@@ -1,0 +1,9 @@
+@(messages: List[model.Message])
+@if(!messages.isEmpty()) {
+<ul>
+ @for(m <- messages) {
+ <li>@{m.getLabel()}     @{m.getId()}</li>
+ }
+</ul>
+}
+
