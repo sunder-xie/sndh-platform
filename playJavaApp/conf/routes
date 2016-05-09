@@ -4,8 +4,10 @@
 
 # An example controller showing a sample home page
 GET     /                           controllers.HomeController.index
-GET     /message/:id                controllers.HomeController.showNessage(id: Long)
+#GET    /message/:id                controllers.HomeController.showNessage(id: Long)
+GET     /message                    controllers.HomeController.showNessage(id:Int)
 POST    /message/add                controllers.HomeController.addNessage
+GET     /showRedis                  controllers.HomeController.showRedis
 # An example controller showing how to use dependency injection
 GET     /count                      controllers.CountController.count
 # An example controller showing how to write asynchronous code
