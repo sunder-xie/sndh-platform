@@ -16,3 +16,5 @@ libraryDependencies ++= Seq(
   "mysql" % "mysql-connector-java" % "5.1.18",
   "redis.clients" % "jedis" % "2.7.3"
 )
+
+resolvers += "Nexus" at "http://nexus.nhry-dev.com/nexus/content/groups/public/"
