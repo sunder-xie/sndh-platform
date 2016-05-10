@@ -15,3 +15,5 @@ libraryDependencies ++= Seq(
   "com.google.inject.extensions" % "guice-multibindings" % "4.0",
   "mysql" % "mysql-connector-java" % "5.1.18"
 )
+
+resolvers += "Nexus" at "http://nexus.nhry-dev.com/nexus/content/groups/public/"
