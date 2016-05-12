@@ -1,5 +1,5 @@
 project:
-  image: nhry/play-framework
+  image: nhry/play-framework:1.0
   ports:
     - "8080:9000"
   volumes:
