@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+  <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"   
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="mybaties.longhu.constant">
+    <!-- 文档唯一标示udf -->
+	<sql id="docuni_typeid">145</sql>
+	<!-- 责任人udf -->
+	<sql id="resman_typeid">156</sql>
+	<!-- 所属系统udf -->
+	<sql id="ssxt_type_id">289</sql>
+	<!-- 反馈流程实例ID udf -->
+	<sql id="feedbackinstance_typeid">216</sql>
+	<!-- 计划状态ID udf -->
+	<sql id="jhzt_typeid">138</sql>
+	<!-- 是否默认模板 udf -->
+	<sql id="jhtype_list">lfproj,gcproj,yfproj,zcproj,Saleproj,bpbjproj,kfproj</sql>
+	<!-- 是否忽略ID udf -->
+	<sql id="sfhy_typeid">218</sql>
+	<!-- 节点唯一标识ID udf -->
+	<sql id="taskuni_typeid">160</sql>
+	
+	<!-- 节点是否是外部节点 -->
+	<sql id="udf_usedflag">154</sql>
+	
+	<sql id="udf_jtdate">157</sql>
+	
+	<!-- 节点管控级别 -->
+	<sql id ="actv_code_type_yyjh" >206</sql>
+	<sql id ="actv_code_type_znjh" >308</sql>
+	
+	<sql id="udf_sortnum">149</sql>
+</mapper>  

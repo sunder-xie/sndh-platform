@@ -1,0 +1,5 @@
+<?xml version="1.0"?>
+<configs>
+ <!-- 环境标示 -->
+  <config key="app_mode" value="produce"></config>
+</configs>
