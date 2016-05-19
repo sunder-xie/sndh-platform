@@ -24,4 +24,11 @@ public class UserServiceImpl extends BaseService implements UserService {
 	public void setUserMapper(UserMapper userMapper) {
 		this.userMapper = userMapper;
 	}
+
+	@Override
+	public PageInfo selectByPage(int pageNum, int pageSize)
+	{
+		// TODO Auto-generated method stub
+		return userMapper.selectByPage(pageNum, pageSize);
+	}
 }
