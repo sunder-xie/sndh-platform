@@ -27,8 +27,7 @@ public class Test extends BaseService{
 //			System.out.println(u.getUserName());
 //		}
         User u = new User();
-        u.setId(124);
-        u.setUserName("李四1");
+        u.setUserName("李四");
         u.setComments("测试用户");
         userMapper.addUser(u);
 	}
