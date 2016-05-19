@@ -4,7 +4,7 @@ public class BaseException extends RuntimeException {
 
 	private String code;
 
-    private Object[] values;
+    private Object value;
 
     public String getCode() {
         return code;
@@ -14,17 +14,17 @@ public class BaseException extends RuntimeException {
         this.code = code;
     }
 
-    public Object[] getValues() {
-        return values;
-    }
-
-    public void setValues(Object[] values) {
-        this.values = values;
-    }
-
-    public BaseException(String message, Throwable cause, String code, Object[] values) {
+    public BaseException(String message, Throwable cause, String code, Object value) {
         super(message, cause);
         this.code = code;
-        this.values = values;
+        this.value = value;
     }
+
+	public Object getValue() {
+		return value;
+	}
+
+	public void setValue(Object value) {
+		this.value = value;
+	}
 }

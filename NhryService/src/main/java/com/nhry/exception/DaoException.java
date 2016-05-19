@@ -23,8 +23,8 @@ public class DaoException extends BaseException {
 	 * @param code  错误代码
 	 * @param values  一组异常信息待定参数
 	 */
-	public DaoException(String code, Object[] values) {
-		super(code, null, code, values);
+	public DaoException(String code, Object value) {
+		super(code, null, code, value);
 	}
 
 	/**
@@ -33,8 +33,7 @@ public class DaoException extends BaseException {
 	 * @param code  错误代码
 	 * @param values  一组异常信息待定参数
 	 */
-	public DaoException(Throwable cause, String code, Object[] values) {
-		super(code, null, code, values);
+	public DaoException(Throwable cause, String code, Object value) {
+		super(code, null, code, value);
 	}
-
 }

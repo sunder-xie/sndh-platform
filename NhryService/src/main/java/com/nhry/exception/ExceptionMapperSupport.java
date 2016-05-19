@@ -8,6 +8,7 @@ import javax.ws.rs.ext.ExceptionMapper;
 import javax.ws.rs.ext.Provider;
 import org.apache.log4j.Logger;
 import org.springframework.web.context.WebApplicationContext;
+
 import com.sun.jersey.api.NotFoundException;
 
 @Provider
@@ -29,7 +30,7 @@ public class ExceptionMapperSupport implements ExceptionMapper<Exception> {
 		if (exception instanceof BaseException) {
 			BaseException baseException = (BaseException) exception;
 			String code = baseException.getCode();
-			Object[] args = baseException.getValues();
+			Object msg = baseException.getValue();
 		} else if (exception instanceof NotFoundException) {
 			message = ExceptionCode.REQUEST_NOT_FOUND;
 			statusCode = Status.NOT_FOUND;

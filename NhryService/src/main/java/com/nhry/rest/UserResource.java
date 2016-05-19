@@ -19,8 +19,6 @@ import org.springframework.stereotype.Controller;
 import com.github.pagehelper.PageInfo;
 import com.nhry.data.dao.UserMapper;
 import com.nhry.domain.User;
-import com.nhry.exception.ExceptionMapperSupport;
-import com.nhry.rest.BaseResource.ErrorType;
 import com.nhry.service.dao.UserService;
 import com.nhry.utils.JsonUtil;
 import com.sun.jersey.spi.resource.Singleton;
@@ -43,9 +41,6 @@ public class UserResource extends BaseResource{
 	@Produces(MediaType.APPLICATION_JSON)
 	@ApiOperation(value = "/search/{uname}", httpMethod = "GET", response = PageInfo.class, notes = "根据用户名模糊查询")
     public JSONObject searchByUname(@ApiParam(required = true, name = "uname", value = "用户名") @PathParam("uname")String name){
-        if(4%0 == 0){
-        	
-        }
 		return JsonUtil.toJson(userService.selectByUserName(name,0,2));
     }
 }
