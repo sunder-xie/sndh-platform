@@ -4,7 +4,7 @@
   name="NhryService"
   id="myeclipse.1463366299424"
   context-root="/NhryService"
-  j2ee-spec="5.0"
+  j2ee-spec="6.0"
   archive="NhryService.war">
   <attributes>
     <attribute name="webrootdir" value="src/main/webapp" />
