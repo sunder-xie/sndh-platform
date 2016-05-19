@@ -42,9 +42,9 @@ private final Logger log = Logger.getLogger(this.getClass());
 	 */
 	@Override
 	protected DataSource determineTargetDataSource() {
-//		if(!"produce".equals(SysContant.getSystemConst("app_mode"))){
-//			return master;
-//		}
+		if(!"produce".equals(SysContant.getSystemConst("app_mode"))){
+			return master;
+		}
 		
 		DataSource returnDataSource = null;
 		if(DataSourceHolder.isMaster()){

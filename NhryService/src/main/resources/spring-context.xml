@@ -1,11 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<beans xmlns="http://www.springframework.org/schema/beans"
-	xmlns:aop="http://www.springframework.org/schema/aop" xmlns:mvc="http://www.springframework.org/schema/mvc"
-	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:context="http://www.springframework.org/schema/context"
-	xmlns:jdbc="http://www.springframework.org/schema/jdbc" xmlns:jee="http://www.springframework.org/schema/jee"
-	xmlns:tx="http://www.springframework.org/schema/tx" xmlns:util="http://www.springframework.org/schema/util"
-	xmlns:task="http://www.springframework.org/schema/task"
-	xsi:schemaLocation="
+<beans xmlns="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:context="http://www.springframework.org/schema/context" xmlns:jdbc="http://www.springframework.org/schema/jdbc"  
+	xmlns:jee="http://www.springframework.org/schema/jee" xmlns:tx="http://www.springframework.org/schema/tx"
+    xmlns:util="http://www.springframework.org/schema/util" xmlns:task="http://www.springframework.org/schema/task"  
+    xsi:schemaLocation="
 		http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-4.0.xsd
 		http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-4.0.xsd
 		http://www.springframework.org/schema/jdbc http://www.springframework.org/schema/jdbc/spring-jdbc-4.0.xsd
@@ -13,13 +11,12 @@
 		http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-4.0.xsd
 		http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util-4.0.xsd
 		http://www.springframework.org/schema/task http://www.springframework.org/schema/task/spring-task-4.0.xsd
-		http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-4.0.xsd
-		http://www.springframework.org/schema/mvc http://www.springframework.org/schema/mvc/spring-mvc-4.0.xsd"
-	default-lazy-init="true">
-	<!-- ibatis3 工厂类 -->
+		http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-4.0.xsd"
+		default-lazy-init="true">
+<!-- ibatis3 工厂类 -->
 	<bean id="sqlSessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean">
 		<property name="dataSource" ref="dataSource" />
-		<property name="mapperLocations" value="classpath:/com/nhry/data/xml/*Mapper.xml" />
+		<property name="mapperLocations" value="classpath:/com/nhry/data/xml/*Mapper.xml" /> 
 		<property name="configLocation" value="classpath:mybatis-config.xml" />
 	</bean>
 	<bean id="sqlSessionTemplate" class="org.mybatis.spring.SqlSessionTemplate">
@@ -28,41 +25,15 @@
 	<bean id="dynamicSqlSessionTemplate" class="com.nhry.datasource.DynamicSqlSessionTemplate">
 		<constructor-arg index="0" ref="sqlSessionTemplate" />
 	</bean>
-
+	
 	<!-- 定义单个jdbc数据源的事务管理器 -->
-	<bean id="transactionManager" class="com.nhry.datasource.DynamicDataSourceTransactionManager">
+	<bean id="transactionManager"  class="com.nhry.datasource.DynamicDataSourceTransactionManager">
 		<property name="dataSource" ref="dataSource" />
 	</bean>
+	<!-- 以 @Transactional 标注来定义事务  -->
+	<tx:annotation-driven transaction-manager="transactionManager"  proxy-target-class="true" />
 	
-	<context:component-scan base-package="com.nhry.rest"></context:component-scan>
-	
-	<bean id="exceptionResolver" class="org.springframework.web.servlet.handler.SimpleMappingExceptionResolver">       
-         <property name="exceptionMappings">       
-             <props>       
-                 <prop key="java.lang.Exception">errors/error</prop>       
-                 <prop key="java.lang.Throwable">errors/err</prop>       
-             </props>       
-         </property>       
-         <property name="statusCodes">       
-             <props>       
-                 <prop key="errors/error">500</prop>       
-                 <prop key="errors/404">404</prop>       
-             </props>       
-         </property>       
-         <!-- 设置日志输出级别，不定义则默认不输出警告等错误日志信息 -->       
-         <property name="warnLogCategory" value="WARN"></property>       
-         <!-- 默认错误页面，当找不到上面mappings中指定的异常对应视图时，使用本默认配置 -->       
-         <property name="defaultErrorView" value="errors/error"></property>       
-         <!-- 默认HTTP状态码 -->       
-         <property name="defaultStatusCode" value="500"></property>       
-     </bean>       
-	
-	<!-- 以 @Transactional 标注来定义事务 
-	<tx:annotation-driven transaction-manager="transactionManager"
-		proxy-target-class="true" />
--->
 	<!-- 配置事务的传播特性 -->
-	<!-- 
 	<tx:advice id="txAdvice" transaction-manager="transactionManager">
 		<tx:attributes>
 			<tx:method name="insert*" propagation="REQUIRED" read-only="false"
@@ -74,19 +45,16 @@
 			<tx:method name="proc*" propagation="REQUIRED" read-only="false"
 				rollback-for="Exception" />
 			<tx:method name="select*" read-only="true" />
-			<tx:method name="*" read-only="false" />   -->
+			<tx:method name="*" read-only="false" />
 			<!-- <tx:method name="*" read-only="true" /> -->
-	<!-- 	</tx:attributes> 
-	</tx:advice>  -->
-	<!-- 那些类的哪些方法参与事务 <aop:config> <aop:pointcut id="allManagerMethod" expression="execution(*com.nhry.dao..*(..))" 
-		/> <aop:advisor pointcut-ref="allManagerMethod" advice-ref="txAdvice" /> 
-		</aop:config> -->
-		
+		</tx:attributes>
+	</tx:advice>
+	<!-- 那些类的哪些方法参与事务 
+	<aop:config>
+		<aop:pointcut id="allManagerMethod" expression="execution(* com.nhry.dao..*(..))" />
+		<aop:advisor pointcut-ref="allManagerMethod" advice-ref="txAdvice" />
+	</aop:config>
+	-->
 	
-	<!-- 
-	<bean class="com.nhry.utils.SwaggerConfig" />
-	 
-	 <mvc:resources mapping="*.html" location="/" />
-	<mvc:default-servlet-handler/>
-	 -->
+	<context:component-scan base-package="com.nhry.rest" />
 </beans>
