@@ -16,12 +16,8 @@ import com.nhry.data.dao.UserMapper;
 import com.nhry.domain.User;
 
 public class UserServiceTest {
-	UserMapper userMapper = null;
 	@Before
 	public void setUp() throws Exception {
-		String[] xmls = new String[]{ "classpath:spring-context.xml","classpath:dataSource.xml" };
-        ApplicationContext context = new ClassPathXmlApplicationContext(xmls);
-        userMapper = (UserMapper) context.getBean("UserMapperImpl");
 	}
 
 	@After
@@ -30,10 +26,14 @@ public class UserServiceTest {
 
 	@Test
 	public void test() {
-//		List<User> list = userMapper.selectByUserName("张");
-//		for(User u : list){
-//			System.out.println(u.getUserName());
-//		}
+		String[] xmls = new String[]{ "classpath:spring-context.xml","classpath:dataSource.xml","classpath:*-bean.xml"  };
+        ApplicationContext context = new ClassPathXmlApplicationContext(xmls);
+        UserMapper userMapper = (UserMapper) context.getBean("userMapper");
+        User u = new User();
+        u.setId(124);
+        u.setUserName("李四1");
+        u.setComments("测试用户");
+        userMapper.addUser(u);
 	}
 
 }
