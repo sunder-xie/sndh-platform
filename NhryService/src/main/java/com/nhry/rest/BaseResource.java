@@ -11,7 +11,7 @@ import org.codehaus.jettison.json.JSONObject;
 
 public class BaseResource {
 	
-	public JSONObject throwMsg(String type,String msg,Object data){
+	public JSONObject throwMsg(String type,Object msg,Object data){
 		JSONObject json = new JSONObject();
 		try {
 			json.put("type", type);
