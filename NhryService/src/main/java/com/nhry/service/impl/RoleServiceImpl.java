@@ -15,7 +15,6 @@ import com.nhry.exception.MessageCode;
 import com.nhry.exception.ServiceException;
 import com.nhry.service.BaseService;
 import com.nhry.service.dao.RoleService;
-import com.nhry.service.dao.UserService;
 
 public class RoleServiceImpl extends BaseService implements RoleService {
 	private RoleMapper roleMapper;

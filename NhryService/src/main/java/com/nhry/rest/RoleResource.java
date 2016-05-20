@@ -27,7 +27,6 @@ import com.nhry.domain.Role;
 import com.nhry.domain.User;
 import com.nhry.exception.MessageCode;
 import com.nhry.service.dao.RoleService;
-import com.nhry.service.dao.UserService;
 import com.nhry.utils.JsonUtil;
 import com.sun.jersey.spi.resource.Singleton;
 import com.wordnik.swagger.annotations.Api;
