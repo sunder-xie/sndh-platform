@@ -34,7 +34,7 @@ public class UserServiceTest {
         u.setId(127);
         u.setUserName("李四1");
         u.setComments("测试用户");
-        userService.addUser(u);
+//        userService.addUser(u);
 	}
 
 }

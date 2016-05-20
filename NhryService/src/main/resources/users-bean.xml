@@ -19,4 +19,10 @@
 	<bean id="userService" class="com.nhry.service.impl.UserServiceImpl">
 	   <property name="userMapper"  ref="userMapper"></property>
 	</bean>
+	<bean id="roleMapper" class="com.nhry.data.impl.RoleMapperImpl">
+	   <property name="sqlSessionTemplate"  ref="dynamicSqlSessionTemplate"></property>
+	</bean>
+	<bean id="roleService" class="com.nhry.service.impl.RoleServiceImpl">
+	   <property name="roleMapper"  ref="roleMapper"></property>
+	</bean>
 </beans>
