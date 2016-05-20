@@ -17,4 +17,8 @@ public interface RoleMapper {
 	public int addRole(Role role);
 	
 	public Role selectOneRole(String name);
+	
+	public int deleteRole(String id);
+	
+	public int updateRole(Role role);
 }

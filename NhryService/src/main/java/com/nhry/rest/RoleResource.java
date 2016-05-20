@@ -25,6 +25,7 @@ import com.github.pagehelper.PageInfo;
 import com.nhry.data.dao.UserMapper;
 import com.nhry.domain.Role;
 import com.nhry.domain.User;
+import com.nhry.exception.MessageCode;
 import com.nhry.service.dao.RoleService;
 import com.nhry.service.dao.UserService;
 import com.nhry.utils.JsonUtil;
@@ -43,21 +44,22 @@ public class RoleResource extends BaseResource{
 	@Autowired
 	private RoleService roleService;
 	
-	@GET
-	@Path("/search/{roleName}")
-	@Produces(MediaType.APPLICATION_JSON)
-	@ApiOperation(value = "/search/{roleName}", httpMethod = "GET", response = PageInfo.class, notes = "根据角色名模糊查询")
-    public JSONObject searchByUname(@ApiParam(required = true, name = "roleName", value = "角色名") @PathParam("roleName")String name){
-		System.out.println("search by page "+name);
-		return JsonUtil.toJson(roleService.selectByRoleName(name,0,2));
-    }
+//	@GET
+//	@Path("/search/{roleName}")
+//	@Produces(MediaType.APPLICATION_JSON)
+//	@ApiOperation(value = "/search/{roleName}", httpMethod = "GET", response = PageInfo.class, notes = "根据角色名模糊查询")
+//    public JSONObject searchByUname(@ApiParam(required = true, name = "roleName", value = "角色名") @PathParam("roleName")String name){
+//		System.out.println("search by page "+name);
+//		
+//		return this.throwMsg(MessageCode.NORMAL, "", JsonUtil.toJson(roleService.selectByRoleName(name,0,2)));
+//    }
 	
 	@GET
-	@Path("/hello{name}")
+	@Path("/search/{id}")
 	@Produces(MediaType.APPLICATION_JSON)
-    public Object sayHello(@PathParam("name")String name) {
-		  System.out.println("hello!"+name);
-        return roleService.selectOneRole(name);
+    public JSONObject searchOneRole(@PathParam("id")String id) {
+		  System.out.println("hello!"+id);
+        return JsonUtil.toJson(roleService.selectOneRole(id));
     }
 	
 	@GET
@@ -69,12 +71,33 @@ public class RoleResource extends BaseResource{
     }
 	
 	@POST
-	@Path("/postForm")
+	@Path("/addRole")
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
-    public Object sayTo(Role role) {
-		  System.out.println("==============POST==========="+role.getId()+role.getRoleName());
-        return role;
+    public JSONObject addRole(Role role) {
+		  System.out.println("==============addRole==========="+role.getId()+role.getRoleName());
+        int success = roleService.addRole(role);
+        
+		  return this.throwMsg(MessageCode.NORMAL,"",null);
     }
 	
+	@POST
+	@Path("/updateRole")
+	@Consumes(MediaType.APPLICATION_JSON)
+	@Produces(MediaType.APPLICATION_JSON)
+    public JSONObject updateRole(Role role) {
+		  System.out.println("==============updateRole==========="+role.getId()+role.getRoleName());
+        int success = roleService.updateRole(role);
+        
+        return this.throwMsg(MessageCode.NORMAL,"",null);
+    }
+	
+	@GET
+	@Path("/deleteRole")
+	@Produces(MediaType.APPLICATION_JSON)
+    public JSONObject deleteRole(@QueryParam("id") String id) {
+		  System.out.println("delete"+id);
+		  int success = roleService.deleteRole(id);
+        return this.throwMsg(MessageCode.NORMAL,"",null);
+    }
 }

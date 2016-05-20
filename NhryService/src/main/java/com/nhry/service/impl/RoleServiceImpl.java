@@ -41,11 +41,44 @@ public class RoleServiceImpl extends BaseService implements RoleService {
 	}
  
 	@Override
-	public Role selectOneRole(String name)
+	public Role selectOneRole(String id)
 	{
 		// TODO Auto-generated method stub
-		Role role = roleMapper.selectOneRole(name);
+		Role role = roleMapper.selectOneRole(id);
 		System.out.println(role.getId()+role.getRoleName());
 		return role;
+	}
+
+	@Override
+	public int addRole(Role role)
+	{
+		// TODO Auto-generated method stub
+		return roleMapper.addRole(role);
+	}
+
+	@Override
+	public int deleteRole(String id)
+	{
+		// TODO Auto-generated method stub
+		int success = roleMapper.deleteRole(id);
+		System.out.println("[========="+success);
+//		if(success<=0){
+//			throw new ServiceException(MessageCode.LOGIC_ERROR,"数据不存在!");
+//		}
+		
+		return success;
+	}
+
+	@Override
+	public int updateRole(Role role)
+	{
+		// TODO Auto-generated method stub
+		int success = roleMapper.updateRole(role);
+		
+		if(success<=0){
+			throw new ServiceException(MessageCode.LOGIC_ERROR,"更新失败!");
+		}
+		
+		return success;
 	}
 }

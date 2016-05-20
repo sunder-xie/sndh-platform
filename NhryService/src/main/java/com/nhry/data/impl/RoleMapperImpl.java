@@ -52,4 +52,18 @@ public class RoleMapperImpl implements RoleMapper {
 		// TODO Auto-generated method stub
 		return sqlSessionTemplate.selectOne("selectOneRole", name);
 	}
+
+	@Override
+	public int deleteRole(String id)
+	{
+		// TODO Auto-generated method stub
+		return sqlSessionTemplate.delete("deleteRole", id);
+	}
+
+	@Override
+	public int updateRole(Role role)
+	{
+		// TODO Auto-generated method stub
+		return sqlSessionTemplate.update("updateRole", role);
+	}
 }

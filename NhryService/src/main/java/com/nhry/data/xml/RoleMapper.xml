@@ -20,4 +20,10 @@
 	<insert id="addRole"  parameterType="com.nhry.domain.Role">
 	    insert into roles (ROLE_ID,ROLE_NAME,SHORT_NAME,COMMENTS) values (#{id},#{roleName},#{shortName},#{comments})
 	</insert>
+	<delete id="deleteRole"  parameterType="String" >
+		 DELETE from roles where ROLE_ID = #{0}
+	</delete>
+	<update id="updateRole"  parameterType="com.nhry.domain.Role" >
+		update roles set role_name = #{roleName} where role_id = #{id}
+	</update>
 </mapper>
