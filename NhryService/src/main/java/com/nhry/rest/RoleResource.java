@@ -1,7 +1,9 @@
 package com.nhry.rest;
 
+import java.io.IOException;
 import java.util.List;
 
+import javax.servlet.http.HttpServletResponse;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DefaultValue;
 import javax.ws.rs.GET;
@@ -22,7 +24,9 @@ import org.springframework.stereotype.Controller;
 
 import com.github.pagehelper.PageInfo;
 import com.nhry.data.dao.UserMapper;
+import com.nhry.domain.Role;
 import com.nhry.domain.User;
+import com.nhry.service.dao.RoleService;
 import com.nhry.service.dao.UserService;
 import com.nhry.utils.JsonUtil;
 import com.sun.jersey.spi.resource.Singleton;
@@ -30,29 +34,31 @@ import com.wordnik.swagger.annotations.Api;
 import com.wordnik.swagger.annotations.ApiOperation;
 import com.wordnik.swagger.annotations.ApiParam;
 
-@Path("/user")  
+@Path("/role")  
 @Component  
 @Scope("request")  
 @Singleton
 @Controller
-@Api(value = "user-api", description = "有关于用户的CURD操作", position = 5)
-public class UserResource extends BaseResource{
+@Api(value = "role-api", description = "有关于角色的CURD操作", position = 5)
+public class RoleResource extends BaseResource{
 	@Autowired
-	private UserService userService;
+	private RoleService roleService;
 	
 	@GET
-	@Path("/search/{uname}")
+	@Path("/search/{roleName}")
 	@Produces(MediaType.APPLICATION_JSON)
-	@ApiOperation(value = "/search/{uname}", httpMethod = "GET", response = PageInfo.class, notes = "根据用户名模糊查询")
-    public JSONObject searchByUname(@ApiParam(required = true, name = "uname", value = "用户名") @PathParam("uname")String name){
-		return JsonUtil.toJson(userService.selectByUserName(name,0,2));
+	@ApiOperation(value = "/search/{roleName}", httpMethod = "GET", response = PageInfo.class, notes = "根据角色名模糊查询")
+    public JSONObject searchByUname(@ApiParam(required = true, name = "roleName", value = "角色名") @PathParam("roleName")String name){
+		System.out.println("search by page "+name);
+		return JsonUtil.toJson(roleService.selectByRoleName(name,0,2));
     }
 	
 	@GET
 	@Path("/hello{name}")
 	@Produces(MediaType.APPLICATION_JSON)
     public Object sayHello(@PathParam("name")String name) {
-        return userService.selectByUserName(name,0,2);
+		  System.out.println("hello!"+name);
+        return roleService.selectOneRole(name);
     }
 	
 	@GET
@@ -60,15 +66,16 @@ public class UserResource extends BaseResource{
 	@Produces(MediaType.APPLICATION_JSON)
     public JSONObject allByPage(@QueryParam("pageNo") @DefaultValue("0") int pageNo
    		 							 ,@QueryParam("pageSize") @DefaultValue("10") int pageSize) {
-        return JsonUtil.toJson(userService.selectByPage(pageNo, pageSize));
+        return JsonUtil.toJson(roleService.selectByPage(pageNo, pageSize));
     }
 	
 	@POST
 	@Path("/postForm")
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
-    public Object sayTo(User user) {
-		  System.out.println("==============POST==========="+user.getId()+user.getUserName());
-        return user;
+    public Object sayTo(Role role) {
+		  System.out.println("==============POST==========="+role.getId()+role.getRoleName());
+        return role;
     }
+	
 }
