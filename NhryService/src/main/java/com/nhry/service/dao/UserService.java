@@ -9,4 +9,6 @@ public interface UserService {
 	public PageInfo selectByUserName(String uname,int pageNum,int pageSize);
 	
 	public PageInfo selectByPage(int pageNum,int pageSize);
+	
+	public int greeUser(User user);
 }

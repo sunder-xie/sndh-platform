@@ -11,7 +11,7 @@ import com.nhry.data.dao.RoleMapper;
 import com.nhry.data.dao.UserMapper;
 import com.nhry.domain.Role;
 import com.nhry.domain.User;
-import com.nhry.exception.ExceptionCode;
+import com.nhry.exception.MessageCode;
 import com.nhry.exception.ServiceException;
 import com.nhry.service.BaseService;
 import com.nhry.service.dao.RoleService;
@@ -24,7 +24,7 @@ public class RoleServiceImpl extends BaseService implements RoleService {
 	public PageInfo selectByRoleName(String roleName,int pageNum,int pageSize) {
 		// TODO Auto-generated method stub
 		if(roleName == null){
-			throw new ServiceException(ExceptionCode.LOGIC_ERROR);
+			throw new ServiceException(MessageCode.LOGIC_ERROR);
 		}
 		return roleMapper.selectByRoleName(roleName,pageNum,pageSize);
 	}
