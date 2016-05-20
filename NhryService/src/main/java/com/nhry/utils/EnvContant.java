@@ -12,19 +12,24 @@ import org.dom4j.io.SAXReader;
 import org.springframework.util.StringUtils;
 
 /**
- * 系统变量工具类
+ * 环境变量工具类
  * @author Administrator
  */
-public class SysContant {
-    private static final String SYS_CONFIG="sys/sys-config.xml";
-    static Logger log=Logger.getLogger(SysContant.class); 
+public class EnvContant {
+    private static final String APP_PROD_CONFIG="env/app-prod.xml";
+    private static final String APP_DEV_CONFIG="env/app-dev.xml";
+    static Logger log=Logger.getLogger(EnvContant.class); 
 	private static  Map<String, String> configs=new HashMap<String, String>() ;
 	 
 	static{
 		try{
 			SAXReader read=new SAXReader();
+			String appEnvConfig = APP_DEV_CONFIG;
+			if("produce".equals(SysContant.getSystemConst("app_mode")) ){
+				appEnvConfig = APP_PROD_CONFIG;
+			}
            //获取根下面的 config,xml文件 进行加载读取
-    		InputStream inputstream= SysContant.class.getClassLoader().getResourceAsStream(SYS_CONFIG);
+    		InputStream inputstream= EnvContant.class.getClassLoader().getResourceAsStream(appEnvConfig);
 			 List<Element> eleconfigs= read.read(inputstream).getRootElement().elements("config");
 			 for(Element ele:eleconfigs){
 				 	String key=ele.attributeValue("key");
@@ -46,7 +51,7 @@ public class SysContant {
 	}
 	
 	public static void main(String[] args){
-		System.out.println(getSystemConst("sys_yetai_type"));
+		System.out.println(getSystemConst("app_mode"));
 	}
 
 }

@@ -7,7 +7,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 import javax.sql.DataSource;
 import org.apache.log4j.Logger;
 
-import com.nhry.utils.SysContant;
+import com.nhry.utils.EnvContant;
 
 public class DynamicDataSource extends AbstractRoutingDataSource {
 private final Logger log = Logger.getLogger(this.getClass());
@@ -42,7 +42,7 @@ private final Logger log = Logger.getLogger(this.getClass());
 	 */
 	@Override
 	protected DataSource determineTargetDataSource() {
-		if(!"produce".equals(SysContant.getSystemConst("app_mode"))){
+		if(!"produce".equals(EnvContant.getSystemConst("app_mode"))){
 			return master;
 		}
 		
