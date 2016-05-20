@@ -33,9 +33,27 @@ public class UserServiceImpl extends BaseService implements UserService {
 	}
 
 	@Override
-//	@Transactional(readOnly=true,propagation=Propagation.REQUIRED)
-	public int addUser(User user) {
+	public PageInfo selectByPage(int pageNum, int pageSize)
+	{
 		// TODO Auto-generated method stub
-		return userMapper.addUser(user);
+		return userMapper.selectByPage(pageNum, pageSize);
+	}
+	
+//	@Transactional(readOnly=true,propagation=Propagation.REQUIRED)
+	public int greeUser(User user) {
+		// TODO Auto-generated method stub
+		for(int t=1;t<=10;t++){
+			User u = new User();
+//			if(t  >= 9){
+//				if(t%0==0){ 
+//					
+//				}
+//			}
+			u.setId(t);
+			u.setUserName("张三"+t);
+			u.setComments("备注"+t);
+			userMapper.addUser(u);
+		}
+		return 0;
 	}
 }

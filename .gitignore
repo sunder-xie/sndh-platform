@@ -31,5 +31,3 @@ project/plugins/project/
 .scala_dependencies
 .worksheet
 
-NhryService/.idea
-*.iml
