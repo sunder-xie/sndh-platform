@@ -42,25 +42,26 @@ private final Logger log = Logger.getLogger(this.getClass());
 	 */
 	@Override
 	protected DataSource determineTargetDataSource() {
-		if(!"produce".equals(EnvContant.getSystemConst("app_mode"))){
-			return master;
-		}
+//		if(!"produce".equals(EnvContant.getSystemConst("app_mode"))){
+//			return master;
+//		}
+		return master;
 		
-		DataSource returnDataSource = null;
-		if(DataSourceHolder.isMaster()){
-			returnDataSource = master;
-		}else if(DataSourceHolder.isSlave()){
-			int count = counter.incrementAndGet();
-			if(count>1000000){
-				counter.set(0);
-			}
-			int n = slaves.size();
-			int index = count%n;
-			returnDataSource = slaves.get(index);
-		}else{
-			returnDataSource = master;
-		}
-		return returnDataSource;
+//		DataSource returnDataSource = null;
+//		if(DataSourceHolder.isMaster()){
+//			returnDataSource = master;
+//		}else if(DataSourceHolder.isSlave()){
+//			int count = counter.incrementAndGet();
+//			if(count>1000000){
+//				counter.set(0);
+//			}
+//			int n = slaves.size();
+//			int index = count%n;
+//			returnDataSource = slaves.get(index);
+//		}else{
+//			returnDataSource = master;
+//		}
+//		return returnDataSource;
 	}
 
 	public DataSource getMaster() {
