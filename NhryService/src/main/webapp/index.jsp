@@ -1,55 +1,59 @@
+<!DOCTYPE html>
 <html>
 <head>
-	<meta charset="utf-8">
-	<link rel="stylesheet" href="http://apps.bdimg.com/libs/bootstrap/3.3.4/css/bootstrap.min.css">
-	<script src="http://apps.bdimg.com/libs/angular.js/1.4.6/angular.min.js"></script>
+<meta charset="utf-8">
+<script src="./angular.js"></script>
+<style>
+table, td  {
+  border: 1px solid grey;
+  border-collapse: collapse;
+  padding: 5px;
+}
+</style>
 </head>
-<body ng-app="myApp" ng-controller="userCtrl" >
+<body>
+<h1>Hello World!</h1>
+<div ng-app="myApp" ng-controller="userCtrl"> 
 
-<div class="container">
-	<h3>Users</h3>
+<!-- <table>
+  <tr ng-repeat="x in lists">
+    <td ng-if="$odd" style="background-color:#f1f1f1">
+    {{ x.id }}</td>
+    <td ng-if="$even">
+    {{ x.id }}</td>
+    <td ng-if="$odd" style="background-color:#f1f1f1">
+    {{ x.userName }}</td>
+    <td ng-if="$even">
+    {{ x.userName }}</td>
+  </tr>
+</table> -->
 
-	<table class="table table-striped">
-		<thead>
-		<tr>
-			<th>id</th>
-			<th>name</th>
-			<th>comments</th>
-		</tr>
-		</thead>
-		<tbody>
-		<tr ng-repeat="user in users">
-			<td>{{ user.id }}</td>
-			<td>{{ user.userName }}</td>
-			<td>{{ user.comments }}</td>
-		</tr>
-		</tbody>
-	</table>
+
+
 </div>
-<script >
-	angular.module('myApp', []).controller('userCtrl', function($scope,$http) {
 
-		$http({
-			url:'/NhryService/rest/user/all',
-			method:'GET'
-		}).success(function(data,header,config,status){
-			$scope.users = data;
+<script>
 
-		}).error(function(data,header,config,status){
-			alert(data);
-		});
-		/* $http.get("/rest/user/all")
-		 .success(function(data) {
-		 alert(data);
-		 alert("success");
-		 $scope.users = data;
-		 }).error(function(data) {
-		 alert($http.url);
-		 alert("server error");
-		 });*/
+/* var app = angular.module('myApp', []);
+app.controller('userCtrl', function($scope, $http) {
+	  $http({method: 'GET', 
+		      url: '/NhryService/rest/user/allByPage',
+		      params:{
+		    	  		  'pageNo':1,
+		    	  		  'pageSize':2
+		    	       }
+	  }).
+	  success(function(data, status, headers, config) {
+	    alert(data+"");
+	    $scope.lists = data.list;
+	  }).
+	  error(function(data, status, headers, config) {
+	      alert('error: ' + data);
+	  });
+}); */
 
-	});
 
 </script>
+
 </body>
 </html>
