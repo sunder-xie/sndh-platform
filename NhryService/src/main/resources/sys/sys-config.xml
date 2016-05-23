@@ -7,4 +7,5 @@
   <config key="serverError"  value="服务异常"></config>
   <config key="logicError"  value="逻辑异常"></config>
   <config key="success"  value="success"></config>
+  <config key="unauthorized" value="无权限访问"></config>
 </configs>
