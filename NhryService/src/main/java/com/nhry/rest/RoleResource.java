@@ -38,7 +38,7 @@ import com.wordnik.swagger.annotations.ApiParam;
 @Scope("request")  
 @Singleton
 @Controller
-@Api(value = "role-api", description = "有关于角色的CURD操作", position = 5)
+@Api(value = "/role", description = "有关于角色的CURD操作", position = 5)
 public class RoleResource extends BaseResource{
 	@Autowired
 	private RoleService roleService;

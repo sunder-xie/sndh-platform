@@ -1,5 +1,13 @@
 package com.nhry.service.impl;
 
+import java.util.List;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
+
+import com.github.pagehelper.Page;
+import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import com.nhry.data.dao.UserMapper;
 import com.nhry.domain.User;
@@ -7,8 +15,6 @@ import com.nhry.exception.MessageCode;
 import com.nhry.exception.ServiceException;
 import com.nhry.service.BaseService;
 import com.nhry.service.dao.UserService;
-
-import java.util.List;
 
 public class UserServiceImpl extends BaseService implements UserService {
 	private UserMapper userMapper;
@@ -49,10 +55,5 @@ public class UserServiceImpl extends BaseService implements UserService {
 			userMapper.addUser(u);
 		}
 		return 0;
-	}
-
-	@Override
-	public List<User> all() {
-		return userMapper.all();
 	}
 }
