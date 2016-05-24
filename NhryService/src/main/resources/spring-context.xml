@@ -42,6 +42,8 @@
 		<tx:attributes>
 			<tx:method name="add*" propagation="REQUIRED" read-only="false"
 				rollback-for="com.nhry.exception.ServiceException" />
+			<tx:method name="insert*" propagation="REQUIRED" read-only="false"
+				rollback-for="com.nhry.exception.ServiceException" />
 			<tx:method name="delete*" propagation="REQUIRED" read-only="false"
 				rollback-for="com.nhry.exception.ServiceException" />
 			<tx:method name="del*" propagation="REQUIRED" read-only="false"

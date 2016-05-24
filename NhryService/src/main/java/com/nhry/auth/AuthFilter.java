@@ -20,7 +20,8 @@ import com.sun.jersey.spi.container.ContainerRequest;
 import com.sun.jersey.spi.container.ContainerRequestFilter;
 
 public class AuthFilter implements ContainerRequestFilter {
-	private static final String userKey="_userKey";
+	private static final String aKey="_aKey";
+	private static final String uname="_uname";
 	
 	@Context   
     private HttpServletRequest servletRequest;  
@@ -29,12 +30,15 @@ public class AuthFilter implements ContainerRequestFilter {
 	@Override
 	public ContainerRequest filter(ContainerRequest request) {
 		// TODO Auto-generated method stub
-//		String uk = CookieUtil.getCookieValue(servletRequest, userKey);
-//		if(StringUtils.isEmpty(uk)){//UNAUTHORIZED
-//			Response response = Response.ok(throwMsg(MessageCode.UNAUTHORIZED,SysContant.getSystemConst(MessageCode.UNAUTHORIZED),null)).status(Status.UNAUTHORIZED).type(MediaType.APPLICATION_JSON).build();  
-//            throw new WebApplicationException(response); 
+//		if("product".equals(SysContant.getSystemConst("app_mode"))){
+//			String ak = CookieUtil.getCookieValue(servletRequest, aKey);
+//			String userName = CookieUtil.getCookieValue(servletRequest, uname);
+//			if(!MessageCode.NORMAL.equals(UserSessionService.checkIdentity(ak, userName))){
+//				Response response = Response.ok(throwMsg(MessageCode.UNAUTHORIZED,SysContant.getSystemConst(MessageCode.UNAUTHORIZED),null)).status(Status.UNAUTHORIZED).type(MediaType.APPLICATION_JSON).build();  
+//	            throw new WebApplicationException(response); 
+//			}
 //		}
-		return null;
+		return request;
 	}
 	
 	public JSONObject throwMsg(String type,Object msg,Object data){

@@ -61,27 +61,9 @@ public class JedisPoolManager {
         return jedisPool.getResource();
 	}
     
-    public static void main(String[] args) {
-    	try {
-			Jedis jedis=JedisPoolManager.getJedis()	;
-			//jedis.select(1);
-			JedisPoolManager.getJedis()	;
-			jedis.close();
-			JedisPoolManager.getJedis()	;
-			jedis.close();
-			JedisPoolManager.getJedis()	;
-			jedis.close();
-			JedisPoolManager.getJedis()	;
-			jedis.close();
-			JedisPoolManager.getJedis()	;
-			jedis.close();
-			
-		}catch(Exception e){
-			e.printStackTrace();
-		} finally {
-			 			// TODO: handle finally clause
-		}
-    	
-    	
-	}
+    public static void returnResource(Jedis jedis) {  
+        if (jedis != null) {  
+        	jedis.close();
+        }  
+    }  
 }

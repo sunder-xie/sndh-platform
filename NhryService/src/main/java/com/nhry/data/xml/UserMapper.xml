@@ -1,19 +1,26 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
-<mapper namespace="com.nhry.data.dao.UserMapper" >
+<mapper namespace="com.nhry.data.impl.UserMapperImpl" >
 	<resultMap id="userMap" type="User">
-		<id column="user_id" property="id" jdbcType="BIGINT" />
-		<result column="user_name" property="userName" jdbcType="VARCHAR" />
-		<result column="email" property="email" jdbcType="VARCHAR" />
+		<id column="LOGIN_NAME" property="loginName" jdbcType="VARCHAR" />
+		<result column="ID" property="id" jdbcType="VARCHAR" />
+		<result column="PWD" property="pwd" jdbcType="VARCHAR" />
+		<result column="STATUS" property="status" jdbcType="VARCHAR" />
+		<result column="CREATE_AT" property="createAt" jdbcType="TIMESTAMP" />
+		<result column="CREATE_BY" property="createBy" jdbcType="VARCHAR" />
+		<result column="CREATE_BY_TXT" property="createByTxt" jdbcType="VARCHAR" />
+		<result column="LAST_MODIFIED" property="lastModified" jdbcType="TIMESTAMP" />
+		<result column="LAST_MODIFIED_BY" property="lastModifiedBy" jdbcType="VARCHAR" />
+		<result column="LAST_MODIFIED_BY_TXT" property="lastModifiedByTxt" jdbcType="VARCHAR" />
 	</resultMap>
 
 	<select id="selectByUserName"  parameterType="String"  resultMap="userMap">
-		select * from users u where u.user_name like '%' #{userName} '%'
+		 select * from T_SYS_USER u where u.LOGIN_NAME like '%' #{userName} '%'
 	</select>
 	<select id="all" resultMap="userMap">
-		select * from users u
+		select * from T_SYS_USER u
 	</select>
 	<insert id="adduser1"  parameterType="User">
-	    insert into users (USER_ID,USER_NAME,COMMENTS) values (#{id},#{userName},#{comments})
+	    insert into T_SYS_USER (LOGIN_NAME,USER_NAME,COMMENTS) values (#{id},#{userName},#{comments})
 	</insert>
 </mapper>

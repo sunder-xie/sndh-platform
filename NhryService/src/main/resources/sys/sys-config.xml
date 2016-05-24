@@ -8,4 +8,6 @@
   <config key="logicError"  value="逻辑异常"></config>
   <config key="success"  value="success"></config>
   <config key="unauthorized" value="无权限访问"></config>
+  <!-- redis用户存取key值 -->
+  <config key="app_user_key" value="app_user_key"></config>
 </configs>

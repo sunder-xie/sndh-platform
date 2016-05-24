@@ -1,26 +1,26 @@
 package com.nhry.rest;
 
-import javax.ws.rs.GET;
-import javax.ws.rs.POST;
-import javax.ws.rs.Path;
-import javax.ws.rs.Produces;
-import javax.ws.rs.core.MediaType;
-
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import javax.ws.rs.core.Context;
+import javax.ws.rs.core.Response;
 import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONObject;
 
+import com.nhry.domain.ResponseModel;
+
 public class BaseResource {
-	
-	protected JSONObject throwMsg(String type,Object msg,Object data){
-		JSONObject json = new JSONObject();
-		try {
-			json.put("type", type);
-			json.put("msg", msg);
-			json.put("data", data);
-		} catch (JSONException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		return json;
+	protected final int pageSize = 8;
+	@Context
+	protected HttpServletRequest request;
+	@Context
+	protected HttpServletResponse response;
+
+	protected Response formatData(String type, Object msg, Object data) {
+		ResponseModel rsmodel = new ResponseModel();
+		rsmodel.setType(type);
+		rsmodel.setMsg(msg);
+		rsmodel.setData(data);
+		return Response.ok().entity(rsmodel).build();
 	}
 }
