@@ -22,13 +22,9 @@ public class TMdVipCustInfoServiceImpl implements TMdVipCustInfoService {
 	}
 
 	@Override
-	public int insert(JSONObject record) {
+	public int insert(TMdVipCustInfo cust) {
 		// TODO Auto-generated method stub
 		//TMdVipCustInfo
-		TMdVipCustInfo cust = JackJson.fromJsonToObject(record.toString(), TMdVipCustInfo.class);
-		if(cust == null){
-			throw new ServiceException(MessageCode.LOGIC_ERROR,"json数据格式异常");
-		}
 		return tmdVipcust.insert(cust);
 	}
 
@@ -52,6 +48,12 @@ public class TMdVipCustInfoServiceImpl implements TMdVipCustInfoService {
 	public List<TMdVipCustInfo> allCust() {
 		// TODO Auto-generated method stub
 		return tmdVipcust.all();
+	}
+
+	@Override
+	public TMdVipCustInfo findCustByPhone(String phone) {
+		// TODO Auto-generated method stub
+		return tmdVipcust.findCustByPhone(phone);
 	}
 
 }

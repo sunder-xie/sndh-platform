@@ -99,4 +99,10 @@
     <include refid="Base_Column_List" />
     from t_md_vip_cust_info
   </select>
+  
+  <select id="findCustByPhone"  resultMap="BaseResultMap"  parameterType="String">
+	    select 
+	    <include refid="Base_Column_List" />
+	    from t_md_vip_cust_info where MP like '%' #{phone,jdbcType=VARCHAR} '%'
+  </select>
 </mapper>

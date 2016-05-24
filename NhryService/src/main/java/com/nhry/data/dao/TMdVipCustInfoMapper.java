@@ -18,4 +18,6 @@ public interface TMdVipCustInfoMapper {
     int updateByPrimaryKey(TMdVipCustInfo record);
     
     List<TMdVipCustInfo> all();
+    
+    TMdVipCustInfo findCustByPhone(String phone);
 }

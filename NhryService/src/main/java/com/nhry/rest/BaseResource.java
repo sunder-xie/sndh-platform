@@ -20,11 +20,12 @@ public class BaseResource {
 		response.setHeader("Access-Control-Allow-Methods", "GET,POST,PUT,DELETE,OPTIONS");
 		response.setHeader("Access-Control-Allow-Credentials", "true");  
 		response.setHeader("Access-Control-Expose-Headers", "Content-Type"); 
+		response.setHeader("Access-Control-Allow-Origin","*");
 		
 		ResponseModel rsmodel = new ResponseModel();
 		rsmodel.setType(type);
 		rsmodel.setMsg(msg);
-		rsmodel.setData(data);
+		rsmodel.setData(data==null ? "" : data);
 		return Response.ok().entity(rsmodel).build();
 	}
 }

@@ -55,4 +55,10 @@ public class TMdVipCustInfoMapperImpl implements TMdVipCustInfoMapper {
 		return sqlSessionTemplate.selectList("getAllCust");
 	}
 
+	@Override
+	public TMdVipCustInfo findCustByPhone(String phone) {
+		// TODO Auto-generated method stub
+		return sqlSessionTemplate.selectOne("findCustByPhone",phone);
+	}
+
 }
