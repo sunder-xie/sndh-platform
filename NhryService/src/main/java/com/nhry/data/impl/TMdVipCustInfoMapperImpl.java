@@ -1,5 +1,7 @@
 package com.nhry.data.impl;
 
+import java.util.List;
+
 import com.nhry.data.dao.TMdVipCustInfoMapper;
 import com.nhry.datasource.DynamicSqlSessionTemplate;
 import com.nhry.domain.TMdVipCustInfo;
@@ -45,6 +47,12 @@ public class TMdVipCustInfoMapperImpl implements TMdVipCustInfoMapper {
 	
 	public void setSqlSessionTemplate(DynamicSqlSessionTemplate sqlSessionTemplate) {
 		this.sqlSessionTemplate = sqlSessionTemplate;
+	}
+
+	@Override
+	public List<TMdVipCustInfo> all() {
+		// TODO Auto-generated method stub
+		return sqlSessionTemplate.selectList("getAllCust");
 	}
 
 }

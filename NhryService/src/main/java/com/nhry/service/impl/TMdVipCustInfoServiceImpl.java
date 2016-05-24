@@ -1,6 +1,7 @@
 package com.nhry.service.impl;
 
 import java.rmi.ServerException;
+import java.util.List;
 
 import org.codehaus.jettison.json.JSONObject;
 
@@ -45,6 +46,12 @@ public class TMdVipCustInfoServiceImpl implements TMdVipCustInfoService {
 
 	public void setTmdVipcust(TMdVipCustInfoMapper tmdVipcust) {
 		this.tmdVipcust = tmdVipcust;
+	}
+
+	@Override
+	public List<TMdVipCustInfo> allCust() {
+		// TODO Auto-generated method stub
+		return tmdVipcust.all();
 	}
 
 }

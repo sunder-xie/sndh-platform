@@ -93,4 +93,10 @@
       LAST_MODIFIED_BY_TXT = #{lastModifiedByTxt,jdbcType=VARCHAR}
     where VIP_CUST_NO = #{vipCustNo,jdbcType=VARCHAR}
   </update>
+  
+  <select id="getAllCust" resultMap="BaseResultMap" >
+    select 
+    <include refid="Base_Column_List" />
+    from t_md_vip_cust_info
+  </select>
 </mapper>
