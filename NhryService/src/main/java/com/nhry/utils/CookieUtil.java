@@ -74,6 +74,7 @@ public class CookieUtil {
         Cookie cookie = new Cookie(name, value);
         cookie.setMaxAge(maxAge);
         cookie.setPath(getPath(request));
+        cookie.setPath("/");
         response.addCookie(cookie);
     }
 

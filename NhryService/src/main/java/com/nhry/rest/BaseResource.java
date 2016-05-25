@@ -18,6 +18,7 @@ public class BaseResource {
 	protected HttpServletResponse response;
 
 	protected Response formatData(String type, Object msg, Object data) {
+		response.setHeader("Access-Control-Allow-Credentials", "true");
 		ResponseModel rsmodel = new ResponseModel();
 		rsmodel.setType(type);
 		rsmodel.setMsg(msg);
