@@ -2,6 +2,7 @@ package com.nhry.rest;
 
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
+import javax.ws.rs.OPTIONS;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
@@ -81,6 +82,14 @@ public class VipCustResource extends BaseResource {
 	@ApiOperation(value = "/update", response = String.class, notes = "修改会员信息")
 	public Response uptCust(@ApiParam(required=true,name="cust",value="会员信息json格式")TMdVipCustInfo cust) {
 		return formatData(MessageCode.NORMAL, null,custService.updateByPrimaryKey(cust));
+	}
+	
+	@OPTIONS
+	@Path("/add")
+	@Consumes(MediaType.APPLICATION_JSON)
+	@ApiOperation(value = "/add", response = String.class, notes = "添加会员信息")
+	public Response addVipCust1(@ApiParam(required=true,name="cust",value="会员信息json格式")TMdVipCustInfo cust) {
+		return formatData(MessageCode.NORMAL, null,custService.insert(cust));
 	}
 
 }
