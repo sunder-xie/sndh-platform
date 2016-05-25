@@ -52,11 +52,14 @@ public class JedisPoolManager {
     }
 	 
     public static Jedis getJedis() {
+    	System.out.println("---redisHost---:"+EnvContant.getSystemConst("redisHost"));
     	if (jedisPool==null){
     		synchronized (syncObject) {
+    			System.out.println("---jedisPoolFlag---:"+jedisPoolFlag);
     			if (!jedisPoolFlag){
             		jedisPool = new JedisPool(new JedisPoolConfig(),REDIS_ADDRESS,REDIS_PORT,REDIS_TIMEOUT);
-    				jedisPoolFlag =true;
+            		System.out.println("---redis初始化成功---:"+jedisPoolFlag);
+            		jedisPoolFlag =true;
     			}
 			}
     	}
