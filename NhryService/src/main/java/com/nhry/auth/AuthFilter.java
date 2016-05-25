@@ -53,7 +53,7 @@ public class AuthFilter implements ContainerRequestFilter {
 		String uri = request.getAbsolutePath().getPath();
 		String host = request.getAbsolutePath().getHost();
 		if("product".equals(SysContant.getSystemConst("app_mode"))){
-			if(isExsitUri(uri) || whiteHostList.contains(host)){
+			if(isExsitUri(uri)){
 				return request;
 			}
 			String ak = CookieUtil.getCookieValue(servletRequest, UserSessionService.accessKey);
