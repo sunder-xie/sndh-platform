@@ -1,5 +1,8 @@
 package com.nhry.auth;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.ws.rs.WebApplicationException;
@@ -12,6 +15,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONObject;
 
+import com.nhry.domain.ResponseModel;
 import com.nhry.exception.MessageCode;
 import com.nhry.exception.ServiceException;
 import com.nhry.utils.CookieUtil;
@@ -22,6 +26,16 @@ import com.sun.jersey.spi.container.ContainerRequestFilter;
 public class AuthFilter implements ContainerRequestFilter {
 	private static final String aKey="_aKey";
 	private static final String uname="_uname";
+	private static  List<String> whiteList =null;
+	@Context
+	protected HttpServletRequest request;
+	@Context
+	protected HttpServletResponse response;
+	
+	static{
+		whiteList = new ArrayList<String>();
+		whiteList.add("/NhryService/rest/user/login");
+	}
 	
 	@Context   
     private HttpServletRequest servletRequest;  
@@ -30,27 +44,35 @@ public class AuthFilter implements ContainerRequestFilter {
 	@Override
 	public ContainerRequest filter(ContainerRequest request) {
 		// TODO Auto-generated method stub
-//		if("product".equals(SysContant.getSystemConst("app_mode"))){
-//			String ak = CookieUtil.getCookieValue(servletRequest, aKey);
-//			String userName = CookieUtil.getCookieValue(servletRequest, uname);
-//			if(!MessageCode.NORMAL.equals(UserSessionService.checkIdentity(ak, userName))){
-//				Response response = Response.ok(throwMsg(MessageCode.UNAUTHORIZED,SysContant.getSystemConst(MessageCode.UNAUTHORIZED),null)).status(Status.UNAUTHORIZED).type(MediaType.APPLICATION_JSON).build();  
-//	            throw new WebApplicationException(response); 
-//			}
-//		}
+		String uri = request.getAbsolutePath().getPath();
+		if("product".equals(SysContant.getSystemConst("app_mode"))){
+			String ak = CookieUtil.getCookieValue(servletRequest, aKey);
+			String userName = CookieUtil.getCookieValue(servletRequest, uname);
+			//未登录
+			if(StringUtils.isEmpty(ak) || StringUtils.isEmpty(userName)){
+				if(!whiteList.contains(uri)){
+					Response response = formatData(MessageCode.UNAUTHORIZED, SysContant.getSystemConst(MessageCode.UNAUTHORIZED), null, Status.UNAUTHORIZED);
+		            throw new WebApplicationException(response); 
+				}
+			}
+			if(!MessageCode.NORMAL.equals(UserSessionService.checkIdentity(ak, userName))){
+				Response response = formatData(MessageCode.UNAUTHORIZED, SysContant.getSystemConst(MessageCode.UNAUTHORIZED), null, Status.UNAUTHORIZED);
+	            throw new WebApplicationException(response); 
+			}
+		}
 		return request;
 	}
 	
-	public JSONObject throwMsg(String type,Object msg,Object data){
-		JSONObject json = new JSONObject();
-		try {
-			json.put("type", type);
-			json.put("msg", msg);
-			json.put("data", data);
-		} catch (JSONException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		return json;
+	protected Response formatData(String type, Object msg, Object data,Status statusCode) {
+		response.setHeader("Access-Control-Allow-Methods", "GET,POST,PUT,DELETE,OPTIONS");
+		response.setHeader("Access-Control-Allow-Credentials", "true");  
+		response.setHeader("Access-Control-Expose-Headers", "Content-Type"); 
+		response.setHeader("Access-Control-Allow-Origin","*");
+		
+		ResponseModel rsmodel = new ResponseModel();
+		rsmodel.setType(type);
+		rsmodel.setMsg(msg);
+		rsmodel.setData(data==null ? "" : data);
+		return Response.ok(rsmodel,MediaType.APPLICATION_JSON).status(statusCode).build();
 	}
 }

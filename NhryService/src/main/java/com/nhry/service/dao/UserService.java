@@ -13,5 +13,5 @@ public interface UserService {
 
 	public int addUser(JSONObject user);
 	
-	public TSysUser login(JSONObject json);
+	public TSysUser login(TSysUser user);
 }

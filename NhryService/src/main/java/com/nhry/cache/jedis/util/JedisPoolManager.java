@@ -1,4 +1,6 @@
 package com.nhry.cache.jedis.util;
+import com.nhry.utils.EnvContant;
+
 import redis.clients.jedis.Jedis;
 import redis.clients.jedis.JedisPool;
 import redis.clients.jedis.JedisPoolConfig;
@@ -8,7 +10,7 @@ import redis.clients.jedis.JedisPoolConfig;
  *
  */
 public class JedisPoolManager {
-	public static final String REDIS_ADDRESS="127.0.0.1";
+	public static final String REDIS_ADDRESS=EnvContant.getSystemConst("redisHost");
 	public static final int REDIS_PORT=6379;
 	public static final int REDIS_TIMEOUT=2000;
     

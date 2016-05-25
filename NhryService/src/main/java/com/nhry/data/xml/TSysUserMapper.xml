@@ -150,7 +150,7 @@
       LAST_MODIFIED_BY_TXT = #{lastModifiedByTxt,jdbcType=VARCHAR}
     where LOGIN_NAME = #{loginName,jdbcType=VARCHAR}
   </update>
-  <select id="login"  parameterType="java.util.HashMap">
+  <select id="login"  resultMap="BaseResultMap" parameterType="java.util.HashMap">
         select 
 	    <include refid="Base_Column_List" />
 	    from t_sys_user

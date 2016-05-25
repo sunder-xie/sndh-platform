@@ -20,10 +20,11 @@ public class UserSessionService {
 	
 	public static String checkIdentity(String accessKey,String uname){
 		Map<String,String> userMap = RedisUtil.getRu().hgetall(SysContant.getSystemConst("app_user_key"));
-		String userName = userMap.get(accessKey);
+		String userName = userMap.get(Base64Util.decodeStr(accessKey));
 		if(StringUtils.isEmpty(userName)){
 			return MessageCode.UNAUTHORIZED;
 		}
+		accessKeyThread.set(accessKey);
 		return MessageCode.NORMAL;
 	}
 	

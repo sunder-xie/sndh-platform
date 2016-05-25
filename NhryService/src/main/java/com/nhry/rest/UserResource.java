@@ -61,11 +61,11 @@ public class UserResource extends BaseResource {
 	@Path("/login")
 	@Produces(MediaType.TEXT_PLAIN)
 	@ApiOperation(value = "/login", response = String.class, notes = "用户登录")
-	public Response login(@ApiParam(required = true, name = "json", value = "用户名、密码") JSONObject json) {
-		TSysUser user = userService.login(json);
+	public Response login(@ApiParam(required = true, name = "user", value = "用户名、密码") TSysUser user) {
+		TSysUser loginuser = userService.login(user);
 		String accesskey = UserSessionService.generateKey();
 		CookieUtil.setCookie(request, response, UserSessionService.accessKey, accesskey);
-		CookieUtil.setCookie(request, response, UserSessionService.uname, user.getLoginName());
+		CookieUtil.setCookie(request, response, UserSessionService.uname, loginuser.getLoginName());
 		UserSessionService.cacheUserSession(user.getLoginName(), accesskey, user);
 		return formatData(MessageCode.NORMAL,null, user);
 	}

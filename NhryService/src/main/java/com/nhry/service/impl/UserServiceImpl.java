@@ -40,28 +40,17 @@ public class UserServiceImpl extends BaseService implements UserService {
 	}
 
 	@Override
-	public TSysUser login(JSONObject json) {
+	public TSysUser login(TSysUser user) {
 		// TODO Auto-generated method stub
-		if((!json.has("loginName") || !json.has("pwd"))){
+		if(StringUtils.isEmpty(user.getLoginName()) || StringUtils.isEmpty(user.getPwd())){
 			throw new ServiceException(MessageCode.LOGIC_ERROR,"用户名、密码不能为空!");
 		}
-		String uname = null;
-		String pwd = null;
-		try {
-			uname = json.getString("loginName").trim();
-			pwd = json.getString("pwd").trim();
-		} catch (JSONException e) {
-			// TODO Auto-generated catch block
-			throw new ServiceException(MessageCode.LOGIC_ERROR,"json数据格式不正确!");
-		}
-		if(StringUtils.isEmpty(uname) || StringUtils.isEmpty(pwd)){
-			throw new ServiceException(MessageCode.LOGIC_ERROR,"用户名、密码不能为空!");
-		}
-		TSysUser user = userMapper.login(uname,pwd);
+
+		TSysUser _user = userMapper.login(user.getLoginName(),user.getPwd());
 		if(user == null){
 			throw new ServiceException(MessageCode.LOGIC_ERROR,"系统不存在该用户,请检查你的用户名、密码！");
 		}
-		return user;
+		return _user;
 	}
 	
 	public void setUserMapper(UserMapper userMapper) {

@@ -83,13 +83,4 @@ public class VipCustResource extends BaseResource {
 	public Response uptCust(@ApiParam(required=true,name="cust",value="会员信息json格式")TMdVipCustInfo cust) {
 		return formatData(MessageCode.NORMAL, null,custService.updateByPrimaryKey(cust));
 	}
-	
-	@OPTIONS
-	@Path("/add")
-	@Consumes(MediaType.APPLICATION_JSON)
-	@ApiOperation(value = "/add", response = String.class, notes = "添加会员信息")
-	public Response addVipCust1(@ApiParam(required=true,name="cust",value="会员信息json格式")TMdVipCustInfo cust) {
-		return formatData(MessageCode.NORMAL, null,custService.insert(cust));
-	}
-
 }

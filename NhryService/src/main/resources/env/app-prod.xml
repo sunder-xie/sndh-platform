@@ -2,4 +2,5 @@
 <configs>
  <!-- 环境标示 -->
   <config key="app_mode" value="produce456"></config>
+  <config key="redisHost" value="redis.nhry-dev.com"></config>
 </configs>
