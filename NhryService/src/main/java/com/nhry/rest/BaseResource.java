@@ -17,11 +17,6 @@ public class BaseResource {
 	protected HttpServletResponse response;
 
 	protected Response formatData(String type, Object msg, Object data) {
-		response.setHeader("Access-Control-Allow-Methods", "GET,POST,PUT,DELETE,OPTIONS");
-		response.setHeader("Access-Control-Allow-Credentials", "true");  
-		response.setHeader("Access-Control-Expose-Headers", "Content-Type"); 
-		response.setHeader("Access-Control-Allow-Origin","*");
-		
 		ResponseModel rsmodel = new ResponseModel();
 		rsmodel.setType(type);
 		rsmodel.setMsg(msg);

@@ -13,7 +13,7 @@ public interface UserMapper {
 	
 	public <T> PageInfo<T> selectByPage(int pageNum,int pageSize);
 	
-	public TSysUser login(String uname,String pwd);
+	public TSysUser login(TSysUser user);
 	
 	public int addUser(TSysUser user);
 	

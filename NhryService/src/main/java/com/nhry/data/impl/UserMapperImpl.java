@@ -38,12 +38,9 @@ public class UserMapperImpl implements UserMapper {
 	}
 
 	@Override
-	public TSysUser login(String uname, String pwd) {
+	public TSysUser login(TSysUser user) {
 		// TODO Auto-generated method stub
-		Map<String,String> attrs = new HashMap<String,String>();
-		attrs.put("uname", uname);
-		attrs.put("pwd", pwd);
-		return sqlSessionTemplate.selectOne("login",attrs);
+		return sqlSessionTemplate.selectOne("login",user);
 	}
 
 	@Override

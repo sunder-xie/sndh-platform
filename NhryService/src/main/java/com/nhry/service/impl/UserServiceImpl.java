@@ -46,7 +46,7 @@ public class UserServiceImpl extends BaseService implements UserService {
 			throw new ServiceException(MessageCode.LOGIC_ERROR,"用户名、密码不能为空!");
 		}
 
-		TSysUser _user = userMapper.login(user.getLoginName(),user.getPwd());
+		TSysUser _user = userMapper.login(user);
 		if(user == null){
 			throw new ServiceException(MessageCode.LOGIC_ERROR,"系统不存在该用户,请检查你的用户名、密码！");
 		}
