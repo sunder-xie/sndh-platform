@@ -24,8 +24,6 @@ import com.sun.jersey.spi.container.ContainerRequest;
 import com.sun.jersey.spi.container.ContainerRequestFilter;
 
 public class AuthFilter implements ContainerRequestFilter {
-	private static final String aKey="_aKey";
-	private static final String uname="_uname";
 	private static  List<String> whiteList =null;
 	@Context
 	protected HttpServletRequest request;
@@ -46,16 +44,18 @@ public class AuthFilter implements ContainerRequestFilter {
 		// TODO Auto-generated method stub
 		String uri = request.getAbsolutePath().getPath();
 		if("product".equals(SysContant.getSystemConst("app_mode"))){
-			String ak = CookieUtil.getCookieValue(servletRequest, aKey);
-			String userName = CookieUtil.getCookieValue(servletRequest, uname);
+			if(whiteList.contains(uri)){
+				return request;
+			}
+			String ak = CookieUtil.getCookieValue(servletRequest, UserSessionService.accessKey);
+			String userName = CookieUtil.getCookieValue(servletRequest, UserSessionService.uname);
 			//未登录
 			if(StringUtils.isEmpty(ak) || StringUtils.isEmpty(userName)){
 				if(!whiteList.contains(uri)){
 					Response response = formatData(MessageCode.UNAUTHORIZED, SysContant.getSystemConst(MessageCode.UNAUTHORIZED), null, Status.UNAUTHORIZED);
 		            throw new WebApplicationException(response); 
 				}
-			}
-			if(!MessageCode.NORMAL.equals(UserSessionService.checkIdentity(ak, userName))){
+			}else	if(!MessageCode.NORMAL.equals(UserSessionService.checkIdentity(ak, userName))){
 				Response response = formatData(MessageCode.UNAUTHORIZED, SysContant.getSystemConst(MessageCode.UNAUTHORIZED), null, Status.UNAUTHORIZED);
 	            throw new WebApplicationException(response); 
 			}
