@@ -36,4 +36,11 @@ public class UserMapperImpl implements UserMapper {
 		// TODO Auto-generated method stub
 	  return sqlSessionTemplate.insert("adduser1", user);
 	}
+
+	@Override
+	public <T> PageInfo<T> selectByPage(int pageNum, int pageSize)
+	{
+		// TODO Auto-generated method stub
+		return sqlSessionTemplate.selectListByPages("all",pageNum,pageSize);
+	}
 }

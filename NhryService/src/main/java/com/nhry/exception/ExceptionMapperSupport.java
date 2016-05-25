@@ -29,6 +29,7 @@ public class ExceptionMapperSupport implements ExceptionMapper<Exception> {
 	 * @return 异常处理后的Response对象
 	 */
 	public Response toResponse(Exception exception) {
+		exception.printStackTrace();
 		String code = MessageCode.SERVER_ERROR;
 		Object msg = null;
 		Status statusCode = Status.INTERNAL_SERVER_ERROR;

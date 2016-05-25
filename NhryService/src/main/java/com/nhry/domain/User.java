@@ -2,6 +2,9 @@ package com.nhry.domain;
 
 import java.io.Serializable;
 
+import com.wordnik.swagger.annotations.ApiModel;
+
+@ApiModel(description = "user")
 public class User implements Serializable {
   private int id;
   private String userName;
