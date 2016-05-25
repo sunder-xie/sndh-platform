@@ -75,6 +75,7 @@ public class CookieUtil {
         cookie.setMaxAge(maxAge);
         cookie.setPath(getPath(request));
         cookie.setPath("/");
+        cookie.setDomain("localhost");
         response.addCookie(cookie);
     }
 
