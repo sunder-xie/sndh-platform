@@ -24,15 +24,23 @@ import com.sun.jersey.spi.container.ContainerRequest;
 import com.sun.jersey.spi.container.ContainerRequestFilter;
 
 public class AuthFilter implements ContainerRequestFilter {
-	private static  List<String> whiteList =null;
+	private static  List<String> whiteUriList =null;
+	private static  List<String> whiteHostList =null;
 	@Context
 	protected HttpServletRequest request;
 	@Context
 	protected HttpServletResponse response;
 	
 	static{
-		whiteList = new ArrayList<String>();
-		whiteList.add("/NhryService/rest/user/login");
+		whiteUriList = new ArrayList<String>();
+		whiteUriList.add("/rest/user/login");
+	}
+	
+	static{
+		whiteHostList = new ArrayList<String>();
+		whiteHostList.add("127.0.0.1");
+		whiteHostList.add("localhost");
+		whiteHostList.add("test.nhry-dev.com");
 	}
 	
 	@Context   
@@ -43,15 +51,16 @@ public class AuthFilter implements ContainerRequestFilter {
 	public ContainerRequest filter(ContainerRequest request) {
 		// TODO Auto-generated method stub
 		String uri = request.getAbsolutePath().getPath();
+		String host = request.getAbsolutePath().getHost();
 		if("product".equals(SysContant.getSystemConst("app_mode"))){
-			if(whiteList.contains(uri)){
+			if(isExsitUri(uri) || whiteHostList.contains(host)){
 				return request;
 			}
 			String ak = CookieUtil.getCookieValue(servletRequest, UserSessionService.accessKey);
 			String userName = CookieUtil.getCookieValue(servletRequest, UserSessionService.uname);
 			//未登录
 			if(StringUtils.isEmpty(ak) || StringUtils.isEmpty(userName)){
-				if(!whiteList.contains(uri)){
+				if(!whiteUriList.contains(uri)){
 					Response response = formatData(MessageCode.UNAUTHORIZED, SysContant.getSystemConst(MessageCode.UNAUTHORIZED), null, Status.UNAUTHORIZED);
 		            throw new WebApplicationException(response); 
 				}
@@ -74,5 +83,14 @@ public class AuthFilter implements ContainerRequestFilter {
 		rsmodel.setMsg(msg);
 		rsmodel.setData(data==null ? "" : data);
 		return Response.ok(rsmodel,MediaType.APPLICATION_JSON).status(statusCode).build();
+	}
+	
+	private boolean isExsitUri(String uri){
+		for(String u : whiteUriList){
+			if(uri.contains(u)){
+				return true;
+			}
+		}
+		return false;
 	}
 }
