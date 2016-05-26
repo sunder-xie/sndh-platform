@@ -16,6 +16,8 @@ public class AccessKey implements Serializable {
 	private String accessIp;
 	// 访问次数
 	private int visitCount;
+	
+	private String lastUri; 
 
 	public String getAck() {
 		return ack;
@@ -63,5 +65,13 @@ public class AccessKey implements Serializable {
 
 	public void setVisitCount(int visitCount) {
 		this.visitCount = visitCount;
+	}
+
+	public String getLastUri() {
+		return lastUri;
+	}
+
+	public void setLastUri(String lastUri) {
+		this.lastUri = lastUri;
 	}
 }

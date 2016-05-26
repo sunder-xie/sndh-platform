@@ -35,12 +35,21 @@
   <script type="text/javascript">
     $(function () {
       var url = window.location.search.match(/url=([^&]+)/);
+      
+      var domain = window.location.host;
+      var host=document.domain; 
+      var _url = window.location.href;
       if (url && url.length > 1) {
         url = decodeURIComponent(url[1]);
       } else {
-        url = "/NhryService/rest/api-docs";
+          if(host.indexOf("127.0.0.1") != -1 || host.indexOf("localhost") != -1){
+          		url = "/NhryService/rest/api-docs";
+          		console.log("---进入本地模式---"+_url);
+          }else if(_url.indexOf("xiexiaojun") != -1){
+          		url = "/xiexiaojun/rest/api-docs";
+          		console.log("---进入集成环境模式---"+_url);
+          }
       }
-
       hljs.configure({
         highlightSizeThreshold: 5000
       });
