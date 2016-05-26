@@ -12,6 +12,7 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 
 import org.apache.commons.lang3.StringUtils;
+import org.apache.log4j.Logger;
 import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONObject;
 
@@ -24,6 +25,7 @@ import com.sun.jersey.spi.container.ContainerRequest;
 import com.sun.jersey.spi.container.ContainerRequestFilter;
 
 public class AuthFilter implements ContainerRequestFilter {
+	private static final Logger LOGGER = Logger.getLogger(AuthFilter.class);
 	private static  List<String> whiteUriList =null;
 	private static  List<String> whiteHostList =null;
 	@Context
@@ -50,18 +52,15 @@ public class AuthFilter implements ContainerRequestFilter {
 	@Override
 	public ContainerRequest filter(ContainerRequest request) {
 		// TODO Auto-generated method stub
-		System.out.println("---getContextPath--"+servletRequest.getRemoteHost());
-		System.out.println("---getContextPath--"+servletRequest.getContextPath());
 		String uri = request.getAbsolutePath().getPath();
-		System.out.println("---uri-----"+uri);
 		String host = request.getAbsolutePath().getHost();
-		System.out.println("---host-----"+host);
 		if("product".equals(SysContant.getSystemConst("app_mode"))){
 			if(isExsitUri(uri)){
 				return request;
 			}
 			String ak = CookieUtil.getCookieValue(servletRequest, UserSessionService.accessKey);
 			String userName = CookieUtil.getCookieValue(servletRequest, UserSessionService.uname);
+			LOGGER.warn("---ak:"+ak+" ---userName:"+userName);
 			//未登录
 			if(StringUtils.isEmpty(ak) || StringUtils.isEmpty(userName)){
 				if(!whiteUriList.contains(uri)){
