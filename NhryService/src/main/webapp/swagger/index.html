@@ -42,6 +42,9 @@
       if (url && url.length > 1) {
         url = decodeURIComponent(url[1]);
       } else {
+      console.log("---_url---"+_url);
+       console.log("---domain---"+domain);
+        console.log("---host---"+host);
           if(host.concat("127.0.0.1") || host.concat("localhost")){
           		url = "/NhryService/rest/api-docs";
           }else if(_url.concat("xiexiaojun")){
