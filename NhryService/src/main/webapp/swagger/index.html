@@ -35,12 +35,19 @@
   <script type="text/javascript">
     $(function () {
       var url = window.location.search.match(/url=([^&]+)/);
+      
+      var domain = window.location.host;
+      var host=document.domain; 
+      var _url = window.location.href;
       if (url && url.length > 1) {
         url = decodeURIComponent(url[1]);
       } else {
-        url = "/NhryService/rest/api-docs";
+          if(host.concat("127.0.0.1") || host.concat("localhost")){
+          		url = "/NhryService/rest/api-docs";
+          }else if(_url.concat("xiexiaojun")){
+          		url = "/xiexiaojun/rest/api-docs";
+          }
       }
-
       hljs.configure({
         highlightSizeThreshold: 5000
       });

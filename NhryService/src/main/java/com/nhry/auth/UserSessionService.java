@@ -33,6 +33,7 @@ public class UserSessionService {
 			LOGGER.warn("当前访问的aceesskey不存在!");
 			 return null;
 		}
+		//url date ip accessKey
 		accessKeyThread.set(ak);
 		return MessageCode.NORMAL;
 	}
@@ -75,6 +76,13 @@ public class UserSessionService {
 	 * @return
 	 */
 	public static TSysUser getCurrentUser(){
+		if(!"product".equals(SysContant.getSystemConst("app_mode"))){
+			//测试时使用
+			TSysUser user = new TSysUser();
+			user.setLoginName("test");
+			return user;
+		}
+		
 		String accessKey = accessKeyThread.get();
 		Map<String, String> accessMap = RedisUtil.getRu().hgetall(SysContant.getSystemConst("app_access_key"));
 		if(accessMap == null || accessMap.get(accessKey)==null){
