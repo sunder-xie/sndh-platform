@@ -54,7 +54,6 @@ public class TMdVipCustInfoServiceImpl implements TMdVipCustInfoService {
 	@Override
 	public List<TMdVipCustInfo> allCust() {
 		// TODO Auto-generated method stub
-		System.out.println("-----"+UserSessionService.getCurrentUser().getLoginName());
 		return tmdVipcust.all();
 	}
 

@@ -1,4 +1,7 @@
 package com.nhry.cache.jedis.util;
+import org.apache.log4j.Logger;
+
+import com.nhry.auth.UserSessionService;
 import com.nhry.utils.EnvContant;
 
 import redis.clients.jedis.Jedis;
@@ -10,6 +13,7 @@ import redis.clients.jedis.JedisPoolConfig;
  *
  */
 public class JedisPoolManager {
+	private static final Logger LOGGER = Logger.getLogger(JedisPoolManager.class);
 	public static final String REDIS_ADDRESS=EnvContant.getSystemConst("redisHost");
 	public static final int REDIS_PORT=6379;
 	public static final int REDIS_TIMEOUT=2000;
@@ -52,18 +56,19 @@ public class JedisPoolManager {
     }
 	 
     public static Jedis getJedis() {
-    	System.out.println("---redisHost---:"+EnvContant.getSystemConst("redisHost"));
     	if (jedisPool==null){
     		synchronized (syncObject) {
-    			System.out.println("---jedisPoolFlag---:"+jedisPoolFlag);
     			if (!jedisPoolFlag){
             		jedisPool = new JedisPool(new JedisPoolConfig(),REDIS_ADDRESS,REDIS_PORT,REDIS_TIMEOUT);
-            		System.out.println("---redis初始化成功---:"+jedisPoolFlag);
             		jedisPoolFlag =true;
     			}
 			}
     	}
-        return jedisPool.getResource();
+    	Jedis jedis = jedisPool.getResource();
+    	if(jedis == null){
+    		LOGGER.error("获取redis连接异常"+jedis);
+    	}
+        return jedis;
 	}
     
     public static void returnResource(Jedis jedis) {  
