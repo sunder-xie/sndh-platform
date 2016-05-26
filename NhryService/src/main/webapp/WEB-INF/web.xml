@@ -13,9 +13,9 @@
 			org.springframework.web.context.ContextLoaderListener
 		</listener-class>
   </listener>
-   <listener>
-      <listener-class>org.springframework.web.util.IntrospectorCleanupListener</listener-class>
-	</listener>
+  <listener>
+    <listener-class>org.springframework.web.util.IntrospectorCleanupListener</listener-class>
+  </listener>
   <listener>
     <listener-class>
 			org.springframework.web.context.request.RequestContextListener
@@ -34,11 +34,14 @@
       		com.nhry.exception;
             com.wordnik.swagger.jaxrs.listing;
       </param-value>
-      
     </init-param>
     <init-param>
       <param-name>com.sun.jersey.api.json.POJOMappingFeature</param-name>
       <param-value>true</param-value>
+    </init-param>
+    <init-param>
+      <param-name>com.sun.jersey.spi.container.ContainerRequestFilters</param-name>
+      <param-value>com.nhry.auth.AuthFilter</param-value>
     </init-param>
     <load-on-startup>1</load-on-startup>
   </servlet>
@@ -46,44 +49,39 @@
     <servlet-name>JerseyServlet</servlet-name>
     <url-pattern>/rest/*</url-pattern>
   </servlet-mapping>
-  
   <servlet>
-        <servlet-name>DefaultJaxrsConfig</servlet-name>
-        <servlet-class>com.wordnik.swagger.jaxrs.config.DefaultJaxrsConfig</servlet-class>
-        <init-param>
-            <param-name>api.version</param-name>
-            <param-value>1.0.0</param-value>
-        </init-param>
-        <init-param>
-      		<param-name>swagger.api.title</param-name>
-            <param-value>Swagger Petstore</param-value>
-    	  </init-param>
-        <init-param>
-            <param-name>swagger.api.basepath</param-name>
-            <param-value>http://localhost:8080/NhryService/rest</param-value>
-        </init-param>
-        <!-- <init-param>
-	         <param-name>scan.all.resources</param-name>
-	         <param-value>true</param-value>
-    	  </init-param> -->
-        <load-on-startup>2</load-on-startup>
-    </servlet>
-  
-  <filter>  
-       <filter-name>springUtf8Encoding</filter-name>  
-       <filter-class>org.springframework.web.filter.CharacterEncodingFilter</filter-class>  
-       <init-param>  
-           <param-name>encoding</param-name>  
-           <param-value>UTF-8</param-value>  
-       </init-param>  
-       <init-param>  
-           <param-name>forceEncoding</param-name>  
-           <param-value>true</param-value>  
-       </init-param>   
-    </filter>  
-    <filter-mapping>  
-       <filter-name>springUtf8Encoding</filter-name>  
-       <url-pattern>/*</url-pattern>  
-   </filter-mapping>   
+    <servlet-name>DefaultJaxrsConfig</servlet-name>
+    <servlet-class>com.wordnik.swagger.jaxrs.config.DefaultJaxrsConfig</servlet-class>
+    <init-param>
+      <param-name>api.version</param-name>
+      <param-value>1.0.0</param-value>
+    </init-param>
+    <init-param>
+      <param-name>swagger.api.title</param-name>
+      <param-value>Swagger Petstore</param-value>
+    </init-param>
+    <init-param>
+      <param-name>swagger.api.basepath</param-name>
+      <param-value>/NhryService/rest</param-value>
+    </init-param>
+    <load-on-startup>2</load-on-startup>
+  </servlet>
+
+  <filter>
+    <filter-name>springUtf8Encoding</filter-name>
+    <filter-class>org.springframework.web.filter.CharacterEncodingFilter</filter-class>
+    <init-param>
+      <param-name>encoding</param-name>
+      <param-value>UTF-8</param-value>
+    </init-param>
+    <init-param>
+      <param-name>forceEncoding</param-name>
+      <param-value>true</param-value>
+    </init-param>
+  </filter>
+  <filter-mapping>
+    <filter-name>springUtf8Encoding</filter-name>
+    <url-pattern>/*</url-pattern>
+  </filter-mapping>
   <display-name>Archetype Created Web Application</display-name>
 </web-app>

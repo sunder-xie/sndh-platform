@@ -1,5 +1,7 @@
 package com.nhry.exception;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
@@ -13,11 +15,16 @@ import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONObject;
 import org.springframework.web.context.WebApplicationContext;
 
+import com.nhry.domain.ResponseModel;
 import com.nhry.utils.SysContant;
 import com.sun.jersey.api.NotFoundException;
 
 @Provider
 public class ExceptionMapperSupport implements ExceptionMapper<Exception> {
+	@Context
+	protected HttpServletRequest request;
+	@Context
+	protected HttpServletResponse response;
 
 	private static final Logger LOGGER = Logger.getLogger(ExceptionMapperSupport.class);
 
@@ -52,19 +59,19 @@ public class ExceptionMapperSupport implements ExceptionMapper<Exception> {
 			msg = SysContant.getSystemConst(code);
 		}
 		LOGGER.error(msg, exception);
-		return Response.ok(throwMsg(code, msg, null), MediaType.APPLICATION_JSON).status(statusCode).build();
+		return formatData(code, msg, null, statusCode);
 	}
 	
-	public JSONObject throwMsg(String type,Object msg,Object data){
-		JSONObject json = new JSONObject();
-		try {
-			json.put("type", type);
-			json.put("msg", msg);
-			json.put("data", data);
-		} catch (JSONException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		return json;
+	protected Response formatData(String type, Object msg, Object data,Status statusCode) {
+//		response.setHeader("Access-Control-Allow-Methods", "GET,POST,PUT,DELETE,OPTIONS");
+//		response.setHeader("Access-Control-Allow-Credentials", "true");  
+//		response.setHeader("Access-Control-Expose-Headers", "Content-Type"); 
+//		response.setHeader("Access-Control-Allow-Origin","*");
+//		
+		ResponseModel rsmodel = new ResponseModel();
+		rsmodel.setType(type);
+		rsmodel.setMsg(msg);
+		rsmodel.setData(data==null ? "" : data);
+		return Response.ok(rsmodel,MediaType.APPLICATION_JSON).status(statusCode).build();
 	}
 }

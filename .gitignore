@@ -31,5 +31,10 @@ project/plugins/project/
 .scala_dependencies
 .worksheet
 
-NhryService/.idea
-*.iml
+NhryService/.externalToolBuilders/
+NhryService/.idea/
+NhryService/NhryService.iml
+NhryService/src/main/webapp/js/jquery-1.9.1.min.js
+NhryService/src/main/webapp/js/jquery.json-2.4.js
+新希望订奶到户数据库设计V0.2.pdm
+新希望订奶到户数据库设计V0.3.pdm

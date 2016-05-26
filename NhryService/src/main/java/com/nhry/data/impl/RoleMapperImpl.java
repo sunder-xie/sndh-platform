@@ -11,16 +11,15 @@ import com.nhry.data.dao.RoleMapper;
 import com.nhry.data.dao.UserMapper;
 import com.nhry.datasource.DynamicSqlSessionTemplate;
 import com.nhry.domain.Role;
-import com.nhry.domain.User;
 
 public class RoleMapperImpl implements RoleMapper {
-	
+
 	private DynamicSqlSessionTemplate sqlSessionTemplate;
-	
+
 	@Override
-	public <T> PageInfo<T> selectByRoleName(String roleName,int pageNum,int pageSize) {
+	public <T> PageInfo<T> selectByRoleName(String roleName, int pageNum,int pageSize) {
 		// TODO Auto-generated method stub
-		return sqlSessionTemplate.selectListByPages("selectByRoleName", roleName,pageNum,pageSize);
+		return sqlSessionTemplate.selectListByPages("selectByRoleName",roleName, pageNum, pageSize);
 	}
 
 	public void setSqlSessionTemplate(DynamicSqlSessionTemplate sqlSessionTemplate) {
@@ -36,33 +35,30 @@ public class RoleMapperImpl implements RoleMapper {
 	@Override
 	public int addRole(Role role) {
 		// TODO Auto-generated method stub
-	  return sqlSessionTemplate.insert("addRole", role);
+		return sqlSessionTemplate.insert("addRole", role);
 	}
 
 	@Override
-	public <T> PageInfo<T> selectByPage(int pageNum, int pageSize)
-	{
+	public <T> PageInfo<T> selectByPage(int pageNum, int pageSize) {
 		// TODO Auto-generated method stub
-		return sqlSessionTemplate.selectListByPages("allRoles",pageNum,pageSize);
+		return sqlSessionTemplate.selectListByPages("allRoles", pageNum,
+				pageSize);
 	}
 
 	@Override
-	public Role selectOneRole(String name)
-	{
+	public Role selectOneRole(String name) {
 		// TODO Auto-generated method stub
 		return sqlSessionTemplate.selectOne("selectOneRole", name);
 	}
 
 	@Override
-	public int deleteRole(String id)
-	{
+	public int deleteRole(String id) {
 		// TODO Auto-generated method stub
 		return sqlSessionTemplate.delete("deleteRole", id);
 	}
 
 	@Override
-	public int updateRole(Role role)
-	{
+	public int updateRole(Role role) {
 		// TODO Auto-generated method stub
 		return sqlSessionTemplate.update("updateRole", role);
 	}

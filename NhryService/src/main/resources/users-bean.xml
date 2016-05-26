@@ -25,4 +25,11 @@
 	<bean id="roleService" class="com.nhry.service.impl.RoleServiceImpl">
 	   <property name="roleMapper"  ref="roleMapper"></property>
 	</bean>
+	
+	<bean id="custMapper" class="com.nhry.data.impl.TMdVipCustInfoMapperImpl">
+	   <property name="sqlSessionTemplate"  ref="dynamicSqlSessionTemplate"></property>
+	</bean>
+	<bean id="custService" class="com.nhry.service.impl.TMdVipCustInfoServiceImpl">
+	   <property name="tmdVipcust"  ref="custMapper"></property>
+	</bean>
 </beans>

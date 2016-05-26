@@ -1,59 +1,59 @@
 package com.nhry.service.impl;
 
-import java.util.List;
-
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.transaction.annotation.Propagation;
-import org.springframework.transaction.annotation.Transactional;
-
-import com.github.pagehelper.Page;
-import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import com.nhry.data.dao.UserMapper;
-import com.nhry.domain.User;
+import com.nhry.domain.SysUser;
+import com.nhry.domain.TSysUser;
 import com.nhry.exception.MessageCode;
 import com.nhry.exception.ServiceException;
 import com.nhry.service.BaseService;
 import com.nhry.service.dao.UserService;
+import com.nhry.utils.json.JackJson;
+
+import java.util.List;
+
+import org.apache.commons.lang3.StringUtils;
+import org.codehaus.jettison.json.JSONException;
+import org.codehaus.jettison.json.JSONObject;
 
 public class UserServiceImpl extends BaseService implements UserService {
 	private UserMapper userMapper;
-	
+
 	@Override
-	public PageInfo selectByUserName(String uname,int pageNum,int pageSize) {
+	public PageInfo selectByUserName(String uname, int pageNum, int pageSize) {
 		// TODO Auto-generated method stub
-		if(uname != null){
-			throw new ServiceException(MessageCode.LOGIC_ERROR);
-		}
-		return userMapper.selectByUserName(uname,pageNum,pageSize);
-	}
-
-	public void setUserMapper(UserMapper userMapper) {
-		this.userMapper = userMapper;
+		return userMapper.selectByUserName(uname, pageNum, pageSize);
 	}
 
 	@Override
-	public PageInfo selectByPage(int pageNum, int pageSize)
-	{
+	public PageInfo selectByPage(int pageNum, int pageSize) {
 		// TODO Auto-generated method stub
 		return userMapper.selectByPage(pageNum, pageSize);
 	}
-	
-//	@Transactional(readOnly=true,propagation=Propagation.REQUIRED)
-	public int greeUser(User user) {
-		// TODO Auto-generated method stub
-		for(int t=1;t<=10;t++){
-			User u = new User();
-//			if(t  >= 9){
-//				if(t%0==0){ 
-//					
-//				}
-//			}
-			u.setId(t);
-			u.setUserName("张三"+t);
-			u.setComments("备注"+t);
-			userMapper.addUser(u);
+
+	public int addUser(JSONObject user) {
+		TSysUser _user = JackJson.fromJsonToObject(user.toString(), TSysUser.class);
+		if (_user == null) {
+			throw new ServiceException(MessageCode.LOGIC_ERROR, "用户信息格式异常");
 		}
-		return 0;
+		return userMapper.addUser(_user);
+	}
+
+	@Override
+	public TSysUser login(TSysUser user) {
+		// TODO Auto-generated method stub
+		if(StringUtils.isEmpty(user.getLoginName()) || StringUtils.isEmpty(user.getPwd())){
+			throw new ServiceException(MessageCode.LOGIC_ERROR,"用户名、密码不能为空!");
+		}
+
+		TSysUser _user = userMapper.login(user);
+		if(user == null){
+			throw new ServiceException(MessageCode.LOGIC_ERROR,"系统不存在该用户,请检查你的用户名、密码！");
+		}
+		return _user;
+	}
+	
+	public void setUserMapper(UserMapper userMapper) {
+		this.userMapper = userMapper;
 	}
 }

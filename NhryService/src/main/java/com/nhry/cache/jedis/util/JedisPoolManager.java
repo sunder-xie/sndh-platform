@@ -1,4 +1,9 @@
 package com.nhry.cache.jedis.util;
+import org.apache.log4j.Logger;
+
+import com.nhry.auth.UserSessionService;
+import com.nhry.utils.EnvContant;
+
 import redis.clients.jedis.Jedis;
 import redis.clients.jedis.JedisPool;
 import redis.clients.jedis.JedisPoolConfig;
@@ -8,7 +13,8 @@ import redis.clients.jedis.JedisPoolConfig;
  *
  */
 public class JedisPoolManager {
-	public static final String REDIS_ADDRESS="127.0.0.1";
+	private static final Logger LOGGER = Logger.getLogger(JedisPoolManager.class);
+	public static final String REDIS_ADDRESS=EnvContant.getSystemConst("redisHost");
 	public static final int REDIS_PORT=6379;
 	public static final int REDIS_TIMEOUT=2000;
     
@@ -54,34 +60,20 @@ public class JedisPoolManager {
     		synchronized (syncObject) {
     			if (!jedisPoolFlag){
             		jedisPool = new JedisPool(new JedisPoolConfig(),REDIS_ADDRESS,REDIS_PORT,REDIS_TIMEOUT);
-    				jedisPoolFlag =true;
+            		jedisPoolFlag =true;
     			}
 			}
     	}
-        return jedisPool.getResource();
+    	Jedis jedis = jedisPool.getResource();
+    	if(jedis == null){
+    		LOGGER.error("获取redis连接异常"+jedis);
+    	}
+        return jedis;
 	}
     
-    public static void main(String[] args) {
-    	try {
-			Jedis jedis=JedisPoolManager.getJedis()	;
-			//jedis.select(1);
-			JedisPoolManager.getJedis()	;
-			jedis.close();
-			JedisPoolManager.getJedis()	;
-			jedis.close();
-			JedisPoolManager.getJedis()	;
-			jedis.close();
-			JedisPoolManager.getJedis()	;
-			jedis.close();
-			JedisPoolManager.getJedis()	;
-			jedis.close();
-			
-		}catch(Exception e){
-			e.printStackTrace();
-		} finally {
-			 			// TODO: handle finally clause
-		}
-    	
-    	
-	}
+    public static void returnResource(Jedis jedis) {  
+        if (jedis != null) {  
+        	jedis.close();
+        }  
+    }  
 }

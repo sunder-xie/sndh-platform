@@ -14,8 +14,6 @@ import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONObject;
 import org.codehaus.jettison.json.JSONArray;
 
-import com.nhry.domain.User;
-
 public class JsonUtil {
 
 	private static ObjectMapper objectMapper = new ObjectMapper();;
@@ -89,22 +87,6 @@ public class JsonUtil {
 	 */
 	public static void main(String[] args) {
 		// TODO Auto-generated method stub
-		Set<User> list = new HashSet<User>();
-		User u = new User();
-		u.setUserName("张三");
-		u.setId(12);
-		list.add(u);
-		// System.out.println(toJSon(list));
-		try {
-			JSONArray json = new JSONArray(toJSonString(list));
-			User[] list2 = (User[]) toBean(json.toString(), User[].class);
-			for (User u1 : list2) {
-				System.out.println(u1.getUserName());
-			}
-		} catch (JSONException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
 
 	}
 }

@@ -2,4 +2,5 @@
 <configs>
  <!-- 环境标示 -->
   <config key="app_mode" value="produce456"></config>
+  <config key="redisHost" value="54.222.218.2"></config>
 </configs>

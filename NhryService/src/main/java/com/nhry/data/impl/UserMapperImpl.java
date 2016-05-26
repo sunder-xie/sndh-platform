@@ -1,24 +1,24 @@
 package com.nhry.data.impl;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Repository;
-
-import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import com.nhry.data.dao.UserMapper;
 import com.nhry.datasource.DynamicSqlSessionTemplate;
-import com.nhry.domain.User;
+import com.nhry.domain.SysUser;
+import com.nhry.domain.TSysUser;
 
 public class UserMapperImpl implements UserMapper {
-	
+
 	private DynamicSqlSessionTemplate sqlSessionTemplate;
-	
+
 	@Override
-	public <T> PageInfo<T> selectByUserName(String uname,int pageNum,int pageSize) {
+	public <T> PageInfo<T> selectByUserName(String uname, int pageNum,
+			int pageSize) {
 		// TODO Auto-generated method stub
-		return sqlSessionTemplate.selectListByPages("selectByUserName", uname,pageNum,pageSize);
+		return sqlSessionTemplate.selectListByPages("selectByUserName", uname,pageNum, pageSize);
 	}
 
 	public void setSqlSessionTemplate(DynamicSqlSessionTemplate sqlSessionTemplate) {
@@ -26,21 +26,38 @@ public class UserMapperImpl implements UserMapper {
 	}
 
 	@Override
-	public List<User> all() {
+	public int addUser(TSysUser user) {
 		// TODO Auto-generated method stub
-		return sqlSessionTemplate.selectList("all");
+		return sqlSessionTemplate.insert("adduser1", user);
 	}
 
 	@Override
-	public int addUser(User user) {
+	public <T> PageInfo<T> selectByPage(int pageNum, int pageSize) {
 		// TODO Auto-generated method stub
-	  return sqlSessionTemplate.insert("adduser1", user);
+		return sqlSessionTemplate.selectListByPages("all", pageNum, pageSize);
 	}
 
 	@Override
-	public <T> PageInfo<T> selectByPage(int pageNum, int pageSize)
-	{
+	public TSysUser login(TSysUser user) {
 		// TODO Auto-generated method stub
-		return sqlSessionTemplate.selectListByPages("all",pageNum,pageSize);
+		return sqlSessionTemplate.selectOne("login",user);
+	}
+
+	@Override
+	public int deleteByPrimaryKey(String loginName) {
+		// TODO Auto-generated method stub
+		return sqlSessionTemplate.delete("deleteByPrimaryKey", loginName);
+	}
+
+	@Override
+	public TSysUser selectByPrimaryKey(String loginName) {
+		// TODO Auto-generated method stub
+		return sqlSessionTemplate.selectOne("selectByPrimaryKey",loginName);
+	}
+
+	@Override
+	public int updateByPrimaryKey(TSysUser record) {
+		// TODO Auto-generated method stub
+		return sqlSessionTemplate.update("updateByPrimaryKey", "updateByPrimaryKey");
 	}
 }

@@ -1,16 +1,8 @@
 package com.nhry.service.impl;
 
-import java.util.List;
-
-import org.springframework.beans.factory.annotation.Autowired;
-
-import com.github.pagehelper.Page;
-import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import com.nhry.data.dao.RoleMapper;
-import com.nhry.data.dao.UserMapper;
 import com.nhry.domain.Role;
-import com.nhry.domain.User;
 import com.nhry.exception.MessageCode;
 import com.nhry.exception.ServiceException;
 import com.nhry.service.BaseService;
