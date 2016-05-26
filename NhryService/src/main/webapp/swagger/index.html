@@ -42,13 +42,12 @@
       if (url && url.length > 1) {
         url = decodeURIComponent(url[1]);
       } else {
-      console.log("---_url---"+_url);
-       console.log("---domain---"+domain);
-        console.log("---host---"+host);
-          if(host.concat("127.0.0.1") || host.concat("localhost")){
+          if(host.indexOf("127.0.0.1") != -1 || host.indexOf("localhost") != -1){
           		url = "/NhryService/rest/api-docs";
-          }else if(_url.concat("xiexiaojun")){
+          		console.log("---进入本地模式---"+_url);
+          }else if(_url.indexOf("xiexiaojun") != -1){
           		url = "/xiexiaojun/rest/api-docs";
+          		console.log("---进入集成环境模式---"+_url);
           }
       }
       hljs.configure({
