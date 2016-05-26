@@ -51,6 +51,7 @@ public class AuthFilter implements ContainerRequestFilter {
 	public ContainerRequest filter(ContainerRequest request) {
 		// TODO Auto-generated method stub
 		System.out.println("---getContextPath--"+servletRequest.getRemoteHost());
+		System.out.println("---getContextPath--"+servletRequest.getContextPath());
 		String uri = request.getAbsolutePath().getPath();
 		System.out.println("---uri-----"+uri);
 		String host = request.getAbsolutePath().getHost();
