@@ -51,6 +51,7 @@ public class AuthFilter implements ContainerRequestFilter {
 	public ContainerRequest filter(ContainerRequest request) {
 		// TODO Auto-generated method stub
 		String uri = request.getAbsolutePath().getPath();
+		System.out.println("---uri-----"+uri);
 		String host = request.getAbsolutePath().getHost();
 		if("product".equals(SysContant.getSystemConst("app_mode"))){
 			if(isExsitUri(uri)){
