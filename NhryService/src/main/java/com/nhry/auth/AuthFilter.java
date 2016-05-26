@@ -58,8 +58,6 @@ public class AuthFilter implements ContainerRequestFilter {
 			}
 			String ak = CookieUtil.getCookieValue(servletRequest, UserSessionService.accessKey);
 			String userName = CookieUtil.getCookieValue(servletRequest, UserSessionService.uname);
-			System.out.println("---ak----"+ak);
-			System.out.println("---userName----"+userName);
 			//未登录
 			if(StringUtils.isEmpty(ak) || StringUtils.isEmpty(userName)){
 				if(!whiteUriList.contains(uri)){
