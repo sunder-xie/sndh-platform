@@ -1,23 +1,20 @@
 package com.nhry.auth;
 
-import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 
-import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;
-
-import com.nhry.cache.jedis.util.JedisPoolManager;
 import com.nhry.common.model.AccessKey;
 import com.nhry.domain.TSysUser;
-import com.nhry.exception.ExceptionMapperSupport;
 import com.nhry.exception.MessageCode;
 import com.nhry.utils.Base64Util;
+import com.nhry.utils.Date;
 import com.nhry.utils.ObjectSerializeUtil;
 import com.nhry.utils.RedisUtil;
 import com.nhry.utils.SysContant;
+import com.sun.jersey.spi.container.ContainerRequest;
 
 public class UserSessionService {
 	private static final Logger LOGGER = Logger.getLogger(UserSessionService.class);
@@ -25,7 +22,7 @@ public class UserSessionService {
 	public static final String uname="uname";
 	private static final ThreadLocal<String> accessKeyThread = new ThreadLocal<String>();
 	
-	public static String checkIdentity(String accessKey,String uname){
+	public static String checkIdentity(String accessKey,String uname,ContainerRequest request,HttpServletRequest servletRequest){
 		Map<String, String> accessMap = RedisUtil.getRu().hgetall(SysContant.getSystemConst("app_access_key"));
 		String ak = Base64Util.decodeStr(accessKey);
 		if(accessMap == null || accessMap.get(ak)==null){
@@ -33,8 +30,11 @@ public class UserSessionService {
 			LOGGER.warn("当前访问的aceesskey不存在!");
 			 return null;
 		}
-		//url date ip accessKey
 		accessKeyThread.set(ak);
+		
+		//身份验证成功，将session推入队列当中缓存中
+		SessionManager.addSessionsCache(accessKey, uname,servletRequest.getRemoteHost(), new Date(), request.getAbsolutePath().getPath());
+		
 		return MessageCode.NORMAL;
 	}
 	
@@ -66,6 +66,7 @@ public class UserSessionService {
 		ak.setUname(uName);
 		ak.setAck(accessKey);
 		ak.setVisitCount(1);
+		ak.setVisitEndTime(new Date());
 		accessMap.put(accessKey, ObjectSerializeUtil.getStrFromObj(ak));
 		//缓存accesskey对象
 		RedisUtil.getRu().hmset(SysContant.getSystemConst("app_access_key"), accessMap);
@@ -91,14 +92,14 @@ public class UserSessionService {
 			 return null;
 		}
 		
-		AccessKey users = (AccessKey)ObjectSerializeUtil.getObjFromStr(accessMap.get(accessKey));
-		if(users == null){
+		AccessKey ak = (AccessKey)ObjectSerializeUtil.getObjFromStr(accessMap.get(accessKey));
+		if(ak == null){
 			//反序列化失败
 			LOGGER.warn("aceesskey反序列化失败!");
 			return null;
 		}
 	    Map<String, String> usersMap = RedisUtil.getRu().hgetall(SysContant.getSystemConst("app_user_key"));
-	    TSysUser user = (TSysUser)ObjectSerializeUtil.getObjFromStr(usersMap.get(users.getUname()));
+	    TSysUser user = (TSysUser)ObjectSerializeUtil.getObjFromStr(usersMap.get(ak.getUname()));
 		return user;
 	}
 	

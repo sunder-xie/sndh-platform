@@ -4,8 +4,7 @@ import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Set;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.apache.log4j.Logger;
 import org.codehaus.jackson.JsonGenerationException;
 import org.codehaus.jackson.JsonParseException;
 import org.codehaus.jackson.map.JsonMappingException;
@@ -15,6 +14,8 @@ import org.codehaus.jackson.map.ser.impl.SimpleBeanPropertyFilter;
 import org.codehaus.jackson.map.ser.impl.SimpleFilterProvider;
 import org.codehaus.jackson.type.TypeReference;
 
+import com.nhry.exception.ExceptionMapperSupport;
+
 /**
  * jackjson一些转换方法
  * 
@@ -22,7 +23,7 @@ import org.codehaus.jackson.type.TypeReference;
  * @date 2010-6-28 下午04:07:33
  */
 public class JackJson {
-	private static final Log logger = LogFactory.getLog(JackJson.class);
+	private static final Logger logger = Logger.getLogger(JackJson.class);
 	/** 格式化时间的string */
 	private static final String DATE_TIME_FORMAT = "yyyy-MM-dd HH:mm:ss";
 

@@ -3,12 +3,9 @@ import java.sql.Timestamp;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
-
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.apache.ibatis.session.SqlSession;
 import org.apache.ibatis.session.SqlSessionFactory;
-
+import org.apache.log4j.Logger;
 import com.nhry.cache.jedis.cacheloader.DictionaryJedisCache;
 import com.nhry.data.sqlexecutor.UserSQLExecutor;
 import com.nhry.domain.NHSysCodeType;
@@ -25,7 +22,7 @@ import com.nhry.utils.SessionUtil;
  *
  */
 public class JedisManager {
-	protected static final Log logger = LogFactory.getLog(JedisManager.class);
+	private static final Logger logger = Logger.getLogger(SessionUtil.class);
 	private static Object syncObject =new Object();
 	private static boolean initFlag =false;
 

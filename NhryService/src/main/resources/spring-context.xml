@@ -33,6 +33,43 @@
 	<bean id="transactionManager" class="com.nhry.datasource.DynamicDataSourceTransactionManager">
 		<property name="dataSource" ref="dataSource" />
 	</bean>
+
+	<bean id="sessionManager" class="com.nhry.auth.SessionManager"></bean>
+	<!-- spring bean全部加载完之后执行方法 -->
+	<bean class="com.nhry.common.ContainerService">
+		<property name="services">
+			<list>
+				<ref bean="sessionManager" />
+			</list>
+		</property>
+	</bean>
+	
+	<bean id="sessioncleanJob" class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
+		<property name="targetObject" ref="sessionManager" />
+		<property name="targetMethod" value="cleanRedisSession" />
+		<property name="concurrent" value="false" /><!-- 作业不并发调度 -->
+	</bean>
+	
+	 <!-- 调度的配置开始 -->
+    <bean id="crontestJobTrigger" class="org.springframework.scheduling.quartz.CronTriggerBean">
+        <property name="jobDetail">
+            <ref bean="sessioncleanJob" />
+        </property>
+        <property name="cronExpression">
+			<value>0 */5 * * * ?</value>  <!-- 5分钟执行一次 -->
+		</property>
+    </bean>
+    <!-- 调度的配置结束 -->
+
+    <!-- 启动触发器的配置开始 -->
+    <bean name="startQuertz" lazy-init="false" autowire="no" class="org.springframework.scheduling.quartz.SchedulerFactoryBean">
+        <property name="triggers">
+            <list>
+                <ref bean="crontestJobTrigger" />
+            </list>
+        </property>
+    </bean>
+
 	<!-- 以 @Transactional 标注来定义事务 -->
 	<tx:annotation-driven transaction-manager="transactionManager"
 		proxy-target-class="true" />

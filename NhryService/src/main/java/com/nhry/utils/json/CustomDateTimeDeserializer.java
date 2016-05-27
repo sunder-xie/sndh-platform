@@ -3,10 +3,8 @@ package com.nhry.utils.json;
 import java.io.IOException;
 import java.text.ParseException;
 import java.util.Date;
-
 import org.apache.commons.lang.time.DateUtils;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.apache.log4j.Logger;
 import org.codehaus.jackson.JsonParser;
 import org.codehaus.jackson.JsonProcessingException;
 import org.codehaus.jackson.map.DeserializationContext;
@@ -26,7 +24,7 @@ import org.codehaus.jackson.map.JsonDeserializer;
  * @date 2010-6-28 下午01:07:16
  */
 public class CustomDateTimeDeserializer extends JsonDeserializer<Date> {
-	private static final Log logger = LogFactory.getLog(CustomDateTimeDeserializer.class);
+	private static final Logger logger = Logger.getLogger(CustomDateTimeDeserializer.class);
 	private static final String[] DATE_TIME = { "yyyy-MM-dd HH:mm:ss" };
 
 	@Override

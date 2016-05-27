@@ -4,6 +4,19 @@ import java.io.Serializable;
 import java.util.Date;
 
 public class AccessKey implements Serializable {
+	public AccessKey(){}
+	public AccessKey(String ack, String uname, Date visitFirstTime,
+			Date visitEndTime, String accessIp, int visitCount, String lastUri) {
+		super();
+		this.ack = ack;
+		this.uname = uname;
+		this.visitFirstTime = visitFirstTime;
+		this.visitEndTime = visitEndTime;
+		this.accessIp = accessIp;
+		this.visitCount = visitCount;
+		this.lastUri = lastUri;
+	}
+
 	// accesskey
 	private String ack;
 	// 用户名

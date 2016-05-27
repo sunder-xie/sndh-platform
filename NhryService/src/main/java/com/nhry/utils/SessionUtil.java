@@ -5,14 +5,11 @@ import java.sql.CallableStatement;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.Statement;
-
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.apache.ibatis.session.SqlSession;
-
+import org.apache.log4j.Logger;
 
 public class SessionUtil {
-	private static Log log = LogFactory.getLog(SessionUtil.class);
+	private static final Logger log = Logger.getLogger(SessionUtil.class);
 
 	public static void free(SqlSession session, Statement stmt,ResultSet rs){
          free(rs);
