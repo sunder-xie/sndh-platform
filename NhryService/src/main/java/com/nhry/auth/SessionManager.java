@@ -55,6 +55,9 @@ public class SessionManager extends CommonService {
 					ak.setVisitCount(ak.getVisitCount() + _ak.getVisitCount());
 					ak.setVisitEndTime(_ak.getVisitEndTime());
 					accessMap.put(_ak.getAck(), ObjectSerializeUtil.getStrFromObj(ak));
+					
+//					RedisUtil.getRu().hdel(SysContant.getSystemConst("app_access_key"),_ak.getAck());
+					
 					RedisUtil.getRu().hmset(SysContant.getSystemConst("app_access_key"), accessMap);
 
 					_ak = null;
@@ -109,6 +112,6 @@ public class SessionManager extends CommonService {
 	@Override
 	public void executeInThread(String threadName) {
 		// TODO Auto-generated method stub
-		this.handleRedisSession();
+//		this.handleRedisSession();
 	}
 }

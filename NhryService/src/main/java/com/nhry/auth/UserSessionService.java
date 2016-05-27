@@ -33,7 +33,7 @@ public class UserSessionService {
 		accessKeyThread.set(ak);
 		
 		//身份验证成功，将session推入队列当中缓存中
-		SessionManager.addSessionsCache(accessKey, uname,servletRequest.getRemoteHost(), new Date(), request.getAbsolutePath().getPath());
+//		SessionManager.addSessionsCache(accessKey, uname,servletRequest.getRemoteHost(), new Date(), request.getAbsolutePath().getPath());
 		
 		return MessageCode.NORMAL;
 	}
