@@ -70,7 +70,10 @@ public class SessionManager extends CommonService {
 	 */
 	public void cleanRedisSession() {
 		Map<String, String> accessMap = RedisUtil.getRu().hgetall(SysContant.getSystemConst("app_access_key"));
-		tempKey.clear();
+		if(tempKey.size() > 0){
+			tempKey.clear();
+		}
+		System.out.println("--------------执行session清理检查操作!!!-----------------");
 		if (accessMap == null) {
 			// access不存在
 			LOGGER.error("当redis不存在session信息!");
@@ -92,6 +95,7 @@ public class SessionManager extends CommonService {
 				}
 			}
 			if(tempKey.size() > 0){
+				System.out.println("--------------成功清除-----"+tempKey.size()+"过期session");
 				RedisUtil.getRu().hdel(SysContant.getSystemConst("app_access_key"), tempKey.toArray(new String[tempKey.size()]));
 			}
 		}
@@ -100,13 +104,13 @@ public class SessionManager extends CommonService {
 	@Override
 	public void onContainerStartedExecute() {
 		// TODO Auto-generated method stub
-		startNewThreadExecute("handleRedisSession");
+//		startNewThreadExecute("handleRedisSession");
 	}
 
 	@Override
 	public void startNewThreadExecute(String... threadNames) {
 		// TODO Auto-generated method stub
-		super.startNewThreadExecute(threadNames);
+//		super.startNewThreadExecute(threadNames);
 	}
 
 	@Override
