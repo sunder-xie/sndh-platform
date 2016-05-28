@@ -75,6 +75,7 @@ public class SessionManager extends CommonService {
 		if(tempKey.size() > 0){
 			tempKey.clear();
 		}
+		System.out.println("---------启动检查session过期操作--------------");
 		List<AccessKey> accessKeys = objectRedisTemplate.opsForHash().values(SysContant.getSystemConst("app_access_key"));
 		Date date = new Date();
 		for(AccessKey ak : accessKeys){
