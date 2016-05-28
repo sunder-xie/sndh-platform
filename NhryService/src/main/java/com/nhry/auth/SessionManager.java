@@ -3,9 +3,11 @@ package com.nhry.auth;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.LinkedBlockingQueue;
 
 import org.apache.log4j.Logger;
+import org.springframework.data.redis.core.RedisTemplate;
 
 import com.nhry.common.CommonService;
 import com.nhry.common.model.AccessKey;
@@ -15,6 +17,7 @@ import com.nhry.utils.RedisUtil;
 import com.nhry.utils.SysContant;
 
 public class SessionManager extends CommonService {
+	private RedisTemplate objectRedisTemplate;
 	private static final Logger LOGGER = Logger.getLogger(SessionManager.class);
     private static List<String> tempKey = new ArrayList<String>();
 	private static LinkedBlockingQueue<AccessKey> sessions = new LinkedBlockingQueue<AccessKey>();
@@ -69,35 +72,26 @@ public class SessionManager extends CommonService {
 	 * 清理过时session信息
 	 */
 	public void cleanRedisSession() {
-		Map<String, String> accessMap = RedisUtil.getRu().hgetall(SysContant.getSystemConst("app_access_key"));
 		if(tempKey.size() > 0){
 			tempKey.clear();
 		}
-		System.out.println("--------------执行session清理检查操作!!!-----------------");
-		if (accessMap == null) {
-			// access不存在
-			LOGGER.error("当redis不存在session信息!");
-		} else {
-			for (String key : accessMap.keySet()) {
-				AccessKey ak = (AccessKey) ObjectSerializeUtil.getObjFromStr(accessMap.get(key));
-				if (ak == null) {
-					// 反序列化失败
-					tempKey.add(key);
-					LOGGER.error("aceesskey反序列化失败,请核查aceesskey是否缓存正确!");
-				} else {
-					Date date = new Date();
-					if (ak.getVisitEndTime() == null) {
-						tempKey.add(key);
-					} else if (date.addDays(-Integer.parseInt(SysContant.getSystemConst("session_duration"))).getTime() > ak.getVisitEndTime().getTime()) {
-						// 如果AccessKey最后一次的访问时间，已经超过session_duration小时数,则移除该Accesskey
-						tempKey.add(key);
-					}
+		List<AccessKey> accessKeys = objectRedisTemplate.opsForHash().values(SysContant.getSystemConst("app_access_key"));
+		Date date = new Date();
+		for(AccessKey ak : accessKeys){
+			if(ak != null){
+				if (ak.getVisitEndTime() == null) {
+					tempKey.add(ak.getAck());
+				} else if (date.addHours(-Integer.parseInt(SysContant.getSystemConst("session_duration"))).getTime() > ak.getVisitEndTime().getTime()) {
+					// 如果AccessKey最后一次的访问时间，已经超过session_duration小时数,则移除该Accesskey
+					tempKey.add(ak.getAck());
 				}
+			}else{
+				LOGGER.error("缓存的AccessKey对象反序列化出来出现null值，请核查！"+SysContant.getSystemConst("app_access_key"));
 			}
-			if(tempKey.size() > 0){
-				System.out.println("--------------成功清除-----"+tempKey.size()+"过期session");
-				RedisUtil.getRu().hdel(SysContant.getSystemConst("app_access_key"), tempKey.toArray(new String[tempKey.size()]));
-			}
+		}
+		if(tempKey.size() > 0){
+			objectRedisTemplate.opsForHash().delete(SysContant.getSystemConst("app_access_key"), tempKey.toArray(new String[tempKey.size()]));
+			System.out.println("--------------成功清除-----"+tempKey.size()+"个过期session");
 		}
 	}
 

@@ -364,12 +364,22 @@
 			<artifactId>mybatis-generator-core</artifactId>
 			<version>${mybatis-generator.version}</version>
 		</dependency>
-
+		<!-- quartz定时任务 -->
 		<dependency>
 			<groupId>org.quartz-scheduler</groupId>
 			<artifactId>quartz</artifactId>
 			<version>1.8.5</version>
 		</dependency>
+		<dependency>
+			<groupId>org.springframework.data</groupId>
+			<artifactId>spring-data-redis</artifactId>
+			<version>1.7.1.RELEASE</version>
+		</dependency>
+		<dependency>
+		    <groupId>org.mybatis.caches</groupId>
+		    <artifactId>mybatis-redis</artifactId>
+		    <version>1.0.0-beta2</version>
+  		</dependency>
 	</dependencies>
 	<!-- 插件配置 -->
 	<build>
