@@ -112,4 +112,8 @@ public class SessionManager extends CommonService {
 		// TODO Auto-generated method stub
 //		this.handleRedisSession();
 	}
+
+	public void setObjectRedisTemplate(RedisTemplate objectRedisTemplate) {
+		this.objectRedisTemplate = objectRedisTemplate;
+	}
 }
