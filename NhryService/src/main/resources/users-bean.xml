@@ -32,4 +32,11 @@
 	<bean id="custService" class="com.nhry.service.impl.TMdVipCustInfoServiceImpl">
 	   <property name="tmdVipcust"  ref="custMapper"></property>
 	</bean>
+	
+	<bean id="sysParammapper" class="com.nhry.data.impl.NHSysParameterMapperImpl">
+	   <property name="sqlSessionTemplate"  ref="dynamicSqlSessionTemplate"></property>
+	</bean>
+	<bean id="sysParamService" class="com.nhry.service.impl.SysParamServiceImpl">
+	   <property name="sysParamMapper"  ref="sysParammapper"></property>
+	</bean>
 </beans>

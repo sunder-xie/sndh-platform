@@ -5,6 +5,7 @@
     <id column="LOGIN_NAME" property="loginName" jdbcType="VARCHAR" />
     <result column="ID" property="id" jdbcType="VARCHAR" />
     <result column="PWD" property="pwd" jdbcType="VARCHAR" />
+    <result column="DISPLAY_NAME" />
     <result column="STATUS" property="status" jdbcType="CHAR" />
     <result column="CREATE_AT" property="createAt" jdbcType="TIMESTAMP" />
     <result column="CREATE_BY" property="createBy" jdbcType="VARCHAR" />
@@ -12,10 +13,14 @@
     <result column="LAST_MODIFIED" property="lastModified" jdbcType="TIMESTAMP" />
     <result column="LAST_MODIFIED_BY" property="lastModifiedBy" jdbcType="VARCHAR" />
     <result column="LAST_MODIFIED_BY_TXT" property="lastModifiedByTxt" jdbcType="VARCHAR" />
+    <result column="DISPLAY_NAME" property="displayName" jdbcType="VARCHAR"/>
+    <result column="BRANCH_NO" property="branchNo" jdbcType="VARCHAR"/>
+    <result column="DEALER_ID" property="dealerId" jdbcType="VARCHAR"/>
+    <result column="SALES_ORG" property="salesOrg" jdbcType="VARCHAR"/>
   </resultMap>
   <sql id="Base_Column_List" >
     LOGIN_NAME, ID, PWD, STATUS, CREATE_AT, CREATE_BY, CREATE_BY_TXT, LAST_MODIFIED, 
-    LAST_MODIFIED_BY, LAST_MODIFIED_BY_TXT
+    LAST_MODIFIED_BY, LAST_MODIFIED_BY_TXT,DISPLAY_NAME,BRANCH_NO,DEALER_ID,SALES_ORG
   </sql>
   <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.String" >
     select 
@@ -31,112 +36,13 @@
     insert into t_sys_user (LOGIN_NAME, ID, PWD, 
       STATUS, CREATE_AT, CREATE_BY, 
       CREATE_BY_TXT, LAST_MODIFIED, LAST_MODIFIED_BY, 
-      LAST_MODIFIED_BY_TXT)
+      LAST_MODIFIED_BY_TXT,DISPLAY_NAME,BRANCH_NO,DEALER_ID,SALES_ORG) 
     values (#{loginName,jdbcType=VARCHAR}, #{id,jdbcType=VARCHAR}, #{pwd,jdbcType=VARCHAR}, 
       #{status,jdbcType=CHAR}, #{createAt,jdbcType=TIMESTAMP}, #{createBy,jdbcType=VARCHAR}, 
       #{createByTxt,jdbcType=VARCHAR}, #{lastModified,jdbcType=TIMESTAMP}, #{lastModifiedBy,jdbcType=VARCHAR}, 
-      #{lastModifiedByTxt,jdbcType=VARCHAR})
+      #{lastModifiedByTxt,jdbcType=VARCHAR},#{displayName,jdbcType=VARCHAR},#{branchNo,jdbcType=VARCHAR},
+      #{dealerId,jdbcType=VARCHAR},#{salesOrg,jdbcType=VARCHAR})
   </insert>
-  <insert id="insertSelective" parameterType="com.nhry.domain.TSysUser" >
-    insert into t_sys_user
-    <trim prefix="(" suffix=")" suffixOverrides="," >
-      <if test="loginName != null" >
-        LOGIN_NAME,
-      </if>
-      <if test="id != null" >
-        ID,
-      </if>
-      <if test="pwd != null" >
-        PWD,
-      </if>
-      <if test="status != null" >
-        STATUS,
-      </if>
-      <if test="createAt != null" >
-        CREATE_AT,
-      </if>
-      <if test="createBy != null" >
-        CREATE_BY,
-      </if>
-      <if test="createByTxt != null" >
-        CREATE_BY_TXT,
-      </if>
-      <if test="lastModified != null" >
-        LAST_MODIFIED,
-      </if>
-      <if test="lastModifiedBy != null" >
-        LAST_MODIFIED_BY,
-      </if>
-      <if test="lastModifiedByTxt != null" >
-        LAST_MODIFIED_BY_TXT,
-      </if>
-    </trim>
-    <trim prefix="values (" suffix=")" suffixOverrides="," >
-      <if test="loginName != null" >
-        #{loginName,jdbcType=VARCHAR},
-      </if>
-      <if test="id != null" >
-        #{id,jdbcType=VARCHAR},
-      </if>
-      <if test="pwd != null" >
-        #{pwd,jdbcType=VARCHAR},
-      </if>
-      <if test="status != null" >
-        #{status,jdbcType=CHAR},
-      </if>
-      <if test="createAt != null" >
-        #{createAt,jdbcType=TIMESTAMP},
-      </if>
-      <if test="createBy != null" >
-        #{createBy,jdbcType=VARCHAR},
-      </if>
-      <if test="createByTxt != null" >
-        #{createByTxt,jdbcType=VARCHAR},
-      </if>
-      <if test="lastModified != null" >
-        #{lastModified,jdbcType=TIMESTAMP},
-      </if>
-      <if test="lastModifiedBy != null" >
-        #{lastModifiedBy,jdbcType=VARCHAR},
-      </if>
-      <if test="lastModifiedByTxt != null" >
-        #{lastModifiedByTxt,jdbcType=VARCHAR},
-      </if>
-    </trim>
-  </insert>
-  <update id="updateByPrimaryKeySelective" parameterType="com.nhry.domain.TSysUser" >
-    update t_sys_user
-    <set >
-      <if test="id != null" >
-        ID = #{id,jdbcType=VARCHAR},
-      </if>
-      <if test="pwd != null" >
-        PWD = #{pwd,jdbcType=VARCHAR},
-      </if>
-      <if test="status != null" >
-        STATUS = #{status,jdbcType=CHAR},
-      </if>
-      <if test="createAt != null" >
-        CREATE_AT = #{createAt,jdbcType=TIMESTAMP},
-      </if>
-      <if test="createBy != null" >
-        CREATE_BY = #{createBy,jdbcType=VARCHAR},
-      </if>
-      <if test="createByTxt != null" >
-        CREATE_BY_TXT = #{createByTxt,jdbcType=VARCHAR},
-      </if>
-      <if test="lastModified != null" >
-        LAST_MODIFIED = #{lastModified,jdbcType=TIMESTAMP},
-      </if>
-      <if test="lastModifiedBy != null" >
-        LAST_MODIFIED_BY = #{lastModifiedBy,jdbcType=VARCHAR},
-      </if>
-      <if test="lastModifiedByTxt != null" >
-        LAST_MODIFIED_BY_TXT = #{lastModifiedByTxt,jdbcType=VARCHAR},
-      </if>
-    </set>
-    where LOGIN_NAME = #{loginName,jdbcType=VARCHAR}
-  </update>
   <update id="updateByPrimaryKey" parameterType="com.nhry.domain.TSysUser" >
     update t_sys_user
     set ID = #{id,jdbcType=VARCHAR},
@@ -147,7 +53,10 @@
       CREATE_BY_TXT = #{createByTxt,jdbcType=VARCHAR},
       LAST_MODIFIED = #{lastModified,jdbcType=TIMESTAMP},
       LAST_MODIFIED_BY = #{lastModifiedBy,jdbcType=VARCHAR},
-      LAST_MODIFIED_BY_TXT = #{lastModifiedByTxt,jdbcType=VARCHAR}
+      LAST_MODIFIED_BY_TXT = #{lastModifiedByTxt,jdbcType=VARCHAR},
+      DISPLAY_NAME = #{displayName,jdbcType=VARCHAR},
+      DEALER_ID = #{dealerId,jdbcType=VARCHAR},
+      SALES_ORG = #{salesOrg,jdbcType=VARCHAR}
     where LOGIN_NAME = #{loginName,jdbcType=VARCHAR}
   </update>
   <select id="login"  resultMap="BaseResultMap"  parameterType="com.nhry.domain.TSysUser">
@@ -156,4 +65,5 @@
 	    from t_sys_user
 	    where LOGIN_NAME = #{loginName,jdbcType=VARCHAR} and PWD = #{pwd,jdbcType=VARCHAR}
   </select>
+  
 </mapper>

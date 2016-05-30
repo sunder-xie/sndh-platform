@@ -63,7 +63,7 @@
             <ref bean="sessioncleanJob" />
         </property>
         <property name="cronExpression">
-			<value>0 */5 * * * ?</value>  <!-- 5分钟执行一次 -->
+			<value>10 40 3 * * ?</value>  
 		</property>
     </bean>
     <!-- 调度的配置结束 -->

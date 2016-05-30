@@ -23,6 +23,11 @@ public class TSysUser implements Serializable{
     private String lastModifiedBy;
 
     private String lastModifiedByTxt;
+    
+    private String displayName;
+    private String branchNo;
+    private String dealerId;
+    private String salesOrg;
 
     public String getLoginName() {
         return loginName;
@@ -103,4 +108,36 @@ public class TSysUser implements Serializable{
     public void setLastModifiedByTxt(String lastModifiedByTxt) {
         this.lastModifiedByTxt = lastModifiedByTxt == null ? null : lastModifiedByTxt.trim();
     }
+
+	public String getDisplayName() {
+		return displayName;
+	}
+
+	public void setDisplayName(String displayName) {
+		this.displayName = displayName;
+	}
+
+	public String getBranchNo() {
+		return branchNo;
+	}
+
+	public void setBranchNo(String branchNo) {
+		this.branchNo = branchNo;
+	}
+
+	public String getDealerId() {
+		return dealerId;
+	}
+
+	public void setDealerId(String dealerId) {
+		this.dealerId = dealerId;
+	}
+
+	public String getSalesOrg() {
+		return salesOrg;
+	}
+
+	public void setSalesOrg(String salesOrg) {
+		this.salesOrg = salesOrg;
+	}
 }

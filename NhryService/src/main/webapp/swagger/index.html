@@ -44,10 +44,8 @@
       } else {
           if(host.indexOf("127.0.0.1") != -1 || host.indexOf("localhost") != -1){
           		url = "/NhryService/rest/api-docs";
-          		console.log("---进入本地模式---"+_url);
           }else if(_url.indexOf("xiexiaojun") != -1){
           		url = "/xiexiaojun/rest/api-docs";
-          		console.log("---进入集成环境模式---"+_url);
           }
       }
       hljs.configure({

@@ -1,9 +1,9 @@
-package com.nhry.data.dao;
+package com.nhry.service.dao;
 
 import com.nhry.domain.NHSysParameter;
 
-public interface NHSysParameterMapper {
-    int deleteSysParamByCode(String paramCode);
+public interface SysParamService  {
+	int deleteSysParamByCode(String paramCode);
 
     int insert(NHSysParameter record);
 

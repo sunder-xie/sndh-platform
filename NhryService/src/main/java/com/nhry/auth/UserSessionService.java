@@ -75,6 +75,7 @@ public class UserSessionService {
 			//测试时使用
 			TSysUser user = new TSysUser();
 			user.setLoginName("test");
+			user.setDisplayName("测试用户");
 			return user;
 		}
 		

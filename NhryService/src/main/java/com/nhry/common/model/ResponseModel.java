@@ -1,4 +1,4 @@
-package com.nhry.domain;
+package com.nhry.common.model;
 
 import java.io.Serializable;
 

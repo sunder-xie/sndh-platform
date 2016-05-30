@@ -49,6 +49,14 @@
     <servlet-name>JerseyServlet</servlet-name>
     <url-pattern>/rest/*</url-pattern>
   </servlet-mapping>
+   <servlet>
+    <servlet-name>ApiServlet</servlet-name>
+    <servlet-class>com.nhry.servlet.ApiServlet</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>ApiServlet</servlet-name>
+    <url-pattern>/api</url-pattern>
+  </servlet-mapping>
   <servlet>
     <servlet-name>DefaultJaxrsConfig</servlet-name>
     <servlet-class>com.wordnik.swagger.jaxrs.config.DefaultJaxrsConfig</servlet-class>
