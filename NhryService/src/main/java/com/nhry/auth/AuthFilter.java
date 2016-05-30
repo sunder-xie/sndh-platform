@@ -10,15 +10,10 @@ import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
-
 import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;
-import org.codehaus.jettison.json.JSONException;
-import org.codehaus.jettison.json.JSONObject;
-
 import com.nhry.domain.ResponseModel;
 import com.nhry.exception.MessageCode;
-import com.nhry.exception.ServiceException;
 import com.nhry.utils.CookieUtil;
 import com.nhry.utils.SysContant;
 import com.sun.jersey.spi.container.ContainerRequest;
@@ -60,14 +55,13 @@ public class AuthFilter implements ContainerRequestFilter {
 			}
 			String ak = CookieUtil.getCookieValue(servletRequest, UserSessionService.accessKey);
 			String userName = CookieUtil.getCookieValue(servletRequest, UserSessionService.uname);
-			LOGGER.warn("---ak:"+ak+" ---userName:"+userName);
 			//未登录
 			if(StringUtils.isEmpty(ak) || StringUtils.isEmpty(userName)){
 				if(!whiteUriList.contains(uri)){
 					Response response = formatData(MessageCode.UNAUTHORIZED, SysContant.getSystemConst(MessageCode.UNAUTHORIZED), null, Status.UNAUTHORIZED);
 		            throw new WebApplicationException(response); 
 				}
-			}else	if(!MessageCode.NORMAL.equals(UserSessionService.checkIdentity(ak, userName))){
+			}else	if(!MessageCode.NORMAL.equals(UserSessionService.checkIdentity(ak, userName,request,servletRequest))){
 				Response response = formatData(MessageCode.UNAUTHORIZED, SysContant.getSystemConst(MessageCode.UNAUTHORIZED), null, Status.UNAUTHORIZED);
 	            throw new WebApplicationException(response); 
 			}

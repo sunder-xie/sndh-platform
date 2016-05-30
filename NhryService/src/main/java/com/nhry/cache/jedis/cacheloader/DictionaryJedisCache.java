@@ -1,21 +1,17 @@
 package com.nhry.cache.jedis.cacheloader;
 
-import java.util.ArrayList;
 import java.util.List;
-
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.apache.ibatis.session.SqlSession;
-
+import org.apache.log4j.Logger;
 import com.nhry.cache.jedis.entity.StringComplexEntity;
 import com.nhry.cache.jedis.facade.JedisCacheFacade;
 import com.nhry.cache.jedis.manager.AbstractJedisCache;
 import com.nhry.data.sqlexecutor.UserSQLExecutor;
 import com.nhry.domain.NHSysCodeItem;
-
+import com.nhry.utils.SessionUtil;
  
 public class DictionaryJedisCache extends AbstractJedisCache {
-	protected static final Log logger = LogFactory.getLog(AbstractJedisCache.class);
+	private static final Logger logger = Logger.getLogger(SessionUtil.class);
 	
 	private String typeCode;
     /**

@@ -35,6 +35,8 @@ import com.wordnik.swagger.annotations.*;
 public class UserResource extends BaseResource {
 	@Autowired
 	private UserService userService;
+	@Autowired
+	private UserSessionService userSessionService;
 
 	@POST
 	@Path("/search/{uname}")
@@ -63,10 +65,10 @@ public class UserResource extends BaseResource {
 	@ApiOperation(value = "/login", response = String.class, notes = "用户登录")
 	public Response login(@ApiParam(required = true, name = "user", value = "用户名、密码") TSysUser user) {
 		TSysUser loginuser = userService.login(user);
-		String accesskey = UserSessionService.generateKey();
+		String accesskey = userSessionService.generateKey();
 		CookieUtil.setCookie(request, response, UserSessionService.accessKey, accesskey);
 		CookieUtil.setCookie(request, response, UserSessionService.uname, loginuser.getLoginName());
-		UserSessionService.cacheUserSession(user.getLoginName(), accesskey, user,request);
+		userSessionService.cacheUserSession(user.getLoginName(), accesskey, user,request);
 		return formatData(MessageCode.NORMAL,null, loginuser);
 	}
 }

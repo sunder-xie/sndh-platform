@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
 <configs>
- <!-- 环境标示 -->
+ <!-- 环境标示 develope/product-->
   <config key="app_mode" value="product"></config>
   <!-- MessageCode key默认的value配置 -->
   <config key="404"  value="资源不存在"></config>
@@ -12,4 +12,6 @@
   <config key="app_user_key" value="app_user_key"></config>
    <!-- accessKey-->
   <config key="app_access_key" value="app_access_key"></config>
+   <!-- redis 中session存活时间(单位：小时)-->
+  <config key="session_duration" value="2"></config>
 </configs>

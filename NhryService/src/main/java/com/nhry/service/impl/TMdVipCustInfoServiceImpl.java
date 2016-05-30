@@ -1,20 +1,14 @@
 package com.nhry.service.impl;
 
-import java.rmi.ServerException;
-import java.util.Date;
 import java.util.List;
-
-import org.codehaus.jettison.json.JSONObject;
-
 import com.nhry.auth.UserSessionService;
 import com.nhry.data.dao.TMdVipCustInfoMapper;
 import com.nhry.domain.TMdVipCustInfo;
-import com.nhry.exception.MessageCode;
-import com.nhry.exception.ServiceException;
+import com.nhry.service.BaseService;
 import com.nhry.service.dao.TMdVipCustInfoService;
-import com.nhry.utils.json.JackJson;
+import com.nhry.utils.Date;
 
-public class TMdVipCustInfoServiceImpl implements TMdVipCustInfoService {
+public class TMdVipCustInfoServiceImpl extends BaseService implements TMdVipCustInfoService {
 	private TMdVipCustInfoMapper tmdVipcust;
 	
 	@Override
@@ -29,7 +23,7 @@ public class TMdVipCustInfoServiceImpl implements TMdVipCustInfoService {
 		//nh201605251401
 		cust.setVipCustNo("nh"+System.currentTimeMillis());
 		cust.setCreateAt(new Date());
-		cust.setCreateBy(UserSessionService.getCurrentUser().getLoginName());
+		cust.setCreateBy(userSessionService.getCurrentUser().getLoginName());
 		return tmdVipcust.insert(cust);
 	}
 
@@ -43,7 +37,7 @@ public class TMdVipCustInfoServiceImpl implements TMdVipCustInfoService {
 	public int updateByPrimaryKey(TMdVipCustInfo record) {
 		// TODO Auto-generated method stub
 		record.setLastModified(new Date());
-		record.setLastModifiedBy(UserSessionService.getCurrentUser().getLoginName());
+		record.setLastModifiedBy(userSessionService.getCurrentUser().getLoginName());
 		return tmdVipcust.updateByPrimaryKey(record);
 	}
 
