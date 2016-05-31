@@ -31,7 +31,7 @@ public class AuthFilter implements ContainerRequestFilter {
 	
 	static{
 		whiteUriList = new ArrayList<String>();
-		whiteUriList.add("/rest/user/login");
+		whiteUriList.add("/api/v1/user/login");
 	}
 	
 	static{
