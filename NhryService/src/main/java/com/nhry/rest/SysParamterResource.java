@@ -38,7 +38,7 @@ public class SysParamterResource extends BaseResource {
 	@Produces(MediaType.APPLICATION_JSON)
 	@ApiOperation(value = "/add", response = ResponseModel.class, notes = "增加系统参数")
 	public Response addSysParam(@ApiParam(required=true,name="param",value="系统参数json格式")NHSysParameter param){
-		return formatData(MessageCode.NORMAL, null,  sysParamService.insert(param));
+		return convertToRespModel(MessageCode.NORMAL, null,  sysParamService.insert(param));
 	}
 	
 	@POST
@@ -47,7 +47,7 @@ public class SysParamterResource extends BaseResource {
 	@Produces(MediaType.APPLICATION_JSON)
 	@ApiOperation(value = "/upt", response = String.class, notes = "修改系统参数")
 	public Response uptSysParam(@ApiParam(required=true,name="param",value="系统参数json格式")NHSysParameter param){
-		return formatData(MessageCode.NORMAL, null,  sysParamService.uptSysParamByCode(param));
+		return convertToRespModel(MessageCode.NORMAL, null,  sysParamService.uptSysParamByCode(param));
 	}
 	
 	@POST
@@ -56,7 +56,7 @@ public class SysParamterResource extends BaseResource {
 	@Produces(MediaType.TEXT_PLAIN)
 	@ApiOperation(value = "/del", response = String.class, notes = "删除系统参数")
 	public Response delSysParam(@ApiParam(required=true,name="param",value="系统参数json格式")NHSysParameter param){
-		return formatData(MessageCode.NORMAL, null,  sysParamService.uptSysParamByCode(param));
+		return convertToRespModel(MessageCode.NORMAL, null,  sysParamService.uptSysParamByCode(param));
 	}
 	
 	@POST
@@ -64,7 +64,7 @@ public class SysParamterResource extends BaseResource {
 	@Produces(MediaType.APPLICATION_JSON)
 	@ApiOperation(value = "/{code}", response = NHSysParameter.class, notes = "根据code查询系统参数")
 	public Response findSysParamByCode(@ApiParam(required=true,name="code",value="参数编码") @PathParam("code") String code){
-		return formatData(MessageCode.NORMAL, null,sysParamService.selectSysParamByCode(code));
+		return convertToRespModel(MessageCode.NORMAL, null,sysParamService.selectSysParamByCode(code));
 	}
-
+	
 }

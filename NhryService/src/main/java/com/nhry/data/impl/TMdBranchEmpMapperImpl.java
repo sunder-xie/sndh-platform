@@ -1,16 +1,20 @@
 package com.nhry.data.impl;
 
+import java.util.List;
+
+import com.github.pagehelper.PageInfo;
 import com.nhry.data.dao.TMdBranchEmpMapper;
 import com.nhry.datasource.DynamicSqlSessionTemplate;
 import com.nhry.domain.TMdBranchEmp;
+import com.nhry.domain.model.SearchModel;
 
 public class TMdBranchEmpMapperImpl implements TMdBranchEmpMapper {
 	private DynamicSqlSessionTemplate sqlSessionTemplate;
 	
 	@Override
-	public int deleteBranchEmpByNo(String empNo) {
+	public int deleteBranchEmp(TMdBranchEmp record) {
 		// TODO Auto-generated method stub
-		return sqlSessionTemplate.delete("deleteBranchEmpByNo", empNo);
+		return sqlSessionTemplate.delete("deleteBranchEmpByNo", record);
 	}
 
 	@Override
@@ -35,4 +39,9 @@ public class TMdBranchEmpMapperImpl implements TMdBranchEmpMapper {
 		this.sqlSessionTemplate = sqlSessionTemplate;
 	}
 
+	@Override
+	public PageInfo searchBranchEmp(SearchModel smodel) {
+		// TODO Auto-generated method stub
+		return sqlSessionTemplate.selectListByPages("searchBranchEmp",smodel, smodel.getPageNum(), smodel.getPageSize());
+	}
 }

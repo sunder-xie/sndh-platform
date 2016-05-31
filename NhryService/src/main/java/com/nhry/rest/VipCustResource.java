@@ -41,7 +41,7 @@ public class VipCustResource extends BaseResource {
 	@Produces(MediaType.APPLICATION_JSON)
 	@ApiOperation(value = "/{vipCustNo}",response = TMdVipCustInfo.class, notes = "根据会员编号获取会员信息")
 	public Response findVipCust(@ApiParam(required=true,name="vipCustNo",value="会员编号") @PathParam("vipCustNo") String vipCustNo) {
-		return formatData(MessageCode.NORMAL, null,custService.selectByPrimaryKey(vipCustNo));
+		return convertToRespModel(MessageCode.NORMAL, null,custService.selectByPrimaryKey(vipCustNo));
 	}
 
 	@POST
@@ -49,7 +49,7 @@ public class VipCustResource extends BaseResource {
 	@Consumes(MediaType.APPLICATION_JSON)
 	@ApiOperation(value = "/add", response = String.class, notes = "添加会员信息")
 	public Response addVipCust(@ApiParam(required=true,name="cust",value="会员信息json格式")TMdVipCustInfo cust) {
-		return formatData(MessageCode.NORMAL, null,custService.insert(cust));
+		return convertToRespModel(MessageCode.NORMAL, null,custService.insert(cust));
 	}
 	
 	@GET
@@ -57,7 +57,7 @@ public class VipCustResource extends BaseResource {
 	@Produces(MediaType.APPLICATION_JSON)
 	@ApiOperation(value = "/find/phone/{phone}", response = String.class, notes = "根据电话号码查询会员信息")
 	public Response findCustByPhone(@ApiParam(required=true,name="phone",value="电话号码") @PathParam("phone")String phone) {
-		return formatData(MessageCode.NORMAL, null,custService.findCustByPhone(phone));
+		return convertToRespModel(MessageCode.NORMAL, null,custService.findCustByPhone(phone));
 	}
 	
 	@POST
@@ -65,7 +65,7 @@ public class VipCustResource extends BaseResource {
 	@Produces(MediaType.APPLICATION_JSON)
 	@ApiOperation(value = "/delete/{vipCustNo}", response = String.class, notes = "删除会员信息")
 	public Response delVipCust(@ApiParam(required=true,name="vipCustNo",value="会员编号") @PathParam("vipCustNo") String vipCustNo) {
-		return formatData(MessageCode.NORMAL, null,custService.deleteByPrimaryKey(vipCustNo));
+		return convertToRespModel(MessageCode.NORMAL, null,custService.deleteByPrimaryKey(vipCustNo));
 	}
 	
 	@GET
@@ -73,7 +73,7 @@ public class VipCustResource extends BaseResource {
 	@Produces(MediaType.APPLICATION_JSON)
 	@ApiOperation(value = "/all", response = String.class, notes = "获取所有的会员信息")
 	public Response all() {
-		return formatData(MessageCode.NORMAL, null,custService.allCust());
+		return convertToRespModel(MessageCode.NORMAL, null,custService.allCust());
 	} 
 	
 	@POST
@@ -81,6 +81,6 @@ public class VipCustResource extends BaseResource {
 	@Consumes(MediaType.APPLICATION_JSON)
 	@ApiOperation(value = "/update", response = String.class, notes = "修改会员信息")
 	public Response uptCust(@ApiParam(required=true,name="cust",value="会员信息json格式")TMdVipCustInfo cust) {
-		return formatData(MessageCode.NORMAL, null,custService.updateByPrimaryKey(cust));
+		return convertToRespModel(MessageCode.NORMAL, null,custService.updateByPrimaryKey(cust));
 	}
 }

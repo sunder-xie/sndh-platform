@@ -1,8 +1,9 @@
 package com.nhry.domain;
 
+import java.io.Serializable;
 import java.util.Date;
 
-public class TMdBranchEmp {
+public class TMdBranchEmp implements Serializable{
     private String empNo;
 
     private String hrEmpNo;

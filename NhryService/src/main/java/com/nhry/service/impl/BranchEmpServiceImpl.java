@@ -1,9 +1,13 @@
 package com.nhry.service.impl;
 
+import java.util.List;
+
 import org.apache.commons.lang3.StringUtils;
 
+import com.github.pagehelper.PageInfo;
 import com.nhry.data.dao.TMdBranchEmpMapper;
 import com.nhry.domain.TMdBranchEmp;
+import com.nhry.domain.model.SearchModel;
 import com.nhry.exception.MessageCode;
 import com.nhry.exception.ServiceException;
 import com.nhry.service.BaseService;
@@ -22,7 +26,12 @@ public class BranchEmpServiceImpl extends BaseService implements
 		if(emp == null){
 			throw new ServiceException(MessageCode.LOGIC_ERROR, "该员工编号对应的员工信息不存在!");
 		}
-		return branchEmpMapper.deleteBranchEmpByNo(empNo);
+		TMdBranchEmp record = new TMdBranchEmp();
+		record.setDelFlag("Y");
+		record.setLastModified(new Date());
+		record.setLastModifiedBy(userSessionService.getCurrentUser().getLoginName());
+		record.setLastModifiedByTxt(userSessionService.getCurrentUser().getDisplayName());
+		return branchEmpMapper.deleteBranchEmp(record);
 	}
 
 	@Override
@@ -34,6 +43,7 @@ public class BranchEmpServiceImpl extends BaseService implements
 		record.setCreateAt(new Date());
 		record.setCreateBy(userSessionService.getCurrentUser().getLoginName());
 		record.setCreateByTxt(userSessionService.getCurrentUser().getDisplayName());
+		record.setDelFlag("N");
 		return branchEmpMapper.addBranchEmp(record);
 	}
 
@@ -58,5 +68,12 @@ public class BranchEmpServiceImpl extends BaseService implements
 
 	public void setBranchEmpMapper(TMdBranchEmpMapper branchEmpMapper) {
 		this.branchEmpMapper = branchEmpMapper;
+	}
+
+	@Override
+	public PageInfo searchBranchEmp(SearchModel smodel) {
+		// TODO Auto-generated method stub
+		
+		return branchEmpMapper.searchBranchEmp(smodel);
 	}
 }

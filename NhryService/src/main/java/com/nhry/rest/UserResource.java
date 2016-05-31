@@ -47,7 +47,7 @@ public class UserResource extends BaseResource {
 			@ApiParam(required = true, name = "uname", value = "用户名") @PathParam("uname") String name,
 			@ApiParam(required = true, name = "json", value = "分页信息") PageInfo page) {
 		PageInfo data = userService.selectByUserName(name,page.getPageNum(),page.getPageSize());
-		return formatData(MessageCode.NORMAL, null, data);
+		return convertToRespModel(MessageCode.NORMAL, null, data);
 	}
 
 	@POST
@@ -56,7 +56,7 @@ public class UserResource extends BaseResource {
 	@ApiOperation(value = "/add", response = String.class, notes = "增加用户")
 	public Response addUser(
 			@ApiParam(required = true, name = "json", value = "分页信息") JSONObject json) {
-		return formatData(MessageCode.NORMAL, userService.addUser(json), null);
+		return convertToRespModel(MessageCode.NORMAL, userService.addUser(json), null);
 	}
 	
 	@POST
@@ -69,6 +69,6 @@ public class UserResource extends BaseResource {
 		CookieUtil.setCookie(request, response, UserSessionService.accessKey, accesskey);
 		CookieUtil.setCookie(request, response, UserSessionService.uname, loginuser.getLoginName());
 		userSessionService.cacheUserSession(user.getLoginName(), accesskey, user,request);
-		return formatData(MessageCode.NORMAL,null, loginuser);
+		return convertToRespModel(MessageCode.NORMAL,null, loginuser);
 	}
 }

@@ -19,7 +19,7 @@ public class BaseResource {
 	@Context
 	protected HttpServletResponse response;
 
-	protected Response formatData(String type, Object msg, Object data) {
+	protected Response convertToRespModel(String type, Object msg, Object data) {
 //		CookieUtil.setCookie(request, response, UserSessionService.accessKey, accesskey);
 //		CookieUtil.setCookie(request, response, UserSessionService.uname, loginuser.getLoginName());
 		ResponseModel rsmodel = new ResponseModel();

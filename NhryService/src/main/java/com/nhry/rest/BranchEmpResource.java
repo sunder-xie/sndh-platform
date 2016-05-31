@@ -17,6 +17,7 @@ import org.springframework.stereotype.Controller;
 import com.nhry.common.model.ResponseModel;
 import com.nhry.domain.NHSysParameter;
 import com.nhry.domain.TMdBranchEmp;
+import com.nhry.domain.model.SearchModel;
 import com.nhry.exception.MessageCode;
 import com.nhry.service.dao.BranchEmpService;
 import com.sun.jersey.spi.resource.Singleton;
@@ -40,7 +41,7 @@ public class BranchEmpResource extends BaseResource {
 	@Produces(MediaType.APPLICATION_JSON)
 	@ApiOperation(value = "/add", response = ResponseModel.class, notes = "增加网点员工")
 	public Response addBranchEmp(@ApiParam(required=true,name="record",value="系统参数json格式")TMdBranchEmp record){
-		return formatData(MessageCode.NORMAL, null,  branchEmpService.addBranchEmp(record));
+		return convertToRespModel(MessageCode.NORMAL, null,  branchEmpService.addBranchEmp(record));
 	}
 	
 	@POST
@@ -49,7 +50,7 @@ public class BranchEmpResource extends BaseResource {
 	@Produces(MediaType.APPLICATION_JSON)
 	@ApiOperation(value = "/upt", response = String.class, notes = "修改网点员工信息")
 	public Response uptBranchEmp(@ApiParam(required=true,name="record",value="系统参数json格式")TMdBranchEmp record){
-		return formatData(MessageCode.NORMAL, null,  branchEmpService.uptBranchEmpByNo(record));
+		return convertToRespModel(MessageCode.NORMAL, null,  branchEmpService.uptBranchEmpByNo(record));
 	}
 	
 	@POST
@@ -57,7 +58,7 @@ public class BranchEmpResource extends BaseResource {
 	@Consumes(MediaType.APPLICATION_JSON)
 	@ApiOperation(value = "/del", response = String.class, notes = "删除员工信息")
 	public Response delBranchEmp(@ApiParam(required=true,name="empNo",value="员工编号")String empNo){
-		return formatData(MessageCode.NORMAL, null,  branchEmpService.deleteBranchEmpByNo(empNo));
+		return convertToRespModel(MessageCode.NORMAL, null,  branchEmpService.deleteBranchEmpByNo(empNo));
 	}
 	
 	@GET
@@ -65,6 +66,16 @@ public class BranchEmpResource extends BaseResource {
 	@Produces(MediaType.APPLICATION_JSON)
 	@ApiOperation(value = "/{empNo}", response = NHSysParameter.class, notes = "根据员工编号查询员工信息")
 	public Response findBranchEmpByNo(@ApiParam(required=true,name="empNo",value="员工编号") @PathParam("empNo") String empNo){
-		return formatData(MessageCode.NORMAL, null,branchEmpService.selectBranchEmpByNo(empNo));
+		return convertToRespModel(MessageCode.NORMAL, null,branchEmpService.selectBranchEmpByNo(empNo));
 	} 
+	
+	@POST
+	@Path("/search")
+	@Produces(MediaType.APPLICATION_JSON)
+	@Consumes(MediaType.APPLICATION_JSON)
+	@ApiOperation(value = "/{search}", response = NHSysParameter.class, notes = "查询员工信息")
+	public Response findBranchEmpByNo(@ApiParam(required=true,name="smodel",value="SearchModel") SearchModel smodel){
+		return convertToRespModel(MessageCode.NORMAL, null,branchEmpService.searchBranchEmp(smodel));
+	} 
+	
 }

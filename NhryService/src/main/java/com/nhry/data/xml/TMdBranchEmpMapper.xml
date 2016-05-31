@@ -30,10 +30,13 @@
     from t_md_branch_emp
     where EMP_NO = #{empNo,jdbcType=VARCHAR}
   </select>
-  <delete id="deleteBranchEmpByNo" parameterType="java.lang.String" >
-    delete from t_md_branch_emp
+  <update id="deleteBranchEmpByNo" parameterType="com.nhry.domain.TMdBranchEmp" >
+    update t_md_branch_emp set  LAST_MODIFIED = #{lastModified,jdbcType=TIMESTAMP},
+      LAST_MODIFIED_BY = #{lastModifiedBy,jdbcType=VARCHAR},
+      LAST_MODIFIED_BY_TXT = #{lastModifiedByTxt,jdbcType=VARCHAR},
+      DEL_FLAG = #{delFlag,jdbcType=CHAR}
     where EMP_NO = #{empNo,jdbcType=VARCHAR}
-  </delete>
+  </update>
   <insert id="addBranchEmp" parameterType="com.nhry.domain.TMdBranchEmp" >
     insert into t_md_branch_emp (EMP_NO, HR_EMP_NO, BRANCH_NO, 
       EMP_NAME, EMP_TYPE, TEL, 
@@ -67,4 +70,15 @@
       DEL_FLAG = #{delFlag,jdbcType=CHAR}
     where EMP_NO = #{empNo,jdbcType=VARCHAR}
   </update>
+  <select id="searchBranchEmp" resultMap="BaseResultMap" parameterType="com.nhry.domain.model.SearchModel">
+      select emp.EMP_NO, emp.HR_EMP_NO, branch.BRANCH_NAME BRANCH_NO, emp.EMP_NAME, emp.EMP_TYPE, emp.TEL, emp.MP, emp.WEBCHAT, emp.SFZH,emp.DEL_FLAG 
+    from t_md_branch_emp emp,T_MD_BRANCH branch
+    where emp.BRANCH_NO=branch.BRANCH_NO
+     <if test="branchNo != null and branchNo !=''">
+     		AND emp.BRANCH_NO = #{branchNo,jdbcType=VARCHAR}
+     </if>
+     <if test="delFlag != null and delFlag != ''">
+     	AND DEL_FLAG = #{delFlag,jdbcType=VARCHAR}
+     </if>
+  </select>
 </mapper>
