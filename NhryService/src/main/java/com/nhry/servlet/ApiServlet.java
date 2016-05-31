@@ -29,7 +29,11 @@ public class ApiServlet extends HttpServlet {
 		CookieUtil.setCookie(request, response, UserSessionService.uname, user.getLoginName());
 		userSessionService.cacheUserSession(user.getLoginName(), accesskey, user,request);
 		userSessionService.cacheUserSession("swagger", "swaggerThread", user,request);
-		response.sendRedirect(request.getContextPath()+"/swagger/index.html");
+		if("/".equals(request.getContextPath())){
+			response.sendRedirect("xiexiaojun/swagger/index.html");
+		}else{
+			response.sendRedirect(request.getContextPath()+"/swagger/index.html");
+		}
 	}
 
 }
