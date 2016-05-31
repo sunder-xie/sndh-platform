@@ -43,9 +43,9 @@
         url = decodeURIComponent(url[1]);
       } else {
           if(host.indexOf("127.0.0.1") != -1 || host.indexOf("localhost") != -1){
-          		url = "/NhryService/rest/api-docs";
+          		url = "/NhryService/api/v1/api-docs";
           }else if(_url.indexOf("xiexiaojun") != -1){
-          		url = "/xiexiaojun/rest/api-docs";
+          		url = "/xiexiaojun/api/v1/api-docs";
           }
       }
       hljs.configure({
