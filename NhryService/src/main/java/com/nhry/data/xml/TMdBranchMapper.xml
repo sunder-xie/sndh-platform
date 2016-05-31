@@ -87,6 +87,6 @@
          select 
     <include refid="Base_Column_List" />
     from t_md_branch
-    where BRANCH_NO = #{salesOrg,jdbcType=VARCHAR}
+    where SALES_ORG = #{salesOrg,jdbcType=VARCHAR}
   </select>
 </mapper>
