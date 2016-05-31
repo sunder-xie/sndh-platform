@@ -1,7 +1,11 @@
 package com.nhry.service.impl;
 
+import org.apache.commons.lang3.StringUtils;
+
 import com.nhry.data.dao.NHSysParameterMapper;
 import com.nhry.domain.NHSysParameter;
+import com.nhry.exception.MessageCode;
+import com.nhry.exception.ServiceException;
 import com.nhry.service.BaseService;
 import com.nhry.service.dao.SysParamService;
 import com.nhry.utils.Date;
@@ -18,6 +22,14 @@ public class SysParamServiceImpl extends BaseService implements SysParamService 
 	@Override
 	public int insert(NHSysParameter record) {
 		// TODO Auto-generated method stub
+		if(StringUtils.isEmpty(record.getParamCode())){
+			throw new ServiceException(MessageCode.LOGIC_ERROR,"参数编码必须填写！");
+		}else{
+			NHSysParameter _record = this.selectSysParamByCode(record.getParamCode());
+			if(_record != null){
+				throw new ServiceException(MessageCode.LOGIC_ERROR,"该参数编码对应的系统参数已经存在！");
+			}
+		}
 		record.setCreateAt(new Date());
 		record.setCreateBy(this.userSessionService.getCurrentUser().getLoginName());
 		record.setCreateByTxt(this.userSessionService.getCurrentUser().getDisplayName());

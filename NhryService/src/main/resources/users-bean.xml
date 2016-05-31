@@ -39,4 +39,11 @@
 	<bean id="sysParamService" class="com.nhry.service.impl.SysParamServiceImpl">
 	   <property name="sysParamMapper"  ref="sysParammapper"></property>
 	</bean>
+	
+	<bean id="branchEmpMapper" class="com.nhry.data.impl.TMdBranchEmpMapperImpl">
+	   <property name="sqlSessionTemplate"  ref="dynamicSqlSessionTemplate"></property>
+	</bean>
+	<bean id="branchEmpService" class="com.nhry.service.impl.BranchEmpServiceImpl">
+	   <property name="branchEmpMapper"  ref="branchEmpMapper"></property>
+	</bean>
 </beans>
