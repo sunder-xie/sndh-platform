@@ -4,7 +4,12 @@ import java.io.Serializable;
 import java.util.Date;
 
 public class TSysUser implements Serializable{
-    private String loginName;
+    /**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+
+	private String loginName;
 
     private String pwd;
 

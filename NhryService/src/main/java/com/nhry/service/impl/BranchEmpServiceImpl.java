@@ -37,7 +37,7 @@ public class BranchEmpServiceImpl extends BaseService implements
 	@Override
 	public int addBranchEmp(TMdBranchEmp record) {
 		// TODO Auto-generated method stub
-		if(StringUtils.isEmpty(record.getBranchNo()) || StringUtils.isEmpty(record.getEmpName())){
+		if(StringUtils.isEmpty(record.getEmpNo()) || StringUtils.isEmpty(record.getEmpName())){
 			throw new ServiceException(MessageCode.LOGIC_ERROR, "员工编号、员工姓名不能为空！");
 		}
 		record.setCreateAt(new Date());
