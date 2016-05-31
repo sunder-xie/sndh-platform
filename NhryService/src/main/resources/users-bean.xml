@@ -38,6 +38,7 @@
 	</bean>
 	<bean id="sysParamService" class="com.nhry.service.impl.SysParamServiceImpl">
 	   <property name="sysParamMapper"  ref="sysParammapper"></property>
+	   <property name="userSessionService" ref="userSessionService"></property>
 	</bean>
 	
 	<bean id="branchEmpMapper" class="com.nhry.data.impl.TMdBranchEmpMapperImpl">
@@ -45,5 +46,6 @@
 	</bean>
 	<bean id="branchEmpService" class="com.nhry.service.impl.BranchEmpServiceImpl">
 	   <property name="branchEmpMapper"  ref="branchEmpMapper"></property>
+	   <property name="userSessionService" ref="userSessionService"></property>
 	</bean>
 </beans>

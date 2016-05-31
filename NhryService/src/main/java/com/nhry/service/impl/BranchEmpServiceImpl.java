@@ -8,6 +8,7 @@ import com.nhry.exception.MessageCode;
 import com.nhry.exception.ServiceException;
 import com.nhry.service.BaseService;
 import com.nhry.service.dao.BranchEmpService;
+import com.nhry.utils.Date;
 
 public class BranchEmpServiceImpl extends BaseService implements
 		BranchEmpService {
@@ -30,6 +31,9 @@ public class BranchEmpServiceImpl extends BaseService implements
 		if(StringUtils.isEmpty(record.getBranchNo()) || StringUtils.isEmpty(record.getEmpName())){
 			throw new ServiceException(MessageCode.LOGIC_ERROR, "员工编号、员工姓名不能为空！");
 		}
+		record.setCreateAt(new Date());
+		record.setCreateBy(userSessionService.getCurrentUser().getLoginName());
+		record.setCreateByTxt(userSessionService.getCurrentUser().getDisplayName());
 		return branchEmpMapper.addBranchEmp(record);
 	}
 
@@ -42,15 +46,17 @@ public class BranchEmpServiceImpl extends BaseService implements
 	@Override
 	public int uptBranchEmpByNo(TMdBranchEmp record) {
 		// TODO Auto-generated method stub
-		TMdBranchEmp emp = this.selectBranchEmpByNo(record.getBranchNo());
+		TMdBranchEmp emp = this.selectBranchEmpByNo(record.getEmpNo());
 		if(emp == null){
 			throw new ServiceException(MessageCode.LOGIC_ERROR, "该员工编号对应的员工信息不存在!");
 		}
+		record.setLastModified(new Date());
+		record.setLastModifiedBy(userSessionService.getCurrentUser().getLoginName());
+		record.setLastModifiedByTxt(userSessionService.getCurrentUser().getDisplayName());
 		return branchEmpMapper.uptBranchEmpByNo(record);
 	}
 
 	public void setBranchEmpMapper(TMdBranchEmpMapper branchEmpMapper) {
 		this.branchEmpMapper = branchEmpMapper;
 	}
-
 }
