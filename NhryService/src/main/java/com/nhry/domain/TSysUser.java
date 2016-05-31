@@ -6,8 +6,6 @@ import java.util.Date;
 public class TSysUser implements Serializable{
     private String loginName;
 
-    private String id;
-
     private String pwd;
 
     private String status;
@@ -35,14 +33,6 @@ public class TSysUser implements Serializable{
 
     public void setLoginName(String loginName) {
         this.loginName = loginName == null ? null : loginName.trim();
-    }
-
-    public String getId() {
-        return id;
-    }
-
-    public void setId(String id) {
-        this.id = id == null ? null : id.trim();
     }
 
     public String getPwd() {

@@ -3,7 +3,6 @@
 <mapper namespace="com.nhry.data.impl.UserMapperImpl" >
   <resultMap id="BaseResultMap" type="com.nhry.domain.TSysUser" >
     <id column="LOGIN_NAME" property="loginName" jdbcType="VARCHAR" />
-    <result column="ID" property="id" jdbcType="VARCHAR" />
     <result column="PWD" property="pwd" jdbcType="VARCHAR" />
     <result column="DISPLAY_NAME" />
     <result column="STATUS" property="status" jdbcType="CHAR" />
@@ -19,7 +18,7 @@
     <result column="SALES_ORG" property="salesOrg" jdbcType="VARCHAR"/>
   </resultMap>
   <sql id="Base_Column_List" >
-    LOGIN_NAME, ID, PWD, STATUS, CREATE_AT, CREATE_BY, CREATE_BY_TXT, LAST_MODIFIED, 
+    LOGIN_NAME, PWD, STATUS, CREATE_AT, CREATE_BY, CREATE_BY_TXT, LAST_MODIFIED, 
     LAST_MODIFIED_BY, LAST_MODIFIED_BY_TXT,DISPLAY_NAME,BRANCH_NO,DEALER_ID,SALES_ORG
   </sql>
   <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.String" >
