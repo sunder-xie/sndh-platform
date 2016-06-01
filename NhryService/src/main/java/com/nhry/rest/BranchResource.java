@@ -34,7 +34,7 @@ public class BranchResource extends BaseResource {
 	@Path("/search/{salesOrg}")
 	@Produces(MediaType.APPLICATION_JSON)
 	@ApiOperation(value = "/{salesOrg}", response = NHSysParameter.class, notes = "根据销售组织查询网点客户信息列表")
-	public Response findBranchListByOrg(@ApiParam(required=true,name="salesOrg",value="销售组织") @PathParam("salesOrg") String salesOrg){
+	public Response findBranchListByOrg(@ApiParam(required=true,name="salesOrg",value="销售组织")  @PathParam("salesOrg") String salesOrg){
 		return convertToRespModel(MessageCode.NORMAL, null,branchService.findBranchListByOrg(salesOrg));
 	}  
 }

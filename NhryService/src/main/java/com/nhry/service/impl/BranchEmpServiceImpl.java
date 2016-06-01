@@ -7,9 +7,9 @@ import org.apache.commons.lang3.StringUtils;
 import com.github.pagehelper.PageInfo;
 import com.nhry.data.dao.TMdBranchEmpMapper;
 import com.nhry.domain.TMdBranchEmp;
-import com.nhry.domain.model.SearchModel;
 import com.nhry.exception.MessageCode;
 import com.nhry.exception.ServiceException;
+import com.nhry.pojo.EmpSearchModel;
 import com.nhry.service.BaseService;
 import com.nhry.service.dao.BranchEmpService;
 import com.nhry.utils.Date;
@@ -74,7 +74,7 @@ public class BranchEmpServiceImpl extends BaseService implements
 	}
 
 	@Override
-	public PageInfo searchBranchEmp(SearchModel smodel) {
+	public PageInfo searchBranchEmp(EmpSearchModel smodel) {
 		// TODO Auto-generated method stub
 		
 		return branchEmpMapper.searchBranchEmp(smodel);

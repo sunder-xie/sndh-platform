@@ -8,6 +8,7 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
+import org.codehaus.jettison.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
@@ -53,7 +54,7 @@ public class SysParamterResource extends BaseResource {
 	@POST
 	@Path("/del")
 	@Consumes(MediaType.APPLICATION_JSON)
-	@Produces(MediaType.TEXT_PLAIN)
+	@Produces(MediaType.APPLICATION_JSON)
 	@ApiOperation(value = "/del", response = String.class, notes = "删除系统参数")
 	public Response delSysParam(@ApiParam(required=true,name="param",value="系统参数json格式")NHSysParameter param){
 		return convertToRespModel(MessageCode.NORMAL, null,  sysParamService.uptSysParamByCode(param));
@@ -65,6 +66,16 @@ public class SysParamterResource extends BaseResource {
 	@ApiOperation(value = "/{code}", response = NHSysParameter.class, notes = "根据code查询系统参数")
 	public Response findSysParamByCode(@ApiParam(required=true,name="code",value="参数编码") @PathParam("code") String code){
 		return convertToRespModel(MessageCode.NORMAL, null,sysParamService.selectSysParamByCode(code));
+	}
+	
+	@POST
+	@Path("/search")
+	@Produces(MediaType.APPLICATION_JSON)
+	@Consumes(MediaType.APPLICATION_JSON)
+	@ApiOperation(value = "/search", response = NHSysParameter.class, notes = "根据code查询系统参数")
+	public Response searchSysParam(@ApiParam(required=true,name="json",value="参数编码") JSONObject json){
+		System.out.println("---json----"+json);
+		return convertToRespModel(MessageCode.NORMAL, null,null);
 	}
 	
 }

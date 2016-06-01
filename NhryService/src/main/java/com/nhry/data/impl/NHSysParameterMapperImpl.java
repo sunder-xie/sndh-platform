@@ -11,7 +11,7 @@ public class NHSysParameterMapperImpl implements NHSysParameterMapper {
 	@Override
 	public int deleteSysParamByCode(String paramCode) {
 		// TODO Auto-generated method stub
-		return this.sqlSessionTemplate.delete("deleteSysParamByCode","paramCode");
+		return this.sqlSessionTemplate.delete("deleteSysParamByCode",paramCode);
 	}
 
 	@Override
