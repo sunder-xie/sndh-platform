@@ -17,6 +17,7 @@ import org.springframework.stereotype.Controller;
 import com.nhry.common.model.ResponseModel;
 import com.nhry.domain.NHSysParameter;
 import com.nhry.exception.MessageCode;
+import com.nhry.pojo.query.SysParamQueryModel;
 import com.nhry.service.dao.SysParamService;
 import com.sun.jersey.spi.resource.Singleton;
 import com.wordnik.swagger.annotations.Api;
@@ -39,7 +40,7 @@ public class SysParamterResource extends BaseResource {
 	@Produces(MediaType.APPLICATION_JSON)
 	@ApiOperation(value = "/add", response = ResponseModel.class, notes = "增加系统参数")
 	public Response addSysParam(@ApiParam(required=true,name="param",value="系统参数json格式")NHSysParameter param){
-		return convertToRespModel(MessageCode.NORMAL, null,  sysParamService.insert(param));
+		return convertToRespModel(MessageCode.NORMAL, null,  sysParamService.addSysParam(param));
 	}
 	
 	@POST
@@ -52,12 +53,12 @@ public class SysParamterResource extends BaseResource {
 	}
 	
 	@POST
-	@Path("/del")
+	@Path("/del/{paramCode}")
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
-	@ApiOperation(value = "/del", response = String.class, notes = "删除系统参数")
-	public Response delSysParam(@ApiParam(required=true,name="param",value="系统参数json格式")NHSysParameter param){
-		return convertToRespModel(MessageCode.NORMAL, null,  sysParamService.uptSysParamByCode(param));
+	@ApiOperation(value = "/del", response = String.class, notes = "根据参数编码删除系统参数")
+	public Response delSysParam(@ApiParam(required=true,name="paramCode",value="参数编码")@PathParam("paramCode")String paramCode){
+		return convertToRespModel(MessageCode.NORMAL, null,  sysParamService.deleteSysParamByCode(paramCode));
 	}
 	
 	@POST
@@ -72,10 +73,9 @@ public class SysParamterResource extends BaseResource {
 	@Path("/search")
 	@Produces(MediaType.APPLICATION_JSON)
 	@Consumes(MediaType.APPLICATION_JSON)
-	@ApiOperation(value = "/search", response = NHSysParameter.class, notes = "根据code查询系统参数")
-	public Response searchSysParam(@ApiParam(required=true,name="json",value="参数编码") JSONObject json){
-		System.out.println("---json----"+json);
-		return convertToRespModel(MessageCode.NORMAL, null,null);
+	@ApiOperation(value = "/search", response = NHSysParameter.class, notes = "根据参数编码、参数名称、参数值，查询系统参数")
+	public Response searchSysParam(@ApiParam(required=true,name="paramName",value="参数名称") SysParamQueryModel param){
+		return convertToRespModel(MessageCode.NORMAL, null,sysParamService.findSysParam(param));
 	}
 	
 }

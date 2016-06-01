@@ -18,7 +18,7 @@ import com.nhry.common.model.ResponseModel;
 import com.nhry.domain.NHSysParameter;
 import com.nhry.domain.TMdBranchEmp;
 import com.nhry.exception.MessageCode;
-import com.nhry.pojo.EmpSearchModel;
+import com.nhry.pojo.query.EmpQueryModel;
 import com.nhry.service.dao.BranchEmpService;
 import com.sun.jersey.spi.resource.Singleton;
 import com.wordnik.swagger.annotations.Api;
@@ -74,7 +74,7 @@ public class BranchEmpResource extends BaseResource {
 	@Produces(MediaType.APPLICATION_JSON)
 	@Consumes(MediaType.APPLICATION_JSON)
 	@ApiOperation(value = "/{search}", response = NHSysParameter.class, notes = "查询员工信息")
-	public Response findBranchEmpByNo(@ApiParam(required=true,name="smodel",value="SearchModel") EmpSearchModel smodel){
+	public Response findBranchEmpByNo(@ApiParam(required=true,name="smodel",value="SearchModel") EmpQueryModel smodel){
 		return convertToRespModel(MessageCode.NORMAL, null,branchEmpService.searchBranchEmp(smodel));
 	} 
 	
