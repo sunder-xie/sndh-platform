@@ -14,36 +14,30 @@ public class EmpSearchModel implements Serializable {
 	private String delFlag;
 	private String pageSize;
 	private String pageNum;
-
-	public String getDelFlag() {
-		return delFlag;
-	}
-
-	public void setDelFlag(String delFlag) {
-		this.delFlag = delFlag;
-	}
-
 	public String getBranchNo() {
 		return branchNo;
 	}
-
 	public void setBranchNo(String branchNo) {
 		this.branchNo = branchNo;
 	}
-
-	public int getPageSize() {
-		return Integer.parseInt(pageSize);
+	public String getDelFlag() {
+		return delFlag;
 	}
-
+	public void setDelFlag(String delFlag) {
+		this.delFlag = delFlag;
+	}
+	public String getPageSize() {
+		return pageSize;
+	}
 	public void setPageSize(String pageSize) {
 		this.pageSize = pageSize;
 	}
-
-	public int getPageNum() {
-		return Integer.parseInt(pageNum);
+	public String getPageNum() {
+		return pageNum;
 	}
-
 	public void setPageNum(String pageNum) {
 		this.pageNum = pageNum;
 	}
+
+	
 }
