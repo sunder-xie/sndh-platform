@@ -6,7 +6,7 @@ import com.github.pagehelper.PageInfo;
 import com.nhry.data.dao.TMdBranchEmpMapper;
 import com.nhry.datasource.DynamicSqlSessionTemplate;
 import com.nhry.domain.TMdBranchEmp;
-import com.nhry.domain.model.SearchModel;
+import com.nhry.pojo.query.EmpQueryModel;
 
 public class TMdBranchEmpMapperImpl implements TMdBranchEmpMapper {
 	private DynamicSqlSessionTemplate sqlSessionTemplate;
@@ -40,8 +40,8 @@ public class TMdBranchEmpMapperImpl implements TMdBranchEmpMapper {
 	}
 
 	@Override
-	public PageInfo searchBranchEmp(SearchModel smodel) {
+	public PageInfo searchBranchEmp(EmpQueryModel smodel) {
 		// TODO Auto-generated method stub
-		return sqlSessionTemplate.selectListByPages("searchBranchEmp",smodel, smodel.getPageNum(), smodel.getPageSize());
+		return sqlSessionTemplate.selectListByPages("searchBranchEmp",smodel, Integer.parseInt(smodel.getPageNum()), Integer.parseInt(smodel.getPageSize()));
 	}
 }

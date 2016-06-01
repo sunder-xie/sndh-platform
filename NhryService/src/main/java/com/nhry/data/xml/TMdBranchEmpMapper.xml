@@ -70,7 +70,7 @@
       DEL_FLAG = #{delFlag,jdbcType=CHAR}
     where EMP_NO = #{empNo,jdbcType=VARCHAR}
   </update>
-  <select id="searchBranchEmp" resultMap="BaseResultMap" parameterType="com.nhry.domain.model.SearchModel">
+  <select id="searchBranchEmp" resultMap="BaseResultMap" parameterType="com.nhry.pojo.query.EmpQueryModel">
       select emp.EMP_NO, emp.HR_EMP_NO, branch.BRANCH_NAME BRANCH_NO, emp.EMP_NAME, emp.EMP_TYPE, emp.TEL, emp.MP, emp.WEBCHAT, emp.SFZH,emp.DEL_FLAG 
     from t_md_branch_emp emp,T_MD_BRANCH branch
     where emp.BRANCH_NO=branch.BRANCH_NO

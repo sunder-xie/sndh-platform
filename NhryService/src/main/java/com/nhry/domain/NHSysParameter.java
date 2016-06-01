@@ -3,7 +3,12 @@ package com.nhry.domain;
 import java.io.Serializable;
 import java.util.Date;
 
+import com.wordnik.swagger.annotations.ApiModel;
+import com.wordnik.swagger.annotations.ApiModelProperty;
+
+@ApiModel(value = "NHSysParameter", description = "系统参数对象")
 public class NHSysParameter implements Serializable{
+	@ApiModelProperty(value="paramCode",notes="参数编码")
     private String paramCode;
 
     private String paramName;

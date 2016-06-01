@@ -56,4 +56,12 @@
 	   <property name="branchMapper"  ref="branchMapper"></property>
 	   <property name="userSessionService" ref="userSessionService"></property>
 	</bean>
+	
+	<bean id="codeItemMapper" class="com.nhry.data.impl.NHSysCodeItemMapperImpl">
+	   <property name="sqlSessionTemplate"  ref="dynamicSqlSessionTemplate"></property>
+	</bean>
+	<bean id="dicService" class="com.nhry.service.impl.DictionaryServiceImpl">
+	   <property name="codeItemMapper"  ref="codeItemMapper"></property>
+	   <property name="userSessionService" ref="userSessionService"></property>
+	</bean>
 </beans>

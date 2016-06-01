@@ -4,7 +4,7 @@ import java.util.List;
 
 import com.github.pagehelper.PageInfo;
 import com.nhry.domain.TMdBranchEmp;
-import com.nhry.domain.model.SearchModel;
+import com.nhry.pojo.query.EmpQueryModel;
 
 public interface BranchEmpService {
 	int deleteBranchEmpByNo(String empNo);
@@ -15,5 +15,5 @@ public interface BranchEmpService {
 
     int uptBranchEmpByNo(TMdBranchEmp record);
     
-    public PageInfo searchBranchEmp(SearchModel smodel);
+    public PageInfo searchBranchEmp(EmpQueryModel smodel);
 }

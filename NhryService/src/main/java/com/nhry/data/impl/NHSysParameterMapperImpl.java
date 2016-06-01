@@ -1,8 +1,12 @@
 package com.nhry.data.impl;
 
+import java.util.List;
+
+import com.github.pagehelper.PageInfo;
 import com.nhry.data.dao.NHSysParameterMapper;
 import com.nhry.datasource.DynamicSqlSessionTemplate;
 import com.nhry.domain.NHSysParameter;
+import com.nhry.pojo.query.SysParamQueryModel;
 
 public class NHSysParameterMapperImpl implements NHSysParameterMapper {
 	
@@ -11,13 +15,13 @@ public class NHSysParameterMapperImpl implements NHSysParameterMapper {
 	@Override
 	public int deleteSysParamByCode(String paramCode) {
 		// TODO Auto-generated method stub
-		return this.sqlSessionTemplate.delete("deleteSysParamByCode","paramCode");
+		return this.sqlSessionTemplate.delete("deleteSysParamByCode",paramCode);
 	}
 
 	@Override
-	public int insert(NHSysParameter record) {
+	public int addSysParam(NHSysParameter record) {
 		// TODO Auto-generated method stub
-		return this.sqlSessionTemplate.insert("insert", record);
+		return this.sqlSessionTemplate.insert("addSysParam", record);
 	}
 
 	@Override
@@ -34,5 +38,11 @@ public class NHSysParameterMapperImpl implements NHSysParameterMapper {
 
 	public void setSqlSessionTemplate(DynamicSqlSessionTemplate sqlSessionTemplate) {
 		this.sqlSessionTemplate = sqlSessionTemplate;
+	}
+
+	@Override
+	public PageInfo findSysParam(SysParamQueryModel param) {
+		// TODO Auto-generated method stub
+		return this.sqlSessionTemplate.selectListByPages("findSysParam", param, Integer.parseInt(param.getPageNum()), Integer.parseInt(param.getPageSize()));
 	}
 }
