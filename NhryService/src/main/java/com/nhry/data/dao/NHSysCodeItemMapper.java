@@ -8,11 +8,7 @@ public interface NHSysCodeItemMapper {
 
     int insert(NHSysCodeItem record);
 
-    int insertSelective(NHSysCodeItem record);
-
     NHSysCodeItem selectByPrimaryKey(NHSysCodeItemKey key);
-
-    int updateByPrimaryKeySelective(NHSysCodeItem record);
 
     int updateByPrimaryKey(NHSysCodeItem record);
 }

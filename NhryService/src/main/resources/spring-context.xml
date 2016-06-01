@@ -31,9 +31,6 @@
 	<bean id="userSessionService" class="com.nhry.auth.UserSessionService">
 	   <property name="objectRedisTemplate" ref="objectRedisTemplate"></property>
 	</bean>
-	<bean id="baseService" class="com.nhry.service.BaseService">
-	   <property name="userSessionService" ref="userSessionService"></property>
-	</bean>
 	<!-- 定义单个jdbc数据源的事务管理器 -->
 	<bean id="transactionManager" class="com.nhry.datasource.DynamicDataSourceTransactionManager">
 		<property name="dataSource" ref="dataSource" />
@@ -63,7 +60,7 @@
             <ref bean="sessioncleanJob" />
         </property>
         <property name="cronExpression">
-			<value>0 */5 * * * ?</value>  <!-- 5分钟执行一次 -->
+			<value>10 40 3 * * ?</value>  
 		</property>
     </bean>
     <!-- 调度的配置结束 -->

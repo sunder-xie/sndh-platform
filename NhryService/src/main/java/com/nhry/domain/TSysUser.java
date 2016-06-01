@@ -4,9 +4,12 @@ import java.io.Serializable;
 import java.util.Date;
 
 public class TSysUser implements Serializable{
-    private String loginName;
+    /**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 
-    private String id;
+	private String loginName;
 
     private String pwd;
 
@@ -23,6 +26,11 @@ public class TSysUser implements Serializable{
     private String lastModifiedBy;
 
     private String lastModifiedByTxt;
+    
+    private String displayName;
+    private String branchNo;
+    private String dealerId;
+    private String salesOrg;
 
     public String getLoginName() {
         return loginName;
@@ -30,14 +38,6 @@ public class TSysUser implements Serializable{
 
     public void setLoginName(String loginName) {
         this.loginName = loginName == null ? null : loginName.trim();
-    }
-
-    public String getId() {
-        return id;
-    }
-
-    public void setId(String id) {
-        this.id = id == null ? null : id.trim();
     }
 
     public String getPwd() {
@@ -103,4 +103,36 @@ public class TSysUser implements Serializable{
     public void setLastModifiedByTxt(String lastModifiedByTxt) {
         this.lastModifiedByTxt = lastModifiedByTxt == null ? null : lastModifiedByTxt.trim();
     }
+
+	public String getDisplayName() {
+		return displayName;
+	}
+
+	public void setDisplayName(String displayName) {
+		this.displayName = displayName;
+	}
+
+	public String getBranchNo() {
+		return branchNo;
+	}
+
+	public void setBranchNo(String branchNo) {
+		this.branchNo = branchNo;
+	}
+
+	public String getDealerId() {
+		return dealerId;
+	}
+
+	public void setDealerId(String dealerId) {
+		this.dealerId = dealerId;
+	}
+
+	public String getSalesOrg() {
+		return salesOrg;
+	}
+
+	public void setSalesOrg(String salesOrg) {
+		this.salesOrg = salesOrg;
+	}
 }

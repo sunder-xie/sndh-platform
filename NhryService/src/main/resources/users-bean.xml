@@ -32,4 +32,28 @@
 	<bean id="custService" class="com.nhry.service.impl.TMdVipCustInfoServiceImpl">
 	   <property name="tmdVipcust"  ref="custMapper"></property>
 	</bean>
+	
+	<bean id="sysParammapper" class="com.nhry.data.impl.NHSysParameterMapperImpl">
+	   <property name="sqlSessionTemplate"  ref="dynamicSqlSessionTemplate"></property>
+	</bean>
+	<bean id="sysParamService" class="com.nhry.service.impl.SysParamServiceImpl">
+	   <property name="sysParamMapper"  ref="sysParammapper"></property>
+	   <property name="userSessionService" ref="userSessionService"></property>
+	</bean>
+	
+	<bean id="branchEmpMapper" class="com.nhry.data.impl.TMdBranchEmpMapperImpl">
+	   <property name="sqlSessionTemplate"  ref="dynamicSqlSessionTemplate"></property>
+	</bean>
+	<bean id="branchEmpService" class="com.nhry.service.impl.BranchEmpServiceImpl">
+	   <property name="branchEmpMapper"  ref="branchEmpMapper"></property>
+	   <property name="userSessionService" ref="userSessionService"></property>
+	</bean>
+	
+	<bean id="branchMapper" class="com.nhry.data.impl.TMdBranchMapperImpl">
+	   <property name="sqlSessionTemplate"  ref="dynamicSqlSessionTemplate"></property>
+	</bean>
+	<bean id="branchService" class="com.nhry.service.impl.BranchServiceImpl">
+	   <property name="branchMapper"  ref="branchMapper"></property>
+	   <property name="userSessionService" ref="userSessionService"></property>
+	</bean>
 </beans>

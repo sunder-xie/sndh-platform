@@ -8,7 +8,9 @@ import javax.ws.rs.core.Response;
 import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONObject;
 
-import com.nhry.domain.ResponseModel;
+import com.nhry.auth.UserSessionService;
+import com.nhry.common.model.ResponseModel;
+import com.nhry.utils.CookieUtil;
 
 public class BaseResource {
 	protected final int pageSize = 8;
@@ -17,12 +19,9 @@ public class BaseResource {
 	@Context
 	protected HttpServletResponse response;
 
-	protected Response formatData(String type, Object msg, Object data) {
-//		response.setHeader("Access-Control-Allow-Methods", "GET,POST,PUT,DELETE,OPTIONS");
-//		response.setHeader("Access-Control-Allow-Credentials", "true");  
-//		response.setHeader("Access-Control-Expose-Headers", "Content-Type"); 
-//		response.setHeader("Access-Control-Allow-Origin","*");
-		
+	protected Response convertToRespModel(String type, Object msg, Object data) {
+//		CookieUtil.setCookie(request, response, UserSessionService.accessKey, accesskey);
+//		CookieUtil.setCookie(request, response, UserSessionService.uname, loginuser.getLoginName());
 		ResponseModel rsmodel = new ResponseModel();
 		rsmodel.setType(type);
 		rsmodel.setMsg(msg);

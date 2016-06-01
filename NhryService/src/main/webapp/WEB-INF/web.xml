@@ -47,7 +47,15 @@
   </servlet>
   <servlet-mapping>
     <servlet-name>JerseyServlet</servlet-name>
-    <url-pattern>/rest/*</url-pattern>
+    <url-pattern>/api/v1/*</url-pattern>
+  </servlet-mapping>
+   <servlet>
+    <servlet-name>ApiServlet</servlet-name>
+    <servlet-class>com.nhry.servlet.ApiServlet</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>ApiServlet</servlet-name>
+    <url-pattern>/api/docs</url-pattern>
   </servlet-mapping>
   <servlet>
     <servlet-name>DefaultJaxrsConfig</servlet-name>
@@ -62,7 +70,7 @@
     </init-param>
     <init-param>
       <param-name>swagger.api.basepath</param-name>
-      <param-value>/NhryService/rest</param-value>
+      <param-value>/xiexiaojun/api/v1</param-value>
     </init-param>
     <load-on-startup>2</load-on-startup>
   </servlet>

@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.nhry.data.dao.TMdBranchMapper" >
+  <resultMap id="BaseResultMap" type="com.nhry.domain.TMdBranch" >
+    <id column="BRANCH_NO" property="branchNo" jdbcType="VARCHAR" />
+    <result column="BRANCH_NAME" property="branchName" jdbcType="VARCHAR" />
+    <result column="SALES_ORG" property="salesOrg" jdbcType="VARCHAR" />
+    <result column="SALES_CHA" property="salesCha" jdbcType="VARCHAR" />
+    <result column="BRANCH_GROUP" property="branchGroup" jdbcType="VARCHAR" />
+    <result column="BRANCH_LEVEL" property="branchLevel" jdbcType="VARCHAR" />
+    <result column="CONTACT" property="contact" jdbcType="VARCHAR" />
+    <result column="TEL" property="tel" jdbcType="VARCHAR" />
+    <result column="MP" property="mp" jdbcType="VARCHAR" />
+    <result column="DEALER_NO" property="dealerNo" jdbcType="VARCHAR" />
+    <result column="ADDRESS" property="address" jdbcType="VARCHAR" />
+    <result column="PROVINCE" property="province" jdbcType="VARCHAR" />
+    <result column="CITY" property="city" jdbcType="VARCHAR" />
+    <result column="COUNTY" property="county" jdbcType="VARCHAR" />
+    <result column="WERKS" property="werks" jdbcType="VARCHAR" />
+    <result column="LGORT" property="lgort" jdbcType="VARCHAR" />
+    <result column="CREATE_AT" property="createAt" jdbcType="TIMESTAMP" />
+    <result column="CREATE_BY" property="createBy" jdbcType="VARCHAR" />
+    <result column="CREATE_BY_TXT" property="createByTxt" jdbcType="VARCHAR" />
+    <result column="LAST_MODIFIED" property="lastModified" jdbcType="TIMESTAMP" />
+    <result column="LAST_MODIFIED_BY" property="lastModifiedBy" jdbcType="VARCHAR" />
+    <result column="LAST_MODIFIED_BY_TXT" property="lastModifiedByTxt" jdbcType="VARCHAR" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    BRANCH_NO, BRANCH_NAME, SALES_ORG, SALES_CHA, BRANCH_GROUP, BRANCH_LEVEL, CONTACT, 
+    TEL, MP, DEALER_NO, ADDRESS, PROVINCE, CITY, COUNTY, WERKS, LGORT, CREATE_AT, CREATE_BY, 
+    CREATE_BY_TXT, LAST_MODIFIED, LAST_MODIFIED_BY, LAST_MODIFIED_BY_TXT
+  </sql>
+  <select id="selectBranchByNo" resultMap="BaseResultMap" parameterType="java.lang.String" >
+    select 
+    <include refid="Base_Column_List" />
+    from t_md_branch
+    where BRANCH_NO = #{branchNo,jdbcType=VARCHAR}
+  </select>
+  <delete id="deleteBranchByNo" parameterType="java.lang.String" >
+    delete from t_md_branch
+    where BRANCH_NO = #{branchNo,jdbcType=VARCHAR}
+  </delete>
+  <insert id="addBranch" parameterType="com.nhry.domain.TMdBranch" >
+    insert into t_md_branch (BRANCH_NO, BRANCH_NAME, SALES_ORG, 
+      SALES_CHA, BRANCH_GROUP, BRANCH_LEVEL, 
+      CONTACT, TEL, MP, DEALER_NO, 
+      ADDRESS, PROVINCE, CITY, 
+      COUNTY, WERKS, LGORT, 
+      CREATE_AT, CREATE_BY, CREATE_BY_TXT, 
+      LAST_MODIFIED, LAST_MODIFIED_BY, LAST_MODIFIED_BY_TXT
+      )
+    values (#{branchNo,jdbcType=VARCHAR}, #{branchName,jdbcType=VARCHAR}, #{salesOrg,jdbcType=VARCHAR}, 
+      #{salesCha,jdbcType=VARCHAR}, #{branchGroup,jdbcType=VARCHAR}, #{branchLevel,jdbcType=VARCHAR}, 
+      #{contact,jdbcType=VARCHAR}, #{tel,jdbcType=VARCHAR}, #{mp,jdbcType=VARCHAR}, #{dealerNo,jdbcType=VARCHAR}, 
+      #{address,jdbcType=VARCHAR}, #{province,jdbcType=VARCHAR}, #{city,jdbcType=VARCHAR}, 
+      #{county,jdbcType=VARCHAR}, #{werks,jdbcType=VARCHAR}, #{lgort,jdbcType=VARCHAR}, 
+      #{createAt,jdbcType=TIMESTAMP}, #{createBy,jdbcType=VARCHAR}, #{createByTxt,jdbcType=VARCHAR}, 
+      #{lastModified,jdbcType=TIMESTAMP}, #{lastModifiedBy,jdbcType=VARCHAR}, #{lastModifiedByTxt,jdbcType=VARCHAR}
+      )
+  </insert>
+  <update id="updateBranchByNo" parameterType="com.nhry.domain.TMdBranch" >
+    update t_md_branch
+    set BRANCH_NAME = #{branchName,jdbcType=VARCHAR},
+      SALES_ORG = #{salesOrg,jdbcType=VARCHAR},
+      SALES_CHA = #{salesCha,jdbcType=VARCHAR},
+      BRANCH_GROUP = #{branchGroup,jdbcType=VARCHAR},
+      BRANCH_LEVEL = #{branchLevel,jdbcType=VARCHAR},
+      CONTACT = #{contact,jdbcType=VARCHAR},
+      TEL = #{tel,jdbcType=VARCHAR},
+      MP = #{mp,jdbcType=VARCHAR},
+      DEALER_NO = #{dealerNo,jdbcType=VARCHAR},
+      ADDRESS = #{address,jdbcType=VARCHAR},
+      PROVINCE = #{province,jdbcType=VARCHAR},
+      CITY = #{city,jdbcType=VARCHAR},
+      COUNTY = #{county,jdbcType=VARCHAR},
+      WERKS = #{werks,jdbcType=VARCHAR},
+      LGORT = #{lgort,jdbcType=VARCHAR},
+      CREATE_AT = #{createAt,jdbcType=TIMESTAMP},
+      CREATE_BY = #{createBy,jdbcType=VARCHAR},
+      CREATE_BY_TXT = #{createByTxt,jdbcType=VARCHAR},
+      LAST_MODIFIED = #{lastModified,jdbcType=TIMESTAMP},
+      LAST_MODIFIED_BY = #{lastModifiedBy,jdbcType=VARCHAR},
+      LAST_MODIFIED_BY_TXT = #{lastModifiedByTxt,jdbcType=VARCHAR}
+    where BRANCH_NO = #{branchNo,jdbcType=VARCHAR}
+  </update>
+  <select id="findBranchListByOrg" resultMap="BaseResultMap" parameterType="String">
+         select 
+    <include refid="Base_Column_List" />
+    from t_md_branch
+    where SALES_ORG = #{salesOrg,jdbcType=VARCHAR}
+  </select>
+</mapper>
