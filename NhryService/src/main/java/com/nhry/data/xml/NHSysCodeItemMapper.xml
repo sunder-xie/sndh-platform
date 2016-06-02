@@ -49,158 +49,6 @@
       #{createByTxt,jdbcType=VARCHAR}, #{lastModified,jdbcType=TIMESTAMP}, #{lastModifiedBy,jdbcType=VARCHAR}, 
       #{lastModifiedByTxt,jdbcType=VARCHAR})
   </insert>
-  <insert id="insertSelective" parameterType="com.nhry.domain.NHSysCodeItem" >
-    insert into t_sys_code_item
-    <trim prefix="(" suffix=")" suffixOverrides="," >
-      <if test="typeCode != null" >
-        TYPE_CODE,
-      </if>
-      <if test="itemCode != null" >
-        ITEM_CODE,
-      </if>
-      <if test="itemName != null" >
-        ITEM_NAME,
-      </if>
-      <if test="parent != null" >
-        PARENT,
-      </if>
-      <if test="attr1 != null" >
-        ATTR1,
-      </if>
-      <if test="attr2 != null" >
-        ATTR2,
-      </if>
-      <if test="attr3 != null" >
-        ATTR3,
-      </if>
-      <if test="attr4 != null" >
-        ATTR4,
-      </if>
-      <if test="attr5 != null" >
-        ATTR5,
-      </if>
-      <if test="idx != null" >
-        IDX,
-      </if>
-      <if test="createAt != null" >
-        CREATE_AT,
-      </if>
-      <if test="createBy != null" >
-        CREATE_BY,
-      </if>
-      <if test="createByTxt != null" >
-        CREATE_BY_TXT,
-      </if>
-      <if test="lastModified != null" >
-        LAST_MODIFIED,
-      </if>
-      <if test="lastModifiedBy != null" >
-        LAST_MODIFIED_BY,
-      </if>
-      <if test="lastModifiedByTxt != null" >
-        LAST_MODIFIED_BY_TXT,
-      </if>
-    </trim>
-    <trim prefix="values (" suffix=")" suffixOverrides="," >
-      <if test="typeCode != null" >
-        #{typeCode,jdbcType=VARCHAR},
-      </if>
-      <if test="itemCode != null" >
-        #{itemCode,jdbcType=VARCHAR},
-      </if>
-      <if test="itemName != null" >
-        #{itemName,jdbcType=VARCHAR},
-      </if>
-      <if test="parent != null" >
-        #{parent,jdbcType=VARCHAR},
-      </if>
-      <if test="attr1 != null" >
-        #{attr1,jdbcType=VARCHAR},
-      </if>
-      <if test="attr2 != null" >
-        #{attr2,jdbcType=VARCHAR},
-      </if>
-      <if test="attr3 != null" >
-        #{attr3,jdbcType=VARCHAR},
-      </if>
-      <if test="attr4 != null" >
-        #{attr4,jdbcType=VARCHAR},
-      </if>
-      <if test="attr5 != null" >
-        #{attr5,jdbcType=VARCHAR},
-      </if>
-      <if test="idx != null" >
-        #{idx,jdbcType=INTEGER},
-      </if>
-      <if test="createAt != null" >
-        #{createAt,jdbcType=TIMESTAMP},
-      </if>
-      <if test="createBy != null" >
-        #{createBy,jdbcType=VARCHAR},
-      </if>
-      <if test="createByTxt != null" >
-        #{createByTxt,jdbcType=VARCHAR},
-      </if>
-      <if test="lastModified != null" >
-        #{lastModified,jdbcType=TIMESTAMP},
-      </if>
-      <if test="lastModifiedBy != null" >
-        #{lastModifiedBy,jdbcType=VARCHAR},
-      </if>
-      <if test="lastModifiedByTxt != null" >
-        #{lastModifiedByTxt,jdbcType=VARCHAR},
-      </if>
-    </trim>
-  </insert>
-  <update id="updateByPrimaryKeySelective" parameterType="com.nhry.domain.NHSysCodeItem" >
-    update t_sys_code_item
-    <set >
-      <if test="itemName != null" >
-        ITEM_NAME = #{itemName,jdbcType=VARCHAR},
-      </if>
-      <if test="parent != null" >
-        PARENT = #{parent,jdbcType=VARCHAR},
-      </if>
-      <if test="attr1 != null" >
-        ATTR1 = #{attr1,jdbcType=VARCHAR},
-      </if>
-      <if test="attr2 != null" >
-        ATTR2 = #{attr2,jdbcType=VARCHAR},
-      </if>
-      <if test="attr3 != null" >
-        ATTR3 = #{attr3,jdbcType=VARCHAR},
-      </if>
-      <if test="attr4 != null" >
-        ATTR4 = #{attr4,jdbcType=VARCHAR},
-      </if>
-      <if test="attr5 != null" >
-        ATTR5 = #{attr5,jdbcType=VARCHAR},
-      </if>
-      <if test="idx != null" >
-        IDX = #{idx,jdbcType=INTEGER},
-      </if>
-      <if test="createAt != null" >
-        CREATE_AT = #{createAt,jdbcType=TIMESTAMP},
-      </if>
-      <if test="createBy != null" >
-        CREATE_BY = #{createBy,jdbcType=VARCHAR},
-      </if>
-      <if test="createByTxt != null" >
-        CREATE_BY_TXT = #{createByTxt,jdbcType=VARCHAR},
-      </if>
-      <if test="lastModified != null" >
-        LAST_MODIFIED = #{lastModified,jdbcType=TIMESTAMP},
-      </if>
-      <if test="lastModifiedBy != null" >
-        LAST_MODIFIED_BY = #{lastModifiedBy,jdbcType=VARCHAR},
-      </if>
-      <if test="lastModifiedByTxt != null" >
-        LAST_MODIFIED_BY_TXT = #{lastModifiedByTxt,jdbcType=VARCHAR},
-      </if>
-    </set>
-    where TYPE_CODE = #{typeCode,jdbcType=VARCHAR}
-      and ITEM_CODE = #{itemCode,jdbcType=VARCHAR}
-  </update>
   <update id="updateByPrimaryKey" parameterType="com.nhry.domain.NHSysCodeItem" >
     update t_sys_code_item
     set ITEM_NAME = #{itemName,jdbcType=VARCHAR},
@@ -220,4 +68,9 @@
     where TYPE_CODE = #{typeCode,jdbcType=VARCHAR}
       and ITEM_CODE = #{itemCode,jdbcType=VARCHAR}
   </update>
+  <select id="getCodeItemsByTypeCode" parameterType="String" resultMap="BaseResultMap">
+       select 
+    <include refid="Base_Column_List" />
+     from T_SYS_CODE_ITEM where TYPE_CODE=#{0} order by IDX
+  </select>
 </mapper>

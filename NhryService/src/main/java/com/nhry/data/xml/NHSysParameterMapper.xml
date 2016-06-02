@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
-<mapper namespace="com.nhry.data.dao.NHSysParameterMapper" >
-<cache type="org.mybatis.caches.redis.RedisCache" />
+<mapper namespace="com.nhry.data.impl.NHSysParameterMapperImpl" >
+  <cache type="org.mybatis.caches.redis.RedisCache" />
   <resultMap id="BaseResultMap" type="com.nhry.domain.NHSysParameter" >
     <id column="PARAM_CODE" property="paramCode" jdbcType="VARCHAR" />
     <result column="PARAM_NAME" property="paramName" jdbcType="VARCHAR" />
@@ -27,7 +27,7 @@
     delete from t_sys_parameter
     where PARAM_CODE = #{paramCode,jdbcType=VARCHAR}
   </delete>
-  <insert id="insert" parameterType="com.nhry.domain.NHSysParameter" >
+  <insert id="addSysParam" parameterType="com.nhry.domain.NHSysParameter" >
     insert into t_sys_parameter (PARAM_CODE, PARAM_NAME, PARAM_VALUE, 
       CREATE_AT, CREATE_BY, CREATE_BY_TXT, 
       LAST_MODIFIED, LAST_MODIFIED_BY, LAST_MODIFIED_BY_TXT
@@ -49,5 +49,21 @@
       LAST_MODIFIED_BY_TXT = #{lastModifiedByTxt,jdbcType=VARCHAR}
     where PARAM_CODE = #{paramCode,jdbcType=VARCHAR}
   </update>
-  
+  <select id="findSysParam" resultMap="BaseResultMap"  parameterType="com.nhry.pojo.query.SysParamQueryModel" >
+       select 
+    <include refid="Base_Column_List" />
+    from t_sys_parameter
+    <where>
+       <if test="paramName!=null and paramName!=''">
+       		PARAM_NAME like '%' #{paramName} '%'
+       </if>
+       <if test="paramCode!=null and paramCode!=''">
+       		PARAM_CODE like '%' #{paramCode} '%'
+       </if>
+       <if test="paramValue!=null and paramValue!=''">
+       		PARAM_VALUE like '%' #{paramValue} '%'
+       </if>
+    </where>
+    order by CREATE_AT desc,LAST_MODIFIED desc
+  </select>
 </mapper>

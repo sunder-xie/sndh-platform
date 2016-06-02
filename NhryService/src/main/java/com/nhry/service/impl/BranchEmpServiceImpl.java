@@ -3,19 +3,20 @@ package com.nhry.service.impl;
 import java.util.List;
 
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.github.pagehelper.PageInfo;
 import com.nhry.data.dao.TMdBranchEmpMapper;
 import com.nhry.domain.TMdBranchEmp;
-import com.nhry.domain.model.SearchModel;
 import com.nhry.exception.MessageCode;
 import com.nhry.exception.ServiceException;
+import com.nhry.pojo.query.EmpQueryModel;
 import com.nhry.service.BaseService;
 import com.nhry.service.dao.BranchEmpService;
 import com.nhry.utils.Date;
 
-public class BranchEmpServiceImpl extends BaseService implements
-		BranchEmpService {
+public class BranchEmpServiceImpl extends BaseService implements BranchEmpService {
 	
 	private TMdBranchEmpMapper branchEmpMapper;
 
@@ -28,6 +29,7 @@ public class BranchEmpServiceImpl extends BaseService implements
 		}
 		TMdBranchEmp record = new TMdBranchEmp();
 		record.setDelFlag("Y");
+		record.setEmpNo(empNo);
 		record.setLastModified(new Date());
 		record.setLastModifiedBy(userSessionService.getCurrentUser().getLoginName());
 		record.setLastModifiedByTxt(userSessionService.getCurrentUser().getDisplayName());
@@ -74,9 +76,11 @@ public class BranchEmpServiceImpl extends BaseService implements
 	}
 
 	@Override
-	public PageInfo searchBranchEmp(SearchModel smodel) {
+	public PageInfo searchBranchEmp(EmpQueryModel smodel) {
 		// TODO Auto-generated method stub
-		
+		if(StringUtils.isEmpty(smodel.getPageNum()) || StringUtils.isEmpty(smodel.getPageSize())){
+			throw new ServiceException(MessageCode.LOGIC_ERROR,"pageNum和pageSize不能为空！");
+		}
 		return branchEmpMapper.searchBranchEmp(smodel);
 	}
 }

@@ -17,8 +17,8 @@ import org.springframework.stereotype.Controller;
 import com.nhry.common.model.ResponseModel;
 import com.nhry.domain.NHSysParameter;
 import com.nhry.domain.TMdBranchEmp;
-import com.nhry.domain.model.SearchModel;
 import com.nhry.exception.MessageCode;
+import com.nhry.pojo.query.EmpQueryModel;
 import com.nhry.service.dao.BranchEmpService;
 import com.sun.jersey.spi.resource.Singleton;
 import com.wordnik.swagger.annotations.Api;
@@ -54,10 +54,10 @@ public class BranchEmpResource extends BaseResource {
 	}
 	
 	@POST
-	@Path("/del")
-	@Consumes(MediaType.APPLICATION_JSON)
-	@ApiOperation(value = "/del", response = String.class, notes = "删除员工信息")
-	public Response delBranchEmp(@ApiParam(required=true,name="empNo",value="员工编号")String empNo){
+	@Path("/del/{empNo}")
+	@Produces(MediaType.APPLICATION_JSON)
+	@ApiOperation(value = "/del/{empNo}", response = String.class, notes = "删除员工信息")
+	public Response delBranchEmp(@ApiParam(required=true,name="empNo",value="员工编号")@PathParam("empNo")String empNo){
 		return convertToRespModel(MessageCode.NORMAL, null,  branchEmpService.deleteBranchEmpByNo(empNo));
 	}
 	
@@ -74,8 +74,10 @@ public class BranchEmpResource extends BaseResource {
 	@Produces(MediaType.APPLICATION_JSON)
 	@Consumes(MediaType.APPLICATION_JSON)
 	@ApiOperation(value = "/{search}", response = NHSysParameter.class, notes = "查询员工信息")
-	public Response findBranchEmpByNo(@ApiParam(required=true,name="smodel",value="SearchModel") SearchModel smodel){
+	public Response findBranchEmpByNo(@ApiParam(required=true,name="smodel",value="SearchModel") EmpQueryModel smodel){
 		return convertToRespModel(MessageCode.NORMAL, null,branchEmpService.searchBranchEmp(smodel));
 	} 
+	
+	
 	
 }
