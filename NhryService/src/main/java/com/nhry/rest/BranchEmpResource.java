@@ -55,7 +55,7 @@ public class BranchEmpResource extends BaseResource {
 	
 	@POST
 	@Path("/del/{empNo}")
-	@Consumes(MediaType.APPLICATION_JSON)
+	@Produces(MediaType.APPLICATION_JSON)
 	@ApiOperation(value = "/del/{empNo}", response = String.class, notes = "删除员工信息")
 	public Response delBranchEmp(@ApiParam(required=true,name="empNo",value="员工编号")@PathParam("empNo")String empNo){
 		return convertToRespModel(MessageCode.NORMAL, null,  branchEmpService.deleteBranchEmpByNo(empNo));
