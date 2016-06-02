@@ -33,7 +33,6 @@ public class DictionaryResource extends BaseResource {
 	private DictionaryService dicService;
 	@POST
 	@Path("/items/{typecode}")
-	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
 	@ApiOperation(value = "/items/{typecode}", response = ResponseModel.class, notes = "根据类型编码查找字典代码")
 	public Response getCodeItems(@ApiParam(required=true,name="typecode",value="类型编码")@PathParam("typecode")String typecode){
