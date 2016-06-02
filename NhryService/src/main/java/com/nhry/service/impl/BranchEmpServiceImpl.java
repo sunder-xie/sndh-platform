@@ -3,6 +3,8 @@ package com.nhry.service.impl;
 import java.util.List;
 
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.github.pagehelper.PageInfo;
 import com.nhry.data.dao.TMdBranchEmpMapper;
@@ -27,6 +29,7 @@ public class BranchEmpServiceImpl extends BaseService implements BranchEmpServic
 		}
 		TMdBranchEmp record = new TMdBranchEmp();
 		record.setDelFlag("Y");
+		record.setEmpNo(empNo);
 		record.setLastModified(new Date());
 		record.setLastModifiedBy(userSessionService.getCurrentUser().getLoginName());
 		record.setLastModifiedByTxt(userSessionService.getCurrentUser().getDisplayName());

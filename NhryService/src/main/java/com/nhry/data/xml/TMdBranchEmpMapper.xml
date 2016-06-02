@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
-<mapper namespace="com.nhry.data.dao.TMdBranchEmpMapper" >
+<mapper namespace="com.nhry.data.impl.TMdBranchEmpMapperImpl" >
   <resultMap id="BaseResultMap" type="com.nhry.domain.TMdBranchEmp" >
     <id column="EMP_NO" property="empNo" jdbcType="VARCHAR" />
     <result column="HR_EMP_NO" property="hrEmpNo" jdbcType="VARCHAR" />
@@ -28,14 +28,14 @@
     select 
     <include refid="Base_Column_List" />
     from t_md_branch_emp
-    where EMP_NO = #{empNo,jdbcType=VARCHAR}
+    where EMP_NO = #{0} and (DEL_FLAG='N' or DEL_FLAG is null)
   </select>
   <update id="deleteBranchEmpByNo" parameterType="com.nhry.domain.TMdBranchEmp" >
     update t_md_branch_emp set  LAST_MODIFIED = #{lastModified,jdbcType=TIMESTAMP},
       LAST_MODIFIED_BY = #{lastModifiedBy,jdbcType=VARCHAR},
       LAST_MODIFIED_BY_TXT = #{lastModifiedByTxt,jdbcType=VARCHAR},
-      DEL_FLAG = #{delFlag,jdbcType=CHAR}
-    where EMP_NO = #{empNo,jdbcType=VARCHAR}
+      DEL_FLAG = #{delFlag}
+    where EMP_NO = #{empNo}
   </update>
   <insert id="addBranchEmp" parameterType="com.nhry.domain.TMdBranchEmp" >
     insert into t_md_branch_emp (EMP_NO, HR_EMP_NO, BRANCH_NO, 
@@ -66,14 +66,13 @@
       CREATE_BY_TXT = #{createByTxt,jdbcType=VARCHAR},
       LAST_MODIFIED = #{lastModified,jdbcType=TIMESTAMP},
       LAST_MODIFIED_BY = #{lastModifiedBy,jdbcType=VARCHAR},
-      LAST_MODIFIED_BY_TXT = #{lastModifiedByTxt,jdbcType=VARCHAR},
-      DEL_FLAG = #{delFlag,jdbcType=CHAR}
+      LAST_MODIFIED_BY_TXT = #{lastModifiedByTxt,jdbcType=VARCHAR} 
     where EMP_NO = #{empNo,jdbcType=VARCHAR}
   </update>
   <select id="searchBranchEmp" resultMap="BaseResultMap" parameterType="com.nhry.pojo.query.EmpQueryModel">
       select emp.EMP_NO, emp.HR_EMP_NO, branch.BRANCH_NAME BRANCH_NO, emp.EMP_NAME, emp.EMP_TYPE, emp.TEL, emp.MP, emp.WEBCHAT, emp.SFZH,emp.DEL_FLAG 
-    from t_md_branch_emp emp,T_MD_BRANCH branch
-    where emp.BRANCH_NO=branch.BRANCH_NO
+    from t_md_branch_emp emp,T_MD_BRANCH branch 
+    where emp.BRANCH_NO=branch.BRANCH_NO and (DEL_FLAG='N' or DEL_FLAG is null)
      <if test="branchNo != null and branchNo !=''">
      		AND emp.BRANCH_NO = #{branchNo,jdbcType=VARCHAR}
      </if>

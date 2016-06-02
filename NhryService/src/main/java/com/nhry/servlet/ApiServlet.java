@@ -8,6 +8,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 
@@ -29,11 +30,12 @@ public class ApiServlet extends HttpServlet {
 		CookieUtil.setCookie(request, response, UserSessionService.uname, user.getLoginName());
 		userSessionService.cacheUserSession(user.getLoginName(), accesskey, user,request);
 		userSessionService.cacheUserSession("swagger", "swaggerThread", user,request);
-		if("/".equals(request.getContextPath())){
+		System.out.println("--URI---:"+request.getRequestURI());
+		System.out.println("--URL---:"+request.getRequestURL());
+		if(StringUtils.isEmpty(request.getContextPath())){
 			response.sendRedirect("xiexiaojun/swagger/index.html");
 		}else{
 			response.sendRedirect(request.getContextPath()+"/swagger/index.html");
 		}
 	}
-
 }
