@@ -4,7 +4,7 @@
 	<groupId>com.nhry.service</groupId>
 	<artifactId>NhryService</artifactId>
 	<packaging>war</packaging>
-	<version>0.0.1-SNAPSHOT</version>
+	<version>1.0-SNAPSHOT</version>
 	<name>NhryService Maven Webapp</name>
 	<url>http://maven.apache.org</url>
 	<!-- 项目属性 -->
@@ -513,6 +513,24 @@
 					<failOnMissingWebXml>false</failOnMissingWebXml>
 				</configuration>
 			</plugin>
+			<plugin>
+				<artifactId>maven-release-plugin</artifactId>
+				<version>2.5.1</version>
+				<configuration>
+					<!-- work around for a bug in javadoc plugin that causes the release to fail. see MRELEASE-271 -->
+					<preparationGoals>clean install</preparationGoals>
+					<pushChanges>false</pushChanges>
+					<localCheckout>true</localCheckout>
+					<tagNameFormat>nhry-platfrom-@{project.version}</tagNameFormat>
+				</configuration>
+			</plugin>
 		</plugins>
 	</build>
+
+	<scm>
+		<connection>scm:git:http://gogs.nhry-dev.com/nhry-crm-team/nhry-platform.git</connection>
+		<developerConnection>scm:git:http://gogs.nhry-dev.com/nhry-crm-team/nhry-platform.git</developerConnection>
+		<url>http://gogs.nhry-dev.com/nhry-crm-team/nhry-platform</url>
+		<tag>HEAD</tag>
+	</scm>
 </project>
