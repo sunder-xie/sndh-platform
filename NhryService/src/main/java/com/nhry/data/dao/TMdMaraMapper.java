@@ -1,17 +1,16 @@
 package com.nhry.data.dao;
 
+import com.github.pagehelper.PageInfo;
 import com.nhry.domain.TMdMara;
+import com.nhry.pojo.query.ProductQueryModel;
 
 public interface TMdMaraMapper {
-    int deleteByPrimaryKey(String matnr);
 
-    int insert(TMdMara record);
 
-    int insertSelective(TMdMara record);
+    TMdMara selectProductByCode(String matnr);
 
-    TMdMara selectByPrimaryKey(String matnr);
+    int uptProductByCode(TMdMara record);
 
-    int updateByPrimaryKeySelective(TMdMara record);
-
-    int updateByPrimaryKey(TMdMara record);
+    PageInfo searchProducts(ProductQueryModel smodel);
+    
 }

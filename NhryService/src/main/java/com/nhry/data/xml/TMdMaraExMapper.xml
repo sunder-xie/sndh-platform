@@ -120,41 +120,14 @@
       </if>
     </trim>
   </insert>
-  <update id="updateByPrimaryKeySelective" parameterType="com.nhry.domain.TMdMaraEx" >
+  <update id="uptProductExByCode" parameterType="com.nhry.domain.TMdMaraEx" >
     update t_md_mara_ex
     <set >
-      <if test="salesFlag != null" >
-        SALES_FLAG = #{salesFlag,jdbcType=VARCHAR},
-      </if>
       <if test="shortTxt != null" >
         SHORT_TXT = #{shortTxt,jdbcType=VARCHAR},
       </if>
       <if test="preDays != null" >
         PRE_DAYS = #{preDays,jdbcType=INTEGER},
-      </if>
-      <if test="botType != null" >
-        BOT_TYPE = #{botType,jdbcType=VARCHAR},
-      </if>
-      <if test="retBotFlag != null" >
-        RET_BOT_FLAG = #{retBotFlag,jdbcType=CHAR},
-      </if>
-      <if test="createAt != null" >
-        CREATE_AT = #{createAt,jdbcType=TIMESTAMP},
-      </if>
-      <if test="createBy != null" >
-        CREATE_BY = #{createBy,jdbcType=VARCHAR},
-      </if>
-      <if test="createByTxt != null" >
-        CREATE_BY_TXT = #{createByTxt,jdbcType=VARCHAR},
-      </if>
-      <if test="lastModified != null" >
-        LAST_MODIFIED = #{lastModified,jdbcType=TIMESTAMP},
-      </if>
-      <if test="lastModifiedBy != null" >
-        LAST_MODIFIED_BY = #{lastModifiedBy,jdbcType=VARCHAR},
-      </if>
-      <if test="lastModifiedByTxt != null" >
-        LAST_MODIFIED_BY_TXT = #{lastModifiedByTxt,jdbcType=VARCHAR},
       </if>
     </set>
     where MATNR = #{matnr,jdbcType=VARCHAR}

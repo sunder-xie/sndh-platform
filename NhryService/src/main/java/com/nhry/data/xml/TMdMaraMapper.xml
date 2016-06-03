@@ -23,17 +23,28 @@
     MATNR, MATNR_TXT, BASE_UNIT, STATUS, LAST_MODIFIED, CREATE_AT, FIRST_CAT, SEC_CATE, 
     BRAND, WEIGHT, WEIGHT_UNIT, IMPORTANT_PRD_FLAG, SPEC, SPEC_UNIT, BOT_SPEC, ZBOT_CODE
   </sql>
-  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.String" >
+  <select id="selectProductByCode" resultMap="BaseResultMap" parameterType="java.lang.String" >
     select 
     <include refid="Base_Column_List" />
     from t_md_mara
     where MATNR = #{matnr,jdbcType=VARCHAR}
   </select>
-  <delete id="deleteByPrimaryKey" parameterType="java.lang.String" >
-    delete from t_md_mara
-    where MATNR = #{matnr,jdbcType=VARCHAR}
-  </delete>
-  <insert id="insert" parameterType="com.nhry.domain.TMdMara" >
+  <select id="searchProducts" resultMap="BaseResultMap" parameterType="com.nhry.pojo.query.ProductQueryModel">
+      select 
+      <include refid="Base_Column_List" />
+      from t_md_mara WHERE 1=1
+     <if test="brandLib != null and brandLib !=''">
+     		AND BRAND = #{brandLib,jdbcType=VARCHAR}
+     </if>
+     <if test="status != null and status != ''">
+     		AND STATUS = #{status,jdbcType=VARCHAR}
+     </if>
+     <if test="catalog != null and catalog !=''">
+     		AND BASE_UNIT = #{catalog,jdbcType=VARCHAR}
+     </if>
+     ORDER BY MATNR
+  </select>
+  <!-- <insert id="insert" parameterType="com.nhry.domain.TMdMara" >
     insert into t_md_mara (MATNR, MATNR_TXT, BASE_UNIT, 
       STATUS, LAST_MODIFIED, CREATE_AT, 
       FIRST_CAT, SEC_CATE, BRAND, 
@@ -46,178 +57,14 @@
       #{weight,jdbcType=REAL}, #{weightUnit,jdbcType=VARCHAR}, #{importantPrdFlag,jdbcType=CHAR}, 
       #{spec,jdbcType=VARCHAR}, #{specUnit,jdbcType=VARCHAR}, #{botSpec,jdbcType=VARCHAR}, 
       #{zbotCode,jdbcType=VARCHAR})
-  </insert>
-  <insert id="insertSelective" parameterType="com.nhry.domain.TMdMara" >
-    insert into t_md_mara
-    <trim prefix="(" suffix=")" suffixOverrides="," >
-      <if test="matnr != null" >
-        MATNR,
-      </if>
-      <if test="matnrTxt != null" >
-        MATNR_TXT,
-      </if>
-      <if test="baseUnit != null" >
-        BASE_UNIT,
-      </if>
-      <if test="status != null" >
-        STATUS,
-      </if>
-      <if test="lastModified != null" >
-        LAST_MODIFIED,
-      </if>
-      <if test="createAt != null" >
-        CREATE_AT,
-      </if>
-      <if test="firstCat != null" >
-        FIRST_CAT,
-      </if>
-      <if test="secCate != null" >
-        SEC_CATE,
-      </if>
-      <if test="brand != null" >
-        BRAND,
-      </if>
-      <if test="weight != null" >
-        WEIGHT,
-      </if>
-      <if test="weightUnit != null" >
-        WEIGHT_UNIT,
-      </if>
-      <if test="importantPrdFlag != null" >
-        IMPORTANT_PRD_FLAG,
-      </if>
-      <if test="spec != null" >
-        SPEC,
-      </if>
-      <if test="specUnit != null" >
-        SPEC_UNIT,
-      </if>
-      <if test="botSpec != null" >
-        BOT_SPEC,
-      </if>
-      <if test="zbotCode != null" >
-        ZBOT_CODE,
-      </if>
-    </trim>
-    <trim prefix="values (" suffix=")" suffixOverrides="," >
-      <if test="matnr != null" >
-        #{matnr,jdbcType=VARCHAR},
-      </if>
-      <if test="matnrTxt != null" >
-        #{matnrTxt,jdbcType=VARCHAR},
-      </if>
-      <if test="baseUnit != null" >
-        #{baseUnit,jdbcType=VARCHAR},
-      </if>
-      <if test="status != null" >
-        #{status,jdbcType=VARCHAR},
-      </if>
-      <if test="lastModified != null" >
-        #{lastModified,jdbcType=TIMESTAMP},
-      </if>
-      <if test="createAt != null" >
-        #{createAt,jdbcType=TIMESTAMP},
-      </if>
-      <if test="firstCat != null" >
-        #{firstCat,jdbcType=VARCHAR},
-      </if>
-      <if test="secCate != null" >
-        #{secCate,jdbcType=VARCHAR},
-      </if>
-      <if test="brand != null" >
-        #{brand,jdbcType=VARCHAR},
-      </if>
-      <if test="weight != null" >
-        #{weight,jdbcType=REAL},
-      </if>
-      <if test="weightUnit != null" >
-        #{weightUnit,jdbcType=VARCHAR},
-      </if>
-      <if test="importantPrdFlag != null" >
-        #{importantPrdFlag,jdbcType=CHAR},
-      </if>
-      <if test="spec != null" >
-        #{spec,jdbcType=VARCHAR},
-      </if>
-      <if test="specUnit != null" >
-        #{specUnit,jdbcType=VARCHAR},
-      </if>
-      <if test="botSpec != null" >
-        #{botSpec,jdbcType=VARCHAR},
-      </if>
-      <if test="zbotCode != null" >
-        #{zbotCode,jdbcType=VARCHAR},
-      </if>
-    </trim>
-  </insert>
-  <update id="updateByPrimaryKeySelective" parameterType="com.nhry.domain.TMdMara" >
+  </insert> -->
+  <update id="uptProductByCode" parameterType="com.nhry.domain.TMdMara" >
     update t_md_mara
-    <set >
+    <set>
       <if test="matnrTxt != null" >
         MATNR_TXT = #{matnrTxt,jdbcType=VARCHAR},
       </if>
-      <if test="baseUnit != null" >
-        BASE_UNIT = #{baseUnit,jdbcType=VARCHAR},
-      </if>
-      <if test="status != null" >
-        STATUS = #{status,jdbcType=VARCHAR},
-      </if>
-      <if test="lastModified != null" >
-        LAST_MODIFIED = #{lastModified,jdbcType=TIMESTAMP},
-      </if>
-      <if test="createAt != null" >
-        CREATE_AT = #{createAt,jdbcType=TIMESTAMP},
-      </if>
-      <if test="firstCat != null" >
-        FIRST_CAT = #{firstCat,jdbcType=VARCHAR},
-      </if>
-      <if test="secCate != null" >
-        SEC_CATE = #{secCate,jdbcType=VARCHAR},
-      </if>
-      <if test="brand != null" >
-        BRAND = #{brand,jdbcType=VARCHAR},
-      </if>
-      <if test="weight != null" >
-        WEIGHT = #{weight,jdbcType=REAL},
-      </if>
-      <if test="weightUnit != null" >
-        WEIGHT_UNIT = #{weightUnit,jdbcType=VARCHAR},
-      </if>
-      <if test="importantPrdFlag != null" >
-        IMPORTANT_PRD_FLAG = #{importantPrdFlag,jdbcType=CHAR},
-      </if>
-      <if test="spec != null" >
-        SPEC = #{spec,jdbcType=VARCHAR},
-      </if>
-      <if test="specUnit != null" >
-        SPEC_UNIT = #{specUnit,jdbcType=VARCHAR},
-      </if>
-      <if test="botSpec != null" >
-        BOT_SPEC = #{botSpec,jdbcType=VARCHAR},
-      </if>
-      <if test="zbotCode != null" >
-        ZBOT_CODE = #{zbotCode,jdbcType=VARCHAR},
-      </if>
     </set>
-    where MATNR = #{matnr,jdbcType=VARCHAR}
-  </update>
-  <update id="updateByPrimaryKey" parameterType="com.nhry.domain.TMdMara" >
-    update t_md_mara
-    set MATNR_TXT = #{matnrTxt,jdbcType=VARCHAR},
-      BASE_UNIT = #{baseUnit,jdbcType=VARCHAR},
-      STATUS = #{status,jdbcType=VARCHAR},
-      LAST_MODIFIED = #{lastModified,jdbcType=TIMESTAMP},
-      CREATE_AT = #{createAt,jdbcType=TIMESTAMP},
-      FIRST_CAT = #{firstCat,jdbcType=VARCHAR},
-      SEC_CATE = #{secCate,jdbcType=VARCHAR},
-      BRAND = #{brand,jdbcType=VARCHAR},
-      WEIGHT = #{weight,jdbcType=REAL},
-      WEIGHT_UNIT = #{weightUnit,jdbcType=VARCHAR},
-      IMPORTANT_PRD_FLAG = #{importantPrdFlag,jdbcType=CHAR},
-      SPEC = #{spec,jdbcType=VARCHAR},
-      SPEC_UNIT = #{specUnit,jdbcType=VARCHAR},
-      BOT_SPEC = #{botSpec,jdbcType=VARCHAR},
-      ZBOT_CODE = #{zbotCode,jdbcType=VARCHAR}
     where MATNR = #{matnr,jdbcType=VARCHAR}
   </update>
 </mapper>
