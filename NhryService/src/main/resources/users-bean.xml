@@ -26,6 +26,18 @@
 	   <property name="roleMapper"  ref="roleMapper"></property>
 	</bean>
 	
+	<!-- 商品信息 -->
+	<bean id="maraMapper" class="com.nhry.data.impl.TMdMaraMapperImpl">
+	   <property name="sqlSessionTemplate"  ref="dynamicSqlSessionTemplate"></property>
+	</bean>
+	<bean id="maraExMapper" class="com.nhry.data.impl.TMdMaraExMapperImpl">
+	   <property name="sqlSessionTemplate"  ref="dynamicSqlSessionTemplate"></property>
+	</bean>
+	<bean id="productService" class="com.nhry.service.impl.ProductServiceImpl">
+	   <property name="tMdMaraMapper"  ref="maraMapper"></property>
+	   <property name="tMdMaraExMapper"  ref="maraExMapper"></property>
+	</bean>
+	
 	<bean id="custMapper" class="com.nhry.data.impl.TMdVipCustInfoMapperImpl">
 	   <property name="sqlSessionTemplate"  ref="dynamicSqlSessionTemplate"></property>
 	</bean>
@@ -63,5 +75,12 @@
 	<bean id="dicService" class="com.nhry.service.impl.DictionaryServiceImpl">
 	   <property name="codeItemMapper"  ref="codeItemMapper"></property>
 	   <property name="userSessionService" ref="userSessionService"></property>
+	</bean>
+
+	<bean id="tMdResidentialAreaMapper" class="com.nhry.data.impl.TMdResidentialAreaMapperImpl">
+		<property name="sqlSessionTemplate"  ref="dynamicSqlSessionTemplate"></property>
+	</bean>
+	<bean id="ResidentialAreaService" class="com.nhry.service.impl.ResidentialAreaServiceImpl">
+		<property name="tMdResidentialAreaMapper"  ref="tMdResidentialAreaMapper"></property>
 	</bean>
 </beans>

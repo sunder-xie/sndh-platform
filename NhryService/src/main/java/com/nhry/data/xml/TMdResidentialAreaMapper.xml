@@ -1,0 +1,173 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.nhry.data.dao.TMdResidentialAreaMapper">
+  <resultMap id="BaseResultMap" type="com.nhry.domain.TMdResidentialArea">
+    <id column="ID" jdbcType="VARCHAR" property="id" />
+    <result column="RESIDENTIAL_AREA_TXT" jdbcType="VARCHAR" property="residentialAreaTxt" />
+    <result column="PROVINCE" jdbcType="VARCHAR" property="province" />
+    <result column="CITY" jdbcType="VARCHAR" property="city" />
+    <result column="COUNTY" jdbcType="VARCHAR" property="county" />
+    <result column="STREET" jdbcType="VARCHAR" property="street" />
+    <result column="ADDRESS_TXT" jdbcType="VARCHAR" property="addressTxt" />
+    <result column="RESIDENTIAL_NUM" jdbcType="INTEGER" property="residentialNum" />
+    <result column="SALES_ORG" jdbcType="VARCHAR" property="salesOrg" />
+    <result column="PROPERTY_TXT" jdbcType="VARCHAR" property="propertyTxt" />
+    <result column="PROPERTY_TEL" jdbcType="VARCHAR" property="propertyTel" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    ID, RESIDENTIAL_AREA_TXT, PROVINCE, CITY, COUNTY, STREET, ADDRESS_TXT, RESIDENTIAL_NUM, 
+    SALES_ORG, PROPERTY_TXT, PROPERTY_TEL
+  </sql>
+
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String">
+    delete from t_md_residential_area
+    where ID = #{id,jdbcType=VARCHAR}
+  </delete>
+  <insert id="insert" parameterType="com.nhry.domain.TMdResidentialArea">
+    insert into t_md_residential_area (ID, RESIDENTIAL_AREA_TXT, PROVINCE, 
+      CITY, COUNTY, STREET, 
+      ADDRESS_TXT, RESIDENTIAL_NUM, SALES_ORG, 
+      PROPERTY_TXT, PROPERTY_TEL)
+    values (#{id,jdbcType=VARCHAR}, #{residentialAreaTxt,jdbcType=VARCHAR}, #{province,jdbcType=VARCHAR}, 
+      #{city,jdbcType=VARCHAR}, #{county,jdbcType=VARCHAR}, #{street,jdbcType=VARCHAR}, 
+      #{addressTxt,jdbcType=VARCHAR}, #{residentialNum,jdbcType=INTEGER}, #{salesOrg,jdbcType=VARCHAR}, 
+      #{propertyTxt,jdbcType=VARCHAR}, #{propertyTel,jdbcType=VARCHAR})
+  </insert>
+  <insert id="insertSelective" parameterType="com.nhry.domain.TMdResidentialArea">
+    insert into t_md_residential_area
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        ID,
+      </if>
+      <if test="residentialAreaTxt != null">
+        RESIDENTIAL_AREA_TXT,
+      </if>
+      <if test="province != null">
+        PROVINCE,
+      </if>
+      <if test="city != null">
+        CITY,
+      </if>
+      <if test="county != null">
+        COUNTY,
+      </if>
+      <if test="street != null">
+        STREET,
+      </if>
+      <if test="addressTxt != null">
+        ADDRESS_TXT,
+      </if>
+      <if test="residentialNum != null">
+        RESIDENTIAL_NUM,
+      </if>
+      <if test="salesOrg != null">
+        SALES_ORG,
+      </if>
+      <if test="propertyTxt != null">
+        PROPERTY_TXT,
+      </if>
+      <if test="propertyTel != null">
+        PROPERTY_TEL,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        #{id,jdbcType=VARCHAR},
+      </if>
+      <if test="residentialAreaTxt != null">
+        #{residentialAreaTxt,jdbcType=VARCHAR},
+      </if>
+      <if test="province != null">
+        #{province,jdbcType=VARCHAR},
+      </if>
+      <if test="city != null">
+        #{city,jdbcType=VARCHAR},
+      </if>
+      <if test="county != null">
+        #{county,jdbcType=VARCHAR},
+      </if>
+      <if test="street != null">
+        #{street,jdbcType=VARCHAR},
+      </if>
+      <if test="addressTxt != null">
+        #{addressTxt,jdbcType=VARCHAR},
+      </if>
+      <if test="residentialNum != null">
+        #{residentialNum,jdbcType=INTEGER},
+      </if>
+      <if test="salesOrg != null">
+        #{salesOrg,jdbcType=VARCHAR},
+      </if>
+      <if test="propertyTxt != null">
+        #{propertyTxt,jdbcType=VARCHAR},
+      </if>
+      <if test="propertyTel != null">
+        #{propertyTel,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.nhry.domain.TMdResidentialArea">
+    update t_md_residential_area
+    <set>
+      <if test="residentialAreaTxt != null">
+        RESIDENTIAL_AREA_TXT = #{residentialAreaTxt,jdbcType=VARCHAR},
+      </if>
+      <if test="province != null">
+        PROVINCE = #{province,jdbcType=VARCHAR},
+      </if>
+      <if test="city != null">
+        CITY = #{city,jdbcType=VARCHAR},
+      </if>
+      <if test="county != null">
+        COUNTY = #{county,jdbcType=VARCHAR},
+      </if>
+      <if test="street != null">
+        STREET = #{street,jdbcType=VARCHAR},
+      </if>
+      <if test="addressTxt != null">
+        ADDRESS_TXT = #{addressTxt,jdbcType=VARCHAR},
+      </if>
+      <if test="residentialNum != null">
+        RESIDENTIAL_NUM = #{residentialNum,jdbcType=INTEGER},
+      </if>
+      <if test="salesOrg != null">
+        SALES_ORG = #{salesOrg,jdbcType=VARCHAR},
+      </if>
+      <if test="propertyTxt != null">
+        PROPERTY_TXT = #{propertyTxt,jdbcType=VARCHAR},
+      </if>
+      <if test="propertyTel != null">
+        PROPERTY_TEL = #{propertyTel,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where ID = #{id,jdbcType=VARCHAR}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.nhry.domain.TMdResidentialArea">
+    update t_md_residential_area
+    set RESIDENTIAL_AREA_TXT = #{residentialAreaTxt,jdbcType=VARCHAR},
+      PROVINCE = #{province,jdbcType=VARCHAR},
+      CITY = #{city,jdbcType=VARCHAR},
+      COUNTY = #{county,jdbcType=VARCHAR},
+      STREET = #{street,jdbcType=VARCHAR},
+      ADDRESS_TXT = #{addressTxt,jdbcType=VARCHAR},
+      RESIDENTIAL_NUM = #{residentialNum,jdbcType=INTEGER},
+      SALES_ORG = #{salesOrg,jdbcType=VARCHAR},
+      PROPERTY_TXT = #{propertyTxt,jdbcType=VARCHAR},
+      PROPERTY_TEL = #{propertyTel,jdbcType=VARCHAR}
+    where ID = #{id,jdbcType=VARCHAR}
+  </update>
+
+  <select id="getAreaByBranchNo" parameterType="String" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from t_md_residential_area area,t_md_branch_scope scope
+    where area.ID = scope.RESIDENTIAL_AREA_ID
+    and scope.BRANCH_NO =  #{branchNo,jdbcType=VARCHAR}
+  </select>
+  <select id="selectById" parameterType="java.lang.String" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from t_md_residential_area
+    where ID = #{id,jdbcType=VARCHAR}
+  </select>
+</mapper>
