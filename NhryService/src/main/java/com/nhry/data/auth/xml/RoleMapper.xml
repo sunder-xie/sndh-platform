@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.nhry.data.auth.dao.RoleMapper" >
+	<resultMap id="roleMap" type="com.nhry.data.auth.domain.Role">
+		<id column="ROLE_ID" property="id" jdbcType="BIGINT" />
+		<result column="ROLE_NAME" property="roleName" jdbcType="VARCHAR" />
+		<result column="SHORT_NAME" property="shortName" jdbcType="VARCHAR" />
+		<result column="COMMENTS" property="comments" jdbcType="VARCHAR" />
+	</resultMap>
+
+	<select id="selectByRoleName"  parameterType="String"  resultMap="roleMap">
+		select * from roles r where r.role_name like '%' #{roleName} '%'
+	</select>
+	<select id="selectOneRole"  parameterType="String"  resultMap="roleMap">
+		select * from roles r where r.role_id = #{0}
+	</select>
+	<select id="allRoles" resultMap="roleMap">
+		select * from roles r
+	</select>
+	<insert id="addRole"  parameterType="com.nhry.data.auth.domain.Role">
+	    insert into roles (ROLE_ID,ROLE_NAME,SHORT_NAME,COMMENTS) values (#{id},#{roleName},#{shortName},#{comments})
+	</insert>
+	<delete id="deleteRole"  parameterType="String" >
+		 DELETE from roles where ROLE_ID = #{0}
+	</delete>
+	<update id="updateRole"  parameterType="com.nhry.data.auth.domain.Role" >
+		update roles set role_name = #{roleName} where role_id = #{id}
+	</update>
+</mapper>

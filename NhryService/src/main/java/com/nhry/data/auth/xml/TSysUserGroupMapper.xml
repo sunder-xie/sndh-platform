@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.nhry.data.auth.dao.TSysUserGroupMapper" >
+  <resultMap id="BaseResultMap" type="com.nhry.data.auth.domain.TSysUserGroup" >
+    <id column="ID" property="id" jdbcType="VARCHAR" />
+    <result column="GROUP_NAME" property="groupName" jdbcType="VARCHAR" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    ID, GROUP_NAME
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.String" >
+    select 
+    <include refid="Base_Column_List" />
+    from t_sys_user_group
+    where ID = #{id,jdbcType=VARCHAR}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String" >
+    delete from t_sys_user_group
+    where ID = #{id,jdbcType=VARCHAR}
+  </delete>
+  <insert id="insert" parameterType="com.nhry.data.auth.domain.TSysUserGroup" >
+    insert into t_sys_user_group (ID, GROUP_NAME)
+    values (#{id,jdbcType=VARCHAR}, #{groupName,jdbcType=VARCHAR})
+  </insert>
+  <insert id="insertSelective" parameterType="com.nhry.data.auth.domain.TSysUserGroup" >
+    insert into t_sys_user_group
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        ID,
+      </if>
+      <if test="groupName != null" >
+        GROUP_NAME,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        #{id,jdbcType=VARCHAR},
+      </if>
+      <if test="groupName != null" >
+        #{groupName,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.nhry.data.auth.domain.TSysUserGroup" >
+    update t_sys_user_group
+    <set >
+      <if test="groupName != null" >
+        GROUP_NAME = #{groupName,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where ID = #{id,jdbcType=VARCHAR}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.nhry.data.auth.domain.TSysUserGroup" >
+    update t_sys_user_group
+    set GROUP_NAME = #{groupName,jdbcType=VARCHAR}
+    where ID = #{id,jdbcType=VARCHAR}
+  </update>
+</mapper>

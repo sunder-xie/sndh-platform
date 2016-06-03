@@ -8,11 +8,12 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 
 import com.nhry.auth.UserSessionService;
-import com.nhry.domain.TSysUser;
+import com.nhry.data.auth.domain.TSysUser;
 import com.nhry.utils.CookieUtil;
 
 public class ApiServlet extends HttpServlet {
@@ -29,11 +30,10 @@ public class ApiServlet extends HttpServlet {
 		CookieUtil.setCookie(request, response, UserSessionService.uname, user.getLoginName());
 		userSessionService.cacheUserSession(user.getLoginName(), accesskey, user,request);
 		userSessionService.cacheUserSession("swagger", "swaggerThread", user,request);
-		if("/".equals(request.getContextPath())){
+		if(StringUtils.isEmpty(request.getContextPath())){
 			response.sendRedirect("xiexiaojun/swagger/index.html");
 		}else{
 			response.sendRedirect(request.getContextPath()+"/swagger/index.html");
 		}
 	}
-
 }

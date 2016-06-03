@@ -6,8 +6,8 @@ import org.apache.log4j.Logger;
 import com.nhry.cache.jedis.entity.StringComplexEntity;
 import com.nhry.cache.jedis.facade.JedisCacheFacade;
 import com.nhry.cache.jedis.manager.AbstractJedisCache;
+import com.nhry.data.config.domain.NHSysCodeItem;
 import com.nhry.data.sqlexecutor.UserSQLExecutor;
-import com.nhry.domain.NHSysCodeItem;
 import com.nhry.utils.SessionUtil;
  
 public class DictionaryJedisCache extends AbstractJedisCache {
