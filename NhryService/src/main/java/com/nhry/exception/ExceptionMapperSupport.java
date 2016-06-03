@@ -15,7 +15,7 @@ import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONObject;
 import org.springframework.web.context.WebApplicationContext;
 
-import com.nhry.common.model.ResponseModel;
+import com.nhry.model.sys.ResponseModel;
 import com.nhry.utils.SysContant;
 import com.sun.jersey.api.NotFoundException;
 
