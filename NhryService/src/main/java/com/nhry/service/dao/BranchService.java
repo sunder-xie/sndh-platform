@@ -1,8 +1,10 @@
 package com.nhry.service.dao;
 
-import java.util.List;
-
+import com.github.pagehelper.PageInfo;
 import com.nhry.domain.TMdBranch;
+import com.nhry.pojo.query.BranchQueryModel;
+
+import java.util.List;
 
 public interface BranchService {
 	int deleteBranchByNo(String branchNo);
@@ -14,4 +16,7 @@ public interface BranchService {
     int updateBranchByNo(TMdBranch record);
     
     public List<TMdBranch> findBranchListByOrg(String salesOrg);
+
+
+    public PageInfo findBranchListByPage(BranchQueryModel branchModel);
 }
