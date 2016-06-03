@@ -19,7 +19,7 @@
 	<!-- ibatis3 工厂类 -->
 	<bean id="sqlSessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean">
 		<property name="dataSource" ref="dataSource" />
-		<property name="mapperLocations" value="classpath:/com/nhry/data/xml/*Mapper.xml" />
+		<property name="mapperLocations" value="classpath:/com/nhry/data/*/xml/*Mapper.xml" />
 		<property name="configLocation" value="classpath:mybatis-config.xml" />
 	</bean>
 	<bean id="sqlSessionTemplate" class="org.mybatis.spring.SqlSessionTemplate"  scope="prototype">
@@ -93,14 +93,15 @@
 				rollback-for="com.nhry.exception.ServiceException" />
 			<tx:method name="proc*" propagation="REQUIRED" read-only="false"
 				rollback-for="com.nhry.exception.ServiceException" />
-			<tx:method name="select*" read-only="true" />
-			<tx:method name="*" read-only="false" />
+			<tx:method name="select*" read-only="true"  rollback-for="com.nhry.exception.ServiceException" />
+			<tx:method name="search*" read-only="true"  rollback-for="com.nhry.exception.ServiceException" />
+			<tx:method name="*" read-only="false"  rollback-for="com.nhry.exception.ServiceException" />
 			<!-- <tx:method name="*" read-only="true" /> -->
 		</tx:attributes>
 	</tx:advice>
 	<!-- 那些类的哪些方法参与事务 -->
 	<aop:config>
-		<aop:pointcut id="allManagerMethod" expression="execution(* com.nhry.service.impl..*(..))" />
+		<aop:pointcut id="allManagerMethod" expression="execution(* com.nhry.service..impl..*(..))" />
 		<aop:advisor pointcut-ref="allManagerMethod" advice-ref="txAdvice" />
 	</aop:config>
 

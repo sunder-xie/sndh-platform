@@ -13,8 +13,8 @@ import javax.ws.rs.core.Response.Status;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;
 
-import com.nhry.common.model.ResponseModel;
 import com.nhry.exception.MessageCode;
+import com.nhry.model.sys.ResponseModel;
 import com.nhry.utils.CookieUtil;
 import com.nhry.utils.SysContant;
 import com.sun.jersey.spi.container.ContainerRequest;

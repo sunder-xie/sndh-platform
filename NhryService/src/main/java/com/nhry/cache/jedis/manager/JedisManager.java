@@ -7,8 +7,8 @@ import org.apache.ibatis.session.SqlSession;
 import org.apache.ibatis.session.SqlSessionFactory;
 import org.apache.log4j.Logger;
 import com.nhry.cache.jedis.cacheloader.DictionaryJedisCache;
+import com.nhry.data.config.domain.NHSysCodeType;
 import com.nhry.data.sqlexecutor.UserSQLExecutor;
-import com.nhry.domain.NHSysCodeType;
 import com.nhry.utils.SessionUtil;
 
  
