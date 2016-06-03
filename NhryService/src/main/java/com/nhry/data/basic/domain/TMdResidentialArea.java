@@ -13,6 +13,8 @@ public class TMdResidentialArea {
 
     private String street;
 
+    private String status;
+
     private String addressTxt;
 
     private Integer residentialNum;
@@ -65,6 +67,14 @@ public class TMdResidentialArea {
 
     public String getStreet() {
         return street;
+    }
+
+    public String getStatus() {
+        return status;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
     }
 
     public void setStreet(String street) {

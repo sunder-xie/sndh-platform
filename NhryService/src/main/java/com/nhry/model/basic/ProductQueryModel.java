@@ -1,11 +1,9 @@
 package com.nhry.model.basic;
 
-import java.io.Serializable;
-import java.util.HashMap;
-import java.util.Map;
-
 import com.wordnik.swagger.annotations.ApiModel;
 import com.wordnik.swagger.annotations.ApiModelProperty;
+
+import java.io.Serializable;
 
 @ApiModel(value = "ProductSearchModel", description = "商品信息列表查询对象")
 public class ProductQueryModel extends BaseQueryModel implements Serializable {

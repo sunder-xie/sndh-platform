@@ -8,6 +8,7 @@
     <result column="CITY" jdbcType="VARCHAR" property="city" />
     <result column="COUNTY" jdbcType="VARCHAR" property="county" />
     <result column="STREET" jdbcType="VARCHAR" property="street" />
+    <result column="STATUS" jdbcType="VARCHAR" property="status" />
     <result column="ADDRESS_TXT" jdbcType="VARCHAR" property="addressTxt" />
     <result column="RESIDENTIAL_NUM" jdbcType="INTEGER" property="residentialNum" />
     <result column="SALES_ORG" jdbcType="VARCHAR" property="salesOrg" />
@@ -15,7 +16,7 @@
     <result column="PROPERTY_TEL" jdbcType="VARCHAR" property="propertyTel" />
   </resultMap>
   <sql id="Base_Column_List">
-    ID, RESIDENTIAL_AREA_TXT, PROVINCE, CITY, COUNTY, STREET, ADDRESS_TXT, RESIDENTIAL_NUM, 
+    ID, RESIDENTIAL_AREA_TXT, PROVINCE, CITY, COUNTY, STREET,STATUS, ADDRESS_TXT, RESIDENTIAL_NUM,
     SALES_ORG, PROPERTY_TXT, PROPERTY_TEL
   </sql>
 
@@ -25,11 +26,11 @@
   </delete>
   <insert id="insert" parameterType="com.nhry.data.basic.domain.TMdResidentialArea">
     insert into t_md_residential_area (ID, RESIDENTIAL_AREA_TXT, PROVINCE, 
-      CITY, COUNTY, STREET, 
+      CITY, COUNTY, STREET,STATUS,
       ADDRESS_TXT, RESIDENTIAL_NUM, SALES_ORG, 
       PROPERTY_TXT, PROPERTY_TEL)
     values (#{id,jdbcType=VARCHAR}, #{residentialAreaTxt,jdbcType=VARCHAR}, #{province,jdbcType=VARCHAR}, 
-      #{city,jdbcType=VARCHAR}, #{county,jdbcType=VARCHAR}, #{street,jdbcType=VARCHAR}, 
+      #{city,jdbcType=VARCHAR}, #{county,jdbcType=VARCHAR}, #{street,jdbcType=VARCHAR}, #{status,jdbcType=VARCHAR},
       #{addressTxt,jdbcType=VARCHAR}, #{residentialNum,jdbcType=INTEGER}, #{salesOrg,jdbcType=VARCHAR}, 
       #{propertyTxt,jdbcType=VARCHAR}, #{propertyTel,jdbcType=VARCHAR})
   </insert>
@@ -52,7 +53,10 @@
         COUNTY,
       </if>
       <if test="street != null">
-        STREET,
+      STREET,
+    </if>
+      <if test="status != null">
+        Status,
       </if>
       <if test="addressTxt != null">
         ADDRESS_TXT,
@@ -124,6 +128,9 @@
       <if test="street != null">
         STREET = #{street,jdbcType=VARCHAR},
       </if>
+      <if test="status != null">
+        Status = #{status,jdbcType=VARCHAR},
+      </if>
       <if test="addressTxt != null">
         ADDRESS_TXT = #{addressTxt,jdbcType=VARCHAR},
       </if>
@@ -149,6 +156,7 @@
       CITY = #{city,jdbcType=VARCHAR},
       COUNTY = #{county,jdbcType=VARCHAR},
       STREET = #{street,jdbcType=VARCHAR},
+      STATUS = #{status,jdbcType=VARCHAR},
       ADDRESS_TXT = #{addressTxt,jdbcType=VARCHAR},
       RESIDENTIAL_NUM = #{residentialNum,jdbcType=INTEGER},
       SALES_ORG = #{salesOrg,jdbcType=VARCHAR},
@@ -169,5 +177,20 @@
     <include refid="Base_Column_List" />
     from t_md_residential_area
     where ID = #{id,jdbcType=VARCHAR}
+  </select>
+  <select id="selectAreaByPage" resultMap="BaseResultMap" parameterType="com.nhry.service.basic.pojo.ResidentialAreaModel">
+    SELECT
+    <include refid="Base_Column_List" />
+    from t_md_residential_area area
+    where 1=1
+    <if test="province != null and province !=''">
+      AND area.PROVINCE = #{province,jdbcType=VARCHAR}
+    </if>
+    <if test="city != null and city != ''">
+      AND area.city = #{city,jdbcType=VARCHAR}
+    </if>
+    <if test="status != null and status != ''">
+      AND area.status = #{status,jdbcType=VARCHAR}
+    </if>
   </select>
 </mapper>
