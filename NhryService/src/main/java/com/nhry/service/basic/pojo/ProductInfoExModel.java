@@ -9,7 +9,7 @@
  * @version: 1.0
  * @since: JDK 1.8
  */
-package com.nhry.pojo.query;
+package com.nhry.service.basic.pojo;
 
 import java.util.Date;
 

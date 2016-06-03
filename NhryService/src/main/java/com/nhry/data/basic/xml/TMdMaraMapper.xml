@@ -19,7 +19,7 @@
     <result column="BOT_SPEC" property="botSpec" jdbcType="VARCHAR" />
     <result column="ZBOT_CODE" property="zbotCode" jdbcType="VARCHAR" />
   </resultMap>
-  <resultMap id="BaseAndExResultMap" type="com.nhry.pojo.query.ProductInfoExModel" >
+  <resultMap id="BaseAndExResultMap" type="com.nhry.service.basic.pojo.ProductInfoExModel" >
     <id column="MATNR" property="matnr" jdbcType="VARCHAR" />
     <result column="MATNR_TXT" property="matnrTxt" jdbcType="VARCHAR" />
     <result column="BASE_UNIT" property="baseUnit" jdbcType="VARCHAR" />

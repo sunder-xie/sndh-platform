@@ -1,7 +1,7 @@
 package com.nhry.data.basic.dao;
 
 import com.github.pagehelper.PageInfo;
-import com.nhry.pojo.query.ProductInfoExModel;
+import com.nhry.service.basic.pojo.ProductInfoExModel;
 import com.nhry.data.basic.domain.TMdMara;
 import com.nhry.model.basic.ProductQueryModel;
 

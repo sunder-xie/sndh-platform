@@ -10,10 +10,10 @@ import com.nhry.data.basic.domain.TMdMara;
 import com.nhry.data.basic.domain.TMdMaraEx;
 import com.nhry.exception.MessageCode;
 import com.nhry.exception.ServiceException;
-import com.nhry.pojo.query.ProductInfoExModel;
 import com.nhry.model.basic.ProductQueryModel;
 import com.nhry.service.BaseService;
 import com.nhry.service.basic.dao.ProductService;
+import com.nhry.service.basic.pojo.ProductInfoExModel;
 import com.nhry.utils.Date;
 
 public class ProductServiceImpl extends BaseService implements ProductService {
