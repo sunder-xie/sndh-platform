@@ -9,7 +9,7 @@ import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONObject;
 
 import com.nhry.auth.UserSessionService;
-import com.nhry.common.model.ResponseModel;
+import com.nhry.model.sys.ResponseModel;
 import com.nhry.utils.CookieUtil;
 
 public class BaseResource {

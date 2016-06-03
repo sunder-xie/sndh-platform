@@ -12,8 +12,9 @@ import org.junit.Test;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 
-import com.nhry.data.dao.UserMapper;
-import com.nhry.service.dao.UserService;
+import com.nhry.data.auth.dao.UserMapper;
+import com.nhry.service.auth.dao.UserService;
+import com.nhry.service.basic.dao.BranchEmpService;
 
 public class UserServiceTest {
 	@Before
@@ -26,14 +27,10 @@ public class UserServiceTest {
 
 	@Test
 	public void test() {
-////		String[] xmls = new String[]{ "classpath:spring-context.xml","classpath:dataSource.xml","classpath:*-bean.xml"  };
-//        ApplicationContext context = new ClassPathXmlApplicationContext(xmls);
-//        UserService userService = (UserService) context.getBean("userService");
-//        User u = new User();
-//        u.setId(127);
-//        u.setUserName("李四1");
-//        u.setComments("测试用户");
-//        userService.addUser(u);
+		String[] xmls = new String[]{ "classpath:spring-context.xml","classpath:dataSource.xml","classpath:*-bean.xml"  };
+        ApplicationContext context = new ClassPathXmlApplicationContext(xmls);
+        BranchEmpService emp = (BranchEmpService)context.getBean("branchService");
+        emp.deleteBranchEmpByNo("11132");
 	}
 
 }

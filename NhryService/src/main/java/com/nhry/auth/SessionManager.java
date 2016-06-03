@@ -10,7 +10,7 @@ import org.apache.log4j.Logger;
 import org.springframework.data.redis.core.RedisTemplate;
 
 import com.nhry.common.CommonService;
-import com.nhry.common.model.AccessKey;
+import com.nhry.model.sys.AccessKey;
 import com.nhry.utils.Date;
 import com.nhry.utils.ObjectSerializeUtil;
 import com.nhry.utils.RedisUtil;
