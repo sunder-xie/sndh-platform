@@ -59,20 +59,23 @@
     where p.MATNR = #{0}
     AND p.MATNR = pex.MATNR
   </select>
-  <select id="searchProducts" resultMap="BaseResultMap" parameterType="com.nhry.model.basic.ProductQueryModel">
+  <select id="searchProducts" resultMap="BaseAndExResultMap" parameterType="com.nhry.model.basic.ProductQueryModel">
       select 
-      <include refid="Base_Column_List" />
-      from t_md_mara WHERE 1=1
+      p.MATNR, p.MATNR_TXT, p.BASE_UNIT, p.STATUS, p.LAST_MODIFIED, p.CREATE_AT, p.FIRST_CAT, p.SEC_CATE, 
+   	p.BRAND, p.WEIGHT, p.WEIGHT_UNIT, p.IMPORTANT_PRD_FLAG, p.SPEC, p.SPEC_UNIT, p.BOT_SPEC, p.ZBOT_CODE,
+    	pex.SHORT_TXT, pex.PRE_DAYS, pex.BOT_TYPE
+    	FROM t_md_mara p, t_md_mara_ex pex
+    	WHERE p.MATNR = pex.MATNR
      <if test="brandLib != null and brandLib !=''">
-     		AND BRAND = #{brandLib,jdbcType=VARCHAR}
+     		AND p.BRAND = #{brandLib,jdbcType=VARCHAR}
      </if>
      <if test="status != null and status != ''">
-     		AND STATUS = #{status,jdbcType=VARCHAR}
+     		AND p.STATUS = #{status,jdbcType=VARCHAR}
      </if>
      <if test="catalog != null and catalog !=''">
-     		AND BASE_UNIT = #{catalog,jdbcType=VARCHAR}
+     		AND p.BASE_UNIT = #{catalog,jdbcType=VARCHAR}
      </if>
-     ORDER BY MATNR
+     ORDER BY p.MATNR
   </select>
   <!-- <insert id="insert" parameterType="com.nhry.data.basic.domain.TMdMara" >
     insert into t_md_mara (MATNR, MATNR_TXT, BASE_UNIT, 
@@ -96,5 +99,10 @@
       </if>
     </set>
     where MATNR = #{matnr,jdbcType=VARCHAR}
+  </update>
+  <update id="pubProductByCode" parameterType="java.lang.String" >
+    update t_md_mara
+    set STATUS = "是"
+    where MATNR = #{0}
   </update>
 </mapper>
