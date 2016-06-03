@@ -13,7 +13,7 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 
 import com.nhry.auth.UserSessionService;
-import com.nhry.domain.TSysUser;
+import com.nhry.data.auth.domain.TSysUser;
 import com.nhry.utils.CookieUtil;
 
 public class ApiServlet extends HttpServlet {
@@ -30,8 +30,6 @@ public class ApiServlet extends HttpServlet {
 		CookieUtil.setCookie(request, response, UserSessionService.uname, user.getLoginName());
 		userSessionService.cacheUserSession(user.getLoginName(), accesskey, user,request);
 		userSessionService.cacheUserSession("swagger", "swaggerThread", user,request);
-		System.out.println("--URI---:"+request.getRequestURI());
-		System.out.println("--URL---:"+request.getRequestURL());
 		if(StringUtils.isEmpty(request.getContextPath())){
 			response.sendRedirect("xiexiaojun/swagger/index.html");
 		}else{
