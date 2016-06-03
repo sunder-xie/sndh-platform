@@ -16,6 +16,7 @@ import com.nhry.domain.TMdMaraEx;
 import com.nhry.exception.MessageCode;
 import com.nhry.exception.ServiceException;
 import com.nhry.pojo.query.EmpQueryModel;
+import com.nhry.pojo.query.ProductInfoExModel;
 import com.nhry.pojo.query.ProductQueryModel;
 import com.nhry.service.BaseService;
 import com.nhry.service.dao.BranchEmpService;
@@ -61,5 +62,12 @@ public class ProductServiceImpl extends BaseService implements ProductService {
 			throw new ServiceException(MessageCode.LOGIC_ERROR,"pageNum和pageSize不能为空！");
 		}
 		return tMdMaraMapper.searchProducts(smodel);
+	}
+
+	@Override
+	public ProductInfoExModel selectProductAndExByCode(String matnr)
+	{
+		// TODO Auto-generated method stub
+		return tMdMaraMapper.selectProductAndExByCode(matnr);
 	}
 }
