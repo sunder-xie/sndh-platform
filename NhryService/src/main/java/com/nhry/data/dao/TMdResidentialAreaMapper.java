@@ -1,6 +1,8 @@
 package com.nhry.data.dao;
 
+import com.github.pagehelper.PageInfo;
 import com.nhry.domain.TMdResidentialArea;
+import com.nhry.pojo.query.ResidentialAreaModel;
 
 import java.util.List;
 
@@ -18,4 +20,6 @@ public interface TMdResidentialAreaMapper {
     int updateByPrimaryKey(TMdResidentialArea record);
 
     public  List<TMdResidentialArea> getAreaByBranchNo(String branchNo);
+
+    public PageInfo findAreaListByPage(ResidentialAreaModel residentialAreaModel);
 }

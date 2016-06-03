@@ -1,7 +1,9 @@
 package com.nhry.rest;
 
+import com.github.pagehelper.PageInfo;
 import com.nhry.domain.TMdResidentialArea;
 import com.nhry.exception.MessageCode;
+import com.nhry.pojo.query.ResidentialAreaModel;
 import com.nhry.service.dao.ResidentialAreaService;
 import com.sun.jersey.spi.resource.Singleton;
 import com.wordnik.swagger.annotations.Api;
@@ -12,10 +14,7 @@ import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Controller;
 
-import javax.ws.rs.GET;
-import javax.ws.rs.Path;
-import javax.ws.rs.PathParam;
-import javax.ws.rs.Produces;
+import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
@@ -42,6 +41,17 @@ public class ResidentialAreaResource extends BaseResource {
 	@ApiOperation(value = "/getAreaById/{id}", response = TMdResidentialArea.class, notes = "小区编号获取配送区域(小区)列表")
 	public Response selectById(@ApiParam(required=true,name="id",value="小区编号")  @PathParam("id") String id){
 		return convertToRespModel(MessageCode.NORMAL, null,residentialAreaService.selectById(id));
+	}
+
+	@POST
+	@Path("/list")
+	@Produces(MediaType.APPLICATION_JSON)
+	@Consumes(MediaType.APPLICATION_JSON)
+	@ApiOperation(value = "/list", response = TMdResidentialArea.class, notes = "根据销售组织、奶站性质、奶站等级查询网点客户(奶站)信息列表")
+	public Response findAreaListByPage(
+			@ApiParam(required=true,name="branchModel",value="SearchModel") ResidentialAreaModel residentialAreaModel){
+		PageInfo data = residentialAreaService.findAreaListByPage(residentialAreaModel);
+		return convertToRespModel(MessageCode.NORMAL, null,data);
 	}
 
 

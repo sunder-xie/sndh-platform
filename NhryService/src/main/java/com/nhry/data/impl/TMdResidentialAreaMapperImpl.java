@@ -1,8 +1,10 @@
 package com.nhry.data.impl;
 
+import com.github.pagehelper.PageInfo;
 import com.nhry.data.dao.TMdResidentialAreaMapper;
 import com.nhry.datasource.DynamicSqlSessionTemplate;
 import com.nhry.domain.TMdResidentialArea;
+import com.nhry.pojo.query.ResidentialAreaModel;
 
 import java.util.List;
 
@@ -46,6 +48,12 @@ public class TMdResidentialAreaMapperImpl implements TMdResidentialAreaMapper {
     @Override
     public List<TMdResidentialArea> getAreaByBranchNo(String branchNo) {
         return sqlSessionTemplate.selectList("getAreaByBranchNo",branchNo);
+    }
+
+    @Override
+    public PageInfo findAreaListByPage(ResidentialAreaModel residentialAreaModel) {
+        return sqlSessionTemplate.selectListByPages("selectAreaByPage",residentialAreaModel,
+                Integer.parseInt(residentialAreaModel.getPageNum()), Integer.parseInt(residentialAreaModel.getPageSize()));
     }
 
     public void setSqlSessionTemplate(DynamicSqlSessionTemplate sqlSessionTemplate) {
