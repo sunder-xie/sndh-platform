@@ -518,7 +518,8 @@
                 <version>2.5.1</version>
                 <configuration>
                     <!-- work around for a bug in javadoc plugin that causes the release to fail. see MRELEASE-271 -->
-                    <preparationGoals>clean install</preparationGoals>
+                    <preparationGoals>clean package</preparationGoals>
+                    <goals>package</goals>
                     <pushChanges>false</pushChanges>
                     <localCheckout>true</localCheckout>
                     <tagNameFormat>nhry-platfrom-@{project.version}</tagNameFormat>
