@@ -41,7 +41,7 @@ public class ProductResource extends BaseResource {
 	@Produces(MediaType.APPLICATION_JSON)
 	@ApiOperation(value = "/{productCode}", response = NHSysParameter.class, notes = "根据商品编号查询商品信息")
 	public Response selectProductByCode(@ApiParam(required=true,name="productCode",value="商品编号") @PathParam("productCode") String productCode){
-		return convertToRespModel(MessageCode.NORMAL, null, productService.selectProductByCode(productCode));
+		return convertToRespModel(MessageCode.NORMAL, null, productService.selectProductAndExByCode(productCode));
 	} 
 	
 	@POST
@@ -61,4 +61,13 @@ public class ProductResource extends BaseResource {
 	public Response findBranchEmpByNo(@ApiParam(required=true,name="smodel",value="SearchModel") ProductQueryModel smodel){
 		return convertToRespModel(MessageCode.NORMAL, null, productService.searchProducts(smodel));
 	} 
+	
+	@GET
+	@Path("/publish/{productCode}")
+	@Produces(MediaType.APPLICATION_JSON)
+	@ApiOperation(value = "/publish/{productCode}", response = NHSysParameter.class, notes = "发布商品")
+	public Response pubProductByCode(@ApiParam(required=true,name="productCode",value="商品编号") @PathParam("productCode") String productCode){
+		return convertToRespModel(MessageCode.NORMAL, null, null);
+	} 
+	
 }
