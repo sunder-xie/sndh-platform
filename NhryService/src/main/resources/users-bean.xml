@@ -64,4 +64,11 @@
 	   <property name="codeItemMapper"  ref="codeItemMapper"></property>
 	   <property name="userSessionService" ref="userSessionService"></property>
 	</bean>
+
+	<bean id="tMdResidentialAreaMapper" class="com.nhry.data.impl.TMdResidentialAreaMapperImpl">
+		<property name="sqlSessionTemplate"  ref="dynamicSqlSessionTemplate"></property>
+	</bean>
+	<bean id="ResidentialAreaService" class="com.nhry.service.impl.ResidentialAreaServiceImpl">
+		<property name="tMdResidentialAreaMapper"  ref="tMdResidentialAreaMapper"></property>
+	</bean>
 </beans>
