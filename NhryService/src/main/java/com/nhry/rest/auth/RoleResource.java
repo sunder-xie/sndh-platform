@@ -1,5 +1,4 @@
-package com.nhry.rest.auth;
-//package com.nhry.rest;
+//package com.nhry.rest.auth;
 //
 //import java.io.IOException;
 //import java.util.List;
@@ -24,10 +23,9 @@ package com.nhry.rest.auth;
 //import org.springframework.stereotype.Controller;
 //
 //import com.github.pagehelper.PageInfo;
-//import com.nhry.data.dao.UserMapper;
-//import com.nhry.domain.Role;
 //import com.nhry.exception.MessageCode;
-//import com.nhry.service.dao.RoleService;
+//import com.nhry.rest.BaseResource;
+//import com.nhry.service.auth.dao.RoleService;
 //import com.nhry.utils.JsonUtil;
 //import com.sun.jersey.spi.resource.Singleton;
 //import com.wordnik.swagger.annotations.Api;
@@ -44,15 +42,15 @@ package com.nhry.rest.auth;
 //	@Autowired
 //	private RoleService roleService;
 //	
-////	@GET
-////	@Path("/search/{roleName}")
-////	@Produces(MediaType.APPLICATION_JSON)
-////	@ApiOperation(value = "/search/{roleName}", httpMethod = "GET", response = PageInfo.class, notes = "根据角色名模糊查询")
-////    public JSONObject searchByUname(@ApiParam(required = true, name = "roleName", value = "角色名") @PathParam("roleName")String name){
-////		System.out.println("search by page "+name);
-////		
-////		return this.throwMsg(MessageCode.NORMAL, "", JsonUtil.toJson(roleService.selectByRoleName(name,0,2)));
-////    }
+//	@GET
+//	@Path("/search/{roleName}")
+//	@Produces(MediaType.APPLICATION_JSON)
+//	@ApiOperation(value = "/search/{roleName}", httpMethod = "GET", response = PageInfo.class, notes = "根据角色名模糊查询")
+//    public JSONObject searchByUname(@ApiParam(required = true, name = "roleName", value = "角色名") @PathParam("roleName")String name){
+//		System.out.println("search by page "+name);
+//		
+//		return this.throwMsg(MessageCode.NORMAL, "", JsonUtil.toJson(roleService.selectByRoleName(name,0,2)));
+//    }
 //	
 //	@GET
 //	@Path("/search/{id}")

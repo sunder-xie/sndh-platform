@@ -1,6 +1,8 @@
 package com.nhry.data.auth.domain;
 
-public class TSysUserGroup {
+import java.io.Serializable;
+
+public class TSysUserGroup implements Serializable{
     private String id;
 
     private String groupName;
