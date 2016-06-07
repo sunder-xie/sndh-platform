@@ -1,22 +1,5 @@
 package com.nhry.rest.auth;
 
-import javax.ws.rs.Consumes;
-import javax.ws.rs.DefaultValue;
-import javax.ws.rs.GET;
-import javax.ws.rs.POST;
-import javax.ws.rs.Path;
-import javax.ws.rs.PathParam;
-import javax.ws.rs.Produces;
-import javax.ws.rs.QueryParam;
-import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.Response;
-import org.codehaus.jettison.json.JSONArray;
-import org.codehaus.jettison.json.JSONException;
-import org.codehaus.jettison.json.JSONObject;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Scope;
-import org.springframework.stereotype.Component;
-import org.springframework.stereotype.Controller;
 import com.github.pagehelper.PageInfo;
 import com.nhry.auth.UserSessionService;
 import com.nhry.data.auth.domain.TSysUser;
@@ -25,7 +8,18 @@ import com.nhry.rest.BaseResource;
 import com.nhry.service.auth.dao.UserService;
 import com.nhry.utils.CookieUtil;
 import com.sun.jersey.spi.resource.Singleton;
-import com.wordnik.swagger.annotations.*;
+import com.wordnik.swagger.annotations.Api;
+import com.wordnik.swagger.annotations.ApiOperation;
+import com.wordnik.swagger.annotations.ApiParam;
+import org.codehaus.jettison.json.JSONObject;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Scope;
+import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Controller;
+
+import javax.ws.rs.*;
+import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
 
 @Path("/user")
 @Component
@@ -72,4 +66,15 @@ public class UserResource extends BaseResource {
 		userSessionService.cacheUserSession(user.getLoginName(), accesskey, user,request);
 		return convertToRespModel(MessageCode.NORMAL,null, loginuser);
 	}
+
+	@GET
+	@Path("/currentUser")
+	@Produces(MediaType.APPLICATION_JSON)
+	@Consumes(MediaType.APPLICATION_JSON)
+	@ApiOperation(value = "/currentUser", response = String.class, notes = "获取当前登录用户")
+	public Response currentUser() {
+		TSysUser user = userSessionService.getCurrentUser();
+		return convertToRespModel(MessageCode.NORMAL,null, user);
+	}
+
 }
