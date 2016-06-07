@@ -11,8 +11,6 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
-
-import com.nhry.data.auth.dao.UserMapper;
 import com.nhry.service.auth.dao.UserService;
 import com.nhry.service.basic.dao.BranchEmpService;
 

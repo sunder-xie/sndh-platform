@@ -4,12 +4,11 @@ import java.io.Serializable;
 import java.util.Date;
 
 public class TSysUser implements Serializable{
-    /**
-	 * 
-	 */
-	private static final long serialVersionUID = 1L;
+    private String loginName;
 
-	private String loginName;
+    private String displayName;
+
+    private String groupId;
 
     private String pwd;
 
@@ -26,11 +25,14 @@ public class TSysUser implements Serializable{
     private String lastModifiedBy;
 
     private String lastModifiedByTxt;
-    
-    private String displayName;
+
     private String branchNo;
+
     private String dealerId;
+
     private String salesOrg;
+
+    private Date lastLogin;
 
     public String getLoginName() {
         return loginName;
@@ -38,6 +40,22 @@ public class TSysUser implements Serializable{
 
     public void setLoginName(String loginName) {
         this.loginName = loginName == null ? null : loginName.trim();
+    }
+
+    public String getDisplayName() {
+        return displayName;
+    }
+
+    public void setDisplayName(String displayName) {
+        this.displayName = displayName == null ? null : displayName.trim();
+    }
+
+    public String getGroupId() {
+        return groupId;
+    }
+
+    public void setGroupId(String groupId) {
+        this.groupId = groupId == null ? null : groupId.trim();
     }
 
     public String getPwd() {
@@ -104,35 +122,35 @@ public class TSysUser implements Serializable{
         this.lastModifiedByTxt = lastModifiedByTxt == null ? null : lastModifiedByTxt.trim();
     }
 
-	public String getDisplayName() {
-		return displayName;
-	}
+    public String getBranchNo() {
+        return branchNo;
+    }
 
-	public void setDisplayName(String displayName) {
-		this.displayName = displayName;
-	}
+    public void setBranchNo(String branchNo) {
+        this.branchNo = branchNo == null ? null : branchNo.trim();
+    }
 
-	public String getBranchNo() {
-		return branchNo;
-	}
+    public String getDealerId() {
+        return dealerId;
+    }
 
-	public void setBranchNo(String branchNo) {
-		this.branchNo = branchNo;
-	}
+    public void setDealerId(String dealerId) {
+        this.dealerId = dealerId == null ? null : dealerId.trim();
+    }
 
-	public String getDealerId() {
-		return dealerId;
-	}
+    public String getSalesOrg() {
+        return salesOrg;
+    }
 
-	public void setDealerId(String dealerId) {
-		this.dealerId = dealerId;
-	}
+    public void setSalesOrg(String salesOrg) {
+        this.salesOrg = salesOrg == null ? null : salesOrg.trim();
+    }
 
-	public String getSalesOrg() {
-		return salesOrg;
-	}
+    public Date getLastLogin() {
+        return lastLogin;
+    }
 
-	public void setSalesOrg(String salesOrg) {
-		this.salesOrg = salesOrg;
-	}
+    public void setLastLogin(Date lastLogin) {
+        this.lastLogin = lastLogin;
+    }
 }

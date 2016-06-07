@@ -8,7 +8,6 @@ import org.springframework.stereotype.Repository;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import com.nhry.data.auth.dao.RoleMapper;
-import com.nhry.data.auth.dao.UserMapper;
 import com.nhry.data.auth.domain.Role;
 import com.nhry.datasource.DynamicSqlSessionTemplate;
 
