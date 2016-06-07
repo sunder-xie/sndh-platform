@@ -13,16 +13,24 @@
 		http://www.springframework.org/schema/task http://www.springframework.org/schema/task/spring-task-4.0.xsd
 		http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-4.0.xsd"
 		default-lazy-init="true">
-	<bean id="userMapper" class="com.nhry.data.auth.impl.UserMapperImpl">
+	<bean id="userMapper" class="com.nhry.data.auth.impl.TSysUserMapperImpl">
 	   <property name="sqlSessionTemplate"  ref="dynamicSqlSessionTemplate"></property>
 	</bean>
 	<bean id="userService" class="com.nhry.service.auth.impl.UserServiceImpl">
 	   <property name="userMapper"  ref="userMapper"></property>
+	   <property name="userSessionService" ref="userSessionService"></property>
 	</bean>
 	<bean id="roleMapper" class="com.nhry.data.auth.impl.RoleMapperImpl">
 	   <property name="sqlSessionTemplate"  ref="dynamicSqlSessionTemplate"></property>
 	</bean>
 	<bean id="roleService" class="com.nhry.service.auth.impl.RoleServiceImpl">
 	   <property name="roleMapper"  ref="roleMapper"></property>
+	</bean>
+	<!-- 用户组 -->
+	<bean id="ugMapper" class="com.nhry.data.auth.impl.TSysUserGroupMapperImpl">
+	   <property name="sqlSessionTemplate"  ref="dynamicSqlSessionTemplate"></property>
+	</bean>
+	<bean id="ugService" class="com.nhry.service.auth.impl.TSysUserGroupServiceImpl">
+	   <property name="ugMapper"  ref="ugMapper"></property>
 	</bean>
 </beans>

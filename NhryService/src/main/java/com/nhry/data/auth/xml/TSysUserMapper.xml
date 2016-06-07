@@ -1,68 +1,143 @@
-<?xml version="1.0" encoding="UTF-8" ?>
-<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
-<mapper namespace="com.nhry.data.auth.impl.UserMapperImpl" >
-  <resultMap id="BaseResultMap" type="com.nhry.data.auth.domain.TSysUser" >
-    <id column="LOGIN_NAME" property="loginName" jdbcType="VARCHAR" />
-    <result column="PWD" property="pwd" jdbcType="VARCHAR" />
-    <result column="DISPLAY_NAME" />
-    <result column="STATUS" property="status" jdbcType="CHAR" />
-    <result column="CREATE_AT" property="createAt" jdbcType="TIMESTAMP" />
-    <result column="CREATE_BY" property="createBy" jdbcType="VARCHAR" />
-    <result column="CREATE_BY_TXT" property="createByTxt" jdbcType="VARCHAR" />
-    <result column="LAST_MODIFIED" property="lastModified" jdbcType="TIMESTAMP" />
-    <result column="LAST_MODIFIED_BY" property="lastModifiedBy" jdbcType="VARCHAR" />
-    <result column="LAST_MODIFIED_BY_TXT" property="lastModifiedByTxt" jdbcType="VARCHAR" />
-    <result column="DISPLAY_NAME" property="displayName" jdbcType="VARCHAR"/>
-    <result column="BRANCH_NO" property="branchNo" jdbcType="VARCHAR"/>
-    <result column="DEALER_ID" property="dealerId" jdbcType="VARCHAR"/>
-    <result column="SALES_ORG" property="salesOrg" jdbcType="VARCHAR"/>
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.nhry.data.auth.dao.TSysUserMapper">
+  <resultMap id="BaseResultMap" type="com.nhry.data.auth.domain.TSysUser">
+    <id column="LOGIN_NAME" jdbcType="VARCHAR" property="loginName" />
+    <result column="DISPLAY_NAME" jdbcType="VARCHAR" property="displayName" />
+    <result column="GROUP_ID" jdbcType="VARCHAR" property="groupId" />
+    <result column="PWD" jdbcType="VARCHAR" property="pwd" />
+    <result column="STATUS" jdbcType="CHAR" property="status" />
+    <result column="CREATE_AT" jdbcType="TIMESTAMP" property="createAt" />
+    <result column="CREATE_BY" jdbcType="VARCHAR" property="createBy" />
+    <result column="CREATE_BY_TXT" jdbcType="VARCHAR" property="createByTxt" />
+    <result column="LAST_MODIFIED" jdbcType="TIMESTAMP" property="lastModified" />
+    <result column="LAST_MODIFIED_BY" jdbcType="VARCHAR" property="lastModifiedBy" />
+    <result column="LAST_MODIFIED_BY_TXT" jdbcType="VARCHAR" property="lastModifiedByTxt" />
+    <result column="BRANCH_NO" jdbcType="VARCHAR" property="branchNo" />
+    <result column="DEALER_ID" jdbcType="VARCHAR" property="dealerId" />
+    <result column="SALES_ORG" jdbcType="VARCHAR" property="salesOrg" />
+    <result column="LAST_LOGIN" jdbcType="TIMESTAMP" property="lastLogin" />
   </resultMap>
-  <sql id="Base_Column_List" >
-    LOGIN_NAME, PWD, STATUS, CREATE_AT, CREATE_BY, CREATE_BY_TXT, LAST_MODIFIED, 
-    LAST_MODIFIED_BY, LAST_MODIFIED_BY_TXT,DISPLAY_NAME,BRANCH_NO,DEALER_ID,SALES_ORG
+  <sql id="Base_Column_List">
+    LOGIN_NAME, DISPLAY_NAME, GROUP_ID, PWD, STATUS, CREATE_AT, CREATE_BY, CREATE_BY_TXT, 
+    LAST_MODIFIED, LAST_MODIFIED_BY, LAST_MODIFIED_BY_TXT, BRANCH_NO, DEALER_ID, SALES_ORG, 
+    LAST_LOGIN
   </sql>
-  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.String" >
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String">
+    delete from t_sys_user
+    where LOGIN_NAME = #{loginName,jdbcType=VARCHAR}
+  </delete>
+  <update id="updateUser" parameterType="com.nhry.data.auth.domain.TSysUser">
+    update t_sys_user
+    <set>
+      <if test="displayName != null">
+        DISPLAY_NAME = #{displayName,jdbcType=VARCHAR},
+      </if>
+      <if test="groupId != null">
+        GROUP_ID = #{groupId,jdbcType=VARCHAR},
+      </if>
+      <if test="status != null">
+        STATUS = #{status,jdbcType=CHAR},
+      </if>
+      <if test="lastModified != null">
+        LAST_MODIFIED = #{lastModified,jdbcType=TIMESTAMP},
+      </if>
+      <if test="lastModifiedBy != null">
+        LAST_MODIFIED_BY = #{lastModifiedBy,jdbcType=VARCHAR},
+      </if>
+      <if test="lastModifiedByTxt != null">
+        LAST_MODIFIED_BY_TXT = #{lastModifiedByTxt,jdbcType=VARCHAR},
+      </if>
+      <if test="branchNo != null">
+        BRANCH_NO = #{branchNo,jdbcType=VARCHAR},
+      </if>
+      <if test="dealerId != null">
+        DEALER_ID = #{dealerId,jdbcType=VARCHAR},
+      </if>
+      <if test="salesOrg != null">
+        SALES_ORG = #{salesOrg,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where LOGIN_NAME = #{loginName,jdbcType=VARCHAR}
+  </update>
+  <update id="updateUserPw" parameterType="com.nhry.data.auth.domain.TSysUser">
+    update t_sys_user
+    <set>
+      <if test="lastModified != null">
+        LAST_MODIFIED = #{lastModified,jdbcType=TIMESTAMP},
+      </if>
+      <if test="lastModifiedBy != null">
+        LAST_MODIFIED_BY = #{lastModifiedBy,jdbcType=VARCHAR},
+      </if>
+      <if test="lastModifiedByTxt != null">
+        LAST_MODIFIED_BY_TXT = #{lastModifiedByTxt,jdbcType=VARCHAR},
+      </if>
+      <if test="pwd != null">
+        PWD = #{pwd},
+      </if>
+    </set>
+    where LOGIN_NAME = #{loginName,jdbcType=VARCHAR}
+  </update>
+  <select id="findUserByLoginName" parameterType="java.lang.String"  resultMap="BaseResultMap">
     select 
     <include refid="Base_Column_List" />
     from t_sys_user
     where LOGIN_NAME = #{loginName,jdbcType=VARCHAR}
   </select>
-  <delete id="deleteByPrimaryKey" parameterType="java.lang.String" >
-    delete from t_sys_user
-    where LOGIN_NAME = #{loginName,jdbcType=VARCHAR}
-  </delete>
-  <insert id="insert" parameterType="com.nhry.data.auth.domain.TSysUser" >
-    insert into t_sys_user (LOGIN_NAME, ID, PWD, 
-      STATUS, CREATE_AT, CREATE_BY, 
-      CREATE_BY_TXT, LAST_MODIFIED, LAST_MODIFIED_BY, 
-      LAST_MODIFIED_BY_TXT,DISPLAY_NAME,BRANCH_NO,DEALER_ID,SALES_ORG) 
-    values (#{loginName,jdbcType=VARCHAR}, #{id,jdbcType=VARCHAR}, #{pwd,jdbcType=VARCHAR}, 
-      #{status,jdbcType=CHAR}, #{createAt,jdbcType=TIMESTAMP}, #{createBy,jdbcType=VARCHAR}, 
-      #{createByTxt,jdbcType=VARCHAR}, #{lastModified,jdbcType=TIMESTAMP}, #{lastModifiedBy,jdbcType=VARCHAR}, 
-      #{lastModifiedByTxt,jdbcType=VARCHAR},#{displayName,jdbcType=VARCHAR},#{branchNo,jdbcType=VARCHAR},
-      #{dealerId,jdbcType=VARCHAR},#{salesOrg,jdbcType=VARCHAR})
+  <insert id="addUser" parameterType="com.nhry.data.auth.domain.TSysUser">
+    insert into t_sys_user (LOGIN_NAME, DISPLAY_NAME, GROUP_ID, 
+      PWD, STATUS, CREATE_AT, 
+      CREATE_BY, CREATE_BY_TXT, LAST_MODIFIED, 
+      LAST_MODIFIED_BY, LAST_MODIFIED_BY_TXT, BRANCH_NO, 
+      DEALER_ID, SALES_ORG 
+      )
+    values (#{loginName,jdbcType=VARCHAR}, #{displayName,jdbcType=VARCHAR}, #{groupId,jdbcType=VARCHAR}, 
+      #{pwd,jdbcType=VARCHAR}, #{status,jdbcType=CHAR}, #{createAt,jdbcType=TIMESTAMP}, 
+      #{createBy,jdbcType=VARCHAR}, #{createByTxt,jdbcType=VARCHAR}, #{lastModified,jdbcType=TIMESTAMP}, 
+      #{lastModifiedBy,jdbcType=VARCHAR}, #{lastModifiedByTxt,jdbcType=VARCHAR}, #{branchNo,jdbcType=VARCHAR}, 
+      #{dealerId,jdbcType=VARCHAR}, #{salesOrg,jdbcType=VARCHAR}
+      )
   </insert>
-  <update id="updateByPrimaryKey" parameterType="com.nhry.data.auth.domain.TSysUser" >
-    update t_sys_user
-    set ID = #{id,jdbcType=VARCHAR},
-      PWD = #{pwd,jdbcType=VARCHAR},
-      STATUS = #{status,jdbcType=CHAR},
-      CREATE_AT = #{createAt,jdbcType=TIMESTAMP},
-      CREATE_BY = #{createBy,jdbcType=VARCHAR},
-      CREATE_BY_TXT = #{createByTxt,jdbcType=VARCHAR},
-      LAST_MODIFIED = #{lastModified,jdbcType=TIMESTAMP},
-      LAST_MODIFIED_BY = #{lastModifiedBy,jdbcType=VARCHAR},
-      LAST_MODIFIED_BY_TXT = #{lastModifiedByTxt,jdbcType=VARCHAR},
-      DISPLAY_NAME = #{displayName,jdbcType=VARCHAR},
-      DEALER_ID = #{dealerId,jdbcType=VARCHAR},
-      SALES_ORG = #{salesOrg,jdbcType=VARCHAR}
-    where LOGIN_NAME = #{loginName,jdbcType=VARCHAR}
-  </update>
-  <select id="login"  resultMap="BaseResultMap"  parameterType="com.nhry.data.auth.domain.TSysUser">
+  <select id="login" parameterType="com.nhry.data.auth.domain.TSysUser" resultMap="BaseResultMap">
         select 
 	    <include refid="Base_Column_List" />
 	    from t_sys_user
 	    where LOGIN_NAME = #{loginName,jdbcType=VARCHAR} and PWD = #{pwd,jdbcType=VARCHAR}
   </select>
-  
+  <select id="findUser" parameterType="com.nhry.model.auth.UserQueryModel" resultMap="BaseResultMap">
+      select  LOGIN_NAME, DISPLAY_NAME, ug.GROUP_NAME GROUP_ID, STATUS, CREATE_AT, CREATE_BY, CREATE_BY_TXT, 
+    LAST_MODIFIED, LAST_MODIFIED_BY, LAST_MODIFIED_BY_TXT, BRANCH_NO, DEALER_ID, SALES_ORG, 
+    LAST_LOGIN from T_SYS_USER user,T_SYS_USER_GROUP ug where user.GROUP_ID=ug.ID
+	    <if test="uname != null and '' != uname">
+	         and  (user.LOGIN_NAME like '%' #{uname} '%' or  user.DISPLAY_NAME like '%' #{uname} '%') 
+	    </if>
+	    <if test="userGroupName != null and '' != userGroupName">
+	        and ug.GROUP_NAME like '%' #{userGroupName} '%' 
+	    </if>
+	    <if test="startDate != null and '' != startDate">
+	        and user.CREATE_AT &gt; #{startDate}
+	    </if>
+	    <if test="userGroupName != null and '' != userGroupName">
+	        and user.CREATE_AT &lt; #{endDate}
+	    </if>
+	    order by user.CREATE_AT desc,user.LAST_MODIFIED desc
+  </select>
+  <update id="deleteUserByLoginName" parameterType="com.nhry.data.auth.domain.TSysUser">
+      update t_sys_user
+    <set>
+      <if test="lastModified != null">
+        LAST_MODIFIED = #{lastModified,jdbcType=TIMESTAMP},
+      </if>
+      <if test="lastModifiedBy != null">
+        LAST_MODIFIED_BY = #{lastModifiedBy,jdbcType=VARCHAR},
+      </if>
+      <if test="lastModifiedByTxt != null">
+        LAST_MODIFIED_BY_TXT = #{lastModifiedByTxt,jdbcType=VARCHAR},
+      </if>
+      <if test="status != null">
+        STATUS = #{status},
+      </if>
+    </set>
+    where LOGIN_NAME = #{loginName,jdbcType=VARCHAR}
+  </update>
 </mapper>
