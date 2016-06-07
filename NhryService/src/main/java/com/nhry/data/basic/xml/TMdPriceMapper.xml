@@ -1,0 +1,296 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.nhry.data.basic.dao.TMdPriceMapper" >
+  <resultMap id="BaseResultMap" type="com.nhry.data.basic.domain.TMdPrice" >
+    <id column="ID" property="id" jdbcType="INTEGER" />
+    <result column="PRICE_TYPE" property="priceType" jdbcType="VARCHAR" />
+    <result column="SALES_ORG" property="salesOrg" jdbcType="VARCHAR" />
+    <result column="SALES_CHA" property="salesCha" jdbcType="VARCHAR" />
+    <result column="PRICE_GROUP" property="priceGroup" jdbcType="VARCHAR" />
+    <result column="BRANCH_NO" property="branchNo" jdbcType="VARCHAR" />
+    <result column="MATNR" property="matnr" jdbcType="VARCHAR" />
+    <result column="UNIT" property="unit" jdbcType="VARCHAR" />
+    <result column="PRICE" property="price" jdbcType="DECIMAL" />
+    <result column="START_DATE" property="startDate" jdbcType="DATE" />
+    <result column="END_DATE" property="endDate" jdbcType="DATE" />
+    <result column="START_TIME" property="startTime" jdbcType="VARCHAR" />
+    <result column="END_TIME" property="endTime" jdbcType="VARCHAR" />
+    <result column="CREATE_AT" property="createAt" jdbcType="TIMESTAMP" />
+    <result column="CREATE_BY" property="createBy" jdbcType="VARCHAR" />
+    <result column="CREATE_BY_TXT" property="createByTxt" jdbcType="VARCHAR" />
+    <result column="LAST_MODIFIED" property="lastModified" jdbcType="TIMESTAMP" />
+    <result column="LAST_MODIFIED_BY" property="lastModifiedBy" jdbcType="VARCHAR" />
+    <result column="LAST_MODIFIED_BY_TXT" property="lastModifiedByTxt" jdbcType="VARCHAR" />
+    <result column="STATUS" property="status" jdbcType="CHAR" />
+    <result column="PRICE_TYPE1" property="priceType1" jdbcType="VARCHAR" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    ID, PRICE_TYPE, SALES_ORG, SALES_CHA, PRICE_GROUP, BRANCH_NO, MATNR, UNIT, PRICE, 
+    START_DATE, END_DATE, START_TIME, END_TIME, CREATE_AT, CREATE_BY, CREATE_BY_TXT, 
+    LAST_MODIFIED, LAST_MODIFIED_BY, LAST_MODIFIED_BY_TXT, STATUS, PRICE_TYPE1
+  </sql>
+  <select id="selectPriceGroupByCode" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select 
+    <include refid="Base_Column_List" />
+    from t_md_price
+    where ID = #{id,jdbcType=INTEGER}
+  </select>
+  <update id="disablePriceGroup" parameterType="com.nhry.data.basic.domain.TMdPrice" >
+    update t_md_price
+    set STATUS = 'N' , LAST_MODIFIED = #{lastModified,jdbcType=TIMESTAMP}
+    where ID = #{id,jdbcType=INTEGER}
+  </update>
+  <insert id="insert" parameterType="com.nhry.data.basic.domain.TMdPrice" >
+    insert into t_md_price (ID, PRICE_TYPE, SALES_ORG, 
+      SALES_CHA, PRICE_GROUP, BRANCH_NO, 
+      MATNR, UNIT, PRICE, 
+      START_DATE, END_DATE, START_TIME, 
+      END_TIME, CREATE_AT, CREATE_BY, 
+      CREATE_BY_TXT, LAST_MODIFIED, LAST_MODIFIED_BY, 
+      LAST_MODIFIED_BY_TXT, STATUS, PRICE_TYPE1
+      )
+    values (#{id,jdbcType=INTEGER}, #{priceType,jdbcType=VARCHAR}, #{salesOrg,jdbcType=VARCHAR}, 
+      #{salesCha,jdbcType=VARCHAR}, #{priceGroup,jdbcType=VARCHAR}, #{branchNo,jdbcType=VARCHAR}, 
+      #{matnr,jdbcType=VARCHAR}, #{unit,jdbcType=VARCHAR}, #{price,jdbcType=DECIMAL}, 
+      #{startDate,jdbcType=DATE}, #{endDate,jdbcType=DATE}, #{startTime,jdbcType=VARCHAR}, 
+      #{endTime,jdbcType=VARCHAR}, #{createAt,jdbcType=TIMESTAMP}, #{createBy,jdbcType=VARCHAR}, 
+      #{createByTxt,jdbcType=VARCHAR}, #{lastModified,jdbcType=TIMESTAMP}, #{lastModifiedBy,jdbcType=VARCHAR}, 
+      #{lastModifiedByTxt,jdbcType=VARCHAR}, #{status,jdbcType=CHAR}, #{priceType1,jdbcType=VARCHAR}
+      )
+  </insert>
+  <insert id="addNewPriceGroup" parameterType="com.nhry.data.basic.domain.TMdPrice" >
+    insert into t_md_price
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        ID,
+      </if>
+      <if test="priceType != null" >
+        PRICE_TYPE,
+      </if>
+      <if test="salesOrg != null" >
+        SALES_ORG,
+      </if>
+      <if test="salesCha != null" >
+        SALES_CHA,
+      </if>
+      <if test="priceGroup != null" >
+        PRICE_GROUP,
+      </if>
+      <if test="branchNo != null" >
+        BRANCH_NO,
+      </if>
+      <if test="matnr != null" >
+        MATNR,
+      </if>
+      <if test="unit != null" >
+        UNIT,
+      </if>
+      <if test="price != null" >
+        PRICE,
+      </if>
+      <if test="startDate != null" >
+        START_DATE,
+      </if>
+      <if test="endDate != null" >
+        END_DATE,
+      </if>
+      <if test="startTime != null" >
+        START_TIME,
+      </if>
+      <if test="endTime != null" >
+        END_TIME,
+      </if>
+      <if test="createAt != null" >
+        CREATE_AT,
+      </if>
+      <if test="createBy != null" >
+        CREATE_BY,
+      </if>
+      <if test="createByTxt != null" >
+        CREATE_BY_TXT,
+      </if>
+      <if test="lastModified != null" >
+        LAST_MODIFIED,
+      </if>
+      <if test="lastModifiedBy != null" >
+        LAST_MODIFIED_BY,
+      </if>
+      <if test="lastModifiedByTxt != null" >
+        LAST_MODIFIED_BY_TXT,
+      </if>
+      <if test="status != null" >
+        STATUS,
+      </if>
+      <if test="priceType1 != null" >
+        PRICE_TYPE1,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        #{id,jdbcType=INTEGER},
+      </if>
+      <if test="priceType != null" >
+        #{priceType,jdbcType=VARCHAR},
+      </if>
+      <if test="salesOrg != null" >
+        #{salesOrg,jdbcType=VARCHAR},
+      </if>
+      <if test="salesCha != null" >
+        #{salesCha,jdbcType=VARCHAR},
+      </if>
+      <if test="priceGroup != null" >
+        #{priceGroup,jdbcType=VARCHAR},
+      </if>
+      <if test="branchNo != null" >
+        #{branchNo,jdbcType=VARCHAR},
+      </if>
+      <if test="matnr != null" >
+        #{matnr,jdbcType=VARCHAR},
+      </if>
+      <if test="unit != null" >
+        #{unit,jdbcType=VARCHAR},
+      </if>
+      <if test="price != null" >
+        #{price,jdbcType=DECIMAL},
+      </if>
+      <if test="startDate != null" >
+        #{startDate,jdbcType=DATE},
+      </if>
+      <if test="endDate != null" >
+        #{endDate,jdbcType=DATE},
+      </if>
+      <if test="startTime != null" >
+        #{startTime,jdbcType=VARCHAR},
+      </if>
+      <if test="endTime != null" >
+        #{endTime,jdbcType=VARCHAR},
+      </if>
+      <if test="createAt != null" >
+        #{createAt,jdbcType=TIMESTAMP},
+      </if>
+      <if test="createBy != null" >
+        #{createBy,jdbcType=VARCHAR},
+      </if>
+      <if test="createByTxt != null" >
+        #{createByTxt,jdbcType=VARCHAR},
+      </if>
+      <if test="lastModified != null" >
+        #{lastModified,jdbcType=TIMESTAMP},
+      </if>
+      <if test="lastModifiedBy != null" >
+        #{lastModifiedBy,jdbcType=VARCHAR},
+      </if>
+      <if test="lastModifiedByTxt != null" >
+        #{lastModifiedByTxt,jdbcType=VARCHAR},
+      </if>
+      <if test="status != null" >
+        #{status,jdbcType=CHAR},
+      </if>
+      <if test="priceType1 != null" >
+        #{priceType1,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.nhry.data.basic.domain.TMdPrice" >
+    update t_md_price
+    <set >
+      <if test="priceType != null" >
+        PRICE_TYPE = #{priceType,jdbcType=VARCHAR},
+      </if>
+      <if test="salesOrg != null" >
+        SALES_ORG = #{salesOrg,jdbcType=VARCHAR},
+      </if>
+      <if test="salesCha != null" >
+        SALES_CHA = #{salesCha,jdbcType=VARCHAR},
+      </if>
+      <if test="priceGroup != null" >
+        PRICE_GROUP = #{priceGroup,jdbcType=VARCHAR},
+      </if>
+      <if test="branchNo != null" >
+        BRANCH_NO = #{branchNo,jdbcType=VARCHAR},
+      </if>
+      <if test="matnr != null" >
+        MATNR = #{matnr,jdbcType=VARCHAR},
+      </if>
+      <if test="unit != null" >
+        UNIT = #{unit,jdbcType=VARCHAR},
+      </if>
+      <if test="price != null" >
+        PRICE = #{price,jdbcType=DECIMAL},
+      </if>
+      <if test="startDate != null" >
+        START_DATE = #{startDate,jdbcType=DATE},
+      </if>
+      <if test="endDate != null" >
+        END_DATE = #{endDate,jdbcType=DATE},
+      </if>
+      <if test="startTime != null" >
+        START_TIME = #{startTime,jdbcType=VARCHAR},
+      </if>
+      <if test="endTime != null" >
+        END_TIME = #{endTime,jdbcType=VARCHAR},
+      </if>
+      <if test="createAt != null" >
+        CREATE_AT = #{createAt,jdbcType=TIMESTAMP},
+      </if>
+      <if test="createBy != null" >
+        CREATE_BY = #{createBy,jdbcType=VARCHAR},
+      </if>
+      <if test="createByTxt != null" >
+        CREATE_BY_TXT = #{createByTxt,jdbcType=VARCHAR},
+      </if>
+      <if test="lastModified != null" >
+        LAST_MODIFIED = #{lastModified,jdbcType=TIMESTAMP},
+      </if>
+      <if test="lastModifiedBy != null" >
+        LAST_MODIFIED_BY = #{lastModifiedBy,jdbcType=VARCHAR},
+      </if>
+      <if test="lastModifiedByTxt != null" >
+        LAST_MODIFIED_BY_TXT = #{lastModifiedByTxt,jdbcType=VARCHAR},
+      </if>
+      <if test="status != null" >
+        STATUS = #{status,jdbcType=CHAR},
+      </if>
+      <if test="priceType1 != null" >
+        PRICE_TYPE1 = #{priceType1,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where ID = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.nhry.data.basic.domain.TMdPrice" >
+    update t_md_price
+    set PRICE_TYPE = #{priceType,jdbcType=VARCHAR},
+      SALES_ORG = #{salesOrg,jdbcType=VARCHAR},
+      SALES_CHA = #{salesCha,jdbcType=VARCHAR},
+      PRICE_GROUP = #{priceGroup,jdbcType=VARCHAR},
+      BRANCH_NO = #{branchNo,jdbcType=VARCHAR},
+      MATNR = #{matnr,jdbcType=VARCHAR},
+      UNIT = #{unit,jdbcType=VARCHAR},
+      PRICE = #{price,jdbcType=DECIMAL},
+      START_DATE = #{startDate,jdbcType=DATE},
+      END_DATE = #{endDate,jdbcType=DATE},
+      START_TIME = #{startTime,jdbcType=VARCHAR},
+      END_TIME = #{endTime,jdbcType=VARCHAR},
+      CREATE_AT = #{createAt,jdbcType=TIMESTAMP},
+      CREATE_BY = #{createBy,jdbcType=VARCHAR},
+      CREATE_BY_TXT = #{createByTxt,jdbcType=VARCHAR},
+      LAST_MODIFIED = #{lastModified,jdbcType=TIMESTAMP},
+      LAST_MODIFIED_BY = #{lastModifiedBy,jdbcType=VARCHAR},
+      LAST_MODIFIED_BY_TXT = #{lastModifiedByTxt,jdbcType=VARCHAR},
+      STATUS = #{status,jdbcType=CHAR},
+      PRICE_TYPE1 = #{priceType1,jdbcType=VARCHAR}
+    where ID = #{id,jdbcType=INTEGER}
+  </update>
+  <select id="searchPriceGroups" resultMap="BaseResultMap" parameterType="com.nhry.model.basic.PriceQueryModel">
+      select 
+      <include refid="Base_Column_List" />
+    	FROM t_md_price WHERE 1 = 1
+      <if test="agencyType != null and agencyType !=''">
+     		AND PRICE_TYPE = #{agencyType,jdbcType=VARCHAR}
+      </if>
+      <if test="status != null and status != ''">
+     		AND STATUS = #{status,jdbcType=VARCHAR}
+      </if>
+      ORDER BY id
+  </select>
+</mapper>

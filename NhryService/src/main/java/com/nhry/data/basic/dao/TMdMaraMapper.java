@@ -14,7 +14,7 @@ public interface TMdMaraMapper {
 
     int uptProductByCode(TMdMara record);
     
-    int uptPubProductByCode();
+    int pubProductByCode(String code);
 
     PageInfo searchProducts(ProductQueryModel smodel);
     

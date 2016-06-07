@@ -14,6 +14,8 @@ public interface ProductService {
 
     int uptProductExByCode(TMdMaraEx record);
     
+    int pubProductByCode(String code);
+    
     public PageInfo searchProducts(ProductQueryModel smodel);
     
     ProductInfoExModel selectProductAndExByCode(String matnr);
