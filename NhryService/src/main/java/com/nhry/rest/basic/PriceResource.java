@@ -59,7 +59,7 @@ public class PriceResource extends BaseResource {
 	@Produces(MediaType.APPLICATION_JSON)
 	@ApiOperation(value = "/upt", response = String.class, notes = "编辑价格组信息")
 	public Response uptPriceGroup(@ApiParam(required=true,name="record",value="系统参数json格式")TMdPrice record){
-		return convertToRespModel(MessageCode.NORMAL, null,  null);
+		return convertToRespModel(MessageCode.NORMAL, null,  priceService.updatePriceGroup(record));
 	}
 	
 	@POST

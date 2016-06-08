@@ -40,24 +40,6 @@
     set STATUS = 'N' , LAST_MODIFIED = #{lastModified,jdbcType=TIMESTAMP}
     where ID = #{id,jdbcType=INTEGER}
   </update>
-  <insert id="insert" parameterType="com.nhry.data.basic.domain.TMdPrice" >
-    insert into t_md_price (ID, PRICE_TYPE, SALES_ORG, 
-      SALES_CHA, PRICE_GROUP, BRANCH_NO, 
-      MATNR, UNIT, PRICE, 
-      START_DATE, END_DATE, START_TIME, 
-      END_TIME, CREATE_AT, CREATE_BY, 
-      CREATE_BY_TXT, LAST_MODIFIED, LAST_MODIFIED_BY, 
-      LAST_MODIFIED_BY_TXT, STATUS, PRICE_TYPE1
-      )
-    values (#{id,jdbcType=INTEGER}, #{priceType,jdbcType=VARCHAR}, #{salesOrg,jdbcType=VARCHAR}, 
-      #{salesCha,jdbcType=VARCHAR}, #{priceGroup,jdbcType=VARCHAR}, #{branchNo,jdbcType=VARCHAR}, 
-      #{matnr,jdbcType=VARCHAR}, #{unit,jdbcType=VARCHAR}, #{price,jdbcType=DECIMAL}, 
-      #{startDate,jdbcType=DATE}, #{endDate,jdbcType=DATE}, #{startTime,jdbcType=VARCHAR}, 
-      #{endTime,jdbcType=VARCHAR}, #{createAt,jdbcType=TIMESTAMP}, #{createBy,jdbcType=VARCHAR}, 
-      #{createByTxt,jdbcType=VARCHAR}, #{lastModified,jdbcType=TIMESTAMP}, #{lastModifiedBy,jdbcType=VARCHAR}, 
-      #{lastModifiedByTxt,jdbcType=VARCHAR}, #{status,jdbcType=CHAR}, #{priceType1,jdbcType=VARCHAR}
-      )
-  </insert>
   <insert id="addNewPriceGroup" parameterType="com.nhry.data.basic.domain.TMdPrice" >
     insert into t_md_price
     <trim prefix="(" suffix=")" suffixOverrides="," >
@@ -191,7 +173,7 @@
       </if>
     </trim>
   </insert>
-  <update id="updateByPrimaryKeySelective" parameterType="com.nhry.data.basic.domain.TMdPrice" >
+  <update id="updatePriceGroup" parameterType="com.nhry.data.basic.domain.TMdPrice" >
     update t_md_price
     <set >
       <if test="priceType != null" >
@@ -255,30 +237,6 @@
         PRICE_TYPE1 = #{priceType1,jdbcType=VARCHAR},
       </if>
     </set>
-    where ID = #{id,jdbcType=INTEGER}
-  </update>
-  <update id="updateByPrimaryKey" parameterType="com.nhry.data.basic.domain.TMdPrice" >
-    update t_md_price
-    set PRICE_TYPE = #{priceType,jdbcType=VARCHAR},
-      SALES_ORG = #{salesOrg,jdbcType=VARCHAR},
-      SALES_CHA = #{salesCha,jdbcType=VARCHAR},
-      PRICE_GROUP = #{priceGroup,jdbcType=VARCHAR},
-      BRANCH_NO = #{branchNo,jdbcType=VARCHAR},
-      MATNR = #{matnr,jdbcType=VARCHAR},
-      UNIT = #{unit,jdbcType=VARCHAR},
-      PRICE = #{price,jdbcType=DECIMAL},
-      START_DATE = #{startDate,jdbcType=DATE},
-      END_DATE = #{endDate,jdbcType=DATE},
-      START_TIME = #{startTime,jdbcType=VARCHAR},
-      END_TIME = #{endTime,jdbcType=VARCHAR},
-      CREATE_AT = #{createAt,jdbcType=TIMESTAMP},
-      CREATE_BY = #{createBy,jdbcType=VARCHAR},
-      CREATE_BY_TXT = #{createByTxt,jdbcType=VARCHAR},
-      LAST_MODIFIED = #{lastModified,jdbcType=TIMESTAMP},
-      LAST_MODIFIED_BY = #{lastModifiedBy,jdbcType=VARCHAR},
-      LAST_MODIFIED_BY_TXT = #{lastModifiedByTxt,jdbcType=VARCHAR},
-      STATUS = #{status,jdbcType=CHAR},
-      PRICE_TYPE1 = #{priceType1,jdbcType=VARCHAR}
     where ID = #{id,jdbcType=INTEGER}
   </update>
   <select id="searchPriceGroups" resultMap="BaseResultMap" parameterType="com.nhry.model.basic.PriceQueryModel">

@@ -33,7 +33,7 @@ public class TMdPriceMapperImpl implements TMdPriceMapper
 	public int updatePriceGroup(TMdPrice record)
 	{
 		// TODO Auto-generated method stub
-		return 0;
+		return this.sqlSessionTemplate.update("updatePriceGroup", record);
 	}
 
 	@Override
