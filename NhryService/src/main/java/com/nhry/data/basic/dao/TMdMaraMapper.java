@@ -5,6 +5,8 @@ import com.nhry.service.basic.pojo.ProductInfoExModel;
 import com.nhry.data.basic.domain.TMdMara;
 import com.nhry.model.basic.ProductQueryModel;
 
+import java.util.List;
+
 public interface TMdMaraMapper {
 
 
@@ -17,5 +19,6 @@ public interface TMdMaraMapper {
     int uptPubProductByCode();
 
     PageInfo searchProducts(ProductQueryModel smodel);
-    
+
+    List<ProductInfoExModel> selectProductAndExListByCode(String productCode);
 }
