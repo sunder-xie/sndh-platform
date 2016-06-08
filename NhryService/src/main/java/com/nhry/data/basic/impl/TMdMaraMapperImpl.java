@@ -7,6 +7,8 @@ import com.nhry.datasource.DynamicSqlSessionTemplate;
 import com.nhry.service.basic.pojo.ProductInfoExModel;
 import com.nhry.model.basic.ProductQueryModel;
 
+import java.util.List;
+
 public class TMdMaraMapperImpl implements TMdMaraMapper {
 	private DynamicSqlSessionTemplate sqlSessionTemplate;
 	public void setSqlSessionTemplate(DynamicSqlSessionTemplate sqlSessionTemplate) {
@@ -30,6 +32,11 @@ public class TMdMaraMapperImpl implements TMdMaraMapper {
 	public PageInfo searchProducts(ProductQueryModel smodel) {
 		// TODO Auto-generated method stub
 		return sqlSessionTemplate.selectListByPages("searchProducts",smodel, Integer.parseInt(smodel.getPageNum()), Integer.parseInt(smodel.getPageSize()));
+	}
+
+	@Override
+	public List<ProductInfoExModel> selectProductAndExListByCode(String productCode) {
+		return this.sqlSessionTemplate.selectList("selectProductAndExListByCode", productCode);
 	}
 
 	@Override

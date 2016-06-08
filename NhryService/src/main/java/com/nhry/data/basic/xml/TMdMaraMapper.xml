@@ -77,6 +77,17 @@
      </if>
      ORDER BY p.MATNR
   </select>
+
+
+  <select id="selectProductAndExListByCode" resultMap="BaseAndExResultMap" parameterType="java.lang.String" >
+    select
+    p.MATNR, p.MATNR_TXT, p.BASE_UNIT, p.STATUS, p.LAST_MODIFIED, p.CREATE_AT, p.FIRST_CAT, p.SEC_CATE,
+    p.BRAND, p.WEIGHT, p.WEIGHT_UNIT, p.IMPORTANT_PRD_FLAG, p.SPEC, p.SPEC_UNIT, p.BOT_SPEC, p.ZBOT_CODE,
+    pex.SHORT_TXT, pex.PRE_DAYS, pex.BOT_TYPE
+    FROM t_md_mara p, t_md_mara_ex pex
+    where p.MATNR like "%"#{0}"%"
+    AND p.MATNR = pex.MATNR
+  </select>
   <!-- <insert id="insert" parameterType="com.nhry.data.basic.domain.TMdMara" >
     insert into t_md_mara (MATNR, MATNR_TXT, BASE_UNIT, 
       STATUS, LAST_MODIFIED, CREATE_AT, 

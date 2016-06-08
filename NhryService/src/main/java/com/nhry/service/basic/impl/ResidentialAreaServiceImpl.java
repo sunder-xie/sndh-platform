@@ -18,7 +18,6 @@ import java.util.List;
 public class ResidentialAreaServiceImpl implements ResidentialAreaService {
 
     private TMdResidentialAreaMapper tMdResidentialAreaMapper;
-
     @Override
     public List<TMdResidentialArea> getAreaByBranchNo(String branchNo) {
         return tMdResidentialAreaMapper.getAreaByBranchNo(branchNo);
@@ -37,6 +36,13 @@ public class ResidentialAreaServiceImpl implements ResidentialAreaService {
         }
         return tMdResidentialAreaMapper.findAreaListByPage(residentialAreaModel);
     }
+
+    @Override
+    public int addResidentialArea(ResidentialAreaModel residentialAreaModel) {
+        return tMdResidentialAreaMapper.addResidentialArea(residentialAreaModel);
+    }
+
+
 
     public void settMdResidentialAreaMapper(TMdResidentialAreaMapper tMdResidentialAreaMapper) {
         this.tMdResidentialAreaMapper = tMdResidentialAreaMapper;

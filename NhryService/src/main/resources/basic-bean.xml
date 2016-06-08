@@ -51,7 +51,17 @@
 	<bean id="tMdResidentialAreaMapper" class="com.nhry.data.basic.impl.TMdResidentialAreaMapperImpl">
 		<property name="sqlSessionTemplate"  ref="dynamicSqlSessionTemplate"></property>
 	</bean>
-	<bean id="ResidentialAreaService" class="com.nhry.service.basic.impl.ResidentialAreaServiceImpl">
+	<bean id="residentialAreaService" class="com.nhry.service.basic.impl.ResidentialAreaServiceImpl">
 		<property name="tMdResidentialAreaMapper"  ref="tMdResidentialAreaMapper"></property>
+	</bean>
+
+
+
+	<bean id="tMdBranchScopeMapper" class="com.nhry.data.basic.impl.TMdBranchScopeMapperImpl">
+		<property name="sqlSessionTemplate"  ref="dynamicSqlSessionTemplate"></property>
+	</bean>
+	<bean id="tMdBranchScopeService" class="com.nhry.service.basic.impl.TMdBranchScopeServiceImpl">
+		<property name="tMdBranchScopeMapper"  ref="tMdBranchScopeMapper"></property>
+
 	</bean>
 </beans>

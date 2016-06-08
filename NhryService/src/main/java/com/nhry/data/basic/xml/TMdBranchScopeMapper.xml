@@ -33,4 +33,13 @@
       </if>
     </trim>
   </insert>
+
+  <delete id="deleteByBranchNo" parameterType="com.nhry.service.basic.pojo.BranchScopeModel">
+    delete from t_md_branch_scope
+    where BRANCH_NO = #{branchNo,jdbcType=VARCHAR}
+    and RESIDENTIAL_AREA_ID in
+    <foreach item="residentialAreaIds" index="index"  collection="residentialAreaIds"  open="(" separator="," close=")">
+       #{residentialAreaIds}
+    </foreach>
+  </delete>
 </mapper>
