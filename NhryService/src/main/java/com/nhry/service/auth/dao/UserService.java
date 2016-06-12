@@ -5,13 +5,20 @@ import java.util.List;
 import org.codehaus.jettison.json.JSONObject;
 import com.github.pagehelper.PageInfo;
 import com.nhry.data.auth.domain.TSysUser;
+import com.nhry.model.auth.UserQueryModel;
 
 public interface UserService {
-	public PageInfo selectByUserName(String uname,int pageNum,int pageSize);
+	public PageInfo findUser(UserQueryModel um);
 
-	public PageInfo selectByPage(int pageNum,int pageSize);
-
-	public int addUser(JSONObject user);
+	public int addUser(TSysUser user);
 	
 	public TSysUser login(TSysUser user);
+	
+	public TSysUser findUserByLoginName(String loginName);
+	
+	public int updateUser(TSysUser record);
+	
+	public int updateUserPw(TSysUser record);
+	
+	public int deleteUserByLoginName(String uname);
 }

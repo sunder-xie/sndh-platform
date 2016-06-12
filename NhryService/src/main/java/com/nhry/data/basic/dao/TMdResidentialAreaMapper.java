@@ -23,4 +23,7 @@ public interface TMdResidentialAreaMapper {
     public  List<TMdResidentialArea> getAreaByBranchNo(String branchNo);
 
     public PageInfo findAreaListByPage(ResidentialAreaModel residentialAreaModel);
+
+    public  int addResidentialArea(ResidentialAreaModel residentialAreaModel);
+
 }

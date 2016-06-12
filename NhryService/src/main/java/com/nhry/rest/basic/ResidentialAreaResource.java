@@ -61,4 +61,15 @@ public class ResidentialAreaResource extends BaseResource {
 		return convertToRespModel(MessageCode.NORMAL, null,data);
 	}
 
+	@POST
+	@Path("/add")
+	@Consumes(MediaType.APPLICATION_JSON)
+	@Produces(MediaType.APPLICATION_JSON)
+	@ApiOperation(value = "/add", response = String.class, notes = "更新商品信息")
+	public Response addResidentialArea(@ApiParam(required=true,name="residentialAreaModel",value="系统参数json格式")ResidentialAreaModel residentialAreaModel){
+		return convertToRespModel(MessageCode.NORMAL, null,  residentialAreaService.addResidentialArea(residentialAreaModel));
+	}
+
+
+
 }

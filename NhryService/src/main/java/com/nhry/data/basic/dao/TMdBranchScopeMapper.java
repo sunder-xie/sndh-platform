@@ -1,11 +1,7 @@
 package com.nhry.data.basic.dao;
 
-import com.nhry.data.basic.domain.TMdBranchScopeKey;
+import java.util.List;
 
 public interface TMdBranchScopeMapper {
-    int deleteByPrimaryKey(TMdBranchScopeKey key);
-
-    int insert(TMdBranchScopeKey record);
-
-    int insertSelective(TMdBranchScopeKey record);
+   int deleteAreaByBranchNo(String branchNo, List<String> list);
 }

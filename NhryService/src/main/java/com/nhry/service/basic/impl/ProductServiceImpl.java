@@ -16,6 +16,8 @@ import com.nhry.service.basic.dao.ProductService;
 import com.nhry.service.basic.pojo.ProductInfoExModel;
 import com.nhry.utils.Date;
 
+import java.util.List;
+
 public class ProductServiceImpl extends BaseService implements ProductService {
 	
 	private TMdMaraMapper tMdMaraMapper;
@@ -69,5 +71,10 @@ public class ProductServiceImpl extends BaseService implements ProductService {
 	{
 		// TODO Auto-generated method stub
 		return tMdMaraMapper.pubProductByCode(code);
+	}
+	
+	@Override
+	public List<ProductInfoExModel> selectProductAndExListByCode(String productCode) {
+		return tMdMaraMapper.selectProductAndExListByCode(productCode);
 	}
 }

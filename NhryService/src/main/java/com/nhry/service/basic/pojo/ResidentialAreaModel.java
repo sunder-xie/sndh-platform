@@ -12,6 +12,9 @@ public class ResidentialAreaModel extends BaseQueryModel implements Serializable
     private String city;
     private String status;
 
+
+
+
     public String getProvince() {
         return province;
     }
