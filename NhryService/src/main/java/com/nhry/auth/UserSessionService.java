@@ -1,24 +1,18 @@
 package com.nhry.auth;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Set;
-
-import javax.servlet.http.HttpServletRequest;
-
-import org.apache.log4j.Logger;
-import org.springframework.data.redis.core.RedisTemplate;
-import org.springframework.data.redis.core.StringRedisTemplate;
-
 import com.nhry.data.auth.domain.TSysUser;
 import com.nhry.exception.MessageCode;
 import com.nhry.model.sys.AccessKey;
 import com.nhry.utils.Base64Util;
 import com.nhry.utils.Date;
-import com.nhry.utils.ObjectSerializeUtil;
 import com.nhry.utils.RedisUtil;
 import com.nhry.utils.SysContant;
 import com.sun.jersey.spi.container.ContainerRequest;
+import org.apache.log4j.Logger;
+import org.springframework.data.redis.core.RedisTemplate;
+
+import javax.servlet.http.HttpServletRequest;
+import java.util.Map;
 
 public class UserSessionService {
 	private static final Logger LOGGER = Logger.getLogger(UserSessionService.class);
@@ -71,11 +65,16 @@ public class UserSessionService {
 	 * @return
 	 */
 	public TSysUser getCurrentUser(){
-		if(!"product".equals(SysContant.getSystemConst("app_mode"))){
+		if("!product".equals(SysContant.getSystemConst("app_mode"))){
 			//测试时使用
 			TSysUser user = new TSysUser();
-			user.setLoginName("test");
+			Date date =  new Date();
+			user.setLoginName("032411");
 			user.setDisplayName("测试用户");
+			user.setSalesOrg("西华送奶站");
+			user.setPwd("12345678");
+			user.setCreateAt(date);
+			user.setLastModified(date);
 			return user;
 		}
 		

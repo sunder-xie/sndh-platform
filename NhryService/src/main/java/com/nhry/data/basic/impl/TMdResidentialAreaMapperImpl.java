@@ -57,6 +57,14 @@ public class TMdResidentialAreaMapperImpl implements TMdResidentialAreaMapper {
                 Integer.parseInt(residentialAreaModel.getPageNum()), Integer.parseInt(residentialAreaModel.getPageSize()));
     }
 
+    @Override
+    public int addResidentialArea(ResidentialAreaModel residentialAreaModel) {
+
+        return sqlSessionTemplate.insert("insert",residentialAreaModel);
+    }
+
+
+
     public void setSqlSessionTemplate(DynamicSqlSessionTemplate sqlSessionTemplate) {
         this.sqlSessionTemplate = sqlSessionTemplate;
     }
