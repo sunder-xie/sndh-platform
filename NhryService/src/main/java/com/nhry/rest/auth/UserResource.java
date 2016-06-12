@@ -22,6 +22,7 @@ import com.nhry.auth.UserSessionService;
 import com.nhry.data.auth.domain.TSysUser;
 import com.nhry.exception.MessageCode;
 import com.nhry.model.auth.UserQueryModel;
+import com.nhry.model.auth.UserRoleModel;
 import com.nhry.model.sys.ResponseModel;
 import com.nhry.rest.BaseResource;
 import com.nhry.service.auth.dao.UserService;
@@ -96,4 +97,6 @@ public class UserResource extends BaseResource {
 	public Response deleteUserByLoginName(@ApiParam(required = true, name = "loginName", value = "用户登录名") @PathParam("loginName")String loginName) {
 		return convertToRespModel(MessageCode.NORMAL, userService.deleteUserByLoginName(loginName), null);
 	}
+	
+	
 }

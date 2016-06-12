@@ -6,6 +6,7 @@ import com.nhry.data.auth.domain.TSysUser;
 import com.nhry.exception.MessageCode;
 import com.nhry.exception.ServiceException;
 import com.nhry.model.auth.UserQueryModel;
+import com.nhry.model.auth.UserRoleModel;
 import com.nhry.service.BaseService;
 import com.nhry.service.auth.dao.UserService;
 import com.nhry.utils.Date;

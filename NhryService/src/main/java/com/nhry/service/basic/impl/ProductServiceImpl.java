@@ -67,6 +67,13 @@ public class ProductServiceImpl extends BaseService implements ProductService {
 	}
 
 	@Override
+	public int pubProductByCode(String code)
+	{
+		// TODO Auto-generated method stub
+		return tMdMaraMapper.pubProductByCode(code);
+	}
+	
+	@Override
 	public List<ProductInfoExModel> selectProductAndExListByCode(String productCode) {
 		return tMdMaraMapper.selectProductAndExListByCode(productCode);
 	}
