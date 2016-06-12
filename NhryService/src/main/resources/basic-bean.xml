@@ -25,6 +25,14 @@
 	   <property name="tMdMaraExMapper"  ref="maraExMapper"></property>
 	</bean>
 	
+	<!-- 价格组信息  -->
+	<bean id="priceMapper" class="com.nhry.data.basic.impl.TMdPriceMapperImpl">
+	   <property name="sqlSessionTemplate"  ref="dynamicSqlSessionTemplate"></property>
+	</bean>
+	<bean id="PriceService" class="com.nhry.service.basic.impl.PriceServiceImpl">
+	   <property name="tMdPriceMapper"  ref="priceMapper"></property>
+	</bean>
+	
 	<bean id="custMapper" class="com.nhry.data.basic.impl.TMdVipCustInfoMapperImpl">
 	   <property name="sqlSessionTemplate"  ref="dynamicSqlSessionTemplate"></property>
 	</bean>
