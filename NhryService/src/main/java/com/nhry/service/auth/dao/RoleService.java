@@ -2,17 +2,51 @@ package com.nhry.service.auth.dao;
 
 import java.util.List;
 
-import com.github.pagehelper.PageInfo;
-import com.nhry.data.auth.domain.Role;
+import com.nhry.data.auth.domain.TSysRole;
+import com.nhry.data.auth.domain.TSysUserRole;
+import com.nhry.model.auth.UserRoleModel;
 
 public interface RoleService {
-	public PageInfo selectByRoleName(String roleName,int pageNum,int pageSize);
+	/**
+	 * 根据角色id，删除角色
+	 * @param id
+	 * @return
+	 */
+	int deleteRoleByRid(String id);
 	
-	public PageInfo selectByPage(int pageNum,int pageSize);
-	
-	public Role selectOneRole(String name);
-	
-	public int addRole(Role role);
-	public int deleteRole(String id);
-	public int updateRole(Role role);
+	/**
+	 * 添加角色
+	 * @param record
+	 * @return
+	 */
+    int addRole(TSysRole record);
+    
+    /**
+     * 根据角色id，查看角色详情
+     * @param id
+     * @return
+     */
+    TSysRole findRoleByRid(String id);
+    
+    /**
+     * 修改角色
+     * @param record
+     * @return
+     */
+    int updateRoleByRid(TSysRole record);
+    
+    /**
+     * 给用户添加指定角色
+     * @param urmodel
+     * @return
+     */
+    public int assignRoleToUsers(UserRoleModel urmodel);
+    
+    /**
+     * 删除用户角色(支持删除多个角色)
+     * @param urmodel
+     * @return
+     */
+    public int deleteUserRoles(UserRoleModel urmodel);
+    
 }
