@@ -46,8 +46,8 @@ public class TMdMaraMapperImpl implements TMdMaraMapper {
 	}
 
 	@Override
-	public int uptPubProductByCode(){
+	public int pubProductByCode(String code){
 		// TODO Auto-generated method stub
-		return 0;
+		return this.sqlSessionTemplate.update("pubProductByCode", code);
 	}
 }
