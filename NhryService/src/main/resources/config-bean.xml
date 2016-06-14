@@ -24,8 +24,12 @@
 	<bean id="codeItemMapper" class="com.nhry.data.config.impl.NHSysCodeItemMapperImpl">
 	   <property name="sqlSessionTemplate"  ref="dynamicSqlSessionTemplate"></property>
 	</bean>
+	<bean id="codeTypeMapper" class="com.nhry.data.config.impl.NHSysCodeTypeMapperImpl">
+	    <property name="sqlSessionTemplate"  ref="dynamicSqlSessionTemplate"></property>
+	</bean>
 	<bean id="dicService" class="com.nhry.service.config.impl.DictionaryServiceImpl">
 	   <property name="codeItemMapper"  ref="codeItemMapper"></property>
 	   <property name="userSessionService" ref="userSessionService"></property>
+	   <property name="codeTypeMapper" ref="codeTypeMapper"></property>
 	</bean>
 </beans>

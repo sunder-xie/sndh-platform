@@ -1,8 +1,13 @@
 package com.nhry.data.config.domain;
 
+import java.io.Serializable;
 import java.util.Date;
 
-public class NHSysCodeItem extends NHSysCodeItemKey {
+public class NHSysCodeItem implements Serializable {
+	private String typeCode;
+
+    private String itemCode;
+    
     private String itemName;
 
     private String parent;
@@ -142,4 +147,20 @@ public class NHSysCodeItem extends NHSysCodeItemKey {
     public void setLastModifiedByTxt(String lastModifiedByTxt) {
         this.lastModifiedByTxt = lastModifiedByTxt == null ? null : lastModifiedByTxt.trim();
     }
+
+	public String getTypeCode() {
+		return typeCode;
+	}
+
+	public void setTypeCode(String typeCode) {
+		this.typeCode = typeCode;
+	}
+
+	public String getItemCode() {
+		return itemCode;
+	}
+
+	public void setItemCode(String itemCode) {
+		this.itemCode = itemCode;
+	}
 }
