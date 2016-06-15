@@ -37,9 +37,25 @@ public class DictionaryResource extends BaseResource {
 	@POST
 	@Path("/items/{typecode}")
 	@Produces(MediaType.APPLICATION_JSON)
-	@ApiOperation(value = "/items/{typecode}", response = ResponseModel.class, notes = "根据类型编码查找字典代码")
+	@ApiOperation(value = "/items/{typecode}", response = NHSysCodeItem.class, notes = "根据类型编码查找字典代码")
 	public Response getCodeItems(@ApiParam(required=true,name="typecode",value="类型编码")@PathParam("typecode")String typecode){
 		return convertToRespModel(MessageCode.NORMAL, null,  dicService.getCodeItemsByTypeCode(typecode));
+	}
+	
+	@POST
+	@Path("/items/tree/{typecode}")
+	@Produces(MediaType.APPLICATION_JSON)
+	@ApiOperation(value = "/items/tree/{typecode}", response = NHSysCodeItem.class, notes = "根据类型编码查找字典代码(树状结构)")
+	public Response getTreeCodeItemsByTypeCode(@ApiParam(required=true,name="typecode",value="类型编码")@PathParam("typecode")String typecode){
+		return convertToRespModel(MessageCode.NORMAL, null,  dicService.getTreeCodeItemsByTypeCode(typecode));
+	}
+	
+	@POST
+	@Path("/find/child/items")
+	@Produces(MediaType.APPLICATION_JSON)
+	@ApiOperation(value = "/find/child/items", response = NHSysCodeItem.class, notes = "根据typeCode和parent查询子itemsCode")
+	public Response findItemsByParentCode(@ApiParam(required=true,name="record",value="字典代码行项目对象(typeCode、parent)")NHSysCodeItem record){
+		return convertToRespModel(MessageCode.NORMAL, null,  dicService.findItemsByParentCode(record));
 	}
 	
 	@POST

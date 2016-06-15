@@ -1,7 +1,9 @@
 package com.nhry.data.config.domain;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 public class NHSysCodeItem implements Serializable {
 	private String typeCode;
@@ -35,6 +37,8 @@ public class NHSysCodeItem implements Serializable {
     private String lastModifiedBy;
 
     private String lastModifiedByTxt;
+    
+    private List<NHSysCodeItem> childrens = new ArrayList<NHSysCodeItem>();
 
     public String getItemName() {
         return itemName;
@@ -162,5 +166,13 @@ public class NHSysCodeItem implements Serializable {
 
 	public void setItemCode(String itemCode) {
 		this.itemCode = itemCode;
+	}
+
+	public List<NHSysCodeItem> getChildrens() {
+		return childrens;
+	}
+
+	public void setChildrens(List<NHSysCodeItem> childrens) {
+		this.childrens = childrens;
 	}
 }

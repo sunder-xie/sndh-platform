@@ -49,4 +49,9 @@ public class NHSysCodeItemMapperImpl implements NHSysCodeItemMapper {
 		return this.sqlSessionTemplate.update("updateCodeItemByCode", record);
 	}
 
+	@Override
+	public List<NHSysCodeItem> findItemsByParentCode(NHSysCodeItem record) {
+		// TODO Auto-generated method stub
+		return this.sqlSessionTemplate.selectList("findItemsByParentCode", record);
+	}
 }
