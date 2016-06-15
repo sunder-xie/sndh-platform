@@ -4,10 +4,10 @@ import java.util.List;
 
 import org.apache.commons.lang3.StringUtils;
 
+import com.nhry.common.exception.MessageCode;
+import com.nhry.common.exception.ServiceException;
 import com.nhry.data.auth.dao.TSysUserGroupMapper;
 import com.nhry.data.auth.domain.TSysUserGroup;
-import com.nhry.exception.MessageCode;
-import com.nhry.exception.ServiceException;
 import com.nhry.service.BaseService;
 import com.nhry.service.auth.dao.TSysUserGroupService;
 import com.nhry.utils.PrimaryKeyUtils;

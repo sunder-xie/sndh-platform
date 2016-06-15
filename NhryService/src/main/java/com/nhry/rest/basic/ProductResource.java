@@ -1,8 +1,8 @@
 package com.nhry.rest.basic;
 
+import com.nhry.common.exception.MessageCode;
 import com.nhry.data.basic.domain.TMdMaraEx;
 import com.nhry.data.config.domain.NHSysParameter;
-import com.nhry.exception.MessageCode;
 import com.nhry.model.basic.ProductQueryModel;
 import com.nhry.rest.BaseResource;
 import com.nhry.service.basic.dao.ProductService;

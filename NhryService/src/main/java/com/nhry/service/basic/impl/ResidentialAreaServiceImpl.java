@@ -2,10 +2,10 @@ package com.nhry.service.basic.impl;
 
 
 import com.github.pagehelper.PageInfo;
+import com.nhry.common.exception.MessageCode;
+import com.nhry.common.exception.ServiceException;
 import com.nhry.data.basic.dao.TMdResidentialAreaMapper;
 import com.nhry.data.basic.domain.TMdResidentialArea;
-import com.nhry.exception.MessageCode;
-import com.nhry.exception.ServiceException;
 import com.nhry.service.basic.dao.ResidentialAreaService;
 import com.nhry.service.basic.pojo.ResidentialAreaModel;
 import org.apache.commons.lang.StringUtils;

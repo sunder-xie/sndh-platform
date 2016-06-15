@@ -2,9 +2,9 @@ package com.nhry.data.config.impl;
 
 import java.util.List;
 
+import com.nhry.common.datasource.DynamicSqlSessionTemplate;
 import com.nhry.data.config.dao.NHSysCodeItemMapper;
 import com.nhry.data.config.domain.NHSysCodeItem;
-import com.nhry.datasource.DynamicSqlSessionTemplate;
 
 public class NHSysCodeItemMapperImpl implements NHSysCodeItemMapper {
 	private DynamicSqlSessionTemplate sqlSessionTemplate;

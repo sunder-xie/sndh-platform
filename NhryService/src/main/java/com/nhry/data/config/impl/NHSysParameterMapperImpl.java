@@ -3,9 +3,9 @@ package com.nhry.data.config.impl;
 import java.util.List;
 
 import com.github.pagehelper.PageInfo;
+import com.nhry.common.datasource.DynamicSqlSessionTemplate;
 import com.nhry.data.config.dao.NHSysParameterMapper;
 import com.nhry.data.config.domain.NHSysParameter;
-import com.nhry.datasource.DynamicSqlSessionTemplate;
 import com.nhry.model.basic.SysParamQueryModel;
 
 public class NHSysParameterMapperImpl implements NHSysParameterMapper {

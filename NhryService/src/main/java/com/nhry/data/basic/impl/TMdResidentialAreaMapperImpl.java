@@ -2,9 +2,9 @@ package com.nhry.data.basic.impl;
 
 
 import com.github.pagehelper.PageInfo;
+import com.nhry.common.datasource.DynamicSqlSessionTemplate;
 import com.nhry.data.basic.dao.TMdResidentialAreaMapper;
 import com.nhry.data.basic.domain.TMdResidentialArea;
-import com.nhry.datasource.DynamicSqlSessionTemplate;
 import com.nhry.service.basic.pojo.ResidentialAreaModel;
 
 import java.util.List;

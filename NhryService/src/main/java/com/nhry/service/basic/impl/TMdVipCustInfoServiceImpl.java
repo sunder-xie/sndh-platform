@@ -1,12 +1,13 @@
 package com.nhry.service.basic.impl;
 
 import java.util.List;
-import com.nhry.auth.UserSessionService;
+
+import com.nhry.common.auth.UserSessionService;
 import com.nhry.data.basic.dao.TMdVipCustInfoMapper;
 import com.nhry.data.basic.domain.TMdVipCustInfo;
 import com.nhry.service.BaseService;
 import com.nhry.service.basic.dao.TMdVipCustInfoService;
-import com.nhry.utils.Date;
+import com.nhry.utils.date.Date;
 
 public class TMdVipCustInfoServiceImpl extends BaseService implements TMdVipCustInfoService {
 	private TMdVipCustInfoMapper tmdVipcust;

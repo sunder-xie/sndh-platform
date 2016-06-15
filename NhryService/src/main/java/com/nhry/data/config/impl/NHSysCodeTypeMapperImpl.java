@@ -1,8 +1,8 @@
 package com.nhry.data.config.impl;
 
+import com.nhry.common.datasource.DynamicSqlSessionTemplate;
 import com.nhry.data.config.dao.NHSysCodeTypeMapper;
 import com.nhry.data.config.domain.NHSysCodeType;
-import com.nhry.datasource.DynamicSqlSessionTemplate;
 
 public class NHSysCodeTypeMapperImpl implements NHSysCodeTypeMapper {
 	private DynamicSqlSessionTemplate sqlSessionTemplate;
