@@ -15,6 +15,13 @@ public interface DictionaryService {
    public List<NHSysCodeItem> getCodeItemsByTypeCode(String typecode);
    
    /**
+    * 根据字典类型查找字典代码(树状结构)
+    * @param typecode
+    * @return
+    */
+   public List<NHSysCodeItem> getTreeCodeItemsByTypeCode(String typecode);
+   
+   /**
 	 * 删除字典代码类型
 	 * @param typeCode 类型编码
 	 * @return
@@ -76,4 +83,11 @@ public interface DictionaryService {
     * @return
     */
    int updateCodeItemByCode(NHSysCodeItem record);
+   
+   /**
+    * 根据parent和typecode，查询items
+    * @param record
+    * @return
+    */
+   public List<NHSysCodeItem> findItemsByParentCode(NHSysCodeItem record);
 }

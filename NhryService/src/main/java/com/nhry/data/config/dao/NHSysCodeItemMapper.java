@@ -46,4 +46,11 @@ public interface NHSysCodeItemMapper {
      * @return
      */
     public int findItemCountByTypeCode(String typecode);
+    
+    /**
+     * 根据parent和typecode，查询items
+     * @param record
+     * @return
+     */
+    public List<NHSysCodeItem> findItemsByParentCode(NHSysCodeItem record);
 }

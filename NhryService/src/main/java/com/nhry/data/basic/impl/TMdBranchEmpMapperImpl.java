@@ -3,9 +3,9 @@ package com.nhry.data.basic.impl;
 import java.util.List;
 
 import com.github.pagehelper.PageInfo;
+import com.nhry.common.datasource.DynamicSqlSessionTemplate;
 import com.nhry.data.basic.dao.TMdBranchEmpMapper;
 import com.nhry.data.basic.domain.TMdBranchEmp;
-import com.nhry.datasource.DynamicSqlSessionTemplate;
 import com.nhry.model.basic.EmpQueryModel;
 
 public class TMdBranchEmpMapperImpl implements TMdBranchEmpMapper {

@@ -1,19 +1,23 @@
 package com.nhry.service.config.impl;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.commons.lang3.StringUtils;
 
+import com.nhry.common.exception.MessageCode;
+import com.nhry.common.exception.ServiceException;
 import com.nhry.data.config.dao.NHSysCodeItemMapper;
 import com.nhry.data.config.dao.NHSysCodeTypeMapper;
 import com.nhry.data.config.domain.NHSysCodeItem;
 import com.nhry.data.config.domain.NHSysCodeType;
-import com.nhry.exception.MessageCode;
-import com.nhry.exception.ServiceException;
 import com.nhry.service.BaseService;
 import com.nhry.service.config.dao.DictionaryService;
-import com.nhry.utils.Date;
 import com.nhry.utils.PrimaryKeyUtils;
+import com.nhry.utils.date.Date;
 
 public class DictionaryServiceImpl extends BaseService implements DictionaryService {
 	private NHSysCodeItemMapper codeItemMapper;
@@ -153,5 +157,47 @@ public class DictionaryServiceImpl extends BaseService implements DictionaryServ
 		record.setLastModifiedBy(userSessionService.getCurrentUser().getLoginName());
 		record.setLastModifiedByTxt(userSessionService.getCurrentUser().getDisplayName());
 		return this.codeItemMapper.updateCodeItemByCode(record);
+	}
+
+	@Override
+	public List<NHSysCodeItem> getTreeCodeItemsByTypeCode(String typecode) {
+		// TODO Auto-generated method stub
+		List<NHSysCodeItem> items = new ArrayList<NHSysCodeItem>();
+		List<NHSysCodeItem> list = this.getCodeItemsByTypeCode(typecode);
+		if (list == null || list.size() == 0) {
+			return items;
+		}
+
+		Map<String, NHSysCodeItem> temp = new LinkedHashMap<String, NHSysCodeItem>();
+		for (NHSysCodeItem item : list) {
+			temp.put(item.getItemCode(), item);
+		}
+		StringBuffer sb = new StringBuffer();
+		for (Map.Entry<String, NHSysCodeItem> entry : temp.entrySet()) {
+			NHSysCodeItem children = entry.getValue();
+			NHSysCodeItem parent = temp.get(children.getParent());
+			if (parent != null) {
+				parent.getChildrens().add(children);
+			}
+			if ("-1".equals(children.getParent())) {
+				sb.append(children.getItemCode()).append(",");
+			}
+		}
+		if(sb.length() > 1){
+			sb.deleteCharAt(sb.length()-1);
+			for(String code : sb.toString().split(",")){
+				items.add(temp.get(code));
+			}
+		}
+		return items;
+	}
+
+	@Override
+	public List<NHSysCodeItem> findItemsByParentCode(NHSysCodeItem record) {
+		// TODO Auto-generated method stub
+		if(StringUtils.isEmpty(record.getTypeCode()) || StringUtils.isEmpty(record.getParent())){
+			throw new ServiceException(MessageCode.LOGIC_ERROR, "typeCode、parent属性值不能为空！");
+		}
+		return this.codeItemMapper.findItemsByParentCode(record);
 	}
 }

@@ -14,8 +14,8 @@ import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Controller;
 
+import com.nhry.common.exception.MessageCode;
 import com.nhry.data.config.domain.NHSysParameter;
-import com.nhry.exception.MessageCode;
 import com.nhry.model.basic.SysParamQueryModel;
 import com.nhry.model.sys.ResponseModel;
 import com.nhry.rest.BaseResource;

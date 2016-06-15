@@ -8,7 +8,7 @@ import javax.ws.rs.core.Response;
 import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONObject;
 
-import com.nhry.auth.UserSessionService;
+import com.nhry.common.auth.UserSessionService;
 import com.nhry.model.sys.ResponseModel;
 import com.nhry.utils.CookieUtil;
 

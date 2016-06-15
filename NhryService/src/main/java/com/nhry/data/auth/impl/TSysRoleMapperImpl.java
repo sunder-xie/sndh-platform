@@ -1,8 +1,8 @@
 package com.nhry.data.auth.impl;
 
+import com.nhry.common.datasource.DynamicSqlSessionTemplate;
 import com.nhry.data.auth.dao.TSysRoleMapper;
 import com.nhry.data.auth.domain.TSysRole;
-import com.nhry.datasource.DynamicSqlSessionTemplate;
 
 public class TSysRoleMapperImpl implements TSysRoleMapper {
 	private DynamicSqlSessionTemplate sqlSessionTemplate;
