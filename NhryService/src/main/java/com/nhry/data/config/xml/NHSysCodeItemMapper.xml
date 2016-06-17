@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
 <mapper namespace="com.nhry.data.config.dao.NHSysCodeItemMapper" >
+  <cache type="org.mybatis.caches.redis.RedisCache" />
   <resultMap id="BaseResultMap" type="com.nhry.data.config.domain.NHSysCodeItem" >
     <id column="TYPE_CODE" property="typeCode" jdbcType="VARCHAR" />
     <id column="ITEM_CODE" property="itemCode" jdbcType="VARCHAR" />
@@ -23,19 +24,19 @@
     TYPE_CODE, ITEM_CODE, ITEM_NAME, PARENT, ATTR1, ATTR2, ATTR3, ATTR4, ATTR5, IDX, 
     CREATE_AT, CREATE_BY, CREATE_BY_TXT, LAST_MODIFIED, LAST_MODIFIED_BY, LAST_MODIFIED_BY_TXT
   </sql>
-  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="com.nhry.data.config.domain.NHSysCodeItemKey" >
+  <select id="findCodeItenByCode" resultMap="BaseResultMap" parameterType="com.nhry.data.config.domain.NHSysCodeItem" >
     select 
     <include refid="Base_Column_List" />
     from t_sys_code_item
     where TYPE_CODE = #{typeCode,jdbcType=VARCHAR}
       and ITEM_CODE = #{itemCode,jdbcType=VARCHAR}
   </select>
-  <delete id="deleteByPrimaryKey" parameterType="com.nhry.data.config.domain.NHSysCodeItemKey" >
+  <delete id="deleteCodeItemByCode" parameterType="com.nhry.data.config.domain.NHSysCodeItem" >
     delete from t_sys_code_item
     where TYPE_CODE = #{typeCode,jdbcType=VARCHAR}
       and ITEM_CODE = #{itemCode,jdbcType=VARCHAR}
   </delete>
-  <insert id="insert" parameterType="com.nhry.data.config.domain.NHSysCodeItem" >
+  <insert id="addCodeItem" parameterType="com.nhry.data.config.domain.NHSysCodeItem" >
     insert into t_sys_code_item (TYPE_CODE, ITEM_CODE, ITEM_NAME, 
       PARENT, ATTR1, ATTR2, 
       ATTR3, ATTR4, ATTR5, 
@@ -49,7 +50,7 @@
       #{createByTxt,jdbcType=VARCHAR}, #{lastModified,jdbcType=TIMESTAMP}, #{lastModifiedBy,jdbcType=VARCHAR}, 
       #{lastModifiedByTxt,jdbcType=VARCHAR})
   </insert>
-  <update id="updateByPrimaryKey" parameterType="com.nhry.data.config.domain.NHSysCodeItem" >
+  <update id="updateCodeItemByCode" parameterType="com.nhry.data.config.domain.NHSysCodeItem" >
     update t_sys_code_item
     set ITEM_NAME = #{itemName,jdbcType=VARCHAR},
       PARENT = #{parent,jdbcType=VARCHAR},
@@ -71,6 +72,14 @@
   <select id="getCodeItemsByTypeCode" parameterType="String" resultMap="BaseResultMap">
        select 
     <include refid="Base_Column_List" />
-     from T_SYS_CODE_ITEM where TYPE_CODE=#{0} order by IDX
+     from T_SYS_CODE_ITEM where TYPE_CODE=#{0} order by PARENT,IDX asc
+  </select>
+  <select id="findTypeItemCountByTypeCode" resultType="Integer">
+      select count(ITEM_CODE) from t_sys_code_item where TYPE_CODE = #{typeCode,jdbcType=VARCHAR}
+  </select>
+  <select id="findItemsByParentCode"  resultMap="BaseResultMap" parameterType="com.nhry.data.config.domain.NHSysCodeItem" >
+      select 
+    <include refid="Base_Column_List" />
+     from T_SYS_CODE_ITEM where TYPE_CODE=#{typeCode} and PARENT=#{parent} order by IDX asc
   </select>
 </mapper>

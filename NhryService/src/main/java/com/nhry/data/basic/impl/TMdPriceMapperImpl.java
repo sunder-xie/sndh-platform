@@ -1,9 +1,9 @@
 package com.nhry.data.basic.impl;
 
 import com.github.pagehelper.PageInfo;
+import com.nhry.common.datasource.DynamicSqlSessionTemplate;
 import com.nhry.data.basic.dao.TMdPriceMapper;
 import com.nhry.data.basic.domain.TMdPrice;
-import com.nhry.datasource.DynamicSqlSessionTemplate;
 import com.nhry.model.basic.PriceQueryModel;
 
 public class TMdPriceMapperImpl implements TMdPriceMapper

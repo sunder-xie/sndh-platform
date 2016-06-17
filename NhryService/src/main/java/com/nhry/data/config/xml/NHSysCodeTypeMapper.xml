@@ -16,27 +16,13 @@
     TYPE_CODE, TYPE_NAME, IS_TREE, CREATE_AT, CREATE_BY, CREATE_BY_TXT, LAST_MODIFIED, 
     LAST_MODIFIED_BY, LAST_MODIFIED_BY_TXT
   </sql>
-  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.String" >
-    select 
-    <include refid="Base_Column_List" />
-    from t_sys_code_type
-    where TYPE_CODE = #{typeCode,jdbcType=VARCHAR}
+  <select id="findCodeTypeByCode" resultMap="BaseResultMap" parameterType="java.lang.String" >
+    select <include refid="Base_Column_List" /> from t_sys_code_type where TYPE_CODE = #{typeCode,jdbcType=VARCHAR}
   </select>
-  <delete id="deleteByPrimaryKey" parameterType="java.lang.String" >
-    delete from t_sys_code_type
-    where TYPE_CODE = #{typeCode,jdbcType=VARCHAR}
+  <delete id="delSysCodeTypeByCode" parameterType="java.lang.String" >
+    delete from t_sys_code_type where TYPE_CODE = #{typeCode,jdbcType=VARCHAR}
   </delete>
-  <insert id="insert" parameterType="com.nhry.data.config.domain.NHSysCodeType" >
-    insert into t_sys_code_type (TYPE_CODE, TYPE_NAME, IS_TREE, 
-      CREATE_AT, CREATE_BY, CREATE_BY_TXT, 
-      LAST_MODIFIED, LAST_MODIFIED_BY, LAST_MODIFIED_BY_TXT
-      )
-    values (#{typeCode,jdbcType=VARCHAR}, #{typeName,jdbcType=VARCHAR}, #{isTree,jdbcType=CHAR}, 
-      #{createAt,jdbcType=TIMESTAMP}, #{createBy,jdbcType=VARCHAR}, #{createByTxt,jdbcType=VARCHAR}, 
-      #{lastModified,jdbcType=TIMESTAMP}, #{lastModifiedBy,jdbcType=VARCHAR}, #{lastModifiedByTxt,jdbcType=VARCHAR}
-      )
-  </insert>
-  <insert id="insertSelective" parameterType="com.nhry.data.config.domain.NHSysCodeType" >
+  <insert id="addSysCodeType" parameterType="com.nhry.data.config.domain.NHSysCodeType" >
     insert into t_sys_code_type
     <trim prefix="(" suffix=")" suffixOverrides="," >
       <if test="typeCode != null" >
@@ -97,7 +83,7 @@
       </if>
     </trim>
   </insert>
-  <update id="updateByPrimaryKeySelective" parameterType="com.nhry.data.config.domain.NHSysCodeType" >
+  <update id="updateSysCodeType" parameterType="com.nhry.data.config.domain.NHSysCodeType" >
     update t_sys_code_type
     <set >
       <if test="typeName != null" >
@@ -125,18 +111,6 @@
         LAST_MODIFIED_BY_TXT = #{lastModifiedByTxt,jdbcType=VARCHAR},
       </if>
     </set>
-    where TYPE_CODE = #{typeCode,jdbcType=VARCHAR}
-  </update>
-  <update id="updateByPrimaryKey" parameterType="com.nhry.data.config.domain.NHSysCodeType" >
-    update t_sys_code_type
-    set TYPE_NAME = #{typeName,jdbcType=VARCHAR},
-      IS_TREE = #{isTree,jdbcType=CHAR},
-      CREATE_AT = #{createAt,jdbcType=TIMESTAMP},
-      CREATE_BY = #{createBy,jdbcType=VARCHAR},
-      CREATE_BY_TXT = #{createByTxt,jdbcType=VARCHAR},
-      LAST_MODIFIED = #{lastModified,jdbcType=TIMESTAMP},
-      LAST_MODIFIED_BY = #{lastModifiedBy,jdbcType=VARCHAR},
-      LAST_MODIFIED_BY_TXT = #{lastModifiedByTxt,jdbcType=VARCHAR}
     where TYPE_CODE = #{typeCode,jdbcType=VARCHAR}
   </update>
 </mapper>

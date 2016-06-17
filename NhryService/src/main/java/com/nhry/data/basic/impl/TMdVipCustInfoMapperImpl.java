@@ -2,9 +2,9 @@ package com.nhry.data.basic.impl;
 
 import java.util.List;
 
+import com.nhry.common.datasource.DynamicSqlSessionTemplate;
 import com.nhry.data.basic.dao.TMdVipCustInfoMapper;
 import com.nhry.data.basic.domain.TMdVipCustInfo;
-import com.nhry.datasource.DynamicSqlSessionTemplate;
 
 public class TMdVipCustInfoMapperImpl implements TMdVipCustInfoMapper {
 	private DynamicSqlSessionTemplate sqlSessionTemplate;

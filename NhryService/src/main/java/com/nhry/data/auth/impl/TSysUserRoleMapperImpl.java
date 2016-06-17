@@ -2,9 +2,9 @@ package com.nhry.data.auth.impl;
 
 import java.util.List;
 
+import com.nhry.common.datasource.DynamicSqlSessionTemplate;
 import com.nhry.data.auth.dao.TSysUserRoleMapper;
 import com.nhry.data.auth.domain.TSysUserRole;
-import com.nhry.datasource.DynamicSqlSessionTemplate;
 import com.nhry.model.auth.UserRoleModel;
 import com.nhry.service.BaseService;
 

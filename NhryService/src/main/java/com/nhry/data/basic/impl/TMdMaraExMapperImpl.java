@@ -1,9 +1,9 @@
 package com.nhry.data.basic.impl;
 
 import com.github.pagehelper.PageInfo;
+import com.nhry.common.datasource.DynamicSqlSessionTemplate;
 import com.nhry.data.basic.dao.TMdMaraExMapper;
 import com.nhry.data.basic.domain.TMdMaraEx;
-import com.nhry.datasource.DynamicSqlSessionTemplate;
 
 public class TMdMaraExMapperImpl implements TMdMaraExMapper {
 	private DynamicSqlSessionTemplate sqlSessionTemplate;

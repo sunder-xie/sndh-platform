@@ -2,9 +2,9 @@ package com.nhry.data.auth.impl;
 
 import java.util.List;
 
+import com.nhry.common.datasource.DynamicSqlSessionTemplate;
 import com.nhry.data.auth.dao.TSysUserGroupMapper;
 import com.nhry.data.auth.domain.TSysUserGroup;
-import com.nhry.datasource.DynamicSqlSessionTemplate;
 
 public class TSysUserGroupMapperImpl implements TSysUserGroupMapper {
 	

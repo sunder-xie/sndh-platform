@@ -12,7 +12,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 
-import com.nhry.auth.UserSessionService;
+import com.nhry.common.auth.UserSessionService;
 import com.nhry.data.auth.domain.TSysUser;
 import com.nhry.utils.CookieUtil;
 
