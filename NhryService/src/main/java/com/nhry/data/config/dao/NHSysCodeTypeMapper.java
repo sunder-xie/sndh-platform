@@ -1,5 +1,8 @@
 package com.nhry.data.config.dao;
 
+import java.util.List;
+
+import com.nhry.data.config.domain.NHSysCodeItem;
 import com.nhry.data.config.domain.NHSysCodeType;
 
 public interface NHSysCodeTypeMapper {
@@ -30,5 +33,12 @@ public interface NHSysCodeTypeMapper {
      * @return
      */
     int updateSysCodeType(NHSysCodeType record);
+    
+    /**
+     * 获取所有的typeCode
+     * @param typecode
+     * @return
+     */
+    List<NHSysCodeType> getAllTypeCodes() ;
 
 }

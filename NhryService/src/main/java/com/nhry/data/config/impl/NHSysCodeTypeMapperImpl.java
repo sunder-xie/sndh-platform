@@ -1,5 +1,7 @@
 package com.nhry.data.config.impl;
 
+import java.util.List;
+
 import com.nhry.common.datasource.DynamicSqlSessionTemplate;
 import com.nhry.data.config.dao.NHSysCodeTypeMapper;
 import com.nhry.data.config.domain.NHSysCodeType;
@@ -28,6 +30,13 @@ public class NHSysCodeTypeMapperImpl implements NHSysCodeTypeMapper {
 	public int updateSysCodeType(NHSysCodeType record) {
 		// TODO Auto-generated method stub
 		return this.sqlSessionTemplate.update("updateSysCodeType", record);
+	}
+	
+	@Override
+	public List<NHSysCodeType> getAllTypeCodes()
+	{
+		// TODO Auto-generated method stub
+		return this.sqlSessionTemplate.selectList("findAllTypeCodes");
 	}
 
 	public void setSqlSessionTemplate(DynamicSqlSessionTemplate sqlSessionTemplate) {
