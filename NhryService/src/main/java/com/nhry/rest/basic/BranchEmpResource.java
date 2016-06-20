@@ -65,7 +65,7 @@ public class BranchEmpResource extends BaseResource {
 	@GET
 	@Path("/{empNo}")
 	@Produces(MediaType.APPLICATION_JSON)
-	@ApiOperation(value = "/{empNo}", response = NHSysParameter.class, notes = "根据员工编号查询员工信息")
+	@ApiOperation(value = "/{empNo}", response = TMdBranchEmp.class, notes = "根据员工编号查询员工信息")
 	public Response findBranchEmpByNo(@ApiParam(required=true,name="empNo",value="员工编号") @PathParam("empNo") String empNo){
 		return convertToRespModel(MessageCode.NORMAL, null,branchEmpService.selectBranchEmpByNo(empNo));
 	} 
