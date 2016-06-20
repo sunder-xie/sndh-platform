@@ -33,6 +33,25 @@
 	   <property name="tMdPriceMapper"  ref="priceMapper"></property>
 	</bean>
 	
+	<!-- 订单信息 -->
+	<bean id="tPreOrderMapper" class="com.nhry.data.order.impl.TPreOrderMapperImpl">
+	   <property name="sqlSessionTemplate"  ref="dynamicSqlSessionTemplate"></property>
+	</bean>
+	<bean id="tOrderDaliyPlanItemMapper" class="com.nhry.data.order.impl.TOrderDaliyPlanItemMapperImpl">
+	   <property name="sqlSessionTemplate"  ref="dynamicSqlSessionTemplate"></property>
+	</bean>
+	<bean id="tPlanOrderItemMapper" class="com.nhry.data.order.impl.TPlanOrderItemMapperImpl">
+	   <property name="sqlSessionTemplate"  ref="dynamicSqlSessionTemplate"></property>
+	</bean>
+	<bean id="orderService" class="com.nhry.service.order.impl.OrderServiceImpl">
+	   <property name="tPreOrderMapper"  ref="tPreOrderMapper"></property>
+	   <property name="tPlanOrderItemMapper"  ref="tPlanOrderItemMapper"></property>
+	   <property name="tOrderDaliyPlanItemMapper"  ref="tOrderDaliyPlanItemMapper"></property>
+	   <property name="userSessionService" ref="userSessionService"></property>
+	</bean>
+	
+	<!-- 订单end -->
+	
 	<bean id="custMapper" class="com.nhry.data.basic.impl.TMdVipCustInfoMapperImpl">
 	   <property name="sqlSessionTemplate"  ref="dynamicSqlSessionTemplate"></property>
 	</bean>
