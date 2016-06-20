@@ -3,6 +3,8 @@ package com.nhry.data.basic.domain;
 public class TMdResidentialArea {
     private String id;
 
+    private String branchNo;
+
     private String residentialAreaTxt;
 
     private String province;
@@ -13,7 +15,10 @@ public class TMdResidentialArea {
 
     private String street;
 
+    private String guideboard;
+
     private String status;
+
 
     private String addressTxt;
 
@@ -31,6 +36,14 @@ public class TMdResidentialArea {
 
     public void setId(String id) {
         this.id = id == null ? null : id.trim();
+    }
+
+    public String getBranchNo() {
+        return branchNo;
+    }
+
+    public void setBranchNo(String branchNo) {
+        this.branchNo = branchNo  == null ? null : branchNo.trim();
     }
 
     public String getResidentialAreaTxt() {
@@ -67,6 +80,14 @@ public class TMdResidentialArea {
 
     public String getStreet() {
         return street;
+    }
+
+    public String getGuideboard() {
+        return guideboard;
+    }
+
+    public void setGuideboard(String guideboard) {
+        this.guideboard = guideboard  == null ? null : guideboard.trim();
     }
 
     public String getStatus() {

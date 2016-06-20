@@ -58,11 +58,25 @@ public class TMdResidentialAreaMapperImpl implements TMdResidentialAreaMapper {
     }
 
     @Override
-    public int addResidentialArea(ResidentialAreaModel residentialAreaModel) {
-
-        return sqlSessionTemplate.insert("insert",residentialAreaModel);
+    public int addResidentialArea(TMdResidentialArea tMdResidentialArea) {
+        int area = sqlSessionTemplate.insert("insertArea",tMdResidentialArea);
+        int areaBranch =  sqlSessionTemplate.insert("insertBranchArea",tMdResidentialArea);
+        return area + areaBranch;
     }
 
+    @Override
+    public int uptResidentialArea(TMdResidentialArea tMdResidentialArea) {
+        int area = sqlSessionTemplate.update("uptArea",tMdResidentialArea);
+        int areaBranch =  sqlSessionTemplate.update("uptBranchArea",tMdResidentialArea);
+        return area + areaBranch;
+    }
+
+    @Override
+    public int deleteAreaById(String id) {
+        int area = sqlSessionTemplate.delete("delArea",id);
+        int areaBranch =  sqlSessionTemplate.delete("delBranchArea",id);
+        return area + areaBranch;
+    }
 
 
     public void setSqlSessionTemplate(DynamicSqlSessionTemplate sqlSessionTemplate) {

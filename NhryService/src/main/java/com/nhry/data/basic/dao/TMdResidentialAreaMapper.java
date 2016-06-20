@@ -24,6 +24,9 @@ public interface TMdResidentialAreaMapper {
 
     public PageInfo findAreaListByPage(ResidentialAreaModel residentialAreaModel);
 
-    public  int addResidentialArea(ResidentialAreaModel residentialAreaModel);
+    public  int addResidentialArea(TMdResidentialArea tMdResidentialArea);
 
+    int uptResidentialArea(TMdResidentialArea tMdResidentialArea);
+
+    int deleteAreaById(String id);
 }

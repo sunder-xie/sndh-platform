@@ -9,6 +9,7 @@
     <result column="BRANCH_GROUP" property="branchGroup" jdbcType="VARCHAR" />
     <result column="BRANCH_LEVEL" property="branchLevel" jdbcType="VARCHAR" />
     <result column="CONTACT" property="contact" jdbcType="VARCHAR" />
+    <result column="EMP_NO" property="empNo" jdbcType="VARCHAR" />
     <result column="TEL" property="tel" jdbcType="VARCHAR" />
     <result column="MP" property="mp" jdbcType="VARCHAR" />
     <result column="DEALER_NO" property="dealerNo" jdbcType="VARCHAR" />
@@ -26,7 +27,7 @@
     <result column="LAST_MODIFIED_BY_TXT" property="lastModifiedByTxt" jdbcType="VARCHAR" />
   </resultMap>
   <sql id="Base_Column_List" >
-    BRANCH_NO, BRANCH_NAME, SALES_ORG, SALES_CHA, BRANCH_GROUP, BRANCH_LEVEL, CONTACT, 
+    BRANCH_NO, BRANCH_NAME, SALES_ORG, SALES_CHA, BRANCH_GROUP, BRANCH_LEVEL, CONTACT,EMP_NO,
     TEL, MP, DEALER_NO, ADDRESS, PROVINCE, CITY, COUNTY, WERKS, LGORT, CREATE_AT, CREATE_BY, 
     CREATE_BY_TXT, LAST_MODIFIED, LAST_MODIFIED_BY, LAST_MODIFIED_BY_TXT
   </sql>
@@ -43,7 +44,7 @@
   <insert id="addBranch" parameterType="com.nhry.data.basic.domain.TMdBranch" >
     insert into t_md_branch (BRANCH_NO, BRANCH_NAME, SALES_ORG, 
       SALES_CHA, BRANCH_GROUP, BRANCH_LEVEL, 
-      CONTACT, TEL, MP, DEALER_NO, 
+      CONTACT,EMP_NO, TEL, MP, DEALER_NO,
       ADDRESS, PROVINCE, CITY, 
       COUNTY, WERKS, LGORT, 
       CREATE_AT, CREATE_BY, CREATE_BY_TXT, 
@@ -51,14 +52,14 @@
       )
     values (#{branchNo,jdbcType=VARCHAR}, #{branchName,jdbcType=VARCHAR}, #{salesOrg,jdbcType=VARCHAR}, 
       #{salesCha,jdbcType=VARCHAR}, #{branchGroup,jdbcType=VARCHAR}, #{branchLevel,jdbcType=VARCHAR}, 
-      #{contact,jdbcType=VARCHAR}, #{tel,jdbcType=VARCHAR}, #{mp,jdbcType=VARCHAR}, #{dealerNo,jdbcType=VARCHAR}, 
+      #{contact,jdbcType=VARCHAR}, #{empNo,jdbcType=VARCHAR}, #{tel,jdbcType=VARCHAR}, #{mp,jdbcType=VARCHAR}, #{dealerNo,jdbcType=VARCHAR},
       #{address,jdbcType=VARCHAR}, #{province,jdbcType=VARCHAR}, #{city,jdbcType=VARCHAR}, 
       #{county,jdbcType=VARCHAR}, #{werks,jdbcType=VARCHAR}, #{lgort,jdbcType=VARCHAR}, 
       #{createAt,jdbcType=TIMESTAMP}, #{createBy,jdbcType=VARCHAR}, #{createByTxt,jdbcType=VARCHAR}, 
       #{lastModified,jdbcType=TIMESTAMP}, #{lastModifiedBy,jdbcType=VARCHAR}, #{lastModifiedByTxt,jdbcType=VARCHAR}
       )
   </insert>
-  <update id="updateBranchByNo" parameterType="com.nhry.data.basic.domain.TMdBranch" >
+  <update id="uptBranch" parameterType="com.nhry.data.basic.domain.TMdBranch" >
     update t_md_branch
     set BRANCH_NAME = #{branchName,jdbcType=VARCHAR},
       SALES_ORG = #{salesOrg,jdbcType=VARCHAR},
@@ -66,6 +67,7 @@
       BRANCH_GROUP = #{branchGroup,jdbcType=VARCHAR},
       BRANCH_LEVEL = #{branchLevel,jdbcType=VARCHAR},
       CONTACT = #{contact,jdbcType=VARCHAR},
+      EMP_NO = #{empNo,jdbcType=VARCHAR},
       TEL = #{tel,jdbcType=VARCHAR},
       MP = #{mp,jdbcType=VARCHAR},
       DEALER_NO = #{dealerNo,jdbcType=VARCHAR},

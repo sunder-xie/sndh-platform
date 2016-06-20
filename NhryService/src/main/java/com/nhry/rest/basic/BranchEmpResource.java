@@ -26,7 +26,7 @@ import javax.ws.rs.core.Response;
 @Scope("request")
 @Singleton
 @Controller
-@Api(value = "/emp", description = "网点员工信息(送奶工)维护")
+@Api(value = "/emp", description = "网点员工信息维护")
 public class BranchEmpResource extends BaseResource {
 	@Autowired
 	private BranchEmpService branchEmpService;

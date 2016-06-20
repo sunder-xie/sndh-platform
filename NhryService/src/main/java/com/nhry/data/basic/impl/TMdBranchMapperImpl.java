@@ -22,6 +22,8 @@ public class TMdBranchMapperImpl implements TMdBranchMapper {
 		return 0;
 	}
 
+
+
 	@Override
 	public TMdBranch selectBranchByNo(String branchNo) {
 		// TODO Auto-generated method stub
@@ -29,10 +31,10 @@ public class TMdBranchMapperImpl implements TMdBranchMapper {
 	}
 
 	@Override
-	public int updateBranchByNo(TMdBranch record) {
-		// TODO Auto-generated method stub
-		return 0;
+	public int updateBranch(TMdBranch tMdBranch) {
+		return sqlSessionTemplate.update("uptBranch",tMdBranch);
 	}
+
 
 	@Override
 	public List<TMdBranch> findBranchListByOrg(String salesOrg) {
@@ -45,6 +47,8 @@ public class TMdBranchMapperImpl implements TMdBranchMapper {
 		return sqlSessionTemplate.selectListByPages("searchBranch",branchModel, Integer.parseInt(branchModel.getPageNum()), Integer.parseInt(branchModel.getPageSize()));
 
 	}
+
+
 
 	public void setSqlSessionTemplate(DynamicSqlSessionTemplate sqlSessionTemplate) {
 		this.sqlSessionTemplate = sqlSessionTemplate;
