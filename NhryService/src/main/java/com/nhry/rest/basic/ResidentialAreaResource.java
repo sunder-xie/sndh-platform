@@ -1,8 +1,8 @@
 package com.nhry.rest.basic;
 
 import com.github.pagehelper.PageInfo;
+import com.nhry.common.exception.MessageCode;
 import com.nhry.data.basic.domain.TMdResidentialArea;
-import com.nhry.exception.MessageCode;
 import com.nhry.rest.BaseResource;
 import com.nhry.service.basic.dao.ResidentialAreaService;
 import com.nhry.service.basic.pojo.ResidentialAreaModel;

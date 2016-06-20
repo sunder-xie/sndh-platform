@@ -6,6 +6,7 @@ import org.codehaus.jettison.json.JSONObject;
 import com.github.pagehelper.PageInfo;
 import com.nhry.data.auth.domain.TSysUser;
 import com.nhry.model.auth.UserQueryModel;
+import com.nhry.model.auth.UserRoleModel;
 
 public interface UserService {
 	public PageInfo findUser(UserQueryModel um);
@@ -21,4 +22,6 @@ public interface UserService {
 	public int updateUserPw(TSysUser record);
 	
 	public int deleteUserByLoginName(String uname);
+	
+	
 }

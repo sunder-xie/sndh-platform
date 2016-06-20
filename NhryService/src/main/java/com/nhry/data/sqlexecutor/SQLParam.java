@@ -6,8 +6,8 @@ import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.util.List;
 
-import com.nhry.exception.MessageCode;
-import com.nhry.exception.ServiceException;
+import com.nhry.common.exception.MessageCode;
+import com.nhry.common.exception.ServiceException;
 
 
 /**

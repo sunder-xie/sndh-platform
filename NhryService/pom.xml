@@ -30,6 +30,7 @@
 		<guava.version>17.0</guava.version>
 		<poi.version>3.9</poi.version>
 		<jetty.version>7.6.11.v20130520</jetty.version>
+		<flywaydb.version>4.0.2</flywaydb.version>
 
 		<!-- jdbc driver setting -->
 		<mysql.driver.version>5.1.30</mysql.driver.version>
@@ -513,6 +514,27 @@
 						<contextPath>/${project.artifactId}</contextPath>
 					</webAppConfig>
 				</configuration>
+			</plugin>
+			<plugin>
+				<groupId>org.flywaydb</groupId>
+				<artifactId>flyway-maven-plugin</artifactId>
+				<version>${flywaydb.version}</version>
+				<configuration>
+					<url>jdbc:mysql://54.222.180.69:3306/nhdb?useUnicode=true</url>
+					<user>root</user>
+					<password>Abcd1234!</password>
+					<encoding>UTF-8</encoding>
+					<baselineOnMigrate>true</baselineOnMigrate>
+				</configuration>
+				<!--
+				<dependencies>
+					<dependency>
+						<groupId>com.h2database</groupId>
+						<artifactId>h2</artifactId>
+						<version>1.4.191</version>
+					</dependency>
+				</dependencies>
+				-->
 			</plugin>
 		</plugins>
 	</build>

@@ -1,10 +1,10 @@
 package com.nhry.data.basic.impl;
 
 import com.github.pagehelper.PageInfo;
+import com.nhry.common.datasource.DynamicSqlSessionTemplate;
 import com.nhry.data.basic.dao.TMdBranchEmpMapper;
 import com.nhry.data.basic.domain.TMdBranchEmp;
 import com.nhry.data.basic.domain.TMdResidentialArea;
-import com.nhry.datasource.DynamicSqlSessionTemplate;
 import com.nhry.model.basic.EmpQueryModel;
 import com.nhry.service.basic.pojo.BranchEmpModel;
 

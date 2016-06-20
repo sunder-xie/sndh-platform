@@ -1,9 +1,9 @@
 package com.nhry.data.basic.impl;
 
 import com.github.pagehelper.PageInfo;
+import com.nhry.common.datasource.DynamicSqlSessionTemplate;
 import com.nhry.data.basic.dao.TMdMaraMapper;
 import com.nhry.data.basic.domain.TMdMara;
-import com.nhry.datasource.DynamicSqlSessionTemplate;
 import com.nhry.service.basic.pojo.ProductInfoExModel;
 import com.nhry.model.basic.ProductQueryModel;
 
@@ -46,8 +46,8 @@ public class TMdMaraMapperImpl implements TMdMaraMapper {
 	}
 
 	@Override
-	public int uptPubProductByCode(){
+	public int pubProductByCode(String code){
 		// TODO Auto-generated method stub
-		return 0;
+		return this.sqlSessionTemplate.update("pubProductByCode", code);
 	}
 }

@@ -1,7 +1,7 @@
 package com.nhry.data.basic.impl;
 
+import com.nhry.common.datasource.DynamicSqlSessionTemplate;
 import com.nhry.data.basic.dao.TMdBranchScopeMapper;
-import com.nhry.datasource.DynamicSqlSessionTemplate;
 import com.nhry.service.basic.pojo.BranchScopeModel;
 import org.apache.commons.lang3.StringUtils;
 

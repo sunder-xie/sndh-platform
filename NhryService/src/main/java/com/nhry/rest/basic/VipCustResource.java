@@ -17,11 +17,10 @@ import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Controller;
 
 import com.github.pagehelper.PageInfo;
+import com.nhry.common.exception.MessageCode;
 import com.nhry.data.basic.domain.TMdVipCustInfo;
-import com.nhry.exception.MessageCode;
 import com.nhry.rest.BaseResource;
 import com.nhry.service.basic.dao.TMdVipCustInfoService;
-import com.nhry.utils.JsonUtil;
 import com.sun.jersey.spi.resource.Singleton;
 import com.wordnik.swagger.annotations.Api;
 import com.wordnik.swagger.annotations.ApiOperation;

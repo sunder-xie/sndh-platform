@@ -1,9 +1,9 @@
 package com.nhry.data.auth.impl;
 
 import com.github.pagehelper.PageInfo;
+import com.nhry.common.datasource.DynamicSqlSessionTemplate;
 import com.nhry.data.auth.dao.TSysUserMapper;
 import com.nhry.data.auth.domain.TSysUser;
-import com.nhry.datasource.DynamicSqlSessionTemplate;
 import com.nhry.model.auth.UserQueryModel;
 
 public class TSysUserMapperImpl implements TSysUserMapper {

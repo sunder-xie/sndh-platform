@@ -1,8 +1,8 @@
 package com.nhry.rest.basic;
 
+import com.nhry.common.exception.MessageCode;
 import com.nhry.data.basic.domain.TMdMaraEx;
 import com.nhry.data.config.domain.NHSysParameter;
-import com.nhry.exception.MessageCode;
 import com.nhry.model.basic.ProductQueryModel;
 import com.nhry.rest.BaseResource;
 import com.nhry.service.basic.dao.ProductService;
@@ -51,7 +51,7 @@ public class ProductResource extends BaseResource {
 	@Produces(MediaType.APPLICATION_JSON)
 	@Consumes(MediaType.APPLICATION_JSON)
 	@ApiOperation(value = "/search", response = NHSysParameter.class, notes = "查询商品信息列表")
-	public Response findBranchEmpByNo(@ApiParam(required=true,name="smodel",value="SearchModel") ProductQueryModel smodel){
+	public Response findProducts(@ApiParam(required=true,name="smodel",value="SearchModel") ProductQueryModel smodel){
 		return convertToRespModel(MessageCode.NORMAL, null, productService.searchProducts(smodel));
 	}
 	
@@ -60,8 +60,9 @@ public class ProductResource extends BaseResource {
 	@Produces(MediaType.APPLICATION_JSON)
 	@ApiOperation(value = "/publish/{productCode}", response = NHSysParameter.class, notes = "发布商品")
 	public Response pubProductByCode(@ApiParam(required=true,name="productCode",value="商品编号") @PathParam("productCode") String productCode){
-		return convertToRespModel(MessageCode.NORMAL, null, null);
-	}
+		return convertToRespModel(MessageCode.NORMAL, null, productService.pubProductByCode(productCode));
+	} 
+	
 	@GET
 	@Path("/getList/{productCode}")
 	@Produces(MediaType.APPLICATION_JSON)

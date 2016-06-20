@@ -1,6 +1,6 @@
 package com.nhry.rest.basic;
 
-import com.nhry.exception.MessageCode;
+import com.nhry.common.exception.MessageCode;
 import com.nhry.rest.BaseResource;
 import com.nhry.service.basic.dao.TMdBranchScopeService;
 import com.sun.jersey.spi.resource.Singleton;
