@@ -387,28 +387,6 @@
 		    <artifactId>shiro-core</artifactId>
 		    <version>1.2.4</version>
 		</dependency>
-		<!-- 
-		<dependency>
-		    <groupId>org.springframework.ws</groupId>
-		    <artifactId>spring-ws-core</artifactId>
-		    <version>2.2.0.RELEASE</version>
-		</dependency>
-		 -->
-		<dependency>
-			<groupId>org.apache.cxf</groupId>
-			<artifactId>cxf-rt-frontend-jaxws</artifactId>
-			<version>3.0.5</version>
-		</dependency>
-		<dependency>
-			<groupId>org.apache.cxf</groupId>
-			<artifactId>cxf-rt-transports-http</artifactId>
-			<version>3.0.5</version>
-		</dependency>
-		<dependency>
-    <groupId>org.apache.cxf</groupId>
-    <artifactId>cxf-rt-ws-security</artifactId>
-    <version>3.0.5</version>
-</dependency>
 	</dependencies>
 	<!-- 插件配置 -->
 	<build>
