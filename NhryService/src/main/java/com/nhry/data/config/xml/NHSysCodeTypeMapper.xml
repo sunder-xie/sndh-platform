@@ -19,6 +19,9 @@
   <select id="findCodeTypeByCode" resultMap="BaseResultMap" parameterType="java.lang.String" >
     select <include refid="Base_Column_List" /> from t_sys_code_type where TYPE_CODE = #{typeCode,jdbcType=VARCHAR}
   </select>
+  <select id="findAllTypeCodes" resultMap="BaseResultMap" parameterType="java.lang.String" >
+    select distinct <include refid="Base_Column_List" /> from t_sys_code_type
+  </select>
   <delete id="delSysCodeTypeByCode" parameterType="java.lang.String" >
     delete from t_sys_code_type where TYPE_CODE = #{typeCode,jdbcType=VARCHAR}
   </delete>

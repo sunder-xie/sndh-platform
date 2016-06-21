@@ -12,6 +12,10 @@ public class TMdBranchEmp implements Serializable{
 
     private String empName;
 
+    private String gender;
+
+    private String roleId;
+
     private String empType;
 
     private String tel;
@@ -34,7 +38,7 @@ public class TMdBranchEmp implements Serializable{
 
     private String lastModifiedByTxt;
 
-    private String delFlag;
+    private String status;
 
     public String getEmpNo() {
         return empNo;
@@ -64,8 +68,24 @@ public class TMdBranchEmp implements Serializable{
         return empName;
     }
 
+    public String getRoleId() {
+        return roleId;
+    }
+
+    public void setRoleId(String roleId) {
+        this.roleId = roleId  == null ? null : roleId.trim();;
+    }
+
     public void setEmpName(String empName) {
         this.empName = empName == null ? null : empName.trim();
+    }
+
+    public String getGender() {
+        return gender;
+    }
+
+    public void setGender(String gender) {
+        this.gender = gender  == null ? null : gender.trim();
     }
 
     public String getEmpType() {
@@ -156,11 +176,11 @@ public class TMdBranchEmp implements Serializable{
         this.lastModifiedByTxt = lastModifiedByTxt == null ? null : lastModifiedByTxt.trim();
     }
 
-    public String getDelFlag() {
-        return delFlag;
+    public String getStatus() {
+        return status;
     }
 
-    public void setDelFlag(String delFlag) {
-        this.delFlag = delFlag == null ? null : delFlag.trim();
+    public void setStatus(String status) {
+        this.status = status;
     }
 }

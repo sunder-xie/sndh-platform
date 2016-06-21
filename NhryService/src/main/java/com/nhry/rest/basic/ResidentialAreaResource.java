@@ -32,7 +32,7 @@ public class ResidentialAreaResource extends BaseResource {
 	@GET
 	@Path("/getAreaByBranchNo/{branchNo}")
 	@Produces(MediaType.APPLICATION_JSON)
-	@ApiOperation(value = "/getAreaByBranchNo/{branchNo}", response = TMdResidentialArea.class, notes = "根据网点客户信息号获取配送区域(小区)列表")
+	@ApiOperation(value = "/getAreaByBranchNo/{branchNo}", response = TMdResidentialArea.class, notes = "根据网点客户信息号(奶站编号)获取小区(配送区域)列表")
 	public Response getAreaByBranchNo(
 			@ApiParam(required = true, name = "branchNo", value = "网店客户信息号(奶站编号)") @PathParam("branchNo") String branchNo) {
 		return convertToRespModel(MessageCode.NORMAL, null,
@@ -42,32 +42,52 @@ public class ResidentialAreaResource extends BaseResource {
 	@GET
 	@Path("/getAreaById/{id}")
 	@Produces(MediaType.APPLICATION_JSON)
-	@ApiOperation(value = "/getAreaById/{id}", response = TMdResidentialArea.class, notes = "小区编号获取配送区域(小区)列表")
+	@ApiOperation(value = "/getAreaById/{id}", response = TMdResidentialArea.class, notes = "根据小区编号获取配送区域(小区)列表")
 	public Response selectById(
 			@ApiParam(required = true, name = "id", value = "小区编号") @PathParam("id") String id) {
 		return convertToRespModel(MessageCode.NORMAL, null,
 				residentialAreaService.selectById(id));
 	}
 
+	@GET
+	@Path("/deleteAreaById/{id}")
+	@Produces(MediaType.APPLICATION_JSON)
+	@ApiOperation(value = "/deleteAreaById/{id}", response = TMdResidentialArea.class, notes = "删除小区信息，并删除小区和奶站的关系表")
+	public Response deleteAreaById(
+			@ApiParam(required = true, name = "id", value = "小区编号") @PathParam("id") String id) {
+		return convertToRespModel(MessageCode.NORMAL, null,
+				residentialAreaService.deleteAreaById(id));
+	}
 
 	@POST
 	@Path("/list")
 	@Produces(MediaType.APPLICATION_JSON)
 	@Consumes(MediaType.APPLICATION_JSON)
-	@ApiOperation(value = "/list", response = TMdResidentialArea.class, notes = "根据销售组织、奶站性质、奶站等级查询网点客户(奶站)信息列表")
+	@ApiOperation(value = "/list", response = TMdResidentialArea.class, notes = "根据省份、城市、状态查询小区(配送区域)信息列表")
 	public Response findAreaListByPage(
 			@ApiParam(required=true,name="branchModel",value="SearchModel") ResidentialAreaModel residentialAreaModel){
 		PageInfo data = residentialAreaService.findAreaListByPage(residentialAreaModel);
 		return convertToRespModel(MessageCode.NORMAL, null,data);
 	}
 
+
+
 	@POST
 	@Path("/add")
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
-	@ApiOperation(value = "/add", response = String.class, notes = "更新商品信息")
-	public Response addResidentialArea(@ApiParam(required=true,name="residentialAreaModel",value="系统参数json格式")ResidentialAreaModel residentialAreaModel){
-		return convertToRespModel(MessageCode.NORMAL, null,  residentialAreaService.addResidentialArea(residentialAreaModel));
+	@ApiOperation(value = "/add", response = String.class, notes = "添加小区信息")
+	public Response addResidentialArea(@ApiParam(required=true,name="residentialAreaModel",value="系统参数json格式")TMdResidentialArea tMdResidentialArea){
+		return convertToRespModel(MessageCode.NORMAL, null,  residentialAreaService.addResidentialArea(tMdResidentialArea));
+	}
+
+	@POST
+	@Path("/upt")
+	@Consumes(MediaType.APPLICATION_JSON)
+	@Produces(MediaType.APPLICATION_JSON)
+	@ApiOperation(value = "/upt", response = String.class, notes = "更新小区信息")
+	public Response uptResidentialArea(@ApiParam(required=true,name="residentialAreaModel",value="系统参数json格式")TMdResidentialArea tMdResidentialArea){
+		return convertToRespModel(MessageCode.NORMAL, null,  residentialAreaService.uptResidentialArea(tMdResidentialArea));
 	}
 
 

@@ -1,10 +1,9 @@
 package com.nhry.service.basic.dao;
 
-import java.util.List;
-
 import com.github.pagehelper.PageInfo;
 import com.nhry.data.basic.domain.TMdBranchEmp;
 import com.nhry.model.basic.EmpQueryModel;
+import com.nhry.service.basic.pojo.BranchEmpModel;
 
 public interface BranchEmpService {
 	int deleteBranchEmpByNo(String empNo);
@@ -16,4 +15,6 @@ public interface BranchEmpService {
     int uptBranchEmpByNo(TMdBranchEmp record);
     
     public PageInfo searchBranchEmp(EmpQueryModel smodel);
+
+    BranchEmpModel empDetailInfo(String empNo);
 }

@@ -28,8 +28,8 @@ import javax.ws.rs.core.Response;
 @Api(value = "/branch", description = "网点客户信息(奶站)信息维护")
 public class BranchResource extends BaseResource {
 	@Autowired
-    private BranchService branchService;
-    
+	private BranchService branchService;
+
 	@GET
 	@Path("/search/{salesOrg}")
 	@Produces(MediaType.APPLICATION_JSON)
@@ -56,5 +56,14 @@ public class BranchResource extends BaseResource {
 			@ApiParam(required=true,name="branchModel",value="SearchModel") BranchQueryModel branchModel){
 		PageInfo data = branchService.findBranchListByPage(branchModel);
 		return convertToRespModel(MessageCode.NORMAL, null,data);
+	}
+
+	@POST
+	@Path("/upt")
+	@Produces(MediaType.APPLICATION_JSON)
+	@Consumes(MediaType.APPLICATION_JSON)
+	@ApiOperation(value = "/upt", response = String.class, notes = "更新网点客户(奶站)信息列表")
+	public Response uptBranch(@ApiParam(required=true,name="branchModel",value="SearchModel") TMdBranch tMdBranch){
+		return convertToRespModel(MessageCode.NORMAL, null,branchService.updateBranch(tMdBranch));
 	}
 }

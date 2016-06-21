@@ -16,6 +16,9 @@ public interface ResidentialAreaService {
 
     public PageInfo findAreaListByPage(ResidentialAreaModel residentialAreaModel);
 
-    int  addResidentialArea(ResidentialAreaModel residentialAreaModel);
+    int  addResidentialArea(TMdResidentialArea area);
 
+    int  uptResidentialArea(TMdResidentialArea area);
+
+    int deleteAreaById(String id);
 }
