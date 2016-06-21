@@ -24,7 +24,7 @@ public class TMdBranchEmp implements Serializable{
 
     private String webchat;
 
-    private String sfzh;
+    private String idNo;
 
     private Date createAt;
 
@@ -120,12 +120,12 @@ public class TMdBranchEmp implements Serializable{
         this.webchat = webchat == null ? null : webchat.trim();
     }
 
-    public String getSfzh() {
-        return sfzh;
+    public String getIdNo() {
+        return idNo;
     }
 
-    public void setSfzh(String sfzh) {
-        this.sfzh = sfzh == null ? null : sfzh.trim();
+    public void setIdNo(String idNo) {
+        this.idNo = idNo == null ? null : idNo.trim();
     }
 
     public Date getCreateAt() {

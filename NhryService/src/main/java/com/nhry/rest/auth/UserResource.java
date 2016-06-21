@@ -1,34 +1,26 @@
 package com.nhry.rest.auth;
 
-import javax.ws.rs.Consumes;
-import javax.ws.rs.DefaultValue;
-import javax.ws.rs.GET;
-import javax.ws.rs.POST;
-import javax.ws.rs.Path;
-import javax.ws.rs.PathParam;
-import javax.ws.rs.Produces;
-import javax.ws.rs.QueryParam;
-import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.Response;
-import org.codehaus.jettison.json.JSONArray;
-import org.codehaus.jettison.json.JSONException;
-import org.codehaus.jettison.json.JSONObject;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Scope;
-import org.springframework.stereotype.Component;
-import org.springframework.stereotype.Controller;
 import com.github.pagehelper.PageInfo;
 import com.nhry.common.auth.UserSessionService;
 import com.nhry.common.exception.MessageCode;
 import com.nhry.data.auth.domain.TSysUser;
 import com.nhry.model.auth.UserQueryModel;
-import com.nhry.model.auth.UserRoleModel;
 import com.nhry.model.sys.ResponseModel;
 import com.nhry.rest.BaseResource;
 import com.nhry.service.auth.dao.UserService;
 import com.nhry.utils.CookieUtil;
 import com.sun.jersey.spi.resource.Singleton;
-import com.wordnik.swagger.annotations.*;
+import com.wordnik.swagger.annotations.Api;
+import com.wordnik.swagger.annotations.ApiOperation;
+import com.wordnik.swagger.annotations.ApiParam;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Scope;
+import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Controller;
+
+import javax.ws.rs.*;
+import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
 
 @Path("/user")
 @Component
@@ -51,12 +43,21 @@ public class UserResource extends BaseResource {
 		return convertToRespModel(MessageCode.NORMAL, null, userService.findUser(um));
 	}
 
+	@GET
+	@Path("/getUserByLoginName/{loginName}")
+	@Produces(MediaType.APPLICATION_JSON)
+	@Consumes(MediaType.APPLICATION_JSON)
+	@ApiOperation(value = "/getUserByLoginName/{loginName}", response = TSysUser.class, notes = "根据用户ID查询用户信息")
+	public Response getUserByLoginName(	@ApiParam(required = true, name = "loginName", value = "用户登录名")  @PathParam("loginName")String loginName) {
+		return convertToRespModel(MessageCode.NORMAL, null, userService.findUserByLoginName(loginName));
+	}
+
 	@POST
 	@Path("/add")
 	@Produces(MediaType.APPLICATION_JSON)
 	@ApiOperation(value = "/add", response = ResponseModel.class, notes = "增加用户")
 	public Response addUser(@ApiParam(required = true, name = "user", value = "用户对象") TSysUser user) {
-		return convertToRespModel(MessageCode.NORMAL, userService.addUser(user), null);
+		return convertToRespModel(MessageCode.NORMAL, null,userService.addUser(user));
 	}
 	
 	@POST
@@ -65,7 +66,7 @@ public class UserResource extends BaseResource {
 	@Consumes(MediaType.APPLICATION_JSON)
 	@ApiOperation(value = "/update", response = ResponseModel.class, notes = "修改用户")
 	public Response updateUser(@ApiParam(required = true, name = "user", value = "用户对象") TSysUser user) {
-		return convertToRespModel(MessageCode.NORMAL, userService.updateUser(user), null);
+		return convertToRespModel(MessageCode.NORMAL,null,userService.updateUser(user));
 	}
 	
 	@POST
@@ -74,7 +75,7 @@ public class UserResource extends BaseResource {
 	@Consumes(MediaType.APPLICATION_JSON)
 	@ApiOperation(value = "/update/password", response = ResponseModel.class, notes = "修改用户密码")
 	public Response updateUserPw(@ApiParam(required = true, name = "user", value = "用户对象(只需要：loginName、pwd属性值)") TSysUser user) {
-		return convertToRespModel(MessageCode.NORMAL, userService.updateUserPw(user), null);
+		return convertToRespModel(MessageCode.NORMAL, null,userService.updateUserPw(user));
 	}
 	
 	@POST
@@ -95,7 +96,7 @@ public class UserResource extends BaseResource {
 	@Produces(MediaType.APPLICATION_JSON)
 	@ApiOperation(value = "/delete/{loginName}", response = ResponseModel.class, notes = "失效指定用户")
 	public Response deleteUserByLoginName(@ApiParam(required = true, name = "loginName", value = "用户登录名") @PathParam("loginName")String loginName) {
-		return convertToRespModel(MessageCode.NORMAL, userService.deleteUserByLoginName(loginName), null);
+		return convertToRespModel(MessageCode.NORMAL,null,userService.deleteUserByLoginName(loginName));
 	}
 	
 	
