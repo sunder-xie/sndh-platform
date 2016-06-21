@@ -95,7 +95,7 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 		order.setOrderDate(date);//订单创建日期
 		order.setCreaterBy(userSessionService.getCurrentUser().getLoginName());//创建人
 		order.setCreaterNo(userSessionService.getCurrentUser().getGroupId());//创建人编号
-//		order.setOrderType(orderType);//订单类型
+		order.setOrderType("20");//订单类型 页面都是线下
 		order.setPreorderSource("30");//订单来源  页面中来源都是30（奶站）
 //		order.setMilkmemberNo(milkmemberNo);//喝奶人编号
 //		order.setMemberNo(memberNo);//下单会员编号
