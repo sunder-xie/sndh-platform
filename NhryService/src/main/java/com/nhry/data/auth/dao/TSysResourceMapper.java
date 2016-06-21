@@ -69,4 +69,11 @@ public interface TSysResourceMapper {
      * @return
      */
     List<TSysRoleResource> findRoleResByResCode(String resCode);
+
+    /**
+     * 根据用户编码查询资源信息
+     * @param userId
+     * @return
+     */
+    List<TSysResource> findRecoureByUserId(String userId);
 }

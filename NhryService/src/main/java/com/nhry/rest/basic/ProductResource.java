@@ -4,8 +4,10 @@ import com.nhry.common.exception.MessageCode;
 import com.nhry.data.basic.domain.TMdMaraEx;
 import com.nhry.data.config.domain.NHSysParameter;
 import com.nhry.model.basic.ProductQueryModel;
+import com.nhry.model.sys.ResponseModel;
 import com.nhry.rest.BaseResource;
 import com.nhry.service.basic.dao.ProductService;
+import com.nhry.service.basic.pojo.ProductInfoExModel;
 import com.sun.jersey.spi.resource.Singleton;
 import com.wordnik.swagger.annotations.Api;
 import com.wordnik.swagger.annotations.ApiOperation;
@@ -32,7 +34,7 @@ public class ProductResource extends BaseResource {
 	@GET
 	@Path("/{productCode}")
 	@Produces(MediaType.APPLICATION_JSON)
-	@ApiOperation(value = "/{productCode}", response = NHSysParameter.class, notes = "根据商品编号查询商品信息")
+	@ApiOperation(value = "/{productCode}", response = ProductInfoExModel.class, notes = "根据商品编号查询商品信息")
 	public Response selectProductByCode(@ApiParam(required=true,name="productCode",value="商品编号") @PathParam("productCode") String productCode){
 		return convertToRespModel(MessageCode.NORMAL, null, productService.selectProductAndExByCode(productCode));
 	} 
@@ -41,7 +43,7 @@ public class ProductResource extends BaseResource {
 	@Path("/upt")
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
-	@ApiOperation(value = "/upt", response = String.class, notes = "更新商品信息")
+	@ApiOperation(value = "/upt", response = ResponseModel.class, notes = "更新商品信息")
 	public Response uptProduct(@ApiParam(required=true,name="record",value="系统参数json格式")TMdMaraEx record){
 		return convertToRespModel(MessageCode.NORMAL, null,  productService.uptProductExByCode(record));
 	}	
@@ -58,7 +60,7 @@ public class ProductResource extends BaseResource {
 	@GET
 	@Path("/publish/{productCode}")
 	@Produces(MediaType.APPLICATION_JSON)
-	@ApiOperation(value = "/publish/{productCode}", response = NHSysParameter.class, notes = "发布商品")
+	@ApiOperation(value = "/publish/{productCode}", response = Integer.class, notes = "发布商品")
 	public Response pubProductByCode(@ApiParam(required=true,name="productCode",value="商品编号") @PathParam("productCode") String productCode){
 		return convertToRespModel(MessageCode.NORMAL, null, productService.pubProductByCode(productCode));
 	} 
@@ -66,7 +68,7 @@ public class ProductResource extends BaseResource {
 	@GET
 	@Path("/getList/{productCode}")
 	@Produces(MediaType.APPLICATION_JSON)
-	@ApiOperation(value = "/getList/{productCode}", response = NHSysParameter.class, notes = "根据产品编号模糊查询商品")
+	@ApiOperation(value = "/getList/{productCode}", response = ProductInfoExModel.class, notes = "根据产品编号模糊查询商品")
 	public Response selectProductAndExListByCode(@ApiParam(required=true,name="productCode",value="商品编号") @PathParam("productCode") String productCode){
 		return convertToRespModel(MessageCode.NORMAL, null, productService.selectProductAndExListByCode(productCode));
 	}

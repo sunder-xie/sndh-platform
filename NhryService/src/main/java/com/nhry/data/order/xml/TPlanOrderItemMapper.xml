@@ -1,0 +1,354 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.nhry.data.order.dao.TPlanOrderItemMapper" >
+  <resultMap id="BaseResultMap" type="com.nhry.data.order.domain.TPlanOrderItem" >
+    <id column="ITEM_NO" property="itemNo" jdbcType="VARCHAR" />
+    <result column="ORDER_NO" property="orderNo" jdbcType="VARCHAR" />
+    <result column="ORDER_DATE" property="orderDate" jdbcType="DATE" />
+    <result column="REF_ITEM_NO" property="refItemNo" jdbcType="VARCHAR" />
+    <result column="NEW_ROW_FLAG" property="newRowFlag" jdbcType="CHAR" />
+    <result column="MATNR" property="matnr" jdbcType="VARCHAR" />
+    <result column="UNIT" property="unit" jdbcType="VARCHAR" />
+    <result column="QTY" property="qty" jdbcType="INTEGER" />
+    <result column="SALES_PRICE" property="salesPrice" jdbcType="DECIMAL" />
+    <result column="RULE_TYPE" property="ruleType" jdbcType="VARCHAR" />
+    <result column="DISP_DAYS" property="dispDays" jdbcType="INTEGER" />
+    <result column="GAP_DAYS" property="gapDays" jdbcType="INTEGER" />
+    <result column="RULE_TXT" property="ruleTxt" jdbcType="VARCHAR" />
+    <result column="REACH_TIME_TYPE" property="reachTimeType" jdbcType="VARCHAR" />
+    <result column="START_DISP_DATE" property="startDispDate" jdbcType="DATE" />
+    <result column="END_DISP_DATE" property="endDispDate" jdbcType="DATE" />
+    <result column="PROMOTION" property="promotion" jdbcType="INTEGER" />
+    <result column="PROM_DAYS" property="promDays" jdbcType="INTEGER" />
+    <result column="STATUS" property="status" jdbcType="VARCHAR" />
+    <result column="BUY_QTY" property="buyQty" jdbcType="INTEGER" />
+    <result column="GIFT_QTY" property="giftQty" jdbcType="INTEGER" />
+    <result column="CREATE_AT" property="createAt" jdbcType="TIMESTAMP" />
+    <result column="CREATE_BY" property="createBy" jdbcType="VARCHAR" />
+    <result column="CREATE_BY_TXT" property="createByTxt" jdbcType="VARCHAR" />
+    <result column="LAST_MODIFIED" property="lastModified" jdbcType="TIMESTAMP" />
+    <result column="LAST_MODIFIED_BY" property="lastModifiedBy" jdbcType="VARCHAR" />
+    <result column="LAST_MODIFIED_BY_TXT" property="lastModifiedByTxt" jdbcType="VARCHAR" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    ITEM_NO, ORDER_NO, ORDER_DATE, REF_ITEM_NO, NEW_ROW_FLAG, MATNR, UNIT, QTY, SALES_PRICE, 
+    RULE_TYPE, DISP_DAYS, GAP_DAYS, RULE_TXT, REACH_TIME_TYPE, START_DISP_DATE, END_DISP_DATE, 
+    PROMOTION, PROM_DAYS, STATUS, BUY_QTY, GIFT_QTY, CREATE_AT, CREATE_BY, CREATE_BY_TXT, 
+    LAST_MODIFIED, LAST_MODIFIED_BY, LAST_MODIFIED_BY_TXT
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.String" >
+    select 
+    <include refid="Base_Column_List" />
+    from t_mst_plan_order_item
+    where ITEM_NO = #{itemNo,jdbcType=VARCHAR}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String" >
+    delete from t_mst_plan_order_item
+    where ITEM_NO = #{itemNo,jdbcType=VARCHAR}
+  </delete>
+  <insert id="insert" parameterType="com.nhry.data.order.domain.TPlanOrderItem" >
+    insert into t_mst_plan_order_item (ITEM_NO, ORDER_NO, ORDER_DATE, 
+      REF_ITEM_NO, NEW_ROW_FLAG, MATNR, 
+      UNIT, QTY, SALES_PRICE, 
+      RULE_TYPE, DISP_DAYS, GAP_DAYS, 
+      RULE_TXT, REACH_TIME_TYPE, START_DISP_DATE, 
+      END_DISP_DATE, PROMOTION, PROM_DAYS, 
+      STATUS, BUY_QTY, GIFT_QTY, 
+      CREATE_AT, CREATE_BY, CREATE_BY_TXT, 
+      LAST_MODIFIED, LAST_MODIFIED_BY, LAST_MODIFIED_BY_TXT
+      )
+    values (#{itemNo,jdbcType=VARCHAR}, #{orderNo,jdbcType=VARCHAR}, #{orderDate,jdbcType=DATE}, 
+      #{refItemNo,jdbcType=VARCHAR}, #{newRowFlag,jdbcType=CHAR}, #{matnr,jdbcType=VARCHAR}, 
+      #{unit,jdbcType=VARCHAR}, #{qty,jdbcType=INTEGER}, #{salesPrice,jdbcType=DECIMAL}, 
+      #{ruleType,jdbcType=VARCHAR}, #{dispDays,jdbcType=INTEGER}, #{gapDays,jdbcType=INTEGER}, 
+      #{ruleTxt,jdbcType=VARCHAR}, #{reachTimeType,jdbcType=VARCHAR}, #{startDispDate,jdbcType=DATE}, 
+      #{endDispDate,jdbcType=DATE}, #{promotion,jdbcType=INTEGER}, #{promDays,jdbcType=INTEGER}, 
+      #{status,jdbcType=VARCHAR}, #{buyQty,jdbcType=INTEGER}, #{giftQty,jdbcType=INTEGER}, 
+      #{createAt,jdbcType=TIMESTAMP}, #{createBy,jdbcType=VARCHAR}, #{createByTxt,jdbcType=VARCHAR}, 
+      #{lastModified,jdbcType=TIMESTAMP}, #{lastModifiedBy,jdbcType=VARCHAR}, #{lastModifiedByTxt,jdbcType=VARCHAR}
+      )
+  </insert>
+  <insert id="insertNewOrderEntry" parameterType="com.nhry.data.order.domain.TPlanOrderItem" >
+    insert into t_mst_plan_order_item
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="itemNo != null" >
+        ITEM_NO,
+      </if>
+      <if test="orderNo != null" >
+        ORDER_NO,
+      </if>
+      <if test="orderDate != null" >
+        ORDER_DATE,
+      </if>
+      <if test="refItemNo != null" >
+        REF_ITEM_NO,
+      </if>
+      <if test="newRowFlag != null" >
+        NEW_ROW_FLAG,
+      </if>
+      <if test="matnr != null" >
+        MATNR,
+      </if>
+      <if test="unit != null" >
+        UNIT,
+      </if>
+      <if test="qty != null" >
+        QTY,
+      </if>
+      <if test="salesPrice != null" >
+        SALES_PRICE,
+      </if>
+      <if test="ruleType != null" >
+        RULE_TYPE,
+      </if>
+      <if test="dispDays != null" >
+        DISP_DAYS,
+      </if>
+      <if test="gapDays != null" >
+        GAP_DAYS,
+      </if>
+      <if test="ruleTxt != null" >
+        RULE_TXT,
+      </if>
+      <if test="reachTimeType != null" >
+        REACH_TIME_TYPE,
+      </if>
+      <if test="startDispDate != null" >
+        START_DISP_DATE,
+      </if>
+      <if test="endDispDate != null" >
+        END_DISP_DATE,
+      </if>
+      <if test="promotion != null" >
+        PROMOTION,
+      </if>
+      <if test="promDays != null" >
+        PROM_DAYS,
+      </if>
+      <if test="status != null" >
+        STATUS,
+      </if>
+      <if test="buyQty != null" >
+        BUY_QTY,
+      </if>
+      <if test="giftQty != null" >
+        GIFT_QTY,
+      </if>
+      <if test="createAt != null" >
+        CREATE_AT,
+      </if>
+      <if test="createBy != null" >
+        CREATE_BY,
+      </if>
+      <if test="createByTxt != null" >
+        CREATE_BY_TXT,
+      </if>
+      <if test="lastModified != null" >
+        LAST_MODIFIED,
+      </if>
+      <if test="lastModifiedBy != null" >
+        LAST_MODIFIED_BY,
+      </if>
+      <if test="lastModifiedByTxt != null" >
+        LAST_MODIFIED_BY_TXT,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="itemNo != null" >
+        #{itemNo,jdbcType=VARCHAR},
+      </if>
+      <if test="orderNo != null" >
+        #{orderNo,jdbcType=VARCHAR},
+      </if>
+      <if test="orderDate != null" >
+        #{orderDate,jdbcType=DATE},
+      </if>
+      <if test="refItemNo != null" >
+        #{refItemNo,jdbcType=VARCHAR},
+      </if>
+      <if test="newRowFlag != null" >
+        #{newRowFlag,jdbcType=CHAR},
+      </if>
+      <if test="matnr != null" >
+        #{matnr,jdbcType=VARCHAR},
+      </if>
+      <if test="unit != null" >
+        #{unit,jdbcType=VARCHAR},
+      </if>
+      <if test="qty != null" >
+        #{qty,jdbcType=INTEGER},
+      </if>
+      <if test="salesPrice != null" >
+        #{salesPrice,jdbcType=DECIMAL},
+      </if>
+      <if test="ruleType != null" >
+        #{ruleType,jdbcType=VARCHAR},
+      </if>
+      <if test="dispDays != null" >
+        #{dispDays,jdbcType=INTEGER},
+      </if>
+      <if test="gapDays != null" >
+        #{gapDays,jdbcType=INTEGER},
+      </if>
+      <if test="ruleTxt != null" >
+        #{ruleTxt,jdbcType=VARCHAR},
+      </if>
+      <if test="reachTimeType != null" >
+        #{reachTimeType,jdbcType=VARCHAR},
+      </if>
+      <if test="startDispDate != null" >
+        #{startDispDate,jdbcType=DATE},
+      </if>
+      <if test="endDispDate != null" >
+        #{endDispDate,jdbcType=DATE},
+      </if>
+      <if test="promotion != null" >
+        #{promotion,jdbcType=INTEGER},
+      </if>
+      <if test="promDays != null" >
+        #{promDays,jdbcType=INTEGER},
+      </if>
+      <if test="status != null" >
+        #{status,jdbcType=VARCHAR},
+      </if>
+      <if test="buyQty != null" >
+        #{buyQty,jdbcType=INTEGER},
+      </if>
+      <if test="giftQty != null" >
+        #{giftQty,jdbcType=INTEGER},
+      </if>
+      <if test="createAt != null" >
+        #{createAt,jdbcType=TIMESTAMP},
+      </if>
+      <if test="createBy != null" >
+        #{createBy,jdbcType=VARCHAR},
+      </if>
+      <if test="createByTxt != null" >
+        #{createByTxt,jdbcType=VARCHAR},
+      </if>
+      <if test="lastModified != null" >
+        #{lastModified,jdbcType=TIMESTAMP},
+      </if>
+      <if test="lastModifiedBy != null" >
+        #{lastModifiedBy,jdbcType=VARCHAR},
+      </if>
+      <if test="lastModifiedByTxt != null" >
+        #{lastModifiedByTxt,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.nhry.data.order.domain.TPlanOrderItem" >
+    update t_mst_plan_order_item
+    <set >
+      <if test="orderNo != null" >
+        ORDER_NO = #{orderNo,jdbcType=VARCHAR},
+      </if>
+      <if test="orderDate != null" >
+        ORDER_DATE = #{orderDate,jdbcType=DATE},
+      </if>
+      <if test="refItemNo != null" >
+        REF_ITEM_NO = #{refItemNo,jdbcType=VARCHAR},
+      </if>
+      <if test="newRowFlag != null" >
+        NEW_ROW_FLAG = #{newRowFlag,jdbcType=CHAR},
+      </if>
+      <if test="matnr != null" >
+        MATNR = #{matnr,jdbcType=VARCHAR},
+      </if>
+      <if test="unit != null" >
+        UNIT = #{unit,jdbcType=VARCHAR},
+      </if>
+      <if test="qty != null" >
+        QTY = #{qty,jdbcType=INTEGER},
+      </if>
+      <if test="salesPrice != null" >
+        SALES_PRICE = #{salesPrice,jdbcType=DECIMAL},
+      </if>
+      <if test="ruleType != null" >
+        RULE_TYPE = #{ruleType,jdbcType=VARCHAR},
+      </if>
+      <if test="dispDays != null" >
+        DISP_DAYS = #{dispDays,jdbcType=INTEGER},
+      </if>
+      <if test="gapDays != null" >
+        GAP_DAYS = #{gapDays,jdbcType=INTEGER},
+      </if>
+      <if test="ruleTxt != null" >
+        RULE_TXT = #{ruleTxt,jdbcType=VARCHAR},
+      </if>
+      <if test="reachTimeType != null" >
+        REACH_TIME_TYPE = #{reachTimeType,jdbcType=VARCHAR},
+      </if>
+      <if test="startDispDate != null" >
+        START_DISP_DATE = #{startDispDate,jdbcType=DATE},
+      </if>
+      <if test="endDispDate != null" >
+        END_DISP_DATE = #{endDispDate,jdbcType=DATE},
+      </if>
+      <if test="promotion != null" >
+        PROMOTION = #{promotion,jdbcType=INTEGER},
+      </if>
+      <if test="promDays != null" >
+        PROM_DAYS = #{promDays,jdbcType=INTEGER},
+      </if>
+      <if test="status != null" >
+        STATUS = #{status,jdbcType=VARCHAR},
+      </if>
+      <if test="buyQty != null" >
+        BUY_QTY = #{buyQty,jdbcType=INTEGER},
+      </if>
+      <if test="giftQty != null" >
+        GIFT_QTY = #{giftQty,jdbcType=INTEGER},
+      </if>
+      <if test="createAt != null" >
+        CREATE_AT = #{createAt,jdbcType=TIMESTAMP},
+      </if>
+      <if test="createBy != null" >
+        CREATE_BY = #{createBy,jdbcType=VARCHAR},
+      </if>
+      <if test="createByTxt != null" >
+        CREATE_BY_TXT = #{createByTxt,jdbcType=VARCHAR},
+      </if>
+      <if test="lastModified != null" >
+        LAST_MODIFIED = #{lastModified,jdbcType=TIMESTAMP},
+      </if>
+      <if test="lastModifiedBy != null" >
+        LAST_MODIFIED_BY = #{lastModifiedBy,jdbcType=VARCHAR},
+      </if>
+      <if test="lastModifiedByTxt != null" >
+        LAST_MODIFIED_BY_TXT = #{lastModifiedByTxt,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where ITEM_NO = #{itemNo,jdbcType=VARCHAR}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.nhry.data.order.domain.TPlanOrderItem" >
+    update t_mst_plan_order_item
+    set ORDER_NO = #{orderNo,jdbcType=VARCHAR},
+      ORDER_DATE = #{orderDate,jdbcType=DATE},
+      REF_ITEM_NO = #{refItemNo,jdbcType=VARCHAR},
+      NEW_ROW_FLAG = #{newRowFlag,jdbcType=CHAR},
+      MATNR = #{matnr,jdbcType=VARCHAR},
+      UNIT = #{unit,jdbcType=VARCHAR},
+      QTY = #{qty,jdbcType=INTEGER},
+      SALES_PRICE = #{salesPrice,jdbcType=DECIMAL},
+      RULE_TYPE = #{ruleType,jdbcType=VARCHAR},
+      DISP_DAYS = #{dispDays,jdbcType=INTEGER},
+      GAP_DAYS = #{gapDays,jdbcType=INTEGER},
+      RULE_TXT = #{ruleTxt,jdbcType=VARCHAR},
+      REACH_TIME_TYPE = #{reachTimeType,jdbcType=VARCHAR},
+      START_DISP_DATE = #{startDispDate,jdbcType=DATE},
+      END_DISP_DATE = #{endDispDate,jdbcType=DATE},
+      PROMOTION = #{promotion,jdbcType=INTEGER},
+      PROM_DAYS = #{promDays,jdbcType=INTEGER},
+      STATUS = #{status,jdbcType=VARCHAR},
+      BUY_QTY = #{buyQty,jdbcType=INTEGER},
+      GIFT_QTY = #{giftQty,jdbcType=INTEGER},
+      CREATE_AT = #{createAt,jdbcType=TIMESTAMP},
+      CREATE_BY = #{createBy,jdbcType=VARCHAR},
+      CREATE_BY_TXT = #{createByTxt,jdbcType=VARCHAR},
+      LAST_MODIFIED = #{lastModified,jdbcType=TIMESTAMP},
+      LAST_MODIFIED_BY = #{lastModifiedBy,jdbcType=VARCHAR},
+      LAST_MODIFIED_BY_TXT = #{lastModifiedByTxt,jdbcType=VARCHAR}
+    where ITEM_NO = #{itemNo,jdbcType=VARCHAR}
+  </update>
+</mapper>
