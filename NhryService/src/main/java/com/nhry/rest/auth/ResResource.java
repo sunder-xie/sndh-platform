@@ -1,8 +1,7 @@
 package com.nhry.rest.auth;
 
-import com.alibaba.druid.filter.AutoLoad;
+import com.nhry.common.exception.MessageCode;
 import com.nhry.data.auth.domain.TSysResource;
-import com.nhry.exception.MessageCode;
 import com.nhry.model.sys.ResponseModel;
 import com.nhry.rest.BaseResource;
 import com.nhry.service.auth.dao.ResourceService;
@@ -18,7 +17,6 @@ import org.springframework.stereotype.Controller;
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
-import java.util.List;
 
 /**
  * Created by cbz on 6/13/2016.
