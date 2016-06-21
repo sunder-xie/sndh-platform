@@ -1,8 +1,8 @@
 package com.nhry.rest.auth;
 
 import com.alibaba.druid.filter.AutoLoad;
+import com.nhry.common.exception.MessageCode;
 import com.nhry.data.auth.domain.TSysResource;
-import com.nhry.exception.MessageCode;
 import com.nhry.model.sys.ResponseModel;
 import com.nhry.rest.BaseResource;
 import com.nhry.service.auth.dao.ResourceService;
