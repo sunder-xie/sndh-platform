@@ -34,9 +34,8 @@ public class BranchServiceImpl extends BaseService implements BranchService {
 	}
 
 	@Override
-	public int updateBranchByNo(TMdBranch record) {
-		// TODO Auto-generated method stub
-		return 0;
+	public int updateBranch(TMdBranch tMdBranch) {
+		return branchMapper.updateBranch(tMdBranch);
 	}
 
 	@Override
@@ -53,6 +52,8 @@ public class BranchServiceImpl extends BaseService implements BranchService {
 		}
 		return branchMapper.findBranchListByPage(branchModel);
 	}
+
+
 
 	public void setBranchMapper(TMdBranchMapper branchMapper) {
 		this.branchMapper = branchMapper;

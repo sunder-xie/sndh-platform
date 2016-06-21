@@ -36,4 +36,5 @@ public class BranchScopeResource extends BaseResource {
 			@ApiParam(required=true,name="residentNoStr",value="需要删除的配送区域的编号")@PathParam("residentNoStr")String  residentNoStr){
 		return convertToRespModel(MessageCode.NORMAL, null,  tMdBranchScopeService.deleteAreaByBranchNo(branchNo,residentNoStr));
 	}
+
 }

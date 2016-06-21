@@ -18,6 +18,8 @@ public class TMdBranch implements Serializable{
 
     private String contact;
 
+    private String empNo;
+
     private String tel;
 
     private String mp;
@@ -102,6 +104,14 @@ public class TMdBranch implements Serializable{
 
     public void setContact(String contact) {
         this.contact = contact == null ? null : contact.trim();
+    }
+
+    public String getEmpNo() {
+        return empNo;
+    }
+
+    public void setEmpNo(String empNo) {
+        this.empNo = empNo == null ? null : empNo.trim();
     }
 
     public String getTel() {

@@ -3,9 +3,9 @@
   <context-param>
     <param-name>contextConfigLocation</param-name>
     <param-value>
-    	classpath:beans/spring-context.xml
-    	classpath:beans/dataSource.xml
-    	classpath:beans/*-bean.xml
+    	classpath:spring-context.xml
+    	classpath:dataSource.xml
+    	classpath:*-bean.xml
     </param-value>
   </context-param>
   <listener>
@@ -31,7 +31,7 @@
       <param-value>
        		com.wordnik.swagger.jaxrs.json;
       		com.nhry.rest;
-      		com.nhry.common.exception;
+      		com.nhry.exception;
             com.wordnik.swagger.jaxrs.listing;
       </param-value>
     </init-param>
@@ -41,7 +41,7 @@
     </init-param>
     <init-param>
       <param-name>com.sun.jersey.spi.container.ContainerRequestFilters</param-name>
-      <param-value>com.nhry.common.auth.AuthFilter</param-value>
+      <param-value>com.nhry.auth.AuthFilter</param-value>
     </init-param>
     <load-on-startup>1</load-on-startup>
   </servlet>

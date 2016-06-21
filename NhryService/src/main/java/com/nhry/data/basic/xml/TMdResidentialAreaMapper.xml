@@ -3,10 +3,12 @@
 <mapper namespace="com.nhry.data.basic.dao.TMdResidentialAreaMapper">
   <resultMap id="BaseResultMap" type="com.nhry.data.basic.domain.TMdResidentialArea">
     <id column="ID" jdbcType="VARCHAR" property="id" />
+    <result column="BRANCHNO" jdbcType="VARCHAR" property="branchNo" />
     <result column="RESIDENTIAL_AREA_TXT" jdbcType="VARCHAR" property="residentialAreaTxt" />
     <result column="PROVINCE" jdbcType="VARCHAR" property="province" />
     <result column="CITY" jdbcType="VARCHAR" property="city" />
     <result column="COUNTY" jdbcType="VARCHAR" property="county" />
+    <result column="GUIDEBOARD" jdbcType="VARCHAR" property="guideboard" />
     <result column="STREET" jdbcType="VARCHAR" property="street" />
     <result column="STATUS" jdbcType="VARCHAR" property="status" />
     <result column="ADDRESS_TXT" jdbcType="VARCHAR" property="addressTxt" />
@@ -16,24 +18,38 @@
     <result column="PROPERTY_TEL" jdbcType="VARCHAR" property="propertyTel" />
   </resultMap>
   <sql id="Base_Column_List">
-    ID, RESIDENTIAL_AREA_TXT, PROVINCE, CITY, COUNTY, STREET,STATUS, ADDRESS_TXT, RESIDENTIAL_NUM,
+    ID, RESIDENTIAL_AREA_TXT, PROVINCE, CITY, COUNTY, STREET,GUIDEBOARD,STATUS, ADDRESS_TXT, RESIDENTIAL_NUM,
     SALES_ORG, PROPERTY_TXT, PROPERTY_TEL
   </sql>
 
-  <delete id="deleteByPrimaryKey" parameterType="java.lang.String">
+  <delete id="delBranchArea" parameterType="java.lang.String">
     delete from t_md_residential_area
     where ID = #{id,jdbcType=VARCHAR}
   </delete>
-  <insert id="insert" parameterType="com.nhry.data.basic.domain.TMdResidentialArea">
-    insert into t_md_residential_area (ID, RESIDENTIAL_AREA_TXT, PROVINCE, 
-      CITY, COUNTY, STREET,STATUS,
-      ADDRESS_TXT, RESIDENTIAL_NUM, SALES_ORG, 
-      PROPERTY_TXT, PROPERTY_TEL)
-    values (#{id,jdbcType=VARCHAR}, #{residentialAreaTxt,jdbcType=VARCHAR}, #{province,jdbcType=VARCHAR}, 
-      #{city,jdbcType=VARCHAR}, #{county,jdbcType=VARCHAR}, #{street,jdbcType=VARCHAR}, #{status,jdbcType=VARCHAR},
-      #{addressTxt,jdbcType=VARCHAR}, #{residentialNum,jdbcType=INTEGER}, #{salesOrg,jdbcType=VARCHAR}, 
-      #{propertyTxt,jdbcType=VARCHAR}, #{propertyTel,jdbcType=VARCHAR})
+
+  <delete id="delArea" parameterType="java.lang.String">
+    delete from t_md_branch_scope
+    where RESIDENTIAL_AREA_ID = #{id,jdbcType=VARCHAR}
+  </delete>
+
+
+  <insert id="insertBranchArea" parameterType="com.nhry.data.basic.domain.TMdResidentialArea">
+    insert into t_md_branch_scope (BRANCH_NO,RESIDENTIAL_AREA_ID)
+    values (#{branchNo,jdbcType=VARCHAR},#{id,jdbcType=VARCHAR})
   </insert>
+
+  <insert id="insertArea" parameterType="com.nhry.data.basic.domain.TMdResidentialArea">
+    insert into t_md_residential_area (ID, RESIDENTIAL_AREA_TXT, PROVINCE,
+    CITY, COUNTY, STREET,GUIDEBOARD,STATUS,
+    ADDRESS_TXT, RESIDENTIAL_NUM, SALES_ORG,
+    PROPERTY_TXT, PROPERTY_TEL)
+    values (#{id,jdbcType=VARCHAR}, #{residentialAreaTxt,jdbcType=VARCHAR}, #{province,jdbcType=VARCHAR},
+    #{city,jdbcType=VARCHAR}, #{county,jdbcType=VARCHAR}, #{street,jdbcType=VARCHAR}, #{guideboard,jdbcType=VARCHAR}, #{status,jdbcType=VARCHAR},
+    #{addressTxt,jdbcType=VARCHAR}, #{residentialNum,jdbcType=INTEGER}, #{salesOrg,jdbcType=VARCHAR},
+    #{propertyTxt,jdbcType=VARCHAR}, #{propertyTel,jdbcType=VARCHAR})
+  </insert>
+
+
   <insert id="insertSelective" parameterType="com.nhry.data.basic.domain.TMdResidentialArea">
     insert into t_md_residential_area
     <trim prefix="(" suffix=")" suffixOverrides=",">
@@ -55,6 +71,10 @@
       <if test="street != null">
       STREET,
     </if>
+
+      <if test="guideboard != null">
+        GUIDEBOARD,
+      </if>
       <if test="status != null">
         Status,
       </if>
@@ -149,7 +169,7 @@
     </set>
     where ID = #{id,jdbcType=VARCHAR}
   </update>
-  <update id="updateByPrimaryKey" parameterType="com.nhry.data.basic.domain.TMdResidentialArea">
+  <update id="uptArea" parameterType="com.nhry.data.basic.domain.TMdResidentialArea">
     update t_md_residential_area
     set RESIDENTIAL_AREA_TXT = #{residentialAreaTxt,jdbcType=VARCHAR},
       PROVINCE = #{province,jdbcType=VARCHAR},
@@ -165,6 +185,13 @@
     where ID = #{id,jdbcType=VARCHAR}
   </update>
 
+  <update id="uptBranchArea" parameterType="com.nhry.data.basic.domain.TMdResidentialArea">
+    update t_md_branch_scope
+    set
+      BRANCH_NO = #{branchNo,jdbcType=VARCHAR}
+    where RESIDENTIAL_AREA_ID = #{id,jdbcType=VARCHAR}
+  </update>
+
   <select id="getAreaByBranchNo" parameterType="String" resultMap="BaseResultMap">
     select
     <include refid="Base_Column_List" />
@@ -174,9 +201,11 @@
   </select>
   <select id="selectById" parameterType="java.lang.String" resultMap="BaseResultMap">
     select
-    <include refid="Base_Column_List" />
-    from t_md_residential_area
-    where ID = #{id,jdbcType=VARCHAR}
+     a.ID,  a.RESIDENTIAL_AREA_TXT,  a.PROVINCE,  a.CITY,  a.COUNTY,  a.STREET,b.BRANCH_NAME branchNo, a.GUIDEBOARD, a.STATUS,  a.ADDRESS_TXT,
+       a.RESIDENTIAL_NUM,a.SALES_ORG,  a.PROPERTY_TXT,  a.PROPERTY_TEL
+    from t_md_residential_area a,t_md_branch_scope s,t_md_branch b
+    where a.ID = s.RESIDENTIAL_AREA_ID and s.BRANCH_NO = b.BRANCH_NO
+    and  ID = #{id,jdbcType=VARCHAR}
   </select>
   <select id="selectAreaByPage" resultMap="BaseResultMap" parameterType="com.nhry.service.basic.pojo.ResidentialAreaModel">
     SELECT
