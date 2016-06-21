@@ -48,7 +48,7 @@ public class PriceResource extends BaseResource {
 	@GET
 	@Path("/{priceGroupCode}")
 	@Produces(MediaType.APPLICATION_JSON)
-	@ApiOperation(value = "/{priceGroupCode}", response = NHSysParameter.class, notes = "根据价格组编号查询信息")
+	@ApiOperation(value = "/{priceGroupCode}", response = TMdPrice.class, notes = "根据价格组编号查询信息")
 	public Response selectPriceGroupByCode(@ApiParam(required=true,name="priceGroupCode",value="价格组编号") @PathParam("priceGroupCode") Integer priceGroupCode){
 		return convertToRespModel(MessageCode.NORMAL, null, priceService.selectPriceGroupByCode(priceGroupCode));
 	}
@@ -66,7 +66,7 @@ public class PriceResource extends BaseResource {
 	@Path("/search")
 	@Produces(MediaType.APPLICATION_JSON)
 	@Consumes(MediaType.APPLICATION_JSON)
-	@ApiOperation(value = "/search", response = NHSysParameter.class, notes = "查询价格组信息列表")
+	@ApiOperation(value = "/search", response = TMdPrice.class, notes = "查询价格组信息列表")
 	public Response findPriceGroups(@ApiParam(required=true,name="smodel",value="SearchModel") PriceQueryModel smodel){
 		return convertToRespModel(MessageCode.NORMAL, null, priceService.searchPriceGroups(smodel));
 	}
@@ -75,7 +75,7 @@ public class PriceResource extends BaseResource {
 	@Path("/disable")
 	@Produces(MediaType.APPLICATION_JSON)
 	@Consumes(MediaType.APPLICATION_JSON)
-	@ApiOperation(value = "/disable", response = NHSysParameter.class, notes = "停用价格组")
+	@ApiOperation(value = "/disable", response = ResponseModel.class, notes = "停用价格组")
 	public Response pubProductByCode(@ApiParam(required=true,name="productCode",value="商品编号")TMdPrice record){
 		return convertToRespModel(MessageCode.NORMAL, null, priceService.disablePriceGroup(record));
 	}

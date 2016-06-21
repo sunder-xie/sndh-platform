@@ -1,19 +1,5 @@
 package com.nhry.rest.basic;
 
-import javax.ws.rs.Consumes;
-import javax.ws.rs.GET;
-import javax.ws.rs.POST;
-import javax.ws.rs.Path;
-import javax.ws.rs.PathParam;
-import javax.ws.rs.Produces;
-import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.Response;
-
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Scope;
-import org.springframework.stereotype.Component;
-import org.springframework.stereotype.Controller;
-
 import com.nhry.common.exception.MessageCode;
 import com.nhry.data.basic.domain.TMdBranchEmp;
 import com.nhry.data.config.domain.NHSysParameter;
@@ -21,17 +7,26 @@ import com.nhry.model.basic.EmpQueryModel;
 import com.nhry.model.sys.ResponseModel;
 import com.nhry.rest.BaseResource;
 import com.nhry.service.basic.dao.BranchEmpService;
+import com.nhry.service.basic.pojo.BranchEmpModel;
 import com.sun.jersey.spi.resource.Singleton;
 import com.wordnik.swagger.annotations.Api;
 import com.wordnik.swagger.annotations.ApiOperation;
 import com.wordnik.swagger.annotations.ApiParam;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Scope;
+import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Controller;
+
+import javax.ws.rs.*;
+import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
 
 @Path("/emp")
 @Component
 @Scope("request")
 @Singleton
 @Controller
-@Api(value = "/emp", description = "网点员工信息(奶站)维护")
+@Api(value = "/emp", description = "网点员工信息维护")
 public class BranchEmpResource extends BaseResource {
 	@Autowired
 	private BranchEmpService branchEmpService;
@@ -50,7 +45,7 @@ public class BranchEmpResource extends BaseResource {
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
 	@ApiOperation(value = "/upt", response = String.class, notes = "修改网点员工信息")
-	public Response uptBranchEmp(@ApiParam(required=true,name="record",value="系统参数json格式")TMdBranchEmp record){
+	public Response uptBranchEmp(@ApiParam(required=true,name="record",value="系统参数json格式") TMdBranchEmp record){
 		return convertToRespModel(MessageCode.NORMAL, null,  branchEmpService.uptBranchEmpByNo(record));
 	}
 	
@@ -65,9 +60,9 @@ public class BranchEmpResource extends BaseResource {
 	@GET
 	@Path("/{empNo}")
 	@Produces(MediaType.APPLICATION_JSON)
-	@ApiOperation(value = "/{empNo}", response = NHSysParameter.class, notes = "根据员工编号查询员工信息")
+	@ApiOperation(value = "/{empNo}", response = BranchEmpModel.class, notes = "根据员工编号查询员工详细信息")
 	public Response findBranchEmpByNo(@ApiParam(required=true,name="empNo",value="员工编号") @PathParam("empNo") String empNo){
-		return convertToRespModel(MessageCode.NORMAL, null,branchEmpService.selectBranchEmpByNo(empNo));
+		return convertToRespModel(MessageCode.NORMAL, null,branchEmpService.empDetailInfo(empNo));
 	} 
 	
 	@POST

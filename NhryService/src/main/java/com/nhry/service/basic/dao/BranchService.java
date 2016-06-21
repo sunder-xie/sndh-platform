@@ -13,10 +13,11 @@ public interface BranchService {
 
     TMdBranch selectBranchByNo(String branchNo);
 
-    int updateBranchByNo(TMdBranch record);
+    int updateBranch(TMdBranch record);
     
     public List<TMdBranch> findBranchListByOrg(String salesOrg);
 
 
     public PageInfo findBranchListByPage(BranchQueryModel branchModel);
+
 }

@@ -55,7 +55,7 @@ public class VipCustResource extends BaseResource {
 	@GET
 	@Path("/find/phone/{phone}")
 	@Produces(MediaType.APPLICATION_JSON)
-	@ApiOperation(value = "/find/phone/{phone}", response = String.class, notes = "根据电话号码查询会员信息")
+	@ApiOperation(value = "/find/phone/{phone}", response = TMdVipCustInfo.class, notes = "根据电话号码查询会员信息")
 	public Response findCustByPhone(@ApiParam(required=true,name="phone",value="电话号码") @PathParam("phone")String phone) {
 		return convertToRespModel(MessageCode.NORMAL, null,custService.findCustByPhone(phone));
 	}

@@ -38,10 +38,19 @@ public class ResidentialAreaServiceImpl implements ResidentialAreaService {
     }
 
     @Override
-    public int addResidentialArea(ResidentialAreaModel residentialAreaModel) {
-        return tMdResidentialAreaMapper.addResidentialArea(residentialAreaModel);
+    public int addResidentialArea(TMdResidentialArea tMdResidentialArea) {
+        return tMdResidentialAreaMapper.addResidentialArea(tMdResidentialArea);
     }
 
+    @Override
+    public int uptResidentialArea(TMdResidentialArea tMdResidentialArea) {
+        return tMdResidentialAreaMapper.uptResidentialArea(tMdResidentialArea);
+    }
+
+    @Override
+    public int deleteAreaById(String id) {
+        return tMdResidentialAreaMapper.deleteAreaById(id);
+    }
 
 
     public void settMdResidentialAreaMapper(TMdResidentialAreaMapper tMdResidentialAreaMapper) {
