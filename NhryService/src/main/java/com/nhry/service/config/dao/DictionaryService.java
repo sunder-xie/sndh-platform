@@ -90,4 +90,11 @@ public interface DictionaryService {
     * @return
     */
    public List<NHSysCodeItem> findItemsByParentCode(NHSysCodeItem record);
+   
+   /**
+    * 查询所有typeCode
+    * @param record
+    * @return
+    */
+   public List<NHSysCodeType> findAllTypeCodes();
 }

@@ -1,6 +1,7 @@
 package com.nhry.rest.config;
 
 import javax.ws.rs.Consumes;
+import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
@@ -126,5 +127,13 @@ public class DictionaryResource extends BaseResource {
 	@ApiOperation(value = "/delete/codeitem", response = ResponseModel.class, notes = "根据code删除字典代码行项目")
 	public Response deleteCodeItemByCode(@ApiParam(required=true,name="record",value="字典代码行项目对象(typeCode、itemCode)")NHSysCodeItem record){
 		return convertToRespModel(MessageCode.NORMAL, null,  dicService.deleteCodeItemByCode(record));
+	}
+	
+	@GET
+	@Path("/allTypeCodes")
+	@Produces(MediaType.APPLICATION_JSON)
+	@ApiOperation(value = "/allTypeCodes", response = String.class, notes = "获取所有字典代码类型")
+	public Response getAllTypeCodes(){
+		return convertToRespModel(MessageCode.NORMAL, null,  dicService.findAllTypeCodes());
 	}
 }

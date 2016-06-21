@@ -200,4 +200,11 @@ public class DictionaryServiceImpl extends BaseService implements DictionaryServ
 		}
 		return this.codeItemMapper.findItemsByParentCode(record);
 	}
+
+	@Override
+	public List<NHSysCodeType> findAllTypeCodes()
+	{
+		// TODO Auto-generated method stub
+		return this.codeTypeMapper.getAllTypeCodes();
+	}
 }

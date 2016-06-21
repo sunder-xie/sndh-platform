@@ -1,0 +1,270 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.nhry.data.order.dao.TOrderDaliyPlanItemMapper" >
+  <resultMap id="BaseResultMap" type="com.nhry.data.order.domain.TOrderDaliyPlanItem" >
+    <id column="ORDER_NO" property="orderNo" jdbcType="VARCHAR" />
+    <id column="ORDER_DATE" property="orderDate" jdbcType="DATE" />
+    <id column="PLAN_ITEM_NO" property="planItemNo" jdbcType="VARCHAR" />
+    <id column="ITEM_NO" property="itemNo" jdbcType="VARCHAR" />
+    <result column="DISP_DATE" property="dispDate" jdbcType="DATE" />
+    <result column="REACH_TIME" property="reachTime" jdbcType="VARCHAR" />
+    <result column="REACH_TIME_TYPE" property="reachTimeType" jdbcType="VARCHAR" />
+    <result column="MATNR" property="matnr" jdbcType="VARCHAR" />
+    <result column="UNIT" property="unit" jdbcType="VARCHAR" />
+    <result column="QTY" property="qty" jdbcType="INTEGER" />
+    <result column="PRICE" property="price" jdbcType="DECIMAL" />
+    <result column="AMT" property="amt" jdbcType="DECIMAL" />
+    <result column="REMAIN_AMT" property="remainAmt" jdbcType="DECIMAL" />
+    <result column="STATUS" property="status" jdbcType="VARCHAR" />
+    <result column="CREATE_AT" property="createAt" jdbcType="TIMESTAMP" />
+    <result column="CREATE_BY" property="createBy" jdbcType="VARCHAR" />
+    <result column="CREATE_BY_TXT" property="createByTxt" jdbcType="VARCHAR" />
+    <result column="LAST_MODIFIED" property="lastModified" jdbcType="TIMESTAMP" />
+    <result column="LAST_MODIFIED_BY" property="lastModifiedBy" jdbcType="VARCHAR" />
+    <result column="LAST_MODIFIED_BY_TXT" property="lastModifiedByTxt" jdbcType="VARCHAR" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    ORDER_NO, ORDER_DATE, PLAN_ITEM_NO, ITEM_NO, DISP_DATE, REACH_TIME, REACH_TIME_TYPE, 
+    MATNR, UNIT, QTY, PRICE, AMT, REMAIN_AMT, STATUS, CREATE_AT, CREATE_BY, CREATE_BY_TXT, 
+    LAST_MODIFIED, LAST_MODIFIED_BY, LAST_MODIFIED_BY_TXT
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="com.nhry.data.order.domain.TOrderDaliyPlanItemKey" >
+    select 
+    <include refid="Base_Column_List" />
+    from t_mst_order_daliy_plan_item
+    where ORDER_NO = #{orderNo,jdbcType=VARCHAR}
+      and ORDER_DATE = #{orderDate,jdbcType=DATE}
+      and PLAN_ITEM_NO = #{planItemNo,jdbcType=VARCHAR}
+      and ITEM_NO = #{itemNo,jdbcType=VARCHAR}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="com.nhry.data.order.domain.TOrderDaliyPlanItemKey" >
+    delete from t_mst_order_daliy_plan_item
+    where ORDER_NO = #{orderNo,jdbcType=VARCHAR}
+      and ORDER_DATE = #{orderDate,jdbcType=DATE}
+      and PLAN_ITEM_NO = #{planItemNo,jdbcType=VARCHAR}
+      and ITEM_NO = #{itemNo,jdbcType=VARCHAR}
+  </delete>
+  <insert id="insert" parameterType="com.nhry.data.order.domain.TOrderDaliyPlanItem" >
+    insert into t_mst_order_daliy_plan_item (ORDER_NO, ORDER_DATE, PLAN_ITEM_NO, 
+      ITEM_NO, DISP_DATE, REACH_TIME, 
+      REACH_TIME_TYPE, MATNR, UNIT, 
+      QTY, PRICE, AMT, REMAIN_AMT, 
+      STATUS, CREATE_AT, CREATE_BY, 
+      CREATE_BY_TXT, LAST_MODIFIED, LAST_MODIFIED_BY, 
+      LAST_MODIFIED_BY_TXT)
+    values (#{orderNo,jdbcType=VARCHAR}, #{orderDate,jdbcType=DATE}, #{planItemNo,jdbcType=VARCHAR}, 
+      #{itemNo,jdbcType=VARCHAR}, #{dispDate,jdbcType=DATE}, #{reachTime,jdbcType=VARCHAR}, 
+      #{reachTimeType,jdbcType=VARCHAR}, #{matnr,jdbcType=VARCHAR}, #{unit,jdbcType=VARCHAR}, 
+      #{qty,jdbcType=INTEGER}, #{price,jdbcType=DECIMAL}, #{amt,jdbcType=DECIMAL}, #{remainAmt,jdbcType=DECIMAL}, 
+      #{status,jdbcType=VARCHAR}, #{createAt,jdbcType=TIMESTAMP}, #{createBy,jdbcType=VARCHAR}, 
+      #{createByTxt,jdbcType=VARCHAR}, #{lastModified,jdbcType=TIMESTAMP}, #{lastModifiedBy,jdbcType=VARCHAR}, 
+      #{lastModifiedByTxt,jdbcType=VARCHAR})
+  </insert>
+  <insert id="insertNewOrderDaliyPlanEntry" parameterType="com.nhry.data.order.domain.TOrderDaliyPlanItem" >
+    insert into t_mst_order_daliy_plan_item
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="orderNo != null" >
+        ORDER_NO,
+      </if>
+      <if test="orderDate != null" >
+        ORDER_DATE,
+      </if>
+      <if test="planItemNo != null" >
+        PLAN_ITEM_NO,
+      </if>
+      <if test="itemNo != null" >
+        ITEM_NO,
+      </if>
+      <if test="dispDate != null" >
+        DISP_DATE,
+      </if>
+      <if test="reachTime != null" >
+        REACH_TIME,
+      </if>
+      <if test="reachTimeType != null" >
+        REACH_TIME_TYPE,
+      </if>
+      <if test="matnr != null" >
+        MATNR,
+      </if>
+      <if test="unit != null" >
+        UNIT,
+      </if>
+      <if test="qty != null" >
+        QTY,
+      </if>
+      <if test="price != null" >
+        PRICE,
+      </if>
+      <if test="amt != null" >
+        AMT,
+      </if>
+      <if test="remainAmt != null" >
+        REMAIN_AMT,
+      </if>
+      <if test="status != null" >
+        STATUS,
+      </if>
+      <if test="createAt != null" >
+        CREATE_AT,
+      </if>
+      <if test="createBy != null" >
+        CREATE_BY,
+      </if>
+      <if test="createByTxt != null" >
+        CREATE_BY_TXT,
+      </if>
+      <if test="lastModified != null" >
+        LAST_MODIFIED,
+      </if>
+      <if test="lastModifiedBy != null" >
+        LAST_MODIFIED_BY,
+      </if>
+      <if test="lastModifiedByTxt != null" >
+        LAST_MODIFIED_BY_TXT,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="orderNo != null" >
+        #{orderNo,jdbcType=VARCHAR},
+      </if>
+      <if test="orderDate != null" >
+        #{orderDate,jdbcType=DATE},
+      </if>
+      <if test="planItemNo != null" >
+        #{planItemNo,jdbcType=VARCHAR},
+      </if>
+      <if test="itemNo != null" >
+        #{itemNo,jdbcType=VARCHAR},
+      </if>
+      <if test="dispDate != null" >
+        #{dispDate,jdbcType=DATE},
+      </if>
+      <if test="reachTime != null" >
+        #{reachTime,jdbcType=VARCHAR},
+      </if>
+      <if test="reachTimeType != null" >
+        #{reachTimeType,jdbcType=VARCHAR},
+      </if>
+      <if test="matnr != null" >
+        #{matnr,jdbcType=VARCHAR},
+      </if>
+      <if test="unit != null" >
+        #{unit,jdbcType=VARCHAR},
+      </if>
+      <if test="qty != null" >
+        #{qty,jdbcType=INTEGER},
+      </if>
+      <if test="price != null" >
+        #{price,jdbcType=DECIMAL},
+      </if>
+      <if test="amt != null" >
+        #{amt,jdbcType=DECIMAL},
+      </if>
+      <if test="remainAmt != null" >
+        #{remainAmt,jdbcType=DECIMAL},
+      </if>
+      <if test="status != null" >
+        #{status,jdbcType=VARCHAR},
+      </if>
+      <if test="createAt != null" >
+        #{createAt,jdbcType=TIMESTAMP},
+      </if>
+      <if test="createBy != null" >
+        #{createBy,jdbcType=VARCHAR},
+      </if>
+      <if test="createByTxt != null" >
+        #{createByTxt,jdbcType=VARCHAR},
+      </if>
+      <if test="lastModified != null" >
+        #{lastModified,jdbcType=TIMESTAMP},
+      </if>
+      <if test="lastModifiedBy != null" >
+        #{lastModifiedBy,jdbcType=VARCHAR},
+      </if>
+      <if test="lastModifiedByTxt != null" >
+        #{lastModifiedByTxt,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.nhry.data.order.domain.TOrderDaliyPlanItem" >
+    update t_mst_order_daliy_plan_item
+    <set >
+      <if test="dispDate != null" >
+        DISP_DATE = #{dispDate,jdbcType=DATE},
+      </if>
+      <if test="reachTime != null" >
+        REACH_TIME = #{reachTime,jdbcType=VARCHAR},
+      </if>
+      <if test="reachTimeType != null" >
+        REACH_TIME_TYPE = #{reachTimeType,jdbcType=VARCHAR},
+      </if>
+      <if test="matnr != null" >
+        MATNR = #{matnr,jdbcType=VARCHAR},
+      </if>
+      <if test="unit != null" >
+        UNIT = #{unit,jdbcType=VARCHAR},
+      </if>
+      <if test="qty != null" >
+        QTY = #{qty,jdbcType=INTEGER},
+      </if>
+      <if test="price != null" >
+        PRICE = #{price,jdbcType=DECIMAL},
+      </if>
+      <if test="amt != null" >
+        AMT = #{amt,jdbcType=DECIMAL},
+      </if>
+      <if test="remainAmt != null" >
+        REMAIN_AMT = #{remainAmt,jdbcType=DECIMAL},
+      </if>
+      <if test="status != null" >
+        STATUS = #{status,jdbcType=VARCHAR},
+      </if>
+      <if test="createAt != null" >
+        CREATE_AT = #{createAt,jdbcType=TIMESTAMP},
+      </if>
+      <if test="createBy != null" >
+        CREATE_BY = #{createBy,jdbcType=VARCHAR},
+      </if>
+      <if test="createByTxt != null" >
+        CREATE_BY_TXT = #{createByTxt,jdbcType=VARCHAR},
+      </if>
+      <if test="lastModified != null" >
+        LAST_MODIFIED = #{lastModified,jdbcType=TIMESTAMP},
+      </if>
+      <if test="lastModifiedBy != null" >
+        LAST_MODIFIED_BY = #{lastModifiedBy,jdbcType=VARCHAR},
+      </if>
+      <if test="lastModifiedByTxt != null" >
+        LAST_MODIFIED_BY_TXT = #{lastModifiedByTxt,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where ORDER_NO = #{orderNo,jdbcType=VARCHAR}
+      and ORDER_DATE = #{orderDate,jdbcType=DATE}
+      and PLAN_ITEM_NO = #{planItemNo,jdbcType=VARCHAR}
+      and ITEM_NO = #{itemNo,jdbcType=VARCHAR}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.nhry.data.order.domain.TOrderDaliyPlanItem" >
+    update t_mst_order_daliy_plan_item
+    set DISP_DATE = #{dispDate,jdbcType=DATE},
+      REACH_TIME = #{reachTime,jdbcType=VARCHAR},
+      REACH_TIME_TYPE = #{reachTimeType,jdbcType=VARCHAR},
+      MATNR = #{matnr,jdbcType=VARCHAR},
+      UNIT = #{unit,jdbcType=VARCHAR},
+      QTY = #{qty,jdbcType=INTEGER},
+      PRICE = #{price,jdbcType=DECIMAL},
+      AMT = #{amt,jdbcType=DECIMAL},
+      REMAIN_AMT = #{remainAmt,jdbcType=DECIMAL},
+      STATUS = #{status,jdbcType=VARCHAR},
+      CREATE_AT = #{createAt,jdbcType=TIMESTAMP},
+      CREATE_BY = #{createBy,jdbcType=VARCHAR},
+      CREATE_BY_TXT = #{createByTxt,jdbcType=VARCHAR},
+      LAST_MODIFIED = #{lastModified,jdbcType=TIMESTAMP},
+      LAST_MODIFIED_BY = #{lastModifiedBy,jdbcType=VARCHAR},
+      LAST_MODIFIED_BY_TXT = #{lastModifiedByTxt,jdbcType=VARCHAR}
+    where ORDER_NO = #{orderNo,jdbcType=VARCHAR}
+      and ORDER_DATE = #{orderDate,jdbcType=DATE}
+      and PLAN_ITEM_NO = #{planItemNo,jdbcType=VARCHAR}
+      and ITEM_NO = #{itemNo,jdbcType=VARCHAR}
+  </update>
+</mapper>
