@@ -3,6 +3,8 @@ package com.nhry.service.auth.dao;
 import com.nhry.data.auth.domain.TSysResource;
 import com.nhry.data.auth.domain.TSysRoleResource;
 
+import java.util.List;
+
 public interface ResourceService {
 	/**
 	 * 根据资源编码删除资源
@@ -46,4 +48,11 @@ public interface ResourceService {
      * @return
      */
     int deleteRoleRes(TSysRoleResource record);
+
+	/**
+	 * 根据用户编码查询资源信息
+	 * @param userId
+	 * @return
+     */
+	List<TSysResource> findRecoureByUserId (String userId);
 }
