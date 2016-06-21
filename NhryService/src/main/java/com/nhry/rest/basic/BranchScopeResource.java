@@ -1,6 +1,6 @@
 package com.nhry.rest.basic;
 
-import com.nhry.exception.MessageCode;
+import com.nhry.common.exception.MessageCode;
 import com.nhry.rest.BaseResource;
 import com.nhry.service.basic.dao.TMdBranchScopeService;
 import com.sun.jersey.spi.resource.Singleton;
@@ -36,4 +36,5 @@ public class BranchScopeResource extends BaseResource {
 			@ApiParam(required=true,name="residentNoStr",value="需要删除的配送区域的编号")@PathParam("residentNoStr")String  residentNoStr){
 		return convertToRespModel(MessageCode.NORMAL, null,  tMdBranchScopeService.deleteAreaByBranchNo(branchNo,residentNoStr));
 	}
+
 }

@@ -17,11 +17,10 @@ import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Controller;
 
 import com.github.pagehelper.PageInfo;
+import com.nhry.common.exception.MessageCode;
 import com.nhry.data.basic.domain.TMdVipCustInfo;
-import com.nhry.exception.MessageCode;
 import com.nhry.rest.BaseResource;
 import com.nhry.service.basic.dao.TMdVipCustInfoService;
-import com.nhry.utils.JsonUtil;
 import com.sun.jersey.spi.resource.Singleton;
 import com.wordnik.swagger.annotations.Api;
 import com.wordnik.swagger.annotations.ApiOperation;
@@ -56,7 +55,7 @@ public class VipCustResource extends BaseResource {
 	@GET
 	@Path("/find/phone/{phone}")
 	@Produces(MediaType.APPLICATION_JSON)
-	@ApiOperation(value = "/find/phone/{phone}", response = String.class, notes = "根据电话号码查询会员信息")
+	@ApiOperation(value = "/find/phone/{phone}", response = TMdVipCustInfo.class, notes = "根据电话号码查询会员信息")
 	public Response findCustByPhone(@ApiParam(required=true,name="phone",value="电话号码") @PathParam("phone")String phone) {
 		return convertToRespModel(MessageCode.NORMAL, null,custService.findCustByPhone(phone));
 	}

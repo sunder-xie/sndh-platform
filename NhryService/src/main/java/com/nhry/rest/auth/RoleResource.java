@@ -13,10 +13,10 @@ import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Controller;
 
+import com.nhry.common.exception.MessageCode;
 import com.nhry.data.auth.domain.TSysResource;
 import com.nhry.data.auth.domain.TSysRole;
 import com.nhry.data.auth.domain.TSysRoleResource;
-import com.nhry.exception.MessageCode;
 import com.nhry.model.auth.UserRoleModel;
 import com.nhry.model.sys.ResponseModel;
 import com.nhry.rest.BaseResource;

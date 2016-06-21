@@ -1,0 +1,332 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.nhry.data.order.dao.TPreOrderMapper" >
+  <resultMap id="BaseResultMap" type="com.nhry.data.order.domain.TPreOrder" >
+    <id column="ORDER_NO" property="orderNo" jdbcType="VARCHAR" />
+    <result column="ORDER_TYPE" property="orderType" jdbcType="VARCHAR" />
+    <result column="ORDER_DATE" property="orderDate" jdbcType="DATE" />
+    <result column="PAYMENTMETHOD" property="paymentmethod" jdbcType="VARCHAR" />
+    <result column="PREORDER_SOURCE" property="preorderSource" jdbcType="VARCHAR" />
+    <result column="ONLINEORDER_NO" property="onlineorderNo" jdbcType="VARCHAR" />
+    <result column="BRANCH_NO" property="branchNo" jdbcType="VARCHAR" />
+    <result column="MILKMEMBER_NO" property="milkmemberNo" jdbcType="VARCHAR" />
+    <result column="MEMBER_NO" property="memberNo" jdbcType="VARCHAR" />
+    <result column="PAYMENT_STAT" property="paymentStat" jdbcType="VARCHAR" />
+    <result column="MILKBOX_STAT" property="milkboxStat" jdbcType="VARCHAR" />
+    <result column="INIT_AMT" property="initAmt" jdbcType="DECIMAL" />
+    <result column="CUR_AMT" property="curAmt" jdbcType="DECIMAL" />
+    <result column="DISP_LINE_NO" property="dispLineNo" jdbcType="VARCHAR" />
+    <result column="EMP_NO" property="empNo" jdbcType="VARCHAR" />
+    <result column="ADRESS_NO" property="adressNo" jdbcType="VARCHAR" />
+    <result column="CREATER_NO" property="createrNo" jdbcType="VARCHAR" />
+    <result column="CREATER_BY" property="createrBy" jdbcType="VARCHAR" />
+    <result column="PREORDER_STAT" property="preorderStat" jdbcType="VARCHAR" />
+    <result column="MEMO_TXT" property="memoTxt" jdbcType="VARCHAR" />
+    <result column="PAY_METHOD" property="payMethod" jdbcType="VARCHAR" />
+    <result column="SOLICIT_NO" property="solicitNo" jdbcType="VARCHAR" />
+    <result column="SOLICIT_DATE" property="solicitDate" jdbcType="DATE" />
+    <result column="SOLICITOR_NO" property="solicitorNo" jdbcType="VARCHAR" />
+    <result column="SOLICIT_BY" property="solicitBy" jdbcType="VARCHAR" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    ORDER_NO, ORDER_TYPE, ORDER_DATE, PAYMENTMETHOD, PREORDER_SOURCE, ONLINEORDER_NO, 
+    BRANCH_NO, MILKMEMBER_NO, MEMBER_NO, PAYMENT_STAT, MILKBOX_STAT, INIT_AMT, CUR_AMT, 
+    DISP_LINE_NO, EMP_NO, ADRESS_NO, CREATER_NO, CREATER_BY, PREORDER_STAT, MEMO_TXT, 
+    PAY_METHOD, SOLICIT_NO, SOLICIT_DATE, SOLICITOR_NO, SOLICIT_BY
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.String" >
+    select 
+    <include refid="Base_Column_List" />
+    from t_preorder
+    where ORDER_NO = #{orderNo,jdbcType=VARCHAR}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String" >
+    delete from t_preorder
+    where ORDER_NO = #{orderNo,jdbcType=VARCHAR}
+  </delete>
+  <insert id="insert" parameterType="com.nhry.data.order.domain.TPreOrder" >
+    insert into t_preorder (ORDER_NO, ORDER_TYPE, ORDER_DATE, 
+      PAYMENTMETHOD, PREORDER_SOURCE, ONLINEORDER_NO, 
+      BRANCH_NO, MILKMEMBER_NO, MEMBER_NO, 
+      PAYMENT_STAT, MILKBOX_STAT, INIT_AMT, 
+      CUR_AMT, DISP_LINE_NO, EMP_NO, 
+      ADRESS_NO, CREATER_NO, CREATER_BY, 
+      PREORDER_STAT, MEMO_TXT, PAY_METHOD, 
+      SOLICIT_NO, SOLICIT_DATE, SOLICITOR_NO, 
+      SOLICIT_BY)
+    values (#{orderNo,jdbcType=VARCHAR}, #{orderType,jdbcType=VARCHAR}, #{orderDate,jdbcType=DATE}, 
+      #{paymentmethod,jdbcType=VARCHAR}, #{preorderSource,jdbcType=VARCHAR}, #{onlineorderNo,jdbcType=VARCHAR}, 
+      #{branchNo,jdbcType=VARCHAR}, #{milkmemberNo,jdbcType=VARCHAR}, #{memberNo,jdbcType=VARCHAR}, 
+      #{paymentStat,jdbcType=VARCHAR}, #{milkboxStat,jdbcType=VARCHAR}, #{initAmt,jdbcType=DECIMAL}, 
+      #{curAmt,jdbcType=DECIMAL}, #{dispLineNo,jdbcType=VARCHAR}, #{empNo,jdbcType=VARCHAR}, 
+      #{adressNo,jdbcType=VARCHAR}, #{createrNo,jdbcType=VARCHAR}, #{createrBy,jdbcType=VARCHAR}, 
+      #{preorderStat,jdbcType=VARCHAR}, #{memoTxt,jdbcType=VARCHAR}, #{payMethod,jdbcType=VARCHAR}, 
+      #{solicitNo,jdbcType=VARCHAR}, #{solicitDate,jdbcType=DATE}, #{solicitorNo,jdbcType=VARCHAR}, 
+      #{solicitBy,jdbcType=VARCHAR})
+  </insert>
+  <insert id="insertNewOrder" parameterType="com.nhry.data.order.domain.TPreOrder" >
+    insert into t_preorder
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="orderNo != null" >
+        ORDER_NO,
+      </if>
+      <if test="orderType != null" >
+        ORDER_TYPE,
+      </if>
+      <if test="orderDate != null" >
+        ORDER_DATE,
+      </if>
+      <if test="paymentmethod != null" >
+        PAYMENTMETHOD,
+      </if>
+      <if test="preorderSource != null" >
+        PREORDER_SOURCE,
+      </if>
+      <if test="onlineorderNo != null" >
+        ONLINEORDER_NO,
+      </if>
+      <if test="branchNo != null" >
+        BRANCH_NO,
+      </if>
+      <if test="milkmemberNo != null" >
+        MILKMEMBER_NO,
+      </if>
+      <if test="memberNo != null" >
+        MEMBER_NO,
+      </if>
+      <if test="paymentStat != null" >
+        PAYMENT_STAT,
+      </if>
+      <if test="milkboxStat != null" >
+        MILKBOX_STAT,
+      </if>
+      <if test="initAmt != null" >
+        INIT_AMT,
+      </if>
+      <if test="curAmt != null" >
+        CUR_AMT,
+      </if>
+      <if test="dispLineNo != null" >
+        DISP_LINE_NO,
+      </if>
+      <if test="empNo != null" >
+        EMP_NO,
+      </if>
+      <if test="adressNo != null" >
+        ADRESS_NO,
+      </if>
+      <if test="createrNo != null" >
+        CREATER_NO,
+      </if>
+      <if test="createrBy != null" >
+        CREATER_BY,
+      </if>
+      <if test="preorderStat != null" >
+        PREORDER_STAT,
+      </if>
+      <if test="memoTxt != null" >
+        MEMO_TXT,
+      </if>
+      <if test="payMethod != null" >
+        PAY_METHOD,
+      </if>
+      <if test="solicitNo != null" >
+        SOLICIT_NO,
+      </if>
+      <if test="solicitDate != null" >
+        SOLICIT_DATE,
+      </if>
+      <if test="solicitorNo != null" >
+        SOLICITOR_NO,
+      </if>
+      <if test="solicitBy != null" >
+        SOLICIT_BY,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="orderNo != null" >
+        #{orderNo,jdbcType=VARCHAR},
+      </if>
+      <if test="orderType != null" >
+        #{orderType,jdbcType=VARCHAR},
+      </if>
+      <if test="orderDate != null" >
+        #{orderDate,jdbcType=DATE},
+      </if>
+      <if test="paymentmethod != null" >
+        #{paymentmethod,jdbcType=VARCHAR},
+      </if>
+      <if test="preorderSource != null" >
+        #{preorderSource,jdbcType=VARCHAR},
+      </if>
+      <if test="onlineorderNo != null" >
+        #{onlineorderNo,jdbcType=VARCHAR},
+      </if>
+      <if test="branchNo != null" >
+        #{branchNo,jdbcType=VARCHAR},
+      </if>
+      <if test="milkmemberNo != null" >
+        #{milkmemberNo,jdbcType=VARCHAR},
+      </if>
+      <if test="memberNo != null" >
+        #{memberNo,jdbcType=VARCHAR},
+      </if>
+      <if test="paymentStat != null" >
+        #{paymentStat,jdbcType=VARCHAR},
+      </if>
+      <if test="milkboxStat != null" >
+        #{milkboxStat,jdbcType=VARCHAR},
+      </if>
+      <if test="initAmt != null" >
+        #{initAmt,jdbcType=DECIMAL},
+      </if>
+      <if test="curAmt != null" >
+        #{curAmt,jdbcType=DECIMAL},
+      </if>
+      <if test="dispLineNo != null" >
+        #{dispLineNo,jdbcType=VARCHAR},
+      </if>
+      <if test="empNo != null" >
+        #{empNo,jdbcType=VARCHAR},
+      </if>
+      <if test="adressNo != null" >
+        #{adressNo,jdbcType=VARCHAR},
+      </if>
+      <if test="createrNo != null" >
+        #{createrNo,jdbcType=VARCHAR},
+      </if>
+      <if test="createrBy != null" >
+        #{createrBy,jdbcType=VARCHAR},
+      </if>
+      <if test="preorderStat != null" >
+        #{preorderStat,jdbcType=VARCHAR},
+      </if>
+      <if test="memoTxt != null" >
+        #{memoTxt,jdbcType=VARCHAR},
+      </if>
+      <if test="payMethod != null" >
+        #{payMethod,jdbcType=VARCHAR},
+      </if>
+      <if test="solicitNo != null" >
+        #{solicitNo,jdbcType=VARCHAR},
+      </if>
+      <if test="solicitDate != null" >
+        #{solicitDate,jdbcType=DATE},
+      </if>
+      <if test="solicitorNo != null" >
+        #{solicitorNo,jdbcType=VARCHAR},
+      </if>
+      <if test="solicitBy != null" >
+        #{solicitBy,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.nhry.data.order.domain.TPreOrder" >
+    update t_preorder
+    <set >
+      <if test="orderType != null" >
+        ORDER_TYPE = #{orderType,jdbcType=VARCHAR},
+      </if>
+      <if test="orderDate != null" >
+        ORDER_DATE = #{orderDate,jdbcType=DATE},
+      </if>
+      <if test="paymentmethod != null" >
+        PAYMENTMETHOD = #{paymentmethod,jdbcType=VARCHAR},
+      </if>
+      <if test="preorderSource != null" >
+        PREORDER_SOURCE = #{preorderSource,jdbcType=VARCHAR},
+      </if>
+      <if test="onlineorderNo != null" >
+        ONLINEORDER_NO = #{onlineorderNo,jdbcType=VARCHAR},
+      </if>
+      <if test="branchNo != null" >
+        BRANCH_NO = #{branchNo,jdbcType=VARCHAR},
+      </if>
+      <if test="milkmemberNo != null" >
+        MILKMEMBER_NO = #{milkmemberNo,jdbcType=VARCHAR},
+      </if>
+      <if test="memberNo != null" >
+        MEMBER_NO = #{memberNo,jdbcType=VARCHAR},
+      </if>
+      <if test="paymentStat != null" >
+        PAYMENT_STAT = #{paymentStat,jdbcType=VARCHAR},
+      </if>
+      <if test="milkboxStat != null" >
+        MILKBOX_STAT = #{milkboxStat,jdbcType=VARCHAR},
+      </if>
+      <if test="initAmt != null" >
+        INIT_AMT = #{initAmt,jdbcType=DECIMAL},
+      </if>
+      <if test="curAmt != null" >
+        CUR_AMT = #{curAmt,jdbcType=DECIMAL},
+      </if>
+      <if test="dispLineNo != null" >
+        DISP_LINE_NO = #{dispLineNo,jdbcType=VARCHAR},
+      </if>
+      <if test="empNo != null" >
+        EMP_NO = #{empNo,jdbcType=VARCHAR},
+      </if>
+      <if test="adressNo != null" >
+        ADRESS_NO = #{adressNo,jdbcType=VARCHAR},
+      </if>
+      <if test="createrNo != null" >
+        CREATER_NO = #{createrNo,jdbcType=VARCHAR},
+      </if>
+      <if test="createrBy != null" >
+        CREATER_BY = #{createrBy,jdbcType=VARCHAR},
+      </if>
+      <if test="preorderStat != null" >
+        PREORDER_STAT = #{preorderStat,jdbcType=VARCHAR},
+      </if>
+      <if test="memoTxt != null" >
+        MEMO_TXT = #{memoTxt,jdbcType=VARCHAR},
+      </if>
+      <if test="payMethod != null" >
+        PAY_METHOD = #{payMethod,jdbcType=VARCHAR},
+      </if>
+      <if test="solicitNo != null" >
+        SOLICIT_NO = #{solicitNo,jdbcType=VARCHAR},
+      </if>
+      <if test="solicitDate != null" >
+        SOLICIT_DATE = #{solicitDate,jdbcType=DATE},
+      </if>
+      <if test="solicitorNo != null" >
+        SOLICITOR_NO = #{solicitorNo,jdbcType=VARCHAR},
+      </if>
+      <if test="solicitBy != null" >
+        SOLICIT_BY = #{solicitBy,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where ORDER_NO = #{orderNo,jdbcType=VARCHAR}
+  </update>
+  <select id="searchOrders" resultMap="BaseResultMap" parameterType="com.nhry.model.order.OrderSearchModel">
+    select 
+    ORDER_NO, ORDER_TYPE, ORDER_DATE, PAYMENTMETHOD, PREORDER_SOURCE, ONLINEORDER_NO, 
+    BRANCH_NO, MILKMEMBER_NO, MEMBER_NO, PAYMENT_STAT, MILKBOX_STAT, INIT_AMT, CUR_AMT, 
+    DISP_LINE_NO, EMP_NO, ADRESS_NO, CREATER_NO, CREATER_BY, PREORDER_STAT,PAY_METHOD
+    FROM t_preorder
+    WHERE 1 = 1
+    <if test="orderNo != null and orderNo !=''">
+     		AND ORDER_NO = #{orderNo,jdbcType=VARCHAR}
+    </if>
+    <if test="branchNo != null and branchNo != ''">
+     		AND BRANCH_NO = #{branchNo,jdbcType=VARCHAR}
+    </if>
+    <if test="empNo != null and empNo !=''">
+     		AND EMP_NO = #{empNo,jdbcType=VARCHAR}
+    </if>
+    <if test="milkmemberNo != null and milkmemberNo !=''">
+     		AND MILKMEMBER_NO = #{milkmemberNo,jdbcType=VARCHAR}
+    </if>
+    <if test="paymentStat != null and paymentStat !=''">
+     		AND PAYMENT_STAT = #{paymentStat,jdbcType=VARCHAR}
+    </if>
+    <if test="milkboxStat != null and milkboxStat !=''">
+     		AND MILKBOX_STAT = #{milkboxStat,jdbcType=VARCHAR}
+    </if>
+    <if test="preorderStat != null and preorderStat !=''">
+     		AND PREORDER_STAT = #{preorderStat,jdbcType=VARCHAR}
+    </if>
+     ORDER BY ORDER_NO
+  </select>
+</mapper>

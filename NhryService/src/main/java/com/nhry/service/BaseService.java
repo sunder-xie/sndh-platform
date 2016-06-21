@@ -4,7 +4,7 @@ import java.util.List;
 
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
-import com.nhry.auth.UserSessionService;
+import com.nhry.common.auth.UserSessionService;
 
 public class BaseService {
     

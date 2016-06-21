@@ -6,6 +6,8 @@
     <result column="HR_EMP_NO" property="hrEmpNo" jdbcType="VARCHAR" />
     <result column="BRANCH_NO" property="branchNo" jdbcType="VARCHAR" />
     <result column="EMP_NAME" property="empName" jdbcType="VARCHAR" />
+    <result column="ROLE_ID" property="roleId" jdbcType="VARCHAR" />
+    <result column="GENDER" property="gender" jdbcType="VARCHAR" />
     <result column="EMP_TYPE" property="empType" jdbcType="VARCHAR" />
     <result column="TEL" property="tel" jdbcType="VARCHAR" />
     <result column="MP" property="mp" jdbcType="VARCHAR" />
@@ -17,46 +19,79 @@
     <result column="LAST_MODIFIED" property="lastModified" jdbcType="TIMESTAMP" />
     <result column="LAST_MODIFIED_BY" property="lastModifiedBy" jdbcType="VARCHAR" />
     <result column="LAST_MODIFIED_BY_TXT" property="lastModifiedByTxt" jdbcType="VARCHAR" />
-    <result column="DEL_FLAG" property="delFlag" jdbcType="CHAR" />
+    <result column="STATUS" property="status" jdbcType="CHAR" />
   </resultMap>
+
+  <resultMap id="RouteResultMap" type="com.nhry.data.basic.domain.TMdResidentialArea">
+    <id column="ID" jdbcType="VARCHAR" property="id" />
+    <result column="RESIDENTIAL_AREA_TXT" jdbcType="VARCHAR" property="residentialAreaTxt" />
+    <result column="PROVINCE" jdbcType="VARCHAR" property="province" />
+    <result column="CITY" jdbcType="VARCHAR" property="city" />
+    <result column="COUNTY" jdbcType="VARCHAR" property="county" />
+    <result column="STREET" jdbcType="VARCHAR" property="street" />
+    <result column="STATUS" jdbcType="VARCHAR" property="status" />
+    <result column="ADDRESS_TXT" jdbcType="VARCHAR" property="addressTxt" />
+    <result column="RESIDENTIAL_NUM" jdbcType="INTEGER" property="residentialNum" />
+    <result column="SALES_ORG" jdbcType="VARCHAR" property="salesOrg" />
+    <result column="PROPERTY_TXT" jdbcType="VARCHAR" property="propertyTxt" />
+    <result column="PROPERTY_TEL" jdbcType="VARCHAR" property="propertyTel" />
+  </resultMap>
+  <!--员工表字段-->
   <sql id="Base_Column_List" >
-    EMP_NO, HR_EMP_NO, BRANCH_NO, EMP_NAME, EMP_TYPE, TEL, MP, WEBCHAT, SFZH, CREATE_AT, 
+    EMP_NO, HR_EMP_NO, BRANCH_NO, EMP_NAME,ROLE_ID,GENDER, EMP_TYPE, TEL, MP, WEBCHAT, SFZH, CREATE_AT,
     CREATE_BY, CREATE_BY_TXT, LAST_MODIFIED, LAST_MODIFIED_BY, LAST_MODIFIED_BY_TXT, 
-    DEL_FLAG
+    STATUS
   </sql>
+
+  <!--员工路线表字段-->
+  <sql id="Route_Column_List">
+    ID, RESIDENTIAL_AREA_TXT, PROVINCE, CITY, COUNTY, STREET,STATUS, ADDRESS_TXT, RESIDENTIAL_NUM,
+    SALES_ORG, PROPERTY_TXT, PROPERTY_TEL
+  </sql>
+
+
   <select id="selectBranchEmpByNo" resultMap="BaseResultMap" parameterType="java.lang.String" >
-    select 
-    <include refid="Base_Column_List" />
-    from t_md_branch_emp
-    where EMP_NO = #{0} and (DEL_FLAG='N' or DEL_FLAG is null)
+    select emp.EMP_NO,emp.EMP_NAME,branch.BRANCH_NAME  BRANCH_NO,emp.GENDER,emp.EMP_TYPE,emp.TEL,emp.WEBCHAT,emp.SFZH,emp.STATUS,role.ROLE_NAME roleId
+    from t_md_branch_emp emp,T_MD_EMP_ROLE erole,t_sys_role role,T_MD_BRANCH branch
+    where erole.ROLE_ID = role.ID and emp.EMP_NO = erole.EMP_NO and emp.BRANCH_NO = branch.BRANCH_NO
+      and erole. EMP_NO = #{0}
   </select>
   <update id="deleteBranchEmpByNo" parameterType="com.nhry.data.basic.domain.TMdBranchEmp" >
     update t_md_branch_emp set  LAST_MODIFIED = #{lastModified,jdbcType=TIMESTAMP},
       LAST_MODIFIED_BY = #{lastModifiedBy,jdbcType=VARCHAR},
       LAST_MODIFIED_BY_TXT = #{lastModifiedByTxt,jdbcType=VARCHAR},
-      DEL_FLAG = #{delFlag}
+      STATUS = #{status}
     where EMP_NO = #{empNo}
   </update>
+  <delete id="deleteEmpRole"  parameterType="com.nhry.data.basic.domain.TMdBranchEmp" >
+      DELETE  FROM  t_md_emp_role
+      where EMP_NO = #{empNo,jdbcType=VARCHAR}
+  </delete>
   <insert id="addBranchEmp" parameterType="com.nhry.data.basic.domain.TMdBranchEmp" >
     insert into t_md_branch_emp (EMP_NO, HR_EMP_NO, BRANCH_NO, 
-      EMP_NAME, EMP_TYPE, TEL, 
+      EMP_NAME,GENDER,EMP_TYPE, TEL,
       MP, WEBCHAT, SFZH, 
-      CREATE_AT, CREATE_BY, CREATE_BY_TXT, 
-      LAST_MODIFIED, LAST_MODIFIED_BY, LAST_MODIFIED_BY_TXT, 
-      DEL_FLAG)
+      CREATE_AT, CREATE_BY, CREATE_BY_TXT,
+      STATUS)
     values (#{empNo,jdbcType=VARCHAR}, #{hrEmpNo,jdbcType=VARCHAR}, #{branchNo,jdbcType=VARCHAR}, 
-      #{empName,jdbcType=VARCHAR}, #{empType,jdbcType=VARCHAR}, #{tel,jdbcType=VARCHAR}, 
+      #{empName,jdbcType=VARCHAR}, #{gender,jdbcType=VARCHAR}, #{empType,jdbcType=VARCHAR}, #{tel,jdbcType=VARCHAR},
       #{mp,jdbcType=VARCHAR}, #{webchat,jdbcType=VARCHAR}, #{sfzh,jdbcType=VARCHAR}, 
-      #{createAt,jdbcType=TIMESTAMP}, #{createBy,jdbcType=VARCHAR}, #{createByTxt,jdbcType=VARCHAR}, 
-      #{lastModified,jdbcType=TIMESTAMP}, #{lastModifiedBy,jdbcType=VARCHAR}, #{lastModifiedByTxt,jdbcType=VARCHAR}, 
-      #{delFlag,jdbcType=CHAR})
+      #{createAt,jdbcType=TIMESTAMP}, #{createBy,jdbcType=VARCHAR}, #{createByTxt,jdbcType=VARCHAR},
+      #{status,jdbcType=CHAR})
+
+  </insert>
+
+  <insert id="addEmpRole" parameterType="com.nhry.data.basic.domain.TMdBranchEmp" >
+       insert into t_md_emp_role(EMP_NO,ROLE_ID)  values(#{empNo,jdbcType=VARCHAR},#{roleId,jdbcType=VARCHAR})
   </insert>
   <update id="uptBranchEmpByNo" parameterType="com.nhry.data.basic.domain.TMdBranchEmp" >
     update t_md_branch_emp
     set HR_EMP_NO = #{hrEmpNo,jdbcType=VARCHAR},
       BRANCH_NO = #{branchNo,jdbcType=VARCHAR},
       EMP_NAME = #{empName,jdbcType=VARCHAR},
+      GENDER = #{gender,jdbcType=VARCHAR},
       EMP_TYPE = #{empType,jdbcType=VARCHAR},
+      STATUS = #{status,jdbcType=VARCHAR},
       TEL = #{tel,jdbcType=VARCHAR},
       MP = #{mp,jdbcType=VARCHAR},
       WEBCHAT = #{webchat,jdbcType=VARCHAR},
@@ -69,15 +104,35 @@
       LAST_MODIFIED_BY_TXT = #{lastModifiedByTxt,jdbcType=VARCHAR} 
     where EMP_NO = #{empNo,jdbcType=VARCHAR}
   </update>
+
+  <update id="uptEmpRole" parameterType="com.nhry.data.basic.domain.TMdBranchEmp" >
+    update t_md_emp_role
+    set
+        ROLE_ID = #{roleId,jdbcType=VARCHAR}
+    where EMP_NO = #{empNo,jdbcType=VARCHAR}
+  </update>
   <select id="searchBranchEmp" resultMap="BaseResultMap" parameterType="com.nhry.model.basic.EmpQueryModel">
-      select emp.EMP_NO, emp.HR_EMP_NO, branch.BRANCH_NAME BRANCH_NO, emp.EMP_NAME, emp.EMP_TYPE, emp.TEL, emp.MP, emp.WEBCHAT, emp.SFZH,emp.DEL_FLAG 
-    from t_md_branch_emp emp,T_MD_BRANCH branch 
-    where emp.BRANCH_NO=branch.BRANCH_NO and (DEL_FLAG='N' or DEL_FLAG is null)
+      select emp.EMP_NO, emp.HR_EMP_NO, branch.BRANCH_NAME  BRANCH_NO, role.ROLE_NAME roleId,emp.EMP_NAME,emp.GENDER, emp.EMP_TYPE, emp.TEL, emp.MP, emp.WEBCHAT, emp.SFZH,emp.STATUS
+    from t_md_branch_emp emp,T_MD_BRANCH branch,T_MD_EMP_ROLE erole,t_sys_role role
+    where emp.BRANCH_NO = branch.BRANCH_NO and erole.ROLE_ID = role.ID and emp.EMP_NO = erole.EMP_NO
      <if test="branchNo != null and branchNo !=''">
      		AND emp.BRANCH_NO = #{branchNo,jdbcType=VARCHAR}
      </if>
-     <if test="delFlag != null and delFlag != ''">
-     	AND DEL_FLAG = #{delFlag,jdbcType=VARCHAR}
+     <if test="status != null and status != ''">
+     	AND  emp.STATUS = #{status,jdbcType=VARCHAR}
      </if>
+
+    <if test="roleId != null and roleId != ''">
+      AND role.ID = #{roleId,jdbcType=VARCHAR}
+    </if>
   </select>
+
+  <select id="selectEmpRoutes" parameterType="String" resultMap="RouteResultMap">
+    select
+    <include refid="Route_Column_List" />
+    from t_md_residential_area area,T_MD_EMP_SCOPE scope
+    where area.ID = scope.RESIDENTIAL_AREA_ID
+    and scope.EMP_NO =  #{empNo,jdbcType=VARCHAR}
+  </select>
+
 </mapper>

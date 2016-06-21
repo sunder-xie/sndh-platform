@@ -2,10 +2,10 @@ package com.nhry.service.basic.impl;
 
 
 import com.github.pagehelper.PageInfo;
+import com.nhry.common.exception.MessageCode;
+import com.nhry.common.exception.ServiceException;
 import com.nhry.data.basic.dao.TMdResidentialAreaMapper;
 import com.nhry.data.basic.domain.TMdResidentialArea;
-import com.nhry.exception.MessageCode;
-import com.nhry.exception.ServiceException;
 import com.nhry.service.basic.dao.ResidentialAreaService;
 import com.nhry.service.basic.pojo.ResidentialAreaModel;
 import org.apache.commons.lang.StringUtils;
@@ -38,10 +38,19 @@ public class ResidentialAreaServiceImpl implements ResidentialAreaService {
     }
 
     @Override
-    public int addResidentialArea(ResidentialAreaModel residentialAreaModel) {
-        return tMdResidentialAreaMapper.addResidentialArea(residentialAreaModel);
+    public int addResidentialArea(TMdResidentialArea tMdResidentialArea) {
+        return tMdResidentialAreaMapper.addResidentialArea(tMdResidentialArea);
     }
 
+    @Override
+    public int uptResidentialArea(TMdResidentialArea tMdResidentialArea) {
+        return tMdResidentialAreaMapper.uptResidentialArea(tMdResidentialArea);
+    }
+
+    @Override
+    public int deleteAreaById(String id) {
+        return tMdResidentialAreaMapper.deleteAreaById(id);
+    }
 
 
     public void settMdResidentialAreaMapper(TMdResidentialAreaMapper tMdResidentialAreaMapper) {

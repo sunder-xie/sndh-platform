@@ -29,7 +29,7 @@
 		<xstream.version>1.4.7</xstream.version>
 		<guava.version>17.0</guava.version>
 		<poi.version>3.9</poi.version>
-		<jetty.version>7.6.11.v20130520</jetty.version>
+		<jetty.version>9.3.8.v20160314</jetty.version>
 
 		<!-- jdbc driver setting -->
 		<mysql.driver.version>5.1.30</mysql.driver.version>
@@ -387,6 +387,17 @@
 		    <artifactId>shiro-core</artifactId>
 		    <version>1.2.4</version>
 		</dependency>
+		<dependency>
+			<groupId>org.apache.cxf</groupId>
+			<artifactId>cxf-rt-frontend-jaxws</artifactId>
+			<version>3.0.5</version>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.cxf</groupId>
+			<artifactId>cxf-rt-transports-http</artifactId>
+			<version>3.0.5</version>
+		</dependency>
+
 	</dependencies>
 	<!-- 插件配置 -->
 	<build>
@@ -497,6 +508,7 @@
 			</plugin>
 			<!-- jetty插件, 设定context path与spring profile -->
 			<plugin>
+				<!--
 				<groupId>org.mortbay.jetty</groupId>
 				<artifactId>jetty-maven-plugin</artifactId>
 				<version>${jetty.version}</version>
@@ -513,6 +525,17 @@
 						<contextPath>/${project.artifactId}</contextPath>
 					</webAppConfig>
 				</configuration>
+				-->
+				<groupId>org.eclipse.jetty</groupId>
+				<artifactId>jetty-maven-plugin</artifactId>
+				<version>${jetty.version}</version>
+				<configuration>
+					<scanIntervalSeconds>10</scanIntervalSeconds>
+					<webApp>
+						<contextPath>/NhryService</contextPath>
+					</webApp>
+				</configuration>
+
 			</plugin>
 		</plugins>
 	</build>

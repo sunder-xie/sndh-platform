@@ -1,10 +1,10 @@
 package com.nhry.service.basic.impl;
 
 import com.github.pagehelper.PageInfo;
+import com.nhry.common.exception.MessageCode;
+import com.nhry.common.exception.ServiceException;
 import com.nhry.data.basic.dao.TMdBranchMapper;
 import com.nhry.data.basic.domain.TMdBranch;
-import com.nhry.exception.MessageCode;
-import com.nhry.exception.ServiceException;
 import com.nhry.model.basic.BranchQueryModel;
 import com.nhry.service.BaseService;
 import com.nhry.service.basic.dao.BranchService;
@@ -34,9 +34,8 @@ public class BranchServiceImpl extends BaseService implements BranchService {
 	}
 
 	@Override
-	public int updateBranchByNo(TMdBranch record) {
-		// TODO Auto-generated method stub
-		return 0;
+	public int updateBranch(TMdBranch tMdBranch) {
+		return branchMapper.updateBranch(tMdBranch);
 	}
 
 	@Override
@@ -53,6 +52,8 @@ public class BranchServiceImpl extends BaseService implements BranchService {
 		}
 		return branchMapper.findBranchListByPage(branchModel);
 	}
+
+
 
 	public void setBranchMapper(TMdBranchMapper branchMapper) {
 		this.branchMapper = branchMapper;

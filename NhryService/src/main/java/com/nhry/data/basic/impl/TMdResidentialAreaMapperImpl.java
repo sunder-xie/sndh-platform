@@ -2,9 +2,9 @@ package com.nhry.data.basic.impl;
 
 
 import com.github.pagehelper.PageInfo;
+import com.nhry.common.datasource.DynamicSqlSessionTemplate;
 import com.nhry.data.basic.dao.TMdResidentialAreaMapper;
 import com.nhry.data.basic.domain.TMdResidentialArea;
-import com.nhry.datasource.DynamicSqlSessionTemplate;
 import com.nhry.service.basic.pojo.ResidentialAreaModel;
 
 import java.util.List;
@@ -58,11 +58,25 @@ public class TMdResidentialAreaMapperImpl implements TMdResidentialAreaMapper {
     }
 
     @Override
-    public int addResidentialArea(ResidentialAreaModel residentialAreaModel) {
-
-        return sqlSessionTemplate.insert("insert",residentialAreaModel);
+    public int addResidentialArea(TMdResidentialArea tMdResidentialArea) {
+        int area = sqlSessionTemplate.insert("insertArea",tMdResidentialArea);
+        int areaBranch =  sqlSessionTemplate.insert("insertBranchArea",tMdResidentialArea);
+        return area + areaBranch;
     }
 
+    @Override
+    public int uptResidentialArea(TMdResidentialArea tMdResidentialArea) {
+        int area = sqlSessionTemplate.update("uptArea",tMdResidentialArea);
+        int areaBranch =  sqlSessionTemplate.update("uptBranchArea",tMdResidentialArea);
+        return area + areaBranch;
+    }
+
+    @Override
+    public int deleteAreaById(String id) {
+        int area = sqlSessionTemplate.delete("delArea",id);
+        int areaBranch =  sqlSessionTemplate.delete("delBranchArea",id);
+        return area + areaBranch;
+    }
 
 
     public void setSqlSessionTemplate(DynamicSqlSessionTemplate sqlSessionTemplate) {

@@ -1,20 +1,17 @@
 package com.nhry.service.basic.impl;
 
-import java.util.List;
-
-import org.apache.commons.lang3.StringUtils;
-import org.springframework.transaction.annotation.Propagation;
-import org.springframework.transaction.annotation.Transactional;
-
 import com.github.pagehelper.PageInfo;
+import com.nhry.common.exception.MessageCode;
+import com.nhry.common.exception.ServiceException;
 import com.nhry.data.basic.dao.TMdBranchEmpMapper;
 import com.nhry.data.basic.domain.TMdBranchEmp;
-import com.nhry.exception.MessageCode;
-import com.nhry.exception.ServiceException;
 import com.nhry.model.basic.EmpQueryModel;
 import com.nhry.service.BaseService;
 import com.nhry.service.basic.dao.BranchEmpService;
-import com.nhry.utils.Date;
+import com.nhry.service.basic.pojo.BranchEmpModel;
+import org.apache.commons.lang3.StringUtils;
+
+import java.util.Date;
 
 public class BranchEmpServiceImpl extends BaseService implements BranchEmpService {
 	
@@ -28,11 +25,12 @@ public class BranchEmpServiceImpl extends BaseService implements BranchEmpServic
 			throw new ServiceException(MessageCode.LOGIC_ERROR, "该员工编号对应的员工信息不存在!");
 		}
 		TMdBranchEmp record = new TMdBranchEmp();
-		record.setDelFlag("Y");
+		record.setStatus("0");
 		record.setEmpNo(empNo);
 		record.setLastModified(new Date());
-		record.setLastModifiedBy(userSessionService.getCurrentUser().getLoginName());
-		record.setLastModifiedByTxt(userSessionService.getCurrentUser().getDisplayName());
+		/*record.setLastModifiedBy(userSessionService.getCurrentUser().getLoginName());
+		record.setLastModifiedByTxt(userSessionService.getCurrentUser().getDisplayName());*/
+
 		return branchEmpMapper.deleteBranchEmp(record);
 	}
 
@@ -46,9 +44,9 @@ public class BranchEmpServiceImpl extends BaseService implements BranchEmpServic
 			throw new ServiceException(MessageCode.LOGIC_ERROR, "该员工编号已存在，请重新填写！");
 		}
 		record.setCreateAt(new Date());
-		record.setCreateBy(userSessionService.getCurrentUser().getLoginName());
-		record.setCreateByTxt(userSessionService.getCurrentUser().getDisplayName());
-		record.setDelFlag("N");
+//		record.setCreateBy(userSessionService.getCurrentUser().getLoginName());
+//		record.setCreateByTxt(userSessionService.getCurrentUser().getDisplayName());
+		record.setStatus("1");
 		return branchEmpMapper.addBranchEmp(record);
 	}
 
@@ -56,6 +54,12 @@ public class BranchEmpServiceImpl extends BaseService implements BranchEmpServic
 	public TMdBranchEmp selectBranchEmpByNo(String empNo) {
 		// TODO Auto-generated method stub
 		return branchEmpMapper.selectBranchEmpByNo(empNo);
+	}
+
+
+	@Override
+	public BranchEmpModel empDetailInfo(String empNo) {
+		return branchEmpMapper.empDetailInfo(empNo);
 	}
 
 	@Override
@@ -66,8 +70,8 @@ public class BranchEmpServiceImpl extends BaseService implements BranchEmpServic
 			throw new ServiceException(MessageCode.LOGIC_ERROR, "该员工编号对应的员工信息不存在!");
 		}
 		record.setLastModified(new Date());
-		record.setLastModifiedBy(userSessionService.getCurrentUser().getLoginName());
-		record.setLastModifiedByTxt(userSessionService.getCurrentUser().getDisplayName());
+		/*record.setLastModifiedBy(userSessionService.getCurrentUser().getLoginName());
+		record.setLastModifiedByTxt(userSessionService.getCurrentUser().getDisplayName());*/
 		return branchEmpMapper.uptBranchEmpByNo(record);
 	}
 
@@ -83,4 +87,6 @@ public class BranchEmpServiceImpl extends BaseService implements BranchEmpServic
 		}
 		return branchEmpMapper.searchBranchEmp(smodel);
 	}
+
+
 }

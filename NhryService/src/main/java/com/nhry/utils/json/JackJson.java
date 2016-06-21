@@ -14,11 +14,10 @@ import org.codehaus.jackson.map.ser.impl.SimpleBeanPropertyFilter;
 import org.codehaus.jackson.map.ser.impl.SimpleFilterProvider;
 import org.codehaus.jackson.type.TypeReference;
 
-import com.nhry.exception.ExceptionMapperSupport;
+import com.nhry.common.exception.ExceptionMapperSupport;
 
 /**
  * jackjson一些转换方法
- * 
  * @author chenxin
  * @date 2010-6-28 下午04:07:33
  */

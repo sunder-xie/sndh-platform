@@ -2,10 +2,10 @@ package com.nhry.data.auth.impl;
 
 import java.util.List;
 
+import com.nhry.common.datasource.DynamicSqlSessionTemplate;
 import com.nhry.data.auth.dao.TSysResourceMapper;
 import com.nhry.data.auth.domain.TSysResource;
 import com.nhry.data.auth.domain.TSysRoleResource;
-import com.nhry.datasource.DynamicSqlSessionTemplate;
 
 public class TSysResourceMapperImpl implements TSysResourceMapper {
 	private DynamicSqlSessionTemplate sqlSessionTemplate;
