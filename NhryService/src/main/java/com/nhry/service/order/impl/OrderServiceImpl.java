@@ -127,7 +127,7 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 		return createDaliyPlan(record.getEntries());
 	}
 	
-	//生成每日计划
+	//根据订单行生成每日计划
 	private int createDaliyPlan(List<TPlanOrderItem> entries){
 		
 		//计算每个行项目总共需要送多少天
@@ -151,10 +151,15 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 					//判断是按周期送还是按星期送
 					Date today = afterDate(entry.getStartDispDate(),afterDays);
 					if("01".equals(entry.getRuleType())){
-						int gapDays = entry.getGapDays();//间隔天数
+						int gapDays = entry.getGapDays() + 1;//间隔天数
 						List<String> deliverDays = Arrays.asList(entry.getRuleTxt().split(","));
-						if(afterDays/gapDays == 0){
-							
+						if(deliverDays.size() > 0){//判断周6，7是否配送
+							String weekday = getWeek(today);
+							if(!deliverDays.contains(weekday)){
+								if(afterDays%gapDays != 0){
+									continue;
+								}
+							}
 						}
 					}
 					else if("02".equals(entry.getRuleType())){
@@ -210,8 +215,18 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 	public int editOrder(OrderCreateModel record)
 	{
 		// TODO Auto-generated method stub
+		
+		
+		
+		
+		
+		
+		
+		
 		return 0;
 	}
+	
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////	
 	
 	//计算间隔天数
 	private int daysOfTwo(Date fDate, Date oDate) {
