@@ -13,5 +13,9 @@ public interface OrderService {
 	int createOrder(OrderCreateModel record);
 	
 	int editOrder(OrderCreateModel record);
+	
+	int modifyOrderStatus(TPreOrder record);
+	
+	TPreOrder selectOrderByCode(String orderCode);
 
 }

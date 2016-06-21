@@ -50,6 +50,19 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 	}
 	
 	/* (non-Javadoc) 
+	* @title: selectOrderByCode
+	* @description: 根据订单号查询订单
+	* @param orderCode
+	* @return 
+	* @see com.nhry.service.order.dao.OrderService#selectOrderByCode(java.lang.String) 
+	*/
+	@Override
+	public TPreOrder selectOrderByCode(String orderCode)
+	{
+		return tPreOrderMapper.selectByPrimaryKey(orderCode);
+	}
+	
+	/* (non-Javadoc) 
 	* @title: 查询订单列表
 	* @description: 
 	* @return 
@@ -83,8 +96,7 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 		order.setCreaterBy(userSessionService.getCurrentUser().getLoginName());//创建人
 		order.setCreaterNo(userSessionService.getCurrentUser().getGroupId());//创建人编号
 //		order.setOrderType(orderType);//订单类型
-//		order.setPreorderSource(preorderSource);//订单来源
-//		order.setOnlineorderNo(onlineorderNo);//线上订单编号
+		order.setPreorderSource("30");//订单来源  页面中来源都是30（奶站）
 //		order.setMilkmemberNo(milkmemberNo);//喝奶人编号
 //		order.setMemberNo(memberNo);//下单会员编号
 //		order.setBranchNo(branchNo);//奶站编号
@@ -123,8 +135,11 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 		   index++;
 		}
 		
-		//生成每日计划
-		return createDaliyPlan(record.getEntries());
+		//生成每日计划,当订户订单装箱状态为已装箱或无需装箱，则系统默认该订单可生成订户日订单
+		if(!"02".equals(order.getMilkboxStat())){
+			return createDaliyPlan(record.getEntries());
+		}
+		return 1;
 	}
 	
 	//根据订单行生成每日计划
@@ -205,6 +220,33 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 	}
 	
 	/* (non-Javadoc) 
+	 * @title: modifyOrderStatus
+	 * @description: 修改订单状态   订单，付款，奶箱状态
+	 * @param state
+	 * @param status
+	 * @return 
+	 * @see com.nhry.service.order.dao.OrderService#modifyOrderStatus(java.lang.String, java.lang.String) 
+	 */
+	@Override
+	public int modifyOrderStatus(TPreOrder record)
+	{	
+		//未收款01、已收款02、垫付款03
+		//已装箱01、未装箱02、无需装箱03
+		//已生效01、未生效02、无效03
+		if(StringUtils.isBlank(record.getPaymentStat()) && StringUtils.isBlank(record.getMilkboxStat())
+				&& StringUtils.isBlank(record.getPreorderStat())){
+			throw new ServiceException("更新信息与状态为空!");
+		}
+		if(tPreOrderMapper.selectByPrimaryKey(record.getOrderNo()) == null){
+			throw new ServiceException("该订单号不存在!");
+		}
+		
+		tPreOrderMapper.updateOrderStatus(record);
+		
+		return 1;
+	}
+	
+	/* (non-Javadoc) 
 	* @title: editOrder
 	* @description: 修改订单
 	* @param record
@@ -215,16 +257,9 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 	public int editOrder(OrderCreateModel record)
 	{
 		// TODO Auto-generated method stub
-		
-		
-		
-		
-		
-		
-		
-		
 		return 0;
 	}
+	
 	
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////	
 	
@@ -262,5 +297,6 @@ public class OrderServiceImpl extends BaseService implements OrderService {
        }   
        return weeks[week_index];  
    }
+
 
 }

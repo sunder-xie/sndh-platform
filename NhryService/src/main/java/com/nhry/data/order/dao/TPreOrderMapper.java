@@ -18,4 +18,6 @@ public interface TPreOrderMapper {
     int updateByPrimaryKey(TPreOrder record);
 
 	 PageInfo selectOrdersByPages(OrderSearchModel smodel);
+	 
+	 int updateOrderStatus(TPreOrder record);
 }

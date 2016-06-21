@@ -34,7 +34,7 @@
     DISP_LINE_NO, EMP_NO, ADRESS_NO, CREATER_NO, CREATER_BY, PREORDER_STAT, MEMO_TXT, 
     PAY_METHOD, SOLICIT_NO, SOLICIT_DATE, SOLICITOR_NO, SOLICIT_BY
   </sql>
-  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.String" >
+  <select id="selectByOrderCode" resultMap="BaseResultMap" parameterType="java.lang.String" >
     select 
     <include refid="Base_Column_List" />
     from t_preorder
@@ -327,6 +327,27 @@
     <if test="preorderStat != null and preorderStat !=''">
      		AND PREORDER_STAT = #{preorderStat,jdbcType=VARCHAR}
     </if>
+    <!-- <if test="orderDateStart != null and orderDateStart !=''">
+     		AND ORDER_DATE >= #{preorderStat,jdbcType=DATE}
+    </if>
+    <if test="orderDateEnd != null and orderDateEnd !=''">
+     		AND ORDER_DATE &lt;= #{preorderStat,jdbcType=DATE}
+    </if> -->
      ORDER BY ORDER_NO
   </select>
+  <update id="updateOrderStatus" parameterType="com.nhry.data.order.domain.TPreOrder" >
+    update t_preorder
+    <set >
+      <if test="paymentStat != null" >
+        PAYMENT_STAT = #{paymentStat,jdbcType=VARCHAR},
+      </if>
+      <if test="milkboxStat != null" >
+        MILKBOX_STAT = #{milkboxStat,jdbcType=VARCHAR},
+      </if>
+      <if test="preorderStat != null" >
+        PREORDER_STAT = #{preorderStat,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where ORDER_NO = #{orderNo,jdbcType=VARCHAR}
+  </update>
 </mapper>

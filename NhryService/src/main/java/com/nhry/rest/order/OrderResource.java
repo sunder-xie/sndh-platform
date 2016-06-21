@@ -36,9 +36,9 @@ public class OrderResource extends BaseResource {
 	@GET
 	@Path("/{orderCode}")
 	@Produces(MediaType.APPLICATION_JSON)
-	@ApiOperation(value = "/{orderCode}", response = NHSysParameter.class, notes = "根据订单编号查询订单信息")
+	@ApiOperation(value = "/{orderCode}", response = TPreOrder.class, notes = "根据订单编号查询订单信息")
 	public Response selectOrderByCode(@ApiParam(required=true,name="orderCode",value="订单编号") @PathParam("orderCode") String orderCode){
-		return convertToRespModel(MessageCode.NORMAL, null, null);
+		return convertToRespModel(MessageCode.NORMAL, null, orderService.selectOrderByCode(orderCode));
 	} 
 	
 	@POST
@@ -63,9 +63,18 @@ public class OrderResource extends BaseResource {
 	@Path("/create")
 	@Produces(MediaType.APPLICATION_JSON)
 	@Consumes(MediaType.APPLICATION_JSON)
-	@ApiOperation(value = "/create", response = NHSysParameter.class, notes = "生成预订单")
+	@ApiOperation(value = "/create", response = Integer.class, notes = "生成预订单")
 	public Response createOrder(@ApiParam(required=true,name="smodel",value="OrderCreateModel") OrderCreateModel record){
 		return convertToRespModel(MessageCode.NORMAL, null, orderService.createOrder(record));
+	}
+	
+	@POST
+	@Path("/uptOrderStatus")
+	@Produces(MediaType.APPLICATION_JSON)
+	@Consumes(MediaType.APPLICATION_JSON)
+	@ApiOperation(value = "/uptOrderStatus", response = Integer.class, notes = "修改订单,付款，奶箱状态")
+	public Response uptOrderStatus(@ApiParam(required=true,name="smodel",value="OrderCreateModel") TPreOrder record){
+		return convertToRespModel(MessageCode.NORMAL, null, orderService.modifyOrderStatus(record));
 	}
 	
 
