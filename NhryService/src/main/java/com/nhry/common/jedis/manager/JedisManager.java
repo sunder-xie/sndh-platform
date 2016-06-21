@@ -23,7 +23,7 @@ import com.nhry.utils.SessionUtil;
  *
  */
 public class JedisManager {
-	private static final Logger logger = Logger.getLogger(SessionUtil.class);
+	private static final Logger logger = Logger.getLogger(JedisManager.class);
 	private static Object syncObject =new Object();
 	private static boolean initFlag =false;
 

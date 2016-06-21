@@ -128,12 +128,14 @@
 
 	<bean id="dataSource" class="com.nhry.common.datasource.DynamicDataSource">
 		<property name="master" ref="masterDs1" />
+		<!-- 
 		<property name="slaves">
 			<list>
 				<ref bean="slaveDs1" />
 				<ref bean="slaveDs2" />
 			</list>
 		</property>
+		 -->
 	</bean>
 	
 	<bean id="redisPoolConfig" class="redis.clients.jedis.JedisPoolConfig">  

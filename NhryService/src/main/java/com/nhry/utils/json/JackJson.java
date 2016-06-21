@@ -18,7 +18,6 @@ import com.nhry.common.exception.ExceptionMapperSupport;
 
 /**
  * jackjson一些转换方法
- * 
  * @author chenxin
  * @date 2010-6-28 下午04:07:33
  */
