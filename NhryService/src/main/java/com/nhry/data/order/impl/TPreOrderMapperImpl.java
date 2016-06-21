@@ -34,10 +34,10 @@ public class TPreOrderMapperImpl implements TPreOrderMapper
 	}
 	
 	@Override
-	public int deleteByPrimaryKey(String orderNo)
+	public int updateOrderStatus(TPreOrder record)
 	{
 		// TODO Auto-generated method stub
-		return 0;
+		return sqlSessionTemplate.update("updateOrderStatus", record);
 	}
 	
 	@Override
@@ -48,17 +48,24 @@ public class TPreOrderMapperImpl implements TPreOrderMapper
 	}
 	
 	@Override
-	public int insertSelective(TPreOrder record)
+	public TPreOrder selectByPrimaryKey(String orderNo)
+	{
+		// TODO Auto-generated method stub
+		return sqlSessionTemplate.selectOne("selectByOrderCode", orderNo);
+	}
+	
+	@Override
+	public int deleteByPrimaryKey(String orderNo)
 	{
 		// TODO Auto-generated method stub
 		return 0;
 	}
 	
 	@Override
-	public TPreOrder selectByPrimaryKey(String orderNo)
+	public int insertSelective(TPreOrder record)
 	{
 		// TODO Auto-generated method stub
-		return null;
+		return 0;
 	}
 	
 	@Override
@@ -74,6 +81,5 @@ public class TPreOrderMapperImpl implements TPreOrderMapper
 		// TODO Auto-generated method stub
 		return 0;
 	}
-	
 	
 }
