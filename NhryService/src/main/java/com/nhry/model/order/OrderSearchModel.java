@@ -19,6 +19,15 @@ public class OrderSearchModel extends BaseQueryModel implements Serializable {
 	private String preorderStat;
 	private String orderDateStart;
 	private String orderDateEnd;
+	private String companyName;
+	public String getCompanyName()
+	{
+		return companyName;
+	}
+	public void setCompanyName(String companyName)
+	{
+		this.companyName = companyName;
+	}
 	public String getOrderDateStart()
 	{
 		return orderDateStart;

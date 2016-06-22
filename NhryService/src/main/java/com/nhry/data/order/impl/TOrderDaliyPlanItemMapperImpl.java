@@ -1,5 +1,7 @@
 package com.nhry.data.order.impl;
 
+import java.util.List;
+
 import com.nhry.common.datasource.DynamicSqlSessionTemplate;
 import com.nhry.data.order.dao.TOrderDaliyPlanItemMapper;
 import com.nhry.data.order.dao.TPlanOrderItemMapper;
@@ -26,6 +28,20 @@ public class TOrderDaliyPlanItemMapperImpl implements TOrderDaliyPlanItemMapper
 	{
 		// TODO Auto-generated method stub
 		return sqlSessionTemplate.insert("insertNewOrderDaliyPlanEntry", record);
+	}
+	
+	@Override
+	public int updateDaliyPlanItemStatus(TOrderDaliyPlanItem record)
+	{
+		// TODO Auto-generated method stub
+		return sqlSessionTemplate.update("updateDaliyPlanItemStatus", record);
+	}
+	
+	@Override
+	public List<TOrderDaliyPlanItem> selectDaliyPlansByEntryNo(String itemNo)
+	{
+		// TODO Auto-generated method stub
+		return sqlSessionTemplate.selectList("selectDaliyPlansByEntryNo", itemNo);
 	}
 
 	@Override

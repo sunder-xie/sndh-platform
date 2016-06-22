@@ -37,6 +37,13 @@
       and PLAN_ITEM_NO = #{planItemNo,jdbcType=VARCHAR}
       and ITEM_NO = #{itemNo,jdbcType=VARCHAR}
   </select>
+  <select id="selectDaliyPlansByEntryNo" resultMap="BaseResultMap" parameterType="java.lang.String" >
+    select 
+    <include refid="Base_Column_List" />
+    from t_mst_order_daliy_plan_item
+    where 1 = 1 
+      and ITEM_NO = #{itemNo,jdbcType=VARCHAR}
+  </select>
   <delete id="deleteByPrimaryKey" parameterType="com.nhry.data.order.domain.TOrderDaliyPlanItemKey" >
     delete from t_mst_order_daliy_plan_item
     where ORDER_NO = #{orderNo,jdbcType=VARCHAR}
@@ -187,7 +194,7 @@
       </if>
     </trim>
   </insert>
-  <update id="updateByPrimaryKeySelective" parameterType="com.nhry.data.order.domain.TOrderDaliyPlanItem" >
+  <update id="updateDaliyPlanItemStatus" parameterType="com.nhry.data.order.domain.TOrderDaliyPlanItem" >
     update t_mst_order_daliy_plan_item
     <set >
       <if test="dispDate != null" >
@@ -240,8 +247,8 @@
       </if>
     </set>
     where ORDER_NO = #{orderNo,jdbcType=VARCHAR}
-      and ORDER_DATE = #{orderDate,jdbcType=DATE}
-      and PLAN_ITEM_NO = #{planItemNo,jdbcType=VARCHAR}
+      and DISP_DATE = #{dispDate,jdbcType=DATE}
+      <!-- and PLAN_ITEM_NO = #{planItemNo,jdbcType=VARCHAR} -->
       and ITEM_NO = #{itemNo,jdbcType=VARCHAR}
   </update>
   <update id="updateByPrimaryKey" parameterType="com.nhry.data.order.domain.TOrderDaliyPlanItem" >
