@@ -12,7 +12,7 @@
     <result column="TEL" property="tel" jdbcType="VARCHAR" />
     <result column="MP" property="mp" jdbcType="VARCHAR" />
     <result column="WEBCHAT" property="webchat" jdbcType="VARCHAR" />
-    <result column="SFZH" property="sfzh" jdbcType="VARCHAR" />
+    <result column="ID_NO" property="idNo" jdbcType="VARCHAR" />
     <result column="CREATE_AT" property="createAt" jdbcType="TIMESTAMP" />
     <result column="CREATE_BY" property="createBy" jdbcType="VARCHAR" />
     <result column="CREATE_BY_TXT" property="createByTxt" jdbcType="VARCHAR" />
@@ -38,7 +38,7 @@
   </resultMap>
   <!--员工表字段-->
   <sql id="Base_Column_List" >
-    EMP_NO, HR_EMP_NO, BRANCH_NO, EMP_NAME,ROLE_ID,GENDER, EMP_TYPE, TEL, MP, WEBCHAT, SFZH, CREATE_AT,
+    EMP_NO, HR_EMP_NO, BRANCH_NO, EMP_NAME,ROLE_ID,GENDER, EMP_TYPE, TEL, MP, WEBCHAT, ID_NO, CREATE_AT,
     CREATE_BY, CREATE_BY_TXT, LAST_MODIFIED, LAST_MODIFIED_BY, LAST_MODIFIED_BY_TXT, 
     STATUS
   </sql>
@@ -51,11 +51,12 @@
 
 
   <select id="selectBranchEmpByNo" resultMap="BaseResultMap" parameterType="java.lang.String" >
-    select emp.EMP_NO,emp.EMP_NAME,branch.BRANCH_NAME  BRANCH_NO,emp.GENDER,emp.EMP_TYPE,emp.TEL,emp.WEBCHAT,emp.SFZH,emp.STATUS,role.ROLE_NAME roleId
+    select emp.EMP_NO,emp.EMP_NAME,branch.BRANCH_NAME  BRANCH_NO,emp.GENDER,emp.EMP_TYPE,emp.TEL,emp.WEBCHAT,emp.ID_NO,emp.STATUS,role.ROLE_NAME roleId
     from t_md_branch_emp emp,T_MD_EMP_ROLE erole,t_sys_role role,T_MD_BRANCH branch
     where erole.ROLE_ID = role.ID and emp.EMP_NO = erole.EMP_NO and emp.BRANCH_NO = branch.BRANCH_NO
       and erole. EMP_NO = #{0}
   </select>
+
   <update id="deleteBranchEmpByNo" parameterType="com.nhry.data.basic.domain.TMdBranchEmp" >
     update t_md_branch_emp set  LAST_MODIFIED = #{lastModified,jdbcType=TIMESTAMP},
       LAST_MODIFIED_BY = #{lastModifiedBy,jdbcType=VARCHAR},
@@ -70,12 +71,12 @@
   <insert id="addBranchEmp" parameterType="com.nhry.data.basic.domain.TMdBranchEmp" >
     insert into t_md_branch_emp (EMP_NO, HR_EMP_NO, BRANCH_NO, 
       EMP_NAME,GENDER,EMP_TYPE, TEL,
-      MP, WEBCHAT, SFZH, 
+      MP, WEBCHAT, ID_NO,
       CREATE_AT, CREATE_BY, CREATE_BY_TXT,
       STATUS)
     values (#{empNo,jdbcType=VARCHAR}, #{hrEmpNo,jdbcType=VARCHAR}, #{branchNo,jdbcType=VARCHAR}, 
       #{empName,jdbcType=VARCHAR}, #{gender,jdbcType=VARCHAR}, #{empType,jdbcType=VARCHAR}, #{tel,jdbcType=VARCHAR},
-      #{mp,jdbcType=VARCHAR}, #{webchat,jdbcType=VARCHAR}, #{sfzh,jdbcType=VARCHAR}, 
+      #{mp,jdbcType=VARCHAR}, #{webchat,jdbcType=VARCHAR}, #{idNo,jdbcType=VARCHAR},
       #{createAt,jdbcType=TIMESTAMP}, #{createBy,jdbcType=VARCHAR}, #{createByTxt,jdbcType=VARCHAR},
       #{status,jdbcType=CHAR})
 
@@ -95,7 +96,7 @@
       TEL = #{tel,jdbcType=VARCHAR},
       MP = #{mp,jdbcType=VARCHAR},
       WEBCHAT = #{webchat,jdbcType=VARCHAR},
-      SFZH = #{sfzh,jdbcType=VARCHAR},
+      ID_NO = #{idNo,jdbcType=VARCHAR},
       CREATE_AT = #{createAt,jdbcType=TIMESTAMP},
       CREATE_BY = #{createBy,jdbcType=VARCHAR},
       CREATE_BY_TXT = #{createByTxt,jdbcType=VARCHAR},
@@ -112,7 +113,7 @@
     where EMP_NO = #{empNo,jdbcType=VARCHAR}
   </update>
   <select id="searchBranchEmp" resultMap="BaseResultMap" parameterType="com.nhry.model.basic.EmpQueryModel">
-      select emp.EMP_NO, emp.HR_EMP_NO, branch.BRANCH_NAME  BRANCH_NO, role.ROLE_NAME roleId,emp.EMP_NAME,emp.GENDER, emp.EMP_TYPE, emp.TEL, emp.MP, emp.WEBCHAT, emp.SFZH,emp.STATUS
+      select emp.EMP_NO, emp.HR_EMP_NO, branch.BRANCH_NAME  BRANCH_NO, role.ROLE_NAME roleId,emp.EMP_NAME,emp.GENDER, emp.EMP_TYPE, emp.TEL, emp.MP, emp.WEBCHAT, emp.ID_NO,emp.STATUS
     from t_md_branch_emp emp,T_MD_BRANCH branch,T_MD_EMP_ROLE erole,t_sys_role role
     where emp.BRANCH_NO = branch.BRANCH_NO and erole.ROLE_ID = role.ID and emp.EMP_NO = erole.EMP_NO
      <if test="branchNo != null and branchNo !=''">
