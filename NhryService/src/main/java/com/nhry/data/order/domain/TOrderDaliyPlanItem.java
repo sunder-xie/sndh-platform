@@ -12,6 +12,8 @@ public class TOrderDaliyPlanItem extends TOrderDaliyPlanItemKey {
 
     private String matnr;
 
+    private String matnrTxt;
+
     private String unit;
 
     private Integer qty;
@@ -66,6 +68,14 @@ public class TOrderDaliyPlanItem extends TOrderDaliyPlanItemKey {
 
     public void setMatnr(String matnr) {
         this.matnr = matnr == null ? null : matnr.trim();
+    }
+
+    public String getMatnrTxt() {
+        return matnrTxt;
+    }
+
+    public void setMatnrTxt(String matnrTxt) {
+        this.matnrTxt = matnrTxt  == null ? null : matnrTxt.trim();
     }
 
     public String getUnit() {

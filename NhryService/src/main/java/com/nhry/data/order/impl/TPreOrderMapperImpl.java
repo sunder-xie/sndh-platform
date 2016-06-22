@@ -62,6 +62,13 @@ public class TPreOrderMapperImpl implements TPreOrderMapper
 	}
 
 	@Override
+	public int orderUnsubscribe(String orderNo) {
+		return sqlSessionTemplate.update("orderUnsubscribe", orderNo);
+	}
+
+
+
+	@Override
 	public int insert(TPreOrder record)
 	{
 		// TODO Auto-generated method stub
