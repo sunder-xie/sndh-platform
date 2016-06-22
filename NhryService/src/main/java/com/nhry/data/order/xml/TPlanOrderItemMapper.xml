@@ -42,6 +42,12 @@
     from t_mst_plan_order_item
     where ORDER_NO = #{orderCode,jdbcType=VARCHAR}
   </select>
+  <select id="selectEntryByEntryNo" resultMap="BaseResultMap" parameterType="java.lang.String" >
+    select 
+    <include refid="Base_Column_List" />
+    from t_mst_plan_order_item
+    where ITEM_NO = #{code,jdbcType=VARCHAR}
+  </select>
   <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.String" >
     select 
     <include refid="Base_Column_List" />

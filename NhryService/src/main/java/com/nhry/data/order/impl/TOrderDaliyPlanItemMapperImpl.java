@@ -17,10 +17,10 @@ public class TOrderDaliyPlanItemMapperImpl implements TOrderDaliyPlanItemMapper
 	}
 
 	@Override
-	public int deleteByPrimaryKey(TOrderDaliyPlanItemKey key)
+	public int deleteFromDateToDate(TOrderDaliyPlanItem record)
 	{
 		// TODO Auto-generated method stub
-		return 0;
+		return sqlSessionTemplate.delete("deleteFromDateToDate", record); 
 	}
 
 	@Override
@@ -38,10 +38,31 @@ public class TOrderDaliyPlanItemMapperImpl implements TOrderDaliyPlanItemMapper
 	}
 	
 	@Override
+	public int updateDaliyPlanItem(TOrderDaliyPlanItem record)
+	{
+		// TODO Auto-generated method stub
+		return sqlSessionTemplate.update("updateDaliyPlanItem", record);
+	}
+	
+	@Override
 	public List<TOrderDaliyPlanItem> selectDaliyPlansByEntryNo(String itemNo)
 	{
 		// TODO Auto-generated method stub
 		return sqlSessionTemplate.selectList("selectDaliyPlansByEntryNo", itemNo);
+	}
+	
+	@Override
+	public List<TOrderDaliyPlanItem> selectDaliyPlansByOrderNo(String orderNo)
+	{
+		// TODO Auto-generated method stub
+		return sqlSessionTemplate.selectList("selectDaliyPlansByOrderNo", orderNo);
+	}
+	
+	@Override
+	public TOrderDaliyPlanItem selectDaliyPlansByEntryNoAndNo(TOrderDaliyPlanItemKey record)
+	{
+		// TODO Auto-generated method stub
+		return sqlSessionTemplate.selectOne("selectDaliyPlansByEntryNoAndNo", record);
 	}
 
 	@Override

@@ -1,6 +1,7 @@
 package com.nhry.data.order.dao;
 
 import java.util.List;
+
 import com.nhry.data.order.domain.TPlanOrderItem;
 
 public interface TPlanOrderItemMapper {
@@ -15,6 +16,8 @@ public interface TPlanOrderItemMapper {
     int updateByPrimaryKeySelective(TPlanOrderItem record);
 
     int updateByPrimaryKey(TPlanOrderItem record);
+    
+    TPlanOrderItem selectEntryByEntryNo(String code);
     
     List<TPlanOrderItem> selectByOrderCode(String orderCode);
     

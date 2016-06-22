@@ -39,6 +39,12 @@ public class TPlanOrderItemMapperImpl implements TPlanOrderItemMapper
 	}
 	
 	@Override
+	public TPlanOrderItem selectEntryByEntryNo(String code)
+	{
+		return sqlSessionTemplate.selectOne("selectEntryByEntryNo", code);
+	}
+	
+	@Override
 	public int insertSelective(TPlanOrderItem record)
 	{
 		// TODO Auto-generated method stub

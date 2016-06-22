@@ -6,7 +6,7 @@ import com.nhry.data.order.domain.TOrderDaliyPlanItem;
 import com.nhry.data.order.domain.TOrderDaliyPlanItemKey;
 
 public interface TOrderDaliyPlanItemMapper {
-    int deleteByPrimaryKey(TOrderDaliyPlanItemKey key);
+	 int deleteFromDateToDate(TOrderDaliyPlanItem record);
 
     int insert(TOrderDaliyPlanItem record);
 
@@ -21,4 +21,10 @@ public interface TOrderDaliyPlanItemMapper {
     int updateDaliyPlanItemStatus(TOrderDaliyPlanItem record);
     
     List<TOrderDaliyPlanItem> selectDaliyPlansByEntryNo(String itemNo);
+    
+    int updateDaliyPlanItem(TOrderDaliyPlanItem record);
+    
+    TOrderDaliyPlanItem selectDaliyPlansByEntryNoAndNo(TOrderDaliyPlanItemKey record);
+    
+    List<TOrderDaliyPlanItem> selectDaliyPlansByOrderNo(String orderNo);
 }

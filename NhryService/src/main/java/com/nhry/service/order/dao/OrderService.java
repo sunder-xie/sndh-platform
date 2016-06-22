@@ -10,7 +10,9 @@ public interface OrderService {
 	
 	int createOrder(OrderCreateModel record);
 	
-	int editOrder(OrderEditModel record);
+	int editOrderForLong(OrderEditModel record);
+	
+	int editOrderForShort(DaliyPlanEditModel record);
 	
 	int modifyOrderStatus(TPreOrder record);
 	
