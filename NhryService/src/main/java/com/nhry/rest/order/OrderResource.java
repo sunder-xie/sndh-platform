@@ -33,7 +33,7 @@ public class OrderResource extends BaseResource {
 	@GET
 	@Path("/{orderCode}")
 	@Produces(MediaType.APPLICATION_JSON)
-	@ApiOperation(value = "/{orderCode}", response = TPreOrder.class, notes = "根据订单编号查询订单信息")
+	@ApiOperation(value = "/{orderCode}", response = OrderCreateModel.class, notes = "根据订单编号查询订单信息")
 	public Response selectOrderByCode(@ApiParam(required=true,name="orderCode",value="订单编号") @PathParam("orderCode") String orderCode){
 		return convertToRespModel(MessageCode.NORMAL, null, orderService.selectOrderByCode(orderCode));
 	} 
@@ -42,9 +42,9 @@ public class OrderResource extends BaseResource {
 	@Path("/upt")
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
-	@ApiOperation(value = "/upt", response = String.class, notes = "更新订单信息")
-	public Response uptOrder(@ApiParam(required=true,name="record",value="系统参数json格式")TMdMaraEx record){
-		return convertToRespModel(MessageCode.NORMAL, null,  null);
+	@ApiOperation(value = "/upt", response = Integer.class, notes = "更新订单信息")
+	public Response uptOrder(@ApiParam(required=true,name="record",value="系统参数json格式") OrderEditModel record){
+		return convertToRespModel(MessageCode.NORMAL, null,  orderService.editOrder(record));
 	}	
 	
 	@POST

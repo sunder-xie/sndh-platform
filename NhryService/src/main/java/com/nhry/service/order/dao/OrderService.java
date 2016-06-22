@@ -10,11 +10,11 @@ public interface OrderService {
 	
 	int createOrder(OrderCreateModel record);
 	
-	int editOrder(OrderCreateModel record);
+	int editOrder(OrderEditModel record);
 	
 	int modifyOrderStatus(TPreOrder record);
 	
-	TPreOrder selectOrderByCode(String orderCode);
+	OrderCreateModel selectOrderByCode(String orderCode);
 
 	PageInfo searchReturnOrders(ManHandOrderSearchModel manHandModel);
 

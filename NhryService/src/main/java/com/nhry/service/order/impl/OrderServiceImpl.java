@@ -18,6 +18,13 @@ import org.apache.commons.lang3.StringUtils;
 import java.math.BigDecimal;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.*;
 
 public class OrderServiceImpl extends BaseService implements OrderService {
@@ -49,11 +56,22 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 	* @see com.nhry.service.order.dao.OrderService#selectOrderByCode(java.lang.String) 
 	*/
 	@Override
-	public TPreOrder selectOrderByCode(String orderCode)
+	public OrderCreateModel selectOrderByCode(String orderCode)
 	{
-		return tPreOrderMapper.selectByPrimaryKey(orderCode);
+		OrderCreateModel orderModel = new OrderCreateModel();
+		ArrayList<TPlanOrderItem> entries = (ArrayList<TPlanOrderItem>) tPlanOrderItemMapper.selectByOrderCode(orderCode);
+		orderModel.setEntries(entries);
+		orderModel.setOrder(tPreOrderMapper.selectByPrimaryKey(orderCode));
+		
+		return orderModel;
 	}
-
+	
+	/* (non-Javadoc) 
+	* @title: 退回单列表
+	* @description: 
+	* @return 
+	* @see com.nhry.service.order.dao.OrderService#searchReturnOrders() 
+	*/
 	@Override
 	public PageInfo searchReturnOrders(ManHandOrderSearchModel manHandModel) {
 		if(StringUtils.isEmpty(manHandModel.getPageNum()) || StringUtils.isEmpty(manHandModel.getPageSize())){
@@ -62,11 +80,23 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 		return tPreOrderMapper.searchReturnOrders(manHandModel);
 	}
 
+	/* (non-Javadoc) 
+	* @title: 人工分单详情
+	* @description: 
+	* @return 
+	* @see com.nhry.service.order.dao.OrderService#manHandOrderDetail() 
+	*/
 	@Override
 	public TPreOrder manHandOrderDetail(String orderCode) {
 		return tPreOrderMapper.manHandOrderDetail(orderCode);
 	}
 
+	/* (non-Javadoc) 
+	* @title: 人工分单
+	* @description: 
+	* @return 
+	* @see com.nhry.service.order.dao.OrderService#uptManHandOrder() 
+	*/
 	@Override
 	public int uptManHandOrder(UpdateManHandOrderModel uptManHandModel) {
 		if(org.apache.commons.lang.StringUtils.isBlank(uptManHandModel.getBranchNo()) || org.apache.commons.lang.StringUtils.isBlank(uptManHandModel.getOrderNo())){
@@ -75,6 +105,12 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 		return tPreOrderMapper.uptManHandOrder(uptManHandModel);
 	}
 
+	/* (non-Javadoc) 
+	* @title: 退回
+	* @description: 
+	* @return 
+	* @see com.nhry.service.order.dao.OrderService#returnOrder() 
+	*/
 	@Override
 	public int returnOrder(ReturnOrderModel r) {
 		if( StringUtils.isBlank(r.getRetReason()) || StringUtils.isBlank(r.getOrderNo())) {
@@ -110,6 +146,7 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 	{	
 		SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
 		TPreOrder order = record.getOrder();
+		List<TPlanOrderItem> entriesList = new ArrayList<TPlanOrderItem>();
 		//暂时生成订单号		
 		Date date = new Date();
 		order.setOrderNo(String.valueOf(date.getTime()));
@@ -117,20 +154,20 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 		order.setOrderDate(date);//订单创建日期
 		order.setCreaterBy(userSessionService.getCurrentUser().getLoginName());//创建人
 		order.setCreaterNo(userSessionService.getCurrentUser().getGroupId());//创建人编号
-//		order.setOrderType(orderType);//订单类型
+		order.setOrderType("20");//订单类型 页面都是线下
 		order.setPreorderSource("30");//订单来源  页面中来源都是30（奶站）
 //		order.setMilkmemberNo(milkmemberNo);//喝奶人编号
 //		order.setMemberNo(memberNo);//下单会员编号
-//		order.setBranchNo(branchNo);//奶站编号
 //		order.setEmpNo(empNo);//送奶员编号
-		order.setPaymentStat(StringUtils.isBlank(order.getPaymentStat()) == true ? "01": order.getPaymentStat());//付款状态
-		order.setMilkboxStat(StringUtils.isBlank(order.getMilkboxStat()) == true ? "01": order.getMilkboxStat());//奶箱状态
-		order.setPreorderStat("01");//订单状态
-      //保存订单
-		tPreOrderMapper.insert(record.getOrder());
+//		order.setInitAmt(initAmt);//页面输入的初始订单金额
+		order.setPaymentStat(StringUtils.isBlank(order.getPaymentStat()) == true ? "20": order.getPaymentStat());//付款状态
+		order.setMilkboxStat(StringUtils.isBlank(order.getMilkboxStat()) == true ? "20": order.getMilkboxStat());//奶箱状态
+		order.setPreorderStat("20");//订单状态
+//		order.setBranchNo(branchNo);//奶站编号 --人工分单或自动??
 		
-		//保存每个订单行
+		//生成每个订单行
 		int index = 0;
+		BigDecimal orderAmt = new BigDecimal("0.00");//订单总价
 		for(TPlanOrderItem entry: record.getEntries()){
 			entry.setOrderNo(order.getOrderNo());
 			entry.setItemNo(order.getOrderNo().substring(9) + String.valueOf(index));//行项目编号
@@ -148,24 +185,35 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 			{
 				throw new ServiceException("日期格式有误!");
 			}
-//			entry.setSalesPrice(salesPrice);//销售单价
-			if("01".equals(entry.getRuleType())){//产品是按间隔还是按星期送
-				
-			}
+			orderAmt = orderAmt.add(calculateEntryAmount(entry));
+			entriesList.add(entry);
 			
-		   tPlanOrderItemMapper.insert(entry);
 		   index++;
 		}
 		
-		//生成每日计划,当订户订单装箱状态为已装箱或无需装箱，则系统默认该订单可生成订户日订单
-		if(!"02".equals(order.getMilkboxStat())){
-			return createDaliyPlan(record.getEntries());
+		//保存订单，订单行
+		order.setCurAmt(orderAmt);//订单价格
+//		BigDecimal remain = order.getInitAmt().subtract(order.getCurAmt());//此为多余的钱，如果是预付款，将存入订户账户
+//		if("20".equals(order.getPaymentStat()) && remain.floatValue() > 0){
+//			
+//		}
+		tPreOrderMapper.insert(record.getOrder());
+		for(TPlanOrderItem entry: entriesList){
+			tPlanOrderItemMapper.insert(entry);
 		}
-		return 1;
+		
+		return createDaliyPlan(order,record.getEntries());//生成每日计划
 	}
 	
 	//根据订单行生成每日计划
-	private int createDaliyPlan(List<TPlanOrderItem> entries){
+	private int createDaliyPlan(TPreOrder order ,List<TPlanOrderItem> entries){
+		
+		//生成每日计划,当订户订单装箱状态为已装箱或无需装箱，则系统默认该订单可生成订户日订单
+		if("20".equals(order.getMilkboxStat())){
+			return 0;
+		}
+		
+		BigDecimal curAmt = order.getCurAmt();
 		
 		//计算每个行项目总共需要送多少天
 		Map<TPlanOrderItem,Integer> entryMap = new HashMap<TPlanOrderItem,Integer>();
@@ -177,8 +225,8 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 		}
 
 		//根据最大配送天数的行
-		int afterDays = 0;
-		int daliyEntryNo = 0;
+		int afterDays = 0;//经过的天数
+		int daliyEntryNo = 0;//日计划行号
 		for(int i = 0; i < maxEntryDay; i++){
 			for (TPlanOrderItem entry : entryMap.keySet()) {
 				int days = entryMap.get(entry);
@@ -187,19 +235,23 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 					
 					//判断是按周期送还是按星期送
 					Date today = afterDate(entry.getStartDispDate(),afterDays);
-					if("01".equals(entry.getRuleType())){
+					if("10".equals(entry.getRuleType())){
 						int gapDays = entry.getGapDays() + 1;//间隔天数
-						List<String> deliverDays = Arrays.asList(entry.getRuleTxt().split(","));
-						if(deliverDays.size() > 0){//判断周6，7是否配送
-							String weekday = getWeek(today);
-							if(!deliverDays.contains(weekday)){
-								if(afterDays%gapDays != 0){
-									continue;
+						if(afterDays%gapDays != 0){
+							if(entry.getRuleTxt()!=null){
+								List<String> deliverDays = Arrays.asList(entry.getRuleTxt().split(","));
+								if(deliverDays.size() > 0){//判断周6，7是否配送
+									String weekday = getWeek(today);
+									if(!deliverDays.contains(weekday)){
+										continue;
+									}
 								}
+							}else{
+								continue;
 							}
 						}
 					}
-					else if("02".equals(entry.getRuleType())){
+					else if("20".equals(entry.getRuleType())){
 						String weekday = getWeek(today);
 						List<String> deliverDays = Arrays.asList(entry.getRuleTxt().split(","));
 						if(!deliverDays.contains(weekday)){
@@ -223,7 +275,8 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 					//日计划行金额和
 					BigDecimal qty = new BigDecimal(entry.getQty().toString());
 					plan.setAmt(entry.getSalesPrice().multiply(qty));//金额小计
-//					plan.setRemainAmt(remainAmt);//订单余额
+					curAmt = curAmt.subtract(plan.getAmt());
+					plan.setRemainAmt(curAmt);//订单余额
 					plan.setStatus("N");//状态
 					plan.setCreateAt(entry.getCreateAt());//创建时间
 					plan.setCreateBy(entry.getCreateBy());//创建人
@@ -252,9 +305,9 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 	@Override
 	public int modifyOrderStatus(TPreOrder record)
 	{	
-		//未收款01、已收款02、垫付款03
-		//已装箱01、未装箱02、无需装箱03
-		//已生效01、未生效02、无效03
+		//未收款10、已收款20、垫付款30
+		//已装箱10、未装箱20、无需装箱30
+		//已生效10、未生效20、无效30
 		if(StringUtils.isBlank(record.getPaymentStat()) && StringUtils.isBlank(record.getMilkboxStat())
 				&& StringUtils.isBlank(record.getPreorderStat())){
 			throw new ServiceException("更新信息与状态为空!");
@@ -276,10 +329,134 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 	* @see com.nhry.service.order.dao.OrderService#editOrder(com.nhry.model.order.OrderCreateModel) 
 	*/
 	@Override
-	public int editOrder(OrderCreateModel record)
+	public int editOrder(OrderEditModel record)
 	{
-		// TODO Auto-generated method stub
-		return 0;
+		SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
+		TPreOrder orgOrder = tPreOrderMapper.selectByPrimaryKey(record.getOrder().getOrderNo());
+		ArrayList<TPlanOrderItem> orgEntries = (ArrayList<TPlanOrderItem>) tPlanOrderItemMapper.selectByOrderCode(record.getOrder().getOrderNo());
+		TPreOrder curOrder = record.getOrder();
+		ArrayList<TPlanOrderItem> curEntries = record.getEntries();
+		//长期变更(10)需对订单进行统一更改，关联更改日订单  和 短期变更(20)短期变更对订户日订单进行修改
+		if( "20".equals(record.getEditType()) ){
+			//后付款的,日订单不往后延
+			if("20".equals(orgOrder.getPaymentmethod()) ){
+				for(TPlanOrderItem orgEntry : orgEntries){
+					for(TPlanOrderItem curEntry : curEntries){
+						if(orgEntry.getItemNo().equals(curEntry.getItemNo())){
+							if(!orgEntry.getMatnr().equals(curEntry.getMatnr())){//换商品
+								orgEntry.setMatnr(curEntry.getMatnr());
+							}
+							if(orgEntry.getQty() != curEntry.getQty()){//改数量
+								orgEntry.setQty(curEntry.getQty());
+							}
+							if(!orgEntry.getRuleType().equals(curEntry.getRuleType())){//周期变更
+								orgEntry.setRuleType(curEntry.getRuleType());
+								orgEntry.setGapDays(curEntry.getGapDays());
+								orgEntry.setRuleTxt(curEntry.getRuleTxt());
+							}else{//相同时判断是周期送还是星期送
+								if("10".equals(orgEntry.getRuleType())){
+									orgEntry.setGapDays(curEntry.getGapDays());
+									orgEntry.setRuleTxt(curEntry.getRuleTxt());
+								}else if("20".equals(orgEntry.getRuleType())){
+									orgEntry.setRuleTxt(curEntry.getRuleTxt());
+								}
+							}
+							if(!orgEntry.getReachTimeType().equals(curEntry.getReachTimeType())){//送奶时段变更
+								orgEntry.setReachTimeType(curEntry.getReachTimeType());
+							}
+							//比较配送日期是否修改
+							String startstr = format.format(curEntry.getStartDispDateStr());
+							String endstr = format.format(curEntry.getEndDispDateStr());
+							if(!startstr.equals(orgEntry.getStartDispDate()) || !endstr.equals(orgEntry.getEndDispDate()) ){
+								try
+								{
+									orgEntry.setStartDispDate(format.parse(startstr));
+									orgEntry.setEndDispDate(format.parse(endstr));
+								}
+								catch (ParseException e)
+								{
+									throw new ServiceException("日期格式有误!");
+								}
+							}
+							//保存修改后的该行
+							tPlanOrderItemMapper.updateEntryByItemNo(orgEntry);
+							//修改每日订单
+							editDaliyPlanAfterPay(orgEntry);
+							//修改完毕
+							break;
+						}
+					}
+				}
+				
+			//先付款的	
+			}else if("10".equals(orgOrder.getPaymentmethod()) ){
+				for(TPlanOrderItem orgEntry : orgEntries){
+					for(TPlanOrderItem curEntry : curEntries){
+						if(orgEntry.getItemNo().equals(curEntry.getItemNo())){
+							if(!orgEntry.getMatnr().equals(curEntry.getMatnr())){//换商品
+								
+							}
+							if(orgEntry.getQty() != curEntry.getQty()){//改数量
+								
+							}
+							if(!orgEntry.getRuleType().equals(curEntry.getRuleType())){//周期变更
+								
+							}else{//相同时判断是周期送还是星期送
+								if("10".equals(orgEntry.getRuleType())){
+									
+								}else if("20".equals(orgEntry.getRuleType())){
+									
+								}
+							}
+							if(!orgEntry.getReachTimeType().equals(curEntry.getReachTimeType())){//送奶时段变更
+								orgEntry.setReachTimeType(curEntry.getReachTimeType());
+							}
+							//修改每日订单
+							
+							//保存修改后的该行
+							
+							//修改完毕
+							break;
+						}
+					}
+				}
+			}
+			
+		}else if( "10".equals(record.getEditType()) ){
+			//修改订单根据行项目编号来确定行是否修改，换商品或改数量
+			for(TPlanOrderItem orgEntry : orgEntries){
+				for(TPlanOrderItem curEntry : curEntries){
+					if(orgEntry.getItemNo().equals(curEntry.getItemNo())){
+						if(!orgEntry.getMatnr().equals(curEntry.getMatnr())){//换商品
+							
+						}
+						if(orgEntry.getQty() != curEntry.getQty()){//改数量
+							
+						}
+						if(!orgEntry.getRuleType().equals(curEntry.getRuleType())){//周期变更
+							
+						}else{//相同时判断是周期送还是星期送
+							if("10".equals(orgEntry.getRuleType())){
+								
+							}else if("20".equals(orgEntry.getRuleType())){
+								
+							}
+						}
+						if(!orgEntry.getReachTimeType().equals(curEntry.getReachTimeType())){//送奶时段变更
+							orgEntry.setReachTimeType(curEntry.getReachTimeType());
+						}
+						//修改每日订单
+						
+						//保存修改后的该行
+						
+						//修改完毕
+						break;
+					}
+				}
+			}
+		}
+		
+		return 1;
 	}
 	
 	
@@ -319,6 +496,63 @@ public class OrderServiceImpl extends BaseService implements OrderService {
        }   
        return weeks[week_index];  
    }
-
-
+   
+   //计算订单行的总价格
+   private BigDecimal calculateEntryAmount(TPlanOrderItem entry){
+   	
+   	int afterDays = 0;//经过的天数
+   	int allDays = daysOfTwo(entry.getStartDispDate(),entry.getEndDispDate());//总共需要配送的天数
+   	
+   	int goDays = 0;
+   	BigDecimal qty = new BigDecimal(entry.getQty().toString());
+   	BigDecimal amount = new BigDecimal(entry.getSalesPrice().toString());
+   	
+   	for(int i = 0;i < allDays; i++,afterDays++){
+   		Date today = afterDate(entry.getStartDispDate(),afterDays);
+   		if("10".equals(entry.getRuleType())){
+   			int gapDays = entry.getGapDays() + 1;//间隔天数
+   			if(afterDays%gapDays != 0){
+   				if(entry.getRuleTxt()!=null){
+      				List<String> deliverDays = Arrays.asList(entry.getRuleTxt().split(","));
+         			if(deliverDays.size() > 0){//判断周6，7是否配送
+         				String weekday = getWeek(today);
+         				if(!deliverDays.contains(weekday)){
+         					continue;
+         				}
+         			}
+   				}else{
+   					continue;
+   				}
+   			}
+   		}else if("20".equals(entry.getRuleType())){
+   			String weekday = getWeek(today);
+   			List<String> deliverDays = Arrays.asList(entry.getRuleTxt().split(","));
+   			if(!deliverDays.contains(weekday)){
+   				continue;
+   			}
+   		}
+   		goDays++;
+   	}
+   	
+   	return amount.multiply(qty).multiply(new BigDecimal(String.valueOf(goDays)));
+   }
+   
+   //修改每日计划单,后付款的,不延日单
+   private void editDaliyPlanAfterPay(TPlanOrderItem entry){
+   	
+   	//计算变更订单行后的配送天
+   	
+   	afterDate(entry.getStartDispDate(),1);
+   	entry.getStartDispDate();
+   	entry.getEndDispDate();
+   	
+   	ArrayList<TOrderDaliyPlanItem> daliyPlans = (ArrayList<TOrderDaliyPlanItem>) tOrderDaliyPlanItemMapper.selectDaliyPlansByEntryNo(entry.getItemNo());
+   	for(TOrderDaliyPlanItem daliyPlan : daliyPlans){
+   		Date dispDate = daliyPlan.getDispDate();
+   	}
+   	
+   	TOrderDaliyPlanItem plan = new TOrderDaliyPlanItem();
+   	
+   	
+   }
 }
