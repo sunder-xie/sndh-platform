@@ -79,10 +79,13 @@
     where LOGIN_NAME = #{loginName,jdbcType=VARCHAR}
   </update>
   <select id="findUserByLoginName" parameterType="java.lang.String"  resultMap="BaseResultMap">
-    select 
-    <include refid="Base_Column_List" />
-    from t_sys_user
-    where LOGIN_NAME = #{loginName,jdbcType=VARCHAR}
+    select
+      u.LOGIN_NAME, u.DISPLAY_NAME, u.GROUP_ID, u.PWD, u.STATUS, u.CREATE_AT, u.CREATE_BY,u.CREATE_BY_TXT,
+    u.LAST_MODIFIED, u.LAST_MODIFIED_BY,u.LAST_MODIFIED_BY_TXT, b.BRANCH_Name BRANCH_NO, u.DEALER_ID, u.SALES_ORG,
+    u.LAST_LOGIN
+    from t_sys_user u ,t_md_branch b
+    where u.BRANCH_NO = b.BRANCH_NO
+     AND LOGIN_NAME = #{loginName,jdbcType=VARCHAR}
   </select>
   <insert id="addUser" parameterType="com.nhry.data.auth.domain.TSysUser">
     insert into t_sys_user (LOGIN_NAME, DISPLAY_NAME, GROUP_ID, 
@@ -111,13 +114,13 @@
 	    <if test="uname != null and '' != uname">
 	         and  (user.LOGIN_NAME like '%' #{uname} '%' or  user.DISPLAY_NAME like '%' #{uname} '%') 
 	    </if>
-	    <if test="userGroupName != null and '' != userGroupName">
-	        and ug.GROUP_NAME like '%' #{userGroupName} '%' 
+	    <if test="groupId != null and '' != groupId">
+	        and ug.ID like '%' #{groupId} '%'
 	    </if>
 	    <if test="startDate != null and '' != startDate">
 	        and user.CREATE_AT &gt; #{startDate}
 	    </if>
-	    <if test="userGroupName != null and '' != userGroupName">
+	    <if test="endDate != null and '' != endDate">
 	        and user.CREATE_AT &lt; #{endDate}
 	    </if>
 	    order by user.CREATE_AT desc,user.LAST_MODIFIED desc

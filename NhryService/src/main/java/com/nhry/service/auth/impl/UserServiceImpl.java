@@ -6,17 +6,10 @@ import com.nhry.common.exception.ServiceException;
 import com.nhry.data.auth.dao.TSysUserMapper;
 import com.nhry.data.auth.domain.TSysUser;
 import com.nhry.model.auth.UserQueryModel;
-import com.nhry.model.auth.UserRoleModel;
 import com.nhry.service.BaseService;
 import com.nhry.service.auth.dao.UserService;
 import com.nhry.utils.date.Date;
-import com.nhry.utils.json.JackJson;
-
-import java.util.List;
-
 import org.apache.commons.lang3.StringUtils;
-import org.codehaus.jettison.json.JSONException;
-import org.codehaus.jettison.json.JSONObject;
 
 public class UserServiceImpl extends BaseService implements UserService {
 	private TSysUserMapper userMapper;

@@ -5,10 +5,14 @@
     <id column="ORDER_NO" property="orderNo" jdbcType="VARCHAR" />
     <result column="ORDER_TYPE" property="orderType" jdbcType="VARCHAR" />
     <result column="ORDER_DATE" property="orderDate" jdbcType="DATE" />
+    <result column="RET_DATE" property="retDate" jdbcType="DATE" />
+    <result column="RET_REASON" property="retReason" jdbcType="VARCHAR" />
     <result column="PAYMENTMETHOD" property="paymentmethod" jdbcType="VARCHAR" />
     <result column="PREORDER_SOURCE" property="preorderSource" jdbcType="VARCHAR" />
     <result column="ONLINEORDER_NO" property="onlineorderNo" jdbcType="VARCHAR" />
     <result column="BRANCH_NO" property="branchNo" jdbcType="VARCHAR" />
+    <result column="BRANCH_TEL" property="branchTel" jdbcType="VARCHAR" />
+    <result column="CUSTOMER_TEL" property="customerTel" jdbcType="VARCHAR" />
     <result column="MILKMEMBER_NO" property="milkmemberNo" jdbcType="VARCHAR" />
     <result column="MEMBER_NO" property="memberNo" jdbcType="VARCHAR" />
     <result column="PAYMENT_STAT" property="paymentStat" jdbcType="VARCHAR" />
@@ -32,7 +36,7 @@
     ORDER_NO, ORDER_TYPE, ORDER_DATE, PAYMENTMETHOD, PREORDER_SOURCE, ONLINEORDER_NO, 
     BRANCH_NO, MILKMEMBER_NO, MEMBER_NO, PAYMENT_STAT, MILKBOX_STAT, INIT_AMT, CUR_AMT, 
     DISP_LINE_NO, EMP_NO, ADRESS_NO, CREATER_NO, CREATER_BY, PREORDER_STAT, MEMO_TXT, 
-    PAY_METHOD, SOLICIT_NO, SOLICIT_DATE, SOLICITOR_NO, SOLICIT_BY
+    PAY_METHOD, SOLICIT_NO, SOLICIT_DATE, SOLICITOR_NO, SOLICIT_BY,RET_REASON,RET_DATE
   </sql>
   <select id="selectByOrderCode" resultMap="BaseResultMap" parameterType="java.lang.String" >
     select 
@@ -343,6 +347,32 @@
     </if>
      ORDER BY ORDER_NO
   </select>
+
+  <select id="searchReturnOrders" resultMap="BaseResultMap" parameterType="com.nhry.model.order.ManHandOrderSearchModel">
+    select
+      o.ORDER_NO, o.PREORDER_STAT,o.RET_REASON,o.RET_DATE, c.VIP_NAME MILKMEMBER_NO, c.VIP_NAME MEMBER_NO,
+    c.MP CUSTOMER_TEL,b.BRANCH_NAME BRANCH_NO
+    FROM t_preorder o,t_md_branch b,t_vip_cust_info c
+
+    WHERE o.BRANCH_NO  = b.BRANCH_NO and o.MILKMEMBER_NO = c.VIP_CUST_NO
+    and o.MEMBER_NO = c.VIP_CUST_NO
+    and  o.PREORDER_STAT = '20'  and o.RET_REASON is not null
+
+    <if test="orderDateStart != null and orderDateStart !=''">
+      AND o.RET_DATE &gt;= #{orderDateStart,jdbcType=DATE}
+    </if>
+    <if test="orderDateEnd != null and orderDateEnd !=''">
+      AND o.RET_DATE &lt;= #{orderDateEnd,jdbcType=DATE}
+    </if>
+    <if test="preorderStat != null and preorderStat !=''">
+      AND o.PREORDER_STAT = #{preorderStat,jdbcType=VARCHAR}
+    </if>
+    <if test="retReason != null and retReason !=''">
+      AND o.RET_REASON = #{retReason,jdbcType=VARCHAR}
+    </if>
+
+    ORDER BY ORDER_NO
+  </select>
   <update id="updateOrderStatus" parameterType="com.nhry.data.order.domain.TPreOrder" >
     update t_preorder
     <set >
@@ -355,6 +385,35 @@
       <if test="preorderStat != null" >
         PREORDER_STAT = #{preorderStat,jdbcType=VARCHAR},
       </if>
+    </set>
+    where ORDER_NO = #{orderNo,jdbcType=VARCHAR}
+  </update>
+  <select id="manHandOrderDetail" resultMap="BaseResultMap" parameterType="java.lang.String" >
+    select
+      o.ORDER_NO, o.PREORDER_STAT,o.RET_REASON,o.RET_DATE, c.VIP_NAME MILKMEMBER_NO, c.VIP_NAME MEMBER_NO,
+      c.MP CUSTOMER_TEL,b.BRANCH_NAME BRANCH_NO,b.MP BRANCH_TEL,o.ORDER_DATE,o.MEMO_TXT
+    FROM t_preorder o,t_md_branch b,t_vip_cust_info c
+    WHERE o.BRANCH_NO  = b.BRANCH_NO and o.MILKMEMBER_NO = c.VIP_CUST_NO
+    and o.MEMBER_NO = c.VIP_CUST_NO
+    and  o.ORDER_NO = #{orderNo,jdbcType=VARCHAR}
+  </select>
+  <update id="uptManHandOrder" parameterType="com.nhry.model.order.UpdateManHandOrderModel" >
+    update t_preorder
+    <set >
+        PREORDER_STAT = '10',
+        BRANCH_NO = #{branchNo,jdbcType=VARCHAR},
+        RET_REASON = '',
+        MEMO_TXT=''
+    </set>
+    where ORDER_NO = #{orderNo,jdbcType=VARCHAR}
+  </update>
+  <update id="returnOrder" parameterType="com.nhry.model.order.ReturnOrderModel" >
+    update t_preorder
+    <set >
+      PREORDER_STAT = '20',
+      RET_REASON =  #{retReason,jdbcType=VARCHAR},
+      MEMO_TXT=  #{memoTxt,jdbcType=VARCHAR},
+      RET_DATE = #{retDate,jdbcType=DATE}
     </set>
     where ORDER_NO = #{orderNo,jdbcType=VARCHAR}
   </update>

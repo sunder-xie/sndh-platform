@@ -18,9 +18,17 @@ public class TPreOrder {
 
     private String branchNo;
 
+    private String branchTel;
+
+    private String customerTel;
+
     private String milkmemberNo;
 
     private String memberNo;
+
+    private String retReason;
+
+    private Date retDate;
 
     private String paymentStat;
 
@@ -54,6 +62,22 @@ public class TPreOrder {
 
     private String solicitBy;
 
+    public String getCustomerTel() {
+        return customerTel;
+    }
+
+    public void setCustomerTel(String customerTel) {
+        this.customerTel = customerTel  == null ? null : customerTel.trim();
+    }
+
+    public String getBranchTel() {
+        return branchTel;
+    }
+
+    public void setBranchTel(String branchTel) {
+        this.branchTel = branchTel == null ? null : branchTel.trim();
+    }
+
     public String getOrderNo() {
         return orderNo;
     }
@@ -76,6 +100,22 @@ public class TPreOrder {
 
     public void setOrderDate(Date orderDate) {
         this.orderDate = orderDate;
+    }
+
+    public String getRetReason() {
+        return retReason;
+    }
+
+    public void setRetReason(String retReason) {
+        this.retReason = retReason  == null ? null : retReason.trim();
+    }
+
+    public Date getRetDate() {
+        return retDate;
+    }
+
+    public void setRetDate(Date retDate) {
+        this.retDate = retDate;
     }
 
     public String getPaymentmethod() {

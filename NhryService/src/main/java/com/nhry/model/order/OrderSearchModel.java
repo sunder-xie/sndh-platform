@@ -28,6 +28,7 @@ public class OrderSearchModel extends BaseQueryModel implements Serializable {
 	{
 		this.companyName = companyName;
 	}
+
 	public String getOrderDateStart()
 	{
 		return orderDateStart;

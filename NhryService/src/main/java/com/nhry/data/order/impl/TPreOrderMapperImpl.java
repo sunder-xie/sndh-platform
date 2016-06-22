@@ -11,14 +11,14 @@
  */
 package com.nhry.data.order.impl;
 
-import java.util.List;
-
 import com.github.pagehelper.PageInfo;
 import com.nhry.common.datasource.DynamicSqlSessionTemplate;
 import com.nhry.data.order.dao.TPreOrderMapper;
-import com.nhry.data.order.domain.TPlanOrderItem;
 import com.nhry.data.order.domain.TPreOrder;
+import com.nhry.model.order.ManHandOrderSearchModel;
 import com.nhry.model.order.OrderSearchModel;
+import com.nhry.model.order.ReturnOrderModel;
+import com.nhry.model.order.UpdateManHandOrderModel;
 
 public class TPreOrderMapperImpl implements TPreOrderMapper
 {
@@ -39,7 +39,28 @@ public class TPreOrderMapperImpl implements TPreOrderMapper
 		// TODO Auto-generated method stub
 		return sqlSessionTemplate.update("updateOrderStatus", record);
 	}
-	
+
+	@Override
+	public PageInfo searchReturnOrders(ManHandOrderSearchModel manHandModel) {
+		return sqlSessionTemplate.selectListByPages("searchReturnOrders",manHandModel, Integer.parseInt(manHandModel.getPageNum()), Integer.parseInt(manHandModel.getPageSize()));
+	}
+
+	@Override
+	public TPreOrder manHandOrderDetail(String orderNo) {
+		return sqlSessionTemplate.selectOne("manHandOrderDetail", orderNo);
+	}
+
+
+	@Override
+	public int uptManHandOrder(UpdateManHandOrderModel uptManHandModel) {
+		return sqlSessionTemplate.update("uptManHandOrder", uptManHandModel);
+	}
+
+	@Override
+	public int returnOrder(ReturnOrderModel returnOrderModel) {
+		return sqlSessionTemplate.update("returnOrder", returnOrderModel);
+	}
+
 	@Override
 	public int insert(TPreOrder record)
 	{

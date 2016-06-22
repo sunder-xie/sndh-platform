@@ -1,8 +1,6 @@
 package com.nhry.service.order.impl;
 
 
-import org.apache.commons.lang3.StringUtils;
-
 import com.github.pagehelper.PageInfo;
 import com.nhry.common.exception.MessageCode;
 import com.nhry.common.exception.ServiceException;
@@ -12,11 +10,10 @@ import com.nhry.data.order.dao.TPreOrderMapper;
 import com.nhry.data.order.domain.TOrderDaliyPlanItem;
 import com.nhry.data.order.domain.TPlanOrderItem;
 import com.nhry.data.order.domain.TPreOrder;
-import com.nhry.model.order.OrderCreateModel;
-import com.nhry.model.order.OrderEditModel;
-import com.nhry.model.order.OrderSearchModel;
+import com.nhry.model.order.*;
 import com.nhry.service.BaseService;
 import com.nhry.service.order.dao.OrderService;
+import org.apache.commons.lang3.StringUtils;
 
 import java.math.BigDecimal;
 import java.text.ParseException;
@@ -28,6 +25,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.*;
 
 public class OrderServiceImpl extends BaseService implements OrderService {
 	
@@ -68,6 +66,60 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 		return orderModel;
 	}
 	
+	/* (non-Javadoc) 
+	* @title: 退回单列表
+	* @description: 
+	* @return 
+	* @see com.nhry.service.order.dao.OrderService#searchReturnOrders() 
+	*/
+	@Override
+	public PageInfo searchReturnOrders(ManHandOrderSearchModel manHandModel) {
+		if(StringUtils.isEmpty(manHandModel.getPageNum()) || StringUtils.isEmpty(manHandModel.getPageSize())){
+			throw new ServiceException(MessageCode.LOGIC_ERROR,"pageNum和pageSize不能为空！");
+		}
+		return tPreOrderMapper.searchReturnOrders(manHandModel);
+	}
+
+	/* (non-Javadoc) 
+	* @title: 人工分单详情
+	* @description: 
+	* @return 
+	* @see com.nhry.service.order.dao.OrderService#manHandOrderDetail() 
+	*/
+	@Override
+	public TPreOrder manHandOrderDetail(String orderCode) {
+		return tPreOrderMapper.manHandOrderDetail(orderCode);
+	}
+
+	/* (non-Javadoc) 
+	* @title: 人工分单
+	* @description: 
+	* @return 
+	* @see com.nhry.service.order.dao.OrderService#uptManHandOrder() 
+	*/
+	@Override
+	public int uptManHandOrder(UpdateManHandOrderModel uptManHandModel) {
+		if(org.apache.commons.lang.StringUtils.isBlank(uptManHandModel.getBranchNo()) || org.apache.commons.lang.StringUtils.isBlank(uptManHandModel.getOrderNo())){
+			throw new ServiceException(MessageCode.LOGIC_ERROR,"奶站号和订单号不能为空！");
+		}
+		return tPreOrderMapper.uptManHandOrder(uptManHandModel);
+	}
+
+	/* (non-Javadoc) 
+	* @title: 退回
+	* @description: 
+	* @return 
+	* @see com.nhry.service.order.dao.OrderService#returnOrder() 
+	*/
+	@Override
+	public int returnOrder(ReturnOrderModel r) {
+		if( StringUtils.isBlank(r.getRetReason()) || StringUtils.isBlank(r.getOrderNo())) {
+			throw new ServiceException(MessageCode.LOGIC_ERROR, "信息不完整！");
+		}
+		r.setRetDate(new Date());
+		return tPreOrderMapper.returnOrder(r);
+	}
+
 	/* (non-Javadoc) 
 	* @title: 查询订单列表
 	* @description: 
