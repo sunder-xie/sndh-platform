@@ -33,5 +33,7 @@ public interface TPreOrderMapper {
     int returnOrder(ReturnOrderModel returnOrderModel);
 
     int orderUnsubscribe(String orderNo);
+    
+    int updateOrderEndDate(TPreOrder record);
 
 }

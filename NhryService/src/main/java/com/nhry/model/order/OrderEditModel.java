@@ -11,20 +11,8 @@ public class OrderEditModel {
 	
 	private TPreOrder order;
 	
-	private String editType;
-
 	private ArrayList<TPlanOrderItem> entries = new ArrayList<TPlanOrderItem>();
 
-	public String getEditType()
-	{
-		return editType;
-	}
-	
-	public void setEditType(String editType)
-	{
-		this.editType = editType;
-	}
-	
 	public TPreOrder getOrder()
 	{
 		return order;

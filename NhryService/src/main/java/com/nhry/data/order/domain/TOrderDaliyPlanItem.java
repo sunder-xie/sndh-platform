@@ -5,8 +5,10 @@ import java.util.Date;
 
 public class TOrderDaliyPlanItem extends TOrderDaliyPlanItemKey {
     private Date dispDate;
+    
+    private String dispDateStr;
 
-    private String reachTime;
+	 private String reachTime;
 
     private String reachTimeType;
 
@@ -37,6 +39,16 @@ public class TOrderDaliyPlanItem extends TOrderDaliyPlanItemKey {
     private String lastModifiedBy;
 
     private String lastModifiedByTxt;
+    
+    public String getDispDateStr()
+ 	 {
+ 		  return dispDateStr;
+ 	 }
+
+ 	 public void setDispDateStr(String dispDateStr)
+ 	 {
+ 		  this.dispDateStr = dispDateStr;
+ 	 }
 
     public Date getDispDate() {
         return dispDate;
