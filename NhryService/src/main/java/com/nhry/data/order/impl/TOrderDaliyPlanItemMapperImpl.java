@@ -24,6 +24,13 @@ public class TOrderDaliyPlanItemMapperImpl implements TOrderDaliyPlanItemMapper
 	}
 
 	@Override
+	public int selectMaxDaliyPlansNoByOrderNo(String orderNo)
+	{
+		// TODO Auto-generated method stub
+		return sqlSessionTemplate.selectOne("selectMaxDaliyPlansNoByOrderNo", orderNo); 
+	}
+	
+	@Override
 	public int insert(TOrderDaliyPlanItem record)
 	{
 		// TODO Auto-generated method stub

@@ -27,4 +27,6 @@ public interface TOrderDaliyPlanItemMapper {
     TOrderDaliyPlanItem selectDaliyPlansByEntryNoAndNo(TOrderDaliyPlanItemKey record);
     
     List<TOrderDaliyPlanItem> selectDaliyPlansByOrderNo(String orderNo);
+    
+    int selectMaxDaliyPlansNoByOrderNo(String orderNo);
 }

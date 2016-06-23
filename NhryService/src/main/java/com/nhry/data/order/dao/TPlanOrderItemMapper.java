@@ -5,7 +5,7 @@ import java.util.List;
 import com.nhry.data.order.domain.TPlanOrderItem;
 
 public interface TPlanOrderItemMapper {
-    int deleteByPrimaryKey(String itemNo);
+    int deleteByEntryItemNo(String itemNo);
 
     int insert(TPlanOrderItem record);
 

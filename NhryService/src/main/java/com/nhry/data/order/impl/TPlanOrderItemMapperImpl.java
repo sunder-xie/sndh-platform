@@ -14,10 +14,10 @@ public class TPlanOrderItemMapperImpl implements TPlanOrderItemMapper
 	}
 	
 	@Override
-	public int deleteByPrimaryKey(String itemNo)
+	public int deleteByEntryItemNo(String itemNo)
 	{
 		// TODO Auto-generated method stub
-		return 0;
+		return sqlSessionTemplate.delete("deleteByEntryItemNo", itemNo);
 	}
 	
 	@Override
