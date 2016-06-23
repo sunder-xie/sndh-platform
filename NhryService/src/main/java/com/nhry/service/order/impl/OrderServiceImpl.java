@@ -161,7 +161,7 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 			for (TPlanOrderItem entry : entryMap.keySet()) {
 				int days = entryMap.get(entry);
 				if(days - 1 > 0){
-					entryMap.replace(entry, days-1);//剩余天数减1天
+//					entryMap.replace(entry, days-1);//剩余天数减1天
 					
 					//判断是按周期送还是按星期送
 					Date today = afterDate(entry.getStartDispDate(),afterDays);

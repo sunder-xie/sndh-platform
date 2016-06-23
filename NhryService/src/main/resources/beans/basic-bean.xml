@@ -51,12 +51,9 @@
 	</bean>
 	
 	<!-- 订单end -->
-	
-	<bean id="custMapper" class="com.nhry.data.basic.impl.TMdVipCustInfoMapperImpl">
-	   <property name="sqlSessionTemplate"  ref="dynamicSqlSessionTemplate"></property>
-	</bean>
-	<bean id="custService" class="com.nhry.service.basic.impl.TMdVipCustInfoServiceImpl">
+	<bean id="custService" class="com.nhry.service.basic.impl.TVipCustInfoServiceImpl">
 	   <property name="tmdVipcust"  ref="custMapper"></property>
+	   <property name="userSessionService" ref="userSessionService"></property>
 	</bean>
 	
 	<bean id="branchEmpMapper" class="com.nhry.data.basic.impl.TMdBranchEmpMapperImpl">
@@ -81,14 +78,16 @@
 	<bean id="residentialAreaService" class="com.nhry.service.basic.impl.ResidentialAreaServiceImpl">
 		<property name="tMdResidentialAreaMapper"  ref="tMdResidentialAreaMapper"></property>
 	</bean>
-
-
-
+	
 	<bean id="tMdBranchScopeMapper" class="com.nhry.data.basic.impl.TMdBranchScopeMapperImpl">
 		<property name="sqlSessionTemplate"  ref="dynamicSqlSessionTemplate"></property>
 	</bean>
 	<bean id="tMdBranchScopeService" class="com.nhry.service.basic.impl.TMdBranchScopeServiceImpl">
 		<property name="tMdBranchScopeMapper"  ref="tMdBranchScopeMapper"></property>
-
 	</bean>
+	
+	<bean id="custMapper"  class="com.nhry.data.basic.impl.TVipCustInfoMapperImpl">
+	    <property name="sqlSessionTemplate"  ref="dynamicSqlSessionTemplate"></property>
+	</bean>
+	
 </beans>
