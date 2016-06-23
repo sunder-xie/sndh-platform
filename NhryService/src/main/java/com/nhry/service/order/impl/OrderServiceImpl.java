@@ -296,6 +296,7 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 			}
 			//保存订单，订单行
 			order.setCurAmt(orderAmt);//订单价格
+			order.setInitAmt(orderAmt);
 			order.setEndDate(calculateFinalDate(entriesList));//订单截止日期
 			tPreOrderMapper.insert(order);
 			
@@ -507,6 +508,7 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 
 		//保存订单，订单行
 		order.setCurAmt(orderAmt);//订单价格
+		order.setInitAmt(orderAmt);
 		order.setEndDate(calculateFinalDate(entriesList));//订单截止日期
 //		BigDecimal remain = order.getInitAmt().subtract(order.getCurAmt());//此为多余的钱，如果是预付款，将存入订户账户??
 //		if("20".equals(order.getPaymentStat()) && remain.floatValue() > 0){
