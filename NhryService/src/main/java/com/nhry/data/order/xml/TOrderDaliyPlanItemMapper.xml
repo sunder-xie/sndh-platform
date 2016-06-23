@@ -10,6 +10,7 @@
     <result column="REACH_TIME" property="reachTime" jdbcType="VARCHAR" />
     <result column="REACH_TIME_TYPE" property="reachTimeType" jdbcType="VARCHAR" />
     <result column="MATNR" property="matnr" jdbcType="VARCHAR" />
+    <result column="MATNR_TXT" property="matnrTxt" jdbcType="VARCHAR" />
     <result column="UNIT" property="unit" jdbcType="VARCHAR" />
     <result column="QTY" property="qty" jdbcType="INTEGER" />
     <result column="PRICE" property="price" jdbcType="DECIMAL" />
@@ -274,4 +275,22 @@
       and PLAN_ITEM_NO = #{planItemNo,jdbcType=VARCHAR}
       and ITEM_NO = #{itemNo,jdbcType=VARCHAR}
   </update>
+
+  <select id="getDayOrderStat" resultMap="BaseResultMap" parameterType="com.nhry.model.order.ReturnOrderModel" >
+    select
+    <include refid="Base_Column_List" />
+    from t_mst_order_daliy_plan_item
+    where
+    and ORDER_NO = #{orderNo,jdbcType=VARCHAR}
+    and DISP_DATE = #{retDate,jdbcType=DATE}
+  </select>
+
+  <select id="selectDaliyPlansByBranchAndDay" resultMap="BaseResultMap" parameterType="com.nhry.model.order.RequireOrderModel" >
+    select
+    i.MATNR,m.MATNR_TXT MATNR_TXT,i.QTY
+    from t_mst_order_daliy_plan_item i,t_md_mara m,t_preorder o
+    where  i.MATNR = m.MATNR and i.ORDER_NO = o.ORDER_NO
+    and o.BRANCH_NO = #{branchNo,jdbcType=VARCHAR}
+    and i.DISP_DATE = #{requireDate,jdbcType=DATE}
+  </select>
 </mapper>

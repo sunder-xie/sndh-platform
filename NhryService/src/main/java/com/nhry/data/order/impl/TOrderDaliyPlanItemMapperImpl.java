@@ -1,13 +1,14 @@
 package com.nhry.data.order.impl;
 
-import java.util.List;
-
 import com.nhry.common.datasource.DynamicSqlSessionTemplate;
 import com.nhry.data.order.dao.TOrderDaliyPlanItemMapper;
-import com.nhry.data.order.dao.TPlanOrderItemMapper;
 import com.nhry.data.order.domain.TOrderDaliyPlanItem;
 import com.nhry.data.order.domain.TOrderDaliyPlanItemKey;
-import com.nhry.data.order.domain.TPlanOrderItem;
+import com.nhry.model.order.RequireOrderModel;
+import com.nhry.model.order.ReturnOrderModel;
+
+import java.util.Date;
+import java.util.List;
 
 public class TOrderDaliyPlanItemMapperImpl implements TOrderDaliyPlanItemMapper
 {
@@ -42,6 +43,26 @@ public class TOrderDaliyPlanItemMapperImpl implements TOrderDaliyPlanItemMapper
 	{
 		// TODO Auto-generated method stub
 		return sqlSessionTemplate.selectList("selectDaliyPlansByEntryNo", itemNo);
+	}
+
+	/**
+	 * 根据订单号和日期获取当前日期的日订单状态
+	 * @param orderNo
+	 * @param date
+	 * @return 日订单状态
+	 */
+	@Override
+	public String getDayOrderStat(String orderNo, Date date) {
+		ReturnOrderModel returnOrderModel = new ReturnOrderModel();
+		returnOrderModel.setOrderNo(orderNo);
+		returnOrderModel.setRetDate(date);
+		TOrderDaliyPlanItem item = sqlSessionTemplate.selectOne("getDayOrderStat", returnOrderModel);
+		return item.getStatus();
+	}
+
+	@Override
+	public List<TOrderDaliyPlanItem> selectDaliyPlansByBranchAndDay(RequireOrderModel rModel) {
+		return sqlSessionTemplate.selectList("selectDaliyPlansByBranchAndDay", rModel);
 	}
 
 	@Override

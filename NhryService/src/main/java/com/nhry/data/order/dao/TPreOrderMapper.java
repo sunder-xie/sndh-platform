@@ -31,4 +31,7 @@ public interface TPreOrderMapper {
     int uptManHandOrder(UpdateManHandOrderModel uptManHandModel);
 
     int returnOrder(ReturnOrderModel returnOrderModel);
+
+    int orderUnsubscribe(String orderNo);
+
 }
