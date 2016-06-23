@@ -19,8 +19,10 @@ public class TPreOrder {
     private String branchNo;
 
     private String branchTel;
+    
+    private String branchName;
 
-    private String customerTel;
+	 private String customerTel;
 
     private String milkmemberNo;
 
@@ -61,6 +63,64 @@ public class TPreOrder {
     private String solicitorNo;
 
     private String solicitBy;
+    
+    private Date stopDateStart;
+
+	 private Date stopDateEnd;
+    
+    private String stopReason;
+    
+    private Date endDate;
+    
+    public Date getEndDate()
+	 {
+		return endDate;
+	 }
+
+	 public void setEndDate(Date endDate)
+	 {
+		this.endDate = endDate;
+	 }
+
+	 public String getBranchName()
+    {
+   	 return branchName;
+    }
+    
+    public void setBranchName(String branchName)
+    {
+   	 this.branchName = branchName  == null ? null : branchName.trim();
+    }
+    
+    public Date getStopDateStart()
+    {
+   	 return stopDateStart;
+    }
+    
+    public void setStopDateStart(Date stopDateStart)
+    {
+   	 this.stopDateStart = stopDateStart;
+    }
+    
+    public Date getStopDateEnd()
+    {
+   	 return stopDateEnd;
+    }
+    
+    public void setStopDateEnd(Date stopDateEnd)
+    {
+   	 this.stopDateEnd = stopDateEnd;
+    }
+    
+    public String getStopReason()
+    {
+   	 return stopReason;
+    }
+    
+    public void setStopReason(String stopReason)
+    {
+   	 this.stopReason = stopReason  == null ? null : stopReason.trim();
+    }
 
     public String getCustomerTel() {
         return customerTel;

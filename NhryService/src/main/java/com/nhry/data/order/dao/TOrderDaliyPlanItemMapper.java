@@ -2,6 +2,7 @@ package com.nhry.data.order.dao;
 
 import com.nhry.data.order.domain.TOrderDaliyPlanItem;
 import com.nhry.data.order.domain.TOrderDaliyPlanItemKey;
+import com.nhry.data.order.domain.TPreOrder;
 import com.nhry.model.order.RequireOrderModel;
 
 import java.util.Date;
@@ -35,4 +36,6 @@ public interface TOrderDaliyPlanItemMapper {
     String getDayOrderStat(String orderNo, Date date);
 
     List<TOrderDaliyPlanItem> selectDaliyPlansByBranchAndDay(RequireOrderModel rModel);
+    
+    int updateDaliyPlansToStop(TPreOrder record);
 }

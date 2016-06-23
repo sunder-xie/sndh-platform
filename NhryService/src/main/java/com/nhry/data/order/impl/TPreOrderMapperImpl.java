@@ -71,15 +71,19 @@ public class TPreOrderMapperImpl implements TPreOrderMapper
 	@Override
 	public int insert(TPreOrder record)
 	{
-		// TODO Auto-generated method stub
 		return sqlSessionTemplate.insert("insertNewOrder", record);
 	}
 	
 	@Override
 	public TPreOrder selectByPrimaryKey(String orderNo)
 	{
-		// TODO Auto-generated method stub
 		return sqlSessionTemplate.selectOne("selectByOrderCode", orderNo);
+	}
+	
+	@Override
+	public int updateOrderEndDate(TPreOrder record)
+	{
+		return sqlSessionTemplate.update("updateOrderEndDate", record);
 	}
 	
 	@Override

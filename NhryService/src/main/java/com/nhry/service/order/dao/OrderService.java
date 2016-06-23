@@ -1,7 +1,10 @@
 package com.nhry.service.order.dao;
 
+import java.util.List;
+
 import com.github.pagehelper.PageInfo;
 import com.nhry.data.order.domain.TMstRequireOrder;
+import com.nhry.data.order.domain.TOrderDaliyPlanItem;
 import com.nhry.data.order.domain.TPreOrder;
 import com.nhry.model.order.*;
 
@@ -14,6 +17,12 @@ public interface OrderService {
 	int editOrderForLong(OrderEditModel record);
 	
 	int editOrderForShort(DaliyPlanEditModel record);
+	
+	int stopOrderForTime(OrderSearchModel record);
+	
+	int backOrder(OrderSearchModel record);
+	
+	int continueOrder(OrderSearchModel record);
 	
 	int modifyOrderStatus(TPreOrder record);
 	
@@ -36,4 +45,6 @@ public interface OrderService {
 	RequireOrderModel searchRequireOrder(RequireOrderModel rModel);
 
 	int uptRequireOrder(RequireOrderModel rModel);
+	
+	List<TOrderDaliyPlanItem> selectDaliyPlansByOrderNo(String orderCode);
 }

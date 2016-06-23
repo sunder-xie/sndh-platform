@@ -324,6 +324,19 @@
       and ITEM_NO = #{itemNo,jdbcType=VARCHAR}
       and PLAN_ITEM_NO = #{planItemNo,jdbcType=VARCHAR}
   </update>
+  <update id="updateDaliyPlansToStop" parameterType="com.nhry.data.order.domain.TPreOrder" >
+    update t_mst_order_daliy_plan_item
+    <set >
+      <if test="reachTimeType != null" >
+        STATUS = "30"
+      </if>
+    </set>
+    where DISP_DATE &gt;= #{stopDateStart,jdbcType=DATE}
+    <if test="stopDateEnd != null and stopDateEnd !=''" >
+        and DISP_DATE &lt;= #{stopDateEnd,jdbcType=DATE}
+    </if>
+    and ORDER_NO = #{orderNo,jdbcType=VARCHAR}
+  </update>
 
   <select id="getDayOrderStat" resultMap="BaseResultMap" parameterType="com.nhry.model.order.ReturnOrderModel" >
     select
