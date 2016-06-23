@@ -2,7 +2,6 @@ package com.nhry.rest.order;
 
 import com.github.pagehelper.PageInfo;
 import com.nhry.common.exception.MessageCode;
-import com.nhry.data.basic.domain.TMdMaraEx;
 import com.nhry.data.order.domain.TPreOrder;
 import com.nhry.model.order.*;
 import com.nhry.rest.BaseResource;
@@ -79,7 +78,7 @@ public class OrderResource extends BaseResource {
 	@Path("/returnOrder")
 	@Produces(MediaType.APPLICATION_JSON)
 	@Consumes(MediaType.APPLICATION_JSON)
-	@ApiOperation(value = "/returnOrder", response = PageInfo.class, notes = "订单退回")
+	@ApiOperation(value = "/returnOrder", response = PageInfo.class, notes = "待确认订单退回")
 	public Response returnOrder(@ApiParam(required=true,name="manHandModel",value="ReturnOrderModel") ReturnOrderModel returnOrderModel){
 		return convertToRespModel(MessageCode.NORMAL, null, orderService.returnOrder(returnOrderModel));
 	}
@@ -119,6 +118,41 @@ public class OrderResource extends BaseResource {
 	public Response uptOrderStatus(@ApiParam(required=true,name="smodel",value="OrderCreateModel") TPreOrder record){
 		return convertToRespModel(MessageCode.NORMAL, null, orderService.modifyOrderStatus(record));
 	}
-	
 
+	@POST
+	@Path("/canOrderUnsubscribe")
+	@Produces(MediaType.APPLICATION_JSON)
+	@Consumes(MediaType.APPLICATION_JSON)
+	@ApiOperation(value = "/canOrderUnsubscribe", response = Integer.class, notes = "判断当前订单 是否可以退订")
+	public Response orderUnsubscribe(@ApiParam(required=true,name="orderNo",value="订单编号") String  orderNo){
+		return convertToRespModel(MessageCode.NORMAL, null, orderService.canOrderUnsubscribe(orderNo));
+	}
+
+
+	@POST
+	@Path("/creatRequireOrder")
+	@Produces(MediaType.APPLICATION_JSON)
+	@Consumes(MediaType.APPLICATION_JSON)
+	@ApiOperation(value = "/creatRequireOrder", response = RequireOrderModel.class, notes = "生成要货计划")
+	public Response creatRequireOrder(@ApiParam(required=true,name="rModel",value="要货计划") RequireOrderModel  rModel){
+		return convertToRespModel(MessageCode.NORMAL, null, orderService.creatRequireOrder(rModel));
+	}
+
+	@POST
+	@Path("/queryRequireOrder")
+	@Produces(MediaType.APPLICATION_JSON)
+	@Consumes(MediaType.APPLICATION_JSON)
+	@ApiOperation(value = "/creatRequireOrder", response = RequireOrderModel.class, notes = "查询要货计划")
+	public Response searchRequireOrder(@ApiParam(required=true,name="rModel",value="要货计划") RequireOrderModel  rModel){
+		return convertToRespModel(MessageCode.NORMAL, null, orderService.searchRequireOrder(rModel));
+	}
+
+	@POST
+	@Path("/uptRequireOrder")
+	@Produces(MediaType.APPLICATION_JSON)
+	@Consumes(MediaType.APPLICATION_JSON)
+	@ApiOperation(value = "/uptRequireOrder", response = RequireOrderModel.class, notes = "更新生成要货计划")
+	public Response uptRequireOrder(@ApiParam(required=true,name="rModel",value="要货计划") RequireOrderModel  rModel){
+		return convertToRespModel(MessageCode.NORMAL, null, orderService.uptRequireOrder(rModel));
+	}
 }

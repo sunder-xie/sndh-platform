@@ -11,6 +11,8 @@ import com.nhry.data.order.domain.TOrderDaliyPlanItem;
 import com.nhry.data.order.domain.TOrderDaliyPlanItemKey;
 import com.nhry.data.order.domain.TPlanOrderItem;
 import com.nhry.data.order.domain.TPreOrder;
+import com.nhry.data.order.dao.TRequireOrderMapper;
+import com.nhry.data.order.domain.*;
 import com.nhry.model.order.*;
 import com.nhry.service.BaseService;
 import com.nhry.service.order.dao.OrderService;
@@ -23,11 +25,12 @@ import java.text.SimpleDateFormat;
 import java.util.*;
 
 public class OrderServiceImpl extends BaseService implements OrderService {
-	
+
 	private TPreOrderMapper tPreOrderMapper;
 	private TOrderDaliyPlanItemMapper tOrderDaliyPlanItemMapper;
 	private TPlanOrderItemMapper tPlanOrderItemMapper;
-	
+	private TRequireOrderMapper tRequireOrderMapper;
+
 	public void settOrderDaliyPlanItemMapper(TOrderDaliyPlanItemMapper tOrderDaliyPlanItemMapper)
 	{
 		this.tOrderDaliyPlanItemMapper = tOrderDaliyPlanItemMapper;
@@ -42,14 +45,18 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 	{
 		this.tPreOrderMapper = tPreOrderMapper;
 	}
-	
-	/* (non-Javadoc) 
-	* @title: selectOrderByCode
-	* @description: 根据订单号查询订单
-	* @param orderCode
-	* @return 
-	* @see com.nhry.service.order.dao.OrderService#selectOrderByCode(java.lang.String) 
-	*/
+
+	public void settRequireOrderMapper(TRequireOrderMapper tRequireOrderMapper) {
+		this.tRequireOrderMapper = tRequireOrderMapper;
+	}
+
+	/* (non-Javadoc)
+        * @title: selectOrderByCode
+        * @description: 根据订单号查询订单
+        * @param orderCode
+        * @return
+        * @see com.nhry.service.order.dao.OrderService#selectOrderByCode(java.lang.String)
+        */
 	@Override
 	public OrderCreateModel selectOrderByCode(String orderCode)
 	{
@@ -57,15 +64,15 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 		ArrayList<TPlanOrderItem> entries = (ArrayList<TPlanOrderItem>) tPlanOrderItemMapper.selectByOrderCode(orderCode);
 		orderModel.setEntries(entries);
 		orderModel.setOrder(tPreOrderMapper.selectByPrimaryKey(orderCode));
-		
+
 		return orderModel;
 	}
-	
-	/* (non-Javadoc) 
+
+	/* (non-Javadoc)
 	* @title: 退回单列表
-	* @description: 
-	* @return 
-	* @see com.nhry.service.order.dao.OrderService#searchReturnOrders() 
+	* @description:
+	* @return
+	* @see com.nhry.service.order.dao.OrderService#searchReturnOrders()
 	*/
 	@Override
 	public PageInfo searchReturnOrders(ManHandOrderSearchModel manHandModel) {
@@ -75,22 +82,22 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 		return tPreOrderMapper.searchReturnOrders(manHandModel);
 	}
 
-	/* (non-Javadoc) 
+	/* (non-Javadoc)
 	* @title: 人工分单详情
-	* @description: 
-	* @return 
-	* @see com.nhry.service.order.dao.OrderService#manHandOrderDetail() 
+	* @description:
+	* @return
+	* @see com.nhry.service.order.dao.OrderService#manHandOrderDetail()
 	*/
 	@Override
 	public TPreOrder manHandOrderDetail(String orderCode) {
 		return tPreOrderMapper.manHandOrderDetail(orderCode);
 	}
 
-	/* (non-Javadoc) 
+	/* (non-Javadoc)
 	* @title: 人工分单
-	* @description: 
-	* @return 
-	* @see com.nhry.service.order.dao.OrderService#uptManHandOrder() 
+	* @description:
+	* @return
+	* @see com.nhry.service.order.dao.OrderService#uptManHandOrder()
 	*/
 	@Override
 	public int uptManHandOrder(UpdateManHandOrderModel uptManHandModel) {
@@ -100,11 +107,11 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 		return tPreOrderMapper.uptManHandOrder(uptManHandModel);
 	}
 
-	/* (non-Javadoc) 
+	/* (non-Javadoc)
 	* @title: 退回
-	* @description: 
-	* @return 
-	* @see com.nhry.service.order.dao.OrderService#returnOrder() 
+	* @description:
+	* @return
+	* @see com.nhry.service.order.dao.OrderService#returnOrder()
 	*/
 	@Override
 	public int returnOrder(ReturnOrderModel r) {
@@ -115,11 +122,131 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 		return tPreOrderMapper.returnOrder(r);
 	}
 
-	/* (non-Javadoc) 
+	/**
+	 * 判断当前订单能否退订
+	 * @param orderNo
+	 * @return
+	 */
+	@Override
+	public int canOrderUnsubscribe(String orderNo) {
+		OrderCreateModel orderModel = this.selectOrderByCode(orderNo);
+		if(orderModel!= null){
+			TPreOrder order = orderModel.getOrder();
+			String paymentStat = order.getPaymentStat();
+
+			//判断当前日订单状态：如果为"已创建"  可直接修改
+			String dayOrderStat = tOrderDaliyPlanItemMapper.getDayOrderStat(orderNo,new Date());
+			if("10".equals(dayOrderStat)){
+				return 1;
+			}else if("20".equals(dayOrderStat)){
+				//当前订单状态为："已确认",不能修改
+				return 2;
+			}else{
+				//当前日订单状态为已退订
+				return 3;
+			}
+		}else{
+			throw new ServiceException(MessageCode.LOGIC_ERROR,"当前订单不存在");
+		}
+
+	}
+
+	@Override
+	public RequireOrderModel creatRequireOrder(RequireOrderModel rModel) {
+		List<TMstRequireOrder> orderlist = this.tRequireOrderMapper.searchRequireOrder(rModel);
+		if(orderlist!=null && orderlist.size()>0){
+			throw new ServiceException(MessageCode.LOGIC_ERROR,"当天要货计划已存在");
+		}
+		List<TOrderDaliyPlanItem> items = tOrderDaliyPlanItemMapper.selectDaliyPlansByBranchAndDay(rModel);
+		//将日预定单生成的要货计划存放数据库
+		for(TOrderDaliyPlanItem entry :items ){
+			TMstRequireOrder torder = new TMstRequireOrder();
+			torder.setRequireDate(rModel.getRequireDate());
+			torder.setBranchNo(rModel.getBranchNo());
+			torder.setMatnr(entry.getMatnr());
+			torder.setCreateAt(new Date());
+			torder.setQty(entry.getQty());
+			torder.setIncreQty(0);
+			this.tRequireOrderMapper.insertRequireOrder(torder);
+		}
+		return this.searchRequireOrder(rModel);
+
+	}
+
+	@Override
+	public int insertRequireOrder(TMstRequireOrder order) {
+		return tRequireOrderMapper.insertRequireOrder(order);
+	}
+
+	/**
+	 * 根据 奶站编号 和 日期 获取当前日期的要货计划
+	 * @param rModel
+	 * @return
+	 */
+	@Override
+	public RequireOrderModel searchRequireOrder(RequireOrderModel rModel) {
+		List<TMstRequireOrder> orderlist = this.tRequireOrderMapper.searchRequireOrder(rModel);
+		RequireOrderModel orderModel = new RequireOrderModel();
+		if(orderlist!= null && orderlist.size()>0){
+			TMstRequireOrder rorder = orderlist.get(0);
+			orderModel.setBranchNo(rorder.getBranchNo());
+			orderModel.setRequireDate(rorder.getRequireDate());
+			List<OrderRequireItem> entry = new ArrayList<OrderRequireItem>();
+			for(TMstRequireOrder order :orderlist){
+				OrderRequireItem item = new OrderRequireItem();
+				item.setMatnr(order.getMatnr());
+				item.setMatnrTxt(order.getMatnrTxt());
+				item.setQty(order.getQty());
+				item.setIncreQty(order.getIncreQty());
+				entry.add(item);
+			}
+			orderModel.setEntries(entry);
+		}
+		return orderModel;
+	}
+
+	/**
+	 * 修改要货计划
+	 * @param rModel
+	 * @return
+     */
+	@Override
+	public int uptRequireOrder(RequireOrderModel rModel) {
+		RequireOrderModel orderModel = this.searchRequireOrder(rModel);
+		/*if(orderModel == orderModel){
+			throw new ServiceException(MessageCode.LOGIC_ERROR,"要货计划未发生变化");
+		}*/
+		int add = 0;
+		int upt = -1;
+		List<OrderRequireItem> items = rModel.getEntries();
+		for(OrderRequireItem item : items){
+			TMstRequireOrder tMstRequireOrder = new TMstRequireOrder();
+			tMstRequireOrder.setBranchNo(rModel.getBranchNo());
+			tMstRequireOrder.setRequireDate(rModel.getRequireDate());
+			tMstRequireOrder.setMatnr(item.getMatnr());
+			tMstRequireOrder.setQty(item.getQty());
+			tMstRequireOrder.setIncreQty(item.getIncreQty());
+			TMstRequireOrder oldItem = tRequireOrderMapper.selectRequireOrderItemByitem(tMstRequireOrder);
+			if(oldItem == null ){
+				//新增加的产品 : @TODO :是否需要判断信息的可靠性
+				   add = tRequireOrderMapper.insertRequireOrder(tMstRequireOrder);
+			}else{
+				//该产品已存在
+				if(oldItem.getIncreQty() != item.getIncreQty() || oldItem.getQty() != item.getQty()){
+					//该产品做了修改
+					upt = tRequireOrderMapper.uptRequireOrder(tMstRequireOrder);
+				}
+			}
+		}
+		return add + upt;
+	}
+
+
+	/* (non-Javadoc)
 	* @title: 查询订单列表
-	* @description: 
-	* @return 
-	* @see com.nhry.service.order.dao.OrderService#createOrder() 
+	* @description:
+	* @return
+	* @see com.nhry.service.order.dao.OrderService#createOrder()
 	*/
 	@Override
 	public PageInfo searchOrders(OrderSearchModel smodel)
@@ -130,19 +257,19 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 		return tPreOrderMapper.selectOrdersByPages(smodel);
 	}
 
-	/* (non-Javadoc) 
+	/* (non-Javadoc)
 	* @title: 生成订单
 	* @description: 生成订单与订单行项目
-	* @return 
-	* @see com.nhry.service.order.dao.OrderService#createOrder() 
+	* @return
+	* @see com.nhry.service.order.dao.OrderService#createOrder()
 	*/
 	@Override
 	public int createOrder(OrderCreateModel record)
-	{	
+	{
 		SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
 		TPreOrder order = record.getOrder();
 		List<TPlanOrderItem> entriesList = new ArrayList<TPlanOrderItem>();
-		//暂时生成订单号		
+		//暂时生成订单号
 		Date date = new Date();
 		order.setOrderNo(String.valueOf(date.getTime()));
 		//其他订单信息
@@ -159,7 +286,7 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 		order.setMilkboxStat(StringUtils.isBlank(order.getMilkboxStat()) == true ? "20": order.getMilkboxStat());//奶箱状态
 		order.setPreorderStat("20");//订单状态
 //		order.setBranchNo(branchNo);//奶站编号 --人工分单或自动??
-		
+
 		//生成每个订单行
 		int index = 0;
 		BigDecimal orderAmt = new BigDecimal("0.00");//订单总价
@@ -182,24 +309,24 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 			}
 			orderAmt = orderAmt.add(calculateEntryAmount(entry));
 			entriesList.add(entry);
-			
-		   index++;
+
+			index++;
 		}
-		
+
 		//保存订单，订单行
 		order.setCurAmt(orderAmt);//订单价格
 //		BigDecimal remain = order.getInitAmt().subtract(order.getCurAmt());//此为多余的钱，如果是预付款，将存入订户账户
 //		if("20".equals(order.getPaymentStat()) && remain.floatValue() > 0){
-//			
+//
 //		}
 		tPreOrderMapper.insert(record.getOrder());
 		for(TPlanOrderItem entry: entriesList){
 			tPlanOrderItemMapper.insert(entry);
 		}
-		
+
 		return createDaliyPlan(order,record.getEntries());//生成每日计划
 	}
-	
+
 	//根据订单行生成每日计划
 	private int createDaliyPlan(TPreOrder order ,List<TPlanOrderItem> entries){
 
@@ -207,9 +334,9 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 		if("20".equals(order.getMilkboxStat())){
 			return 0;
 		}
-		
+
 		BigDecimal curAmt = order.getCurAmt();
-		
+
 		//计算每个行项目总共需要送多少天
 		Map<TPlanOrderItem,Integer> entryMap = new HashMap<TPlanOrderItem,Integer>();
 		int maxEntryDay = 0;
@@ -233,7 +360,7 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 				int days = entryMap.get(entry);
 				if(days - 1 > 0){
 					entryMap.replace(entry, days-1);//剩余天数减1天
-					
+
 					//判断是按周期送还是按星期送
 					Date today = afterDate(entry.getStartDispDate(),afterDays);
 					if("10".equals(entry.getRuleType())){
@@ -259,7 +386,7 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 							continue;//如果选择的星期几不送，则跳过今天生成日计划
 						}
 					}
-					
+
 					//生成该订单行的每日计划
 					TOrderDaliyPlanItem plan = new TOrderDaliyPlanItem();
 					plan.setOrderNo(entry.getOrderNo());//订单编号
@@ -291,21 +418,21 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 			}
 			afterDays++;
 		}
-		
+
 		return 1;
 	}
-	
-	/* (non-Javadoc) 
+
+	/* (non-Javadoc)
 	 * @title: modifyOrderStatus
 	 * @description: 修改订单状态   订单，付款，奶箱状态
 	 * @param state
 	 * @param status
-	 * @return 
-	 * @see com.nhry.service.order.dao.OrderService#modifyOrderStatus(java.lang.String, java.lang.String) 
+	 * @return
+	 * @see com.nhry.service.order.dao.OrderService#modifyOrderStatus(java.lang.String, java.lang.String)
 	 */
 	@Override
 	public int modifyOrderStatus(TPreOrder record)
-	{	
+	{
 		//未收款10、已收款20、垫付款30
 		//已装箱10、未装箱20、无需装箱30
 		//已生效10、未生效20、无效30
@@ -316,9 +443,9 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 		if(tPreOrderMapper.selectByPrimaryKey(record.getOrderNo()) == null){
 			throw new ServiceException("该订单号不存在!");
 		}
-		
+
 		tPreOrderMapper.updateOrderStatus(record);
-		
+
 		return 1;
 	}
 	
@@ -326,8 +453,8 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 	* @title: editOrderForLong
 	* @description: 长期修改订单
 	* @param record
-	* @return 
-	* @see com.nhry.service.order.dao.OrderService#editOrder(com.nhry.model.order.OrderCreateModel) 
+	* @return
+	* @see com.nhry.service.order.dao.OrderService#editOrder(com.nhry.model.order.OrderCreateModel)
 	*/
 	@Override
 	public int editOrderForLong(OrderEditModel record)
@@ -508,30 +635,30 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 			
 		return 1;
 	}
-	
-///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////	
-	
+
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
 	//计算间隔天数
 	private int daysOfTwo(Date fDate, Date oDate) {
 
-      Calendar aCalendar = Calendar.getInstance();
-      aCalendar.setTime(fDate);
-      int day1 = aCalendar.get(Calendar.DAY_OF_YEAR);
-      aCalendar.setTime(oDate);
-      int day2 = aCalendar.get(Calendar.DAY_OF_YEAR);
+		Calendar aCalendar = Calendar.getInstance();
+		aCalendar.setTime(fDate);
+		int day1 = aCalendar.get(Calendar.DAY_OF_YEAR);
+		aCalendar.setTime(oDate);
+		int day2 = aCalendar.get(Calendar.DAY_OF_YEAR);
 
-      return day2 - day1;
-   }
-	
+		return day2 - day1;
+	}
+
 	//日期往前后加n天
 	private Date afterDate(Date date, int days) {
 
 		Calendar aCalendar =  Calendar.getInstance();
-		aCalendar.setTime(date); 
-		aCalendar.add(aCalendar.DATE, days);//把日期往后增加一天.整数往后推,负数往前移动 
-      date=aCalendar.getTime();   //这个时间就是日期往后推一天的结果 
+		aCalendar.setTime(date);
+		aCalendar.add(aCalendar.DATE, days);//把日期往后增加一天.整数往后推,负数往前移动
+		date=aCalendar.getTime();   //这个时间就是日期往后推一天的结果
 
-	   return date;
+		return date;
 	}
 	
    //根据日期取得星期几  
