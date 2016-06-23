@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	   xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-4.0.xsd"
+	   default-lazy-init="true">
+
+	<bean id="scheduledJobDetail1"
+		  class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean" >
+		<property name="targetObject">
+			<ref  bean="piProductService"/>
+		</property>
+		<property name="targetMethod">
+			<value>matHandler</value>
+		</property>
+	</bean>
+	 <!-- 调度的配置开始 -->
+    <bean id="crontestJobTrigger1" class="org.springframework.scheduling.quartz.CronTriggerBean">
+        <property name="jobDetail">
+            <ref bean="scheduledJobDetail1" />
+        </property>
+        <property name="cronExpression">
+			<value>0 59 23 * * ?</value>
+		</property>
+    </bean>
+    <!-- 调度的配置结束 -->
+
+    <!-- 启动触发器的配置开始 -->
+    <bean name="startQuertz1" lazy-init="false" autowire="no" class="org.springframework.scheduling.quartz.SchedulerFactoryBean">
+        <property name="triggers">
+            <list>
+                <ref bean="crontestJobTrigger1" />
+            </list>
+        </property>
+    </bean>
+
+</beans>
