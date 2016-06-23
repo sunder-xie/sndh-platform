@@ -1,5 +1,7 @@
 package com.nhry.data.order.impl;
 
+import java.util.List;
+
 import com.nhry.common.datasource.DynamicSqlSessionTemplate;
 import com.nhry.data.order.dao.TPlanOrderItemMapper;
 import com.nhry.data.order.domain.TPlanOrderItem;
@@ -12,17 +14,34 @@ public class TPlanOrderItemMapperImpl implements TPlanOrderItemMapper
 	}
 	
 	@Override
-	public int deleteByPrimaryKey(String itemNo)
+	public int deleteByEntryItemNo(String itemNo)
 	{
 		// TODO Auto-generated method stub
-		return 0;
+		return sqlSessionTemplate.delete("deleteByEntryItemNo", itemNo);
 	}
-
+	
+	@Override
+	public List<TPlanOrderItem> selectByOrderCode(String orderCode)
+	{
+		return sqlSessionTemplate.selectList("selectEntriesByOrderCode", orderCode);
+	}
+	
 	@Override
 	public int insert(TPlanOrderItem record)
 	{
-		// TODO Auto-generated method stub
 		return sqlSessionTemplate.insert("insertNewOrderEntry", record);
+	}
+	
+	@Override
+	public int updateEntryByItemNo(TPlanOrderItem record)
+	{
+		return sqlSessionTemplate.update("updateEntryByOrderCode", record);
+	}
+	
+	@Override
+	public TPlanOrderItem selectEntryByEntryNo(String code)
+	{
+		return sqlSessionTemplate.selectOne("selectEntryByEntryNo", code);
 	}
 	
 	@Override

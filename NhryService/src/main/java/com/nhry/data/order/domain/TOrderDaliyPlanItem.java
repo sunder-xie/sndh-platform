@@ -5,12 +5,16 @@ import java.util.Date;
 
 public class TOrderDaliyPlanItem extends TOrderDaliyPlanItemKey {
     private Date dispDate;
+    
+    private String dispDateStr;
 
-    private String reachTime;
+	 private String reachTime;
 
     private String reachTimeType;
 
     private String matnr;
+
+    private String matnrTxt;
 
     private String unit;
 
@@ -35,6 +39,16 @@ public class TOrderDaliyPlanItem extends TOrderDaliyPlanItemKey {
     private String lastModifiedBy;
 
     private String lastModifiedByTxt;
+    
+    public String getDispDateStr()
+ 	 {
+ 		  return dispDateStr;
+ 	 }
+
+ 	 public void setDispDateStr(String dispDateStr)
+ 	 {
+ 		  this.dispDateStr = dispDateStr;
+ 	 }
 
     public Date getDispDate() {
         return dispDate;
@@ -66,6 +80,14 @@ public class TOrderDaliyPlanItem extends TOrderDaliyPlanItemKey {
 
     public void setMatnr(String matnr) {
         this.matnr = matnr == null ? null : matnr.trim();
+    }
+
+    public String getMatnrTxt() {
+        return matnrTxt;
+    }
+
+    public void setMatnrTxt(String matnrTxt) {
+        this.matnrTxt = matnrTxt  == null ? null : matnrTxt.trim();
     }
 
     public String getUnit() {
