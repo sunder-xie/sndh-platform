@@ -1,4 +1,4 @@
-package com.nhry.data.order.domain;
+package com.nhry.model.milktrans;
 
 /**
  * Created by gongjk on 2016/6/22.

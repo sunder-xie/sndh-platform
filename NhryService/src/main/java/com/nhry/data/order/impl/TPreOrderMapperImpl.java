@@ -15,6 +15,7 @@ import com.github.pagehelper.PageInfo;
 import com.nhry.common.datasource.DynamicSqlSessionTemplate;
 import com.nhry.data.order.dao.TPreOrderMapper;
 import com.nhry.data.order.domain.TPreOrder;
+import com.nhry.model.bill.CustBillQueryModel;
 import com.nhry.model.order.ManHandOrderSearchModel;
 import com.nhry.model.order.OrderSearchModel;
 import com.nhry.model.order.ReturnOrderModel;
@@ -66,6 +67,17 @@ public class TPreOrderMapperImpl implements TPreOrderMapper
 		return sqlSessionTemplate.update("orderUnsubscribe", orderNo);
 	}
 
+	@Override
+	public PageInfo searchCustomerOrder(CustBillQueryModel cModel) {
+		return sqlSessionTemplate.selectListByPages("searchCustomerOrder",cModel, Integer.parseInt(cModel.getPageNum()), Integer.parseInt(cModel.getPageSize()));
+
+	}
+
+	@Override
+	public int updateOrderPayMentStatus(String orderNo) {
+		return sqlSessionTemplate.update("updateOrderPayMentStatus", orderNo);
+
+	}
 
 
 	@Override

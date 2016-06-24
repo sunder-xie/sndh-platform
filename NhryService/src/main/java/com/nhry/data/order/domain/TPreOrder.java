@@ -10,6 +10,8 @@ public class TPreOrder {
 
     private Date orderDate;
 
+    private Date endDate;
+
     private String paymentmethod;
 
     private String preorderSource;
@@ -42,6 +44,8 @@ public class TPreOrder {
 
     private String empNo;
 
+    private String empName;
+
     private String adressNo;
 
     private String createrNo;
@@ -61,6 +65,23 @@ public class TPreOrder {
     private String solicitorNo;
 
     private String solicitBy;
+
+
+    public Date getEndDate() {
+        return endDate;
+    }
+
+    public void setEndDate(Date endDate) {
+        this.endDate = endDate;
+    }
+
+    public String getEmpName() {
+        return empName;
+    }
+
+    public void setEmpName(String empName) {
+        this.empName = empName;
+    }
 
     public String getCustomerTel() {
         return customerTel;

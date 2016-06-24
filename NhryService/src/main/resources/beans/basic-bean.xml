@@ -43,14 +43,13 @@
 	<bean id="tPlanOrderItemMapper" class="com.nhry.data.order.impl.TPlanOrderItemMapperImpl">
 	   <property name="sqlSessionTemplate"  ref="dynamicSqlSessionTemplate"></property>
 	</bean>
-	<bean id="tRequireOrderMapper" class="com.nhry.data.order.impl.TRequireOrderMapperImpl">
+	<bean id="tRequireOrderMapper" class="com.nhry.data.milktrans.impl.TRequireOrderMapperImpl">
 		<property name="sqlSessionTemplate"  ref="dynamicSqlSessionTemplate"></property>
 	</bean>
 	<bean id="orderService" class="com.nhry.service.order.impl.OrderServiceImpl">
 	   <property name="tPreOrderMapper"  ref="tPreOrderMapper"></property>
 	   <property name="tPlanOrderItemMapper"  ref="tPlanOrderItemMapper"></property>
 	   <property name="tOrderDaliyPlanItemMapper"  ref="tOrderDaliyPlanItemMapper"></property>
-		<property name="tRequireOrderMapper"  ref="tRequireOrderMapper"></property>
 	   <property name="userSessionService" ref="userSessionService"></property>
 	</bean>
 	

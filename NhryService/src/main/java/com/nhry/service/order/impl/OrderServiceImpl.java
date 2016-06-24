@@ -7,8 +7,9 @@ import com.nhry.common.exception.ServiceException;
 import com.nhry.data.order.dao.TOrderDaliyPlanItemMapper;
 import com.nhry.data.order.dao.TPlanOrderItemMapper;
 import com.nhry.data.order.dao.TPreOrderMapper;
-import com.nhry.data.order.dao.TRequireOrderMapper;
-import com.nhry.data.order.domain.*;
+import com.nhry.data.order.domain.TOrderDaliyPlanItem;
+import com.nhry.data.order.domain.TPlanOrderItem;
+import com.nhry.data.order.domain.TPreOrder;
 import com.nhry.model.order.*;
 import com.nhry.service.BaseService;
 import com.nhry.service.order.dao.OrderService;
@@ -24,7 +25,7 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 	private TPreOrderMapper tPreOrderMapper;
 	private TOrderDaliyPlanItemMapper tOrderDaliyPlanItemMapper;
 	private TPlanOrderItemMapper tPlanOrderItemMapper;
-	private TRequireOrderMapper tRequireOrderMapper;
+
 
 	public void settOrderDaliyPlanItemMapper(TOrderDaliyPlanItemMapper tOrderDaliyPlanItemMapper)
 	{
@@ -41,9 +42,7 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 		this.tPreOrderMapper = tPreOrderMapper;
 	}
 
-	public void settRequireOrderMapper(TRequireOrderMapper tRequireOrderMapper) {
-		this.tRequireOrderMapper = tRequireOrderMapper;
-	}
+
 
 	/* (non-Javadoc)
         * @title: selectOrderByCode
@@ -146,95 +145,6 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 
 	}
 
-	@Override
-	public RequireOrderModel creatRequireOrder(RequireOrderModel rModel) {
-		List<TMstRequireOrder> orderlist = this.tRequireOrderMapper.searchRequireOrder(rModel);
-		if(orderlist!=null && orderlist.size()>0){
-			throw new ServiceException(MessageCode.LOGIC_ERROR,"当天要货计划已存在");
-		}
-		List<TOrderDaliyPlanItem> items = tOrderDaliyPlanItemMapper.selectDaliyPlansByBranchAndDay(rModel);
-		//将日预定单生成的要货计划存放数据库
-		for(TOrderDaliyPlanItem entry :items ){
-			TMstRequireOrder torder = new TMstRequireOrder();
-			torder.setRequireDate(rModel.getRequireDate());
-			torder.setBranchNo(rModel.getBranchNo());
-			torder.setMatnr(entry.getMatnr());
-			torder.setCreateAt(new Date());
-			torder.setQty(entry.getQty());
-			torder.setIncreQty(0);
-			this.tRequireOrderMapper.insertRequireOrder(torder);
-		}
-		return this.searchRequireOrder(rModel);
-
-	}
-
-	@Override
-	public int insertRequireOrder(TMstRequireOrder order) {
-		return tRequireOrderMapper.insertRequireOrder(order);
-	}
-
-	/**
-	 * 根据 奶站编号 和 日期 获取当前日期的要货计划
-	 * @param rModel
-	 * @return
-	 */
-	@Override
-	public RequireOrderModel searchRequireOrder(RequireOrderModel rModel) {
-		List<TMstRequireOrder> orderlist = this.tRequireOrderMapper.searchRequireOrder(rModel);
-		RequireOrderModel orderModel = new RequireOrderModel();
-		if(orderlist!= null && orderlist.size()>0){
-			TMstRequireOrder rorder = orderlist.get(0);
-			orderModel.setBranchNo(rorder.getBranchNo());
-			orderModel.setRequireDate(rorder.getRequireDate());
-			List<OrderRequireItem> entry = new ArrayList<OrderRequireItem>();
-			for(TMstRequireOrder order :orderlist){
-				OrderRequireItem item = new OrderRequireItem();
-				item.setMatnr(order.getMatnr());
-				item.setMatnrTxt(order.getMatnrTxt());
-				item.setQty(order.getQty());
-				item.setIncreQty(order.getIncreQty());
-				entry.add(item);
-			}
-			orderModel.setEntries(entry);
-		}
-		return orderModel;
-	}
-
-	/**
-	 * 修改要货计划
-	 * @param rModel
-	 * @return
-     */
-	@Override
-	public int uptRequireOrder(RequireOrderModel rModel) {
-		RequireOrderModel orderModel = this.searchRequireOrder(rModel);
-		/*if(orderModel == orderModel){
-			throw new ServiceException(MessageCode.LOGIC_ERROR,"要货计划未发生变化");
-		}*/
-		int add = 0;
-		int upt = -1;
-		List<OrderRequireItem> items = rModel.getEntries();
-		for(OrderRequireItem item : items){
-			TMstRequireOrder tMstRequireOrder = new TMstRequireOrder();
-			tMstRequireOrder.setBranchNo(rModel.getBranchNo());
-			tMstRequireOrder.setRequireDate(rModel.getRequireDate());
-			tMstRequireOrder.setMatnr(item.getMatnr());
-			tMstRequireOrder.setQty(item.getQty());
-			tMstRequireOrder.setIncreQty(item.getIncreQty());
-			TMstRequireOrder oldItem = tRequireOrderMapper.selectRequireOrderItemByitem(tMstRequireOrder);
-			if(oldItem == null ){
-				//新增加的产品 : @TODO :是否需要判断信息的可靠性
-				   add = tRequireOrderMapper.insertRequireOrder(tMstRequireOrder);
-			}else{
-				//该产品已存在
-				if(oldItem.getIncreQty() != item.getIncreQty() || oldItem.getQty() != item.getQty()){
-					//该产品做了修改
-					upt = tRequireOrderMapper.uptRequireOrder(tMstRequireOrder);
-				}
-			}
-		}
-		return add + upt;
-	}
 
 
 	/* (non-Javadoc)
@@ -580,7 +490,7 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 	//计算间隔天数
-	private int daysOfTwo(Date fDate, Date oDate) {
+	public static int daysOfTwo(Date fDate, Date oDate) {
 
 		Calendar aCalendar = Calendar.getInstance();
 		aCalendar.setTime(fDate);

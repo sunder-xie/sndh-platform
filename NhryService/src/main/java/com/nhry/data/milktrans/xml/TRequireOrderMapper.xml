@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
-<mapper namespace="com.nhry.data.order.dao.TRequireOrderMapper" >
-    <resultMap id="BaseResultMap" type="com.nhry.data.order.domain.TMstRequireOrder" >
+<mapper namespace="com.nhry.data.milktrans.dao.TRequireOrderMapper" >
+    <resultMap id="BaseResultMap" type="com.nhry.data.milktrans.domain.TMstRequireOrder" >
         <result column="BRANCH_NO" property="branchNo" jdbcType="VARCHAR" />
         <result column="REQUIRE_DATE" property="requireDate" jdbcType="DATE" />
         <result column="MATNR" property="matnr" jdbcType="VARCHAR" />
@@ -24,7 +24,7 @@
         LAST_MODIFIED,LAST_MODIFIED_BY,LAST_MODIFIED_BY_TXT
     </sql>
 
-    <insert id="insertRequireOrder" parameterType="com.nhry.data.order.domain.TMstRequireOrder" >
+    <insert id="insertRequireOrder" parameterType="com.nhry.data.milktrans.domain.TMstRequireOrder" >
         insert into t_mst_requireorder
         <trim prefix="(" suffix=")" suffixOverrides="," >
             <if test="branchNo != null" >
@@ -103,7 +103,7 @@
             </if>
         </trim>
     </insert>
-    <select id="searchRequireOrder" resultMap="BaseResultMap" parameterType="com.nhry.model.order.RequireOrderModel" >
+    <select id="searchRequireOrder" resultMap="BaseResultMap" parameterType="com.nhry.model.milktrans.RequireOrderSearch" >
         select
             r.BRANCH_NO,r.MATNR,m.MATNR_TXT MATNR_TXT,r.REQUIRE_DATE,r.QTY,r.INCRE_QTY
         FROM t_mst_requireorder r,t_md_mara m
@@ -111,7 +111,7 @@
        and r.BRANCH_NO = #{branchNo,jdbcType=VARCHAR}
        and r.REQUIRE_DATE = #{requireDate,jdbcType=DATE}
     </select>
-    <select id="selectRequireOrderItemByitem" resultMap="BaseResultMap" parameterType="com.nhry.data.order.domain.TMstRequireOrder" >
+    <select id="selectRequireOrderItemByitem" resultMap="BaseResultMap" parameterType="com.nhry.data.milktrans.domain.TMstRequireOrder" >
         select
         r.BRANCH_NO,r.MATNR,m.MATNR_TXT MATNR_TXT,r.REQUIRE_DATE,r.QTY,r.INCRE_QTY
         FROM t_mst_requireorder r,t_md_mara m
@@ -123,7 +123,7 @@
     </select>
 
 
-    <update id="uptRequireOrder" parameterType="com.nhry.data.order.domain.TMstRequireOrder" >
+    <update id="uptRequireOrder" parameterType="com.nhry.data.milktrans.domain.TMstRequireOrder" >
         update t_mst_requireorder
         set
 
@@ -142,6 +142,11 @@
         and REQUIRE_DATE = #{requireDate,jdbcType=DATE}
         and MATNR = #{matnr,jdbcType=VARCHAR}
     </update>
-
+    <delete id="delRequireOrder" parameterType="com.nhry.data.milktrans.domain.TMstRequireOrder" >
+        DELETE  FROM  t_mst_requireorder
+         where BRANCH_NO = #{branchNo,jdbcType=VARCHAR}
+        and REQUIRE_DATE = #{requireDate,jdbcType=DATE}
+        and MATNR = #{matnr,jdbcType=VARCHAR}
+    </delete>
 
 </mapper>
