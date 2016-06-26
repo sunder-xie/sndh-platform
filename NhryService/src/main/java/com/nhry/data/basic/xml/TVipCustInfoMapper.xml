@@ -49,19 +49,6 @@
 		<result column="MEMO_TXT" property="memoTxt" jdbcType="VARCHAR" />
 		<result column="DISP_MEMO_TXT" property="dispMemoTxt" jdbcType="VARCHAR" />
 		<result column="BRANCH_NO" property="branchNo" jdbcType="VARCHAR" />
-		<collection property="addresses" resultMap="addressMap"></collection>
-	</resultMap>
-	<resultMap id="addressMap"  type="com.nhry.data.basic.domain.TMdAddress">
-		<id column="ADDRESS_ID" property="addressId" jdbcType="VARCHAR" />
-		<result column="RECV_NAME" property="recvName" jdbcType="VARCHAR" />
-		<result column="ADD_PROVINCE" property="province" jdbcType="VARCHAR" />
-		<result column="ADD_CITY" property="city" jdbcType="VARCHAR" />
-		<result column="ADD_COUNTY" property="county" jdbcType="VARCHAR" />
-		<result column="ADD_MP" property="mp" jdbcType="VARCHAR" />
-		<result column="ADD_ZIP" property="zip" jdbcType="VARCHAR" />
-		<result column="ADDRESS_TXT" property="addressTxt" jdbcType="VARCHAR" />
-		<result column="RESIDENTIAL_AREA" property="residentialArea" jdbcType="VARCHAR" />
-		<result column="IS_DEFAULT" property="isDafault" jdbcType="VARCHAR" />
 	</resultMap>
 	<sql id="Base_Column_List">
 		VIP_CUST_NO, VIP_CUST_NO_SAP, SALES_ORG, VIP_NAME,
@@ -86,7 +73,7 @@
 		it.ITEM_NAME
 		FROM
 		T_SYS_CODE_ITEM it
-		WHERE
+		WHERE it.TYPE_CODE = <include refid="mybaties.longhu.constant.SALES_ORG_CONSTANT" /> AND 
 		it.ITEM_CODE = i.SALES_ORG
 		) SALES_ORG,
 		i.VIP_NAME,
@@ -96,7 +83,7 @@
 		it.ITEM_NAME
 		FROM
 		T_SYS_CODE_ITEM it
-		WHERE
+		WHERE it.TYPE_CODE = <include refid="mybaties.longhu.constant.COUNTRY_CITY_CONSTANT" /> AND 
 		it.ITEM_CODE = i.PROVINCE
 		) PROVINCE,
 		(
@@ -104,7 +91,7 @@
 		it.ITEM_NAME
 		FROM
 		T_SYS_CODE_ITEM it
-		WHERE
+		WHERE it.TYPE_CODE = <include refid="mybaties.longhu.constant.COUNTRY_CITY_CONSTANT" /> AND 
 		it.ITEM_CODE = i.CITY
 		) CITY,
 		(
@@ -112,7 +99,7 @@
 		it.ITEM_NAME
 		FROM
 		T_SYS_CODE_ITEM it
-		WHERE
+		WHERE it.TYPE_CODE = <include refid="mybaties.longhu.constant.COUNTRY_CITY_CONSTANT" /> AND 
 		it.ITEM_CODE = i.COUNTY
 		) COUNTY,
 		i.STREET,
@@ -141,43 +128,14 @@
 		i.LAST_MODIFIED_BY_TXT,
 		i.MEMO_TXT,
 		i.DISP_MEMO_TXT,
-		i.BRANCH_NO,
-		d.ADDRESS_ID,
-		d.RECV_NAME,
 		(
-		SELECT
-		it.ITEM_NAME
+		 SELECT
+				b.BRANCH_NAME
+			FROM
+				T_MD_BRANCH b where b.BRANCH_NO = i.BRANCH_NO
+		) BRANCH_NO 
 		FROM
-		T_SYS_CODE_ITEM it
-		WHERE
-		it.ITEM_CODE = d.PROVINCE
-		)  ADD_PROVINCE,
-		(
-		SELECT
-		it.ITEM_NAME
-		FROM
-		T_SYS_CODE_ITEM it
-		WHERE
-		it.ITEM_CODE = d.CITY
-		)  ADD_CITY,
-		(
-		SELECT
-		it.ITEM_NAME
-		FROM
-		T_SYS_CODE_ITEM it
-		WHERE
-		it.ITEM_CODE = d.COUNTY
-		) ADD_COUNTY,
-		d.MP ADD_MP,
-		d.ZIP ADD_ZIP,
-		d.ADDRESS_TXT,
-		d.RESIDENTIAL_AREA,d.IS_DEFAULT 
-		FROM
-		t_vip_cust_info i,
-		T_MD_ADDRESS d
-		WHERE
-		i.VIP_CUST_NO = d.VIP_CUST_NO
-		AND i.VIP_CUST_NO =#{vipCustNo,jdbcType=VARCHAR}
+		t_vip_cust_info i WHERE i.VIP_CUST_NO =#{vipCustNo,jdbcType=VARCHAR}
 	</select>
 	<select id="findVipCustByNoForUpt" resultMap="BaseResultMap" parameterType="java.lang.String">
 		SELECT
@@ -214,22 +172,10 @@
 		i.LAST_MODIFIED_BY_TXT,
 		i.MEMO_TXT,
 		i.DISP_MEMO_TXT,
-		i.BRANCH_NO,
-		d.ADDRESS_ID,
-		d.RECV_NAME,
-		d.PROVINCE ADD_PROVINCE,
-		d.CITY ADD_CITY,
-		d.COUNTY ADD_COUNTY,
-		d.MP ADD_MP,
-		d.ZIP ADD_ZIP,
-		d.ADDRESS_TXT,
-		d.RESIDENTIAL_AREA,d.IS_DEFAULT 
+		i.BRANCH_NO 
 		FROM
-		t_vip_cust_info i,
-		T_MD_ADDRESS d
-		WHERE
-		i.VIP_CUST_NO = d.VIP_CUST_NO
-		AND i.VIP_CUST_NO =#{vipCustNo,jdbcType=VARCHAR}
+		t_vip_cust_info i 
+		WHERE i.VIP_CUST_NO =#{vipCustNo,jdbcType=VARCHAR}
 	</select>
 	<select id="findVipCustOnlyByNo" resultMap="BaseResultMap" parameterType="java.lang.String">
 		SELECT
@@ -731,7 +677,7 @@
 	<update id="uptCustStatus" parameterType="com.nhry.data.basic.domain.TVipCustInfo">
 	   update t_vip_cust_info
 		<set>
-			<if test="status != null">
+			<if test="status != null and status != ''">
 				STATUS = #{status,jdbcType=VARCHAR},
 			</if>
 			<if test="lastModified != null">
@@ -747,7 +693,94 @@
 		</set>
 		where VIP_CUST_NO = #{vipCustNo,jdbcType=VARCHAR}
 	</update>
-	<select id="findcust" parameterType="com.nhry.model.basic.CustQueryModel">
-	   select <include refid="Base_Column_List" /> from t_vip_cust_info where MP = #{phone} and SALES_ORG=#{salesOrg}
+	<select id="findcustMixedTerms" resultMap="BaseResultMap" parameterType="com.nhry.model.basic.CustQueryModel">
+		 select i.VIP_CUST_NO,
+		(
+		SELECT
+		it.ITEM_NAME
+		FROM
+		T_SYS_CODE_ITEM it
+		WHERE it.TYPE_CODE = <include refid="mybaties.longhu.constant.SALES_ORG_CONSTANT" /> AND 
+		it.ITEM_CODE = i.SALES_ORG
+		) SALES_ORG,
+		i.VIP_NAME,
+		i.ADDRESS_TXT,
+		(
+		SELECT
+		it.ITEM_NAME
+		FROM
+		T_SYS_CODE_ITEM it
+		WHERE it.TYPE_CODE = <include refid="mybaties.longhu.constant.COUNTRY_CITY_CONSTANT" /> AND 
+		it.ITEM_CODE = i.PROVINCE
+		) PROVINCE,
+		(
+		SELECT
+		it.ITEM_NAME
+		FROM
+		T_SYS_CODE_ITEM it
+		WHERE it.TYPE_CODE = <include refid="mybaties.longhu.constant.COUNTRY_CITY_CONSTANT" /> AND 
+		it.ITEM_CODE = i.CITY
+		) CITY,
+		(
+		SELECT
+		it.ITEM_NAME
+		FROM
+		T_SYS_CODE_ITEM it
+		WHERE it.TYPE_CODE = <include refid="mybaties.longhu.constant.COUNTRY_CITY_CONSTANT" /> AND 
+		it.ITEM_CODE = i.COUNTY
+		) COUNTY,
+		i.STREET,
+		i.ROAD,
+		i.SUBDIST,
+		i.ROOM,
+		i.MP,
+		i.ZIP,
+		i.Email,
+		i.SEX,
+		i.BIRTHDAY,
+		i.CERT_ID,
+		i.VIP_SRC,
+		i.MILKBOX,
+		i.VIP_TYPE,
+		i.SUBSCRIBE_DATE,
+		i.SUBSCRIBER,
+		i.ACTIVITY_NO,
+		i. STATUS,
+		i.VIP_AMT,
+		i.CREATE_AT,
+		i.CREATE_BY,
+		i.CREATE_BY_TXT,
+		i.LAST_MODIFIED,
+		i.LAST_MODIFIED_BY,
+		i.LAST_MODIFIED_BY_TXT,
+		i.MEMO_TXT,
+		i.DISP_MEMO_TXT,
+		(
+		 SELECT
+				b.BRANCH_NAME
+			FROM
+				T_MD_BRANCH b where b.BRANCH_NO = i.BRANCH_NO
+		) BRANCH_NO  from t_vip_cust_info i 
+		<where>
+		     <if test="salesOrg != null and salesOrg !=''">
+		         SALES_ORG = #{salesOrg} 
+		     </if>
+		    <if test="station != null and station != ''">
+		    	 and BRANCH_NO = #{station} 
+		    </if>
+		    <if test="status != null and status != ''">
+		    	and STATUS = #{status} 
+		    </if>
+		    <if test="startDate != null and startDate != ''">
+		    	and SUBSCRIBE_DATE &gt;= #{startDate} 
+		    </if>
+		    <if test="endDate != null and endDate != ''">
+		    	and SUBSCRIBE_DATE &lt;= #{endDate} 
+		    </if>
+		    <if test="content != null and content != ''">
+		        and (VIP_NAME like '%' #{content} '%' or ADDRESS_TXT like '%' #{content} '%' or MP '%' #{content} '%') 
+		    </if>
+		</where>
+		order by COUNTY,STREET,CREATE_AT desc,LAST_MODIFIED desc
 	</select>
 </mapper>

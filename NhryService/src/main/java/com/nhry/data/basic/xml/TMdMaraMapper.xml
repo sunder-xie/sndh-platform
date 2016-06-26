@@ -1,176 +1,189 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
 <mapper namespace="com.nhry.data.basic.dao.TMdMaraMapper">
-    <resultMap id="BaseResultMap" type="com.nhry.data.basic.domain.TMdMara">
-        <id column="MATNR" property="matnr" jdbcType="VARCHAR"/>
-        <result column="MATNR_TXT" property="matnrTxt" jdbcType="VARCHAR"/>
-        <result column="BASE_UNIT" property="baseUnit" jdbcType="VARCHAR"/>
-        <result column="STATUS" property="status" jdbcType="VARCHAR"/>
-        <result column="LAST_MODIFIED" property="lastModified" jdbcType="TIMESTAMP"/>
-        <result column="CREATE_AT" property="createAt" jdbcType="TIMESTAMP"/>
-        <result column="FIRST_CAT" property="firstCat" jdbcType="VARCHAR"/>
-        <result column="SEC_CATE" property="secCate" jdbcType="VARCHAR"/>
-        <result column="BRAND" property="brand" jdbcType="VARCHAR"/>
-        <result column="WEIGHT" property="weight" jdbcType="REAL"/>
-        <result column="WEIGHT_UNIT" property="weightUnit" jdbcType="VARCHAR"/>
-        <result column="IMPORTANT_PRD_FLAG" property="importantPrdFlag" jdbcType="CHAR"/>
-        <result column="SPEC" property="spec" jdbcType="VARCHAR"/>
-        <result column="SPEC_UNIT" property="specUnit" jdbcType="VARCHAR"/>
-        <result column="BOT_SPEC" property="botSpec" jdbcType="VARCHAR"/>
-        <result column="ZBOT_CODE" property="zbotCode" jdbcType="VARCHAR"/>
-    </resultMap>
-    <resultMap id="BaseAndExResultMap" type="com.nhry.service.basic.pojo.ProductInfoExModel">
-        <id column="MATNR" property="matnr" jdbcType="VARCHAR"/>
-        <result column="MATNR_TXT" property="matnrTxt" jdbcType="VARCHAR"/>
-        <result column="BASE_UNIT" property="baseUnit" jdbcType="VARCHAR"/>
-        <result column="STATUS" property="status" jdbcType="VARCHAR"/>
-        <result column="LAST_MODIFIED" property="lastModified" jdbcType="TIMESTAMP"/>
-        <result column="CREATE_AT" property="createAt" jdbcType="TIMESTAMP"/>
-        <result column="FIRST_CAT" property="firstCat" jdbcType="VARCHAR"/>
-        <result column="SEC_CATE" property="secCate" jdbcType="VARCHAR"/>
-        <result column="BRAND" property="brand" jdbcType="VARCHAR"/>
-        <result column="WEIGHT" property="weight" jdbcType="REAL"/>
-        <result column="WEIGHT_UNIT" property="weightUnit" jdbcType="VARCHAR"/>
-        <result column="IMPORTANT_PRD_FLAG" property="importantPrdFlag" jdbcType="CHAR"/>
-        <result column="SPEC" property="spec" jdbcType="VARCHAR"/>
-        <result column="SPEC_UNIT" property="specUnit" jdbcType="VARCHAR"/>
-        <result column="BOT_SPEC" property="botSpec" jdbcType="VARCHAR"/>
-        <result column="ZBOT_CODE" property="zbotCode" jdbcType="VARCHAR"/>
-        <result column="SHORT_TXT" property="shortTxt" jdbcType="VARCHAR"/>
-        <result column="PRE_DAYS" property="preDays" jdbcType="VARCHAR"/>
-        <result column="BOT_TYPE" property="botType" jdbcType="VARCHAR"/>
-    </resultMap>
-    <sql id="Base_Column_List">
-    MATNR, MATNR_TXT, BASE_UNIT, STATUS, LAST_MODIFIED, CREATE_AT, FIRST_CAT, SEC_CATE, 
-    BRAND, WEIGHT, WEIGHT_UNIT, IMPORTANT_PRD_FLAG, SPEC, SPEC_UNIT, BOT_SPEC, ZBOT_CODE
-  </sql>
-    <select id="selectProductByCode" resultMap="BaseResultMap" parameterType="java.lang.String">
-        select
-        <include refid="Base_Column_List"/>
-        from t_md_mara
-        where MATNR = #{matnr,jdbcType=VARCHAR}
-    </select>
-    <select id="selectProductAndExByCode" resultMap="BaseAndExResultMap" parameterType="java.lang.String">
-    select 
-    p.MATNR, p.MATNR_TXT, p.BASE_UNIT, p.STATUS, p.LAST_MODIFIED, p.CREATE_AT, p.FIRST_CAT, p.SEC_CATE, 
-    p.BRAND, p.WEIGHT, p.WEIGHT_UNIT, p.IMPORTANT_PRD_FLAG, p.SPEC, p.SPEC_UNIT, p.BOT_SPEC, p.ZBOT_CODE,
-    pex.SHORT_TXT, pex.PRE_DAYS, pex.BOT_TYPE
-    FROM t_md_mara p, t_md_mara_ex pex 
-    where p.MATNR = #{0}
-    AND p.MATNR = pex.MATNR
-  </select>
-    <select id="searchProducts" resultMap="BaseAndExResultMap" parameterType="com.nhry.model.basic.ProductQueryModel">
-        select
-        p.MATNR, p.MATNR_TXT, p.BASE_UNIT, p.STATUS, p.LAST_MODIFIED, p.CREATE_AT, p.FIRST_CAT, p.SEC_CATE,
-        p.BRAND, p.WEIGHT, p.WEIGHT_UNIT, p.IMPORTANT_PRD_FLAG, p.SPEC, p.SPEC_UNIT, p.BOT_SPEC, p.ZBOT_CODE,
-        pex.SHORT_TXT, pex.PRE_DAYS, pex.BOT_TYPE
-        FROM t_md_mara p, t_md_mara_ex pex
-        WHERE p.MATNR = pex.MATNR
-        <if test="brandLib != null and brandLib !=''">
-            AND p.BRAND = #{brandLib,jdbcType=VARCHAR}
-        </if>
-        <if test="status != null and status != ''">
-            AND p.STATUS = #{status,jdbcType=VARCHAR}
-        </if>
-        <if test="catalog != null and catalog !=''">
-            AND p.BASE_UNIT = #{catalog,jdbcType=VARCHAR}
-        </if>
-        ORDER BY p.MATNR
-    </select>
-
-
-    <select id="selectProductAndExListByCode" resultMap="BaseAndExResultMap" parameterType="java.lang.String">
-    select
-    p.MATNR, p.MATNR_TXT, p.BASE_UNIT, p.STATUS, p.LAST_MODIFIED, p.CREATE_AT, p.FIRST_CAT, p.SEC_CATE,
-    p.BRAND, p.WEIGHT, p.WEIGHT_UNIT, p.IMPORTANT_PRD_FLAG, p.SPEC, p.SPEC_UNIT, p.BOT_SPEC, p.ZBOT_CODE,
-    pex.SHORT_TXT, pex.PRE_DAYS, pex.BOT_TYPE
-    FROM t_md_mara p, t_md_mara_ex pex
-    where p.MATNR like "%"#{0}"%"
-    AND p.MATNR = pex.MATNR
-  </select>
-
-    <update id="uptProductByCode" parameterType="com.nhry.data.basic.domain.TMdMara">
-        update t_md_mara
-        <set>
-            <if test="matnrTxt != null">
-                MATNR_TXT = #{matnrTxt,jdbcType=VARCHAR},
-            </if>
-        </set>
-        where MATNR = #{matnr,jdbcType=VARCHAR}
-    </update>
-    <update id="pubProductByCode" parameterType="java.lang.String">
-    update t_md_mara
-    set STATUS = "是"
-    where MATNR = #{0}
-  </update>
-    <insert id="insertProduct" parameterType="com.nhry.data.basic.domain.TMdMara">
-   insert into t_md_mara (MATNR, MATNR_TXT, BASE_UNIT,
-     STATUS, LAST_MODIFIED, CREATE_AT,
-     FIRST_CAT, SEC_CATE, BRAND,
-     WEIGHT, WEIGHT_UNIT, IMPORTANT_PRD_FLAG,
-     SPEC, SPEC_UNIT, BOT_SPEC,
-     ZBOT_CODE)
-   values (#{matnr,jdbcType=VARCHAR}, #{matnrTxt,jdbcType=VARCHAR}, #{baseUnit,jdbcType=VARCHAR},
-     #{status,jdbcType=VARCHAR}, #{lastModified,jdbcType=TIMESTAMP}, #{createAt,jdbcType=TIMESTAMP},
-     #{firstCat,jdbcType=VARCHAR}, #{secCate,jdbcType=VARCHAR}, #{brand,jdbcType=VARCHAR},
-     #{weight,jdbcType=REAL}, #{weightUnit,jdbcType=VARCHAR}, #{importantPrdFlag,jdbcType=CHAR},
-     #{spec,jdbcType=VARCHAR}, #{specUnit,jdbcType=VARCHAR}, #{botSpec,jdbcType=VARCHAR},
-     #{zbotCode,jdbcType=VARCHAR})
- </insert>
-<update id="updateProduct" parameterType="com.nhry.data.basic.domain.TMdMara">
-    UPDATE t_md_mara t
-    <set>
-    <if test="baseUnit != null" >
-        t.BASE_UNIT = #{baseUnit,jdbcType=VARCHAR},
-    </if>
-    <if test="botSpec != null" >
-        t.BOT_SPEC = #{botSpec,jdbcType=VARCHAR},
-    </if>
-    <if test="brand != null" >
-        t.BRAND = #{brand,jdbcType=VARCHAR},
-    </if>
-    <if test="createAt != null" >
-        t.CREATE_AT = #{createAt,jdbcType=TIMESTAMP},
-    </if>
-    <if test="firstCat != null">
-        t.FIRST_CAT = #{firstCat,jdbcType=VARCHAR},
-    </if>
-    <if test="importantPrdFlag != null">
-        t.IMPORTANT_PRD_FLAG = #{importantPrdFlag,jdbcType=CHAR},
-    </if>
-    <if test="lastModified != null">
-        t.LAST_MODIFIED = #{lastModified,jdbcType=TIMESTAMP},
-    </if>
-    <if test="matnrTxt != null">
-        t.MATNR_TXT = #{matnrTxt,jdbcType=VARCHAR},
-    </if>
-    <if test="secCate != null">
-        t.SEC_CATE = #{secCate,jdbcType=VARCHAR},
-    </if>
-    <if test="spec != null">
-        t.SPEC = #{spec,jdbcType=VARCHAR},
-    </if>
-    <if test="specUnit != null">
-        t.SPEC_UNIT = #{specUnit,jdbcType=VARCHAR},
-    </if>
-    <if test="status != null">
-        t.STATUS =  #{status,jdbcType=VARCHAR},
-    </if>
-    <if test="weight != null">
-        t.WEIGHT =  #{weight,jdbcType=REAL},
-    </if>
-    <if test="weightUnit != null">
-        t.WEIGHT_UNIT = #{weightUnit,jdbcType=VARCHAR},
-    </if>
-    <if test="zbotCode != null">
-        t.ZBOT_CODE = #{zbotCode,jdbcType=VARCHAR}
-    </if>
-    </set>
-    WHERE
-	    t.MATNR = #{matnr,jdbcType=VARCHAR}
- </update>
-
-  <select id="isProduct" parameterType="java.lang.String" resultType="java.lang.Integer">
-      SELECT count(1) FROM t_md_mara WHERE MATNR = #{id}
-  </select>
+	<resultMap id="BaseResultMap" type="com.nhry.data.basic.domain.TMdMara">
+		<id column="MATNR" property="matnr" jdbcType="VARCHAR" />
+		<result column="MATNR_TXT" property="matnrTxt" jdbcType="VARCHAR" />
+		<result column="BASE_UNIT" property="baseUnit" jdbcType="VARCHAR" />
+		<result column="STATUS" property="status" jdbcType="VARCHAR" />
+		<result column="LAST_MODIFIED" property="lastModified" jdbcType="TIMESTAMP" />
+		<result column="CREATE_AT" property="createAt" jdbcType="TIMESTAMP" />
+		<result column="FIRST_CAT" property="firstCat" jdbcType="VARCHAR" />
+		<result column="SEC_CATE" property="secCate" jdbcType="VARCHAR" />
+		<result column="BRAND" property="brand" jdbcType="VARCHAR" />
+		<result column="WEIGHT" property="weight" jdbcType="REAL" />
+		<result column="WEIGHT_UNIT" property="weightUnit" jdbcType="VARCHAR" />
+		<result column="IMPORTANT_PRD_FLAG" property="importantPrdFlag" jdbcType="CHAR" />
+		<result column="SPEC" property="spec" jdbcType="VARCHAR" />
+		<result column="SPEC_UNIT" property="specUnit" jdbcType="VARCHAR" />
+		<result column="BOT_SPEC" property="botSpec" jdbcType="VARCHAR" />
+		<result column="ZBOT_CODE" property="zbotCode" jdbcType="VARCHAR" />
+		<result column="SALES_ORG" property="salesOrg" jdbcType="VARCHAR"/>
+		<result column="DEALER_NO" property="dealerNo" jdbcType="VARCHAR"/>
+	</resultMap>
+	<resultMap id="BaseAndExResultMap"
+		type="com.nhry.service.basic.pojo.ProductInfoExModel">
+		<id column="MATNR" property="matnr" jdbcType="VARCHAR" />
+		<result column="MATNR_TXT" property="matnrTxt" jdbcType="VARCHAR" />
+		<result column="BASE_UNIT" property="baseUnit" jdbcType="VARCHAR" />
+		<result column="STATUS" property="status" jdbcType="VARCHAR" />
+		<result column="LAST_MODIFIED" property="lastModified"
+			jdbcType="TIMESTAMP" />
+		<result column="CREATE_AT" property="createAt" jdbcType="TIMESTAMP" />
+		<result column="FIRST_CAT" property="firstCat" jdbcType="VARCHAR" />
+		<result column="SEC_CATE" property="secCate" jdbcType="VARCHAR" />
+		<result column="BRAND" property="brand" jdbcType="VARCHAR" />
+		<result column="WEIGHT" property="weight" jdbcType="REAL" />
+		<result column="WEIGHT_UNIT" property="weightUnit" jdbcType="VARCHAR" />
+		<result column="IMPORTANT_PRD_FLAG" property="importantPrdFlag"
+			jdbcType="CHAR" />
+		<result column="SPEC" property="spec" jdbcType="VARCHAR" />
+		<result column="SPEC_UNIT" property="specUnit" jdbcType="VARCHAR" />
+		<result column="BOT_SPEC" property="botSpec" jdbcType="VARCHAR" />
+		<result column="ZBOT_CODE" property="zbotCode" jdbcType="VARCHAR" />
+		<result column="SHORT_TXT" property="shortTxt" jdbcType="VARCHAR" />
+		<result column="PRE_DAYS" property="preDays" jdbcType="VARCHAR" />
+		<result column="BOT_TYPE" property="botType" jdbcType="VARCHAR" />
+	</resultMap>
+	<sql id="Base_Column_List">
+		MATNR, MATNR_TXT, BASE_UNIT, STATUS, LAST_MODIFIED, CREATE_AT, FIRST_CAT,
+		SEC_CATE,
+		BRAND, WEIGHT, WEIGHT_UNIT, IMPORTANT_PRD_FLAG, SPEC, SPEC_UNIT, BOT_SPEC,
+		ZBOT_CODE,SALES_ORG,DEALER_NO
+	</sql>
+	<select id="selectProductByCode" resultMap="BaseResultMap"
+		parameterType="java.lang.String">
+		select
+		<include refid="Base_Column_List" />
+		from t_md_mara
+		where MATNR = #{matnr,jdbcType=VARCHAR}
+	</select>
+	<select id="selectProductAndExByCode" resultMap="BaseAndExResultMap" parameterType="java.lang.String">
+		select
+		p.MATNR, p.MATNR_TXT, p.BASE_UNIT, p.STATUS, p.LAST_MODIFIED, p.CREATE_AT,
+		p.FIRST_CAT, p.SEC_CATE,
+		p.BRAND, p.WEIGHT, p.WEIGHT_UNIT, p.IMPORTANT_PRD_FLAG, p.SPEC, p.SPEC_UNIT,
+		p.BOT_SPEC, p.ZBOT_CODE,
+		pex.SHORT_TXT, pex.PRE_DAYS, pex.BOT_TYPE
+		FROM t_md_mara p, t_md_mara_ex pex
+		where p.MATNR = #{0}
+		AND p.MATNR = pex.MATNR
+	</select>
+	<select id="searchProducts" resultMap="BaseAndExResultMap" parameterType="com.nhry.model.basic.ProductQueryModel">
+		select
+		p.MATNR, p.MATNR_TXT, p.BASE_UNIT, p.STATUS, p.LAST_MODIFIED, p.CREATE_AT,
+		p.FIRST_CAT, p.SEC_CATE,
+		p.BRAND, p.WEIGHT, p.WEIGHT_UNIT, p.IMPORTANT_PRD_FLAG, p.SPEC, p.SPEC_UNIT,
+		p.BOT_SPEC, p.ZBOT_CODE,
+		pex.SHORT_TXT, pex.PRE_DAYS, pex.BOT_TYPE
+		FROM t_md_mara p, t_md_mara_ex pex
+		WHERE p.MATNR = pex.MATNR
+		<if test="brandLib != null and brandLib !=''">
+			AND p.BRAND = #{brandLib,jdbcType=VARCHAR}
+		</if>
+		<if test="status != null and status != ''">
+			AND p.STATUS = #{status,jdbcType=VARCHAR}
+		</if>
+		<if test="catalog != null and catalog !=''">
+			AND p.BASE_UNIT = #{catalog,jdbcType=VARCHAR}
+		</if>
+		ORDER BY p.MATNR
+	</select>
+	<select id="selectProductAndExListByCode" resultMap="BaseAndExResultMap" parameterType="java.lang.String">
+		select
+		p.MATNR, p.MATNR_TXT, p.BASE_UNIT, p.STATUS, p.LAST_MODIFIED, p.CREATE_AT,
+		p.FIRST_CAT, p.SEC_CATE,
+		p.BRAND, p.WEIGHT, p.WEIGHT_UNIT, p.IMPORTANT_PRD_FLAG, p.SPEC, p.SPEC_UNIT,
+		p.BOT_SPEC, p.ZBOT_CODE,
+		pex.SHORT_TXT, pex.PRE_DAYS, pex.BOT_TYPE
+		FROM t_md_mara p, t_md_mara_ex pex
+		where p.MATNR like "%"#{0}"%"
+		AND p.MATNR = pex.MATNR
+	</select>
+	<update id="uptProductByCode" parameterType="com.nhry.data.basic.domain.TMdMara">
+		update t_md_mara
+		<set>
+			<if test="matnrTxt != null">
+				MATNR_TXT = #{matnrTxt,jdbcType=VARCHAR},
+			</if>
+		</set>
+		where MATNR = #{matnr,jdbcType=VARCHAR}
+	</update>
+	<update id="pubProductByCode" parameterType="java.lang.String">
+		update t_md_mara
+		set STATUS = "是"
+		where MATNR = #{0}
+	</update>
+	<insert id="insertProduct" parameterType="com.nhry.data.basic.domain.TMdMara">
+		insert into t_md_mara (MATNR, MATNR_TXT, BASE_UNIT,
+		STATUS, LAST_MODIFIED, CREATE_AT,
+		FIRST_CAT, SEC_CATE, BRAND,
+		WEIGHT, WEIGHT_UNIT, IMPORTANT_PRD_FLAG,
+		SPEC, SPEC_UNIT, BOT_SPEC,
+		ZBOT_CODE)
+		values (#{matnr,jdbcType=VARCHAR}, #{matnrTxt,jdbcType=VARCHAR},
+		#{baseUnit,jdbcType=VARCHAR},
+		#{status,jdbcType=VARCHAR}, #{lastModified,jdbcType=TIMESTAMP}, #{createAt,jdbcType=TIMESTAMP},
+		#{firstCat,jdbcType=VARCHAR}, #{secCate,jdbcType=VARCHAR},
+		#{brand,jdbcType=VARCHAR},
+		#{weight,jdbcType=REAL}, #{weightUnit,jdbcType=VARCHAR}, #{importantPrdFlag,jdbcType=CHAR},
+		#{spec,jdbcType=VARCHAR}, #{specUnit,jdbcType=VARCHAR},
+		#{botSpec,jdbcType=VARCHAR},
+		#{zbotCode,jdbcType=VARCHAR})
+	</insert>
+	<update id="updateProduct" parameterType="com.nhry.data.basic.domain.TMdMara">
+		UPDATE t_md_mara t
+		<set>
+			<if test="baseUnit != null">
+				t.BASE_UNIT = #{baseUnit,jdbcType=VARCHAR},
+			</if>
+			<if test="botSpec != null">
+				t.BOT_SPEC = #{botSpec,jdbcType=VARCHAR},
+			</if>
+			<if test="brand != null">
+				t.BRAND = #{brand,jdbcType=VARCHAR},
+			</if>
+			<if test="createAt != null">
+				t.CREATE_AT = #{createAt,jdbcType=TIMESTAMP},
+			</if>
+			<if test="firstCat != null">
+				t.FIRST_CAT = #{firstCat,jdbcType=VARCHAR},
+			</if>
+			<if test="importantPrdFlag != null">
+				t.IMPORTANT_PRD_FLAG = #{importantPrdFlag,jdbcType=CHAR},
+			</if>
+			<if test="lastModified != null">
+				t.LAST_MODIFIED = #{lastModified,jdbcType=TIMESTAMP},
+			</if>
+			<if test="matnrTxt != null">
+				t.MATNR_TXT = #{matnrTxt,jdbcType=VARCHAR},
+			</if>
+			<if test="secCate != null">
+				t.SEC_CATE = #{secCate,jdbcType=VARCHAR},
+			</if>
+			<if test="spec != null">
+				t.SPEC = #{spec,jdbcType=VARCHAR},
+			</if>
+			<if test="specUnit != null">
+				t.SPEC_UNIT = #{specUnit,jdbcType=VARCHAR},
+			</if>
+			<if test="status != null">
+				t.STATUS = #{status,jdbcType=VARCHAR},
+			</if>
+			<if test="weight != null">
+				t.WEIGHT = #{weight,jdbcType=REAL},
+			</if>
+			<if test="weightUnit != null">
+				t.WEIGHT_UNIT = #{weightUnit,jdbcType=VARCHAR},
+			</if>
+			<if test="zbotCode != null">
+				t.ZBOT_CODE = #{zbotCode,jdbcType=VARCHAR}
+			</if>
+		</set>
+		WHERE
+		t.MATNR = #{matnr,jdbcType=VARCHAR}
+	</update>
+	<select id="isProduct" parameterType="java.lang.String" resultType="java.lang.Integer">
+		SELECT count(1) FROM t_md_mara WHERE MATNR = #{id}
+	</select>
 </mapper>

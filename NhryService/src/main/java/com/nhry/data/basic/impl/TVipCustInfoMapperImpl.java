@@ -3,11 +3,13 @@ package com.nhry.data.basic.impl;
 import java.util.List;
 import java.util.Map;
 
+import com.github.pagehelper.PageInfo;
 import com.nhry.common.datasource.DynamicSqlSessionTemplate;
 import com.nhry.data.auth.domain.TSysUser;
 import com.nhry.data.basic.dao.TVipCustInfoMapper;
 import com.nhry.data.basic.domain.TMdAddress;
 import com.nhry.data.basic.domain.TVipCustInfo;
+import com.nhry.model.basic.CustQueryModel;
 
 public class TVipCustInfoMapperImpl implements TVipCustInfoMapper {
 	private DynamicSqlSessionTemplate sqlSessionTemplate;
@@ -61,6 +63,12 @@ public class TVipCustInfoMapperImpl implements TVipCustInfoMapper {
 	@Override
 	public int uptCustStatus(TVipCustInfo record) {
 		// TODO Auto-generated method stub
-		return 0;
+		return this.sqlSessionTemplate.update("uptCustStatus", record);
+	}
+
+	@Override
+	public PageInfo findcustMixedTerms(CustQueryModel cust) {
+		// TODO Auto-generated method stub
+		return this.sqlSessionTemplate.selectListByPages("findcustMixedTerms",cust, Integer.parseInt(cust.getPageNum()), Integer.parseInt(cust.getPageSize()));
 	}
 }

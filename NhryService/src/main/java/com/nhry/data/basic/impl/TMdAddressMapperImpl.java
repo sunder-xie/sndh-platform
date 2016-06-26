@@ -1,5 +1,7 @@
 package com.nhry.data.basic.impl;
 
+import java.util.List;
+
 import com.nhry.common.datasource.DynamicSqlSessionTemplate;
 import com.nhry.data.basic.dao.TMdAddressMapper;
 import com.nhry.data.basic.domain.TMdAddress;
@@ -26,5 +28,17 @@ public class TMdAddressMapperImpl implements TMdAddressMapper{
 
 	public void setSqlSessionTemplate(DynamicSqlSessionTemplate sqlSessionTemplate) {
 		this.sqlSessionTemplate = sqlSessionTemplate;
+	}
+
+	@Override
+	public List<TMdAddress> findOriginAddressByCustNo(String custNo) {
+		// TODO Auto-generated method stub
+		return this.sqlSessionTemplate.selectList("findOriginAddressByCustNo", custNo);
+	}
+
+	@Override
+	public List<TMdAddress> findCnAddressByCustNo(String custNo) {
+		// TODO Auto-generated method stub
+		return this.sqlSessionTemplate.selectList("findCnAddressByCustNo", custNo);
 	}
 }

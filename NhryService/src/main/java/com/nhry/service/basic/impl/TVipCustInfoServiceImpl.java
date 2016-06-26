@@ -46,7 +46,11 @@ public class TVipCustInfoServiceImpl extends BaseService implements TVipCustInfo
 	@Override
 	public TVipCustInfo findVipCustByNo(String vipCustNo) {
 		// TODO Auto-generated method stub
-		return this.tmdVipcust.findVipCustByNo(vipCustNo);
+		TVipCustInfo cust = this.tmdVipcust.findVipCustByNo(vipCustNo);
+		if(cust != null){
+			cust.setAddresses(addressMapper.findCnAddressByCustNo(vipCustNo));
+		}
+		return cust;
 	}
 
 	@Override
@@ -76,6 +80,10 @@ public class TVipCustInfoServiceImpl extends BaseService implements TVipCustInfo
 	@Override
 	public TVipCustInfo findVipCustByNoForUpt(String vipCustNo) {
 		// TODO Auto-generated method stub
+		TVipCustInfo cust = this.tmdVipcust.findVipCustByNoForUpt(vipCustNo);
+		if(cust != null){
+			cust.setAddresses(this.addressMapper.findOriginAddressByCustNo(vipCustNo));
+		}
 		return this.tmdVipcust.findVipCustByNoForUpt(vipCustNo);
 	}
 
@@ -88,6 +96,7 @@ public class TVipCustInfoServiceImpl extends BaseService implements TVipCustInfo
 		}
 		TVipCustInfo cust = new TVipCustInfo();
 		cust.setVipCustNo(vipCustNo);
+		cust.setStatus(status);
 		cust.setLastModified(new Date());
 		cust.setLastModifiedBy(this.userSessionService.getCurrentUser().getLoginName());
 		cust.setLastModifiedByTxt(this.userSessionService.getCurrentUser().getDisplayName());
@@ -95,10 +104,17 @@ public class TVipCustInfoServiceImpl extends BaseService implements TVipCustInfo
 	}
 
 	@Override
-	public PageInfo findcust(CustQueryModel cust) {
+	public PageInfo findcustMixedTerms(CustQueryModel cust) {
 		// TODO Auto-generated method stub
-	  
-	  return null;
+	 if(!StringUtils.isEmpty(userSessionService.getCurrentUser().getBranchNo())){
+		 //奶站用户
+		 cust.setStation(userSessionService.getCurrentUser().getBranchNo());
+		 cust.setSalesOrg(userSessionService.getCurrentUser().getSalesOrg());
+	  }else{
+		  //公司用户
+		  cust.setSalesOrg(userSessionService.getCurrentUser().getSalesOrg());
+	  }
+	  return this.tmdVipcust.findcustMixedTerms(cust);
 	}
 
 	@Override
@@ -111,6 +127,10 @@ public class TVipCustInfoServiceImpl extends BaseService implements TVipCustInfo
 		if(cust == null){
 			 throw new ServiceException(MessageCode.LOGIC_ERROR,"该订户地址详细信息中vipCustNo对应的订户信息不存在!");
 		}
+		address.setAddressId(PrimaryKeyUtils.generateUuidKey());
+		address.setCreateAt(new Date());
+		address.setCreateBy(this.userSessionService.getCurrentUser().getLoginName());
+		address.setCreateByTxt(this.userSessionService.getCurrentUser().getDisplayName());
 		return this.addressMapper.addAddressForCust(address);
 	}
 
@@ -121,12 +141,12 @@ public class TVipCustInfoServiceImpl extends BaseService implements TVipCustInfo
 	@Override
 	public int uptCustAddress(TMdAddress address) {
 		// TODO Auto-generated method stub
-		if(StringUtils.isEmpty(address.getVipCustNo()) || StringUtils.isEmpty(address.getAddressTxt()) || StringUtils.isEmpty(address.getProvince()) || StringUtils.isEmpty(address.getCity()) ){
-			throw new ServiceException(MessageCode.LOGIC_ERROR, "订户地址详细信息对应的订户编号(vipCustNo)、详细地址(addressTxt)、省份(province)、城市(city)不能为空!");
+		if(StringUtils.isEmpty(address.getAddressId())){
+			throw new ServiceException(MessageCode.LOGIC_ERROR, "订户地址详细信息对应的地址唯一编号(addressId)不能为空!");
 		}
-		TVipCustInfo cust = this.tmdVipcust.findVipCustOnlyByNo(address.getVipCustNo());
-		if(cust == null){
-			 throw new ServiceException(MessageCode.LOGIC_ERROR,"该订户地址详细信息中vipCustNo对应的订户信息不存在!");
+		TMdAddress _address = this.addressMapper.findAddressById(address.getAddressId());
+		if(_address == null){
+			throw new ServiceException(MessageCode.LOGIC_ERROR, "该地址唯一编号(addressId)对应的地址详细信息不存在!");
 		}
 		address.setLastModified(new Date());
 		address.setLastModifiedBy(this.userSessionService.getCurrentUser().getLoginName());
@@ -153,11 +173,11 @@ public class TVipCustInfoServiceImpl extends BaseService implements TVipCustInfo
 			return this.vipAcctMapper.addVipAcct(record);
 		}else{
 			//修改  
-			record.setLastModified(new Date());
-			record.setLastModifiedBy(this.userSessionService.getCurrentUser().getLoginName());
-			record.setLastModifiedByTxt(this.userSessionService.getCurrentUser().getDisplayName());
+			acct.setLastModified(new Date());
+			acct.setLastModifiedBy(this.userSessionService.getCurrentUser().getLoginName());
+			acct.setLastModifiedByTxt(this.userSessionService.getCurrentUser().getDisplayName());
 			acct.setAcctAmt(new BigDecimal(acct.getAcctAmt().floatValue()+record.getAcctAmt().floatValue()));
-			return this.uptVipAcct(record);
+			return this.uptVipAcct(acct);
 	   }
 	}
 

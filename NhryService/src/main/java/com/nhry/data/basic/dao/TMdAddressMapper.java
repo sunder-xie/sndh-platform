@@ -1,5 +1,7 @@
 package com.nhry.data.basic.dao;
 
+import java.util.List;
+
 import com.nhry.data.basic.domain.TMdAddress;
 
 public interface TMdAddressMapper {
@@ -24,4 +26,18 @@ public interface TMdAddressMapper {
      * @return
      */
     int uptCustAddress(TMdAddress record);
+    
+    /**
+     * 根据订户编号查询，订户对应的原始详细地址列表
+     * @param custNp
+     * @return
+     */
+    List<TMdAddress> findOriginAddressByCustNo(String custNo);
+    
+    /**
+     * 根据订户编号查询，订户对应的翻译之后的详细地址列表
+     * @param custNp
+     * @return
+     */
+    List<TMdAddress> findCnAddressByCustNo(String custNo);
 }

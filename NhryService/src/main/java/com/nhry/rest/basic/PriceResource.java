@@ -79,5 +79,4 @@ public class PriceResource extends BaseResource {
 	public Response pubProductByCode(@ApiParam(required=true,name="productCode",value="商品编号")TMdPrice record){
 		return convertToRespModel(MessageCode.NORMAL, null, priceService.disablePriceGroup(record));
 	}
-	
 }

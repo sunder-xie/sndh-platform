@@ -58,7 +58,7 @@ public class VipCustResource extends BaseResource {
 	@Path("/upt/cust")
 	@Produces(MediaType.APPLICATION_JSON)
 	@Consumes(MediaType.APPLICATION_JSON)
-	@ApiOperation(value = "/upt/cust",response = TVipCustInfo.class, notes = "修改订户信息")
+	@ApiOperation(value = "/upt/cust",response = ResponseModel.class, notes = "修改订户信息")
 	public Response findVipCustForUpt(@ApiParam(required=true,name="vipCustNo",value="订户信息对象") TVipCustInfo cust) {
 		return convertToRespModel(MessageCode.NORMAL, null,custService.updateVipCustByNo(cust));
 	}
@@ -66,7 +66,7 @@ public class VipCustResource extends BaseResource {
 	@POST
 	@Path("/add/cust")
 	@Consumes(MediaType.APPLICATION_JSON)
-	@ApiOperation(value = "/add/cust", response = String.class, notes = "添加订户信息")
+	@ApiOperation(value = "/add/cust", response = ResponseModel.class, notes = "添加订户信息")
 	public Response addVipCust(@ApiParam(required=true,name="cust",value="订户信息对象")TVipCustInfo cust) {
 		return convertToRespModel(MessageCode.NORMAL, null,custService.addVipCust(cust));
 	}
@@ -103,8 +103,17 @@ public class VipCustResource extends BaseResource {
 	@Path("/upt/address")
 	@Produces(MediaType.APPLICATION_JSON)
 	@Consumes(MediaType.APPLICATION_JSON)
-	@ApiOperation(value = "/upt/address", response = TVipCustInfo.class, notes = "修改订户详细地址信息")
+	@ApiOperation(value = "/upt/address", response = ResponseModel.class, notes = "修改订户详细地址信息")
 	public Response addAddressForCust(@ApiParam(required=true,name="address",value="地址信息对象") TMdAddress address) {
 	  return convertToRespModel(MessageCode.NORMAL, null,custService.uptCustAddress(address));
+	}
+	
+	@POST
+	@Path("/find/cust")
+	@Produces(MediaType.APPLICATION_JSON)
+	@Consumes(MediaType.APPLICATION_JSON)
+	@ApiOperation(value = "/find/cust", response = PageInfo.class, notes = "根据奶站编号、征订时间等内容查询订户信息")
+	public Response findcustMixedTerms(@ApiParam(required=true,name="cust",value="订户查询对象") CustQueryModel cust) {
+	  return convertToRespModel(MessageCode.NORMAL, null,custService.findcustMixedTerms(cust));
 	}
 }

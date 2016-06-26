@@ -57,9 +57,16 @@
 	<!-- 订单end -->
 	<bean id="custService" class="com.nhry.service.basic.impl.TVipCustInfoServiceImpl">
 	   <property name="tmdVipcust"  ref="custMapper"></property>
+	   <property name="addressMapper"  ref="addressMapper"></property>
+	   <property name="vipAcctMapper"  ref="vipAcctMapper"></property>
 	   <property name="userSessionService" ref="userSessionService"></property>
 	</bean>
-	
+	<bean id="addressMapper" class="com.nhry.data.basic.impl.TMdAddressMapperImpl">
+	   <property name="sqlSessionTemplate"  ref="dynamicSqlSessionTemplate"></property>
+	</bean>
+	<bean id="vipAcctMapper" class="com.nhry.data.basic.impl.TVipAcctMapperImpl">
+	   <property name="sqlSessionTemplate"  ref="dynamicSqlSessionTemplate"></property>
+	</bean>
 	<bean id="branchEmpMapper" class="com.nhry.data.basic.impl.TMdBranchEmpMapperImpl">
 	   <property name="sqlSessionTemplate"  ref="dynamicSqlSessionTemplate"></property>
 	</bean>

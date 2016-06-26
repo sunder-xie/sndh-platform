@@ -4,12 +4,12 @@ import java.io.Serializable;
 
 import com.nhry.utils.date.Date;
 
-public class CustQueryModel implements Serializable {
+public class CustQueryModel extends BaseQueryModel {
 	private String salesOrg;
 	private String station;
 	private String status;
-	private Date startDate;
-	private Date endDate;
+	private String startDate;
+	private String endDate;
 	private String content;
 	public String getSalesOrg() {
 		return salesOrg;
@@ -23,18 +23,6 @@ public class CustQueryModel implements Serializable {
 	public void setStatus(String status) {
 		this.status = status;
 	}
-	public Date getStartDate() {
-		return startDate;
-	}
-	public void setStartDate(Date startDate) {
-		this.startDate = startDate;
-	}
-	public Date getEndDate() {
-		return endDate;
-	}
-	public void setEndDate(Date endDate) {
-		this.endDate = endDate;
-	}
 	public String getStation() {
 		return station;
 	}
@@ -46,5 +34,17 @@ public class CustQueryModel implements Serializable {
 	}
 	public void setContent(String content) {
 		this.content = content;
+	}
+	public String getStartDate() {
+		return startDate;
+	}
+	public void setStartDate(String startDate) {
+		this.startDate = startDate;
+	}
+	public String getEndDate() {
+		return endDate;
+	}
+	public void setEndDate(String endDate) {
+		this.endDate = endDate;
 	}
 }

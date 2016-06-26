@@ -19,13 +19,14 @@
     <result column="LAST_MODIFIED_BY" property="lastModifiedBy" jdbcType="VARCHAR" />
     <result column="LAST_MODIFIED_BY_TXT" property="lastModifiedByTxt" jdbcType="VARCHAR" />
     <result column="VIP_CUST_NO" property="vipCustNo" jdbcType="VARCHAR" />
+    <result column="IS_DEFAULT" property="isDafault" jdbcType="VARCHAR" />
   </resultMap>
   <sql id="Base_Column_List" >
     ADDRESS_ID, RECV_NAME, PROVINCE, CITY, COUNTY, MP, TEL, ZIP, ADDRESS_TXT, RESIDENTIAL_AREA, 
     CREATE_AT, CREATE_BY, CREATE_BY_TXT, LAST_MODIFIED, LAST_MODIFIED_BY, LAST_MODIFIED_BY_TXT, 
-    VIP_CUST_NO
+    VIP_CUST_NO,IS_DEFAULT
   </sql>
-  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.String" >
+  <select id="findAddressById" resultMap="BaseResultMap" parameterType="java.lang.String" >
     select 
     <include refid="Base_Column_List" />
     from t_md_address
@@ -198,4 +199,80 @@
     </set>
     where ADDRESS_ID = #{addressId,jdbcType=VARCHAR}
   </update>
+  <select id="findCnAddressByCustNo" resultMap="BaseResultMap" parameterType="String">
+   SELECT
+	i.VIP_CUST_NO,
+	(
+		SELECT
+			it.ITEM_NAME
+		FROM
+			T_SYS_CODE_ITEM it
+		WHERE
+			it.TYPE_CODE = <include refid="mybaties.longhu.constant.SALES_ORG_CONSTANT" /> 
+		AND it.ITEM_CODE = i.SALES_ORG
+	) SALES_ORG,
+	i.VIP_NAME,
+	i.ADDRESS_TXT,
+	(
+		SELECT
+			it.ITEM_NAME
+		FROM
+			T_SYS_CODE_ITEM it
+		WHERE
+			it.TYPE_CODE = <include refid="mybaties.longhu.constant.COUNTRY_CITY_CONSTANT" /> 
+		AND it.ITEM_CODE = i.PROVINCE
+	) PROVINCE,
+	(
+		SELECT
+			it.ITEM_NAME
+		FROM
+			T_SYS_CODE_ITEM it
+		WHERE
+			it.TYPE_CODE = <include refid="mybaties.longhu.constant.COUNTRY_CITY_CONSTANT" /> 
+		AND it.ITEM_CODE = i.CITY
+	) CITY,
+	(
+		SELECT
+			it.ITEM_NAME
+		FROM
+			T_SYS_CODE_ITEM it
+		WHERE
+			it.TYPE_CODE = <include refid="mybaties.longhu.constant.COUNTRY_CITY_CONSTANT" /> 
+		AND it.ITEM_CODE = i.COUNTY
+	) COUNTY,
+	i.STREET,
+	i.ROAD,
+	i.SUBDIST,
+	i.ROOM,
+	i.MP,
+	i.ZIP,
+	i.Email,
+	i.SEX,
+	i.BIRTHDAY,
+	i.CERT_ID,
+	i.VIP_SRC,
+	i.MILKBOX,
+	i.VIP_TYPE,
+	i.SUBSCRIBE_DATE,
+	i.SUBSCRIBER,
+	i.ACTIVITY_NO,
+	i. STATUS,
+	i.VIP_AMT,
+	i.CREATE_AT,
+	i.CREATE_BY,
+	i.CREATE_BY_TXT,
+	i.LAST_MODIFIED,
+	i.LAST_MODIFIED_BY,
+	i.LAST_MODIFIED_BY_TXT,
+	i.MEMO_TXT,
+	i.DISP_MEMO_TXT,
+	i.BRANCH_NO
+FROM
+	t_vip_cust_info i
+WHERE
+	i.VIP_CUST_NO = #{custNo} order by CREATE_AT desc,LAST_MODIFIED desc
+  </select>
+  <select id="findOriginAddressByCustNo" resultMap="BaseResultMap" parameterType="String">
+    SELECT <include refid="Base_Column_List" /> FROM t_md_address WHERE VIP_CUST_NO=#{custNo} order by CREATE_AT desc,LAST_MODIFIED desc
+  </select>
 </mapper>

@@ -17,11 +17,10 @@
     BRANCH_NO, VIP_CUST_NO, ACCT_AMT, CREATE_AT, CREATE_BY, CREATE_BY_TXT, LAST_MODIFIED, 
     LAST_MODIFIED_BY, LAST_MODIFIED_BY_TXT,CARD_NO
   </sql>
-  <select id="findVipAcctByCustNo" resultMap="BaseResultMap" parameterType="com.nhry.data.basic.domain.TVipAcctKey" >
+  <select id="findVipAcctByCustNo" resultMap="BaseResultMap" parameterType="String" >
     select <include refid="Base_Column_List" />
     from t_vip_acct 
-    where BRANCH_NO = #{branchNo,jdbcType=VARCHAR}
-      and VIP_CUST_NO = #{vipCustNo,jdbcType=VARCHAR}
+    where VIP_CUST_NO = #{custNo,jdbcType=VARCHAR}
   </select>
   <insert id="addVipAcct" parameterType="com.nhry.data.basic.domain.TVipAcct" >
     insert into t_vip_acct

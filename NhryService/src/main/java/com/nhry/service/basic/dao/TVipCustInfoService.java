@@ -60,7 +60,12 @@ public interface TVipCustInfoService {
      */
     public int discontinue(String vipCustNo,String status);
     
-    public PageInfo findcust(CustQueryModel cust);
+    /**
+     * 根据奶站编号、订户状态、时间等条件查询订户列表信息
+     * @param cust
+     * @return
+     */
+    public PageInfo findcustMixedTerms(CustQueryModel cust);
     
     /**
      * 为订户添加详细地址信息
