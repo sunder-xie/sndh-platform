@@ -1,14 +1,23 @@
 package com.nhry.data.basic.domain;
 
 import java.io.Serializable;
+import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
-public class TMdVipCustInfo implements Serializable{
+public class TVipCustInfo implements Serializable{
     private String vipCustNo;
+
+    private String vipCustNoSap;
+
+    private String salesOrg;
 
     private String vipName;
 
     private String addressTxt;
+
+    private String country;
 
     private String province;
 
@@ -16,11 +25,21 @@ public class TMdVipCustInfo implements Serializable{
 
     private String county;
 
+    private String street;
+
+    private String road;
+
+    private String subdist;
+
+    private String room;
+
     private String mp;
 
     private String tel;
 
     private String zip;
+
+    private String email;
 
     private String alipayAccount;
 
@@ -30,9 +49,15 @@ public class TMdVipCustInfo implements Serializable{
 
     private String jdAccount;
 
+    private String sex;
+
+    private Date birthday;
+
     private String certId;
 
     private String vipSrc;
+
+    private String milkbox;
 
     private String vipType;
 
@@ -40,7 +65,11 @@ public class TMdVipCustInfo implements Serializable{
 
     private String subscriber;
 
+    private String activityNo;
+
     private String status;
+
+    private BigDecimal vipAmt;
 
     private Date createAt;
 
@@ -54,12 +83,36 @@ public class TMdVipCustInfo implements Serializable{
 
     private String lastModifiedByTxt;
 
+    private String memoTxt;
+
+    private String dispMemoTxt;
+
+    private String branchNo;
+    
+    private List<TMdAddress> addresses = new ArrayList<TMdAddress>();
+
     public String getVipCustNo() {
         return vipCustNo;
     }
 
     public void setVipCustNo(String vipCustNo) {
         this.vipCustNo = vipCustNo == null ? null : vipCustNo.trim();
+    }
+
+    public String getVipCustNoSap() {
+        return vipCustNoSap;
+    }
+
+    public void setVipCustNoSap(String vipCustNoSap) {
+        this.vipCustNoSap = vipCustNoSap == null ? null : vipCustNoSap.trim();
+    }
+
+    public String getSalesOrg() {
+        return salesOrg;
+    }
+
+    public void setSalesOrg(String salesOrg) {
+        this.salesOrg = salesOrg == null ? null : salesOrg.trim();
     }
 
     public String getVipName() {
@@ -76,6 +129,14 @@ public class TMdVipCustInfo implements Serializable{
 
     public void setAddressTxt(String addressTxt) {
         this.addressTxt = addressTxt == null ? null : addressTxt.trim();
+    }
+
+    public String getCountry() {
+        return country;
+    }
+
+    public void setCountry(String country) {
+        this.country = country == null ? null : country.trim();
     }
 
     public String getProvince() {
@@ -102,6 +163,38 @@ public class TMdVipCustInfo implements Serializable{
         this.county = county == null ? null : county.trim();
     }
 
+    public String getStreet() {
+        return street;
+    }
+
+    public void setStreet(String street) {
+        this.street = street == null ? null : street.trim();
+    }
+
+    public String getRoad() {
+        return road;
+    }
+
+    public void setRoad(String road) {
+        this.road = road == null ? null : road.trim();
+    }
+
+    public String getSubdist() {
+        return subdist;
+    }
+
+    public void setSubdist(String subdist) {
+        this.subdist = subdist == null ? null : subdist.trim();
+    }
+
+    public String getRoom() {
+        return room;
+    }
+
+    public void setRoom(String room) {
+        this.room = room == null ? null : room.trim();
+    }
+
     public String getMp() {
         return mp;
     }
@@ -124,6 +217,14 @@ public class TMdVipCustInfo implements Serializable{
 
     public void setZip(String zip) {
         this.zip = zip == null ? null : zip.trim();
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email == null ? null : email.trim();
     }
 
     public String getAlipayAccount() {
@@ -158,6 +259,22 @@ public class TMdVipCustInfo implements Serializable{
         this.jdAccount = jdAccount == null ? null : jdAccount.trim();
     }
 
+    public String getSex() {
+        return sex;
+    }
+
+    public void setSex(String sex) {
+        this.sex = sex == null ? null : sex.trim();
+    }
+
+    public Date getBirthday() {
+        return birthday;
+    }
+
+    public void setBirthday(Date birthday) {
+        this.birthday = birthday;
+    }
+
     public String getCertId() {
         return certId;
     }
@@ -172,6 +289,14 @@ public class TMdVipCustInfo implements Serializable{
 
     public void setVipSrc(String vipSrc) {
         this.vipSrc = vipSrc == null ? null : vipSrc.trim();
+    }
+
+    public String getMilkbox() {
+        return milkbox;
+    }
+
+    public void setMilkbox(String milkbox) {
+        this.milkbox = milkbox == null ? null : milkbox.trim();
     }
 
     public String getVipType() {
@@ -198,12 +323,28 @@ public class TMdVipCustInfo implements Serializable{
         this.subscriber = subscriber == null ? null : subscriber.trim();
     }
 
+    public String getActivityNo() {
+        return activityNo;
+    }
+
+    public void setActivityNo(String activityNo) {
+        this.activityNo = activityNo == null ? null : activityNo.trim();
+    }
+
     public String getStatus() {
         return status;
     }
 
     public void setStatus(String status) {
         this.status = status == null ? null : status.trim();
+    }
+
+    public BigDecimal getVipAmt() {
+        return vipAmt;
+    }
+
+    public void setVipAmt(BigDecimal vipAmt) {
+        this.vipAmt = vipAmt;
     }
 
     public Date getCreateAt() {
@@ -253,4 +394,36 @@ public class TMdVipCustInfo implements Serializable{
     public void setLastModifiedByTxt(String lastModifiedByTxt) {
         this.lastModifiedByTxt = lastModifiedByTxt == null ? null : lastModifiedByTxt.trim();
     }
+
+    public String getMemoTxt() {
+        return memoTxt;
+    }
+
+    public void setMemoTxt(String memoTxt) {
+        this.memoTxt = memoTxt == null ? null : memoTxt.trim();
+    }
+
+    public String getDispMemoTxt() {
+        return dispMemoTxt;
+    }
+
+    public void setDispMemoTxt(String dispMemoTxt) {
+        this.dispMemoTxt = dispMemoTxt == null ? null : dispMemoTxt.trim();
+    }
+
+    public String getBranchNo() {
+        return branchNo;
+    }
+
+    public void setBranchNo(String branchNo) {
+        this.branchNo = branchNo == null ? null : branchNo.trim();
+    }
+
+	public List<TMdAddress> getAddresses() {
+		return addresses;
+	}
+
+	public void setAddresses(List<TMdAddress> addresses) {
+		this.addresses = addresses;
+	}
 }
