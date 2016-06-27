@@ -35,6 +35,10 @@ public class TMdMara {
     private String botSpec;
 
     private String zbotCode;
+    
+    private String salesOrg;
+    
+    private String dealerNo;
 
     public String getMatnr() {
         return matnr;
@@ -163,4 +167,20 @@ public class TMdMara {
     public void setZbotCode(String zbotCode) {
         this.zbotCode = zbotCode == null ? null : zbotCode.trim();
     }
+
+	public String getSalesOrg() {
+		return salesOrg;
+	}
+
+	public void setSalesOrg(String salesOrg) {
+		this.salesOrg = salesOrg;
+	}
+
+	public String getDealerNo() {
+		return dealerNo;
+	}
+
+	public void setDealerNo(String dealerNo) {
+		this.dealerNo = dealerNo;
+	}
 }

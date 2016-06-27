@@ -72,5 +72,4 @@ public class ProductResource extends BaseResource {
 	public Response selectProductAndExListByCode(@ApiParam(required=true,name="productCode",value="商品编号") @PathParam("productCode") String productCode){
 		return convertToRespModel(MessageCode.NORMAL, null, productService.selectProductAndExListByCode(productCode));
 	}
-
 }
