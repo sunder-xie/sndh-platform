@@ -97,7 +97,7 @@ public class OrderResource extends BaseResource {
 	@Path("/continueOrder")
 	@Produces(MediaType.APPLICATION_JSON)
 	@Consumes(MediaType.APPLICATION_JSON)
-	@ApiOperation(value = "/continueOrder", response = Integer.class, notes = "订单退订")
+	@ApiOperation(value = "/continueOrder", response = Integer.class, notes = "订单续订")
 	public Response continueOrder(@ApiParam(required=true,name="smodel",value="SearchModel") OrderSearchModel smodel){
 		return convertToRespModel(MessageCode.NORMAL, null, orderService.continueOrder(smodel));
 	}

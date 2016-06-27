@@ -56,6 +56,18 @@
 	
 	<!-- 订单end -->
 	
+	<!-- 奶箱 -->
+	<bean id="tMilkboxPlanMapper" class="com.nhry.data.order.impl.TMilkboxPlanMapperImpl">
+		<property name="sqlSessionTemplate"  ref="dynamicSqlSessionTemplate"></property>
+	</bean>
+	<bean id="milkBoxService" class="com.nhry.service.order.impl.MilkBoxServiceImpl">
+	   <property name="tMilkboxPlanMapper"  ref="tMilkboxPlanMapper"></property>
+	   <property name="tPreOrderMapper"  ref="tPreOrderMapper"></property>
+	   <property name="branchEmpMapper"  ref="branchEmpMapper"></property>
+	   <property name="userSessionService" ref="userSessionService"></property>
+	</bean>
+	<!-- 奶箱end -->
+	
 	<bean id="custMapper" class="com.nhry.data.basic.impl.TMdVipCustInfoMapperImpl">
 	   <property name="sqlSessionTemplate"  ref="dynamicSqlSessionTemplate"></property>
 	</bean>
