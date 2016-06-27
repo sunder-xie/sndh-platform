@@ -45,12 +45,34 @@
     where 1 = 1 
       and ITEM_NO = #{itemNo,jdbcType=VARCHAR}
   </select>
-  <delete id="deleteByPrimaryKey" parameterType="com.nhry.data.order.domain.TOrderDaliyPlanItemKey" >
+  <select id="selectDaliyPlansByOrderNo" resultMap="BaseResultMap" parameterType="java.lang.String" >
+    select 
+    <include refid="Base_Column_List" />
+    from t_mst_order_daliy_plan_item
+    where 1 = 1 
+      and ORDER_NO = #{orderNo,jdbcType=VARCHAR}
+    order by DISP_DATE desc  
+  </select>
+  <select id="selectDaliyPlansByEntryNoAndNo" resultMap="BaseResultMap" parameterType="com.nhry.data.order.domain.TOrderDaliyPlanItemKey" >
+    select 
+    <include refid="Base_Column_List" />
+    from t_mst_order_daliy_plan_item
+    where 1 = 1 
+      and ITEM_NO = #{itemNo,jdbcType=VARCHAR}
+      and PLAN_ITEM_NO = #{planItemNo,jdbcType=VARCHAR}
+  </select>
+  <select id="selectMaxDaliyPlansNoByOrderNo" resultType="java.lang.Integer" parameterType="java.lang.String" >
+    select max(PLAN_ITEM_NO) 
+    from t_mst_order_daliy_plan_item 
+    where ORDER_NO = #{orderNo,jdbcType=VARCHAR}
+  </select>
+  <delete id="deleteFromDateToDate" parameterType="com.nhry.data.order.domain.TOrderDaliyPlanItem" >
     delete from t_mst_order_daliy_plan_item
     where ORDER_NO = #{orderNo,jdbcType=VARCHAR}
-      and ORDER_DATE = #{orderDate,jdbcType=DATE}
-      and PLAN_ITEM_NO = #{planItemNo,jdbcType=VARCHAR}
-      and ITEM_NO = #{itemNo,jdbcType=VARCHAR}
+      <if test="itemNo != null" >
+	      and ITEM_NO = #{itemNo,jdbcType=VARCHAR}
+      </if>
+      and DISP_DATE &gt;= #{dispDateStr,jdbcType=DATE}
   </delete>
   <insert id="insert" parameterType="com.nhry.data.order.domain.TOrderDaliyPlanItem" >
     insert into t_mst_order_daliy_plan_item (ORDER_NO, ORDER_DATE, PLAN_ITEM_NO, 
@@ -252,28 +274,68 @@
       <!-- and PLAN_ITEM_NO = #{planItemNo,jdbcType=VARCHAR} -->
       and ITEM_NO = #{itemNo,jdbcType=VARCHAR}
   </update>
-  <update id="updateByPrimaryKey" parameterType="com.nhry.data.order.domain.TOrderDaliyPlanItem" >
+  <update id="updateDaliyPlanItem" parameterType="com.nhry.data.order.domain.TOrderDaliyPlanItem" >
     update t_mst_order_daliy_plan_item
-    set DISP_DATE = #{dispDate,jdbcType=DATE},
-      REACH_TIME = #{reachTime,jdbcType=VARCHAR},
-      REACH_TIME_TYPE = #{reachTimeType,jdbcType=VARCHAR},
-      MATNR = #{matnr,jdbcType=VARCHAR},
-      UNIT = #{unit,jdbcType=VARCHAR},
-      QTY = #{qty,jdbcType=INTEGER},
-      PRICE = #{price,jdbcType=DECIMAL},
-      AMT = #{amt,jdbcType=DECIMAL},
-      REMAIN_AMT = #{remainAmt,jdbcType=DECIMAL},
-      STATUS = #{status,jdbcType=VARCHAR},
-      CREATE_AT = #{createAt,jdbcType=TIMESTAMP},
-      CREATE_BY = #{createBy,jdbcType=VARCHAR},
-      CREATE_BY_TXT = #{createByTxt,jdbcType=VARCHAR},
-      LAST_MODIFIED = #{lastModified,jdbcType=TIMESTAMP},
-      LAST_MODIFIED_BY = #{lastModifiedBy,jdbcType=VARCHAR},
-      LAST_MODIFIED_BY_TXT = #{lastModifiedByTxt,jdbcType=VARCHAR}
+    <set >
+      <if test="reachTimeType != null" >
+        REACH_TIME_TYPE = #{reachTimeType,jdbcType=VARCHAR},
+      </if>
+      <if test="matnr != null" >
+        MATNR = #{matnr,jdbcType=VARCHAR},
+      </if>
+      <if test="unit != null" >
+        UNIT = #{unit,jdbcType=VARCHAR},
+      </if>
+      <if test="qty != null" >
+        QTY = #{qty,jdbcType=INTEGER},
+      </if>
+      <if test="price != null" >
+        PRICE = #{price,jdbcType=DECIMAL},
+      </if>
+      <if test="amt != null" >
+        AMT = #{amt,jdbcType=DECIMAL},
+      </if>
+      <if test="remainAmt != null" >
+        REMAIN_AMT = #{remainAmt,jdbcType=DECIMAL},
+      </if>
+      <if test="status != null" >
+        STATUS = #{status,jdbcType=VARCHAR},
+      </if>
+      <if test="createAt != null" >
+        CREATE_AT = #{createAt,jdbcType=TIMESTAMP},
+      </if>
+      <if test="createBy != null" >
+        CREATE_BY = #{createBy,jdbcType=VARCHAR},
+      </if>
+      <if test="createByTxt != null" >
+        CREATE_BY_TXT = #{createByTxt,jdbcType=VARCHAR},
+      </if>
+      <if test="lastModified != null" >
+        LAST_MODIFIED = #{lastModified,jdbcType=TIMESTAMP},
+      </if>
+      <if test="lastModifiedBy != null" >
+        LAST_MODIFIED_BY = #{lastModifiedBy,jdbcType=VARCHAR},
+      </if>
+      <if test="lastModifiedByTxt != null" >
+        LAST_MODIFIED_BY_TXT = #{lastModifiedByTxt,jdbcType=VARCHAR},
+      </if>
+    </set>
     where ORDER_NO = #{orderNo,jdbcType=VARCHAR}
-      and ORDER_DATE = #{orderDate,jdbcType=DATE}
-      and PLAN_ITEM_NO = #{planItemNo,jdbcType=VARCHAR}
       and ITEM_NO = #{itemNo,jdbcType=VARCHAR}
+      and PLAN_ITEM_NO = #{planItemNo,jdbcType=VARCHAR}
+  </update>
+  <update id="updateDaliyPlansToStop" parameterType="com.nhry.data.order.domain.TPreOrder" >
+    update t_mst_order_daliy_plan_item
+    <set >
+      <if test="reachTimeType != null" >
+        STATUS = "30"
+      </if>
+    </set>
+    where DISP_DATE &gt;= #{stopDateStart,jdbcType=DATE}
+    <if test="stopDateEnd != null and stopDateEnd !=''" >
+        and DISP_DATE &lt;= #{stopDateEnd,jdbcType=DATE}
+    </if>
+    and ORDER_NO = #{orderNo,jdbcType=VARCHAR}
   </update>
 
   <select id="getDayOrderStat" resultMap="BaseResultMap" parameterType="com.nhry.model.order.ReturnOrderModel" >

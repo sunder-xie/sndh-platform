@@ -2,13 +2,13 @@ package com.nhry.data.order.dao;
 
 import com.nhry.data.order.domain.TOrderDaliyPlanItem;
 import com.nhry.data.order.domain.TOrderDaliyPlanItemKey;
-import com.nhry.model.milktrans.RequireOrderModel;
+import com.nhry.data.order.domain.TPreOrder;
 
 import java.util.Date;
 import java.util.List;
 
 public interface TOrderDaliyPlanItemMapper {
-    int deleteByPrimaryKey(TOrderDaliyPlanItemKey key);
+	 int deleteFromDateToDate(TOrderDaliyPlanItem record);
 
     int insert(TOrderDaliyPlanItem record);
 
@@ -23,8 +23,16 @@ public interface TOrderDaliyPlanItemMapper {
     int updateDaliyPlanItemStatus(TOrderDaliyPlanItem record);
     
     List<TOrderDaliyPlanItem> selectDaliyPlansByEntryNo(String itemNo);
+    
+    int updateDaliyPlanItem(TOrderDaliyPlanItem record);
+    
+    TOrderDaliyPlanItem selectDaliyPlansByEntryNoAndNo(TOrderDaliyPlanItemKey record);
+    
+    List<TOrderDaliyPlanItem> selectDaliyPlansByOrderNo(String orderNo);
+    
+    int selectMaxDaliyPlansNoByOrderNo(String orderNo);
 
     String getDayOrderStat(String orderNo, Date date);
 
-    List<TOrderDaliyPlanItem> selectDaliyPlansByBranchAndDay(RequireOrderModel rModel);
+    int updateDaliyPlansToStop(TPreOrder record);
 }

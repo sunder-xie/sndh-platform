@@ -10,6 +10,7 @@ import com.sun.jersey.spi.resource.Singleton;
 import com.wordnik.swagger.annotations.Api;
 import com.wordnik.swagger.annotations.ApiOperation;
 import com.wordnik.swagger.annotations.ApiParam;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
@@ -18,6 +19,8 @@ import org.springframework.stereotype.Controller;
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+
+import java.util.ArrayList;
 
 @Path("/order")
 @Component
@@ -35,16 +38,33 @@ public class OrderResource extends BaseResource {
 	@ApiOperation(value = "/{orderCode}", response = OrderCreateModel.class, notes = "根据订单编号查询订单信息")
 	public Response selectOrderByCode(@ApiParam(required=true,name="orderCode",value="订单编号") @PathParam("orderCode") String orderCode){
 		return convertToRespModel(MessageCode.NORMAL, null, orderService.selectOrderByCode(orderCode));
-	} 
+	}
+	
+	@GET
+	@Path("/daliyPlans/{orderCode}")
+	@Produces(MediaType.APPLICATION_JSON)
+	@ApiOperation(value = "/daliyPlans/{orderCode}", response = ArrayList.class, notes = "根据订单编号查询订单信息")
+	public Response selectDaliyPlansByOrderNo(@ApiParam(required=true,name="orderCode",value="订单编号") @PathParam("orderCode") String orderCode){
+		return convertToRespModel(MessageCode.NORMAL, null, orderService.selectDaliyPlansByOrderNo(orderCode));
+	}
 	
 	@POST
-	@Path("/upt")
+	@Path("/uptlong")
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
-	@ApiOperation(value = "/upt", response = Integer.class, notes = "更新订单信息")
+	@ApiOperation(value = "/uptlong", response = Integer.class, notes = "更新订单信息(长期修改)")
 	public Response uptOrder(@ApiParam(required=true,name="record",value="系统参数json格式") OrderEditModel record){
-		return convertToRespModel(MessageCode.NORMAL, null,  orderService.editOrder(record));
+		return convertToRespModel(MessageCode.NORMAL, null,  orderService.editOrderForLong(record));
 	}	
+	
+	@POST
+	@Path("/uptshort")
+	@Consumes(MediaType.APPLICATION_JSON)
+	@Produces(MediaType.APPLICATION_JSON)
+	@ApiOperation(value = "/uptshort", response = Integer.class, notes = "更新订单信息(短期修改)")
+	public Response uptOrder(@ApiParam(required=true,name="record",value="系统参数json格式") DaliyPlanEditModel record){
+		return convertToRespModel(MessageCode.NORMAL, null,  orderService.editOrderForShort(record));
+	}
 	
 	@POST
 	@Path("/search")
@@ -53,6 +73,33 @@ public class OrderResource extends BaseResource {
 	@ApiOperation(value = "/search", response = PageInfo.class, notes = "查询订单信息列表")
 	public Response findOrders(@ApiParam(required=true,name="smodel",value="SearchModel") OrderSearchModel smodel){
 		return convertToRespModel(MessageCode.NORMAL, null, orderService.searchOrders(smodel));
+	}
+	
+	@POST
+	@Path("/stopOrder")
+	@Produces(MediaType.APPLICATION_JSON)
+	@Consumes(MediaType.APPLICATION_JSON)
+	@ApiOperation(value = "/stopOrder", response = Integer.class, notes = "订单停订")
+	public Response stopOrder(@ApiParam(required=true,name="smodel",value="SearchModel") OrderSearchModel smodel){
+		return convertToRespModel(MessageCode.NORMAL, null, orderService.stopOrderForTime(smodel));
+	}
+	
+	@POST
+	@Path("/backOrder")
+	@Produces(MediaType.APPLICATION_JSON)
+	@Consumes(MediaType.APPLICATION_JSON)
+	@ApiOperation(value = "/backOrder", response = Integer.class, notes = "订单退订")
+	public Response backOrder(@ApiParam(required=true,name="smodel",value="SearchModel") OrderSearchModel smodel){
+		return convertToRespModel(MessageCode.NORMAL, null, orderService.backOrder(smodel));
+	}
+	
+	@POST
+	@Path("/continueOrder")
+	@Produces(MediaType.APPLICATION_JSON)
+	@Consumes(MediaType.APPLICATION_JSON)
+	@ApiOperation(value = "/continueOrder", response = Integer.class, notes = "订单退订")
+	public Response continueOrder(@ApiParam(required=true,name="smodel",value="SearchModel") OrderSearchModel smodel){
+		return convertToRespModel(MessageCode.NORMAL, null, orderService.continueOrder(smodel));
 	}
 
 	@POST
