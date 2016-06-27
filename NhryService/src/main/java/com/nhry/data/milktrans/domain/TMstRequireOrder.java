@@ -1,4 +1,4 @@
-package com.nhry.data.order.domain;
+package com.nhry.data.milktrans.domain;
 
 import java.io.Serializable;
 import java.util.Date;

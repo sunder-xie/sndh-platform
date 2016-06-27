@@ -5,6 +5,7 @@
     <id column="ORDER_NO" property="orderNo" jdbcType="VARCHAR" />
     <result column="ORDER_TYPE" property="orderType" jdbcType="VARCHAR" />
     <result column="ORDER_DATE" property="orderDate" jdbcType="DATE" />
+    <result column="END_DATE" property="endDate" jdbcType="DATE" />
     <result column="RET_DATE" property="retDate" jdbcType="DATE" />
     <result column="RET_REASON" property="retReason" jdbcType="VARCHAR" />
     <result column="PAYMENTMETHOD" property="paymentmethod" jdbcType="VARCHAR" />
@@ -22,6 +23,7 @@
     <result column="CUR_AMT" property="curAmt" jdbcType="DECIMAL" />
     <result column="DISP_LINE_NO" property="dispLineNo" jdbcType="VARCHAR" />
     <result column="EMP_NO" property="empNo" jdbcType="VARCHAR" />
+    <result column="EMP_Name" property="empName" jdbcType="VARCHAR" />
     <result column="ADRESS_NO" property="adressNo" jdbcType="VARCHAR" />
     <result column="CREATER_NO" property="createrNo" jdbcType="VARCHAR" />
     <result column="CREATER_BY" property="createrBy" jdbcType="VARCHAR" />
@@ -434,6 +436,27 @@
     </set>
     where ORDER_NO = #{orderNo,jdbcType=VARCHAR}
   </update>
+  <select id="searchCustomerOrder" resultMap="BaseResultMap" parameterType="com.nhry.model.bill.CustBillQueryModel">
+    select
+    o.ORDER_NO, o.END_DATE,o.EMP_NO,e.EMP_NAME EMP_NAME,o.INIT_AMT,o.PAYMENT_STAT
+    FROM t_preorder o , t_md_branch_emp e
+    WHERE o.EMP_NO = e.EMP_NO
+    <if test="status !=null and status!=''">
+       and  o.PAYMENT_STAT = #{status,jdbcType=VARCHAR}
+    </if>
+    <if test="orderStartDate !=null">
+        and o.END_DATE &gt;= #{orderStartDate,jdbcType=DATE}
+    </if>
+    <if test="orderEndDate !=null">
+       and   o.END_DATE &lt;= #{orderEndDate,jdbcType=DATE}
+    </if>
+    ORDER BY ORDER_NO
+  </select>
 
+  <update id="updateOrderPayMentStatus" parameterType="String" >
+    update t_preorder
+    SET  PAYMENT_STAT = '20'
+    where ORDER_NO = #{orderNo,jdbcType=VARCHAR}
+  </update>
 
 </mapper>
