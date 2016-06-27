@@ -55,10 +55,10 @@
 	
 	<!-- 订单end -->
 	
-	<bean id="custMapper" class="com.nhry.data.basic.impl.TMdVipCustInfoMapperImpl">
+	<bean id="custMapper" class="com.nhry.data.basic.impl.TVipCustInfoMapperImpl">
 	   <property name="sqlSessionTemplate"  ref="dynamicSqlSessionTemplate"></property>
 	</bean>
-	<bean id="custService" class="com.nhry.service.basic.impl.TMdVipCustInfoServiceImpl">
+	<bean id="custService" class="com.nhry.service.basic.impl.TVipCustInfoServiceImpl">
 	   <property name="tmdVipcust"  ref="custMapper"></property>
 	</bean>
 	

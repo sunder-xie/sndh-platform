@@ -5,6 +5,7 @@ import com.nhry.data.order.dao.TOrderDaliyPlanItemMapper;
 import com.nhry.data.order.domain.TOrderDaliyPlanItem;
 import com.nhry.data.order.domain.TOrderDaliyPlanItemKey;
 import com.nhry.data.order.domain.TPreOrder;
+import com.nhry.model.milktrans.RequireOrderModel;
 import com.nhry.model.order.ReturnOrderModel;
 import java.util.Date;
 import java.util.List;
@@ -77,6 +78,11 @@ public class TOrderDaliyPlanItemMapperImpl implements TOrderDaliyPlanItemMapper
 	{
 		// TODO Auto-generated method stub
 		return sqlSessionTemplate.update("updateDaliyPlansToStop", record);
+	}
+
+	@Override
+	public List<TOrderDaliyPlanItem> selectDaliyPlansByBranchAndDay(RequireOrderModel rModel) {
+		return sqlSessionTemplate.selectList("selectDaliyPlansByBranchAndDay", rModel);
 	}
 
 	/**
