@@ -1,9 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <beans xmlns="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xmlns:context="http://www.springframework.org/schema/context" xmlns:jdbc="http://www.springframework.org/schema/jdbc"  
-	xmlns:jee="http://www.springframework.org/schema/jee" xmlns:tx="http://www.springframework.org/schema/tx"
-    xmlns:util="http://www.springframework.org/schema/util" xmlns:task="http://www.springframework.org/schema/task"  
-    xsi:schemaLocation="
+       xmlns:context="http://www.springframework.org/schema/context"
+       xmlns:jdbc="http://www.springframework.org/schema/jdbc"
+       xmlns:jee="http://www.springframework.org/schema/jee" xmlns:tx="http://www.springframework.org/schema/tx"
+       xmlns:util="http://www.springframework.org/schema/util" xmlns:task="http://www.springframework.org/schema/task"
+       xsi:schemaLocation="
 		http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-4.0.xsd
 		http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-4.0.xsd
 		http://www.springframework.org/schema/jdbc http://www.springframework.org/schema/jdbc/spring-jdbc-4.0.xsd
@@ -12,12 +13,18 @@
 		http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util-4.0.xsd
 		http://www.springframework.org/schema/task http://www.springframework.org/schema/task/spring-task-4.0.xsd
 		http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-4.0.xsd"
-		default-lazy-init="true">
-		<bean id="piProductMapper" class="com.nhry.data.basic.impl.PIProductMapperImpl">
-			<property name="sqlSessionFactory" ref="sqlSessionFactory"/>
-		</bean>
-		<bean class="com.nhry.service.pi.impl.PIProductServiceImpl" id="piProductService">
-			<property name="piProductMapper" ref="piProductMapper"/>
-			<property name="maraMapper" ref="maraMapper"/>
-		</bean>
+       default-lazy-init="true">
+    <bean id="piProductMapper" class="com.nhry.data.basic.impl.PIProductMapperImpl">
+        <property name="sqlSessionFactory" ref="sqlSessionFactory"/>
+    </bean>
+    <!-- -->
+    <bean id="maraSalesMapper" class="com.nhry.data.basic.impl.TMaraSalesMapperImpl">
+        <property name="sqlSessionTemplate" ref="dynamicSqlSessionTemplate"/>
+    </bean>
+    <bean class="com.nhry.service.pi.impl.PIProductServiceImpl" id="piProductService">
+        <property name="piProductMapper" ref="piProductMapper"/>
+        <property name="maraSalesMapper" ref="maraSalesMapper"/>
+        <property name="maraMapper" ref="maraMapper"/>
+    </bean>
+
 </beans>
