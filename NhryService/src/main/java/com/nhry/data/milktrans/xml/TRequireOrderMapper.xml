@@ -1,0 +1,152 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.nhry.data.milktrans.dao.TRequireOrderMapper" >
+    <resultMap id="BaseResultMap" type="com.nhry.data.milktrans.domain.TMstRequireOrder" >
+        <result column="BRANCH_NO" property="branchNo" jdbcType="VARCHAR" />
+        <result column="REQUIRE_DATE" property="requireDate" jdbcType="DATE" />
+        <result column="MATNR" property="matnr" jdbcType="VARCHAR" />
+        <result column="MATNR_TXT" property="matnrTxt" jdbcType="VARCHAR" />
+        <result column="QTY" property="qty" jdbcType="INTEGER" />
+        <result column="INCRE_QTY" property="increQty" jdbcType="INTEGER" />
+        <result column="STATUS" property="status" jdbcType="VARCHAR" />
+        <result column="CREATE_AT" property="createAt" jdbcType="TIMESTAMP" />
+        <result column="CREATE_BY" property="createBy" jdbcType="VARCHAR" />
+        <result column="CREATE_BY_TXT" property="createByTxt" jdbcType="VARCHAR" />
+        <result column="LAST_MODIFIED" property="lastModified" jdbcType="TIMESTAMP" />
+        <result column="LAST_MODIFIED_BY" property="lastModifiedBy" jdbcType="VARCHAR" />
+        <result column="LAST_MODIFIED_BY_TXT" property="lastModifiedByTxt" jdbcType="VARCHAR" />
+    </resultMap>
+    <sql id="Base_Column_List" >
+      BRANCH_NO,REQUIRE_DATE,MATNR,QTY,INCRE_QTY,STATUS
+    </sql>
+    <sql id="Full_Column_List" >
+        BRANCH_NO,REQUIRE_DATE,MATNR,QTY,INCRE_QTY,STATUS,CREATE_AT,CREATE_BY,CREATE_BY_TXT,
+        LAST_MODIFIED,LAST_MODIFIED_BY,LAST_MODIFIED_BY_TXT
+    </sql>
+
+    <insert id="insertRequireOrder" parameterType="com.nhry.data.milktrans.domain.TMstRequireOrder" >
+        insert into t_mst_requireorder
+        <trim prefix="(" suffix=")" suffixOverrides="," >
+            <if test="branchNo != null" >
+                BRANCH_NO,
+            </if>
+            <if test="requireDate != null" >
+                REQUIRE_DATE,
+            </if>
+            <if test="matnr != null" >
+                MATNR,
+            </if>
+            <if test="qty != null" >
+                QTY,
+            </if>
+            <if test="increQty != null" >
+                INCRE_QTY,
+            </if>
+            <if test="status != null" >
+                STATUS,
+            </if>
+            <if test="createAt != null" >
+                CREATE_AT,
+            </if>
+            <if test="createBy != null" >
+                CREATE_BY,
+            </if>
+            <if test="createByTxt != null" >
+                CREATE_BY_TXT,
+            </if>
+            <if test="lastModified != null" >
+                LAST_MODIFIED,
+            </if>
+            <if test="lastModifiedBy != null" >
+                LAST_MODIFIED_BY,
+            </if>
+            <if test="lastModifiedByTxt != null" >
+                LAST_MODIFIED_BY_TXT,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides="," >
+            <if test="branchNo != null" >
+                #{branchNo,jdbcType=VARCHAR},
+            </if>
+            <if test="requireDate != null" >
+                #{requireDate,jdbcType=DATE},
+            </if>
+            <if test="matnr != null" >
+                #{matnr,jdbcType=VARCHAR},
+            </if>
+            <if test="qty != null" >
+                #{qty,jdbcType=INTEGER},
+            </if>
+            <if test="increQty != null" >
+                #{increQty,jdbcType=INTEGER},
+            </if>
+            <if test="status != null" >
+                #{status,jdbcType=VARCHAR},
+            </if>
+            <if test="createAt != null" >
+                #{createAt,jdbcType=TIMESTAMP},
+            </if>
+            <if test="createBy != null" >
+                #{createBy,jdbcType=VARCHAR},
+            </if>
+            <if test="createByTxt != null" >
+                #{createByTxt,jdbcType=VARCHAR},
+            </if>
+            <if test="lastModified != null" >
+                #{lastModified,jdbcType=TIMESTAMP},
+            </if>
+            <if test="lastModifiedBy != null" >
+                #{lastModifiedBy,jdbcType=VARCHAR},
+            </if>
+            <if test="lastModifiedByTxt != null" >
+                #{lastModifiedByTxt,jdbcType=VARCHAR},
+            </if>
+        </trim>
+    </insert>
+    <select id="searchRequireOrder" resultMap="BaseResultMap" parameterType="com.nhry.model.milktrans.RequireOrderSearch" >
+        select
+            r.BRANCH_NO,r.MATNR,m.MATNR_TXT MATNR_TXT,r.REQUIRE_DATE,r.QTY,r.INCRE_QTY
+        FROM t_mst_requireorder r,t_md_mara m
+        WHERE r.MATNR = m.MATNR
+       and r.BRANCH_NO = #{branchNo,jdbcType=VARCHAR}
+       and r.REQUIRE_DATE = #{requireDate,jdbcType=DATE}
+    </select>
+    <select id="selectRequireOrderItemByitem" resultMap="BaseResultMap" parameterType="com.nhry.data.milktrans.domain.TMstRequireOrder" >
+        select
+        r.BRANCH_NO,r.MATNR,m.MATNR_TXT MATNR_TXT,r.REQUIRE_DATE,r.QTY,r.INCRE_QTY
+        FROM t_mst_requireorder r,t_md_mara m
+        WHERE r.MATNR = m.MATNR
+        and r.BRANCH_NO = #{branchNo,jdbcType=VARCHAR}
+        and r.REQUIRE_DATE = #{requireDate,jdbcType=DATE}
+        and r.MATNR =  #{matnr,jdbcType=VARCHAR}
+        and r.QTY =  #{qty,jdbcType=INTEGER}
+    </select>
+
+
+    <update id="uptRequireOrder" parameterType="com.nhry.data.milktrans.domain.TMstRequireOrder" >
+        update t_mst_requireorder
+        set
+
+        <if test="lastModified != null" >
+          LAST_MODIFIED = #{lastModified,jdbcType=TIMESTAMP},
+        </if>
+        <if test="lastModifiedBy != null" >
+          LAST_MODIFIED_BY = #{lastModifiedBy,jdbcType=VARCHAR},
+        </if>
+        <if test="lastModifiedByTxt != null" >
+         LAST_MODIFIED_BY_TXT = #{lastModifiedByTxt,jdbcType=VARCHAR},
+        </if>
+        INCRE_QTY = #{increQty,jdbcType=INTEGER}
+        where
+            BRANCH_NO = #{branchNo,jdbcType=VARCHAR}
+        and REQUIRE_DATE = #{requireDate,jdbcType=DATE}
+        and MATNR = #{matnr,jdbcType=VARCHAR}
+    </update>
+    <delete id="delRequireOrder" parameterType="com.nhry.data.milktrans.domain.TMstRequireOrder" >
+        DELETE  FROM  t_mst_requireorder
+         where BRANCH_NO = #{branchNo,jdbcType=VARCHAR}
+        and REQUIRE_DATE = #{requireDate,jdbcType=DATE}
+        and MATNR = #{matnr,jdbcType=VARCHAR}
+    </delete>
+
+</mapper>

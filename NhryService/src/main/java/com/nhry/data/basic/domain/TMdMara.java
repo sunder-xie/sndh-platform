@@ -1,5 +1,6 @@
 package com.nhry.data.basic.domain;
 
+import java.math.BigDecimal;
 import java.util.Date;
 
 public class TMdMara {
@@ -21,7 +22,7 @@ public class TMdMara {
 
     private String brand;
 
-    private Float weight;
+    private BigDecimal weight;
 
     private String weightUnit;
 
@@ -34,6 +35,10 @@ public class TMdMara {
     private String botSpec;
 
     private String zbotCode;
+    
+    private String salesOrg;
+    
+    private String dealerNo;
 
     public String getMatnr() {
         return matnr;
@@ -107,11 +112,11 @@ public class TMdMara {
         this.brand = brand == null ? null : brand.trim();
     }
 
-    public Float getWeight() {
+    public BigDecimal getWeight() {
         return weight;
     }
 
-    public void setWeight(Float weight) {
+    public void setWeight(BigDecimal weight) {
         this.weight = weight;
     }
 
@@ -162,4 +167,20 @@ public class TMdMara {
     public void setZbotCode(String zbotCode) {
         this.zbotCode = zbotCode == null ? null : zbotCode.trim();
     }
+
+	public String getSalesOrg() {
+		return salesOrg;
+	}
+
+	public void setSalesOrg(String salesOrg) {
+		this.salesOrg = salesOrg;
+	}
+
+	public String getDealerNo() {
+		return dealerNo;
+	}
+
+	public void setDealerNo(String dealerNo) {
+		this.dealerNo = dealerNo;
+	}
 }

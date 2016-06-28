@@ -13,7 +13,7 @@
 		http://www.springframework.org/schema/task http://www.springframework.org/schema/task/spring-task-4.0.xsd
 		http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-4.0.xsd"
 		default-lazy-init="true">
-	<!-- 商品信息 -->
+		<!-- 商品信息 -->
 	<bean id="maraMapper" class="com.nhry.data.basic.impl.TMdMaraMapperImpl">
 	   <property name="sqlSessionTemplate"  ref="dynamicSqlSessionTemplate"></property>
 	</bean>
@@ -43,17 +43,12 @@
 	<bean id="tPlanOrderItemMapper" class="com.nhry.data.order.impl.TPlanOrderItemMapperImpl">
 	   <property name="sqlSessionTemplate"  ref="dynamicSqlSessionTemplate"></property>
 	</bean>
-	<bean id="tRequireOrderMapper" class="com.nhry.data.order.impl.TRequireOrderMapperImpl">
-		<property name="sqlSessionTemplate"  ref="dynamicSqlSessionTemplate"></property>
-	</bean>
 	<bean id="orderService" class="com.nhry.service.order.impl.OrderServiceImpl">
 	   <property name="tPreOrderMapper"  ref="tPreOrderMapper"></property>
 	   <property name="tPlanOrderItemMapper"  ref="tPlanOrderItemMapper"></property>
 	   <property name="tOrderDaliyPlanItemMapper"  ref="tOrderDaliyPlanItemMapper"></property>
-		<property name="tRequireOrderMapper"  ref="tRequireOrderMapper"></property>
 	   <property name="userSessionService" ref="userSessionService"></property>
 	</bean>
-	
 	<!-- 订单end -->
 	
 	<!-- 奶箱 -->
@@ -84,14 +79,18 @@
 	   <property name="userSessionService" ref="userSessionService"></property>
 	</bean>
 	<!-- 送奶信息维护end -->
-	
-	<bean id="custMapper" class="com.nhry.data.basic.impl.TMdVipCustInfoMapperImpl">
+	<bean id="custService" class="com.nhry.service.basic.impl.TVipCustInfoServiceImpl">
+	   <property name="tmdVipcust"  ref="custMapper"></property>
+	   <property name="addressMapper"  ref="addressMapper"></property>
+	   <property name="vipAcctMapper"  ref="vipAcctMapper"></property>
+	   <property name="userSessionService" ref="userSessionService"></property>
+	</bean>
+	<bean id="addressMapper" class="com.nhry.data.basic.impl.TMdAddressMapperImpl">
 	   <property name="sqlSessionTemplate"  ref="dynamicSqlSessionTemplate"></property>
 	</bean>
-	<bean id="custService" class="com.nhry.service.basic.impl.TMdVipCustInfoServiceImpl">
-	   <property name="tmdVipcust"  ref="custMapper"></property>
+	<bean id="vipAcctMapper" class="com.nhry.data.basic.impl.TVipAcctMapperImpl">
+	   <property name="sqlSessionTemplate"  ref="dynamicSqlSessionTemplate"></property>
 	</bean>
-	
 	<bean id="branchEmpMapper" class="com.nhry.data.basic.impl.TMdBranchEmpMapperImpl">
 	   <property name="sqlSessionTemplate"  ref="dynamicSqlSessionTemplate"></property>
 	</bean>
@@ -114,14 +113,15 @@
 	<bean id="residentialAreaService" class="com.nhry.service.basic.impl.ResidentialAreaServiceImpl">
 		<property name="tMdResidentialAreaMapper"  ref="tMdResidentialAreaMapper"></property>
 	</bean>
-
-
-
+	
 	<bean id="tMdBranchScopeMapper" class="com.nhry.data.basic.impl.TMdBranchScopeMapperImpl">
 		<property name="sqlSessionTemplate"  ref="dynamicSqlSessionTemplate"></property>
 	</bean>
 	<bean id="tMdBranchScopeService" class="com.nhry.service.basic.impl.TMdBranchScopeServiceImpl">
 		<property name="tMdBranchScopeMapper"  ref="tMdBranchScopeMapper"></property>
-
+	</bean>
+	
+	<bean id="custMapper"  class="com.nhry.data.basic.impl.TVipCustInfoMapperImpl">
+	    <property name="sqlSessionTemplate"  ref="dynamicSqlSessionTemplate"></property>
 	</bean>
 </beans>

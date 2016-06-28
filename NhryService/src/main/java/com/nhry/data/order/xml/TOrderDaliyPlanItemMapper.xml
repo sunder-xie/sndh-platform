@@ -358,12 +358,15 @@
     and DISP_DATE = #{retDate,jdbcType=DATE}
   </select>
 
-  <select id="selectDaliyPlansByBranchAndDay" resultMap="BaseResultMap" parameterType="com.nhry.model.order.RequireOrderModel" >
-    select
-    i.MATNR,m.MATNR_TXT MATNR_TXT,i.QTY
-    from t_mst_order_daliy_plan_item i,t_md_mara m,t_preorder o
-    where  i.MATNR = m.MATNR and i.ORDER_NO = o.ORDER_NO
-    and o.BRANCH_NO = #{branchNo,jdbcType=VARCHAR}
-    and i.DISP_DATE = #{requireDate,jdbcType=DATE}
+  <select id="selectDaliyPlansByBranchAndDay" resultMap="BaseResultMap" parameterType="com.nhry.model.milktrans.RequireOrderModel" >
+   		select  i.MATNR,m.MATNR_TXT MATNR_TXT,i.QTY
+      from t_mst_order_daliy_plan_item i,t_md_mara m,t_preorder o,t_md_mara_ex e
+      where   1=1
+          and	i.ORDER_NO = o.ORDER_NO
+          and  e.PRE_DAYS=#{preDays,jdbcType=INTEGER}
+          and i.MATNR = e.MATNR
+          and e.MATNR = m.MATNR
+          and o.BRANCH_NO = #{branchNo,jdbcType=VARCHAR}
+          and i.DISP_DATE = #{requireDate,jdbcType=DATE}
   </select>
 </mapper>

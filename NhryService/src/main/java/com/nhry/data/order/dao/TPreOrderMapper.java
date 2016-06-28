@@ -4,6 +4,7 @@ import java.util.List;
 
 import com.github.pagehelper.PageInfo;
 import com.nhry.data.order.domain.TPreOrder;
+import com.nhry.model.bill.CustBillQueryModel;
 import com.nhry.model.order.ManHandOrderSearchModel;
 import com.nhry.model.order.OrderSearchModel;
 import com.nhry.model.order.ReturnOrderModel;
@@ -40,4 +41,7 @@ public interface TPreOrderMapper {
     
     List<TPreOrder> selectDispNoByGroup();
 
+    PageInfo searchCustomerOrder(CustBillQueryModel cModel);
+
+    int updateOrderPayMentStatus(String orderNo);
 }

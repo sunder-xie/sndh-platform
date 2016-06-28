@@ -167,30 +167,6 @@ public class OrderResource extends BaseResource {
 	}
 
 
-	@POST
-	@Path("/creatRequireOrder")
-	@Produces(MediaType.APPLICATION_JSON)
-	@Consumes(MediaType.APPLICATION_JSON)
-	@ApiOperation(value = "/creatRequireOrder", response = RequireOrderModel.class, notes = "生成要货计划")
-	public Response creatRequireOrder(@ApiParam(required=true,name="rModel",value="要货计划") RequireOrderModel  rModel){
-		return convertToRespModel(MessageCode.NORMAL, null, orderService.creatRequireOrder(rModel));
-	}
 
-	@POST
-	@Path("/queryRequireOrder")
-	@Produces(MediaType.APPLICATION_JSON)
-	@Consumes(MediaType.APPLICATION_JSON)
-	@ApiOperation(value = "/creatRequireOrder", response = RequireOrderModel.class, notes = "查询要货计划")
-	public Response searchRequireOrder(@ApiParam(required=true,name="rModel",value="要货计划") RequireOrderModel  rModel){
-		return convertToRespModel(MessageCode.NORMAL, null, orderService.searchRequireOrder(rModel));
-	}
 
-	@POST
-	@Path("/uptRequireOrder")
-	@Produces(MediaType.APPLICATION_JSON)
-	@Consumes(MediaType.APPLICATION_JSON)
-	@ApiOperation(value = "/uptRequireOrder", response = RequireOrderModel.class, notes = "更新生成要货计划")
-	public Response uptRequireOrder(@ApiParam(required=true,name="rModel",value="要货计划") RequireOrderModel  rModel){
-		return convertToRespModel(MessageCode.NORMAL, null, orderService.uptRequireOrder(rModel));
-	}
 }

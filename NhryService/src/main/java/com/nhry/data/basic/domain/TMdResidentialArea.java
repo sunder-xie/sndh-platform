@@ -1,6 +1,8 @@
 package com.nhry.data.basic.domain;
 
-public class TMdResidentialArea {
+import java.io.Serializable;
+
+public class TMdResidentialArea implements Serializable{
     private String id;
 
     private String branchNo;
