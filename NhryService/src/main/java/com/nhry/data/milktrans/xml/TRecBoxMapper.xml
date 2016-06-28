@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.nhry.data.milktrans.dao.TRecBotMapper" >
+    <resultMap id="BaseResultMap" type="com.nhry.data.milktrans.domain.TRecBot" >
+        <result column="RET_LSH" property="retLsh" jdbcType="VARCHAR" />
+        <result column="EMP_NO " property="empNo" jdbcType="VARCHAR" />
+        <result column="EMP_NAME" property="empName" jdbcType="VARCHAR" />
+        <result column="BRANCH_NO" property="branchNo" jdbcType="VARCHAR" />
+        <result column="RECEIVE_NUM" property="receiveNum" jdbcType="INTEGER" />
+        <result column="REAL_NUM" property="realNum" jdbcType="INTEGER" />
+        <result column="STATUS" property="status" jdbcType="VARCHAR" />
+        <result column="REC_DATE" property="recDate" jdbcType="DATE" />
+        <result column="CREATE_AT" property="createAt" jdbcType="TIMESTAMP" />
+        <result column="CREATE_BY" property="createBy" jdbcType="VARCHAR" />
+        <result column="CREATE_BY_TXT" property="createByTxt" jdbcType="VARCHAR" />
+        <result column="LAST_MODIFIED" property="lastModified" jdbcType="TIMESTAMP" />
+        <result column="LAST_MODIFIED_BY" property="lastModifiedBy" jdbcType="VARCHAR" />
+        <result column="LAST_MODIFIED_BY_TXT" property="lastModifiedByTxt" jdbcType="VARCHAR" />
+    </resultMap>
+    <sql id="Base_Column_List" >
+      RET_LSH,EMP_NO,EMP_NAME,BRANCH_NO,RECEIVE_NUM,REAL_NUM,STATUS,REC_DATE,CREATE_AT,CREATE_BY,CREATE_BY_TXT,
+        LAST_MODIFIED,LAST_MODIFIED_BY,LAST_MODIFIED_BY_TXT
+    </sql>
+    <select id="searchBoxPage" resultMap="BaseResultMap" parameterType="com.nhry.model.milktrans.BoxSearch" >
+        select
+        <include refid="Base_Column_List"/>
+        FROM t_rec_bot bot
+        WHERE 1=1
+        <if test="''!=status and status!=null">
+            and bot.STATUS = #{status,jdbcType=VARCHAR}
+        </if>
+
+        <if test="''!=empNo and empNo!=null">
+            and bot.EMP_NO = #{empNo,jdbcType=VARCHAR}
+        </if>
+    </select>
+
+    <select id="searchBoxByEmpAndBranch" resultMap="BaseResultMap" parameterType="com.nhry.model.milktrans.CreateEmpReturnboxModel" >
+        select
+        <include refid="Base_Column_List"/>
+        FROM t_rec_bot bot
+        WHERE 1=1
+        and bot.REC_DATE = #(retDate,jdbcType=DATE)
+        and bot.BRANCH_NO = #{branchNo,jdbcType=VARCHAR}
+        and bot.EMP_NO = #{empNo,jdbcType=VARCHAR}
+    </select>
+    <insert id="addTrecBot" parameterType="com.nhry.data.milktrans.domain.TRecBot">
+        insert into T_REC_BOT(RET_LSH,EMP_NO,EMP_NAME,BRANCH_NO,RECEIVE_NUM,REAL_NUM,STATUS,REC_DATE,CREATE_AT,CREATE_BY,CREATE_BY_TXT)
+         values(#{retLsh,jdbcType=VARCHAR},#{empNo,jdbcType=VARCHAR},#{empName,jdbcType=VARCHAR},
+         #{branchNo,jdbcType=VARCHAR},#{receiveNum,jdbcType=INTEGER},#{realNum,jdbcType=INTEGER},
+         #{recDate,jdbcType=DATE},#{creatAt,jdbcType=TIMESTAMP},#{creatBy,jdbcType=VARCHAR},#{creatByTxt,jdbcType=VARCHAR})
+
+    </insert>
+
+    <update id="uptTrecBot" parameterType="com.nhry.data.milktrans.domain.TRecBot">
+        UPDATE  T_REC_BOT
+        SET
+        REAL_NUM = #{realNum,jdbcType=INTEGER},
+        LAST_MODIFIED =  #{lastModified,jdbcType=TIMESTAP},
+        LAST_MODIFIED_BY = #{lastModifiedBy,jdbcType=VARCHAR},
+        LAST_MODIFIED_BY_TXT =  #{lastModifiedByTxt,jdbcType=VARCHAR}
+    </update>
+
+
+</mapper>

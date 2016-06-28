@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.nhry.data.bill.dao.CustomerBillMapper" >
+    <resultMap id="BranchResultMap" type="com.nhry.data.bill.domain.BranchBillOfCust" >
+        <id column="ORDER_NO" property="orderNo" jdbcType="VARCHAR" />
+        <result column="PREORDER_SOURCE" property="preorderSource" jdbcType="VARCHAR" />
+        <result column="PAYMENT_TYPE" property="paymentType" jdbcType="VARCHAR" />
+        <result column="VIP_CUST_NO" property="vipCustNo" jdbcType="VARCHAR" />
+        <result column="VIP_Name" property="vipName" jdbcType="VARCHAR" />
+        <result column="VIP_Tel" property="vipTel" jdbcType="VARCHAR" />
+        <result column="VIP_MP" property="vipMp" jdbcType="VARCHAR" />
+        <result column="ADDRESS" property="address" jdbcType="VARCHAR" />
+        <result column="PAYMENT_DATE" property="paymentDate" jdbcType="DATE" />
+        <result column="REAL_COLLECTION" property="realCollection" jdbcType="VARCHAR" />
+        <result column="SATTLEMENT_PRICE" property="settlementPrice" jdbcType="VARCHAR" />
+        <result column="EMP_NO" property="empNo" jdbcType="VARCHAR" />
+        <result column="EMP_NAME" property="empName" jdbcType="VARCHAR" />
+    </resultMap>
+    <sql id="Branch_Column_List" >
+            ORDER_NO,PREORDER_SOURCE,PAYMENT_TYPE,VIP_CUST_NO,VIP_Name,VIP_Tel,ADDRESS,PAYMENT_DATE,REAL_COLLECTION,
+            SATTLEMENT_PRICE,EMP_NO,EMP_NAME
+    </sql>
+    <sql id="Emp_Column_List" >
+
+    </sql>
+    <select id="branchBillSearch" resultMap="BranchResultMap" parameterType="com.nhry.model.bill.BranchBillSearch">
+        select
+       order.ORDER_NO ORDER_NO, order.PREORDER_SOURCE PREORDER_SOURCE,order.PAYMENTMETHOD PAYMENT_TYPE,order.INIT_AMT  SATTLEMENT_PRICE
+       cust.VIP_CUST_NO VIP_CUST_NO,cust.VIP_NAME VIP_Name,cust.MP VIP_MP,cust.TEL VIP_TEL, cust.ADDRESS_TXT ADDRESS,
+       bill.PAYMENT_YEAR_MONTH PAYMENT_DATE,bill.AMT REAL_COLLECTION,
+       emp.EMP_NO EMP_NO,emp.EMP_NAME EMP_NAME
+
+        FROM t_preorder order,t_md_branch_emp emp,t_vip_cust_info cust,t_mst_recv_bill bill
+        WHERE 1=1
+        and order.EMP_NO = emp.EMP_NO
+        and order.MEMBER_NO = cust.VIP_CUST_NO
+        and order.ORDER_NO = bill.ORDER_NO
+
+    </select>
+
+</mapper>

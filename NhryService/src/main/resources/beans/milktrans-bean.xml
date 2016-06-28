@@ -13,12 +13,26 @@
 		http://www.springframework.org/schema/task http://www.springframework.org/schema/task/spring-task-4.0.xsd
 		http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-4.0.xsd"
 		default-lazy-init="true">
+	<!--要货计划-->
 	<bean id="tRequireOrderMapper" class="com.nhry.data.milktrans.impl.TRequireOrderMapperImpl">
 	   <property name="sqlSessionTemplate"  ref="dynamicSqlSessionTemplate"></property>
 	</bean>
 	<bean id="requireOrderService" class="com.nhry.service.milktrans.impl.RequireOrderServiceImpl">
 	   <property name="tRequireOrderMapper"  ref="tRequireOrderMapper"></property>
 		<property name="tOrderDaliyPlanItemMapper"  ref="tOrderDaliyPlanItemMapper"></property>
+	</bean>
+
+	<!--回瓶管理-->
+	<bean id="tRecBotDetailMapper" class="com.nhry.data.milktrans.impl.TRecBotDetailMapperImpl">
+		<property name="sqlSessionTemplate"  ref="dynamicSqlSessionTemplate"></property>
+	</bean>
+	<bean id="tRecBotMapper" class="com.nhry.data.milktrans.impl.TRecBotMapperImpl">
+		<property name="sqlSessionTemplate"  ref="dynamicSqlSessionTemplate"></property>
+	</bean>
+	<bean id="returnBoxService" class="com.nhry.service.milktrans.impl.ReturnBoxServiceImpl">
+		<property name="tRecBotMapper"  ref="tRecBotMapper"></property>
+		<property name="tRecBotDetailMapper"  ref="tRecBotDetailMapper"></property>
+		<property name="userSessionService" ref="userSessionService"></property>
 	</bean>
 
 </beans>

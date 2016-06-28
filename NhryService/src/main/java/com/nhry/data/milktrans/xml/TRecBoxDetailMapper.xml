@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.nhry.data.milktrans.dao.TRecBotDetailMapper">
+    <resultMap id="BaseResultMap" type="com.nhry.data.milktrans.domain.TRecBotDetail" >
+        <result column="DET_LSH" property="detLsh" jdbcType="VARCHAR" />
+        <result column="SPEC " property="spec" jdbcType="VARCHAR" />
+        <result column="BOT_SPEC" property="botSpec" jdbcType="VARCHAR" />
+        <result column="SPEC_UNIT " property="specUnit" jdbcType="VARCHAR" />
+        <result column="RECEIVE_NUM" property="receiveNum" jdbcType="INTEGER" />
+        <result column="REAL_NUM" property="realNum" jdbcType="INTEGER" />
+        <result column="CREATE_BY" property="createBy" jdbcType="VARCHAR" />
+        <result column="CREATE_BY_TXT" property="createByTxt" jdbcType="VARCHAR" />
+        <result column="LAST_MODIFIED" property="lastModified" jdbcType="TIMESTAMP" />
+        <result column="LAST_MODIFIED_BY" property="lastModifiedBy" jdbcType="VARCHAR" />
+        <result column="LAST_MODIFIED_BY_TXT" property="lastModifiedByTxt" jdbcType="VARCHAR" />
+        <result column="RET_LSH" property="retLsh" jdbcType="VARCHAR" />
+    </resultMap>
+    <sql id="Base_Column_List" >
+      DET_LSH,SPEC,BOT_SPEC,SPEC_UNIT,RECEIVE_NUM,REAL_NUM,CREATE_BY,CREATE_BY_TXT,
+        LAST_MODIFIED,LAST_MODIFIED_BY,LAST_MODIFIED_BY_TXT,RET_LSH
+    </sql>
+
+    <insert id="addRecBotItem" parameterType="com.nhry.data.milktrans.domain.TRecBotDetail">
+        insert into T_REC_BOT_DETAIL(DET_LSH,SPEC,BOT_SPEC,SPEC_UNIT,RECEIVE_NUM,REAL_NUM,CREATE_BY,CREATE_BY_TXT,RET_LSH},
+        values( #{detLsh,jdbcType=VARCHAR}, #{spec,jdbcType=VARCHAR}, #{botSpec,jdbcType=VARCHAR}, #{specUnit,jdbcType=VARCHAR},
+        #{receiveNum,jdbcType=INTEGER},#{realNum,jdbcType=INTEGER},
+         #{BOT_SPEC,jdbcType=DATE},#{creatAt,jdbcType=DATE},#{creatBy,jdbcType=VARCHAR},#{creatByTxt,jdbcType=VARCHAR},#{retLsh,jdbcType=VARCHAR},)
+
+    </insert>
+
+    <select id="selectBotDetailByRetLsh" resultMap="BaseResultMap" parameterType="String">
+        SELECT
+        <include refid="Base_Column_List"/>
+        from t_rec_bot_detail
+        where REC_LSH = #{retLsh,jdbcType=VARCHAR}
+    </select>
+
+    <update id="uptRecBotDetail" parameterType="com.nhry.data.milktrans.domain.TRecBotDetail">
+        UPDATE  T_REC_BOT_DETAIL
+        SET
+        REAL_NUM = #{realNum,jdbcType=INTEGER},
+         LAST_MODIFIED =  #{lastModified,jdbcType=TIMESTAP},
+        LAST_MODIFIED_BY = #{lastModifiedBy,jdbcType=VARCHAR},
+        LAST_MODIFIED_BY_TXT =  #{lastModifiedByTxt,jdbcType=VARCHAR}
+    </update>
+
+
+</mapper>

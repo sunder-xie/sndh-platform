@@ -3,6 +3,7 @@ package com.nhry.rest.basic;
 import com.github.pagehelper.PageInfo;
 import com.nhry.common.exception.MessageCode;
 import com.nhry.data.basic.domain.TMdResidentialArea;
+import com.nhry.model.basic.BranchAreaSearch;
 import com.nhry.rest.BaseResource;
 import com.nhry.service.basic.dao.ResidentialAreaService;
 import com.nhry.service.basic.pojo.ResidentialAreaModel;
@@ -29,12 +30,24 @@ public class ResidentialAreaResource extends BaseResource {
 	@Autowired
 	private ResidentialAreaService residentialAreaService;
 
+	@POST
+	@Path("/searchAreaByBranchNo")
+	@Produces(MediaType.APPLICATION_JSON)
+	@Consumes(MediaType.APPLICATION_JSON)
+	@ApiOperation(value = "/getAreaByBranchNo", response = PageInfo.class, notes = "根据网点客户信息号(奶站编号)获取小区(配送区域)列表")
+	public Response getAreaByBranchNo(
+			@ApiParam(required = true, name = "bsearch", value = "网店客户信息号(奶站编号)") BranchAreaSearch bsearch) {
+		return convertToRespModel(MessageCode.NORMAL, null,
+				residentialAreaService.searchAreaByBranchNo(bsearch));
+	}
+
+
 	@GET
 	@Path("/getAreaByBranchNo/{branchNo}")
 	@Produces(MediaType.APPLICATION_JSON)
-	@ApiOperation(value = "/getAreaByBranchNo/{branchNo}", response = TMdResidentialArea.class, notes = "根据网点客户信息号(奶站编号)获取小区(配送区域)列表")
+	@ApiOperation(value = "/getAreaByBranchNo", response = PageInfo.class, notes = "根据网点客户信息号(奶站编号)获取小区(配送区域)列表")
 	public Response getAreaByBranchNo(
-			@ApiParam(required = true, name = "branchNo", value = "网店客户信息号(奶站编号)") @PathParam("branchNo") String branchNo) {
+			@ApiParam(required = true, name = "branchNo", value = "网店客户信息号(奶站编号)") @PathParam("branchNo") String  branchNo) {
 		return convertToRespModel(MessageCode.NORMAL, null,
 				residentialAreaService.getAreaByBranchNo(branchNo));
 	}

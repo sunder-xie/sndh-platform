@@ -62,4 +62,8 @@
   <select id="findUserRoleByRid"  resultMap="BaseResultMap" parameterType="String">
      SELECT <include refid="Base_Column_List" /> FROM t_sys_user_role ur where ID = #{rid,jdbcType=VARCHAR}
   </select>
+
+  <select id="getUserRoleByLoginName"  resultMap="BaseResultMap" parameterType="String">
+    SELECT <include refid="Base_Column_List" /> FROM t_sys_user_role ur where LOGIN_NAME = #{loginName,jdbcType=VARCHAR}
+  </select>
 </mapper>

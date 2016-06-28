@@ -16,4 +16,5 @@ public interface CustomerBillService {
    public int  customerPayment(TMstRecvBill customerBill);
 
    public CustomerBillOrder getCustomerOrderDetailByCode(String orderNo);
+
 }

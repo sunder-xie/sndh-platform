@@ -3,8 +3,10 @@ package com.nhry.rest.bill;
 import com.github.pagehelper.PageInfo;
 import com.nhry.common.exception.MessageCode;
 import com.nhry.data.bill.domain.TMstRecvBill;
+import com.nhry.model.bill.BranchBillSearch;
 import com.nhry.model.bill.CustBillQueryModel;
 import com.nhry.rest.BaseResource;
+import com.nhry.service.bill.dao.BranchBillService;
 import com.nhry.service.bill.dao.CustomerBillService;
 import com.sun.jersey.spi.resource.Singleton;
 import com.wordnik.swagger.annotations.Api;
@@ -28,6 +30,8 @@ import javax.ws.rs.core.Response;
 public class BillResource extends BaseResource {
     @Autowired
     private CustomerBillService customerBillService;
+    @Autowired
+    private BranchBillService branchBillService;
 
 
 
@@ -56,14 +60,15 @@ public class BillResource extends BaseResource {
     public Response customerPayment(@ApiParam(required=true,name="customerBill",value="收款信息")TMstRecvBill customerBill){
         return convertToRespModel(MessageCode.NORMAL, null, customerBillService.customerPayment(customerBill));
     }
-/*
+
+
+
     @POST
-    @Path("/disable")
+    @Path("/branch/branchBill")
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes(MediaType.APPLICATION_JSON)
-    @ApiOperation(value = "/disable", response = ResponseModel.class, notes = "停用价格组")
-    public Response pubProductByCode(@ApiParam(required=true,name="productCode",value="商品编号")TMdPrice record){
-        return convertToRespModel(MessageCode.NORMAL, null, priceService.disablePriceGroup(record));
-    }*/
-
+    @ApiOperation(value = "/branch/branchBill", response = PageInfo.class, notes = "奶站结算")
+    public Response branchBill(@ApiParam(required=true,name="customerBill",value="奶站结算")BranchBillSearch bsearch){
+        return convertToRespModel(MessageCode.NORMAL, null, branchBillService.branchBill(bsearch));
+    }
 }

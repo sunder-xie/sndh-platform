@@ -1,8 +1,10 @@
 package com.nhry.service.bill.impl;
 
 import com.github.pagehelper.PageInfo;
+import com.nhry.common.auth.UserSessionService;
 import com.nhry.common.exception.MessageCode;
 import com.nhry.common.exception.ServiceException;
+import com.nhry.data.auth.domain.TSysUser;
 import com.nhry.data.bill.dao.CustomerBillMapper;
 import com.nhry.data.bill.domain.TMstRecvBill;
 import com.nhry.data.order.dao.TPlanOrderItemMapper;
@@ -27,6 +29,7 @@ public class CustomerBillServiceImpl implements CustomerBillService {
     private CustomerBillMapper customerBillMapper;
     private TPreOrderMapper tPreOrderMapper;
     private TPlanOrderItemMapper tPlanOrderItemMapper;
+    private UserSessionService userSessionService;
 
     @Override
     public PageInfo searchCustomerOrder(CustBillQueryModel cModel) {
@@ -58,11 +61,12 @@ public class CustomerBillServiceImpl implements CustomerBillService {
                 Date date = new Date();
                 calendar.setTime(date);
                 String payMentYM =String.valueOf(String.valueOf(calendar.get(Calendar.YEAR))+String.valueOf(calendar.get(Calendar.MONTH)+1));
+                TSysUser user = userSessionService.getCurrentUser();
                 customerBill.setVipCustNo(order.getMemberNo());
                 customerBill.setPaymentYearMonth(payMentYM);
                 customerBill.setLastModified(date);
-                customerBill.setLastModifiedBy("032411");
-                customerBill.setCreateByTxt("测试用户");
+                customerBill.setLastModifiedBy(user.getLoginName());
+                customerBill.setCreateByTxt(user.getDisplayName());
                 if(bill!=null && bill.getStatus()=="10"){
                     updateBill =  customerBillMapper.updateCustomerBillrPayment(customerBill);
                 }else{
@@ -71,8 +75,8 @@ public class CustomerBillServiceImpl implements CustomerBillService {
                         customerBill.setReceiptNo(receiptNo);
                     }
                     customerBill.setCreateAt(date);
-                    customerBill.setCreateBy("032411");
-                    customerBill.setCreateByTxt("测试用户");
+                    customerBill.setCreateBy(user.getLoginName());
+                    customerBill.setCreateByTxt(user.getDisplayName());
                     updateBill =  customerBillMapper.customerPayment(customerBill);
                 }
                 updateOrderStatus = tPreOrderMapper.updateOrderPayMentStatus(orderNo);
@@ -110,5 +114,9 @@ public class CustomerBillServiceImpl implements CustomerBillService {
 
     public void settPlanOrderItemMapper(TPlanOrderItemMapper tPlanOrderItemMapper) {
         this.tPlanOrderItemMapper = tPlanOrderItemMapper;
+    }
+
+    public void setUserSessionService(UserSessionService userSessionService) {
+        this.userSessionService = userSessionService;
     }
 }
