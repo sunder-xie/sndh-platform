@@ -1,0 +1,329 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.nhry.data.milk.dao.TDispOrderMapper" >
+  <resultMap id="BaseResultMap" type="com.nhry.data.milk.domain.TDispOrder" >
+    <id column="ORDER_NO" property="orderNo" jdbcType="VARCHAR" />
+    <id column="ORDER_DATE" property="orderDate" jdbcType="DATE" />
+    <result column="DISP_DATE" property="dispDate" jdbcType="DATE" />
+    <result column="BRANCH_NO" property="branchNo" jdbcType="VARCHAR" />
+    <result column="DISP_LINE_NO" property="dispLineNo" jdbcType="VARCHAR" />
+    <result column="MST_CUST_NO" property="mstCustNo" jdbcType="VARCHAR" />
+    <result column="AMT" property="amt" jdbcType="DECIMAL" />
+    <result column="CONFIRM_AMT" property="confirmAmt" jdbcType="DECIMAL" />
+    <result column="REACH_TIME_TYPE" property="reachTimeType" jdbcType="VARCHAR" />
+    <result column="PAYMENT_TYPE" property="paymentType" jdbcType="VARCHAR" />
+    <result column="STATUS" property="status" jdbcType="VARCHAR" />
+    <result column="MEMO_TXT" property="memoTxt" jdbcType="VARCHAR" />
+    <result column="DISP_ORDER" property="dispOrder" jdbcType="INTEGER" />
+    <result column="DISP_EMP_NO" property="dispEmpNo" jdbcType="VARCHAR" />
+    <result column="HZ_ORDER_NO" property="hzOrderNo" jdbcType="VARCHAR" />
+    <result column="DAY_ACCT_FLAG" property="dayAcctFlag" jdbcType="CHAR" />
+    <result column="CREATE_AT" property="createAt" jdbcType="TIMESTAMP" />
+    <result column="CREATE_BY" property="createBy" jdbcType="VARCHAR" />
+    <result column="CREATE_BY_TXT" property="createByTxt" jdbcType="VARCHAR" />
+    <result column="LAST_MODIFIED" property="lastModified" jdbcType="TIMESTAMP" />
+    <result column="LAST_MODIFIED_BY" property="lastModifiedBy" jdbcType="VARCHAR" />
+    <result column="LAST_MODIFIED_BY_TXT" property="lastModifiedByTxt" jdbcType="VARCHAR" />
+    <result column="PAYMENT_ORDER_NO" property="paymentOrderNo" jdbcType="VARCHAR" />
+    <result column="SUBSCRIBE_ORDER_NO" property="subscribeOrderNo" jdbcType="VARCHAR" />
+    <result column="TOTAL_QTY" property="totalQty" jdbcType="INTEGER" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    ORDER_NO, ORDER_DATE, DISP_DATE, BRANCH_NO, DISP_LINE_NO, MST_CUST_NO, AMT, CONFIRM_AMT, 
+    REACH_TIME_TYPE, PAYMENT_TYPE, STATUS, MEMO_TXT, DISP_ORDER, DISP_EMP_NO, HZ_ORDER_NO, 
+    DAY_ACCT_FLAG, CREATE_AT, CREATE_BY, CREATE_BY_TXT, LAST_MODIFIED, LAST_MODIFIED_BY, 
+    LAST_MODIFIED_BY_TXT, PAYMENT_ORDER_NO, SUBSCRIBE_ORDER_NO
+  </sql>
+  <select id="selectDispOrderByOrderNo" resultMap="BaseResultMap" parameterType="com.nhry.data.milk.domain.TDispOrderKey" >
+    select 
+    <include refid="Base_Column_List" />
+    from t_mst_disp_order
+    where ORDER_NO = #{orderNo,jdbcType=VARCHAR}
+    <if test="orderDate != null and orderDate !=''">
+      and ORDER_DATE = #{orderDate,jdbcType=DATE}
+    </if>  
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="com.nhry.data.milk.domain.TDispOrderKey" >
+    delete from t_mst_disp_order
+    where ORDER_NO = #{orderNo,jdbcType=VARCHAR}
+      and ORDER_DATE = #{orderDate,jdbcType=DATE}
+  </delete>
+  <select id="searchRoutePlansByPage" parameterType="com.nhry.model.milk.RouteOrderSearchModel" >
+     select 
+    <include refid="Base_Column_List" />
+    from t_mst_disp_order
+    where 1 = 1
+    <if test="emp != null and emp !=''">
+     		AND DISP_EMP_NO = #{emp,jdbcType=VARCHAR}
+    </if>
+    <if test="branchNo != null and branchNo !=''">
+     		AND BRANCH_NO = #{branchNo,jdbcType=VARCHAR}
+    </if>
+    <if test="deliverTime != null and deliverTime !=''">
+     		AND REACH_TIME_TYPE = #{deliverTime,jdbcType=VARCHAR}
+    </if>
+    <if test="deliverDate != null and deliverDate !=''">
+     		AND DISP_DATE = #{deliverDate,jdbcType=VARCHAR}
+    </if>
+    order by ORDER_NO
+  </select>
+  <insert id="addNewDispOrder" parameterType="com.nhry.data.milk.domain.TDispOrder" >
+    insert into t_mst_disp_order
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="orderNo != null" >
+        ORDER_NO,
+      </if>
+      <if test="orderDate != null" >
+        ORDER_DATE,
+      </if>
+      <if test="dispDate != null" >
+        DISP_DATE,
+      </if>
+      <if test="branchNo != null" >
+        BRANCH_NO,
+      </if>
+      <if test="dispLineNo != null" >
+        DISP_LINE_NO,
+      </if>
+      <if test="mstCustNo != null" >
+        MST_CUST_NO,
+      </if>
+      <if test="amt != null" >
+        AMT,
+      </if>
+      <if test="confirmAmt != null" >
+        CONFIRM_AMT,
+      </if>
+      <if test="reachTimeType != null" >
+        REACH_TIME_TYPE,
+      </if>
+      <if test="paymentType != null" >
+        PAYMENT_TYPE,
+      </if>
+      <if test="status != null" >
+        STATUS,
+      </if>
+      <if test="memoTxt != null" >
+        MEMO_TXT,
+      </if>
+      <if test="dispOrder != null" >
+        DISP_ORDER,
+      </if>
+      <if test="dispEmpNo != null" >
+        DISP_EMP_NO,
+      </if>
+      <if test="hzOrderNo != null" >
+        HZ_ORDER_NO,
+      </if>
+      <if test="dayAcctFlag != null" >
+        DAY_ACCT_FLAG,
+      </if>
+      <if test="createAt != null" >
+        CREATE_AT,
+      </if>
+      <if test="createBy != null" >
+        CREATE_BY,
+      </if>
+      <if test="createByTxt != null" >
+        CREATE_BY_TXT,
+      </if>
+      <if test="lastModified != null" >
+        LAST_MODIFIED,
+      </if>
+      <if test="lastModifiedBy != null" >
+        LAST_MODIFIED_BY,
+      </if>
+      <if test="lastModifiedByTxt != null" >
+        LAST_MODIFIED_BY_TXT,
+      </if>
+      <if test="paymentOrderNo != null" >
+        PAYMENT_ORDER_NO,
+      </if>
+      <if test="subscribeOrderNo != null" >
+        SUBSCRIBE_ORDER_NO,
+      </if>
+      <if test="totalQty != null" >
+        TOTAL_QTY,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="orderNo != null" >
+        #{orderNo,jdbcType=VARCHAR},
+      </if>
+      <if test="orderDate != null" >
+        #{orderDate,jdbcType=DATE},
+      </if>
+      <if test="dispDate != null" >
+        #{dispDate,jdbcType=DATE},
+      </if>
+      <if test="branchNo != null" >
+        #{branchNo,jdbcType=VARCHAR},
+      </if>
+      <if test="dispLineNo != null" >
+        #{dispLineNo,jdbcType=VARCHAR},
+      </if>
+      <if test="mstCustNo != null" >
+        #{mstCustNo,jdbcType=VARCHAR},
+      </if>
+      <if test="amt != null" >
+        #{amt,jdbcType=DECIMAL},
+      </if>
+      <if test="confirmAmt != null" >
+        #{confirmAmt,jdbcType=DECIMAL},
+      </if>
+      <if test="reachTimeType != null" >
+        #{reachTimeType,jdbcType=VARCHAR},
+      </if>
+      <if test="paymentType != null" >
+        #{paymentType,jdbcType=VARCHAR},
+      </if>
+      <if test="status != null" >
+        #{status,jdbcType=VARCHAR},
+      </if>
+      <if test="memoTxt != null" >
+        #{memoTxt,jdbcType=VARCHAR},
+      </if>
+      <if test="dispOrder != null" >
+        #{dispOrder,jdbcType=INTEGER},
+      </if>
+      <if test="dispEmpNo != null" >
+        #{dispEmpNo,jdbcType=VARCHAR},
+      </if>
+      <if test="hzOrderNo != null" >
+        #{hzOrderNo,jdbcType=VARCHAR},
+      </if>
+      <if test="dayAcctFlag != null" >
+        #{dayAcctFlag,jdbcType=CHAR},
+      </if>
+      <if test="createAt != null" >
+        #{createAt,jdbcType=TIMESTAMP},
+      </if>
+      <if test="createBy != null" >
+        #{createBy,jdbcType=VARCHAR},
+      </if>
+      <if test="createByTxt != null" >
+        #{createByTxt,jdbcType=VARCHAR},
+      </if>
+      <if test="lastModified != null" >
+        #{lastModified,jdbcType=TIMESTAMP},
+      </if>
+      <if test="lastModifiedBy != null" >
+        #{lastModifiedBy,jdbcType=VARCHAR},
+      </if>
+      <if test="lastModifiedByTxt != null" >
+        #{lastModifiedByTxt,jdbcType=VARCHAR},
+      </if>
+      <if test="paymentOrderNo != null" >
+        #{paymentOrderNo,jdbcType=VARCHAR},
+      </if>
+      <if test="subscribeOrderNo != null" >
+        #{subscribeOrderNo,jdbcType=VARCHAR},
+      </if>
+      <if test="totalQty != null" >
+        #{totalQty,jdbcType=INTEGER},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateDispOrder" parameterType="com.nhry.data.milk.domain.TDispOrder" >
+    update t_mst_disp_order
+    <set >
+      <if test="dispDate != null" >
+        DISP_DATE = #{dispDate,jdbcType=DATE},
+      </if>
+      <if test="branchNo != null" >
+        BRANCH_NO = #{branchNo,jdbcType=VARCHAR},
+      </if>
+      <if test="dispLineNo != null" >
+        DISP_LINE_NO = #{dispLineNo,jdbcType=VARCHAR},
+      </if>
+      <if test="mstCustNo != null" >
+        MST_CUST_NO = #{mstCustNo,jdbcType=VARCHAR},
+      </if>
+      <if test="amt != null" >
+        AMT = #{amt,jdbcType=DECIMAL},
+      </if>
+      <if test="confirmAmt != null" >
+        CONFIRM_AMT = #{confirmAmt,jdbcType=DECIMAL},
+      </if>
+      <if test="reachTimeType != null" >
+        REACH_TIME_TYPE = #{reachTimeType,jdbcType=VARCHAR},
+      </if>
+      <if test="paymentType != null" >
+        PAYMENT_TYPE = #{paymentType,jdbcType=VARCHAR},
+      </if>
+      <if test="status != null" >
+        STATUS = #{status,jdbcType=VARCHAR},
+      </if>
+      <if test="memoTxt != null" >
+        MEMO_TXT = #{memoTxt,jdbcType=VARCHAR},
+      </if>
+      <if test="dispOrder != null" >
+        DISP_ORDER = #{dispOrder,jdbcType=INTEGER},
+      </if>
+      <if test="dispEmpNo != null" >
+        DISP_EMP_NO = #{dispEmpNo,jdbcType=VARCHAR},
+      </if>
+      <if test="hzOrderNo != null" >
+        HZ_ORDER_NO = #{hzOrderNo,jdbcType=VARCHAR},
+      </if>
+      <if test="dayAcctFlag != null" >
+        DAY_ACCT_FLAG = #{dayAcctFlag,jdbcType=CHAR},
+      </if>
+      <if test="createAt != null" >
+        CREATE_AT = #{createAt,jdbcType=TIMESTAMP},
+      </if>
+      <if test="createBy != null" >
+        CREATE_BY = #{createBy,jdbcType=VARCHAR},
+      </if>
+      <if test="createByTxt != null" >
+        CREATE_BY_TXT = #{createByTxt,jdbcType=VARCHAR},
+      </if>
+      <if test="lastModified != null" >
+        LAST_MODIFIED = #{lastModified,jdbcType=TIMESTAMP},
+      </if>
+      <if test="lastModifiedBy != null" >
+        LAST_MODIFIED_BY = #{lastModifiedBy,jdbcType=VARCHAR},
+      </if>
+      <if test="lastModifiedByTxt != null" >
+        LAST_MODIFIED_BY_TXT = #{lastModifiedByTxt,jdbcType=VARCHAR},
+      </if>
+      <if test="paymentOrderNo != null" >
+        PAYMENT_ORDER_NO = #{paymentOrderNo,jdbcType=VARCHAR},
+      </if>
+      <if test="subscribeOrderNo != null" >
+        SUBSCRIBE_ORDER_NO = #{subscribeOrderNo,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where ORDER_NO = #{orderNo,jdbcType=VARCHAR}
+    <if test="orderDate != null" >
+      and ORDER_DATE = #{orderDate,jdbcType=DATE}
+    </if>
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.nhry.data.milk.domain.TDispOrder" >
+    update t_mst_disp_order
+    set DISP_DATE = #{dispDate,jdbcType=DATE},
+      BRANCH_NO = #{branchNo,jdbcType=VARCHAR},
+      DISP_LINE_NO = #{dispLineNo,jdbcType=VARCHAR},
+      MST_CUST_NO = #{mstCustNo,jdbcType=VARCHAR},
+      AMT = #{amt,jdbcType=DECIMAL},
+      CONFIRM_AMT = #{confirmAmt,jdbcType=DECIMAL},
+      REACH_TIME_TYPE = #{reachTimeType,jdbcType=VARCHAR},
+      PAYMENT_TYPE = #{paymentType,jdbcType=VARCHAR},
+      STATUS = #{status,jdbcType=VARCHAR},
+      MEMO_TXT = #{memoTxt,jdbcType=VARCHAR},
+      DISP_ORDER = #{dispOrder,jdbcType=INTEGER},
+      DISP_EMP_NO = #{dispEmpNo,jdbcType=VARCHAR},
+      HZ_ORDER_NO = #{hzOrderNo,jdbcType=VARCHAR},
+      DAY_ACCT_FLAG = #{dayAcctFlag,jdbcType=CHAR},
+      CREATE_AT = #{createAt,jdbcType=TIMESTAMP},
+      CREATE_BY = #{createBy,jdbcType=VARCHAR},
+      CREATE_BY_TXT = #{createByTxt,jdbcType=VARCHAR},
+      LAST_MODIFIED = #{lastModified,jdbcType=TIMESTAMP},
+      LAST_MODIFIED_BY = #{lastModifiedBy,jdbcType=VARCHAR},
+      LAST_MODIFIED_BY_TXT = #{lastModifiedByTxt,jdbcType=VARCHAR},
+      PAYMENT_ORDER_NO = #{paymentOrderNo,jdbcType=VARCHAR},
+      SUBSCRIBE_ORDER_NO = #{subscribeOrderNo,jdbcType=VARCHAR}
+    where ORDER_NO = #{orderNo,jdbcType=VARCHAR}
+      and ORDER_DATE = #{orderDate,jdbcType=DATE}
+  </update>
+</mapper>

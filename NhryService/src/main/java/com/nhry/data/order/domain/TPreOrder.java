@@ -74,7 +74,17 @@ public class TPreOrder {
     
     private String stopReason;
     
+    private String deliveryType;
+    
+    public String getDeliveryType()
+	{
+		return deliveryType;
+	}
 
+	public void setDeliveryType(String deliveryType)
+	{
+		this.deliveryType = deliveryType;
+	}
 
 	 public String getBranchName()
     {
