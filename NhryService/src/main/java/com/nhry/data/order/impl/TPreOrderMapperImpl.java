@@ -11,6 +11,8 @@
  */
 package com.nhry.data.order.impl;
 
+import java.util.List;
+
 import com.github.pagehelper.PageInfo;
 import com.nhry.common.datasource.DynamicSqlSessionTemplate;
 import com.nhry.data.order.dao.TPreOrderMapper;
@@ -96,6 +98,12 @@ public class TPreOrderMapperImpl implements TPreOrderMapper
 	public int updateOrderEndDate(TPreOrder record)
 	{
 		return sqlSessionTemplate.update("updateOrderEndDate", record);
+	}
+	
+	@Override
+	public List<TPreOrder> selectDispNoByGroup()
+	{
+		return sqlSessionTemplate.selectList("selectDispNoByGroup");
 	}
 	
 	@Override
