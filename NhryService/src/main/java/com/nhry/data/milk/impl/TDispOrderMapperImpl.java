@@ -1,6 +1,10 @@
 package com.nhry.data.milk.impl;
 
+import java.util.Date;
+import java.util.List;
+
 import com.github.pagehelper.PageInfo;
+import com.nhry.common.auth.UserSessionService;
 import com.nhry.common.datasource.DynamicSqlSessionTemplate;
 import com.nhry.data.milk.dao.TDispOrderMapper;
 import com.nhry.data.milk.domain.TDispOrder;
@@ -13,12 +17,23 @@ public class TDispOrderMapperImpl implements TDispOrderMapper
 	public void setSqlSessionTemplate(DynamicSqlSessionTemplate sqlSessionTemplate) {
 		this.sqlSessionTemplate = sqlSessionTemplate;
 	}
+	private UserSessionService userSessionService;
+	public void setUserSessionService(UserSessionService userSessionService) {
+		this.userSessionService = userSessionService;
+	}
 	
 	@Override
 	public PageInfo selectMilkboxsByPage(RouteOrderSearchModel smodel)
 	{
 		// TODO Auto-generated method stub
 		return sqlSessionTemplate.selectListByPages("searchRoutePlansByPage",smodel, Integer.parseInt(smodel.getPageNum()), Integer.parseInt(smodel.getPageSize()));
+	}
+	
+	@Override
+	public TDispOrder selectByPrimaryKey(TDispOrderKey key)
+	{
+		// TODO Auto-generated method stub
+		return sqlSessionTemplate.selectOne("selectDispOrderByOrderNo", key);
 	}
 	
 	@Override
@@ -32,14 +47,7 @@ public class TDispOrderMapperImpl implements TDispOrderMapper
 	public int insert(TDispOrder record)
 	{
 		// TODO Auto-generated method stub
-		return 0;
-	}
-
-	@Override
-	public TDispOrder selectByPrimaryKey(TDispOrderKey key)
-	{
-		// TODO Auto-generated method stub
-		return null;
+		return sqlSessionTemplate.insert("addNewDispOrder", record);
 	}
 
 	@Override
@@ -50,10 +58,15 @@ public class TDispOrderMapperImpl implements TDispOrderMapper
 	}
 
 	@Override
-	public int updateByPrimaryKey(TDispOrder record)
+	public int updateDispOrderStatus(String orderCode,String status)
 	{
-		// TODO Auto-generated method stub
-		return 0;
+		TDispOrder record = new TDispOrder();
+		record.setOrderNo(orderCode);
+		record.setStatus(status);
+		record.setLastModified(new Date());
+		record.setLastModifiedBy(userSessionService.getCurrentUser().getLoginName());
+		record.setLastModifiedByTxt(userSessionService.getCurrentUser().getDisplayName());
+		return sqlSessionTemplate.update("updateDispOrder", record);
 	}
 
 }

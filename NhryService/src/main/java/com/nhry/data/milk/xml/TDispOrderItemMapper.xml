@@ -5,6 +5,7 @@
     <id column="ORDER_NO" property="orderNo" jdbcType="VARCHAR" />
     <id column="ORDER_DATE" property="orderDate" jdbcType="DATE" />
     <id column="ITEM_NO" property="itemNo" jdbcType="VARCHAR" />
+    <result column="CONFIRM_MATNR" property="confirmMatnr" jdbcType="VARCHAR" />
     <result column="MATNR" property="matnr" jdbcType="VARCHAR" />
     <result column="CONFIRM_QTY" property="confirmQty" jdbcType="DECIMAL" />
     <result column="QTY" property="qty" jdbcType="DECIMAL" />
@@ -19,11 +20,15 @@
     <result column="REDISP_DATE" property="redispDate" jdbcType="DATE" />
     <result column="WHOLESALE_PRICE" property="wholesalePrice" jdbcType="DECIMAL" />
     <result column="WHOLESALE_PRICE_1" property="wholesalePrice1" jdbcType="DECIMAL" />
+    <result column="ADDRESS_NO" property="addressNo" jdbcType="VARCHAR" />
+    <result column="ORG_ITEM_NO" property="orgItemNo" jdbcType="VARCHAR" />
+    <result column="ORG_ORDER_NO" property="orgOrderNo" jdbcType="VARCHAR" />
+    <result column="REACH_TIME_TYPE" property="reachTimeType" jdbcType="VARCHAR" />
   </resultMap>
   <sql id="Base_Column_List" >
-    ORDER_NO, ORDER_DATE, ITEM_NO, MATNR, CONFIRM_QTY, QTY, UNIT, PRICE, AMT, CONFIRM_AMT, 
-    STATUS, PICKUP_ORDER_NO, PICKUP_ORDER_ITEM_NO, REASON, REDISP_DATE, WHOLESALE_PRICE, 
-    WHOLESALE_PRICE_1
+    ORDER_NO, ORDER_DATE, ITEM_NO,CONFIRM_MATNR, MATNR, CONFIRM_QTY, QTY, UNIT, PRICE, AMT, CONFIRM_AMT, 
+    STATUS, PICKUP_ORDER_NO, PICKUP_ORDER_ITEM_NO, REASON, REDISP_DATE, WHOLESALE_PRICE,
+    WHOLESALE_PRICE_1, ADDRESS_NO,ORG_ITEM_NO,ORG_ORDER_NO
   </sql>
   <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="com.nhry.data.milk.domain.TDispOrderItemKey" >
     select 
@@ -39,7 +44,7 @@
       and ORDER_DATE = #{orderDate,jdbcType=DATE}
       and ITEM_NO = #{itemNo,jdbcType=VARCHAR}
   </delete>
-  <select id="selectItemsByKeys" parameterType="com.nhry.data.milk.domain.TDispOrderItemKey" >
+  <select id="selectDispItemsByKey" resultMap="BaseResultMap" parameterType="com.nhry.data.milk.domain.TDispOrderItemKey">
   	 select 
     <include refid="Base_Column_List" />
     from t_mst_disp_order_item
@@ -105,6 +110,9 @@
       <if test="wholesalePrice1 != null" >
         WHOLESALE_PRICE_1,
       </if>
+      <if test="addressNo != null" >
+        ADDRESS_NO,
+      </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides="," >
       <if test="orderNo != null" >
@@ -158,11 +166,33 @@
       <if test="wholesalePrice1 != null" >
         #{wholesalePrice1,jdbcType=DECIMAL},
       </if>
+      <if test="addressNo != null" >
+        #{addressNo,jdbcType=VARCHAR},
+      </if>
     </trim>
   </insert>
-  <update id="updateByPrimaryKeySelective" parameterType="com.nhry.data.milk.domain.TDispOrderItem" >
+  <insert id="batchAddNewDispOrderItems" parameterType="java.util.List" >
+    insert into t_mst_disp_order_item
+    (ORDER_NO, ORDER_DATE, ITEM_NO,CONFIRM_MATNR, MATNR, CONFIRM_QTY, QTY, UNIT, PRICE, AMT, CONFIRM_AMT, 
+    STATUS, PICKUP_ORDER_NO, PICKUP_ORDER_ITEM_NO, REASON, REDISP_DATE, WHOLESALE_PRICE,
+    WHOLESALE_PRICE_1, ADDRESS_NO,ORG_ITEM_NO,ORG_ORDER_NO,REACH_TIME_TYPE) values
+    <foreach collection="list" item="item" index="index"  
+        separator=",">  
+        ( #{item.orderNo}, #{item.orderDate}, #{item.itemNo},  
+        #{item.confirmMatnr}, #{item.matnr},  
+        #{item.confirmQty},#{item.qty}, #{item.unit},  
+        #{item.price}, #{item.amt},  
+        #{item.confirmAmt}, #{item.status}, #{item.pickupOrderNo},  
+        #{item.pickupOrderItemNo}, #{item.reason}, #{item.redispDate},
+        #{item.wholesalePrice}, #{item.wholesalePrice1}, #{item.addressNo}, #{item.orgItemNo}, #{item.orgOrderNo},#{item.reachTimeType} )  
+    </foreach> 
+  </insert>
+  <update id="updateDispOrderItem" parameterType="com.nhry.data.milk.domain.TDispOrderItem" >
     update t_mst_disp_order_item
     <set >
+      <if test="confirmMatnr != null" >
+        CONFIRM_QTY = #{confirmMatnr,jdbcType=DECIMAL},
+      </if>
       <if test="matnr != null" >
         MATNR = #{matnr,jdbcType=VARCHAR},
       </if>
@@ -207,7 +237,7 @@
       </if>
     </set>
     where ORDER_NO = #{orderNo,jdbcType=VARCHAR}
-      and ORDER_DATE = #{orderDate,jdbcType=DATE}
+      <!-- and ORDER_DATE = #{orderDate,jdbcType=DATE} -->
       and ITEM_NO = #{itemNo,jdbcType=VARCHAR}
   </update>
   <update id="updateByPrimaryKey" parameterType="com.nhry.data.milk.domain.TDispOrderItem" >

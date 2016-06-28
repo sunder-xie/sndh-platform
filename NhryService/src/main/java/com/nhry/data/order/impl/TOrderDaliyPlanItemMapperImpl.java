@@ -114,10 +114,13 @@ public class TOrderDaliyPlanItemMapperImpl implements TOrderDaliyPlanItemMapper
 	}
 
 	@Override
-	public TOrderDaliyPlanItem selectByPrimaryKey(TOrderDaliyPlanItemKey key)
+	public List<TOrderDaliyPlanItem> selectbyDispLineNo(String dispNo , String date ,String reachTimeType)
 	{
-		// TODO Auto-generated method stub
-		return null;
+		TOrderDaliyPlanItemKey key = new TOrderDaliyPlanItemKey();
+		key.setPlanItemNo(date);
+		key.setItemNo(dispNo);
+		key.setOrderNo(reachTimeType);
+		return sqlSessionTemplate.selectList("selectDaliyPlansByDispNo", key);
 	}
 
 	@Override

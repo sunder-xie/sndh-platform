@@ -15,7 +15,7 @@ public interface TOrderDaliyPlanItemMapper {
 
     int insertSelective(TOrderDaliyPlanItem record);
 
-    TOrderDaliyPlanItem selectByPrimaryKey(TOrderDaliyPlanItemKey key);
+    List<TOrderDaliyPlanItem> selectbyDispLineNo(String dispNo , String date,String reachTimeType);
 
     int updateByPrimaryKeySelective(TOrderDaliyPlanItem record);
 

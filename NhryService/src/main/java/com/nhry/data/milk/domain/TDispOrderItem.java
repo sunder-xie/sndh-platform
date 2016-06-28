@@ -5,6 +5,8 @@ import java.util.Date;
 
 public class TDispOrderItem extends TDispOrderItemKey {
     private String matnr;
+    
+    private String confirmMatnr;
 
     private BigDecimal confirmQty;
 
@@ -32,7 +34,55 @@ public class TDispOrderItem extends TDispOrderItemKey {
 
     private BigDecimal wholesalePrice1;
 
-    public String getMatnr() {
+    private String addressNo;
+    
+    private String orgItemNo;
+    
+    private String orgOrderNo;
+    
+    private String reachTimeType;
+    
+    public String getReachTimeType()
+	{
+		return reachTimeType;
+	}
+
+	public void setReachTimeType(String reachTimeType)
+	{
+		this.reachTimeType = reachTimeType;
+	}
+
+	public String getOrgItemNo()
+	{
+		return orgItemNo;
+	}
+
+	public void setOrgItemNo(String orgItemNo)
+	{
+		this.orgItemNo = orgItemNo == null ? null : orgItemNo.trim();
+	}
+
+	public String getOrgOrderNo()
+	{
+		return orgOrderNo;
+	}
+
+	public void setOrgOrderNo(String orgOrderNo)
+	{
+		this.orgOrderNo = orgOrderNo == null ? null : orgOrderNo.trim();
+	}
+
+	public String getAddressNo()
+	{
+		return addressNo;
+	}
+
+	public void setAddressNo(String addressNo)
+	{
+		this.addressNo = addressNo == null ? null : addressNo.trim();
+	}
+
+	public String getMatnr() {
         return matnr;
     }
 
@@ -40,7 +90,17 @@ public class TDispOrderItem extends TDispOrderItemKey {
         this.matnr = matnr == null ? null : matnr.trim();
     }
 
-    public BigDecimal getConfirmQty() {
+    public String getConfirmMatnr()
+	 {
+		return confirmMatnr;
+	 }
+
+	public void setConfirmMatnr(String confirmMatnr)
+	{
+		this.confirmMatnr = confirmMatnr == null ? null : confirmMatnr.trim();
+	}
+
+	public BigDecimal getConfirmQty() {
         return confirmQty;
     }
 

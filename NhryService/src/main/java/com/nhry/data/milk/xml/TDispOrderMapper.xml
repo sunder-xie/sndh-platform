@@ -26,6 +26,7 @@
     <result column="LAST_MODIFIED_BY_TXT" property="lastModifiedByTxt" jdbcType="VARCHAR" />
     <result column="PAYMENT_ORDER_NO" property="paymentOrderNo" jdbcType="VARCHAR" />
     <result column="SUBSCRIBE_ORDER_NO" property="subscribeOrderNo" jdbcType="VARCHAR" />
+    <result column="TOTAL_QTY" property="totalQty" jdbcType="INTEGER" />
   </resultMap>
   <sql id="Base_Column_List" >
     ORDER_NO, ORDER_DATE, DISP_DATE, BRANCH_NO, DISP_LINE_NO, MST_CUST_NO, AMT, CONFIRM_AMT, 
@@ -33,12 +34,14 @@
     DAY_ACCT_FLAG, CREATE_AT, CREATE_BY, CREATE_BY_TXT, LAST_MODIFIED, LAST_MODIFIED_BY, 
     LAST_MODIFIED_BY_TXT, PAYMENT_ORDER_NO, SUBSCRIBE_ORDER_NO
   </sql>
-  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="com.nhry.data.milk.domain.TDispOrderKey" >
+  <select id="selectDispOrderByOrderNo" resultMap="BaseResultMap" parameterType="com.nhry.data.milk.domain.TDispOrderKey" >
     select 
     <include refid="Base_Column_List" />
     from t_mst_disp_order
     where ORDER_NO = #{orderNo,jdbcType=VARCHAR}
+    <if test="orderDate != null and orderDate !=''">
       and ORDER_DATE = #{orderDate,jdbcType=DATE}
+    </if>  
   </select>
   <delete id="deleteByPrimaryKey" parameterType="com.nhry.data.milk.domain.TDispOrderKey" >
     delete from t_mst_disp_order
@@ -64,7 +67,7 @@
     </if>
     order by ORDER_NO
   </select>
-  <insert id="insertSelective" parameterType="com.nhry.data.milk.domain.TDispOrder" >
+  <insert id="addNewDispOrder" parameterType="com.nhry.data.milk.domain.TDispOrder" >
     insert into t_mst_disp_order
     <trim prefix="(" suffix=")" suffixOverrides="," >
       <if test="orderNo != null" >
@@ -138,6 +141,9 @@
       </if>
       <if test="subscribeOrderNo != null" >
         SUBSCRIBE_ORDER_NO,
+      </if>
+      <if test="totalQty != null" >
+        TOTAL_QTY,
       </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides="," >
@@ -213,9 +219,12 @@
       <if test="subscribeOrderNo != null" >
         #{subscribeOrderNo,jdbcType=VARCHAR},
       </if>
+      <if test="totalQty != null" >
+        #{totalQty,jdbcType=INTEGER},
+      </if>
     </trim>
   </insert>
-  <update id="updateByPrimaryKeySelective" parameterType="com.nhry.data.milk.domain.TDispOrder" >
+  <update id="updateDispOrder" parameterType="com.nhry.data.milk.domain.TDispOrder" >
     update t_mst_disp_order
     <set >
       <if test="dispDate != null" >
@@ -286,7 +295,9 @@
       </if>
     </set>
     where ORDER_NO = #{orderNo,jdbcType=VARCHAR}
+    <if test="orderDate != null" >
       and ORDER_DATE = #{orderDate,jdbcType=DATE}
+    </if>
   </update>
   <update id="updateByPrimaryKey" parameterType="com.nhry.data.milk.domain.TDispOrder" >
     update t_mst_disp_order

@@ -47,8 +47,20 @@ public class TDispOrder extends TDispOrderKey {
     private String paymentOrderNo;
 
     private String subscribeOrderNo;
+    
+    private Integer totalQty;
+    
+	public Integer getTotalQty()
+	{
+		return totalQty;
+	}
 
-    public Date getDispDate() {
+	public void setTotalQty(Integer totalQty)
+	{
+		this.totalQty = totalQty;
+	}
+
+	public Date getDispDate() {
         return dispDate;
     }
 

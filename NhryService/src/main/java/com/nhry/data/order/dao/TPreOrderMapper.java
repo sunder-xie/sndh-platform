@@ -1,5 +1,7 @@
 package com.nhry.data.order.dao;
 
+import java.util.List;
+
 import com.github.pagehelper.PageInfo;
 import com.nhry.data.order.domain.TPreOrder;
 import com.nhry.model.order.ManHandOrderSearchModel;
@@ -35,5 +37,7 @@ public interface TPreOrderMapper {
     int orderUnsubscribe(String orderNo);
     
     int updateOrderEndDate(TPreOrder record);
+    
+    List<TPreOrder> selectDispNoByGroup();
 
 }

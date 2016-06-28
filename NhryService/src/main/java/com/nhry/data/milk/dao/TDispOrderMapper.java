@@ -1,5 +1,7 @@
 package com.nhry.data.milk.dao;
 
+import java.util.List;
+
 import com.github.pagehelper.PageInfo;
 import com.nhry.data.milk.domain.TDispOrder;
 import com.nhry.data.milk.domain.TDispOrderKey;
@@ -16,5 +18,5 @@ public interface TDispOrderMapper {
 
     int updateByPrimaryKeySelective(TDispOrder record);
 
-    int updateByPrimaryKey(TDispOrder record);
+    int updateDispOrderStatus(String orderCode,String status);
 }

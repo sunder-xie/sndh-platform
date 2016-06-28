@@ -72,7 +72,19 @@ public class TPreOrder {
     
     private Date endDate;
     
-    public Date getEndDate()
+    private String deliveryType;
+    
+    public String getDeliveryType()
+	{
+		return deliveryType;
+	}
+
+	public void setDeliveryType(String deliveryType)
+	{
+		this.deliveryType = deliveryType;
+	}
+
+	public Date getEndDate()
 	 {
 		return endDate;
 	 }
