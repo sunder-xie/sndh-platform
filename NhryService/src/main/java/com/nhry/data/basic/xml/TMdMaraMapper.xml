@@ -71,6 +71,8 @@
 		pex.PRE_DAYS,
 		pex.BOT_TYPE,
 		pex.MATNR EX_MATNR,
+		pex.SALES_FLAG,
+		pex.RET_BOT_FLAG,
 		pex.CREATE_AT, 
 		pex.CREATE_BY,
 		pex.CREATE_BY_TXT,
@@ -102,10 +104,12 @@
 		p.ZBOT_CODE,
 		p.SALES_ORG,
 		p.DEALER_NO,
-		pex.MATNR EX_MATNR,
 		pex.SHORT_TXT,
 		pex.PRE_DAYS,
 		pex.BOT_TYPE,
+		pex.MATNR EX_MATNR,
+		pex.SALES_FLAG,
+		pex.RET_BOT_FLAG,
 		pex.CREATE_AT, 
 		pex.CREATE_BY,
 		pex.CREATE_BY_TXT,
@@ -130,6 +134,12 @@
 				p.MATNR_TXT like '%' ||
 				#{matnrTxt}' || %' )
 			</if>
+			<if test="salesOrg != null and salesOrg != ''">
+			   AND p.SALES_ORG=#{salesOrg}
+			</if>
+			<if test="dealerNo != null and dealerNo != ''">
+			   AND p.DEALER_NO=#{dealerNo}
+			</if>
 		</where>
 		ORDER BY p.MATNR
 	</select>
@@ -153,16 +163,18 @@
 		p.ZBOT_CODE,
 		p.SALES_ORG,
 		p.DEALER_NO,
-		pex.MATNR EX_MATNR,
 		pex.SHORT_TXT,
 		pex.PRE_DAYS,
 		pex.BOT_TYPE,
+		pex.MATNR EX_MATNR,
+		pex.SALES_FLAG,
+		pex.RET_BOT_FLAG,
 		pex.CREATE_AT, 
 		pex.CREATE_BY,
 		pex.CREATE_BY_TXT,
 		pex.LAST_MODIFIED,
 		pex.LAST_MODIFIED_BY,
-		pex.LAST_MODIFIED_BY_TXT 
+		pex.LAST_MODIFIED_BY_TXT  
 		FROM
 		t_md_mara p
 		LEFT JOIN t_md_mara_ex pex ON p.MATNR = pex.MATNR
@@ -178,10 +190,7 @@
 		where MATNR = #{matnr,jdbcType=VARCHAR}
 	</update>
 	<update id="pubProductByCode" parameterType="java.lang.String">
-		update t_md_mara
-		set
-		STATUS = "Y"
-		where MATNR = #{0}
+		update t_md_mara set STATUS = "Y" where MATNR = #{0}
 	</update>
 	<insert id="addProduct" parameterType="com.nhry.data.basic.domain.TMdMara">
 		insert into t_md_mara

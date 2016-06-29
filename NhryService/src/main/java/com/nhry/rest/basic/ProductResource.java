@@ -47,8 +47,8 @@ public class ProductResource extends BaseResource {
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
 	@ApiOperation(value = "/upt", response = ResponseModel.class, notes = "更新商品信息")
-	public Response uptProduct(@ApiParam(required=true,name="record",value="系统参数json格式")TMdMaraEx record){
-		return convertToRespModel(MessageCode.NORMAL, null,  productService.uptProductExByCode(record));
+	public Response uptProduct(@ApiParam(required=true,name="record",value="系统参数json格式")TMdMara record){
+		return convertToRespModel(MessageCode.NORMAL, null,  productService.uptProductByCode(record));
 	}	
 	
 	@POST

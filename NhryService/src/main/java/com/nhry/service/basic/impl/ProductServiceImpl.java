@@ -18,7 +18,9 @@ import com.nhry.service.basic.pojo.ProductInfoExModel;
 import com.nhry.utils.PrimaryKeyUtils;
 import com.nhry.utils.date.Date;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class ProductServiceImpl extends BaseService implements ProductService {
 
@@ -37,6 +39,10 @@ public class ProductServiceImpl extends BaseService implements ProductService {
 	@Override
 	public TMdMara selectProductByCode(String productCode) {
 		// TODO Auto-generated method stub
+//		Map<String,String> attrs = new HashMap<String,String>();
+//		attrs.put("salesOrg", this.userSessionService.getCurrentUser().getSalesOrg() == null ? "-1" : this.userSessionService.getCurrentUser().getSalesOrg());
+//		attrs.put("dealerNo", this.userSessionService.getCurrentUser().getDealerId());
+//		attrs.put("productCode", productCode);
 		return tMdMaraMapper.selectProductByCode(productCode);
 	}
 
@@ -61,7 +67,7 @@ public class ProductServiceImpl extends BaseService implements ProductService {
 		if(record.getMaraEx() != null){
 			this.uptProductExByCode(record.getMaraEx());
 		}
-		return tMdMaraMapper.updateProduct(record);
+		return 1;
 	}
 
 	@Override
@@ -70,6 +76,8 @@ public class ProductServiceImpl extends BaseService implements ProductService {
 		if (StringUtils.isEmpty(smodel.getPageNum()) || StringUtils.isEmpty(smodel.getPageSize())) {
 			throw new ServiceException(MessageCode.LOGIC_ERROR,"pageNum和pageSize不能为空！");
 		}
+		smodel.setSalesOrg(this.userSessionService.getCurrentUser().getSalesOrg() == null ? "-1" : this.userSessionService.getCurrentUser().getSalesOrg());
+		smodel.setDealerNo(this.userSessionService.getCurrentUser().getDealerId());
 		return tMdMaraMapper.searchProducts(smodel);
 	}
 
