@@ -12,7 +12,7 @@ public interface TMdMaraMapper {
 
     TMdMara selectProductByCode(String matnr);
 
-    ProductInfoExModel selectProductAndExByCode(String matnr);
+    TMdMara selectProductAndExByCode(String matnr);
 
     int uptProductByCode(TMdMara record);
 
@@ -20,9 +20,9 @@ public interface TMdMaraMapper {
 
     PageInfo searchProducts(ProductQueryModel smodel);
 
-    List<ProductInfoExModel> selectProductAndExListByCode(String productCode);
+    List<TMdMara> selectProductAndExListByCode(String productCode);
 
-    int insertProduct(TMdMara tMdMara);
+    int addProduct(TMdMara tMdMara);
 
     int updateProduct(TMdMara tMdMara);
 

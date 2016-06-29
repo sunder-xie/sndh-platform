@@ -124,4 +124,8 @@
 	<bean id="custMapper"  class="com.nhry.data.basic.impl.TVipCustInfoMapperImpl">
 	    <property name="sqlSessionTemplate"  ref="dynamicSqlSessionTemplate"></property>
 	</bean>
+	
+	<bean id="maraPriceMapper" class="com.nhry.data.basic.impl.TMaraPriceRelMapperImpl">
+	   <property name="sqlSessionTemplate"  ref="dynamicSqlSessionTemplate"></property>
+	</bean>
 </beans>

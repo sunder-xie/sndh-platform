@@ -10,13 +10,15 @@ public interface ProductService {
 
     TMdMara selectProductByCode(String productCode);
 
-    int uptProductExByCode(TMdMaraEx record);
+    int uptProductByCode(TMdMara record);
+    
+    int uptProductExByCode(TMdMaraEx maraEx);
     
     int pubProductByCode(String code);
     
     public PageInfo searchProducts(ProductQueryModel smodel);
     
-    ProductInfoExModel selectProductAndExByCode(String matnr);
+    TMdMara selectProductAndExByCode(String matnr);
 
-    List<ProductInfoExModel> selectProductAndExListByCode(String productCode);
+    List<TMdMara> selectProductAndExListByCode(String productCode);
 }

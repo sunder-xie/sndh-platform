@@ -5,31 +5,33 @@ import com.wordnik.swagger.annotations.ApiModelProperty;
 
 import java.io.Serializable;
 
-
-@ApiModel(value = "PriceSearchModel", description = "价格组列表查询对象")
-public class PriceQueryModel extends BaseQueryModel implements Serializable
-{
-	@ApiModelProperty(value = "agencyType", notes = "经销商类型")
-	private String agencyType;
+public class PriceQueryModel extends BaseQueryModel implements Serializable {
+	private String priceGroup;;
 	private String status;
-
-	public String getAgencyType()
-	{
-		return agencyType;
+	private String startDate;
+	private String endDate;
+	public String getPriceGroup() {
+		return priceGroup;
 	}
-
-	public void setAgencyType(String agencyType)
-	{
-		this.agencyType = agencyType;
+	public void setPriceGroup(String priceGroup) {
+		this.priceGroup = priceGroup;
 	}
-
-	public String getStatus()
-	{
+	public String getStatus() {
 		return status;
 	}
-
-	public void setStatus(String status)
-	{
+	public void setStatus(String status) {
 		this.status = status;
+	}
+	public String getStartDate() {
+		return startDate;
+	}
+	public void setStartDate(String startDate) {
+		this.startDate = startDate;
+	}
+	public String getEndDate() {
+		return endDate;
+	}
+	public void setEndDate(String endDate) {
+		this.endDate = endDate;
 	}
 }

@@ -1,20 +1,16 @@
 package com.nhry.data.basic.domain;
 
-import java.io.Serializable;
+import java.math.BigDecimal;
 import java.util.Date;
 
-public class TMdMaraEx implements Serializable{
+public class TMaraPriceRel {
+    private String relNo;
+
     private String matnr;
+    
+    private String matnrTxt;
 
-    private String salesFlag;
-
-    private String shortTxt;
-
-    private Integer preDays;
-
-    private String botType;
-
-    private String retBotFlag;
+    private String id;
 
     private Date createAt;
 
@@ -28,6 +24,20 @@ public class TMdMaraEx implements Serializable{
 
     private String lastModifiedByTxt;
 
+    private BigDecimal price1;
+
+    private BigDecimal price2;
+    
+    private String editStatus;
+
+    public String getRelNo() {
+        return relNo;
+    }
+
+    public void setRelNo(String relNo) {
+        this.relNo = relNo == null ? null : relNo.trim();
+    }
+
     public String getMatnr() {
         return matnr;
     }
@@ -36,44 +46,12 @@ public class TMdMaraEx implements Serializable{
         this.matnr = matnr == null ? null : matnr.trim();
     }
 
-    public String getSalesFlag() {
-        return salesFlag;
+    public String getId() {
+        return id;
     }
 
-    public void setSalesFlag(String salesFlag) {
-        this.salesFlag = salesFlag == null ? null : salesFlag.trim();
-    }
-
-    public String getShortTxt() {
-        return shortTxt;
-    }
-
-    public void setShortTxt(String shortTxt) {
-        this.shortTxt = shortTxt == null ? null : shortTxt.trim();
-    }
-
-    public Integer getPreDays() {
-        return preDays;
-    }
-
-    public void setPreDays(Integer preDays) {
-        this.preDays = preDays;
-    }
-
-    public String getBotType() {
-        return botType;
-    }
-
-    public void setBotType(String botType) {
-        this.botType = botType == null ? null : botType.trim();
-    }
-
-    public String getRetBotFlag() {
-        return retBotFlag;
-    }
-
-    public void setRetBotFlag(String retBotFlag) {
-        this.retBotFlag = retBotFlag == null ? null : retBotFlag.trim();
+    public void setId(String id) {
+        this.id = id == null ? null : id.trim();
     }
 
     public Date getCreateAt() {
@@ -123,4 +101,36 @@ public class TMdMaraEx implements Serializable{
     public void setLastModifiedByTxt(String lastModifiedByTxt) {
         this.lastModifiedByTxt = lastModifiedByTxt == null ? null : lastModifiedByTxt.trim();
     }
+
+    public BigDecimal getPrice1() {
+        return price1;
+    }
+
+    public void setPrice1(BigDecimal price1) {
+        this.price1 = price1;
+    }
+
+    public BigDecimal getPrice2() {
+        return price2;
+    }
+
+    public void setPrice2(BigDecimal price2) {
+        this.price2 = price2;
+    }
+
+	public String getMatnrTxt() {
+		return matnrTxt;
+	}
+
+	public void setMatnrTxt(String matnrTxt) {
+		this.matnrTxt = matnrTxt;
+	}
+
+	public String getEditStatus() {
+		return editStatus;
+	}
+
+	public void setEditStatus(String editStatus) {
+		this.editStatus = editStatus;
+	}
 }

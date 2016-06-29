@@ -45,13 +45,13 @@ public class TMdMaraMapperImpl implements TMdMaraMapper {
     }
 
     @Override
-    public List<ProductInfoExModel> selectProductAndExListByCode(String productCode) {
+    public List<TMdMara> selectProductAndExListByCode(String productCode) {
         return this.sqlSessionTemplate.selectList("selectProductAndExListByCode", productCode);
     }
 
     @Override
-    public int insertProduct(TMdMara tMdMara) {
-        return sqlSessionTemplate.insert("insertProduct",tMdMara);
+    public int addProduct(TMdMara tMdMara) {
+        return sqlSessionTemplate.insert("addProduct",tMdMara);
     }
 
     @Override
@@ -65,7 +65,7 @@ public class TMdMaraMapperImpl implements TMdMaraMapper {
     }
 
     @Override
-    public ProductInfoExModel selectProductAndExByCode(String productCode) {
+    public TMdMara selectProductAndExByCode(String productCode) {
         // TODO Auto-generated method stub
         return this.sqlSessionTemplate.selectOne("selectProductAndExByCode", productCode);
     }
@@ -75,6 +75,4 @@ public class TMdMaraMapperImpl implements TMdMaraMapper {
         // TODO Auto-generated method stub
         return this.sqlSessionTemplate.update("pubProductByCode", code);
     }
-
-
 }
