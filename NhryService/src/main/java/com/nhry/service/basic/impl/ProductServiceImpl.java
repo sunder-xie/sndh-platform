@@ -58,6 +58,7 @@ public class ProductServiceImpl extends BaseService implements ProductService {
 			for(TBranchSalesList sl : record.getSalesList()){
 				sl.setListNo(PrimaryKeyUtils.generateUuidKey());
 				sl.setCreateAt(new Date());
+				sl.setMatnr(record.getMatnr());
 				sl.setCreateBy(this.userSessionService.getCurrentUser().getLoginName());
 				sl.setCreateByTxt(this.userSessionService.getCurrentUser().getDisplayName());
 				salesListMapper.addBranchSales(sl);
@@ -65,7 +66,7 @@ public class ProductServiceImpl extends BaseService implements ProductService {
 		}
 		record.setLastModified(new Date());
 		if(record.getMaraEx() != null){
-			this.uptProductExByCode(record.getMaraEx());
+			this.uptProductExByCode(record.getMatnr(),record.getMaraEx());
 		}
 		return 1;
 	}
@@ -103,15 +104,20 @@ public class ProductServiceImpl extends BaseService implements ProductService {
 	}
 
 	@Override
-	public int uptProductExByCode(TMdMaraEx maraEx) {
+	public int uptProductExByCode(String matnr,TMdMaraEx maraEx) {
 		// TODO Auto-generated method stub
-		if(!StringUtils.isEmpty(maraEx.getMatnr())){
+		TMdMaraEx ex = this.tMdMaraExMapper.findProductExByCode(matnr);
+		if(ex == null){
+			maraEx.setMatnr(matnr);
+			maraEx.setCreateAt(new Date());
+			maraEx.setCreateBy(this.userSessionService.getCurrentUser().getLoginName());
+			maraEx.setCreateByTxt(this.userSessionService.getCurrentUser().getDisplayName());
+			this.tMdMaraExMapper.addMaraEx(maraEx);
+		}else{
 			maraEx.setLastModified(new Date());
 			maraEx.setLastModifiedBy(this.userSessionService.getCurrentUser().getLoginName());
 			maraEx.setLastModifiedByTxt(this.userSessionService.getCurrentUser().getDisplayName());
 			this.tMdMaraExMapper.uptProductExByCode(maraEx);
-		}else{
-			this.tMdMaraExMapper.addMaraEx(maraEx);
 		}
 		return 1;
 	}

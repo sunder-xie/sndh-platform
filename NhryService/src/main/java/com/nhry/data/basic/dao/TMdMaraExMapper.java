@@ -7,4 +7,6 @@ public interface TMdMaraExMapper {
     int uptProductExByCode(TMdMaraEx record);
     
     int addMaraEx(TMdMaraEx record);
+    
+    TMdMaraEx findProductExByCode(String matnr);
 }

@@ -5,6 +5,7 @@ import com.nhry.data.basic.domain.TMdMara;
 import com.nhry.data.basic.domain.TMdMaraEx;
 import com.nhry.model.basic.ProductQueryModel;
 import com.nhry.service.basic.pojo.ProductInfoExModel;
+
 import  java.util.*;
 public interface ProductService {
 
@@ -12,7 +13,7 @@ public interface ProductService {
 
     int uptProductByCode(TMdMara record);
     
-    int uptProductExByCode(TMdMaraEx maraEx);
+    int uptProductExByCode(String matnr,TMdMaraEx maraEx);
     
     int pubProductByCode(String code);
     

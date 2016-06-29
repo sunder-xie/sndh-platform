@@ -20,9 +20,14 @@
 	<bean id="maraExMapper" class="com.nhry.data.basic.impl.TMdMaraExMapperImpl">
 	   <property name="sqlSessionTemplate"  ref="dynamicSqlSessionTemplate"></property>
 	</bean>
+	<bean id="salesListMapper" class="com.nhry.data.basic.impl.TBranchSalesListMapperImpl">
+		<property name="sqlSessionTemplate"  ref="dynamicSqlSessionTemplate"></property>
+	</bean>
 	<bean id="productService" class="com.nhry.service.basic.impl.ProductServiceImpl">
 	   <property name="tMdMaraMapper"  ref="maraMapper"></property>
 	   <property name="tMdMaraExMapper"  ref="maraExMapper"></property>
+	   <property name="salesListMapper" ref="salesListMapper"></property>
+	   <property name="userSessionService" ref="userSessionService"></property>
 	</bean>
 	
 	<!-- 价格组信息  -->

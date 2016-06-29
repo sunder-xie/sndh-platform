@@ -23,4 +23,9 @@ public class TMdMaraExMapperImpl implements TMdMaraExMapper {
 		return this.sqlSessionTemplate.insert("addMaraEx", record);
 	}
 
+	@Override
+	public TMdMaraEx findProductExByCode(String matnr) {
+		// TODO Auto-generated method stub
+		return this.sqlSessionTemplate.selectOne("findProductExByCode", matnr);
+	}
 }
