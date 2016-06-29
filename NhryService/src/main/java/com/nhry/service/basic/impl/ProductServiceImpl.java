@@ -114,6 +114,7 @@ public class ProductServiceImpl extends BaseService implements ProductService {
 			maraEx.setCreateByTxt(this.userSessionService.getCurrentUser().getDisplayName());
 			this.tMdMaraExMapper.addMaraEx(maraEx);
 		}else{
+			maraEx.setMatnr(matnr);
 			maraEx.setLastModified(new Date());
 			maraEx.setLastModifiedBy(this.userSessionService.getCurrentUser().getLoginName());
 			maraEx.setLastModifiedByTxt(this.userSessionService.getCurrentUser().getDisplayName());
