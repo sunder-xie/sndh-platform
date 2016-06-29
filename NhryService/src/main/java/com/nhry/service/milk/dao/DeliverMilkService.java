@@ -16,4 +16,8 @@ public interface DeliverMilkService {
 	int updateRouteOrderItems(RouteDetailUpdateModel record);
 	
 	int createDayRouteOder();
+	
+	int createRouteChanges();
+	
+	int updatePreOrderCurAmt();
 }

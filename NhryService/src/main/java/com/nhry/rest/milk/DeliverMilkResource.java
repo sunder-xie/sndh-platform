@@ -60,9 +60,25 @@ public class DeliverMilkResource extends BaseResource {
 	@GET
 	@Path("/createRouteOrders")
 	@Produces(MediaType.APPLICATION_JSON)
-	@ApiOperation(value = "/createRouteOrders", response = RouteOrderModel.class, notes = "生成路单")
+	@ApiOperation(value = "/createRouteOrders", response = Integer.class, notes = "生成路单")
 	public Response createRouteOrders(){
 		return convertToRespModel(MessageCode.NORMAL, null, deliverMilkService.createDayRouteOder());
+	}
+	
+	@GET
+	@Path("/createRouteChanges")
+	@Produces(MediaType.APPLICATION_JSON)
+	@ApiOperation(value = "/createRouteChanges", response = Integer.class, notes = "生成路单变化单")
+	public Response createRouteChanges(){
+		return convertToRespModel(MessageCode.NORMAL, null, deliverMilkService.createRouteChanges());
+	}
+	
+	@GET
+	@Path("/updatePreOrderCurAmt")
+	@Produces(MediaType.APPLICATION_JSON)
+	@ApiOperation(value = "/updatePreOrderCurAmt", response = Integer.class, notes = "回执后更新订单剩余金额")
+	public Response updatePreOrderCurAmt(){
+		return convertToRespModel(MessageCode.NORMAL, null, deliverMilkService.updatePreOrderCurAmt());
 	}
 	
 }
