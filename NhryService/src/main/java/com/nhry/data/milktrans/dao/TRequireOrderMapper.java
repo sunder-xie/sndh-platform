@@ -1,7 +1,7 @@
-package com.nhry.data.order.dao;
+package com.nhry.data.milktrans.dao;
 
-import com.nhry.data.order.domain.TMstRequireOrder;
-import com.nhry.model.order.RequireOrderModel;
+import com.nhry.data.milktrans.domain.TMstRequireOrder;
+import com.nhry.model.milktrans.RequireOrderSearch;
 
 import java.util.List;
 
@@ -12,8 +12,9 @@ public interface TRequireOrderMapper {
 
     public int insertRequireOrder(TMstRequireOrder order);
 
-    List<TMstRequireOrder> searchRequireOrder(RequireOrderModel rModel);
+    List<TMstRequireOrder> searchRequireOrder(RequireOrderSearch rModel);
     TMstRequireOrder selectRequireOrderItemByitem(TMstRequireOrder tMstRequireOrder);
 
     int uptRequireOrder(TMstRequireOrder tMstRequireOrder);
+    int delRequireOrder(TMstRequireOrder tMstRequireOrder);
 }

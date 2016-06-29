@@ -5,9 +5,8 @@ import com.nhry.data.order.dao.TOrderDaliyPlanItemMapper;
 import com.nhry.data.order.domain.TOrderDaliyPlanItem;
 import com.nhry.data.order.domain.TOrderDaliyPlanItemKey;
 import com.nhry.data.order.domain.TPreOrder;
-import com.nhry.model.order.RequireOrderModel;
+import com.nhry.model.milktrans.RequireOrderModel;
 import com.nhry.model.order.ReturnOrderModel;
-
 import java.util.Date;
 import java.util.List;
 
@@ -81,6 +80,11 @@ public class TOrderDaliyPlanItemMapperImpl implements TOrderDaliyPlanItemMapper
 		return sqlSessionTemplate.update("updateDaliyPlansToStop", record);
 	}
 
+	@Override
+	public List<TOrderDaliyPlanItem> selectDaliyPlansByBranchAndDay(RequireOrderModel rModel) {
+		return sqlSessionTemplate.selectList("selectDaliyPlansByBranchAndDay", rModel);
+	}
+
 	/**
 	 * 根据订单号和日期获取当前日期的日订单状态
 	 * @param orderNo
@@ -101,10 +105,7 @@ public class TOrderDaliyPlanItemMapperImpl implements TOrderDaliyPlanItemMapper
 		return "10";
 	}
 
-	@Override
-	public List<TOrderDaliyPlanItem> selectDaliyPlansByBranchAndDay(RequireOrderModel rModel) {
-		return sqlSessionTemplate.selectList("selectDaliyPlansByBranchAndDay", rModel);
-	}
+
 
 	@Override
 	public int insertSelective(TOrderDaliyPlanItem record)
@@ -114,10 +115,13 @@ public class TOrderDaliyPlanItemMapperImpl implements TOrderDaliyPlanItemMapper
 	}
 
 	@Override
-	public TOrderDaliyPlanItem selectByPrimaryKey(TOrderDaliyPlanItemKey key)
+	public List<TOrderDaliyPlanItem> selectbyDispLineNo(String dispNo , String date ,String reachTimeType)
 	{
-		// TODO Auto-generated method stub
-		return null;
+		TOrderDaliyPlanItemKey key = new TOrderDaliyPlanItemKey();
+		key.setPlanItemNo(date);
+		key.setItemNo(dispNo);
+		key.setOrderNo(reachTimeType);
+		return sqlSessionTemplate.selectList("selectDaliyPlansByDispNo", key);
 	}
 
 	@Override

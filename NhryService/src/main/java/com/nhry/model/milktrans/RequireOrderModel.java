@@ -1,6 +1,5 @@
-package com.nhry.model.order;
+package com.nhry.model.milktrans;
 
-import com.nhry.data.order.domain.OrderRequireItem;
 import com.wordnik.swagger.annotations.ApiModel;
 
 import java.io.Serializable;
@@ -15,9 +14,17 @@ public class RequireOrderModel implements Serializable {
 
     private String branchNo;
     private Date requireDate;
+    private String status;
+    private int  preDays;
     List<OrderRequireItem> entries;
     public String getBranchNo() {
         return branchNo;
+    }
+    public int  getPreDays() {
+        return preDays;
+    }
+    public void setPreDays(int  preDays) {
+        this.preDays = preDays;
     }
 
     public void setBranchNo(String branchNo) {
@@ -38,5 +45,13 @@ public class RequireOrderModel implements Serializable {
 
     public void setEntries(List<OrderRequireItem> entries) {
         this.entries = entries;
+    }
+
+    public String getStatus() {
+        return status;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
     }
 }

@@ -1,26 +1,19 @@
 package com.nhry.data.basic.domain;
 
-import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 public class TMdPrice {
-    private Integer id;
-
-    private String priceType;
+    private String id;
 
     private String salesOrg;
 
-    private String salesCha;
-
     private String priceGroup;
 
+    private String priceType;
+
     private String branchNo;
-
-    private String matnr;
-
-    private String unit;
-
-    private BigDecimal price;
 
     private Date startDate;
 
@@ -43,23 +36,15 @@ public class TMdPrice {
     private String lastModifiedByTxt;
 
     private String status;
+    
+    private List<TMaraPriceRel> mprices = new ArrayList<TMaraPriceRel>();;
 
-    private String priceType1;
-
-    public Integer getId() {
+    public String getId() {
         return id;
     }
 
-    public void setId(Integer id) {
-        this.id = id;
-    }
-
-    public String getPriceType() {
-        return priceType;
-    }
-
-    public void setPriceType(String priceType) {
-        this.priceType = priceType == null ? null : priceType.trim();
+    public void setId(String id) {
+        this.id = id == null ? null : id.trim();
     }
 
     public String getSalesOrg() {
@@ -70,14 +55,6 @@ public class TMdPrice {
         this.salesOrg = salesOrg == null ? null : salesOrg.trim();
     }
 
-    public String getSalesCha() {
-        return salesCha;
-    }
-
-    public void setSalesCha(String salesCha) {
-        this.salesCha = salesCha == null ? null : salesCha.trim();
-    }
-
     public String getPriceGroup() {
         return priceGroup;
     }
@@ -86,36 +63,20 @@ public class TMdPrice {
         this.priceGroup = priceGroup == null ? null : priceGroup.trim();
     }
 
+    public String getPriceType() {
+        return priceType;
+    }
+
+    public void setPriceType(String priceType) {
+        this.priceType = priceType == null ? null : priceType.trim();
+    }
+
     public String getBranchNo() {
         return branchNo;
     }
 
     public void setBranchNo(String branchNo) {
         this.branchNo = branchNo == null ? null : branchNo.trim();
-    }
-
-    public String getMatnr() {
-        return matnr;
-    }
-
-    public void setMatnr(String matnr) {
-        this.matnr = matnr == null ? null : matnr.trim();
-    }
-
-    public String getUnit() {
-        return unit;
-    }
-
-    public void setUnit(String unit) {
-        this.unit = unit == null ? null : unit.trim();
-    }
-
-    public BigDecimal getPrice() {
-        return price;
-    }
-
-    public void setPrice(BigDecimal price) {
-        this.price = price;
     }
 
     public Date getStartDate() {
@@ -206,11 +167,11 @@ public class TMdPrice {
         this.status = status == null ? null : status.trim();
     }
 
-    public String getPriceType1() {
-        return priceType1;
-    }
+	public List<TMaraPriceRel> getMprices() {
+		return mprices;
+	}
 
-    public void setPriceType1(String priceType1) {
-        this.priceType1 = priceType1 == null ? null : priceType1.trim();
-    }
+	public void setMprices(List<TMaraPriceRel> mprices) {
+		this.mprices = mprices;
+	}
 }

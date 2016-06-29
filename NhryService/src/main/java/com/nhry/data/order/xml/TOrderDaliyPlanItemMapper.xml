@@ -66,6 +66,17 @@
     from t_mst_order_daliy_plan_item 
     where ORDER_NO = #{orderNo,jdbcType=VARCHAR}
   </select>
+  <select id="selectDaliyPlansByDispNo" resultMap="BaseResultMap" parameterType="com.nhry.data.order.domain.TOrderDaliyPlanItemKey" >
+    select
+    d.ORDER_NO, d.ORDER_DATE, d.PLAN_ITEM_NO, d.ITEM_NO, d.DISP_DATE, d.REACH_TIME, d.REACH_TIME_TYPE, 
+    d.MATNR, d.UNIT, d.QTY, d.PRICE, d.AMT, d.REMAIN_AMT, d.STATUS, d.CREATE_AT, d.CREATE_BY, o.ADRESS_NO CREATE_BY_TXT, 
+    d.LAST_MODIFIED, d.LAST_MODIFIED_BY, d.LAST_MODIFIED_BY_TXT 
+	 from t_mst_order_daliy_plan_item d
+	 left join t_preorder o on o.order_no = d.order_no
+	 where d.disp_date = #{planItemNo,jdbcType=DATE}
+	 and o.disp_line_no = #{itemNo,jdbcType=VARCHAR}
+	 and d.reach_time_type = #{orderNo,jdbcType=VARCHAR}
+  </select>
   <delete id="deleteFromDateToDate" parameterType="com.nhry.data.order.domain.TOrderDaliyPlanItem" >
     delete from t_mst_order_daliy_plan_item
     where ORDER_NO = #{orderNo,jdbcType=VARCHAR}
@@ -347,12 +358,15 @@
     and DISP_DATE = #{retDate,jdbcType=DATE}
   </select>
 
-  <select id="selectDaliyPlansByBranchAndDay" resultMap="BaseResultMap" parameterType="com.nhry.model.order.RequireOrderModel" >
-    select
-    i.MATNR,m.MATNR_TXT MATNR_TXT,i.QTY
-    from t_mst_order_daliy_plan_item i,t_md_mara m,t_preorder o
-    where  i.MATNR = m.MATNR and i.ORDER_NO = o.ORDER_NO
-    and o.BRANCH_NO = #{branchNo,jdbcType=VARCHAR}
-    and i.DISP_DATE = #{requireDate,jdbcType=DATE}
+  <select id="selectDaliyPlansByBranchAndDay" resultMap="BaseResultMap" parameterType="com.nhry.model.milktrans.RequireOrderModel" >
+   		select  i.MATNR,m.MATNR_TXT MATNR_TXT,i.QTY
+      from t_mst_order_daliy_plan_item i,t_md_mara m,t_preorder o,t_md_mara_ex e
+      where   1=1
+          and	i.ORDER_NO = o.ORDER_NO
+          and  e.PRE_DAYS=#{preDays,jdbcType=INTEGER}
+          and i.MATNR = e.MATNR
+          and e.MATNR = m.MATNR
+          and o.BRANCH_NO = #{branchNo,jdbcType=VARCHAR}
+          and i.DISP_DATE = #{requireDate,jdbcType=DATE}
   </select>
 </mapper>

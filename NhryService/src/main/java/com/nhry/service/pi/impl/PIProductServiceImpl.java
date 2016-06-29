@@ -60,7 +60,7 @@ public class PIProductServiceImpl implements PIProductService {
                 TMdMara tMdMara = new TMdMara();
                 tMdMara.setMatnr(etMatnr.getMATNR());
                 tMdMara.setBaseUnit(etMatnr.getMEINS());
-                tMdMara.setWeight(etMatnr.getNTGEW());
+                tMdMara.setWeight(etMatnr.getNTGEW() == null ? null : etMatnr.getNTGEW().floatValue());
                 tMdMara.setWeightUnit(etMatnr.getGEWEI());
                 tMdMara.setMatnrTxt(etMap.get(etMatnr.getMATNR()));
                 TMdMara tmp = maraMapper.selectProductByCode(etMatnr.getMATNR());
@@ -69,7 +69,7 @@ public class PIProductServiceImpl implements PIProductService {
                     maraMapper.updateProduct(tMdMara);
                 } else {
                     tMdMara.setCreateAt(new Date());
-                    maraMapper.insertProduct(tMdMara);
+                    maraMapper.addProduct(tMdMara);
                 }
                 TMaraSalesKey maraSalesKey = new TMaraSalesKey();
                 maraSalesKey.setMaraId(tMdMara.getMatnr());
