@@ -25,6 +25,8 @@
         <property name="piProductMapper" ref="piProductMapper"/>
         <property name="maraSalesMapper" ref="maraSalesMapper"/>
         <property name="maraMapper" ref="maraMapper"/>
+        <property name="branchMapper" ref="branchMapper"/>
+        <property name="dealerMapper" ref="dealerMapper"/>
     </bean>
 
 </beans>

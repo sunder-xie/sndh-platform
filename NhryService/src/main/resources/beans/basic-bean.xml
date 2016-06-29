@@ -56,12 +56,7 @@
 	
 	<!-- 订单end -->
 	
-	<bean id="custMapper" class="com.nhry.data.basic.impl.TMdVipCustInfoMapperImpl">
-	   <property name="sqlSessionTemplate"  ref="dynamicSqlSessionTemplate"></property>
-	</bean>
-	<bean id="custService" class="com.nhry.service.basic.impl.TMdVipCustInfoServiceImpl">
-	   <property name="tmdVipcust"  ref="custMapper"></property>
-	</bean>
+
 	
 	<bean id="branchEmpMapper" class="com.nhry.data.basic.impl.TMdBranchEmpMapperImpl">
 	   <property name="sqlSessionTemplate"  ref="dynamicSqlSessionTemplate"></property>
@@ -96,4 +91,7 @@
 
 	</bean>
 
+	<bean class="com.nhry.data.basic.impl.TMdDealerMapperImpl" id="dealerMapper">
+		<property name="sqlSessionTemplate" ref="dynamicSqlSessionTemplate"/>
+	</bean>
 </beans>

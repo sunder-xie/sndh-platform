@@ -19,7 +19,7 @@ public class TMdBranchMapperImpl implements TMdBranchMapper {
 	@Override
 	public int addBranch(TMdBranch record) {
 		// TODO Auto-generated method stub
-		return 0;
+		return sqlSessionTemplate.insert("addBranch",record);
 	}
 
 
