@@ -375,6 +375,8 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 		SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
 		TPreOrder order = record.getOrder();
 		List<TPlanOrderItem> entriesList = new ArrayList<TPlanOrderItem>();
+		//信息交验
+		validateOrderInfo(record);
 		//暂时生成订单号
 		Date date = new Date();
 		order.setOrderNo(String.valueOf(date.getTime()));
@@ -395,10 +397,6 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 		//如果地址信息不为空，为订户创建新的地址
 		if(record.getAddress() != null){
 			tVipCustInfoService.addAddressForCust(record.getAddress());
-		}
-		//如果账户信息不为空，更新账户信息
-		if(record.getAccount() != null){
-			tVipCustInfoService.addVipAcct(record.getAccount());
 		}
 
 		//生成每个订单行
@@ -427,14 +425,20 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 			index++;
 		}
 
-		//保存订单，订单行
-		order.setCurAmt(orderAmt);//订单价格
-		order.setInitAmt(orderAmt);
+		//订单价格
+		order.setCurAmt(orderAmt);
+		//此为多余的钱，如果是预付款，将存入订户账户
+		BigDecimal remain = order.getInitAmt().subtract(order.getCurAmt());
+		if("20".equals(order.getPaymentStat()) && remain.floatValue() > 0){
+			if(record.getAccount() != null){
+				record.getAccount().setAcctAmt(remain);
+				tVipCustInfoService.addVipAcct(record.getAccount());
+			}
+		}
 		order.setEndDate(calculateFinalDate(entriesList));//订单截止日期
-//		BigDecimal remain = order.getInitAmt().subtract(order.getCurAmt());//此为多余的钱，如果是预付款，将存入订户账户??
-//		if("20".equals(order.getPaymentStat()) && remain.floatValue() > 0){
-//       todo
-//		}
+		order.setInitAmt(orderAmt);
+		
+		//保存订单和行项目
 		tPreOrderMapper.insert(record.getOrder());
 		for(TPlanOrderItem entry: entriesList){
 			tPlanOrderItemMapper.insert(entry);
@@ -583,6 +587,10 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 		ArrayList<TPlanOrderItem> curEntries = record.getEntries();
 		ArrayList<TPlanOrderItem> modifiedEntries = new ArrayList<TPlanOrderItem>();
 		//长期变更(10)需对订单进行统一更改，关联更改日订单 
+		//是否修改地址
+		if(StringUtils.isNotBlank(record.getOrder().getAdressNo()) && orgOrder.getAdressNo() != record.getOrder().getAdressNo() ){
+			orgOrder.setAdressNo(record.getOrder().getAdressNo());
+		}
 		//修改订单根据行项目编号来确定行是否修改，换商品或改数量
 		for(TPlanOrderItem orgEntry : orgEntries){
 			boolean delFlag = true;
@@ -1048,6 +1056,28 @@ public class OrderServiceImpl extends BaseService implements OrderService {
    		plan.setRemainAmt(curAmt);
    	}
    	
+   }
+   
+   //交验生成订单的输入信息
+   private void validateOrderInfo(OrderCreateModel record){
+   	TPreOrder order = record.getOrder();
+   	if(StringUtils.isBlank(order.getPaymentmethod())){
+   		throw new ServiceException(MessageCode.LOGIC_ERROR,"请选择付款方式!");
+		}
+   	if(StringUtils.isBlank(order.getMilkboxStat())){
+   		throw new ServiceException(MessageCode.LOGIC_ERROR,"请选择奶箱状态!");
+		}
+   	if(record.getEntries()==null || record.getEntries().size() == 0){
+   		throw new ServiceException(MessageCode.LOGIC_ERROR,"请选择商品行!");
+		}
+   	if(StringUtils.isBlank(order.getMilkmemberNo())){
+   		throw new ServiceException(MessageCode.LOGIC_ERROR,"请选择订户!");
+		}
+   	if(StringUtils.isBlank(order.getAdressNo())){
+   		if(record.getAddress() == null){
+   			throw new ServiceException(MessageCode.LOGIC_ERROR,"请选择或输入地址!");
+   		}
+		}
    }
 
 }
