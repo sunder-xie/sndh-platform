@@ -1,5 +1,7 @@
 package com.nhry.rest.basic;
 
+import java.util.List;
+
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
@@ -15,6 +17,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Controller;
 
 import com.nhry.common.exception.MessageCode;
+import com.nhry.data.basic.domain.TMaraPriceRel;
 import com.nhry.data.basic.domain.TMdPrice;
 import com.nhry.data.config.domain.NHSysParameter;
 import com.nhry.model.basic.PriceQueryModel;
@@ -49,7 +52,7 @@ public class PriceResource extends BaseResource {
 	@Path("/{priceGroupCode}")
 	@Produces(MediaType.APPLICATION_JSON)
 	@ApiOperation(value = "/{priceGroupCode}", response = TMdPrice.class, notes = "根据价格组编号查询信息")
-	public Response selectPriceGroupByCode(@ApiParam(required=true,name="priceGroupCode",value="价格组编号") @PathParam("priceGroupCode") Integer priceGroupCode){
+	public Response selectPriceGroupByCode(@ApiParam(required=true,name="priceGroupCode",value="价格组编号") @PathParam("priceGroupCode") String priceGroupCode){
 		return convertToRespModel(MessageCode.NORMAL, null, priceService.selectPriceGroupByCode(priceGroupCode));
 	}
 	
@@ -78,5 +81,14 @@ public class PriceResource extends BaseResource {
 	@ApiOperation(value = "/disable", response = ResponseModel.class, notes = "停用价格组")
 	public Response pubProductByCode(@ApiParam(required=true,name="productCode",value="商品编号")TMdPrice record){
 		return convertToRespModel(MessageCode.NORMAL, null, priceService.disablePriceGroup(record));
+	}
+	
+	@POST
+	@Path("/upt/mprice/rel")
+	@Produces(MediaType.APPLICATION_JSON)
+	@Consumes(MediaType.APPLICATION_JSON)
+	@ApiOperation(value = "/upt/mprice/rel", response = ResponseModel.class, notes = "维护价格组与产品关系")
+	public Response mergeMaraPriceRel(@ApiParam(required=true,name="records",value="价格组与产品关系对象")List<TMaraPriceRel> records){
+		return convertToRespModel(MessageCode.NORMAL, null, priceService.mergeMaraPriceRel(records));
 	}
 }

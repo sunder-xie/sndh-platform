@@ -1,9 +1,11 @@
 package com.nhry.data.basic.domain;
 
-import java.math.BigDecimal;
+import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
-public class TMdMara {
+public class TMdMara implements Serializable{
     private String matnr;
 
     private String matnrTxt;
@@ -22,7 +24,7 @@ public class TMdMara {
 
     private String brand;
 
-    private BigDecimal weight;
+    private Float weight;
 
     private String weightUnit;
 
@@ -35,10 +37,14 @@ public class TMdMara {
     private String botSpec;
 
     private String zbotCode;
-    
+
     private String salesOrg;
-    
+
     private String dealerNo;
+    
+    private TMdMaraEx maraEx;
+    
+    private List<TBranchSalesList> salesList = new ArrayList<TBranchSalesList>();
 
     public String getMatnr() {
         return matnr;
@@ -112,11 +118,11 @@ public class TMdMara {
         this.brand = brand == null ? null : brand.trim();
     }
 
-    public BigDecimal getWeight() {
+    public Float getWeight() {
         return weight;
     }
 
-    public void setWeight(BigDecimal weight) {
+    public void setWeight(Float weight) {
         this.weight = weight;
     }
 
@@ -168,19 +174,35 @@ public class TMdMara {
         this.zbotCode = zbotCode == null ? null : zbotCode.trim();
     }
 
-	public String getSalesOrg() {
-		return salesOrg;
+    public String getSalesOrg() {
+        return salesOrg;
+    }
+
+    public void setSalesOrg(String salesOrg) {
+        this.salesOrg = salesOrg == null ? null : salesOrg.trim();
+    }
+
+    public String getDealerNo() {
+        return dealerNo;
+    }
+
+    public void setDealerNo(String dealerNo) {
+        this.dealerNo = dealerNo == null ? null : dealerNo.trim();
+    }
+
+	public TMdMaraEx getMaraEx() {
+		return maraEx;
 	}
 
-	public void setSalesOrg(String salesOrg) {
-		this.salesOrg = salesOrg;
+	public void setMaraEx(TMdMaraEx maraEx) {
+		this.maraEx = maraEx;
 	}
 
-	public String getDealerNo() {
-		return dealerNo;
+	public List<TBranchSalesList> getSalesList() {
+		return salesList;
 	}
 
-	public void setDealerNo(String dealerNo) {
-		this.dealerNo = dealerNo;
+	public void setSalesList(List<TBranchSalesList> salesList) {
+		this.salesList = salesList;
 	}
 }
