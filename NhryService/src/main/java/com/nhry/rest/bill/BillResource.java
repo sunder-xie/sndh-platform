@@ -2,9 +2,9 @@ package com.nhry.rest.bill;
 
 import com.github.pagehelper.PageInfo;
 import com.nhry.common.exception.MessageCode;
-import com.nhry.data.bill.domain.TMstRecvBill;
 import com.nhry.model.bill.BranchBillSearch;
 import com.nhry.model.bill.CustBillQueryModel;
+import com.nhry.model.bill.CustomerPayMentModel;
 import com.nhry.rest.BaseResource;
 import com.nhry.service.bill.dao.BranchBillService;
 import com.nhry.service.bill.dao.CustomerBillService;
@@ -57,8 +57,8 @@ public class BillResource extends BaseResource {
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes(MediaType.APPLICATION_JSON)
     @ApiOperation(value = "/cust/customerPayment", response = int.class, notes = "订户收款")
-    public Response customerPayment(@ApiParam(required=true,name="customerBill",value="收款信息")TMstRecvBill customerBill){
-        return convertToRespModel(MessageCode.NORMAL, null, customerBillService.customerPayment(customerBill));
+    public Response customerPayment(@ApiParam(required=true,name="cModel",value="收款信息") CustomerPayMentModel cModel){
+        return convertToRespModel(MessageCode.NORMAL, null, customerBillService.customerPayment(cModel));
     }
 
 

@@ -9,7 +9,7 @@ public class SerialUtil {
 
     public static String creatSeria(){
         Date date = new Date();
-       String serial = String.valueOf(date);
+       String serial = String.valueOf(date.getTime());
         return serial;
     }
 }

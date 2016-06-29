@@ -33,6 +33,9 @@
 		<property name="tRecBotMapper"  ref="tRecBotMapper"></property>
 		<property name="tRecBotDetailMapper"  ref="tRecBotDetailMapper"></property>
 		<property name="userSessionService" ref="userSessionService"></property>
+		<property name="tDispOrderMapper"  ref="tDispOrderMapper"></property>
+		<property name="tDispOrderItemMapper"  ref="tDispOrderItemMapper"></property>
+		<property name="empMapper" ref="branchEmpMapper"></property>
 	</bean>
 
 </beans>

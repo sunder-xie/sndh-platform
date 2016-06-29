@@ -40,15 +40,16 @@
         <include refid="Base_Column_List"/>
         FROM t_rec_bot bot
         WHERE 1=1
-        and bot.REC_DATE = #(retDate,jdbcType=DATE)
+        and bot.REC_DATE = #{retDate,jdbcType=DATE}
         and bot.BRANCH_NO = #{branchNo,jdbcType=VARCHAR}
         and bot.EMP_NO = #{empNo,jdbcType=VARCHAR}
     </select>
     <insert id="addTrecBot" parameterType="com.nhry.data.milktrans.domain.TRecBot">
-        insert into T_REC_BOT(RET_LSH,EMP_NO,EMP_NAME,BRANCH_NO,RECEIVE_NUM,REAL_NUM,STATUS,REC_DATE,CREATE_AT,CREATE_BY,CREATE_BY_TXT)
+
+          insert into T_REC_BOT(RET_LSH,EMP_NO,EMP_NAME,BRANCH_NO,RECEIVE_NUM,STATUS,REC_DATE,CREATE_AT,CREATE_BY,CREATE_BY_TXT)
          values(#{retLsh,jdbcType=VARCHAR},#{empNo,jdbcType=VARCHAR},#{empName,jdbcType=VARCHAR},
-         #{branchNo,jdbcType=VARCHAR},#{receiveNum,jdbcType=INTEGER},#{realNum,jdbcType=INTEGER},
-         #{recDate,jdbcType=DATE},#{creatAt,jdbcType=TIMESTAMP},#{creatBy,jdbcType=VARCHAR},#{creatByTxt,jdbcType=VARCHAR})
+         #{branchNo,jdbcType=VARCHAR},#{receiveNum,jdbcType=INTEGER},#{status,jdbcType=VARCHAR},
+         #{recDate,jdbcType=DATE},#{createAt,jdbcType=TIMESTAMP},#{createBy,jdbcType=VARCHAR},#{createByTxt,jdbcType=VARCHAR})
 
     </insert>
 
@@ -56,7 +57,7 @@
         UPDATE  T_REC_BOT
         SET
         REAL_NUM = #{realNum,jdbcType=INTEGER},
-        LAST_MODIFIED =  #{lastModified,jdbcType=TIMESTAP},
+        LAST_MODIFIED =  #{lastModified,jdbcType=TIMESTAMP},
         LAST_MODIFIED_BY = #{lastModifiedBy,jdbcType=VARCHAR},
         LAST_MODIFIED_BY_TXT =  #{lastModifiedByTxt,jdbcType=VARCHAR}
     </update>

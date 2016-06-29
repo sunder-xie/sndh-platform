@@ -1,20 +1,16 @@
 package com.nhry.model.bill;
 
-import com.nhry.model.basic.BaseQueryModel;
-
-import java.io.Serializable;
 import java.util.Date;
 
 /**
- * Created by gongjk on 2016/6/27.
+ * Created by gongjk on 2016/6/29.
  */
-public class BranchBillSearch extends BaseQueryModel implements Serializable{
+public class BranchBillEmpItemSearch{
     private String dimenType;
     private String branchNo;
     private Date startDate;
     private Date endDate;
     private String empNo;
-
 
     public String getDimenType() {
         return dimenType;
@@ -23,7 +19,6 @@ public class BranchBillSearch extends BaseQueryModel implements Serializable{
     public void setDimenType(String dimenType) {
         this.dimenType = dimenType;
     }
-
 
     public String getBranchNo() {
         return branchNo;

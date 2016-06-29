@@ -10,7 +10,7 @@ public class TRecBot implements Serializable {
     private String retLsh;      //回瓶流水号
     private String empNo;
     private String empName;
-    private String brnachNo;
+    private String branchNo;
     private String status;
     private int  receiveNum;  //应收数量
     private int  realNum;     //实收数量
@@ -46,12 +46,12 @@ public class TRecBot implements Serializable {
         this.empName = empName;
     }
 
-    public String getBrnachNo() {
-        return brnachNo;
+    public String getBranchNo() {
+        return branchNo;
     }
 
-    public void setBrnachNo(String brnachNo) {
-        this.brnachNo = brnachNo;
+    public void setBranchNo(String branchNo) {
+        this.branchNo = branchNo;
     }
 
     public String getStatus() {

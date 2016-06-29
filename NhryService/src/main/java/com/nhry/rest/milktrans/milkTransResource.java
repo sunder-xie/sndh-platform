@@ -65,7 +65,7 @@ public class milkTransResource extends BaseResource {
 	@Path("/box/upt")
 	@Produces(MediaType.APPLICATION_JSON)
 	@Consumes(MediaType.APPLICATION_JSON)
-	@ApiOperation(value = "/box/upt", response = PageInfo.class, notes = "录入回瓶管理")
+	@ApiOperation(value = "/box/upt", response = Response.class, notes = "录入回瓶管理")
 	public Response uptBoxRetrun(@ApiParam(required=true,name="cModel",value="cModel") CreateReturnBoxModel boxModel){
 		return convertToRespModel(MessageCode.NORMAL, null, returnBoxService.uptBoxRetrun(boxModel));
 	}
@@ -74,7 +74,7 @@ public class milkTransResource extends BaseResource {
 	@Path("/box/createDayRetBox")
 	@Produces(MediaType.APPLICATION_JSON)
 	@Consumes(MediaType.APPLICATION_JSON)
-	@ApiOperation(value = "/box/createDayRetBox", response = PageInfo.class, notes = "生成当天(员工)需要回瓶的数据")
+	@ApiOperation(value = "/box/createDayRetBox", response = CreateReturnBoxModel.class, notes = "生成当天(员工)需要回瓶的数据")
 	public Response createDayRetBox(@ApiParam(required=true,name="cModel",value="cModel") CreateEmpReturnboxModel cModel){
 		return convertToRespModel(MessageCode.NORMAL, null, returnBoxService.createDayRetBox(cModel));
 	}

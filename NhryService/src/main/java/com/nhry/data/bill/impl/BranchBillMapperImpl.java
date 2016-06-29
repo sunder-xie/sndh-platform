@@ -3,7 +3,10 @@ package com.nhry.data.bill.impl;
 import com.github.pagehelper.PageInfo;
 import com.nhry.common.datasource.DynamicSqlSessionTemplate;
 import com.nhry.data.bill.dao.BranchBillMapper;
+import com.nhry.model.bill.BranchBillEmpItemModel;
 import com.nhry.model.bill.BranchBillSearch;
+
+import java.util.List;
 
 /**
  * Created by gongjk on 2016/6/27.
@@ -23,6 +26,12 @@ public class BranchBillMapperImpl implements BranchBillMapper {
 
     @Override
     public PageInfo branchBillEmpSearch(BranchBillSearch bsearch) {
-        return null;
+        return sqlSessionTemplate.selectListByPages("branchBillEmpSearch",bsearch, Integer.parseInt(bsearch.getPageNum()), Integer.parseInt(bsearch.getPageSize()));
+
+    }
+
+    @Override
+    public List<BranchBillEmpItemModel> branchBillEmpItemSearch(BranchBillSearch bsearch) {
+        return sqlSessionTemplate.selectList("branchBillEmpItemSearch",bsearch);
     }
 }

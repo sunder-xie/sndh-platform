@@ -6,6 +6,8 @@ import java.io.Serializable;
  * Created by gongjk on 2016/6/27.
  */
 public class BranchBillOfCust   implements Serializable {
+    private String branchNo;
+    private String branchName;
     private String orderNo;//订单号
     private String preorderSource;//订单来源
     private String paymentType;//付款选择（预付款/后付款）
@@ -19,6 +21,30 @@ public class BranchBillOfCust   implements Serializable {
     private String paymentDate;//付款日期
     private String empNo;//送奶工 工号
     private String empName;//送奶工名称
+
+    public String getBranchNo() {
+        return branchNo;
+    }
+
+    public void setBranchNo(String branchNo) {
+        this.branchNo = branchNo;
+    }
+
+    public String getBranchName() {
+        return branchName;
+    }
+
+    public void setBranchName(String branchName) {
+        this.branchName = branchName;
+    }
+
+    public String getVipMp() {
+        return vipMp;
+    }
+
+    public void setVipMp(String vipMp) {
+        this.vipMp = vipMp;
+    }
 
     public String getOrderNo() {
         return orderNo;

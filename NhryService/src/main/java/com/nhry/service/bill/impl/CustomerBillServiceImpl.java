@@ -13,6 +13,7 @@ import com.nhry.data.order.domain.TPlanOrderItem;
 import com.nhry.data.order.domain.TPreOrder;
 import com.nhry.model.bill.CustBillQueryModel;
 import com.nhry.model.bill.CustomerBillOrder;
+import com.nhry.model.bill.CustomerPayMentModel;
 import com.nhry.service.bill.dao.CustomerBillService;
 import org.apache.commons.lang3.StringUtils;
 
@@ -46,27 +47,38 @@ public class CustomerBillServiceImpl implements CustomerBillService {
     }
 
     @Override
-    public int customerPayment(TMstRecvBill customerBill) {
+    public int customerPayment(CustomerPayMentModel cModel) {
+        String errorContent ="";
         try{
             int updateBill = 0;
             int updateOrderStatus = 0;
-            String orderNo = customerBill.getOrderNo();
+            String orderNo = cModel.getOrderNo();
             TMstRecvBill bill = customerBillMapper.getCustomerOrderByCode(orderNo);
-            if(bill!= null && bill.getStatus()=="20"){
+
+            if(bill!= null && "20".equals(bill.getStatus())){
+                errorContent = "该订单已收款";
                 throw new ServiceException(MessageCode.LOGIC_ERROR,"该订单已收款！");
             }else {
                 TPreOrder order = tPreOrderMapper.selectByPrimaryKey(orderNo);
-                customerBill.setStatus("20");
                 Calendar calendar =Calendar.getInstance();
                 Date date = new Date();
                 calendar.setTime(date);
-                String payMentYM =String.valueOf(String.valueOf(calendar.get(Calendar.YEAR))+String.valueOf(calendar.get(Calendar.MONTH)+1));
+
+                TMstRecvBill customerBill = new TMstRecvBill();
+                customerBill.setOrderNo(orderNo);
+                customerBill.setAmt(Integer.valueOf(cModel.getAmt()));
+                customerBill.setReceiptDate(date);
+                customerBill.setStatus("20");
+                customerBill.setRecvEmp(order.getEmpNo());
+                customerBill.setPaymentType(cModel.getPaymentType());
+                String payMentYM = String.valueOf(calendar.get(Calendar.YEAR)+String.valueOf(calendar.get(Calendar.MONTH)+1));
                 TSysUser user = userSessionService.getCurrentUser();
                 customerBill.setVipCustNo(order.getMemberNo());
                 customerBill.setPaymentYearMonth(payMentYM);
                 customerBill.setLastModified(date);
                 customerBill.setLastModifiedBy(user.getLoginName());
                 customerBill.setCreateByTxt(user.getDisplayName());
+
                 if(bill!=null && bill.getStatus()=="10"){
                     updateBill =  customerBillMapper.updateCustomerBillrPayment(customerBill);
                 }else{
@@ -84,7 +96,12 @@ public class CustomerBillServiceImpl implements CustomerBillService {
             }
 
         }catch (Exception e){
-            throw new ServiceException(MessageCode.LOGIC_ERROR,"收款失败！");
+            if("".equals(errorContent)){
+                throw new ServiceException(MessageCode.LOGIC_ERROR,"收款失败！");
+            }else{
+                throw new ServiceException(MessageCode.LOGIC_ERROR,"该订单已收款！");
+            }
+
         }
 
 

@@ -326,4 +326,14 @@
     where ORDER_NO = #{orderNo,jdbcType=VARCHAR}
       and ORDER_DATE = #{orderDate,jdbcType=DATE}
   </update>
+
+  <select id="creatRecBot" resultType="DECIMAL" parameterType="com.nhry.model.milktrans.CreateEmpReturnboxModel" >
+    select
+    SUM(i.QTY) RECEIVE_NUM
+    from t_mst_disp_order_item i,t_mst_disp_order o
+    WHERE i.ORDER_NO = o.ORDER_NO
+    and o.DISP_DATE = #{retDate,jdbcType=DATE}
+    and o.DISP_EMP_NO = #{empNo,jdbcType=VARCHAR}
+    and o.BRANCH_NO =  #{branchNo,jdbcType=VARCHAR}
+  </select>
 </mapper>

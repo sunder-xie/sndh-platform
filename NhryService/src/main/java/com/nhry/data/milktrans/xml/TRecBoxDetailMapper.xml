@@ -21,10 +21,10 @@
     </sql>
 
     <insert id="addRecBotItem" parameterType="com.nhry.data.milktrans.domain.TRecBotDetail">
-        insert into T_REC_BOT_DETAIL(DET_LSH,SPEC,BOT_SPEC,SPEC_UNIT,RECEIVE_NUM,REAL_NUM,CREATE_BY,CREATE_BY_TXT,RET_LSH},
-        values( #{detLsh,jdbcType=VARCHAR}, #{spec,jdbcType=VARCHAR}, #{botSpec,jdbcType=VARCHAR}, #{specUnit,jdbcType=VARCHAR},
-        #{receiveNum,jdbcType=INTEGER},#{realNum,jdbcType=INTEGER},
-         #{BOT_SPEC,jdbcType=DATE},#{creatAt,jdbcType=DATE},#{creatBy,jdbcType=VARCHAR},#{creatByTxt,jdbcType=VARCHAR},#{retLsh,jdbcType=VARCHAR},)
+        insert into T_REC_BOT_DETAIL(
+        DET_LSH, SPEC, BOT_SPEC,  RECEIVE_NUM, CREATE_BY, CREATE_BY_TXT,RET_LSH)
+        values( #{detLsh,jdbcType=VARCHAR}, #{spec,jdbcType=VARCHAR}, #{botSpec,jdbcType=VARCHAR},
+        #{receiveNum,jdbcType=INTEGER},#{createBy,jdbcType=VARCHAR},#{createByTxt,jdbcType=VARCHAR},#{retLsh,jdbcType=VARCHAR})
 
     </insert>
 
@@ -32,14 +32,14 @@
         SELECT
         <include refid="Base_Column_List"/>
         from t_rec_bot_detail
-        where REC_LSH = #{retLsh,jdbcType=VARCHAR}
+        where RET_LSH = #{retLsh,jdbcType=VARCHAR}
     </select>
 
     <update id="uptRecBotDetail" parameterType="com.nhry.data.milktrans.domain.TRecBotDetail">
         UPDATE  T_REC_BOT_DETAIL
         SET
         REAL_NUM = #{realNum,jdbcType=INTEGER},
-         LAST_MODIFIED =  #{lastModified,jdbcType=TIMESTAP},
+         LAST_MODIFIED =  #{lastModified,jdbcType=TIMESTAMP},
         LAST_MODIFIED_BY = #{lastModifiedBy,jdbcType=VARCHAR},
         LAST_MODIFIED_BY_TXT =  #{lastModifiedByTxt,jdbcType=VARCHAR}
     </update>
