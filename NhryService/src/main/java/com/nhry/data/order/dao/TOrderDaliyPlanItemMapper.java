@@ -3,7 +3,7 @@ package com.nhry.data.order.dao;
 import com.nhry.data.order.domain.TOrderDaliyPlanItem;
 import com.nhry.data.order.domain.TOrderDaliyPlanItemKey;
 import com.nhry.data.order.domain.TPreOrder;
-import com.nhry.model.order.RequireOrderModel;
+import com.nhry.model.milktrans.RequireOrderModel;
 
 import java.util.Date;
 import java.util.List;
@@ -15,7 +15,7 @@ public interface TOrderDaliyPlanItemMapper {
 
     int insertSelective(TOrderDaliyPlanItem record);
 
-    TOrderDaliyPlanItem selectByPrimaryKey(TOrderDaliyPlanItemKey key);
+    List<TOrderDaliyPlanItem> selectbyDispLineNo(String dispNo , String date,String reachTimeType);
 
     int updateByPrimaryKeySelective(TOrderDaliyPlanItem record);
 
@@ -35,7 +35,7 @@ public interface TOrderDaliyPlanItemMapper {
 
     String getDayOrderStat(String orderNo, Date date);
 
-    List<TOrderDaliyPlanItem> selectDaliyPlansByBranchAndDay(RequireOrderModel rModel);
-    
     int updateDaliyPlansToStop(TPreOrder record);
+
+    List<TOrderDaliyPlanItem> selectDaliyPlansByBranchAndDay(RequireOrderModel rModel);
 }

@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.nhry.data.bill.dao.CustomerBillMapper" >
+    <resultMap id="BaseResultMap" type="com.nhry.data.bill.domain.TMstRecvBill" >
+        <id column="RECEIPT_NO" property="receiptNo" jdbcType="VARCHAR" />
+        <result column="RECEIPT_DATE" property="orderDate" jdbcType="DATE" />
+        <result column="ORDER_NO" property="orderNo" jdbcType="VARCHAR" />
+        <result column="PAYMENT_TYPE" property="paymentType" jdbcType="VARCHAR" />
+        <result column="STATUS" property="status" jdbcType="VARCHAR" />
+        <result column="AMT" property="amt" jdbcType="DECIMAL" />
+        <result column="VIP_CUST_NO" property="vipCustNo" jdbcType="VARCHAR" />
+        <result column="START_TIME" property="startTime" jdbcType="DATE" />
+        <result column="END_TIME" property="endTime" jdbcType="DATE" />
+        <result column="PAYMENT_YEAR_MONTH" property="yearMonth" jdbcType="VARCHAR" />
+        <result column="RECV_EMP" property="recvEmp" jdbcType="VARCHAR" />
+        <result column="RECV_EMP_NAME" property="recvEmpName" jdbcType="VARCHAR" />
+        <result column="CREATE_AT" property="createAt" jdbcType="DATE" />
+        <result column="CREATE_BY" property="createBy" jdbcType="VARCHAR" />
+        <result column="CREATE_BY_TXT" property="createByTxt" jdbcType="VARCHAR" />
+        <result column="LAST_MODIFIED" property="lastModified" jdbcType="TIMESTAMP" />
+        <result column="LAST_MODIFIED_BY" property="lastModifiedBy" jdbcType="VARCHAR" />
+        <result column="LAST_MODIFIED_BY_TXT" property="lastModifiedByTxt" jdbcType="VARCHAR" />
+    </resultMap>
+    <sql id="Base_Column_List" >
+
+    </sql>
+    <sql id="Full_Column_List" >
+       RECEIPT_NO,RECEIPT_DATE,ORDER_NO,PAYMENT_TYPE,STATUS,AMT,VIP_CUST_NO,START_TIME,END_TIME,
+       PAYMENT_YEAR_MONTH,RECV_EMP,CREATE_AT,CREATE_BY,CREATE_BY_TXT,LAST_MODIFIED,LAST_MODIFIED_BY,LAST_MODIFIED_BY_TXT
+    </sql>
+    <select id="getCustomerOrderByCode" resultMap="BaseResultMap" parameterType="String">
+        select
+        <include refid="Full_Column_List"/>
+        FROM t_mst_recv_bill
+        WHERE 1=1
+        and ORDER_NO = #{orderNo,jdbcType=VARCHAR}
+    </select>
+    <insert id="customerPayment" parameterType="com.nhry.data.bill.domain.TMstRecvBill" >
+        insert into t_mst_recv_bill (RECEIPT_NO,ORDER_NO,END_TIME,AMT,RECV_EMP,PAYMENT_TYPE,VIP_CUST_NO,PAYMENT_YEAR_MONTH
+        CREATE_AT,CREATE_BY,CREATE_BY_TXT,STATUS)
+        values (
+            #{receiptNo,jdbcType=VARCHAR}, #{orderNo,jdbcType=VARCHAR}, #{endTime,jdbcType=VARCHAR},
+            #{amt,jdbcType=INTEGER}, #{recvEmp,jdbcType=VARCHAR},  #{paymentType,jdbcType=VARCHAR}, #{vipCustNo,jdbcType=VARCHAR},
+            #{paymentYearMonth,jdbcType=TIMESTAMP}, #{createBy,jdbcType=VARCHAR}, #{createByTxt,jdbcType=VARCHAR},
+            #{status,jdbcType=VARCHAR})
+    </insert>
+
+    <update id="updateCustomerBillrPayment" parameterType="com.nhry.data.bill.domain.TMstRecvBill" >
+
+        UPDATE  t_mst_recv_bill
+        SET
+           END_TIME =  #{endTime,jdbcType=VARCHAR},
+           RECV_EMP =  #{recvEmp,jdbcType=VARCHAR},
+           VIP_CUST_NO =  #{vipCustNo,jdbcType=VARCHAR},
+           STATUS = #{status,jdbcType=VARCHAR},
+           LAST_MODIFIED = #{lastModified,jdbcType=TIMESTAMP},
+           LAST_MODIFIED_BY = #{lastModifiedBy,jdbcType=VARCHAR},
+           LAST_MODIFIED_BY_TXT =  #{lastModifiedByTxt,jdbcType=VARCHAR}
+    </update>
+</mapper>

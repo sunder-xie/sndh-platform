@@ -43,7 +43,7 @@ public class OrderResource extends BaseResource {
 	@GET
 	@Path("/daliyPlans/{orderCode}")
 	@Produces(MediaType.APPLICATION_JSON)
-	@ApiOperation(value = "/daliyPlans/{orderCode}", response = ArrayList.class, notes = "根据订单编号查询订单信息")
+	@ApiOperation(value = "/daliyPlans/{orderCode}", response = ArrayList.class, notes = "根据订单编号查询订单日计划信息")
 	public Response selectDaliyPlansByOrderNo(@ApiParam(required=true,name="orderCode",value="订单编号") @PathParam("orderCode") String orderCode){
 		return convertToRespModel(MessageCode.NORMAL, null, orderService.selectDaliyPlansByOrderNo(orderCode));
 	}
@@ -97,7 +97,7 @@ public class OrderResource extends BaseResource {
 	@Path("/continueOrder")
 	@Produces(MediaType.APPLICATION_JSON)
 	@Consumes(MediaType.APPLICATION_JSON)
-	@ApiOperation(value = "/continueOrder", response = Integer.class, notes = "订单退订")
+	@ApiOperation(value = "/continueOrder", response = Integer.class, notes = "订单续订")
 	public Response continueOrder(@ApiParam(required=true,name="smodel",value="SearchModel") OrderSearchModel smodel){
 		return convertToRespModel(MessageCode.NORMAL, null, orderService.continueOrder(smodel));
 	}
@@ -167,30 +167,6 @@ public class OrderResource extends BaseResource {
 	}
 
 
-	@POST
-	@Path("/creatRequireOrder")
-	@Produces(MediaType.APPLICATION_JSON)
-	@Consumes(MediaType.APPLICATION_JSON)
-	@ApiOperation(value = "/creatRequireOrder", response = RequireOrderModel.class, notes = "生成要货计划")
-	public Response creatRequireOrder(@ApiParam(required=true,name="rModel",value="要货计划") RequireOrderModel  rModel){
-		return convertToRespModel(MessageCode.NORMAL, null, orderService.creatRequireOrder(rModel));
-	}
 
-	@POST
-	@Path("/queryRequireOrder")
-	@Produces(MediaType.APPLICATION_JSON)
-	@Consumes(MediaType.APPLICATION_JSON)
-	@ApiOperation(value = "/creatRequireOrder", response = RequireOrderModel.class, notes = "查询要货计划")
-	public Response searchRequireOrder(@ApiParam(required=true,name="rModel",value="要货计划") RequireOrderModel  rModel){
-		return convertToRespModel(MessageCode.NORMAL, null, orderService.searchRequireOrder(rModel));
-	}
 
-	@POST
-	@Path("/uptRequireOrder")
-	@Produces(MediaType.APPLICATION_JSON)
-	@Consumes(MediaType.APPLICATION_JSON)
-	@ApiOperation(value = "/uptRequireOrder", response = RequireOrderModel.class, notes = "更新生成要货计划")
-	public Response uptRequireOrder(@ApiParam(required=true,name="rModel",value="要货计划") RequireOrderModel  rModel){
-		return convertToRespModel(MessageCode.NORMAL, null, orderService.uptRequireOrder(rModel));
-	}
 }
