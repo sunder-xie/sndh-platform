@@ -5,34 +5,34 @@ import com.wordnik.swagger.annotations.ApiModelProperty;
 
 import java.io.Serializable;
 
-@ApiModel(value = "ProductSearchModel", description = "商品信息列表查询对象")
 public class ProductQueryModel extends BaseQueryModel implements Serializable {
-	@ApiModelProperty(value="brandLib",notes="商品品牌")
-	private String brandLib;
-	private String catalog;
+	private String firstCatory;
+	private String secCatory;
 	private String status;
-	public String getBrandLib()
-	{
-		return brandLib;
+	private String matnrTxt;
+	public String getFirstCatory() {
+		return firstCatory;
 	}
-	public void setBrandLib(String brandLib)
-	{
-		this.brandLib = brandLib;
+	public void setFirstCatory(String firstCatory) {
+		this.firstCatory = firstCatory;
 	}
-	public String getCatalog()
-	{
-		return catalog;
+	public String getSecCatory() {
+		return secCatory;
 	}
-	public void setCatalog(String catalog)
-	{
-		this.catalog = catalog;
+	public void setSecCatory(String secCatory) {
+		this.secCatory = secCatory;
 	}
-	public String getStatus()
-	{
+	public String getStatus() {
 		return status;
 	}
-	public void setStatus(String status)
-	{
+	public void setStatus(String status) {
 		this.status = status;
 	}
+	public String getMatnrTxt() {
+		return matnrTxt;
+	}
+	public void setMatnrTxt(String matnrTxt) {
+		this.matnrTxt = matnrTxt;
+	}
+	
 }

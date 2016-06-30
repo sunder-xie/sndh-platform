@@ -41,7 +41,7 @@
       #{lastModified,jdbcType=TIMESTAMP}, #{lastModifiedBy,jdbcType=VARCHAR}, #{lastModifiedByTxt,jdbcType=VARCHAR}
       )
   </insert>
-  <insert id="insertSelective" parameterType="com.nhry.data.basic.domain.TMdMaraEx" >
+  <insert id="addMaraEx" parameterType="com.nhry.data.basic.domain.TMdMaraEx" >
     insert into t_md_mara_ex
     <trim prefix="(" suffix=")" suffixOverrides="," >
       <if test="matnr != null" >

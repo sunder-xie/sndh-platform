@@ -1,8 +1,9 @@
 package com.nhry.data.basic.domain;
 
+import java.io.Serializable;
 import java.util.Date;
 
-public class TMdMaraEx {
+public class TMdMaraEx implements Serializable{
     private String matnr;
 
     private String salesFlag;

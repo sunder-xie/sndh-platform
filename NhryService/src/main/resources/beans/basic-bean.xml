@@ -50,7 +50,7 @@
 	   <property name="userSessionService" ref="userSessionService"></property>
 	</bean>
 	<!-- 订单end -->
-	
+
 	<!-- 奶箱 -->
 	<bean id="tMilkboxPlanMapper" class="com.nhry.data.order.impl.TMilkboxPlanMapperImpl">
 		<property name="sqlSessionTemplate"  ref="dynamicSqlSessionTemplate"></property>
@@ -59,7 +59,8 @@
 	   <property name="tMilkboxPlanMapper"  ref="tMilkboxPlanMapper"></property>
 	   <property name="tPreOrderMapper"  ref="tPreOrderMapper"></property>
 	   <property name="branchEmpMapper"  ref="branchEmpMapper"></property>
-	   <property name="userSessionService" ref="userSessionService"></property>
+	   <property name="userSessionService" ref="userSessionService"></property>  
+	   <property name="tVipCustInfoService" ref="custService"></property>
 	</bean>
 	<!-- 奶箱end -->
 	
@@ -71,12 +72,16 @@
 	<bean id="tDispOrderItemMapper" class="com.nhry.data.milk.impl.TDispOrderItemMapperImpl">
 		<property name="sqlSessionTemplate"  ref="dynamicSqlSessionTemplate"></property>
 	</bean>
+	<bean id="tDispOrderChangeMapper" class="com.nhry.data.milk.impl.TDispOrderChangeMapperImpl">
+		<property name="sqlSessionTemplate"  ref="dynamicSqlSessionTemplate"></property>
+	</bean>
 	<bean id="deliverMilkService" class="com.nhry.service.milk.impl.DeliverMilkServiceImpl">
 	   <property name="tDispOrderMapper"  ref="tDispOrderMapper"></property>
 	   <property name="tDispOrderItemMapper"  ref="tDispOrderItemMapper"></property>
 	   <property name="tPreOrderMapper"  ref="tPreOrderMapper"></property>
+	   <property name="tPlanOrderItemMapper"  ref="tPlanOrderItemMapper"></property>
 	   <property name="tOrderDaliyPlanItemMapper"  ref="tOrderDaliyPlanItemMapper"></property>
-
+	   <property name="tDispOrderChangeMapper"  ref="tDispOrderChangeMapper"></property>
 		<property name="tMstInsideSalOrderMapper"  ref="tMstInsideSalOrderMapper"></property>
 		<property name="tMstInsideSalOrderItemMapper"  ref="tMstInsideSalOrderItemMapper"></property>
 	   <property name="userSessionService" ref="userSessionService"></property>
@@ -124,8 +129,18 @@
 	<bean id="tMdBranchScopeService" class="com.nhry.service.basic.impl.TMdBranchScopeServiceImpl">
 		<property name="tMdBranchScopeMapper"  ref="tMdBranchScopeMapper"></property>
 	</bean>
-	
+
 	<bean id="custMapper"  class="com.nhry.data.basic.impl.TVipCustInfoMapperImpl">
 	    <property name="sqlSessionTemplate"  ref="dynamicSqlSessionTemplate"></property>
 	</bean>
+	
+	<bean id="maraPriceMapper" class="com.nhry.data.basic.impl.TMaraPriceRelMapperImpl">
+	   <property name="sqlSessionTemplate"  ref="dynamicSqlSessionTemplate"></property>
+	</bean>
+
+	<!-- 经销商 -->
+	<bean class="com.nhry.data.basic.impl.TMdDealerMapperImpl" id="dealerMapper">
+		<property name="sqlSessionTemplate" ref="dynamicSqlSessionTemplate"/>
+	</bean>
+	<!-- 经销商 end -->
 </beans>

@@ -43,14 +43,14 @@ public abstract class ZT_MasterDataQueryServiceCallbackHandler {
      * override this method for handling normal response from customerQuery operation
      */
     public void receiveResultcustomerQuery(
-        ZT_MasterDataQueryServiceStub.ZSD_CUSTOMER_DATA_SYN_RFCResponse result) {
+        com.nhry.webService.client.masterData.ZT_MasterDataQueryServiceStub.ZSD_CUSTOMER_DATA_SYN_RFCResponse result) {
     }
 
     /**
      * auto generated Axis2 Error handler
      * override this method for handling error response from customerQuery operation
      */
-    public void receiveErrorcustomerQuery(Exception e) {
+    public void receiveErrorcustomerQuery(java.lang.Exception e) {
     }
 
     /**
@@ -58,14 +58,14 @@ public abstract class ZT_MasterDataQueryServiceCallbackHandler {
      * override this method for handling normal response from matWHWQuery operation
      */
     public void receiveResultmatWHWQuery(
-        ZT_MasterDataQueryServiceStub.ZMM_POS_24DATAResponse result) {
+        com.nhry.webService.client.masterData.ZT_MasterDataQueryServiceStub.ZMM_POS_24DATAResponse result) {
     }
 
     /**
      * auto generated Axis2 Error handler
      * override this method for handling error response from matWHWQuery operation
      */
-    public void receiveErrormatWHWQuery(Exception e) {
+    public void receiveErrormatWHWQuery(java.lang.Exception e) {
     }
 
     /**
@@ -73,13 +73,13 @@ public abstract class ZT_MasterDataQueryServiceCallbackHandler {
      * override this method for handling normal response from mATQUERY operation
      */
     public void receiveResultmATQUERY(
-        ZT_MasterDataQueryServiceStub.ZSD_MATERAIL_DATA_RFCResponse result) {
+        com.nhry.webService.client.masterData.ZT_MasterDataQueryServiceStub.ZSD_MATERAIL_DATA_RFCResponse result) {
     }
 
     /**
      * auto generated Axis2 Error handler
      * override this method for handling error response from mATQUERY operation
      */
-    public void receiveErrormATQUERY(Exception e) {
+    public void receiveErrormATQUERY(java.lang.Exception e) {
     }
 }

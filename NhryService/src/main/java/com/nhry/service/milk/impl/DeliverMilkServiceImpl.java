@@ -3,33 +3,34 @@ package com.nhry.service.milk.impl;
 import com.github.pagehelper.PageInfo;
 import com.nhry.common.exception.MessageCode;
 import com.nhry.common.exception.ServiceException;
+import com.nhry.data.milk.dao.TDispOrderChangeMapper;
 import com.nhry.data.milk.dao.TDispOrderItemMapper;
 import com.nhry.data.milk.dao.TDispOrderMapper;
-import com.nhry.data.milk.domain.TDispOrder;
-import com.nhry.data.milk.domain.TDispOrderItem;
-import com.nhry.data.milk.domain.TDispOrderItemKey;
-import com.nhry.data.milk.domain.TDispOrderKey;
+import com.nhry.data.milk.domain.*;
 import com.nhry.data.milktrans.dao.TMstInsideSalOrderItemMapper;
 import com.nhry.data.milktrans.dao.TMstInsideSalOrderMapper;
 import com.nhry.data.milktrans.domain.TMstInsideSalOrder;
 import com.nhry.data.milktrans.domain.TMstInsideSalOrderItem;
 import com.nhry.data.order.dao.TOrderDaliyPlanItemMapper;
+import com.nhry.data.order.dao.TPlanOrderItemMapper;
 import com.nhry.data.order.dao.TPreOrderMapper;
 import com.nhry.data.order.domain.TOrderDaliyPlanItem;
+import com.nhry.data.order.domain.TPlanOrderItem;
 import com.nhry.data.order.domain.TPreOrder;
 import com.nhry.model.milk.RouteDetailUpdateModel;
 import com.nhry.model.milk.RouteOrderModel;
 import com.nhry.model.milk.RouteOrderSearchModel;
 import com.nhry.model.milk.RouteUpdateModel;
-import com.nhry.model.milktrans.UnDeliverProductSearch;
 import com.nhry.service.BaseService;
 import com.nhry.service.milk.dao.DeliverMilkService;
+import com.nhry.service.milk.pojo.TDispOrderChangeItem;
 import com.nhry.utils.SerialUtil;
 import org.apache.commons.lang3.StringUtils;
 
 import java.math.BigDecimal;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
@@ -39,8 +40,10 @@ public class DeliverMilkServiceImpl extends BaseService implements DeliverMilkSe
 	private TDispOrderMapper tDispOrderMapper;
 	private TPreOrderMapper tPreOrderMapper;
 	private TOrderDaliyPlanItemMapper tOrderDaliyPlanItemMapper;
-	private TMstInsideSalOrderItemMapper tMstInsideSalOrderItemMapper;
+	private TDispOrderChangeMapper tDispOrderChangeMapper;
+	private TPlanOrderItemMapper tPlanOrderItemMapper;
 	private TMstInsideSalOrderMapper tMstInsideSalOrderMapper;
+	private TMstInsideSalOrderItemMapper tMstInsideSalOrderItemMapper;
 
 	public void settMstInsideSalOrderMapper(TMstInsideSalOrderMapper tMstInsideSalOrderMapper) {
 		this.tMstInsideSalOrderMapper = tMstInsideSalOrderMapper;
@@ -48,6 +51,16 @@ public class DeliverMilkServiceImpl extends BaseService implements DeliverMilkSe
 
 	public void settMstInsideSalOrderItemMapper(TMstInsideSalOrderItemMapper tMstInsideSalOrderItemMapper) {
 		this.tMstInsideSalOrderItemMapper = tMstInsideSalOrderItemMapper;
+	}
+
+	public void settPlanOrderItemMapper(TPlanOrderItemMapper tPlanOrderItemMapper)
+	{
+		this.tPlanOrderItemMapper = tPlanOrderItemMapper;
+	}
+	
+	public void settDispOrderChangeMapper(TDispOrderChangeMapper tDispOrderChangeMapper)
+	{
+		this.tDispOrderChangeMapper = tDispOrderChangeMapper;
 	}
 
 	public void settDispOrderItemMapper(TDispOrderItemMapper tDispOrderItemMapper)
@@ -70,6 +83,57 @@ public class DeliverMilkServiceImpl extends BaseService implements DeliverMilkSe
 		this.tPreOrderMapper = tPreOrderMapper;
 	}
 
+	/**
+	 * 根据  路单号 生成 对应的内部销售订单
+	 * @param dispOrderNo
+	 * @return
+     */
+	@Override
+	public int createInsideSalOrder(String dispOrderNo) {
+		String message = "";
+		try{
+			TMstInsideSalOrder sOrder = tMstInsideSalOrderMapper.getInSalOrderByDispOrderNo(dispOrderNo);
+			List<TDispOrderItem> entries = tDispOrderItemMapper.selectItemsByOrderNo(dispOrderNo);
+			if(entries == null || entries.size() <1){
+				message = "该路单没有可以生成销售订单的未送达项";
+				throw new ServiceException(MessageCode.LOGIC_ERROR,message);
+			}
+			if(sOrder!=null){
+				tMstInsideSalOrderItemMapper.delInSalOrderItemByOrderNo(sOrder.getInsOrderNo());
+			}else{
+				TDispOrder order = tDispOrderMapper.getDispOrderByNo(dispOrderNo);
+				sOrder = new TMstInsideSalOrder();
+				sOrder.setInsOrderNo(SerialUtil.creatSeria());
+				sOrder.setOrderDate(order.getOrderDate());
+				sOrder.setDispOrderNo(order.getOrderNo());
+				sOrder.setBranchNo(order.getBranchNo());
+				sOrder.setSalEmpNo(order.getDispEmpNo());
+				tMstInsideSalOrderMapper.insertInsideSalOrder(sOrder);
+			}
+
+			for(TDispOrderItem entry : entries){
+				TMstInsideSalOrderItem item = new TMstInsideSalOrderItem();
+				item.setInsOrderNo(sOrder.getInsOrderNo());
+				item.setItemNo(entry.getItemNo());
+				item.setMatnr(entry.getMatnr());
+				item.setOrderDate(sOrder.getOrderDate());
+				item.setPrice(entry.getPrice());
+				item.setQty(entry.getQty());
+				item.setReason(entry.getReason());
+				tMstInsideSalOrderItemMapper.insertOrderItem(item);
+			}
+			return 1;
+
+		}catch (Exception e){
+			if(message == ""){
+				throw new ServiceException(MessageCode.LOGIC_ERROR,"收款失败"+e.getMessage());
+			}else{
+				throw new ServiceException(MessageCode.LOGIC_ERROR,message);
+			}
+
+		}
+
+	}
 	/* (non-Javadoc) 
 	* @title: searchOrders
 	* @description: 查询路单列表
@@ -155,8 +219,8 @@ public class DeliverMilkServiceImpl extends BaseService implements DeliverMilkSe
 		key.setOrderNo(record.getOrderNo());
 		TDispOrder dispOrder = tDispOrderMapper.selectByPrimaryKey(key);
 		if(dispOrder!=null){
-			tDispOrderItemMapper.updateDispOrderItem(record);
-			
+			TPlanOrderItem entry = tPlanOrderItemMapper.selectEntryByEntryNo(record.getOrgItemNo());
+			tDispOrderItemMapper.updateDispOrderItem(record , entry);
 		}else{
 			throw new ServiceException(MessageCode.LOGIC_ERROR,"没有此路单号!");
 		}
@@ -206,6 +270,7 @@ public class DeliverMilkServiceImpl extends BaseService implements DeliverMilkSe
 				item.setStatus("20");//取消发货，待发货，已回执
 				item.setOrgItemNo(plan.getItemNo());//对应原订单，订单行编号
 				item.setOrgOrderNo(plan.getOrderNo());//对应原订单，订单编号
+//				item.setDispEmpNo();//配送人员id
 				
 				dispEntries.add(item);
 				index++;
@@ -221,7 +286,7 @@ public class DeliverMilkServiceImpl extends BaseService implements DeliverMilkSe
 			dispOrder.setStatus("10");//未确认
 			dispOrder.setReachTimeType(order.getOrderType());//查询时用此字段代替了reachtimetype
 //			dispOrder.setBranchNo(order.getBranchNo());
-//			dispOrder.setDispEmpNo(order.getEmpNo());
+//			dispOrder.setDispEmpNo();
 			
 			//保存日单与日单行
 			tDispOrderMapper.insert(dispOrder);
@@ -232,49 +297,104 @@ public class DeliverMilkServiceImpl extends BaseService implements DeliverMilkSe
 		return 1;
 	}
 
+	/* (non-Javadoc) 
+	* @title: createRouteChanges
+	* @description: 生成变化路单  原因代码：10 变更产品 20 变更数量 30 增加订户 40 减少订户 50 变更配送时间
+	* @return 
+	* @see com.nhry.service.milk.dao.DeliverMilkService#createRouteChanges() 
+	*/
 	@Override
-	public PageInfo searchUndeliverProduct(UnDeliverProductSearch uSearch) {
-		if(StringUtils.isEmpty(uSearch.getPageNum()) || StringUtils.isEmpty(uSearch.getPageSize())){
-			throw new ServiceException(MessageCode.LOGIC_ERROR,"pageNum和pageSize不能为空！");
-		}
-		return tDispOrderItemMapper.searchUndeliverProduct(uSearch);
-	}
-
-	@Override
-	public int createInsideSalOrder(String dispOrderNo) {
-		try{
-			TMstInsideSalOrder sOrder = tMstInsideSalOrderMapper.getInSalOrderByDispOrderNo(dispOrderNo);
-			if(sOrder!=null){
-				tMstInsideSalOrderItemMapper.delInSalOrderItemByOrderNo(sOrder.getInsOrderNo());
+	public int createRouteChanges()
+	{
+		SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
+		List<TDispOrderChangeItem> list = tDispOrderItemMapper.selectDispItemsChange("2016-06-27","2016-06-26");
+		
+//    测试用上面的，正式用下面
+//		List<TDispOrderChangeItem> list = tDispOrderItemMapper.selectDispItemsChange( format.format(new Date()), format.format(afterDate(new Date(),-1)) );
+		
+		//对比每个不一样的前今日订单生成变化单，批量保存
+		List<TDispOrderChange> saveList = new ArrayList<TDispOrderChange>();
+		for(TDispOrderChangeItem item : list){
+			TDispOrderChange change = new TDispOrderChange();
+			if(StringUtils.isBlank(item.getOrderNo1()) && StringUtils.isNotBlank(item.getOrderNo2()) ){
+				//减少订户
+				change.setReason("40");
+				change.setYestodayMatnr(item.getMatnr2());
+				change.setYestodayQty(item.getQty2());
+			}else if(StringUtils.isBlank(item.getOrderNo2()) && StringUtils.isNotBlank(item.getOrderNo1())){
+				//新增订户
+				change.setReason("30");
+				change.setTodayMatnr(item.getMatnr1());
+				change.setTodayQty(item.getQty1());
+			}else if(!item.getItemNo1().equals(item.getItemNo2())){
+				//变更产品
+				change.setReason("10");
+				change.setYestodayMatnr(item.getMatnr2());
+				change.setTodayMatnr(item.getMatnr1());
+				change.setTodayQty(item.getQty1());
+				change.setYestodayQty(item.getQty2());
+			}else if(item.getQty1().intValue() != item.getQty2().intValue()){
+				//变更数量
+				change.setReason("20");
+				change.setTodayQty(item.getQty1());
+				change.setYestodayQty(item.getQty2());
+			}else if(item.getReachTimeType1().equals(item.getReachTimeType2())){
+				//变更配送时间
+				change.setReason("50");
+				change.setYestodayReachTimeType(item.getReachTimeType1());
+				change.setTodayReachTimeType(item.getReachTimeType2());
 			}else{
-				TDispOrder order = tDispOrderMapper.getDispOrderByNo(dispOrderNo);
-				sOrder = new TMstInsideSalOrder();
-				sOrder.setInsOrderNo(SerialUtil.creatSeria());
-				sOrder.setOrderDate(order.getOrderDate());
-				sOrder.setDispOrderNo(order.getOrderNo());
-				sOrder.setBranchNo(order.getBranchNo());
-				sOrder.setSalEmpNo(order.getDispEmpNo());
-				tMstInsideSalOrderMapper.insertInsideSalOrder(sOrder);
+				continue;
 			}
-			List<TDispOrderItem> entries = tDispOrderItemMapper.selectItemsByOrderNo(dispOrderNo);
-			for(TDispOrderItem entry : entries){
-				TMstInsideSalOrderItem item = new TMstInsideSalOrderItem();
-				item.setInsOrderNo(sOrder.getInsOrderNo());
-				item.setItemNo(entry.getItemNo());
-				item.setMatnr(entry.getMatnr());
-				item.setOrderDate(sOrder.getOrderDate());
-				item.setPrice(entry.getPrice());
-				item.setQty(entry.getQty());
-				item.setReason(entry.getReason());
-				tMstInsideSalOrderItemMapper.insertOrderItem(item);
-			}
-			return 1;
-
-		}catch (Exception e){
-			throw new ServiceException(MessageCode.LOGIC_ERROR,"收款失败"+e.getMessage());
+			
+			change.setOrderNo(StringUtils.isNotBlank(item.getOrderNo1())?item.getOrderNo1():item.getOrderNo2());
+			change.setOrderDate(item.getOrderDate1()!=null?item.getOrderDate1():item.getOrderDate2());
+			change.setOrgOrderNo(StringUtils.isNotBlank(item.getOrgOrderNo1())?item.getOrgOrderNo1():item.getOrgOrderNo2());
+			change.setOrgItemNo(StringUtils.isNotBlank(item.getOrgItemNo1())?item.getOrgItemNo1():item.getOrgItemNo2());
+			change.setAddressNo(StringUtils.isNotBlank(item.getAddressNo1())?item.getAddressNo1():item.getAddressNo2());
+			change.setEmpNo(StringUtils.isNotBlank(item.getDispEmpNo1())?item.getDispEmpNo1():item.getDispEmpNo2());
+			
+			saveList.add(change);
 		}
-
+		
+		tDispOrderChangeMapper.batchAddNewDispOrderChanges(saveList);
+		
+		return 1;
 	}
+	
+	/* (non-Javadoc) 
+	* @title: updatePreOrderCurAmt
+	* @description: 回执后更新订单的剩余金额 ???
+	* @param orderCode
+	* @return 
+	* @see com.nhry.service.milk.dao.DeliverMilkService#updatePreOrderCurAmt(java.lang.String) 
+	*/
+	@Override
+	public int updatePreOrderCurAmt()
+	{
+		List<TDispOrderItem> list = tDispOrderItemMapper.selectItemsByConfirmed();
+		
+		for(TDispOrderItem item : list){
+			TPreOrder order = tPreOrderMapper.selectByPrimaryKey(item.getOrgOrderNo());
+			order.setCurAmt(order.getCurAmt().subtract(item.getConfirmAmt()));
+			tPreOrderMapper.updateOrderCurAmt(order);
+		}
+		
+		return 1;
+	}
+	
+	
+	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	
+	//日期往前后加n天
+	private Date afterDate(Date date, int days) {
 
+		Calendar aCalendar =  Calendar.getInstance();
+		aCalendar.setTime(date);
+		aCalendar.add(aCalendar.DATE, days);//把日期往后增加一天.整数往后推,负数往前移动
+		date=aCalendar.getTime();   //这个时间就是日期往后推一天的结果
+
+		return date;
+	}
 
 }

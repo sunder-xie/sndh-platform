@@ -1,6 +1,8 @@
 package com.nhry.rest.basic;
 
+import com.github.pagehelper.PageInfo;
 import com.nhry.common.exception.MessageCode;
+import com.nhry.data.basic.domain.TMdMara;
 import com.nhry.data.basic.domain.TMdMaraEx;
 import com.nhry.data.config.domain.NHSysParameter;
 import com.nhry.model.basic.ProductQueryModel;
@@ -12,6 +14,7 @@ import com.sun.jersey.spi.resource.Singleton;
 import com.wordnik.swagger.annotations.Api;
 import com.wordnik.swagger.annotations.ApiOperation;
 import com.wordnik.swagger.annotations.ApiParam;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
@@ -31,10 +34,10 @@ public class ProductResource extends BaseResource {
 	@Autowired
 	private ProductService productService;
 	
-	@GET
+	@POST
 	@Path("/{productCode}")
 	@Produces(MediaType.APPLICATION_JSON)
-	@ApiOperation(value = "/{productCode}", response = ProductInfoExModel.class, notes = "根据商品编号查询商品信息")
+	@ApiOperation(value = "/{productCode}", response = TMdMara.class, notes = "根据商品编号查询商品信息")
 	public Response selectProductByCode(@ApiParam(required=true,name="productCode",value="商品编号") @PathParam("productCode") String productCode){
 		return convertToRespModel(MessageCode.NORMAL, null, productService.selectProductAndExByCode(productCode));
 	} 
@@ -52,23 +55,23 @@ public class ProductResource extends BaseResource {
 	@Path("/search")
 	@Produces(MediaType.APPLICATION_JSON)
 	@Consumes(MediaType.APPLICATION_JSON)
-	@ApiOperation(value = "/search", response = NHSysParameter.class, notes = "查询商品信息列表")
+	@ApiOperation(value = "/search", response = PageInfo.class, notes = "查询商品信息列表")
 	public Response findProducts(@ApiParam(required=true,name="smodel",value="SearchModel") ProductQueryModel smodel){
 		return convertToRespModel(MessageCode.NORMAL, null, productService.searchProducts(smodel));
 	}
 	
-	@GET
+	@POST
 	@Path("/publish/{productCode}")
 	@Produces(MediaType.APPLICATION_JSON)
-	@ApiOperation(value = "/publish/{productCode}", response = Integer.class, notes = "发布商品")
+	@ApiOperation(value = "/publish/{productCode}", response = ResponseModel.class, notes = "发布商品")
 	public Response pubProductByCode(@ApiParam(required=true,name="productCode",value="商品编号") @PathParam("productCode") String productCode){
 		return convertToRespModel(MessageCode.NORMAL, null, productService.pubProductByCode(productCode));
 	} 
 	
-	@GET
+	@POST
 	@Path("/getList/{productCode}")
 	@Produces(MediaType.APPLICATION_JSON)
-	@ApiOperation(value = "/getList/{productCode}", response = ProductInfoExModel.class, notes = "根据产品编号模糊查询商品")
+	@ApiOperation(value = "/getList/{productCode}", response = TMdMara.class, notes = "根据产品编号模糊查询商品")
 	public Response selectProductAndExListByCode(@ApiParam(required=true,name="productCode",value="商品编号") @PathParam("productCode") String productCode){
 		return convertToRespModel(MessageCode.NORMAL, null, productService.selectProductAndExListByCode(productCode));
 	}
