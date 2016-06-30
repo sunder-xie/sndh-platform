@@ -24,6 +24,56 @@
     <result column="ORG_ITEM_NO" property="orgItemNo" jdbcType="VARCHAR" />
     <result column="ORG_ORDER_NO" property="orgOrderNo" jdbcType="VARCHAR" />
     <result column="REACH_TIME_TYPE" property="reachTimeType" jdbcType="VARCHAR" />
+    <result column="DISP_EMP_NO" property="dispEmpNo" jdbcType="VARCHAR" />
+  </resultMap>
+  <resultMap id="BaseChangeResultMap" type="com.nhry.service.milk.pojo.TDispOrderChangeItem" >
+    <result column="ORDER_NO1" property="orderNo1" jdbcType="VARCHAR" />
+    <result column="ORDER_DATE1" property="orderDate1" jdbcType="DATE" />
+    <result column="ITEM_NO1" property="itemNo1" jdbcType="VARCHAR" />
+    <result column="CONFIRM_MATNR1" property="confirmMatnr1" jdbcType="VARCHAR" />
+    <result column="MATNR1" property="matnr1" jdbcType="VARCHAR" />
+    <result column="CONFIRM_QTY1" property="confirmQty1" jdbcType="DECIMAL" />
+    <result column="QTY1" property="qty1" jdbcType="DECIMAL" />
+    <result column="UNIT1" property="unit1" jdbcType="VARCHAR" />
+    <result column="PRICE1" property="price1" jdbcType="DECIMAL" />
+    <result column="AMT1" property="amt1" jdbcType="DECIMAL" />
+    <result column="CONFIRM_AMT1" property="confirmAmt1" jdbcType="DECIMAL" />
+    <result column="STATUS1" property="status1" jdbcType="VARCHAR" />
+    <result column="PICKUP_ORDER_NO1" property="pickupOrderNo1" jdbcType="VARCHAR" />
+    <result column="PICKUP_ORDER_ITEM_NO1" property="pickupOrderItemNo1" jdbcType="VARCHAR" />
+    <result column="REASON1" property="reason1" jdbcType="VARCHAR" />
+    <result column="REDISP_DATE1" property="redispDate1" jdbcType="DATE" />
+    <result column="WHOLESALE_PRICE1" property="wholesalePrice1" jdbcType="DECIMAL" />
+    <result column="WHOLESALE_PRICE_11" property="wholesalePrice11" jdbcType="DECIMAL" />
+    <result column="ADDRESS_NO1" property="addressNo1" jdbcType="VARCHAR" />
+    <result column="ORG_ITEM_NO1" property="orgItemNo1" jdbcType="VARCHAR" />
+    <result column="ORG_ORDER_NO1" property="orgOrderNo1" jdbcType="VARCHAR" />
+    <result column="REACH_TIME_TYPE1" property="reachTimeType1" jdbcType="VARCHAR" />
+    <result column="DISP_EMP_NO1" property="dispEmpNo1" jdbcType="VARCHAR" />
+    <!--  -->
+    <result column="ORDER_NO2" property="orderNo2" jdbcType="VARCHAR" />
+    <result column="ORDER_DATE2" property="orderDate2" jdbcType="DATE" />
+    <result column="ITEM_NO2" property="itemNo2" jdbcType="VARCHAR" />
+    <result column="CONFIRM_MATNR2" property="confirmMatnr2" jdbcType="VARCHAR" />
+    <result column="MATNR2" property="matnr2" jdbcType="VARCHAR" />
+    <result column="CONFIRM_QTY2" property="confirmQty2" jdbcType="DECIMAL" />
+    <result column="QTY2" property="qty2" jdbcType="DECIMAL" />
+    <result column="UNIT2" property="unit2" jdbcType="VARCHAR" />
+    <result column="PRICE2" property="price2" jdbcType="DECIMAL" />
+    <result column="AMT2" property="amt2" jdbcType="DECIMAL" />
+    <result column="CONFIRM_AMT2" property="confirmAmt2" jdbcType="DECIMAL" />
+    <result column="STATUS2" property="status2" jdbcType="VARCHAR" />
+    <result column="PICKUP_ORDER_NO2" property="pickupOrderNo2" jdbcType="VARCHAR" />
+    <result column="PICKUP_ORDER_ITEM_NO2" property="pickupOrderItemNo2" jdbcType="VARCHAR" />
+    <result column="REASON2" property="reason2" jdbcType="VARCHAR" />
+    <result column="REDISP_DATE2" property="redispDate2" jdbcType="DATE" />
+    <result column="WHOLESALE_PRICE2" property="wholesalePrice2" jdbcType="DECIMAL" />
+    <result column="WHOLESALE_PRICE_12" property="wholesalePrice12" jdbcType="DECIMAL" />
+    <result column="ADDRESS_NO2" property="addressNo2" jdbcType="VARCHAR" />
+    <result column="ORG_ITEM_NO2" property="orgItemNo2" jdbcType="VARCHAR" />
+    <result column="ORG_ORDER_NO2" property="orgOrderNo2" jdbcType="VARCHAR" />
+    <result column="REACH_TIME_TYPE2" property="reachTimeType2" jdbcType="VARCHAR" />
+    <result column="DISP_EMP_NO2" property="dispEmpNo2" jdbcType="VARCHAR" />
   </resultMap>
   <resultMap id="boxDetailMap" type="com.nhry.data.milktrans.domain.TRecBotDetail">
     <result column="SPEC " property="spec" jdbcType="VARCHAR" />
@@ -34,15 +84,56 @@
   <sql id="Base_Column_List" >
     ORDER_NO, ORDER_DATE, ITEM_NO,CONFIRM_MATNR, MATNR, CONFIRM_QTY, QTY, UNIT, PRICE, AMT, CONFIRM_AMT, 
     STATUS, PICKUP_ORDER_NO, PICKUP_ORDER_ITEM_NO, REASON, REDISP_DATE, WHOLESALE_PRICE,
-    WHOLESALE_PRICE_1, ADDRESS_NO,ORG_ITEM_NO,ORG_ORDER_NO
+    WHOLESALE_PRICE_1, ADDRESS_NO,ORG_ITEM_NO,ORG_ORDER_NO,REACH_TIME_TYPE
   </sql>
-  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="com.nhry.data.milk.domain.TDispOrderItemKey" >
+  <select id="selectDispItemsChange" resultMap="BaseChangeResultMap" parameterType="com.nhry.data.milk.domain.TDispOrderItem" >
+    select * from (
+		(select 
+       ORDER_NO ORDER_NO1,ORDER_DATE ORDER_DATE1,ITEM_NO ITEM_NO1,CONFIRM_MATNR CONFIRM_MATNR1, 
+       MATNR MATNR1,CONFIRM_QTY CONFIRM_QTY1,QTY QTY1,UNIT UNIT1,PRICE PRICE1,
+       ADDRESS_NO ADDRESS_NO1,ORG_ITEM_NO ORG_ITEM_NO1,ORG_ORDER_NO ORG_ORDER_NO1,
+       REACH_TIME_TYPE REACH_TIME_TYPE1, DISP_EMP_NO DISP_EMP_NO1
+      from t_mst_disp_order_item a where a.order_date = #{itemNo,jdbcType=DATE}) a1
+		left outer join 
+		(select 
+		 ORDER_NO ORDER_NO2,ORDER_DATE ORDER_DATE2,ITEM_NO ITEM_NO2,CONFIRM_MATNR CONFIRM_MATNR2, 
+       MATNR MATNR2,CONFIRM_QTY CONFIRM_QTY2,QTY QTY2,UNIT UNIT2,PRICE PRICE2,
+       ADDRESS_NO ADDRESS_NO2,ORG_ITEM_NO ORG_ITEM_NO2,ORG_ORDER_NO ORG_ORDER_NO2,
+       REACH_TIME_TYPE REACH_TIME_TYPE2, DISP_EMP_NO DISP_EMP_NO2
+		from t_mst_disp_order_item b where b.order_date = #{orderNo,jdbcType=DATE}) b1
+		on a1.org_order_no1 = b1.org_order_no2 and a1.org_item_no1 = b1.org_item_no2
+		)
+		where (a1.matnr1 != b1.matnr2 or a1.matnr1 is null or b1.matnr2 is null) 
+		or (a1.qty1 != b1.qty2 or a1.qty1 is null or b1.qty2 is null) 
+		or (a1.reach_time_type1 != b1.reach_time_type2 or a1.reach_time_type1 is null or b1.reach_time_type2 is null)
+		
+		union
+		
+		select * from (
+		(select 
+		 ORDER_NO ORDER_NO1,ORDER_DATE ORDER_DATE1,ITEM_NO ITEM_NO1,CONFIRM_MATNR CONFIRM_MATNR1, 
+       MATNR MATNR1,CONFIRM_QTY CONFIRM_QTY1,QTY QTY1,UNIT UNIT1,PRICE PRICE1,
+       ADDRESS_NO ADDRESS_NO1,ORG_ITEM_NO ORG_ITEM_NO1,ORG_ORDER_NO ORG_ORDER_NO1,
+       REACH_TIME_TYPE REACH_TIME_TYPE1, DISP_EMP_NO DISP_EMP_NO1
+		from t_mst_disp_order_item a where a.order_date = #{itemNo,jdbcType=DATE}) a1
+		right outer join 
+		(select 
+		 ORDER_NO ORDER_NO2,ORDER_DATE ORDER_DATE2,ITEM_NO ITEM_NO2,CONFIRM_MATNR CONFIRM_MATNR2, 
+       MATNR MATNR2,CONFIRM_QTY CONFIRM_QTY2,QTY QTY2,UNIT UNIT2,PRICE PRICE2,
+       ADDRESS_NO ADDRESS_NO2,ORG_ITEM_NO ORG_ITEM_NO2,ORG_ORDER_NO ORG_ORDER_NO2,
+       REACH_TIME_TYPE REACH_TIME_TYPE2, DISP_EMP_NO DISP_EMP_NO2
+		from t_mst_disp_order_item b where b.order_date = #{orderNo,jdbcType=DATE}) b1
+		on a1.org_order_no1 = b1.org_order_no2 and a1.org_item_no1 = b1.org_item_no2
+		)
+		where (a1.matnr1 != b1.matnr2 or a1.matnr1 is null or b1.matnr2 is null) 
+		or (a1.qty1 != b1.qty2 or a1.qty1 is null or b1.qty2 is null) 
+		or (a1.reach_time_type1 != b1.reach_time_type2 or a1.reach_time_type1 is null or b1.reach_time_type2 is null)
+  </select>
+  <select id="selectItemsByConfirmed" resultMap="BaseResultMap" >
     select 
     <include refid="Base_Column_List" />
     from t_mst_disp_order_item
-    where ORDER_NO = #{orderNo,jdbcType=VARCHAR}
-      and ORDER_DATE = #{orderDate,jdbcType=DATE}
-      and ITEM_NO = #{itemNo,jdbcType=VARCHAR}
+    where CONFIRM_AMT &gt; 0
   </select>
   <delete id="deleteByPrimaryKey" parameterType="com.nhry.data.milk.domain.TDispOrderItemKey" >
     delete from t_mst_disp_order_item

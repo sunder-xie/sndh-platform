@@ -42,7 +42,19 @@ public class TDispOrderItem extends TDispOrderItemKey {
     
     private String reachTimeType;
     
-    public String getReachTimeType()
+    private String dispEmpNo;
+    
+    public String getDispEmpNo()
+	{
+		return dispEmpNo;
+	}
+
+	public void setDispEmpNo(String dispEmpNo)
+	{
+		this.dispEmpNo = dispEmpNo;
+	}
+
+	public String getReachTimeType()
 	{
 		return reachTimeType;
 	}

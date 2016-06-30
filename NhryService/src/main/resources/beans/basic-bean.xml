@@ -59,7 +59,8 @@
 	   <property name="tMilkboxPlanMapper"  ref="tMilkboxPlanMapper"></property>
 	   <property name="tPreOrderMapper"  ref="tPreOrderMapper"></property>
 	   <property name="branchEmpMapper"  ref="branchEmpMapper"></property>
-	   <property name="userSessionService" ref="userSessionService"></property>
+	   <property name="userSessionService" ref="userSessionService"></property>  
+	   <property name="tVipCustInfoService" ref="custService"></property>
 	</bean>
 	<!-- 奶箱end -->
 	
@@ -71,11 +72,16 @@
 	<bean id="tDispOrderItemMapper" class="com.nhry.data.milk.impl.TDispOrderItemMapperImpl">
 		<property name="sqlSessionTemplate"  ref="dynamicSqlSessionTemplate"></property>
 	</bean>
+	<bean id="tDispOrderChangeMapper" class="com.nhry.data.milk.impl.TDispOrderChangeMapperImpl">
+		<property name="sqlSessionTemplate"  ref="dynamicSqlSessionTemplate"></property>
+	</bean>
 	<bean id="deliverMilkService" class="com.nhry.service.milk.impl.DeliverMilkServiceImpl">
 	   <property name="tDispOrderMapper"  ref="tDispOrderMapper"></property>
 	   <property name="tDispOrderItemMapper"  ref="tDispOrderItemMapper"></property>
 	   <property name="tPreOrderMapper"  ref="tPreOrderMapper"></property>
+	   <property name="tPlanOrderItemMapper"  ref="tPlanOrderItemMapper"></property>
 	   <property name="tOrderDaliyPlanItemMapper"  ref="tOrderDaliyPlanItemMapper"></property>
+	   <property name="tDispOrderChangeMapper"  ref="tDispOrderChangeMapper"></property>
 	   <property name="userSessionService" ref="userSessionService"></property>
 	</bean>
 	<!-- 送奶信息维护end -->

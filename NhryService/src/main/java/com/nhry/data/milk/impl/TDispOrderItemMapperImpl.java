@@ -4,6 +4,9 @@ import com.nhry.common.datasource.DynamicSqlSessionTemplate;
 import com.nhry.data.milk.dao.TDispOrderItemMapper;
 import com.nhry.data.milk.domain.TDispOrderItem;
 import com.nhry.data.milk.domain.TDispOrderItemKey;
+import com.nhry.data.order.domain.TPlanOrderItem;
+import com.nhry.model.milk.RouteDetailUpdateModel;
+import com.nhry.service.milk.pojo.TDispOrderChangeItem;
 import com.nhry.data.milktrans.domain.TRecBotDetail;
 import com.nhry.model.milk.RouteDetailUpdateModel;
 import com.nhry.model.milktrans.CreateEmpReturnboxModel;
@@ -55,12 +58,21 @@ public class TDispOrderItemMapperImpl implements TDispOrderItemMapper
 		// TODO Auto-generated method stub
 		return sqlSessionTemplate.selectList("selectDispItemsByKey", record);
 	}
-
+	
 	@Override
-	public TDispOrderItem selectByPrimaryKey(TDispOrderItemKey key)
+	public List<TDispOrderItem> selectItemsByConfirmed()
 	{
 		// TODO Auto-generated method stub
-		return null;
+		return sqlSessionTemplate.selectList("selectItemsByConfirmed");
+	}
+
+	@Override
+	public List<TDispOrderChangeItem> selectDispItemsChange(String yestoday,String today)
+	{
+		TDispOrderItem key = new TDispOrderItem();
+		key.setOrderNo(yestoday);
+		key.setItemNo(today);
+		return sqlSessionTemplate.selectList("selectDispItemsChange", key);
 	}
 
 	@Override
@@ -71,8 +83,10 @@ public class TDispOrderItemMapperImpl implements TDispOrderItemMapper
 	}
 
 	@Override
-	public int updateDispOrderItem(RouteDetailUpdateModel record)
+	public int updateDispOrderItem(RouteDetailUpdateModel record,TPlanOrderItem entry)
 	{
+		//用原订单行的价格
+		BigDecimal orgPrice = entry.getSalesPrice();
 		TDispOrderItem key = new TDispOrderItem();
 		key.setOrderNo(record.getOrderNo());
 		key.setItemNo(record.getItemNo());
@@ -80,6 +94,7 @@ public class TDispOrderItemMapperImpl implements TDispOrderItemMapper
 		key.setReason(record.getReason());
 		key.setStatus(record.getStatus());
 		key.setConfirmMatnr(record.getProductCode());
+		key.setConfirmAmt(key.getConfirmQty().multiply(orgPrice));
 //		key.setLastModified(new Date());
 //		key.setLastModifiedBy(userSessionService.getCurrentUser().getLoginName());
 //		key.setLastModifiedByTxt(userSessionService.getCurrentUser().getDisplayName());
