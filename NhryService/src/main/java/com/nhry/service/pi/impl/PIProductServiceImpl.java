@@ -94,22 +94,42 @@ public class PIProductServiceImpl implements PIProductService {
             Map<String, List<ET_VKORG>> et_vkorgs = getET_VKORG(response);
             List<ET_PARTNER> et_partner = getET_PARTNER(response);
             Map<String,List<ET_PARTNER>> partners = new HashMap<>();
-            for(ET_PARTNER partner : et_partner){
-                String kunnr = partner.getKUNNR();
-                List<ET_PARTNER> l = new ArrayList<>();
-                for(ET_PARTNER p : et_partner){
-                    if(kunnr.equals(p.getKUNNR()) && !kunnr.equals(p.getKUNWE())){
-                        l.add(p);
-                    }
-                }
-                if(l.size()>0) {
-                    partners.put(kunnr, l);
-                }
-            }
+
             List<ET_VKORG> zys = et_vkorgs.get("01");
             for (ET_VKORG et_vkorg : zys) {
                 saveBranch(et_kunnrs, BRANDCHTYPE_ZY, et_vkorg.getVKORG(),et_vkorg.getKUNNR(),et_vkorg.getVTWEG(),"");
             }
+            List<ET_VKORG> wbs = et_vkorgs.get("02");
+            Map<String ,ET_VKORG> jxs = new HashMap<>();
+            for(ET_VKORG et_vkorg : wbs){
+                String kunner = et_vkorg.getKUNNR();
+                for(ET_PARTNER et_partner1 : et_partner){
+                    if(kunner.equals(et_partner1.getKUNNR())) {
+                        jxs.put(kunner,et_vkorg);
+                    }
+                }
+            }
+            /**
+             * 保存经销商信息
+             */
+            for(Map.Entry<String,ET_VKORG> entry : jxs.entrySet()){
+                saveDealer(et_kunnrs,entry.getKey(),entry.getValue().getVKORG());
+            }
+
+//            for(ET_PARTNER partner : et_partner){
+            for(Map.Entry<String,ET_VKORG> entry : jxs.entrySet()){
+                String kunnr = entry.getKey();
+                List<ET_PARTNER> l = new ArrayList<>();
+                for(ET_PARTNER p : et_partner){
+                    if(kunnr.equals(p.getKUNNR()) && !kunnr.equals(p.getKUNWE())){
+
+                        l.add(p);
+                    }
+                }
+                if(l.size()>0)
+                partners.put(kunnr, l);
+            }
+
             for(Map.Entry<String,List<ET_PARTNER>> entry : partners.entrySet()){
                 String key = entry.getKey();
                 String vkorg = "";
@@ -118,7 +138,7 @@ public class PIProductServiceImpl implements PIProductService {
                     vkorg = partner.getVKORG();
                     saveBranch(et_kunnrs, BRANDCHTYPE_WB, partner.getVKORG(),partner.getKUNWE(),partner.getVTWEG(),key);
                 }
-                saveDealer(et_kunnrs, key, vkorg);
+//                saveDealer(et_kunnrs, key, vkorg);
             }
             return 1;
         } catch (Exception e) {
