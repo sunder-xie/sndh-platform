@@ -63,4 +63,6 @@ public class TMdBranchEmpMapperImpl implements TMdBranchEmpMapper {
 		// TODO Auto-generated method stub
 		return sqlSessionTemplate.selectListByPages("searchBranchEmp",smodel, Integer.parseInt(smodel.getPageNum()), Integer.parseInt(smodel.getPageSize()));
 	}
+
+
 }

@@ -1,8 +1,5 @@
 package com.nhry.data.milk.impl;
 
-import java.util.Date;
-import java.util.List;
-
 import com.github.pagehelper.PageInfo;
 import com.nhry.common.auth.UserSessionService;
 import com.nhry.common.datasource.DynamicSqlSessionTemplate;
@@ -10,6 +7,10 @@ import com.nhry.data.milk.dao.TDispOrderMapper;
 import com.nhry.data.milk.domain.TDispOrder;
 import com.nhry.data.milk.domain.TDispOrderKey;
 import com.nhry.model.milk.RouteOrderSearchModel;
+import com.nhry.model.milktrans.CreateEmpReturnboxModel;
+
+import java.math.BigDecimal;
+import java.util.Date;
 
 public class TDispOrderMapperImpl implements TDispOrderMapper
 {
@@ -21,7 +22,10 @@ public class TDispOrderMapperImpl implements TDispOrderMapper
 	public void setUserSessionService(UserSessionService userSessionService) {
 		this.userSessionService = userSessionService;
 	}
-	
+	@Override
+	public BigDecimal creatRecBot(CreateEmpReturnboxModel cModel) {
+		return sqlSessionTemplate.selectOne("creatRecBot",cModel);
+	}
 	@Override
 	public PageInfo selectMilkboxsByPage(RouteOrderSearchModel smodel)
 	{

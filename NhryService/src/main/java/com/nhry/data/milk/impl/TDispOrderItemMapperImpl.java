@@ -1,13 +1,15 @@
 package com.nhry.data.milk.impl;
 
-import java.math.BigDecimal;
-import java.util.List;
-
 import com.nhry.common.datasource.DynamicSqlSessionTemplate;
 import com.nhry.data.milk.dao.TDispOrderItemMapper;
 import com.nhry.data.milk.domain.TDispOrderItem;
 import com.nhry.data.milk.domain.TDispOrderItemKey;
+import com.nhry.data.milktrans.domain.TRecBotDetail;
 import com.nhry.model.milk.RouteDetailUpdateModel;
+import com.nhry.model.milktrans.CreateEmpReturnboxModel;
+
+import java.math.BigDecimal;
+import java.util.List;
 
 public class TDispOrderItemMapperImpl implements TDispOrderItemMapper
 {
@@ -40,6 +42,12 @@ public class TDispOrderItemMapperImpl implements TDispOrderItemMapper
 		// TODO Auto-generated method stub
 		return sqlSessionTemplate.insert("batchAddNewDispOrderItems", records);
 	}
+
+	@Override
+	public List<TRecBotDetail> selectItemsByReturnBox(CreateEmpReturnboxModel cModel) {
+		return sqlSessionTemplate.selectList("selectItemsByReturnBox",cModel);
+	}
+
 
 	@Override
 	public List<TDispOrderItem> selectItemsByKeys(TDispOrderItemKey record)

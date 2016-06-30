@@ -1,9 +1,11 @@
 package com.nhry.service.basic.dao;
 
 import com.github.pagehelper.PageInfo;
+import com.nhry.data.basic.domain.TMdBranch;
 import com.nhry.data.basic.domain.TMdBranchEmp;
 import com.nhry.model.basic.EmpQueryModel;
 import com.nhry.service.basic.pojo.BranchEmpModel;
+import java.util.*;
 
 public interface BranchEmpService {
 	int deleteBranchEmpByNo(String empNo);
@@ -17,4 +19,6 @@ public interface BranchEmpService {
     public PageInfo searchBranchEmp(EmpQueryModel smodel);
 
     BranchEmpModel empDetailInfo(String empNo);
+
+    List<TMdBranch> getComPanyAllBranch();
 }
