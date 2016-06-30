@@ -427,10 +427,10 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 
 		//订单价格
 		order.setCurAmt(orderAmt);
-		//此为多余的钱，如果是预付款，将存入订户账户
+		//此为多余的钱，如果是预付款，将存入订户账户???
 		BigDecimal remain = order.getInitAmt().subtract(order.getCurAmt());
-		if("20".equals(order.getPaymentStat()) && remain.floatValue() > 0){
-			if(record.getAccount() != null){
+		if(record.getAccount() != null){
+			if("20".equals(order.getPaymentStat()) && remain.floatValue() > 0){
 				record.getAccount().setAcctAmt(remain);
 				tVipCustInfoService.addVipAcct(record.getAccount());
 			}
@@ -440,9 +440,9 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 		
 		//保存订单和行项目
 		tPreOrderMapper.insert(record.getOrder());
-		for(TPlanOrderItem entry: entriesList){
+		entriesList.forEach(entry->{
 			tPlanOrderItemMapper.insert(entry);
-		}
+		});
 
 		return createDaliyPlan(order,record.getEntries());//生成每日计划
 	}
