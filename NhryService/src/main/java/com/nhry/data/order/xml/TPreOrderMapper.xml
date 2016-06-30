@@ -464,5 +464,10 @@
     SET  PAYMENT_STAT = '20'
     where ORDER_NO = #{orderNo,jdbcType=VARCHAR}
   </update>
-
+  
+  <update id="updateOrderCurAmt" parameterType="com.nhry.data.order.domain.TPreOrder" >
+    update t_preorder
+    set CUR_AMT =  #{curAmt,jdbcType=DECIMAL}
+    where ORDER_NO = #{orderNo,jdbcType=VARCHAR}
+  </update>
 </mapper>

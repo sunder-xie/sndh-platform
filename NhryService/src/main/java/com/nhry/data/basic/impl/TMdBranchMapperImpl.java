@@ -36,6 +36,8 @@ public class TMdBranchMapperImpl implements TMdBranchMapper {
 	}
 
 
+
+
 	@Override
 	public List<TMdBranch> findBranchListByOrg(String salesOrg) {
 		// TODO Auto-generated method stub

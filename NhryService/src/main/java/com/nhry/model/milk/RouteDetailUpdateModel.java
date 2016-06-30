@@ -10,14 +10,38 @@ public class RouteDetailUpdateModel {
 	private String orderNo;
 	
 	private String itemNo;
-    
-   private String status;
+	
+	private String orgItemNo;
+
+	private String status;
 
    private String productCode;
    
    private String reason;
    
    private String qty;
+   
+   private String matnr;
+   
+   public String getOrgItemNo()
+   {
+   	return orgItemNo;
+   }
+   
+   public void setOrgItemNo(String orgItemNo)
+   {
+   	this.orgItemNo = orgItemNo;
+   }
+
+	public String getMatnr()
+	{
+		return matnr;
+	}
+
+	public void setMatnr(String matnr)
+	{
+		this.matnr = matnr;
+	}
 
 	public String getOrderNo()
 	{

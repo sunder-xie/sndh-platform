@@ -16,10 +16,19 @@
 	<bean id="customerBillMapper" class="com.nhry.data.bill.impl.CustomerBillMapperImpl">
 	   <property name="sqlSessionTemplate"  ref="dynamicSqlSessionTemplate"></property>
 	</bean>
+	<bean id="branchBillMapper" class="com.nhry.data.bill.impl.BranchBillMapperImpl">
+		<property name="sqlSessionTemplate"  ref="dynamicSqlSessionTemplate"></property>
+	</bean>
 	<bean id="customerBillService" class="com.nhry.service.bill.impl.CustomerBillServiceImpl">
 	   <property name="customerBillMapper"  ref="customerBillMapper"></property>
 		<property name="tPreOrderMapper"  ref="tPreOrderMapper"></property>
 		<property name="tPlanOrderItemMapper"  ref="tPlanOrderItemMapper"></property>
+		<property name="userSessionService"  ref="userSessionService"></property>
+	</bean>
+	<bean id="branchBillService" class="com.nhry.service.bill.impl.BranchBillServiceImpl">
+		<property name="branchBillMapper"  ref="branchBillMapper"></property>
+		<property name="userSessionService"  ref="userSessionService"></property>
+		<property name="tSysUserRoleMapper"  ref="urMapper"></property>
 	</bean>
 
 </beans>

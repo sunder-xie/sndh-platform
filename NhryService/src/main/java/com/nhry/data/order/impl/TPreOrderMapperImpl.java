@@ -17,6 +17,7 @@ import com.github.pagehelper.PageInfo;
 import com.nhry.common.datasource.DynamicSqlSessionTemplate;
 import com.nhry.data.order.dao.TPreOrderMapper;
 import com.nhry.data.order.domain.TPreOrder;
+import com.nhry.model.bill.BranchBillSearch;
 import com.nhry.model.bill.CustBillQueryModel;
 import com.nhry.model.order.ManHandOrderSearchModel;
 import com.nhry.model.order.OrderSearchModel;
@@ -82,6 +83,8 @@ public class TPreOrderMapperImpl implements TPreOrderMapper
 	}
 
 
+
+
 	@Override
 	public int insert(TPreOrder record)
 	{
@@ -121,10 +124,9 @@ public class TPreOrderMapperImpl implements TPreOrderMapper
 	}
 	
 	@Override
-	public int updateByPrimaryKeySelective(TPreOrder record)
+	public int updateOrderCurAmt(TPreOrder record)
 	{
-		// TODO Auto-generated method stub
-		return 0;
+		return sqlSessionTemplate.update("updateOrderCurAmt", record);
 	}
 	
 	@Override

@@ -199,6 +199,7 @@
     where area.ID = scope.RESIDENTIAL_AREA_ID
     and scope.BRANCH_NO =  #{branchNo,jdbcType=VARCHAR}
   </select>
+
   <select id="selectById" parameterType="java.lang.String" resultMap="BaseResultMap">
     select
      a.ID,  a.RESIDENTIAL_AREA_TXT,  a.PROVINCE,  a.CITY,  a.COUNTY,  a.STREET,b.BRANCH_NAME branchNo, a.GUIDEBOARD, a.STATUS,  a.ADDRESS_TXT,

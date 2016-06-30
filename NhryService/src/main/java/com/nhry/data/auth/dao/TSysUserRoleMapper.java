@@ -1,9 +1,9 @@
 package com.nhry.data.auth.dao;
 
-import java.util.List;
-
 import com.nhry.data.auth.domain.TSysUserRole;
 import com.nhry.model.auth.UserRoleModel;
+
+import java.util.List;
 
 public interface TSysUserRoleMapper {
     int deleteUserRoleByLoginName(TSysUserRole key);
@@ -17,4 +17,6 @@ public interface TSysUserRoleMapper {
     public int deleteUserRoles(UserRoleModel urmodel);
     
     public List<TSysUserRole> findUserRoleByRid(String rid);
+
+    TSysUserRole getUserRoleByLoginName(String loginName);
 }

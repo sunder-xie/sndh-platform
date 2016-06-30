@@ -5,8 +5,10 @@
     <id column="EMP_NO" property="empNo" jdbcType="VARCHAR" />
     <result column="HR_EMP_NO" property="hrEmpNo" jdbcType="VARCHAR" />
     <result column="BRANCH_NO" property="branchNo" jdbcType="VARCHAR" />
+    <result column="BRANCH_NAME" property="branchName" jdbcType="VARCHAR" />
     <result column="EMP_NAME" property="empName" jdbcType="VARCHAR" />
     <result column="ROLE_ID" property="roleId" jdbcType="VARCHAR" />
+    <result column="ROLE_Name" property="roleName" jdbcType="VARCHAR" />
     <result column="GENDER" property="gender" jdbcType="VARCHAR" />
     <result column="EMP_TYPE" property="empType" jdbcType="VARCHAR" />
     <result column="TEL" property="tel" jdbcType="VARCHAR" />
@@ -20,6 +22,9 @@
     <result column="LAST_MODIFIED_BY" property="lastModifiedBy" jdbcType="VARCHAR" />
     <result column="LAST_MODIFIED_BY_TXT" property="lastModifiedByTxt" jdbcType="VARCHAR" />
     <result column="STATUS" property="status" jdbcType="CHAR" />
+    <result column="SALARY_MET" property="salaryMet" jdbcType="CHAR" />
+    <result column="BASE_SALARY" property="baseSalary" jdbcType="INTEGER" />
+    <result column="JOIN_DATE" property="joinDate" jdbcType="DATE" />
   </resultMap>
 
   <resultMap id="RouteResultMap" type="com.nhry.data.basic.domain.TMdResidentialArea">
@@ -39,7 +44,7 @@
   <!--员工表字段-->
   <sql id="Base_Column_List" >
     EMP_NO, HR_EMP_NO, BRANCH_NO, EMP_NAME,ROLE_ID,GENDER, EMP_TYPE, TEL, MP, WEBCHAT, ID_NO, CREATE_AT,
-    CREATE_BY, CREATE_BY_TXT, LAST_MODIFIED, LAST_MODIFIED_BY, LAST_MODIFIED_BY_TXT, 
+    CREATE_BY, CREATE_BY_TXT, LAST_MODIFIED, LAST_MODIFIED_BY, LAST_MODIFIED_BY_TXT, SALARY_MET,BASE_SALARY,JOIN_DATE
     STATUS
   </sql>
 
@@ -51,7 +56,8 @@
 
 
   <select id="selectBranchEmpByNo" resultMap="BaseResultMap" parameterType="java.lang.String" >
-    select emp.EMP_NO,emp.EMP_NAME,branch.BRANCH_NAME  BRANCH_NO,emp.GENDER,emp.EMP_TYPE,emp.TEL,emp.WEBCHAT,emp.ID_NO,emp.STATUS,role.ROLE_NAME roleId
+    select emp.EMP_NO,emp.HR_EMP_NO,emp.EMP_NAME,branch.BRANCH_NAME BRANCH_NAME,branch.BRANCH_NO BRANCH_NO,emp.GENDER,emp.EMP_TYPE,emp.TEL,
+      emp.MP,emp.BASE_SALARY,emp.SALARY_MET,emp.JOIN_DATE,emp.WEBCHAT,emp.ID_NO,emp.STATUS,role.ROLE_NAME ROLE_NAME,role.ID ROLE_ID
     from t_md_branch_emp emp,T_MD_EMP_ROLE erole,t_sys_role role,T_MD_BRANCH branch
     where erole.ROLE_ID = role.ID and emp.EMP_NO = erole.EMP_NO and emp.BRANCH_NO = branch.BRANCH_NO
       and erole. EMP_NO = #{0}

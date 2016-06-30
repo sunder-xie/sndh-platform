@@ -72,8 +72,18 @@ public class BranchEmpResource extends BaseResource {
 	@ApiOperation(value = "/{search}", response = NHSysParameter.class, notes = "查询员工信息")
 	public Response findBranchEmpByNo(@ApiParam(required=true,name="smodel",value="SearchModel") EmpQueryModel smodel){
 		return convertToRespModel(MessageCode.NORMAL, null,branchEmpService.searchBranchEmp(smodel));
-	} 
-	
-	
-	
+	}
+
+	@POST
+	@Path("/getComPanyAllBranch")
+	@Produces(MediaType.APPLICATION_JSON)
+	@Consumes(MediaType.APPLICATION_JSON)
+	@ApiOperation(value = "/getComPanyAllBranch", response = Response.class, notes = "查询登录员工所属公司下所有的奶站")
+	public Response getComPanyAllBranch(){
+		return convertToRespModel(MessageCode.NORMAL, null,branchEmpService.getComPanyAllBranch());
+	}
+
+
+
+
 }

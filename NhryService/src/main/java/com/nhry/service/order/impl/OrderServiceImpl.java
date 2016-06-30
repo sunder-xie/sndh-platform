@@ -12,6 +12,7 @@ import com.nhry.data.order.domain.TPlanOrderItem;
 import com.nhry.data.order.domain.TPreOrder;
 import com.nhry.model.order.*;
 import com.nhry.service.BaseService;
+import com.nhry.service.basic.dao.TVipCustInfoService;
 import com.nhry.service.order.dao.OrderService;
 
 import org.apache.commons.lang3.StringUtils;
@@ -26,7 +27,13 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 	private TPreOrderMapper tPreOrderMapper;
 	private TOrderDaliyPlanItemMapper tOrderDaliyPlanItemMapper;
 	private TPlanOrderItemMapper tPlanOrderItemMapper;
+	private TVipCustInfoService tVipCustInfoService;
 
+
+	public void settVipCustInfoService(TVipCustInfoService tVipCustInfoService)
+	{
+		this.tVipCustInfoService = tVipCustInfoService;
+	}
 
 	public void settOrderDaliyPlanItemMapper(TOrderDaliyPlanItemMapper tOrderDaliyPlanItemMapper)
 	{
@@ -175,7 +182,7 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 			//订奶收款通知???
 			//todo
 			//订户状态更改???
-			//todo
+			tVipCustInfoService.discontinue(order.getMilkmemberNo(), "30");
 			
 		}else{
 			throw new ServiceException(MessageCode.LOGIC_ERROR,"当前订单不存在");
@@ -227,7 +234,7 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 			//订奶收款通知???
 			//todo
 			//订户状态更改???
-			//todo
+			tVipCustInfoService.discontinue(order.getMilkmemberNo(), "40");
 			
 		}else{
 			throw new ServiceException(MessageCode.LOGIC_ERROR,"当前订单不存在");
@@ -368,6 +375,8 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 		SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
 		TPreOrder order = record.getOrder();
 		List<TPlanOrderItem> entriesList = new ArrayList<TPlanOrderItem>();
+		//信息交验
+		validateOrderInfo(record);
 		//暂时生成订单号
 		Date date = new Date();
 		order.setOrderNo(String.valueOf(date.getTime()));
@@ -385,6 +394,10 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 		order.setMilkboxStat(StringUtils.isBlank(order.getMilkboxStat()) == true ? "20": order.getMilkboxStat());//奶箱状态
 		order.setPreorderStat("20");//订单状态
 //		order.setBranchNo(branchNo);//奶站编号 --人工分单或自动??
+		//如果地址信息不为空，为订户创建新的地址
+		if(record.getAddress() != null){
+			tVipCustInfoService.addAddressForCust(record.getAddress());
+		}
 
 		//生成每个订单行
 		int index = 0;
@@ -412,18 +425,24 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 			index++;
 		}
 
-		//保存订单，订单行
-		order.setCurAmt(orderAmt);//订单价格
-		order.setInitAmt(orderAmt);
-		order.setEndDate(calculateFinalDate(entriesList));//订单截止日期
-//		BigDecimal remain = order.getInitAmt().subtract(order.getCurAmt());//此为多余的钱，如果是预付款，将存入订户账户??
-//		if("20".equals(order.getPaymentStat()) && remain.floatValue() > 0){
-//       todo
-//		}
-		tPreOrderMapper.insert(record.getOrder());
-		for(TPlanOrderItem entry: entriesList){
-			tPlanOrderItemMapper.insert(entry);
+		//订单价格
+		order.setCurAmt(orderAmt);
+		//此为多余的钱，如果是预付款，将存入订户账户???
+		BigDecimal remain = order.getInitAmt().subtract(order.getCurAmt());
+		if(record.getAccount() != null){
+			if("20".equals(order.getPaymentStat()) && remain.floatValue() > 0){
+				record.getAccount().setAcctAmt(remain);
+				tVipCustInfoService.addVipAcct(record.getAccount());
+			}
 		}
+		order.setEndDate(calculateFinalDate(entriesList));//订单截止日期
+		order.setInitAmt(orderAmt);
+		
+		//保存订单和行项目
+		tPreOrderMapper.insert(record.getOrder());
+		entriesList.forEach(entry->{
+			tPlanOrderItemMapper.insert(entry);
+		});
 
 		return createDaliyPlan(order,record.getEntries());//生成每日计划
 	}
@@ -568,6 +587,10 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 		ArrayList<TPlanOrderItem> curEntries = record.getEntries();
 		ArrayList<TPlanOrderItem> modifiedEntries = new ArrayList<TPlanOrderItem>();
 		//长期变更(10)需对订单进行统一更改，关联更改日订单 
+		//是否修改地址
+		if(StringUtils.isNotBlank(record.getOrder().getAdressNo()) && orgOrder.getAdressNo() != record.getOrder().getAdressNo() ){
+			orgOrder.setAdressNo(record.getOrder().getAdressNo());
+		}
 		//修改订单根据行项目编号来确定行是否修改，换商品或改数量
 		for(TPlanOrderItem orgEntry : orgEntries){
 			boolean delFlag = true;
@@ -812,6 +835,7 @@ public class OrderServiceImpl extends BaseService implements OrderService {
    private void changeProductOrQty(TPreOrder orgOrder, ArrayList<TPlanOrderItem> orgEntries,List<TOrderDaliyPlanItem> daliyPlans, Map<TOrderDaliyPlanItem,TOrderDaliyPlanItem> changeProducts,Map<TOrderDaliyPlanItem,TOrderDaliyPlanItem> changeQtys,Map<TOrderDaliyPlanItem,TOrderDaliyPlanItem> stopPlans){
 		
 		SimpleDateFormat format = new SimpleDateFormat("yyyyMMdd");//该商品该日期原日计划送多少个
+		BigDecimal curAmt = orgOrder.getCurAmt();//当前订单的剩余金额
    	
    	Map<String,Integer> needNewDaliyPlans = new HashMap<String,Integer>();//所有需要新增或减少的日计划行
 
@@ -943,6 +967,9 @@ public class OrderServiceImpl extends BaseService implements OrderService {
    	for(TOrderDaliyPlanItem plan:newPlans){
    		plan.setPlanItemNo(String.valueOf(index));
    		plan.setAmt(plan.getPrice().multiply(new BigDecimal(plan.getQty().toString())));//重新计算小记金额
+   		curAmt = curAmt.subtract(plan.getAmt());//计算日计划的剩余金额
+   		plan.setRemainAmt(curAmt);
+   		
    		if(plan.getDispDate()==null){
    			
    			TPlanOrderItem entry = relatedEntryMap.get(plan.getItemNo());
@@ -1017,6 +1044,40 @@ public class OrderServiceImpl extends BaseService implements OrderService {
    		finalDate = finalDate.after(entry.getEndDispDate())?finalDate:entry.getEndDispDate();
    	}
    	return finalDate;
+   }
+   
+   //计算生成的日单的剩余金额,此处传入的日订单必须要按日期从小到大排序
+   private void calculateDaliyPlanRemainAmt(List<TOrderDaliyPlanItem> daliyPlans){
+   	if(daliyPlans.size() == 0 || daliyPlans == null) return;
+   	BigDecimal curAmt = tPreOrderMapper.selectByPrimaryKey(daliyPlans.get(0).getOrderNo()).getCurAmt();
+
+   	for(TOrderDaliyPlanItem plan :daliyPlans){
+   		curAmt = curAmt.subtract(plan.getAmt());
+   		plan.setRemainAmt(curAmt);
+   	}
+   	
+   }
+   
+   //交验生成订单的输入信息
+   private void validateOrderInfo(OrderCreateModel record){
+   	TPreOrder order = record.getOrder();
+   	if(StringUtils.isBlank(order.getPaymentmethod())){
+   		throw new ServiceException(MessageCode.LOGIC_ERROR,"请选择付款方式!");
+		}
+   	if(StringUtils.isBlank(order.getMilkboxStat())){
+   		throw new ServiceException(MessageCode.LOGIC_ERROR,"请选择奶箱状态!");
+		}
+   	if(record.getEntries()==null || record.getEntries().size() == 0){
+   		throw new ServiceException(MessageCode.LOGIC_ERROR,"请选择商品行!");
+		}
+   	if(StringUtils.isBlank(order.getMilkmemberNo())){
+   		throw new ServiceException(MessageCode.LOGIC_ERROR,"请选择订户!");
+		}
+   	if(StringUtils.isBlank(order.getAdressNo())){
+   		if(record.getAddress() == null){
+   			throw new ServiceException(MessageCode.LOGIC_ERROR,"请选择或输入地址!");
+   		}
+		}
    }
 
 }

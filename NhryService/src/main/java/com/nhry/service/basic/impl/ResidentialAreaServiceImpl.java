@@ -6,6 +6,7 @@ import com.nhry.common.exception.MessageCode;
 import com.nhry.common.exception.ServiceException;
 import com.nhry.data.basic.dao.TMdResidentialAreaMapper;
 import com.nhry.data.basic.domain.TMdResidentialArea;
+import com.nhry.model.basic.BranchAreaSearch;
 import com.nhry.service.basic.dao.ResidentialAreaService;
 import com.nhry.service.basic.pojo.ResidentialAreaModel;
 import org.apache.commons.lang.StringUtils;
@@ -18,6 +19,17 @@ import java.util.List;
 public class ResidentialAreaServiceImpl implements ResidentialAreaService {
 
     private TMdResidentialAreaMapper tMdResidentialAreaMapper;
+    @Override
+    public PageInfo searchAreaByBranchNo(BranchAreaSearch bSearch) {
+        if(StringUtils.isEmpty(bSearch.getPageNum()) || StringUtils.isEmpty(bSearch.getPageSize())){
+            throw new ServiceException(MessageCode.LOGIC_ERROR,"pageNum和pageSize不能为空！");
+        }
+        if(StringUtils.isEmpty(bSearch.getBranchNo())){
+            throw new ServiceException(MessageCode.LOGIC_ERROR,"奶站编号不能为空！");
+        }
+        return tMdResidentialAreaMapper.searchAreaByBranchNo(bSearch);
+    }
+
     @Override
     public List<TMdResidentialArea> getAreaByBranchNo(String branchNo) {
         return tMdResidentialAreaMapper.getAreaByBranchNo(branchNo);
