@@ -93,14 +93,14 @@ public class PIProductServiceImpl implements PIProductService {
             Map<String, ET_KUNNR> et_kunnrs = getET_KUNNR(response);
             Map<String, List<ET_VKORG>> et_vkorgs = getET_VKORG(response);
             List<ET_PARTNER> et_partner = getET_PARTNER(response);
-            Map<String,List<ET_PARTNER>> partners = new HashMap<>();
+            Map<String,List<ET_PARTNER>> partners = new HashMap<String,List<ET_PARTNER>>();
 
             List<ET_VKORG> zys = et_vkorgs.get("01");
             for (ET_VKORG et_vkorg : zys) {
                 saveBranch(et_kunnrs, BRANDCHTYPE_ZY, et_vkorg.getVKORG(),et_vkorg.getKUNNR(),et_vkorg.getVTWEG(),"");
             }
             List<ET_VKORG> wbs = et_vkorgs.get("02");
-            Map<String ,ET_VKORG> jxs = new HashMap<>();
+            Map<String ,ET_VKORG> jxs = new HashMap<String ,ET_VKORG>();
             for(ET_VKORG et_vkorg : wbs){
                 String kunner = et_vkorg.getKUNNR();
                 for(ET_PARTNER et_partner1 : et_partner){
@@ -287,7 +287,7 @@ public class PIProductServiceImpl implements PIProductService {
         ZT_MasterDataQueryServiceStub.ZMM_POS_24DATAResponse response = getMatWHQuery();
         ZT_MasterDataQueryServiceStub.ET_DATA_type0 et_data_type0 = response.getET_DATA();
         ZT_MasterDataQueryServiceStub.ZTSD00024[] ztsd00024s = et_data_type0.getItem();
-        Map<String, String> map = new HashMap<>();
+        Map<String, String> map = new HashMap<String, String>();
         for (ZT_MasterDataQueryServiceStub.ZTSD00024 zt : ztsd00024s) {
             String kunner = zt.getKUNNR1().getKUNNR1_type0();
             String lgort = zt.getLGORT().getLGORT_type0();
@@ -302,7 +302,7 @@ public class PIProductServiceImpl implements PIProductService {
         ZT_MasterDataQueryServiceStub.ZMM_POS_24DATAResponse response = getMatWHQuery();
         ZT_MasterDataQueryServiceStub.ET_LGORT_type0 et_lgort_type0 = response.getET_LGORT();
         ZT_MasterDataQueryServiceStub.T001L[] t001Ls = et_lgort_type0.getItem();
-        Map<String, ET_LGORT> result = new HashMap<>();
+        Map<String, ET_LGORT> result = new HashMap<String, ET_LGORT>();
         for (ZT_MasterDataQueryServiceStub.T001L t001L : t001Ls) {
             ET_LGORT et = new ET_LGORT();
             et.setWERKS(t001L.getWERKS().getWERKS_type4());
