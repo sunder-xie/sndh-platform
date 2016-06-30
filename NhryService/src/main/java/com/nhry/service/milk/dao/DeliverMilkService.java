@@ -5,6 +5,7 @@ import com.nhry.model.milk.RouteDetailUpdateModel;
 import com.nhry.model.milk.RouteOrderModel;
 import com.nhry.model.milk.RouteOrderSearchModel;
 import com.nhry.model.milk.RouteUpdateModel;
+import com.nhry.model.milktrans.UnDeliverProductSearch;
 
 public interface DeliverMilkService {
 	PageInfo searchRouteOrders(RouteOrderSearchModel smodel);
@@ -16,4 +17,8 @@ public interface DeliverMilkService {
 	int updateRouteOrderItems(RouteDetailUpdateModel record);
 	
 	int createDayRouteOder();
+
+	PageInfo searchUndeliverProduct(UnDeliverProductSearch uSearch);
+
+	int createInsideSalOrder(String dispOrderNo);
 }
