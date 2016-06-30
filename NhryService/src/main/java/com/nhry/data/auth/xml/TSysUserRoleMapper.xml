@@ -4,7 +4,7 @@
   <resultMap id="BaseResultMap" type="com.nhry.data.auth.domain.TSysUserRole" >
     <id column="LOGIN_NAME" property="loginName" jdbcType="VARCHAR" />
     <id column="ID" property="id" jdbcType="VARCHAR" />
-    <result column="IS_DEFAULT" property="isDefault" jdbcType="CHAR" />
+    <result column="IS_DEFAULT" property="isDefault" jdbcType="VARCHAR" />
   </resultMap>
   <sql id="Base_Column_List" >
     LOGIN_NAME, ID, IS_DEFAULT
@@ -61,5 +61,9 @@
   </delete>
   <select id="findUserRoleByRid"  resultMap="BaseResultMap" parameterType="String">
      SELECT <include refid="Base_Column_List" /> FROM t_sys_user_role ur where ID = #{rid,jdbcType=VARCHAR}
+  </select>
+
+  <select id="getUserRoleByLoginName"  resultMap="BaseResultMap" parameterType="String">
+    SELECT <include refid="Base_Column_List" /> FROM t_sys_user_role ur where LOGIN_NAME = #{loginName,jdbcType=VARCHAR}
   </select>
 </mapper>

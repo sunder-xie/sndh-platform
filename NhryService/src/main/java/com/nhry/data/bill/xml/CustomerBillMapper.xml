@@ -11,7 +11,7 @@
         <result column="VIP_CUST_NO" property="vipCustNo" jdbcType="VARCHAR" />
         <result column="START_TIME" property="startTime" jdbcType="DATE" />
         <result column="END_TIME" property="endTime" jdbcType="DATE" />
-        <result column="PAYMENT_YEAR_MONTH" property="yearMonth" jdbcType="VARCHAR" />
+        <result column="PAYMENT_YEAR_MONTH" property="paymentYearMonth" jdbcType="VARCHAR" />
         <result column="RECV_EMP" property="recvEmp" jdbcType="VARCHAR" />
         <result column="RECV_EMP_NAME" property="recvEmpName" jdbcType="VARCHAR" />
         <result column="CREATE_AT" property="createAt" jdbcType="DATE" />
@@ -22,7 +22,8 @@
         <result column="LAST_MODIFIED_BY_TXT" property="lastModifiedByTxt" jdbcType="VARCHAR" />
     </resultMap>
     <sql id="Base_Column_List" >
-
+        RECEIPT_NO,RECEIPT_DATE,ORDER_NO,PAYMENT_TYPE,STATUS,AMT,VIP_CUST_NO,START_TIME,END_TIME,
+       PAYMENT_YEAR_MONTH,RECV_EMP,CREATE_AT,CREATE_BY,CREATE_BY_TXT,LAST_MODIFIED,LAST_MODIFIED_BY,LAST_MODIFIED_BY_TXT
     </sql>
     <sql id="Full_Column_List" >
        RECEIPT_NO,RECEIPT_DATE,ORDER_NO,PAYMENT_TYPE,STATUS,AMT,VIP_CUST_NO,START_TIME,END_TIME,
@@ -30,18 +31,18 @@
     </sql>
     <select id="getCustomerOrderByCode" resultMap="BaseResultMap" parameterType="String">
         select
-        <include refid="Full_Column_List"/>
+           <include refid="Full_Column_List"/>
         FROM t_mst_recv_bill
         WHERE 1=1
         and ORDER_NO = #{orderNo,jdbcType=VARCHAR}
     </select>
     <insert id="customerPayment" parameterType="com.nhry.data.bill.domain.TMstRecvBill" >
-        insert into t_mst_recv_bill (RECEIPT_NO,ORDER_NO,END_TIME,AMT,RECV_EMP,PAYMENT_TYPE,VIP_CUST_NO,PAYMENT_YEAR_MONTH
+        insert into t_mst_recv_bill (RECEIPT_NO,RECEIPT_DATE,ORDER_NO,END_TIME,AMT,RECV_EMP,PAYMENT_TYPE,VIP_CUST_NO,PAYMENT_YEAR_MONTH,
         CREATE_AT,CREATE_BY,CREATE_BY_TXT,STATUS)
         values (
-            #{receiptNo,jdbcType=VARCHAR}, #{orderNo,jdbcType=VARCHAR}, #{endTime,jdbcType=VARCHAR},
+            #{receiptNo,jdbcType=VARCHAR}, #{receiptDate,jdbcType=DATE}, #{orderNo,jdbcType=VARCHAR}, #{endTime,jdbcType=DATE},
             #{amt,jdbcType=INTEGER}, #{recvEmp,jdbcType=VARCHAR},  #{paymentType,jdbcType=VARCHAR}, #{vipCustNo,jdbcType=VARCHAR},
-            #{paymentYearMonth,jdbcType=TIMESTAMP}, #{createBy,jdbcType=VARCHAR}, #{createByTxt,jdbcType=VARCHAR},
+            #{paymentYearMonth,jdbcType=TIMESTAMP},#{createAt,jdbcType=DATE}, #{createBy,jdbcType=VARCHAR}, #{createByTxt,jdbcType=VARCHAR},
             #{status,jdbcType=VARCHAR})
     </insert>
 

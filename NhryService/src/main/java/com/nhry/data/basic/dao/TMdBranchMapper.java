@@ -19,4 +19,5 @@ public interface TMdBranchMapper {
     public PageInfo findBranchListByPage(BranchQueryModel branchModel);
 
     int updateBranch(TMdBranch tMdBranch);
+
 }

@@ -10,11 +10,15 @@ public class TMdBranchEmp implements Serializable{
 
     private String branchNo;
 
+    private String branchName;
+
     private String empName;
 
     private String gender;
 
     private String roleId;
+
+    private String roleName;
 
     private String empType;
 
@@ -39,6 +43,53 @@ public class TMdBranchEmp implements Serializable{
     private String lastModifiedByTxt;
 
     private String status;
+
+    private Date joinDate;
+
+    private int baseSalary;
+
+    private String salaryMet;
+
+    public String getSalaryMet() {
+        return salaryMet;
+    }
+
+    public void setSalaryMet(String salaryMet) {
+        this.salaryMet = salaryMet;
+    }
+
+    public Date getJoinDate() {
+        return joinDate;
+    }
+
+    public String getRoleName() {
+        return roleName;
+    }
+
+    public void setRoleName(String roleName) {
+        this.roleName = roleName;
+    }
+
+    public String getBranchName() {
+        return branchName;
+    }
+
+    public void setBranchName(String branchName) {
+        this.branchName = branchName;
+    }
+
+
+    public void setJoinDate(Date joinDate) {
+        this.joinDate = joinDate;
+    }
+
+    public int getBaseSalary() {
+        return baseSalary;
+    }
+
+    public void setBaseSalary(int baseSalary) {
+        this.baseSalary = baseSalary;
+    }
 
     public String getEmpNo() {
         return empNo;
