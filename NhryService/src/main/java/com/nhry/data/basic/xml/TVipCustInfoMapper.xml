@@ -778,7 +778,7 @@
 		    	and SUBSCRIBE_DATE &lt;= #{endDate} 
 		    </if>
 		    <if test="content != null and content != ''">
-		        and (VIP_NAME like '%' #{content} '%' or ADDRESS_TXT like '%' #{content} '%' or MP '%' #{content} '%') 
+		        and (VIP_NAME like '%' || #{content} || '%' or ADDRESS_TXT like '%' || #{content} || '%' or MP '%' || #{content} || '%') 
 		    </if>
 		</where>
 		order by COUNTY,STREET,CREATE_AT desc,LAST_MODIFIED desc

@@ -75,6 +75,12 @@
     <result column="REACH_TIME_TYPE2" property="reachTimeType2" jdbcType="VARCHAR" />
     <result column="DISP_EMP_NO2" property="dispEmpNo2" jdbcType="VARCHAR" />
   </resultMap>
+  <resultMap id="boxDetailMap" type="com.nhry.data.milktrans.domain.TRecBotDetail">
+    <result column="SPEC " property="spec" jdbcType="VARCHAR" />
+    <result column="BOT_SPEC" property="botSpec" jdbcType="VARCHAR" />
+    <result column="SPEC_UNIT " property="specUnit" jdbcType="VARCHAR" />
+    <result column="RECEIVE_NUM" property="receiveNum" jdbcType="INTEGER" />
+  </resultMap>
   <sql id="Base_Column_List" >
     ORDER_NO, ORDER_DATE, ITEM_NO,CONFIRM_MATNR, MATNR, CONFIRM_QTY, QTY, UNIT, PRICE, AMT, CONFIRM_AMT, 
     STATUS, PICKUP_ORDER_NO, PICKUP_ORDER_ITEM_NO, REASON, REDISP_DATE, WHOLESALE_PRICE,
@@ -351,4 +357,15 @@
       and ORDER_DATE = #{orderDate,jdbcType=DATE}
       and ITEM_NO = #{itemNo,jdbcType=VARCHAR}
   </update>
+
+  <select id="selectItemsByReturnBox" resultMap="boxDetailMap" parameterType="com.nhry.model.milktrans.CreateEmpReturnboxModel">
+    select
+   m.SPEC SPEC ,m.BOT_SPEC BOT_SPEC,m.SPEC_UNIT SPEC_UNIT,i.QTY RECEIVE_NUM
+    from t_mst_disp_order_item i,t_mst_disp_order o,t_md_mara m
+    WHERE i.ORDER_NO = o.ORDER_NO
+    and i.MATNR = m.MATNR
+     and o.DISP_DATE = #{retDate,jdbcType=DATE}
+    and o.DISP_EMP_NO = #{empNo,jdbcType=VARCHAR}
+    and o.BRANCH_NO =  #{branchNo,jdbcType=VARCHAR}
+  </select>
 </mapper>

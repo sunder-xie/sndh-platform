@@ -102,6 +102,7 @@
 	</bean>
 	<bean id="branchEmpService" class="com.nhry.service.basic.impl.BranchEmpServiceImpl">
 	   <property name="branchEmpMapper"  ref="branchEmpMapper"></property>
+		<property name="tMdBranchMapper"  ref="branchMapper"></property>
 	   <property name="userSessionService" ref="userSessionService"></property>
 	</bean>
 	
@@ -129,5 +130,9 @@
 	
 	<bean id="custMapper"  class="com.nhry.data.basic.impl.TVipCustInfoMapperImpl">
 	    <property name="sqlSessionTemplate"  ref="dynamicSqlSessionTemplate"></property>
+	</bean>
+	
+	<bean id="maraPriceMapper" class="com.nhry.data.basic.impl.TMaraPriceRelMapperImpl">
+	   <property name="sqlSessionTemplate"  ref="dynamicSqlSessionTemplate"></property>
 	</bean>
 </beans>

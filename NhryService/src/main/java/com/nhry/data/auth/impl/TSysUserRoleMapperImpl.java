@@ -1,12 +1,12 @@
 package com.nhry.data.auth.impl;
 
-import java.util.List;
-
 import com.nhry.common.datasource.DynamicSqlSessionTemplate;
 import com.nhry.data.auth.dao.TSysUserRoleMapper;
 import com.nhry.data.auth.domain.TSysUserRole;
 import com.nhry.model.auth.UserRoleModel;
 import com.nhry.service.BaseService;
+
+import java.util.List;
 
 public class TSysUserRoleMapperImpl extends BaseService implements TSysUserRoleMapper {
 	private DynamicSqlSessionTemplate sqlSessionTemplate;
@@ -48,5 +48,10 @@ public class TSysUserRoleMapperImpl extends BaseService implements TSysUserRoleM
 	public List<TSysUserRole> findUserRoleByRid(String rid) {
 		// TODO Auto-generated method stub
 		return this.sqlSessionTemplate.selectList("findUserRoleByRid", rid);
+	}
+
+	@Override
+	public TSysUserRole getUserRoleByLoginName(String loginName) {
+		return this.sqlSessionTemplate.selectOne("getUserRoleByLoginName", loginName);
 	}
 }
