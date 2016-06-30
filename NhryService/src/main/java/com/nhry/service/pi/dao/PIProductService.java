@@ -8,4 +8,5 @@ import java.rmi.RemoteException;
 public interface PIProductService {
     int matHandler();
     int customerDataHandle() throws RemoteException;
+    int matWHWHandler() throws RemoteException;
 }

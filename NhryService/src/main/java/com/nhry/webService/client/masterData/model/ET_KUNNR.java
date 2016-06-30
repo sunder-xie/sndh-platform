@@ -123,7 +123,7 @@ public class ET_KUNNR {
      *
      * @param s
      */
-    public String getKUNNR(String s) {
+    public String getKUNNR() {
         return kunnr;
     }
 
@@ -148,7 +148,7 @@ public class ET_KUNNR {
      *
      * @param s
      */
-    public String getNAME1(String s) {
+    public String getNAME1() {
         return name1;
     }
 
@@ -173,7 +173,7 @@ public class ET_KUNNR {
      *
      * @param s
      */
-    public String getNAME2(String s) {
+    public String getNAME2() {
         return name2;
     }
 
