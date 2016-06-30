@@ -17,6 +17,7 @@ import org.springframework.stereotype.Controller;
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+import java.rmi.RemoteException;
 
 /**
  * Created by cbz on 6/22/2016.
@@ -35,7 +36,7 @@ public class PIResouce extends BaseResource{
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes(MediaType.APPLICATION_JSON)
     @ApiOperation(value = "/getProducts", response = ResponseModel.class, notes = "获取产品数据")
-    public Response addRes() {
-        return convertToRespModel(MessageCode.NORMAL, piProductService.matHandler(), null);
+    public Response addRes() throws RemoteException {
+        return convertToRespModel(MessageCode.NORMAL, piProductService.customerDataHandle(), null);
     }
 }

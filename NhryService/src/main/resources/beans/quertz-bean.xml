@@ -13,6 +13,24 @@
 			<value>matHandler</value>
 		</property>
 	</bean>
+	<bean id="scheduledJobDetail2"
+		  class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean" >
+		<property name="targetObject">
+			<ref  bean="piProductService"/>
+		</property>
+		<property name="targetMethod">
+			<value>customerDataHandle</value>
+		</property>
+	</bean>
+	<bean id="scheduledJobDetail3"
+		  class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean" >
+		<property name="targetObject">
+			<ref  bean="piProductService"/>
+		</property>
+		<property name="targetMethod">
+			<value>matWHWHandler</value>
+		</property>
+	</bean>
 	 <!-- 调度的配置开始 -->
     <bean id="crontestJobTrigger1" class="org.springframework.scheduling.quartz.CronTriggerBean">
         <property name="jobDetail">
@@ -22,6 +40,22 @@
 			<value>0 59 23 * * ?</value>
 		</property>
     </bean>
+	<bean id="crontestJobTrigger2" class="org.springframework.scheduling.quartz.CronTriggerBean">
+		<property name="jobDetail">
+			<ref bean="scheduledJobDetail2" />
+		</property>
+		<property name="cronExpression">
+			<value>0 59 1 * * ?</value>
+		</property>
+	</bean>
+	<bean id="crontestJobTrigger3" class="org.springframework.scheduling.quartz.CronTriggerBean">
+		<property name="jobDetail">
+			<ref bean="scheduledJobDetail3" />
+		</property>
+		<property name="cronExpression">
+			<value>0 55 15 * * ?</value>
+		</property>
+	</bean>
     <!-- 调度的配置结束 -->
 
     <!-- 启动触发器的配置开始 -->
@@ -29,6 +63,8 @@
         <property name="triggers">
             <list>
                 <ref bean="crontestJobTrigger1" />
+				<ref bean="crontestJobTrigger2" />
+				<ref bean="crontestJobTrigger3" />
             </list>
         </property>
     </bean>

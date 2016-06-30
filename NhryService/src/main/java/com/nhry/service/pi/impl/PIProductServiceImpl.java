@@ -1,21 +1,17 @@
 package com.nhry.service.pi.impl;
 
-import com.nhry.data.basic.dao.PIProductMapper;
-import com.nhry.data.basic.dao.TMaraSalesMapper;
-import com.nhry.data.basic.dao.TMdMaraMapper;
+import com.nhry.data.basic.dao.*;
 import com.nhry.data.basic.domain.TMaraSalesKey;
+import com.nhry.data.basic.domain.TMdBranch;
+import com.nhry.data.basic.domain.TMdDealer;
 import com.nhry.data.basic.domain.TMdMara;
 import com.nhry.service.pi.dao.PIProductService;
 import com.nhry.utils.PIPropertitesUtil;
 import com.nhry.webService.OptionManager;
 import com.nhry.webService.client.masterData.ZT_MasterDataQueryServiceStub;
-import com.nhry.webService.client.masterData.model.ET_KUNNR;
-import com.nhry.webService.client.masterData.model.ET_MATNR;
-import com.nhry.webService.client.masterData.model.ET_PARTNER;
-import com.nhry.webService.client.masterData.model.ET_VKORG;
+import com.nhry.webService.client.masterData.model.*;
 import org.apache.axis2.client.Options;
 
-import javax.ws.rs.core.Response;
 import java.rmi.RemoteException;
 import java.util.*;
 
@@ -25,9 +21,14 @@ import java.util.*;
 public class PIProductServiceImpl implements PIProductService {
 
     public static String URL = PIPropertitesUtil.getValue("PI.MasterData.URL");
+    public static String VKORG = PIPropertitesUtil.getValue("PI.MasterData.mATQUERY.VKORG");
+    public static String BRANDCHTYPE_ZY = "01";
+    public static String BRANDCHTYPE_WB = "02";
     public PIProductMapper piProductMapper;
     public TMdMaraMapper maraMapper;
     public TMaraSalesMapper maraSalesMapper;
+    public TMdBranchMapper branchMapper;
+    public TMdDealerMapper dealerMapper;
 
     public void setMaraMapper(TMdMaraMapper maraMapper) {
         this.maraMapper = maraMapper;
@@ -41,13 +42,21 @@ public class PIProductServiceImpl implements PIProductService {
         this.maraSalesMapper = maraSalesMapper;
     }
 
+    public void setBranchMapper(TMdBranchMapper branchMapper) {
+        this.branchMapper = branchMapper;
+    }
+
+    public void setDealerMapper(TMdDealerMapper dealerMapper) {
+        this.dealerMapper = dealerMapper;
+    }
+
     @Override
-    public int matHandler()  {
-        try{
+    public int matHandler() {
+        try {
             ZT_MasterDataQueryServiceStub.ZSD_MATERAIL_DATA_RFCResponse response = getMaterailData();
             List<ET_MATNR> etMatnrs = getET_MATNR(response);
-            Map<String ,String> etMap = getET_MAKTX(response);
-            for (ET_MATNR etMatnr:etMatnrs) {
+            Map<String, String> etMap = getET_MAKTX(response);
+            for (ET_MATNR etMatnr : etMatnrs) {
                 TMdMara tMdMara = new TMdMara();
                 tMdMara.setMatnr(etMatnr.getMATNR());
                 tMdMara.setBaseUnit(etMatnr.getMEINS());
@@ -55,42 +64,194 @@ public class PIProductServiceImpl implements PIProductService {
                 tMdMara.setWeightUnit(etMatnr.getGEWEI());
                 tMdMara.setMatnrTxt(etMap.get(etMatnr.getMATNR()));
                 TMdMara tmp = maraMapper.selectProductByCode(etMatnr.getMATNR());
-                if(tmp!=null){
+                if (tmp != null) {
                     tMdMara.setLastModified(new Date());
                     maraMapper.updateProduct(tMdMara);
-                }else{
+                } else {
                     tMdMara.setCreateAt(new Date());
                     maraMapper.addProduct(tMdMara);
                 }
                 TMaraSalesKey maraSalesKey = new TMaraSalesKey();
                 maraSalesKey.setMaraId(tMdMara.getMatnr());
                 maraSalesKey.setSalesOrg(etMatnr.getVKORG());
-                int num =maraSalesMapper.isMaraSales(maraSalesKey);
-                if(num == 0){
+                int num = maraSalesMapper.isMaraSales(maraSalesKey);
+                if (num == 0) {
                     maraSalesMapper.insertMaraSales(maraSalesKey);
                 }
                 System.out.println("-----" + tMdMara.getMatnr());
             }
-        }catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
         }
         return 1;
     }
 
     @Override
-    public int customerDataHandle() throws RemoteException{
-        ZT_MasterDataQueryServiceStub.ZSD_CUSTOMER_DATA_SYN_RFCResponse response = getCustomerData();
-        List<ET_KUNNR> et_kunnrs = getET_KUNNR(response);
-        List<ET_PARTNER> et_partner = getET_PARTNER(response);
-        List<ET_VKORG> et_vkorg = getET_VKORG(response);
+    public int customerDataHandle() {
+        try {
+            ZT_MasterDataQueryServiceStub.ZSD_CUSTOMER_DATA_SYN_RFCResponse response = getCustomerData();
+            Map<String, ET_KUNNR> et_kunnrs = getET_KUNNR(response);
+            Map<String, List<ET_VKORG>> et_vkorgs = getET_VKORG(response);
+            List<ET_PARTNER> et_partner = getET_PARTNER(response);
+            Map<String,List<ET_PARTNER>> partners = new HashMap<>();
 
+            List<ET_VKORG> zys = et_vkorgs.get("01");
+            for (ET_VKORG et_vkorg : zys) {
+                saveBranch(et_kunnrs, BRANDCHTYPE_ZY, et_vkorg.getVKORG(),et_vkorg.getKUNNR(),et_vkorg.getVTWEG(),"");
+            }
+            List<ET_VKORG> wbs = et_vkorgs.get("02");
+            Map<String ,ET_VKORG> jxs = new HashMap<>();
+            for(ET_VKORG et_vkorg : wbs){
+                String kunner = et_vkorg.getKUNNR();
+                for(ET_PARTNER et_partner1 : et_partner){
+                    if(kunner.equals(et_partner1.getKUNNR())) {
+                        jxs.put(kunner,et_vkorg);
+                    }
+                }
+            }
+            /**
+             * 保存经销商信息
+             */
+            for(Map.Entry<String,ET_VKORG> entry : jxs.entrySet()){
+                saveDealer(et_kunnrs,entry.getKey(),entry.getValue().getVKORG());
+            }
+
+//            for(ET_PARTNER partner : et_partner){
+            for(Map.Entry<String,ET_VKORG> entry : jxs.entrySet()){
+                String kunnr = entry.getKey();
+                List<ET_PARTNER> l = new ArrayList<>();
+                for(ET_PARTNER p : et_partner){
+                    if(kunnr.equals(p.getKUNNR()) && !kunnr.equals(p.getKUNWE())){
+
+                        l.add(p);
+                    }
+                }
+                if(l.size()>0)
+                partners.put(kunnr, l);
+            }
+
+            for(Map.Entry<String,List<ET_PARTNER>> entry : partners.entrySet()){
+                String key = entry.getKey();
+                String vkorg = "";
+                List<ET_PARTNER> lists = entry.getValue();
+                for(ET_PARTNER partner : lists){
+                    vkorg = partner.getVKORG();
+                    saveBranch(et_kunnrs, BRANDCHTYPE_WB, partner.getVKORG(),partner.getKUNWE(),partner.getVTWEG(),key);
+                }
+//                saveDealer(et_kunnrs, key, vkorg);
+            }
+            return 1;
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
         return 1;
     }
 
-    private ZT_MasterDataQueryServiceStub.ZSD_CUSTOMER_DATA_SYN_RFCResponse getCustomerData() throws RemoteException{
+    private void saveDealer(Map<String, ET_KUNNR> et_kunnrs, String key, String vkorg) {
+        ET_KUNNR et_kunnr = et_kunnrs.get(key);
+        TMdDealer dealer = dealerMapper.selectDealerByNo(key);
+        if(dealer==null){
+            dealer = new TMdDealer();
+            dealer.setDealerNo(key);
+            dealer.setDealerName(et_kunnr.getNAME1());
+            dealer.setCity(et_kunnr.getORT01());
+            dealer.setProvince(et_kunnr.getREGIO());
+            dealer.setCreateAt(new Date());
+            dealer.setCreateBy("ECC");
+            dealer.setCreateByTxt("ECC");
+            dealer.setSalesOrg(vkorg);
+            dealer.setAddress(et_kunnr.getSTRAS());
+            dealer.setTel(et_kunnr.getTELF1());
+            dealer.setDelFlag("N");
+            dealerMapper.insertDealer(dealer);
+        }else{
+            dealer.setDealerNo(key);
+            dealer.setDealerName(et_kunnr.getNAME1());
+            dealer.setCity(et_kunnr.getORT01());
+            dealer.setProvince(et_kunnr.getREGIO());
+            dealer.setCreateAt(new Date());
+            dealer.setCreateBy("ECC");
+            dealer.setCreateByTxt("ECC");
+            dealer.setSalesOrg(vkorg);
+            dealer.setAddress(et_kunnr.getSTRAS());
+            dealer.setTel(et_kunnr.getTELF1());
+            dealer.setDelFlag("N");
+            dealerMapper.updateDealer(dealer);
+        }
+    }
+
+    private void saveBranch(Map<String, ET_KUNNR> et_kunnrs, String branchGroup, String vkorg, String kunnr, String vtweg, String dealerNo) {
+        ET_KUNNR et_kunnr = et_kunnrs.get(kunnr);
+        if(et_kunnr == null){
+            System.out.println(kunnr + "@@@@@@@@@@@@@@@");
+        }else {
+            TMdBranch branch = branchMapper.selectBranchByNo(et_kunnr.getKUNNR());
+            if (branch == null) {
+                branch = new TMdBranch();
+                branch.setBranchNo(et_kunnr.getKUNNR());
+                branch.setBranchName(et_kunnr.getNAME1());
+                branch.setTel(et_kunnr.getTELF1());
+                branch.setAddress(et_kunnr.getSTRAS());
+                branch.setCity(et_kunnr.getORT01());
+                branch.setBranchGroup(branchGroup);
+                branch.setProvince(et_kunnr.getREGIO());
+                branch.setSalesCha(vtweg);
+                branch.setSalesOrg(vkorg);
+                branch.setCreateAt(new Date());
+                branch.setCreateBy("ECC");
+                branch.setCreateByTxt("ECC");
+                branch.setDealerNo(dealerNo);
+                branchMapper.addBranch(branch);
+            } else {
+                branch.setBranchNo(et_kunnr.getKUNNR());
+                branch.setBranchName(et_kunnr.getNAME1());
+                branch.setTel(et_kunnr.getTELF1());
+                branch.setAddress(et_kunnr.getSTRAS());
+                branch.setCity(et_kunnr.getORT01());
+                branch.setBranchGroup(branchGroup);
+                branch.setProvince(et_kunnr.getREGIO());
+                branch.setSalesCha(vtweg);
+                branch.setSalesOrg(vkorg);
+                branch.setDealerNo(dealerNo);
+                branchMapper.updateBranch(branch);
+            }
+        }
+    }
+
+    @Override
+    public int matWHWHandler() throws RemoteException {
+        Map<String, String> etMap = getET_DATA();
+        Map<String, ET_LGORT> lgMap = getET_LGORT();
+        for (Map.Entry<String, String> entry : etMap.entrySet()) {
+            TMdBranch branch = branchMapper.selectBranchByNo(entry.getKey());
+            ET_LGORT et = lgMap.get(entry.getValue());
+            if(et != null && branch != null) {
+                branch.setWerks(et.getWERKS());
+                branch.setLgort(entry.getValue());
+                branchMapper.updateBranch(branch);
+            }
+            System.out.println("key= " + entry.getKey() + " and value= " + entry.getValue());
+        }
+        return 1;
+    }
+
+    private ZT_MasterDataQueryServiceStub.ZSD_CUSTOMER_DATA_SYN_RFCResponse getCustomerData() throws RemoteException {
         ZT_MasterDataQueryServiceStub client = getZt_masterDataQueryServiceStub();
         ZT_MasterDataQueryServiceStub.ZSD_CUSTOMER_DATA_SYN_RFC zsdCustomerDataSynRfc = new ZT_MasterDataQueryServiceStub.ZSD_CUSTOMER_DATA_SYN_RFC();
         ZT_MasterDataQueryServiceStub.ZSD_CUSTOMER_DATA_SYN_RFCResponse response = new ZT_MasterDataQueryServiceStub.ZSD_CUSTOMER_DATA_SYN_RFCResponse();
+        ZT_MasterDataQueryServiceStub.IT_VTWEG_type1 it_vtweg_type1 = new ZT_MasterDataQueryServiceStub.IT_VTWEG_type1();
+        ZT_MasterDataQueryServiceStub.ZSSD00071 zssd00071 = new ZT_MasterDataQueryServiceStub.ZSSD00071();
+        ZT_MasterDataQueryServiceStub.SIGN_type5 sign_type5 = new ZT_MasterDataQueryServiceStub.SIGN_type5();
+        sign_type5.setSIGN_type4("I");
+        zssd00071.setSIGN(sign_type5);
+        ZT_MasterDataQueryServiceStub.OPTION_type5 option_type5 = new ZT_MasterDataQueryServiceStub.OPTION_type5();
+        option_type5.setOPTION_type4("EQ");
+        zssd00071.setOPTION(option_type5);
+        ZT_MasterDataQueryServiceStub.LOW_type5 low_type5 = new ZT_MasterDataQueryServiceStub.LOW_type5();
+        low_type5.setLOW_type4(VKORG);
+        zssd00071.setLOW(low_type5);
+        it_vtweg_type1.addItem(zssd00071);
+        zsdCustomerDataSynRfc.setIT_VTWEG(it_vtweg_type1);
         response = client.customerQuery(zsdCustomerDataSynRfc);
         return response;
     }
@@ -110,74 +271,131 @@ public class PIProductServiceImpl implements PIProductService {
         low_type3.setLOW_type2(PIPropertitesUtil.getValue("PI.MasterData.mATQUERY.LOW"));
         zssd00006.setLOW(low_type3);
         itMtartType0.addItem(zssd00006);
-        ZT_MasterDataQueryServiceStub.ZSD_MATERAIL_DATA_RFCResponse response ;
+        ZT_MasterDataQueryServiceStub.ZSD_MATERAIL_DATA_RFCResponse response;
         ZT_MasterDataQueryServiceStub.ZSD_MATERAIL_DATA_RFC zsdMaterailDataRfc = new ZT_MasterDataQueryServiceStub.ZSD_MATERAIL_DATA_RFC();
         zsdMaterailDataRfc.setIT_MTART(itMtartType0);
         return client.mATQUERY(zsdMaterailDataRfc);
 
     }
 
-    private List<ET_KUNNR> getET_KUNNR(ZT_MasterDataQueryServiceStub.ZSD_CUSTOMER_DATA_SYN_RFCResponse response){
+    /**
+     * 客户对应的库存地点
+     *
+     * @return
+     */
+    private Map<String, String> getET_DATA() throws RemoteException {
+        ZT_MasterDataQueryServiceStub.ZMM_POS_24DATAResponse response = getMatWHQuery();
+        ZT_MasterDataQueryServiceStub.ET_DATA_type0 et_data_type0 = response.getET_DATA();
+        ZT_MasterDataQueryServiceStub.ZTSD00024[] ztsd00024s = et_data_type0.getItem();
+        Map<String, String> map = new HashMap<>();
+        for (ZT_MasterDataQueryServiceStub.ZTSD00024 zt : ztsd00024s) {
+            String kunner = zt.getKUNNR1().getKUNNR1_type0();
+            String lgort = zt.getLGORT().getLGORT_type0();
+            if (org.apache.commons.lang.StringUtils.isNotEmpty(kunner)) {
+                map.put(kunner, lgort);
+            }
+        }
+        return map;
+    }
+
+    private Map<String, ET_LGORT> getET_LGORT() throws RemoteException {
+        ZT_MasterDataQueryServiceStub.ZMM_POS_24DATAResponse response = getMatWHQuery();
+        ZT_MasterDataQueryServiceStub.ET_LGORT_type0 et_lgort_type0 = response.getET_LGORT();
+        ZT_MasterDataQueryServiceStub.T001L[] t001Ls = et_lgort_type0.getItem();
+        Map<String, ET_LGORT> result = new HashMap<>();
+        for (ZT_MasterDataQueryServiceStub.T001L t001L : t001Ls) {
+            ET_LGORT et = new ET_LGORT();
+            et.setWERKS(t001L.getWERKS().getWERKS_type4());
+            et.setLGOBE(t001L.getLGOBE().getLGOBE_type0());
+            et.setLGORT(t001L.getLGORT().getLGORT_type2());
+            result.put(t001L.getLGORT().getLGORT_type2(), et);
+        }
+        return result;
+    }
+
+
+    private ZT_MasterDataQueryServiceStub.ZMM_POS_24DATAResponse getMatWHQuery() throws RemoteException {
+        ZT_MasterDataQueryServiceStub client = getZt_masterDataQueryServiceStub();
+        ZT_MasterDataQueryServiceStub.ZMM_POS_24DATA zmm_pos_24DATA = new ZT_MasterDataQueryServiceStub.ZMM_POS_24DATA();
+        return client.matWHWQuery(zmm_pos_24DATA);
+    }
+
+    private Map<String, ET_KUNNR> getET_KUNNR(ZT_MasterDataQueryServiceStub.ZSD_CUSTOMER_DATA_SYN_RFCResponse response) {
         ZT_MasterDataQueryServiceStub.ET_KUNNR_type1 et_kunnr_type1 = response.getET_KUNNR();
 
         ZT_MasterDataQueryServiceStub.ZSSD00002[] zssd00002s = et_kunnr_type1.getItem();
         List<ET_KUNNR> records = new ArrayList<ET_KUNNR>();
-        if(zssd00002s.length>0){
-            for (ZT_MasterDataQueryServiceStub.ZSSD00002 zssd00002:zssd00002s) {
+        Map<String, ET_KUNNR> map = new HashMap<String, ET_KUNNR>();
+        if (zssd00002s.length > 0) {
+            for (ZT_MasterDataQueryServiceStub.ZSSD00002 zssd00002 : zssd00002s) {
                 ET_KUNNR et = new ET_KUNNR();
-                et.setBUKRS(zssd00002.getBUKRS()==null?null:zssd00002.getBUKRS().getBUKRS_type0());
-                et.setKUNNR(zssd00002.getKUNNR()==null?null:zssd00002.getKUNNR().getKUNNR_type0());
-                et.setNAME1(zssd00002.getNAME1()==null?null:zssd00002.getNAME1().getNAME1_type0());
-                et.setNAME2(zssd00002.getNAME2()==null?null:zssd00002.getNAME2().getNAME2_type0());
-                et.setNAME3(zssd00002.getNAME3()==null?null:zssd00002.getNAME3().getNAME3_type0());
-                et.setNAMEV(zssd00002.getNAMEV()==null?null:zssd00002.getNAMEV().getNAMEV_type0());
-                et.setORT01(zssd00002.getORT01()==null?null:zssd00002.getORT01().getORT01_type0());
-                et.setREGIO(zssd00002.getREGIO()==null?null:zssd00002.getREGIO().getREGIO_type0());
-                et.setSTRAS(zssd00002.getSTRAS()==null?null:zssd00002.getSTRAS().getSTRAS_type0());
-                et.setTELF1(zssd00002.getTELF1()==null?null:zssd00002.getTELF1().getTELF1_type0());
-                records.add(et);
+                et.setBUKRS(zssd00002.getBUKRS() == null ? null : zssd00002.getBUKRS().getBUKRS_type0());
+                et.setKUNNR(zssd00002.getKUNNR() == null ? null : zssd00002.getKUNNR().getKUNNR_type0());
+                et.setNAME1(zssd00002.getNAME1() == null ? null : zssd00002.getNAME1().getNAME1_type0());
+                et.setNAME2(zssd00002.getNAME2() == null ? null : zssd00002.getNAME2().getNAME2_type0());
+                et.setNAME3(zssd00002.getNAME3() == null ? null : zssd00002.getNAME3().getNAME3_type0());
+                et.setNAMEV(zssd00002.getNAMEV() == null ? null : zssd00002.getNAMEV().getNAMEV_type0());
+                et.setORT01(zssd00002.getORT01() == null ? null : zssd00002.getORT01().getORT01_type0());
+                et.setREGIO(zssd00002.getREGIO() == null ? null : zssd00002.getREGIO().getREGIO_type0());
+                et.setSTRAS(zssd00002.getSTRAS() == null ? null : zssd00002.getSTRAS().getSTRAS_type0());
+                et.setTELF1(zssd00002.getTELF1() == null ? null : zssd00002.getTELF1().getTELF1_type0());
+                map.put(zssd00002.getKUNNR().getKUNNR_type0(), et);
             }
         }
-        return records;
+        return map;
     }
 
-    private List<ET_PARTNER> getET_PARTNER(ZT_MasterDataQueryServiceStub.ZSD_CUSTOMER_DATA_SYN_RFCResponse response){
+    private List<ET_PARTNER> getET_PARTNER(ZT_MasterDataQueryServiceStub.ZSD_CUSTOMER_DATA_SYN_RFCResponse response) {
         ZT_MasterDataQueryServiceStub.ET_PARTNER_type1 et_partner_type1 = response.getET_PARTNER();
 
         ZT_MasterDataQueryServiceStub.ZSSD00030[] zssd00030s = et_partner_type1.getItem();
         List<ET_PARTNER> records = new ArrayList<ET_PARTNER>();
-        if(zssd00030s.length>0){
-            for (ZT_MasterDataQueryServiceStub.ZSSD00030 zssd00030: zssd00030s) {
+        if (zssd00030s.length > 0) {
+            for (ZT_MasterDataQueryServiceStub.ZSSD00030 zssd00030 : zssd00030s) {
+                String vtweg = zssd00030.getVTWEG() == null ? null : zssd00030.getVTWEG().getVTWEG_type4();
+//                if(vtweg!=null && VKORG.equals(vtweg)) {
                 ET_PARTNER et = new ET_PARTNER();
-                et.setKUNNR(zssd00030.getKUNNR()==null?null:zssd00030.getKUNNR().getKUNNR_type2());
-                et.setKUNWE(zssd00030.getKUNWE()==null?null:zssd00030.getKUNWE().getKUNWE_type0());
-                et.setSPART(zssd00030.getSPART()==null?null:zssd00030.getSPART().getSPART_type2());
-                et.setVKORG(zssd00030.getVTWEG()==null?null:zssd00030.getVTWEG().getVTWEG_type4());
-                et.setVTWEG(zssd00030.getVTWEG()==null?null:zssd00030.getVTWEG().getVTWEG_type4());
+                et.setKUNNR(zssd00030.getKUNNR() == null ? null : zssd00030.getKUNNR().getKUNNR_type2());
+                et.setKUNWE(zssd00030.getKUNWE() == null ? null : zssd00030.getKUNWE().getKUNWE_type0());
+                et.setSPART(zssd00030.getSPART() == null ? null : zssd00030.getSPART().getSPART_type2());
+                et.setVKORG(zssd00030.getVKORG() == null ? null : zssd00030.getVKORG().getVKORG_type4());
+                et.setVTWEG(zssd00030.getVTWEG() == null ? null : zssd00030.getVTWEG().getVTWEG_type4());
                 records.add(et);
             }
+//            }
         }
         return records;
     }
 
-    private List<ET_VKORG> getET_VKORG(ZT_MasterDataQueryServiceStub.ZSD_CUSTOMER_DATA_SYN_RFCResponse response){
+    private Map<String, List<ET_VKORG>> getET_VKORG(ZT_MasterDataQueryServiceStub.ZSD_CUSTOMER_DATA_SYN_RFCResponse response) {
         List<ET_VKORG> records = new ArrayList<ET_VKORG>();
         ZT_MasterDataQueryServiceStub.ZSSD00003[] zssd00003s = response.getET_VKORG().getItem();
-        if(zssd00003s.length>0){
-            for (ZT_MasterDataQueryServiceStub.ZSSD00003 zssd00003:zssd00003s) {
+
+        Map<String, List<ET_VKORG>> map = new HashMap<String, List<ET_VKORG>>();
+        List<ET_VKORG> zy = new ArrayList<>();
+        List<ET_VKORG> wb = new ArrayList<>();
+        if (zssd00003s.length > 0) {
+            for (ZT_MasterDataQueryServiceStub.ZSSD00003 zssd00003 : zssd00003s) {
                 ET_VKORG et = new ET_VKORG();
-                et.setKUNNR(zssd00003.getKUNNR()==null?null:zssd00003.getKUNNR().getKUNNR_type4());
-                et.setVTWEG(zssd00003.getVTWEG()==null?null:zssd00003.getVTWEG().getVTWEG_type6());
-                et.setVKORG(zssd00003.getVKORG()==null?null:zssd00003.getVKORG().getVKORG_type6());
-                et.setSPART(zssd00003.getSPART()==null?null:zssd00003.getSPART().getSPART_type4());
-                et.setKDGRP(zssd00003.getKDGRP()==null?null:zssd00003.getKDGRP().getKDGRP_type0());
-                et.setKUNWE(zssd00003.getKUNWE()==null?null:zssd00003.getKUNWE().getKUNWE_type2());
-                et.setKVGR1(zssd00003.getKVGR1()==null?null:zssd00003.getKVGR1().getKVGR1_type0());
-                et.setKVGR2(zssd00003.getKVGR2()==null?null:zssd00003.getKVGR2().getKVGR2_type0());
-                records.add(et);
+                String kvgr2 = zssd00003.getKVGR2() == null ? null : zssd00003.getKVGR2().getKVGR2_type0();
+                et.setKUNNR(zssd00003.getKUNNR() == null ? null : zssd00003.getKUNNR().getKUNNR_type4());
+                et.setVTWEG(zssd00003.getVTWEG() == null ? null : zssd00003.getVTWEG().getVTWEG_type6());
+                et.setVKORG(zssd00003.getVKORG() == null ? null : zssd00003.getVKORG().getVKORG_type6());
+                et.setSPART(zssd00003.getSPART() == null ? null : zssd00003.getSPART().getSPART_type4());
+                et.setKDGRP(zssd00003.getKDGRP() == null ? null : zssd00003.getKDGRP().getKDGRP_type0());
+                et.setKUNWE(zssd00003.getKUNWE() == null ? null : zssd00003.getKUNWE().getKUNWE_type2());
+                et.setKVGR1(zssd00003.getKVGR1() == null ? null : zssd00003.getKVGR1().getKVGR1_type0());
+                et.setKVGR2(zssd00003.getKVGR2() == null ? null : zssd00003.getKVGR2().getKVGR2_type0());
+                if (org.apache.commons.lang.StringUtils.isNotEmpty(kvgr2) && "01".equals(kvgr2)) {
+                    zy.add(et);
+                } else if (org.apache.commons.lang.StringUtils.isNotEmpty(kvgr2) && "02".equals(kvgr2)) {
+                    wb.add(et);
+                }
             }
+            map.put("01", zy);
+            map.put("02", wb);
         }
-        return records;
+        return map;
     }
 
     private ZT_MasterDataQueryServiceStub getZt_masterDataQueryServiceStub() throws org.apache.axis2.AxisFault {
@@ -187,18 +405,18 @@ public class PIProductServiceImpl implements PIProductService {
         return client;
     }
 
-    private List<ET_MATNR>  getET_MATNR(ZT_MasterDataQueryServiceStub.ZSD_MATERAIL_DATA_RFCResponse response){
+    private List<ET_MATNR> getET_MATNR(ZT_MasterDataQueryServiceStub.ZSD_MATERAIL_DATA_RFCResponse response) {
         ZT_MasterDataQueryServiceStub.ET_MATNR_type1 et_matnr = response.getET_MATNR();
         ZT_MasterDataQueryServiceStub.ZSSD00005[] zssd00005s = et_matnr.getItem();
         List<ET_MATNR> records = new ArrayList<ET_MATNR>();
-        if(zssd00005s.length>0){
-            Map<String,String> map = new HashMap<String,String>();
-            map.put("-1","");
+        if (zssd00005s.length > 0) {
+            Map<String, String> map = new HashMap<String, String>();
+            map.put("-1", "");
             for (ZT_MasterDataQueryServiceStub.ZSSD00005 zssd00005 : zssd00005s) {
                 ZT_MasterDataQueryServiceStub.VTWEG_type3 vtweg_type3 = zssd00005.getVTWEG();
-                if(vtweg_type3 != null && "13".equals(vtweg_type3.getVTWEG_type2()) && zssd00005.getMATNR()!=null) {
+                if (vtweg_type3 != null && VKORG.equals(vtweg_type3.getVTWEG_type2()) && zssd00005.getMATNR() != null) {
                     String matrn = zssd00005.getMATNR().getMATNR_type4();
-                    if ( map.get(matrn) == null) {
+                    if (map.get(matrn) == null) {
                         ET_MATNR etMatnr = new ET_MATNR();
                         etMatnr.setMATNR(zssd00005.getMATNR().getMATNR_type4());//    "matnr",
                         etMatnr.setBOMX(zssd00005.getBOMX() == null ? null : zssd00005.getBOMX().getBOMX_type0());   //    "bomx",
@@ -212,7 +430,7 @@ public class PIProductServiceImpl implements PIProductService {
                         etMatnr.setWERKS(zssd00005.getWERKS() == null ? null : zssd00005.getWERKS().getWERKS_type2());
                         etMatnr.setMTPOSMARA(zssd00005.getMTPOS_MARA() == null ? null : zssd00005.getMTPOS_MARA().getMTPOS_MARA_type0());
                         etMatnr.setMTART(zssd00005.getMTART() == null ? null : zssd00005.getMTART().getMTART_type0());
-                        map.put(matrn,matrn);
+                        map.put(matrn, matrn);
                         records.add(etMatnr);
                     }
                 }
@@ -221,24 +439,22 @@ public class PIProductServiceImpl implements PIProductService {
         return records;
     }
 
-
-
-    private Map getET_MAKTX(ZT_MasterDataQueryServiceStub.ZSD_MATERAIL_DATA_RFCResponse response){
+    private Map getET_MAKTX(ZT_MasterDataQueryServiceStub.ZSD_MATERAIL_DATA_RFCResponse response) {
         ZT_MasterDataQueryServiceStub.ET_MAKTX_type1 et_maktx = response.getET_MAKTX();
         ZT_MasterDataQueryServiceStub.ZSSD00008[] zssd00008s = et_maktx.getItem();
-        Map<String,String> map = new HashMap<String,String>();
-        if(zssd00008s.length>0)
-            for(ZT_MasterDataQueryServiceStub.ZSSD00008 zssd00008 : zssd00008s){
-                map.put(zssd00008.getMATNR().getMATNR_type2(),zssd00008.getMAKTX().getMAKTX_type0());
+        Map<String, String> map = new HashMap<String, String>();
+        if (zssd00008s.length > 0)
+            for (ZT_MasterDataQueryServiceStub.ZSSD00008 zssd00008 : zssd00008s) {
+                map.put(zssd00008.getMATNR().getMATNR_type2(), zssd00008.getMAKTX().getMAKTX_type0());
             }
         return map;
     }
 
-    public Map<String,TMdMara> findAll(){
-        Map<String,TMdMara> results = new HashMap<String,TMdMara>();
+    public Map<String, TMdMara> findAll() {
+        Map<String, TMdMara> results = new HashMap<String, TMdMara>();
         List<TMdMara> lists = piProductMapper.findAll();
-        for(TMdMara tMdMara : lists){
-            results.put(tMdMara.getMatnr(),tMdMara);
+        for (TMdMara tMdMara : lists) {
+            results.put(tMdMara.getMatnr(), tMdMara);
         }
         return results;
     }
