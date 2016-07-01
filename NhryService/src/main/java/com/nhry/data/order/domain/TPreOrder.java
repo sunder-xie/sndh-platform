@@ -71,12 +71,36 @@ public class TPreOrder {
     private Date stopDateStart;
 
 	 private Date stopDateEnd;
+	 
+	 private String stopDateStartStr;
+
+	 private String stopDateEndStr;
     
     private String stopReason;
     
     private String deliveryType;
     
-    public String getDeliveryType()
+    public String getStopDateStartStr()
+	{
+		return stopDateStartStr;
+	}
+
+	public void setStopDateStartStr(String stopDateStartStr)
+	{
+		this.stopDateStartStr = stopDateStartStr;
+	}
+
+	public String getStopDateEndStr()
+	{
+		return stopDateEndStr;
+	}
+
+	public void setStopDateEndStr(String stopDateEndStr)
+	{
+		this.stopDateEndStr = stopDateEndStr;
+	}
+
+	public String getDeliveryType()
 	{
 		return deliveryType;
 	}

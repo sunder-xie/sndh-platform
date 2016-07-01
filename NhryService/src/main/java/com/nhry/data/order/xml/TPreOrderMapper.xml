@@ -36,25 +36,29 @@
     <result column="SOLICIT_BY" property="solicitBy" jdbcType="VARCHAR" />
     <result column="END_DATE" property="endDate" jdbcType="DATE" />
     <result column="DELIVERY_TYPE" property="deliveryType" jdbcType="VARCHAR" />
+    <result column="STOP_DATE_START" property="stopDateStart" jdbcType="VARCHAR" />
+    <result column="STOP_DATE_END" property="stopDateEnd" jdbcType="VARCHAR" />
+    <result column="STOP_REASON" property="stopReason" jdbcType="VARCHAR" />
   </resultMap>
   <sql id="Base_Column_List" >
     ORDER_NO, ORDER_TYPE, ORDER_DATE, PAYMENTMETHOD, PREORDER_SOURCE, ONLINEORDER_NO, 
     BRANCH_NO, MILKMEMBER_NO, MEMBER_NO, PAYMENT_STAT, MILKBOX_STAT, INIT_AMT, CUR_AMT, 
     DISP_LINE_NO, EMP_NO, ADRESS_NO, CREATER_NO, CREATER_BY, PREORDER_STAT, MEMO_TXT, 
-    PAY_METHOD, SOLICIT_NO, SOLICIT_DATE, SOLICITOR_NO, SOLICIT_BY,RET_REASON,RET_DATE
+    PAY_METHOD, SOLICIT_NO, SOLICIT_DATE, SOLICITOR_NO, SOLICIT_BY,RET_REASON,RET_DATE,DELIVERY_TYPE,STOP_DATE_START,STOP_DATE_END,STOP_REASON
   </sql>
   <select id="selectByOrderCode" resultMap="BaseResultMap" parameterType="java.lang.String" >
     select 
     o.ORDER_NO, o.ORDER_TYPE, o.ORDER_DATE, o.PAYMENTMETHOD, o.PREORDER_SOURCE, o.ONLINEORDER_NO, 
     b.BRANCH_NAME BRANCH_NAME,o.BRANCH_NO, o.MILKMEMBER_NO, o.MEMBER_NO, o.PAYMENT_STAT, o.MILKBOX_STAT, o.INIT_AMT, o.CUR_AMT, 
     o.DISP_LINE_NO, o.EMP_NO, o.ADRESS_NO, o.CREATER_NO, o.CREATER_BY, o.PREORDER_STAT, o.MEMO_TXT, 
-    o.PAY_METHOD, o.SOLICIT_NO, o.SOLICIT_DATE, o.SOLICITOR_NO, o.SOLICIT_BY, o.END_DATE
+    o.PAY_METHOD, o.SOLICIT_NO, o.SOLICIT_DATE, o.SOLICITOR_NO, o.SOLICIT_BY, o.END_DATE,o.STOP_DATE_START,o.DELIVERY_TYPE,
+    o.STOP_DATE_END,o.STOP_REASON
     from t_preorder o 
     left join t_md_branch b on o.BRANCH_NO = b.BRANCH_NO
     where ORDER_NO = #{orderNo,jdbcType=VARCHAR}
   </select>
   <select id="selectDispNoByGroup" resultMap="BaseResultMap">
-    select distinct e.reach_time_type ORDER_TYPE, o.disp_line_no
+    select distinct e.reach_time_type ORDER_TYPE, o.EMP_NO, o.BRANCH_NO
 	 from t_mst_plan_order_item e
 	 left join t_preorder o on e.order_no = o.order_no 
   </select>
@@ -329,6 +333,12 @@
       <if test="endDate != null" >
         END_DATE = #{endDate,jdbcType=DATE},
       </if>
+      <if test="stopDateEnd != null" >
+        STOP_DATE_END = #{stopDateEnd,jdbcType=DATE},
+      </if>
+      <if test="preorderStat != null" >
+        PREORDER_STAT = #{preorderStat,jdbcType=VARCHAR},
+      </if>
     </set>
     where ORDER_NO = #{orderNo,jdbcType=VARCHAR}
   </update>
@@ -409,6 +419,15 @@
       </if>
       <if test="preorderStat != null" >
         PREORDER_STAT = #{preorderStat,jdbcType=VARCHAR},
+      </if>
+      <if test="stopDateStart != null" >
+        STOP_DATE_START = #{stopDateStart,jdbcType=VARCHAR},
+      </if>
+      <if test="stopDateEnd != null" >
+        STOP_DATE_END = #{stopDateEnd,jdbcType=VARCHAR},
+      </if>
+      <if test="stopReason != null" >
+        STOP_REASON = #{stopReason,jdbcType=VARCHAR},
       </if>
     </set>
     where ORDER_NO = #{orderNo,jdbcType=VARCHAR}

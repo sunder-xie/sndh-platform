@@ -13,7 +13,7 @@ public interface TDispOrderMapper {
 
     int insert(TDispOrder record);
 
-    PageInfo selectMilkboxsByPage(RouteOrderSearchModel smodel);
+    PageInfo searchRoutePlansByPage(RouteOrderSearchModel smodel);
 
     TDispOrder selectByPrimaryKey(TDispOrderKey key);
 

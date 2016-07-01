@@ -1,9 +1,11 @@
 package com.nhry.data.milk.dao;
 
+import com.github.pagehelper.PageInfo;
 import com.nhry.data.milk.domain.TDispOrderItem;
 import com.nhry.data.milk.domain.TDispOrderItemKey;
 import com.nhry.data.order.domain.TPlanOrderItem;
 import com.nhry.model.milk.RouteDetailUpdateModel;
+import com.nhry.model.milk.RouteOrderSearchModel;
 import com.nhry.service.milk.pojo.TDispOrderChangeItem;
 import com.nhry.data.milktrans.domain.TRecBotDetail;
 import com.nhry.model.milk.RouteDetailUpdateModel;
@@ -12,6 +14,9 @@ import com.nhry.model.milktrans.CreateEmpReturnboxModel;
 import java.util.List;
 
 public interface TDispOrderItemMapper {
+	
+	 PageInfo selectRouteDetailsByPage(RouteOrderSearchModel smodel);
+	
     int deleteByPrimaryKey(TDispOrderItemKey key);
 
     int insert(TDispOrderItem record);

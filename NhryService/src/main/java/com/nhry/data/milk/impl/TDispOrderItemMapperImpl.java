@@ -1,11 +1,13 @@
 package com.nhry.data.milk.impl;
 
+import com.github.pagehelper.PageInfo;
 import com.nhry.common.datasource.DynamicSqlSessionTemplate;
 import com.nhry.data.milk.dao.TDispOrderItemMapper;
 import com.nhry.data.milk.domain.TDispOrderItem;
 import com.nhry.data.milk.domain.TDispOrderItemKey;
 import com.nhry.data.order.domain.TPlanOrderItem;
 import com.nhry.model.milk.RouteDetailUpdateModel;
+import com.nhry.model.milk.RouteOrderSearchModel;
 import com.nhry.service.milk.pojo.TDispOrderChangeItem;
 import com.nhry.data.milktrans.domain.TRecBotDetail;
 import com.nhry.model.milk.RouteDetailUpdateModel;
@@ -92,13 +94,19 @@ public class TDispOrderItemMapperImpl implements TDispOrderItemMapper
 		key.setItemNo(record.getItemNo());
 		key.setConfirmQty(new BigDecimal(record.getQty()));
 		key.setReason(record.getReason());
-		key.setStatus(record.getStatus());
+		key.setStatus("30");//30 回执确认
 		key.setConfirmMatnr(record.getProductCode());
 		key.setConfirmAmt(key.getConfirmQty().multiply(orgPrice));
 //		key.setLastModified(new Date());
 //		key.setLastModifiedBy(userSessionService.getCurrentUser().getLoginName());
 //		key.setLastModifiedByTxt(userSessionService.getCurrentUser().getDisplayName());
 		return sqlSessionTemplate.update("updateDispOrderItem", key);
+	}
+	
+	@Override
+	public PageInfo selectRouteDetailsByPage(RouteOrderSearchModel smodel)
+	{
+		return sqlSessionTemplate.selectListByPages("selectRouteDetailsByPage",smodel, Integer.parseInt(smodel.getPageNum()), Integer.parseInt(smodel.getPageSize()));
 	}
 
 }

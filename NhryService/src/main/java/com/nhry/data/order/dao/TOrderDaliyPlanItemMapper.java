@@ -15,7 +15,7 @@ public interface TOrderDaliyPlanItemMapper {
 
     int insertSelective(TOrderDaliyPlanItem record);
 
-    List<TOrderDaliyPlanItem> selectbyDispLineNo(String dispNo , String date,String reachTimeType);
+    List<TOrderDaliyPlanItem> selectbyDispLineNo(String empNo , String date,String reachTimeType);
 
     int updateByPrimaryKeySelective(TOrderDaliyPlanItem record);
 
@@ -30,6 +30,8 @@ public interface TOrderDaliyPlanItemMapper {
     TOrderDaliyPlanItem selectDaliyPlansByEntryNoAndNo(TOrderDaliyPlanItemKey record);
     
     List<TOrderDaliyPlanItem> selectDaliyPlansByOrderNo(String orderNo);
+    
+    List<TOrderDaliyPlanItem> selectDaliyPlansByOrderNoAsc(String orderNo);
     
     int selectMaxDaliyPlansNoByOrderNo(String orderNo);
 

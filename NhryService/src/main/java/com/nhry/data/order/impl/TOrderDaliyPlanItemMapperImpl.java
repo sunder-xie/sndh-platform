@@ -7,6 +7,8 @@ import com.nhry.data.order.domain.TOrderDaliyPlanItemKey;
 import com.nhry.data.order.domain.TPreOrder;
 import com.nhry.model.milktrans.RequireOrderModel;
 import com.nhry.model.order.ReturnOrderModel;
+
+import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 
@@ -67,6 +69,13 @@ public class TOrderDaliyPlanItemMapperImpl implements TOrderDaliyPlanItemMapper
 	}
 	
 	@Override
+	public List<TOrderDaliyPlanItem> selectDaliyPlansByOrderNoAsc(String orderNo)
+	{
+		// TODO Auto-generated method stub
+		return sqlSessionTemplate.selectList("selectDaliyPlansByOrderNoAsc", orderNo);
+	}
+	
+	@Override
 	public TOrderDaliyPlanItem selectDaliyPlansByEntryNoAndNo(TOrderDaliyPlanItemKey record)
 	{
 		// TODO Auto-generated method stub
@@ -76,7 +85,9 @@ public class TOrderDaliyPlanItemMapperImpl implements TOrderDaliyPlanItemMapper
 	@Override
 	public int updateDaliyPlansToStop(TPreOrder record)
 	{
-		// TODO Auto-generated method stub
+		SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
+		record.setStopDateStartStr(format.format(record.getStopDateStart()));
+		record.setStopDateEndStr(format.format(record.getStopDateEnd()));
 		return sqlSessionTemplate.update("updateDaliyPlansToStop", record);
 	}
 
@@ -93,9 +104,10 @@ public class TOrderDaliyPlanItemMapperImpl implements TOrderDaliyPlanItemMapper
 	 */
 	@Override
 	public String getDayOrderStat(String orderNo, Date date) {
+		SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
 		ReturnOrderModel returnOrderModel = new ReturnOrderModel();
 		returnOrderModel.setOrderNo(orderNo);
-		returnOrderModel.setRetDate(date);
+		returnOrderModel.setRetReason(format.format(date));
 		List<TOrderDaliyPlanItem> items = sqlSessionTemplate.selectList("getDayOrderStat", returnOrderModel);
 		for(TOrderDaliyPlanItem it : items){
 			if("20".equals(it.getStatus())){
@@ -115,11 +127,11 @@ public class TOrderDaliyPlanItemMapperImpl implements TOrderDaliyPlanItemMapper
 	}
 
 	@Override
-	public List<TOrderDaliyPlanItem> selectbyDispLineNo(String dispNo , String date ,String reachTimeType)
+	public List<TOrderDaliyPlanItem> selectbyDispLineNo(String empNo , String date ,String reachTimeType)
 	{
 		TOrderDaliyPlanItemKey key = new TOrderDaliyPlanItemKey();
 		key.setPlanItemNo(date);
-		key.setItemNo(dispNo);
+		key.setItemNo(empNo);
 		key.setOrderNo(reachTimeType);
 		return sqlSessionTemplate.selectList("selectDaliyPlansByDispNo", key);
 	}

@@ -44,6 +44,30 @@ public class TDispOrderItem extends TDispOrderItemKey {
     
     private String dispEmpNo;
     
+    private String addressTxt;
+    
+    private String matnrTxt;
+    
+    public String getAddressTxt()
+	{
+		return addressTxt;
+	}
+
+	public void setAddressTxt(String addressTxt)
+	{
+		this.addressTxt = addressTxt;
+	}
+
+	public String getMatnrTxt()
+	{
+		return matnrTxt;
+	}
+
+	public void setMatnrTxt(String matnrTxt)
+	{
+		this.matnrTxt = matnrTxt;
+	}
+    
     public String getDispEmpNo()
 	{
 		return dispEmpNo;
