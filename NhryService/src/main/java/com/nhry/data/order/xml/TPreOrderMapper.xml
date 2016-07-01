@@ -470,4 +470,6 @@
     set CUR_AMT =  #{curAmt,jdbcType=DECIMAL}
     where ORDER_NO = #{orderNo,jdbcType=VARCHAR}
   </update>
+
+
 </mapper>

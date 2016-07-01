@@ -11,7 +11,7 @@ public class TMstInsideSalOrderItem implements Serializable {
     private String insOrderNo;
     private Date orderDate;
     private String itemNo;
-
+    private String orgOrderNo;
     private String matnr;
     private BigDecimal qty;
     private String reason;
@@ -39,6 +39,14 @@ public class TMstInsideSalOrderItem implements Serializable {
 
     public void setItemNo(String itemNo) {
         this.itemNo = itemNo;
+    }
+
+    public String getOrgOrderNo() {
+        return orgOrderNo;
+    }
+
+    public void setOrgOrderNo(String orgOrderNo) {
+        this.orgOrderNo = orgOrderNo;
     }
 
     public String getMatnr() {

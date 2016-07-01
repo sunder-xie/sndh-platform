@@ -2,13 +2,11 @@ package com.nhry.rest.bill;
 
 import com.github.pagehelper.PageInfo;
 import com.nhry.common.exception.MessageCode;
-import com.nhry.model.bill.BranchBillSearch;
-import com.nhry.model.bill.CustBillQueryModel;
-import com.nhry.model.bill.CustomerPayMentModel;
-import com.nhry.model.bill.EmpDispDetiallInfoSearch;
+import com.nhry.model.bill.*;
 import com.nhry.rest.BaseResource;
 import com.nhry.service.bill.dao.BranchBillService;
 import com.nhry.service.bill.dao.CustomerBillService;
+import com.nhry.service.bill.dao.EmpBillService;
 import com.sun.jersey.spi.resource.Singleton;
 import com.wordnik.swagger.annotations.Api;
 import com.wordnik.swagger.annotations.ApiOperation;
@@ -33,6 +31,8 @@ public class BillResource extends BaseResource {
     private CustomerBillService customerBillService;
     @Autowired
     private BranchBillService branchBillService;
+    @Autowired
+    private EmpBillService empBillService;
 
 
 
@@ -68,8 +68,17 @@ public class BillResource extends BaseResource {
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes(MediaType.APPLICATION_JSON)
     @ApiOperation(value = "/emp/empDispDetialInfo", response = int.class, notes = "获取送奶工配送数量明细结算表")
-    public Response empDispDetialInfo(@ApiParam(required=true,name="cModel",value="收款信息") EmpDispDetiallInfoSearch eSearch){
-        return convertToRespModel(MessageCode.NORMAL, null, customerBillService.empDispDetialInfo(eSearch));
+    public Response empDispDetialInfo(@ApiParam(required=true,name="eSearch",value="收款信息") EmpDispDetialInfoSearch eSearch){
+        return convertToRespModel(MessageCode.NORMAL, null, empBillService.empDispDetialInfo(eSearch));
+    }
+
+    @POST
+    @Path("/emp/empAccountReceAmount")
+    @Produces(MediaType.APPLICATION_JSON)
+    @Consumes(MediaType.APPLICATION_JSON)
+    @ApiOperation(value = "/emp/empAccountReceAmount", response = int.class, notes = "送奶员收款金额核算")
+    public Response empAccountReceAmount(@ApiParam(required=true,name="eSearch",value="收款信息") EmpAccountSearch eSearch){
+        return convertToRespModel(MessageCode.NORMAL, null, empBillService.empAccountReceAmount(eSearch));
     }
 
 
