@@ -363,12 +363,5 @@
     where ITEM_NO = #{itemNo,jdbcType=VARCHAR}
   </update>
 
-  <select id="empDispDetialInfo" resultMap="EmpDispDetailResultMap" parameterType="com.nhry.model.bill.EmpDispDetiallInfoSearch">
-  SELECT
-	po.BRANCH_NO,po.EMP_NO
-  FROM t_preorder po, t_mst_disp_order o,t_mst_disp_order_item oi
-  where  	1=1
-  and po.ORDER_NO = o.SUBSCRIBE_ORDER_NO
-  and o.ORDER_NO = oi.ORDER_NO
-  </select>
+
 </mapper>

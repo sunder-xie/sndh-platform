@@ -119,13 +119,7 @@ public class CustomerBillServiceImpl implements CustomerBillService {
         return order;
     }
 
-    @Override
-    public PageInfo empDispDetialInfo(EmpDispDetiallInfoSearch eSearch) {
-        if(StringUtils.isBlank(eSearch.getPageNum()) || StringUtils.isBlank(eSearch.getPageSize())){
-            throw new ServiceException(MessageCode.LOGIC_ERROR,"pageNum和pageSize不能为空！");
-        }
-        return tPlanOrderItemMapper.empDispDetialInfo(eSearch);
-    }
+
 
     public void setCustomerBillMapper(CustomerBillMapper customerBillMapper) {
         this.customerBillMapper = customerBillMapper;

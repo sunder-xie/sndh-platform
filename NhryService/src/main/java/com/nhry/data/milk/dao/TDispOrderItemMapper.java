@@ -43,6 +43,6 @@ public interface TDispOrderItemMapper {
     TDispOrderItem selectDispOrderItemByKey(TDispOrderItemKey code);
 
     PageInfo searchUndeliverProduct(UnDeliverProductSearch uSearch);
-    
+
     List<TDispOrderItem> selectItemsByOrderNo(String dispOrderNo);
 }

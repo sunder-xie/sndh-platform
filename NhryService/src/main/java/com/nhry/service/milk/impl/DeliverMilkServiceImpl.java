@@ -138,6 +138,7 @@ public class DeliverMilkServiceImpl extends BaseService implements DeliverMilkSe
 				TMstInsideSalOrderItem item = new TMstInsideSalOrderItem();
 				item.setInsOrderNo(sOrder.getInsOrderNo());
 				item.setItemNo(entry.getItemNo());
+				item.setOrgOrderNo(entry.getOrgOrderNo());
 				item.setMatnr(entry.getMatnr());
 				item.setOrderDate(sOrder.getOrderDate());
 				item.setPrice(entry.getPrice());

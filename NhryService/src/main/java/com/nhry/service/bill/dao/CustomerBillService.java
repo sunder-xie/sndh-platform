@@ -16,5 +16,5 @@ public interface CustomerBillService {
 
    public CustomerBillOrder getCustomerOrderDetailByCode(String orderNo);
 
-  public PageInfo empDispDetialInfo(EmpDispDetiallInfoSearch eSearch);
+
 }
