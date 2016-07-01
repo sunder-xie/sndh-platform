@@ -109,4 +109,16 @@ public class TDispOrderItemMapperImpl implements TDispOrderItemMapper
 		return sqlSessionTemplate.selectListByPages("selectRouteDetailsByPage",smodel, Integer.parseInt(smodel.getPageNum()), Integer.parseInt(smodel.getPageSize()));
 	}
 
+	@Override
+	public List<TDispOrderItem> selectNotDeliveryItemsByKeys(String code)
+	{
+		return sqlSessionTemplate.selectList("selectNotDeliveryItemsByKeys", code);
+	}
+	
+	@Override
+	public TDispOrderItem selectDispOrderItemByKey(TDispOrderItemKey code)
+	{
+		return sqlSessionTemplate.selectOne("selectDispOrderItemByKey", code);
+	}
+
 }

@@ -137,6 +137,24 @@
     from t_mst_disp_order_item
     where CONFIRM_AMT &gt; 0
   </select>
+  <select id="selectDispOrderItemByKey" resultMap="BaseResultMap" parameterType="com.nhry.data.milk.domain.TDispOrderItemKey">
+    select 
+    <include refid="Base_Column_List" />
+    from t_mst_disp_order_item
+    where i.ORDER_NO = #{orderNo,jdbcType=VARCHAR}
+      and i.ITEM_NO = #{itemNo,jdbcType=VARCHAR}
+      <if test="orderDate != null" >
+      and i.ORDER_DATE = #{orderDate,jdbcType=DATE}
+      </if>
+  </select>
+  <select id="selectNotDeliveryItemsByKeys" resultMap="BaseResultMap" parameterType="java.lang.String">
+    select 
+    <include refid="Base_Column_List" />
+    from t_mst_disp_order_item
+    where REASON is not null
+          and CONFIRM_QTY != QTY
+          and ORDER_NO = #{orderNo,jdbcType=VARCHAR}
+  </select>
   <delete id="deleteByPrimaryKey" parameterType="com.nhry.data.milk.domain.TDispOrderItemKey" >
     delete from t_mst_disp_order_item
     where ORDER_NO = #{orderNo,jdbcType=VARCHAR}

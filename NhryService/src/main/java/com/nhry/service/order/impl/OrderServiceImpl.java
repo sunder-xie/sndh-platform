@@ -835,7 +835,7 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 	* @see com.nhry.service.order.dao.OrderService#resumeDaliyPlanForRouteOrder(java.lang.String) 
 	*/
 	@Override
-	public void resumeDaliyPlanForRouteOrder(RouteDetailUpdateModel record, TDispOrderItem entry,TPlanOrderItem orgEntry,Date dispDate)
+	public void resumeDaliyPlanForRouteOrder(BigDecimal confirmQty, TDispOrderItem entry,TPlanOrderItem orgEntry,Date dispDate)
 	{
 //		record 路单详细条回执信息
 //		entry 原路单行详细
@@ -845,7 +845,7 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 		ArrayList<TOrderDaliyPlanItem> daliyPlans = (ArrayList<TOrderDaliyPlanItem>) tOrderDaliyPlanItemMapper.selectDaliyPlansByOrderNoAsc(orgEntry.getOrderNo());
 		int daliyEntryNo = tOrderDaliyPlanItemMapper.selectMaxDaliyPlansNoByOrderNo(orgEntry.getOrderNo()) + 1;
 		
-		int lackQty = entry.getQty().intValue() - Integer.parseInt(record.getQty());
+		int lackQty = entry.getQty().intValue() - confirmQty.intValue();
 		
 		//生成该新的一条每日计划
 		TOrderDaliyPlanItem plan = new TOrderDaliyPlanItem();
@@ -875,8 +875,8 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 				lastDate = lastDate.after(item.getDispDate())?lastDate : item.getDispDate();
 				//同时更新今天的日计划
 				if(format.format(item.getDispDate()).equals(format.format(dispDate))){
-					item.setQty(Integer.parseInt(record.getQty()));
-					item.setAmt(item.getPrice().multiply(new BigDecimal(record.getQty())) );
+					item.setQty(confirmQty.intValue());
+					item.setAmt(item.getPrice().multiply(confirmQty) );
 				}
 			}
 		}

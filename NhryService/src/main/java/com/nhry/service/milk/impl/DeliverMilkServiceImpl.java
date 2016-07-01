@@ -215,11 +215,14 @@ public class DeliverMilkServiceImpl extends BaseService implements DeliverMilkSe
 	@Override
 	public int updateRouteOrderItems(RouteDetailUpdateModel record)
 	{
+		final long startTime = System.currentTimeMillis();
+		
 		TDispOrderKey key = new TDispOrderKey();
 		key.setOrderNo(record.getOrderNo());
 		TDispOrder dispOrder = tDispOrderMapper.selectByPrimaryKey(key);
-		Date dispDate = dispOrder.getDispDate();
+		
 		if(dispOrder!=null){
+			Date dispDate = dispOrder.getDispDate();
 			TDispOrderItemKey itemKey = new TDispOrderItemKey();
 			itemKey.setOrderNo(record.getOrderNo());
 			itemKey.setItemNo(record.getItemNo());
@@ -230,15 +233,59 @@ public class DeliverMilkServiceImpl extends BaseService implements DeliverMilkSe
    			record.setOrgOrderNo(entryList.get(0).getOrgOrderNo());
    			record.setOrgItemNo(entryList.get(0).getOrgItemNo());
    			tDispOrderItemMapper.updateDispOrderItem(record , entry);
-   			//更新原订单剩余金额
-   			updatePreOrderCurAmt(entry.getOrderNo(),entry.getSalesPrice().multiply(new BigDecimal(record.getQty())));
-   			//更改路单,少送的，需要往后延期,并重新计算此后日计划的剩余金额
-   			orderService.resumeDaliyPlanForRouteOrder(record,entryList.get(0),entry,dispDate);
+//   			//更新原订单剩余金额
+//   			updatePreOrderCurAmt(entry.getOrderNo(),entry.getSalesPrice().multiply(new BigDecimal(record.getQty())));
+//   			//更改路单,少送的，需要往后延期,并重新计算此后日计划的剩余金额
+//   			orderService.resumeDaliyPlanForRouteOrder(record,entryList.get(0),entry,dispDate);
+			}else{
+				throw new ServiceException(MessageCode.LOGIC_ERROR,"没有此路单详细号!");
 			}
 			
 		}else{
 			throw new ServiceException(MessageCode.LOGIC_ERROR,"没有此路单号!");
 		}
+		
+		System.out.println("修改路单 消耗时间："+(System.currentTimeMillis()-startTime)+"毫秒");
+		
+		return 1;
+	}
+	
+	/* (non-Javadoc) 
+	* @title: updateDaliyPlanByRouteOrder
+	* @description: 由更新的路单，确认后，更新日计划
+	* @param record
+	* @return 
+	* @see com.nhry.service.milk.dao.DeliverMilkService#updateDaliyPlanByRouteOrder(com.nhry.model.milk.RouteDetailUpdateModel) 
+	*/
+	@Override
+	public int updateDaliyPlanByRouteOrder(String routeCode)
+	{
+		final long startTime = System.currentTimeMillis();
+		
+		TDispOrderKey key = new TDispOrderKey();
+		key.setOrderNo(routeCode);
+		TDispOrder dispOrder = tDispOrderMapper.selectByPrimaryKey(key);
+		
+		if(dispOrder!=null){
+			Date dispDate = dispOrder.getDispDate();
+			List<TDispOrderItem> entryList = tDispOrderItemMapper.selectNotDeliveryItemsByKeys(routeCode);
+			
+			if(entryList.size()==0)throw new ServiceException(MessageCode.LOGIC_ERROR,"没有变化的路单!");
+			
+			entryList.stream().forEach((e)->{
+				TPlanOrderItem entry = tPlanOrderItemMapper.selectEntryByEntryNo(e.getOrgItemNo());
+   			//更新原订单剩余金额
+   			updatePreOrderCurAmt(entry.getOrderNo(),entry.getSalesPrice().multiply(e.getConfirmQty()));
+   			//更改路单,少送的，需要往后延期,并重新计算此后日计划的剩余金额
+   			orderService.resumeDaliyPlanForRouteOrder(e.getConfirmQty(), e, entry, dispDate);
+			});
+		
+		}else{
+			throw new ServiceException(MessageCode.LOGIC_ERROR,"没有此路单号!");
+		}
+		
+		System.out.println("根据路单修改日计划 消耗时间："+(System.currentTimeMillis()-startTime)+"毫秒");
+		
 		return 1;
 	}
 

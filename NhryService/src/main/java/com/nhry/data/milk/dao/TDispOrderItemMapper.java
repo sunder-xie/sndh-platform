@@ -23,6 +23,8 @@ public interface TDispOrderItemMapper {
 
     List<TDispOrderItem> selectItemsByKeys(TDispOrderItemKey record);
 
+    List<TDispOrderItem> selectNotDeliveryItemsByKeys(String code);
+    
     List<TDispOrderChangeItem> selectDispItemsChange(String yestoday,String today);
 
     int updateByPrimaryKeySelective(TDispOrderItem record);
@@ -34,5 +36,7 @@ public interface TDispOrderItemMapper {
     List<TDispOrderItem> selectItemsByConfirmed();
 
     List<TRecBotDetail> selectItemsByReturnBox(CreateEmpReturnboxModel cModel);
+    
+    TDispOrderItem selectDispOrderItemByKey(TDispOrderItemKey code);
 
 }

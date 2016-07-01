@@ -8,6 +8,7 @@ import com.nhry.data.order.domain.TPreOrder;
 import com.nhry.model.milk.RouteDetailUpdateModel;
 import com.nhry.model.order.*;
 
+import java.math.BigDecimal;
 import java.util.Date;
 import java.util.List;
 
@@ -45,5 +46,5 @@ public interface OrderService {
 
 	List<TOrderDaliyPlanItem> selectDaliyPlansByOrderNo(String orderCode);
 	
-	void resumeDaliyPlanForRouteOrder(RouteDetailUpdateModel record,TDispOrderItem entry,TPlanOrderItem orgEntry,Date dispDate);
+	void resumeDaliyPlanForRouteOrder(BigDecimal confirmQty,TDispOrderItem entry,TPlanOrderItem orgEntry,Date dispDate);
 }
