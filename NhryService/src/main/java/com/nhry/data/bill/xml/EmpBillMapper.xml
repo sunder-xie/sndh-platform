@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.nhry.data.bill.dao.EmpBillMapper" >
+    <resultMap id="EmpDispResultMap" type="com.nhry.model.bill.EmpDispDetailModel" >
+        <result column="DISP_DATE" property="dispDate" jdbcType="DATE" />
+        <result column="BRANCH_NO" property="branchNo" jdbcType="VARCHAR" />
+        <result column="BRANCH_NAME" property="branchName" jdbcType="VARCHAR" />
+        <result column="EMP_NO" property="empNo" jdbcType="VARCHAR" />
+        <result column="EMP_Name" property="empName" jdbcType="VARCHAR" />
+        <result column="MATNR" property="matnr" jdbcType="VARCHAR" />
+        <result column="MATNR_TXT" property="matnrTxt" jdbcType="VARCHAR" />
+        <result column="QTY" property="qty" jdbcType="INTEGER" />
+        <result column="TYPE" property="type" jdbcType="VARCHAR" />
+    </resultMap>
+
+    <resultMap id="EmpAccountResultMap" type="com.nhry.model.bill.EmpAccountReceAmount" >
+        <result column="ORDER_NO" property="orderNo" jdbcType="VARCHAR" />
+        <result column="BRANCH_NAME" property="branchName" jdbcType="VARCHAR" />
+        <result column="EMP_NAME" property="empName" jdbcType="VARCHAR" />
+        <result column="CUST_NAME" property="custName" jdbcType="VARCHAR" />
+        <result column="MP" property="mp" jdbcType="VARCHAR" />
+        <result column="ADDRESS" property="address" jdbcType="VARCHAR" />
+        <result column="ACCOUNT_RECE" property="amountRece" jdbcType="DECIMAL" />
+        <result column="ACCOUNT_REAL" property="amountReal" jdbcType="DECIMAL" />
+        <result column="ACCOUNT_GAP" property="amountGap" jdbcType="DECIMAL" />
+        <result column="PAYMENT_TYPE" property="paymentType" jdbcType="VARCHAR" />
+        <result column="PAYMENT_DATE" property="paymentDate" jdbcType="DATE" />
+    </resultMap>
+
+
+    <select id="empDispDetialInfo" resultMap="EmpDispResultMap" parameterType="com.nhry.model.bill.EmpDispDetialInfoSearch">
+        SELECT
+        di.DISP_DATE,i.MATNR,i.QTY,o.BRANCH_NO,o.EMP_NO,(select '内部销售订单产品' from DUAL) TYPE
+        FROM t_mst_inside_sal_order_item i LEFT JOIN t_mst_order_daliy_plan_item di on i.ORG_ORDER_NO = di.ORDER_NO
+        LEFT JOIN t_preorder o on i.ORG_ORDER_NO = o.ORDER_NO
+        where 1=1
+        <if test="branchNo!=null and ''!=branchNo">
+        o.BRANCH_NO = #{branchNo,jdbcType=VARCHAR}
+         </if>
+        <if test="empNo!=null and ''!=empNo">
+            o.EMP_NO = #{empNo,jdbcType=VARCHAR}
+        </if>
+        <if test="startDate!=null and ''!=startDate">
+            di.DISP_DATE &gt;= #{startDate,jdbcType=DATE}
+        </if>
+        <if test="endDate!=null and ''!=endDate">
+            di.DISP_DATE &lt;= #{endDate,jdbcType=DATE}
+        </if>
+
+        UNION ALL
+
+        SELECT
+        i.DISP_DATE,i.MATNR,i.QTY,o.BRANCH_NO,o.EMP_NO,(select '配送产品' from DUAL) TYPE
+        FROM t_mst_order_daliy_plan_item i LEFT JOIN t_preorder o on i.ORDER_NO = o.ORDER_NO
+        where 1=1
+        <if test="branchNo!=null and ''!=branchNo">
+            o.BRANCH_NO = #{branchNo,jdbcType=VARCHAR}
+        </if>
+        <if test="empNo!=null and ''!=empNo">
+            o.EMP_NO = #{empNo,jdbcType=VARCHAR}
+        </if>
+        <if test="startDate!=null and ''!=startDate">
+            di.DISP_DATE &gt;= #{startDate,jdbcType=DATE}
+        </if>
+        <if test="endDate!=null and ''!=endDate">
+            i.DISP_DATE &lt;= #{endDate,jdbcType=DATE}
+        </if>
+        ORDER BY  DISP_DATE ASC,TYPE
+    </select>
+
+    <select id="empAccountReceAmount" resultMap="EmpAccountResultMap" parameterType="com.nhry.model.bill.EmpAccountSearch">
+        SELECT
+        o.ORDER_NO,e.EMP_NAME,c.VIP_NAME CUST_NAME,c.MP,c.ADDRESS_TXT ADDRESS,o.INIT_AMT ACCOUNT_RECE,b.AMT ACCOUNT_REAL,
+        (o.INIT_AMT-b.AMT) ACCOUNT_GAP,b.PAYMENT_TYPE,b.PAYMENT_YEAR_MONTH PAYMENT_DATE
+        FROM  t_preorder o LEFT JOIN t_md_branch_emp e on o.EMP_NO = e.EMP_NO
+						    LEFT JOIN t_vip_cust_info c on o.MILKMEMBER_NO = c.VIP_CUST_NO
+						    LEFT JOIN t_mst_recv_bill b on o.ORDER_NO = b.ORDER_NO
+        WHERE 1= 1
+            <if test="branchNo!=null and ''!=branchNo">
+                and o.BRANCH_NO = #{branchNo,jdbcType=VARCHAR}
+            </if>
+            <if test="empNo!=null and ''!=empNo">
+               and  o.EMP_NO = #{empNo,jdbcType=VARCHAR}
+            </if>
+            <if test="startDate!=null and ''!=startDate">
+               and  o.END_DATE &gt;= #{startDate,jdbcType=DATE}
+            </if>
+            <if test="endDate!=null and ''!=endDate">
+               and  o.END_DATE &lt;= #{endDate,jdbcType=DATE}
+            </if>
+    </select>
+</mapper>

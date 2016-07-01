@@ -10,17 +10,11 @@ public class EmpDispDetailModel {
     private String branchName;
     private String empNo;
     private String empName;
-    private Date startDate;
-    private Date endDate;
-    private String dispMatnr;
-    private String dispMatnrTxt;
-    private int dispQty;
-    private String giftMatnr;
-    private String giftMatnrTxt;
-    private int  giftQty;
-    private String inSaleMatnr;
-    private String inSaleMatnrTxt;
-    private int inSaleQty;
+    private Date     dispDate;
+    private String matnr;
+    private String matnrTxt;
+    private Integer qty;
+    private String type;
 
     public String getBranchNo() {
         return branchNo;
@@ -54,91 +48,43 @@ public class EmpDispDetailModel {
         this.empName = empName;
     }
 
-    public Date getStartDate() {
-        return startDate;
+    public Date getDispDate() {
+        return dispDate;
     }
 
-    public void setStartDate(Date startDate) {
-        this.startDate = startDate;
+    public void setDispDate(Date dispDate) {
+        this.dispDate = dispDate;
     }
 
-    public Date getEndDate() {
-        return endDate;
+    public String getType() {
+        return type;
     }
 
-    public void setEndDate(Date endDate) {
-        this.endDate = endDate;
+    public String getMatnr() {
+        return matnr;
     }
 
-    public String getDispMatnr() {
-        return dispMatnr;
+    public void setMatnr(String matnr) {
+        this.matnr = matnr;
     }
 
-    public void setDispMatnr(String dispMatnr) {
-        this.dispMatnr = dispMatnr;
+    public String getMatnrTxt() {
+        return matnrTxt;
     }
 
-    public String getDispMatnrTxt() {
-        return dispMatnrTxt;
+    public void setMatnrTxt(String matnrTxt) {
+        this.matnrTxt = matnrTxt;
     }
 
-    public void setDispMatnrTxt(String dispMatnrTxt) {
-        this.dispMatnrTxt = dispMatnrTxt;
+    public Integer getQty() {
+        return qty;
     }
 
-    public int getDispQty() {
-        return dispQty;
+    public void setQty(Integer qty) {
+        this.qty = qty;
     }
 
-    public void setDispQty(int dispQty) {
-        this.dispQty = dispQty;
-    }
-
-    public String getGiftMatnr() {
-        return giftMatnr;
-    }
-
-    public void setGiftMatnr(String giftMatnr) {
-        this.giftMatnr = giftMatnr;
-    }
-
-    public String getGiftMatnrTxt() {
-        return giftMatnrTxt;
-    }
-
-    public void setGiftMatnrTxt(String giftMatnrTxt) {
-        this.giftMatnrTxt = giftMatnrTxt;
-    }
-
-    public int getGiftQty() {
-        return giftQty;
-    }
-
-    public void setGiftQty(int giftQty) {
-        this.giftQty = giftQty;
-    }
-
-    public String getInSaleMatnr() {
-        return inSaleMatnr;
-    }
-
-    public void setInSaleMatnr(String inSaleMatnr) {
-        this.inSaleMatnr = inSaleMatnr;
-    }
-
-    public String getInSaleMatnrTxt() {
-        return inSaleMatnrTxt;
-    }
-
-    public void setInSaleMatnrTxt(String inSaleMatnrTxt) {
-        this.inSaleMatnrTxt = inSaleMatnrTxt;
-    }
-
-    public int getInSaleQty() {
-        return inSaleQty;
-    }
-
-    public void setInSaleQty(int inSaleQty) {
-        this.inSaleQty = inSaleQty;
+    public void setType(String type) {
+        this.type = type;
     }
 }

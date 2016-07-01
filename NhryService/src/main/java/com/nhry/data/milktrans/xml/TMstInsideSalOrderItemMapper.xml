@@ -5,14 +5,15 @@
         <result column="INS_ORDER_NO" property="insOrderNo" jdbcType="VARCHAR" />
         <result column="ORDER_DATE"   property="orderDate" jdbcType="DATE" />
         <result column="ITEM_NO"      property="itemNo" jdbcType="VARCHAR" />
-        <result column="MATNR "  property="matnr" jdbcType="VARCHAR" />
-        <result column="QTY" property="qty" jdbcType="DECIMAL" />
-        <result column="PRICE" property="price" jdbcType="DECIMAL" />
-        <result column="REASON" property="reason" jdbcType="VARCHAR" />
+        <result column="ORG_ORDER_NO" property="orgOrderNo" jdbcType="VARCHAR" />
+        <result column="MATNR "       property="matnr" jdbcType="VARCHAR" />
+        <result column="QTY"          property="qty" jdbcType="DECIMAL" />
+        <result column="PRICE"        property="price" jdbcType="DECIMAL" />
+        <result column="REASON"       property="reason" jdbcType="VARCHAR" />
 
     </resultMap>
     <sql id="Base_Column_List" >
-    INS_ORDER_NO,ORDER_DATE,ITEM_NO,MATNR,QTY,PRICE,REASON
+       INS_ORDER_NO,ORDER_DATE,ITEM_NO,ORG_ORDER_NO,MATNR,QTY,PRICE,REASON
     </sql>
     <delete id="delInSalOrderItemByOrderNo"  parameterType="String" >
         DELETE  FROM  t_mst_inside_sal_order_item
@@ -21,11 +22,11 @@
 
     <insert id="insertOrderItem" parameterType="com.nhry.data.milktrans.domain.TMstInsideSalOrderItem">
           insert into t_mst_inside_sal_order_item (
-          INS_ORDER_NO ,ORDER_DATE ,ITEM_NO ,MATNR, QTY, PRICE, REASON)
+          INS_ORDER_NO ,ORDER_DATE ,ITEM_NO ,ORG_ORDER_NO,MATNR, QTY, PRICE, REASON)
          values(
              #{insOrderNo,jdbcType=VARCHAR}, #{orderDate,jdbcType=DATE}, #{itemNo,jdbcType=VARCHAR},
-             #{matnr,jdbcType=VARCHAR},#{qty,jdbcType=DECIMAL},#{price,jdbcType=DECIMAL},
-             #{reason,jdbcType=VARCHAR}
+             #{orgOrderNo,jdbcType=VARCHAR}, #{matnr,jdbcType=VARCHAR},#{qty,jdbcType=DECIMAL},
+             #{price,jdbcType=DECIMAL},#{reason,jdbcType=VARCHAR}
          )
 
     </insert>

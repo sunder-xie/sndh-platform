@@ -6,13 +6,15 @@ import java.io.Serializable;
 import java.util.Date;
 
 /**
- * Created by gongjk on 2016/6/30.
- * 配送数量明细结算表的生成  查询条件
+ * Created by gongjk on 2016/7/1.
  */
-public class EmpDispDetiallInfoSearch  extends BaseQueryModel implements Serializable{
+public class EmpAccountSearch  extends BaseQueryModel implements Serializable{
     private String branchNo;
+
     private String empNo;
+
     private Date startDate;
+
     private Date endDate;
 
     public String getBranchNo() {
