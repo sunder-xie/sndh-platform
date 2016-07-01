@@ -1,30 +1,20 @@
 package com.nhry.service.milk.impl;
 
-import java.math.BigDecimal;
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.List;
-
-import org.apache.commons.lang3.StringUtils;
-
 import com.github.pagehelper.PageInfo;
 import com.nhry.common.exception.MessageCode;
 import com.nhry.common.exception.ServiceException;
 import com.nhry.data.milk.dao.TDispOrderChangeMapper;
 import com.nhry.data.milk.dao.TDispOrderItemMapper;
 import com.nhry.data.milk.dao.TDispOrderMapper;
-import com.nhry.data.milk.domain.TDispOrder;
-import com.nhry.data.milk.domain.TDispOrderChange;
-import com.nhry.data.milk.domain.TDispOrderItem;
-import com.nhry.data.milk.domain.TDispOrderItemKey;
-import com.nhry.data.milk.domain.TDispOrderKey;
+import com.nhry.data.milk.domain.*;
+import com.nhry.data.milktrans.dao.TMstInsideSalOrderItemMapper;
+import com.nhry.data.milktrans.dao.TMstInsideSalOrderMapper;
+import com.nhry.data.milktrans.domain.TMstInsideSalOrder;
+import com.nhry.data.milktrans.domain.TMstInsideSalOrderItem;
 import com.nhry.data.order.dao.TOrderDaliyPlanItemMapper;
 import com.nhry.data.order.dao.TPlanOrderItemMapper;
 import com.nhry.data.order.dao.TPreOrderMapper;
 import com.nhry.data.order.domain.TOrderDaliyPlanItem;
-import com.nhry.data.order.domain.TOrderDaliyPlanItemKey;
 import com.nhry.data.order.domain.TPlanOrderItem;
 import com.nhry.data.order.domain.TPreOrder;
 import com.nhry.model.milk.RouteDetailUpdateModel;
@@ -34,6 +24,15 @@ import com.nhry.model.milk.RouteUpdateModel;
 import com.nhry.service.BaseService;
 import com.nhry.service.milk.dao.DeliverMilkService;
 import com.nhry.service.milk.pojo.TDispOrderChangeItem;
+import com.nhry.utils.SerialUtil;
+import org.apache.commons.lang3.StringUtils;
+
+import java.math.BigDecimal;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.List;
 
 public class DeliverMilkServiceImpl extends BaseService implements DeliverMilkService
 {
@@ -43,7 +42,17 @@ public class DeliverMilkServiceImpl extends BaseService implements DeliverMilkSe
 	private TOrderDaliyPlanItemMapper tOrderDaliyPlanItemMapper;
 	private TDispOrderChangeMapper tDispOrderChangeMapper;
 	private TPlanOrderItemMapper tPlanOrderItemMapper;
-	
+	private TMstInsideSalOrderMapper tMstInsideSalOrderMapper;
+	private TMstInsideSalOrderItemMapper tMstInsideSalOrderItemMapper;
+
+	public void settMstInsideSalOrderMapper(TMstInsideSalOrderMapper tMstInsideSalOrderMapper) {
+		this.tMstInsideSalOrderMapper = tMstInsideSalOrderMapper;
+	}
+
+	public void settMstInsideSalOrderItemMapper(TMstInsideSalOrderItemMapper tMstInsideSalOrderItemMapper) {
+		this.tMstInsideSalOrderItemMapper = tMstInsideSalOrderItemMapper;
+	}
+
 	public void settPlanOrderItemMapper(TPlanOrderItemMapper tPlanOrderItemMapper)
 	{
 		this.tPlanOrderItemMapper = tPlanOrderItemMapper;
@@ -74,6 +83,57 @@ public class DeliverMilkServiceImpl extends BaseService implements DeliverMilkSe
 		this.tPreOrderMapper = tPreOrderMapper;
 	}
 
+	/**
+	 * 根据  路单号 生成 对应的内部销售订单
+	 * @param dispOrderNo
+	 * @return
+     */
+	@Override
+	public int createInsideSalOrder(String dispOrderNo) {
+		String message = "";
+		try{
+			TMstInsideSalOrder sOrder = tMstInsideSalOrderMapper.getInSalOrderByDispOrderNo(dispOrderNo);
+			List<TDispOrderItem> entries = tDispOrderItemMapper.selectItemsByOrderNo(dispOrderNo);
+			if(entries == null || entries.size() <1){
+				message = "该路单没有可以生成销售订单的未送达项";
+				throw new ServiceException(MessageCode.LOGIC_ERROR,message);
+			}
+			if(sOrder!=null){
+				tMstInsideSalOrderItemMapper.delInSalOrderItemByOrderNo(sOrder.getInsOrderNo());
+			}else{
+				TDispOrder order = tDispOrderMapper.getDispOrderByNo(dispOrderNo);
+				sOrder = new TMstInsideSalOrder();
+				sOrder.setInsOrderNo(SerialUtil.creatSeria());
+				sOrder.setOrderDate(order.getOrderDate());
+				sOrder.setDispOrderNo(order.getOrderNo());
+				sOrder.setBranchNo(order.getBranchNo());
+				sOrder.setSalEmpNo(order.getDispEmpNo());
+				tMstInsideSalOrderMapper.insertInsideSalOrder(sOrder);
+			}
+
+			for(TDispOrderItem entry : entries){
+				TMstInsideSalOrderItem item = new TMstInsideSalOrderItem();
+				item.setInsOrderNo(sOrder.getInsOrderNo());
+				item.setItemNo(entry.getItemNo());
+				item.setMatnr(entry.getMatnr());
+				item.setOrderDate(sOrder.getOrderDate());
+				item.setPrice(entry.getPrice());
+				item.setQty(entry.getQty());
+				item.setReason(entry.getReason());
+				tMstInsideSalOrderItemMapper.insertOrderItem(item);
+			}
+			return 1;
+
+		}catch (Exception e){
+			if(message == ""){
+				throw new ServiceException(MessageCode.LOGIC_ERROR,"收款失败"+e.getMessage());
+			}else{
+				throw new ServiceException(MessageCode.LOGIC_ERROR,message);
+			}
+
+		}
+
+	}
 	/* (non-Javadoc) 
 	* @title: searchOrders
 	* @description: 查询路单列表

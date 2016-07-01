@@ -30,6 +30,25 @@
     <result column="LAST_MODIFIED_BY" property="lastModifiedBy" jdbcType="VARCHAR" />
     <result column="LAST_MODIFIED_BY_TXT" property="lastModifiedByTxt" jdbcType="VARCHAR" />
   </resultMap>
+
+  <resultMap id="EmpDispDetailResultMap" type="com.nhry.model.bill.EmpDispDetailModel" >
+    <result column="BRANCH_NO" property="branchNo" jdbcType="VARCHAR" />
+    <result column="BRANCH_NAME" property="branchName" jdbcType="VARCHAR" />
+    <result column="EMP_NO" property="empNo" jdbcType="VARCHAR" />
+    <result column="EMP_NAME" property="empName" jdbcType="VARCHAR" />
+    <result column="START_DATE" property="startDate" jdbcType="DATE" />
+    <result column="END_DATE" property="endDate" jdbcType="DATE" />
+    <result column="DISP_MATNR" property="DispMatnr" jdbcType="VARCHAR" />
+    <result column="DISP_MATNR_TXT" property="DispMatnrTxt" jdbcType="VARCHAR" />
+    <result column="DISP_QTY" property="DispQty" jdbcType="INTEGER" />
+    <result column="GIFT_MATNR" property="giftMatnr" jdbcType="VARCHAR" />
+    <result column="GIFT_MATNR_TXT" property="giftMatnrTxt" jdbcType="VARCHAR" />
+    <result column="GIFT_QTY" property="giftQty" jdbcType="INTEGER" />
+    <result column="IN_SALE_MATNR" property="inSaleMatnr" jdbcType="VARCHAR" />
+    <result column="IN_SALE_MATNR_TXT" property="inSaleMatnrTxt" jdbcType="VARCHAR" />
+    <result column="IN_SALE_QTY" property="inSaleQty" jdbcType="INTEGER" />
+  </resultMap>
+
   <sql id="Base_Column_List" >
     ITEM_NO, ORDER_NO, ORDER_DATE, REF_ITEM_NO, NEW_ROW_FLAG, MATNR, UNIT, QTY, SALES_PRICE, 
     RULE_TYPE, DISP_DAYS, GAP_DAYS, RULE_TXT, REACH_TIME_TYPE, START_DISP_DATE, END_DISP_DATE, 
@@ -342,4 +361,13 @@
       LAST_MODIFIED_BY_TXT = #{lastModifiedByTxt,jdbcType=VARCHAR}
     where ITEM_NO = #{itemNo,jdbcType=VARCHAR}
   </update>
+
+  <select id="empDispDetialInfo" resultMap="EmpDispDetailResultMap" parameterType="com.nhry.model.bill.EmpDispDetiallInfoSearch">
+  SELECT
+	po.BRANCH_NO,po.EMP_NO
+  FROM t_preorder po, t_mst_disp_order o,t_mst_disp_order_item oi
+  where  	1=1
+  and po.ORDER_NO = o.SUBSCRIBE_ORDER_NO
+  and o.ORDER_NO = oi.ORDER_NO
+  </select>
 </mapper>
