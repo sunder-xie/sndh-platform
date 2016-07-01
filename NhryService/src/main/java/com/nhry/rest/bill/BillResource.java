@@ -5,6 +5,7 @@ import com.nhry.common.exception.MessageCode;
 import com.nhry.model.bill.BranchBillSearch;
 import com.nhry.model.bill.CustBillQueryModel;
 import com.nhry.model.bill.CustomerPayMentModel;
+import com.nhry.model.bill.EmpDispDetiallInfoSearch;
 import com.nhry.rest.BaseResource;
 import com.nhry.service.bill.dao.BranchBillService;
 import com.nhry.service.bill.dao.CustomerBillService;
@@ -60,6 +61,18 @@ public class BillResource extends BaseResource {
     public Response customerPayment(@ApiParam(required=true,name="cModel",value="收款信息") CustomerPayMentModel cModel){
         return convertToRespModel(MessageCode.NORMAL, null, customerBillService.customerPayment(cModel));
     }
+
+
+    @POST
+    @Path("/emp/empDispDetialInfo")
+    @Produces(MediaType.APPLICATION_JSON)
+    @Consumes(MediaType.APPLICATION_JSON)
+    @ApiOperation(value = "/emp/empDispDetialInfo", response = int.class, notes = "获取送奶工配送数量明细结算表")
+    public Response empDispDetialInfo(@ApiParam(required=true,name="cModel",value="收款信息") EmpDispDetiallInfoSearch eSearch){
+        return convertToRespModel(MessageCode.NORMAL, null, customerBillService.empDispDetialInfo(eSearch));
+    }
+
+
 
 
 

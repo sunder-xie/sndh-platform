@@ -95,6 +95,8 @@
 	   <property name="tPlanOrderItemMapper"  ref="tPlanOrderItemMapper"></property>
 	   <property name="tOrderDaliyPlanItemMapper"  ref="tOrderDaliyPlanItemMapper"></property>
 	   <property name="tDispOrderChangeMapper"  ref="tDispOrderChangeMapper"></property>
+		<property name="tMstInsideSalOrderMapper"  ref="tMstInsideSalOrderMapper"></property>
+		<property name="tMstInsideSalOrderItemMapper"  ref="tMstInsideSalOrderItemMapper"></property>
 	   <property name="userSessionService" ref="userSessionService"></property>
 	</bean>
 	<!-- 送奶信息维护end -->

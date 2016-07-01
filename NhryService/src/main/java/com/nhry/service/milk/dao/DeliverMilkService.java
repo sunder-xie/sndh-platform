@@ -14,6 +14,7 @@ public interface DeliverMilkService {
 	int updateRouteOrder(RouteUpdateModel record);
 	
 	int updateRouteOrderItems(RouteDetailUpdateModel record);
+	public int createInsideSalOrder(String dispOrderNo);
 	
 	int createDayRouteOder();
 	

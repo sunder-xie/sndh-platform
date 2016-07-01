@@ -1,15 +1,16 @@
 package com.nhry.data.milk.impl;
 
+import com.github.pagehelper.PageInfo;
 import com.nhry.common.datasource.DynamicSqlSessionTemplate;
 import com.nhry.data.milk.dao.TDispOrderItemMapper;
 import com.nhry.data.milk.domain.TDispOrderItem;
 import com.nhry.data.milk.domain.TDispOrderItemKey;
+import com.nhry.data.milktrans.domain.TRecBotDetail;
 import com.nhry.data.order.domain.TPlanOrderItem;
 import com.nhry.model.milk.RouteDetailUpdateModel;
-import com.nhry.service.milk.pojo.TDispOrderChangeItem;
-import com.nhry.data.milktrans.domain.TRecBotDetail;
-import com.nhry.model.milk.RouteDetailUpdateModel;
 import com.nhry.model.milktrans.CreateEmpReturnboxModel;
+import com.nhry.model.milktrans.UnDeliverProductSearch;
+import com.nhry.service.milk.pojo.TDispOrderChangeItem;
 
 import java.math.BigDecimal;
 import java.util.List;
@@ -49,6 +50,16 @@ public class TDispOrderItemMapperImpl implements TDispOrderItemMapper
 	@Override
 	public List<TRecBotDetail> selectItemsByReturnBox(CreateEmpReturnboxModel cModel) {
 		return sqlSessionTemplate.selectList("selectItemsByReturnBox",cModel);
+	}
+
+	@Override
+	public PageInfo searchUndeliverProduct(UnDeliverProductSearch uSearch) {
+		return sqlSessionTemplate.selectListByPages("searchUndeliverProduct",uSearch, Integer.parseInt(uSearch.getPageNum()), Integer.parseInt(uSearch.getPageSize()));
+	}
+
+	@Override
+	public List<TDispOrderItem> selectItemsByOrderNo(String dispOrderNo) {
+		return sqlSessionTemplate.selectList("selectItemsByOrderNo",dispOrderNo);
 	}
 
 
