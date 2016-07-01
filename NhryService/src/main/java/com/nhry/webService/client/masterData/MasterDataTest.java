@@ -28,9 +28,9 @@ public class MasterDataTest {
             optionType7.setOPTION_type8("EQ");
             ZT_MasterDataQueryServiceStub.LOW_type9 lowType7 = new ZT_MasterDataQueryServiceStub.LOW_type9();
             lowType7.setLOW_type8("4030");
-            item.setSIGN(sign);
-            item.setOPTION(optionType7);
-            item.setLOW(lowType7);
+//            item.setSIGN(sign);
+//            item.setOPTION(optionType7);
+//            item.setLOW(lowType7);
             ZT_MasterDataQueryServiceStub.IT_WERKS_type1 itWerksType1 = new ZT_MasterDataQueryServiceStub.IT_WERKS_type1();
             itWerksType1.addItem(item);
             zmm_pos_24DATA.setIT_WERKS(itWerksType1);

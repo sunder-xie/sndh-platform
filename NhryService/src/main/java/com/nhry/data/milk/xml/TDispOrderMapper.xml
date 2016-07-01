@@ -336,4 +336,11 @@
     and o.DISP_EMP_NO = #{empNo,jdbcType=VARCHAR}
     and o.BRANCH_NO =  #{branchNo,jdbcType=VARCHAR}
   </select>
+
+  <select id="getDispOrderByNo" resultMap="BaseResultMap" parameterType="String" >
+    select
+    <include refid="Base_Column_List" />
+    from t_mst_disp_order
+    where ORDER_NO = #{dispOrderNo,jdbcType=VARCHAR}
+  </select>
 </mapper>

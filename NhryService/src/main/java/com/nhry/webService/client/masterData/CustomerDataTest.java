@@ -21,8 +21,8 @@ public class CustomerDataTest {
             client._getServiceClient().setOptions(options);
             ZT_MasterDataQueryServiceStub.ZSD_CUSTOMER_DATA_SYN_RFC zsdCustomerDataSynRfc = new ZT_MasterDataQueryServiceStub.ZSD_CUSTOMER_DATA_SYN_RFC();
             ZT_MasterDataQueryServiceStub.ZSD_CUSTOMER_DATA_SYN_RFCResponse response = new ZT_MasterDataQueryServiceStub.ZSD_CUSTOMER_DATA_SYN_RFCResponse();
-            ZT_MasterDataQueryServiceStub.I_BUKRS_type1 iBukrsType1 = new ZT_MasterDataQueryServiceStub.I_BUKRS_type1();
-            iBukrsType1.setI_BUKRS_type0("0300");
+//            ZT_MasterDataQueryServiceStub.I_BUKRS_type1 iBukrsType1 = new ZT_MasterDataQueryServiceStub.I_BUKRS_type1();
+//            iBukrsType1.setI_BUKRS_type0("0300");
 //            zsdCustomerDataSynRfc.setI_BUKRS(iBukrsType1);
 
             response = client.customerQuery(zsdCustomerDataSynRfc);

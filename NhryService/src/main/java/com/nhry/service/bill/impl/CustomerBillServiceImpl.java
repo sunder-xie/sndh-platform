@@ -11,9 +11,7 @@ import com.nhry.data.order.dao.TPlanOrderItemMapper;
 import com.nhry.data.order.dao.TPreOrderMapper;
 import com.nhry.data.order.domain.TPlanOrderItem;
 import com.nhry.data.order.domain.TPreOrder;
-import com.nhry.model.bill.CustBillQueryModel;
-import com.nhry.model.bill.CustomerBillOrder;
-import com.nhry.model.bill.CustomerPayMentModel;
+import com.nhry.model.bill.*;
 import com.nhry.service.bill.dao.CustomerBillService;
 import org.apache.commons.lang3.StringUtils;
 
@@ -119,6 +117,14 @@ public class CustomerBillServiceImpl implements CustomerBillService {
         order.setBill(bill);
         order.setEntrys(entry);
         return order;
+    }
+
+    @Override
+    public PageInfo empDispDetialInfo(EmpDispDetiallInfoSearch eSearch) {
+        if(StringUtils.isBlank(eSearch.getPageNum()) || StringUtils.isBlank(eSearch.getPageSize())){
+            throw new ServiceException(MessageCode.LOGIC_ERROR,"pageNum和pageSize不能为空！");
+        }
+        return tPlanOrderItemMapper.empDispDetialInfo(eSearch);
     }
 
     public void setCustomerBillMapper(CustomerBillMapper customerBillMapper) {

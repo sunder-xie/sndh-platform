@@ -83,6 +83,35 @@
     <result column="SPEC_UNIT " property="specUnit" jdbcType="VARCHAR" />
     <result column="RECEIVE_NUM" property="receiveNum" jdbcType="INTEGER" />
   </resultMap>
+
+  <resultMap id="UnDeliverResultMap" type="com.nhry.model.milktrans.UnDeliverProductModel" >
+    <result column="BRANCH_NO" property="orderNo" jdbcType="VARCHAR" />
+    <result column="EMP_NO" property="orderNo" jdbcType="VARCHAR" />
+    <result column="ORDER_NO" property="orderNo" jdbcType="VARCHAR" />
+    <result column="ORDER_DATE" property="orderDate" jdbcType="DATE" />
+    <result column="ITEM_NO" property="itemNo" jdbcType="VARCHAR" />
+    <result column="CONFIRM_MATNR" property="confirmMatnr" jdbcType="VARCHAR" />
+    <result column="MATNR" property="matnr" jdbcType="VARCHAR" />
+    <result column="CONFIRM_QTY" property="confirmQty" jdbcType="DECIMAL" />
+    <result column="QTY" property="qty" jdbcType="DECIMAL" />
+    <result column="UNIT" property="unit" jdbcType="VARCHAR" />
+    <result column="PRICE" property="price" jdbcType="DECIMAL" />
+    <result column="AMT" property="amt" jdbcType="DECIMAL" />
+    <result column="CONFIRM_AMT" property="confirmAmt" jdbcType="DECIMAL" />
+    <result column="STATUS" property="status" jdbcType="VARCHAR" />
+    <result column="PICKUP_ORDER_NO" property="pickupOrderNo" jdbcType="VARCHAR" />
+    <result column="PICKUP_ORDER_ITEM_NO" property="pickupOrderItemNo" jdbcType="VARCHAR" />
+    <result column="REASON" property="reason" jdbcType="VARCHAR" />
+    <result column="REDISP_DATE" property="redispDate" jdbcType="DATE" />
+    <result column="WHOLESALE_PRICE" property="wholesalePrice" jdbcType="DECIMAL" />
+    <result column="WHOLESALE_PRICE_1" property="wholesalePrice1" jdbcType="DECIMAL" />
+    <result column="ADDRESS_NO" property="addressNo" jdbcType="VARCHAR" />
+    <result column="ORG_ITEM_NO" property="orgItemNo" jdbcType="VARCHAR" />
+    <result column="ORG_ORDER_NO" property="orgOrderNo" jdbcType="VARCHAR" />
+    <result column="REACH_TIME_TYPE" property="reachTimeType" jdbcType="VARCHAR" />
+  </resultMap>
+
+
   <sql id="Base_Column_List" >
     ORDER_NO, ORDER_DATE, ITEM_NO,CONFIRM_MATNR, MATNR, CONFIRM_QTY, QTY, UNIT, PRICE, AMT, CONFIRM_AMT, 
     STATUS, PICKUP_ORDER_NO, PICKUP_ORDER_ITEM_NO, REASON, REDISP_DATE, WHOLESALE_PRICE,
@@ -394,12 +423,43 @@
 
   <select id="selectItemsByReturnBox" resultMap="boxDetailMap" parameterType="com.nhry.model.milktrans.CreateEmpReturnboxModel">
     select
-   m.SPEC SPEC ,m.BOT_SPEC BOT_SPEC,m.SPEC_UNIT SPEC_UNIT,i.QTY RECEIVE_NUM
+      m.SPEC SPEC ,m.BOT_SPEC BOT_SPEC,m.SPEC_UNIT SPEC_UNIT,i.QTY RECEIVE_NUM
     from t_mst_disp_order_item i,t_mst_disp_order o,t_md_mara m
     WHERE i.ORDER_NO = o.ORDER_NO
     and i.MATNR = m.MATNR
      and o.DISP_DATE = #{retDate,jdbcType=DATE}
     and o.DISP_EMP_NO = #{empNo,jdbcType=VARCHAR}
     and o.BRANCH_NO =  #{branchNo,jdbcType=VARCHAR}
+  </select>
+
+
+  <select id="searchUndeliverProduct" resultMap="BaseResultMap" parameterType="com.nhry.model.milktrans.UnDeliverProductSearch">
+      select
+      o.BRANCH_NO,o.DISP_EMP_NO EMP_NO,i.ORDER_NO,i.ORDER_DATE,i.MATNR,i.QTY,i.UNIT,i.PRICE,i.CONFIRM_QTY,i.AMT,i.STATUS,i.REASON
+      from t_mst_disp_order_item  i,t_mst_disp_order o
+      where i.ORDER_NO = o.ORDER_NO
+        and ( i.REASON = '20' OR  i.REASON ='30')
+        <if test="branchNo!=null and ''!=branchNo">
+          and o.BRANCH_NO = #{branchNo,jdbcType=VARCHAR}
+        </if>
+        <if test="empNo!=null and ''!=empNo">
+          and o.DISP_EMP_NO = #{empNo,jdbcType=VARCHAR}
+        </if>
+
+        <if test="createDate!=null and ''!=createDate">
+          and o.CREAT_AT = #{createDate,jdbcType=DATE}
+        </if>
+        <if test="orderNo!=null and ''!=orderNo">
+          and o.ORDER_NO = #{orderNo,jdbcType=VARCHAR}
+        </if>
+
+  </select>
+
+  <select id="selectItemsByOrderNo" resultMap="BaseResultMap" parameterType="String">
+    select
+   <include refid="Base_Column_List"/>
+    from t_mst_disp_order_item
+    where ORDER_NO = #{orderNo,jdbcType=VARCHAR}
+    and (REASON = '20' or  REASON = '30')
   </select>
 </mapper>

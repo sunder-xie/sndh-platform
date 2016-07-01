@@ -26,6 +26,13 @@ public class TDispOrderMapperImpl implements TDispOrderMapper
 	public BigDecimal creatRecBot(CreateEmpReturnboxModel cModel) {
 		return sqlSessionTemplate.selectOne("creatRecBot",cModel);
 	}
+
+	@Override
+	public TDispOrder getDispOrderByNo(String dispOrderNo) {
+		return sqlSessionTemplate.selectOne("getDispOrderByNo",dispOrderNo);
+	}
+
+
 	@Override
 	public PageInfo searchRoutePlansByPage(RouteOrderSearchModel smodel)
 	{

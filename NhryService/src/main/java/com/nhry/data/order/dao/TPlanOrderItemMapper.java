@@ -1,6 +1,8 @@
 package com.nhry.data.order.dao;
 
+import com.github.pagehelper.PageInfo;
 import com.nhry.data.order.domain.TPlanOrderItem;
+import com.nhry.model.bill.EmpDispDetiallInfoSearch;
 
 import java.util.List;
 
@@ -22,4 +24,6 @@ public interface TPlanOrderItemMapper {
     List<TPlanOrderItem> selectByOrderCode(String orderCode);
     
     int updateEntryByItemNo(TPlanOrderItem record);
+
+    PageInfo empDispDetialInfo(EmpDispDetiallInfoSearch eSearch);
 }

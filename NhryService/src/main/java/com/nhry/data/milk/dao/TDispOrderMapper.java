@@ -21,4 +21,6 @@ public interface TDispOrderMapper {
 
     int updateDispOrderStatus(String orderCode,String status);
     BigDecimal creatRecBot(CreateEmpReturnboxModel cModel);
+
+    TDispOrder getDispOrderByNo(String dispOrderNo);
 }

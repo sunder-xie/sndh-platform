@@ -4,8 +4,9 @@ import com.github.pagehelper.PageInfo;
 import com.nhry.common.exception.MessageCode;
 import com.nhry.model.milktrans.*;
 import com.nhry.rest.BaseResource;
-import com.nhry.service.milktrans.dao.ReturnBoxService;
+import com.nhry.service.milk.dao.DeliverMilkService;
 import com.nhry.service.milktrans.dao.RequireOrderService;
+import com.nhry.service.milktrans.dao.ReturnBoxService;
 import com.sun.jersey.spi.resource.Singleton;
 import com.wordnik.swagger.annotations.Api;
 import com.wordnik.swagger.annotations.ApiOperation;
@@ -15,10 +16,7 @@ import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Controller;
 
-import javax.ws.rs.Consumes;
-import javax.ws.rs.POST;
-import javax.ws.rs.Path;
-import javax.ws.rs.Produces;
+import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
@@ -33,6 +31,8 @@ public class milkTransResource extends BaseResource {
 	private RequireOrderService requireOrderService;
 	@Autowired
 	private ReturnBoxService returnBoxService;
+	@Autowired
+	private DeliverMilkService deliverMilkService;
 
 	@POST
 	@Path("/creatRequireOrder")
@@ -89,5 +89,20 @@ public class milkTransResource extends BaseResource {
 	public Response uptRequireOrder(@ApiParam(required=true,name="rModel",value="要货计划") RequireOrderModel  rModel){
 		return convertToRespModel(MessageCode.NORMAL, null, requireOrderService.uptRequireOrder(rModel));
 	}
+
+
+	@GET
+	@Path("/createInsideSalOrder")
+	@Produces(MediaType.APPLICATION_JSON)
+	@Consumes(MediaType.APPLICATION_JSON)
+	@ApiOperation(value = "/uptRequireOrder", response = RequireOrderModel.class, notes = "创建内部销售订单")
+	public Response createInsideSalOrder(@ApiParam(required=true,name="dispOrderNo",value="配送单号")@QueryParam("dispOrderNo") String  dispOrderNo){
+		return convertToRespModel(MessageCode.NORMAL, null, deliverMilkService.createInsideSalOrder(dispOrderNo));
+	}
+
+
+
+
+
 
 }

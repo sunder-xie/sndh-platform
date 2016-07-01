@@ -8,8 +8,11 @@ import com.nhry.model.milk.RouteDetailUpdateModel;
 import com.nhry.model.milk.RouteOrderSearchModel;
 import com.nhry.service.milk.pojo.TDispOrderChangeItem;
 import com.nhry.data.milktrans.domain.TRecBotDetail;
+import com.nhry.data.order.domain.TPlanOrderItem;
 import com.nhry.model.milk.RouteDetailUpdateModel;
 import com.nhry.model.milktrans.CreateEmpReturnboxModel;
+import com.nhry.model.milktrans.UnDeliverProductSearch;
+import com.nhry.service.milk.pojo.TDispOrderChangeItem;
 
 import java.util.List;
 
@@ -39,4 +42,7 @@ public interface TDispOrderItemMapper {
     
     TDispOrderItem selectDispOrderItemByKey(TDispOrderItemKey code);
 
+    PageInfo searchUndeliverProduct(UnDeliverProductSearch uSearch);
+    
+    List<TDispOrderItem> selectItemsByOrderNo(String dispOrderNo);
 }

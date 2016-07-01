@@ -37,5 +37,11 @@
 		<property name="tDispOrderItemMapper"  ref="tDispOrderItemMapper"></property>
 		<property name="empMapper" ref="branchEmpMapper"></property>
 	</bean>
-
+	<!--内部销售单管理-->
+	<bean id="tMstInsideSalOrderMapper" class="com.nhry.data.milktrans.impl.TMstInsideSalOrderMapperImpl">
+		<property name="sqlSessionTemplate"  ref="dynamicSqlSessionTemplate"></property>
+	</bean>
+	<bean id="tMstInsideSalOrderItemMapper" class="com.nhry.data.milktrans.impl.TMstInsideSalOrderItemMapperImpl">
+		<property name="sqlSessionTemplate"  ref="dynamicSqlSessionTemplate"></property>
+	</bean>
 </beans>
