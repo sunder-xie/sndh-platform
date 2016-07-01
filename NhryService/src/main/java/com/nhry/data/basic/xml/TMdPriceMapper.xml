@@ -17,11 +17,13 @@
     <result column="LAST_MODIFIED_BY" property="lastModifiedBy" jdbcType="VARCHAR" />
     <result column="LAST_MODIFIED_BY_TXT" property="lastModifiedByTxt" jdbcType="VARCHAR" />
     <result column="STATUS" property="status" jdbcType="CHAR" />
+    <result column="SCOPE" property="scope" jdbcType="VARCHAR" />
+    <result column="mcount" property="mcount" jdbcType="INTEGER"/>
   </resultMap>
   <sql id="Base_Column_List" >
     ID, SALES_ORG, PRICE_GROUP, PRICE_TYPE, START_DATE, END_DATE, START_TIME, END_TIME, 
     CREATE_AT, CREATE_BY, CREATE_BY_TXT, LAST_MODIFIED, LAST_MODIFIED_BY, LAST_MODIFIED_BY_TXT, 
-    STATUS
+    STATUS,SCOPE
   </sql>
   <select id="selectPriceGroupByCode" resultMap="BaseResultMap" parameterType="String" >
     select 
@@ -174,24 +176,56 @@
     where ID = #{id,jdbcType=VARCHAR}
   </update>
   <select id="searchPriceGroups" resultMap="BaseResultMap" parameterType="com.nhry.model.basic.PriceQueryModel">
-      select 
-      <include refid="Base_Column_List" />
-    	FROM t_md_price WHERE 1 = 1
-      <if test="salesOrg != null and salesOrg != ''">
-      		AND SALES_ORG = #{salesOrg}
-      </if>
-      <if test="priceGroup != null and priceGroup !=''">
-     		AND PRICE_GROUP like '%' || #{agencyType} || '%'
-      </if>
-      <if test="status != null and status != ''">
-     		AND STATUS = #{status,jdbcType=VARCHAR}
-      </if>
-      <if test="startDate != null and startDate != ''">
-         AND START_DATE &lt; #{startDate}
-      </if>
-      <if test="endDate != null and endDate != ''">
-         AND END_DATE &gt; #{endDate}
-      </if>
+      SELECT
+		p.ID,
+		(
+			SELECT
+				t.ITEM_NAME
+			FROM
+				t_sys_code_item t
+			WHERE
+				t.TYPE_CODE = <include refid="mybaties.longhu.constant.SALES_ORG_CONSTANT"></include>
+			AND t.ITEM_CODE = p.SALES_ORG
+		) SALES_ORG,
+		PRICE_GROUP,
+		p.PRICE_TYPE,
+		date_format(p.START_DATE, '%Y-%m-%d') START_DATE,
+		date_format(p.END_DATE, '%Y-%m-%d') END_DATE,
+		p.CREATE_AT,
+		p.CREATE_BY,
+		p.CREATE_BY_TXT,
+		p.LAST_MODIFIED,
+		p.LAST_MODIFIED_BY,
+		p.LAST_MODIFIED_BY_TXT,
+		p. STATUS,
+		p.SCOPE,
+		(
+			SELECT
+				count(t.ID)
+			FROM
+				T_MARA_PRICE_REL t
+			WHERE
+				t.ID = p.ID
+		) mcount
+	FROM
+	t_md_price p
+     <where>
+         <if test="salesOrg != null and salesOrg != ''">
+	      		AND SALES_ORG = #{salesOrg}
+	      </if>
+	      <if test="priceGroup != null and priceGroup !=''">
+	     		AND PRICE_GROUP like '%' || #{agencyType} || '%'
+	      </if>
+	      <if test="status != null and status != ''">
+	     		AND STATUS = #{status,jdbcType=VARCHAR}
+	      </if>
+	      <if test="startDate != null and startDate != ''">
+	         AND START_DATE &lt; #{startDate}
+	      </if>
+	      <if test="endDate != null and endDate != ''">
+	         AND END_DATE &gt; #{endDate}
+	      </if>
+     </where>
       ORDER BY id
   </select>
   <!-- 根据销售奶站编号和产品编号，查询渠道价格组列表 -->

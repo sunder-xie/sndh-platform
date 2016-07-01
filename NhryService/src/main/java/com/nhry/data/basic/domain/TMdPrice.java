@@ -21,10 +21,6 @@ public class TMdPrice {
     
     private String endDate;
 
-    private String startTime;
-
-    private String endTime;
-
     private Date createAt;
 
     private String createBy;
@@ -38,6 +34,10 @@ public class TMdPrice {
     private String lastModifiedByTxt;
 
     private String status;
+    
+    private String scope;
+    
+    private String mcount;
     
     private List<TMaraPriceRel> mprices = new ArrayList<TMaraPriceRel>();
 
@@ -71,22 +71,6 @@ public class TMdPrice {
 
     public void setPriceType(String priceType) {
         this.priceType = priceType == null ? null : priceType.trim();
-    }
-
-    public String getStartTime() {
-        return startTime;
-    }
-
-    public void setStartTime(String startTime) {
-        this.startTime = startTime == null ? null : startTime.trim();
-    }
-
-    public String getEndTime() {
-        return endTime;
-    }
-
-    public void setEndTime(String endTime) {
-        this.endTime = endTime == null ? null : endTime.trim();
     }
 
     public Date getCreateAt() {
@@ -167,5 +151,21 @@ public class TMdPrice {
 
 	public void setEndDate(String endDate) {
 		this.endDate = endDate;
+	}
+
+	public String getScope() {
+		return scope;
+	}
+
+	public void setScope(String scope) {
+		this.scope = scope;
+	}
+
+	public String getMcount() {
+		return mcount;
+	}
+
+	public void setMcount(String mcount) {
+		this.mcount = mcount;
 	}
 }

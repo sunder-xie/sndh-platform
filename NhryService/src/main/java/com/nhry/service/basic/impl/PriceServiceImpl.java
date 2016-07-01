@@ -12,10 +12,12 @@ import com.nhry.common.exception.MessageCode;
 import com.nhry.common.exception.ServiceException;
 import com.nhry.data.basic.dao.TMaraPriceRelMapper;
 import com.nhry.data.basic.dao.TMdBranchMapper;
+import com.nhry.data.basic.dao.TMdDealerMapper;
 import com.nhry.data.basic.dao.TMdPriceBranchMapper;
 import com.nhry.data.basic.dao.TMdPriceMapper;
 import com.nhry.data.basic.domain.TMaraPriceRel;
 import com.nhry.data.basic.domain.TMdBranch;
+import com.nhry.data.basic.domain.TMdDealer;
 import com.nhry.data.basic.domain.TMdPrice;
 import com.nhry.data.basic.domain.TMdPriceBranch;
 import com.nhry.model.basic.PriceQueryModel;
@@ -30,6 +32,7 @@ public class PriceServiceImpl extends BaseService implements PriceService {
 	private TMaraPriceRelMapper maraPriceMapper;
 	private TMdPriceBranchMapper priceBranchMapper;
 	private TMdBranchMapper branchMapper;
+	private TMdDealerMapper dealerMapper;
 
 	public void settMdPriceMapper(TMdPriceMapper tMdPriceMapper) {
 		this.tMdPriceMapper = tMdPriceMapper;
@@ -214,5 +217,23 @@ public class PriceServiceImpl extends BaseService implements PriceService {
 			return prices.get(0).getPrice2();
 		}
 		return -1.0f;
+	}
+
+	public void setDealerMapper(TMdDealerMapper dealerMapper) {
+		this.dealerMapper = dealerMapper;
+	}
+
+	@Override
+	public List<TMdDealer> getDealers() {
+		// TODO Auto-generated method stub
+		List<TMdDealer> list = this.dealerMapper.findDealersBySalesOrg(this.userSessionService.getCurrentUser().getSalesOrg());
+		if(list == null){
+			list = new ArrayList<TMdDealer>();
+		}
+		TMdDealer dealer = new TMdDealer();
+		dealer.setDealerNo("-1");
+		dealer.setDealerName("自营奶站");
+		list.add(dealer);
+		return list;
 	}
 }

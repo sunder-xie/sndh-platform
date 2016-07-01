@@ -1,5 +1,7 @@
 package com.nhry.data.basic.dao;
 
+import java.util.List;
+
 import com.nhry.data.basic.domain.TMdDealer;
 
 public interface TMdDealerMapper {
@@ -14,4 +16,6 @@ public interface TMdDealerMapper {
 //    int updateByPrimaryKeySelective(TMdDealer record);
 
     int updateDealer(TMdDealer record);
+    
+    public List<TMdDealer>findDealersBySalesOrg(String salesOrg);
 }

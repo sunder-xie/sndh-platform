@@ -36,6 +36,12 @@
     delete from t_md_dealer
     where DEALER_NO = #{dealerNo,jdbcType=VARCHAR}
   </delete>
+  <select id="findDealersBySalesOrg" parameterType="String">
+      select 
+    <include refid="Base_Column_List" />
+    from t_md_dealer
+    where SALES_ORG = #{salesOrg,jdbcType=VARCHAR}
+  </select>
   <insert id="insertDealer" parameterType="com.nhry.data.basic.domain.TMdDealer" >
     insert into t_md_dealer (DEALER_NO, DEALER_NAME, SALES_ORG, 
       PARENT, DEALER_TYPE, CONTACT, 

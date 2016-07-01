@@ -18,6 +18,7 @@ import org.springframework.stereotype.Controller;
 
 import com.nhry.common.exception.MessageCode;
 import com.nhry.data.basic.domain.TMaraPriceRel;
+import com.nhry.data.basic.domain.TMdDealer;
 import com.nhry.data.basic.domain.TMdPrice;
 import com.nhry.data.basic.domain.TMdPriceBranch;
 import com.nhry.data.config.domain.NHSysParameter;
@@ -101,5 +102,13 @@ public class PriceResource extends BaseResource {
 	public Response pubProductByCode(@ApiParam(required=true,name="branchNo",value="奶站编号")
 	@PathParam("branchNo")String branchNo,@ApiParam(required=true,name="id",value="价格组编号")@PathParam("id")String id){
 		return convertToRespModel(MessageCode.NORMAL, null, priceService.delPriceBranch(branchNo,id));
+	}
+	
+	@POST
+	@Path("/dealers")
+	@Produces(MediaType.APPLICATION_JSON)
+	@ApiOperation(value = "/dealers", response = TMdDealer.class, notes = "获取当前登录人所在公司下面的所有经销商")
+	public Response getDealers(){
+		return convertToRespModel(MessageCode.NORMAL, null, priceService.getDealers());
 	}
 }

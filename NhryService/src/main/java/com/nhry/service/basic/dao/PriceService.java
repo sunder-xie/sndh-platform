@@ -4,6 +4,7 @@ import java.util.List;
 
 import com.github.pagehelper.PageInfo;
 import com.nhry.data.basic.domain.TMaraPriceRel;
+import com.nhry.data.basic.domain.TMdDealer;
 import com.nhry.data.basic.domain.TMdPrice;
 import com.nhry.data.basic.domain.TMdPriceBranch;
 import com.nhry.model.basic.PriceQueryModel;
@@ -87,4 +88,11 @@ public interface PriceService {
     * @return
     */
     public float getMaraPrice(String branchNo,String matnr,String deliveryType);
+    
+    /**
+     * 根据销售组织获取该公司下面的经销商列表
+     * @param salesOrg
+     * @return
+     */
+    public List<TMdDealer> getDealers();
 }
