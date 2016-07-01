@@ -1,7 +1,5 @@
 package com.nhry.data.order.dao;
 
-import java.util.List;
-
 import com.github.pagehelper.PageInfo;
 import com.nhry.data.order.domain.TPreOrder;
 import com.nhry.model.bill.CustBillQueryModel;
@@ -9,6 +7,8 @@ import com.nhry.model.order.ManHandOrderSearchModel;
 import com.nhry.model.order.OrderSearchModel;
 import com.nhry.model.order.ReturnOrderModel;
 import com.nhry.model.order.UpdateManHandOrderModel;
+
+import java.util.List;
 
 public interface TPreOrderMapper {
     int deleteByPrimaryKey(String orderNo);

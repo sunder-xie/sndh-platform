@@ -1,10 +1,8 @@
 package com.nhry.data.order.impl;
 
-import com.github.pagehelper.PageInfo;
 import com.nhry.common.datasource.DynamicSqlSessionTemplate;
 import com.nhry.data.order.dao.TPlanOrderItemMapper;
 import com.nhry.data.order.domain.TPlanOrderItem;
-import com.nhry.model.bill.EmpDispDetiallInfoSearch;
 
 import java.util.List;
 
@@ -40,10 +38,6 @@ public class TPlanOrderItemMapperImpl implements TPlanOrderItemMapper
 		return sqlSessionTemplate.update("updateEntryByOrderCode", record);
 	}
 
-	@Override
-	public PageInfo empDispDetialInfo(EmpDispDetiallInfoSearch eSearch) {
-		return sqlSessionTemplate.selectListByPages("empDispDetialInfo",eSearch, Integer.parseInt(eSearch.getPageNum()), Integer.parseInt(eSearch.getPageSize()));
-	}
 
 	@Override
 	public TPlanOrderItem selectEntryByEntryNo(String code)

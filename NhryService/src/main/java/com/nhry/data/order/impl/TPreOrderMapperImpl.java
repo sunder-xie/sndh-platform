@@ -11,18 +11,17 @@
  */
 package com.nhry.data.order.impl;
 
-import java.util.List;
-
 import com.github.pagehelper.PageInfo;
 import com.nhry.common.datasource.DynamicSqlSessionTemplate;
 import com.nhry.data.order.dao.TPreOrderMapper;
 import com.nhry.data.order.domain.TPreOrder;
-import com.nhry.model.bill.BranchBillSearch;
 import com.nhry.model.bill.CustBillQueryModel;
 import com.nhry.model.order.ManHandOrderSearchModel;
 import com.nhry.model.order.OrderSearchModel;
 import com.nhry.model.order.ReturnOrderModel;
 import com.nhry.model.order.UpdateManHandOrderModel;
+
+import java.util.List;
 
 public class TPreOrderMapperImpl implements TPreOrderMapper
 {
@@ -81,9 +80,6 @@ public class TPreOrderMapperImpl implements TPreOrderMapper
 		return sqlSessionTemplate.update("updateOrderPayMentStatus", orderNo);
 
 	}
-
-
-
 
 	@Override
 	public int insert(TPreOrder record)
