@@ -5,14 +5,16 @@ import org.apache.commons.lang3.StringUtils;
 import com.github.pagehelper.PageInfo;
 import com.nhry.common.exception.MessageCode;
 import com.nhry.common.exception.ServiceException;
-import com.nhry.data.basic.dao.TBranchSalesListMapper;
+import com.nhry.data.basic.dao.TBranchNotsellListMapper;
 import com.nhry.data.basic.dao.TMdMaraExMapper;
 import com.nhry.data.basic.dao.TMdMaraMapper;
-import com.nhry.data.basic.domain.TBranchSalesList;
+import com.nhry.data.basic.domain.TBranchNotsellList;
+import com.nhry.data.basic.domain.TMdBranch;
 import com.nhry.data.basic.domain.TMdMara;
 import com.nhry.data.basic.domain.TMdMaraEx;
 import com.nhry.model.basic.ProductQueryModel;
 import com.nhry.service.BaseService;
+import com.nhry.service.basic.dao.BranchService;
 import com.nhry.service.basic.dao.ProductService;
 import com.nhry.service.basic.pojo.ProductInfoExModel;
 import com.nhry.utils.PrimaryKeyUtils;
@@ -26,7 +28,8 @@ public class ProductServiceImpl extends BaseService implements ProductService {
 
 	private TMdMaraMapper tMdMaraMapper;
 	private TMdMaraExMapper tMdMaraExMapper;
-	private TBranchSalesListMapper salesListMapper;
+	private TBranchNotsellListMapper notsellListMapper;
+	private BranchService branchSevice;
 
 	public void settMdMaraMapper(TMdMaraMapper tMdMaraMapper) {
 		this.tMdMaraMapper = tMdMaraMapper;
@@ -53,18 +56,17 @@ public class ProductServiceImpl extends BaseService implements ProductService {
 		if (product == null) {
 			throw new ServiceException(MessageCode.LOGIC_ERROR, "该商品信息不存在!");
 		}
-		salesListMapper.delSalesListByMatnr(record.getMatnr());
-		if(record.getSalesList() != null && record.getSalesList().size() > 0){
-			for(TBranchSalesList sl : record.getSalesList()){
-				sl.setListNo(PrimaryKeyUtils.generateUuidKey());
-				sl.setCreateAt(new Date());
-				sl.setMatnr(record.getMatnr());
-				sl.setCreateBy(this.userSessionService.getCurrentUser().getLoginName());
-				sl.setCreateByTxt(this.userSessionService.getCurrentUser().getDisplayName());
-				salesListMapper.addBranchSales(sl);
+		this.notsellListMapper.delBranchNotsellByMatnr(record.getMatnr());
+		if(record.getNotsellList() != null && record.getNotsellList().size() > 0){
+			for(TBranchNotsellList nl : record.getNotsellList()){
+				nl.setListNo(PrimaryKeyUtils.generateUuidKey());
+				nl.setCreateAt(new Date());
+				nl.setMatnr(record.getMatnr());
+				nl.setCreateBy(this.userSessionService.getCurrentUser().getLoginName());
+				nl.setCreateByTxt(this.userSessionService.getCurrentUser().getDisplayName());
+				notsellListMapper.addBranchNotSell(nl);
 			}
 		}
-		record.setLastModified(new Date());
 		if(record.getMaraEx() != null){
 			this.uptProductExByCode(record.getMatnr(),record.getMaraEx());
 		}
@@ -99,10 +101,6 @@ public class ProductServiceImpl extends BaseService implements ProductService {
 		return tMdMaraMapper.selectProductAndExListByCode(productCode);
 	}
 
-	public void setSalesListMapper(TBranchSalesListMapper salesListMapper) {
-		this.salesListMapper = salesListMapper;
-	}
-
 	@Override
 	public int uptProductExByCode(String matnr,TMdMaraEx maraEx) {
 		// TODO Auto-generated method stub
@@ -121,5 +119,32 @@ public class ProductServiceImpl extends BaseService implements ProductService {
 			this.tMdMaraExMapper.uptProductExByCode(maraEx);
 		}
 		return 1;
+	}
+
+	public void setNotsellListMapper(TBranchNotsellListMapper notsellListMapper) {
+		this.notsellListMapper = notsellListMapper;
+	}
+
+	@Override
+	public List<TMdMara> getBranchSaleMaras(String branchNo) {
+		// TODO Auto-generated method stub
+		TMdBranch branch = branchSevice.selectBranchByNo(branchNo);
+		if(branch != null){
+			Map<String,String> attrs = new HashMap<String,String>();
+			attrs.put("salesOrg", branch.getSalesOrg());
+			if(StringUtils.isEmpty(branch.getDealerNo())){
+				//自营奶站
+				return this.tMdMaraMapper.getCompMaras(attrs);
+			}else{
+				//经销商奶站
+				attrs.put("dealerNo", branch.getDealerNo());
+				return this.tMdMaraMapper.getDealerMaras(attrs);
+			}
+		}
+		return null;
+	}
+
+	public void setBranchSevice(BranchService branchSevice) {
+		this.branchSevice = branchSevice;
 	}
 }

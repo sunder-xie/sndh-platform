@@ -367,4 +367,95 @@
 	<select id="isProduct" parameterType="java.lang.String" resultType="java.lang.Integer">
 		SELECT count(1) FROM t_md_mara WHERE MATNR = #{id}
 	</select>
+	<select id="getDealerMaras" resultMap="BaseResultMap" parameterType="java.util.Map">
+	    SELECT
+			p.MATNR,
+			p.MATNR_TXT,
+			p.BASE_UNIT,
+			p. STATUS,
+			p.LAST_MODIFIED MARA_LAST_MODIFIED,
+			p.CREATE_AT MARA_CREATE_AT,
+			p.FIRST_CAT,
+			p.SEC_CATE,
+			p.BRAND,
+			p.WEIGHT,
+			p.WEIGHT_UNIT,
+			p.IMPORTANT_PRD_FLAG,
+			p.SPEC,
+			p.SPEC_UNIT,
+			p.BOT_SPEC,
+			p.ZBOT_CODE,
+			p.SALES_ORG,
+			p.DEALER_NO,
+			pex.SHORT_TXT,
+			pex.PRE_DAYS,
+			pex.BOT_TYPE,
+			pex.MATNR EX_MATNR,
+			pex.SALES_FLAG,
+			pex.RET_BOT_FLAG,
+			pex.CREATE_AT,
+			pex.CREATE_BY,
+			pex.CREATE_BY_TXT,
+			pex.LAST_MODIFIED,
+			pex.LAST_MODIFIED_BY,
+			pex.LAST_MODIFIED_BY_TXT
+		FROM
+			t_md_mara p
+		LEFT JOIN t_md_mara_ex pex ON p.MATNR = pex.MATNR
+		AND p.MATNR NOT IN (
+			SELECT
+				nl.matnr
+			FROM
+				T_BRANCH_NOTSELL_LIST nl
+			WHERE
+				nl.sales_org = #{salesOrg}
+			AND nl.dealer_no = #{dealerNo}
+		)
+		AND p.SALES_ORG = #{salesOrg};
+	</select>
+	<select id="getCompMaras" resultMap="BaseResultMap" parameterType="java.util.Map">
+	    SELECT
+			p.MATNR,
+			p.MATNR_TXT,
+			p.BASE_UNIT,
+			p. STATUS,
+			p.LAST_MODIFIED MARA_LAST_MODIFIED,
+			p.CREATE_AT MARA_CREATE_AT,
+			p.FIRST_CAT,
+			p.SEC_CATE,
+			p.BRAND,
+			p.WEIGHT,
+			p.WEIGHT_UNIT,
+			p.IMPORTANT_PRD_FLAG,
+			p.SPEC,
+			p.SPEC_UNIT,
+			p.BOT_SPEC,
+			p.ZBOT_CODE,
+			p.SALES_ORG,
+			p.DEALER_NO,
+			pex.SHORT_TXT,
+			pex.PRE_DAYS,
+			pex.BOT_TYPE,
+			pex.MATNR EX_MATNR,
+			pex.SALES_FLAG,
+			pex.RET_BOT_FLAG,
+			pex.CREATE_AT,
+			pex.CREATE_BY,
+			pex.CREATE_BY_TXT,
+			pex.LAST_MODIFIED,
+			pex.LAST_MODIFIED_BY,
+			pex.LAST_MODIFIED_BY_TXT
+		FROM
+			t_md_mara p
+		LEFT JOIN t_md_mara_ex pex ON p.MATNR = pex.MATNR
+		AND p.MATNR NOT IN (
+			SELECT
+				nl.matnr
+			FROM
+				T_BRANCH_NOTSELL_LIST nl
+			WHERE
+			 nl.dealer_no = null and nl.sales_org = #{salesOrg}
+		)
+		AND p.SALES_ORG = #{salesOrg};
+	</select>
 </mapper>

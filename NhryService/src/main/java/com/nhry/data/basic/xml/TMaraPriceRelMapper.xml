@@ -13,7 +13,6 @@
     <result column="LAST_MODIFIED_BY_TXT" property="lastModifiedByTxt" jdbcType="VARCHAR" />
     <result column="PRICE1" property="price1" jdbcType="DECIMAL" />
     <result column="PRICE2" property="price2" jdbcType="DECIMAL" />
-    <result column="MATNR_TXT" property="matnrTxt" jdbcType="VARCHAR"/>
   </resultMap>
   <sql id="Base_Column_List" >
     REL_NO, MATNR, ID, CREATE_AT, CREATE_BY, CREATE_BY_TXT, LAST_MODIFIED, LAST_MODIFIED_BY, 
@@ -103,7 +102,7 @@
     </trim>
   </insert>
   <update id="uptMaraPricerel" parameterType="com.nhry.data.basic.domain.TMaraPriceRel" >
-    update t_mara_price_rel
+     update t_mara_price_rel
     <set >
       <if test="matnr != null" >
         MATNR = #{matnr,jdbcType=VARCHAR},
@@ -142,4 +141,7 @@
       select p.REL_NO, p.MATNR, p.ID, p.CREATE_AT, p.CREATE_BY, p.CREATE_BY_TXT, p.LAST_MODIFIED, p.LAST_MODIFIED_BY, 
     p.LAST_MODIFIED_BY_TXT, p.PRICE1, p.PRICE2,m.MATNR_TXT from t_mara_price_rel p,T_MD_MARA m where p.MATNR=m.MATNR and REL_NO = #{id,jdbcType=VARCHAR}
   </select>
+  <delete id="delMaraPricesById" parameterType="String">
+      delete from t_mara_price_rel where ID=#{id}
+  </delete>
 </mapper>

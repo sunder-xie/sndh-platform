@@ -7,8 +7,6 @@ public class TMaraPriceRel {
     private String relNo;
 
     private String matnr;
-    
-    private String matnrTxt;
 
     private String id;
 
@@ -27,8 +25,6 @@ public class TMaraPriceRel {
     private BigDecimal price1;
 
     private BigDecimal price2;
-    
-    private String editStatus;
 
     public String getRelNo() {
         return relNo;
@@ -117,20 +113,4 @@ public class TMaraPriceRel {
     public void setPrice2(BigDecimal price2) {
         this.price2 = price2;
     }
-
-	public String getMatnrTxt() {
-		return matnrTxt;
-	}
-
-	public void setMatnrTxt(String matnrTxt) {
-		this.matnrTxt = matnrTxt;
-	}
-
-	public String getEditStatus() {
-		return editStatus;
-	}
-
-	public void setEditStatus(String editStatus) {
-		this.editStatus = editStatus;
-	}
 }

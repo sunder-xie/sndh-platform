@@ -6,6 +6,7 @@ import com.nhry.model.basic.ProductQueryModel;
 import com.nhry.service.basic.pojo.ProductInfoExModel;
 
 import java.util.List;
+import java.util.Map;
 
 public interface TMdMaraMapper {
 	
@@ -66,4 +67,18 @@ public interface TMdMaraMapper {
     int updateProduct(TMdMara tMdMara);
 
     int isProduct(String id);
+    
+    /**
+     * 获取经销商可销售的产品列表
+     * @param attrs
+     * @return
+     */
+    List<TMdMara> getDealerMaras(Map<String,String> attrs);
+    
+    /**
+     * 获取自营奶站的可销售的产品列表
+     * @param attrs
+     * @return
+     */
+    List<TMdMara> getCompMaras(Map<String,String> attrs);
 }

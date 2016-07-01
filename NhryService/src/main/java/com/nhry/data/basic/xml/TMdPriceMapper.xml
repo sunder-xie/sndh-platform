@@ -6,9 +6,8 @@
     <result column="SALES_ORG" property="salesOrg" jdbcType="VARCHAR" />
     <result column="PRICE_GROUP" property="priceGroup" jdbcType="VARCHAR" />
     <result column="PRICE_TYPE" property="priceType" jdbcType="VARCHAR" />
-    <result column="BRANCH_NO" property="branchNo" jdbcType="VARCHAR" />
-    <result column="START_DATE" property="startDate" jdbcType="DATE" />
-    <result column="END_DATE" property="endDate" jdbcType="DATE" />
+    <result column="START_DATE" property="startDate" jdbcType="VARCHAR" />
+    <result column="END_DATE" property="endDate" jdbcType="VARCHAR" />
     <result column="START_TIME" property="startTime" jdbcType="VARCHAR" />
     <result column="END_TIME" property="endTime" jdbcType="VARCHAR" />
     <result column="CREATE_AT" property="createAt" jdbcType="TIMESTAMP" />
@@ -20,12 +19,15 @@
     <result column="STATUS" property="status" jdbcType="CHAR" />
   </resultMap>
   <sql id="Base_Column_List" >
-    ID, SALES_ORG, PRICE_GROUP, PRICE_TYPE, BRANCH_NO, START_DATE, END_DATE, START_TIME, 
-    END_TIME, CREATE_AT, CREATE_BY, CREATE_BY_TXT, LAST_MODIFIED, LAST_MODIFIED_BY, LAST_MODIFIED_BY_TXT, 
+    ID, SALES_ORG, PRICE_GROUP, PRICE_TYPE, START_DATE, END_DATE, START_TIME, END_TIME, 
+    CREATE_AT, CREATE_BY, CREATE_BY_TXT, LAST_MODIFIED, LAST_MODIFIED_BY, LAST_MODIFIED_BY_TXT, 
     STATUS
   </sql>
   <select id="selectPriceGroupByCode" resultMap="BaseResultMap" parameterType="String" >
-    select <include refid="Base_Column_List" /> from t_md_price where ID = #{id}
+    select 
+    <include refid="Base_Column_List" />
+    from t_md_price
+    where ID = #{id,jdbcType=VARCHAR}
   </select>
   <update id="disablePriceGroup" parameterType="com.nhry.data.basic.domain.TMdPrice" >
     update t_md_price
@@ -46,9 +48,6 @@
       </if>
       <if test="priceType != null" >
         PRICE_TYPE,
-      </if>
-      <if test="branchNo != null" >
-        BRANCH_NO,
       </if>
       <if test="startDate != null" >
         START_DATE,
@@ -97,9 +96,6 @@
       <if test="priceType != null" >
         #{priceType,jdbcType=VARCHAR},
       </if>
-      <if test="branchNo != null" >
-        #{branchNo,jdbcType=VARCHAR},
-      </if>
       <if test="startDate != null" >
         #{startDate,jdbcType=DATE},
       </if>
@@ -138,17 +134,11 @@
   <update id="updatePriceGroup" parameterType="com.nhry.data.basic.domain.TMdPrice" >
     update t_md_price
     <set >
-      <if test="salesOrg != null" >
-        SALES_ORG = #{salesOrg,jdbcType=VARCHAR},
-      </if>
       <if test="priceGroup != null" >
         PRICE_GROUP = #{priceGroup,jdbcType=VARCHAR},
       </if>
       <if test="priceType != null" >
         PRICE_TYPE = #{priceType,jdbcType=VARCHAR},
-      </if>
-      <if test="branchNo != null" >
-        BRANCH_NO = #{branchNo,jdbcType=VARCHAR},
       </if>
       <if test="startDate != null" >
         START_DATE = #{startDate,jdbcType=DATE},
@@ -180,9 +170,6 @@
       <if test="lastModifiedByTxt != null" >
         LAST_MODIFIED_BY_TXT = #{lastModifiedByTxt,jdbcType=VARCHAR},
       </if>
-      <if test="status != null" >
-        STATUS = #{status,jdbcType=CHAR},
-      </if>
     </set>
     where ID = #{id,jdbcType=VARCHAR}
   </update>
@@ -190,6 +177,9 @@
       select 
       <include refid="Base_Column_List" />
     	FROM t_md_price WHERE 1 = 1
+      <if test="salesOrg != null and salesOrg != ''">
+      		AND SALES_ORG = #{salesOrg}
+      </if>
       <if test="priceGroup != null and priceGroup !=''">
      		AND PRICE_GROUP like '%' || #{agencyType} || '%'
       </if>
@@ -203,5 +193,49 @@
          AND END_DATE &gt; #{endDate}
       </if>
       ORDER BY id
+  </select>
+  <!-- 根据销售奶站编号和产品编号，查询渠道价格组列表 -->
+  <select id="findMaraPriceBymatnrAndNo" resultType="com.nhry.service.basic.pojo.PriceGroup" parameterType="java.util.Map">
+     SELECT
+		pr.PRICE1,
+		pr.PRICE2,
+		p.PRICE_TYPE,
+		p.PRICE_GROUP
+	FROM
+		T_MD_PRICE p,
+		T_MD_PRICE_BRANCH pb,
+		T_MARA_PRICE_REL pr
+	WHERE
+		p.ID = pb.ID
+	AND p.ID = pr.ID
+	AND pb.BRANCH_NO = #{branchNo}
+	AND pr.MATNR = #{matnr}
+	ORDER BY
+		p.PRICE_TYPE DESC
+  </select>
+  <!-- 根据销售组织编号和产品编号，查询渠道价格组 -->
+  <select id="findMaraPriceBymatnrAndOrg" resultType="com.nhry.service.basic.pojo.PriceGroup"  parameterType="java.util.Map">
+        SELECT
+			pr.PRICE1,
+			pr.PRICE2,
+			p.PRICE_TYPE,
+			p.PRICE_GROUP
+		FROM
+			T_MD_PRICE p,
+			T_MARA_PRICE_REL pr
+		WHERE
+			p.ID = pr.ID
+		AND p.PRICE_TYPE = '10'
+		AND p.SALES_ORG = (
+			SELECT
+				b.SALES_ORG
+			FROM
+				t_md_branch b
+			WHERE
+				b.BRANCH_NO = #{branchNo}
+		)
+		AND pr.MATNR = #{matnr}
+		ORDER BY
+			p.PRICE_TYPE DESC
   </select>
 </mapper>

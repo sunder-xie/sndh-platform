@@ -6,11 +6,13 @@ import com.nhry.data.basic.dao.TMdMaraMapper;
 import com.nhry.data.basic.domain.TMdMara;
 import com.nhry.service.basic.pojo.ProductInfoExModel;
 import com.nhry.model.basic.ProductQueryModel;
+
 import org.apache.ibatis.session.ExecutorType;
 import org.apache.ibatis.session.SqlSession;
 import org.apache.ibatis.session.SqlSessionFactory;
 
 import java.util.List;
+import java.util.Map;
 
 public class TMdMaraMapperImpl implements TMdMaraMapper {
 
@@ -75,4 +77,16 @@ public class TMdMaraMapperImpl implements TMdMaraMapper {
         // TODO Auto-generated method stub
         return this.sqlSessionTemplate.update("pubProductByCode", code);
     }
+
+	@Override
+	public List<TMdMara> getDealerMaras(Map<String, String> attrs) {
+		// TODO Auto-generated method stub
+		return this.sqlSessionTemplate.selectList("getDealerMaras", attrs);
+	}
+
+	@Override
+	public List<TMdMara> getCompMaras(Map<String, String> attrs) {
+		// TODO Auto-generated method stub
+		return this.sqlSessionTemplate.selectList("getCompMaras", attrs);
+	}
 }

@@ -1,8 +1,12 @@
 package com.nhry.data.basic.dao;
 
+import java.util.List;
+import java.util.Map;
+
 import com.github.pagehelper.PageInfo;
 import com.nhry.data.basic.domain.TMdPrice;
 import com.nhry.model.basic.PriceQueryModel;
+import com.nhry.service.basic.pojo.PriceGroup;
 
 public interface TMdPriceMapper {
 	 /**
@@ -39,4 +43,18 @@ public interface TMdPriceMapper {
 	  * @return
 	  */
 	 TMdPrice selectPriceGroupById(String id);
+	 
+	 /**
+	  * 根据销售奶站编号和产品编号，查询价格组列表
+	  * @param attrs
+	  * @return
+	  */
+	 List<PriceGroup> findMaraPriceBymatnrAndNo(Map<String,String> attrs);
+	 
+	 /**
+	  * 根据销售组织编号和产品编号，查询渠道价格组
+	  * @param attrs
+	  * @return
+	  */
+	 PriceGroup findMaraPriceBymatnrAndOrg(Map<String,String> attrs);
 }
