@@ -61,6 +61,7 @@
 	   <property name="tPlanOrderItemMapper"  ref="tPlanOrderItemMapper"></property>
 	   <property name="tOrderDaliyPlanItemMapper"  ref="tOrderDaliyPlanItemMapper"></property>
 	   <property name="userSessionService" ref="userSessionService"></property>
+	   <property name="tVipCustInfoService" ref="custService"></property>
 	</bean>
 	<!-- 订单end -->
 
@@ -98,6 +99,7 @@
 		<property name="tMstInsideSalOrderMapper"  ref="tMstInsideSalOrderMapper"></property>
 		<property name="tMstInsideSalOrderItemMapper"  ref="tMstInsideSalOrderItemMapper"></property>
 	   <property name="userSessionService" ref="userSessionService"></property>
+	   <property name="orderService" ref="orderService"></property>
 	</bean>
 	<!-- 送奶信息维护end -->
 	<bean id="custService" class="com.nhry.service.basic.impl.TVipCustInfoServiceImpl">

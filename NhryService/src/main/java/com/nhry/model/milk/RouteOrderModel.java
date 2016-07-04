@@ -11,7 +11,7 @@ public class RouteOrderModel {
 	
 	private TDispOrder order;
     
-   private ArrayList<TDispOrderItem> entries = new ArrayList<TDispOrderItem>();
+   private String products;
 
 	public TDispOrder getOrder()
 	{
@@ -23,14 +23,15 @@ public class RouteOrderModel {
 		this.order = order;
 	}
 
-	public ArrayList<TDispOrderItem> getEntries()
+	public String getProducts()
 	{
-		return entries;
+		return products;
 	}
 
-	public void setEntries(ArrayList<TDispOrderItem> entries)
+	public void setProducts(String products)
 	{
-		this.entries = entries;
+		this.products = products;
 	}
+
 
 }
