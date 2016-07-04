@@ -1,10 +1,15 @@
 package com.nhry.service.order.dao;
 
 import com.github.pagehelper.PageInfo;
+import com.nhry.data.milk.domain.TDispOrderItem;
 import com.nhry.data.order.domain.TOrderDaliyPlanItem;
+import com.nhry.data.order.domain.TPlanOrderItem;
 import com.nhry.data.order.domain.TPreOrder;
+import com.nhry.model.milk.RouteDetailUpdateModel;
 import com.nhry.model.order.*;
 
+import java.math.BigDecimal;
+import java.util.Date;
 import java.util.List;
 
 public interface OrderService {
@@ -22,6 +27,8 @@ public interface OrderService {
 	int backOrder(OrderSearchModel record);
 
 	int continueOrder(OrderSearchModel record);
+	
+	int continueOrdeAfterStop(OrderSearchModel record);
 
 	int modifyOrderStatus(TPreOrder record);
 
@@ -38,4 +45,6 @@ public interface OrderService {
 	int canOrderUnsubscribe(String orderNo);
 
 	List<TOrderDaliyPlanItem> selectDaliyPlansByOrderNo(String orderCode);
+	
+	void resumeDaliyPlanForRouteOrder(BigDecimal confirmQty,TDispOrderItem entry,TPlanOrderItem orgEntry,Date dispDate);
 }

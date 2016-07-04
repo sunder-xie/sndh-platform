@@ -49,6 +49,15 @@ public class OrderResource extends BaseResource {
 	}
 	
 	@POST
+	@Path("/resumeFromStop")
+	@Consumes(MediaType.APPLICATION_JSON)
+	@Produces(MediaType.APPLICATION_JSON)
+	@ApiOperation(value = "/resumeFromStop", response = Integer.class, notes = "将停订的订单复订")
+	public Response resumeFromStop(@ApiParam(required=true,name="record",value="系统参数json格式") OrderSearchModel record){
+		return convertToRespModel(MessageCode.NORMAL, null, orderService.continueOrdeAfterStop(record));
+	}
+	
+	@POST
 	@Path("/uptlong")
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
