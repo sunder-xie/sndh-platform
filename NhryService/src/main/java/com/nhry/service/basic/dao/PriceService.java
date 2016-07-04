@@ -46,6 +46,13 @@ public interface PriceService {
 	TMdPrice selectPriceGroupByCode(String id);
 	
 	/**
+	 * 根据code查询价格组
+	 * @param id
+	 * @return
+	 */
+	TMdPrice selectPGByCode4Edit(String id);
+	
+	/**
 	 * 更新价格组关联的商品信息
 	 * @param record
 	 * @return

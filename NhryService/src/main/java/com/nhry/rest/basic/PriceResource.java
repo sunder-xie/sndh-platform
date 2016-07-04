@@ -59,6 +59,14 @@ public class PriceResource extends BaseResource {
 	}
 	
 	@POST
+	@Path("/{code}/edit")
+	@Produces(MediaType.APPLICATION_JSON)
+	@ApiOperation(value = "/{code}/edit", response = TMdPrice.class, notes = "根据价格组编号查询信息(priceType：10 区域价;20 销售渠道价;30 奶站价),用于点击编辑按钮查询")
+	public Response selectPGByCode4Edit(@ApiParam(required=true,name="code",value="价格组编号") @PathParam("code") String code){
+		return convertToRespModel(MessageCode.NORMAL, null, priceService.selectPGByCode4Edit(code));
+	}
+	
+	@POST
 	@Path("/upt/price")
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
@@ -90,7 +98,7 @@ public class PriceResource extends BaseResource {
 	@Produces(MediaType.APPLICATION_JSON)
 	@Consumes(MediaType.APPLICATION_JSON)
 	@ApiOperation(value = "/add/price/branch", response = ResponseModel.class, notes = "添加价格组与奶站关系")
-	public Response pubProductByCode(@ApiParam(required=true,name="record",value="价格组与奶站关系对象")TMdPriceBranch record){
+	public Response pubProductByCode(@ApiParam(required=true,name="record",value="价格组与奶站关系对象(priceType不用填写)")TMdPriceBranch record){
 		return convertToRespModel(MessageCode.NORMAL, null, priceService.addPriceBranch(record));
 	}
 	
@@ -110,5 +118,15 @@ public class PriceResource extends BaseResource {
 	@ApiOperation(value = "/dealers", response = TMdDealer.class, notes = "获取当前登录人所在公司下面的所有经销商")
 	public Response getDealers(){
 		return convertToRespModel(MessageCode.NORMAL, null, priceService.getDealers());
+	}
+	
+	@POST
+	@Path("/matnr/{branchNo}/{matnr}/{deliveryType}")
+	@Produces(MediaType.APPLICATION_JSON)
+	@ApiOperation(value = "/matnr/{matnr}", response = TMdDealer.class, notes = "商品价格")
+	public Response getMatnrPrice(@ApiParam(required=true,name="branchNo",value="奶站编号")@PathParam("branchNo")String branchNo,
+			@ApiParam(required=true,name="matnr",value="产品编号")@PathParam("matnr")String matnr,
+			@ApiParam(required=true,name="deliveryType",value="配送类型")@PathParam("deliveryType")String deliveryType){
+		return convertToRespModel(MessageCode.NORMAL, null, priceService.getMaraPrice(branchNo, matnr, deliveryType));
 	}
 }

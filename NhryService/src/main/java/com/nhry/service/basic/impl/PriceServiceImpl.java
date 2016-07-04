@@ -95,7 +95,11 @@ public class PriceServiceImpl extends BaseService implements PriceService {
 	@Override
 	public TMdPrice selectPriceGroupByCode(String id) {
 		// TODO Auto-generated method stub
-		return tMdPriceMapper.selectPriceGroupById(id);
+		TMdPrice price = tMdPriceMapper.selectPriceGroupById(id);
+		if(price != null){
+			price.setMprices(this.maraPriceMapper.findMaraPricesById(id));
+		}
+		return price;
 	}
 
 	public void setMaraPriceMapper(TMaraPriceRelMapper maraPriceMapper) {
@@ -235,5 +239,15 @@ public class PriceServiceImpl extends BaseService implements PriceService {
 		dealer.setDealerName("自营奶站");
 		list.add(dealer);
 		return list;
+	}
+
+	@Override
+	public TMdPrice selectPGByCode4Edit(String id) {
+		// TODO Auto-generated method stub
+		TMdPrice price = this.tMdPriceMapper.selectPGByCode4Edit(id);
+		if(price != null){
+			price.setMprices(this.maraPriceMapper.findMaraPricesById(id));
+		}
+		return price;
 	}
 }

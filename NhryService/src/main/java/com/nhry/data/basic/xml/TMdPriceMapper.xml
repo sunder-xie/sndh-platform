@@ -8,8 +8,6 @@
     <result column="PRICE_TYPE" property="priceType" jdbcType="VARCHAR" />
     <result column="START_DATE" property="startDate" jdbcType="VARCHAR" />
     <result column="END_DATE" property="endDate" jdbcType="VARCHAR" />
-    <result column="START_TIME" property="startTime" jdbcType="VARCHAR" />
-    <result column="END_TIME" property="endTime" jdbcType="VARCHAR" />
     <result column="CREATE_AT" property="createAt" jdbcType="TIMESTAMP" />
     <result column="CREATE_BY" property="createBy" jdbcType="VARCHAR" />
     <result column="CREATE_BY_TXT" property="createByTxt" jdbcType="VARCHAR" />
@@ -26,10 +24,68 @@
     STATUS,SCOPE
   </sql>
   <select id="selectPriceGroupByCode" resultMap="BaseResultMap" parameterType="String" >
-    select 
-    <include refid="Base_Column_List" />
-    from t_md_price
-    where ID = #{id,jdbcType=VARCHAR}
+       SELECT
+			p.ID,
+			(
+				SELECT
+					t.ITEM_NAME
+				FROM
+					t_sys_code_item t
+				WHERE
+					t.TYPE_CODE = '1002'
+				AND t.ITEM_CODE = p.SALES_ORG
+			) SALES_ORG,
+			PRICE_GROUP,
+			p.PRICE_TYPE,
+			date_format(p.START_DATE, '%Y-%m-%d') START_DATE,
+			date_format(p.END_DATE, '%Y-%m-%d') END_DATE,
+			p.CREATE_AT,
+			p.CREATE_BY,
+			p.CREATE_BY_TXT,
+			p.LAST_MODIFIED,
+			p.LAST_MODIFIED_BY,
+			p.LAST_MODIFIED_BY_TXT,
+			p. STATUS,
+			(
+				CASE
+				WHEN p.SCOPE = '-1' THEN
+					'自营奶站'
+				ELSE
+					(
+						SELECT
+							d.DEALER_NAME
+						FROM
+							t_md_dealer d
+						WHERE
+							d.DEALER_NO = p.SCOPE
+					)
+				END
+			) SCOPE 
+		FROM
+			t_md_price p 
+		  WHERE
+			p.ID = #{id,jdbcType=VARCHAR}
+  </select>
+  <select id="selectPGByCode4Edit" resultMap="BaseResultMap" parameterType="String" >
+       SELECT
+			p.ID,
+			p.SALES_ORG,
+			PRICE_GROUP,
+			p.PRICE_TYPE,
+			date_format(p.START_DATE, '%Y-%m-%d') START_DATE,
+			date_format(p.END_DATE, '%Y-%m-%d') END_DATE,
+			p.CREATE_AT,
+			p.CREATE_BY,
+			p.CREATE_BY_TXT,
+			p.LAST_MODIFIED,
+			p.LAST_MODIFIED_BY,
+			p.LAST_MODIFIED_BY_TXT,
+			p. STATUS,
+			SCOPE 
+		FROM
+			t_md_price p
+		WHERE
+			p.ID = #{id,jdbcType=VARCHAR}
   </select>
   <update id="disablePriceGroup" parameterType="com.nhry.data.basic.domain.TMdPrice" >
     update t_md_price
@@ -56,12 +112,6 @@
       </if>
       <if test="endDate != null" >
         END_DATE,
-      </if>
-      <if test="startTime != null" >
-        START_TIME,
-      </if>
-      <if test="endTime != null" >
-        END_TIME,
       </if>
       <if test="createAt != null" >
         CREATE_AT,
@@ -104,12 +154,6 @@
       <if test="endDate != null" >
         #{endDate,jdbcType=DATE},
       </if>
-      <if test="startTime != null" >
-        #{startTime,jdbcType=VARCHAR},
-      </if>
-      <if test="endTime != null" >
-        #{endTime,jdbcType=VARCHAR},
-      </if>
       <if test="createAt != null" >
         #{createAt,jdbcType=TIMESTAMP},
       </if>
@@ -147,12 +191,6 @@
       </if>
       <if test="endDate != null" >
         END_DATE = #{endDate,jdbcType=DATE},
-      </if>
-      <if test="startTime != null" >
-        START_TIME = #{startTime,jdbcType=VARCHAR},
-      </if>
-      <if test="endTime != null" >
-        END_TIME = #{endTime,jdbcType=VARCHAR},
       </if>
       <if test="createAt != null" >
         CREATE_AT = #{createAt,jdbcType=TIMESTAMP},
@@ -211,7 +249,7 @@
 	t_md_price p
      <where>
          <if test="salesOrg != null and salesOrg != ''">
-	      		AND SALES_ORG = #{salesOrg}
+	      		SALES_ORG = #{salesOrg}
 	      </if>
 	      <if test="priceGroup != null and priceGroup !=''">
 	     		AND PRICE_GROUP like '%' || #{agencyType} || '%'
@@ -220,16 +258,16 @@
 	     		AND STATUS = #{status,jdbcType=VARCHAR}
 	      </if>
 	      <if test="startDate != null and startDate != ''">
-	         AND START_DATE &lt; #{startDate}
+	         AND START_DATE &gt;= #{startDate}
 	      </if>
 	      <if test="endDate != null and endDate != ''">
-	         AND END_DATE &gt; #{endDate}
+	         AND END_DATE &lt;= #{endDate}
 	      </if>
      </where>
       ORDER BY id
   </select>
   <!-- 根据销售奶站编号和产品编号，查询渠道价格组列表 -->
-  <select id="findMaraPriceBymatnrAndNo" resultType="com.nhry.service.basic.pojo.PriceGroup" parameterType="java.util.Map">
+  <select id="findMaraPriceBymatnrAndNo" resultType="com.nhry.service.basic.pojo.PriceGroup" parameterType="java.util.HashMap">
      SELECT
 		pr.PRICE1,
 		pr.PRICE2,
@@ -242,13 +280,13 @@
 	WHERE
 		p.ID = pb.ID
 	AND p.ID = pr.ID
-	AND pb.BRANCH_NO = #{branchNo}
-	AND pr.MATNR = #{matnr}
+	AND pb.BRANCH_NO = #{branchNo,jdbcType=VARCHAR}
+	AND pr.MATNR = #{matnr,jdbcType=VARCHAR}
 	ORDER BY
 		p.PRICE_TYPE DESC
   </select>
   <!-- 根据销售组织编号和产品编号，查询渠道价格组 -->
-  <select id="findMaraPriceBymatnrAndOrg" resultType="com.nhry.service.basic.pojo.PriceGroup"  parameterType="java.util.Map">
+  <select id="findMaraPriceBymatnrAndOrg" resultType="com.nhry.service.basic.pojo.PriceGroup"  parameterType="java.util.HashMap">
         SELECT
 			pr.PRICE1,
 			pr.PRICE2,
@@ -266,9 +304,9 @@
 			FROM
 				t_md_branch b
 			WHERE
-				b.BRANCH_NO = #{branchNo}
+				b.BRANCH_NO = #{branchNo,jdbcType=VARCHAR}
 		)
-		AND pr.MATNR = #{matnr}
+		AND pr.MATNR = #{matnr,jdbcType=VARCHAR}
 		ORDER BY
 			p.PRICE_TYPE DESC
   </select>

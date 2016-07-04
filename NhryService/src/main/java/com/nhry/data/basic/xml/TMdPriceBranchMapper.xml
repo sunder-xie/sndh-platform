@@ -65,7 +65,7 @@
           </if>
       </where>
   </select>
-  <select id="findPriceBrachCountByPt" parameterType="com.nhry.data.basic.domain.TMdPriceBranch">
+  <select id="findPriceBrachCountByPt" resultType="Integer" parameterType="com.nhry.data.basic.domain.TMdPriceBranch">
      SELECT
 		COUNT(p.ID)
 	FROM

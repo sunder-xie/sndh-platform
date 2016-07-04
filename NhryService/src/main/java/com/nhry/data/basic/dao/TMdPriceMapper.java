@@ -45,6 +45,13 @@ public interface TMdPriceMapper {
 	 TMdPrice selectPriceGroupById(String id);
 	 
 	 /**
+	  * 根据价格组编号查询价格组明细
+	  * @param id
+	  * @return
+	  */
+	 TMdPrice selectPGByCode4Edit(String id);
+	 
+	 /**
 	  * 根据销售奶站编号和产品编号，查询价格组列表
 	  * @param attrs
 	  * @return

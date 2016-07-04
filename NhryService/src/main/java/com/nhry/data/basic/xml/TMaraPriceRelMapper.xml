@@ -4,6 +4,7 @@
   <resultMap id="BaseResultMap" type="com.nhry.data.basic.domain.TMaraPriceRel" >
     <id column="REL_NO" property="relNo" jdbcType="VARCHAR" />
     <result column="MATNR" property="matnr" jdbcType="VARCHAR" />
+    <result column="MATNR_TXT" property="matnrTxt" jdbcType="VARCHAR" />
     <result column="ID" property="id" jdbcType="VARCHAR" />
     <result column="CREATE_AT" property="createAt" jdbcType="TIMESTAMP" />
     <result column="CREATE_BY" property="createBy" jdbcType="VARCHAR" />
@@ -138,8 +139,23 @@
     where REL_NO = #{relNo,jdbcType=VARCHAR}
   </update>
   <select id="findMaraPricesById" resultMap="BaseResultMap" parameterType="String">
-      select p.REL_NO, p.MATNR, p.ID, p.CREATE_AT, p.CREATE_BY, p.CREATE_BY_TXT, p.LAST_MODIFIED, p.LAST_MODIFIED_BY, 
-    p.LAST_MODIFIED_BY_TXT, p.PRICE1, p.PRICE2,m.MATNR_TXT from t_mara_price_rel p,T_MD_MARA m where p.MATNR=m.MATNR and REL_NO = #{id,jdbcType=VARCHAR}
+      SELECT
+		p.REL_NO,
+		p.MATNR,
+		p.ID,
+		p.CREATE_AT,
+		p.CREATE_BY,
+		p.CREATE_BY_TXT,
+		p.LAST_MODIFIED,
+		p.LAST_MODIFIED_BY,
+		p.LAST_MODIFIED_BY_TXT,
+		p.PRICE1,
+		p.PRICE2,
+		m.MATNR_TXT
+	FROM
+		t_mara_price_rel p,
+		T_MD_MARA m
+	WHERE p.MATNR=m.MATNR and  p.ID = #{id}
   </select>
   <delete id="delMaraPricesById" parameterType="String">
       delete from t_mara_price_rel where ID=#{id}

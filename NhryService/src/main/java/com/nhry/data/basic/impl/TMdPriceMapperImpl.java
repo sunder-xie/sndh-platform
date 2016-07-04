@@ -58,4 +58,10 @@ public class TMdPriceMapperImpl implements TMdPriceMapper {
 		// TODO Auto-generated method stub
 		return this.sqlSessionTemplate.selectOne("findMaraPriceBymatnrAndOrg", attrs);
 	}
+
+	@Override
+	public TMdPrice selectPGByCode4Edit(String id) {
+		// TODO Auto-generated method stub
+		return this.sqlSessionTemplate.selectOne("selectPGByCode4Edit", id);
+	}
 }

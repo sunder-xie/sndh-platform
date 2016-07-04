@@ -1,12 +1,15 @@
 package com.nhry.data.basic.domain;
 
+import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.Date;
 
-public class TMaraPriceRel {
+public class TMaraPriceRel implements Serializable{
     private String relNo;
 
     private String matnr;
+    
+    private String matnrTxt;
 
     private String id;
 
@@ -113,4 +116,12 @@ public class TMaraPriceRel {
     public void setPrice2(BigDecimal price2) {
         this.price2 = price2;
     }
+
+	public String getMatnrTxt() {
+		return matnrTxt;
+	}
+
+	public void setMatnrTxt(String matnrTxt) {
+		this.matnrTxt = matnrTxt;
+	}
 }

@@ -73,7 +73,7 @@ public class UserSessionService {
 			user.setDisplayName("测试用户");
 			user.setBranchNo("001");
 			user.setPwd("12345678");
-			user.setSalesOrg("4230");
+			user.setSalesOrg("4100");
 			user.setCreateAt(date);
 			user.setLastModified(date);
 			return user;
