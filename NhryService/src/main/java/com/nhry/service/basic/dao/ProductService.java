@@ -8,7 +8,7 @@ import com.nhry.service.basic.pojo.ProductInfoExModel;
 import  java.util.*;
 public interface ProductService {
 
-    TMdMara selectProductByCode(String productCode);
+    TMdMara selectProductByCode(TMdMara mara);
 
     int uptProductByCode(TMdMara record);
     

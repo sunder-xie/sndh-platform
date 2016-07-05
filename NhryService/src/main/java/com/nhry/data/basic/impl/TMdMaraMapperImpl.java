@@ -4,10 +4,7 @@ import com.github.pagehelper.PageInfo;
 import com.nhry.common.datasource.DynamicSqlSessionTemplate;
 import com.nhry.data.basic.dao.TMdMaraMapper;
 import com.nhry.data.basic.domain.TMdMara;
-import com.nhry.service.basic.pojo.ProductInfoExModel;
 import com.nhry.model.basic.ProductQueryModel;
-import org.apache.ibatis.session.ExecutorType;
-import org.apache.ibatis.session.SqlSession;
 import org.apache.ibatis.session.SqlSessionFactory;
 
 import java.util.List;
@@ -26,9 +23,9 @@ public class TMdMaraMapperImpl implements TMdMaraMapper {
     }
 
     @Override
-    public TMdMara selectProductByCode(String productCode) {
+    public TMdMara selectProductByCode(TMdMara mara) {
         // TODO Auto-generated method stub
-        return this.sqlSessionTemplate.selectOne("selectProductByCode", productCode);
+        return this.sqlSessionTemplate.selectOne("selectProductByCode", mara);
     }
 
     @Override
@@ -60,8 +57,8 @@ public class TMdMaraMapperImpl implements TMdMaraMapper {
     }
 
     @Override
-    public int isProduct(String id) {
-        return sqlSessionTemplate.selectOne("isProduct",id);
+    public int isProduct(TMdMara mara) {
+        return sqlSessionTemplate.selectOne("isProduct",mara);
     }
 
     @Override

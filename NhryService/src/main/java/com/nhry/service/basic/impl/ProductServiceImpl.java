@@ -14,7 +14,6 @@ import com.nhry.data.basic.domain.TMdMaraEx;
 import com.nhry.model.basic.ProductQueryModel;
 import com.nhry.service.BaseService;
 import com.nhry.service.basic.dao.ProductService;
-import com.nhry.service.basic.pojo.ProductInfoExModel;
 import com.nhry.utils.PrimaryKeyUtils;
 import com.nhry.utils.date.Date;
 
@@ -35,15 +34,15 @@ public class ProductServiceImpl extends BaseService implements ProductService {
 	}
 
 	@Override
-	public TMdMara selectProductByCode(String productCode) {
+	public TMdMara selectProductByCode(TMdMara mara) {
 		// TODO Auto-generated method stub
-		return tMdMaraMapper.selectProductByCode(productCode);
+		return tMdMaraMapper.selectProductByCode(mara);
 	}
 
 	@Override
 	public int uptProductByCode(TMdMara record) {
 		// TODO Auto-generated method stub
-		TMdMara product = this.selectProductByCode(record.getMatnr());
+		TMdMara product = this.selectProductByCode(record);
 		if (product == null) {
 			throw new ServiceException(MessageCode.LOGIC_ERROR, "该商品信息不存在!");
 		}

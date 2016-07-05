@@ -3,14 +3,13 @@ package com.nhry.data.basic.dao;
 import com.github.pagehelper.PageInfo;
 import com.nhry.data.basic.domain.TMdMara;
 import com.nhry.model.basic.ProductQueryModel;
-import com.nhry.service.basic.pojo.ProductInfoExModel;
 
 import java.util.List;
 
 public interface TMdMaraMapper {
 
 
-    TMdMara selectProductByCode(String matnr);
+    TMdMara selectProductByCode(TMdMara mara);
 
     TMdMara selectProductAndExByCode(String matnr);
 
@@ -26,5 +25,5 @@ public interface TMdMaraMapper {
 
     int updateProduct(TMdMara tMdMara);
 
-    int isProduct(String id);
+    int isProduct(TMdMara mara);
 }

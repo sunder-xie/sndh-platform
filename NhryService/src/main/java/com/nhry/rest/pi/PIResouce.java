@@ -37,6 +37,6 @@ public class PIResouce extends BaseResource{
     @Consumes(MediaType.APPLICATION_JSON)
     @ApiOperation(value = "/getProducts", response = ResponseModel.class, notes = "获取产品数据")
     public Response addRes() throws RemoteException {
-        return convertToRespModel(MessageCode.NORMAL, piProductService.customerDataHandle(), null);
+        return convertToRespModel(MessageCode.NORMAL, piProductService.matHandler(), null);
     }
 }
