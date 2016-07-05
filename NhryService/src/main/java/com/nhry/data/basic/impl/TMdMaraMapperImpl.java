@@ -47,8 +47,8 @@ public class TMdMaraMapperImpl implements TMdMaraMapper {
     }
 
     @Override
-    public List<TMdMara> selectProductAndExListByCode(String productCode) {
-        return this.sqlSessionTemplate.selectList("selectProductAndExListByCode", productCode);
+    public List<TMdMara> selectProductAndExListByCode(Map<String,String> attrs) {
+        return this.sqlSessionTemplate.selectList("selectProductAndExListByCode", attrs);
     }
 
     @Override
@@ -67,15 +67,15 @@ public class TMdMaraMapperImpl implements TMdMaraMapper {
     }
 
     @Override
-    public TMdMara selectProductAndExByCode(String productCode) {
+    public TMdMara selectProductAndExByCode(Map<String,String> attrs) {
         // TODO Auto-generated method stub
-        return this.sqlSessionTemplate.selectOne("selectProductAndExByCode", productCode);
+        return this.sqlSessionTemplate.selectOne("selectProductAndExByCode", attrs);
     }
 
     @Override
-    public int pubProductByCode(String code) {
+    public int pubProductByCode(Map<String,String> attrs) {
         // TODO Auto-generated method stub
-        return this.sqlSessionTemplate.update("pubProductByCode", code);
+        return this.sqlSessionTemplate.update("pubProductByCode", attrs);
     }
 
 	@Override
@@ -88,5 +88,11 @@ public class TMdMaraMapperImpl implements TMdMaraMapper {
 	public List<TMdMara> getCompMaras(Map<String, String> attrs) {
 		// TODO Auto-generated method stub
 		return this.sqlSessionTemplate.selectList("getCompMaras", attrs);
+	}
+
+	@Override
+	public List<TMdMara> findMarasBySalesCodeAndOrg(Map<String, String> attrs) {
+		// TODO Auto-generated method stub
+		return this.sqlSessionTemplate.selectList("findMarasBySalesCodeAndOrg", attrs);
 	}
 }

@@ -69,10 +69,10 @@ public class ProductResource extends BaseResource {
 	} 
 	
 	@POST
-	@Path("/getList/{productCode}")
+	@Path("/lists/{id}")
 	@Produces(MediaType.APPLICATION_JSON)
-	@ApiOperation(value = "/getList/{productCode}", response = TMdMara.class, notes = "根据产品编号模糊查询商品")
-	public Response selectProductAndExListByCode(@ApiParam(required=true,name="productCode",value="商品编号") @PathParam("productCode") String productCode){
-		return convertToRespModel(MessageCode.NORMAL, null, productService.selectProductAndExListByCode(productCode));
+	@ApiOperation(value = "/lists/{id}", response = TMdMara.class, notes = "根据价格编号查询当前组织下未被选择的商品列表")
+	public Response selectProductAndExListByCode(@ApiParam(required=true,name="id",value="价格组编号(如果还没有商品编号，直接写-1)") @PathParam("id") String id){
+		return convertToRespModel(MessageCode.NORMAL, null, productService.findMarasBySalesCodeAndOrg(id));
 	}
 }

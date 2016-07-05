@@ -252,7 +252,7 @@
 	      		SALES_ORG = #{salesOrg}
 	      </if>
 	      <if test="priceGroup != null and priceGroup !=''">
-	     		AND PRICE_GROUP like '%' || #{agencyType} || '%'
+	     		AND PRICE_GROUP like '%${priceGroup}%'
 	      </if>
 	      <if test="status != null and status != ''">
 	     		AND STATUS = #{status,jdbcType=VARCHAR}

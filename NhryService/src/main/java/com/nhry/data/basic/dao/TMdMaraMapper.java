@@ -22,7 +22,7 @@ public interface TMdMaraMapper {
      * @param matnr
      * @return
      */
-    TMdMara selectProductAndExByCode(String matnr);
+    TMdMara selectProductAndExByCode(Map<String,String> attrs);
     
     /**
      * 修改产品信息
@@ -36,7 +36,7 @@ public interface TMdMaraMapper {
      * @param code
      * @return
      */
-    int pubProductByCode(String code);
+    int pubProductByCode(Map<String,String> attrs);
     
     /**
      * 根据产品分类、状态
@@ -50,7 +50,10 @@ public interface TMdMaraMapper {
      * @param productCode
      * @return
      */
-    List<TMdMara> selectProductAndExListByCode(String productCode);
+    List<TMdMara> selectProductAndExListByCode(Map<String,String> attrs);
+    
+    
+    List<TMdMara> findMarasBySalesCodeAndOrg(Map<String,String> attrs);
     
     /**
      * 添加产品信息

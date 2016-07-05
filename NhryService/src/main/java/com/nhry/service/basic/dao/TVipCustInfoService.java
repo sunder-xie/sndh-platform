@@ -72,7 +72,7 @@ public interface TVipCustInfoService {
      * @param vipCustNo
      * @return
      */
-    int addAddressForCust(TMdAddress address);
+    String addAddressForCust(TMdAddress address);
     
     /**
      * 修改订户详细地址

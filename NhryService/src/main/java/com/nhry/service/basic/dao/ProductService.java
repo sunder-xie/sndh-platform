@@ -59,6 +59,13 @@ public interface ProductService {
     List<TMdMara> selectProductAndExListByCode(String productCode);
     
     /**
+     * 根据价格组编号，查询该价格组中未被选择的公司产品列表
+     * @param id
+     * @return
+     */
+    List<TMdMara> findMarasBySalesCodeAndOrg(String id);
+    
+    /**
      * 获取奶站可销售的产品清单
      * @param branchNo
      * @return

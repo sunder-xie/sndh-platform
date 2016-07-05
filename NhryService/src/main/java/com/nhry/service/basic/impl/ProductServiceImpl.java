@@ -60,6 +60,7 @@ public class ProductServiceImpl extends BaseService implements ProductService {
 		if(record.getNotsellList() != null && record.getNotsellList().size() > 0){
 			for(TBranchNotsellList nl : record.getNotsellList()){
 				nl.setListNo(PrimaryKeyUtils.generateUuidKey());
+				nl.setSalesOrg(this.userSessionService.getCurrentUser().getSalesOrg());
 				nl.setCreateAt(new Date());
 				nl.setMatnr(record.getMatnr());
 				nl.setCreateBy(this.userSessionService.getCurrentUser().getLoginName());
@@ -76,10 +77,13 @@ public class ProductServiceImpl extends BaseService implements ProductService {
 	@Override
 	public PageInfo searchProducts(ProductQueryModel smodel) {
 		// TODO Auto-generated method stub
+		if(StringUtils.isEmpty(this.userSessionService.getCurrentUser().getSalesOrg())){
+			throw new ServiceException(MessageCode.LOGIC_ERROR,"当前用户的关联的组织信息不全,请先维护好当前用户信息!");
+		}
 		if (StringUtils.isEmpty(smodel.getPageNum()) || StringUtils.isEmpty(smodel.getPageSize())) {
 			throw new ServiceException(MessageCode.LOGIC_ERROR,"pageNum和pageSize不能为空！");
 		}
-		smodel.setSalesOrg(this.userSessionService.getCurrentUser().getSalesOrg() == null ? "-1" : this.userSessionService.getCurrentUser().getSalesOrg());
+		smodel.setSalesOrg(this.userSessionService.getCurrentUser().getSalesOrg());
 		smodel.setDealerNo(this.userSessionService.getCurrentUser().getDealerId());
 		return tMdMaraMapper.searchProducts(smodel);
 	}
@@ -87,32 +91,57 @@ public class ProductServiceImpl extends BaseService implements ProductService {
 	@Override
 	public TMdMara selectProductAndExByCode(String matnr) {
 		// TODO Auto-generated method stub
-		return tMdMaraMapper.selectProductAndExByCode(matnr);
+		if(StringUtils.isEmpty(this.userSessionService.getCurrentUser().getSalesOrg())){
+			throw new ServiceException(MessageCode.LOGIC_ERROR,"当前用户的关联的组织信息不全,请先维护好当前用户信息!");
+		}
+		Map<String,String> attrs = new HashMap<String,String>();
+		attrs.put("matnr",matnr);
+		attrs.put("salesOrg",this.userSessionService.getCurrentUser().getSalesOrg());
+		return tMdMaraMapper.selectProductAndExByCode(attrs);
 	}
 
 	@Override
 	public int pubProductByCode(String code) {
 		// TODO Auto-generated method stub
-		return tMdMaraMapper.pubProductByCode(code);
+		if(StringUtils.isEmpty(this.userSessionService.getCurrentUser().getSalesOrg())){
+			throw new ServiceException(MessageCode.LOGIC_ERROR,"当前用户的关联的组织信息不全,请先维护好当前用户信息!");
+		}
+		Map<String,String> attrs = new HashMap<String,String>();
+		attrs.put("code", code);
+		attrs.put("salesOrg",this.userSessionService.getCurrentUser().getSalesOrg());
+		return tMdMaraMapper.pubProductByCode(attrs);
 	}
 
 	@Override
 	public List<TMdMara> selectProductAndExListByCode(String productCode) {
-		return tMdMaraMapper.selectProductAndExListByCode(productCode);
+		if(StringUtils.isEmpty(this.userSessionService.getCurrentUser().getSalesOrg())){
+			throw new ServiceException(MessageCode.LOGIC_ERROR,"当前用户的关联的组织信息不全,请先维护好当前用户信息!");
+		}
+		Map<String,String> attrs = new HashMap<String,String>();
+		if(!StringUtils.isEmpty(productCode)){
+			attrs.put("productCode","%"+productCode+"%");
+		}
+		attrs.put("salesOrg",this.userSessionService.getCurrentUser().getSalesOrg());
+		return tMdMaraMapper.selectProductAndExListByCode(attrs);
 	}
 
 	@Override
 	public int uptProductExByCode(String matnr,TMdMaraEx maraEx) {
 		// TODO Auto-generated method stub
-		TMdMaraEx ex = this.tMdMaraExMapper.findProductExByCode(matnr);
+		Map<String,String> attrs = new HashMap<String,String>();
+		attrs.put("matnr", matnr);
+		attrs.put("salesOrg",this.userSessionService.getCurrentUser().getSalesOrg());
+		TMdMaraEx ex = this.tMdMaraExMapper.findProductExByCode(attrs);
 		if(ex == null){
 			maraEx.setMatnr(matnr);
+			maraEx.setSalesOrg(this.userSessionService.getCurrentUser().getSalesOrg());
 			maraEx.setCreateAt(new Date());
 			maraEx.setCreateBy(this.userSessionService.getCurrentUser().getLoginName());
 			maraEx.setCreateByTxt(this.userSessionService.getCurrentUser().getDisplayName());
 			this.tMdMaraExMapper.addMaraEx(maraEx);
 		}else{
 			maraEx.setMatnr(matnr);
+			maraEx.setSalesOrg(this.userSessionService.getCurrentUser().getSalesOrg());
 			maraEx.setLastModified(new Date());
 			maraEx.setLastModifiedBy(this.userSessionService.getCurrentUser().getLoginName());
 			maraEx.setLastModifiedByTxt(this.userSessionService.getCurrentUser().getDisplayName());
@@ -146,5 +175,17 @@ public class ProductServiceImpl extends BaseService implements ProductService {
 
 	public void setBranchSevice(BranchService branchSevice) {
 		this.branchSevice = branchSevice;
+	}
+
+	@Override
+	public List<TMdMara> findMarasBySalesCodeAndOrg(String id) {
+		// TODO Auto-generated method stub
+		Map<String,String> attrs = new HashMap<String,String>();
+		attrs.put("salesOrg",this.userSessionService.getCurrentUser().getSalesOrg());
+		attrs.put("dealerNo",this.userSessionService.getCurrentUser().getDealerId());
+		if(!StringUtils.isEmpty(id) && !"-1".equals(id)){
+			attrs.put("id",id);
+		}
+		return this.tMdMaraMapper.findMarasBySalesCodeAndOrg(attrs);
 	}
 }
