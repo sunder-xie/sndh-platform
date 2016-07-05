@@ -10,6 +10,7 @@
     <result column="MP" property="mp" jdbcType="VARCHAR" />
     <result column="TEL" property="tel" jdbcType="VARCHAR" />
     <result column="ZIP" property="zip" jdbcType="VARCHAR" />
+    <result column="STREET" property="street" jdbcType="VARCHAR" />
     <result column="ADDRESS_TXT" property="addressTxt" jdbcType="VARCHAR" />
     <result column="RESIDENTIAL_AREA" property="residentialArea" jdbcType="VARCHAR" />
     <result column="CREATE_AT" property="createAt" jdbcType="TIMESTAMP" />
@@ -24,7 +25,7 @@
   <sql id="Base_Column_List" >
     ADDRESS_ID, RECV_NAME, PROVINCE, CITY, COUNTY, MP, TEL, ZIP, ADDRESS_TXT, RESIDENTIAL_AREA, 
     CREATE_AT, CREATE_BY, CREATE_BY_TXT, LAST_MODIFIED, LAST_MODIFIED_BY, LAST_MODIFIED_BY_TXT, 
-    VIP_CUST_NO,IS_DEFAULT
+    VIP_CUST_NO,IS_DEFAULT,
   </sql>
   <select id="findAddressById" resultMap="BaseResultMap" parameterType="java.lang.String" >
     select 
@@ -90,6 +91,9 @@
       <if test="vipCustNo != null" >
         VIP_CUST_NO,
       </if>
+      <if test="street != null">
+          STREET,
+      </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides="," >
       <if test="addressId != null" >
@@ -142,6 +146,9 @@
       </if>
       <if test="vipCustNo != null" >
         #{vipCustNo,jdbcType=VARCHAR},
+      </if>
+       <if test="street != null">
+          #{street,jdbcType=VARCHAR},
       </if>
     </trim>
   </insert>
@@ -196,6 +203,9 @@
       <if test="vipCustNo != null" >
         VIP_CUST_NO = #{vipCustNo,jdbcType=VARCHAR},
       </if>
+      <if test="street != null">
+      	 STREET = #{street,jdbcType=VARCHAR},
+      </if>
     </set>
     where ADDRESS_ID = #{addressId,jdbcType=VARCHAR}
   </update>
@@ -240,7 +250,15 @@
 			it.TYPE_CODE = <include refid="mybaties.longhu.constant.COUNTRY_CITY_CONSTANT" /> 
 		AND it.ITEM_CODE = i.COUNTY
 	) COUNTY,
-	i.STREET,
+	(
+		SELECT
+			it.ITEM_NAME
+		FROM
+			T_SYS_CODE_ITEM it
+		WHERE
+			it.TYPE_CODE = <include refid="mybaties.longhu.constant.COUNTRY_CITY_CONSTANT" /> 
+		AND it.ITEM_CODE = i.STREET
+	) STREET,
 	i.ROAD,
 	i.SUBDIST,
 	i.ROOM,

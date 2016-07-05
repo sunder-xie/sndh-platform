@@ -15,6 +15,8 @@ public class TMdAddress implements Serializable{
     private String county;
 
     private String mp;
+    
+    private String street;
 
     private String tel;
 
@@ -182,5 +184,13 @@ public class TMdAddress implements Serializable{
 
 	public void setIsDafault(String isDafault) {
 		this.isDafault = isDafault;
+	}
+
+	public String getStreet() {
+		return street;
+	}
+
+	public void setStreet(String street) {
+		this.street = street;
 	}
 }

@@ -118,7 +118,7 @@ public class TVipCustInfoServiceImpl extends BaseService implements TVipCustInfo
 	}
 
 	@Override
-	public int addAddressForCust(TMdAddress address) {
+	public String addAddressForCust(TMdAddress address) {
 		// TODO Auto-generated method stub
 		if(StringUtils.isEmpty(address.getVipCustNo()) || StringUtils.isEmpty(address.getAddressTxt()) || StringUtils.isEmpty(address.getProvince()) || StringUtils.isEmpty(address.getCity()) ){
 			throw new ServiceException(MessageCode.LOGIC_ERROR, "订户地址详细信息对应的订户编号(vipCustNo)、详细地址(addressTxt)、省份(province)、城市(city)不能为空!");
@@ -131,7 +131,8 @@ public class TVipCustInfoServiceImpl extends BaseService implements TVipCustInfo
 		address.setCreateAt(new Date());
 		address.setCreateBy(this.userSessionService.getCurrentUser().getLoginName());
 		address.setCreateByTxt(this.userSessionService.getCurrentUser().getDisplayName());
-		return this.addressMapper.addAddressForCust(address);
+		this.addressMapper.addAddressForCust(address);
+		return address.getAddressId();
 	}
 
 	public void setAddressMapper(TMdAddressMapper addressMapper) {

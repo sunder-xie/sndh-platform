@@ -4,7 +4,9 @@ import java.util.List;
 
 import com.github.pagehelper.PageInfo;
 import com.nhry.data.basic.domain.TMaraPriceRel;
+import com.nhry.data.basic.domain.TMdDealer;
 import com.nhry.data.basic.domain.TMdPrice;
+import com.nhry.data.basic.domain.TMdPriceBranch;
 import com.nhry.model.basic.PriceQueryModel;
 
 public interface PriceService {
@@ -17,10 +19,10 @@ public interface PriceService {
     
 	/**
 	 * 停用价格组
-	 * @param record
+	 * @param id
 	 * @return
 	 */
-	int disablePriceGroup(TMdPrice record);
+	int disablePriceGroup(String id);
 	
 	/**
 	 * 修改价格组
@@ -44,9 +46,60 @@ public interface PriceService {
 	TMdPrice selectPriceGroupByCode(String id);
 	
 	/**
+	 * 根据code查询价格组
+	 * @param id
+	 * @return
+	 */
+	TMdPrice selectPGByCode4Edit(String id);
+	
+	/**
 	 * 更新价格组关联的商品信息
 	 * @param record
 	 * @return
 	 */
-	int mergeMaraPriceRel(List<TMaraPriceRel> records);
+	int mergeMaraPriceRel(String id,List<TMaraPriceRel> records);
+	
+	/**
+	 * 添加价格组与奶站关系
+	 * @param record
+	 * @return
+	 */
+    int addPriceBranch(TMdPriceBranch record);
+    
+    /**
+     * 根据奶站编号删除奶站价格组关系
+     * @param branchNo
+     * @return
+     */
+    int delPriceBranchByNo(String branchNo);
+    
+    /**
+     * 根据价格组id删除奶站与价格组关联关系
+     * @param id
+     * @return
+     */
+    int delPriceBranchById(String id);
+    
+    /**
+     * 根据奶站编号和价格组id删除奶站与价格组关系
+     * @param record
+     * @return
+     */
+    int delPriceBranch(String branchNo,String id);
+    
+   /**
+    * 根据奶站编号、产品编号、配送类型 获取产品价格
+    * @param branchNo 奶站编号
+    * @param matnr       产品编号
+    * @param deliveryType 配送类型(10:自取；20：送奶到户)
+    * @return
+    */
+    public float getMaraPrice(String branchNo,String matnr,String deliveryType);
+    
+    /**
+     * 根据销售组织获取该公司下面的经销商列表
+     * @param salesOrg
+     * @return
+     */
+    public List<TMdDealer> getDealers();
 }

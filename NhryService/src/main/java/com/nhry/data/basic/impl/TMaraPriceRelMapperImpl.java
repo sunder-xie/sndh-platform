@@ -43,4 +43,10 @@ public class TMaraPriceRelMapperImpl implements TMaraPriceRelMapper {
 	public void setSqlSessionTemplate(DynamicSqlSessionTemplate sqlSessionTemplate) {
 		this.sqlSessionTemplate = sqlSessionTemplate;
 	}
+
+	@Override
+	public int delMaraPricesById(String id) {
+		// TODO Auto-generated method stub
+		return this.sqlSessionTemplate.delete("delMaraPricesById", id);
+	}
 }

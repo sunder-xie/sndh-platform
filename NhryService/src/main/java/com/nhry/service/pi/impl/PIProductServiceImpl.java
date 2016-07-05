@@ -119,7 +119,7 @@ public class PIProductServiceImpl implements PIProductService {
 //            for(ET_PARTNER partner : et_partner){
             for(Map.Entry<String,ET_VKORG> entry : jxs.entrySet()){
                 String kunnr = entry.getKey();
-                List<ET_PARTNER> l = new ArrayList<>();
+                List<ET_PARTNER> l = new ArrayList<ET_PARTNER>();
                 for(ET_PARTNER p : et_partner){
                     if(kunnr.equals(p.getKUNNR()) && !kunnr.equals(p.getKUNWE())){
 
@@ -372,8 +372,8 @@ public class PIProductServiceImpl implements PIProductService {
         ZT_MasterDataQueryServiceStub.ZSSD00003[] zssd00003s = response.getET_VKORG().getItem();
 
         Map<String, List<ET_VKORG>> map = new HashMap<String, List<ET_VKORG>>();
-        List<ET_VKORG> zy = new ArrayList<>();
-        List<ET_VKORG> wb = new ArrayList<>();
+        List<ET_VKORG> zy = new ArrayList<ET_VKORG>();
+        List<ET_VKORG> wb = new ArrayList<ET_VKORG>();
         if (zssd00003s.length > 0) {
             for (ZT_MasterDataQueryServiceStub.ZSSD00003 zssd00003 : zssd00003s) {
                 ET_VKORG et = new ET_VKORG();

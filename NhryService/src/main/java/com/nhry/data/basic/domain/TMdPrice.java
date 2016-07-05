@@ -3,6 +3,10 @@ package com.nhry.data.basic.domain;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import com.nhry.utils.DateAdapter;
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
 public class TMdPrice {
     private String id;
@@ -12,16 +16,10 @@ public class TMdPrice {
     private String priceGroup;
 
     private String priceType;
-
-    private String branchNo;
-
-    private Date startDate;
-
-    private Date endDate;
-
-    private String startTime;
-
-    private String endTime;
+    
+    private String startDate;
+    
+    private String endDate;
 
     private Date createAt;
 
@@ -37,7 +35,11 @@ public class TMdPrice {
 
     private String status;
     
-    private List<TMaraPriceRel> mprices = new ArrayList<TMaraPriceRel>();;
+    private String scope;
+    
+    private String mcount;
+    
+    private List<TMaraPriceRel> mprices = new ArrayList<TMaraPriceRel>();
 
     public String getId() {
         return id;
@@ -69,46 +71,6 @@ public class TMdPrice {
 
     public void setPriceType(String priceType) {
         this.priceType = priceType == null ? null : priceType.trim();
-    }
-
-    public String getBranchNo() {
-        return branchNo;
-    }
-
-    public void setBranchNo(String branchNo) {
-        this.branchNo = branchNo == null ? null : branchNo.trim();
-    }
-
-    public Date getStartDate() {
-        return startDate;
-    }
-
-    public void setStartDate(Date startDate) {
-        this.startDate = startDate;
-    }
-
-    public Date getEndDate() {
-        return endDate;
-    }
-
-    public void setEndDate(Date endDate) {
-        this.endDate = endDate;
-    }
-
-    public String getStartTime() {
-        return startTime;
-    }
-
-    public void setStartTime(String startTime) {
-        this.startTime = startTime == null ? null : startTime.trim();
-    }
-
-    public String getEndTime() {
-        return endTime;
-    }
-
-    public void setEndTime(String endTime) {
-        this.endTime = endTime == null ? null : endTime.trim();
     }
 
     public Date getCreateAt() {
@@ -173,5 +135,37 @@ public class TMdPrice {
 
 	public void setMprices(List<TMaraPriceRel> mprices) {
 		this.mprices = mprices;
+	}
+
+	public String getStartDate() {
+		return startDate;
+	}
+
+	public void setStartDate(String startDate) {
+		this.startDate = startDate;
+	}
+
+	public String getEndDate() {
+		return endDate;
+	}
+
+	public void setEndDate(String endDate) {
+		this.endDate = endDate;
+	}
+
+	public String getScope() {
+		return scope;
+	}
+
+	public void setScope(String scope) {
+		this.scope = scope;
+	}
+
+	public String getMcount() {
+		return mcount;
+	}
+
+	public void setMcount(String mcount) {
+		this.mcount = mcount;
 	}
 }
