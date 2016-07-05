@@ -1,8 +1,10 @@
 package com.nhry.service.bill.dao;
 
 import com.github.pagehelper.PageInfo;
-import com.nhry.model.bill.EmpAccountSearch;
-import com.nhry.model.bill.EmpDispDetialInfoSearch;
+import com.nhry.model.bill.*;
+
+import java.math.BigDecimal;
+import java.util.List;
 
 /**
  * Created by gongjk on 2016/7/1.
@@ -10,5 +12,15 @@ import com.nhry.model.bill.EmpDispDetialInfoSearch;
 public interface EmpBillService {
     public PageInfo empDispDetialInfo(EmpDispDetialInfoSearch eSearch);
 
-    PageInfo empAccountReceAmount(EmpAccountSearch eSearch);
+    public List<EmpAccoDispFeeByProduct> empAccoDispFeeByProduct(EmpDispDetialInfoSearch eSearch);
+
+    PageInfo empAccountReceAmount(EmpDispDetialInfoSearch eSearch);
+
+    public BigDecimal CalculateEmpTransRate(String empNo,int dispNum);
+
+    public BigDecimal CalculateEmpTransFee(EmpDispDetialInfoSearch eSearch,String type);
+
+    PageInfo empSalaryRep(EmpDispDetialInfoSearch eSearch);
+
+    int uptEmpDispRate(SaleOrgDispRateModel sModel);
 }

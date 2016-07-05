@@ -42,4 +42,19 @@
        #{residentialAreaIds}
     </foreach>
   </delete>
+  <select id="getBranchScopeByBranchNo" resultMap="BaseResultMap" parameterType="String">
+    SELECT  BRANCH_NO,RESIDENTIAL_AREA_ID
+    FROM t_md_branch_scope
+    WHERE BRANCH_NO = #{branchNo,jdbcType=VARCHAR}
+  </select>
+
+  <insert id="addBranchScope" parameterType="com.nhry.data.basic.domain.TMdBranchScopeKey">
+      insert into t_md_branch_scope (BRANCH_NO, RESIDENTIAL_AREA_ID)
+      values (#{branchNo,jdbcType=VARCHAR}, #{residentialAreaId,jdbcType=VARCHAR})
+    </insert>
+
+  <delete id="deleteAllAreaByBranchNo" parameterType="String">
+    delete from t_md_branch_scope
+    where BRANCH_NO = #{branchNo,jdbcType=VARCHAR}
+  </delete>
 </mapper>
