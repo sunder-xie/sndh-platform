@@ -60,6 +60,7 @@
     <include refid="Base_Column_List" />
     from t_mst_plan_order_item
     where ORDER_NO = #{orderCode,jdbcType=VARCHAR}
+    and (STATUS != "30" or STATUS is null)
   </select>
   <select id="selectEntryByEntryNo" resultMap="BaseResultMap" parameterType="java.lang.String" >
     select 

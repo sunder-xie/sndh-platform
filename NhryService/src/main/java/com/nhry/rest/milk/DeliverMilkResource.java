@@ -2,6 +2,7 @@ package com.nhry.rest.milk;
 
 import com.github.pagehelper.PageInfo;
 import com.nhry.common.exception.MessageCode;
+import com.nhry.model.milk.RouteDetailUpdateModel;
 import com.nhry.model.milk.RouteOrderModel;
 import com.nhry.model.milk.RouteOrderSearchModel;
 import com.nhry.model.milk.RouteUpdateModel;
@@ -40,6 +41,15 @@ public class DeliverMilkResource extends BaseResource {
 		return convertToRespModel(MessageCode.NORMAL, null, deliverMilkService.searchRouteOrders(smodel));
 	}
 	
+	@POST
+	@Path("/searchDetails")
+	@Produces(MediaType.APPLICATION_JSON)
+	@Consumes(MediaType.APPLICATION_JSON)
+	@ApiOperation(value = "/search", response = PageInfo.class, notes = "查询路单详细信息列表")
+	public Response findRouteOrderDetails(@ApiParam(required=true,name="smodel",value="SearchModel") RouteOrderSearchModel smodel){
+		return convertToRespModel(MessageCode.NORMAL, null, deliverMilkService.searchRouteOrderDetail(smodel));
+	}
+	
 	@GET
 	@Path("/{orderCode}")
 	@Produces(MediaType.APPLICATION_JSON)
@@ -74,11 +84,20 @@ public class DeliverMilkResource extends BaseResource {
 	}
 	
 	@GET
-	@Path("/updatePreOrderCurAmt")
+	@Path("/changeDaliyPlans/{orderCode}")
 	@Produces(MediaType.APPLICATION_JSON)
-	@ApiOperation(value = "/updatePreOrderCurAmt", response = Integer.class, notes = "回执后更新订单剩余金额")
-	public Response updatePreOrderCurAmt(){
-		return convertToRespModel(MessageCode.NORMAL, null, deliverMilkService.updatePreOrderCurAmt());
+	@ApiOperation(value = "/{orderCode}", response = RouteOrderModel.class, notes = "根据路单编号查询路单详细信息")
+	public Response changeDaliyPlans(@ApiParam(required=true,name="orderCode",value="路单编号") @PathParam("orderCode") String orderCode){
+		return convertToRespModel(MessageCode.NORMAL, null, deliverMilkService.updateDaliyPlanByRouteOrder(orderCode));
+	}
+	
+	@POST
+	@Path("/uptRouteOrderDetail")
+	@Produces(MediaType.APPLICATION_JSON)
+	@Consumes(MediaType.APPLICATION_JSON)
+	@ApiOperation(value = "/uptRouteOrder", response = Integer.class, notes = "更新路单状态")
+	public Response uptRouteOrderDetail(@ApiParam(required=true,name="smodel",value="SearchModel") RouteDetailUpdateModel smodel){
+		return convertToRespModel(MessageCode.NORMAL, null, deliverMilkService.updateRouteOrderItems(smodel));
 	}
 	
 }

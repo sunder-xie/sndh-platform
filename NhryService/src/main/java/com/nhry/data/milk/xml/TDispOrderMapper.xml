@@ -48,7 +48,7 @@
     where ORDER_NO = #{orderNo,jdbcType=VARCHAR}
       and ORDER_DATE = #{orderDate,jdbcType=DATE}
   </delete>
-  <select id="searchRoutePlansByPage" parameterType="com.nhry.model.milk.RouteOrderSearchModel" >
+  <select id="searchRoutePlansByPage" resultMap="BaseResultMap" parameterType="com.nhry.model.milk.RouteOrderSearchModel" >
      select 
     <include refid="Base_Column_List" />
     from t_mst_disp_order

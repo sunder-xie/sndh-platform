@@ -25,6 +25,8 @@
     <result column="ORG_ORDER_NO" property="orgOrderNo" jdbcType="VARCHAR" />
     <result column="REACH_TIME_TYPE" property="reachTimeType" jdbcType="VARCHAR" />
     <result column="DISP_EMP_NO" property="dispEmpNo" jdbcType="VARCHAR" />
+    <result column="ADDRESS_TXT" property="addressTxt" jdbcType="VARCHAR" />
+    <result column="MATNR_TXT" property="matnrTxt" jdbcType="VARCHAR" />
   </resultMap>
   <resultMap id="BaseChangeResultMap" type="com.nhry.service.milk.pojo.TDispOrderChangeItem" >
     <result column="ORDER_NO1" property="orderNo1" jdbcType="VARCHAR" />
@@ -164,6 +166,24 @@
     from t_mst_disp_order_item
     where CONFIRM_AMT &gt; 0
   </select>
+  <select id="selectDispOrderItemByKey" resultMap="BaseResultMap" parameterType="com.nhry.data.milk.domain.TDispOrderItemKey">
+    select 
+    <include refid="Base_Column_List" />
+    from t_mst_disp_order_item
+    where i.ORDER_NO = #{orderNo,jdbcType=VARCHAR}
+      and i.ITEM_NO = #{itemNo,jdbcType=VARCHAR}
+      <if test="orderDate != null" >
+      and i.ORDER_DATE = #{orderDate,jdbcType=DATE}
+      </if>
+  </select>
+  <select id="selectNotDeliveryItemsByKeys" resultMap="BaseResultMap" parameterType="java.lang.String">
+    select 
+    <include refid="Base_Column_List" />
+    from t_mst_disp_order_item
+    where REASON is not null
+          and CONFIRM_QTY != QTY
+          and ORDER_NO = #{orderNo,jdbcType=VARCHAR}
+  </select>
   <delete id="deleteByPrimaryKey" parameterType="com.nhry.data.milk.domain.TDispOrderItemKey" >
     delete from t_mst_disp_order_item
     where ORDER_NO = #{orderNo,jdbcType=VARCHAR}
@@ -172,15 +192,29 @@
   </delete>
   <select id="selectDispItemsByKey" resultMap="BaseResultMap" parameterType="com.nhry.data.milk.domain.TDispOrderItemKey">
   	 select 
-    <include refid="Base_Column_List" />
-    from t_mst_disp_order_item
-    where ORDER_NO = #{orderNo,jdbcType=VARCHAR}
+    i.ORDER_NO, i.ORDER_DATE, i.ITEM_NO,i.CONFIRM_MATNR, i.MATNR, i.CONFIRM_QTY, i.QTY, i.UNIT, i.PRICE, i.AMT, i.CONFIRM_AMT, 
+    i.STATUS, i.PICKUP_ORDER_NO, i.PICKUP_ORDER_ITEM_NO, i.REASON, i.REDISP_DATE, i.WHOLESALE_PRICE,
+    i.WHOLESALE_PRICE_1, i.ADDRESS_NO,i.ORG_ITEM_NO,i.ORG_ORDER_NO,i.REACH_TIME_TYPE,p.MATNR_TXT MATNR_TXT, a.ADDRESS_TXT ADDRESS_TXT
+    from t_mst_disp_order_item i 
+    left join t_md_mara p on p.MATNR = i.MATNR 
+    left join t_md_address a on a.ADDRESS_ID = i.ADDRESS_NO
+    where i.ORDER_NO = #{orderNo,jdbcType=VARCHAR}
       <if test="orderDate != null" >
-      and ORDER_DATE = #{orderDate,jdbcType=DATE}
+      and i.ORDER_DATE = #{orderDate,jdbcType=DATE}
       </if>
       <if test="itemNo != null" >
-      and ITEM_NO = #{itemNo,jdbcType=VARCHAR}
+      and i.ITEM_NO = #{itemNo,jdbcType=VARCHAR}
       </if>
+  </select>
+  <select id="selectRouteDetailsByPage" resultMap="BaseResultMap" parameterType="com.nhry.model.milk.RouteOrderSearchModel">
+  	 select 
+    i.ORDER_NO, i.ORDER_DATE, i.ITEM_NO,i.CONFIRM_MATNR, i.MATNR, i.CONFIRM_QTY, i.QTY, i.UNIT, i.PRICE, i.AMT, i.CONFIRM_AMT, 
+    i.STATUS, i.PICKUP_ORDER_NO, i.PICKUP_ORDER_ITEM_NO, i.REASON, i.REDISP_DATE, i.WHOLESALE_PRICE,
+    i.WHOLESALE_PRICE_1, i.ADDRESS_NO,i.ORG_ITEM_NO,i.ORG_ORDER_NO,i.REACH_TIME_TYPE,p.MATNR_TXT MATNR_TXT, a.ADDRESS_TXT ADDRESS_TXT
+    from t_mst_disp_order_item i 
+    left join t_md_mara p on p.MATNR = i.MATNR 
+    left join t_md_address a on a.ADDRESS_ID = i.ADDRESS_NO
+    where i.ORDER_NO = #{orderNo,jdbcType=VARCHAR}
   </select>
   <insert id="insertSelective" parameterType="com.nhry.data.milk.domain.TDispOrderItem" >
     insert into t_mst_disp_order_item

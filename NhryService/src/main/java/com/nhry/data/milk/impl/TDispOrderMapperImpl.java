@@ -34,7 +34,7 @@ public class TDispOrderMapperImpl implements TDispOrderMapper
 
 
 	@Override
-	public PageInfo selectMilkboxsByPage(RouteOrderSearchModel smodel)
+	public PageInfo searchRoutePlansByPage(RouteOrderSearchModel smodel)
 	{
 		// TODO Auto-generated method stub
 		return sqlSessionTemplate.selectListByPages("searchRoutePlansByPage",smodel, Integer.parseInt(smodel.getPageNum()), Integer.parseInt(smodel.getPageSize()));
@@ -79,5 +79,5 @@ public class TDispOrderMapperImpl implements TDispOrderMapper
 		record.setLastModifiedByTxt(userSessionService.getCurrentUser().getDisplayName());
 		return sqlSessionTemplate.update("updateDispOrder", record);
 	}
-
+	
 }
