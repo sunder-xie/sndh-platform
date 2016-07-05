@@ -21,10 +21,6 @@ public class TMdMaraEx implements Serializable{
     
     private BigDecimal rate;
 
-    private String salesOrg;
-
-    private BigDecimal rate;
-
     private Date createAt;
 
     private String createBy;
@@ -83,22 +79,6 @@ public class TMdMaraEx implements Serializable{
 
     public void setRetBotFlag(String retBotFlag) {
         this.retBotFlag = retBotFlag == null ? null : retBotFlag.trim();
-    }
-
-    public String getSalesOrg() {
-        return salesOrg;
-    }
-
-    public void setSalesOrg(String salesOrg) {
-        this.salesOrg = salesOrg;
-    }
-
-    public BigDecimal getRate() {
-        return rate;
-    }
-
-    public void setRate(BigDecimal rate) {
-        this.rate = rate;
     }
 
     public Date getCreateAt() {
