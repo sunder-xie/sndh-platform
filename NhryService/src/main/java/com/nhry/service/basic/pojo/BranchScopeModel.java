@@ -1,14 +1,12 @@
 package com.nhry.service.basic.pojo;
 
-import com.nhry.model.basic.BaseQueryModel;
-
 import java.io.Serializable;
 import java.util.List;
 
 /**
  * Created by gongjk on 2016/6/7.
  */
-public class BranchScopeModel extends BaseQueryModel implements Serializable {
+public class BranchScopeModel  implements Serializable {
 
     private String branchNo;
     private List<String> residentialAreaIds;

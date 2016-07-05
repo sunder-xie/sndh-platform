@@ -3,7 +3,7 @@
 <mapper namespace="com.nhry.data.basic.dao.TMdResidentialAreaMapper">
   <resultMap id="BaseResultMap" type="com.nhry.data.basic.domain.TMdResidentialArea">
     <id column="ID" jdbcType="VARCHAR" property="id" />
-    <result column="BRANCHNO" jdbcType="VARCHAR" property="branchNo" />
+    <result column="BRANCH_NO" jdbcType="VARCHAR" property="branchNo" />
     <result column="RESIDENTIAL_AREA_TXT" jdbcType="VARCHAR" property="residentialAreaTxt" />
     <result column="PROVINCE" jdbcType="VARCHAR" property="province" />
     <result column="CITY" jdbcType="VARCHAR" property="city" />
@@ -223,6 +223,27 @@
       AND area.status = #{status,jdbcType=VARCHAR}
     </if>
   </select>
+  <update id="updateStatusToUnDistById"  parameterType="String">
+    UPDATE  t_md_residential_area
+    SET  STATUS = '10'
+    WHERE  ID = #{residentialAreaId,jdbcType=VARCHAR}
+  </update>
+  <update id="updateStatusToDistedById" parameterType="String">
+    UPDATE  t_md_residential_area
+    SET  STATUS = '30'
+    WHERE  ID = #{residentialAreaId,jdbcType=VARCHAR}
+  </update>
+  <select id="getAreaById" resultMap="BaseResultMap" parameterType="String">
+    SELECT
+    <include refid="Base_Column_List" />
+    from t_md_residential_area
+    WHERE  ID = #{residentialAreaId,jdbcType=VARCHAR}
+  </select>
 
-
+  <select id="getUnDistAreas" resultMap="BaseResultMap" >
+    SELECT
+    <include refid="Base_Column_List" />
+    from t_md_residential_area
+    WHERE  STATUS = '10'
+  </select>
 </mapper>

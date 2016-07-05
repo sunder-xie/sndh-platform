@@ -11,6 +11,7 @@ public class TMdBranchEmp implements Serializable{
     private String branchNo;
 
     private String branchName;
+    private String salesOrg;
 
     private String empName;
 
@@ -49,6 +50,15 @@ public class TMdBranchEmp implements Serializable{
     private int baseSalary;
 
     private String salaryMet;
+
+
+    public String getSalesOrg() {
+        return salesOrg;
+    }
+
+    public void setSalesOrg(String salesOrg) {
+        this.salesOrg = salesOrg;
+    }
 
     public String getSalaryMet() {
         return salaryMet;

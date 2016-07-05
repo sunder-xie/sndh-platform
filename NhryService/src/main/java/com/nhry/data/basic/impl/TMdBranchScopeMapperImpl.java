@@ -2,6 +2,7 @@ package com.nhry.data.basic.impl;
 
 import com.nhry.common.datasource.DynamicSqlSessionTemplate;
 import com.nhry.data.basic.dao.TMdBranchScopeMapper;
+import com.nhry.data.basic.domain.TMdBranchScopeKey;
 import com.nhry.service.basic.pojo.BranchScopeModel;
 import org.apache.commons.lang3.StringUtils;
 
@@ -23,6 +24,21 @@ public class TMdBranchScopeMapperImpl implements TMdBranchScopeMapper{
             }
             return sqlSessionTemplate.delete("deleteByBranchNo",branchScopeModel);
         }
+
+    @Override
+    public List<TMdBranchScopeKey> getBranchScopeByBranchNo(String branchNo) {
+        return sqlSessionTemplate.selectList("getBranchScopeByBranchNo",branchNo);
+    }
+
+    @Override
+    public int addBranchScope(TMdBranchScopeKey scopeKey) {
+        return sqlSessionTemplate.insert("addBranchScope",scopeKey);
+    }
+
+    @Override
+    public int deleteAllAreaByBranchNo(String branchNo) {
+        return sqlSessionTemplate.delete("deleteAllAreaByBranchNo",branchNo);
+    }
 
 
     public void setSqlSessionTemplate(DynamicSqlSessionTemplate sqlSessionTemplate) {

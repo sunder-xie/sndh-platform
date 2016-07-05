@@ -425,7 +425,7 @@
     select
    <include refid="Base_Column_List"/>
     from t_mst_disp_order_item
-    where ORDER_NO = #{orderNo,jdbcType=VARCHAR}
+    where DISP_ORDER_NO = #{dispOrderNo,jdbcType=VARCHAR}
     and (REASON = '20' or  REASON = '30')
   </select>
 </mapper>
