@@ -41,8 +41,18 @@
 	<bean id="empBillMapper" class="com.nhry.data.bill.impl.EmpBillMapperImpl">
 		<property name="sqlSessionTemplate"  ref="dynamicSqlSessionTemplate"></property>
 	</bean>
+	<bean id="tMdDispRateMapper" class="com.nhry.data.bill.impl.TMdDispRateMapperImpl">
+		<property name="sqlSessionTemplate"  ref="dynamicSqlSessionTemplate"></property>
+	</bean>
+	<bean id="tMdDispRateItemMapper" class="com.nhry.data.bill.impl.TMdDispRateItemMapperImpl">
+		<property name="sqlSessionTemplate"  ref="dynamicSqlSessionTemplate"></property>
+	</bean>
 	<bean id="empBillService" class="com.nhry.service.bill.impl.EmpBillServiceImpl">
 		<property name="empBillMapper"  ref="empBillMapper"></property>
+		<property name="branchEmpMapper"  ref="branchEmpMapper"></property>
+		<property name="tMdDispRateMapper"  ref="tMdDispRateMapper"></property>
+		<property name="tMdDispRateItemMapper"  ref="tMdDispRateItemMapper"></property>
+		<property name="userSessionService"  ref="userSessionService"></property>
 	</bean>
 
 

@@ -32,4 +32,12 @@ public interface TMdResidentialAreaMapper {
     int deleteAreaById(String id);
 
     PageInfo searchAreaByBranchNo(BranchAreaSearch bSearch);
+
+    int updateStatusToUnDistById(String residentialAreaId);
+
+    TMdResidentialArea getAreaById(String id);
+
+    int updateStatusToDistedById(String id);
+
+    List<TMdResidentialArea> getUnDistAreas();
 }
