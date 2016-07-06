@@ -44,10 +44,10 @@
 		IMPORTANT_PRD_FLAG, SPEC, SPEC_UNIT, BOT_SPEC,
 		ZBOT_CODE,SALES_ORG,DEALER_NO
 	</sql>
-	<select id="selectProductByCode" resultMap="BaseResultMap" parameterType="java.lang.String">
-		select <include refid="Base_Column_List" /> from t_md_mara where MATNR = #{matnr,jdbcType=VARCHAR}
+	<select id="selectProductByCode" resultMap="BaseResultMap" parameterType="java.util.HashMap">
+		select <include refid="Base_Column_List" /> from t_md_mara where SALES_ORG = #{salesOrg} and MATNR = #{matnr,jdbcType=VARCHAR}
 	</select>
-	<select id="selectProductAndExByCode" resultMap="BaseResultMap" parameterType="java.lang.String">
+	<select id="selectProductAndExByCode" resultMap="BaseResultMap" parameterType="java.util.HashMap">
 		SELECT
 		p.MATNR,
 		p.MATNR_TXT,
@@ -71,6 +71,8 @@
 		pex.PRE_DAYS,
 		pex.BOT_TYPE,
 		pex.MATNR EX_MATNR,
+		pex.SALES_FLAG,
+		pex.RET_BOT_FLAG,
 		pex.CREATE_AT, 
 		pex.CREATE_BY,
 		pex.CREATE_BY_TXT,
@@ -80,7 +82,7 @@
 		FROM 
 		t_md_mara p 
 		LEFT JOIN t_md_mara_ex pex ON p.MATNR = pex.MATNR 
-		WHERE p.MATNR = #{0}
+		WHERE p.SALES_ORG=#{salesOrg} and p.MATNR = #{matnr}
 	</select>
 	<select id="searchProducts" resultMap="BaseResultMap" parameterType="com.nhry.model.basic.ProductQueryModel">
 		SELECT
@@ -102,10 +104,12 @@
 		p.ZBOT_CODE,
 		p.SALES_ORG,
 		p.DEALER_NO,
-		pex.MATNR EX_MATNR,
 		pex.SHORT_TXT,
 		pex.PRE_DAYS,
 		pex.BOT_TYPE,
+		pex.MATNR EX_MATNR,
+		pex.SALES_FLAG,
+		pex.RET_BOT_FLAG,
 		pex.CREATE_AT, 
 		pex.CREATE_BY,
 		pex.CREATE_BY_TXT,
@@ -126,9 +130,14 @@
 				AND p.STATUS = #{status,jdbcType=VARCHAR}
 			</if>
 			<if test="matnrTxt != null and matnrTxt != ''">
-				AND (p.MATNR like '%' || #{matnrTxt} || '%' or
-				p.MATNR_TXT like '%' ||
-				#{matnrTxt}' || %' )
+				AND (p.MATNR like '%${matnrTxt}%' or
+				p.MATNR_TXT like '%${matnrTxt}%') 
+			</if>
+			<if test="salesOrg != null and salesOrg != ''">
+			   AND p.SALES_ORG=#{salesOrg}
+			</if>
+			<if test="dealerNo != null and dealerNo != ''">
+			   AND p.DEALER_NO=#{dealerNo}
 			</if>
 		</where>
 		ORDER BY p.MATNR
@@ -153,20 +162,63 @@
 		p.ZBOT_CODE,
 		p.SALES_ORG,
 		p.DEALER_NO,
-		pex.MATNR EX_MATNR,
 		pex.SHORT_TXT,
 		pex.PRE_DAYS,
 		pex.BOT_TYPE,
+		pex.MATNR EX_MATNR,
+		pex.SALES_FLAG,
+		pex.RET_BOT_FLAG,
 		pex.CREATE_AT, 
 		pex.CREATE_BY,
 		pex.CREATE_BY_TXT,
 		pex.LAST_MODIFIED,
 		pex.LAST_MODIFIED_BY,
-		pex.LAST_MODIFIED_BY_TXT 
+		pex.LAST_MODIFIED_BY_TXT  
 		FROM
 		t_md_mara p
-		LEFT JOIN t_md_mara_ex pex ON p.MATNR = pex.MATNR
-		where p.MATNR like "%" || #{0} || "%"
+		LEFT JOIN t_md_mara_ex pex ON p.SALES_ORG=pex.SALES_ORG AND p.MATNR = pex.MATNR
+		<where>
+		    <if test="productCode != null and productCode != ''">
+		        p.MATNR like #{productCode}  
+		    </if>
+		    <if test="salesOrg != null and salesOrg != ''">
+		       and p.SALES_ORG=#{salesOrg}
+		    </if>
+		</where>
+	</select>
+	<select id="findMarasBySalesCodeAndOrg" resultMap="BaseResultMap" parameterType="java.util.HashMap">
+		SELECT
+		p.MATNR,
+		p.MATNR_TXT,
+		p.BASE_UNIT,
+		p. STATUS,
+		p.LAST_MODIFIED MARA_LAST_MODIFIED,
+		p.CREATE_AT MARA_CREATE_AT,
+		p.FIRST_CAT,
+		p.SEC_CATE,
+		p.BRAND,
+		p.WEIGHT,
+		p.WEIGHT_UNIT,
+		p.IMPORTANT_PRD_FLAG,
+		p.SPEC,
+		p.SPEC_UNIT,
+		p.BOT_SPEC,
+		p.ZBOT_CODE,
+		p.SALES_ORG,
+		p.DEALER_NO 
+		FROM
+		t_md_mara p 
+		<where>
+		    <if test="salesOrg != null and salesOrg != ''">
+		        p.SALES_ORG=#{salesOrg}
+		    </if>
+		    <if test="dealerNo != null and dealerNo != ''">
+		        AND p.DEALER_NO=#{dealerNo}
+		    </if>
+		    <if test="id != null and id != ''">
+		        AND NOT EXISTS (select * from T_MARA_PRICE_REL pl where pl.MATNR=p.MATNR and pl.id=#{id})
+		    </if>
+		</where>
 	</select>
 	<update id="uptProductByCode" parameterType="com.nhry.data.basic.domain.TMdMara">
 		update t_md_mara
@@ -177,11 +229,8 @@
 		</set>
 		where MATNR = #{matnr,jdbcType=VARCHAR}
 	</update>
-	<update id="pubProductByCode" parameterType="java.lang.String">
-		update t_md_mara
-		set
-		STATUS = "Y"
-		where MATNR = #{0}
+	<update id="pubProductByCode" parameterType="java.util.HashMap">
+		update t_md_mara set STATUS = "Y" where SALES_ORG= #{salesOrg} and MATNR = #{code}
 	</update>
 	<insert id="addProduct" parameterType="com.nhry.data.basic.domain.TMdMara">
 		insert into t_md_mara
@@ -357,5 +406,70 @@
 	</update>
 	<select id="isProduct" parameterType="java.lang.String" resultType="java.lang.Integer">
 		SELECT count(1) FROM t_md_mara WHERE MATNR = #{id}
+	</select>
+	<select id="getDealerMaras" resultMap="BaseResultMap" parameterType="java.util.Map">
+	    SELECT
+			p.MATNR,
+			p.MATNR_TXT,
+			p.BASE_UNIT,
+			p. STATUS,
+			p.LAST_MODIFIED MARA_LAST_MODIFIED,
+			p.CREATE_AT MARA_CREATE_AT,
+			p.FIRST_CAT,
+			p.SEC_CATE,
+			p.BRAND,
+			p.WEIGHT,
+			p.WEIGHT_UNIT,
+			p.IMPORTANT_PRD_FLAG,
+			p.SPEC,
+			p.SPEC_UNIT,
+			p.BOT_SPEC,
+			p.ZBOT_CODE,
+			p.SALES_ORG,
+			p.DEALER_NO 
+		FROM
+			t_md_mara p
+		where p.MATNR NOT IN (
+			SELECT
+				nl.matnr
+			FROM
+				T_BRANCH_NOTSELL_LIST nl
+			WHERE
+				nl.sales_org = #{salesOrg}
+			AND nl.dealer_no = #{dealerNo}
+		)
+		AND p.SALES_ORG = #{salesOrg}
+	</select>
+	<select id="getCompMaras" resultMap="BaseResultMap" parameterType="java.util.Map">
+	    SELECT
+			p.MATNR,
+			p.MATNR_TXT,
+			p.BASE_UNIT,
+			p. STATUS,
+			p.LAST_MODIFIED MARA_LAST_MODIFIED,
+			p.CREATE_AT MARA_CREATE_AT,
+			p.FIRST_CAT,
+			p.SEC_CATE,
+			p.BRAND,
+			p.WEIGHT,
+			p.WEIGHT_UNIT,
+			p.IMPORTANT_PRD_FLAG,
+			p.SPEC,
+			p.SPEC_UNIT,
+			p.BOT_SPEC,
+			p.ZBOT_CODE,
+			p.SALES_ORG,
+			p.DEALER_NO 
+		FROM
+			t_md_mara p WHERE p.MATNR not in (
+			SELECT
+				nl.matnr
+			FROM
+				T_BRANCH_NOTSELL_LIST nl
+			WHERE
+				nl.dealer_no = NULL
+			AND nl.sales_org = #{salesOrg}
+		)
+		AND p.SALES_ORG = #{salesOrg}
 	</select>
 </mapper>

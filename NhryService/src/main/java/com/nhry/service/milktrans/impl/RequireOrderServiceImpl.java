@@ -124,6 +124,7 @@ public class RequireOrderServiceImpl implements RequireOrderService {
         TSysUser user = userSessionService.getCurrentUser();
         RequireOrderModel orderModel = new RequireOrderModel();
         RequireOrderSearch rModel = new RequireOrderSearch();
+        String salesOrg = user.getSalesOrg();
         rModel.setBranchNo(user.getBranchNo());
         rModel.setRequireDate(requiredDate);
         TSsmReqGoodsOrder order  = this.tSsmReqGoodsOrderMapper.searchRequireOrder(rModel);
@@ -137,7 +138,11 @@ public class RequireOrderServiceImpl implements RequireOrderService {
             List<OrderRequireItem> entries = new ArrayList<OrderRequireItem>();
             for(TSsmReqGoodsOrderItem item :items){
                 OrderRequireItem entry = new OrderRequireItem();
-                TMdMara mara = tMdMaraMapper.selectProductByCode(entry.getMatnr());
+                Map<String,String> map = new HashMap<String,String>();
+                map.put("salesOrg",salesOrg);
+                map.put("matnr",entry.getMatnr());
+
+                TMdMara mara = tMdMaraMapper.selectProductByCode(map);
                 entry.setMatnr(item.getMatnr());
                 entry.setMatnrTxt(mara.getMatnrTxt());
                 entry.setQty(item.getQty());
@@ -157,6 +162,7 @@ public class RequireOrderServiceImpl implements RequireOrderService {
     public int uptNewRequireOrderItem(UpdateNewRequiredModel rModel) {
 
        try{
+           TSysUser user = userSessionService.getCurrentUser();
            String orderNo = rModel.getOrderNo();
            TSsmReqGoodsOrder orderModel = this.tSsmReqGoodsOrderMapper.getRequireOrderByNo(orderNo);
            //获取数据库中存好的要货计划 如果状态已经确定，则不能修改
@@ -164,7 +170,11 @@ public class RequireOrderServiceImpl implements RequireOrderService {
                throw new ServiceException(MessageCode.LOGIC_ERROR,"要货订单已确定，不能改变");
            }
 
-           TMdMara mara = tMdMaraMapper.selectProductByCode(rModel.getMatnr());
+           Map<String,String> map = new HashMap<String,String>();
+           map.put("salesOrg",user.getSalesOrg());
+           map.put("matnr",rModel.getMatnr());
+
+           TMdMara mara = tMdMaraMapper.selectProductByCode(map);
            TSsmReqGoodsOrderItemUpt itemUpt = new TSsmReqGoodsOrderItemUpt();
            itemUpt.setMatnr(rModel.getMatnr());
            itemUpt.setOrderNo(orderNo);
@@ -189,7 +199,6 @@ public class RequireOrderServiceImpl implements RequireOrderService {
             throw new ServiceException(MessageCode.LOGIC_ERROR,"该产品已存在，请重新选择");
         }
 
-
         TSysUser user = userSessionService.getCurrentUser();
         TSsmReqGoodsOrder orderModel = this.tSsmReqGoodsOrderMapper.getRequireOrderByNo(orderNo);
         orderModel.setLastModified(new Date());
@@ -199,7 +208,10 @@ public class RequireOrderServiceImpl implements RequireOrderService {
 
 
         if(StringUtils.isBlank(item.getUnit())){
-            TMdMara mara = tMdMaraMapper.selectProductAndExByCode(item.getMatnr());
+            Map<String,String> map = new HashMap<String,String>();
+            map.put("salesOrg",user.getSalesOrg());
+            map.put("matnr",item.getMatnr());
+            TMdMara mara = tMdMaraMapper.selectProductByCode(map);
             item.setUnit(mara.getBaseUnit());
         }
         item.setFlag("2");

@@ -1,9 +1,10 @@
 package com.nhry.data.basic.domain;
 
+import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.Date;
 
-public class TMaraPriceRel {
+public class TMaraPriceRel implements Serializable{
     private String relNo;
 
     private String matnr;
@@ -27,8 +28,6 @@ public class TMaraPriceRel {
     private BigDecimal price1;
 
     private BigDecimal price2;
-    
-    private String editStatus;
 
     public String getRelNo() {
         return relNo;
@@ -124,13 +123,5 @@ public class TMaraPriceRel {
 
 	public void setMatnrTxt(String matnrTxt) {
 		this.matnrTxt = matnrTxt;
-	}
-
-	public String getEditStatus() {
-		return editStatus;
-	}
-
-	public void setEditStatus(String editStatus) {
-		this.editStatus = editStatus;
 	}
 }

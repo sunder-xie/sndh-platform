@@ -44,7 +44,7 @@ public class TMdMara implements Serializable{
     
     private TMdMaraEx maraEx;
     
-    private List<TBranchSalesList> salesList = new ArrayList<TBranchSalesList>();
+    private List<TBranchNotsellList> notsellList = new ArrayList<TBranchNotsellList>();
 
     public String getMatnr() {
         return matnr;
@@ -198,11 +198,11 @@ public class TMdMara implements Serializable{
 		this.maraEx = maraEx;
 	}
 
-	public List<TBranchSalesList> getSalesList() {
-		return salesList;
+	public List<TBranchNotsellList> getNotsellList() {
+		return notsellList;
 	}
 
-	public void setSalesList(List<TBranchSalesList> salesList) {
-		this.salesList = salesList;
+	public void setNotsellList(List<TBranchNotsellList> notsellList) {
+		this.notsellList = notsellList;
 	}
 }

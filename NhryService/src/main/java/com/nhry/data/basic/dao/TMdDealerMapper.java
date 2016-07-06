@@ -16,6 +16,6 @@ public interface TMdDealerMapper {
 //    int updateByPrimaryKeySelective(TMdDealer record);
 
     int updateDealer(TMdDealer record);
-
-    List<TMdDealer> selectDealerBySalesOrg(String salesOrg);
+    
+    public List<TMdDealer>findDealersBySalesOrg(String salesOrg);
 }

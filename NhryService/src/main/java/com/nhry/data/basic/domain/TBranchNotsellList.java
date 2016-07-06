@@ -2,7 +2,7 @@ package com.nhry.data.basic.domain;
 
 import java.util.Date;
 
-public class TBranchSalesList {
+public class TBranchNotsellList {
     private String listNo;
 
     private String matnr;

@@ -37,8 +37,9 @@ public class TMdDealerMapperImpl implements TMdDealerMapper {
         return sqlSessionTemplate.update("updateDealer",record);
     }
 
-    @Override
-    public List<TMdDealer> selectDealerBySalesOrg(String salesOrg) {
-        return sqlSessionTemplate.selectList("selectDealerBySalesOrg",salesOrg);
-    }
+	@Override
+	public List<TMdDealer> findDealersBySalesOrg(String salesOrg) {
+		// TODO Auto-generated method stub
+		return this.sqlSessionTemplate.selectList("findDealersBySalesOrg", salesOrg);
+	}
 }

@@ -40,4 +40,11 @@ public interface TMdAddressMapper {
      * @return
      */
     List<TMdAddress> findCnAddressByCustNo(String custNo);
+    
+     /**
+      * 根据地址id，查询地址详细信息
+      * @param id
+      * @return
+      */
+    TMdAddress findAddressDetailById(String id);
 }

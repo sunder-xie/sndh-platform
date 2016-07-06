@@ -1,5 +1,7 @@
 package com.nhry.data.basic.impl;
 
+import java.util.Map;
+
 import com.nhry.common.datasource.DynamicSqlSessionTemplate;
 import com.nhry.data.basic.dao.TMdMaraExMapper;
 import com.nhry.data.basic.domain.TMdMaraEx;
@@ -42,4 +44,8 @@ public class TMdMaraExMapperImpl implements TMdMaraExMapper {
 		return sqlSessionTemplate.selectList("getProductsBySalesOrg",salesOrg);
 	}
 
+	public TMdMaraEx findProductExByCode(Map<String,String> attrs) {
+		// TODO Auto-generated method stub
+		return this.sqlSessionTemplate.selectOne("findProductExByCode", attrs);
+	}
 }

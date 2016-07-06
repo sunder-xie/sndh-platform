@@ -3,6 +3,7 @@ package com.nhry.data.basic.dao;
 import com.nhry.data.basic.domain.TMdMaraEx;
 
 import java.util.List;
+import java.util.Map;
 
 public interface TMdMaraExMapper {
 
@@ -15,4 +16,6 @@ public interface TMdMaraExMapper {
     int uptProductExByCodeAndSalesOrg(TMdMaraEx ex);
 
     List<TMdMaraEx> getProductsBySalesOrg(String salesOrg);
+
+    TMdMaraEx findProductExByCode(Map<String,String> attrs);
 }

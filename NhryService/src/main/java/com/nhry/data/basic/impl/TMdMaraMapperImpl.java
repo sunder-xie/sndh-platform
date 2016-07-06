@@ -5,17 +5,11 @@ import com.nhry.common.datasource.DynamicSqlSessionTemplate;
 import com.nhry.data.basic.dao.TMdMaraMapper;
 import com.nhry.data.basic.domain.TMdMara;
 import com.nhry.model.basic.ProductQueryModel;
-import org.apache.ibatis.session.SqlSessionFactory;
-
 import java.util.List;
+import java.util.Map;
 
 public class TMdMaraMapperImpl implements TMdMaraMapper {
 
-    public void setSqlSessionFactory(SqlSessionFactory sqlSessionFactory) {
-        this.sqlSessionFactory = sqlSessionFactory;
-    }
-
-    private SqlSessionFactory sqlSessionFactory;
     private DynamicSqlSessionTemplate sqlSessionTemplate;
 
     public void setSqlSessionTemplate(DynamicSqlSessionTemplate sqlSessionTemplate) {
@@ -23,9 +17,9 @@ public class TMdMaraMapperImpl implements TMdMaraMapper {
     }
 
     @Override
-    public TMdMara selectProductByCode(String productCode) {
+    public TMdMara selectProductByCode(Map<String,String> attrs) {
         // TODO Auto-generated method stub
-        return this.sqlSessionTemplate.selectOne("selectProductByCode", productCode);
+        return this.sqlSessionTemplate.selectOne("selectProductByCode", attrs);
     }
 
     @Override
@@ -42,8 +36,8 @@ public class TMdMaraMapperImpl implements TMdMaraMapper {
     }
 
     @Override
-    public List<TMdMara> selectProductAndExListByCode(String productCode) {
-        return this.sqlSessionTemplate.selectList("selectProductAndExListByCode", productCode);
+    public List<TMdMara> selectProductAndExListByCode(Map<String,String> attrs) {
+        return this.sqlSessionTemplate.selectList("selectProductAndExListByCode", attrs);
     }
 
     @Override
@@ -62,14 +56,32 @@ public class TMdMaraMapperImpl implements TMdMaraMapper {
     }
 
     @Override
-    public TMdMara selectProductAndExByCode(String productCode) {
+    public TMdMara selectProductAndExByCode(Map<String,String> attrs) {
         // TODO Auto-generated method stub
-        return this.sqlSessionTemplate.selectOne("selectProductAndExByCode", productCode);
+        return this.sqlSessionTemplate.selectOne("selectProductAndExByCode", attrs);
     }
 
     @Override
-    public int pubProductByCode(String code) {
+    public int pubProductByCode(Map<String,String> attrs) {
         // TODO Auto-generated method stub
-        return this.sqlSessionTemplate.update("pubProductByCode", code);
+        return this.sqlSessionTemplate.update("pubProductByCode", attrs);
     }
+
+	@Override
+	public List<TMdMara> getDealerMaras(Map<String, String> attrs) {
+		// TODO Auto-generated method stub
+		return this.sqlSessionTemplate.selectList("getDealerMaras", attrs);
+	}
+
+	@Override
+	public List<TMdMara> getCompMaras(Map<String, String> attrs) {
+		// TODO Auto-generated method stub
+		return this.sqlSessionTemplate.selectList("getCompMaras", attrs);
+	}
+
+	@Override
+	public List<TMdMara> findMarasBySalesCodeAndOrg(Map<String, String> attrs) {
+		// TODO Auto-generated method stub
+		return this.sqlSessionTemplate.selectList("findMarasBySalesCodeAndOrg", attrs);
+	}
 }
