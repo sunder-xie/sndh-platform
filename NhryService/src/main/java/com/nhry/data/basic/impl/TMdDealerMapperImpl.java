@@ -4,6 +4,8 @@ import com.nhry.common.datasource.DynamicSqlSessionTemplate;
 import com.nhry.data.basic.dao.TMdDealerMapper;
 import com.nhry.data.basic.domain.TMdDealer;
 
+import java.util.List;
+
 /**
  * Created by cbz on 6/29/2016.
  */
@@ -34,4 +36,10 @@ public class TMdDealerMapperImpl implements TMdDealerMapper {
     public int updateDealer(TMdDealer record) {
         return sqlSessionTemplate.update("updateDealer",record);
     }
+
+	@Override
+	public List<TMdDealer> findDealersBySalesOrg(String salesOrg) {
+		// TODO Auto-generated method stub
+		return this.sqlSessionTemplate.selectList("findDealersBySalesOrg", salesOrg);
+	}
 }

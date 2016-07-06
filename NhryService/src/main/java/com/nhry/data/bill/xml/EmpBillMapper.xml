@@ -27,6 +27,19 @@
         <result column="PAYMENT_DATE" property="paymentDate" jdbcType="DATE" />
     </resultMap>
 
+    <resultMap id="EmpSalaryResultMap" type="com.nhry.model.bill.EmpSalaryBillModel" >
+        <result column="BRANCH_NO" property="branchNo" jdbcType="VARCHAR" />
+        <result column="BRANCH_NAME" property="branchName" jdbcType="VARCHAR" />
+        <result column="EMP_NO" property="empNo" jdbcType="VARCHAR" />
+        <result column="EMP_NAME" property="empName" jdbcType="VARCHAR" />
+        <result column="BASE_SALARY" property="baseSalary" jdbcType="INTEGER" />
+        <result column="SALARY_MET" property="salaryMet" jdbcType="VARCHAR" />
+    </resultMap>
+
+    <resultMap id="EmpAccoDispFeeResultMap" type="com.nhry.model.bill.EmpAccoDispFeeByProduct" >
+        <result column="MATNR" property="matnr" jdbcType="VARCHAR" />
+        <result column="QTY" property="qty" jdbcType="INTEGER" />
+    </resultMap>
 
     <select id="empDispDetialInfo" resultMap="EmpDispResultMap" parameterType="com.nhry.model.bill.EmpDispDetialInfoSearch">
         SELECT
@@ -35,16 +48,16 @@
         LEFT JOIN t_preorder o on i.ORG_ORDER_NO = o.ORDER_NO
         where 1=1
         <if test="branchNo!=null and ''!=branchNo">
-        o.BRANCH_NO = #{branchNo,jdbcType=VARCHAR}
+            AND  o.BRANCH_NO = #{branchNo,jdbcType=VARCHAR}
          </if>
         <if test="empNo!=null and ''!=empNo">
-            o.EMP_NO = #{empNo,jdbcType=VARCHAR}
+            AND  o.EMP_NO = #{empNo,jdbcType=VARCHAR}
         </if>
-        <if test="startDate!=null and ''!=startDate">
-            di.DISP_DATE &gt;= #{startDate,jdbcType=DATE}
+        <if test="startDate!=null">
+            AND di.DISP_DATE &gt;= #{startDate,jdbcType=DATE}
         </if>
-        <if test="endDate!=null and ''!=endDate">
-            di.DISP_DATE &lt;= #{endDate,jdbcType=DATE}
+        <if test="endDate!=null">
+            AND  di.DISP_DATE &lt;= #{endDate,jdbcType=DATE}
         </if>
 
         UNION ALL
@@ -54,21 +67,21 @@
         FROM t_mst_order_daliy_plan_item i LEFT JOIN t_preorder o on i.ORDER_NO = o.ORDER_NO
         where 1=1
         <if test="branchNo!=null and ''!=branchNo">
-            o.BRANCH_NO = #{branchNo,jdbcType=VARCHAR}
+            AND o.BRANCH_NO = #{branchNo,jdbcType=VARCHAR}
         </if>
         <if test="empNo!=null and ''!=empNo">
-            o.EMP_NO = #{empNo,jdbcType=VARCHAR}
+            AND  o.EMP_NO = #{empNo,jdbcType=VARCHAR}
         </if>
         <if test="startDate!=null and ''!=startDate">
-            di.DISP_DATE &gt;= #{startDate,jdbcType=DATE}
+            AND   i.DISP_DATE &gt;= #{startDate,jdbcType=DATE}
         </if>
         <if test="endDate!=null and ''!=endDate">
-            i.DISP_DATE &lt;= #{endDate,jdbcType=DATE}
+            AND  i.DISP_DATE &lt;= #{endDate,jdbcType=DATE}
         </if>
         ORDER BY  DISP_DATE ASC,TYPE
     </select>
 
-    <select id="empAccountReceAmount" resultMap="EmpAccountResultMap" parameterType="com.nhry.model.bill.EmpAccountSearch">
+    <select id="empAccountReceAmount" resultMap="EmpAccountResultMap" parameterType="com.nhry.model.bill.EmpDispDetialInfoSearch">
         SELECT
         o.ORDER_NO,e.EMP_NAME,c.VIP_NAME CUST_NAME,c.MP,c.ADDRESS_TXT ADDRESS,o.INIT_AMT ACCOUNT_RECE,b.AMT ACCOUNT_REAL,
         (o.INIT_AMT-b.AMT) ACCOUNT_GAP,b.PAYMENT_TYPE,b.PAYMENT_YEAR_MONTH PAYMENT_DATE
@@ -89,4 +102,78 @@
                and  o.END_DATE &lt;= #{endDate,jdbcType=DATE}
             </if>
     </select>
+
+    <select id="empSalaryRep" resultMap="EmpSalaryResultMap"  parameterType="com.nhry.model.bill.EmpDispDetialInfoSearch" >
+        select
+            e.BRANCH_NO,b.BRANCH_NAME,e.EMP_NO,e.EMP_NAME,e.BASE_SALARY,SALARY_MET
+        from t_md_branch_emp e LEFT JOIN t_md_branch b on e.BRANCH_NO = b.BRANCH_NO
+        where 1=1
+            <if test="branchNo!=null and branchNo!=''">
+                and e.BRANCH_NO = #{branchNo,jdbcType=VARCHAR}
+            </if>
+
+            <if test="empNo!=null and empNo!=''">
+                    and e. EMP_NO = #{empNo,jdbcType=VARCHAR}
+            </if>
+    </select>
+
+    <select id="empAccoDispFeeByProduct" resultMap="EmpAccoDispFeeResultMap"  parameterType="com.nhry.model.bill.EmpDispDetialInfoSearch" >
+        SELECT t.MATNR,SUM(t.QTY) QTY
+        FROM
+        (
+        SELECT  MATNR,QTY
+        FROM  t_mst_order_daliy_plan_item  i LEFT JOIN t_preorder o on i.ORDER_NO = o.ORDER_NO
+            <if test="branchNo!=null and ''!=branchNo">
+                and o.BRANCH_NO = #{branchNo,jdbcType=VARCHAR}
+            </if>
+            <if test="empNo!=null and ''!=empNo">
+                and  o.EMP_NO = #{empNo,jdbcType=VARCHAR}
+            </if>
+            <if test="startDate!=null and ''!=startDate">
+                and  o.END_DATE &gt;= #{startDate,jdbcType=DATE}
+            </if>
+            <if test="endDate!=null and ''!=endDate">
+                and  o.END_DATE &lt;= #{endDate,jdbcType=DATE}
+            </if>
+        UNION  ALL
+
+        SELECT MATNR,QTY
+            FROM  t_mst_inside_sal_order_item s LEFT JOIN t_preorder o on s.ORG_ORDER_NO = o.ORDER_NO
+            <if test="branchNo!=null and ''!=branchNo">
+                and o.BRANCH_NO = #{branchNo,jdbcType=VARCHAR}
+            </if>
+            <if test="empNo!=null and ''!=empNo">
+                and  o.EMP_NO = #{empNo,jdbcType=VARCHAR}
+            </if>
+            <if test="startDate!=null and ''!=startDate">
+                and  o.END_DATE &gt;= #{startDate,jdbcType=DATE}
+            </if>
+            <if test="endDate!=null and ''!=endDate">
+                and  o.END_DATE &lt;= #{endDate,jdbcType=DATE}
+            </if>
+        ) t
+        GROUP BY MATNR
+    </select>
+
+    <select id="empAccoDispFeeByNum" resultType="INTEGER"  parameterType="com.nhry.model.bill.EmpDispDetialInfoSearch" >
+        SELECT SUM(i.QTY)+SUM(s.QTY) QTY
+
+        FROM  t_mst_order_daliy_plan_item  i
+              LEFT JOIN t_mst_inside_sal_order_item s on s.MATNR = i.MATNR
+              LEFT JOIN t_preorder o on i.ORDER_NO = o.ORDER_NO
+        <if test="branchNo!=null and ''!=branchNo">
+            and   o.BRANCH_NO = #{branchNo,jdbcType=VARCHAR}
+        </if>
+        <if test="empNo!=null and ''!=empNo">
+            and  o.EMP_NO = #{empNo,jdbcType=VARCHAR}
+        </if>
+        <if test="startDate!=null and ''!=startDate">
+            and  o.END_DATE &gt;= #{startDate,jdbcType=DATE}
+        </if>
+        <if test="endDate!=null and ''!=endDate">
+            and  o.END_DATE &lt;= #{endDate,jdbcType=DATE}
+        </if>
+
+    </select>
+
 </mapper>

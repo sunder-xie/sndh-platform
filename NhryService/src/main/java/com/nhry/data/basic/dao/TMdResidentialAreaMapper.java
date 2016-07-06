@@ -32,4 +32,17 @@ public interface TMdResidentialAreaMapper {
     int deleteAreaById(String id);
 
     PageInfo searchAreaByBranchNo(BranchAreaSearch bSearch);
+
+    int updateStatusToUnDistById(String residentialAreaId);
+
+    TMdResidentialArea getAreaById(String id);
+
+    int updateStatusToDistedById(String id);
+
+    /**
+     * 获取销售组织下的未分配的配送区域
+     * @param salesOrg
+     * @return
+     */
+    List<TMdResidentialArea> getUnDistAreas(String salesOrg);
 }

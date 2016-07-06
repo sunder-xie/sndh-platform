@@ -67,6 +67,8 @@ public class TPreOrder {
     private String solicitNo;
 
     private Date solicitDate;
+    
+    private String solicitDateStr;
 
     private String solicitorNo;
 
@@ -88,7 +90,17 @@ public class TPreOrder {
 
     private Date backDate;
     
-    public String getBackReason()
+    public String getSolicitDateStr()
+	{
+		return solicitDateStr;
+	}
+
+	public void setSolicitDateStr(String solicitDateStr)
+	{
+		this.solicitDateStr = solicitDateStr;
+	}
+
+	public String getBackReason()
 	{
 		return backReason;
 	}

@@ -1,10 +1,13 @@
 package com.nhry.data.basic.domain;
 
 import java.io.Serializable;
+import java.math.BigDecimal;
 import java.util.Date;
 
 public class TMdMaraEx implements Serializable{
     private String matnr;
+
+    private String matnrTxt;
 
     private String salesFlag;
 
@@ -15,6 +18,10 @@ public class TMdMaraEx implements Serializable{
     private String botType;
 
     private String retBotFlag;
+    
+    private String salesOrg;
+    
+    private BigDecimal rate;
 
     private Date createAt;
 
@@ -34,6 +41,14 @@ public class TMdMaraEx implements Serializable{
 
     public void setMatnr(String matnr) {
         this.matnr = matnr == null ? null : matnr.trim();
+    }
+
+    public String getMatnrTxt() {
+        return matnrTxt;
+    }
+
+    public void setMatnrTxt(String matnrTxt) {
+        this.matnrTxt = matnrTxt;
     }
 
     public String getSalesFlag() {
@@ -123,4 +138,20 @@ public class TMdMaraEx implements Serializable{
     public void setLastModifiedByTxt(String lastModifiedByTxt) {
         this.lastModifiedByTxt = lastModifiedByTxt == null ? null : lastModifiedByTxt.trim();
     }
+
+	public String getSalesOrg() {
+		return salesOrg;
+	}
+
+	public void setSalesOrg(String salesOrg) {
+		this.salesOrg = salesOrg;
+	}
+
+	public BigDecimal getRate() {
+		return rate;
+	}
+
+	public void setRate(BigDecimal rate) {
+		this.rate = rate;
+	}
 }

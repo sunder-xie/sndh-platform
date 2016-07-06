@@ -6,6 +6,7 @@ import com.wordnik.swagger.annotations.ApiModelProperty;
 import java.io.Serializable;
 
 public class PriceQueryModel extends BaseQueryModel implements Serializable {
+	private String salesOrg;
 	private String priceGroup;;
 	private String status;
 	private String startDate;
@@ -33,5 +34,11 @@ public class PriceQueryModel extends BaseQueryModel implements Serializable {
 	}
 	public void setEndDate(String endDate) {
 		this.endDate = endDate;
+	}
+	public String getSalesOrg() {
+		return salesOrg;
+	}
+	public void setSalesOrg(String salesOrg) {
+		this.salesOrg = salesOrg;
 	}
 }

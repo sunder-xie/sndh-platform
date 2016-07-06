@@ -47,8 +47,8 @@ public class ProductResource extends BaseResource {
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
 	@ApiOperation(value = "/upt", response = ResponseModel.class, notes = "更新商品信息")
-	public Response uptProduct(@ApiParam(required=true,name="record",value="系统参数json格式")TMdMaraEx record){
-		return convertToRespModel(MessageCode.NORMAL, null,  productService.uptProductExByCode(record));
+	public Response uptProduct(@ApiParam(required=true,name="record",value="系统参数json格式")TMdMara record){
+		return convertToRespModel(MessageCode.NORMAL, null,  productService.uptProductByCode(record));
 	}	
 	
 	@POST
@@ -69,10 +69,18 @@ public class ProductResource extends BaseResource {
 	} 
 	
 	@POST
-	@Path("/getList/{productCode}")
+	@Path("/lists/{id}")
 	@Produces(MediaType.APPLICATION_JSON)
-	@ApiOperation(value = "/getList/{productCode}", response = TMdMara.class, notes = "根据产品编号模糊查询商品")
-	public Response selectProductAndExListByCode(@ApiParam(required=true,name="productCode",value="商品编号") @PathParam("productCode") String productCode){
-		return convertToRespModel(MessageCode.NORMAL, null, productService.selectProductAndExListByCode(productCode));
+	@ApiOperation(value = "/lists/{id}", response = TMdMara.class, notes = "根据价格编号查询当前组织下未被选择的商品列表")
+	public Response selectProductAndExListByCode(@ApiParam(required=true,name="id",value="价格组编号(如果还没有价格组编号，直接写-1,-1表示获取当前组织下所有的产品列表)") @PathParam("id") String id){
+		return convertToRespModel(MessageCode.NORMAL, null, productService.findMarasBySalesCodeAndOrg(id));
+	}
+	
+	@POST
+	@Path("/sell/lists/{branchNo}")
+	@Produces(MediaType.APPLICATION_JSON)
+	@ApiOperation(value = "/sell/lists/{branchNo}", response = TMdMara.class, notes = "获取奶站可销售的产品清单")
+	public Response getBranchSaleMaras(@ApiParam(required=true,name="branchNo",value="奶站编号") @PathParam("branchNo") String branchNo){
+		return convertToRespModel(MessageCode.NORMAL, null, productService.getBranchSaleMaras(branchNo));
 	}
 }

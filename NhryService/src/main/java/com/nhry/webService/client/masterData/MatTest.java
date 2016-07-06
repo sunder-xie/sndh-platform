@@ -1,5 +1,8 @@
 package com.nhry.webService.client.masterData;
 
+import com.nhry.webService.client.masterData.functions.ET_MAKTX_type1;
+import com.nhry.webService.client.masterData.functions.ZSD_MATERAIL_DATA_RFC;
+import com.nhry.webService.client.masterData.functions.ZSD_MATERAIL_DATA_RFCResponse;
 import org.apache.axis2.client.Options;
 import org.apache.axis2.transport.http.HTTPConstants;
 import org.apache.axis2.transport.http.impl.httpclient4.HttpTransportPropertiesImpl;
@@ -19,10 +22,10 @@ public class MatTest {
             options.setProperty(HTTPConstants.AUTHENTICATE, authenticator1);
             options.setProperty(HTTPConstants.SO_TIMEOUT,new Integer(300000));
             client._getServiceClient().setOptions(options);
-            ZT_MasterDataQueryServiceStub.ZSD_MATERAIL_DATA_RFCResponse response ;
-            ZT_MasterDataQueryServiceStub.ZSD_MATERAIL_DATA_RFC zsdMaterailDataRfc = new ZT_MasterDataQueryServiceStub.ZSD_MATERAIL_DATA_RFC();
+            ZSD_MATERAIL_DATA_RFCResponse response ;
+            ZSD_MATERAIL_DATA_RFC zsdMaterailDataRfc = new ZSD_MATERAIL_DATA_RFC();
             response = client.mATQUERY(zsdMaterailDataRfc);
-            ZT_MasterDataQueryServiceStub.ET_MAKTX_type1 etMaktxType1 = response.getET_MAKTX();
+            ET_MAKTX_type1 etMaktxType1 = response.getET_MAKTX();
 
         }catch (Exception e){
             e.printStackTrace();

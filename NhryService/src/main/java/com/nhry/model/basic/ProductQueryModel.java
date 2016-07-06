@@ -1,8 +1,5 @@
 package com.nhry.model.basic;
 
-import com.wordnik.swagger.annotations.ApiModel;
-import com.wordnik.swagger.annotations.ApiModelProperty;
-
 import java.io.Serializable;
 
 public class ProductQueryModel extends BaseQueryModel implements Serializable {
@@ -10,6 +7,9 @@ public class ProductQueryModel extends BaseQueryModel implements Serializable {
 	private String secCatory;
 	private String status;
 	private String matnrTxt;
+	private String salesOrg;
+	private String dealerNo;
+	
 	public String getFirstCatory() {
 		return firstCatory;
 	}
@@ -34,5 +34,16 @@ public class ProductQueryModel extends BaseQueryModel implements Serializable {
 	public void setMatnrTxt(String matnrTxt) {
 		this.matnrTxt = matnrTxt;
 	}
-	
+	public String getSalesOrg() {
+		return salesOrg;
+	}
+	public void setSalesOrg(String salesOrg) {
+		this.salesOrg = salesOrg;
+	}
+	public String getDealerNo() {
+		return dealerNo;
+	}
+	public void setDealerNo(String dealerNo) {
+		this.dealerNo = dealerNo;
+	}
 }

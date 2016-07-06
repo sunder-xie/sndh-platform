@@ -7,6 +7,8 @@
 package com.nhry.webService.client.masterData;
 
 
+import com.nhry.webService.client.masterData.functions.*;
+
 /**
  *  ZT_MasterDataQueryServiceCallbackHandler Callback class, Users can extend this class and implement
  *  their own receiveResult and receiveError methods.
@@ -43,14 +45,14 @@ public abstract class ZT_MasterDataQueryServiceCallbackHandler {
      * override this method for handling normal response from customerQuery operation
      */
     public void receiveResultcustomerQuery(
-        com.nhry.webService.client.masterData.ZT_MasterDataQueryServiceStub.ZSD_CUSTOMER_DATA_SYN_RFCResponse result) {
+        ZSD_CUSTOMER_DATA_SYN_RFCResponse result) {
     }
 
     /**
      * auto generated Axis2 Error handler
      * override this method for handling error response from customerQuery operation
      */
-    public void receiveErrorcustomerQuery(java.lang.Exception e) {
+    public void receiveErrorcustomerQuery(Exception e) {
     }
 
     /**
@@ -58,14 +60,29 @@ public abstract class ZT_MasterDataQueryServiceCallbackHandler {
      * override this method for handling normal response from matWHWQuery operation
      */
     public void receiveResultmatWHWQuery(
-        com.nhry.webService.client.masterData.ZT_MasterDataQueryServiceStub.ZMM_POS_24DATAResponse result) {
+        ZMM_POS_24DATAResponse result) {
     }
 
     /**
      * auto generated Axis2 Error handler
      * override this method for handling error response from matWHWQuery operation
      */
-    public void receiveErrormatWHWQuery(java.lang.Exception e) {
+    public void receiveErrormatWHWQuery(Exception e) {
+    }
+
+    /**
+     * auto generated Axis2 call back method for codeQuery method
+     * override this method for handling normal response from codeQuery operation
+     */
+    public void receiveResultcodeQuery(
+        ZSD_T005_DATAResponse result) {
+    }
+
+    /**
+     * auto generated Axis2 Error handler
+     * override this method for handling error response from codeQuery operation
+     */
+    public void receiveErrorcodeQuery(Exception e) {
     }
 
     /**
@@ -73,13 +90,28 @@ public abstract class ZT_MasterDataQueryServiceCallbackHandler {
      * override this method for handling normal response from mATQUERY operation
      */
     public void receiveResultmATQUERY(
-        com.nhry.webService.client.masterData.ZT_MasterDataQueryServiceStub.ZSD_MATERAIL_DATA_RFCResponse result) {
+        ZSD_MATERAIL_DATA_RFCResponse result) {
     }
 
     /**
      * auto generated Axis2 Error handler
      * override this method for handling error response from mATQUERY operation
      */
-    public void receiveErrormATQUERY(java.lang.Exception e) {
+    public void receiveErrormATQUERY(Exception e) {
+    }
+
+    /**
+     * auto generated Axis2 call back method for salesQuery method
+     * override this method for handling normal response from salesQuery operation
+     */
+    public void receiveResultsalesQuery(
+        ZSD_SALES_ORGANIZATION_RFCResponse result) {
+    }
+
+    /**
+     * auto generated Axis2 Error handler
+     * override this method for handling error response from salesQuery operation
+     */
+    public void receiveErrorsalesQuery(Exception e) {
     }
 }

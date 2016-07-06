@@ -478,7 +478,7 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 //		order.setBranchNo(branchNo);//奶站编号 --人工分单或自动??
 		//如果地址信息不为空，为订户创建新的地址
 		if(record.getAddress() != null){
-			tVipCustInfoService.addAddressForCust(record.getAddress());
+			order.setAdressNo(tVipCustInfoService.addAddressForCust(record.getAddress()));
 		}
 
 		//生成每个订单行

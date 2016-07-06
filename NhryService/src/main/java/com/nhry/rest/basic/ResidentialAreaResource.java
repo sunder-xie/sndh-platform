@@ -6,6 +6,7 @@ import com.nhry.data.basic.domain.TMdResidentialArea;
 import com.nhry.model.basic.BranchAreaSearch;
 import com.nhry.rest.BaseResource;
 import com.nhry.service.basic.dao.ResidentialAreaService;
+import com.nhry.service.basic.pojo.BranchScopeModel;
 import com.nhry.service.basic.pojo.ResidentialAreaModel;
 import com.sun.jersey.spi.resource.Singleton;
 import com.wordnik.swagger.annotations.Api;
@@ -102,6 +103,25 @@ public class ResidentialAreaResource extends BaseResource {
 	public Response uptResidentialArea(@ApiParam(required=true,name="residentialAreaModel",value="系统参数json格式")TMdResidentialArea tMdResidentialArea){
 		return convertToRespModel(MessageCode.NORMAL, null,  residentialAreaService.uptResidentialArea(tMdResidentialArea));
 	}
+
+	@POST
+	@Path("/relBranch")
+	@Consumes(MediaType.APPLICATION_JSON)
+	@Produces(MediaType.APPLICATION_JSON)
+	@ApiOperation(value = "/relBranch", response = String.class, notes = "配送区域关联奶站")
+	public Response areaRelBranch(@ApiParam(required=true,name="bModel",value="系统参数json格式")BranchScopeModel bModel){
+		return convertToRespModel(MessageCode.NORMAL, null,  residentialAreaService.areaRelBranch(bModel));
+	}
+
+	@POST
+	@Path("/getUnDistAreas")
+	@Consumes(MediaType.APPLICATION_JSON)
+	@Produces(MediaType.APPLICATION_JSON)
+	@ApiOperation(value = "/getUnDistAreas", response = TMdResidentialArea.class, notes = "获取未分配区域列表")
+	public Response getUnDistAreas(){
+		return convertToRespModel(MessageCode.NORMAL, null,  residentialAreaService.getUnDistAreas());
+	}
+
 
 
 

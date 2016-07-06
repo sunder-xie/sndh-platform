@@ -2,6 +2,7 @@ package com.nhry.rest.milktrans;
 
 import com.github.pagehelper.PageInfo;
 import com.nhry.common.exception.MessageCode;
+import com.nhry.data.milktrans.domain.TSsmReqGoodsOrderItem;
 import com.nhry.model.milktrans.*;
 import com.nhry.rest.BaseResource;
 import com.nhry.service.milk.dao.DeliverMilkService;
@@ -39,18 +40,60 @@ public class milkTransResource extends BaseResource {
 	@Produces(MediaType.APPLICATION_JSON)
 	@Consumes(MediaType.APPLICATION_JSON)
 	@ApiOperation(value = "/creatRequireOrder", response = RequireOrderModel.class, notes = "生成要货计划")
-	public Response creatRequireOrder(@ApiParam(required=true,name="rModel",value="要货计划") RequireOrderModel  rModel){
-		return convertToRespModel(MessageCode.NORMAL, null, requireOrderService.creatRequireOrder(rModel));
+	public Response creatRequireOrder(){
+		return convertToRespModel(MessageCode.NORMAL, null, requireOrderService.creatRequireOrder());
 	}
 
 	@POST
 	@Path("/queryRequireOrder")
 	@Produces(MediaType.APPLICATION_JSON)
 	@Consumes(MediaType.APPLICATION_JSON)
-	@ApiOperation(value = "/creatRequireOrder", response = RequireOrderModel.class, notes = "查询要货计划")
-	public Response searchRequireOrder(@ApiParam(required=true,name="rModel",value="要货计划") RequireOrderSearch rModel){
-		return convertToRespModel(MessageCode.NORMAL, null, requireOrderService.searchRequireOrder(rModel));
+	@ApiOperation(value = "/queryRequireOrder", response = RequireOrderModel.class, notes = "查询奶站下某一天的要货计划")
+	public Response searchRequireOrder(@ApiParam(required=true,name="eSearch",value="要货计划日期") ReqGoodsOrderSearch eSearch) {
+
+		return convertToRespModel(MessageCode.NORMAL, null, requireOrderService.searchRequireOrder(eSearch.getRequiredDate()));
 	}
+
+	@POST
+	@Path("/uptRequireOrderItem")
+	@Produces(MediaType.APPLICATION_JSON)
+	@Consumes(MediaType.APPLICATION_JSON)
+	@ApiOperation(value = "/uptRequireOrderItem", response = Response.class, notes = "更新生成的要货计划行")
+	public Response uptRequireOrderItem(@ApiParam(required=true,name="rModel",value="要货计划") UpdateRequiredModel  uModel){
+		return convertToRespModel(MessageCode.NORMAL, null, requireOrderService.uptRequireOrder(uModel));
+	}
+
+
+
+	@POST
+	@Path("/uptNewRequireOrderItem")
+	@Produces(MediaType.APPLICATION_JSON)
+	@Consumes(MediaType.APPLICATION_JSON)
+	@ApiOperation(value = "/uptNewRequireOrderItem", response = Response.class, notes = "更新新添加的要货计划行")
+	public Response uptNewRequireOrderItem(@ApiParam(required=true,name="rModel",value="要货计划") UpdateNewRequiredModel  uModel){
+		return convertToRespModel(MessageCode.NORMAL, null, requireOrderService.uptNewRequireOrderItem(uModel));
+	}
+
+	@POST
+	@Path("/addRequireOrderItem")
+	@Produces(MediaType.APPLICATION_JSON)
+	@Consumes(MediaType.APPLICATION_JSON)
+	@ApiOperation(value = "/addRequireOrderItem", response = Response.class, notes = "添加新的生成要货计划行")
+	public Response addRequireOrderItem(@ApiParam(required=true,name="item",value="要货计划") TSsmReqGoodsOrderItem item){
+		return convertToRespModel(MessageCode.NORMAL, null, requireOrderService.addRequireOrderItem(item));
+	}
+
+
+
+	@POST
+	@Path("/delRequireOrderItem")
+	@Produces(MediaType.APPLICATION_JSON)
+	@Consumes(MediaType.APPLICATION_JSON)
+	@ApiOperation(value = "/delRequireOrderItem", response = Response.class, notes = "删除新添加的生成要货计划行")
+	public Response delRequireOrderItem(@ApiParam(required=true,name="dModel",value="要货计划") ReqGoodsOrderItemSearch  item){
+		return convertToRespModel(MessageCode.NORMAL, null, requireOrderService.delRequireOrderItem(item));
+	}
+
 
 	@POST
 	@Path("/box/search")
@@ -81,21 +124,14 @@ public class milkTransResource extends BaseResource {
 
 
 
-	@POST
-	@Path("/uptRequireOrder")
-	@Produces(MediaType.APPLICATION_JSON)
-	@Consumes(MediaType.APPLICATION_JSON)
-	@ApiOperation(value = "/uptRequireOrder", response = RequireOrderModel.class, notes = "更新生成要货计划")
-	public Response uptRequireOrder(@ApiParam(required=true,name="rModel",value="要货计划") RequireOrderModel  rModel){
-		return convertToRespModel(MessageCode.NORMAL, null, requireOrderService.uptRequireOrder(rModel));
-	}
+
 
 
 	@GET
 	@Path("/createInsideSalOrder")
 	@Produces(MediaType.APPLICATION_JSON)
 	@Consumes(MediaType.APPLICATION_JSON)
-	@ApiOperation(value = "/uptRequireOrder", response = RequireOrderModel.class, notes = "创建内部销售订单")
+	@ApiOperation(value = "/createInsideSalOrder", response = RequireOrderModel.class, notes = "创建内部销售订单")
 	public Response createInsideSalOrder(@ApiParam(required=true,name="dispOrderNo",value="配送单号")@QueryParam("dispOrderNo") String  dispOrderNo){
 		return convertToRespModel(MessageCode.NORMAL, null, deliverMilkService.createInsideSalOrder(dispOrderNo));
 	}

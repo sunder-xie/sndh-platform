@@ -77,12 +77,39 @@ public class BillResource extends BaseResource {
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes(MediaType.APPLICATION_JSON)
     @ApiOperation(value = "/emp/empAccountReceAmount", response = int.class, notes = "送奶员收款金额核算")
-    public Response empAccountReceAmount(@ApiParam(required=true,name="eSearch",value="收款信息") EmpAccountSearch eSearch){
+    public Response empAccountReceAmount(@ApiParam(required=true,name="eSearch",value="收款信息") EmpDispDetialInfoSearch eSearch){
         return convertToRespModel(MessageCode.NORMAL, null, empBillService.empAccountReceAmount(eSearch));
     }
 
 
 
+    @POST
+    @Path("/emp/empSalaryRep")
+    @Produces(MediaType.APPLICATION_JSON)
+    @Consumes(MediaType.APPLICATION_JSON)
+    @ApiOperation(value = "/emp/empSalaryRep", response = PageInfo.class, notes = "送奶员工资报表")
+    public Response empSalaryRep(@ApiParam(required=true,name="eSearch",value="查询条件") EmpDispDetialInfoSearch eSearch){
+        return convertToRespModel(MessageCode.NORMAL, null, empBillService.empSalaryRep(eSearch));
+    }
+
+    @POST
+    @Path("/emp/getSalesOrgDispRate")
+    @Produces(MediaType.APPLICATION_JSON)
+    @Consumes(MediaType.APPLICATION_JSON)
+    @ApiOperation(value = "/emp/getSalesOrgDispRate", response = Response.class, notes = "获取当前登录人所在的 销售组织下的配送率")
+    public Response getSalesOrgDispRate(){
+        return convertToRespModel(MessageCode.NORMAL, null, empBillService.getSalesOrgDispRate());
+    }
+
+
+    @POST
+    @Path("/emp/uptEmpDispRate")
+    @Produces(MediaType.APPLICATION_JSON)
+    @Consumes(MediaType.APPLICATION_JSON)
+    @ApiOperation(value = "/emp/uptEmpDispRate", response = int.class, notes = "更新销售组织 配送率")
+    public Response uptEmpDispRate(@ApiParam(required=true,name="sModel",value="JSON 格式") SaleOrgDispRateModel sModel){
+        return convertToRespModel(MessageCode.NORMAL, null, empBillService.uptEmpDispRate(sModel));
+    }
 
 
     @POST
