@@ -74,6 +74,8 @@ public class milkTransResource extends BaseResource {
 		return convertToRespModel(MessageCode.NORMAL, null, requireOrderService.uptNewRequireOrderItem(uModel));
 	}
 
+
+
 	@POST
 	@Path("/addRequireOrderItem")
 	@Produces(MediaType.APPLICATION_JSON)
@@ -92,6 +94,17 @@ public class milkTransResource extends BaseResource {
 	@ApiOperation(value = "/delRequireOrderItem", response = Response.class, notes = "删除新添加的生成要货计划行")
 	public Response delRequireOrderItem(@ApiParam(required=true,name="dModel",value="要货计划") ReqGoodsOrderItemSearch  item){
 		return convertToRespModel(MessageCode.NORMAL, null, requireOrderService.delRequireOrderItem(item));
+	}
+
+
+
+	@POST
+	@Path("/sendRequireOrderToERP")
+	@Produces(MediaType.APPLICATION_JSON)
+	@Consumes(MediaType.APPLICATION_JSON)
+	@ApiOperation(value = "/sendRequireOrderToERP", response = Response.class, notes = "传到ERP系统")
+	public Response sendRequireOrderToERP(){
+		return convertToRespModel(MessageCode.NORMAL, null, requireOrderService.sendRequireOrderToERP());
 	}
 
 

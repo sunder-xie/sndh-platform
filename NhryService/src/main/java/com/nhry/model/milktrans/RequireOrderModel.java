@@ -12,7 +12,8 @@ import java.util.List;
 @ApiModel(value = "ReturnOrderModel", description = "要货计划对象")
 public class RequireOrderModel implements Serializable {
     private String branchNo;
-    private Date requireDate;
+    private String orderNo;
+    private Date requiredDate;
     private String status;
     List<OrderRequireItem> entries;
 
@@ -24,12 +25,20 @@ public class RequireOrderModel implements Serializable {
         this.branchNo = branchNo;
     }
 
-    public Date getRequireDate() {
-        return requireDate;
+    public String getOrderNo() {
+        return orderNo;
     }
 
-    public void setRequireDate(Date requireDate) {
-        this.requireDate = requireDate;
+    public void setOrderNo(String orderNo) {
+        this.orderNo = orderNo;
+    }
+
+    public Date getRequiredDate() {
+        return requiredDate;
+    }
+
+    public void setRequiredDate(Date requiredDate) {
+        this.requiredDate = requiredDate;
     }
 
     public List<OrderRequireItem> getEntries() {
