@@ -30,7 +30,6 @@
     </bean>
     <bean class="com.nhry.service.pi.impl.PIRequireOrderServiceImpl" id="piRequireOrderService">
         <property name="branchExMapper" ref="branchExMapper"/>
-        <property name="ssmReqGoodsOrderMapper" ref="ssmReqGoodsOrderMapper"/>
-        <property name="ssmReqGoodsOrderItemMapper" ref="ssmReqGoodsOrderItemMapper"/>
+        <property name="tSsmReqGoodsOrderItemMapper" ref="tSsmReqGoodsOrderItemMapper"/>
     </bean>
 </beans>

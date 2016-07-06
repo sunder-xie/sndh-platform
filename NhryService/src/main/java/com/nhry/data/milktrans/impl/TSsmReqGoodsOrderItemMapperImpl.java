@@ -8,6 +8,7 @@ import com.nhry.model.milktrans.ReqGoodsOrderItemSearch;
 import com.nhry.model.milktrans.UpdateRequiredModel;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created by gongjk on 2016/7/5.
@@ -51,5 +52,10 @@ public class TSsmReqGoodsOrderItemMapperImpl implements TSsmReqGoodsOrderItemMap
     @Override
     public int delRequireOrderItem(ReqGoodsOrderItemSearch item) {
         return sqlSessionTemplate.delete("delRequireOrderItem",item);
+    }
+
+    @Override
+    public List<Map<String, String>> findItemsForPI(ReqGoodsOrderItemSearch item) {
+        return sqlSessionTemplate.selectList("findItemsForPI",item);
     }
 }

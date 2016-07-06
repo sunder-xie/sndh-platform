@@ -50,6 +50,7 @@ public class PIProductServiceImpl implements PIProductService {
     public int matHandler() {
         try {
             ZSD_MATERAIL_DATA_RFCResponse response = getMaterailData();
+            response.getET_MARM();
             List<ET_MATNR> etMatnrs = getET_MATNR(response);
             Map<String, String> etMap = getET_MAKTX(response);
             for (ET_MATNR etMatnr : etMatnrs) {
@@ -152,6 +153,7 @@ public class PIProductServiceImpl implements PIProductService {
             dealer.setAddress(et_kunnr.getSTRAS());
             dealer.setTel(et_kunnr.getTELF1());
             dealer.setDelFlag("N");
+            dealer.setCompanyCode(et_kunnr.getBUKRS());
             dealerMapper.insertDealer(dealer);
         } else {
             dealer.setDealerNo(key);
@@ -164,6 +166,7 @@ public class PIProductServiceImpl implements PIProductService {
             dealer.setSalesOrg(vkorg);
             dealer.setAddress(et_kunnr.getSTRAS());
             dealer.setTel(et_kunnr.getTELF1());
+            dealer.setCompanyCode(et_kunnr.getBUKRS());
             dealer.setDelFlag("N");
             dealerMapper.updateDealer(dealer);
         }
@@ -189,6 +192,7 @@ public class PIProductServiceImpl implements PIProductService {
                 branch.setCreateBy("ECC");
                 branch.setCreateByTxt("ECC");
                 branch.setDealerNo(dealerNo);
+                branch.setCompanyCode(et_kunnr.getBUKRS());
                 branchMapper.addBranch(branch);
             } else {
                 branch.setBranchNo(et_kunnr.getKUNNR());
@@ -201,6 +205,10 @@ public class PIProductServiceImpl implements PIProductService {
                 branch.setSalesCha(vtweg);
                 branch.setSalesOrg(vkorg);
                 branch.setDealerNo(dealerNo);
+                branch.setLastModified(new Date());
+                branch.setLastModifiedBy("ECC");
+                branch.setLastModifiedByTxt("ECC");
+                branch.setCompanyCode(et_kunnr.getBUKRS());
                 branchMapper.updateBranch(branch);
             }
         }
@@ -354,20 +362,22 @@ public class PIProductServiceImpl implements PIProductService {
         List<ET_VKORG> wb = new ArrayList<>();
         if (zssd00003s.length > 0) {
             for (ZSSD00003 zssd00003 : zssd00003s) {
-                ET_VKORG et = new ET_VKORG();
-                String kvgr2 = zssd00003.getKVGR2() == null ? null : zssd00003.getKVGR2().getKVGR2_type0();
-                et.setKUNNR(zssd00003.getKUNNR() == null ? null : zssd00003.getKUNNR().getKUNNR_type4());
-                et.setVTWEG(zssd00003.getVTWEG() == null ? null : zssd00003.getVTWEG().getVTWEG_type6());
-                et.setVKORG(zssd00003.getVKORG() == null ? null : zssd00003.getVKORG().getVKORG_type6());
-                et.setSPART(zssd00003.getSPART() == null ? null : zssd00003.getSPART().getSPART_type4());
-                et.setKDGRP(zssd00003.getKDGRP() == null ? null : zssd00003.getKDGRP().getKDGRP_type0());
-                et.setKUNWE(zssd00003.getKUNWE() == null ? null : zssd00003.getKUNWE().getKUNWE_type2());
-                et.setKVGR1(zssd00003.getKVGR1() == null ? null : zssd00003.getKVGR1().getKVGR1_type0());
-                et.setKVGR2(zssd00003.getKVGR2() == null ? null : zssd00003.getKVGR2().getKVGR2_type0());
-                if (org.apache.commons.lang.StringUtils.isNotEmpty(kvgr2) && "01".equals(kvgr2)) {
-                    zy.add(et);
-                } else if (org.apache.commons.lang.StringUtils.isNotEmpty(kvgr2) && "02".equals(kvgr2)) {
-                    wb.add(et);
+                if(zssd00003.getVTWEG()!=null && VKORG.equals(zssd00003.getVTWEG().getVTWEG_type6())){
+                    ET_VKORG et = new ET_VKORG();
+                    String kvgr2 = zssd00003.getKVGR2() == null ? null : zssd00003.getKVGR2().getKVGR2_type0();
+                    et.setKUNNR(zssd00003.getKUNNR() == null ? null : zssd00003.getKUNNR().getKUNNR_type4());
+                    et.setVTWEG(zssd00003.getVTWEG() == null ? null : zssd00003.getVTWEG().getVTWEG_type6());
+                    et.setVKORG(zssd00003.getVKORG() == null ? null : zssd00003.getVKORG().getVKORG_type6());
+                    et.setSPART(zssd00003.getSPART() == null ? null : zssd00003.getSPART().getSPART_type4());
+                    et.setKDGRP(zssd00003.getKDGRP() == null ? null : zssd00003.getKDGRP().getKDGRP_type0());
+                    et.setKUNWE(zssd00003.getKUNWE() == null ? null : zssd00003.getKUNWE().getKUNWE_type2());
+                    et.setKVGR1(zssd00003.getKVGR1() == null ? null : zssd00003.getKVGR1().getKVGR1_type0());
+                    et.setKVGR2(zssd00003.getKVGR2() == null ? null : zssd00003.getKVGR2().getKVGR2_type0());
+                    if (org.apache.commons.lang.StringUtils.isNotEmpty(kvgr2) && "01".equals(kvgr2)) {
+                        zy.add(et);
+                    } else if (org.apache.commons.lang.StringUtils.isNotEmpty(kvgr2) && "02".equals(kvgr2)) {
+                        wb.add(et);
+                    }
                 }
             }
             map.put("01", zy);
@@ -380,6 +390,21 @@ public class PIProductServiceImpl implements PIProductService {
         Options options = client._getServiceClient().getOptions();
         client._getServiceClient().setOptions(OptionManager.initializable(options));
         return client;
+    }
+
+    public List<ET_MARM_type1> getET_MARM(ZSD_MATERAIL_DATA_RFCResponse response){
+        ET_MARM_type1 et_marm_type1 = response.getET_MARM();
+        MARM[] marms = et_marm_type1.getItem();
+
+        for(MARM marm : marms){
+            marm.getMATNR();
+            marm.getMEINH();
+            marm.getUMREZ();
+            marm.getUMREN();
+
+        }
+
+        return null;
     }
     /**
      * 获取产品数据

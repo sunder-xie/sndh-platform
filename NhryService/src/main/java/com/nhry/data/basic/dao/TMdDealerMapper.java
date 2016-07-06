@@ -13,7 +13,7 @@ public interface TMdDealerMapper {
 
     TMdDealer selectDealerByNo(String dealerNo);
 
-//    int updateByPrimaryKeySelective(TMdDealer record);
+    int updateDealerSelective(TMdDealer record);
 
     int updateDealer(TMdDealer record);
     
