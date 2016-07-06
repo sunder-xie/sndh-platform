@@ -68,7 +68,11 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 		ArrayList<TPlanOrderItem> entries = (ArrayList<TPlanOrderItem>) tPlanOrderItemMapper.selectByOrderCode(orderCode);
 		orderModel.setEntries(entries);
 		orderModel.setOrder(tPreOrderMapper.selectByPrimaryKey(orderCode));
-
+//		//帐户
+//		tVipCustInfoService.findVipAcctByCustNo(custNo);
+//		//地址信息
+//		tVipCustInfoService.findVipCustByNo(vipCustNo);
+		
 		return orderModel;
 	}
 
@@ -466,8 +470,9 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 //		order.setEmpNo(empNo);//送奶员编号
 //		order.setInitAmt(initAmt);//页面输入的初始订单金额
 		order.setPaymentStat(StringUtils.isBlank(order.getPaymentStat()) == true ? "10": order.getPaymentStat());//付款状态
+		order.setPaymentmethod(order.getPaymentStat());//10 后款 20 先款 30 殿付款
 		order.setMilkboxStat(StringUtils.isBlank(order.getMilkboxStat()) == true ? "20": order.getMilkboxStat());//奶箱状态
-		order.setPreorderStat("20");//订单状态
+		order.setPreorderStat("20");//订单状态,初始未确认
 //		order.setBranchNo(branchNo);//奶站编号 --人工分单或自动??
 		//如果地址信息不为空，为订户创建新的地址
 		if(record.getAddress() != null){
@@ -777,7 +782,7 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 		Map<TOrderDaliyPlanItem,TOrderDaliyPlanItem> changeQtyPlans = new HashMap<TOrderDaliyPlanItem,TOrderDaliyPlanItem>();
 		//长期变更(10)需对订单进行统一更改，关联更改日订单  和 短期变更(20)短期变更对订户日订单进行修改
 		//后付款的,日订单不往后延
-		if("20".equals(orgOrder.getPaymentmethod()) ){
+		if("10".equals(orgOrder.getPaymentmethod()) ){
 			for(TOrderDaliyPlanItem plan : record.getEntries()){
 //				plan.getMatnr();//校验商品
 				TOrderDaliyPlanItem orgPlan = daliyPlanMap.get(plan.getItemNo()+"/"+plan.getPlanItemNo());
@@ -800,7 +805,7 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 			}
 			
 		//先付款的	,日订单往后延
-		}else if("10".equals(orgOrder.getPaymentmethod()) ){
+		}else if("20".equals(orgOrder.getPaymentmethod()) ){
 			for(TOrderDaliyPlanItem plan : record.getEntries()){
 //				plan.getMatnr();//校验商品
 				TOrderDaliyPlanItem orgPlan = daliyPlanMap.get(plan.getItemNo()+"/"+plan.getPlanItemNo());
@@ -842,6 +847,9 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 //		orgEntry 原订单行
 		SimpleDateFormat format = new SimpleDateFormat("yyyyMMdd");
 		TPreOrder orgOrder = tPreOrderMapper.selectByPrimaryKey(orgEntry.getOrderNo());
+		
+		if("10".equals(orgOrder.getPaymentStat()))return;//后付款的不需要往后延期
+		
 		ArrayList<TOrderDaliyPlanItem> daliyPlans = (ArrayList<TOrderDaliyPlanItem>) tOrderDaliyPlanItemMapper.selectDaliyPlansByOrderNoAsc(orgEntry.getOrderNo());
 		int daliyEntryNo = tOrderDaliyPlanItemMapper.selectMaxDaliyPlansNoByOrderNo(orgEntry.getOrderNo()) + 1;
 		

@@ -336,14 +336,19 @@ public class DeliverMilkServiceImpl extends BaseService implements DeliverMilkSe
 			Date dispDate = dispOrder.getDispDate();
 			List<TDispOrderItem> entryList = tDispOrderItemMapper.selectNotDeliveryItemsByKeys(routeCode);
 			
-			if(entryList.size()==0)throw new ServiceException(MessageCode.LOGIC_ERROR,"没有变化的路单!");
-			
 			entryList.stream().forEach((e)->{
-				TPlanOrderItem entry = tPlanOrderItemMapper.selectEntryByEntryNo(e.getOrgItemNo());
-   			//更新原订单剩余金额
-   			updatePreOrderCurAmt(entry.getOrderNo(),entry.getSalesPrice().multiply(e.getConfirmQty()));
-   			//更改路单,少送的，需要往后延期,并重新计算此后日计划的剩余金额
-   			orderService.resumeDaliyPlanForRouteOrder(e.getConfirmQty(), e, entry, dispDate);
+				//变化的也更改日计划状态
+				if(StringUtils.isNotBlank(e.getReason()) && e.getConfirmQty().intValue() != e.getQty().intValue()){
+					TPlanOrderItem entry = tPlanOrderItemMapper.selectEntryByEntryNo(e.getOrgItemNo());
+					//更新原订单剩余金额
+					updatePreOrderCurAmt(entry.getOrderNo(),entry.getSalesPrice().multiply(e.getConfirmQty()));
+					//更改路单,少送的，需要往后延期,并重新计算此后日计划的剩余金额
+					orderService.resumeDaliyPlanForRouteOrder(e.getConfirmQty(), e, entry, dispDate);
+				}else{
+				//没有变化的路单更新日计划状态
+					
+					
+				}
 			});
 		
 		}else{

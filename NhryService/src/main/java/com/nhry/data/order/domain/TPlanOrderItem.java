@@ -16,6 +16,8 @@ public class TPlanOrderItem {
 
     private String matnr;
 
+    private String matnrTxt;
+    
     private String unit;
 
     private Integer qty;
@@ -64,7 +66,17 @@ public class TPlanOrderItem {
 
     private String lastModifiedByTxt;
     
-    public String getStartDispDateStr() {
+    public String getMatnrTxt()
+	{
+		return matnrTxt;
+	}
+
+	public void setMatnrTxt(String matnrTxt)
+	{
+		this.matnrTxt = matnrTxt;
+	}
+
+	public String getStartDispDateStr() {
        return startDispDateStr;
     }
 

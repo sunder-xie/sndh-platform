@@ -16,6 +16,7 @@
     <result column="BRANCH_TEL" property="branchTel" jdbcType="VARCHAR" />
     <result column="CUSTOMER_TEL" property="customerTel" jdbcType="VARCHAR" />
     <result column="MILKMEMBER_NO" property="milkmemberNo" jdbcType="VARCHAR" />
+    <result column="MILKMEMBER_NAME" property="milkmemberName" jdbcType="VARCHAR" />
     <result column="MEMBER_NO" property="memberNo" jdbcType="VARCHAR" />
     <result column="PAYMENT_STAT" property="paymentStat" jdbcType="VARCHAR" />
     <result column="MILKBOX_STAT" property="milkboxStat" jdbcType="VARCHAR" />
@@ -23,7 +24,7 @@
     <result column="CUR_AMT" property="curAmt" jdbcType="DECIMAL" />
     <result column="DISP_LINE_NO" property="dispLineNo" jdbcType="VARCHAR" />
     <result column="EMP_NO" property="empNo" jdbcType="VARCHAR" />
-    <result column="EMP_Name" property="empName" jdbcType="VARCHAR" />
+    <result column="EMP_NAME" property="empName" jdbcType="VARCHAR" />
     <result column="ADRESS_NO" property="adressNo" jdbcType="VARCHAR" />
     <result column="CREATER_NO" property="createrNo" jdbcType="VARCHAR" />
     <result column="CREATER_BY" property="createrBy" jdbcType="VARCHAR" />
@@ -50,12 +51,12 @@
     select 
     o.ORDER_NO, o.ORDER_TYPE, o.ORDER_DATE, o.PAYMENTMETHOD, o.PREORDER_SOURCE, o.ONLINEORDER_NO, 
     b.BRANCH_NAME BRANCH_NAME,o.BRANCH_NO, o.MILKMEMBER_NO, o.MEMBER_NO, o.PAYMENT_STAT, o.MILKBOX_STAT, o.INIT_AMT, o.CUR_AMT, 
-    o.DISP_LINE_NO, o.EMP_NO, o.ADRESS_NO, o.CREATER_NO, o.CREATER_BY, o.PREORDER_STAT, o.MEMO_TXT, 
+    o.DISP_LINE_NO, o.EMP_NO,e.EMP_NAME EMP_NAME,o.ADRESS_NO, o.CREATER_NO, o.CREATER_BY, o.PREORDER_STAT, o.MEMO_TXT, 
     o.PAY_METHOD, o.SOLICIT_NO, o.SOLICIT_DATE, o.SOLICITOR_NO, o.SOLICIT_BY, o.END_DATE,o.STOP_DATE_START,o.DELIVERY_TYPE,
-    o.STOP_DATE_END,o.STOP_REASON
-    from t_preorder o 
-    left join t_md_branch b on o.BRANCH_NO = b.BRANCH_NO
-    where ORDER_NO = #{orderNo,jdbcType=VARCHAR}
+    o.STOP_DATE_END,o.STOP_REASON,v.MP CUSTOMER_TEL,v.VIP_NAME MILKMEMBER_NAME
+    FROM t_preorder o , t_md_branch b , t_vip_cust_info v ,t_md_branch_emp e
+    WHERE o.BRANCH_NO = b.BRANCH_NO and v.VIP_CUST_NO = o.MILKMEMBER_NO and e.EMP_NO = o.EMP_NO
+    and ORDER_NO = #{orderNo,jdbcType=VARCHAR}
   </select>
   <select id="selectDispNoByGroup" resultMap="BaseResultMap">
     select distinct e.reach_time_type ORDER_TYPE, o.EMP_NO, o.BRANCH_NO
@@ -346,10 +347,11 @@
     select 
     o.ORDER_NO, o.ORDER_TYPE, o.ORDER_DATE, o.PAYMENTMETHOD, o.PREORDER_SOURCE, o.ONLINEORDER_NO, 
     b.BRANCH_NAME BRANCH_NO, o.MILKMEMBER_NO, o.MEMBER_NO, o.PAYMENT_STAT, o.MILKBOX_STAT, o.INIT_AMT, o.CUR_AMT, 
-    o.DISP_LINE_NO, o.EMP_NO, o.ADRESS_NO, o.CREATER_NO, o.CREATER_BY, o.PREORDER_STAT,o.PAY_METHOD
-    FROM t_preorder o , t_md_branch b
-    WHERE o.BRANCH_NO = b.BRANCH_NO 
-    AND o.PREORDER_STAT = "10"
+    o.DISP_LINE_NO, o.EMP_NO,v.ADDRESS_TXT ADRESS_NO, o.CREATER_NO, o.CREATER_BY, o.PREORDER_STAT,o.PAY_METHOD,
+    v.MP CUSTOMER_TEL,v.VIP_NAME MILKMEMBER_NAME,o.RET_REASON,o.RET_DATE
+    FROM t_preorder o , t_md_branch b , t_vip_cust_info v
+    WHERE o.BRANCH_NO = b.BRANCH_NO and v.VIP_CUST_NO = o.MILKMEMBER_NO
+    <!-- AND o.PREORDER_STAT = "10" -->
     <if test="orderNo != null and orderNo !=''">
      		AND ORDER_NO = #{orderNo,jdbcType=VARCHAR}
     </if>
@@ -379,6 +381,15 @@
     </if>
     <if test="orderDateEnd != null and orderDateEnd !=''">
      		AND ORDER_DATE  &lt;=  #{orderDateEnd}
+    </if>
+    <if test="reason != null and reason !=''">
+     		AND RET_REASON = #{reason}
+    </if>
+    <if test="orderReturnDateStart != null and orderReturnDateStart !=''">
+     		AND RET_DATE &gt;=  #{orderReturnDateStart}
+    </if>
+    <if test="orderReturnDateEnd != null and orderReturnDateEnd !=''">
+     		AND RET_DATE &lt;=  #{orderReturnDateEnd}
     </if>
      ORDER BY ORDER_NO
   </select>
@@ -447,7 +458,8 @@
         PREORDER_STAT = '10',
         BRANCH_NO = #{branchNo,jdbcType=VARCHAR},
         RET_REASON = '',
-        MEMO_TXT=''
+        MEMO_TXT = '',
+        RET_DATE = null
     </set>
     where ORDER_NO = #{orderNo,jdbcType=VARCHAR}
   </update>

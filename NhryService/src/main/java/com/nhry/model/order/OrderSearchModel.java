@@ -21,7 +21,34 @@ public class OrderSearchModel extends BaseQueryModel implements Serializable {
 	private String orderDateEnd;
 	private String companyName;
 	private String reason;
+	private String status;
+	private String orderReturnDateStart;
+	private String orderReturnDateEnd;
 	
+	public String getStatus()
+	{
+		return status;
+	}
+	public void setStatus(String status)
+	{
+		this.status = status;
+	}
+	public String getOrderReturnDateStart()
+	{
+		return orderReturnDateStart;
+	}
+	public void setOrderReturnDateStart(String orderReturnDateStart)
+	{
+		this.orderReturnDateStart = orderReturnDateStart;
+	}
+	public String getOrderReturnDateEnd()
+	{
+		return orderReturnDateEnd;
+	}
+	public void setOrderReturnDateEnd(String orderReturnDateEnd)
+	{
+		this.orderReturnDateEnd = orderReturnDateEnd;
+	}
 	public String getReason()
 	{
 		return reason;

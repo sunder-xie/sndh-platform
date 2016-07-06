@@ -180,8 +180,9 @@
     select 
     <include refid="Base_Column_List" />
     from t_mst_disp_order_item
-    where REASON is not null
-          and CONFIRM_QTY != QTY
+    where 
+    		 <!-- REASON is not null
+          and CONFIRM_QTY != QTY -->
           and ORDER_NO = #{orderNo,jdbcType=VARCHAR}
   </select>
   <delete id="deleteByPrimaryKey" parameterType="com.nhry.data.milk.domain.TDispOrderItemKey" >

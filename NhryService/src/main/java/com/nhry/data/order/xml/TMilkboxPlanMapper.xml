@@ -47,7 +47,7 @@
     <if test="setDateStart != null and setDateStart !=''">
      		AND PLAN_DATE &gt;= #{setDateStart,jdbcType=DATE}
     </if>
-    <if test="setDateStart != null and setDateStart !=''">
+    <if test="setDateEnd != null and setDateEnd !=''">
      		AND PLAN_DATE &lt;= #{setDateEnd,jdbcType=DATE}
     </if>
   </select>
