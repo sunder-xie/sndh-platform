@@ -15,6 +15,7 @@ import com.nhry.data.order.dao.TOrderDaliyPlanItemMapper;
 import com.nhry.data.order.domain.TOrderDaliyPlanItem;
 import com.nhry.model.milktrans.*;
 import com.nhry.service.milktrans.dao.RequireOrderService;
+import com.nhry.service.pi.dao.PIRequireOrderService;
 import com.nhry.utils.PrimaryKeyUtils;
 import org.apache.commons.lang3.StringUtils;
 
@@ -29,7 +30,11 @@ public class RequireOrderServiceImpl implements RequireOrderService {
     private TSsmReqGoodsOrderMapper  tSsmReqGoodsOrderMapper ;
     private TOrderDaliyPlanItemMapper tOrderDaliyPlanItemMapper;
     private UserSessionService userSessionService;
+    private PIRequireOrderService piRequireOrderService;
     private TMdMaraMapper tMdMaraMapper;
+    public void setPiRequireOrderService(PIRequireOrderService piRequireOrderService) {
+        this.piRequireOrderService = piRequireOrderService;
+    }
     public void settSsmReqGoodsOrderItemMapper(TSsmReqGoodsOrderItemMapper tSsmReqGoodsOrderItemMapper) {
         this.tSsmReqGoodsOrderItemMapper = tSsmReqGoodsOrderItemMapper;
     }
@@ -52,7 +57,7 @@ public class RequireOrderServiceImpl implements RequireOrderService {
         Date today = new Date();
         TSysUser user = userSessionService.getCurrentUser();
         rModel.setBranchNo(user.getBranchNo());
-        rModel.setRequireDate(today);
+        rModel.setRequiredDate(today);
         rModel.setSalesOrg(user.getSalesOrg());
         TSsmReqGoodsOrder order = null;
         //首先查看今天的要货计划是否已存在
@@ -82,8 +87,8 @@ public class RequireOrderServiceImpl implements RequireOrderService {
             Calendar calendar = new GregorianCalendar();
             calendar.setTime(today);
             calendar.add(calendar.DATE,i);//把日期往后增加i天.整数往后推 这个时间就是日期往后推一天的结果
-            Date requireDate = calendar.getTime();
-            rModel.setRequireDate(requireDate);
+            Date requiredDate = calendar.getTime();
+            rModel.setRequiredDate(requiredDate);
             rModel.setPreDays(i);
             List<TOrderDaliyPlanItem> items = tOrderDaliyPlanItemMapper.selectDaliyPlansByBranchAndDay(rModel);
             //将i天后的日订单中符合的产品加入到 生成的要货计划
@@ -124,16 +129,17 @@ public class RequireOrderServiceImpl implements RequireOrderService {
         TSysUser user = userSessionService.getCurrentUser();
         RequireOrderModel orderModel = new RequireOrderModel();
         RequireOrderSearch rModel = new RequireOrderSearch();
+
         String salesOrg = user.getSalesOrg();
         rModel.setBranchNo(user.getBranchNo());
-        rModel.setRequireDate(requiredDate);
+        rModel.setRequiredDate(requiredDate);
         TSsmReqGoodsOrder order  = this.tSsmReqGoodsOrderMapper.searchRequireOrder(rModel);
 
         if(order!= null){
             orderModel.setStatus(order.getStatus());
-            orderModel.setRequireDate(order.getOrderDate());
+            orderModel.setRequiredDate(order.getOrderDate());
             orderModel.setBranchNo(order.getBranchNo());
-
+            orderModel.setOrderNo(order.getOrderNo());
             List<TSsmReqGoodsOrderItem> items = this.tSsmReqGoodsOrderItemMapper.getReqGoodsItemsByOrderNo(order.getOrderNo());
             List<OrderRequireItem> entries = new ArrayList<OrderRequireItem>();
             for(TSsmReqGoodsOrderItem item :items){
@@ -193,20 +199,28 @@ public class RequireOrderServiceImpl implements RequireOrderService {
 
     @Override
     public int addRequireOrderItem(TSsmReqGoodsOrderItem item) {
+        String message = "";
         String orderNo = item.getOrderNo();
         TSsmReqGoodsOrderItem oldItem = tSsmReqGoodsOrderItemMapper.getReqGoodsItemsByMatnrAndOrderNo(orderNo,item.getMatnr());
         if(oldItem!=null){
-            throw new ServiceException(MessageCode.LOGIC_ERROR,"该产品已存在，请重新选择");
+            message = "该产品已存在，请重新选择";
+            throw new ServiceException(MessageCode.LOGIC_ERROR,message);
         }
+
 
         TSysUser user = userSessionService.getCurrentUser();
         TSsmReqGoodsOrder orderModel = this.tSsmReqGoodsOrderMapper.getRequireOrderByNo(orderNo);
+
+        if("30".equals(orderModel.getStatus())){
+            message = "今天的要货计划已确定，不可再添加或修改";
+            throw new ServiceException(MessageCode.LOGIC_ERROR,message);
+        }
         orderModel.setLastModified(new Date());
         orderModel.setLastModifiedBy(user.getLoginName());
         orderModel.setLastModifiedByTxt(user.getDisplayName());
         tSsmReqGoodsOrderMapper.uptRequireGoodsModifyInfo(orderModel);
 
-
+        List<TSsmReqGoodsOrderItem> items = this.tSsmReqGoodsOrderItemMapper.getReqGoodsItemsByOrderNo(orderNo);
         if(StringUtils.isBlank(item.getUnit())){
             Map<String,String> map = new HashMap<String,String>();
             map.put("salesOrg",user.getSalesOrg());
@@ -214,7 +228,9 @@ public class RequireOrderServiceImpl implements RequireOrderService {
             TMdMara mara = tMdMaraMapper.selectProductByCode(map);
             item.setUnit(mara.getBaseUnit());
         }
+        item.setItemNo(items.size()+1);
         item.setFlag("2");
+        item.setOrderDate(orderModel.getOrderDate());
         return tSsmReqGoodsOrderItemMapper.insertRequireOrderItem(item);
     }
 
@@ -229,21 +245,34 @@ public class RequireOrderServiceImpl implements RequireOrderService {
 
     @Override
     public int uptRequireOrder(UpdateRequiredModel uModel) {
-
+        String message = "修改失败";
         try{
             String orderNo = uModel.getOrderNo();
             TSsmReqGoodsOrder orderModel = this.tSsmReqGoodsOrderMapper.getRequireOrderByNo(orderNo);
             //获取数据库中存好的要货计划 如果状态已经确定，则不能修改
             if(orderModel.getStatus() == "30"){
-                throw new ServiceException(MessageCode.LOGIC_ERROR,"要货订单已确定，不能改变");
+                message = "要货订单已确定，不能改变";
+                throw new ServiceException(MessageCode.LOGIC_ERROR,message);
             }
 
 
             this.tSsmReqGoodsOrderItemMapper.uptReqGoodsItem(uModel);
             return 1;
         }catch (Exception e){
-            throw new ServiceException(MessageCode.LOGIC_ERROR,"修改失败");
+            throw new ServiceException(MessageCode.LOGIC_ERROR,message);
         }
+    }
+
+    @Override
+    public int sendRequireOrderToERP() {
+        Date today = new Date();
+        TSysUser user = userSessionService.getCurrentUser();
+        String salesOrg =user.getGroupId();
+        RequireOrderSearch search = new RequireOrderSearch();
+        search.setRequiredDate(today);
+        TSsmReqGoodsOrder order = tSsmReqGoodsOrderMapper.searchRequireOrder(search);
+      //  piRequireOrderService.generateRequireOrder(order);
+        return 0;
     }
 
 

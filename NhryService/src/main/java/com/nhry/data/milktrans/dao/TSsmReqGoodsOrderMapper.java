@@ -14,6 +14,6 @@ public interface TSsmReqGoodsOrderMapper {
     TSsmReqGoodsOrder getRequireOrderByNo(String orderNo);
 
     int uptRequireGoodsModifyInfo(TSsmReqGoodsOrder orderModel);
-   /* int uptRequireOrder(TMstRequireOrder tMstRequireOrder);
-    int delRequireOrder(TMstRequireOrder tMstRequireOrder);*/
+
+
 }
