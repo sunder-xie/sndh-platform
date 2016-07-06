@@ -68,5 +68,23 @@
          where ORDER_NO = #{orderNo,jdbcType=VARCHAR}
          and MATNR = #{matnr,jdbcType=VARCHAR}
     </delete>
-
+    <select id="findItemsForPI" resultType="hashmap" parameterType="com.nhry.model.milktrans.ReqGoodsOrderItemSearch">
+        SELECT
+        i.*,
+        ex.WERKS WERKS,
+        ex.RESLO RESLO,
+        m.BASE_UNIT BASE_UNIT,
+        i.INCRE_QTY + i.QTY SUM_QTY
+        FROM
+        t_ssm_req_goods_order_item i
+        JOIN t_ssm_req_goods_order o ON i.ORDER_DATE = o.ORDER_DATE
+        AND i.ORDER_NO = #{orderNo,jdbcType=VARCHAR}
+        AND i.MATNR = #{matnr,jdbcType=VARCHAR}
+        AND i.ORDER_NO = o.ORDER_NO
+        JOIN t_md_branch b ON b.BRANCH_NO = o.BRANCH_NO
+        JOIN t_md_mara m ON m.MATNR = i.MATNR
+        AND m.SALES_ORG = b.SALES_ORG
+        JOIN t_md_mara_ex ex ON m.MATNR = ex.MATNR
+        AND m.SALES_ORG = ex.MATNR
+    </select>
 </mapper>
