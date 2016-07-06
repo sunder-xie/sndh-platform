@@ -119,4 +119,30 @@ public class PriceResource extends BaseResource {
 	public Response getDealers(){
 		return convertToRespModel(MessageCode.NORMAL, null, priceService.getDealers());
 	}
+	
+	@POST
+	@Path("/lists/{branchNo}")
+	@Produces(MediaType.APPLICATION_JSON)
+	@ApiOperation(value = "/lists/{branchNo}", response = TMdDealer.class, notes = "根据奶站编号获取当前销售组织下该奶站已经选择的价格组列表")
+	public Response getPricesGroupByBn(@ApiParam(required=true,name="branchNo",value="奶站编号")@PathParam("branchNo")String branchNo){
+		return convertToRespModel(MessageCode.NORMAL, null, priceService.getPricesGroupByBn(branchNo));
+	}
+	
+	@POST
+	@Path("/scope/lists/{branchNo}")
+	@Produces(MediaType.APPLICATION_JSON)
+	@ApiOperation(value = "/scope/lists/{branchNo}", response = TMdDealer.class, notes = "根据奶站编号获取当前销售组织下该奶站适用范围内的价格组列表")
+	public Response getScopePricesGroupByBn(@ApiParam(required=true,name="branchNo",value="奶站编号")@PathParam("branchNo")String branchNo){
+		return convertToRespModel(MessageCode.NORMAL, null, priceService.getScopePricesGroupByBn(branchNo));
+	}
+	
+	@POST
+	@Path("/{branchNo}/{matnr}/{deliveryType}")
+	@Produces(MediaType.APPLICATION_JSON)
+	@ApiOperation(value = "/{branchNo}/{matnr}/{deliveryType}", response = TMdDealer.class, notes = "根据奶站编号、产品编号、配送类型 获取产品价格(配送类型(10:自取；20：送奶到户)")
+	public Response getMaraPrice(@ApiParam(required=true,name="branchNo",value="奶站编号")@PathParam("branchNo")String branchNo,
+			@ApiParam(required=true,name="matnr",value="产品编号")@PathParam("matnr")String matnr,
+			@ApiParam(required=true,name="deliveryType",value="配送类型")@PathParam("deliveryType")String deliveryType){
+		return convertToRespModel(MessageCode.NORMAL, null, priceService.getMaraPrice(branchNo,matnr,deliveryType));
+	}
 }

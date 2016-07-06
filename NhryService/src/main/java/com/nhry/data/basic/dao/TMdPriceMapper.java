@@ -64,4 +64,25 @@ public interface TMdPriceMapper {
 	  * @return
 	  */
 	 PriceGroup findMaraPriceBymatnrAndOrg(Map<String,String> attrs);
+	 
+	 /**
+	  * 根据奶站编号获取价格组
+	  * @param branchNo
+	  * @return
+	  */
+	 public List<TMdPrice> getPricesGroupByBn(Map<String,String> attrs);
+	 
+	 /**
+	  * 获取自由奶站价格组列表
+	  * @param salesOrg
+	  * @return
+	  */
+	 public List<TMdPrice> getOwnBranchPricesGroupByBn(String salesOrg);
+	 
+	 /**
+	  * 获取经销商奶站价格组列表
+	  * @param salesOrg
+	  * @return
+	  */
+	 public List<TMdPrice> getDealerBranchPricesGroupByBn(Map<String,String> attrs);
 }

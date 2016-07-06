@@ -25,6 +25,7 @@ import com.nhry.service.BaseService;
 import com.nhry.service.basic.dao.PriceService;
 import com.nhry.service.basic.pojo.PriceGroup;
 import com.nhry.utils.PrimaryKeyUtils;
+import com.nhry.utils.SysContant;
 import com.nhry.utils.date.Date;
 
 public class PriceServiceImpl extends BaseService implements PriceService {
@@ -249,5 +250,35 @@ public class PriceServiceImpl extends BaseService implements PriceService {
 			price.setMprices(this.maraPriceMapper.findMaraPricesById(id));
 		}
 		return price;
+	}
+
+	@Override
+	public List<TMdPrice> getPricesGroupByBn(String branchNo) {
+		// TODO Auto-generated method stub
+		Map<String,String> attrs = new HashMap<String,String>();
+		attrs.put("salesOrg",this.userSessionService.getCurrentUser().getSalesOrg());
+		attrs.put("branchNo", branchNo);
+		return this.tMdPriceMapper.getPricesGroupByBn(attrs);
+	}
+
+	@Override
+	public List<TMdPrice> getScopePricesGroupByBn(String branchNo) {
+		// TODO Auto-generated method stub
+		TMdBranch branch = this.branchMapper.selectBranchByNo(branchNo);
+		if(branch == null){
+			throw new ServiceException(MessageCode.LOGIC_ERROR,"该奶站编号(branchNo)对应的奶站不存在!");
+		}
+		if(SysContant.getSystemConst("own_Branch").equals(branch.getBranchGroup())){
+			//自由奶站
+			return this.tMdPriceMapper.getOwnBranchPricesGroupByBn(this.userSessionService.getCurrentUser().getSalesOrg());
+		}else if(SysContant.getSystemConst("dealer_Branch").equals(branch.getBranchGroup())){
+			//经销商奶站
+			Map<String,String> attrs = new HashMap<String,String>();
+			attrs.put("salesOrg",this.userSessionService.getCurrentUser().getSalesOrg());
+			attrs.put("dealerNo", this.userSessionService.getCurrentUser().getDealerId());
+			return this.tMdPriceMapper.getDealerBranchPricesGroupByBn(attrs);
+		}else{
+			throw new ServiceException(MessageCode.LOGIC_ERROR,"该奶站信息不全,请联系管理完善该奶站信息!");
+		}
 	}
 }

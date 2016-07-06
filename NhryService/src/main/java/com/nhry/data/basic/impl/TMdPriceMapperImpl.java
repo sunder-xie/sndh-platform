@@ -64,4 +64,22 @@ public class TMdPriceMapperImpl implements TMdPriceMapper {
 		// TODO Auto-generated method stub
 		return this.sqlSessionTemplate.selectOne("selectPGByCode4Edit", id);
 	}
+
+	@Override
+	public List<TMdPrice> getPricesGroupByBn(Map<String,String> attrs) {
+		// TODO Auto-generated method stub
+		return this.sqlSessionTemplate.selectList("getPricesGroupByBn",attrs);
+	}
+
+	@Override
+	public List<TMdPrice> getOwnBranchPricesGroupByBn(String salesOrg) {
+		// TODO Auto-generated method stub
+		return this.sqlSessionTemplate.selectList("getOwnBranchPricesGroupByBn", salesOrg);
+	}
+
+	@Override
+	public List<TMdPrice> getDealerBranchPricesGroupByBn(Map<String, String> attrs) {
+		// TODO Auto-generated method stub
+		return this.sqlSessionTemplate.selectList("getDealerBranchPricesGroupByBn", attrs);
+	}
 }

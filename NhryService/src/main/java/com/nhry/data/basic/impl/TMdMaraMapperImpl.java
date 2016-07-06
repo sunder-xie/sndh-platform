@@ -28,9 +28,9 @@ public class TMdMaraMapperImpl implements TMdMaraMapper {
     }
 
     @Override
-    public TMdMara selectProductByCode(String productCode) {
+    public TMdMara selectProductByCode(Map<String,String> attrs) {
         // TODO Auto-generated method stub
-        return this.sqlSessionTemplate.selectOne("selectProductByCode", productCode);
+        return this.sqlSessionTemplate.selectOne("selectProductByCode", attrs);
     }
 
     @Override

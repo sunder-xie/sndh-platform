@@ -102,4 +102,18 @@ public interface PriceService {
      * @return
      */
     public List<TMdDealer> getDealers();
+    
+    /**
+     * 根据奶站编号获取选择
+     * @param branchNo
+     * @return
+     */
+    public List<TMdPrice> getPricesGroupByBn(String branchNo);
+    
+    /**
+     * 根据奶站编号获取适用范围内的价格组列表
+     * @param branchNo
+     * @return
+     */
+    public List<TMdPrice> getScopePricesGroupByBn(String branchNo);
 }
