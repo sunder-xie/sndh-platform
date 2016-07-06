@@ -361,7 +361,7 @@
     <include refid="Base_Column_List" />
     from t_mst_order_daliy_plan_item
     where
-    and ORDER_NO = #{orderNo,jdbcType=VARCHAR}
+    ORDER_NO = #{orderNo,jdbcType=VARCHAR}
     and DISP_DATE = #{retReason,jdbcType=DATE}
   </select>
 

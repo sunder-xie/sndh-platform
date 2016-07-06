@@ -90,6 +90,14 @@ public class TOrderDaliyPlanItemMapperImpl implements TOrderDaliyPlanItemMapper
 		record.setStopDateEndStr(format.format(record.getStopDateEnd()));
 		return sqlSessionTemplate.update("updateDaliyPlansToStop", record);
 	}
+	
+	@Override
+	public int updateDaliyPlansToBack(TPreOrder record)
+	{
+		SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
+		record.setStopDateStartStr(format.format(record.getBackDate()));
+		return sqlSessionTemplate.update("updateDaliyPlansToStop", record);
+	}
 
 	@Override
 	public List<TOrderDaliyPlanItem> selectDaliyPlansByBranchAndDay(RequireOrderModel rModel) {

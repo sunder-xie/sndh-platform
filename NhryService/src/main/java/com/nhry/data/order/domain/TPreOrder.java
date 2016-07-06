@@ -84,7 +84,31 @@ public class TPreOrder {
     
     private String deliveryType;
     
-    public String getMilkmemberName()
+    private String backReason;
+
+    private Date backDate;
+    
+    public String getBackReason()
+	{
+		return backReason;
+	}
+
+	public void setBackReason(String backReason)
+	{
+		this.backReason = backReason  == null ? null : backReason.trim();
+	}
+
+	public Date getBackDate()
+	{
+		return backDate;
+	}
+
+	public void setBackDate(Date backDate)
+	{
+		this.backDate = backDate;
+	}
+
+	public String getMilkmemberName()
 	{
 		return milkmemberName;
 	}

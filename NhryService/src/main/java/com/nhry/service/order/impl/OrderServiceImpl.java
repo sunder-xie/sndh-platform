@@ -140,6 +140,7 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 			throw new ServiceException(MessageCode.LOGIC_ERROR, "信息不完整！");
 		}
 		r.setRetDate(new Date());
+		r.setRetReason(r.getRetReason().trim());
 		return tPreOrderMapper.returnOrder(r);
 	}
 	
@@ -217,7 +218,7 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 	@Override
 	public int backOrder(OrderSearchModel record)
 	{
-		SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
+//		SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
 		TPreOrder order = tPreOrderMapper.selectByPrimaryKey(record.getOrderNo());
 		
 		if(order!= null){
@@ -226,26 +227,27 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 				throw new ServiceException(MessageCode.LOGIC_ERROR,"订单日订单已经确认，不能修改订单!");
 			}
 			//退订逻辑
-			try
-			{
-				Date sdate = format.parse(record.getOrderDateStart());
-				order.setStopDateStart(sdate);
-			}
-			catch (ParseException e)
-			{
-				throw new ServiceException(MessageCode.LOGIC_ERROR,"日期格式不正确!");
-			}
-			order.setStopReason(record.getReason());
+//			try
+//			{
+//				Date sdate = format.parse(record.getOrderDate());
+				order.setBackDate(new Date());
+//			}
+//			catch (ParseException e)
+//			{
+//				throw new ServiceException(MessageCode.LOGIC_ERROR,"日期格式不正确!");
+//			}
+			order.setBackReason(record.getReason());
 			String state = order.getPaymentmethod();
+			
 			if("10".equals(state)){//先付款
-				tOrderDaliyPlanItemMapper.updateDaliyPlansToStop(order);
+				tOrderDaliyPlanItemMapper.updateDaliyPlansToBack(order);
 				
 			}else{//后付款
-				tOrderDaliyPlanItemMapper.updateDaliyPlansToStop(order);
+				tOrderDaliyPlanItemMapper.updateDaliyPlansToBack(order);
 				
 			}
 			//更新订单状态为退订
-			order.setPreorderStat("40");//退订
+			order.setPreorderStat("30");//失效的订单
 			modifyOrderStatus(order);
 			//订奶收款通知???
 			//todo

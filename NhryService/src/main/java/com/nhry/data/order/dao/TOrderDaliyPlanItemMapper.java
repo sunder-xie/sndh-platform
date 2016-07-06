@@ -40,4 +40,6 @@ public interface TOrderDaliyPlanItemMapper {
     int updateDaliyPlansToStop(TPreOrder record);
 
     List<TOrderDaliyPlanItem> selectDaliyPlansByBranchAndDay(RequireOrderModel rModel);
+    
+    int updateDaliyPlansToBack(TPreOrder record);
 }
