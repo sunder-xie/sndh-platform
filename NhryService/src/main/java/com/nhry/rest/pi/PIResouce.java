@@ -36,7 +36,16 @@ public class PIResouce extends BaseResource{
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes(MediaType.APPLICATION_JSON)
     @ApiOperation(value = "/getProducts", response = ResponseModel.class, notes = "获取产品数据")
-    public Response addRes() throws RemoteException {
+    public Response getProducts() throws RemoteException {
         return convertToRespModel(MessageCode.NORMAL, piProductService.matHandler(), null);
+    }
+
+    @GET
+    @Path("/getCustomer")
+    @Produces(MediaType.APPLICATION_JSON)
+    @Consumes(MediaType.APPLICATION_JSON)
+    @ApiOperation(value = "/getCustomer", response = ResponseModel.class, notes = "获取奶站经销商数据")
+    public Response getCustomer() throws RemoteException {
+        return convertToRespModel(MessageCode.NORMAL, piProductService.customerDataHandle(), null);
     }
 }

@@ -8,6 +8,8 @@ import com.nhry.webService.client.businessData.ZT_BusinessData_MaintainServiceCa
 import com.nhry.webService.client.businessData.ZT_BusinessData_MaintainServiceStub;
 import com.nhry.webService.client.businessData.functions.*;
 import com.nhry.webService.client.masterData.ZT_MasterDataQueryServiceStub;
+import com.nhry.webService.client.masterData.functions.ZSD_SALES_ORGANIZATION_RFC;
+import com.nhry.webService.client.masterData.functions.ZSSD00007;
 import org.apache.axis2.AxisFault;
 import org.apache.axis2.client.Options;
 import org.apache.commons.lang.StringUtils;
@@ -69,7 +71,7 @@ public class BusinessDataConnection {
             String item_no = item.get("ITEM_NO");
             String order_no = item.get("ORDER_NO");
             String matnr = item.get("MATNR");
-            String unit = item.get("UNIT");
+//            String unit = item.get("UNIT");
             String sum_qty = item.get("SUM_QTY");
             String werks = item.get("WERKS");
             String reslo = item.get("RESLO");
@@ -110,12 +112,119 @@ public class BusinessDataConnection {
         response = BusinessDataConnection.getConn().requisitionCreate(rfc);
         ET_MESSAGE_type1 message = response.getET_MESSAGE();
         BAPIRET2[] bap = message.getItem();
-        String mes = bap[0].getTYPE().getTYPE_type0();
-        if("1".equals(mes)){
-            return response.getET_EBELN().getET_EBELN_type0();
+        if(bap.length > 0) {
+            String mes = bap[0].getTYPE().getTYPE_type0();
+            if ("1".equals(mes)) {
+                return response.getET_EBELN().getET_EBELN_type0();
+            } else {
+                throw new RuntimeException(bap[0].getMESSAGE().getMESSAGE_type0());
+            }
         }else{
-            throw new RuntimeException(bap[0].getMESSAGE().getMESSAGE_type0());
+            return response.getET_EBELN().getET_EBELN_type0();
         }
+    }
+
+    public static String SalesOrderCreate(String KUNNR,String KUNWE,String VKORG,String BSTKD,Date LFDAT,List<Map<String,String>> items ) throws RemoteException {
+
+        IT_ZSSD00011_type0 it_zssd00011_type1 = new IT_ZSSD00011_type0();
+        for (Map<String,String> map:items) {
+            ZSSD00011 zssd00011 = new ZSSD00011();
+            MATNR_type1 matnr_type1 = new MATNR_type1();
+            matnr_type1.setMATNR_type0(map.get("MATNR"));
+            zssd00011.setMATNR(matnr_type1);
+            KWMENG_type1 kwmeng_type1 = new KWMENG_type1();
+            BigDecimal kw = new BigDecimal(map.get("MWMENG"));
+            kwmeng_type1.setKWMENG_type0(kw);
+            zssd00011.setKWMENG(kwmeng_type1);
+            VRKME_type1 vrkme_type1 = new VRKME_type1();
+            vrkme_type1.setVRKME_type0(map.get("VRKME"));
+            zssd00011.setVRKME(vrkme_type1);
+            WERKS_type1 werks_type1 = new WERKS_type1();
+            werks_type1.setWERKS_type0(map.get("WERKS"));
+            zssd00011.setWERKS(werks_type1);
+            LGORT_type1 lgort_type1 = new LGORT_type1();
+            lgort_type1.setLGORT_type0(map.get("LGORT"));
+            zssd00011.setLGORT(lgort_type1);
+            POSEX_type1 posex_type1 = new POSEX_type1();
+            posex_type1.setPOSEX_type0(map.get("POSEX"));
+            zssd00011.setPOSEX(posex_type1);
+            it_zssd00011_type1.addItem(zssd00011);
+        }
+
+        ZSD_SALESORDER_DATA_RFC_2 rfc = new ZSD_SALESORDER_DATA_RFC_2();
+        rfc.setIT_ZSSD00011(it_zssd00011_type1);
+        ZSSD00010 zssd00010 = new ZSSD00010();
+        KUNNR_type1 kunnr_type1 = new KUNNR_type1();
+        kunnr_type1.setKUNNR_type0(KUNNR);
+        zssd00010.setKUNNR(kunnr_type1);
+        KUNWE_type1 kunwe_type1 = new KUNWE_type1();
+        kunwe_type1.setKUNWE_type0(KUNWE);
+        zssd00010.setKUNWE(kunwe_type1);
+        VKORG_type1 vkorg_type1 = new VKORG_type1();
+        vkorg_type1.setVKORG_type0(VKORG);
+        zssd00010.setVKORG(vkorg_type1);
+        VTWEG_type1 vtweg_type1 = new VTWEG_type1();
+        vtweg_type1.setVTWEG_type0(PIPropertitesUtil.getValue("PI.MasterData.mATQUERY.VKORG"));
+        zssd00010.setVTWEG(vtweg_type1);
+        SPART_type1 spart_type1 =  new SPART_type1();
+        spart_type1.setSPART_type0(PIPropertitesUtil.getValue("PI.SPART"));
+        zssd00010.setSPART(spart_type1);
+        AUART_type1 auart_type1 = new AUART_type1();
+        auart_type1.setAUART_type0(PIPropertitesUtil.getValue("PI.AUART"));
+        zssd00010.setAUART(auart_type1);
+        ParsePosition pos = new ParsePosition(8);
+        String dateString = formatter.format(LFDAT);
+        com.nhry.webService.client.businessData.functions.Date date = new com.nhry.webService.client.businessData.functions.Date();
+        date.setObject(formatter.parse(dateString, pos));
+        zssd00010.setLFDAT(date);
+        BSTKD_type1 bstkd_type1 = new BSTKD_type1();
+        bstkd_type1.setBSTKD_type0(BSTKD);
+        zssd00010.setBSTKD(bstkd_type1);
+        rfc.setIT_ZSSD00010(zssd00010);
+
+        ZSD_SALESORDER_DATA_RFC_2Response response = BusinessDataConnection.getConn().salesOrderCreate(rfc);
+
+        ET_BAPIRETURN1_type1 et_bapirequrn1_type1 =  response.getET_BAPIRETURN1();
+        BAPIRET2[] bap = et_bapirequrn1_type1.getItem();
+        if(bap.length>0){
+            if("S".equals(bap[0].getTYPE())){
+                return response.getET_VBELN().getET_VBELN_type0();
+            }else{
+                throw new RuntimeException(bap[0].getMESSAGE().getMESSAGE_type0());
+            }
+        }
+        return response.getET_VBELN().getET_VBELN_type0();
+    }
+
+    private static String DeliveryQuery(String datum,String deliveryType) throws RemoteException {
+
+        ZSD_DELIVERY_DATA zsd_delivery_data = new ZSD_DELIVERY_DATA();
+        if(StringUtils.isNotEmpty(deliveryType)) {
+            I_DELIVERY_type1 i_delivery_type = new I_DELIVERY_type1();
+            i_delivery_type.setI_DELIVERY_type0("");
+            zsd_delivery_data.setI_DELIVERY(i_delivery_type);
+        }
+        if(datum!=null) {
+            IT_DATUM_type1 it_DATUM_type1 = new IT_DATUM_type1();
+            ZSSD00070 zssd00070 = new ZSSD00070();
+            SIGN_type1 sign_type1 = new SIGN_type1();
+            sign_type1.setSIGN_type0(PIPropertitesUtil.getValue("PI.MasterData.mATQUERY.SIGN"));
+            zssd00070.setSIGN(sign_type1);
+            ParsePosition pos = new ParsePosition(8);
+            String dateString = formatter.format(datum);
+            com.nhry.webService.client.businessData.functions.Date date = new com.nhry.webService.client.businessData.functions.Date();
+            date.setObject(formatter.parse(dateString, pos));
+            zssd00070.setLOW(date);
+            OPTION_type1 option_type1 = new OPTION_type1();
+            option_type1.setOPTION_type0(PIPropertitesUtil.getValue("PI.MasterData.mATQUERY.OPTION.EQ"));
+            zssd00070.setOPTION(option_type1);
+            it_DATUM_type1.addItem(zssd00070);
+            zsd_delivery_data.setIT_DATUM(it_DATUM_type1);
+        }
+
+        ZSD_DELIVERY_DATAResponse response = BusinessDataConnection.getConn().deliveryQuery(zsd_delivery_data);
+
+        return "";
     }
 
 

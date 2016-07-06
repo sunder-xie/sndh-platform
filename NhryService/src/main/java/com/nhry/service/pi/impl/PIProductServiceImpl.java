@@ -108,6 +108,7 @@ public class PIProductServiceImpl implements PIProductService {
             for (ET_VKORG et_vkorg : wbs) {
                 String kunner = et_vkorg.getKUNNR();
                 for (ET_PARTNER et_partner1 : et_partner) {
+                    //是售达方都作为经销商处理
                     if (kunner.equals(et_partner1.getKUNNR())) {
                         jxs.put(kunner, et_vkorg);
                     }
@@ -119,14 +120,12 @@ public class PIProductServiceImpl implements PIProductService {
             for (Map.Entry<String, ET_VKORG> entry : jxs.entrySet()) {
                 saveDealer(et_kunnrs, entry.getKey(), entry.getValue().getVKORG());
             }
-
-//            for(ET_PARTNER partner : et_partner){
             for (Map.Entry<String, ET_VKORG> entry : jxs.entrySet()) {
                 String kunnr = entry.getKey();
                 List<ET_PARTNER> l = new ArrayList<>();
                 for (ET_PARTNER p : et_partner) {
-                    if (kunnr.equals(p.getKUNNR()) && !kunnr.equals(p.getKUNWE())) {
-
+                    //送达方都作为经销商奶站
+                    if (kunnr.equals(p.getKUNNR())) {
                         l.add(p);
                     }
                 }
@@ -136,13 +135,10 @@ public class PIProductServiceImpl implements PIProductService {
 
             for (Map.Entry<String, List<ET_PARTNER>> entry : partners.entrySet()) {
                 String key = entry.getKey();
-                String vkorg = "";
                 List<ET_PARTNER> lists = entry.getValue();
                 for (ET_PARTNER partner : lists) {
-                    vkorg = partner.getVKORG();
                     saveBranch(et_kunnrs, BRANDCHTYPE_WB, partner.getVKORG(), partner.getKUNWE(), partner.getVTWEG(), key);
                 }
-//                saveDealer(et_kunnrs, key, vkorg);
             }
             return 1;
         } catch (Exception e) {

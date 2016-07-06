@@ -13,7 +13,7 @@
     <sql id="Base_Column_List">
     ORDER_NO, ITEM_NO, ORDER_DATE, MATNR, UNIT, QTY, INCRE_QTY
   </sql>
-    <select id="findItemsForPI" resultMap="hashmap" parameterType="com.nhry.data.basic.domain.TSsmReqGoodsOrderKey">
+    <select id="findItemsForPI" resultType="hashmap" parameterType="com.nhry.data.basic.domain.TSsmReqGoodsOrderKey">
         SELECT
             i.*,
             ex.WERKS WERKS,
