@@ -58,6 +58,36 @@ public class TMdResidentialAreaMapperImpl implements TMdResidentialAreaMapper {
                 Integer.parseInt(bSearch.getPageNum()), Integer.parseInt(bSearch.getPageSize()));
     }
 
+    /**
+     * 更新小区状态为未分配
+     * @param residentialAreaId
+     * @return
+     */
+    @Override
+    public int updateStatusToUnDistById(String residentialAreaId) {
+        return sqlSessionTemplate.update("updateStatusToUnDistById",residentialAreaId);
+    }
+
+    @Override
+    public TMdResidentialArea getAreaById(String id) {
+        return sqlSessionTemplate.selectOne("getAreaById",id);
+    }
+
+    /**
+     * 更新小区状态为已分配
+     * @param id
+     * @return
+     */
+    @Override
+    public int updateStatusToDistedById(String id) {
+        return sqlSessionTemplate.update("updateStatusToDistedById",id);
+    }
+
+    @Override
+    public List<TMdResidentialArea> getUnDistAreas() {
+        return sqlSessionTemplate.selectList("getUnDistAreas");
+    }
+
     @Override
     public PageInfo findAreaListByPage(ResidentialAreaModel residentialAreaModel) {
         return sqlSessionTemplate.selectListByPages("selectAreaByPage",residentialAreaModel,

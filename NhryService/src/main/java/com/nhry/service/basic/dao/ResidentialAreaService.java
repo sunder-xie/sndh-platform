@@ -4,6 +4,7 @@ package com.nhry.service.basic.dao;
 import com.github.pagehelper.PageInfo;
 import com.nhry.data.basic.domain.TMdResidentialArea;
 import com.nhry.model.basic.BranchAreaSearch;
+import com.nhry.service.basic.pojo.BranchScopeModel;
 import com.nhry.service.basic.pojo.ResidentialAreaModel;
 
 import java.util.List;
@@ -25,4 +26,8 @@ public interface ResidentialAreaService {
     int deleteAreaById(String id);
 
     public PageInfo searchAreaByBranchNo(BranchAreaSearch bsearch);
+
+    public int areaRelBranch(BranchScopeModel rmodel);
+
+    List<TMdResidentialArea> getUnDistAreas();
 }

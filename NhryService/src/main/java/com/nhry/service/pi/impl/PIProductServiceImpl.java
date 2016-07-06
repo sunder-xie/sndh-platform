@@ -1,5 +1,4 @@
 package com.nhry.service.pi.impl;
-
 import com.nhry.data.basic.dao.*;
 import com.nhry.data.basic.domain.TMdBranch;
 import com.nhry.data.basic.domain.TMdDealer;
@@ -11,16 +10,13 @@ import com.nhry.webService.client.masterData.ZT_MasterDataQueryServiceStub;
 import com.nhry.webService.client.masterData.functions.*;
 import com.nhry.webService.client.masterData.model.*;
 import org.apache.axis2.client.Options;
-
 import java.rmi.RemoteException;
 import java.util.*;
 import java.util.Date;
-
 /**
  * Created by cbz on 6/21/2016.
  */
 public class PIProductServiceImpl implements PIProductService {
-
     public static String URL = PIPropertitesUtil.getValue("PI.MasterData.URL");
     public static String VKORG = PIPropertitesUtil.getValue("PI.MasterData.mATQUERY.VKORG");
     public static String BRANDCHTYPE_ZY = "01";
@@ -30,27 +26,21 @@ public class PIProductServiceImpl implements PIProductService {
     public TMaraSalesMapper maraSalesMapper;
     public TMdBranchMapper branchMapper;
     public TMdDealerMapper dealerMapper;
-
     public void setMaraMapper(TMdMaraMapper maraMapper) {
         this.maraMapper = maraMapper;
     }
-
     public void setPiProductMapper(PIProductMapper piProductMapper) {
         this.piProductMapper = piProductMapper;
     }
-
     public void setMaraSalesMapper(TMaraSalesMapper maraSalesMapper) {
         this.maraSalesMapper = maraSalesMapper;
     }
-
     public void setBranchMapper(TMdBranchMapper branchMapper) {
         this.branchMapper = branchMapper;
     }
-
     public void setDealerMapper(TMdDealerMapper dealerMapper) {
         this.dealerMapper = dealerMapper;
     }
-
     /**
      * 物料查询
      *
@@ -70,7 +60,10 @@ public class PIProductServiceImpl implements PIProductService {
                 tMdMara.setWeightUnit(etMatnr.getGEWEI());
                 tMdMara.setMatnrTxt(etMap.get(etMatnr.getMATNR()));
                 tMdMara.setSalesOrg(etMatnr.getVKORG());
-                TMdMara tmp = maraMapper.selectProductByCode(tMdMara);
+                Map<String,String> mara = new HashMap<String,String>();
+                mara.put("salesOrg",etMatnr.getVKORG());
+                mara.put("matnr",etMatnr.getMATNR());
+                TMdMara tmp = maraMapper.selectProductByCode(mara);
                 if (tmp != null) {
                     tMdMara.setLastModified(new Date());
                     maraMapper.updateProduct(tMdMara);
@@ -85,7 +78,6 @@ public class PIProductServiceImpl implements PIProductService {
         }
         return 1;
     }
-
     /**
      * 自营奶站和供应商及供应商奶站
      * @return
@@ -98,7 +90,6 @@ public class PIProductServiceImpl implements PIProductService {
             Map<String, List<ET_VKORG>> et_vkorgs = getET_VKORG(response);
             List<ET_PARTNER> et_partner = getET_PARTNER(response);
             Map<String, List<ET_PARTNER>> partners = new HashMap<String, List<ET_PARTNER>>();
-
             List<ET_VKORG> zys = et_vkorgs.get("01");
             for (ET_VKORG et_vkorg : zys) {
                 saveBranch(et_kunnrs, BRANDCHTYPE_ZY, et_vkorg.getVKORG(), et_vkorg.getKUNNR(), et_vkorg.getVTWEG(), "");
@@ -132,7 +123,6 @@ public class PIProductServiceImpl implements PIProductService {
                 if (l.size() > 0)
                     partners.put(kunnr, l);
             }
-
             for (Map.Entry<String, List<ET_PARTNER>> entry : partners.entrySet()) {
                 String key = entry.getKey();
                 List<ET_PARTNER> lists = entry.getValue();
@@ -146,7 +136,6 @@ public class PIProductServiceImpl implements PIProductService {
         }
         return 1;
     }
-
     private void saveDealer(Map<String, ET_KUNNR> et_kunnrs, String key, String vkorg) {
         ET_KUNNR et_kunnr = et_kunnrs.get(key);
         TMdDealer dealer = dealerMapper.selectDealerByNo(key);
@@ -179,7 +168,6 @@ public class PIProductServiceImpl implements PIProductService {
             dealerMapper.updateDealer(dealer);
         }
     }
-
     private void saveBranch(Map<String, ET_KUNNR> et_kunnrs, String branchGroup, String vkorg, String kunnr, String vtweg, String dealerNo) {
         ET_KUNNR et_kunnr = et_kunnrs.get(kunnr);
         if (et_kunnr == null) {
@@ -217,7 +205,6 @@ public class PIProductServiceImpl implements PIProductService {
             }
         }
     }
-
     /**
      * 工厂
      * @return
@@ -239,7 +226,6 @@ public class PIProductServiceImpl implements PIProductService {
         }
         return 1;
     }
-
     protected ZSD_CUSTOMER_DATA_SYN_RFCResponse getCustomerData() throws RemoteException {
         ZT_MasterDataQueryServiceStub client = getZt_masterDataQueryServiceStub();
         ZSD_CUSTOMER_DATA_SYN_RFC zsdCustomerDataSynRfc = new ZSD_CUSTOMER_DATA_SYN_RFC();
@@ -260,8 +246,6 @@ public class PIProductServiceImpl implements PIProductService {
         response = client.customerQuery(zsdCustomerDataSynRfc);
         return response;
     }
-
-
     private ZSD_MATERAIL_DATA_RFCResponse getMaterailData() throws RemoteException {
         ZT_MasterDataQueryServiceStub client = getZt_masterDataQueryServiceStub();
         IT_MTART_type0 itMtartType0 = new IT_MTART_type0();
@@ -280,9 +264,7 @@ public class PIProductServiceImpl implements PIProductService {
         ZSD_MATERAIL_DATA_RFC zsdMaterailDataRfc = new ZSD_MATERAIL_DATA_RFC();
         zsdMaterailDataRfc.setIT_MTART(itMtartType0);
         return client.mATQUERY(zsdMaterailDataRfc);
-
     }
-
     /**
      * 客户对应的库存地点
      *
@@ -302,7 +284,6 @@ public class PIProductServiceImpl implements PIProductService {
         }
         return map;
     }
-
     private Map<String, ET_LGORT> getET_LGORT() throws RemoteException {
         ZMM_POS_24DATAResponse response = getMatWHQuery();
         ET_LGORT_type0 et_lgort_type0 = response.getET_LGORT();
@@ -317,17 +298,13 @@ public class PIProductServiceImpl implements PIProductService {
         }
         return result;
     }
-
-
     private ZMM_POS_24DATAResponse getMatWHQuery() throws RemoteException {
         ZT_MasterDataQueryServiceStub client = getZt_masterDataQueryServiceStub();
         ZMM_POS_24DATA zmm_pos_24DATA = new ZMM_POS_24DATA();
         return client.matWHWQuery(zmm_pos_24DATA);
     }
-
     private Map<String, ET_KUNNR> getET_KUNNR(ZSD_CUSTOMER_DATA_SYN_RFCResponse response) {
         ET_KUNNR_type1 et_kunnr_type1 = response.getET_KUNNR();
-
         ZSSD00002[] zssd00002s = et_kunnr_type1.getItem();
         List<ET_KUNNR> records = new ArrayList<ET_KUNNR>();
         Map<String, ET_KUNNR> map = new HashMap<String, ET_KUNNR>();
@@ -349,16 +326,14 @@ public class PIProductServiceImpl implements PIProductService {
         }
         return map;
     }
-
     private List<ET_PARTNER> getET_PARTNER(ZSD_CUSTOMER_DATA_SYN_RFCResponse response) {
         ET_PARTNER_type1 et_partner_type1 = response.getET_PARTNER();
-
         ZSSD00030[] zssd00030s = et_partner_type1.getItem();
         List<ET_PARTNER> records = new ArrayList<ET_PARTNER>();
         if (zssd00030s.length > 0) {
             for (ZSSD00030 zssd00030 : zssd00030s) {
                 String vtweg = zssd00030.getVTWEG() == null ? null : zssd00030.getVTWEG().getVTWEG_type4();
-//                if(vtweg!=null && VKORG.equals(vtweg)) {
+                //                if(vtweg!=null && VKORG.equals(vtweg)) {
                 ET_PARTNER et = new ET_PARTNER();
                 et.setKUNNR(zssd00030.getKUNNR() == null ? null : zssd00030.getKUNNR().getKUNNR_type2());
                 et.setKUNWE(zssd00030.getKUNWE() == null ? null : zssd00030.getKUNWE().getKUNWE_type0());
@@ -367,15 +342,13 @@ public class PIProductServiceImpl implements PIProductService {
                 et.setVTWEG(zssd00030.getVTWEG() == null ? null : zssd00030.getVTWEG().getVTWEG_type4());
                 records.add(et);
             }
-//            }
+            //            }
         }
         return records;
     }
-
     private Map<String, List<ET_VKORG>> getET_VKORG(ZSD_CUSTOMER_DATA_SYN_RFCResponse response) {
         List<ET_VKORG> records = new ArrayList<ET_VKORG>();
         ZSSD00003[] zssd00003s = response.getET_VKORG().getItem();
-
         Map<String, List<ET_VKORG>> map = new HashMap<String, List<ET_VKORG>>();
         List<ET_VKORG> zy = new ArrayList<>();
         List<ET_VKORG> wb = new ArrayList<>();
@@ -402,14 +375,12 @@ public class PIProductServiceImpl implements PIProductService {
         }
         return map;
     }
-
     private ZT_MasterDataQueryServiceStub getZt_masterDataQueryServiceStub() throws org.apache.axis2.AxisFault {
         ZT_MasterDataQueryServiceStub client = new ZT_MasterDataQueryServiceStub(URL);
         Options options = client._getServiceClient().getOptions();
         client._getServiceClient().setOptions(OptionManager.initializable(options));
         return client;
     }
-
     /**
      * 获取产品数据
      *
@@ -417,7 +388,6 @@ public class PIProductServiceImpl implements PIProductService {
      * @return
      */
     private List<ET_MATNR> getET_MATNR(ZSD_MATERAIL_DATA_RFCResponse response) {
-
         String ZORM = PIPropertitesUtil.getValue("PI.MasterData.mATQUERY.ZORM");
         ET_MATNR_type1 et_matnr = response.getET_MATNR();
         ZSSD00005[] zssd00005s = et_matnr.getItem();
@@ -445,7 +415,6 @@ public class PIProductServiceImpl implements PIProductService {
         }
         return records;
     }
-
     private Map getET_MAKTX(ZSD_MATERAIL_DATA_RFCResponse response) {
         ET_MAKTX_type1 et_maktx = response.getET_MAKTX();
         ZSSD00008[] zssd00008s = et_maktx.getItem();
@@ -456,7 +425,6 @@ public class PIProductServiceImpl implements PIProductService {
             }
         return map;
     }
-
     public Map<String, TMdMara> findAll() {
         Map<String, TMdMara> results = new HashMap<String, TMdMara>();
         List<TMdMara> lists = piProductMapper.findAll();

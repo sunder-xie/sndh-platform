@@ -116,4 +116,20 @@ public class VipCustResource extends BaseResource {
 	public Response findcustMixedTerms(@ApiParam(required=true,name="cust",value="订户查询对象") CustQueryModel cust) {
 	  return convertToRespModel(MessageCode.NORMAL, null,custService.findcustMixedTerms(cust));
 	}
+	
+	@POST
+	@Path("/find/address/{id}")
+	@Produces(MediaType.APPLICATION_JSON)
+	@ApiOperation(value = "/find/address/{id}", response = PageInfo.class, notes = "根据地址编号获取地址详细信息")
+	public Response findAddressById(@ApiParam(required=true,name="id",value="地址编号id")@PathParam("id")String id) {
+	  return convertToRespModel(MessageCode.NORMAL, null,custService.findAddressDetailById(id));
+	}
+	
+	@POST
+	@Path("/find/cust/address/{custNo}")
+	@Produces(MediaType.APPLICATION_JSON)
+	@ApiOperation(value = "/find/cust/address/{custNo}", response = PageInfo.class, notes = "根据订户编号获取地址列表信息")
+	public Response findCnAddressByCustNo(@ApiParam(required=true,name="custNo",value="订户编号")@PathParam("custNo")String custNo) {
+	  return convertToRespModel(MessageCode.NORMAL, null,custService.findCnAddressByCustNo(custNo));
+	}
 }

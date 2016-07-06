@@ -71,9 +71,9 @@ public class UserSessionService {
 			Date date =  new Date();
 			user.setLoginName("032411");
 			user.setDisplayName("测试用户");
-			user.setBranchNo("001");
+//			user.setBranchNo("001");
 			user.setPwd("12345678");
-			user.setSalesOrg("川乳");
+			user.setSalesOrg("4100");
 			user.setCreateAt(date);
 			user.setLastModified(date);
 			return user;

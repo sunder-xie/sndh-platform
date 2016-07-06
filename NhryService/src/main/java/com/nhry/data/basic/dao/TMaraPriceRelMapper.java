@@ -40,4 +40,10 @@ public interface TMaraPriceRelMapper {
      */
     List<TMaraPriceRel> findMaraPricesById(String id);
     
+    /**
+     * 根据价格编号id，删除关联的商品价格信息
+     * @param id
+     * @return
+     */
+    int delMaraPricesById(String id);
 }
