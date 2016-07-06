@@ -83,7 +83,7 @@ public class VipCustResource extends BaseResource {
 			attrs.put("phone",phone);
 			return convertToRespModel(MessageCode.NORMAL, null,custService.findStaCustByPhone(attrs));
 		}
-		//奶站用户
+		//公司用户
 		Map<String,String> attrs = new HashMap<String,String>();
 		attrs.put("branchNo", this.userSessionService.getCurrentUser().getSalesOrg());
 		attrs.put("phone",phone);
@@ -131,5 +131,13 @@ public class VipCustResource extends BaseResource {
 	@ApiOperation(value = "/find/cust/address/{custNo}", response = PageInfo.class, notes = "根据订户编号获取地址列表信息")
 	public Response findCnAddressByCustNo(@ApiParam(required=true,name="custNo",value="订户编号")@PathParam("custNo")String custNo) {
 	  return convertToRespModel(MessageCode.NORMAL, null,custService.findCnAddressByCustNo(custNo));
+	}
+	
+	@POST
+	@Path("/find/cust/acct/{custNo}")
+	@Produces(MediaType.APPLICATION_JSON)
+	@ApiOperation(value = "/find/cust/address/{custNo}", response = PageInfo.class, notes = "根据订户编号查询订户的资金订户信息")
+	public Response findVipAcctByCustNo(@ApiParam(required=true,name="custNo",value="订户编号")@PathParam("custNo")String custNo) {
+	  return convertToRespModel(MessageCode.NORMAL, null,custService.findVipAcctByCustNo(custNo));
 	}
 }
