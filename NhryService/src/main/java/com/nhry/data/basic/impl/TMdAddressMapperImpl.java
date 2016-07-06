@@ -41,4 +41,10 @@ public class TMdAddressMapperImpl implements TMdAddressMapper{
 		// TODO Auto-generated method stub
 		return this.sqlSessionTemplate.selectList("findCnAddressByCustNo", custNo);
 	}
+
+	@Override
+	public TMdAddress findAddressDetailById(String id) {
+		// TODO Auto-generated method stub
+		return this.sqlSessionTemplate.selectOne("findAddressDetailById", id);
+	}
 }

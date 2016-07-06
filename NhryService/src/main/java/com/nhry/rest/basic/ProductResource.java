@@ -75,4 +75,12 @@ public class ProductResource extends BaseResource {
 	public Response selectProductAndExListByCode(@ApiParam(required=true,name="id",value="价格组编号(如果还没有价格组编号，直接写-1,-1表示获取当前组织下所有的产品列表)") @PathParam("id") String id){
 		return convertToRespModel(MessageCode.NORMAL, null, productService.findMarasBySalesCodeAndOrg(id));
 	}
+	
+	@POST
+	@Path("/sell/lists/{branchNo}")
+	@Produces(MediaType.APPLICATION_JSON)
+	@ApiOperation(value = "/sell/lists/{branchNo}", response = TMdMara.class, notes = "获取奶站可销售的产品清单")
+	public Response getBranchSaleMaras(@ApiParam(required=true,name="branchNo",value="奶站编号") @PathParam("branchNo") String branchNo){
+		return convertToRespModel(MessageCode.NORMAL, null, productService.getBranchSaleMaras(branchNo));
+	}
 }

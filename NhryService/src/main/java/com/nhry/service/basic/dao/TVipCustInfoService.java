@@ -101,4 +101,25 @@ public interface TVipCustInfoService {
      * @return
      */
     int uptVipAcct(TVipAcct record);
+    
+    /**
+     * 根据id查询地址详细信息
+     * @param addressId
+     * @return
+     */
+    TMdAddress findAddressById(String addressId);
+    
+    /**
+     * 根据地址id查询地址详细信息
+     * @param id
+     * @return
+     */
+    public TMdAddress findAddressDetailById(String id);
+    
+    /**
+     * 根据订户编号，查询地址详细列表
+     * @param custNo
+     * @return
+     */
+    List<TMdAddress> findCnAddressByCustNo(String custNo);
 }

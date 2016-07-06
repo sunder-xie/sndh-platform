@@ -42,11 +42,10 @@ public class ProductServiceImpl extends BaseService implements ProductService {
 	@Override
 	public TMdMara selectProductByCode(String productCode) {
 		// TODO Auto-generated method stub
-//		Map<String,String> attrs = new HashMap<String,String>();
-//		attrs.put("salesOrg", this.userSessionService.getCurrentUser().getSalesOrg() == null ? "-1" : this.userSessionService.getCurrentUser().getSalesOrg());
-//		attrs.put("dealerNo", this.userSessionService.getCurrentUser().getDealerId());
-//		attrs.put("productCode", productCode);
-		return tMdMaraMapper.selectProductByCode(productCode);
+		Map<String,String> attrs = new HashMap<String,String>();
+		attrs.put("salesOrg", this.userSessionService.getCurrentUser().getSalesOrg());
+		attrs.put("productCode", productCode);
+		return tMdMaraMapper.selectProductByCode(attrs);
 	}
 
 	@Override

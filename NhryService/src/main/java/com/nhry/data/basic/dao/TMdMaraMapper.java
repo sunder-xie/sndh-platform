@@ -15,7 +15,7 @@ public interface TMdMaraMapper {
 	 * @param matnr
 	 * @return
 	 */
-    TMdMara selectProductByCode(String matnr);
+    TMdMara selectProductByCode(Map<String,String> attrs);
     
     /**
      * 根据产品编号查询产品与产品扩展信息

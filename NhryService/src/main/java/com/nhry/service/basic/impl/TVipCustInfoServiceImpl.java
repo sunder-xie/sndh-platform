@@ -197,4 +197,22 @@ public class TVipCustInfoServiceImpl extends BaseService implements TVipCustInfo
 	public void setVipAcctMapper(TVipAcctMapper vipAcctMapper) {
 		this.vipAcctMapper = vipAcctMapper;
 	}
+
+	@Override
+	public TMdAddress findAddressById(String addressId) {
+		// TODO Auto-generated method stub
+		return this.addressMapper.findAddressById(addressId);
+	}
+
+	@Override
+	public TMdAddress findAddressDetailById(String id) {
+		// TODO Auto-generated method stub
+		return this.addressMapper.findAddressDetailById(id);
+	}
+
+	@Override
+	public List<TMdAddress> findCnAddressByCustNo(String custNo) {
+		// TODO Auto-generated method stub
+		return this.addressMapper.findCnAddressByCustNo(custNo);
+	}
 }

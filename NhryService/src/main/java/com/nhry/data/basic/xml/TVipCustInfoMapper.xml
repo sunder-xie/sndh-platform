@@ -73,7 +73,7 @@
 		it.ITEM_NAME
 		FROM
 		T_SYS_CODE_ITEM it
-		WHERE it.TYPE_CODE = <include refid="mybaties.longhu.constant.SALES_ORG_CONSTANT" /> AND 
+		WHERE it.TYPE_CODE = <include refid="mybaties.constant.SALES_ORG_CONSTANT" /> AND 
 		it.ITEM_CODE = i.SALES_ORG
 		) SALES_ORG,
 		i.VIP_NAME,
@@ -83,7 +83,7 @@
 		it.ITEM_NAME
 		FROM
 		T_SYS_CODE_ITEM it
-		WHERE it.TYPE_CODE = <include refid="mybaties.longhu.constant.COUNTRY_CITY_CONSTANT" /> AND 
+		WHERE it.TYPE_CODE = <include refid="mybaties.constant.COUNTRY_CITY_CONSTANT" /> AND 
 		it.ITEM_CODE = i.PROVINCE
 		) PROVINCE,
 		(
@@ -91,7 +91,7 @@
 		it.ITEM_NAME
 		FROM
 		T_SYS_CODE_ITEM it
-		WHERE it.TYPE_CODE = <include refid="mybaties.longhu.constant.COUNTRY_CITY_CONSTANT" /> AND 
+		WHERE it.TYPE_CODE = <include refid="mybaties.constant.COUNTRY_CITY_CONSTANT" /> AND 
 		it.ITEM_CODE = i.CITY
 		) CITY,
 		(
@@ -99,7 +99,7 @@
 		it.ITEM_NAME
 		FROM
 		T_SYS_CODE_ITEM it
-		WHERE it.TYPE_CODE = <include refid="mybaties.longhu.constant.COUNTRY_CITY_CONSTANT" /> AND 
+		WHERE it.TYPE_CODE = <include refid="mybaties.constant.COUNTRY_CITY_CONSTANT" /> AND 
 		it.ITEM_CODE = i.COUNTY
 		) COUNTY,
 		i.STREET,
@@ -700,7 +700,7 @@
 		it.ITEM_NAME
 		FROM
 		T_SYS_CODE_ITEM it
-		WHERE it.TYPE_CODE = <include refid="mybaties.longhu.constant.SALES_ORG_CONSTANT" /> AND 
+		WHERE it.TYPE_CODE = <include refid="mybaties.constant.SALES_ORG_CONSTANT" /> AND 
 		it.ITEM_CODE = i.SALES_ORG
 		) SALES_ORG,
 		i.VIP_NAME,
@@ -710,7 +710,7 @@
 		it.ITEM_NAME
 		FROM
 		T_SYS_CODE_ITEM it
-		WHERE it.TYPE_CODE = <include refid="mybaties.longhu.constant.COUNTRY_CITY_CONSTANT" /> AND 
+		WHERE it.TYPE_CODE = <include refid="mybaties.constant.COUNTRY_CITY_CONSTANT" /> AND 
 		it.ITEM_CODE = i.PROVINCE
 		) PROVINCE,
 		(
@@ -718,7 +718,7 @@
 		it.ITEM_NAME
 		FROM
 		T_SYS_CODE_ITEM it
-		WHERE it.TYPE_CODE = <include refid="mybaties.longhu.constant.COUNTRY_CITY_CONSTANT" /> AND 
+		WHERE it.TYPE_CODE = <include refid="mybaties.constant.COUNTRY_CITY_CONSTANT" /> AND 
 		it.ITEM_CODE = i.CITY
 		) CITY,
 		(
@@ -726,7 +726,7 @@
 		it.ITEM_NAME
 		FROM
 		T_SYS_CODE_ITEM it
-		WHERE it.TYPE_CODE = <include refid="mybaties.longhu.constant.COUNTRY_CITY_CONSTANT" /> AND 
+		WHERE it.TYPE_CODE = <include refid="mybaties.constant.COUNTRY_CITY_CONSTANT" /> AND 
 		it.ITEM_CODE = i.COUNTY
 		) COUNTY,
 		i.STREET,

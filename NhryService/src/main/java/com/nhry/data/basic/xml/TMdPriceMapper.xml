@@ -222,7 +222,7 @@
 			FROM
 				t_sys_code_item t
 			WHERE
-				t.TYPE_CODE = <include refid="mybaties.longhu.constant.SALES_ORG_CONSTANT"></include>
+				t.TYPE_CODE = <include refid="mybaties.constant.SALES_ORG_CONSTANT"></include>
 			AND t.ITEM_CODE = p.SALES_ORG
 		) SALES_ORG,
 		PRICE_GROUP,
@@ -309,5 +309,38 @@
 		AND pr.MATNR = #{matnr,jdbcType=VARCHAR}
 		ORDER BY
 			p.PRICE_TYPE DESC
+  </select>
+  <select id="getPricesGroupByBn" resultType="com.nhry.service.basic.pojo.PriceGroup"  parameterType="java.util.HashMap">
+     	SELECT
+			p.*
+		FROM
+			T_MD_PRICE p,
+			T_MD_PRICE_BRANCH pb
+		WHERE
+			p.ID = pb.ID
+		AND p.SALES_ORG = #{salesOrg}
+		AND pb.BRANCH_NO = #{branchNo}
+  </select>
+  <select id="getOwnBranchPricesGroupByBn" resultType="com.nhry.service.basic.pojo.PriceGroup"  parameterType="String">
+     	SELECT
+			p.*
+		FROM
+			T_MD_PRICE p,
+			T_MD_PRICE_BRANCH pb
+		WHERE
+			p.ID = pb.ID
+		AND p.SALES_ORG = #{salesOrg}
+		AND pb.SCOPE = '-1'
+  </select>
+  <select id="getDealerBranchPricesGroupByBn" resultType="com.nhry.service.basic.pojo.PriceGroup"  parameterType="java.util.HashMap">
+     	SELECT
+			p.*
+		FROM
+			T_MD_PRICE p,
+			T_MD_PRICE_BRANCH pb
+		WHERE
+			p.ID = pb.ID
+		AND p.SALES_ORG = #{salesOrg}
+		AND pb.SCOPE = #{dealerNo}
   </select>
 </mapper>

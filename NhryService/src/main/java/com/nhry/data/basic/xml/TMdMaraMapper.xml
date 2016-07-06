@@ -44,8 +44,8 @@
 		IMPORTANT_PRD_FLAG, SPEC, SPEC_UNIT, BOT_SPEC,
 		ZBOT_CODE,SALES_ORG,DEALER_NO
 	</sql>
-	<select id="selectProductByCode" resultMap="BaseResultMap" parameterType="java.lang.String">
-		select <include refid="Base_Column_List" /> from t_md_mara where MATNR = #{matnr,jdbcType=VARCHAR}
+	<select id="selectProductByCode" resultMap="BaseResultMap" parameterType="java.util.HashMap">
+		select <include refid="Base_Column_List" /> from t_md_mara where SALES_ORG = #{salesOrg} and MATNR = #{matnr,jdbcType=VARCHAR}
 	</select>
 	<select id="selectProductAndExByCode" resultMap="BaseResultMap" parameterType="java.util.HashMap">
 		SELECT
@@ -426,23 +426,10 @@
 			p.BOT_SPEC,
 			p.ZBOT_CODE,
 			p.SALES_ORG,
-			p.DEALER_NO,
-			pex.SHORT_TXT,
-			pex.PRE_DAYS,
-			pex.BOT_TYPE,
-			pex.MATNR EX_MATNR,
-			pex.SALES_FLAG,
-			pex.RET_BOT_FLAG,
-			pex.CREATE_AT,
-			pex.CREATE_BY,
-			pex.CREATE_BY_TXT,
-			pex.LAST_MODIFIED,
-			pex.LAST_MODIFIED_BY,
-			pex.LAST_MODIFIED_BY_TXT
+			p.DEALER_NO 
 		FROM
 			t_md_mara p
-		LEFT JOIN t_md_mara_ex pex ON p.MATNR = pex.MATNR
-		AND p.MATNR NOT IN (
+		where p.MATNR NOT IN (
 			SELECT
 				nl.matnr
 			FROM
@@ -451,7 +438,7 @@
 				nl.sales_org = #{salesOrg}
 			AND nl.dealer_no = #{dealerNo}
 		)
-		AND p.SALES_ORG = #{salesOrg};
+		AND p.SALES_ORG = #{salesOrg}
 	</select>
 	<select id="getCompMaras" resultMap="BaseResultMap" parameterType="java.util.Map">
 	    SELECT
@@ -472,30 +459,17 @@
 			p.BOT_SPEC,
 			p.ZBOT_CODE,
 			p.SALES_ORG,
-			p.DEALER_NO,
-			pex.SHORT_TXT,
-			pex.PRE_DAYS,
-			pex.BOT_TYPE,
-			pex.MATNR EX_MATNR,
-			pex.SALES_FLAG,
-			pex.RET_BOT_FLAG,
-			pex.CREATE_AT,
-			pex.CREATE_BY,
-			pex.CREATE_BY_TXT,
-			pex.LAST_MODIFIED,
-			pex.LAST_MODIFIED_BY,
-			pex.LAST_MODIFIED_BY_TXT
+			p.DEALER_NO 
 		FROM
-			t_md_mara p
-		LEFT JOIN t_md_mara_ex pex ON p.MATNR = pex.MATNR
-		AND p.MATNR NOT IN (
+			t_md_mara p WHERE p.MATNR not in (
 			SELECT
 				nl.matnr
 			FROM
 				T_BRANCH_NOTSELL_LIST nl
 			WHERE
-			 nl.dealer_no = null and nl.sales_org = #{salesOrg}
+				nl.dealer_no = NULL
+			AND nl.sales_org = #{salesOrg}
 		)
-		AND p.SALES_ORG = #{salesOrg};
+		AND p.SALES_ORG = #{salesOrg}
 	</select>
 </mapper>
