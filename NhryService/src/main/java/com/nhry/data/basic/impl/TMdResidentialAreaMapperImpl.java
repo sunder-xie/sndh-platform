@@ -84,8 +84,8 @@ public class TMdResidentialAreaMapperImpl implements TMdResidentialAreaMapper {
     }
 
     @Override
-    public List<TMdResidentialArea> getUnDistAreas() {
-        return sqlSessionTemplate.selectList("getUnDistAreas");
+    public List<TMdResidentialArea> getUnDistAreas(String salesOrg) {
+        return sqlSessionTemplate.selectList("getUnDistAreas",salesOrg);
     }
 
     @Override

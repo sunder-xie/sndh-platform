@@ -1,16 +1,21 @@
 package com.nhry.service.milktrans.impl;
 
+import com.nhry.common.auth.UserSessionService;
 import com.nhry.common.exception.MessageCode;
 import com.nhry.common.exception.ServiceException;
-import com.nhry.data.milktrans.dao.TRequireOrderMapper;
-import com.nhry.data.milktrans.domain.TMstRequireOrder;
+import com.nhry.data.auth.domain.TSysUser;
+import com.nhry.data.basic.dao.TMdMaraMapper;
+import com.nhry.data.basic.domain.TMdMara;
+import com.nhry.data.milktrans.dao.TSsmReqGoodsOrderItemMapper;
+import com.nhry.data.milktrans.dao.TSsmReqGoodsOrderMapper;
+import com.nhry.data.milktrans.domain.TSsmReqGoodsOrder;
+import com.nhry.data.milktrans.domain.TSsmReqGoodsOrderItem;
+import com.nhry.data.milktrans.domain.TSsmReqGoodsOrderItemUpt;
 import com.nhry.data.order.dao.TOrderDaliyPlanItemMapper;
 import com.nhry.data.order.domain.TOrderDaliyPlanItem;
-import com.nhry.model.milktrans.OrderRequireItem;
-import com.nhry.model.milktrans.RequireOrderModel;
-import com.nhry.model.milktrans.RequireOrderSearch;
+import com.nhry.model.milktrans.*;
 import com.nhry.service.milktrans.dao.RequireOrderService;
-import com.nhry.service.order.impl.OrderServiceImpl;
+import com.nhry.utils.PrimaryKeyUtils;
 import org.apache.commons.lang3.StringUtils;
 
 import java.util.*;
@@ -20,163 +25,225 @@ import java.util.*;
  */
 public class RequireOrderServiceImpl implements RequireOrderService {
 
-    private TRequireOrderMapper tRequireOrderMapper;
+    private TSsmReqGoodsOrderItemMapper tSsmReqGoodsOrderItemMapper;
+    private TSsmReqGoodsOrderMapper  tSsmReqGoodsOrderMapper ;
     private TOrderDaliyPlanItemMapper tOrderDaliyPlanItemMapper;
-    public void settRequireOrderMapper(TRequireOrderMapper tRequireOrderMapper) {
-        this.tRequireOrderMapper = tRequireOrderMapper;
+    private UserSessionService userSessionService;
+    private TMdMaraMapper tMdMaraMapper;
+    public void settSsmReqGoodsOrderItemMapper(TSsmReqGoodsOrderItemMapper tSsmReqGoodsOrderItemMapper) {
+        this.tSsmReqGoodsOrderItemMapper = tSsmReqGoodsOrderItemMapper;
     }
-
+    public void setUserSessionService(UserSessionService userSessionService) {
+        this.userSessionService = userSessionService;
+    }
+    public void settSsmReqGoodsOrderMapper(TSsmReqGoodsOrderMapper tSsmReqGoodsOrderMapper) {
+        this.tSsmReqGoodsOrderMapper = tSsmReqGoodsOrderMapper;
+    }
     public void settOrderDaliyPlanItemMapper(TOrderDaliyPlanItemMapper tOrderDaliyPlanItemMapper) {
         this.tOrderDaliyPlanItemMapper = tOrderDaliyPlanItemMapper;
     }
+    public void settMdMaraMapper(TMdMaraMapper tMdMaraMapper) {
+        this.tMdMaraMapper = tMdMaraMapper;
+    }
 
     @Override
-    public RequireOrderModel creatRequireOrder(RequireOrderModel rModel) {
-
-        RequireOrderSearch sModel = new RequireOrderSearch();
-        sModel.setRequireDate(rModel.getRequireDate());
-        sModel.setBranchNo(rModel.getBranchNo());
-
-        List<TMstRequireOrder> orderlist = this.tRequireOrderMapper.searchRequireOrder(sModel);
-        if(orderlist!=null && orderlist.size()>0){
-            throw new ServiceException(MessageCode.LOGIC_ERROR,"当天要货计划已存在");
-        }
+    public RequireOrderModel creatRequireOrder() {
+        RequireOrderSearch rModel = new RequireOrderSearch();
         Date today = new Date();
-        Date requireDate = rModel.getRequireDate();
-        rModel.setPreDays(OrderServiceImpl.daysOfTwo(today,requireDate));
-        List<TOrderDaliyPlanItem> items = tOrderDaliyPlanItemMapper.selectDaliyPlansByBranchAndDay(rModel);
-        //将日预定单生成的要货计划存放数据库
-        for(TOrderDaliyPlanItem entry :items ){
-            TMstRequireOrder torder = new TMstRequireOrder();
-            torder.setRequireDate(requireDate);
-            torder.setBranchNo(rModel.getBranchNo());
-            torder.setMatnr(entry.getMatnr());
-            torder.setCreateAt(today);
-            torder.setQty(entry.getQty());
-            torder.setIncreQty(0);
-            torder.setStatus("10");
-            this.tRequireOrderMapper.insertRequireOrder(torder);
+        TSysUser user = userSessionService.getCurrentUser();
+        rModel.setBranchNo(user.getBranchNo());
+        rModel.setRequireDate(today);
+        rModel.setSalesOrg(user.getSalesOrg());
+        TSsmReqGoodsOrder order = null;
+        //首先查看今天的要货计划是否已存在
+        order = this.tSsmReqGoodsOrderMapper.searchRequireOrder(rModel);
+
+        if(order !=null){
+            throw new ServiceException(MessageCode.LOGIC_ERROR,"当天要货计划已存在");
+        }else{
+            order = new TSsmReqGoodsOrder();
+            String orderNo = PrimaryKeyUtils.generateUuidKey();
+            order.setRequiredDate(today);
+            order.setStatus("10");
+            order.setOrderNo(orderNo);
+            order.setOrderDate(today);
+            order.setBranchNo(user.getBranchNo());
+            order.setCreateAt(today);
+            order.setCreateBy(user.getLoginName());
+            order.setCreateByTxt(user.getDisplayName());
+            order.setLastModified(today);
+            order.setLastModifiedByTxt(user.getDisplayName());
+            order.setLastModifiedBy(user.getLoginName());
+            tSsmReqGoodsOrderMapper.insertRequireOrder(order);
         }
-        return this.searchRequireOrder(sModel);
+        //查看明天和后天的订单
+        int k = 0;
+        for(int i = 1;i<=2;i++){
+            Calendar calendar = new GregorianCalendar();
+            calendar.setTime(today);
+            calendar.add(calendar.DATE,i);//把日期往后增加i天.整数往后推 这个时间就是日期往后推一天的结果
+            Date requireDate = calendar.getTime();
+            rModel.setRequireDate(requireDate);
+            rModel.setPreDays(i);
+            List<TOrderDaliyPlanItem> items = tOrderDaliyPlanItemMapper.selectDaliyPlansByBranchAndDay(rModel);
+            //将i天后的日订单中符合的产品加入到 生成的要货计划
+            if(items!=null && items.size()>0){
+                for(int j=0 ;j<items.size();j++ ){
+                    k++;
+                    TOrderDaliyPlanItem entry = items.get(j);
+                    TSsmReqGoodsOrderItem item = new TSsmReqGoodsOrderItem();
+                    item.setFlag("1");
+                    item.setItemNo(k);
+                    item.setUnit(entry.getUnit());
+                    item.setOrderDate(today);
+                    item.setOrderNo(order.getOrderNo());
+                    item.setMatnr(entry.getMatnr());
+                    item.setMatnrTxt(entry.getMatnrTxt());
+                    item.setQty(entry.getQty());
+                    item.setIncreQty(0);
+                    this.tSsmReqGoodsOrderItemMapper.insertRequireOrderItem(item);
+                }
+            }
 
-    }
+        }
+        //查询出今天的要货计划
+        return this.searchRequireOrder(today);
 
-
-
-    @Override
-    public int insertRequireOrder(TMstRequireOrder order) {
-        return tRequireOrderMapper.insertRequireOrder(order);
     }
 
     /**
-     * 根据 奶站编号 和 日期 获取当前日期的要货计划
-     * @param rModel
+     * 根据 日期 获取当前登录人所在奶站的 要货计划
+     * @param requiredDate
      * @return
      */
     @Override
-    public RequireOrderModel searchRequireOrder(RequireOrderSearch rModel) {
-        List<TMstRequireOrder> orderlist = this.tRequireOrderMapper.searchRequireOrder(rModel);
+    public RequireOrderModel searchRequireOrder(Date  requiredDate) {
+        if(requiredDate == null){
+            throw new ServiceException(MessageCode.LOGIC_ERROR,"查询要货计划的日期不能为空");
+        }
+        TSysUser user = userSessionService.getCurrentUser();
         RequireOrderModel orderModel = new RequireOrderModel();
-        if(orderlist!= null && orderlist.size()>0){
-            TMstRequireOrder rorder = orderlist.get(0);
-            orderModel.setBranchNo(rorder.getBranchNo());
-            orderModel.setRequireDate(rorder.getRequireDate());
-            List<OrderRequireItem> entry = new ArrayList<OrderRequireItem>();
-            for(TMstRequireOrder order :orderlist){
-                if(StringUtils.isBlank(orderModel.getStatus())){
-                    orderModel.setStatus(order.getStatus());
-                }
-                OrderRequireItem item = new OrderRequireItem();
-                item.setMatnr(order.getMatnr());
-                item.setMatnrTxt(order.getMatnrTxt());
-                item.setQty(order.getQty());
-                item.setIncreQty(order.getIncreQty());
-                entry.add(item);
-            }
-            orderModel.setEntries(entry);
-        }
-        return orderModel;
-    }
+        RequireOrderSearch rModel = new RequireOrderSearch();
+        String salesOrg = user.getSalesOrg();
+        rModel.setBranchNo(user.getBranchNo());
+        rModel.setRequireDate(requiredDate);
+        TSsmReqGoodsOrder order  = this.tSsmReqGoodsOrderMapper.searchRequireOrder(rModel);
 
+        if(order!= null){
+            orderModel.setStatus(order.getStatus());
+            orderModel.setRequireDate(order.getOrderDate());
+            orderModel.setBranchNo(order.getBranchNo());
+
+            List<TSsmReqGoodsOrderItem> items = this.tSsmReqGoodsOrderItemMapper.getReqGoodsItemsByOrderNo(order.getOrderNo());
+            List<OrderRequireItem> entries = new ArrayList<OrderRequireItem>();
+            for(TSsmReqGoodsOrderItem item :items){
+                OrderRequireItem entry = new OrderRequireItem();
+                Map<String,String> map = new HashMap<String,String>();
+                map.put("salesOrg",salesOrg);
+                map.put("matnr",item.getMatnr());
+
+                TMdMara mara = tMdMaraMapper.selectProductByCode(map);
+                entry.setMatnr(item.getMatnr());
+                entry.setMatnrTxt(mara.getMatnrTxt());
+                entry.setQty(item.getQty());
+                entry.setIncreQty(item.getIncreQty());
+                entries.add(entry);
+            }
+            orderModel.setEntries(entries);
+        }
+            return orderModel;
+    }
     /**
-     * 修改要货计划
+     * 修改新添加的要货计划行
      * @param rModel
      * @return
      */
     @Override
-    public int uptRequireOrder(RequireOrderModel rModel) {
-        //获取数据库中存好的要货计划
-        RequireOrderSearch search = new RequireOrderSearch();
-        search.setBranchNo(rModel.getBranchNo());
-        search.setRequireDate(rModel.getRequireDate());
-        RequireOrderModel orderModel = this.searchRequireOrder(search);
+    public int uptNewRequireOrderItem(UpdateNewRequiredModel rModel) {
 
-        if(orderModel.getStatus() == "30"){
-            throw new ServiceException(MessageCode.LOGIC_ERROR,"要货订单已确定，不能改变");
-        }
-        if(orderModel == rModel){
-            throw new ServiceException(MessageCode.LOGIC_ERROR,"要货计划未改变");
+       try{
+           TSysUser user = userSessionService.getCurrentUser();
+           String orderNo = rModel.getOrderNo();
+           TSsmReqGoodsOrder orderModel = this.tSsmReqGoodsOrderMapper.getRequireOrderByNo(orderNo);
+           //获取数据库中存好的要货计划 如果状态已经确定，则不能修改
+           if(orderModel.getStatus() == "30"){
+               throw new ServiceException(MessageCode.LOGIC_ERROR,"要货订单已确定，不能改变");
+           }
+
+           Map<String,String> map = new HashMap<String,String>();
+           map.put("salesOrg",user.getSalesOrg());
+           map.put("matnr",rModel.getMatnr());
+
+           TMdMara mara = tMdMaraMapper.selectProductByCode(map);
+           TSsmReqGoodsOrderItemUpt itemUpt = new TSsmReqGoodsOrderItemUpt();
+           itemUpt.setMatnr(rModel.getMatnr());
+           itemUpt.setOrderNo(orderNo);
+           itemUpt.setMatnrTxt(mara.getMatnrTxt());
+           itemUpt.setIncreQty(rModel.getIncreQty());
+           itemUpt.setQty(rModel.getQty());
+           itemUpt.setUnit(mara.getBaseUnit());
+           itemUpt.setOldMatnr(rModel.getOldMatnr());
+           this.tSsmReqGoodsOrderItemMapper.uptNewReqGoodsItem(itemUpt);
+           return 1;
+       }catch (Exception e){
+           throw new ServiceException(MessageCode.LOGIC_ERROR,"修改失败");
+       }
+
+    }
+
+    @Override
+    public int addRequireOrderItem(TSsmReqGoodsOrderItem item) {
+        String orderNo = item.getOrderNo();
+        TSsmReqGoodsOrderItem oldItem = tSsmReqGoodsOrderItemMapper.getReqGoodsItemsByMatnrAndOrderNo(orderNo,item.getMatnr());
+        if(oldItem!=null){
+            throw new ServiceException(MessageCode.LOGIC_ERROR,"该产品已存在，请重新选择");
         }
 
-        int add = 0;
-        int upt = 0;
-        int del = 0;
-        boolean success = true;
+        TSysUser user = userSessionService.getCurrentUser();
+        TSsmReqGoodsOrder orderModel = this.tSsmReqGoodsOrderMapper.getRequireOrderByNo(orderNo);
+        orderModel.setLastModified(new Date());
+        orderModel.setLastModifiedBy(user.getLoginName());
+        orderModel.setLastModifiedByTxt(user.getDisplayName());
+        tSsmReqGoodsOrderMapper.uptRequireGoodsModifyInfo(orderModel);
+
+
+        if(StringUtils.isBlank(item.getUnit())){
+            Map<String,String> map = new HashMap<String,String>();
+            map.put("salesOrg",user.getSalesOrg());
+            map.put("matnr",item.getMatnr());
+            TMdMara mara = tMdMaraMapper.selectProductByCode(map);
+            item.setUnit(mara.getBaseUnit());
+        }
+        item.setFlag("2");
+        return tSsmReqGoodsOrderItemMapper.insertRequireOrderItem(item);
+    }
+
+    @Override
+    public int delRequireOrderItem(ReqGoodsOrderItemSearch item) {
+        TSsmReqGoodsOrderItem oldItem = tSsmReqGoodsOrderItemMapper.getReqGoodsItemsByMatnrAndOrderNo(item.getOrderNo(),item.getMatnr());
+        if("1".equals(oldItem.getFlag())){
+            throw new ServiceException(MessageCode.LOGIC_ERROR,"生成的要货计划行不能删除");
+        }
+        return tSsmReqGoodsOrderItemMapper.delRequireOrderItem(item);
+    }
+
+    @Override
+    public int uptRequireOrder(UpdateRequiredModel uModel) {
+
         try{
-            //前台传来的要货计划entry
-            List<OrderRequireItem> items = rModel.getEntries();
-            //数据库中存放的要货计划enry
-            List<OrderRequireItem> oldItems = orderModel.getEntries();
-            //存放数据库中取出来的产品，key存放产品code
-            Set<String> oldCodeSet = new HashSet<String>();
-            Map<String,OrderRequireItem> oldMaps =new HashMap<String,OrderRequireItem>();
-            for(OrderRequireItem item : oldItems) {
-                oldCodeSet.add(item.getMatnr());
-                oldMaps.put(item.getMatnr(),item);
-
-            }
-            for(OrderRequireItem item : items){
-                String matnr = item.getMatnr();
-                TMstRequireOrder tMstRequireOrder = new TMstRequireOrder();
-                tMstRequireOrder.setBranchNo(rModel.getBranchNo());
-                tMstRequireOrder.setRequireDate(rModel.getRequireDate());
-                tMstRequireOrder.setMatnr(matnr);
-                tMstRequireOrder.setQty(item.getQty());
-                tMstRequireOrder.setIncreQty(item.getIncreQty());
-                //该产品存在，则该产品有两种可能：1数量修改，2 没有变化
-                if(oldCodeSet.contains(matnr)){
-                    oldCodeSet.remove(matnr);
-                    OrderRequireItem oldItem = oldMaps.get(matnr);
-                    //数量发生变化  则说明做了修改 ， 更新数据
-                    if(oldItem.getQty() != item.getQty() || oldItem.getIncreQty() != item.getIncreQty()){//
-                        tMstRequireOrder.setStatus("20");
-                        upt = tRequireOrderMapper.uptRequireOrder(tMstRequireOrder);
-                    }
-                    oldMaps.remove(matnr);
-                }else {
-                    //该产品不存在：新添加的
-                    tMstRequireOrder.setStatus("10");
-                    add = tRequireOrderMapper.insertRequireOrder(tMstRequireOrder);
-
-                }
-            }
-            //如果oldCodeSet.size()>0 则说明这里面的产品为删除的产品
-            if(oldCodeSet.size()>0){
-                for(String matnr : oldCodeSet){
-                    OrderRequireItem oldItem = oldMaps.get(matnr);
-                    TMstRequireOrder tMstRequireOrder = new TMstRequireOrder();
-                    tMstRequireOrder.setBranchNo(rModel.getBranchNo());
-                    tMstRequireOrder.setRequireDate(rModel.getRequireDate());
-                    tMstRequireOrder.setMatnr(matnr);
-                    del = tRequireOrderMapper.delRequireOrder(tMstRequireOrder);
-                }
+            String orderNo = uModel.getOrderNo();
+            TSsmReqGoodsOrder orderModel = this.tSsmReqGoodsOrderMapper.getRequireOrderByNo(orderNo);
+            //获取数据库中存好的要货计划 如果状态已经确定，则不能修改
+            if(orderModel.getStatus() == "30"){
+                throw new ServiceException(MessageCode.LOGIC_ERROR,"要货订单已确定，不能改变");
             }
 
+
+            this.tSsmReqGoodsOrderItemMapper.uptReqGoodsItem(uModel);
+            return 1;
         }catch (Exception e){
-            success = false;
-            throw new ServiceException(MessageCode.LOGIC_ERROR,"更新要货订单失败");
+            throw new ServiceException(MessageCode.LOGIC_ERROR,"修改失败");
         }
-        return add + upt +del;
     }
 
 

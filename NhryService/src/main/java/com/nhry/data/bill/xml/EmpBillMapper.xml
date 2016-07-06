@@ -118,7 +118,7 @@
     </select>
 
     <select id="empAccoDispFeeByProduct" resultMap="EmpAccoDispFeeResultMap"  parameterType="com.nhry.model.bill.EmpDispDetialInfoSearch" >
-        SELECT t.MATNR,SUM(t.QTY)
+        SELECT t.MATNR,SUM(t.QTY) QTY
         FROM
         (
         SELECT  MATNR,QTY
@@ -138,7 +138,7 @@
         UNION  ALL
 
         SELECT MATNR,QTY
-            FROM  t_mst_inside_sal_order_item s LEFT JOIN t_preorder o on i.ORDER_NO = o.ORDER_NO
+            FROM  t_mst_inside_sal_order_item s LEFT JOIN t_preorder o on s.ORG_ORDER_NO = o.ORDER_NO
             <if test="branchNo!=null and ''!=branchNo">
                 and o.BRANCH_NO = #{branchNo,jdbcType=VARCHAR}
             </if>

@@ -6,7 +6,9 @@ import com.nhry.common.exception.MessageCode;
 import com.nhry.common.exception.ServiceException;
 import com.nhry.data.auth.domain.TSysUser;
 import com.nhry.data.basic.dao.TMdBranchEmpMapper;
+import com.nhry.data.basic.dao.TMdMaraExMapper;
 import com.nhry.data.basic.domain.TMdBranchEmp;
+import com.nhry.data.basic.domain.TMdMaraEx;
 import com.nhry.data.bill.dao.EmpBillMapper;
 import com.nhry.data.bill.dao.TMdDispRateItemMapper;
 import com.nhry.data.bill.dao.TMdDispRateMapper;
@@ -18,6 +20,7 @@ import com.nhry.utils.PrimaryKeyUtils;
 import org.apache.commons.lang3.StringUtils;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -30,6 +33,13 @@ public class EmpBillServiceImpl implements EmpBillService {
     private TMdDispRateItemMapper tMdDispRateItemMapper;
     private TMdBranchEmpMapper branchEmpMapper;
     private UserSessionService userSessionService;
+
+    private TMdMaraExMapper tMdMaraExMapper;
+
+    public void settMdMaraExMapper(TMdMaraExMapper tMdMaraExMapper) {
+        this.tMdMaraExMapper = tMdMaraExMapper;
+    }
+
     public void setUserSessionService(UserSessionService userSessionService) {
         this.userSessionService = userSessionService;
     }
@@ -79,7 +89,7 @@ public class EmpBillServiceImpl implements EmpBillService {
      * @return
      */
     @Override
-    public BigDecimal CalculateEmpTransRate(String empNo,int dispNum) {
+    public BigDecimal CalculateEmpTransRateByNum(String empNo,int dispNum) {
         TMdBranchEmp emp =branchEmpMapper.selectBranchEmpByNo(empNo);
         if(emp == null){
             throw new ServiceException(MessageCode.LOGIC_ERROR,"该员工不存在！");
@@ -113,21 +123,55 @@ public class EmpBillServiceImpl implements EmpBillService {
         throw new ServiceException(MessageCode.LOGIC_ERROR,"配送数 不在输入的阶梯范围内!!! 请审查");
     }
 
+    /**
+     * 获取按产品结算的运送费率
+     * @param matnr 产品编码
+     * @param salesOrg  销售组织
+     * @return
+     */
+
+    public BigDecimal CalculateEmpTransRateByProduct(String matnr,String salesOrg){
+        TMdMaraEx product = tMdMaraExMapper.getProductTransRateByCode(matnr,salesOrg);
+        if(product == null){
+            throw new ServiceException(MessageCode.LOGIC_ERROR,"产品"+matnr+"在分公司"+salesOrg+"下存在");
+        }
+        return product.getRate();
+    }
+
+    /**
+     * 计算送奶工的配送费
+     * @param eSearch
+     * @param empNo
+     * @return
+     */
     @Override
-    public BigDecimal CalculateEmpTransFee(EmpDispDetialInfoSearch eSearch,String type) {
+    public BigDecimal CalculateEmpTransFee(EmpDispDetialInfoSearch eSearch,String empNo) {
+        TMdBranchEmp emp = branchEmpMapper.selectBranchEmpByEmpNo(empNo);
+        String type = emp.getSalaryMet();
+        String salesOrg = emp.getSalesOrg();
+        if(eSearch.getEmpNo() == null){
+            eSearch.setEmpNo(empNo);
+        }
+        BigDecimal result = new BigDecimal(0);
         //按产品计算配送费
         if("20".equals(type)){
             List<EmpAccoDispFeeByProduct> detail = empBillMapper.empAccoDispFeeByProduct(eSearch);
-            for(EmpAccoDispFeeByProduct pro: detail){
-
+            if(detail!=null && detail.size()>0){
+                for(EmpAccoDispFeeByProduct pro: detail){
+                    BigDecimal dispRate = this.CalculateEmpTransRateByProduct(pro.getMatnr(),salesOrg);
+                    BigDecimal dispFee = dispRate.multiply(new BigDecimal(pro.getQty()));
+                    result =  result.add(dispFee);
+                }
             }
+
         }
         //按 数量计算配送费
         else{
             int dispNum = empBillMapper.empAccoDispFeeByNum(eSearch);
-            return new BigDecimal(dispNum);
+            BigDecimal dispFee = this.CalculateEmpTransRateByNum(empNo,dispNum).multiply(new BigDecimal(dispNum));
+             result =  result.add(dispFee);
         }
-        return null;
+        return result;
     }
 
 
@@ -142,7 +186,7 @@ public class EmpBillServiceImpl implements EmpBillService {
         if(empSalList !=null && empSalList.size()>0){
             for (EmpSalaryBillModel  empSal : empSalList){
                 //配送费
-               BigDecimal dispFee =  this.CalculateEmpTransFee(eSearch,empSal.getSalaryMet());
+               BigDecimal dispFee =  this.CalculateEmpTransFee(eSearch,empSal.getEmpNo());
                 empSal.setDispFee(dispFee);
                 //奶瓶回收率
             }
@@ -153,10 +197,9 @@ public class EmpBillServiceImpl implements EmpBillService {
 
     @Override
     public int uptEmpDispRate(SaleOrgDispRateModel sModel) {
-
        try{
            TMdDispRate dispRate =  null;
-           String salesOrg = sModel.getSaleOrg();
+           String salesOrg = sModel.getSalesOrg();
            TSysUser user =  userSessionService.getCurrentUser();
            dispRate = tMdDispRateMapper.getDispRateBySaleOrg(salesOrg);
            //原来的结算方式已有 则更新
@@ -168,7 +211,7 @@ public class EmpBillServiceImpl implements EmpBillService {
                tMdDispRateMapper.uptDispRateTypeBySaleOrg(dispRate);
            }else{
                dispRate = new  TMdDispRate();
-               dispRate.setSalesOrg(sModel.getSaleOrg());
+               dispRate.setSalesOrg(salesOrg);
                dispRate.setSalaryMet(sModel.getSalaryMet());
                dispRate.setCreateBy(user.getLoginName());
                dispRate.setCreateByTxt(user.getDisplayName());
@@ -205,10 +248,67 @@ public class EmpBillServiceImpl implements EmpBillService {
                        tMdDispRateItemMapper.addDispRateItem(item);
                    }
                }
+           }else{
+               List<DispProductEntry> entries = sModel.getDispProductEntries();
+               if(entries!=null && entries.size()>0){
+                   for (DispProductEntry entry :entries ){
+                       TMdMaraEx ex = new TMdMaraEx();
+                       ex.setSalesOrg(salesOrg);
+                       ex.setMatnr(entry.getMatnr());
+                       ex.setRate(entry.getDispRate());
+                       tMdMaraExMapper.uptProductExByCodeAndSalesOrg(ex);
+                   }
+               }
            }
            return 1;
-       }catch (Exception e){
+      }catch (Exception e){
            throw new ServiceException(MessageCode.LOGIC_ERROR,"更新或创建失败！");
        }
+    }
+
+    /**
+     * 获取当前登录人所在销售组织下的配送费率
+     * @return
+     */
+    @Override
+    public SaleOrgDispRateModel getSalesOrgDispRate() {
+        SaleOrgDispRateModel model = new SaleOrgDispRateModel();
+        TSysUser user = userSessionService.getCurrentUser();
+        String salesOrg = user.getSalesOrg();
+        if(StringUtils.isBlank(salesOrg)){
+            throw  new ServiceException(MessageCode.LOGIC_ERROR,"当前登录人没分配销售组织，数据有问题！");
+        }
+        TMdDispRate rate = tMdDispRateMapper.getDispRateBySaleOrg(salesOrg);
+        model.setSalesOrg(salesOrg);
+        model.setSalaryMet(rate.getSalaryMet());
+        //如果是数量
+        if("10".equals(rate.getSalaryMet())){
+            List<TMdDispRateItem> items = tMdDispRateItemMapper.getDispRateNumBySalOrg(salesOrg);
+            List<DispNumEntry> entries = new ArrayList<DispNumEntry>();
+            if(items!=null && items.size()>0){
+                for(TMdDispRateItem item : items){
+                    DispNumEntry entry  = new DispNumEntry();
+                    entry.setNum(item.getItemValue());
+                    entry.setDispRate(item.getRate());
+                    entries.add(entry);
+                }
+            }
+            model.setDispNumEntries(entries);
+
+        }else{
+            List<TMdMaraEx> items = tMdMaraExMapper.getProductsBySalesOrg(salesOrg);
+            List<DispProductEntry> entries = new ArrayList<DispProductEntry>();
+            if(items!=null && items.size()>0){
+                for(TMdMaraEx item: items){
+                    DispProductEntry entry = new DispProductEntry();
+                    entry.setDispRate(item.getRate());
+                    entry.setMatnr(item.getMatnr());
+                    entries.add(entry);
+                }
+            }
+            model.setDispProductEntries(entries);
+        }
+
+        return model;
     }
 }

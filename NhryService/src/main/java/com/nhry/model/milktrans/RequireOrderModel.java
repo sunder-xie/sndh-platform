@@ -11,20 +11,13 @@ import java.util.List;
  */
 @ApiModel(value = "ReturnOrderModel", description = "要货计划对象")
 public class RequireOrderModel implements Serializable {
-
     private String branchNo;
     private Date requireDate;
     private String status;
-    private int  preDays;
     List<OrderRequireItem> entries;
+
     public String getBranchNo() {
         return branchNo;
-    }
-    public int  getPreDays() {
-        return preDays;
-    }
-    public void setPreDays(int  preDays) {
-        this.preDays = preDays;
     }
 
     public void setBranchNo(String branchNo) {

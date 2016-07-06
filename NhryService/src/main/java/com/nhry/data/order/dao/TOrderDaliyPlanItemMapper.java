@@ -3,7 +3,7 @@ package com.nhry.data.order.dao;
 import com.nhry.data.order.domain.TOrderDaliyPlanItem;
 import com.nhry.data.order.domain.TOrderDaliyPlanItemKey;
 import com.nhry.data.order.domain.TPreOrder;
-import com.nhry.model.milktrans.RequireOrderModel;
+import com.nhry.model.milktrans.RequireOrderSearch;
 
 import java.util.Date;
 import java.util.List;
@@ -39,5 +39,5 @@ public interface TOrderDaliyPlanItemMapper {
 
     int updateDaliyPlansToStop(TPreOrder record);
 
-    List<TOrderDaliyPlanItem> selectDaliyPlansByBranchAndDay(RequireOrderModel rModel);
+    List<TOrderDaliyPlanItem> selectDaliyPlansByBranchAndDay(RequireOrderSearch rModel);
 }

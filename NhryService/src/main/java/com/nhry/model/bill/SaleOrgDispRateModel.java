@@ -6,16 +6,17 @@ import java.util.List;
  * Created by gongjk on 2016/7/4.
  */
 public class SaleOrgDispRateModel {
-    private String saleOrg;
+    private String salesOrg;
     private String salaryMet;
     List<DispNumEntry> dispNumEntries;
+    List<DispProductEntry> dispProductEntries;
 
-    public String getSaleOrg() {
-        return saleOrg;
+    public String getSalesOrg() {
+        return salesOrg;
     }
 
-    public void setSaleOrg(String saleOrg) {
-        this.saleOrg = saleOrg;
+    public void setSalesOrg(String salesOrg) {
+        this.salesOrg = salesOrg;
     }
 
     public String getSalaryMet() {
@@ -32,5 +33,13 @@ public class SaleOrgDispRateModel {
 
     public void setDispNumEntries(List<DispNumEntry> dispNumEntries) {
         this.dispNumEntries = dispNumEntries;
+    }
+
+    public List<DispProductEntry> getDispProductEntries() {
+        return dispProductEntries;
+    }
+
+    public void setDispProductEntries(List<DispProductEntry> dispProductEntries) {
+        this.dispProductEntries = dispProductEntries;
     }
 }

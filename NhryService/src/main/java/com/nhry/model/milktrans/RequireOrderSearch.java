@@ -9,6 +9,24 @@ import java.util.Date;
 public class RequireOrderSearch  implements Serializable {
     private String branchNo;
     private Date requireDate;
+    private int preDays;
+    private String salesOrg;
+
+    public String getSalesOrg() {
+        return salesOrg;
+    }
+
+    public void setSalesOrg(String salesOrg) {
+        this.salesOrg = salesOrg;
+    }
+
+    public int getPreDays() {
+        return preDays;
+    }
+
+    public void setPreDays(int preDays) {
+        this.preDays = preDays;
+    }
 
     public String getBranchNo() {
         return branchNo;

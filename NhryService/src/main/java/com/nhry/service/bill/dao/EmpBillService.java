@@ -16,11 +16,13 @@ public interface EmpBillService {
 
     PageInfo empAccountReceAmount(EmpDispDetialInfoSearch eSearch);
 
-    public BigDecimal CalculateEmpTransRate(String empNo,int dispNum);
+    public BigDecimal CalculateEmpTransRateByNum(String empNo,int dispNum);
 
     public BigDecimal CalculateEmpTransFee(EmpDispDetialInfoSearch eSearch,String type);
 
     PageInfo empSalaryRep(EmpDispDetialInfoSearch eSearch);
 
     int uptEmpDispRate(SaleOrgDispRateModel sModel);
+
+   public SaleOrgDispRateModel getSalesOrgDispRate();
 }

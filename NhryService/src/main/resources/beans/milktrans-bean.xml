@@ -14,12 +14,18 @@
 		http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-4.0.xsd"
 		default-lazy-init="true">
 	<!--要货计划-->
-	<bean id="tRequireOrderMapper" class="com.nhry.data.milktrans.impl.TRequireOrderMapperImpl">
+	<bean id="tSsmReqGoodsOrderItemMapper" class="com.nhry.data.milktrans.impl.TSsmReqGoodsOrderItemMapperImpl">
 	   <property name="sqlSessionTemplate"  ref="dynamicSqlSessionTemplate"></property>
 	</bean>
+	<bean id="tSsmReqGoodsOrderMapper" class="com.nhry.data.milktrans.impl.TSsmReqGoodsOrderMapperImpl">
+		<property name="sqlSessionTemplate"  ref="dynamicSqlSessionTemplate"></property>
+	</bean>
 	<bean id="requireOrderService" class="com.nhry.service.milktrans.impl.RequireOrderServiceImpl">
-	   <property name="tRequireOrderMapper"  ref="tRequireOrderMapper"></property>
+	   <property name="tSsmReqGoodsOrderMapper"  ref="tSsmReqGoodsOrderMapper"></property>
+		<property name="tSsmReqGoodsOrderItemMapper"  ref="tSsmReqGoodsOrderItemMapper"></property>
+		<property name="userSessionService"  ref="userSessionService"></property>
 		<property name="tOrderDaliyPlanItemMapper"  ref="tOrderDaliyPlanItemMapper"></property>
+		<property name="tMdMaraMapper"  ref="maraMapper"></property>
 	</bean>
 
 	<!--回瓶管理-->

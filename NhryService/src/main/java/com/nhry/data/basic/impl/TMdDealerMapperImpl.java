@@ -1,10 +1,10 @@
 package com.nhry.data.basic.impl;
 
-import java.util.List;
-
 import com.nhry.common.datasource.DynamicSqlSessionTemplate;
 import com.nhry.data.basic.dao.TMdDealerMapper;
 import com.nhry.data.basic.domain.TMdDealer;
+
+import java.util.List;
 
 /**
  * Created by cbz on 6/29/2016.
