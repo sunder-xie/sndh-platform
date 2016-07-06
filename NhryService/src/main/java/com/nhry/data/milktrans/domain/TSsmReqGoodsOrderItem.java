@@ -16,14 +16,6 @@ public class TSsmReqGoodsOrderItem {
     private int increQty;
     private String flag;
 
-    public String getFlag() {
-        return flag;
-    }
-
-    public void setFlag(String flag) {
-        this.flag = flag;
-    }
-
     public String getOrderNo() {
         return orderNo;
     }
@@ -86,5 +78,13 @@ public class TSsmReqGoodsOrderItem {
 
     public void setIncreQty(int increQty) {
         this.increQty = increQty;
+    }
+
+    public String getFlag() {
+        return flag;
+    }
+
+    public void setFlag(String flag) {
+        this.flag = flag;
     }
 }

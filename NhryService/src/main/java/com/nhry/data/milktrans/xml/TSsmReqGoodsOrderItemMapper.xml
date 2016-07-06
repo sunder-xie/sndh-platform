@@ -12,9 +12,6 @@
         <result column="INCRE_QTY" property="increQty" jdbcType="INTEGER" />
         <result column="FLAG" property="flag" jdbcType="VARCHAR" />
     </resultMap>
-
-
-
     <sql id="Base_Column_List" >
         ORDER_NO,ORDER_DATE,ITEM_NO,MATNR,UNIT,QTY,INCRE_QTY,FLAG
     </sql>
@@ -31,7 +28,8 @@
         select
           ORDER_NO,ORDER_DATE,ITEM_NO,MATNR,UNIT,QTY,INCRE_QTY,FLAG
         FROM t_ssm_req_goods_order_item
-        WHERE ORDER_NO =  #{orderNo,jdbcType=VARCHAR}
+        WHERE  1=1
+        and ORDER_NO =  #{orderNo,jdbcType=VARCHAR}
     </select>
     <select id="getReqGoodsItemsByMatnrAndOrderNo" resultMap="BaseResultMap" parameterType="com.nhry.model.milktrans.ReqGoodsOrderItemSearch" >
         select
@@ -50,7 +48,6 @@
         </if>
         INCRE_QTY = #{increQty,jdbcType=INTEGER},
         MATNR = #{matnr,jdbcType=VARCHAR},
-        MATNR_TXT = #{matnrTxt,jdbcType=VARCHAR},
         QTY = #{qty,jdbcType=INTEGER}
         where  ORDER_NO = #{orderNo,jdbcType=VARCHAR}
         and MATNR = #{oldMatnr,jdbcType=VARCHAR}
@@ -62,7 +59,7 @@
         set
         INCRE_QTY = #{increQty,jdbcType=INTEGER}
         where  ORDER_NO = #{orderNo,jdbcType=VARCHAR}
-        and  MATNR = #{oldMatnr,jdbcType=VARCHAR}
+        and  MATNR = #{matnr,jdbcType=VARCHAR}
     </update>
 
 
