@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
   <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"   
   "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="mybaties.longhu.constant">
+<mapper namespace="mybaties.constant">
     <!-- 销售组织type_code -->
 	<sql id="SALES_ORG_CONSTANT">1002</sql>
 	<!-- 全国省、市、区、街type_code -->

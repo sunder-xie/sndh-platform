@@ -75,7 +75,7 @@
 	   <property name="tPreOrderMapper"  ref="tPreOrderMapper"></property>
 	   <property name="branchEmpMapper"  ref="branchEmpMapper"></property>
 	   <property name="userSessionService" ref="userSessionService"></property>  
-	   <property name="tVipCustInfoService" ref="custService"></property>
+	   <!-- <property name="tVipCustInfoService" ref="custService"></property> -->
 	</bean>
 	<!-- 奶箱end -->
 	
@@ -162,4 +162,18 @@
 		<property name="sqlSessionTemplate" ref="dynamicSqlSessionTemplate"/>
 	</bean>
 	<!-- 经销商 end -->
+
+	<!-- 奶站扩展表 -->
+	<bean class="com.nhry.data.basic.impl.TMdBranchExMapperImpl" id="branchExMapper">
+		<property name="sqlSessionTemplate" ref="dynamicSqlSessionTemplate"/>
+	</bean>
+
+	<!-- 要货单 -->
+	<bean class="com.nhry.data.basic.impl.TSsmReqGoodsOrderMapperImpl" id="ssmReqGoodsOrderMapper">
+		<property name="sqlSessionTemplate" ref="dynamicSqlSessionTemplate"/>
+	</bean>
+	<bean class="com.nhry.data.basic.impl.TSsmReqGoodsOrderItemMapperImpl" id="ssmReqGoodsOrderItemMapper">
+		<property name="sqlSessionTemplate" ref="dynamicSqlSessionTemplate"/>
+	</bean>
+	<!-- 要货单 end-->
 </beans>

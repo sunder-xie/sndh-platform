@@ -27,6 +27,8 @@ public class TPreOrder {
 	 private String customerTel;
 
     private String milkmemberNo;
+    
+    private String milkmemberName;
 
     private String memberNo;
 
@@ -39,6 +41,8 @@ public class TPreOrder {
     private String milkboxStat;
 
     private BigDecimal initAmt;
+    
+    private String initAmtStr;
 
     private BigDecimal curAmt;
 
@@ -80,7 +84,27 @@ public class TPreOrder {
     
     private String deliveryType;
     
-    public String getStopDateStartStr()
+    public String getMilkmemberName()
+	{
+		return milkmemberName;
+	}
+
+	public void setMilkmemberName(String milkmemberName)
+	{
+		this.milkmemberName = milkmemberName;
+	}
+
+	public String getInitAmtStr()
+	{
+		return initAmtStr;
+	}
+
+	public void setInitAmtStr(String initAmtStr)
+	{
+		this.initAmtStr = initAmtStr;
+	}
+
+	public String getStopDateStartStr()
 	{
 		return stopDateStartStr;
 	}
