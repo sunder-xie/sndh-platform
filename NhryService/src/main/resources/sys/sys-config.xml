@@ -14,8 +14,4 @@
   <config key="app_access_key" value="app_access_key"></config>
    <!-- redis 中session存活时间(单位：小时)-->
   <config key="session_duration" value="2"></config>
-  <!-- 自有奶站标示 -->
-  <config key="own_Branch" value="01"></config>
-  <!-- 经销商奶站标示 -->
-  <config key="dealer_Branch" value="02"></config>
 </configs>

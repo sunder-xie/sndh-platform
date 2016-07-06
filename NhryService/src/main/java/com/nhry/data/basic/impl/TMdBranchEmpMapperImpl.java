@@ -64,5 +64,10 @@ public class TMdBranchEmpMapperImpl implements TMdBranchEmpMapper {
 		return sqlSessionTemplate.selectListByPages("searchBranchEmp",smodel, Integer.parseInt(smodel.getPageNum()), Integer.parseInt(smodel.getPageSize()));
 	}
 
+	@Override
+	public TMdBranchEmp selectBranchEmpByEmpNo(String empNo) {
+		return sqlSessionTemplate.selectOne("selectBranchEmpByEmpNo",empNo);
+	}
+
 
 }

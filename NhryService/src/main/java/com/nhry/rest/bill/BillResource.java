@@ -87,9 +87,18 @@ public class BillResource extends BaseResource {
     @Path("/emp/empSalaryRep")
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes(MediaType.APPLICATION_JSON)
-    @ApiOperation(value = "/emp/empSalaryRep", response = int.class, notes = "送奶员工资报表")
+    @ApiOperation(value = "/emp/empSalaryRep", response = PageInfo.class, notes = "送奶员工资报表")
     public Response empSalaryRep(@ApiParam(required=true,name="eSearch",value="查询条件") EmpDispDetialInfoSearch eSearch){
         return convertToRespModel(MessageCode.NORMAL, null, empBillService.empSalaryRep(eSearch));
+    }
+
+    @POST
+    @Path("/emp/getSalesOrgDispRate")
+    @Produces(MediaType.APPLICATION_JSON)
+    @Consumes(MediaType.APPLICATION_JSON)
+    @ApiOperation(value = "/emp/getSalesOrgDispRate", response = Response.class, notes = "获取当前登录人所在的 销售组织下的配送率")
+    public Response getSalesOrgDispRate(){
+        return convertToRespModel(MessageCode.NORMAL, null, empBillService.getSalesOrgDispRate());
     }
 
 

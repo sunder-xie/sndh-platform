@@ -1,8 +1,8 @@
 package com.nhry.data.basic.dao;
 
-import java.util.List;
-
 import com.nhry.data.basic.domain.TMdDealer;
+
+import java.util.List;
 
 public interface TMdDealerMapper {
     int deleteDealerByNo(String dealerNo);

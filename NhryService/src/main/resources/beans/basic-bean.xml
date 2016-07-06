@@ -129,6 +129,7 @@
 	</bean>
 	<bean id="branchService" class="com.nhry.service.basic.impl.BranchServiceImpl">
 	   <property name="branchMapper"  ref="branchMapper"></property>
+		<property name="dealerMapper"  ref="dealerMapper"></property>
 	   <property name="userSessionService" ref="userSessionService"></property>
 	</bean>
 	
@@ -145,6 +146,7 @@
 	</bean>
 	<bean id="tMdBranchScopeService" class="com.nhry.service.basic.impl.TMdBranchScopeServiceImpl">
 		<property name="tMdBranchScopeMapper"  ref="tMdBranchScopeMapper"></property>
+		<property name="tMdResidentialAreaMapper"  ref="tMdResidentialAreaMapper"></property>
 	</bean>
 
 	<bean id="custMapper"  class="com.nhry.data.basic.impl.TVipCustInfoMapperImpl">

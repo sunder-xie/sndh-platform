@@ -2,10 +2,11 @@ package com.nhry.data.basic.impl;
 
 import java.util.Map;
 
-import com.github.pagehelper.PageInfo;
 import com.nhry.common.datasource.DynamicSqlSessionTemplate;
 import com.nhry.data.basic.dao.TMdMaraExMapper;
 import com.nhry.data.basic.domain.TMdMaraEx;
+
+import java.util.List;
 
 public class TMdMaraExMapperImpl implements TMdMaraExMapper {
 	private DynamicSqlSessionTemplate sqlSessionTemplate;
@@ -26,6 +27,23 @@ public class TMdMaraExMapperImpl implements TMdMaraExMapper {
 	}
 
 	@Override
+	public TMdMaraEx getProductTransRateByCode(String matnr, String salesOrg) {
+		TMdMaraEx ex = new TMdMaraEx();
+		ex.setMatnr(matnr);
+		ex.setSalesOrg(salesOrg);
+		return this.sqlSessionTemplate.selectOne("getProductTransRateByCode",ex);
+	}
+
+	@Override
+	public int uptProductExByCodeAndSalesOrg(TMdMaraEx ex) {
+		return this.sqlSessionTemplate.update("uptProductExByCodeAndSalesOrg", ex);
+	}
+
+	@Override
+	public List<TMdMaraEx> getProductsBySalesOrg(String salesOrg) {
+		return sqlSessionTemplate.selectList("getProductsBySalesOrg",salesOrg);
+	}
+
 	public TMdMaraEx findProductExByCode(Map<String,String> attrs) {
 		// TODO Auto-generated method stub
 		return this.sqlSessionTemplate.selectOne("findProductExByCode", attrs);

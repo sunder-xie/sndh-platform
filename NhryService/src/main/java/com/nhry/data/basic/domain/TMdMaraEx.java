@@ -7,6 +7,8 @@ import java.util.Date;
 public class TMdMaraEx implements Serializable{
     private String matnr;
 
+    private String matnrTxt;
+
     private String salesFlag;
 
     private String shortTxt;
@@ -39,6 +41,14 @@ public class TMdMaraEx implements Serializable{
 
     public void setMatnr(String matnr) {
         this.matnr = matnr == null ? null : matnr.trim();
+    }
+
+    public String getMatnrTxt() {
+        return matnrTxt;
+    }
+
+    public void setMatnrTxt(String matnrTxt) {
+        this.matnrTxt = matnrTxt;
     }
 
     public String getSalesFlag() {

@@ -1,8 +1,5 @@
 package com.nhry.model.basic;
 
-import com.wordnik.swagger.annotations.ApiModel;
-import com.wordnik.swagger.annotations.ApiModelProperty;
-
 import java.io.Serializable;
 
 public class ProductQueryModel extends BaseQueryModel implements Serializable {

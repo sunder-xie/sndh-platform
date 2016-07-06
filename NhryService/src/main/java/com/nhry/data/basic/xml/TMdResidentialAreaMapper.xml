@@ -245,5 +245,8 @@
     <include refid="Base_Column_List" />
     from t_md_residential_area
     WHERE  STATUS = '10'
+    <if test="salesOrg!=null and ''!=salesOrg">
+      SALES_ORG = #{salesOrg,jdbcType=VARCHAR}
+    </if>
   </select>
 </mapper>

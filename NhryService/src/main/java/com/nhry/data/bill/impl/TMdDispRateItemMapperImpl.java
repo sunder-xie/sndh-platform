@@ -18,13 +18,13 @@ public class TMdDispRateItemMapperImpl implements TMdDispRateItemMapper {
     }
 
     @Override
-    public List<TMdDispRateItem> getDispRateNumBySalOrg(String saleOrg) {
-        return sqlSessionTemplate.selectList("getDispRateNumBySalOrg",saleOrg);
+    public List<TMdDispRateItem> getDispRateNumBySalOrg(String salesOrg) {
+        return sqlSessionTemplate.selectList("getDispRateNumBySalOrg",salesOrg);
     }
 
     @Override
-    public int delDispRateNumBySaleOrg(String saleOrg) {
-        return sqlSessionTemplate.delete("delDispRateNumBySaleOrg",saleOrg);
+    public int delDispRateNumBySaleOrg(String salesOrg) {
+        return sqlSessionTemplate.delete("delDispRateNumBySaleOrg",salesOrg);
     }
 
     @Override
