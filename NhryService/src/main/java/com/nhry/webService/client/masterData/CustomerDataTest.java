@@ -1,5 +1,9 @@
 package com.nhry.webService.client.masterData;
 
+import com.nhry.webService.client.masterData.functions.ET_KUNNR_type1;
+import com.nhry.webService.client.masterData.functions.ZSD_CUSTOMER_DATA_SYN_RFC;
+import com.nhry.webService.client.masterData.functions.ZSD_CUSTOMER_DATA_SYN_RFCResponse;
+import com.nhry.webService.client.masterData.functions.ZSSD00002;
 import org.apache.axis2.client.Options;
 import org.apache.axis2.transport.http.HTTPConstants;
 import org.apache.axis2.transport.http.impl.httpclient4.HttpTransportPropertiesImpl;
@@ -19,17 +23,17 @@ public class CustomerDataTest {
             options.setProperty(HTTPConstants.AUTHENTICATE, authenticator1);
             options.setProperty(HTTPConstants.SO_TIMEOUT,new Integer(300000));
             client._getServiceClient().setOptions(options);
-            ZT_MasterDataQueryServiceStub.ZSD_CUSTOMER_DATA_SYN_RFC zsdCustomerDataSynRfc = new ZT_MasterDataQueryServiceStub.ZSD_CUSTOMER_DATA_SYN_RFC();
-            ZT_MasterDataQueryServiceStub.ZSD_CUSTOMER_DATA_SYN_RFCResponse response = new ZT_MasterDataQueryServiceStub.ZSD_CUSTOMER_DATA_SYN_RFCResponse();
-//            ZT_MasterDataQueryServiceStub.I_BUKRS_type1 iBukrsType1 = new ZT_MasterDataQueryServiceStub.I_BUKRS_type1();
+            ZSD_CUSTOMER_DATA_SYN_RFC zsdCustomerDataSynRfc = new ZSD_CUSTOMER_DATA_SYN_RFC();
+            ZSD_CUSTOMER_DATA_SYN_RFCResponse response = new ZSD_CUSTOMER_DATA_SYN_RFCResponse();
+//            I_BUKRS_type1 iBukrsType1 = new I_BUKRS_type1();
 //            iBukrsType1.setI_BUKRS_type0("0300");
 //            zsdCustomerDataSynRfc.setI_BUKRS(iBukrsType1);
 
             response = client.customerQuery(zsdCustomerDataSynRfc);
-            ZT_MasterDataQueryServiceStub.ET_KUNNR_type1 etKunnrType0s = response.getET_KUNNR();
-            ZT_MasterDataQueryServiceStub.ZSSD00002[] zssd00002s = etKunnrType0s.getItem();
+            ET_KUNNR_type1 etKunnrType0s = response.getET_KUNNR();
+            ZSSD00002[] zssd00002s = etKunnrType0s.getItem();
 
-            for(ZT_MasterDataQueryServiceStub.ZSSD00002 zssd00002 : zssd00002s){
+            for(ZSSD00002 zssd00002 : zssd00002s){
                 System.out.println("---------------"+zssd00002.getKUNNR());
             }
 
