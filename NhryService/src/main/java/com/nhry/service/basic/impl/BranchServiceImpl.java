@@ -65,12 +65,12 @@ public class BranchServiceImpl extends BaseService implements BranchService {
 	public BranchOrDealerList findResultByType(String type) {
 		TSysUser user = userSessionService.getCurrentUser();
 		BranchOrDealerList list = new BranchOrDealerList();
-		if("自营".equals("type")){
+		if("自营".equals(type)){
 			List<TMdBranch> branchList = branchMapper.findBranchListByOrg(user.getSalesOrg());
 			list.setBranchList(branchList);
 		}
 		if("外包".equals(type)){
-			List<TMdDealer> dealerList = dealerMapper.selectDealerBySalesOrg(user.getSalesOrg());
+			List<TMdDealer> dealerList = dealerMapper.findDealersBySalesOrg(user.getSalesOrg());
 		}
 		return list;
 	}

@@ -140,7 +140,7 @@ public class RequireOrderServiceImpl implements RequireOrderService {
                 OrderRequireItem entry = new OrderRequireItem();
                 Map<String,String> map = new HashMap<String,String>();
                 map.put("salesOrg",salesOrg);
-                map.put("matnr",entry.getMatnr());
+                map.put("matnr",item.getMatnr());
 
                 TMdMara mara = tMdMaraMapper.selectProductByCode(map);
                 entry.setMatnr(item.getMatnr());
