@@ -8,16 +8,24 @@ import java.util.Date;
  */
 public class RequireOrderSearch  implements Serializable {
     private String branchNo;
-    private Date requireDate;
+    private Date requiredDate;
     private int preDays;
     private String salesOrg;
 
-    public String getSalesOrg() {
-        return salesOrg;
+    public String getBranchNo() {
+        return branchNo;
     }
 
-    public void setSalesOrg(String salesOrg) {
-        this.salesOrg = salesOrg;
+    public void setBranchNo(String branchNo) {
+        this.branchNo = branchNo;
+    }
+
+    public Date getRequiredDate() {
+        return requiredDate;
+    }
+
+    public void setRequiredDate(Date requiredDate) {
+        this.requiredDate = requiredDate;
     }
 
     public int getPreDays() {
@@ -28,19 +36,12 @@ public class RequireOrderSearch  implements Serializable {
         this.preDays = preDays;
     }
 
-    public String getBranchNo() {
-        return branchNo;
+    public String getSalesOrg() {
+        return salesOrg;
     }
 
-    public void setBranchNo(String branchNo) {
-        this.branchNo = branchNo;
-    }
-
-    public Date getRequireDate() {
-        return requireDate;
-    }
-
-    public void setRequireDate(Date requireDate) {
-        this.requireDate = requireDate;
+    public void setSalesOrg(String salesOrg) {
+        this.salesOrg = salesOrg;
     }
 }
+

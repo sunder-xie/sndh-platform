@@ -1,9 +1,7 @@
 package com.nhry.service.pi.dao;
 
-import com.nhry.data.basic.domain.TSsmReqGoodsOrder;
-import com.nhry.data.basic.domain.TSsmReqGoodsOrderItem;
 
-import java.util.Date;
+import com.nhry.data.basic.domain.TSsmReqGoodsOrder;
 
 /**
  * Created by cbz on 7/4/2016.

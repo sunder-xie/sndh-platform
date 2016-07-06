@@ -36,18 +36,8 @@ public class TSsmReqGoodsOrderMapperImpl implements TSsmReqGoodsOrderMapper {
         return sqlSessionTemplate.update("uptRequireGoodsModifyInfo",orderModel);
     }
 
-/*
 
-    @Override
-    public int uptRequireOrder(TMstRequireOrder tMstRequireOrder) {
-        return sqlSessionTemplate.update("uptRequireOrder",tMstRequireOrder);
-    }
 
-    @Override
-    public int delRequireOrder(TMstRequireOrder tMstRequireOrder) {
-        return sqlSessionTemplate.delete("delRequireOrder",tMstRequireOrder);
-    }
-*/
 
 
 }

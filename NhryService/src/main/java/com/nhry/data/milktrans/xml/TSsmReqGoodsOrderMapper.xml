@@ -38,7 +38,7 @@
         select
         <include refid="Base_Column_List"/>
         FROM t_ssm_req_goods_order
-        WHERE  REQUIRED_DATE = #{requireDate,jdbcType=DATE}
+        WHERE  REQUIRED_DATE = #{requiredDate,jdbcType=DATE}
     </select>
 
     <select id="getRequireOrderByNo" resultMap="BaseResultMap" parameterType="String" >
@@ -49,7 +49,7 @@
     </select>
 
     <update id="uptRequireGoodsModifyInfo" parameterType="com.nhry.data.milktrans.domain.TSsmReqGoodsOrder" >
-        update t_mst_requireorder
+        update t_ssm_req_goods_order
         set
             <if test="status!=null and ''!=status">
                 STATUS = #{status,jdbcType=VARCHAR},
@@ -57,10 +57,8 @@
             LAST_MODIFIED = #{lastModified,jdbcType=TIMESTAMP},
             LAST_MODIFIED_BY = #{lastModifiedBy,jdbcType=VARCHAR},
             LAST_MODIFIED_BY_TXT = #{lastModifiedByTxt,jdbcType=VARCHAR}
-
-        where 1=1
+            where 1=1
              and   ORDER_NO= #{orderNo,jdbcType=VARCHAR}
-             and REQUIRE_DATE = #{requireDate,jdbcType=DATE}
     </update>
 
 

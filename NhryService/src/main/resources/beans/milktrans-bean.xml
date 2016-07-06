@@ -24,6 +24,7 @@
 	   <property name="tSsmReqGoodsOrderMapper"  ref="tSsmReqGoodsOrderMapper"></property>
 		<property name="tSsmReqGoodsOrderItemMapper"  ref="tSsmReqGoodsOrderItemMapper"></property>
 		<property name="userSessionService"  ref="userSessionService"></property>
+		<property name="piRequireOrderService"  ref="piRequireOrderService"></property>
 		<property name="tOrderDaliyPlanItemMapper"  ref="tOrderDaliyPlanItemMapper"></property>
 		<property name="tMdMaraMapper"  ref="maraMapper"></property>
 	</bean>
