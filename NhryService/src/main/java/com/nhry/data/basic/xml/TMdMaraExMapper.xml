@@ -3,9 +3,11 @@
 <mapper namespace="com.nhry.data.basic.dao.TMdMaraExMapper" >
   <resultMap id="BaseResultMap" type="com.nhry.data.basic.domain.TMdMaraEx" >
     <id column="MATNR" property="matnr" jdbcType="VARCHAR" />
+    <result column="MATNR_TXT" property="matnrTxt" jdbcType="VARCHAR" />
     <result column="SALES_FLAG" property="salesFlag" jdbcType="VARCHAR" />
     <result column="SHORT_TXT" property="shortTxt" jdbcType="VARCHAR" />
     <result column="PRE_DAYS" property="preDays" jdbcType="INTEGER" />
+    <result column="RATE" property="rate" jdbcType="DECIMAL" />
     <result column="BOT_TYPE" property="botType" jdbcType="VARCHAR" />
     <result column="RET_BOT_FLAG" property="retBotFlag" jdbcType="CHAR" />
     <result column="CREATE_AT" property="createAt" jdbcType="TIMESTAMP" />
@@ -16,7 +18,7 @@
     <result column="LAST_MODIFIED_BY_TXT" property="lastModifiedByTxt" jdbcType="VARCHAR" />
   </resultMap>
   <sql id="Base_Column_List" >
-    MATNR, SALES_FLAG, SHORT_TXT, PRE_DAYS, BOT_TYPE, RET_BOT_FLAG, CREATE_AT, CREATE_BY, 
+    MATNR, RATE,SALES_FLAG, SHORT_TXT, PRE_DAYS, BOT_TYPE, RET_BOT_FLAG, CREATE_AT, CREATE_BY,
     CREATE_BY_TXT, LAST_MODIFIED, LAST_MODIFIED_BY, LAST_MODIFIED_BY_TXT
   </sql>
   <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.String" >
@@ -147,4 +149,28 @@
       LAST_MODIFIED_BY_TXT = #{lastModifiedByTxt,jdbcType=VARCHAR}
     where MATNR = #{matnr,jdbcType=VARCHAR}
   </update>
+
+  <select id="getProductTransRateByCode" resultMap="BaseResultMap" parameterType="com.nhry.data.basic.domain.TMdMaraEx" >
+    select
+      e.MATNR, e.RATE,e.SALES_ORG,m.MATNR_TXT
+    from t_md_mara_ex e LEFT  JOIN  t_md_mara m ON  e.MATNR = m.MATNR
+    where e.MATNR = #{matnr,jdbcType=VARCHAR}
+    and e.SALES_ORG = #{salesOrg,jdbcType=VARCHAR}
+  </select>
+
+  <select id="getProductsBySalesOrg" resultMap="BaseResultMap" parameterType="String" >
+    select
+    <include refid="Base_Column_List" />
+    from t_md_mara_ex
+    where SALES_ORG = #{salesOrg,jdbcType=VARCHAR}
+  </select>
+
+
+  <update id="uptProductExByCodeAndSalesOrg" parameterType="com.nhry.data.basic.domain.TMdMaraEx" >
+    update t_md_mara_ex
+   set RATE = #{rate,jdbcType=DECIMAL}
+    where MATNR = #{matnr,jdbcType=VARCHAR}
+   and SALES_ORG = #{salesOrg,jdbcType=VARCHAR}
+  </update>
+
 </mapper>

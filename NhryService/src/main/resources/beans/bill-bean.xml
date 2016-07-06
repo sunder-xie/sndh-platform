@@ -52,6 +52,7 @@
 		<property name="branchEmpMapper"  ref="branchEmpMapper"></property>
 		<property name="tMdDispRateMapper"  ref="tMdDispRateMapper"></property>
 		<property name="tMdDispRateItemMapper"  ref="tMdDispRateItemMapper"></property>
+		<property name="tMdMaraExMapper"  ref="maraExMapper"></property>
 		<property name="userSessionService"  ref="userSessionService"></property>
 	</bean>
 

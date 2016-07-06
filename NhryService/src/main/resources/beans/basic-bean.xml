@@ -131,6 +131,7 @@
 	</bean>
 	<bean id="tMdBranchScopeService" class="com.nhry.service.basic.impl.TMdBranchScopeServiceImpl">
 		<property name="tMdBranchScopeMapper"  ref="tMdBranchScopeMapper"></property>
+		<property name="tMdResidentialAreaMapper"  ref="tMdResidentialAreaMapper"></property>
 	</bean>
 
 	<bean id="custMapper"  class="com.nhry.data.basic.impl.TVipCustInfoMapperImpl">

@@ -17,4 +17,6 @@ public interface TMdBranchEmpMapper {
     int uptBranchEmpByNo(TMdBranchEmp record);
     
     public PageInfo searchBranchEmp(EmpQueryModel smodel);
+
+    TMdBranchEmp selectBranchEmpByEmpNo(String empNo);
 }

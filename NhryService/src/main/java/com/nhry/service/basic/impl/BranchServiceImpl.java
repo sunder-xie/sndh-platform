@@ -1,8 +1,10 @@
 package com.nhry.service.basic.impl;
 
 import com.github.pagehelper.PageInfo;
+import com.nhry.common.auth.UserSessionService;
 import com.nhry.common.exception.MessageCode;
 import com.nhry.common.exception.ServiceException;
+import com.nhry.data.auth.domain.TSysUser;
 import com.nhry.data.basic.dao.TMdBranchMapper;
 import com.nhry.data.basic.domain.TMdBranch;
 import com.nhry.model.basic.BranchQueryModel;
@@ -15,6 +17,7 @@ import java.util.List;
 
 public class BranchServiceImpl extends BaseService implements BranchService {
      private TMdBranchMapper branchMapper;
+	private UserSessionService userSessionService;
 	@Override
 	public int deleteBranchByNo(String branchNo) {
 		// TODO Auto-generated method stub
@@ -39,9 +42,10 @@ public class BranchServiceImpl extends BaseService implements BranchService {
 	}
 
 	@Override
-	public List<TMdBranch> findBranchListByOrg(String salesOrg) {
+	public List<TMdBranch> findBranchListByOrg() {
 		// TODO Auto-generated method stub
-		return branchMapper.findBranchListByOrg(salesOrg);
+		TSysUser user = userSessionService.getCurrentUser();
+		return branchMapper.findBranchListByOrg(user.getSalesOrg());
 	}
 
 	@Override
@@ -59,4 +63,8 @@ public class BranchServiceImpl extends BaseService implements BranchService {
 		this.branchMapper = branchMapper;
 	}
 
+	@Override
+	public void setUserSessionService(UserSessionService userSessionService) {
+		this.userSessionService = userSessionService;
+	}
 }

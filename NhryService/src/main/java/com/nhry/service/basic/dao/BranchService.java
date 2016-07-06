@@ -15,7 +15,7 @@ public interface BranchService {
 
     int updateBranch(TMdBranch record);
     
-    public List<TMdBranch> findBranchListByOrg(String salesOrg);
+    public List<TMdBranch> findBranchListByOrg();
 
 
     public PageInfo findBranchListByPage(BranchQueryModel branchModel);

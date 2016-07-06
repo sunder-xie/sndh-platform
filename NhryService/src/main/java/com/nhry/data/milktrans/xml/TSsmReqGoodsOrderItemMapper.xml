@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.nhry.data.milktrans.dao.TSsmReqGoodsOrderItemMapper" >
+    <resultMap id="BaseResultMap" type="com.nhry.data.milktrans.domain.TSsmReqGoodsOrderItem" >
+        <result column="ORDER_NO" property="orderNo" jdbcType="VARCHAR" />
+        <result column="ORDER_DATE" property="orderDate" jdbcType="DATE" />
+        <result column="ITEM_NO" property="itemNo" jdbcType="INTEGER" />
+        <result column="MATNR" property="matnr" jdbcType="VARCHAR" />
+        <result column="MATNR_TXT" property="matnrTxt" jdbcType="VARCHAR" />
+        <result column="UNIT" property="unit" jdbcType="VARCHAR" />
+        <result column="QTY" property="qty" jdbcType="INTEGER" />
+        <result column="INCRE_QTY" property="increQty" jdbcType="INTEGER" />
+        <result column="FLAG" property="flag" jdbcType="VARCHAR" />
+    </resultMap>
+
+
+
+    <sql id="Base_Column_List" >
+        ORDER_NO,ORDER_DATE,ITEM_NO,MATNR,UNIT,QTY,INCRE_QTY,FLAG
+    </sql>
+
+    <insert id="insertRequireOrderItem" parameterType="com.nhry.data.milktrans.domain.TSsmReqGoodsOrderItem" >
+        insert into t_ssm_req_goods_order_item (ORDER_NO,ORDER_DATE,ITEM_NO,MATNR,UNIT,QTY,INCRE_QTY,FLAG)
+        VALUES(
+            #{orderNo,jdbcType=VARCHAR},#{orderDate,jdbcType=DATE},#{itemNo,jdbcType=INTEGER},
+            #{matnr,jdbcType=VARCHAR},#{unit,jdbcType=VARCHAR},
+            #{qty,jdbcType=INTEGER}, #{increQty,jdbcType=INTEGER},#{flag,jdbcType=VARCHAR}
+        )
+    </insert>
+    <select id="getReqGoodsItemsByOrderNo" resultMap="BaseResultMap" parameterType="String" >
+        select
+          ORDER_NO,ORDER_DATE,ITEM_NO,MATNR,UNIT,QTY,INCRE_QTY,FLAG
+        FROM t_ssm_req_goods_order_item
+        WHERE ORDER_NO =  #{orderNo,jdbcType=VARCHAR}
+    </select>
+    <select id="getReqGoodsItemsByMatnrAndOrderNo" resultMap="BaseResultMap" parameterType="com.nhry.model.milktrans.ReqGoodsOrderItemSearch" >
+        select
+        <include refid="Base_Column_List"/>
+        FROM t_ssm_req_goods_order_item
+        WHERE 1=1
+        and ORDER_NO =  #{orderNo,jdbcType=VARCHAR}
+        and MATNR = #{matnr,jdbcType=VARCHAR}
+    </select>
+
+    <update id="uptNewReqGoodsItem" parameterType="com.nhry.data.milktrans.domain.TSsmReqGoodsOrderItemUpt" >
+        update t_ssm_req_goods_order_item
+        set
+        <if test="unit != null" >
+            UNIT = #{unit,jdbcType=VARCHAR},
+        </if>
+        INCRE_QTY = #{increQty,jdbcType=INTEGER},
+        MATNR = #{matnr,jdbcType=VARCHAR},
+        MATNR_TXT = #{matnrTxt,jdbcType=VARCHAR},
+        QTY = #{qty,jdbcType=INTEGER}
+        where  ORDER_NO = #{orderNo,jdbcType=VARCHAR}
+        and MATNR = #{oldMatnr,jdbcType=VARCHAR}
+    </update>
+
+
+    <update id="uptReqGoodsItem" parameterType="com.nhry.model.milktrans.UpdateRequiredModel" >
+        update t_ssm_req_goods_order_item
+        set
+        INCRE_QTY = #{increQty,jdbcType=INTEGER}
+        where  ORDER_NO = #{orderNo,jdbcType=VARCHAR}
+        and  MATNR = #{oldMatnr,jdbcType=VARCHAR}
+    </update>
+
+
+    <delete id="delRequireOrderItem" parameterType="com.nhry.model.milktrans.ReqGoodsOrderItemSearch" >
+        DELETE  FROM  t_ssm_req_goods_order_item
+         where ORDER_NO = #{orderNo,jdbcType=VARCHAR}
+         and MATNR = #{matnr,jdbcType=VARCHAR}
+    </delete>
+
+</mapper>

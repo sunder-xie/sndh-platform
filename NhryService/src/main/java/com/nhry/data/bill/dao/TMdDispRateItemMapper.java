@@ -9,9 +9,9 @@ import java.util.List;
  */
 public interface TMdDispRateItemMapper {
 
-    List<TMdDispRateItem> getDispRateNumBySalOrg(String saleOrg);
+    List<TMdDispRateItem> getDispRateNumBySalOrg(String salesOrg);
 
-    int delDispRateNumBySaleOrg(String saleOrg);
+    int delDispRateNumBySaleOrg(String salesOrg);
 
     int addDispRateItem(TMdDispRateItem item);
 }

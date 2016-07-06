@@ -1,18 +1,27 @@
 package com.nhry.service.milktrans.dao;
 
-import com.nhry.data.milktrans.domain.TMstRequireOrder;
+import com.nhry.data.milktrans.domain.TSsmReqGoodsOrderItem;
+import com.nhry.model.milktrans.ReqGoodsOrderItemSearch;
 import com.nhry.model.milktrans.RequireOrderModel;
-import com.nhry.model.milktrans.RequireOrderSearch;
+import com.nhry.model.milktrans.UpdateNewRequiredModel;
+import com.nhry.model.milktrans.UpdateRequiredModel;
+
+import java.util.Date;
 
 /**
  * Created by gongjk on 2016/6/24.
  */
 public interface RequireOrderService {
-    RequireOrderModel creatRequireOrder(RequireOrderModel rModel);
 
-    int insertRequireOrder(TMstRequireOrder order);
+    RequireOrderModel creatRequireOrder();
+    RequireOrderModel searchRequireOrder(Date requiredDate);
 
-    RequireOrderModel searchRequireOrder(RequireOrderSearch rModel);
+    int uptNewRequireOrderItem(UpdateNewRequiredModel uModel);
 
-    int uptRequireOrder(RequireOrderModel rModel);
+    int addRequireOrderItem(TSsmReqGoodsOrderItem item);
+
+    int delRequireOrderItem(ReqGoodsOrderItemSearch item);
+
+    int uptRequireOrder(UpdateRequiredModel uModel);
+
 }

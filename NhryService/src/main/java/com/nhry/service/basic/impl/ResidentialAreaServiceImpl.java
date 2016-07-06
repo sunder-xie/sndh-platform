@@ -2,8 +2,10 @@ package com.nhry.service.basic.impl;
 
 
 import com.github.pagehelper.PageInfo;
+import com.nhry.common.auth.UserSessionService;
 import com.nhry.common.exception.MessageCode;
 import com.nhry.common.exception.ServiceException;
+import com.nhry.data.auth.domain.TSysUser;
 import com.nhry.data.basic.dao.TMdBranchScopeMapper;
 import com.nhry.data.basic.dao.TMdResidentialAreaMapper;
 import com.nhry.data.basic.domain.TMdBranchScopeKey;
@@ -23,6 +25,7 @@ public class ResidentialAreaServiceImpl implements ResidentialAreaService {
 
     private TMdResidentialAreaMapper tMdResidentialAreaMapper;
     private TMdBranchScopeMapper tMdBranchScopeMapper;
+    private UserSessionService userSessionService;
 
     @Override
     public PageInfo searchAreaByBranchNo(BranchAreaSearch bSearch) {
@@ -84,7 +87,9 @@ public class ResidentialAreaServiceImpl implements ResidentialAreaService {
 
     @Override
     public List<TMdResidentialArea> getUnDistAreas() {
-        return tMdResidentialAreaMapper.getUnDistAreas();
+        TSysUser user = userSessionService.getCurrentUser();
+        String salesOrg = user.getSalesOrg();
+        return tMdResidentialAreaMapper.getUnDistAreas(salesOrg);
     }
 
     @Override
@@ -133,5 +138,9 @@ public class ResidentialAreaServiceImpl implements ResidentialAreaService {
 
     public void settMdBranchScopeMapper(TMdBranchScopeMapper tMdBranchScopeMapper) {
         this.tMdBranchScopeMapper = tMdBranchScopeMapper;
+    }
+
+    public void setUserSessionService(UserSessionService userSessionService) {
+        this.userSessionService = userSessionService;
     }
 }

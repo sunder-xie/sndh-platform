@@ -39,5 +39,10 @@ public interface TMdResidentialAreaMapper {
 
     int updateStatusToDistedById(String id);
 
-    List<TMdResidentialArea> getUnDistAreas();
+    /**
+     * 获取销售组织下的未分配的配送区域
+     * @param salesOrg
+     * @return
+     */
+    List<TMdResidentialArea> getUnDistAreas(String salesOrg);
 }

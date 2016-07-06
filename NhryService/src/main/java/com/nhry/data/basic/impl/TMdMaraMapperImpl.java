@@ -4,10 +4,7 @@ import com.github.pagehelper.PageInfo;
 import com.nhry.common.datasource.DynamicSqlSessionTemplate;
 import com.nhry.data.basic.dao.TMdMaraMapper;
 import com.nhry.data.basic.domain.TMdMara;
-import com.nhry.service.basic.pojo.ProductInfoExModel;
 import com.nhry.model.basic.ProductQueryModel;
-import org.apache.ibatis.session.ExecutorType;
-import org.apache.ibatis.session.SqlSession;
 import org.apache.ibatis.session.SqlSessionFactory;
 
 import java.util.List;

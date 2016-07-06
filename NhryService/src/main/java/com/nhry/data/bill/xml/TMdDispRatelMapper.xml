@@ -2,7 +2,7 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
 <mapper namespace="com.nhry.data.bill.dao.TMdDispRateMapper" >
     <resultMap id="BaseResultMap" type="com.nhry.data.bill.domain.TMdDispRate" >
-        <id column="SALES_ORG" property="saleOrg" jdbcType="VARCHAR" />
+        <id column="SALES_ORG" property="salesOrg" jdbcType="VARCHAR" />
         <result column="SALARY_MET" property="salaryMet" jdbcType="VARCHAR" />
         <result column="CREATE_BY" property="createBy" jdbcType="VARCHAR" />
         <result column="CREATE_BY_TXT" property="createByTxt" jdbcType="VARCHAR" />
@@ -25,11 +25,11 @@
     <update id="uptDispRateTypeBySaleOrg"   parameterType="com.nhry.data.bill.domain.TMdDispRate" >
          UPDATE  t_md_disp_rate
          SET
-          SALES_MET = #{salaryMet,jdbcType=VARCHAR},
+          SALARY_MET = #{salaryMet,jdbcType=VARCHAR},
           LAST_MODIFIED = #{lastModified,jdbcType=TIMESTAMP},
           LAST_MODIFIED_BY = #{lastModifiedBy,jdbcType=VARCHAR},
           LAST_MODIFIED_BY_TXT =  #{lastModifiedByTxt,jdbcType=VARCHAR}
-         WHERE   SALES_ORG = #{salesOrg,jdbcType=VARCHAR},
+         WHERE   SALES_ORG = #{salesOrg,jdbcType=VARCHAR}
     </update>
 
     <insert id="addDispRateSalOrg"   parameterType="com.nhry.data.bill.domain.TMdDispRate" >
