@@ -73,7 +73,7 @@ public class BranchResource extends BaseResource {
 	@Produces(MediaType.APPLICATION_JSON)
 	@ApiOperation(value = "/getInfoByType", response = Response.class, notes = "自营下返回可选奶站，外包下返回可选经销商")
 	public Response getInfoByType(
-			@ApiParam(required=true,name="type",value="类型")@QueryParam("type") String type){
+			@ApiParam(required=true,name="type",value="10（代表选择自营） 20（代表选择外包）")@QueryParam("type") String type){
 		return convertToRespModel(MessageCode.NORMAL, null,branchService.findResultByType(type));
 	}
 
