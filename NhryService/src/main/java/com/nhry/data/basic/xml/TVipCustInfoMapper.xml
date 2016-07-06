@@ -49,6 +49,8 @@
 		<result column="MEMO_TXT" property="memoTxt" jdbcType="VARCHAR" />
 		<result column="DISP_MEMO_TXT" property="dispMemoTxt" jdbcType="VARCHAR" />
 		<result column="BRANCH_NO" property="branchNo" jdbcType="VARCHAR" />
+		<result column="FIRST_ORDER_TIME" property="firstOrderTime" jdbcType="TIMESTAMP" />
+		<result column="LAST_ORDER_TIME" property="lastOrderTime" jdbcType="TIMESTAMP" />
 	</resultMap>
 	<sql id="Base_Column_List">
 		VIP_CUST_NO, VIP_CUST_NO_SAP, SALES_ORG, VIP_NAME,
@@ -63,7 +65,8 @@
 		CREATE_BY, CREATE_BY_TXT,
 		LAST_MODIFIED,
 		LAST_MODIFIED_BY,
-		LAST_MODIFIED_BY_TXT, MEMO_TXT, DISP_MEMO_TXT, BRANCH_NO
+		LAST_MODIFIED_BY_TXT, MEMO_TXT, DISP_MEMO_TXT, BRANCH_NO,
+		date_format(FIRST_ORDER_TIME, '%Y-%m-%d') FIRST_ORDER_TIME,date_format(LAST_ORDER_TIME, '%Y-%m-%d') LAST_ORDER_TIME
 	</sql>
 	<select id="findVipCustByNo" resultMap="BaseResultMap" parameterType="java.lang.String">
 		SELECT
@@ -133,7 +136,8 @@
 				b.BRANCH_NAME
 			FROM
 				T_MD_BRANCH b where b.BRANCH_NO = i.BRANCH_NO
-		) BRANCH_NO 
+		) BRANCH_NO,
+		date_format(FIRST_ORDER_TIME, '%Y-%m-%d') FIRST_ORDER_TIME,date_format(LAST_ORDER_TIME, '%Y-%m-%d') LAST_ORDER_TIME 
 		FROM
 		t_vip_cust_info i WHERE i.VIP_CUST_NO =#{vipCustNo,jdbcType=VARCHAR}
 	</select>
@@ -172,7 +176,8 @@
 		i.LAST_MODIFIED_BY_TXT,
 		i.MEMO_TXT,
 		i.DISP_MEMO_TXT,
-		i.BRANCH_NO 
+		i.BRANCH_NO,
+		date_format(FIRST_ORDER_TIME, '%Y-%m-%d') FIRST_ORDER_TIME,date_format(LAST_ORDER_TIME, '%Y-%m-%d') LAST_ORDER_TIME 
 		FROM
 		t_vip_cust_info i 
 		WHERE i.VIP_CUST_NO =#{vipCustNo,jdbcType=VARCHAR}
@@ -206,7 +211,8 @@
 		i.VIP_AMT,
 		i.MEMO_TXT,
 		i.DISP_MEMO_TXT,
-		i.BRANCH_NO 
+		i.BRANCH_NO,
+		date_format(FIRST_ORDER_TIME, '%Y-%m-%d') FIRST_ORDER_TIME,date_format(LAST_ORDER_TIME, '%Y-%m-%d') LAST_ORDER_TIME 
 		FROM
 		t_vip_cust_info i 
 		WHERE i.VIP_CUST_NO =#{vipCustNo,jdbcType=VARCHAR}
