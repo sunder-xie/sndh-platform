@@ -115,6 +115,7 @@
 	</bean>
 	<bean id="branchService" class="com.nhry.service.basic.impl.BranchServiceImpl">
 	   <property name="branchMapper"  ref="branchMapper"></property>
+		<property name="dealerMapper"  ref="dealerMapper"></property>
 	   <property name="userSessionService" ref="userSessionService"></property>
 	</bean>
 	

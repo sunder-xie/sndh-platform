@@ -2,6 +2,8 @@ package com.nhry.data.basic.dao;
 
 import com.nhry.data.basic.domain.TMdDealer;
 
+import java.util.List;
+
 public interface TMdDealerMapper {
     int deleteDealerByNo(String dealerNo);
 
@@ -14,4 +16,6 @@ public interface TMdDealerMapper {
 //    int updateByPrimaryKeySelective(TMdDealer record);
 
     int updateDealer(TMdDealer record);
+
+    List<TMdDealer> selectDealerBySalesOrg(String salesOrg);
 }

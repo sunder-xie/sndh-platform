@@ -248,4 +248,12 @@
       DEL_FLAG = #{delFlag,jdbcType=CHAR}
     where DEALER_NO = #{dealerNo,jdbcType=VARCHAR}
   </update>
+
+
+  <select id="selectDealerBySalesOrg" resultMap="BaseResultMap" parameterType="java.lang.String" >
+    select
+    <include refid="Base_Column_List" />
+    from t_md_dealer
+    where SALES_ORG = #{salesOrg,jdbcType=VARCHAR}
+  </select>
 </mapper>
