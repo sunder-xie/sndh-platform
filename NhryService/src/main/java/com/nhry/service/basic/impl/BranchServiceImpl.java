@@ -13,10 +13,11 @@ import com.nhry.model.basic.BranchOrDealerList;
 import com.nhry.model.basic.BranchQueryModel;
 import com.nhry.service.BaseService;
 import com.nhry.service.basic.dao.BranchService;
-
 import org.apache.commons.lang3.StringUtils;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class BranchServiceImpl extends BaseService implements BranchService {
      private TMdBranchMapper branchMapper;
@@ -65,15 +66,26 @@ public class BranchServiceImpl extends BaseService implements BranchService {
 	public BranchOrDealerList findResultByType(String type) {
 		TSysUser user = userSessionService.getCurrentUser();
 		BranchOrDealerList list = new BranchOrDealerList();
-		if("10".equals(type)){
-			List<TMdBranch> branchList = branchMapper.findBranchListByOrg(user.getSalesOrg());
+		if("01".equals(type)){
+			List<TMdBranch> branchList = branchMapper.findBranchListByOrgAndAuto(user.getSalesOrg());
 			list.setBranchList(branchList);
 		}
-		if("20".equals(type)){
+		if("02".equals(type)){
 			List<TMdDealer> dealerList = dealerMapper.findDealersBySalesOrg(user.getSalesOrg());
 			list.setDealerList(dealerList);
 		}
 		return list;
+	}
+
+	@Override
+	public List<TMdBranch> getBranchByCodeOrName(String branch) {
+		TSysUser user = userSessionService.getCurrentUser();
+		Map<String,String>  map = new HashMap<String,String>();
+		map.put("branchNo",branch);
+		map.put("branchName",branch);
+		map.put("salesOrg",user.getSalesOrg());
+
+		return branchMapper.getBranchByCodeOrName(map);
 	}
 
 
