@@ -154,19 +154,21 @@ public class ProductServiceImpl extends BaseService implements ProductService {
 	}
 
 	@Override
-	public List<TMdMara> getBranchSaleMaras(String branchNo) {
+	public PageInfo getBranchSaleMaras(ProductQueryModel pm) {
 		// TODO Auto-generated method stub
-		TMdBranch branch = branchSevice.selectBranchByNo(branchNo);
+		if(StringUtils.isEmpty(pm.getBranchNo())){
+			throw new ServiceException(MessageCode.LOGIC_ERROR,"奶站编号(branchNo)不能为空!");
+		}
+		TMdBranch branch = branchSevice.selectBranchByNo(pm.getBranchNo());
 		if(branch != null){
-			Map<String,String> attrs = new HashMap<String,String>();
-			attrs.put("salesOrg", branch.getSalesOrg());
+			pm.setSalesOrg(branch.getSalesOrg());
 			if(StringUtils.isEmpty(branch.getDealerNo())){
 				//自营奶站
-				return this.tMdMaraMapper.getCompMaras(attrs);
+				return this.tMdMaraMapper.getCompMaras(pm);
 			}else{
 				//经销商奶站
-				attrs.put("dealerNo", branch.getDealerNo());
-				return this.tMdMaraMapper.getDealerMaras(attrs);
+				pm.setDealerNo(branch.getDealerNo());
+				return this.tMdMaraMapper.getDealerMaras(pm);
 			}
 		}
 		return null;
