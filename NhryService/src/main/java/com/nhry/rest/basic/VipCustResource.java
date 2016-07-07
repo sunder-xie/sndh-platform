@@ -72,24 +72,24 @@ public class VipCustResource extends BaseResource {
 		return convertToRespModel(MessageCode.NORMAL, null,custService.addVipCust(cust));
 	}
 	
-	@POST
-	@Path("/find/{phone}")
-	@Produces(MediaType.APPLICATION_JSON)
-	@ApiOperation(value = "/find/{phone}", response = TVipCustInfo.class, notes = "根据电话号码查询订户信息")
-	public Response findCustByPhone(@ApiParam(required=true,name="phone",value="电话号码") @PathParam("phone")String phone) {
-		if(!StringUtils.isEmpty(userSessionService.getCurrentUser().getBranchNo())){
-			//奶站用户
-			Map<String,String> attrs = new HashMap<String,String>();
-			attrs.put("branchNo", this.userSessionService.getCurrentUser().getBranchNo());
-			attrs.put("phone",phone);
-			return convertToRespModel(MessageCode.NORMAL, null,custService.findStaCustByPhone(attrs));
-		}
-		//公司用户
-		Map<String,String> attrs = new HashMap<String,String>();
-		attrs.put("branchNo", this.userSessionService.getCurrentUser().getSalesOrg());
-		attrs.put("phone",phone);
-		return convertToRespModel(MessageCode.NORMAL, null,custService.findCompanyCustByPhone(attrs));
-	}
+//	@POST
+//	@Path("/find/{phone}")
+//	@Produces(MediaType.APPLICATION_JSON)
+//	@ApiOperation(value = "/find/{phone}", response = TVipCustInfo.class, notes = "根据电话号码查询订户信息")
+//	public Response findCustByPhone(@ApiParam(required=true,name="phone",value="电话号码") @PathParam("phone")String phone) {
+//		if(!StringUtils.isEmpty(userSessionService.getCurrentUser().getBranchNo())){
+//			//奶站用户
+//			Map<String,String> attrs = new HashMap<String,String>();
+//			attrs.put("branchNo", this.userSessionService.getCurrentUser().getBranchNo());
+//			attrs.put("phone",phone);
+//			return convertToRespModel(MessageCode.NORMAL, null,custService.findStaCustByPhone(attrs));
+//		}
+//		//公司用户
+//		Map<String,String> attrs = new HashMap<String,String>();
+//		attrs.put("branchNo", this.userSessionService.getCurrentUser().getSalesOrg());
+//		attrs.put("phone",phone);
+//		return convertToRespModel(MessageCode.NORMAL, null,custService.findCompanyCustByPhone(attrs));
+//	}
 	
 	@POST
 	@Path("/add/address")
@@ -145,7 +145,7 @@ public class VipCustResource extends BaseResource {
 	@POST
 	@Path("/upt/address/{status}/{addressId}")
 	@Produces(MediaType.APPLICATION_JSON)
-	@ApiOperation(value = "/find/cust/address/{custNo}", response = PageInfo.class, notes = "更改订户详细地址状态")
+	@ApiOperation(value = "/find/cust/address/{custNo}", response = ResponseModel.class, notes = "更改订户详细地址状态")
 	public Response findVipAcctByCustNo(@ApiParam(required=true,name="status",value="状态标示(10 : 删除  20 ： 改成默认地址)")@PathParam("status")String status,
 			@ApiParam(required=true,name="addressId",value="地址编号")@PathParam("addressId")String addressId) {
 	  return convertToRespModel(MessageCode.NORMAL, null,custService.uptAddressById(status,addressId));
