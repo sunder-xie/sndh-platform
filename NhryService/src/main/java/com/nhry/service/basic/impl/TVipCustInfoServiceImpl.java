@@ -170,7 +170,7 @@ public class TVipCustInfoServiceImpl extends BaseService implements TVipCustInfo
 	@Override
 	public int addVipAcct(TVipAcct record) {
 		// TODO Auto-generated method stub
-		if(StringUtils.isEmpty(record.getVipCustNo()) || (record.getAcctAmt() == null )){
+		if(StringUtils.isEmpty(record.getVipCustNo()) || (record.getAcctAmt() == null)){
 			throw new ServiceException(MessageCode.LOGIC_ERROR, "订户编号(vipCustNo)、个帐余额(acctAmt)不能为空!");
 		}
 		TVipCustInfo cust = this.tmdVipcust.findVipCustOnlyByNo(record.getVipCustNo());
@@ -189,7 +189,7 @@ public class TVipCustInfoServiceImpl extends BaseService implements TVipCustInfo
 			acct.setLastModified(new Date());
 			acct.setLastModifiedBy(this.userSessionService.getCurrentUser().getLoginName());
 			acct.setLastModifiedByTxt(this.userSessionService.getCurrentUser().getDisplayName());
-			acct.setAcctAmt(new BigDecimal(acct.getAcctAmt().floatValue()+record.getAcctAmt().floatValue()));
+			acct.setAcctAmt(acct.getAcctAmt().add(record.getAcctAmt()));
 			return this.uptVipAcct(acct);
 	   }
 	}

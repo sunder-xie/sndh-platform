@@ -126,4 +126,10 @@ public class RoleServiceImpl extends BaseService implements RoleService {
 	public void setResMapper(TSysResourceMapper resMapper) {
 		this.resMapper = resMapper;
 	}
+
+	@Override
+	public List<TSysRole> getAllRoles() {
+		// TODO Auto-generated method stub
+		return this.roleMapper.getAllRoles();
+	}
 }

@@ -1,5 +1,7 @@
 package com.nhry.data.auth.impl;
 
+import java.util.List;
+
 import com.nhry.common.datasource.DynamicSqlSessionTemplate;
 import com.nhry.data.auth.dao.TSysRoleMapper;
 import com.nhry.data.auth.domain.TSysRole;
@@ -32,5 +34,11 @@ public class TSysRoleMapperImpl implements TSysRoleMapper {
 
 	public void setSqlSessionTemplate(DynamicSqlSessionTemplate sqlSessionTemplate) {
 		this.sqlSessionTemplate = sqlSessionTemplate;
+	}
+
+	@Override
+	public List<TSysRole> getAllRoles() {
+		// TODO Auto-generated method stub
+		return this.sqlSessionTemplate.selectList("getAllRoles");
 	}
 }

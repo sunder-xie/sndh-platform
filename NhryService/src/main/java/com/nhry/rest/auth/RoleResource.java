@@ -1,5 +1,7 @@
 package com.nhry.rest.auth;
 
+import java.util.List;
+
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
@@ -8,6 +10,7 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
@@ -17,6 +20,7 @@ import com.nhry.common.exception.MessageCode;
 import com.nhry.data.auth.domain.TSysResource;
 import com.nhry.data.auth.domain.TSysRole;
 import com.nhry.data.auth.domain.TSysRoleResource;
+import com.nhry.model.auth.RoleResourceData;
 import com.nhry.model.auth.UserRoleModel;
 import com.nhry.model.sys.ResponseModel;
 import com.nhry.rest.BaseResource;
@@ -39,12 +43,20 @@ public class RoleResource extends BaseResource{
 	@Autowired
 	private ResourceService resService;
 	
-	@GET
+	@POST
 	@Path("/search/{id}")
 	@Produces(MediaType.APPLICATION_JSON)
 	@ApiOperation(value = "/search/{id}", response = ResponseModel.class, notes = "根据角色id查找角色信息")
     public Response findRoleByRid(@ApiParam(required = true, name = "id", value = "角色id")@PathParam("id")String id) {
         return this.convertToRespModel(MessageCode.NORMAL, null, roleService.findRoleByRid(id));
+    }
+	
+	@POST
+	@Path("/lists")
+	@Produces(MediaType.APPLICATION_JSON)
+	@ApiOperation(value = "/lists", response = ResponseModel.class, notes = "获取所有角色列表")
+    public Response getAllRoles() {
+        return this.convertToRespModel(MessageCode.NORMAL, null, roleService.getAllRoles());
     }
 	
 	@POST
@@ -74,7 +86,7 @@ public class RoleResource extends BaseResource{
     }
 	
 	@POST
-	@Path("/assign/role")
+	@Path("/assign/user/roles")
 	@Produces(MediaType.APPLICATION_JSON)
 	@Consumes(MediaType.APPLICATION_JSON)
 	@ApiOperation(value = "/assign/role", response = ResponseModel.class, notes = "给用户(批量)指定角色")
@@ -128,14 +140,25 @@ public class RoleResource extends BaseResource{
 	@POST
 	@Path("/add/roleRes")
 	@Produces(MediaType.APPLICATION_JSON)
+	@Consumes(MediaType.APPLICATION_JSON)
 	@ApiOperation(value = "/add/role/res", response = ResponseModel.class, notes = "添加角色资源关系")
 	public Response addRoleRes(@ApiParam(required = true, name = "record", value = "角色资源关系对象")TSysRoleResource record) {
 		return convertToRespModel(MessageCode.NORMAL, null,resService.addRoleRes(record));
 	}
 	
 	@POST
+	@Path("/add/batch/roleRes")
+	@Produces(MediaType.APPLICATION_JSON)
+	@Consumes(MediaType.APPLICATION_JSON)
+	@ApiOperation(value = "/add/batch/roleRes", response = ResponseModel.class, notes = "批量添加角色资源关系")
+	public Response addbatchRoleRes(@ApiParam(required = true, name = "record", value = "角色资源关系对象(id:角色编号;资源编号:resCode)")RoleResourceData record) {
+		return convertToRespModel(MessageCode.NORMAL, null,resService.addRoleRes(record));
+	}
+	
+	@POST
 	@Path("/delete/roleRes")
 	@Produces(MediaType.APPLICATION_JSON)
+	@Consumes(MediaType.APPLICATION_JSON)
 	@ApiOperation(value = "/add/role/res", response = ResponseModel.class, notes = "删除角色资源关系")
 	public Response deleteRoleRes(@ApiParam(required = true, name = "record", value = "角色资源关系对象")TSysRoleResource record) {
 		return convertToRespModel(MessageCode.NORMAL, null,resService.deleteRoleRes(record));

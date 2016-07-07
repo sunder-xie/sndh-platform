@@ -2,6 +2,7 @@ package com.nhry.service.auth.dao;
 
 import com.nhry.data.auth.domain.TSysResource;
 import com.nhry.data.auth.domain.TSysRoleResource;
+import com.nhry.model.auth.RoleResourceData;
 
 import java.util.List;
 
@@ -40,6 +41,13 @@ public interface ResourceService {
      * @return
      */
     int addRoleRes(TSysRoleResource record);
+    
+    /**
+     * 批量添加角色资源关系
+     * @param records
+     * @return
+     */
+    int addRoleRes(RoleResourceData record);
     
     /**
      * 根据角色id和资源编码删除角色资源关系
