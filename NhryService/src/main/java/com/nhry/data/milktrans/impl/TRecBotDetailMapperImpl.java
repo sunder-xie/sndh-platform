@@ -1,8 +1,10 @@
 package com.nhry.data.milktrans.impl;
 
+import com.github.pagehelper.PageInfo;
 import com.nhry.common.datasource.DynamicSqlSessionTemplate;
 import com.nhry.data.milktrans.dao.TRecBotDetailMapper;
 import com.nhry.data.milktrans.domain.TRecBotDetail;
+import com.nhry.model.milktrans.ReturnboxSerarch;
 
 import java.util.List;
 
@@ -28,5 +30,11 @@ public class TRecBotDetailMapperImpl implements TRecBotDetailMapper {
     @Override
     public int uptRecBotDetail(TRecBotDetail entry) {
         return sqlSessionTemplate.update("uptRecBotDetail",entry);
+    }
+
+    @Override
+    public PageInfo searchRetBoxPage(ReturnboxSerarch rSearch) {
+        return sqlSessionTemplate.selectListByPages("searchRetBoxPage", rSearch, Integer.parseInt(rSearch.getPageNum()), Integer.parseInt(rSearch.getPageSize()));
+
     }
 }

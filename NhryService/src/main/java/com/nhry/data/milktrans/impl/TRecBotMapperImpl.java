@@ -7,6 +7,9 @@ import com.nhry.data.milktrans.domain.TRecBot;
 import com.nhry.model.milktrans.BoxSearch;
 import com.nhry.model.milktrans.CreateEmpReturnboxModel;
 
+import java.util.Date;
+import java.util.List;
+
 /**
  * Created by gongjk on 2016/6/27.
  */
@@ -34,6 +37,16 @@ public class TRecBotMapperImpl implements TRecBotMapper {
     @Override
     public int uptTrecBot(TRecBot bot) {
         return sqlSessionTemplate.update("uptTrecBot",bot);
+    }
+
+    @Override
+    public List<TRecBot> searchBoxByDate(Date day) {
+        return sqlSessionTemplate.selectList("searchBoxByDate",day);
+    }
+
+    @Override
+    public TRecBot getReturnBoxByNo(String retLsh) {
+        return sqlSessionTemplate.selectOne("getReturnBoxByNo",retLsh);
     }
 
 }

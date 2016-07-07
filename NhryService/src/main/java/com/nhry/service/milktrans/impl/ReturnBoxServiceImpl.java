@@ -16,10 +16,12 @@ import com.nhry.data.milktrans.domain.TRecBotDetail;
 import com.nhry.model.milktrans.BoxSearch;
 import com.nhry.model.milktrans.CreateEmpReturnboxModel;
 import com.nhry.model.milktrans.CreateReturnBoxModel;
+import com.nhry.model.milktrans.ReturnboxSerarch;
 import com.nhry.service.milktrans.dao.ReturnBoxService;
 import com.nhry.utils.SerialUtil;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -87,6 +89,11 @@ public class ReturnBoxServiceImpl implements ReturnBoxService {
 
     }
 
+    /**
+     * 路单确认时创建该员工的回瓶管理单
+     * @param cModel
+     * @return
+     */
     @Override
     public CreateReturnBoxModel createDayRetBox(CreateEmpReturnboxModel cModel) {
         Date today = new Date();
@@ -131,5 +138,27 @@ public class ReturnBoxServiceImpl implements ReturnBoxService {
             boxModel.setRecBot(tRecBot);
             return boxModel;
         }
+    }
+
+    @Override
+    public PageInfo searchRetBoxPage(ReturnboxSerarch rSearch) {
+        TSysUser user = userSessionService.getCurrentUser();
+        //返回列表
+        PageInfo result = tRecBotDetailMapper.searchRetBoxPage(rSearch);
+        return result;
+    }
+
+    @Override
+    public CreateReturnBoxModel getRetBoxDetail(String retLsh) {
+        CreateReturnBoxModel model = new CreateReturnBoxModel();
+        TRecBot bot = tRecBotMapper.getReturnBoxByNo(retLsh);
+        List<TRecBotDetail> items = tRecBotDetailMapper.selectBotDetailByRetLsh(retLsh);
+        List<TRecBotDetail> entries = new ArrayList<TRecBotDetail>();
+        if(items!=null && items.size()>0){
+            entries.addAll(items);
+        }
+        model.setRecBot(bot);
+        model.setEntries(entries);
+        return model;
     }
 }

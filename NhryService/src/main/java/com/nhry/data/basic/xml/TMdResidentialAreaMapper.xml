@@ -240,13 +240,11 @@
     WHERE  ID = #{residentialAreaId,jdbcType=VARCHAR}
   </select>
 
-  <select id="getUnDistAreas" resultMap="BaseResultMap" >
+  <select id="getUnDistAreas" resultMap="BaseResultMap"  parameterType="String" >
     SELECT
     <include refid="Base_Column_List" />
     from t_md_residential_area
     WHERE  STATUS = '10'
-    <if test="salesOrg!=null and ''!=salesOrg">
-      SALES_ORG = #{salesOrg,jdbcType=VARCHAR}
-    </if>
+     and  SALES_ORG = #{salesOrg,jdbcType=VARCHAR}
   </select>
 </mapper>
