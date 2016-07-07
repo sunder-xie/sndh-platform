@@ -477,4 +477,34 @@
 				p.MATNR_TXT like '%${matnrTxt}%') 
 		</if>
 	</select>
+
+
+	<select id="getProductByCodeOrNameAndSalesOrg" resultMap="BaseResultMap" parameterType="java.util.HashMap">
+		SELECT
+		p.MATNR,
+		p.MATNR_TXT,
+		p.BASE_UNIT,
+		p. STATUS,
+		p.LAST_MODIFIED MARA_LAST_MODIFIED,
+		p.CREATE_AT MARA_CREATE_AT,
+		p.FIRST_CAT,
+		p.SEC_CATE,
+		p.BRAND,
+		p.WEIGHT,
+		p.WEIGHT_UNIT,
+		p.IMPORTANT_PRD_FLAG,
+		p.SPEC,
+		p.SPEC_UNIT,
+		p.BOT_SPEC,
+		p.ZBOT_CODE,
+		p.SALES_ORG,
+		p.DEALER_NO
+		FROM
+		t_md_mara p
+		where 1=1
+				and p.SALES_ORG=#{salesOrg}
+				AND ( p.MATNR LIKE '%${matnr}%' OR p.MATNR_TXT like  '%${matnrTxt}%' )
+
+
+	</select>
 </mapper>

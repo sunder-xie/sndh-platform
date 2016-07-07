@@ -42,7 +42,16 @@
         WHERE 1=1
         and bot.REC_DATE = #{retDate,jdbcType=DATE}
         and bot.BRANCH_NO = #{branchNo,jdbcType=VARCHAR}
-        and bot.EMP_NO = #{empNo,jdbcType=VARCHAR}
+           and bot.EMP_NO = #{empNo,jdbcType=VARCHAR}
+    </select>
+
+    <select id="searchBoxByBranchAndDate" resultMap="BaseResultMap" parameterType="com.nhry.model.milktrans.CreateEmpReturnboxModel" >
+        select
+        <include refid="Base_Column_List"/>
+        FROM t_rec_bot bot
+        WHERE 1=1
+        and bot.REC_DATE = #{retDate,jdbcType=DATE}
+        and bot.BRANCH_NO = #{branchNo,jdbcType=VARCHAR}
     </select>
     <insert id="addTrecBot" parameterType="com.nhry.data.milktrans.domain.TRecBot">
 
@@ -61,6 +70,19 @@
         LAST_MODIFIED_BY = #{lastModifiedBy,jdbcType=VARCHAR},
         LAST_MODIFIED_BY_TXT =  #{lastModifiedByTxt,jdbcType=VARCHAR}
     </update>
+    <select id="searchBoxByDate" resultMap="BaseResultMap" parameterType="com.nhry.model.milktrans.ReturnboxSerarch" >
+        select
+        <include refid="Base_Column_List"/>
+        FROM t_rec_bot bot
+        WHERE 1=1
+        and REC_DATE = #{0,jdbcType=DATE}
+    </select>
 
-
+    <select id="getReturnBoxByNo" resultMap="BaseResultMap" parameterType="String" >
+        select
+        <include refid="Base_Column_List"/>
+        FROM t_rec_bot bot
+        WHERE 1=1
+        and RET_LSH = #{retLsh,jdbcType=VARCHAR}
+    </select>
 </mapper>

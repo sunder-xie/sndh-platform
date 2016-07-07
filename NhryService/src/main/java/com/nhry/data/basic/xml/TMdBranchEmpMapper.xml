@@ -150,4 +150,12 @@
     and scope.EMP_NO =  #{empNo,jdbcType=VARCHAR}
   </select>
 
+
+  <select id="getAllEmpByBranchNo" parameterType="String" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from T_MD_BRANCH_EMP
+    where 1=1
+    and BRANCH_NO =  #{branchNo,jdbcType=VARCHAR}
+  </select>
 </mapper>

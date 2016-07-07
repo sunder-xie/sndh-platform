@@ -1,6 +1,8 @@
 package com.nhry.data.milktrans.dao;
 
+import com.github.pagehelper.PageInfo;
 import com.nhry.data.milktrans.domain.TRecBotDetail;
+import com.nhry.model.milktrans.ReturnboxSerarch;
 
 import java.util.List;
 
@@ -13,4 +15,6 @@ public interface TRecBotDetailMapper {
     List<TRecBotDetail> selectBotDetailByRetLsh(String retLsh);
 
     int uptRecBotDetail(TRecBotDetail entry);
+
+    PageInfo searchRetBoxPage(ReturnboxSerarch rSearch);
 }
