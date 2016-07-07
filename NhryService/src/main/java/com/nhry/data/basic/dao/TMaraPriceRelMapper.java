@@ -1,7 +1,9 @@
 package com.nhry.data.basic.dao;
 
 import java.util.List;
+import java.util.Map;
 
+import com.github.pagehelper.PageInfo;
 import com.nhry.data.basic.domain.TMaraPriceRel;
 
 public interface TMaraPriceRelMapper {
@@ -38,7 +40,14 @@ public interface TMaraPriceRelMapper {
      * @param id
      * @return
      */
-    List<TMaraPriceRel> findMaraPricesById(String id);
+    List<TMaraPriceRel> findMaraPricesById(Map<String,String> attrs);
+    
+    /**
+     * 根据价格编号id查询价格组关联商品信息(分页)
+     * @param id
+     * @return
+     */
+    PageInfo findMaraPricesById(Map<String,String> attrs,int pageNum,int pageSize);
     
     /**
      * 根据价格编号id，删除关联的商品价格信息

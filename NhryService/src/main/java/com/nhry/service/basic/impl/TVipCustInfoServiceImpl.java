@@ -1,6 +1,7 @@
 package com.nhry.service.basic.impl;
 
 import java.math.BigDecimal;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -33,8 +34,16 @@ public class TVipCustInfoServiceImpl extends BaseService implements TVipCustInfo
 	@Override
 	public int addVipCust(TVipCustInfo record) {
 		// TODO Auto-generated method stub
-		if(StringUtils.isEmpty(record.getVipName()) || StringUtils.isEmpty(record.getMp())){
-			throw new ServiceException(MessageCode.LOGIC_ERROR, "会员姓名(vipName)、手机号码(mp)必须填写!");
+		if(StringUtils.isEmpty(record.getVipName()) || StringUtils.isEmpty(record.getMp()) || StringUtils.isEmpty(record.getBranchNo())){
+			throw new ServiceException(MessageCode.LOGIC_ERROR, "会员姓名(vipName)、手机号码(mp)、订户奶站(branchNo) 必须填写!");
+		}
+		Map<String,String> attrs = new HashMap<String,String>();
+		attrs.put("salesOrg", this.userSessionService.getCurrentUser().getSalesOrg());
+		attrs.put("branchNo", record.getBranchNo());
+		attrs.put("phone", record.getMp());
+		int count = this.tmdVipcust.getCustCountByPhone(attrs);
+		if(count > 0){
+			throw new ServiceException(MessageCode.LOGIC_ERROR, "改电话号码对应的订户信息已存在！");
 		}
 		record.setVipCustNo(PrimaryKeyUtils.generateUuidKey());
 		record.setCreateAt(new Date());
@@ -58,6 +67,16 @@ public class TVipCustInfoServiceImpl extends BaseService implements TVipCustInfo
 		// TODO Auto-generated method stub
 		if(StringUtils.isEmpty(record.getVipCustNo()) || StringUtils.isEmpty(record.getVipName()) || StringUtils.isEmpty(record.getMp())){
 			throw new ServiceException(MessageCode.LOGIC_ERROR, "订户编号(vipCustNo)、会员姓名(vipName)、手机号码(mp)不能为空!");
+		}
+		//判断同一电话号码，在同一奶站下是否存在相同的订户
+		Map<String,String> attrs = new HashMap<String,String>();
+		attrs.put("salesOrg", this.userSessionService.getCurrentUser().getSalesOrg());
+		attrs.put("branchNo", record.getBranchNo());
+		attrs.put("phone", record.getMp());
+		attrs.put("custNo", record.getVipCustNo());
+		int count = this.tmdVipcust.getCustCountByPhone(attrs);
+		if(count > 0){
+			throw new ServiceException(MessageCode.LOGIC_ERROR, "改电话号码对应的订户信息已存在！");
 		}
 		record.setLastModified(new Date());
 		record.setLastModifiedBy(this.userSessionService.getCurrentUser().getLoginName());
@@ -106,7 +125,6 @@ public class TVipCustInfoServiceImpl extends BaseService implements TVipCustInfo
 	@Override
 	public PageInfo findcustMixedTerms(CustQueryModel cust) {
 		// TODO Auto-generated method stub
-	   cust.setStation(userSessionService.getCurrentUser().getBranchNo());
 	   cust.setSalesOrg(userSessionService.getCurrentUser().getSalesOrg());
 	  return this.tmdVipcust.findcustMixedTerms(cust);
 	}

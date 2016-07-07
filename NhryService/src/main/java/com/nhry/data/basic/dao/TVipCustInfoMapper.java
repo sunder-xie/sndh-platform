@@ -73,4 +73,11 @@ public interface TVipCustInfoMapper {
      * @return
      */
     public PageInfo findcustMixedTerms(CustQueryModel cust);
+    
+    /**
+     * 根据电话号码获取在同一奶站下订户的个数
+     * @param attrs
+     * @return
+     */
+    public int getCustCountByPhone(Map<String,String> attrs);
 }

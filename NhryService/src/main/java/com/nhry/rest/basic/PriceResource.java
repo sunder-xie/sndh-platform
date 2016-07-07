@@ -16,6 +16,7 @@ import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Controller;
 
+import com.github.pagehelper.PageInfo;
 import com.nhry.common.exception.MessageCode;
 import com.nhry.data.basic.domain.TMaraPriceRel;
 import com.nhry.data.basic.domain.TMdDealer;
@@ -144,5 +145,15 @@ public class PriceResource extends BaseResource {
 			@ApiParam(required=true,name="matnr",value="产品编号")@PathParam("matnr")String matnr,
 			@ApiParam(required=true,name="deliveryType",value="配送类型")@PathParam("deliveryType")String deliveryType){
 		return convertToRespModel(MessageCode.NORMAL, null, priceService.getMaraPrice(branchNo,matnr,deliveryType));
+	}
+	
+	@POST
+	@Path("/maras/{id}/{pageNum}/{pageSize}")   
+	@Produces(MediaType.APPLICATION_JSON)
+	@ApiOperation(value = "/maras/{id}/{pageNum}/{pageSize}", response = PageInfo.class, notes = "根据价格组编号获取价格组关联的商品列表(带分页)")
+	public Response findMaraPricesById(@ApiParam(required=true,name="id",value="价格组编号")@PathParam("id")String id,
+			@ApiParam(required=true,name="pageNum",value="当前页码")@PathParam("pageNum")int pageNum,
+			@ApiParam(required=true,name="pageSize",value="每页显示条数")@PathParam("pageSize")int pageSize){
+		return convertToRespModel(MessageCode.NORMAL, null, priceService.findMaraPricesById(id,pageNum,pageSize));
 	}
 }
