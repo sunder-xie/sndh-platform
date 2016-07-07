@@ -216,10 +216,10 @@ public class PriceServiceImpl extends BaseService implements PriceService {
 		}
 		if("10".equals(deliveryType)){
 			//自取价
-			return prices.get(0).getPrice1();
+			return price.getPrice1();
 		}else if("20".equals(deliveryType)){
 			//订户价
-			return prices.get(0).getPrice2();
+			return price.getPrice2();
 		}
 		return -1.0f;
 	}
