@@ -65,8 +65,8 @@ public class TVipCustInfoServiceImpl extends BaseService implements TVipCustInfo
 	@Override
 	public int updateVipCustByNo(TVipCustInfo record) {
 		// TODO Auto-generated method stub
-		if(StringUtils.isEmpty(record.getVipCustNo()) || StringUtils.isEmpty(record.getVipName()) || StringUtils.isEmpty(record.getMp())){
-			throw new ServiceException(MessageCode.LOGIC_ERROR, "订户编号(vipCustNo)、会员姓名(vipName)、手机号码(mp)不能为空!");
+		if(StringUtils.isEmpty(record.getVipCustNo()) || StringUtils.isEmpty(record.getVipName()) || StringUtils.isEmpty(record.getMp()) || StringUtils.isEmpty(record.getBranchNo())){
+			throw new ServiceException(MessageCode.LOGIC_ERROR, "订户编号(vipCustNo)、会员姓名(vipName)、手机号码(mp)、奶站编号(branchNo)不能为空!");
 		}
 		//判断同一电话号码，在同一奶站下是否存在相同的订户
 		Map<String,String> attrs = new HashMap<String,String>();

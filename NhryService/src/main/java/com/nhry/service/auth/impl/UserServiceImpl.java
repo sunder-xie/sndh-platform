@@ -21,20 +21,19 @@ public class UserServiceImpl extends BaseService implements UserService {
 	}
 
 	public int addUser(TSysUser user) {
-		if(StringUtils.isEmpty(user.getLoginName()) || StringUtils.isEmpty(user.getDisplayName()) || StringUtils.isEmpty(user.getPwd())){
-			 throw new ServiceException(MessageCode.LOGIC_ERROR, "loginName、displayName、pwd属性值不能为空!");
+		if(StringUtils.isEmpty(user.getLoginName()) || StringUtils.isEmpty(user.getDisplayName())){
+			 throw new ServiceException(MessageCode.LOGIC_ERROR, "loginName、displayName属性值不能为空!");
 		}
-		user.setCreateAt(new Date());
-		user.setCreateBy(userSessionService.getCurrentUser().getLoginName());
-		user.setCreateByTxt(userSessionService.getCurrentUser().getDisplayName());
+		user.setCreateOn(new Date());
+		user.setLastModified(new Date());
 		return userMapper.addUser(user);
 	}
 
 	@Override
 	public TSysUser login(TSysUser user) {
 		// TODO Auto-generated method stub
-		if(StringUtils.isEmpty(user.getLoginName()) || StringUtils.isEmpty(user.getPwd())){
-			throw new ServiceException(MessageCode.LOGIC_ERROR,"用户名、密码不能为空!");
+		if(StringUtils.isEmpty(user.getLoginName())){
+			throw new ServiceException(MessageCode.LOGIC_ERROR,"用户名不能为空!");
 		}
 
 		TSysUser _user = userMapper.login(user);
@@ -61,21 +60,7 @@ public class UserServiceImpl extends BaseService implements UserService {
 			throw new ServiceException(MessageCode.LOGIC_ERROR, "用户名登录名不能为空！");
 		}
 		record.setLastModified(new Date());
-		record.setLastModifiedBy(userSessionService.getCurrentUser().getLoginName());
-		record.setLastModifiedByTxt(userSessionService.getCurrentUser().getDisplayName());
 		return userMapper.updateUser(record);
-	}
-
-	@Override
-	public int updateUserPw(TSysUser record) {
-		// TODO Auto-generated method stub
-		if(StringUtils.isEmpty(record.getPwd())){
-			 throw new ServiceException(MessageCode.LOGIC_ERROR,"密码不能为空!");
-		}
-		record.setLastModified(new Date());
-		record.setLastModifiedBy(userSessionService.getCurrentUser().getLoginName());
-		record.setLastModifiedByTxt(userSessionService.getCurrentUser().getDisplayName());
-		return this.userMapper.updateUserPw(record);
 	}
 
 	@Override
@@ -86,8 +71,6 @@ public class UserServiceImpl extends BaseService implements UserService {
 			throw new ServiceException(MessageCode.LOGIC_ERROR, "该用户名对应的用户信息不存在！");
 		}
 		user.setLastModified(new Date());
-		user.setLastModifiedBy(userSessionService.getCurrentUser().getLoginName());
-		user.setLastModifiedByTxt(userSessionService.getCurrentUser().getDisplayName());
 		return this.userMapper.deleteUserByLoginName(user);
 	}
 }

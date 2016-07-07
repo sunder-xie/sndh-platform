@@ -15,7 +15,5 @@ public interface UserService {
 	
 	public int updateUser(TSysUser record);
 	
-	public int updateUserPw(TSysUser record);
-	
 	public int deleteUserByLoginName(String uname);
 }
