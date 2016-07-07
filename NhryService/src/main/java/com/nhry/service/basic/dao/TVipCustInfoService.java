@@ -36,7 +36,7 @@ public interface TVipCustInfoService {
      * @param attrs
      * @return
      */
-    TVipCustInfo findStaCustByPhone(Map<String,String> attrs);
+    List<TVipCustInfo> findStaCustByPhone(Map<String,String> attrs);
     
     /**
      * 根据电话查找公司订户信息

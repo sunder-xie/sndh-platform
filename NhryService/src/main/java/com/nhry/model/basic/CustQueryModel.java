@@ -8,6 +8,7 @@ public class CustQueryModel extends BaseQueryModel {
 	private String salesOrg;
 	private String station;
 	private String status;
+	private String phone;
 	private String startDate;
 	private String endDate;
 	private String content;
@@ -46,5 +47,11 @@ public class CustQueryModel extends BaseQueryModel {
 	}
 	public void setEndDate(String endDate) {
 		this.endDate = endDate;
+	}
+	public String getPhone() {
+		return phone;
+	}
+	public void setPhone(String phone) {
+		this.phone = phone;
 	}
 }

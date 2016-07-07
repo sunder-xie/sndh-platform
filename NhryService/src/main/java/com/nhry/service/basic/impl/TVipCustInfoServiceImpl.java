@@ -66,7 +66,7 @@ public class TVipCustInfoServiceImpl extends BaseService implements TVipCustInfo
 	}
 
 	@Override
-	public TVipCustInfo findStaCustByPhone(Map<String, String> attrs) {
+	public List<TVipCustInfo> findStaCustByPhone(Map<String, String> attrs) {
 		// TODO Auto-generated method stub
 		return this.tmdVipcust.findStaCustByPhone(attrs);
 	}
@@ -106,14 +106,8 @@ public class TVipCustInfoServiceImpl extends BaseService implements TVipCustInfo
 	@Override
 	public PageInfo findcustMixedTerms(CustQueryModel cust) {
 		// TODO Auto-generated method stub
-	 if(!StringUtils.isEmpty(userSessionService.getCurrentUser().getBranchNo())){
-		 //奶站用户
-		 cust.setStation(userSessionService.getCurrentUser().getBranchNo());
-		 cust.setSalesOrg(userSessionService.getCurrentUser().getSalesOrg());
-	  }else{
-		  //公司用户
-		  cust.setSalesOrg(userSessionService.getCurrentUser().getSalesOrg());
-	  }
+	   cust.setStation(userSessionService.getCurrentUser().getBranchNo());
+	   cust.setSalesOrg(userSessionService.getCurrentUser().getSalesOrg());
 	  return this.tmdVipcust.findcustMixedTerms(cust);
 	}
 
