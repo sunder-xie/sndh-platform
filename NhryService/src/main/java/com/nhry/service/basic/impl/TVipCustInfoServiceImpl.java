@@ -215,4 +215,32 @@ public class TVipCustInfoServiceImpl extends BaseService implements TVipCustInfo
 		// TODO Auto-generated method stub
 		return this.addressMapper.findCnAddressByCustNo(custNo);
 	}
+
+	@Override
+	public int uptAddressById(String status, String addressId) {
+		// TODO Auto-generated method stub
+		TMdAddress address = this.addressMapper.findAddressById(addressId);
+		if(address != null){
+			//10 : 删除  20 ： 改成默认状态
+			if("10".equals(status)){
+				 address.setIsDelete("Y");
+				 address.setLastModified(new Date());
+				 address.setLastModifiedBy(this.userSessionService.getCurrentUser().getSalesOrg());
+				 address.setLastModifiedByTxt(this.userSessionService.getCurrentUser().getDisplayName());
+				 return this.addressMapper.uptCustAddress(address);
+			}else if("20".equals(status)){
+				 address.setIsDafault("Y");
+				 address.setLastModified(new Date());
+				 address.setLastModifiedBy(this.userSessionService.getCurrentUser().getSalesOrg());
+				 address.setLastModifiedByTxt(this.userSessionService.getCurrentUser().getDisplayName());
+				 this.addressMapper.uptCustAddress(address);
+				 //将该订户下的其他详细地址设置为非默认状态
+				return this.addressMapper.uptCustAddressUnDefault(address);
+			}else{
+				throw new ServiceException(MessageCode.LOGIC_ERROR, "状态标示不符合约定条件!");
+			}
+		}else{
+			throw new ServiceException(MessageCode.LOGIC_ERROR, "该地址编号对应的地址信息不存在!");
+		}
+	}
 }

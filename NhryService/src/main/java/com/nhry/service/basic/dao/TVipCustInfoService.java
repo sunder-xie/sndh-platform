@@ -110,6 +110,13 @@ public interface TVipCustInfoService {
     TMdAddress findAddressById(String addressId);
     
     /**
+     * 根据状态和地址编号，更新地址信息
+     * @param addressId
+     * @return
+     */
+    int uptAddressById(String status,String addressId);
+    
+    /**
      * 根据地址id查询地址详细信息
      * @param id
      * @return

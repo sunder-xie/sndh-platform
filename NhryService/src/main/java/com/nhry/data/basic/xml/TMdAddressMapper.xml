@@ -21,6 +21,7 @@
     <result column="LAST_MODIFIED_BY_TXT" property="lastModifiedByTxt" jdbcType="VARCHAR" />
     <result column="VIP_CUST_NO" property="vipCustNo" jdbcType="VARCHAR" />
     <result column="IS_DEFAULT" property="isDafault" jdbcType="VARCHAR" />
+    <result column="IS_DELETE" property="isDelete" jdbcType="VARCHAR" />
   </resultMap>
   <sql id="Base_Column_List" >
     ADDRESS_ID, RECV_NAME, PROVINCE, CITY, COUNTY, MP, TEL, ZIP, ADDRESS_TXT, RESIDENTIAL_AREA, 
@@ -33,10 +34,6 @@
     from t_md_address
     where ADDRESS_ID = #{addressId,jdbcType=VARCHAR}
   </select>
-  <delete id="deleteByPrimaryKey" parameterType="java.lang.String" >
-    delete from t_md_address
-    where ADDRESS_ID = #{addressId,jdbcType=VARCHAR}
-  </delete>
   <insert id="addAddressForCust" parameterType="com.nhry.data.basic.domain.TMdAddress" >
     insert into t_md_address
     <trim prefix="(" suffix=")" suffixOverrides="," >
@@ -94,6 +91,9 @@
       <if test="street != null">
           STREET,
       </if>
+      <if test="isDafault != null">
+          IS_DEFAULT,
+      </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides="," >
       <if test="addressId != null" >
@@ -150,6 +150,9 @@
        <if test="street != null">
           #{street,jdbcType=VARCHAR},
       </if>
+      <if test="isDafault != null">
+          #{isDafault,jdbcType=VARCHAR},
+      </if>
     </trim>
   </insert>
   <update id="uptCustAddress" parameterType="com.nhry.data.basic.domain.TMdAddress" >
@@ -205,6 +208,12 @@
       </if>
       <if test="street != null">
       	 STREET = #{street,jdbcType=VARCHAR},
+      </if>
+       <if test="isDelete != null" >
+        IS_DELETE = #{isDelete,jdbcType=VARCHAR},
+      </if>
+      <if test="isDafault != null">
+         IS_DEFAULT=#{isDafault,jdbcType=VARCHAR},
       </if>
     </set>
     where ADDRESS_ID = #{addressId,jdbcType=VARCHAR}
@@ -272,10 +281,10 @@
 	FROM
 		T_MD_ADDRESS d
 	WHERE
-		d.VIP_CUST_NO = #{custNo} order by CREATE_AT desc,LAST_MODIFIED desc
+		d.IS_DELETE='N' AND d.VIP_CUST_NO = #{custNo} order by IS_DEFAULT desc,LAST_MODIFIED desc,CREATE_AT desc
   </select>
   <select id="findOriginAddressByCustNo" resultMap="BaseResultMap" parameterType="String">
-    SELECT <include refid="Base_Column_List" /> FROM t_md_address WHERE VIP_CUST_NO=#{custNo} order by CREATE_AT desc,LAST_MODIFIED desc
+    SELECT <include refid="Base_Column_List" /> FROM t_md_address WHERE VIP_CUST_NO=#{custNo} where IS_DELETE='N' order by IS_DEFAULT desc,LAST_MODIFIED desc,CREATE_AT desc
   </select>
   <select id="findAddressDetailById" resultMap="BaseResultMap" parameterType="String">
      SELECT
@@ -340,6 +349,22 @@
 	FROM
 		T_MD_ADDRESS d
 	WHERE
-		ADDRESS_ID = #{id}
+		IS_DELETE='N' and ADDRESS_ID = #{id}
   </select>
+  <update id="uptCustAddressUnDefault" parameterType="com.nhry.data.basic.domain.TMdAddress">
+      update t_md_address
+    <set >
+      <if test="lastModified != null" >
+        LAST_MODIFIED = #{lastModified,jdbcType=TIMESTAMP},
+      </if>
+      <if test="lastModifiedBy != null" >
+        LAST_MODIFIED_BY = #{lastModifiedBy,jdbcType=VARCHAR},
+      </if>
+      <if test="lastModifiedByTxt != null" >
+        LAST_MODIFIED_BY_TXT = #{lastModifiedByTxt,jdbcType=VARCHAR},
+      </if>
+       IS_DEFAULT='N',
+    </set>
+    WHERE IS_DELETE='N' AND ADDRESS_ID &lt;&gt; #{addressId} AND VIP_CUST_NO=#{vipCustNo}
+  </update>
 </mapper>
