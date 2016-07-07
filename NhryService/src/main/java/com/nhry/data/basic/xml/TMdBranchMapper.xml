@@ -107,5 +107,22 @@
       </if>
   </select>
 
+  <select id="getBranchByCodeOrName" resultMap="BaseResultMap" parameterType="java.util.HashMap">
+    select
+    <include refid="Base_Column_List" />
+    from t_md_branch
+    where 1=1
+    and SALES_ORG=#{salesOrg}
+    AND ( BRANCH_NO LIKE '%${branchNo}%' OR BRANCH_NAME like  '%${branchName}%' )
 
+  </select>
+
+
+  <select id="findBranchListByOrgAndAuto" resultMap="BaseResultMap" parameterType="String">
+    select
+    <include refid="Base_Column_List" />
+    from t_md_branch
+    where SALES_ORG = #{salesOrg,jdbcType=VARCHAR}
+     and BRANCH_GROUP= '01'
+  </select>
 </mapper>

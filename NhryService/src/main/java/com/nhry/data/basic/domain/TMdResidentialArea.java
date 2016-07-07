@@ -7,6 +7,9 @@ public class TMdResidentialArea implements Serializable{
 
     private String branchNo;
 
+    private String branchName;
+
+
     private String residentialAreaTxt;
 
     private String province;
@@ -142,5 +145,13 @@ public class TMdResidentialArea implements Serializable{
 
     public void setPropertyTel(String propertyTel) {
         this.propertyTel = propertyTel == null ? null : propertyTel.trim();
+    }
+
+    public String getBranchName() {
+        return branchName;
+    }
+
+    public void setBranchName(String branchName) {
+        this.branchName = branchName;
     }
 }
