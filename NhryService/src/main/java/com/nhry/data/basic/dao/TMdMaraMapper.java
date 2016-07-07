@@ -76,12 +76,12 @@ public interface TMdMaraMapper {
      * @param attrs
      * @return
      */
-    List<TMdMara> getDealerMaras(Map<String,String> attrs);
+    PageInfo getDealerMaras(ProductQueryModel pm);
     
     /**
      * 获取自营奶站的可销售的产品列表
      * @param attrs
      * @return
      */
-    List<TMdMara> getCompMaras(Map<String,String> attrs);
+    PageInfo getCompMaras(ProductQueryModel pm);
 }

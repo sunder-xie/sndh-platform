@@ -9,6 +9,7 @@ public class ProductQueryModel extends BaseQueryModel implements Serializable {
 	private String matnrTxt;
 	private String salesOrg;
 	private String dealerNo;
+	private String branchNo;
 	
 	public String getFirstCatory() {
 		return firstCatory;
@@ -45,5 +46,11 @@ public class ProductQueryModel extends BaseQueryModel implements Serializable {
 	}
 	public void setDealerNo(String dealerNo) {
 		this.dealerNo = dealerNo;
+	}
+	public String getBranchNo() {
+		return branchNo;
+	}
+	public void setBranchNo(String branchNo) {
+		this.branchNo = branchNo;
 	}
 }

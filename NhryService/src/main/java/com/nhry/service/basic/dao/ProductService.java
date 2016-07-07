@@ -70,5 +70,5 @@ public interface ProductService {
      * @param branchNo
      * @return
      */
-    List<TMdMara> getBranchSaleMaras(String branchNo);
+    PageInfo getBranchSaleMaras(ProductQueryModel pm);
 }
