@@ -116,4 +116,11 @@ public interface PriceService {
      * @return
      */
     public List<TMdPrice> getScopePricesGroupByBn(String branchNo);
+    
+    /**
+     * 根据价格编号id查询价格组关联商品信息
+     * @param id
+     * @return
+     */
+    public PageInfo findMaraPricesById(String id,int pageNum,int pageSize);
 }

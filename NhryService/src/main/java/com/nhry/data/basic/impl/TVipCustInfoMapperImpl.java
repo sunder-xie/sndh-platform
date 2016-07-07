@@ -71,4 +71,10 @@ public class TVipCustInfoMapperImpl implements TVipCustInfoMapper {
 		// TODO Auto-generated method stub
 		return this.sqlSessionTemplate.selectListByPages("findcustMixedTerms",cust, Integer.parseInt(cust.getPageNum()), Integer.parseInt(cust.getPageSize()));
 	}
+
+	@Override
+	public int getCustCountByPhone(Map<String, String> attrs) {
+		// TODO Auto-generated method stub
+		return this.sqlSessionTemplate.selectOne("getCustCountByPhone", attrs);
+	}
 }

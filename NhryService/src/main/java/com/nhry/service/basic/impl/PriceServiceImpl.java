@@ -97,9 +97,9 @@ public class PriceServiceImpl extends BaseService implements PriceService {
 	public TMdPrice selectPriceGroupByCode(String id) {
 		// TODO Auto-generated method stub
 		TMdPrice price = tMdPriceMapper.selectPriceGroupById(id);
-		if(price != null){
-			price.setMprices(this.maraPriceMapper.findMaraPricesById(id));
-		}
+//		if(price != null){
+//			price.setMprices(this.maraPriceMapper.findMaraPricesById(id));
+//		}
 		return price;
 	}
 
@@ -117,6 +117,7 @@ public class PriceServiceImpl extends BaseService implements PriceService {
 			for(TMaraPriceRel mp : records){
 				mp.setRelNo(PrimaryKeyUtils.generateUuidKey());
 				mp.setId(id);
+				mp.setSalesOrg(this.userSessionService.getCurrentUser().getSalesOrg());
 				mp.setCreateAt(new Date());
 				mp.setCreateBy(this.userSessionService.getCurrentUser().getLoginName());
 				mp.setCreateByTxt(this.userSessionService.getCurrentUser().getDisplayName());
@@ -247,7 +248,10 @@ public class PriceServiceImpl extends BaseService implements PriceService {
 		// TODO Auto-generated method stub
 		TMdPrice price = this.tMdPriceMapper.selectPGByCode4Edit(id);
 		if(price != null){
-			price.setMprices(this.maraPriceMapper.findMaraPricesById(id));
+			Map<String,String> attrs = new HashMap<String,String>();
+			attrs.put("salesOrg", this.userSessionService.getCurrentUser().getSalesOrg());
+			attrs.put("id", id);
+			price.setMprices(this.maraPriceMapper.findMaraPricesById(attrs));
 		}
 		return price;
 	}
@@ -280,5 +284,14 @@ public class PriceServiceImpl extends BaseService implements PriceService {
 		}else{
 			throw new ServiceException(MessageCode.LOGIC_ERROR,"该奶站信息不全,请联系管理完善该奶站信息!");
 		}
+	}
+
+	@Override
+	public PageInfo findMaraPricesById(String id,int pageNum,int pageSize) {
+		// TODO Auto-generated method stub
+		Map<String,String> attrs = new HashMap<String,String>();
+		attrs.put("salesOrg", this.userSessionService.getCurrentUser().getSalesOrg());
+		attrs.put("id", id);
+		return this.maraPriceMapper.findMaraPricesById(attrs, pageNum, pageSize);
 	}
 }

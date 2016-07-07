@@ -14,10 +14,11 @@
     <result column="LAST_MODIFIED_BY_TXT" property="lastModifiedByTxt" jdbcType="VARCHAR" />
     <result column="PRICE1" property="price1" jdbcType="DECIMAL" />
     <result column="PRICE2" property="price2" jdbcType="DECIMAL" />
+    <result column="SALES_ORG" property="salesOrg" jdbcType="VARCHAR" />
   </resultMap>
   <sql id="Base_Column_List" >
     REL_NO, MATNR, ID, CREATE_AT, CREATE_BY, CREATE_BY_TXT, LAST_MODIFIED, LAST_MODIFIED_BY, 
-    LAST_MODIFIED_BY_TXT, PRICE1, PRICE2
+    LAST_MODIFIED_BY_TXT, PRICE1, PRICE2,SALES_ORG
   </sql>
   <select id="findMaraPriceByNo" resultMap="BaseResultMap" parameterType="java.lang.String" >
     select 
@@ -65,6 +66,9 @@
       <if test="price2 != null" >
         PRICE2,
       </if>
+      <if test="salesOrg != null">
+          SALES_ORG,
+      </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides="," >
       <if test="relNo != null" >
@@ -99,6 +103,9 @@
       </if>
       <if test="price2 != null" >
         #{price2,jdbcType=DECIMAL},
+      </if>
+      <if test="salesOrg != null">
+          #{salesOrg,jdbcType=VARCHAR},
       </if>
     </trim>
   </insert>
@@ -135,10 +142,13 @@
       <if test="price2 != null" >
         PRICE2 = #{price2,jdbcType=DECIMAL},
       </if>
+      <if test="salesOrg != null">
+          SALES_ORG = #{salesOrg,jdbcType=VARCHAR},
+      </if>
     </set>
     where REL_NO = #{relNo,jdbcType=VARCHAR}
   </update>
-  <select id="findMaraPricesById" resultMap="BaseResultMap" parameterType="String">
+  <select id="findMaraPricesById" resultMap="BaseResultMap" parameterType="java.util.HashMap">
       SELECT
 		p.REL_NO,
 		p.MATNR,
@@ -151,11 +161,13 @@
 		p.LAST_MODIFIED_BY_TXT,
 		p.PRICE1,
 		p.PRICE2,
+		p.SALES_ORG,
 		m.MATNR_TXT
 	FROM
 		t_mara_price_rel p,
 		T_MD_MARA m
-	WHERE p.MATNR=m.MATNR and  p.ID = #{id}
+	WHERE p.MATNR = m.MATNR and m.SALES_ORG=#{salesOrg} and p.sales_org=#{salesOrg}
+AND p.ID = #{id}
   </select>
   <delete id="delMaraPricesById" parameterType="String">
       delete from t_mara_price_rel where ID=#{id}
