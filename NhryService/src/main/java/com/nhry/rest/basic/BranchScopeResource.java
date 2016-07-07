@@ -37,4 +37,5 @@ public class BranchScopeResource extends BaseResource {
 		return convertToRespModel(MessageCode.NORMAL, null,  tMdBranchScopeService.deleteAreaByBranchNo(branchNo,residentNoStr));
 	}
 
+
 }

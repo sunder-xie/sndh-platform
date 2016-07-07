@@ -152,6 +152,7 @@ public class RequireOrderServiceImpl implements RequireOrderService {
                 entry.setMatnr(item.getMatnr());
                 entry.setMatnrTxt(mara.getMatnrTxt());
                 entry.setQty(item.getQty());
+                entry.setFlag(item.getFlag());
                 entry.setIncreQty(item.getIncreQty());
                 entries.add(entry);
             }

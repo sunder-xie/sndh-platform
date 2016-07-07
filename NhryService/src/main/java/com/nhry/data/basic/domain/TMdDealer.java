@@ -39,6 +39,8 @@ public class TMdDealer {
 
     private String delFlag;
 
+    private String companyCode;
+
     public String getDealerNo() {
         return dealerNo;
     }
@@ -181,5 +183,13 @@ public class TMdDealer {
 
     public void setDelFlag(String delFlag) {
         this.delFlag = delFlag == null ? null : delFlag.trim();
+    }
+
+    public String getCompanyCode() {
+        return companyCode;
+    }
+
+    public void setCompanyCode(String companyCode) {
+        this.companyCode = companyCode;
     }
 }

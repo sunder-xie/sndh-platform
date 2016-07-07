@@ -117,7 +117,7 @@ public class BillResource extends BaseResource {
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes(MediaType.APPLICATION_JSON)
     @ApiOperation(value = "/branch/branchBill", response = PageInfo.class, notes = "奶站结算")
-    public Response branchBill(@ApiParam(required=true,name="customerBill",value="奶站结算")BranchBillSearch bsearch){
+    public Response branchBill(@ApiParam(required=true,name="customerBill",value="奶站结算") BranchBillSearch bsearch){
         return convertToRespModel(MessageCode.NORMAL, null, branchBillService.branchBill(bsearch));
     }
 }

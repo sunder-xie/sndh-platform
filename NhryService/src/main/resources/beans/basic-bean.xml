@@ -139,6 +139,7 @@
 	<bean id="residentialAreaService" class="com.nhry.service.basic.impl.ResidentialAreaServiceImpl">
 		<property name="tMdResidentialAreaMapper"  ref="tMdResidentialAreaMapper"></property>
 		<property name="tMdBranchScopeMapper"  ref="tMdBranchScopeMapper"></property>
+		<property name="userSessionService" ref="userSessionService"></property>
 	</bean>
 	
 	<bean id="tMdBranchScopeMapper" class="com.nhry.data.basic.impl.TMdBranchScopeMapperImpl">
@@ -168,12 +169,4 @@
 		<property name="sqlSessionTemplate" ref="dynamicSqlSessionTemplate"/>
 	</bean>
 
-	<!-- 要货单 -->
-	<bean class="com.nhry.data.basic.impl.TSsmReqGoodsOrderMapperImpl" id="ssmReqGoodsOrderMapper">
-		<property name="sqlSessionTemplate" ref="dynamicSqlSessionTemplate"/>
-	</bean>
-	<bean class="com.nhry.data.basic.impl.TSsmReqGoodsOrderItemMapperImpl" id="ssmReqGoodsOrderItemMapper">
-		<property name="sqlSessionTemplate" ref="dynamicSqlSessionTemplate"/>
-	</bean>
-	<!-- 要货单 end-->
 </beans>

@@ -15,11 +15,23 @@
         <result column="LAST_MODIFIED_BY_TXT" property="lastModifiedByTxt" jdbcType="VARCHAR" />
         <result column="RET_LSH" property="retLsh" jdbcType="VARCHAR" />
     </resultMap>
+
+    <resultMap id="BoxRetResultMap" type="com.nhry.model.milktrans.ReturnBoxModel" >
+        <result column="DEALER_NO" property="dealerNo" jdbcType="VARCHAR" />
+        <result column="DEALER_NAME" property="dealerName" jdbcType="VARCHAR" />
+        <result column="BRANCH_NO" property="branchNo" jdbcType="VARCHAR" />
+        <result column="BRANCH_NAME" property="branchName" jdbcType="VARCHAR" />
+        <result column="EMP_NO" property="empNo" jdbcType="VARCHAR" />
+        <result column="EMP_NAME" property="empName" jdbcType="VARCHAR" />
+        <result column="SPEC" property="spec" jdbcType="VARCHAR" />
+        <result column="REC_DATE" property="recDate" jdbcType="DATE" />
+        <result column="RECEIVE_NUM" property="receiveNum" jdbcType="INTEGER" />
+        <result column="REAL_NUM" property="realNum" jdbcType="INTEGER" />
+    </resultMap>
     <sql id="Base_Column_List" >
       DET_LSH,SPEC,BOT_SPEC,SPEC_UNIT,RECEIVE_NUM,REAL_NUM,CREATE_BY,CREATE_BY_TXT,
         LAST_MODIFIED,LAST_MODIFIED_BY,LAST_MODIFIED_BY_TXT,RET_LSH
     </sql>
-
     <insert id="addRecBotItem" parameterType="com.nhry.data.milktrans.domain.TRecBotDetail">
         insert into T_REC_BOT_DETAIL(
         DET_LSH, SPEC, BOT_SPEC,  RECEIVE_NUM, CREATE_BY, CREATE_BY_TXT,RET_LSH)
@@ -27,7 +39,6 @@
         #{receiveNum,jdbcType=INTEGER},#{createBy,jdbcType=VARCHAR},#{createByTxt,jdbcType=VARCHAR},#{retLsh,jdbcType=VARCHAR})
 
     </insert>
-
     <select id="selectBotDetailByRetLsh" resultMap="BaseResultMap" parameterType="String">
         SELECT
         <include refid="Base_Column_List"/>
@@ -45,4 +56,28 @@
     </update>
 
 
+
+    <select id="searchRetBoxPage" resultMap="BaseResultMap" parameterType="com.nhry.model.milktrans.ReturnboxSerarch">
+     SELECT
+        d.SPEC,SUM(d.RECEIVE_NUM) RECEIVE_NUM,SUM(d.REAL_NUM) REAL_NUM ,b.REC_DATE
+        ,b.BRANCH_NO,br.BRANCH_NAME,b.EMP_NO,b.EMP_NAME,br.DEALER_NO,de.DEALER_NAME
+      FROM t_rec_bot_detail d
+        LEFT JOIN t_rec_bot b  on d.RET_LSH = b.RET_LSH
+        LEFT JOIN t_md_branch br ON b.BRANCH_NO = br.BRANCH_NO
+        LEFT JOIN t_md_dealer de on br.DEALER_NO = de.DEALER_NO
+        GROUP BY d.SPEC,b.EMP_NO,b.REC_DATE
+        HAVING 1=1
+        <if test="branchNo!=null and ''!=branchNo">
+            br.BRANCH_NO = #{branchNo,jdbcTypc=VARCHAR}
+        </if>
+        <if test="empNo!=null and ''!=empNo">
+            b.EMP_NO = #{empNo,jdbcTypc=VARCHAR}
+        </if>
+        <if test="startDate!=null">
+            b.REC_DATE &gt;= #{startDate,jdbcTypc=DATE}
+        </if>
+        <if test="endDate!=null">
+            b.REC_DATE &lt;= #{endDate,jdbcTypc=DATE}
+        </if>
+    </select>
 </mapper>

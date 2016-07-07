@@ -69,5 +69,10 @@ public class TMdBranchEmpMapperImpl implements TMdBranchEmpMapper {
 		return sqlSessionTemplate.selectOne("selectBranchEmpByEmpNo",empNo);
 	}
 
+	@Override
+	public List<TMdBranchEmp> getAllEmpByBranchNo(String branchNo) {
+		return sqlSessionTemplate.selectList("getAllEmpByBranchNo",branchNo);
+	}
+
 
 }

@@ -33,6 +33,11 @@ public class TMdDealerMapperImpl implements TMdDealerMapper {
     }
 
     @Override
+    public int updateDealerSelective(TMdDealer record) {
+        return sqlSessionTemplate.update("updateDealerSelective",record);
+    }
+
+    @Override
     public int updateDealer(TMdDealer record) {
         return sqlSessionTemplate.update("updateDealer",record);
     }

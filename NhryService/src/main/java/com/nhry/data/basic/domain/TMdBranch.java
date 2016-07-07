@@ -50,6 +50,8 @@ public class TMdBranch implements Serializable{
 
     private String lastModifiedByTxt;
 
+    private String companyCode;
+
     public String getBranchNo() {
         return branchNo;
     }
@@ -232,5 +234,13 @@ public class TMdBranch implements Serializable{
 
     public void setLastModifiedByTxt(String lastModifiedByTxt) {
         this.lastModifiedByTxt = lastModifiedByTxt == null ? null : lastModifiedByTxt.trim();
+    }
+
+    public String getCompanyCode() {
+        return companyCode;
+    }
+
+    public void setCompanyCode(String companyCode) {
+        this.companyCode = companyCode;
     }
 }

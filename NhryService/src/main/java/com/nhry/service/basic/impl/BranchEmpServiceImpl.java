@@ -90,6 +90,11 @@ public class BranchEmpServiceImpl extends BaseService implements BranchEmpServic
 	}
 
 	@Override
+	public List<TMdBranchEmp> getAllEmpByBranchNo(String branchNo) {
+		return branchEmpMapper.getAllEmpByBranchNo(branchNo);
+	}
+
+	@Override
 	public int uptBranchEmpByNo(TMdBranchEmp record) {
 		// TODO Auto-generated method stub
 		TMdBranchEmp emp = this.selectBranchEmpByNo(record.getEmpNo());

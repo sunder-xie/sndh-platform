@@ -1,10 +1,9 @@
 package com.nhry.service.basic.impl;
 
-import org.apache.commons.lang3.StringUtils;
-
 import com.github.pagehelper.PageInfo;
 import com.nhry.common.exception.MessageCode;
 import com.nhry.common.exception.ServiceException;
+import com.nhry.data.auth.domain.TSysUser;
 import com.nhry.data.basic.dao.TBranchNotsellListMapper;
 import com.nhry.data.basic.dao.TMdMaraExMapper;
 import com.nhry.data.basic.dao.TMdMaraMapper;
@@ -16,9 +15,9 @@ import com.nhry.model.basic.ProductQueryModel;
 import com.nhry.service.BaseService;
 import com.nhry.service.basic.dao.BranchService;
 import com.nhry.service.basic.dao.ProductService;
-import com.nhry.service.basic.pojo.ProductInfoExModel;
 import com.nhry.utils.PrimaryKeyUtils;
 import com.nhry.utils.date.Date;
+import org.apache.commons.lang3.StringUtils;
 
 import java.util.HashMap;
 import java.util.List;
@@ -172,6 +171,16 @@ public class ProductServiceImpl extends BaseService implements ProductService {
 			}
 		}
 		return null;
+	}
+
+	@Override
+	public List<TMdMara>  getProductByCodeOrName(String product) {
+		TSysUser user = userSessionService.getCurrentUser();
+		Map<String,String > map = new HashMap<String,String>();
+			map.put("matnr",product);
+			map.put("matnrTxt",product);
+			map.put("salesOrg",user.getSalesOrg());
+		return tMdMaraMapper.getProductByCodeOrNameAndSalesOrg(map);
 	}
 
 	public void setBranchSevice(BranchService branchSevice) {
