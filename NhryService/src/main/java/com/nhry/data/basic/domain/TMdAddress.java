@@ -41,6 +41,8 @@ public class TMdAddress implements Serializable{
     private String vipCustNo;
     
     private String isDafault;
+    
+    private String isDelete;
 
     public String getAddressId() {
         return addressId;
@@ -192,5 +194,13 @@ public class TMdAddress implements Serializable{
 
 	public void setStreet(String street) {
 		this.street = street;
+	}
+
+	public String getIsDelete() {
+		return isDelete;
+	}
+
+	public void setIsDelete(String isDelete) {
+		this.isDelete = isDelete;
 	}
 }

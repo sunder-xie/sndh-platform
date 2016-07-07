@@ -4,6 +4,7 @@ import com.nhry.data.basic.domain.TMdBranch;
 import com.nhry.data.basic.domain.TMdBranchEx;
 import com.nhry.utils.PIPropertitesUtil;
 import com.nhry.webService.OptionManager;
+import com.nhry.webService.client.PISuccessMessage;
 import com.nhry.webService.client.businessData.ZT_BusinessData_MaintainServiceCallbackHandler;
 import com.nhry.webService.client.businessData.ZT_BusinessData_MaintainServiceStub;
 import com.nhry.webService.client.businessData.functions.*;
@@ -19,6 +20,7 @@ import java.rmi.RemoteException;
 import java.text.ParsePosition;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -38,7 +40,7 @@ public class BusinessDataConnection {
         return stub;
     }
 
-    public static String RequisitionCreate(TMdBranchEx branchEx, Date reqDate, List<Map<String, String>> items) throws RemoteException {
+    public static PISuccessMessage RequisitionCreate(TMdBranchEx branchEx, Date reqDate, List<Map<String, String>> items){
         ZSD_REQUISITION_CREATE_RFC rfc = new ZSD_REQUISITION_CREATE_RFC();
         ZSD_REQ_EKKO ekko = new ZSD_REQ_EKKO();
         COMP_CODE_type1 comp_code_type1 = new COMP_CODE_type1();
@@ -109,22 +111,37 @@ public class BusinessDataConnection {
         }
         rfc.setIT_ITEM(it_item_type0);
         ZSD_REQUISITION_CREATE_RFCResponse response;
-        response = BusinessDataConnection.getConn().requisitionCreate(rfc);
-        ET_MESSAGE_type1 message = response.getET_MESSAGE();
-        BAPIRET2[] bap = message.getItem();
-        if(bap.length > 0) {
-            String mes = bap[0].getTYPE().getTYPE_type0();
-            if ("1".equals(mes)) {
-                return response.getET_EBELN().getET_EBELN_type0();
-            } else {
-                throw new RuntimeException(bap[0].getMESSAGE().getMESSAGE_type0());
+        PISuccessMessage successMessage = new PISuccessMessage();
+        try {
+            response = BusinessDataConnection.getConn().requisitionCreate(rfc);
+            ET_MESSAGE_type1 message = response.getET_MESSAGE();
+            BAPIRET2[] bap = message.getItem();
+
+            if (bap.length > 0) {
+                String mes = bap[0].getTYPE().getTYPE_type0();
+                if ("1".equals(mes)) {
+                    successMessage.setSuccess(true);
+                    successMessage.setData(response.getET_EBELN().getET_EBELN_type0());
+                    successMessage.setMessage("");
+                } else {
+                    successMessage.setSuccess(false);
+                    successMessage.setData("");
+                    successMessage.setMessage("bap[0].getMESSAGE().getMESSAGE_type0()");
+                }
+            } else{
+                successMessage.setSuccess(true);
+                successMessage.setData(response.getET_EBELN().getET_EBELN_type0());
+                successMessage.setMessage("");
             }
-        }else{
-            return response.getET_EBELN().getET_EBELN_type0();
+        }catch (Exception e){
+            successMessage.setSuccess(false);
+            successMessage.setData("");
+            successMessage.setMessage("bap[0].getMESSAGE().getMESSAGE_type0()");
         }
+        return successMessage;
     }
 
-    public static String SalesOrderCreate(String KUNNR,String KUNWE,String VKORG,String BSTKD,Date LFDAT,List<Map<String,String>> items ) throws RemoteException {
+    public static PISuccessMessage SalesOrderCreate(String KUNNR,String KUNWE,String VKORG,String BSTKD,Date LFDAT,List<Map<String,String>> items ) throws RemoteException {
 
         IT_ZSSD00011_type0 it_zssd00011_type1 = new IT_ZSSD00011_type0();
         for (Map<String,String> map:items) {
@@ -181,19 +198,33 @@ public class BusinessDataConnection {
         bstkd_type1.setBSTKD_type0(BSTKD);
         zssd00010.setBSTKD(bstkd_type1);
         rfc.setIT_ZSSD00010(zssd00010);
-
-        ZSD_SALESORDER_DATA_RFC_2Response response = BusinessDataConnection.getConn().salesOrderCreate(rfc);
-
-        ET_BAPIRETURN1_type1 et_bapirequrn1_type1 =  response.getET_BAPIRETURN1();
-        BAPIRET2[] bap = et_bapirequrn1_type1.getItem();
-        if(bap.length>0){
-            if("S".equals(bap[0].getTYPE())){
-                return response.getET_VBELN().getET_VBELN_type0();
-            }else{
-                throw new RuntimeException(bap[0].getMESSAGE().getMESSAGE_type0());
+        PISuccessMessage successMessage = new PISuccessMessage();
+        try {
+            ZSD_SALESORDER_DATA_RFC_2Response response = BusinessDataConnection.getConn().salesOrderCreate(rfc);
+            ET_BAPIRETURN1_type1 et_bapirequrn1_type1 = response.getET_BAPIRETURN1();
+            BAPIRET2[] bap = et_bapirequrn1_type1.getItem();
+            if (bap.length > 0) {
+                String mes = bap[0].getTYPE().getTYPE_type0();
+                if ("1".equals(mes)) {
+                    successMessage.setSuccess(true);
+                    successMessage.setData(response.getET_VBELN().getET_VBELN_type0());
+                    successMessage.setMessage("");
+                } else {
+                    successMessage.setSuccess(false);
+                    successMessage.setData("");
+                    successMessage.setMessage("bap[0].getMESSAGE().getMESSAGE_type0()");
+                }
+            } else {
+                successMessage.setSuccess(true);
+                successMessage.setData(response.getET_VBELN().getET_VBELN_type0());
+                successMessage.setMessage("");
             }
+        }catch (Exception e){
+            successMessage.setSuccess(false);
+            successMessage.setData("");
+            successMessage.setMessage("bap[0].getMESSAGE().getMESSAGE_type0()");
         }
-        return response.getET_VBELN().getET_VBELN_type0();
+        return successMessage;
     }
 
     private static String DeliveryQuery(String datum,String deliveryType) throws RemoteException {

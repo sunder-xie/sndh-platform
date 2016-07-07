@@ -47,4 +47,6 @@ public interface TMdAddressMapper {
       * @return
       */
     TMdAddress findAddressDetailById(String id);
+    
+    int uptCustAddressUnDefault(TMdAddress record);
 }

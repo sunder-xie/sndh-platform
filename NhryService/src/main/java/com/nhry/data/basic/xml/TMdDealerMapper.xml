@@ -20,11 +20,12 @@
     <result column="LAST_MODIFIED_BY" property="lastModifiedBy" jdbcType="VARCHAR" />
     <result column="LAST_MODIFIED_BY_TXT" property="lastModifiedByTxt" jdbcType="VARCHAR" />
     <result column="DEL_FLAG" property="delFlag" jdbcType="CHAR" />
+    <result column="COMPANY_CODE" property="companyCode" jdbcType="VARCHAR"/>
   </resultMap>
   <sql id="Base_Column_List" >
     DEALER_NO, DEALER_NAME, SALES_ORG, PARENT, DEALER_TYPE, CONTACT, TEL, ADDRESS, PROVINCE, 
     CITY, COUNTY, CREATE_AT, CREATE_BY, CREATE_BY_TXT, LAST_MODIFIED, LAST_MODIFIED_BY, 
-    LAST_MODIFIED_BY_TXT, DEL_FLAG
+    LAST_MODIFIED_BY_TXT, DEL_FLAG,COMPANY_CODE
   </sql>
   <select id="selectDealerByNo" resultMap="BaseResultMap" parameterType="java.lang.String" >
     select 
@@ -48,14 +49,14 @@
       TEL, ADDRESS, PROVINCE, 
       CITY, COUNTY, CREATE_AT, 
       CREATE_BY, CREATE_BY_TXT, LAST_MODIFIED, 
-      LAST_MODIFIED_BY, LAST_MODIFIED_BY_TXT, DEL_FLAG
+      LAST_MODIFIED_BY, LAST_MODIFIED_BY_TXT, DEL_FLAG,COMPANY_CODE
       )
     values (#{dealerNo,jdbcType=VARCHAR}, #{dealerName,jdbcType=VARCHAR}, #{salesOrg,jdbcType=VARCHAR}, 
       #{parent,jdbcType=VARCHAR}, #{dealerType,jdbcType=VARCHAR}, #{contact,jdbcType=VARCHAR}, 
       #{tel,jdbcType=VARCHAR}, #{address,jdbcType=VARCHAR}, #{province,jdbcType=VARCHAR}, 
       #{city,jdbcType=VARCHAR}, #{county,jdbcType=VARCHAR}, #{createAt,jdbcType=TIMESTAMP}, 
       #{createBy,jdbcType=VARCHAR}, #{createByTxt,jdbcType=VARCHAR}, #{lastModified,jdbcType=TIMESTAMP}, 
-      #{lastModifiedBy,jdbcType=VARCHAR}, #{lastModifiedByTxt,jdbcType=VARCHAR}, #{delFlag,jdbcType=CHAR}
+      #{lastModifiedBy,jdbcType=VARCHAR}, #{lastModifiedByTxt,jdbcType=VARCHAR}, #{delFlag,jdbcType=CHAR},#{companyCode,jdbcType=VARCHAR}
       )
   </insert>
   <!--
@@ -174,8 +175,8 @@
       </if>
     </trim>
   </insert>
-
-  <update id="updateByPrimaryKeySelective" parameterType="com.nhry.data.basic.domain.TMdDealer" >
+  -->
+  <update id="updateDealerSelective" parameterType="com.nhry.data.basic.domain.TMdDealer" >
     update t_md_dealer
     <set >
       <if test="dealerName != null" >
@@ -226,13 +227,16 @@
       <if test="lastModifiedByTxt != null" >
         LAST_MODIFIED_BY_TXT = #{lastModifiedByTxt,jdbcType=VARCHAR},
       </if>
+      <if test="companyCode != null">
+        COMPANY_CODE = #{companyCode,jdbcType=VARCHAR},
+      </if>
       <if test="delFlag != null" >
         DEL_FLAG = #{delFlag,jdbcType=CHAR},
       </if>
     </set>
     where DEALER_NO = #{dealerNo,jdbcType=VARCHAR}
   </update>
-  -->
+
   <update id="updateDealer" parameterType="com.nhry.data.basic.domain.TMdDealer" >
     update t_md_dealer
     set DEALER_NAME = #{dealerName,jdbcType=VARCHAR},
@@ -251,6 +255,7 @@
       LAST_MODIFIED = #{lastModified,jdbcType=TIMESTAMP},
       LAST_MODIFIED_BY = #{lastModifiedBy,jdbcType=VARCHAR},
       LAST_MODIFIED_BY_TXT = #{lastModifiedByTxt,jdbcType=VARCHAR},
+      COMPANY_CODE = #{companyCode,jdbcType=VARCHAR},
       DEL_FLAG = #{delFlag,jdbcType=CHAR}
     where DEALER_NO = #{dealerNo,jdbcType=VARCHAR}
   </update>
