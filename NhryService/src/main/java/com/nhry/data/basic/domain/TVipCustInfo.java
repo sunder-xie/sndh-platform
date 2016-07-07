@@ -89,6 +89,8 @@ public class TVipCustInfo implements Serializable{
 
     private String branchNo;
     
+    private String branchName;
+    
     private Date firstOrderTime;
     
     private Date lastOrderTime;
@@ -445,5 +447,13 @@ public class TVipCustInfo implements Serializable{
 
 	public void setLastOrderTime(Date lastOrderTime) {
 		this.lastOrderTime = lastOrderTime;
+	}
+
+	public String getBranchName() {
+		return branchName;
+	}
+
+	public void setBranchName(String branchName) {
+		this.branchName = branchName;
 	}
 }

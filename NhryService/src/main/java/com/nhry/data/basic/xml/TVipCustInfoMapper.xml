@@ -51,6 +51,7 @@
 		<result column="BRANCH_NO" property="branchNo" jdbcType="VARCHAR" />
 		<result column="FIRST_ORDER_TIME" property="firstOrderTime" jdbcType="TIMESTAMP" />
 		<result column="LAST_ORDER_TIME" property="lastOrderTime" jdbcType="TIMESTAMP" />
+		<result column="BRANCH_NAME" property="branchName" jdbcType="VARCHAR" />
 	</resultMap>
 	<sql id="Base_Column_List">
 		VIP_CUST_NO, VIP_CUST_NO_SAP, SALES_ORG, VIP_NAME,
@@ -136,7 +137,7 @@
 				b.BRANCH_NAME
 			FROM
 				T_MD_BRANCH b where b.BRANCH_NO = i.BRANCH_NO
-		) BRANCH_NO,
+		) BRANCH_NAME,i.BRANCH_NO,
 		date_format(FIRST_ORDER_TIME, '%Y-%m-%d') FIRST_ORDER_TIME,date_format(LAST_ORDER_TIME, '%Y-%m-%d') LAST_ORDER_TIME 
 		FROM
 		t_vip_cust_info i WHERE i.VIP_CUST_NO =#{vipCustNo,jdbcType=VARCHAR}
@@ -766,7 +767,7 @@
 				b.BRANCH_NAME
 			FROM
 				T_MD_BRANCH b where b.BRANCH_NO = i.BRANCH_NO
-		) BRANCH_NO  from t_vip_cust_info i 
+		) BRANCH_NAME,i.BRANCH_NO  from t_vip_cust_info i 
 		<where>
 		     <if test="salesOrg != null and salesOrg !=''">
 		         SALES_ORG = #{salesOrg} 
