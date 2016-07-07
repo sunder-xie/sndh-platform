@@ -29,6 +29,12 @@ public interface RoleService {
     TSysRole findRoleByRid(String id);
     
     /**
+     * 获取所有的角色
+     * @return
+     */
+    public List<TSysRole> getAllRoles();
+    
+    /**
      * 修改角色
      * @param record
      * @return

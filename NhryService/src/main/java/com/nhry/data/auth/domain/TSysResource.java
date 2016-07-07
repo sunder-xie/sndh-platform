@@ -1,8 +1,9 @@
 package com.nhry.data.auth.domain;
 
+import java.io.Serializable;
 import java.util.Date;
 
-public class TSysResource {
+public class TSysResource implements Serializable{
     private String resCode;
 
     private String resName;

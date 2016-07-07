@@ -1,6 +1,8 @@
 package com.nhry.data.auth.domain;
 
-public class TSysRoleResource {
+import java.io.Serializable;
+
+public class TSysRoleResource implements Serializable{
     private String id;
 
     private String resCode;
