@@ -79,7 +79,7 @@ public class ProductResource extends BaseResource {
 	@POST
 	@Path("/sell/lists")
 	@Produces(MediaType.APPLICATION_JSON)
-	@ApiOperation(value = "/sell/lists", response = TMdMara.class, notes = "获取奶站可销售的产品清单")
+	@ApiOperation(value = "/sell/lists", response = PageInfo.class, notes = "获取奶站可销售的产品清单")
 	public Response getBranchSaleMaras(@ApiParam(required=true,name="pm",value="产品查询对象(branchNo(必填)、matnrTxt)")ProductQueryModel pm){
 		return convertToRespModel(MessageCode.NORMAL, null, productService.getBranchSaleMaras(pm));
 	}
