@@ -84,4 +84,6 @@ public interface TMdMaraMapper {
      * @return
      */
     PageInfo getCompMaras(ProductQueryModel pm);
+
+    List<TMdMara>  getProductByCodeOrNameAndSalesOrg(Map<String,String> attrs);
 }

@@ -21,4 +21,6 @@ public interface BranchEmpService {
     BranchEmpModel empDetailInfo(String empNo);
 
     List<TMdBranch> getComPanyAllBranch();
+
+    List<TMdBranchEmp> getAllEmpByBranchNo(String branchNo);
 }

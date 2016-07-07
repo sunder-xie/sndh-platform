@@ -74,6 +74,14 @@ public class BranchEmpResource extends BaseResource {
 		return convertToRespModel(MessageCode.NORMAL, null,branchEmpService.searchBranchEmp(smodel));
 	}
 
+	@GET
+	@Path("/getAllEmpByBranchNo")
+	@Produces(MediaType.APPLICATION_JSON)
+	@ApiOperation(value = "/getAllEmpByBranchNo", response = Response.class, notes = "获取奶站下的所有员工")
+	public Response getAllEmpByBranchNo(@ApiParam(required=true,name="branchNo",value="奶站编号") @QueryParam("branchNo")String branchNo){
+		return convertToRespModel(MessageCode.NORMAL, null,branchEmpService.getAllEmpByBranchNo(branchNo));
+	}
+
 	@POST
 	@Path("/getComPanyAllBranch")
 	@Produces(MediaType.APPLICATION_JSON)

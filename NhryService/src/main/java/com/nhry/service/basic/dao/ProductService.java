@@ -71,4 +71,6 @@ public interface ProductService {
      * @return
      */
     PageInfo getBranchSaleMaras(ProductQueryModel pm);
+
+    List<TMdMara>  getProductByCodeOrName(String product);
 }

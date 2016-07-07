@@ -5,6 +5,8 @@ import com.nhry.data.basic.domain.TMdBranchEmp;
 import com.nhry.model.basic.EmpQueryModel;
 import com.nhry.service.basic.pojo.BranchEmpModel;
 
+import java.util.List;
+
 public interface TMdBranchEmpMapper {
     int deleteBranchEmp(TMdBranchEmp record);
 
@@ -19,4 +21,6 @@ public interface TMdBranchEmpMapper {
     public PageInfo searchBranchEmp(EmpQueryModel smodel);
 
     TMdBranchEmp selectBranchEmpByEmpNo(String empNo);
+
+    List<TMdBranchEmp> getAllEmpByBranchNo(String branchNo);
 }

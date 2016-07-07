@@ -3,18 +3,14 @@ package com.nhry.rest.basic;
 import com.github.pagehelper.PageInfo;
 import com.nhry.common.exception.MessageCode;
 import com.nhry.data.basic.domain.TMdMara;
-import com.nhry.data.basic.domain.TMdMaraEx;
-import com.nhry.data.config.domain.NHSysParameter;
 import com.nhry.model.basic.ProductQueryModel;
 import com.nhry.model.sys.ResponseModel;
 import com.nhry.rest.BaseResource;
 import com.nhry.service.basic.dao.ProductService;
-import com.nhry.service.basic.pojo.ProductInfoExModel;
 import com.sun.jersey.spi.resource.Singleton;
 import com.wordnik.swagger.annotations.Api;
 import com.wordnik.swagger.annotations.ApiOperation;
 import com.wordnik.swagger.annotations.ApiParam;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
@@ -82,5 +78,13 @@ public class ProductResource extends BaseResource {
 	@ApiOperation(value = "/sell/lists", response = TMdMara.class, notes = "获取奶站可销售的产品清单")
 	public Response getBranchSaleMaras(@ApiParam(required=true,name="pm",value="产品查询对象(branchNo(必填)、matnrTxt)")ProductQueryModel pm){
 		return convertToRespModel(MessageCode.NORMAL, null, productService.getBranchSaleMaras(pm));
+	}
+
+	@GET
+	@Path("/getProductByCodeOrName")
+	@Produces(MediaType.APPLICATION_JSON)
+	@ApiOperation(value = "/getProductByCodeOrName", response = ResponseModel.class, notes = "根据产品编号或者名称模糊查询商品")
+	public Response getProductByCodeOrName(@ApiParam(required=true,name="product",value="商品编号或名称") @QueryParam("product") String product){
+		return convertToRespModel(MessageCode.NORMAL, null, productService.getProductByCodeOrName(product));
 	}
 }
