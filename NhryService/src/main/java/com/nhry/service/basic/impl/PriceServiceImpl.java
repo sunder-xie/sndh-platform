@@ -273,7 +273,7 @@ public class PriceServiceImpl extends BaseService implements PriceService {
 			throw new ServiceException(MessageCode.LOGIC_ERROR,"该奶站编号(branchNo)对应的奶站不存在!");
 		}
 		if(SysContant.getSystemConst("own_Branch").equals(branch.getBranchGroup())){
-			//自由奶站
+			//自有奶站
 			return this.tMdPriceMapper.getOwnBranchPricesGroupByBn(this.userSessionService.getCurrentUser().getSalesOrg());
 		}else if(SysContant.getSystemConst("dealer_Branch").equals(branch.getBranchGroup())){
 			//经销商奶站
