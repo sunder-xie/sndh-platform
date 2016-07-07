@@ -7,6 +7,7 @@ import com.nhry.data.basic.domain.TMdBranch;
 import com.nhry.model.basic.BranchQueryModel;
 
 import java.util.List;
+import java.util.Map;
 
 public class TMdBranchMapperImpl implements TMdBranchMapper {
 	private DynamicSqlSessionTemplate sqlSessionTemplate;
@@ -35,7 +36,15 @@ public class TMdBranchMapperImpl implements TMdBranchMapper {
 		return sqlSessionTemplate.update("uptBranch",tMdBranch);
 	}
 
+	@Override
+	public List<TMdBranch> getBranchByCodeOrName(Map<String, String> map) {
+		return sqlSessionTemplate.selectList("getBranchByCodeOrName",map);
+	}
 
+	@Override
+	public List<TMdBranch> findBranchListByOrgAndAuto(String salesOrg) {
+		return sqlSessionTemplate.selectList("findBranchListByOrgAndAuto",salesOrg);
+	}
 
 
 	@Override

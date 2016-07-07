@@ -5,6 +5,7 @@ import com.nhry.data.basic.domain.TMdBranch;
 import com.nhry.model.basic.BranchQueryModel;
 
 import java.util.List;
+import java.util.Map;
 
 public interface TMdBranchMapper {
     int deleteBranchByNo(String branchNo);
@@ -20,4 +21,7 @@ public interface TMdBranchMapper {
 
     int updateBranch(TMdBranch tMdBranch);
 
+    List<TMdBranch> getBranchByCodeOrName(Map<String, String> map);
+
+    List<TMdBranch> findBranchListByOrgAndAuto(String salesOrg);
 }
