@@ -4,6 +4,7 @@ package com.nhry.service.order.impl;
 import com.github.pagehelper.PageInfo;
 import com.nhry.common.exception.MessageCode;
 import com.nhry.common.exception.ServiceException;
+import com.nhry.data.basic.domain.TVipAcct;
 import com.nhry.data.milk.domain.TDispOrderItem;
 import com.nhry.data.order.dao.TOrderDaliyPlanItemMapper;
 import com.nhry.data.order.dao.TPlanOrderItemMapper;
@@ -355,7 +356,7 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 		}
 		catch (ParseException e)
 		{
-			throw new ServiceException("日期格式有误!");
+			throw new ServiceException(MessageCode.LOGIC_ERROR,"日期格式有误!");
 		}
 		//比较配送日期是否修改
 //		int betweenDays = daysOfTwo(order.getStopDateStart(),order.getStopDateEnd());//订单停订到复订中间间隔了多少天
@@ -475,6 +476,17 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 		order.setPaymentmethod(order.getPaymentStat());//10 后款 20 先款 30 殿付款
 		order.setMilkboxStat(StringUtils.isBlank(order.getMilkboxStat()) == true ? "20": order.getMilkboxStat());//奶箱状态
 		order.setPreorderStat("20");//订单状态,初始未确认
+		//受款日期
+		if(StringUtils.isNotBlank(order.getSolicitDateStr())){
+			try
+			{
+				order.setSolicitDate(format.parse(order.getSolicitDateStr()));
+			}
+			catch (Exception e)
+			{
+				throw new ServiceException(MessageCode.LOGIC_ERROR,"日期格式有误!");
+			}
+		}
 //		order.setBranchNo(branchNo);//奶站编号 --人工分单或自动??
 		//如果地址信息不为空，为订户创建新的地址
 		if(record.getAddress() != null){
@@ -497,9 +509,9 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 				entry.setStartDispDate(format.parse(entry.getStartDispDateStr()));
 				entry.setEndDispDate(format.parse(entry.getEndDispDateStr()));
 			}
-			catch (ParseException e)
+			catch (Exception e)
 			{
-				throw new ServiceException("日期格式有误!");
+				throw new ServiceException(MessageCode.LOGIC_ERROR,"日期格式有误!");
 			}
 			orderAmt = orderAmt.add(calculateEntryAmount(entry));
 			entriesList.add(entry);
@@ -509,14 +521,18 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 
 		//订单价格
 		order.setCurAmt(orderAmt);
+		
 		//此为多余的钱，如果是预付款，将存入订户账户???
-		BigDecimal remain = order.getInitAmt().subtract(order.getCurAmt());
-		if(record.getAccount() != null){
-			if("20".equals(order.getPaymentStat()) && remain.floatValue() > 0){
+		if(order.getInitAmt()!=null){
+			BigDecimal remain = order.getInitAmt().subtract(order.getCurAmt());
+			if(record.getAccount() != null && "20".equals(order.getPaymentStat())){
+				if(StringUtils.isBlank(record.getAccount().getBranchNo()))record.getAccount().setBranchNo(order.getBranchNo());
+				if(StringUtils.isBlank(record.getAccount().getVipCustNo()))record.getAccount().setVipCustNo(order.getMilkmemberNo());
 				record.getAccount().setAcctAmt(remain);
 				tVipCustInfoService.addVipAcct(record.getAccount());
 			}
 		}
+		
 		order.setEndDate(calculateFinalDate(entriesList));//订单截止日期
 		order.setInitAmt(orderAmt);
 		
@@ -641,10 +657,10 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 		//先款10、后付款20
 		if(StringUtils.isBlank(record.getPaymentStat()) && StringUtils.isBlank(record.getMilkboxStat())
 				&& StringUtils.isBlank(record.getPreorderStat())){
-			throw new ServiceException("更新信息与状态为空!");
+			throw new ServiceException(MessageCode.LOGIC_ERROR,"更新信息与状态为空!");
 		}
 		if(tPreOrderMapper.selectByPrimaryKey(record.getOrderNo()) == null){
-			throw new ServiceException("该订单号不存在!");
+			throw new ServiceException(MessageCode.LOGIC_ERROR,"该订单号不存在!");
 		}
 
 		tPreOrderMapper.updateOrderStatus(record);
@@ -720,7 +736,7 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 						}
 						catch (ParseException e)
 						{
-							throw new ServiceException("日期格式有误!");
+							throw new ServiceException(MessageCode.LOGIC_ERROR,"日期格式有误!");
 						}
 					}
 					if(!modiFlag){
@@ -1224,11 +1240,14 @@ public class OrderServiceImpl extends BaseService implements OrderService {
    //交验生成订单的输入信息
    private void validateOrderInfo(OrderCreateModel record){
    	TPreOrder order = record.getOrder();
-   	if(StringUtils.isBlank(order.getPaymentmethod())){
+   	if(StringUtils.isBlank(order.getPaymentStat())){
    		throw new ServiceException(MessageCode.LOGIC_ERROR,"请选择付款方式!");
 		}
    	if(StringUtils.isBlank(order.getMilkboxStat())){
    		throw new ServiceException(MessageCode.LOGIC_ERROR,"请选择奶箱状态!");
+		}
+   	if(StringUtils.isBlank(order.getEmpNo())){
+   		throw new ServiceException(MessageCode.LOGIC_ERROR,"请选择送奶员!");
 		}
    	if(record.getEntries()==null || record.getEntries().size() == 0){
    		throw new ServiceException(MessageCode.LOGIC_ERROR,"请选择商品行!");
@@ -1241,6 +1260,11 @@ public class OrderServiceImpl extends BaseService implements OrderService {
    			throw new ServiceException(MessageCode.LOGIC_ERROR,"请选择或输入地址!");
    		}
 		}
+   	for(TPlanOrderItem e:record.getEntries()){
+   		if(StringUtils.isBlank(e.getRuleType())){
+   			throw new ServiceException(MessageCode.LOGIC_ERROR,"商品行必须要有配送规律!");
+   		}
+   	}
    }
 
    //重新计算当天更新日单后，日计划的剩余金额
