@@ -180,7 +180,7 @@
   </select>
     <select id="findRecoureByUserId" resultMap="sysResResultMap">
         SELECT
-        r.*
+        distinct r.*
         FROM
             t_sys_resource r
         LEFT JOIN t_sys_resource d ON r.PARENT = d.RES_CODE

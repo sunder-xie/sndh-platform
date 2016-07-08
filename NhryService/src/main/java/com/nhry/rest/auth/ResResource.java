@@ -59,7 +59,7 @@ public class ResResource extends BaseResource {
     }
 
     @POST
-    @Path("/get/{resCode}")
+    @Path("/{resCode}")
     @Produces(MediaType.APPLICATION_JSON)
     @ApiOperation(value = "/get/{resCode}", response = TSysResource.class, notes = "查找资源")
     public Response addRes(@ApiParam(required = true, name = "resCode", value = "资源编号")@PathParam("resCode")String resCode) {

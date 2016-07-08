@@ -6,6 +6,7 @@ import com.nhry.common.exception.ServiceException;
 import com.nhry.data.auth.dao.TSysResourceMapper;
 import com.nhry.data.auth.domain.TSysResource;
 import com.nhry.data.auth.domain.TSysRoleResource;
+import com.nhry.data.config.domain.NHSysCodeItem;
 import com.nhry.model.auth.RoleResourceData;
 import com.nhry.service.BaseService;
 import com.nhry.service.auth.dao.ResourceService;
@@ -15,7 +16,9 @@ import com.nhry.utils.date.Date;
 import org.apache.commons.lang3.StringUtils;
 
 import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 
 
 public class ResourceServiceImpl extends BaseService implements ResourceService {
@@ -103,7 +106,32 @@ public class ResourceServiceImpl extends BaseService implements ResourceService 
 
     @Override
     public List<TSysResource> findRecoureByUserId(String userId) {
-        return resMapper.findRecoureByUserId(userId);
+    	List<TSysResource> items = new ArrayList<TSysResource>();
+    	List<TSysResource> list = resMapper.findRecoureByUserId(userId);
+    	if(list != null && list.size() > 0){
+    		Map<String,TSysResource> temp = new LinkedHashMap<String,TSysResource>();
+    		for(TSysResource r : list){
+    			temp.put(r.getResCode(),r);
+    		}
+    		StringBuffer sb = new StringBuffer();
+    		for (Map.Entry<String, TSysResource> entry : temp.entrySet()) {
+    			TSysResource children = entry.getValue();
+    			TSysResource parent = temp.get(children.getParent());
+    			if (parent != null) {
+    				parent.getChildrens().add(children);
+    			}
+    			if ("-1".equals(children.getParent())) {
+    				sb.append(children.getResCode()).append(",");
+    			}
+    		}
+    		if(sb.length() > 1){
+    			sb.deleteCharAt(sb.length()-1);
+    			for(String code : sb.toString().split(",")){
+    				items.add(temp.get(code));
+    			}
+    		}
+    	}
+        return items;
     }
 
 	@Override
