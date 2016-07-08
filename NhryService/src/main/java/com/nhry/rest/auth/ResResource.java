@@ -45,7 +45,7 @@ public class ResResource extends BaseResource {
     @POST
     @Path("/lists")
     @Produces(MediaType.APPLICATION_JSON)
-    @ApiOperation(value = "/lists", response = ResponseModel.class, notes = "获取所有的资源列表")
+    @ApiOperation(value = "/lists", response = TSysResource.class, notes = "获取所有的资源列表")
     public Response getAllResources() {
         return convertToRespModel(MessageCode.NORMAL, null, resService.getAllResources());
     }
@@ -53,7 +53,7 @@ public class ResResource extends BaseResource {
     @POST
     @Path("/{roleId}/res/lists")
     @Produces(MediaType.APPLICATION_JSON)
-    @ApiOperation(value = "/{roleId}/res/lists", response = ResponseModel.class, notes = "根据角色编号，查询角色关联的资源列表")
+    @ApiOperation(value = "/{roleId}/res/lists", response = TSysResource.class, notes = "根据角色编号，查询角色关联的资源列表")
     public Response getAllResources(@ApiParam(required = true, name = "roleId", value = "角色编号")@PathParam("roleId")String roleId) {
         return convertToRespModel(MessageCode.NORMAL, null, resService.getRoleResources(roleId));
     }
@@ -61,7 +61,7 @@ public class ResResource extends BaseResource {
     @POST
     @Path("/get/{resCode}")
     @Produces(MediaType.APPLICATION_JSON)
-    @ApiOperation(value = "/get/{resCode}", response = ResponseModel.class, notes = "查找资源")
+    @ApiOperation(value = "/get/{resCode}", response = TSysResource.class, notes = "查找资源")
     public Response addRes(@ApiParam(required = true, name = "resCode", value = "资源编号")@PathParam("resCode")String resCode) {
         return convertToRespModel(MessageCode.NORMAL, null, resService.selectResByCode(resCode));
     }
@@ -86,7 +86,7 @@ public class ResResource extends BaseResource {
     @POST
     @Path("/find/{userId}")
     @Produces(MediaType.APPLICATION_JSON)
-    @ApiOperation(value = "/find/{userId}", response = ResponseModel.class, notes = "根据用户编码查询资源信息")
+    @ApiOperation(value = "/find/{userId}", response = TSysResource.class, notes = "根据用户编码查询资源信息")
     public Response findResourceByUserId(@ApiParam(required = true, name = "userId", value = "用户编码")@PathParam("userId")String userId){
         return convertToRespModel(MessageCode.NORMAL, null, resService.findRecoureByUserId(userId));
     }
