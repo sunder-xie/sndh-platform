@@ -190,4 +190,7 @@
         JOIN t_sys_user usr ON usr.LOGIN_NAME = ur.LOGIN_NAME
         AND usr.LOGIN_NAME = #{userId}
     </select>
+    <select id="getAllResources" resultMap="sysResResultMap" >
+        select <include refid="sysRes_Column_List"/> from t_sys_resource ORDER BY CREATE_AT,LAST_MODIFIED
+    </select>
 </mapper>

@@ -41,8 +41,17 @@ public class ResResource extends BaseResource {
     public Response addRes(@ApiParam(required = true, name = "resource", value = "资源对象")TSysResource resource) {
         return convertToRespModel(MessageCode.NORMAL, null, resService.addRes(resource));
     }
+    
+    @POST
+    @Path("/lists")
+    @Produces(MediaType.APPLICATION_JSON)
+    @Consumes(MediaType.APPLICATION_JSON)
+    @ApiOperation(value = "/lists", response = ResponseModel.class, notes = "获取所有的资源列表")
+    public Response getAllResources() {
+        return convertToRespModel(MessageCode.NORMAL, null, resService.getAllResources());
+    }
 
-    @GET
+    @POST
     @Path("/get/{resCode}")
     @Produces(MediaType.APPLICATION_JSON)
     @ApiOperation(value = "/get/{resCode}", response = ResponseModel.class, notes = "查找资源")
@@ -50,7 +59,7 @@ public class ResResource extends BaseResource {
         return convertToRespModel(MessageCode.NORMAL, null, resService.selectResByCode(resCode));
     }
 
-    @PUT
+    @POST
     @Path("/update")
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes(MediaType.APPLICATION_JSON)
@@ -59,14 +68,15 @@ public class ResResource extends BaseResource {
         return convertToRespModel(MessageCode.NORMAL, null, resService.updateResByCode(resource));
     }
 
-    @DELETE
+    @POST
     @Path("/delete/{resCode}")
     @Produces(MediaType.APPLICATION_JSON)
     @ApiOperation(value = "/update/{resCode}", response = ResponseModel.class, notes = "删除资源")
     public Response deleteRes(@ApiParam(required = true, name = "resCode", value = "资源编码")@PathParam("resCode")String resCode) {
         return convertToRespModel(MessageCode.NORMAL, null, resService.deleteResByCode(resCode));
     }
-    @GET
+    
+    @POST
     @Path("/find/{userId}")
     @Produces(MediaType.APPLICATION_JSON)
     @ApiOperation(value = "/find/{userId}", response = ResponseModel.class, notes = "根据用户编码查询资源信息")

@@ -115,4 +115,10 @@ public class ResourceServiceImpl extends BaseService implements ResourceService 
 		}
 		return 1;
 	}
+
+	@Override
+	public List<TSysResource> getAllResources() {
+		// TODO Auto-generated method stub
+		return this.resMapper.getAllResources();
+	}
 }

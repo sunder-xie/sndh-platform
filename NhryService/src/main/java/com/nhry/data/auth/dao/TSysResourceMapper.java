@@ -76,4 +76,10 @@ public interface TSysResourceMapper {
      * @return
      */
     List<TSysResource> findRecoureByUserId(String userId);
+    
+    /**
+     * 获取所有的资源
+     * @return
+     */
+    List<TSysResource> getAllResources();
 }
