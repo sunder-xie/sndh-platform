@@ -45,10 +45,17 @@ public class ResResource extends BaseResource {
     @POST
     @Path("/lists")
     @Produces(MediaType.APPLICATION_JSON)
-    @Consumes(MediaType.APPLICATION_JSON)
     @ApiOperation(value = "/lists", response = ResponseModel.class, notes = "获取所有的资源列表")
     public Response getAllResources() {
         return convertToRespModel(MessageCode.NORMAL, null, resService.getAllResources());
+    }
+    
+    @POST
+    @Path("/{roleId}/res/lists")
+    @Produces(MediaType.APPLICATION_JSON)
+    @ApiOperation(value = "/{roleId}/res/lists", response = ResponseModel.class, notes = "根据角色编号，查询角色关联的资源列表")
+    public Response getAllResources(@ApiParam(required = true, name = "roleId", value = "角色编号")@PathParam("roleId")String roleId) {
+        return convertToRespModel(MessageCode.NORMAL, null, resService.getRoleResources(roleId));
     }
 
     @POST
