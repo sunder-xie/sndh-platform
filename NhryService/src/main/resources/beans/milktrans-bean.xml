@@ -26,6 +26,7 @@
 		<property name="userSessionService"  ref="userSessionService"></property>
 		<property name="piRequireOrderService"  ref="piRequireOrderService"></property>
 		<property name="tOrderDaliyPlanItemMapper"  ref="tOrderDaliyPlanItemMapper"></property>
+		<property name="branchMapper"  ref="branchMapper"></property>
 		<property name="tMdMaraMapper"  ref="maraMapper"></property>
 	</bean>
 

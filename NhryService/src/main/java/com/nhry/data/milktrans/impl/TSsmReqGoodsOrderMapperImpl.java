@@ -36,8 +36,4 @@ public class TSsmReqGoodsOrderMapperImpl implements TSsmReqGoodsOrderMapper {
         return sqlSessionTemplate.update("uptRequireGoodsModifyInfo",orderModel);
     }
 
-
-
-
-
 }
