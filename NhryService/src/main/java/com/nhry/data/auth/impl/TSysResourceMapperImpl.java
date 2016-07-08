@@ -72,4 +72,10 @@ public class TSysResourceMapperImpl implements TSysResourceMapper {
 	public List<TSysResource> findRecoureByUserId(String userId) {
 		return this.sqlSessionTemplate.selectList("findRecoureByUserId",userId);
 	}
+
+	@Override
+	public List<TSysResource> getAllResources() {
+		// TODO Auto-generated method stub
+		return this.sqlSessionTemplate.selectList("getAllResources");
+	}
 }
