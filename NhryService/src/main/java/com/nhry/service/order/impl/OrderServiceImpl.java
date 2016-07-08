@@ -17,6 +17,7 @@ import com.nhry.model.order.*;
 import com.nhry.service.BaseService;
 import com.nhry.service.basic.dao.TVipCustInfoService;
 import com.nhry.service.order.dao.OrderService;
+import com.nhry.service.order.pojo.OrderRemainData;
 
 import org.apache.commons.lang3.StringUtils;
 
@@ -70,9 +71,9 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 		orderModel.setEntries(entries);
 		orderModel.setOrder(tPreOrderMapper.selectByPrimaryKey(orderCode));
 //		//帐户
-//		tVipCustInfoService.findVipAcctByCustNo(custNo);
+		orderModel.setAccount(tVipCustInfoService.findVipAcctByCustNo(orderModel.getOrder().getMilkmemberNo()));
 //		//地址信息
-//		tVipCustInfoService.findVipCustByNo(vipCustNo);
+		orderModel.setAddress(tVipCustInfoService.findAddressDetailById(orderModel.getOrder().getAdressNo()));
 		
 		return orderModel;
 	}
@@ -194,8 +195,8 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 				tOrderDaliyPlanItemMapper.updateDaliyPlansToStop(order);
 				
 			}
-			//更新订单状态为停订
-			order.setPreorderStat("50");//停订中
+			//更新订单标示为停订
+			order.setSign("20");//停订中
 			modifyOrderStatus(order);
 			//订奶收款通知???
 			//todo
@@ -249,6 +250,7 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 			}
 			//更新订单状态为退订
 			order.setPreorderStat("30");//失效的订单
+			order.setSign("30");//标示退订
 			modifyOrderStatus(order);
 			//订奶收款通知???
 			//todo
@@ -325,6 +327,16 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 				tPlanOrderItemMapper.insert(entry);
 			}
 			
+			//续费的余额存入帐户
+			if(StringUtils.isNotBlank(record.getGoAmt())){
+				BigDecimal remain = new BigDecimal(record.getGoAmt()).subtract(orderAmt);
+				TVipAcct account = new TVipAcct();
+				account.setBranchNo(order.getBranchNo());
+				account.setVipCustNo(order.getMilkmemberNo());
+				account.setAcctAmt(remain);
+				tVipCustInfoService.addVipAcct(account);
+			}
+			
 			//生成每日计划
 			createDaliyPlan(order,entriesList);
 			
@@ -389,7 +401,8 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 		createDaliyPlan(order , orgEntries);
 		//更新订单
 		order.setStopDateEnd(startDate);
-		order.setPreorderStat("10");//在订
+//		order.setPreorderStat("10");//在订
+		order.setSign("10");//标示在订
 		order.setEndDate(calculateFinalDate(orgEntries));//订单截止日期修改
 		tPreOrderMapper.updateOrderEndDate(order);
 		
@@ -476,6 +489,8 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 		order.setPaymentmethod(order.getPaymentStat());//10 后款 20 先款 30 殿付款
 		order.setMilkboxStat(StringUtils.isBlank(order.getMilkboxStat()) == true ? "20": order.getMilkboxStat());//奶箱状态
 		order.setPreorderStat("20");//订单状态,初始未确认
+		order.setSign("10");//在订状态
+		order.setSalesOrg(userSessionService.getCurrentUser().getSalesOrg());//公司
 		//受款日期
 		if(StringUtils.isNotBlank(order.getSolicitDateStr())){
 			try
@@ -489,7 +504,7 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 		}
 //		order.setBranchNo(branchNo);//奶站编号 --人工分单或自动??
 		//如果地址信息不为空，为订户创建新的地址
-		if(record.getAddress() != null){
+		if(record.getAddress() != null && "1".equals(record.getAddress().getAddressMode())){
 			order.setAdressNo(tVipCustInfoService.addAddressForCust(record.getAddress()));
 		}
 
@@ -655,8 +670,9 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 		//已装箱10、未装箱20、无需装箱30
 		//已生效10、未生效20、无效30
 		//先款10、后付款20
+		//在订10、停订20、退订30
 		if(StringUtils.isBlank(record.getPaymentStat()) && StringUtils.isBlank(record.getMilkboxStat())
-				&& StringUtils.isBlank(record.getPreorderStat())){
+				&& StringUtils.isBlank(record.getPreorderStat()) && StringUtils.isBlank(record.getSign())){
 			throw new ServiceException(MessageCode.LOGIC_ERROR,"更新信息与状态为空!");
 		}
 		if(tPreOrderMapper.selectByPrimaryKey(record.getOrderNo()) == null){
@@ -866,7 +882,7 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 		SimpleDateFormat format = new SimpleDateFormat("yyyyMMdd");
 		TPreOrder orgOrder = tPreOrderMapper.selectByPrimaryKey(orgEntry.getOrderNo());
 		
-		if("10".equals(orgOrder.getPaymentStat()))return;//后付款的不需要往后延期
+		if("10".equals(orgOrder.getPaymentmethod()))return;//后付款的不需要往后延期
 		
 		ArrayList<TOrderDaliyPlanItem> daliyPlans = (ArrayList<TOrderDaliyPlanItem>) tOrderDaliyPlanItemMapper.selectDaliyPlansByOrderNoAsc(orgEntry.getOrderNo());
 		int daliyEntryNo = tOrderDaliyPlanItemMapper.selectMaxDaliyPlansNoByOrderNo(orgEntry.getOrderNo()) + 1;
@@ -941,6 +957,19 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 		
 		calculateDaliyPlanRemainAmtAfterUptRoute(daliyPlans,orgOrder,dispDate);
 		
+	}
+	
+	/* (non-Javadoc) 
+	* @title: searchOrderRemainData
+	* @description: 查询该订户有多少未送的产品和已经消费的金额
+	* @param memberNo
+	* @return 
+	* @see com.nhry.service.order.dao.OrderService#searchOrderRemainData(java.lang.String) 
+	*/
+	@Override
+	public OrderRemainData searchOrderRemainData(String memberNo)
+	{
+		return tPreOrderMapper.searchOrderRemainData(memberNo);
 	}
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -1276,6 +1305,7 @@ public class OrderServiceImpl extends BaseService implements OrderService {
    	for(TOrderDaliyPlanItem plan : daliyPlans){
    		if(plan.getDispDate().compareTo(dispDate) == 0){
    			plan.setRemainAmt(curAmt);
+   			plan.setStatus("20");//已确认送达,当天的确认
    			needUpt.add(plan);
    			continue;
    		}
@@ -1288,4 +1318,5 @@ public class OrderServiceImpl extends BaseService implements OrderService {
    	needUpt.stream().forEach((e)->tOrderDaliyPlanItemMapper.updateDaliyPlanItem(e));
    
    }
+
 }

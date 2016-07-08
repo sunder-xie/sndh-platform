@@ -12,6 +12,10 @@ public class OrderSearchModel extends BaseQueryModel implements Serializable {
 	private String orderNo;
 	private String branchNo;
 	private String empNo;
+	private String product;
+	private String content;//订户电话或者姓名
+	private String goAmt;//订单续订的续费
+	private String address;
 	private String milkmemberNo;
 	private String orderDate;
 	private String paymentStat;
@@ -25,6 +29,38 @@ public class OrderSearchModel extends BaseQueryModel implements Serializable {
 	private String orderReturnDateStart;
 	private String orderReturnDateEnd;
 	
+	public String getGoAmt()
+	{
+		return goAmt;
+	}
+	public void setGoAmt(String goAmt)
+	{
+		this.goAmt = goAmt;
+	}
+	public String getProduct()
+	{
+		return product;
+	}
+	public void setProduct(String product)
+	{
+		this.product = product;
+	}
+	public String getContent()
+	{
+		return content;
+	}
+	public void setContent(String content)
+	{
+		this.content = content;
+	}
+	public String getAddress()
+	{
+		return address;
+	}
+	public void setAddress(String address)
+	{
+		this.address = address;
+	}
 	public String getStatus()
 	{
 		return status;
