@@ -8,9 +8,12 @@ import com.nhry.webService.client.PISuccessMessage;
 import com.nhry.webService.client.businessData.ZT_BusinessData_MaintainServiceCallbackHandler;
 import com.nhry.webService.client.businessData.ZT_BusinessData_MaintainServiceStub;
 import com.nhry.webService.client.businessData.functions.*;
+import com.nhry.webService.client.businessData.functions.Date;
+import com.nhry.webService.client.businessData.model.Delivery;
 import com.nhry.webService.client.masterData.ZT_MasterDataQueryServiceStub;
 import com.nhry.webService.client.masterData.functions.ZSD_SALES_ORGANIZATION_RFC;
 import com.nhry.webService.client.masterData.functions.ZSSD00007;
+import com.sun.xml.bind.v2.TODO;
 import org.apache.axis2.AxisFault;
 import org.apache.axis2.client.Options;
 import org.apache.commons.lang.StringUtils;
@@ -19,19 +22,18 @@ import java.math.BigDecimal;
 import java.rmi.RemoteException;
 import java.text.ParsePosition;
 import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * Created by cbz on 7/4/2016.
  */
 public class BusinessDataConnection {
 
-    public static String URL = PIPropertitesUtil.getValue("PI.BusinessData.URL");
-
-    public static SimpleDateFormat formatter = new SimpleDateFormat("yyyymmdd");
+    private static String URL = PIPropertitesUtil.getValue("PI.BusinessData.URL");
+    private static String SIGN = PIPropertitesUtil.getValue("PI.MasterData.mATQUERY.SIGN");
+    private static String EQ = PIPropertitesUtil.getValue("PI.MasterData.mATQUERY.OPTION.EQ");
+    private static String I_DELIVERY_D = "D";
+    private static SimpleDateFormat formatter = new SimpleDateFormat("yyyymmdd");
 
     public static ZT_BusinessData_MaintainServiceStub getConn() throws AxisFault {
         ZT_BusinessData_MaintainServiceStub stub = new ZT_BusinessData_MaintainServiceStub(URL);
@@ -40,7 +42,7 @@ public class BusinessDataConnection {
         return stub;
     }
 
-    public static PISuccessMessage RequisitionCreate(TMdBranchEx branchEx, Date reqDate, List<Map<String, String>> items){
+    public static PISuccessMessage RequisitionCreate(TMdBranchEx branchEx, java.util.Date reqDate, List<Map<String, String>> items){
         ZSD_REQUISITION_CREATE_RFC rfc = new ZSD_REQUISITION_CREATE_RFC();
         ZSD_REQ_EKKO ekko = new ZSD_REQ_EKKO();
         COMP_CODE_type1 comp_code_type1 = new COMP_CODE_type1();
@@ -141,7 +143,7 @@ public class BusinessDataConnection {
         return successMessage;
     }
 
-    public static PISuccessMessage SalesOrderCreate(String KUNNR,String KUNWE,String VKORG,String BSTKD,Date LFDAT,List<Map<String,String>> items ) throws RemoteException {
+    public static PISuccessMessage SalesOrderCreate(String KUNNR, String KUNWE, String VKORG, String BSTKD, java.util.Date LFDAT, List<Map<String,String>> items ) {
 
         IT_ZSSD00011_type0 it_zssd00011_type1 = new IT_ZSSD00011_type0();
         for (Map<String,String> map:items) {
@@ -227,35 +229,68 @@ public class BusinessDataConnection {
         return successMessage;
     }
 
-    private static String DeliveryQuery(String datum,String deliveryType) throws RemoteException {
-
+    public static List<Delivery>  DeliveryQuery(String orderNo,boolean deliveryType) throws RemoteException {
         ZSD_DELIVERY_DATA zsd_delivery_data = new ZSD_DELIVERY_DATA();
-        if(StringUtils.isNotEmpty(deliveryType)) {
+        if(deliveryType) {
             I_DELIVERY_type1 i_delivery_type = new I_DELIVERY_type1();
-            i_delivery_type.setI_DELIVERY_type0("");
+            i_delivery_type.setI_DELIVERY_type0(I_DELIVERY_D);
             zsd_delivery_data.setI_DELIVERY(i_delivery_type);
         }
-        if(datum!=null) {
-            IT_DATUM_type1 it_DATUM_type1 = new IT_DATUM_type1();
-            ZSSD00070 zssd00070 = new ZSSD00070();
-            SIGN_type1 sign_type1 = new SIGN_type1();
-            sign_type1.setSIGN_type0(PIPropertitesUtil.getValue("PI.MasterData.mATQUERY.SIGN"));
-            zssd00070.setSIGN(sign_type1);
-            ParsePosition pos = new ParsePosition(8);
-            String dateString = formatter.format(datum);
-            com.nhry.webService.client.businessData.functions.Date date = new com.nhry.webService.client.businessData.functions.Date();
-            date.setObject(formatter.parse(dateString, pos));
-            zssd00070.setLOW(date);
-            OPTION_type1 option_type1 = new OPTION_type1();
-            option_type1.setOPTION_type0(PIPropertitesUtil.getValue("PI.MasterData.mATQUERY.OPTION.EQ"));
-            zssd00070.setOPTION(option_type1);
-            it_DATUM_type1.addItem(zssd00070);
-            zsd_delivery_data.setIT_DATUM(it_DATUM_type1);
-        }
-
+        //销售订单/要货单号
+        IT_SO_type1 it_so_type1 = new IT_SO_type1();
+        ZSSD00068 zssd00068 = new ZSSD00068();
+        SIGN_type5 sign_type5 = new SIGN_type5();
+        sign_type5.setSIGN_type4(SIGN);
+        zssd00068.setSIGN(sign_type5);
+        OPTION_type5 option_type5 = new OPTION_type5();
+        option_type5.setOPTION_type4(EQ);
+        zssd00068.setOPTION(option_type5);
+        LOW_type3 low_type3 = new LOW_type3();
+        low_type3.setLOW_type2(orderNo);
+        zssd00068.setLOW(low_type3);
+        it_so_type1.addItem(zssd00068);
+//        if(datum!=null) {
+//            IT_DATUM_type1 it_DATUM_type1 = new IT_DATUM_type1();
+//            ZSSD00070 zssd00070 = new ZSSD00070();
+//            SIGN_type1 sign_type1 = new SIGN_type1();
+//            sign_type1.setSIGN_type0(SIGN);
+//            zssd00070.setSIGN(sign_type1);
+//            ParsePosition pos = new ParsePosition(8);
+//            String dateString = formatter.format(datum);
+//            com.nhry.webService.client.businessData.functions.Date date = new com.nhry.webService.client.businessData.functions.Date();
+//            date.setObject(formatter.parse(dateString, pos));
+//            zssd00070.setLOW(date);
+//            OPTION_type1 option_type1 = new OPTION_type1();
+//            option_type1.setOPTION_type0(EQ);
+//            zssd00070.setOPTION(option_type1);
+//            it_DATUM_type1.addItem(zssd00070);
+//            zsd_delivery_data.setIT_DATUM(it_DATUM_type1);
+//        }
         ZSD_DELIVERY_DATAResponse response = BusinessDataConnection.getConn().deliveryQuery(zsd_delivery_data);
-
-        return "";
+        ET_DATA_type0 et_data_type0 = response.getET_DATA();
+        ZSSD00069[] zssd00069s = et_data_type0.getItem();
+        List<Delivery> deliveries = new ArrayList<Delivery>();
+        if(zssd00069s.length > 0) {
+            for(ZSSD00069 zssd00069 :zssd00069s ) {
+                Delivery delivery = new Delivery();
+                delivery.setKUNNR(zssd00069.getKUNNR().getKUNNR_type2());
+                delivery.setBSTKD(zssd00069.getBSTKD().getBSTKD_type2());
+                delivery.setVBELN(zssd00069.getVBELN().getVBELN_type0());
+                delivery.setPOSNR(zssd00069.getPOSNR().getPOSNR_type0());
+                delivery.setLFIMG(zssd00069.getLFIMG().getLFIMG_type0());
+                delivery.setMEINS(zssd00069.getMEINS().getMEINS_type0());
+                delivery.setKUNAG(zssd00069.getKUNAG().getKUNAG_type0());
+                Object o =zssd00069.getLFDAT().getObject();
+                String dateString = formatter.format(o);
+                delivery.setLFDAT(formatter.parse(dateString,new ParsePosition(8)));
+                delivery.setVBELV(zssd00069.getVBELV().getVBELV_type0());
+                delivery.setPOSNV(zssd00069.getPOSNV().getPOSNV_type0());
+                delivery.setLGORT(zssd00069.getLGORT().getLGORT_type2());
+                delivery.setRESLO(zssd00069.getRESLO().getRESLO_type0());
+                deliveries.add(delivery);
+            }
+        }
+        return deliveries;
     }
 
 

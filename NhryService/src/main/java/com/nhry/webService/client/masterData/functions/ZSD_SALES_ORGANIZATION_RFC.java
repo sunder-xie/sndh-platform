@@ -22,6 +22,9 @@ public class ZSD_SALES_ORGANIZATION_RFC implements org.apache.axis2.databinding.
      */
     protected IT_BUKRS_type2 localIT_BUKRS;
 
+
+    protected boolean localIT_BUKRSTracker = false;
+
     /**
      * field for ET_BUKRS
      */
@@ -54,13 +57,16 @@ public class ZSD_SALES_ORGANIZATION_RFC implements org.apache.axis2.databinding.
     public IT_BUKRS_type2 getIT_BUKRS() {
         return localIT_BUKRS;
     }
-
+    public boolean isIT_BUKRSSpecified() {
+        return localIT_BUKRSTracker;
+    }
     /**
      * Auto generated setter method
      * @param param IT_BUKRS
      */
     public void setIT_BUKRS(
         IT_BUKRS_type2 param) {
+        localIT_BUKRSTracker = param != null;
         this.localIT_BUKRS = param;
     }
 
@@ -197,14 +203,15 @@ public class ZSD_SALES_ORGANIZATION_RFC implements org.apache.axis2.databinding.
                     "ZSD_SALES_ORGANIZATION_RFC", xmlWriter);
             }
         }
+        if(localIT_BUKRSTracker) {
+            if (localIT_BUKRS == null) {
+                throw new org.apache.axis2.databinding.ADBException(
+                        "IT_BUKRS cannot be null!!");
+            }
 
-        if (localIT_BUKRS == null) {
-            throw new org.apache.axis2.databinding.ADBException(
-                "IT_BUKRS cannot be null!!");
+            localIT_BUKRS.serialize(new javax.xml.namespace.QName("", "IT_BUKRS"),
+                    xmlWriter);
         }
-
-        localIT_BUKRS.serialize(new javax.xml.namespace.QName("", "IT_BUKRS"),
-            xmlWriter);
 
         if (localET_BUKRS == null) {
             throw new org.apache.axis2.databinding.ADBException(

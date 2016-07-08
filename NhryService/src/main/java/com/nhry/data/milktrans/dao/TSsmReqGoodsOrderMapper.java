@@ -15,5 +15,5 @@ public interface TSsmReqGoodsOrderMapper {
 
     int uptRequireGoodsModifyInfo(TSsmReqGoodsOrder orderModel);
 
-
+    TSsmReqGoodsOrder getRequireOrderByVoucherNo(String voucherNo);
 }

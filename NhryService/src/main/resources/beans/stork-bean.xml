@@ -14,26 +14,12 @@
 		http://www.springframework.org/schema/task http://www.springframework.org/schema/task/spring-task-4.0.xsd
 		http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-4.0.xsd"
        default-lazy-init="true">
-    <bean id="piProductMapper" class="com.nhry.data.basic.impl.PIProductMapperImpl">
-        <property name="sqlSessionFactory" ref="sqlSessionFactory"/>
-    </bean>
-    <!-- -->
-    <bean id="maraSalesMapper" class="com.nhry.data.basic.impl.TMaraSalesMapperImpl">
+    <!-- 交货单 -->
+    <bean class="com.nhry.data.stock.impl.TSsmGiOrderMapperImpl" id="ssmGiOrderMapper">
         <property name="sqlSessionTemplate" ref="dynamicSqlSessionTemplate"/>
     </bean>
-    <bean class="com.nhry.service.pi.impl.PIProductServiceImpl" id="piProductService">
-        <property name="piProductMapper" ref="piProductMapper"/>
-        <property name="maraMapper" ref="maraMapper"/>
-        <property name="branchMapper" ref="branchMapper"/>
-        <property name="dealerMapper" ref="dealerMapper"/>
-        <property name="maraUnitMapper" ref="maraUnitMapper"/>
-        <property name="codeItemMapper" ref="codeItemMapper"/>
+    <bean class="com.nhry.data.stock.impl.TSsmGiOrderItemMapperImpl" id="ssmGiOrderItemMapper">
+        <property name="sqlSessionTemplate" ref="dynamicSqlSessionTemplate"/>
     </bean>
-    <bean class="com.nhry.service.pi.impl.PIRequireOrderServiceImpl" id="piRequireOrderService">
-        <property name="branchExMapper" ref="branchExMapper"/>
-        <property name="tSsmReqGoodsOrderItemMapper" ref="tSsmReqGoodsOrderItemMapper"/>
-        <property name="ssmGiOrderMapper" ref="ssmGiOrderMapper"/>
-        <property name="ssmGiOrderItemMapper" ref="ssmGiOrderItemMapper"/>
-        <property name="tSsmReqGoodsOrderMapper" ref="tSsmReqGoodsOrderMapper"/>
-    </bean>
+
 </beans>

@@ -36,8 +36,10 @@ public class TSsmReqGoodsOrderMapperImpl implements TSsmReqGoodsOrderMapper {
         return sqlSessionTemplate.update("uptRequireGoodsModifyInfo",orderModel);
     }
 
-
-
+    @Override
+    public TSsmReqGoodsOrder getRequireOrderByVoucherNo(String voucherNo) {
+        return sqlSessionTemplate.selectOne("getRequireOrderByVoucherNo",voucherNo);
+    }
 
 
 }

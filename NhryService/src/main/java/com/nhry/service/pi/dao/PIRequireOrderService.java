@@ -9,4 +9,17 @@ import com.nhry.webService.client.PISuccessMessage;
  */
 public interface PIRequireOrderService {
     PISuccessMessage generateRequireOrder(TSsmReqGoodsOrder ssmReqGoodsOrder);
+
+    /**
+     *
+     * @param ssmReqGoodsOrder
+     * @param kunnr 客户编号
+     * @param kunwe 送达方
+     * @param vkorg 销售组织
+     * @return
+     */
+    PISuccessMessage generateSalesOrder(TSsmReqGoodsOrder ssmReqGoodsOrder, String kunnr, String kunwe, String vkorg) ;
+
+
+    String getDelivery(String orderNo,boolean isDeli);
 }
