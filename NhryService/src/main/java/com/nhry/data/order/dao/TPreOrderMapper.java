@@ -7,6 +7,7 @@ import com.nhry.model.order.ManHandOrderSearchModel;
 import com.nhry.model.order.OrderSearchModel;
 import com.nhry.model.order.ReturnOrderModel;
 import com.nhry.model.order.UpdateManHandOrderModel;
+import com.nhry.service.order.pojo.OrderRemainData;
 
 import java.util.List;
 
@@ -44,5 +45,7 @@ public interface TPreOrderMapper {
     PageInfo searchCustomerOrder(CustBillQueryModel cModel);
 
     int updateOrderPayMentStatus(String orderNo);
+    
+    OrderRemainData searchOrderRemainData(String memberNo);
 
 }
