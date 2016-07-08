@@ -47,4 +47,10 @@ public class TMdAddressMapperImpl implements TMdAddressMapper{
 		// TODO Auto-generated method stub
 		return this.sqlSessionTemplate.selectOne("findAddressDetailById", id);
 	}
+
+	@Override
+	public int uptCustAddressUnDefault(TMdAddress record) {
+		// TODO Auto-generated method stub
+		return this.sqlSessionTemplate.update("uptCustAddressUnDefault", record);
+	}
 }

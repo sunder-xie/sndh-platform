@@ -107,5 +107,9 @@
     </set>
     where ID = #{id,jdbcType=VARCHAR}
   </update>
-  
+  <select id="getAllRoles" resultMap="BaseResultMap" >
+    select 
+    <include refid="Base_Column_List" />
+    from t_sys_role order by ROLE_NAME
+  </select>
 </mapper>

@@ -8,23 +8,17 @@ public class TSysUser implements Serializable{
 
     private String displayName;
 
-    private String groupId;
+    private String departmentNumber;
 
-    private String pwd;
+    private String departmentName;
 
-    private String status;
+    private Date customizedPositionid;
 
-    private Date createAt;
-
-    private String createBy;
-
-    private String createByTxt;
+    private String customizedPositionname;
 
     private Date lastModified;
 
-    private String lastModifiedBy;
-
-    private String lastModifiedByTxt;
+    private Date createOn;
 
     private String branchNo;
 
@@ -33,6 +27,70 @@ public class TSysUser implements Serializable{
     private String salesOrg;
 
     private Date lastLogin;
+
+    private String customizedDutyid;
+
+    private String customizedDutyname;
+
+    private String customizedResidence;
+
+    private String customizedPersonalMail;
+
+    private String mail;
+
+    private String mobile;
+
+    private Date customizedJoininworkdate;
+
+    private Date customizedJoinsysdate;
+
+    private String customizedResigneddate;
+
+    private String customizedLastdepartmentname;
+
+    private String customizedHrregion;
+
+    private String customizedHrregiontxt;
+
+    private String customizedSubhrregion;
+
+    private String customizedSubhrregiontxt;
+
+    private String customizedEmptype;
+
+    private String customizedEmptypetxt;
+
+    private String customizedSubemptype;
+
+    private String customizedSubemptypetxt;
+
+    private String customizedDegree;
+
+    private String customizedMajor;
+
+    private String customizedManagercode;
+
+    private String customizedManagername;
+
+    private String smartIdcardnumber;
+
+    private String customizedNation;
+
+    private String customizedCountry;
+
+    private String smartType;
+
+    private String smartCategory;
+
+    private String cumstomizedVpath;
+
+    private String cumstomizedRpath;
+
+    private String smartAuthority;
+
+    private String dsPwpAccountDisabled;
+
+    private String groupId;
 
     public String getLoginName() {
         return loginName;
@@ -50,52 +108,36 @@ public class TSysUser implements Serializable{
         this.displayName = displayName == null ? null : displayName.trim();
     }
 
-    public String getGroupId() {
-        return groupId;
+    public String getDepartmentNumber() {
+        return departmentNumber;
     }
 
-    public void setGroupId(String groupId) {
-        this.groupId = groupId == null ? null : groupId.trim();
+    public void setDepartmentNumber(String departmentNumber) {
+        this.departmentNumber = departmentNumber == null ? null : departmentNumber.trim();
     }
 
-    public String getPwd() {
-        return pwd;
+    public String getDepartmentName() {
+        return departmentName;
     }
 
-    public void setPwd(String pwd) {
-        this.pwd = pwd == null ? null : pwd.trim();
+    public void setDepartmentName(String departmentName) {
+        this.departmentName = departmentName == null ? null : departmentName.trim();
     }
 
-    public String getStatus() {
-        return status;
+    public Date getCustomizedPositionid() {
+        return customizedPositionid;
     }
 
-    public void setStatus(String status) {
-        this.status = status == null ? null : status.trim();
+    public void setCustomizedPositionid(Date customizedPositionid) {
+        this.customizedPositionid = customizedPositionid;
     }
 
-    public Date getCreateAt() {
-        return createAt;
+    public String getCustomizedPositionname() {
+        return customizedPositionname;
     }
 
-    public void setCreateAt(Date createAt) {
-        this.createAt = createAt;
-    }
-
-    public String getCreateBy() {
-        return createBy;
-    }
-
-    public void setCreateBy(String createBy) {
-        this.createBy = createBy == null ? null : createBy.trim();
-    }
-
-    public String getCreateByTxt() {
-        return createByTxt;
-    }
-
-    public void setCreateByTxt(String createByTxt) {
-        this.createByTxt = createByTxt == null ? null : createByTxt.trim();
+    public void setCustomizedPositionname(String customizedPositionname) {
+        this.customizedPositionname = customizedPositionname == null ? null : customizedPositionname.trim();
     }
 
     public Date getLastModified() {
@@ -106,20 +148,12 @@ public class TSysUser implements Serializable{
         this.lastModified = lastModified;
     }
 
-    public String getLastModifiedBy() {
-        return lastModifiedBy;
+    public Date getCreateOn() {
+        return createOn;
     }
 
-    public void setLastModifiedBy(String lastModifiedBy) {
-        this.lastModifiedBy = lastModifiedBy == null ? null : lastModifiedBy.trim();
-    }
-
-    public String getLastModifiedByTxt() {
-        return lastModifiedByTxt;
-    }
-
-    public void setLastModifiedByTxt(String lastModifiedByTxt) {
-        this.lastModifiedByTxt = lastModifiedByTxt == null ? null : lastModifiedByTxt.trim();
+    public void setCreateOn(Date createOn) {
+        this.createOn = createOn;
     }
 
     public String getBranchNo() {
@@ -152,5 +186,261 @@ public class TSysUser implements Serializable{
 
     public void setLastLogin(Date lastLogin) {
         this.lastLogin = lastLogin;
+    }
+
+    public String getCustomizedDutyid() {
+        return customizedDutyid;
+    }
+
+    public void setCustomizedDutyid(String customizedDutyid) {
+        this.customizedDutyid = customizedDutyid == null ? null : customizedDutyid.trim();
+    }
+
+    public String getCustomizedDutyname() {
+        return customizedDutyname;
+    }
+
+    public void setCustomizedDutyname(String customizedDutyname) {
+        this.customizedDutyname = customizedDutyname == null ? null : customizedDutyname.trim();
+    }
+
+    public String getCustomizedResidence() {
+        return customizedResidence;
+    }
+
+    public void setCustomizedResidence(String customizedResidence) {
+        this.customizedResidence = customizedResidence == null ? null : customizedResidence.trim();
+    }
+
+    public String getCustomizedPersonalMail() {
+        return customizedPersonalMail;
+    }
+
+    public void setCustomizedPersonalMail(String customizedPersonalMail) {
+        this.customizedPersonalMail = customizedPersonalMail == null ? null : customizedPersonalMail.trim();
+    }
+
+    public String getMail() {
+        return mail;
+    }
+
+    public void setMail(String mail) {
+        this.mail = mail == null ? null : mail.trim();
+    }
+
+    public String getMobile() {
+        return mobile;
+    }
+
+    public void setMobile(String mobile) {
+        this.mobile = mobile == null ? null : mobile.trim();
+    }
+
+    public Date getCustomizedJoininworkdate() {
+        return customizedJoininworkdate;
+    }
+
+    public void setCustomizedJoininworkdate(Date customizedJoininworkdate) {
+        this.customizedJoininworkdate = customizedJoininworkdate;
+    }
+
+    public Date getCustomizedJoinsysdate() {
+        return customizedJoinsysdate;
+    }
+
+    public void setCustomizedJoinsysdate(Date customizedJoinsysdate) {
+        this.customizedJoinsysdate = customizedJoinsysdate;
+    }
+
+    public String getCustomizedResigneddate() {
+        return customizedResigneddate;
+    }
+
+    public void setCustomizedResigneddate(String customizedResigneddate) {
+        this.customizedResigneddate = customizedResigneddate == null ? null : customizedResigneddate.trim();
+    }
+
+    public String getCustomizedLastdepartmentname() {
+        return customizedLastdepartmentname;
+    }
+
+    public void setCustomizedLastdepartmentname(String customizedLastdepartmentname) {
+        this.customizedLastdepartmentname = customizedLastdepartmentname == null ? null : customizedLastdepartmentname.trim();
+    }
+
+    public String getCustomizedHrregion() {
+        return customizedHrregion;
+    }
+
+    public void setCustomizedHrregion(String customizedHrregion) {
+        this.customizedHrregion = customizedHrregion == null ? null : customizedHrregion.trim();
+    }
+
+    public String getCustomizedHrregiontxt() {
+        return customizedHrregiontxt;
+    }
+
+    public void setCustomizedHrregiontxt(String customizedHrregiontxt) {
+        this.customizedHrregiontxt = customizedHrregiontxt == null ? null : customizedHrregiontxt.trim();
+    }
+
+    public String getCustomizedSubhrregion() {
+        return customizedSubhrregion;
+    }
+
+    public void setCustomizedSubhrregion(String customizedSubhrregion) {
+        this.customizedSubhrregion = customizedSubhrregion == null ? null : customizedSubhrregion.trim();
+    }
+
+    public String getCustomizedSubhrregiontxt() {
+        return customizedSubhrregiontxt;
+    }
+
+    public void setCustomizedSubhrregiontxt(String customizedSubhrregiontxt) {
+        this.customizedSubhrregiontxt = customizedSubhrregiontxt == null ? null : customizedSubhrregiontxt.trim();
+    }
+
+    public String getCustomizedEmptype() {
+        return customizedEmptype;
+    }
+
+    public void setCustomizedEmptype(String customizedEmptype) {
+        this.customizedEmptype = customizedEmptype == null ? null : customizedEmptype.trim();
+    }
+
+    public String getCustomizedEmptypetxt() {
+        return customizedEmptypetxt;
+    }
+
+    public void setCustomizedEmptypetxt(String customizedEmptypetxt) {
+        this.customizedEmptypetxt = customizedEmptypetxt == null ? null : customizedEmptypetxt.trim();
+    }
+
+    public String getCustomizedSubemptype() {
+        return customizedSubemptype;
+    }
+
+    public void setCustomizedSubemptype(String customizedSubemptype) {
+        this.customizedSubemptype = customizedSubemptype == null ? null : customizedSubemptype.trim();
+    }
+
+    public String getCustomizedSubemptypetxt() {
+        return customizedSubemptypetxt;
+    }
+
+    public void setCustomizedSubemptypetxt(String customizedSubemptypetxt) {
+        this.customizedSubemptypetxt = customizedSubemptypetxt == null ? null : customizedSubemptypetxt.trim();
+    }
+
+    public String getCustomizedDegree() {
+        return customizedDegree;
+    }
+
+    public void setCustomizedDegree(String customizedDegree) {
+        this.customizedDegree = customizedDegree == null ? null : customizedDegree.trim();
+    }
+
+    public String getCustomizedMajor() {
+        return customizedMajor;
+    }
+
+    public void setCustomizedMajor(String customizedMajor) {
+        this.customizedMajor = customizedMajor == null ? null : customizedMajor.trim();
+    }
+
+    public String getCustomizedManagercode() {
+        return customizedManagercode;
+    }
+
+    public void setCustomizedManagercode(String customizedManagercode) {
+        this.customizedManagercode = customizedManagercode == null ? null : customizedManagercode.trim();
+    }
+
+    public String getCustomizedManagername() {
+        return customizedManagername;
+    }
+
+    public void setCustomizedManagername(String customizedManagername) {
+        this.customizedManagername = customizedManagername == null ? null : customizedManagername.trim();
+    }
+
+    public String getSmartIdcardnumber() {
+        return smartIdcardnumber;
+    }
+
+    public void setSmartIdcardnumber(String smartIdcardnumber) {
+        this.smartIdcardnumber = smartIdcardnumber == null ? null : smartIdcardnumber.trim();
+    }
+
+    public String getCustomizedNation() {
+        return customizedNation;
+    }
+
+    public void setCustomizedNation(String customizedNation) {
+        this.customizedNation = customizedNation == null ? null : customizedNation.trim();
+    }
+
+    public String getCustomizedCountry() {
+        return customizedCountry;
+    }
+
+    public void setCustomizedCountry(String customizedCountry) {
+        this.customizedCountry = customizedCountry == null ? null : customizedCountry.trim();
+    }
+
+    public String getSmartType() {
+        return smartType;
+    }
+
+    public void setSmartType(String smartType) {
+        this.smartType = smartType == null ? null : smartType.trim();
+    }
+
+    public String getSmartCategory() {
+        return smartCategory;
+    }
+
+    public void setSmartCategory(String smartCategory) {
+        this.smartCategory = smartCategory == null ? null : smartCategory.trim();
+    }
+
+    public String getCumstomizedVpath() {
+        return cumstomizedVpath;
+    }
+
+    public void setCumstomizedVpath(String cumstomizedVpath) {
+        this.cumstomizedVpath = cumstomizedVpath == null ? null : cumstomizedVpath.trim();
+    }
+
+    public String getCumstomizedRpath() {
+        return cumstomizedRpath;
+    }
+
+    public void setCumstomizedRpath(String cumstomizedRpath) {
+        this.cumstomizedRpath = cumstomizedRpath == null ? null : cumstomizedRpath.trim();
+    }
+
+    public String getSmartAuthority() {
+        return smartAuthority;
+    }
+
+    public void setSmartAuthority(String smartAuthority) {
+        this.smartAuthority = smartAuthority == null ? null : smartAuthority.trim();
+    }
+
+    public String getDsPwpAccountDisabled() {
+        return dsPwpAccountDisabled;
+    }
+
+    public void setDsPwpAccountDisabled(String dsPwpAccountDisabled) {
+        this.dsPwpAccountDisabled = dsPwpAccountDisabled == null ? null : dsPwpAccountDisabled.trim();
+    }
+
+    public String getGroupId() {
+        return groupId;
+    }
+
+    public void setGroupId(String groupId) {
+        this.groupId = groupId == null ? null : groupId.trim();
     }
 }

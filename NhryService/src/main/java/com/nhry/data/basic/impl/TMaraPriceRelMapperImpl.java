@@ -1,9 +1,11 @@
 package com.nhry.data.basic.impl;
 
 import java.util.List;
+import java.util.Map;
 
 import org.apache.ibatis.session.SqlSessionFactory;
 
+import com.github.pagehelper.PageInfo;
 import com.nhry.common.datasource.DynamicSqlSessionTemplate;
 import com.nhry.data.basic.dao.TMaraPriceRelMapper;
 import com.nhry.data.basic.domain.TMaraPriceRel;
@@ -35,9 +37,9 @@ public class TMaraPriceRelMapperImpl implements TMaraPriceRelMapper {
 	}
 
 	@Override
-	public List<TMaraPriceRel> findMaraPricesById(String id) {
+	public List<TMaraPriceRel> findMaraPricesById(Map<String,String> attrs) {
 		// TODO Auto-generated method stub
-		return this.sqlSessionTemplate.selectList("findMaraPricesById", id);
+		return this.sqlSessionTemplate.selectList("findMaraPricesById", attrs);
 	}
 
 	public void setSqlSessionTemplate(DynamicSqlSessionTemplate sqlSessionTemplate) {
@@ -48,5 +50,11 @@ public class TMaraPriceRelMapperImpl implements TMaraPriceRelMapper {
 	public int delMaraPricesById(String id) {
 		// TODO Auto-generated method stub
 		return this.sqlSessionTemplate.delete("delMaraPricesById", id);
+	}
+
+	@Override
+	public PageInfo findMaraPricesById(Map<String,String> attrs,int pageNum,int pageSize) {
+		// TODO Auto-generated method stub
+		return this.sqlSessionTemplate.selectListByPages("findMaraPricesById", attrs, pageNum, pageSize);
 	}
 }

@@ -36,7 +36,7 @@ public interface TVipCustInfoService {
      * @param attrs
      * @return
      */
-    TVipCustInfo findStaCustByPhone(Map<String,String> attrs);
+    List<TVipCustInfo> findStaCustByPhone(Map<String,String> attrs);
     
     /**
      * 根据电话查找公司订户信息
@@ -108,6 +108,13 @@ public interface TVipCustInfoService {
      * @return
      */
     TMdAddress findAddressById(String addressId);
+    
+    /**
+     * 根据状态和地址编号，更新地址信息
+     * @param addressId
+     * @return
+     */
+    int uptAddressById(String status,String addressId);
     
     /**
      * 根据地址id查询地址详细信息

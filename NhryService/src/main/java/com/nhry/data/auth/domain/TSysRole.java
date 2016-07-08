@@ -1,8 +1,9 @@
 package com.nhry.data.auth.domain;
 
+import java.io.Serializable;
 import java.util.Date;
 
-public class TSysRole {
+public class TSysRole implements Serializable{
     private String id;
 
     private String roleName;

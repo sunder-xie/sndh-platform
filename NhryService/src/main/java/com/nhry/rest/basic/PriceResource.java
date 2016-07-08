@@ -16,6 +16,7 @@ import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Controller;
 
+import com.github.pagehelper.PageInfo;
 import com.nhry.common.exception.MessageCode;
 import com.nhry.data.basic.domain.TMaraPriceRel;
 import com.nhry.data.basic.domain.TMdDealer;
@@ -123,7 +124,7 @@ public class PriceResource extends BaseResource {
 	@POST
 	@Path("/lists/{branchNo}")
 	@Produces(MediaType.APPLICATION_JSON)
-	@ApiOperation(value = "/lists/{branchNo}", response = TMdDealer.class, notes = "根据奶站编号获取当前销售组织下该奶站已经选择的价格组列表")
+	@ApiOperation(value = "/lists/{branchNo}", response = TMdPrice.class, notes = "根据奶站编号获取当前销售组织下该奶站已经选择的价格组列表")
 	public Response getPricesGroupByBn(@ApiParam(required=true,name="branchNo",value="奶站编号")@PathParam("branchNo")String branchNo){
 		return convertToRespModel(MessageCode.NORMAL, null, priceService.getPricesGroupByBn(branchNo));
 	}
@@ -131,18 +132,28 @@ public class PriceResource extends BaseResource {
 	@POST
 	@Path("/scope/lists/{branchNo}")
 	@Produces(MediaType.APPLICATION_JSON)
-	@ApiOperation(value = "/scope/lists/{branchNo}", response = TMdDealer.class, notes = "根据奶站编号获取当前销售组织下该奶站适用范围内的价格组列表")
+	@ApiOperation(value = "/scope/lists/{branchNo}", response = TMdPrice.class, notes = "根据奶站编号获取当前销售组织下该奶站适用范围内的价格组列表")
 	public Response getScopePricesGroupByBn(@ApiParam(required=true,name="branchNo",value="奶站编号")@PathParam("branchNo")String branchNo){
 		return convertToRespModel(MessageCode.NORMAL, null, priceService.getScopePricesGroupByBn(branchNo));
 	}
 	
 	@POST
-	@Path("/{branchNo}/{matnr}/{deliveryType}")
+	@Path("/{branchNo}/{matnr}/{deliveryType}")   
 	@Produces(MediaType.APPLICATION_JSON)
-	@ApiOperation(value = "/{branchNo}/{matnr}/{deliveryType}", response = TMdDealer.class, notes = "根据奶站编号、产品编号、配送类型 获取产品价格(配送类型(10:自取；20：送奶到户)")
+	@ApiOperation(value = "/{branchNo}/{matnr}/{deliveryType}", response = Float.class, notes = "根据奶站编号、产品编号、配送类型 获取产品价格(配送类型(10:自取；20：送奶到户)")
 	public Response getMaraPrice(@ApiParam(required=true,name="branchNo",value="奶站编号")@PathParam("branchNo")String branchNo,
 			@ApiParam(required=true,name="matnr",value="产品编号")@PathParam("matnr")String matnr,
 			@ApiParam(required=true,name="deliveryType",value="配送类型")@PathParam("deliveryType")String deliveryType){
 		return convertToRespModel(MessageCode.NORMAL, null, priceService.getMaraPrice(branchNo,matnr,deliveryType));
+	}
+	
+	@POST
+	@Path("/maras/{id}/{pageNum}/{pageSize}")   
+	@Produces(MediaType.APPLICATION_JSON)
+	@ApiOperation(value = "/maras/{id}/{pageNum}/{pageSize}", response = PageInfo.class, notes = "根据价格组编号获取价格组关联的商品列表(带分页)")
+	public Response findMaraPricesById(@ApiParam(required=true,name="id",value="价格组编号")@PathParam("id")String id,
+			@ApiParam(required=true,name="pageNum",value="当前页码")@PathParam("pageNum")int pageNum,
+			@ApiParam(required=true,name="pageSize",value="每页显示条数")@PathParam("pageSize")int pageSize){
+		return convertToRespModel(MessageCode.NORMAL, null, priceService.findMaraPricesById(id,pageNum,pageSize));
 	}
 }

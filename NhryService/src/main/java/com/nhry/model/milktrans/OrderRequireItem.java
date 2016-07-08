@@ -8,6 +8,7 @@ public class OrderRequireItem {
     private String matnrTxt;
     private Integer  qty;
     private Integer increQty;
+    private String flag;
 
     public String getMatnr() {
         return matnr;
@@ -39,5 +40,13 @@ public class OrderRequireItem {
 
     public void setIncreQty(Integer increQty) {
         this.increQty = increQty;
+    }
+
+    public String getFlag() {
+        return flag;
+    }
+
+    public void setFlag(String flag) {
+        this.flag = flag;
     }
 }

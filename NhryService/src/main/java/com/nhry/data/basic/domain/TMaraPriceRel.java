@@ -28,6 +28,8 @@ public class TMaraPriceRel implements Serializable{
     private BigDecimal price1;
 
     private BigDecimal price2;
+    
+    private String salesOrg;
 
     public String getRelNo() {
         return relNo;
@@ -123,5 +125,13 @@ public class TMaraPriceRel implements Serializable{
 
 	public void setMatnrTxt(String matnrTxt) {
 		this.matnrTxt = matnrTxt;
+	}
+
+	public String getSalesOrg() {
+		return salesOrg;
+	}
+
+	public void setSalesOrg(String salesOrg) {
+		this.salesOrg = salesOrg;
 	}
 }

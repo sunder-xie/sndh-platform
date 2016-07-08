@@ -44,7 +44,7 @@ public interface TVipCustInfoMapper {
      * @param attrs
      * @return
      */
-    TVipCustInfo findStaCustByPhone(Map<String,String> attrs);
+    List<TVipCustInfo> findStaCustByPhone(Map<String,String> attrs);
     
     /**
      * 根据电话查找公司订户信息
@@ -73,4 +73,11 @@ public interface TVipCustInfoMapper {
      * @return
      */
     public PageInfo findcustMixedTerms(CustQueryModel cust);
+    
+    /**
+     * 根据电话号码获取在同一奶站下订户的个数
+     * @param attrs
+     * @return
+     */
+    public int getCustCountByPhone(Map<String,String> attrs);
 }

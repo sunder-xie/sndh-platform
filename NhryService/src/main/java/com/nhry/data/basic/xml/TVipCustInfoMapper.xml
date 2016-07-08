@@ -49,6 +49,9 @@
 		<result column="MEMO_TXT" property="memoTxt" jdbcType="VARCHAR" />
 		<result column="DISP_MEMO_TXT" property="dispMemoTxt" jdbcType="VARCHAR" />
 		<result column="BRANCH_NO" property="branchNo" jdbcType="VARCHAR" />
+		<result column="FIRST_ORDER_TIME" property="firstOrderTime" jdbcType="TIMESTAMP" />
+		<result column="LAST_ORDER_TIME" property="lastOrderTime" jdbcType="TIMESTAMP" />
+		<result column="BRANCH_NAME" property="branchName" jdbcType="VARCHAR" />
 	</resultMap>
 	<sql id="Base_Column_List">
 		VIP_CUST_NO, VIP_CUST_NO_SAP, SALES_ORG, VIP_NAME,
@@ -63,7 +66,8 @@
 		CREATE_BY, CREATE_BY_TXT,
 		LAST_MODIFIED,
 		LAST_MODIFIED_BY,
-		LAST_MODIFIED_BY_TXT, MEMO_TXT, DISP_MEMO_TXT, BRANCH_NO
+		LAST_MODIFIED_BY_TXT, MEMO_TXT, DISP_MEMO_TXT, BRANCH_NO,
+		date_format(FIRST_ORDER_TIME, '%Y-%m-%d') FIRST_ORDER_TIME,date_format(LAST_ORDER_TIME, '%Y-%m-%d') LAST_ORDER_TIME
 	</sql>
 	<select id="findVipCustByNo" resultMap="BaseResultMap" parameterType="java.lang.String">
 		SELECT
@@ -133,7 +137,8 @@
 				b.BRANCH_NAME
 			FROM
 				T_MD_BRANCH b where b.BRANCH_NO = i.BRANCH_NO
-		) BRANCH_NO 
+		) BRANCH_NAME,i.BRANCH_NO,
+		date_format(FIRST_ORDER_TIME, '%Y-%m-%d') FIRST_ORDER_TIME,date_format(LAST_ORDER_TIME, '%Y-%m-%d') LAST_ORDER_TIME 
 		FROM
 		t_vip_cust_info i WHERE i.VIP_CUST_NO =#{vipCustNo,jdbcType=VARCHAR}
 	</select>
@@ -172,7 +177,8 @@
 		i.LAST_MODIFIED_BY_TXT,
 		i.MEMO_TXT,
 		i.DISP_MEMO_TXT,
-		i.BRANCH_NO 
+		i.BRANCH_NO,
+		date_format(FIRST_ORDER_TIME, '%Y-%m-%d') FIRST_ORDER_TIME,date_format(LAST_ORDER_TIME, '%Y-%m-%d') LAST_ORDER_TIME 
 		FROM
 		t_vip_cust_info i 
 		WHERE i.VIP_CUST_NO =#{vipCustNo,jdbcType=VARCHAR}
@@ -206,7 +212,8 @@
 		i.VIP_AMT,
 		i.MEMO_TXT,
 		i.DISP_MEMO_TXT,
-		i.BRANCH_NO 
+		i.BRANCH_NO,
+		date_format(FIRST_ORDER_TIME, '%Y-%m-%d') FIRST_ORDER_TIME,date_format(LAST_ORDER_TIME, '%Y-%m-%d') LAST_ORDER_TIME 
 		FROM
 		t_vip_cust_info i 
 		WHERE i.VIP_CUST_NO =#{vipCustNo,jdbcType=VARCHAR}
@@ -737,12 +744,12 @@
 		i.ZIP,
 		i.Email,
 		i.SEX,
-		i.BIRTHDAY,
+		date_format(i.BIRTHDAY, '%Y-%m-%d') BIRTHDAY,
 		i.CERT_ID,
 		i.VIP_SRC,
 		i.MILKBOX,
 		i.VIP_TYPE,
-		i.SUBSCRIBE_DATE,
+		date_format(i.SUBSCRIBE_DATE, '%Y-%m-%d') SUBSCRIBE_DATE,
 		i.SUBSCRIBER,
 		i.ACTIVITY_NO,
 		i. STATUS,
@@ -760,14 +767,44 @@
 				b.BRANCH_NAME
 			FROM
 				T_MD_BRANCH b where b.BRANCH_NO = i.BRANCH_NO
-		) BRANCH_NO  from t_vip_cust_info i 
+		) BRANCH_NAME,i.BRANCH_NO  from t_vip_cust_info i 
 		<where>
 		     <if test="salesOrg != null and salesOrg !=''">
 		         SALES_ORG = #{salesOrg} 
 		     </if>
-		    <if test="station != null and station != ''">
-		    	 and BRANCH_NO = #{station} 
-		    </if>
+		    <choose>
+		         <when test="stationType != null and stationType != '' ">
+		            <choose>
+		                <when test="stationType=='02'">
+		                	   <!-- 经销商奶站 -->
+					           <choose>
+					               <when test="station != null and station != ''">
+					               		and i.BRANCH_NO in (select b.BRANCH_NO from t_md_branch b where b.BRANCH_GROUP=#{stationType} and b.SALES_ORG=#{salesOrg} and b.dealer_no=#{station})
+					               </when>
+					               <otherwise>
+					               		and i.BRANCH_NO in (select b.BRANCH_NO from t_md_branch b where b.BRANCH_GROUP=#{stationType} and b.SALES_ORG=#{salesOrg})	
+					               </otherwise>
+					           </choose>
+		                </when>
+		                <otherwise>
+		                     <choose>
+					               <when test="station != null and station != ''">
+					               		and i.BRANCH_NO = #{station} 
+					               </when>
+					               <otherwise>
+					               		and i.BRANCH_NO in (select b.BRANCH_NO from t_md_branch b where b.BRANCH_GROUP=#{stationType} and b.SALES_ORG=#{salesOrg})	
+					               </otherwise>
+					           </choose>
+		                </otherwise>
+		            </choose>
+		         </when>
+		         <otherwise>
+		         <!-- 自有奶站 -->
+		             <if test="station != null and station != ''">
+				    	 and BRANCH_NO = #{station} 
+				    </if>
+		         </otherwise>
+		     </choose>
 		    <if test="status != null and status != ''">
 		    	and STATUS = #{status} 
 		    </if>
@@ -778,9 +815,29 @@
 		    	and SUBSCRIBE_DATE &lt;= #{endDate} 
 		    </if>
 		    <if test="content != null and content != ''">
-		        and (VIP_NAME like '%' || #{content} || '%' or ADDRESS_TXT like '%' || #{content} || '%' or MP '%' || #{content} || '%') 
+		        and (VIP_NAME like '%${content}%' or ADDRESS_TXT like '%${content}%' or MP like '%${content}%') 
+		    </if>
+		    <if test="phone != null and phone != ''">
+		       and MP = #{phone}
 		    </if>
 		</where>
 		order by COUNTY,STREET,CREATE_AT desc,LAST_MODIFIED desc
+	</select>
+	<select id="getCustCountByPhone"  resultType="Integer" parameterType="java.util.HashMap">
+	   SELECT count(c.VIP_CUST_NO) from t_vip_cust_info c 
+	   <where>
+	        <if test="custNo != null and custNo != ''">
+	        	c.VIP_CUST_NO &lt;&gt; #{custNo} 
+	        </if>
+	        <if test="phone != null and phone != ''">
+	        	AND c.MP= #{phone}
+	        </if>
+	        <if test="salesOrg != null and salesOrg != ''">
+	        	and c.SALES_ORG=#{salesOrg}
+	        </if>
+	        <if test="branchNo != null and branchNo != ''">
+	        	and c.BRANCH_NO=#{branchNo}
+	        </if>
+	   </where>
 	</select>
 </mapper>

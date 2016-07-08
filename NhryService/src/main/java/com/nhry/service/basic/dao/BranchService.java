@@ -22,4 +22,6 @@ public interface BranchService {
     public PageInfo findBranchListByPage(BranchQueryModel branchModel);
 
    public BranchOrDealerList findResultByType(String type);
+
+    List<TMdBranch> getBranchByCodeOrName(String branch);
 }

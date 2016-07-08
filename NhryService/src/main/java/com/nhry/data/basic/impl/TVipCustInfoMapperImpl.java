@@ -37,15 +37,15 @@ public class TVipCustInfoMapperImpl implements TVipCustInfoMapper {
 	}
 
 	@Override
-	public TVipCustInfo findStaCustByPhone(Map<String, String> attrs) {
+	public List<TVipCustInfo> findStaCustByPhone(Map<String, String> attrs) {
 		// TODO Auto-generated method stub
-		return this.sqlSessionTemplate.selectOne("findStaCustByPhone", attrs);
+		return this.sqlSessionTemplate.selectList("findStaCustByPhone", attrs);
 	}
 
 	@Override
 	public List<TVipCustInfo> findCompanyCustByPhone(Map<String, String> attrs) {
 		// TODO Auto-generated method stub
-		return this.sqlSessionTemplate.selectList("findStaCustByPhone", attrs);
+		return this.sqlSessionTemplate.selectList("findCompanyCustByPhone", attrs);
 	}
 
 	@Override
@@ -70,5 +70,11 @@ public class TVipCustInfoMapperImpl implements TVipCustInfoMapper {
 	public PageInfo findcustMixedTerms(CustQueryModel cust) {
 		// TODO Auto-generated method stub
 		return this.sqlSessionTemplate.selectListByPages("findcustMixedTerms",cust, Integer.parseInt(cust.getPageNum()), Integer.parseInt(cust.getPageSize()));
+	}
+
+	@Override
+	public int getCustCountByPhone(Map<String, String> attrs) {
+		// TODO Auto-generated method stub
+		return this.sqlSessionTemplate.selectOne("getCustCountByPhone", attrs);
 	}
 }

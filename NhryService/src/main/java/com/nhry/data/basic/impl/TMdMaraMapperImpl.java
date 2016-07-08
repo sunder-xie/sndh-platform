@@ -68,18 +68,23 @@ public class TMdMaraMapperImpl implements TMdMaraMapper {
     }
 
 	@Override
-	public List<TMdMara> getDealerMaras(Map<String, String> attrs) {
+	public PageInfo getDealerMaras(ProductQueryModel pm) {
 		// TODO Auto-generated method stub
-		return this.sqlSessionTemplate.selectList("getDealerMaras", attrs);
+		return this.sqlSessionTemplate.selectListByPages("getDealerMaras", pm,Integer.parseInt(pm.getPageNum()),Integer.parseInt(pm.getPageSize()));
 	}
 
 	@Override
-	public List<TMdMara> getCompMaras(Map<String, String> attrs) {
+	public PageInfo getCompMaras(ProductQueryModel pm) {
 		// TODO Auto-generated method stub
-		return this.sqlSessionTemplate.selectList("getCompMaras", attrs);
+		return this.sqlSessionTemplate.selectListByPages("getCompMaras",pm,Integer.parseInt(pm.getPageNum()),Integer.parseInt(pm.getPageSize()));
 	}
 
-	@Override
+    @Override
+    public List<TMdMara>  getProductByCodeOrNameAndSalesOrg(Map<String,String> attrs) {
+        return this.sqlSessionTemplate.selectList("getProductByCodeOrNameAndSalesOrg", attrs);
+    }
+
+    @Override
 	public List<TMdMara> findMarasBySalesCodeAndOrg(Map<String, String> attrs) {
 		// TODO Auto-generated method stub
 		return this.sqlSessionTemplate.selectList("findMarasBySalesCodeAndOrg", attrs);

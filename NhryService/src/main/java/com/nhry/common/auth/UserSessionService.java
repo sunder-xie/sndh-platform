@@ -72,9 +72,8 @@ public class UserSessionService {
 			user.setLoginName("032411");
 			user.setDisplayName("测试用户");
 //			user.setBranchNo("001");
-			user.setPwd("12345678");
+			user.setDealerId("0300000880");
 			user.setSalesOrg("4100");
-			user.setCreateAt(date);
 			user.setLastModified(date);
 			return user;
 		}

@@ -1,5 +1,7 @@
 package com.nhry.data.auth.dao;
 
+import java.util.List;
+
 import com.nhry.data.auth.domain.TSysRole;
 
 public interface TSysRoleMapper {
@@ -11,4 +13,5 @@ public interface TSysRoleMapper {
 
     int updateRoleByRid(TSysRole record);
     
+    List<TSysRole> getAllRoles();
 }

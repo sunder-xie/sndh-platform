@@ -89,6 +89,12 @@ public class TVipCustInfo implements Serializable{
 
     private String branchNo;
     
+    private String branchName;
+    
+    private Date firstOrderTime;
+    
+    private Date lastOrderTime;
+    
     private List<TMdAddress> addresses = new ArrayList<TMdAddress>();
 
     public String getVipCustNo() {
@@ -425,5 +431,29 @@ public class TVipCustInfo implements Serializable{
 
 	public void setAddresses(List<TMdAddress> addresses) {
 		this.addresses = addresses;
+	}
+
+	public Date getFirstOrderTime() {
+		return firstOrderTime;
+	}
+
+	public void setFirstOrderTime(Date firstOrderTime) {
+		this.firstOrderTime = firstOrderTime;
+	}
+
+	public Date getLastOrderTime() {
+		return lastOrderTime;
+	}
+
+	public void setLastOrderTime(Date lastOrderTime) {
+		this.lastOrderTime = lastOrderTime;
+	}
+
+	public String getBranchName() {
+		return branchName;
+	}
+
+	public void setBranchName(String branchName) {
+		this.branchName = branchName;
 	}
 }

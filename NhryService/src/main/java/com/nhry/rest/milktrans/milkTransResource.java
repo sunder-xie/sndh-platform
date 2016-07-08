@@ -127,6 +127,15 @@ public class milkTransResource extends BaseResource {
 	}
 
 	@POST
+	@Path("/box/getRetBoxDetail")
+	@Produces(MediaType.APPLICATION_JSON)
+	@Consumes(MediaType.APPLICATION_JSON)
+	@ApiOperation(value = "/box/getRetBoxDetail", response = Response.class, notes = "获取回瓶详情")
+	public Response getRetBoxDetail(@ApiParam(required=true,name="retLsh",value="回瓶流水号") @QueryParam("retLsh") String retLsh){
+		return convertToRespModel(MessageCode.NORMAL, null, returnBoxService.getRetBoxDetail(retLsh));
+	}
+
+	@POST
 	@Path("/box/createDayRetBox")
 	@Produces(MediaType.APPLICATION_JSON)
 	@Consumes(MediaType.APPLICATION_JSON)
@@ -136,8 +145,14 @@ public class milkTransResource extends BaseResource {
 	}
 
 
-
-
+	@POST
+	@Path("/box/searchRetBoxPage")
+	@Produces(MediaType.APPLICATION_JSON)
+	@Consumes(MediaType.APPLICATION_JSON)
+	@ApiOperation(value = "/box/createToDayRetBox", response = PageInfo.class, notes = "奶瓶回收列表")
+	public Response searchToDayRetBoxPage(@ApiParam(required=true,name="rSearch",value="cModel") ReturnboxSerarch rSearch){
+		return convertToRespModel(MessageCode.NORMAL, null, returnBoxService.searchRetBoxPage(rSearch));
+	}
 
 
 	@GET

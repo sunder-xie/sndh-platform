@@ -4,6 +4,7 @@
   <resultMap id="BaseResultMap" type="com.nhry.data.basic.domain.TMdResidentialArea">
     <id column="ID" jdbcType="VARCHAR" property="id" />
     <result column="BRANCH_NO" jdbcType="VARCHAR" property="branchNo" />
+    <result column="BRANCH_NAME" jdbcType="VARCHAR" property="branchName" />
     <result column="RESIDENTIAL_AREA_TXT" jdbcType="VARCHAR" property="residentialAreaTxt" />
     <result column="PROVINCE" jdbcType="VARCHAR" property="province" />
     <result column="CITY" jdbcType="VARCHAR" property="city" />
@@ -202,10 +203,12 @@
 
   <select id="selectById" parameterType="java.lang.String" resultMap="BaseResultMap">
     select
-     a.ID,  a.RESIDENTIAL_AREA_TXT,  a.PROVINCE,  a.CITY,  a.COUNTY,  a.STREET,b.BRANCH_NAME branchNo, a.GUIDEBOARD, a.STATUS,  a.ADDRESS_TXT,
+      a.ID,  a.RESIDENTIAL_AREA_TXT,  a.PROVINCE,  a.CITY,  a.COUNTY,  a.STREET,s.BRANCH_NO,b.BRANCH_NAME, a.GUIDEBOARD, a.STATUS,  a.ADDRESS_TXT,
        a.RESIDENTIAL_NUM,a.SALES_ORG,  a.PROPERTY_TXT,  a.PROPERTY_TEL
-    from t_md_residential_area a,t_md_branch_scope s,t_md_branch b
-    where a.ID = s.RESIDENTIAL_AREA_ID and s.BRANCH_NO = b.BRANCH_NO
+    from t_md_residential_area a
+        left JOIN t_md_branch_scope s on a.ID = s.RESIDENTIAL_AREA_ID
+        LEFT JOIN t_md_branch b ON s.BRANCH_NO = b.BRANCH_NO
+    where 1=1
     and  ID = #{id,jdbcType=VARCHAR}
   </select>
   <select id="selectAreaByPage" resultMap="BaseResultMap" parameterType="com.nhry.service.basic.pojo.ResidentialAreaModel">
@@ -240,13 +243,11 @@
     WHERE  ID = #{residentialAreaId,jdbcType=VARCHAR}
   </select>
 
-  <select id="getUnDistAreas" resultMap="BaseResultMap" >
+  <select id="getUnDistAreas" resultMap="BaseResultMap"  parameterType="String" >
     SELECT
     <include refid="Base_Column_List" />
     from t_md_residential_area
     WHERE  STATUS = '10'
-    <if test="salesOrg!=null and ''!=salesOrg">
-      SALES_ORG = #{salesOrg,jdbcType=VARCHAR}
-    </if>
+     and  SALES_ORG = #{salesOrg,jdbcType=VARCHAR}
   </select>
 </mapper>

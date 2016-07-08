@@ -6,10 +6,12 @@ import com.nhry.common.exception.ServiceException;
 import com.nhry.data.auth.dao.TSysResourceMapper;
 import com.nhry.data.auth.domain.TSysResource;
 import com.nhry.data.auth.domain.TSysRoleResource;
+import com.nhry.model.auth.RoleResourceData;
 import com.nhry.service.BaseService;
 import com.nhry.service.auth.dao.ResourceService;
 import com.nhry.utils.PrimaryKeyUtils;
 import com.nhry.utils.date.Date;
+
 import org.apache.commons.lang3.StringUtils;
 
 import java.util.List;
@@ -102,4 +104,15 @@ public class ResourceServiceImpl extends BaseService implements ResourceService 
     public List<TSysResource> findRecoureByUserId(String userId) {
         return resMapper.findRecoureByUserId(userId);
     }
+
+	@Override
+	public int addRoleRes(RoleResourceData record) {
+		// TODO Auto-generated method stub
+		if(record != null && record.getRecords().size() > 0){
+			for(TSysRoleResource recond : record.getRecords()){
+				this.addRoleRes(recond);
+			}
+		}
+		return 1;
+	}
 }

@@ -70,15 +70,6 @@ public class UserResource extends BaseResource {
 	}
 	
 	@POST
-	@Path("/update/password")
-	@Produces(MediaType.APPLICATION_JSON)
-	@Consumes(MediaType.APPLICATION_JSON)
-	@ApiOperation(value = "/update/password", response = ResponseModel.class, notes = "修改用户密码")
-	public Response updateUserPw(@ApiParam(required = true, name = "user", value = "用户对象(只需要：loginName、pwd属性值)") TSysUser user) {
-		return convertToRespModel(MessageCode.NORMAL, null,userService.updateUserPw(user));
-	}
-	
-	@POST
 	@Path("/login")
 	@Produces(MediaType.APPLICATION_JSON)
 	@ApiOperation(value = "/login", response = ResponseModel.class, notes = "用户登录")
@@ -98,6 +89,4 @@ public class UserResource extends BaseResource {
 	public Response deleteUserByLoginName(@ApiParam(required = true, name = "loginName", value = "用户登录名") @PathParam("loginName")String loginName) {
 		return convertToRespModel(MessageCode.NORMAL,null,userService.deleteUserByLoginName(loginName));
 	}
-	
-	
 }

@@ -56,7 +56,7 @@ public class ResidentialAreaResource extends BaseResource {
 	@GET
 	@Path("/getAreaById/{id}")
 	@Produces(MediaType.APPLICATION_JSON)
-	@ApiOperation(value = "/getAreaById/{id}", response = TMdResidentialArea.class, notes = "根据小区编号获取配送区域(小区)列表")
+	@ApiOperation(value = "/getAreaById/{id}", response = TMdResidentialArea.class, notes = "根据小区编号获取配送区域(小区)")
 	public Response selectById(
 			@ApiParam(required = true, name = "id", value = "小区编号") @PathParam("id") String id) {
 		return convertToRespModel(MessageCode.NORMAL, null,

@@ -38,6 +38,14 @@ public class BranchResource extends BaseResource {
 	}
 
 	@GET
+	@Path("/getBranchByCodeOrName")
+	@Produces(MediaType.APPLICATION_JSON)
+	@ApiOperation(value = "/getBranchByCodeOrName", response = TMdBranch.class, notes = "根据奶站名称或者名称获取奶站列表")
+	public Response getBranchByCodeOrName(@ApiParam(required=true,name="branch",value="奶站编号或奶站名称")  @QueryParam("branch") String branch){
+		return convertToRespModel(MessageCode.NORMAL, null,branchService.getBranchByCodeOrName(branch));
+	}
+
+	@GET
 	@Path("/getBranchInfo/{branchNo}")
 	@Produces(MediaType.APPLICATION_JSON)
 	@ApiOperation(value = "/getBranchInfo/{branchNo}", response = TMdBranch.class, notes = "根据网点编号查询网点客户信息列表")
@@ -73,7 +81,7 @@ public class BranchResource extends BaseResource {
 	@Produces(MediaType.APPLICATION_JSON)
 	@ApiOperation(value = "/getInfoByType", response = Response.class, notes = "自营下返回可选奶站，外包下返回可选经销商")
 	public Response getInfoByType(
-			@ApiParam(required=true,name="type",value="类型")@QueryParam("type") String type){
+			@ApiParam(required=true,name="type",value="01（代表选择自营） 02（代表选择外包）")@QueryParam("type") String type){
 		return convertToRespModel(MessageCode.NORMAL, null,branchService.findResultByType(type));
 	}
 
