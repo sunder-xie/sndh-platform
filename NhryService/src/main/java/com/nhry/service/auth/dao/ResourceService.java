@@ -69,4 +69,11 @@ public interface ResourceService {
      * @return
      */
     List<TSysResource> getAllResources();
+    
+    /**
+     * 根据角色编号，查询角色拥有的资源
+     * @param id
+     * @return
+     */
+    public List<TSysResource> getRoleResources(String id);
 }

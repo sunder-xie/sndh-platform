@@ -25,6 +25,10 @@ public class TSysResource implements Serializable{
     private String lastModifiedByTxt;
 
     private String resUrl;
+    
+    private boolean checked = false;
+    
+    private boolean open = false;
 
     public String getResCode() {
         return resCode;
@@ -113,4 +117,20 @@ public class TSysResource implements Serializable{
     public void setResUrl(String resUrl) {
         this.resUrl = resUrl == null ? null : resUrl.trim();
     }
+
+	public boolean isChecked() {
+		return checked;
+	}
+
+	public void setChecked(boolean checked) {
+		this.checked = checked;
+	}
+
+	public boolean isOpen() {
+		return open;
+	}
+
+	public void setOpen(boolean open) {
+		this.open = open;
+	}
 }

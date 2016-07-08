@@ -78,4 +78,10 @@ public class TSysResourceMapperImpl implements TSysResourceMapper {
 		// TODO Auto-generated method stub
 		return this.sqlSessionTemplate.selectList("getAllResources");
 	}
+
+	@Override
+	public List<TSysResource> getRoleRosources(String id) {
+		// TODO Auto-generated method stub
+		return this.sqlSessionTemplate.selectList("getRoleRosources", id);
+	}
 }

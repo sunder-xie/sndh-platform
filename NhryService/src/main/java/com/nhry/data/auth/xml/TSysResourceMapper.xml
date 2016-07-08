@@ -193,4 +193,7 @@
     <select id="getAllResources" resultMap="sysResResultMap" >
         select <include refid="sysRes_Column_List"/> from t_sys_resource ORDER BY CREATE_AT,LAST_MODIFIED
     </select>
+    <select id="getRoleRosources" parameterType="String" resultMap="sysResResultMap" >
+       select distinct t1.RES_CODE, t1.RES_NAME, t1.PARENT, t1.RES_TYPE,t1.RES_URL from t_sys_resource t1,T_SYS_ROLE_RESOURCE tr where t1.RES_CODE=tr.RES_CODE and tr.ID=#{id}
+    </select>
 </mapper>

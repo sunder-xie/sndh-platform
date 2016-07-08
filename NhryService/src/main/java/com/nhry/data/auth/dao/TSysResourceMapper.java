@@ -82,4 +82,11 @@ public interface TSysResourceMapper {
      * @return
      */
     List<TSysResource> getAllResources();
+    
+    /**
+     * 根据角色编号，查询角色拥有的资源
+     * @param id
+     * @return
+     */
+    List<TSysResource> getRoleRosources(String id);
 }

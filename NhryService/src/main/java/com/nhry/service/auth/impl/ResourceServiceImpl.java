@@ -14,6 +14,7 @@ import com.nhry.utils.date.Date;
 
 import org.apache.commons.lang3.StringUtils;
 
+import java.util.ArrayList;
 import java.util.List;
 
 
@@ -120,5 +121,29 @@ public class ResourceServiceImpl extends BaseService implements ResourceService 
 	public List<TSysResource> getAllResources() {
 		// TODO Auto-generated method stub
 		return this.resMapper.getAllResources();
+	}
+
+	@Override
+	public List<TSysResource> getRoleResources(String id) {
+		// TODO Auto-generated method stub
+		List<TSysResource> roleRes = this.resMapper.getRoleRosources(id);
+		List<String> temp = null;
+		if(roleRes != null && roleRes.size() > 0){
+			temp = new ArrayList<String>();
+			for(TSysResource r : roleRes){
+				temp.add(r.getResCode());
+			}
+		}
+		
+		List<TSysResource> res = getAllResources();
+		if(res != null && temp != null){
+			for(TSysResource r : res){
+				if(temp.contains(r.getResCode())){
+					r.setOpen(true);
+					r.setChecked(true);
+				}
+			}
+		}
+		return res;
 	}
 }
