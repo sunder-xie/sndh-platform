@@ -46,7 +46,7 @@ public class RoleResource extends BaseResource{
 	@POST
 	@Path("/search/{id}")
 	@Produces(MediaType.APPLICATION_JSON)
-	@ApiOperation(value = "/search/{id}", response = ResponseModel.class, notes = "根据角色id查找角色信息")
+	@ApiOperation(value = "/search/{id}", response = TSysRole.class, notes = "根据角色id查找角色信息")
     public Response findRoleByRid(@ApiParam(required = true, name = "id", value = "角色id")@PathParam("id")String id) {
         return this.convertToRespModel(MessageCode.NORMAL, null, roleService.findRoleByRid(id));
     }
@@ -54,7 +54,7 @@ public class RoleResource extends BaseResource{
 	@POST
 	@Path("/lists")
 	@Produces(MediaType.APPLICATION_JSON)
-	@ApiOperation(value = "/lists", response = ResponseModel.class, notes = "获取所有角色列表")
+	@ApiOperation(value = "/lists", response = TSysRole.class, notes = "获取所有角色列表")
     public Response getAllRoles() {
         return this.convertToRespModel(MessageCode.NORMAL, null, roleService.getAllRoles());
     }
@@ -115,7 +115,7 @@ public class RoleResource extends BaseResource{
 	@POST
 	@Path("/find/res/{resCode}")
 	@Produces(MediaType.APPLICATION_JSON)
-	@ApiOperation(value = "/find/res/{resCode}", response = ResponseModel.class, notes = "查找资源")
+	@ApiOperation(value = "/find/res/{resCode}", response = TSysResource.class, notes = "查找资源")
 	public Response addRes(@ApiParam(required = true, name = "resCode", value = "资源编号")@PathParam("resCode")String resCode) {
 		return convertToRespModel(MessageCode.NORMAL, null, resService.selectResByCode(resCode));
 	}
