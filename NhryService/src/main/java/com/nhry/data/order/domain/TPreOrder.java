@@ -90,7 +90,31 @@ public class TPreOrder {
 
     private Date backDate;
     
-    public String getSolicitDateStr()
+    private String sign;
+    
+    private String salesOrg;
+    
+    public String getSalesOrg()
+	{
+		return salesOrg;
+	}
+
+	public void setSalesOrg(String salesOrg)
+	{
+		this.salesOrg = salesOrg;
+	}
+
+	public String getSign()
+	{
+		return sign;
+	}
+
+	public void setSign(String sign)
+	{
+		this.sign = sign;
+	}
+
+	public String getSolicitDateStr()
 	{
 		return solicitDateStr;
 	}

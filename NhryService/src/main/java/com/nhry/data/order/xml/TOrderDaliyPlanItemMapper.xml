@@ -366,7 +366,7 @@
   </select>
 
   <select id="selectDaliyPlansByBranchAndDay" resultMap="BaseResultMap" parameterType="com.nhry.model.milktrans.RequireOrderSearch" >
-   		select  i.MATNR,m.MATNR_TXT MATNR_TXT,i.QTY,m.BASE_UNIT UNIT
+   		select i.ORDER_NO,i.ITEM_NO,i.DISP_DATE, i.MATNR,m.MATNR_TXT MATNR_TXT,i.QTY,m.BASE_UNIT UNIT
       from t_mst_order_daliy_plan_item i
         LEFT JOIN t_md_mara m on i.MATNR =  m.MATNR
         LEFT JOIN t_preorder o on 	i.ORDER_NO = o.ORDER_NO
