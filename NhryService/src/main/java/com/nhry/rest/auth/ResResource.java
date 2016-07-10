@@ -37,8 +37,8 @@ public class ResResource extends BaseResource {
     @Path("/add")
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes(MediaType.APPLICATION_JSON)
-    @ApiOperation(value = "/add", response = ResponseModel.class, notes = "添加资源")
-    public Response addRes(@ApiParam(required = true, name = "resource", value = "资源对象")TSysResource resource) {
+    @ApiOperation(value = "/add", response = ResponseModel.class, notes = "添加资源(resType: 10 --> 菜单;20 --> 功能按钮)")
+    public Response addRes(@ApiParam(required = true, name = "resource", value = "资源对象(资源编码(resCode)可以自定义)")TSysResource resource) {
         return convertToRespModel(MessageCode.NORMAL, null, resService.addRes(resource));
     }
     
@@ -78,7 +78,7 @@ public class ResResource extends BaseResource {
     @POST
     @Path("/delete/{resCode}")
     @Produces(MediaType.APPLICATION_JSON)
-    @ApiOperation(value = "/update/{resCode}", response = ResponseModel.class, notes = "删除资源")
+    @ApiOperation(value = "/delete/{resCode}", response = ResponseModel.class, notes = "删除资源")
     public Response deleteRes(@ApiParam(required = true, name = "resCode", value = "资源编码")@PathParam("resCode")String resCode) {
         return convertToRespModel(MessageCode.NORMAL, null, resService.deleteResByCode(resCode));
     }

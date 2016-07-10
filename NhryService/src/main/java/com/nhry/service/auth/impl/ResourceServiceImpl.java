@@ -56,7 +56,15 @@ public class ResourceServiceImpl extends BaseService implements ResourceService 
                 throw new ServiceException(MessageCode.LOGIC_ERROR, "该资源对应的父类资源不存在,请检查你的parent属性!");
             }
         }
-        record.setResCode(PrimaryKeyUtils.generateUuidKey());
+        
+        if(StringUtils.isEmpty(record.getResCode())){
+        	record.setResCode(PrimaryKeyUtils.generateUuidKey());
+        }else{
+        	TSysResource res = resMapper.selectResByCode(record.getResCode());
+        	if(res != null){
+        		throw new ServiceException(MessageCode.LOGIC_ERROR,"该资源编码已经存在,请重新填写！");
+        	}
+        }
         record.setCreateAt(new Date());
         record.setCreateBy(userSessionService.getCurrentUser().getLoginName());
         record.setCreateByTxt(userSessionService.getCurrentUser().getDisplayName());
