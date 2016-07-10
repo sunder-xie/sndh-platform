@@ -32,6 +32,8 @@ public class TSysResource implements Serializable{
     
     private boolean open = false;
     
+    private int index;
+    
     private List<TSysResource> childrens = new ArrayList<TSysResource>();
 
     public String getResCode() {
@@ -144,5 +146,13 @@ public class TSysResource implements Serializable{
 
 	public void setChildrens(List<TSysResource> childrens) {
 		this.childrens = childrens;
+	}
+
+	public int getIndex() {
+		return index;
+	}
+
+	public void setIndex(int index) {
+		this.index = index;
 	}
 }
