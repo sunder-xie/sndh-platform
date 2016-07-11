@@ -1,14 +1,19 @@
 package com.nhry.data.order.dao;
 
+import com.github.pagehelper.PageInfo;
 import com.nhry.data.order.domain.TOrderDaliyPlanItem;
 import com.nhry.data.order.domain.TOrderDaliyPlanItemKey;
 import com.nhry.data.order.domain.TPreOrder;
 import com.nhry.model.milktrans.RequireOrderSearch;
+import com.nhry.model.order.OrderSearchModel;
 
 import java.util.Date;
 import java.util.List;
 
 public interface TOrderDaliyPlanItemMapper {
+	
+	 PageInfo selectDaliyOrdersByPages(OrderSearchModel smodel);
+	
 	 int deleteFromDateToDate(TOrderDaliyPlanItem record);
 
     int insert(TOrderDaliyPlanItem record);

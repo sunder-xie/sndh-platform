@@ -287,6 +287,8 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 			{
 				throw new ServiceException(MessageCode.LOGIC_ERROR,"日期格式不正确!");
 			}
+			
+			if(edate.before(order.getEndDate()))throw new ServiceException(MessageCode.LOGIC_ERROR,"续订日期不能小于原订单截止日期!");
 			String state = order.getPaymentmethod();
 			
 			//基本参考原单
@@ -458,6 +460,22 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 		return tPreOrderMapper.selectOrdersByPages(smodel);
 	}
 
+	/* (non-Javadoc) 
+	* @title: searchDaliyOrders
+	* @description: 分页查询日计划
+	* @param smodel
+	* @return 
+	* @see com.nhry.service.order.dao.OrderService#searchDaliyOrders(com.nhry.model.order.OrderSearchModel) 
+	*/
+	@Override
+	public PageInfo searchDaliyOrders(OrderSearchModel smodel)
+	{
+		if(StringUtils.isEmpty(smodel.getPageNum()) || StringUtils.isEmpty(smodel.getPageSize())){
+			throw new ServiceException(MessageCode.LOGIC_ERROR,"pageNum和pageSize不能为空！");
+		}
+		return tOrderDaliyPlanItemMapper.selectDaliyOrdersByPages(smodel);
+	}
+	
 	/* (non-Javadoc)
 	* @title: 生成订单
 	* @description: 生成订单与订单行项目
@@ -701,10 +719,10 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 		ArrayList<TPlanOrderItem> curEntries = record.getEntries();
 		ArrayList<TPlanOrderItem> modifiedEntries = new ArrayList<TPlanOrderItem>();
 		//长期变更(10)需对订单进行统一更改，关联更改日订单 
-		//是否修改地址
-		if(StringUtils.isNotBlank(record.getOrder().getAdressNo()) && orgOrder.getAdressNo() != record.getOrder().getAdressNo() ){
-			orgOrder.setAdressNo(record.getOrder().getAdressNo());
-		}
+		//是否修改地址???
+//		if(StringUtils.isNotBlank(record.getOrder().getAdressNo()) && orgOrder.getAdressNo() != record.getOrder().getAdressNo() ){
+//			orgOrder.setAdressNo(record.getOrder().getAdressNo());
+//		}
 		//修改订单根据行项目编号来确定行是否修改，换商品或改数量
 		for(TPlanOrderItem orgEntry : orgEntries){
 			boolean delFlag = true;
@@ -745,15 +763,15 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 					String endstr = format.format(orgEntry.getEndDispDate());
 					if(!startstr.equals(curEntry.getStartDispDateStr()) || !endstr.equals(curEntry.getEndDispDateStr()) ){
 						modiFlag = true;
-						try
-						{
-							orgEntry.setStartDispDate(format.parse(curEntry.getStartDispDateStr()));
-							orgEntry.setEndDispDate(format.parse(curEntry.getEndDispDateStr()));
-						}
-						catch (ParseException e)
-						{
-							throw new ServiceException(MessageCode.LOGIC_ERROR,"日期格式有误!");
-						}
+//						try
+//						{
+						orgEntry.setStartDispDate(curEntry.getStartDispDate());
+						orgEntry.setEndDispDate(curEntry.getEndDispDate());
+//						}
+//						catch (ParseException e)
+//						{
+//							throw new ServiceException(MessageCode.LOGIC_ERROR,"日期格式有误!");
+//						}
 					}
 					if(!modiFlag){
 						break;
@@ -825,7 +843,12 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 				}
 				if("30".equals(plan.getStatus())){
 					orgPlan.setStatus(plan.getStatus());
+					tOrderDaliyPlanItemMapper.updateDaliyPlanItem(orgPlan);
 					continue;
+				}
+				//送达时段
+				if(StringUtils.isNotBlank(plan.getReachTimeType())){
+					orgPlan.setReachTimeType(plan.getReachTimeType());
 				}
 				orgPlan.setMatnr(plan.getMatnr());
 				orgPlan.setQty(plan.getQty());
@@ -849,6 +872,10 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 				if("30".equals(plan.getStatus())){
 					stopPlans.put(orgPlan, plan);
 					continue;
+				}
+				//送达时段
+				if(StringUtils.isNotBlank(plan.getReachTimeType())){
+					orgPlan.setReachTimeType(plan.getReachTimeType());
 				}
 				//变更产品
 				if(!orgPlan.getMatnr().equals(plan.getMatnr())){
