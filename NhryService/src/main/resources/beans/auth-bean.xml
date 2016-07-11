@@ -49,4 +49,7 @@
 	    <property name="resMapper" ref="resMapper"></property>
 	    <property name="userSessionService" ref="userSessionService"></property>
 	</bean>
+	<bean id="ladpService" class="com.nhry.common.ladp.LadpService" init-method="init">
+	   <property name="userService" ref="userService"></property>
+	</bean>
 </beans>
