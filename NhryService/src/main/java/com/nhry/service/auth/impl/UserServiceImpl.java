@@ -32,9 +32,15 @@ public class UserServiceImpl extends BaseService implements UserService {
 		if(StringUtils.isEmpty(user.getLoginName()) || StringUtils.isEmpty(user.getDisplayName())){
 			 throw new ServiceException(MessageCode.LOGIC_ERROR, "loginName、displayName属性值不能为空!");
 		}
-		user.setCreateOn(new Date());
-		user.setLastModified(new Date());
-		return userMapper.addUser(user);
+		TSysUser u = this.userMapper.findUserByLoginName(user.getLoginName());
+		if(u == null){
+			user.setCreateOn(new Date());
+			user.setLastModified(new Date());
+			return userMapper.addUser(user);
+		}else{
+			user.setLastModified(new Date());
+			return this.userMapper.updateUser(user);
+		}
 	}
 
 	@Override

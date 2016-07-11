@@ -153,7 +153,10 @@ public class LadpService {
 		}
 	}
 	
-	public void updateSysUsers(){
+	/**
+	 * 同步系统用户
+	 */
+	public void syncSysUsers(){
 		try {
 			String filter = "(&(modifyTimestamp>=20160609044329+0800)(smart-authority=Auth_SSO))";
 			String basedn = "ou=People,o=newhopedairy,o=isp";
@@ -173,10 +176,9 @@ public class LadpService {
 	}
 
 	public static void main(String[] args) {
-		//ladpService
 		String[] xmls = new String[]{ "classpath:beans/spring-context.xml","classpath:beans/dataSource.xml","classpath:beans/*-bean.xml"  };
         ApplicationContext context = new ClassPathXmlApplicationContext(xmls);
         LadpService ldservice = (LadpService)context.getBean("ladpService");
-        ldservice.updateSysUsers();
+        ldservice.syncSysUsers();
 	}
 }
