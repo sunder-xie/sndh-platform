@@ -11,6 +11,8 @@ public class TSsmGiOrderItem extends TSsmGiOrderItemKey {
 
     private BigDecimal confirmQty;
 
+    private BigDecimal factoryPrice;
+
     private String itemType;
 
     public String getMatnr() {
@@ -43,6 +45,14 @@ public class TSsmGiOrderItem extends TSsmGiOrderItemKey {
 
     public void setConfirmQty(BigDecimal confirmQty) {
         this.confirmQty = confirmQty;
+    }
+
+    public BigDecimal getFactoryPrice() {
+        return factoryPrice;
+    }
+
+    public void setFactoryPrice(BigDecimal factoryPrice) {
+        this.factoryPrice = factoryPrice;
     }
 
     public String getItemType() {

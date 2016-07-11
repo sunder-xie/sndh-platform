@@ -152,6 +152,17 @@ public class ZSSD00010 implements org.apache.axis2.databinding.ADBBean {
      */
     protected boolean localAUDATTracker = false;
 
+    /**
+     * field for CMPGN_EXTID
+     */
+    protected CMPGN_EXTID_type1 localCMPGN_EXTID;
+
+    /*  This tracker boolean wil be used to detect whether the user called the set method
+     *   for this attribute. It will be used to determine whether to include this field
+     *   in the serialized XML
+     */
+    protected boolean localCMPGN_EXTIDTracker = false;
+
     public boolean isKUNNRSpecified() {
         return localKUNNRTracker;
     }
@@ -168,7 +179,8 @@ public class ZSSD00010 implements org.apache.axis2.databinding.ADBBean {
      * Auto generated setter method
      * @param param KUNNR
      */
-    public void setKUNNR(KUNNR_type1 param) {
+    public void setKUNNR(
+        KUNNR_type1 param) {
         localKUNNRTracker = param != null;
 
         this.localKUNNR = param;
@@ -190,7 +202,8 @@ public class ZSSD00010 implements org.apache.axis2.databinding.ADBBean {
      * Auto generated setter method
      * @param param KUNWE
      */
-    public void setKUNWE(KUNWE_type1 param) {
+    public void setKUNWE(
+        KUNWE_type1 param) {
         localKUNWETracker = param != null;
 
         this.localKUNWE = param;
@@ -212,7 +225,8 @@ public class ZSSD00010 implements org.apache.axis2.databinding.ADBBean {
      * Auto generated setter method
      * @param param VKORG
      */
-    public void setVKORG(VKORG_type1 param) {
+    public void setVKORG(
+        VKORG_type1 param) {
         localVKORGTracker = param != null;
 
         this.localVKORG = param;
@@ -234,7 +248,8 @@ public class ZSSD00010 implements org.apache.axis2.databinding.ADBBean {
      * Auto generated setter method
      * @param param VTWEG
      */
-    public void setVTWEG(VTWEG_type1 param) {
+    public void setVTWEG(
+        VTWEG_type1 param) {
         localVTWEGTracker = param != null;
 
         this.localVTWEG = param;
@@ -256,7 +271,8 @@ public class ZSSD00010 implements org.apache.axis2.databinding.ADBBean {
      * Auto generated setter method
      * @param param SPART
      */
-    public void setSPART(SPART_type1 param) {
+    public void setSPART(
+        SPART_type1 param) {
         localSPARTTracker = param != null;
 
         this.localSPART = param;
@@ -278,7 +294,8 @@ public class ZSSD00010 implements org.apache.axis2.databinding.ADBBean {
      * Auto generated setter method
      * @param param AUART
      */
-    public void setAUART(AUART_type1 param) {
+    public void setAUART(
+        AUART_type1 param) {
         localAUARTTracker = param != null;
 
         this.localAUART = param;
@@ -300,7 +317,8 @@ public class ZSSD00010 implements org.apache.axis2.databinding.ADBBean {
      * Auto generated setter method
      * @param param BSTKD
      */
-    public void setBSTKD(BSTKD_type1 param) {
+    public void setBSTKD(
+        BSTKD_type1 param) {
         localBSTKDTracker = param != null;
 
         this.localBSTKD = param;
@@ -322,7 +340,8 @@ public class ZSSD00010 implements org.apache.axis2.databinding.ADBBean {
      * Auto generated setter method
      * @param param LFDAT
      */
-    public void setLFDAT(Date param) {
+    public void setLFDAT(
+        Date param) {
         localLFDATTracker = param != null;
 
         this.localLFDAT = param;
@@ -344,7 +363,8 @@ public class ZSSD00010 implements org.apache.axis2.databinding.ADBBean {
      * Auto generated setter method
      * @param param AUGRU
      */
-    public void setAUGRU(AUGRU_type1 param) {
+    public void setAUGRU(
+        AUGRU_type1 param) {
         localAUGRUTracker = param != null;
 
         this.localAUGRU = param;
@@ -366,7 +386,8 @@ public class ZSSD00010 implements org.apache.axis2.databinding.ADBBean {
      * Auto generated setter method
      * @param param ZZ001
      */
-    public void setZZ001(ZZ001_type1 param) {
+    public void setZZ001(
+        ZZ001_type1 param) {
         localZZ001Tracker = param != null;
 
         this.localZZ001 = param;
@@ -388,7 +409,8 @@ public class ZSSD00010 implements org.apache.axis2.databinding.ADBBean {
      * Auto generated setter method
      * @param param KOSTL
      */
-    public void setKOSTL(KOSTL_type1 param) {
+    public void setKOSTL(
+        KOSTL_type1 param) {
         localKOSTLTracker = param != null;
 
         this.localKOSTL = param;
@@ -410,10 +432,34 @@ public class ZSSD00010 implements org.apache.axis2.databinding.ADBBean {
      * Auto generated setter method
      * @param param AUDAT
      */
-    public void setAUDAT(Date param) {
+    public void setAUDAT(
+        Date param) {
         localAUDATTracker = param != null;
 
         this.localAUDAT = param;
+    }
+
+    public boolean isCMPGN_EXTIDSpecified() {
+        return localCMPGN_EXTIDTracker;
+    }
+
+    /**
+     * Auto generated getter method
+     * @return com.nhry.webService.client.businessData.functions.CMPGN_EXTID_type1
+     */
+    public CMPGN_EXTID_type1 getCMPGN_EXTID() {
+        return localCMPGN_EXTID;
+    }
+
+    /**
+     * Auto generated setter method
+     * @param param CMPGN_EXTID
+     */
+    public void setCMPGN_EXTID(
+        CMPGN_EXTID_type1 param) {
+        localCMPGN_EXTIDTracker = param != null;
+
+        this.localCMPGN_EXTID = param;
     }
 
     /**
@@ -583,6 +629,16 @@ public class ZSSD00010 implements org.apache.axis2.databinding.ADBBean {
 
             localAUDAT.serialize(new javax.xml.namespace.QName("", "AUDAT"),
                 xmlWriter);
+        }
+
+        if (localCMPGN_EXTIDTracker) {
+            if (localCMPGN_EXTID == null) {
+                throw new org.apache.axis2.databinding.ADBException(
+                    "CMPGN_EXTID cannot be null!!");
+            }
+
+            localCMPGN_EXTID.serialize(new javax.xml.namespace.QName("",
+                    "CMPGN_EXTID"), xmlWriter);
         }
 
         xmlWriter.writeEndElement();
@@ -1050,6 +1106,23 @@ public class ZSSD00010 implements org.apache.axis2.databinding.ADBBean {
                         new javax.xml.namespace.QName("", "AUDAT").equals(
                             reader.getName())) {
                     object.setAUDAT(Date.Factory.parse(
+                            reader));
+
+                    reader.next();
+                } // End of if for expected property start element
+
+                else {
+                }
+
+                while (!reader.isStartElement() && !reader.isEndElement())
+                    reader.next();
+
+                if ((reader.isStartElement() &&
+                        new javax.xml.namespace.QName("", "CMPGN_EXTID").equals(
+                            reader.getName())) ||
+                        new javax.xml.namespace.QName("", "CMPGN_EXTID").equals(
+                            reader.getName())) {
+                    object.setCMPGN_EXTID(CMPGN_EXTID_type1.Factory.parse(
                             reader));
 
                     reader.next();

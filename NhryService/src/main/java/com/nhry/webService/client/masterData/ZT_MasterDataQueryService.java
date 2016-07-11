@@ -29,7 +29,7 @@ public interface ZT_MasterDataQueryService {
      */
     public void startcustomerQuery(
             ZSD_CUSTOMER_DATA_SYN_RFC zSD_CUSTOMER_DATA_SYN_RFC0,
-            final com.nhry.webService.client.masterData.ZT_MasterDataQueryServiceCallbackHandler callback)
+            final ZT_MasterDataQueryServiceCallbackHandler callback)
         throws java.rmi.RemoteException;
 
     /**
@@ -48,7 +48,7 @@ public interface ZT_MasterDataQueryService {
      */
     public void startmatWHWQuery(
             ZMM_POS_24DATA zMM_POS_24DATA2,
-            final com.nhry.webService.client.masterData.ZT_MasterDataQueryServiceCallbackHandler callback)
+            final ZT_MasterDataQueryServiceCallbackHandler callback)
         throws java.rmi.RemoteException;
 
     /**
@@ -67,7 +67,7 @@ public interface ZT_MasterDataQueryService {
      */
     public void startcodeQuery(
             ZSD_T005_DATA zSD_T005_DATA4,
-            final com.nhry.webService.client.masterData.ZT_MasterDataQueryServiceCallbackHandler callback)
+            final ZT_MasterDataQueryServiceCallbackHandler callback)
         throws java.rmi.RemoteException;
 
     /**
@@ -86,7 +86,7 @@ public interface ZT_MasterDataQueryService {
      */
     public void startmATQUERY(
             ZSD_MATERAIL_DATA_RFC zSD_MATERAIL_DATA_RFC6,
-            final com.nhry.webService.client.masterData.ZT_MasterDataQueryServiceCallbackHandler callback)
+            final ZT_MasterDataQueryServiceCallbackHandler callback)
         throws java.rmi.RemoteException;
 
     /**
@@ -105,7 +105,7 @@ public interface ZT_MasterDataQueryService {
      */
     public void startsalesQuery(
             ZSD_SALES_ORGANIZATION_RFC zSD_SALES_ORGANIZATION_RFC8,
-            final com.nhry.webService.client.masterData.ZT_MasterDataQueryServiceCallbackHandler callback)
+            final ZT_MasterDataQueryServiceCallbackHandler callback)
         throws java.rmi.RemoteException;
 
     //

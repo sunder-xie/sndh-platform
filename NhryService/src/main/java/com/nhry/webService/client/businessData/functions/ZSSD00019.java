@@ -89,7 +89,7 @@ public class ZSSD00019 implements org.apache.axis2.databinding.ADBBean {
     /**
      * field for WERKS
      */
-    protected WERKS_type3 localWERKS;
+    protected WERKS_type5 localWERKS;
 
     /*  This tracker boolean wil be used to detect whether the user called the set method
      *   for this attribute. It will be used to determine whether to include this field
@@ -204,7 +204,8 @@ public class ZSSD00019 implements org.apache.axis2.databinding.ADBBean {
      * Auto generated setter method
      * @param param MATNR
      */
-    public void setMATNR(MATNR_type5 param) {
+    public void setMATNR(
+        MATNR_type5 param) {
         localMATNRTracker = param != null;
 
         this.localMATNR = param;
@@ -226,7 +227,8 @@ public class ZSSD00019 implements org.apache.axis2.databinding.ADBBean {
      * Auto generated setter method
      * @param param MENGE
      */
-    public void setMENGE(MENGE_type1 param) {
+    public void setMENGE(
+        MENGE_type1 param) {
         localMENGETracker = param != null;
 
         this.localMENGE = param;
@@ -248,7 +250,8 @@ public class ZSSD00019 implements org.apache.axis2.databinding.ADBBean {
      * Auto generated setter method
      * @param param MEINS
      */
-    public void setMEINS(MEINS_type3 param) {
+    public void setMEINS(
+        MEINS_type3 param) {
         localMEINSTracker = param != null;
 
         this.localMEINS = param;
@@ -260,9 +263,9 @@ public class ZSSD00019 implements org.apache.axis2.databinding.ADBBean {
 
     /**
      * Auto generated getter method
-     * @return com.nhry.webService.client.businessData.functions.WERKS_type3
+     * @return com.nhry.webService.client.businessData.functions.WERKS_type5
      */
-    public WERKS_type3 getWERKS() {
+    public WERKS_type5 getWERKS() {
         return localWERKS;
     }
 
@@ -270,7 +273,8 @@ public class ZSSD00019 implements org.apache.axis2.databinding.ADBBean {
      * Auto generated setter method
      * @param param WERKS
      */
-    public void setWERKS(WERKS_type3 param) {
+    public void setWERKS(
+        WERKS_type5 param) {
         localWERKSTracker = param != null;
 
         this.localWERKS = param;
@@ -292,7 +296,8 @@ public class ZSSD00019 implements org.apache.axis2.databinding.ADBBean {
      * Auto generated setter method
      * @param param LGORT
      */
-    public void setLGORT(LGORT_type5 param) {
+    public void setLGORT(
+        LGORT_type5 param) {
         localLGORTTracker = param != null;
 
         this.localLGORT = param;
@@ -314,7 +319,8 @@ public class ZSSD00019 implements org.apache.axis2.databinding.ADBBean {
      * Auto generated setter method
      * @param param RESLO
      */
-    public void setRESLO(RESLO_type3 param) {
+    public void setRESLO(
+        RESLO_type3 param) {
         localRESLOTracker = param != null;
 
         this.localRESLO = param;
@@ -838,7 +844,7 @@ public class ZSSD00019 implements org.apache.axis2.databinding.ADBBean {
                             reader.getName())) ||
                         new javax.xml.namespace.QName("", "WERKS").equals(
                             reader.getName())) {
-                    object.setWERKS(WERKS_type3.Factory.parse(
+                    object.setWERKS(WERKS_type5.Factory.parse(
                             reader));
 
                     reader.next();

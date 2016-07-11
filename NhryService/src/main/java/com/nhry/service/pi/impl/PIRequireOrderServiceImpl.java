@@ -113,12 +113,14 @@ public class PIRequireOrderServiceImpl implements PIRequireOrderService {
                         ssmGiOrderItem.setOrderDate(d.getLFDAT());
                         ssmGiOrderItem.setItemType(d.getPSTYV());
                         ssmGiOrderItem.setQty(d.getLFIMG());
+                        ssmGiOrderItem.setFactoryPrice(d.getCmpre());
                         ssmGiOrderItemMapper.insertGiOrderItem(ssmGiOrderItem);
                     }else{
                         ssmGiOrderItem.setMatnr(d.getMATNR());
                         ssmGiOrderItem.setUnit(d.getMEINS());
                         ssmGiOrderItem.setItemType(d.getPSTYV());
                         ssmGiOrderItem.setQty(d.getLFIMG());
+                        ssmGiOrderItem.setFactoryPrice(d.getCmpre());
                         ssmGiOrderItemMapper.updateGiOrderItem(ssmGiOrderItem);
                     }
                 }

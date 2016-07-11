@@ -1,4 +1,5 @@
 package com.nhry.service.pi.impl;
+
 import com.nhry.common.exception.MessageCode;
 import com.nhry.common.exception.ServiceException;
 import com.nhry.data.basic.dao.*;
@@ -76,7 +77,7 @@ public class PIProductServiceImpl implements PIProductService {
                     tMdMara.setWeight(etMatnr.getNTGEW() == null ? null : etMatnr.getNTGEW().floatValue());
                     tMdMara.setWeightUnit(etMatnr.getGEWEI());
                     tMdMara.setMatnrTxt(etMap.get(etMatnr.getMATNR()));
-                    tMdMara.setLastModified(new Date());
+                    tMdMara.setLastModified(new java.util.Date());
                     maraMapper.updateProduct(tMdMara);
                 } else {
                     tMdMara.setMatnr(etMatnr.getMATNR());

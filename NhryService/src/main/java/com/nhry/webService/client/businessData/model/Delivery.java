@@ -26,6 +26,8 @@ public class Delivery {
     protected String sortl;
     protected String lgort;
     protected String reslo;
+    protected BigDecimal cmpre;
+
 
     /**
      * Gets the value of the bstkd property.
@@ -411,4 +413,11 @@ public class Delivery {
         this.reslo = value;
     }
 
+    public BigDecimal getCmpre() {
+        return cmpre;
+    }
+
+    public void setCmpre(BigDecimal cmpre) {
+        this.cmpre = cmpre;
+    }
 }

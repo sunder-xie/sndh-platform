@@ -8,6 +8,11 @@ import com.nhry.webService.client.PISuccessMessage;
  * Created by cbz on 7/4/2016.
  */
 public interface PIRequireOrderService {
+    /**
+     * 要货单
+     * @param ssmReqGoodsOrder 要货单主表
+     * @return
+     */
     PISuccessMessage generateRequireOrder(TSsmReqGoodsOrder ssmReqGoodsOrder);
 
     /**
@@ -20,6 +25,11 @@ public interface PIRequireOrderService {
      */
     PISuccessMessage generateSalesOrder(TSsmReqGoodsOrder ssmReqGoodsOrder, String kunnr, String kunwe, String vkorg) ;
 
-
+    /**
+     * 交货单
+      * @param orderNo 销售凭证
+     * @param isDeli 是否是调货单
+     * @return
+     */
     String getDelivery(String orderNo,boolean isDeli);
 }

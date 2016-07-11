@@ -1,28 +1,22 @@
 package com.nhry.service.pi.impl;
 
-import com.nhry.data.basic.domain.TMdBranch;
 import com.nhry.data.basic.domain.TMdBranchEx;
 import com.nhry.utils.PIPropertitesUtil;
 import com.nhry.webService.OptionManager;
 import com.nhry.webService.client.PISuccessMessage;
-import com.nhry.webService.client.businessData.ZT_BusinessData_MaintainServiceCallbackHandler;
 import com.nhry.webService.client.businessData.ZT_BusinessData_MaintainServiceStub;
 import com.nhry.webService.client.businessData.functions.*;
-import com.nhry.webService.client.businessData.functions.Date;
 import com.nhry.webService.client.businessData.model.Delivery;
-import com.nhry.webService.client.masterData.ZT_MasterDataQueryServiceStub;
-import com.nhry.webService.client.masterData.functions.ZSD_SALES_ORGANIZATION_RFC;
-import com.nhry.webService.client.masterData.functions.ZSSD00007;
-import com.sun.xml.bind.v2.TODO;
 import org.apache.axis2.AxisFault;
 import org.apache.axis2.client.Options;
-import org.apache.commons.lang.StringUtils;
 
 import java.math.BigDecimal;
 import java.rmi.RemoteException;
 import java.text.ParsePosition;
 import java.text.SimpleDateFormat;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 
 /**
  * Created by cbz on 7/4/2016.
@@ -106,9 +100,9 @@ public class BusinessDataConnection {
             RESLO_type3 reslo_type3 = new RESLO_type3();
             reslo_type3.setRESLO_type2(reslo);
             zssd00019.setRESLO(reslo_type3);
-            WERKS_type3 werks_type3 = new WERKS_type3();
-            werks_type3.setWERKS_type2(werks);
-            zssd00019.setWERKS(werks_type3);
+            WERKS_type5 werks_type5 = new WERKS_type5();
+            werks_type5.setWERKS_type4(werks);
+            zssd00019.setWERKS(werks_type5);
             it_item_type0.addItem(zssd00019);
         }
         rfc.setIT_ITEM(it_item_type0);
@@ -287,6 +281,7 @@ public class BusinessDataConnection {
                 delivery.setPOSNV(zssd00069.getPOSNV().getPOSNV_type0());
                 delivery.setLGORT(zssd00069.getLGORT().getLGORT_type2());
                 delivery.setRESLO(zssd00069.getRESLO().getRESLO_type0());
+                delivery.setCmpre(zssd00069.getCMPRE().getCMPRE_type0());
                 deliveries.add(delivery);
             }
         }

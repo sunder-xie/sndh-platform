@@ -10,9 +10,10 @@
     <result column="QTY" property="qty" jdbcType="DECIMAL" />
     <result column="CONFIRM_QTY" property="confirmQty" jdbcType="DECIMAL" />
     <result column="ITEM_TYPE" property="itemType" jdbcType="VARCHAR" />
+    <result column="FACTORY_PRICE" property="factoryPrice" jdbcType="DECIMAL"/>
   </resultMap>
   <sql id="Base_Column_List" >
-    ORDER_NO, ITEM_NO, ORDER_DATE, MATNR, UNIT, QTY, CONFIRM_QTY, ITEM_TYPE
+    ORDER_NO, ITEM_NO, ORDER_DATE, MATNR, UNIT, QTY, CONFIRM_QTY, ITEM_TYPE, FACTORY_PRICE
   </sql>
   <select id="selectGiOrderItemByNo" resultMap="BaseResultMap" parameterType="com.nhry.data.stock.domain.TSsmGiOrderItemKey" >
     select 
@@ -30,11 +31,11 @@
   </delete>
   <insert id="insertGiOrderItem" parameterType="com.nhry.data.stock.domain.TSsmGiOrderItem" >
     insert into t_ssm_gi_order_item (ORDER_NO, ITEM_NO, ORDER_DATE, 
-      MATNR, UNIT, QTY, CONFIRM_QTY, 
+      MATNR, UNIT, QTY, CONFIRM_QTY, FACTORY_PRICE,
       ITEM_TYPE)
     values (#{orderNo,jdbcType=VARCHAR}, #{itemNo,jdbcType=VARCHAR}, #{orderDate,jdbcType=DATE}, 
       #{matnr,jdbcType=VARCHAR}, #{unit,jdbcType=VARCHAR}, #{qty,jdbcType=DECIMAL}, #{confirmQty,jdbcType=DECIMAL}, 
-      #{itemType,jdbcType=VARCHAR})
+      #{factoryPrice,jdbcType=DECIMAL},#{itemType,jdbcType=VARCHAR})
   </insert>
   <insert id="insertGiOrderItemSelective" parameterType="com.nhry.data.stock.domain.TSsmGiOrderItem" >
     insert into t_ssm_gi_order_item
@@ -59,6 +60,9 @@
       </if>
       <if test="confirmQty != null" >
         CONFIRM_QTY,
+      </if>
+      <if test="factoryPrice != null">
+        FACTORY_PRICE,
       </if>
       <if test="itemType != null" >
         ITEM_TYPE,
@@ -86,6 +90,9 @@
       <if test="confirmQty != null" >
         #{confirmQty,jdbcType=DECIMAL},
       </if>
+      <if test="factoryPrice != null">
+        #{factoryPrice,jdbcType=DECIMAL},
+      </if>
       <if test="itemType != null" >
         #{itemType,jdbcType=VARCHAR},
       </if>
@@ -106,6 +113,9 @@
       <if test="confirmQty != null" >
         CONFIRM_QTY = #{confirmQty,jdbcType=DECIMAL},
       </if>
+      <if test="factoryPrice != null">
+        FACTORY_PRICE = #{factoryPrice,jdbcType=DECIMAL},
+      </if>
       <if test="itemType != null" >
         ITEM_TYPE = #{itemType,jdbcType=VARCHAR},
       </if>
@@ -120,6 +130,7 @@
       UNIT = #{unit,jdbcType=VARCHAR},
       QTY = #{qty,jdbcType=DECIMAL},
       CONFIRM_QTY = #{confirmQty,jdbcType=DECIMAL},
+      FACTORY_PRICE = #{factoryPrice,jdbcType=DECIMAL},
       ITEM_TYPE = #{itemType,jdbcType=VARCHAR}
     where ORDER_NO = #{orderNo,jdbcType=VARCHAR}
       and ITEM_NO = #{itemNo,jdbcType=VARCHAR}
