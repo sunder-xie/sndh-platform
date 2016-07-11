@@ -7,8 +7,6 @@
 package com.nhry.webService.client.businessData;
 
 
-import com.nhry.webService.client.businessData.functions.*;
-
 /*
  *  ZT_BusinessData_MaintainServiceStub java implementation
  */
@@ -134,11 +132,11 @@ public class ZT_BusinessData_MaintainServiceStub extends org.apache.axis2.client
     /**
      * Auto generated method signature
      *
-     * @see com.nhry.webService.client.businessData.ZT_BusinessData_MaintainService#deliveryQuery
+     * @see ZT_BusinessData_MaintainService#deliveryQuery
      * @param zSD_DELIVERY_DATA6
      */
-    public ZSD_DELIVERY_DATAResponse deliveryQuery(
-        ZSD_DELIVERY_DATA zSD_DELIVERY_DATA6)
+    public com.nhry.webService.client.businessData.functions.ZSD_DELIVERY_DATAResponse deliveryQuery(
+        com.nhry.webService.client.businessData.functions.ZSD_DELIVERY_DATA zSD_DELIVERY_DATA6)
         throws java.rmi.RemoteException {
         org.apache.axis2.context.MessageContext _messageContext = null;
 
@@ -185,9 +183,9 @@ public class ZT_BusinessData_MaintainServiceStub extends org.apache.axis2.client
 
             Object object = fromOM(_returnEnv.getBody()
                                                        .getFirstElement(),
-                    ZSD_DELIVERY_DATAResponse.class);
+                    com.nhry.webService.client.businessData.functions.ZSD_DELIVERY_DATAResponse.class);
 
-            return (ZSD_DELIVERY_DATAResponse) object;
+            return (com.nhry.webService.client.businessData.functions.ZSD_DELIVERY_DATAResponse) object;
         } catch (org.apache.axis2.AxisFault f) {
             org.apache.axiom.om.OMElement faultElt = f.getDetail();
 
@@ -250,11 +248,11 @@ public class ZT_BusinessData_MaintainServiceStub extends org.apache.axis2.client
     /**
      * Auto generated method signature for Asynchronous Invocations
      *
-     * @see com.nhry.webService.client.businessData.ZT_BusinessData_MaintainService#startdeliveryQuery
+     * @see ZT_BusinessData_MaintainService#startdeliveryQuery
      * @param zSD_DELIVERY_DATA6
      */
     public void startdeliveryQuery(
-        ZSD_DELIVERY_DATA zSD_DELIVERY_DATA6,
+        com.nhry.webService.client.businessData.functions.ZSD_DELIVERY_DATA zSD_DELIVERY_DATA6,
         final ZT_BusinessData_MaintainServiceCallbackHandler callback)
         throws java.rmi.RemoteException {
         org.apache.axis2.client.OperationClient _operationClient = _serviceClient.createClient(_operations[0].getName());
@@ -297,8 +295,8 @@ public class ZT_BusinessData_MaintainServiceStub extends org.apache.axis2.client
 
                         Object object = fromOM(resultEnv.getBody()
                                                                   .getFirstElement(),
-                                ZSD_DELIVERY_DATAResponse.class);
-                        callback.receiveResultdeliveryQuery((ZSD_DELIVERY_DATAResponse) object);
+                                com.nhry.webService.client.businessData.functions.ZSD_DELIVERY_DATAResponse.class);
+                        callback.receiveResultdeliveryQuery((com.nhry.webService.client.businessData.functions.ZSD_DELIVERY_DATAResponse) object);
                     } catch (org.apache.axis2.AxisFault e) {
                         callback.receiveErrordeliveryQuery(e);
                     }
@@ -400,11 +398,11 @@ public class ZT_BusinessData_MaintainServiceStub extends org.apache.axis2.client
     /**
      * Auto generated method signature
      *
-     * @see com.nhry.webService.client.businessData.ZT_BusinessData_MaintainService#salesOrderCreate
+     * @see ZT_BusinessData_MaintainService#salesOrderCreate
      * @param zSD_SALESORDER_DATA_RFC_28
      */
-    public ZSD_SALESORDER_DATA_RFC_2Response salesOrderCreate(
-        ZSD_SALESORDER_DATA_RFC_2 zSD_SALESORDER_DATA_RFC_28)
+    public com.nhry.webService.client.businessData.functions.ZSD_SALESORDER_DATA_RFC_2Response salesOrderCreate(
+        com.nhry.webService.client.businessData.functions.ZSD_SALESORDER_DATA_RFC_2 zSD_SALESORDER_DATA_RFC_28)
         throws java.rmi.RemoteException {
         org.apache.axis2.context.MessageContext _messageContext = null;
 
@@ -451,9 +449,9 @@ public class ZT_BusinessData_MaintainServiceStub extends org.apache.axis2.client
 
             Object object = fromOM(_returnEnv.getBody()
                                                        .getFirstElement(),
-                    ZSD_SALESORDER_DATA_RFC_2Response.class);
+                    com.nhry.webService.client.businessData.functions.ZSD_SALESORDER_DATA_RFC_2Response.class);
 
-            return (ZSD_SALESORDER_DATA_RFC_2Response) object;
+            return (com.nhry.webService.client.businessData.functions.ZSD_SALESORDER_DATA_RFC_2Response) object;
         } catch (org.apache.axis2.AxisFault f) {
             org.apache.axiom.om.OMElement faultElt = f.getDetail();
 
@@ -516,11 +514,11 @@ public class ZT_BusinessData_MaintainServiceStub extends org.apache.axis2.client
     /**
      * Auto generated method signature for Asynchronous Invocations
      *
-     * @see com.nhry.webService.client.businessData.ZT_BusinessData_MaintainService#startsalesOrderCreate
+     * @see ZT_BusinessData_MaintainService#startsalesOrderCreate
      * @param zSD_SALESORDER_DATA_RFC_28
      */
     public void startsalesOrderCreate(
-        ZSD_SALESORDER_DATA_RFC_2 zSD_SALESORDER_DATA_RFC_28,
+        com.nhry.webService.client.businessData.functions.ZSD_SALESORDER_DATA_RFC_2 zSD_SALESORDER_DATA_RFC_28,
         final ZT_BusinessData_MaintainServiceCallbackHandler callback)
         throws java.rmi.RemoteException {
         org.apache.axis2.client.OperationClient _operationClient = _serviceClient.createClient(_operations[1].getName());
@@ -564,8 +562,8 @@ public class ZT_BusinessData_MaintainServiceStub extends org.apache.axis2.client
 
                         Object object = fromOM(resultEnv.getBody()
                                                                   .getFirstElement(),
-                                ZSD_SALESORDER_DATA_RFC_2Response.class);
-                        callback.receiveResultsalesOrderCreate((ZSD_SALESORDER_DATA_RFC_2Response) object);
+                                com.nhry.webService.client.businessData.functions.ZSD_SALESORDER_DATA_RFC_2Response.class);
+                        callback.receiveResultsalesOrderCreate((com.nhry.webService.client.businessData.functions.ZSD_SALESORDER_DATA_RFC_2Response) object);
                     } catch (org.apache.axis2.AxisFault e) {
                         callback.receiveErrorsalesOrderCreate(e);
                     }
@@ -668,11 +666,11 @@ public class ZT_BusinessData_MaintainServiceStub extends org.apache.axis2.client
     /**
      * Auto generated method signature
      *
-     * @see com.nhry.webService.client.businessData.ZT_BusinessData_MaintainService#requisitionCreate
+     * @see ZT_BusinessData_MaintainService#requisitionCreate
      * @param zSD_REQUISITION_CREATE_RFC10
      */
-    public ZSD_REQUISITION_CREATE_RFCResponse requisitionCreate(
-        ZSD_REQUISITION_CREATE_RFC zSD_REQUISITION_CREATE_RFC10)
+    public com.nhry.webService.client.businessData.functions.ZSD_REQUISITION_CREATE_RFCResponse requisitionCreate(
+        com.nhry.webService.client.businessData.functions.ZSD_REQUISITION_CREATE_RFC zSD_REQUISITION_CREATE_RFC10)
         throws java.rmi.RemoteException {
         org.apache.axis2.context.MessageContext _messageContext = null;
 
@@ -719,9 +717,9 @@ public class ZT_BusinessData_MaintainServiceStub extends org.apache.axis2.client
 
             Object object = fromOM(_returnEnv.getBody()
                                                        .getFirstElement(),
-                    ZSD_REQUISITION_CREATE_RFCResponse.class);
+                    com.nhry.webService.client.businessData.functions.ZSD_REQUISITION_CREATE_RFCResponse.class);
 
-            return (ZSD_REQUISITION_CREATE_RFCResponse) object;
+            return (com.nhry.webService.client.businessData.functions.ZSD_REQUISITION_CREATE_RFCResponse) object;
         } catch (org.apache.axis2.AxisFault f) {
             org.apache.axiom.om.OMElement faultElt = f.getDetail();
 
@@ -784,11 +782,11 @@ public class ZT_BusinessData_MaintainServiceStub extends org.apache.axis2.client
     /**
      * Auto generated method signature for Asynchronous Invocations
      *
-     * @see com.nhry.webService.client.businessData.ZT_BusinessData_MaintainService#startrequisitionCreate
+     * @see ZT_BusinessData_MaintainService#startrequisitionCreate
      * @param zSD_REQUISITION_CREATE_RFC10
      */
     public void startrequisitionCreate(
-        ZSD_REQUISITION_CREATE_RFC zSD_REQUISITION_CREATE_RFC10,
+        com.nhry.webService.client.businessData.functions.ZSD_REQUISITION_CREATE_RFC zSD_REQUISITION_CREATE_RFC10,
         final ZT_BusinessData_MaintainServiceCallbackHandler callback)
         throws java.rmi.RemoteException {
         org.apache.axis2.client.OperationClient _operationClient = _serviceClient.createClient(_operations[2].getName());
@@ -832,8 +830,8 @@ public class ZT_BusinessData_MaintainServiceStub extends org.apache.axis2.client
 
                         Object object = fromOM(resultEnv.getBody()
                                                                   .getFirstElement(),
-                                ZSD_REQUISITION_CREATE_RFCResponse.class);
-                        callback.receiveResultrequisitionCreate((ZSD_REQUISITION_CREATE_RFCResponse) object);
+                                com.nhry.webService.client.businessData.functions.ZSD_REQUISITION_CREATE_RFCResponse.class);
+                        callback.receiveResultrequisitionCreate((com.nhry.webService.client.businessData.functions.ZSD_REQUISITION_CREATE_RFCResponse) object);
                     } catch (org.apache.axis2.AxisFault e) {
                         callback.receiveErrorrequisitionCreate(e);
                     }
@@ -949,10 +947,10 @@ public class ZT_BusinessData_MaintainServiceStub extends org.apache.axis2.client
 
     //http://pidev.newhope.com:50000/XISOAPAdapter/MessageServlet?senderParty=&senderService=ZT_Q&receiverParty=&receiverService=&interface=ZT_BusinessData_Maintain&interfaceNamespace=urn%3Anewhopedairy.cn%3AZT%3ABusinessData
     private org.apache.axiom.om.OMElement toOM(
-        ZSD_DELIVERY_DATA param,
+        com.nhry.webService.client.businessData.functions.ZSD_DELIVERY_DATA param,
         boolean optimizeContent) throws org.apache.axis2.AxisFault {
         try {
-            return param.getOMElement(ZSD_DELIVERY_DATA.MY_QNAME,
+            return param.getOMElement(com.nhry.webService.client.businessData.functions.ZSD_DELIVERY_DATA.MY_QNAME,
                 org.apache.axiom.om.OMAbstractFactory.getOMFactory());
         } catch (org.apache.axis2.databinding.ADBException e) {
             throw org.apache.axis2.AxisFault.makeFault(e);
@@ -960,10 +958,10 @@ public class ZT_BusinessData_MaintainServiceStub extends org.apache.axis2.client
     }
 
     private org.apache.axiom.om.OMElement toOM(
-        ZSD_DELIVERY_DATAResponse param,
+        com.nhry.webService.client.businessData.functions.ZSD_DELIVERY_DATAResponse param,
         boolean optimizeContent) throws org.apache.axis2.AxisFault {
         try {
-            return param.getOMElement(ZSD_DELIVERY_DATAResponse.MY_QNAME,
+            return param.getOMElement(com.nhry.webService.client.businessData.functions.ZSD_DELIVERY_DATAResponse.MY_QNAME,
                 org.apache.axiom.om.OMAbstractFactory.getOMFactory());
         } catch (org.apache.axis2.databinding.ADBException e) {
             throw org.apache.axis2.AxisFault.makeFault(e);
@@ -971,10 +969,10 @@ public class ZT_BusinessData_MaintainServiceStub extends org.apache.axis2.client
     }
 
     private org.apache.axiom.om.OMElement toOM(
-        ZSD_SALESORDER_DATA_RFC_2 param,
+        com.nhry.webService.client.businessData.functions.ZSD_SALESORDER_DATA_RFC_2 param,
         boolean optimizeContent) throws org.apache.axis2.AxisFault {
         try {
-            return param.getOMElement(ZSD_SALESORDER_DATA_RFC_2.MY_QNAME,
+            return param.getOMElement(com.nhry.webService.client.businessData.functions.ZSD_SALESORDER_DATA_RFC_2.MY_QNAME,
                 org.apache.axiom.om.OMAbstractFactory.getOMFactory());
         } catch (org.apache.axis2.databinding.ADBException e) {
             throw org.apache.axis2.AxisFault.makeFault(e);
@@ -982,10 +980,10 @@ public class ZT_BusinessData_MaintainServiceStub extends org.apache.axis2.client
     }
 
     private org.apache.axiom.om.OMElement toOM(
-        ZSD_SALESORDER_DATA_RFC_2Response param,
+        com.nhry.webService.client.businessData.functions.ZSD_SALESORDER_DATA_RFC_2Response param,
         boolean optimizeContent) throws org.apache.axis2.AxisFault {
         try {
-            return param.getOMElement(ZSD_SALESORDER_DATA_RFC_2Response.MY_QNAME,
+            return param.getOMElement(com.nhry.webService.client.businessData.functions.ZSD_SALESORDER_DATA_RFC_2Response.MY_QNAME,
                 org.apache.axiom.om.OMAbstractFactory.getOMFactory());
         } catch (org.apache.axis2.databinding.ADBException e) {
             throw org.apache.axis2.AxisFault.makeFault(e);
@@ -993,10 +991,10 @@ public class ZT_BusinessData_MaintainServiceStub extends org.apache.axis2.client
     }
 
     private org.apache.axiom.om.OMElement toOM(
-        ZSD_REQUISITION_CREATE_RFC param,
+        com.nhry.webService.client.businessData.functions.ZSD_REQUISITION_CREATE_RFC param,
         boolean optimizeContent) throws org.apache.axis2.AxisFault {
         try {
-            return param.getOMElement(ZSD_REQUISITION_CREATE_RFC.MY_QNAME,
+            return param.getOMElement(com.nhry.webService.client.businessData.functions.ZSD_REQUISITION_CREATE_RFC.MY_QNAME,
                 org.apache.axiom.om.OMAbstractFactory.getOMFactory());
         } catch (org.apache.axis2.databinding.ADBException e) {
             throw org.apache.axis2.AxisFault.makeFault(e);
@@ -1004,10 +1002,10 @@ public class ZT_BusinessData_MaintainServiceStub extends org.apache.axis2.client
     }
 
     private org.apache.axiom.om.OMElement toOM(
-        ZSD_REQUISITION_CREATE_RFCResponse param,
+        com.nhry.webService.client.businessData.functions.ZSD_REQUISITION_CREATE_RFCResponse param,
         boolean optimizeContent) throws org.apache.axis2.AxisFault {
         try {
-            return param.getOMElement(ZSD_REQUISITION_CREATE_RFCResponse.MY_QNAME,
+            return param.getOMElement(com.nhry.webService.client.businessData.functions.ZSD_REQUISITION_CREATE_RFCResponse.MY_QNAME,
                 org.apache.axiom.om.OMAbstractFactory.getOMFactory());
         } catch (org.apache.axis2.databinding.ADBException e) {
             throw org.apache.axis2.AxisFault.makeFault(e);
@@ -1016,14 +1014,14 @@ public class ZT_BusinessData_MaintainServiceStub extends org.apache.axis2.client
 
     private org.apache.axiom.soap.SOAPEnvelope toEnvelope(
         org.apache.axiom.soap.SOAPFactory factory,
-        ZSD_DELIVERY_DATA param,
+        com.nhry.webService.client.businessData.functions.ZSD_DELIVERY_DATA param,
         boolean optimizeContent, javax.xml.namespace.QName elementQName)
         throws org.apache.axis2.AxisFault {
         try {
             org.apache.axiom.soap.SOAPEnvelope emptyEnvelope = factory.getDefaultEnvelope();
             emptyEnvelope.getBody()
                          .addChild(param.getOMElement(
-                    ZSD_DELIVERY_DATA.MY_QNAME,
+                    com.nhry.webService.client.businessData.functions.ZSD_DELIVERY_DATA.MY_QNAME,
                     factory));
 
             return emptyEnvelope;
@@ -1035,14 +1033,14 @@ public class ZT_BusinessData_MaintainServiceStub extends org.apache.axis2.client
     /* methods to provide back word compatibility */
     private org.apache.axiom.soap.SOAPEnvelope toEnvelope(
         org.apache.axiom.soap.SOAPFactory factory,
-        ZSD_SALESORDER_DATA_RFC_2 param,
+        com.nhry.webService.client.businessData.functions.ZSD_SALESORDER_DATA_RFC_2 param,
         boolean optimizeContent, javax.xml.namespace.QName elementQName)
         throws org.apache.axis2.AxisFault {
         try {
             org.apache.axiom.soap.SOAPEnvelope emptyEnvelope = factory.getDefaultEnvelope();
             emptyEnvelope.getBody()
                          .addChild(param.getOMElement(
-                    ZSD_SALESORDER_DATA_RFC_2.MY_QNAME,
+                    com.nhry.webService.client.businessData.functions.ZSD_SALESORDER_DATA_RFC_2.MY_QNAME,
                     factory));
 
             return emptyEnvelope;
@@ -1054,14 +1052,14 @@ public class ZT_BusinessData_MaintainServiceStub extends org.apache.axis2.client
     /* methods to provide back word compatibility */
     private org.apache.axiom.soap.SOAPEnvelope toEnvelope(
         org.apache.axiom.soap.SOAPFactory factory,
-        ZSD_REQUISITION_CREATE_RFC param,
+        com.nhry.webService.client.businessData.functions.ZSD_REQUISITION_CREATE_RFC param,
         boolean optimizeContent, javax.xml.namespace.QName elementQName)
         throws org.apache.axis2.AxisFault {
         try {
             org.apache.axiom.soap.SOAPEnvelope emptyEnvelope = factory.getDefaultEnvelope();
             emptyEnvelope.getBody()
                          .addChild(param.getOMElement(
-                    ZSD_REQUISITION_CREATE_RFC.MY_QNAME,
+                    com.nhry.webService.client.businessData.functions.ZSD_REQUISITION_CREATE_RFC.MY_QNAME,
                     factory));
 
             return emptyEnvelope;
@@ -1083,34 +1081,34 @@ public class ZT_BusinessData_MaintainServiceStub extends org.apache.axis2.client
     private Object fromOM(org.apache.axiom.om.OMElement param,
         Class type) throws org.apache.axis2.AxisFault {
         try {
-            if (ZSD_DELIVERY_DATA.class.equals(
+            if (com.nhry.webService.client.businessData.functions.ZSD_DELIVERY_DATA.class.equals(
                         type)) {
-                return ZSD_DELIVERY_DATA.Factory.parse(param.getXMLStreamReaderWithoutCaching());
+                return com.nhry.webService.client.businessData.functions.ZSD_DELIVERY_DATA.Factory.parse(param.getXMLStreamReaderWithoutCaching());
             }
 
-            if (ZSD_DELIVERY_DATAResponse.class.equals(
+            if (com.nhry.webService.client.businessData.functions.ZSD_DELIVERY_DATAResponse.class.equals(
                         type)) {
-                return ZSD_DELIVERY_DATAResponse.Factory.parse(param.getXMLStreamReaderWithoutCaching());
+                return com.nhry.webService.client.businessData.functions.ZSD_DELIVERY_DATAResponse.Factory.parse(param.getXMLStreamReaderWithoutCaching());
             }
 
-            if (ZSD_REQUISITION_CREATE_RFC.class.equals(
+            if (com.nhry.webService.client.businessData.functions.ZSD_REQUISITION_CREATE_RFC.class.equals(
                         type)) {
-                return ZSD_REQUISITION_CREATE_RFC.Factory.parse(param.getXMLStreamReaderWithoutCaching());
+                return com.nhry.webService.client.businessData.functions.ZSD_REQUISITION_CREATE_RFC.Factory.parse(param.getXMLStreamReaderWithoutCaching());
             }
 
-            if (ZSD_REQUISITION_CREATE_RFCResponse.class.equals(
+            if (com.nhry.webService.client.businessData.functions.ZSD_REQUISITION_CREATE_RFCResponse.class.equals(
                         type)) {
-                return ZSD_REQUISITION_CREATE_RFCResponse.Factory.parse(param.getXMLStreamReaderWithoutCaching());
+                return com.nhry.webService.client.businessData.functions.ZSD_REQUISITION_CREATE_RFCResponse.Factory.parse(param.getXMLStreamReaderWithoutCaching());
             }
 
-            if (ZSD_SALESORDER_DATA_RFC_2.class.equals(
+            if (com.nhry.webService.client.businessData.functions.ZSD_SALESORDER_DATA_RFC_2.class.equals(
                         type)) {
-                return ZSD_SALESORDER_DATA_RFC_2.Factory.parse(param.getXMLStreamReaderWithoutCaching());
+                return com.nhry.webService.client.businessData.functions.ZSD_SALESORDER_DATA_RFC_2.Factory.parse(param.getXMLStreamReaderWithoutCaching());
             }
 
-            if (ZSD_SALESORDER_DATA_RFC_2Response.class.equals(
+            if (com.nhry.webService.client.businessData.functions.ZSD_SALESORDER_DATA_RFC_2Response.class.equals(
                         type)) {
-                return ZSD_SALESORDER_DATA_RFC_2Response.Factory.parse(param.getXMLStreamReaderWithoutCaching());
+                return com.nhry.webService.client.businessData.functions.ZSD_SALESORDER_DATA_RFC_2Response.Factory.parse(param.getXMLStreamReaderWithoutCaching());
             }
         } catch (Exception e) {
             throw org.apache.axis2.AxisFault.makeFault(e);

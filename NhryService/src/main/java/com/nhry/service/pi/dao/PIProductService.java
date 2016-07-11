@@ -9,4 +9,5 @@ public interface PIProductService {
     int matHandler();
     int customerDataHandle() throws RemoteException;
     int matWHWHandler() throws RemoteException;
+    int salesQueryHandler() throws RemoteException;
 }

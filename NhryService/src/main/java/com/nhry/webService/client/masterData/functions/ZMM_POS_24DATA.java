@@ -20,7 +20,7 @@ public class ZMM_POS_24DATA implements org.apache.axis2.databinding.ADBBean {
     /**
      * field for ET_DATA
      */
-    protected ET_DATA_type1 localET_DATA;
+    protected com.nhry.webService.client.masterData.functions.ET_DATA_type1 localET_DATA;
 
     /*  This tracker boolean wil be used to detect whether the user called the set method
      *   for this attribute. It will be used to determine whether to include this field
@@ -31,7 +31,7 @@ public class ZMM_POS_24DATA implements org.apache.axis2.databinding.ADBBean {
     /**
      * field for ET_LGORT
      */
-    protected ET_LGORT_type1 localET_LGORT;
+    protected com.nhry.webService.client.masterData.functions.ET_LGORT_type1 localET_LGORT;
 
     /*  This tracker boolean wil be used to detect whether the user called the set method
      *   for this attribute. It will be used to determine whether to include this field
@@ -42,7 +42,7 @@ public class ZMM_POS_24DATA implements org.apache.axis2.databinding.ADBBean {
     /**
      * field for IT_LGORT
      */
-    protected IT_LGORT_type1 localIT_LGORT;
+    protected com.nhry.webService.client.masterData.functions.IT_LGORT_type1 localIT_LGORT;
 
     /*  This tracker boolean wil be used to detect whether the user called the set method
      *   for this attribute. It will be used to determine whether to include this field
@@ -53,7 +53,7 @@ public class ZMM_POS_24DATA implements org.apache.axis2.databinding.ADBBean {
     /**
      * field for IT_WERKS
      */
-    protected IT_WERKS_type1 localIT_WERKS;
+    protected com.nhry.webService.client.masterData.functions.IT_WERKS_type1 localIT_WERKS;
 
     /*  This tracker boolean wil be used to detect whether the user called the set method
      *   for this attribute. It will be used to determine whether to include this field
@@ -69,7 +69,7 @@ public class ZMM_POS_24DATA implements org.apache.axis2.databinding.ADBBean {
      * Auto generated getter method
      * @return com.nhry.webService.client.masterData.functions.ET_DATA_type1
      */
-    public ET_DATA_type1 getET_DATA() {
+    public com.nhry.webService.client.masterData.functions.ET_DATA_type1 getET_DATA() {
         return localET_DATA;
     }
 
@@ -78,7 +78,7 @@ public class ZMM_POS_24DATA implements org.apache.axis2.databinding.ADBBean {
      * @param param ET_DATA
      */
     public void setET_DATA(
-        ET_DATA_type1 param) {
+        com.nhry.webService.client.masterData.functions.ET_DATA_type1 param) {
         localET_DATATracker = param != null;
 
         this.localET_DATA = param;
@@ -92,7 +92,7 @@ public class ZMM_POS_24DATA implements org.apache.axis2.databinding.ADBBean {
      * Auto generated getter method
      * @return com.nhry.webService.client.masterData.functions.ET_LGORT_type1
      */
-    public ET_LGORT_type1 getET_LGORT() {
+    public com.nhry.webService.client.masterData.functions.ET_LGORT_type1 getET_LGORT() {
         return localET_LGORT;
     }
 
@@ -101,7 +101,7 @@ public class ZMM_POS_24DATA implements org.apache.axis2.databinding.ADBBean {
      * @param param ET_LGORT
      */
     public void setET_LGORT(
-        ET_LGORT_type1 param) {
+        com.nhry.webService.client.masterData.functions.ET_LGORT_type1 param) {
         localET_LGORTTracker = param != null;
 
         this.localET_LGORT = param;
@@ -115,7 +115,7 @@ public class ZMM_POS_24DATA implements org.apache.axis2.databinding.ADBBean {
      * Auto generated getter method
      * @return com.nhry.webService.client.masterData.functions.IT_LGORT_type1
      */
-    public IT_LGORT_type1 getIT_LGORT() {
+    public com.nhry.webService.client.masterData.functions.IT_LGORT_type1 getIT_LGORT() {
         return localIT_LGORT;
     }
 
@@ -124,7 +124,7 @@ public class ZMM_POS_24DATA implements org.apache.axis2.databinding.ADBBean {
      * @param param IT_LGORT
      */
     public void setIT_LGORT(
-        IT_LGORT_type1 param) {
+        com.nhry.webService.client.masterData.functions.IT_LGORT_type1 param) {
         localIT_LGORTTracker = param != null;
 
         this.localIT_LGORT = param;
@@ -138,7 +138,7 @@ public class ZMM_POS_24DATA implements org.apache.axis2.databinding.ADBBean {
      * Auto generated getter method
      * @return com.nhry.webService.client.masterData.functions.IT_WERKS_type1
      */
-    public IT_WERKS_type1 getIT_WERKS() {
+    public com.nhry.webService.client.masterData.functions.IT_WERKS_type1 getIT_WERKS() {
         return localIT_WERKS;
     }
 
@@ -147,7 +147,7 @@ public class ZMM_POS_24DATA implements org.apache.axis2.databinding.ADBBean {
      * @param param IT_WERKS
      */
     public void setIT_WERKS(
-        IT_WERKS_type1 param) {
+        com.nhry.webService.client.masterData.functions.IT_WERKS_type1 param) {
         localIT_WERKSTracker = param != null;
 
         this.localIT_WERKS = param;
@@ -178,8 +178,8 @@ public class ZMM_POS_24DATA implements org.apache.axis2.databinding.ADBBean {
         javax.xml.stream.XMLStreamWriter xmlWriter, boolean serializeType)
         throws javax.xml.stream.XMLStreamException,
             org.apache.axis2.databinding.ADBException {
-        String prefix = null;
-        String namespace = null;
+        java.lang.String prefix = null;
+        java.lang.String namespace = null;
 
         prefix = parentQName.getPrefix();
         namespace = parentQName.getNamespaceURI();
@@ -187,7 +187,7 @@ public class ZMM_POS_24DATA implements org.apache.axis2.databinding.ADBBean {
             xmlWriter);
 
         if (serializeType) {
-            String namespacePrefix = registerPrefix(xmlWriter,
+            java.lang.String namespacePrefix = registerPrefix(xmlWriter,
                     "urn:sap-com:document:sap:rfc:functions");
 
             if ((namespacePrefix != null) &&
@@ -245,7 +245,7 @@ public class ZMM_POS_24DATA implements org.apache.axis2.databinding.ADBBean {
         xmlWriter.writeEndElement();
     }
 
-    private static String generatePrefix(String namespace) {
+    private static java.lang.String generatePrefix(java.lang.String namespace) {
         if (namespace.equals("urn:sap-com:document:sap:rfc:functions")) {
             return "ns1";
         }
@@ -256,11 +256,11 @@ public class ZMM_POS_24DATA implements org.apache.axis2.databinding.ADBBean {
     /**
      * Utility method to write an element start tag.
      */
-    private void writeStartElement(String prefix,
-        String namespace, String localPart,
+    private void writeStartElement(java.lang.String prefix,
+        java.lang.String namespace, java.lang.String localPart,
         javax.xml.stream.XMLStreamWriter xmlWriter)
         throws javax.xml.stream.XMLStreamException {
-        String writerPrefix = xmlWriter.getPrefix(namespace);
+        java.lang.String writerPrefix = xmlWriter.getPrefix(namespace);
 
         if (writerPrefix != null) {
             xmlWriter.writeStartElement(writerPrefix, localPart, namespace);
@@ -280,11 +280,11 @@ public class ZMM_POS_24DATA implements org.apache.axis2.databinding.ADBBean {
     /**
      * Util method to write an attribute with the ns prefix
      */
-    private void writeAttribute(String prefix,
-        String namespace, String attName,
-        String attValue, javax.xml.stream.XMLStreamWriter xmlWriter)
+    private void writeAttribute(java.lang.String prefix,
+        java.lang.String namespace, java.lang.String attName,
+        java.lang.String attValue, javax.xml.stream.XMLStreamWriter xmlWriter)
         throws javax.xml.stream.XMLStreamException {
-        String writerPrefix = xmlWriter.getPrefix(namespace);
+        java.lang.String writerPrefix = xmlWriter.getPrefix(namespace);
 
         if (writerPrefix != null) {
             xmlWriter.writeAttribute(writerPrefix, namespace, attName, attValue);
@@ -298,8 +298,8 @@ public class ZMM_POS_24DATA implements org.apache.axis2.databinding.ADBBean {
     /**
      * Util method to write an attribute without the ns prefix
      */
-    private void writeAttribute(String namespace,
-        String attName, String attValue,
+    private void writeAttribute(java.lang.String namespace,
+        java.lang.String attName, java.lang.String attValue,
         javax.xml.stream.XMLStreamWriter xmlWriter)
         throws javax.xml.stream.XMLStreamException {
         if (namespace.equals("")) {
@@ -313,18 +313,18 @@ public class ZMM_POS_24DATA implements org.apache.axis2.databinding.ADBBean {
     /**
      * Util method to write an attribute without the ns prefix
      */
-    private void writeQNameAttribute(String namespace,
-        String attName, javax.xml.namespace.QName qname,
+    private void writeQNameAttribute(java.lang.String namespace,
+        java.lang.String attName, javax.xml.namespace.QName qname,
         javax.xml.stream.XMLStreamWriter xmlWriter)
         throws javax.xml.stream.XMLStreamException {
-        String attributeNamespace = qname.getNamespaceURI();
-        String attributePrefix = xmlWriter.getPrefix(attributeNamespace);
+        java.lang.String attributeNamespace = qname.getNamespaceURI();
+        java.lang.String attributePrefix = xmlWriter.getPrefix(attributeNamespace);
 
         if (attributePrefix == null) {
             attributePrefix = registerPrefix(xmlWriter, attributeNamespace);
         }
 
-        String attributeValue;
+        java.lang.String attributeValue;
 
         if (attributePrefix.trim().length() > 0) {
             attributeValue = attributePrefix + ":" + qname.getLocalPart();
@@ -347,10 +347,10 @@ public class ZMM_POS_24DATA implements org.apache.axis2.databinding.ADBBean {
     private void writeQName(javax.xml.namespace.QName qname,
         javax.xml.stream.XMLStreamWriter xmlWriter)
         throws javax.xml.stream.XMLStreamException {
-        String namespaceURI = qname.getNamespaceURI();
+        java.lang.String namespaceURI = qname.getNamespaceURI();
 
         if (namespaceURI != null) {
-            String prefix = xmlWriter.getPrefix(namespaceURI);
+            java.lang.String prefix = xmlWriter.getPrefix(namespaceURI);
 
             if (prefix == null) {
                 prefix = generatePrefix(namespaceURI);
@@ -379,9 +379,9 @@ public class ZMM_POS_24DATA implements org.apache.axis2.databinding.ADBBean {
         if (qnames != null) {
             // we have to store this data until last moment since it is not possible to write any
             // namespace data after writing the charactor data
-            StringBuffer stringToWrite = new StringBuffer();
-            String namespaceURI = null;
-            String prefix = null;
+            java.lang.StringBuffer stringToWrite = new java.lang.StringBuffer();
+            java.lang.String namespaceURI = null;
+            java.lang.String prefix = null;
 
             for (int i = 0; i < qnames.length; i++) {
                 if (i > 0) {
@@ -420,10 +420,10 @@ public class ZMM_POS_24DATA implements org.apache.axis2.databinding.ADBBean {
     /**
      * Register a namespace prefix
      */
-    private String registerPrefix(
-        javax.xml.stream.XMLStreamWriter xmlWriter, String namespace)
+    private java.lang.String registerPrefix(
+        javax.xml.stream.XMLStreamWriter xmlWriter, java.lang.String namespace)
         throws javax.xml.stream.XMLStreamException {
-        String prefix = xmlWriter.getPrefix(namespace);
+        java.lang.String prefix = xmlWriter.getPrefix(namespace);
 
         if (prefix == null) {
             prefix = generatePrefix(namespace);
@@ -431,7 +431,7 @@ public class ZMM_POS_24DATA implements org.apache.axis2.databinding.ADBBean {
             javax.xml.namespace.NamespaceContext nsContext = xmlWriter.getNamespaceContext();
 
             while (true) {
-                String uri = nsContext.getNamespaceURI(prefix);
+                java.lang.String uri = nsContext.getNamespaceURI(prefix);
 
                 if ((uri == null) || (uri.length() == 0)) {
                     break;
@@ -461,14 +461,14 @@ public class ZMM_POS_24DATA implements org.apache.axis2.databinding.ADBBean {
          *                If this object is a complex type, the reader is positioned at the end element of its outer element
          */
         public static ZMM_POS_24DATA parse(
-            javax.xml.stream.XMLStreamReader reader) throws Exception {
+            javax.xml.stream.XMLStreamReader reader) throws java.lang.Exception {
             ZMM_POS_24DATA object = new ZMM_POS_24DATA();
 
             int event;
             javax.xml.namespace.QName currentQName = null;
-            String nillableValue = null;
-            String prefix = "";
-            String namespaceuri = "";
+            java.lang.String nillableValue = null;
+            java.lang.String prefix = "";
+            java.lang.String namespaceuri = "";
 
             try {
                 while (!reader.isStartElement() && !reader.isEndElement())
@@ -478,11 +478,11 @@ public class ZMM_POS_24DATA implements org.apache.axis2.databinding.ADBBean {
 
                 if (reader.getAttributeValue(
                             "http://www.w3.org/2001/XMLSchema-instance", "type") != null) {
-                    String fullTypeName = reader.getAttributeValue("http://www.w3.org/2001/XMLSchema-instance",
+                    java.lang.String fullTypeName = reader.getAttributeValue("http://www.w3.org/2001/XMLSchema-instance",
                             "type");
 
                     if (fullTypeName != null) {
-                        String nsPrefix = null;
+                        java.lang.String nsPrefix = null;
 
                         if (fullTypeName.indexOf(":") > -1) {
                             nsPrefix = fullTypeName.substring(0,
@@ -491,15 +491,15 @@ public class ZMM_POS_24DATA implements org.apache.axis2.databinding.ADBBean {
 
                         nsPrefix = (nsPrefix == null) ? "" : nsPrefix;
 
-                        String type = fullTypeName.substring(fullTypeName.indexOf(
+                        java.lang.String type = fullTypeName.substring(fullTypeName.indexOf(
                                     ":") + 1);
 
                         if (!"ZMM_POS_24DATA".equals(type)) {
                             //find namespace for the prefix
-                            String nsUri = reader.getNamespaceContext()
+                            java.lang.String nsUri = reader.getNamespaceContext()
                                                            .getNamespaceURI(nsPrefix);
 
-                            return (ZMM_POS_24DATA) ExtensionMapper.getTypeObject(nsUri,
+                            return (ZMM_POS_24DATA) com.nhry.webService.client.masterData.functions.ExtensionMapper.getTypeObject(nsUri,
                                 type, reader);
                         }
                     }
@@ -518,7 +518,7 @@ public class ZMM_POS_24DATA implements org.apache.axis2.databinding.ADBBean {
                                     reader.getName())) ||
                                 new javax.xml.namespace.QName("", "ET_DATA").equals(
                                     reader.getName())) {
-                            object.setET_DATA(ET_DATA_type1.Factory.parse(
+                            object.setET_DATA(com.nhry.webService.client.masterData.functions.ET_DATA_type1.Factory.parse(
                                     reader));
 
                             reader.next();
@@ -530,7 +530,7 @@ public class ZMM_POS_24DATA implements org.apache.axis2.databinding.ADBBean {
                                     reader.getName())) ||
                                 new javax.xml.namespace.QName("", "ET_LGORT").equals(
                                     reader.getName())) {
-                            object.setET_LGORT(ET_LGORT_type1.Factory.parse(
+                            object.setET_LGORT(com.nhry.webService.client.masterData.functions.ET_LGORT_type1.Factory.parse(
                                     reader));
 
                             reader.next();
@@ -542,7 +542,7 @@ public class ZMM_POS_24DATA implements org.apache.axis2.databinding.ADBBean {
                                     reader.getName())) ||
                                 new javax.xml.namespace.QName("", "IT_LGORT").equals(
                                     reader.getName())) {
-                            object.setIT_LGORT(IT_LGORT_type1.Factory.parse(
+                            object.setIT_LGORT(com.nhry.webService.client.masterData.functions.IT_LGORT_type1.Factory.parse(
                                     reader));
 
                             reader.next();
@@ -554,7 +554,7 @@ public class ZMM_POS_24DATA implements org.apache.axis2.databinding.ADBBean {
                                     reader.getName())) ||
                                 new javax.xml.namespace.QName("", "IT_WERKS").equals(
                                     reader.getName())) {
-                            object.setIT_WERKS(IT_WERKS_type1.Factory.parse(
+                            object.setIT_WERKS(com.nhry.webService.client.masterData.functions.IT_WERKS_type1.Factory.parse(
                                     reader));
 
                             reader.next();
@@ -570,7 +570,7 @@ public class ZMM_POS_24DATA implements org.apache.axis2.databinding.ADBBean {
                     }
                 } // end of while loop
             } catch (javax.xml.stream.XMLStreamException e) {
-                throw new Exception(e);
+                throw new java.lang.Exception(e);
             }
 
             return object;

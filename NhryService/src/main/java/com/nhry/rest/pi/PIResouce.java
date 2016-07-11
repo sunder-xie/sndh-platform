@@ -5,6 +5,7 @@ import com.nhry.data.auth.domain.TSysResource;
 import com.nhry.model.sys.ResponseModel;
 import com.nhry.rest.BaseResource;
 import com.nhry.service.pi.dao.PIProductService;
+import com.nhry.service.pi.dao.PIRequireOrderService;
 import com.sun.jersey.spi.resource.Singleton;
 import com.wordnik.swagger.annotations.Api;
 import com.wordnik.swagger.annotations.ApiOperation;
@@ -31,6 +32,8 @@ import java.rmi.RemoteException;
 public class PIResouce extends BaseResource{
     @Autowired
     public PIProductService piProductService;
+    @Autowired
+    public PIRequireOrderService requireOrderService;
     @GET
     @Path("/getProducts")
     @Produces(MediaType.APPLICATION_JSON)
@@ -47,5 +50,23 @@ public class PIResouce extends BaseResource{
     @ApiOperation(value = "/getCustomer", response = ResponseModel.class, notes = "获取奶站经销商数据")
     public Response getCustomer() throws RemoteException {
         return convertToRespModel(MessageCode.NORMAL, piProductService.customerDataHandle(), null);
+    }
+
+    @GET
+    @Path("/getZD")
+    @Produces(MediaType.APPLICATION_JSON)
+    @Consumes(MediaType.APPLICATION_JSON)
+    @ApiOperation(value = "/getZD", response = ResponseModel.class, notes = "获取字典数据")
+    public Response getZD() throws RemoteException {
+        return convertToRespModel(MessageCode.NORMAL, piProductService.salesQueryHandler(), null);
+    }
+
+    @GET
+    @Path("/getJHD/{id}")
+    @Produces(MediaType.APPLICATION_JSON)
+    @Consumes(MediaType.APPLICATION_JSON)
+    @ApiOperation(value = "/getJHD/{id}", response = ResponseModel.class, notes = "获取交货单数据")
+    public Response gegetJHDZD(@PathParam("id") String id) throws RemoteException {
+        return convertToRespModel(MessageCode.NORMAL, requireOrderService.getDelivery(id,true), null);
     }
 }

@@ -134,4 +134,10 @@ public class TDispOrderItemMapperImpl implements TDispOrderItemMapper
 		return sqlSessionTemplate.selectOne("selectDispOrderItemByKey", code);
 	}
 
+	@Override
+	public List selectRouteDetails(String routeCode)
+	{
+		return sqlSessionTemplate.selectList("selectRouteDetailsAll", routeCode);
+	}
+
 }

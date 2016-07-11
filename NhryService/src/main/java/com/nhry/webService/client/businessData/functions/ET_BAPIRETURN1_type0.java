@@ -55,7 +55,8 @@ public class ET_BAPIRETURN1_type0 implements org.apache.axis2.databinding.ADBBea
      * Auto generated setter method
      * @param param Item
      */
-    public void setItem(BAPIRET2[] param) {
+    public void setItem(
+        BAPIRET2[] param) {
         validateItem(param);
 
         localItemTracker = param != null;
@@ -67,9 +68,12 @@ public class ET_BAPIRETURN1_type0 implements org.apache.axis2.databinding.ADBBea
      * Auto generated add method for the array for convenience
      * @param param com.nhry.webService.client.businessData.functions.BAPIRET2
      */
-    public void addItem(BAPIRET2 param) {
+    public void addItem(
+        BAPIRET2 param) {
         if (localItem == null) {
-            localItem = new BAPIRET2[] {  };
+            localItem = new BAPIRET2[] {
+                    
+                };
         }
 
         //update the setting tracker

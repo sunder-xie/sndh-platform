@@ -1,11 +1,13 @@
 package com.nhry.data.order.impl;
 
+import com.github.pagehelper.PageInfo;
 import com.nhry.common.datasource.DynamicSqlSessionTemplate;
 import com.nhry.data.order.dao.TOrderDaliyPlanItemMapper;
 import com.nhry.data.order.domain.TOrderDaliyPlanItem;
 import com.nhry.data.order.domain.TOrderDaliyPlanItemKey;
 import com.nhry.data.order.domain.TPreOrder;
 import com.nhry.model.milktrans.RequireOrderSearch;
+import com.nhry.model.order.OrderSearchModel;
 import com.nhry.model.order.ReturnOrderModel;
 
 import java.text.SimpleDateFormat;
@@ -157,6 +159,12 @@ public class TOrderDaliyPlanItemMapperImpl implements TOrderDaliyPlanItemMapper
 		// TODO Auto-generated method stub
 		return 0;
 	}
-
+	
+	@Override
+	public PageInfo selectDaliyOrdersByPages(OrderSearchModel smodel)
+	{
+		// TODO Auto-generated method stub
+		return sqlSessionTemplate.selectListByPages("searchDaliyOrdersByPage",smodel, Integer.parseInt(smodel.getPageNum()), Integer.parseInt(smodel.getPageSize()));	
+	}
 	
 }

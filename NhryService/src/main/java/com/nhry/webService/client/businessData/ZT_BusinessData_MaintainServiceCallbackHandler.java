@@ -7,10 +7,6 @@
 package com.nhry.webService.client.businessData;
 
 
-import com.nhry.webService.client.businessData.functions.ZSD_DELIVERY_DATAResponse;
-import com.nhry.webService.client.businessData.functions.ZSD_REQUISITION_CREATE_RFCResponse;
-import com.nhry.webService.client.businessData.functions.ZSD_SALESORDER_DATA_RFC_2Response;
-
 /**
  *  ZT_BusinessData_MaintainServiceCallbackHandler Callback class, Users can extend this class and implement
  *  their own receiveResult and receiveError methods.
@@ -47,7 +43,7 @@ public abstract class ZT_BusinessData_MaintainServiceCallbackHandler {
      * override this method for handling normal response from deliveryQuery operation
      */
     public void receiveResultdeliveryQuery(
-        ZSD_DELIVERY_DATAResponse result) {
+        com.nhry.webService.client.businessData.functions.ZSD_DELIVERY_DATAResponse result) {
     }
 
     /**
@@ -62,7 +58,7 @@ public abstract class ZT_BusinessData_MaintainServiceCallbackHandler {
      * override this method for handling normal response from salesOrderCreate operation
      */
     public void receiveResultsalesOrderCreate(
-        ZSD_SALESORDER_DATA_RFC_2Response result) {
+        com.nhry.webService.client.businessData.functions.ZSD_SALESORDER_DATA_RFC_2Response result) {
     }
 
     /**
@@ -77,7 +73,7 @@ public abstract class ZT_BusinessData_MaintainServiceCallbackHandler {
      * override this method for handling normal response from requisitionCreate operation
      */
     public void receiveResultrequisitionCreate(
-        ZSD_REQUISITION_CREATE_RFCResponse result) {
+        com.nhry.webService.client.businessData.functions.ZSD_REQUISITION_CREATE_RFCResponse result) {
     }
 
     /**

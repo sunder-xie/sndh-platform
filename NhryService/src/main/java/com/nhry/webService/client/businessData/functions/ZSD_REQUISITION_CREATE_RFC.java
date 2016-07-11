@@ -54,7 +54,8 @@ public class ZSD_REQUISITION_CREATE_RFC implements org.apache.axis2.databinding.
      * Auto generated setter method
      * @param param I_EKKO
      */
-    public void setI_EKKO(ZSD_REQ_EKKO param) {
+    public void setI_EKKO(
+        ZSD_REQ_EKKO param) {
         localI_EKKOTracker = param != null;
 
         this.localI_EKKO = param;

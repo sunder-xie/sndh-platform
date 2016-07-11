@@ -149,7 +149,7 @@ public class ZT_MasterDataQueryServiceStub extends org.apache.axis2.client.Stub
     /**
      * Auto generated method signature
      *
-     * @see com.nhry.webService.client.masterData.ZT_MasterDataQueryService#customerQuery
+     * @see ZT_MasterDataQueryService#customerQuery
      * @param zSD_CUSTOMER_DATA_SYN_RFC10
      */
     public ZSD_CUSTOMER_DATA_SYN_RFCResponse customerQuery(
@@ -264,12 +264,12 @@ public class ZT_MasterDataQueryServiceStub extends org.apache.axis2.client.Stub
     /**
      * Auto generated method signature for Asynchronous Invocations
      *
-     * @see com.nhry.webService.client.masterData.ZT_MasterDataQueryService#startcustomerQuery
+     * @see ZT_MasterDataQueryService#startcustomerQuery
      * @param zSD_CUSTOMER_DATA_SYN_RFC10
      */
     public void startcustomerQuery(
         ZSD_CUSTOMER_DATA_SYN_RFC zSD_CUSTOMER_DATA_SYN_RFC10,
-        final com.nhry.webService.client.masterData.ZT_MasterDataQueryServiceCallbackHandler callback)
+        final ZT_MasterDataQueryServiceCallbackHandler callback)
         throws java.rmi.RemoteException {
         org.apache.axis2.client.OperationClient _operationClient = _serviceClient.createClient(_operations[0].getName());
         _operationClient.getOptions()
@@ -414,7 +414,7 @@ public class ZT_MasterDataQueryServiceStub extends org.apache.axis2.client.Stub
     /**
      * Auto generated method signature
      *
-     * @see com.nhry.webService.client.masterData.ZT_MasterDataQueryService#matWHWQuery
+     * @see ZT_MasterDataQueryService#matWHWQuery
      * @param zMM_POS_24DATA12
      */
     public ZMM_POS_24DATAResponse matWHWQuery(
@@ -529,12 +529,12 @@ public class ZT_MasterDataQueryServiceStub extends org.apache.axis2.client.Stub
     /**
      * Auto generated method signature for Asynchronous Invocations
      *
-     * @see com.nhry.webService.client.masterData.ZT_MasterDataQueryService#startmatWHWQuery
+     * @see ZT_MasterDataQueryService#startmatWHWQuery
      * @param zMM_POS_24DATA12
      */
     public void startmatWHWQuery(
         ZMM_POS_24DATA zMM_POS_24DATA12,
-        final com.nhry.webService.client.masterData.ZT_MasterDataQueryServiceCallbackHandler callback)
+        final ZT_MasterDataQueryServiceCallbackHandler callback)
         throws java.rmi.RemoteException {
         org.apache.axis2.client.OperationClient _operationClient = _serviceClient.createClient(_operations[1].getName());
         _operationClient.getOptions()
@@ -678,7 +678,7 @@ public class ZT_MasterDataQueryServiceStub extends org.apache.axis2.client.Stub
     /**
      * Auto generated method signature
      *
-     * @see com.nhry.webService.client.masterData.ZT_MasterDataQueryService#codeQuery
+     * @see ZT_MasterDataQueryService#codeQuery
      * @param zSD_T005_DATA14
      */
     public ZSD_T005_DATAResponse codeQuery(
@@ -793,12 +793,12 @@ public class ZT_MasterDataQueryServiceStub extends org.apache.axis2.client.Stub
     /**
      * Auto generated method signature for Asynchronous Invocations
      *
-     * @see com.nhry.webService.client.masterData.ZT_MasterDataQueryService#startcodeQuery
+     * @see ZT_MasterDataQueryService#startcodeQuery
      * @param zSD_T005_DATA14
      */
     public void startcodeQuery(
         ZSD_T005_DATA zSD_T005_DATA14,
-        final com.nhry.webService.client.masterData.ZT_MasterDataQueryServiceCallbackHandler callback)
+        final ZT_MasterDataQueryServiceCallbackHandler callback)
         throws java.rmi.RemoteException {
         org.apache.axis2.client.OperationClient _operationClient = _serviceClient.createClient(_operations[2].getName());
         _operationClient.getOptions()
@@ -940,7 +940,7 @@ public class ZT_MasterDataQueryServiceStub extends org.apache.axis2.client.Stub
     /**
      * Auto generated method signature
      *
-     * @see com.nhry.webService.client.masterData.ZT_MasterDataQueryService#mATQUERY
+     * @see ZT_MasterDataQueryService#mATQUERY
      * @param zSD_MATERAIL_DATA_RFC16
      */
     public ZSD_MATERAIL_DATA_RFCResponse mATQUERY(
@@ -1055,12 +1055,12 @@ public class ZT_MasterDataQueryServiceStub extends org.apache.axis2.client.Stub
     /**
      * Auto generated method signature for Asynchronous Invocations
      *
-     * @see com.nhry.webService.client.masterData.ZT_MasterDataQueryService#startmATQUERY
+     * @see ZT_MasterDataQueryService#startmATQUERY
      * @param zSD_MATERAIL_DATA_RFC16
      */
     public void startmATQUERY(
         ZSD_MATERAIL_DATA_RFC zSD_MATERAIL_DATA_RFC16,
-        final com.nhry.webService.client.masterData.ZT_MasterDataQueryServiceCallbackHandler callback)
+        final ZT_MasterDataQueryServiceCallbackHandler callback)
         throws java.rmi.RemoteException {
         org.apache.axis2.client.OperationClient _operationClient = _serviceClient.createClient(_operations[3].getName());
         _operationClient.getOptions()
@@ -1203,7 +1203,7 @@ public class ZT_MasterDataQueryServiceStub extends org.apache.axis2.client.Stub
     /**
      * Auto generated method signature
      *
-     * @see com.nhry.webService.client.masterData.ZT_MasterDataQueryService#salesQuery
+     * @see ZT_MasterDataQueryService#salesQuery
      * @param zSD_SALES_ORGANIZATION_RFC18
      */
     public ZSD_SALES_ORGANIZATION_RFCResponse salesQuery(
@@ -1318,12 +1318,12 @@ public class ZT_MasterDataQueryServiceStub extends org.apache.axis2.client.Stub
     /**
      * Auto generated method signature for Asynchronous Invocations
      *
-     * @see com.nhry.webService.client.masterData.ZT_MasterDataQueryService#startsalesQuery
+     * @see ZT_MasterDataQueryService#startsalesQuery
      * @param zSD_SALES_ORGANIZATION_RFC18
      */
     public void startsalesQuery(
         ZSD_SALES_ORGANIZATION_RFC zSD_SALES_ORGANIZATION_RFC18,
-        final com.nhry.webService.client.masterData.ZT_MasterDataQueryServiceCallbackHandler callback)
+        final ZT_MasterDataQueryServiceCallbackHandler callback)
         throws java.rmi.RemoteException {
         org.apache.axis2.client.OperationClient _operationClient = _serviceClient.createClient(_operations[4].getName());
         _operationClient.getOptions()
