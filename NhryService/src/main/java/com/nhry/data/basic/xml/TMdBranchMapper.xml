@@ -125,4 +125,26 @@
     where SALES_ORG = #{salesOrg,jdbcType=VARCHAR}
      and BRANCH_GROUP= '01'
   </select>
+  <select id="findBranchByDno" resultMap="BaseResultMap" parameterType="java.util.HashMap">
+      select
+    <include refid="Base_Column_List" />
+    from t_md_branch
+    <where>
+        <if test="salesOrg != null and salesOrg != ''">
+           SALES_ORG = #{salesOrg,jdbcType=VARCHAR}
+        </if>
+       <if test="dealerNo != null and dealerNo !=''">
+             <choose>
+                 <when test="dealerNo == '-1'">
+                     <!-- 查询自有奶站 -->
+           			and BRANCH_GROUP= '01' 
+                 </when>
+                 <otherwise>
+                    <!-- 经销商奶站 -->
+                    and BRANCH_GROUP= '02' and DEALER_NO = #{dealerNo} 
+                 </otherwise>
+             </choose>
+          </if>
+    </where>
+  </select>
 </mapper>

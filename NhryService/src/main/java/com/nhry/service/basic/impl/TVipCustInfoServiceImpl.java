@@ -49,7 +49,26 @@ public class TVipCustInfoServiceImpl extends BaseService implements TVipCustInfo
 		record.setCreateAt(new Date());
 		record.setCreateBy(this.userSessionService.getCurrentUser().getLoginName());
 		record.setCreateByTxt(this.userSessionService.getCurrentUser().getDisplayName());
-		return this.tmdVipcust.addVipCust(record);
+		record.setSalesOrg(this.userSessionService.getCurrentUser().getSalesOrg());
+		this.tmdVipcust.addVipCust(record);
+		
+		TMdAddress address = new TMdAddress();
+		address.setAddressTxt(record.getAddressTxt());
+		address.setProvince(record.getProvince());
+		address.setCity(record.getCity());
+		address.setCounty(record.getCounty());
+		address.setMp(record.getMp());
+		address.setRecvName(record.getVipName());
+		address.setZip(record.getZip());
+		address.setResidentialArea(record.getSubdist());
+		address.setStreet(record.getStreet());
+		address.setVipCustNo(record.getVipCustNo());
+		address.setIsDafault("Y");
+		address.setCreateAt(new Date());
+		address.setCreateBy(this.userSessionService.getCurrentUser().getLoginName());
+		address.setCreateByTxt(this.userSessionService.getCurrentUser().getDisplayName());
+		addAddressForCust(address);
+		return 1;
 	}
 
 	@Override
@@ -107,7 +126,7 @@ public class TVipCustInfoServiceImpl extends BaseService implements TVipCustInfo
 	}
 
 	@Override
-	public int discontinue(String vipCustNo, String status) {
+	public int discontinue(String vipCustNo, String status,Date firstTime,Date lastestTime) {
 		// TODO Auto-generated method stub
 		TVipCustInfo custinfo = this.tmdVipcust.findVipCustOnlyByNo(vipCustNo);
 		if(custinfo == null){
@@ -116,6 +135,8 @@ public class TVipCustInfoServiceImpl extends BaseService implements TVipCustInfo
 		TVipCustInfo cust = new TVipCustInfo();
 		cust.setVipCustNo(vipCustNo);
 		cust.setStatus(status);
+		cust.setFirstOrderTime(firstTime);
+		cust.setLastOrderTime(lastestTime);
 		cust.setLastModified(new Date());
 		cust.setLastModifiedBy(this.userSessionService.getCurrentUser().getLoginName());
 		cust.setLastModifiedByTxt(this.userSessionService.getCurrentUser().getDisplayName());

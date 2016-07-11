@@ -5,6 +5,7 @@ import com.github.pagehelper.PageInfo;
 import com.nhry.common.exception.MessageCode;
 import com.nhry.common.exception.ServiceException;
 import com.nhry.data.basic.domain.TVipAcct;
+import com.nhry.data.basic.domain.TVipCustInfo;
 import com.nhry.data.milk.domain.TDispOrderItem;
 import com.nhry.data.order.dao.TOrderDaliyPlanItemMapper;
 import com.nhry.data.order.dao.TPlanOrderItemMapper;
@@ -218,7 +219,7 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 			//订户状态更改???
 			List<TPreOrder> list = tPreOrderMapper.selectByMilkmemberNo(order.getMilkmemberNo());
 			if(list==null||list.size()<=0){
-				tVipCustInfoService.discontinue(order.getMilkmemberNo(), "30");
+				tVipCustInfoService.discontinue(order.getMilkmemberNo(), "30",null,null);
 			}
 			
 		}else{
@@ -275,7 +276,7 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 			//订户状态更改???
 			List<TPreOrder> list = tPreOrderMapper.selectByMilkmemberNo(order.getMilkmemberNo());
 			if(list==null||list.size()<=0){
-				tVipCustInfoService.discontinue(order.getMilkmemberNo(), "40");
+				tVipCustInfoService.discontinue(order.getMilkmemberNo(), "40",null,null);
 			}
 			
 		}else{
@@ -361,7 +362,7 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 			}
 			
 			//订户状态更改
-			tVipCustInfoService.discontinue(order.getMilkmemberNo(), "10");
+			tVipCustInfoService.discontinue(order.getMilkmemberNo(), "10",null,new com.nhry.utils.date.Date());
 			
 			//生成每日计划
 			createDaliyPlan(order,entriesList);
@@ -433,7 +434,7 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 		tPreOrderMapper.updateOrderEndDate(order);
 		
 		//订户状态更改
-		tVipCustInfoService.discontinue(order.getMilkmemberNo(), "10");
+		tVipCustInfoService.discontinue(order.getMilkmemberNo(), "10",null,null);
 		
 		return 1;
 	}
@@ -603,7 +604,7 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 		});
 		
 		//订户状态更改
-		tVipCustInfoService.discontinue(order.getMilkmemberNo(), "10");
+		tVipCustInfoService.discontinue(order.getMilkmemberNo(), "10",new com.nhry.utils.date.Date(),new com.nhry.utils.date.Date());
 			
 		//生成装箱工单
 		if("20".equals(order.getMilkboxStat())){
@@ -1033,9 +1034,15 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 	* @see com.nhry.service.order.dao.OrderService#searchOrderRemainData(java.lang.String) 
 	*/
 	@Override
-	public OrderRemainData searchOrderRemainData(String memberNo)
+	public OrderRemainData searchOrderRemainData(String phone)
 	{
-		return tPreOrderMapper.searchOrderRemainData(memberNo);
+		Map<String,String> attrs = new HashMap<String,String>();
+		attrs.put("phone", phone);
+		List<TVipCustInfo> custs = tVipCustInfoService.findCompanyCustByPhone(attrs);
+		if(custs != null && custs.size() == 1){
+			return tPreOrderMapper.searchOrderRemainData(custs.get(0).getVipCustNo());
+		}
+		return null;
 	}
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

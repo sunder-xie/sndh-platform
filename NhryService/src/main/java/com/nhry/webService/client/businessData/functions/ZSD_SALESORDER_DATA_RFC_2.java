@@ -100,7 +100,8 @@ public class ZSD_SALESORDER_DATA_RFC_2 implements org.apache.axis2.databinding.A
      * Auto generated setter method
      * @param param I_MONI
      */
-    public void setI_MONI(I_MONI_type1 param) {
+    public void setI_MONI(
+        I_MONI_type1 param) {
         localI_MONITracker = param != null;
 
         this.localI_MONI = param;

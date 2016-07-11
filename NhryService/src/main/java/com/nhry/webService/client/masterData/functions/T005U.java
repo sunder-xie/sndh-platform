@@ -23,7 +23,7 @@ public class T005U implements org.apache.axis2.databinding.ADBBean {
     /**
      * field for MANDT
      */
-    protected MANDT_type5 localMANDT;
+    protected com.nhry.webService.client.masterData.functions.MANDT_type5 localMANDT;
 
     /*  This tracker boolean wil be used to detect whether the user called the set method
      *   for this attribute. It will be used to determine whether to include this field
@@ -34,7 +34,7 @@ public class T005U implements org.apache.axis2.databinding.ADBBean {
     /**
      * field for SPRAS
      */
-    protected SPRAS_type3 localSPRAS;
+    protected com.nhry.webService.client.masterData.functions.SPRAS_type3 localSPRAS;
 
     /*  This tracker boolean wil be used to detect whether the user called the set method
      *   for this attribute. It will be used to determine whether to include this field
@@ -45,7 +45,7 @@ public class T005U implements org.apache.axis2.databinding.ADBBean {
     /**
      * field for LAND1
      */
-    protected LAND1_type3 localLAND1;
+    protected com.nhry.webService.client.masterData.functions.LAND1_type3 localLAND1;
 
     /*  This tracker boolean wil be used to detect whether the user called the set method
      *   for this attribute. It will be used to determine whether to include this field
@@ -56,7 +56,7 @@ public class T005U implements org.apache.axis2.databinding.ADBBean {
     /**
      * field for BLAND
      */
-    protected BLAND_type1 localBLAND;
+    protected com.nhry.webService.client.masterData.functions.BLAND_type1 localBLAND;
 
     /*  This tracker boolean wil be used to detect whether the user called the set method
      *   for this attribute. It will be used to determine whether to include this field
@@ -67,7 +67,7 @@ public class T005U implements org.apache.axis2.databinding.ADBBean {
     /**
      * field for BEZEI
      */
-    protected BEZEI_type1 localBEZEI;
+    protected com.nhry.webService.client.masterData.functions.BEZEI_type1 localBEZEI;
 
     /*  This tracker boolean wil be used to detect whether the user called the set method
      *   for this attribute. It will be used to determine whether to include this field
@@ -83,7 +83,7 @@ public class T005U implements org.apache.axis2.databinding.ADBBean {
      * Auto generated getter method
      * @return com.nhry.webService.client.masterData.functions.MANDT_type5
      */
-    public MANDT_type5 getMANDT() {
+    public com.nhry.webService.client.masterData.functions.MANDT_type5 getMANDT() {
         return localMANDT;
     }
 
@@ -91,7 +91,8 @@ public class T005U implements org.apache.axis2.databinding.ADBBean {
      * Auto generated setter method
      * @param param MANDT
      */
-    public void setMANDT(MANDT_type5 param) {
+    public void setMANDT(
+        com.nhry.webService.client.masterData.functions.MANDT_type5 param) {
         localMANDTTracker = param != null;
 
         this.localMANDT = param;
@@ -105,7 +106,7 @@ public class T005U implements org.apache.axis2.databinding.ADBBean {
      * Auto generated getter method
      * @return com.nhry.webService.client.masterData.functions.SPRAS_type3
      */
-    public SPRAS_type3 getSPRAS() {
+    public com.nhry.webService.client.masterData.functions.SPRAS_type3 getSPRAS() {
         return localSPRAS;
     }
 
@@ -113,7 +114,8 @@ public class T005U implements org.apache.axis2.databinding.ADBBean {
      * Auto generated setter method
      * @param param SPRAS
      */
-    public void setSPRAS(SPRAS_type3 param) {
+    public void setSPRAS(
+        com.nhry.webService.client.masterData.functions.SPRAS_type3 param) {
         localSPRASTracker = param != null;
 
         this.localSPRAS = param;
@@ -127,7 +129,7 @@ public class T005U implements org.apache.axis2.databinding.ADBBean {
      * Auto generated getter method
      * @return com.nhry.webService.client.masterData.functions.LAND1_type3
      */
-    public LAND1_type3 getLAND1() {
+    public com.nhry.webService.client.masterData.functions.LAND1_type3 getLAND1() {
         return localLAND1;
     }
 
@@ -135,7 +137,8 @@ public class T005U implements org.apache.axis2.databinding.ADBBean {
      * Auto generated setter method
      * @param param LAND1
      */
-    public void setLAND1(LAND1_type3 param) {
+    public void setLAND1(
+        com.nhry.webService.client.masterData.functions.LAND1_type3 param) {
         localLAND1Tracker = param != null;
 
         this.localLAND1 = param;
@@ -149,7 +152,7 @@ public class T005U implements org.apache.axis2.databinding.ADBBean {
      * Auto generated getter method
      * @return com.nhry.webService.client.masterData.functions.BLAND_type1
      */
-    public BLAND_type1 getBLAND() {
+    public com.nhry.webService.client.masterData.functions.BLAND_type1 getBLAND() {
         return localBLAND;
     }
 
@@ -157,7 +160,8 @@ public class T005U implements org.apache.axis2.databinding.ADBBean {
      * Auto generated setter method
      * @param param BLAND
      */
-    public void setBLAND(BLAND_type1 param) {
+    public void setBLAND(
+        com.nhry.webService.client.masterData.functions.BLAND_type1 param) {
         localBLANDTracker = param != null;
 
         this.localBLAND = param;
@@ -171,7 +175,7 @@ public class T005U implements org.apache.axis2.databinding.ADBBean {
      * Auto generated getter method
      * @return com.nhry.webService.client.masterData.functions.BEZEI_type1
      */
-    public BEZEI_type1 getBEZEI() {
+    public com.nhry.webService.client.masterData.functions.BEZEI_type1 getBEZEI() {
         return localBEZEI;
     }
 
@@ -179,7 +183,8 @@ public class T005U implements org.apache.axis2.databinding.ADBBean {
      * Auto generated setter method
      * @param param BEZEI
      */
-    public void setBEZEI(BEZEI_type1 param) {
+    public void setBEZEI(
+        com.nhry.webService.client.masterData.functions.BEZEI_type1 param) {
         localBEZEITracker = param != null;
 
         this.localBEZEI = param;
@@ -210,8 +215,8 @@ public class T005U implements org.apache.axis2.databinding.ADBBean {
         javax.xml.stream.XMLStreamWriter xmlWriter, boolean serializeType)
         throws javax.xml.stream.XMLStreamException,
             org.apache.axis2.databinding.ADBException {
-        String prefix = null;
-        String namespace = null;
+        java.lang.String prefix = null;
+        java.lang.String namespace = null;
 
         prefix = parentQName.getPrefix();
         namespace = parentQName.getNamespaceURI();
@@ -219,7 +224,7 @@ public class T005U implements org.apache.axis2.databinding.ADBBean {
             xmlWriter);
 
         if (serializeType) {
-            String namespacePrefix = registerPrefix(xmlWriter,
+            java.lang.String namespacePrefix = registerPrefix(xmlWriter,
                     "urn:sap-com:document:sap:rfc:functions");
 
             if ((namespacePrefix != null) &&
@@ -287,7 +292,7 @@ public class T005U implements org.apache.axis2.databinding.ADBBean {
         xmlWriter.writeEndElement();
     }
 
-    private static String generatePrefix(String namespace) {
+    private static java.lang.String generatePrefix(java.lang.String namespace) {
         if (namespace.equals("urn:sap-com:document:sap:rfc:functions")) {
             return "ns1";
         }
@@ -298,11 +303,11 @@ public class T005U implements org.apache.axis2.databinding.ADBBean {
     /**
      * Utility method to write an element start tag.
      */
-    private void writeStartElement(String prefix,
-        String namespace, String localPart,
+    private void writeStartElement(java.lang.String prefix,
+        java.lang.String namespace, java.lang.String localPart,
         javax.xml.stream.XMLStreamWriter xmlWriter)
         throws javax.xml.stream.XMLStreamException {
-        String writerPrefix = xmlWriter.getPrefix(namespace);
+        java.lang.String writerPrefix = xmlWriter.getPrefix(namespace);
 
         if (writerPrefix != null) {
             xmlWriter.writeStartElement(writerPrefix, localPart, namespace);
@@ -322,11 +327,11 @@ public class T005U implements org.apache.axis2.databinding.ADBBean {
     /**
      * Util method to write an attribute with the ns prefix
      */
-    private void writeAttribute(String prefix,
-        String namespace, String attName,
-        String attValue, javax.xml.stream.XMLStreamWriter xmlWriter)
+    private void writeAttribute(java.lang.String prefix,
+        java.lang.String namespace, java.lang.String attName,
+        java.lang.String attValue, javax.xml.stream.XMLStreamWriter xmlWriter)
         throws javax.xml.stream.XMLStreamException {
-        String writerPrefix = xmlWriter.getPrefix(namespace);
+        java.lang.String writerPrefix = xmlWriter.getPrefix(namespace);
 
         if (writerPrefix != null) {
             xmlWriter.writeAttribute(writerPrefix, namespace, attName, attValue);
@@ -340,8 +345,8 @@ public class T005U implements org.apache.axis2.databinding.ADBBean {
     /**
      * Util method to write an attribute without the ns prefix
      */
-    private void writeAttribute(String namespace,
-        String attName, String attValue,
+    private void writeAttribute(java.lang.String namespace,
+        java.lang.String attName, java.lang.String attValue,
         javax.xml.stream.XMLStreamWriter xmlWriter)
         throws javax.xml.stream.XMLStreamException {
         if (namespace.equals("")) {
@@ -355,18 +360,18 @@ public class T005U implements org.apache.axis2.databinding.ADBBean {
     /**
      * Util method to write an attribute without the ns prefix
      */
-    private void writeQNameAttribute(String namespace,
-        String attName, javax.xml.namespace.QName qname,
+    private void writeQNameAttribute(java.lang.String namespace,
+        java.lang.String attName, javax.xml.namespace.QName qname,
         javax.xml.stream.XMLStreamWriter xmlWriter)
         throws javax.xml.stream.XMLStreamException {
-        String attributeNamespace = qname.getNamespaceURI();
-        String attributePrefix = xmlWriter.getPrefix(attributeNamespace);
+        java.lang.String attributeNamespace = qname.getNamespaceURI();
+        java.lang.String attributePrefix = xmlWriter.getPrefix(attributeNamespace);
 
         if (attributePrefix == null) {
             attributePrefix = registerPrefix(xmlWriter, attributeNamespace);
         }
 
-        String attributeValue;
+        java.lang.String attributeValue;
 
         if (attributePrefix.trim().length() > 0) {
             attributeValue = attributePrefix + ":" + qname.getLocalPart();
@@ -389,10 +394,10 @@ public class T005U implements org.apache.axis2.databinding.ADBBean {
     private void writeQName(javax.xml.namespace.QName qname,
         javax.xml.stream.XMLStreamWriter xmlWriter)
         throws javax.xml.stream.XMLStreamException {
-        String namespaceURI = qname.getNamespaceURI();
+        java.lang.String namespaceURI = qname.getNamespaceURI();
 
         if (namespaceURI != null) {
-            String prefix = xmlWriter.getPrefix(namespaceURI);
+            java.lang.String prefix = xmlWriter.getPrefix(namespaceURI);
 
             if (prefix == null) {
                 prefix = generatePrefix(namespaceURI);
@@ -421,9 +426,9 @@ public class T005U implements org.apache.axis2.databinding.ADBBean {
         if (qnames != null) {
             // we have to store this data until last moment since it is not possible to write any
             // namespace data after writing the charactor data
-            StringBuffer stringToWrite = new StringBuffer();
-            String namespaceURI = null;
-            String prefix = null;
+            java.lang.StringBuffer stringToWrite = new java.lang.StringBuffer();
+            java.lang.String namespaceURI = null;
+            java.lang.String prefix = null;
 
             for (int i = 0; i < qnames.length; i++) {
                 if (i > 0) {
@@ -462,10 +467,10 @@ public class T005U implements org.apache.axis2.databinding.ADBBean {
     /**
      * Register a namespace prefix
      */
-    private String registerPrefix(
-        javax.xml.stream.XMLStreamWriter xmlWriter, String namespace)
+    private java.lang.String registerPrefix(
+        javax.xml.stream.XMLStreamWriter xmlWriter, java.lang.String namespace)
         throws javax.xml.stream.XMLStreamException {
-        String prefix = xmlWriter.getPrefix(namespace);
+        java.lang.String prefix = xmlWriter.getPrefix(namespace);
 
         if (prefix == null) {
             prefix = generatePrefix(namespace);
@@ -473,7 +478,7 @@ public class T005U implements org.apache.axis2.databinding.ADBBean {
             javax.xml.namespace.NamespaceContext nsContext = xmlWriter.getNamespaceContext();
 
             while (true) {
-                String uri = nsContext.getNamespaceURI(prefix);
+                java.lang.String uri = nsContext.getNamespaceURI(prefix);
 
                 if ((uri == null) || (uri.length() == 0)) {
                     break;
@@ -503,14 +508,14 @@ public class T005U implements org.apache.axis2.databinding.ADBBean {
          *                If this object is a complex type, the reader is positioned at the end element of its outer element
          */
         public static T005U parse(javax.xml.stream.XMLStreamReader reader)
-            throws Exception {
+            throws java.lang.Exception {
             T005U object = new T005U();
 
             int event;
             javax.xml.namespace.QName currentQName = null;
-            String nillableValue = null;
-            String prefix = "";
-            String namespaceuri = "";
+            java.lang.String nillableValue = null;
+            java.lang.String prefix = "";
+            java.lang.String namespaceuri = "";
 
             try {
                 while (!reader.isStartElement() && !reader.isEndElement())
@@ -520,11 +525,11 @@ public class T005U implements org.apache.axis2.databinding.ADBBean {
 
                 if (reader.getAttributeValue(
                             "http://www.w3.org/2001/XMLSchema-instance", "type") != null) {
-                    String fullTypeName = reader.getAttributeValue("http://www.w3.org/2001/XMLSchema-instance",
+                    java.lang.String fullTypeName = reader.getAttributeValue("http://www.w3.org/2001/XMLSchema-instance",
                             "type");
 
                     if (fullTypeName != null) {
-                        String nsPrefix = null;
+                        java.lang.String nsPrefix = null;
 
                         if (fullTypeName.indexOf(":") > -1) {
                             nsPrefix = fullTypeName.substring(0,
@@ -533,15 +538,15 @@ public class T005U implements org.apache.axis2.databinding.ADBBean {
 
                         nsPrefix = (nsPrefix == null) ? "" : nsPrefix;
 
-                        String type = fullTypeName.substring(fullTypeName.indexOf(
+                        java.lang.String type = fullTypeName.substring(fullTypeName.indexOf(
                                     ":") + 1);
 
                         if (!"T005U".equals(type)) {
                             //find namespace for the prefix
-                            String nsUri = reader.getNamespaceContext()
+                            java.lang.String nsUri = reader.getNamespaceContext()
                                                            .getNamespaceURI(nsPrefix);
 
-                            return (T005U) ExtensionMapper.getTypeObject(nsUri,
+                            return (T005U) com.nhry.webService.client.masterData.functions.ExtensionMapper.getTypeObject(nsUri,
                                 type, reader);
                         }
                     }
@@ -561,7 +566,7 @@ public class T005U implements org.apache.axis2.databinding.ADBBean {
                             reader.getName())) ||
                         new javax.xml.namespace.QName("", "MANDT").equals(
                             reader.getName())) {
-                    object.setMANDT(MANDT_type5.Factory.parse(
+                    object.setMANDT(com.nhry.webService.client.masterData.functions.MANDT_type5.Factory.parse(
                             reader));
 
                     reader.next();
@@ -578,7 +583,7 @@ public class T005U implements org.apache.axis2.databinding.ADBBean {
                             reader.getName())) ||
                         new javax.xml.namespace.QName("", "SPRAS").equals(
                             reader.getName())) {
-                    object.setSPRAS(SPRAS_type3.Factory.parse(
+                    object.setSPRAS(com.nhry.webService.client.masterData.functions.SPRAS_type3.Factory.parse(
                             reader));
 
                     reader.next();
@@ -595,7 +600,7 @@ public class T005U implements org.apache.axis2.databinding.ADBBean {
                             reader.getName())) ||
                         new javax.xml.namespace.QName("", "LAND1").equals(
                             reader.getName())) {
-                    object.setLAND1(LAND1_type3.Factory.parse(
+                    object.setLAND1(com.nhry.webService.client.masterData.functions.LAND1_type3.Factory.parse(
                             reader));
 
                     reader.next();
@@ -612,7 +617,7 @@ public class T005U implements org.apache.axis2.databinding.ADBBean {
                             reader.getName())) ||
                         new javax.xml.namespace.QName("", "BLAND").equals(
                             reader.getName())) {
-                    object.setBLAND(BLAND_type1.Factory.parse(
+                    object.setBLAND(com.nhry.webService.client.masterData.functions.BLAND_type1.Factory.parse(
                             reader));
 
                     reader.next();
@@ -629,7 +634,7 @@ public class T005U implements org.apache.axis2.databinding.ADBBean {
                             reader.getName())) ||
                         new javax.xml.namespace.QName("", "BEZEI").equals(
                             reader.getName())) {
-                    object.setBEZEI(BEZEI_type1.Factory.parse(
+                    object.setBEZEI(com.nhry.webService.client.masterData.functions.BEZEI_type1.Factory.parse(
                             reader));
 
                     reader.next();
@@ -647,7 +652,7 @@ public class T005U implements org.apache.axis2.databinding.ADBBean {
                         "Unexpected subelement " + reader.getName());
                 }
             } catch (javax.xml.stream.XMLStreamException e) {
-                throw new Exception(e);
+                throw new java.lang.Exception(e);
             }
 
             return object;

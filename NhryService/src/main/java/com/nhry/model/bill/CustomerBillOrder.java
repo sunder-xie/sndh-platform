@@ -10,7 +10,7 @@ import java.util.List;
  */
 public class CustomerBillOrder {
     private TMstRecvBill bill;
-    List<TPlanOrderItem> entrys;
+    List<TPlanOrderItem> entries;
 
     public TMstRecvBill getBill() {
         return bill;
@@ -20,11 +20,11 @@ public class CustomerBillOrder {
         this.bill = bill;
     }
 
-    public List<TPlanOrderItem> getEntrys() {
-        return entrys;
+    public List<TPlanOrderItem> getEntries() {
+        return entries;
     }
 
-    public void setEntrys(List<TPlanOrderItem> entrys) {
-        this.entrys = entrys;
+    public void setEntries(List<TPlanOrderItem> entries) {
+        this.entries = entries;
     }
 }

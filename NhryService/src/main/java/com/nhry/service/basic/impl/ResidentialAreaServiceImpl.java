@@ -14,6 +14,7 @@ import com.nhry.model.basic.BranchAreaSearch;
 import com.nhry.service.basic.dao.ResidentialAreaService;
 import com.nhry.service.basic.pojo.BranchScopeModel;
 import com.nhry.service.basic.pojo.ResidentialAreaModel;
+import com.nhry.utils.PrimaryKeyUtils;
 import org.apache.commons.lang.StringUtils;
 
 import java.util.List;
@@ -113,6 +114,7 @@ public class ResidentialAreaServiceImpl implements ResidentialAreaService {
 
     @Override
     public int addResidentialArea(TMdResidentialArea tMdResidentialArea) {
+        tMdResidentialArea.setId(PrimaryKeyUtils.generateUuidKey());
         return tMdResidentialAreaMapper.addResidentialArea(tMdResidentialArea);
     }
 

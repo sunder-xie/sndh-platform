@@ -108,6 +108,28 @@ public class ZSSD00011 implements org.apache.axis2.databinding.ADBBean {
      */
     protected boolean localKBETRTracker = false;
 
+    /**
+     * field for REQ_DATE
+     */
+    protected Date localREQ_DATE;
+
+    /*  This tracker boolean wil be used to detect whether the user called the set method
+     *   for this attribute. It will be used to determine whether to include this field
+     *   in the serialized XML
+     */
+    protected boolean localREQ_DATETracker = false;
+
+    /**
+     * field for PSTYV
+     */
+    protected PSTYV_type1 localPSTYV;
+
+    /*  This tracker boolean wil be used to detect whether the user called the set method
+     *   for this attribute. It will be used to determine whether to include this field
+     *   in the serialized XML
+     */
+    protected boolean localPSTYVTracker = false;
+
     public boolean isMATNRSpecified() {
         return localMATNRTracker;
     }
@@ -124,7 +146,8 @@ public class ZSSD00011 implements org.apache.axis2.databinding.ADBBean {
      * Auto generated setter method
      * @param param MATNR
      */
-    public void setMATNR(MATNR_type1 param) {
+    public void setMATNR(
+        MATNR_type1 param) {
         localMATNRTracker = param != null;
 
         this.localMATNR = param;
@@ -146,7 +169,8 @@ public class ZSSD00011 implements org.apache.axis2.databinding.ADBBean {
      * Auto generated setter method
      * @param param KWMENG
      */
-    public void setKWMENG(KWMENG_type1 param) {
+    public void setKWMENG(
+        KWMENG_type1 param) {
         localKWMENGTracker = param != null;
 
         this.localKWMENG = param;
@@ -168,7 +192,8 @@ public class ZSSD00011 implements org.apache.axis2.databinding.ADBBean {
      * Auto generated setter method
      * @param param VRKME
      */
-    public void setVRKME(VRKME_type1 param) {
+    public void setVRKME(
+        VRKME_type1 param) {
         localVRKMETracker = param != null;
 
         this.localVRKME = param;
@@ -190,7 +215,8 @@ public class ZSSD00011 implements org.apache.axis2.databinding.ADBBean {
      * Auto generated setter method
      * @param param WERKS
      */
-    public void setWERKS(WERKS_type1 param) {
+    public void setWERKS(
+        WERKS_type1 param) {
         localWERKSTracker = param != null;
 
         this.localWERKS = param;
@@ -212,7 +238,8 @@ public class ZSSD00011 implements org.apache.axis2.databinding.ADBBean {
      * Auto generated setter method
      * @param param LGORT
      */
-    public void setLGORT(LGORT_type1 param) {
+    public void setLGORT(
+        LGORT_type1 param) {
         localLGORTTracker = param != null;
 
         this.localLGORT = param;
@@ -234,7 +261,8 @@ public class ZSSD00011 implements org.apache.axis2.databinding.ADBBean {
      * Auto generated setter method
      * @param param POSEX
      */
-    public void setPOSEX(POSEX_type1 param) {
+    public void setPOSEX(
+        POSEX_type1 param) {
         localPOSEXTracker = param != null;
 
         this.localPOSEX = param;
@@ -256,7 +284,8 @@ public class ZSSD00011 implements org.apache.axis2.databinding.ADBBean {
      * Auto generated setter method
      * @param param AUGRU
      */
-    public void setAUGRU(AUGRU_type3 param) {
+    public void setAUGRU(
+        AUGRU_type3 param) {
         localAUGRUTracker = param != null;
 
         this.localAUGRU = param;
@@ -278,10 +307,57 @@ public class ZSSD00011 implements org.apache.axis2.databinding.ADBBean {
      * Auto generated setter method
      * @param param KBETR
      */
-    public void setKBETR(KBETR_type1 param) {
+    public void setKBETR(
+        KBETR_type1 param) {
         localKBETRTracker = param != null;
 
         this.localKBETR = param;
+    }
+
+    public boolean isREQ_DATESpecified() {
+        return localREQ_DATETracker;
+    }
+
+    /**
+     * Auto generated getter method
+     * @return com.nhry.webService.client.businessData.functions.Date
+     */
+    public Date getREQ_DATE() {
+        return localREQ_DATE;
+    }
+
+    /**
+     * Auto generated setter method
+     * @param param REQ_DATE
+     */
+    public void setREQ_DATE(
+        Date param) {
+        localREQ_DATETracker = param != null;
+
+        this.localREQ_DATE = param;
+    }
+
+    public boolean isPSTYVSpecified() {
+        return localPSTYVTracker;
+    }
+
+    /**
+     * Auto generated getter method
+     * @return com.nhry.webService.client.businessData.functions.PSTYV_type1
+     */
+    public PSTYV_type1 getPSTYV() {
+        return localPSTYV;
+    }
+
+    /**
+     * Auto generated setter method
+     * @param param PSTYV
+     */
+    public void setPSTYV(
+        PSTYV_type1 param) {
+        localPSTYVTracker = param != null;
+
+        this.localPSTYV = param;
     }
 
     /**
@@ -410,6 +486,26 @@ public class ZSSD00011 implements org.apache.axis2.databinding.ADBBean {
             }
 
             localKBETR.serialize(new javax.xml.namespace.QName("", "KBETR"),
+                xmlWriter);
+        }
+
+        if (localREQ_DATETracker) {
+            if (localREQ_DATE == null) {
+                throw new org.apache.axis2.databinding.ADBException(
+                    "REQ_DATE cannot be null!!");
+            }
+
+            localREQ_DATE.serialize(new javax.xml.namespace.QName("", "REQ_DATE"),
+                xmlWriter);
+        }
+
+        if (localPSTYVTracker) {
+            if (localPSTYV == null) {
+                throw new org.apache.axis2.databinding.ADBException(
+                    "PSTYV cannot be null!!");
+            }
+
+            localPSTYV.serialize(new javax.xml.namespace.QName("", "PSTYV"),
                 xmlWriter);
         }
 
@@ -810,6 +906,40 @@ public class ZSSD00011 implements org.apache.axis2.databinding.ADBBean {
                         new javax.xml.namespace.QName("", "KBETR").equals(
                             reader.getName())) {
                     object.setKBETR(KBETR_type1.Factory.parse(
+                            reader));
+
+                    reader.next();
+                } // End of if for expected property start element
+
+                else {
+                }
+
+                while (!reader.isStartElement() && !reader.isEndElement())
+                    reader.next();
+
+                if ((reader.isStartElement() &&
+                        new javax.xml.namespace.QName("", "REQ_DATE").equals(
+                            reader.getName())) ||
+                        new javax.xml.namespace.QName("", "REQ_DATE").equals(
+                            reader.getName())) {
+                    object.setREQ_DATE(Date.Factory.parse(
+                            reader));
+
+                    reader.next();
+                } // End of if for expected property start element
+
+                else {
+                }
+
+                while (!reader.isStartElement() && !reader.isEndElement())
+                    reader.next();
+
+                if ((reader.isStartElement() &&
+                        new javax.xml.namespace.QName("", "PSTYV").equals(
+                            reader.getName())) ||
+                        new javax.xml.namespace.QName("", "PSTYV").equals(
+                            reader.getName())) {
+                    object.setPSTYV(PSTYV_type1.Factory.parse(
                             reader));
 
                     reader.next();

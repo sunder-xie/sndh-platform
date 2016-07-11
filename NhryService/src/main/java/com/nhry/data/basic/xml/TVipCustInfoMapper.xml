@@ -3,8 +3,7 @@
 <mapper namespace="com.nhry.data.basic.dao.TVipCustInfoMapper">
 	<resultMap id="BaseResultMap" type="com.nhry.data.basic.domain.TVipCustInfo">
 		<id column="VIP_CUST_NO" property="vipCustNo" jdbcType="VARCHAR" />
-		<result column="VIP_CUST_NO_SAP" property="vipCustNoSap"
-			jdbcType="VARCHAR" />
+		<result column="VIP_CUST_NO_SAP" property="vipCustNoSap" jdbcType="VARCHAR" />
 		<result column="SALES_ORG" property="salesOrg" jdbcType="VARCHAR" />
 		<result column="VIP_NAME" property="vipName" jdbcType="VARCHAR" />
 		<result column="ADDRESS_TXT" property="addressTxt" jdbcType="VARCHAR" />
@@ -20,8 +19,7 @@
 		<result column="TEL" property="tel" jdbcType="VARCHAR" />
 		<result column="ZIP" property="zip" jdbcType="VARCHAR" />
 		<result column="Email" property="email" jdbcType="VARCHAR" />
-		<result column="ALIPAY_ACCOUNT" property="alipayAccount"
-			jdbcType="VARCHAR" />
+		<result column="ALIPAY_ACCOUNT" property="alipayAccount" jdbcType="VARCHAR" />
 		<result column="WEBCHAT_NO" property="webchatNo" jdbcType="VARCHAR" />
 		<result column="NH_EC_ACCOUNT" property="nhEcAccount" jdbcType="VARCHAR" />
 		<result column="JD_ACCOUNT" property="jdAccount" jdbcType="VARCHAR" />
@@ -40,18 +38,17 @@
 		<result column="CREATE_AT" property="createAt" jdbcType="TIMESTAMP" />
 		<result column="CREATE_BY" property="createBy" jdbcType="VARCHAR" />
 		<result column="CREATE_BY_TXT" property="createByTxt" jdbcType="VARCHAR" />
-		<result column="LAST_MODIFIED" property="lastModified"
-			jdbcType="TIMESTAMP" />
-		<result column="LAST_MODIFIED_BY" property="lastModifiedBy"
-			jdbcType="VARCHAR" />
-		<result column="LAST_MODIFIED_BY_TXT" property="lastModifiedByTxt"
-			jdbcType="VARCHAR" />
+		<result column="LAST_MODIFIED" property="lastModified" jdbcType="TIMESTAMP" />
+		<result column="LAST_MODIFIED_BY" property="lastModifiedBy" jdbcType="VARCHAR" />
+		<result column="LAST_MODIFIED_BY_TXT" property="lastModifiedByTxt" jdbcType="VARCHAR" />
 		<result column="MEMO_TXT" property="memoTxt" jdbcType="VARCHAR" />
 		<result column="DISP_MEMO_TXT" property="dispMemoTxt" jdbcType="VARCHAR" />
 		<result column="BRANCH_NO" property="branchNo" jdbcType="VARCHAR" />
 		<result column="FIRST_ORDER_TIME" property="firstOrderTime" jdbcType="TIMESTAMP" />
 		<result column="LAST_ORDER_TIME" property="lastOrderTime" jdbcType="TIMESTAMP" />
 		<result column="BRANCH_NAME" property="branchName" jdbcType="VARCHAR" />
+		<result column="DEALER_NO" property="dealerNo" jdbcType="VARCHAR" />
+		<result column="DEALER_NAME" property="dealerName" jdbcType="VARCHAR" />
 	</resultMap>
 	<sql id="Base_Column_List">
 		VIP_CUST_NO, VIP_CUST_NO_SAP, SALES_ORG, VIP_NAME,
@@ -65,7 +62,7 @@
 		SUBSCRIBER, ACTIVITY_NO, STATUS, VIP_AMT, CREATE_AT,
 		CREATE_BY, CREATE_BY_TXT,
 		LAST_MODIFIED,
-		LAST_MODIFIED_BY,
+		LAST_MODIFIED_BY,DEALER_NO,
 		LAST_MODIFIED_BY_TXT, MEMO_TXT, DISP_MEMO_TXT, BRANCH_NO,
 		date_format(FIRST_ORDER_TIME, '%Y-%m-%d') FIRST_ORDER_TIME,date_format(LAST_ORDER_TIME, '%Y-%m-%d') LAST_ORDER_TIME
 	</sql>
@@ -137,7 +134,9 @@
 				b.BRANCH_NAME
 			FROM
 				T_MD_BRANCH b where b.BRANCH_NO = i.BRANCH_NO
-		) BRANCH_NAME,i.BRANCH_NO,
+		) BRANCH_NAME,i.BRANCH_NO,i.DEALER_NO,(CASE i.DEALER_NO
+			WHEN '-1' THEN '自有奶站'
+			ELSE (SELECT d.dealer_name from t_md_dealer d where d.dealer_no=i.DEALER_NO) END) DEALER_NAME,
 		date_format(FIRST_ORDER_TIME, '%Y-%m-%d') FIRST_ORDER_TIME,date_format(LAST_ORDER_TIME, '%Y-%m-%d') LAST_ORDER_TIME 
 		FROM
 		t_vip_cust_info i WHERE i.VIP_CUST_NO =#{vipCustNo,jdbcType=VARCHAR}
@@ -177,7 +176,7 @@
 		i.LAST_MODIFIED_BY_TXT,
 		i.MEMO_TXT,
 		i.DISP_MEMO_TXT,
-		i.BRANCH_NO,
+		i.BRANCH_NO,i.DEALER_NO,
 		date_format(FIRST_ORDER_TIME, '%Y-%m-%d') FIRST_ORDER_TIME,date_format(LAST_ORDER_TIME, '%Y-%m-%d') LAST_ORDER_TIME 
 		FROM
 		t_vip_cust_info i 
@@ -212,7 +211,7 @@
 		i.VIP_AMT,
 		i.MEMO_TXT,
 		i.DISP_MEMO_TXT,
-		i.BRANCH_NO,
+		i.BRANCH_NO,i.DEALER_NO,
 		date_format(FIRST_ORDER_TIME, '%Y-%m-%d') FIRST_ORDER_TIME,date_format(LAST_ORDER_TIME, '%Y-%m-%d') LAST_ORDER_TIME 
 		FROM
 		t_vip_cust_info i 
@@ -344,6 +343,9 @@
 			<if test="branchNo != null">
 				BRANCH_NO,
 			</if>
+			<if test="dealerNo != null">
+			    DEALER_NO,
+			</if>
 		</trim>
 		<trim prefix="values (" suffix=")" suffixOverrides=",">
 			<if test="vipCustNo != null">
@@ -468,6 +470,9 @@
 			</if>
 			<if test="branchNo != null">
 				#{branchNo,jdbcType=VARCHAR},
+			</if>
+			<if test="dealerNo != null">
+			    #{dealerNo,jdbcType=VARCHAR},
 			</if>
 		</trim>
 	</insert>
@@ -673,7 +678,15 @@
 	<select id="findCompanyCustByPhone" resultMap="BaseResultMap" parameterType="java.util.Map">
 		select
 		<include refid="Base_Column_List" />
-		from t_vip_cust_info where MP = #{phone} and SALES_ORG=#{salesOrg}
+		from t_vip_cust_info 
+		<where>
+		    <if test="phone != null and phone != ''">
+		        MP = #{phone} 
+		    </if>
+		    <if test="salesOrg != null and salesOrg != ''">
+		        and SALES_ORG=#{salesOrg}
+		    </if>
+		</where>
 	</select>
 	<select id="findVipCust" resultMap="BaseResultMap"
 		parameterType="java.util.Map">
@@ -696,6 +709,12 @@
 			<if test="lastModifiedByTxt != null">
 				LAST_MODIFIED_BY_TXT =
 				#{lastModifiedByTxt,jdbcType=VARCHAR},
+			</if>
+			<if test="firstOrderTime != null">
+				FIRST_ORDER_TIME = #{firstOrderTime,jdbcType=TIMESTAMP},
+			</if>
+			<if test="lastOrderTime != null">
+				LAST_ORDER_TIME = #{lastOrderTime,jdbcType=TIMESTAMP},
 			</if>
 		</set>
 		where VIP_CUST_NO = #{vipCustNo,jdbcType=VARCHAR}
@@ -767,7 +786,9 @@
 				b.BRANCH_NAME
 			FROM
 				T_MD_BRANCH b where b.BRANCH_NO = i.BRANCH_NO
-		) BRANCH_NAME,i.BRANCH_NO  from t_vip_cust_info i 
+		) BRANCH_NAME,i.BRANCH_NO,i.DEALER_NO,(CASE i.DEALER_NO
+			WHEN '-1' THEN '自有奶站'
+			ELSE (SELECT d.dealer_name from t_md_dealer d where d.dealer_no=i.DEALER_NO) END) DEALER_NAME  from t_vip_cust_info i 
 		<where>
 		     <if test="salesOrg != null and salesOrg !=''">
 		         SALES_ORG = #{salesOrg} 

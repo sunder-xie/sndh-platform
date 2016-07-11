@@ -1,8 +1,11 @@
 package com.nhry.service.pi.impl;
+
+import com.nhry.common.exception.MessageCode;
+import com.nhry.common.exception.ServiceException;
 import com.nhry.data.basic.dao.*;
-import com.nhry.data.basic.domain.TMdBranch;
-import com.nhry.data.basic.domain.TMdDealer;
-import com.nhry.data.basic.domain.TMdMara;
+import com.nhry.data.basic.domain.*;
+import com.nhry.data.config.dao.NHSysCodeItemMapper;
+import com.nhry.data.config.domain.NHSysCodeItem;
 import com.nhry.service.pi.dao.PIProductService;
 import com.nhry.utils.PIPropertitesUtil;
 import com.nhry.webService.OptionManager;
@@ -10,6 +13,8 @@ import com.nhry.webService.client.masterData.ZT_MasterDataQueryServiceStub;
 import com.nhry.webService.client.masterData.functions.*;
 import com.nhry.webService.client.masterData.model.*;
 import org.apache.axis2.client.Options;
+import org.apache.commons.lang.StringUtils;
+
 import java.rmi.RemoteException;
 import java.util.*;
 import java.util.Date;
@@ -23,17 +28,15 @@ public class PIProductServiceImpl implements PIProductService {
     public static String BRANDCHTYPE_WB = "02";
     public PIProductMapper piProductMapper;
     public TMdMaraMapper maraMapper;
-    public TMaraSalesMapper maraSalesMapper;
     public TMdBranchMapper branchMapper;
     public TMdDealerMapper dealerMapper;
+    public TMdMaraUnitMapper maraUnitMapper;
+    public NHSysCodeItemMapper codeItemMapper;
     public void setMaraMapper(TMdMaraMapper maraMapper) {
         this.maraMapper = maraMapper;
     }
     public void setPiProductMapper(PIProductMapper piProductMapper) {
         this.piProductMapper = piProductMapper;
-    }
-    public void setMaraSalesMapper(TMaraSalesMapper maraSalesMapper) {
-        this.maraSalesMapper = maraSalesMapper;
     }
     public void setBranchMapper(TMdBranchMapper branchMapper) {
         this.branchMapper = branchMapper;
@@ -41,6 +44,15 @@ public class PIProductServiceImpl implements PIProductService {
     public void setDealerMapper(TMdDealerMapper dealerMapper) {
         this.dealerMapper = dealerMapper;
     }
+
+    public void setMaraUnitMapper(TMdMaraUnitMapper maraUnitMapper) {
+        this.maraUnitMapper = maraUnitMapper;
+    }
+
+    public void setCodeItemMapper(NHSysCodeItemMapper codeItemMapper) {
+        this.codeItemMapper = codeItemMapper;
+    }
+
     /**
      * 物料查询
      *
@@ -50,29 +62,66 @@ public class PIProductServiceImpl implements PIProductService {
     public int matHandler() {
         try {
             ZSD_MATERAIL_DATA_RFCResponse response = getMaterailData();
-            response.getET_MARM();
+            MARM[] marms = response.getET_MARM().getItem();
             List<ET_MATNR> etMatnrs = getET_MATNR(response);
             Map<String, String> etMap = getET_MAKTX(response);
+            Map<String,String> matnrUnit = new HashMap<String,String>();
             for (ET_MATNR etMatnr : etMatnrs) {
-                TMdMara tMdMara = new TMdMara();
-                tMdMara.setMatnr(etMatnr.getMATNR());
-                tMdMara.setBaseUnit(etMatnr.getMEINS());
-                tMdMara.setWeight(etMatnr.getNTGEW() == null ? null : etMatnr.getNTGEW().floatValue());
-                tMdMara.setWeightUnit(etMatnr.getGEWEI());
-                tMdMara.setMatnrTxt(etMap.get(etMatnr.getMATNR()));
-                tMdMara.setSalesOrg(etMatnr.getVKORG());
+                matnrUnit.put(etMatnr.getMATNR(),etMatnr.getMEINS());
                 Map<String,String> mara = new HashMap<String,String>();
                 mara.put("salesOrg",etMatnr.getVKORG());
                 mara.put("matnr",etMatnr.getMATNR());
-                TMdMara tmp = maraMapper.selectProductByCode(mara);
-                if (tmp != null) {
-                    tMdMara.setLastModified(new Date());
+                TMdMara tMdMara = maraMapper.selectProductByCode(mara);
+                if (tMdMara != null) {
+                    tMdMara.setBaseUnit(etMatnr.getMEINS());
+                    tMdMara.setWeight(etMatnr.getNTGEW() == null ? null : etMatnr.getNTGEW().floatValue());
+                    tMdMara.setWeightUnit(etMatnr.getGEWEI());
+                    tMdMara.setMatnrTxt(etMap.get(etMatnr.getMATNR()));
+                    tMdMara.setLastModified(new java.util.Date());
                     maraMapper.updateProduct(tMdMara);
                 } else {
+                    tMdMara.setMatnr(etMatnr.getMATNR());
+                    tMdMara.setSalesOrg(etMatnr.getVKORG());
+                    tMdMara.setBaseUnit(etMatnr.getMEINS());
+                    tMdMara.setWeight(etMatnr.getNTGEW() == null ? null : etMatnr.getNTGEW().floatValue());
+                    tMdMara.setWeightUnit(etMatnr.getGEWEI());
+                    tMdMara.setMatnrTxt(etMap.get(etMatnr.getMATNR()));
                     tMdMara.setCreateAt(new Date());
+                    tMdMara.setStatus("N");//不生效
                     maraMapper.addProduct(tMdMara);
                 }
                 System.out.println("-----" + tMdMara.getMatnr());
+            }
+
+            for(MARM marm : marms) {
+                String matnr = marm.getMATNR().getMATNR_type4();
+                String meinh = marm.getMEINH().getMEINH_type0();
+                String mat = matnrUnit.get(matnr);
+                System.out.println(matnr + "@@@" +meinh + "!!!!" + mat);
+                if(StringUtils.isNotEmpty(mat) && StringUtils.isNotEmpty(matnr)&& StringUtils.isNotEmpty(meinh)) {
+                    TMdMaraUnitKey key = new TMdMaraUnitKey();
+                    key.setUnit(meinh);
+                    key.setMatnr(matnr);
+                    TMdMaraUnit maraUnit = maraUnitMapper.selectMaraUnitByNo(key);
+                    if (maraUnit == null) {
+                        maraUnit = new TMdMaraUnit();
+                        maraUnit.setBaseUnit(mat);
+                        maraUnit.setMatnr(marm.getMATNR().getMATNR_type4());
+                        maraUnit.setUnit(marm.getMEINH().getMEINH_type0());
+                        maraUnit.setUmrez(marm.getUMREZ().getUMREZ_type0());
+                        maraUnit.setUmren(marm.getUMREN().getUMREN_type0());
+                        maraUnit.setCreateAt(new Date());
+                        maraUnitMapper.insertMaraUnit(maraUnit);
+                    } else {
+                        maraUnit.setBaseUnit(mat);
+//                        maraUnit.setMatnr(marm.getMATNR().getMATNR_type4());
+//                        maraUnit.setUnit(marm.getMEINH().getMEINH_type0());
+                        maraUnit.setUmrez(marm.getUMREZ().getUMREZ_type0());
+                        maraUnit.setUmren(marm.getUMREN().getUMREN_type0());
+                        maraUnit.setLastModified(new Date());
+                        maraUnitMapper.updateMaraUnit(maraUnit);
+                    }
+                }
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -92,8 +141,19 @@ public class PIProductServiceImpl implements PIProductService {
             List<ET_PARTNER> et_partner = getET_PARTNER(response);
             Map<String, List<ET_PARTNER>> partners = new HashMap<String, List<ET_PARTNER>>();
             List<ET_VKORG> zys = et_vkorgs.get("01");
+            Map<String,String> gcs = getET_DATA();
+            Map<String,ET_LGORT> ccds = getET_LGORT();
             for (ET_VKORG et_vkorg : zys) {
-                saveBranch(et_kunnrs, BRANDCHTYPE_ZY, et_vkorg.getVKORG(), et_vkorg.getKUNNR(), et_vkorg.getVTWEG(), "");
+                String kunnr = et_vkorg.getKUNNR();
+                String lgort = gcs.get(kunnr);
+                if(StringUtils.isNotEmpty(lgort)){
+                    ET_LGORT lg = ccds.get(lgort);
+                    String werks = lg.getWERKS();
+                    String lgorm = lg.getLGOBE();
+                    if(StringUtils.isNotEmpty(werks)){
+                        saveBranch(et_kunnrs, BRANDCHTYPE_ZY, et_vkorg.getVKORG(), et_vkorg.getKUNNR(), lgort, werks, "");
+                    }
+                }
             }
             List<ET_VKORG> wbs = et_vkorgs.get("02");
             Map<String, ET_VKORG> jxs = new HashMap<String, ET_VKORG>();
@@ -128,7 +188,7 @@ public class PIProductServiceImpl implements PIProductService {
                 String key = entry.getKey();
                 List<ET_PARTNER> lists = entry.getValue();
                 for (ET_PARTNER partner : lists) {
-                    saveBranch(et_kunnrs, BRANDCHTYPE_WB, partner.getVKORG(), partner.getKUNWE(), partner.getVTWEG(), key);
+                    saveBranch(et_kunnrs, BRANDCHTYPE_WB, partner.getVKORG(), partner.getKUNWE(), "", "", key);
                 }
             }
             return 1;
@@ -171,7 +231,7 @@ public class PIProductServiceImpl implements PIProductService {
             dealerMapper.updateDealer(dealer);
         }
     }
-    private void saveBranch(Map<String, ET_KUNNR> et_kunnrs, String branchGroup, String vkorg, String kunnr, String vtweg, String dealerNo) {
+    private void saveBranch(Map<String, ET_KUNNR> et_kunnrs, String branchGroup, String vkorg, String kunnr, String lgort, String werks, String dealerNo) {
         ET_KUNNR et_kunnr = et_kunnrs.get(kunnr);
         if (et_kunnr == null) {
             System.out.println(kunnr + "@@@@@@@@@@@@@@@");
@@ -186,12 +246,16 @@ public class PIProductServiceImpl implements PIProductService {
                 branch.setCity(et_kunnr.getORT01());
                 branch.setBranchGroup(branchGroup);
                 branch.setProvince(et_kunnr.getREGIO());
-                branch.setSalesCha(vtweg);
+                branch.setSalesCha("13");
                 branch.setSalesOrg(vkorg);
                 branch.setCreateAt(new Date());
                 branch.setCreateBy("ECC");
                 branch.setCreateByTxt("ECC");
                 branch.setDealerNo(dealerNo);
+                if(StringUtils.isNotEmpty(lgort))
+                    branch.setLgort(lgort);
+                if(StringUtils.isNotEmpty(werks))
+                    branch.setWerks(werks);
                 branch.setCompanyCode(et_kunnr.getBUKRS());
                 branchMapper.addBranch(branch);
             } else {
@@ -202,9 +266,13 @@ public class PIProductServiceImpl implements PIProductService {
                 branch.setCity(et_kunnr.getORT01());
                 branch.setBranchGroup(branchGroup);
                 branch.setProvince(et_kunnr.getREGIO());
-                branch.setSalesCha(vtweg);
+                branch.setSalesCha("13");
                 branch.setSalesOrg(vkorg);
                 branch.setDealerNo(dealerNo);
+                if(StringUtils.isNotEmpty(lgort))
+                    branch.setLgort(lgort);
+                if(StringUtils.isNotEmpty(werks))
+                    branch.setWerks(werks);
                 branch.setLastModified(new Date());
                 branch.setLastModifiedBy("ECC");
                 branch.setLastModifiedByTxt("ECC");
@@ -234,7 +302,210 @@ public class PIProductServiceImpl implements PIProductService {
         }
         return 1;
     }
-    protected ZSD_CUSTOMER_DATA_SYN_RFCResponse getCustomerData() throws RemoteException {
+
+    /**
+     * 字典表
+     * @return
+     * @throws RemoteException
+     */
+    @Override
+    public int salesQueryHandler() throws RemoteException{
+        try {
+//            ZSD_SALES_ORGANIZATION_RFCResponse response = salesQuery();
+//            saveCompany(response);
+//            saveWerks(response);
+//            saveLgort(response);
+//            saveVkorg(response);
+            ZSD_T005_DATAResponse response1 = codeQuery();
+            saveET_T024E(response1);
+        }catch (Exception e){
+            throw new ServiceException(MessageCode.LOGIC_ERROR,"字典数据保存出差！");
+        }
+        return 1;
+    }
+
+
+
+    /**
+     * 销售组织
+     * @return
+     * @throws RemoteException
+     */
+    private ZSD_SALES_ORGANIZATION_RFCResponse salesQuery() throws RemoteException{
+        ZT_MasterDataQueryServiceStub client = getZt_masterDataQueryServiceStub();
+        ZSD_SALES_ORGANIZATION_RFC rfc = new ZSD_SALES_ORGANIZATION_RFC();
+        return client.salesQuery(rfc);
+    }
+
+    /**
+     * 保存销售组织
+     * @param response
+     */
+    private void saveVkorg(ZSD_SALES_ORGANIZATION_RFCResponse response){
+        ZSSD00025[] zssd00025s = response.getET_VKORG().getItem();
+        for(ZSSD00025 zssd00025 : zssd00025s){
+            String vkorg = zssd00025.getVKORG().getVKORG_type10();
+            String vkorgTxt = zssd00025.getVKORGTEXT().getVKORGTEXT_type0();
+            String bukrs = zssd00025.getBUKRS().getBUKRS_type10();
+            if (StringUtils.isNotEmpty(vkorg)) {
+                NHSysCodeItem param = new NHSysCodeItem();
+                param.setItemCode(vkorg);
+                param.setTypeCode("1002");
+                NHSysCodeItem codeItem = codeItemMapper.findCodeItenByCode(param);
+                if (codeItem == null) {
+                    codeItem = new NHSysCodeItem();
+                    codeItem.setItemCode(vkorg);
+                    codeItem.setTypeCode("1002");
+                    codeItem.setItemName(vkorgTxt);
+                    codeItem.setParent(bukrs);
+                    codeItemMapper.addCodeItem(codeItem);
+                } else {
+                    codeItem.setItemName(vkorgTxt);
+                    codeItem.setParent(bukrs);
+                    codeItemMapper.updateCodeItemByCode(codeItem);
+                }
+            }
+        }
+    }
+
+    /**
+     * 保存库存地点
+     * @param response
+     */
+    private void saveLgort(ZSD_SALES_ORGANIZATION_RFCResponse response){
+        ZSSD00024[] zssd00024s = response.getET_LGORT().getItem();
+        for(ZSSD00024 zssd00024 : zssd00024s) {
+            String lgort = zssd00024.getLGORT().getLGORT_type4();
+            String name = zssd00024.getNAME1().getNAME1_type2();
+            String werks = zssd00024.getWERKS().getWERKS_type8();
+            String des = zssd00024.getLGOBE().getLGOBE_type2();
+            if (StringUtils.isNotEmpty(lgort)) {
+                NHSysCodeItem param = new NHSysCodeItem();
+                param.setItemCode(lgort);
+                param.setTypeCode("1006");
+                NHSysCodeItem codeItem = codeItemMapper.findCodeItenByCode(param);
+                if (codeItem == null) {
+                    codeItem = new NHSysCodeItem();
+                    codeItem.setItemCode(lgort);
+                    codeItem.setTypeCode("1006");
+                    codeItem.setItemName(name);
+                    codeItem.setParent(werks);
+                    codeItem.setAttr1(des);
+                    codeItemMapper.addCodeItem(codeItem);
+                } else {
+                    codeItem.setItemName(name);
+                    codeItem.setParent(werks);
+                    codeItem.setAttr1(des);
+                    codeItemMapper.updateCodeItemByCode(codeItem);
+                }
+            }
+        }
+    }
+
+    /**
+     * 保存工厂
+     * @param response
+     */
+    private void saveWerks(ZSD_SALES_ORGANIZATION_RFCResponse response){
+        ZSSD00023[] zssd00023s = response.getET_WERKS().getItem();
+        for(ZSSD00023 zssd00023 : zssd00023s) {
+            String werks = zssd00023.getWERKS().getWERKS_type4();
+            String butxt = zssd00023.getNAME().getNAME_type0();
+            String bukrs = zssd00023.getBUKRS().getBUKRS_type2();
+            if (StringUtils.isNotEmpty(werks)) {
+                NHSysCodeItem param = new NHSysCodeItem();
+                param.setItemCode(werks);
+                param.setTypeCode("1005");
+                NHSysCodeItem codeItem = codeItemMapper.findCodeItenByCode(param);
+                if (codeItem == null) {
+                    codeItem = new NHSysCodeItem();
+                    codeItem.setItemCode(werks);
+                    codeItem.setTypeCode("1005");
+                    codeItem.setItemName(butxt);
+                    codeItem.setParent(bukrs);
+                    codeItemMapper.addCodeItem(codeItem);
+                } else {
+                    codeItem.setItemName(butxt);
+                    codeItem.setParent(bukrs);
+                    codeItemMapper.updateCodeItemByCode(codeItem);
+                }
+            }
+        }
+
+    }
+
+
+    private void saveCompany(ZSD_SALES_ORGANIZATION_RFCResponse response){
+        ZSSD00027[] zssd00027s = response.getET_BUKRS().getItem();
+        for(ZSSD00027 zssd00027 : zssd00027s){
+           String bukrs =  zssd00027.getBUKRS().getBUKRS_type8();
+           String butxt = zssd00027.getBUTXT().getBUTXT_type0();
+            if(StringUtils.isNotEmpty(bukrs)){
+                NHSysCodeItem param = new NHSysCodeItem();
+                param.setItemCode(bukrs);
+                param.setTypeCode("1003");
+                NHSysCodeItem codeItem = codeItemMapper.findCodeItenByCode(param);
+                if(codeItem == null) {
+                    codeItem = new NHSysCodeItem();
+                    codeItem.setItemCode(bukrs);
+                    codeItem.setTypeCode("1003");
+                    codeItem.setItemName(butxt);
+                    codeItemMapper.addCodeItem(codeItem);
+                }else{
+                    codeItem.setItemName(butxt);
+                    codeItemMapper.updateCodeItemByCode(codeItem);
+                }
+            }
+        }
+    }
+
+
+    /**
+     * 字典数据
+     * @return
+     * @throws RemoteException
+     */
+    private ZSD_T005_DATAResponse codeQuery() throws RemoteException {
+        ZT_MasterDataQueryServiceStub client = getZt_masterDataQueryServiceStub();
+        ZSD_T005_DATA zsd_t005_data = new ZSD_T005_DATA();
+        return client.codeQuery(zsd_t005_data);
+    }
+
+    /**
+     * 保存采购组织
+     * @param response
+     */
+    private void saveET_T024E(ZSD_T005_DATAResponse response){
+        T024E[] t024Es = response.getET_T024E().getItem();
+        for (T024E t024e : t024Es) {
+            String ekorg = t024e.getEKORG().getEKORG_type0();
+            if(StringUtils.isNotEmpty(ekorg)) {
+                NHSysCodeItem param = new NHSysCodeItem();
+                param.setItemCode(ekorg);
+                param.setTypeCode("1004");
+                NHSysCodeItem codeItem = codeItemMapper.findCodeItenByCode(param);
+                if(codeItem == null) {
+                    codeItem = new NHSysCodeItem();
+                    codeItem.setItemCode(ekorg);
+                    codeItem.setTypeCode("1004");
+                    codeItem.setItemName(t024e.getEKOTX().getEKOTX_type0());
+                    codeItem.setParent(t024e.getBUKRS().getBUKRS_type4());
+                    codeItemMapper.addCodeItem(codeItem);
+                }else{
+                    codeItem.setItemName(t024e.getEKOTX().getEKOTX_type0());
+                    codeItem.setParent(t024e.getBUKRS().getBUKRS_type4());
+                    codeItemMapper.updateCodeItemByCode(codeItem);
+                }
+            }
+        }
+    }
+
+    /**
+     * 客户数据
+     * @return
+     * @throws RemoteException
+     */
+    private ZSD_CUSTOMER_DATA_SYN_RFCResponse getCustomerData() throws RemoteException {
         ZT_MasterDataQueryServiceStub client = getZt_masterDataQueryServiceStub();
         ZSD_CUSTOMER_DATA_SYN_RFC zsdCustomerDataSynRfc = new ZSD_CUSTOMER_DATA_SYN_RFC();
         ZSD_CUSTOMER_DATA_SYN_RFCResponse response = new ZSD_CUSTOMER_DATA_SYN_RFCResponse();
@@ -254,6 +525,12 @@ public class PIProductServiceImpl implements PIProductService {
         response = client.customerQuery(zsdCustomerDataSynRfc);
         return response;
     }
+
+    /**
+     * 材料数据
+     * @return
+     * @throws RemoteException
+     */
     private ZSD_MATERAIL_DATA_RFCResponse getMaterailData() throws RemoteException {
         ZT_MasterDataQueryServiceStub client = getZt_masterDataQueryServiceStub();
         IT_MTART_type0 itMtartType0 = new IT_MTART_type0();
@@ -392,19 +669,10 @@ public class PIProductServiceImpl implements PIProductService {
         return client;
     }
 
-    public List<ET_MARM_type1> getET_MARM(ZSD_MATERAIL_DATA_RFCResponse response){
+    public MARM[] getET_MARM(ZSD_MATERAIL_DATA_RFCResponse response){
         ET_MARM_type1 et_marm_type1 = response.getET_MARM();
         MARM[] marms = et_marm_type1.getItem();
-
-        for(MARM marm : marms){
-            marm.getMATNR();
-            marm.getMEINH();
-            marm.getUMREZ();
-            marm.getUMREN();
-
-        }
-
-        return null;
+        return marms;
     }
     /**
      * 获取产品数据

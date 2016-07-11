@@ -4,7 +4,9 @@ import com.nhry.common.auth.UserSessionService;
 import com.nhry.common.exception.MessageCode;
 import com.nhry.common.exception.ServiceException;
 import com.nhry.data.auth.domain.TSysUser;
+import com.nhry.data.basic.dao.TMdBranchMapper;
 import com.nhry.data.basic.dao.TMdMaraMapper;
+import com.nhry.data.basic.domain.TMdBranch;
 import com.nhry.data.basic.domain.TMdMara;
 import com.nhry.data.milktrans.dao.TSsmReqGoodsOrderItemMapper;
 import com.nhry.data.milktrans.dao.TSsmReqGoodsOrderMapper;
@@ -17,6 +19,7 @@ import com.nhry.model.milktrans.*;
 import com.nhry.service.milktrans.dao.RequireOrderService;
 import com.nhry.service.pi.dao.PIRequireOrderService;
 import com.nhry.utils.PrimaryKeyUtils;
+import com.nhry.webService.client.PISuccessMessage;
 import org.apache.commons.lang3.StringUtils;
 
 import java.util.*;
@@ -31,7 +34,12 @@ public class RequireOrderServiceImpl implements RequireOrderService {
     private TOrderDaliyPlanItemMapper tOrderDaliyPlanItemMapper;
     private UserSessionService userSessionService;
     private PIRequireOrderService piRequireOrderService;
+    private TMdBranchMapper branchMapper;
     private TMdMaraMapper tMdMaraMapper;
+
+    public void setBranchMapper(TMdBranchMapper branchMapper) {
+        this.branchMapper = branchMapper;
+    }
     public void setPiRequireOrderService(PIRequireOrderService piRequireOrderService) {
         this.piRequireOrderService = piRequireOrderService;
     }
@@ -268,12 +276,90 @@ public class RequireOrderServiceImpl implements RequireOrderService {
     public int sendRequireOrderToERP() {
         Date today = new Date();
         TSysUser user = userSessionService.getCurrentUser();
-        String salesOrg =user.getGroupId();
+        String salesOrg =user.getSalesOrg();
+        String branchNo = user.getBranchNo();
         RequireOrderSearch search = new RequireOrderSearch();
         search.setRequiredDate(today);
+        search.setBranchNo(branchNo);
         TSsmReqGoodsOrder order = tSsmReqGoodsOrderMapper.searchRequireOrder(search);
-      //  piRequireOrderService.generateRequireOrder(order);
+        String errorMessage = "";
+        if(order == null){
+            errorMessage = "今天的要货计划还未创建";
+            throw  new ServiceException(MessageCode.LOGIC_ERROR,errorMessage);
+        }else{
+            if( "30".equals(order.getStatus())){
+                errorMessage = "今天的要货计划已发送至ERP";
+                throw  new ServiceException(MessageCode.LOGIC_ERROR,errorMessage);
+            }
+
+           PISuccessMessage message =  piRequireOrderService.generateRequireOrder(order);
+           /* PISuccessMessage message = new PISuccessMessage();
+            message.setSuccess(Boolean.TRUE);
+            message.setData(PrimaryKeyUtils.generateUuidKey());
+            message.setMessage("成功");*/
+            //如果成功
+            if(message.isSuccess()){
+                order.setVoucherNo(message.getData());
+                TMdBranch branch = branchMapper.selectBranchByNo(branchNo);
+                //直营奶站
+                if("01".equals(branch.getBranchGroup())){
+                     //修改要货计划状态为已确认状态 并 同步修改订户日订单状态为已确认
+                    if(!uptRequireOrderAndDayOrderStatus(order,user)){
+                        errorMessage ="修改要货计划或日订单状态失败" ;
+                        throw  new ServiceException(MessageCode.LOGIC_ERROR,errorMessage);
+                    }
+                }else{
+                    //非直营奶站
+                    //要货计划单状态为“确认”，将不能修改
+                    order.setLastModified(new Date());
+                    order.setLastModifiedBy(user.getLoginName());
+                    order.setLastModifiedByTxt(user.getDisplayName());
+                    order.setStatus("30");
+                    tSsmReqGoodsOrderMapper.uptRequireGoodsModifyInfo(order);
+                }
+
+            }else{
+                throw  new ServiceException(MessageCode.REQUEST_NOT_FOUND,message.getMessage());
+            }
+        }
         return 0;
+    }
+
+    private boolean  uptRequireOrderAndDayOrderStatus(TSsmReqGoodsOrder order,TSysUser user) {
+            //更新要货计划状态为确认
+        order.setLastModified(new Date());
+        order.setLastModifiedBy(user.getLoginName());
+        order.setLastModifiedByTxt(user.getDisplayName());
+        order.setStatus("30");
+        tSsmReqGoodsOrderMapper.uptRequireGoodsModifyInfo(order);
+        String branchNo = order.getBranchNo();
+        String salesOrg = user.getSalesOrg();
+        Date requiredDate = order.getRequiredDate();
+
+        //更新后两天配送的订户日订单
+        for(int i=1;i<=2;i++){
+            Calendar calendar = new GregorianCalendar();
+            calendar.setTime(requiredDate);
+            calendar.add(calendar.DATE,i);//把日期往后增加i天.整数往后推 这个时间就是日期往后推一天的结果
+            Date orderDate = calendar.getTime();
+            //更近orderDate时的产品
+            RequireOrderSearch search = new RequireOrderSearch();
+            search.setBranchNo(branchNo);
+            search.setPreDays(i);
+            search.setSalesOrg(salesOrg);
+            search.setRequiredDate(orderDate);
+            List<TOrderDaliyPlanItem> items = tOrderDaliyPlanItemMapper.selectDaliyPlansByBranchAndDay(search);
+            if(items!=null && items.size()>0){
+                for(TOrderDaliyPlanItem item : items){
+                    item.setStatus("20");
+                    tOrderDaliyPlanItemMapper.updateDaliyPlanItemStatus(item);
+                }
+            }
+
+        }
+
+
+        return true;
     }
 
 

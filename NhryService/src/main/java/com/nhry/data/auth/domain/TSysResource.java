@@ -1,7 +1,9 @@
 package com.nhry.data.auth.domain;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 public class TSysResource implements Serializable{
     private String resCode;
@@ -25,6 +27,14 @@ public class TSysResource implements Serializable{
     private String lastModifiedByTxt;
 
     private String resUrl;
+    
+    private boolean checked = false;
+    
+    private boolean open = false;
+    
+    private int index;
+    
+    private List<TSysResource> childrens = new ArrayList<TSysResource>();
 
     public String getResCode() {
         return resCode;
@@ -113,4 +123,36 @@ public class TSysResource implements Serializable{
     public void setResUrl(String resUrl) {
         this.resUrl = resUrl == null ? null : resUrl.trim();
     }
+
+	public boolean isChecked() {
+		return checked;
+	}
+
+	public void setChecked(boolean checked) {
+		this.checked = checked;
+	}
+
+	public boolean isOpen() {
+		return open;
+	}
+
+	public void setOpen(boolean open) {
+		this.open = open;
+	}
+
+	public List<TSysResource> getChildrens() {
+		return childrens;
+	}
+
+	public void setChildrens(List<TSysResource> childrens) {
+		this.childrens = childrens;
+	}
+
+	public int getIndex() {
+		return index;
+	}
+
+	public void setIndex(int index) {
+		this.index = index;
+	}
 }

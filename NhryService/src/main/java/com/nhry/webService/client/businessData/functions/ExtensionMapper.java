@@ -38,6 +38,16 @@ public class ExtensionMapper {
         }
 
         if ("urn:sap-com:document:sap:rfc:functions".equals(namespaceURI) &&
+                "IT_VKORG_type1".equals(typeName)) {
+            return IT_VKORG_type1.Factory.parse(reader);
+        }
+
+        if ("urn:sap-com:document:sap:rfc:functions".equals(namespaceURI) &&
+                "IT_VKORG_type0".equals(typeName)) {
+            return IT_VKORG_type0.Factory.parse(reader);
+        }
+
+        if ("urn:sap-com:document:sap:rfc:functions".equals(namespaceURI) &&
                 "date".equals(typeName)) {
             return Date.Factory.parse(reader);
         }
@@ -58,8 +68,18 @@ public class ExtensionMapper {
         }
 
         if ("urn:sap-com:document:sap:rfc:functions".equals(namespaceURI) &&
+                "SIGN_type9".equals(typeName)) {
+            return SIGN_type9.Factory.parse(reader);
+        }
+
+        if ("urn:sap-com:document:sap:rfc:functions".equals(namespaceURI) &&
                 "ET_DATA_type1".equals(typeName)) {
             return ET_DATA_type1.Factory.parse(reader);
+        }
+
+        if ("urn:sap-com:document:sap:rfc:functions".equals(namespaceURI) &&
+                "SIGN_type7".equals(typeName)) {
+            return SIGN_type7.Factory.parse(reader);
         }
 
         if ("urn:sap-com:document:sap:rfc:functions".equals(namespaceURI) &&
@@ -138,6 +158,11 @@ public class ExtensionMapper {
         }
 
         if ("urn:sap-com:document:sap:rfc:functions".equals(namespaceURI) &&
+                "ZMMRP022_S_RFC_WERKS".equals(typeName)) {
+            return ZMMRP022_S_RFC_WERKS.Factory.parse(reader);
+        }
+
+        if ("urn:sap-com:document:sap:rfc:functions".equals(namespaceURI) &&
                 "genericDate".equals(typeName)) {
             return GenericDate.Factory.parse(reader);
         }
@@ -163,6 +188,16 @@ public class ExtensionMapper {
         }
 
         if ("urn:sap-com:document:sap:rfc:functions".equals(namespaceURI) &&
+                "OPTION_type7".equals(typeName)) {
+            return OPTION_type7.Factory.parse(reader);
+        }
+
+        if ("urn:sap-com:document:sap:rfc:functions".equals(namespaceURI) &&
+                "LOW_type5".equals(typeName)) {
+            return LOW_type5.Factory.parse(reader);
+        }
+
+        if ("urn:sap-com:document:sap:rfc:functions".equals(namespaceURI) &&
                 "AUART_type1".equals(typeName)) {
             return AUART_type1.Factory.parse(reader);
         }
@@ -173,8 +208,18 @@ public class ExtensionMapper {
         }
 
         if ("urn:sap-com:document:sap:rfc:functions".equals(namespaceURI) &&
+                "LOW_type7".equals(typeName)) {
+            return LOW_type7.Factory.parse(reader);
+        }
+
+        if ("urn:sap-com:document:sap:rfc:functions".equals(namespaceURI) &&
                 "MATNR_type5".equals(typeName)) {
             return MATNR_type5.Factory.parse(reader);
+        }
+
+        if ("urn:sap-com:document:sap:rfc:functions".equals(namespaceURI) &&
+                "OPTION_type9".equals(typeName)) {
+            return OPTION_type9.Factory.parse(reader);
         }
 
         if ("urn:sap-com:document:sap:rfc:functions".equals(namespaceURI) &&
@@ -198,8 +243,18 @@ public class ExtensionMapper {
         }
 
         if ("urn:sap-com:document:sap:rfc:functions".equals(namespaceURI) &&
+                "CMPGN_EXTID_type1".equals(typeName)) {
+            return CMPGN_EXTID_type1.Factory.parse(reader);
+        }
+
+        if ("urn:sap-com:document:sap:rfc:functions".equals(namespaceURI) &&
                 "VTWEG_type1".equals(typeName)) {
             return VTWEG_type1.Factory.parse(reader);
+        }
+
+        if ("urn:sap-com:document:sap:rfc:functions".equals(namespaceURI) &&
+                "VKORG_type3".equals(typeName)) {
+            return VKORG_type3.Factory.parse(reader);
         }
 
         if ("urn:sap-com:document:sap:rfc:functions".equals(namespaceURI) &&
@@ -318,6 +373,11 @@ public class ExtensionMapper {
         }
 
         if ("urn:sap-com:document:sap:rfc:functions".equals(namespaceURI) &&
+                "WERKS_type5".equals(typeName)) {
+            return WERKS_type5.Factory.parse(reader);
+        }
+
+        if ("urn:sap-com:document:sap:rfc:functions".equals(namespaceURI) &&
                 "KUNWE_type1".equals(typeName)) {
             return KUNWE_type1.Factory.parse(reader);
         }
@@ -325,6 +385,11 @@ public class ExtensionMapper {
         if ("urn:sap-com:document:sap:rfc:functions".equals(namespaceURI) &&
                 "WERKS_type3".equals(typeName)) {
             return WERKS_type3.Factory.parse(reader);
+        }
+
+        if ("urn:sap-com:document:sap:rfc:functions".equals(namespaceURI) &&
+                "IT_WERKS_type0".equals(typeName)) {
+            return IT_WERKS_type0.Factory.parse(reader);
         }
 
         if ("urn:sap-com:document:sap:rfc:functions".equals(namespaceURI) &&
@@ -378,6 +443,11 @@ public class ExtensionMapper {
         }
 
         if ("urn:sap-com:document:sap:rfc:functions".equals(namespaceURI) &&
+                "IT_WERKS_type1".equals(typeName)) {
+            return IT_WERKS_type1.Factory.parse(reader);
+        }
+
+        if ("urn:sap-com:document:sap:rfc:functions".equals(namespaceURI) &&
                 "NUMBER_type1".equals(typeName)) {
             return NUMBER_type1.Factory.parse(reader);
         }
@@ -400,6 +470,11 @@ public class ExtensionMapper {
         if ("urn:sap-com:document:sap:rfc:functions".equals(namespaceURI) &&
                 "HIGH_type3".equals(typeName)) {
             return HIGH_type3.Factory.parse(reader);
+        }
+
+        if ("urn:sap-com:document:sap:rfc:functions".equals(namespaceURI) &&
+                "HIGH_type5".equals(typeName)) {
+            return HIGH_type5.Factory.parse(reader);
         }
 
         if ("urn:sap-com:document:sap:rfc:functions".equals(namespaceURI) &&
@@ -433,6 +508,11 @@ public class ExtensionMapper {
         }
 
         if ("urn:sap-com:document:sap:rfc:functions".equals(namespaceURI) &&
+                "PSTYV_type3".equals(typeName)) {
+            return PSTYV_type3.Factory.parse(reader);
+        }
+
+        if ("urn:sap-com:document:sap:rfc:functions".equals(namespaceURI) &&
                 "ZSSD00001".equals(typeName)) {
             return ZSSD00001.Factory.parse(reader);
         }
@@ -460,6 +540,11 @@ public class ExtensionMapper {
         if ("urn:sap-com:document:sap:rfc:functions".equals(namespaceURI) &&
                 "POSNR_type1".equals(typeName)) {
             return POSNR_type1.Factory.parse(reader);
+        }
+
+        if ("urn:sap-com:document:sap:rfc:functions".equals(namespaceURI) &&
+                "CMPRE_type1".equals(typeName)) {
+            return CMPRE_type1.Factory.parse(reader);
         }
 
         if ("urn:sap-com:document:sap:rfc:functions".equals(namespaceURI) &&
@@ -518,6 +603,11 @@ public class ExtensionMapper {
         }
 
         if ("urn:sap-com:document:sap:rfc:functions".equals(namespaceURI) &&
+                "ZSSD00073".equals(typeName)) {
+            return ZSSD00073.Factory.parse(reader);
+        }
+
+        if ("urn:sap-com:document:sap:rfc:functions".equals(namespaceURI) &&
                 "ZSD_REQ_EKKO".equals(typeName)) {
             return ZSD_REQ_EKKO.Factory.parse(reader);
         }
@@ -530,6 +620,11 @@ public class ExtensionMapper {
         if ("urn:sap-com:document:sap:rfc:functions".equals(namespaceURI) &&
                 "AUGRU_type1".equals(typeName)) {
             return AUGRU_type1.Factory.parse(reader);
+        }
+
+        if ("urn:sap-com:document:sap:rfc:functions".equals(namespaceURI) &&
+                "HIGH_type7".equals(typeName)) {
+            return HIGH_type7.Factory.parse(reader);
         }
 
         if ("urn:sap-com:document:sap:rfc:functions".equals(namespaceURI) &&

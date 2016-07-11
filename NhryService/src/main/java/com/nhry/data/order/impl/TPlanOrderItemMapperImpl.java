@@ -5,6 +5,7 @@ import com.nhry.data.order.dao.TPlanOrderItemMapper;
 import com.nhry.data.order.domain.TPlanOrderItem;
 
 import java.util.List;
+import java.util.Map;
 
 public class TPlanOrderItemMapperImpl implements TPlanOrderItemMapper
 {
@@ -36,6 +37,11 @@ public class TPlanOrderItemMapperImpl implements TPlanOrderItemMapper
 	public int updateEntryByItemNo(TPlanOrderItem record)
 	{
 		return sqlSessionTemplate.update("updateEntryByOrderCode", record);
+	}
+
+	@Override
+	public List<TPlanOrderItem> selectEntriesByOrderNo(Map<String, String> map) {
+		return sqlSessionTemplate.selectList("selectEntriesByOrderNo",map);
 	}
 
 

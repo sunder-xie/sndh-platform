@@ -11,6 +11,11 @@
     <result column="LAST_MODIFIED_BY" property="lastModifiedBy" jdbcType="VARCHAR" />
     <result column="LAST_MODIFIED_BY_TXT" property="lastModifiedByTxt" jdbcType="VARCHAR" />
   </resultMap>
+  <resultMap id="userRoleMap" type="com.nhry.service.auth.pojo.UserRoles" >
+    <result column="ID" property="roleId" jdbcType="VARCHAR" />
+    <result column="ROLE_NAME" property="roleName" jdbcType="VARCHAR" />
+    <result column="IS_DEFAULT" property="isDefault" jdbcType="VARCHAR" />
+  </resultMap>
   <sql id="Base_Column_List" >
     ID, ROLE_NAME, CREATE_AT, CREATE_BY, CREATE_BY_TXT, LAST_MODIFIED, LAST_MODIFIED_BY, 
     LAST_MODIFIED_BY_TXT
@@ -111,5 +116,17 @@
     select 
     <include refid="Base_Column_List" />
     from t_sys_role order by ROLE_NAME
+  </select>
+  <select id="getUserRoles" parameterType="String" resultMap="userRoleMap">
+      SELECT DISTINCT
+			IFNULL(ur.IS_DEFAULT, 'N') IS_DEFAULT,
+			role.ROLE_NAME,
+			role.ID
+		FROM
+			t_sys_user_role ur,
+			t_sys_role role
+		WHERE
+			ur.ID = role.ID
+		AND ur.LOGIN_NAME = #{uname}
   </select>
 </mapper>

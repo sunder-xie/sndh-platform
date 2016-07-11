@@ -55,7 +55,8 @@ public class IT_SO_type1 implements org.apache.axis2.databinding.ADBBean {
      * Auto generated setter method
      * @param param Item
      */
-    public void setItem(ZSSD00068[] param) {
+    public void setItem(
+        ZSSD00068[] param) {
         validateItem(param);
 
         localItemTracker = param != null;
@@ -67,9 +68,12 @@ public class IT_SO_type1 implements org.apache.axis2.databinding.ADBBean {
      * Auto generated add method for the array for convenience
      * @param param com.nhry.webService.client.businessData.functions.ZSSD00068
      */
-    public void addItem(ZSSD00068 param) {
+    public void addItem(
+        ZSSD00068 param) {
         if (localItem == null) {
-            localItem = new ZSSD00068[] {  };
+            localItem = new ZSSD00068[] {
+                    
+                };
         }
 
         //update the setting tracker

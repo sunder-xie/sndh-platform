@@ -8,6 +8,7 @@ import com.nhry.data.basic.domain.TMdAddress;
 import com.nhry.data.basic.domain.TVipAcct;
 import com.nhry.data.basic.domain.TVipCustInfo;
 import com.nhry.model.basic.CustQueryModel;
+import com.nhry.utils.date.Date;
 
 public interface TVipCustInfoService {
 	/**
@@ -56,9 +57,11 @@ public interface TVipCustInfoService {
      * 停订、退订接口
      * @param vipCustNo
      * @param status 10-在订 20-暂停 30-停订 40-退订
+     * @param firstTime 首次订奶时间
+     * @param lastestTime 最近订奶时间
      * @return
      */
-    public int discontinue(String vipCustNo,String status);
+    public int discontinue(String vipCustNo,String status,Date firstTime,Date lastestTime);
     
     /**
      * 根据奶站编号、订户状态、时间等条件查询订户列表信息

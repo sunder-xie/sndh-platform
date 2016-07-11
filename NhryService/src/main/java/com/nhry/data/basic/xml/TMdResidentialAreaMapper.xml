@@ -50,7 +50,6 @@
     #{propertyTxt,jdbcType=VARCHAR}, #{propertyTel,jdbcType=VARCHAR})
   </insert>
 
-
   <insert id="insertSelective" parameterType="com.nhry.data.basic.domain.TMdResidentialArea">
     insert into t_md_residential_area
     <trim prefix="(" suffix=")" suffixOverrides=",">
@@ -194,16 +193,27 @@
   </update>
 
   <select id="getAreaByBranchNo" parameterType="String" resultMap="BaseResultMap">
-    select
-    <include refid="Base_Column_List" />
-    from t_md_residential_area area,t_md_branch_scope scope
-    where area.ID = scope.RESIDENTIAL_AREA_ID
-    and scope.BRANCH_NO =  #{branchNo,jdbcType=VARCHAR}
+     select
+     a.ID,a.RESIDENTIAL_AREA_TXT,a.GUIDEBOARD,a.RESIDENTIAL_NUM,a.SALES_ORG,a.PROPERTY_TXT,a.PROPERTY_TEL,a.STATUS,a.ADDRESS_TXT,
+    (SELECT i.ITEM_NAME from t_sys_code_item i WHERE i.TYPE_CODE="1001" and i.ITEM_CODE = a.PROVINCE ) PROVINCE,
+    (SELECT i.ITEM_NAME from t_sys_code_item i WHERE i.TYPE_CODE="1001" and i.ITEM_CODE = a.CITY ) CITY,
+    (SELECT i.ITEM_NAME from t_sys_code_item i WHERE i.TYPE_CODE="1001" and i.ITEM_CODE = a.COUNTY ) COUNTY,
+    (SELECT i.ITEM_NAME from t_sys_code_item i WHERE i.TYPE_CODE="1001" and i.ITEM_CODE = a.STREET ) STREET,
+    s.BRANCH_NO
+    from t_md_residential_area  a
+    LEFT JOIN  t_md_branch_scope s on a.ID = s.RESIDENTIAL_AREA_ID
+    WHERE  1=1
+    and s.BRANCH_NO =  #{branchNo,jdbcType=VARCHAR}
   </select>
 
   <select id="selectById" parameterType="java.lang.String" resultMap="BaseResultMap">
     select
-      a.ID,  a.RESIDENTIAL_AREA_TXT,  a.PROVINCE,  a.CITY,  a.COUNTY,  a.STREET,s.BRANCH_NO,b.BRANCH_NAME, a.GUIDEBOARD, a.STATUS,  a.ADDRESS_TXT,
+      a.ID, a.RESIDENTIAL_AREA_TXT,
+      (SELECT i.ITEM_NAME from t_sys_code_item i WHERE i.TYPE_CODE="1001" and i.ITEM_CODE = a.PROVINCE ) PROVINCE,
+      (SELECT i.ITEM_NAME from t_sys_code_item i WHERE i.TYPE_CODE="1001" and i.ITEM_CODE = a.CITY ) CITY,
+      (SELECT i.ITEM_NAME from t_sys_code_item i WHERE i.TYPE_CODE="1001" and i.ITEM_CODE = a.COUNTY ) COUNTY,
+       (SELECT i.ITEM_NAME from t_sys_code_item i WHERE i.TYPE_CODE="1001" and i.ITEM_CODE = a.STREET ) STREET,
+       s.BRANCH_NO,b.BRANCH_NAME, a.GUIDEBOARD, a.STATUS,  a.ADDRESS_TXT,b.BRANCH_NO,b.BRANCH_NAME,
        a.RESIDENTIAL_NUM,a.SALES_ORG,  a.PROPERTY_TXT,  a.PROPERTY_TEL
     from t_md_residential_area a
         left JOIN t_md_branch_scope s on a.ID = s.RESIDENTIAL_AREA_ID
@@ -213,17 +223,21 @@
   </select>
   <select id="selectAreaByPage" resultMap="BaseResultMap" parameterType="com.nhry.service.basic.pojo.ResidentialAreaModel">
     SELECT
-    <include refid="Base_Column_List" />
-    from t_md_residential_area area
+    a.ID,a.RESIDENTIAL_AREA_TXT,a.GUIDEBOARD,a.RESIDENTIAL_NUM,a.SALES_ORG,a.PROPERTY_TXT,a.PROPERTY_TEL,a.STATUS,a.ADDRESS_TXT,
+    (SELECT i.ITEM_NAME from t_sys_code_item i WHERE i.TYPE_CODE="1001" and i.ITEM_CODE = a.PROVINCE ) PROVINCE,
+    (SELECT i.ITEM_NAME from t_sys_code_item i WHERE i.TYPE_CODE="1001" and i.ITEM_CODE = a.CITY ) CITY,
+    (SELECT i.ITEM_NAME from t_sys_code_item i WHERE i.TYPE_CODE="1001" and i.ITEM_CODE = a.COUNTY ) COUNTY,
+    (SELECT i.ITEM_NAME from t_sys_code_item i WHERE i.TYPE_CODE="1001" and i.ITEM_CODE = a.STREET ) STREET
+    from t_md_residential_area a
     where 1=1
     <if test="province != null and province !=''">
-      AND area.PROVINCE = #{province,jdbcType=VARCHAR}
+      AND a.PROVINCE = #{province,jdbcType=VARCHAR}
     </if>
     <if test="city != null and city != ''">
-      AND area.city = #{city,jdbcType=VARCHAR}
+      AND a.city = #{city,jdbcType=VARCHAR}
     </if>
     <if test="status != null and status != ''">
-      AND area.status = #{status,jdbcType=VARCHAR}
+      AND a.status = #{status,jdbcType=VARCHAR}
     </if>
   </select>
   <update id="updateStatusToUnDistById"  parameterType="String">
@@ -238,9 +252,17 @@
   </update>
   <select id="getAreaById" resultMap="BaseResultMap" parameterType="String">
     SELECT
-    <include refid="Base_Column_List" />
-    from t_md_residential_area
-    WHERE  ID = #{residentialAreaId,jdbcType=VARCHAR}
+        a.ID, a.RESIDENTIAL_AREA_TXT,
+        (SELECT i.ITEM_NAME from t_sys_code_item i WHERE i.TYPE_CODE="1001" and i.ITEM_CODE = a.PROVINCE ) PROVINCE,
+        (SELECT i.ITEM_NAME from t_sys_code_item i WHERE i.TYPE_CODE="1001" and i.ITEM_CODE = a.CITY ) CITY,
+        (SELECT i.ITEM_NAME from t_sys_code_item i WHERE i.TYPE_CODE="1001" and i.ITEM_CODE = a.COUNTY ) COUNTY,
+        (SELECT i.ITEM_NAME from t_sys_code_item i WHERE i.TYPE_CODE="1001" and i.ITEM_CODE = a.STREET ) STREET,
+        a.GUIDEBOARD, a.STATUS,  a.ADDRESS_TXT,a.RESIDENTIAL_NUM,a.SALES_ORG,  a.PROPERTY_TXT,  a.PROPERTY_TEL,
+        s.BRANCH_NO,b.BRANCH_NAME
+    from t_md_residential_area a
+      left JOIN t_md_branch_scope s on a.ID = s.RESIDENTIAL_AREA_ID
+      LEFT JOIN t_md_branch b ON s.BRANCH_NO = b.BRANCH_NO
+    WHERE  a.ID = #{residentialAreaId,jdbcType=VARCHAR}
   </select>
 
   <select id="getUnDistAreas" resultMap="BaseResultMap"  parameterType="String" >

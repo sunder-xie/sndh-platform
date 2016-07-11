@@ -19,7 +19,7 @@ public interface ResourceService {
 	 * @param record
 	 * @return
 	 */
-    int addRes(TSysResource record);
+    String addRes(TSysResource record);
     
     /**
      * 根据资源编码查看资源详情
@@ -63,4 +63,17 @@ public interface ResourceService {
 	 * @return
      */
 	List<TSysResource> findRecoureByUserId (String userId);
+	
+	/**
+     * 获取所有的资源
+     * @return
+     */
+    List<TSysResource> getAllResources();
+    
+    /**
+     * 根据角色编号，查询角色拥有的资源
+     * @param id
+     * @return
+     */
+    public List<TSysResource> getRoleResources(String id);
 }

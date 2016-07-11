@@ -80,7 +80,8 @@ public class ZSSD00001 implements org.apache.axis2.databinding.ADBBean {
      * Auto generated setter method
      * @param param SIGN
      */
-    public void setSIGN(SIGN_type3 param) {
+    public void setSIGN(
+        SIGN_type3 param) {
         localSIGNTracker = param != null;
 
         this.localSIGN = param;
@@ -102,7 +103,8 @@ public class ZSSD00001 implements org.apache.axis2.databinding.ADBBean {
      * Auto generated setter method
      * @param param OPTION
      */
-    public void setOPTION(OPTION_type3 param) {
+    public void setOPTION(
+        OPTION_type3 param) {
         localOPTIONTracker = param != null;
 
         this.localOPTION = param;
@@ -124,7 +126,8 @@ public class ZSSD00001 implements org.apache.axis2.databinding.ADBBean {
      * Auto generated setter method
      * @param param LOW
      */
-    public void setLOW(LOW_type1 param) {
+    public void setLOW(
+        LOW_type1 param) {
         localLOWTracker = param != null;
 
         this.localLOW = param;
@@ -146,7 +149,8 @@ public class ZSSD00001 implements org.apache.axis2.databinding.ADBBean {
      * Auto generated setter method
      * @param param HIGH
      */
-    public void setHIGH(HIGH_type1 param) {
+    public void setHIGH(
+        HIGH_type1 param) {
         localHIGHTracker = param != null;
 
         this.localHIGH = param;

@@ -82,7 +82,7 @@ public class ProductServiceImpl extends BaseService implements ProductService {
 			throw new ServiceException(MessageCode.LOGIC_ERROR,"pageNum和pageSize不能为空！");
 		}
 		smodel.setSalesOrg(this.userSessionService.getCurrentUser().getSalesOrg());
-		smodel.setDealerNo(this.userSessionService.getCurrentUser().getDealerId());
+//		smodel.setDealerNo(this.userSessionService.getCurrentUser().getDealerId());
 		return tMdMaraMapper.searchProducts(smodel);
 	}
 
@@ -95,6 +95,10 @@ public class ProductServiceImpl extends BaseService implements ProductService {
 		Map<String,String> attrs = new HashMap<String,String>();
 		attrs.put("matnr",matnr);
 		attrs.put("salesOrg",this.userSessionService.getCurrentUser().getSalesOrg());
+		TMdMara mara = tMdMaraMapper.selectProductAndExByCode(attrs);
+		if(mara != null){
+			this.notsellListMapper.getNotSellListByMatnr(matnr);
+		}
 		return tMdMaraMapper.selectProductAndExByCode(attrs);
 	}
 
