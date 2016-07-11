@@ -126,7 +126,7 @@ public class TVipCustInfoServiceImpl extends BaseService implements TVipCustInfo
 	}
 
 	@Override
-	public int discontinue(String vipCustNo, String status) {
+	public int discontinue(String vipCustNo, String status,Date firstTime,Date lastestTime) {
 		// TODO Auto-generated method stub
 		TVipCustInfo custinfo = this.tmdVipcust.findVipCustOnlyByNo(vipCustNo);
 		if(custinfo == null){
@@ -135,6 +135,8 @@ public class TVipCustInfoServiceImpl extends BaseService implements TVipCustInfo
 		TVipCustInfo cust = new TVipCustInfo();
 		cust.setVipCustNo(vipCustNo);
 		cust.setStatus(status);
+		cust.setFirstOrderTime(firstTime);
+		cust.setLastOrderTime(lastestTime);
 		cust.setLastModified(new Date());
 		cust.setLastModifiedBy(this.userSessionService.getCurrentUser().getLoginName());
 		cust.setLastModifiedByTxt(this.userSessionService.getCurrentUser().getDisplayName());

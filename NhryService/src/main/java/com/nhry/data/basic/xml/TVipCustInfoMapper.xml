@@ -678,7 +678,15 @@
 	<select id="findCompanyCustByPhone" resultMap="BaseResultMap" parameterType="java.util.Map">
 		select
 		<include refid="Base_Column_List" />
-		from t_vip_cust_info where MP = #{phone} and SALES_ORG=#{salesOrg}
+		from t_vip_cust_info 
+		<where>
+		    <if test="phone != null and phone != ''">
+		        MP = #{phone} 
+		    </if>
+		    <if test="salesOrg != null and salesOrg != ''">
+		        and SALES_ORG=#{salesOrg}
+		    </if>
+		</where>
 	</select>
 	<select id="findVipCust" resultMap="BaseResultMap"
 		parameterType="java.util.Map">
@@ -701,6 +709,12 @@
 			<if test="lastModifiedByTxt != null">
 				LAST_MODIFIED_BY_TXT =
 				#{lastModifiedByTxt,jdbcType=VARCHAR},
+			</if>
+			<if test="firstOrderTime != null">
+				FIRST_ORDER_TIME = #{firstOrderTime,jdbcType=TIMESTAMP},
+			</if>
+			<if test="lastOrderTime != null">
+				LAST_ORDER_TIME = #{lastOrderTime,jdbcType=TIMESTAMP},
 			</if>
 		</set>
 		where VIP_CUST_NO = #{vipCustNo,jdbcType=VARCHAR}

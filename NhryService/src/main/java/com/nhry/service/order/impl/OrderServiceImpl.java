@@ -5,6 +5,7 @@ import com.github.pagehelper.PageInfo;
 import com.nhry.common.exception.MessageCode;
 import com.nhry.common.exception.ServiceException;
 import com.nhry.data.basic.domain.TVipAcct;
+import com.nhry.data.basic.domain.TVipCustInfo;
 import com.nhry.data.milk.domain.TDispOrderItem;
 import com.nhry.data.order.dao.TOrderDaliyPlanItemMapper;
 import com.nhry.data.order.dao.TPlanOrderItemMapper;
@@ -994,9 +995,15 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 	* @see com.nhry.service.order.dao.OrderService#searchOrderRemainData(java.lang.String) 
 	*/
 	@Override
-	public OrderRemainData searchOrderRemainData(String memberNo)
+	public OrderRemainData searchOrderRemainData(String phone)
 	{
-		return tPreOrderMapper.searchOrderRemainData(memberNo);
+		Map<String,String> attrs = new HashMap<String,String>();
+		attrs.put("phone", phone);
+		List<TVipCustInfo> custs = tVipCustInfoService.findCompanyCustByPhone(attrs);
+		if(custs != null && custs.size() == 1){
+			return tPreOrderMapper.searchOrderRemainData(custs.get(0).getVipCustNo());
+		}
+		return null;
 	}
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

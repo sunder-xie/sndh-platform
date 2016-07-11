@@ -59,11 +59,11 @@ public class OrderResource extends BaseResource {
 	}
 	
 	@GET
-	@Path("/searchOrderRemain/{memberNo}")
+	@Path("/searchOrderRemain/{phone}")
 	@Produces(MediaType.APPLICATION_JSON)
-	@ApiOperation(value = "/searchOrderRemain/{memberNo}", response = OrderRemainData.class, notes = "根据订户编号查询为送达数量和总共消费金额")
-	public Response searchOrderRemain(@ApiParam(required=true,name="memberNo",value="订户编号") @PathParam("memberNo") String memberNo){
-		return convertToRespModel(MessageCode.NORMAL, null, orderService.searchOrderRemainData(memberNo));
+	@ApiOperation(value = "/searchOrderRemain/{phone}", response = OrderRemainData.class, notes = "根据电话号码查询为送达数量和总共消费金额")
+	public Response searchOrderRemain(@ApiParam(required=true,name="memberNo",value="订户编号") @PathParam("phone") String phone){
+		return convertToRespModel(MessageCode.NORMAL, null, orderService.searchOrderRemainData(phone));
 	}
 	
 	@POST
