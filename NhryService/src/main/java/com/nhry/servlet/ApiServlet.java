@@ -31,7 +31,7 @@ public class ApiServlet extends HttpServlet {
 		userSessionService.cacheUserSession(user.getLoginName(), accesskey, user,request);
 		userSessionService.cacheUserSession("swagger", "swaggerThread", user,request);
 		if(StringUtils.isEmpty(request.getContextPath())){
-			response.sendRedirect("xiexiaojun/swagger/index.html");
+			response.sendRedirect("/xiexiaojun/swagger/index.html");
 		}else{
 			response.sendRedirect(request.getContextPath()+"/swagger/index.html");
 		}
