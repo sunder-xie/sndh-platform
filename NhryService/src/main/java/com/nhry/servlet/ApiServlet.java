@@ -19,7 +19,7 @@ import com.nhry.utils.CookieUtil;
 public class ApiServlet extends HttpServlet {
 
 	public void doGet(HttpServletRequest request, HttpServletResponse response)throws ServletException, IOException {
-		String[] xmls = new String[]{ "classpath:spring-context.xml","classpath:dataSource.xml","classpath:*-bean.xml"  };
+		String[] xmls = new String[]{ "classpath:beans/spring-context.xml","classpath:beans/dataSource.xml","classpath:beans/*-bean.xml"  };
         ApplicationContext context = new ClassPathXmlApplicationContext(xmls);
         UserSessionService userSessionService = (UserSessionService) context.getBean("userSessionService");
 		TSysUser user = new TSysUser();
