@@ -101,7 +101,7 @@ public class ReturnBoxServiceImpl implements ReturnBoxService {
         CreateReturnBoxModel boxModel = new CreateReturnBoxModel();
         if(tRecBot== null){
             //创建
-            //首先根据前日录单配送信息获取应回瓶数，和
+            //首先根据前日录单配送信息获取应回瓶数
             TSysUser user = userSessionService.getCurrentUser();
             TMdBranchEmp emp = empMapper.selectBranchEmpByNo(cModel.getEmpNo());
             BigDecimal receiveNum = tDispOrderMapper.creatRecBot(cModel);

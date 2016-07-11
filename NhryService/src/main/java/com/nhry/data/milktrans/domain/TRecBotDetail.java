@@ -10,8 +10,6 @@ public class TRecBotDetail implements Serializable {
     private String detLsh;      //明细流水号
     private String retLsh;      //回瓶流水号
     private String spec;        //规格
-    private String botSpec;     // 奶瓶规格编码
-    private String specUnit;    //规格单位
     private int receiveNum;     //应收数量
     private int realNum;        //实收数量
     private String createBy;
@@ -42,22 +40,6 @@ public class TRecBotDetail implements Serializable {
 
     public void setSpec(String spec) {
         this.spec = spec;
-    }
-
-    public String getBotSpec() {
-        return botSpec;
-    }
-
-    public void setBotSpec(String botSpec) {
-        this.botSpec = botSpec;
-    }
-
-    public String getSpecUnit() {
-        return specUnit;
-    }
-
-    public void setSpecUnit(String specUnit) {
-        this.specUnit = specUnit;
     }
 
     public int getReceiveNum() {

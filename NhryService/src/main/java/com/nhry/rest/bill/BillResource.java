@@ -53,6 +53,7 @@ public class BillResource extends BaseResource {
          return convertToRespModel(MessageCode.NORMAL, null, customerBillService.getCustomerOrderDetailByCode(orderNo));
     }
 
+
     @POST
     @Path("/cust/customerPayment")
     @Produces(MediaType.APPLICATION_JSON)

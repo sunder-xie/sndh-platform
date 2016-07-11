@@ -55,6 +55,10 @@
             <if test="status!=null and ''!=status">
                 STATUS = #{status,jdbcType=VARCHAR},
             </if>
+
+            <if test="voucherNo!=null and ''!=voucherNo">
+                VOUCHER_NO = #{voucherNo,jdbcType=VARCHAR},
+            </if>
             LAST_MODIFIED = #{lastModified,jdbcType=TIMESTAMP},
             LAST_MODIFIED_BY = #{lastModifiedBy,jdbcType=VARCHAR},
             LAST_MODIFIED_BY_TXT = #{lastModifiedByTxt,jdbcType=VARCHAR}

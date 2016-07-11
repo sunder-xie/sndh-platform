@@ -11,14 +11,13 @@ import com.nhry.data.order.dao.TPlanOrderItemMapper;
 import com.nhry.data.order.dao.TPreOrderMapper;
 import com.nhry.data.order.domain.TPlanOrderItem;
 import com.nhry.data.order.domain.TPreOrder;
-import com.nhry.model.bill.*;
+import com.nhry.model.bill.CustBillQueryModel;
+import com.nhry.model.bill.CustomerBillOrder;
+import com.nhry.model.bill.CustomerPayMentModel;
 import com.nhry.service.bill.dao.CustomerBillService;
 import org.apache.commons.lang3.StringUtils;
 
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 
 /**
  * Created by gongjk on 2016/6/23.
@@ -108,9 +107,15 @@ public class CustomerBillServiceImpl implements CustomerBillService {
     @Override
     public CustomerBillOrder getCustomerOrderDetailByCode(String orderNo) {
         TMstRecvBill bill = customerBillMapper.getCustomerOrderByCode(orderNo);
+        TSysUser user = userSessionService.getCurrentUser();
+
         List<TPlanOrderItem> entry = new  ArrayList<TPlanOrderItem>();
-        if(tPlanOrderItemMapper.selectByOrderCode(orderNo) !=null){
-            entry.addAll(tPlanOrderItemMapper.selectByOrderCode(orderNo));
+        Map<String,String> map = new HashMap<String,String>();
+        map.put("orderNo",orderNo);
+        map.put("salesOrg",user.getSalesOrg());
+        if(tPlanOrderItemMapper.selectEntriesByOrderNo(map) !=null){
+
+            entry.addAll(tPlanOrderItemMapper.selectEntriesByOrderNo(map));
         }
 
         CustomerBillOrder  order = new CustomerBillOrder();

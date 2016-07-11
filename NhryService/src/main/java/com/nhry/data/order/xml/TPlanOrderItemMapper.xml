@@ -58,15 +58,28 @@
   </sql>
   <select id="selectEntriesByOrderCode" resultMap="BaseResultMap" parameterType="java.lang.String" >
     select 
-    e.ITEM_NO, e.ORDER_NO, e.ORDER_DATE, e.REF_ITEM_NO, e.NEW_ROW_FLAG, e.MATNR, e.UNIT, e.QTY, e.SALES_PRICE, 
+    e.ITEM_NO, e.ORDER_NO, e.ORDER_DATE, e.REF_ITEM_NO, e.NEW_ROW_FLAG, e.MATNR, e.UNIT, e.QTY, e.SALES_PRICE,
     e.RULE_TYPE, e.DISP_DAYS, e.GAP_DAYS, e.RULE_TXT, e.REACH_TIME_TYPE, e.START_DISP_DATE, e.END_DISP_DATE, 
     e.PROMOTION, e.PROM_DAYS, e.STATUS, e.BUY_QTY, e.GIFT_QTY, e.CREATE_AT, e.CREATE_BY, e.CREATE_BY_TXT, 
     e.LAST_MODIFIED, e.LAST_MODIFIED_BY, e.LAST_MODIFIED_BY_TXT,
-    p.MATNR_TXT MATNR_TXT 
+    p.MATNR_TXT MATNR_TXT
     from t_mst_plan_order_item e, t_md_mara p
     where e.ORDER_NO = #{orderCode,jdbcType=VARCHAR}
     and (e.STATUS != "30" or e.STATUS is null)
     and e.MATNR = p.MATNR
+  </select>
+
+  <select id="selectEntriesByOrderNo" resultMap="BaseResultMap" parameterType="java.util.Map" >
+    select
+    e.ITEM_NO, e.ORDER_NO, e.ORDER_DATE, e.REF_ITEM_NO, e.NEW_ROW_FLAG, e.MATNR,
+   (SELECT i.ITEM_NAME from t_sys_code_item i WHERE i.TYPE_CODE="1009" and i.ITEM_CODE = ex.BOT_TYPE ) UNIT,
+     e.QTY, e.SALES_PRICE,e.RULE_TYPE, e.DISP_DAYS, e.GAP_DAYS, e.RULE_TXT, e.REACH_TIME_TYPE, e.START_DISP_DATE, e.END_DISP_DATE,
+    e.PROMOTION, e.PROM_DAYS, e.STATUS, e.BUY_QTY, e.GIFT_QTY, e.CREATE_AT, e.CREATE_BY, e.CREATE_BY_TXT,
+    e.LAST_MODIFIED, e.LAST_MODIFIED_BY, e.LAST_MODIFIED_BY_TXT,
+    p.MATNR_TXT
+    from t_mst_plan_order_item e LEFT JOIN t_md_mara p on (e.MATNR = p.MATNR and p.SALES_ORG=#{salesOrg} )
+    LEFT  JOIN  t_md_mara_ex ex on e.MATNR = ex.MATNR
+    where e.ORDER_NO = #{orderNo}
   </select>
   <select id="selectEntryByEntryNo" resultMap="BaseResultMap" parameterType="java.lang.String" >
     select 
