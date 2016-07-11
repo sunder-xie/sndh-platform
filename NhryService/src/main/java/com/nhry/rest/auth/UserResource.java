@@ -78,7 +78,7 @@ public class UserResource extends BaseResource {
 		String accesskey = userSessionService.generateKey();
 		CookieUtil.setCookie(request, response, UserSessionService.accessKey, accesskey);
 		CookieUtil.setCookie(request, response, UserSessionService.uname, loginuser.getLoginName());
-		userSessionService.cacheUserSession(user.getLoginName(), accesskey, user,request);
+		userSessionService.cacheUserSession(user.getLoginName(), accesskey, loginuser,request);
 		return convertToRespModel(MessageCode.NORMAL,null, loginuser);
 	}
 	

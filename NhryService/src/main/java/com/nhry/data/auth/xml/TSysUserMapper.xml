@@ -209,16 +209,14 @@
 		u.GROUP_ID,
 		u.CREATE_ON,
 		u.LAST_MODIFIED,
-		b.BRANCH_Name BRANCH_NO,
+		(select b.BRANCH_Name from t_md_branch b where b.BRANCH_NO=u.BRANCH_NO) BRANCH_NO,
 		u.DEALER_ID,
 		u.SALES_ORG,
 		u.LAST_LOGIN
 	FROM
-		t_sys_user u,
-		t_md_branch b
+		t_sys_user u 
 	WHERE
-		u.BRANCH_NO = b.BRANCH_NO
-	AND LOGIN_NAME = #{loginName,jdbcType=VARCHAR}
+		 LOGIN_NAME = #{loginName,jdbcType=VARCHAR}
   </select>
   <insert id="addUser" parameterType="com.nhry.data.auth.domain.TSysUser">
     insert into t_sys_user
