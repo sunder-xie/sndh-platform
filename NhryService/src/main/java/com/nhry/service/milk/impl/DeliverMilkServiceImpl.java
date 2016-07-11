@@ -31,6 +31,7 @@ import com.nhry.data.order.dao.TPreOrderMapper;
 import com.nhry.data.order.domain.TOrderDaliyPlanItem;
 import com.nhry.data.order.domain.TPlanOrderItem;
 import com.nhry.data.order.domain.TPreOrder;
+import com.nhry.model.milk.RouteDetailUpdateListModel;
 import com.nhry.model.milk.RouteDetailUpdateModel;
 import com.nhry.model.milk.RouteOrderModel;
 import com.nhry.model.milk.RouteOrderSearchModel;
@@ -41,6 +42,7 @@ import com.nhry.service.milk.dao.DeliverMilkService;
 import com.nhry.service.milk.pojo.TDispOrderChangeItem;
 import com.nhry.service.order.dao.OrderService;
 import com.nhry.utils.SerialUtil;
+
 import org.apache.commons.lang3.StringUtils;
 
 import java.math.BigDecimal;
@@ -291,7 +293,23 @@ public class DeliverMilkServiceImpl extends BaseService implements DeliverMilkSe
 		
 		return 1;
 	}
-
+	
+	/* (non-Javadoc) 
+	* @title: updateRouteOrderItems
+	* @description: 更新路单行项目  路单如果变更产品，需要更改库存 
+	* @param record
+	* @return 
+	* @see com.nhry.service.milk.dao.DeliverMilkService#updateRouteOrderItems(com.nhry.model.milk.RouteUpdateModel) 
+	*/
+	@Override
+	public int updateRouteOrderAllItems(RouteDetailUpdateListModel record)
+	{
+		record.getList().stream().forEach((e)->{
+			updateRouteOrderItems(e);
+		});
+		return 1;
+	}
+	
 	/* (non-Javadoc) 
 	* @title: updateRouteOrderItems
 	* @description: 更新路单行项目  路单如果变更产品，需要更改库存 
@@ -354,11 +372,15 @@ public class DeliverMilkServiceImpl extends BaseService implements DeliverMilkSe
 		TDispOrder dispOrder = tDispOrderMapper.selectByPrimaryKey(key);
 		
 		if(dispOrder!=null){
+			
 			Date dispDate = dispOrder.getDispDate();
 			List<TDispOrderItem> entryList = tDispOrderItemMapper.selectNotDeliveryItemsByKeys(routeCode);
 			
 			entryList.stream().forEach((e)->{
 				//变化的也更改日计划状态
+				if(e.getConfirmQty()==null){
+					throw new ServiceException(MessageCode.LOGIC_ERROR,"此路单没有保存过，有行项目未保存!");
+				}
 				if(StringUtils.isNotBlank(e.getReason()) && e.getConfirmQty().intValue() != e.getQty().intValue()){
 					TPlanOrderItem entry = tPlanOrderItemMapper.selectEntryByEntryNo(e.getOrgItemNo());
 					//更新原订单剩余金额
@@ -371,6 +393,9 @@ public class DeliverMilkServiceImpl extends BaseService implements DeliverMilkSe
 					
 				}
 			});
+			
+			//路单更新为已经确认
+			tDispOrderMapper.updateDispOrderStatus(routeCode,"20");
 		
 		}else{
 			throw new ServiceException(MessageCode.LOGIC_ERROR,"没有此路单号!");
@@ -418,11 +443,14 @@ public class DeliverMilkServiceImpl extends BaseService implements DeliverMilkSe
 				item.setOrderDate(date);
 				item.setItemNo(String.valueOf(index));
 				item.setMatnr(plan.getMatnr());
+				item.setConfirmMatnr(plan.getMatnr());
 				item.setUnit(plan.getUnit());
 				item.setUnit(plan.getUnit());
 				item.setPrice(plan.getPrice());
 				item.setAmt(plan.getAmt());
+				item.setConfirmAmt(plan.getAmt());
 				item.setQty(new BigDecimal(plan.getQty()));
+				item.setConfirmQty(new BigDecimal(plan.getQty()));
 				item.setAddressNo(plan.getCreateByTxt());//配送地址用创建人字段临时读取,不需要再增加字段
 				item.setStatus("20");//取消发货，待发货，已回执
 				item.setOrgItemNo(plan.getItemNo());//对应原订单，订单行编号
