@@ -35,20 +35,27 @@
   </select>
   <select id="selectMilkboxsByPage" resultMap="BaseResultMap" parameterType="com.nhry.model.order.MilkboxSearchModel" >
     select 
-    <include refid="Base_Column_List" />
-    from t_mst_milkbox_plan
-    where 1 = 1
+    m.PLAN_NO, m.EMP_NO, m.EMP_NAME, m.ORDER_NO, m.MEMBER_NO,v.VIP_NAME MEMBER_NAME, v.MP MEMBER_TEL, m.ADRESS_NO, 
+    b.BRANCH_NAME BRANCH_NO, m.PLAN_DATE, m.MILKBOX_STAT, m.PAYMENT_STAT
+    from t_mst_milkbox_plan m,t_vip_cust_info v,t_md_branch b,t_preorder o
+    where m.MEMBER_NO = v.VIP_CUST_NO and b.BRANCH_NO = m.BRANCH_NO and o.ORDER_NO = m.ORDER_NO
     <if test="status != null and status !=''">
-     		AND MILKBOX_STAT = #{status,jdbcType=VARCHAR}
+     		AND m.MILKBOX_STAT = #{status,jdbcType=VARCHAR}
     </if>
     <if test="emp != null and emp !=''">
-     		AND EMP_NO = #{emp,jdbcType=VARCHAR}
+     		AND m.EMP_NO = #{emp,jdbcType=VARCHAR}
     </if>
     <if test="setDateStart != null and setDateStart !=''">
-     		AND PLAN_DATE &gt;= #{setDateStart,jdbcType=DATE}
+     		AND m.PLAN_DATE &gt;= #{setDateStart,jdbcType=DATE}
     </if>
     <if test="setDateEnd != null and setDateEnd !=''">
-     		AND PLAN_DATE &lt;= #{setDateEnd,jdbcType=DATE}
+     		AND m.PLAN_DATE &lt;= #{setDateEnd,jdbcType=DATE}
+    </if>
+    <if test="branchNo != null and branchNo !=''">
+     		AND o.BRANCH_NO &gt;= #{branchNo,jdbcType=DATE}
+    </if>
+    <if test="salesOrg != null and salesOrg !=''">
+     		AND o.SALES_ORG &lt;= #{salesOrg,jdbcType=DATE}
     </if>
   </select>
   <delete id="deleteByPrimaryKey" parameterType="java.lang.String" >

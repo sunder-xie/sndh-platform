@@ -18,6 +18,8 @@ public interface DeliverMilkService {
 	
 	List searchRouteOrderDetailAll(String code);
 	
+	List searchRouteChangeOrder(String code);
+	
 	RouteOrderModel searchRouteDetails(String orderNo);
 	
 	int updateRouteOrder(RouteUpdateModel record);

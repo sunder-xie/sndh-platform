@@ -3,6 +3,7 @@ package com.nhry.service.order.impl;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Arrays;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -52,7 +53,9 @@ public class MilkBoxServiceImpl extends BaseService implements MilkBoxService
 	*/
 	@Override
 	public PageInfo searchMilkBox(MilkboxSearchModel smodel)
-	{
+	{	
+		smodel.setBranchNo(userSessionService.getCurrentUser().getBranchNo());
+		smodel.setSalesOrg(userSessionService.getCurrentUser().getSalesOrg());
 		return tMilkboxPlanMapper.selectMilkboxsByPage(smodel);
 	}
 	
@@ -95,6 +98,7 @@ public class MilkBoxServiceImpl extends BaseService implements MilkBoxService
 			record.setCreateByTxt(userSessionService.getCurrentUser().getDisplayName());
 			record.setEmpNo(order.getEmpNo());
 			record.setEmpName(branchEmpMapper.selectBranchEmpByNo(order.getEmpNo()).getEmpName());
+			record.setMemberNo(order.getMilkmemberNo());
 			//保存订户的具体信息
 //			record.setMemberNo(memberNo);
 //			record.setMemberName(memberName);
@@ -108,7 +112,7 @@ public class MilkBoxServiceImpl extends BaseService implements MilkBoxService
 				if(StringUtils.isNotBlank(model.getSetDate()) ){
 					record.setPlanDate(format.parse(model.getSetDate()));
 				}else{
-					record.setPlanDate(new Date());
+					record.setPlanDate(afterDate(new Date(),1));
 				}
 			}
 			catch (Exception e)
@@ -199,5 +203,18 @@ public class MilkBoxServiceImpl extends BaseService implements MilkBoxService
 	{
 		return tMilkboxPlanMapper.updateMilkboxPlanPrinted(code);
 	}
+	
+	
+	////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	
+	//日期往前后加n天
+	private Date afterDate(Date date, int days) {
 
+		Calendar aCalendar =  Calendar.getInstance();
+		aCalendar.setTime(date);
+		aCalendar.add(aCalendar.DATE, days);//把日期往后增加一天.整数往后推,负数往前移动
+		date=aCalendar.getTime();   //这个时间就是日期往后推一天的结果
+
+		return date;
+	}
 }

@@ -396,7 +396,10 @@
      		AND ORDER_NO = #{orderNo,jdbcType=VARCHAR}
     </if>
     <if test="branchNo != null and branchNo != ''">
-     		AND BRANCH_NO = #{branchNo,jdbcType=VARCHAR}
+     		AND o.BRANCH_NO = #{branchNo,jdbcType=VARCHAR}
+    </if>
+    <if test="salesOrg != null and salesOrg != ''">
+     		AND o.SALES_ORG = #{salesOrg,jdbcType=VARCHAR}
     </if>
     <if test="empNo != null and empNo !=''">
      		AND EMP_NO = #{empNo,jdbcType=VARCHAR}
@@ -413,9 +416,9 @@
     <if test="preorderStat != null and preorderStat !=''">
      		AND PREORDER_STAT = #{preorderStat,jdbcType=VARCHAR}
     </if>
-    <if test="companyName != null and companyName !=''">
+    <!-- <if test="companyName != null and companyName !=''">
      		AND b.SALES_ORG = #{companyName,jdbcType=VARCHAR}
-    </if>
+    </if> -->
     <if test="orderDateStart != null and orderDateStart !=''">
      		AND ORDER_DATE  &gt;=  #{orderDateStart}
     </if>
@@ -431,7 +434,10 @@
      		         AND ORDER_NO = #{orderNo,jdbcType=VARCHAR}
 			    </if>
 			    <if test="branchNo != null and branchNo != ''">
-			     		AND BRANCH_NO = #{branchNo,jdbcType=VARCHAR}
+			     		AND o.BRANCH_NO = #{branchNo,jdbcType=VARCHAR}
+			    </if>
+			    <if test="salesOrg != null and salesOrg != ''">
+			     		AND o.SALES_ORG = #{salesOrg,jdbcType=VARCHAR}
 			    </if>
 			    <if test="empNo != null and empNo !=''">
 			     		AND EMP_NO = #{empNo,jdbcType=VARCHAR}
@@ -445,9 +451,9 @@
 			    <if test="milkboxStat != null and milkboxStat !=''">
 			     		AND MILKBOX_STAT = #{milkboxStat,jdbcType=VARCHAR}
 			    </if>
-			    <if test="companyName != null and companyName !=''">
+			    <!-- <if test="companyName != null and companyName !=''">
 			     		AND b.SALES_ORG = #{companyName,jdbcType=VARCHAR}
-			    </if>
+			    </if> -->
 			    <if test="orderDateStart != null and orderDateStart !=''">
 			     		AND ORDER_DATE  &gt;=  #{orderDateStart}
 			    </if>
@@ -484,6 +490,12 @@
     </if>
     <if test="retReason != null and retReason !=''">
       AND o.RET_REASON = #{retReason,jdbcType=VARCHAR}
+    </if>
+    <if test="branchNo != null and branchNo !=''">
+      AND o.BRANCH_NO = #{branchNo,jdbcType=VARCHAR}
+    </if>
+    <if test="salesOrg != null and salesOrg !=''">
+      AND o.SALES_ORG = #{salesOrg,jdbcType=VARCHAR}
     </if>
 
     ORDER BY ORDER_NO

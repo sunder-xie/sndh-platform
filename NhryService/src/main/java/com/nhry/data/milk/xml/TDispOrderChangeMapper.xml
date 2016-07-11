@@ -16,6 +16,7 @@
     <result column="MILKMEMBER_NO" property="milkmemberNo" jdbcType="VARCHAR" />
     <result column="ADDRESS_NO" property="addressNo" jdbcType="VARCHAR" />
     <result column="EMP_NO" property="empNo" jdbcType="VARCHAR" />
+    <result column="CUST_TEL" property="custTel" jdbcType="VARCHAR" />
   </resultMap>
   <sql id="Base_Column_List" >
     ORDER_NO, ORDER_DATE, ORG_ORDER_NO, ORG_ITEM_NO, YESTODAY_MATNR, TODAY_MATNR, YESTODAY_QTY, 
@@ -37,14 +38,17 @@
         #{item.empNo} )  
     </foreach> 
   </insert>
-  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="com.nhry.data.milk.domain.TDispOrderChangeKey" >
+  <select id="searchRouteChangeOrder" resultMap="BaseResultMap" parameterType="java.lang.String" >
     select 
-    <include refid="Base_Column_List" />
-    from t_mst_disp_order_change
-    where ORDER_NO = #{orderNo,jdbcType=VARCHAR}
-      and ORDER_DATE = #{orderDate,jdbcType=DATE}
-      and ORG_ORDER_NO = #{orgOrderNo,jdbcType=VARCHAR}
-      and ORG_ITEM_NO = #{orgItemNo,jdbcType=VARCHAR}
+    c.ORDER_NO, c.ORDER_DATE, c.ORG_ORDER_NO, c.ORG_ITEM_NO, c.YESTODAY_MATNR, c.TODAY_MATNR, c.YESTODAY_QTY, 
+    c.TODAY_QTY, c.YESTODAY_REACH_TIME_TYPE, c.TODAY_REACH_TIME_TYPE, c.REASON, v.VIP_NAME MILKMEMBER_NO, 
+    a.ADDRESS_TXT ADDRESS_NO,e.EMP_NAME  EMP_NO, v.MP CUST_TEL
+    from t_mst_disp_order_change c,t_preorder o,t_vip_cust_info v,t_md_address a,t_md_branch_emp e
+    where c.ORDER_NO = #{orderNo,jdbcType=VARCHAR}
+    and c.ORG_ORDER_NO = o.ORDER_NO 
+    and c.ADDRESS_NO = a.ADDRESS_ID
+    and o.MILKMEMBER_NO = v.VIP_CUST_NO
+    and e.EMP_NO = c.EMP_NO
   </select>
   <delete id="deleteByPrimaryKey" parameterType="com.nhry.data.milk.domain.TDispOrderChangeKey" >
     delete from t_mst_disp_order_change

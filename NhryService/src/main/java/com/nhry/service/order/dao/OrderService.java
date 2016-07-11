@@ -19,7 +19,7 @@ public interface OrderService {
 	
 	PageInfo searchDaliyOrders(OrderSearchModel smodel);
 
-	int createOrder(OrderCreateModel record);
+	String createOrder(OrderCreateModel record);
 
 	int editOrderForLong(OrderEditModel record);
 

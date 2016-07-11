@@ -20,10 +20,22 @@ public class TDispOrderChange extends TDispOrderChangeKey {
     private String milkmemberNo;
 
     private String addressNo;
+    
+    private String custTel;
 
     private String empNo;
 
-    public String getYestodayMatnr() {
+    public String getCustTel()
+	{
+		return custTel;
+	}
+
+	public void setCustTel(String custTel)
+	{
+		this.custTel = custTel;
+	}
+
+	public String getYestodayMatnr() {
         return yestodayMatnr;
     }
 

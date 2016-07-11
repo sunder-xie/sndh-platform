@@ -15,7 +15,9 @@ import com.nhry.data.order.domain.TPreOrder;
 import com.nhry.model.milk.RouteDetailUpdateModel;
 import com.nhry.model.order.*;
 import com.nhry.service.BaseService;
+import com.nhry.service.basic.dao.PriceService;
 import com.nhry.service.basic.dao.TVipCustInfoService;
+import com.nhry.service.order.dao.MilkBoxService;
 import com.nhry.service.order.dao.OrderService;
 import com.nhry.service.order.pojo.OrderRemainData;
 
@@ -32,7 +34,13 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 	private TOrderDaliyPlanItemMapper tOrderDaliyPlanItemMapper;
 	private TPlanOrderItemMapper tPlanOrderItemMapper;
 	private TVipCustInfoService tVipCustInfoService;
-
+	private MilkBoxService milkBoxService;
+	private PriceService priceService;
+	
+	public void setPriceService(PriceService priceService)
+	{
+		this.priceService = priceService;
+	}
 
 	public void settVipCustInfoService(TVipCustInfoService tVipCustInfoService)
 	{
@@ -53,7 +61,11 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 	{
 		this.tPreOrderMapper = tPreOrderMapper;
 	}
-
+	
+	public void setMilkBoxService(MilkBoxService milkBoxService)
+	{
+		this.milkBoxService = milkBoxService;
+	}
 
 
 	/* (non-Javadoc)
@@ -102,6 +114,8 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 		if(StringUtils.isEmpty(manHandModel.getPageNum()) || StringUtils.isEmpty(manHandModel.getPageSize())){
 			throw new ServiceException(MessageCode.LOGIC_ERROR,"pageNum和pageSize不能为空！");
 		}
+		manHandModel.setBranchNo(userSessionService.getCurrentUser().getBranchNo());
+		manHandModel.setSalesOrg(userSessionService.getCurrentUser().getSalesOrg());
 		return tPreOrderMapper.searchReturnOrders(manHandModel);
 	}
 
@@ -457,6 +471,8 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 		if(StringUtils.isEmpty(smodel.getPageNum()) || StringUtils.isEmpty(smodel.getPageSize())){
 			throw new ServiceException(MessageCode.LOGIC_ERROR,"pageNum和pageSize不能为空！");
 		}
+		smodel.setBranchNo(userSessionService.getCurrentUser().getBranchNo());
+		smodel.setSalesOrg(userSessionService.getCurrentUser().getSalesOrg());
 		return tPreOrderMapper.selectOrdersByPages(smodel);
 	}
 
@@ -483,7 +499,7 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 	* @see com.nhry.service.order.dao.OrderService#createOrder()
 	*/
 	@Override
-	public int createOrder(OrderCreateModel record)
+	public String createOrder(OrderCreateModel record)
 	{
 		SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
 		TPreOrder order = record.getOrder();
@@ -506,7 +522,7 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 		order.setPaymentStat(StringUtils.isBlank(order.getPaymentStat()) == true ? "10": order.getPaymentStat());//付款状态
 		order.setPaymentmethod(order.getPaymentStat());//10 后款 20 先款 30 殿付款
 		order.setMilkboxStat(StringUtils.isBlank(order.getMilkboxStat()) == true ? "20": order.getMilkboxStat());//奶箱状态
-		order.setPreorderStat("20");//订单状态,初始未确认
+		order.setPreorderStat("10");//订单状态,初始确认
 		order.setSign("10");//在订状态
 		order.setSalesOrg(userSessionService.getCurrentUser().getSalesOrg());//公司
 		//受款日期
@@ -574,16 +590,23 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 		entriesList.forEach(entry->{
 			tPlanOrderItemMapper.insert(entry);
 		});
-
+		
+		//生成装箱工单
+		if("20".equals(order.getMilkboxStat())){
+			MilkboxCreateModel model = new MilkboxCreateModel();
+			model.setCode(order.getOrderNo());
+			milkBoxService.addNewMilkboxPlan(model);
+		}
+		
 		return createDaliyPlan(order,record.getEntries());//生成每日计划
 	}
 
 	//根据订单行生成每日计划
-	private int createDaliyPlan(TPreOrder order ,List<TPlanOrderItem> entries){
+	private String createDaliyPlan(TPreOrder order ,List<TPlanOrderItem> entries){
 
 		//生成每日计划,当订户订单装箱状态为已装箱或无需装箱，则系统默认该订单可生成订户日订单
 		if("20".equals(order.getMilkboxStat())){
-			return 0;
+			return order.getOrderNo();
 		}
 
 		BigDecimal curAmt = order.getCurAmt();
@@ -670,7 +693,7 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 			afterDays++;
 		}
 
-		return 1;
+		return order.getOrderNo();
 	}
 
 	/* (non-Javadoc)

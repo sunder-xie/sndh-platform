@@ -63,6 +63,8 @@
 	   <property name="tOrderDaliyPlanItemMapper"  ref="tOrderDaliyPlanItemMapper"></property>
 	   <property name="userSessionService" ref="userSessionService"></property>
 	   <property name="tVipCustInfoService" ref="custService"></property>
+	   <property name="milkBoxService" ref="milkBoxService"></property>
+	   <property name="priceService" ref="priceService"></property>
 	</bean>
 	<!-- 订单end -->
 

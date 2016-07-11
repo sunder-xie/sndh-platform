@@ -378,9 +378,6 @@ public class DeliverMilkServiceImpl extends BaseService implements DeliverMilkSe
 			
 			entryList.stream().forEach((e)->{
 				//变化的也更改日计划状态
-				if(e.getConfirmQty()==null){
-					throw new ServiceException(MessageCode.LOGIC_ERROR,"此路单没有保存过，有行项目未保存!");
-				}
 				if(StringUtils.isNotBlank(e.getReason()) && e.getConfirmQty().intValue() != e.getQty().intValue()){
 					TPlanOrderItem entry = tPlanOrderItemMapper.selectEntryByEntryNo(e.getOrgItemNo());
 					//更新原订单剩余金额
@@ -389,13 +386,18 @@ public class DeliverMilkServiceImpl extends BaseService implements DeliverMilkSe
 					orderService.resumeDaliyPlanForRouteOrder(e.getConfirmQty(), e, entry, dispDate);
 				}else{
 				//没有变化的路单更新日计划状态
-					
+					//更新原订单剩余金额
+					TPlanOrderItem entry = tPlanOrderItemMapper.selectEntryByEntryNo(e.getOrgItemNo());
+					updatePreOrderCurAmt(entry.getOrderNo(),entry.getSalesPrice().multiply(e.getConfirmQty()));
 					
 				}
 			});
 			
 			//路单更新为已经确认
 			tDispOrderMapper.updateDispOrderStatus(routeCode,"20");
+			
+			//生成变化路单
+			createRouteChanges(routeCode,dispDate);
 		
 		}else{
 			throw new ServiceException(MessageCode.LOGIC_ERROR,"没有此路单号!");
@@ -453,6 +455,7 @@ public class DeliverMilkServiceImpl extends BaseService implements DeliverMilkSe
 				item.setConfirmQty(new BigDecimal(plan.getQty()));
 				item.setAddressNo(plan.getCreateByTxt());//配送地址用创建人字段临时读取,不需要再增加字段
 				item.setStatus("20");//取消发货，待发货，已回执
+				item.setReachTimeType(plan.getReachTimeType());
 				item.setOrgItemNo(plan.getItemNo());//对应原订单，订单行编号
 				item.setOrgOrderNo(plan.getOrderNo());//对应原订单，订单编号
 				item.setDispEmpNo(empNo);
@@ -492,7 +495,7 @@ public class DeliverMilkServiceImpl extends BaseService implements DeliverMilkSe
 	public int createRouteChanges()
 	{
 		SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
-		List<TDispOrderChangeItem> list = tDispOrderItemMapper.selectDispItemsChange("2016-06-27","2016-06-26");
+		List<TDispOrderChangeItem> list = tDispOrderItemMapper.selectDispItemsChange("2016-06-27","2016-06-26",null);
 		
 //    测试用上面的，正式用下面
 //		List<TDispOrderChangeItem> list = tDispOrderItemMapper.selectDispItemsChange( format.format(new Date()), format.format(afterDate(new Date(),-1)) );
@@ -569,6 +572,19 @@ public class DeliverMilkServiceImpl extends BaseService implements DeliverMilkSe
 		return 1;
 	}
 	
+	/* (non-Javadoc) 
+	* @title: searchRouteChangeOrder
+	* @description: 获取此路单的变化路单
+	* @param code
+	* @return 
+	* @see com.nhry.service.milk.dao.DeliverMilkService#searchRouteChangeOrder(java.lang.String) 
+	*/
+	@Override
+	public List searchRouteChangeOrder(String code)
+	{
+		return tDispOrderChangeMapper.searchRouteChangeOrder(code);
+	}
+	
 	
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	
@@ -581,6 +597,58 @@ public class DeliverMilkServiceImpl extends BaseService implements DeliverMilkSe
 		date=aCalendar.getTime();   //这个时间就是日期往后推一天的结果
 
 		return date;
+	}
+	
+	//一张路单，确认后，生成变化路单
+	private int createRouteChanges(String orderNo,Date dispDate)
+	{
+		SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
+		List<TDispOrderChangeItem> list = tDispOrderItemMapper.selectDispItemsChange(format.format(afterDate(dispDate,-1)),format.format(dispDate),orderNo);
+		
+		//对比每个不一样的前今日订单生成变化单，批量保存
+		List<TDispOrderChange> saveList = new ArrayList<TDispOrderChange>();
+		for(TDispOrderChangeItem item : list){
+			TDispOrderChange change = new TDispOrderChange();
+			if(StringUtils.isBlank(item.getOrderNo1()) && StringUtils.isNotBlank(item.getOrderNo2()) ){
+				//减少订户
+				change.setReason("40");
+			}else if(StringUtils.isBlank(item.getOrderNo2()) && StringUtils.isNotBlank(item.getOrderNo1())){
+				//新增订户
+				change.setReason("30");
+			}else if(!item.getItemNo1().equals(item.getItemNo2())){
+				//变更产品
+				change.setReason("10");
+			}else if(item.getQty1().intValue() != item.getQty2().intValue()){
+				//变更数量
+				change.setReason("20");
+			}else if(item.getReachTimeType1().equals(item.getReachTimeType2())){
+				//变更配送时间
+				change.setReason("50");
+			}else{
+				continue;
+			}
+			
+			change.setYestodayMatnr(item.getMatnr2());
+			change.setTodayMatnr(item.getMatnr1());
+			change.setTodayQty(item.getQty1());
+			change.setYestodayQty(item.getQty2());
+			change.setYestodayReachTimeType(item.getReachTimeType1());
+			change.setTodayReachTimeType(item.getReachTimeType2());
+			//
+			change.setOrderNo(StringUtils.isNotBlank(item.getOrderNo1())?item.getOrderNo1():item.getOrderNo2());
+			change.setOrderDate(item.getOrderDate1()!=null?item.getOrderDate1():item.getOrderDate2());
+			change.setOrgOrderNo(StringUtils.isNotBlank(item.getOrgOrderNo1())?item.getOrgOrderNo1():item.getOrgOrderNo2());
+			change.setOrgItemNo(StringUtils.isNotBlank(item.getOrgItemNo1())?item.getOrgItemNo1():item.getOrgItemNo2());
+			change.setAddressNo(StringUtils.isNotBlank(item.getAddressNo1())?item.getAddressNo1():item.getAddressNo2());
+			change.setEmpNo(StringUtils.isNotBlank(item.getDispEmpNo1())?item.getDispEmpNo1():item.getDispEmpNo2());
+			
+			saveList.add(change);
+		}
+		
+		if(saveList.size()==0)return 0;
+		tDispOrderChangeMapper.batchAddNewDispOrderChanges(saveList);
+		
+		return 1;
 	}
 
 }
