@@ -35,6 +35,7 @@
 	    <result column="LAST_MODIFIED" property="lastModified" jdbcType="TIMESTAMP" />
 	    <result column="LAST_MODIFIED_BY" property="lastModifiedBy" jdbcType="VARCHAR" />
 	    <result column="LAST_MODIFIED_BY_TXT" property="lastModifiedByTxt" jdbcType="VARCHAR" />
+	    <result column="RATE" property="rate" jdbcType="VARCHAR" />
   </resultMap>
   <sql id="Base_Column_List">
 		MATNR, MATNR_TXT, BASE_UNIT, STATUS, LAST_MODIFIED MARA_LAST_MODIFIED,
@@ -67,6 +68,7 @@
 		p.ZBOT_CODE,
 		p.SALES_ORG,
 		p.DEALER_NO,
+		pex.rate,
 		pex.SHORT_TXT,
 		pex.PRE_DAYS,
 		pex.BOT_TYPE,
@@ -104,6 +106,7 @@
 		p.ZBOT_CODE,
 		p.SALES_ORG,
 		p.DEALER_NO,
+		pex.rate,
 		pex.SHORT_TXT,
 		pex.PRE_DAYS,
 		pex.BOT_TYPE,
@@ -162,6 +165,7 @@
 		p.ZBOT_CODE,
 		p.SALES_ORG,
 		p.DEALER_NO,
+		pex.rate,
 		pex.SHORT_TXT,
 		pex.PRE_DAYS,
 		pex.BOT_TYPE,
@@ -477,8 +481,6 @@
 				p.MATNR_TXT like '%${matnrTxt}%') 
 		</if>
 	</select>
-
-
 	<select id="getProductByCodeOrNameAndSalesOrg" resultMap="BaseResultMap" parameterType="java.util.HashMap">
 		SELECT
 		p.MATNR,
@@ -504,7 +506,5 @@
 		where 1=1
 				and p.SALES_ORG=#{salesOrg}
 				AND ( p.MATNR LIKE '%${matnr}%' OR p.MATNR_TXT like  '%${matnrTxt}%' )
-
-
 	</select>
 </mapper>

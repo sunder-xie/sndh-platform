@@ -95,6 +95,10 @@ public class ProductServiceImpl extends BaseService implements ProductService {
 		Map<String,String> attrs = new HashMap<String,String>();
 		attrs.put("matnr",matnr);
 		attrs.put("salesOrg",this.userSessionService.getCurrentUser().getSalesOrg());
+		TMdMara mara = tMdMaraMapper.selectProductAndExByCode(attrs);
+		if(mara != null){
+			this.notsellListMapper.getNotSellListByMatnr(matnr);
+		}
 		return tMdMaraMapper.selectProductAndExByCode(attrs);
 	}
 

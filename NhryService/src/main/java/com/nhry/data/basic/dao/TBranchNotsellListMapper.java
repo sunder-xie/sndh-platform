@@ -1,5 +1,7 @@
 package com.nhry.data.basic.dao;
 
+import java.util.List;
+
 import com.nhry.data.basic.domain.TBranchNotsellList;
 
 public interface TBranchNotsellListMapper {
@@ -23,4 +25,11 @@ public interface TBranchNotsellListMapper {
      * @return
      */
     int delBranchNotsellByMatnr(String matnr);
+    
+    /**
+     * 根据物料编号，查询不可销售的范围
+     * @param matnr
+     * @return
+     */
+    public List<TBranchNotsellList> getNotSellListByMatnr(String matnr);
 }

@@ -10,6 +10,8 @@ public class TBranchNotsellList {
     private String salesOrg;
 
     private String dealerNo;
+    
+    private String dealerName;
 
     private String branchNo;
 
@@ -112,4 +114,12 @@ public class TBranchNotsellList {
     public void setCreateAt(Date createAt) {
         this.createAt = createAt;
     }
+
+	public String getDealerName() {
+		return dealerName;
+	}
+
+	public void setDealerName(String dealerName) {
+		this.dealerName = dealerName;
+	}
 }
