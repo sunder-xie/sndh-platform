@@ -59,10 +59,14 @@ public class TMdBranchMapperImpl implements TMdBranchMapper {
 
 	}
 
-
-
 	public void setSqlSessionTemplate(DynamicSqlSessionTemplate sqlSessionTemplate) {
 		this.sqlSessionTemplate = sqlSessionTemplate;
+	}
+
+	@Override
+	public List<TMdBranch> findBranchByDno(Map<String, String> attrs) {
+		// TODO Auto-generated method stub
+		return this.sqlSessionTemplate.selectList("findBranchByDno", attrs);
 	}
 
 }

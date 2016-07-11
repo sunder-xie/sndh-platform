@@ -95,6 +95,10 @@ public class TVipCustInfo implements Serializable{
     
     private Date lastOrderTime;
     
+    private String dealerNo;
+    
+    private String dealerName;
+    
     private List<TMdAddress> addresses = new ArrayList<TMdAddress>();
 
     public String getVipCustNo() {
@@ -455,5 +459,21 @@ public class TVipCustInfo implements Serializable{
 
 	public void setBranchName(String branchName) {
 		this.branchName = branchName;
+	}
+
+	public String getDealerNo() {
+		return dealerNo;
+	}
+
+	public void setDealerNo(String dealerNo) {
+		this.dealerNo = dealerNo;
+	}
+
+	public String getDealerName() {
+		return dealerName;
+	}
+
+	public void setDealerName(String dealerName) {
+		this.dealerName = dealerName;
 	}
 }

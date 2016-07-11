@@ -43,8 +43,20 @@ public class TMdAddress implements Serializable{
     private String isDafault;
     
     private String isDelete;
+    
+    private String addressMode;
 
-    public String getAddressId() {
+    public String getAddressMode()
+	{
+		return addressMode;
+	}
+
+	public void setAddressMode(String addressMode)
+	{
+		this.addressMode = addressMode;
+	}
+
+	public String getAddressId() {
         return addressId;
     }
 

@@ -13,6 +13,7 @@ import com.nhry.model.basic.BranchOrDealerList;
 import com.nhry.model.basic.BranchQueryModel;
 import com.nhry.service.BaseService;
 import com.nhry.service.basic.dao.BranchService;
+
 import org.apache.commons.lang3.StringUtils;
 
 import java.util.HashMap;
@@ -100,5 +101,14 @@ public class BranchServiceImpl extends BaseService implements BranchService {
 
 	public void setDealerMapper(TMdDealerMapper dealerMapper) {
 		this.dealerMapper = dealerMapper;
+	}
+
+	@Override
+	public List<TMdBranch> findBranchByDno(String dealerNo) {
+		// TODO Auto-generated method stub
+		Map<String,String> attrs = new HashMap<String,String>();
+		attrs.put("salesOrg", this.userSessionService.getCurrentUser().getSalesOrg());
+		attrs.put("dealerNo",dealerNo);
+		return this.branchMapper.findBranchByDno(attrs);
 	}
 }

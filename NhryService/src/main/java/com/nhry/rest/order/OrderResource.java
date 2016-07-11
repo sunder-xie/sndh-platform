@@ -6,6 +6,7 @@ import com.nhry.data.order.domain.TPreOrder;
 import com.nhry.model.order.*;
 import com.nhry.rest.BaseResource;
 import com.nhry.service.order.dao.OrderService;
+import com.nhry.service.order.pojo.OrderRemainData;
 import com.sun.jersey.spi.resource.Singleton;
 import com.wordnik.swagger.annotations.Api;
 import com.wordnik.swagger.annotations.ApiOperation;
@@ -46,6 +47,14 @@ public class OrderResource extends BaseResource {
 	@ApiOperation(value = "/daliyPlans/{orderCode}", response = ArrayList.class, notes = "根据订单编号查询订单日计划信息")
 	public Response selectDaliyPlansByOrderNo(@ApiParam(required=true,name="orderCode",value="订单编号") @PathParam("orderCode") String orderCode){
 		return convertToRespModel(MessageCode.NORMAL, null, orderService.selectDaliyPlansByOrderNo(orderCode));
+	}
+	
+	@GET
+	@Path("/searchOrderRemain/{memberNo}")
+	@Produces(MediaType.APPLICATION_JSON)
+	@ApiOperation(value = "/searchOrderRemain/{memberNo}", response = OrderRemainData.class, notes = "根据订户编号查询为送达数量和总共消费金额")
+	public Response searchOrderRemain(@ApiParam(required=true,name="memberNo",value="订户编号") @PathParam("memberNo") String memberNo){
+		return convertToRespModel(MessageCode.NORMAL, null, orderService.searchOrderRemainData(memberNo));
 	}
 	
 	@POST

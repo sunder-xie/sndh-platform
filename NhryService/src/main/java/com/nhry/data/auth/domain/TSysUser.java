@@ -1,7 +1,11 @@
 package com.nhry.data.auth.domain;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
+
+import com.nhry.service.auth.pojo.UserRoles;
 
 public class TSysUser implements Serializable{
     private String loginName;
@@ -21,10 +25,14 @@ public class TSysUser implements Serializable{
     private Date createOn;
 
     private String branchNo;
+    
+    private String branchName;
 
     private String dealerId;
 
     private String salesOrg;
+    
+    private String orgName;
 
     private Date lastLogin;
 
@@ -91,6 +99,10 @@ public class TSysUser implements Serializable{
     private String dsPwpAccountDisabled;
 
     private String groupId;
+    
+    private List<UserRoles> roles = new ArrayList<UserRoles>();
+    
+    private List<TSysResource> resources = new ArrayList<TSysResource>(); 
 
     public String getLoginName() {
         return loginName;
@@ -443,4 +455,36 @@ public class TSysUser implements Serializable{
     public void setGroupId(String groupId) {
         this.groupId = groupId == null ? null : groupId.trim();
     }
+
+	public String getBranchName() {
+		return branchName;
+	}
+
+	public void setBranchName(String branchName) {
+		this.branchName = branchName;
+	}
+
+	public String getOrgName() {
+		return orgName;
+	}
+
+	public void setOrgName(String orgName) {
+		this.orgName = orgName;
+	}
+
+	public List<UserRoles> getRoles() {
+		return roles;
+	}
+
+	public void setRoles(List<UserRoles> roles) {
+		this.roles = roles;
+	}
+
+	public List<TSysResource> getResources() {
+		return resources;
+	}
+
+	public void setResources(List<TSysResource> resources) {
+		this.resources = resources;
+	}
 }

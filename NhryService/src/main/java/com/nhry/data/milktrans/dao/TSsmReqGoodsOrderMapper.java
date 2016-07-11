@@ -16,5 +16,5 @@ public interface TSsmReqGoodsOrderMapper {
     //修改要货计划状态 或 修改记录
     int uptRequireGoodsModifyInfo(TSsmReqGoodsOrder orderModel);
 
-
+    TSsmReqGoodsOrder getRequireOrderByVoucherNo(String voucherNo);
 }

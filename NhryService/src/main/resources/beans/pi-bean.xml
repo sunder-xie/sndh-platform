@@ -23,13 +23,17 @@
     </bean>
     <bean class="com.nhry.service.pi.impl.PIProductServiceImpl" id="piProductService">
         <property name="piProductMapper" ref="piProductMapper"/>
-        <property name="maraSalesMapper" ref="maraSalesMapper"/>
         <property name="maraMapper" ref="maraMapper"/>
         <property name="branchMapper" ref="branchMapper"/>
         <property name="dealerMapper" ref="dealerMapper"/>
+        <property name="maraUnitMapper" ref="maraUnitMapper"/>
+        <property name="codeItemMapper" ref="codeItemMapper"/>
     </bean>
     <bean class="com.nhry.service.pi.impl.PIRequireOrderServiceImpl" id="piRequireOrderService">
         <property name="branchExMapper" ref="branchExMapper"/>
         <property name="tSsmReqGoodsOrderItemMapper" ref="tSsmReqGoodsOrderItemMapper"/>
+        <property name="ssmGiOrderMapper" ref="ssmGiOrderMapper"/>
+        <property name="ssmGiOrderItemMapper" ref="ssmGiOrderItemMapper"/>
+        <property name="tSsmReqGoodsOrderMapper" ref="tSsmReqGoodsOrderMapper"/>
     </bean>
 </beans>

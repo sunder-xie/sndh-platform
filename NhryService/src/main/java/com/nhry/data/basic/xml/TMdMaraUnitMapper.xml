@@ -13,19 +13,19 @@
   <sql id="Base_Column_List" >
     MATNR, UNIT, UMREZ, BASE_UNIT, UMREN, LAST_MODIFIED, CREATE_AT
   </sql>
-  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="com.nhry.data.basic.domain.TMdMaraUnitKey" >
+  <select id="selectMaraUnitByNo" resultMap="BaseResultMap" parameterType="com.nhry.data.basic.domain.TMdMaraUnitKey" >
     select 
     <include refid="Base_Column_List" />
     from t_md_mara_unit
     where MATNR = #{matnr,jdbcType=VARCHAR}
       and UNIT = #{unit,jdbcType=VARCHAR}
   </select>
-  <delete id="deleteByPrimaryKey" parameterType="com.nhry.data.basic.domain.TMdMaraUnitKey" >
+  <delete id="deleteMaraUnitByNo" parameterType="com.nhry.data.basic.domain.TMdMaraUnitKey" >
     delete from t_md_mara_unit
     where MATNR = #{matnr,jdbcType=VARCHAR}
       and UNIT = #{unit,jdbcType=VARCHAR}
   </delete>
-  <insert id="insert" parameterType="com.nhry.data.basic.domain.TMdMaraUnit" >
+  <insert id="insertMaraUnit" parameterType="com.nhry.data.basic.domain.TMdMaraUnit" >
     insert into t_md_mara_unit (MATNR, UNIT, UMREZ, 
       BASE_UNIT, UMREN, LAST_MODIFIED, 
       CREATE_AT)
@@ -33,7 +33,7 @@
       #{baseUnit,jdbcType=VARCHAR}, #{umren,jdbcType=DECIMAL}, #{lastModified,jdbcType=TIMESTAMP}, 
       #{createAt,jdbcType=TIMESTAMP})
   </insert>
-  <insert id="insertSelective" parameterType="com.nhry.data.basic.domain.TMdMaraUnit" >
+  <insert id="insertMaraUnitSelective" parameterType="com.nhry.data.basic.domain.TMdMaraUnit" >
     insert into t_md_mara_unit
     <trim prefix="(" suffix=")" suffixOverrides="," >
       <if test="matnr != null" >
@@ -82,7 +82,7 @@
       </if>
     </trim>
   </insert>
-  <update id="updateByPrimaryKeySelective" parameterType="com.nhry.data.basic.domain.TMdMaraUnit" >
+  <update id="updateMaraUnitSelective" parameterType="com.nhry.data.basic.domain.TMdMaraUnit" >
     update t_md_mara_unit
     <set >
       <if test="umrez != null" >
@@ -104,7 +104,7 @@
     where MATNR = #{matnr,jdbcType=VARCHAR}
       and UNIT = #{unit,jdbcType=VARCHAR}
   </update>
-  <update id="updateByPrimaryKey" parameterType="com.nhry.data.basic.domain.TMdMaraUnit" >
+  <update id="updateMaraUnit" parameterType="com.nhry.data.basic.domain.TMdMaraUnit" >
     update t_md_mara_unit
     set UMREZ = #{umrez,jdbcType=DECIMAL},
       BASE_UNIT = #{baseUnit,jdbcType=VARCHAR},

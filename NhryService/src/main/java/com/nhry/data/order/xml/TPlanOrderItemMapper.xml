@@ -59,8 +59,8 @@
   <select id="selectEntriesByOrderCode" resultMap="BaseResultMap" parameterType="java.lang.String" >
     select 
     e.ITEM_NO, e.ORDER_NO, e.ORDER_DATE, e.REF_ITEM_NO, e.NEW_ROW_FLAG, e.MATNR, e.UNIT, e.QTY, e.SALES_PRICE,
-    e.RULE_TYPE, e.DISP_DAYS, e.GAP_DAYS, e.RULE_TXT, e.REACH_TIME_TYPE, e.START_DISP_DATE, e.END_DISP_DATE, 
-    e.PROMOTION, e.PROM_DAYS, e.STATUS, e.BUY_QTY, e.GIFT_QTY, e.CREATE_AT, e.CREATE_BY, e.CREATE_BY_TXT, 
+    e.RULE_TYPE, e.DISP_DAYS, e.GAP_DAYS, e.RULE_TXT, e.REACH_TIME_TYPE, e.START_DISP_DATE, e.END_DISP_DATE,
+    e.PROMOTION, e.PROM_DAYS, e.STATUS, e.BUY_QTY, e.GIFT_QTY, e.CREATE_AT, e.CREATE_BY, e.CREATE_BY_TXT,
     e.LAST_MODIFIED, e.LAST_MODIFIED_BY, e.LAST_MODIFIED_BY_TXT,
     p.MATNR_TXT MATNR_TXT
     from t_mst_plan_order_item e, t_md_mara p

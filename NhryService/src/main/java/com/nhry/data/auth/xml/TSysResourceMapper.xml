@@ -13,6 +13,7 @@
         <result column="LAST_MODIFIED_BY" property="lastModifiedBy" jdbcType="VARCHAR"/>
         <result column="LAST_MODIFIED_BY_TXT" property="lastModifiedByTxt" jdbcType="VARCHAR"/>
         <result column="RES_URL" property="resUrl" jdbcType="VARCHAR"/>
+        <result column="RES_INDEX" property="index" jdbcType="INTEGER"/>
     </resultMap>
     <resultMap id="sysRoleResMap" type="com.nhry.data.auth.domain.TSysRoleResource">
         <result column="ID" property="id" jdbcType="VARCHAR"/>
@@ -21,7 +22,7 @@
     </resultMap>
     <sql id="sysRes_Column_List">
     RES_CODE, RES_NAME, PARENT, RES_TYPE, CREATE_AT, CREATE_BY, CREATE_BY_TXT, LAST_MODIFIED, 
-    LAST_MODIFIED_BY, LAST_MODIFIED_BY_TXT, RES_URL
+    LAST_MODIFIED_BY, LAST_MODIFIED_BY_TXT, RES_URL,RES_INDEX
   </sql>
     <select id="selectResByCode" resultMap="sysResResultMap" parameterType="java.lang.String">
         select
@@ -67,6 +68,9 @@
             <if test="resUrl != null">
                 RES_URL,
             </if>
+            <if test="index != null">
+                RES_INDEX,
+            </if>
         </trim>
         <trim prefix="values (" suffix=")" suffixOverrides=",">
             <if test="resCode != null">
@@ -102,6 +106,9 @@
             <if test="resUrl != null">
                 #{resUrl,jdbcType=VARCHAR},
             </if>
+            <if test="index != null">
+                #{index,jdbcType=INTEGER},
+            </if>
         </trim>
     </insert>
     <update id="updateResByCode" parameterType="com.nhry.data.auth.domain.TSysResource">
@@ -136,6 +143,9 @@
             </if>
             <if test="resUrl != null">
                 RES_URL = #{resUrl,jdbcType=VARCHAR},
+            </if>
+            <if test="index != null">
+                RES_INDEX = #{index,jdbcType=INTEGER},
             </if>
         </set>
         where RES_CODE = #{resCode,jdbcType=VARCHAR}
@@ -180,7 +190,7 @@
   </select>
     <select id="findRecoureByUserId" resultMap="sysResResultMap">
         SELECT
-        r.*
+        distinct r.*
         FROM
             t_sys_resource r
         LEFT JOIN t_sys_resource d ON r.PARENT = d.RES_CODE
@@ -188,6 +198,12 @@
         JOIN t_sys_role role ON role.id = rr.ID
         JOIN t_sys_user_role ur ON ur.ID = role.ID
         JOIN t_sys_user usr ON usr.LOGIN_NAME = ur.LOGIN_NAME
-        AND usr.LOGIN_NAME = #{userId}
+        AND usr.LOGIN_NAME = #{userId} ORDER BY r.RES_INDEX ASC
+    </select>
+    <select id="getAllResources" resultMap="sysResResultMap" >
+        select <include refid="sysRes_Column_List"/> from t_sys_resource ORDER BY CREATE_AT,LAST_MODIFIED
+    </select>
+    <select id="getRoleRosources" parameterType="String" resultMap="sysResResultMap" >
+       select distinct t1.RES_CODE, t1.RES_NAME, t1.PARENT, t1.RES_TYPE,t1.RES_URL from t_sys_resource t1,T_SYS_ROLE_RESOURCE tr where t1.RES_CODE=tr.RES_CODE and tr.ID=#{id}
     </select>
 </mapper>

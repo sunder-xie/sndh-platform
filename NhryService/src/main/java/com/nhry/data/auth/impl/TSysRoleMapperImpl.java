@@ -5,6 +5,7 @@ import java.util.List;
 import com.nhry.common.datasource.DynamicSqlSessionTemplate;
 import com.nhry.data.auth.dao.TSysRoleMapper;
 import com.nhry.data.auth.domain.TSysRole;
+import com.nhry.service.auth.pojo.UserRoles;
 
 public class TSysRoleMapperImpl implements TSysRoleMapper {
 	private DynamicSqlSessionTemplate sqlSessionTemplate;
@@ -40,5 +41,11 @@ public class TSysRoleMapperImpl implements TSysRoleMapper {
 	public List<TSysRole> getAllRoles() {
 		// TODO Auto-generated method stub
 		return this.sqlSessionTemplate.selectList("getAllRoles");
+	}
+
+	@Override
+	public List<UserRoles> getUserRoles(String uname) {
+		// TODO Auto-generated method stub
+		return this.sqlSessionTemplate.selectList("getUserRoles", uname);
 	}
 }

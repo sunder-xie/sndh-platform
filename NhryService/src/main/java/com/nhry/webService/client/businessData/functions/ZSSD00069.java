@@ -56,7 +56,7 @@ public class ZSSD00069 implements org.apache.axis2.databinding.ADBBean {
     /**
      * field for PSTYV
      */
-    protected PSTYV_type1 localPSTYV;
+    protected PSTYV_type3 localPSTYV;
 
     /*  This tracker boolean wil be used to detect whether the user called the set method
      *   for this attribute. It will be used to determine whether to include this field
@@ -196,6 +196,39 @@ public class ZSSD00069 implements org.apache.axis2.databinding.ADBBean {
      */
     protected boolean localRESLOTracker = false;
 
+    /**
+     * field for WERKS
+     */
+    protected WERKS_type3 localWERKS;
+
+    /*  This tracker boolean wil be used to detect whether the user called the set method
+     *   for this attribute. It will be used to determine whether to include this field
+     *   in the serialized XML
+     */
+    protected boolean localWERKSTracker = false;
+
+    /**
+     * field for VKORG
+     */
+    protected VKORG_type3 localVKORG;
+
+    /*  This tracker boolean wil be used to detect whether the user called the set method
+     *   for this attribute. It will be used to determine whether to include this field
+     *   in the serialized XML
+     */
+    protected boolean localVKORGTracker = false;
+
+    /**
+     * field for CMPRE
+     */
+    protected CMPRE_type1 localCMPRE;
+
+    /*  This tracker boolean wil be used to detect whether the user called the set method
+     *   for this attribute. It will be used to determine whether to include this field
+     *   in the serialized XML
+     */
+    protected boolean localCMPRETracker = false;
+
     public boolean isBSTKDSpecified() {
         return localBSTKDTracker;
     }
@@ -212,7 +245,8 @@ public class ZSSD00069 implements org.apache.axis2.databinding.ADBBean {
      * Auto generated setter method
      * @param param BSTKD
      */
-    public void setBSTKD(BSTKD_type3 param) {
+    public void setBSTKD(
+        BSTKD_type3 param) {
         localBSTKDTracker = param != null;
 
         this.localBSTKD = param;
@@ -234,7 +268,8 @@ public class ZSSD00069 implements org.apache.axis2.databinding.ADBBean {
      * Auto generated setter method
      * @param param VBELN
      */
-    public void setVBELN(VBELN_type1 param) {
+    public void setVBELN(
+        VBELN_type1 param) {
         localVBELNTracker = param != null;
 
         this.localVBELN = param;
@@ -256,7 +291,8 @@ public class ZSSD00069 implements org.apache.axis2.databinding.ADBBean {
      * Auto generated setter method
      * @param param POSNR
      */
-    public void setPOSNR(POSNR_type1 param) {
+    public void setPOSNR(
+        POSNR_type1 param) {
         localPOSNRTracker = param != null;
 
         this.localPOSNR = param;
@@ -268,9 +304,9 @@ public class ZSSD00069 implements org.apache.axis2.databinding.ADBBean {
 
     /**
      * Auto generated getter method
-     * @return com.nhry.webService.client.businessData.functions.PSTYV_type1
+     * @return com.nhry.webService.client.businessData.functions.PSTYV_type3
      */
-    public PSTYV_type1 getPSTYV() {
+    public PSTYV_type3 getPSTYV() {
         return localPSTYV;
     }
 
@@ -278,7 +314,8 @@ public class ZSSD00069 implements org.apache.axis2.databinding.ADBBean {
      * Auto generated setter method
      * @param param PSTYV
      */
-    public void setPSTYV(PSTYV_type1 param) {
+    public void setPSTYV(
+        PSTYV_type3 param) {
         localPSTYVTracker = param != null;
 
         this.localPSTYV = param;
@@ -300,7 +337,8 @@ public class ZSSD00069 implements org.apache.axis2.databinding.ADBBean {
      * Auto generated setter method
      * @param param MATNR
      */
-    public void setMATNR(MATNR_type3 param) {
+    public void setMATNR(
+        MATNR_type3 param) {
         localMATNRTracker = param != null;
 
         this.localMATNR = param;
@@ -322,7 +360,8 @@ public class ZSSD00069 implements org.apache.axis2.databinding.ADBBean {
      * Auto generated setter method
      * @param param LFIMG
      */
-    public void setLFIMG(LFIMG_type1 param) {
+    public void setLFIMG(
+        LFIMG_type1 param) {
         localLFIMGTracker = param != null;
 
         this.localLFIMG = param;
@@ -344,7 +383,8 @@ public class ZSSD00069 implements org.apache.axis2.databinding.ADBBean {
      * Auto generated setter method
      * @param param MEINS
      */
-    public void setMEINS(MEINS_type1 param) {
+    public void setMEINS(
+        MEINS_type1 param) {
         localMEINSTracker = param != null;
 
         this.localMEINS = param;
@@ -366,7 +406,8 @@ public class ZSSD00069 implements org.apache.axis2.databinding.ADBBean {
      * Auto generated setter method
      * @param param KUNNR
      */
-    public void setKUNNR(KUNNR_type3 param) {
+    public void setKUNNR(
+        KUNNR_type3 param) {
         localKUNNRTracker = param != null;
 
         this.localKUNNR = param;
@@ -388,7 +429,8 @@ public class ZSSD00069 implements org.apache.axis2.databinding.ADBBean {
      * Auto generated setter method
      * @param param KUNAG
      */
-    public void setKUNAG(KUNAG_type1 param) {
+    public void setKUNAG(
+        KUNAG_type1 param) {
         localKUNAGTracker = param != null;
 
         this.localKUNAG = param;
@@ -410,7 +452,8 @@ public class ZSSD00069 implements org.apache.axis2.databinding.ADBBean {
      * Auto generated setter method
      * @param param LFDAT
      */
-    public void setLFDAT(Date param) {
+    public void setLFDAT(
+        Date param) {
         localLFDATTracker = param != null;
 
         this.localLFDAT = param;
@@ -432,7 +475,8 @@ public class ZSSD00069 implements org.apache.axis2.databinding.ADBBean {
      * Auto generated setter method
      * @param param VBELV
      */
-    public void setVBELV(VBELV_type1 param) {
+    public void setVBELV(
+        VBELV_type1 param) {
         localVBELVTracker = param != null;
 
         this.localVBELV = param;
@@ -454,7 +498,8 @@ public class ZSSD00069 implements org.apache.axis2.databinding.ADBBean {
      * Auto generated setter method
      * @param param POSNV
      */
-    public void setPOSNV(POSNV_type1 param) {
+    public void setPOSNV(
+        POSNV_type1 param) {
         localPOSNVTracker = param != null;
 
         this.localPOSNV = param;
@@ -476,7 +521,8 @@ public class ZSSD00069 implements org.apache.axis2.databinding.ADBBean {
      * Auto generated setter method
      * @param param CHARG
      */
-    public void setCHARG(CHARG_type1 param) {
+    public void setCHARG(
+        CHARG_type1 param) {
         localCHARGTracker = param != null;
 
         this.localCHARG = param;
@@ -498,7 +544,8 @@ public class ZSSD00069 implements org.apache.axis2.databinding.ADBBean {
      * Auto generated setter method
      * @param param SORTL
      */
-    public void setSORTL(SORTL_type1 param) {
+    public void setSORTL(
+        SORTL_type1 param) {
         localSORTLTracker = param != null;
 
         this.localSORTL = param;
@@ -520,7 +567,8 @@ public class ZSSD00069 implements org.apache.axis2.databinding.ADBBean {
      * Auto generated setter method
      * @param param LGORT
      */
-    public void setLGORT(LGORT_type3 param) {
+    public void setLGORT(
+        LGORT_type3 param) {
         localLGORTTracker = param != null;
 
         this.localLGORT = param;
@@ -542,10 +590,80 @@ public class ZSSD00069 implements org.apache.axis2.databinding.ADBBean {
      * Auto generated setter method
      * @param param RESLO
      */
-    public void setRESLO(RESLO_type1 param) {
+    public void setRESLO(
+        RESLO_type1 param) {
         localRESLOTracker = param != null;
 
         this.localRESLO = param;
+    }
+
+    public boolean isWERKSSpecified() {
+        return localWERKSTracker;
+    }
+
+    /**
+     * Auto generated getter method
+     * @return com.nhry.webService.client.businessData.functions.WERKS_type3
+     */
+    public WERKS_type3 getWERKS() {
+        return localWERKS;
+    }
+
+    /**
+     * Auto generated setter method
+     * @param param WERKS
+     */
+    public void setWERKS(
+        WERKS_type3 param) {
+        localWERKSTracker = param != null;
+
+        this.localWERKS = param;
+    }
+
+    public boolean isVKORGSpecified() {
+        return localVKORGTracker;
+    }
+
+    /**
+     * Auto generated getter method
+     * @return com.nhry.webService.client.businessData.functions.VKORG_type3
+     */
+    public VKORG_type3 getVKORG() {
+        return localVKORG;
+    }
+
+    /**
+     * Auto generated setter method
+     * @param param VKORG
+     */
+    public void setVKORG(
+        VKORG_type3 param) {
+        localVKORGTracker = param != null;
+
+        this.localVKORG = param;
+    }
+
+    public boolean isCMPRESpecified() {
+        return localCMPRETracker;
+    }
+
+    /**
+     * Auto generated getter method
+     * @return com.nhry.webService.client.businessData.functions.CMPRE_type1
+     */
+    public CMPRE_type1 getCMPRE() {
+        return localCMPRE;
+    }
+
+    /**
+     * Auto generated setter method
+     * @param param CMPRE
+     */
+    public void setCMPRE(
+        CMPRE_type1 param) {
+        localCMPRETracker = param != null;
+
+        this.localCMPRE = param;
     }
 
     /**
@@ -754,6 +872,36 @@ public class ZSSD00069 implements org.apache.axis2.databinding.ADBBean {
             }
 
             localRESLO.serialize(new javax.xml.namespace.QName("", "RESLO"),
+                xmlWriter);
+        }
+
+        if (localWERKSTracker) {
+            if (localWERKS == null) {
+                throw new org.apache.axis2.databinding.ADBException(
+                    "WERKS cannot be null!!");
+            }
+
+            localWERKS.serialize(new javax.xml.namespace.QName("", "WERKS"),
+                xmlWriter);
+        }
+
+        if (localVKORGTracker) {
+            if (localVKORG == null) {
+                throw new org.apache.axis2.databinding.ADBException(
+                    "VKORG cannot be null!!");
+            }
+
+            localVKORG.serialize(new javax.xml.namespace.QName("", "VKORG"),
+                xmlWriter);
+        }
+
+        if (localCMPRETracker) {
+            if (localCMPRE == null) {
+                throw new org.apache.axis2.databinding.ADBException(
+                    "CMPRE cannot be null!!");
+            }
+
+            localCMPRE.serialize(new javax.xml.namespace.QName("", "CMPRE"),
                 xmlWriter);
         }
 
@@ -1085,7 +1233,7 @@ public class ZSSD00069 implements org.apache.axis2.databinding.ADBBean {
                             reader.getName())) ||
                         new javax.xml.namespace.QName("", "PSTYV").equals(
                             reader.getName())) {
-                    object.setPSTYV(PSTYV_type1.Factory.parse(
+                    object.setPSTYV(PSTYV_type3.Factory.parse(
                             reader));
 
                     reader.next();
@@ -1290,6 +1438,57 @@ public class ZSSD00069 implements org.apache.axis2.databinding.ADBBean {
                         new javax.xml.namespace.QName("", "RESLO").equals(
                             reader.getName())) {
                     object.setRESLO(RESLO_type1.Factory.parse(
+                            reader));
+
+                    reader.next();
+                } // End of if for expected property start element
+
+                else {
+                }
+
+                while (!reader.isStartElement() && !reader.isEndElement())
+                    reader.next();
+
+                if ((reader.isStartElement() &&
+                        new javax.xml.namespace.QName("", "WERKS").equals(
+                            reader.getName())) ||
+                        new javax.xml.namespace.QName("", "WERKS").equals(
+                            reader.getName())) {
+                    object.setWERKS(WERKS_type3.Factory.parse(
+                            reader));
+
+                    reader.next();
+                } // End of if for expected property start element
+
+                else {
+                }
+
+                while (!reader.isStartElement() && !reader.isEndElement())
+                    reader.next();
+
+                if ((reader.isStartElement() &&
+                        new javax.xml.namespace.QName("", "VKORG").equals(
+                            reader.getName())) ||
+                        new javax.xml.namespace.QName("", "VKORG").equals(
+                            reader.getName())) {
+                    object.setVKORG(VKORG_type3.Factory.parse(
+                            reader));
+
+                    reader.next();
+                } // End of if for expected property start element
+
+                else {
+                }
+
+                while (!reader.isStartElement() && !reader.isEndElement())
+                    reader.next();
+
+                if ((reader.isStartElement() &&
+                        new javax.xml.namespace.QName("", "CMPRE").equals(
+                            reader.getName())) ||
+                        new javax.xml.namespace.QName("", "CMPRE").equals(
+                            reader.getName())) {
+                    object.setCMPRE(CMPRE_type1.Factory.parse(
                             reader));
 
                     reader.next();

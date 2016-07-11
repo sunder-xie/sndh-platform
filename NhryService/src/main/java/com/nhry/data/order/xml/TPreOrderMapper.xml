@@ -42,20 +42,38 @@
     <result column="STOP_REASON" property="stopReason" jdbcType="VARCHAR" />
     <result column="BACK_REASON" property="backReason" jdbcType="VARCHAR" />
     <result column="BACK_DATE" property="backDate" jdbcType="DATE" />
+    <result column="SIGN" property="sign" jdbcType="VARCHAR" />
+    <result column="SALES_ORG" property="salesOrg" jdbcType="VARCHAR" />
+  </resultMap>
+  <resultMap id="BaseRemainResultMap" type="com.nhry.service.order.pojo.OrderRemainData" >
+    <result column="QTY" property="qty" jdbcType="INTEGER" />
+    <result column="AMT" property="amt" jdbcType="DECIMAL" />
   </resultMap>
   <sql id="Base_Column_List" >
     ORDER_NO, ORDER_TYPE, ORDER_DATE, PAYMENTMETHOD, PREORDER_SOURCE, ONLINEORDER_NO, 
     BRANCH_NO, MILKMEMBER_NO, MEMBER_NO, PAYMENT_STAT, MILKBOX_STAT, INIT_AMT, CUR_AMT, 
     DISP_LINE_NO, EMP_NO, ADRESS_NO, CREATER_NO, CREATER_BY, PREORDER_STAT, MEMO_TXT, 
     PAY_METHOD, SOLICIT_NO, SOLICIT_DATE, SOLICITOR_NO, SOLICIT_BY,RET_REASON,RET_DATE,DELIVERY_TYPE,STOP_DATE_START,STOP_DATE_END,STOP_REASON
+  	 SIGN,SALES_ORG
   </sql>
+  <select id="selectOrderRemainAndAmt" resultMap="BaseRemainResultMap" parameterType="java.lang.String" >
+	   select sum(d.QTY) QTY,(select sum(INIT_AMT - CUR_AMT) 
+		from t_preorder
+		where MILKMEMBER_NO = #{memberNo,jdbcType=VARCHAR} ) AMT 
+		from t_mst_order_daliy_plan_item d
+		left join t_preorder o on d.ORDER_NO = o.ORDER_NO
+		where o.MILKMEMBER_NO = #{memberNo,jdbcType=VARCHAR}
+	   and d.DISP_DATE &gt;= curdate()
+		and d.DISP_DATE &lt;= last_day(curdate())
+		and d.STATUS = '10'
+  </select>
   <select id="selectByOrderCode" resultMap="BaseResultMap" parameterType="java.lang.String" >
     select 
     o.ORDER_NO, o.ORDER_TYPE, o.ORDER_DATE, o.PAYMENTMETHOD, o.PREORDER_SOURCE, o.ONLINEORDER_NO, 
     b.BRANCH_NAME BRANCH_NAME,o.BRANCH_NO, o.MILKMEMBER_NO, o.MEMBER_NO, o.PAYMENT_STAT, o.MILKBOX_STAT, o.INIT_AMT, o.CUR_AMT, 
     o.DISP_LINE_NO, o.EMP_NO,e.EMP_NAME EMP_NAME,o.ADRESS_NO, o.CREATER_NO, o.CREATER_BY, o.PREORDER_STAT, o.MEMO_TXT, 
     o.PAY_METHOD, o.SOLICIT_NO, o.SOLICIT_DATE, o.SOLICITOR_NO, o.SOLICIT_BY, o.END_DATE,o.STOP_DATE_START,o.DELIVERY_TYPE,
-    o.STOP_DATE_END,o.STOP_REASON,v.MP CUSTOMER_TEL,v.VIP_NAME MILKMEMBER_NAME
+    o.STOP_DATE_END,o.STOP_REASON,v.MP CUSTOMER_TEL,v.VIP_NAME MILKMEMBER_NAME,o.SIGN,o.SALES_ORG
     FROM t_preorder o , t_md_branch b , t_vip_cust_info v ,t_md_branch_emp e
     WHERE o.BRANCH_NO = b.BRANCH_NO and v.VIP_CUST_NO = o.MILKMEMBER_NO and e.EMP_NO = o.EMP_NO
     and ORDER_NO = #{orderNo,jdbcType=VARCHAR}
@@ -170,6 +188,12 @@
       <if test="endDate != null" >
         END_DATE,
       </if>
+      <if test="sign != null" >
+        SIGN,
+      </if>
+      <if test="salesOrg != null" >
+        SALES_ORG,
+      </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides="," >
       <if test="orderNo != null" >
@@ -249,6 +273,12 @@
       </if>
       <if test="endDate != null" >
         #{endDate,jdbcType=DATE},
+      </if>
+      <if test="sign != null" >
+        #{sign,jdbcType=VARCHAR},
+      </if>
+      <if test="salesOrg != null" >
+        #{salesOrg,jdbcType=VARCHAR},
       </if>
     </trim>
   </insert>
@@ -350,7 +380,7 @@
     o.ORDER_NO, o.ORDER_TYPE, o.ORDER_DATE, o.PAYMENTMETHOD, o.PREORDER_SOURCE, o.ONLINEORDER_NO, 
     b.BRANCH_NAME BRANCH_NO, o.MILKMEMBER_NO, o.MEMBER_NO, o.PAYMENT_STAT, o.MILKBOX_STAT, o.INIT_AMT, o.CUR_AMT, 
     o.DISP_LINE_NO, o.EMP_NO,v.ADDRESS_TXT ADRESS_NO, o.CREATER_NO, o.CREATER_BY, o.PREORDER_STAT,o.PAY_METHOD,
-    v.MP CUSTOMER_TEL,v.VIP_NAME MILKMEMBER_NAME,o.RET_REASON,o.RET_DATE,o.BACK_REASON,o.BACK_DATE
+    v.MP CUSTOMER_TEL,v.VIP_NAME MILKMEMBER_NAME,o.RET_REASON,o.RET_DATE,o.BACK_REASON,o.BACK_DATE,o.SIGN
     FROM t_preorder o , t_md_branch b , t_vip_cust_info v
     WHERE o.BRANCH_NO = b.BRANCH_NO and v.VIP_CUST_NO = o.MILKMEMBER_NO
     <!-- AND o.PREORDER_STAT = "10" -->
@@ -426,7 +456,7 @@
   <select id="searchReturnOrders" resultMap="BaseResultMap" parameterType="com.nhry.model.order.ManHandOrderSearchModel">
     select
       o.ORDER_NO, o.PREORDER_STAT,o.RET_REASON,o.RET_DATE, c.VIP_NAME MILKMEMBER_NO, c.VIP_NAME MEMBER_NO,
-    c.MP CUSTOMER_TEL,b.BRANCH_NAME BRANCH_NO
+    c.MP CUSTOMER_TEL,b.BRANCH_NAME BRANCH_NO,o.SIGN
     FROM t_preorder o,t_md_branch b,t_vip_cust_info c
 
     WHERE o.BRANCH_NO  = b.BRANCH_NO and o.MILKMEMBER_NO = c.VIP_CUST_NO
@@ -464,6 +494,9 @@
       <if test="preorderStat != null" >
         PREORDER_STAT = #{preorderStat,jdbcType=VARCHAR},
       </if>
+      <if test="sign != null" >
+        SIGN = #{sign,jdbcType=VARCHAR},
+      </if>
       <if test="stopDateStart != null" >
         STOP_DATE_START = #{stopDateStart,jdbcType=VARCHAR},
       </if>
@@ -478,6 +511,9 @@
       </if>
       <if test="backDate != null" >
         BACK_DATE = #{backDate,jdbcType=VARCHAR},
+      </if>
+      <if test="memoTxt != null" >
+        MEMO_TXT = #{memoTxt,jdbcType=VARCHAR},
       </if>
     </set>
     where ORDER_NO = #{orderNo,jdbcType=VARCHAR}

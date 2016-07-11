@@ -24,4 +24,11 @@ public interface TMdBranchMapper {
     List<TMdBranch> getBranchByCodeOrName(Map<String, String> map);
 
     List<TMdBranch> findBranchListByOrgAndAuto(String salesOrg);
+    
+    /**
+     * 根据经销商编号、当前销售组织查询对应的奶站
+     * @param attrs
+     * @return
+     */
+    List<TMdBranch> findBranchByDno(Map<String,String> attrs);
 }

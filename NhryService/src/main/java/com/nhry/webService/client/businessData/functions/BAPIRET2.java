@@ -190,7 +190,8 @@ public class BAPIRET2 implements org.apache.axis2.databinding.ADBBean {
      * Auto generated setter method
      * @param param TYPE
      */
-    public void setTYPE(TYPE_type1 param) {
+    public void setTYPE(
+        TYPE_type1 param) {
         localTYPETracker = param != null;
 
         this.localTYPE = param;
@@ -212,7 +213,8 @@ public class BAPIRET2 implements org.apache.axis2.databinding.ADBBean {
      * Auto generated setter method
      * @param param ID
      */
-    public void setID(ID_type1 param) {
+    public void setID(
+        ID_type1 param) {
         localIDTracker = param != null;
 
         this.localID = param;
@@ -234,7 +236,8 @@ public class BAPIRET2 implements org.apache.axis2.databinding.ADBBean {
      * Auto generated setter method
      * @param param NUMBER
      */
-    public void setNUMBER(NUMBER_type1 param) {
+    public void setNUMBER(
+        NUMBER_type1 param) {
         localNUMBERTracker = param != null;
 
         this.localNUMBER = param;
@@ -279,7 +282,8 @@ public class BAPIRET2 implements org.apache.axis2.databinding.ADBBean {
      * Auto generated setter method
      * @param param LOG_NO
      */
-    public void setLOG_NO(LOG_NO_type1 param) {
+    public void setLOG_NO(
+        LOG_NO_type1 param) {
         localLOG_NOTracker = param != null;
 
         this.localLOG_NO = param;
@@ -461,7 +465,8 @@ public class BAPIRET2 implements org.apache.axis2.databinding.ADBBean {
      * Auto generated setter method
      * @param param FIELD
      */
-    public void setFIELD(FIELD_type1 param) {
+    public void setFIELD(
+        FIELD_type1 param) {
         localFIELDTracker = param != null;
 
         this.localFIELD = param;
@@ -483,7 +488,8 @@ public class BAPIRET2 implements org.apache.axis2.databinding.ADBBean {
      * Auto generated setter method
      * @param param SYSTEM
      */
-    public void setSYSTEM(SYSTEM_type1 param) {
+    public void setSYSTEM(
+        SYSTEM_type1 param) {
         localSYSTEMTracker = param != null;
 
         this.localSYSTEM = param;
