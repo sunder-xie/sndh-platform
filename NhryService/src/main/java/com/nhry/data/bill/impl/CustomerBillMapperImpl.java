@@ -17,7 +17,7 @@ public class CustomerBillMapperImpl implements CustomerBillMapper {
 
 
     @Override
-    public TMstRecvBill getCustomerOrderByCode(String orderNo) {
+    public TMstRecvBill getRecBillByOrderNo(String orderNo) {
         return sqlSessionTemplate.selectOne("getCustomerOrderByCode",orderNo);
     }
 

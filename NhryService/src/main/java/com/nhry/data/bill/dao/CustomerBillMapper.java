@@ -7,7 +7,7 @@ import com.nhry.data.bill.domain.TMstRecvBill;
  */
 public interface CustomerBillMapper {
 
-    public TMstRecvBill getCustomerOrderByCode(String orderNo);
+    public TMstRecvBill getRecBillByOrderNo(String orderNo);
 
     public int customerPayment(TMstRecvBill customerBill);
 

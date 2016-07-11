@@ -1,6 +1,7 @@
 package com.nhry.data.bill.domain;
 
 import java.io.Serializable;
+import java.math.BigDecimal;
 import java.util.Date;
 
 /**
@@ -14,9 +15,13 @@ public class TMstRecvBill implements Serializable {
     private String status;
     private Integer amt;
     private String vipCustNo;
+    private String vipCustName;
+    private String remark;
     private Date startTime;
     private Date endTime;
     private String paymentYearMonth;
+    private BigDecimal totalPrice;
+    private int totalNum;
     private String recvEmp;
     private String recvEmpName;
     private Date createAt;
@@ -32,6 +37,38 @@ public class TMstRecvBill implements Serializable {
 
     public void setOrderNo(String orderNo) {
         this.orderNo = orderNo;
+    }
+
+    public BigDecimal getTotalPrice() {
+        return totalPrice;
+    }
+
+    public void setTotalPrice(BigDecimal totalPrice) {
+        this.totalPrice = totalPrice;
+    }
+
+    public int getTotalNum() {
+        return totalNum;
+    }
+
+    public void setTotalNum(int totalNum) {
+        this.totalNum = totalNum;
+    }
+
+    public String getVipCustName() {
+        return vipCustName;
+    }
+
+    public void setVipCustName(String vipCustName) {
+        this.vipCustName = vipCustName;
+    }
+
+    public String getRemark() {
+        return remark;
+    }
+
+    public void setRemark(String remark) {
+        this.remark = remark;
     }
 
     public String getReceiptNo() {

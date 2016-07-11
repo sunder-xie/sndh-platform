@@ -516,6 +516,7 @@
     select
     o.ORDER_NO, o.END_DATE,o.EMP_NO,e.EMP_NAME EMP_NAME,o.INIT_AMT,o.PAYMENT_STAT
     FROM t_preorder o LEFT JOIN t_md_branch_emp e on o.EMP_NO = e.EMP_NO
+    where 1=1
     <if test="status !=null and status!=''">
        and  o.PAYMENT_STAT = #{status,jdbcType=VARCHAR}
     </if>
