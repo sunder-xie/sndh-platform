@@ -72,6 +72,28 @@ public class ZSD_DELIVERY_DATAResponse implements org.apache.axis2.databinding.A
      */
     protected boolean localIT_SOTracker = false;
 
+    /**
+     * field for IT_VKORG
+     */
+    protected IT_VKORG_type0 localIT_VKORG;
+
+    /*  This tracker boolean wil be used to detect whether the user called the set method
+     *   for this attribute. It will be used to determine whether to include this field
+     *   in the serialized XML
+     */
+    protected boolean localIT_VKORGTracker = false;
+
+    /**
+     * field for IT_WERKS
+     */
+    protected IT_WERKS_type0 localIT_WERKS;
+
+    /*  This tracker boolean wil be used to detect whether the user called the set method
+     *   for this attribute. It will be used to determine whether to include this field
+     *   in the serialized XML
+     */
+    protected boolean localIT_WERKSTracker = false;
+
     public boolean isET_DATASpecified() {
         return localET_DATATracker;
     }
@@ -180,10 +202,57 @@ public class ZSD_DELIVERY_DATAResponse implements org.apache.axis2.databinding.A
      * Auto generated setter method
      * @param param IT_SO
      */
-    public void setIT_SO(IT_SO_type0 param) {
+    public void setIT_SO(
+        IT_SO_type0 param) {
         localIT_SOTracker = param != null;
 
         this.localIT_SO = param;
+    }
+
+    public boolean isIT_VKORGSpecified() {
+        return localIT_VKORGTracker;
+    }
+
+    /**
+     * Auto generated getter method
+     * @return com.nhry.webService.client.businessData.functions.IT_VKORG_type0
+     */
+    public IT_VKORG_type0 getIT_VKORG() {
+        return localIT_VKORG;
+    }
+
+    /**
+     * Auto generated setter method
+     * @param param IT_VKORG
+     */
+    public void setIT_VKORG(
+        IT_VKORG_type0 param) {
+        localIT_VKORGTracker = param != null;
+
+        this.localIT_VKORG = param;
+    }
+
+    public boolean isIT_WERKSSpecified() {
+        return localIT_WERKSTracker;
+    }
+
+    /**
+     * Auto generated getter method
+     * @return com.nhry.webService.client.businessData.functions.IT_WERKS_type0
+     */
+    public IT_WERKS_type0 getIT_WERKS() {
+        return localIT_WERKS;
+    }
+
+    /**
+     * Auto generated setter method
+     * @param param IT_WERKS
+     */
+    public void setIT_WERKS(
+        IT_WERKS_type0 param) {
+        localIT_WERKSTracker = param != null;
+
+        this.localIT_WERKS = param;
     }
 
     /**
@@ -282,6 +351,26 @@ public class ZSD_DELIVERY_DATAResponse implements org.apache.axis2.databinding.A
             }
 
             localIT_SO.serialize(new javax.xml.namespace.QName("", "IT_SO"),
+                xmlWriter);
+        }
+
+        if (localIT_VKORGTracker) {
+            if (localIT_VKORG == null) {
+                throw new org.apache.axis2.databinding.ADBException(
+                    "IT_VKORG cannot be null!!");
+            }
+
+            localIT_VKORG.serialize(new javax.xml.namespace.QName("", "IT_VKORG"),
+                xmlWriter);
+        }
+
+        if (localIT_WERKSTracker) {
+            if (localIT_WERKS == null) {
+                throw new org.apache.axis2.databinding.ADBException(
+                    "IT_WERKS cannot be null!!");
+            }
+
+            localIT_WERKS.serialize(new javax.xml.namespace.QName("", "IT_WERKS"),
                 xmlWriter);
         }
 
@@ -610,6 +699,30 @@ public class ZSD_DELIVERY_DATAResponse implements org.apache.axis2.databinding.A
                                 new javax.xml.namespace.QName("", "IT_SO").equals(
                                     reader.getName())) {
                             object.setIT_SO(IT_SO_type0.Factory.parse(
+                                    reader));
+
+                            reader.next();
+                        } // End of if for expected property start element
+
+                        else
+                         if ((reader.isStartElement() &&
+                                new javax.xml.namespace.QName("", "IT_VKORG").equals(
+                                    reader.getName())) ||
+                                new javax.xml.namespace.QName("", "IT_VKORG").equals(
+                                    reader.getName())) {
+                            object.setIT_VKORG(IT_VKORG_type0.Factory.parse(
+                                    reader));
+
+                            reader.next();
+                        } // End of if for expected property start element
+
+                        else
+                         if ((reader.isStartElement() &&
+                                new javax.xml.namespace.QName("", "IT_WERKS").equals(
+                                    reader.getName())) ||
+                                new javax.xml.namespace.QName("", "IT_WERKS").equals(
+                                    reader.getName())) {
+                            object.setIT_WERKS(IT_WERKS_type0.Factory.parse(
                                     reader));
 
                             reader.next();

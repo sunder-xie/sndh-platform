@@ -168,5 +168,8 @@
 	<bean class="com.nhry.data.basic.impl.TMdBranchExMapperImpl" id="branchExMapper">
 		<property name="sqlSessionTemplate" ref="dynamicSqlSessionTemplate"/>
 	</bean>
-
+	<!-- 物料单位表(单位换算关系) -->
+	<bean class="com.nhry.data.basic.impl.TMdMaraUnitMapperImpl" id="maraUnitMapper">
+		<property name="sqlSessionTemplate" ref="dynamicSqlSessionTemplate"/>
+	</bean>
 </beans>

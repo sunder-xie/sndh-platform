@@ -217,7 +217,8 @@ public class ZSD_REQ_EKKO implements org.apache.axis2.databinding.ADBBean {
      * Auto generated setter method
      * @param param I_DATUM
      */
-    public void setI_DATUM(Date param) {
+    public void setI_DATUM(
+        Date param) {
         localI_DATUMTracker = param != null;
 
         this.localI_DATUM = param;

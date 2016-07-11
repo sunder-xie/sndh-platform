@@ -4,15 +4,15 @@ import com.nhry.data.basic.domain.TMdMaraUnit;
 import com.nhry.data.basic.domain.TMdMaraUnitKey;
 
 public interface TMdMaraUnitMapper {
-    int deleteByPrimaryKey(TMdMaraUnitKey key);
+    int deleteMaraUnitByNo(TMdMaraUnitKey key);
 
-    int insert(TMdMaraUnit record);
+    int insertMaraUnit(TMdMaraUnit record);
 
-    int insertSelective(TMdMaraUnit record);
+    int insertMaraUnitelective(TMdMaraUnit record);
 
-    TMdMaraUnit selectByPrimaryKey(TMdMaraUnitKey key);
+    TMdMaraUnit selectMaraUnitByNo(TMdMaraUnitKey key);
 
-    int updateByPrimaryKeySelective(TMdMaraUnit record);
+    int updateMaraUnitSelective(TMdMaraUnit record);
 
-    int updateByPrimaryKey(TMdMaraUnit record);
+    int updateMaraUnit(TMdMaraUnit record);
 }
