@@ -81,8 +81,6 @@
   </resultMap>
   <resultMap id="boxDetailMap" type="com.nhry.data.milktrans.domain.TRecBotDetail">
     <result column="SPEC " property="spec" jdbcType="VARCHAR" />
-    <result column="BOT_SPEC" property="botSpec" jdbcType="VARCHAR" />
-    <result column="SPEC_UNIT " property="specUnit" jdbcType="VARCHAR" />
     <result column="RECEIVE_NUM" property="receiveNum" jdbcType="INTEGER" />
   </resultMap>
 
@@ -439,14 +437,20 @@
   </update>
 
   <select id="selectItemsByReturnBox" resultMap="boxDetailMap" parameterType="com.nhry.model.milktrans.CreateEmpReturnboxModel">
+
     select
-      m.SPEC SPEC ,m.BOT_SPEC BOT_SPEC,m.SPEC_UNIT SPEC_UNIT,i.QTY RECEIVE_NUM
-    from t_mst_disp_order_item i,t_mst_disp_order o,t_md_mara m
-    WHERE i.ORDER_NO = o.ORDER_NO
-    and i.MATNR = m.MATNR
-     and o.DISP_DATE = #{retDate,jdbcType=DATE}
-    and o.DISP_EMP_NO = #{empNo,jdbcType=VARCHAR}
-    and o.BRANCH_NO =  #{branchNo,jdbcType=VARCHAR}
+    SUM(i.QTY) RECEIVE_NUM,ex.BOT_TYPE SPEC
+    from t_mst_disp_order_item  i
+      LEFT JOIN t_mst_disp_order o on  i.ORDER_NO = o.ORDER_NO
+      LEFT JOIN t_md_mara_ex ex on  i.MATNR = ex.MATNR
+
+		where ex.RET_BOT_FLAG = "Y"
+		 and i.MATNR = m.MATNR
+         and o.DISP_DATE = #{retDate,jdbcType=DATE}
+         and o.DISP_EMP_NO = #{empNo,jdbcType=VARCHAR}
+         and o.BRANCH_NO =  #{branchNo,jdbcType=VARCHAR}
+		 GROUP BY ex.BOT_TYPE
+
   </select>
 
 

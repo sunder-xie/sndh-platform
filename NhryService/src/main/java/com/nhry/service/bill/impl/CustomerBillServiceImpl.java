@@ -11,14 +11,15 @@ import com.nhry.data.order.dao.TPlanOrderItemMapper;
 import com.nhry.data.order.dao.TPreOrderMapper;
 import com.nhry.data.order.domain.TPlanOrderItem;
 import com.nhry.data.order.domain.TPreOrder;
-import com.nhry.model.bill.*;
+import com.nhry.model.bill.CustBillQueryModel;
+import com.nhry.model.bill.CustomerBillOrder;
+import com.nhry.model.bill.CustomerPayMentModel;
 import com.nhry.service.bill.dao.CustomerBillService;
+import com.nhry.utils.SerialUtil;
 import org.apache.commons.lang3.StringUtils;
 
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.List;
+import java.math.BigDecimal;
+import java.util.*;
 
 /**
  * Created by gongjk on 2016/6/23.
@@ -40,24 +41,33 @@ public class CustomerBillServiceImpl implements CustomerBillService {
     }
 
     @Override
-    public TMstRecvBill getCustomerOrderByCode(String orderNo) {
-        return customerBillMapper.getCustomerOrderByCode(orderNo);
+    public TMstRecvBill getRecBillByOrderNo(String orderNo) {
+        TMstRecvBill result = customerBillMapper.getRecBillByOrderNo(orderNo);
+        if(result == null){
+            throw new ServiceException(MessageCode.LOGIC_ERROR,"该订单还未收款！！！请先收款");
+        }
+        return result;
     }
 
     @Override
     public int customerPayment(CustomerPayMentModel cModel) {
         String errorContent ="";
-        try{
             int updateBill = 0;
             int updateOrderStatus = 0;
             String orderNo = cModel.getOrderNo();
-            TMstRecvBill bill = customerBillMapper.getCustomerOrderByCode(orderNo);
+            TPreOrder order = tPreOrderMapper.selectByPrimaryKey(orderNo);
 
+            if(order == null){
+                errorContent = "该订单不存在！";
+                throw new ServiceException(MessageCode.LOGIC_ERROR,errorContent);
+            }
+
+            TMstRecvBill bill = customerBillMapper.getRecBillByOrderNo(orderNo);
             if(bill!= null && "20".equals(bill.getStatus())){
                 errorContent = "该订单已收款";
-                throw new ServiceException(MessageCode.LOGIC_ERROR,"该订单已收款！");
+                throw new ServiceException(MessageCode.LOGIC_ERROR,errorContent);
             }else {
-                TPreOrder order = tPreOrderMapper.selectByPrimaryKey(orderNo);
+
                 Calendar calendar =Calendar.getInstance();
                 Date date = new Date();
                 calendar.setTime(date);
@@ -69,9 +79,13 @@ public class CustomerBillServiceImpl implements CustomerBillService {
                 customerBill.setStatus("20");
                 customerBill.setRecvEmp(order.getEmpNo());
                 customerBill.setPaymentType(cModel.getPaymentType());
-                String payMentYM = String.valueOf(calendar.get(Calendar.YEAR)+String.valueOf(calendar.get(Calendar.MONTH)+1));
+                String month = calendar.get(Calendar.MONTH)+1 < 10 ? "0"+(calendar.get(Calendar.MONTH)+1) : String.valueOf(calendar.get(Calendar.MONTH)+1);
+                String payMentYM = String.valueOf(calendar.get(Calendar.YEAR))+month;
                 TSysUser user = userSessionService.getCurrentUser();
-                customerBill.setVipCustNo(order.getMemberNo());
+                //备注
+                customerBill.setRemark(cModel.getRemark());
+                customerBill.setEndTime(order.getEndDate());
+                customerBill.setVipCustNo(order.getMilkmemberNo());
                 customerBill.setPaymentYearMonth(payMentYM);
                 customerBill.setLastModified(date);
                 customerBill.setLastModifiedBy(user.getLoginName());
@@ -81,41 +95,46 @@ public class CustomerBillServiceImpl implements CustomerBillService {
                     updateBill =  customerBillMapper.updateCustomerBillrPayment(customerBill);
                 }else{
                     if(StringUtils.isBlank(customerBill.getReceiptNo())){
-                        String receiptNo  = String.valueOf(new Date().getTime()).substring(0,10);
-                        customerBill.setReceiptNo(receiptNo);
+                        //收款流水号
+                        customerBill.setReceiptNo(SerialUtil.creatSeria());
                     }
                     customerBill.setCreateAt(date);
                     customerBill.setCreateBy(user.getLoginName());
                     customerBill.setCreateByTxt(user.getDisplayName());
                     updateBill =  customerBillMapper.customerPayment(customerBill);
                 }
+                //更新订单状态为已收款
                 updateOrderStatus = tPreOrderMapper.updateOrderPayMentStatus(orderNo);
                 return updateBill+updateOrderStatus;
             }
-
-        }catch (Exception e){
-            if("".equals(errorContent)){
-                throw new ServiceException(MessageCode.LOGIC_ERROR,"收款失败！");
-            }else{
-                throw new ServiceException(MessageCode.LOGIC_ERROR,"该订单已收款！");
-            }
-
-        }
-
-
     }
 
     @Override
     public CustomerBillOrder getCustomerOrderDetailByCode(String orderNo) {
-        TMstRecvBill bill = customerBillMapper.getCustomerOrderByCode(orderNo);
-        List<TPlanOrderItem> entry = new  ArrayList<TPlanOrderItem>();
-        if(tPlanOrderItemMapper.selectByOrderCode(orderNo) !=null){
-            entry.addAll(tPlanOrderItemMapper.selectByOrderCode(orderNo));
+        TMstRecvBill bill = customerBillMapper.getRecBillByOrderNo(orderNo);
+        TSysUser user = userSessionService.getCurrentUser();
+        if(bill == null){
+            throw new ServiceException(MessageCode.LOGIC_ERROR,"该订单还未收款！！请先收款");
         }
-
+        int totalNum = 0;
+        BigDecimal totalPrice = new BigDecimal(0);
+        List<TPlanOrderItem> entries = new  ArrayList<TPlanOrderItem>();
+        Map<String,String> map = new HashMap<String,String>();
+        map.put("orderNo",orderNo);
+        map.put("salesOrg",user.getSalesOrg());
+        List<TPlanOrderItem> items = tPlanOrderItemMapper.selectEntriesByOrderNo(map);
+        if( items !=null && items.size()>0){
+            for(TPlanOrderItem item : items){
+                totalNum = totalNum+item.getQty();
+                totalPrice = totalPrice.add(item.getSalesPrice().multiply(new BigDecimal(item.getQty())));
+                entries.add(item);
+            }
+        }
+        bill.setTotalNum(totalNum);
+        bill.setTotalPrice(totalPrice);
         CustomerBillOrder  order = new CustomerBillOrder();
         order.setBill(bill);
-        order.setEntrys(entry);
+        order.setEntries(entries);
         return order;
     }
 

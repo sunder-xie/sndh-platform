@@ -10,11 +10,10 @@ import com.nhry.model.bill.*;
 public interface CustomerBillService {
    public PageInfo searchCustomerOrder(CustBillQueryModel cModel);
 
-   public TMstRecvBill getCustomerOrderByCode(String orderNo);
+   public TMstRecvBill getRecBillByOrderNo(String orderNo);
 
    public int  customerPayment(CustomerPayMentModel cModel);
 
    public CustomerBillOrder getCustomerOrderDetailByCode(String orderNo);
-
 
 }
