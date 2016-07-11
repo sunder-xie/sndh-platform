@@ -49,6 +49,7 @@ public class TVipCustInfoServiceImpl extends BaseService implements TVipCustInfo
 		record.setCreateAt(new Date());
 		record.setCreateBy(this.userSessionService.getCurrentUser().getLoginName());
 		record.setCreateByTxt(this.userSessionService.getCurrentUser().getDisplayName());
+		record.setSalesOrg(this.userSessionService.getCurrentUser().getSalesOrg());
 		return this.tmdVipcust.addVipCust(record);
 	}
 
