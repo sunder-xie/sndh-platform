@@ -67,6 +67,15 @@
 		and d.DISP_DATE &lt;= last_day(curdate())
 		and d.STATUS = '10'
   </select>
+  <select id="selectByMilkmemberNo" resultMap="BaseResultMap" parameterType="java.lang.String" >
+    select 
+    <include refid="Base_Column_List" />
+    FROM t_preorder
+    WHERE MILKMEMBER_NO = #{MILKMEMBER_NO,jdbcType=VARCHAR}
+    	    and PREORDER_STAT = '10'
+    	    and SIGN != '20'
+    	    and SIGN != '30'
+  </select>
   <select id="selectByOrderCode" resultMap="BaseResultMap" parameterType="java.lang.String" >
     select 
     o.ORDER_NO, o.ORDER_TYPE, o.ORDER_DATE, o.PAYMENTMETHOD, o.PREORDER_SOURCE, o.ONLINEORDER_NO, 

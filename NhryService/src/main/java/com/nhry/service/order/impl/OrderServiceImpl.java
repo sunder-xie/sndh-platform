@@ -209,13 +209,17 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 				tOrderDaliyPlanItemMapper.updateDaliyPlansToStop(order);
 				
 			}
-			//更新订单标示为停订
+			//更新订单标示为停订,综合可能有很多订单
 			order.setSign("20");//停订中
 			modifyOrderStatus(order);
+			
 			//订奶收款通知???
 			//todo
 			//订户状态更改???
-			tVipCustInfoService.discontinue(order.getMilkmemberNo(), "30");
+			List<TPreOrder> list = tPreOrderMapper.selectByMilkmemberNo(order.getMilkmemberNo());
+			if(list==null||list.size()<=0){
+				tVipCustInfoService.discontinue(order.getMilkmemberNo(), "30");
+			}
 			
 		}else{
 			throw new ServiceException(MessageCode.LOGIC_ERROR,"当前订单不存在");
@@ -269,7 +273,10 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 			//订奶收款通知???
 			//todo
 			//订户状态更改???
-			tVipCustInfoService.discontinue(order.getMilkmemberNo(), "40");
+			List<TPreOrder> list = tPreOrderMapper.selectByMilkmemberNo(order.getMilkmemberNo());
+			if(list==null||list.size()<=0){
+				tVipCustInfoService.discontinue(order.getMilkmemberNo(), "40");
+			}
 			
 		}else{
 			throw new ServiceException(MessageCode.LOGIC_ERROR,"当前订单不存在");
@@ -352,6 +359,9 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 				account.setAcctAmt(remain);
 				tVipCustInfoService.addVipAcct(account);
 			}
+			
+			//订户状态更改
+			tVipCustInfoService.discontinue(order.getMilkmemberNo(), "10");
 			
 			//生成每日计划
 			createDaliyPlan(order,entriesList);
@@ -592,6 +602,9 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 			tPlanOrderItemMapper.insert(entry);
 		});
 		
+		//订户状态更改
+		tVipCustInfoService.discontinue(order.getMilkmemberNo(), "10");
+			
 		//生成装箱工单
 		if("20".equals(order.getMilkboxStat())){
 			MilkboxCreateModel model = new MilkboxCreateModel();
