@@ -139,5 +139,11 @@ public class TPreOrderMapperImpl implements TPreOrderMapper
 		// TODO Auto-generated method stub
 		return sqlSessionTemplate.selectOne("selectOrderRemainAndAmt", memberNo);
 	}
-
+	
+	@Override
+	public List<TPreOrder> selectByMilkmemberNo(String memberNo)
+	{
+		return sqlSessionTemplate.selectList("selectByMilkmemberNo", memberNo);
+	}
+	
 }

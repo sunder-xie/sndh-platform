@@ -16,7 +16,9 @@ import com.nhry.data.order.domain.TPreOrder;
 import com.nhry.model.milk.RouteDetailUpdateModel;
 import com.nhry.model.order.*;
 import com.nhry.service.BaseService;
+import com.nhry.service.basic.dao.PriceService;
 import com.nhry.service.basic.dao.TVipCustInfoService;
+import com.nhry.service.order.dao.MilkBoxService;
 import com.nhry.service.order.dao.OrderService;
 import com.nhry.service.order.pojo.OrderRemainData;
 
@@ -33,7 +35,13 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 	private TOrderDaliyPlanItemMapper tOrderDaliyPlanItemMapper;
 	private TPlanOrderItemMapper tPlanOrderItemMapper;
 	private TVipCustInfoService tVipCustInfoService;
-
+	private MilkBoxService milkBoxService;
+	private PriceService priceService;
+	
+	public void setPriceService(PriceService priceService)
+	{
+		this.priceService = priceService;
+	}
 
 	public void settVipCustInfoService(TVipCustInfoService tVipCustInfoService)
 	{
@@ -54,7 +62,11 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 	{
 		this.tPreOrderMapper = tPreOrderMapper;
 	}
-
+	
+	public void setMilkBoxService(MilkBoxService milkBoxService)
+	{
+		this.milkBoxService = milkBoxService;
+	}
 
 
 	/* (non-Javadoc)
@@ -103,6 +115,8 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 		if(StringUtils.isEmpty(manHandModel.getPageNum()) || StringUtils.isEmpty(manHandModel.getPageSize())){
 			throw new ServiceException(MessageCode.LOGIC_ERROR,"pageNum和pageSize不能为空！");
 		}
+		manHandModel.setBranchNo(userSessionService.getCurrentUser().getBranchNo());
+		manHandModel.setSalesOrg(userSessionService.getCurrentUser().getSalesOrg());
 		return tPreOrderMapper.searchReturnOrders(manHandModel);
 	}
 
@@ -196,13 +210,17 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 				tOrderDaliyPlanItemMapper.updateDaliyPlansToStop(order);
 				
 			}
-			//更新订单标示为停订
+			//更新订单标示为停订,综合可能有很多订单
 			order.setSign("20");//停订中
 			modifyOrderStatus(order);
+			
 			//订奶收款通知???
 			//todo
 			//订户状态更改???
-			tVipCustInfoService.discontinue(order.getMilkmemberNo(), "30");
+			List<TPreOrder> list = tPreOrderMapper.selectByMilkmemberNo(order.getMilkmemberNo());
+			if(list==null||list.size()<=0){
+				tVipCustInfoService.discontinue(order.getMilkmemberNo(), "30",null,null);
+			}
 			
 		}else{
 			throw new ServiceException(MessageCode.LOGIC_ERROR,"当前订单不存在");
@@ -256,7 +274,10 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 			//订奶收款通知???
 			//todo
 			//订户状态更改???
-			tVipCustInfoService.discontinue(order.getMilkmemberNo(), "40");
+			List<TPreOrder> list = tPreOrderMapper.selectByMilkmemberNo(order.getMilkmemberNo());
+			if(list==null||list.size()<=0){
+				tVipCustInfoService.discontinue(order.getMilkmemberNo(), "40",null,null);
+			}
 			
 		}else{
 			throw new ServiceException(MessageCode.LOGIC_ERROR,"当前订单不存在");
@@ -340,6 +361,9 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 				tVipCustInfoService.addVipAcct(account);
 			}
 			
+			//订户状态更改
+			tVipCustInfoService.discontinue(order.getMilkmemberNo(), "10",null,new com.nhry.utils.date.Date());
+			
 			//生成每日计划
 			createDaliyPlan(order,entriesList);
 			
@@ -410,7 +434,7 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 		tPreOrderMapper.updateOrderEndDate(order);
 		
 		//订户状态更改
-		tVipCustInfoService.discontinue(order.getMilkmemberNo(), "10");
+		tVipCustInfoService.discontinue(order.getMilkmemberNo(), "10",null,null);
 		
 		return 1;
 	}
@@ -458,6 +482,8 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 		if(StringUtils.isEmpty(smodel.getPageNum()) || StringUtils.isEmpty(smodel.getPageSize())){
 			throw new ServiceException(MessageCode.LOGIC_ERROR,"pageNum和pageSize不能为空！");
 		}
+		smodel.setBranchNo(userSessionService.getCurrentUser().getBranchNo());
+		smodel.setSalesOrg(userSessionService.getCurrentUser().getSalesOrg());
 		return tPreOrderMapper.selectOrdersByPages(smodel);
 	}
 
@@ -484,7 +510,7 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 	* @see com.nhry.service.order.dao.OrderService#createOrder()
 	*/
 	@Override
-	public int createOrder(OrderCreateModel record)
+	public String createOrder(OrderCreateModel record)
 	{
 		SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
 		TPreOrder order = record.getOrder();
@@ -507,7 +533,7 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 		order.setPaymentStat(StringUtils.isBlank(order.getPaymentStat()) == true ? "10": order.getPaymentStat());//付款状态
 		order.setPaymentmethod(order.getPaymentStat());//10 后款 20 先款 30 殿付款
 		order.setMilkboxStat(StringUtils.isBlank(order.getMilkboxStat()) == true ? "20": order.getMilkboxStat());//奶箱状态
-		order.setPreorderStat("20");//订单状态,初始未确认
+		order.setPreorderStat("10");//订单状态,初始确认
 		order.setSign("10");//在订状态
 		order.setSalesOrg(userSessionService.getCurrentUser().getSalesOrg());//公司
 		//受款日期
@@ -524,6 +550,7 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 //		order.setBranchNo(branchNo);//奶站编号 --人工分单或自动??
 		//如果地址信息不为空，为订户创建新的地址
 		if(record.getAddress() != null && "1".equals(record.getAddress().getAddressMode())){
+			record.getAddress().setVipCustNo(order.getMilkmemberNo());
 			order.setAdressNo(tVipCustInfoService.addAddressForCust(record.getAddress()));
 		}
 
@@ -575,16 +602,27 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 		entriesList.forEach(entry->{
 			tPlanOrderItemMapper.insert(entry);
 		});
-
+		
+		//订户状态更改
+		tVipCustInfoService.discontinue(order.getMilkmemberNo(), "10",new com.nhry.utils.date.Date(),new com.nhry.utils.date.Date());
+			
+		//生成装箱工单
+		if("20".equals(order.getMilkboxStat())){
+			MilkboxCreateModel model = new MilkboxCreateModel();
+			model.setCode(order.getOrderNo());
+			milkBoxService.addNewMilkboxPlan(model);
+		}
+		
 		return createDaliyPlan(order,record.getEntries());//生成每日计划
 	}
 
 	//根据订单行生成每日计划
-	private int createDaliyPlan(TPreOrder order ,List<TPlanOrderItem> entries){
+	@Override
+	public String createDaliyPlan(TPreOrder order ,List<TPlanOrderItem> entries){
 
 		//生成每日计划,当订户订单装箱状态为已装箱或无需装箱，则系统默认该订单可生成订户日订单
 		if("20".equals(order.getMilkboxStat())){
-			return 0;
+			return order.getOrderNo();
 		}
 
 		BigDecimal curAmt = order.getCurAmt();
@@ -671,7 +709,7 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 			afterDays++;
 		}
 
-		return 1;
+		return order.getOrderNo();
 	}
 
 	/* (non-Javadoc)
@@ -880,6 +918,7 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 				}
 				//变更产品
 				if(!orgPlan.getMatnr().equals(plan.getMatnr())){
+					plan.setPrice(new BigDecimal(String.valueOf(priceService.getMaraPrice(orgOrder.getBranchNo(), plan.getMatnr(), orgOrder.getDeliveryType()))));
 					changeProductPlans.put(orgPlan,plan);
 				}
 				//变更数量
@@ -1218,10 +1257,19 @@ public class OrderServiceImpl extends BaseService implements OrderService {
    	//保存所有新的日计划
    	int index = 0;
    	for(TOrderDaliyPlanItem plan:newPlans){
+   		//停订的直接保存
    		plan.setPlanItemNo(String.valueOf(index));
+   		if(stopPlans.containsKey(plan)){
+   			tOrderDaliyPlanItemMapper.insert(plan);
+   			index++;
+   			continue;
+   		}
+   		//其他的重新计算剩余金额等信息
    		plan.setAmt(plan.getPrice().multiply(new BigDecimal(plan.getQty().toString())));//重新计算小记金额
    		curAmt = curAmt.subtract(plan.getAmt());//计算日计划的剩余金额
    		plan.setRemainAmt(curAmt);
+   		
+   		if(plan.getRemainAmt().floatValue() < 0)break;
    		
    		if(plan.getDispDate()==null){
    			

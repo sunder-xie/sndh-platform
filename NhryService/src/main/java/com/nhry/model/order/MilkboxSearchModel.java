@@ -13,6 +13,24 @@ public class MilkboxSearchModel extends BaseQueryModel implements Serializable {
 	private String emp;
 	private String setDateStart;
 	private String setDateEnd;
+	private String branchNo;
+	private String salesOrg;
+	public String getBranchNo()
+	{
+		return branchNo;
+	}
+	public void setBranchNo(String branchNo)
+	{
+		this.branchNo = branchNo;
+	}
+	public String getSalesOrg()
+	{
+		return salesOrg;
+	}
+	public void setSalesOrg(String salesOrg)
+	{
+		this.salesOrg = salesOrg;
+	}
 	public String getEmp()
 	{
 		return emp;

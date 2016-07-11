@@ -62,6 +62,12 @@ public class TDispOrderChangeMapperImpl implements TDispOrderChangeMapper
 		// TODO Auto-generated method stub
 		return 0;
 	}
+
+	@Override
+	public List searchRouteChangeOrder(String code)
+	{
+		return sqlSessionTemplate.selectList("searchRouteChangeOrder", code);
+	}
 	
 
 }
