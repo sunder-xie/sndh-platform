@@ -52,4 +52,6 @@ public interface OrderService {
 	void resumeDaliyPlanForRouteOrder(BigDecimal confirmQty,TDispOrderItem entry,TPlanOrderItem orgEntry,Date dispDate);
 	
 	OrderRemainData searchOrderRemainData(String memberNo);
+	
+	String createDaliyPlan(TPreOrder order ,List<TPlanOrderItem> entries);
 }

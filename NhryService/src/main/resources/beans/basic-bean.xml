@@ -76,7 +76,8 @@
 	   <property name="tMilkboxPlanMapper"  ref="tMilkboxPlanMapper"></property>
 	   <property name="tPreOrderMapper"  ref="tPreOrderMapper"></property>
 	   <property name="branchEmpMapper"  ref="branchEmpMapper"></property>
-	   <property name="userSessionService" ref="userSessionService"></property>  
+	   <property name="userSessionService" ref="userSessionService"></property> 
+	   <property name="orderService" ref="orderService"></property>
 	   <!-- <property name="tVipCustInfoService" ref="custService"></property> -->
 	</bean>
 	<!-- 奶箱end -->

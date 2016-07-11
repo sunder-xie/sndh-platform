@@ -21,15 +21,18 @@ import com.nhry.data.order.domain.TMilkboxPlan;
 import com.nhry.data.order.domain.TPreOrder;
 import com.nhry.model.order.MilkboxCreateModel;
 import com.nhry.model.order.MilkboxSearchModel;
+import com.nhry.model.order.OrderCreateModel;
 import com.nhry.model.order.OrderSearchModel;
 import com.nhry.service.BaseService;
 import com.nhry.service.order.dao.MilkBoxService;
+import com.nhry.service.order.dao.OrderService;
 
 public class MilkBoxServiceImpl extends BaseService implements MilkBoxService
 {
 	private TMilkboxPlanMapper tMilkboxPlanMapper;
 	private TPreOrderMapper tPreOrderMapper;
 	private TMdBranchEmpMapper branchEmpMapper;
+	private OrderService orderService;
 
 	public void setBranchEmpMapper(TMdBranchEmpMapper branchEmpMapper)
 	{
@@ -42,6 +45,10 @@ public class MilkBoxServiceImpl extends BaseService implements MilkBoxService
 	public void settMilkboxPlanMapper(TMilkboxPlanMapper tMilkboxPlanMapper)
 	{
 		this.tMilkboxPlanMapper = tMilkboxPlanMapper;
+	}
+	public void setOrderService(OrderService orderService)
+	{
+		this.orderService = orderService;
 	}
 
 	/* (non-Javadoc) 
@@ -152,6 +159,12 @@ public class MilkBoxServiceImpl extends BaseService implements MilkBoxService
 				plan.setMilkboxStat(model.getStatus());
 				o.setMilkboxStat(plan.getMilkboxStat());
 				tPreOrderMapper.updateOrderStatus(o);
+				
+				//当装箱变为已安装完后，生成日计划
+				if("10".equals(plan.getMilkboxStat())){
+					OrderCreateModel omodel = orderService.selectOrderByCode(plan.getOrderNo());
+					orderService.createDaliyPlan(omodel.getOrder(), omodel.getEntries());
+				}
 			}
 			if(StringUtils.isNotBlank(model.getSetDate())){
 				try

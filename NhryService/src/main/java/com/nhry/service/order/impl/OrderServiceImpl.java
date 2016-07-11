@@ -539,6 +539,7 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 //		order.setBranchNo(branchNo);//奶站编号 --人工分单或自动??
 		//如果地址信息不为空，为订户创建新的地址
 		if(record.getAddress() != null && "1".equals(record.getAddress().getAddressMode())){
+			record.getAddress().setVipCustNo(order.getMilkmemberNo());
 			order.setAdressNo(tVipCustInfoService.addAddressForCust(record.getAddress()));
 		}
 
@@ -602,7 +603,8 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 	}
 
 	//根据订单行生成每日计划
-	private String createDaliyPlan(TPreOrder order ,List<TPlanOrderItem> entries){
+	@Override
+	public String createDaliyPlan(TPreOrder order ,List<TPlanOrderItem> entries){
 
 		//生成每日计划,当订户订单装箱状态为已装箱或无需装箱，则系统默认该订单可生成订户日订单
 		if("20".equals(order.getMilkboxStat())){
@@ -902,6 +904,7 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 				}
 				//变更产品
 				if(!orgPlan.getMatnr().equals(plan.getMatnr())){
+					plan.setPrice(new BigDecimal(String.valueOf(priceService.getMaraPrice(orgOrder.getBranchNo(), plan.getMatnr(), orgOrder.getDeliveryType()))));
 					changeProductPlans.put(orgPlan,plan);
 				}
 				//变更数量
@@ -1234,10 +1237,19 @@ public class OrderServiceImpl extends BaseService implements OrderService {
    	//保存所有新的日计划
    	int index = 0;
    	for(TOrderDaliyPlanItem plan:newPlans){
+   		//停订的直接保存
    		plan.setPlanItemNo(String.valueOf(index));
+   		if(stopPlans.containsKey(plan)){
+   			tOrderDaliyPlanItemMapper.insert(plan);
+   			index++;
+   			continue;
+   		}
+   		//其他的重新计算剩余金额等信息
    		plan.setAmt(plan.getPrice().multiply(new BigDecimal(plan.getQty().toString())));//重新计算小记金额
    		curAmt = curAmt.subtract(plan.getAmt());//计算日计划的剩余金额
    		plan.setRemainAmt(curAmt);
+   		
+   		if(plan.getRemainAmt().floatValue() < 0)break;
    		
    		if(plan.getDispDate()==null){
    			
