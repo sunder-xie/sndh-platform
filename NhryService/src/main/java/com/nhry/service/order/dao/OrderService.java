@@ -51,5 +51,5 @@ public interface OrderService {
 	
 	void resumeDaliyPlanForRouteOrder(BigDecimal confirmQty,TDispOrderItem entry,TPlanOrderItem orgEntry,Date dispDate);
 	
-	OrderRemainData searchOrderRemainData(String memberNo);
+	OrderRemainData searchOrderRemainData(String phone);
 }
