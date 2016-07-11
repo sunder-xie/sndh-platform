@@ -16,6 +16,8 @@ import java.util.List;
 public interface OrderService {
 
 	PageInfo searchOrders(OrderSearchModel smodel);
+	
+	PageInfo searchDaliyOrders(OrderSearchModel smodel);
 
 	int createOrder(OrderCreateModel record);
 

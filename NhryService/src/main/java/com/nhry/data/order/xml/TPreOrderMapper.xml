@@ -194,6 +194,9 @@
       <if test="salesOrg != null" >
         SALES_ORG,
       </if>
+      <if test="deliveryType != null" >
+        DELIVERY_TYPE,
+      </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides="," >
       <if test="orderNo != null" >
@@ -279,6 +282,9 @@
       </if>
       <if test="salesOrg != null" >
         #{salesOrg,jdbcType=VARCHAR},
+      </if>
+      <if test="deliveryType != null" >
+        #{deliveryType,jdbcType=VARCHAR},
       </if>
     </trim>
   </insert>

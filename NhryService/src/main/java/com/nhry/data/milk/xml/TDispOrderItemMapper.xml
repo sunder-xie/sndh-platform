@@ -27,6 +27,8 @@
     <result column="DISP_EMP_NO" property="dispEmpNo" jdbcType="VARCHAR" />
     <result column="ADDRESS_TXT" property="addressTxt" jdbcType="VARCHAR" />
     <result column="MATNR_TXT" property="matnrTxt" jdbcType="VARCHAR" />
+    <result column="CUST_NAME" property="custName" jdbcType="VARCHAR" />
+    <result column="CUST_TEL" property="custTel" jdbcType="VARCHAR" />
   </resultMap>
   <resultMap id="BaseChangeResultMap" type="com.nhry.service.milk.pojo.TDispOrderChangeItem" >
     <result column="ORDER_NO1" property="orderNo1" jdbcType="VARCHAR" />
@@ -195,7 +197,8 @@
     i.STATUS, i.PICKUP_ORDER_NO, i.PICKUP_ORDER_ITEM_NO, i.REASON, i.REDISP_DATE, i.WHOLESALE_PRICE,
     i.WHOLESALE_PRICE_1, i.ADDRESS_NO,i.ORG_ITEM_NO,i.ORG_ORDER_NO,i.REACH_TIME_TYPE,p.MATNR_TXT MATNR_TXT, a.ADDRESS_TXT ADDRESS_TXT
     from t_mst_disp_order_item i 
-    left join t_md_mara p on p.MATNR = i.MATNR 
+    left join t_preorder o on o.ORDER_NO = i.ORG_ORDER_NO
+    left join t_md_mara p on p.MATNR = i.MATNR and p.SALES_ORG = o.SALES_ORG
     left join t_md_address a on a.ADDRESS_ID = i.ADDRESS_NO
     where i.ORDER_NO = #{orderNo,jdbcType=VARCHAR}
       <if test="orderDate != null" >
@@ -213,6 +216,19 @@
     from t_mst_disp_order_item i 
     left join t_md_mara p on p.MATNR = i.MATNR 
     left join t_md_address a on a.ADDRESS_ID = i.ADDRESS_NO
+    where i.ORDER_NO = #{orderNo,jdbcType=VARCHAR}
+  </select>
+  <select id="selectRouteDetailsAll" resultMap="BaseResultMap" parameterType="java.lang.String">
+  	 select 
+    i.ORDER_NO, i.ORDER_DATE, i.ITEM_NO,i.CONFIRM_MATNR, i.MATNR, i.CONFIRM_QTY, i.QTY, i.UNIT, i.PRICE, i.AMT, i.CONFIRM_AMT, 
+    i.STATUS, i.PICKUP_ORDER_NO, i.PICKUP_ORDER_ITEM_NO, i.REASON, i.REDISP_DATE, i.WHOLESALE_PRICE,
+    i.WHOLESALE_PRICE_1, i.ADDRESS_NO,i.ORG_ITEM_NO,i.ORG_ORDER_NO,i.REACH_TIME_TYPE,p.MATNR_TXT MATNR_TXT, a.ADDRESS_TXT ADDRESS_TXT,
+    v.VIP_NAME CUST_NAME,v.MP CUST_TEL
+    from t_mst_disp_order_item i 
+    left join t_preorder o on o.ORDER_NO = i.ORG_ORDER_NO
+    left join t_md_mara p on p.MATNR = i.MATNR and p.SALES_ORG = o.SALES_ORG
+    left join t_md_address a on a.ADDRESS_ID = i.ADDRESS_NO
+    left join t_vip_cust_info v on v.VIP_CUST_NO = o.MILKMEMBER_NO
     where i.ORDER_NO = #{orderNo,jdbcType=VARCHAR}
   </select>
   <insert id="insertSelective" parameterType="com.nhry.data.milk.domain.TDispOrderItem" >
