@@ -50,7 +50,25 @@ public class TVipCustInfoServiceImpl extends BaseService implements TVipCustInfo
 		record.setCreateBy(this.userSessionService.getCurrentUser().getLoginName());
 		record.setCreateByTxt(this.userSessionService.getCurrentUser().getDisplayName());
 		record.setSalesOrg(this.userSessionService.getCurrentUser().getSalesOrg());
-		return this.tmdVipcust.addVipCust(record);
+		this.tmdVipcust.addVipCust(record);
+		
+		TMdAddress address = new TMdAddress();
+		address.setAddressTxt(record.getAddressTxt());
+		address.setProvince(record.getProvince());
+		address.setCity(record.getCity());
+		address.setCounty(record.getCounty());
+		address.setMp(record.getMp());
+		address.setRecvName(record.getVipName());
+		address.setZip(record.getZip());
+		address.setResidentialArea(record.getSubdist());
+		address.setStreet(record.getStreet());
+		address.setVipCustNo(record.getVipCustNo());
+		address.setIsDafault("Y");
+		address.setCreateAt(new Date());
+		address.setCreateBy(this.userSessionService.getCurrentUser().getLoginName());
+		address.setCreateByTxt(this.userSessionService.getCurrentUser().getDisplayName());
+		addAddressForCust(address);
+		return 1;
 	}
 
 	@Override
