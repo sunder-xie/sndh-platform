@@ -22,6 +22,8 @@ import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
+import java.util.List;
+
 @Path("/deliverMilk")
 @Component
 @Scope("request")
@@ -42,12 +44,19 @@ public class DeliverMilkResource extends BaseResource {
 	}
 	
 	@POST
-	@Path("/searchDetails")
+	@Path("/searchDetailsByPage")
 	@Produces(MediaType.APPLICATION_JSON)
-	@Consumes(MediaType.APPLICATION_JSON)
-	@ApiOperation(value = "/search", response = PageInfo.class, notes = "查询路单详细信息列表")
-	public Response findRouteOrderDetails(@ApiParam(required=true,name="smodel",value="SearchModel") RouteOrderSearchModel smodel){
+	@ApiOperation(value = "/searchDetailsByPage", response = PageInfo.class, notes = "查询路单详细信息列表分页")
+	public Response searchDetailsByPage(@ApiParam(required=true,name="smodel",value="SearchModel") RouteOrderSearchModel smodel){
 		return convertToRespModel(MessageCode.NORMAL, null, deliverMilkService.searchRouteOrderDetail(smodel));
+	}
+	
+	@GET
+	@Path("/searchDetails/{orderCode}")
+	@Produces(MediaType.APPLICATION_JSON)
+	@ApiOperation(value = "/{orderCode}", response = List.class, notes = "查询路单详细信息列表")
+	public Response findRouteOrderDetails(@ApiParam(required=true,name="orderCode",value="路单编号") @PathParam("orderCode") String orderCode){
+		return convertToRespModel(MessageCode.NORMAL, null, deliverMilkService.searchRouteOrderDetailAll(orderCode));
 	}
 	
 	@GET

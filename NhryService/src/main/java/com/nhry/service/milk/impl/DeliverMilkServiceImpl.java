@@ -249,6 +249,27 @@ public class DeliverMilkServiceImpl extends BaseService implements DeliverMilkSe
 	}
 	
 	/* (non-Javadoc) 
+	* @title: searchRouteOrderDetail
+	* @description: 搜索路单详情内详细表不分页
+	* @param smodel
+	* @return 
+	* @see com.nhry.service.milk.dao.DeliverMilkService#searchRouteOrderDetail(com.nhry.model.milk.RouteOrderSearchModel) 
+	*/
+	@Override
+	public List searchRouteOrderDetailAll(String code)
+	{
+		//查询
+		TDispOrderKey key = new TDispOrderKey();
+		key.setOrderNo(code);
+		TDispOrder dispOrder = tDispOrderMapper.selectByPrimaryKey(key);
+		if(dispOrder!=null){
+			return tDispOrderItemMapper.selectRouteDetails(code);
+		}else{
+			throw new ServiceException(MessageCode.LOGIC_ERROR,"没有此路单号!");
+		}
+	}
+	
+	/* (non-Javadoc) 
 	* @title: updateRouteOrder
 	* @description: 更新路单状态
 	* @param record
@@ -281,7 +302,7 @@ public class DeliverMilkServiceImpl extends BaseService implements DeliverMilkSe
 	@Override
 	public int updateRouteOrderItems(RouteDetailUpdateModel record)
 	{
-		final long startTime = System.currentTimeMillis();
+//		final long startTime = System.currentTimeMillis();
 		
 		TDispOrderKey key = new TDispOrderKey();
 		key.setOrderNo(record.getOrderNo());
@@ -311,7 +332,7 @@ public class DeliverMilkServiceImpl extends BaseService implements DeliverMilkSe
 			throw new ServiceException(MessageCode.LOGIC_ERROR,"没有此路单号!");
 		}
 		
-		System.out.println("修改路单 消耗时间："+(System.currentTimeMillis()-startTime)+"毫秒");
+//		System.out.println("修改路单 消耗时间："+(System.currentTimeMillis()-startTime)+"毫秒");
 		
 		return 1;
 	}

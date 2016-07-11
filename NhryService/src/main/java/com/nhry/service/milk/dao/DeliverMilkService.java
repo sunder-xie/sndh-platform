@@ -1,6 +1,7 @@
 package com.nhry.service.milk.dao;
 
 import java.math.BigDecimal;
+import java.util.List;
 
 import com.github.pagehelper.PageInfo;
 import com.nhry.data.milk.domain.TDispOrderItem;
@@ -13,6 +14,8 @@ public interface DeliverMilkService {
 	PageInfo searchRouteOrders(RouteOrderSearchModel smodel);
 	
 	PageInfo searchRouteOrderDetail(RouteOrderSearchModel smodel);
+	
+	List searchRouteOrderDetailAll(String code);
 	
 	RouteOrderModel searchRouteDetails(String orderNo);
 	

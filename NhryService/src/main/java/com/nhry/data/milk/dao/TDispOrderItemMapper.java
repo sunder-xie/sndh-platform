@@ -19,6 +19,8 @@ import java.util.List;
 public interface TDispOrderItemMapper {
 	
 	 PageInfo selectRouteDetailsByPage(RouteOrderSearchModel smodel);
+	 
+	 List selectRouteDetails(String routeCode);
 	
     int deleteByPrimaryKey(TDispOrderItemKey key);
 

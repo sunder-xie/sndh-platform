@@ -26,19 +26,25 @@
     <result column="LAST_MODIFIED_BY_TXT" property="lastModifiedByTxt" jdbcType="VARCHAR" />
     <result column="PAYMENT_ORDER_NO" property="paymentOrderNo" jdbcType="VARCHAR" />
     <result column="SUBSCRIBE_ORDER_NO" property="subscribeOrderNo" jdbcType="VARCHAR" />
-    <result column="TOTAL_QTY" property="totalQty" jdbcType="INTEGER" />
+    <result column="TOTAL_QTY" property="totalQty" jdbcType="INTEGER" /> 
+    <result column="BRANCH_NAME" property="branchName" jdbcType="INTEGER" />
+    <result column="DISP_EMP_NAME" property="dispEmpName" jdbcType="INTEGER" />
   </resultMap>
   <sql id="Base_Column_List" >
     ORDER_NO, ORDER_DATE, DISP_DATE, BRANCH_NO, DISP_LINE_NO, MST_CUST_NO, AMT, CONFIRM_AMT, 
     REACH_TIME_TYPE, PAYMENT_TYPE, STATUS, MEMO_TXT, DISP_ORDER, DISP_EMP_NO, HZ_ORDER_NO, 
     DAY_ACCT_FLAG, CREATE_AT, CREATE_BY, CREATE_BY_TXT, LAST_MODIFIED, LAST_MODIFIED_BY, 
-    LAST_MODIFIED_BY_TXT, PAYMENT_ORDER_NO, SUBSCRIBE_ORDER_NO
+    LAST_MODIFIED_BY_TXT, PAYMENT_ORDER_NO, SUBSCRIBE_ORDER_NO,TOTAL_QTY
   </sql>
   <select id="selectDispOrderByOrderNo" resultMap="BaseResultMap" parameterType="com.nhry.data.milk.domain.TDispOrderKey" >
     select 
-    <include refid="Base_Column_List" />
-    from t_mst_disp_order
-    where ORDER_NO = #{orderNo,jdbcType=VARCHAR}
+    o.ORDER_NO, o.ORDER_DATE, o.DISP_DATE, o.BRANCH_NO, o.DISP_LINE_NO, o.MST_CUST_NO, AMT, o.CONFIRM_AMT, 
+    o.REACH_TIME_TYPE, o.PAYMENT_TYPE, o.STATUS, o.MEMO_TXT, o.DISP_ORDER, o.DISP_EMP_NO, o.HZ_ORDER_NO, 
+    o.DAY_ACCT_FLAG, o.CREATE_AT, o.CREATE_BY, o.CREATE_BY_TXT, o.LAST_MODIFIED, o.LAST_MODIFIED_BY, 
+    o.LAST_MODIFIED_BY_TXT, o.PAYMENT_ORDER_NO, o.SUBSCRIBE_ORDER_NO,o.TOTAL_QTY,b.BRANCH_NAME BRANCH_NAME,e.EMP_NAME DISP_EMP_NAME
+    from t_mst_disp_order o,t_md_branch b,t_md_branch_emp e
+    where o.BRANCH_NO = b.BRANCH_NO and e.EMP_NO = o.DISP_EMP_NO
+    and ORDER_NO = #{orderNo,jdbcType=VARCHAR}
     <if test="orderDate != null and orderDate !=''">
       and ORDER_DATE = #{orderDate,jdbcType=DATE}
     </if>  
@@ -50,22 +56,28 @@
   </delete>
   <select id="searchRoutePlansByPage" resultMap="BaseResultMap" parameterType="com.nhry.model.milk.RouteOrderSearchModel" >
      select 
-    <include refid="Base_Column_List" />
-    from t_mst_disp_order
-    where 1 = 1
+    o.ORDER_NO, o.ORDER_DATE, o.DISP_DATE, o.BRANCH_NO, o.MST_CUST_NO, o.AMT, o.CONFIRM_AMT, 
+    o.REACH_TIME_TYPE, o.PAYMENT_TYPE, o.STATUS, o.MEMO_TXT, o.DISP_ORDER, e.EMP_NAME DISP_EMP_NO, o.HZ_ORDER_NO, 
+    o.DAY_ACCT_FLAG, o.CREATE_AT, o.CREATE_BY, o.CREATE_BY_TXT, o.LAST_MODIFIED, o.LAST_MODIFIED_BY, 
+    o.LAST_MODIFIED_BY_TXT, o.PAYMENT_ORDER_NO, o.SUBSCRIBE_ORDER_NO,o.TOTAL_QTY
+    from t_mst_disp_order o , t_md_branch_emp e
+    where o.DISP_EMP_NO = e.EMP_NO
     <if test="emp != null and emp !=''">
-     		AND DISP_EMP_NO = #{emp,jdbcType=VARCHAR}
+     		AND o.DISP_EMP_NO = #{emp,jdbcType=VARCHAR}
     </if>
     <if test="branchNo != null and branchNo !=''">
-     		AND BRANCH_NO = #{branchNo,jdbcType=VARCHAR}
+     		AND o.BRANCH_NO = #{branchNo,jdbcType=VARCHAR}
     </if>
     <if test="deliverTime != null and deliverTime !=''">
-     		AND REACH_TIME_TYPE = #{deliverTime,jdbcType=VARCHAR}
+     		AND o.REACH_TIME_TYPE = #{deliverTime,jdbcType=VARCHAR}
     </if>
     <if test="deliverDate != null and deliverDate !=''">
-     		AND DISP_DATE = #{deliverDate,jdbcType=VARCHAR}
+     		AND o.DISP_DATE = #{deliverDate,jdbcType=VARCHAR}
     </if>
-    order by ORDER_NO
+    <if test="orderNo != null and orderNo !=''">
+     		AND o.ORDER_NO = #{orderNo,jdbcType=VARCHAR}
+    </if>
+    order by o.ORDER_NO
   </select>
   <insert id="addNewDispOrder" parameterType="com.nhry.data.milk.domain.TDispOrder" >
     insert into t_mst_disp_order
