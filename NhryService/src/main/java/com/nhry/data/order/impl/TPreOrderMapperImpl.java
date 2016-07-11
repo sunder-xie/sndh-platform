@@ -20,6 +20,7 @@ import com.nhry.model.order.ManHandOrderSearchModel;
 import com.nhry.model.order.OrderSearchModel;
 import com.nhry.model.order.ReturnOrderModel;
 import com.nhry.model.order.UpdateManHandOrderModel;
+import com.nhry.service.order.pojo.OrderRemainData;
 
 import java.util.List;
 
@@ -130,6 +131,13 @@ public class TPreOrderMapperImpl implements TPreOrderMapper
 	{
 		// TODO Auto-generated method stub
 		return 0;
+	}
+
+	@Override
+	public OrderRemainData searchOrderRemainData(String memberNo)
+	{
+		// TODO Auto-generated method stub
+		return sqlSessionTemplate.selectOne("selectOrderRemainAndAmt", memberNo);
 	}
 	
 }

@@ -74,8 +74,6 @@ public class BranchResource extends BaseResource {
 		return convertToRespModel(MessageCode.NORMAL, null,branchService.updateBranch(tMdBranch));
 	}
 
-
-
 	@GET
 	@Path("/getInfoByType")
 	@Produces(MediaType.APPLICATION_JSON)
@@ -83,6 +81,14 @@ public class BranchResource extends BaseResource {
 	public Response getInfoByType(
 			@ApiParam(required=true,name="type",value="01（代表选择自营） 02（代表选择外包）")@QueryParam("type") String type){
 		return convertToRespModel(MessageCode.NORMAL, null,branchService.findResultByType(type));
+	}
+	
+	@POST
+	@Path("/find/{deanerNo}")
+	@Produces(MediaType.APPLICATION_JSON)
+	@ApiOperation(value = "/find/{deanerNo}", response = String.class, notes = "根据经销商编号获取奶站列表信息")
+	public Response uptBranch(@ApiParam(required=true,name="deanerNo",value="经销商编号(自有奶站时：-1)")@PathParam("deanerNo") String deanerNo){
+		return convertToRespModel(MessageCode.NORMAL, null,branchService.findBranchByDno(deanerNo));
 	}
 
 }

@@ -6,6 +6,7 @@ import com.nhry.common.exception.ServiceException;
 import com.nhry.data.auth.dao.TSysResourceMapper;
 import com.nhry.data.auth.domain.TSysResource;
 import com.nhry.data.auth.domain.TSysRoleResource;
+import com.nhry.data.config.domain.NHSysCodeItem;
 import com.nhry.model.auth.RoleResourceData;
 import com.nhry.service.BaseService;
 import com.nhry.service.auth.dao.ResourceService;
@@ -14,7 +15,10 @@ import com.nhry.utils.date.Date;
 
 import org.apache.commons.lang3.StringUtils;
 
+import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 
 
 public class ResourceServiceImpl extends BaseService implements ResourceService {
@@ -52,7 +56,15 @@ public class ResourceServiceImpl extends BaseService implements ResourceService 
                 throw new ServiceException(MessageCode.LOGIC_ERROR, "该资源对应的父类资源不存在,请检查你的parent属性!");
             }
         }
-        record.setResCode(PrimaryKeyUtils.generateUuidKey());
+        
+        if(StringUtils.isEmpty(record.getResCode())){
+        	record.setResCode(PrimaryKeyUtils.generateUuidKey());
+        }else{
+        	TSysResource res = resMapper.selectResByCode(record.getResCode());
+        	if(res != null){
+        		throw new ServiceException(MessageCode.LOGIC_ERROR,"该资源编码已经存在,请重新填写！");
+        	}
+        }
         record.setCreateAt(new Date());
         record.setCreateBy(userSessionService.getCurrentUser().getLoginName());
         record.setCreateByTxt(userSessionService.getCurrentUser().getDisplayName());
@@ -102,7 +114,32 @@ public class ResourceServiceImpl extends BaseService implements ResourceService 
 
     @Override
     public List<TSysResource> findRecoureByUserId(String userId) {
-        return resMapper.findRecoureByUserId(userId);
+    	List<TSysResource> items = new ArrayList<TSysResource>();
+    	List<TSysResource> list = resMapper.findRecoureByUserId(userId);
+    	if(list != null && list.size() > 0){
+    		Map<String,TSysResource> temp = new LinkedHashMap<String,TSysResource>();
+    		for(TSysResource r : list){
+    			temp.put(r.getResCode(),r);
+    		}
+    		StringBuffer sb = new StringBuffer();
+    		for (Map.Entry<String, TSysResource> entry : temp.entrySet()) {
+    			TSysResource children = entry.getValue();
+    			TSysResource parent = temp.get(children.getParent());
+    			if (parent != null) {
+    				parent.getChildrens().add(children);
+    			}
+    			if ("-1".equals(children.getParent())) {
+    				sb.append(children.getResCode()).append(",");
+    			}
+    		}
+    		if(sb.length() > 1){
+    			sb.deleteCharAt(sb.length()-1);
+    			for(String code : sb.toString().split(",")){
+    				items.add(temp.get(code));
+    			}
+    		}
+    	}
+        return items;
     }
 
 	@Override
@@ -114,5 +151,35 @@ public class ResourceServiceImpl extends BaseService implements ResourceService 
 			}
 		}
 		return 1;
+	}
+
+	@Override
+	public List<TSysResource> getAllResources() {
+		// TODO Auto-generated method stub
+		return this.resMapper.getAllResources();
+	}
+
+	@Override
+	public List<TSysResource> getRoleResources(String id) {
+		// TODO Auto-generated method stub
+		List<TSysResource> roleRes = this.resMapper.getRoleRosources(id);
+		List<String> temp = null;
+		if(roleRes != null && roleRes.size() > 0){
+			temp = new ArrayList<String>();
+			for(TSysResource r : roleRes){
+				temp.add(r.getResCode());
+			}
+		}
+		
+		List<TSysResource> res = getAllResources();
+		if(res != null && temp != null){
+			for(TSysResource r : res){
+				if(temp.contains(r.getResCode())){
+					r.setOpen(true);
+					r.setChecked(true);
+				}
+			}
+		}
+		return res;
 	}
 }

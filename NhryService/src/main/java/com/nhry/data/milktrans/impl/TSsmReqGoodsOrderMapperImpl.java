@@ -40,6 +40,4 @@ public class TSsmReqGoodsOrderMapperImpl implements TSsmReqGoodsOrderMapper {
     public TSsmReqGoodsOrder getRequireOrderByVoucherNo(String voucherNo) {
         return sqlSessionTemplate.selectOne("getRequireOrderByVoucherNo",voucherNo);
     }
-
-
 }

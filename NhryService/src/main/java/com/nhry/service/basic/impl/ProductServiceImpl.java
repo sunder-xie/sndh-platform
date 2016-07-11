@@ -82,7 +82,7 @@ public class ProductServiceImpl extends BaseService implements ProductService {
 			throw new ServiceException(MessageCode.LOGIC_ERROR,"pageNum和pageSize不能为空！");
 		}
 		smodel.setSalesOrg(this.userSessionService.getCurrentUser().getSalesOrg());
-		smodel.setDealerNo(this.userSessionService.getCurrentUser().getDealerId());
+//		smodel.setDealerNo(this.userSessionService.getCurrentUser().getDealerId());
 		return tMdMaraMapper.searchProducts(smodel);
 	}
 

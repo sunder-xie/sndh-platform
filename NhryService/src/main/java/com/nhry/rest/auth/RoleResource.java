@@ -46,7 +46,7 @@ public class RoleResource extends BaseResource{
 	@POST
 	@Path("/search/{id}")
 	@Produces(MediaType.APPLICATION_JSON)
-	@ApiOperation(value = "/search/{id}", response = ResponseModel.class, notes = "根据角色id查找角色信息")
+	@ApiOperation(value = "/search/{id}", response = TSysRole.class, notes = "根据角色id查找角色信息")
     public Response findRoleByRid(@ApiParam(required = true, name = "id", value = "角色id")@PathParam("id")String id) {
         return this.convertToRespModel(MessageCode.NORMAL, null, roleService.findRoleByRid(id));
     }
@@ -54,7 +54,7 @@ public class RoleResource extends BaseResource{
 	@POST
 	@Path("/lists")
 	@Produces(MediaType.APPLICATION_JSON)
-	@ApiOperation(value = "/lists", response = ResponseModel.class, notes = "获取所有角色列表")
+	@ApiOperation(value = "/lists", response = TSysRole.class, notes = "获取所有角色列表")
     public Response getAllRoles() {
         return this.convertToRespModel(MessageCode.NORMAL, null, roleService.getAllRoles());
     }
@@ -102,41 +102,7 @@ public class RoleResource extends BaseResource{
 	public Response deleteUserRoles(@ApiParam(required = true, name = "urmodel", value = "用户角色关系对象(loginName、roleIds)")UserRoleModel urmodel) {
 		return convertToRespModel(MessageCode.NORMAL, null, roleService.deleteUserRoles(urmodel));
 	}
-	
-	@POST
-	@Path("/add/res")
-	@Produces(MediaType.APPLICATION_JSON)
-	@Consumes(MediaType.APPLICATION_JSON)
-	@ApiOperation(value = "/add/res", response = ResponseModel.class, notes = "添加资源")
-	public Response addRes(@ApiParam(required = true, name = "resource", value = "资源对象")TSysResource resource) {
-		return convertToRespModel(MessageCode.NORMAL, null, resService.addRes(resource));
-	}
-	
-	@POST
-	@Path("/find/res/{resCode}")
-	@Produces(MediaType.APPLICATION_JSON)
-	@ApiOperation(value = "/find/res/{resCode}", response = ResponseModel.class, notes = "查找资源")
-	public Response addRes(@ApiParam(required = true, name = "resCode", value = "资源编号")@PathParam("resCode")String resCode) {
-		return convertToRespModel(MessageCode.NORMAL, null, resService.selectResByCode(resCode));
-	}
-	
-	@POST
-	@Path("/update/res")
-	@Produces(MediaType.APPLICATION_JSON)
-	@Consumes(MediaType.APPLICATION_JSON)
-	@ApiOperation(value = "/update/res", response = ResponseModel.class, notes = "修改资源")
-	public Response updateResByCode(@ApiParam(required = true, name = "resource", value = "资源对象")TSysResource resource) {
-		return convertToRespModel(MessageCode.NORMAL, null, resService.updateResByCode(resource));
-	}
-	
-	@POST
-	@Path("/delete/res/{resCode}")
-	@Produces(MediaType.APPLICATION_JSON)
-	@ApiOperation(value = "/update/res/{resCode}", response = ResponseModel.class, notes = "删除资源")
-	public Response deleteRes(@ApiParam(required = true, name = "resCode", value = "资源编码")@PathParam("resCode")String resCode) {
-		return convertToRespModel(MessageCode.NORMAL, null, resService.deleteResByCode(resCode));
-	}
-	
+
 	@POST
 	@Path("/add/roleRes")
 	@Produces(MediaType.APPLICATION_JSON)

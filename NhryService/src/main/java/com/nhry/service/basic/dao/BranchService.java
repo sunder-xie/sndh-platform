@@ -6,6 +6,7 @@ import com.nhry.model.basic.BranchOrDealerList;
 import com.nhry.model.basic.BranchQueryModel;
 
 import java.util.List;
+import java.util.Map;
 
 public interface BranchService {
 	int deleteBranchByNo(String branchNo);
@@ -24,4 +25,12 @@ public interface BranchService {
    public BranchOrDealerList findResultByType(String type);
 
     List<TMdBranch> getBranchByCodeOrName(String branch);
+    
+    
+    /**
+     * 根据经销商编号、当前销售组织查询对应的奶站
+     * @param attrs
+     * @return
+     */
+    List<TMdBranch> findBranchByDno(String dealerNo);
 }
