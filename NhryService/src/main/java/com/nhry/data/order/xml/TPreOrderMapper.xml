@@ -387,6 +387,9 @@
       <if test="preorderStat != null" >
         PREORDER_STAT = #{preorderStat,jdbcType=VARCHAR},
       </if>
+      <if test="sign != null" >
+        SIGN = #{sign,jdbcType=VARCHAR},
+      </if>
     </set>
     where ORDER_NO = #{orderNo,jdbcType=VARCHAR}
   </update>

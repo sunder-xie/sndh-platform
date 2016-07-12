@@ -23,13 +23,16 @@
     <resultMap id="EmpResultMap" type="com.nhry.model.bill.BranchBillEmpModel" >
         <result column="EMP_NO" property="empNo" jdbcType="VARCHAR" />
         <result column="EMP_NAME" property="empName" jdbcType="VARCHAR" />
-        <result column="SALE_PRICE" property="salePrice" jdbcType="VARCHAR" />
-        <result column="BILL_PRICE" property="billPirce" jdbcType="VARCHAR" />
+        <result column="DISP_DATE" property="dispDate" jdbcType="DATE" />
+        <result column="QTY" property="qty" jdbcType="DECIMAL" />
+        <result column="SALE_PRICE" property="salePrice" jdbcType="DECIMAL" />
+        <result column="BILL_PRICE" property="billPirce" jdbcType="DECIMAL" />
     </resultMap>
     <resultMap id="EmpItemResultMap" type="com.nhry.model.bill.BranchBillEmpItemModel" >
         <result column="MATNR" property="matnr" jdbcType="VARCHAR" />
         <result column="MATNR_TXT" property="matnrTxt" jdbcType="VARCHAR" />
         <result column="QTY" property="qty" jdbcType="INTEGER" />
+        <result column="PRICE" property="price" jdbcType="DECIMAL" />
     </resultMap>
 
     <sql id="Branch_Column_List" >
@@ -42,71 +45,91 @@
     <sql id="EmpItem_Column_List" >
         MATNR,MATNR_TXT,QTY
     </sql>
-    <select id="branchBillSearch" resultMap="BranchResultMap" parameterType="com.nhry.model.bill.BranchBillSearch">
-        select
-        t1.BRANCH_NO ,t1.BRANCH_NAME ,t1.ORDER_NO ORDER_NO,t1.PREORDER_SOURCE, t1.PAYMENT_TYPE ,
-        t1.SATTLEMENT_PRICE, t1.VIP_CUST_NO ,t1.VIP_Name ,t1.VIP_MP ,t1.VIP_TEL ,t1.ADDRESS ,
-        t1.EMP_NO , t1.EMP_NAME ,
-        ( CASE when t1.PAYMENT_STAT ='20' then t2.AMT else  '0' END) REAL_COLLECTION,
-        ( CASE when t1.PAYMENT_STAT ='20' then t2.PAYMENT_YEAR_MONTH else  '无' END) PAYMENT_DATE
-      from (
+    <select id="CustomerBranchBill" resultMap="BranchResultMap" parameterType="com.nhry.model.bill.CustBranchBillSearch">
         select
         b.BRANCH_NO BRANCH_NO,b.BRANCH_NAME BRANCH_NAME,o.ORDER_NO ORDER_NO, o.PREORDER_SOURCE PREORDER_SOURCE,o.PAYMENTMETHOD PAYMENT_TYPE,
         o.INIT_AMT  SATTLEMENT_PRICE,cust.VIP_CUST_NO VIP_CUST_NO,cust.VIP_NAME VIP_Name, cust.MP VIP_MP,cust.TEL VIP_TEL, cust.ADDRESS_TXT ADDRESS,
-        emp.EMP_NO EMP_NO, emp.EMP_NAME EMP_NAME,o.PAYMENT_STAT PAYMENT_STAT
-        FROM t_preorder o,t_md_branch_emp emp,t_vip_cust_info cust,t_md_branch b
+        emp.EMP_NO EMP_NO, emp.EMP_NAME EMP_NAME,o.PAYMENT_STAT PAYMENT_STAT,
+        ( CASE when o.PAYMENT_STAT ='20' then bill.AMT else  '0' END) REAL_COLLECTION,
+        ( CASE when o.PAYMENT_STAT ='20' then bill.PAYMENT_YEAR_MONTH else  '无' END) PAYMENT_DATE
+        FROM t_mst_recv_bill bill  LEFT JOIN t_preorder o ON bill.ORDER_NO = o.ORDER_NO
+        LEFT JOIN t_md_branch_emp emp on  o.EMP_NO = emp.EMP_NO
+        LEFT JOIN t_vip_cust_info cust on  o.MEMBER_NO = cust.VIP_CUST_NO
+        LEFT JOIN t_md_branch b on o.BRANCH_NO  = b.BRANCH_NO
         WHERE 1=1
-        and o.EMP_NO = emp.EMP_NO
-        and o.MEMBER_NO = cust.VIP_CUST_NO
-        and o.BRANCH_NO  = b.BRANCH_NO
         <if test="branchNo!=null and branchNo!=''">
-            o.BRANCH_NO = #{branchNo,jdbcType=VARCHAR}
+           and o.BRANCH_NO = #{branchNo,jdbcType=VARCHAR}
         </if>
         <if test="startDate!=null and startDate!=''">
-            o.ORDER_DATE &gt;= #{startDate,jdbcType=DATE}
+            and o.ORDER_DATE &gt;= #{startDate,jdbcType=DATE}
         </if>
         <if test="endDate!=null and endDate!=''">
-            o.BRANCH_NO &lt;= #{endDate,jdbcType=DATE}
-        </if>
-        )t1 left JOIN t_mst_recv_bill t2 on t1.ORDER_NO = t2.ORDER_NO
-
-    </select>
-
-    <select id="branchBillEmpSearch" resultMap="EmpResultMap" parameterType="com.nhry.model.bill.BranchBillSearch">
-        select
-          o.EMP_NO EMP_NO,e.EMP_NAME EMP_NAME,SUM(i.QTY * i.PRICE) SALE_PRICE
-        from t_preorder o,t_mst_order_daliy_plan_item  i,t_md_branch_emp e
-        where 1=1
-        and o.ORDER_NO = i.ORDER_NO
-        and e.EMP_NO = o.EMP_NO
-        <if test="branchNo!=null and branchNo!=''">
-            o.BRANCH_NO = #{branchNo,jdbcType=VARCHAR}
-        </if>
-        <if test="startDate!=null and startDate!=''">
-            o.ORDER_DATE &gt;= #{startDate,jdbcType=DATE}
-        </if>
-        <if test="endDate!=null and endDate!=''">
-            o.BRANCH_NO &lt;= #{endDate,jdbcType=DATE}
+            and  o.BRANCH_NO &lt;= #{endDate,jdbcType=DATE}
         </if>
     </select>
 
+    <select id="branchBillEmpSearch" resultMap="EmpResultMap" parameterType="com.nhry.model.bill.EmpBranchBillSearch">
+        SELECT
+        SUM(t1.QTY) QTY,SUM(t1.PRICE * t1.QTY) SALE_PRICE,t1.DISP_DATE,t1.DISP_EMP_NO,e.EMP_NO,e.EMP_NAME
+        FROM (
+                SELECT
+                i.MATNR,i.QTY,i.PRICE,o.DISP_EMP_NO,o.DISP_DATE
+                FROM t_mst_inside_sal_order_item i LEFT JOIN t_mst_inside_sal_order so on i.INS_ORDER_NO = so.INS_ORDER_NO
+                LEFT JOIN t_mst_disp_order o on so.DISP_ORDER_NO = o.ORDER_NO
+                WHERE 1= 1
+                <if test="branchNo!=null and branchNo!=''">
+                    and   o.BRANCH_NO = #{branchNo,jdbcType=VARCHAR}
+                </if>
+                <if test="startDate!=null and startDate!=''">
+                    and  o.DISP_DATE &gt;= #{startDate,jdbcType=DATE}
+                </if>
+                <if test="endDate!=null and endDate!=''">
+                    and  o.DISP_DATE &lt;= #{endDate,jdbcType=DATE}
+                </if>
+                UNION ALL
 
-    <select id="branchBillEmpItemSearch" resultMap="EmpItemResultMap" parameterType="com.nhry.model.bill.BranchBillSearch">
-       select
-	    i.MATNR MATNR,m.MATNR_TXT MATNR_TXT,i.QTY QTY
-        from t_preorder o,t_mst_order_daliy_plan_item  i,t_md_mara m
-        where 1=1
-        and o.ORDER_NO = i.ORDER_NO
-        and m.MATNR = i.MATNR
-        <if test="branchNo!=null and branchNo!=''">
-            o.BRANCH_NO = #{branchNo,jdbcType=VARCHAR}
-        </if>
-        <if test="startDate!=null and startDate!=''">
-            o.ORDER_DATE &gt;= #{startDate,jdbcType=DATE}
-        </if>
-        <if test="endDate!=null and endDate!=''">
-            o.BRANCH_NO &lt;= #{endDate,jdbcType=DATE}
-        </if>
+
+                SELECT
+                i.MATNR,i.QTY ,i.PRICE ,o.DISP_EMP_NO,o.DISP_DATE
+                FROM t_mst_disp_order_item i LEFT JOIN t_mst_disp_order o ON i.ORDER_NO = o.ORDER_NO
+                WHERE 1= 1
+                <if test="branchNo!=null and branchNo!=''">
+                    and o.BRANCH_NO = #{branchNo,jdbcType=VARCHAR}
+                </if>
+                <if test="startDate!=null and startDate!=''">
+                    and o.DISP_DATE &gt;= #{startDate,jdbcType=DATE}
+                </if>
+                <if test="endDate!=null and endDate!=''">
+                    and o.DISP_DATE &lt;= #{endDate,jdbcType=DATE}
+                </if>
+
+        ) t1 LEFT  JOIN  t_md_branch_emp e on t1.DISP_EMP_NO = e.EMP_NO
+        GROUP BY t1.DISP_DATE,t1.DISP_EMP_NO
+
+
+    </select>
+
+
+    <select id="branchBillEmpItemSearch" resultMap="EmpItemResultMap" parameterType="com.nhry.model.bill.EmpBranchBillDetailSearch">
+        SELECT
+        i.MATNR,a.MATNR_TXT,i.QTY,i.PRICE,o.DISP_EMP_NO
+        FROM t_mst_inside_sal_order_item i LEFT JOIN t_mst_inside_sal_order so on i.INS_ORDER_NO = so.INS_ORDER_NO
+        LEFT JOIN t_mst_disp_order o on so.DISP_ORDER_NO = o.ORDER_NO
+        LEFT JOIN t_md_mara a on (i.MATNR = a.MATNR and a.SALES_ORG = #{salesOrg,jdbcType=VARCHAR})
+        WHERE 1=1
+           and  o.DISP_DATE = #{dispDate,jdbcType=DATE}
+           and  o.DISP_EMP_NO = #{empNo,jdbcType=VARCHAR}
+
+        UNION ALL
+
+        SELECT
+        i.MATNR,a.MATNR_TXT,i.QTY ,i.PRICE ,o.DISP_EMP_NO
+        FROM t_mst_disp_order_item i LEFT JOIN t_mst_disp_order o ON i.ORDER_NO = o.ORDER_NO
+        LEFT JOIN t_md_mara a on (i.MATNR = a.MATNR and a.SALES_ORG = #{salesOrg,jdbcType=VARCHAR})
+        WHERE 1=1
+          and  o.DISP_DATE = #{dispDate,jdbcType=DATE}
+           and  o.DISP_EMP_NO = #{empNo,jdbcType=VARCHAR}
+
     </select>
 
 </mapper>

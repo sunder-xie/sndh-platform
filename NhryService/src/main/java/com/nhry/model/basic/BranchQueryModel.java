@@ -10,16 +10,7 @@ public class BranchQueryModel extends BaseQueryModel implements Serializable {
 	@ApiModelProperty(value="branchLevel",notes="奶站等级")
 
 	private String salesOrg;
-	private String branchLevel;
-	private String salesCha;
-
-	public String getSalesCha() {
-		return salesCha;
-	}
-
-	public void setSalesCha(String salesCha) {
-		this.salesCha = salesCha;
-	}
+	private String branchGroup;
 
 	public String getSalesOrg() {
 		return salesOrg;
@@ -29,11 +20,11 @@ public class BranchQueryModel extends BaseQueryModel implements Serializable {
 		this.salesOrg = salesOrg;
 	}
 
-	public String getBranchLevel() {
-		return branchLevel;
+	public String getBranchGroup() {
+		return branchGroup;
 	}
 
-	public void setBranchLevel(String branchLevel) {
-		this.branchLevel = branchLevel;
+	public void setBranchGroup(String branchGroup) {
+		this.branchGroup = branchGroup;
 	}
 }

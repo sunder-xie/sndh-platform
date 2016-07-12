@@ -398,6 +398,8 @@ public class DeliverMilkServiceImpl extends BaseService implements DeliverMilkSe
 			
 			//生成变化路单
 			createRouteChanges(routeCode,dispDate);
+			
+			//记录回瓶数
 		
 		}else{
 			throw new ServiceException(MessageCode.LOGIC_ERROR,"没有此路单号!");

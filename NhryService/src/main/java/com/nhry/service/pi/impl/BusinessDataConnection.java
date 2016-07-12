@@ -14,9 +14,7 @@ import java.math.BigDecimal;
 import java.rmi.RemoteException;
 import java.text.ParsePosition;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * Created by cbz on 7/4/2016.
@@ -137,7 +135,7 @@ public class BusinessDataConnection {
         return successMessage;
     }
 
-    public static PISuccessMessage SalesOrderCreate(String KUNNR, String KUNWE, String VKORG, String BSTKD, java.util.Date LFDAT, List<Map<String,String>> items ) {
+    public static PISuccessMessage SalesOrderCreate(String KUNNR, String KUNWE, String VKORG, String BSTKD, java.util.Date LFDAT, List<Map<String, String>> items, String activityId) {
 
         IT_ZSSD00011_type0 it_zssd00011_type1 = new IT_ZSSD00011_type0();
         for (Map<String,String> map:items) {
@@ -193,6 +191,9 @@ public class BusinessDataConnection {
         BSTKD_type1 bstkd_type1 = new BSTKD_type1();
         bstkd_type1.setBSTKD_type0(BSTKD);
         zssd00010.setBSTKD(bstkd_type1);
+        CMPGN_EXTID_type1 cmpgn_extid_type1 = new CMPGN_EXTID_type1();
+        cmpgn_extid_type1.setCMPGN_EXTID_type0(activityId);
+        zssd00010.setCMPGN_EXTID(cmpgn_extid_type1);
         rfc.setIT_ZSSD00010(zssd00010);
         PISuccessMessage successMessage = new PISuccessMessage();
         try {

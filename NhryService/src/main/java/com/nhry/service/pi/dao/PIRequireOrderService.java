@@ -21,9 +21,10 @@ public interface PIRequireOrderService {
      * @param kunnr 客户编号
      * @param kunwe 送达方
      * @param vkorg 销售组织
+     * @param activityId 促销活动号
      * @return
      */
-    PISuccessMessage generateSalesOrder(TSsmReqGoodsOrder ssmReqGoodsOrder, String kunnr, String kunwe, String vkorg) ;
+    PISuccessMessage generateSalesOrder(TSsmReqGoodsOrder ssmReqGoodsOrder, String kunnr, String kunwe, String vkorg, String activityId) ;
 
     /**
      * 交货单

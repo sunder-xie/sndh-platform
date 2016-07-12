@@ -311,15 +311,15 @@ public class PIProductServiceImpl implements PIProductService {
     @Override
     public int salesQueryHandler() throws RemoteException{
         try {
-//            ZSD_SALES_ORGANIZATION_RFCResponse response = salesQuery();
-//            saveCompany(response);
-//            saveWerks(response);
-//            saveLgort(response);
-//            saveVkorg(response);
+            ZSD_SALES_ORGANIZATION_RFCResponse response = salesQuery();
+            saveCompany(response);
+            saveWerks(response);
+            saveLgort(response);
+            saveVkorg(response);
             ZSD_T005_DATAResponse response1 = codeQuery();
             saveET_T024E(response1);
         }catch (Exception e){
-            throw new ServiceException(MessageCode.LOGIC_ERROR,"字典数据保存出差！");
+            throw new ServiceException(MessageCode.LOGIC_ERROR,"字典数据保存出错！");
         }
         return 1;
     }
@@ -347,7 +347,9 @@ public class PIProductServiceImpl implements PIProductService {
             String vkorg = zssd00025.getVKORG().getVKORG_type10();
             String vkorgTxt = zssd00025.getVKORGTEXT().getVKORGTEXT_type0();
             String bukrs = zssd00025.getBUKRS().getBUKRS_type10();
-            if (StringUtils.isNotEmpty(vkorg)) {
+            String vtweg = zssd00025.getVTWEG().getVTWEG_type10();
+            String sparttext = zssd00025.getSPARTTEXT().getSPARTTEXT_type0();
+            if (StringUtils.isNotEmpty(vkorg)&&VKORG.equals(vtweg)) {
                 NHSysCodeItem param = new NHSysCodeItem();
                 param.setItemCode(vkorg);
                 param.setTypeCode("1002");
@@ -358,10 +360,16 @@ public class PIProductServiceImpl implements PIProductService {
                     codeItem.setTypeCode("1002");
                     codeItem.setItemName(vkorgTxt);
                     codeItem.setParent(bukrs);
+                    codeItem.setCreateAt(new Date());
+                    codeItem.setCreateByTxt("ECC");
+                    codeItem.setCreateBy("ECC");
                     codeItemMapper.addCodeItem(codeItem);
                 } else {
                     codeItem.setItemName(vkorgTxt);
                     codeItem.setParent(bukrs);
+                    codeItem.setLastModified(new Date());
+                    codeItem.setLastModifiedBy("ECC");
+                    codeItem.setLastModifiedByTxt("ECC");
                     codeItemMapper.updateCodeItemByCode(codeItem);
                 }
             }
@@ -382,20 +390,26 @@ public class PIProductServiceImpl implements PIProductService {
             if (StringUtils.isNotEmpty(lgort)) {
                 NHSysCodeItem param = new NHSysCodeItem();
                 param.setItemCode(lgort);
-                param.setTypeCode("1006");
+                param.setTypeCode("1011");
                 NHSysCodeItem codeItem = codeItemMapper.findCodeItenByCode(param);
                 if (codeItem == null) {
                     codeItem = new NHSysCodeItem();
                     codeItem.setItemCode(lgort);
-                    codeItem.setTypeCode("1006");
+                    codeItem.setTypeCode("1011");
                     codeItem.setItemName(name);
                     codeItem.setParent(werks);
                     codeItem.setAttr1(des);
+                    codeItem.setCreateAt(new Date());
+                    codeItem.setCreateByTxt("ECC");
+                    codeItem.setCreateBy("ECC");
                     codeItemMapper.addCodeItem(codeItem);
                 } else {
                     codeItem.setItemName(name);
                     codeItem.setParent(werks);
                     codeItem.setAttr1(des);
+                    codeItem.setLastModified(new Date());
+                    codeItem.setLastModifiedBy("ECC");
+                    codeItem.setLastModifiedByTxt("ECC");
                     codeItemMapper.updateCodeItemByCode(codeItem);
                 }
             }
@@ -423,10 +437,16 @@ public class PIProductServiceImpl implements PIProductService {
                     codeItem.setTypeCode("1005");
                     codeItem.setItemName(butxt);
                     codeItem.setParent(bukrs);
+                    codeItem.setCreateAt(new Date());
+                    codeItem.setCreateByTxt("ECC");
+                    codeItem.setCreateBy("ECC");
                     codeItemMapper.addCodeItem(codeItem);
                 } else {
                     codeItem.setItemName(butxt);
                     codeItem.setParent(bukrs);
+                    codeItem.setLastModified(new Date());
+                    codeItem.setLastModifiedBy("ECC");
+                    codeItem.setLastModifiedByTxt("ECC");
                     codeItemMapper.updateCodeItemByCode(codeItem);
                 }
             }
@@ -450,9 +470,15 @@ public class PIProductServiceImpl implements PIProductService {
                     codeItem.setItemCode(bukrs);
                     codeItem.setTypeCode("1003");
                     codeItem.setItemName(butxt);
+                    codeItem.setCreateAt(new Date());
+                    codeItem.setCreateByTxt("ECC");
+                    codeItem.setCreateBy("ECC");
                     codeItemMapper.addCodeItem(codeItem);
                 }else{
                     codeItem.setItemName(butxt);
+                    codeItem.setLastModified(new Date());
+                    codeItem.setLastModifiedBy("ECC");
+                    codeItem.setLastModifiedByTxt("ECC");
                     codeItemMapper.updateCodeItemByCode(codeItem);
                 }
             }
@@ -490,10 +516,16 @@ public class PIProductServiceImpl implements PIProductService {
                     codeItem.setTypeCode("1004");
                     codeItem.setItemName(t024e.getEKOTX().getEKOTX_type0());
                     codeItem.setParent(t024e.getBUKRS().getBUKRS_type4());
+                    codeItem.setCreateAt(new Date());
+                    codeItem.setCreateByTxt("ECC");
+                    codeItem.setCreateBy("ECC");
                     codeItemMapper.addCodeItem(codeItem);
                 }else{
                     codeItem.setItemName(t024e.getEKOTX().getEKOTX_type0());
                     codeItem.setParent(t024e.getBUKRS().getBUKRS_type4());
+                    codeItem.setLastModified(new Date());
+                    codeItem.setLastModifiedBy("ECC");
+                    codeItem.setLastModifiedByTxt("ECC");
                     codeItemMapper.updateCodeItemByCode(codeItem);
                 }
             }

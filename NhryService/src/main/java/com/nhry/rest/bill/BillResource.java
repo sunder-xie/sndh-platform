@@ -121,11 +121,31 @@ public class BillResource extends BaseResource {
 
 
     @POST
-    @Path("/branch/branchBill")
+    @Path("/branch/customerBranchBill")
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes(MediaType.APPLICATION_JSON)
-    @ApiOperation(value = "/branch/branchBill", response = PageInfo.class, notes = "奶站结算")
-    public Response branchBill(@ApiParam(required=true,name="customerBill",value="奶站结算") BranchBillSearch bsearch){
-        return convertToRespModel(MessageCode.NORMAL, null, branchBillService.branchBill(bsearch));
+    @ApiOperation(value = "/branch/customerBranchBill", response = PageInfo.class, notes = "奶站结算-订户维度")
+    public Response branchBill(@ApiParam(required=true,name="customerBill",value="奶站结算") CustBranchBillSearch bsearch){
+        return convertToRespModel(MessageCode.NORMAL, null, branchBillService.CustomerBranchBill(bsearch));
+    }
+
+    @POST
+    @Path("/branch/empBranchBill")
+    @Produces(MediaType.APPLICATION_JSON)
+    @Consumes(MediaType.APPLICATION_JSON)
+    @ApiOperation(value = "/branch/empBranchBill", response = PageInfo.class, notes = "奶站结算-送奶工维度")
+    public Response branchBill(@ApiParam(required=true,name="customerBill",value="奶站结算") EmpBranchBillSearch eSearch){
+        return convertToRespModel(MessageCode.NORMAL, null, branchBillService.EmpBranchBill(eSearch));
+    }
+
+
+
+    @POST
+    @Path("/branch/getEmpBranchBillDetail")
+    @Produces(MediaType.APPLICATION_JSON)
+    @Consumes(MediaType.APPLICATION_JSON)
+    @ApiOperation(value = "/branch/getEmpBranchBillDetail", response = PageInfo.class, notes = "奶站结算-送奶员维度-详情")
+    public Response getEmpBranchBillDetail (@ApiParam(required=true,name="customerBill",value="根据送奶员和日期获取详情") EmpBranchBillDetailSearch bsearch){
+        return convertToRespModel(MessageCode.NORMAL, null, branchBillService.getEmpBranchBillDetail(bsearch));
     }
 }
