@@ -7,6 +7,7 @@ import com.nhry.data.milktrans.domain.TRecBotDetail;
 import com.nhry.model.milktrans.ReturnboxSerarch;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created by gongjk on 2016/6/28.
@@ -25,6 +26,16 @@ public class TRecBotDetailMapperImpl implements TRecBotDetailMapper {
     @Override
     public List<TRecBotDetail> selectBotDetailByRetLsh(String retLsh) {
         return sqlSessionTemplate.selectList("selectBotDetailByRetLsh",retLsh);
+    }
+
+    @Override
+    public TRecBotDetail selectBotDetailByDetLsh(Map<String, String> map) {
+        return sqlSessionTemplate.selectOne("selectBotDetailByDetLshAndSpec",map);
+    }
+
+    @Override
+    public TRecBotDetail selectRetByDispOrderNo(String dispOrderNo) {
+        return sqlSessionTemplate.selectOne("selectRetByDispOrderNo",dispOrderNo);
     }
 
     @Override

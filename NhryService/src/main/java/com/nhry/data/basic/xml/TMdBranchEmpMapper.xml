@@ -127,9 +127,15 @@
     where EMP_NO = #{empNo,jdbcType=VARCHAR}
   </update>
   <select id="searchBranchEmp" resultMap="BaseResultMap" parameterType="com.nhry.model.basic.EmpQueryModel">
-      select emp.EMP_NO, emp.HR_EMP_NO, branch.BRANCH_NAME  BRANCH_NO, role.ROLE_NAME roleId,emp.EMP_NAME,emp.GENDER, emp.EMP_TYPE, emp.TEL, emp.MP, emp.WEBCHAT, emp.ID_NO,emp.STATUS
-    from t_md_branch_emp emp,T_MD_BRANCH branch,T_MD_EMP_ROLE erole,t_sys_role role
-    where emp.BRANCH_NO = branch.BRANCH_NO and erole.ROLE_ID = role.ID and emp.EMP_NO = erole.EMP_NO
+      select emp.EMP_NO, emp.HR_EMP_NO, branch.BRANCH_NAME  BRANCH_NO, role.ROLE_NAME roleId,emp.EMP_NAME,emp.GENDER,
+    emp.EMP_TYPE, emp.TEL, emp.MP, emp.WEBCHAT, emp.ID_NO,emp.STATUS
+    from t_md_branch_emp emp
+    LEFT JOIN  T_MD_BRANCH branch on emp.BRANCH_NO = branch.BRANCH_NO
+
+    LEFT JOIN T_MD_EMP_ROLE erole on emp.EMP_NO = erole.EMP_NO
+    LEFT JOIN t_sys_role role  on  erole.ROLE_ID = role.ID
+    where  1=1
+    AND emp.SALES_ORG = #{salesOrg,jdbcType=VARCHAR}
      <if test="branchNo != null and branchNo !=''">
      		AND emp.BRANCH_NO = #{branchNo,jdbcType=VARCHAR}
      </if>

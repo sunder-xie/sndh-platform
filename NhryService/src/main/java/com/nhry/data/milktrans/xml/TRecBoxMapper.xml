@@ -54,7 +54,6 @@
         and bot.BRANCH_NO = #{branchNo,jdbcType=VARCHAR}
     </select>
     <insert id="addTrecBot" parameterType="com.nhry.data.milktrans.domain.TRecBot">
-
           insert into T_REC_BOT(RET_LSH,EMP_NO,EMP_NAME,BRANCH_NO,RECEIVE_NUM,STATUS,REC_DATE,CREATE_AT,CREATE_BY,CREATE_BY_TXT)
          values(#{retLsh,jdbcType=VARCHAR},#{empNo,jdbcType=VARCHAR},#{empName,jdbcType=VARCHAR},
          #{branchNo,jdbcType=VARCHAR},#{receiveNum,jdbcType=INTEGER},#{status,jdbcType=VARCHAR},
@@ -69,6 +68,7 @@
         LAST_MODIFIED =  #{lastModified,jdbcType=TIMESTAMP},
         LAST_MODIFIED_BY = #{lastModifiedBy,jdbcType=VARCHAR},
         LAST_MODIFIED_BY_TXT =  #{lastModifiedByTxt,jdbcType=VARCHAR}
+        WHERE  RET_LSH = #{retLsh,jdbcType=VARCHAR}
     </update>
     <select id="searchBoxByDate" resultMap="BaseResultMap" parameterType="com.nhry.model.milktrans.ReturnboxSerarch" >
         select
