@@ -10,9 +10,12 @@ import com.nhry.model.milktrans.RequireOrderSearch;
 import com.nhry.model.order.OrderSearchModel;
 import com.nhry.model.order.ReturnOrderModel;
 
+import java.math.BigDecimal;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
+
+import org.apache.commons.lang3.StringUtils;
 
 public class TOrderDaliyPlanItemMapperImpl implements TOrderDaliyPlanItemMapper
 {
@@ -89,7 +92,9 @@ public class TOrderDaliyPlanItemMapperImpl implements TOrderDaliyPlanItemMapper
 	{
 		SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
 		record.setStopDateStartStr(format.format(record.getStopDateStart()));
-		record.setStopDateEndStr(format.format(record.getStopDateEnd()));
+		if(record.getStopDateEnd()!=null){
+			record.setStopDateEndStr(format.format(record.getStopDateEnd()));
+		}
 		return sqlSessionTemplate.update("updateDaliyPlansToStop", record);
 	}
 	
@@ -130,10 +135,9 @@ public class TOrderDaliyPlanItemMapperImpl implements TOrderDaliyPlanItemMapper
 
 
 	@Override
-	public int insertSelective(TOrderDaliyPlanItem record)
+	public BigDecimal selectDaliyPlansRemainAmt(TOrderDaliyPlanItemKey record)
 	{
-		// TODO Auto-generated method stub
-		return 0;
+		return sqlSessionTemplate.selectOne("selectDaliyPlansRemainAmt", record);
 	}
 
 	@Override
@@ -154,10 +158,10 @@ public class TOrderDaliyPlanItemMapperImpl implements TOrderDaliyPlanItemMapper
 	}
 
 	@Override
-	public int updateByPrimaryKey(TOrderDaliyPlanItem record)
+	public int updateFromDateToDate(TOrderDaliyPlanItem record)
 	{
 		// TODO Auto-generated method stub
-		return 0;
+		return sqlSessionTemplate.update("updateFromDateToDate", record);
 	}
 	
 	@Override

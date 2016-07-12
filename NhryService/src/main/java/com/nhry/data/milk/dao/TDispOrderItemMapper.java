@@ -3,14 +3,10 @@ package com.nhry.data.milk.dao;
 import com.github.pagehelper.PageInfo;
 import com.nhry.data.milk.domain.TDispOrderItem;
 import com.nhry.data.milk.domain.TDispOrderItemKey;
-import com.nhry.data.order.domain.TPlanOrderItem;
-import com.nhry.model.milk.RouteDetailUpdateModel;
-import com.nhry.model.milk.RouteOrderSearchModel;
-import com.nhry.service.milk.pojo.TDispOrderChangeItem;
 import com.nhry.data.milktrans.domain.TRecBotDetail;
 import com.nhry.data.order.domain.TPlanOrderItem;
 import com.nhry.model.milk.RouteDetailUpdateModel;
-import com.nhry.model.milktrans.CreateEmpReturnboxModel;
+import com.nhry.model.milk.RouteOrderSearchModel;
 import com.nhry.model.milktrans.UnDeliverProductSearch;
 import com.nhry.service.milk.pojo.TDispOrderChangeItem;
 
@@ -40,11 +36,11 @@ public interface TDispOrderItemMapper {
     
     List<TDispOrderItem> selectItemsByConfirmed();
 
-    List<TRecBotDetail> selectItemsByReturnBox(CreateEmpReturnboxModel cModel);
-    
     TDispOrderItem selectDispOrderItemByKey(TDispOrderItemKey code);
 
     PageInfo searchUndeliverProduct(UnDeliverProductSearch uSearch);
 
     List<TDispOrderItem> selectItemsByOrderNo(String dispOrderNo);
+
+    List<TRecBotDetail> createRecBotByDispOrder(String dispOrderNo);
 }
