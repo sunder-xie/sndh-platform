@@ -130,7 +130,7 @@
 				AND p.SEC_CATE = #{secCatory,jdbcType=VARCHAR}
 			</if>
 			<if test="status != null and status != ''">
-				AND p.STATUS = #{status,jdbcType=VARCHAR}
+				AND IFNULL(p.STATUS,'N') = #{status,jdbcType=VARCHAR}
 			</if>
 			<if test="matnrTxt != null and matnrTxt != ''">
 				AND (p.MATNR like '%${matnrTxt}%' or
@@ -440,6 +440,7 @@
 			AND nl.dealer_no = #{dealerNo}
 		)
 		AND p.SALES_ORG = #{salesOrg}
+		AND P.STATUS='Y' 
 		<if test="matnrTxt != null and matnrTxt != ''">
 		    AND (p.MATNR like '%${matnrTxt}%' or
 				p.MATNR_TXT like '%${matnrTxt}%') 
@@ -476,6 +477,7 @@
 			AND nl.sales_org = #{salesOrg}
 		)
 		AND p.SALES_ORG = #{salesOrg}
+		AND p.STATUS='Y' 
 		<if test="matnrTxt != null and matnrTxt != ''">
 		    AND (p.MATNR like '%${matnrTxt}%' or
 				p.MATNR_TXT like '%${matnrTxt}%') 
