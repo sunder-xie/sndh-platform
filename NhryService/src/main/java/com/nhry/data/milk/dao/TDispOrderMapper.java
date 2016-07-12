@@ -17,7 +17,7 @@ public interface TDispOrderMapper {
 
     TDispOrder selectByPrimaryKey(TDispOrderKey key);
 
-    int updateByPrimaryKeySelective(TDispOrder record);
+    TDispOrder selectYestodayDispOrderByEmp(TDispOrder record);
 
     int updateDispOrderStatus(String orderCode,String status);
     BigDecimal creatRecBot(CreateEmpReturnboxModel cModel);

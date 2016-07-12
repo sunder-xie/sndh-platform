@@ -361,4 +361,14 @@
     from t_mst_disp_order
     where ORDER_NO = #{dispOrderNo,jdbcType=VARCHAR}
   </select>
+  
+  <select id="selectYestodayDispOrderByEmp" resultMap="BaseResultMap" parameterType="com.nhry.data.milk.domain.TDispOrder" >
+    select
+    <include refid="Base_Column_List" />
+    from t_mst_disp_order
+    where 
+    DISP_DATE = #{branchName,jdbcType=DATE}
+    and DISP_EMP_NO = #{dispEmpNo,jdbcType=VARCHAR}
+    and REACH_TIME_TYPE = #{reachTimeType,jdbcType=VARCHAR}
+  </select>
 </mapper>

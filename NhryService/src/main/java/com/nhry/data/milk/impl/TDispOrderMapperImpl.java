@@ -62,10 +62,10 @@ public class TDispOrderMapperImpl implements TDispOrderMapper
 	}
 
 	@Override
-	public int updateByPrimaryKeySelective(TDispOrder record)
+	public TDispOrder selectYestodayDispOrderByEmp(TDispOrder record)
 	{
 		// TODO Auto-generated method stub
-		return 0;
+		return sqlSessionTemplate.selectOne("selectYestodayDispOrderByEmp", record);
 	}
 
 	@Override

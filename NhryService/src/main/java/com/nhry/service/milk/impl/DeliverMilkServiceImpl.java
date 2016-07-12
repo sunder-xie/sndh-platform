@@ -195,6 +195,7 @@ public class DeliverMilkServiceImpl extends BaseService implements DeliverMilkSe
 	@Override
 	public RouteOrderModel searchRouteDetails(String orderNo)
 	{
+		SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
 		TDispOrderKey key = new TDispOrderKey();
 		key.setOrderNo(orderNo);
 		TDispOrder dispOrder = tDispOrderMapper.selectByPrimaryKey(key);
@@ -205,6 +206,19 @@ public class DeliverMilkServiceImpl extends BaseService implements DeliverMilkSe
 			record.setOrderNo(orderNo);
 			entries = tDispOrderItemMapper.selectItemsByKeys(record);
 			StringBuffer sb = new StringBuffer();
+			
+			//昨天的回瓶
+			TDispOrder record2 = new TDispOrder();
+			record2.setDispEmpNo(dispOrder.getDispEmpNo());
+			record2.setBranchName(format.format(afterDate(dispOrder.getDispDate(),-1)));//日期
+			record2.setReachTimeType(dispOrder.getReachTimeType());
+			TDispOrder tmpDispOrder = tDispOrderMapper.selectYestodayDispOrderByEmp(record2);
+			if(tmpDispOrder!=null){
+				String yestodayOrderNo = tmpDispOrder.getOrderNo();
+				//查昨日的回瓶管理
+				
+//				routeModel.setRetAmt(retAmt);
+			}
 			
 			//处理每个产品应该送多少个
 			Map<String,Integer> productMap = new HashMap<String,Integer>();
@@ -442,7 +456,8 @@ public class DeliverMilkServiceImpl extends BaseService implements DeliverMilkSe
 	public int createDayRouteOder()
 	{
 		SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
-		List<TPreOrder> empNos = tPreOrderMapper.selectDispNoByGroup();
+		if(userSessionService.getCurrentUser().getBranchNo()==null)throw new ServiceException(MessageCode.LOGIC_ERROR,"登陆人没有奶站，非奶站人员无法创建路单!");
+		List<TPreOrder> empNos = tPreOrderMapper.selectDispNoByGroup(userSessionService.getCurrentUser().getBranchNo());
 		TDispOrder dispOrder = null;
 		List<TDispOrderItem> dispEntries = null;
 		Date date = null;
