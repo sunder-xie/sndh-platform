@@ -96,7 +96,9 @@
       <include refid="Base_Column_List" />
       from T_MD_BRANCH branch
       where 1=1
-
+    <if test="branchNo != null and branchNo != ''">
+      AND branch.BRANCH_NO = #{branchNo,jdbcType=VARCHAR}
+    </if>
       <if test="salesOrg != null and salesOrg != ''">
         AND branch.SALES_ORG = #{salesOrg,jdbcType=VARCHAR}
       </if>

@@ -13,7 +13,7 @@
         <result column="SPEC_UNIT " property="specUnit" jdbcType="VARCHAR" />
         <result column="DISP_ORDER_NO " property="dispOrderNo" jdbcType="VARCHAR" />
 
-
+        <result column="CREATE_AT" property="createAt" jdbcType="DATE" />
         <result column="CREATE_BY" property="createBy" jdbcType="VARCHAR" />
         <result column="CREATE_BY_TXT" property="createByTxt" jdbcType="VARCHAR" />
         <result column="LAST_MODIFIED" property="lastModified" jdbcType="TIMESTAMP" />
@@ -44,10 +44,10 @@
     </sql>
     <insert id="addRecBotItem" parameterType="com.nhry.data.milktrans.domain.TRecBotDetail">
         insert into T_REC_BOT_DETAIL(
-        DET_LSH,BRANCH_NO,DISP_ORDER_NO,EMP_NO, SPEC, RECEIVE_NUM,, CREATE_BY, CREATE_BY_TXT)
+        DET_LSH,BRANCH_NO,DISP_ORDER_NO,EMP_NO, SPEC, RECEIVE_NUM,CREATE_AT, CREATE_BY, CREATE_BY_TXT)
         values( #{detLsh,jdbcType=VARCHAR},#{branchNo,jdbcType=VARCHAR},#{dispOrderNo,jdbcType=VARCHAR},
         #{empNo,jdbcType=VARCHAR}, #{spec,jdbcType=VARCHAR},#{receiveNum,jdbcType=INTEGER},
-        #{createBy,jdbcType=VARCHAR},#{createByTxt,jdbcType=VARCHAR})
+        #{createAt,jdbcType=DATE}, #{createBy,jdbcType=VARCHAR},#{createByTxt,jdbcType=VARCHAR})
 
     </insert>
     <select id="selectBotDetailByRetLsh" resultMap="BaseResultMap" parameterType="String">
