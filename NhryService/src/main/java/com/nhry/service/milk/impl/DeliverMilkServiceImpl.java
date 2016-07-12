@@ -173,6 +173,8 @@ public class DeliverMilkServiceImpl extends BaseService implements DeliverMilkSe
 		if(StringUtils.isEmpty(smodel.getPageNum()) || StringUtils.isEmpty(smodel.getPageSize())){
 			throw new ServiceException(MessageCode.LOGIC_ERROR,"pageNum和pageSize不能为空！");
 		}
+		smodel.setBranchNo1(userSessionService.getCurrentUser().getBranchNo());
+		smodel.setSalesOrg(userSessionService.getCurrentUser().getSalesOrg());
 		return tDispOrderMapper.searchRoutePlansByPage(smodel);
 	}
 
@@ -375,10 +377,11 @@ public class DeliverMilkServiceImpl extends BaseService implements DeliverMilkSe
 			
 			Date dispDate = dispOrder.getDispDate();
 			List<TDispOrderItem> entryList = tDispOrderItemMapper.selectNotDeliveryItemsByKeys(routeCode);
+			TOrderDaliyPlanItem record = new TOrderDaliyPlanItem();
 			
-			entryList.stream().forEach((e)->{
+			for(TDispOrderItem e : entryList){
 				//变化的也更改日计划状态
-				if(StringUtils.isNotBlank(e.getReason()) && e.getConfirmQty().intValue() != e.getQty().intValue()){
+				if(StringUtils.isNotBlank(e.getReason()) && e.getConfirmQty().intValue() < e.getQty().intValue()){
 					TPlanOrderItem entry = tPlanOrderItemMapper.selectEntryByEntryNo(e.getOrgItemNo());
 					//更新原订单剩余金额
 					updatePreOrderCurAmt(entry.getOrderNo(),entry.getSalesPrice().multiply(e.getConfirmQty()));
@@ -390,8 +393,15 @@ public class DeliverMilkServiceImpl extends BaseService implements DeliverMilkSe
 					TPlanOrderItem entry = tPlanOrderItemMapper.selectEntryByEntryNo(e.getOrgItemNo());
 					updatePreOrderCurAmt(entry.getOrderNo(),entry.getSalesPrice().multiply(e.getConfirmQty()));
 					
+					//更新日计划为确认
+					record.setOrderNo(e.getOrgOrderNo());
+					record.setDispDate(dispDate);
+					record.setItemNo(e.getOrgItemNo());
+					record.setStatus("20");
+					tOrderDaliyPlanItemMapper.updateDaliyPlanItemStatus(record);
+					
 				}
-			});
+			}
 			
 			//路单更新为已经确认
 			tDispOrderMapper.updateDispOrderStatus(routeCode,"20");
@@ -399,7 +409,7 @@ public class DeliverMilkServiceImpl extends BaseService implements DeliverMilkSe
 			//生成变化路单
 			createRouteChanges(routeCode,dispDate);
 			
-			//记录回瓶数
+			//创建回瓶管理
 		
 		}else{
 			throw new ServiceException(MessageCode.LOGIC_ERROR,"没有此路单号!");
@@ -474,7 +484,7 @@ public class DeliverMilkServiceImpl extends BaseService implements DeliverMilkSe
 			dispOrder.setOrderDate(date);
 			dispOrder.setDispDate(date);
 			dispOrder.setStatus("10");//未确认
-			dispOrder.setReachTimeType(order.getOrderType());//查询时用此字段代替了reachtimetype
+			dispOrder.setReachTimeType(order.getOrderType());
 			dispOrder.setBranchNo(order.getBranchNo());
 			dispOrder.setDispEmpNo(empNo);
 			

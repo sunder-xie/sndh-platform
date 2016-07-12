@@ -60,8 +60,14 @@
     o.REACH_TIME_TYPE, o.PAYMENT_TYPE, o.STATUS, o.MEMO_TXT, o.DISP_ORDER, e.EMP_NAME DISP_EMP_NO, o.HZ_ORDER_NO, 
     o.DAY_ACCT_FLAG, o.CREATE_AT, o.CREATE_BY, o.CREATE_BY_TXT, o.LAST_MODIFIED, o.LAST_MODIFIED_BY, 
     o.LAST_MODIFIED_BY_TXT, o.PAYMENT_ORDER_NO, o.SUBSCRIBE_ORDER_NO,o.TOTAL_QTY
-    from t_mst_disp_order o , t_md_branch_emp e
-    where o.DISP_EMP_NO = e.EMP_NO
+    from t_mst_disp_order o , t_md_branch_emp e , t_md_branch b
+    where o.DISP_EMP_NO = e.EMP_NO and o.BRANCH_NO = b.BRANCH_NO
+    	<if test="branchNo1 != null and branchNo1 !=''">
+     		AND o.BRANCH_NO = #{branchNo1,jdbcType=VARCHAR}
+      </if>
+      <if test="salesOrg != null and salesOrg !=''">
+     		AND b.SALES_ORG = #{salesOrg,jdbcType=VARCHAR}
+    </if>
     <if test="emp != null and emp !=''">
      		AND o.DISP_EMP_NO = #{emp,jdbcType=VARCHAR}
     </if>

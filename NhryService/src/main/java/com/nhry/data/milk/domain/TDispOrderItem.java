@@ -52,7 +52,44 @@ public class TDispOrderItem extends TDispOrderItemKey {
     
     private String custTel;
     
-    public String getCustTel()
+    private Integer retQtyB;
+    
+    private Integer retQtyS;
+    
+    private Integer retQtyM;
+    
+    
+    public Integer getRetQtyB()
+	{
+		return retQtyB;
+	}
+
+	public void setRetQtyB(Integer retQtyB)
+	{
+		this.retQtyB = retQtyB;
+	}
+
+	public Integer getRetQtyS()
+	{
+		return retQtyS;
+	}
+
+	public void setRetQtyS(Integer retQtyS)
+	{
+		this.retQtyS = retQtyS;
+	}
+
+	public Integer getRetQtyM()
+	{
+		return retQtyM;
+	}
+
+	public void setRetQtyM(Integer retQtyM)
+	{
+		this.retQtyM = retQtyM;
+	}
+
+	public String getCustTel()
 	{
 		return custTel;
 	}

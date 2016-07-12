@@ -29,6 +29,9 @@
     <result column="MATNR_TXT" property="matnrTxt" jdbcType="VARCHAR" />
     <result column="CUST_NAME" property="custName" jdbcType="VARCHAR" />
     <result column="CUST_TEL" property="custTel" jdbcType="VARCHAR" />
+    <result column="RET_QTY_B" property="retQtyB" jdbcType="INTEGER" />
+    <result column="RET_QTY_S" property="retQtyS" jdbcType="INTEGER" />
+    <result column="RET_QTY_M" property="retQtyM" jdbcType="INTEGER" />
   </resultMap>
   <resultMap id="BaseChangeResultMap" type="com.nhry.service.milk.pojo.TDispOrderChangeItem" >
     <result column="ORDER_NO1" property="orderNo1" jdbcType="VARCHAR" />
@@ -422,6 +425,15 @@
       </if>
       <if test="wholesalePrice1 != null" >
         WHOLESALE_PRICE_1 = #{wholesalePrice1,jdbcType=DECIMAL},
+      </if>
+      <if test="retQtyS != null" >
+        RET_QTY_S = #{retQtyS,jdbcType=INTEGER},
+      </if>
+      <if test="retQtyM != null" >
+        RET_QTY_M = #{retQtyM,jdbcType=INTEGER},
+      </if>
+      <if test="retQtyB != null" >
+        RET_QTY_B = #{retQtyB,jdbcType=INTEGER},
       </if>
     </set>
     where ORDER_NO = #{orderNo,jdbcType=VARCHAR}

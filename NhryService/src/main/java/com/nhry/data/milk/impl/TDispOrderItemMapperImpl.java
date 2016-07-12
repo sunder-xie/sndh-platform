@@ -111,6 +111,13 @@ public class TDispOrderItemMapperImpl implements TDispOrderItemMapper
 		key.setStatus("30");//30 回执确认
 		key.setConfirmMatnr(record.getProductCode());
 		key.setConfirmAmt(key.getConfirmQty().multiply(orgPrice));
+		if(key.getRetQtyB()!=null){
+			key.setRetQtyB(key.getConfirmQty().intValue());
+		}else if(key.getRetQtyS()!=null){
+			key.setRetQtyS(key.getConfirmQty().intValue());
+		}else if(key.getRetQtyM()!=null){
+			key.setRetQtyM(key.getConfirmQty().intValue());
+		}
 //		key.setLastModified(new Date());
 //		key.setLastModifiedBy(userSessionService.getCurrentUser().getLoginName());
 //		key.setLastModifiedByTxt(userSessionService.getCurrentUser().getDisplayName());
