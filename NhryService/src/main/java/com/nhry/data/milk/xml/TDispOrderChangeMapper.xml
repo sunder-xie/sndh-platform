@@ -47,7 +47,7 @@
     where c.ORDER_NO = #{orderNo,jdbcType=VARCHAR}
     and c.ORG_ORDER_NO = o.ORDER_NO 
     and c.ADDRESS_NO = a.ADDRESS_ID
-    and o.MILKMEMBER_NO = v.VIP_CUST_NO
+    and a.VIP_CUST_NO = v.VIP_CUST_NO
     and e.EMP_NO = c.EMP_NO
   </select>
   <delete id="deleteByPrimaryKey" parameterType="com.nhry.data.milk.domain.TDispOrderChangeKey" >

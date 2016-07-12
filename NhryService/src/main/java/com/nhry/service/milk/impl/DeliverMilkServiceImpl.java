@@ -38,6 +38,7 @@ import com.nhry.model.milk.RouteOrderSearchModel;
 import com.nhry.model.milk.RouteUpdateModel;
 import com.nhry.model.order.DaliyPlanEditModel;
 import com.nhry.service.BaseService;
+import com.nhry.service.basic.dao.ProductService;
 import com.nhry.service.milk.dao.DeliverMilkService;
 import com.nhry.service.milk.pojo.TDispOrderChangeItem;
 import com.nhry.service.order.dao.OrderService;
@@ -61,6 +62,12 @@ public class DeliverMilkServiceImpl extends BaseService implements DeliverMilkSe
 	private TDispOrderChangeMapper tDispOrderChangeMapper;
 	private TPlanOrderItemMapper tPlanOrderItemMapper;
 	private OrderService orderService;
+	private ProductService productService;
+	
+	public void setProductService(ProductService productService)
+	{
+		this.productService = productService;
+	}
 	
 	public void setOrderService(OrderService orderService)
 	{
@@ -173,6 +180,8 @@ public class DeliverMilkServiceImpl extends BaseService implements DeliverMilkSe
 		if(StringUtils.isEmpty(smodel.getPageNum()) || StringUtils.isEmpty(smodel.getPageSize())){
 			throw new ServiceException(MessageCode.LOGIC_ERROR,"pageNum和pageSize不能为空！");
 		}
+		smodel.setBranchNo1(userSessionService.getCurrentUser().getBranchNo());
+		smodel.setSalesOrg(userSessionService.getCurrentUser().getSalesOrg());
 		return tDispOrderMapper.searchRoutePlansByPage(smodel);
 	}
 
@@ -186,6 +195,7 @@ public class DeliverMilkServiceImpl extends BaseService implements DeliverMilkSe
 	@Override
 	public RouteOrderModel searchRouteDetails(String orderNo)
 	{
+		SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
 		TDispOrderKey key = new TDispOrderKey();
 		key.setOrderNo(orderNo);
 		TDispOrder dispOrder = tDispOrderMapper.selectByPrimaryKey(key);
@@ -196,6 +206,19 @@ public class DeliverMilkServiceImpl extends BaseService implements DeliverMilkSe
 			record.setOrderNo(orderNo);
 			entries = tDispOrderItemMapper.selectItemsByKeys(record);
 			StringBuffer sb = new StringBuffer();
+			
+			//昨天的回瓶
+			TDispOrder record2 = new TDispOrder();
+			record2.setDispEmpNo(dispOrder.getDispEmpNo());
+			record2.setBranchName(format.format(afterDate(dispOrder.getDispDate(),-1)));//日期
+			record2.setReachTimeType(dispOrder.getReachTimeType());
+			TDispOrder tmpDispOrder = tDispOrderMapper.selectYestodayDispOrderByEmp(record2);
+			if(tmpDispOrder!=null){
+				String yestodayOrderNo = tmpDispOrder.getOrderNo();
+				//查昨日的回瓶管理
+				
+//				routeModel.setRetAmt(retAmt);
+			}
 			
 			//处理每个产品应该送多少个
 			Map<String,Integer> productMap = new HashMap<String,Integer>();
@@ -304,8 +327,9 @@ public class DeliverMilkServiceImpl extends BaseService implements DeliverMilkSe
 	@Override
 	public int updateRouteOrderAllItems(RouteDetailUpdateListModel record)
 	{
+		Map<String,String> productMap = productService.getMataBotTypes();
 		record.getList().stream().forEach((e)->{
-			updateRouteOrderItems(e);
+			updateRouteOrderItems(e,productMap);
 		});
 		return 1;
 	}
@@ -318,7 +342,7 @@ public class DeliverMilkServiceImpl extends BaseService implements DeliverMilkSe
 	* @see com.nhry.service.milk.dao.DeliverMilkService#updateRouteOrderItems(com.nhry.model.milk.RouteUpdateModel) 
 	*/
 	@Override
-	public int updateRouteOrderItems(RouteDetailUpdateModel record)
+	public int updateRouteOrderItems(RouteDetailUpdateModel record,Map<String,String> productMap)
 	{
 //		final long startTime = System.currentTimeMillis();
 		
@@ -337,7 +361,7 @@ public class DeliverMilkServiceImpl extends BaseService implements DeliverMilkSe
    			TPlanOrderItem entry = tPlanOrderItemMapper.selectEntryByEntryNo(entryList.get(0).getOrgItemNo());
    			record.setOrgOrderNo(entryList.get(0).getOrgOrderNo());
    			record.setOrgItemNo(entryList.get(0).getOrgItemNo());
-   			tDispOrderItemMapper.updateDispOrderItem(record , entry);
+   			tDispOrderItemMapper.updateDispOrderItem(record , entry,productMap);
 //   			//更新原订单剩余金额
 //   			updatePreOrderCurAmt(entry.getOrderNo(),entry.getSalesPrice().multiply(new BigDecimal(record.getQty())));
 //   			//更改路单,少送的，需要往后延期,并重新计算此后日计划的剩余金额
@@ -375,10 +399,11 @@ public class DeliverMilkServiceImpl extends BaseService implements DeliverMilkSe
 			
 			Date dispDate = dispOrder.getDispDate();
 			List<TDispOrderItem> entryList = tDispOrderItemMapper.selectNotDeliveryItemsByKeys(routeCode);
+			TOrderDaliyPlanItem record = new TOrderDaliyPlanItem();
 			
-			entryList.stream().forEach((e)->{
+			for(TDispOrderItem e : entryList){
 				//变化的也更改日计划状态
-				if(StringUtils.isNotBlank(e.getReason()) && e.getConfirmQty().intValue() != e.getQty().intValue()){
+				if(StringUtils.isNotBlank(e.getReason()) && e.getConfirmQty().intValue() < e.getQty().intValue()){
 					TPlanOrderItem entry = tPlanOrderItemMapper.selectEntryByEntryNo(e.getOrgItemNo());
 					//更新原订单剩余金额
 					updatePreOrderCurAmt(entry.getOrderNo(),entry.getSalesPrice().multiply(e.getConfirmQty()));
@@ -390,8 +415,15 @@ public class DeliverMilkServiceImpl extends BaseService implements DeliverMilkSe
 					TPlanOrderItem entry = tPlanOrderItemMapper.selectEntryByEntryNo(e.getOrgItemNo());
 					updatePreOrderCurAmt(entry.getOrderNo(),entry.getSalesPrice().multiply(e.getConfirmQty()));
 					
+					//更新日计划为确认
+					record.setOrderNo(e.getOrgOrderNo());
+					record.setDispDate(dispDate);
+					record.setItemNo(e.getOrgItemNo());
+					record.setStatus("20");
+					tOrderDaliyPlanItemMapper.updateDaliyPlanItemStatus(record);
+					
 				}
-			});
+			}
 			
 			//路单更新为已经确认
 			tDispOrderMapper.updateDispOrderStatus(routeCode,"20");
@@ -399,7 +431,11 @@ public class DeliverMilkServiceImpl extends BaseService implements DeliverMilkSe
 			//生成变化路单
 			createRouteChanges(routeCode,dispDate);
 			
-			//记录回瓶数
+			//创建回瓶管理，调用
+			
+			
+			//生成内部销售订单，调用
+			createInsideSalOrder(routeCode);
 		
 		}else{
 			throw new ServiceException(MessageCode.LOGIC_ERROR,"没有此路单号!");
@@ -420,10 +456,12 @@ public class DeliverMilkServiceImpl extends BaseService implements DeliverMilkSe
 	public int createDayRouteOder()
 	{
 		SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
-		List<TPreOrder> empNos = tPreOrderMapper.selectDispNoByGroup();
+		if(userSessionService.getCurrentUser().getBranchNo()==null)throw new ServiceException(MessageCode.LOGIC_ERROR,"登陆人没有奶站，非奶站人员无法创建路单!");
+		List<TPreOrder> empNos = tPreOrderMapper.selectDispNoByGroup(userSessionService.getCurrentUser().getBranchNo());
 		TDispOrder dispOrder = null;
 		List<TDispOrderItem> dispEntries = null;
 		Date date = null;
+		Map<String,String> productMap = productService.getMataBotTypes();
 		for(TPreOrder order : empNos){
 			date = new Date();
 			dispOrder = new TDispOrder();
@@ -449,7 +487,6 @@ public class DeliverMilkServiceImpl extends BaseService implements DeliverMilkSe
 				item.setMatnr(plan.getMatnr());
 				item.setConfirmMatnr(plan.getMatnr());
 				item.setUnit(plan.getUnit());
-				item.setUnit(plan.getUnit());
 				item.setPrice(plan.getPrice());
 				item.setAmt(plan.getAmt());
 				item.setConfirmAmt(plan.getAmt());
@@ -461,6 +498,13 @@ public class DeliverMilkServiceImpl extends BaseService implements DeliverMilkSe
 				item.setOrgItemNo(plan.getItemNo());//对应原订单，订单行编号
 				item.setOrgOrderNo(plan.getOrderNo());//对应原订单，订单编号
 				item.setDispEmpNo(empNo);
+				
+				//回瓶规格
+				if(productMap.containsKey(item.getMatnr())){
+					if(productMap.get(item.getMatnr()).equals("10"))item.setRetQtyS(item.getQty().intValue());
+					if(productMap.get(item.getMatnr()).equals("20"))item.setRetQtyM(item.getQty().intValue());
+					if(productMap.get(item.getMatnr()).equals("30"))item.setRetQtyB(item.getQty().intValue());
+				}
 				
 				dispEntries.add(item);
 				index++;
@@ -474,7 +518,7 @@ public class DeliverMilkServiceImpl extends BaseService implements DeliverMilkSe
 			dispOrder.setOrderDate(date);
 			dispOrder.setDispDate(date);
 			dispOrder.setStatus("10");//未确认
-			dispOrder.setReachTimeType(order.getOrderType());//查询时用此字段代替了reachtimetype
+			dispOrder.setReachTimeType(order.getOrderType());
 			dispOrder.setBranchNo(order.getBranchNo());
 			dispOrder.setDispEmpNo(empNo);
 			

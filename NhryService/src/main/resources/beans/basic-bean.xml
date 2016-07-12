@@ -104,6 +104,7 @@
 		<property name="tMstInsideSalOrderItemMapper"  ref="tMstInsideSalOrderItemMapper"></property>
 	   <property name="userSessionService" ref="userSessionService"></property>
 	   <property name="orderService" ref="orderService"></property>
+	   <property name="productService" ref="productService"></property>
 	</bean>
 	<!-- 送奶信息维护end -->
 	<bean id="custService" class="com.nhry.service.basic.impl.TVipCustInfoServiceImpl">

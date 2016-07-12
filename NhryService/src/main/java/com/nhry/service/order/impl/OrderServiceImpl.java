@@ -620,6 +620,7 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 		
 		//此为多余的钱，如果是预付款，将存入订户账户???
 		if(order.getInitAmt()!=null){
+			if("20".equals(order.getPaymentStat()) && order.getInitAmt().subtract(orderAmt).floatValue()<0)throw new ServiceException(MessageCode.LOGIC_ERROR,"付款方式为预付款!您支付的金额不足!");
 			BigDecimal remain = order.getInitAmt().subtract(order.getCurAmt());
 			if(record.getAccount() != null && "20".equals(order.getPaymentStat())){
 				if(StringUtils.isBlank(record.getAccount().getBranchNo()))record.getAccount().setBranchNo(order.getBranchNo());

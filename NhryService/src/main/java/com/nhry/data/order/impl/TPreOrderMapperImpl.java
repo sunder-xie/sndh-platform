@@ -101,9 +101,9 @@ public class TPreOrderMapperImpl implements TPreOrderMapper
 	}
 	
 	@Override
-	public List<TPreOrder> selectDispNoByGroup()
+	public List<TPreOrder> selectDispNoByGroup(String branchNo)
 	{
-		return sqlSessionTemplate.selectList("selectDispNoByGroup");
+		return sqlSessionTemplate.selectList("selectDispNoByGroup",branchNo);
 	}
 	
 	@Override

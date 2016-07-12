@@ -109,14 +109,14 @@ public class DeliverMilkResource extends BaseResource {
 		return convertToRespModel(MessageCode.NORMAL, null, deliverMilkService.searchRouteChangeOrder(orderCode));
 	}
 	
-	@POST
-	@Path("/uptRouteOrderDetail")
-	@Produces(MediaType.APPLICATION_JSON)
-	@Consumes(MediaType.APPLICATION_JSON)
-	@ApiOperation(value = "/uptRouteOrder", response = Integer.class, notes = "更新路单状态")
-	public Response uptRouteOrderDetail(@ApiParam(required=true,name="smodel",value="SearchModel") RouteDetailUpdateModel smodel){
-		return convertToRespModel(MessageCode.NORMAL, null, deliverMilkService.updateRouteOrderItems(smodel));
-	}
+//	@POST
+//	@Path("/uptRouteOrderDetail")
+//	@Produces(MediaType.APPLICATION_JSON)
+//	@Consumes(MediaType.APPLICATION_JSON)
+//	@ApiOperation(value = "/uptRouteOrder", response = Integer.class, notes = "更新路单状态")
+//	public Response uptRouteOrderDetail(@ApiParam(required=true,name="smodel",value="SearchModel") RouteDetailUpdateModel smodel){
+//		return convertToRespModel(MessageCode.NORMAL, null, deliverMilkService.updateRouteOrderItems(smodel));
+//	}
 	
 	@POST
 	@Path("/uptRouteOrderDetailList")

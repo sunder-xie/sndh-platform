@@ -65,7 +65,7 @@
 		where o.MILKMEMBER_NO = #{memberNo,jdbcType=VARCHAR}
 	   and d.DISP_DATE &gt;= curdate()
 		and d.DISP_DATE &lt;= last_day(curdate())
-		and d.STATUS = '10'
+		and d.STATUS = '20'
   </select>
   <select id="selectByMilkmemberNo" resultMap="BaseResultMap" parameterType="java.lang.String" >
     select 
@@ -87,10 +87,12 @@
     WHERE o.BRANCH_NO = b.BRANCH_NO and v.VIP_CUST_NO = o.MILKMEMBER_NO and e.EMP_NO = o.EMP_NO
     and ORDER_NO = #{orderNo,jdbcType=VARCHAR}
   </select>
-  <select id="selectDispNoByGroup" resultMap="BaseResultMap">
+  <select id="selectDispNoByGroup" resultMap="BaseResultMap" parameterType="java.lang.String">
     select distinct e.reach_time_type ORDER_TYPE, o.EMP_NO, o.BRANCH_NO
 	 from t_mst_plan_order_item e
 	 left join t_preorder o on e.order_no = o.order_no 
+	 where o.SIGN != '20' and o.SIGN != '30' and o.PREORDER_STAT != '20' and PREORDER_STAT != '30'
+	        and o.BRANCH_NO = #{branchNo,jdbcType=VARCHAR}
   </select>
   <delete id="deleteByPrimaryKey" parameterType="java.lang.String" >
     delete from t_preorder

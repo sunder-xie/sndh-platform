@@ -12,6 +12,18 @@ public class RouteOrderModel {
 	private TDispOrder order;
     
    private String products;
+   
+   private String retAmt;
+
+	public String getRetAmt()
+	{
+		return retAmt;
+	}
+
+	public void setRetAmt(String retAmt)
+	{
+		this.retAmt = retAmt;
+	}
 
 	public TDispOrder getOrder()
 	{
