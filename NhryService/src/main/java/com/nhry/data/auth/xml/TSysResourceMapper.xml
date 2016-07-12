@@ -14,6 +14,9 @@
         <result column="LAST_MODIFIED_BY_TXT" property="lastModifiedByTxt" jdbcType="VARCHAR"/>
         <result column="RES_URL" property="resUrl" jdbcType="VARCHAR"/>
         <result column="RES_INDEX" property="index" jdbcType="INTEGER"/>
+        <result column="ATTR1" property="attr1" jdbcType="VARCHAR"/>
+        <result column="ATTR2" property="attr2" jdbcType="VARCHAR"/>
+        <result column="ATTR3" property="attr3" jdbcType="VARCHAR"/>
     </resultMap>
     <resultMap id="sysRoleResMap" type="com.nhry.data.auth.domain.TSysRoleResource">
         <result column="ID" property="id" jdbcType="VARCHAR"/>
@@ -22,7 +25,7 @@
     </resultMap>
     <sql id="sysRes_Column_List">
     RES_CODE, RES_NAME, PARENT, RES_TYPE, CREATE_AT, CREATE_BY, CREATE_BY_TXT, LAST_MODIFIED, 
-    LAST_MODIFIED_BY, LAST_MODIFIED_BY_TXT, RES_URL,RES_INDEX
+    LAST_MODIFIED_BY, LAST_MODIFIED_BY_TXT, RES_URL,RES_INDEX,ATTR1,ATTR2,ATTR3
   </sql>
     <select id="selectResByCode" resultMap="sysResResultMap" parameterType="java.lang.String">
         select
@@ -71,6 +74,15 @@
             <if test="index != null">
                 RES_INDEX,
             </if>
+            <if test="attr1 != null">
+                ATTR1,
+            </if>
+            <if test="attr2 != null">
+                ATTR2,
+            </if>
+            <if test="attr3 != null">
+                ATTR3,
+            </if>
         </trim>
         <trim prefix="values (" suffix=")" suffixOverrides=",">
             <if test="resCode != null">
@@ -109,6 +121,15 @@
             <if test="index != null">
                 #{index,jdbcType=INTEGER},
             </if>
+            <if test="attr1 != null">
+                #{attr1,jdbcType=VARCHAR},
+            </if>
+            <if test="attr2 != null">
+                #{attr2,jdbcType=VARCHAR},
+            </if>
+            <if test="attr3 != null">
+                #{attr3,jdbcType=VARCHAR},
+            </if>
         </trim>
     </insert>
     <update id="updateResByCode" parameterType="com.nhry.data.auth.domain.TSysResource">
@@ -146,6 +167,15 @@
             </if>
             <if test="index != null">
                 RES_INDEX = #{index,jdbcType=INTEGER},
+            </if>
+            <if test="attr1 != null">
+                ATTR1 = #{attr1,jdbcType=INTEGER},
+            </if>
+            <if test="attr2 != null">
+                ATTR2 = #{attr2,jdbcType=VARCHAR},
+            </if>
+            <if test="attr3 != null">
+                ATTR3 = #{attr3,jdbcType=VARCHAR},
             </if>
         </set>
         where RES_CODE = #{resCode,jdbcType=VARCHAR}

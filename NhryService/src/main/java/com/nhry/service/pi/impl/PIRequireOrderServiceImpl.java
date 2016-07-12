@@ -15,7 +15,6 @@ import com.nhry.service.pi.dao.PIRequireOrderService;
 import com.nhry.webService.client.PISuccessMessage;
 import com.nhry.webService.client.businessData.model.Delivery;
 
-import java.rmi.RemoteException;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -67,12 +66,12 @@ public class PIRequireOrderServiceImpl implements PIRequireOrderService {
     }
 
     @Override
-    public PISuccessMessage generateSalesOrder(TSsmReqGoodsOrder ssmReqGoodsOrder, String kunnr, String kunwe, String vkorg) {
+    public PISuccessMessage generateSalesOrder(TSsmReqGoodsOrder ssmReqGoodsOrder, String kunnr, String kunwe, String vkorg, String activityId) {
         ReqGoodsOrderItemSearch key = new ReqGoodsOrderItemSearch();
         key.setOrderNo(ssmReqGoodsOrder.getOrderNo());
         key.setMatnr(ssmReqGoodsOrder.getBranchNo());
         List<Map<String, String>> items = tSsmReqGoodsOrderItemMapper.findItemsForPI(key);
-        return BusinessDataConnection.SalesOrderCreate(kunnr,kunwe,vkorg,ssmReqGoodsOrder.getOrderNo(),ssmReqGoodsOrder.getRequiredDate(),items);
+        return BusinessDataConnection.SalesOrderCreate(kunnr,kunwe,vkorg,ssmReqGoodsOrder.getOrderNo(),ssmReqGoodsOrder.getRequiredDate(),items,activityId );
     }
 
     @Override
