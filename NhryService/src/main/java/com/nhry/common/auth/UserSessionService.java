@@ -69,11 +69,11 @@ public class UserSessionService {
 			//测试时使用
 			TSysUser user = new TSysUser();
 			Date date =  new Date();
-			user.setLoginName("032411");
+			user.setLoginName("88022396");
 			user.setDisplayName("测试用户");
-			user.setBranchNo("001");
-			user.setDealerId("0300000880");
-			user.setSalesOrg("4100");
+//			user.setBranchNo("001");
+//			user.setDealerId("0300000880");
+			user.setSalesOrg("4111");
 			user.setLastModified(date);
 			return user;
 		}

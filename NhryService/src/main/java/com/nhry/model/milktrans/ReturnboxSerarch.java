@@ -10,6 +10,8 @@ import java.util.Date;
 public class ReturnboxSerarch extends BaseQueryModel{
     private String branchNo;
     private String empNo;
+    private String dealerNo;
+    private String status;
     private Date startDate;
     private Date endDate;
 
@@ -21,12 +23,28 @@ public class ReturnboxSerarch extends BaseQueryModel{
         this.branchNo = branchNo;
     }
 
+    public String getStatus() {
+        return status;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
+    }
+
     public String getEmpNo() {
         return empNo;
     }
 
     public void setEmpNo(String empNo) {
         this.empNo = empNo;
+    }
+
+    public String getDealerNo() {
+        return dealerNo;
+    }
+
+    public void setDealerNo(String dealerNo) {
+        this.dealerNo = dealerNo;
     }
 
     public Date getStartDate() {

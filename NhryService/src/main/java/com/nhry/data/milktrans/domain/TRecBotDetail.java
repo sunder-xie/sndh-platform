@@ -9,14 +9,69 @@ import java.util.Date;
 public class TRecBotDetail implements Serializable {
     private String detLsh;      //明细流水号
     private String retLsh;      //回瓶流水号
-    private String spec;        //规格
+    private String spec;        //规格 名称
+    private String dispOrderNo; //配送单号
+    private String branchNo;
+    private String empNo;
+    private Date recDate;
     private int receiveNum;     //应收数量
     private int realNum;        //实收数量
+    private String status;
+    private Date createDate;
     private String createBy;
     private String createByTxt;
     private Date lastModified;
     private String lastModifiedBy;
     private String lastModifiedByTxt;
+
+    public String getDispOrderNo() {
+        return dispOrderNo;
+    }
+
+    public void setDispOrderNo(String dispOrderNo) {
+        this.dispOrderNo = dispOrderNo;
+    }
+
+    public String getStatus() {
+        return status;
+    }
+
+
+    public String getBranchNo() {
+        return branchNo;
+    }
+
+    public void setBranchNo(String branchNo) {
+        this.branchNo = branchNo;
+    }
+
+    public String getEmpNo() {
+        return empNo;
+    }
+
+    public void setEmpNo(String empNo) {
+        this.empNo = empNo;
+    }
+
+    public Date getRecDate() {
+        return recDate;
+    }
+
+    public void setRecDate(Date recDate) {
+        this.recDate = recDate;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
+    }
+
+    public Date getCreateDate() {
+        return createDate;
+    }
+
+    public void setCreateDate(Date createDate) {
+        this.createDate = createDate;
+    }
 
     public String getDetLsh() {
         return detLsh;

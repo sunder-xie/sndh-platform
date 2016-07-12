@@ -4,10 +4,16 @@
     <resultMap id="BaseResultMap" type="com.nhry.data.milktrans.domain.TRecBotDetail" >
         <result column="DET_LSH" property="detLsh" jdbcType="VARCHAR" />
         <result column="SPEC " property="spec" jdbcType="VARCHAR" />
-        <result column="BOT_SPEC" property="botSpec" jdbcType="VARCHAR" />
-        <result column="SPEC_UNIT " property="specUnit" jdbcType="VARCHAR" />
+        <result column="EMP_NO " property="empNo" jdbcType="VARCHAR" />
+        <result column="BRANCH_NO" property="branchNo" jdbcType="VARCHAR" />
+        <result column="REC_DATE" property="recDate" jdbcType="DATE" />
         <result column="RECEIVE_NUM" property="receiveNum" jdbcType="INTEGER" />
         <result column="REAL_NUM" property="realNum" jdbcType="INTEGER" />
+        <result column="BOT_SPEC" property="botSpec" jdbcType="VARCHAR" />
+        <result column="SPEC_UNIT " property="specUnit" jdbcType="VARCHAR" />
+        <result column="DISP_ORDER_NO " property="dispOrderNo" jdbcType="VARCHAR" />
+
+        <result column="CREATE_AT" property="createAt" jdbcType="DATE" />
         <result column="CREATE_BY" property="createBy" jdbcType="VARCHAR" />
         <result column="CREATE_BY_TXT" property="createByTxt" jdbcType="VARCHAR" />
         <result column="LAST_MODIFIED" property="lastModified" jdbcType="TIMESTAMP" />
@@ -17,6 +23,9 @@
     </resultMap>
 
     <resultMap id="BoxRetResultMap" type="com.nhry.model.milktrans.ReturnBoxModel" >
+        <result column="SPEC_NAME" property="specName" jdbcType="VARCHAR" />
+        <result column="RET_LSH" property="retLsh" jdbcType="VARCHAR" />
+        <result column="DET_LSH" property="detLsh" jdbcType="VARCHAR" />
         <result column="DEALER_NO" property="dealerNo" jdbcType="VARCHAR" />
         <result column="DEALER_NAME" property="dealerName" jdbcType="VARCHAR" />
         <result column="BRANCH_NO" property="branchNo" jdbcType="VARCHAR" />
@@ -24,19 +33,21 @@
         <result column="EMP_NO" property="empNo" jdbcType="VARCHAR" />
         <result column="EMP_NAME" property="empName" jdbcType="VARCHAR" />
         <result column="SPEC" property="spec" jdbcType="VARCHAR" />
+        <result column="STATUS" property="status" jdbcType="VARCHAR" />
         <result column="REC_DATE" property="recDate" jdbcType="DATE" />
         <result column="RECEIVE_NUM" property="receiveNum" jdbcType="INTEGER" />
         <result column="REAL_NUM" property="realNum" jdbcType="INTEGER" />
     </resultMap>
     <sql id="Base_Column_List" >
-      DET_LSH,SPEC,BOT_SPEC,SPEC_UNIT,RECEIVE_NUM,REAL_NUM,CREATE_BY,CREATE_BY_TXT,
+      DET_LSH,SPEC,RECEIVE_NUM,REAL_NUM,CREATE_BY,CREATE_BY_TXT,
         LAST_MODIFIED,LAST_MODIFIED_BY,LAST_MODIFIED_BY_TXT,RET_LSH
     </sql>
     <insert id="addRecBotItem" parameterType="com.nhry.data.milktrans.domain.TRecBotDetail">
         insert into T_REC_BOT_DETAIL(
-        DET_LSH, SPEC, BOT_SPEC,  RECEIVE_NUM, CREATE_BY, CREATE_BY_TXT,RET_LSH)
-        values( #{detLsh,jdbcType=VARCHAR}, #{spec,jdbcType=VARCHAR}, #{botSpec,jdbcType=VARCHAR},
-        #{receiveNum,jdbcType=INTEGER},#{createBy,jdbcType=VARCHAR},#{createByTxt,jdbcType=VARCHAR},#{retLsh,jdbcType=VARCHAR})
+        DET_LSH,BRANCH_NO,DISP_ORDER_NO,EMP_NO, SPEC, RECEIVE_NUM,CREATE_AT, CREATE_BY, CREATE_BY_TXT)
+        values( #{detLsh,jdbcType=VARCHAR},#{branchNo,jdbcType=VARCHAR},#{dispOrderNo,jdbcType=VARCHAR},
+        #{empNo,jdbcType=VARCHAR}, #{spec,jdbcType=VARCHAR},#{receiveNum,jdbcType=INTEGER},
+        #{createAt,jdbcType=DATE}, #{createBy,jdbcType=VARCHAR},#{createByTxt,jdbcType=VARCHAR})
 
     </insert>
     <select id="selectBotDetailByRetLsh" resultMap="BaseResultMap" parameterType="String">
@@ -46,38 +57,66 @@
         where RET_LSH = #{retLsh,jdbcType=VARCHAR}
     </select>
 
+    <select id="selectBotDetailByDetLshAndSpec" resultMap="BaseResultMap" parameterType="java.util.Map">
+        SELECT
+        DET_LSH,SPEC,RECEIVE_NUM,REAL_NUM,RET_LSH,STATUS
+        from t_rec_bot_detail
+        where DET_LSH = #{detLsh}
+        and SPEC = #{spec}
+    </select>
+
     <update id="uptRecBotDetail" parameterType="com.nhry.data.milktrans.domain.TRecBotDetail">
         UPDATE  T_REC_BOT_DETAIL
         SET
+        STATUS = #{status,jdbcType=VARCHAR},
+        REC_DATE = #{recDate,jdbcType=DATE},
         REAL_NUM = #{realNum,jdbcType=INTEGER},
-         LAST_MODIFIED =  #{lastModified,jdbcType=TIMESTAMP},
+        LAST_MODIFIED =  #{lastModified,jdbcType=TIMESTAMP},
         LAST_MODIFIED_BY = #{lastModifiedBy,jdbcType=VARCHAR},
         LAST_MODIFIED_BY_TXT =  #{lastModifiedByTxt,jdbcType=VARCHAR}
+        WHERE  DET_LSH = #{detLsh,jdbcType=VARCHAR}
     </update>
 
 
+    <select id="selectRetByDispOrderNo" resultMap="BaseResultMap" parameterType="String">
+        SELECT
+        <include refid="Base_Column_List"/>
+        from t_rec_bot_detail
+        where DISP_ORDER_NO = #{dispOrderNo,jdbcType=VARCHAR}
+    </select>
 
-    <select id="searchRetBoxPage" resultMap="BaseResultMap" parameterType="com.nhry.model.milktrans.ReturnboxSerarch">
-     SELECT
-        d.SPEC,SUM(d.RECEIVE_NUM) RECEIVE_NUM,SUM(d.REAL_NUM) REAL_NUM ,b.REC_DATE
-        ,b.BRANCH_NO,br.BRANCH_NAME,b.EMP_NO,b.EMP_NAME,br.DEALER_NO,de.DEALER_NAME
-      FROM t_rec_bot_detail d
-        LEFT JOIN t_rec_bot b  on d.RET_LSH = b.RET_LSH
-        LEFT JOIN t_md_branch br ON b.BRANCH_NO = br.BRANCH_NO
+
+
+    <select id="searchRetBoxPage" resultMap="BoxRetResultMap" parameterType="com.nhry.model.milktrans.ReturnboxSerarch">
+        SELECT
+        (SELECT i.ITEM_NAME from t_sys_code_item i WHERE i.TYPE_CODE="1009" and i.ITEM_CODE = d.SPEC ) SPEC_NAME,
+        SUM(d.RECEIVE_NUM) RECEIVE_NUM,SUM(d.REAL_NUM) REAL_NUM ,d.REC_DATE,d.STATUS,d.SPEC,
+        d.BRANCH_NO,br.BRANCH_NAME,d.EMP_NO,e.EMP_NAME,br.DEALER_NO,de.DEALER_NAME,d.DET_LSH
+        FROM t_rec_bot_detail d
+
+        LEFT JOIN t_md_branch br ON d.BRANCH_NO = br.BRANCH_NO
         LEFT JOIN t_md_dealer de on br.DEALER_NO = de.DEALER_NO
-        GROUP BY d.SPEC,b.EMP_NO,b.REC_DATE
+        LEFT JOIN t_md_branch_emp e on d.EMP_NO = e.EMP_NO
+        GROUP BY d.SPEC,d.EMP_NO,d.REC_DATE
         HAVING 1=1
+        <if test="status!=null and ''!=status">
+            and  d.STATUS = #{status,jdbcType=VARCHAR}
+        </if>
         <if test="branchNo!=null and ''!=branchNo">
-            br.BRANCH_NO = #{branchNo,jdbcTypc=VARCHAR}
+          and  d.BRANCH_NO = #{branchNo,jdbcType=VARCHAR}
         </if>
         <if test="empNo!=null and ''!=empNo">
-            b.EMP_NO = #{empNo,jdbcTypc=VARCHAR}
+            and d.EMP_NO = #{empNo,jdbcType=VARCHAR}
+        </if>
+        <if test="dealerNo!=null and ''!=dealerNo">
+            and de.DEALER_NO = #{dealerNo,jdbcType=VARCHAR}
         </if>
         <if test="startDate!=null">
-            b.REC_DATE &gt;= #{startDate,jdbcTypc=DATE}
+            and  d.REC_DATE &gt;= #{startDate,jdbcType=DATE}
         </if>
         <if test="endDate!=null">
-            b.REC_DATE &lt;= #{endDate,jdbcTypc=DATE}
+            and d.REC_DATE &lt;= #{endDate,jdbcType=DATE}
         </if>
+        ORDER BY d.REC_DATE asc
     </select>
 </mapper>

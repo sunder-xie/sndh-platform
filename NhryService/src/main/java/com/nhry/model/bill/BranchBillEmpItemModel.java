@@ -1,11 +1,14 @@
 package com.nhry.model.bill;
 
+import java.math.BigDecimal;
+
 /**
  * Created by gongjk on 2016/6/29.
  */
 public class BranchBillEmpItemModel {
     private String matnr;
     private String matnrTxt;
+    private BigDecimal price;
     private int qty;
 
     public String getMatnr() {
@@ -30,5 +33,13 @@ public class BranchBillEmpItemModel {
 
     public void setQty(int qty) {
         this.qty = qty;
+    }
+
+    public BigDecimal getPrice() {
+        return price;
+    }
+
+    public void setPrice(BigDecimal price) {
+        this.price = price;
     }
 }

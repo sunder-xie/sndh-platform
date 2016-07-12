@@ -96,14 +96,14 @@
       <include refid="Base_Column_List" />
       from T_MD_BRANCH branch
       where 1=1
-      <if test="branchLevel != null and branchLevel !=''">
-        AND branch.BRANCH_LEVEL = #{branchLevel,jdbcType=VARCHAR}
-      </if>
+    <if test="branchNo != null and branchNo != ''">
+      AND branch.BRANCH_NO = #{branchNo,jdbcType=VARCHAR}
+    </if>
       <if test="salesOrg != null and salesOrg != ''">
         AND branch.SALES_ORG = #{salesOrg,jdbcType=VARCHAR}
       </if>
-      <if test="salesCha != null and salesCha != ''">
-        AND branch.SALES_CHA = #{salesCha,jdbcType=VARCHAR}
+      <if test="branchGroup != null and branchGroup != ''">
+        AND branch.BRANCH_GROUP = #{branchGroup,jdbcType=VARCHAR}
       </if>
   </select>
 

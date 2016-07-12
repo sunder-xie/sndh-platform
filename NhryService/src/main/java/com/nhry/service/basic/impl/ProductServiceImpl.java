@@ -15,8 +15,11 @@ import com.nhry.model.basic.ProductQueryModel;
 import com.nhry.service.BaseService;
 import com.nhry.service.basic.dao.BranchService;
 import com.nhry.service.basic.dao.ProductService;
+import com.nhry.service.basic.pojo.BotType;
 import com.nhry.utils.PrimaryKeyUtils;
+import com.nhry.utils.SysContant;
 import com.nhry.utils.date.Date;
+
 import org.apache.commons.lang3.StringUtils;
 
 import java.util.HashMap;
@@ -165,10 +168,10 @@ public class ProductServiceImpl extends BaseService implements ProductService {
 		TMdBranch branch = branchSevice.selectBranchByNo(pm.getBranchNo());
 		if(branch != null){
 			pm.setSalesOrg(branch.getSalesOrg());
-			if(StringUtils.isEmpty(branch.getDealerNo())){
+			if(SysContant.getSystemConst("own_Branch").equals(branch.getBranchGroup())){
 				//自营奶站
 				return this.tMdMaraMapper.getCompMaras(pm);
-			}else{
+			}else if(SysContant.getSystemConst("dealer_Branch").equals(branch.getBranchGroup())){
 				//经销商奶站
 				pm.setDealerNo(branch.getDealerNo());
 				return this.tMdMaraMapper.getDealerMaras(pm);
@@ -196,10 +199,23 @@ public class ProductServiceImpl extends BaseService implements ProductService {
 		// TODO Auto-generated method stub
 		Map<String,String> attrs = new HashMap<String,String>();
 		attrs.put("salesOrg",this.userSessionService.getCurrentUser().getSalesOrg());
-		attrs.put("dealerNo",this.userSessionService.getCurrentUser().getDealerId());
+//		attrs.put("dealerNo",this.userSessionService.getCurrentUser().getDealerId());
 		if(!StringUtils.isEmpty(id) && !"-1".equals(id)){
 			attrs.put("id",id);
 		}
 		return this.tMdMaraMapper.findMarasBySalesCodeAndOrg(attrs);
+	}
+
+	@Override
+	public Map<String, String> getMataBotTypes() {
+		// TODO Auto-generated method stub
+		Map<String,String> attrs = new HashMap<String,String>();
+		List<BotType> list = this.tMdMaraExMapper.getMataBotTypes(this.userSessionService.getCurrentUser().getSalesOrg());
+		if(list != null){
+			for(BotType bt : list){
+				attrs.put(bt.getMatnr(), bt.getBotType());
+			}
+		}
+		return attrs;
 	}
 }

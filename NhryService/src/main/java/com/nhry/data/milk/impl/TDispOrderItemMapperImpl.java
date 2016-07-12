@@ -5,14 +5,10 @@ import com.nhry.common.datasource.DynamicSqlSessionTemplate;
 import com.nhry.data.milk.dao.TDispOrderItemMapper;
 import com.nhry.data.milk.domain.TDispOrderItem;
 import com.nhry.data.milk.domain.TDispOrderItemKey;
-import com.nhry.data.order.domain.TPlanOrderItem;
-import com.nhry.model.milk.RouteDetailUpdateModel;
-import com.nhry.model.milk.RouteOrderSearchModel;
-import com.nhry.service.milk.pojo.TDispOrderChangeItem;
 import com.nhry.data.milktrans.domain.TRecBotDetail;
 import com.nhry.data.order.domain.TPlanOrderItem;
 import com.nhry.model.milk.RouteDetailUpdateModel;
-import com.nhry.model.milktrans.CreateEmpReturnboxModel;
+import com.nhry.model.milk.RouteOrderSearchModel;
 import com.nhry.model.milktrans.UnDeliverProductSearch;
 import com.nhry.service.milk.pojo.TDispOrderChangeItem;
 
@@ -52,8 +48,8 @@ public class TDispOrderItemMapperImpl implements TDispOrderItemMapper
 	}
 
 	@Override
-	public List<TRecBotDetail> selectItemsByReturnBox(CreateEmpReturnboxModel cModel) {
-		return sqlSessionTemplate.selectList("selectItemsByReturnBox",cModel);
+	public List<TRecBotDetail> createRecBotByDispOrder(String dispOrderNo) {
+		return sqlSessionTemplate.selectList("createRecBotByDispOrder",dispOrderNo);
 	}
 
 	@Override

@@ -30,6 +30,7 @@ import com.nhry.model.basic.CustQueryModel;
 import com.nhry.model.sys.ResponseModel;
 import com.nhry.rest.BaseResource;
 import com.nhry.service.basic.dao.TVipCustInfoService;
+import com.nhry.service.basic.pojo.Addresses;
 import com.sun.jersey.spi.resource.Singleton;
 import com.wordnik.swagger.annotations.Api;
 import com.wordnik.swagger.annotations.ApiOperation;
@@ -105,8 +106,17 @@ public class VipCustResource extends BaseResource {
 	@Produces(MediaType.APPLICATION_JSON)
 	@Consumes(MediaType.APPLICATION_JSON)
 	@ApiOperation(value = "/upt/address", response = ResponseModel.class, notes = "修改订户详细地址信息")
-	public Response addAddressForCust(@ApiParam(required=true,name="address",value="地址信息对象") TMdAddress address) {
+	public Response uptCustAddress(@ApiParam(required=true,name="address",value="地址信息对象") TMdAddress address) {
 	  return convertToRespModel(MessageCode.NORMAL, null,custService.uptCustAddress(address));
+	}
+	
+	@POST
+	@Path("/batch/upt/address")
+	@Produces(MediaType.APPLICATION_JSON)
+	@Consumes(MediaType.APPLICATION_JSON)
+	@ApiOperation(value = "batch/upt/address", response = ResponseModel.class, notes = "批量更新订户详细地址信息")
+	public Response batchUptCustAddress(@ApiParam(required=true,name="addresses",value="地址信息对象列表") Addresses addresses) {
+	  return convertToRespModel(MessageCode.NORMAL, null,custService.batchUptCustAddress(addresses));
 	}
 	
 	@POST

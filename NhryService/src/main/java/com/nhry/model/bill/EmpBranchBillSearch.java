@@ -6,24 +6,15 @@ import java.io.Serializable;
 import java.util.Date;
 
 /**
- * Created by gongjk on 2016/6/27.
+ * Created by gongjk on 2016/7/12.
  */
-public class BranchBillSearch extends BaseQueryModel implements Serializable{
-    private String dimenType;
+public class EmpBranchBillSearch  extends BaseQueryModel implements Serializable{
+
     private String branchNo;
     private Date startDate;
     private Date endDate;
     private String empNo;
-
-
-    public String getDimenType() {
-        return dimenType;
-    }
-
-    public void setDimenType(String dimenType) {
-        this.dimenType = dimenType;
-    }
-
+    private Date dispDate;
 
     public String getBranchNo() {
         return branchNo;
@@ -55,5 +46,13 @@ public class BranchBillSearch extends BaseQueryModel implements Serializable{
 
     public void setEmpNo(String empNo) {
         this.empNo = empNo;
+    }
+
+    public Date getDispDate() {
+        return dispDate;
+    }
+
+    public void setDispDate(Date dispDate) {
+        this.dispDate = dispDate;
     }
 }

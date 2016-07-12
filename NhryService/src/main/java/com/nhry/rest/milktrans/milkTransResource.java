@@ -109,39 +109,22 @@ public class milkTransResource extends BaseResource {
 
 
 	@POST
-	@Path("/box/search")
-	@Produces(MediaType.APPLICATION_JSON)
-	@Consumes(MediaType.APPLICATION_JSON)
-	@ApiOperation(value = "/box/search", response = PageInfo.class, notes = "查询回瓶管理列表")
-	public Response searchBoxPage(@ApiParam(required=true,name="cModel",value="cModel") BoxSearch bsearch){
-		return convertToRespModel(MessageCode.NORMAL, null, returnBoxService.searchBoxPage(bsearch));
-	}
-
-	@POST
 	@Path("/box/upt")
 	@Produces(MediaType.APPLICATION_JSON)
 	@Consumes(MediaType.APPLICATION_JSON)
 	@ApiOperation(value = "/box/upt", response = Response.class, notes = "录入回瓶管理")
-	public Response uptBoxRetrun(@ApiParam(required=true,name="cModel",value="cModel") CreateReturnBoxModel boxModel){
+	public Response uptBoxRetrun(@ApiParam(required=true,name="cModel",value="cModel") UpdateReturnBoxModel boxModel){
 		return convertToRespModel(MessageCode.NORMAL, null, returnBoxService.uptBoxRetrun(boxModel));
 	}
 
-	@POST
-	@Path("/box/getRetBoxDetail")
-	@Produces(MediaType.APPLICATION_JSON)
-	@Consumes(MediaType.APPLICATION_JSON)
-	@ApiOperation(value = "/box/getRetBoxDetail", response = Response.class, notes = "获取回瓶详情")
-	public Response getRetBoxDetail(@ApiParam(required=true,name="retLsh",value="回瓶流水号") @QueryParam("retLsh") String retLsh){
-		return convertToRespModel(MessageCode.NORMAL, null, returnBoxService.getRetBoxDetail(retLsh));
-	}
 
 	@POST
 	@Path("/box/createDayRetBox")
 	@Produces(MediaType.APPLICATION_JSON)
 	@Consumes(MediaType.APPLICATION_JSON)
 	@ApiOperation(value = "/box/createDayRetBox", response = CreateReturnBoxModel.class, notes = "生成当天(员工)需要回瓶的数据")
-	public Response createDayRetBox(@ApiParam(required=true,name="cModel",value="cModel") CreateEmpReturnboxModel cModel){
-		return convertToRespModel(MessageCode.NORMAL, null, returnBoxService.createDayRetBox(cModel));
+	public Response createDayRetBox(@ApiParam(required=true,name="cModel",value="cModel") @QueryParam("dispOrderNo") String dispOrderNo){
+		return convertToRespModel(MessageCode.NORMAL, null, returnBoxService.createDayRetBox(dispOrderNo));
 	}
 
 
