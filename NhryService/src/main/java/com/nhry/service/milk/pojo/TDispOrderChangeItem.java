@@ -5,6 +5,8 @@ import java.util.Date;
 
 public class TDispOrderChangeItem {
 	
+	 private String milkmemberNo; 
+	
 	 private String orderNo1;
 
     private Date orderDate1;
@@ -50,6 +52,16 @@ public class TDispOrderChangeItem {
     private String reachTimeType1;
     
     private String dispEmpNo1;
+
+	public String getMilkmemberNo()
+	{
+		return milkmemberNo;
+	}
+
+	public void setMilkmemberNo(String milkmemberNo)
+	{
+		this.milkmemberNo = milkmemberNo;
+	}
 
 	public String getDispEmpNo1()
 	{
