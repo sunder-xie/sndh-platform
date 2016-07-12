@@ -3,7 +3,11 @@ package com.nhry.service.auth.pojo;
 import java.io.Serializable;
 
 public class UserRoles implements Serializable{
-  private String roleId;
+  /**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+private String roleId;
   private String roleName;
   private String isDefault;
 public String getRoleId() {

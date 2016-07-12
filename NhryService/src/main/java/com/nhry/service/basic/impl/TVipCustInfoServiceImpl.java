@@ -157,6 +157,9 @@ public class TVipCustInfoServiceImpl extends BaseService implements TVipCustInfo
 	public PageInfo findcustMixedTerms(CustQueryModel cust) {
 		// TODO Auto-generated method stub
 	   cust.setSalesOrg(userSessionService.getCurrentUser().getSalesOrg());
+	   if(StringUtils.isEmpty(cust.getStation()) && !StringUtils.isEmpty(this.userSessionService.getCurrentUser().getBranchNo())){
+		   cust.setStation(this.userSessionService.getCurrentUser().getBranchNo());
+	   }
 	  return this.tmdVipcust.findcustMixedTerms(cust);
 	}
 
