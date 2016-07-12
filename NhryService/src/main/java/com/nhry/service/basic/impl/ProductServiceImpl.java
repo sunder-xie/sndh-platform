@@ -196,7 +196,7 @@ public class ProductServiceImpl extends BaseService implements ProductService {
 		// TODO Auto-generated method stub
 		Map<String,String> attrs = new HashMap<String,String>();
 		attrs.put("salesOrg",this.userSessionService.getCurrentUser().getSalesOrg());
-		attrs.put("dealerNo",this.userSessionService.getCurrentUser().getDealerId());
+//		attrs.put("dealerNo",this.userSessionService.getCurrentUser().getDealerId());
 		if(!StringUtils.isEmpty(id) && !"-1".equals(id)){
 			attrs.put("id",id);
 		}
