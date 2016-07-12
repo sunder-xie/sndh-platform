@@ -19,6 +19,7 @@ import com.nhry.data.basic.domain.TVipCustInfo;
 import com.nhry.model.basic.CustQueryModel;
 import com.nhry.service.BaseService;
 import com.nhry.service.basic.dao.TVipCustInfoService;
+import com.nhry.service.basic.pojo.Addresses;
 import com.nhry.utils.PrimaryKeyUtils;
 import com.nhry.utils.date.Date;
 
@@ -51,23 +52,25 @@ public class TVipCustInfoServiceImpl extends BaseService implements TVipCustInfo
 		record.setCreateByTxt(this.userSessionService.getCurrentUser().getDisplayName());
 		record.setSalesOrg(this.userSessionService.getCurrentUser().getSalesOrg());
 		this.tmdVipcust.addVipCust(record);
-		
-		TMdAddress address = new TMdAddress();
-		address.setAddressTxt(record.getAddressTxt());
-		address.setProvince(record.getProvince());
-		address.setCity(record.getCity());
-		address.setCounty(record.getCounty());
-		address.setMp(record.getMp());
-		address.setRecvName(record.getVipName());
-		address.setZip(record.getZip());
-		address.setResidentialArea(record.getSubdist());
-		address.setStreet(record.getStreet());
-		address.setVipCustNo(record.getVipCustNo());
-		address.setIsDafault("Y");
-		address.setCreateAt(new Date());
-		address.setCreateBy(this.userSessionService.getCurrentUser().getLoginName());
-		address.setCreateByTxt(this.userSessionService.getCurrentUser().getDisplayName());
-		addAddressForCust(address);
+		if(!StringUtils.isBlank(record.getAddressTxt()) && !StringUtils.isBlank(record.getProvince()) && !StringUtils.isBlank(record.getCity()) &&
+				!StringUtils.isBlank(record.getCounty())){
+			TMdAddress address = new TMdAddress();
+			address.setAddressTxt(record.getAddressTxt());
+			address.setProvince(record.getProvince());
+			address.setCity(record.getCity());
+			address.setCounty(record.getCounty());
+			address.setMp(record.getMp());
+			address.setRecvName(record.getVipName());
+			address.setZip(record.getZip());
+			address.setResidentialArea(record.getSubdist());
+			address.setStreet(record.getStreet());
+			address.setVipCustNo(record.getVipCustNo());
+			address.setIsDafault("Y");
+			address.setCreateAt(new Date());
+			address.setCreateBy(this.userSessionService.getCurrentUser().getLoginName());
+			address.setCreateByTxt(this.userSessionService.getCurrentUser().getDisplayName());
+			addAddressForCust(address);
+		}
 		return 1;
 	}
 
@@ -275,5 +278,22 @@ public class TVipCustInfoServiceImpl extends BaseService implements TVipCustInfo
 		}else{
 			throw new ServiceException(MessageCode.LOGIC_ERROR, "该地址编号对应的地址信息不存在!");
 		}
+	}
+
+	@Override
+	public int batchUptCustAddress(Addresses record) {
+		// TODO Auto-generated method stub
+		if(record != null){
+			for(TMdAddress ad : record.getAddresses()){
+				if(StringUtils.isBlank(ad.getAddressId())){
+					//新增
+					this.addAddressForCust(ad);
+				}else{
+					//修改
+					this.addressMapper.uptCustAddress(ad);
+				}
+			}
+		}
+		return 1;
 	}
 }

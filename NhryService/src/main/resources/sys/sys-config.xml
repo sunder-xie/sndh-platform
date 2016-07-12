@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <configs>
  <!-- 环境标示 develope/product-->
-  <config key="app_mode" value="develope"></config>
+  <config key="app_mode" value="product"></config>
   <!-- MessageCode key默认的value配置 -->
   <config key="404"  value="资源不存在"></config>
   <config key="serverError"  value="服务异常"></config>
@@ -14,4 +14,8 @@
   <config key="app_access_key" value="app_access_key"></config>
    <!-- redis 中session存活时间(单位：小时)-->
   <config key="session_duration" value="2"></config>
+  <!-- 自有奶站性质 -->
+  <config key="own_Branch" value="01"></config>
+  <!-- 经销商奶站性质 -->
+  <config key="dealer_Branch" value="02"></config>
 </configs>
