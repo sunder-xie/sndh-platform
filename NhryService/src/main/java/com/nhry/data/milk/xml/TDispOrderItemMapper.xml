@@ -80,8 +80,11 @@
     <result column="DISP_EMP_NO2" property="dispEmpNo2" jdbcType="VARCHAR" />
   </resultMap>
   <resultMap id="boxDetailMap" type="com.nhry.data.milktrans.domain.TRecBotDetail">
-    <result column="SPEC " property="spec" jdbcType="VARCHAR" />
-    <result column="RECEIVE_NUM" property="receiveNum" jdbcType="INTEGER" />
+      <result column="SPEC " property="spec" jdbcType="VARCHAR" />
+      <result column="EMP_NO " property="empNo" jdbcType="VARCHAR" />
+      <result column="BRANCH_NO" property="branchNo" jdbcType="VARCHAR" />
+      <result column="RECEIVE_NUM" property="receiveNum" jdbcType="INTEGER" />
+      <result column="DISP_ORDER_NO " property="dispOrderNo" jdbcType="VARCHAR" />
   </resultMap>
 
   <resultMap id="UnDeliverResultMap" type="com.nhry.model.milktrans.UnDeliverProductModel" >
@@ -436,21 +439,14 @@
       and ITEM_NO = #{itemNo,jdbcType=VARCHAR}
   </update>
 
-  <select id="selectItemsByReturnBox" resultMap="boxDetailMap" parameterType="com.nhry.model.milktrans.CreateEmpReturnboxModel">
-
+  <select id="createRecBotByDispOrder" resultMap="boxDetailMap" parameterType="String">
     select
-    SUM(i.QTY) RECEIVE_NUM,ex.BOT_TYPE SPEC
+	o.DISP_EMP_NO EMP_NO, SUM(i.QTY) RECEIVE_NUM,ex.BOT_TYPE SPEC,o.BRANCH_NO,o.ORDER_NO DISP_ORDER_NO
     from t_mst_disp_order_item  i
-      LEFT JOIN t_mst_disp_order o on  i.ORDER_NO = o.ORDER_NO
-      LEFT JOIN t_md_mara_ex ex on  i.MATNR = ex.MATNR
-
-		where ex.RET_BOT_FLAG = "Y"
-		 and i.MATNR = m.MATNR
-         and o.DISP_DATE = #{retDate,jdbcType=DATE}
-         and o.DISP_EMP_NO = #{empNo,jdbcType=VARCHAR}
-         and o.BRANCH_NO =  #{branchNo,jdbcType=VARCHAR}
-		 GROUP BY ex.BOT_TYPE
-
+    LEFT JOIN t_mst_disp_order o on  i.ORDER_NO = o.ORDER_NO
+    LEFT JOIN t_md_mara_ex ex on ( i.MATNR = ex.MATNR and ex.RET_BOT_FLAG = "Y")
+	where o.ORDER_NO = #{dispOrderNo,jdbcType=VARCHAR}
+	GROUP BY ex.BOT_TYPE,o.DISP_EMP_NO
   </select>
 
 

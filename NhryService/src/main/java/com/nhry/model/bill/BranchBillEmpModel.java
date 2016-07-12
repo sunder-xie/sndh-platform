@@ -1,6 +1,7 @@
 package com.nhry.model.bill;
 
 import java.math.BigDecimal;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -9,6 +10,8 @@ import java.util.List;
 public class BranchBillEmpModel {
     private String empNo;
     private String empName;
+    private Date dispDate;
+    private BigDecimal qty;
     private BigDecimal salePrice;
     private BigDecimal billPirce;
     private List<BranchBillEmpItemModel> entries;
@@ -19,6 +22,22 @@ public class BranchBillEmpModel {
 
     public void setEmpNo(String empNo) {
         this.empNo = empNo;
+    }
+
+    public Date getDispDate() {
+        return dispDate;
+    }
+
+    public void setDispDate(Date dispDate) {
+        this.dispDate = dispDate;
+    }
+
+    public BigDecimal getQty() {
+        return qty;
+    }
+
+    public void setQty(BigDecimal qty) {
+        this.qty = qty;
     }
 
     public String getEmpName() {
