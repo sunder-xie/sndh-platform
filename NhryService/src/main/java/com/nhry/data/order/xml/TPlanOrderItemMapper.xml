@@ -63,8 +63,9 @@
     e.PROMOTION, e.PROM_DAYS, e.STATUS, e.BUY_QTY, e.GIFT_QTY, e.CREATE_AT, e.CREATE_BY, e.CREATE_BY_TXT,
     e.LAST_MODIFIED, e.LAST_MODIFIED_BY, e.LAST_MODIFIED_BY_TXT,
     p.MATNR_TXT MATNR_TXT
-    from t_mst_plan_order_item e, t_md_mara p
+    from t_mst_plan_order_item e, t_md_mara p,t_preorder o
     where e.ORDER_NO = #{orderCode,jdbcType=VARCHAR}
+    and o.ORDER_NO= e.ORDER_NO and o.SALES_ORG = p.SALES_ORG
     and (e.STATUS != "30" or e.STATUS is null)
     and e.MATNR = p.MATNR
   </select>

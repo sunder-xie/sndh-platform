@@ -116,8 +116,8 @@ public class MilkBoxServiceImpl extends BaseService implements MilkBoxService
 			//计划安装日期
 			try
 			{
-				if(StringUtils.isNotBlank(model.getSetDate()) ){
-					record.setPlanDate(format.parse(model.getSetDate()));
+				if(model.getSetDate()!=null ){
+					record.setPlanDate(model.getSetDate());
 				}else{
 					record.setPlanDate(afterDate(new Date(),1));
 				}
@@ -166,15 +166,8 @@ public class MilkBoxServiceImpl extends BaseService implements MilkBoxService
 					orderService.createDaliyPlan(omodel.getOrder(), omodel.getEntries());
 				}
 			}
-			if(StringUtils.isNotBlank(model.getSetDate())){
-				try
-				{
-					plan.setPlanDate(format.parse(model.getSetDate()));
-				}
-				catch (Exception e)
-				{
-					throw new ServiceException(MessageCode.LOGIC_ERROR, "日期格式不正确！");
-				}
+			if(model.getSetDate()!=null){
+				plan.setPlanDate(model.getSetDate());
 			}
 			plan.setLastModified(new Date());
 			plan.setLastModifiedBy(userSessionService.getCurrentUser().getLoginName());
