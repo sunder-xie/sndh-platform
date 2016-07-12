@@ -17,6 +17,7 @@ public class TRecBotDetail implements Serializable {
     private int receiveNum;     //应收数量
     private int realNum;        //实收数量
     private String status;
+    private Date createDate;
     private String createBy;
     private String createByTxt;
     private Date lastModified;
@@ -62,6 +63,14 @@ public class TRecBotDetail implements Serializable {
 
     public void setStatus(String status) {
         this.status = status;
+    }
+
+    public Date getCreateDate() {
+        return createDate;
+    }
+
+    public void setCreateDate(Date createDate) {
+        this.createDate = createDate;
     }
 
     public String getDetLsh() {

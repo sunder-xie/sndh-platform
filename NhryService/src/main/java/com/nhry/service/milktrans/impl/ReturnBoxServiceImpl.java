@@ -93,6 +93,7 @@ public class ReturnBoxServiceImpl implements ReturnBoxService {
             List<TRecBotDetail> entries = tDispOrderItemMapper.createRecBotByDispOrder(dispOrderNo);
             if (entries != null && entries.size() > 0) {
                 for (TRecBotDetail bot : entries) {
+                    bot.setCreateDate(today);
                     bot.setCreateBy(user.getLoginName());
                     bot.setCreateByTxt(user.getDisplayName());
                     bot.setStatus("10");
