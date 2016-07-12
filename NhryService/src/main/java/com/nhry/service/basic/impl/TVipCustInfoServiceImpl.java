@@ -103,7 +103,14 @@ public class TVipCustInfoServiceImpl extends BaseService implements TVipCustInfo
 		record.setLastModified(new Date());
 		record.setLastModifiedBy(this.userSessionService.getCurrentUser().getLoginName());
 		record.setLastModifiedByTxt(this.userSessionService.getCurrentUser().getDisplayName());
-		return this.tmdVipcust.updateVipCustByNo(record);
+		this.tmdVipcust.updateVipCustByNo(record);
+		//更新地址列表信息
+		if(record.getAddresses() != null && record.getAddresses().size() > 0){
+			Addresses ad = new Addresses();
+			ad.setAddresses(record.getAddresses());
+			this.batchUptCustAddress(ad);
+		}
+		return 1;
 	}
 
 	@Override
