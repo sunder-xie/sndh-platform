@@ -39,6 +39,8 @@ public class TSysResource implements Serializable{
     private String attr2;
 
     private String attr3;
+
+    private String parentName;
     
     private List<TSysResource> childrens = new ArrayList<TSysResource>();
 
@@ -184,5 +186,13 @@ public class TSysResource implements Serializable{
 
     public void setAttr3(String attr3) {
         this.attr3 = attr3;
+    }
+
+    public String getParentName() {
+        return parentName;
+    }
+
+    public void setParentName(String parentName) {
+        this.parentName = parentName;
     }
 }

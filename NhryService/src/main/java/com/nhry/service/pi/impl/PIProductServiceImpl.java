@@ -318,6 +318,7 @@ public class PIProductServiceImpl implements PIProductService {
             saveVkorg(response);
             ZSD_T005_DATAResponse response1 = codeQuery();
             saveET_T024E(response1);
+            saveET_T024(response1);
         }catch (Exception e){
             throw new ServiceException(MessageCode.LOGIC_ERROR,"字典数据保存出错！");
         }
@@ -523,6 +524,40 @@ public class PIProductServiceImpl implements PIProductService {
                 }else{
                     codeItem.setItemName(t024e.getEKOTX().getEKOTX_type0());
                     codeItem.setParent(t024e.getBUKRS().getBUKRS_type4());
+                    codeItem.setLastModified(new Date());
+                    codeItem.setLastModifiedBy("ECC");
+                    codeItem.setLastModifiedByTxt("ECC");
+                    codeItemMapper.updateCodeItemByCode(codeItem);
+                }
+            }
+        }
+    }
+
+
+    /**
+     * 保存采购组
+     * @param response
+     */
+    private void saveET_T024(ZSD_T005_DATAResponse response){
+        T024[] t024s = response.getET_T024().getItem();
+        for (T024 t024 : t024s) {
+            String ekgrp = t024.getEKGRP().getEKGRP_type0();
+            if(StringUtils.isNotEmpty(ekgrp)) {
+                NHSysCodeItem param = new NHSysCodeItem();
+                param.setItemCode(ekgrp);
+                param.setTypeCode("1013");
+                NHSysCodeItem codeItem = codeItemMapper.findCodeItenByCode(param);
+                if(codeItem == null) {
+                    codeItem = new NHSysCodeItem();
+                    codeItem.setItemCode(ekgrp);
+                    codeItem.setTypeCode("1013");
+                    codeItem.setItemName(t024.getEKNAM().getEKNAM_type0());
+                    codeItem.setCreateAt(new Date());
+                    codeItem.setCreateByTxt("ECC");
+                    codeItem.setCreateBy("ECC");
+                    codeItemMapper.addCodeItem(codeItem);
+                }else{
+                    codeItem.setItemName(t024.getEKNAM().getEKNAM_type0());
                     codeItem.setLastModified(new Date());
                     codeItem.setLastModifiedBy("ECC");
                     codeItem.setLastModifiedByTxt("ECC");
