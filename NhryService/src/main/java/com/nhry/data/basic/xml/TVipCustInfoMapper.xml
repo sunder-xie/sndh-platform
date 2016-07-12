@@ -116,8 +116,24 @@
 		i.BIRTHDAY,
 		i.CERT_ID,
 		i.VIP_SRC,
+		(
+		SELECT
+		it.ITEM_NAME
+		FROM
+		T_SYS_CODE_ITEM it
+		WHERE it.TYPE_CODE = <include refid="mybaties.constant.vip_src" /> AND 
+		it.ITEM_CODE = i.VIP_SRC
+		) VIP_SRC_NAME,
 		i.MILKBOX,
 		i.VIP_TYPE,
+		(
+		SELECT
+		it.ITEM_NAME
+		FROM
+		T_SYS_CODE_ITEM it
+		WHERE it.TYPE_CODE = <include refid="mybaties.constant.vip_type" /> AND 
+		it.ITEM_CODE = i.VIP_TYPE
+		) VIP_TYPE_NAME,
 		i.SUBSCRIBE_DATE,
 		i.SUBSCRIBER,
 		i.ACTIVITY_NO,

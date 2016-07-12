@@ -62,7 +62,7 @@ public class OrderResource extends BaseResource {
 	@Path("/searchOrderRemain/{phone}")
 	@Produces(MediaType.APPLICATION_JSON)
 	@ApiOperation(value = "/searchOrderRemain/{phone}", response = OrderRemainData.class, notes = "根据电话号码查询为送达数量和总共消费金额")
-	public Response searchOrderRemain(@ApiParam(required=true,name="memberNo",value="订户编号") @PathParam("phone") String phone){
+	public Response searchOrderRemain(@ApiParam(required=true,name="phone",value="电话号码") @PathParam("phone") String phone){
 		return convertToRespModel(MessageCode.NORMAL, null, orderService.searchOrderRemainData(phone));
 	}
 	
