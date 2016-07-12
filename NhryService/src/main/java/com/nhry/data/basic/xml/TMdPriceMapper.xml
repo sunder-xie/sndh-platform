@@ -321,26 +321,21 @@
 		AND p.SALES_ORG = #{salesOrg}
 		AND pb.BRANCH_NO = #{branchNo}
   </select>
-  <select id="getOwnBranchPricesGroupByBn" resultType="com.nhry.service.basic.pojo.PriceGroup"  parameterType="String">
+  <select id="getOwnBranchPricesGroupByBn" resultMap="BaseResultMap"  parameterType="String">
      	SELECT
 			p.*
 		FROM
-			T_MD_PRICE p,
-			T_MD_PRICE_BRANCH pb
+			T_MD_PRICE p 
 		WHERE
-			p.ID = pb.ID
-		AND p.SALES_ORG = #{salesOrg}
+			 p.SALES_ORG = #{salesOrg}
 		AND p.SCOPE = '-1'
   </select>
-  <select id="getDealerBranchPricesGroupByBn" resultType="com.nhry.service.basic.pojo.PriceGroup"  parameterType="java.util.HashMap">
+  <select id="getDealerBranchPricesGroupByBn" resultMap="BaseResultMap"  parameterType="java.util.HashMap">
      	SELECT
 			p.*
 		FROM
-			T_MD_PRICE p,
-			T_MD_PRICE_BRANCH pb
-		WHERE
-			p.ID = pb.ID
-		AND p.SALES_ORG = #{salesOrg}
+			T_MD_PRICE p 
+		WHERE p.SALES_ORG = #{salesOrg}
 		AND p.SCOPE = #{dealerNo}
   </select>
 </mapper>
