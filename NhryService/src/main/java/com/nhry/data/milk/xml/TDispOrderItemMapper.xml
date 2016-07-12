@@ -369,7 +369,7 @@
     insert into t_mst_disp_order_item
     (ORDER_NO, ORDER_DATE, ITEM_NO,CONFIRM_MATNR, MATNR, CONFIRM_QTY, QTY, UNIT, PRICE, AMT, CONFIRM_AMT, 
     STATUS, PICKUP_ORDER_NO, PICKUP_ORDER_ITEM_NO, REASON, REDISP_DATE, WHOLESALE_PRICE,
-    WHOLESALE_PRICE_1, ADDRESS_NO,ORG_ITEM_NO,ORG_ORDER_NO,REACH_TIME_TYPE) values
+    WHOLESALE_PRICE_1, ADDRESS_NO,ORG_ITEM_NO,ORG_ORDER_NO,REACH_TIME_TYPE,RET_QTY_S,RET_QTY_M,RET_QTY_B) values
     <foreach collection="list" item="item" index="index"  
         separator=",">  
         ( #{item.orderNo}, #{item.orderDate}, #{item.itemNo},  
@@ -378,7 +378,8 @@
         #{item.price}, #{item.amt},  
         #{item.confirmAmt}, #{item.status}, #{item.pickupOrderNo},  
         #{item.pickupOrderItemNo}, #{item.reason}, #{item.redispDate},
-        #{item.wholesalePrice}, #{item.wholesalePrice1}, #{item.addressNo}, #{item.orgItemNo}, #{item.orgOrderNo},#{item.reachTimeType} )  
+        #{item.wholesalePrice}, #{item.wholesalePrice1}, #{item.addressNo}, #{item.orgItemNo}, #{item.orgOrderNo},#{item.reachTimeType},
+         #{item.retQtyS},#{item.retQtyM},#{item.retQtyB})  
     </foreach> 
   </insert>
   <update id="updateDispOrderItem" parameterType="com.nhry.data.milk.domain.TDispOrderItem" >

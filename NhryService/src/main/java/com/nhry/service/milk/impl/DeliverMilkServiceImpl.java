@@ -38,6 +38,7 @@ import com.nhry.model.milk.RouteOrderSearchModel;
 import com.nhry.model.milk.RouteUpdateModel;
 import com.nhry.model.order.DaliyPlanEditModel;
 import com.nhry.service.BaseService;
+import com.nhry.service.basic.dao.ProductService;
 import com.nhry.service.milk.dao.DeliverMilkService;
 import com.nhry.service.milk.pojo.TDispOrderChangeItem;
 import com.nhry.service.order.dao.OrderService;
@@ -61,6 +62,12 @@ public class DeliverMilkServiceImpl extends BaseService implements DeliverMilkSe
 	private TDispOrderChangeMapper tDispOrderChangeMapper;
 	private TPlanOrderItemMapper tPlanOrderItemMapper;
 	private OrderService orderService;
+	private ProductService productService;
+	
+	public void setProductService(ProductService productService)
+	{
+		this.productService = productService;
+	}
 	
 	public void setOrderService(OrderService orderService)
 	{
@@ -306,8 +313,9 @@ public class DeliverMilkServiceImpl extends BaseService implements DeliverMilkSe
 	@Override
 	public int updateRouteOrderAllItems(RouteDetailUpdateListModel record)
 	{
+		Map<String,String> productMap = productService.getMataBotTypes();
 		record.getList().stream().forEach((e)->{
-			updateRouteOrderItems(e);
+			updateRouteOrderItems(e,productMap);
 		});
 		return 1;
 	}
@@ -320,7 +328,7 @@ public class DeliverMilkServiceImpl extends BaseService implements DeliverMilkSe
 	* @see com.nhry.service.milk.dao.DeliverMilkService#updateRouteOrderItems(com.nhry.model.milk.RouteUpdateModel) 
 	*/
 	@Override
-	public int updateRouteOrderItems(RouteDetailUpdateModel record)
+	public int updateRouteOrderItems(RouteDetailUpdateModel record,Map<String,String> productMap)
 	{
 //		final long startTime = System.currentTimeMillis();
 		
@@ -339,7 +347,7 @@ public class DeliverMilkServiceImpl extends BaseService implements DeliverMilkSe
    			TPlanOrderItem entry = tPlanOrderItemMapper.selectEntryByEntryNo(entryList.get(0).getOrgItemNo());
    			record.setOrgOrderNo(entryList.get(0).getOrgOrderNo());
    			record.setOrgItemNo(entryList.get(0).getOrgItemNo());
-   			tDispOrderItemMapper.updateDispOrderItem(record , entry);
+   			tDispOrderItemMapper.updateDispOrderItem(record , entry,productMap);
 //   			//更新原订单剩余金额
 //   			updatePreOrderCurAmt(entry.getOrderNo(),entry.getSalesPrice().multiply(new BigDecimal(record.getQty())));
 //   			//更改路单,少送的，需要往后延期,并重新计算此后日计划的剩余金额
@@ -434,6 +442,7 @@ public class DeliverMilkServiceImpl extends BaseService implements DeliverMilkSe
 		TDispOrder dispOrder = null;
 		List<TDispOrderItem> dispEntries = null;
 		Date date = null;
+		Map<String,String> productMap = productService.getMataBotTypes();
 		for(TPreOrder order : empNos){
 			date = new Date();
 			dispOrder = new TDispOrder();
@@ -459,7 +468,6 @@ public class DeliverMilkServiceImpl extends BaseService implements DeliverMilkSe
 				item.setMatnr(plan.getMatnr());
 				item.setConfirmMatnr(plan.getMatnr());
 				item.setUnit(plan.getUnit());
-				item.setUnit(plan.getUnit());
 				item.setPrice(plan.getPrice());
 				item.setAmt(plan.getAmt());
 				item.setConfirmAmt(plan.getAmt());
@@ -471,6 +479,13 @@ public class DeliverMilkServiceImpl extends BaseService implements DeliverMilkSe
 				item.setOrgItemNo(plan.getItemNo());//对应原订单，订单行编号
 				item.setOrgOrderNo(plan.getOrderNo());//对应原订单，订单编号
 				item.setDispEmpNo(empNo);
+				
+				//回瓶规格
+				if(productMap.containsKey(item.getMatnr())){
+					if(productMap.get(item.getMatnr()).equals("10"))item.setRetQtyS(item.getQty().intValue());
+					if(productMap.get(item.getMatnr()).equals("20"))item.setRetQtyM(item.getQty().intValue());
+					if(productMap.get(item.getMatnr()).equals("30"))item.setRetQtyB(item.getQty().intValue());
+				}
 				
 				dispEntries.add(item);
 				index++;
