@@ -13,6 +13,7 @@
     <result column="LAST_MODIFIED_BY" property="lastModifiedBy" jdbcType="VARCHAR" />
     <result column="LAST_MODIFIED_BY_TXT" property="lastModifiedByTxt" jdbcType="VARCHAR" />
     <result column="CREATE_AT" property="createAt" jdbcType="TIMESTAMP" />
+    <result column="DEALER_NAME" property="dealerName" jdbcType="VARCHAR" />
   </resultMap>
   <sql id="Base_Column_List" >
     LIST_NO, MATNR, SALES_ORG, DEALER_NO, BRANCH_NO, CREATE_BY, CREATE_BY_TXT, LAST_MODIFIED, 
@@ -140,4 +141,30 @@
     </set>
     where LIST_NO = #{listNo,jdbcType=VARCHAR}
   </update>
+  <select id="getNotSellListByMatnr" resultMap="BaseResultMap" parameterType="String">
+      SELECT
+		LIST_NO,
+		MATNR,
+		SALES_ORG,
+		DEALER_NO,
+		BRANCH_NO,
+		(
+			CASE t_branch_notsell_list.DEALER_NO
+			WHEN '-1' THEN
+				'自有奶站'
+			ELSE
+				(
+					SELECT
+						d.DEALER_NAME
+					FROM
+						t_md_dealer d
+					WHERE
+						d.DEALER_NO = t_branch_notsell_list.DEALER_NO
+				)
+			END
+		) DEALER_NAME
+	FROM
+		t_branch_notsell_list 
+	    where MATNR = #{matnr}
+  </select>
 </mapper>

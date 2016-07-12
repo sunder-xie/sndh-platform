@@ -49,6 +49,8 @@
 		<result column="BRANCH_NAME" property="branchName" jdbcType="VARCHAR" />
 		<result column="DEALER_NO" property="dealerNo" jdbcType="VARCHAR" />
 		<result column="DEALER_NAME" property="dealerName" jdbcType="VARCHAR" />
+		<result column="VIP_SRC_NAME" property="vipSrcName" jdbcType="VARCHAR" />
+		<result column="VIP_TYPE_NAME" property="vipTypeName" jdbcType="VARCHAR" />
 	</resultMap>
 	<sql id="Base_Column_List">
 		VIP_CUST_NO, VIP_CUST_NO_SAP, SALES_ORG, VIP_NAME,
@@ -114,8 +116,24 @@
 		i.BIRTHDAY,
 		i.CERT_ID,
 		i.VIP_SRC,
+		(
+		SELECT
+		it.ITEM_NAME
+		FROM
+		T_SYS_CODE_ITEM it
+		WHERE it.TYPE_CODE = <include refid="mybaties.constant.vip_src" /> AND 
+		it.ITEM_CODE = i.VIP_SRC
+		) VIP_SRC_NAME,
 		i.MILKBOX,
 		i.VIP_TYPE,
+		(
+		SELECT
+		it.ITEM_NAME
+		FROM
+		T_SYS_CODE_ITEM it
+		WHERE it.TYPE_CODE = <include refid="mybaties.constant.vip_type" /> AND 
+		it.ITEM_CODE = i.VIP_TYPE
+		) VIP_TYPE_NAME,
 		i.SUBSCRIBE_DATE,
 		i.SUBSCRIBER,
 		i.ACTIVITY_NO,
@@ -678,7 +696,15 @@
 	<select id="findCompanyCustByPhone" resultMap="BaseResultMap" parameterType="java.util.Map">
 		select
 		<include refid="Base_Column_List" />
-		from t_vip_cust_info where MP = #{phone} and SALES_ORG=#{salesOrg}
+		from t_vip_cust_info 
+		<where>
+		    <if test="phone != null and phone != ''">
+		        MP = #{phone} 
+		    </if>
+		    <if test="salesOrg != null and salesOrg != ''">
+		        and SALES_ORG=#{salesOrg}
+		    </if>
+		</where>
 	</select>
 	<select id="findVipCust" resultMap="BaseResultMap"
 		parameterType="java.util.Map">
@@ -701,6 +727,12 @@
 			<if test="lastModifiedByTxt != null">
 				LAST_MODIFIED_BY_TXT =
 				#{lastModifiedByTxt,jdbcType=VARCHAR},
+			</if>
+			<if test="firstOrderTime != null">
+				FIRST_ORDER_TIME = #{firstOrderTime,jdbcType=TIMESTAMP},
+			</if>
+			<if test="lastOrderTime != null">
+				LAST_ORDER_TIME = #{lastOrderTime,jdbcType=TIMESTAMP},
 			</if>
 		</set>
 		where VIP_CUST_NO = #{vipCustNo,jdbcType=VARCHAR}
@@ -752,8 +784,24 @@
 		date_format(i.BIRTHDAY, '%Y-%m-%d') BIRTHDAY,
 		i.CERT_ID,
 		i.VIP_SRC,
+		(
+		SELECT
+		it.ITEM_NAME
+		FROM
+		T_SYS_CODE_ITEM it
+		WHERE it.TYPE_CODE = <include refid="mybaties.constant.vip_src" /> AND 
+		it.ITEM_CODE = i.VIP_SRC
+		) VIP_SRC_NAME,
 		i.MILKBOX,
 		i.VIP_TYPE,
+		(
+		SELECT
+		it.ITEM_NAME
+		FROM
+		T_SYS_CODE_ITEM it
+		WHERE it.TYPE_CODE = <include refid="mybaties.constant.vip_type" /> AND 
+		it.ITEM_CODE = i.VIP_TYPE
+		) VIP_TYPE_NAME, 
 		date_format(i.SUBSCRIBE_DATE, '%Y-%m-%d') SUBSCRIBE_DATE,
 		i.SUBSCRIBER,
 		i.ACTIVITY_NO,

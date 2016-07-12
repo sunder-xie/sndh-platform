@@ -1,5 +1,7 @@
 package com.nhry.data.basic.impl;
 
+import java.util.List;
+
 import com.nhry.common.datasource.DynamicSqlSessionTemplate;
 import com.nhry.data.basic.dao.TBranchNotsellListMapper;
 import com.nhry.data.basic.domain.TBranchNotsellList;
@@ -27,5 +29,11 @@ public class TBranchNotsellListMapperImpl implements TBranchNotsellListMapper {
 	public int delBranchNotsellByMatnr(String matnr) {
 		// TODO Auto-generated method stub
 		return this.sqlSessionTemplate.delete("delBranchNotsellByMatnr", matnr);
+	}
+
+	@Override
+	public List<TBranchNotsellList> getNotSellListByMatnr(String matnr) {
+		// TODO Auto-generated method stub
+		return this.sqlSessionTemplate.selectList("getNotSellListByMatnr", matnr);
 	}
 }

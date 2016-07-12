@@ -21,7 +21,7 @@ public class RouteDetailUpdateModel {
    
    private String reason;
    
-   private String qty;
+   private String confirmQty;
    
    private String matnr;
    
@@ -105,14 +105,14 @@ public class RouteDetailUpdateModel {
 		this.reason = reason;
 	}
 
-	public String getQty()
+	public String getConfirmQty()
 	{
-		return qty;
+		return confirmQty;
 	}
 
-	public void setQty(String qty)
+	public void setConfirmQty(String confirmQty)
 	{
-		this.qty = qty;
+		this.confirmQty = confirmQty;
 	}
    
 }

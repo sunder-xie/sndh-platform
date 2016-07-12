@@ -48,9 +48,17 @@ public class BillResource extends BaseResource {
     @GET
     @Path("/cust/getCustomerOrderDetialByCode")
     @Produces(MediaType.APPLICATION_JSON)
-    @ApiOperation(value = "/cust/getCustomerOrderByCode", response = Response.class, notes = "查询订户收款表")
+    @ApiOperation(value = "/cust/getCustomerOrderByCode", response = Response.class, notes = "查询订户收款表详情")
     public Response getCustomerOrderByCode(@ApiParam(required=true,name="orderNo",value="订单号") @QueryParam("orderNo") String orderNo){
          return convertToRespModel(MessageCode.NORMAL, null, customerBillService.getCustomerOrderDetailByCode(orderNo));
+    }
+
+    @GET
+    @Path("/cust/getRecBillByOrderNo")
+    @Produces(MediaType.APPLICATION_JSON)
+    @ApiOperation(value = "/cust/getRecBillByOrderNo", response = Response.class, notes = "根据订单号获取收款单")
+    public Response getRecBillByOrderNo(@ApiParam(required=true,name="orderNo",value="订单号") @QueryParam("orderNo") String orderNo){
+        return convertToRespModel(MessageCode.NORMAL, null, customerBillService.getRecBillByOrderNo(orderNo));
     }
 
     @POST

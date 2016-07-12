@@ -16,8 +16,30 @@ public class ManHandOrderSearchModel extends BaseQueryModel implements Serializa
     private String orderDateStart;
     private String orderDateEnd;
     private String retReason;
+    private String branchNo;
+    private String salesOrg;
 
-    public String getPreorderStat() {
+    public String getBranchNo()
+	{
+		return branchNo;
+	}
+
+	public void setBranchNo(String branchNo)
+	{
+		this.branchNo = branchNo;
+	}
+
+	public String getSalesOrg()
+	{
+		return salesOrg;
+	}
+
+	public void setSalesOrg(String salesOrg)
+	{
+		this.salesOrg = salesOrg;
+	}
+
+	public String getPreorderStat() {
         return preorderStat;
     }
 

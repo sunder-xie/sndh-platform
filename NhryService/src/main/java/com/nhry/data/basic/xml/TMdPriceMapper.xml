@@ -330,7 +330,7 @@
 		WHERE
 			p.ID = pb.ID
 		AND p.SALES_ORG = #{salesOrg}
-		AND pb.SCOPE = '-1'
+		AND p.SCOPE = '-1'
   </select>
   <select id="getDealerBranchPricesGroupByBn" resultType="com.nhry.service.basic.pojo.PriceGroup"  parameterType="java.util.HashMap">
      	SELECT
@@ -341,6 +341,6 @@
 		WHERE
 			p.ID = pb.ID
 		AND p.SALES_ORG = #{salesOrg}
-		AND pb.SCOPE = #{dealerNo}
+		AND p.SCOPE = #{dealerNo}
   </select>
 </mapper>

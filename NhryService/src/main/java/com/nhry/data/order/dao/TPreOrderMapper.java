@@ -47,5 +47,7 @@ public interface TPreOrderMapper {
     int updateOrderPayMentStatus(String orderNo);
     
     OrderRemainData searchOrderRemainData(String memberNo);
+    
+    List<TPreOrder> selectByMilkmemberNo(String memberNo);
 
 }

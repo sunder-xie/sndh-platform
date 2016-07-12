@@ -7,6 +7,8 @@ public class TDispOrder extends TDispOrderKey {
     private Date dispDate;
 
     private String branchNo;
+    
+    private String branchName;
 
     private String dispLineNo;
 
@@ -27,6 +29,8 @@ public class TDispOrder extends TDispOrderKey {
     private Integer dispOrder;
 
     private String dispEmpNo;
+    
+    private String dispEmpName;
 
     private String hzOrderNo;
 
@@ -50,6 +54,26 @@ public class TDispOrder extends TDispOrderKey {
     
     private Integer totalQty;
     
+	public String getBranchName()
+	{
+		return branchName;
+	}
+
+	public void setBranchName(String branchName)
+	{
+		this.branchName = branchName;
+	}
+
+	public String getDispEmpName()
+	{
+		return dispEmpName;
+	}
+
+	public void setDispEmpName(String dispEmpName)
+	{
+		this.dispEmpName = dispEmpName;
+	}
+
 	public Integer getTotalQty()
 	{
 		return totalQty;

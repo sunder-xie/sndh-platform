@@ -43,7 +43,7 @@ public class ResourceServiceImpl extends BaseService implements ResourceService 
     }
 
     @Override
-    public int addRes(TSysResource record) {
+    public String addRes(TSysResource record) {
         // TODO Auto-generated method stub
         if (StringUtils.isEmpty(record.getResName())) {
             throw new ServiceException(MessageCode.LOGIC_ERROR, "资源名称不能为空!");
@@ -68,7 +68,8 @@ public class ResourceServiceImpl extends BaseService implements ResourceService 
         record.setCreateAt(new Date());
         record.setCreateBy(userSessionService.getCurrentUser().getLoginName());
         record.setCreateByTxt(userSessionService.getCurrentUser().getDisplayName());
-        return this.resMapper.addRes(record);
+        this.resMapper.addRes(record);
+        return record.getResCode();
     }
 
     @Override

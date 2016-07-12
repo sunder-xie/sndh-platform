@@ -49,12 +49,21 @@ public class OrderResource extends BaseResource {
 		return convertToRespModel(MessageCode.NORMAL, null, orderService.selectDaliyPlansByOrderNo(orderCode));
 	}
 	
-	@GET
-	@Path("/searchOrderRemain/{memberNo}")
+	@POST
+	@Path("/daliyPlansByPage")
 	@Produces(MediaType.APPLICATION_JSON)
-	@ApiOperation(value = "/searchOrderRemain/{memberNo}", response = OrderRemainData.class, notes = "根据订户编号查询为送达数量和总共消费金额")
-	public Response searchOrderRemain(@ApiParam(required=true,name="memberNo",value="订户编号") @PathParam("memberNo") String memberNo){
-		return convertToRespModel(MessageCode.NORMAL, null, orderService.searchOrderRemainData(memberNo));
+	@Consumes(MediaType.APPLICATION_JSON)
+	@ApiOperation(value = "/daliyPlansByPage", response = PageInfo.class, notes = "查询日计划信息列表")
+	public Response daliyPlansByPage(@ApiParam(required=true,name="smodel",value="SearchModel") OrderSearchModel smodel){
+		return convertToRespModel(MessageCode.NORMAL, null, orderService.searchDaliyOrders(smodel));
+	}
+	
+	@GET
+	@Path("/searchOrderRemain/{phone}")
+	@Produces(MediaType.APPLICATION_JSON)
+	@ApiOperation(value = "/searchOrderRemain/{phone}", response = OrderRemainData.class, notes = "根据电话号码查询为送达数量和总共消费金额")
+	public Response searchOrderRemain(@ApiParam(required=true,name="phone",value="电话号码") @PathParam("phone") String phone){
+		return convertToRespModel(MessageCode.NORMAL, null, orderService.searchOrderRemainData(phone));
 	}
 	
 	@POST

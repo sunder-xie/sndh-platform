@@ -27,6 +27,8 @@
     <result column="DISP_EMP_NO" property="dispEmpNo" jdbcType="VARCHAR" />
     <result column="ADDRESS_TXT" property="addressTxt" jdbcType="VARCHAR" />
     <result column="MATNR_TXT" property="matnrTxt" jdbcType="VARCHAR" />
+    <result column="CUST_NAME" property="custName" jdbcType="VARCHAR" />
+    <result column="CUST_TEL" property="custTel" jdbcType="VARCHAR" />
   </resultMap>
   <resultMap id="BaseChangeResultMap" type="com.nhry.service.milk.pojo.TDispOrderChangeItem" >
     <result column="ORDER_NO1" property="orderNo1" jdbcType="VARCHAR" />
@@ -79,8 +81,6 @@
   </resultMap>
   <resultMap id="boxDetailMap" type="com.nhry.data.milktrans.domain.TRecBotDetail">
     <result column="SPEC " property="spec" jdbcType="VARCHAR" />
-    <result column="BOT_SPEC" property="botSpec" jdbcType="VARCHAR" />
-    <result column="SPEC_UNIT " property="specUnit" jdbcType="VARCHAR" />
     <result column="RECEIVE_NUM" property="receiveNum" jdbcType="INTEGER" />
   </resultMap>
 
@@ -124,14 +124,22 @@
        MATNR MATNR1,CONFIRM_QTY CONFIRM_QTY1,QTY QTY1,UNIT UNIT1,PRICE PRICE1,
        ADDRESS_NO ADDRESS_NO1,ORG_ITEM_NO ORG_ITEM_NO1,ORG_ORDER_NO ORG_ORDER_NO1,
        REACH_TIME_TYPE REACH_TIME_TYPE1, DISP_EMP_NO DISP_EMP_NO1
-      from t_mst_disp_order_item a where a.order_date = #{itemNo,jdbcType=DATE}) a1
+      from t_mst_disp_order_item a where a.order_date = #{itemNo,jdbcType=DATE}
+      <if test="addressNo != null" >
+      	and a.ORDER_NO = #{addressNo,jdbcType=DATE}
+      </if>	
+      ) a1
 		left outer join 
 		(select 
 		 ORDER_NO ORDER_NO2,ORDER_DATE ORDER_DATE2,ITEM_NO ITEM_NO2,CONFIRM_MATNR CONFIRM_MATNR2, 
        MATNR MATNR2,CONFIRM_QTY CONFIRM_QTY2,QTY QTY2,UNIT UNIT2,PRICE PRICE2,
        ADDRESS_NO ADDRESS_NO2,ORG_ITEM_NO ORG_ITEM_NO2,ORG_ORDER_NO ORG_ORDER_NO2,
        REACH_TIME_TYPE REACH_TIME_TYPE2, DISP_EMP_NO DISP_EMP_NO2
-		from t_mst_disp_order_item b where b.order_date = #{orderNo,jdbcType=DATE}) b1
+		from t_mst_disp_order_item b where b.order_date = #{orderNo,jdbcType=DATE}
+		<if test="addressNo != null" >
+			and b.ORDER_NO = #{addressNo,jdbcType=DATE}
+		</if>
+		) b1
 		on a1.org_order_no1 = b1.org_order_no2 and a1.org_item_no1 = b1.org_item_no2
 		)
 		where (a1.matnr1 != b1.matnr2 or a1.matnr1 is null or b1.matnr2 is null) 
@@ -146,14 +154,22 @@
        MATNR MATNR1,CONFIRM_QTY CONFIRM_QTY1,QTY QTY1,UNIT UNIT1,PRICE PRICE1,
        ADDRESS_NO ADDRESS_NO1,ORG_ITEM_NO ORG_ITEM_NO1,ORG_ORDER_NO ORG_ORDER_NO1,
        REACH_TIME_TYPE REACH_TIME_TYPE1, DISP_EMP_NO DISP_EMP_NO1
-		from t_mst_disp_order_item a where a.order_date = #{itemNo,jdbcType=DATE}) a1
+		from t_mst_disp_order_item a where a.order_date = #{itemNo,jdbcType=DATE}
+		<if test="addressNo != null" >
+			and a.ORDER_NO = #{addressNo,jdbcType=DATE} 
+		</if>
+		) a1
 		right outer join 
 		(select 
 		 ORDER_NO ORDER_NO2,ORDER_DATE ORDER_DATE2,ITEM_NO ITEM_NO2,CONFIRM_MATNR CONFIRM_MATNR2, 
        MATNR MATNR2,CONFIRM_QTY CONFIRM_QTY2,QTY QTY2,UNIT UNIT2,PRICE PRICE2,
        ADDRESS_NO ADDRESS_NO2,ORG_ITEM_NO ORG_ITEM_NO2,ORG_ORDER_NO ORG_ORDER_NO2,
        REACH_TIME_TYPE REACH_TIME_TYPE2, DISP_EMP_NO DISP_EMP_NO2
-		from t_mst_disp_order_item b where b.order_date = #{orderNo,jdbcType=DATE}) b1
+		from t_mst_disp_order_item b where b.order_date = #{orderNo,jdbcType=DATE}
+		<if test="addressNo != null" >
+			and b.ORDER_NO = #{addressNo,jdbcType=DATE}
+		</if>
+		) b1
 		on a1.org_order_no1 = b1.org_order_no2 and a1.org_item_no1 = b1.org_item_no2
 		)
 		where (a1.matnr1 != b1.matnr2 or a1.matnr1 is null or b1.matnr2 is null) 
@@ -180,10 +196,7 @@
     select 
     <include refid="Base_Column_List" />
     from t_mst_disp_order_item
-    where 
-    		 <!-- REASON is not null
-          and CONFIRM_QTY != QTY -->
-          and ORDER_NO = #{orderNo,jdbcType=VARCHAR}
+    where ORDER_NO = #{orderNo,jdbcType=VARCHAR}
   </select>
   <delete id="deleteByPrimaryKey" parameterType="com.nhry.data.milk.domain.TDispOrderItemKey" >
     delete from t_mst_disp_order_item
@@ -197,7 +210,8 @@
     i.STATUS, i.PICKUP_ORDER_NO, i.PICKUP_ORDER_ITEM_NO, i.REASON, i.REDISP_DATE, i.WHOLESALE_PRICE,
     i.WHOLESALE_PRICE_1, i.ADDRESS_NO,i.ORG_ITEM_NO,i.ORG_ORDER_NO,i.REACH_TIME_TYPE,p.MATNR_TXT MATNR_TXT, a.ADDRESS_TXT ADDRESS_TXT
     from t_mst_disp_order_item i 
-    left join t_md_mara p on p.MATNR = i.MATNR 
+    left join t_preorder o on o.ORDER_NO = i.ORG_ORDER_NO
+    left join t_md_mara p on p.MATNR = i.MATNR and p.SALES_ORG = o.SALES_ORG
     left join t_md_address a on a.ADDRESS_ID = i.ADDRESS_NO
     where i.ORDER_NO = #{orderNo,jdbcType=VARCHAR}
       <if test="orderDate != null" >
@@ -215,6 +229,19 @@
     from t_mst_disp_order_item i 
     left join t_md_mara p on p.MATNR = i.MATNR 
     left join t_md_address a on a.ADDRESS_ID = i.ADDRESS_NO
+    where i.ORDER_NO = #{orderNo,jdbcType=VARCHAR}
+  </select>
+  <select id="selectRouteDetailsAll" resultMap="BaseResultMap" parameterType="java.lang.String">
+  	 select 
+    i.ORDER_NO, i.ORDER_DATE, i.ITEM_NO,i.CONFIRM_MATNR, i.MATNR, i.CONFIRM_QTY, i.QTY, i.UNIT, i.PRICE, i.AMT, i.CONFIRM_AMT, 
+    i.STATUS, i.PICKUP_ORDER_NO, i.PICKUP_ORDER_ITEM_NO, i.REASON, i.REDISP_DATE, i.WHOLESALE_PRICE,
+    i.WHOLESALE_PRICE_1, i.ADDRESS_NO,i.ORG_ITEM_NO,i.ORG_ORDER_NO,i.REACH_TIME_TYPE,p.MATNR_TXT MATNR_TXT, a.ADDRESS_TXT ADDRESS_TXT,
+    v.VIP_NAME CUST_NAME,v.MP CUST_TEL
+    from t_mst_disp_order_item i 
+    left join t_preorder o on o.ORDER_NO = i.ORG_ORDER_NO
+    left join t_md_mara p on p.MATNR = i.MATNR and p.SALES_ORG = o.SALES_ORG
+    left join t_md_address a on a.ADDRESS_ID = i.ADDRESS_NO
+    left join t_vip_cust_info v on v.VIP_CUST_NO = o.MILKMEMBER_NO
     where i.ORDER_NO = #{orderNo,jdbcType=VARCHAR}
   </select>
   <insert id="insertSelective" parameterType="com.nhry.data.milk.domain.TDispOrderItem" >
@@ -423,14 +450,20 @@
   </update>
 
   <select id="selectItemsByReturnBox" resultMap="boxDetailMap" parameterType="com.nhry.model.milktrans.CreateEmpReturnboxModel">
+
     select
-      m.SPEC SPEC ,m.BOT_SPEC BOT_SPEC,m.SPEC_UNIT SPEC_UNIT,i.QTY RECEIVE_NUM
-    from t_mst_disp_order_item i,t_mst_disp_order o,t_md_mara m
-    WHERE i.ORDER_NO = o.ORDER_NO
-    and i.MATNR = m.MATNR
-     and o.DISP_DATE = #{retDate,jdbcType=DATE}
-    and o.DISP_EMP_NO = #{empNo,jdbcType=VARCHAR}
-    and o.BRANCH_NO =  #{branchNo,jdbcType=VARCHAR}
+    SUM(i.QTY) RECEIVE_NUM,ex.BOT_TYPE SPEC
+    from t_mst_disp_order_item  i
+      LEFT JOIN t_mst_disp_order o on  i.ORDER_NO = o.ORDER_NO
+      LEFT JOIN t_md_mara_ex ex on  i.MATNR = ex.MATNR
+
+		where ex.RET_BOT_FLAG = "Y"
+		 and i.MATNR = m.MATNR
+         and o.DISP_DATE = #{retDate,jdbcType=DATE}
+         and o.DISP_EMP_NO = #{empNo,jdbcType=VARCHAR}
+         and o.BRANCH_NO =  #{branchNo,jdbcType=VARCHAR}
+		 GROUP BY ex.BOT_TYPE
+
   </select>
 
 

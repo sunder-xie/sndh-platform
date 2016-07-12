@@ -140,4 +140,10 @@ public class TPreOrderMapperImpl implements TPreOrderMapper
 		return sqlSessionTemplate.selectOne("selectOrderRemainAndAmt", memberNo);
 	}
 	
+	@Override
+	public List<TPreOrder> selectByMilkmemberNo(String memberNo)
+	{
+		return sqlSessionTemplate.selectList("selectByMilkmemberNo", memberNo);
+	}
+	
 }

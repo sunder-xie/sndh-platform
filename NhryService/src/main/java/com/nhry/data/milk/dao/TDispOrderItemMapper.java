@@ -19,6 +19,8 @@ import java.util.List;
 public interface TDispOrderItemMapper {
 	
 	 PageInfo selectRouteDetailsByPage(RouteOrderSearchModel smodel);
+	 
+	 List selectRouteDetails(String routeCode);
 	
     int deleteByPrimaryKey(TDispOrderItemKey key);
 
@@ -28,7 +30,7 @@ public interface TDispOrderItemMapper {
 
     List<TDispOrderItem> selectNotDeliveryItemsByKeys(String code);
     
-    List<TDispOrderChangeItem> selectDispItemsChange(String yestoday,String today);
+    List<TDispOrderChangeItem> selectDispItemsChange(String yestoday,String today,String orderNo);
 
     int updateByPrimaryKeySelective(TDispOrderItem record);
 
