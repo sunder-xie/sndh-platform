@@ -95,6 +95,10 @@ public class ProductServiceImpl extends BaseService implements ProductService {
 		Map<String,String> attrs = new HashMap<String,String>();
 		attrs.put("matnr",matnr);
 		attrs.put("salesOrg",this.userSessionService.getCurrentUser().getSalesOrg());
+		TMdMara mara = tMdMaraMapper.selectProductAndExByCode(attrs);
+		if(mara != null){
+			this.notsellListMapper.getNotSellListByMatnr(matnr);
+		}
 		return tMdMaraMapper.selectProductAndExByCode(attrs);
 	}
 
@@ -192,7 +196,7 @@ public class ProductServiceImpl extends BaseService implements ProductService {
 		// TODO Auto-generated method stub
 		Map<String,String> attrs = new HashMap<String,String>();
 		attrs.put("salesOrg",this.userSessionService.getCurrentUser().getSalesOrg());
-		attrs.put("dealerNo",this.userSessionService.getCurrentUser().getDealerId());
+//		attrs.put("dealerNo",this.userSessionService.getCurrentUser().getDealerId());
 		if(!StringUtils.isEmpty(id) && !"-1".equals(id)){
 			attrs.put("id",id);
 		}

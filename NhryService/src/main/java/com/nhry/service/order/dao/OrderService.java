@@ -19,7 +19,7 @@ public interface OrderService {
 	
 	PageInfo searchDaliyOrders(OrderSearchModel smodel);
 
-	int createOrder(OrderCreateModel record);
+	String createOrder(OrderCreateModel record);
 
 	int editOrderForLong(OrderEditModel record);
 
@@ -51,5 +51,7 @@ public interface OrderService {
 	
 	void resumeDaliyPlanForRouteOrder(BigDecimal confirmQty,TDispOrderItem entry,TPlanOrderItem orgEntry,Date dispDate);
 	
-	OrderRemainData searchOrderRemainData(String memberNo);
+	String createDaliyPlan(TPreOrder order ,List<TPlanOrderItem> entries);
+	
+	OrderRemainData searchOrderRemainData(String phone);
 }

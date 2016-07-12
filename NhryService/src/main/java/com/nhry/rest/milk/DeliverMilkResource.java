@@ -96,9 +96,17 @@ public class DeliverMilkResource extends BaseResource {
 	@GET
 	@Path("/changeDaliyPlans/{orderCode}")
 	@Produces(MediaType.APPLICATION_JSON)
-	@ApiOperation(value = "/{orderCode}", response = RouteOrderModel.class, notes = "根据路单更新日计划")
+	@ApiOperation(value = "/changeDaliyPlans/{orderCode}", response = RouteOrderModel.class, notes = "根据路单更新日计划")
 	public Response changeDaliyPlans(@ApiParam(required=true,name="orderCode",value="路单编号") @PathParam("orderCode") String orderCode){
 		return convertToRespModel(MessageCode.NORMAL, null, deliverMilkService.updateDaliyPlanByRouteOrder(orderCode));
+	}
+	
+	@GET
+	@Path("/searchRouteChangeOrder/{orderCode}")
+	@Produces(MediaType.APPLICATION_JSON)
+	@ApiOperation(value = "searchRouteChangeOrder/{orderCode}", response = List.class, notes = "查询变化路单")
+	public Response searchRouteChangeOrder(@ApiParam(required=true,name="orderCode",value="路单编号") @PathParam("orderCode") String orderCode){
+		return convertToRespModel(MessageCode.NORMAL, null, deliverMilkService.searchRouteChangeOrder(orderCode));
 	}
 	
 	@POST

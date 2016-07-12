@@ -127,14 +127,22 @@
        MATNR MATNR1,CONFIRM_QTY CONFIRM_QTY1,QTY QTY1,UNIT UNIT1,PRICE PRICE1,
        ADDRESS_NO ADDRESS_NO1,ORG_ITEM_NO ORG_ITEM_NO1,ORG_ORDER_NO ORG_ORDER_NO1,
        REACH_TIME_TYPE REACH_TIME_TYPE1, DISP_EMP_NO DISP_EMP_NO1
-      from t_mst_disp_order_item a where a.order_date = #{itemNo,jdbcType=DATE}) a1
+      from t_mst_disp_order_item a where a.order_date = #{itemNo,jdbcType=DATE}
+      <if test="addressNo != null" >
+      	and a.ORDER_NO = #{addressNo,jdbcType=DATE}
+      </if>	
+      ) a1
 		left outer join 
 		(select 
 		 ORDER_NO ORDER_NO2,ORDER_DATE ORDER_DATE2,ITEM_NO ITEM_NO2,CONFIRM_MATNR CONFIRM_MATNR2, 
        MATNR MATNR2,CONFIRM_QTY CONFIRM_QTY2,QTY QTY2,UNIT UNIT2,PRICE PRICE2,
        ADDRESS_NO ADDRESS_NO2,ORG_ITEM_NO ORG_ITEM_NO2,ORG_ORDER_NO ORG_ORDER_NO2,
        REACH_TIME_TYPE REACH_TIME_TYPE2, DISP_EMP_NO DISP_EMP_NO2
-		from t_mst_disp_order_item b where b.order_date = #{orderNo,jdbcType=DATE}) b1
+		from t_mst_disp_order_item b where b.order_date = #{orderNo,jdbcType=DATE}
+		<if test="addressNo != null" >
+			and b.ORDER_NO = #{addressNo,jdbcType=DATE}
+		</if>
+		) b1
 		on a1.org_order_no1 = b1.org_order_no2 and a1.org_item_no1 = b1.org_item_no2
 		)
 		where (a1.matnr1 != b1.matnr2 or a1.matnr1 is null or b1.matnr2 is null) 
@@ -149,14 +157,22 @@
        MATNR MATNR1,CONFIRM_QTY CONFIRM_QTY1,QTY QTY1,UNIT UNIT1,PRICE PRICE1,
        ADDRESS_NO ADDRESS_NO1,ORG_ITEM_NO ORG_ITEM_NO1,ORG_ORDER_NO ORG_ORDER_NO1,
        REACH_TIME_TYPE REACH_TIME_TYPE1, DISP_EMP_NO DISP_EMP_NO1
-		from t_mst_disp_order_item a where a.order_date = #{itemNo,jdbcType=DATE}) a1
+		from t_mst_disp_order_item a where a.order_date = #{itemNo,jdbcType=DATE}
+		<if test="addressNo != null" >
+			and a.ORDER_NO = #{addressNo,jdbcType=DATE} 
+		</if>
+		) a1
 		right outer join 
 		(select 
 		 ORDER_NO ORDER_NO2,ORDER_DATE ORDER_DATE2,ITEM_NO ITEM_NO2,CONFIRM_MATNR CONFIRM_MATNR2, 
        MATNR MATNR2,CONFIRM_QTY CONFIRM_QTY2,QTY QTY2,UNIT UNIT2,PRICE PRICE2,
        ADDRESS_NO ADDRESS_NO2,ORG_ITEM_NO ORG_ITEM_NO2,ORG_ORDER_NO ORG_ORDER_NO2,
        REACH_TIME_TYPE REACH_TIME_TYPE2, DISP_EMP_NO DISP_EMP_NO2
-		from t_mst_disp_order_item b where b.order_date = #{orderNo,jdbcType=DATE}) b1
+		from t_mst_disp_order_item b where b.order_date = #{orderNo,jdbcType=DATE}
+		<if test="addressNo != null" >
+			and b.ORDER_NO = #{addressNo,jdbcType=DATE}
+		</if>
+		) b1
 		on a1.org_order_no1 = b1.org_order_no2 and a1.org_item_no1 = b1.org_item_no2
 		)
 		where (a1.matnr1 != b1.matnr2 or a1.matnr1 is null or b1.matnr2 is null) 
@@ -183,10 +199,7 @@
     select 
     <include refid="Base_Column_List" />
     from t_mst_disp_order_item
-    where 
-    		 <!-- REASON is not null
-          and CONFIRM_QTY != QTY -->
-          and ORDER_NO = #{orderNo,jdbcType=VARCHAR}
+    where ORDER_NO = #{orderNo,jdbcType=VARCHAR}
   </select>
   <delete id="deleteByPrimaryKey" parameterType="com.nhry.data.milk.domain.TDispOrderItemKey" >
     delete from t_mst_disp_order_item

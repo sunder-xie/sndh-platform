@@ -78,11 +78,12 @@ public class TDispOrderItemMapperImpl implements TDispOrderItemMapper
 	}
 
 	@Override
-	public List<TDispOrderChangeItem> selectDispItemsChange(String yestoday,String today)
+	public List<TDispOrderChangeItem> selectDispItemsChange(String yestoday,String today,String orderNo)
 	{
 		TDispOrderItem key = new TDispOrderItem();
 		key.setOrderNo(yestoday);
 		key.setItemNo(today);
+		key.setAddressNo(orderNo);
 		return sqlSessionTemplate.selectList("selectDispItemsChange", key);
 	}
 
@@ -101,7 +102,7 @@ public class TDispOrderItemMapperImpl implements TDispOrderItemMapper
 		TDispOrderItem key = new TDispOrderItem();
 		key.setOrderNo(record.getOrderNo());
 		key.setItemNo(record.getItemNo());
-		key.setConfirmQty(new BigDecimal(record.getQty()));
+		key.setConfirmQty(new BigDecimal(record.getConfirmQty()));
 		key.setReason(record.getReason());
 		key.setStatus("30");//30 回执确认
 		key.setConfirmMatnr(record.getProductCode());

@@ -56,10 +56,14 @@ public class TVipCustInfo implements Serializable{
     private String certId;
 
     private String vipSrc;
+    
+    private String vipSrcName;
 
     private String milkbox;
 
     private String vipType;
+    
+    private String vipTypeName;
 
     private Date subscribeDate;
 
@@ -475,5 +479,21 @@ public class TVipCustInfo implements Serializable{
 
 	public void setDealerName(String dealerName) {
 		this.dealerName = dealerName;
+	}
+
+	public String getVipSrcName() {
+		return vipSrcName;
+	}
+
+	public void setVipSrcName(String vipSrcName) {
+		this.vipSrcName = vipSrcName;
+	}
+
+	public String getVipTypeName() {
+		return vipTypeName;
+	}
+
+	public void setVipTypeName(String vipTypeName) {
+		this.vipTypeName = vipTypeName;
 	}
 }

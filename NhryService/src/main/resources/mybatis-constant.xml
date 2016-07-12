@@ -6,4 +6,14 @@
 	<sql id="SALES_ORG_CONSTANT">1002</sql>
 	<!-- 全国省、市、区、街type_code -->
 	<sql id="COUNTRY_CITY_CONSTANT">1001</sql>
+	<!-- 公司代码 -->
+	<sql id="comp_code">1003</sql>
+	<!-- 采购组织 -->
+	<sql id="purchase_org">1004</sql>
+	<!-- 工厂 -->
+	<sql id="factory">1005</sql>
+	<!-- 订户来源 -->
+	<sql id="vip_src">1006</sql>
+	<!-- 订户类型 -->
+	<sql id="vip_type">1007</sql>
 </mapper>  

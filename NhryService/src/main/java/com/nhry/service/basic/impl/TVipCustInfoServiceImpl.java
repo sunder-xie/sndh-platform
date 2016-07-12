@@ -19,6 +19,7 @@ import com.nhry.data.basic.domain.TVipCustInfo;
 import com.nhry.model.basic.CustQueryModel;
 import com.nhry.service.BaseService;
 import com.nhry.service.basic.dao.TVipCustInfoService;
+import com.nhry.service.basic.pojo.Addresses;
 import com.nhry.utils.PrimaryKeyUtils;
 import com.nhry.utils.date.Date;
 
@@ -49,7 +50,28 @@ public class TVipCustInfoServiceImpl extends BaseService implements TVipCustInfo
 		record.setCreateAt(new Date());
 		record.setCreateBy(this.userSessionService.getCurrentUser().getLoginName());
 		record.setCreateByTxt(this.userSessionService.getCurrentUser().getDisplayName());
-		return this.tmdVipcust.addVipCust(record);
+		record.setSalesOrg(this.userSessionService.getCurrentUser().getSalesOrg());
+		this.tmdVipcust.addVipCust(record);
+		if(!StringUtils.isBlank(record.getAddressTxt()) && !StringUtils.isBlank(record.getProvince()) && !StringUtils.isBlank(record.getCity()) &&
+				!StringUtils.isBlank(record.getCounty())){
+			TMdAddress address = new TMdAddress();
+			address.setAddressTxt(record.getAddressTxt());
+			address.setProvince(record.getProvince());
+			address.setCity(record.getCity());
+			address.setCounty(record.getCounty());
+			address.setMp(record.getMp());
+			address.setRecvName(record.getVipName());
+			address.setZip(record.getZip());
+			address.setResidentialArea(record.getSubdist());
+			address.setStreet(record.getStreet());
+			address.setVipCustNo(record.getVipCustNo());
+			address.setIsDafault("Y");
+			address.setCreateAt(new Date());
+			address.setCreateBy(this.userSessionService.getCurrentUser().getLoginName());
+			address.setCreateByTxt(this.userSessionService.getCurrentUser().getDisplayName());
+			addAddressForCust(address);
+		}
+		return 1;
 	}
 
 	@Override
@@ -81,7 +103,14 @@ public class TVipCustInfoServiceImpl extends BaseService implements TVipCustInfo
 		record.setLastModified(new Date());
 		record.setLastModifiedBy(this.userSessionService.getCurrentUser().getLoginName());
 		record.setLastModifiedByTxt(this.userSessionService.getCurrentUser().getDisplayName());
-		return this.tmdVipcust.updateVipCustByNo(record);
+		this.tmdVipcust.updateVipCustByNo(record);
+		//更新地址列表信息
+		if(record.getAddresses() != null && record.getAddresses().size() > 0){
+			Addresses ad = new Addresses();
+			ad.setAddresses(record.getAddresses());
+			this.batchUptCustAddress(ad);
+		}
+		return 1;
 	}
 
 	@Override
@@ -107,7 +136,7 @@ public class TVipCustInfoServiceImpl extends BaseService implements TVipCustInfo
 	}
 
 	@Override
-	public int discontinue(String vipCustNo, String status) {
+	public int discontinue(String vipCustNo, String status,Date firstTime,Date lastestTime) {
 		// TODO Auto-generated method stub
 		TVipCustInfo custinfo = this.tmdVipcust.findVipCustOnlyByNo(vipCustNo);
 		if(custinfo == null){
@@ -116,6 +145,8 @@ public class TVipCustInfoServiceImpl extends BaseService implements TVipCustInfo
 		TVipCustInfo cust = new TVipCustInfo();
 		cust.setVipCustNo(vipCustNo);
 		cust.setStatus(status);
+		cust.setFirstOrderTime(firstTime);
+		cust.setLastOrderTime(lastestTime);
 		cust.setLastModified(new Date());
 		cust.setLastModifiedBy(this.userSessionService.getCurrentUser().getLoginName());
 		cust.setLastModifiedByTxt(this.userSessionService.getCurrentUser().getDisplayName());
@@ -254,5 +285,22 @@ public class TVipCustInfoServiceImpl extends BaseService implements TVipCustInfo
 		}else{
 			throw new ServiceException(MessageCode.LOGIC_ERROR, "该地址编号对应的地址信息不存在!");
 		}
+	}
+
+	@Override
+	public int batchUptCustAddress(Addresses record) {
+		// TODO Auto-generated method stub
+		if(record != null){
+			for(TMdAddress ad : record.getAddresses()){
+				if(StringUtils.isBlank(ad.getAddressId())){
+					//新增
+					this.addAddressForCust(ad);
+				}else{
+					//修改
+					this.addressMapper.uptCustAddress(ad);
+				}
+			}
+		}
+		return 1;
 	}
 }

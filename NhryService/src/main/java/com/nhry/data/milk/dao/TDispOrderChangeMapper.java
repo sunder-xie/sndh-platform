@@ -17,4 +17,6 @@ public interface TDispOrderChangeMapper {
     int updateByPrimaryKeySelective(TDispOrderChange record);
 
     int updateByPrimaryKey(TDispOrderChange record);
+    
+    List searchRouteChangeOrder(String code);
 }

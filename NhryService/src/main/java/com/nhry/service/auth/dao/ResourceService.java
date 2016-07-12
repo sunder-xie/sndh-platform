@@ -19,7 +19,7 @@ public interface ResourceService {
 	 * @param record
 	 * @return
 	 */
-    int addRes(TSysResource record);
+    String addRes(TSysResource record);
     
     /**
      * 根据资源编码查看资源详情
