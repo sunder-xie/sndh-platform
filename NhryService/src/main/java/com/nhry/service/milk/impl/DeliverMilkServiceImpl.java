@@ -417,7 +417,11 @@ public class DeliverMilkServiceImpl extends BaseService implements DeliverMilkSe
 			//生成变化路单
 			createRouteChanges(routeCode,dispDate);
 			
-			//创建回瓶管理
+			//创建回瓶管理，调用
+			
+			
+			//生成内部销售订单，调用
+			createInsideSalOrder(routeCode);
 		
 		}else{
 			throw new ServiceException(MessageCode.LOGIC_ERROR,"没有此路单号!");
