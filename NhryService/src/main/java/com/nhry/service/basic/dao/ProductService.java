@@ -4,6 +4,7 @@ import com.github.pagehelper.PageInfo;
 import com.nhry.data.basic.domain.TMdMara;
 import com.nhry.data.basic.domain.TMdMaraEx;
 import com.nhry.model.basic.ProductQueryModel;
+import com.nhry.service.basic.pojo.BotType;
 import com.nhry.service.basic.pojo.ProductInfoExModel;
 
 import  java.util.*;
@@ -73,4 +74,10 @@ public interface ProductService {
     PageInfo getBranchSaleMaras(ProductQueryModel pm);
 
     List<TMdMara>  getProductByCodeOrName(String product);
+    
+    /**
+     * 获取当前销售组织下产品与奶瓶规格数据
+     * @return
+     */
+    Map<String,String> getMataBotTypes();
 }
