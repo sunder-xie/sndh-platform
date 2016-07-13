@@ -8,6 +8,8 @@ public class TMdBranch implements Serializable{
 
     private String branchName;
 
+    private int totalCus;
+
     private String salesOrg;
 
     private String salesCha;
@@ -25,6 +27,8 @@ public class TMdBranch implements Serializable{
     private String mp;
 
     private String dealerNo;
+
+    private String dealerName;
 
     private String address;
 
@@ -58,6 +62,22 @@ public class TMdBranch implements Serializable{
 
     public void setBranchNo(String branchNo) {
         this.branchNo = branchNo == null ? null : branchNo.trim();
+    }
+
+    public int getTotalCus() {
+        return totalCus;
+    }
+
+    public void setTotalCus(int totalCus) {
+        this.totalCus = totalCus;
+    }
+
+    public String getDealerName() {
+        return dealerName;
+    }
+
+    public void setDealerName(String dealerName) {
+        this.dealerName = dealerName;
     }
 
     public String getBranchName() {

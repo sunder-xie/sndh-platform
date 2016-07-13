@@ -468,7 +468,7 @@
       o.BRANCH_NO,o.DISP_EMP_NO EMP_NO,i.ORDER_NO,i.ORDER_DATE,i.MATNR,i.QTY,i.UNIT,i.PRICE,i.CONFIRM_QTY,i.AMT,i.STATUS,i.REASON
       from t_mst_disp_order_item  i,t_mst_disp_order o
       where i.ORDER_NO = o.ORDER_NO
-        and ( i.REASON = '20' OR  i.REASON ='30')
+        and ( i.REASON is not null  and i.REASON &lt;&gt; '30')
         <if test="branchNo!=null and ''!=branchNo">
           and o.BRANCH_NO = #{branchNo,jdbcType=VARCHAR}
         </if>
@@ -489,7 +489,7 @@
     select
    <include refid="Base_Column_List"/>
     from t_mst_disp_order_item
-    where DISP_ORDER_NO = #{dispOrderNo,jdbcType=VARCHAR}
-    and (REASON = '20' or  REASON = '30')
+    where ORDER_NO = #{dispOrderNo,jdbcType=VARCHAR}
+    and (REASON is not null  and REASON &lt;&gt; '10')
   </select>
 </mapper>

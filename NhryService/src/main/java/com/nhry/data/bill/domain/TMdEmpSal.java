@@ -14,16 +14,77 @@ public class TMdEmpSal implements Serializable {
     private BigDecimal totalSal;//总工资
     private Date setDate;       //结算日期
     private BigDecimal compRate;//投诉率
-    private BigDecimal recRate; //回收率
     private BigDecimal dispRate; //配送率
     private BigDecimal compSal; //投诉费
-    private BigDecimal recSal;  //回收费
     private BigDecimal dispSal; //配送费
-
-
+    private BigDecimal InDispSal;//内部销售订单配送费
+    private BigDecimal sendDispSal;//赠品配送费
     private Date createAt;
     private String createBy;
     private String createByTxt;
+
+    private String empName;
+    private String branchNo;
+    private String branchName;
+    private String baseSalary;
+    private String salaryMet;
+
+    public BigDecimal getSendDispSal() {
+        return sendDispSal;
+    }
+
+    public void setSendDispSal(BigDecimal sendDispSal) {
+        this.sendDispSal = sendDispSal;
+    }
+
+    public BigDecimal getInDispSal() {
+        return InDispSal;
+    }
+
+    public void setInDispSal(BigDecimal inDispSal) {
+        InDispSal = inDispSal;
+    }
+
+    public String getBaseSalary() {
+        return baseSalary;
+    }
+
+    public void setBaseSalary(String baseSalary) {
+        this.baseSalary = baseSalary;
+    }
+
+    public String getSalaryMet() {
+        return salaryMet;
+    }
+
+    public void setSalaryMet(String salaryMet) {
+        this.salaryMet = salaryMet;
+    }
+
+    public String getBranchNo() {
+        return branchNo;
+    }
+
+    public void setBranchNo(String branchNo) {
+        this.branchNo = branchNo;
+    }
+
+    public String getBranchName() {
+        return branchName;
+    }
+
+    public void setBranchName(String branchName) {
+        this.branchName = branchName;
+    }
+
+    public String getEmpName() {
+        return empName;
+    }
+
+    public void setEmpName(String empName) {
+        this.empName = empName;
+    }
+
     public String getEmpSalLsh() {
         return empSalLsh;
     }
@@ -59,22 +120,6 @@ public class TMdEmpSal implements Serializable {
 
     public void setDispSal(BigDecimal dispSal) {
         this.dispSal = dispSal;
-    }
-
-    public BigDecimal getRecRate() {
-        return recRate;
-    }
-
-    public void setRecRate(BigDecimal recRate) {
-        this.recRate = recRate;
-    }
-
-    public BigDecimal getRecSal() {
-        return recSal;
-    }
-
-    public void setRecSal(BigDecimal recSal) {
-        this.recSal = recSal;
     }
 
     public void setEmpSalLsh(String empSalLsh) {

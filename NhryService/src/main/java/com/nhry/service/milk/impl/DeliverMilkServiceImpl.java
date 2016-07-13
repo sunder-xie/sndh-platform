@@ -1,19 +1,5 @@
 package com.nhry.service.milk.impl;
 
-import java.math.BigDecimal;
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Collection;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-
-
-import java.util.Map;
-
-import org.apache.commons.lang3.StringUtils;
-
 import com.github.pagehelper.PageInfo;
 import com.nhry.common.exception.MessageCode;
 import com.nhry.common.exception.ServiceException;
@@ -31,26 +17,17 @@ import com.nhry.data.order.dao.TPreOrderMapper;
 import com.nhry.data.order.domain.TOrderDaliyPlanItem;
 import com.nhry.data.order.domain.TPlanOrderItem;
 import com.nhry.data.order.domain.TPreOrder;
-import com.nhry.model.milk.RouteDetailUpdateListModel;
-import com.nhry.model.milk.RouteDetailUpdateModel;
-import com.nhry.model.milk.RouteOrderModel;
-import com.nhry.model.milk.RouteOrderSearchModel;
-import com.nhry.model.milk.RouteUpdateModel;
-import com.nhry.model.order.DaliyPlanEditModel;
+import com.nhry.model.milk.*;
 import com.nhry.service.BaseService;
 import com.nhry.service.milk.dao.DeliverMilkService;
 import com.nhry.service.milk.pojo.TDispOrderChangeItem;
 import com.nhry.service.order.dao.OrderService;
 import com.nhry.utils.SerialUtil;
-
 import org.apache.commons.lang3.StringUtils;
 
 import java.math.BigDecimal;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 
 public class DeliverMilkServiceImpl extends BaseService implements DeliverMilkService
 {
@@ -115,9 +92,10 @@ public class DeliverMilkServiceImpl extends BaseService implements DeliverMilkSe
      */
 	@Override
 	public int createInsideSalOrder(String dispOrderNo) {
+
 		String message = "";
-		try{
 			TMstInsideSalOrder sOrder = tMstInsideSalOrderMapper.getInSalOrderByDispOrderNo(dispOrderNo);
+
 			List<TDispOrderItem> entries = tDispOrderItemMapper.selectItemsByOrderNo(dispOrderNo);
 			if(entries == null || entries.size() <1){
 				message = "该路单没有可以生成销售订单的未送达项";
@@ -135,7 +113,6 @@ public class DeliverMilkServiceImpl extends BaseService implements DeliverMilkSe
 				sOrder.setSalEmpNo(order.getDispEmpNo());
 				tMstInsideSalOrderMapper.insertInsideSalOrder(sOrder);
 			}
-
 			for(TDispOrderItem entry : entries){
 				TMstInsideSalOrderItem item = new TMstInsideSalOrderItem();
 				item.setInsOrderNo(sOrder.getInsOrderNo());
@@ -144,20 +121,13 @@ public class DeliverMilkServiceImpl extends BaseService implements DeliverMilkSe
 				item.setMatnr(entry.getMatnr());
 				item.setOrderDate(sOrder.getOrderDate());
 				item.setPrice(entry.getPrice());
-				item.setQty(entry.getQty());
+				item.setQty(entry.getQty().subtract(entry.getConfirmQty()));
 				item.setReason(entry.getReason());
 				tMstInsideSalOrderItemMapper.insertOrderItem(item);
 			}
 			return 1;
 
-		}catch (Exception e){
-			if(message == ""){
-				throw new ServiceException(MessageCode.LOGIC_ERROR,"收款失败"+e.getMessage());
-			}else{
-				throw new ServiceException(MessageCode.LOGIC_ERROR,message);
-			}
 
-		}
 
 	}
 	/* (non-Javadoc) 

@@ -14,6 +14,15 @@ public class EmpDispDetialInfoSearch  extends BaseQueryModel implements Serializ
     private String empNo;
     private Date startDate;
     private Date endDate;
+    private String salesOrg;
+
+    public String getSalesOrg() {
+        return salesOrg;
+    }
+
+    public void setSalesOrg(String salesOrg) {
+        this.salesOrg = salesOrg;
+    }
 
     public String getBranchNo() {
         return branchNo;

@@ -124,6 +124,8 @@
 	<bean id="branchEmpService" class="com.nhry.service.basic.impl.BranchEmpServiceImpl">
 	   <property name="branchEmpMapper"  ref="branchEmpMapper"></property>
 		<property name="tMdBranchMapper"  ref="branchMapper"></property>
+		<property name="userRoleMapper"  ref="urMapper"></property>
+
 	   <property name="userSessionService" ref="userSessionService"></property>
 	</bean>
 	
