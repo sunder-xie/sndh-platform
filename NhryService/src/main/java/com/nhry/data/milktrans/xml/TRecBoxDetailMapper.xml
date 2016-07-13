@@ -12,19 +12,17 @@
         <result column="BOT_SPEC" property="botSpec" jdbcType="VARCHAR" />
         <result column="SPEC_UNIT " property="specUnit" jdbcType="VARCHAR" />
         <result column="DISP_ORDER_NO " property="dispOrderNo" jdbcType="VARCHAR" />
-
+        <result column="STATUS" property="status" jdbcType="VARCHAR" />
         <result column="CREATE_AT" property="createAt" jdbcType="DATE" />
         <result column="CREATE_BY" property="createBy" jdbcType="VARCHAR" />
         <result column="CREATE_BY_TXT" property="createByTxt" jdbcType="VARCHAR" />
         <result column="LAST_MODIFIED" property="lastModified" jdbcType="TIMESTAMP" />
         <result column="LAST_MODIFIED_BY" property="lastModifiedBy" jdbcType="VARCHAR" />
         <result column="LAST_MODIFIED_BY_TXT" property="lastModifiedByTxt" jdbcType="VARCHAR" />
-        <result column="RET_LSH" property="retLsh" jdbcType="VARCHAR" />
     </resultMap>
 
     <resultMap id="BoxRetResultMap" type="com.nhry.model.milktrans.ReturnBoxModel" >
         <result column="SPEC_NAME" property="specName" jdbcType="VARCHAR" />
-        <result column="RET_LSH" property="retLsh" jdbcType="VARCHAR" />
         <result column="DET_LSH" property="detLsh" jdbcType="VARCHAR" />
         <result column="DEALER_NO" property="dealerNo" jdbcType="VARCHAR" />
         <result column="DEALER_NAME" property="dealerName" jdbcType="VARCHAR" />
@@ -39,27 +37,23 @@
         <result column="REAL_NUM" property="realNum" jdbcType="INTEGER" />
     </resultMap>
     <sql id="Base_Column_List" >
-      DET_LSH,SPEC,RECEIVE_NUM,REAL_NUM,CREATE_BY,CREATE_BY_TXT,
-        LAST_MODIFIED,LAST_MODIFIED_BY,LAST_MODIFIED_BY_TXT,RET_LSH
+      DET_LSH,SPEC,RECEIVE_NUM,REAL_NUM,CREATE_BY,CREATE_BY_TXT,STATUS,
+        LAST_MODIFIED,LAST_MODIFIED_BY,LAST_MODIFIED_BY_TXT
     </sql>
     <insert id="addRecBotItem" parameterType="com.nhry.data.milktrans.domain.TRecBotDetail">
         insert into T_REC_BOT_DETAIL(
-        DET_LSH,BRANCH_NO,DISP_ORDER_NO,EMP_NO, SPEC, RECEIVE_NUM,CREATE_AT, CREATE_BY, CREATE_BY_TXT)
+        DET_LSH,BRANCH_NO,DISP_ORDER_NO,EMP_NO, SPEC, RECEIVE_NUM,CREATE_AT, CREATE_BY, CREATE_BY_TXT,STATUS)
         values( #{detLsh,jdbcType=VARCHAR},#{branchNo,jdbcType=VARCHAR},#{dispOrderNo,jdbcType=VARCHAR},
         #{empNo,jdbcType=VARCHAR}, #{spec,jdbcType=VARCHAR},#{receiveNum,jdbcType=INTEGER},
-        #{createAt,jdbcType=DATE}, #{createBy,jdbcType=VARCHAR},#{createByTxt,jdbcType=VARCHAR})
+        #{createAt,jdbcType=DATE}, #{createBy,jdbcType=VARCHAR},#{createByTxt,jdbcType=VARCHAR},#{status,jdbcType=VARCHAR})
 
     </insert>
-    <select id="selectBotDetailByRetLsh" resultMap="BaseResultMap" parameterType="String">
-        SELECT
-        <include refid="Base_Column_List"/>
-        from t_rec_bot_detail
-        where RET_LSH = #{retLsh,jdbcType=VARCHAR}
-    </select>
 
     <select id="selectBotDetailByDetLshAndSpec" resultMap="BaseResultMap" parameterType="java.util.Map">
         SELECT
-        DET_LSH,SPEC,RECEIVE_NUM,REAL_NUM,RET_LSH,STATUS
+        DET_LSH,SPEC,
+        (SELECT i.ITEM_NAME from t_sys_code_item i WHERE i.TYPE_CODE= <include refid="mybaties.constant.bot_spec"></include> and i.ITEM_CODE = SPEC ) SPEC_NAME,
+        RECEIVE_NUM,REAL_NUM,STATUS
         from t_rec_bot_detail
         where DET_LSH = #{detLsh}
         and SPEC = #{spec}
