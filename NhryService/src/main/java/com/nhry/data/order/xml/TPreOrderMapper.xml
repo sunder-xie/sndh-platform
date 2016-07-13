@@ -65,7 +65,7 @@
 		where o.MILKMEMBER_NO = #{memberNo,jdbcType=VARCHAR}
 	   and d.DISP_DATE &gt;= curdate()
 		and d.DISP_DATE &lt;= last_day(curdate())
-		and d.STATUS = '20'
+		and d.STATUS = '10'
   </select>
   <select id="selectByMilkmemberNo" resultMap="BaseResultMap" parameterType="java.lang.String" >
     select 

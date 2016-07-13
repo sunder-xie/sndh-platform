@@ -473,14 +473,14 @@ public class DeliverMilkServiceImpl extends BaseService implements DeliverMilkSe
 			
 			//对每日计划的统计
 			int index = 0;
-			String empNo = null;
+			String empNo = order.getEmpNo();
 			for(TOrderDaliyPlanItem plan : daliyPlans){
 				TDispOrderItem item = new TDispOrderItem();
 				totalQty += plan.getQty();
 				totalAmt = totalAmt.add(plan.getAmt());
 				
 				//路单详细,一个日计划对应一行
-				if(empNo == null)empNo = plan.getLastModifiedByTxt();//配送人员id,字段临时读取,不需要再增加字段
+//				if(empNo == null)empNo = plan.getLastModifiedByTxt();//配送人员id,字段临时读取,不需要再增加字段
 				item.setOrderNo(String.valueOf(date.getTime()));
 				item.setOrderDate(date);
 				item.setItemNo(String.valueOf(index));
