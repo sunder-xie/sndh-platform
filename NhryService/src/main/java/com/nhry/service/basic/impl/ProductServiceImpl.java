@@ -104,9 +104,9 @@ public class ProductServiceImpl extends BaseService implements ProductService {
 		attrs.put("salesOrg",this.userSessionService.getCurrentUser().getSalesOrg());
 		TMdMara mara = tMdMaraMapper.selectProductAndExByCode(attrs);
 		if(mara != null){
-			this.notsellListMapper.getNotSellListByMatnr(matnr);
+			mara.setNotsellList(this.notsellListMapper.getNotSellListByMatnr(matnr));
 		}
-		return tMdMaraMapper.selectProductAndExByCode(attrs);
+		return mara;
 	}
 
 	@Override
