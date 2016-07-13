@@ -7,9 +7,10 @@ import com.nhry.model.milk.RouteOrderSearchModel;
 import com.nhry.model.milktrans.CreateEmpReturnboxModel;
 
 import java.math.BigDecimal;
+import java.util.List;
 
 public interface TDispOrderMapper {
-    int deleteByPrimaryKey(TDispOrderKey key);
+    List<TDispOrder> selectTodayDispOrderByBranchNo(String branchNo);
 
     int insert(TDispOrder record);
 

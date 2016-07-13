@@ -22,5 +22,5 @@ public interface TMdBranchEmpMapper {
 
     TMdBranchEmp selectBranchEmpByEmpNo(String empNo);
 
-    List<TMdBranchEmp> getAllEmpByBranchNo(String branchNo);
+    List<TMdBranchEmp> getAllEmpByBranchNo(String branchNo,String salesOrg);
 }

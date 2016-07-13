@@ -37,4 +37,6 @@ public interface DeliverMilkService {
 	int createRouteChanges();
 	
 	int updatePreOrderCurAmt(String orderNo , BigDecimal amt);
+	
+	int createDispOrderdayliy();
 }

@@ -145,7 +145,7 @@ public class TVipCustInfoServiceImpl extends BaseService implements TVipCustInfo
 		TVipCustInfo cust = new TVipCustInfo();
 		cust.setVipCustNo(vipCustNo);
 		cust.setStatus(status);
-		cust.setFirstOrderTime(firstTime);
+		if(custinfo.getFirstOrderTime()==null)cust.setFirstOrderTime(firstTime);
 		cust.setLastOrderTime(lastestTime);
 		cust.setLastModified(new Date());
 		cust.setLastModifiedBy(this.userSessionService.getCurrentUser().getLoginName());
