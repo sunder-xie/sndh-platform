@@ -768,6 +768,10 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 		//已生效10、未生效20、无效30
 		//先款10、后付款20
 		//在订10、停订20、退订30
+		if("10".equals(record.getPreorderStat())){
+			TPreOrder order = tPreOrderMapper.selectByPrimaryKey(record.getOrderNo());
+			if(StringUtils.isBlank(order.getMilkmemberNo()))throw new ServiceException(MessageCode.LOGIC_ERROR,"该订单没有订户，请选择订户或新建订户!");
+		}
 		if(StringUtils.isBlank(record.getPaymentStat()) && StringUtils.isBlank(record.getMilkboxStat())
 				&& StringUtils.isBlank(record.getPreorderStat()) && StringUtils.isBlank(record.getSign())){
 			throw new ServiceException(MessageCode.LOGIC_ERROR,"更新信息与状态为空!");

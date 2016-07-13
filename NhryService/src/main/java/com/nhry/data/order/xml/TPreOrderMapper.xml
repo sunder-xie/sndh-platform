@@ -487,15 +487,15 @@
     select
       o.ORDER_NO, o.PREORDER_STAT,o.RET_REASON,o.RET_DATE, c.VIP_NAME MILKMEMBER_NO, c.VIP_NAME MEMBER_NO,
     c.MP CUSTOMER_TEL,b.BRANCH_NAME BRANCH_NO,o.SIGN
-    FROM t_preorder o,t_md_branch b,t_vip_cust_info c
+    FROM t_preorder o
+    left join t_md_branch b on o.BRANCH_NO  = b.BRANCH_NO
+	 left join t_vip_cust_info c on o.MILKMEMBER_NO = c.VIP_CUST_NO
 
-    WHERE o.BRANCH_NO  = b.BRANCH_NO and o.MILKMEMBER_NO = c.VIP_CUST_NO
-    <!-- and o.MEMBER_NO = c.VIP_CUST_NO -->
-    <!-- and  o.PREORDER_STAT = '20' -->  
-    and o.RET_REASON is not null 
-    and o.RET_REASON != ""
+    WHERE  1=1
+    <!-- and o.RET_REASON is not null 
+    and o.RET_REASON != "" -->
+    and o.SIGN = "30"
     and o.PREORDER_STAT != "30"
-    and o.BACK_DATE is null
 
     <if test="orderDateStart != null and orderDateStart !=''">
       AND o.RET_DATE &gt;= #{orderDateStart,jdbcType=DATE}
@@ -508,9 +508,6 @@
     </if>
     <if test="retReason != null and retReason !=''">
       AND o.RET_REASON = #{retReason,jdbcType=VARCHAR}
-    </if>
-    <if test="branchNo != null and branchNo !=''">
-      AND o.BRANCH_NO = #{branchNo,jdbcType=VARCHAR}
     </if>
     <if test="salesOrg != null and salesOrg !=''">
       AND o.SALES_ORG = #{salesOrg,jdbcType=VARCHAR}

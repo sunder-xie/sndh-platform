@@ -22,8 +22,10 @@ import com.nhry.service.BaseService;
 import com.nhry.service.basic.dao.ProductService;
 import com.nhry.service.milk.dao.DeliverMilkService;
 import com.nhry.service.milk.pojo.TDispOrderChangeItem;
+import com.nhry.service.milktrans.dao.ReturnBoxService;
 import com.nhry.service.order.dao.OrderService;
 import com.nhry.utils.SerialUtil;
+
 import org.apache.commons.lang3.StringUtils;
 
 import java.math.BigDecimal;
@@ -40,6 +42,12 @@ public class DeliverMilkServiceImpl extends BaseService implements DeliverMilkSe
 	private TPlanOrderItemMapper tPlanOrderItemMapper;
 	private OrderService orderService;
 	private ProductService productService;
+	private ReturnBoxService returnBoxService;
+	
+	public void setReturnBoxService(ReturnBoxService returnBoxService)
+	{
+		this.returnBoxService = returnBoxService;
+	}
 	
 	public void setProductService(ProductService productService)
 	{
@@ -186,7 +194,7 @@ public class DeliverMilkServiceImpl extends BaseService implements DeliverMilkSe
 			if(tmpDispOrder!=null){
 				String yestodayOrderNo = tmpDispOrder.getOrderNo();
 				//查昨日的回瓶管理
-				
+//				returnBoxService.
 //				routeModel.setRetAmt(retAmt);
 			}
 			
@@ -402,7 +410,7 @@ public class DeliverMilkServiceImpl extends BaseService implements DeliverMilkSe
 			createRouteChanges(routeCode,dispDate);
 			
 			//创建回瓶管理，调用
-			
+			returnBoxService.createDayRetBox(routeCode);
 			
 			//生成内部销售订单，调用
 			createInsideSalOrder(routeCode);
