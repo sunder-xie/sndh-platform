@@ -321,7 +321,7 @@
 		ORDER BY
 			p.PRICE_TYPE DESC
   </select>
-  <select id="getPricesGroupByBn" resultType="com.nhry.service.basic.pojo.PriceGroup"  parameterType="java.util.HashMap">
+  <select id="getPricesGroupByBn" resultMap="BaseResultMap" parameterType="java.util.HashMap">
      	SELECT
 			p.*
 		FROM

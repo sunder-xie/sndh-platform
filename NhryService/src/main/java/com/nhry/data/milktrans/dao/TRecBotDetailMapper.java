@@ -13,13 +13,11 @@ import java.util.Map;
 public interface TRecBotDetailMapper {
     int addRecBotItem(TRecBotDetail bot);
 
-    List<TRecBotDetail> selectBotDetailByRetLsh(String retLsh);
-
     int uptRecBotDetail(TRecBotDetail entry);
 
     PageInfo searchRetBoxPage(ReturnboxSerarch rSearch);
 
     TRecBotDetail selectBotDetailByDetLsh(Map<String, String> map);
 
-    TRecBotDetail selectRetByDispOrderNo(String dispOrderNo);
+    List<TRecBotDetail> selectRetByDispOrderNo(String dispOrderNo);
 }

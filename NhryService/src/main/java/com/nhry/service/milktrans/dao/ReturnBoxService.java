@@ -1,5 +1,7 @@
 package com.nhry.service.milktrans.dao;
 
+import java.util.Map;
+
 import com.github.pagehelper.PageInfo;
 import com.nhry.model.milktrans.*;
 
@@ -13,5 +15,7 @@ public interface ReturnBoxService {
     public  int createDayRetBox(String dispOrderNo);
 
     public PageInfo searchRetBoxPage(ReturnboxSerarch rSearch);
+    
+    String getLastDayRets(String code);
 
 }

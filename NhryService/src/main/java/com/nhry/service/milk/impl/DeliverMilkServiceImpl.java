@@ -194,8 +194,7 @@ public class DeliverMilkServiceImpl extends BaseService implements DeliverMilkSe
 			if(tmpDispOrder!=null){
 				String yestodayOrderNo = tmpDispOrder.getOrderNo();
 				//查昨日的回瓶管理
-//				returnBoxService.
-//				routeModel.setRetAmt(retAmt);
+				routeModel.setRetAmt(returnBoxService.getLastDayRets(yestodayOrderNo));
 			}
 			
 			//处理每个产品应该送多少个
