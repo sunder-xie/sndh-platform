@@ -127,7 +127,7 @@ public class EmpBillServiceImpl implements EmpBillService {
     public BigDecimal CalculateEmpTransRateByProduct(String matnr,String salesOrg){
         TMdMaraEx product = tMdMaraExMapper.getProductTransRateByCode(matnr,salesOrg);
         if(product == null){
-            throw new ServiceException(MessageCode.LOGIC_ERROR,"产品"+matnr+"在分公司"+salesOrg+"下不存在");
+           return new BigDecimal(0);
         }
         return product.getRate();
     }
@@ -280,7 +280,7 @@ public class EmpBillServiceImpl implements EmpBillService {
         if(empList!=null && empList.size()>0){
             for(TMdBranchEmp emp : empList){
                 search.setEmpNo(emp.getEmpNo());
-                this.setEmpSalary(emp,search,setYearMonth);
+                this.setEmpSalary(emp,search,setYearMonth,user);
             }
         }
         return 1;
@@ -290,7 +290,7 @@ public class EmpBillServiceImpl implements EmpBillService {
      * 结算送奶员本月工资,基本工资 + 产品配送费 + 赠品配送费+ 内部销售订单配送费
      * @return
      */
-    public int setEmpSalary(TMdBranchEmp emp,EmpDispDetialInfoSearch search,String setYearMonth){
+    public int setEmpSalary(TMdBranchEmp emp,EmpDispDetialInfoSearch search,String setYearMonth,TSysUser user){
         String empNo = emp.getEmpNo();
         Map<String,String> map =new HashMap<String,String>();
         map.put("empNo",empNo);
@@ -301,7 +301,7 @@ public class EmpBillServiceImpl implements EmpBillService {
             empSal.setEmpSalLsh(PrimaryKeyUtils.generateUuidKey());
             empSal.setEmpNo(empNo);
             //三种配送费
-            if("10".equals(emp.getSalaryMet())){
+            if("20".equals(emp.getSalaryMet())){
                 //按产品结算  //产品配送费
                 List<EmpAccoDispFeeByProduct> pro = empBillMapper.empDisByProduct(search);
                 BigDecimal dispFee = this.getEmpDispFee(pro,emp.getSalesOrg());
@@ -311,7 +311,6 @@ public class EmpBillServiceImpl implements EmpBillService {
                 //按产品结算  //内部销售配送费
                 List<EmpAccoDispFeeByProduct> proIn = empBillMapper.empInDispByProduct(search);
                 BigDecimal inDispFee = this.getEmpDispFee(proIn,emp.getSalesOrg());
-
                 empSal.setInDispSal(inDispFee);
 
                 //按产品结算  //赠品配送费
@@ -320,14 +319,23 @@ public class EmpBillServiceImpl implements EmpBillService {
             }else{
                 //按数量结算  //产品配送费
                 int dispNum = empBillMapper.empDispFeeNum(search);
-                BigDecimal dispRate = this.CalculateEmpTransRateByNum(empNo,dispNum);
-                empSal.setDispSal(dispRate.multiply(new BigDecimal(dispNum)));
+                if(dispNum == 0){
+                    empSal.setDispSal(new BigDecimal(0));
+                }else{
+                    BigDecimal dispRate = this.CalculateEmpTransRateByNum(empNo,dispNum);
+                    empSal.setDispSal(dispRate.multiply(new BigDecimal(dispNum)));
+                }
 
                 //按数量结算  //内部销售配送费
                 int inDispNum = empBillMapper.empInDispFeeNum(search);
-                BigDecimal inDispRate = this.CalculateEmpTransRateByNum(empNo,inDispNum);
-                empSal.setInDispSal(inDispRate.multiply(new BigDecimal(inDispNum)));
+                if(inDispNum == 0){
+                    empSal.setInDispSal(new BigDecimal(0));
+                }else{
+                    BigDecimal inDispRate = this.CalculateEmpTransRateByNum(empNo,inDispNum);
+                    empSal.setInDispSal(inDispRate.multiply(new BigDecimal(inDispNum)));
+                }
 
+                empSal.setDispNum(dispNum+inDispNum);
 
                 //按数量结算  //赠品配送费
               /*  int sendDispNum = empBillMapper.empFreeDispFeeNum(search);
@@ -338,7 +346,11 @@ public class EmpBillServiceImpl implements EmpBillService {
             }
 
             empSal.setTotalSal(empSal.getInDispSal().add(empSal.getDispSal()).add(new BigDecimal(emp.getBaseSalary())));
-
+            empSal.setCreateAt(new Date());
+            empSal.setSetDate(new Date());
+            empSal.setSetYearMonth(setYearMonth);
+            empSal.setCreateBy(user.getLoginName());
+            empSal.setCreateByTxt(user.getDisplayName());
             tMdEmpSalMapper.addEmpSal(empSal);
 
         }
