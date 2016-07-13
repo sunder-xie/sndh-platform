@@ -90,6 +90,7 @@ public class BillResource extends BaseResource {
     }
 
 
+/*
 
     @POST
     @Path("/emp/empSalaryRep")
@@ -99,6 +100,30 @@ public class BillResource extends BaseResource {
     public Response empSalaryRep(@ApiParam(required=true,name="eSearch",value="查询条件") EmpDispDetialInfoSearch eSearch){
         return convertToRespModel(MessageCode.NORMAL, null, empBillService.empSalaryRep(eSearch));
     }
+*/
+
+
+    @POST
+    @Path("/emp/searchEmpSalaryRep")
+    @Produces(MediaType.APPLICATION_JSON)
+    @Consumes(MediaType.APPLICATION_JSON)
+    @ApiOperation(value = "/emp/searchEmpSalaryRep", response = PageInfo.class, notes = "送奶员工资报表")
+    public Response searchEmpSalaryRep(@ApiParam(required=true,name="eSearch",value="查询条件") EmpDispDetialInfoSearch eSearch){
+        return convertToRespModel(MessageCode.NORMAL, null, empBillService.searchEmpSalaryRep(eSearch));
+    }
+
+
+
+    @POST
+    @Path("/emp/setBranchEmpSalary")
+    @Produces(MediaType.APPLICATION_JSON)
+    @Consumes(MediaType.APPLICATION_JSON)
+    @ApiOperation(value = "/emp/setBranchEmpSalary", response = PageInfo.class, notes = "结算本月本奶站下所有送奶员工资")
+    public Response setBranchEmpSalary(){
+        return convertToRespModel(MessageCode.NORMAL, null, empBillService.setBranchEmpSalary());
+    }
+
+
 
     @POST
     @Path("/emp/getSalesOrgDispRate")
