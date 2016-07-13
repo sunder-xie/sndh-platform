@@ -5,6 +5,7 @@ import java.util.Map;
 import com.nhry.common.datasource.DynamicSqlSessionTemplate;
 import com.nhry.data.basic.dao.TMdMaraExMapper;
 import com.nhry.data.basic.domain.TMdMaraEx;
+import com.nhry.service.basic.pojo.BotType;
 
 import java.util.List;
 
@@ -47,5 +48,11 @@ public class TMdMaraExMapperImpl implements TMdMaraExMapper {
 	public TMdMaraEx findProductExByCode(Map<String,String> attrs) {
 		// TODO Auto-generated method stub
 		return this.sqlSessionTemplate.selectOne("findProductExByCode", attrs);
+	}
+
+	@Override
+	public List<BotType> getMataBotTypes(String salesOrg) {
+		// TODO Auto-generated method stub
+		return this.sqlSessionTemplate.selectList("getMataBotTypes", salesOrg);
 	}
 }

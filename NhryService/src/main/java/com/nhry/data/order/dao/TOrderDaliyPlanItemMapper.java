@@ -7,6 +7,7 @@ import com.nhry.data.order.domain.TPreOrder;
 import com.nhry.model.milktrans.RequireOrderSearch;
 import com.nhry.model.order.OrderSearchModel;
 
+import java.math.BigDecimal;
 import java.util.Date;
 import java.util.List;
 
@@ -18,13 +19,13 @@ public interface TOrderDaliyPlanItemMapper {
 
     int insert(TOrderDaliyPlanItem record);
 
-    int insertSelective(TOrderDaliyPlanItem record);
+    BigDecimal selectDaliyPlansRemainAmt(TOrderDaliyPlanItemKey record);
 
     List<TOrderDaliyPlanItem> selectbyDispLineNo(String empNo , String date,String reachTimeType);
 
     int updateByPrimaryKeySelective(TOrderDaliyPlanItem record);
 
-    int updateByPrimaryKey(TOrderDaliyPlanItem record);
+    int updateFromDateToDate(TOrderDaliyPlanItem record);
     
     int updateDaliyPlanItemStatus(TOrderDaliyPlanItem record);
     

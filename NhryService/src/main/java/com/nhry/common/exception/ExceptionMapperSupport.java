@@ -1,5 +1,8 @@
 package com.nhry.common.exception;
 
+import java.io.IOException;
+
+import javax.servlet.ServletInputStream;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.ws.rs.core.Context;
@@ -9,6 +12,7 @@ import javax.ws.rs.core.Response.Status;
 import javax.ws.rs.ext.ExceptionMapper;
 import javax.ws.rs.ext.Provider;
 
+import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;
 import org.codehaus.jettison.json.JSONException;
@@ -37,6 +41,18 @@ public class ExceptionMapperSupport implements ExceptionMapper<Exception> {
 	 */
 	public Response toResponse(Exception exception) {
 		exception.printStackTrace();
+//		try {
+//			ServletInputStream inStream = request.getInputStream();
+//			String  contentStr= IOUtils.toString(inStream, "utf-8");
+//			System.out.println("-------------------------------");
+//			System.out.println();
+//			System.out.println(contentStr);
+//			System.out.println();
+//			System.out.println("-------------------------------");
+//		} catch (IOException e) {
+//			// TODO Auto-generated catch block
+//			e.printStackTrace();
+//		}
 		String code = MessageCode.SERVER_ERROR;
 		Object msg = null;
 		Status statusCode = Status.INTERNAL_SERVER_ERROR;
@@ -74,4 +90,29 @@ public class ExceptionMapperSupport implements ExceptionMapper<Exception> {
 		rsmodel.setData(data==null ? "" : data);
 		return Response.ok(rsmodel,MediaType.APPLICATION_JSON).status(statusCode).build();
 	}
+	
+	
+	protected String inputStream(ServletInputStream sis, int size,String bodyNodeIdentifier) throws Exception
+	{
+		if(size<=0)
+			return null;
+		
+		byte[] buffer = new byte[1024]; // 用于缓存每次读取的数据
+
+		byte[] in_b = new byte[size]; //  用于存放结果的数组
+
+		int count = 0;
+
+		int readlen = 0;
+
+		while (count < size) { // 循环读取
+			readlen = sis.read(buffer);
+			for (int i = 0; i < readlen; i++)
+				in_b[count + i] = buffer[i];
+			count += readlen;
+		}
+		
+		return new String(in_b,"UTF-8");
+	}
+
 }

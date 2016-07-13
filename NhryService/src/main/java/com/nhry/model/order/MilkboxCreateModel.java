@@ -5,6 +5,7 @@ import com.wordnik.swagger.annotations.ApiModel;
 import com.wordnik.swagger.annotations.ApiModelProperty;
 
 import java.io.Serializable;
+import java.util.Date;
 
 @ApiModel(value = "MilkboxCreateModel", description = "奶箱新建对象")
 public class MilkboxCreateModel implements Serializable {
@@ -12,7 +13,7 @@ public class MilkboxCreateModel implements Serializable {
 	private String code;
 	private String status;
 	private String paymentStatus;
-	private String setDate;
+	private Date setDate;
 	private String empNo;
 	private String addressNo;
 	private String branchNo;
@@ -64,11 +65,11 @@ public class MilkboxCreateModel implements Serializable {
 	{
 		this.paymentStatus = paymentStatus;
 	}
-	public String getSetDate()
+	public Date getSetDate()
 	{
 		return setDate;
 	}
-	public void setSetDate(String setDate)
+	public void setSetDate(Date setDate)
 	{
 		this.setDate = setDate;
 	}

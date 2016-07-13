@@ -16,4 +16,6 @@
 	<sql id="vip_src">1006</sql>
 	<!-- 订户类型 -->
 	<sql id="vip_type">1007</sql>
+	<!-- 价格组类型 -->
+	<sql id="price_type">1008</sql>
 </mapper>  

@@ -25,7 +25,7 @@
 	<bean id="sqlSessionTemplate" class="org.mybatis.spring.SqlSessionTemplate"  scope="prototype">
 		<constructor-arg index="0" ref="sqlSessionFactory" />
 	</bean>
-	<bean id="dynamicSqlSessionTemplate" class="com.nhry.common.datasource.DynamicSqlSessionTemplate">
+	<bean id="dynamicSqlSessionTemplate" class="com.nhry.common.datasource.DynamicSqlSessionTemplate" scope="prototype">
 		<constructor-arg index="0" ref="sqlSessionTemplate" />
 	</bean>
 	<bean id="userSessionService" class="com.nhry.common.auth.UserSessionService">

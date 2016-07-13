@@ -210,6 +210,9 @@
       <if test="lastModifiedByTxt != null" >
         LAST_MODIFIED_BY_TXT = #{lastModifiedByTxt,jdbcType=VARCHAR},
       </if>
+       <if test="scope != null" >
+       	 SCOPE = #{scope,jdbcType=VARCHAR},
+      </if>
     </set>
     where ID = #{id,jdbcType=VARCHAR}
   </update>
@@ -226,7 +229,15 @@
 			AND t.ITEM_CODE = p.SALES_ORG
 		) SALES_ORG,
 		PRICE_GROUP,
-		p.PRICE_TYPE,
+		(
+			SELECT
+				t.ITEM_NAME
+			FROM
+				t_sys_code_item t
+			WHERE
+				t.TYPE_CODE = <include refid="mybaties.constant.price_type"></include>
+			AND t.ITEM_CODE = p.PRICE_TYPE
+		)  PRICE_TYPE,
 		date_format(p.START_DATE, '%Y-%m-%d') START_DATE,
 		date_format(p.END_DATE, '%Y-%m-%d') END_DATE,
 		p.CREATE_AT,
@@ -235,7 +246,7 @@
 		p.LAST_MODIFIED,
 		p.LAST_MODIFIED_BY,
 		p.LAST_MODIFIED_BY_TXT,
-		p. STATUS,
+		(case IFNULL(p. STATUS,'N') when 'Y' then '启用' else '停用' end) STATUS,
 		p.SCOPE,
 		(
 			SELECT
@@ -321,26 +332,21 @@
 		AND p.SALES_ORG = #{salesOrg}
 		AND pb.BRANCH_NO = #{branchNo}
   </select>
-  <select id="getOwnBranchPricesGroupByBn" resultType="com.nhry.service.basic.pojo.PriceGroup"  parameterType="String">
+  <select id="getOwnBranchPricesGroupByBn" resultMap="BaseResultMap"  parameterType="String">
      	SELECT
 			p.*
 		FROM
-			T_MD_PRICE p,
-			T_MD_PRICE_BRANCH pb
+			T_MD_PRICE p 
 		WHERE
-			p.ID = pb.ID
-		AND p.SALES_ORG = #{salesOrg}
-		AND p.SCOPE = '-1'
+			 p.SALES_ORG = #{salesOrg}
+		AND p.price_type='30'
   </select>
-  <select id="getDealerBranchPricesGroupByBn" resultType="com.nhry.service.basic.pojo.PriceGroup"  parameterType="java.util.HashMap">
+  <select id="getDealerBranchPricesGroupByBn" resultMap="BaseResultMap"  parameterType="java.util.HashMap">
      	SELECT
 			p.*
 		FROM
-			T_MD_PRICE p,
-			T_MD_PRICE_BRANCH pb
-		WHERE
-			p.ID = pb.ID
-		AND p.SALES_ORG = #{salesOrg}
-		AND p.SCOPE = #{dealerNo}
+			T_MD_PRICE p 
+		WHERE p.SALES_ORG = #{salesOrg}
+		AND p.price_type='30'
   </select>
 </mapper>
