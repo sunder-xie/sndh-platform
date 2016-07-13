@@ -36,7 +36,7 @@ public interface ProductService {
      * @param code
      * @return
      */
-    int pubProductByCode(String code);
+    int pubProductByCode(String code,String status);
     
     /**
      * 根据分类、产品状态、(产品名称、产品简称、产品编号)查询产品列表信息
