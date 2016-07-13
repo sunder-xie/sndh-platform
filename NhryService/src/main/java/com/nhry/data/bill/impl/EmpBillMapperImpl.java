@@ -42,4 +42,34 @@ public class EmpBillMapperImpl implements EmpBillMapper {
     public int empAccoDispFeeByNum(EmpDispDetialInfoSearch eSearch) {
         return sqlSessionTemplate.selectOne("empAccoDispFeeByNum",eSearch);
     }
+
+    @Override
+    public int empInDispFeeNum(EmpDispDetialInfoSearch eSearch) {
+        return sqlSessionTemplate.selectOne("empInDispFeeNum",eSearch);
+    }
+
+    @Override
+    public int empDispFeeNum(EmpDispDetialInfoSearch eSearch) {
+        return sqlSessionTemplate.selectOne("empDispFeeNum",eSearch);
+    }
+
+    @Override
+    public int empFreeDispFeeNum(EmpDispDetialInfoSearch eSearch) {
+        return sqlSessionTemplate.selectOne("empFreeDispFeeNum",eSearch);
+    }
+
+    @Override
+    public List<EmpAccoDispFeeByProduct> empDisByProduct(EmpDispDetialInfoSearch eSearch) {
+        return sqlSessionTemplate.selectList("empDisByProduct",eSearch);
+    }
+
+    @Override
+    public List<EmpAccoDispFeeByProduct> empInDispByProduct(EmpDispDetialInfoSearch eSearch) {
+        return sqlSessionTemplate.selectList("empInDispByProduct",eSearch);
+    }
+
+    @Override
+    public List<EmpAccoDispFeeByProduct> empFreeDispByProduct(EmpDispDetialInfoSearch eSearch) {
+        return sqlSessionTemplate.selectList("empFreeDispByProduct",eSearch);
+    }
 }

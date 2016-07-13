@@ -4,7 +4,9 @@ import com.github.pagehelper.PageInfo;
 import com.nhry.common.auth.UserSessionService;
 import com.nhry.common.exception.MessageCode;
 import com.nhry.common.exception.ServiceException;
+import com.nhry.data.auth.dao.TSysUserRoleMapper;
 import com.nhry.data.auth.domain.TSysUser;
+import com.nhry.data.auth.domain.TSysUserRole;
 import com.nhry.data.basic.dao.TMdBranchEmpMapper;
 import com.nhry.data.basic.dao.TMdBranchMapper;
 import com.nhry.data.basic.domain.TMdBranch;
@@ -24,6 +26,9 @@ public class BranchEmpServiceImpl extends BaseService implements BranchEmpServic
 	private TMdBranchEmpMapper branchEmpMapper;
 	private TMdBranchMapper tMdBranchMapper;
 	private UserSessionService userSessionService;
+	private TSysUserRoleMapper userRoleMapper;
+
+
 
 	@Override
 	public int deleteBranchEmpByNo(String empNo) {
@@ -115,6 +120,10 @@ public class BranchEmpServiceImpl extends BaseService implements BranchEmpServic
 		this.tMdBranchMapper = tMdBranchMapper;
 	}
 
+	public void setUserRoleMapper(TSysUserRoleMapper userRoleMapper) {
+		this.userRoleMapper = userRoleMapper;
+	}
+
 	@Override
 	public void setUserSessionService(UserSessionService userSessionService) {
 		this.userSessionService = userSessionService;
@@ -124,6 +133,17 @@ public class BranchEmpServiceImpl extends BaseService implements BranchEmpServic
 	public PageInfo searchBranchEmp(EmpQueryModel smodel) {
 		TSysUser user = userSessionService.getCurrentUser();
 		smodel.setSalesOrg(user.getSalesOrg());
+
+		if(StringUtils.isBlank(smodel.getBranchNo())){
+			TSysUserRole userRole = userRoleMapper.getUserRoleByLoginName(user.getLoginName());
+			if("10003".equals(userRole.getId())){
+				smodel.setBranchNo("");
+			}else{
+				smodel.setBranchNo(user.getBranchNo());
+			}
+		}
+
+
 		// TODO Auto-generated method stub
 		if(StringUtils.isEmpty(smodel.getPageNum()) || StringUtils.isEmpty(smodel.getPageSize())){
 			throw new ServiceException(MessageCode.LOGIC_ERROR,"pageNum和pageSize不能为空！");
