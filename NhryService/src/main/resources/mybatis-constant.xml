@@ -28,4 +28,6 @@
 	<sql id="sys_res_type">1012</sql>
 	<!-- 采购组 -->
 	<sql id="purchasing_group">1013</sql>
+	<!-- 价格组类型  公司价 -->
+	<sql id="price_type_comp">10</sql>
 </mapper>  

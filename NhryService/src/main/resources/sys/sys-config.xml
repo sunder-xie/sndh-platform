@@ -18,4 +18,10 @@
   <config key="own_Branch" value="01"></config>
   <!-- 经销商奶站性质 -->
   <config key="dealer_Branch" value="02"></config>
+  <!-- 价格组类型 公司价 -->
+  <config key="price_type_comp" value="10"></config>
+  <!-- 价格组类型 区域价 -->
+  <config key="price_type_area" value="20"></config>
+  <!-- 价格组类型 奶站价 -->
+  <config key="price_type_station" value="30"></config>
 </configs>

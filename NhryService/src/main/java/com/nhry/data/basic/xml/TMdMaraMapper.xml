@@ -83,7 +83,7 @@
 		pex.LAST_MODIFIED_BY_TXT  
 		FROM 
 		t_md_mara p 
-		LEFT JOIN t_md_mara_ex pex ON p.MATNR = pex.MATNR 
+		LEFT JOIN t_md_mara_ex pex ON (p.MATNR = pex.MATNR and p.SALES_ORG=pex.SALES_ORG)
 		WHERE p.SALES_ORG=#{salesOrg} and p.MATNR = #{matnr}
 	</select>
 	<select id="searchProducts" resultMap="BaseResultMap" parameterType="com.nhry.model.basic.ProductQueryModel">
@@ -121,7 +121,7 @@
 		pex.LAST_MODIFIED_BY_TXT  
 		FROM
 		t_md_mara p
-		LEFT JOIN t_md_mara_ex pex ON p.MATNR = pex.MATNR
+		LEFT JOIN t_md_mara_ex pex ON (p.MATNR = pex.MATNR and p.SALES_ORG=pex.SALES_ORG)
 		<where>
 			<if test="firstCatory != null and firstCatory !=''">
 				p.FIRST_CAT = #{firstCatory,jdbcType=VARCHAR}
@@ -180,7 +180,7 @@
 		pex.LAST_MODIFIED_BY_TXT  
 		FROM
 		t_md_mara p
-		LEFT JOIN t_md_mara_ex pex ON p.SALES_ORG=pex.SALES_ORG AND p.MATNR = pex.MATNR
+		LEFT JOIN t_md_mara_ex pex ON (p.MATNR = pex.MATNR and p.SALES_ORG=pex.SALES_ORG)
 		<where>
 		    <if test="productCode != null and productCode != ''">
 		        p.MATNR like #{productCode}  
