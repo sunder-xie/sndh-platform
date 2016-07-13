@@ -96,7 +96,11 @@ public class BranchEmpServiceImpl extends BaseService implements BranchEmpServic
 
 	@Override
 	public List<TMdBranchEmp> getAllEmpByBranchNo(String branchNo) {
-		return branchEmpMapper.getAllEmpByBranchNo(branchNo);
+		if(StringUtils.isBlank(branchNo)){
+			branchNo = userSessionService.getCurrentUser().getBranchNo();
+		}
+		String salesOrg = userSessionService.getCurrentUser().getSalesOrg();
+		return branchEmpMapper.getAllEmpByBranchNo(branchNo,salesOrg);
 	}
 
 	@Override
