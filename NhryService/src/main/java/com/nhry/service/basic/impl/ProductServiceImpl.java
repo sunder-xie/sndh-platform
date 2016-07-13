@@ -72,6 +72,10 @@ public class ProductServiceImpl extends BaseService implements ProductService {
 		if(record.getMaraEx() != null){
 			this.uptProductExByCode(record.getMatnr(),record.getMaraEx());
 		}
+	   if(!StringUtils.isBlank(record.getStatus())){
+		   //状态不为空时，更新产品状态
+		   pubProductByCode(record.getMatnr());
+		}
 		return 1;
 	}
 
@@ -108,9 +112,6 @@ public class ProductServiceImpl extends BaseService implements ProductService {
 	@Override
 	public int pubProductByCode(String code) {
 		// TODO Auto-generated method stub
-		if(StringUtils.isEmpty(this.userSessionService.getCurrentUser().getSalesOrg())){
-			throw new ServiceException(MessageCode.LOGIC_ERROR,"当前用户的关联的组织信息不全,请先维护好当前用户信息!");
-		}
 		Map<String,String> attrs = new HashMap<String,String>();
 		attrs.put("code", code);
 		attrs.put("salesOrg",this.userSessionService.getCurrentUser().getSalesOrg());
