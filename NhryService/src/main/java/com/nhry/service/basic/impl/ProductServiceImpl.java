@@ -74,7 +74,7 @@ public class ProductServiceImpl extends BaseService implements ProductService {
 		}
 	   if(!StringUtils.isBlank(record.getStatus())){
 		   //状态不为空时，更新产品状态
-		   pubProductByCode(record.getMatnr());
+		   pubProductByCode(record.getMatnr(),record.getStatus());
 		}
 		return 1;
 	}
@@ -110,11 +110,13 @@ public class ProductServiceImpl extends BaseService implements ProductService {
 	}
 
 	@Override
-	public int pubProductByCode(String code) {
+	public int pubProductByCode(String code,String status) {
 		// TODO Auto-generated method stub
-		Map<String,String> attrs = new HashMap<String,String>();
+		Map attrs = new HashMap();
 		attrs.put("code", code);
 		attrs.put("salesOrg",this.userSessionService.getCurrentUser().getSalesOrg());
+		attrs.put("status",status);
+		attrs.put("lastModified", new Date());
 		return tMdMaraMapper.pubProductByCode(attrs);
 	}
 

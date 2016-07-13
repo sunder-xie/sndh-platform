@@ -234,7 +234,7 @@
 		where MATNR = #{matnr,jdbcType=VARCHAR}
 	</update>
 	<update id="pubProductByCode" parameterType="java.util.HashMap">
-		update t_md_mara set STATUS = "Y" where SALES_ORG= #{salesOrg} and MATNR = #{code}
+		update t_md_mara set STATUS = #{status},LAST_MODIFIED=#{lastModified} where SALES_ORG= #{salesOrg} and MATNR = #{code}
 	</update>
 	<insert id="addProduct" parameterType="com.nhry.data.basic.domain.TMdMara">
 		insert into t_md_mara
