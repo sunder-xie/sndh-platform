@@ -23,8 +23,11 @@ public class ApiServlet extends HttpServlet {
         ApplicationContext context = new ClassPathXmlApplicationContext(xmls);
         UserSessionService userSessionService = (UserSessionService) context.getBean("userSessionService");
 		TSysUser user = new TSysUser();
-		user.setLoginName("swagger");
-		user.setDisplayName("swagger");
+//		user.setLoginName("swagger");
+//		user.setDisplayName("swagger");
+		user.setLoginName("88022396");
+		user.setDisplayName("测试用户");
+		user.setSalesOrg("4111");
 		String accesskey = userSessionService.generateKey();
 		CookieUtil.setCookie(request, response, UserSessionService.accessKey, accesskey);
 		CookieUtil.setCookie(request, response, UserSessionService.uname, user.getLoginName());
