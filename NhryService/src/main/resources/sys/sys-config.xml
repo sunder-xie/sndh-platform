@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <configs>
  <!-- 环境标示 develope/product-->
-  <config key="app_mode" value="develope"></config>
+  <config key="app_mode" value="product"></config>
   <!-- MessageCode key默认的value配置 -->
   <config key="404"  value="资源不存在"></config>
   <config key="serverError"  value="服务异常"></config>
@@ -18,4 +18,10 @@
   <config key="own_Branch" value="01"></config>
   <!-- 经销商奶站性质 -->
   <config key="dealer_Branch" value="02"></config>
+  <!-- 价格组类型 公司价 -->
+  <config key="price_type_comp" value="10"></config>
+  <!-- 价格组类型 区域价 -->
+  <config key="price_type_area" value="20"></config>
+  <!-- 价格组类型 奶站价 -->
+  <config key="price_type_station" value="30"></config>
 </configs>
