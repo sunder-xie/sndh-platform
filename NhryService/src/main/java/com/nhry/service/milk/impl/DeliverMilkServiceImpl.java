@@ -22,8 +22,10 @@ import com.nhry.service.BaseService;
 import com.nhry.service.basic.dao.ProductService;
 import com.nhry.service.milk.dao.DeliverMilkService;
 import com.nhry.service.milk.pojo.TDispOrderChangeItem;
+import com.nhry.service.milktrans.dao.ReturnBoxService;
 import com.nhry.service.order.dao.OrderService;
 import com.nhry.utils.SerialUtil;
+
 import org.apache.commons.lang3.StringUtils;
 
 import java.math.BigDecimal;
@@ -40,6 +42,12 @@ public class DeliverMilkServiceImpl extends BaseService implements DeliverMilkSe
 	private TPlanOrderItemMapper tPlanOrderItemMapper;
 	private OrderService orderService;
 	private ProductService productService;
+	private ReturnBoxService returnBoxService;
+	
+	public void setReturnBoxService(ReturnBoxService returnBoxService)
+	{
+		this.returnBoxService = returnBoxService;
+	}
 	
 	public void setProductService(ProductService productService)
 	{
@@ -186,8 +194,7 @@ public class DeliverMilkServiceImpl extends BaseService implements DeliverMilkSe
 			if(tmpDispOrder!=null){
 				String yestodayOrderNo = tmpDispOrder.getOrderNo();
 				//查昨日的回瓶管理
-				
-//				routeModel.setRetAmt(retAmt);
+				routeModel.setRetAmt(returnBoxService.getLastDayRets(yestodayOrderNo));
 			}
 			
 			//处理每个产品应该送多少个
@@ -402,7 +409,7 @@ public class DeliverMilkServiceImpl extends BaseService implements DeliverMilkSe
 			createRouteChanges(routeCode,dispDate);
 			
 			//创建回瓶管理，调用
-			
+			returnBoxService.createDayRetBox(routeCode);
 			
 			//生成内部销售订单，调用
 			createInsideSalOrder(routeCode);
@@ -427,6 +434,7 @@ public class DeliverMilkServiceImpl extends BaseService implements DeliverMilkSe
 	{
 		SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
 		if(userSessionService.getCurrentUser().getBranchNo()==null)throw new ServiceException(MessageCode.LOGIC_ERROR,"登陆人没有奶站，非奶站人员无法创建路单!");
+		if(tDispOrderMapper.selectTodayDispOrderByBranchNo(userSessionService.getCurrentUser().getBranchNo()).size()>0)throw new ServiceException(MessageCode.LOGIC_ERROR,"本日该奶站已经创建过路单!");
 		List<TPreOrder> empNos = tPreOrderMapper.selectDispNoByGroup(userSessionService.getCurrentUser().getBranchNo());
 		TDispOrder dispOrder = null;
 		List<TDispOrderItem> dispEntries = null;
@@ -443,14 +451,14 @@ public class DeliverMilkServiceImpl extends BaseService implements DeliverMilkSe
 			
 			//对每日计划的统计
 			int index = 0;
-			String empNo = null;
+			String empNo = order.getEmpNo();
 			for(TOrderDaliyPlanItem plan : daliyPlans){
 				TDispOrderItem item = new TDispOrderItem();
 				totalQty += plan.getQty();
 				totalAmt = totalAmt.add(plan.getAmt());
 				
 				//路单详细,一个日计划对应一行
-				if(empNo == null)empNo = plan.getLastModifiedByTxt();//配送人员id,字段临时读取,不需要再增加字段
+//				if(empNo == null)empNo = plan.getLastModifiedByTxt();//配送人员id,字段临时读取,不需要再增加字段
 				item.setOrderNo(String.valueOf(date.getTime()));
 				item.setOrderDate(date);
 				item.setItemNo(String.valueOf(index));
@@ -665,6 +673,19 @@ public class DeliverMilkServiceImpl extends BaseService implements DeliverMilkSe
 		tDispOrderChangeMapper.batchAddNewDispOrderChanges(saveList);
 		
 		return 1;
+	}
+
+	/* (non-Javadoc) 
+	* @title: createDispOrderdayliy
+	* @description: 定时生成路单
+	* @return 
+	* @see com.nhry.service.milk.dao.DeliverMilkService#createDispOrderdayliy() 
+	*/
+	@Override
+	public int createDispOrderdayliy()
+	{
+		System.out.print("qqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqq-----------------------------------------");
+		return 0;
 	}
 
 }

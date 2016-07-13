@@ -36,6 +36,13 @@
     DAY_ACCT_FLAG, CREATE_AT, CREATE_BY, CREATE_BY_TXT, LAST_MODIFIED, LAST_MODIFIED_BY, 
     LAST_MODIFIED_BY_TXT, PAYMENT_ORDER_NO, SUBSCRIBE_ORDER_NO,TOTAL_QTY
   </sql>
+  <select id="selectTodayDispOrderByBranchNo" resultMap="BaseResultMap" parameterType="com.nhry.data.milk.domain.TDispOrder" >
+    select 
+    <include refid="Base_Column_List" />
+    from t_mst_disp_order 
+    where BRANCH_NO = #{branchNo,jdbcType=VARCHAR}
+    and ORDER_DATE = #{branchName,jdbcType=DATE}
+  </select>
   <select id="selectDispOrderByOrderNo" resultMap="BaseResultMap" parameterType="com.nhry.data.milk.domain.TDispOrderKey" >
     select 
     o.ORDER_NO, o.ORDER_DATE, o.DISP_DATE, o.BRANCH_NO, o.DISP_LINE_NO, o.MST_CUST_NO, AMT, o.CONFIRM_AMT, 
