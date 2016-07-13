@@ -349,4 +349,7 @@
 		WHERE p.SALES_ORG = #{salesOrg}
 		AND p.price_type='30'
   </select>
+  <select id="getCompPriceGroupCount" resultType="Integer" parameterType="String">
+     select COUNT(m.ID) from t_md_price m where m.STATUS='Y' and m.PRICE_TYPE=<include refid="mybaties.constant.price_type_comp"></include> AND m.SALES_ORG=#{salesOrg}
+  </select>
 </mapper>
