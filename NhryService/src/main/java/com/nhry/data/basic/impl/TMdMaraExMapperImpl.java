@@ -1,13 +1,13 @@
 package com.nhry.data.basic.impl;
 
-import java.util.Map;
-
 import com.nhry.common.datasource.DynamicSqlSessionTemplate;
 import com.nhry.data.basic.dao.TMdMaraExMapper;
 import com.nhry.data.basic.domain.TMdMaraEx;
 import com.nhry.service.basic.pojo.BotType;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class TMdMaraExMapperImpl implements TMdMaraExMapper {
 	private DynamicSqlSessionTemplate sqlSessionTemplate;
@@ -29,10 +29,11 @@ public class TMdMaraExMapperImpl implements TMdMaraExMapper {
 
 	@Override
 	public TMdMaraEx getProductTransRateByCode(String matnr, String salesOrg) {
-		TMdMaraEx ex = new TMdMaraEx();
-		ex.setMatnr(matnr);
-		ex.setSalesOrg(salesOrg);
-		return this.sqlSessionTemplate.selectOne("getProductTransRateByCode",ex);
+		Map<String,String> map =new HashMap<String,String>();
+		map.put("matnr",matnr);
+		map.put("salesOrg",salesOrg);
+
+		return this.sqlSessionTemplate.selectOne("getProductTransRateByCode",map);
 	}
 
 	@Override

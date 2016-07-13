@@ -56,7 +56,7 @@
     <select id="getEmpSalByEmpNoAndDate" resultMap="BaseResultMap" parameterType="java.util.Map">
         SELECT
         <include refid="Base_Column_List" />
-        t_md_emp_sal
+         FROM t_md_emp_sal
         WHERE 1=1
         and EMP_NO = #{empNo}
         and SET_YEAR_MONTH = #{setYearMonth}
@@ -95,6 +95,9 @@
             <if test="compSal != null">
                 COMP_SAL,
             </if>
+            <if test="setYearMonth != null">
+                SET_YEAR_MONTH,
+            </if>
 
         </trim>
         <trim prefix="values (" suffix=")" suffixOverrides=",">
@@ -127,6 +130,9 @@
             </if>
             <if test="compSal != null">
                 #{compSal,jdbcType=DECIMAL},
+            </if>
+            <if test="setYearMonth != null">
+                #{setYearMonth,jdbcType=VARCHAR},
             </if>
 
         </trim>

@@ -22,12 +22,20 @@ public class TMdEmpSal implements Serializable {
     private Date createAt;
     private String createBy;
     private String createByTxt;
-
+    private String setYearMonth;
     private String empName;
     private String branchNo;
     private String branchName;
     private String baseSalary;
     private String salaryMet;
+
+    public String getSetYearMonth() {
+        return setYearMonth;
+    }
+
+    public void setSetYearMonth(String setYearMonth) {
+        this.setYearMonth = setYearMonth;
+    }
 
     public BigDecimal getSendDispSal() {
         return sendDispSal;

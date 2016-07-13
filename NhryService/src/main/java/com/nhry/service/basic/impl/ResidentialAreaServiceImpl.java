@@ -114,7 +114,10 @@ public class ResidentialAreaServiceImpl implements ResidentialAreaService {
 
     @Override
     public int addResidentialArea(TMdResidentialArea tMdResidentialArea) {
+        TSysUser user = userSessionService.getCurrentUser();
+        tMdResidentialArea.setSalesOrg(user.getSalesOrg());
         tMdResidentialArea.setId(PrimaryKeyUtils.generateUuidKey());
+        tMdResidentialArea.setStatus("10");
         return tMdResidentialAreaMapper.addResidentialArea(tMdResidentialArea);
     }
 
