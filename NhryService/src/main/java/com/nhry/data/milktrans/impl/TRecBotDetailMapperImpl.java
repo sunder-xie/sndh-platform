@@ -24,18 +24,13 @@ public class TRecBotDetailMapperImpl implements TRecBotDetailMapper {
     }
 
     @Override
-    public List<TRecBotDetail> selectBotDetailByRetLsh(String retLsh) {
-        return sqlSessionTemplate.selectList("selectBotDetailByRetLsh",retLsh);
-    }
-
-    @Override
     public TRecBotDetail selectBotDetailByDetLsh(Map<String, String> map) {
         return sqlSessionTemplate.selectOne("selectBotDetailByDetLshAndSpec",map);
     }
 
     @Override
-    public TRecBotDetail selectRetByDispOrderNo(String dispOrderNo) {
-        return sqlSessionTemplate.selectOne("selectRetByDispOrderNo",dispOrderNo);
+    public List<TRecBotDetail> selectRetByDispOrderNo(String dispOrderNo) {
+        return sqlSessionTemplate.selectList("selectRetByDispOrderNo",dispOrderNo);
     }
 
     @Override
