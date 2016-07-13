@@ -73,6 +73,7 @@
 		</init-param>
 		<load-on-startup>2</load-on-startup>
 	</servlet>
+
 	<filter>
 		<filter-name>springUtf8Encoding</filter-name>
 		<filter-class>org.springframework.web.filter.CharacterEncodingFilter</filter-class>

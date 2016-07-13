@@ -15,7 +15,7 @@ import com.nhry.data.milktrans.domain.TRecBotDetail;
 import com.nhry.model.milktrans.ReturnboxSerarch;
 import com.nhry.model.milktrans.UpdateReturnBoxModel;
 import com.nhry.service.milktrans.dao.ReturnBoxService;
-import com.nhry.utils.PrimaryKeyUtils;
+import com.nhry.utils.SerialUtil;
 
 import java.util.Date;
 import java.util.HashMap;
@@ -77,6 +77,8 @@ public class ReturnBoxServiceImpl implements ReturnBoxService {
 
     }
 
+
+
     /**
      * 路单确认时根据路单号创建该员工的回瓶管理单
      * @param dispOrderNo
@@ -87,17 +89,19 @@ public class ReturnBoxServiceImpl implements ReturnBoxService {
         Date today = new Date();
         TSysUser user = userSessionService.getCurrentUser();
         TDispOrder dispOrder = tDispOrderMapper.getDispOrderByNo(dispOrderNo);
-        TRecBotDetail tRecBot = tRecBotDetailMapper.selectRetByDispOrderNo(dispOrderNo);
-        if (tRecBot == null) {
+        List<TRecBotDetail> tRecBot = tRecBotDetailMapper.selectRetByDispOrderNo(dispOrderNo);
+        if (tRecBot == null || tRecBot.size() == 0 ) {
             //生成回瓶详情列表
             List<TRecBotDetail> entries = tDispOrderItemMapper.createRecBotByDispOrder(dispOrderNo);
             if (entries != null && entries.size() > 0) {
                 for (TRecBotDetail bot : entries) {
-                    bot.setCreateDate(today);
+                    bot.setEmpNo(dispOrder.getDispEmpNo());
+                    bot.setDispOrderNo(dispOrderNo);
+                    bot.setCreateAt(today);
                     bot.setCreateBy(user.getLoginName());
                     bot.setCreateByTxt(user.getDisplayName());
                     bot.setStatus("10");
-                    bot.setDetLsh(PrimaryKeyUtils.generateUuidKey());
+                    bot.setDetLsh(SerialUtil.creatSeria());
                     tRecBotDetailMapper.addRecBotItem(bot);
                 }
             }
