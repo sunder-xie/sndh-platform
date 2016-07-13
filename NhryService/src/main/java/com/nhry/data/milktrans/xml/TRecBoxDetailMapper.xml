@@ -52,7 +52,7 @@
     <select id="selectBotDetailByDetLshAndSpec" resultMap="BaseResultMap" parameterType="java.util.Map">
         SELECT
         DET_LSH,SPEC,
-        (SELECT i.ITEM_NAME from t_sys_code_item i WHERE i.TYPE_CODE= <include refid="mybaties.constant.bot_spec"></include> and i.ITEM_CODE = SPEC ) SPEC_NAME,
+        (SELECT i.ITEM_NAME from t_sys_code_item i WHERE i.TYPE_CODE= <include refid="mybaties.constant.bot_type"></include> and i.ITEM_CODE = SPEC ) SPEC_NAME,
         RECEIVE_NUM,REAL_NUM,STATUS
         from t_rec_bot_detail
         where DET_LSH = #{detLsh}
