@@ -46,7 +46,7 @@
 		ZBOT_CODE,SALES_ORG,DEALER_NO
 	</sql>
 	<select id="selectProductByCode" resultMap="BaseResultMap" parameterType="java.util.HashMap">
-		select <include refid="Base_Column_List" /> from t_md_mara where SALES_ORG = #{salesOrg} and MATNR = #{productCode,jdbcType=VARCHAR}
+		select <include refid="Base_Column_List" /> from t_md_mara where SALES_ORG = #{salesOrg,jdbcType=VARCHAR} and MATNR = #{matnr,jdbcType=VARCHAR}
 	</select>
 	<select id="selectProductAndExByCode" resultMap="BaseResultMap" parameterType="java.util.HashMap">
 		SELECT

@@ -43,7 +43,7 @@ public class ProductServiceImpl extends BaseService implements ProductService {
 		// TODO Auto-generated method stub
 		Map<String,String> attrs = new HashMap<String,String>();
 		attrs.put("salesOrg", this.userSessionService.getCurrentUser().getSalesOrg());
-		attrs.put("productCode", productCode);
+		attrs.put("matnr", productCode);
 		return tMdMaraMapper.selectProductByCode(attrs);
 	}
 
