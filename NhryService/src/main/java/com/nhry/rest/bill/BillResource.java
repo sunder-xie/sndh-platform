@@ -90,17 +90,6 @@ public class BillResource extends BaseResource {
     }
 
 
-/*
-
-    @POST
-    @Path("/emp/empSalaryRep")
-    @Produces(MediaType.APPLICATION_JSON)
-    @Consumes(MediaType.APPLICATION_JSON)
-    @ApiOperation(value = "/emp/empSalaryRep", response = PageInfo.class, notes = "送奶员工资报表")
-    public Response empSalaryRep(@ApiParam(required=true,name="eSearch",value="查询条件") EmpDispDetialInfoSearch eSearch){
-        return convertToRespModel(MessageCode.NORMAL, null, empBillService.empSalaryRep(eSearch));
-    }
-*/
 
 
     @POST

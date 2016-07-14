@@ -168,6 +168,10 @@
 	<bean class="com.nhry.data.basic.impl.TMdDealerMapperImpl" id="dealerMapper">
 		<property name="sqlSessionTemplate" ref="dynamicSqlSessionTemplate"/>
 	</bean>
+	<bean id="dealerService" class="com.nhry.service.basic.impl.DealerServiceImpl">
+		<property name="dealerMapper"  ref="dealerMapper"></property>
+		<property name="userSessionService"  ref="userSessionService"></property>
+	</bean>
 	<!-- 经销商 end -->
 
 	<!-- 奶站扩展表 -->

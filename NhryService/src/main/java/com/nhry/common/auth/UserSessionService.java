@@ -73,7 +73,8 @@ public class UserSessionService {
 			user.setDisplayName("测试用户");
 //			user.setBranchNo("001");
 //			user.setDealerId("0300000880");
-			user.setSalesOrg("4111");
+//			user.setSalesOrg("4111");
+			user.setSalesOrg("4100");
 			user.setLastModified(date);
 			return user;
 		}
