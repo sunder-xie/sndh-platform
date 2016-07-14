@@ -169,4 +169,13 @@
      	AND  SALES_ORG = #{salesOrg,jdbcType=VARCHAR}
      </if>
   </select>
+
+
+  <select id="getAllEmpBySalesOrg" parameterType="String" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from T_MD_BRANCH_EMP
+    where 1=1
+    and SALES_ORG =  #{salesOrg,jdbcType=VARCHAR}
+  </select>
 </mapper>

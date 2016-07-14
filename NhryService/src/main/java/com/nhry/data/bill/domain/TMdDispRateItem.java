@@ -11,6 +11,7 @@ public class TMdDispRateItem {
     private String itemValue; //存放区间范围
     private int itemIndex; //存放1、2、3、4、5序号
     private String salesOrg;
+
     private BigDecimal rate;
 
     private String createBy;
@@ -50,6 +51,7 @@ public class TMdDispRateItem {
     public void setSalesOrg(String salesOrg) {
         this.salesOrg = salesOrg;
     }
+
 
     public BigDecimal getRate() {
         return rate;

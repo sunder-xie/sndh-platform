@@ -8,6 +8,7 @@ import java.util.Date;
 public class EmpDispDetailModel {
     private String branchNo;
     private String branchName;
+    private String dealerName;
     private String empNo;
     private String empName;
     private Date     dispDate;
@@ -15,6 +16,14 @@ public class EmpDispDetailModel {
     private String matnrTxt;
     private Integer qty;
     private String type;
+
+    public String getDealerName() {
+        return dealerName;
+    }
+
+    public void setDealerName(String dealerName) {
+        this.dealerName = dealerName;
+    }
 
     public String getBranchNo() {
         return branchNo;

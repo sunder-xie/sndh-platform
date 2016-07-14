@@ -65,6 +65,8 @@ public class EmpBillServiceImpl implements EmpBillService {
         if(StringUtils.isBlank(eSearch.getPageNum()) || StringUtils.isBlank(eSearch.getPageSize())){
             throw new ServiceException(MessageCode.LOGIC_ERROR,"pageNum和pageSize不能为空！");
         }
+        TSysUser user = userSessionService.getCurrentUser();
+        eSearch.setSalesOrg(user.getSalesOrg());
         return  empBillMapper.empDispDetialInfo(eSearch);
     }
 
@@ -175,8 +177,8 @@ public class EmpBillServiceImpl implements EmpBillService {
                        item.setSalesOrg(salesOrg);
                        item.setItemNo(PrimaryKeyUtils.generateUuidKey());
                        item.setItemIndex(i);
-                       item.setRate(entry.getDispRate());
-                       item.setItemValue(entry.getNum());
+                       item.setRate(entry.getRate());
+                       item.setItemValue(entry.getEndValue());
                        item.setCreateBy(user.getLoginName());
                        item.setCreateByTxt(user.getDisplayName());
                        item.setLastModified(new Date());
@@ -218,15 +220,19 @@ public class EmpBillServiceImpl implements EmpBillService {
         TMdDispRate rate = tMdDispRateMapper.getDispRateBySaleOrg(salesOrg);
         model.setSalesOrg(salesOrg);
         model.setSalaryMet(rate.getSalaryMet());
+        model.setSalesOrgName(rate.getSalesOrgName());
         //如果是数量
         if("10".equals(rate.getSalaryMet())){
             List<TMdDispRateItem> items = tMdDispRateItemMapper.getDispRateNumBySalOrg(salesOrg);
             List<DispNumEntry> entries = new ArrayList<DispNumEntry>();
+            String frontValue="0";
             if(items!=null && items.size()>0){
                 for(TMdDispRateItem item : items){
                     DispNumEntry entry  = new DispNumEntry();
-                    entry.setNum(item.getItemValue());
-                    entry.setDispRate(item.getRate());
+                    entry.setStartValue(frontValue);
+                    frontValue = item.getItemValue();
+                    entry.setEndValue(item.getItemValue());
+                    entry.setRate(item.getRate());
                     entries.add(entry);
                 }
             }
