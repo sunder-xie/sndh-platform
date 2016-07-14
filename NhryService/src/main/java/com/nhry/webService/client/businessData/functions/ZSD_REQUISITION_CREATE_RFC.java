@@ -33,6 +33,8 @@ public class ZSD_REQUISITION_CREATE_RFC implements org.apache.axis2.databinding.
      */
     protected ET_MESSAGE_type0 localET_MESSAGE;
 
+    protected boolean localET_MESSAGETracker = false;
+
     /**
      * field for IT_ITEM
      */
@@ -61,6 +63,9 @@ public class ZSD_REQUISITION_CREATE_RFC implements org.apache.axis2.databinding.
         this.localI_EKKO = param;
     }
 
+    public boolean isET_MESSAGESpecified() {
+        return localET_MESSAGETracker;
+    }
     /**
      * Auto generated getter method
      * @return com.nhry.webService.client.businessData.functions.ET_MESSAGE_type0
@@ -75,6 +80,7 @@ public class ZSD_REQUISITION_CREATE_RFC implements org.apache.axis2.databinding.
      */
     public void setET_MESSAGE(
         ET_MESSAGE_type0 param) {
+        localET_MESSAGETracker = param != null;
         this.localET_MESSAGE = param;
     }
 

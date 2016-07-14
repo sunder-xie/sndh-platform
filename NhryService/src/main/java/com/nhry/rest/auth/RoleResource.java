@@ -129,4 +129,13 @@ public class RoleResource extends BaseResource{
 	public Response deleteRoleRes(@ApiParam(required = true, name = "record", value = "角色资源关系对象")TSysRoleResource record) {
 		return convertToRespModel(MessageCode.NORMAL, null,resService.deleteRoleRes(record));
 	}
+
+	@POST
+	@Path("/delete/batch/roleRes")
+	@Produces(MediaType.APPLICATION_JSON)
+	@Consumes(MediaType.APPLICATION_JSON)
+	@ApiOperation(value = "/delete/batch/roleRes", response = ResponseModel.class, notes = "批量删除角色资源关系")
+	public Response deletebatchRoleRes(@ApiParam(required = true, name = "record", value = "角色资源关系对象(id:角色编号;资源编号:resCode)")RoleResourceData record) {
+		return convertToRespModel(MessageCode.NORMAL, null,resService.deleteRoleRes(record));
+	}
 }
