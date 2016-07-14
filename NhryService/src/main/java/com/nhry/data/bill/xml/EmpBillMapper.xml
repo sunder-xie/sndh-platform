@@ -21,6 +21,7 @@
         <result column="CUST_NAME" property="custName" jdbcType="VARCHAR" />
         <result column="MP" property="mp" jdbcType="VARCHAR" />
         <result column="ADDRESS" property="address" jdbcType="VARCHAR" />
+        <result column="ACCT_AMT" property="acctAmt" jdbcType="DECIMAL" />
         <result column="ACCOUNT_RECE" property="amountRece" jdbcType="DECIMAL" />
         <result column="ACCOUNT_REAL" property="amountReal" jdbcType="DECIMAL" />
         <result column="ACCOUNT_GAP" property="amountGap" jdbcType="DECIMAL" />
@@ -102,12 +103,36 @@
 
     <select id="empAccountReceAmount" resultMap="EmpAccountResultMap" parameterType="com.nhry.model.bill.EmpDispDetialInfoSearch">
         SELECT
-        o.ORDER_NO,e.EMP_NAME,c.VIP_NAME CUST_NAME,c.MP,c.ADDRESS_TXT ADDRESS,o.INIT_AMT ACCOUNT_RECE,b.AMT ACCOUNT_REAL,
-        (o.INIT_AMT-b.AMT) ACCOUNT_GAP,b.PAYMENT_TYPE,b.PAYMENT_YEAR_MONTH PAYMENT_DATE
-        FROM  t_preorder o LEFT JOIN t_md_branch_emp e on o.EMP_NO = e.EMP_NO
-						    LEFT JOIN t_vip_cust_info c on o.MILKMEMBER_NO = c.VIP_CUST_NO
-						    LEFT JOIN t_mst_recv_bill b on o.ORDER_NO = b.ORDER_NO
+        o.ORDER_NO,
+
+        o.PAYMENTMETHOD,
+        e.EMP_NAME,
+        c.VIP_NAME CUST_NAME,
+        br.BRANCH_NAME,
+        a.ACCT_AMT,
+        c.MP,
+        c.ADDRESS_TXT ADDRESS,
+        o.INIT_AMT ACCOUNT_RECE,
+        b.AMT ACCOUNT_REAL,
+        (o.INIT_AMT-b.AMT) ACCOUNT_GAP,
+        (
+          SELECT i.ITEM_NAME
+          from t_sys_code_item i
+          WHERE i.TYPE_CODE= <include refid="mybaties.constant.payment_type"></include>
+          and i.ITEM_CODE = b.PAYMENT_TYPE
+        ) PAYMENT_TYPE,
+        b.RECEIPT_DATE PAYMENT_DATE
+        FROM t_mst_recv_bill b
+        LEFT JOIN t_preorder o  on  o.ORDER_NO = b.ORDER_NO
+        LEFT JOIN	t_md_branch_emp e on o.EMP_NO = e.EMP_NO
+        LEFT JOIN t_vip_cust_info c on o.MILKMEMBER_NO = c.VIP_CUST_NO
+        LEFT JOIN t_vip_acct a on c.VIP_CUST_NO = a.VIP_CUST_NO
+        LEFT JOIN t_md_branch br on o.BRANCH_NO = br.BRANCH_NO
         WHERE 1= 1
+            <if test="salesOrg!=null and ''!=salesOrg">
+                and o.SALES_ORG = #{salesOrg,jdbcType=VARCHAR}
+            </if>
+
             <if test="branchNo!=null and ''!=branchNo">
                 and o.BRANCH_NO = #{branchNo,jdbcType=VARCHAR}
             </if>
@@ -115,10 +140,10 @@
                and  o.EMP_NO = #{empNo,jdbcType=VARCHAR}
             </if>
             <if test="startDate!=null and ''!=startDate">
-               and  o.END_DATE &gt;= #{startDate,jdbcType=DATE}
+               and  b.RECEIPT_DATE &gt;= #{startDate,jdbcType=DATE}
             </if>
             <if test="endDate!=null and ''!=endDate">
-               and  o.END_DATE &lt;= #{endDate,jdbcType=DATE}
+               and  b.RECEIPT_DATE &lt;= #{endDate,jdbcType=DATE}
             </if>
     </select>
 
