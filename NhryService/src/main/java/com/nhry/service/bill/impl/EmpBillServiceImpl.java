@@ -72,9 +72,11 @@ public class EmpBillServiceImpl implements EmpBillService {
 
     @Override
     public PageInfo empAccountReceAmount(EmpDispDetialInfoSearch eSearch) {
+        TSysUser user = userSessionService.getCurrentUser();
         if(StringUtils.isBlank(eSearch.getPageNum()) || StringUtils.isBlank(eSearch.getPageSize())){
             throw new ServiceException(MessageCode.LOGIC_ERROR,"pageNum和pageSize不能为空！");
         }
+        eSearch.setSalesOrg(user.getSalesOrg());
         return  empBillMapper.empAccountReceAmount(eSearch);
     }
 
