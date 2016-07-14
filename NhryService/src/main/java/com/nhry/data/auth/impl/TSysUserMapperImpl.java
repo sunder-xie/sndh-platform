@@ -6,6 +6,8 @@ import com.nhry.data.auth.dao.TSysUserMapper;
 import com.nhry.data.auth.domain.TSysUser;
 import com.nhry.model.auth.UserQueryModel;
 
+import java.util.List;
+
 public class TSysUserMapperImpl implements TSysUserMapper {
 	private DynamicSqlSessionTemplate sqlSessionTemplate;
 	@Override
@@ -52,5 +54,15 @@ public class TSysUserMapperImpl implements TSysUserMapper {
 	public int deleteUserByLoginName(TSysUser user) {
 		// TODO Auto-generated method stub
 		return this.sqlSessionTemplate.update("deleteUserByLoginName", user);
+	}
+
+	@Override
+	public List<TSysUser> findUserByRoleId(UserQueryModel um) {
+		return sqlSessionTemplate.selectList("findUserByRoleId",um);
+	}
+
+	@Override
+	public PageInfo findUserPageByRoleId(UserQueryModel um) {
+		return sqlSessionTemplate.selectListByPages("findUserByRoleId",um,Integer.parseInt(um.getPageNum()),Integer.parseInt(um.getPageSize()));
 	}
 }
