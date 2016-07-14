@@ -105,10 +105,6 @@ public class TSysUser implements Serializable{
 
     private String groupId;
     
-    private List<UserRoles> roles = new ArrayList<UserRoles>();
-    
-    private List<TSysResource> resources = new ArrayList<TSysResource>(); 
-
     public String getLoginName() {
         return loginName;
     }
@@ -475,21 +471,5 @@ public class TSysUser implements Serializable{
 
 	public void setOrgName(String orgName) {
 		this.orgName = orgName;
-	}
-
-	public List<UserRoles> getRoles() {
-		return roles;
-	}
-
-	public void setRoles(List<UserRoles> roles) {
-		this.roles = roles;
-	}
-
-	public List<TSysResource> getResources() {
-		return resources;
-	}
-
-	public void setResources(List<TSysResource> resources) {
-		this.resources = resources;
 	}
 }
