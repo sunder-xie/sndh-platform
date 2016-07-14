@@ -10,11 +10,20 @@ import java.util.Date;
  * 配送数量明细结算表的生成  查询条件
  */
 public class EmpDispDetialInfoSearch  extends BaseQueryModel implements Serializable{
+    private String dealerNo;
     private String branchNo;
     private String empNo;
     private Date startDate;
     private Date endDate;
     private String salesOrg;
+
+    public String getDealerNo() {
+        return dealerNo;
+    }
+
+    public void setDealerNo(String dealerNo) {
+        this.dealerNo = dealerNo;
+    }
 
     public String getSalesOrg() {
         return salesOrg;

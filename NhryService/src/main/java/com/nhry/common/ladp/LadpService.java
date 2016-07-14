@@ -3,6 +3,8 @@ package com.nhry.common.ladp;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Hashtable;
@@ -158,7 +160,10 @@ public class LadpService {
 	 */
 	public void syncSysUsers(){
 		try {
-			String filter = "(&(modifyTimestamp>=20160609044329+0800)(smart-authority=Auth_SSO))";
+			Date date = new Date();
+			DateFormat formatter = new SimpleDateFormat("yyyyMMddHHmmssZ");  
+			String dateStr = formatter.format(date.addMilliseconds(-60));
+			String filter = "(&(|(modifyTimestamp>="+dateStr+")(createTimestamp>="+dateStr+"))(smart-authority=Auth_SSO))";
 			String basedn = "ou=People,o=newhopedairy,o=isp";
 			List<Map<String, String>> list = getObjectsByFilter(basedn,filter);
 			Map<String,String> spcAttrs = new HashMap<String,String>();

@@ -54,8 +54,8 @@ public class UserServiceImpl extends BaseService implements UserService {
 		if(_user == null){
 			throw new ServiceException(MessageCode.LOGIC_ERROR,"系统不存在该用户,请检查你的用户名、密码！");
 		}
-		_user.setResources(resService.findRecoureByUserId(_user.getLoginName()));
-		_user.setRoles(roleMapper.getUserRoles(_user.getLoginName()));
+//		_user.setResources(resService.findRecoureByUserId(_user.getLoginName()));
+//		_user.setRoles(roleMapper.getUserRoles(_user.getLoginName()));
 		return _user;
 	}
 

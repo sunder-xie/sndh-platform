@@ -8,6 +8,7 @@ import java.util.Date;
  */
 public class TMdDispRate {
     private String salesOrg;
+    private String salesOrgName;
     private String salaryMet; // 结算方式
     private String createBy;
     private String createByTxt;
@@ -21,6 +22,14 @@ public class TMdDispRate {
 
     public void setSalesOrg(String salesOrg) {
         this.salesOrg = salesOrg;
+    }
+
+    public String getSalesOrgName() {
+        return salesOrgName;
+    }
+
+    public void setSalesOrgName(String salesOrgName) {
+        this.salesOrgName = salesOrgName;
     }
 
     public String getSalaryMet() {

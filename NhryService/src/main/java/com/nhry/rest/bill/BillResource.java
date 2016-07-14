@@ -75,7 +75,7 @@ public class BillResource extends BaseResource {
     @Path("/emp/empDispDetialInfo")
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes(MediaType.APPLICATION_JSON)
-    @ApiOperation(value = "/emp/empDispDetialInfo", response = int.class, notes = "获取送奶工配送数量明细结算表")
+    @ApiOperation(value = "/emp/empDispDetialInfo", response = Response.class, notes = "获取送奶工配送数量明细结算表")
     public Response empDispDetialInfo(@ApiParam(required=true,name="eSearch",value="收款信息") EmpDispDetialInfoSearch eSearch){
         return convertToRespModel(MessageCode.NORMAL, null, empBillService.empDispDetialInfo(eSearch));
     }
@@ -84,23 +84,12 @@ public class BillResource extends BaseResource {
     @Path("/emp/empAccountReceAmount")
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes(MediaType.APPLICATION_JSON)
-    @ApiOperation(value = "/emp/empAccountReceAmount", response = int.class, notes = "送奶员收款金额核算")
+    @ApiOperation(value = "/emp/empAccountReceAmount", response = Response.class, notes = "送奶员收款金额核算")
     public Response empAccountReceAmount(@ApiParam(required=true,name="eSearch",value="收款信息") EmpDispDetialInfoSearch eSearch){
         return convertToRespModel(MessageCode.NORMAL, null, empBillService.empAccountReceAmount(eSearch));
     }
 
 
-/*
-
-    @POST
-    @Path("/emp/empSalaryRep")
-    @Produces(MediaType.APPLICATION_JSON)
-    @Consumes(MediaType.APPLICATION_JSON)
-    @ApiOperation(value = "/emp/empSalaryRep", response = PageInfo.class, notes = "送奶员工资报表")
-    public Response empSalaryRep(@ApiParam(required=true,name="eSearch",value="查询条件") EmpDispDetialInfoSearch eSearch){
-        return convertToRespModel(MessageCode.NORMAL, null, empBillService.empSalaryRep(eSearch));
-    }
-*/
 
 
     @POST

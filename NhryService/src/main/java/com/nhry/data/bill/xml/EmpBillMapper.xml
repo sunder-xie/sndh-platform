@@ -5,6 +5,7 @@
         <result column="DISP_DATE" property="dispDate" jdbcType="DATE" />
         <result column="BRANCH_NO" property="branchNo" jdbcType="VARCHAR" />
         <result column="BRANCH_NAME" property="branchName" jdbcType="VARCHAR" />
+        <result column="DEALER_NAME" property="dealerName" jdbcType="VARCHAR" />
         <result column="EMP_NO" property="empNo" jdbcType="VARCHAR" />
         <result column="EMP_Name" property="empName" jdbcType="VARCHAR" />
         <result column="MATNR" property="matnr" jdbcType="VARCHAR" />
@@ -20,6 +21,7 @@
         <result column="CUST_NAME" property="custName" jdbcType="VARCHAR" />
         <result column="MP" property="mp" jdbcType="VARCHAR" />
         <result column="ADDRESS" property="address" jdbcType="VARCHAR" />
+        <result column="ACCT_AMT" property="acctAmt" jdbcType="DECIMAL" />
         <result column="ACCOUNT_RECE" property="amountRece" jdbcType="DECIMAL" />
         <result column="ACCOUNT_REAL" property="amountReal" jdbcType="DECIMAL" />
         <result column="ACCOUNT_GAP" property="amountGap" jdbcType="DECIMAL" />
@@ -43,10 +45,20 @@
 
     <select id="empDispDetialInfo" resultMap="EmpDispResultMap" parameterType="com.nhry.model.bill.EmpDispDetialInfoSearch">
         SELECT
-        di.DISP_DATE,i.MATNR,i.QTY,o.BRANCH_NO,o.EMP_NO,(select '内部销售订单产品' from DUAL) TYPE
-        FROM t_mst_inside_sal_order_item i LEFT JOIN t_mst_order_daliy_plan_item di on i.ORG_ORDER_NO = di.ORDER_NO
+        di.DISP_DATE,i.MATNR,m.MATNR_TXT,i.QTY,o.BRANCH_NO,b.BRANCH_NAME,d.DEALER_NAME,o.EMP_NO,e.EMP_NAME,
+        (select '内部销售订单产品' from DUAL) TYPE
+        FROM t_mst_inside_sal_order_item i
+        LEFT JOIN t_mst_order_daliy_plan_item di on i.ORG_ORDER_NO = di.ORDER_NO
         LEFT JOIN t_preorder o on i.ORG_ORDER_NO = o.ORDER_NO
+        LEFT JOIN t_md_branch b on o.BRANCH_NO = b.BRANCH_NO
+        LEFT JOIN t_md_dealer d on b.DEALER_NO = d.DEALER_NO
+        LEFT JOIN t_md_branch_emp e on o.EMP_NO = e.EMP_NO
+        LEFT JOIN t_md_mara  m on (i.MATNR = m.MATNR and m.SALES_ORG=#{salesOrg,jdbcType=VARCHAR})
         where 1=1
+        and e.SALES_ORG = #{salesOrg,jdbcType=VARCHAR}
+        <if test="dealerNo!=null and ''!=dealerNo">
+            AND  b.DEALER_NO = #{dealerNo,jdbcType=VARCHAR}
+        </if>
         <if test="branchNo!=null and ''!=branchNo">
             AND  o.BRANCH_NO = #{branchNo,jdbcType=VARCHAR}
          </if>
@@ -59,36 +71,68 @@
         <if test="endDate!=null">
             AND  di.DISP_DATE &lt;= #{endDate,jdbcType=DATE}
         </if>
-
         UNION ALL
-
         SELECT
-        i.DISP_DATE,i.MATNR,i.QTY,o.BRANCH_NO,o.EMP_NO,(select '配送产品' from DUAL) TYPE
-        FROM t_mst_order_daliy_plan_item i LEFT JOIN t_preorder o on i.ORDER_NO = o.ORDER_NO
+        o.DISP_DATE,i.MATNR,m.MATNR_TXT,i.CONFIRM_QTY,o.BRANCH_NO,b.BRANCH_NAME,d.DEALER_NAME,o.DISP_EMP_NO EMP_NO,e.EMP_NAME,
+        (select '配送产品' from DUAL) TYPE
+        FROM t_mst_disp_order_item i
+        LEFT JOIN t_mst_disp_order o on i.ORDER_NO = o.ORDER_NO
+        LEFT JOIN t_md_branch b on o.BRANCH_NO = b.BRANCH_NO
+        LEFT JOIN t_md_dealer d on b.DEALER_NO = d.DEALER_NO
+        LEFT JOIN t_md_branch_emp e on o.DISP_EMP_NO = e.EMP_NO
+        LEFT JOIN t_md_mara  m on (i.MATNR = m.MATNR and m.SALES_ORG=#{salesOrg,jdbcType=VARCHAR})
         where 1=1
+        and e.SALES_ORG = #{salesOrg,jdbcType=VARCHAR}
+        <if test="dealerNo!=null and ''!=dealerNo">
+            AND  b.DEALER_NO = #{dealerNo,jdbcType=VARCHAR}
+        </if>
         <if test="branchNo!=null and ''!=branchNo">
             AND o.BRANCH_NO = #{branchNo,jdbcType=VARCHAR}
         </if>
         <if test="empNo!=null and ''!=empNo">
-            AND  o.EMP_NO = #{empNo,jdbcType=VARCHAR}
+            AND  o.DISP_EMP_NO = #{empNo,jdbcType=VARCHAR}
         </if>
         <if test="startDate!=null and ''!=startDate">
-            AND   i.DISP_DATE &gt;= #{startDate,jdbcType=DATE}
+            AND   o.DISP_DATE &gt;= #{startDate,jdbcType=DATE}
         </if>
         <if test="endDate!=null and ''!=endDate">
-            AND  i.DISP_DATE &lt;= #{endDate,jdbcType=DATE}
+            AND  o.DISP_DATE &lt;= #{endDate,jdbcType=DATE}
         </if>
         ORDER BY  DISP_DATE ASC,TYPE
     </select>
 
     <select id="empAccountReceAmount" resultMap="EmpAccountResultMap" parameterType="com.nhry.model.bill.EmpDispDetialInfoSearch">
         SELECT
-        o.ORDER_NO,e.EMP_NAME,c.VIP_NAME CUST_NAME,c.MP,c.ADDRESS_TXT ADDRESS,o.INIT_AMT ACCOUNT_RECE,b.AMT ACCOUNT_REAL,
-        (o.INIT_AMT-b.AMT) ACCOUNT_GAP,b.PAYMENT_TYPE,b.PAYMENT_YEAR_MONTH PAYMENT_DATE
-        FROM  t_preorder o LEFT JOIN t_md_branch_emp e on o.EMP_NO = e.EMP_NO
-						    LEFT JOIN t_vip_cust_info c on o.MILKMEMBER_NO = c.VIP_CUST_NO
-						    LEFT JOIN t_mst_recv_bill b on o.ORDER_NO = b.ORDER_NO
+        o.ORDER_NO,
+
+        o.PAYMENTMETHOD,
+        e.EMP_NAME,
+        c.VIP_NAME CUST_NAME,
+        br.BRANCH_NAME,
+        a.ACCT_AMT,
+        c.MP,
+        c.ADDRESS_TXT ADDRESS,
+        o.INIT_AMT ACCOUNT_RECE,
+        b.AMT ACCOUNT_REAL,
+        (o.INIT_AMT-b.AMT) ACCOUNT_GAP,
+        (
+          SELECT i.ITEM_NAME
+          from t_sys_code_item i
+          WHERE i.TYPE_CODE= <include refid="mybaties.constant.payment_type"></include>
+          and i.ITEM_CODE = b.PAYMENT_TYPE
+        ) PAYMENT_TYPE,
+        b.RECEIPT_DATE PAYMENT_DATE
+        FROM t_mst_recv_bill b
+        LEFT JOIN t_preorder o  on  o.ORDER_NO = b.ORDER_NO
+        LEFT JOIN	t_md_branch_emp e on o.EMP_NO = e.EMP_NO
+        LEFT JOIN t_vip_cust_info c on o.MILKMEMBER_NO = c.VIP_CUST_NO
+        LEFT JOIN t_vip_acct a on c.VIP_CUST_NO = a.VIP_CUST_NO
+        LEFT JOIN t_md_branch br on o.BRANCH_NO = br.BRANCH_NO
         WHERE 1= 1
+            <if test="salesOrg!=null and ''!=salesOrg">
+                and o.SALES_ORG = #{salesOrg,jdbcType=VARCHAR}
+            </if>
+
             <if test="branchNo!=null and ''!=branchNo">
                 and o.BRANCH_NO = #{branchNo,jdbcType=VARCHAR}
             </if>
@@ -96,10 +140,10 @@
                and  o.EMP_NO = #{empNo,jdbcType=VARCHAR}
             </if>
             <if test="startDate!=null and ''!=startDate">
-               and  o.END_DATE &gt;= #{startDate,jdbcType=DATE}
+               and  b.RECEIPT_DATE &gt;= #{startDate,jdbcType=DATE}
             </if>
             <if test="endDate!=null and ''!=endDate">
-               and  o.END_DATE &lt;= #{endDate,jdbcType=DATE}
+               and  b.RECEIPT_DATE &lt;= #{endDate,jdbcType=DATE}
             </if>
     </select>
 
