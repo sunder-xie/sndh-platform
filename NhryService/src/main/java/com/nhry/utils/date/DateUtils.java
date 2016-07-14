@@ -1,5 +1,6 @@
 package com.nhry.utils.date;
 
+import java.text.DateFormat;
 import java.text.DecimalFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -48,9 +49,9 @@ public class DateUtils {
         String str = "";
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
         Calendar lastDate = Calendar.getInstance();
-        lastDate.add(Calendar.MONTH, -1); //��һ����
-        lastDate.set(Calendar.DATE, 1); //����������Ϊ���µ�һ��
-        lastDate.roll(Calendar.DATE, -1); //���ڻع�һ�죬Ҳ���Ǳ������һ��
+        lastDate.add(Calendar.MONTH, -1);  
+        lastDate.set(Calendar.DATE, 1);  
+        lastDate.roll(Calendar.DATE, -1);  
         str = sdf.format(lastDate.getTime());
         return str;
     }

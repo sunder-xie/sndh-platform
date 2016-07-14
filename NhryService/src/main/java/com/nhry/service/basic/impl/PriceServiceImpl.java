@@ -42,6 +42,18 @@ public class PriceServiceImpl extends BaseService implements PriceService {
 	@Override
 	public int addNewPriceGroup(TMdPrice record) {
 		// TODO Auto-generated method stub
+		if(StringUtils.isEmpty(record.getPriceGroup()) || StringUtils.isEmpty(record.getPriceType())){
+			throw new ServiceException(MessageCode.LOGIC_ERROR,"价格组名称、价格组类型不能为空!");
+		}
+		if(record.getMprices() == null || record.getMprices().size() == 0){
+			throw new ServiceException(MessageCode.LOGIC_ERROR,"价格组至少关联一个商品!");
+		}
+		if(SysContant.getSystemConst("price_type_comp").equals(record.getPriceType())){
+			int count = this.tMdPriceMapper.getCompPriceGroupCount(this.userSessionService.getCurrentUser().getSalesOrg());
+			if(count > 0){
+				throw new ServiceException(MessageCode.LOGIC_ERROR,"当前销售组织下区域(公司)价已经存在!");
+			}
+		}
 		record.setId(PrimaryKeyUtils.generateUuidKey());
 		record.setCreateBy(this.userSessionService.getCurrentUser().getLoginName());
 		record.setCreateByTxt(this.userSessionService.getCurrentUser().getDisplayName());
@@ -51,6 +63,27 @@ public class PriceServiceImpl extends BaseService implements PriceService {
 		tMdPriceMapper.addNewPriceGroup(record);
 		//维护产品与价格组关系
 		mergeMaraPriceRel(record.getId(),record.getMprices());
+		
+		//选择区域价、公司价 自动将该组织下所有的奶站关联上该价格组
+		if(SysContant.getSystemConst("price_type_comp").equals(record.getPriceType()) || SysContant.getSystemConst("price_type_area").equals(record.getPriceType())){
+			if(SysContant.getSystemConst("price_type_area").equals(record.getPriceType()) && StringUtils.isEmpty(record.getScope())){
+				throw new ServiceException(MessageCode.LOGIC_ERROR, "选择区域价时，适用范围必须选择!");
+			}else{
+				Map<String,String> attrs = new HashMap<String,String>();
+				attrs.put("salesOrg", this.userSessionService.getCurrentUser().getSalesOrg());
+				attrs.put("dealerNo", record.getScope());
+				List<TMdBranch> branchs = branchMapper.findBranchByDno(attrs);
+				for(TMdBranch tb : branchs){
+					TMdPriceBranch pb = new TMdPriceBranch();
+					pb.setBranchNo(tb.getBranchNo());
+					pb.setId(record.getId());
+					pb.setCreateAt(new Date());
+					pb.setCreateBy(this.userSessionService.getCurrentUser().getLoginName());
+					pb.setCreateByTxt(this.userSessionService.getCurrentUser().getDisplayName());
+					this.priceBranchMapper.addPriceBranch(pb);
+				}
+			}
+		}
 		return 1;
 	}
 
@@ -63,7 +96,10 @@ public class PriceServiceImpl extends BaseService implements PriceService {
 		priceGroup.setLastModified(new Date());
 		priceGroup.setLastModifiedBy(this.userSessionService.getCurrentUser().getLoginName());
 		priceGroup.setLastModifiedByTxt(this.userSessionService.getCurrentUser().getDisplayName());
-		return tMdPriceMapper.disablePriceGroup(priceGroup);
+		//禁用奶站
+		tMdPriceMapper.disablePriceGroup(priceGroup);
+		//删除该价格组与所有奶站的关系
+		return priceBranchMapper.delPriceBranchById(id);
 	}
 
 	@Override

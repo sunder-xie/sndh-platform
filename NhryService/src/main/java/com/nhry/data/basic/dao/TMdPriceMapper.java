@@ -85,4 +85,11 @@ public interface TMdPriceMapper {
 	  * @return
 	  */
 	 public List<TMdPrice> getDealerBranchPricesGroupByBn(Map<String,String> attrs);
+	 
+	 /**
+	  * 获取公司价在当前组织(salesOrg)下的个数
+	  * @param salesOrg
+	  * @return
+	  */
+	 public int getCompPriceGroupCount(String salesOrg);
 }

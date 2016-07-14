@@ -116,5 +116,34 @@ public class ReturnBoxServiceImpl implements ReturnBoxService {
         PageInfo result = tRecBotDetailMapper.searchRetBoxPage(rSearch);
         return result;
     }
+	
+	 @Override
+	 public String getLastDayRets(String code)
+	 {
+		  List<TRecBotDetail> list = tRecBotDetailMapper.selectRetByDispOrderNo(code);
+		  Map<String, Integer> map = new HashMap<String, Integer>();
+		  map.put("10",0);
+		  map.put("20",0);
+		  map.put("30",0);
+		  for(TRecBotDetail e:list){
+			   int amt = map.get(e.getSpec());
+			   if("10".equals(e.getSpec())){
+				   map.replace("10", amt + e.getReceiveNum());
+			   }
+            if("20".equals(e.getSpec())){
+            	map.replace("20", amt + e.getReceiveNum());			  
+            }
+            if("30".equals(e.getSpec())){
+            	map.replace("30", amt + e.getReceiveNum());
+            }
+		  }
+		  
+		  StringBuilder retStr = new StringBuilder("");
+		  retStr.append("大瓶:"+map.get("30"));
+		  retStr.append("中瓶:"+map.get("20"));
+		  retStr.append("小瓶:"+map.get("10"));
+		  
+		  return retStr.toString();
+	 }
 
 }

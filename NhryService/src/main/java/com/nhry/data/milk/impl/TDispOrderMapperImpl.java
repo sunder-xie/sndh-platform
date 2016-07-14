@@ -10,7 +10,9 @@ import com.nhry.model.milk.RouteOrderSearchModel;
 import com.nhry.model.milktrans.CreateEmpReturnboxModel;
 
 import java.math.BigDecimal;
+import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.List;
 
 public class TDispOrderMapperImpl implements TDispOrderMapper
 {
@@ -48,10 +50,13 @@ public class TDispOrderMapperImpl implements TDispOrderMapper
 	}
 	
 	@Override
-	public int deleteByPrimaryKey(TDispOrderKey key)
+	public List<TDispOrder> selectTodayDispOrderByBranchNo(String branchNo)
 	{
-		// TODO Auto-generated method stub
-		return 0;
+		SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
+		TDispOrder key = new TDispOrder();
+		key.setBranchNo(branchNo);
+		key.setBranchName(format.format(new Date()));
+		return sqlSessionTemplate.selectList("selectTodayDispOrderByBranchNo",key);
 	}
 
 	@Override
