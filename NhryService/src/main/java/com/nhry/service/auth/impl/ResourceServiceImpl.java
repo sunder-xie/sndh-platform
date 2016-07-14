@@ -110,7 +110,17 @@ public class ResourceServiceImpl extends BaseService implements ResourceService 
         if (roleRes == null) {
             throw new ServiceException(MessageCode.LOGIC_ERROR, "该角色资源关系不存在!");
         }
-        return this.deleteRoleRes(record);
+        return resMapper.deleteRoleRes(record);
+    }
+
+    @Override
+    public int deleteRoleRes(RoleResourceData record) {
+        if(record != null && record.getRecords().size()>0){
+            for(TSysRoleResource res : record.getRecords()){
+                this.deleteRoleRes(res);
+            }
+        }
+        return 1;
     }
 
     @Override
