@@ -58,6 +58,13 @@ public interface ResourceService {
     int deleteRoleRes(TSysRoleResource record);
 
 	/**
+	 * 批量删除角色资源关系
+	 * @param record
+	 * @return
+     */
+	int deleteRoleRes(RoleResourceData record);
+
+	/**
 	 * 根据用户编码查询资源信息
 	 * @param userId
 	 * @return
@@ -76,4 +83,6 @@ public interface ResourceService {
      * @return
      */
     public List<TSysResource> getRoleResources(String id);
+
+
 }
