@@ -40,7 +40,7 @@ public class BranchResource extends BaseResource {
 	@GET
 	@Path("/getBranchByCodeOrName")
 	@Produces(MediaType.APPLICATION_JSON)
-	@ApiOperation(value = "/getBranchByCodeOrName", response = TMdBranch.class, notes = "根据奶站名称或者名称获取奶站列表")
+	@ApiOperation(value = "/getBranchByCodeOrName", response = TMdBranch.class, notes = "根据奶站名称或者名称获取销售组织下奶站列表")
 	public Response getBranchByCodeOrName(@ApiParam(required=true,name="branch",value="奶站编号或奶站名称")  @QueryParam("branch") String branch){
 		return convertToRespModel(MessageCode.NORMAL, null,branchService.getBranchByCodeOrName(branch));
 	}
@@ -58,7 +58,7 @@ public class BranchResource extends BaseResource {
 	@Path("/list")
 	@Produces(MediaType.APPLICATION_JSON)
 	@Consumes(MediaType.APPLICATION_JSON)
-	@ApiOperation(value = "/list", response = TMdBranch.class, notes = "根据销售组织、奶站性质、奶站等级查询网点客户(奶站)信息列表")
+	@ApiOperation(value = "/list", response = TMdBranch.class, notes = "奶站编号、奶站性质查询网点客户(奶站)信息列表")
 	public Response findBranchListByPage(
 			@ApiParam(required=true,name="branchModel",value="SearchModel") BranchQueryModel branchModel){
 		PageInfo data = branchService.findBranchListByPage(branchModel);
@@ -84,11 +84,11 @@ public class BranchResource extends BaseResource {
 	}
 	
 	@POST
-	@Path("/find/{deanerNo}")
+	@Path("/find/{dealerNo}")
 	@Produces(MediaType.APPLICATION_JSON)
 	@ApiOperation(value = "/find/{deanerNo}", response = String.class, notes = "根据经销商编号获取奶站列表信息")
-	public Response uptBranch(@ApiParam(required=true,name="deanerNo",value="经销商编号(自有奶站时：-1)")@PathParam("deanerNo") String deanerNo){
-		return convertToRespModel(MessageCode.NORMAL, null,branchService.findBranchByDno(deanerNo));
+	public Response uptBranch(@ApiParam(required=true,name="dealerNo",value="经销商编号(自有奶站时：-1)")@PathParam("dealerNo") String dealerNo){
+		return convertToRespModel(MessageCode.NORMAL, null,branchService.findBranchByDno(dealerNo));
 	}
 
 }

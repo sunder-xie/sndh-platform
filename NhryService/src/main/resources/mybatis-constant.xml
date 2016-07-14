@@ -16,4 +16,18 @@
 	<sql id="vip_src">1006</sql>
 	<!-- 订户类型 -->
 	<sql id="vip_type">1007</sql>
+	<!-- 价格组类型 -->
+	<sql id="price_type">1008</sql>
+	<!-- 奶瓶规格 -->
+	<sql id="bot_type">1009</sql>
+	<!-- 收款方式 -->
+	<sql id="payment_type">1010</sql>
+	<!-- 库存地点-->
+	<sql id="storage_location">1011</sql>
+	<!-- 系统资源类型 -->
+	<sql id="sys_res_type">1012</sql>
+	<!-- 采购组 -->
+	<sql id="purchasing_group">1013</sql>
+	<!-- 价格组类型  公司价 -->
+	<sql id="price_type_comp">10</sql>
 </mapper>  

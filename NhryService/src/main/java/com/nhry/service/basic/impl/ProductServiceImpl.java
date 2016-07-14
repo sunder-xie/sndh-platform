@@ -15,8 +15,11 @@ import com.nhry.model.basic.ProductQueryModel;
 import com.nhry.service.BaseService;
 import com.nhry.service.basic.dao.BranchService;
 import com.nhry.service.basic.dao.ProductService;
+import com.nhry.service.basic.pojo.BotType;
 import com.nhry.utils.PrimaryKeyUtils;
+import com.nhry.utils.SysContant;
 import com.nhry.utils.date.Date;
+
 import org.apache.commons.lang3.StringUtils;
 
 import java.util.HashMap;
@@ -69,6 +72,10 @@ public class ProductServiceImpl extends BaseService implements ProductService {
 		if(record.getMaraEx() != null){
 			this.uptProductExByCode(record.getMatnr(),record.getMaraEx());
 		}
+	   if(!StringUtils.isBlank(record.getStatus())){
+		   //状态不为空时，更新产品状态
+		   pubProductByCode(record.getMatnr(),record.getStatus());
+		}
 		return 1;
 	}
 
@@ -97,20 +104,19 @@ public class ProductServiceImpl extends BaseService implements ProductService {
 		attrs.put("salesOrg",this.userSessionService.getCurrentUser().getSalesOrg());
 		TMdMara mara = tMdMaraMapper.selectProductAndExByCode(attrs);
 		if(mara != null){
-			this.notsellListMapper.getNotSellListByMatnr(matnr);
+			mara.setNotsellList(this.notsellListMapper.getNotSellListByMatnr(matnr));
 		}
-		return tMdMaraMapper.selectProductAndExByCode(attrs);
+		return mara;
 	}
 
 	@Override
-	public int pubProductByCode(String code) {
+	public int pubProductByCode(String code,String status) {
 		// TODO Auto-generated method stub
-		if(StringUtils.isEmpty(this.userSessionService.getCurrentUser().getSalesOrg())){
-			throw new ServiceException(MessageCode.LOGIC_ERROR,"当前用户的关联的组织信息不全,请先维护好当前用户信息!");
-		}
-		Map<String,String> attrs = new HashMap<String,String>();
+		Map attrs = new HashMap();
 		attrs.put("code", code);
 		attrs.put("salesOrg",this.userSessionService.getCurrentUser().getSalesOrg());
+		attrs.put("status",status);
+		attrs.put("lastModified", new Date());
 		return tMdMaraMapper.pubProductByCode(attrs);
 	}
 
@@ -165,10 +171,10 @@ public class ProductServiceImpl extends BaseService implements ProductService {
 		TMdBranch branch = branchSevice.selectBranchByNo(pm.getBranchNo());
 		if(branch != null){
 			pm.setSalesOrg(branch.getSalesOrg());
-			if(StringUtils.isEmpty(branch.getDealerNo())){
+			if(SysContant.getSystemConst("own_Branch").equals(branch.getBranchGroup())){
 				//自营奶站
 				return this.tMdMaraMapper.getCompMaras(pm);
-			}else{
+			}else if(SysContant.getSystemConst("dealer_Branch").equals(branch.getBranchGroup())){
 				//经销商奶站
 				pm.setDealerNo(branch.getDealerNo());
 				return this.tMdMaraMapper.getDealerMaras(pm);
@@ -201,5 +207,18 @@ public class ProductServiceImpl extends BaseService implements ProductService {
 			attrs.put("id",id);
 		}
 		return this.tMdMaraMapper.findMarasBySalesCodeAndOrg(attrs);
+	}
+
+	@Override
+	public Map<String, String> getMataBotTypes() {
+		// TODO Auto-generated method stub
+		Map<String,String> attrs = new HashMap<String,String>();
+		List<BotType> list = this.tMdMaraExMapper.getMataBotTypes(this.userSessionService.getCurrentUser().getSalesOrg());
+		if(list != null){
+			for(BotType bt : list){
+				attrs.put(bt.getMatnr(), bt.getBotType());
+			}
+		}
+		return attrs;
 	}
 }

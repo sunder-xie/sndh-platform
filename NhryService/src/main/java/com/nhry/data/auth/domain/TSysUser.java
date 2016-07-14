@@ -8,7 +8,12 @@ import java.util.List;
 import com.nhry.service.auth.pojo.UserRoles;
 
 public class TSysUser implements Serializable{
-    private String loginName;
+    /**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+
+	private String loginName;
 
     private String displayName;
 

@@ -11,6 +11,7 @@ import com.nhry.model.milktrans.UnDeliverProductSearch;
 import com.nhry.service.milk.pojo.TDispOrderChangeItem;
 
 import java.util.List;
+import java.util.Map;
 
 public interface TDispOrderItemMapper {
 	
@@ -30,7 +31,7 @@ public interface TDispOrderItemMapper {
 
     int updateByPrimaryKeySelective(TDispOrderItem record);
 
-    int updateDispOrderItem(RouteDetailUpdateModel record,TPlanOrderItem entry);
+    int updateDispOrderItem(RouteDetailUpdateModel record,TPlanOrderItem entry,Map<String,String>productMap);
     
     int batchinsert(List<TDispOrderItem> records);
     

@@ -15,6 +15,25 @@ public class RouteOrderSearchModel extends BaseQueryModel implements Serializabl
 	private String deliverDate;
 	private String type;
 	private String orderNo;
+	private String branchNo1;
+	private String salesOrg;
+	
+	public String getBranchNo1()
+	{
+		return branchNo1;
+	}
+	public void setBranchNo1(String branchNo1)
+	{
+		this.branchNo1 = branchNo1;
+	}
+	public String getSalesOrg()
+	{
+		return salesOrg;
+	}
+	public void setSalesOrg(String salesOrg)
+	{
+		this.salesOrg = salesOrg;
+	}
 	public String getOrderNo()
 	{
 		return orderNo;

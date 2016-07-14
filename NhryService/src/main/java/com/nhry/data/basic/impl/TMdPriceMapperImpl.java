@@ -82,4 +82,10 @@ public class TMdPriceMapperImpl implements TMdPriceMapper {
 		// TODO Auto-generated method stub
 		return this.sqlSessionTemplate.selectList("getDealerBranchPricesGroupByBn", attrs);
 	}
+
+	@Override
+	public int getCompPriceGroupCount(String salesOrg) {
+		// TODO Auto-generated method stub
+		return this.sqlSessionTemplate.selectOne("getCompPriceGroupCount", salesOrg);
+	}
 }

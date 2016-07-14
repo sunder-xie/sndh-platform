@@ -13,6 +13,10 @@
     <result column="TEL" property="tel" jdbcType="VARCHAR" />
     <result column="MP" property="mp" jdbcType="VARCHAR" />
     <result column="DEALER_NO" property="dealerNo" jdbcType="VARCHAR" />
+
+    <result column="TOTAL_CUS" property="totalCus" jdbcType="INTEGER" />
+    <result column="DEALER_NAME" property="dealerName" jdbcType="VARCHAR" />
+
     <result column="ADDRESS" property="address" jdbcType="VARCHAR" />
     <result column="PROVINCE" property="province" jdbcType="VARCHAR" />
     <result column="CITY" property="city" jdbcType="VARCHAR" />
@@ -92,17 +96,25 @@
     where SALES_ORG = #{salesOrg,jdbcType=VARCHAR}
   </select>
   <select id="searchBranch" resultMap="BaseResultMap" parameterType="com.nhry.model.basic.BranchQueryModel">
-      SELECT
-      <include refid="Base_Column_List" />
-      from T_MD_BRANCH branch
-      where 1=1
-
+    SELECT
+    b.BRANCH_NO,b.BRANCH_NAME,
+    (SELECT i.ITEM_NAME from t_sys_code_item i WHERE i.TYPE_CODE= <include refid="mybaties.constant.SALES_ORG_CONSTANT"/> and i.ITEM_CODE = b.SALES_ORG)
+    SALES_ORG,b.SALES_CHA,
+    BRANCH_GROUP,b.BRANCH_LEVEL,b.DEALER_NO,d.DEALER_NAME,COUNT(c.BRANCH_NO) TOTAL_CUS,b.MP,b.TEL
+    from T_MD_BRANCH b LEFT JOIN t_md_dealer d on b.DEALER_NO = d.DEALER_NO
+    LEFT JOIN t_vip_cust_info c on b.BRANCH_NO = c.BRANCH_NO
+    where 1=1
+    <if test="branchNo != null and branchNo != ''">
+      AND b.BRANCH_NO = #{branchNo,jdbcType=VARCHAR}
+    </if>
       <if test="salesOrg != null and salesOrg != ''">
-        AND branch.SALES_ORG = #{salesOrg,jdbcType=VARCHAR}
+        AND b.SALES_ORG = #{salesOrg,jdbcType=VARCHAR}
       </if>
       <if test="branchGroup != null and branchGroup != ''">
-        AND branch.BRANCH_GROUP = #{branchGroup,jdbcType=VARCHAR}
+        AND b.BRANCH_GROUP = #{branchGroup,jdbcType=VARCHAR}
       </if>
+
+    GROUP BY b.BRANCH_NO
   </select>
 
   <select id="getBranchByCodeOrName" resultMap="BaseResultMap" parameterType="java.util.HashMap">

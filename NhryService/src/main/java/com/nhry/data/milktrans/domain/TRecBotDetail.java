@@ -8,7 +8,6 @@ import java.util.Date;
  */
 public class TRecBotDetail implements Serializable {
     private String detLsh;      //明细流水号
-    private String retLsh;      //回瓶流水号
     private String spec;        //规格 名称
     private String dispOrderNo; //配送单号
     private String branchNo;
@@ -17,6 +16,7 @@ public class TRecBotDetail implements Serializable {
     private int receiveNum;     //应收数量
     private int realNum;        //实收数量
     private String status;
+    private Date createAt;
     private String createBy;
     private String createByTxt;
     private Date lastModified;
@@ -64,20 +64,20 @@ public class TRecBotDetail implements Serializable {
         this.status = status;
     }
 
+    public Date getCreateAt() {
+        return createAt;
+    }
+
+    public void setCreateAt(Date createAt) {
+        this.createAt = createAt;
+    }
+
     public String getDetLsh() {
         return detLsh;
     }
 
     public void setDetLsh(String detLsh) {
         this.detLsh = detLsh;
-    }
-
-    public String getRetLsh() {
-        return retLsh;
-    }
-
-    public void setRetLsh(String retLsh) {
-        this.retLsh = retLsh;
     }
 
     public String getSpec() {

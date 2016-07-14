@@ -118,12 +118,11 @@ public class milkTransResource extends BaseResource {
 	}
 
 
-	@POST
+	@GET
 	@Path("/box/createDayRetBox")
 	@Produces(MediaType.APPLICATION_JSON)
-	@Consumes(MediaType.APPLICATION_JSON)
-	@ApiOperation(value = "/box/createDayRetBox", response = CreateReturnBoxModel.class, notes = "生成当天(员工)需要回瓶的数据")
-	public Response createDayRetBox(@ApiParam(required=true,name="cModel",value="cModel") @QueryParam("dispOrderNo") String dispOrderNo){
+	@ApiOperation(value = "/box/createDayRetBox", response = Response.class, notes = "生成当天(员工)需要回瓶的数据")
+	public Response createDayRetBox(@ApiParam(required=true,name="dispOrderNo",value="配送单号") @QueryParam("dispOrderNo") String dispOrderNo){
 		return convertToRespModel(MessageCode.NORMAL, null, returnBoxService.createDayRetBox(dispOrderNo));
 	}
 
@@ -142,7 +141,7 @@ public class milkTransResource extends BaseResource {
 	@Path("/createInsideSalOrder")
 	@Produces(MediaType.APPLICATION_JSON)
 	@Consumes(MediaType.APPLICATION_JSON)
-	@ApiOperation(value = "/createInsideSalOrder", response = RequireOrderModel.class, notes = "创建内部销售订单")
+	@ApiOperation(value = "/createInsideSalOrder", response = Response.class, notes = "创建内部销售订单")
 	public Response createInsideSalOrder(@ApiParam(required=true,name="dispOrderNo",value="配送单号")@QueryParam("dispOrderNo") String  dispOrderNo){
 		return convertToRespModel(MessageCode.NORMAL, null, deliverMilkService.createInsideSalOrder(dispOrderNo));
 	}

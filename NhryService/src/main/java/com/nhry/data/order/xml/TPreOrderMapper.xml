@@ -83,14 +83,18 @@
     o.DISP_LINE_NO, o.EMP_NO,e.EMP_NAME EMP_NAME,o.ADRESS_NO, o.CREATER_NO, o.CREATER_BY, o.PREORDER_STAT, o.MEMO_TXT, 
     o.PAY_METHOD, o.SOLICIT_NO, o.SOLICIT_DATE, o.SOLICITOR_NO, o.SOLICIT_BY, o.END_DATE,o.STOP_DATE_START,o.DELIVERY_TYPE,
     o.STOP_DATE_END,o.STOP_REASON,v.MP CUSTOMER_TEL,v.VIP_NAME MILKMEMBER_NAME,o.SIGN,o.SALES_ORG
-    FROM t_preorder o , t_md_branch b , t_vip_cust_info v ,t_md_branch_emp e
-    WHERE o.BRANCH_NO = b.BRANCH_NO and v.VIP_CUST_NO = o.MILKMEMBER_NO and e.EMP_NO = o.EMP_NO
-    and ORDER_NO = #{orderNo,jdbcType=VARCHAR}
+    FROM t_preorder o 
+    left join t_md_branch b on o.BRANCH_NO = b.BRANCH_NO
+    left join t_vip_cust_info v on v.VIP_CUST_NO = o.MILKMEMBER_NO
+    left join t_md_branch_emp e on e.EMP_NO = o.EMP_NO
+    WHERE ORDER_NO = #{orderNo,jdbcType=VARCHAR}
   </select>
-  <select id="selectDispNoByGroup" resultMap="BaseResultMap">
+  <select id="selectDispNoByGroup" resultMap="BaseResultMap" parameterType="java.lang.String">
     select distinct e.reach_time_type ORDER_TYPE, o.EMP_NO, o.BRANCH_NO
 	 from t_mst_plan_order_item e
 	 left join t_preorder o on e.order_no = o.order_no 
+	 where o.SIGN != '20' and o.SIGN != '30' and o.PREORDER_STAT != '20' and PREORDER_STAT != '30'
+	        and o.BRANCH_NO = #{branchNo,jdbcType=VARCHAR}
   </select>
   <delete id="deleteByPrimaryKey" parameterType="java.lang.String" >
     delete from t_preorder
@@ -394,20 +398,24 @@
     where ORDER_NO = #{orderNo,jdbcType=VARCHAR}
   </update>
   <select id="searchOrders" resultMap="BaseResultMap" parameterType="com.nhry.model.order.OrderSearchModel">
-    select 
+    select distinct
     o.ORDER_NO, o.ORDER_TYPE, o.ORDER_DATE, o.PAYMENTMETHOD, o.PREORDER_SOURCE, o.ONLINEORDER_NO, 
     b.BRANCH_NAME BRANCH_NO, o.MILKMEMBER_NO, o.MEMBER_NO, o.PAYMENT_STAT, o.MILKBOX_STAT, o.INIT_AMT, o.CUR_AMT, 
     o.DISP_LINE_NO, o.EMP_NO,a.ADDRESS_TXT ADRESS_NO, o.CREATER_NO, o.CREATER_BY, o.PREORDER_STAT,o.PAY_METHOD,
     v.MP CUSTOMER_TEL,v.VIP_NAME MILKMEMBER_NAME,o.RET_REASON,o.RET_DATE,o.BACK_REASON,o.BACK_DATE,o.SIGN
-    FROM t_preorder o , t_md_branch b , t_vip_cust_info v,t_md_address a
-    WHERE o.BRANCH_NO = b.BRANCH_NO 
-    and v.VIP_CUST_NO = o.MILKMEMBER_NO
-    and a.ADDRESS_ID = o.ADRESS_NO
+    FROM t_preorder o 
+    left join t_md_branch b on o.BRANCH_NO = b.BRANCH_NO 
+    left join t_vip_cust_info v on v.VIP_CUST_NO = o.MILKMEMBER_NO
+    left join t_md_address a on a.ADDRESS_ID = o.ADRESS_NO
+    left join t_mst_plan_order_item e on e.ORDER_NO = o.ORDER_NO
+    WHERE 1=1
     <!-- AND o.PREORDER_STAT = "10" -->
-     AND (RET_REASON is null
-     AND RET_DATE is null
+     AND (o.RET_DATE is null
     <if test="orderNo != null and orderNo !=''">
-     		AND ORDER_NO = #{orderNo,jdbcType=VARCHAR}
+     		AND o.ORDER_NO = #{orderNo,jdbcType=VARCHAR}
+    </if>
+    <if test="product != null and product !=''">
+     		AND e.MATNR = #{product,jdbcType=VARCHAR}
     </if>
     <if test="branchNo != null and branchNo != ''">
      		AND o.BRANCH_NO = #{branchNo,jdbcType=VARCHAR}
@@ -416,38 +424,40 @@
      		AND o.SALES_ORG = #{salesOrg,jdbcType=VARCHAR}
     </if>
     <if test="empNo != null and empNo !=''">
-     		AND EMP_NO = #{empNo,jdbcType=VARCHAR}
+     		AND o.EMP_NO = #{empNo,jdbcType=VARCHAR}
     </if>
     <if test="milkmemberNo != null and milkmemberNo !=''">
-     		AND MILKMEMBER_NO = #{milkmemberNo,jdbcType=VARCHAR}
+     		AND o.MILKMEMBER_NO = #{milkmemberNo,jdbcType=VARCHAR}
     </if>
     <if test="paymentStat != null and paymentStat !=''">
-     		AND PAYMENT_STAT = #{paymentStat,jdbcType=VARCHAR}
+     		AND o.PAYMENT_STAT = #{paymentStat,jdbcType=VARCHAR}
     </if>
     <if test="milkboxStat != null and milkboxStat !=''">
-     		AND MILKBOX_STAT = #{milkboxStat,jdbcType=VARCHAR}
+     		AND o.MILKBOX_STAT = #{milkboxStat,jdbcType=VARCHAR}
     </if>
     <if test="preorderStat != null and preorderStat !=''">
-     		AND PREORDER_STAT = #{preorderStat,jdbcType=VARCHAR}
+     		AND o.PREORDER_STAT = #{preorderStat,jdbcType=VARCHAR}
     </if>
     <!-- <if test="companyName != null and companyName !=''">
      		AND b.SALES_ORG = #{companyName,jdbcType=VARCHAR}
     </if> -->
     <if test="orderDateStart != null and orderDateStart !=''">
-     		AND ORDER_DATE  &gt;=  #{orderDateStart}
+     		AND o.ORDER_DATE  &gt;=  #{orderDateStart}
     </if>
     <if test="orderDateEnd != null and orderDateEnd !=''">
-     		AND ORDER_DATE  &lt;=  #{orderDateEnd}
+     		AND o.ORDER_DATE  &lt;=  #{orderDateEnd}
     </if>
-     AND PREORDER_STAT != "30")
+     AND o.PREORDER_STAT != "30"
+     AND o.SIGN != "30")
      
     <!-- 订单列表里要包括已经取消的订单 -->
     <if test="reason != null and reason !=''">
-     	   OR (o.BRANCH_NO = b.BRANCH_NO 
-     	   and v.VIP_CUST_NO = o.MILKMEMBER_NO 
-    	   and a.ADDRESS_ID = o.ADRESS_NO
+     	   OR ( 1=1
 	     		 <if test="orderNo != null and orderNo !=''">
-     		         AND ORDER_NO = #{orderNo,jdbcType=VARCHAR}
+     		         AND o.ORDER_NO = #{orderNo,jdbcType=VARCHAR}
+			    </if>
+			    <if test="product != null and product !=''">
+			     		AND e.MATNR = #{product,jdbcType=VARCHAR}
 			    </if>
 			    <if test="branchNo != null and branchNo != ''">
 			     		AND o.BRANCH_NO = #{branchNo,jdbcType=VARCHAR}
@@ -456,44 +466,44 @@
 			     		AND o.SALES_ORG = #{salesOrg,jdbcType=VARCHAR}
 			    </if>
 			    <if test="empNo != null and empNo !=''">
-			     		AND EMP_NO = #{empNo,jdbcType=VARCHAR}
+			     		AND o.EMP_NO = #{empNo,jdbcType=VARCHAR}
 			    </if>
 			    <if test="milkmemberNo != null and milkmemberNo !=''">
-			     		AND MILKMEMBER_NO = #{milkmemberNo,jdbcType=VARCHAR}
+			     		AND o.MILKMEMBER_NO = #{milkmemberNo,jdbcType=VARCHAR}
 			    </if>
 			    <if test="paymentStat != null and paymentStat !=''">
-			     		AND PAYMENT_STAT = #{paymentStat,jdbcType=VARCHAR}
+			     		AND o.PAYMENT_STAT = #{paymentStat,jdbcType=VARCHAR}
 			    </if>
 			    <if test="milkboxStat != null and milkboxStat !=''">
-			     		AND MILKBOX_STAT = #{milkboxStat,jdbcType=VARCHAR}
+			     		AND o.MILKBOX_STAT = #{milkboxStat,jdbcType=VARCHAR}
 			    </if>
 			    <!-- <if test="companyName != null and companyName !=''">
 			     		AND b.SALES_ORG = #{companyName,jdbcType=VARCHAR}
 			    </if> -->
 			    <if test="orderDateStart != null and orderDateStart !=''">
-			     		AND ORDER_DATE  &gt;=  #{orderDateStart}
+			     		AND o.ORDER_DATE  &gt;=  #{orderDateStart}
 			    </if>
 			    <if test="orderDateEnd != null and orderDateEnd !=''">
-			     		AND ORDER_DATE  &lt;=  #{orderDateEnd}
+			     		AND o.ORDER_DATE  &lt;=  #{orderDateEnd}
 			    </if>
-			     		AND PREORDER_STAT = "30" )
+			     		AND o.PREORDER_STAT = "30"
+			     		AND o.SIGN = "30" )
 			    </if>
-     ORDER BY ORDER_DATE
+     ORDER BY o.ORDER_DATE desc
   </select>
 
   <select id="searchReturnOrders" resultMap="BaseResultMap" parameterType="com.nhry.model.order.ManHandOrderSearchModel">
     select
       o.ORDER_NO, o.PREORDER_STAT,o.RET_REASON,o.RET_DATE, c.VIP_NAME MILKMEMBER_NO, c.VIP_NAME MEMBER_NO,
     c.MP CUSTOMER_TEL,b.BRANCH_NAME BRANCH_NO,o.SIGN
-    FROM t_preorder o,t_md_branch b,t_vip_cust_info c
+    FROM t_preorder o
+    left join t_md_branch b on o.BRANCH_NO  = b.BRANCH_NO
+	 left join t_vip_cust_info c on o.MILKMEMBER_NO = c.VIP_CUST_NO
 
-    WHERE o.BRANCH_NO  = b.BRANCH_NO and o.MILKMEMBER_NO = c.VIP_CUST_NO
-    <!-- and o.MEMBER_NO = c.VIP_CUST_NO -->
-    <!-- and  o.PREORDER_STAT = '20' -->  
-    and o.RET_REASON is not null 
-    and o.RET_REASON != ""
+    WHERE  1=1
+    and o.RET_DATE is not null 
+    <!-- and o.SIGN = "30" -->
     and o.PREORDER_STAT != "30"
-    and o.BACK_DATE is null
 
     <if test="orderDateStart != null and orderDateStart !=''">
       AND o.RET_DATE &gt;= #{orderDateStart,jdbcType=DATE}
@@ -507,9 +517,6 @@
     <if test="retReason != null and retReason !=''">
       AND o.RET_REASON = #{retReason,jdbcType=VARCHAR}
     </if>
-    <if test="branchNo != null and branchNo !=''">
-      AND o.BRANCH_NO = #{branchNo,jdbcType=VARCHAR}
-    </if>
     <if test="salesOrg != null and salesOrg !=''">
       AND o.SALES_ORG = #{salesOrg,jdbcType=VARCHAR}
     </if>
@@ -519,6 +526,9 @@
   <update id="updateOrderStatus" parameterType="com.nhry.data.order.domain.TPreOrder" >
     update t_preorder
     <set >
+    	<if test="milkmemberNo != null" >
+        MILKMEMBER_NO = #{milkmemberNo,jdbcType=VARCHAR},
+      </if>
       <if test="paymentStat != null" >
         PAYMENT_STAT = #{paymentStat,jdbcType=VARCHAR},
       </if>
@@ -556,9 +566,10 @@
     select
       o.ORDER_NO, o.PREORDER_STAT,o.RET_REASON,o.RET_DATE, c.VIP_NAME MILKMEMBER_NO, c.VIP_NAME MEMBER_NO,
       c.MP CUSTOMER_TEL,b.BRANCH_NAME BRANCH_NO,b.MP BRANCH_TEL,o.ORDER_DATE,o.MEMO_TXT
-    FROM t_preorder o,t_md_branch b,t_vip_cust_info c
-    WHERE o.BRANCH_NO  = b.BRANCH_NO and o.MILKMEMBER_NO = c.VIP_CUST_NO
-    and o.MEMBER_NO = c.VIP_CUST_NO
+    FROM t_preorder o
+    left join t_md_branch b on o.BRANCH_NO  = b.BRANCH_NO
+	 left join t_vip_cust_info c on o.MILKMEMBER_NO = c.VIP_CUST_NO
+    WHERE 1 = 1
     and  o.ORDER_NO = #{orderNo,jdbcType=VARCHAR}
   </select>
   <update id="uptManHandOrder" parameterType="com.nhry.model.order.UpdateManHandOrderModel" >

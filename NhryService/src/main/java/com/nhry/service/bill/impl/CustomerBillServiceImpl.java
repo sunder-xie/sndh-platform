@@ -83,7 +83,10 @@ public class CustomerBillServiceImpl implements CustomerBillService {
                 String payMentYM = String.valueOf(calendar.get(Calendar.YEAR))+month;
                 TSysUser user = userSessionService.getCurrentUser();
                 //备注
-                customerBill.setRemark(cModel.getRemark());
+                if(StringUtils.isNoneBlank(cModel.getRemark())){
+                    customerBill.setRemark(cModel.getRemark());
+                }
+
                 customerBill.setEndTime(order.getEndDate());
                 customerBill.setVipCustNo(order.getMilkmemberNo());
                 customerBill.setPaymentYearMonth(payMentYM);

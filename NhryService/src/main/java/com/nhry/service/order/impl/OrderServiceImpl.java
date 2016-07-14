@@ -620,6 +620,7 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 		
 		//此为多余的钱，如果是预付款，将存入订户账户???
 		if(order.getInitAmt()!=null){
+			if("20".equals(order.getPaymentStat()) && order.getInitAmt().subtract(orderAmt).floatValue()<0)throw new ServiceException(MessageCode.LOGIC_ERROR,"付款方式为预付款!您支付的金额不足!");
 			BigDecimal remain = order.getInitAmt().subtract(order.getCurAmt());
 			if(record.getAccount() != null && "20".equals(order.getPaymentStat())){
 				if(StringUtils.isBlank(record.getAccount().getBranchNo()))record.getAccount().setBranchNo(order.getBranchNo());
@@ -767,6 +768,18 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 		//已生效10、未生效20、无效30
 		//先款10、后付款20
 		//在订10、停订20、退订30
+		if(record.getMilkmemberNo()!=null){
+			//更改订户
+			tPreOrderMapper.updateOrderStatus(record);
+			//订户状态更改
+			tVipCustInfoService.discontinue(record.getMilkmemberNo(), "10",new com.nhry.utils.date.Date(),new com.nhry.utils.date.Date());
+			
+			return 1;
+		}
+		if("10".equals(record.getPreorderStat())){
+			TPreOrder order = tPreOrderMapper.selectByPrimaryKey(record.getOrderNo());
+			if(StringUtils.isBlank(order.getMilkmemberNo()))throw new ServiceException(MessageCode.LOGIC_ERROR,"该订单没有订户，请选择订户或新建订户!");
+		}
 		if(StringUtils.isBlank(record.getPaymentStat()) && StringUtils.isBlank(record.getMilkboxStat())
 				&& StringUtils.isBlank(record.getPreorderStat()) && StringUtils.isBlank(record.getSign())){
 			throw new ServiceException(MessageCode.LOGIC_ERROR,"更新信息与状态为空!");

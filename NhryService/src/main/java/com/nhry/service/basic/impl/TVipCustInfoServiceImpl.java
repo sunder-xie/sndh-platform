@@ -145,7 +145,7 @@ public class TVipCustInfoServiceImpl extends BaseService implements TVipCustInfo
 		TVipCustInfo cust = new TVipCustInfo();
 		cust.setVipCustNo(vipCustNo);
 		cust.setStatus(status);
-		cust.setFirstOrderTime(firstTime);
+		if(custinfo.getFirstOrderTime()==null)cust.setFirstOrderTime(firstTime);
 		cust.setLastOrderTime(lastestTime);
 		cust.setLastModified(new Date());
 		cust.setLastModifiedBy(this.userSessionService.getCurrentUser().getLoginName());
@@ -157,6 +157,9 @@ public class TVipCustInfoServiceImpl extends BaseService implements TVipCustInfo
 	public PageInfo findcustMixedTerms(CustQueryModel cust) {
 		// TODO Auto-generated method stub
 	   cust.setSalesOrg(userSessionService.getCurrentUser().getSalesOrg());
+	   if(StringUtils.isEmpty(cust.getStation()) && !StringUtils.isEmpty(this.userSessionService.getCurrentUser().getBranchNo())){
+		   cust.setStation(this.userSessionService.getCurrentUser().getBranchNo());
+	   }
 	  return this.tmdVipcust.findcustMixedTerms(cust);
 	}
 

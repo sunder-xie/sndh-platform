@@ -2,6 +2,7 @@ package com.nhry.service.milk.dao;
 
 import java.math.BigDecimal;
 import java.util.List;
+import java.util.Map;
 
 import com.github.pagehelper.PageInfo;
 import com.nhry.data.milk.domain.TDispOrderItem;
@@ -26,7 +27,7 @@ public interface DeliverMilkService {
 	
 	int updateRouteOrderAllItems(RouteDetailUpdateListModel record);
 	
-	int updateRouteOrderItems(RouteDetailUpdateModel record);
+	int updateRouteOrderItems(RouteDetailUpdateModel record,Map<String,String> productMap);
 	public int createInsideSalOrder(String dispOrderNo);
 	
 	int updateDaliyPlanByRouteOrder(String orderCode);
@@ -36,4 +37,6 @@ public interface DeliverMilkService {
 	int createRouteChanges();
 	
 	int updatePreOrderCurAmt(String orderNo , BigDecimal amt);
+	
+	int createDispOrderdayliy();
 }

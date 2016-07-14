@@ -83,7 +83,7 @@
 		pex.LAST_MODIFIED_BY_TXT  
 		FROM 
 		t_md_mara p 
-		LEFT JOIN t_md_mara_ex pex ON p.MATNR = pex.MATNR 
+		LEFT JOIN t_md_mara_ex pex ON (p.MATNR = pex.MATNR and p.SALES_ORG=pex.SALES_ORG)
 		WHERE p.SALES_ORG=#{salesOrg} and p.MATNR = #{matnr}
 	</select>
 	<select id="searchProducts" resultMap="BaseResultMap" parameterType="com.nhry.model.basic.ProductQueryModel">
@@ -121,7 +121,7 @@
 		pex.LAST_MODIFIED_BY_TXT  
 		FROM
 		t_md_mara p
-		LEFT JOIN t_md_mara_ex pex ON p.MATNR = pex.MATNR
+		LEFT JOIN t_md_mara_ex pex ON (p.MATNR = pex.MATNR and p.SALES_ORG=pex.SALES_ORG)
 		<where>
 			<if test="firstCatory != null and firstCatory !=''">
 				p.FIRST_CAT = #{firstCatory,jdbcType=VARCHAR}
@@ -130,7 +130,7 @@
 				AND p.SEC_CATE = #{secCatory,jdbcType=VARCHAR}
 			</if>
 			<if test="status != null and status != ''">
-				AND p.STATUS = #{status,jdbcType=VARCHAR}
+				AND IFNULL(p.STATUS,'N') = #{status,jdbcType=VARCHAR}
 			</if>
 			<if test="matnrTxt != null and matnrTxt != ''">
 				AND (p.MATNR like '%${matnrTxt}%' or
@@ -180,7 +180,7 @@
 		pex.LAST_MODIFIED_BY_TXT  
 		FROM
 		t_md_mara p
-		LEFT JOIN t_md_mara_ex pex ON p.SALES_ORG=pex.SALES_ORG AND p.MATNR = pex.MATNR
+		LEFT JOIN t_md_mara_ex pex ON (p.MATNR = pex.MATNR and p.SALES_ORG=pex.SALES_ORG)
 		<where>
 		    <if test="productCode != null and productCode != ''">
 		        p.MATNR like #{productCode}  
@@ -234,7 +234,7 @@
 		where MATNR = #{matnr,jdbcType=VARCHAR}
 	</update>
 	<update id="pubProductByCode" parameterType="java.util.HashMap">
-		update t_md_mara set STATUS = "Y" where SALES_ORG= #{salesOrg} and MATNR = #{code}
+		update t_md_mara set STATUS = #{status},LAST_MODIFIED=#{lastModified} where SALES_ORG= #{salesOrg} and MATNR = #{code}
 	</update>
 	<insert id="addProduct" parameterType="com.nhry.data.basic.domain.TMdMara">
 		insert into t_md_mara
@@ -440,6 +440,7 @@
 			AND nl.dealer_no = #{dealerNo}
 		)
 		AND p.SALES_ORG = #{salesOrg}
+		AND P.STATUS='Y' 
 		<if test="matnrTxt != null and matnrTxt != ''">
 		    AND (p.MATNR like '%${matnrTxt}%' or
 				p.MATNR_TXT like '%${matnrTxt}%') 
@@ -476,6 +477,7 @@
 			AND nl.sales_org = #{salesOrg}
 		)
 		AND p.SALES_ORG = #{salesOrg}
+		AND p.STATUS='Y' 
 		<if test="matnrTxt != null and matnrTxt != ''">
 		    AND (p.MATNR like '%${matnrTxt}%' or
 				p.MATNR_TXT like '%${matnrTxt}%') 

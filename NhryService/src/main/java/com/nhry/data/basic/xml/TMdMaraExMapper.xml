@@ -169,9 +169,8 @@
   <select id="getProductTransRateByCode" resultMap="BaseResultMap" parameterType="com.nhry.data.basic.domain.TMdMaraEx" >
     select
       e.MATNR, e.RATE,e.SALES_ORG,m.MATNR_TXT
-    from t_md_mara_ex e LEFT  JOIN  t_md_mara m ON  e.MATNR = m.MATNR
+    from t_md_mara_ex e LEFT  JOIN  t_md_mara m ON ( e.MATNR = m.MATNR AND m.SALES_ORG = #{salesOrg,jdbcType=VARCHAR})
     where e.MATNR = #{matnr,jdbcType=VARCHAR}
-    and e.SALES_ORG = #{salesOrg,jdbcType=VARCHAR}
   </select>
 
   <select id="getProductsBySalesOrg" resultMap="BaseResultMap" parameterType="String" >
@@ -180,13 +179,13 @@
     from t_md_mara_ex
     where SALES_ORG = #{salesOrg,jdbcType=VARCHAR}
   </select>
-
-
   <update id="uptProductExByCodeAndSalesOrg" parameterType="com.nhry.data.basic.domain.TMdMaraEx" >
     update t_md_mara_ex
    set RATE = #{rate,jdbcType=DECIMAL}
     where MATNR = #{matnr,jdbcType=VARCHAR}
    and SALES_ORG = #{salesOrg,jdbcType=VARCHAR}
   </update>
-
+  <select id="getMataBotTypes" parameterType="String" resultType="com.nhry.service.basic.pojo.BotType">
+      select e.MATNR,e.BOT_TYPE botType from t_md_mara_ex e where e.SALES_ORG=#{salesOrg} and e.RET_BOT_FLAG='Y';
+  </select>
 </mapper>

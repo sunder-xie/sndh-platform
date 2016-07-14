@@ -12,17 +12,18 @@ import com.nhry.data.basic.domain.TMdMaraEx;
 import com.nhry.data.bill.dao.EmpBillMapper;
 import com.nhry.data.bill.dao.TMdDispRateItemMapper;
 import com.nhry.data.bill.dao.TMdDispRateMapper;
+import com.nhry.data.bill.dao.TMdEmpSalMapper;
 import com.nhry.data.bill.domain.TMdDispRate;
 import com.nhry.data.bill.domain.TMdDispRateItem;
+import com.nhry.data.bill.domain.TMdEmpSal;
 import com.nhry.model.bill.*;
 import com.nhry.service.bill.dao.EmpBillService;
 import com.nhry.utils.PrimaryKeyUtils;
+import com.nhry.utils.YearLastMonthUtil;
 import org.apache.commons.lang3.StringUtils;
 
 import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 
 /**
  * Created by gongjk on 2016/7/1.
@@ -33,25 +34,24 @@ public class EmpBillServiceImpl implements EmpBillService {
     private TMdDispRateItemMapper tMdDispRateItemMapper;
     private TMdBranchEmpMapper branchEmpMapper;
     private UserSessionService userSessionService;
+    private TMdEmpSalMapper tMdEmpSalMapper;
 
     private TMdMaraExMapper tMdMaraExMapper;
-
+    public void settMdEmpSalMapper(TMdEmpSalMapper tMdEmpSalMapper) {
+        this.tMdEmpSalMapper = tMdEmpSalMapper;
+    }
     public void settMdMaraExMapper(TMdMaraExMapper tMdMaraExMapper) {
         this.tMdMaraExMapper = tMdMaraExMapper;
     }
-
     public void setUserSessionService(UserSessionService userSessionService) {
         this.userSessionService = userSessionService;
     }
-
     public void setBranchEmpMapper(TMdBranchEmpMapper branchEmpMapper) {
         this.branchEmpMapper = branchEmpMapper;
     }
-
     public void setEmpBillMapper(EmpBillMapper empBillMapper) {
         this.empBillMapper = empBillMapper;
     }
-
     public void settMdDispRateMapper(TMdDispRateMapper tMdDispRateMapper) {
         this.tMdDispRateMapper = tMdDispRateMapper;
     }
@@ -68,12 +68,6 @@ public class EmpBillServiceImpl implements EmpBillService {
         return  empBillMapper.empDispDetialInfo(eSearch);
     }
 
-    //获取指定日期内（一个月）送奶工配送详细
-    @Override
-    public List<EmpAccoDispFeeByProduct> empAccoDispFeeByProduct(EmpDispDetialInfoSearch eSearch) {
-        return  empBillMapper.empAccoDispFeeByProduct(eSearch);
-}
-
     @Override
     public PageInfo empAccountReceAmount(EmpDispDetialInfoSearch eSearch) {
         if(StringUtils.isBlank(eSearch.getPageNum()) || StringUtils.isBlank(eSearch.getPageSize())){
@@ -83,10 +77,10 @@ public class EmpBillServiceImpl implements EmpBillService {
     }
 
     /**
-     * 获取按数量结算的运送费率
+     * 根据  数量  获取按 数量结算  的配送费率
      * @param empNo
-     * @param dispNum
-     * @return
+     * @param dispNum  配送数量
+     * @return  配送数量所在范围的配送费率
      */
     @Override
     public BigDecimal CalculateEmpTransRateByNum(String empNo,int dispNum) {
@@ -124,75 +118,18 @@ public class EmpBillServiceImpl implements EmpBillService {
     }
 
     /**
-     * 获取按产品结算的运送费率
+     * 获取按  产品 结算的运送费率
      * @param matnr 产品编码
      * @param salesOrg  销售组织
-     * @return
+     * @return  产品的配送费
      */
 
     public BigDecimal CalculateEmpTransRateByProduct(String matnr,String salesOrg){
         TMdMaraEx product = tMdMaraExMapper.getProductTransRateByCode(matnr,salesOrg);
         if(product == null){
-            throw new ServiceException(MessageCode.LOGIC_ERROR,"产品"+matnr+"在分公司"+salesOrg+"下存在");
+           return new BigDecimal(0);
         }
         return product.getRate();
-    }
-
-    /**
-     * 计算送奶工的配送费
-     * @param eSearch
-     * @param empNo
-     * @return
-     */
-    @Override
-    public BigDecimal CalculateEmpTransFee(EmpDispDetialInfoSearch eSearch,String empNo) {
-        TMdBranchEmp emp = branchEmpMapper.selectBranchEmpByEmpNo(empNo);
-        String type = emp.getSalaryMet();
-        String salesOrg = emp.getSalesOrg();
-        if(eSearch.getEmpNo() == null){
-            eSearch.setEmpNo(empNo);
-        }
-        BigDecimal result = new BigDecimal(0);
-        //按产品计算配送费
-        if("20".equals(type)){
-            List<EmpAccoDispFeeByProduct> detail = empBillMapper.empAccoDispFeeByProduct(eSearch);
-            if(detail!=null && detail.size()>0){
-                for(EmpAccoDispFeeByProduct pro: detail){
-                    BigDecimal dispRate = this.CalculateEmpTransRateByProduct(pro.getMatnr(),salesOrg);
-                    BigDecimal dispFee = dispRate.multiply(new BigDecimal(pro.getQty()));
-                    result =  result.add(dispFee);
-                }
-            }
-
-        }
-        //按 数量计算配送费
-        else{
-            int dispNum = empBillMapper.empAccoDispFeeByNum(eSearch);
-            BigDecimal dispFee = this.CalculateEmpTransRateByNum(empNo,dispNum).multiply(new BigDecimal(dispNum));
-             result =  result.add(dispFee);
-        }
-        return result;
-    }
-
-
-
-    @Override
-    public PageInfo empSalaryRep(EmpDispDetialInfoSearch eSearch) {
-        if(StringUtils.isBlank(eSearch.getPageNum()) || StringUtils.isBlank(eSearch.getPageSize())){
-            throw new ServiceException(MessageCode.LOGIC_ERROR,"pageNum和pageSize不能为空！");
-        }
-        PageInfo info = empBillMapper.empSalaryRep(eSearch);
-        List<EmpSalaryBillModel> empSalList = info.getList();
-        if(empSalList !=null && empSalList.size()>0){
-            for (EmpSalaryBillModel  empSal : empSalList){
-                //配送费
-               BigDecimal dispFee =  this.CalculateEmpTransFee(eSearch,empSal.getEmpNo());
-                empSal.setDispFee(dispFee);
-                //奶瓶回收率
-            }
-        }
-
-        return  info;
     }
 
     @Override
@@ -311,4 +248,126 @@ public class EmpBillServiceImpl implements EmpBillService {
 
         return model;
     }
+
+    @Override
+    public PageInfo searchEmpSalaryRep(EmpDispDetialInfoSearch eSearch) {
+        TSysUser user = userSessionService.getCurrentUser();
+        eSearch.setSalesOrg(user.getSalesOrg());
+        if(StringUtils.isBlank(eSearch.getPageNum()) || StringUtils.isBlank(eSearch.getPageSize())){
+            throw new ServiceException(MessageCode.LOGIC_ERROR,"pageNum和pageSize不能为空！");
+        }
+        return tMdEmpSalMapper.searchEmpSalaryRep(eSearch);
+    }
+
+    /**
+     * 结算本月工资（登录人所在奶站下的所有送奶工）
+     * @return
+     */
+    @Override
+    public int setBranchEmpSalary() {
+        TSysUser user = userSessionService.getCurrentUser();
+        String branchNo = user.getBranchNo();
+        EmpDispDetialInfoSearch search = new EmpDispDetialInfoSearch();
+        search.setBranchNo(branchNo);
+        //获取上个月的第一天
+        search.setStartDate(YearLastMonthUtil.getLastMonthFirstDay());
+        //获取上个月的最后一天
+        search.setEndDate(YearLastMonthUtil.getLastMonthLastDay());
+        //获取上个月  例如今天是2016-07-02  结果是201606
+        String setYearMonth = YearLastMonthUtil.getYearLastMonth();
+
+        List<TMdBranchEmp> empList =  branchEmpMapper.getAllEmpByBranchNo(user.getBranchNo(),user.getSalesOrg());
+        if(empList!=null && empList.size()>0){
+            for(TMdBranchEmp emp : empList){
+                search.setEmpNo(emp.getEmpNo());
+                this.setEmpSalary(emp,search,setYearMonth,user);
+            }
+        }
+        return 1;
+    }
+
+    /**
+     * 结算送奶员本月工资,基本工资 + 产品配送费 + 赠品配送费+ 内部销售订单配送费
+     * @return
+     */
+    public int setEmpSalary(TMdBranchEmp emp,EmpDispDetialInfoSearch search,String setYearMonth,TSysUser user){
+        String empNo = emp.getEmpNo();
+        Map<String,String> map =new HashMap<String,String>();
+        map.put("empNo",empNo);
+        map.put("setYearMonth",setYearMonth);
+        TMdEmpSal empSal = tMdEmpSalMapper.getEmpSalByEmpNoAndDate(map);
+        if(empSal == null){
+            empSal = new TMdEmpSal();
+            empSal.setEmpSalLsh(PrimaryKeyUtils.generateUuidKey());
+            empSal.setEmpNo(empNo);
+            //三种配送费
+            if("20".equals(emp.getSalaryMet())){
+                //按产品结算  //产品配送费
+                List<EmpAccoDispFeeByProduct> pro = empBillMapper.empDisByProduct(search);
+                BigDecimal dispFee = this.getEmpDispFee(pro,emp.getSalesOrg());
+                empSal.setDispSal(dispFee);
+
+
+                //按产品结算  //内部销售配送费
+                List<EmpAccoDispFeeByProduct> proIn = empBillMapper.empInDispByProduct(search);
+                BigDecimal inDispFee = this.getEmpDispFee(proIn,emp.getSalesOrg());
+                empSal.setInDispSal(inDispFee);
+
+                //按产品结算  //赠品配送费
+
+
+            }else{
+                //按数量结算  //产品配送费
+                int dispNum = empBillMapper.empDispFeeNum(search);
+                if(dispNum == 0){
+                    empSal.setDispSal(new BigDecimal(0));
+                }else{
+                    BigDecimal dispRate = this.CalculateEmpTransRateByNum(empNo,dispNum);
+                    empSal.setDispSal(dispRate.multiply(new BigDecimal(dispNum)));
+                }
+
+                //按数量结算  //内部销售配送费
+                int inDispNum = empBillMapper.empInDispFeeNum(search);
+                if(inDispNum == 0){
+                    empSal.setInDispSal(new BigDecimal(0));
+                }else{
+                    BigDecimal inDispRate = this.CalculateEmpTransRateByNum(empNo,inDispNum);
+                    empSal.setInDispSal(inDispRate.multiply(new BigDecimal(inDispNum)));
+                }
+
+                empSal.setDispNum(dispNum+inDispNum);
+
+                //按数量结算  //赠品配送费
+              /*  int sendDispNum = empBillMapper.empFreeDispFeeNum(search);
+                BigDecimal sendDispRate = this.CalculateEmpTransRateByNum(empNo,sendDispNum);
+                empSal.setSendDispSal(sendDispRate.multiply(new BigDecimal(sendDispNum)));*/
+
+
+            }
+
+            empSal.setTotalSal(empSal.getInDispSal().add(empSal.getDispSal()).add(new BigDecimal(emp.getBaseSalary())));
+            empSal.setCreateAt(new Date());
+            empSal.setSetDate(new Date());
+            empSal.setSetYearMonth(setYearMonth);
+            empSal.setCreateBy(user.getLoginName());
+            empSal.setCreateByTxt(user.getDisplayName());
+            tMdEmpSalMapper.addEmpSal(empSal);
+
+        }
+        return 1;
+    }
+
+    //计算配送费（按产品结算）
+    public BigDecimal getEmpDispFee( List<EmpAccoDispFeeByProduct> detail,String salesOrg){
+             BigDecimal result = new BigDecimal(0);
+            if(detail!=null && detail.size()>0){
+                for(EmpAccoDispFeeByProduct pro: detail){
+                    BigDecimal dispRate = this.CalculateEmpTransRateByProduct(pro.getMatnr(),salesOrg);
+                    BigDecimal dispFee = dispRate.multiply(new BigDecimal(pro.getQty()));
+                    result =  result.add(dispFee);
+                }
+            }
+             return result;
+     }
+
 }

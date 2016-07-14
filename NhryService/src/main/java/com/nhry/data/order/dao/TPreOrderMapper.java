@@ -40,7 +40,7 @@ public interface TPreOrderMapper {
     
     int updateOrderEndDate(TPreOrder record);
     
-    List<TPreOrder> selectDispNoByGroup();
+    List<TPreOrder> selectDispNoByGroup(String branchNo);
 
     PageInfo searchCustomerOrder(CustBillQueryModel cModel);
 

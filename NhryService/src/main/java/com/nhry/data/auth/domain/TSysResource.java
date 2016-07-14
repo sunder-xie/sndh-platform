@@ -6,7 +6,12 @@ import java.util.Date;
 import java.util.List;
 
 public class TSysResource implements Serializable{
-    private String resCode;
+    /**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+
+	private String resCode;
 
     private String resName;
 
