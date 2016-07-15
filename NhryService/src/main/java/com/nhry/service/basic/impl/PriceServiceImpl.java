@@ -236,6 +236,7 @@ public class PriceServiceImpl extends BaseService implements PriceService {
 	public float getMaraPrice(String branchNo, String matnr, String deliveryType) {
 		// TODO Auto-generated method stub
 		Map<String,String> attrs = new HashMap<String,String>();
+		attrs.put("salesOrg",this.userSessionService.getCurrentUser().getSalesOrg());
 		attrs.put("branchNo", branchNo);
 		attrs.put("matnr", matnr);
 		//先查询该奶站上该商品关联的价格组列表
