@@ -11,6 +11,24 @@ public class RequireOrderSearch  implements Serializable {
     private Date requiredDate;
     private int preDays;
     private String salesOrg;
+    private Date firstDay;
+    private Date secondDay;
+
+    public Date getFirstDay() {
+        return firstDay;
+    }
+
+    public void setFirstDay(Date firstDay) {
+        this.firstDay = firstDay;
+    }
+
+    public Date getSecondDay() {
+        return secondDay;
+    }
+
+    public void setSecondDay(Date secondDay) {
+        this.secondDay = secondDay;
+    }
 
     public String getBranchNo() {
         return branchNo;

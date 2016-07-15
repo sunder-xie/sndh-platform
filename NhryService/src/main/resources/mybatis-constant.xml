@@ -30,4 +30,7 @@
 	<sql id="purchasing_group">1013</sql>
 	<!-- 价格组类型  公司价 -->
 	<sql id="price_type_comp">10</sql>
+
+	<!-- 角色ID  送奶员 -->
+	<sql id="milkman">1001</sql>
 </mapper>  

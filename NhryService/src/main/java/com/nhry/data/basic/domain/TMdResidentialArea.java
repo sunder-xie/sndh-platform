@@ -1,6 +1,7 @@
 package com.nhry.data.basic.domain;
 
 import java.io.Serializable;
+import java.util.Date;
 
 public class TMdResidentialArea implements Serializable{
     private String id;
@@ -8,8 +9,6 @@ public class TMdResidentialArea implements Serializable{
     private String branchNo;
 
     private String branchName;
-
-
     private String residentialAreaTxt;
 
     private String province;
@@ -34,6 +33,26 @@ public class TMdResidentialArea implements Serializable{
     private String propertyTxt;
 
     private String propertyTel;
+
+    private Date createAt;
+
+    private String createBy;
+
+    public Date getCreateAt() {
+        return createAt;
+    }
+
+    public void setCreateAt(Date createAt) {
+        this.createAt = createAt;
+    }
+
+    public String getCreateBy() {
+        return createBy;
+    }
+
+    public void setCreateBy(String createBy) {
+        this.createBy = createBy;
+    }
 
     public String getId() {
         return id;
