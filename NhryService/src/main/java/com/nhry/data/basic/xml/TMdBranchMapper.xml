@@ -158,8 +158,8 @@
       <if test="branchNo != null and branchNo != ''">
        and   ( b.BRANCH_NO LIKE '%${branchNo}%' OR b.BRANCH_NAME like  '%${branchNo}%' )
     </if>
-      <if test="salesOrg != null and salesOrg != ''">
-        AND b.SALES_ORG = #{salesOrg,jdbcType=VARCHAR}
+      <if test="dealerNo != null and dealerNo != ''">
+        AND b.DEALER_NO = #{dealerNo,jdbcType=VARCHAR}
       </if>
       <if test="branchGroup != null and branchGroup != ''">
         AND b.BRANCH_GROUP = #{branchGroup,jdbcType=VARCHAR}

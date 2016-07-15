@@ -234,6 +234,11 @@
     (SELECT i.ITEM_NAME from t_sys_code_item i WHERE i.TYPE_CODE=<include refid="mybaties.constant.COUNTRY_CITY_CONSTANT"></include> and i.ITEM_CODE = a.STREET ) STREET
     from t_md_residential_area a
     where 1=1
+      and a.SALES_ORG = #{salesOrg,jdbcType=VARCHAR}
+
+    <if test="branchNO != null and branchNO !=''">
+      AND a.BRANCH_NO = #{branchNO,jdbcType=VARCHAR}
+    </if>
     <if test="province != null and province !=''">
       AND a.PROVINCE = #{province,jdbcType=VARCHAR}
     </if>
