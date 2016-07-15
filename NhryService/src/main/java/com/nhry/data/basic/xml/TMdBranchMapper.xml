@@ -133,7 +133,7 @@
     WHERE i.TYPE_CODE=<include refid="mybaties.constant.comp_code"/>
     and i.ITEM_CODE = b.COMPANY_CODE
     ) COMPANY_NAME,
-    b.CONTACT,	b.EMP_NO,b.TEL, b.MP, b.DEALER_NO, b.ADDRESS,
+    b.CONTACT,	b.EMP_NO,b.TEL, b.MP, b.DEALER_NO,d.DEALER_NAME, b.ADDRESS,
     b.PROVINCE, b.CITY,b.COUNTY,
    <!-- (SELECT i.ITEM_NAME from t_sys_code_item i WHERE i.TYPE_CODE=<include refid="mybaties.constant.COUNTRY_CITY_CONSTANT"/> and i.ITEM_CODE = b.PROVINCE ) PROVINCE,
     (SELECT i.ITEM_NAME from t_sys_code_item i WHERE i.TYPE_CODE=<include refid="mybaties.constant.COUNTRY_CITY_CONSTANT"/> and i.ITEM_CODE = b.CITY ) CITY,
@@ -141,10 +141,10 @@
     (SELECT i.ITEM_NAME from t_sys_code_item i WHERE i.TYPE_CODE=<include refid="mybaties.constant.factory"/> and i.ITEM_CODE = b.WERKS) WERKS,
     (SELECT i.ITEM_NAME from t_sys_code_item i WHERE i.TYPE_CODE=<include refid="mybaties.constant.storage_location"/>  and i.ITEM_CODE = b.LGORT) LGORT,
     b.CREATE_AT, b.CREATE_BY, b.CREATE_BY_TXT,b.LAST_MODIFIED, b.LAST_MODIFIED_BY, b.LAST_MODIFIED_BY_TXT
-    from t_md_branch
-    where SALES_ORG = #{salesOrg,jdbcType=VARCHAR}
+    from t_md_branch b LEFT  JOIN  t_md_dealer d on b.DEALER_NO = d.DEALER_NO
+    where b.SALES_ORG = #{salesOrg,jdbcType=VARCHAR}
 
-    ORDER BY CREATE_AT desc
+    ORDER BY b.CREATE_AT desc
   </select>
   <select id="searchBranch" resultMap="BaseResultMap" parameterType="com.nhry.model.basic.BranchQueryModel">
     SELECT
@@ -184,7 +184,7 @@
     <include refid="Base_Column_List" />
     from t_md_branch
     where SALES_ORG = #{salesOrg,jdbcType=VARCHAR}
-     and BRANCH_GROUP= '01'
+    and BRANCH_GROUP= '01'
   </select>
   <select id="findBranchByDno" resultMap="BaseResultMap" parameterType="java.util.HashMap">
       select
