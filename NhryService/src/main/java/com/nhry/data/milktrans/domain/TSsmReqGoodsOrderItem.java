@@ -7,7 +7,6 @@ import java.util.Date;
  */
 public class TSsmReqGoodsOrderItem {
     private String orderNo;
-    private int itemNo;
     private Date  orderDate;
     private String matnr;
     private String matnrTxt;
@@ -24,13 +23,6 @@ public class TSsmReqGoodsOrderItem {
         this.orderNo = orderNo;
     }
 
-    public int getItemNo() {
-        return itemNo;
-    }
-
-    public void setItemNo(int itemNo) {
-        this.itemNo = itemNo;
-    }
 
     public Date getOrderDate() {
         return orderDate;

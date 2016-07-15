@@ -237,7 +237,7 @@
     <select id="findRoleResByResCode" resultMap="sysRoleResMap" parameterType="String">
       select * from t_sys_role_resource sr where sr.RES_CODE=#{resCode}
   </select>
-    <select id="findRecoureByUserId" resultMap="sysResResultMap">
+    <select id="findRecoureByUserId" resultMap="sysResResultMap" parameterType="String">
         SELECT
         distinct r.*
         FROM
@@ -254,5 +254,32 @@
     </select>
     <select id="getRoleRosources" parameterType="String" resultMap="sysResResultMap" >
        select distinct t1.RES_CODE, t1.RES_NAME, t1.PARENT, t1.RES_TYPE,t1.RES_URL from t_sys_resource t1,T_SYS_ROLE_RESOURCE tr where t1.RES_CODE=tr.RES_CODE and tr.ID=#{id}
+    </select>
+    <select id="findComponentByLogName" resultMap="sysResResultMap" parameterType="String">
+        SELECT DISTINCT
+			r.RES_CODE,
+			r.RES_NAME,
+			r.RES_TYPE,
+			r.RES_URL,
+			(
+				SELECT
+					r1.RES_NAME
+				FROM
+					t_sys_resource r1
+				WHERE
+					r1.RES_CODE = r.PARENT
+			) PARENT,
+			r.ATTR1,
+			r.ATTR2,
+			r.ATTR3
+		FROM
+			t_sys_resource r
+		JOIN t_sys_role_resource rr ON r.RES_CODE = rr.RES_CODE
+		JOIN t_sys_role role ON role.id = rr.ID
+		JOIN t_sys_user_role ur ON ur.ID = role.ID
+		JOIN t_sys_user usr ON usr.LOGIN_NAME = ur.LOGIN_NAME
+		WHERE
+			r.RES_TYPE = <include refid="mybaties.constant.sys_res_type_component"></include>
+		AND usr.LOGIN_NAME = #{userId}
     </select>
 </mapper>

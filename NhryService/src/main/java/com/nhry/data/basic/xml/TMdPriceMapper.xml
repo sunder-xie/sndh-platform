@@ -32,11 +32,19 @@
 				FROM
 					t_sys_code_item t
 				WHERE
-					t.TYPE_CODE = '1002'
+					t.TYPE_CODE = <include refid="mybaties.constant.SALES_ORG_CONSTANT"></include>
 				AND t.ITEM_CODE = p.SALES_ORG
 			) SALES_ORG,
 			PRICE_GROUP,
-			p.PRICE_TYPE,
+			(
+				SELECT
+					t.ITEM_NAME
+				FROM
+					t_sys_code_item t
+				WHERE
+					t.TYPE_CODE = <include refid="mybaties.constant.price_type"></include>
+				AND t.ITEM_CODE = p.PRICE_TYPE
+			) PRICE_TYPE,
 			date_format(p.START_DATE, '%Y-%m-%d') START_DATE,
 			date_format(p.END_DATE, '%Y-%m-%d') END_DATE,
 			p.CREATE_AT,
@@ -292,6 +300,8 @@
 		p.ID = pb.ID
 	AND p.ID = pr.ID
 	AND pb.BRANCH_NO = #{branchNo,jdbcType=VARCHAR}
+	AND p.SALES_ORG = #{salesOrg}
+	AND pr.SALES_ORG = #{salesOrg}
 	AND pr.MATNR = #{matnr,jdbcType=VARCHAR}
 	ORDER BY
 		p.PRICE_TYPE DESC
@@ -309,14 +319,8 @@
 		WHERE
 			p.ID = pr.ID
 		AND p.PRICE_TYPE = '10'
-		AND p.SALES_ORG = (
-			SELECT
-				b.SALES_ORG
-			FROM
-				t_md_branch b
-			WHERE
-				b.BRANCH_NO = #{branchNo,jdbcType=VARCHAR}
-		)
+		AND p.SALES_ORG = #{salesOrg}
+		AND pr.SALES_ORG = #{salesOrg}
 		AND pr.MATNR = #{matnr,jdbcType=VARCHAR}
 		ORDER BY
 			p.PRICE_TYPE DESC
@@ -348,5 +352,8 @@
 			T_MD_PRICE p 
 		WHERE p.SALES_ORG = #{salesOrg}
 		AND p.price_type='30'
+  </select>
+  <select id="getCompPriceGroupCount" resultType="Integer" parameterType="String">
+     select COUNT(m.ID) from t_md_price m where m.STATUS='Y' and m.PRICE_TYPE=<include refid="mybaties.constant.price_type_comp"></include> AND m.SALES_ORG=#{salesOrg}
   </select>
 </mapper>

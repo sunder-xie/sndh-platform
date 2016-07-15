@@ -7,6 +7,7 @@ import java.util.List;
  */
 public class SaleOrgDispRateModel {
     private String salesOrg;
+    private String salesOrgName;
     private String salaryMet;
     List<DispNumEntry> dispNumEntries;
     List<DispProductEntry> dispProductEntries;
@@ -17,6 +18,14 @@ public class SaleOrgDispRateModel {
 
     public void setSalesOrg(String salesOrg) {
         this.salesOrg = salesOrg;
+    }
+
+    public String getSalesOrgName() {
+        return salesOrgName;
+    }
+
+    public void setSalesOrgName(String salesOrgName) {
+        this.salesOrgName = salesOrgName;
     }
 
     public String getSalaryMet() {

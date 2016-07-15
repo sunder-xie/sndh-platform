@@ -1,6 +1,7 @@
 package com.nhry.service.pi.impl;
 
 import com.nhry.data.basic.dao.TMdBranchExMapper;
+import com.nhry.data.basic.domain.TMdBranch;
 import com.nhry.data.basic.domain.TMdBranchEx;
 import com.nhry.data.milktrans.dao.TSsmReqGoodsOrderItemMapper;
 import com.nhry.data.milktrans.dao.TSsmReqGoodsOrderMapper;
@@ -11,10 +12,12 @@ import com.nhry.data.stock.domain.TSsmGiOrder;
 import com.nhry.data.stock.domain.TSsmGiOrderItem;
 import com.nhry.data.stock.domain.TSsmGiOrderItemKey;
 import com.nhry.model.milktrans.ReqGoodsOrderItemSearch;
+import com.nhry.model.milktrans.RequireOrderSearch;
 import com.nhry.service.pi.dao.PIRequireOrderService;
 import com.nhry.webService.client.PISuccessMessage;
 import com.nhry.webService.client.businessData.model.Delivery;
 
+import java.text.ParseException;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -56,7 +59,7 @@ public class PIRequireOrderServiceImpl implements PIRequireOrderService {
     }
 
     @Override
-    public PISuccessMessage generateRequireOrder(TSsmReqGoodsOrder ssmReqGoodsOrder) {
+    public PISuccessMessage generateRequireOrder(TSsmReqGoodsOrder ssmReqGoodsOrder)  {
             TMdBranchEx branchEx = branchExMapper.getBranchEx(ssmReqGoodsOrder.getBranchNo());
             ReqGoodsOrderItemSearch key = new ReqGoodsOrderItemSearch();
             key.setOrderNo(ssmReqGoodsOrder.getOrderNo());
@@ -127,6 +130,26 @@ public class PIRequireOrderServiceImpl implements PIRequireOrderService {
         }catch (Exception e){
             e.printStackTrace();
         }
+        return "1";
+    }
+
+    @Override
+    public String execRequieOrder(Date date, String branchNo) {
+        RequireOrderSearch search = new RequireOrderSearch();
+        search.setRequiredDate(date);
+        search.setBranchNo(branchNo);
+        TSsmReqGoodsOrder order = tSsmReqGoodsOrderMapper.searchRequireOrder(search);
+        generateRequireOrder(order);
+        return "1";
+    }
+    @Override
+    public String execSalesOrder(Date date, TMdBranch branch){
+        RequireOrderSearch search = new RequireOrderSearch();
+        search.setRequiredDate(date);
+        search.setBranchNo(branch.getBranchNo());
+        TSsmReqGoodsOrder order = tSsmReqGoodsOrderMapper.searchRequireOrder(search);
+
+        generateSalesOrder(order,branch.getDealerNo(),branch.getBranchNo(),branch.getSalesOrg(),"");
         return "1";
     }
 

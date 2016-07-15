@@ -6,22 +6,28 @@ import java.math.BigDecimal;
  * Created by gongjk on 2016/7/4.
  */
 public class DispNumEntry {
-    private String num;
-    private BigDecimal dispRate;
-
-    public String getNum() {
-        return num;
+    private String startValue;
+    private String endValue;
+    private BigDecimal rate;
+    public String getStartValue() {
+        return startValue;
+    }
+    public void setStartValue(String startValue) {
+        this.startValue = startValue;
+    }
+    public String getEndValue() {
+        return endValue;
     }
 
-    public void setNum(String num) {
-        this.num = num;
+    public void setEndValue(String endValue) {
+        this.endValue = endValue;
     }
 
-    public BigDecimal getDispRate() {
-        return dispRate;
+    public BigDecimal getRate() {
+        return rate;
     }
 
-    public void setDispRate(BigDecimal dispRate) {
-        this.dispRate = dispRate;
+    public void setRate(BigDecimal rate) {
+        this.rate = rate;
     }
 }

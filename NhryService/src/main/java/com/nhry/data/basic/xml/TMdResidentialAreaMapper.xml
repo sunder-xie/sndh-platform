@@ -17,6 +17,9 @@
     <result column="SALES_ORG" jdbcType="VARCHAR" property="salesOrg" />
     <result column="PROPERTY_TXT" jdbcType="VARCHAR" property="propertyTxt" />
     <result column="PROPERTY_TEL" jdbcType="VARCHAR" property="propertyTel" />
+    <result column="CREATE_AT" property="createAt" jdbcType="TIMESTAMP" />
+    <result column="CREATE_BY" property="createBy" jdbcType="VARCHAR" />
+
   </resultMap>
   <sql id="Base_Column_List">
     ID, RESIDENTIAL_AREA_TXT, PROVINCE, CITY, COUNTY, STREET,GUIDEBOARD,STATUS, ADDRESS_TXT, RESIDENTIAL_NUM,
@@ -204,6 +207,7 @@
     LEFT JOIN  t_md_branch_scope s on a.ID = s.RESIDENTIAL_AREA_ID
     WHERE  1=1
     and s.BRANCH_NO =  #{branchNo,jdbcType=VARCHAR}
+    ORDER BY a.CREATE_AT desc
   </select>
 
   <select id="selectById" parameterType="java.lang.String" resultMap="BaseResultMap">
@@ -239,6 +243,7 @@
     <if test="status != null and status != ''">
       AND a.status = #{status,jdbcType=VARCHAR}
     </if>
+    ORDER BY a.CREATE_AT desc
   </select>
   <update id="updateStatusToUnDistById"  parameterType="String">
     UPDATE  t_md_residential_area
@@ -271,5 +276,6 @@
     from t_md_residential_area
     WHERE  STATUS = '10'
      and  SALES_ORG = #{salesOrg,jdbcType=VARCHAR}
+    ORDER BY CREATE_AT desc
   </select>
 </mapper>

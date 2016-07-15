@@ -5,7 +5,9 @@ import com.github.pagehelper.PageInfo;
 import com.nhry.common.auth.UserSessionService;
 import com.nhry.common.exception.MessageCode;
 import com.nhry.common.exception.ServiceException;
+import com.nhry.data.auth.dao.TSysUserRoleMapper;
 import com.nhry.data.auth.domain.TSysUser;
+import com.nhry.data.auth.domain.TSysUserRole;
 import com.nhry.data.basic.dao.TMdBranchScopeMapper;
 import com.nhry.data.basic.dao.TMdResidentialAreaMapper;
 import com.nhry.data.basic.domain.TMdBranchScopeKey;
@@ -27,6 +29,8 @@ public class ResidentialAreaServiceImpl implements ResidentialAreaService {
     private TMdResidentialAreaMapper tMdResidentialAreaMapper;
     private TMdBranchScopeMapper tMdBranchScopeMapper;
     private UserSessionService userSessionService;
+    private TSysUserRoleMapper urMapper;
+
 
     @Override
     public PageInfo searchAreaByBranchNo(BranchAreaSearch bSearch) {
@@ -46,6 +50,12 @@ public class ResidentialAreaServiceImpl implements ResidentialAreaService {
      */
     @Override
     public int areaRelBranch(BranchScopeModel bModel) {
+        TSysUser user = userSessionService.getCurrentUser();
+        TSysUserRole userRole =urMapper.getUserRoleByLoginName(user.getLoginName());
+        if("10004".equals(userRole.getId())){
+            throw new ServiceException(MessageCode.LOGIC_ERROR,"奶站内勤 无权进行奶站配送区域分配！");
+        }
+
         String message = "";
         try{
             //删除 奶站和配送区域的 关系 并将配送区域设为未分配
@@ -115,6 +125,7 @@ public class ResidentialAreaServiceImpl implements ResidentialAreaService {
     @Override
     public int addResidentialArea(TMdResidentialArea tMdResidentialArea) {
         TSysUser user = userSessionService.getCurrentUser();
+        TSysUserRole userRole =urMapper.getUserRoleByLoginName(user.getLoginName());
         tMdResidentialArea.setSalesOrg(user.getSalesOrg());
         tMdResidentialArea.setId(PrimaryKeyUtils.generateUuidKey());
         tMdResidentialArea.setStatus("10");
@@ -147,5 +158,9 @@ public class ResidentialAreaServiceImpl implements ResidentialAreaService {
 
     public void setUserSessionService(UserSessionService userSessionService) {
         this.userSessionService = userSessionService;
+    }
+
+    public void setUrMapper(TSysUserRoleMapper urMapper) {
+        this.urMapper = urMapper;
     }
 }

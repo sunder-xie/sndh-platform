@@ -4,6 +4,8 @@ import com.github.pagehelper.PageInfo;
 import com.nhry.data.auth.domain.TSysUser;
 import com.nhry.model.auth.UserQueryModel;
 
+import java.util.List;
+
 public interface UserService {
 	public PageInfo findUser(UserQueryModel um);
 	
@@ -26,4 +28,8 @@ public interface UserService {
 	public int updateUser(TSysUser record);
 	
 	public int deleteUserByLoginName(String uname);
+
+	List<TSysUser> findUserByRoleId(UserQueryModel um);
+
+	PageInfo findUserPageByRoleId(UserQueryModel um);
 }

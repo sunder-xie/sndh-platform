@@ -17,6 +17,8 @@ import com.nhry.utils.date.Date;
 
 import org.apache.commons.lang3.StringUtils;
 
+import java.util.List;
+
 public class UserServiceImpl extends BaseService implements UserService {
 	private TSysUserMapper userMapper;
 	private TSysRoleMapper roleMapper;
@@ -54,8 +56,8 @@ public class UserServiceImpl extends BaseService implements UserService {
 		if(_user == null){
 			throw new ServiceException(MessageCode.LOGIC_ERROR,"系统不存在该用户,请检查你的用户名、密码！");
 		}
-		_user.setResources(resService.findRecoureByUserId(_user.getLoginName()));
-		_user.setRoles(roleMapper.getUserRoles(_user.getLoginName()));
+//		_user.setResources(resService.findRecoureByUserId(_user.getLoginName()));
+//		_user.setRoles(roleMapper.getUserRoles(_user.getLoginName()));
 		return _user;
 	}
 
@@ -88,6 +90,19 @@ public class UserServiceImpl extends BaseService implements UserService {
 		}
 		user.setLastModified(new Date());
 		return this.userMapper.deleteUserByLoginName(user);
+	}
+
+	@Override
+	public List<TSysUser> findUserByRoleId(UserQueryModel um) {
+		return userMapper.findUserByRoleId(um);
+	}
+
+	@Override
+	public PageInfo findUserPageByRoleId(UserQueryModel um) {
+		if(StringUtils.isEmpty(um.getPageNum()) || StringUtils.isEmpty(um.getPageSize())){
+			throw new ServiceException(MessageCode.LOGIC_ERROR,"pageNum和pageSize不能为空！");
+		}
+		return userMapper.findUserPageByRoleId(um);
 	}
 
 	public void setRoleMapper(TSysRoleMapper roleMapper) {

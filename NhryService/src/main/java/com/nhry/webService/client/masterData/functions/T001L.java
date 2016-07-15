@@ -23,7 +23,7 @@ public class T001L implements org.apache.axis2.databinding.ADBBean {
     /**
      * field for MANDT
      */
-    protected com.nhry.webService.client.masterData.functions.MANDT_type13 localMANDT;
+    protected com.nhry.webService.client.masterData.functions.MANDT_type15 localMANDT;
 
     /*  This tracker boolean wil be used to detect whether the user called the set method
      *   for this attribute. It will be used to determine whether to include this field
@@ -268,9 +268,9 @@ public class T001L implements org.apache.axis2.databinding.ADBBean {
 
     /**
      * Auto generated getter method
-     * @return com.nhry.webService.client.masterData.functions.MANDT_type13
+     * @return com.nhry.webService.client.masterData.functions.MANDT_type15
      */
-    public com.nhry.webService.client.masterData.functions.MANDT_type13 getMANDT() {
+    public com.nhry.webService.client.masterData.functions.MANDT_type15 getMANDT() {
         return localMANDT;
     }
 
@@ -279,7 +279,7 @@ public class T001L implements org.apache.axis2.databinding.ADBBean {
      * @param param MANDT
      */
     public void setMANDT(
-        com.nhry.webService.client.masterData.functions.MANDT_type13 param) {
+        com.nhry.webService.client.masterData.functions.MANDT_type15 param) {
         localMANDTTracker = param != null;
 
         this.localMANDT = param;
@@ -1314,7 +1314,7 @@ public class T001L implements org.apache.axis2.databinding.ADBBean {
                             reader.getName())) ||
                         new javax.xml.namespace.QName("", "MANDT").equals(
                             reader.getName())) {
-                    object.setMANDT(com.nhry.webService.client.masterData.functions.MANDT_type13.Factory.parse(
+                    object.setMANDT(com.nhry.webService.client.masterData.functions.MANDT_type15.Factory.parse(
                             reader));
 
                     reader.next();

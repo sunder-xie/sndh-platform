@@ -104,6 +104,13 @@ public class BranchEmpServiceImpl extends BaseService implements BranchEmpServic
 	}
 
 	@Override
+	public List<TMdBranchEmp> getAllEmpBySalesOrg() {
+		TSysUser user = userSessionService.getCurrentUser();
+
+		return branchEmpMapper.getAllEmpBySalesOrg(user.getSalesOrg());
+	}
+
+	@Override
 	public int uptBranchEmpByNo(TMdBranchEmp record) {
 		// TODO Auto-generated method stub
 		TMdBranchEmp emp = this.selectBranchEmpByNo(record.getEmpNo());

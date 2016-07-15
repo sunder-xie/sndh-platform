@@ -23,7 +23,7 @@ public class ZTSD00024 implements org.apache.axis2.databinding.ADBBean {
     /**
      * field for MANDT
      */
-    protected com.nhry.webService.client.masterData.functions.MANDT_type11 localMANDT;
+    protected com.nhry.webService.client.masterData.functions.MANDT_type13 localMANDT;
 
     /*  This tracker boolean wil be used to detect whether the user called the set method
      *   for this attribute. It will be used to determine whether to include this field
@@ -56,7 +56,7 @@ public class ZTSD00024 implements org.apache.axis2.databinding.ADBBean {
     /**
      * field for MATNR
      */
-    protected com.nhry.webService.client.masterData.functions.MATNR_type9 localMATNR;
+    protected com.nhry.webService.client.masterData.functions.MATNR_type11 localMATNR;
 
     /*  This tracker boolean wil be used to detect whether the user called the set method
      *   for this attribute. It will be used to determine whether to include this field
@@ -125,9 +125,9 @@ public class ZTSD00024 implements org.apache.axis2.databinding.ADBBean {
 
     /**
      * Auto generated getter method
-     * @return com.nhry.webService.client.masterData.functions.MANDT_type11
+     * @return com.nhry.webService.client.masterData.functions.MANDT_type13
      */
-    public com.nhry.webService.client.masterData.functions.MANDT_type11 getMANDT() {
+    public com.nhry.webService.client.masterData.functions.MANDT_type13 getMANDT() {
         return localMANDT;
     }
 
@@ -136,7 +136,7 @@ public class ZTSD00024 implements org.apache.axis2.databinding.ADBBean {
      * @param param MANDT
      */
     public void setMANDT(
-        com.nhry.webService.client.masterData.functions.MANDT_type11 param) {
+        com.nhry.webService.client.masterData.functions.MANDT_type13 param) {
         localMANDTTracker = param != null;
 
         this.localMANDT = param;
@@ -194,9 +194,9 @@ public class ZTSD00024 implements org.apache.axis2.databinding.ADBBean {
 
     /**
      * Auto generated getter method
-     * @return com.nhry.webService.client.masterData.functions.MATNR_type9
+     * @return com.nhry.webService.client.masterData.functions.MATNR_type11
      */
-    public com.nhry.webService.client.masterData.functions.MATNR_type9 getMATNR() {
+    public com.nhry.webService.client.masterData.functions.MATNR_type11 getMATNR() {
         return localMATNR;
     }
 
@@ -205,7 +205,7 @@ public class ZTSD00024 implements org.apache.axis2.databinding.ADBBean {
      * @param param MATNR
      */
     public void setMATNR(
-        com.nhry.webService.client.masterData.functions.MATNR_type9 param) {
+        com.nhry.webService.client.masterData.functions.MATNR_type11 param) {
         localMATNRTracker = param != null;
 
         this.localMATNR = param;
@@ -742,7 +742,7 @@ public class ZTSD00024 implements org.apache.axis2.databinding.ADBBean {
                             reader.getName())) ||
                         new javax.xml.namespace.QName("", "MANDT").equals(
                             reader.getName())) {
-                    object.setMANDT(com.nhry.webService.client.masterData.functions.MANDT_type11.Factory.parse(
+                    object.setMANDT(com.nhry.webService.client.masterData.functions.MANDT_type13.Factory.parse(
                             reader));
 
                     reader.next();
@@ -793,7 +793,7 @@ public class ZTSD00024 implements org.apache.axis2.databinding.ADBBean {
                             reader.getName())) ||
                         new javax.xml.namespace.QName("", "MATNR").equals(
                             reader.getName())) {
-                    object.setMATNR(com.nhry.webService.client.masterData.functions.MATNR_type9.Factory.parse(
+                    object.setMATNR(com.nhry.webService.client.masterData.functions.MATNR_type11.Factory.parse(
                             reader));
 
                     reader.next();
