@@ -94,13 +94,16 @@ public class UserServiceImpl extends BaseService implements UserService {
 
 	@Override
 	public List<TSysUser> findUserByRoleId(UserQueryModel um) {
+		if(StringUtils.isEmpty(um.getRoleId())){
+			throw new ServiceException(MessageCode.LOGIC_ERROR,"roleId不能为空！");
+		}
 		return userMapper.findUserByRoleId(um);
 	}
 
 	@Override
 	public PageInfo findUserPageByRoleId(UserQueryModel um) {
-		if(StringUtils.isEmpty(um.getPageNum()) || StringUtils.isEmpty(um.getPageSize())){
-			throw new ServiceException(MessageCode.LOGIC_ERROR,"pageNum和pageSize不能为空！");
+		if(StringUtils.isEmpty(um.getPageNum()) || StringUtils.isEmpty(um.getPageSize()) || StringUtils.isEmpty(um.getRoleId())){
+			throw new ServiceException(MessageCode.LOGIC_ERROR,"roleId,pageNum和pageSize不能为空！");
 		}
 		return userMapper.findUserPageByRoleId(um);
 	}

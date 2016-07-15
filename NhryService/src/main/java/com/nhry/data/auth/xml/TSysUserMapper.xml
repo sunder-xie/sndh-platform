@@ -499,33 +499,17 @@
     </select>
     <select id="findUser" parameterType="com.nhry.model.auth.UserQueryModel" resultMap="BaseResultMap">
         SELECT
-        USER .LOGIN_NAME,
-        USER .DISPLAY_NAME,
-        ug.GROUP_NAME GROUP_ID,
-        USER .CREATE_ON,
-        USER.LAST_MODIFIED,
-        USER.BRANCH_NO,
-        USER.DEALER_ID,
-        USER.SALES_ORG,
-        USER.LAST_LOGIN
+        <include refid="Base_Column_List"/>
         FROM
-        T_SYS_USER USER left JOIN
-        T_SYS_USER_GROUP ug
-        ON
-        USER .GROUP_ID = ug.ID
-        <if test="uname != null and '' != uname">
-            and (user.LOGIN_NAME like '%' #{uname} '%' or user.DISPLAY_NAME like '%' #{uname} '%')
+        T_SYS_USER
+        WHERE 1=1
+        <if test="uname != null">
+            and (LOGIN_NAME like '%' #{uname,jdbcType=VARCHAR} '%' or DISPLAY_NAME like '%' #{uname,jdbcType=VARCHAR} '%')
         </if>
-        <if test="groupId != null and '' != groupId">
-            and ug.ID like '%' #{groupId} '%'
+        <if test="salesOrg != null">
+            and SALES_ORG = #{salesOrg,jdbcType=VARCHAR}
         </if>
-        <if test="startDate != null and '' != startDate">
-            and user.CREATE_ON &gt;= #{startDate}
-        </if>
-        <if test="endDate != null and '' != endDate">
-            and user.CREATE_ON &lt;= #{endDate}
-        </if>
-        order by user.CREATE_ON desc,user.LAST_MODIFIED desc
+        order by CREATE_ON desc,LAST_MODIFIED desc
     </select>
     <update id="deleteUserByLoginName" parameterType="com.nhry.data.auth.domain.TSysUser">
         update t_sys_user
@@ -545,27 +529,35 @@
         </set>
         where LOGIN_NAME = #{loginName,jdbcType=VARCHAR}
     </update>
-
+    <sql id="Ch_Column_List">
+        u.LOGIN_NAME, u.DISPLAY_NAME, u.DEPARTMENT_NUMBER, u.DEPARTMENT_NAME, u.CUSTOMIZED_POSITIONID,
+        u.CUSTOMIZED_POSITIONNAME, u.LAST_MODIFIED, u.CREATE_ON, u.BRANCH_NO, u.DEALER_ID, u.SALES_ORG,
+        u.LAST_LOGIN, u.CUSTOMIZED_DUTYID, u.CUSTOMIZED_DUTYNAME, u.CUSTOMIZED_RESIDENCE, u.CUSTOMIZED_PERSONAL_MAIL,
+        u.MAIL, u.MOBILE, u.CUSTOMIZED_JOININWORKDATE, u.CUSTOMIZED_JOINSYSDATE, u.CUSTOMIZED_RESIGNEDDATE,
+        u.CUSTOMIZED_LASTDEPARTMENTNAME, u.CUSTOMIZED_HRREGION, u.CUSTOMIZED_HRREGIONTXT, u.CUSTOMIZED_SUBHRREGION,
+        u.CUSTOMIZED_SUBHRREGIONTXT, u.CUSTOMIZED_EMPTYPE, u.CUSTOMIZED_EMPTYPETXT, u.CUSTOMIZED_SUBEMPTYPE,
+        u.CUSTOMIZED_SUBEMPTYPETXT, u.CUSTOMIZED_DEGREE, u.CUSTOMIZED_MAJOR, u.CUSTOMIZED_MANAGERCODE,
+        u.CUSTOMIZED_MANAGERNAME, u.SMART_IDCARDNUMBER, u.CUSTOMIZED_NATION, u.CUSTOMIZED_COUNTRY,
+        u.SMART_TYPE, u.SMART_CATEGORY, u.CUMSTOMIZED_VPATH, u.CUMSTOMIZED_RPATH, SMART_AUTHORITY,
+        u.DS_PWP_ACCOUNT_DISABLED, u.GROUP_ID,
+        (SELECT i.ITEM_NAME FROM t_sys_code_item i where i.TYPE_CODE=
+        <include refid="mybaties.constant.SALES_ORG_CONSTANT"></include>
+        and i.ITEM_CODE=u.SALES_ORG) ORG_NAME,
+        (SELECT b.BRANCH_NAME FROM t_md_branch b where b.BRANCH_NO=u.BRANCH_NO) BRANCH_NAME
+    </sql>
     <select id="findUserByRoleId" parameterType="com.nhry.model.auth.UserQueryModel" resultMap="BaseResultMap">
       SELECT
-        USER .LOGIN_NAME,
-        USER .DISPLAY_NAME,
-        USER .CREATE_ON,
-        USER.LAST_MODIFIED,
-        USER.BRANCH_NO,
-        USER.DEALER_ID,
-        USER.SALES_ORG,
-        USER.LAST_LOGIN
-      FROM T_SYS_USER USER
+        <include refid="Ch_Column_List"/>
+      FROM T_SYS_USER u
       JOIN T_SYS_USER_ROLE r
-      ON USER.LOGIN_NAME = r.LOGIN_NAME
+      ON u.LOGIN_NAME = r.LOGIN_NAME
       and r.ID = #{roleId,jdbcType=VARCHAR}
         <if test="uname != null and '' != uname">
-            and (user.LOGIN_NAME like '%' #{uname,jdbcType=VARCHAR} '%' or user.DISPLAY_NAME like '%' #{uname,jdbcType=VARCHAR} '%')
+            and (u.LOGIN_NAME like '%' #{uname,jdbcType=VARCHAR} '%' or u.DISPLAY_NAME like '%' #{uname,jdbcType=VARCHAR} '%')
         </if>
         <if test="salesOrg != null and ''!= salesOrg">
-            and user.SALES_ORG = #{salesOrg,jdbcType=VARCHAR}
+            and u.SALES_ORG = #{salesOrg,jdbcType=VARCHAR}
         </if>
-      order by user.CREATE_ON desc,user.LAST_MODIFIED desc
+      order by u.CREATE_ON desc,u.LAST_MODIFIED desc
   </select>
 </mapper>
