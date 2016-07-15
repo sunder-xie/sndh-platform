@@ -9,6 +9,7 @@ import com.nhry.webService.client.businessData.functions.*;
 import com.nhry.webService.client.businessData.model.Delivery;
 import org.apache.axis2.AxisFault;
 import org.apache.axis2.client.Options;
+import org.apache.commons.lang.StringUtils;
 
 import java.math.BigDecimal;
 import java.rmi.RemoteException;
@@ -35,7 +36,7 @@ public class BusinessDataConnection {
         return stub;
     }
 
-    public static PISuccessMessage RequisitionCreate(TMdBranchEx branchEx, java.util.Date reqDate, List<Map<String, String>> items){
+    public static PISuccessMessage RequisitionCreate(TMdBranchEx branchEx, java.util.Date reqDate, List<Map<String, String>> items) {
         PISuccessMessage successMessage = new PISuccessMessage();
         try {
             ZSD_REQUISITION_CREATE_RFC rfc = new ZSD_REQUISITION_CREATE_RFC();
@@ -107,25 +108,26 @@ public class BusinessDataConnection {
             }
             rfc.setIT_ITEM(it_item_type0);
             ZSD_REQUISITION_CREATE_RFCResponse response;
-
-
             response = BusinessDataConnection.getConn().requisitionCreate(rfc);
             ET_MESSAGE_type1 message = response.getET_MESSAGE();
             BAPIRET2[] bap = message.getItem();
-            if (bap.length > 0) {
-                String mes = bap[0].getTYPE().getTYPE_type0();
-                if ("1".equals(mes)) {
-                    successMessage.setSuccess(true);
-                    successMessage.setData(response.getET_EBELN().getET_EBELN_type0());
-                    successMessage.setMessage("");
-                } else {
-                    successMessage.setSuccess(false);
-                    successMessage.setData("");
-                    successMessage.setMessage(bap[0].getMESSAGE().getMESSAGE_type0());
-                }
-            } else {
+            String result = response.getET_EBELN() != null ? response.getET_EBELN().getET_EBELN_type0() : null;
+            StringBuilder msg = new StringBuilder();
+            if (StringUtils.isNotEmpty(result)) {
                 successMessage.setSuccess(true);
-                successMessage.setData(response.getET_EBELN().getET_EBELN_type0());
+                successMessage.setData(result);
+            } else {
+                successMessage.setSuccess(false);
+            }
+            if (bap!= null && bap.length > 0) {
+                BAPIRET2 bapiret2 = bap[0];
+                msg.append(bapiret2.getMESSAGE().getMESSAGE_type0());
+                msg.append(bapiret2.getMESSAGE_V1().getMESSAGE_V1_type0());
+                msg.append(bapiret2.getMESSAGE_V2().getMESSAGE_V2_type0());
+                msg.append(bapiret2.getMESSAGE_V3().getMESSAGE_V3_type0());
+                msg.append(bapiret2.getMESSAGE_V4().getMESSAGE_V4_type0());
+                successMessage.setMessage(msg.toString());
+            } else {
                 successMessage.setMessage("");
             }
         } catch (Exception e) {
@@ -137,87 +139,91 @@ public class BusinessDataConnection {
     }
 
     public static PISuccessMessage SalesOrderCreate(String KUNNR, String KUNWE, String VKORG, String BSTKD, java.util.Date LFDAT, List<Map<String, String>> items, String activityId) {
-
-        IT_ZSSD00011_type0 it_zssd00011_type1 = new IT_ZSSD00011_type0();
-        for (Map<String, String> map : items) {
-            ZSSD00011 zssd00011 = new ZSSD00011();
-            MATNR_type1 matnr_type1 = new MATNR_type1();
-            matnr_type1.setMATNR_type0(map.get("MATNR"));
-            zssd00011.setMATNR(matnr_type1);
-            KWMENG_type1 kwmeng_type1 = new KWMENG_type1();
-            BigDecimal kw = new BigDecimal(map.get("MWMENG"));
-            kwmeng_type1.setKWMENG_type0(kw);
-            zssd00011.setKWMENG(kwmeng_type1);
-            VRKME_type1 vrkme_type1 = new VRKME_type1();
-            vrkme_type1.setVRKME_type0(map.get("VRKME"));
-            zssd00011.setVRKME(vrkme_type1);
-            WERKS_type1 werks_type1 = new WERKS_type1();
-            werks_type1.setWERKS_type0(map.get("WERKS"));
-            zssd00011.setWERKS(werks_type1);
-            LGORT_type1 lgort_type1 = new LGORT_type1();
-            lgort_type1.setLGORT_type0(map.get("LGORT"));
-            zssd00011.setLGORT(lgort_type1);
-            POSEX_type1 posex_type1 = new POSEX_type1();
-            posex_type1.setPOSEX_type0(map.get("POSEX"));
-            zssd00011.setPOSEX(posex_type1);
-            it_zssd00011_type1.addItem(zssd00011);
-        }
-
-        ZSD_SALESORDER_DATA_RFC_2 rfc = new ZSD_SALESORDER_DATA_RFC_2();
-        rfc.setIT_ZSSD00011(it_zssd00011_type1);
-        ZSSD00010 zssd00010 = new ZSSD00010();
-        KUNNR_type1 kunnr_type1 = new KUNNR_type1();
-        kunnr_type1.setKUNNR_type0(KUNNR);
-        zssd00010.setKUNNR(kunnr_type1);
-        KUNWE_type1 kunwe_type1 = new KUNWE_type1();
-        kunwe_type1.setKUNWE_type0(KUNWE);
-        zssd00010.setKUNWE(kunwe_type1);
-        VKORG_type1 vkorg_type1 = new VKORG_type1();
-        vkorg_type1.setVKORG_type0(VKORG);
-        zssd00010.setVKORG(vkorg_type1);
-        VTWEG_type1 vtweg_type1 = new VTWEG_type1();
-        vtweg_type1.setVTWEG_type0(PIPropertitesUtil.getValue("PI.MasterData.mATQUERY.VKORG"));
-        zssd00010.setVTWEG(vtweg_type1);
-        SPART_type1 spart_type1 = new SPART_type1();
-        spart_type1.setSPART_type0(PIPropertitesUtil.getValue("PI.SPART"));
-        zssd00010.setSPART(spart_type1);
-        AUART_type1 auart_type1 = new AUART_type1();
-        auart_type1.setAUART_type0(PIPropertitesUtil.getValue("PI.AUART"));
-        zssd00010.setAUART(auart_type1);
-        ParsePosition pos = new ParsePosition(8);
-        String dateString = formatter.format(LFDAT);
-        com.nhry.webService.client.businessData.functions.Date date = new com.nhry.webService.client.businessData.functions.Date();
-        date.setObject(formatter.parse(dateString, pos));
-        zssd00010.setLFDAT(date);
-        BSTKD_type1 bstkd_type1 = new BSTKD_type1();
-        bstkd_type1.setBSTKD_type0(BSTKD);
-        zssd00010.setBSTKD(bstkd_type1);
-        CMPGN_EXTID_type1 cmpgn_extid_type1 = new CMPGN_EXTID_type1();
-        cmpgn_extid_type1.setCMPGN_EXTID_type0(activityId);
-        zssd00010.setCMPGN_EXTID(cmpgn_extid_type1);
-        rfc.setIT_ZSSD00010(zssd00010);
         PISuccessMessage successMessage = new PISuccessMessage();
         try {
+            IT_ZSSD00011_type0 it_zssd00011_type1 = new IT_ZSSD00011_type0();
+            for (Map<String, String> map : items) {
+                ZSSD00011 zssd00011 = new ZSSD00011();
+                MATNR_type1 matnr_type1 = new MATNR_type1();
+                matnr_type1.setMATNR_type0(map.get("MATNR"));
+                zssd00011.setMATNR(matnr_type1);
+                KWMENG_type1 kwmeng_type1 = new KWMENG_type1();
+                BigDecimal kw = new BigDecimal(map.get("MWMENG"));
+                kwmeng_type1.setKWMENG_type0(kw);
+                zssd00011.setKWMENG(kwmeng_type1);
+                VRKME_type1 vrkme_type1 = new VRKME_type1();
+                vrkme_type1.setVRKME_type0(map.get("VRKME"));
+                zssd00011.setVRKME(vrkme_type1);
+                WERKS_type1 werks_type1 = new WERKS_type1();
+                werks_type1.setWERKS_type0(map.get("WERKS"));
+                zssd00011.setWERKS(werks_type1);
+                LGORT_type1 lgort_type1 = new LGORT_type1();
+                lgort_type1.setLGORT_type0(map.get("LGORT"));
+                zssd00011.setLGORT(lgort_type1);
+                POSEX_type1 posex_type1 = new POSEX_type1();
+                posex_type1.setPOSEX_type0(map.get("POSEX"));
+                zssd00011.setPOSEX(posex_type1);
+                it_zssd00011_type1.addItem(zssd00011);
+            }
+
+            ZSD_SALESORDER_DATA_RFC_2 rfc = new ZSD_SALESORDER_DATA_RFC_2();
+            rfc.setIT_ZSSD00011(it_zssd00011_type1);
+            ZSSD00010 zssd00010 = new ZSSD00010();
+            KUNNR_type1 kunnr_type1 = new KUNNR_type1();
+            kunnr_type1.setKUNNR_type0(KUNNR);
+            zssd00010.setKUNNR(kunnr_type1);
+            KUNWE_type1 kunwe_type1 = new KUNWE_type1();
+            kunwe_type1.setKUNWE_type0(KUNWE);
+            zssd00010.setKUNWE(kunwe_type1);
+            VKORG_type1 vkorg_type1 = new VKORG_type1();
+            vkorg_type1.setVKORG_type0(VKORG);
+            zssd00010.setVKORG(vkorg_type1);
+            VTWEG_type1 vtweg_type1 = new VTWEG_type1();
+            vtweg_type1.setVTWEG_type0(PIPropertitesUtil.getValue("PI.MasterData.mATQUERY.VKORG"));
+            zssd00010.setVTWEG(vtweg_type1);
+            SPART_type1 spart_type1 = new SPART_type1();
+            spart_type1.setSPART_type0(PIPropertitesUtil.getValue("PI.SPART"));
+            zssd00010.setSPART(spart_type1);
+            AUART_type1 auart_type1 = new AUART_type1();
+            auart_type1.setAUART_type0(PIPropertitesUtil.getValue("PI.AUART"));
+            zssd00010.setAUART(auart_type1);
+            ParsePosition pos = new ParsePosition(8);
+            String dateString = formatter.format(LFDAT);
+            com.nhry.webService.client.businessData.functions.Date date = new com.nhry.webService.client.businessData.functions.Date();
+            date.setObject(formatter.parse(dateString));
+            zssd00010.setLFDAT(date);
+            BSTKD_type1 bstkd_type1 = new BSTKD_type1();
+            bstkd_type1.setBSTKD_type0(BSTKD);
+            zssd00010.setBSTKD(bstkd_type1);
+            CMPGN_EXTID_type1 cmpgn_extid_type1 = new CMPGN_EXTID_type1();
+            cmpgn_extid_type1.setCMPGN_EXTID_type0(activityId);
+            zssd00010.setCMPGN_EXTID(cmpgn_extid_type1);
+            rfc.setIT_ZSSD00010(zssd00010);
+
             ZSD_SALESORDER_DATA_RFC_2Response response = BusinessDataConnection.getConn().salesOrderCreate(rfc);
             ET_BAPIRETURN1_type1 et_bapirequrn1_type1 = response.getET_BAPIRETURN1();
             BAPIRET2[] bap = et_bapirequrn1_type1.getItem();
-            if (bap.length > 0) {
-                String mes = bap[0].getTYPE().getTYPE_type0();
-                if ("1".equals(mes)) {
-                    successMessage.setSuccess(true);
-                    successMessage.setData(response.getET_VBELN().getET_VBELN_type0());
-                    successMessage.setMessage("");
-                } else {
-                    successMessage.setSuccess(false);
-                    successMessage.setData("");
-                    successMessage.setMessage(bap[0].getMESSAGE().getMESSAGE_type0());
-                }
-            } else {
+            String result = response.getET_VBELN() != null ? response.getET_VBELN().getET_VBELN_type0() : null;
+            StringBuilder msg = new StringBuilder();
+            if (StringUtils.isNotEmpty(result)) {
                 successMessage.setSuccess(true);
-                successMessage.setData(response.getET_VBELN().getET_VBELN_type0());
+                successMessage.setData(result);
+            } else {
+                successMessage.setSuccess(false);
+            }
+            if (bap!=null && bap.length > 0) {
+                BAPIRET2 bapiret2 = bap[0];
+                msg.append(bapiret2.getMESSAGE().getMESSAGE_type0());
+                msg.append(bapiret2.getMESSAGE_V1().getMESSAGE_V1_type0());
+                msg.append(bapiret2.getMESSAGE_V2().getMESSAGE_V2_type0());
+                msg.append(bapiret2.getMESSAGE_V3().getMESSAGE_V3_type0());
+                msg.append(bapiret2.getMESSAGE_V4().getMESSAGE_V4_type0());
+                successMessage.setMessage(msg.toString());
+            } else {
                 successMessage.setMessage("");
             }
         } catch (Exception e) {
+            e.printStackTrace();
             successMessage.setSuccess(false);
             successMessage.setData("");
             successMessage.setMessage("销售订单接口异常，请联系管理员！");
