@@ -72,7 +72,8 @@ public class ExceptionMapperSupport implements ExceptionMapper<Exception> {
 			statusCode = Status.NOT_FOUND;
 		}
 		if(msg == null){
-			msg = SysContant.getSystemConst(code);
+//			msg = SysContant.getSystemConst(code);
+			msg = exception.getMessage();
 		}
 		LOGGER.error(msg, exception);
 		return formatData(code, msg, null, statusCode);

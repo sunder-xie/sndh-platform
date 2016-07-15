@@ -32,11 +32,19 @@
 				FROM
 					t_sys_code_item t
 				WHERE
-					t.TYPE_CODE = '1002'
+					t.TYPE_CODE = <include refid="mybaties.constant.SALES_ORG_CONSTANT"></include>
 				AND t.ITEM_CODE = p.SALES_ORG
 			) SALES_ORG,
 			PRICE_GROUP,
-			p.PRICE_TYPE,
+			(
+				SELECT
+					t.ITEM_NAME
+				FROM
+					t_sys_code_item t
+				WHERE
+					t.TYPE_CODE = <include refid="mybaties.constant.price_type"></include>
+				AND t.ITEM_CODE = p.PRICE_TYPE
+			) PRICE_TYPE,
 			date_format(p.START_DATE, '%Y-%m-%d') START_DATE,
 			date_format(p.END_DATE, '%Y-%m-%d') END_DATE,
 			p.CREATE_AT,
