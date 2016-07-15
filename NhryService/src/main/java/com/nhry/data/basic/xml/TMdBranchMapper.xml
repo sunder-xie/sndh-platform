@@ -143,6 +143,8 @@
     b.CREATE_AT, b.CREATE_BY, b.CREATE_BY_TXT,b.LAST_MODIFIED, b.LAST_MODIFIED_BY, b.LAST_MODIFIED_BY_TXT
     from t_md_branch
     where SALES_ORG = #{salesOrg,jdbcType=VARCHAR}
+
+    ORDER BY CREATE_AT desc
   </select>
   <select id="searchBranch" resultMap="BaseResultMap" parameterType="com.nhry.model.basic.BranchQueryModel">
     SELECT
@@ -154,7 +156,7 @@
     from T_MD_BRANCH b LEFT JOIN t_md_dealer d on b.DEALER_NO = d.DEALER_NO
     <where>
       <if test="branchNo != null and branchNo != ''">
-       b.BRANCH_NO = #{branchNo,jdbcType=VARCHAR}
+       and   ( b.BRANCH_NO LIKE '%${branchNo}%' OR b.BRANCH_NAME like  '%${branchNo}%' )
     </if>
       <if test="salesOrg != null and salesOrg != ''">
         AND b.SALES_ORG = #{salesOrg,jdbcType=VARCHAR}
@@ -163,6 +165,7 @@
         AND b.BRANCH_GROUP = #{branchGroup,jdbcType=VARCHAR}
       </if>
     </where>
+    ORDER BY b.CREATE_AT desc
   </select>
 
   <select id="getBranchByCodeOrName" resultMap="BaseResultMap" parameterType="java.util.HashMap">
