@@ -170,5 +170,11 @@ public class TOrderDaliyPlanItemMapperImpl implements TOrderDaliyPlanItemMapper
 		// TODO Auto-generated method stub
 		return sqlSessionTemplate.selectListByPages("searchDaliyOrdersByPage",smodel, Integer.parseInt(smodel.getPageNum()), Integer.parseInt(smodel.getPageSize()));	
 	}
+
+	@Override
+	public List<TOrderDaliyPlanItem> searchDaliyOrdersByOrderNoAndFinalStop(OrderSearchModel smodel)
+	{
+		return sqlSessionTemplate.selectList("searchDaliyOrdersByOrderNoAndFinalStop", smodel);
+	}
 	
 }

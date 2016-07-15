@@ -40,7 +40,31 @@ public class TOrderDaliyPlanItem extends TOrderDaliyPlanItemKey {
 
     private String lastModifiedByTxt;
     
-    public String getDispDateStr()
+    private Integer giftQty;
+    
+    private String promotionFlag;
+    
+    public Integer getGiftQty()
+	{
+		return giftQty;
+	}
+
+	public void setGiftQty(Integer giftQty)
+	{
+		this.giftQty = giftQty;
+	}
+
+	public String getPromotionFlag()
+	{
+		return promotionFlag;
+	}
+
+	public void setPromotionFlag(String promotionFlag)
+	{
+		this.promotionFlag = promotionFlag;
+	}
+
+	public String getDispDateStr()
  	 {
  		  return dispDateStr;
  	 }
