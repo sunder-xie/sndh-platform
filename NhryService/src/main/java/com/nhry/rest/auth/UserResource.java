@@ -21,6 +21,7 @@ import org.springframework.stereotype.Controller;
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+import java.util.List;
 
 @Path("/user")
 @Component
@@ -88,5 +89,22 @@ public class UserResource extends BaseResource {
 	@ApiOperation(value = "/delete/{loginName}", response = ResponseModel.class, notes = "失效指定用户")
 	public Response deleteUserByLoginName(@ApiParam(required = true, name = "loginName", value = "用户登录名") @PathParam("loginName")String loginName) {
 		return convertToRespModel(MessageCode.NORMAL,null,userService.deleteUserByLoginName(loginName));
+	}
+
+	@POST
+	@Path("/findPageByRoleId")
+	@Produces(MediaType.APPLICATION_JSON)
+	@Consumes(MediaType.APPLICATION_JSON)
+	@ApiOperation(value = "/findPageByRoleId", response = PageInfo.class, notes = "根据角色 用户名(或者中文名)查询人员列表")
+	public Response findPageByRoleId(	@ApiParam(required = true, name = "um", value = "角色 用户登录名、中文名") UserQueryModel um) {
+		return convertToRespModel(MessageCode.NORMAL, null, userService.findUserPageByRoleId(um));
+	}
+	@POST
+	@Path("/findByRoleId")
+	@Produces(MediaType.APPLICATION_JSON)
+	@Consumes(MediaType.APPLICATION_JSON)
+	@ApiOperation(value = "/findByRoleId", response = List.class, notes = "根据角色 用户名(或者中文名)查询人员列表")
+	public Response findByRoleId(	@ApiParam(required = true, name = "um", value = "角色 用户登录名、中文名") UserQueryModel um) {
+		return convertToRespModel(MessageCode.NORMAL, null, userService.findUserByRoleId(um));
 	}
 }

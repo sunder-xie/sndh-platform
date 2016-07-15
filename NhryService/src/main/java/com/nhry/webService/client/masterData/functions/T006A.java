@@ -23,7 +23,7 @@ public class T006A implements org.apache.axis2.databinding.ADBBean {
     /**
      * field for MANDT
      */
-    protected com.nhry.webService.client.masterData.functions.MANDT_type15 localMANDT;
+    protected com.nhry.webService.client.masterData.functions.MANDT_type17 localMANDT;
 
     /*  This tracker boolean wil be used to detect whether the user called the set method
      *   for this attribute. It will be used to determine whether to include this field
@@ -89,7 +89,7 @@ public class T006A implements org.apache.axis2.databinding.ADBBean {
     /**
      * field for MSEHL
      */
-    protected com.nhry.webService.client.masterData.functions.MSEHL_type1 localMSEHL;
+    protected com.nhry.webService.client.masterData.functions.MSEHL_type3 localMSEHL;
 
     /*  This tracker boolean wil be used to detect whether the user called the set method
      *   for this attribute. It will be used to determine whether to include this field
@@ -103,9 +103,9 @@ public class T006A implements org.apache.axis2.databinding.ADBBean {
 
     /**
      * Auto generated getter method
-     * @return com.nhry.webService.client.masterData.functions.MANDT_type15
+     * @return com.nhry.webService.client.masterData.functions.MANDT_type17
      */
-    public com.nhry.webService.client.masterData.functions.MANDT_type15 getMANDT() {
+    public com.nhry.webService.client.masterData.functions.MANDT_type17 getMANDT() {
         return localMANDT;
     }
 
@@ -114,7 +114,7 @@ public class T006A implements org.apache.axis2.databinding.ADBBean {
      * @param param MANDT
      */
     public void setMANDT(
-        com.nhry.webService.client.masterData.functions.MANDT_type15 param) {
+        com.nhry.webService.client.masterData.functions.MANDT_type17 param) {
         localMANDTTracker = param != null;
 
         this.localMANDT = param;
@@ -241,9 +241,9 @@ public class T006A implements org.apache.axis2.databinding.ADBBean {
 
     /**
      * Auto generated getter method
-     * @return com.nhry.webService.client.masterData.functions.MSEHL_type1
+     * @return com.nhry.webService.client.masterData.functions.MSEHL_type3
      */
-    public com.nhry.webService.client.masterData.functions.MSEHL_type1 getMSEHL() {
+    public com.nhry.webService.client.masterData.functions.MSEHL_type3 getMSEHL() {
         return localMSEHL;
     }
 
@@ -252,7 +252,7 @@ public class T006A implements org.apache.axis2.databinding.ADBBean {
      * @param param MSEHL
      */
     public void setMSEHL(
-        com.nhry.webService.client.masterData.functions.MSEHL_type1 param) {
+        com.nhry.webService.client.masterData.functions.MSEHL_type3 param) {
         localMSEHLTracker = param != null;
 
         this.localMSEHL = param;
@@ -654,7 +654,7 @@ public class T006A implements org.apache.axis2.databinding.ADBBean {
                             reader.getName())) ||
                         new javax.xml.namespace.QName("", "MANDT").equals(
                             reader.getName())) {
-                    object.setMANDT(com.nhry.webService.client.masterData.functions.MANDT_type15.Factory.parse(
+                    object.setMANDT(com.nhry.webService.client.masterData.functions.MANDT_type17.Factory.parse(
                             reader));
 
                     reader.next();
@@ -756,7 +756,7 @@ public class T006A implements org.apache.axis2.databinding.ADBBean {
                             reader.getName())) ||
                         new javax.xml.namespace.QName("", "MSEHL").equals(
                             reader.getName())) {
-                    object.setMSEHL(com.nhry.webService.client.masterData.functions.MSEHL_type1.Factory.parse(
+                    object.setMSEHL(com.nhry.webService.client.masterData.functions.MSEHL_type3.Factory.parse(
                             reader));
 
                     reader.next();

@@ -23,7 +23,7 @@ public class T005U implements org.apache.axis2.databinding.ADBBean {
     /**
      * field for MANDT
      */
-    protected com.nhry.webService.client.masterData.functions.MANDT_type5 localMANDT;
+    protected com.nhry.webService.client.masterData.functions.MANDT_type7 localMANDT;
 
     /*  This tracker boolean wil be used to detect whether the user called the set method
      *   for this attribute. It will be used to determine whether to include this field
@@ -81,9 +81,9 @@ public class T005U implements org.apache.axis2.databinding.ADBBean {
 
     /**
      * Auto generated getter method
-     * @return com.nhry.webService.client.masterData.functions.MANDT_type5
+     * @return com.nhry.webService.client.masterData.functions.MANDT_type7
      */
-    public com.nhry.webService.client.masterData.functions.MANDT_type5 getMANDT() {
+    public com.nhry.webService.client.masterData.functions.MANDT_type7 getMANDT() {
         return localMANDT;
     }
 
@@ -92,7 +92,7 @@ public class T005U implements org.apache.axis2.databinding.ADBBean {
      * @param param MANDT
      */
     public void setMANDT(
-        com.nhry.webService.client.masterData.functions.MANDT_type5 param) {
+        com.nhry.webService.client.masterData.functions.MANDT_type7 param) {
         localMANDTTracker = param != null;
 
         this.localMANDT = param;
@@ -566,7 +566,7 @@ public class T005U implements org.apache.axis2.databinding.ADBBean {
                             reader.getName())) ||
                         new javax.xml.namespace.QName("", "MANDT").equals(
                             reader.getName())) {
-                    object.setMANDT(com.nhry.webService.client.masterData.functions.MANDT_type5.Factory.parse(
+                    object.setMANDT(com.nhry.webService.client.masterData.functions.MANDT_type7.Factory.parse(
                             reader));
 
                     reader.next();
