@@ -89,4 +89,11 @@ public interface TSysResourceMapper {
      * @return
      */
     List<TSysResource> getRoleRosources(String id);
+    
+    /**
+     * 根据登录名获取用拥有的组件资源列表
+     * @param userId
+     * @return
+     */
+    List<TSysResource> findComponentByLogName(String userId);
 }

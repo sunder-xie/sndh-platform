@@ -26,9 +26,10 @@
 	   <property name="sqlSessionTemplate"  ref="dynamicSqlSessionTemplate"></property>
 	</bean>
 	<bean id="roleService" class="com.nhry.service.auth.impl.RoleServiceImpl">
-	   <property name="roleMapper"  ref="roleMapper"></property>
-	   <property name="urMapper" ref="urMapper"></property>
-	   <property name="userSessionService" ref="userSessionService"></property>
+	    <property name="roleMapper"  ref="roleMapper"></property>
+	    <property name="urMapper" ref="urMapper"></property>
+	    <property name="userSessionService" ref="userSessionService"></property>
+		<property name="resMapper" ref="resMapper"/>
 	</bean>
 	<!-- 用户组 -->
 	<bean id="ugMapper" class="com.nhry.data.auth.impl.TSysUserGroupMapperImpl">

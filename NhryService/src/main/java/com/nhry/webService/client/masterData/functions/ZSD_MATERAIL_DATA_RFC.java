@@ -62,6 +62,17 @@ public class ZSD_MATERAIL_DATA_RFC implements org.apache.axis2.databinding.ADBBe
     protected boolean localET_MATNRTracker = false;
 
     /**
+     * field for ET_ZTMM00037
+     */
+    protected com.nhry.webService.client.masterData.functions.ET_ZTMM00037_type0 localET_ZTMM00037;
+
+    /*  This tracker boolean wil be used to detect whether the user called the set method
+     *   for this attribute. It will be used to determine whether to include this field
+     *   in the serialized XML
+     */
+    protected boolean localET_ZTMM00037Tracker = false;
+
+    /**
      * field for IT_MATNR
      */
     protected com.nhry.webService.client.masterData.functions.IT_MATNR_type0 localIT_MATNR;
@@ -184,6 +195,29 @@ public class ZSD_MATERAIL_DATA_RFC implements org.apache.axis2.databinding.ADBBe
         localET_MATNRTracker = param != null;
 
         this.localET_MATNR = param;
+    }
+
+    public boolean isET_ZTMM00037Specified() {
+        return localET_ZTMM00037Tracker;
+    }
+
+    /**
+     * Auto generated getter method
+     * @return com.nhry.webService.client.masterData.functions.ET_ZTMM00037_type0
+     */
+    public com.nhry.webService.client.masterData.functions.ET_ZTMM00037_type0 getET_ZTMM00037() {
+        return localET_ZTMM00037;
+    }
+
+    /**
+     * Auto generated setter method
+     * @param param ET_ZTMM00037
+     */
+    public void setET_ZTMM00037(
+        com.nhry.webService.client.masterData.functions.ET_ZTMM00037_type0 param) {
+        localET_ZTMM00037Tracker = param != null;
+
+        this.localET_ZTMM00037 = param;
     }
 
     public boolean isIT_MATNRSpecified() {
@@ -342,6 +376,16 @@ public class ZSD_MATERAIL_DATA_RFC implements org.apache.axis2.databinding.ADBBe
 
             localET_MATNR.serialize(new javax.xml.namespace.QName("", "ET_MATNR"),
                 xmlWriter);
+        }
+
+        if (localET_ZTMM00037Tracker) {
+            if (localET_ZTMM00037 == null) {
+                throw new org.apache.axis2.databinding.ADBException(
+                    "ET_ZTMM00037 cannot be null!!");
+            }
+
+            localET_ZTMM00037.serialize(new javax.xml.namespace.QName("",
+                    "ET_ZTMM00037"), xmlWriter);
         }
 
         if (localIT_MATNRTracker) {
@@ -687,6 +731,18 @@ public class ZSD_MATERAIL_DATA_RFC implements org.apache.axis2.databinding.ADBBe
                                 new javax.xml.namespace.QName("", "ET_MATNR").equals(
                                     reader.getName())) {
                             object.setET_MATNR(com.nhry.webService.client.masterData.functions.ET_MATNR_type0.Factory.parse(
+                                    reader));
+
+                            reader.next();
+                        } // End of if for expected property start element
+
+                        else
+                         if ((reader.isStartElement() &&
+                                new javax.xml.namespace.QName("", "ET_ZTMM00037").equals(
+                                    reader.getName())) ||
+                                new javax.xml.namespace.QName("", "ET_ZTMM00037").equals(
+                                    reader.getName())) {
+                            object.setET_ZTMM00037(com.nhry.webService.client.masterData.functions.ET_ZTMM00037_type0.Factory.parse(
                                     reader));
 
                             reader.next();

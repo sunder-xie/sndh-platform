@@ -4,6 +4,8 @@ import com.github.pagehelper.PageInfo;
 import com.nhry.data.auth.domain.TSysUser;
 import com.nhry.model.auth.UserQueryModel;
 
+import java.util.List;
+
 public interface TSysUserMapper {
 	public PageInfo findUser(UserQueryModel um);
 
@@ -18,4 +20,8 @@ public interface TSysUserMapper {
 	public int updateUserPw(TSysUser record);
 	
 	public int deleteUserByLoginName(TSysUser user);
+
+	List<TSysUser> findUserByRoleId(UserQueryModel um);
+
+	PageInfo findUserPageByRoleId(UserQueryModel um);
 }

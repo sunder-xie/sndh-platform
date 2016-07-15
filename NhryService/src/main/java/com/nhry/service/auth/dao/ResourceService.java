@@ -84,5 +84,10 @@ public interface ResourceService {
      */
     public List<TSysResource> getRoleResources(String id);
 
-
+    /**
+     * 查询当前用户拥有的组件资源列表
+     * @param userId
+     * @return
+     */
+    public List<TSysResource> findCurUserComponents();
 }
