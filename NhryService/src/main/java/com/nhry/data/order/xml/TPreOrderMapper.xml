@@ -44,6 +44,7 @@
     <result column="BACK_DATE" property="backDate" jdbcType="DATE" />
     <result column="SIGN" property="sign" jdbcType="VARCHAR" />
     <result column="SALES_ORG" property="salesOrg" jdbcType="VARCHAR" />
+    <result column="DEALER_NO" property="dealerNo" jdbcType="VARCHAR" />
   </resultMap>
   <resultMap id="BaseRemainResultMap" type="com.nhry.service.order.pojo.OrderRemainData" >
     <result column="QTY" property="qty" jdbcType="INTEGER" />
@@ -210,6 +211,9 @@
       <if test="deliveryType != null" >
         DELIVERY_TYPE,
       </if>
+      <if test="dealerNo != null" >
+        DEALER_NO,
+      </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides="," >
       <if test="orderNo != null" >
@@ -298,6 +302,9 @@
       </if>
       <if test="deliveryType != null" >
         #{deliveryType,jdbcType=VARCHAR},
+      </if>
+      <if test="dealerNo != null" >
+        #{dealerNo,jdbcType=VARCHAR},
       </if>
     </trim>
   </insert>
@@ -394,6 +401,24 @@
       <if test="sign != null" >
         SIGN = #{sign,jdbcType=VARCHAR},
       </if>
+      <if test="initAmt != null" >
+        INIT_AMT = #{initAmt,jdbcType=DECIMAL},
+      </if>
+      <if test="curAmt != null" >
+        CUR_AMT = #{curAmt,jdbcType=DECIMAL},
+      </if>
+    </set>
+    where ORDER_NO = #{orderNo,jdbcType=VARCHAR}
+  </update>
+  <update id="updateOrderInitAmtAndCurAmt" parameterType="com.nhry.data.order.domain.TPreOrder" >
+    update t_preorder
+    <set >
+      <if test="initAmt != null" >
+        INIT_AMT = #{initAmt,jdbcType=DECIMAL},
+      </if>
+      <if test="curAmt != null" >
+        CUR_AMT = #{curAmt,jdbcType=DECIMAL},
+      </if>
     </set>
     where ORDER_NO = #{orderNo,jdbcType=VARCHAR}
   </update>
@@ -422,6 +447,9 @@
     </if>
     <if test="salesOrg != null and salesOrg != ''">
      		AND o.SALES_ORG = #{salesOrg,jdbcType=VARCHAR}
+    </if>
+    <if test="dealerNo != null and dealerNo != ''">
+     		AND o.DEALER_NO = #{dealerNo,jdbcType=VARCHAR}
     </if>
     <if test="empNo != null and empNo !=''">
      		AND o.EMP_NO = #{empNo,jdbcType=VARCHAR}
@@ -464,6 +492,9 @@
 			    </if>
 			    <if test="salesOrg != null and salesOrg != ''">
 			     		AND o.SALES_ORG = #{salesOrg,jdbcType=VARCHAR}
+			    </if>
+			    <if test="dealerNo != null and dealerNo != ''">
+			     		AND o.DEALER_NO = #{dealerNo,jdbcType=VARCHAR}
 			    </if>
 			    <if test="empNo != null and empNo !=''">
 			     		AND o.EMP_NO = #{empNo,jdbcType=VARCHAR}

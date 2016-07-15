@@ -276,7 +276,7 @@ public class EmpBillServiceImpl implements EmpBillService {
         //获取上个月  例如今天是2016-07-02  结果是201606
         String setYearMonth = YearLastMonthUtil.getYearLastMonth();
 
-        List<TMdBranchEmp> empList =  branchEmpMapper.getAllEmpByBranchNo(user.getBranchNo(),null);
+        List<TMdBranchEmp> empList =  branchEmpMapper.getAllEmpByBranchNo(user.getBranchNo(),user.getSalesOrg());
         if(empList!=null && empList.size()>0){
             for(TMdBranchEmp emp : empList){
                 search.setEmpNo(emp.getEmpNo());

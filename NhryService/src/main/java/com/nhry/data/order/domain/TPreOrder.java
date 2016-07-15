@@ -94,7 +94,20 @@ public class TPreOrder {
     
     private String salesOrg;
     
-    public String getSalesOrg()
+    private String dealerNo;
+    
+
+	public String getDealerNo()
+	{
+		return dealerNo;
+	}
+
+	public void setDealerNo(String dealerNo)
+	{
+		this.dealerNo = dealerNo;
+	}
+
+	public String getSalesOrg()
 	{
 		return salesOrg;
 	}
