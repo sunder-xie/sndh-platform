@@ -300,6 +300,8 @@
 		p.ID = pb.ID
 	AND p.ID = pr.ID
 	AND pb.BRANCH_NO = #{branchNo,jdbcType=VARCHAR}
+	AND p.SALES_ORG = #{salesOrg}
+	AND pr.SALES_ORG = #{salesOrg}
 	AND pr.MATNR = #{matnr,jdbcType=VARCHAR}
 	ORDER BY
 		p.PRICE_TYPE DESC
@@ -317,14 +319,8 @@
 		WHERE
 			p.ID = pr.ID
 		AND p.PRICE_TYPE = '10'
-		AND p.SALES_ORG = (
-			SELECT
-				b.SALES_ORG
-			FROM
-				t_md_branch b
-			WHERE
-				b.BRANCH_NO = #{branchNo,jdbcType=VARCHAR}
-		)
+		AND p.SALES_ORG = #{salesOrg}
+		AND pr.SALES_ORG = #{salesOrg}
 		AND pr.MATNR = #{matnr,jdbcType=VARCHAR}
 		ORDER BY
 			p.PRICE_TYPE DESC
