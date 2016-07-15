@@ -26,8 +26,11 @@
 	<sql id="storage_location">1011</sql>
 	<!-- 系统资源类型 -->
 	<sql id="sys_res_type">1012</sql>
+	<!-- 系统资源类型 页面组件-->
+	<sql id="sys_res_type_component">20</sql>
 	<!-- 采购组 -->
 	<sql id="purchasing_group">1013</sql>
 	<!-- 价格组类型  公司价 -->
 	<sql id="price_type_comp">10</sql>
+	
 </mapper>  

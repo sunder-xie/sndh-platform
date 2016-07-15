@@ -99,6 +99,7 @@ public class UserResource extends BaseResource {
 	public Response findPageByRoleId(	@ApiParam(required = true, name = "um", value = "角色 用户登录名、中文名") UserQueryModel um) {
 		return convertToRespModel(MessageCode.NORMAL, null, userService.findUserPageByRoleId(um));
 	}
+	
 	@POST
 	@Path("/findByRoleId")
 	@Produces(MediaType.APPLICATION_JSON)
@@ -107,4 +108,6 @@ public class UserResource extends BaseResource {
 	public Response findByRoleId(	@ApiParam(required = true, name = "um", value = "角色 用户登录名、中文名") UserQueryModel um) {
 		return convertToRespModel(MessageCode.NORMAL, null, userService.findUserByRoleId(um));
 	}
+	
+	
 }

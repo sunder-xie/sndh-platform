@@ -193,4 +193,10 @@ public class ResourceServiceImpl extends BaseService implements ResourceService 
 		}
 		return res;
 	}
+
+	@Override
+	public List<TSysResource> findCurUserComponents() {
+		// TODO Auto-generated method stub
+		return resMapper.findComponentByLogName(this.userSessionService.getCurrentUser().getLoginName());
+	}
 }
