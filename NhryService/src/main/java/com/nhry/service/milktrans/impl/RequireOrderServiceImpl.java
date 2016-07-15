@@ -289,6 +289,7 @@ public class RequireOrderServiceImpl implements RequireOrderService {
                 throw  new ServiceException(MessageCode.LOGIC_ERROR,errorMessage);
             }
 
+
            PISuccessMessage message =  piRequireOrderService.generateRequireOrder(order);
            /* PISuccessMessage message = new PISuccessMessage();
             message.setSuccess(Boolean.TRUE);
@@ -305,14 +306,21 @@ public class RequireOrderServiceImpl implements RequireOrderService {
                         errorMessage ="修改要货计划或日订单状态失败" ;
                         throw  new ServiceException(MessageCode.LOGIC_ERROR,errorMessage);
                     }
+                    // 生成一张调拨单
                 }else{
-                    //非直营奶站
+
                     //要货计划单状态为“确认”，将不能修改
                     order.setLastModified(new Date());
                     order.setLastModifiedBy(user.getLoginName());
                     order.setLastModifiedByTxt(user.getDisplayName());
                     order.setStatus("30");
                     tSsmReqGoodsOrderMapper.uptRequireGoodsModifyInfo(order);
+                    /*上订户系统的大商/小商奶站  自动生成以奶站为单位的销售订单(产品要重新统计，根据产品参加N个促销活动  生成N+1 个销售单 )
+                    * 其中 产品增量部分 为不参加促销活动的产品 即 放至 在 1 那个单子中
+                    * */
+
+
+
                 }
 
             }else{

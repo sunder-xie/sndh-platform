@@ -115,6 +115,12 @@ public class ResidentialAreaServiceImpl implements ResidentialAreaService {
 
     @Override
     public PageInfo findAreaListByPage(ResidentialAreaModel residentialAreaModel) {
+        TSysUser user = userSessionService.getCurrentUser();
+        residentialAreaModel.setSalesOrg(user.getSalesOrg());
+        if(StringUtils.isNotBlank(user.getBranchNo())){
+            residentialAreaModel.setBranchNo(user.getBranchNo());
+        }
+
         // TODO Auto-generated method stub
         if(StringUtils.isEmpty(residentialAreaModel.getPageNum()) || StringUtils.isEmpty(residentialAreaModel.getPageSize())){
             throw new ServiceException(MessageCode.LOGIC_ERROR,"pageNum和pageSize不能为空！");
