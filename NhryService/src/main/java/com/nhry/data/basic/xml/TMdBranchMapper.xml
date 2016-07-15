@@ -5,6 +5,7 @@
     <id column="BRANCH_NO" property="branchNo" jdbcType="VARCHAR" />
     <result column="BRANCH_NAME" property="branchName" jdbcType="VARCHAR" />
     <result column="SALES_ORG" property="salesOrg" jdbcType="VARCHAR" />
+    <result column="SALES_ORG_NAME" property="salesOrgName" jdbcType="VARCHAR" />
     <result column="SALES_CHA" property="salesCha" jdbcType="VARCHAR" />
     <result column="BRANCH_GROUP" property="branchGroup" jdbcType="VARCHAR" />
     <result column="BRANCH_LEVEL" property="branchLevel" jdbcType="VARCHAR" />
@@ -23,6 +24,10 @@
     <result column="COUNTY" property="county" jdbcType="VARCHAR" />
     <result column="WERKS" property="werks" jdbcType="VARCHAR" />
     <result column="LGORT" property="lgort" jdbcType="VARCHAR" />
+
+    <result column="COMPANY_CODE" property="companyCode" jdbcType="VARCHAR" />
+    <result column="COMPANY_NAME" property="companyName" jdbcType="VARCHAR" />
+
     <result column="CREATE_AT" property="createAt" jdbcType="TIMESTAMP" />
     <result column="CREATE_BY" property="createBy" jdbcType="VARCHAR" />
     <result column="CREATE_BY_TXT" property="createByTxt" jdbcType="VARCHAR" />
@@ -36,10 +41,33 @@
     CREATE_BY_TXT, LAST_MODIFIED, LAST_MODIFIED_BY, LAST_MODIFIED_BY_TXT
   </sql>
   <select id="selectBranchByNo" resultMap="BaseResultMap" parameterType="java.lang.String" >
-    select 
-    <include refid="Base_Column_List" />
-    from t_md_branch
-    where BRANCH_NO = #{branchNo,jdbcType=VARCHAR}
+          select
+			b.BRANCH_NO, b.BRANCH_NAME, b.SALES_CHA, b.BRANCH_GROUP,b.BRANCH_LEVEL,  b.SALES_ORG,
+			(
+				SELECT i.ITEM_NAME
+					from t_sys_code_item i
+				WHERE i.TYPE_CODE=<include refid="mybaties.constant.SALES_ORG_CONSTANT"/>
+                and i.ITEM_CODE = b.SALES_ORG
+			) SALES_ORG_NAME,
+			b.COMPANY_CODE,
+			(
+				SELECT i.ITEM_NAME
+				from t_sys_code_item i
+				WHERE i.TYPE_CODE=<include refid="mybaties.constant.comp_code"/>
+				and i.ITEM_CODE = b.COMPANY_CODE
+			) COMPANY_NAME,
+			b.CONTACT,	b.EMP_NO,b.TEL, b.MP, b.DEALER_NO,d.DEALER_NAME, b.ADDRESS,
+           b.PROVINCE, b.CITY, b.COUNTY,
+		  <!--
+		  (SELECT i.ITEM_NAME from t_sys_code_item i WHERE i.TYPE_CODE=<include refid="mybaties.constant.COUNTRY_CITY_CONSTANT"/> and i.ITEM_CODE = b.PROVINCE ) PROVINCE,
+		 (SELECT i.ITEM_NAME from t_sys_code_item i WHERE i.TYPE_CODE=<include refid="mybaties.constant.COUNTRY_CITY_CONSTANT"/> and i.ITEM_CODE = b.CITY ) CITY,
+		 (SELECT i.ITEM_NAME from t_sys_code_item i WHERE i.TYPE_CODE=<include refid="mybaties.constant.COUNTRY_CITY_CONSTANT"/> and i.ITEM_CODE = b.COUNTY ) COUNTY,
+         -->
+          (SELECT i.ITEM_NAME from t_sys_code_item i WHERE i.TYPE_CODE=<include refid="mybaties.constant.factory"/> and i.ITEM_CODE = b.WERKS) WERKS,
+         (SELECT i.ITEM_NAME from t_sys_code_item i WHERE i.TYPE_CODE=<include refid="mybaties.constant.storage_location"/>  and i.ITEM_CODE = b.LGORT) LGORT,
+          b.CREATE_AT, b.CREATE_BY, b.CREATE_BY_TXT,b.LAST_MODIFIED, b.LAST_MODIFIED_BY, b.LAST_MODIFIED_BY_TXT
+          from t_md_branch b LEFT JOIN  t_md_dealer d on b.DEALER_NO = d.DEALER_NO
+         where BRANCH_NO = #{branchNo,jdbcType=VARCHAR}
   </select>
   <delete id="deleteBranchByNo" parameterType="java.lang.String" >
     delete from t_md_branch
@@ -91,7 +119,28 @@
   </update>
   <select id="findBranchListByOrg" resultMap="BaseResultMap" parameterType="String">
     select
-    <include refid="Base_Column_List" />
+    b.BRANCH_NO, b.BRANCH_NAME, b.SALES_CHA, b.BRANCH_GROUP,b.BRANCH_LEVEL,  b.SALES_ORG,
+    (
+    SELECT i.ITEM_NAME
+    from t_sys_code_item i
+    WHERE i.TYPE_CODE=<include refid="mybaties.constant.SALES_ORG_CONSTANT"/>
+    and i.ITEM_CODE = b.SALES_ORG
+    ) SALES_ORG_NAME,
+    b.COMPANY_CODE,
+    (
+    SELECT i.ITEM_NAME
+    from t_sys_code_item i
+    WHERE i.TYPE_CODE=<include refid="mybaties.constant.comp_code"/>
+    and i.ITEM_CODE = b.COMPANY_CODE
+    ) COMPANY_NAME,
+    b.CONTACT,	b.EMP_NO,b.TEL, b.MP, b.DEALER_NO, b.ADDRESS,
+    b.PROVINCE, b.CITY,b.COUNTY,
+   <!-- (SELECT i.ITEM_NAME from t_sys_code_item i WHERE i.TYPE_CODE=<include refid="mybaties.constant.COUNTRY_CITY_CONSTANT"/> and i.ITEM_CODE = b.PROVINCE ) PROVINCE,
+    (SELECT i.ITEM_NAME from t_sys_code_item i WHERE i.TYPE_CODE=<include refid="mybaties.constant.COUNTRY_CITY_CONSTANT"/> and i.ITEM_CODE = b.CITY ) CITY,
+    (SELECT i.ITEM_NAME from t_sys_code_item i WHERE i.TYPE_CODE=<include refid="mybaties.constant.COUNTRY_CITY_CONSTANT"/> and i.ITEM_CODE = b.COUNTY ) COUNTY,-->
+    (SELECT i.ITEM_NAME from t_sys_code_item i WHERE i.TYPE_CODE=<include refid="mybaties.constant.factory"/> and i.ITEM_CODE = b.WERKS) WERKS,
+    (SELECT i.ITEM_NAME from t_sys_code_item i WHERE i.TYPE_CODE=<include refid="mybaties.constant.storage_location"/>  and i.ITEM_CODE = b.LGORT) LGORT,
+    b.CREATE_AT, b.CREATE_BY, b.CREATE_BY_TXT,b.LAST_MODIFIED, b.LAST_MODIFIED_BY, b.LAST_MODIFIED_BY_TXT
     from t_md_branch
     where SALES_ORG = #{salesOrg,jdbcType=VARCHAR}
   </select>

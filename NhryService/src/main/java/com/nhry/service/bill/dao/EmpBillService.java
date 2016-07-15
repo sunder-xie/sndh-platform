@@ -1,6 +1,7 @@
 package com.nhry.service.bill.dao;
 
 import com.github.pagehelper.PageInfo;
+import com.nhry.data.bill.domain.TMdEmpSal;
 import com.nhry.model.bill.EmpDispDetialInfoSearch;
 import com.nhry.model.bill.SaleOrgDispRateModel;
 
@@ -23,4 +24,6 @@ public interface EmpBillService {
     PageInfo searchEmpSalaryRep(EmpDispDetialInfoSearch eSearch);
 
     int setBranchEmpSalary();
+
+    TMdEmpSal getEmpSalaryBySalaryNo(String empSalLsh);
 }

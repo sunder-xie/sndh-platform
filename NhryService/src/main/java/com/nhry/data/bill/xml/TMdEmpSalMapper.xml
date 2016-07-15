@@ -31,8 +31,9 @@
         SELECT
         e.EMP_NO,e.EMP_NAME,e.BRANCH_NO,b.BRANCH_NAME,e.SALARY_MET,s.SET_DATE,s.EMP_SAL_LSH,s.IN_DISP_SAL,s.SEND_DISP_SAL,
         e.BASE_SALARY
-        FROM t_md_branch_emp e  LEFT  JOIN t_md_emp_sal s on e.EMP_NO = s.EMP_NO
+        FROM t_md_emp_sal s LEFT  JOIN t_md_branch_emp e on e.EMP_NO = s.EMP_NO
         LEFT JOIN  t_md_branch b on e.BRANCH_NO = b.BRANCH_NO
+        LEFT JOIN t_md_emp_role r on( e.EMP_NO = r.EMP_NO  and r.ROLE_ID = <include refid="mybaties.constant.milkman"/>)
         WHERE 1=1
         <if test="salesOrg!=null and ''!=salesOrg">
           and e.SALES_ORG = #{salesOrg,jdbcType=VARCHAR}
@@ -138,5 +139,15 @@
         </trim>
 
     </insert>
+
+    <select id="getEmpSalByEmpSalLsh" resultMap="BaseResultMap" parameterType="String">
+      SELECT
+        s.EMP_NO,e.EMP_NAME,e.BRANCH_NO,b.BRANCH_NAME,e.SALARY_MET,s.SET_DATE,s.EMP_SAL_LSH,s.IN_DISP_SAL,s.SEND_DISP_SAL,s.DISP_SAL,
+        e.BASE_SALARY,s.DISP_NUM,s.TOTAL_SAL
+        FROM t_md_emp_sal s LEFT  JOIN t_md_branch_emp  e   on e.EMP_NO = s.EMP_NO
+        LEFT JOIN  t_md_branch b on e.BRANCH_NO = b.BRANCH_NO
+        WHERE 1=1
+        and EMP_SAL_LSH = #{empSalLsh,jdbcType=VARCHAR}
+    </select>
 
 </mapper>

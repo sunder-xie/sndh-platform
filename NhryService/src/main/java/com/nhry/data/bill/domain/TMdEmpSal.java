@@ -26,8 +26,8 @@ public class TMdEmpSal implements Serializable {
     private String empName;
     private String branchNo;
     private String branchName;
-    private String baseSalary;
-    private String salaryMet;
+    private String baseSalary;  //基本工资
+    private String salaryMet;   //结算方式
 
     public String getSetYearMonth() {
         return setYearMonth;
