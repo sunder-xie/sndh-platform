@@ -25,6 +25,9 @@ import java.util.Date;
 public class PIProductServiceImpl implements PIProductService {
     public static String URL = PIPropertitesUtil.getValue("PI.MasterData.URL");
     public static String VKORG = PIPropertitesUtil.getValue("PI.MasterData.mATQUERY.VKORG");
+    public static String OPTION = PIPropertitesUtil.getValue("PI.MasterData.mATQUERY.OPTION.EQ");
+    public static String SIGN = PIPropertitesUtil.getValue("PI.MasterData.mATQUERY.SIGN");
+    public static String LOW = PIPropertitesUtil.getValue("PI.MasterData.mATQUERY.LOW");
     public static String BRANDCHTYPE_ZY = "01";
     public static String BRANDCHTYPE_WB = "02";
     public PIProductMapper piProductMapper;
@@ -131,7 +134,7 @@ public class PIProductServiceImpl implements PIProductService {
                 if (StringUtils.isNotEmpty(ztmm00037.getPRDL2().getPRDL2_type0()))
                     prdl2Map.put(ztmm00037.getPRDL2().getPRDL2_type0(), ztmm00037.getPRDLT().getPRDLT_type0());
                 if (StringUtils.isNotEmpty(ztmm00037.getBRANF().getBRANF_type0()))
-                    branfMap.put(ztmm00037.getBRANF().getBRANF_type0(), ztmm00037.getBRAND().getBRAND_type0());
+                    branfMap.put(ztmm00037.getBRANF().getBRANF_type0(), ztmm00037.getBRANS().getBRANS_type0());
                 if (StringUtils.isNotEmpty(ztmm00037.getFRMAT().getFRMAT_type0()))
                     frmatMap.put(ztmm00037.getFRMAT().getFRMAT_type0(), ztmm00037.getFRMAD().getFRMAD_type0());
                 if (StringUtils.isNotEmpty(ztmm00037.getPACK1().getPACK1_type0()))
@@ -139,12 +142,12 @@ public class PIProductServiceImpl implements PIProductService {
                 if (StringUtils.isNotEmpty(ztmm00037.getCLASF().getCLASF_type0()))
                     clasfMap.put(ztmm00037.getCLASF().getCLASF_type0(), ztmm00037.getCLAST().getCLAST_type0());
             }
-            saveDL(prdl1Map,"2000");
-            saveDL(prdl2Map,"2001");
-            saveDL(branfMap,"2002");
-            saveDL(frmatMap,"2003");
-            saveDL(pack1Map,"2004");
-            saveDL(clasfMap,"2005");
+            saveDL(prdl1Map,"2000"); //大类
+            saveDL(prdl2Map,"2001"); //中类
+            saveDL(branfMap,"2002"); //产品品牌
+            saveDL(frmatMap,"2003"); //规格
+            saveDL(pack1Map,"2004");//包装类型
+            saveDL(clasfMap,"2005");//重点产品分类
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -708,18 +711,32 @@ public class PIProductServiceImpl implements PIProductService {
         IT_MTART_type0 itMtartType0 = new IT_MTART_type0();
         ZSSD00006 zssd00006 = new ZSSD00006();
         SIGN_type3 sign_type3 = new SIGN_type3();
-        sign_type3.setSIGN_type2(PIPropertitesUtil.getValue("PI.MasterData.mATQUERY.SIGN"));
+        sign_type3.setSIGN_type2(SIGN);
         zssd00006.setSIGN(sign_type3);
         OPTION_type3 option_type3 = new OPTION_type3();
-        option_type3.setOPTION_type2(PIPropertitesUtil.getValue("PI.MasterData.mATQUERY.OPTION.EQ"));
+        option_type3.setOPTION_type2(OPTION);
         zssd00006.setOPTION(option_type3);
         LOW_type3 low_type3 = new LOW_type3();
-        low_type3.setLOW_type2(PIPropertitesUtil.getValue("PI.MasterData.mATQUERY.LOW"));
+        low_type3.setLOW_type2(LOW);
         zssd00006.setLOW(low_type3);
         itMtartType0.addItem(zssd00006);
+        IT_VTWEG_type0 it_vtweg_type0 = new IT_VTWEG_type0();
+        ZSSD00071 zssd00071 = new ZSSD00071();
+        SIGN_type5 sign_type5 = new SIGN_type5();
+        sign_type5.setSIGN_type4(SIGN);
+        zssd00071.setSIGN(sign_type5);
+        OPTION_type5 option_type5 = new OPTION_type5();
+        option_type5.setOPTION_type4(OPTION);
+        zssd00071.setOPTION(option_type5);
+        LOW_type5 low_type5 = new LOW_type5();
+        low_type5.setLOW_type4(VKORG);
+        zssd00071.setLOW(low_type5);
+        it_vtweg_type0.addItem(zssd00071);
+
         ZSD_MATERAIL_DATA_RFCResponse response;
         ZSD_MATERAIL_DATA_RFC zsdMaterailDataRfc = new ZSD_MATERAIL_DATA_RFC();
         zsdMaterailDataRfc.setIT_MTART(itMtartType0);
+        zsdMaterailDataRfc.setIT_VTWEG(it_vtweg_type0);
         return client.mATQUERY(zsdMaterailDataRfc);
     }
 
@@ -900,11 +917,19 @@ public class PIProductServiceImpl implements PIProductService {
         return map;
     }
 
+    /**
+     * 物料的增强属性
+     * @param response
+     * @return
+     */
     private Map<String, ZTMM00037> getET_ZTMM00037(ZSD_MATERAIL_DATA_RFCResponse response) {
-        ZTMM00037[] ztmm00037s = response.getET_ZTMM00037().getItem();
+        ET_ZTMM00037_type1 et_ztmm00037_type1 = response.getET_ZTMM00037();
         Map<String, ZTMM00037> result = new HashMap<String, ZTMM00037>();
-        for (ZTMM00037 ztmm00037 : ztmm00037s) {
-            result.put(ztmm00037.getMATNR().getMATNR_type8(), ztmm00037);
+        if(et_ztmm00037_type1 != null) {
+            ZTMM00037[] ztmm00037s = et_ztmm00037_type1.getItem();
+            for (ZTMM00037 ztmm00037 : ztmm00037s) {
+                result.put(ztmm00037.getMATNR().getMATNR_type8(), ztmm00037);
+            }
         }
         return result;
     }
