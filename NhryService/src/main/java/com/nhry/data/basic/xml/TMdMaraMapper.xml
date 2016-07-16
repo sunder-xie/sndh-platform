@@ -20,6 +20,11 @@
 		<result column="ZBOT_CODE" property="zbotCode" jdbcType="VARCHAR" />
 		<result column="SALES_ORG" property="salesOrg" jdbcType="VARCHAR" />
 		<result column="DEALER_NO" property="dealerNo" jdbcType="VARCHAR" />
+		<result column="FIRST_CAT_NAME" property="firstCateName" jdbcType="VARCHAR" />
+		<result column="SEC_CATE_NAME" property="secCateName" jdbcType="VARCHAR" />
+		<result column="SPEC_NAME" property="specName" jdbcType="VARCHAR" />
+		<result column="ZBOT_CODE_NAME" property="zbotCodeName" jdbcType="VARCHAR" />
+		<result column="BRAND_NAME" property="brandName" jdbcType="VARCHAR" />
 		<association property="maraEx" resultMap="BaseAndExResultMap"></association>
 	</resultMap>
 	<resultMap id="BaseAndExResultMap" type="com.nhry.data.basic.domain.TMdMaraEx" >
@@ -57,15 +62,20 @@
 		p.LAST_MODIFIED MARA_LAST_MODIFIED,
 		p.CREATE_AT MARA_CREATE_AT,
 		p.FIRST_CAT,
+		(SELECT i.ITEM_NAME FROM t_sys_code_item I WHERE i.TYPE_CODE=<include refid="mybaties.constant.products_first_category"></include> AND i.ITEM_CODE=p.FIRST_CAT) FIRST_CAT_NAME,
 		p.SEC_CATE,
+		(SELECT i.ITEM_NAME FROM t_sys_code_item I WHERE i.TYPE_CODE=<include refid="mybaties.constant.products_second_category"></include> AND i.ITEM_CODE=p.SEC_CATE) SEC_CATE_NAME,
 		p.BRAND,
+		(SELECT i.ITEM_NAME FROM t_sys_code_item I WHERE i.TYPE_CODE=<include refid="mybaties.constant.products_third_category"></include> AND i.ITEM_CODE=p.BRAND) BRAND_NAME,
 		p.WEIGHT,
 		p.WEIGHT_UNIT,
 		p.IMPORTANT_PRD_FLAG,
 		p.SPEC,
+		(SELECT i.ITEM_NAME FROM t_sys_code_item I WHERE i.TYPE_CODE=<include refid="mybaties.constant.products_spec"></include> AND i.ITEM_CODE=p.SPEC) SPEC_NAME,
 		p.SPEC_UNIT,
 		p.BOT_SPEC,
 		p.ZBOT_CODE,
+		(SELECT i.ITEM_NAME FROM t_sys_code_item I WHERE i.TYPE_CODE=<include refid="mybaties.constant.packing _type"></include> AND i.ITEM_CODE=p.ZBOT_CODE) ZBOT_CODE_NAME,
 		p.SALES_ORG,
 		p.DEALER_NO,
 		pex.rate,
@@ -95,15 +105,20 @@
 		p.LAST_MODIFIED MARA_LAST_MODIFIED,
 		p.CREATE_AT MARA_CREATE_AT,
 		p.FIRST_CAT,
+		(SELECT i.ITEM_NAME FROM t_sys_code_item I WHERE i.TYPE_CODE=<include refid="mybaties.constant.products_first_category"></include> AND i.ITEM_CODE=p.FIRST_CAT) FIRST_CAT_NAME,
 		p.SEC_CATE,
+		(SELECT i.ITEM_NAME FROM t_sys_code_item I WHERE i.TYPE_CODE=<include refid="mybaties.constant.products_second_category"></include> AND i.ITEM_CODE=p.SEC_CATE) SEC_CATE_NAME,
 		p.BRAND,
+		(SELECT i.ITEM_NAME FROM t_sys_code_item I WHERE i.TYPE_CODE=<include refid="mybaties.constant.products_third_category"></include> AND i.ITEM_CODE=p.BRAND) BRAND_NAME,
 		p.WEIGHT,
 		p.WEIGHT_UNIT,
 		p.IMPORTANT_PRD_FLAG,
 		p.SPEC,
+		(SELECT i.ITEM_NAME FROM t_sys_code_item I WHERE i.TYPE_CODE=<include refid="mybaties.constant.products_spec"></include> AND i.ITEM_CODE=p.SPEC) SPEC_NAME,
 		p.SPEC_UNIT,
 		p.BOT_SPEC,
 		p.ZBOT_CODE,
+		(SELECT i.ITEM_NAME FROM t_sys_code_item I WHERE i.TYPE_CODE=<include refid="mybaties.constant.packing _type"></include> AND i.ITEM_CODE=p.ZBOT_CODE) ZBOT_CODE_NAME,
 		p.SALES_ORG,
 		p.DEALER_NO,
 		pex.rate,
@@ -492,15 +507,20 @@
 		p.LAST_MODIFIED MARA_LAST_MODIFIED,
 		p.CREATE_AT MARA_CREATE_AT,
 		p.FIRST_CAT,
+		(SELECT i.ITEM_NAME FROM t_sys_code_item I WHERE i.TYPE_CODE=<include refid="mybaties.constant.products_first_category"></include> AND i.ITEM_CODE=p.FIRST_CAT) FIRST_CAT_NAME,
 		p.SEC_CATE,
+		(SELECT i.ITEM_NAME FROM t_sys_code_item I WHERE i.TYPE_CODE=<include refid="mybaties.constant.products_second_category"></include> AND i.ITEM_CODE=p.SEC_CATE) SEC_CATE_NAME,
 		p.BRAND,
+		(SELECT i.ITEM_NAME FROM t_sys_code_item I WHERE i.TYPE_CODE=<include refid="mybaties.constant.products_third_category"></include> AND i.ITEM_CODE=p.BRAND) BRAND_NAME,
 		p.WEIGHT,
 		p.WEIGHT_UNIT,
 		p.IMPORTANT_PRD_FLAG,
 		p.SPEC,
+		(SELECT i.ITEM_NAME FROM t_sys_code_item I WHERE i.TYPE_CODE=<include refid="mybaties.constant.products_spec"></include> AND i.ITEM_CODE=p.SPEC) SPEC_NAME,
 		p.SPEC_UNIT,
 		p.BOT_SPEC,
 		p.ZBOT_CODE,
+		(SELECT i.ITEM_NAME FROM t_sys_code_item I WHERE i.TYPE_CODE=<include refid="mybaties.constant.packing _type"></include> AND i.ITEM_CODE=p.ZBOT_CODE) ZBOT_CODE_NAME,
 		p.SALES_ORG,
 		p.DEALER_NO
 		FROM

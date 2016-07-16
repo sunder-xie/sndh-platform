@@ -53,4 +53,5 @@ public interface NHSysCodeItemMapper {
      * @return
      */
     public List<NHSysCodeItem> findItemsByParentCode(NHSysCodeItem record);
+    
 }

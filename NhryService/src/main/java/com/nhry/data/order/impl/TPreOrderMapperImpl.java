@@ -114,10 +114,9 @@ public class TPreOrderMapperImpl implements TPreOrderMapper
 	}
 	
 	@Override
-	public int insertSelective(TPreOrder record)
+	public int updateOrderInitAmtAndCurAmt(TPreOrder record)
 	{
-		// TODO Auto-generated method stub
-		return 0;
+		return sqlSessionTemplate.update("updateOrderInitAmtAndCurAmt",record);
 	}
 	
 	@Override

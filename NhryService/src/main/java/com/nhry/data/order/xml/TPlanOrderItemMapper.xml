@@ -19,7 +19,7 @@
     <result column="REACH_TIME_TYPE" property="reachTimeType" jdbcType="VARCHAR" />
     <result column="START_DISP_DATE" property="startDispDate" jdbcType="DATE" />
     <result column="END_DISP_DATE" property="endDispDate" jdbcType="DATE" />
-    <result column="PROMOTION" property="promotion" jdbcType="INTEGER" />
+    <result column="PROMOTION" property="promotion" jdbcType="VARCHAR" />
     <result column="PROM_DAYS" property="promDays" jdbcType="INTEGER" />
     <result column="STATUS" property="status" jdbcType="VARCHAR" />
     <result column="BUY_QTY" property="buyQty" jdbcType="INTEGER" />
@@ -30,6 +30,8 @@
     <result column="LAST_MODIFIED" property="lastModified" jdbcType="TIMESTAMP" />
     <result column="LAST_MODIFIED_BY" property="lastModifiedBy" jdbcType="VARCHAR" />
     <result column="LAST_MODIFIED_BY_TXT" property="lastModifiedByTxt" jdbcType="VARCHAR" />
+    <result column="GIFT_MATNR" property="giftMatnr" jdbcType="VARCHAR" />
+    <result column="GIFT_UNIT" property="giftUnit" jdbcType="VARCHAR" />
   </resultMap>
 
   <resultMap id="EmpDispDetailResultMap" type="com.nhry.model.bill.EmpDispDetailModel" >
@@ -61,7 +63,7 @@
     e.ITEM_NO, e.ORDER_NO, e.ORDER_DATE, e.REF_ITEM_NO, e.NEW_ROW_FLAG, e.MATNR, e.UNIT, e.QTY, e.SALES_PRICE,
     e.RULE_TYPE, e.DISP_DAYS, e.GAP_DAYS, e.RULE_TXT, e.REACH_TIME_TYPE, e.START_DISP_DATE, e.END_DISP_DATE,
     e.PROMOTION, e.PROM_DAYS, e.STATUS, e.BUY_QTY, e.GIFT_QTY, e.CREATE_AT, e.CREATE_BY, e.CREATE_BY_TXT,
-    e.LAST_MODIFIED, e.LAST_MODIFIED_BY, e.LAST_MODIFIED_BY_TXT,
+    e.LAST_MODIFIED, e.LAST_MODIFIED_BY, e.LAST_MODIFIED_BY_TXT,e.GIFT_MATNR,e.GIFT_UNIT,
     p.MATNR_TXT MATNR_TXT
     from t_mst_plan_order_item e, t_md_mara p,t_preorder o
     where e.ORDER_NO = #{orderCode,jdbcType=VARCHAR}
@@ -114,7 +116,7 @@
       #{unit,jdbcType=VARCHAR}, #{qty,jdbcType=INTEGER}, #{salesPrice,jdbcType=DECIMAL}, 
       #{ruleType,jdbcType=VARCHAR}, #{dispDays,jdbcType=INTEGER}, #{gapDays,jdbcType=INTEGER}, 
       #{ruleTxt,jdbcType=VARCHAR}, #{reachTimeType,jdbcType=VARCHAR}, #{startDispDate,jdbcType=DATE}, 
-      #{endDispDate,jdbcType=DATE}, #{promotion,jdbcType=INTEGER}, #{promDays,jdbcType=INTEGER}, 
+      #{endDispDate,jdbcType=DATE}, #{promotion,jdbcType=VARCHAR}, #{promDays,jdbcType=INTEGER}, 
       #{status,jdbcType=VARCHAR}, #{buyQty,jdbcType=INTEGER}, #{giftQty,jdbcType=INTEGER}, 
       #{createAt,jdbcType=TIMESTAMP}, #{createBy,jdbcType=VARCHAR}, #{createByTxt,jdbcType=VARCHAR}, 
       #{lastModified,jdbcType=TIMESTAMP}, #{lastModifiedBy,jdbcType=VARCHAR}, #{lastModifiedByTxt,jdbcType=VARCHAR}
@@ -204,6 +206,12 @@
       <if test="lastModifiedByTxt != null" >
         LAST_MODIFIED_BY_TXT,
       </if>
+      <if test="giftMatnr != null" >
+        GIFT_MATNR,
+      </if>
+      <if test="giftUnit != null" >
+        GIFT_UNIT,
+      </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides="," >
       <if test="itemNo != null" >
@@ -255,7 +263,7 @@
         #{endDispDate,jdbcType=DATE},
       </if>
       <if test="promotion != null" >
-        #{promotion,jdbcType=INTEGER},
+        #{promotion,jdbcType=VARCHAR},
       </if>
       <if test="promDays != null" >
         #{promDays,jdbcType=INTEGER},
@@ -286,6 +294,12 @@
       </if>
       <if test="lastModifiedByTxt != null" >
         #{lastModifiedByTxt,jdbcType=VARCHAR},
+      </if>
+      <if test="giftMatnr != null" >
+        #{giftMatnr,jdbcType=VARCHAR},
+      </if>
+      <if test="giftUnit != null" >
+        #{giftUnit,jdbcType=VARCHAR},
       </if>
     </trim>
   </insert>
@@ -326,7 +340,7 @@
         END_DISP_DATE = #{endDispDate,jdbcType=DATE},
       </if>
       <if test="promotion != null" >
-        PROMOTION = #{promotion,jdbcType=INTEGER},
+        PROMOTION = #{promotion,jdbcType=VARCHAR},
       </if>
       <if test="promDays != null" >
         PROM_DAYS = #{promDays,jdbcType=INTEGER},
@@ -349,6 +363,12 @@
       <if test="lastModifiedByTxt != null" >
         LAST_MODIFIED_BY_TXT = #{lastModifiedByTxt,jdbcType=VARCHAR},
       </if>
+      <if test="giftMatnr != null" >
+        GIFT_MATNR = #{giftMatnr,jdbcType=VARCHAR},
+      </if> 
+      <if test="giftUnit != null" >
+        GIFT_UNIT = #{giftUnit,jdbcType=VARCHAR},
+      </if>
     </set>
     where ITEM_NO = #{itemNo,jdbcType=VARCHAR}
   </update>
@@ -369,7 +389,7 @@
       REACH_TIME_TYPE = #{reachTimeType,jdbcType=VARCHAR},
       START_DISP_DATE = #{startDispDate,jdbcType=DATE},
       END_DISP_DATE = #{endDispDate,jdbcType=DATE},
-      PROMOTION = #{promotion,jdbcType=INTEGER},
+      PROMOTION = #{promotion,jdbcType=VARCHAR},
       PROM_DAYS = #{promDays,jdbcType=INTEGER},
       STATUS = #{status,jdbcType=VARCHAR},
       BUY_QTY = #{buyQty,jdbcType=INTEGER},

@@ -18,6 +18,7 @@ import com.nhry.data.basic.dao.TMdBranchEmpMapper;
 import com.nhry.data.order.dao.TMilkboxPlanMapper;
 import com.nhry.data.order.dao.TPreOrderMapper;
 import com.nhry.data.order.domain.TMilkboxPlan;
+import com.nhry.data.order.domain.TOrderDaliyPlanItem;
 import com.nhry.data.order.domain.TPreOrder;
 import com.nhry.model.order.MilkboxCreateModel;
 import com.nhry.model.order.MilkboxSearchModel;
@@ -26,6 +27,7 @@ import com.nhry.model.order.OrderSearchModel;
 import com.nhry.service.BaseService;
 import com.nhry.service.order.dao.MilkBoxService;
 import com.nhry.service.order.dao.OrderService;
+import com.nhry.service.order.dao.PromotionService;
 
 public class MilkBoxServiceImpl extends BaseService implements MilkBoxService
 {
@@ -33,7 +35,13 @@ public class MilkBoxServiceImpl extends BaseService implements MilkBoxService
 	private TPreOrderMapper tPreOrderMapper;
 	private TMdBranchEmpMapper branchEmpMapper;
 	private OrderService orderService;
-
+	private PromotionService promotionService;
+	
+	
+	public void setPromotionService(PromotionService promotionService)
+	{
+		this.promotionService = promotionService;
+	}
 	public void setBranchEmpMapper(TMdBranchEmpMapper branchEmpMapper)
 	{
 		this.branchEmpMapper = branchEmpMapper;
@@ -163,7 +171,10 @@ public class MilkBoxServiceImpl extends BaseService implements MilkBoxService
 				//当装箱变为已安装完后，生成日计划
 				if("10".equals(plan.getMilkboxStat())){
 					OrderCreateModel omodel = orderService.selectOrderByCode(plan.getOrderNo());
-					orderService.createDaliyPlan(omodel.getOrder(), omodel.getEntries());
+					//生成每日计划
+					List<TOrderDaliyPlanItem> list = orderService.createDaliyPlan(omodel.getOrder(), omodel.getEntries());
+					//如果有赠品，生成赠品的日计划
+					promotionService.createDaliyPlanByPromotion(omodel.getOrder(), omodel.getEntries() ,list);
 				}
 			}
 			if(model.getSetDate()!=null){

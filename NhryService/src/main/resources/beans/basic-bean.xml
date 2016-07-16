@@ -65,6 +65,15 @@
 	   <property name="tVipCustInfoService" ref="custService"></property>
 	   <property name="milkBoxService" ref="milkBoxService"></property>
 	   <property name="priceService" ref="priceService"></property>
+	   <property name="promotionService" ref="promotionService"></property>
+	</bean>
+	<bean id="tPromotionMapper" class="com.nhry.data.order.impl.TPromotionMapperImpl">
+	   <property name="sqlSessionTemplate"  ref="dynamicSqlSessionTemplate"></property>
+	</bean>
+	<bean id="promotionService" class="com.nhry.service.order.impl.PromotionServiceImpl">
+	   <property name="tPromotionMapper"  ref="tPromotionMapper"></property>
+	   <property name="tOrderDaliyPlanItemMapper"  ref="tOrderDaliyPlanItemMapper"></property>
+	   <property name="userSessionService" ref="userSessionService"></property>
 	</bean>
 	<!-- 订单end -->
 
@@ -78,6 +87,7 @@
 	   <property name="branchEmpMapper"  ref="branchEmpMapper"></property>
 	   <property name="userSessionService" ref="userSessionService"></property> 
 	   <property name="orderService" ref="orderService"></property>
+	   <property name="promotionService" ref="promotionService"></property>
 	   <!-- <property name="tVipCustInfoService" ref="custService"></property> -->
 	</bean>
 	<!-- 奶箱end -->

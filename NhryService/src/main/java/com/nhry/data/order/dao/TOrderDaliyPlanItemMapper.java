@@ -42,7 +42,9 @@ public interface TOrderDaliyPlanItemMapper {
     int selectMaxDaliyPlansNoByOrderNo(String orderNo);
 
     String getDayOrderStat(String orderNo, Date date);
-
+    
+    List<TOrderDaliyPlanItem> searchDaliyOrdersByOrderNoAndFinalStop(OrderSearchModel smodel);
+    
     int updateDaliyPlansToStop(TPreOrder record);
 
     int updateDaliyPlansToBack(TPreOrder record);

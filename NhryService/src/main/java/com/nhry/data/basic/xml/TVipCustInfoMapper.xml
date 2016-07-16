@@ -809,6 +809,8 @@
 		i.VIP_AMT,
 		i.CREATE_AT,
 		i.CREATE_BY,
+		date_format(i.FIRST_ORDER_TIME, '%Y-%m-%d') FIRST_ORDER_TIME,
+		date_format(i.LAST_ORDER_TIME, '%Y-%m-%d') LAST_ORDER_TIME,
 		i.CREATE_BY_TXT,
 		i.LAST_MODIFIED,
 		i.LAST_MODIFIED_BY,
@@ -876,7 +878,7 @@
 		       and MP = #{phone}
 		    </if>
 		</where>
-		order by COUNTY,STREET,CREATE_AT desc,LAST_MODIFIED desc
+		order by CREATE_AT desc,LAST_MODIFIED desc,BRANCH_NO,DEALER_NO
 	</select>
 	<select id="getCustCountByPhone"  resultType="Integer" parameterType="java.util.HashMap">
 	   SELECT count(c.VIP_CUST_NO) from t_vip_cust_info c 
