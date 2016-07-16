@@ -70,7 +70,19 @@ public class TPlanOrderItem {
     
     private String giftUnit;
     
-    public String getGiftUnit()
+    private Integer dispTotal;
+    
+    public Integer getDispTotal()
+	{
+		return dispTotal;
+	}
+
+	public void setDispTotal(Integer dispTotal)
+	{
+		this.dispTotal = dispTotal;
+	}
+
+	public String getGiftUnit()
 	{
 		return giftUnit;
 	}

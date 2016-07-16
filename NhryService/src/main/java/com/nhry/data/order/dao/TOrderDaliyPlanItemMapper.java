@@ -50,4 +50,16 @@ public interface TOrderDaliyPlanItemMapper {
     int updateDaliyPlansToBack(TPreOrder record);
     
     List<TOrderDaliyPlanItem> selectDaliyPlansByBranchAndDay(RequireOrderSearch rModel);
+
+    List<String> getDailOrderPromOfDealerBranch(RequireOrderSearch rModel);
+
+    List<TOrderDaliyPlanItem> selectProDayPlanOfDealerBranch(RequireOrderSearch rModel);
+
+    List<TOrderDaliyPlanItem> selectNoProDayPlanOfDealerBranch(RequireOrderSearch rModel);
+
+    List<String> getDailOrderPromOfSelfBranch(RequireOrderSearch rModel);
+
+    List<TOrderDaliyPlanItem> selectNoProDayPlanOfSelfBranch(RequireOrderSearch rModel);
+
+    List<TOrderDaliyPlanItem> selectProDayPlanOfSelfBranch(RequireOrderSearch rModel);
 }

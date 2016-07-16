@@ -26,5 +26,11 @@ public interface RequireOrderService {
 
     int sendRequireOrderToERP();
 
-    int creatSalOrderOfDealerBranch();
+    int creatPromoSalOrderOfDealerBranch(Date today);
+
+    int creatNoPromoSalOrderOfDealerBranch(Date requiredDate);
+
+    int creatNoPromoSalOrderOfSelftBranch(Date requiredDate);
+
+    int creatPromoSalOrderOfSelftBranch(Date requiredDate);
 }

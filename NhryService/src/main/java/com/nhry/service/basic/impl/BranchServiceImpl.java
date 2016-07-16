@@ -4,7 +4,9 @@ import com.github.pagehelper.PageInfo;
 import com.nhry.common.auth.UserSessionService;
 import com.nhry.common.exception.MessageCode;
 import com.nhry.common.exception.ServiceException;
+import com.nhry.data.auth.dao.TSysUserRoleMapper;
 import com.nhry.data.auth.domain.TSysUser;
+import com.nhry.data.auth.domain.TSysUserRole;
 import com.nhry.data.basic.dao.TMdBranchMapper;
 import com.nhry.data.basic.dao.TMdDealerMapper;
 import com.nhry.data.basic.domain.TMdBranch;
@@ -23,6 +25,8 @@ public class BranchServiceImpl extends BaseService implements BranchService {
      private TMdBranchMapper branchMapper;
 	private TMdDealerMapper dealerMapper;
 	private UserSessionService userSessionService;
+	private TSysUserRoleMapper urMapper;
+
 	@Override
 	public int deleteBranchByNo(String branchNo) {
 		// TODO Auto-generated method stub
@@ -58,7 +62,18 @@ public class BranchServiceImpl extends BaseService implements BranchService {
 	@Override
 	public PageInfo findBranchListByPage(BranchQueryModel branchModel) {
 		TSysUser user = userSessionService.getCurrentUser();
-		branchModel.setDealerNo(user.getDealerId());
+		TSysUserRole userRole = urMapper.getUserRoleByLoginName(user.getLoginName());
+		//部门内勤
+		if("10003".equals(userRole.getId())){
+			branchModel.setSalesOrg(user.getSalesOrg());
+		}else if("10005".equals(userRole.getId())){
+			//经销商内勤
+			branchModel.setDealerNo(user.getDealerId());
+		}else {
+			//奶站内勤
+			branchModel.setBranchNo(user.getBranchNo());
+		}
+
 		// TODO Auto-generated method stub
 		if(StringUtils.isEmpty(branchModel.getPageNum()) || StringUtils.isEmpty(branchModel.getPageSize())){
 			throw new ServiceException(MessageCode.LOGIC_ERROR,"pageNum和pageSize不能为空！");
@@ -104,6 +119,10 @@ public class BranchServiceImpl extends BaseService implements BranchService {
 
 	public void setDealerMapper(TMdDealerMapper dealerMapper) {
 		this.dealerMapper = dealerMapper;
+	}
+
+	public void setUrMapper(TSysUserRoleMapper urMapper) {
+		this.urMapper = urMapper;
 	}
 
 	@Override

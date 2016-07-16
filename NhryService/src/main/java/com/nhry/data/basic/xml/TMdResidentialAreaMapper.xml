@@ -282,7 +282,8 @@
     SELECT
     <include refid="Base_Column_List" />
     from t_md_residential_area
-    WHERE  STATUS = '10'
+    WHERE 1=1
+   /*   and STATUS = '10'*/
      and  SALES_ORG = #{salesOrg,jdbcType=VARCHAR}
     ORDER BY CREATE_AT desc
   </select>

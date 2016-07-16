@@ -36,13 +36,49 @@ public class milkTransResource extends BaseResource {
 	private DeliverMilkService deliverMilkService;
 
 	@POST
-	@Path("/creatSalOrderOfDealerBranch")
+	@Path("/creatPromoSalOrderOfDealerBranch")
 	@Produces(MediaType.APPLICATION_JSON)
 	@Consumes(MediaType.APPLICATION_JSON)
-	@ApiOperation(value = "/creatSalOrderOfDealerBranch", response = Response.class, notes = "根据日订单生成经销商奶站的销售订单")
-	public Response creatSalOrderOfDealerBranch(){
-		return convertToRespModel(MessageCode.NORMAL, null, requireOrderService.creatSalOrderOfDealerBranch());
+	@ApiOperation(value = "/creatPromoSalOrderOfDealerBranch", response = Response.class, notes = "根据日订单生成经销商奶站的参加促销的销售订单")
+	public Response creatSalOrderOfDealerBranch(@ApiParam(required=true,name="rSearch",value="日期") ReqGoodsOrderSearch  rSearch){
+		int result = requireOrderService.creatPromoSalOrderOfDealerBranch(rSearch.getRequiredDate());
+		return convertToRespModel(MessageCode.NORMAL, null, result);
 	}
+
+
+	@POST
+	@Path("/creatNoPromoSalOrderOfDealerBranch")
+	@Produces(MediaType.APPLICATION_JSON)
+	@Consumes(MediaType.APPLICATION_JSON)
+	@ApiOperation(value = "/creatNoPromoSalOrderOfDealerBranch", response = Response.class, notes = "根据日订单，要货计划生成经销商奶站的销售订单")
+	public Response creatNoPromoSalOrderOfDealerBranch(@ApiParam(required=true,name="rSearch",value="日期") ReqGoodsOrderSearch  rSearch){
+		int result = requireOrderService.creatNoPromoSalOrderOfDealerBranch(rSearch.getRequiredDate());
+		return convertToRespModel(MessageCode.NORMAL, null, result);
+	}
+
+
+	@POST
+	@Path("/creatNoPromoSalOrderOfSelftBranch")
+	@Produces(MediaType.APPLICATION_JSON)
+	@Consumes(MediaType.APPLICATION_JSON)
+	@ApiOperation(value = "/creatNoPromoSalOrderOfSelftBranch", response = Response.class, notes = "根据当天确认的日订单的非赠品，内部销售订单 生成自营奶站的销售订单")
+	public Response creatNoPromoSalOrderOfSelftBranch(@ApiParam(required=true,name="rSearch",value="日期") ReqGoodsOrderSearch  rSearch){
+		int result = requireOrderService.creatNoPromoSalOrderOfSelftBranch(rSearch.getRequiredDate());
+		return convertToRespModel(MessageCode.NORMAL, null, result);
+	}
+
+
+	@POST
+	@Path("/creatPromoSalOrderOfSelftBranch")
+	@Produces(MediaType.APPLICATION_JSON)
+	@Consumes(MediaType.APPLICATION_JSON)
+	@ApiOperation(value = "/creatPromoSalOrderOfSelftBranch", response = Response.class, notes = "根据当天确认的日订单中赠品 生成自营奶站N个的销售订单")
+	public Response creatPromoSalOrderOfSelftBranch(@ApiParam(required=true,name="rSearch",value="日期") ReqGoodsOrderSearch  rSearch){
+		int result = requireOrderService.creatPromoSalOrderOfSelftBranch(rSearch.getRequiredDate());
+		return convertToRespModel(MessageCode.NORMAL, null, result);
+	}
+
+
 
 	@POST
 	@Path("/creatRequireOrder")

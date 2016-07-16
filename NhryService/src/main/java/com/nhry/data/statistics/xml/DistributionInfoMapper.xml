@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.nhry.data.statistics.dao.DistributionInfoMapper">
+    <select id="findDistDifferInfo" resultType="hashmap" parameterType="com.nhry.model.statistics.DistInfoModel">
+        SELECT
+            o.BRANCH_NO branchNo,
+            b.BRANCH_NAME branchName,
+            o.DISP_EMP_NO dispEmpNo,
+            e.EMP_NAME empName,
+            o.MST_CUST_NO mstCustNo,
+            f.VIP_NAME vipName,
+            o.ORDER_DATE orderDate,
+            i.REASON reason,
+            i.MATNR matnr,
+            i.QTY qty,
+            o.DAY_ACCT_FLAG dayAcctFlag
+        FROM
+            t_mst_disp_order_item i
+        JOIN t_mst_disp_order o ON i.ORDER_NO = o.ORDER_NO
+        AND o.ORDER_DATE = i.ORDER_DATE
+
+        <if test="beginDate != null">
+            AND i.ORDER_DATE &gt;= #{beginDate}
+        </if>
+        <if test="endDate != null">
+            AND i.ORDER_DATE &lt;= #{endDate}
+        </if>
+        left join t_md_branch b on b.BRANCH_NO = o.BRANCH_NO
+        left join t_vip_cust_info f on f.VIP_CUST_NO = o.MST_CUST_NO
+        left join t_md_branch_emp e on e.EMP_NO = o.DISP_EMP_NO
+        order by o.ORDER_DATE
+    </select>
+</mapper>
