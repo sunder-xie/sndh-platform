@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.nhry.data.basic.dao.TMdResidentialAreaMapper">
+   <cache type="org.mybatis.caches.redis.RedisCache" />
   <resultMap id="BaseResultMap" type="com.nhry.data.basic.domain.TMdResidentialArea">
     <id column="ID" jdbcType="VARCHAR" property="id" />
     <result column="BRANCH_NO" jdbcType="VARCHAR" property="branchNo" />
