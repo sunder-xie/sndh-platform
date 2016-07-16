@@ -15,8 +15,6 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 
-import org.apache.commons.lang3.StringUtils;
-
 public class TOrderDaliyPlanItemMapperImpl implements TOrderDaliyPlanItemMapper
 {
 	private DynamicSqlSessionTemplate sqlSessionTemplate;
@@ -109,6 +107,36 @@ public class TOrderDaliyPlanItemMapperImpl implements TOrderDaliyPlanItemMapper
 	@Override
 	public List<TOrderDaliyPlanItem> selectDaliyPlansByBranchAndDay(RequireOrderSearch rModel) {
 		return sqlSessionTemplate.selectList("selectDaliyPlansByBranchAndDay", rModel);
+	}
+
+	@Override
+	public List<String> getDailOrderPromOfDealerBranch(RequireOrderSearch rModel) {
+		return sqlSessionTemplate.selectList("getDailOrderPromOfDealerBranch", rModel);
+	}
+
+	@Override
+	public List<TOrderDaliyPlanItem> selectProDayPlanOfDealerBranch(RequireOrderSearch rModel) {
+		return sqlSessionTemplate.selectList("selectProDayPlanOfDealerBranch", rModel);
+	}
+
+	@Override
+	public List<TOrderDaliyPlanItem> selectNoProDayPlanOfDealerBranch(RequireOrderSearch rModel) {
+		return sqlSessionTemplate.selectList("selectNoProDayPlanOfDealerBranch", rModel);
+	}
+
+	@Override
+	public List<String> getDailOrderPromOfSelfBranch(RequireOrderSearch rModel) {
+		return sqlSessionTemplate.selectList("getDailOrderPromOfSelfBranch", rModel);
+	}
+
+	@Override
+	public List<TOrderDaliyPlanItem> selectNoProDayPlanOfSelfBranch(RequireOrderSearch rModel) {
+		return sqlSessionTemplate.selectList("selectNoProDayPlanOfSelfBranch", rModel);
+	}
+
+	@Override
+	public List<TOrderDaliyPlanItem> selectProDayPlanOfSelfBranch(RequireOrderSearch rModel) {
+		return sqlSessionTemplate.selectList("selectProDayPlanOfSelfBranch", rModel);
 	}
 
 	/**

@@ -13,6 +13,7 @@ public class YearLastMonthUtil {
         System.out.println(getYearLastMonth());
         System.out.println(getLastMonthFirstDay());
         System.out.println(getLastMonthLastDay());
+        System.out.println(getLastDate(new Date()));
     }
 
 
@@ -21,21 +22,21 @@ public class YearLastMonthUtil {
         Date date = new Date();
         return sdf.format(getLastDate(date));
     }
-
+    //获取上个月 的第一天
     public static Date getLastMonthFirstDay(){
         Calendar c = Calendar.getInstance();
         c.add(Calendar.MONTH, -1);
         c.set(Calendar.DAY_OF_MONTH,1);
         return  c.getTime();
     }
-
+    //获取上个月 的最后一天
     public static Date getLastMonthLastDay(){
         Calendar c = Calendar.getInstance();
         c.set(Calendar.DAY_OF_MONTH, 1);
         c.add(Calendar.DATE, -1);
         return  c.getTime();
     }
-
+    //获取上个月的 今天
     private static Date getLastDate(Date date) {
         Calendar cal = Calendar.getInstance();
         cal.setTime(date);

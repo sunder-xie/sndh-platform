@@ -12,6 +12,15 @@ public class BranchQueryModel extends BaseQueryModel implements Serializable {
 	private String dealerNo;
 	private String branchNo;
 	private String branchGroup;
+	private String salesOrg;
+
+	public String getSalesOrg() {
+		return salesOrg;
+	}
+
+	public void setSalesOrg(String salesOrg) {
+		this.salesOrg = salesOrg;
+	}
 
 	public String getBranchNo() {
 		return branchNo;
