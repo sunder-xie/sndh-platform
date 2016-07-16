@@ -476,6 +476,7 @@
      		AND o.ORDER_DATE  &lt;=  #{orderDateEnd}
     </if>
      AND o.PREORDER_STAT != "30"
+     AND o.PREORDER_STAT != "40"
      AND o.SIGN != "30")
      
     <!-- 订单列表里要包括已经取消的订单 -->
@@ -518,9 +519,10 @@
 			     		AND o.ORDER_DATE  &lt;=  #{orderDateEnd}
 			    </if>
 			     		AND o.PREORDER_STAT = "30"
+			     		AND o.PREORDER_STAT != "40"
 			     		AND o.SIGN = "30" )
 			    </if>
-     ORDER BY o.ORDER_DATE desc
+     ORDER BY o.ORDER_NO desc
   </select>
 
   <select id="searchReturnOrders" resultMap="BaseResultMap" parameterType="com.nhry.model.order.ManHandOrderSearchModel">
@@ -535,6 +537,7 @@
     and o.RET_DATE is not null 
     <!-- and o.SIGN = "30" -->
     and o.PREORDER_STAT != "30"
+    and o.PREORDER_STAT != "40"
 
     <if test="orderDateStart != null and orderDateStart !=''">
       AND o.RET_DATE &gt;= #{orderDateStart,jdbcType=DATE}
@@ -583,6 +586,9 @@
       </if>
       <if test="backReason != null" >
         BACK_REASON = #{backReason,jdbcType=VARCHAR},
+      </if>
+      <if test="deleteReason != null" >
+        DELETE_REASON = #{deleteReason,jdbcType=VARCHAR},
       </if>
       <if test="backDate != null" >
         BACK_DATE = #{backDate,jdbcType=VARCHAR},

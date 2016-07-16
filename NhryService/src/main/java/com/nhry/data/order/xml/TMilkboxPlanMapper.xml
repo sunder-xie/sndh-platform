@@ -39,6 +39,7 @@
     b.BRANCH_NAME BRANCH_NO, m.PLAN_DATE, m.MILKBOX_STAT, m.PAYMENT_STAT
     from t_mst_milkbox_plan m,t_vip_cust_info v,t_md_branch b,t_preorder o
     where m.MEMBER_NO = v.VIP_CUST_NO and b.BRANCH_NO = m.BRANCH_NO and o.ORDER_NO = m.ORDER_NO
+    and o.PREORDER_STAT != '30' and o.PREORDER_STAT != '40'
     <if test="status != null and status !=''">
      		AND m.MILKBOX_STAT = #{status,jdbcType=VARCHAR}
     </if>

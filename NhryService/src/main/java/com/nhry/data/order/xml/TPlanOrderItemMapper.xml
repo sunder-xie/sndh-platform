@@ -32,6 +32,7 @@
     <result column="LAST_MODIFIED_BY_TXT" property="lastModifiedByTxt" jdbcType="VARCHAR" />
     <result column="GIFT_MATNR" property="giftMatnr" jdbcType="VARCHAR" />
     <result column="GIFT_UNIT" property="giftUnit" jdbcType="VARCHAR" />
+    <result column="DISP_TOTAL" property="dispTotal" jdbcType="INTEGER" />
   </resultMap>
 
   <resultMap id="EmpDispDetailResultMap" type="com.nhry.model.bill.EmpDispDetailModel" >
@@ -212,6 +213,9 @@
       <if test="giftUnit != null" >
         GIFT_UNIT,
       </if>
+      <if test="dispTotal != null" >
+        DISP_TOTAL,
+      </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides="," >
       <if test="itemNo != null" >
@@ -300,6 +304,9 @@
       </if>
       <if test="giftUnit != null" >
         #{giftUnit,jdbcType=VARCHAR},
+      </if>
+      <if test="dispTotal != null" >
+        #{dispTotal,jdbcType=INTEGER},
       </if>
     </trim>
   </insert>
