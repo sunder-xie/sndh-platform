@@ -330,6 +330,18 @@ public class RequireOrderServiceImpl implements RequireOrderService {
         return 0;
     }
 
+    /**
+     * 根据日订单生成经销商奶站的销售订单
+     *
+     * @return
+     */
+
+    @Override
+    public int creatSalOrderOfDealerBranch() {
+
+        return 0;
+    }
+
     private boolean  uptRequireOrderAndDayOrderStatus(TSsmReqGoodsOrder order,TSysUser user) {
             //更新要货计划状态为确认
         order.setLastModified(new Date());

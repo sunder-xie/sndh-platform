@@ -6,6 +6,7 @@ import com.nhry.common.datasource.DynamicSqlSessionTemplate;
 import com.nhry.data.basic.dao.TMdResidentialAreaMapper;
 import com.nhry.data.basic.domain.TMdResidentialArea;
 import com.nhry.model.basic.BranchAreaSearch;
+import com.nhry.service.basic.pojo.AreaSearchModel;
 import com.nhry.service.basic.pojo.ResidentialAreaModel;
 
 import java.util.List;
@@ -86,6 +87,11 @@ public class TMdResidentialAreaMapperImpl implements TMdResidentialAreaMapper {
     @Override
     public List<TMdResidentialArea> getUnDistAreas(String salesOrg) {
         return sqlSessionTemplate.selectList("getUnDistAreas",salesOrg);
+    }
+
+    @Override
+    public List<TMdResidentialArea> searchAreaBySalesOrg(AreaSearchModel residentialArea) {
+        return sqlSessionTemplate.selectList("searchAreaBySalesOrg",residentialArea);
     }
 
     @Override

@@ -4,6 +4,7 @@ package com.nhry.service.basic.dao;
 import com.github.pagehelper.PageInfo;
 import com.nhry.data.basic.domain.TMdResidentialArea;
 import com.nhry.model.basic.BranchAreaSearch;
+import com.nhry.service.basic.pojo.AreaSearchModel;
 import com.nhry.service.basic.pojo.BranchScopeModel;
 import com.nhry.service.basic.pojo.ResidentialAreaModel;
 
@@ -30,4 +31,6 @@ public interface ResidentialAreaService {
     public int areaRelBranch(BranchScopeModel rmodel);
 
     List<TMdResidentialArea> getUnDistAreas();
+
+    List<TMdResidentialArea>  searchAreaBySalesOrg( AreaSearchModel aModel);
 }
