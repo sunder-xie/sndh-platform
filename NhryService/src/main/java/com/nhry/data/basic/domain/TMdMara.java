@@ -20,9 +20,15 @@ public class TMdMara implements Serializable{
 
     private String firstCat;
 
+    private String firstCateName;
+    
     private String secCate;
+    
+    private String secCateName;
 
     private String brand;
+    
+    private String brandName;
 
     private Float weight;
 
@@ -31,12 +37,16 @@ public class TMdMara implements Serializable{
     private String importantPrdFlag;
 
     private String spec;
+    
+    private String specName;
 
     private String specUnit;
 
     private String botSpec;
 
     private String zbotCode;
+    
+    private String zbotCodeName; //包装类型
 
     private String salesOrg;
 
@@ -204,5 +214,45 @@ public class TMdMara implements Serializable{
 
 	public void setNotsellList(List<TBranchNotsellList> notsellList) {
 		this.notsellList = notsellList;
+	}
+
+	public String getFirstCateName() {
+		return firstCateName;
+	}
+
+	public void setFirstCateName(String firstCateName) {
+		this.firstCateName = firstCateName;
+	}
+
+	public String getSecCateName() {
+		return secCateName;
+	}
+
+	public void setSecCateName(String secCateName) {
+		this.secCateName = secCateName;
+	}
+
+	public String getSpecName() {
+		return specName;
+	}
+
+	public void setSpecName(String specName) {
+		this.specName = specName;
+	}
+
+	public String getZbotCodeName() {
+		return zbotCodeName;
+	}
+
+	public void setZbotCodeName(String zbotCodeName) {
+		this.zbotCodeName = zbotCodeName;
+	}
+
+	public String getBrandName() {
+		return brandName;
+	}
+
+	public void setBrandName(String brandName) {
+		this.brandName = brandName;
 	}
 }

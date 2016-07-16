@@ -9,7 +9,7 @@ import java.io.Serializable;
 public class BranchQueryModel extends BaseQueryModel implements Serializable {
 	@ApiModelProperty(value="branchLevel",notes="奶站等级")
 
-	private String salesOrg;
+	private String dealerNo;
 	private String branchNo;
 	private String branchGroup;
 
@@ -21,12 +21,12 @@ public class BranchQueryModel extends BaseQueryModel implements Serializable {
 		this.branchNo = branchNo;
 	}
 
-	public String getSalesOrg() {
-		return salesOrg;
+	public String getDealerNo() {
+		return dealerNo;
 	}
 
-	public void setSalesOrg(String salesOrg) {
-		this.salesOrg = salesOrg;
+	public void setDealerNo(String dealerNo) {
+		this.dealerNo = dealerNo;
 	}
 
 	public String getBranchGroup() {

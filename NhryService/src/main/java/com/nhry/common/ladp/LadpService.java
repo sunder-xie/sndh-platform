@@ -179,7 +179,7 @@ public class LadpService {
 			e.printStackTrace();
 		}
 	}
-
+	
 	public static void main(String[] args) {
 		String[] xmls = new String[]{ "classpath:beans/spring-context.xml","classpath:beans/dataSource.xml","classpath:beans/*-bean.xml"  };
         ApplicationContext context = new ClassPathXmlApplicationContext(xmls);

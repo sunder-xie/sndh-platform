@@ -6,6 +6,7 @@ import com.nhry.data.basic.domain.TMdResidentialArea;
 import com.nhry.model.basic.BranchAreaSearch;
 import com.nhry.rest.BaseResource;
 import com.nhry.service.basic.dao.ResidentialAreaService;
+import com.nhry.service.basic.pojo.AreaSearchModel;
 import com.nhry.service.basic.pojo.BranchScopeModel;
 import com.nhry.service.basic.pojo.ResidentialAreaModel;
 import com.sun.jersey.spi.resource.Singleton;
@@ -30,6 +31,16 @@ import javax.ws.rs.core.Response;
 public class ResidentialAreaResource extends BaseResource {
 	@Autowired
 	private ResidentialAreaService residentialAreaService;
+
+	@POST
+	@Path("/searchAreaBySalesOrg")
+	@Produces(MediaType.APPLICATION_JSON)
+	@Consumes(MediaType.APPLICATION_JSON)
+	@ApiOperation(value = "/searchAreaBySalesOrg", response = Response.class, notes = "获取当前销售组织下的获取小区(配送区域)列表")
+	public Response searchAreaBySalesOrg(@ApiParam(required=true,name="aModel",value="省、市、区") AreaSearchModel aModel) {
+		return convertToRespModel(MessageCode.NORMAL, null,
+				residentialAreaService.searchAreaBySalesOrg(aModel));
+	}
 
 	@POST
 	@Path("/searchAreaByBranchNo")
