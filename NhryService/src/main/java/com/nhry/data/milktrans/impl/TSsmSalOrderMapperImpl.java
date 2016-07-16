@@ -4,6 +4,8 @@ import com.nhry.common.datasource.DynamicSqlSessionTemplate;
 import com.nhry.data.milktrans.domain.TSsmSalOrder;
 import com.nhry.data.milktrans.dao.TSsmSalOrderMapper;
 
+import java.util.Map;
+
 /**
  * Created by gongjk on 2016/7/16.
  */
@@ -17,5 +19,10 @@ public class TSsmSalOrderMapperImpl implements TSsmSalOrderMapper {
     @Override
     public int addsalOrder(TSsmSalOrder order) {
         return sqlSessionTemplate.insert("addsalOrder",order);
+    }
+
+    @Override
+    public int uptVouCherNoByOrderNo(Map map) {
+        return sqlSessionTemplate.update("uptVouCherNoByOrderNo",map);
     }
 }

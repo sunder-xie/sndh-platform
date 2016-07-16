@@ -30,6 +30,12 @@
         LAST_MODIFIED,LAST_MODIFIED_BY,LAST_MODIFIED_BY_TXT
     </sql>
 
+    <update id="uptVouCherNoByOrderNo" parameterType="java.util.Map">
+        UPDATE  t_ssm_sal_order
+        SET   VOUCHER_NO = #{voucherNo}
+        where ORDER_NO = #{orderNo}
+    </update>
+
     <insert id="addsalOrder"  parameterType="com.nhry.data.milktrans.domain.TSsmSalOrder" >
         insert into t_ssm_sal_order
         <trim prefix="(" suffix=")" suffixOverrides="," >
