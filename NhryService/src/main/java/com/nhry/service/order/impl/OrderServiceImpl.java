@@ -362,7 +362,7 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 			//基本参考原单
 			//新的订单号
 			Date date = new Date();
-			order.setOrderNo(String.valueOf(date.getTime()));
+			order.setOrderNo(CodeGeneratorUtil.getCode());
 			//
 			order.setOrderDate(date);
          if("20".equals(state)){
@@ -374,13 +374,13 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 			BigDecimal orderAmt = new BigDecimal("0.00");//订单总价
 			for(TPlanOrderItem entry: entries){
 				entry.setOrderNo(order.getOrderNo());
-				entry.setItemNo(order.getOrderNo().substring(9) + String.valueOf(index));//行项目编号
+				entry.setItemNo(order.getOrderNo() + String.valueOf(index));//行项目编号
 				entry.setRefItemNo(String.valueOf(index));//参考行项目编号
 				entry.setOrderDate(date);//订单日期
 				entry.setCreateAt(date);//创建日期
 				entry.setCreateBy(userSessionService.getCurrentUser().getLoginName());//创建人
 				entry.setCreateByTxt(userSessionService.getCurrentUser().getDisplayName());//创建人姓名
-				entry.setStartDispDate(order.getEndDate());
+				entry.setStartDispDate(afterDate(order.getEndDate(),1));
 				entry.setEndDispDate(edate);
 				orderAmt = orderAmt.add(calculateEntryAmount(entry));
 				entriesList.add(entry);
@@ -767,7 +767,7 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 		for(int i = 0; i < maxEntryDay; i++){
 			for (TPlanOrderItem entry : entryMap.keySet()) {
 				int days = entryMap.get(entry);
-				if(days - 1 > 0){
+				if(days - 1 >= 0){
 					entryMap.replace(entry, days-1);//剩余天数减1天
 
 					//判断是按周期送还是按星期送
@@ -1342,7 +1342,7 @@ public class OrderServiceImpl extends BaseService implements OrderService {
    private BigDecimal calculateEntryAmount(TPlanOrderItem entry){
    	
    	int afterDays = 0;//经过的天数
-   	int allDays = daysOfTwo(entry.getStartDispDate(),entry.getEndDispDate());//总共需要配送的天数
+   	int allDays = daysOfTwo(entry.getStartDispDate(),entry.getEndDispDate())+1;//总共需要配送的天数
    	
    	int goDays = 0;
    	BigDecimal qty = new BigDecimal(entry.getQty().toString());
@@ -1577,6 +1577,10 @@ public class OrderServiceImpl extends BaseService implements OrderService {
    		
    		index++;
    	}
+   	
+   	//订单截止日期修改
+   	orgOrder.setEndDate(dateList.get(0));
+		tPreOrderMapper.updateOrderEndDate(orgOrder);
    	
    	int i=0;
    	for(TOrderDaliyPlanItem plan:newPlans){
@@ -1888,11 +1892,6 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 		for(int i=0;i<365;i++){
 			Date today = afterDate(entry.getStartDispDate(),afterDays);
 			
-			if(total==0){
-				entry.setEndDispDate(today);
-				break;
-			}
-			
 			if("10".equals(entry.getRuleType())){
 				int gapDays = entry.getGapDays() + 1;//间隔天数
 				if(afterDays%gapDays != 0){
@@ -1919,6 +1918,11 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 			
 			total = total - entry.getQty();
 			afterDays++;
+			
+			if(total==0){
+				entry.setEndDispDate(today);
+				break;
+			}
 			
 		}
 		
