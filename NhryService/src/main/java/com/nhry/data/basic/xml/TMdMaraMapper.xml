@@ -24,6 +24,7 @@
 		<result column="SEC_CATE_NAME" property="secCateName" jdbcType="VARCHAR" />
 		<result column="SPEC_NAME" property="specName" jdbcType="VARCHAR" />
 		<result column="ZBOT_CODE_NAME" property="zbotCodeName" jdbcType="VARCHAR" />
+		<result column="BRAND_NAME" property="brandName" jdbcType="VARCHAR" />
 		<association property="maraEx" resultMap="BaseAndExResultMap"></association>
 	</resultMap>
 	<resultMap id="BaseAndExResultMap" type="com.nhry.data.basic.domain.TMdMaraEx" >
@@ -65,6 +66,7 @@
 		p.SEC_CATE,
 		(SELECT i.ITEM_NAME FROM t_sys_code_item I WHERE i.TYPE_CODE=<include refid="mybaties.constant.products_second_category"></include> AND i.ITEM_CODE=p.SEC_CATE) SEC_CATE_NAME,
 		p.BRAND,
+		(SELECT i.ITEM_NAME FROM t_sys_code_item I WHERE i.TYPE_CODE=<include refid="mybaties.constant.products_third_category"></include> AND i.ITEM_CODE=p.BRAND) BRAND_NAME,
 		p.WEIGHT,
 		p.WEIGHT_UNIT,
 		p.IMPORTANT_PRD_FLAG,
@@ -107,6 +109,7 @@
 		p.SEC_CATE,
 		(SELECT i.ITEM_NAME FROM t_sys_code_item I WHERE i.TYPE_CODE=<include refid="mybaties.constant.products_second_category"></include> AND i.ITEM_CODE=p.SEC_CATE) SEC_CATE_NAME,
 		p.BRAND,
+		(SELECT i.ITEM_NAME FROM t_sys_code_item I WHERE i.TYPE_CODE=<include refid="mybaties.constant.products_third_category"></include> AND i.ITEM_CODE=p.BRAND) BRAND_NAME,
 		p.WEIGHT,
 		p.WEIGHT_UNIT,
 		p.IMPORTANT_PRD_FLAG,
@@ -508,6 +511,7 @@
 		p.SEC_CATE,
 		(SELECT i.ITEM_NAME FROM t_sys_code_item I WHERE i.TYPE_CODE=<include refid="mybaties.constant.products_second_category"></include> AND i.ITEM_CODE=p.SEC_CATE) SEC_CATE_NAME,
 		p.BRAND,
+		(SELECT i.ITEM_NAME FROM t_sys_code_item I WHERE i.TYPE_CODE=<include refid="mybaties.constant.products_third_category"></include> AND i.ITEM_CODE=p.BRAND) BRAND_NAME,
 		p.WEIGHT,
 		p.WEIGHT_UNIT,
 		p.IMPORTANT_PRD_FLAG,
