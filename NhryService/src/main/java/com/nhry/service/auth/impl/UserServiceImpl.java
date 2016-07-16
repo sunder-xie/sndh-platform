@@ -8,11 +8,14 @@ import com.nhry.data.auth.dao.TSysRoleMapper;
 import com.nhry.data.auth.dao.TSysUserMapper;
 import com.nhry.data.auth.dao.TSysUserRoleMapper;
 import com.nhry.data.auth.domain.TSysUser;
+import com.nhry.data.config.dao.NHSysCodeItemMapper;
+import com.nhry.data.config.domain.NHSysCodeItem;
 import com.nhry.model.auth.UserQueryModel;
 import com.nhry.service.BaseService;
 import com.nhry.service.auth.dao.ResourceService;
 import com.nhry.service.auth.dao.RoleService;
 import com.nhry.service.auth.dao.UserService;
+import com.nhry.utils.SysContant;
 import com.nhry.utils.date.Date;
 
 import org.apache.commons.lang3.StringUtils;
@@ -23,6 +26,7 @@ public class UserServiceImpl extends BaseService implements UserService {
 	private TSysUserMapper userMapper;
 	private TSysRoleMapper roleMapper;
 	private ResourceService resService;
+	private NHSysCodeItemMapper codeItemMapper;
 
 	@Override
 	public PageInfo findUser(UserQueryModel um){
@@ -33,6 +37,15 @@ public class UserServiceImpl extends BaseService implements UserService {
 	public int addUser(TSysUser user) {
 		if(StringUtils.isEmpty(user.getLoginName()) || StringUtils.isEmpty(user.getDisplayName())){
 			 throw new ServiceException(MessageCode.LOGIC_ERROR, "loginName、displayName属性值不能为空!");
+		}
+		if(!StringUtils.isEmpty(user.getCustomizedHrregion())){
+			NHSysCodeItem item = new NHSysCodeItem();
+			item.setParent(user.getCustomizedHrregion());
+			item.setTypeCode(SysContant.getSystemConst("sales_org"));
+			List<NHSysCodeItem> items = codeItemMapper.findItemsByParentCode(item);
+			if(items != null && items.size() > 0 && !StringUtils.isEmpty(items.get(0).getItemCode())){
+				user.setSalesOrg(items.get(0).getItemCode());
+			}
 		}
 		TSysUser u = this.userMapper.findUserByLoginName(user.getLoginName());
 		if(u == null){
@@ -111,5 +124,9 @@ public class UserServiceImpl extends BaseService implements UserService {
 
 	public void setResService(ResourceService resService) {
 		this.resService = resService;
+	}
+
+	public void setCodeItemMapper(NHSysCodeItemMapper codeItemMapper) {
+		this.codeItemMapper = codeItemMapper;
 	}
 }

@@ -69,6 +69,10 @@ public class PriceServiceImpl extends BaseService implements PriceService {
 			if(SysContant.getSystemConst("price_type_area").equals(record.getPriceType()) && StringUtils.isEmpty(record.getScope())){
 				throw new ServiceException(MessageCode.LOGIC_ERROR, "选择区域价时，适用范围必须选择!");
 			}else{
+				if("-1".equals(record.getScope())){
+					//选择区域价、公司价时，自营奶站不自动关联上该价格组
+					return 1;
+				}
 				Map<String,String> attrs = new HashMap<String,String>();
 				attrs.put("salesOrg", this.userSessionService.getCurrentUser().getSalesOrg());
 				attrs.put("dealerNo", record.getScope());

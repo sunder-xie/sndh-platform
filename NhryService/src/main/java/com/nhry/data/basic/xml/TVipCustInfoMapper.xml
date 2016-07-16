@@ -876,7 +876,7 @@
 		       and MP = #{phone}
 		    </if>
 		</where>
-		order by COUNTY,STREET,CREATE_AT desc,LAST_MODIFIED desc
+		order by CREATE_AT desc,LAST_MODIFIED desc,BRANCH_NO,DEALER_NO
 	</select>
 	<select id="getCustCountByPhone"  resultType="Integer" parameterType="java.util.HashMap">
 	   SELECT count(c.VIP_CUST_NO) from t_vip_cust_info c 

@@ -283,7 +283,7 @@
 	         AND END_DATE &lt;= #{endDate}
 	      </if>
      </where>
-      ORDER BY id
+      order by CREATE_AT DESC,LAST_MODIFIED desc,PRICE_TYPE,PRICE_GROUP
   </select>
   <!-- 根据销售奶站编号和产品编号，查询渠道价格组列表 -->
   <select id="findMaraPriceBymatnrAndNo" resultType="com.nhry.service.basic.pojo.PriceGroup" parameterType="java.util.HashMap">

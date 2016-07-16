@@ -186,10 +186,10 @@ public class ProductServiceImpl extends BaseService implements ProductService {
 	@Override
 	public List<TMdMara>  getProductByCodeOrName(String product) {
 		TSysUser user = userSessionService.getCurrentUser();
-		Map<String,String > map = new HashMap<String,String>();
-			map.put("matnr",product);
-			map.put("matnrTxt",product);
-			map.put("salesOrg",user.getSalesOrg());
+		Map<String, String> map = new HashMap<String, String>();
+		map.put("matnr", product);
+		map.put("matnrTxt", product);
+		map.put("salesOrg", user.getSalesOrg());
 		return tMdMaraMapper.getProductByCodeOrNameAndSalesOrg(map);
 	}
 
