@@ -57,7 +57,7 @@ public class BranchServiceImpl extends BaseService implements BranchService {
 	@Override
 	public PageInfo findBranchListByPage(BranchQueryModel branchModel) {
 		TSysUser user = userSessionService.getCurrentUser();
-		branchModel.setSalesOrg(user.getSalesOrg());
+		branchModel.setDealerNo(user.getDealerId());
 		// TODO Auto-generated method stub
 		if(StringUtils.isEmpty(branchModel.getPageNum()) || StringUtils.isEmpty(branchModel.getPageSize())){
 			throw new ServiceException(MessageCode.LOGIC_ERROR,"pageNum和pageSize不能为空！");
@@ -113,4 +113,6 @@ public class BranchServiceImpl extends BaseService implements BranchService {
 		attrs.put("dealerNo",dealerNo);
 		return this.branchMapper.findBranchByDno(attrs);
 	}
+
+
 }

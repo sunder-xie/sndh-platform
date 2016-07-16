@@ -295,6 +295,16 @@ public class EmpBillServiceImpl implements EmpBillService {
     }
 
     /**
+     * 根据员工工资单流水号获取 员工本月工资详情
+     * @param empSalLsh
+     * @return
+     */
+    @Override
+    public TMdEmpSal getEmpSalaryBySalaryNo(String empSalLsh) {
+        return tMdEmpSalMapper.getEmpSalByEmpSalLsh(empSalLsh);
+    }
+
+    /**
      * 结算送奶员本月工资,基本工资 + 产品配送费 + 赠品配送费+ 内部销售订单配送费
      * @return
      */

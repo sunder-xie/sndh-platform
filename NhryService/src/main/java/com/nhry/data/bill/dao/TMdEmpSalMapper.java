@@ -17,4 +17,6 @@ public interface TMdEmpSalMapper {
 
 
     int addEmpSal(TMdEmpSal empSal);
+
+    TMdEmpSal getEmpSalByEmpSalLsh(String empSalLsh);
 }

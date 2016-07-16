@@ -90,34 +90,33 @@ public class RequireOrderServiceImpl implements RequireOrderService {
             tSsmReqGoodsOrderMapper.insertRequireOrder(order);
         }
         //查看明天和后天的订单
-        int k = 0;
-        for(int i = 1;i<=2;i++){
-            Calendar calendar = new GregorianCalendar();
-            calendar.setTime(today);
-            calendar.add(calendar.DATE,i);//把日期往后增加i天.整数往后推 这个时间就是日期往后推一天的结果
-            Date requiredDate = calendar.getTime();
-            rModel.setRequiredDate(requiredDate);
-            rModel.setPreDays(i);
-            List<TOrderDaliyPlanItem> items = tOrderDaliyPlanItemMapper.selectDaliyPlansByBranchAndDay(rModel);
-            //将i天后的日订单中符合的产品加入到 生成的要货计划
-            if(items!=null && items.size()>0){
-                for(int j=0 ;j<items.size();j++ ){
-                    k++;
-                    TOrderDaliyPlanItem entry = items.get(j);
-                    TSsmReqGoodsOrderItem item = new TSsmReqGoodsOrderItem();
-                    item.setFlag("1");
-                    item.setItemNo(k);
-                    item.setUnit(entry.getUnit());
-                    item.setOrderDate(today);
-                    item.setOrderNo(order.getOrderNo());
-                    item.setMatnr(entry.getMatnr());
-                    item.setMatnrTxt(entry.getMatnrTxt());
-                    item.setQty(entry.getQty());
-                    item.setIncreQty(0);
-                    this.tSsmReqGoodsOrderItemMapper.insertRequireOrderItem(item);
-                }
-            }
+        Calendar calendar = new GregorianCalendar();
+        calendar.setTime(today);
+        calendar.add(calendar.DATE,1);//把日期往后增加1天.整数往后推 这个时间就是日期往后推一天的结果
+        Date firstDay = calendar.getTime();
 
+        calendar.setTime(today);
+        calendar.add(calendar.DATE,2);//把日期往后增加2天.整数往后推 这个时间就是日期往后推两天的结果
+        Date secondDay = calendar.getTime();
+
+        rModel.setFirstDay(firstDay);
+        rModel.setSecondDay(secondDay);
+        List<TOrderDaliyPlanItem> items = tOrderDaliyPlanItemMapper.selectDaliyPlansByBranchAndDay(rModel);
+        //将i天后的日订单中符合的产品加入到 生成的要货计划
+        if(items!=null && items.size()>0){
+            for(int j=0 ;j<items.size();j++ ){
+                TOrderDaliyPlanItem entry = items.get(j);
+                TSsmReqGoodsOrderItem item = new TSsmReqGoodsOrderItem();
+                item.setFlag("1");
+                item.setUnit(entry.getUnit());
+                item.setOrderDate(today);
+                item.setOrderNo(order.getOrderNo());
+                item.setMatnr(entry.getMatnr());
+                item.setMatnrTxt(entry.getMatnrTxt());
+                item.setQty(entry.getQty());
+                item.setIncreQty(0);
+                this.tSsmReqGoodsOrderItemMapper.insertRequireOrderItem(item);
+            }
         }
         //查询出今天的要货计划
         return this.searchRequireOrder(today);
@@ -155,7 +154,6 @@ public class RequireOrderServiceImpl implements RequireOrderService {
                 Map<String,String> map = new HashMap<String,String>();
                 map.put("salesOrg",salesOrg);
                 map.put("matnr",item.getMatnr());
-
                 TMdMara mara = tMdMaraMapper.selectProductByCode(map);
                 entry.setMatnr(item.getMatnr());
                 entry.setMatnrTxt(mara.getMatnrTxt());
@@ -237,7 +235,6 @@ public class RequireOrderServiceImpl implements RequireOrderService {
             TMdMara mara = tMdMaraMapper.selectProductByCode(map);
             item.setUnit(mara.getBaseUnit());
         }
-        item.setItemNo(items.size()+1);
         item.setFlag("2");
         item.setOrderDate(orderModel.getOrderDate());
         return tSsmReqGoodsOrderItemMapper.insertRequireOrderItem(item);
@@ -292,6 +289,7 @@ public class RequireOrderServiceImpl implements RequireOrderService {
                 throw  new ServiceException(MessageCode.LOGIC_ERROR,errorMessage);
             }
 
+
            PISuccessMessage message =  piRequireOrderService.generateRequireOrder(order);
            /* PISuccessMessage message = new PISuccessMessage();
             message.setSuccess(Boolean.TRUE);
@@ -308,14 +306,21 @@ public class RequireOrderServiceImpl implements RequireOrderService {
                         errorMessage ="修改要货计划或日订单状态失败" ;
                         throw  new ServiceException(MessageCode.LOGIC_ERROR,errorMessage);
                     }
+                    // 生成一张调拨单
                 }else{
-                    //非直营奶站
+
                     //要货计划单状态为“确认”，将不能修改
                     order.setLastModified(new Date());
                     order.setLastModifiedBy(user.getLoginName());
                     order.setLastModifiedByTxt(user.getDisplayName());
                     order.setStatus("30");
                     tSsmReqGoodsOrderMapper.uptRequireGoodsModifyInfo(order);
+                    /*上订户系统的大商/小商奶站  自动生成以奶站为单位的销售订单(产品要重新统计，根据产品参加N个促销活动  生成N+1 个销售单 )
+                    * 其中 产品增量部分 为不参加促销活动的产品 即 放至 在 1 那个单子中
+                    * */
+
+
+
                 }
 
             }else{

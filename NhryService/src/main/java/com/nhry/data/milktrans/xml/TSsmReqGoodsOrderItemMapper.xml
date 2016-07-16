@@ -4,7 +4,6 @@
     <resultMap id="BaseResultMap" type="com.nhry.data.milktrans.domain.TSsmReqGoodsOrderItem" >
         <result column="ORDER_NO" property="orderNo" jdbcType="VARCHAR" />
         <result column="ORDER_DATE" property="orderDate" jdbcType="DATE" />
-        <result column="ITEM_NO" property="itemNo" jdbcType="INTEGER" />
         <result column="MATNR" property="matnr" jdbcType="VARCHAR" />
         <result column="MATNR_TXT" property="matnrTxt" jdbcType="VARCHAR" />
         <result column="UNIT" property="unit" jdbcType="VARCHAR" />
@@ -13,20 +12,20 @@
         <result column="FLAG" property="flag" jdbcType="VARCHAR" />
     </resultMap>
     <sql id="Base_Column_List" >
-        ORDER_NO,ORDER_DATE,ITEM_NO,MATNR,UNIT,QTY,INCRE_QTY,FLAG
+        ORDER_NO,ORDER_DATE,MATNR,UNIT,QTY,INCRE_QTY,FLAG
     </sql>
 
     <insert id="insertRequireOrderItem" parameterType="com.nhry.data.milktrans.domain.TSsmReqGoodsOrderItem" >
-        insert into t_ssm_req_goods_order_item (ORDER_NO,ORDER_DATE,ITEM_NO,MATNR,UNIT,QTY,INCRE_QTY,FLAG)
+        insert into t_ssm_req_goods_order_item (ORDER_NO,ORDER_DATE,MATNR,UNIT,QTY,INCRE_QTY,FLAG)
         VALUES(
-            #{orderNo,jdbcType=VARCHAR},#{orderDate,jdbcType=DATE},#{itemNo,jdbcType=INTEGER},
+            #{orderNo,jdbcType=VARCHAR},#{orderDate,jdbcType=DATE},
             #{matnr,jdbcType=VARCHAR},#{unit,jdbcType=VARCHAR},
             #{qty,jdbcType=INTEGER}, #{increQty,jdbcType=INTEGER},#{flag,jdbcType=VARCHAR}
         )
     </insert>
     <select id="getReqGoodsItemsByOrderNo" resultMap="BaseResultMap" parameterType="String" >
         select
-          ORDER_NO,ORDER_DATE,ITEM_NO,MATNR,UNIT,QTY,INCRE_QTY,FLAG
+          ORDER_NO,ORDER_DATE,MATNR,UNIT,QTY,INCRE_QTY,FLAG
         FROM t_ssm_req_goods_order_item
         WHERE  1=1
         and ORDER_NO =  #{orderNo,jdbcType=VARCHAR}

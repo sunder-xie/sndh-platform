@@ -29,7 +29,16 @@ public class OrderSearchModel extends BaseQueryModel implements Serializable {
 	private String orderReturnDateStart;
 	private String orderReturnDateEnd;
 	private String salesOrg;
+	private String dealerNo;
 	
+	public String getDealerNo()
+	{
+		return dealerNo;
+	}
+	public void setDealerNo(String dealerNo)
+	{
+		this.dealerNo = dealerNo;
+	}
 	public String getSalesOrg()
 	{
 		return salesOrg;

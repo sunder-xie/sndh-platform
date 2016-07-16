@@ -17,6 +17,9 @@
     <result column="SALES_ORG" jdbcType="VARCHAR" property="salesOrg" />
     <result column="PROPERTY_TXT" jdbcType="VARCHAR" property="propertyTxt" />
     <result column="PROPERTY_TEL" jdbcType="VARCHAR" property="propertyTel" />
+    <result column="CREATE_AT" property="createAt" jdbcType="TIMESTAMP" />
+    <result column="CREATE_BY" property="createBy" jdbcType="VARCHAR" />
+
   </resultMap>
   <sql id="Base_Column_List">
     ID, RESIDENTIAL_AREA_TXT, PROVINCE, CITY, COUNTY, STREET,GUIDEBOARD,STATUS, ADDRESS_TXT, RESIDENTIAL_NUM,
@@ -204,6 +207,7 @@
     LEFT JOIN  t_md_branch_scope s on a.ID = s.RESIDENTIAL_AREA_ID
     WHERE  1=1
     and s.BRANCH_NO =  #{branchNo,jdbcType=VARCHAR}
+    ORDER BY a.CREATE_AT desc
   </select>
 
   <select id="selectById" parameterType="java.lang.String" resultMap="BaseResultMap">
@@ -228,17 +232,25 @@
     (SELECT i.ITEM_NAME from t_sys_code_item i WHERE i.TYPE_CODE=<include refid="mybaties.constant.COUNTRY_CITY_CONSTANT"></include> and i.ITEM_CODE = a.CITY ) CITY,
     (SELECT i.ITEM_NAME from t_sys_code_item i WHERE i.TYPE_CODE=<include refid="mybaties.constant.COUNTRY_CITY_CONSTANT"></include> and i.ITEM_CODE = a.COUNTY ) COUNTY,
     (SELECT i.ITEM_NAME from t_sys_code_item i WHERE i.TYPE_CODE=<include refid="mybaties.constant.COUNTRY_CITY_CONSTANT"></include> and i.ITEM_CODE = a.STREET ) STREET
-    from t_md_residential_area a
+    from t_md_residential_area a LEFT JOIN t_md_branch_scope s on a.ID = s.RESIDENTIAL_AREA_ID
     where 1=1
+      and a.SALES_ORG = #{salesOrg,jdbcType=VARCHAR}
+    <if test="branchNo != null and branchNo !=''">
+      AND s.BRANCH_NO = #{branchNo,jdbcType=VARCHAR}
+    </if>
     <if test="province != null and province !=''">
       AND a.PROVINCE = #{province,jdbcType=VARCHAR}
     </if>
     <if test="city != null and city != ''">
-      AND a.city = #{city,jdbcType=VARCHAR}
+      AND a.CITY = #{city,jdbcType=VARCHAR}
+    </if>
+    <if test="county != null and county != ''">
+      AND a.COUNTY = #{county,jdbcType=VARCHAR}
     </if>
     <if test="status != null and status != ''">
-      AND a.status = #{status,jdbcType=VARCHAR}
+      AND a.STATUS = #{status,jdbcType=VARCHAR}
     </if>
+    ORDER BY a.CREATE_AT desc
   </select>
   <update id="updateStatusToUnDistById"  parameterType="String">
     UPDATE  t_md_residential_area
@@ -271,5 +283,6 @@
     from t_md_residential_area
     WHERE  STATUS = '10'
      and  SALES_ORG = #{salesOrg,jdbcType=VARCHAR}
+    ORDER BY CREATE_AT desc
   </select>
 </mapper>

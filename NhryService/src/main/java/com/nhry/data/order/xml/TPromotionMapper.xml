@@ -1,0 +1,202 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.nhry.data.order.dao.TPromotionMapper" >
+  <resultMap id="BaseResultMap" type="com.nhry.data.order.domain.TPromotion" >
+    <result column="PROM_NO" property="promNo" jdbcType="VARCHAR" />
+    <result column="PROM_DES" property="promDes" jdbcType="VARCHAR" />
+    <result column="PROM_TYPE" property="promType" jdbcType="VARCHAR" />
+    <result column="SALES_ORG" property="salesOrg" jdbcType="VARCHAR" />
+    <result column="SALES_DIST" property="salesDist" jdbcType="VARCHAR" />
+    <result column="CUSTOMER_TYPE" property="customerType" jdbcType="VARCHAR" />
+    <result column="PROM_STAT" property="promStat" jdbcType="VARCHAR" />
+    <result column="PLAN_START_TIME" property="planStartTime" jdbcType="TIMESTAMP" />
+    <result column="PLAN_STOP_TIME" property="planStopTime" jdbcType="TIMESTAMP" />
+    <result column="BUY_START_TIME" property="buyStartTime" jdbcType="TIMESTAMP" />
+    <result column="BUY_STOP_TIME" property="buyStopTime" jdbcType="TIMESTAMP" />
+    <result column="BUY_AMT" property="buyAmt" jdbcType="DECIMAL" />
+    <result column="GIFT_AMT" property="giftAmt" jdbcType="DECIMAL" />
+    <result column="CREATE_AT" property="createAt" jdbcType="TIMESTAMP" />
+    <result column="CREATE_BY" property="createBy" jdbcType="VARCHAR" />
+    <result column="CREATE_BY_TXT" property="createByTxt" jdbcType="VARCHAR" />
+    <result column="LAST_MODIFIED" property="lastModified" jdbcType="TIMESTAMP" />
+    <result column="LAST_MODIFIED_BY" property="lastModifiedBy" jdbcType="VARCHAR" />
+    <result column="LAST_MODIFIED_BY_TXT" property="lastModifiedByTxt" jdbcType="VARCHAR" />
+    <result column="ORG_MATNR" property="orgMatnr" jdbcType="VARCHAR" />
+    <result column="GIFT_MATNR" property="giftMatnr" jdbcType="VARCHAR" />
+    <result column="ORG_QTY" property="orgQty" jdbcType="DECIMAL" />
+    <result column="GIFT_QTY" property="giftQty" jdbcType="DECIMAL" />
+    <result column="GIFT_UNIT" property="giftUnit" jdbcType="DECIMAL" />
+  </resultMap>
+  <select id="selectPromotionByMatnr" resultMap="BaseResultMap" parameterType="com.nhry.data.order.domain.TPromotion" >
+	   select distinct 
+	   pro1.MATNR_TXT ORG_MATNR, oi.ORIG_NUM ORG_QTY, pro2.MATNR_TXT GIFT_MATNR,gi.GIFT_NUM GIFT_QTY,
+	   p.PROM_NO, p.PROM_DES, p.PROM_TYPE, 
+      p.SALES_ORG, p.SALES_DIST, p.CUSTOMER_TYPE, 
+      p.PROM_STAT, p.PLAN_START_TIME, p.PLAN_STOP_TIME, 
+      p.BUY_START_TIME, p.BUY_STOP_TIME, p.BUY_AMT, 
+      p.GIFT_AMT
+		from t_promotion p
+		left join t_promotion_orig_item oi on p.PROM_NO = oi.PROM_NO
+		left join t_promotion_gift_item gi on p.PROM_NO = gi.PROM_NO
+		left join t_prom_scope_item si on p.PROM_NO = si.PROM_NO
+		left join t_md_mara pro1 on pro1.matnr = oi.GOOD_NO
+		left join t_md_mara pro2 on pro2.matnr = gi.GIFT_NO
+		where 1 = 1
+		and oi.GOOD_NO = #{orgMatnr,jdbcType=VARCHAR}
+		and p.PLAN_START_TIME &lt;= #{planStartTime,jdbcType=VARCHAR}
+		and p.PLAN_STOP_TIME &gt;= #{planStartTime,jdbcType=VARCHAR}
+  </select>
+  <select id="selectPromotionByPromNo" resultMap="BaseResultMap" parameterType="com.nhry.data.order.domain.TPromotion" >
+	   select oi.GOOD_NO ORG_MATNR, oi.ORIG_NUM ORG_QTY, gi.GIFT_NO GIFT_MATNR,gi.GIFT_NUM GIFT_QTY,gi.GIFT_UNIT,
+	   p.PROM_NO, p.PROM_DES, p.PROM_TYPE, 
+      p.SALES_ORG, p.SALES_DIST, p.CUSTOMER_TYPE, 
+      p.PROM_STAT, p.PLAN_START_TIME, p.PLAN_STOP_TIME, 
+      p.BUY_START_TIME, p.BUY_STOP_TIME, p.BUY_AMT, 
+      p.GIFT_AMT, p.CREATE_AT, p.CREATE_BY, 
+      p.CREATE_BY_TXT, p.LAST_MODIFIED, p.LAST_MODIFIED_BY, 
+      p.LAST_MODIFIED_BY_TXT
+      from t_promotion p
+		left join t_promotion_orig_item oi on p.PROM_NO = oi.PROM_NO
+		left join t_promotion_gift_item gi on p.PROM_NO = gi.PROM_NO
+		left join t_prom_scope_item si on p.PROM_NO = si.PROM_NO
+		where 1 = 1
+		and p.PROM_NO = #{promNo,jdbcType=VARCHAR}
+  </select>
+  <insert id="insert" parameterType="com.nhry.data.order.domain.TPromotion" >
+    insert into t_promotion (PROM_NO, PROM_DES, PROM_TYPE, 
+      SALES_ORG, SALES_DIST, CUSTOMER_TYPE, 
+      PROM_STAT, PLAN_START_TIME, PLAN_STOP_TIME, 
+      BUY_START_TIME, BUY_STOP_TIME, BUY_AMT, 
+      GIFT_AMT, CREATE_AT, CREATE_BY, 
+      CREATE_BY_TXT, LAST_MODIFIED, LAST_MODIFIED_BY, 
+      LAST_MODIFIED_BY_TXT)
+    values (#{promNo,jdbcType=VARCHAR}, #{promDes,jdbcType=VARCHAR}, #{promType,jdbcType=VARCHAR}, 
+      #{salesOrg,jdbcType=VARCHAR}, #{salesDist,jdbcType=VARCHAR}, #{customerType,jdbcType=VARCHAR}, 
+      #{promStat,jdbcType=VARCHAR}, #{planStartTime,jdbcType=TIMESTAMP}, #{planStopTime,jdbcType=TIMESTAMP}, 
+      #{buyStartTime,jdbcType=TIMESTAMP}, #{buyStopTime,jdbcType=TIMESTAMP}, #{buyAmt,jdbcType=DECIMAL}, 
+      #{giftAmt,jdbcType=DECIMAL}, #{createAt,jdbcType=TIMESTAMP}, #{createBy,jdbcType=VARCHAR}, 
+      #{createByTxt,jdbcType=VARCHAR}, #{lastModified,jdbcType=TIMESTAMP}, #{lastModifiedBy,jdbcType=VARCHAR}, 
+      #{lastModifiedByTxt,jdbcType=VARCHAR})
+  </insert>
+  <insert id="insertSelective" parameterType="com.nhry.data.order.domain.TPromotion" >
+    insert into t_promotion
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="promNo != null" >
+        PROM_NO,
+      </if>
+      <if test="promDes != null" >
+        PROM_DES,
+      </if>
+      <if test="promType != null" >
+        PROM_TYPE,
+      </if>
+      <if test="salesOrg != null" >
+        SALES_ORG,
+      </if>
+      <if test="salesDist != null" >
+        SALES_DIST,
+      </if>
+      <if test="customerType != null" >
+        CUSTOMER_TYPE,
+      </if>
+      <if test="promStat != null" >
+        PROM_STAT,
+      </if>
+      <if test="planStartTime != null" >
+        PLAN_START_TIME,
+      </if>
+      <if test="planStopTime != null" >
+        PLAN_STOP_TIME,
+      </if>
+      <if test="buyStartTime != null" >
+        BUY_START_TIME,
+      </if>
+      <if test="buyStopTime != null" >
+        BUY_STOP_TIME,
+      </if>
+      <if test="buyAmt != null" >
+        BUY_AMT,
+      </if>
+      <if test="giftAmt != null" >
+        GIFT_AMT,
+      </if>
+      <if test="createAt != null" >
+        CREATE_AT,
+      </if>
+      <if test="createBy != null" >
+        CREATE_BY,
+      </if>
+      <if test="createByTxt != null" >
+        CREATE_BY_TXT,
+      </if>
+      <if test="lastModified != null" >
+        LAST_MODIFIED,
+      </if>
+      <if test="lastModifiedBy != null" >
+        LAST_MODIFIED_BY,
+      </if>
+      <if test="lastModifiedByTxt != null" >
+        LAST_MODIFIED_BY_TXT,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="promNo != null" >
+        #{promNo,jdbcType=VARCHAR},
+      </if>
+      <if test="promDes != null" >
+        #{promDes,jdbcType=VARCHAR},
+      </if>
+      <if test="promType != null" >
+        #{promType,jdbcType=VARCHAR},
+      </if>
+      <if test="salesOrg != null" >
+        #{salesOrg,jdbcType=VARCHAR},
+      </if>
+      <if test="salesDist != null" >
+        #{salesDist,jdbcType=VARCHAR},
+      </if>
+      <if test="customerType != null" >
+        #{customerType,jdbcType=VARCHAR},
+      </if>
+      <if test="promStat != null" >
+        #{promStat,jdbcType=VARCHAR},
+      </if>
+      <if test="planStartTime != null" >
+        #{planStartTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="planStopTime != null" >
+        #{planStopTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="buyStartTime != null" >
+        #{buyStartTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="buyStopTime != null" >
+        #{buyStopTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="buyAmt != null" >
+        #{buyAmt,jdbcType=DECIMAL},
+      </if>
+      <if test="giftAmt != null" >
+        #{giftAmt,jdbcType=DECIMAL},
+      </if>
+      <if test="createAt != null" >
+        #{createAt,jdbcType=TIMESTAMP},
+      </if>
+      <if test="createBy != null" >
+        #{createBy,jdbcType=VARCHAR},
+      </if>
+      <if test="createByTxt != null" >
+        #{createByTxt,jdbcType=VARCHAR},
+      </if>
+      <if test="lastModified != null" >
+        #{lastModified,jdbcType=TIMESTAMP},
+      </if>
+      <if test="lastModifiedBy != null" >
+        #{lastModifiedBy,jdbcType=VARCHAR},
+      </if>
+      <if test="lastModifiedByTxt != null" >
+        #{lastModifiedByTxt,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+</mapper>
