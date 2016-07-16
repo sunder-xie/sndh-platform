@@ -11,10 +11,18 @@ public class ResidentialAreaModel extends BaseQueryModel implements Serializable
     private String province;
     private String city;
     private String status;
-
+    private String county;
     private String branchNo;
     private String salesOrg;
 
+
+    public String getCounty() {
+        return county;
+    }
+
+    public void setCounty(String county) {
+        this.county = county;
+    }
 
     public String getBranchNo() {
         return branchNo;

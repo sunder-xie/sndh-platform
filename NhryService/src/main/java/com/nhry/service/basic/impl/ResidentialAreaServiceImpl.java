@@ -117,9 +117,7 @@ public class ResidentialAreaServiceImpl implements ResidentialAreaService {
     public PageInfo findAreaListByPage(ResidentialAreaModel residentialAreaModel) {
         TSysUser user = userSessionService.getCurrentUser();
         residentialAreaModel.setSalesOrg(user.getSalesOrg());
-        if(StringUtils.isNotBlank(user.getBranchNo())){
-            residentialAreaModel.setBranchNo(user.getBranchNo());
-        }
+
 
         // TODO Auto-generated method stub
         if(StringUtils.isEmpty(residentialAreaModel.getPageNum()) || StringUtils.isEmpty(residentialAreaModel.getPageSize())){
