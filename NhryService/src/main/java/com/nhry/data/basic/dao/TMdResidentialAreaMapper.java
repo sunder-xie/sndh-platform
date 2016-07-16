@@ -4,6 +4,7 @@ package com.nhry.data.basic.dao;
 import com.github.pagehelper.PageInfo;
 import com.nhry.data.basic.domain.TMdResidentialArea;
 import com.nhry.model.basic.BranchAreaSearch;
+import com.nhry.service.basic.pojo.AreaSearchModel;
 import com.nhry.service.basic.pojo.ResidentialAreaModel;
 
 import java.util.List;
@@ -45,4 +46,6 @@ public interface TMdResidentialAreaMapper {
      * @return
      */
     List<TMdResidentialArea> getUnDistAreas(String salesOrg);
+
+    List<TMdResidentialArea> searchAreaBySalesOrg(AreaSearchModel aModel);
 }

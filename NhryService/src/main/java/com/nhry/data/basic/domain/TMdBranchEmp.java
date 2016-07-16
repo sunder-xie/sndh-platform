@@ -13,6 +13,7 @@ public class TMdBranchEmp implements Serializable{
     private String branchName;
     private String salesOrg;
 
+
     private String empName;
 
     private String gender;

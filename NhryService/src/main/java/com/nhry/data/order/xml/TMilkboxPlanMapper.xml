@@ -52,10 +52,10 @@
      		AND m.PLAN_DATE &lt;= #{setDateEnd,jdbcType=DATE}
     </if>
     <if test="branchNo != null and branchNo !=''">
-     		AND o.BRANCH_NO &gt;= #{branchNo,jdbcType=DATE}
+     		AND o.BRANCH_NO &gt;= #{branchNo,jdbcType=VARCHAR}
     </if>
     <if test="salesOrg != null and salesOrg !=''">
-     		AND o.SALES_ORG &lt;= #{salesOrg,jdbcType=DATE}
+     		AND o.SALES_ORG &lt;= #{salesOrg,jdbcType=VARCHAR}
     </if>
   </select>
   <delete id="deleteByPrimaryKey" parameterType="java.lang.String" >

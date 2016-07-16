@@ -84,4 +84,10 @@ public class TSysResourceMapperImpl implements TSysResourceMapper {
 		// TODO Auto-generated method stub
 		return this.sqlSessionTemplate.selectList("getRoleRosources", id);
 	}
+
+	@Override
+	public List<TSysResource> findComponentByLogName(String userId) {
+		// TODO Auto-generated method stub
+		return this.sqlSessionTemplate.selectList("findComponentByLogName", userId);
+	}
 }

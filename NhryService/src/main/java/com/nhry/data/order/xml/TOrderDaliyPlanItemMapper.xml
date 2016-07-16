@@ -23,11 +23,13 @@
     <result column="LAST_MODIFIED" property="lastModified" jdbcType="TIMESTAMP" />
     <result column="LAST_MODIFIED_BY" property="lastModifiedBy" jdbcType="VARCHAR" />
     <result column="LAST_MODIFIED_BY_TXT" property="lastModifiedByTxt" jdbcType="VARCHAR" />
+    <result column="GIFT_QTY" property="giftQty" jdbcType="INTEGER" />
+    <result column="PROMOTION_FLAG" property="promotionFlag" jdbcType="VARCHAR" />
   </resultMap>
   <sql id="Base_Column_List" >
     ORDER_NO, ORDER_DATE, PLAN_ITEM_NO, ITEM_NO, DISP_DATE, REACH_TIME, REACH_TIME_TYPE, 
     MATNR, UNIT, QTY, PRICE, AMT, REMAIN_AMT, STATUS, CREATE_AT, CREATE_BY, CREATE_BY_TXT, 
-    LAST_MODIFIED, LAST_MODIFIED_BY, LAST_MODIFIED_BY_TXT
+    LAST_MODIFIED, LAST_MODIFIED_BY, LAST_MODIFIED_BY_TXT,GIFT_QTY,PROMOTION_FLAG
   </sql>
   <select id="searchDaliyOrdersByPage" resultMap="BaseResultMap" parameterType="com.nhry.model.order.OrderSearchModel" >
     select 
@@ -38,6 +40,15 @@
     where d.MATNR = p.MATNR and o.ORDER_NO = d.ORDER_NO and o.SALES_ORG = p.SALES_ORG
     and d.ORDER_NO = #{orderNo,jdbcType=VARCHAR}
     order by d.DISP_DATE
+  </select>
+  <select id="searchDaliyOrdersByOrderNoAndFinalStop" resultMap="BaseResultMap" parameterType="com.nhry.model.order.OrderSearchModel" >
+    select 
+    <include refid="Base_Column_List" />
+    from t_mst_order_daliy_plan_item
+    where 1=1
+    and ORDER_NO = #{orderNo,jdbcType=VARCHAR}
+    and DISP_DATE &gt;= #{orderDateStart,jdbcType=DATE}
+    and STATUS = '30'
   </select>
   <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="com.nhry.data.order.domain.TOrderDaliyPlanItemKey" >
     select 
@@ -200,6 +211,12 @@
       <if test="lastModifiedByTxt != null" >
         LAST_MODIFIED_BY_TXT,
       </if>
+      <if test="giftQty != null" >
+        GIFT_QTY,
+      </if>
+      <if test="promotionFlag != null" >
+        PROMOTION_FLAG,
+      </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides="," >
       <if test="orderNo != null" >
@@ -261,6 +278,12 @@
       </if>
       <if test="lastModifiedByTxt != null" >
         #{lastModifiedByTxt,jdbcType=VARCHAR},
+      </if>
+      <if test="giftQty != null" >
+        #{giftQty,jdbcType=INTEGER},
+      </if>
+      <if test="promotionFlag != null" >
+        #{promotionFlag,jdbcType=VARCHAR},
       </if>
     </trim>
   </insert>
@@ -393,15 +416,16 @@
   </select>
 
   <select id="selectDaliyPlansByBranchAndDay" resultMap="BaseResultMap" parameterType="com.nhry.model.milktrans.RequireOrderSearch" >
-   		select i.ORDER_NO,i.ITEM_NO,i.DISP_DATE, i.MATNR,m.MATNR_TXT MATNR_TXT,i.QTY,m.BASE_UNIT UNIT
+      select  i.DISP_DATE, i.MATNR,m.MATNR_TXT MATNR_TXT,SUM(i.QTY) QTY,m.BASE_UNIT UNIT
       from t_mst_order_daliy_plan_item i
         LEFT JOIN t_md_mara m on i.MATNR =  m.MATNR
         LEFT JOIN t_preorder o on 	i.ORDER_NO = o.ORDER_NO
         LEFT JOIN t_md_mara_ex e on i.MATNR = e.MATNR
         where   1=1
-          and  e.PRE_DAYS=#{preDays,jdbcType=INTEGER}
+         and  ((e.PRE_DAYS= 2 and   i.DISP_DATE = #{secondDay,jdbcType=DATE} ) or (e.PRE_DAYS= 1 and   i.DISP_DATE = #{firstDay,jdbcType=DATE}))
           and m.SALES_ORG=#{salesOrg,jdbcType=VARCHAR}
           and o.BRANCH_NO = #{branchNo,jdbcType=VARCHAR}
-          and i.DISP_DATE = #{requiredDate,jdbcType=DATE}
+      	GROUP BY i.MATNR,i.DISP_DATE
+        ORDER BY i.DISP_DATE desc
   </select>
 </mapper>

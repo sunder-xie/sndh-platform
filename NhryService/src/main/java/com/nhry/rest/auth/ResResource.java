@@ -90,4 +90,12 @@ public class ResResource extends BaseResource {
     public Response findResourceByUserId(@ApiParam(required = true, name = "userId", value = "用户编码")@PathParam("userId")String userId){
         return convertToRespModel(MessageCode.NORMAL, null, resService.findRecoureByUserId(userId));
     }
+    
+    @POST
+    @Path("/find/component")
+    @Produces(MediaType.APPLICATION_JSON)
+    @ApiOperation(value = "/find/component", response = TSysResource.class, notes = "根据当前用户拥有组件资源信息列表")
+    public Response findComponentByLogName(){
+        return convertToRespModel(MessageCode.NORMAL, null, resService.findCurUserComponents());
+    }
 }

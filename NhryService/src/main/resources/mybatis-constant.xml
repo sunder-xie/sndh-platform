@@ -26,8 +26,24 @@
 	<sql id="storage_location">1011</sql>
 	<!-- 系统资源类型 -->
 	<sql id="sys_res_type">1012</sql>
+	<!-- 系统资源类型 页面组件-->
+	<sql id="sys_res_type_component">20</sql>
 	<!-- 采购组 -->
 	<sql id="purchasing_group">1013</sql>
 	<!-- 价格组类型  公司价 -->
 	<sql id="price_type_comp">10</sql>
+	<!-- 产品大类 -->
+	<sql id="products_first_category">2000</sql>
+	<!-- 产品中类 -->
+	<sql id="products_second_category">2001</sql>
+	<!-- 产品品牌/副品牌 -->
+	<sql id="products_third_category">2002</sql>
+	<!-- 产品规格 -->
+	<sql id="products_spec">2003</sql>
+	<!-- 包装类型 -->
+	<sql id="packing _type">2004</sql>
+	<!-- 重点产品分类 -->
+	<sql id="major_products_category">2005</sql>
+	<!-- 角色ID  送奶员 -->
+	<sql id="milkman">1001</sql>
 </mapper>  

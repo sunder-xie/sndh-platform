@@ -36,6 +36,15 @@ public class milkTransResource extends BaseResource {
 	private DeliverMilkService deliverMilkService;
 
 	@POST
+	@Path("/creatSalOrderOfDealerBranch")
+	@Produces(MediaType.APPLICATION_JSON)
+	@Consumes(MediaType.APPLICATION_JSON)
+	@ApiOperation(value = "/creatSalOrderOfDealerBranch", response = Response.class, notes = "根据日订单生成经销商奶站的销售订单")
+	public Response creatSalOrderOfDealerBranch(){
+		return convertToRespModel(MessageCode.NORMAL, null, requireOrderService.creatSalOrderOfDealerBranch());
+	}
+
+	@POST
 	@Path("/creatRequireOrder")
 	@Produces(MediaType.APPLICATION_JSON)
 	@Consumes(MediaType.APPLICATION_JSON)

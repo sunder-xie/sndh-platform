@@ -16,7 +16,7 @@ public interface TPreOrderMapper {
 
     int insert(TPreOrder record);
 
-    int insertSelective(TPreOrder record);
+    int updateOrderInitAmtAndCurAmt(TPreOrder record);
 
     TPreOrder selectByPrimaryKey(String orderNo);
 

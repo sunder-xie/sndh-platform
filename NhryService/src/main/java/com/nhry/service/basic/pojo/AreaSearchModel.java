@@ -1,13 +1,11 @@
 package com.nhry.service.basic.pojo;
 
-import com.nhry.model.basic.BaseQueryModel;
-
 import java.io.Serializable;
 
 /**
  * Created by gongjk on 2016/6/3.
  */
-public class ResidentialAreaModel extends BaseQueryModel implements Serializable {
+public class AreaSearchModel implements Serializable {
     private String province;
     private String city;
     private String status;

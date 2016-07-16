@@ -33,4 +33,9 @@ public class TMdEmpSalMapperImpl implements TMdEmpSalMapper {
     public int addEmpSal(TMdEmpSal empSal) {
         return sqlSessionTemplate.insert("addEmpSal",empSal);
     }
+
+    @Override
+    public TMdEmpSal getEmpSalByEmpSalLsh(String empSalLsh) {
+        return sqlSessionTemplate.selectOne("getEmpSalByEmpSalLsh",empSalLsh);
+    }
 }

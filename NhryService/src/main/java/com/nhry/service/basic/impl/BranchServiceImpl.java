@@ -13,7 +13,6 @@ import com.nhry.model.basic.BranchOrDealerList;
 import com.nhry.model.basic.BranchQueryModel;
 import com.nhry.service.BaseService;
 import com.nhry.service.basic.dao.BranchService;
-
 import org.apache.commons.lang3.StringUtils;
 
 import java.util.HashMap;
@@ -51,13 +50,15 @@ public class BranchServiceImpl extends BaseService implements BranchService {
 	public List<TMdBranch> findBranchListByOrg() {
 		// TODO Auto-generated method stub
 		TSysUser user = userSessionService.getCurrentUser();
+
+
 		return branchMapper.findBranchListByOrg(user.getSalesOrg());
 	}
 
 	@Override
 	public PageInfo findBranchListByPage(BranchQueryModel branchModel) {
 		TSysUser user = userSessionService.getCurrentUser();
-		branchModel.setSalesOrg(user.getSalesOrg());
+		branchModel.setDealerNo(user.getDealerId());
 		// TODO Auto-generated method stub
 		if(StringUtils.isEmpty(branchModel.getPageNum()) || StringUtils.isEmpty(branchModel.getPageSize())){
 			throw new ServiceException(MessageCode.LOGIC_ERROR,"pageNum和pageSize不能为空！");
@@ -113,4 +114,6 @@ public class BranchServiceImpl extends BaseService implements BranchService {
 		attrs.put("dealerNo",dealerNo);
 		return this.branchMapper.findBranchByDno(attrs);
 	}
+
+
 }

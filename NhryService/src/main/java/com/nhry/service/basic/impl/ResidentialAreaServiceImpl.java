@@ -5,19 +5,24 @@ import com.github.pagehelper.PageInfo;
 import com.nhry.common.auth.UserSessionService;
 import com.nhry.common.exception.MessageCode;
 import com.nhry.common.exception.ServiceException;
+import com.nhry.data.auth.dao.TSysUserRoleMapper;
 import com.nhry.data.auth.domain.TSysUser;
+import com.nhry.data.auth.domain.TSysUserRole;
 import com.nhry.data.basic.dao.TMdBranchScopeMapper;
 import com.nhry.data.basic.dao.TMdResidentialAreaMapper;
 import com.nhry.data.basic.domain.TMdBranchScopeKey;
 import com.nhry.data.basic.domain.TMdResidentialArea;
 import com.nhry.model.basic.BranchAreaSearch;
 import com.nhry.service.basic.dao.ResidentialAreaService;
+import com.nhry.service.basic.pojo.AreaSearchModel;
 import com.nhry.service.basic.pojo.BranchScopeModel;
 import com.nhry.service.basic.pojo.ResidentialAreaModel;
 import com.nhry.utils.PrimaryKeyUtils;
 import org.apache.commons.lang.StringUtils;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created by gongjk on 2016/6/3.
@@ -27,6 +32,8 @@ public class ResidentialAreaServiceImpl implements ResidentialAreaService {
     private TMdResidentialAreaMapper tMdResidentialAreaMapper;
     private TMdBranchScopeMapper tMdBranchScopeMapper;
     private UserSessionService userSessionService;
+    private TSysUserRoleMapper urMapper;
+
 
     @Override
     public PageInfo searchAreaByBranchNo(BranchAreaSearch bSearch) {
@@ -46,6 +53,12 @@ public class ResidentialAreaServiceImpl implements ResidentialAreaService {
      */
     @Override
     public int areaRelBranch(BranchScopeModel bModel) {
+        TSysUser user = userSessionService.getCurrentUser();
+        TSysUserRole userRole =urMapper.getUserRoleByLoginName(user.getLoginName());
+        if("10004".equals(userRole.getId())){
+            throw new ServiceException(MessageCode.LOGIC_ERROR,"奶站内勤 无权进行奶站配送区域分配！");
+        }
+
         String message = "";
         try{
             //删除 奶站和配送区域的 关系 并将配送区域设为未分配
@@ -94,6 +107,19 @@ public class ResidentialAreaServiceImpl implements ResidentialAreaService {
     }
 
     @Override
+    public List<TMdResidentialArea> searchAreaBySalesOrg(AreaSearchModel aModel) {
+        TSysUser user = userSessionService.getCurrentUser();
+        TSysUserRole userRole = urMapper.getUserRoleByLoginName(user.getLoginName());
+        Map<String,String> map = new HashMap<String,String>();
+        aModel.setSalesOrg(user.getSalesOrg());
+        //奶站内勤，只看该奶站下的
+        if("10004".equals(userRole.getId())){
+            aModel.setBranchNo(user.getBranchNo());
+        }
+        return tMdResidentialAreaMapper.searchAreaBySalesOrg(aModel);
+    }
+
+    @Override
     public List<TMdResidentialArea> getAreaByBranchNo(String branchNo) {
         return tMdResidentialAreaMapper.getAreaByBranchNo(branchNo);
     }
@@ -105,6 +131,10 @@ public class ResidentialAreaServiceImpl implements ResidentialAreaService {
 
     @Override
     public PageInfo findAreaListByPage(ResidentialAreaModel residentialAreaModel) {
+        TSysUser user = userSessionService.getCurrentUser();
+        residentialAreaModel.setSalesOrg(user.getSalesOrg());
+
+
         // TODO Auto-generated method stub
         if(StringUtils.isEmpty(residentialAreaModel.getPageNum()) || StringUtils.isEmpty(residentialAreaModel.getPageSize())){
             throw new ServiceException(MessageCode.LOGIC_ERROR,"pageNum和pageSize不能为空！");
@@ -115,6 +145,7 @@ public class ResidentialAreaServiceImpl implements ResidentialAreaService {
     @Override
     public int addResidentialArea(TMdResidentialArea tMdResidentialArea) {
         TSysUser user = userSessionService.getCurrentUser();
+        TSysUserRole userRole =urMapper.getUserRoleByLoginName(user.getLoginName());
         tMdResidentialArea.setSalesOrg(user.getSalesOrg());
         tMdResidentialArea.setId(PrimaryKeyUtils.generateUuidKey());
         tMdResidentialArea.setStatus("10");
@@ -147,5 +178,9 @@ public class ResidentialAreaServiceImpl implements ResidentialAreaService {
 
     public void setUserSessionService(UserSessionService userSessionService) {
         this.userSessionService = userSessionService;
+    }
+
+    public void setUrMapper(TSysUserRoleMapper urMapper) {
+        this.urMapper = urMapper;
     }
 }

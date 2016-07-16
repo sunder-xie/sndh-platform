@@ -24,4 +24,6 @@
   <config key="price_type_area" value="20"></config>
   <!-- 价格组类型 奶站价 -->
   <config key="price_type_station" value="30"></config>
+  <!-- 销售组织typeCode -->
+  <config key="sales_org" value="1002"></config>
 </configs>

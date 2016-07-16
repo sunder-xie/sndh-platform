@@ -12,6 +12,8 @@ public class TMdBranch implements Serializable{
 
     private String salesOrg;
 
+    private String salesOrgName;
+
     private String salesCha;
 
     private String branchGroup;
@@ -55,6 +57,24 @@ public class TMdBranch implements Serializable{
     private String lastModifiedByTxt;
 
     private String companyCode;
+
+    private String companyName;
+
+    public String getSalesOrgName() {
+        return salesOrgName;
+    }
+
+    public void setSalesOrgName(String salesOrgName) {
+        this.salesOrgName = salesOrgName;
+    }
+
+    public String getCompanyName() {
+        return companyName;
+    }
+
+    public void setCompanyName(String companyName) {
+        this.companyName = companyName;
+    }
 
     public String getBranchNo() {
         return branchNo;

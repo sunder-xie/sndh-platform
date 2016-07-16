@@ -44,7 +44,7 @@ public class TPlanOrderItem {
 
     private String endDispDateStr;
 
-    private Integer promotion;
+    private String promotion;
 
     private Integer promDays;
 
@@ -66,7 +66,31 @@ public class TPlanOrderItem {
 
     private String lastModifiedByTxt;
     
-    public String getMatnrTxt()
+    private String giftMatnr;
+    
+    private String giftUnit;
+    
+    public String getGiftUnit()
+	{
+		return giftUnit;
+	}
+
+	public void setGiftUnit(String giftUnit)
+	{
+		this.giftUnit = giftUnit;
+	}
+
+	public String getGiftMatnr()
+	{
+		return giftMatnr;
+	}
+
+	public void setGiftMatnr(String giftMatnr)
+	{
+		this.giftMatnr = giftMatnr;
+	}
+
+	public String getMatnrTxt()
 	{
 		return matnrTxt;
 	}
@@ -228,11 +252,11 @@ public class TPlanOrderItem {
         this.endDispDate = endDispDate;
     }
 
-    public Integer getPromotion() {
+    public String getPromotion() {
         return promotion;
     }
 
-    public void setPromotion(Integer promotion) {
+    public void setPromotion(String promotion) {
         this.promotion = promotion;
     }
 
