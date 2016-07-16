@@ -24,6 +24,7 @@ import com.nhry.service.order.dao.MilkBoxService;
 import com.nhry.service.order.dao.OrderService;
 import com.nhry.service.order.dao.PromotionService;
 import com.nhry.service.order.pojo.OrderRemainData;
+import com.nhry.utils.CodeGeneratorUtil;
 
 import org.apache.commons.lang3.StringUtils;
 
@@ -610,7 +611,7 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 		validateOrderInfo(record);
 		//暂时生成订单号
 		Date date = new Date();
-		order.setOrderNo(String.valueOf(date.getTime()));
+		order.setOrderNo(CodeGeneratorUtil.getCode());
 		//其他订单信息
 		order.setOrderDate(date);//订单创建日期
 		order.setCreaterBy(userSessionService.getCurrentUser().getLoginName());//创建人
@@ -657,7 +658,7 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 		BigDecimal orderAmt = new BigDecimal("0.00");//订单总价
 		for(TPlanOrderItem entry: record.getEntries()){
 			entry.setOrderNo(order.getOrderNo());
-			entry.setItemNo(order.getOrderNo().substring(9) + String.valueOf(index));//行项目编号
+			entry.setItemNo(order.getOrderNo() + String.valueOf(index));//行项目编号
 			entry.setRefItemNo(String.valueOf(index));//参考行项目编号
 			entry.setOrderDate(date);//订单日期
 			entry.setCreateAt(date);//创建日期
