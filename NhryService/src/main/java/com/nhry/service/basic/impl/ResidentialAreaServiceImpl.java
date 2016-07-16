@@ -14,12 +14,15 @@ import com.nhry.data.basic.domain.TMdBranchScopeKey;
 import com.nhry.data.basic.domain.TMdResidentialArea;
 import com.nhry.model.basic.BranchAreaSearch;
 import com.nhry.service.basic.dao.ResidentialAreaService;
+import com.nhry.service.basic.pojo.AreaSearchModel;
 import com.nhry.service.basic.pojo.BranchScopeModel;
 import com.nhry.service.basic.pojo.ResidentialAreaModel;
 import com.nhry.utils.PrimaryKeyUtils;
 import org.apache.commons.lang.StringUtils;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created by gongjk on 2016/6/3.
@@ -101,6 +104,19 @@ public class ResidentialAreaServiceImpl implements ResidentialAreaService {
         TSysUser user = userSessionService.getCurrentUser();
         String salesOrg = user.getSalesOrg();
         return tMdResidentialAreaMapper.getUnDistAreas(salesOrg);
+    }
+
+    @Override
+    public List<TMdResidentialArea> searchAreaBySalesOrg(AreaSearchModel aModel) {
+        TSysUser user = userSessionService.getCurrentUser();
+        TSysUserRole userRole = urMapper.getUserRoleByLoginName(user.getLoginName());
+        Map<String,String> map = new HashMap<String,String>();
+        aModel.setSalesOrg(user.getSalesOrg());
+        //奶站内勤，只看该奶站下的
+        if("10004".equals(userRole.getId())){
+            aModel.setBranchNo(user.getBranchNo());
+        }
+        return tMdResidentialAreaMapper.searchAreaBySalesOrg(aModel);
     }
 
     @Override

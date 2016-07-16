@@ -25,4 +25,6 @@ public interface RequireOrderService {
     int uptRequireOrder(UpdateRequiredModel uModel);
 
     int sendRequireOrderToERP();
+
+    int creatSalOrderOfDealerBranch();
 }

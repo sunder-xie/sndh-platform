@@ -13,7 +13,6 @@ import com.nhry.model.basic.BranchOrDealerList;
 import com.nhry.model.basic.BranchQueryModel;
 import com.nhry.service.BaseService;
 import com.nhry.service.basic.dao.BranchService;
-
 import org.apache.commons.lang3.StringUtils;
 
 import java.util.HashMap;
@@ -51,6 +50,8 @@ public class BranchServiceImpl extends BaseService implements BranchService {
 	public List<TMdBranch> findBranchListByOrg() {
 		// TODO Auto-generated method stub
 		TSysUser user = userSessionService.getCurrentUser();
+
+
 		return branchMapper.findBranchListByOrg(user.getSalesOrg());
 	}
 
