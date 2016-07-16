@@ -22,6 +22,11 @@
     <result column="VIP_CUST_NO" property="vipCustNo" jdbcType="VARCHAR" />
     <result column="IS_DEFAULT" property="isDafault" jdbcType="VARCHAR" />
     <result column="IS_DELETE" property="isDelete" jdbcType="VARCHAR" />
+    <result column="PROVINCE_NAME" property="provinceName" jdbcType="VARCHAR" />
+    <result column="CITY_NAME" property="cityName" jdbcType="VARCHAR" />
+    <result column="COUNTY_NAME" property="countyName" jdbcType="VARCHAR" />
+    <result column="STREET_NAME" property="streetName" jdbcType="VARCHAR" />
+    <result column="RESIDENTIAL_AREA_NAME" property="residentialAreaName" jdbcType="VARCHAR" />
   </resultMap>
   <sql id="Base_Column_List" >
     ADDRESS_ID, RECV_NAME, PROVINCE, CITY, COUNTY, MP, TEL, ZIP, ADDRESS_TXT, RESIDENTIAL_AREA, 
@@ -230,7 +235,8 @@
 			WHERE
 				it.TYPE_CODE = <include refid="mybaties.constant.COUNTRY_CITY_CONSTANT" /> 
 			AND it.ITEM_CODE = d.PROVINCE
-		) PROVINCE,
+		) PROVINCE_NAME,
+		d.PROVINCE,
 		(
 			SELECT
 				it.ITEM_NAME
@@ -239,7 +245,7 @@
 			WHERE
 				it.TYPE_CODE = <include refid="mybaties.constant.COUNTRY_CITY_CONSTANT" /> 
 			AND it.ITEM_CODE = d.CITY
-		) CITY,
+		) CITY_NAME,d.CITY,
 		(
 			SELECT
 				it.ITEM_NAME
@@ -248,7 +254,7 @@
 			WHERE
 				it.TYPE_CODE = <include refid="mybaties.constant.COUNTRY_CITY_CONSTANT" /> 
 			AND it.ITEM_CODE = d.COUNTY
-		) COUNTY,
+		) COUNTY_NAME,d.COUNTY,
 		(
 			SELECT
 				it.ITEM_NAME
@@ -257,7 +263,7 @@
 			WHERE
 				it.TYPE_CODE = <include refid="mybaties.constant.COUNTRY_CITY_CONSTANT" /> 
 			AND it.ITEM_CODE = d.STREET
-		) STREET,
+		) STREET_NAME,d.STREET,
 		MP,
 		TEL,
 		ZIP,
@@ -269,7 +275,7 @@
 				T_MD_RESIDENTIAL_AREA a
 			WHERE
 				a.ID = d.RESIDENTIAL_AREA
-		) RESIDENTIAL_AREA,
+		) RESIDENTIAL_AREA_NAME,d.RESIDENTIAL_AREA,
 		CREATE_AT,
 		CREATE_BY,
 		CREATE_BY_TXT,
