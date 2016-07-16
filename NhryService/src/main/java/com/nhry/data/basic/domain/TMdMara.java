@@ -27,6 +27,8 @@ public class TMdMara implements Serializable{
     private String secCateName;
 
     private String brand;
+    
+    private String brandName;
 
     private Float weight;
 
@@ -244,5 +246,13 @@ public class TMdMara implements Serializable{
 
 	public void setZbotCodeName(String zbotCodeName) {
 		this.zbotCodeName = zbotCodeName;
+	}
+
+	public String getBrandName() {
+		return brandName;
+	}
+
+	public void setBrandName(String brandName) {
+		this.brandName = brandName;
 	}
 }
