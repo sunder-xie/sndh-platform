@@ -128,7 +128,7 @@
         LEFT JOIN t_md_mara a on (i.MATNR = a.MATNR and a.SALES_ORG = #{salesOrg,jdbcType=VARCHAR})
         WHERE 1=1
           and  o.DISP_DATE = #{dispDate,jdbcType=DATE}
-           and  o.DISP_EMP_NO = #{empNo,jdbcType=VARCHAR}
+         and  o.DISP_EMP_NO = #{empNo,jdbcType=VARCHAR}
 
     </select>
 
