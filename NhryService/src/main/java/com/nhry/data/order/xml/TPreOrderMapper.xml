@@ -520,7 +520,7 @@
 			     		AND o.PREORDER_STAT = "30"
 			     		AND o.SIGN = "30" )
 			    </if>
-     ORDER BY o.ORDER_DATE desc
+     ORDER BY o.ORDER_NO desc
   </select>
 
   <select id="searchReturnOrders" resultMap="BaseResultMap" parameterType="com.nhry.model.order.ManHandOrderSearchModel">
