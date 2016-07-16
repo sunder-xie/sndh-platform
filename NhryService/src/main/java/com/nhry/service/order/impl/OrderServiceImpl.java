@@ -667,11 +667,18 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 			try
 			{
 				entry.setStartDispDate(format.parse(entry.getStartDispDateStr()));
-				entry.setEndDispDate(format.parse(entry.getEndDispDateStr()));
+				if("20".equals(order.getPaymentmethod())){
+					resolveEntryEndDispDate(entry);
+				}else{
+					entry.setEndDispDate(format.parse(entry.getEndDispDateStr()));
+				}
+			}
+			catch (ServiceException e1){
+				throw e1;
 			}
 			catch (Exception e)
 			{
-				throw new ServiceException(MessageCode.LOGIC_ERROR,"日期格式有误!");
+				throw new ServiceException(MessageCode.LOGIC_ERROR,e.getMessage());
 			}
 			orderAmt = orderAmt.add(calculateEntryAmount(entry));
 			
@@ -844,7 +851,7 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 	{
 		//未收款10、已收款20、垫付款30
 		//已装箱10、未装箱20、无需装箱30
-		//已生效10、未生效20、无效30
+		//已生效10、未生效20、无效30,作废40
 		//先款10、后付款20
 		//在订10、停订20、退订30
 		if(record.getMilkmemberNo()!=null){
@@ -858,6 +865,8 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 		if("10".equals(record.getPreorderStat())){
 			TPreOrder order = tPreOrderMapper.selectByPrimaryKey(record.getOrderNo());
 			if(StringUtils.isBlank(order.getMilkmemberNo()))throw new ServiceException(MessageCode.LOGIC_ERROR,"该订单没有订户，请选择订户或新建订户!");
+			//订户状态更改
+			tVipCustInfoService.discontinue(record.getMilkmemberNo(), "10",new com.nhry.utils.date.Date(),new com.nhry.utils.date.Date());
 		}
 		if(StringUtils.isBlank(record.getPaymentStat()) && StringUtils.isBlank(record.getMilkboxStat())
 				&& StringUtils.isBlank(record.getPreorderStat()) && StringUtils.isBlank(record.getSign())){
@@ -1867,5 +1876,56 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 
  		return daliyPlans;
  	}
+ 	
+ 	//当订单是预付款时，订单行有配送总数和起始日期，需要计算结束日期
+ 	private void resolveEntryEndDispDate(TPlanOrderItem entry){
+ 		int total = entry.getDispTotal();
+ 		if(total<=0 || total%entry.getQty()!=0)throw new ServiceException(MessageCode.LOGIC_ERROR,"行总共配送无法平均分配到每一天!请修改总数或每日配送数");
+ 		
+ 		int afterDays = 0;
+ 		
+ 		//判断是按周期送还是按星期送
+		for(int i=0;i<365;i++){
+			Date today = afterDate(entry.getStartDispDate(),afterDays);
+			
+			if(total==0){
+				entry.setEndDispDate(today);
+				break;
+			}
+			
+			if("10".equals(entry.getRuleType())){
+				int gapDays = entry.getGapDays() + 1;//间隔天数
+				if(afterDays%gapDays != 0){
+					if(entry.getRuleTxt()!=null){
+						List<String> deliverDays = Arrays.asList(entry.getRuleTxt().split(","));
+						if(deliverDays.size() > 0){//判断周6，7是否配送
+							String weekday = getWeek(today);
+							if(!deliverDays.contains(weekday)){
+								continue;
+							}
+						}
+					}else{
+						continue;
+					}
+				}
+			}
+			else if("20".equals(entry.getRuleType())){
+				String weekday = getWeek(today);
+				List<String> deliverDays = Arrays.asList(entry.getRuleTxt().split(","));
+				if(!deliverDays.contains(weekday)){
+					continue;//如果选择的星期几不送，则跳过今天
+				}
+			}
+			
+			total = total - entry.getQty();
+			afterDays++;
+			
+		}
+		
+ 	}
+ 	
+ 	
+ 	
+ 	
  	
 }
