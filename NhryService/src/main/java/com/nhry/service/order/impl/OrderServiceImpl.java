@@ -678,7 +678,7 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 			}
 			catch (Exception e)
 			{
-				throw new ServiceException(MessageCode.LOGIC_ERROR,e.getMessage());
+				throw new ServiceException(MessageCode.LOGIC_ERROR,"日期格式有误");
 			}
 			orderAmt = orderAmt.add(calculateEntryAmount(entry));
 			
@@ -1900,10 +1900,12 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 						if(deliverDays.size() > 0){//判断周6，7是否配送
 							String weekday = getWeek(today);
 							if(!deliverDays.contains(weekday)){
+								afterDays++;
 								continue;
 							}
 						}
 					}else{
+						afterDays++;
 						continue;
 					}
 				}
@@ -1912,6 +1914,7 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 				String weekday = getWeek(today);
 				List<String> deliverDays = Arrays.asList(entry.getRuleTxt().split(","));
 				if(!deliverDays.contains(weekday)){
+					afterDays++;
 					continue;//如果选择的星期几不送，则跳过今天
 				}
 			}
