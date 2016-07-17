@@ -30,10 +30,12 @@ public class TSysUser implements Serializable{
     private Date createOn;
 
     private String branchNo;
-    
+        
     private String branchName;
 
     private String dealerId;
+    
+    private String dealerName;
 
     private String salesOrg;
     
@@ -471,5 +473,13 @@ public class TSysUser implements Serializable{
 
 	public void setOrgName(String orgName) {
 		this.orgName = orgName;
+	}
+
+	public String getDealerName() {
+		return dealerName;
+	}
+
+	public void setDealerName(String dealerName) {
+		this.dealerName = dealerName;
 	}
 }

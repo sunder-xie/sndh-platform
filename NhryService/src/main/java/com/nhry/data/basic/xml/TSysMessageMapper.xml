@@ -1,0 +1,212 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.nhry.data.basic.dao.TSysMessageMapper" >
+  <resultMap id="BaseResultMap" type="com.nhry.data.basic.domain.TSysMessage" >
+    <id column="MESSAGE_NO" property="messageNo" jdbcType="VARCHAR" />
+    <result column="TITLE" property="title" jdbcType="VARCHAR" />
+    <result column="CONTENT" property="content" jdbcType="VARCHAR" />
+    <result column="TYPE" property="type" jdbcType="VARCHAR" />
+    <result column="SALES_ORG" property="salesOrg" jdbcType="VARCHAR" />
+    <result column="DEALER_NO" property="dealerNo" jdbcType="VARCHAR" />
+    <result column="BRANCH_NO" property="branchNo" jdbcType="VARCHAR" />
+    <result column="LOGIN_NAME" property="loginName" jdbcType="VARCHAR" />
+    <result column="DISPLAY_NAME" property="displayName" jdbcType="VARCHAR" />
+    <result column="CREATE_AT" property="createAt" jdbcType="TIMESTAMP" />
+    <result column="CREATE_BY" property="createBy" jdbcType="VARCHAR" />
+    <result column="CREATE_BY_TXT" property="createByTxt" jdbcType="VARCHAR" />
+    <result column="FINISH_TIME" property="finishTime" jdbcType="TIMESTAMP" />
+    <result column="FINISH_FLAY" property="finishFlay" jdbcType="VARCHAR" />
+    <result column="URL" property="url" jdbcType="VARCHAR" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    MESSAGE_NO, TITLE, CONTENT, TYPE, SALES_ORG, DEALER_NO, BRANCH_NO, LOGIN_NAME, DISPLAY_NAME, 
+    CREATE_AT, CREATE_BY, CREATE_BY_TXT, FINISH_TIME, FINISH_FLAY, URL
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.String" >
+    select 
+    <include refid="Base_Column_List" />
+    from t_sys_message
+    where MESSAGE_NO = #{messageNo,jdbcType=VARCHAR}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String" >
+    delete from t_sys_message
+    where MESSAGE_NO = #{messageNo,jdbcType=VARCHAR}
+  </delete>
+  <insert id="insert" parameterType="com.nhry.data.basic.domain.TSysMessage" >
+    insert into t_sys_message (MESSAGE_NO, TITLE, CONTENT, 
+      TYPE, SALES_ORG, DEALER_NO, 
+      BRANCH_NO, LOGIN_NAME, DISPLAY_NAME, 
+      CREATE_AT, CREATE_BY, CREATE_BY_TXT, 
+      FINISH_TIME, FINISH_FLAY, URL
+      )
+    values (#{messageNo,jdbcType=VARCHAR}, #{title,jdbcType=VARCHAR}, #{content,jdbcType=VARCHAR}, 
+      #{type,jdbcType=VARCHAR}, #{salesOrg,jdbcType=VARCHAR}, #{dealerNo,jdbcType=VARCHAR}, 
+      #{branchNo,jdbcType=VARCHAR}, #{loginName,jdbcType=VARCHAR}, #{displayName,jdbcType=VARCHAR}, 
+      #{createAt,jdbcType=TIMESTAMP}, #{createBy,jdbcType=VARCHAR}, #{createByTxt,jdbcType=VARCHAR}, 
+      #{finishTime,jdbcType=TIMESTAMP}, #{finishFlay,jdbcType=VARCHAR}, #{url,jdbcType=VARCHAR}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="com.nhry.data.basic.domain.TSysMessage" >
+    insert into t_sys_message
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="messageNo != null" >
+        MESSAGE_NO,
+      </if>
+      <if test="title != null" >
+        TITLE,
+      </if>
+      <if test="content != null" >
+        CONTENT,
+      </if>
+      <if test="type != null" >
+        TYPE,
+      </if>
+      <if test="salesOrg != null" >
+        SALES_ORG,
+      </if>
+      <if test="dealerNo != null" >
+        DEALER_NO,
+      </if>
+      <if test="branchNo != null" >
+        BRANCH_NO,
+      </if>
+      <if test="loginName != null" >
+        LOGIN_NAME,
+      </if>
+      <if test="displayName != null" >
+        DISPLAY_NAME,
+      </if>
+      <if test="createAt != null" >
+        CREATE_AT,
+      </if>
+      <if test="createBy != null" >
+        CREATE_BY,
+      </if>
+      <if test="createByTxt != null" >
+        CREATE_BY_TXT,
+      </if>
+      <if test="finishTime != null" >
+        FINISH_TIME,
+      </if>
+      <if test="finishFlay != null" >
+        FINISH_FLAY,
+      </if>
+      <if test="url != null" >
+        URL,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="messageNo != null" >
+        #{messageNo,jdbcType=VARCHAR},
+      </if>
+      <if test="title != null" >
+        #{title,jdbcType=VARCHAR},
+      </if>
+      <if test="content != null" >
+        #{content,jdbcType=VARCHAR},
+      </if>
+      <if test="type != null" >
+        #{type,jdbcType=VARCHAR},
+      </if>
+      <if test="salesOrg != null" >
+        #{salesOrg,jdbcType=VARCHAR},
+      </if>
+      <if test="dealerNo != null" >
+        #{dealerNo,jdbcType=VARCHAR},
+      </if>
+      <if test="branchNo != null" >
+        #{branchNo,jdbcType=VARCHAR},
+      </if>
+      <if test="loginName != null" >
+        #{loginName,jdbcType=VARCHAR},
+      </if>
+      <if test="displayName != null" >
+        #{displayName,jdbcType=VARCHAR},
+      </if>
+      <if test="createAt != null" >
+        #{createAt,jdbcType=TIMESTAMP},
+      </if>
+      <if test="createBy != null" >
+        #{createBy,jdbcType=VARCHAR},
+      </if>
+      <if test="createByTxt != null" >
+        #{createByTxt,jdbcType=VARCHAR},
+      </if>
+      <if test="finishTime != null" >
+        #{finishTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="finishFlay != null" >
+        #{finishFlay,jdbcType=VARCHAR},
+      </if>
+      <if test="url != null" >
+        #{url,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.nhry.data.basic.domain.TSysMessage" >
+    update t_sys_message
+    <set >
+      <if test="title != null" >
+        TITLE = #{title,jdbcType=VARCHAR},
+      </if>
+      <if test="content != null" >
+        CONTENT = #{content,jdbcType=VARCHAR},
+      </if>
+      <if test="type != null" >
+        TYPE = #{type,jdbcType=VARCHAR},
+      </if>
+      <if test="salesOrg != null" >
+        SALES_ORG = #{salesOrg,jdbcType=VARCHAR},
+      </if>
+      <if test="dealerNo != null" >
+        DEALER_NO = #{dealerNo,jdbcType=VARCHAR},
+      </if>
+      <if test="branchNo != null" >
+        BRANCH_NO = #{branchNo,jdbcType=VARCHAR},
+      </if>
+      <if test="loginName != null" >
+        LOGIN_NAME = #{loginName,jdbcType=VARCHAR},
+      </if>
+      <if test="displayName != null" >
+        DISPLAY_NAME = #{displayName,jdbcType=VARCHAR},
+      </if>
+      <if test="createAt != null" >
+        CREATE_AT = #{createAt,jdbcType=TIMESTAMP},
+      </if>
+      <if test="createBy != null" >
+        CREATE_BY = #{createBy,jdbcType=VARCHAR},
+      </if>
+      <if test="createByTxt != null" >
+        CREATE_BY_TXT = #{createByTxt,jdbcType=VARCHAR},
+      </if>
+      <if test="finishTime != null" >
+        FINISH_TIME = #{finishTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="finishFlay != null" >
+        FINISH_FLAY = #{finishFlay,jdbcType=VARCHAR},
+      </if>
+      <if test="url != null" >
+        URL = #{url,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where MESSAGE_NO = #{messageNo,jdbcType=VARCHAR}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.nhry.data.basic.domain.TSysMessage" >
+    update t_sys_message
+    set TITLE = #{title,jdbcType=VARCHAR},
+      CONTENT = #{content,jdbcType=VARCHAR},
+      TYPE = #{type,jdbcType=VARCHAR},
+      SALES_ORG = #{salesOrg,jdbcType=VARCHAR},
+      DEALER_NO = #{dealerNo,jdbcType=VARCHAR},
+      BRANCH_NO = #{branchNo,jdbcType=VARCHAR},
+      LOGIN_NAME = #{loginName,jdbcType=VARCHAR},
+      DISPLAY_NAME = #{displayName,jdbcType=VARCHAR},
+      CREATE_AT = #{createAt,jdbcType=TIMESTAMP},
+      CREATE_BY = #{createBy,jdbcType=VARCHAR},
+      CREATE_BY_TXT = #{createByTxt,jdbcType=VARCHAR},
+      FINISH_TIME = #{finishTime,jdbcType=TIMESTAMP},
+      FINISH_FLAY = #{finishFlay,jdbcType=VARCHAR},
+      URL = #{url,jdbcType=VARCHAR}
+    where MESSAGE_NO = #{messageNo,jdbcType=VARCHAR}
+  </update>
+</mapper>

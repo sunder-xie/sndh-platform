@@ -9,14 +9,22 @@ public class TMdAddress implements Serializable{
     private String recvName;
 
     private String province;
+    
+    private String provinceName;
 
     private String city;
+    
+    private String cityName;
 
     private String county;
+    
+    private String countyName;
 
     private String mp;
     
     private String street;
+    
+    private String streetName;
 
     private String tel;
 
@@ -25,6 +33,8 @@ public class TMdAddress implements Serializable{
     private String addressTxt;
 
     private String residentialArea;
+    
+    private String residentialAreaName;
 
     private Date createAt;
 
@@ -214,5 +224,45 @@ public class TMdAddress implements Serializable{
 
 	public void setIsDelete(String isDelete) {
 		this.isDelete = isDelete;
+	}
+
+	public String getProvinceName() {
+		return provinceName;
+	}
+
+	public void setProvinceName(String provinceName) {
+		this.provinceName = provinceName;
+	}
+
+	public String getCityName() {
+		return cityName;
+	}
+
+	public void setCityName(String cityName) {
+		this.cityName = cityName;
+	}
+
+	public String getCountyName() {
+		return countyName;
+	}
+
+	public void setCountyName(String countyName) {
+		this.countyName = countyName;
+	}
+
+	public String getStreetName() {
+		return streetName;
+	}
+
+	public void setStreetName(String streetName) {
+		this.streetName = streetName;
+	}
+
+	public String getResidentialAreaName() {
+		return residentialAreaName;
+	}
+
+	public void setResidentialAreaName(String residentialAreaName) {
+		this.residentialAreaName = residentialAreaName;
 	}
 }
