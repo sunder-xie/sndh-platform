@@ -142,6 +142,9 @@
       <if test="status != null" >
         STATUS,
       </if>
+      <if test="scope != null" >
+        SCOPE,
+      </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides="," >
       <if test="id != null" >
@@ -182,6 +185,9 @@
       </if>
       <if test="status != null" >
         #{status,jdbcType=CHAR},
+      </if>
+      <if test="scope != null" >
+        #{scope,jdbcType=VARCHAR},
       </if>
     </trim>
   </insert>
@@ -353,7 +359,11 @@
 		WHERE p.SALES_ORG = #{salesOrg}
 		AND p.price_type='30'
   </select>
-  <select id="getCompPriceGroupCount" resultType="Integer" parameterType="String">
-     select COUNT(m.ID) from t_md_price m where m.STATUS='Y' and m.PRICE_TYPE=<include refid="mybaties.constant.price_type_comp"></include> AND m.SALES_ORG=#{salesOrg}
+  <select id="getCompPriceGroupCount" resultType="Integer" parameterType="java.util.HashMap">
+     select COUNT(m.ID) from t_md_price m where m.STATUS='Y' and m.PRICE_TYPE=#{priceType}
+     <if test="scope != null and scope != ''">
+     AND m.SCOPE=#{scope}
+     </if>
+      AND m.SALES_ORG=#{salesOrg}
   </select>
 </mapper>

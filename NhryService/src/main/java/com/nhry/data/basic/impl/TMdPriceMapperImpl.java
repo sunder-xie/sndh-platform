@@ -84,8 +84,8 @@ public class TMdPriceMapperImpl implements TMdPriceMapper {
 	}
 
 	@Override
-	public int getCompPriceGroupCount(String salesOrg) {
+	public int getCompPriceGroupCount(Map<String,String> attrs) {
 		// TODO Auto-generated method stub
-		return this.sqlSessionTemplate.selectOne("getCompPriceGroupCount", salesOrg);
+		return this.sqlSessionTemplate.selectOne("getCompPriceGroupCount", attrs);
 	}
 }
