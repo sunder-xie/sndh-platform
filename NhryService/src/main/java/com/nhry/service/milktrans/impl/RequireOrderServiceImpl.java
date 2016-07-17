@@ -20,6 +20,7 @@ import com.nhry.service.milktrans.dao.RequireOrderService;
 import com.nhry.service.pi.dao.PIRequireOrderService;
 import com.nhry.utils.DateUtil;
 import com.nhry.utils.PrimaryKeyUtils;
+import com.nhry.utils.SerialUtil;
 import com.nhry.webService.client.PISuccessMessage;
 import org.apache.commons.lang3.StringUtils;
 
@@ -360,15 +361,24 @@ public class RequireOrderServiceImpl implements RequireOrderService {
         if(promotionNolist !=null && promotionNolist.size()>0){
             for(String promotion : promotionNolist){
                 //创建一份 销售订单
-               String orderNo = createSaleOrder(user,today,"dealer",promotion);
+                TSsmSalOrder order = createSaleOrder(user,today,"dealer",promotion);
                 rModel.setPromotion(promotion);
                 List<TOrderDaliyPlanItem> items = tOrderDaliyPlanItemMapper.selectProDayPlanOfDealerBranch(rModel);
                 if(items !=null && items.size()>0){
                     for(int i = 1; i <=items.size();i++){
                         TOrderDaliyPlanItem item = items.get(i-1);
-                        createSaleOrderItem(item,i,orderNo,today,"dealer");
+                        createSaleOrderItem(item,i,order.getOrderNo(),today,"dealer");
                     }
                 }
+                //调用 接口
+                // piRequireOrderService.generateRequireOrder();
+                PISuccessMessage message =new PISuccessMessage();
+                message.setData(SerialUtil.creatSeria());
+                message.setSuccess(true);
+                if(message.isSuccess()){
+                    this.uptVouCherNoByOrderNo(order.getOrderNo(),message.getData());
+                }
+
             }
         }
 
@@ -391,16 +401,24 @@ public class RequireOrderServiceImpl implements RequireOrderService {
         List<TOrderDaliyPlanItem> items = tOrderDaliyPlanItemMapper.selectNoProDayPlanOfDealerBranch(rModel);
         if(items!=null && items.size()>0){
             //生成 促销订单
-            String orderNo = createSaleOrder(user,requiredDate,"dealer","");
+            TSsmSalOrder order  = createSaleOrder(user,requiredDate,"dealer","");
             for(int i=0 ;i<items.size();i++){
                 TOrderDaliyPlanItem item = items.get(i);
                 //生成 促销订单行项目
-                createSaleOrderItem(item,i+1,orderNo,requiredDate,"dealer");
+                createSaleOrderItem(item,i+1,order.getOrderNo(),requiredDate,"dealer");
+            }
+
+            //调用 接口
+            // piRequireOrderService.generateRequireOrder();
+            PISuccessMessage message =new PISuccessMessage();
+            message.setData(SerialUtil.creatSeria());
+            message.setSuccess(true);
+            if(message.isSuccess()){
+                this.uptVouCherNoByOrderNo(order.getOrderNo(),message.getData());
             }
         }
         return 1;
     }
-
 
 
 
@@ -421,11 +439,19 @@ public class RequireOrderServiceImpl implements RequireOrderService {
         List<TOrderDaliyPlanItem> items = tOrderDaliyPlanItemMapper.selectNoProDayPlanOfSelfBranch(rModel);
         if(items!=null && items.size()>0){
             //生成 促销订单
-            String orderNo = createSaleOrder(user,requiredDate,"branch","");
+            TSsmSalOrder order = createSaleOrder(user,requiredDate,"branch","");
             for(int i=0 ;i<items.size();i++){
                 TOrderDaliyPlanItem item = items.get(i);
                 //生成 促销订单行项目
-                createSaleOrderItem(item,i+1,orderNo,requiredDate,"branch");
+                createSaleOrderItem(item,i+1,order.getOrderNo(),requiredDate,"branch");
+            }
+            //调用 接口
+            // piRequireOrderService.generateRequireOrder();
+            PISuccessMessage message =new PISuccessMessage();
+            message.setData(SerialUtil.creatSeria());
+            message.setSuccess(true);
+            if(message.isSuccess()){
+                this.uptVouCherNoByOrderNo(order.getOrderNo(),message.getData());
             }
         }
         return 1;
@@ -448,17 +474,26 @@ public class RequireOrderServiceImpl implements RequireOrderService {
         if(promotionNolist !=null && promotionNolist.size()>0){
             for(String promotion : promotionNolist){
                 //创建一份 销售订单
-                String orderNo = createSaleOrder(user,requiredDate,"branch",promotion);
+                TSsmSalOrder order = createSaleOrder(user,requiredDate,"branch",promotion);
                 rModel.setPromotion(promotion);
                 List<TOrderDaliyPlanItem> items = tOrderDaliyPlanItemMapper.selectProDayPlanOfSelfBranch(rModel);
                 if(items !=null && items.size()>0){
                     for(int i = 1; i <=items.size();i++){
                         TOrderDaliyPlanItem item = items.get(i-1);
-                        createSaleOrderItem(item,i,orderNo,requiredDate,"branch");
+                        createSaleOrderItem(item,i,order.getOrderNo(),requiredDate,"branch");
 
                     }
                 }
+                //调用 接口
+                // piRequireOrderService.generateRequireOrder();
+                PISuccessMessage message =new PISuccessMessage();
+                message.setData(SerialUtil.creatSeria());
+                message.setSuccess(true);
+                if(message.isSuccess()){
+                    this.uptVouCherNoByOrderNo(order.getOrderNo(),message.getData());
+                }
             }
+
         }
         return 1;
     }
@@ -496,7 +531,7 @@ public class RequireOrderServiceImpl implements RequireOrderService {
      * @param promotion         如果促销号不为空，则该销售订单为一个参加促销的销售订单，否则为正品促销订单
      * @return
      */
-    private String  createSaleOrder(TSysUser user, Date requiredDate, String type, String promotion) {
+    private TSsmSalOrder  createSaleOrder(TSysUser user, Date requiredDate, String type, String promotion) {
         TSsmSalOrder order = new TSsmSalOrder();
         order.setDealerNo(user.getDealerId());
         String orderNo = PrimaryKeyUtils.generateUuidKey();
@@ -517,7 +552,7 @@ public class RequireOrderServiceImpl implements RequireOrderService {
             order.setPromNo(promotion);
         }
         tSsmSalOrderMapper.addsalOrder(order);
-        return orderNo;
+        return order;
     }
 
     private boolean  uptRequireOrderAndDayOrderStatus(TSsmReqGoodsOrder order,TSysUser user) {
@@ -556,5 +591,12 @@ public class RequireOrderServiceImpl implements RequireOrderService {
         return true;
     }
 
+
+    public void uptVouCherNoByOrderNo(String orderNo,String voucherNo){
+        Map<String,String> map = new HashMap<String,String>();
+        map.put("orderNo",orderNo);
+        map.put("voucherNo",voucherNo);
+        tSsmSalOrderMapper.uptVouCherNoByOrderNo(map);
+    }
 
 }
