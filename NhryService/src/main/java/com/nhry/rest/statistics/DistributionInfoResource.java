@@ -1,6 +1,8 @@
 package com.nhry.rest.statistics;
 
+import com.nhry.common.auth.UserSessionService;
 import com.nhry.common.exception.MessageCode;
+import com.nhry.data.auth.domain.TSysUser;
 import com.nhry.model.statistics.DistInfoModel;
 import com.nhry.model.sys.ResponseModel;
 import com.nhry.rest.BaseResource;
@@ -34,13 +36,23 @@ import java.text.SimpleDateFormat;
 public class DistributionInfoResource extends BaseResource{
     @Autowired
     private DistributionInfoService distributionInfoService;
-
+    @Autowired
+    private UserSessionService userSessionService;
     @POST
     @Path("/findDifferInfo")
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes(MediaType.APPLICATION_JSON)
     @ApiOperation(value = "/findDifferInfo}", response = ResponseModel.class, notes = "路单配送差异明细")
     public Response getYHD(@ApiParam(name = "model",value = "路单配送") DistInfoModel model){
+        TSysUser user = userSessionService.getCurrentUser();
+        if(user.getBranchNo()!=null){
+            model.setBranchNo(user.getBranchNo());
+        }else if(user.getDealerId() != null){
+            model.setDealerId(user.getDealerId());
+        }
+        if(user.getSalesOrg() != null){
+            model.setSalesOrg(user.getSalesOrg());
+        }
         return convertToRespModel(MessageCode.NORMAL, null, distributionInfoService.findDistDifferInfo(model));
     }
 

@@ -13,6 +13,10 @@ public class DistInfoModel {
     Date endDate;
     String pageNum;
     String pageSize;
+    String branchNo;
+    String dealerId;
+    String salesOrg;
+    Date theDate;
 
     public Date getBeginDate() {
         try {
@@ -56,5 +60,43 @@ public class DistInfoModel {
 
     public void setPageSize(String pageSize) {
         this.pageSize = pageSize;
+    }
+
+    public String getBranchNo() {
+        return branchNo;
+    }
+
+    public void setBranchNo(String branchNo) {
+        this.branchNo = branchNo;
+    }
+
+    public String getDealerId() {
+        return dealerId;
+    }
+
+    public void setDealerId(String dealerId) {
+        this.dealerId = dealerId;
+    }
+
+    public String getSalesOrg() {
+        return salesOrg;
+    }
+
+    public void setSalesOrg(String salesOrg) {
+        this.salesOrg = salesOrg;
+    }
+
+    public Date getTheDate() {
+        try {
+            if(theDate != null)
+                return format.parse(format.format(theDate));
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        return theDate;
+    }
+
+    public void setTheDate(Date theDate) {
+        this.theDate = theDate;
     }
 }
