@@ -141,7 +141,7 @@
     </set>
     where LIST_NO = #{listNo,jdbcType=VARCHAR}
   </update>
-  <select id="getNotSellListByMatnr" resultMap="BaseResultMap" parameterType="String">
+  <select id="getNotSellListByMatnr" resultMap="BaseResultMap" parameterType="java.util.HashMap">
       SELECT
 		LIST_NO,
 		MATNR,
