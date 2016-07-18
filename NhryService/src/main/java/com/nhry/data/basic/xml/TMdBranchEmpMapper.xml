@@ -45,7 +45,7 @@
   <!--员工表字段-->
   <sql id="Base_Column_List" >
     EMP_NO, HR_EMP_NO, BRANCH_NO, EMP_NAME,GENDER, EMP_TYPE, TEL, MP, WEBCHAT, ID_NO, CREATE_AT,SALES_ORG,
-    CREATE_BY, CREATE_BY_TXT, LAST_MODIFIED, LAST_MODIFIED_BY, LAST_MODIFIED_BY_TXT, SALARY_MET,BASE_SALARY,JOIN_DATE
+    CREATE_BY, CREATE_BY_TXT, LAST_MODIFIED, LAST_MODIFIED_BY, LAST_MODIFIED_BY_TXT, SALARY_MET,BASE_SALARY,JOIN_DATE,
     STATUS
   </sql>
 
@@ -159,15 +159,19 @@
 
   <select id="getAllEmpByBranchNo" parameterType="String" resultMap="BaseResultMap">
     select
-    <include refid="Base_Column_List" />
-    from T_MD_BRANCH_EMP
+    e.EMP_NO, e.HR_EMP_NO, e.BRANCH_NO, e.EMP_NAME,e.GENDER, e.EMP_TYPE, e.TEL,e.MP, e.WEBCHAT, e.ID_NO, e.CREATE_AT,e.SALES_ORG,
+    e.CREATE_BY, e.CREATE_BY_TXT, e.LAST_MODIFIED, e.LAST_MODIFIED_BY, e.LAST_MODIFIED_BY_TXT,e.SALARY_MET,e.BASE_SALARY,e.JOIN_DATE,
+    e.STATUS
+    from T_MD_BRANCH_EMP e LEFT JOIN t_sys_user_role u on e.EMP_NO = u.LOGIN_NAME
     where 1=1
+    and u.ID=  <include refid="mybaties.constant.milkman"/>
     <if test="branchNo != null and branchNo != ''">
      	AND  BRANCH_NO = #{branchNo,jdbcType=VARCHAR}
      </if>
      <if test="salesOrg != null and salesOrg != ''">
      	AND  SALES_ORG = #{salesOrg,jdbcType=VARCHAR}
      </if>
+
   </select>
 
 

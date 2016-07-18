@@ -17,7 +17,7 @@ public interface TVipCustInfoService {
 	 * @param record
 	 * @return
 	 */
-    int addVipCust(TVipCustInfo record);
+	String addVipCust(TVipCustInfo record);
     
     /**
      * 根据订户编号查询订户信息

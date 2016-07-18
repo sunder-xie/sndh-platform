@@ -32,4 +32,18 @@ public interface TSysUserMapper {
 	 * @return
 	 */
 	List<TSysUser> getUsersByRidandOrgs(Map<String,String> attrs);
+	
+	/**
+	 * 根据组织和角色查询登录名列表(不在给定经销商范围内的)
+	 * @param attrs
+	 * @return
+	 */
+	List<TSysUser> getloginNamesByOrgsandRid(Map<String,String> attrs);
+	
+	/**
+	 * 根据组织和角色查询登录名列表
+	 * @param attrs
+	 * @return
+	 */
+	List<TSysUser> getloginNamesByOrgsandRid2(Map<String,String> attrs);
 }
