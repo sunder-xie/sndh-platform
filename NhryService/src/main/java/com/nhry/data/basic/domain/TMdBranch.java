@@ -36,9 +36,15 @@ public class TMdBranch implements Serializable{
 
     private String province;
 
+    private String provinceName;
+
     private String city;
 
+    private String cityName;
+
     private String county;
+
+    private String countyName;
 
     private String werks;
 
@@ -59,6 +65,30 @@ public class TMdBranch implements Serializable{
     private String companyCode;
 
     private String companyName;
+
+    public String getProvinceName() {
+        return provinceName;
+    }
+
+    public void setProvinceName(String provinceName) {
+        this.provinceName = provinceName;
+    }
+
+    public String getCityName() {
+        return cityName;
+    }
+
+    public void setCityName(String cityName) {
+        this.cityName = cityName;
+    }
+
+    public String getCountyName() {
+        return countyName;
+    }
+
+    public void setCountyName(String countyName) {
+        this.countyName = countyName;
+    }
 
     public String getSalesOrgName() {
         return salesOrgName;
