@@ -151,7 +151,7 @@
 		(
 			CASE t_branch_notsell_list.DEALER_NO
 			WHEN '-1' THEN
-				'自有奶站'
+				'<include refid="mybaties.constant.ownBranch"></include>'
 			ELSE
 				(
 					SELECT
@@ -165,6 +165,6 @@
 		) DEALER_NAME
 	FROM
 		t_branch_notsell_list 
-	    where MATNR = #{matnr}
+	    where SALES_ORG =#{salesOrg} and MATNR = #{matnr}
   </select>
 </mapper>
