@@ -5,7 +5,9 @@ import com.nhry.data.basic.domain.TMdBranch;
 import com.nhry.data.basic.domain.TMdBranchEx;
 import com.nhry.data.milktrans.dao.TSsmReqGoodsOrderItemMapper;
 import com.nhry.data.milktrans.dao.TSsmReqGoodsOrderMapper;
+import com.nhry.data.milktrans.dao.TSsmSalOrderItemMapper;
 import com.nhry.data.milktrans.domain.TSsmReqGoodsOrder;
+import com.nhry.data.milktrans.domain.TSsmSalOrder;
 import com.nhry.data.stock.dao.TSsmGiOrderItemMapper;
 import com.nhry.data.stock.dao.TSsmGiOrderMapper;
 import com.nhry.data.stock.domain.TSsmGiOrder;
@@ -17,7 +19,6 @@ import com.nhry.service.pi.dao.PIRequireOrderService;
 import com.nhry.webService.client.PISuccessMessage;
 import com.nhry.webService.client.businessData.model.Delivery;
 
-import java.text.ParseException;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -37,6 +38,8 @@ public class PIRequireOrderServiceImpl implements PIRequireOrderService {
     private TSsmGiOrderItemMapper ssmGiOrderItemMapper;
 
     private TSsmReqGoodsOrderMapper tSsmReqGoodsOrderMapper;
+
+    private TSsmSalOrderItemMapper tSsmSalOrderItemMapper;
 
     public void setSsmGiOrderItemMapper(TSsmGiOrderItemMapper ssmGiOrderItemMapper) {
         this.ssmGiOrderItemMapper = ssmGiOrderItemMapper;
@@ -69,12 +72,9 @@ public class PIRequireOrderServiceImpl implements PIRequireOrderService {
     }
 
     @Override
-    public PISuccessMessage generateSalesOrder(TSsmReqGoodsOrder ssmReqGoodsOrder, String kunnr, String kunwe, String vkorg, String activityId) {
-        ReqGoodsOrderItemSearch key = new ReqGoodsOrderItemSearch();
-        key.setOrderNo(ssmReqGoodsOrder.getOrderNo());
-        key.setMatnr(ssmReqGoodsOrder.getBranchNo());
-        List<Map<String, String>> items = tSsmReqGoodsOrderItemMapper.findItemsForPI(key);
-        return BusinessDataConnection.SalesOrderCreate(kunnr,kunwe,vkorg,ssmReqGoodsOrder.getOrderNo(),ssmReqGoodsOrder.getRequiredDate(),items,activityId );
+    public PISuccessMessage generateSalesOrder(TSsmSalOrder ssmSalOrder, String kunnr, String kunwe, String vkorg, String activityId) {
+        List<Map<String,String>> items = tSsmSalOrderItemMapper.findItemsForPI(ssmSalOrder.getOrderNo());
+        return BusinessDataConnection.SalesOrderCreate(kunnr,kunwe,vkorg, ssmSalOrder.getOrderNo(), ssmSalOrder.getRequiredDate(),items,activityId );
     }
 
     @Override
@@ -144,12 +144,12 @@ public class PIRequireOrderServiceImpl implements PIRequireOrderService {
     }
     @Override
     public String execSalesOrder(Date date, TMdBranch branch){
-        RequireOrderSearch search = new RequireOrderSearch();
-        search.setRequiredDate(date);
-        search.setBranchNo(branch.getBranchNo());
-        TSsmReqGoodsOrder order = tSsmReqGoodsOrderMapper.searchRequireOrder(search);
+//        RequireOrderSearch search = new RequireOrderSearch();
+//        search.setRequiredDate(date);
+//        search.setBranchNo(branch.getBranchNo());
+//        TSsmReqGoodsOrder order = tSsmReqGoodsOrderMapper.searchRequireOrder(search);
 
-        generateSalesOrder(order,branch.getDealerNo(),branch.getBranchNo(),branch.getSalesOrg(),"");
+//        generateSalesOrder(order,branch.getDealerNo(),branch.getBranchNo(),branch.getSalesOrg(),"");
         return "1";
     }
 
