@@ -1,14 +1,17 @@
 package com.nhry.data.basic.domain;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+
 import com.nhry.utils.DateAdapter;
+
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
-public class TMdPrice {
+public class TMdPrice implements Serializable{
     private String id;
 
     private String salesOrg;
