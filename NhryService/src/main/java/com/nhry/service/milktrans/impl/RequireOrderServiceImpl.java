@@ -174,6 +174,8 @@ public class RequireOrderServiceImpl implements RequireOrderService {
                 entries.add(entry);
             }
             orderModel.setEntries(entries);
+        }else{
+            throw new ServiceException(MessageCode.LOGIC_ERROR,"当天的要货计划还未生成");
         }
             return orderModel;
     }
