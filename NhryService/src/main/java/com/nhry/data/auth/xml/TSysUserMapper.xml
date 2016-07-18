@@ -586,4 +586,61 @@
 	   AND u.BRANCH_NO = #{branchNo}
 	</if>
   </select>
+  <select id="getloginNamesByOrgsandRid" resultMap="BaseResultMap" parameterType="java.util.HashMap">
+     SELECT
+		u.LOGIN_NAME,
+		u.BRANCH_NO,
+		u.SALES_ORG,
+		u.DEALER_ID,
+		u.DISPLAY_NAME
+	FROM
+		t_sys_user u,
+		t_sys_user_role r,
+		t_md_branch b
+	WHERE
+		u.LOGIN_NAME = r.LOGIN_NAME
+	AND u.BRANCH_NO = b.BRANCH_NO
+	<if test="dealerNo != null and dealerNo != ''">
+	    AND b.DEALER_NO NOT IN (#{dealerNo})
+	</if>
+	<if test="branchGroup != null and branchGroup != ''">
+	   AND b.BRANCH_GROUP = #{branchGroup}
+	</if>
+	<if test="salesOrg != null and salesOrg != ''">
+	   AND b.SALES_ORG = #{salesOrg}
+	   AND u.SALES_ORG = #{salesOrg}
+	</if>
+	<if test="rid != null and rid != ''">
+	   AND r.ID = #{rid}
+	</if>
+  </select>
+  <select id="getloginNamesByOrgsandRid2" resultMap="BaseResultMap" parameterType="java.util.HashMap">
+     SELECT
+		u.LOGIN_NAME,
+		u.BRANCH_NO,
+		u.SALES_ORG,
+		u.DEALER_ID,
+		u.DISPLAY_NAME
+	FROM
+		t_sys_user u,
+		t_sys_user_role r,
+		t_md_branch b
+	WHERE
+		u.LOGIN_NAME = r.LOGIN_NAME
+	AND u.BRANCH_NO = b.BRANCH_NO
+	<if test="dealerNo != null and dealerNo != ''">
+	    AND b.DEALER_NO = #{dealerNo}
+	</if>
+	<if test="branchNo != null and branchNo != ''">
+	   AND u.BRANCH_NO = #{branchNo}
+	   AND b.BRANCH_NO = #{branchNo}
+	</if>
+	<if test="salesOrg != null and salesOrg != ''">
+	   AND b.SALES_ORG = #{salesOrg}
+	   AND u.SALES_ORG = #{salesOrg}
+	</if>
+	<if test="rid != null and rid != ''">
+	   AND r.ID in (#{rid})
+	</if>
+  </select>
 </mapper>

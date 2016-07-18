@@ -72,4 +72,16 @@ public class TSysUserMapperImpl implements TSysUserMapper {
 		// TODO Auto-generated method stub
 		return this.sqlSessionTemplate.selectList("getUsersByRidandOrgs", attrs);
 	}
+
+	@Override
+	public List<TSysUser> getloginNamesByOrgsandRid(Map<String, String> attrs) {
+		// TODO Auto-generated method stub
+		return this.sqlSessionTemplate.selectList("getloginNamesByOrgsandRid", attrs);
+	}
+
+	@Override
+	public List<TSysUser> getloginNamesByOrgsandRid2(Map<String, String> attrs) {
+		// TODO Auto-generated method stub
+		return this.sqlSessionTemplate.selectList("getloginNamesByOrgsandRid2", attrs);
+	}
 }

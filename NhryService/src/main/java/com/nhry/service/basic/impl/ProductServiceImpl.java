@@ -15,6 +15,7 @@ import com.nhry.model.basic.ProductQueryModel;
 import com.nhry.service.BaseService;
 import com.nhry.service.basic.dao.BranchService;
 import com.nhry.service.basic.dao.ProductService;
+import com.nhry.service.basic.dao.TSysMessageService;
 import com.nhry.service.basic.pojo.BotType;
 import com.nhry.utils.PrimaryKeyUtils;
 import com.nhry.utils.SysContant;
@@ -32,6 +33,7 @@ public class ProductServiceImpl extends BaseService implements ProductService {
 	private TMdMaraExMapper tMdMaraExMapper;
 	private TBranchNotsellListMapper notsellListMapper;
 	private BranchService branchSevice;
+	private TSysMessageService messService;
 
 	public void settMdMaraMapper(TMdMaraMapper tMdMaraMapper) {
 		this.tMdMaraMapper = tMdMaraMapper;
@@ -75,6 +77,7 @@ public class ProductServiceImpl extends BaseService implements ProductService {
 	   if(!StringUtils.isBlank(record.getStatus())){
 		   //状态不为空时，更新产品状态
 		   pubProductByCode(record.getMatnr(),record.getStatus());
+		   messService.sendProductsMessages("产品更新了！", record);
 		}
 		return 1;
 	}
@@ -113,11 +116,22 @@ public class ProductServiceImpl extends BaseService implements ProductService {
 	public int pubProductByCode(String code,String status) {
 		// TODO Auto-generated method stub
 		Map attrs = new HashMap();
-		attrs.put("code", code);
+		attrs.put("matnr", code);
 		attrs.put("salesOrg",this.userSessionService.getCurrentUser().getSalesOrg());
 		attrs.put("status",status);
 		attrs.put("lastModified", new Date());
-		return tMdMaraMapper.pubProductByCode(attrs);
+		TMdMara mara = tMdMaraMapper.selectProductAndExByCode(attrs);
+		if(mara == null){
+			throw new ServiceException(MessageCode.LOGIC_ERROR, "该产品不存在，请检查输入的产品编号!");
+		}
+		tMdMaraMapper.pubProductByCode(attrs);
+		//发送通知
+		if("Y".equals(status)){
+			messService.sendProductsMessages("新品发布通知！", mara);
+		}else if("N".equals(status)){
+			messService.sendProductsMessages("产品下架通知！", mara);
+		}
+		return 1;
 	}
 
 	@Override
@@ -220,5 +234,9 @@ public class ProductServiceImpl extends BaseService implements ProductService {
 			}
 		}
 		return attrs;
+	}
+
+	public void setMessService(TSysMessageService messService) {
+		this.messService = messService;
 	}
 }
