@@ -20,6 +20,7 @@ import com.nhry.service.basic.pojo.ResidentialAreaModel;
 import com.nhry.utils.PrimaryKeyUtils;
 import org.apache.commons.lang.StringUtils;
 
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -149,6 +150,8 @@ public class ResidentialAreaServiceImpl implements ResidentialAreaService {
         tMdResidentialArea.setSalesOrg(user.getSalesOrg());
         tMdResidentialArea.setId(PrimaryKeyUtils.generateUuidKey());
         tMdResidentialArea.setStatus("10");
+        tMdResidentialArea.setCreateAt(new Date());
+        tMdResidentialArea.setCreateBy(user.getLoginName());
         return tMdResidentialAreaMapper.addResidentialArea(tMdResidentialArea);
     }
 
