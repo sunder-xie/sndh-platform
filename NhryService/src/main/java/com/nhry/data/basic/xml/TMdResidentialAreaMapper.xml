@@ -20,7 +20,6 @@
     <result column="PROPERTY_TEL" jdbcType="VARCHAR" property="propertyTel" />
     <result column="CREATE_AT" property="createAt" jdbcType="TIMESTAMP" />
     <result column="CREATE_BY" property="createBy" jdbcType="VARCHAR" />
-
   </resultMap>
   <sql id="Base_Column_List">
     ID, RESIDENTIAL_AREA_TXT, PROVINCE, CITY, COUNTY, STREET,GUIDEBOARD,STATUS, ADDRESS_TXT, RESIDENTIAL_NUM,
@@ -44,14 +43,97 @@
   </insert>
 
   <insert id="insertArea" parameterType="com.nhry.data.basic.domain.TMdResidentialArea">
-    insert into t_md_residential_area (ID, RESIDENTIAL_AREA_TXT, PROVINCE,
-    CITY, COUNTY, STREET,GUIDEBOARD,STATUS,
-    ADDRESS_TXT, RESIDENTIAL_NUM, SALES_ORG,
-    PROPERTY_TXT, PROPERTY_TEL)
-    values (#{id,jdbcType=VARCHAR}, #{residentialAreaTxt,jdbcType=VARCHAR}, #{province,jdbcType=VARCHAR},
-    #{city,jdbcType=VARCHAR}, #{county,jdbcType=VARCHAR}, #{street,jdbcType=VARCHAR}, #{guideboard,jdbcType=VARCHAR}, #{status,jdbcType=VARCHAR},
-    #{addressTxt,jdbcType=VARCHAR}, #{residentialNum,jdbcType=INTEGER}, #{salesOrg,jdbcType=VARCHAR},
-    #{propertyTxt,jdbcType=VARCHAR}, #{propertyTel,jdbcType=VARCHAR})
+    insert into t_md_residential_area
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        ID,
+      </if>
+      <if test="residentialAreaTxt != null">
+        RESIDENTIAL_AREA_TXT,
+      </if>
+      <if test="province != null">
+        PROVINCE,
+      </if>
+      <if test="city != null">
+        CITY,
+      </if>
+      <if test="county != null">
+        COUNTY,
+      </if>
+      <if test="street != null">
+        STREET,
+      </if>
+
+      <if test="guideboard != null">
+        GUIDEBOARD,
+      </if>
+      <if test="status != null">
+        Status,
+      </if>
+      <if test="addressTxt != null">
+        ADDRESS_TXT,
+      </if>
+      <if test="residentialNum != null">
+        RESIDENTIAL_NUM,
+      </if>
+      <if test="salesOrg != null">
+        SALES_ORG,
+      </if>
+      <if test="propertyTxt != null">
+        PROPERTY_TXT,
+      </if>
+      <if test="propertyTel != null">
+        PROPERTY_TEL,
+      </if>
+      <if test="createAt != null" >
+        CREATE_AT,
+      </if>
+      <if test="createBy != null" >
+        CREATE_BY,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        #{id,jdbcType=VARCHAR},
+      </if>
+      <if test="residentialAreaTxt != null">
+        #{residentialAreaTxt,jdbcType=VARCHAR},
+      </if>
+      <if test="province != null">
+        #{province,jdbcType=VARCHAR},
+      </if>
+      <if test="city != null">
+        #{city,jdbcType=VARCHAR},
+      </if>
+      <if test="county != null">
+        #{county,jdbcType=VARCHAR},
+      </if>
+      <if test="street != null">
+        #{street,jdbcType=VARCHAR},
+      </if>
+      <if test="addressTxt != null">
+        #{addressTxt,jdbcType=VARCHAR},
+      </if>
+      <if test="residentialNum != null">
+        #{residentialNum,jdbcType=INTEGER},
+      </if>
+      <if test="salesOrg != null">
+        #{salesOrg,jdbcType=VARCHAR},
+      </if>
+      <if test="propertyTxt != null">
+        #{propertyTxt,jdbcType=VARCHAR},
+      </if>
+      <if test="propertyTel != null">
+        #{propertyTel,jdbcType=VARCHAR},
+      </if>
+      <if test="createAt != null" >
+        #{createAt,jdbcType=TIMESTAMP},
+      </if>
+      <if test="createBy != null" >
+        #{createBy,jdbcType=VARCHAR},
+      </if>
+    </trim>
+
   </insert>
 
   <insert id="insertSelective" parameterType="com.nhry.data.basic.domain.TMdResidentialArea">
@@ -175,17 +257,41 @@
   </update>
   <update id="uptArea" parameterType="com.nhry.data.basic.domain.TMdResidentialArea">
     update t_md_residential_area
-    set RESIDENTIAL_AREA_TXT = #{residentialAreaTxt,jdbcType=VARCHAR},
-      PROVINCE = #{province,jdbcType=VARCHAR},
-      CITY = #{city,jdbcType=VARCHAR},
-      COUNTY = #{county,jdbcType=VARCHAR},
-      STREET = #{street,jdbcType=VARCHAR},
-      STATUS = #{status,jdbcType=VARCHAR},
-      ADDRESS_TXT = #{addressTxt,jdbcType=VARCHAR},
-      RESIDENTIAL_NUM = #{residentialNum,jdbcType=INTEGER},
-      SALES_ORG = #{salesOrg,jdbcType=VARCHAR},
-      PROPERTY_TXT = #{propertyTxt,jdbcType=VARCHAR},
-      PROPERTY_TEL = #{propertyTel,jdbcType=VARCHAR}
+    <set>
+      <if test="residentialAreaTxt != null">
+        RESIDENTIAL_AREA_TXT = #{residentialAreaTxt,jdbcType=VARCHAR},
+      </if>
+      <if test="province != null">
+        PROVINCE = #{province,jdbcType=VARCHAR},
+      </if>
+      <if test="city != null">
+        CITY = #{city,jdbcType=VARCHAR},
+      </if>
+      <if test="county != null">
+        COUNTY = #{county,jdbcType=VARCHAR},
+      </if>
+      <if test="street != null">
+        STREET = #{street,jdbcType=VARCHAR},
+      </if>
+      <if test="status != null">
+        Status = #{status,jdbcType=VARCHAR},
+      </if>
+      <if test="addressTxt != null">
+        ADDRESS_TXT = #{addressTxt,jdbcType=VARCHAR},
+      </if>
+      <if test="residentialNum != null">
+        RESIDENTIAL_NUM = #{residentialNum,jdbcType=INTEGER},
+      </if>
+      <if test="salesOrg != null">
+        SALES_ORG = #{salesOrg,jdbcType=VARCHAR},
+      </if>
+      <if test="propertyTxt != null">
+        PROPERTY_TXT = #{propertyTxt,jdbcType=VARCHAR},
+      </if>
+      <if test="propertyTel != null">
+        PROPERTY_TEL = #{propertyTel,jdbcType=VARCHAR},
+      </if>
+    </set>
     where ID = #{id,jdbcType=VARCHAR}
   </update>
 
