@@ -65,28 +65,17 @@ public class ResidentialAreaServiceImpl implements ResidentialAreaService {
             //删除 奶站和配送区域的 关系 并将配送区域设为未分配
             List<TMdBranchScopeKey> oldList =  tMdBranchScopeMapper.getBranchScopeByBranchNo(bModel.getBranchNo());
             if(oldList!=null && oldList.size()>0){
-                for (TMdBranchScopeKey scope : oldList){
-                    //更新小区状态为未分配
-                    tMdResidentialAreaMapper.updateStatusToUnDistById(scope.getResidentialAreaId());
-                }
-                //并删除原关系
+                //并删除奶站下的所有区域原关系
                 tMdBranchScopeMapper.deleteAllAreaByBranchNo(bModel.getBranchNo());
             }
             //更新奶站 和 配送区域关系
             List<String> newList = bModel.getResidentialAreaIds();
             if(newList!=null && newList.size()>0){
                 for (String id : newList){
-                    TMdResidentialArea area  = tMdResidentialAreaMapper.getAreaById(id);
-                    if("30".equals(area.getStatus())){
-                        message = "配送区域"+id+"已经分配！";
-                        throw new ServiceException(MessageCode.LOGIC_ERROR,"配送区域"+id+"已经分配！");
-                    }else{
                         TMdBranchScopeKey scopeKey = new  TMdBranchScopeKey();
                         scopeKey.setBranchNo(bModel.getBranchNo());
                         scopeKey.setResidentialAreaId(id);
                         tMdBranchScopeMapper.addBranchScope(scopeKey);
-                        tMdResidentialAreaMapper.updateStatusToDistedById(id);
-                    }
                 }
               }
             return 1;
@@ -146,7 +135,6 @@ public class ResidentialAreaServiceImpl implements ResidentialAreaService {
     @Override
     public int addResidentialArea(TMdResidentialArea tMdResidentialArea) {
         TSysUser user = userSessionService.getCurrentUser();
-        TSysUserRole userRole =urMapper.getUserRoleByLoginName(user.getLoginName());
         tMdResidentialArea.setSalesOrg(user.getSalesOrg());
         tMdResidentialArea.setId(PrimaryKeyUtils.generateUuidKey());
         tMdResidentialArea.setStatus("10");
