@@ -10,15 +10,17 @@ import com.nhry.data.basic.domain.TMdBranch;
 import com.nhry.data.basic.domain.TMdMara;
 import com.nhry.data.milktrans.dao.TSsmReqGoodsOrderItemMapper;
 import com.nhry.data.milktrans.dao.TSsmReqGoodsOrderMapper;
-import com.nhry.data.milktrans.domain.TSsmReqGoodsOrder;
-import com.nhry.data.milktrans.domain.TSsmReqGoodsOrderItem;
-import com.nhry.data.milktrans.domain.TSsmReqGoodsOrderItemUpt;
+import com.nhry.data.milktrans.dao.TSsmSalOrderItemMapper;
+import com.nhry.data.milktrans.dao.TSsmSalOrderMapper;
+import com.nhry.data.milktrans.domain.*;
 import com.nhry.data.order.dao.TOrderDaliyPlanItemMapper;
 import com.nhry.data.order.domain.TOrderDaliyPlanItem;
 import com.nhry.model.milktrans.*;
 import com.nhry.service.milktrans.dao.RequireOrderService;
 import com.nhry.service.pi.dao.PIRequireOrderService;
+import com.nhry.utils.DateUtil;
 import com.nhry.utils.PrimaryKeyUtils;
+import com.nhry.utils.SerialUtil;
 import com.nhry.webService.client.PISuccessMessage;
 import org.apache.commons.lang3.StringUtils;
 
@@ -36,6 +38,15 @@ public class RequireOrderServiceImpl implements RequireOrderService {
     private PIRequireOrderService piRequireOrderService;
     private TMdBranchMapper branchMapper;
     private TMdMaraMapper tMdMaraMapper;
+    private TSsmSalOrderMapper tSsmSalOrderMapper;
+    private TSsmSalOrderItemMapper tSsmSalOrderItemMapper;
+
+    public void settSsmSalOrderMapper(TSsmSalOrderMapper tSsmSalOrderMapper) {
+        this.tSsmSalOrderMapper = tSsmSalOrderMapper;
+    }
+    public void settSsmSalOrderItemMapper(TSsmSalOrderItemMapper tSsmSalOrderItemMapper) {
+        this.tSsmSalOrderItemMapper = tSsmSalOrderItemMapper;
+    }
 
     public void setBranchMapper(TMdBranchMapper branchMapper) {
         this.branchMapper = branchMapper;
@@ -163,6 +174,8 @@ public class RequireOrderServiceImpl implements RequireOrderService {
                 entries.add(entry);
             }
             orderModel.setEntries(entries);
+        }else{
+            throw new ServiceException(MessageCode.LOGIC_ERROR,"当天的要货计划还未生成");
         }
             return orderModel;
     }
@@ -307,6 +320,7 @@ public class RequireOrderServiceImpl implements RequireOrderService {
                         throw  new ServiceException(MessageCode.LOGIC_ERROR,errorMessage);
                     }
                     // 生成一张调拨单
+
                 }else{
 
                     //要货计划单状态为“确认”，将不能修改
@@ -318,7 +332,8 @@ public class RequireOrderServiceImpl implements RequireOrderService {
                     /*上订户系统的大商/小商奶站  自动生成以奶站为单位的销售订单(产品要重新统计，根据产品参加N个促销活动  生成N+1 个销售单 )
                     * 其中 产品增量部分 为不参加促销活动的产品 即 放至 在 1 那个单子中
                     * */
-
+                    this.creatNoPromoSalOrderOfDealerBranch(today);
+                    this.creatPromoSalOrderOfDealerBranch(today);
 
 
                 }
@@ -331,15 +346,215 @@ public class RequireOrderServiceImpl implements RequireOrderService {
     }
 
     /**
-     * 根据日订单生成经销商奶站的销售订单
+     * 根据日订单  生成经销商奶站的  参加促销的销售订单
      *
      * @return
      */
 
     @Override
-    public int creatSalOrderOfDealerBranch() {
+    public int creatPromoSalOrderOfDealerBranch(Date today) {
+        TSysUser user = userSessionService.getCurrentUser();
+        RequireOrderSearch rModel = new RequireOrderSearch();
+        rModel.setFirstDay(DateUtil.getTomorrow(today));
+        rModel.setSecondDay(DateUtil.getDayAfterTomorrow(today));
+        rModel.setBranchNo(user.getBranchNo());
+        rModel.setSalesOrg(user.getSalesOrg());
+        List<String> promotionNolist = tOrderDaliyPlanItemMapper.getDailOrderPromOfDealerBranch(rModel);
+        if(promotionNolist !=null && promotionNolist.size()>0){
+            for(String promotion : promotionNolist){
+                //创建一份 销售订单
+                TSsmSalOrder order = createSaleOrder(user,today,"dealer",promotion);
+                rModel.setPromotion(promotion);
+                List<TOrderDaliyPlanItem> items = tOrderDaliyPlanItemMapper.selectProDayPlanOfDealerBranch(rModel);
+                if(items !=null && items.size()>0){
+                    for(int i = 1; i <=items.size();i++){
+                        TOrderDaliyPlanItem item = items.get(i-1);
+                        createSaleOrderItem(item,i,order.getOrderNo(),today,"dealer");
+                    }
+                }
+                //调用 接口
+                // piRequireOrderService.generateRequireOrder();
+                PISuccessMessage message =new PISuccessMessage();
+                message.setData(SerialUtil.creatSeria());
+                message.setSuccess(true);
+                if(message.isSuccess()){
+                    this.uptVouCherNoByOrderNo(order.getOrderNo(),message.getData());
+                }
 
-        return 0;
+            }
+        }
+
+        return 1;
+    }
+
+    /**
+     *  经销商奶站  生成 requiredDate 日期的  不参加促销的销售订单
+     * @param requiredDate
+     * @return
+     */
+    @Override
+    public int creatNoPromoSalOrderOfDealerBranch(Date requiredDate) {
+        TSysUser user = userSessionService.getCurrentUser();
+        RequireOrderSearch rModel = new RequireOrderSearch();
+        rModel.setFirstDay(DateUtil.getTomorrow(requiredDate));
+        rModel.setSecondDay(DateUtil.getDayAfterTomorrow(requiredDate));
+        rModel.setBranchNo(user.getBranchNo());
+        rModel.setSalesOrg(user.getSalesOrg());
+        List<TOrderDaliyPlanItem> items = tOrderDaliyPlanItemMapper.selectNoProDayPlanOfDealerBranch(rModel);
+        if(items!=null && items.size()>0){
+            //生成 促销订单
+            TSsmSalOrder order  = createSaleOrder(user,requiredDate,"dealer","");
+            for(int i=0 ;i<items.size();i++){
+                TOrderDaliyPlanItem item = items.get(i);
+                //生成 促销订单行项目
+                createSaleOrderItem(item,i+1,order.getOrderNo(),requiredDate,"dealer");
+            }
+
+            //调用 接口
+            // piRequireOrderService.generateRequireOrder();
+            PISuccessMessage message =new PISuccessMessage();
+            message.setData(SerialUtil.creatSeria());
+            message.setSuccess(true);
+            if(message.isSuccess()){
+                this.uptVouCherNoByOrderNo(order.getOrderNo(),message.getData());
+            }
+        }
+        return 1;
+    }
+
+
+
+
+    /**
+     * 自营奶站   创建 不参加促销的销售订单
+     * @param requiredDate
+     * @return
+     */
+
+    @Override
+    public int creatNoPromoSalOrderOfSelftBranch(Date requiredDate) {
+        TSysUser user = userSessionService.getCurrentUser();
+        RequireOrderSearch rModel = new RequireOrderSearch();
+        rModel.setRequiredDate(requiredDate);
+        rModel.setBranchNo(user.getBranchNo());
+        rModel.setSalesOrg(user.getSalesOrg());
+        List<TOrderDaliyPlanItem> items = tOrderDaliyPlanItemMapper.selectNoProDayPlanOfSelfBranch(rModel);
+        if(items!=null && items.size()>0){
+            //生成 促销订单
+            TSsmSalOrder order = createSaleOrder(user,requiredDate,"branch","");
+            for(int i=0 ;i<items.size();i++){
+                TOrderDaliyPlanItem item = items.get(i);
+                //生成 促销订单行项目
+                createSaleOrderItem(item,i+1,order.getOrderNo(),requiredDate,"branch");
+            }
+            //调用 接口
+            // piRequireOrderService.generateRequireOrder();
+            PISuccessMessage message =new PISuccessMessage();
+            message.setData(SerialUtil.creatSeria());
+            message.setSuccess(true);
+            if(message.isSuccess()){
+                this.uptVouCherNoByOrderNo(order.getOrderNo(),message.getData());
+            }
+        }
+        return 1;
+    }
+
+
+    /**
+     * 自营奶站   创建 参加促销的销售订单
+     * @param requiredDate
+     * @return
+     */
+    @Override
+    public int creatPromoSalOrderOfSelftBranch(Date requiredDate) {
+        TSysUser user = userSessionService.getCurrentUser();
+        RequireOrderSearch rModel = new RequireOrderSearch();
+        rModel.setRequiredDate(requiredDate);
+        rModel.setBranchNo(user.getBranchNo());
+        rModel.setSalesOrg(user.getSalesOrg());
+        List<String> promotionNolist = tOrderDaliyPlanItemMapper.getDailOrderPromOfSelfBranch(rModel);
+        if(promotionNolist !=null && promotionNolist.size()>0){
+            for(String promotion : promotionNolist){
+                //创建一份 销售订单
+                TSsmSalOrder order = createSaleOrder(user,requiredDate,"branch",promotion);
+                rModel.setPromotion(promotion);
+                List<TOrderDaliyPlanItem> items = tOrderDaliyPlanItemMapper.selectProDayPlanOfSelfBranch(rModel);
+                if(items !=null && items.size()>0){
+                    for(int i = 1; i <=items.size();i++){
+                        TOrderDaliyPlanItem item = items.get(i-1);
+                        createSaleOrderItem(item,i,order.getOrderNo(),requiredDate,"branch");
+
+                    }
+                }
+                //调用 接口
+                // piRequireOrderService.generateRequireOrder();
+                PISuccessMessage message =new PISuccessMessage();
+                message.setData(SerialUtil.creatSeria());
+                message.setSuccess(true);
+                if(message.isSuccess()){
+                    this.uptVouCherNoByOrderNo(order.getOrderNo(),message.getData());
+                }
+            }
+
+        }
+        return 1;
+    }
+
+    /**
+     *添加  销售订单行项目
+     * @param item          产品code，产品数量
+     * @param i             用来生成itemNo
+     * @param orderNo       销售单号
+     * @param requiredDate  日期
+     * @param type          如果type=dealer 则为经销商订单行项目，否则为自营奶站订单行项目
+     */
+    private void createSaleOrderItem(TOrderDaliyPlanItem item, int i, String orderNo,Date requiredDate,String type) {
+        TSsmSalOrderItems salOrderItems = new TSsmSalOrderItems();
+        salOrderItems.setOrderNo(orderNo);
+        salOrderItems.setOrderDate(requiredDate);
+        salOrderItems.setMatnr(item.getMatnr());
+        salOrderItems.setQty(item.getQty());
+        if("dealer".equals(type)){
+            salOrderItems.setType("10");
+        }else{
+            salOrderItems.setType("20");
+        }
+
+        salOrderItems.setItemNo(i*10);
+        tSsmSalOrderItemMapper.addSalOrderItem(salOrderItems);
+
+    }
+
+    /**
+     *  创建一个销售订单
+     * @param user              当前用户
+     * @param requiredDate      日期
+     * @param type              类型（dealer为经销商销售订单  branch 为自营奶站销售订单）
+     * @param promotion         如果促销号不为空，则该销售订单为一个参加促销的销售订单，否则为正品促销订单
+     * @return
+     */
+    private TSsmSalOrder  createSaleOrder(TSysUser user, Date requiredDate, String type, String promotion) {
+        TSsmSalOrder order = new TSsmSalOrder();
+        order.setDealerNo(user.getDealerId());
+        String orderNo = PrimaryKeyUtils.generateUuidKey();
+        order.setOrderNo(orderNo);
+        order.setSalesOrg(user.getSalesOrg());
+        order.setRequiredDate(requiredDate);
+        order.setBranchNo(user.getBranchNo());
+        if("dealer".equals(type)){
+            order.setBranchGroup("10");
+        }else{
+            order.setBranchGroup("20");
+        }
+        order.setOrderDate(requiredDate);
+        order.setCreateAt(requiredDate);
+        order.setCreateByTxt(user.getDisplayName());
+        order.setCreateBy(user.getLoginName());
+        if(StringUtils.isNoneBlank(promotion)){
+            order.setPromNo(promotion);
+        }
+        tSsmSalOrderMapper.addsalOrder(order);
+        return order;
     }
 
     private boolean  uptRequireOrderAndDayOrderStatus(TSsmReqGoodsOrder order,TSysUser user) {
@@ -352,7 +567,6 @@ public class RequireOrderServiceImpl implements RequireOrderService {
         String branchNo = order.getBranchNo();
         String salesOrg = user.getSalesOrg();
         Date requiredDate = order.getRequiredDate();
-
         //更新后两天配送的订户日订单
         for(int i=1;i<=2;i++){
             Calendar calendar = new GregorianCalendar();
@@ -379,5 +593,12 @@ public class RequireOrderServiceImpl implements RequireOrderService {
         return true;
     }
 
+
+    public void uptVouCherNoByOrderNo(String orderNo,String voucherNo){
+        Map<String,String> map = new HashMap<String,String>();
+        map.put("orderNo",orderNo);
+        map.put("voucherNo",voucherNo);
+        tSsmSalOrderMapper.uptVouCherNoByOrderNo(map);
+    }
 
 }

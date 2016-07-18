@@ -45,13 +45,21 @@ public class PriceServiceImpl extends BaseService implements PriceService {
 		if(StringUtils.isEmpty(record.getPriceGroup()) || StringUtils.isEmpty(record.getPriceType())){
 			throw new ServiceException(MessageCode.LOGIC_ERROR,"价格组名称、价格组类型不能为空!");
 		}
+		if(SysContant.getSystemConst("price_type_area").equals(record.getPriceType()) && StringUtils.isEmpty(record.getScope())){
+			throw new ServiceException(MessageCode.LOGIC_ERROR,"选择区域价时必须选择适用范围!");
+		}
 		if(record.getMprices() == null || record.getMprices().size() == 0){
 			throw new ServiceException(MessageCode.LOGIC_ERROR,"价格组至少关联一个商品!");
 		}
-		if(SysContant.getSystemConst("price_type_comp").equals(record.getPriceType())){
-			int count = this.tMdPriceMapper.getCompPriceGroupCount(this.userSessionService.getCurrentUser().getSalesOrg());
+		if(SysContant.getSystemConst("price_type_comp").equals(record.getPriceType()) || (SysContant.getSystemConst("price_type_area").equals(record.getPriceType())
+				&& !"-1".equals(record.getScope()))){
+			Map<String,String> attrs=new HashMap<String,String>(2);
+			attrs.put("salesOrg", this.userSessionService.getCurrentUser().getSalesOrg());
+			attrs.put("priceType", record.getPriceType());
+			attrs.put("scope", record.getScope());
+			int count = this.tMdPriceMapper.getCompPriceGroupCount(attrs);
 			if(count > 0){
-				throw new ServiceException(MessageCode.LOGIC_ERROR,"当前销售组织下区域(公司)价已经存在!");
+				throw new ServiceException(MessageCode.LOGIC_ERROR,"当前销售组织下该类型价格组已经存在!");
 			}
 		}
 		record.setId(PrimaryKeyUtils.generateUuidKey());
@@ -277,10 +285,19 @@ public class PriceServiceImpl extends BaseService implements PriceService {
 		if(list == null){
 			list = new ArrayList<TMdDealer>();
 		}
-		TMdDealer dealer = new TMdDealer();
-		dealer.setDealerNo("-1");
-		dealer.setDealerName("自营奶站");
-		list.add(dealer);
+		boolean flag = false;
+		for(TMdDealer dealer : list){
+			if("-1".equals(dealer.getDealerNo())){
+				flag = true;
+				break;
+			}
+		}
+		if(!flag){
+			TMdDealer dealer = new TMdDealer();
+			dealer.setDealerNo("-1");
+			dealer.setDealerName("自营奶站");
+			list.add(dealer);
+		}
 		return list;
 	}
 

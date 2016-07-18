@@ -99,12 +99,12 @@ public class ProductServiceImpl extends BaseService implements ProductService {
 		if(StringUtils.isEmpty(this.userSessionService.getCurrentUser().getSalesOrg())){
 			throw new ServiceException(MessageCode.LOGIC_ERROR,"当前用户的关联的组织信息不全,请先维护好当前用户信息!");
 		}
-		Map<String,String> attrs = new HashMap<String,String>();
+		Map<String,String> attrs = new HashMap<String,String>(2);
 		attrs.put("matnr",matnr);
 		attrs.put("salesOrg",this.userSessionService.getCurrentUser().getSalesOrg());
 		TMdMara mara = tMdMaraMapper.selectProductAndExByCode(attrs);
 		if(mara != null){
-			mara.setNotsellList(this.notsellListMapper.getNotSellListByMatnr(matnr));
+			mara.setNotsellList(this.notsellListMapper.getNotSellListByMatnr(attrs));
 		}
 		return mara;
 	}

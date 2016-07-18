@@ -13,6 +13,13 @@
 		http://www.springframework.org/schema/task http://www.springframework.org/schema/task/spring-task-4.0.xsd
 		http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-4.0.xsd"
 		default-lazy-init="true">
+	<!--销售订单-->
+	<bean id="tSsmSalOrderMapper" class="com.nhry.data.milktrans.impl.TSsmSalOrderMapperImpl">
+		<property name="sqlSessionTemplate"  ref="dynamicSqlSessionTemplate"></property>
+	</bean>
+	<bean id="tSsmSalOrderItemMapper" class="com.nhry.data.milktrans.impl.TSsmSalOrderItemMapperImpl">
+		<property name="sqlSessionTemplate"  ref="dynamicSqlSessionTemplate"></property>
+	</bean>
 	<!--要货计划-->
 	<bean id="tSsmReqGoodsOrderItemMapper" class="com.nhry.data.milktrans.impl.TSsmReqGoodsOrderItemMapperImpl">
 	   <property name="sqlSessionTemplate"  ref="dynamicSqlSessionTemplate"></property>
@@ -23,6 +30,8 @@
 	<bean id="requireOrderService" class="com.nhry.service.milktrans.impl.RequireOrderServiceImpl">
 	   <property name="tSsmReqGoodsOrderMapper"  ref="tSsmReqGoodsOrderMapper"></property>
 		<property name="tSsmReqGoodsOrderItemMapper"  ref="tSsmReqGoodsOrderItemMapper"></property>
+		<property name="tSsmSalOrderItemMapper"  ref="tSsmSalOrderItemMapper"></property>
+		<property name="tSsmSalOrderMapper"  ref="tSsmSalOrderMapper"></property>
 		<property name="userSessionService"  ref="userSessionService"></property>
 		<property name="piRequireOrderService"  ref="piRequireOrderService"></property>
 		<property name="tOrderDaliyPlanItemMapper"  ref="tOrderDaliyPlanItemMapper"></property>
