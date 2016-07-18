@@ -167,4 +167,7 @@
 		t_branch_notsell_list 
 	    where SALES_ORG =#{salesOrg} and MATNR = #{matnr}
   </select>
+  <select id="getNotSellDealerNosByMatnr"  resultType="String" parameterType="java.util.HashMap">
+      SELECT DEALER_NO FROM t_branch_notsell_list where SALES_ORG =#{salesOrg} and MATNR = #{matnr}
+  </select>
 </mapper>

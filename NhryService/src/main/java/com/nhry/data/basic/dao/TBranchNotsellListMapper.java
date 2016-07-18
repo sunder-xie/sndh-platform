@@ -33,4 +33,11 @@ public interface TBranchNotsellListMapper {
      * @return
      */
     public List<TBranchNotsellList> getNotSellListByMatnr(Map<String,String> attrs);
+    
+    /**
+     * 根据物料编号，查询不可销售的经销商ids
+     * @param attrs
+     * @return
+     */
+    public List<String> getNotSellDealerNosByMatnr(Map<String,String> attrs);
 }

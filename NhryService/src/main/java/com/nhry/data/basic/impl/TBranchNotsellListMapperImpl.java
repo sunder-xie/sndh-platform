@@ -37,4 +37,10 @@ public class TBranchNotsellListMapperImpl implements TBranchNotsellListMapper {
 		// TODO Auto-generated method stub
 		return this.sqlSessionTemplate.selectList("getNotSellListByMatnr", attrs);
 	}
+
+	@Override
+	public List<String> getNotSellDealerNosByMatnr(Map<String, String> attrs) {
+		// TODO Auto-generated method stub
+		return this.sqlSessionTemplate.selectList("getNotSellDealerNosByMatnr", attrs);
+	}
 }

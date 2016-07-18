@@ -23,31 +23,17 @@
     MESSAGE_NO, TITLE, CONTENT, TYPE, SALES_ORG, DEALER_NO, BRANCH_NO, LOGIN_NAME, DISPLAY_NAME, 
     CREATE_AT, CREATE_BY, CREATE_BY_TXT, FINISH_TIME, FINISH_FLAG, URL, SOURCE
   </sql>
-  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.String" >
+  <select id="findTSysmessageByNo" resultMap="BaseResultMap" parameterType="java.lang.String" >
     select 
     <include refid="Base_Column_List" />
     from t_sys_message
     where MESSAGE_NO = #{messageNo,jdbcType=VARCHAR}
   </select>
-  <delete id="deleteByPrimaryKey" parameterType="java.lang.String" >
+  <delete id="delTSysMessageByNo" parameterType="java.lang.String" >
     delete from t_sys_message
     where MESSAGE_NO = #{messageNo,jdbcType=VARCHAR}
   </delete>
-  <insert id="insert" parameterType="com.nhry.data.basic.domain.TSysMessage" >
-    insert into t_sys_message (MESSAGE_NO, TITLE, CONTENT, 
-      TYPE, SALES_ORG, DEALER_NO, 
-      BRANCH_NO, LOGIN_NAME, DISPLAY_NAME, 
-      CREATE_AT, CREATE_BY, CREATE_BY_TXT, 
-      FINISH_TIME, FINISH_FLAG, URL, 
-      SOURCE)
-    values (#{messageNo,jdbcType=VARCHAR}, #{title,jdbcType=VARCHAR}, #{content,jdbcType=VARCHAR}, 
-      #{type,jdbcType=VARCHAR}, #{salesOrg,jdbcType=VARCHAR}, #{dealerNo,jdbcType=VARCHAR}, 
-      #{branchNo,jdbcType=VARCHAR}, #{loginName,jdbcType=VARCHAR}, #{displayName,jdbcType=VARCHAR}, 
-      #{createAt,jdbcType=TIMESTAMP}, #{createBy,jdbcType=VARCHAR}, #{createByTxt,jdbcType=VARCHAR}, 
-      #{finishTime,jdbcType=TIMESTAMP}, #{finishFlag,jdbcType=VARCHAR}, #{url,jdbcType=VARCHAR}, 
-      #{source,jdbcType=VARCHAR})
-  </insert>
-  <insert id="insertSelective" parameterType="com.nhry.data.basic.domain.TSysMessage" >
+  <insert id="addTSysMessage" parameterType="com.nhry.data.basic.domain.TSysMessage" >
     insert into t_sys_message
     <trim prefix="(" suffix=")" suffixOverrides="," >
       <if test="messageNo != null" >
@@ -150,7 +136,7 @@
       </if>
     </trim>
   </insert>
-  <update id="updateByPrimaryKeySelective" parameterType="com.nhry.data.basic.domain.TSysMessage" >
+  <update id="uptTSysMessage" parameterType="com.nhry.data.basic.domain.TSysMessage" >
     update t_sys_message
     <set >
       <if test="title != null" >
@@ -199,25 +185,6 @@
         SOURCE = #{source,jdbcType=VARCHAR},
       </if>
     </set>
-    where MESSAGE_NO = #{messageNo,jdbcType=VARCHAR}
-  </update>
-  <update id="updateByPrimaryKey" parameterType="com.nhry.data.basic.domain.TSysMessage" >
-    update t_sys_message
-    set TITLE = #{title,jdbcType=VARCHAR},
-      CONTENT = #{content,jdbcType=VARCHAR},
-      TYPE = #{type,jdbcType=VARCHAR},
-      SALES_ORG = #{salesOrg,jdbcType=VARCHAR},
-      DEALER_NO = #{dealerNo,jdbcType=VARCHAR},
-      BRANCH_NO = #{branchNo,jdbcType=VARCHAR},
-      LOGIN_NAME = #{loginName,jdbcType=VARCHAR},
-      DISPLAY_NAME = #{displayName,jdbcType=VARCHAR},
-      CREATE_AT = #{createAt,jdbcType=TIMESTAMP},
-      CREATE_BY = #{createBy,jdbcType=VARCHAR},
-      CREATE_BY_TXT = #{createByTxt,jdbcType=VARCHAR},
-      FINISH_TIME = #{finishTime,jdbcType=TIMESTAMP},
-      FINISH_FLAG = #{finishFlag,jdbcType=VARCHAR},
-      URL = #{url,jdbcType=VARCHAR},
-      SOURCE = #{source,jdbcType=VARCHAR}
     where MESSAGE_NO = #{messageNo,jdbcType=VARCHAR}
   </update>
 </mapper>

@@ -33,7 +33,7 @@ public class TVipCustInfoServiceImpl extends BaseService implements TVipCustInfo
 	}
 
 	@Override
-	public int addVipCust(TVipCustInfo record) {
+	public String addVipCust(TVipCustInfo record) {
 		// TODO Auto-generated method stub
 		if(StringUtils.isEmpty(record.getVipName()) || StringUtils.isEmpty(record.getMp()) || StringUtils.isEmpty(record.getBranchNo())){
 			throw new ServiceException(MessageCode.LOGIC_ERROR, "会员姓名(vipName)、手机号码(mp)、订户奶站(branchNo) 必须填写!");
@@ -71,7 +71,7 @@ public class TVipCustInfoServiceImpl extends BaseService implements TVipCustInfo
 			address.setCreateByTxt(this.userSessionService.getCurrentUser().getDisplayName());
 			addAddressForCust(address);
 		}
-		return 1;
+		return record.getVipCustNo();
 	}
 
 	@Override
