@@ -12,12 +12,19 @@ public class TMdResidentialArea implements Serializable{
     private String residentialAreaTxt;
 
     private String province;
+    private String provinceName;
 
     private String city;
 
+    private String cityName;
+
     private String county;
 
+    private String countyName;
+
     private String street;
+
+    private String streetName;
 
     private String guideboard;
 
@@ -37,6 +44,38 @@ public class TMdResidentialArea implements Serializable{
     private Date createAt;
 
     private String createBy;
+
+    public String getStreetName() {
+        return streetName;
+    }
+
+    public void setStreetName(String streetName) {
+        this.streetName = streetName;
+    }
+
+    public String getProvinceName() {
+        return provinceName;
+    }
+
+    public void setProvinceName(String provinceName) {
+        this.provinceName = provinceName;
+    }
+
+    public String getCityName() {
+        return cityName;
+    }
+
+    public void setCityName(String cityName) {
+        this.cityName = cityName;
+    }
+
+    public String getCountyName() {
+        return countyName;
+    }
+
+    public void setCountyName(String countyName) {
+        this.countyName = countyName;
+    }
 
     public Date getCreateAt() {
         return createAt;

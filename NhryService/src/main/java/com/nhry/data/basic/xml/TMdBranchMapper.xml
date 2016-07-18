@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
 <mapper namespace="com.nhry.data.basic.dao.TMdBranchMapper" >
-  <cache type="org.mybatis.caches.redis.RedisCache" />
+  <!--<cache type="org.mybatis.caches.redis.RedisCache" />-->
   <resultMap id="BaseResultMap" type="com.nhry.data.basic.domain.TMdBranch" >
     <id column="BRANCH_NO" property="branchNo" jdbcType="VARCHAR" />
     <result column="BRANCH_NAME" property="branchName" jdbcType="VARCHAR" />
@@ -23,6 +23,12 @@
     <result column="PROVINCE" property="province" jdbcType="VARCHAR" />
     <result column="CITY" property="city" jdbcType="VARCHAR" />
     <result column="COUNTY" property="county" jdbcType="VARCHAR" />
+
+      <result column="PROVINCE_NAME" property="provinceName" jdbcType="VARCHAR" />
+      <result column="CITY_NAME" property="cityName" jdbcType="VARCHAR" />
+      <result column="COUNTY_NAME" property="countyName" jdbcType="VARCHAR" />
+
+
     <result column="WERKS" property="werks" jdbcType="VARCHAR" />
     <result column="LGORT" property="lgort" jdbcType="VARCHAR" />
 
@@ -59,11 +65,11 @@
 			) COMPANY_NAME,
 			b.CONTACT,	b.EMP_NO,b.TEL, b.MP, b.DEALER_NO,d.DEALER_NAME, b.ADDRESS,
            b.PROVINCE, b.CITY, b.COUNTY,
-		  <!--
-		  (SELECT i.ITEM_NAME from t_sys_code_item i WHERE i.TYPE_CODE=<include refid="mybaties.constant.COUNTRY_CITY_CONSTANT"/> and i.ITEM_CODE = b.PROVINCE ) PROVINCE,
-		 (SELECT i.ITEM_NAME from t_sys_code_item i WHERE i.TYPE_CODE=<include refid="mybaties.constant.COUNTRY_CITY_CONSTANT"/> and i.ITEM_CODE = b.CITY ) CITY,
-		 (SELECT i.ITEM_NAME from t_sys_code_item i WHERE i.TYPE_CODE=<include refid="mybaties.constant.COUNTRY_CITY_CONSTANT"/> and i.ITEM_CODE = b.COUNTY ) COUNTY,
-         -->
+
+		  (SELECT i.ITEM_NAME from t_sys_code_item i WHERE i.TYPE_CODE=<include refid="mybaties.constant.COUNTRY_CITY_CONSTANT"/> and i.ITEM_CODE = b.PROVINCE ) PROVINCE_NAME,
+		 (SELECT i.ITEM_NAME from t_sys_code_item i WHERE i.TYPE_CODE=<include refid="mybaties.constant.COUNTRY_CITY_CONSTANT"/> and i.ITEM_CODE = b.CITY ) CITY_NAME,
+		 (SELECT i.ITEM_NAME from t_sys_code_item i WHERE i.TYPE_CODE=<include refid="mybaties.constant.COUNTRY_CITY_CONSTANT"/> and i.ITEM_CODE = b.COUNTY ) COUNTY_NAME,
+
           (SELECT i.ITEM_NAME from t_sys_code_item i WHERE i.TYPE_CODE=<include refid="mybaties.constant.factory"/> and i.ITEM_CODE = b.WERKS) WERKS,
          (SELECT i.ITEM_NAME from t_sys_code_item i WHERE i.TYPE_CODE=<include refid="mybaties.constant.storage_location"/>  and i.ITEM_CODE = b.LGORT) LGORT,
           b.CREATE_AT, b.CREATE_BY, b.CREATE_BY_TXT,b.LAST_MODIFIED, b.LAST_MODIFIED_BY, b.LAST_MODIFIED_BY_TXT
