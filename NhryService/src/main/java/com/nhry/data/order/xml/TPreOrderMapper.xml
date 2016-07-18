@@ -439,6 +439,9 @@
     <if test="orderNo != null and orderNo !=''">
      		AND o.ORDER_NO = #{orderNo,jdbcType=VARCHAR}
     </if>
+    <if test="status != null and status !=''">
+     		AND o.SIGN = #{status,jdbcType=VARCHAR}
+    </if>
     <if test="product != null and product !=''">
      		AND e.MATNR = #{product,jdbcType=VARCHAR}
     </if>
@@ -477,13 +480,16 @@
     </if>
      AND o.PREORDER_STAT != "30"
      AND o.PREORDER_STAT != "40"
-     AND o.SIGN != "30")
+     )
      
     <!-- 订单列表里要包括已经取消的订单 -->
     <if test="reason != null and reason !=''">
      	   OR ( 1=1
 	     		 <if test="orderNo != null and orderNo !=''">
      		         AND o.ORDER_NO = #{orderNo,jdbcType=VARCHAR}
+			    </if>
+			    <if test="status != null and status !=''">
+			     		AND o.SIGN = #{status,jdbcType=VARCHAR}
 			    </if>
 			    <if test="product != null and product !=''">
 			     		AND e.MATNR = #{product,jdbcType=VARCHAR}
@@ -520,7 +526,7 @@
 			    </if>
 			     		AND o.PREORDER_STAT = "30"
 			     		AND o.PREORDER_STAT != "40"
-			     		AND o.SIGN = "30" )
+			     		)
 			    </if>
      ORDER BY o.ORDER_NO desc
   </select>
