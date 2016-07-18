@@ -1,6 +1,8 @@
 package com.nhry.data.basic.domain;
 
-public class TMaraSalesKey {
+import java.io.Serializable;
+
+public class TMaraSalesKey implements Serializable{
     private String maraId;
 
     private String salesOrg;

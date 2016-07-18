@@ -1,8 +1,9 @@
 package com.nhry.data.basic.domain;
 
+import java.io.Serializable;
 import java.util.Date;
 
-public class TSysMessage {
+public class TSysMessage implements Serializable{
     private String messageNo;
 
     private String title;
