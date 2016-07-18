@@ -455,7 +455,7 @@
      		AND o.EMP_NO = #{empNo,jdbcType=VARCHAR}
     </if>
     <if test="milkmemberNo != null and milkmemberNo !=''">
-     		AND o.MILKMEMBER_NO = #{milkmemberNo,jdbcType=VARCHAR}
+     		AND (v.VIP_NAME like '%${milkmemberNo}%' or v.MP like '%${milkmemberNo}%')
     </if>
     <if test="paymentStat != null and paymentStat !=''">
      		AND o.PAYMENT_STAT = #{paymentStat,jdbcType=VARCHAR}
@@ -501,7 +501,7 @@
 			     		AND o.EMP_NO = #{empNo,jdbcType=VARCHAR}
 			    </if>
 			    <if test="milkmemberNo != null and milkmemberNo !=''">
-			     		AND o.MILKMEMBER_NO = #{milkmemberNo,jdbcType=VARCHAR}
+			     		AND (v.VIP_NAME like '%${milkmemberNo}%' or v.MP like '%${milkmemberNo}%')
 			    </if>
 			    <if test="paymentStat != null and paymentStat !=''">
 			     		AND o.PAYMENT_STAT = #{paymentStat,jdbcType=VARCHAR}

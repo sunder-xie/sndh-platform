@@ -54,4 +54,6 @@ public interface OrderService {
 	List<TOrderDaliyPlanItem> createDaliyPlan(TPreOrder order ,List<TPlanOrderItem> entries);
 	
 	OrderRemainData searchOrderRemainData(String phone);
+	
+	TPlanOrderItem calculateAmtAndEndDateForFront(TPlanOrderItem item);
 }
