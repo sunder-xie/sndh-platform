@@ -10,12 +10,6 @@ import com.nhry.service.basic.pojo.ResidentialAreaModel;
 import java.util.List;
 
 public interface TMdResidentialAreaMapper {
-    int deleteByPrimaryKey(String id);
-
-    int insert(TMdResidentialArea record);
-
-    int insertSelective(TMdResidentialArea record);
-
     public  TMdResidentialArea selectById(String id);
 
     int updateByPrimaryKeySelective(TMdResidentialArea record);
@@ -48,4 +42,6 @@ public interface TMdResidentialAreaMapper {
     List<TMdResidentialArea> getUnDistAreas(String salesOrg);
 
     List<TMdResidentialArea> searchAreaBySalesOrg(AreaSearchModel aModel);
+
+    TMdResidentialArea getAreaByAreaName(String residentialAreaTxt);
 }

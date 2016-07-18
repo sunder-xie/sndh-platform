@@ -28,6 +28,7 @@
 	   <property name="tMdMaraExMapper"  ref="maraExMapper"></property>
 	   <property name="notsellListMapper" ref="notsellListMapper"></property>
 	   <property name="branchSevice" ref="branchService"></property>
+	   <property name="messService" ref="messService"></property>
 	   <property name="userSessionService" ref="userSessionService"></property>
 	</bean>
 	
@@ -145,6 +146,7 @@
 	   <property name="sqlSessionTemplate"  ref="dynamicSqlSessionTemplate"></property>
 	</bean>
 	<bean id="branchService" class="com.nhry.service.basic.impl.BranchServiceImpl">
+		<property name="urMapper"  ref="urMapper"></property>
 	   <property name="branchMapper"  ref="branchMapper"></property>
 		<property name="dealerMapper"  ref="dealerMapper"></property>
 	   <property name="userSessionService" ref="userSessionService"></property>
@@ -193,5 +195,16 @@
 	<!-- 物料单位表(单位换算关系) -->
 	<bean class="com.nhry.data.basic.impl.TMdMaraUnitMapperImpl" id="maraUnitMapper">
 		<property name="sqlSessionTemplate" ref="dynamicSqlSessionTemplate"/>
+	</bean>
+	<!-- 系统消息 -->
+	<bean class="com.nhry.data.basic.impl.TSysMessageMapperImpl" id="messMapper">
+		<property name="sqlSessionTemplate" ref="dynamicSqlSessionTemplate"/>
+	</bean>
+	<bean class="com.nhry.service.basic.impl.TSysMessageServiceImpl" id="messService">
+		<property name="messageMapper" ref="messMapper"/>
+		<property name="userMapper" ref="userMapper"/>
+		<property name="notsellListMapper" ref="notsellListMapper"/>
+		<property name="tPreOrderMapper" ref="tPreOrderMapper"></property>
+		<property name="userSessionService"  ref="userSessionService"></property>
 	</bean>
 </beans>

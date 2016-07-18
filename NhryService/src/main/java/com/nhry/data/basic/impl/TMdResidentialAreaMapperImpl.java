@@ -18,20 +18,6 @@ public class TMdResidentialAreaMapperImpl implements TMdResidentialAreaMapper {
 
     private DynamicSqlSessionTemplate sqlSessionTemplate;
 
-    @Override
-    public int deleteByPrimaryKey(String id) {
-        return 0;
-    }
-
-    @Override
-    public int insert(TMdResidentialArea record) {
-        return 0;
-    }
-
-    @Override
-    public int insertSelective(TMdResidentialArea record) {
-        return 0;
-    }
 
     @Override
     public TMdResidentialArea selectById(String id) {
@@ -92,6 +78,11 @@ public class TMdResidentialAreaMapperImpl implements TMdResidentialAreaMapper {
     @Override
     public List<TMdResidentialArea> searchAreaBySalesOrg(AreaSearchModel residentialArea) {
         return sqlSessionTemplate.selectList("searchAreaBySalesOrg",residentialArea);
+    }
+
+    @Override
+    public TMdResidentialArea getAreaByAreaName(String residentialAreaTxt) {
+        return sqlSessionTemplate.selectOne("getAreaByAreaName",residentialAreaTxt);
     }
 
     @Override

@@ -2,9 +2,13 @@ package com.nhry.rest.order;
 
 import com.github.pagehelper.PageInfo;
 import com.nhry.common.exception.MessageCode;
+import com.nhry.data.order.domain.TPlanOrderItem;
 import com.nhry.data.order.domain.TPreOrder;
+import com.nhry.model.basic.OrderModel;
 import com.nhry.model.order.*;
+import com.nhry.model.sys.ResponseModel;
 import com.nhry.rest.BaseResource;
+import com.nhry.service.basic.dao.TSysMessageService;
 import com.nhry.service.order.dao.OrderService;
 import com.nhry.service.order.pojo.OrderRemainData;
 import com.sun.jersey.spi.resource.Singleton;
@@ -32,6 +36,8 @@ import java.util.ArrayList;
 public class OrderResource extends BaseResource {
 	@Autowired
 	private OrderService orderService;
+	@Autowired
+	private TSysMessageService messService;
 	
 	@GET
 	@Path("/{orderCode}")
@@ -193,7 +199,22 @@ public class OrderResource extends BaseResource {
 		return convertToRespModel(MessageCode.NORMAL, null, orderService.canOrderUnsubscribe(orderNo));
 	}
 
-
-
-
+	@POST
+	@Path("/calculateAmtAndEndDateForFront")
+	@Produces(MediaType.APPLICATION_JSON)
+	@Consumes(MediaType.APPLICATION_JSON)
+	@ApiOperation(value = "/calculateAmtAndEndDateForFront", response = TPlanOrderItem.class, notes = "计算预付款订单行的行金额，截止日期")
+	public Response calculateAmtAndEndDateForFront(@ApiParam(required=true,name="item",value="订单行json") TPlanOrderItem  item){
+		return convertToRespModel(MessageCode.NORMAL, null, orderService.calculateAmtAndEndDateForFront(item));
+	}
+	
+	@POST
+	@Path("/memo")
+	@Produces(MediaType.APPLICATION_JSON)
+	@Consumes(MediaType.APPLICATION_JSON)
+	@ApiOperation(value = "/memo", response = ResponseModel.class, notes = "更新订单备注信息")
+	public Response uptOrderComments(@ApiParam(required=true,name="OrderModel",value="订单备注对象") OrderModel  orderModel){
+		return convertToRespModel(MessageCode.NORMAL, null, messService.sendOrderMemo(orderModel));
+	}
+	
 }

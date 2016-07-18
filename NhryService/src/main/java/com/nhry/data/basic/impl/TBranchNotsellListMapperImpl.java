@@ -1,6 +1,7 @@
 package com.nhry.data.basic.impl;
 
 import java.util.List;
+import java.util.Map;
 
 import com.nhry.common.datasource.DynamicSqlSessionTemplate;
 import com.nhry.data.basic.dao.TBranchNotsellListMapper;
@@ -32,8 +33,14 @@ public class TBranchNotsellListMapperImpl implements TBranchNotsellListMapper {
 	}
 
 	@Override
-	public List<TBranchNotsellList> getNotSellListByMatnr(String matnr) {
+	public List<TBranchNotsellList> getNotSellListByMatnr(Map<String,String> attrs) {
 		// TODO Auto-generated method stub
-		return this.sqlSessionTemplate.selectList("getNotSellListByMatnr", matnr);
+		return this.sqlSessionTemplate.selectList("getNotSellListByMatnr", attrs);
+	}
+
+	@Override
+	public List<String> getNotSellDealerNosByMatnr(Map<String, String> attrs) {
+		// TODO Auto-generated method stub
+		return this.sqlSessionTemplate.selectList("getNotSellDealerNosByMatnr", attrs);
 	}
 }

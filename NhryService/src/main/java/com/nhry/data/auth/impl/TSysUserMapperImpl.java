@@ -7,6 +7,7 @@ import com.nhry.data.auth.domain.TSysUser;
 import com.nhry.model.auth.UserQueryModel;
 
 import java.util.List;
+import java.util.Map;
 
 public class TSysUserMapperImpl implements TSysUserMapper {
 	private DynamicSqlSessionTemplate sqlSessionTemplate;
@@ -64,5 +65,23 @@ public class TSysUserMapperImpl implements TSysUserMapper {
 	@Override
 	public PageInfo findUserPageByRoleId(UserQueryModel um) {
 		return sqlSessionTemplate.selectListByPages("findUserByRoleId",um,Integer.parseInt(um.getPageNum()),Integer.parseInt(um.getPageSize()));
+	}
+
+	@Override
+	public List<TSysUser> getUsersByRidandOrgs(Map<String, String> attrs) {
+		// TODO Auto-generated method stub
+		return this.sqlSessionTemplate.selectList("getUsersByRidandOrgs", attrs);
+	}
+
+	@Override
+	public List<TSysUser> getloginNamesByOrgsandRid(Map<String, String> attrs) {
+		// TODO Auto-generated method stub
+		return this.sqlSessionTemplate.selectList("getloginNamesByOrgsandRid", attrs);
+	}
+
+	@Override
+	public List<TSysUser> getloginNamesByOrgsandRid2(Map<String, String> attrs) {
+		// TODO Auto-generated method stub
+		return this.sqlSessionTemplate.selectList("getloginNamesByOrgsandRid2", attrs);
 	}
 }

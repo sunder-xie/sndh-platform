@@ -1,6 +1,8 @@
 package com.nhry.service.basic.dao;
 
+import com.nhry.data.basic.domain.TMdMara;
 import com.nhry.data.basic.domain.TSysMessage;
+import com.nhry.model.basic.OrderModel;
 
 public interface TSysMessageService {
 	/**
@@ -30,4 +32,18 @@ public interface TSysMessageService {
      * @return
      */
     int uptTSysMessage(TSysMessage record);
+    
+    /**
+     * 产品发布通知(给奶站内勤发送通知)
+     * @param mara
+     * @return
+     */
+    public boolean sendProductsMessages(String title,TMdMara mara);
+    
+    /**
+     * 发送订单备注消息
+     * @param om
+     * @return
+     */
+    public boolean sendOrderMemo(OrderModel om);
 }

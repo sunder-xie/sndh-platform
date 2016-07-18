@@ -285,10 +285,19 @@ public class PriceServiceImpl extends BaseService implements PriceService {
 		if(list == null){
 			list = new ArrayList<TMdDealer>();
 		}
-		TMdDealer dealer = new TMdDealer();
-		dealer.setDealerNo("-1");
-		dealer.setDealerName("自营奶站");
-		list.add(dealer);
+		boolean flag = false;
+		for(TMdDealer dealer : list){
+			if("-1".equals(dealer.getDealerNo())){
+				flag = true;
+				break;
+			}
+		}
+		if(!flag){
+			TMdDealer dealer = new TMdDealer();
+			dealer.setDealerNo("-1");
+			dealer.setDealerName("自营奶站");
+			list.add(dealer);
+		}
 		return list;
 	}
 

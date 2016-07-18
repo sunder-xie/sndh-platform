@@ -45,5 +45,7 @@
 	<!-- 重点产品分类 -->
 	<sql id="major_products_category">2005</sql>
 	<!-- 角色ID  送奶员 -->
-	<sql id="milkman">1001</sql>
+	<sql id="milkman">10001</sql>
+	<!-- 角色ID  送奶员 -->
+	<sql id="ownBranch">自营奶站</sql>
 </mapper>  
