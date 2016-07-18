@@ -291,7 +291,7 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 				tOrderDaliyPlanItemMapper.updateDaliyPlansToBack(order);
 				
 				//此为多余的钱，如果是预付款，将存入订户账户
-				if(order.getInitAmt()!=null){
+				if(order.getInitAmt()!=null && "20".equals(order.getPaymentStat())){//已经收款的
 				   TVipAcct ac = new TVipAcct();
 				   ac.setVipCustNo(order.getMilkmemberNo());
 				   ac.setAcctAmt(order.getCurAmt());
@@ -302,11 +302,11 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 				tOrderDaliyPlanItemMapper.updateDaliyPlansToBack(order);
 				
 				//用掉的钱，将存入订户账户
-				BigDecimal remain = order.getCurAmt().subtract(order.getInitAmt());
-				TVipAcct ac = new TVipAcct();
-				ac.setAcctAmt(remain);
-				ac.setVipCustNo(order.getMilkmemberNo());
-				tVipCustInfoService.addVipAcct(ac);
+//				BigDecimal remain = order.getCurAmt().subtract(order.getInitAmt());
+//				TVipAcct ac = new TVipAcct();
+//				ac.setAcctAmt(remain);
+//				ac.setVipCustNo(order.getMilkmemberNo());
+//				tVipCustInfoService.addVipAcct(ac);
 					
 			}
 			//更新订单状态为退订
@@ -362,7 +362,7 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 			//
 			order.setOrderDate(date);
          if("20".equals(state)){
-         	order.setPaymentStat("10");
+         	order.setPaymentStat(state);
          }
 			//生成每个订单行
 			List<TPlanOrderItem> entriesList = new ArrayList<TPlanOrderItem>();
@@ -408,6 +408,8 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 			
 			//生成每日计划
 			createDaliyPlan(order,entriesList);
+			
+			//生成收款单
 			
 		}else{
 			throw new ServiceException(MessageCode.LOGIC_ERROR,"原订单不存在");
@@ -619,11 +621,10 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 			order.setPreorderSource("30");//订单来源  页面中来源都是30（奶站）
 		}
 //		order.setMilkmemberNo(milkmemberNo);//喝奶人编号
-//		order.setMemberNo(memberNo);//下单会员编号
 //		order.setEmpNo(empNo);//送奶员编号
 //		order.setInitAmt(initAmt);//页面输入的初始订单金额
-		order.setPaymentStat(StringUtils.isBlank(order.getPaymentStat()) == true ? "10": order.getPaymentStat());//付款状态
 		order.setPaymentmethod(order.getPaymentStat());//10 后款 20 先款 30 殿付款
+		order.setPaymentStat("10");//付款状态,生成时未付款
 		order.setMilkboxStat(StringUtils.isBlank(order.getMilkboxStat()) == true ? "20": order.getMilkboxStat());//奶箱状态
 		if(StringUtils.isBlank(order.getPreorderStat())){
 			order.setPreorderStat("10");//订单状态,初始确认
@@ -642,7 +643,7 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 				throw new ServiceException(MessageCode.LOGIC_ERROR,"日期格式有误!");
 			}
 		}
-//		order.setBranchNo(branchNo);//奶站编号 --人工分单或自动??
+
 		//如果地址信息不为空，为订户创建新的地址
 		if(record.getAddress() != null && "1".equals(record.getAddress().getAddressMode())){
 			record.getAddress().setVipCustNo(order.getMilkmemberNo());
@@ -691,16 +692,16 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 		order.setCurAmt(orderAmt);
 		
 		//此为多余的钱，如果是预付款，将存入订户账户???
-		if(order.getInitAmt()!=null){
-			if("20".equals(order.getPaymentStat()) && order.getInitAmt().subtract(orderAmt).floatValue()<0)throw new ServiceException(MessageCode.LOGIC_ERROR,"付款方式为预付款!您支付的金额不足!");
-			BigDecimal remain = order.getInitAmt().subtract(order.getCurAmt());
-			if(record.getAccount() != null && "20".equals(order.getPaymentStat())){
-				if(StringUtils.isBlank(record.getAccount().getBranchNo()))record.getAccount().setBranchNo(order.getBranchNo());
-				if(StringUtils.isBlank(record.getAccount().getVipCustNo()))record.getAccount().setVipCustNo(order.getMilkmemberNo());
-				record.getAccount().setAcctAmt(remain);
-				tVipCustInfoService.addVipAcct(record.getAccount());
-			}
-		}
+//		if(order.getInitAmt()!=null){
+//			if("20".equals(order.getPaymentmethod()) && order.getInitAmt().subtract(orderAmt).floatValue()<0)throw new ServiceException(MessageCode.LOGIC_ERROR,"付款方式为预付款!您支付的金额不足!");
+//			BigDecimal remain = order.getInitAmt().subtract(order.getCurAmt());
+//			if(record.getAccount() != null && "20".equals(order.getPaymentmethod())){
+//				if(StringUtils.isBlank(record.getAccount().getBranchNo()))record.getAccount().setBranchNo(order.getBranchNo());
+//				if(StringUtils.isBlank(record.getAccount().getVipCustNo()))record.getAccount().setVipCustNo(order.getMilkmemberNo());
+//				record.getAccount().setAcctAmt(remain);
+//				tVipCustInfoService.addVipAcct(record.getAccount());
+//			}
+//		}
 		
 		order.setEndDate(calculateFinalDate(entriesList));//订单截止日期
 		order.setInitAmt(orderAmt);
@@ -727,6 +728,8 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 		//如果有赠品，生成赠品的日计划
 		promotionService.createDaliyPlanByPromotion(order,entriesList,list);
 		
+		//生成收款单
+		
 		return order.getOrderNo();
 	}
 
@@ -744,11 +747,17 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 
 		//计算每个行项目总共需要送多少天
 		Map<TPlanOrderItem,Integer> entryMap = new HashMap<TPlanOrderItem,Integer>();
-		int maxEntryDay = 0;
+		int maxEntryDay = 365;
+		Date firstDeliveryDate = null;
 		for(TPlanOrderItem entry: entries){
+			if(firstDeliveryDate==null){
+				firstDeliveryDate = entry.getStartDispDate();
+			}else{
+				firstDeliveryDate = firstDeliveryDate.before(entry.getStartDispDate())?firstDeliveryDate:entry.getStartDispDate();
+			}
 			int entryDays = (daysOfTwo(entry.getStartDispDate(),entry.getEndDispDate())) + 1;
 			entryMap.put(entry,entryDays);
-			maxEntryDay = maxEntryDay > entryDays ? maxEntryDay : entryDays;
+//			maxEntryDay = maxEntryDay > entryDays ? maxEntryDay : entryDays;
 		}
 
 		//根据最大配送天数的行
@@ -760,14 +769,18 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 		}catch(Exception e){
 			//如果找不到最大值
 		}
+		
 		for(int i = 0; i < maxEntryDay; i++){
 			for (TPlanOrderItem entry : entryMap.keySet()) {
 				int days = entryMap.get(entry);
 				if(days - 1 >= 0){
-					entryMap.replace(entry, days-1);//剩余天数减1天
-
 					//判断是按周期送还是按星期送
-					Date today = afterDate(entry.getStartDispDate(),afterDays);
+					Date today = afterDate(firstDeliveryDate,afterDays);
+					
+					if(entry.getStartDispDate().after(today))continue;
+					
+					entryMap.replace(entry, days-1);//剩余天数减1天
+					
 					if("10".equals(entry.getRuleType())){
 						int gapDays = entry.getGapDays() + 1;//间隔天数
 						if(afterDays%gapDays != 0){
@@ -1325,6 +1338,32 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 		return model;
 	}
 
+
+	/* (non-Javadoc) 
+	* @title: calculateAmtAndEndDateForFront
+	* @description: 页面计算行项目截止日期和总计数量,总计金额
+	* @param item
+	* @return 
+	* @see com.nhry.service.order.dao.OrderService#calculateAmtAndEndDateForFront(com.nhry.data.order.domain.TPlanOrderItem) 
+	*/
+	@Override
+	public TPlanOrderItem calculateAmtAndEndDateForFront(TPlanOrderItem item)
+	{
+		SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
+		try
+		{
+			item.setStartDispDate(format.parse(item.getStartDispDateStr()));
+		}
+		catch (Exception e)
+		{
+			return item;
+		}
+		//计算
+		resolveEntryEndDispDateForFront(item);
+		
+		return item;
+	}
+	
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 	//计算间隔天数
@@ -1540,13 +1579,13 @@ public class OrderServiceImpl extends BaseService implements OrderService {
    	
    	//保存所有新的日计划
    	int index = 0;
-   	List<Date> dateList = new ArrayList<Date>(); 
+   	List<TOrderDaliyPlanItem> dateList = new ArrayList<TOrderDaliyPlanItem>(); 
    	for(TOrderDaliyPlanItem plan:newPlans){
    		
    		//停订的和确认的，直接保存
    		plan.setPlanItemNo(String.valueOf(index));
    		if(stopPlans.containsKey(plan)||"20".equals(plan.getStatus())||"30".equals(plan.getStatus())){
-   			tOrderDaliyPlanItemMapper.insert(plan);
+//   			tOrderDaliyPlanItemMapper.insert(plan);
    			index++;
    			continue;
    		}
@@ -1554,12 +1593,12 @@ public class OrderServiceImpl extends BaseService implements OrderService {
    		//跳过赠品，赠品日期需要放到最后几天
    		if(plan.getGiftQty()!=null)continue;
    		
-   		//其他的重新计算剩余金额等信息
-   		plan.setAmt(plan.getPrice().multiply(new BigDecimal(plan.getQty().toString())));//重新计算小记金额
-   		curAmt = curAmt.subtract(plan.getAmt());//计算日计划的剩余金额
-   		plan.setRemainAmt(curAmt);
-   		
-   		if(plan.getRemainAmt().floatValue() < 0)break;
+//   		//其他的重新计算剩余金额等信息
+//   		plan.setAmt(plan.getPrice().multiply(new BigDecimal(plan.getQty().toString())));//重新计算小记金额
+//   		curAmt = curAmt.subtract(plan.getAmt());//计算日计划的剩余金额
+//   		plan.setRemainAmt(curAmt);
+//   		
+//   		if(plan.getRemainAmt().floatValue() < 0)break;
    		
    		if(plan.getDispDate()==null){
    			
@@ -1596,24 +1635,61 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 					}
 				}
    		}
-   		tOrderDaliyPlanItemMapper.insert(plan);
-   		dateList.add(0,plan.getDispDate());
+//   		tOrderDaliyPlanItemMapper.insert(plan);
+   		dateList.add(0,plan);
    		
    		index++;
    	}
    	
+   	//日期排序完，全保存
+   	newPlans.sort(new Comparator<TOrderDaliyPlanItem>(){
+			@Override
+			public int compare(TOrderDaliyPlanItem o1, TOrderDaliyPlanItem o2)
+			{
+				if(o1.getDispDate().before(o2.getDispDate()))
+				{
+					return -1;
+				}else{
+					return  1;
+				}
+			}
+   	});
+   	
+   	//设置金额
+   	for(TOrderDaliyPlanItem plan:newPlans){
+   		//停订的和确认的，直接保存
+   		if(stopPlans.containsKey(plan)||"20".equals(plan.getStatus())||"30".equals(plan.getStatus())){
+   			tOrderDaliyPlanItemMapper.insert(plan);
+   			continue;
+   		}
+   		//跳过赠品，赠品日期需要放到最后几天
+   		if(plan.getGiftQty()!=null)continue;
+   		//其他的重新计算剩余金额等信息
+   		plan.setAmt(plan.getPrice().multiply(new BigDecimal(plan.getQty().toString())));//重新计算小记金额
+   		curAmt = curAmt.subtract(plan.getAmt());//计算日计划的剩余金额
+   		plan.setRemainAmt(curAmt);
+   		
+   		if(plan.getRemainAmt().floatValue() < 0)break;
+   		
+   		tOrderDaliyPlanItemMapper.insert(plan);
+   	}
+   	
    	//订单截止日期修改
-   	orgOrder.setEndDate(dateList.get(0));
+   	orgOrder.setEndDate(newPlans.get(newPlans.size()-1).getDispDate());
 		tPreOrderMapper.updateOrderEndDate(orgOrder);
    	
    	int i=0;
    	for(TOrderDaliyPlanItem plan:newPlans){
    		if(plan.getGiftQty()==null)continue;
-   			plan.setDispDate(dateList.get(i));
-   			plan.setPlanItemNo(String.valueOf(index));
-   			index++;
+   		if(!dateList.get(i).getItemNo().equals(plan.getItemNo())){
    			i++;
-   			tOrderDaliyPlanItemMapper.insert(plan);
+   			continue;
+   		}
+			plan.setDispDate(dateList.get(i).getDispDate());
+			plan.setPlanItemNo(String.valueOf(index));
+			index++;
+			i++;
+			tOrderDaliyPlanItemMapper.insert(plan);
    	}
    	
    }
@@ -1728,11 +1804,17 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 
  		//计算每个行项目总共需要送多少天
  		Map<TPlanOrderItem,Integer> entryMap = new HashMap<TPlanOrderItem,Integer>();
- 		int maxEntryDay = 0;
+ 		int maxEntryDay = 365;
+ 		Date firstDeliveryDate = null;
  		for(TPlanOrderItem entry: entries){
+ 			if(firstDeliveryDate==null){
+				firstDeliveryDate = entry.getStartDispDate();
+			}else{
+				firstDeliveryDate = firstDeliveryDate.before(entry.getStartDispDate())?firstDeliveryDate:entry.getStartDispDate();
+			}
  			int entryDays = (daysOfTwo(entry.getStartDispDate(),entry.getEndDispDate())) + 1;
  			entryMap.put(entry,entryDays);
- 			maxEntryDay = maxEntryDay > entryDays ? maxEntryDay : entryDays;
+// 			maxEntryDay = maxEntryDay > entryDays ? maxEntryDay : entryDays;
  		}
 
  		//根据最大配送天数的行
@@ -1748,10 +1830,13 @@ public class OrderServiceImpl extends BaseService implements OrderService {
  			for (TPlanOrderItem entry : entryMap.keySet()) {
  				int days = entryMap.get(entry);
  				if(days - 1 > 0){
- 					entryMap.replace(entry, days-1);//剩余天数减1天
-
- 					//判断是按周期送还是按星期送
- 					Date today = afterDate(entry.getStartDispDate(),afterDays);
+ 				   //判断是按周期送还是按星期送
+					Date today = afterDate(firstDeliveryDate,afterDays);
+					
+					if(entry.getStartDispDate().after(today))continue;
+					
+					entryMap.replace(entry, days-1);//剩余天数减1天
+					
  					if("10".equals(entry.getRuleType())){
  						int gapDays = entry.getGapDays() + 1;//间隔天数
  						if(afterDays%gapDays != 0){
@@ -1955,8 +2040,69 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 		
  	}
  	
- 	
- 	
- 	
+   //当订单是预付款时，订单行有配送总数和起始日期，需要计算结束日期,页面用，顺便计算金额
+  	private void resolveEntryEndDispDateForFront(TPlanOrderItem entry){
+  		SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
+  		try{
+     		int total = entry.getDispTotal();
+     		if(total<=0 || total%entry.getQty()!=0)throw new ServiceException(MessageCode.LOGIC_ERROR,"行总共配送无法平均分配到每一天!请修改总数或每日配送数");
+     		
+     		int afterDays = 0;
+     		BigDecimal amt = new BigDecimal("0.00");//行金额总计
+     		
+     		//判断是按周期送还是按星期送
+    		for(int i=0;i<365;i++){
+    			Date today = afterDate(entry.getStartDispDate(),afterDays);
+    			
+    			if("10".equals(entry.getRuleType())){
+    				int gapDays = entry.getGapDays() + 1;//间隔天数
+    				if(afterDays%gapDays != 0){
+    					if(entry.getRuleTxt()!=null){
+    						List<String> deliverDays = Arrays.asList(entry.getRuleTxt().split(","));
+    						if(deliverDays.size() > 0){//判断周6，7是否配送
+    							String weekday = getWeek(today);
+    							if(!deliverDays.contains(weekday)){
+    								afterDays++;
+    								continue;
+    							}
+    						}
+    					}else{
+    						afterDays++;
+    						continue;
+    					}
+    				}
+    			}
+    			else if("20".equals(entry.getRuleType())){
+    				String weekday = getWeek(today);
+    				List<String> deliverDays = Arrays.asList(entry.getRuleTxt().split(","));
+    				if(!deliverDays.contains(weekday)){
+    					afterDays++;
+    					continue;//如果选择的星期几不送，则跳过今天
+    				}
+    			}
+    			else{
+    				return;
+    			}
+    			
+    			total = total - entry.getQty();
+    			amt = amt.add(entry.getSalesPrice().multiply(new BigDecimal(String.valueOf(entry.getQty()))));
+    			afterDays++;
+    			
+    			if(total==0){
+    				entry.setEndDispDateStr(format.format(today));
+    				entry.setEntryTotal(amt);
+    				break;
+    			}
+    			
+    		}
+  		}catch(Exception e)
+  		{
+  			entry.setEndDispDateStr(null);
+  			entry.setEntryTotal(null);
+  			return;
+  		}
+  		
+  	}
+
  	
 }

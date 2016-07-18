@@ -55,4 +55,6 @@ public interface OrderService {
 	OrderRemainData searchOrderRemainData(String phone);
 
 	CollectOrderModel queryCollectByOrderNo(String orderCode);
+
+	TPlanOrderItem calculateAmtAndEndDateForFront(TPlanOrderItem item);
 }

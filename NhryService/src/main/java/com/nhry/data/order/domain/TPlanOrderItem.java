@@ -72,7 +72,19 @@ public class TPlanOrderItem {
     
     private Integer dispTotal;
     
-    public Integer getDispTotal()
+    private BigDecimal entryTotal;
+    
+    public BigDecimal getEntryTotal()
+	{
+		return entryTotal;
+	}
+
+	public void setEntryTotal(BigDecimal entryTotal)
+	{
+		this.entryTotal = entryTotal;
+	}
+
+	public Integer getDispTotal()
 	{
 		return dispTotal;
 	}
