@@ -562,4 +562,28 @@
         </if>
       order by u.CREATE_ON desc,u.LAST_MODIFIED desc
   </select>
+  <select id="getUsersByRidandOrgs" resultMap="BaseResultMap" parameterType="java.util.HashMap">
+      SELECT
+		u.LOGIN_NAME,
+		u.BRANCH_NO,
+		u.SALES_ORG,
+		u.DEALER_ID
+	FROM
+		t_sys_user u,
+		t_sys_user_role r
+	WHERE
+		u.LOGIN_NAME = r.LOGIN_NAME
+	<if test="rid != null and rid != ''">
+	   AND r.ID = #{rid}
+	</if>
+	<if test="salesOrg != null and salesOrg != ''">
+	   AND u.SALES_ORG = #{salesOrg}
+	</if>
+	<if test="dealerNo != null and dealerNo != ''">
+	   AND u.DEALER_ID = #{dealerNo}
+	</if>
+	<if test="branchNo != null and branchNo != ''">
+	   AND u.BRANCH_NO = #{branchNo}
+	</if>
+  </select>
 </mapper>
