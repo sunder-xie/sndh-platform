@@ -29,9 +29,11 @@ public class TSysMessage {
 
     private Date finishTime;
 
-    private String finishFlay;
+    private String finishFlag;
 
     private String url;
+
+    private String source;
 
     public String getMessageNo() {
         return messageNo;
@@ -137,12 +139,12 @@ public class TSysMessage {
         this.finishTime = finishTime;
     }
 
-    public String getFinishFlay() {
-        return finishFlay;
+    public String getFinishFlag() {
+        return finishFlag;
     }
 
-    public void setFinishFlay(String finishFlay) {
-        this.finishFlay = finishFlay == null ? null : finishFlay.trim();
+    public void setFinishFlag(String finishFlag) {
+        this.finishFlag = finishFlag == null ? null : finishFlag.trim();
     }
 
     public String getUrl() {
@@ -151,5 +153,13 @@ public class TSysMessage {
 
     public void setUrl(String url) {
         this.url = url == null ? null : url.trim();
+    }
+
+    public String getSource() {
+        return source;
+    }
+
+    public void setSource(String source) {
+        this.source = source == null ? null : source.trim();
     }
 }

@@ -3,7 +3,7 @@ package com.nhry.data.basic.domain;
 import java.io.Serializable;
 import java.util.Date;
 
-public class TMdDealer implements Serializable {
+public class TMdDealer implements Serializable{
     private String dealerNo;
 
     private String dealerName;

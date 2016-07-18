@@ -1,5 +1,6 @@
 package com.nhry.service.basic.dao;
 
+import com.nhry.data.basic.domain.TMdMara;
 import com.nhry.data.basic.domain.TSysMessage;
 
 public interface TSysMessageService {
@@ -30,4 +31,11 @@ public interface TSysMessageService {
      * @return
      */
     int uptTSysMessage(TSysMessage record);
+    
+    /**
+     * 产品发布通知(给奶站内勤发送通知)
+     * @param mara
+     * @return
+     */
+    public boolean sendProductsMessages(TMdMara mara);
 }

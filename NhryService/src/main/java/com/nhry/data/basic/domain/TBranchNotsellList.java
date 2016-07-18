@@ -1,8 +1,9 @@
 package com.nhry.data.basic.domain;
 
+import java.io.Serializable;
 import java.util.Date;
 
-public class TBranchNotsellList {
+public class TBranchNotsellList implements Serializable{
     private String listNo;
 
     private String matnr;

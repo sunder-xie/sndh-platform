@@ -1,8 +1,9 @@
 package com.nhry.data.basic.domain;
 
+import java.io.Serializable;
 import java.util.Date;
 
-public class TMdPriceBranch {
+public class TMdPriceBranch implements Serializable{
     private String branchNo;
     
     private String priceType;   //价格组类型
