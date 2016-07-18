@@ -158,7 +158,7 @@
     from T_MD_BRANCH b LEFT JOIN t_md_dealer d on b.DEALER_NO = d.DEALER_NO
     where 1=1
       <if test="branchNo != null and branchNo != ''">
-       and   ( b.BRANCH_NO LIKE '%${branchNo}%' OR b.BRANCH_NAME like  '%${branchNo}%' )
+       and  b.BRANCH_NO = #{branchNo,jdbcType=VARCHAR}
     </if>
       <if test="dealerNo != null and dealerNo != ''">
         AND b.DEALER_NO = #{dealerNo,jdbcType=VARCHAR}
