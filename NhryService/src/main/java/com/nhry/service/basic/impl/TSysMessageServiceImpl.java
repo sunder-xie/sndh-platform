@@ -143,12 +143,18 @@ public class TSysMessageServiceImpl extends BaseService implements TSysMessageSe
 			//部门内勤
 			attrs.put("rid", "'"+SysContant.getSystemConst("department_back_office")+"'");
 			users = userMapper.getloginNamesByOrgsandRid2(attrs);
+			if(users == null || users.size() == 0){
+				throw new ServiceException(MessageCode.LOGIC_ERROR, "该组织下没有找到相应的部门内勤人员!");
+			}
 			this.sendMessage(users, om.getMemoTitle(), om.getMemoContent(), "20");
 			if(!StringUtils.isEmpty(order.getDealerNo())){
 				//经销商奶站订单
 				attrs.put("dealerNo", order.getDealerNo());
 				attrs.put("rid", "'"+SysContant.getSystemConst("dealer_back_office")+"'");
 				users = userMapper.getloginNamesByOrgsandRid2(attrs);
+				if(users == null || users.size() == 0){
+					throw new ServiceException(MessageCode.LOGIC_ERROR, "该组织下没有找到相应的经销商内勤人员!");
+				}
 				this.sendMessage(users, om.getMemoTitle(), om.getMemoContent(), "20");
 			}
 		}else if("20".equals(om.getMemoType())){
@@ -157,6 +163,9 @@ public class TSysMessageServiceImpl extends BaseService implements TSysMessageSe
 			attrs.put("dealerNo", order.getDealerNo());
 			attrs.put("rid", "'"+SysContant.getSystemConst("branch_back_office")+"'");
 			users = userMapper.getloginNamesByOrgsandRid2(attrs);
+			if(users == null || users.size() == 0){
+				throw new ServiceException(MessageCode.LOGIC_ERROR, "该组织下没有找到相应的奶站内勤人员!");
+			}
 			this.sendMessage(users, om.getMemoTitle(), om.getMemoContent(), "20");
 		}else if("30".equals(om.getMemoType())){
 			//部门内勤和奶站内勤

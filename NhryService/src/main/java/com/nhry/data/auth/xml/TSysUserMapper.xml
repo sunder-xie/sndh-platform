@@ -548,10 +548,9 @@
         <if test="salesOrg != null and ''!= salesOrg">
             and u.SALES_ORG = #{salesOrg,jdbcType=VARCHAR}
         </if>
-        order by u.CREATE_ON desc,u.LAST_MODIFIED desc
-    </select>
-
-    <resultMap id="BaseResultMap1" type="com.nhry.data.auth.domain.TSysUser" extends="BaseResultMap">
+      order by u.CREATE_ON desc,u.LAST_MODIFIED desc
+  </select>
+  <resultMap id="BaseResultMap1" type="com.nhry.data.auth.domain.TSysUser" extends="BaseResultMap">
         <collection property="roleIds" ofType="com.nhry.data.auth.domain.TSysUserRole">
             <id property="id" column="ID"/>
         </collection>
@@ -594,7 +593,6 @@
         </where>
         order by u.CREATE_ON desc,LAST_MODIFIED desc
     </select>
-
     <select id="getUsersByRidandOrgs" resultMap="BaseResultMap" parameterType="java.util.HashMap">
         SELECT
         u.LOGIN_NAME,
@@ -634,7 +632,7 @@
         u.LOGIN_NAME = r.LOGIN_NAME
         AND u.BRANCH_NO = b.BRANCH_NO
         <if test="dealerNo != null and dealerNo != ''">
-            AND b.DEALER_NO NOT IN (#{dealerNo})
+            AND b.DEALER_NO NOT IN (${dealerNo})
         </if>
         <if test="branchGroup != null and branchGroup != ''">
             AND b.BRANCH_GROUP = #{branchGroup}
@@ -673,7 +671,7 @@
             AND u.SALES_ORG = #{salesOrg}
         </if>
         <if test="rid != null and rid != ''">
-            AND r.ID in (#{rid})
+            AND r.ID in (${rid})
         </if>
     </select>
 </mapper>
