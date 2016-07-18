@@ -63,15 +63,18 @@ public class BranchServiceImpl extends BaseService implements BranchService {
 	public PageInfo findBranchListByPage(BranchQueryModel branchModel) {
 		TSysUser user = userSessionService.getCurrentUser();
 		TSysUserRole userRole = urMapper.getUserRoleByLoginName(user.getLoginName());
+		branchModel.setSalesOrg(user.getSalesOrg());
 		//部门内勤
 		if("10003".equals(userRole.getId())){
-			branchModel.setSalesOrg(user.getSalesOrg());
+			branchModel.setRoleId("10003");
 		}else if("10005".equals(userRole.getId())){
+			branchModel.setRoleId("10005");
 			//经销商内勤
 			branchModel.setDealerNo(user.getDealerId());
 		}else {
 			//奶站内勤
 			branchModel.setBranchNo(user.getBranchNo());
+
 		}
 
 		// TODO Auto-generated method stub

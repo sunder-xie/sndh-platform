@@ -323,5 +323,11 @@
     </if>
     ORDER BY a.CREATE_AT desc
   </select>
-
+<select id="getAreaByAreaName" resultMap="BaseResultMap" parameterType="String">
+  SELECT
+  <include refid="Base_Column_List" />
+  from t_md_residential_area
+  WHERE 1=1
+  and  RESIDENTIAL_AREA_TXT = #{residentialAreaTxt,jdbcType=VARCHAR}
+</select>
 </mapper>

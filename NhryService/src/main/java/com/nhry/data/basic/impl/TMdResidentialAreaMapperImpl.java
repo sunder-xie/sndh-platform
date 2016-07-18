@@ -81,6 +81,11 @@ public class TMdResidentialAreaMapperImpl implements TMdResidentialAreaMapper {
     }
 
     @Override
+    public TMdResidentialArea getAreaByAreaName(String residentialAreaTxt) {
+        return sqlSessionTemplate.selectOne("getAreaByAreaName",residentialAreaTxt);
+    }
+
+    @Override
     public PageInfo findAreaListByPage(ResidentialAreaModel residentialAreaModel) {
         return sqlSessionTemplate.selectListByPages("selectAreaByPage",residentialAreaModel,
                 Integer.parseInt(residentialAreaModel.getPageNum()), Integer.parseInt(residentialAreaModel.getPageSize()));

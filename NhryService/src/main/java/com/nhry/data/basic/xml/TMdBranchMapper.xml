@@ -163,9 +163,17 @@
     b.MP,b.TEL
     from T_MD_BRANCH b LEFT JOIN t_md_dealer d on b.DEALER_NO = d.DEALER_NO
     where 1=1
+      <choose>
+          <when test="roleId !=null">
+              and ( b.BRANCH_NO like '%${branchNo}%' or b.BRANCH_NAME like '%${branchNo}%')
+          </when>
+          <otherwise>
+              and  b.BRANCH_NO = #{branchNo,jdbcType=VARCHAR}
+          </otherwise>
+      </choose>
       <if test="branchNo != null and branchNo != ''">
-       and  b.BRANCH_NO = #{branchNo,jdbcType=VARCHAR}
-    </if>
+
+      </if>
       <if test="dealerNo != null and dealerNo != ''">
         AND b.DEALER_NO = #{dealerNo,jdbcType=VARCHAR}
       </if>
