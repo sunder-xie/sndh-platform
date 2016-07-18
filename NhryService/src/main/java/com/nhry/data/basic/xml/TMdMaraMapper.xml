@@ -229,8 +229,9 @@
 		FROM
 		t_md_mara p 
 		<where>
+		     p. STATUS='Y' 
 		    <if test="salesOrg != null and salesOrg != ''">
-		        p.SALES_ORG=#{salesOrg}
+		        AND p.SALES_ORG=#{salesOrg}
 		    </if>
 		    <if test="dealerNo != null and dealerNo != ''">
 		        AND p.DEALER_NO=#{dealerNo}

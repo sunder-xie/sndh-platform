@@ -601,7 +601,7 @@
 		u.LOGIN_NAME = r.LOGIN_NAME
 	AND u.BRANCH_NO = b.BRANCH_NO
 	<if test="dealerNo != null and dealerNo != ''">
-	    AND b.DEALER_NO NOT IN (#{dealerNo})
+	    AND b.DEALER_NO NOT IN (${dealerNo})
 	</if>
 	<if test="branchGroup != null and branchGroup != ''">
 	   AND b.BRANCH_GROUP = #{branchGroup}
@@ -628,19 +628,19 @@
 	WHERE
 		u.LOGIN_NAME = r.LOGIN_NAME
 	AND u.BRANCH_NO = b.BRANCH_NO
-	<if test="dealerNo != null and dealerNo != ''">
+	<if test="salesOrg != null and salesOrg != ''">
+	   AND b.SALES_ORG = #{salesOrg}
+	   AND u.SALES_ORG = #{salesOrg}
+	</if>
+		<if test="dealerNo != null and dealerNo != ''">
 	    AND b.DEALER_NO = #{dealerNo}
 	</if>
 	<if test="branchNo != null and branchNo != ''">
 	   AND u.BRANCH_NO = #{branchNo}
 	   AND b.BRANCH_NO = #{branchNo}
 	</if>
-	<if test="salesOrg != null and salesOrg != ''">
-	   AND b.SALES_ORG = #{salesOrg}
-	   AND u.SALES_ORG = #{salesOrg}
-	</if>
 	<if test="rid != null and rid != ''">
-	   AND r.ID in (#{rid})
+	   AND r.ID in (${rid})
 	</if>
   </select>
 </mapper>
