@@ -24,6 +24,7 @@ import com.nhry.service.order.dao.MilkBoxService;
 import com.nhry.service.order.dao.OrderService;
 import com.nhry.service.order.dao.PromotionService;
 import com.nhry.service.order.pojo.OrderRemainData;
+import com.nhry.utils.CodeGeneratorUtil;
 
 import org.apache.commons.lang3.StringUtils;
 
@@ -361,7 +362,7 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 			//基本参考原单
 			//新的订单号
 			Date date = new Date();
-			order.setOrderNo(String.valueOf(date.getTime()));
+			order.setOrderNo(CodeGeneratorUtil.getCode());
 			//
 			order.setOrderDate(date);
          if("20".equals(state)){
@@ -373,13 +374,13 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 			BigDecimal orderAmt = new BigDecimal("0.00");//订单总价
 			for(TPlanOrderItem entry: entries){
 				entry.setOrderNo(order.getOrderNo());
-				entry.setItemNo(order.getOrderNo().substring(9) + String.valueOf(index));//行项目编号
+				entry.setItemNo(order.getOrderNo() + String.valueOf(index));//行项目编号
 				entry.setRefItemNo(String.valueOf(index));//参考行项目编号
 				entry.setOrderDate(date);//订单日期
 				entry.setCreateAt(date);//创建日期
 				entry.setCreateBy(userSessionService.getCurrentUser().getLoginName());//创建人
 				entry.setCreateByTxt(userSessionService.getCurrentUser().getDisplayName());//创建人姓名
-				entry.setStartDispDate(order.getEndDate());
+				entry.setStartDispDate(afterDate(order.getEndDate(),1));
 				entry.setEndDispDate(edate);
 				orderAmt = orderAmt.add(calculateEntryAmount(entry));
 				entriesList.add(entry);
@@ -610,7 +611,7 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 		validateOrderInfo(record);
 		//暂时生成订单号
 		Date date = new Date();
-		order.setOrderNo(String.valueOf(date.getTime()));
+		order.setOrderNo(CodeGeneratorUtil.getCode());
 		//其他订单信息
 		order.setOrderDate(date);//订单创建日期
 		order.setCreaterBy(userSessionService.getCurrentUser().getLoginName());//创建人
@@ -657,7 +658,7 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 		BigDecimal orderAmt = new BigDecimal("0.00");//订单总价
 		for(TPlanOrderItem entry: record.getEntries()){
 			entry.setOrderNo(order.getOrderNo());
-			entry.setItemNo(order.getOrderNo().substring(9) + String.valueOf(index));//行项目编号
+			entry.setItemNo(order.getOrderNo() + String.valueOf(index));//行项目编号
 			entry.setRefItemNo(String.valueOf(index));//参考行项目编号
 			entry.setOrderDate(date);//订单日期
 			entry.setCreateAt(date);//创建日期
@@ -666,11 +667,18 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 			try
 			{
 				entry.setStartDispDate(format.parse(entry.getStartDispDateStr()));
-				entry.setEndDispDate(format.parse(entry.getEndDispDateStr()));
+				if("20".equals(order.getPaymentmethod())){
+					resolveEntryEndDispDate(entry);
+				}else{
+					entry.setEndDispDate(format.parse(entry.getEndDispDateStr()));
+				}
+			}
+			catch (ServiceException e1){
+				throw e1;
 			}
 			catch (Exception e)
 			{
-				throw new ServiceException(MessageCode.LOGIC_ERROR,"日期格式有误!");
+				throw new ServiceException(MessageCode.LOGIC_ERROR,"日期格式有误");
 			}
 			orderAmt = orderAmt.add(calculateEntryAmount(entry));
 			
@@ -759,7 +767,7 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 		for(int i = 0; i < maxEntryDay; i++){
 			for (TPlanOrderItem entry : entryMap.keySet()) {
 				int days = entryMap.get(entry);
-				if(days - 1 > 0){
+				if(days - 1 >= 0){
 					entryMap.replace(entry, days-1);//剩余天数减1天
 
 					//判断是按周期送还是按星期送
@@ -843,7 +851,7 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 	{
 		//未收款10、已收款20、垫付款30
 		//已装箱10、未装箱20、无需装箱30
-		//已生效10、未生效20、无效30
+		//已生效10、未生效20、无效30,作废40
 		//先款10、后付款20
 		//在订10、停订20、退订30
 		if(record.getMilkmemberNo()!=null){
@@ -857,6 +865,8 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 		if("10".equals(record.getPreorderStat())){
 			TPreOrder order = tPreOrderMapper.selectByPrimaryKey(record.getOrderNo());
 			if(StringUtils.isBlank(order.getMilkmemberNo()))throw new ServiceException(MessageCode.LOGIC_ERROR,"该订单没有订户，请选择订户或新建订户!");
+			//订户状态更改
+			tVipCustInfoService.discontinue(record.getMilkmemberNo(), "10",new com.nhry.utils.date.Date(),new com.nhry.utils.date.Date());
 		}
 		if(StringUtils.isBlank(record.getPaymentStat()) && StringUtils.isBlank(record.getMilkboxStat())
 				&& StringUtils.isBlank(record.getPreorderStat()) && StringUtils.isBlank(record.getSign())){
@@ -1332,7 +1342,7 @@ public class OrderServiceImpl extends BaseService implements OrderService {
    private BigDecimal calculateEntryAmount(TPlanOrderItem entry){
    	
    	int afterDays = 0;//经过的天数
-   	int allDays = daysOfTwo(entry.getStartDispDate(),entry.getEndDispDate());//总共需要配送的天数
+   	int allDays = daysOfTwo(entry.getStartDispDate(),entry.getEndDispDate())+1;//总共需要配送的天数
    	
    	int goDays = 0;
    	BigDecimal qty = new BigDecimal(entry.getQty().toString());
@@ -1567,6 +1577,10 @@ public class OrderServiceImpl extends BaseService implements OrderService {
    		
    		index++;
    	}
+   	
+   	//订单截止日期修改
+   	orgOrder.setEndDate(dateList.get(0));
+		tPreOrderMapper.updateOrderEndDate(orgOrder);
    	
    	int i=0;
    	for(TOrderDaliyPlanItem plan:newPlans){
@@ -1866,5 +1880,59 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 
  		return daliyPlans;
  	}
+ 	
+ 	//当订单是预付款时，订单行有配送总数和起始日期，需要计算结束日期
+ 	private void resolveEntryEndDispDate(TPlanOrderItem entry){
+ 		int total = entry.getDispTotal();
+ 		if(total<=0 || total%entry.getQty()!=0)throw new ServiceException(MessageCode.LOGIC_ERROR,"行总共配送无法平均分配到每一天!请修改总数或每日配送数");
+ 		
+ 		int afterDays = 0;
+ 		
+ 		//判断是按周期送还是按星期送
+		for(int i=0;i<365;i++){
+			Date today = afterDate(entry.getStartDispDate(),afterDays);
+			
+			if("10".equals(entry.getRuleType())){
+				int gapDays = entry.getGapDays() + 1;//间隔天数
+				if(afterDays%gapDays != 0){
+					if(entry.getRuleTxt()!=null){
+						List<String> deliverDays = Arrays.asList(entry.getRuleTxt().split(","));
+						if(deliverDays.size() > 0){//判断周6，7是否配送
+							String weekday = getWeek(today);
+							if(!deliverDays.contains(weekday)){
+								afterDays++;
+								continue;
+							}
+						}
+					}else{
+						afterDays++;
+						continue;
+					}
+				}
+			}
+			else if("20".equals(entry.getRuleType())){
+				String weekday = getWeek(today);
+				List<String> deliverDays = Arrays.asList(entry.getRuleTxt().split(","));
+				if(!deliverDays.contains(weekday)){
+					afterDays++;
+					continue;//如果选择的星期几不送，则跳过今天
+				}
+			}
+			
+			total = total - entry.getQty();
+			afterDays++;
+			
+			if(total==0){
+				entry.setEndDispDate(today);
+				break;
+			}
+			
+		}
+		
+ 	}
+ 	
+ 	
+ 	
+ 	
  	
 }

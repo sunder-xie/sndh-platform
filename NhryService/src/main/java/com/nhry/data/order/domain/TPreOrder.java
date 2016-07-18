@@ -96,6 +96,17 @@ public class TPreOrder {
     
     private String dealerNo;
     
+    private String deleteReason;
+
+	public String getDeleteReason()
+	{
+		return deleteReason;
+	}
+
+	public void setDeleteReason(String deleteReason)
+	{
+		this.deleteReason = deleteReason;
+	}
 
 	public String getDealerNo()
 	{

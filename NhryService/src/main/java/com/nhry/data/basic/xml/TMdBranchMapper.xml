@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
 <mapper namespace="com.nhry.data.basic.dao.TMdBranchMapper" >
+  <cache type="org.mybatis.caches.redis.RedisCache" />
   <resultMap id="BaseResultMap" type="com.nhry.data.basic.domain.TMdBranch" >
     <id column="BRANCH_NO" property="branchNo" jdbcType="VARCHAR" />
     <result column="BRANCH_NAME" property="branchName" jdbcType="VARCHAR" />
@@ -119,7 +120,7 @@
   </update>
   <select id="findBranchListByOrg" resultMap="BaseResultMap" parameterType="String">
     select
-    b.BRANCH_NO, b.BRANCH_NAME, b.SALES_CHA, b.BRANCH_GROUP,b.BRANCH_LEVEL,  b.SALES_ORG,
+    b.BRANCH_NO, b.BRANCH_NAME<!--, b.SALES_CHA, b.BRANCH_GROUP,b.BRANCH_LEVEL,  b.SALES_ORG,
     (
     SELECT i.ITEM_NAME
     from t_sys_code_item i
@@ -135,15 +136,15 @@
     ) COMPANY_NAME,
     b.CONTACT,	b.EMP_NO,b.TEL, b.MP, b.DEALER_NO,d.DEALER_NAME, b.ADDRESS,
     b.PROVINCE, b.CITY,b.COUNTY,
-   <!-- (SELECT i.ITEM_NAME from t_sys_code_item i WHERE i.TYPE_CODE=<include refid="mybaties.constant.COUNTRY_CITY_CONSTANT"/> and i.ITEM_CODE = b.PROVINCE ) PROVINCE,
+   &lt;!&ndash; (SELECT i.ITEM_NAME from t_sys_code_item i WHERE i.TYPE_CODE=<include refid="mybaties.constant.COUNTRY_CITY_CONSTANT"/> and i.ITEM_CODE = b.PROVINCE ) PROVINCE,
     (SELECT i.ITEM_NAME from t_sys_code_item i WHERE i.TYPE_CODE=<include refid="mybaties.constant.COUNTRY_CITY_CONSTANT"/> and i.ITEM_CODE = b.CITY ) CITY,
-    (SELECT i.ITEM_NAME from t_sys_code_item i WHERE i.TYPE_CODE=<include refid="mybaties.constant.COUNTRY_CITY_CONSTANT"/> and i.ITEM_CODE = b.COUNTY ) COUNTY,-->
+    (SELECT i.ITEM_NAME from t_sys_code_item i WHERE i.TYPE_CODE=<include refid="mybaties.constant.COUNTRY_CITY_CONSTANT"/> and i.ITEM_CODE = b.COUNTY ) COUNTY,&ndash;&gt;
     (SELECT i.ITEM_NAME from t_sys_code_item i WHERE i.TYPE_CODE=<include refid="mybaties.constant.factory"/> and i.ITEM_CODE = b.WERKS) WERKS,
     (SELECT i.ITEM_NAME from t_sys_code_item i WHERE i.TYPE_CODE=<include refid="mybaties.constant.storage_location"/>  and i.ITEM_CODE = b.LGORT) LGORT,
-    b.CREATE_AT, b.CREATE_BY, b.CREATE_BY_TXT,b.LAST_MODIFIED, b.LAST_MODIFIED_BY, b.LAST_MODIFIED_BY_TXT
-    from t_md_branch b LEFT  JOIN  t_md_dealer d on b.DEALER_NO = d.DEALER_NO
-    where b.SALES_ORG = #{salesOrg,jdbcType=VARCHAR}
+    b.CREATE_AT, b.CREATE_BY, b.CREATE_BY_TXT,b.LAST_MODIFIED, b.LAST_MODIFIED_BY, b.LAST_MODIFIED_BY_TXT-->
 
+    from t_md_branch b /*LEFT  JOIN  t_md_dealer d on b.DEALER_NO = d.DEALER_NO*/
+    where b.SALES_ORG = #{salesOrg,jdbcType=VARCHAR}
     ORDER BY b.CREATE_AT desc
   </select>
   <select id="searchBranch" resultMap="BaseResultMap" parameterType="com.nhry.model.basic.BranchQueryModel">
@@ -164,6 +165,9 @@
       </if>
       <if test="branchGroup != null and branchGroup != ''">
         AND b.BRANCH_GROUP = #{branchGroup,jdbcType=VARCHAR}
+      </if>
+      <if test="salesOrg != null and salesOrg != ''">
+        AND b.SALES_ORG = #{salesOrg,jdbcType=VARCHAR}
       </if>
     ORDER BY b.CREATE_AT desc
   </select>

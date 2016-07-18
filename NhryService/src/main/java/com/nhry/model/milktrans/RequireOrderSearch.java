@@ -13,6 +13,15 @@ public class RequireOrderSearch  implements Serializable {
     private String salesOrg;
     private Date firstDay;
     private Date secondDay;
+    private String promotion;
+
+    public String getPromotion() {
+        return promotion;
+    }
+
+    public void setPromotion(String promotion) {
+        this.promotion = promotion;
+    }
 
     public Date getFirstDay() {
         return firstDay;

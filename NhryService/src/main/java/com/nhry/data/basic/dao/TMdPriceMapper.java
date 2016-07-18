@@ -91,5 +91,5 @@ public interface TMdPriceMapper {
 	  * @param salesOrg
 	  * @return
 	  */
-	 public int getCompPriceGroupCount(String salesOrg);
+	 public int getCompPriceGroupCount(Map<String,String> attrs);
 }

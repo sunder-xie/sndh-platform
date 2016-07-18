@@ -449,6 +449,8 @@ public class DeliverMilkServiceImpl extends BaseService implements DeliverMilkSe
 			//生成一条路线，一个配送时段的路单
 			List<TOrderDaliyPlanItem> daliyPlans = tOrderDaliyPlanItemMapper.selectbyDispLineNo(order.getEmpNo(),format.format(new Date()),order.getOrderType());
 			
+			if(daliyPlans == null || daliyPlans.size() <= 0)continue;
+				
 			//对每日计划的统计
 			int index = 0;
 			String empNo = order.getEmpNo();

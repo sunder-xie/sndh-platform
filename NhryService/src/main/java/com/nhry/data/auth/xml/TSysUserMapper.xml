@@ -48,6 +48,7 @@
         <result column="GROUP_ID" jdbcType="VARCHAR" property="groupId"/>
         <result column="BRANCH_NAME" property="branchName" jdbcType="VARCHAR"/>
         <result column="ORG_NAME" property="orgName" jdbcType="VARCHAR"/>
+        <result column="DEALER_NAME" property="dealerName" jdbcType="VARCHAR"/>
     </resultMap>
     <sql id="Base_Column_List">
         LOGIN_NAME, DISPLAY_NAME, DEPARTMENT_NUMBER, DEPARTMENT_NAME, CUSTOMIZED_POSITIONID,
@@ -62,8 +63,9 @@
         DS_PWP_ACCOUNT_DISABLED, GROUP_ID,
         (SELECT i.ITEM_NAME FROM t_sys_code_item i where i.TYPE_CODE=
         <include refid="mybaties.constant.SALES_ORG_CONSTANT"></include>
-        and i.ITEM_CODE=SALES_ORG) ORG_NAME,
-        (SELECT b.BRANCH_NAME FROM t_md_branch b where b.BRANCH_NO=t_sys_user.BRANCH_NO) BRANCH_NAME
+        and i.ITEM_CODE=t_sys_user.SALES_ORG) ORG_NAME,
+        (SELECT b.BRANCH_NAME FROM t_md_branch b where b.BRANCH_NO=t_sys_user.BRANCH_NO) BRANCH_NAME,
+        (select d.DEALER_NAME from t_md_dealer d where d.DEALER_NO=t_sys_user.DEALER_ID) DEALER_NAME
     </sql>
     <delete id="deleteByPrimaryKey" parameterType="java.lang.String">
     delete from t_sys_user

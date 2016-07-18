@@ -153,7 +153,7 @@
 			FROM
 				T_MD_BRANCH b where b.BRANCH_NO = i.BRANCH_NO
 		) BRANCH_NAME,i.BRANCH_NO,i.DEALER_NO,(CASE i.DEALER_NO
-			WHEN '-1' THEN '自有奶站'
+			WHEN '-1' THEN '自营奶站'
 			ELSE (SELECT d.dealer_name from t_md_dealer d where d.dealer_no=i.DEALER_NO) END) DEALER_NAME,
 		date_format(FIRST_ORDER_TIME, '%Y-%m-%d') FIRST_ORDER_TIME,date_format(LAST_ORDER_TIME, '%Y-%m-%d') LAST_ORDER_TIME 
 		FROM
@@ -809,6 +809,8 @@
 		i.VIP_AMT,
 		i.CREATE_AT,
 		i.CREATE_BY,
+		date_format(i.FIRST_ORDER_TIME, '%Y-%m-%d') FIRST_ORDER_TIME,
+		date_format(i.LAST_ORDER_TIME, '%Y-%m-%d') LAST_ORDER_TIME,
 		i.CREATE_BY_TXT,
 		i.LAST_MODIFIED,
 		i.LAST_MODIFIED_BY,
