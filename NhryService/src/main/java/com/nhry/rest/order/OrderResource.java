@@ -40,7 +40,17 @@ public class OrderResource extends BaseResource {
 	public Response selectOrderByCode(@ApiParam(required=true,name="orderCode",value="订单编号") @PathParam("orderCode") String orderCode){
 		return convertToRespModel(MessageCode.NORMAL, null, orderService.selectOrderByCode(orderCode));
 	}
-	
+
+
+	@GET
+	@Path("/queryCollectByOrderNo")
+	@Produces(MediaType.APPLICATION_JSON)
+	@ApiOperation(value = "/queryCollectByOrderNo", response = OrderCreateModel.class, notes = "根据订单编号查询收款信息")
+	public Response queryCollectByOrderNo(@ApiParam(required=true,name="orderCode",value="订单编号") @QueryParam("orderCode") String orderCode){
+		return convertToRespModel(MessageCode.NORMAL, null, orderService.queryCollectByOrderNo(orderCode));
+	}
+
+
 	@GET
 	@Path("/daliyPlans/{orderCode}")
 	@Produces(MediaType.APPLICATION_JSON)

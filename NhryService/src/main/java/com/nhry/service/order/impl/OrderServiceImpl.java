@@ -11,11 +11,8 @@ import com.nhry.data.order.dao.TOrderDaliyPlanItemMapper;
 import com.nhry.data.order.dao.TPlanOrderItemMapper;
 import com.nhry.data.order.dao.TPreOrderMapper;
 import com.nhry.data.order.domain.TOrderDaliyPlanItem;
-import com.nhry.data.order.domain.TOrderDaliyPlanItemKey;
 import com.nhry.data.order.domain.TPlanOrderItem;
 import com.nhry.data.order.domain.TPreOrder;
-import com.nhry.data.order.domain.TPromotion;
-import com.nhry.model.milk.RouteDetailUpdateModel;
 import com.nhry.model.order.*;
 import com.nhry.service.BaseService;
 import com.nhry.service.basic.dao.PriceService;
@@ -25,7 +22,6 @@ import com.nhry.service.order.dao.OrderService;
 import com.nhry.service.order.dao.PromotionService;
 import com.nhry.service.order.pojo.OrderRemainData;
 import com.nhry.utils.CodeGeneratorUtil;
-
 import org.apache.commons.lang3.StringUtils;
 
 import java.math.BigDecimal;
@@ -1299,6 +1295,34 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 			return tPreOrderMapper.searchOrderRemainData(custs.get(0).getVipCustNo());
 		}
 		return null;
+	}
+
+	@Override
+	public CollectOrderModel queryCollectByOrderNo(String orderCode) {
+		TPreOrder order = tPreOrderMapper.selectByPrimaryKey(orderCode);
+		List<TOrderDaliyPlanItem> items = tOrderDaliyPlanItemMapper.getProductItemsByOrderNo(orderCode);
+		CollectOrderModel model = new CollectOrderModel();
+		model.setOrder(order);
+		BigDecimal totalPrices = new BigDecimal(0);
+		List<ProductItem> entries = new ArrayList<ProductItem>();
+		if(items!=null && items.size()>0){
+			for(TOrderDaliyPlanItem item : items ){
+				ProductItem entry = new ProductItem();
+				entry.setMatnr(item.getMatnr());
+				entry.setMatnrTxt(item.getMatnrTxt());
+				entry.setMatnr(item.getMatnr());
+				entry.setQty(item.getQty());
+				entry.setUnit(item.getUnit());
+				entry.setBasePrice(item.getPrice());
+				entry.setTotalPrice(item.getPrice().multiply(new BigDecimal(item.getQty() == null ? 0 : item.getQty())));
+				totalPrices = totalPrices.add(entry.getTotalPrice());
+				entries.add(entry);
+			}
+		}
+		model.setAddress(tVipCustInfoService.findAddressDetailById(order.getAdressNo()));
+		model.setTotalPrice(totalPrices);
+		model.setEntries(entries);
+		return model;
 	}
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
