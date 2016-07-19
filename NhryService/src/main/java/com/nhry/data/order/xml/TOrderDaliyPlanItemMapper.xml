@@ -78,9 +78,39 @@
     select 
     <include refid="Base_Column_List" />
     from t_mst_order_daliy_plan_item
-    where 1 = 1 
-      and ORDER_NO = #{orderNo,jdbcType=VARCHAR}
-      and STATUS = #{status,jdbcType=VARCHAR}
+    where ORDER_NO = #{orderNo,jdbcType=VARCHAR}
+    <choose>
+    	 <when test="status != null" >
+	     and (STATUS = '10'
+	     <if test="createBy != null" >
+				or STATUS = '20'
+        </if>
+        <if test="createByTxt != null" >
+	     	   or STATUS = '30'
+        </if>
+        )
+       </when>
+    	 <when test="createBy != null" >
+	     and (STATUS = '20'
+	     <if test="status != null" >
+				or STATUS = '10'
+        </if>
+        <if test="createByTxt != null" >
+	     	   or STATUS = '30'
+        </if>
+        )
+       </when>
+       <when test="createByTxt != null" >
+	     and (STATUS = '30'
+	     <if test="createBy != null" >
+				or STATUS = '20'
+        </if>
+        <if test="status != null" >
+	     	   or STATUS = '10'
+        </if>
+        )
+       </when>
+    </choose>
     order by DISP_DATE asc  
   </select>
   <select id="selectDaliyPlansByOrderNoAsc" resultMap="BaseResultMap" parameterType="java.lang.String" >
@@ -435,7 +465,7 @@
     and  ((e.PRE_DAYS= 2 and   i.DISP_DATE = #{secondDay,jdbcType=DATE} ) or (e.PRE_DAYS= 1 and   i.DISP_DATE = #{firstDay,jdbcType=DATE}))
     and m.SALES_ORG=#{salesOrg,jdbcType=VARCHAR}
     and o.BRANCH_NO = #{branchNo,jdbcType=VARCHAR}
-    GROUP BY i.MATNR,i.DISP_DATE
+    GROUP BY i.MATNR
     ORDER BY i.DISP_DATE desc
   </select>
 
