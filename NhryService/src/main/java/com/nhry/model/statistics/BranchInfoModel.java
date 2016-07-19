@@ -11,42 +11,42 @@ import java.util.List;
  */
 public class BranchInfoModel {
     private static final SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
-    Date beginDate;
-    Date endDate;
+//    Date beginDate;
+//    Date endDate;
     String pageNum;
     String pageSize;
     String branchNo;
     String dealerId;
     String salesOrg;
     Date theDate;
-    List<Date> dates = new LinkedList<Date>();
-    public Date getBeginDate() {
-        try {
-            if(beginDate != null)
-            return format.parse(format.format(beginDate));
-        } catch (ParseException e) {
-            e.printStackTrace();
-        }
-        return beginDate;
-    }
-
-    public void setBeginDate(Date beginDate) {
-        this.beginDate = beginDate;
-    }
-
-    public Date getEndDate() {
-        try {
-            if(endDate != null)
-            return format.parse(format.format(endDate));
-        } catch (ParseException e) {
-            e.printStackTrace();
-        }
-        return endDate;
-    }
-
-    public void setEndDate(Date endDate) {
-        this.endDate = endDate;
-    }
+//    List<Date> dates = new LinkedList<Date>();
+//    public Date getBeginDate() {
+//        try {
+//            if(beginDate != null)
+//            return format.parse(format.format(beginDate));
+//        } catch (ParseException e) {
+//            e.printStackTrace();
+//        }
+//        return beginDate;
+//    }
+//
+//    public void setBeginDate(Date beginDate) {
+//        this.beginDate = beginDate;
+//    }
+//
+//    public Date getEndDate() {
+//        try {
+//            if(endDate != null)
+//            return format.parse(format.format(endDate));
+//        } catch (ParseException e) {
+//            e.printStackTrace();
+//        }
+//        return endDate;
+//    }
+//
+//    public void setEndDate(Date endDate) {
+//        this.endDate = endDate;
+//    }
 
     public String getPageNum() {
         return pageNum;
@@ -102,11 +102,11 @@ public class BranchInfoModel {
         this.theDate = theDate;
     }
 
-    public List<Date> getDates() {
-        return dates;
-    }
-
-    public void setDates(List<Date> dates) {
-        this.dates = dates;
-    }
+//    public List<Date> getDates() {
+//        return dates;
+//    }
+//
+//    public void setDates(List<Date> dates) {
+//        this.dates = dates;
+//    }
 }

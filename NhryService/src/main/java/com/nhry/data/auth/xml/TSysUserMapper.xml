@@ -534,13 +534,22 @@
         and i.ITEM_CODE=u.SALES_ORG) ORG_NAME,
         (SELECT b.BRANCH_NAME FROM t_md_branch b where b.BRANCH_NO=u.BRANCH_NO) BRANCH_NAME
     </sql>
-    <select id="findUserByRoleId" parameterType="com.nhry.model.auth.UserQueryModel" resultMap="BaseResultMap">
+
+    <select id="findUserByRoleId" parameterType="com.nhry.model.auth.UserQueryModel2" resultType="hashmap">
         SELECT
-        <include refid="Ch_Column_List"/>
+        u.LOGIN_NAME loginName,
+        u.DISPLAY_NAME displayName,
+        u.SMART_IDCARDNUMBER smartIdcardnumber,
+        CASE WHEN r.ID IS NULL THEN false ELSE true end isRole
         FROM T_SYS_USER u
+        <if test="isAll">
+            LEFT
+        </if>
         JOIN T_SYS_USER_ROLE r
         ON u.LOGIN_NAME = r.LOGIN_NAME
-        and r.ID = #{roleId,jdbcType=VARCHAR}
+        <if test="roleId != null">
+            and r.ID = #{roleId,jdbcType=VARCHAR}
+        </if>
         <if test="uname != null and '' != uname">
             and (u.LOGIN_NAME like '%' #{uname,jdbcType=VARCHAR} '%' or u.DISPLAY_NAME like '%'
             #{uname,jdbcType=VARCHAR} '%')
@@ -548,9 +557,9 @@
         <if test="salesOrg != null and ''!= salesOrg">
             and u.SALES_ORG = #{salesOrg,jdbcType=VARCHAR}
         </if>
-      order by u.CREATE_ON desc,u.LAST_MODIFIED desc
-  </select>
-  <resultMap id="BaseResultMap1" type="com.nhry.data.auth.domain.TSysUser" extends="BaseResultMap">
+        order by u.CREATE_ON desc,u.LAST_MODIFIED desc
+    </select>
+    <resultMap id="BaseResultMap1" type="com.nhry.data.auth.domain.TSysUser" extends="BaseResultMap">
         <collection property="roleIds" ofType="com.nhry.data.auth.domain.TSysUserRole">
             <id property="id" column="ID"/>
         </collection>

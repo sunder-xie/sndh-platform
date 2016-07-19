@@ -3,8 +3,10 @@ package com.nhry.service.auth.dao;
 import com.github.pagehelper.PageInfo;
 import com.nhry.data.auth.domain.TSysUser;
 import com.nhry.model.auth.UserQueryModel;
+import com.nhry.model.auth.UserQueryModel2;
 
 import java.util.List;
+import java.util.Map;
 
 public interface UserService {
 	public PageInfo findUser(UserQueryModel um);
@@ -29,7 +31,7 @@ public interface UserService {
 	
 	public int deleteUserByLoginName(String uname);
 
-	List<TSysUser> findUserByRoleId(UserQueryModel um);
+	List<Map<String,String>> findUserByRoleId(UserQueryModel2 um);
 
 	PageInfo findUserPageByRoleId(UserQueryModel um);
 }
