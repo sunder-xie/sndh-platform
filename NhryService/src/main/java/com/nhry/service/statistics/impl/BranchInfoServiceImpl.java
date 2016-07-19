@@ -29,21 +29,21 @@ public class BranchInfoServiceImpl implements BranchInfoService {
         if(StringUtils.isEmpty(model.getPageNum()) || StringUtils.isEmpty(model.getPageSize())){
             throw new ServiceException(MessageCode.LOGIC_ERROR,"pageNum和pageSize不能为空！");
         }
-        try {
-            Date date = model.getTheDate();
-            Calendar c = Calendar.getInstance();
-            c.setTime(date);
-            c.add(Calendar.DAY_OF_YEAR,-1);
-            model.getDates().add(format.parse(format.format(c.getTime())));
-            c.add(Calendar.DAY_OF_YEAR,-1);
-            model.getDates().add(format.parse(format.format(c.getTime())));
-            c.add(Calendar.DAY_OF_YEAR,-1);
-            model.getDates().add(format.parse(format.format(c.getTime())));
-            c.add(Calendar.DAY_OF_YEAR,-1);
-            model.getDates().add(format.parse(format.format(c.getTime())));
-        }catch (Exception e){
-
-        }
+//        try {
+//            Date date = model.getTheDate();
+//            Calendar c = Calendar.getInstance();
+//            c.setTime(date);
+//            c.add(Calendar.DAY_OF_YEAR,-1);
+//            model.getDates().add(format.parse(format.format(c.getTime())));
+//            c.add(Calendar.DAY_OF_YEAR,-1);
+//            model.getDates().add(format.parse(format.format(c.getTime())));
+//            c.add(Calendar.DAY_OF_YEAR,-1);
+//            model.getDates().add(format.parse(format.format(c.getTime())));
+//            c.add(Calendar.DAY_OF_YEAR,-1);
+//            model.getDates().add(format.parse(format.format(c.getTime())));
+//        }catch (Exception e){
+//
+//        }
         return branchInfoMapper.branchDayInfo(model);
     }
 }

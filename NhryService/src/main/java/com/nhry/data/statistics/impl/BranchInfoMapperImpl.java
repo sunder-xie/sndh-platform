@@ -32,9 +32,6 @@ public class BranchInfoMapperImpl implements BranchInfoMapper{
 
     @Override
     public List<Map<String, String>> branchDayInfoList(BranchInfoModel model) {
-
-
-
         return sqlSessionTemplate.selectList("branchDayInfoList",model);
     }
 }
