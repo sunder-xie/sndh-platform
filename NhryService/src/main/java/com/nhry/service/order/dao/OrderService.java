@@ -13,7 +13,7 @@ import java.util.Date;
 import java.util.List;
 
 public interface OrderService {
-	List<TOrderDaliyPlanItem> searchDaliyPlansByStatus(String orderNo, String status);
+	List<TOrderDaliyPlanItem> searchDaliyPlansByStatus(String orderNo, String status1,String status2,String status3);
 	
 	PageInfo searchOrders(OrderSearchModel smodel);
 	

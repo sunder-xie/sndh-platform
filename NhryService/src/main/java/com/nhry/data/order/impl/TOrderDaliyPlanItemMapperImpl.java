@@ -211,11 +211,13 @@ public class TOrderDaliyPlanItemMapperImpl implements TOrderDaliyPlanItemMapper
 	}
 
 	@Override
-	public List<TOrderDaliyPlanItem> searchDaliyPlansByStatus(String orderNo, String status)
+	public List<TOrderDaliyPlanItem> searchDaliyPlansByStatus(String orderNo, String status1,String status2,String status3)
 	{
 		TOrderDaliyPlanItem smodel = new TOrderDaliyPlanItem();
 		smodel.setOrderNo(orderNo);
-		smodel.setStatus(status);
+		smodel.setStatus(status1);
+		smodel.setCreateBy(status2);
+		smodel.setCreateByTxt(status3);
 		return sqlSessionTemplate.selectList("searchDaliyPlansByStatus", smodel);
 	}
 	

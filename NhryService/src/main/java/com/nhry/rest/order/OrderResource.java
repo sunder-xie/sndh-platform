@@ -70,8 +70,10 @@ public class OrderResource extends BaseResource {
 	@Produces(MediaType.APPLICATION_JSON)
 	@ApiOperation(value = "/findDaliyPlansByStatus", response = ArrayList.class, notes = "根据订单编号,日单状态查询订单日计划信息")
 	public Response findDaliyPlansByStatus(@ApiParam(required=true,name="orderNo",value="订单号") @QueryParam("orderNo") String orderNo,
-			@ApiParam(required=true,name="status",value="日单状态") @QueryParam("status") String status){
-		return convertToRespModel(MessageCode.NORMAL, null, orderService.searchDaliyPlansByStatus(orderNo,status));
+			@ApiParam(required=false,name="status1",value="日单生成状态10") @QueryParam("status1") String status1,
+			@ApiParam(required=false,name="status2",value="日单确认状态20") @QueryParam("status2") String status2,
+			@ApiParam(required=false,name="status3",value="日单停订状态30") @QueryParam("status3") String status3){
+		return convertToRespModel(MessageCode.NORMAL, null, orderService.searchDaliyPlansByStatus(orderNo,status1,status2,status3));
 	}
 	
 	@POST
