@@ -13,6 +13,7 @@ import com.sun.jersey.spi.resource.Singleton;
 import com.wordnik.swagger.annotations.Api;
 import com.wordnik.swagger.annotations.ApiOperation;
 import com.wordnik.swagger.annotations.ApiParam;
+import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Controller;
@@ -45,12 +46,12 @@ public class StatisticsResource extends BaseResource {
     @ApiOperation(value = "/branchDayInfo}", response = ResponseModel.class, notes = "奶站日报表")
     public Response branchDayInfo(@ApiParam(name = "model",value = "奶站日报") BranchInfoModel model){
         TSysUser user = userSessionService.getCurrentUser();
-        if(user.getBranchNo()!=null){
+        if(StringUtils.isEmpty(model.getBranchNo()) && StringUtils.isNotEmpty(user.getBranchNo())){
             model.setBranchNo(user.getBranchNo());
-        }else if(user.getDealerId() != null){
+        }else if(StringUtils.isEmpty(model.getDealerId()) && StringUtils.isNotEmpty(user.getDealerId())){
             model.setDealerId(user.getDealerId());
         }
-        if(user.getSalesOrg() != null){
+        if(StringUtils.isNotEmpty(user.getSalesOrg())){
             model.setSalesOrg(user.getSalesOrg());
         }
         return convertToRespModel(MessageCode.NORMAL, null, branchInfoService.branchDayInfo(model));
@@ -62,12 +63,12 @@ public class StatisticsResource extends BaseResource {
     @ApiOperation(value = "/findDifferInfo}", response = ResponseModel.class, notes = "路单配送差异明细")
     public Response findDifferInfo(@ApiParam(name = "model",value = "路单配送") DistInfoModel model){
         TSysUser user = userSessionService.getCurrentUser();
-        if(user.getBranchNo()!=null && model.getBranchNo()==null){
+        if(StringUtils.isEmpty(model.getBranchNo()) && StringUtils.isNotEmpty(user.getBranchNo())){
             model.setBranchNo(user.getBranchNo());
-        }else if(user.getDealerId() != null && model.getDealerId() != null){
+        }else if(StringUtils.isEmpty(model.getDealerId()) && StringUtils.isNotEmpty(user.getDealerId())){
             model.setDealerId(user.getDealerId());
         }
-        if(user.getSalesOrg() != null){
+        if(StringUtils.isNotEmpty(user.getSalesOrg())){
             model.setSalesOrg(user.getSalesOrg());
         }
         return convertToRespModel(MessageCode.NORMAL, null, distributionInfoService.findDistDifferInfo(model));
@@ -80,12 +81,12 @@ public class StatisticsResource extends BaseResource {
     @ApiOperation(value = "/findOrderRatio}", response = ResponseModel.class, notes = "奶站订单转化率(T+3)报表")
     public Response findOrderRatio(@ApiParam(name = "model",value = "订单转化率") BranchInfoModel model){
         TSysUser user = userSessionService.getCurrentUser();
-        if(user.getBranchNo()!=null && model.getBranchNo()==null){
+        if(StringUtils.isEmpty(model.getBranchNo()) && StringUtils.isNotEmpty(user.getBranchNo())){
             model.setBranchNo(user.getBranchNo());
-        }else if(user.getDealerId() != null && model.getDealerId() != null){
+        }else if(StringUtils.isEmpty(model.getDealerId()) && StringUtils.isNotEmpty(user.getDealerId())){
             model.setDealerId(user.getDealerId());
         }
-        if(user.getSalesOrg() != null){
+        if(StringUtils.isNotEmpty(user.getSalesOrg())){
             model.setSalesOrg(user.getSalesOrg());
         }
         return convertToRespModel(MessageCode.NORMAL, null, branchInfoService.findOrderRatio(model));
