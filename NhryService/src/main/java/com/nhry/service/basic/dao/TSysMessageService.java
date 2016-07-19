@@ -1,8 +1,10 @@
 package com.nhry.service.basic.dao;
 
+import com.github.pagehelper.PageInfo;
 import com.nhry.data.basic.domain.TMdBranch;
 import com.nhry.data.basic.domain.TMdMara;
 import com.nhry.data.basic.domain.TSysMessage;
+import com.nhry.model.basic.MessageModel;
 import com.nhry.model.basic.OrderModel;
 
 public interface TSysMessageService {
@@ -26,6 +28,20 @@ public interface TSysMessageService {
      * @return
      */
     TSysMessage findTSysmessageByNo(String messageNo);
+    
+    /**
+     * 查询消息
+     * @param mess
+     * @return
+     */
+    PageInfo searchMessages(MessageModel mess);
+    
+    /**
+     * 关闭消息
+     * @param messageNo
+     * @return
+     */
+    public int closeMessage(String messageNo);
     
     /**
      * 修改消息
