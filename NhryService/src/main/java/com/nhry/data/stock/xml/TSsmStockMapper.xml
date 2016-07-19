@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.nhry.data.stock.dao.TSsmStockMapper" >
+  <resultMap id="BaseResultMap" type="com.nhry.data.stock.domain.TSsmStock" >
+    <id column="BRANCH_NO" property="branchNo" jdbcType="VARCHAR" />
+    <id column="MATNR" property="matnr" jdbcType="VARCHAR" />
+    <result column="UNIT" property="unit" jdbcType="VARCHAR" />
+    <result column="QTY" property="qty" jdbcType="DECIMAL" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    BRANCH_NO, MATNR, UNIT, QTY
+  </sql>
+  <select id="getStock" resultMap="BaseResultMap" parameterType="com.nhry.data.stock.domain.TSsmStockKey" >
+    select 
+    <include refid="Base_Column_List" />
+    from t_ssm_stock
+    where BRANCH_NO = #{branchNo,jdbcType=VARCHAR}
+      and MATNR = #{matnr,jdbcType=VARCHAR}
+  </select>
+  <delete id="deleteStock" parameterType="com.nhry.data.stock.domain.TSsmStockKey" >
+    delete from t_ssm_stock
+    where BRANCH_NO = #{branchNo,jdbcType=VARCHAR}
+      and MATNR = #{matnr,jdbcType=VARCHAR}
+  </delete>
+  <insert id="insertStock" parameterType="com.nhry.data.stock.domain.TSsmStock" >
+    insert into t_ssm_stock (BRANCH_NO, MATNR, UNIT, 
+      QTY)
+    values (#{branchNo,jdbcType=VARCHAR}, #{matnr,jdbcType=VARCHAR}, #{unit,jdbcType=VARCHAR}, 
+      #{qty,jdbcType=DECIMAL})
+  </insert>
+  <update id="updateStock" parameterType="com.nhry.data.stock.domain.TSsmStock" >
+    update t_ssm_stock
+    set UNIT = #{unit,jdbcType=VARCHAR},
+      QTY = #{qty,jdbcType=DECIMAL}
+    where BRANCH_NO = #{branchNo,jdbcType=VARCHAR}
+      and MATNR = #{matnr,jdbcType=VARCHAR}
+  </update>
+</mapper>

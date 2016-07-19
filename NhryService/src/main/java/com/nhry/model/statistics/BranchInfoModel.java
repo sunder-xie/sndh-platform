@@ -17,7 +17,7 @@ public class BranchInfoModel extends BaseQueryModel implements Serializable {
     String branchNo;
     String dealerId;
     String salesOrg;
-    Date theDate;
+    Date theDate = new Date();
     public String getBranchNo() {
         return branchNo;
     }
