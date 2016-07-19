@@ -84,9 +84,6 @@ public class RoleServiceImpl extends BaseService implements RoleService {
 	@Override
 	public int assignRoleToUsers(UserRoleModel urmodel) {
 		// TODO Auto-generated method stub
-//		if(StringUtils.isEmpty(urmodel.getRoleId()) || urmodel.getLoginNames() == null || urmodel.getLoginNames().size() ==0 ){
-//			 throw new ServiceException(MessageCode.LOGIC_ERROR, "角色和用户名不能为空！");
-//		}
 		//为一个角色添加一批用户
 		if(urmodel.getLoginNames() != null && urmodel.getLoginNames().size() > 0){
 			if(StringUtils.isEmpty(urmodel.getRoleId())){
@@ -142,9 +139,6 @@ public class RoleServiceImpl extends BaseService implements RoleService {
 	@Override
 	public int deleteUserRoles(UserRoleModel urmodel) {
 		// TODO Auto-generated method stub
-		if(StringUtils.isEmpty(urmodel.getLoginName()) || urmodel.getRoleIds()==null || urmodel.getRoleIds().size()==0){
-			throw new ServiceException(MessageCode.LOGIC_ERROR, "loginName、roleIds属性值不能为空!");
-		}
 		return this.urMapper.deleteUserRoles(urmodel);
 	}
 

@@ -98,8 +98,8 @@ public class RoleResource extends BaseResource{
 	@Path("/delete/user/roles")
 	@Produces(MediaType.APPLICATION_JSON)
 	@Consumes(MediaType.APPLICATION_JSON)
-	@ApiOperation(value = "/delte/user/roles", response = ResponseModel.class, notes = "删除指定的用户角色(支持批量)")
-	public Response deleteUserRoles(@ApiParam(required = true, name = "urmodel", value = "用户角色关系对象(loginName、roleIds)")UserRoleModel urmodel) {
+	@ApiOperation(value = "/delte/user/roles", response = ResponseModel.class, notes = "根据用户的多个角色用户关系、根据角色的删除多个角色用户关系")
+	public Response deleteUserRoles(@ApiParam(required = true, name = "urmodel", value = "用户角色关系对象(loginNames与roleId配对、loginName与roleIds配对)")UserRoleModel urmodel) {
 		return convertToRespModel(MessageCode.NORMAL, null, roleService.deleteUserRoles(urmodel));
 	}
 
