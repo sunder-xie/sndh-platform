@@ -39,16 +39,18 @@
     </foreach> 
   </insert>
   <select id="searchRouteChangeOrder" resultMap="BaseResultMap" parameterType="java.lang.String" >
-    select 
-    c.ORDER_NO, c.ORDER_DATE, c.ORG_ORDER_NO, c.ORG_ITEM_NO, c.YESTODAY_MATNR, c.TODAY_MATNR, c.YESTODAY_QTY, 
+    select
+    c.ORDER_NO, c.ORDER_DATE, c.ORG_ORDER_NO, c.ORG_ITEM_NO,ex1.SHORT_TXT YESTODAY_MATNR,ex2.SHORT_TXT TODAY_MATNR, c.YESTODAY_QTY, 
     c.TODAY_QTY, c.YESTODAY_REACH_TIME_TYPE, c.TODAY_REACH_TIME_TYPE, c.REASON, v.VIP_NAME MILKMEMBER_NO, 
     a.ADDRESS_TXT ADDRESS_NO,e.EMP_NAME  EMP_NO, v.MP CUST_TEL
-    from t_mst_disp_order_change c,t_preorder o,t_vip_cust_info v,t_md_address a,t_md_branch_emp e
+    from t_mst_disp_order_change c
+    left join t_preorder o on c.ORG_ORDER_NO = o.ORDER_NO
+    left join t_md_address a on c.ADDRESS_NO = a.ADDRESS_ID
+    left join t_vip_cust_info v on a.VIP_CUST_NO = v.VIP_CUST_NO
+	 left join t_md_branch_emp e on e.EMP_NO = c.EMP_NO
+	 left join t_md_mara_ex ex1 on ex1.MATNR = c.YESTODAY_MATNR and o.SALES_ORG = ex1.SALES_ORG
+	 left join t_md_mara_ex ex2 on ex2.MATNR = c.TODAY_MATNR and o.SALES_ORG = ex2.SALES_ORG
     where c.ORDER_NO = #{orderNo,jdbcType=VARCHAR}
-    and c.ORG_ORDER_NO = o.ORDER_NO 
-    and c.ADDRESS_NO = a.ADDRESS_ID
-    and a.VIP_CUST_NO = v.VIP_CUST_NO
-    and e.EMP_NO = c.EMP_NO
   </select>
   <delete id="deleteByPrimaryKey" parameterType="com.nhry.data.milk.domain.TDispOrderChangeKey" >
     delete from t_mst_disp_order_change
