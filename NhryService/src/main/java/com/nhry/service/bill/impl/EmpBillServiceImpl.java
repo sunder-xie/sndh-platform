@@ -95,27 +95,24 @@ public class EmpBillServiceImpl implements EmpBillService {
         String salaryMet = emp.getSalaryMet();
         String salesOrg = emp.getSalesOrg();
         BigDecimal result = new BigDecimal(0);
-        int firstNum = 0;
-        int endNum = 0 ;
+        int j = 0;
+        List<TMdDispRateItem> oldList = tMdDispRateItemMapper.getDispRateNumBySalOrg(salesOrg);
         //如果是数量
         if("10".equals(salaryMet)){
-            List<TMdDispRateItem> oldList = tMdDispRateItemMapper.getDispRateNumBySalOrg(salesOrg);
             if(oldList!=null && oldList.size() >0){
-                result = oldList.get(0).getRate();
-
-              for(int i=1;i<oldList.size();i++){
+              for(int i=0;i<oldList.size();i++){
                   TMdDispRateItem item = oldList.get(i);
-                  endNum =item.getItemValue();
+                 int  endNum =item.getItemValue();
                   if(dispNum < endNum ){
-                     return result;
-                  }else {
-                      result =  item.getRate();
-                      firstNum = item.getItemValue();
+                    break;
+                  }else{
+                      j = i;
                   }
               }
             }
-            return result;
+            return oldList.get(j).getRate();
         }
+
 
         throw new ServiceException(MessageCode.LOGIC_ERROR,"配送数 不在输入的阶梯范围内!!! 请审查");
     }
@@ -179,7 +176,7 @@ public class EmpBillServiceImpl implements EmpBillService {
                        item.setItemNo(PrimaryKeyUtils.generateUuidKey());
                        item.setItemIndex(i);
                        item.setRate(entry.getRate());
-                       item.setItemValue(entry.getItemValue());
+                       item.setItemValue(entry.getStartValue());
                        item.setCreateBy(user.getLoginName());
                        item.setCreateByTxt(user.getDisplayName());
                        item.setLastModified(new Date());
@@ -236,11 +233,11 @@ public class EmpBillServiceImpl implements EmpBillService {
                     TMdDispRateItem item = items.get(i);
                     DispNumEntry entry  = new DispNumEntry();
                     entry.setStartValue(startValue);
-                    entry.setEndValue(item.getItemValue());
+                    entry.setEndValue(item.getItemValue()-1);
                     entry.setRate(result);
                     entries.add(entry);
                     result = item.getRate();
-                    startValue = item.getItemValue() + 1;
+                    startValue = item.getItemValue();
                 }
                 DispNumEntry entry  = new DispNumEntry();
                 entry.setStartValue(startValue);
