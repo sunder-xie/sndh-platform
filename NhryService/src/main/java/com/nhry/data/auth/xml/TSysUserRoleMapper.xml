@@ -54,10 +54,23 @@
 	  where LOGIN_NAME = #{loginName,jdbcType=VARCHAR} and ID = #{id,jdbcType=VARCHAR}
   </select>
   <delete id="deleteUserRoles" parameterType="com.nhry.model.auth.UserRoleModel">
-      delete from t_sys_user_role where LOGIN_NAME = #{loginName,jdbcType=VARCHAR} and ID in 
-      <foreach collection="roleIds" open="(" close=")" separator=","  item="item">
-         #{item}
-      </foreach>
+      delete from t_sys_user_role 
+     <where>
+          <if test="roleIds != null">
+               LOGIN_NAME = #{loginName,jdbcType=VARCHAR} and ID in 
+	      <foreach collection="roleIds" open="(" close=")" separator=","  item="item">
+	         #{item}
+	      </foreach>
+          </if>
+	      <if test="loginNames != null">
+	          OR (
+	                ID = #{roleId,jdbcType=VARCHAR} and LOGIN_NAME in 
+			      <foreach collection="loginNames" open="(" close=")" separator=","  item="item">
+			         #{item}
+			      </foreach>
+	          )
+	      </if> 
+     </where> 
   </delete>
   <select id="findUserRoleByRid"  resultMap="BaseResultMap" parameterType="String">
      SELECT <include refid="Base_Column_List" /> FROM t_sys_user_role ur where ID = #{rid,jdbcType=VARCHAR}
