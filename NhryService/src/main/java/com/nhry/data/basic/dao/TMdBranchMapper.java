@@ -3,6 +3,7 @@ package com.nhry.data.basic.dao;
 import com.github.pagehelper.PageInfo;
 import com.nhry.data.basic.domain.TMdBranch;
 import com.nhry.model.basic.BranchQueryModel;
+import com.nhry.model.basic.BranchSalesOrgModel;
 
 import java.util.List;
 import java.util.Map;
@@ -14,7 +15,7 @@ public interface TMdBranchMapper {
 
     TMdBranch selectBranchByNo(String branchNo);
 
-    public List<TMdBranch> findBranchListByOrg(String salesOrg);
+    public List<TMdBranch> findBranchListByOrg(BranchSalesOrgModel bmodel);
 
 
     public PageInfo findBranchListByPage(BranchQueryModel branchModel);

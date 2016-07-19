@@ -11,6 +11,7 @@ import com.nhry.data.basic.dao.TMdBranchEmpMapper;
 import com.nhry.data.basic.dao.TMdBranchMapper;
 import com.nhry.data.basic.domain.TMdBranch;
 import com.nhry.data.basic.domain.TMdBranchEmp;
+import com.nhry.model.basic.BranchSalesOrgModel;
 import com.nhry.model.basic.EmpQueryModel;
 import com.nhry.service.BaseService;
 import com.nhry.service.basic.dao.BranchEmpService;
@@ -89,7 +90,9 @@ public class BranchEmpServiceImpl extends BaseService implements BranchEmpServic
 			branchlist.add(branch);
 			return branchlist ;
 		}else{
-			return tMdBranchMapper.findBranchListByOrg(salesOrg);
+			BranchSalesOrgModel bModel = new BranchSalesOrgModel();
+			bModel.setSalesOrg(salesOrg);
+			return tMdBranchMapper.findBranchListByOrg(bModel);
 		}
 
 	}

@@ -13,6 +13,7 @@ import com.nhry.data.basic.domain.TMdBranch;
 import com.nhry.data.basic.domain.TMdDealer;
 import com.nhry.model.basic.BranchOrDealerList;
 import com.nhry.model.basic.BranchQueryModel;
+import com.nhry.model.basic.BranchSalesOrgModel;
 import com.nhry.service.BaseService;
 import com.nhry.service.basic.dao.BranchService;
 import org.apache.commons.lang3.StringUtils;
@@ -54,9 +55,16 @@ public class BranchServiceImpl extends BaseService implements BranchService {
 	public List<TMdBranch> findBranchListByOrg() {
 		// TODO Auto-generated method stub
 		TSysUser user = userSessionService.getCurrentUser();
-
-
-		return branchMapper.findBranchListByOrg(user.getSalesOrg());
+		TSysUserRole userRole = urMapper.getUserRoleByLoginName(user.getLoginName());
+		BranchSalesOrgModel bModel = new BranchSalesOrgModel();
+		bModel.setSalesOrg(user.getSalesOrg());
+		if("10004".equals(userRole.getId())){
+			bModel.setBranchNo(user.getBranchNo());
+		}else if("10005".equals(userRole.getId())){
+			//经销商内勤
+			bModel.setDealerNo(user.getDealerId());
+		}
+		return branchMapper.findBranchListByOrg(bModel);
 	}
 
 	@Override

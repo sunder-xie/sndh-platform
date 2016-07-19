@@ -5,6 +5,7 @@ import com.nhry.common.datasource.DynamicSqlSessionTemplate;
 import com.nhry.data.basic.dao.TMdBranchMapper;
 import com.nhry.data.basic.domain.TMdBranch;
 import com.nhry.model.basic.BranchQueryModel;
+import com.nhry.model.basic.BranchSalesOrgModel;
 
 import java.util.List;
 import java.util.Map;
@@ -48,9 +49,9 @@ public class TMdBranchMapperImpl implements TMdBranchMapper {
 
 
 	@Override
-	public List<TMdBranch> findBranchListByOrg(String salesOrg) {
+	public List<TMdBranch> findBranchListByOrg(BranchSalesOrgModel bModel) {
 		// TODO Auto-generated method stub
-		return sqlSessionTemplate.selectList("findBranchListByOrg", salesOrg);
+		return sqlSessionTemplate.selectList("findBranchListByOrg", bModel);
 	}
 
 	@Override

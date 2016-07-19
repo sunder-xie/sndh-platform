@@ -48,6 +48,10 @@ public class BranchBillServiceImpl implements BranchBillService {
     public PageInfo getEmpBranchBillDetail(EmpBranchBillDetailSearch bsearch) {
         TSysUser user = userSessionService.getCurrentUser();
         bsearch.setSalesOrg(user.getSalesOrg());
+        TSysUserRole userRole = tSysUserRoleMapper.getUserRoleByLoginName(user.getLoginName());
+        if("1004".equals(userRole.getId())){
+            bsearch.setBranchNo(user.getBranchNo());
+        }
         return branchBillMapper.branchBillEmpItemSearch(bsearch);
     }
 
