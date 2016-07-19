@@ -39,6 +39,15 @@
         and MATNR = #{matnr,jdbcType=VARCHAR}
     </select>
 
+
+    <select id="getMaxItemNoByOrderNo" resultType="INTEGER" parameterType="String" >
+        select
+        MAX(ITEM_NO)
+        FROM t_ssm_req_goods_order_item
+        WHERE 1=1
+        and ORDER_NO =  #{orderNo,jdbcType=VARCHAR}
+    </select>
+
     <update id="uptNewReqGoodsItem" parameterType="com.nhry.data.milktrans.domain.TSsmReqGoodsOrderItemUpt" >
         update t_ssm_req_goods_order_item
         set
