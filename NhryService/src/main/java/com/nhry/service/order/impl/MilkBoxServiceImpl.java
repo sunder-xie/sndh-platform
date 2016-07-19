@@ -168,8 +168,8 @@ public class MilkBoxServiceImpl extends BaseService implements MilkBoxService
 				o.setMilkboxStat(plan.getMilkboxStat());
 				tPreOrderMapper.updateOrderStatus(o);
 				
-				//当装箱变为已安装完后，生成日计划
-				if("10".equals(plan.getMilkboxStat())){
+				//当装箱变为已安装完后或无需安装，生成日计划
+				if(!"20".equals(plan.getMilkboxStat())){
 					OrderCreateModel omodel = orderService.selectOrderByCode(plan.getOrderNo());
 					//生成每日计划
 					List<TOrderDaliyPlanItem> list = orderService.createDaliyPlan(omodel.getOrder(), omodel.getEntries());

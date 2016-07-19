@@ -436,20 +436,19 @@ public class DeliverMilkServiceImpl extends BaseService implements DeliverMilkSe
 	{
 		SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
 		if(userSessionService.getCurrentUser().getBranchNo()==null)throw new ServiceException(MessageCode.LOGIC_ERROR,"登陆人没有奶站，非奶站人员无法创建路单!");
-		if(tDispOrderMapper.selectTodayDispOrderByBranchNo(userSessionService.getCurrentUser().getBranchNo()).size()>0)throw new ServiceException(MessageCode.LOGIC_ERROR,"本日该奶站已经创建过路单!");
+//		if(tDispOrderMapper.selectTodayDispOrderByBranchNo(userSessionService.getCurrentUser().getBranchNo()).size()>0)throw new ServiceException(MessageCode.LOGIC_ERROR,"本日该奶站已经创建过路单!");
 		List<TPreOrder> empNos = tPreOrderMapper.selectDispNoByGroup(userSessionService.getCurrentUser().getBranchNo());
 		TDispOrder dispOrder = null;
 		List<TDispOrderItem> dispEntries = null;
-		Date date = null;
+		Date date = afterDate(new Date(),1);
 		Map<String,String> productMap = productService.getMataBotTypes();
 		for(TPreOrder order : empNos){
-			date = new Date();
 			dispOrder = new TDispOrder();
 			dispEntries = new ArrayList<TDispOrderItem>();
 			int totalQty = 0;
 			BigDecimal totalAmt = new BigDecimal("0.00");
 			//生成一条路线，一个配送时段的路单
-			List<TOrderDaliyPlanItem> daliyPlans = tOrderDaliyPlanItemMapper.selectbyDispLineNo(order.getEmpNo(),format.format(new Date()),order.getOrderType());
+			List<TOrderDaliyPlanItem> daliyPlans = tOrderDaliyPlanItemMapper.selectbyDispLineNo(order.getEmpNo(),format.format(date),order.getOrderType());
 			
 			if(daliyPlans == null || daliyPlans.size() <= 0)continue;
 				
@@ -554,15 +553,15 @@ public class DeliverMilkServiceImpl extends BaseService implements DeliverMilkSe
 				change.setReason("20");
 				change.setTodayQty(item.getQty1());
 				change.setYestodayQty(item.getQty2());
-			}else if(item.getReachTimeType1().equals(item.getReachTimeType2())){
+			}else if(!item.getReachTimeType1().equals(item.getReachTimeType2())){
 				//变更配送时间
 				change.setReason("50");
-				change.setYestodayReachTimeType(item.getReachTimeType2());
-				change.setTodayReachTimeType(item.getReachTimeType1());
 			}else{
 				continue;
 			}
 			
+			change.setYestodayReachTimeType(item.getReachTimeType2());
+			change.setTodayReachTimeType(item.getReachTimeType1());
 			change.setOrderNo(StringUtils.isNotBlank(item.getOrderNo1())?item.getOrderNo1():item.getOrderNo2());
 			change.setOrderDate(item.getOrderDate1()!=null?item.getOrderDate1():item.getOrderDate2());
 			change.setOrgOrderNo(StringUtils.isNotBlank(item.getOrgOrderNo1())?item.getOrgOrderNo1():item.getOrgOrderNo2());
@@ -660,8 +659,8 @@ public class DeliverMilkServiceImpl extends BaseService implements DeliverMilkSe
 			change.setTodayMatnr(item.getMatnr1());
 			change.setTodayQty(item.getQty1());
 			change.setYestodayQty(item.getQty2());
-			change.setYestodayReachTimeType(item.getReachTimeType1());
-			change.setTodayReachTimeType(item.getReachTimeType2());
+			change.setYestodayReachTimeType(item.getReachTimeType2());
+			change.setTodayReachTimeType(item.getReachTimeType1());
 			//
 			change.setOrderNo(StringUtils.isNotBlank(item.getOrderNo1())?item.getOrderNo1():item.getOrderNo2());
 			change.setOrderDate(item.getOrderDate1()!=null?item.getOrderDate1():item.getOrderDate2());
