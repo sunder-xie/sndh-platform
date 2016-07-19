@@ -56,6 +56,11 @@ public class TSsmReqGoodsOrderItemMapperImpl implements TSsmReqGoodsOrderItemMap
 
     @Override
     public List<Map<String, String>> findItemsForPI(ReqGoodsOrderItemSearch item) {
-        return sqlSessionTemplate.selectList("findItemsForPI",item);
+        return sqlSessionTemplate.selectList("findOrderItemsForPI",item);
+    }
+
+    @Override
+    public int getMaxItemNoByOrderNo(String orderNo) {
+        return sqlSessionTemplate.selectOne("getMaxItemNoByOrderNo",orderNo);
     }
 }

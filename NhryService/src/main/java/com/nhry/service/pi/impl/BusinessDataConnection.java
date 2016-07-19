@@ -17,6 +17,7 @@ import java.text.ParseException;
 import java.text.ParsePosition;
 import java.text.SimpleDateFormat;
 import java.util.*;
+import java.util.Date;
 
 /**
  * Created by cbz on 7/4/2016.
@@ -66,44 +67,55 @@ public class BusinessDataConnection {
             ekko.setPURCH_ORG(purch_org_type1);
             rfc.setI_EKKO(ekko);
             IT_ITEM_type0 it_item_type0 = new IT_ITEM_type0();
+            int num = 0;
             for (Map<String, String> item : items) {
                 String item_no = item.get("ITEM_NO");
                 String order_no = item.get("ORDER_NO");
                 String matnr = item.get("MATNR");
-//            String unit = item.get("UNIT");
-                String sum_qty = item.get("SUM_QTY");
-                String werks = item.get("WERKS");
+                String qtys = String.valueOf(item.get("SUM_QTY"));
+                BigDecimal qty = new BigDecimal(qtys);
+                String werks = branchEx.getSupplPlnt();
                 String reslo = item.get("RESLO");
                 String base_unit = item.get("BASE_UNIT");
+                String branchNo = branchEx.getSupplPlnt();
                 ZSSD00019 zssd00019 = new ZSSD00019();
+                num = num+10;//TODO 待修改
                 EXT_RFX_ITEM_type1 ext_rfx_item_type1 = new EXT_RFX_ITEM_type1();
-                ext_rfx_item_type1.setEXT_RFX_ITEM_type0(item_no);
+                ext_rfx_item_type1.setEXT_RFX_ITEM_type0(item_no==null?num+"":item_no);
                 zssd00019.setEXT_RFX_ITEM(ext_rfx_item_type1);
+
                 EXT_RFX_NUMBER_type1 ext_rfx_number_type1 = new EXT_RFX_NUMBER_type1();
-                ext_rfx_item_type1.setEXT_RFX_ITEM_type0(order_no);
+                ext_rfx_number_type1.setEXT_RFX_NUMBER_type0(order_no);
                 zssd00019.setEXT_RFX_NUMBER(ext_rfx_number_type1);
-                LGORT_type5 lgort_type5 = new LGORT_type5();
-                lgort_type5.setLGORT_type4(branchEx.getBranchNo());
-                zssd00019.setLGORT(lgort_type5);
+
                 MATNR_type5 matnr_type5 = new MATNR_type5();
                 matnr_type5.setMATNR_type4(matnr);
                 zssd00019.setMATNR(matnr_type5);
+
                 MEINS_type3 meins_type3 = new MEINS_type3();
                 meins_type3.setMEINS_type2(base_unit);
                 zssd00019.setMEINS(meins_type3);
+
                 MENGE_type1 menge_type1 = new MENGE_type1();
-                BigDecimal qty = new BigDecimal(sum_qty);
                 menge_type1.setMENGE_type0(qty);
                 zssd00019.setMENGE(menge_type1);
-                PO_ITEM_type1 po_item_type1 = new PO_ITEM_type1();
-                po_item_type1.setPO_ITEM_type0(item_no);
-                zssd00019.setPO_ITEM(po_item_type1);
+
                 RESLO_type3 reslo_type3 = new RESLO_type3();
-                reslo_type3.setRESLO_type2(reslo);
+                reslo_type3.setRESLO_type2("3002");//TODO 待修改
                 zssd00019.setRESLO(reslo_type3);
+
                 WERKS_type5 werks_type5 = new WERKS_type5();
                 werks_type5.setWERKS_type4(werks);
                 zssd00019.setWERKS(werks_type5);
+
+                LGORT_type5 lgort_type5 = new LGORT_type5();
+                lgort_type5.setLGORT_type4(branchNo);
+                zssd00019.setLGORT(lgort_type5);
+
+                PO_ITEM_type1 po_item_type1 = new PO_ITEM_type1();
+
+                po_item_type1.setPO_ITEM_type0(item_no==null? num+"" :item_no);
+                zssd00019.setPO_ITEM(po_item_type1);
                 it_item_type0.addItem(zssd00019);
             }
             rfc.setIT_ITEM(it_item_type0);
@@ -120,12 +132,14 @@ public class BusinessDataConnection {
                 successMessage.setSuccess(false);
             }
             if (bap!= null && bap.length > 0) {
-                BAPIRET2 bapiret2 = bap[0];
-                msg.append(bapiret2.getMESSAGE().getMESSAGE_type0());
-                msg.append(bapiret2.getMESSAGE_V1().getMESSAGE_V1_type0());
-                msg.append(bapiret2.getMESSAGE_V2().getMESSAGE_V2_type0());
-                msg.append(bapiret2.getMESSAGE_V3().getMESSAGE_V3_type0());
-                msg.append(bapiret2.getMESSAGE_V4().getMESSAGE_V4_type0());
+                for(BAPIRET2 bapiret2 : bap) {
+//                    BAPIRET2 bapiret2 = bap[0];
+                    msg.append(bapiret2.getMESSAGE().getMESSAGE_type0());
+                    msg.append(bapiret2.getMESSAGE_V1().getMESSAGE_V1_type0());
+                    msg.append(bapiret2.getMESSAGE_V2().getMESSAGE_V2_type0());
+                    msg.append(bapiret2.getMESSAGE_V3().getMESSAGE_V3_type0());
+                    msg.append(bapiret2.getMESSAGE_V4().getMESSAGE_V4_type0());
+                }
                 successMessage.setMessage(msg.toString());
             } else {
                 successMessage.setMessage("");

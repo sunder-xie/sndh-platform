@@ -121,6 +121,7 @@ public class RequireOrderServiceImpl implements RequireOrderService {
                 item.setFlag("1");
                 item.setUnit(entry.getUnit());
                 item.setOrderDate(today);
+                item.setItemNo((j+1) * 10);
                 item.setOrderNo(order.getOrderNo());
                 item.setMatnr(entry.getMatnr());
                 item.setMatnrTxt(entry.getMatnrTxt());
@@ -186,7 +187,6 @@ public class RequireOrderServiceImpl implements RequireOrderService {
      */
     @Override
     public int uptNewRequireOrderItem(UpdateNewRequiredModel rModel) {
-
        try{
            TSysUser user = userSessionService.getCurrentUser();
            String orderNo = rModel.getOrderNo();
@@ -240,7 +240,6 @@ public class RequireOrderServiceImpl implements RequireOrderService {
         orderModel.setLastModifiedByTxt(user.getDisplayName());
         tSsmReqGoodsOrderMapper.uptRequireGoodsModifyInfo(orderModel);
 
-        List<TSsmReqGoodsOrderItem> items = this.tSsmReqGoodsOrderItemMapper.getReqGoodsItemsByOrderNo(orderNo);
         if(StringUtils.isBlank(item.getUnit())){
             Map<String,String> map = new HashMap<String,String>();
             map.put("salesOrg",user.getSalesOrg());
@@ -249,6 +248,7 @@ public class RequireOrderServiceImpl implements RequireOrderService {
             item.setUnit(mara.getBaseUnit());
         }
         item.setFlag("2");
+        item.setItemNo(tSsmReqGoodsOrderItemMapper.getMaxItemNoByOrderNo(orderNo)+10);
         item.setOrderDate(orderModel.getOrderDate());
         return tSsmReqGoodsOrderItemMapper.insertRequireOrderItem(item);
     }
@@ -261,6 +261,7 @@ public class RequireOrderServiceImpl implements RequireOrderService {
         }
         return tSsmReqGoodsOrderItemMapper.delRequireOrderItem(item);
     }
+
 
     @Override
     public int uptRequireOrder(UpdateRequiredModel uModel) {

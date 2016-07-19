@@ -19,6 +19,7 @@
 	</bean>
 
 	<bean id="customerBillService" class="com.nhry.service.bill.impl.CustomerBillServiceImpl">
+		<property name="urMapper"  ref="urMapper"></property>
 	   <property name="customerBillMapper"  ref="customerBillMapper"></property>
 		<property name="tPreOrderMapper"  ref="tPreOrderMapper"></property>
 		<property name="tPlanOrderItemMapper"  ref="tPlanOrderItemMapper"></property>

@@ -72,4 +72,22 @@ public class StatisticsResource extends BaseResource {
         }
         return convertToRespModel(MessageCode.NORMAL, null, distributionInfoService.findDistDifferInfo(model));
     }
+
+    @POST
+    @Path("/findOrderRatio")
+    @Produces(MediaType.APPLICATION_JSON)
+    @Consumes(MediaType.APPLICATION_JSON)
+    @ApiOperation(value = "/findOrderRatio}", response = ResponseModel.class, notes = "奶站订单转化率(T+3)报表")
+    public Response findOrderRatio(@ApiParam(name = "model",value = "订单转化率") BranchInfoModel model){
+        TSysUser user = userSessionService.getCurrentUser();
+        if(user.getBranchNo()!=null && model.getBranchNo()==null){
+            model.setBranchNo(user.getBranchNo());
+        }else if(user.getDealerId() != null && model.getDealerId() != null){
+            model.setDealerId(user.getDealerId());
+        }
+        if(user.getSalesOrg() != null){
+            model.setSalesOrg(user.getSalesOrg());
+        }
+        return convertToRespModel(MessageCode.NORMAL, null, branchInfoService.findOrderRatio(model));
+    }
 }

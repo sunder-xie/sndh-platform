@@ -13,7 +13,9 @@ import com.nhry.model.order.ReturnOrderModel;
 import java.math.BigDecimal;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class TOrderDaliyPlanItemMapperImpl implements TOrderDaliyPlanItemMapper
 {
@@ -140,8 +142,11 @@ public class TOrderDaliyPlanItemMapperImpl implements TOrderDaliyPlanItemMapper
 	}
 
 	@Override
-	public List<TOrderDaliyPlanItem> getProductItemsByOrderNo(String orderCode) {
-		return sqlSessionTemplate.selectList("getProductItemsByOrderNo", orderCode);
+	public List<TOrderDaliyPlanItem> getProductItemsByOrderNo(String orderCode,String salesOrg) {
+		Map<String,String> map =new HashMap<String,String>();
+		map.put("orderNo",orderCode);
+		map.put("salesOrg",salesOrg);
+		return sqlSessionTemplate.selectList("getProductItemsByOrderNo", map);
 	}
 
 	/**

@@ -8,4 +8,5 @@ import com.nhry.model.statistics.BranchInfoModel;
  */
 public interface BranchInfoService {
     public PageInfo branchDayInfo(BranchInfoModel model);
+    public PageInfo findOrderRatio(BranchInfoModel model);
 }

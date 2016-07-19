@@ -362,9 +362,9 @@ public class EmpBillServiceImpl implements EmpBillService {
                 empSal.setDispNum(dispNum+inDispNum);
 
                 //按数量结算  //赠品配送费
-              /*  int sendDispNum = empBillMapper.empFreeDispFeeNum(search);
+                int sendDispNum = empBillMapper.empFreeDispFeeNum(search);
                 BigDecimal sendDispRate = this.CalculateEmpTransRateByNum(empNo,sendDispNum);
-                empSal.setSendDispSal(sendDispRate.multiply(new BigDecimal(sendDispNum)));*/
+                empSal.setSendDispSal(sendDispRate.multiply(new BigDecimal(sendDispNum)));
 
 
             }
