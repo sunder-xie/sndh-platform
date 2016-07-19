@@ -7,6 +7,7 @@ import java.util.Map;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;
 
+import com.github.pagehelper.PageInfo;
 import com.nhry.common.exception.ExceptionMapperSupport;
 import com.nhry.common.exception.MessageCode;
 import com.nhry.common.exception.ServiceException;
@@ -19,6 +20,7 @@ import com.nhry.data.basic.domain.TMdMara;
 import com.nhry.data.basic.domain.TSysMessage;
 import com.nhry.data.order.dao.TPreOrderMapper;
 import com.nhry.data.order.domain.TPreOrder;
+import com.nhry.model.basic.MessageModel;
 import com.nhry.model.basic.OrderModel;
 import com.nhry.service.BaseService;
 import com.nhry.service.basic.dao.TSysMessageService;
@@ -245,5 +247,23 @@ public class TSysMessageServiceImpl extends BaseService implements TSysMessageSe
 			this.sendMessage(users, "奶站新建消息！奶站编号："+branch.getBranchNo(), "奶站新建消息！奶站编号："+branch.getBranchNo()+" 奶站名称："+branch.getBranchName(), "30","10");
 		}
 		return true;
+	}
+
+	@Override
+	public PageInfo searchMessages(MessageModel mess) {
+		// TODO Auto-generated method stub
+		mess.setLoginName(this.userSessionService.getCurrentUser().getLoginName());
+		return this.messageMapper.searchMessages(mess);
+	}
+
+	@Override
+	public int closeMessage(String messageNo) {
+		// TODO Auto-generated method stub
+		Map attrs = new HashMap();
+		attrs.put("finishTime", new Date());
+		attrs.put("finishFlag", "Y");
+		attrs.put("loginName", this.userSessionService.getCurrentUser().getLoginName());
+		attrs.put("messageNo", messageNo);
+		return this.messageMapper.closeSysMessage(attrs);
 	}
 }
