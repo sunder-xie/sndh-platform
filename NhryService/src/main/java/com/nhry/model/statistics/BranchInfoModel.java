@@ -2,7 +2,6 @@ package com.nhry.model.statistics;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
@@ -10,7 +9,7 @@ import java.util.List;
 /**
  * Created by cbz on 7/16/2016.
  */
-public class DistInfoModel {
+public class BranchInfoModel {
     private static final SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
     Date beginDate;
     Date endDate;
@@ -20,8 +19,7 @@ public class DistInfoModel {
     String dealerId;
     String salesOrg;
     Date theDate;
-
-
+    List<Date> dates = new LinkedList<Date>();
     public Date getBeginDate() {
         try {
             if(beginDate != null)
@@ -102,5 +100,13 @@ public class DistInfoModel {
 
     public void setTheDate(Date theDate) {
         this.theDate = theDate;
+    }
+
+    public List<Date> getDates() {
+        return dates;
+    }
+
+    public void setDates(List<Date> dates) {
+        this.dates = dates;
     }
 }

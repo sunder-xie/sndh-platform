@@ -3,12 +3,12 @@ package com.nhry.rest.statistics;
 import com.nhry.common.auth.UserSessionService;
 import com.nhry.common.exception.MessageCode;
 import com.nhry.data.auth.domain.TSysUser;
+import com.nhry.model.statistics.BranchInfoModel;
 import com.nhry.model.statistics.DistInfoModel;
 import com.nhry.model.sys.ResponseModel;
 import com.nhry.rest.BaseResource;
-import com.nhry.service.statistics.dao.DistributionInfoService;
+import com.nhry.service.statistics.dao.BranchInfoService;
 import com.sun.jersey.spi.resource.Singleton;
-import com.sun.xml.internal.rngom.parse.host.Base;
 import com.wordnik.swagger.annotations.Api;
 import com.wordnik.swagger.annotations.ApiOperation;
 import com.wordnik.swagger.annotations.ApiParam;
@@ -17,33 +17,32 @@ import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Controller;
 
-import javax.ws.rs.*;
+import javax.ws.rs.Consumes;
+import javax.ws.rs.POST;
+import javax.ws.rs.Path;
+import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
-import java.rmi.RemoteException;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 
 /**
- * Created by cbz on 7/16/2016.
+ * Created by cbz on 7/18/2016.
  */
-@Path("/dist")
+@Path("/branchInfo")
 @Controller
 @Singleton
 @Scope("request")
-@Component
-@Api(value = "/dist",description = "配送信息统计")
-public class DistributionInfoResource extends BaseResource{
+@Api(value = "/branchInfo",description = "奶站信息统计")
+public class BranchInfoResource extends BaseResource {
     @Autowired
-    private DistributionInfoService distributionInfoService;
+    private BranchInfoService branchInfoService;
     @Autowired
     private UserSessionService userSessionService;
     @POST
-    @Path("/findDifferInfo")
+    @Path("/branchDayInfo")
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes(MediaType.APPLICATION_JSON)
-    @ApiOperation(value = "/findDifferInfo}", response = ResponseModel.class, notes = "路单配送差异明细")
-    public Response getYHD(@ApiParam(name = "model",value = "路单配送") DistInfoModel model){
+    @ApiOperation(value = "/branchDayInfo}", response = ResponseModel.class, notes = "奶站日报表")
+    public Response getYHD(@ApiParam(name = "model",value = "奶站日报") BranchInfoModel model){
         TSysUser user = userSessionService.getCurrentUser();
         if(user.getBranchNo()!=null){
             model.setBranchNo(user.getBranchNo());
@@ -53,10 +52,7 @@ public class DistributionInfoResource extends BaseResource{
         if(user.getSalesOrg() != null){
             model.setSalesOrg(user.getSalesOrg());
         }
-        return convertToRespModel(MessageCode.NORMAL, null, distributionInfoService.findDistDifferInfo(model));
+        return convertToRespModel(MessageCode.NORMAL, null, branchInfoService.branchDayInfo(model));
     }
-
-
-
 
 }

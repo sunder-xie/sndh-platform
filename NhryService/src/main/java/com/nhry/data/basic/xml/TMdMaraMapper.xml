@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
 <mapper namespace="com.nhry.data.basic.dao.TMdMaraMapper">
-    <cache type="org.mybatis.caches.redis.RedisCache" />
+    <!-- <cache type="org.mybatis.caches.redis.RedisCache" /> -->
 	<resultMap id="BaseResultMap" type="com.nhry.data.basic.domain.TMdMara">
 		<id column="MATNR" property="matnr" jdbcType="VARCHAR" />
 		<result column="MATNR_TXT" property="matnrTxt" jdbcType="VARCHAR" />
@@ -229,8 +229,9 @@
 		FROM
 		t_md_mara p 
 		<where>
+		     p. STATUS='Y' 
 		    <if test="salesOrg != null and salesOrg != ''">
-		        p.SALES_ORG=#{salesOrg}
+		        AND p.SALES_ORG=#{salesOrg}
 		    </if>
 		    <if test="dealerNo != null and dealerNo != ''">
 		        AND p.DEALER_NO=#{dealerNo}
@@ -433,15 +434,20 @@
 			p.LAST_MODIFIED MARA_LAST_MODIFIED,
 			p.CREATE_AT MARA_CREATE_AT,
 			p.FIRST_CAT,
+			(SELECT i.ITEM_NAME FROM t_sys_code_item I WHERE i.TYPE_CODE=<include refid="mybaties.constant.products_first_category"></include> AND i.ITEM_CODE=p.FIRST_CAT) FIRST_CAT_NAME,
 			p.SEC_CATE,
+			(SELECT i.ITEM_NAME FROM t_sys_code_item I WHERE i.TYPE_CODE=<include refid="mybaties.constant.products_second_category"></include> AND i.ITEM_CODE=p.SEC_CATE) SEC_CATE_NAME,
 			p.BRAND,
+			(SELECT i.ITEM_NAME FROM t_sys_code_item I WHERE i.TYPE_CODE=<include refid="mybaties.constant.products_third_category"></include> AND i.ITEM_CODE=p.BRAND) BRAND_NAME,
 			p.WEIGHT,
 			p.WEIGHT_UNIT,
 			p.IMPORTANT_PRD_FLAG,
 			p.SPEC,
+			(SELECT i.ITEM_NAME FROM t_sys_code_item I WHERE i.TYPE_CODE=<include refid="mybaties.constant.products_spec"></include> AND i.ITEM_CODE=p.SPEC) SPEC_NAME,
 			p.SPEC_UNIT,
 			p.BOT_SPEC,
 			p.ZBOT_CODE,
+			(SELECT i.ITEM_NAME FROM t_sys_code_item I WHERE i.TYPE_CODE=<include refid="mybaties.constant.packing _type"></include> AND i.ITEM_CODE=p.ZBOT_CODE) ZBOT_CODE_NAME,
 			p.SALES_ORG,
 			p.DEALER_NO 
 		FROM
@@ -471,15 +477,20 @@
 			p.LAST_MODIFIED MARA_LAST_MODIFIED,
 			p.CREATE_AT MARA_CREATE_AT,
 			p.FIRST_CAT,
+			(SELECT i.ITEM_NAME FROM t_sys_code_item I WHERE i.TYPE_CODE=<include refid="mybaties.constant.products_first_category"></include> AND i.ITEM_CODE=p.FIRST_CAT) FIRST_CAT_NAME,
 			p.SEC_CATE,
+			(SELECT i.ITEM_NAME FROM t_sys_code_item I WHERE i.TYPE_CODE=<include refid="mybaties.constant.products_second_category"></include> AND i.ITEM_CODE=p.SEC_CATE) SEC_CATE_NAME,
 			p.BRAND,
+			(SELECT i.ITEM_NAME FROM t_sys_code_item I WHERE i.TYPE_CODE=<include refid="mybaties.constant.products_third_category"></include> AND i.ITEM_CODE=p.BRAND) BRAND_NAME,
 			p.WEIGHT,
 			p.WEIGHT_UNIT,
 			p.IMPORTANT_PRD_FLAG,
 			p.SPEC,
+			(SELECT i.ITEM_NAME FROM t_sys_code_item I WHERE i.TYPE_CODE=<include refid="mybaties.constant.products_spec"></include> AND i.ITEM_CODE=p.SPEC) SPEC_NAME,
 			p.SPEC_UNIT,
 			p.BOT_SPEC,
 			p.ZBOT_CODE,
+			(SELECT i.ITEM_NAME FROM t_sys_code_item I WHERE i.TYPE_CODE=<include refid="mybaties.constant.packing _type"></include> AND i.ITEM_CODE=p.ZBOT_CODE) ZBOT_CODE_NAME,
 			p.SALES_ORG,
 			p.DEALER_NO 
 		FROM
