@@ -65,7 +65,7 @@ public class TSysUserMapperImpl implements TSysUserMapper {
 
 	@Override
 	public PageInfo findUserPageByRoleId(UserQueryModel um) {
-		return sqlSessionTemplate.selectListByPages("findUserByRoleId",um,Integer.parseInt(um.getPageNum()),Integer.parseInt(um.getPageSize()));
+		return sqlSessionTemplate.selectListByPages("findPageByRoleId",um,Integer.parseInt(um.getPageNum()),Integer.parseInt(um.getPageSize()));
 	}
 
 	@Override

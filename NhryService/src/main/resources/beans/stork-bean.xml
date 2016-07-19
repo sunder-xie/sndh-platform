@@ -21,5 +21,15 @@
     <bean class="com.nhry.data.stock.impl.TSsmGiOrderItemMapperImpl" id="ssmGiOrderItemMapper">
         <property name="sqlSessionTemplate" ref="dynamicSqlSessionTemplate"/>
     </bean>
-
+    <!--
+    <bean class="com.nhry.data.stock.impl.TSsmStockMapperImpl" id="ssmStockMapper">
+        <property name="sqlSessionTemplate" ref="dynamicSqlSessionTemplate"/>
+    </bean>
+    <bean class="com.nhry.data.stock.impl.TSsmVoucherMapperImpl" id="ssmVoucherMapper">
+        <property name="sqlSessionTemplate" ref="dynamicSqlSessionTemplate"/>
+    </bean>
+    <bean class="com.nhry.data.stock.impl.TSsmVoucherItemMapperImpl" id="ssmVoucherItemMapper">
+        <property name="sqlSessionTemplate" ref="dynamicSqlSessionTemplate"/>
+    </bean>
+    -->
 </beans>
