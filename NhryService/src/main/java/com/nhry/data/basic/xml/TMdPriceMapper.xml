@@ -358,6 +358,7 @@
 		AND p.SALES_ORG = #{salesOrg}
 		AND pb.BRANCH_NO = #{branchNo}
   </select>
+  <!-- 查询自营奶站可选价格组，自营奶站也可以选择scope为自营奶站的区域价 -->
   <select id="getOwnBranchPricesGroupByBn" resultMap="BaseResultMap"  parameterType="String">
      	SELECT
 			p.ID,
@@ -378,7 +379,7 @@
 		WHERE
 			 p.STATUS='Y' AND 
 			 p.SALES_ORG = #{salesOrg}
-		AND p.price_type='30'
+		AND (p.price_type='30' OR (p.price_type='20' AND p.scope='-1')) 
   </select>
   <select id="getDealerBranchPricesGroupByBn" resultMap="BaseResultMap"  parameterType="java.util.HashMap">
      	SELECT
