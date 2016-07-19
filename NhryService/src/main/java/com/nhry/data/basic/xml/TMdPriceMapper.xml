@@ -336,7 +336,19 @@
   </select>
   <select id="getPricesGroupByBn" resultMap="BaseResultMap" parameterType="java.util.HashMap">
      	SELECT
-			p.*
+			p.ID,
+			PRICE_GROUP,
+			(
+				SELECT
+					t.ITEM_NAME
+				FROM
+					t_sys_code_item t
+				WHERE
+					t.TYPE_CODE = <include refid="mybaties.constant.price_type"></include>
+				AND t.ITEM_CODE = p.PRICE_TYPE
+			) PRICE_TYPE_NAME,p.PRICE_TYPE,
+			date_format(p.START_DATE, '%Y-%m-%d') START_DATE,
+			date_format(p.END_DATE, '%Y-%m-%d') END_DATE 
 		FROM
 			T_MD_PRICE p,
 			T_MD_PRICE_BRANCH pb
@@ -348,7 +360,19 @@
   </select>
   <select id="getOwnBranchPricesGroupByBn" resultMap="BaseResultMap"  parameterType="String">
      	SELECT
-			p.*
+			p.ID,
+			PRICE_GROUP,
+			(
+				SELECT
+					t.ITEM_NAME
+				FROM
+					t_sys_code_item t
+				WHERE
+					t.TYPE_CODE = <include refid="mybaties.constant.price_type"></include>
+				AND t.ITEM_CODE = p.PRICE_TYPE
+			) PRICE_TYPE_NAME,p.PRICE_TYPE,
+			date_format(p.START_DATE, '%Y-%m-%d') START_DATE,
+			date_format(p.END_DATE, '%Y-%m-%d') END_DATE 
 		FROM
 			T_MD_PRICE p 
 		WHERE
@@ -358,7 +382,19 @@
   </select>
   <select id="getDealerBranchPricesGroupByBn" resultMap="BaseResultMap"  parameterType="java.util.HashMap">
      	SELECT
-			p.*
+				p.ID,
+			PRICE_GROUP,
+			(
+				SELECT
+					t.ITEM_NAME
+				FROM
+					t_sys_code_item t
+				WHERE
+					t.TYPE_CODE = <include refid="mybaties.constant.price_type"></include>
+				AND t.ITEM_CODE = p.PRICE_TYPE
+			) PRICE_TYPE_NAME,p.PRICE_TYPE,
+			date_format(p.START_DATE, '%Y-%m-%d') START_DATE,
+			date_format(p.END_DATE, '%Y-%m-%d') END_DATE 
 		FROM
 			T_MD_PRICE p 
 		WHERE p.SALES_ORG = #{salesOrg}
