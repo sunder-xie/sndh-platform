@@ -209,5 +209,14 @@ public class TOrderDaliyPlanItemMapperImpl implements TOrderDaliyPlanItemMapper
 	{
 		return sqlSessionTemplate.selectList("searchDaliyOrdersByOrderNoAndFinalStop", smodel);
 	}
+
+	@Override
+	public List<TOrderDaliyPlanItem> searchDaliyPlansByStatus(String orderNo, String status)
+	{
+		TOrderDaliyPlanItem smodel = new TOrderDaliyPlanItem();
+		smodel.setOrderNo(orderNo);
+		smodel.setStatus(status);
+		return sqlSessionTemplate.selectList("searchDaliyPlansByStatus", smodel);
+	}
 	
 }

@@ -24,6 +24,7 @@ import com.nhry.service.milk.dao.DeliverMilkService;
 import com.nhry.service.milk.pojo.TDispOrderChangeItem;
 import com.nhry.service.milktrans.dao.ReturnBoxService;
 import com.nhry.service.order.dao.OrderService;
+import com.nhry.utils.PrimaryKeyUtils;
 import com.nhry.utils.SerialUtil;
 
 import org.apache.commons.lang3.StringUtils;
@@ -113,8 +114,9 @@ public class DeliverMilkServiceImpl extends BaseService implements DeliverMilkSe
 
 			List<TDispOrderItem> entries = tDispOrderItemMapper.selectItemsByOrderNo(dispOrderNo);
 			if(entries == null || entries.size() <1){
-				message = "该路单没有可以生成销售订单的未送达项";
-				throw new ServiceException(MessageCode.LOGIC_ERROR,message);
+//				message = "该路单没有可以生成销售订单的未送达项";
+//				throw new ServiceException(MessageCode.LOGIC_ERROR,message);
+				return 1;
 			}
 			if(sOrder!=null){
 				tMstInsideSalOrderItemMapper.delInSalOrderItemByOrderNo(sOrder.getInsOrderNo());
@@ -451,6 +453,7 @@ public class DeliverMilkServiceImpl extends BaseService implements DeliverMilkSe
 			
 			if(daliyPlans == null || daliyPlans.size() <= 0)continue;
 				
+			dispOrder.setOrderNo(PrimaryKeyUtils.generateUuidKey());
 			//对每日计划的统计
 			int index = 0;
 			String empNo = order.getEmpNo();
@@ -461,7 +464,7 @@ public class DeliverMilkServiceImpl extends BaseService implements DeliverMilkSe
 				
 				//路单详细,一个日计划对应一行
 //				if(empNo == null)empNo = plan.getLastModifiedByTxt();//配送人员id,字段临时读取,不需要再增加字段
-				item.setOrderNo(String.valueOf(date.getTime()));
+				item.setOrderNo(dispOrder.getOrderNo());
 				item.setOrderDate(date);
 				item.setItemNo(String.valueOf(index));
 				item.setMatnr(plan.getMatnr());
@@ -491,7 +494,6 @@ public class DeliverMilkServiceImpl extends BaseService implements DeliverMilkSe
 			}
 			
 			//生成路单号
-			dispOrder.setOrderNo(String.valueOf(date.getTime()));
 			dispOrder.setAmt(totalAmt);
 			dispOrder.setTotalQty(totalQty);
 			dispOrder.setDispLineNo(order.getDispLineNo());
@@ -555,8 +557,8 @@ public class DeliverMilkServiceImpl extends BaseService implements DeliverMilkSe
 			}else if(item.getReachTimeType1().equals(item.getReachTimeType2())){
 				//变更配送时间
 				change.setReason("50");
-				change.setYestodayReachTimeType(item.getReachTimeType1());
-				change.setTodayReachTimeType(item.getReachTimeType2());
+				change.setYestodayReachTimeType(item.getReachTimeType2());
+				change.setTodayReachTimeType(item.getReachTimeType1());
 			}else{
 				continue;
 			}
