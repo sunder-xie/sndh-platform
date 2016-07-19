@@ -23,6 +23,7 @@ import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+import java.util.Date;
 
 /**
  * Created by cbz on 7/18/2016.
@@ -51,6 +52,9 @@ public class BranchInfoResource extends BaseResource {
         }
         if(user.getSalesOrg() != null){
             model.setSalesOrg(user.getSalesOrg());
+        }
+        if(model.getTheDate() == null){
+            model.setTheDate(new Date());
         }
         return convertToRespModel(MessageCode.NORMAL, null, branchInfoService.branchDayInfo(model));
     }

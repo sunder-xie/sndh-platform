@@ -43,7 +43,7 @@ public class StatisticsResource extends BaseResource {
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes(MediaType.APPLICATION_JSON)
     @ApiOperation(value = "/branchDayInfo}", response = ResponseModel.class, notes = "奶站日报表")
-    public Response getYHD(@ApiParam(name = "model",value = "奶站日报") BranchInfoModel model){
+    public Response branchDayInfo(@ApiParam(name = "model",value = "奶站日报") BranchInfoModel model){
         TSysUser user = userSessionService.getCurrentUser();
         if(user.getBranchNo()!=null){
             model.setBranchNo(user.getBranchNo());
@@ -60,11 +60,11 @@ public class StatisticsResource extends BaseResource {
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes(MediaType.APPLICATION_JSON)
     @ApiOperation(value = "/findDifferInfo}", response = ResponseModel.class, notes = "路单配送差异明细")
-    public Response getYHD(@ApiParam(name = "model",value = "路单配送") DistInfoModel model){
+    public Response findDifferInfo(@ApiParam(name = "model",value = "路单配送") DistInfoModel model){
         TSysUser user = userSessionService.getCurrentUser();
-        if(user.getBranchNo()!=null){
+        if(user.getBranchNo()!=null && model.getBranchNo()==null){
             model.setBranchNo(user.getBranchNo());
-        }else if(user.getDealerId() != null){
+        }else if(user.getDealerId() != null && model.getDealerId() != null){
             model.setDealerId(user.getDealerId());
         }
         if(user.getSalesOrg() != null){

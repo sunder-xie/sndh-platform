@@ -1915,6 +1915,15 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 
  		List<TOrderDaliyPlanItem> daliyPlans = new ArrayList<TOrderDaliyPlanItem>();
  		BigDecimal curAmt = order.getCurAmt();//订单余额
+ 		
+ 		Date firstDeliveryDate = null;
+ 		for(TPlanOrderItem entry: entries){
+ 			if(firstDeliveryDate==null){
+				firstDeliveryDate = entry.getStartDispDate();
+			}else{
+				firstDeliveryDate = firstDeliveryDate.before(entry.getStartDispDate())?firstDeliveryDate:entry.getStartDispDate();
+			}
+ 		}
 
  		//行号唯一，需要判断以前最大的行号
  		int daliyEntryNo = 0;//日计划行号
@@ -1928,7 +1937,10 @@ public class OrderServiceImpl extends BaseService implements OrderService {
  			for(TPlanOrderItem entry : entries){
  				
  			//判断是按周期送还是按星期送
-				Date today = afterDate(entry.getStartDispDate(),afterDays);
+				Date today = afterDate(firstDeliveryDate,afterDays);
+				
+				if(entry.getStartDispDate().after(today))continue;
+				
 				if("10".equals(entry.getRuleType())){
 					int gapDays = entry.getGapDays() + 1;//间隔天数
 					if(afterDays%gapDays != 0){
@@ -1987,7 +1999,17 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 				
 				daliyPlans.add(0,plan);
  			}
- 		}	
+ 		}
+ 		
+ 		//更新订单行enddispdate
+ 		for(TPlanOrderItem entry: entries){
+ 			for(TOrderDaliyPlanItem p :daliyPlans){
+ 				if(p.getItemNo().equals(entry.getItemNo())){
+ 					entry.setEndDispDate(p.getDispDate());
+ 					break;
+ 				}
+ 			}
+ 		}
 
  		return daliyPlans;
  	}

@@ -2,13 +2,13 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
 <mapper namespace="com.nhry.data.statistics.dao.BranchInfoMapper">
     <select id="branchDayInfo" resultType="hashmap" parameterType="com.nhry.model.statistics.BranchInfoModel">
-        select b.branch_no,br.BRANCH_NAME,
-        max( CASE b.ORDER_DATE when DATE_ADD(#{theDate},INTERVAL -4 day) then qty else  0  end ) as 'date1',
-        max( CASE b.ORDER_DATE when DATE_ADD(#{theDate},INTERVAL -3 day)  then qty else  0  end ) as 'date2',
-        max( CASE b.ORDER_DATE when DATE_ADD(#{theDate},INTERVAL -2 day)  then qty else  0  end ) as 'date3',
-        max( CASE b.ORDER_DATE when DATE_ADD(#{theDate},INTERVAL -1 day)  then qty else  0  end ) as 'date4',
-        max( CASE b.ORDER_DATE when #{theDate} then qty else  0  end ) as 'date5',
-        max( CASE b.ORDER_DATE when #{theDate} then qty else  0  end )/max( CASE b.ORDER_DATE when  DATE_ADD(#{theDate},INTERVAL -1 day)  then qty else  0  end ) as hb from (
+        select b.branch_no branchNo,br.BRANCH_NAME branchName,br.branch_group branchGroup,
+        max( CASE b.ORDER_DATE when date_format(DATE_ADD(#{theDate},INTERVAL -4 day),'%Y-%m-%d') then qty else  0  end ) as 'date1',
+        max( CASE b.ORDER_DATE when date_format(DATE_ADD(#{theDate},INTERVAL -3 day),'%Y-%m-%d') then qty else  0  end ) as 'date2',
+        max( CASE b.ORDER_DATE when date_format(DATE_ADD(#{theDate},INTERVAL -2 day),'%Y-%m-%d') then qty else  0  end ) as 'date3',
+        max( CASE b.ORDER_DATE when date_format(DATE_ADD(#{theDate},INTERVAL -1 day),'%Y-%m-%d') then qty else  0  end ) as 'date4',
+        max( CASE b.ORDER_DATE when date_format(#{theDate},'%Y-%m-%d') then qty else  0  end ) as 'date5',
+        max( CASE b.ORDER_DATE when date_format(#{theDate},'%Y-%m-%d') then qty else  0  end )/max( CASE b.ORDER_DATE when  date_format(DATE_ADD(#{theDate},INTERVAL -1 day),'%Y-%m-%d')  then qty else  0  end ) as hb from (
         SELECT
         o.BRANCH_NO,
         o.ORDER_DATE,
