@@ -1,6 +1,7 @@
 package com.nhry.data.bill.domain;
 
 import java.io.Serializable;
+import java.util.Date;
 
 /**
  * Created by gongjk on 2016/6/27.
@@ -21,6 +22,15 @@ public class BranchBillOfCust   implements Serializable {
     private String paymentDate;//付款日期
     private String empNo;//送奶工 工号
     private String empName;//送奶工名称
+    private Date receiptDate;
+
+    public Date getReceiptDate() {
+        return receiptDate;
+    }
+
+    public void setReceiptDate(Date receiptDate) {
+        this.receiptDate = receiptDate;
+    }
 
     public String getBranchNo() {
         return branchNo;

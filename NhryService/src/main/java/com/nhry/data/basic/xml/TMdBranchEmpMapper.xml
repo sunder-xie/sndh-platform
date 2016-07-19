@@ -101,6 +101,44 @@
   </insert>
   <update id="uptBranchEmpByNo" parameterType="com.nhry.data.basic.domain.TMdBranchEmp" >
     update t_md_branch_emp
+    <set>
+      <if test="residentialAreaTxt != null">
+        RESIDENTIAL_AREA_TXT = #{residentialAreaTxt,jdbcType=VARCHAR},
+      </if>
+      <if test="province != null">
+        PROVINCE = #{province,jdbcType=VARCHAR},
+      </if>
+      <if test="city != null">
+        CITY = #{city,jdbcType=VARCHAR},
+      </if>
+      <if test="county != null">
+        COUNTY = #{county,jdbcType=VARCHAR},
+      </if>
+      <if test="street != null">
+        STREET = #{street,jdbcType=VARCHAR},
+      </if>
+      <if test="status != null">
+        Status = #{status,jdbcType=VARCHAR},
+      </if>
+      <if test="addressTxt != null">
+        ADDRESS_TXT = #{addressTxt,jdbcType=VARCHAR},
+      </if>
+      <if test="residentialNum != null">
+        RESIDENTIAL_NUM = #{residentialNum,jdbcType=INTEGER},
+      </if>
+      <if test="salesOrg != null">
+        SALES_ORG = #{salesOrg,jdbcType=VARCHAR},
+      </if>
+      <if test="propertyTxt != null">
+        PROPERTY_TXT = #{propertyTxt,jdbcType=VARCHAR},
+      </if>
+      <if test="propertyTel != null">
+        PROPERTY_TEL = #{propertyTel,jdbcType=VARCHAR},
+      </if>
+    </set>
+
+
+    update
     set HR_EMP_NO = #{hrEmpNo,jdbcType=VARCHAR},
       BRANCH_NO = #{branchNo,jdbcType=VARCHAR},
       EMP_NAME = #{empName,jdbcType=VARCHAR},

@@ -373,10 +373,8 @@ public class RequireOrderServiceImpl implements RequireOrderService {
                     }
                 }
                 //调用 接口
-                // piRequireOrderService.generateRequireOrder();
-                PISuccessMessage message =new PISuccessMessage();
-                message.setData(SerialUtil.creatSeria());
-                message.setSuccess(true);
+
+              PISuccessMessage  message  = piRequireOrderService.generateSalesOrder(order,order.getDealerNo(),order.getBranchNo(),order.getSalesOrg(),promotion);
                 if(message.isSuccess()){
                     this.uptVouCherNoByOrderNo(order.getOrderNo(),message.getData());
                 }
@@ -411,10 +409,7 @@ public class RequireOrderServiceImpl implements RequireOrderService {
             }
 
             //调用 接口
-            // piRequireOrderService.generateRequireOrder();
-            PISuccessMessage message =new PISuccessMessage();
-            message.setData(SerialUtil.creatSeria());
-            message.setSuccess(true);
+            PISuccessMessage  message  = piRequireOrderService.generateSalesOrder(order,order.getDealerNo(),order.getBranchNo(),order.getSalesOrg(),"");
             if(message.isSuccess()){
                 this.uptVouCherNoByOrderNo(order.getOrderNo(),message.getData());
             }
