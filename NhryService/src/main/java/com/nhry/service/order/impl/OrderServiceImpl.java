@@ -22,6 +22,7 @@ import com.nhry.service.order.dao.OrderService;
 import com.nhry.service.order.dao.PromotionService;
 import com.nhry.service.order.pojo.OrderRemainData;
 import com.nhry.utils.CodeGeneratorUtil;
+
 import org.apache.commons.lang3.StringUtils;
 
 import java.math.BigDecimal;
@@ -109,6 +110,20 @@ public class OrderServiceImpl extends BaseService implements OrderService {
    {  
    	return tOrderDaliyPlanItemMapper.selectDaliyPlansByOrderNo(orderCode);
    }
+   
+	/* (non-Javadoc) 
+	* @title: searchDaliyPlansByStatus
+	* @description: 根据订单号，日单状态查询该订单所有日计划
+	* @param orderNo
+	* @param status
+	* @return 
+	* @see com.nhry.service.order.dao.OrderService#searchDaliyPlansByStatus(java.lang.String, java.lang.String) 
+	*/
+	@Override
+	public List<TOrderDaliyPlanItem> searchDaliyPlansByStatus(String orderNo, String status)
+	{
+		return tOrderDaliyPlanItemMapper.searchDaliyPlansByStatus(orderNo, status);
+	}
 
 	/* (non-Javadoc)
 	* @title: 退回单列表
@@ -2128,5 +2143,4 @@ public class OrderServiceImpl extends BaseService implements OrderService {
   		
   	}
 
- 	
 }

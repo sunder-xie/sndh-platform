@@ -114,8 +114,9 @@ public class DeliverMilkServiceImpl extends BaseService implements DeliverMilkSe
 
 			List<TDispOrderItem> entries = tDispOrderItemMapper.selectItemsByOrderNo(dispOrderNo);
 			if(entries == null || entries.size() <1){
-				message = "该路单没有可以生成销售订单的未送达项";
-				throw new ServiceException(MessageCode.LOGIC_ERROR,message);
+//				message = "该路单没有可以生成销售订单的未送达项";
+//				throw new ServiceException(MessageCode.LOGIC_ERROR,message);
+				return 1;
 			}
 			if(sOrder!=null){
 				tMstInsideSalOrderItemMapper.delInSalOrderItemByOrderNo(sOrder.getInsOrderNo());
@@ -556,8 +557,8 @@ public class DeliverMilkServiceImpl extends BaseService implements DeliverMilkSe
 			}else if(item.getReachTimeType1().equals(item.getReachTimeType2())){
 				//变更配送时间
 				change.setReason("50");
-				change.setYestodayReachTimeType(item.getReachTimeType1());
-				change.setTodayReachTimeType(item.getReachTimeType2());
+				change.setYestodayReachTimeType(item.getReachTimeType2());
+				change.setTodayReachTimeType(item.getReachTimeType1());
 			}else{
 				continue;
 			}
