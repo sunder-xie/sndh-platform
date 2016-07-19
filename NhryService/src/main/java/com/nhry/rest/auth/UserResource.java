@@ -5,6 +5,7 @@ import com.nhry.common.auth.UserSessionService;
 import com.nhry.common.exception.MessageCode;
 import com.nhry.data.auth.domain.TSysUser;
 import com.nhry.model.auth.UserQueryModel;
+import com.nhry.model.auth.UserQueryModel2;
 import com.nhry.model.sys.ResponseModel;
 import com.nhry.rest.BaseResource;
 import com.nhry.service.auth.dao.UserService;
@@ -105,7 +106,7 @@ public class UserResource extends BaseResource {
 	@Produces(MediaType.APPLICATION_JSON)
 	@Consumes(MediaType.APPLICATION_JSON)
 	@ApiOperation(value = "/findByRoleId", response = List.class, notes = "根据角色 用户名(或者中文名)查询人员列表")
-	public Response findByRoleId(	@ApiParam(required = true, name = "um", value = "角色 用户登录名、中文名") UserQueryModel um) {
+	public Response findByRoleId(	@ApiParam(required = true, name = "um", value = "角色 用户登录名、中文名") UserQueryModel2 um) {
 		return convertToRespModel(MessageCode.NORMAL, null, userService.findUserByRoleId(um));
 	}
 	
