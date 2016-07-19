@@ -146,7 +146,7 @@
         #{yestodayReachTimeType,jdbcType=VARCHAR},
       </if>
       <if test="todayReachTimeType != null" >
-        #{todayReachTimeType,jdbcType=DECIMAL},
+        #{todayReachTimeType,jdbcType=VARCHAR},
       </if>
       <if test="reason != null" >
         #{reason,jdbcType=VARCHAR},

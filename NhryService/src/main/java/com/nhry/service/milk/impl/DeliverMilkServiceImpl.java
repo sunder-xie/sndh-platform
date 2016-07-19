@@ -553,15 +553,15 @@ public class DeliverMilkServiceImpl extends BaseService implements DeliverMilkSe
 				change.setReason("20");
 				change.setTodayQty(item.getQty1());
 				change.setYestodayQty(item.getQty2());
-			}else if(item.getReachTimeType1().equals(item.getReachTimeType2())){
+			}else if(!item.getReachTimeType1().equals(item.getReachTimeType2())){
 				//变更配送时间
 				change.setReason("50");
-				change.setYestodayReachTimeType(item.getReachTimeType2());
-				change.setTodayReachTimeType(item.getReachTimeType1());
 			}else{
 				continue;
 			}
 			
+			change.setYestodayReachTimeType(item.getReachTimeType2());
+			change.setTodayReachTimeType(item.getReachTimeType1());
 			change.setOrderNo(StringUtils.isNotBlank(item.getOrderNo1())?item.getOrderNo1():item.getOrderNo2());
 			change.setOrderDate(item.getOrderDate1()!=null?item.getOrderDate1():item.getOrderDate2());
 			change.setOrgOrderNo(StringUtils.isNotBlank(item.getOrgOrderNo1())?item.getOrgOrderNo1():item.getOrgOrderNo2());
@@ -659,8 +659,8 @@ public class DeliverMilkServiceImpl extends BaseService implements DeliverMilkSe
 			change.setTodayMatnr(item.getMatnr1());
 			change.setTodayQty(item.getQty1());
 			change.setYestodayQty(item.getQty2());
-			change.setYestodayReachTimeType(item.getReachTimeType1());
-			change.setTodayReachTimeType(item.getReachTimeType2());
+			change.setYestodayReachTimeType(item.getReachTimeType2());
+			change.setTodayReachTimeType(item.getReachTimeType1());
 			//
 			change.setOrderNo(StringUtils.isNotBlank(item.getOrderNo1())?item.getOrderNo1():item.getOrderNo2());
 			change.setOrderDate(item.getOrderDate1()!=null?item.getOrderDate1():item.getOrderDate2());
