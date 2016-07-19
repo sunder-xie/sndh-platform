@@ -192,7 +192,14 @@ public class milkTransResource extends BaseResource {
 	}
 
 
-
+/*	@GET
+	@Path("/getInsideSalOrder")
+	@Produces(MediaType.APPLICATION_JSON)
+	@Consumes(MediaType.APPLICATION_JSON)
+	@ApiOperation(value = "/getInsideSalOrder", response = Response.class, notes = "创建内部销售订单")
+	public Response getInsideSalOrder(){
+		return convertToRespModel(MessageCode.NORMAL, null, deliverMilkService.getInsideSalOrder());
+	}*/
 
 
 
