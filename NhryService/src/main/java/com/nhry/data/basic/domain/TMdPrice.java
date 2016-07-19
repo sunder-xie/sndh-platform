@@ -20,6 +20,8 @@ public class TMdPrice implements Serializable{
 
     private String priceType;
     
+    private String priceTypeName;
+    
     private String startDate;
     
     private String endDate;
@@ -170,5 +172,13 @@ public class TMdPrice implements Serializable{
 
 	public void setMcount(String mcount) {
 		this.mcount = mcount;
+	}
+
+	public String getPriceTypeName() {
+		return priceTypeName;
+	}
+
+	public void setPriceTypeName(String priceTypeName) {
+		this.priceTypeName = priceTypeName;
 	}
 }

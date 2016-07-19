@@ -6,6 +6,7 @@
     <result column="SALES_ORG" property="salesOrg" jdbcType="VARCHAR" />
     <result column="PRICE_GROUP" property="priceGroup" jdbcType="VARCHAR" />
     <result column="PRICE_TYPE" property="priceType" jdbcType="VARCHAR" />
+    <result column="PRICE_TYPE_NAME" property="priceTypeName" jdbcType="VARCHAR" />
     <result column="START_DATE" property="startDate" jdbcType="VARCHAR" />
     <result column="END_DATE" property="endDate" jdbcType="VARCHAR" />
     <result column="CREATE_AT" property="createAt" jdbcType="TIMESTAMP" />
@@ -44,7 +45,7 @@
 				WHERE
 					t.TYPE_CODE = <include refid="mybaties.constant.price_type"></include>
 				AND t.ITEM_CODE = p.PRICE_TYPE
-			) PRICE_TYPE,
+			) PRICE_TYPE_NAME,p.PRICE_TYPE,
 			date_format(p.START_DATE, '%Y-%m-%d') START_DATE,
 			date_format(p.END_DATE, '%Y-%m-%d') END_DATE,
 			p.CREATE_AT,
@@ -57,7 +58,7 @@
 			(
 				CASE
 				WHEN p.SCOPE = '-1' THEN
-					'自营奶站'
+					'<include refid="mybaties.constant.ownBranch"></include>'
 				ELSE
 					(
 						SELECT
