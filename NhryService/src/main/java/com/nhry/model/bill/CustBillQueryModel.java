@@ -16,6 +16,43 @@ public class CustBillQueryModel extends BaseQueryModel implements Serializable {
 
     private Date orderEndDate;
 
+    private String branchNo ;
+    private String dealerNo;
+    private String salesOrg;
+    private String empNo;
+
+    public String getBranchNo() {
+        return branchNo;
+    }
+
+    public void setBranchNo(String branchNo) {
+        this.branchNo = branchNo;
+    }
+
+    public String getDealerNo() {
+        return dealerNo;
+    }
+
+    public void setDealerNo(String dealerNo) {
+        this.dealerNo = dealerNo;
+    }
+
+    public String getSalesOrg() {
+        return salesOrg;
+    }
+
+    public void setSalesOrg(String salesOrg) {
+        this.salesOrg = salesOrg;
+    }
+
+    public String getEmpNo() {
+        return empNo;
+    }
+
+    public void setEmpNo(String empNo) {
+        this.empNo = empNo;
+    }
+
     public String getStatus() {
         return status;
     }

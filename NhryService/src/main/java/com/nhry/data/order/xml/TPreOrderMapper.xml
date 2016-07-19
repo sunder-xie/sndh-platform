@@ -641,6 +641,18 @@
     o.ORDER_NO, o.END_DATE,o.EMP_NO,e.EMP_NAME EMP_NAME,o.INIT_AMT,o.PAYMENT_STAT
     FROM t_preorder o LEFT JOIN t_md_branch_emp e on o.EMP_NO = e.EMP_NO
     where 1=1
+    <if test="branchNo !=null and branchNo!=''">
+      and  o.BRANCH_NO = #{branchNo,jdbcType=VARCHAR}
+    </if>
+    <if test="empNo !=null and empNo!=''">
+      and  o.EMP_NO = #{empNo,jdbcType=VARCHAR}
+    </if>
+    <if test="dealerNo !=null and dealerNo!=''">
+      and  o.DEALER_NO = #{dealerNo,jdbcType=VARCHAR}
+    </if>
+    <if test="salesOrg !=null and salesOrg!=''">
+      and  o.SALES_ORG = #{salesOrg,jdbcType=VARCHAR}
+    </if>
     <if test="status !=null and status!=''">
        and  o.PAYMENT_STAT = #{status,jdbcType=VARCHAR}
     </if>
