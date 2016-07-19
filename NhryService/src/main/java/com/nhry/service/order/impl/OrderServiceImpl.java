@@ -231,21 +231,23 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 			String state = order.getPaymentmethod();
 			if("20".equals(state)){//先付款
 				//用掉的钱，将存入订户账户
-				BigDecimal remain = order.getCurAmt();
-				TVipAcct ac = new TVipAcct();
-				ac.setAcctAmt(remain);
-				ac.setVipCustNo(order.getMilkmemberNo());
-				tVipCustInfoService.addVipAcct(ac);
+				if("20".equals(order.getPaymentStat())){//已经付过钱的退余额
+					BigDecimal remain = order.getCurAmt();
+					TVipAcct ac = new TVipAcct();
+					ac.setAcctAmt(remain);
+					ac.setVipCustNo(order.getMilkmemberNo());
+					tVipCustInfoService.addVipAcct(ac);
+				}
 				
 				tOrderDaliyPlanItemMapper.updateDaliyPlansToStop(order);
 
 			}else{//后付款
 				//用掉的钱，将存入订户账户
-				BigDecimal remain = order.getCurAmt().subtract(order.getInitAmt());
-				TVipAcct ac = new TVipAcct();
-				ac.setAcctAmt(remain);
-				ac.setVipCustNo(order.getMilkmemberNo());
-				tVipCustInfoService.addVipAcct(ac);
+//				BigDecimal remain = order.getCurAmt().subtract(order.getInitAmt());
+//				TVipAcct ac = new TVipAcct();
+//				ac.setAcctAmt(remain);
+//				ac.setVipCustNo(order.getMilkmemberNo());
+//				tVipCustInfoService.addVipAcct(ac);
 				
 				tOrderDaliyPlanItemMapper.updateDaliyPlansToStop(order);
 				
