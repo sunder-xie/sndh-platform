@@ -22,6 +22,7 @@ import com.nhry.service.order.dao.OrderService;
 import com.nhry.service.order.dao.PromotionService;
 import com.nhry.service.order.pojo.OrderRemainData;
 import com.nhry.utils.CodeGeneratorUtil;
+
 import org.apache.commons.lang3.StringUtils;
 
 import java.math.BigDecimal;
@@ -109,6 +110,20 @@ public class OrderServiceImpl extends BaseService implements OrderService {
    {  
    	return tOrderDaliyPlanItemMapper.selectDaliyPlansByOrderNo(orderCode);
    }
+   
+	/* (non-Javadoc) 
+	* @title: searchDaliyPlansByStatus
+	* @description: 根据订单号，日单状态查询该订单所有日计划
+	* @param orderNo
+	* @param status
+	* @return 
+	* @see com.nhry.service.order.dao.OrderService#searchDaliyPlansByStatus(java.lang.String, java.lang.String) 
+	*/
+	@Override
+	public List<TOrderDaliyPlanItem> searchDaliyPlansByStatus(String orderNo, String status)
+	{
+		return tOrderDaliyPlanItemMapper.searchDaliyPlansByStatus(orderNo, status);
+	}
 
 	/* (non-Javadoc)
 	* @title: 退回单列表
@@ -1748,7 +1763,9 @@ public class OrderServiceImpl extends BaseService implements OrderService {
    		throw new ServiceException(MessageCode.LOGIC_ERROR,"请选择奶箱状态!");
 		}
    	if(StringUtils.isBlank(order.getEmpNo())){
-   		throw new ServiceException(MessageCode.LOGIC_ERROR,"请选择送奶员!");
+   		if(!"10".equals(order.getPreorderSource())){
+   			throw new ServiceException(MessageCode.LOGIC_ERROR,"请选择送奶员!");
+   		}
 		}
    	if(record.getEntries()==null || record.getEntries().size() == 0){
    		throw new ServiceException(MessageCode.LOGIC_ERROR,"请选择商品行!");
@@ -1913,6 +1930,15 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 
  		List<TOrderDaliyPlanItem> daliyPlans = new ArrayList<TOrderDaliyPlanItem>();
  		BigDecimal curAmt = order.getCurAmt();//订单余额
+ 		
+ 		Date firstDeliveryDate = null;
+ 		for(TPlanOrderItem entry: entries){
+ 			if(firstDeliveryDate==null){
+				firstDeliveryDate = entry.getStartDispDate();
+			}else{
+				firstDeliveryDate = firstDeliveryDate.before(entry.getStartDispDate())?firstDeliveryDate:entry.getStartDispDate();
+			}
+ 		}
 
  		//行号唯一，需要判断以前最大的行号
  		int daliyEntryNo = 0;//日计划行号
@@ -1926,7 +1952,10 @@ public class OrderServiceImpl extends BaseService implements OrderService {
  			for(TPlanOrderItem entry : entries){
  				
  			//判断是按周期送还是按星期送
-				Date today = afterDate(entry.getStartDispDate(),afterDays);
+				Date today = afterDate(firstDeliveryDate,afterDays);
+				
+				if(entry.getStartDispDate().after(today))continue;
+				
 				if("10".equals(entry.getRuleType())){
 					int gapDays = entry.getGapDays() + 1;//间隔天数
 					if(afterDays%gapDays != 0){
@@ -1985,7 +2014,17 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 				
 				daliyPlans.add(0,plan);
  			}
- 		}	
+ 		}
+ 		
+ 		//更新订单行enddispdate
+ 		for(TPlanOrderItem entry: entries){
+ 			for(TOrderDaliyPlanItem p :daliyPlans){
+ 				if(p.getItemNo().equals(entry.getItemNo())){
+ 					entry.setEndDispDate(p.getDispDate());
+ 					break;
+ 				}
+ 			}
+ 		}
 
  		return daliyPlans;
  	}
@@ -2104,5 +2143,4 @@ public class OrderServiceImpl extends BaseService implements OrderService {
   		
   	}
 
- 	
 }

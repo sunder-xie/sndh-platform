@@ -305,6 +305,7 @@
 	WHERE
 		p.ID = pb.ID
 	AND p.ID = pr.ID
+	AND p.STATUS='Y'
 	AND pb.BRANCH_NO = #{branchNo,jdbcType=VARCHAR}
 	AND p.SALES_ORG = #{salesOrg}
 	AND pr.SALES_ORG = #{salesOrg}
@@ -325,6 +326,7 @@
 		WHERE
 			p.ID = pr.ID
 		AND p.PRICE_TYPE = '10'
+		AND p.STATUS='Y'
 		AND p.SALES_ORG = #{salesOrg}
 		AND pr.SALES_ORG = #{salesOrg}
 		AND pr.MATNR = #{matnr,jdbcType=VARCHAR}
@@ -339,6 +341,7 @@
 			T_MD_PRICE_BRANCH pb
 		WHERE
 			p.ID = pb.ID
+		AND P.STATUS='Y' 
 		AND p.SALES_ORG = #{salesOrg}
 		AND pb.BRANCH_NO = #{branchNo}
   </select>
@@ -348,6 +351,7 @@
 		FROM
 			T_MD_PRICE p 
 		WHERE
+			 p.STATUS='Y' AND 
 			 p.SALES_ORG = #{salesOrg}
 		AND p.price_type='30'
   </select>
@@ -357,7 +361,8 @@
 		FROM
 			T_MD_PRICE p 
 		WHERE p.SALES_ORG = #{salesOrg}
-		AND p.price_type='30'
+		 AND p.STATUS='Y'  
+		 AND p.price_type='30'
   </select>
   <select id="getCompPriceGroupCount" resultType="Integer" parameterType="java.util.HashMap">
      select COUNT(m.ID) from t_md_price m where m.STATUS='Y' and m.PRICE_TYPE=#{priceType}

@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.nhry.data.statistics.dao.BranchInfoMapper">
+    <select id="branchDayInfo" resultType="hashmap" parameterType="com.nhry.model.statistics.BranchInfoModel">
+        select b.branch_no branchNo,br.BRANCH_NAME branchName,br.branch_group branchGroup,
+        max( CASE b.ORDER_DATE when date_format(DATE_ADD(#{theDate},INTERVAL -4 day),'%Y-%m-%d') then qty else  0  end ) as 'date1',
+        max( CASE b.ORDER_DATE when date_format(DATE_ADD(#{theDate},INTERVAL -3 day),'%Y-%m-%d') then qty else  0  end ) as 'date2',
+        max( CASE b.ORDER_DATE when date_format(DATE_ADD(#{theDate},INTERVAL -2 day),'%Y-%m-%d') then qty else  0  end ) as 'date3',
+        max( CASE b.ORDER_DATE when date_format(DATE_ADD(#{theDate},INTERVAL -1 day),'%Y-%m-%d') then qty else  0  end ) as 'date4',
+        max( CASE b.ORDER_DATE when date_format(#{theDate},'%Y-%m-%d') then qty else  0  end ) as 'date5',
+        max( CASE b.ORDER_DATE when date_format(#{theDate},'%Y-%m-%d') then qty else  0  end )/max( CASE b.ORDER_DATE when  date_format(DATE_ADD(#{theDate},INTERVAL -1 day),'%Y-%m-%d')  then qty else  0  end ) as hb from (
+        SELECT
+        o.BRANCH_NO,
+        o.ORDER_DATE,
+        sum(i.QTY) qty
+        FROM
+        t_mst_disp_order_item i
+        JOIN t_mst_disp_order o ON i.ORDER_NO = o.ORDER_NO
+        AND i.ORDER_DATE BETWEEN DATE_ADD(#{theDate},INTERVAL -4 day) AND #{theDate}
+        AND o.ORDER_DATE = i.ORDER_DATE
+        AND i.`STATUS` = '20'
+        JOIN t_md_branch b ON b.BRANCH_NO = o.BRANCH_NO
+        <if test="branchNo != null">
+            AND b.BRANCH_NO = ${branchNo}
+        </if>
+        <if test="dealerId != null">
+            AND b.DEALER_ID = ${dealerId}
+        </if>
+        <if test="salesOrg != null">
+            AND b.SALES_ORG = ${salesOrg}
+        </if>
+        GROUP BY o.BRANCH_NO) b left join t_md_branch br on b.BRANCH_NO = br.BRANCH_NO group by b.BRANCH_NO
+    </select>
+
+    <select id="getBranchs" resultType="hashmap" parameterType="com.nhry.model.statistics.DistInfoModel">
+        SELECT
+            BRANCH_NO,
+            BRANCH_NAME
+        FROM
+            t_md_branch
+        <where>
+            <if test="salesOrg != null">
+                SALES_ORG = #{salesOrg}
+            </if>
+            <if test="dealerNo != null">
+                AND DEALER_NO = #{dealerNo}
+            </if>
+        </where>
+    </select>
+</mapper>

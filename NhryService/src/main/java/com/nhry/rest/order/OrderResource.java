@@ -65,6 +65,15 @@ public class OrderResource extends BaseResource {
 		return convertToRespModel(MessageCode.NORMAL, null, orderService.selectDaliyPlansByOrderNo(orderCode));
 	}
 	
+	@GET
+	@Path("/findDaliyPlansByStatus")
+	@Produces(MediaType.APPLICATION_JSON)
+	@ApiOperation(value = "/findDaliyPlansByStatus", response = ArrayList.class, notes = "根据订单编号,日单状态查询订单日计划信息")
+	public Response findDaliyPlansByStatus(@ApiParam(required=true,name="orderNo",value="订单号") @QueryParam("orderNo") String orderNo,
+			@ApiParam(required=true,name="status",value="日单状态") @QueryParam("status") String status){
+		return convertToRespModel(MessageCode.NORMAL, null, orderService.searchDaliyPlansByStatus(orderNo,status));
+	}
+	
 	@POST
 	@Path("/daliyPlansByPage")
 	@Produces(MediaType.APPLICATION_JSON)

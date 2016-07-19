@@ -499,20 +499,7 @@
         from t_sys_user
         where LOGIN_NAME = #{loginName,jdbcType=VARCHAR}
     </select>
-    <select id="findUser" parameterType="com.nhry.model.auth.UserQueryModel" resultMap="BaseResultMap">
-        SELECT
-        <include refid="Base_Column_List"/>
-        FROM
-        T_SYS_USER
-        WHERE 1=1
-        <if test="uname != null">
-            and (LOGIN_NAME like '%' #{uname,jdbcType=VARCHAR} '%' or DISPLAY_NAME like '%' #{uname,jdbcType=VARCHAR} '%')
-        </if>
-        <if test="salesOrg != null">
-            and SALES_ORG = #{salesOrg,jdbcType=VARCHAR}
-        </if>
-        order by CREATE_ON desc,LAST_MODIFIED desc
-    </select>
+
     <update id="deleteUserByLoginName" parameterType="com.nhry.data.auth.domain.TSysUser">
         update t_sys_user
         <set>
@@ -547,100 +534,153 @@
         and i.ITEM_CODE=u.SALES_ORG) ORG_NAME,
         (SELECT b.BRANCH_NAME FROM t_md_branch b where b.BRANCH_NO=u.BRANCH_NO) BRANCH_NAME
     </sql>
-    <select id="findUserByRoleId" parameterType="com.nhry.model.auth.UserQueryModel" resultMap="BaseResultMap">
-      SELECT
-        <include refid="Ch_Column_List"/>
-      FROM T_SYS_USER u
-      JOIN T_SYS_USER_ROLE r
-      ON u.LOGIN_NAME = r.LOGIN_NAME
-      and r.ID = #{roleId,jdbcType=VARCHAR}
+
+    <select id="findUserByRoleId" parameterType="com.nhry.model.auth.UserQueryModel2" resultType="hashmap">
+        SELECT
+        u.LOGIN_NAME loginName,
+        u.DISPLAY_NAME displayName,
+        u.SMART_IDCARDNUMBER smartIdcardnumber,
+        CASE WHEN r.ID IS NULL THEN false ELSE true end isRole
+        FROM T_SYS_USER u
+        <if test="isAll">
+            LEFT
+        </if>
+        JOIN T_SYS_USER_ROLE r
+        ON u.LOGIN_NAME = r.LOGIN_NAME
+        <if test="roleId != null">
+            and r.ID = #{roleId,jdbcType=VARCHAR}
+        </if>
         <if test="uname != null and '' != uname">
-            and (u.LOGIN_NAME like '%' #{uname,jdbcType=VARCHAR} '%' or u.DISPLAY_NAME like '%' #{uname,jdbcType=VARCHAR} '%')
+            and (u.LOGIN_NAME like '%' #{uname,jdbcType=VARCHAR} '%' or u.DISPLAY_NAME like '%'
+            #{uname,jdbcType=VARCHAR} '%')
         </if>
         <if test="salesOrg != null and ''!= salesOrg">
             and u.SALES_ORG = #{salesOrg,jdbcType=VARCHAR}
         </if>
-      order by u.CREATE_ON desc,u.LAST_MODIFIED desc
-  </select>
-  <select id="getUsersByRidandOrgs" resultMap="BaseResultMap" parameterType="java.util.HashMap">
-      SELECT
-		u.LOGIN_NAME,
-		u.BRANCH_NO,
-		u.SALES_ORG,
-		u.DEALER_ID
-	FROM
-		t_sys_user u,
-		t_sys_user_role r
-	WHERE
-		u.LOGIN_NAME = r.LOGIN_NAME
-	<if test="rid != null and rid != ''">
-	   AND r.ID = #{rid}
-	</if>
-	<if test="salesOrg != null and salesOrg != ''">
-	   AND u.SALES_ORG = #{salesOrg}
-	</if>
-	<if test="dealerNo != null and dealerNo != ''">
-	   AND u.DEALER_ID = #{dealerNo}
-	</if>
-	<if test="branchNo != null and branchNo != ''">
-	   AND u.BRANCH_NO = #{branchNo}
-	</if>
-  </select>
-  <select id="getloginNamesByOrgsandRid" resultMap="BaseResultMap" parameterType="java.util.HashMap">
-     SELECT
-		u.LOGIN_NAME,
-		u.BRANCH_NO,
-		u.SALES_ORG,
-		u.DEALER_ID,
-		u.DISPLAY_NAME
-	FROM
-		t_sys_user u,
-		t_sys_user_role r,
-		t_md_branch b
-	WHERE
-		u.LOGIN_NAME = r.LOGIN_NAME
-	AND u.BRANCH_NO = b.BRANCH_NO
-	<if test="dealerNo != null and dealerNo != ''">
-	    AND b.DEALER_NO NOT IN (#{dealerNo})
-	</if>
-	<if test="branchGroup != null and branchGroup != ''">
-	   AND b.BRANCH_GROUP = #{branchGroup}
-	</if>
-	<if test="salesOrg != null and salesOrg != ''">
-	   AND b.SALES_ORG = #{salesOrg}
-	   AND u.SALES_ORG = #{salesOrg}
-	</if>
-	<if test="rid != null and rid != ''">
-	   AND r.ID = #{rid}
-	</if>
-  </select>
-  <select id="getloginNamesByOrgsandRid2" resultMap="BaseResultMap" parameterType="java.util.HashMap">
-     SELECT
-		u.LOGIN_NAME,
-		u.BRANCH_NO,
-		u.SALES_ORG,
-		u.DEALER_ID,
-		u.DISPLAY_NAME
-	FROM
-		t_sys_user u,
-		t_sys_user_role r,
-		t_md_branch b
-	WHERE
-		u.LOGIN_NAME = r.LOGIN_NAME
-	AND u.BRANCH_NO = b.BRANCH_NO
-	<if test="dealerNo != null and dealerNo != ''">
-	    AND b.DEALER_NO = #{dealerNo}
-	</if>
-	<if test="branchNo != null and branchNo != ''">
-	   AND u.BRANCH_NO = #{branchNo}
-	   AND b.BRANCH_NO = #{branchNo}
-	</if>
-	<if test="salesOrg != null and salesOrg != ''">
-	   AND b.SALES_ORG = #{salesOrg}
-	   AND u.SALES_ORG = #{salesOrg}
-	</if>
-	<if test="rid != null and rid != ''">
-	   AND r.ID in (#{rid})
-	</if>
-  </select>
+        order by u.CREATE_ON desc,u.LAST_MODIFIED desc
+    </select>
+    <resultMap id="BaseResultMap1" type="com.nhry.data.auth.domain.TSysUser" extends="BaseResultMap">
+        <collection property="roleIds" ofType="com.nhry.data.auth.domain.TSysUserRole">
+            <id property="id" column="ID"/>
+        </collection>
+    </resultMap>
+    <select id="findUserBack" parameterType="com.nhry.model.auth.UserQueryModel" resultMap="BaseResultMap1">
+        SELECT
+        u.*,
+        r.id
+        FROM
+        T_SYS_USER u left join t_sys_user_role r
+        on u.LOGIN_NAME = r.LOGIN_NAME
+        <where>
+            <if test="uname != null">
+                (u.LOGIN_NAME like '%' #{uname,jdbcType=VARCHAR} '%' or u.DISPLAY_NAME like '%'
+                #{uname,jdbcType=VARCHAR} '%')
+            </if>
+            <if test="salesOrg != null">
+                and u.SALES_ORG = #{salesOrg,jdbcType=VARCHAR}
+            </if>
+        </where>
+        order by u.CREATE_ON desc,LAST_MODIFIED desc
+    </select>
+    <resultMap id="BaseResultMap2" type="com.nhry.data.auth.domain.TSysUser" extends="BaseResultMap">
+        <result property="roleIds" column="roleIds"/>
+    </resultMap>
+    <select id="findUser" parameterType="com.nhry.model.auth.UserQueryModel" resultMap="BaseResultMap1">
+        SELECT
+        u.*,
+        (select group_concat(r.ID) from t_sys_user_role r where r.LOGIN_NAME = u.LOGIN_NAME ) as roleIds
+        FROM
+        T_SYS_USER u
+        <where>
+            <if test="uname != null">
+                (u.LOGIN_NAME like '%' #{uname,jdbcType=VARCHAR} '%' or u.DISPLAY_NAME like '%'
+                #{uname,jdbcType=VARCHAR} '%')
+            </if>
+            <if test="salesOrg != null">
+                and u.SALES_ORG = #{salesOrg,jdbcType=VARCHAR}
+            </if>
+        </where>
+        order by u.CREATE_ON desc,LAST_MODIFIED desc
+    </select>
+    <select id="getUsersByRidandOrgs" resultMap="BaseResultMap" parameterType="java.util.HashMap">
+        SELECT
+        u.LOGIN_NAME,
+        u.BRANCH_NO,
+        u.SALES_ORG,
+        u.DEALER_ID
+        FROM
+        t_sys_user u,
+        t_sys_user_role r
+        WHERE
+        u.LOGIN_NAME = r.LOGIN_NAME
+        <if test="rid != null and rid != ''">
+            AND r.ID = #{rid}
+        </if>
+        <if test="salesOrg != null and salesOrg != ''">
+            AND u.SALES_ORG = #{salesOrg}
+        </if>
+        <if test="dealerNo != null and dealerNo != ''">
+            AND u.DEALER_ID = #{dealerNo}
+        </if>
+        <if test="branchNo != null and branchNo != ''">
+            AND u.BRANCH_NO = #{branchNo}
+        </if>
+    </select>
+    <select id="getloginNamesByOrgsandRid" resultMap="BaseResultMap" parameterType="java.util.HashMap">
+        SELECT
+        u.LOGIN_NAME,
+        u.BRANCH_NO,
+        u.SALES_ORG,
+        u.DEALER_ID,
+        u.DISPLAY_NAME
+        FROM
+        t_sys_user u,
+        t_sys_user_role r,
+        t_md_branch b
+        WHERE
+        u.LOGIN_NAME = r.LOGIN_NAME
+        AND u.BRANCH_NO = b.BRANCH_NO
+        <if test="dealerNo != null and dealerNo != ''">
+            AND b.DEALER_NO NOT IN (${dealerNo})
+        </if>
+        <if test="branchGroup != null and branchGroup != ''">
+            AND b.BRANCH_GROUP = #{branchGroup}
+        </if>
+        <if test="salesOrg != null and salesOrg != ''">
+            AND b.SALES_ORG = #{salesOrg}
+            AND u.SALES_ORG = #{salesOrg}
+        </if>
+        <if test="rid != null and rid != ''">
+            AND r.ID = #{rid}
+        </if>
+    </select>
+    <select id="getloginNamesByOrgsandRid2" resultMap="BaseResultMap" parameterType="java.util.HashMap">
+        SELECT
+        u.LOGIN_NAME,
+        u.BRANCH_NO,
+        u.SALES_ORG,
+        u.DEALER_ID,
+        u.DISPLAY_NAME
+        FROM
+        t_sys_user u,
+        t_sys_user_role r,
+        t_md_branch b
+        WHERE
+        u.LOGIN_NAME = r.LOGIN_NAME
+        AND u.BRANCH_NO = b.BRANCH_NO
+        <if test="dealerNo != null and dealerNo != ''">
+            AND b.DEALER_NO = #{dealerNo}
+        </if>
+        <if test="branchNo != null and branchNo != ''">
+            AND u.BRANCH_NO = #{branchNo}
+            AND b.BRANCH_NO = #{branchNo}
+        </if>
+        <if test="salesOrg != null and salesOrg != ''">
+            AND b.SALES_ORG = #{salesOrg}
+            AND u.SALES_ORG = #{salesOrg}
+        </if>
+        <if test="rid != null and rid != ''">
+            AND r.ID in (${rid})
+        </if>
+    </select>
 </mapper>

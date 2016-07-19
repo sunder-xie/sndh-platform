@@ -106,6 +106,12 @@ public class TSysUser implements Serializable{
     private String dsPwpAccountDisabled;
 
     private String groupId;
+
+    private String roleIds;
+
+    private String[] roleIdArray;
+
+//    private List<TSysUserRole> roleIds = new ArrayList<TSysUserRole>();
     
     public String getLoginName() {
         return loginName;
@@ -482,4 +488,29 @@ public class TSysUser implements Serializable{
 	public void setDealerName(String dealerName) {
 		this.dealerName = dealerName;
 	}
+
+//    public List<TSysUserRole> getRoleIds() {
+//        return roleIds;
+//    }
+//
+//    public void setRoleIds(List<TSysUserRole> roleIds) {
+//        this.roleIds = roleIds;
+//    }
+
+    public String getRoleIds() {
+        return roleIds;
+    }
+
+    public void setRoleIds(String roleIds) {
+        roleIdArray = roleIds.split(",");
+        this.roleIds = roleIds;
+    }
+
+    public String[] getRoleIdArray() {
+        return roleIdArray;
+    }
+
+    public void setRoleIdArray(String[] roleIdArray) {
+        this.roleIdArray = roleIdArray;
+    }
 }

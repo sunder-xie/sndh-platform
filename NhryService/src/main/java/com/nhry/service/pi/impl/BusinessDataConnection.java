@@ -148,11 +148,11 @@ public class BusinessDataConnection {
                 matnr_type1.setMATNR_type0(map.get("MATNR"));
                 zssd00011.setMATNR(matnr_type1);
                 KWMENG_type1 kwmeng_type1 = new KWMENG_type1();
-                BigDecimal kw = new BigDecimal(map.get("MWMENG"));
+                BigDecimal kw = new BigDecimal(map.get("SUM_QTY"));
                 kwmeng_type1.setKWMENG_type0(kw);
                 zssd00011.setKWMENG(kwmeng_type1);
                 VRKME_type1 vrkme_type1 = new VRKME_type1();
-                vrkme_type1.setVRKME_type0(map.get("VRKME"));
+                vrkme_type1.setVRKME_type0(map.get("BASE_UNIT"));
                 zssd00011.setVRKME(vrkme_type1);
                 WERKS_type1 werks_type1 = new WERKS_type1();
                 werks_type1.setWERKS_type0(map.get("WERKS"));
@@ -161,7 +161,7 @@ public class BusinessDataConnection {
                 lgort_type1.setLGORT_type0(map.get("LGORT"));
                 zssd00011.setLGORT(lgort_type1);
                 POSEX_type1 posex_type1 = new POSEX_type1();
-                posex_type1.setPOSEX_type0(map.get("POSEX"));
+                posex_type1.setPOSEX_type0(map.get("ITEM_NO"));
                 zssd00011.setPOSEX(posex_type1);
                 it_zssd00011_type1.addItem(zssd00011);
             }

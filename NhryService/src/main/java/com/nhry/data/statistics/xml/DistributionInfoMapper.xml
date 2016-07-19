@@ -18,14 +18,25 @@
             t_mst_disp_order_item i
         JOIN t_mst_disp_order o ON i.ORDER_NO = o.ORDER_NO
         AND o.ORDER_DATE = i.ORDER_DATE
-
+        <if test="theDate != null">
+            AND i.ORDER_DATE = #{theDate}
+        </if>
         <if test="beginDate != null">
             AND i.ORDER_DATE &gt;= #{beginDate}
         </if>
         <if test="endDate != null">
             AND i.ORDER_DATE &lt;= #{endDate}
         </if>
-        left join t_md_branch b on b.BRANCH_NO = o.BRANCH_NO
+        join t_md_branch b on b.BRANCH_NO = o.BRANCH_NO
+        <if test="branchNo != null">
+            AND b.BRANCH_NO = ${branchNo}
+        </if>
+        <if test="dealerId != null">
+            AND b.DEALER_ID = ${dealerId}
+        </if>
+        <if test="salesOrg != null">
+            AND b.SALES_ORG = ${salesOrg}
+        </if>
         left join t_vip_cust_info f on f.VIP_CUST_NO = o.MST_CUST_NO
         left join t_md_branch_emp e on e.EMP_NO = o.DISP_EMP_NO
         order by o.ORDER_DATE

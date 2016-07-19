@@ -13,6 +13,8 @@ import java.util.List;
 
 public interface TOrderDaliyPlanItemMapper {
 	
+	 List<TOrderDaliyPlanItem> searchDaliyPlansByStatus(String orderNo, String status);
+	
 	 PageInfo selectDaliyOrdersByPages(OrderSearchModel smodel);
 	
 	 int deleteFromDateToDate(TOrderDaliyPlanItem record);

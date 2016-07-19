@@ -2,6 +2,7 @@ package com.nhry.service.pi.dao;
 
 import com.nhry.data.basic.domain.TMdBranch;
 import com.nhry.data.milktrans.domain.TSsmReqGoodsOrder;
+import com.nhry.data.milktrans.domain.TSsmSalOrder;
 import com.nhry.webService.client.PISuccessMessage;
 
 import java.util.Date;
@@ -20,14 +21,14 @@ public interface PIRequireOrderService {
 
     /**
      * 销售订单创建
-     * @param ssmReqGoodsOrder
+     * @param ssmSalOrder
      * @param kunnr 客户编号
      * @param kunwe 送达方
      * @param vkorg 销售组织
      * @param activityId 促销活动号
      * @return
      */
-    PISuccessMessage generateSalesOrder(TSsmReqGoodsOrder ssmReqGoodsOrder, String kunnr, String kunwe, String vkorg, String activityId) ;
+    PISuccessMessage generateSalesOrder(TSsmSalOrder ssmSalOrder, String kunnr, String kunwe, String vkorg, String activityId) ;
 
     /**
      * 交货单
