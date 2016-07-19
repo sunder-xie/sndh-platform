@@ -95,29 +95,28 @@ public class EmpBillServiceImpl implements EmpBillService {
         String salaryMet = emp.getSalaryMet();
         String salesOrg = emp.getSalesOrg();
         BigDecimal result = new BigDecimal(0);
+        int firstNum = 0;
+        int endNum = 0 ;
         //如果是数量
         if("10".equals(salaryMet)){
             List<TMdDispRateItem> oldList = tMdDispRateItemMapper.getDispRateNumBySalOrg(salesOrg);
             if(oldList!=null && oldList.size() >0){
-              for(TMdDispRateItem  dispRateNum : oldList){
-                  String num = dispRateNum.getItemValue();
-                  boolean flag = num.endsWith("+");
-                  if(flag){
-                      if(dispNum > Integer.valueOf( num.substring(0,num.length()-1))){
-                          result = dispRateNum.getRate();
-                          break;
-                      }
-                  }else{
-                      if(dispNum <= Integer.valueOf(num)){
-                          result = dispRateNum.getRate();
-                          break;
-                      }
-                  }
+                result = oldList.get(0).getRate();
 
+              for(int i=1;i<oldList.size();i++){
+                  TMdDispRateItem item = oldList.get(i);
+                  endNum =item.getItemValue();
+                  if(dispNum < endNum ){
+                     return result;
+                  }else {
+                      result =  item.getRate();
+                      firstNum = item.getItemValue();
+                  }
               }
-                return result;
             }
+            return result;
         }
+
         throw new ServiceException(MessageCode.LOGIC_ERROR,"配送数 不在输入的阶梯范围内!!! 请审查");
     }
 
@@ -180,7 +179,7 @@ public class EmpBillServiceImpl implements EmpBillService {
                        item.setItemNo(PrimaryKeyUtils.generateUuidKey());
                        item.setItemIndex(i);
                        item.setRate(entry.getRate());
-                       item.setItemValue(entry.getEndValue());
+                       item.setItemValue(entry.getItemValue());
                        item.setCreateBy(user.getLoginName());
                        item.setCreateByTxt(user.getDisplayName());
                        item.setLastModified(new Date());
@@ -227,16 +226,26 @@ public class EmpBillServiceImpl implements EmpBillService {
         if("10".equals(rate.getSalaryMet())){
             List<TMdDispRateItem> items = tMdDispRateItemMapper.getDispRateNumBySalOrg(salesOrg);
             List<DispNumEntry> entries = new ArrayList<DispNumEntry>();
-            String frontValue="0";
             if(items!=null && items.size()>0){
-                for(TMdDispRateItem item : items){
+
+                TMdDispRateItem it = items.get(0);
+                int startValue = it.getItemValue();
+                BigDecimal result = it.getRate();
+
+                for( int i=1;i<items.size();i++ ){
+                    TMdDispRateItem item = items.get(i);
                     DispNumEntry entry  = new DispNumEntry();
-                    entry.setStartValue(frontValue);
-                    frontValue = item.getItemValue();
+                    entry.setStartValue(startValue);
                     entry.setEndValue(item.getItemValue());
-                    entry.setRate(item.getRate());
+                    entry.setRate(result);
                     entries.add(entry);
+                    result = item.getRate();
+                    startValue = item.getItemValue() + 1;
                 }
+                DispNumEntry entry  = new DispNumEntry();
+                entry.setStartValue(startValue);
+                entry.setRate(result);
+                entries.add(entry);
             }
             model.setDispNumEntries(entries);
 

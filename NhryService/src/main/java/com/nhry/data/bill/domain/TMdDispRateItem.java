@@ -8,7 +8,7 @@ import java.util.Date;
  */
 public class TMdDispRateItem {
     private String  itemNo;
-    private String itemValue; //存放区间范围
+    private int itemValue; //存放区间范围
     private int itemIndex; //存放1、2、3、4、5序号
     private String salesOrg;
 
@@ -28,11 +28,11 @@ public class TMdDispRateItem {
         this.itemNo = itemNo;
     }
 
-    public String getItemValue() {
+    public int getItemValue() {
         return itemValue;
     }
 
-    public void setItemValue(String itemValue) {
+    public void setItemValue(int itemValue) {
         this.itemValue = itemValue;
     }
 
