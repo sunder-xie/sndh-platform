@@ -39,9 +39,9 @@ public class CustomerBillServiceImpl implements CustomerBillService {
         TSysUser user = userSessionService.getCurrentUser();
         TSysUserRole userRole =urMapper.getUserRoleByLoginName(user.getLoginName());
         cModel.setSalesOrg(user.getSalesOrg());
-        if("10004".equals(userRole)){
+        if("10004".equals(userRole.getId())){
             cModel.setBranchNo(user.getBranchNo());
-        }else if("10005".equals(userRole)){
+        }else if("10005".equals(userRole.getId())){
             cModel.setDealerNo(user.getDealerId());
         }
         // TODO Auto-generated method stub
