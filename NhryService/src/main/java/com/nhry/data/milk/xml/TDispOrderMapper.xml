@@ -90,7 +90,7 @@
     <if test="orderNo != null and orderNo !=''">
      		AND o.ORDER_NO = #{orderNo,jdbcType=VARCHAR}
     </if>
-    order by o.ORDER_NO
+    order by o.ORDER_NO desc
   </select>
   <insert id="addNewDispOrder" parameterType="com.nhry.data.milk.domain.TDispOrder" >
     insert into t_mst_disp_order

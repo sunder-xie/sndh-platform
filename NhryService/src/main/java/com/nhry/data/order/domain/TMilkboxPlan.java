@@ -20,6 +20,8 @@ public class TMilkboxPlan {
     private String adressNo;
 
     private String branchNo;
+    
+    private String branchTel;
 
     private Date planDate;
 
@@ -41,7 +43,17 @@ public class TMilkboxPlan {
 
     private String printFlag;
     
-    public String getPrintFlag(){
+    public String getBranchTel()
+	{
+		return branchTel;
+	}
+
+	public void setBranchTel(String branchTel)
+	{
+		this.branchTel = branchTel;
+	}
+
+	public String getPrintFlag(){
 		return printFlag;
 	 }
 
