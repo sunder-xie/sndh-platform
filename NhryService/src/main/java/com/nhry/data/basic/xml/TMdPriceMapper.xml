@@ -6,6 +6,7 @@
     <result column="SALES_ORG" property="salesOrg" jdbcType="VARCHAR" />
     <result column="PRICE_GROUP" property="priceGroup" jdbcType="VARCHAR" />
     <result column="PRICE_TYPE" property="priceType" jdbcType="VARCHAR" />
+    <result column="PRICE_TYPE_NAME" property="priceTypeName" jdbcType="VARCHAR" />
     <result column="START_DATE" property="startDate" jdbcType="VARCHAR" />
     <result column="END_DATE" property="endDate" jdbcType="VARCHAR" />
     <result column="CREATE_AT" property="createAt" jdbcType="TIMESTAMP" />
@@ -44,7 +45,7 @@
 				WHERE
 					t.TYPE_CODE = <include refid="mybaties.constant.price_type"></include>
 				AND t.ITEM_CODE = p.PRICE_TYPE
-			) PRICE_TYPE,
+			) PRICE_TYPE_NAME,p.PRICE_TYPE,
 			date_format(p.START_DATE, '%Y-%m-%d') START_DATE,
 			date_format(p.END_DATE, '%Y-%m-%d') END_DATE,
 			p.CREATE_AT,
@@ -57,7 +58,7 @@
 			(
 				CASE
 				WHEN p.SCOPE = '-1' THEN
-					'自营奶站'
+					'<include refid="mybaties.constant.ownBranch"></include>'
 				ELSE
 					(
 						SELECT
@@ -335,7 +336,19 @@
   </select>
   <select id="getPricesGroupByBn" resultMap="BaseResultMap" parameterType="java.util.HashMap">
      	SELECT
-			p.*
+			p.ID,
+			PRICE_GROUP,
+			(
+				SELECT
+					t.ITEM_NAME
+				FROM
+					t_sys_code_item t
+				WHERE
+					t.TYPE_CODE = <include refid="mybaties.constant.price_type"></include>
+				AND t.ITEM_CODE = p.PRICE_TYPE
+			) PRICE_TYPE_NAME,p.PRICE_TYPE,
+			date_format(p.START_DATE, '%Y-%m-%d') START_DATE,
+			date_format(p.END_DATE, '%Y-%m-%d') END_DATE 
 		FROM
 			T_MD_PRICE p,
 			T_MD_PRICE_BRANCH pb
@@ -345,19 +358,44 @@
 		AND p.SALES_ORG = #{salesOrg}
 		AND pb.BRANCH_NO = #{branchNo}
   </select>
+  <!-- 查询自营奶站可选价格组，自营奶站也可以选择scope为自营奶站的区域价 -->
   <select id="getOwnBranchPricesGroupByBn" resultMap="BaseResultMap"  parameterType="String">
      	SELECT
-			p.*
+			p.ID,
+			PRICE_GROUP,
+			(
+				SELECT
+					t.ITEM_NAME
+				FROM
+					t_sys_code_item t
+				WHERE
+					t.TYPE_CODE = <include refid="mybaties.constant.price_type"></include>
+				AND t.ITEM_CODE = p.PRICE_TYPE
+			) PRICE_TYPE_NAME,p.PRICE_TYPE,
+			date_format(p.START_DATE, '%Y-%m-%d') START_DATE,
+			date_format(p.END_DATE, '%Y-%m-%d') END_DATE 
 		FROM
 			T_MD_PRICE p 
 		WHERE
 			 p.STATUS='Y' AND 
 			 p.SALES_ORG = #{salesOrg}
-		AND p.price_type='30'
+		AND (p.price_type='30' OR (p.price_type='20' AND p.scope='-1')) 
   </select>
   <select id="getDealerBranchPricesGroupByBn" resultMap="BaseResultMap"  parameterType="java.util.HashMap">
      	SELECT
-			p.*
+				p.ID,
+			PRICE_GROUP,
+			(
+				SELECT
+					t.ITEM_NAME
+				FROM
+					t_sys_code_item t
+				WHERE
+					t.TYPE_CODE = <include refid="mybaties.constant.price_type"></include>
+				AND t.ITEM_CODE = p.PRICE_TYPE
+			) PRICE_TYPE_NAME,p.PRICE_TYPE,
+			date_format(p.START_DATE, '%Y-%m-%d') START_DATE,
+			date_format(p.END_DATE, '%Y-%m-%d') END_DATE 
 		FROM
 			T_MD_PRICE p 
 		WHERE p.SALES_ORG = #{salesOrg}

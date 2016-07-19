@@ -76,7 +76,7 @@
          where ORDER_NO = #{orderNo,jdbcType=VARCHAR}
          and MATNR = #{matnr,jdbcType=VARCHAR}
     </delete>
-    <select id="findItemsForPI" resultType="hashmap" parameterType="com.nhry.model.milktrans.ReqGoodsOrderItemSearch">
+    <select id="findOrderItemsForPI" resultType="hashmap" parameterType="com.nhry.model.milktrans.ReqGoodsOrderItemSearch">
         SELECT
         i.*,
         ex.WERKS WERKS,

@@ -34,4 +34,9 @@ public class BranchInfoMapperImpl implements BranchInfoMapper{
     public List<Map<String, String>> branchDayInfoList(BranchInfoModel model) {
         return sqlSessionTemplate.selectList("branchDayInfoList",model);
     }
+
+    @Override
+    public PageInfo findOrderRatio(BranchInfoModel model) {
+        return sqlSessionTemplate.selectListByPages("findOrderRatio",model,Integer.valueOf(model.getPageNum()),Integer.valueOf(model.getPageSize()));
+    }
 }

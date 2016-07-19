@@ -120,9 +120,9 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 	* @see com.nhry.service.order.dao.OrderService#searchDaliyPlansByStatus(java.lang.String, java.lang.String) 
 	*/
 	@Override
-	public List<TOrderDaliyPlanItem> searchDaliyPlansByStatus(String orderNo, String status)
+	public List<TOrderDaliyPlanItem> searchDaliyPlansByStatus(String orderNo, String status1,String status2,String status3)
 	{
-		return tOrderDaliyPlanItemMapper.searchDaliyPlansByStatus(orderNo, status);
+		return tOrderDaliyPlanItemMapper.searchDaliyPlansByStatus(orderNo, status1, status2, status3);
 	}
 
 	/* (non-Javadoc)
@@ -357,6 +357,7 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 		TPreOrder order = tPreOrderMapper.selectByPrimaryKey(record.getOrderNo());
 		ArrayList<TPlanOrderItem> entries = (ArrayList<TPlanOrderItem>) tPlanOrderItemMapper.selectByOrderCode(record.getOrderNo());
 		if(order!= null){
+			if("20".equals(order.getMilkboxStat()))throw new ServiceException(MessageCode.LOGIC_ERROR,"原订单还没有装箱，不能续订!");
 			Date edate = null;
 			try
 			{
