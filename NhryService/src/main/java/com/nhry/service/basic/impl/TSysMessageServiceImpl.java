@@ -5,13 +5,16 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.lang3.StringUtils;
+import org.apache.log4j.Logger;
 
+import com.nhry.common.exception.ExceptionMapperSupport;
 import com.nhry.common.exception.MessageCode;
 import com.nhry.common.exception.ServiceException;
 import com.nhry.data.auth.dao.TSysUserMapper;
 import com.nhry.data.auth.domain.TSysUser;
 import com.nhry.data.basic.dao.TBranchNotsellListMapper;
 import com.nhry.data.basic.dao.TSysMessageMapper;
+import com.nhry.data.basic.domain.TMdBranch;
 import com.nhry.data.basic.domain.TMdMara;
 import com.nhry.data.basic.domain.TSysMessage;
 import com.nhry.data.order.dao.TPreOrderMapper;
@@ -24,7 +27,8 @@ import com.nhry.utils.SysContant;
 import com.nhry.utils.date.Date;
 
 public class TSysMessageServiceImpl extends BaseService implements TSysMessageService {
-    private TSysMessageMapper messageMapper;
+	private static final Logger LOGGER = Logger.getLogger(TSysMessageServiceImpl.class);
+	private TSysMessageMapper messageMapper;
     private TSysUserMapper userMapper;
     private TBranchNotsellListMapper notsellListMapper;
     private TPreOrderMapper tPreOrderMapper;
@@ -93,12 +97,20 @@ public class TSysMessageServiceImpl extends BaseService implements TSysMessageSe
 		}
 		if(users != null && users.size() > 0){
 			sendMessage(users, title+"！产品编号："+mara.getMatnr(), "产品编号："+mara.getMatnr()+"  产品名称："+mara.getMatnrTxt()+" 产品简称："+mara.getMaraEx().getShortTxt()+" 报货提前天数："
-					+mara.getMaraEx().getPreDays(), "10");
+					+mara.getMaraEx().getPreDays(), "10","10");
 		}
 		return true;
 	}
 	
-	private void sendMessage(List<TSysUser> users,String title,String content,String type){
+	/**
+	 * 发送消息
+	 * @param users  发送用户二表
+	 * @param title    消息主题
+	 * @param content  消息内容
+	 * @param type       消息类型(10：产品消息；20：订单消息；30：奶站消息)
+	 * @param source    消息来源(10:系统本身；20：电商系统)
+	 */
+	private void sendMessage(List<TSysUser> users,String title,String content,String type,String source){
 		if(users != null && users.size() > 0){
 			for(TSysUser user : users){
 				TSysMessage mess = new TSysMessage();
@@ -107,6 +119,7 @@ public class TSysMessageServiceImpl extends BaseService implements TSysMessageSe
 				mess.setBranchNo(user.getBranchNo());
 				mess.setLoginName(user.getLoginName());
 				mess.setType(type);    //产品消息
+				mess.setSource(source);
 				mess.setDisplayName(user.getDisplayName());
 				mess.setFinishFlag("N");
 				mess.setMessageNo(PrimaryKeyUtils.generateUuidKey());
@@ -143,13 +156,19 @@ public class TSysMessageServiceImpl extends BaseService implements TSysMessageSe
 			//部门内勤
 			attrs.put("rid", "'"+SysContant.getSystemConst("department_back_office")+"'");
 			users = userMapper.getloginNamesByOrgsandRid2(attrs);
-			this.sendMessage(users, om.getMemoTitle(), om.getMemoContent(), "20");
+			if(users == null || users.size() == 0){
+				throw new ServiceException(MessageCode.LOGIC_ERROR, "该组织下没有找到相应的部门内勤人员!");
+			}
+			this.sendMessage(users, om.getMemoTitle(), om.getMemoContent(), "20","20");
 			if(!StringUtils.isEmpty(order.getDealerNo())){
 				//经销商奶站订单
 				attrs.put("dealerNo", order.getDealerNo());
 				attrs.put("rid", "'"+SysContant.getSystemConst("dealer_back_office")+"'");
 				users = userMapper.getloginNamesByOrgsandRid2(attrs);
-				this.sendMessage(users, om.getMemoTitle(), om.getMemoContent(), "20");
+				if(users == null || users.size() == 0){
+					throw new ServiceException(MessageCode.LOGIC_ERROR, "该组织下没有找到相应的经销商内勤人员!");
+				}
+				this.sendMessage(users, om.getMemoTitle(), om.getMemoContent(), "20","20");
 			}
 		}else if("20".equals(om.getMemoType())){
 			//奶站内勤
@@ -157,7 +176,10 @@ public class TSysMessageServiceImpl extends BaseService implements TSysMessageSe
 			attrs.put("dealerNo", order.getDealerNo());
 			attrs.put("rid", "'"+SysContant.getSystemConst("branch_back_office")+"'");
 			users = userMapper.getloginNamesByOrgsandRid2(attrs);
-			this.sendMessage(users, om.getMemoTitle(), om.getMemoContent(), "20");
+			if(users == null || users.size() == 0){
+				throw new ServiceException(MessageCode.LOGIC_ERROR, "该组织下没有找到相应的奶站内勤人员!");
+			}
+			this.sendMessage(users, om.getMemoTitle(), om.getMemoContent(), "20","20");
 		}else if("30".equals(om.getMemoType())){
 			//部门内勤和奶站内勤
 			om.setMemoType("10");
@@ -171,5 +193,57 @@ public class TSysMessageServiceImpl extends BaseService implements TSysMessageSe
 
 	public void settPreOrderMapper(TPreOrderMapper tPreOrderMapper) {
 		this.tPreOrderMapper = tPreOrderMapper;
+	}
+
+	@Override
+	public boolean sendMessagesForCreateProducts(TMdMara mara) {
+		// TODO Auto-generated method stub
+		Map<String,String> attrs = new HashMap<String,String>(2);
+		attrs.put("salesOrg", mara.getSalesOrg());
+		//部门内勤
+		attrs.put("rid", "'"+SysContant.getSystemConst("department_back_office")+"'");
+		List<TSysUser> users = userMapper.getloginNamesByOrgsandRid2(attrs);
+		if(users == null || users.size() == 0){
+			LOGGER.warn("该销售组织下："+mara.getSalesOrg()+"目前没有部门内勤！");
+			return false;
+		}else{
+			this.sendMessage(users, "新品添加消息！商品编号："+mara.getMatnr(), "新品添加消息！商品编号："+mara.getMatnr()+" 商品名称："+mara.getMatnrTxt(), "30","10");
+		}
+		return true;
+	}
+
+	@Override
+	public boolean sendMessagesForCreateBranch(TMdBranch branch) {
+		// TODO Auto-generated method stub
+		Map<String,String> attrs = new HashMap<String,String>(2);
+		attrs.put("salesOrg", branch.getSalesOrg());
+		//部门内勤
+		attrs.put("rid", "'"+SysContant.getSystemConst("department_back_office")+"'");
+		List<TSysUser> users = userMapper.getloginNamesByOrgsandRid2(attrs);
+		if(users == null || users.size() == 0){
+			LOGGER.warn("该销售组织下："+branch.getSalesOrg()+"目前没有部门内勤！");
+			return false;
+		}else{
+			this.sendMessage(users, "奶站新建消息！奶站编号："+branch.getBranchNo(), "奶站新建消息！奶站编号："+branch.getBranchNo()+" 奶站名称："+branch.getBranchName(), "30","10");
+		}
+		return true;
+	}
+
+	@Override
+	public boolean sendMessagesForUptBranch(TMdBranch branch) {
+		// TODO Auto-generated method stub
+		Map<String,String> attrs = new HashMap<String,String>(2);
+		attrs.put("salesOrg", branch.getSalesOrg());
+		attrs.put("branchNo", branch.getBranchNo());
+		attrs.put("dealerNo", branch.getDealerNo());
+		attrs.put("rid", "'"+SysContant.getSystemConst("branch_back_office")+"'");
+		List<TSysUser> users = userMapper.getloginNamesByOrgsandRid2(attrs);
+		if(users == null || users.size() == 0){
+			LOGGER.warn("该销售组织下："+branch.getSalesOrg()+"目前没有奶站内勤！");
+			return false;
+		}else{
+			this.sendMessage(users, "奶站新建消息！奶站编号："+branch.getBranchNo(), "奶站新建消息！奶站编号："+branch.getBranchNo()+" 奶站名称："+branch.getBranchName(), "30","10");
+		}
+		return true;
 	}
 }

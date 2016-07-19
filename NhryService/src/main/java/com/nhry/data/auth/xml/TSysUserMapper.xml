@@ -536,30 +536,29 @@
     </sql>
 
     <select id="findUserByRoleId" parameterType="com.nhry.model.auth.UserQueryModel2" resultType="hashmap">
-    SELECT
-    u.LOGIN_NAME loginName,
-    u.DISPLAY_NAME displayName,
-    u.SMART_IDCARDNUMBER smartIdcardnumber,
-    CASE WHEN r.ID IS NULL THEN false ELSE true end isRole
-    FROM T_SYS_USER u
-    <if test="isAll">
-        LEFT
-    </if>
-    JOIN T_SYS_USER_ROLE r
-    ON u.LOGIN_NAME = r.LOGIN_NAME
-    <if test="roleId != null">
-        and r.ID = #{roleId,jdbcType=VARCHAR}
-    </if>
-    <if test="uname != null and '' != uname">
-        and (u.LOGIN_NAME like '%' #{uname,jdbcType=VARCHAR} '%' or u.DISPLAY_NAME like '%'
-        #{uname,jdbcType=VARCHAR} '%')
-    </if>
-    <if test="salesOrg != null and ''!= salesOrg">
-        and u.SALES_ORG = #{salesOrg,jdbcType=VARCHAR}
-    </if>
-    order by u.CREATE_ON desc,u.LAST_MODIFIED desc
-</select>
-
+        SELECT
+        u.LOGIN_NAME loginName,
+        u.DISPLAY_NAME displayName,
+        u.SMART_IDCARDNUMBER smartIdcardnumber,
+        CASE WHEN r.ID IS NULL THEN false ELSE true end isRole
+        FROM T_SYS_USER u
+        <if test="isAll">
+            LEFT
+        </if>
+        JOIN T_SYS_USER_ROLE r
+        ON u.LOGIN_NAME = r.LOGIN_NAME
+        <if test="roleId != null">
+            and r.ID = #{roleId,jdbcType=VARCHAR}
+        </if>
+        <if test="uname != null and '' != uname">
+            and (u.LOGIN_NAME like '%' #{uname,jdbcType=VARCHAR} '%' or u.DISPLAY_NAME like '%'
+            #{uname,jdbcType=VARCHAR} '%')
+        </if>
+        <if test="salesOrg != null and ''!= salesOrg">
+            and u.SALES_ORG = #{salesOrg,jdbcType=VARCHAR}
+        </if>
+        order by u.CREATE_ON desc,u.LAST_MODIFIED desc
+    </select>
     <resultMap id="BaseResultMap1" type="com.nhry.data.auth.domain.TSysUser" extends="BaseResultMap">
         <collection property="roleIds" ofType="com.nhry.data.auth.domain.TSysUserRole">
             <id property="id" column="ID"/>
@@ -603,7 +602,6 @@
         </where>
         order by u.CREATE_ON desc,LAST_MODIFIED desc
     </select>
-
     <select id="getUsersByRidandOrgs" resultMap="BaseResultMap" parameterType="java.util.HashMap">
         SELECT
         u.LOGIN_NAME,
@@ -643,7 +641,7 @@
         u.LOGIN_NAME = r.LOGIN_NAME
         AND u.BRANCH_NO = b.BRANCH_NO
         <if test="dealerNo != null and dealerNo != ''">
-            AND b.DEALER_NO NOT IN (#{dealerNo})
+            AND b.DEALER_NO NOT IN (${dealerNo})
         </if>
         <if test="branchGroup != null and branchGroup != ''">
             AND b.BRANCH_GROUP = #{branchGroup}
@@ -682,7 +680,7 @@
             AND u.SALES_ORG = #{salesOrg}
         </if>
         <if test="rid != null and rid != ''">
-            AND r.ID in (#{rid})
+            AND r.ID in (${rid})
         </if>
     </select>
 </mapper>

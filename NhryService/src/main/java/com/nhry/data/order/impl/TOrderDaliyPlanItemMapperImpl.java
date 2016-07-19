@@ -139,6 +139,11 @@ public class TOrderDaliyPlanItemMapperImpl implements TOrderDaliyPlanItemMapper
 		return sqlSessionTemplate.selectList("selectProDayPlanOfSelfBranch", rModel);
 	}
 
+	@Override
+	public List<TOrderDaliyPlanItem> getProductItemsByOrderNo(String orderCode) {
+		return sqlSessionTemplate.selectList("getProductItemsByOrderNo", orderCode);
+	}
+
 	/**
 	 * 根据订单号和日期获取当前日期的日订单状态
 	 * @param orderNo

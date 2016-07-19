@@ -1,5 +1,6 @@
 package com.nhry.service.basic.dao;
 
+import com.nhry.data.basic.domain.TMdBranch;
 import com.nhry.data.basic.domain.TMdMara;
 import com.nhry.data.basic.domain.TSysMessage;
 import com.nhry.model.basic.OrderModel;
@@ -41,9 +42,30 @@ public interface TSysMessageService {
     public boolean sendProductsMessages(String title,TMdMara mara);
     
     /**
+     * 新产品添加时给部门内勤发送系统消息
+     * @param mara
+     * @return
+     */
+    public boolean sendMessagesForCreateProducts(TMdMara mara);
+    
+    /**
      * 发送订单备注消息
      * @param om
      * @return
      */
     public boolean sendOrderMemo(OrderModel om);
+    
+    /**
+     * 创建新奶站时给部门内勤发送系统消息    
+     * @param branch
+     * @return
+     */
+    public boolean sendMessagesForCreateBranch(TMdBranch branch);
+    
+    /**
+     * 更新奶站信息时给奶站内勤发送系统消息    
+     * @param branch
+     * @return
+     */
+    public boolean sendMessagesForUptBranch(TMdBranch branch);
 }
