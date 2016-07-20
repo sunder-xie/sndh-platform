@@ -149,6 +149,7 @@
 		<property name="urMapper"  ref="urMapper"></property>
 	   <property name="branchMapper"  ref="branchMapper"></property>
 		<property name="dealerMapper"  ref="dealerMapper"></property>
+		<property name="messService" ref="messService"></property>
 	   <property name="userSessionService" ref="userSessionService"></property>
 	</bean>
 	

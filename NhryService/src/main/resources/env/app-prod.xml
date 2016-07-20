@@ -3,7 +3,7 @@
  <!-- 环境标示 -->
   <config key="app_mode" value="produce456"></config>
   <config key="redisHost" value="54.222.218.2"></config>
-  <config key="ladp_url" value="ldap://10.6.251.250:1389"></config>
+  <config key="ladp_url" value="ldap:// 10.6.240.144:1389"></config>
   <config key="ladp_uname" value="uid=super,ou=People,o=newhopedairy,o=isp"></config>
   <config key="ladp_password" value="smart123"></config>
 </configs>
