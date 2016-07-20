@@ -537,6 +537,7 @@
 
     <select id="findUserByRoleId" parameterType="com.nhry.model.auth.UserQueryModel2" resultType="hashmap">
         SELECT
+        DISTINCT
         u.LOGIN_NAME loginName,
         u.DISPLAY_NAME displayName,
         u.SMART_IDCARDNUMBER smartIdcardnumber,
@@ -554,9 +555,8 @@
         </if>
         <where>
             <if test="uname != null and '' != uname">
-                (u.LOGIN_NAME like '%' #{uname,jdbcType=VARCHAR} '%' or u.DISPLAY_NAME like '%'
-                #{uname,jdbcType=VARCHAR} '%' OR u.SMART_IDCARDNUMBER like '%' #{uname,jdbcType=VARCHAR} '%' OR
-                u.MOBILE like '%'#{uname,jdbcType=VARCHAR}'%')
+                and (u.LOGIN_NAME like CONCAT('%',#{uname,jdbcType=VARCHAR},'%') or u.DISPLAY_NAME like CONCAT('%',#{uname,jdbcType=VARCHAR},'%') OR u.SMART_IDCARDNUMBER like CONCAT('%',#{uname,jdbcType=VARCHAR},'%') OR
+                u.MOBILE like CONCAT('%',#{uname,jdbcType=VARCHAR},'%'))
             </if>
             <if test="salesOrg != null and ''!= salesOrg">
                 and u.SALES_ORG = #{salesOrg,jdbcType=VARCHAR}
@@ -581,9 +581,8 @@
                 r.ID = #{roleId,jdbcType=VARCHAR}
             </if>
             <if test="uname != null and '' != uname">
-                and (u.LOGIN_NAME like '%' #{uname,jdbcType=VARCHAR} '%' or u.DISPLAY_NAME like '%'
-                #{uname,jdbcType=VARCHAR} '%' OR u.SMART_IDCARDNUMBER like '%' #{uname,jdbcType=VARCHAR} '%' OR
-                u.MOBILE like '%'#{uname,jdbcType=VARCHAR}'%')
+                and (u.LOGIN_NAME like CONCAT('%',#{uname,jdbcType=VARCHAR},'%') or u.DISPLAY_NAME like CONCAT('%',#{uname,jdbcType=VARCHAR},'%') OR u.SMART_IDCARDNUMBER like CONCAT('%',#{uname,jdbcType=VARCHAR},'%') OR
+                u.MOBILE like CONCAT('%',#{uname,jdbcType=VARCHAR},'%'))
             </if>
             <if test="salesOrg != null and ''!= salesOrg">
                 and u.SALES_ORG = #{salesOrg,jdbcType=VARCHAR}
@@ -625,8 +624,8 @@
         T_SYS_USER u
         <where>
             <if test="uname != null">
-                (u.LOGIN_NAME like '%' #{uname,jdbcType=VARCHAR} '%' or u.DISPLAY_NAME like '%'
-                #{uname,jdbcType=VARCHAR} '%')
+                and (u.LOGIN_NAME like CONCAT('%',#{uname,jdbcType=VARCHAR},'%') or u.DISPLAY_NAME like CONCAT('%',#{uname,jdbcType=VARCHAR},'%') OR u.SMART_IDCARDNUMBER like CONCAT('%',#{uname,jdbcType=VARCHAR},'%') OR
+                u.MOBILE like CONCAT('%',#{uname,jdbcType=VARCHAR},'%'))
             </if>
             <if test="salesOrg != null">
                 and u.SALES_ORG = #{salesOrg,jdbcType=VARCHAR}
