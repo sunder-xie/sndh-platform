@@ -233,6 +233,18 @@ public class PriceServiceImpl extends BaseService implements PriceService {
 		if(count == 0){
 			throw new ServiceException(MessageCode.LOGIC_ERROR, "该奶站编号(branchNo)和价格编号(id)对应的奶站价格组关系记录不存在!");
 		}
+		TMdPrice price =  tMdPriceMapper.selectPriceGroupById(id);
+		if(price != null){
+			 if("10".equals(price.getPriceType())){
+				 //公司价
+				 throw new ServiceException(MessageCode.LOGIC_ERROR, "公司价不允许删除!");
+			 }else if("20".equals(price.getPriceType()) && !StringUtils.isEmpty(price.getScope()) && !"-1".equals(price.getPriceType())){
+				 //区域价
+				 throw new ServiceException(MessageCode.LOGIC_ERROR, "经销商奶站的区域价不允许删除!");
+			 }
+		}else{
+			throw new ServiceException(MessageCode.LOGIC_ERROR, "该价格组编号id对应的价格组不存在!");
+		}
 		return priceBranchMapper.delPriceBranch(attrs);
 	}
 

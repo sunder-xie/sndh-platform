@@ -462,10 +462,11 @@
     LEFT JOIN t_preorder o on 	i.ORDER_NO = o.ORDER_NO
     LEFT JOIN t_md_mara_ex e on i.MATNR = e.MATNR
     where   1=1
+    and i.STATUS!='30'
     and  ((e.PRE_DAYS= 2 and   i.DISP_DATE = #{secondDay,jdbcType=DATE} ) or (e.PRE_DAYS= 1 and   i.DISP_DATE = #{firstDay,jdbcType=DATE}))
     and m.SALES_ORG=#{salesOrg,jdbcType=VARCHAR}
     and o.BRANCH_NO = #{branchNo,jdbcType=VARCHAR}
-    GROUP BY i.MATNR,i.DISP_DATE
+    GROUP BY i.MATNR
     ORDER BY i.DISP_DATE desc
   </select>
 
@@ -616,22 +617,22 @@
 
   </select>
 
-  <select id="getProductItemsByOrderNo" resultMap="BaseResultMap" parameterType="String">
+  <select id="getProductItemsByOrderNo" resultMap="BaseResultMap" parameterType="java.util.Map">
       SELECT
-      i.MATNR,i.UNIT,i.PRICE,SUM(i.GIFT_QTY) QTY,a.MATNR_TXT
-      FROM t_mst_order_daliy_plan_item i   LEFT JOIN t_md_mara a on i.MATNR = a.MATNR
-      where i.ORDER_NO =  #{orderNo,jdbcType=VARCHAR}
+      i.MATNR,i.UNIT,SUM(i.GIFT_QTY) QTY,i.PRICE,a.MATNR_TXT
+      FROM t_mst_order_daliy_plan_item i   LEFT JOIN t_md_mara a on i.MATNR = a.MATNR and a.SALES_ORG = #{salesOrg}
+      where i.ORDER_NO =  #{orderNo}
       and i.GIFT_QTY is not null
       GROUP BY i.MATNR
 
       UNION ALL
 
-
       SELECT
       i.MATNR,i.UNIT,SUM(i.QTY) QTY,i.PRICE,a.MATNR_TXT
-      FROM t_mst_order_daliy_plan_item i  LEFT JOIN t_md_mara a on i.MATNR = a.MATNR
+      FROM t_mst_order_daliy_plan_item i  LEFT JOIN t_md_mara a on i.MATNR = a.MATNR and a.SALES_ORG = #{salesOrg}
       where 1=1
-      and i.ORDER_NO = #{orderNo,jdbcType=VARCHAR}
+      and i.STATUS !='30'
+      and i.ORDER_NO = #{orderNo}
       and i.GIFT_QTY IS NULL
       GROUP BY i.MATNR
 

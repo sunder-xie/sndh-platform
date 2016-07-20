@@ -84,30 +84,52 @@ public class RoleServiceImpl extends BaseService implements RoleService {
 	@Override
 	public int assignRoleToUsers(UserRoleModel urmodel) {
 		// TODO Auto-generated method stub
-		if(StringUtils.isEmpty(urmodel.getRoleId()) || urmodel.getLoginNames() == null || urmodel.getLoginNames().size() ==0 ){
-			 throw new ServiceException(MessageCode.LOGIC_ERROR, "角色和用户名不能为空！");
-		}
-		for(String uname : urmodel.getLoginNames()){
-			TSysUserRole ur = new TSysUserRole();
-			ur.setId(urmodel.getRoleId());
-			ur.setLoginName(uname);
-			if("Y".equals(urmodel.getIsDefault()) || "N".equals(urmodel.getIsDefault())){
-				ur.setIsDefault(urmodel.getIsDefault());
-			}else{
-				ur.setIsDefault(null);
+		//为一个角色添加一批用户
+		if(urmodel.getLoginNames() != null && urmodel.getLoginNames().size() > 0){
+			if(StringUtils.isEmpty(urmodel.getRoleId())){
+				throw new ServiceException(MessageCode.LOGIC_ERROR, "当loginNames不为空时，角色(roleId)也不能为空!");
 			}
-			TSysUserRole userRole = urMapper.findUserRoleRelations(ur);
-			if(userRole != null){
-				//如果存在该用户关系，则更新用户角色关系
-				if(!StringUtils.isEmpty(ur.getIsDefault()) && !ur.getIsDefault().equals(userRole.getIsDefault())){
-					userRole.setIsDefault(urmodel.getIsDefault());
-					this.urMapper.updateUserRoleByLoginName(userRole);
-				}
-			}else{
-				this.urMapper.addUserRole(ur);
+			for(String uname : urmodel.getLoginNames()){
+				uptUserRoleRelations(urmodel.getRoleId(), uname, urmodel.getIsDefault());
+			}
+		}
+		//为一个用户添加一批角色
+		if(urmodel.getRoleIds() != null && urmodel.getRoleIds().size() > 0){
+			if(StringUtils.isEmpty(urmodel.getLoginName())){
+				throw new ServiceException(MessageCode.LOGIC_ERROR, "当roleIds不为空时，用户登录名(loginName)也不能为空!");
+			}
+			for(String rid : urmodel.getRoleIds()){
+				uptUserRoleRelations(rid, urmodel.getLoginName(), urmodel.getIsDefault());
 			}
 		}
 		return 1;
+	}
+	
+	/**
+	 * 更新人员角色关系
+	 * @param rid
+	 * @param lname
+	 * @param isdefault
+	 */
+	public void uptUserRoleRelations(String rid,String lname,String isdefault){
+		TSysUserRole ur = new TSysUserRole();
+		ur.setId(rid);
+		ur.setLoginName(lname);
+		if("Y".equals(isdefault) || "N".equals(isdefault)){
+			ur.setIsDefault(isdefault);
+		}else{
+			ur.setIsDefault(null);
+		}
+		TSysUserRole userRole = urMapper.findUserRoleRelations(ur);
+		if(userRole != null){
+			//如果存在该用户关系，则更新用户角色关系
+			if(!StringUtils.isEmpty(ur.getIsDefault()) && !ur.getIsDefault().equals(userRole.getIsDefault())){
+				userRole.setIsDefault(isdefault);
+				this.urMapper.updateUserRoleByLoginName(userRole);
+			}
+		}else{
+			this.urMapper.addUserRole(ur);
+		}
 	}
 
 	public void setUrMapper(TSysUserRoleMapper urMapper) {
@@ -117,9 +139,6 @@ public class RoleServiceImpl extends BaseService implements RoleService {
 	@Override
 	public int deleteUserRoles(UserRoleModel urmodel) {
 		// TODO Auto-generated method stub
-		if(StringUtils.isEmpty(urmodel.getLoginName()) || urmodel.getRoleIds()==null || urmodel.getRoleIds().size()==0){
-			throw new ServiceException(MessageCode.LOGIC_ERROR, "loginName、roleIds属性值不能为空!");
-		}
 		return this.urMapper.deleteUserRoles(urmodel);
 	}
 

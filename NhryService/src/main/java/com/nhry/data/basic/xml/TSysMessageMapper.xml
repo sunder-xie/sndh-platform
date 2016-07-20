@@ -187,4 +187,45 @@
     </set>
     where MESSAGE_NO = #{messageNo,jdbcType=VARCHAR}
   </update>
+  <update id="closeSysMessage" parameterType="java.util.HashMap" >
+    update t_sys_message
+    <set >
+      <if test="finishTime != null" >
+        FINISH_TIME = #{finishTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="finishFlag != null" >
+        FINISH_FLAG = #{finishFlag,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where  LOGIN_NAME = #{loginName} AND MESSAGE_NO = #{messageNo,jdbcType=VARCHAR}
+  </update>
+  <select id="searchMessages" resultMap="BaseResultMap" parameterType="com.nhry.model.basic.MessageModel">
+      select 
+    <include refid="Base_Column_List" />
+    from t_sys_message
+    <where>
+        <if test="title != null and title != ''">
+            TITLE like '%${title}%'
+        </if>
+        <if test="content != null and content != ''">
+            AND CONTENT like '%${content}%'
+        </if>
+        <if test="type != null and type != ''">
+            AND TYPE = #{type}
+        </if>
+        <if test="startDate != null and startDate != ''">
+            AND CREATE_AT &gt;= #{startDate}
+        </if>
+         <if test="endDate != null and endDate != ''">
+            AND CREATE_AT &lt;= #{endDate}
+        </if>
+        <if test="finishFlag != null and finishFlag != ''">
+            AND FINISH_FLAG = #{finishFlag}
+         </if>
+         <if test="loginName != null and  loginName != ''">
+            AND LOGIN_NAME = #{loginName}
+         </if>
+    </where>
+    order by CREATE_AT desc,FINISH_TIME desc
+  </select>
 </mapper>

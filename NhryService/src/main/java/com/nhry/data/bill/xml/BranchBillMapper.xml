@@ -13,6 +13,7 @@
         <result column="VIP_MP" property="vipMp" jdbcType="VARCHAR" />
         <result column="ADDRESS" property="address" jdbcType="VARCHAR" />
         <result column="PAYMENT_DATE" property="paymentDate" jdbcType="DATE" />
+        <result column="RECEIPT_DATE" property="receiptDate" jdbcType="DATE" />
         <result column="REAL_COLLECTION" property="realCollection" jdbcType="VARCHAR" />
         <result column="SATTLEMENT_PRICE" property="settlementPrice" jdbcType="VARCHAR" />
         <result column="EMP_NO" property="empNo" jdbcType="VARCHAR" />
@@ -49,7 +50,7 @@
         select
         b.BRANCH_NO BRANCH_NO,b.BRANCH_NAME BRANCH_NAME,o.ORDER_NO ORDER_NO, o.PREORDER_SOURCE PREORDER_SOURCE,o.PAYMENTMETHOD PAYMENT_TYPE,
         o.INIT_AMT  SATTLEMENT_PRICE,cust.VIP_CUST_NO VIP_CUST_NO,cust.VIP_NAME VIP_Name, cust.MP VIP_MP,cust.TEL VIP_TEL, cust.ADDRESS_TXT ADDRESS,
-        emp.EMP_NO EMP_NO, emp.EMP_NAME EMP_NAME,o.PAYMENT_STAT PAYMENT_STAT,
+        emp.EMP_NO EMP_NO, emp.EMP_NAME EMP_NAME,o.PAYMENT_STAT PAYMENT_STAT,bill.RECEIPT_DATE,
         ( CASE when o.PAYMENT_STAT ='20' then bill.AMT else  '0' END) REAL_COLLECTION,
         ( CASE when o.PAYMENT_STAT ='20' then bill.PAYMENT_YEAR_MONTH else  '无' END) PAYMENT_DATE
         FROM t_mst_recv_bill bill  LEFT JOIN t_preorder o ON bill.ORDER_NO = o.ORDER_NO
@@ -61,10 +62,10 @@
            and o.BRANCH_NO = #{branchNo,jdbcType=VARCHAR}
         </if>
         <if test="startDate!=null and startDate!=''">
-            and o.ORDER_DATE &gt;= #{startDate,jdbcType=DATE}
+            and o.END_DATE &gt;= #{startDate,jdbcType=DATE}
         </if>
         <if test="endDate!=null and endDate!=''">
-            and  o.BRANCH_NO &lt;= #{endDate,jdbcType=DATE}
+            and  o.END_DATE &lt;= #{endDate,jdbcType=DATE}
         </if>
     </select>
 
@@ -117,6 +118,9 @@
         LEFT JOIN t_mst_disp_order o on so.DISP_ORDER_NO = o.ORDER_NO
         LEFT JOIN t_md_mara a on (i.MATNR = a.MATNR and a.SALES_ORG = #{salesOrg,jdbcType=VARCHAR})
         WHERE 1=1
+          <if test="branchNo!=null and branchNo!=''">
+              and so.BRANCH_NO = #{branchNo,jdbcType=VARCHAR}
+          </if>
            and  o.DISP_DATE = #{dispDate,jdbcType=DATE}
            and  o.DISP_EMP_NO = #{empNo,jdbcType=VARCHAR}
 
@@ -127,6 +131,9 @@
         FROM t_mst_disp_order_item i LEFT JOIN t_mst_disp_order o ON i.ORDER_NO = o.ORDER_NO
         LEFT JOIN t_md_mara a on (i.MATNR = a.MATNR and a.SALES_ORG = #{salesOrg,jdbcType=VARCHAR})
         WHERE 1=1
+        <if test="branchNo!=null and branchNo!=''">
+            and o.BRANCH_NO = #{branchNo,jdbcType=VARCHAR}
+        </if>
           and  o.DISP_DATE = #{dispDate,jdbcType=DATE}
          and  o.DISP_EMP_NO = #{empNo,jdbcType=VARCHAR}
 

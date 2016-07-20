@@ -11,6 +11,8 @@ import com.nhry.data.basic.dao.TMdBranchEmpMapper;
 import com.nhry.data.basic.dao.TMdBranchMapper;
 import com.nhry.data.basic.domain.TMdBranch;
 import com.nhry.data.basic.domain.TMdBranchEmp;
+import com.nhry.model.basic.BranchEmpSearchModel;
+import com.nhry.model.basic.BranchSalesOrgModel;
 import com.nhry.model.basic.EmpQueryModel;
 import com.nhry.service.BaseService;
 import com.nhry.service.basic.dao.BranchEmpService;
@@ -89,7 +91,9 @@ public class BranchEmpServiceImpl extends BaseService implements BranchEmpServic
 			branchlist.add(branch);
 			return branchlist ;
 		}else{
-			return tMdBranchMapper.findBranchListByOrg(salesOrg);
+			BranchSalesOrgModel bModel = new BranchSalesOrgModel();
+			bModel.setSalesOrg(salesOrg);
+			return tMdBranchMapper.findBranchListByOrg(bModel);
 		}
 
 	}
@@ -108,6 +112,21 @@ public class BranchEmpServiceImpl extends BaseService implements BranchEmpServic
 		TSysUser user = userSessionService.getCurrentUser();
 
 		return branchEmpMapper.getAllEmpBySalesOrg(user.getSalesOrg());
+	}
+
+	@Override
+	public List<TMdBranchEmp> getAllBranchEmpByNo(BranchEmpSearchModel bModel) {
+		TSysUser user = userSessionService.getCurrentUser();
+		TSysUserRole userRole = userRoleMapper.getUserRoleByLoginName(user.getLoginName());
+		bModel.setSalesOrg(user.getSalesOrg());
+		if("10004".equals(userRole.getId())){
+			bModel.setBranchNo(user.getBranchNo());
+		}
+		if("10005".equals(userRole.getId())){
+			bModel.setDealerNo(user.getDealerId());
+		}
+
+		return branchEmpMapper.getAllBranchEmpByNo(bModel);
 	}
 
 	@Override

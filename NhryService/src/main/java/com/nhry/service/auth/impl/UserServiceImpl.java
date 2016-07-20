@@ -11,6 +11,7 @@ import com.nhry.data.auth.domain.TSysUser;
 import com.nhry.data.config.dao.NHSysCodeItemMapper;
 import com.nhry.data.config.domain.NHSysCodeItem;
 import com.nhry.model.auth.UserQueryModel;
+import com.nhry.model.auth.UserQueryModel2;
 import com.nhry.service.BaseService;
 import com.nhry.service.auth.dao.ResourceService;
 import com.nhry.service.auth.dao.RoleService;
@@ -21,6 +22,7 @@ import com.nhry.utils.date.Date;
 import org.apache.commons.lang3.StringUtils;
 
 import java.util.List;
+import java.util.Map;
 
 public class UserServiceImpl extends BaseService implements UserService {
 	private TSysUserMapper userMapper;
@@ -106,10 +108,10 @@ public class UserServiceImpl extends BaseService implements UserService {
 	}
 
 	@Override
-	public List<TSysUser> findUserByRoleId(UserQueryModel um) {
-		if(StringUtils.isEmpty(um.getRoleId())){
-			throw new ServiceException(MessageCode.LOGIC_ERROR,"roleId不能为空！");
-		}
+	public List<TSysUser> findUserByRoleId(UserQueryModel2 um) {
+//		if(StringUtils.isEmpty(um.getRoleId())){
+//			throw new ServiceException(MessageCode.LOGIC_ERROR,"roleId不能为空！");
+//		}
 		return userMapper.findUserByRoleId(um);
 	}
 

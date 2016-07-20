@@ -4,8 +4,10 @@ import com.github.pagehelper.PageInfo;
 import com.nhry.common.auth.UserSessionService;
 import com.nhry.common.exception.MessageCode;
 import com.nhry.common.exception.ServiceException;
+import com.nhry.data.auth.dao.TSysUserRoleMapper;
 import com.nhry.data.auth.domain.TSysUser;
 import com.nhry.data.basic.domain.TVipAcct;
+import com.nhry.data.auth.domain.TSysUserRole;
 import com.nhry.data.bill.dao.CustomerBillMapper;
 import com.nhry.data.bill.domain.TMstRecvBill;
 import com.nhry.data.order.dao.TPlanOrderItemMapper;
@@ -40,9 +42,18 @@ public class CustomerBillServiceImpl implements CustomerBillService {
     private OrderService orderService;
     private PromotionService promotionService;
     private TVipCustInfoService tVipCustInfoService;
+    private TSysUserRoleMapper urMapper;
 
     @Override
     public PageInfo searchCustomerOrder(CustBillQueryModel cModel) {
+        TSysUser user = userSessionService.getCurrentUser();
+        TSysUserRole userRole =urMapper.getUserRoleByLoginName(user.getLoginName());
+        cModel.setSalesOrg(user.getSalesOrg());
+        if("10004".equals(userRole.getId())){
+            cModel.setBranchNo(user.getBranchNo());
+        }else if("10005".equals(userRole.getId())){
+            cModel.setDealerNo(user.getDealerId());
+        }
         // TODO Auto-generated method stub
         if(StringUtils.isEmpty(cModel.getPageNum()) || StringUtils.isEmpty(cModel.getPageSize())){
             throw new ServiceException(MessageCode.LOGIC_ERROR,"pageNum和pageSize不能为空！");
@@ -186,7 +197,6 @@ public class CustomerBillServiceImpl implements CustomerBillService {
     public void setUserSessionService(UserSessionService userSessionService) {
         this.userSessionService = userSessionService;
     }
-    
     public void setOrderService(OrderService orderService) {
        this.orderService = orderService;
     }
@@ -194,8 +204,10 @@ public class CustomerBillServiceImpl implements CustomerBillService {
     public void setPromotionService(PromotionService promotionService) {
        this.promotionService = promotionService;
     }
-    
     public void settVipCustInfoService(TVipCustInfoService tVipCustInfoService) {
        this.tVipCustInfoService = tVipCustInfoService;
+    }
+    public void setUrMapper(TSysUserRoleMapper urMapper) {
+        this.urMapper = urMapper;
     }
 }

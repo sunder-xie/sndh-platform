@@ -101,22 +101,62 @@
   </insert>
   <update id="uptBranchEmpByNo" parameterType="com.nhry.data.basic.domain.TMdBranchEmp" >
     update t_md_branch_emp
-    set HR_EMP_NO = #{hrEmpNo,jdbcType=VARCHAR},
-      BRANCH_NO = #{branchNo,jdbcType=VARCHAR},
-      EMP_NAME = #{empName,jdbcType=VARCHAR},
-      GENDER = #{gender,jdbcType=VARCHAR},
-      EMP_TYPE = #{empType,jdbcType=VARCHAR},
-      STATUS = #{status,jdbcType=VARCHAR},
-      TEL = #{tel,jdbcType=VARCHAR},
-      MP = #{mp,jdbcType=VARCHAR},
-      WEBCHAT = #{webchat,jdbcType=VARCHAR},
-      ID_NO = #{idNo,jdbcType=VARCHAR},
-      CREATE_AT = #{createAt,jdbcType=TIMESTAMP},
-      CREATE_BY = #{createBy,jdbcType=VARCHAR},
-      CREATE_BY_TXT = #{createByTxt,jdbcType=VARCHAR},
-      LAST_MODIFIED = #{lastModified,jdbcType=TIMESTAMP},
-      LAST_MODIFIED_BY = #{lastModifiedBy,jdbcType=VARCHAR},
-      LAST_MODIFIED_BY_TXT = #{lastModifiedByTxt,jdbcType=VARCHAR} 
+    <set>
+      <if test="hrEmpNo != null">
+        HR_EMP_NO = #{hrEmpNo,jdbcType=VARCHAR},
+      </if>
+      <if test="branchNo != null">
+        BRANCH_NO = #{branchNo,jdbcType=VARCHAR},
+      </if>
+      <if test="empName != null">
+        EMP_NAME = #{empName,jdbcType=VARCHAR},
+      </if>
+      <if test="gender != null">
+        GENDER = #{gender,jdbcType=VARCHAR},
+      </if>
+      <if test="empType != null">
+        EMP_TYPE = #{empType,jdbcType=VARCHAR},
+      </if>
+      <if test="status != null">
+        Status = #{status,jdbcType=VARCHAR},
+      </if>
+      <if test="tel != null">
+        TEL = #{tel,jdbcType=VARCHAR},
+      </if>
+      <if test="mp != null">
+        MP = #{mp,jdbcType=VARCHAR},
+      </if>
+      <if test="webchat != null">
+        WEBCHAT = #{webchat,jdbcType=VARCHAR},
+      </if>
+      <if test="idNo != null">
+        ID_NO = #{idNo,jdbcType=VARCHAR},
+      </if>
+      <if test="baseSalary != null">
+        BASE_SALARY = #{baseSalary,jdbcType=INTEGER},
+      </if>
+      <if test="salaryMet != null">
+        SALARY_MET = #{salaryMet,jdbcType=VARCHAR},
+      </if>
+      <if test="createAt != null" >
+        CREATE_AT = #{createAt,jdbcType=TIMESTAMP},
+      </if>
+      <if test="createBy != null" >
+        CREATE_BY = #{createBy,jdbcType=VARCHAR},
+      </if>
+      <if test="createByTxt != null" >
+        CREATE_BY_TXT = #{createByTxt,jdbcType=VARCHAR},
+      </if>
+      <if test="lastModified != null" >
+        LAST_MODIFIED = #{lastModified,jdbcType=TIMESTAMP},
+      </if>
+      <if test="lastModifiedBy != null" >
+        LAST_MODIFIED_BY = #{lastModifiedBy,jdbcType=VARCHAR},
+      </if>
+      <if test="lastModifiedByTxt != null" >
+        LAST_MODIFIED_BY_TXT = #{lastModifiedByTxt,jdbcType=VARCHAR},
+      </if>
+    </set>
     where EMP_NO = #{empNo,jdbcType=VARCHAR}
   </update>
 
@@ -175,11 +215,30 @@
   </select>
 
 
+
   <select id="getAllEmpBySalesOrg" parameterType="String" resultMap="BaseResultMap">
     select
     <include refid="Base_Column_List" />
     from T_MD_BRANCH_EMP
     where 1=1
     and SALES_ORG =  #{salesOrg,jdbcType=VARCHAR}
+  </select>
+
+
+  <select id="getAllBranchEmpByNo" parameterType="com.nhry.model.basic.BranchEmpSearchModel" resultMap="BaseResultMap">
+    select
+    e.EMP_NO,e.EMP_NAME
+    from T_MD_BRANCH_EMP e LEFT JOIN t_sys_user_role u on e.EMP_NO = u.LOGIN_NAME
+    where 1=1
+    AND  e.SALES_ORG = #{salesOrg,jdbcType=VARCHAR}
+    <if test="type!=null and type!='' and type=='milkMan'">
+       and u.ID=  <include refid="mybaties.constant.milkman"/>
+    </if>
+    <if test="branchNo != null and branchNo != ''">
+      AND  e.BRANCH_NO = #{branchNo,jdbcType=VARCHAR}
+    </if>
+    <if test="dealerNo != null and dealerNo != ''">
+      AND  e.DEALER_NO = #{dealerNo,jdbcType=VARCHAR}
+    </if>
   </select>
 </mapper>

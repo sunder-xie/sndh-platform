@@ -14,6 +14,15 @@ public class TSsmReqGoodsOrderItem {
     private int qty;
     private int increQty;
     private String flag;
+    private int itemNo;
+
+    public int getItemNo() {
+        return itemNo;
+    }
+
+    public void setItemNo(int itemNo) {
+        this.itemNo = itemNo;
+    }
 
     public String getOrderNo() {
         return orderNo;

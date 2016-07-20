@@ -4,6 +4,7 @@ package com.nhry.service.order.impl;
 import com.github.pagehelper.PageInfo;
 import com.nhry.common.exception.MessageCode;
 import com.nhry.common.exception.ServiceException;
+import com.nhry.data.auth.domain.TSysUser;
 import com.nhry.data.basic.domain.TVipAcct;
 import com.nhry.data.basic.domain.TVipCustInfo;
 import com.nhry.data.milk.domain.TDispOrderItem;
@@ -22,7 +23,6 @@ import com.nhry.service.order.dao.OrderService;
 import com.nhry.service.order.dao.PromotionService;
 import com.nhry.service.order.pojo.OrderRemainData;
 import com.nhry.utils.CodeGeneratorUtil;
-
 import org.apache.commons.lang3.StringUtils;
 
 import java.math.BigDecimal;
@@ -1360,22 +1360,25 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 
 	@Override
 	public CollectOrderModel queryCollectByOrderNo(String orderCode) {
+		TSysUser user = userSessionService.getCurrentUser();
+
 		TPreOrder order = tPreOrderMapper.selectByPrimaryKey(orderCode);
-		List<TOrderDaliyPlanItem> items = tOrderDaliyPlanItemMapper.getProductItemsByOrderNo(orderCode);
+		List<TOrderDaliyPlanItem> items = tOrderDaliyPlanItemMapper.getProductItemsByOrderNo(orderCode,user.getSalesOrg());
 		CollectOrderModel model = new CollectOrderModel();
 		model.setOrder(order);
 		BigDecimal totalPrices = new BigDecimal(0);
 		List<ProductItem> entries = new ArrayList<ProductItem>();
 		if(items!=null && items.size()>0){
 			for(TOrderDaliyPlanItem item : items ){
+				BigDecimal price = item.getPrice() == null? new BigDecimal(0): item.getPrice();
 				ProductItem entry = new ProductItem();
 				entry.setMatnr(item.getMatnr());
 				entry.setMatnrTxt(item.getMatnrTxt());
 				entry.setMatnr(item.getMatnr());
 				entry.setQty(item.getQty());
 				entry.setUnit(item.getUnit());
-				entry.setBasePrice(item.getPrice());
-				entry.setTotalPrice(item.getPrice().multiply(new BigDecimal(item.getQty() == null ? 0 : item.getQty())));
+				entry.setBasePrice(price);
+				entry.setTotalPrice(price.multiply(new BigDecimal(item.getQty() == null ? 0 : item.getQty())));
 				totalPrices = totalPrices.add(entry.getTotalPrice());
 				entries.add(entry);
 			}

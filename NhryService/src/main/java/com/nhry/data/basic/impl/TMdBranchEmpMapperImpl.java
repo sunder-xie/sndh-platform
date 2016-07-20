@@ -5,6 +5,7 @@ import com.nhry.common.datasource.DynamicSqlSessionTemplate;
 import com.nhry.data.basic.dao.TMdBranchEmpMapper;
 import com.nhry.data.basic.domain.TMdBranchEmp;
 import com.nhry.data.basic.domain.TMdResidentialArea;
+import com.nhry.model.basic.BranchEmpSearchModel;
 import com.nhry.model.basic.EmpQueryModel;
 import com.nhry.service.basic.pojo.BranchEmpModel;
 
@@ -75,6 +76,11 @@ public class TMdBranchEmpMapperImpl implements TMdBranchEmpMapper {
 		smodel.setBranchNo(branchNo);
 		smodel.setSalesOrg(salesOrg);
 		return sqlSessionTemplate.selectList("getAllEmpByBranchNo",smodel);
+	}
+
+	@Override
+	public List<TMdBranchEmp> getAllBranchEmpByNo(BranchEmpSearchModel bModel) {
+		return sqlSessionTemplate.selectList("getAllBranchEmpByNo",bModel);
 	}
 
 	@Override

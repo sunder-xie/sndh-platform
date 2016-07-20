@@ -25,4 +25,8 @@ public interface TSsmReqGoodsOrderItemMapper {
     int delRequireOrderItem(ReqGoodsOrderItemSearch item);
 
     List<Map<String,String>> findItemsForPI (ReqGoodsOrderItemSearch item);
+
+    int getMaxItemNoByOrderNo(String orderNo);
+
+    int delRequireOrderItemsByOrderNo(String orderNo);
 }

@@ -2,13 +2,18 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
 <mapper namespace="com.nhry.data.statistics.dao.BranchInfoMapper">
     <select id="branchDayInfo" resultType="hashmap" parameterType="com.nhry.model.statistics.BranchInfoModel">
-        select b.branch_no,br.BRANCH_NAME,
-        max( CASE b.ORDER_DATE when DATE_ADD(#{theDate},INTERVAL -4 day) then qty else  0  end ) as 'date1',
-        max( CASE b.ORDER_DATE when DATE_ADD(#{theDate},INTERVAL -3 day)  then qty else  0  end ) as 'date2',
-        max( CASE b.ORDER_DATE when DATE_ADD(#{theDate},INTERVAL -2 day)  then qty else  0  end ) as 'date3',
-        max( CASE b.ORDER_DATE when DATE_ADD(#{theDate},INTERVAL -1 day)  then qty else  0  end ) as 'date4',
-        max( CASE b.ORDER_DATE when #{theDate} then qty else  0  end ) as 'date5',
-        max( CASE b.ORDER_DATE when #{theDate} then qty else  0  end )/max( CASE b.ORDER_DATE when  DATE_ADD(#{theDate},INTERVAL -1 day)  then qty else  0  end ) as hb from (
+        select b.branch_no branchNo,br.BRANCH_NAME branchName,br.branch_group branchGroup,
+        max( CASE b.ORDER_DATE when date_format(DATE_ADD(#{theDate},INTERVAL -4 day),'%Y-%m-%d') then qty else 0 end )
+        as 'date1',
+        max( CASE b.ORDER_DATE when date_format(DATE_ADD(#{theDate},INTERVAL -3 day),'%Y-%m-%d') then qty else 0 end )
+        as 'date2',
+        max( CASE b.ORDER_DATE when date_format(DATE_ADD(#{theDate},INTERVAL -2 day),'%Y-%m-%d') then qty else 0 end )
+        as 'date3',
+        max( CASE b.ORDER_DATE when date_format(DATE_ADD(#{theDate},INTERVAL -1 day),'%Y-%m-%d') then qty else 0 end )
+        as 'date4',
+        max( CASE b.ORDER_DATE when date_format(#{theDate},'%Y-%m-%d') then qty else 0 end ) as 'date5',
+        max( CASE b.ORDER_DATE when date_format(#{theDate},'%Y-%m-%d') then qty else 0 end )/max( CASE b.ORDER_DATE when
+        date_format(DATE_ADD(#{theDate},INTERVAL -1 day),'%Y-%m-%d') then qty else 0 end ) as hb from (
         SELECT
         o.BRANCH_NO,
         o.ORDER_DATE,
@@ -24,7 +29,7 @@
             AND b.BRANCH_NO = ${branchNo}
         </if>
         <if test="dealerId != null">
-            AND b.DEALER_ID = ${dealerId}
+            AND b.DEALER_NO = ${dealerId}
         </if>
         <if test="salesOrg != null">
             AND b.SALES_ORG = ${salesOrg}
@@ -34,10 +39,10 @@
 
     <select id="getBranchs" resultType="hashmap" parameterType="com.nhry.model.statistics.DistInfoModel">
         SELECT
-            BRANCH_NO,
-            BRANCH_NAME
+        BRANCH_NO,
+        BRANCH_NAME
         FROM
-            t_md_branch
+        t_md_branch
         <where>
             <if test="salesOrg != null">
                 SALES_ORG = #{salesOrg}
@@ -46,5 +51,105 @@
                 AND DEALER_NO = #{dealerNo}
             </if>
         </where>
+    </select>
+
+    <select id="findOrderRatio" parameterType="com.nhry.model.statistics.BranchInfoModel" resultType="hashMap">
+        SELECT
+            z.BRANCH_NO branchNo,
+            br.BRANCH_GROUP branchGroup,
+            br.BRANCH_NAME branchName,
+            z.qty initQty,
+            y.qty validQty,
+            cc.qty infoErrQty,
+            k.qty custQty,
+            q.qty superQty,
+            qt.qty otherQty,
+            y.qty / z.qty ratio
+        FROM
+            (
+                SELECT
+                    p.BRANCH_NO,
+                    sum(i.QTY) qty
+                FROM
+                    T_MST_ORDER_DALIY_PLAN_ITEM i
+                JOIN t_preorder p ON i.ORDER_NO = p.ORDER_NO
+                AND p.ORDER_DATE = DATE_FORMAT(
+                    DATE_ADD(#{theDate}, INTERVAL - 3 DAY),
+                    '%y-%m-%d'
+                )
+                GROUP BY
+                    p.BRANCH_NO
+            ) z
+        LEFT JOIN (
+            SELECT
+                p.BRANCH_NO,
+                sum(i.QTY) qty
+            FROM
+                T_MST_ORDER_DALIY_PLAN_ITEM i
+            JOIN t_preorder p ON i.ORDER_NO = p.ORDER_NO
+            AND p.PREORDER_STAT = '10'
+            AND i.`STATUS` != '30'
+            AND p.ORDER_DATE = #{theDate}
+            GROUP BY
+                p.BRANCH_NO
+        ) y ON z.BRANCH_NO = y.BRANCH_NO
+        LEFT JOIN (
+            SELECT
+                p.BRANCH_NO,
+                sum(i.QTY) qty
+            FROM
+                T_MST_ORDER_DALIY_PLAN_ITEM i
+            JOIN t_preorder p ON i.ORDER_NO = p.ORDER_NO
+            AND p.RET_REASON = '20'
+            AND p.ORDER_DATE = #{theDate}
+            GROUP BY
+                p.BRANCH_NO
+        ) cc ON cc.BRANCH_NO = z.BRANCH_NO
+        LEFT JOIN (
+            SELECT
+                p.BRANCH_NO,
+                sum(i.QTY) qty
+            FROM
+                T_MST_ORDER_DALIY_PLAN_ITEM i
+            JOIN t_preorder p ON i.ORDER_NO = p.ORDER_NO
+            AND p.RET_REASON = '30'
+            AND p.ORDER_DATE = #{theDate}
+            GROUP BY
+                p.BRANCH_NO
+        ) k ON k.BRANCH_NO = z.BRANCH_NO
+        LEFT JOIN (
+            SELECT
+                p.BRANCH_NO,
+                sum(i.QTY) qty
+            FROM
+                T_MST_ORDER_DALIY_PLAN_ITEM i
+            JOIN t_preorder p ON i.ORDER_NO = p.ORDER_NO
+            AND p.RET_REASON = '10'
+            AND p.ORDER_DATE = #{theDate}
+            GROUP BY
+                p.BRANCH_NO
+        ) q ON q.BRANCH_NO = z.BRANCH_NO
+        LEFT JOIN (
+            SELECT
+                p.BRANCH_NO,
+                sum(i.QTY) qty
+            FROM
+                T_MST_ORDER_DALIY_PLAN_ITEM i
+            JOIN t_preorder p ON i.ORDER_NO = p.ORDER_NO
+            AND p.RET_REASON = '40'
+            AND p.ORDER_DATE = #{theDate}
+            GROUP BY
+                p.BRANCH_NO
+        ) qt ON qt.BRANCH_NO = z.BRANCH_NO
+        JOIN t_md_branch br ON br.BRANCH_NO = z.BRANCH_NO
+        <if test="branchNo != null">
+            AND br.BRANCH_NO = ${branchNo}
+        </if>
+        <if test="dealerId != null">
+            AND br.DEALER_NO = ${dealerId}
+        </if>
+        <if test="salesOrg != null">
+            AND br.SALES_ORG = ${salesOrg}
+        </if>
     </select>
 </mapper>

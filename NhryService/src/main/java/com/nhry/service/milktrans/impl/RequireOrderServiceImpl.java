@@ -80,11 +80,15 @@ public class RequireOrderServiceImpl implements RequireOrderService {
         rModel.setSalesOrg(user.getSalesOrg());
         TSsmReqGoodsOrder order = null;
         //首先查看今天的要货计划是否已存在
-        order = this.tSsmReqGoodsOrderMapper.searchRequireOrder(rModel);
+       order =  this.tSsmReqGoodsOrderMapper.searchRequireOrder(rModel);
 
         if(order !=null){
-            throw new ServiceException(MessageCode.LOGIC_ERROR,"当天要货计划已存在");
-        }else{
+            tSsmReqGoodsOrderItemMapper.delRequireOrderItemsByOrderNo(order.getOrderNo());
+            tSsmReqGoodsOrderMapper.deleRequireGoodsOrderbyNo(order.getOrderNo());
+           // throw new ServiceException(MessageCode.LOGIC_ERROR,"当天要货计划已存在");
+        }
+
+
             order = new TSsmReqGoodsOrder();
             String orderNo = PrimaryKeyUtils.generateUuidKey();
             order.setRequiredDate(today);
@@ -99,7 +103,7 @@ public class RequireOrderServiceImpl implements RequireOrderService {
             order.setLastModifiedByTxt(user.getDisplayName());
             order.setLastModifiedBy(user.getLoginName());
             tSsmReqGoodsOrderMapper.insertRequireOrder(order);
-        }
+
         //查看明天和后天的订单
         Calendar calendar = new GregorianCalendar();
         calendar.setTime(today);
@@ -121,6 +125,7 @@ public class RequireOrderServiceImpl implements RequireOrderService {
                 item.setFlag("1");
                 item.setUnit(entry.getUnit());
                 item.setOrderDate(today);
+                item.setItemNo((j+1) * 10);
                 item.setOrderNo(order.getOrderNo());
                 item.setMatnr(entry.getMatnr());
                 item.setMatnrTxt(entry.getMatnrTxt());
@@ -186,7 +191,6 @@ public class RequireOrderServiceImpl implements RequireOrderService {
      */
     @Override
     public int uptNewRequireOrderItem(UpdateNewRequiredModel rModel) {
-
        try{
            TSysUser user = userSessionService.getCurrentUser();
            String orderNo = rModel.getOrderNo();
@@ -240,7 +244,6 @@ public class RequireOrderServiceImpl implements RequireOrderService {
         orderModel.setLastModifiedByTxt(user.getDisplayName());
         tSsmReqGoodsOrderMapper.uptRequireGoodsModifyInfo(orderModel);
 
-        List<TSsmReqGoodsOrderItem> items = this.tSsmReqGoodsOrderItemMapper.getReqGoodsItemsByOrderNo(orderNo);
         if(StringUtils.isBlank(item.getUnit())){
             Map<String,String> map = new HashMap<String,String>();
             map.put("salesOrg",user.getSalesOrg());
@@ -249,6 +252,7 @@ public class RequireOrderServiceImpl implements RequireOrderService {
             item.setUnit(mara.getBaseUnit());
         }
         item.setFlag("2");
+        item.setItemNo(tSsmReqGoodsOrderItemMapper.getMaxItemNoByOrderNo(orderNo)+10);
         item.setOrderDate(orderModel.getOrderDate());
         return tSsmReqGoodsOrderItemMapper.insertRequireOrderItem(item);
     }
@@ -261,6 +265,7 @@ public class RequireOrderServiceImpl implements RequireOrderService {
         }
         return tSsmReqGoodsOrderItemMapper.delRequireOrderItem(item);
     }
+
 
     @Override
     public int uptRequireOrder(UpdateRequiredModel uModel) {
@@ -373,10 +378,8 @@ public class RequireOrderServiceImpl implements RequireOrderService {
                     }
                 }
                 //调用 接口
-                // piRequireOrderService.generateRequireOrder();
-                PISuccessMessage message =new PISuccessMessage();
-                message.setData(SerialUtil.creatSeria());
-                message.setSuccess(true);
+
+              PISuccessMessage  message  = piRequireOrderService.generateSalesOrder(order,order.getDealerNo(),order.getBranchNo(),order.getSalesOrg(),promotion);
                 if(message.isSuccess()){
                     this.uptVouCherNoByOrderNo(order.getOrderNo(),message.getData());
                 }
@@ -411,10 +414,7 @@ public class RequireOrderServiceImpl implements RequireOrderService {
             }
 
             //调用 接口
-            // piRequireOrderService.generateRequireOrder();
-            PISuccessMessage message =new PISuccessMessage();
-            message.setData(SerialUtil.creatSeria());
-            message.setSuccess(true);
+            PISuccessMessage  message  = piRequireOrderService.generateSalesOrder(order,order.getDealerNo(),order.getBranchNo(),order.getSalesOrg(),"");
             if(message.isSuccess()){
                 this.uptVouCherNoByOrderNo(order.getOrderNo(),message.getData());
             }

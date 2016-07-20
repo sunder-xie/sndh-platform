@@ -1,5 +1,8 @@
 package com.nhry.model.statistics;
 
+import com.nhry.model.basic.BaseQueryModel;
+
+import java.io.Serializable;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -9,61 +12,12 @@ import java.util.List;
 /**
  * Created by cbz on 7/16/2016.
  */
-public class BranchInfoModel {
+public class BranchInfoModel extends BaseQueryModel implements Serializable {
     private static final SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
-    Date beginDate;
-    Date endDate;
-    String pageNum;
-    String pageSize;
     String branchNo;
     String dealerId;
     String salesOrg;
-    Date theDate;
-    List<Date> dates = new LinkedList<Date>();
-    public Date getBeginDate() {
-        try {
-            if(beginDate != null)
-            return format.parse(format.format(beginDate));
-        } catch (ParseException e) {
-            e.printStackTrace();
-        }
-        return beginDate;
-    }
-
-    public void setBeginDate(Date beginDate) {
-        this.beginDate = beginDate;
-    }
-
-    public Date getEndDate() {
-        try {
-            if(endDate != null)
-            return format.parse(format.format(endDate));
-        } catch (ParseException e) {
-            e.printStackTrace();
-        }
-        return endDate;
-    }
-
-    public void setEndDate(Date endDate) {
-        this.endDate = endDate;
-    }
-
-    public String getPageNum() {
-        return pageNum;
-    }
-
-    public void setPageNum(String pageNum) {
-        this.pageNum = pageNum;
-    }
-
-    public String getPageSize() {
-        return pageSize;
-    }
-
-    public void setPageSize(String pageSize) {
-        this.pageSize = pageSize;
-    }
-
+    Date theDate = new Date();
     public String getBranchNo() {
         return branchNo;
     }
@@ -100,13 +54,5 @@ public class BranchInfoModel {
 
     public void setTheDate(Date theDate) {
         this.theDate = theDate;
-    }
-
-    public List<Date> getDates() {
-        return dates;
-    }
-
-    public void setDates(List<Date> dates) {
-        this.dates = dates;
     }
 }
