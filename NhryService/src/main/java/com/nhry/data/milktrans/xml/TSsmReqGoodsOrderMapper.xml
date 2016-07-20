@@ -72,4 +72,8 @@
         FROM t_ssm_req_goods_order
         WHERE VOUCHER_NO =  #{voucherNo,jdbcType=VARCHAR}
     </select>
+    <delete id="deleRequireGoodsOrderbyNo" parameterType="String">
+        DELETE  FROM t_ssm_req_goods_order
+        WHERE  ORDER_NO = #{orderNo,jdbcType=VARCHAR}
+    </delete>
 </mapper>
