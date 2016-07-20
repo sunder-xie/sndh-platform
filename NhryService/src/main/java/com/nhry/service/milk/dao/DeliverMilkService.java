@@ -1,16 +1,13 @@
 package com.nhry.service.milk.dao;
 
+import com.github.pagehelper.PageInfo;
+import com.nhry.model.milk.*;
+import com.nhry.model.milktrans.InSideSalOrderDetailSearchModel;
+import com.nhry.model.milktrans.InSideSalOrderSearchModel;
+
 import java.math.BigDecimal;
 import java.util.List;
 import java.util.Map;
-
-import com.github.pagehelper.PageInfo;
-import com.nhry.data.milk.domain.TDispOrderItem;
-import com.nhry.model.milk.RouteDetailUpdateListModel;
-import com.nhry.model.milk.RouteDetailUpdateModel;
-import com.nhry.model.milk.RouteOrderModel;
-import com.nhry.model.milk.RouteOrderSearchModel;
-import com.nhry.model.milk.RouteUpdateModel;
 
 public interface DeliverMilkService {
 	PageInfo searchRouteOrders(RouteOrderSearchModel smodel);
@@ -39,4 +36,8 @@ public interface DeliverMilkService {
 	int updatePreOrderCurAmt(String orderNo , BigDecimal amt);
 	
 	int createDispOrderdayliy();
+
+	PageInfo getInsideSalOrder(InSideSalOrderSearchModel sModel);
+
+	PageInfo getInsideSalOrderDetail(InSideSalOrderDetailSearchModel sModel);
 }

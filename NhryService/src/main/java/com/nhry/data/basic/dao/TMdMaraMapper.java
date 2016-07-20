@@ -86,4 +86,6 @@ public interface TMdMaraMapper {
     PageInfo getCompMaras(ProductQueryModel pm);
 
     List<TMdMara>  getProductByCodeOrNameAndSalesOrg(Map<String,String> attrs);
+
+    PageInfo listsBySalesOrg(ProductQueryModel pm);
 }

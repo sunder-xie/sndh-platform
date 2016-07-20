@@ -16,6 +16,33 @@ public class TMstInsideSalOrderItem implements Serializable {
     private BigDecimal qty;
     private String reason;
     private BigDecimal price;
+    private String spec;
+    private String secCate;
+    private String zbotCode;
+
+    public String getSpec() {
+        return spec;
+    }
+
+    public void setSpec(String spec) {
+        this.spec = spec;
+    }
+
+    public String getSecCate() {
+        return secCate;
+    }
+
+    public void setSecCate(String secCate) {
+        this.secCate = secCate;
+    }
+
+    public String getZbotCode() {
+        return zbotCode;
+    }
+
+    public void setZbotCode(String zbotCode) {
+        this.zbotCode = zbotCode;
+    }
 
     public String getInsOrderNo() {
         return insOrderNo;

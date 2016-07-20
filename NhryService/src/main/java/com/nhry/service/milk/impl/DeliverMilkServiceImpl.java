@@ -3,6 +3,7 @@ package com.nhry.service.milk.impl;
 import com.github.pagehelper.PageInfo;
 import com.nhry.common.exception.MessageCode;
 import com.nhry.common.exception.ServiceException;
+import com.nhry.data.auth.domain.TSysUser;
 import com.nhry.data.milk.dao.TDispOrderChangeMapper;
 import com.nhry.data.milk.dao.TDispOrderItemMapper;
 import com.nhry.data.milk.dao.TDispOrderMapper;
@@ -18,6 +19,8 @@ import com.nhry.data.order.domain.TOrderDaliyPlanItem;
 import com.nhry.data.order.domain.TPlanOrderItem;
 import com.nhry.data.order.domain.TPreOrder;
 import com.nhry.model.milk.*;
+import com.nhry.model.milktrans.InSideSalOrderDetailSearchModel;
+import com.nhry.model.milktrans.InSideSalOrderSearchModel;
 import com.nhry.service.BaseService;
 import com.nhry.service.basic.dao.ProductService;
 import com.nhry.service.milk.dao.DeliverMilkService;
@@ -147,6 +150,21 @@ public class DeliverMilkServiceImpl extends BaseService implements DeliverMilkSe
 
 
 	}
+
+	@Override
+	public PageInfo getInsideSalOrder(InSideSalOrderSearchModel sModel) {
+		TSysUser user = userSessionService.getCurrentUser();
+		sModel.setBranchNo(user.getBranchNo());
+		return tMstInsideSalOrderMapper.getAuthAllInsideSalOrder(sModel);
+	}
+
+	@Override
+	public PageInfo getInsideSalOrderDetail(InSideSalOrderDetailSearchModel sModel) {
+		TSysUser user = userSessionService.getCurrentUser();
+		sModel.setSalesOrg(user.getSalesOrg());
+		return tMstInsideSalOrderItemMapper.getInsideSalOrderDetail(sModel);
+	}
+
 	/* (non-Javadoc) 
 	* @title: searchOrders
 	* @description: 查询路单列表
@@ -519,7 +537,7 @@ public class DeliverMilkServiceImpl extends BaseService implements DeliverMilkSe
 	* @see com.nhry.service.milk.dao.DeliverMilkService#createRouteChanges() 
 	*/
 	@Override
-	public int createRouteChanges()
+	public int createRouteChanges()//此方法暂时不用
 	{
 		SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
 		List<TDispOrderChangeItem> list = tDispOrderItemMapper.selectDispItemsChange("2016-06-27","2016-06-26",null);
@@ -690,5 +708,6 @@ public class DeliverMilkServiceImpl extends BaseService implements DeliverMilkSe
 		System.out.print("qqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqq-----------------------------------------");
 		return 0;
 	}
+
 
 }

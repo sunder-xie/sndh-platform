@@ -6,6 +6,8 @@ import java.util.Map;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.github.pagehelper.PageInfo;
 import com.nhry.common.exception.ExceptionMapperSupport;
@@ -68,6 +70,7 @@ public class TSysMessageServiceImpl extends BaseService implements TSysMessageSe
 	}
 
 	@Override
+	@Transactional(propagation=Propagation.REQUIRES_NEW)
 	public boolean sendProductsMessages(String title,TMdMara mara) {
 		// TODO Auto-generated method stub
 		Map<String,String> attrs = new HashMap<String,String>();
@@ -198,9 +201,10 @@ public class TSysMessageServiceImpl extends BaseService implements TSysMessageSe
 	}
 
 	@Override
+	@Transactional(propagation=Propagation.REQUIRES_NEW)
 	public boolean sendMessagesForCreateProducts(TMdMara mara) {
 		// TODO Auto-generated method stub
-		Map<String,String> attrs = new HashMap<String,String>(2);
+		Map<String,String> attrs = new HashMap<String,String>();
 		attrs.put("salesOrg", mara.getSalesOrg());
 		//部门内勤
 		attrs.put("rid", "'"+SysContant.getSystemConst("department_back_office")+"'");
@@ -215,9 +219,10 @@ public class TSysMessageServiceImpl extends BaseService implements TSysMessageSe
 	}
 
 	@Override
+	@Transactional(propagation=Propagation.REQUIRES_NEW)
 	public boolean sendMessagesForCreateBranch(TMdBranch branch) {
 		// TODO Auto-generated method stub
-		Map<String,String> attrs = new HashMap<String,String>(2);
+		Map<String,String> attrs = new HashMap<String,String>();
 		attrs.put("salesOrg", branch.getSalesOrg());
 		//部门内勤
 		attrs.put("rid", "'"+SysContant.getSystemConst("department_back_office")+"'");
@@ -232,9 +237,13 @@ public class TSysMessageServiceImpl extends BaseService implements TSysMessageSe
 	}
 
 	@Override
+	@Transactional(propagation=Propagation.REQUIRES_NEW)
 	public boolean sendMessagesForUptBranch(TMdBranch branch) {
 		// TODO Auto-generated method stub
-		Map<String,String> attrs = new HashMap<String,String>(2);
+		if(StringUtils.isEmpty(branch.getSalesOrg()) || StringUtils.isEmpty(branch.getBranchNo())){
+			return false;
+		}
+		Map<String,String> attrs = new HashMap<String,String>();
 		attrs.put("salesOrg", branch.getSalesOrg());
 		attrs.put("branchNo", branch.getBranchNo());
 		attrs.put("dealerNo", branch.getDealerNo());
@@ -244,7 +253,7 @@ public class TSysMessageServiceImpl extends BaseService implements TSysMessageSe
 			LOGGER.warn("该销售组织下："+branch.getSalesOrg()+"目前没有奶站内勤！");
 			return false;
 		}else{
-			this.sendMessage(users, "奶站新建消息！奶站编号："+branch.getBranchNo(), "奶站新建消息！奶站编号："+branch.getBranchNo()+" 奶站名称："+branch.getBranchName(), "30","10");
+			this.sendMessage(users, "奶站配置更新消息！奶站编号："+branch.getBranchNo(), "奶站配置更新消息！奶站编号："+branch.getBranchNo()+" 奶站名称："+branch.getBranchName(), "30","10");
 		}
 		return true;
 	}

@@ -13,7 +13,7 @@ public class TMstRecvBill implements Serializable {
     private String orderNo;
     private String paymentType;
     private String status;
-    private Integer amt;
+    private BigDecimal amt;
     private String vipCustNo;
     private String vipCustName;
     private String remark;
@@ -103,11 +103,11 @@ public class TMstRecvBill implements Serializable {
         this.status = status;
     }
 
-    public Integer getAmt() {
+    public BigDecimal getAmt() {
         return amt;
     }
 
-    public void setAmt(Integer amt) {
+    public void setAmt(BigDecimal amt) {
         this.amt = amt;
     }
 
