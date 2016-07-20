@@ -1,9 +1,11 @@
 package com.nhry.data.stock.impl;
 
+import com.github.pagehelper.PageInfo;
 import com.nhry.common.datasource.DynamicSqlSessionTemplate;
 import com.nhry.data.stock.dao.TSsmStockMapper;
 import com.nhry.data.stock.domain.TSsmStock;
 import com.nhry.data.stock.domain.TSsmStockKey;
+import com.nhry.model.stock.StockModel;
 
 /**
  * Created by cbz on 7/19/2016.
@@ -33,5 +35,10 @@ public class TSsmStockMapperImpl implements TSsmStockMapper {
     @Override
     public int updateStock(TSsmStock record) {
         return sqlSessionTemplate.update("updateStock",record);
+    }
+
+    @Override
+    public PageInfo findStock(StockModel model) {
+        return sqlSessionTemplate.selectListByPages("findStock",model,Integer.valueOf(model.getPageNum()),Integer.valueOf(model.getPageSize()));
     }
 }

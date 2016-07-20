@@ -2,6 +2,7 @@ package com.nhry.data.basic.dao;
 
 import com.github.pagehelper.PageInfo;
 import com.nhry.data.basic.domain.TMdBranchEmp;
+import com.nhry.model.basic.BranchEmpSearchModel;
 import com.nhry.model.basic.EmpQueryModel;
 import com.nhry.service.basic.pojo.BranchEmpModel;
 
@@ -25,4 +26,6 @@ public interface TMdBranchEmpMapper {
     List<TMdBranchEmp> getAllEmpBySalesOrg(String salesOrg);
 
     List<TMdBranchEmp> getAllEmpByBranchNo(String branchNo,String salesOrg);
+
+    List<TMdBranchEmp> getAllBranchEmpByNo(BranchEmpSearchModel bModel);
 }

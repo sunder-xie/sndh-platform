@@ -25,6 +25,9 @@
     <bean class="com.nhry.data.stock.impl.TSsmStockMapperImpl" id="ssmStockMapper">
         <property name="sqlSessionTemplate" ref="dynamicSqlSessionTemplate"/>
     </bean>
+    <bean class="com.nhry.service.stock.impl.TSsmStockServiceImpl" id="ssmStockService">
+        <property name="ssmStockMapper" ref="ssmStockMapper"/>
+    </bean>
     <bean class="com.nhry.data.stock.impl.TSsmVoucherMapperImpl" id="ssmVoucherMapper">
         <property name="sqlSessionTemplate" ref="dynamicSqlSessionTemplate"/>
     </bean>

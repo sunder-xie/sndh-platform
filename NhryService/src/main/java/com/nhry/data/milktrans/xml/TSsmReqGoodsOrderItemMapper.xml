@@ -16,11 +16,11 @@
     </sql>
 
     <insert id="insertRequireOrderItem" parameterType="com.nhry.data.milktrans.domain.TSsmReqGoodsOrderItem" >
-        insert into t_ssm_req_goods_order_item (ORDER_NO,ORDER_DATE,MATNR,UNIT,QTY,INCRE_QTY,FLAG)
+        insert into t_ssm_req_goods_order_item (ORDER_NO,ORDER_DATE,MATNR,UNIT,QTY,INCRE_QTY,ITEM_NO,FLAG)
         VALUES(
             #{orderNo,jdbcType=VARCHAR},#{orderDate,jdbcType=DATE},
             #{matnr,jdbcType=VARCHAR},#{unit,jdbcType=VARCHAR},
-            #{qty,jdbcType=INTEGER}, #{increQty,jdbcType=INTEGER},#{flag,jdbcType=VARCHAR}
+            #{qty,jdbcType=INTEGER}, #{increQty,jdbcType=INTEGER},#{itemNo,jdbcType=INTEGER},#{flag,jdbcType=VARCHAR}
         )
     </insert>
     <select id="getReqGoodsItemsByOrderNo" resultMap="BaseResultMap" parameterType="String" >
@@ -94,4 +94,10 @@
         JOIN t_md_mara_ex ex ON m.MATNR = ex.MATNR
         AND m.SALES_ORG = ex.SALES_ORG
     </select>
+
+
+    <delete id="delRequireOrderItemsByOrderNo" parameterType="String" >
+        DELETE  FROM  t_ssm_req_goods_order_item
+        where ORDER_NO = #{orderNo,jdbcType=VARCHAR}
+    </delete>
 </mapper>
