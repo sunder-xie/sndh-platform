@@ -63,4 +63,9 @@ public class TSsmReqGoodsOrderItemMapperImpl implements TSsmReqGoodsOrderItemMap
     public int getMaxItemNoByOrderNo(String orderNo) {
         return sqlSessionTemplate.selectOne("getMaxItemNoByOrderNo",orderNo);
     }
+
+    @Override
+    public int delRequireOrderItemsByOrderNo(String orderNo) {
+        return sqlSessionTemplate.delete("delRequireOrderItemsByOrderNo",orderNo);
+    }
 }

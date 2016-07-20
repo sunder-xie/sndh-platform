@@ -132,9 +132,7 @@
             AND  i.DISP_DATE &lt;= #{endDate,jdbcType=DATE}
         </if>
         GROUP BY i.DISP_DATE,o.EMP_NO,i.MATNR
-
-
-        ORDER BY  DISP_DATE ASC,TYPE
+        ORDER BY  DISP_DATE DESC,TYPE
     </select>
 
     <select id="empAccountReceAmount" resultMap="EmpAccountResultMap" parameterType="com.nhry.model.bill.EmpDispDetialInfoSearch">
