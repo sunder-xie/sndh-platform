@@ -16,11 +16,11 @@
     </sql>
 
     <insert id="insertRequireOrderItem" parameterType="com.nhry.data.milktrans.domain.TSsmReqGoodsOrderItem" >
-        insert into t_ssm_req_goods_order_item (ORDER_NO,ORDER_DATE,MATNR,UNIT,QTY,INCRE_QTY,FLAG)
+        insert into t_ssm_req_goods_order_item (ORDER_NO,ORDER_DATE,MATNR,UNIT,QTY,INCRE_QTY,ITEM_NO,FLAG)
         VALUES(
             #{orderNo,jdbcType=VARCHAR},#{orderDate,jdbcType=DATE},
             #{matnr,jdbcType=VARCHAR},#{unit,jdbcType=VARCHAR},
-            #{qty,jdbcType=INTEGER}, #{increQty,jdbcType=INTEGER},#{flag,jdbcType=VARCHAR}
+            #{qty,jdbcType=INTEGER}, #{increQty,jdbcType=INTEGER},#{itemNo,jdbcType=INTEGER},#{flag,jdbcType=VARCHAR}
         )
     </insert>
     <select id="getReqGoodsItemsByOrderNo" resultMap="BaseResultMap" parameterType="String" >
