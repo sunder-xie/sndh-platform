@@ -9,7 +9,9 @@ import com.nhry.model.basic.BranchAreaSearch;
 import com.nhry.service.basic.pojo.AreaSearchModel;
 import com.nhry.service.basic.pojo.ResidentialAreaModel;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created by gongjk on 2016/6/3.
@@ -81,8 +83,11 @@ public class TMdResidentialAreaMapperImpl implements TMdResidentialAreaMapper {
     }
 
     @Override
-    public TMdResidentialArea getAreaByAreaName(String residentialAreaTxt) {
-        return sqlSessionTemplate.selectOne("getAreaByAreaName",residentialAreaTxt);
+    public TMdResidentialArea getAreaByAreaName(String residentialAreaTxt,String salesOrg) {
+        Map<String,String> map = new HashMap<String,String>();
+        map.put("salesOrg",salesOrg);
+        map.put("residentialAreaTxt",residentialAreaTxt);
+        return sqlSessionTemplate.selectOne("getAreaByAreaName",map);
     }
 
     @Override
