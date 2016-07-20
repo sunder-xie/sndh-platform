@@ -38,8 +38,7 @@ public class ResidentialAreaResource extends BaseResource {
 	@Consumes(MediaType.APPLICATION_JSON)
 	@ApiOperation(value = "/searchAreaBySalesOrg", response = Response.class, notes = "获取当前销售组织下的获取小区(配送区域)列表")
 	public Response searchAreaBySalesOrg(@ApiParam(required=true,name="aModel",value="省、市、区") AreaSearchModel aModel) {
-		return convertToRespModel(MessageCode.NORMAL, null,
-				residentialAreaService.searchAreaBySalesOrg(aModel));
+		return convertToRespModel(MessageCode.NORMAL, null,residentialAreaService.searchAreaBySalesOrg(aModel));
 	}
 
 
