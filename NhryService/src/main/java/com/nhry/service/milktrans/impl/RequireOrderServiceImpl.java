@@ -80,11 +80,15 @@ public class RequireOrderServiceImpl implements RequireOrderService {
         rModel.setSalesOrg(user.getSalesOrg());
         TSsmReqGoodsOrder order = null;
         //首先查看今天的要货计划是否已存在
-        order = this.tSsmReqGoodsOrderMapper.searchRequireOrder(rModel);
+       order =  this.tSsmReqGoodsOrderMapper.searchRequireOrder(rModel);
 
         if(order !=null){
-            throw new ServiceException(MessageCode.LOGIC_ERROR,"当天要货计划已存在");
-        }else{
+            tSsmReqGoodsOrderItemMapper.delRequireOrderItemsByOrderNo(order.getOrderNo());
+            tSsmReqGoodsOrderMapper.deleRequireGoodsOrderbyNo(order.getOrderNo());
+           // throw new ServiceException(MessageCode.LOGIC_ERROR,"当天要货计划已存在");
+        }
+
+
             order = new TSsmReqGoodsOrder();
             String orderNo = PrimaryKeyUtils.generateUuidKey();
             order.setRequiredDate(today);
@@ -99,7 +103,7 @@ public class RequireOrderServiceImpl implements RequireOrderService {
             order.setLastModifiedByTxt(user.getDisplayName());
             order.setLastModifiedBy(user.getLoginName());
             tSsmReqGoodsOrderMapper.insertRequireOrder(order);
-        }
+
         //查看明天和后天的订单
         Calendar calendar = new GregorianCalendar();
         calendar.setTime(today);

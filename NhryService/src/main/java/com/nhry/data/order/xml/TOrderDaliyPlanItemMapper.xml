@@ -462,6 +462,7 @@
     LEFT JOIN t_preorder o on 	i.ORDER_NO = o.ORDER_NO
     LEFT JOIN t_md_mara_ex e on i.MATNR = e.MATNR
     where   1=1
+    and i.STATUS!='30'
     and  ((e.PRE_DAYS= 2 and   i.DISP_DATE = #{secondDay,jdbcType=DATE} ) or (e.PRE_DAYS= 1 and   i.DISP_DATE = #{firstDay,jdbcType=DATE}))
     and m.SALES_ORG=#{salesOrg,jdbcType=VARCHAR}
     and o.BRANCH_NO = #{branchNo,jdbcType=VARCHAR}
