@@ -519,7 +519,7 @@ public class DeliverMilkServiceImpl extends BaseService implements DeliverMilkSe
 	* @see com.nhry.service.milk.dao.DeliverMilkService#createRouteChanges() 
 	*/
 	@Override
-	public int createRouteChanges()
+	public int createRouteChanges()//此方法暂时不用
 	{
 		SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
 		List<TDispOrderChangeItem> list = tDispOrderItemMapper.selectDispItemsChange("2016-06-27","2016-06-26",null);

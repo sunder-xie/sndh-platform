@@ -24,6 +24,9 @@
 		<property name="tPreOrderMapper"  ref="tPreOrderMapper"></property>
 		<property name="tPlanOrderItemMapper"  ref="tPlanOrderItemMapper"></property>
 		<property name="userSessionService"  ref="userSessionService"></property>
+		<property name="orderService"  ref="orderService"></property>
+		<property name="promotionService"  ref="promotionService"></property>
+		<property name="tVipCustInfoService" ref="custService"></property>
 	</bean>
 
 	<!--奶站结算-->
