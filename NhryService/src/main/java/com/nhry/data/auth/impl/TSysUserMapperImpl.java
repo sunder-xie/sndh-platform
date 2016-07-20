@@ -59,7 +59,7 @@ public class TSysUserMapperImpl implements TSysUserMapper {
 	}
 
 	@Override
-	public List<Map<String,String>> findUserByRoleId(UserQueryModel2 um) {
+	public List<TSysUser> findUserByRoleId(UserQueryModel2 um) {
 		return sqlSessionTemplate.selectList("findUserByRoleId",um);
 	}
 

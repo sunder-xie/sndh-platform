@@ -23,7 +23,7 @@ public interface TSysUserMapper {
 	
 	public int deleteUserByLoginName(TSysUser user);
 
-	List<Map<String,String>> findUserByRoleId(UserQueryModel2 um);
+	List<TSysUser> findUserByRoleId(UserQueryModel2 um);
 
 	PageInfo findUserPageByRoleId(UserQueryModel um);
 	
