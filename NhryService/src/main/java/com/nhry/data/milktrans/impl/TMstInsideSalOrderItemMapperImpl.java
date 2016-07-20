@@ -1,8 +1,10 @@
 package com.nhry.data.milktrans.impl;
 
+import com.github.pagehelper.PageInfo;
 import com.nhry.common.datasource.DynamicSqlSessionTemplate;
 import com.nhry.data.milktrans.dao.TMstInsideSalOrderItemMapper;
 import com.nhry.data.milktrans.domain.TMstInsideSalOrderItem;
+import com.nhry.model.milktrans.InSideSalOrderDetailSearchModel;
 
 /**
  * Created by gongjk on 2016/6/30.
@@ -22,5 +24,10 @@ public class TMstInsideSalOrderItemMapperImpl implements TMstInsideSalOrderItemM
     @Override
     public int insertOrderItem(TMstInsideSalOrderItem item) {
         return sqlSessionTemplate.insert("insertOrderItem",item);
+    }
+
+    @Override
+    public PageInfo getInsideSalOrderDetail(InSideSalOrderDetailSearchModel smodel) {
+        return sqlSessionTemplate.selectListByPages("getInsideSalOrderDetail",smodel, Integer.parseInt(smodel.getPageNum()), Integer.parseInt(smodel.getPageSize()));
     }
 }

@@ -80,4 +80,6 @@ public interface ProductService {
      * @return
      */
     Map<String,String> getMataBotTypes();
+
+    PageInfo listsBySalesOrg(ProductQueryModel pmodel);
 }

@@ -192,14 +192,25 @@ public class milkTransResource extends BaseResource {
 	}
 
 
-/*	@GET
+	@POST
 	@Path("/getInsideSalOrder")
 	@Produces(MediaType.APPLICATION_JSON)
 	@Consumes(MediaType.APPLICATION_JSON)
-	@ApiOperation(value = "/getInsideSalOrder", response = Response.class, notes = "创建内部销售订单")
-	public Response getInsideSalOrder(){
-		return convertToRespModel(MessageCode.NORMAL, null, deliverMilkService.getInsideSalOrder());
-	}*/
+	@ApiOperation(value = "/getInsideSalOrder", response = Response.class, notes = "获取内部销售订单")
+	public Response getInsideSalOrder(@ApiParam(required=true,name="sModel",value="分页查询") InSideSalOrderSearchModel sModel){
+		return convertToRespModel(MessageCode.NORMAL, null, deliverMilkService.getInsideSalOrder(sModel));
+	}
+
+
+
+	@POST
+	@Path("/getInsideSalOrderDetail")
+	@Produces(MediaType.APPLICATION_JSON)
+	@Consumes(MediaType.APPLICATION_JSON)
+	@ApiOperation(value = "/getInsideSalOrderDetail", response = Response.class, notes = "获取内部销售订单")
+	public Response getInsideSalOrderDetail(@ApiParam(required=true,name="sModel",value="分页查询") InSideSalOrderDetailSearchModel sModel){
+		return convertToRespModel(MessageCode.NORMAL, null, deliverMilkService.getInsideSalOrderDetail(sModel));
+	}
 
 
 

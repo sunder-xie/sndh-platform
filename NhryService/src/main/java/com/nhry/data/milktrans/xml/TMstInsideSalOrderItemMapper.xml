@@ -11,6 +11,10 @@
         <result column="PRICE"        property="price" jdbcType="DECIMAL" />
         <result column="REASON"       property="reason" jdbcType="VARCHAR" />
 
+        <result column="SPEC"       property="spec" jdbcType="VARCHAR" />
+        <result column="SEC_CATE"       property="secCate" jdbcType="VARCHAR" />
+        <result column="ZBOT_CODE"       property="zbotCode" jdbcType="VARCHAR" />
+
     </resultMap>
     <sql id="Base_Column_List" >
        INS_ORDER_NO,ORDER_DATE,ITEM_NO,ORG_ORDER_NO,MATNR,QTY,PRICE,REASON
@@ -30,6 +34,29 @@
          )
 
     </insert>
-
+    <select id="getInsideSalOrderDetail" resultMap="BaseResultMap" parameterType="com.nhry.model.milktrans.InSideSalOrderDetailSearchModel">
+      SELECT
+       i.INS_ORDER_NO ,i.ORDER_DATE ,i.ITEM_NO ,i.ORG_ORDER_NO,i.MATNR,i.QTY, i.PRICE, i.REASON,
+       m.MATNR_TXT,
+       (
+        SELECT i.ITEM_NAME from t_sys_code_item i
+        WHERE i.TYPE_CODE= <include refid="mybaties.constant.products_second_category"/>
+        and i.ITEM_CODE =m.SEC_CATE
+      ) SEC_CATE,
+        (
+        SELECT i.ITEM_NAME from t_sys_code_item i
+        WHERE i.TYPE_CODE= <include refid="mybaties.constant.packing _type"/>
+        and i.ITEM_CODE =m.ZBOT_CODE
+        ) ZBOT_CODE,
+        (
+        SELECT i.ITEM_NAME from t_sys_code_item i
+        WHERE i.TYPE_CODE= <include refid="mybaties.constant.products_spec"/>
+        and i.ITEM_CODE =m.SPEC
+        ) SPEC
+        FROM t_mst_inside_sal_order_item i
+      LEFT  JOIN  t_md_mara m on i.MATNR = m.MATNR and m.SALES_ORG = #{salesOrg,jdbcType=VARCHAR}
+      where 1=1
+      and i.INS_ORDER_NO = #{orderNo,jdbcType=VARCHAR}
+    </select>
 
 </mapper>

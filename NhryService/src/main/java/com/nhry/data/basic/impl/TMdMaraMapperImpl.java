@@ -85,6 +85,11 @@ public class TMdMaraMapperImpl implements TMdMaraMapper {
     }
 
     @Override
+    public PageInfo listsBySalesOrg(ProductQueryModel pm) {
+        return this.sqlSessionTemplate.selectListByPages("listsBySalesOrg",pm,Integer.parseInt(pm.getPageNum()),Integer.parseInt(pm.getPageSize()));
+    }
+
+    @Override
 	public List<TMdMara> findMarasBySalesCodeAndOrg(Map<String, String> attrs) {
 		// TODO Auto-generated method stub
 		return this.sqlSessionTemplate.selectList("findMarasBySalesCodeAndOrg", attrs);
