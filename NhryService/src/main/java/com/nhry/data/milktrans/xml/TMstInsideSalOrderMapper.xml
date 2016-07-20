@@ -7,6 +7,8 @@
         <result column="DISP_ORDER_NO"      property="dispOrderNo" jdbcType="VARCHAR" />
         <result column="SAL_EMP_NO"        property="salEmpNo" jdbcType="VARCHAR" />
         <result column="BRANCH_NO"       property="branchNo" jdbcType="VARCHAR" />
+        <result column="EMP_NAME"        property="empName" jdbcType="VARCHAR" />
+        <result column="BRANCH_NAME"       property="branchName" jdbcType="VARCHAR" />
     </resultMap>
     <sql id="Base_Column_List" >
        INS_ORDER_NO,ORDER_DATE,DISP_ORDER_NO,SAL_EMP_NO,BRANCH_NO
@@ -29,4 +31,16 @@
     </insert>
 
 
+    <select id="getAuthAllInsideSalOrder" resultMap="BaseResultMap" parameterType="com.nhry.model.milktrans.InSideSalOrderSearchModel" >
+        SELECT
+        o.INS_ORDER_NO,o.ORDER_DATE,o.DISP_ORDER_NO,o.SAL_EMP_NO,o.BRANCH_NO,e.EMP_NAME,b.BRANCH_NAME
+        FROM  t_mst_inside_sal_order o
+        LEFT JOIN t_md_branch_emp e on o.SAL_EMP_NO = e.EMP_NO
+        LEFT JOIN  t_md_branch b on o.BRANCH_NO = b.BRANCH_NO
+        WHERE 1=1
+        <if test="branchNo!=null and ''!=branchNo">
+          and  o.BRANCH_NO  = #{branchNo,jdbcType=VARCHAR}
+        </if>
+
+    </select>
 </mapper>

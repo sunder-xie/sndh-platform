@@ -72,6 +72,15 @@ public class ProductResource extends BaseResource {
 	public Response selectProductAndExListByCode(@ApiParam(required=true,name="id",value="价格组编号(如果还没有价格组编号，直接写-1,-1表示获取当前组织下所有的产品列表)") @PathParam("id") String id){
 		return convertToRespModel(MessageCode.NORMAL, null, productService.findMarasBySalesCodeAndOrg(id));
 	}
+
+
+	@POST
+	@Path("/listsBySalesOrg")
+	@Produces(MediaType.APPLICATION_JSON)
+	@ApiOperation(value = "/listsBySalesOrg", response = PageInfo.class, notes = "根据当前组织下可销售商品列表")
+	public Response listsBySalesOrg(@ApiParam(required=true,name="pm",value="产品查询对象 ")ProductQueryModel pm){
+		return convertToRespModel(MessageCode.NORMAL, null, productService.listsBySalesOrg(pm));
+	}
 	
 	@POST
 	@Path("/sell/lists")

@@ -11,7 +11,25 @@ public class TMstInsideSalOrder implements Serializable {
     private Date orderDate;
     private String dispOrderNo;
     private String salEmpNo;
+    private String empName;
     private String branchNo;
+    private String branchName;
+
+    public String getEmpName() {
+        return empName;
+    }
+
+    public void setEmpName(String empName) {
+        this.empName = empName;
+    }
+
+    public String getBranchName() {
+        return branchName;
+    }
+
+    public void setBranchName(String branchName) {
+        this.branchName = branchName;
+    }
 
     public String getInsOrderNo() {
         return insOrderNo;

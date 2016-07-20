@@ -137,11 +137,12 @@ public class ResidentialAreaServiceImpl implements ResidentialAreaService {
 
     @Override
     public int addResidentialArea(TMdResidentialArea tMdResidentialArea) {
-        TMdResidentialArea area = tMdResidentialAreaMapper.getAreaByAreaName(tMdResidentialArea.getResidentialAreaTxt());
+        TSysUser user = userSessionService.getCurrentUser();
+        TMdResidentialArea area = tMdResidentialAreaMapper.getAreaByAreaName(tMdResidentialArea.getResidentialAreaTxt(),user.getSalesOrg());
         if(area!=null){
             throw new ServiceException(MessageCode.LOGIC_ERROR,"该小区名称已存在！");
         }
-        TSysUser user = userSessionService.getCurrentUser();
+
         tMdResidentialArea.setSalesOrg(user.getSalesOrg());
         tMdResidentialArea.setId(PrimaryKeyUtils.generateUuidKey());
         tMdResidentialArea.setStatus("10");

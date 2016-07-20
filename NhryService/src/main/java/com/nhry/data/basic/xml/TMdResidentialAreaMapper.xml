@@ -49,7 +49,7 @@
     values (#{branchNo,jdbcType=VARCHAR},#{id,jdbcType=VARCHAR})
   </insert>
 
-  <insert id="insertArea" parameterType="com.nhry.data.basic.domain.TMdResidentialArea">
+  <insert id="insertSelective" parameterType="com.nhry.data.basic.domain.TMdResidentialArea">
     insert into t_md_residential_area (ID, RESIDENTIAL_AREA_TXT, PROVINCE,
     CITY, COUNTY, STREET,GUIDEBOARD,STATUS,
     ADDRESS_TXT, RESIDENTIAL_NUM, SALES_ORG,
@@ -60,7 +60,7 @@
     #{propertyTxt,jdbcType=VARCHAR}, #{propertyTel,jdbcType=VARCHAR},#{createAt,jdbcType=TIMESTAMP},#{createBy,jdbcType=VARCHAR})
   </insert>
 
-  <insert id="insertSelective" parameterType="com.nhry.data.basic.domain.TMdResidentialArea">
+  <insert id="insertArea" parameterType="com.nhry.data.basic.domain.TMdResidentialArea">
     insert into t_md_residential_area
     <trim prefix="(" suffix=")" suffixOverrides=",">
       <if test="id != null">
@@ -103,6 +103,12 @@
       <if test="propertyTel != null">
         PROPERTY_TEL,
       </if>
+      <if test="createAt != null">
+        CREATE_AT,
+      </if>
+      <if test="createBy != null">
+        CREATE_BY,
+      </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides=",">
       <if test="id != null">
@@ -119,6 +125,9 @@
       </if>
       <if test="county != null">
         #{county,jdbcType=VARCHAR},
+      </if>
+      <if test="status != null">
+        #{status,jdbcType=VARCHAR},
       </if>
       <if test="street != null">
         #{street,jdbcType=VARCHAR},
@@ -137,6 +146,12 @@
       </if>
       <if test="propertyTel != null">
         #{propertyTel,jdbcType=VARCHAR},
+      </if>
+      <if test="createAt != null">
+        #{createAt,jdbcType=TIMESTAMP},
+      </if>
+      <if test="createBy != null">
+        #{createBy,jdbcType=VARCHAR},
       </if>
     </trim>
   </insert>
@@ -240,7 +255,7 @@
     (SELECT i.ITEM_NAME from t_sys_code_item i WHERE i.TYPE_CODE= <include refid="mybaties.constant.COUNTRY_CITY_CONSTANT"></include> and i.ITEM_CODE = a.CITY ) CITY_NAME,
     (SELECT i.ITEM_NAME from t_sys_code_item i WHERE i.TYPE_CODE= <include refid="mybaties.constant.COUNTRY_CITY_CONSTANT"></include> and i.ITEM_CODE = a.COUNTY ) COUNTY_NAME,
     (SELECT i.ITEM_NAME from t_sys_code_item i WHERE i.TYPE_CODE= <include refid="mybaties.constant.COUNTRY_CITY_CONSTANT"></include> and i.ITEM_CODE = a.STREET ) STREET_NAME
-    from t_md_residential_area a LEFT JOIN t_md_branch_scope s on a.ID = s.RESIDENTIAL_AREA_ID
+    from t_md_residential_area a
     where 1=1
       and a.SALES_ORG = #{salesOrg,jdbcType=VARCHAR}
     <if test="branchNo != null and branchNo !=''">
@@ -319,11 +334,12 @@
        </if>
     </where> 
   </select>
-<select id="getAreaByAreaName" resultMap="BaseResultMap" parameterType="String">
+<select id="getAreaByAreaName" resultMap="BaseResultMap" parameterType="java.util.Map">
   SELECT
   <include refid="Base_Column_List" />
   from t_md_residential_area
   WHERE 1=1
-  and  RESIDENTIAL_AREA_TXT = #{residentialAreaTxt,jdbcType=VARCHAR}
+  and  RESIDENTIAL_AREA_TXT = #{residentialAreaTxt}
+  and SALES_ORG = #{salesOrg}
 </select>
 </mapper>
