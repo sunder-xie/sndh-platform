@@ -126,6 +126,11 @@ public class PromotionServiceImpl extends BaseService implements PromotionServic
 	@Override
  	public void createDaliyPlanByPromotion(TPreOrder order, List<TPlanOrderItem> entriesList,List<TOrderDaliyPlanItem> daliyPlans){
 		
+		//预付款的要付款+装箱才生成日计划
+		if("20".equals(order.getPaymentmethod()) && !"20".equals(order.getPaymentStat())){
+			return;
+		}
+				
 		//生成每日计划,当订户订单装箱状态为已装箱或无需装箱，则系统默认该订单可生成订户日订单
 		if("20".equals(order.getMilkboxStat())){
 			return;

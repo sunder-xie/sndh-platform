@@ -371,7 +371,7 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 			}
 			
 			if(edate.before(order.getEndDate()))throw new ServiceException(MessageCode.LOGIC_ERROR,"续订日期不能小于原订单截止日期!");
-			String state = order.getPaymentmethod();
+//			String state = order.getPaymentmethod();
 			
 			//基本参考原单
 			//新的订单号
@@ -379,9 +379,9 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 			order.setOrderNo(CodeGeneratorUtil.getCode());
 			//
 			order.setOrderDate(date);
-         if("20".equals(state)){
-         	order.setPaymentStat(state);
-         }
+//         if("20".equals(state)){
+         order.setPaymentStat("10");//默认未付款
+//         }
 			//生成每个订单行
 			List<TPlanOrderItem> entriesList = new ArrayList<TPlanOrderItem>();
 			int index = 0;
@@ -396,7 +396,16 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 				entry.setCreateByTxt(userSessionService.getCurrentUser().getDisplayName());//创建人姓名
 				entry.setStartDispDate(afterDate(order.getEndDate(),1));
 				entry.setEndDispDate(edate);
-				orderAmt = orderAmt.add(calculateEntryAmount(entry));
+				BigDecimal entryTotal = calculateEntryAmount(entry);
+				
+				//促销清空
+				entry.setPromotion("");
+				entry.setGiftQty(0);
+				entry.setGiftMatnr("");
+				entry.setGiftUnit("");
+				entry.setDispTotal(0);
+				
+				orderAmt = orderAmt.add(entryTotal);
 				entriesList.add(entry);
 
 				index++;
@@ -411,13 +420,13 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 				tPlanOrderItemMapper.insert(entry);
 			}
 			
-			//续费的余额存入帐户
+			//续费的金额存入帐户
 			if(StringUtils.isNotBlank(record.getGoAmt())){
-				BigDecimal remain = new BigDecimal(record.getGoAmt()).subtract(orderAmt);
+//				BigDecimal remain = new BigDecimal(record.getGoAmt()).subtract(orderAmt);
 				TVipAcct account = new TVipAcct();
 				account.setBranchNo(order.getBranchNo());
 				account.setVipCustNo(order.getMilkmemberNo());
-				account.setAcctAmt(remain);
+				account.setAcctAmt(new BigDecimal(record.getGoAmt()));
 				tVipCustInfoService.addVipAcct(account);
 			}
 			
@@ -426,8 +435,6 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 			
 			//生成每日计划
 			createDaliyPlan(order,entriesList);
-			
-			//生成收款单
 			
 		}else{
 			throw new ServiceException(MessageCode.LOGIC_ERROR,"原订单不存在");
@@ -755,6 +762,10 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 	@Override
 	public List<TOrderDaliyPlanItem> createDaliyPlan(TPreOrder order ,List<TPlanOrderItem> entries){
 
+		//预付款的要付款+装箱才生成日计划
+		if("20".equals(order.getPaymentmethod()) && !"20".equals(order.getPaymentStat())){
+			return null;
+		}
 		//生成每日计划,当订户订单装箱状态为已装箱或无需装箱，则系统默认该订单可生成订户日订单
 		if("20".equals(order.getMilkboxStat())){
 			return null;
