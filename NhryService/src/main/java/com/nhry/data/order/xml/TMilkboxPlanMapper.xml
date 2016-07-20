@@ -187,16 +187,16 @@
   <update id="updateMilkboxPlan" parameterType="com.nhry.data.order.domain.TMilkboxPlan" >
     update t_mst_milkbox_plan
     <set >
-      <if test="empNo != null" >
+      <!-- <if test="empNo != null" >
         EMP_NO = #{empNo,jdbcType=VARCHAR},
-      </if>
-      <if test="empName != null" >
+      </if> -->
+      <!-- <if test="empName != null" >
         EMP_NAME = #{empName,jdbcType=VARCHAR},
-      </if>
-      <if test="orderNo != null" >
+      </if> -->
+      <!-- <if test="orderNo != null" >
         ORDER_NO = #{orderNo,jdbcType=VARCHAR},
-      </if>
-      <if test="memberNo != null" >
+      </if> -->
+      <!-- <if test="memberNo != null" >
         MEMBER_NO = #{memberNo,jdbcType=VARCHAR},
       </if>
       <if test="memberName != null" >
@@ -204,10 +204,10 @@
       </if>
       <if test="memberTel != null" >
         MEMBER_TEL = #{memberTel,jdbcType=VARCHAR},
-      </if>
-      <if test="adressNo != null" >
+      </if> -->
+      <!-- <if test="adressNo != null" >
         ADRESS_NO = #{adressNo,jdbcType=VARCHAR},
-      </if>
+      </if> -->
       <if test="branchNo != null" >
         BRANCH_NO = #{branchNo,jdbcType=VARCHAR},
       </if>
@@ -220,7 +220,7 @@
       <if test="paymentStat != null" >
         PAYMENT_STAT = #{paymentStat,jdbcType=VARCHAR},
       </if>
-      <if test="createAt != null" >
+      <!-- <if test="createAt != null" >
         CREATE_AT = #{createAt,jdbcType=DATE},
       </if>
       <if test="createBy != null" >
@@ -228,7 +228,7 @@
       </if>
       <if test="createByTxt != null" >
         CREATE_BY_TXT = #{createByTxt,jdbcType=VARCHAR},
-      </if>
+      </if> -->
       <if test="lastModified != null" >
         LAST_MODIFIED = #{lastModified,jdbcType=DATE},
       </if>
