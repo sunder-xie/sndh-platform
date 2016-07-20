@@ -43,5 +43,5 @@ public interface TMdResidentialAreaMapper {
 
     List<TMdResidentialArea> searchAreaBySalesOrg(AreaSearchModel aModel);
 
-    TMdResidentialArea getAreaByAreaName(String residentialAreaTxt);
+    TMdResidentialArea getAreaByAreaName(String residentialAreaTxt,String salesOrg);
 }

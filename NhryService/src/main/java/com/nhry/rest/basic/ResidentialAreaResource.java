@@ -42,6 +42,8 @@ public class ResidentialAreaResource extends BaseResource {
 				residentialAreaService.searchAreaBySalesOrg(aModel));
 	}
 
+
+
 	@POST
 	@Path("/searchAreaByBranchNo")
 	@Produces(MediaType.APPLICATION_JSON)
