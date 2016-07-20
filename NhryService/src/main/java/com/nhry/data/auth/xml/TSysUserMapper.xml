@@ -535,7 +535,7 @@
         (SELECT b.BRANCH_NAME FROM t_md_branch b where b.BRANCH_NO=u.BRANCH_NO) BRANCH_NAME
     </sql>
 
-    <select id="findUserByRoleId" parameterType="com.nhry.model.auth.UserQueryModel2" resultType="hashmap">
+    <select id="findUserByRoleId" parameterType="com.nhry.model.auth.UserQueryModel2" resultMap="BaseResultMap1">
         SELECT
         DISTINCT
         u.LOGIN_NAME loginName,
@@ -565,7 +565,7 @@
         order by u.CREATE_ON desc,u.LAST_MODIFIED desc
     </select>
 
-    <select id="findPageByRoleId" parameterType="com.nhry.model.auth.UserQueryModel" resultType="hashmap">
+    <select id="findPageByRoleId" parameterType="com.nhry.model.auth.UserQueryModel" resultMap="BaseResultMap1">
         SELECT
         u.LOGIN_NAME loginName,
         u.DISPLAY_NAME displayName,
@@ -590,10 +590,15 @@
         </where>
         order by u.CREATE_ON desc,u.LAST_MODIFIED desc
     </select>
-    <resultMap id="BaseResultMap1" type="com.nhry.data.auth.domain.TSysUser" extends="BaseResultMap">
-        <collection property="roleIds" ofType="com.nhry.data.auth.domain.TSysUserRole">
-            <id property="id" column="ID"/>
-        </collection>
+    <resultMap id="BaseResultMap1" type="com.nhry.data.auth.domain.TSysUser">
+        <id column="LOGIN_NAME" jdbcType="VARCHAR" property="loginName"/>
+        <result column="DISPLAY_NAME" jdbcType="VARCHAR" property="displayName"/>
+        <result column="MOBILE" jdbcType="VARCHAR" property="mobile"/>
+        <result column="SMART_IDCARDNUMBER" jdbcType="VARCHAR" property="smartIdcardnumber"/>
+        <result column="roleIds" jdbcType="VARCHAR" property="roleIds"/>
+        <!--<collection property="roleIds" ofType="com.nhry.data.auth.domain.TSysUserRole">-->
+            <!--<id property="id" column="ID"/>-->
+        <!--</collection>-->
     </resultMap>
     <select id="findUserBack" parameterType="com.nhry.model.auth.UserQueryModel" resultMap="BaseResultMap1">
         SELECT
