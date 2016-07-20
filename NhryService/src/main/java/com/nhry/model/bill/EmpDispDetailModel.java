@@ -9,6 +9,7 @@ public class EmpDispDetailModel {
     private String branchNo;
     private String branchName;
     private String dealerName;
+    private String dealerNo;
     private String empNo;
     private String empName;
     private Date     dispDate;
@@ -16,6 +17,14 @@ public class EmpDispDetailModel {
     private String matnrTxt;
     private Integer qty;
     private String type;
+
+    public String getDealerNo() {
+        return dealerNo;
+    }
+
+    public void setDealerNo(String dealerNo) {
+        this.dealerNo = dealerNo;
+    }
 
     public String getDealerName() {
         return dealerName;
