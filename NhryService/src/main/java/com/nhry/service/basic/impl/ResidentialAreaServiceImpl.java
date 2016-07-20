@@ -106,6 +106,9 @@ public class ResidentialAreaServiceImpl implements ResidentialAreaService {
         if("10004".equals(userRole.getId())){
             aModel.setBranchNo(user.getBranchNo());
         }
+        if(!StringUtils.isEmpty(aModel.getContent())){
+        	aModel.setContent(aModel.getContent().trim().replace(" ", "%"));
+        }
         return tMdResidentialAreaMapper.searchAreaBySalesOrg(aModel);
     }
 
