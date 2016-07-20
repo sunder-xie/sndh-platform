@@ -538,10 +538,12 @@
     <select id="findUserByRoleId" parameterType="com.nhry.model.auth.UserQueryModel2" resultMap="BaseResultMap1">
         SELECT
         DISTINCT
-        u.LOGIN_NAME loginName,
-        u.DISPLAY_NAME displayName,
-        u.SMART_IDCARDNUMBER smartIdcardnumber,
-        u.MOBILE mobile,
+        u.LOGIN_NAME,
+        u.DISPLAY_NAME,
+        u.SMART_IDCARDNUMBER,
+        u.MOBILE,
+        u.CUSTOMIZED_EMPTYPETXT,
+        u.DEPARTMENT_NAME,
         CASE WHEN r.ID IS NULL THEN false ELSE true end isRole,
         (select group_concat(r.ID) from t_sys_user_role r where r.LOGIN_NAME = u.LOGIN_NAME ) as roleIds
         FROM T_SYS_USER u
@@ -567,10 +569,13 @@
 
     <select id="findPageByRoleId" parameterType="com.nhry.model.auth.UserQueryModel" resultMap="BaseResultMap1">
         SELECT
-        u.LOGIN_NAME loginName,
-        u.DISPLAY_NAME displayName,
-        u.SMART_IDCARDNUMBER smartIdcardnumber,
-        u.MOBILE mobile,
+        DISTINCT
+        u.LOGIN_NAME,
+        u.DISPLAY_NAME,
+        u.SMART_IDCARDNUMBER,
+        u.MOBILE,
+        u.CUSTOMIZED_EMPTYPETXT,
+        u.DEPARTMENT_NAME,
         CASE WHEN r.ID IS NULL THEN false ELSE true end isRole,
         (select group_concat(r.ID) from t_sys_user_role r where r.LOGIN_NAME = u.LOGIN_NAME ) as roleIds
         FROM T_SYS_USER u
@@ -596,6 +601,8 @@
         <result column="MOBILE" jdbcType="VARCHAR" property="mobile"/>
         <result column="SMART_IDCARDNUMBER" jdbcType="VARCHAR" property="smartIdcardnumber"/>
         <result column="roleIds" jdbcType="VARCHAR" property="roleIds"/>
+        <result column="CUSTOMIZED_EMPTYPETXT" jdbcType="VARCHAR" property="customizedEmptypetxt"/>
+        <result column="DEPARTMENT_NAME" jdbcType="VARCHAR" property="departmentName"/>
         <!--<collection property="roleIds" ofType="com.nhry.data.auth.domain.TSysUserRole">-->
             <!--<id property="id" column="ID"/>-->
         <!--</collection>-->
