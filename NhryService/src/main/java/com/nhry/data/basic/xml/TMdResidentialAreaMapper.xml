@@ -240,7 +240,7 @@
     (SELECT i.ITEM_NAME from t_sys_code_item i WHERE i.TYPE_CODE= <include refid="mybaties.constant.COUNTRY_CITY_CONSTANT"></include> and i.ITEM_CODE = a.CITY ) CITY_NAME,
     (SELECT i.ITEM_NAME from t_sys_code_item i WHERE i.TYPE_CODE= <include refid="mybaties.constant.COUNTRY_CITY_CONSTANT"></include> and i.ITEM_CODE = a.COUNTY ) COUNTY_NAME,
     (SELECT i.ITEM_NAME from t_sys_code_item i WHERE i.TYPE_CODE= <include refid="mybaties.constant.COUNTRY_CITY_CONSTANT"></include> and i.ITEM_CODE = a.STREET ) STREET_NAME
-    from t_md_residential_area a LEFT JOIN t_md_branch_scope s on a.ID = s.RESIDENTIAL_AREA_ID
+    from t_md_residential_area a
     where 1=1
       and a.SALES_ORG = #{salesOrg,jdbcType=VARCHAR}
     <if test="branchNo != null and branchNo !=''">

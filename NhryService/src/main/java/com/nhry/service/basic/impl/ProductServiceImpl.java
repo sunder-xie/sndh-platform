@@ -236,6 +236,13 @@ public class ProductServiceImpl extends BaseService implements ProductService {
 		return attrs;
 	}
 
+	@Override
+	public PageInfo listsBySalesOrg(ProductQueryModel pm) {
+		TSysUser user = userSessionService.getCurrentUser();
+		pm.setSalesOrg(user.getSalesOrg());
+		return tMdMaraMapper.listsBySalesOrg(pm);
+	}
+
 	public void setMessService(TSysMessageService messService) {
 		this.messService = messService;
 	}
