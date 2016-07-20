@@ -6,6 +6,7 @@
         <id column="MATNR" property="matnr" jdbcType="VARCHAR"/>
         <result column="UNIT" property="unit" jdbcType="VARCHAR"/>
         <result column="QTY" property="qty" jdbcType="DECIMAL"/>
+        <result column="MATNR_TXT" property="matnrTxt" jdbcType="VARCHAR"/>
         <result column="ZBOT_CODE_NAME" property="zbotCodeName" jdbcType="VARCHAR" />
         <result column="SEC_CATE_NAME" property="secCateName" jdbcType="VARCHAR" />
         <result column="SPEC_NAME" property="specName" jdbcType="VARCHAR" />    
