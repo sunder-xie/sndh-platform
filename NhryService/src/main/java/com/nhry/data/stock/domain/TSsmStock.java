@@ -22,4 +22,44 @@ public class TSsmStock extends TSsmStockKey {
     public void setQty(BigDecimal qty) {
         this.qty = qty;
     }
+
+    private String zbotCodeName; //包装类型
+
+    private String specName;
+
+    private String secCateName;
+
+    public String getSpecUnit() {
+        return SpecUnit;
+    }
+
+    public void setSpecUnit(String specUnit) {
+        SpecUnit = specUnit;
+    }
+
+    private String SpecUnit;
+
+    public String getZbotCodeName() {
+        return zbotCodeName;
+    }
+
+    public void setZbotCodeName(String zbotCodeName) {
+        this.zbotCodeName = zbotCodeName;
+    }
+
+    public String getSpecName() {
+        return specName;
+    }
+
+    public void setSpecName(String specName) {
+        this.specName = specName;
+    }
+
+    public String getSecCateName() {
+        return secCateName;
+    }
+
+    public void setSecCateName(String secCateName) {
+        this.secCateName = secCateName;
+    }
 }
