@@ -111,6 +111,8 @@ public class TSysUser implements Serializable{
 
     private String[] roleIdArray;
 
+    private boolean isRole;
+
 //    private List<TSysUserRole> roleIds = new ArrayList<TSysUserRole>();
     
     public String getLoginName() {
@@ -512,5 +514,13 @@ public class TSysUser implements Serializable{
 
     public void setRoleIdArray(String[] roleIdArray) {
         this.roleIdArray = roleIdArray;
+    }
+
+    public boolean isRole() {
+        return isRole;
+    }
+
+    public void setRole(boolean role) {
+        isRole = role;
     }
 }

@@ -75,7 +75,7 @@ public class PIResouce extends BaseResource{
     @Consumes(MediaType.APPLICATION_JSON)
     @ApiOperation(value = "/getJHD/{id}", response = ResponseModel.class, notes = "获取交货单数据")
     public Response gegetJHDZD(@PathParam("id") String id) throws RemoteException {
-        return convertToRespModel(MessageCode.NORMAL, requireOrderService.getDelivery(id,true), null);
+        return convertToRespModel(MessageCode.NORMAL, requireOrderService.getDelivery(id,false), null);
     }
 
     @POST

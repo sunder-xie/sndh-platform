@@ -108,7 +108,7 @@ public class UserServiceImpl extends BaseService implements UserService {
 	}
 
 	@Override
-	public List<Map<String,String>> findUserByRoleId(UserQueryModel2 um) {
+	public List<TSysUser> findUserByRoleId(UserQueryModel2 um) {
 //		if(StringUtils.isEmpty(um.getRoleId())){
 //			throw new ServiceException(MessageCode.LOGIC_ERROR,"roleId不能为空！");
 //		}
