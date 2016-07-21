@@ -62,7 +62,7 @@ public class ProductResource extends BaseResource {
 	@ApiOperation(value = "/change/status/{status}/{productCode}", response = ResponseModel.class, notes = "更改商品状态")
 	public Response pubProductByCode(@ApiParam(required=true,name="productCode",value="更改商品状态") @PathParam("productCode") String productCode,
 			@ApiParam(required=true,name="status",value="产品状态(Y：有效；N：无效)") @PathParam("status") String status){
-		return convertToRespModel(MessageCode.NORMAL, null, productService.pubProductByCode(productCode,status));
+		return convertToRespModel(MessageCode.NORMAL, null, productService.pubProductByCode(productCode,status,true));
 	} 
 	
 	@POST
