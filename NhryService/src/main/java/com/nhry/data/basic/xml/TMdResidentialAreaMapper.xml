@@ -339,7 +339,7 @@
     ) t 
     <where>
        <if test="content != null and content != ''">
-             CONCAT(t.PROVINCE_NAME,t.CITY_NAME,t.COUNTY_NAME,t.STREET_NAME) like '%${content}%'
+             CONCAT_WS(t.PROVINCE_NAME,t.CITY_NAME,t.COUNTY_NAME,t.ADDRESS_TXT) like '%${content}%'
        </if>
     </where> 
   </select>
