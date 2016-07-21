@@ -373,4 +373,24 @@
     </set>
     WHERE IS_DELETE='N' AND ADDRESS_ID &lt;&gt; #{addressId} AND VIP_CUST_NO=#{vipCustNo}
   </update>
+  <select id="findAddressByMixedTerms" parameterType="java.util.HashMap" resultMap="BaseResultMap">
+     select <include refid="Base_Column_List" /> from t_md_address d 
+    <where>
+        <if test="province != null and province != ''">
+           d.PROVINCE=#{province}
+        </if>
+         <if test="city != null and city != ''">
+           and d.CITY=#{city}
+        </if>
+         <if test="county != null and county != ''">
+           and d.COUNTY=#{county}
+        </if>
+         <if test="residentialArea != null and residentialArea != ''">
+           and d.RESIDENTIAL_AREA=#{residentialArea}
+        </if>
+        <if test="addressTxt != null and addressTxt != ''">
+           and d.ADDRESS_TXT=#{addressTxt}
+        </if>
+    </where>
+  </select>
 </mapper>
