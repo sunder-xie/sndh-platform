@@ -408,6 +408,15 @@
       <if test="curAmt != null" >
         CUR_AMT = #{curAmt,jdbcType=DECIMAL},
       </if>
+      <if test="backReason != null" >
+        BACK_REASON = #{backReason,jdbcType=VARCHAR},
+      </if>
+      <if test="backDate != null" >
+        BACK_DATE = #{backDate,jdbcType=DATE},
+      </if>
+      <if test="memoTxt != null" >
+        MEMO_TXT = #{memoTxt,jdbcType=VARCHAR},
+      </if>
     </set>
     where ORDER_NO = #{orderNo,jdbcType=VARCHAR}
   </update>
