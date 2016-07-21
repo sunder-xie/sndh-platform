@@ -21,12 +21,48 @@
     </select>
 
     <insert id="insertInsideSalOrder" parameterType="com.nhry.data.milktrans.domain.TMstInsideSalOrder">
-          insert into t_mst_inside_sal_order (
+
+        insert into t_mst_inside_sal_order
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="insOrderNo != null">
+                INS_ORDER_NO,
+            </if>
+            <if test="orderDate != null">
+                ORDER_DATE,
+            </if>
+            <if test="dispOrderNo != null">
+                DISP_ORDER_NO,
+            </if>
+            <if test="salEmpNo != null">
+                SAL_EMP_NO,
+            </if>
+            <if test="branchNo != null">
+                BRANCH_NO,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="insOrderNo != null">
+                #{insOrderNo,jdbcType=VARCHAR},
+            </if>
+            <if test="orderDate != null">
+                #{orderDate,jdbcType=DATE},
+            </if>
+            <if test="dispOrderNo != null">
+                #{dispOrderNo,jdbcType=VARCHAR},
+            </if>
+            <if test="salEmpNo != null">
+                #{salEmpNo,jdbcType=VARCHAR},
+            </if>
+            <if test="branchNo != null">
+                #{branchNo,jdbcType=VARCHAR},
+            </if>
+        </trim>
+      /*    insert into t_mst_inside_sal_order (
            INS_ORDER_NO,ORDER_DATE,DISP_ORDER_NO,SAL_EMP_NO,BRANCH_NO)
          values(
              #{insOrderNo,jdbcType=VARCHAR}, #{orderDate,jdbcType=DATE}, #{dispOrderNo,jdbcType=VARCHAR},
              #{salEmpNo,jdbcType=VARCHAR}, #{branchNo,jdbcType=VARCHAR}
-         )
+         )*/
 
     </insert>
 

@@ -163,7 +163,6 @@ public class BranchEmpServiceImpl extends BaseService implements BranchEmpServic
 	public PageInfo searchBranchEmp(EmpQueryModel smodel) {
 		TSysUser user = userSessionService.getCurrentUser();
 		smodel.setSalesOrg(user.getSalesOrg());
-
 		if(StringUtils.isBlank(smodel.getBranchNo())){
 			TSysUserRole userRole = userRoleMapper.getUserRoleByLoginName(user.getLoginName());
 			if("10003".equals(userRole.getId())){
