@@ -24,6 +24,7 @@ import javax.naming.directory.SearchResult;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 
+import com.nhry.data.auth.dao.TSysUserMapper;
 import com.nhry.data.auth.domain.TSysUser;
 import com.nhry.service.auth.dao.UserService;
 import com.nhry.utils.EnvContant;
@@ -162,8 +163,8 @@ public class LadpService {
 		try {
 			Date date = new Date();
 			DateFormat formatter = new SimpleDateFormat("yyyyMMddHHmmssZ");  
-			String dateStr = formatter.format(date.addMilliseconds(-60));
-			String filter = "(&(|(modifyTimestamp>="+dateStr+")(createTimestamp>="+dateStr+"))(smart-authority=Auth_SSO))";
+			String dateStr = formatter.format(date.addMilliseconds(-60));  //60分钟之前
+			String filter = "(&(|(modifyTimestamp>="+dateStr+")(createTimestamp>="+dateStr+"))(smart-authority=Auth_CRM))";
 			String basedn = "ou=People,o=newhopedairy,o=isp";
 			List<Map<String, String>> list = getObjectsByFilter(basedn,filter);
 			Map<String,String> spcAttrs = new HashMap<String,String>();
@@ -183,7 +184,8 @@ public class LadpService {
 	public static void main(String[] args) {
 		String[] xmls = new String[]{ "classpath:beans/spring-context.xml","classpath:beans/dataSource.xml","classpath:beans/*-bean.xml"  };
         ApplicationContext context = new ClassPathXmlApplicationContext(xmls);
-        LadpService ldservice = (LadpService)context.getBean("ladpService");
-        ldservice.syncSysUsers();
+        TSysUserMapper userMapper = (TSysUserMapper)context.getBean("userMapper");
+        List<TSysUser> users = userMapper.getloginNamesByOrgsandRid2(new HashMap<String,String>());
+        System.out.println(users.size());
 	}
 }

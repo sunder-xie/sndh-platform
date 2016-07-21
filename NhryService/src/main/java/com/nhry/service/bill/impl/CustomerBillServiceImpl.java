@@ -6,18 +6,25 @@ import com.nhry.common.exception.MessageCode;
 import com.nhry.common.exception.ServiceException;
 import com.nhry.data.auth.dao.TSysUserRoleMapper;
 import com.nhry.data.auth.domain.TSysUser;
+import com.nhry.data.basic.domain.TVipAcct;
 import com.nhry.data.auth.domain.TSysUserRole;
 import com.nhry.data.bill.dao.CustomerBillMapper;
 import com.nhry.data.bill.domain.TMstRecvBill;
 import com.nhry.data.order.dao.TPlanOrderItemMapper;
 import com.nhry.data.order.dao.TPreOrderMapper;
+import com.nhry.data.order.domain.TOrderDaliyPlanItem;
 import com.nhry.data.order.domain.TPlanOrderItem;
 import com.nhry.data.order.domain.TPreOrder;
 import com.nhry.model.bill.CustBillQueryModel;
 import com.nhry.model.bill.CustomerBillOrder;
 import com.nhry.model.bill.CustomerPayMentModel;
+import com.nhry.model.order.OrderCreateModel;
+import com.nhry.service.basic.dao.TVipCustInfoService;
 import com.nhry.service.bill.dao.CustomerBillService;
+import com.nhry.service.order.dao.OrderService;
+import com.nhry.service.order.dao.PromotionService;
 import com.nhry.utils.SerialUtil;
+
 import org.apache.commons.lang3.StringUtils;
 
 import java.math.BigDecimal;
@@ -32,6 +39,9 @@ public class CustomerBillServiceImpl implements CustomerBillService {
     private TPreOrderMapper tPreOrderMapper;
     private TPlanOrderItemMapper tPlanOrderItemMapper;
     private UserSessionService userSessionService;
+    private OrderService orderService;
+    private PromotionService promotionService;
+    private TVipCustInfoService tVipCustInfoService;
     private TSysUserRoleMapper urMapper;
 
     @Override
@@ -85,7 +95,7 @@ public class CustomerBillServiceImpl implements CustomerBillService {
 
                 TMstRecvBill customerBill = new TMstRecvBill();
                 customerBill.setOrderNo(orderNo);
-                customerBill.setAmt(Integer.valueOf(cModel.getAmt()));
+                customerBill.setAmt(new BigDecimal(cModel.getAmt()));
                 customerBill.setReceiptDate(date);
                 customerBill.setStatus("20");
                 customerBill.setRecvEmp(order.getEmpNo());
@@ -105,6 +115,16 @@ public class CustomerBillServiceImpl implements CustomerBillService {
                 customerBill.setLastModifiedBy(user.getLoginName());
                 customerBill.setCreateByTxt(user.getDisplayName());
 
+                //多收或者少收款的，要记回订户帐户
+            	 if(order.getInitAmt()!=null){
+       				TVipAcct ac = new TVipAcct();
+       				BigDecimal acLeftAmt = tVipCustInfoService.findVipAcctByCustNo(order.getMilkmemberNo()).getAcctAmt();
+       				if(acLeftAmt.add(customerBill.getAmt()).floatValue() < order.getInitAmt().floatValue())throw new ServiceException(MessageCode.LOGIC_ERROR,"输入的金额和账户余额不足以支付此订单!");
+   				   ac.setVipCustNo(order.getMilkmemberNo());
+   				   ac.setAcctAmt(customerBill.getAmt().subtract(order.getInitAmt()));
+   					tVipCustInfoService.addVipAcct(ac);
+          		 }
+                
                 if(bill!=null && bill.getStatus()=="10"){
                     updateBill =  customerBillMapper.updateCustomerBillrPayment(customerBill);
                 }else{
@@ -119,6 +139,14 @@ public class CustomerBillServiceImpl implements CustomerBillService {
                 }
                 //更新订单状态为已收款
                 updateOrderStatus = tPreOrderMapper.updateOrderPayMentStatus(orderNo);
+                
+                //预付款的，付款后生成日计划
+                if("20".equals(order.getPaymentmethod()) && !"20".equals(order.getMilkboxStat()) ){
+               	 OrderCreateModel omodel = orderService.selectOrderByCode(orderNo);
+               	 List<TOrderDaliyPlanItem> list = orderService.createDaliyPlan(omodel.getOrder(),omodel.getEntries());
+               	 promotionService.createDaliyPlanByPromotion(omodel.getOrder(),omodel.getEntries(),list);
+                }
+                
                 return updateBill+updateOrderStatus;
             }
     }
@@ -169,7 +197,16 @@ public class CustomerBillServiceImpl implements CustomerBillService {
     public void setUserSessionService(UserSessionService userSessionService) {
         this.userSessionService = userSessionService;
     }
-
+    public void setOrderService(OrderService orderService) {
+       this.orderService = orderService;
+    }
+    
+    public void setPromotionService(PromotionService promotionService) {
+       this.promotionService = promotionService;
+    }
+    public void settVipCustInfoService(TVipCustInfoService tVipCustInfoService) {
+       this.tVipCustInfoService = tVipCustInfoService;
+    }
     public void setUrMapper(TSysUserRoleMapper urMapper) {
         this.urMapper = urMapper;
     }

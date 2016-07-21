@@ -16,6 +16,8 @@ import com.nhry.model.basic.BranchQueryModel;
 import com.nhry.model.basic.BranchSalesOrgModel;
 import com.nhry.service.BaseService;
 import com.nhry.service.basic.dao.BranchService;
+import com.nhry.service.basic.dao.TSysMessageService;
+
 import org.apache.commons.lang3.StringUtils;
 
 import java.util.HashMap;
@@ -23,10 +25,11 @@ import java.util.List;
 import java.util.Map;
 
 public class BranchServiceImpl extends BaseService implements BranchService {
-     private TMdBranchMapper branchMapper;
+    private TMdBranchMapper branchMapper;
 	private TMdDealerMapper dealerMapper;
 	private UserSessionService userSessionService;
 	private TSysUserRoleMapper urMapper;
+	private TSysMessageService messService;
 
 	@Override
 	public int deleteBranchByNo(String branchNo) {
@@ -48,7 +51,16 @@ public class BranchServiceImpl extends BaseService implements BranchService {
 
 	@Override
 	public int updateBranch(TMdBranch tMdBranch) {
-		return branchMapper.updateBranch(tMdBranch);
+		if(StringUtils.isEmpty(tMdBranch.getBranchNo())){
+			throw new ServiceException(MessageCode.LOGIC_ERROR, "奶站编号不能为空!");
+		}
+		TMdBranch branch = this.branchMapper.selectBranchByNo(tMdBranch.getBranchNo());
+		if(branch == null){
+			throw new ServiceException(MessageCode.LOGIC_ERROR, "该奶站编号对应的奶站信息不存在!");
+		}
+		branchMapper.updateBranch(tMdBranch);
+		//奶站数据更新，发送系统消息
+		return messService.sendMessagesForUptBranch(branch) ? 1 : 0;
 	}
 
 	@Override
@@ -143,6 +155,10 @@ public class BranchServiceImpl extends BaseService implements BranchService {
 		attrs.put("salesOrg", this.userSessionService.getCurrentUser().getSalesOrg());
 		attrs.put("dealerNo",dealerNo);
 		return this.branchMapper.findBranchByDno(attrs);
+	}
+
+	public void setMessService(TSysMessageService messService) {
+		this.messService = messService;
 	}
 
 

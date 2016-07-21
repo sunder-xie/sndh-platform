@@ -168,13 +168,15 @@ public class MilkBoxServiceImpl extends BaseService implements MilkBoxService
 				o.setMilkboxStat(plan.getMilkboxStat());
 				tPreOrderMapper.updateOrderStatus(o);
 				
-				//当装箱变为已安装完后或无需安装，生成日计划
-				if(!"20".equals(plan.getMilkboxStat())){
-					OrderCreateModel omodel = orderService.selectOrderByCode(plan.getOrderNo());
-					//生成每日计划
-					List<TOrderDaliyPlanItem> list = orderService.createDaliyPlan(omodel.getOrder(), omodel.getEntries());
-					//如果有赠品，生成赠品的日计划
-					promotionService.createDaliyPlanByPromotion(omodel.getOrder(), omodel.getEntries() ,list);
+				//预付款的订单要付款+装箱才生成日计划
+				OrderCreateModel omodel = orderService.selectOrderByCode(plan.getOrderNo());
+				if(!"20".equals(plan.getMilkboxStat()) ){
+					if( ("20".equals(omodel.getOrder().getPaymentmethod()) && "20".equals(omodel.getOrder().getPaymentStat())) || !"20".equals(omodel.getOrder().getPaymentmethod()) ){
+						//生成每日计划
+						List<TOrderDaliyPlanItem> list = orderService.createDaliyPlan(omodel.getOrder(), omodel.getEntries());
+						//如果有赠品，生成赠品的日计划
+						promotionService.createDaliyPlanByPromotion(omodel.getOrder(), omodel.getEntries() ,list);
+					}
 				}
 			}
 			if(model.getSetDate()!=null){

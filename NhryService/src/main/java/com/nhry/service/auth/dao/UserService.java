@@ -31,7 +31,7 @@ public interface UserService {
 	
 	public int deleteUserByLoginName(String uname);
 
-	List<Map<String,String>> findUserByRoleId(UserQueryModel2 um);
+	List<TSysUser> findUserByRoleId(UserQueryModel2 um);
 
 	PageInfo findUserPageByRoleId(UserQueryModel um);
 }

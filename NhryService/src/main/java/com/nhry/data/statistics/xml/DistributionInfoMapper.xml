@@ -32,7 +32,7 @@
             AND b.BRANCH_NO = ${branchNo}
         </if>
         <if test="dealerId != null">
-            AND b.DEALER_ID = ${dealerId}
+            AND b.DEALER_NO = ${dealerId}
         </if>
         <if test="salesOrg != null">
             AND b.SALES_ORG = ${salesOrg}

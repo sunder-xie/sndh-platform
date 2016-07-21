@@ -69,7 +69,7 @@ public class BusinessDataConnection {
             IT_ITEM_type0 it_item_type0 = new IT_ITEM_type0();
             int num = 0;
             for (Map<String, String> item : items) {
-                String item_no = item.get("ITEM_NO");
+                String item_no = String.valueOf(item.get("ITEM_NO"));
                 String order_no = item.get("ORDER_NO");
                 String matnr = item.get("MATNR");
                 String qtys = String.valueOf(item.get("SUM_QTY"));
@@ -101,7 +101,7 @@ public class BusinessDataConnection {
                 zssd00019.setMENGE(menge_type1);
 
                 RESLO_type3 reslo_type3 = new RESLO_type3();
-                reslo_type3.setRESLO_type2("3002");//TODO 待修改
+                reslo_type3.setRESLO_type2("3001");//TODO 待修改
                 zssd00019.setRESLO(reslo_type3);
 
                 WERKS_type5 werks_type5 = new WERKS_type5();
@@ -109,12 +109,11 @@ public class BusinessDataConnection {
                 zssd00019.setWERKS(werks_type5);
 
                 LGORT_type5 lgort_type5 = new LGORT_type5();
-                lgort_type5.setLGORT_type4(branchNo);
+                lgort_type5.setLGORT_type4("4005");
                 zssd00019.setLGORT(lgort_type5);
 
                 PO_ITEM_type1 po_item_type1 = new PO_ITEM_type1();
-
-                po_item_type1.setPO_ITEM_type0(item_no==null? num+"" :item_no);
+                po_item_type1.setPO_ITEM_type0(item_no==null? num+"":item_no);
                 zssd00019.setPO_ITEM(po_item_type1);
                 it_item_type0.addItem(zssd00019);
             }
