@@ -10,6 +10,10 @@ public class AreaSearchModel implements Serializable {
     private String content;
     private String branchNo;
     private String salesOrg;
+    private String province;
+    private String city;
+    private String county;
+
 	public String getStatus() {
 		return status;
 	}
@@ -33,6 +37,24 @@ public class AreaSearchModel implements Serializable {
 	}
 	public void setSalesOrg(String salesOrg) {
 		this.salesOrg = salesOrg;
+	}
+	public String getProvince() {
+		return province;
+	}
+	public void setProvince(String province) {
+		this.province = province;
+	}
+	public String getCity() {
+		return city;
+	}
+	public void setCity(String city) {
+		this.city = city;
+	}
+	public String getCounty() {
+		return county;
+	}
+	public void setCounty(String county) {
+		this.county = county;
 	}
 
    
