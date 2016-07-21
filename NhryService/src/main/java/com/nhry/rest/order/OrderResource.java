@@ -139,12 +139,39 @@ public class OrderResource extends BaseResource {
 	}
 	
 	@POST
+	@Path("/batchContinueOrder")
+	@Produces(MediaType.APPLICATION_JSON)
+	@Consumes(MediaType.APPLICATION_JSON)
+	@ApiOperation(value = "/batchContinueOrder", response = Integer.class, notes = "订单批量续订")
+	public Response batchContinueOrder(@ApiParam(required=true,name="smodel",value="SearchModel") OrderSearchModel smodel){
+		return convertToRespModel(MessageCode.NORMAL, null, orderService.batchContinueOrder(smodel));
+	}
+	
+	@POST
+	@Path("/batchResumeFromStop")
+	@Produces(MediaType.APPLICATION_JSON)
+	@Consumes(MediaType.APPLICATION_JSON)
+	@ApiOperation(value = "/batchResumeFromStop", response = Integer.class, notes = "订单批量复订")
+	public Response batchResumeFromStop(@ApiParam(required=true,name="smodel",value="SearchModel") OrderSearchModel smodel){
+		return convertToRespModel(MessageCode.NORMAL, null, orderService.batchContinueOrdeAfterStop(smodel));
+	}
+	
+	@POST
 	@Path("/stopOrder")
 	@Produces(MediaType.APPLICATION_JSON)
 	@Consumes(MediaType.APPLICATION_JSON)
 	@ApiOperation(value = "/stopOrder", response = Integer.class, notes = "订单停订")
 	public Response stopOrder(@ApiParam(required=true,name="smodel",value="SearchModel") OrderSearchModel smodel){
 		return convertToRespModel(MessageCode.NORMAL, null, orderService.stopOrderForTime(smodel));
+	}
+	
+	@POST
+	@Path("/stopOrderInTime")
+	@Produces(MediaType.APPLICATION_JSON)
+	@Consumes(MediaType.APPLICATION_JSON)
+	@ApiOperation(value = "/stopOrderInTime", response = Integer.class, notes = "订单停订(区间)")
+	public Response stopOrderInTime(@ApiParam(required=true,name="smodel",value="SearchModel") OrderSearchModel smodel){
+		return convertToRespModel(MessageCode.NORMAL, null, orderService.stopOrderInTime(smodel));
 	}
 	
 	@POST
