@@ -25,6 +25,8 @@ public interface OrderService {
 
 	int editOrderForShort(DaliyPlanEditModel record);
 
+	int batchStopOrderForTime(OrderSearchModel record);
+	
 	int stopOrderForTime(OrderSearchModel record);
 
 	int backOrder(OrderSearchModel record);

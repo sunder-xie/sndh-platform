@@ -76,7 +76,7 @@ public class ProductServiceImpl extends BaseService implements ProductService {
 		}
 	   if(!StringUtils.isBlank(record.getStatus())){
 		   //状态不为空时，更新产品状态
-		   pubProductByCode(record.getMatnr(),record.getStatus());
+		   pubProductByCode(record.getMatnr(),record.getStatus(),false);
 		   messService.sendProductsMessages("产品更新了！", record);
 		}
 		return 1;
@@ -113,7 +113,7 @@ public class ProductServiceImpl extends BaseService implements ProductService {
 	}
 
 	@Override
-	public int pubProductByCode(String code,String status) {
+	public int pubProductByCode(String code,String status,boolean flag) {
 		// TODO Auto-generated method stub
 		Map attrs = new HashMap();
 		attrs.put("matnr", code);
@@ -126,10 +126,12 @@ public class ProductServiceImpl extends BaseService implements ProductService {
 		}
 		tMdMaraMapper.pubProductByCode(attrs);
 		//发送通知
-		if("Y".equals(status)){
-			messService.sendProductsMessages("新品发布通知！", mara);
-		}else if("N".equals(status)){
-			messService.sendProductsMessages("产品下架通知！", mara);
+		if(flag){
+			if("Y".equals(status)){
+				messService.sendProductsMessages("新品发布通知！", mara);
+			}else if("N".equals(status)){
+				messService.sendProductsMessages("产品下架通知！", mara);
+			}
 		}
 		return 1;
 	}

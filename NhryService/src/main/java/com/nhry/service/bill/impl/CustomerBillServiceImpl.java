@@ -118,7 +118,11 @@ public class CustomerBillServiceImpl implements CustomerBillService {
                 //多收或者少收款的，要记回订户帐户
             	 if(order.getInitAmt()!=null){
        				TVipAcct ac = new TVipAcct();
-       				BigDecimal acLeftAmt = tVipCustInfoService.findVipAcctByCustNo(order.getMilkmemberNo()).getAcctAmt();
+       				BigDecimal acLeftAmt = new BigDecimal("0.00");
+       				TVipAcct eac = tVipCustInfoService.findVipAcctByCustNo(order.getMilkmemberNo());
+       				if(eac!=null){
+       					acLeftAmt = eac.getAcctAmt();
+       				}
        				if(acLeftAmt.add(customerBill.getAmt()).floatValue() < order.getInitAmt().floatValue())throw new ServiceException(MessageCode.LOGIC_ERROR,"输入的金额和账户余额不足以支付此订单!");
    				   ac.setVipCustNo(order.getMilkmemberNo());
    				   ac.setAcctAmt(customerBill.getAmt().subtract(order.getInitAmt()));

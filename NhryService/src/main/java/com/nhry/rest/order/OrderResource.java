@@ -130,6 +130,15 @@ public class OrderResource extends BaseResource {
 	}
 	
 	@POST
+	@Path("/batchStopOrder")
+	@Produces(MediaType.APPLICATION_JSON)
+	@Consumes(MediaType.APPLICATION_JSON)
+	@ApiOperation(value = "/batchStopOrder", response = Integer.class, notes = "订单批量停订")
+	public Response batchStopOrder(@ApiParam(required=true,name="smodel",value="SearchModel") OrderSearchModel smodel){
+		return convertToRespModel(MessageCode.NORMAL, null, orderService.batchStopOrderForTime(smodel));
+	}
+	
+	@POST
 	@Path("/stopOrder")
 	@Produces(MediaType.APPLICATION_JSON)
 	@Consumes(MediaType.APPLICATION_JSON)
