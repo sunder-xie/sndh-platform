@@ -25,6 +25,7 @@
     </delete>
 
     <insert id="insertOrderItem" parameterType="com.nhry.data.milktrans.domain.TMstInsideSalOrderItem">
+
           insert into t_mst_inside_sal_order_item (
           INS_ORDER_NO ,ORDER_DATE ,ITEM_NO ,ORG_ORDER_NO,MATNR, QTY, PRICE, REASON)
          values(

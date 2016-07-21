@@ -638,8 +638,9 @@
   </update>
   <select id="searchCustomerOrder" resultMap="BaseResultMap" parameterType="com.nhry.model.bill.CustBillQueryModel">
     select
-    o.ORDER_NO, o.END_DATE,o.EMP_NO,e.EMP_NAME EMP_NAME,o.INIT_AMT,o.PAYMENT_STAT
+    o.ORDER_NO, o.END_DATE,o.EMP_NO,e.EMP_NAME EMP_NAME,o.INIT_AMT,o.PAYMENT_STAT,o.MILKMEMBER_NO,c.VIP_NAME MILKMEMBER_NAME
     FROM t_preorder o LEFT JOIN t_md_branch_emp e on o.EMP_NO = e.EMP_NO
+    LEFT JOIN  t_vip_cust_info c on o.MILKMEMBER_NO = c.VIP_CUST_NO
     where 1=1
     <if test="branchNo !=null and branchNo!=''">
       and  o.BRANCH_NO = #{branchNo,jdbcType=VARCHAR}
@@ -661,6 +662,9 @@
     </if>
     <if test="orderEndDate !=null">
        and   o.END_DATE &lt;= #{orderEndDate,jdbcType=DATE}
+    </if>
+    <if test="search !=null">
+      and  ( o.ORDER_NO like '%${search}%' or  e.EMP_NAME like'%${search}%' or c.VIP_NAME like '%${search}%')
     </if>
     ORDER BY ORDER_NO
   </select>

@@ -18,7 +18,9 @@ import com.nhry.data.order.dao.TPreOrderMapper;
 import com.nhry.data.order.domain.TOrderDaliyPlanItem;
 import com.nhry.data.order.domain.TPlanOrderItem;
 import com.nhry.data.order.domain.TPreOrder;
+import com.nhry.model.basic.MatnrAndQtyModel;
 import com.nhry.model.milk.*;
+import com.nhry.model.milktrans.CreateInSalOrderModel;
 import com.nhry.model.milktrans.InSideSalOrderDetailSearchModel;
 import com.nhry.model.milktrans.InSideSalOrderSearchModel;
 import com.nhry.service.BaseService;
@@ -163,6 +165,38 @@ public class DeliverMilkServiceImpl extends BaseService implements DeliverMilkSe
 		TSysUser user = userSessionService.getCurrentUser();
 		sModel.setSalesOrg(user.getSalesOrg());
 		return tMstInsideSalOrderItemMapper.getInsideSalOrderDetail(sModel);
+	}
+
+	@Override
+	public int createInsideSalOrderByStock(CreateInSalOrderModel cModel) {
+		List<MatnrAndQtyModel> items = cModel.getMatnrs();
+		if(items!=null && items.size()>0){
+			Date date = new Date();
+			TSysUser user = userSessionService.getCurrentUser();
+			TMstInsideSalOrder order = new TMstInsideSalOrder();
+			String insOrderNo = PrimaryKeyUtils.generateUuidKey();
+			order.setSalEmpNo(cModel.getEmpNo());
+			order.setInsOrderNo(insOrderNo);
+			order.setOrderDate(date);
+			order.setBranchNo(user.getBranchNo());
+			tMstInsideSalOrderMapper.insertInsideSalOrder(order);
+			for(int i=0 ;i <items.size();i++){
+				MatnrAndQtyModel model = items.get(i);
+				TMstInsideSalOrderItem item = new TMstInsideSalOrderItem();
+				item.setOrderDate(date);
+				item.setInsOrderNo(insOrderNo);
+				item.setReason("");
+				item.setMatnr(model.getMatnr());
+				item.setQty(new BigDecimal(model.getQty()));
+				item.setItemNo(SerialUtil.creatSeria());
+				tMstInsideSalOrderItemMapper.insertOrderItem(item);
+			}
+
+		}else{
+			throw new ServiceException(MessageCode.LOGIC_ERROR,"没有选择产品！！！！");
+		}
+
+ 		return 0;
 	}
 
 	/* (non-Javadoc) 
