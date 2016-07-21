@@ -25,16 +25,71 @@
     </delete>
 
     <insert id="insertOrderItem" parameterType="com.nhry.data.milktrans.domain.TMstInsideSalOrderItem">
+        insert into t_mst_inside_sal_order_item
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="insOrderNo != null">
+                INS_ORDER_NO,
+            </if>
+            <if test="orderDate != null">
+                ORDER_DATE,
+            </if>
+            <if test="itemNo != null">
+                itemNo,
+            </if>
+            <if test="orgOrderNo != null">
+                ORGG_ORDER_NO,
+            </if>
+            <if test="matnr != null">
+                MATNR,
+            </if>
+            <if test="qty != null">
+                QTY,
+            </if>
+            <if test="price != null">
+                PRICE,
+            </if>
+            <if test="reason != null">
+                REASON,
+            </if>
 
-          insert into t_mst_inside_sal_order_item (
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="insOrderNo != null">
+                #{insOrderNo,jdbcType=VARCHAR},
+            </if>
+            <if test="orderDate != null">
+                #{orderDate,jdbcType=DATE},
+            </if>
+            <if test="itemNo != null">
+                #{itemNo,jdbcType=VARCHAR},
+            </if>
+            <if test="orgOrderNo != null">
+                #{orgOrderNo,jdbcType=VARCHAR},
+            </if>
+            <if test="matnr != null">
+                #{matnr,jdbcType=VARCHAR},
+            </if>
+
+            <if test="qty != null">
+                #{qty,jdbcType=DECEIMAL},
+            </if>
+            <if test="price != null">
+                #{price,jdbcType=DECEIMAL},
+            </if>
+            <if test="reason != null">
+                #{reason,jdbcType=VARCHAR},
+            </if>
+        </trim>
+        <!--          insert into  (
           INS_ORDER_NO ,ORDER_DATE ,ITEM_NO ,ORG_ORDER_NO,MATNR, QTY, PRICE, REASON)
          values(
              #{insOrderNo,jdbcType=VARCHAR}, #{orderDate,jdbcType=DATE}, #{itemNo,jdbcType=VARCHAR},
              #{orgOrderNo,jdbcType=VARCHAR}, #{matnr,jdbcType=VARCHAR},#{qty,jdbcType=DECIMAL},
              #{price,jdbcType=DECIMAL},#{reason,jdbcType=VARCHAR}
-         )
-
+         )-->
     </insert>
+
+
     <select id="getInsideSalOrderDetail" resultMap="BaseResultMap" parameterType="com.nhry.model.milktrans.InSideSalOrderDetailSearchModel">
       SELECT
        i.INS_ORDER_NO ,i.ORDER_DATE ,i.ITEM_NO ,i.ORG_ORDER_NO,i.MATNR,i.QTY, i.PRICE, i.REASON,

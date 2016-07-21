@@ -179,19 +179,18 @@ public class DeliverMilkServiceImpl extends BaseService implements DeliverMilkSe
 			order.setInsOrderNo(insOrderNo);
 			order.setOrderDate(date);
 			order.setBranchNo(user.getBranchNo());
-			tMstInsideSalOrderMapper.insertInsideSalOrder(order);
 			for(int i=0 ;i <items.size();i++){
 				MatnrAndQtyModel model = items.get(i);
 				TMstInsideSalOrderItem item = new TMstInsideSalOrderItem();
 				item.setOrderDate(date);
 				item.setInsOrderNo(insOrderNo);
-				item.setReason("");
+				//item.setReason("");
 				item.setMatnr(model.getMatnr());
 				item.setQty(new BigDecimal(model.getQty()));
 				item.setItemNo(SerialUtil.creatSeria());
 				tMstInsideSalOrderItemMapper.insertOrderItem(item);
 			}
-
+			tMstInsideSalOrderMapper.insertInsideSalOrder(order);
 		}else{
 			throw new ServiceException(MessageCode.LOGIC_ERROR,"没有选择产品！！！！");
 		}
