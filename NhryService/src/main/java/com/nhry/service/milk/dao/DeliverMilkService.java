@@ -2,6 +2,7 @@ package com.nhry.service.milk.dao;
 
 import com.github.pagehelper.PageInfo;
 import com.nhry.model.milk.*;
+import com.nhry.model.milktrans.CreateInSalOrderModel;
 import com.nhry.model.milktrans.InSideSalOrderDetailSearchModel;
 import com.nhry.model.milktrans.InSideSalOrderSearchModel;
 
@@ -40,4 +41,6 @@ public interface DeliverMilkService {
 	PageInfo getInsideSalOrder(InSideSalOrderSearchModel sModel);
 
 	PageInfo getInsideSalOrderDetail(InSideSalOrderDetailSearchModel sModel);
+
+	int createInsideSalOrderByStock(CreateInSalOrderModel cModel);
 }

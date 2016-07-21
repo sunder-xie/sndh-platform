@@ -15,11 +15,19 @@ public class CustBillQueryModel extends BaseQueryModel implements Serializable {
     private Date orderStartDate;
 
     private Date orderEndDate;
-
+    private String search;
     private String branchNo ;
     private String dealerNo;
     private String salesOrg;
     private String empNo;
+
+    public String getSearch() {
+        return search;
+    }
+
+    public void setSearch(String search) {
+        this.search = search;
+    }
 
     public String getBranchNo() {
         return branchNo;
