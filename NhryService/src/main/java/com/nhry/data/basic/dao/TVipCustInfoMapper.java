@@ -80,4 +80,11 @@ public interface TVipCustInfoMapper {
      * @return
      */
     public int getCustCountByPhone(Map<String,String> attrs);
+    
+    /**
+     * 根据电话号码获取在订户编号
+     * @param attrs
+     * @return
+     */
+    public String getCustNoByPhone(Map<String,String> attrs);
 }

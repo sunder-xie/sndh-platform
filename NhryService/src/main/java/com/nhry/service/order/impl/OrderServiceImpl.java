@@ -713,7 +713,7 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 		//如果地址信息不为空，为订户创建新的地址
 		if(record.getAddress() != null && "1".equals(record.getAddress().getAddressMode())){
 			record.getAddress().setVipCustNo(order.getMilkmemberNo());
-			order.setAdressNo(tVipCustInfoService.addAddressForCust(record.getAddress()));
+			order.setAdressNo(tVipCustInfoService.addAddressForCust(record.getAddress(),null));
 		}
 
 		//生成每个订单行

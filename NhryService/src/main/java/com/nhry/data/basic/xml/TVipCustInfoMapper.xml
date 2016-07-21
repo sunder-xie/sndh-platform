@@ -897,4 +897,21 @@
 	        </if>
 	   </where>
 	</select>
+	<select id="getCustNoByPhone"  resultType="String" parameterType="java.util.HashMap">
+	   SELECT c.VIP_CUST_NO from t_vip_cust_info c 
+	   <where>
+	        <if test="custNo != null and custNo != ''">
+	        	c.VIP_CUST_NO &lt;&gt; #{custNo} 
+	        </if>
+	        <if test="phone != null and phone != ''">
+	        	AND c.MP= #{phone}
+	        </if>
+	        <if test="salesOrg != null and salesOrg != ''">
+	        	and c.SALES_ORG=#{salesOrg}
+	        </if>
+	        <if test="branchNo != null and branchNo != ''">
+	        	and c.BRANCH_NO=#{branchNo}
+	        </if>
+	   </where>
+	</select>
 </mapper>

@@ -77,4 +77,12 @@ public class TVipCustInfoMapperImpl implements TVipCustInfoMapper {
 		// TODO Auto-generated method stub
 		return this.sqlSessionTemplate.selectOne("getCustCountByPhone", attrs);
 	}
+
+	@Override
+	public String getCustNoByPhone(Map<String, String> attrs) {
+		// TODO Auto-generated method stub
+		return this.sqlSessionTemplate.selectOne("getCustNoByPhone", attrs);
+	}
+	
+	
 }
