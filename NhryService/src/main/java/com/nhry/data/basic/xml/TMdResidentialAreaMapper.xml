@@ -327,6 +327,15 @@
      <if test="status != null and status != ''">
       AND a.STATUS = #{status,jdbcType=VARCHAR}
     </if>
+    <if test="province != null and province !=''">
+      AND a.PROVINCE = #{province,jdbcType=VARCHAR}
+    </if>
+    <if test="city != null and city != ''">
+      AND a.CITY = #{city,jdbcType=VARCHAR}
+    </if>
+    <if test="county != null and county != ''">
+      AND a.COUNTY = #{county,jdbcType=VARCHAR}
+    </if>
     ) t 
     <where>
        <if test="content != null and content != ''">
