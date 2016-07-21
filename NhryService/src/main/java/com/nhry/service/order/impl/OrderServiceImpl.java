@@ -23,6 +23,7 @@ import com.nhry.service.order.dao.OrderService;
 import com.nhry.service.order.dao.PromotionService;
 import com.nhry.service.order.pojo.OrderRemainData;
 import com.nhry.utils.CodeGeneratorUtil;
+
 import org.apache.commons.lang3.StringUtils;
 
 import java.math.BigDecimal;
@@ -183,6 +184,27 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 	}
 	
 	/* (non-Javadoc) 
+	* @title: batchStopOrderForTime
+	* @description: 批量停订
+	* @param record
+	* @return 
+	* @see com.nhry.service.order.dao.OrderService#batchStopOrderForTime(com.nhry.model.order.OrderSearchModel) 
+	*/
+	@Override
+	public int batchStopOrderForTime(OrderSearchModel record)
+	{
+		if(StringUtils.isNotBlank(record.getOrderNo())){
+			List<String> orderList = Arrays.asList(record.getOrderNo().split(","));
+			orderList.stream().forEach((e)->{
+				record.setOrderNo(e);
+				stopOrderForTime(record);
+			});
+		}
+		
+		return 1;
+	}
+	
+	/* (non-Javadoc) 
 	* @title: stopOrderForTime
 	* @description: 订单停订一段时间
 	* @param record
@@ -206,10 +228,10 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 				//没有当天已确认的日单
 			}
 			if("20".equals(status)){
-				throw new ServiceException(MessageCode.LOGIC_ERROR,"订单日订单已经确认，不能修改订单!");
+				throw new ServiceException(MessageCode.LOGIC_ERROR,record.getOrderNo()+"订单日订单已经确认，不能修改订单!");
 			}
 			if(tOrderDaliyPlanItemMapper.searchDaliyOrdersByOrderNoAndFinalStop(record).size()>0){
-				throw new ServiceException(MessageCode.LOGIC_ERROR,"长期停订前订单日订单已经停订，请往后修改日期或修改日计划!");
+				throw new ServiceException(MessageCode.LOGIC_ERROR,record.getOrderNo()+"长期停订前订单日订单已经停订，请往后修改日期或修改日计划!");
 			}
 			//停订逻辑
 			try
@@ -267,7 +289,7 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 			}
 			
 		}else{
-			throw new ServiceException(MessageCode.LOGIC_ERROR,"当前订单不存在");
+			throw new ServiceException(MessageCode.LOGIC_ERROR,record.getOrderNo()+"当前订单不存在");
 		}
 		
 		return 1;
@@ -2156,6 +2178,6 @@ public class OrderServiceImpl extends BaseService implements OrderService {
   		}
   		
   	}
-  	
+
 
 }
