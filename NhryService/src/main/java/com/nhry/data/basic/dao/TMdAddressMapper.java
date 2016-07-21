@@ -1,6 +1,7 @@
 package com.nhry.data.basic.dao;
 
 import java.util.List;
+import java.util.Map;
 
 import com.nhry.data.basic.domain.TMdAddress;
 
@@ -19,6 +20,13 @@ public interface TMdAddressMapper {
      * @return
      */
     TMdAddress findAddressById(String addressId);
+    
+   /**
+    * 根据省份、城市、区县、小区、街道、详细地址
+    * @param attrs
+    * @return
+    */
+    List<TMdAddress> findAddressByMixedTerms(Map<String,String> attrs);
     
     /**
      * 修改地址

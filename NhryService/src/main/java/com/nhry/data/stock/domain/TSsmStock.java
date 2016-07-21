@@ -25,6 +25,8 @@ public class TSsmStock extends TSsmStockKey {
 
     private String matnrTxt;
 
+    private String salesOrg;
+
     public String getUnit() {
         return unit;
     }
@@ -73,5 +75,13 @@ public class TSsmStock extends TSsmStockKey {
 
     public void setMatnrTxt(String matnrTxt) {
         this.matnrTxt = matnrTxt;
+    }
+
+    public String getSalesOrg() {
+        return salesOrg;
+    }
+
+    public void setSalesOrg(String salesOrg) {
+        this.salesOrg = salesOrg;
     }
 }

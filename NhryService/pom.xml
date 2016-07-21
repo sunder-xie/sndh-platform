@@ -1,5 +1,5 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-		 xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>com.nhry.service</groupId>
 	<artifactId>NhryService</artifactId>
@@ -359,7 +359,7 @@
 			<groupId>javax.servlet</groupId>
 			<artifactId>javax.servlet-api</artifactId>
 			<version>3.1.0</version>
-			<!-- <scope>provided</scope>  -->
+			<!-- <scope>provided</scope> -->
 		</dependency>
 		<dependency>
 			<groupId>org.mybatis.generator</groupId>
@@ -388,7 +388,7 @@
 			<version>1.2.4</version>
 		</dependency>
 
-		<!-- axis2 begin-->
+		<!-- axis2 begin -->
 		<dependency>
 			<groupId>org.apache.axis2</groupId>
 			<artifactId>axis2-adb</artifactId>
@@ -471,11 +471,11 @@
 			<artifactId>axis2-soapmonitor-servlet</artifactId>
 			<version>${axis-version}</version>
 		</dependency>
-		<!--<dependency>-->
-		<!--<groupId>org.apache.axis2</groupId>-->
-		<!--<artifactId>axis2-spring</artifactId>-->
-		<!--<version>${axis-version}</version>-->
-		<!--</dependency>-->
+		<!--<dependency> -->
+		<!--<groupId>org.apache.axis2</groupId> -->
+		<!--<artifactId>axis2-spring</artifactId> -->
+		<!--<version>${axis-version}</version> -->
+		<!--</dependency> -->
 		<dependency>
 			<groupId>org.apache.axis2</groupId>
 			<artifactId>axis2-transport-http</artifactId>
@@ -496,7 +496,12 @@
 			<artifactId>jaxb-xjc</artifactId>
 			<version>2.2.7-b41</version>
 		</dependency>
-		<!-- axis2 end-->
+		<!-- axis2 end -->
+		<dependency>
+			<groupId> org.shardbatis </groupId>
+			<artifactId> shardbatis </artifactId>
+			<version> 2.0.0D </version>
+		</dependency>
 	</dependencies>
 	<!-- 插件配置 -->
 	<build>
@@ -607,24 +612,11 @@
 			</plugin>
 			<!-- jetty插件, 设定context path与spring profile -->
 			<plugin>
-				<!--
-				<groupId>org.mortbay.jetty</groupId>
-				<artifactId>jetty-maven-plugin</artifactId>
-				<version>${jetty.version}</version>
-				<configuration>
-					<systemProperties>
-						<systemProperty>
-							<name>spring.profiles.active</name>
-							<value>development</value>
-						</systemProperty>
-					</systemProperties>
-					<useTestClasspath>true</useTestClasspath>
-
-					<webAppConfig>
-						<contextPath>/${project.artifactId}</contextPath>
-					</webAppConfig>
-				</configuration>
-				-->
+				<!-- <groupId>org.mortbay.jetty</groupId> <artifactId>jetty-maven-plugin</artifactId> 
+					<version>${jetty.version}</version> <configuration> <systemProperties> <systemProperty> 
+					<name>spring.profiles.active</name> <value>development</value> </systemProperty> 
+					</systemProperties> <useTestClasspath>true</useTestClasspath> <webAppConfig> 
+					<contextPath>/${project.artifactId}</contextPath> </webAppConfig> </configuration> -->
 				<groupId>org.eclipse.jetty</groupId>
 				<artifactId>jetty-maven-plugin</artifactId>
 				<version>${jetty.version}</version>

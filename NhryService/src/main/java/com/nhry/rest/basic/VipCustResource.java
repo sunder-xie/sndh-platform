@@ -98,7 +98,7 @@ public class VipCustResource extends BaseResource {
 	@Consumes(MediaType.APPLICATION_JSON)
 	@ApiOperation(value = "/add/address", response = ResponseModel.class, notes = "为订户信息添加地址信息")
 	public Response addAdress(@ApiParam(required=true,name="address",value="地址信息对象") TMdAddress address) {
-	  return convertToRespModel(MessageCode.NORMAL, null,custService.addAddressForCust(address));
+	  return convertToRespModel(MessageCode.NORMAL, null,custService.addAddressForCust(address,null));
 	}
 	
 	@POST

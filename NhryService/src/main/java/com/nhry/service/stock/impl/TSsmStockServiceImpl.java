@@ -41,4 +41,9 @@ public class TSsmStockServiceImpl implements TSsmStockService {
     public PageInfo findStock(StockModel mode) {
         return ssmStockMapper.findStock(mode);
     }
+
+    @Override
+    public PageInfo findStockinsidesal(StockModel mode) {
+        return ssmStockMapper.findStockinsidesal(mode);
+    }
 }

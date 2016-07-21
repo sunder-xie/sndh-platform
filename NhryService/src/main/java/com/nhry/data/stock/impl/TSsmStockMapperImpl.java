@@ -41,4 +41,10 @@ public class TSsmStockMapperImpl implements TSsmStockMapper {
     public PageInfo findStock(StockModel model) {
         return sqlSessionTemplate.selectListByPages("findStock",model,Integer.valueOf(model.getPageNum()),Integer.valueOf(model.getPageSize()));
     }
+
+    @Override
+    public PageInfo findStockinsidesal(StockModel model) {
+        return sqlSessionTemplate.selectListByPages("findStockinsidesal",model,Integer.valueOf(model.getPageNum()),Integer.valueOf(model.getPageSize()));
+    }
+    
 }

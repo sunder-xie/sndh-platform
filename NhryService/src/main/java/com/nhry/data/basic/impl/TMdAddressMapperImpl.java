@@ -1,6 +1,7 @@
 package com.nhry.data.basic.impl;
 
 import java.util.List;
+import java.util.Map;
 
 import com.nhry.common.datasource.DynamicSqlSessionTemplate;
 import com.nhry.data.basic.dao.TMdAddressMapper;
@@ -52,5 +53,11 @@ public class TMdAddressMapperImpl implements TMdAddressMapper{
 	public int uptCustAddressUnDefault(TMdAddress record) {
 		// TODO Auto-generated method stub
 		return this.sqlSessionTemplate.update("uptCustAddressUnDefault", record);
+	}
+
+	@Override
+	public List<TMdAddress> findAddressByMixedTerms(Map<String, String> attrs) {
+		// TODO Auto-generated method stub
+		return this.sqlSessionTemplate.selectList("findAddressByMixedTerms", attrs);
 	}
 }
