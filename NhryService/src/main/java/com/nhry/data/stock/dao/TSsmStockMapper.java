@@ -15,4 +15,6 @@ public interface TSsmStockMapper {
     int updateStock(TSsmStock record);
 
     PageInfo findStock(StockModel model);
+
+    PageInfo findStockinsidesal(StockModel model);
 }
