@@ -15,4 +15,5 @@ public interface TSsmStockService {
     int save(TSsmStock ssmStock);
     TSsmStock getStock(TSsmStockKey key);
     PageInfo findStock(StockModel mode);
+    PageInfo findStockinsidesal(StockModel mode);
 }
