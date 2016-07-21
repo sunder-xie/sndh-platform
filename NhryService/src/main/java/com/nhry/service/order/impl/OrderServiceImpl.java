@@ -1390,10 +1390,7 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 		BigDecimal totalPrices = new BigDecimal(0);
 		List<ProductItem> entries = new ArrayList<ProductItem>();
 		if("20".equals(order.getPaymentmethod())){
-			Map<String,String> map = new HashMap<String,String>();
-			map.put("salesOrg",user.getSalesOrg());
-			map.put("orderNo",order.getOrderNo());
-			List<TPlanOrderItem> items = tPlanOrderItemMapper.selectEntriesByOrderNo(map);
+			List<TPlanOrderItem> items = tPlanOrderItemMapper.selectByOrderCode(order.getOrderNo());
 			if(items!=null && items.size()>0){
 				for(TPlanOrderItem item : items ){
 					BigDecimal price = item.getSalesPrice() == null? new BigDecimal(0): item.getSalesPrice();
