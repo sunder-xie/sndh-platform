@@ -227,7 +227,7 @@
 
   <select id="getAllBranchEmpByNo" parameterType="com.nhry.model.basic.BranchEmpSearchModel" resultMap="BaseResultMap">
     select
-    e.EMP_NO,e.EMP_NAME
+    e.EMP_NO,e.EMP_NAME,u.ID ROLE_ID
     from T_MD_BRANCH_EMP e LEFT JOIN t_sys_user_role u on e.EMP_NO = u.LOGIN_NAME
     where 1=1
     AND  e.SALES_ORG = #{salesOrg,jdbcType=VARCHAR}
