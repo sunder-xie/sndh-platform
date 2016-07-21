@@ -182,7 +182,7 @@ public class milkTransResource extends BaseResource {
 	}
 
 
-	@GET
+	@POST
 	@Path("/createInsideSalOrder")
 	@Produces(MediaType.APPLICATION_JSON)
 	@Consumes(MediaType.APPLICATION_JSON)
@@ -190,7 +190,7 @@ public class milkTransResource extends BaseResource {
 	public Response createInsideSalOrder(@ApiParam(required=true,name="dispOrderNo",value="配送单号")@QueryParam("dispOrderNo") String  dispOrderNo){
 		return convertToRespModel(MessageCode.NORMAL, null, deliverMilkService.createInsideSalOrder(dispOrderNo));
 	}
-	@GET
+	@POST
 	@Path("/createInsideSalOrderByStock")
 	@Produces(MediaType.APPLICATION_JSON)
 	@Consumes(MediaType.APPLICATION_JSON)
@@ -204,7 +204,7 @@ public class milkTransResource extends BaseResource {
 	@Path("/getInsideSalOrder")
 	@Produces(MediaType.APPLICATION_JSON)
 	@Consumes(MediaType.APPLICATION_JSON)
-	@ApiOperation(value = "/getInsideSalOrder", response = Response.class, notes = "获取内部销售订单")
+	@ApiOperation(value = "/getInsideSalOrder", response = Response.class, notes = "获取当前奶站下所有的内部销售订单")
 	public Response getInsideSalOrder(@ApiParam(required=true,name="sModel",value="分页查询") InSideSalOrderSearchModel sModel){
 		return convertToRespModel(MessageCode.NORMAL, null, deliverMilkService.getInsideSalOrder(sModel));
 	}
@@ -215,8 +215,8 @@ public class milkTransResource extends BaseResource {
 	@Path("/getInsideSalOrderDetail")
 	@Produces(MediaType.APPLICATION_JSON)
 	@Consumes(MediaType.APPLICATION_JSON)
-	@ApiOperation(value = "/getInsideSalOrderDetail", response = Response.class, notes = "获取内部销售订单")
-	public Response getInsideSalOrderDetail(@ApiParam(required=true,name="sModel",value="分页查询") InSideSalOrderDetailSearchModel sModel){
+	@ApiOperation(value = "/getInsideSalOrderDetail", response = Response.class, notes = "获取内部销售订单详情")
+	public Response getInsideSalOrderDetail(@ApiParam(required=true,name="sModel",value="订单号必须，分页查询") InSideSalOrderDetailSearchModel sModel){
 		return convertToRespModel(MessageCode.NORMAL, null, deliverMilkService.getInsideSalOrderDetail(sModel));
 	}
 

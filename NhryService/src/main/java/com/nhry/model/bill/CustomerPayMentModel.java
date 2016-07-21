@@ -7,7 +7,16 @@ public class CustomerPayMentModel  {
     private String orderNo;
     private String amt;
     private String paymentType;
+    private String empNo;
     private String remark;
+
+    public String getEmpNo() {
+        return empNo;
+    }
+
+    public void setEmpNo(String empNo) {
+        this.empNo = empNo;
+    }
 
     public String getOrderNo() {
         return orderNo;
