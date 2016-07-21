@@ -1398,7 +1398,7 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 					entry.setMatnr(item.getMatnr());
 					entry.setMatnrTxt(item.getMatnrTxt());
 					entry.setMatnr(item.getMatnr());
-					entry.setQty(item.getDispTotal());
+					entry.setQty(item.getDispTotal() == null ?0 :item.getDispTotal());
 					entry.setUnit(item.getUnit());
 					entry.setBasePrice(price);
 					entry.setTotalPrice(price.multiply(new BigDecimal(entry.getQty())));
