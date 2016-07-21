@@ -55,7 +55,7 @@
         ( CASE when o.PAYMENT_STAT ='20' then bill.PAYMENT_YEAR_MONTH else  '无' END) PAYMENT_DATE
         FROM t_mst_recv_bill bill  LEFT JOIN t_preorder o ON bill.ORDER_NO = o.ORDER_NO
         LEFT JOIN t_md_branch_emp emp on  o.EMP_NO = emp.EMP_NO
-        LEFT JOIN t_vip_cust_info cust on  o.MEMBER_NO = cust.VIP_CUST_NO
+        LEFT JOIN t_vip_cust_info cust on  o.MILKMEMBER_NO = cust.VIP_CUST_NO
         LEFT JOIN t_md_branch b on o.BRANCH_NO  = b.BRANCH_NO
         WHERE 1=1
         <if test="branchNo!=null and branchNo!=''">
