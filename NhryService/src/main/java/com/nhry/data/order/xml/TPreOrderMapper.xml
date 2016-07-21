@@ -640,6 +640,7 @@
   <select id="searchCustomerOrder" resultMap="BaseResultMap" parameterType="com.nhry.model.bill.CustBillQueryModel">
     select
     o.ORDER_NO, o.END_DATE,o.EMP_NO,e.EMP_NAME EMP_NAME,o.INIT_AMT,o.PAYMENT_STAT,o.MILKMEMBER_NO,c.VIP_NAME MILKMEMBER_NAME
+    ,o.PAYMENTMETHOD,o.MILKBOX_STAT
     FROM t_preorder o LEFT JOIN t_md_branch_emp e on o.EMP_NO = e.EMP_NO
     LEFT JOIN  t_vip_cust_info c on o.MILKMEMBER_NO = c.VIP_CUST_NO
     where 1=1

@@ -1385,26 +1385,50 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 		TSysUser user = userSessionService.getCurrentUser();
 
 		TPreOrder order = tPreOrderMapper.selectByPrimaryKey(orderCode);
-		List<TOrderDaliyPlanItem> items = tOrderDaliyPlanItemMapper.getProductItemsByOrderNo(orderCode,user.getSalesOrg());
 		CollectOrderModel model = new CollectOrderModel();
 		model.setOrder(order);
 		BigDecimal totalPrices = new BigDecimal(0);
 		List<ProductItem> entries = new ArrayList<ProductItem>();
-		if(items!=null && items.size()>0){
-			for(TOrderDaliyPlanItem item : items ){
-				BigDecimal price = item.getPrice() == null? new BigDecimal(0): item.getPrice();
-				ProductItem entry = new ProductItem();
-				entry.setMatnr(item.getMatnr());
-				entry.setMatnrTxt(item.getMatnrTxt());
-				entry.setMatnr(item.getMatnr());
-				entry.setQty(item.getQty());
-				entry.setUnit(item.getUnit());
-				entry.setBasePrice(price);
-				entry.setTotalPrice(price.multiply(new BigDecimal(item.getQty() == null ? 0 : item.getQty())));
-				totalPrices = totalPrices.add(entry.getTotalPrice());
-				entries.add(entry);
+		if("20".equals(order.getPaymentmethod())){
+			List<TPlanOrderItem> items = tPlanOrderItemMapper.selectByOrderCode(order.getOrderNo());
+			if(items!=null && items.size()>0){
+				for(TPlanOrderItem item : items ){
+					BigDecimal price = item.getSalesPrice() == null? new BigDecimal(0): item.getSalesPrice();
+					ProductItem entry = new ProductItem();
+					entry.setMatnr(item.getMatnr());
+					entry.setMatnrTxt(item.getMatnrTxt());
+					entry.setMatnr(item.getMatnr());
+					entry.setQty(item.getDispTotal());
+					entry.setUnit(item.getUnit());
+					entry.setBasePrice(price);
+					entry.setTotalPrice(price.multiply(new BigDecimal(entry.getQty())));
+					totalPrices = totalPrices.add(entry.getTotalPrice());
+					entries.add(entry);
+				}
+			}
+		}else{
+			List<TOrderDaliyPlanItem> items = tOrderDaliyPlanItemMapper.getProductItemsByOrderNo(orderCode,user.getSalesOrg());
+
+			if(items!=null && items.size()>0){
+				for(TOrderDaliyPlanItem item : items ){
+					BigDecimal price = item.getPrice() == null? new BigDecimal(0): item.getPrice();
+					ProductItem entry = new ProductItem();
+					entry.setMatnr(item.getMatnr());
+					entry.setMatnrTxt(item.getMatnrTxt());
+					entry.setMatnr(item.getMatnr());
+					entry.setQty(item.getQty());
+					entry.setUnit(item.getUnit());
+					entry.setBasePrice(price);
+					entry.setTotalPrice(price.multiply(new BigDecimal(item.getQty() == null ? 0 : item.getQty())));
+					totalPrices = totalPrices.add(entry.getTotalPrice());
+					entries.add(entry);
+				}
 			}
 		}
+
+
+
+
 		model.setAddress(tVipCustInfoService.findAddressDetailById(order.getAdressNo()));
 		model.setTotalPrice(totalPrices);
 		model.setEntries(entries);

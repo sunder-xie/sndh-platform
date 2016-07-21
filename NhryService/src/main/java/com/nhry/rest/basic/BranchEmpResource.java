@@ -89,7 +89,7 @@ public class BranchEmpResource extends BaseResource {
 	@Produces(MediaType.APPLICATION_JSON)
 	@Consumes(MediaType.APPLICATION_JSON)
 	@ApiOperation(value = "/getAllBranchEmpByNo", response = Response.class, notes = "获取奶站下的所有员工")
-	public Response getAllBranchEmpByNo(@ApiParam(required=true,name="bModel",value="branchNo-奶站编号,type='milkMan'送奶工 type!='milkMan' 非送奶工（员工）") BranchEmpSearchModel bModel){
+	public Response getAllBranchEmpByNo(@ApiParam(required=true,name="bModel",value="branchNo-奶站编号,type='milkMan'送奶工 type!='milkMan' （员工）") BranchEmpSearchModel bModel){
 		return convertToRespModel(MessageCode.NORMAL, null,branchEmpService.getAllBranchEmpByNo(bModel));
 	}
 
