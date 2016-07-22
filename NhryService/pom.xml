@@ -497,11 +497,13 @@
 			<version>2.2.7-b41</version>
 		</dependency>
 		<!-- axis2 end -->
-		<dependency>
+  <!-- 
+  		<dependency>
 			<groupId> org.shardbatis </groupId>
 			<artifactId> shardbatis </artifactId>
 			<version> 2.0.0D </version>
 		</dependency>
+   -->
 	</dependencies>
 	<!-- 插件配置 -->
 	<build>
