@@ -57,6 +57,15 @@
 		<url-pattern>/api/docs</url-pattern>
 	</servlet-mapping>
 	<servlet>
+    <description>swagger api</description>
+    <servlet-name>IdmAuthServlet</servlet-name>
+    <servlet-class>com.nhry.servlet.IdmAuthServlet</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>IdmAuthServlet</servlet-name>
+    <url-pattern>/idm/auth</url-pattern>
+  </servlet-mapping>
+	<servlet>
 		<servlet-name>DefaultJaxrsConfig</servlet-name>
 		<servlet-class>com.wordnik.swagger.jaxrs.config.DefaultJaxrsConfig</servlet-class>
 		<init-param>
@@ -69,7 +78,7 @@
 		</init-param>
 		<init-param>
 			<param-name>swagger.api.basepath</param-name>
-			<param-value>/master/api/v1</param-value>
+			<param-value>/NhryService/api/v1</param-value>
 		</init-param>
 		<load-on-startup>2</load-on-startup>
 	</servlet>
