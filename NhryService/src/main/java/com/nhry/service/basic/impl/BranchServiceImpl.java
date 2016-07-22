@@ -155,9 +155,5 @@ public class BranchServiceImpl extends BaseService implements BranchService {
 		return this.branchMapper.findBranchByDno(attrs);
 	}
 
-	public void setMessService(TSysMessageService messService) {
-		this.messService = messService;
-	}
-
 
 }
