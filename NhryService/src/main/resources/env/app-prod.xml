@@ -9,7 +9,7 @@
 	<!-- idm auth2.0 -->
 	<config key="authurl" value="http://10.6.240.143:8080/siam/oauth2.0/authorize"></config>
 	<config key="client_id" value="dhxtuser"></config>
-	<config key="redirect_uri" value="http://10.6.240.143:8080/oauthdemo/callback.html"></config>
+	<config key="redirect_uri" value="http://54.222.169.214:8070/idm/auth"></config>
 	<config key="response_type" value="code"></config>
 	<config key="client_secret" value="secret"></config>
 	<config key="grant_type" value="authorizaiton_code"></config>
