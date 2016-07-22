@@ -8,16 +8,20 @@ import com.nhry.common.exception.ServiceException;
 import com.nhry.data.auth.dao.TSysUserRoleMapper;
 import com.nhry.data.auth.domain.TSysUser;
 import com.nhry.data.auth.domain.TSysUserRole;
+import com.nhry.data.basic.dao.TMdBranchMapper;
 import com.nhry.data.basic.dao.TMdBranchScopeMapper;
 import com.nhry.data.basic.dao.TMdResidentialAreaMapper;
+import com.nhry.data.basic.domain.TMdBranch;
 import com.nhry.data.basic.domain.TMdBranchScopeKey;
 import com.nhry.data.basic.domain.TMdResidentialArea;
 import com.nhry.model.basic.BranchAreaSearch;
 import com.nhry.service.basic.dao.ResidentialAreaService;
+import com.nhry.service.basic.dao.TSysMessageService;
 import com.nhry.service.basic.pojo.AreaSearchModel;
 import com.nhry.service.basic.pojo.BranchScopeModel;
 import com.nhry.service.basic.pojo.ResidentialAreaModel;
 import com.nhry.utils.PrimaryKeyUtils;
+
 import org.apache.commons.lang.StringUtils;
 
 import java.util.Date;
@@ -34,6 +38,8 @@ public class ResidentialAreaServiceImpl implements ResidentialAreaService {
     private TMdBranchScopeMapper tMdBranchScopeMapper;
     private UserSessionService userSessionService;
     private TSysUserRoleMapper urMapper;
+    private TSysMessageService messService;
+    private TMdBranchMapper branchMapper;
 
 
     @Override
@@ -76,6 +82,11 @@ public class ResidentialAreaServiceImpl implements ResidentialAreaService {
                         scopeKey.setBranchNo(bModel.getBranchNo());
                         scopeKey.setResidentialAreaId(id);
                         tMdBranchScopeMapper.addBranchScope(scopeKey);
+                }
+                //奶站的配送发生变化，发生系统消息
+                TMdBranch branch = branchMapper.selectBranchByNo(bModel.getBranchNo());
+                if(branch != null){
+                	messService.sendMessagesForUptBranch(branch, 2);
                 }
               }
             return 1;
@@ -182,4 +193,12 @@ public class ResidentialAreaServiceImpl implements ResidentialAreaService {
     public void setUrMapper(TSysUserRoleMapper urMapper) {
         this.urMapper = urMapper;
     }
+
+	public void setMessService(TSysMessageService messService) {
+		this.messService = messService;
+	}
+
+	public void setBranchMapper(TMdBranchMapper branchMapper) {
+		this.branchMapper = branchMapper;
+	}
 }

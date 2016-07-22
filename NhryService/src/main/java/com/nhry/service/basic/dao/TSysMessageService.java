@@ -83,5 +83,5 @@ public interface TSysMessageService {
      * @param branch
      * @return
      */
-    public boolean sendMessagesForUptBranch(TMdBranch branch);
+    public boolean sendMessagesForUptBranch(TMdBranch branch,int flag);
 }

@@ -2,9 +2,13 @@ package com.nhry.service.basic.impl;
 
 import com.nhry.common.exception.MessageCode;
 import com.nhry.common.exception.ServiceException;
+import com.nhry.data.basic.dao.TMdBranchMapper;
 import com.nhry.data.basic.dao.TMdBranchScopeMapper;
 import com.nhry.data.basic.dao.TMdResidentialAreaMapper;
+import com.nhry.data.basic.domain.TMdBranch;
 import com.nhry.service.basic.dao.TMdBranchScopeService;
+import com.nhry.service.basic.dao.TSysMessageService;
+
 import org.apache.commons.lang3.StringUtils;
 
 import java.util.ArrayList;
@@ -18,6 +22,8 @@ public class TMdBranchScopeServiceImpl implements TMdBranchScopeService {
 
     private TMdBranchScopeMapper tMdBranchScopeMapper;
     private TMdResidentialAreaMapper  tMdResidentialAreaMapper;
+    private TSysMessageService messService;
+    private TMdBranchMapper branchMapper;
 
 
 
@@ -39,6 +45,11 @@ public class TMdBranchScopeServiceImpl implements TMdBranchScopeService {
                 for(String areaId : list){
                     tMdResidentialAreaMapper.updateStatusToUnDistById(areaId);
                 }
+              //奶站的配送发生变化，发生系统消息
+                TMdBranch branch = branchMapper.selectBranchByNo(branchNo);
+                if(branch != null){
+                	messService.sendMessagesForUptBranch(branch, 2);
+                }
             }
         }catch (Exception e){
             throw new ServiceException(MessageCode.LOGIC_ERROR,"删除失败");
@@ -54,4 +65,12 @@ public class TMdBranchScopeServiceImpl implements TMdBranchScopeService {
     public void settMdResidentialAreaMapper(TMdResidentialAreaMapper tMdResidentialAreaMapper) {
         this.tMdResidentialAreaMapper = tMdResidentialAreaMapper;
     }
+
+	public void setMessService(TSysMessageService messService) {
+		this.messService = messService;
+	}
+
+	public void setBranchMapper(TMdBranchMapper branchMapper) {
+		this.branchMapper = branchMapper;
+	}
 }

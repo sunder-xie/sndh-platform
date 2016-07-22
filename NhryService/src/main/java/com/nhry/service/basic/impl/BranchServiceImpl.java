@@ -29,7 +29,7 @@ public class BranchServiceImpl extends BaseService implements BranchService {
 	private TMdDealerMapper dealerMapper;
 	private UserSessionService userSessionService;
 	private TSysUserRoleMapper urMapper;
-	private TSysMessageService messService;
+	
 
 	@Override
 	public int deleteBranchByNo(String branchNo) {
@@ -58,9 +58,7 @@ public class BranchServiceImpl extends BaseService implements BranchService {
 		if(branch == null){
 			throw new ServiceException(MessageCode.LOGIC_ERROR, "该奶站编号对应的奶站信息不存在!");
 		}
-		branchMapper.updateBranch(tMdBranch);
-		//奶站数据更新，发送系统消息
-		return messService.sendMessagesForUptBranch(branch) ? 1 : 0;
+		return branchMapper.updateBranch(tMdBranch);
 	}
 
 	@Override

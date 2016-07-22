@@ -23,6 +23,7 @@ import com.nhry.data.basic.domain.TMdPriceBranch;
 import com.nhry.model.basic.PriceQueryModel;
 import com.nhry.service.BaseService;
 import com.nhry.service.basic.dao.PriceService;
+import com.nhry.service.basic.dao.TSysMessageService;
 import com.nhry.service.basic.pojo.PriceGroup;
 import com.nhry.utils.PrimaryKeyUtils;
 import com.nhry.utils.SysContant;
@@ -34,6 +35,7 @@ public class PriceServiceImpl extends BaseService implements PriceService {
 	private TMdPriceBranchMapper priceBranchMapper;
 	private TMdBranchMapper branchMapper;
 	private TMdDealerMapper dealerMapper;
+	private TSysMessageService messService;
 
 	public void settMdPriceMapper(TMdPriceMapper tMdPriceMapper) {
 		this.tMdPriceMapper = tMdPriceMapper;
@@ -193,10 +195,13 @@ public class PriceServiceImpl extends BaseService implements PriceService {
 		if(count > 0){
 			throw new ServiceException(MessageCode.LOGIC_ERROR, "该奶站下面存在该价格组类型的价格组，不允许重复添加同一类型价格组!");
 		}
+		
 		record.setCreateAt(new Date());
 		record.setCreateBy(this.userSessionService.getCurrentUser().getLoginName());
 		record.setCreateByTxt(this.userSessionService.getCurrentUser().getDisplayName());
-		return this.priceBranchMapper.addPriceBranch(record);
+		this.priceBranchMapper.addPriceBranch(record);
+		//奶站价格组更新，发送系统消息
+		return messService.sendMessagesForUptBranch(branch,1) ? 1 : 0;
 	}
 
 	@Override
@@ -245,7 +250,14 @@ public class PriceServiceImpl extends BaseService implements PriceService {
 		}else{
 			throw new ServiceException(MessageCode.LOGIC_ERROR, "该价格组编号id对应的价格组不存在!");
 		}
-		return priceBranchMapper.delPriceBranch(attrs);
+		priceBranchMapper.delPriceBranch(attrs);
+		//奶站价格组更新，发送系统消息
+		TMdBranch branch = branchMapper.selectBranchByNo(branchNo);
+		if(branch != null){
+			return messService.sendMessagesForUptBranch(branch,1) ? 1 : 0;
+		}else{
+			return 0;
+		}
 	}
 
 	public void setPriceBranchMapper(TMdPriceBranchMapper priceBranchMapper) {
@@ -363,5 +375,9 @@ public class PriceServiceImpl extends BaseService implements PriceService {
 		attrs.put("salesOrg", this.userSessionService.getCurrentUser().getSalesOrg());
 		attrs.put("id", id);
 		return this.maraPriceMapper.findMaraPricesById(attrs, pageNum, pageSize);
+	}
+
+	public void setMessService(TSysMessageService messService) {
+		this.messService = messService;
 	}
 }

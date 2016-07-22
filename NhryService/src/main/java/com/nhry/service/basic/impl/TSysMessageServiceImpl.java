@@ -238,7 +238,7 @@ public class TSysMessageServiceImpl extends BaseService implements TSysMessageSe
 
 	@Override
 	@Transactional(propagation=Propagation.REQUIRES_NEW)
-	public boolean sendMessagesForUptBranch(TMdBranch branch) {
+	public boolean sendMessagesForUptBranch(TMdBranch branch,int flag) {
 		// TODO Auto-generated method stub
 		if(StringUtils.isEmpty(branch.getSalesOrg()) || StringUtils.isEmpty(branch.getBranchNo())){
 			return false;
@@ -253,7 +253,13 @@ public class TSysMessageServiceImpl extends BaseService implements TSysMessageSe
 			LOGGER.warn("该销售组织下："+branch.getSalesOrg()+"目前没有奶站内勤！");
 			return false;
 		}else{
-			this.sendMessage(users, "奶站配置更新消息！奶站编号："+branch.getBranchNo(), "奶站配置更新消息！奶站编号："+branch.getBranchNo()+" 奶站名称："+branch.getBranchName(), "30","10");
+			if(1 == flag){
+				//价格组发生变化
+				this.sendMessage(users, "奶站更新价格组消息！奶站编号："+branch.getBranchNo(), "奶站配置更新消息！奶站编号："+branch.getBranchNo()+" 奶站名称："+branch.getBranchName()+" 价格组配置发生变化，敬请关注！", "30","10");
+			}else if(2 == flag){
+				//配送区域发生变化
+				this.sendMessage(users, "奶站更新配送消息！奶站编号："+branch.getBranchNo(), "奶站配置更新消息！奶站编号："+branch.getBranchNo()+" 奶站名称："+branch.getBranchName()+" 配送区域发生变化，敬请关注！", "30","10");
+			}
 		}
 		return true;
 	}
