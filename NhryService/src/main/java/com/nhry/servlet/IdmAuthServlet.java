@@ -30,8 +30,8 @@ public class IdmAuthServlet extends HttpServlet {
 		String code = request.getParameter("code");
 		if (!StringUtils.isEmpty(code)) {
 			Map<String,Object> attrs = new HashMap<String,Object>();
-			attrs.put("client_id", EnvContant.getSystemConst("client_secret"));
-			attrs.put("client_secret", EnvContant.getSystemConst("client_id"));
+			attrs.put("client_id", EnvContant.getSystemConst("client_id"));
+			attrs.put("client_secret", EnvContant.getSystemConst("client_secret"));
 			attrs.put("grant_type", EnvContant.getSystemConst("grant_type"));
 			attrs.put("redirect_uri", EnvContant.getSystemConst("redirect_uri"));
 			attrs.put("code", code);
