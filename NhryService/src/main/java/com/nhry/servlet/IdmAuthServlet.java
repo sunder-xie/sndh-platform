@@ -40,7 +40,7 @@ public class IdmAuthServlet extends HttpServlet {
 			if(!StringUtils.isEmpty(access_token)){
 				attrs.clear();
 				attrs.put("access_token", access_token);
-				String msg = HttpUtils.request(EnvContant.getSystemConst("authurl"), attrs);
+				String msg = HttpUtils.request(EnvContant.getSystemConst("auth_profile"), attrs);
 				System.out.println("-----msg-------"+msg);
 			}
 		} else {
