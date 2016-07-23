@@ -700,6 +700,19 @@
     set CUR_AMT =  #{curAmt,jdbcType=DECIMAL}
     where ORDER_NO = #{orderNo,jdbcType=VARCHAR}
   </update>
+  
+   <update id="updateOrderSolicitor" parameterType="com.nhry.data.order.domain.TPreOrder" >
+    update t_preorder
+    <set >
+    	<if test="solicitorNo != null" >
+        SOLICITOR_NO = #{solicitorNo,jdbcType=VARCHAR},
+      </if>
+      <if test="solicitDate != null" >
+        SOLICIT_DATE = #{solicitDate,jdbcType=DATE},
+      </if>
+    </set>
+    where ORDER_NO = #{orderNo,jdbcType=VARCHAR}
+  </update>
 
 
 </mapper>

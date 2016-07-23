@@ -1166,7 +1166,7 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 			//当非奶站订单时，退回或者作废待确认订单时，需要判断是否删除订户和地址
 			List<TPreOrder> list = tPreOrderMapper.selectNodeletedByMilkmemberNo(order);
 			if(list == null || list.size() <= 0 ){
-				System.out.print("删除订户!!");
+				System.out.print("删除订户");
 			}
 		}
 
