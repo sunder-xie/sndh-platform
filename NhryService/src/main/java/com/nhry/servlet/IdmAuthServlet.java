@@ -35,7 +35,7 @@ public class IdmAuthServlet extends HttpServlet {
 			attrs.put("grant_type", EnvContant.getSystemConst("grant_type"));
 			attrs.put("redirect_uri", EnvContant.getSystemConst("redirect_uri"));
 			attrs.put("code", code);
-			String access_token = HttpUtils.request(EnvContant.getSystemConst("authurl"), attrs);
+			String access_token = HttpUtils.request(EnvContant.getSystemConst("auth_token"), attrs);
 			System.out.println("-----access_token-------"+access_token);
 			if(!StringUtils.isEmpty(access_token)){
 				attrs.clear();
