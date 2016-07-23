@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <configs>
  <!-- 环境标示 develope/product-->
-  <config key="app_mode" value="product"></config>
+  <config key="app_mode" value="develope"></config>
   <!-- MessageCode key默认的value配置 -->
   <config key="404"  value="资源不存在"></config>
   <config key="serverError"  value="服务异常"></config>
@@ -32,6 +32,4 @@
   <config key="department_back_office" value="10004"></config>
   <!-- 经销商内勤编号 -->
   <config key="dealer_back_office" value="10004"></config>
-  
-  <config key="dealer_back_office1234" value="10004"></config>
 </configs>
