@@ -56,11 +56,6 @@
 			<!-- always总是返回PageInfo类型,check检查返回类型是否为PageInfo,none返回Page -->
 			<property name="returnPageInfo" value="check" />
 		</plugin>
-		<!-- 
-		<plugin interceptor="com.google.code.shardbatis.plugin.ShardPlugin">
-				<property name="shardingConfig" value="shard_config.xml" />
-		</plugin>
-		 -->
 	</plugins>
 	<mappers>
 		<mapper resource="mybatis-constant.xml" />
