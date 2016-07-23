@@ -28,10 +28,16 @@ public interface OrderService {
 	int batchStopOrderForTime(OrderSearchModel record);
 	
 	int stopOrderForTime(OrderSearchModel record);
+	
+	int stopOrderInTime(OrderSearchModel record);
 
 	int backOrder(OrderSearchModel record);
 
+	int batchContinueOrder(OrderSearchModel record);
+	
 	int continueOrder(OrderSearchModel record);
+	
+	int batchContinueOrdeAfterStop(OrderSearchModel record);
 	
 	int continueOrdeAfterStop(OrderSearchModel record);
 

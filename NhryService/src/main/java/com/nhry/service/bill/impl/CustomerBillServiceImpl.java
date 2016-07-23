@@ -94,6 +94,7 @@ public class CustomerBillServiceImpl implements CustomerBillService {
                 calendar.setTime(date);
 
                 TMstRecvBill customerBill = new TMstRecvBill();
+                customerBill.setRecvEmp(cModel.getEmpNo());
                 customerBill.setOrderNo(orderNo);
                 customerBill.setAmt(new BigDecimal(cModel.getAmt()));
                 customerBill.setReceiptDate(date);
