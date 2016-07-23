@@ -42,8 +42,8 @@ public class IdmAuthServlet extends HttpServlet {
 				System.out.println("-----access_token-------"+access_token);
 				if(!StringUtils.isEmpty(access_token)){
 					attrs.clear();
-					JSONObject json = new JSONObject(access_token);
-					attrs.put("access_token", json.getString("access_token"));
+					String token = access_token.split("=")[1].split("&")[0];
+					attrs.put("access_token", token);
 					String msg = HttpUtils.request(EnvContant.getSystemConst("auth_profile"), attrs);
 					System.out.println("-----msg-------"+msg);
 				}
