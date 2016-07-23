@@ -49,5 +49,8 @@ public interface TPreOrderMapper {
     OrderRemainData searchOrderRemainData(String memberNo);
     
     List<TPreOrder> selectByMilkmemberNo(String memberNo);
+    
+    List<TPreOrder> selectNodeletedByMilkmemberNo(TPreOrder order);
+    
 
 }

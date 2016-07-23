@@ -439,9 +439,9 @@
         STATUS = "30"
     </set>
     where DISP_DATE &gt;= #{stopDateStartStr,jdbcType=DATE}
-    <if test="stopDateEnd != null and stopDateEnd !=''" >
+   <!--  <if test="stopDateEnd != null and stopDateEnd !=''" >
         and DISP_DATE &lt;= #{stopDateEndStr,jdbcType=DATE}
-    </if>
+    </if> -->
     and ORDER_NO = #{orderNo,jdbcType=VARCHAR}
   </update>
 

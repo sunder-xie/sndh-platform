@@ -376,6 +376,9 @@
       <if test="giftUnit != null" >
         GIFT_UNIT = #{giftUnit,jdbcType=VARCHAR},
       </if>
+      <if test="dispTotal != null" >
+        DISP_TOTAL = #{dispTotal,jdbcType=INTEGER},
+      </if>
     </set>
     where ITEM_NO = #{itemNo,jdbcType=VARCHAR}
   </update>

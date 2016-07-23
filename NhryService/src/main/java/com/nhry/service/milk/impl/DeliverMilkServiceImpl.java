@@ -231,7 +231,7 @@ public class DeliverMilkServiceImpl extends BaseService implements DeliverMilkSe
 		key.setOrderNo(orderNo);
 		TDispOrder dispOrder = tDispOrderMapper.selectByPrimaryKey(key);
 		List<TDispOrderItem> entries = null;
-		RouteOrderModel routeModel = null;
+		RouteOrderModel routeModel = new RouteOrderModel();
 		if(dispOrder!=null){
 			TDispOrderItemKey record = new TDispOrderItemKey();
 			record.setOrderNo(orderNo);
@@ -268,7 +268,6 @@ public class DeliverMilkServiceImpl extends BaseService implements DeliverMilkSe
 			});
 			
 			//返回信息
-			routeModel = new RouteOrderModel();
 			routeModel.setOrder(dispOrder);
 			routeModel.setProducts(sb.toString());
 			

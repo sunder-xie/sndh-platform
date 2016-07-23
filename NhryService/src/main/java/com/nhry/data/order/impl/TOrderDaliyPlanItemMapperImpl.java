@@ -92,9 +92,9 @@ public class TOrderDaliyPlanItemMapperImpl implements TOrderDaliyPlanItemMapper
 	{
 		SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
 		record.setStopDateStartStr(format.format(record.getStopDateStart()));
-		if(record.getStopDateEnd()!=null){
-			record.setStopDateEndStr(format.format(record.getStopDateEnd()));
-		}
+//		if(record.getStopDateEnd()!=null){
+//			record.setStopDateEndStr(format.format(record.getStopDateEnd()));
+//		}
 		return sqlSessionTemplate.update("updateDaliyPlansToStop", record);
 	}
 	

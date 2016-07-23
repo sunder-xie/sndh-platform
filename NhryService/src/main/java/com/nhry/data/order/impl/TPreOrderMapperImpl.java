@@ -144,5 +144,11 @@ public class TPreOrderMapperImpl implements TPreOrderMapper
 	{
 		return sqlSessionTemplate.selectList("selectByMilkmemberNo", memberNo);
 	}
+
+	@Override
+	public List<TPreOrder> selectNodeletedByMilkmemberNo(TPreOrder order)
+	{
+		return sqlSessionTemplate.selectList("selectNodeletedByMilkmemberNo", order);
+	}
 	
 }
