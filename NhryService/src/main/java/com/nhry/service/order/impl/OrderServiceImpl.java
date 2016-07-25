@@ -539,6 +539,44 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 	}
 	
 	/* (non-Javadoc) 
+	* @title: calculateContinueOrder
+	* @description: 订单续订计算续费和截止日期
+	* @param record
+	* @return 
+	* @see com.nhry.service.order.dao.OrderService#calContinueOrder(com.nhry.model.order.OrderSearchModel) 
+	*/
+	@Override
+	public OrderSearchModel calculateContinueOrder(OrderSearchModel record)
+	{
+		SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
+		Date startDate = null;
+		try
+		{
+			//续订的起始日期
+			startDate = format.parse(record.getOrderDateStart());
+		}
+		catch (ParseException e)
+		{
+			return record;
+		}
+		
+		TPreOrder order = tPreOrderMapper.selectByPrimaryKey(record.getOrderNo());
+		int goDays = record.getGoDays();//续订多少天
+		ArrayList<TPlanOrderItem> entries = (ArrayList<TPlanOrderItem>) tPlanOrderItemMapper.selectByOrderCode(record.getOrderNo());
+		BigDecimal goAmt = new BigDecimal("0.00");
+		for(TPlanOrderItem e : entries){
+			e.setStartDispDate(startDate);
+			e.setEndDispDate(afterDate(startDate, goDays-1 ));
+			goAmt = goAmt.add(calculateEntryAmount(e));
+		}
+		
+		record.setGoAmt(goAmt.toString());
+		record.setOrderDateEnd(format.format(entries.get(0).getEndDispDate()));
+
+		return record;
+	}
+	
+	/* (non-Javadoc) 
 	* @title: continueOrder
 	* @description: 订单续订
 	* @param record
@@ -553,17 +591,17 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 		ArrayList<TPlanOrderItem> entries = (ArrayList<TPlanOrderItem>) tPlanOrderItemMapper.selectByOrderCode(record.getOrderNo());
 		if(order!= null){
 			if("20".equals(order.getMilkboxStat()))throw new ServiceException(MessageCode.LOGIC_ERROR,record.getOrderNo()+"原订单还没有装箱，不能续订!");
-			Date edate = null;
+			Date sdate = null;
 			try
 			{
-				edate = format.parse(record.getOrderDateEnd());
+				sdate = format.parse(record.getOrderDateStart());
 			}
 			catch (ParseException e)
 			{
 				throw new ServiceException(MessageCode.LOGIC_ERROR,"日期格式不正确!");
 			}
 			
-			if(edate.before(order.getEndDate()))throw new ServiceException(MessageCode.LOGIC_ERROR,record.getOrderNo()+"续订日期不能小于原订单截止日期!");
+			if(sdate.before(order.getEndDate()))throw new ServiceException(MessageCode.LOGIC_ERROR,record.getOrderNo()+"续订日期不能小于原订单截止日期!"+order.getEndDate());
 //			String state = order.getPaymentmethod();
 			
 			//基本参考原单
@@ -587,12 +625,13 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 				entry.setCreateAt(date);//创建日期
 				entry.setCreateBy(userSessionService.getCurrentUser().getLoginName());//创建人
 				entry.setCreateByTxt(userSessionService.getCurrentUser().getDisplayName());//创建人姓名
-				entry.setStartDispDate(afterDate(order.getEndDate(),1));
-				entry.setEndDispDate(edate);
+				entry.setStartDispDate(sdate);
+				entry.setEndDispDate(afterDate(sdate,record.getGoDays()-1));
 				BigDecimal entryTotal = calculateEntryAmount(entry);
 				
 				//促销清空
 				entry.setPromotion("");
+				entry.setBuyQty(0);
 				entry.setGiftQty(0);
 				entry.setGiftMatnr("");
 				entry.setGiftUnit("");

@@ -19,6 +19,8 @@ public interface OrderService {
 	PageInfo searchOrders(OrderSearchModel smodel);
 	
 	PageInfo searchDaliyOrders(OrderSearchModel smodel);
+	
+	OrderSearchModel calculateContinueOrder(OrderSearchModel record);
 
 	String createOrder(OrderCreateModel record);
 
