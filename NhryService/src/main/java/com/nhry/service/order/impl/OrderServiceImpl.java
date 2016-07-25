@@ -1425,14 +1425,15 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 					orgPlan.setReachTimeType(plan.getReachTimeType());
 				}
 				if(!"30".equals(plan.getStatus())){
-   				orgPlan.setMatnr(plan.getMatnr());
-   				orgPlan.setQty(plan.getQty());
-   				orgPlan.setUnit(plan.getUnit());
    				if(!orgPlan.getMatnr().equals(plan.getMatnr())){
    					float price = priceService.getMaraPrice(orgOrder.getBranchNo(), plan.getMatnr(), orgOrder.getDeliveryType());
+   					if(price<=0)throw new ServiceException(MessageCode.LOGIC_ERROR,"替换的产品价格小于0，请维护价格组!");
    					cj = orgPlan.getAmt().subtract(new BigDecimal(String.valueOf(price)).multiply(new BigDecimal(orgPlan.getQty().toString())));
    					orgPlan.setPrice(new BigDecimal(String.valueOf(price)));
    				}
+   				orgPlan.setMatnr(plan.getMatnr());
+   				orgPlan.setQty(plan.getQty());
+   				orgPlan.setUnit(plan.getUnit());
    				orgPlan.setAmt(orgPlan.getPrice().multiply(new BigDecimal(orgPlan.getQty().toString())));
 				}
 				orgPlan.setLastModified(new Date());
@@ -1467,6 +1468,7 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 				//变更产品
 				if(!orgPlan.getMatnr().equals(plan.getMatnr())){
 					float price = priceService.getMaraPrice(orgOrder.getBranchNo(), plan.getMatnr(), orgOrder.getDeliveryType());
+					if(price<=0)throw new ServiceException(MessageCode.LOGIC_ERROR,"替换的产品价格小于0，请维护价格组!");
 					if(StringUtils.isNotBlank(orgPlan.getPromotionFlag())&&orgPlan.getPrice().floatValue()!=price)throw new ServiceException(MessageCode.LOGIC_ERROR,"有促销的产品只能替换价格相同的产品!");
 					plan.setPrice(new BigDecimal(String.valueOf(price)));
 					changeProductPlans.put(orgPlan,plan);
@@ -1777,7 +1779,7 @@ public class OrderServiceImpl extends BaseService implements OrderService {
    	for (TOrderDaliyPlanItem org : changeProducts.keySet()) {
    		TOrderDaliyPlanItem cur = changeProducts.get(org);
    		BigDecimal planAmt = cur.getPrice().multiply(new BigDecimal(cur.getQty().toString()));
-   		BigDecimal rate = planAmt.subtract(org.getAmt()).divide(new BigDecimal(org.getQty()).setScale(2, BigDecimal.ROUND_FLOOR));
+   		BigDecimal rate = planAmt.subtract(org.getAmt()).divide(relatedEntryMap.get(cur.getItemNo()).getSalesPrice(),2).setScale(2, BigDecimal.ROUND_FLOOR);
    		String itemNo = org.getItemNo();//原日计划的商品号
    		if(!productMap.containsKey(itemNo)){
          	productMap.put(itemNo, new BigDecimal("0.00").subtract(rate));
@@ -1828,7 +1830,7 @@ public class OrderServiceImpl extends BaseService implements OrderService {
       					needNewDaliyPlans.replace(plan.getItemNo(), 0);
       				}
       				else if(plan.getQty() > 0 && (plan.getQty() + needNewDaliyPlans.get(plan.getItemNo()) < 0)){
-      					plan.setQty(needNewDaliyPlans.get(plan.getItemNo()) - plan.getQty());
+      					plan.setQty(plan.getQty());
       					needNewDaliyPlans.replace(plan.getItemNo(), needNewDaliyPlans.get(plan.getItemNo()) + plan.getQty() );
       				}
       				else{
@@ -1851,6 +1853,10 @@ public class OrderServiceImpl extends BaseService implements OrderService {
    				newPlans.add(np);
    			}
    		}
+   	}
+   	
+   	for(String key :needNewDaliyPlans.keySet()){
+   		if(needNewDaliyPlans.get(key) < 0)throw new ServiceException(MessageCode.LOGIC_ERROR,"该产品行日计划金额不足以更换此商品!");;
    	}
    	
    	//删除数量为0的日计划,并重新生成新加的日计划
@@ -1921,13 +1927,15 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 					int gapDays = entry.getGapDays() + 1;//间隔天数
 					for(int i=1;i<365;i++){
 						Date today = afterDate(lastDate,i);
-						if(i%gapDays !=0){
-							if(entry.getRuleTxt()!=null){
-								List<String> deliverDays = Arrays.asList(entry.getRuleTxt().split(","));
-								if(!deliverDays.contains(getWeek(today))){
-									continue;
-								}
-							}
+						if(daysOfTwo(dateMap.get(plan.getItemNo()),today)%gapDays !=0){
+//							if(entry.getRuleTxt()!=null){
+//								List<String> deliverDays = Arrays.asList(entry.getRuleTxt().split(","));
+//								if(!deliverDays.contains(getWeek(today))){
+//									continue;
+//								}
+//							}else{
+								continue;
+//							}
 						}
 						dateMap.replace(plan.getItemNo(), today); 
 						plan.setDispDate(today);
