@@ -32,6 +32,4 @@
   <config key="department_back_office" value="10004"></config>
   <!-- 经销商内勤编号 -->
   <config key="dealer_back_office" value="10004"></config>
-  
-  <config key="dealer_back_office1234" value="10004"></config>
 </configs>
