@@ -188,6 +188,14 @@
     from t_mst_disp_order_item
     where CONFIRM_AMT &gt; 0
   </select>
+  <select id="selectItemsByOrgOrderAndItemNo" resultMap="BaseResultMap" parameterType="com.nhry.data.milk.domain.TDispOrderItemKey">
+    select 
+    <include refid="Base_Column_List" />
+    from t_mst_disp_order_item
+    where ORG_ORDER_NO = #{orderNo,jdbcType=VARCHAR}
+          and ORG_ITEM_NO = #{itemNo,jdbcType=VARCHAR}
+          and ORDER_DATE = #{orderDate,jdbcType=DATE}
+  </select>
   <select id="selectDispOrderItemByKey" resultMap="BaseResultMap" parameterType="com.nhry.data.milk.domain.TDispOrderItemKey">
     select 
     <include refid="Base_Column_List" />

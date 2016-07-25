@@ -7,6 +7,7 @@ import com.nhry.common.exception.ServiceException;
 import com.nhry.data.auth.domain.TSysUser;
 import com.nhry.data.basic.domain.TVipAcct;
 import com.nhry.data.basic.domain.TVipCustInfo;
+import com.nhry.data.milk.dao.TDispOrderItemMapper;
 import com.nhry.data.milk.domain.TDispOrderItem;
 import com.nhry.data.order.dao.TOrderDaliyPlanItemMapper;
 import com.nhry.data.order.dao.TPlanOrderItemMapper;
@@ -40,7 +41,13 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 	private MilkBoxService milkBoxService;
 	private PriceService priceService;
 	private PromotionService promotionService;
+	private TDispOrderItemMapper tDispOrderItemMapper;
 	
+	public void settDispOrderItemMapper(TDispOrderItemMapper tDispOrderItemMapper)
+	{
+		this.tDispOrderItemMapper = tDispOrderItemMapper;
+	}
+
 	public void setPromotionService(PromotionService promotionService)
 	{
 		this.promotionService = promotionService;
@@ -1413,6 +1420,9 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 //				plan.getMatnr();//校验商品
 				BigDecimal cj = new BigDecimal("0.00");//差价
 				TOrderDaliyPlanItem orgPlan = daliyPlanMap.get(plan.getItemNo()+"/"+plan.getPlanItemNo());
+				if(tDispOrderItemMapper.selectItemsByOrgOrderAndItemNo(orgPlan.getOrderNo(), orgPlan.getItemNo(), orgPlan.getDispDate()).size()>0){
+					throw new ServiceException(MessageCode.LOGIC_ERROR,"该日计划已经生成路单，不可以修改!");
+				}
 				if("30".equals(orgPlan.getStatus())){//如果已停订，跳过
 					continue;
 				}
@@ -1454,6 +1464,9 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 			for(TOrderDaliyPlanItem plan : record.getEntries()){
 //				plan.getMatnr();//校验商品
 				TOrderDaliyPlanItem orgPlan = daliyPlanMap.get(plan.getItemNo()+"/"+plan.getPlanItemNo());
+				if(tDispOrderItemMapper.selectItemsByOrgOrderAndItemNo(orgPlan.getOrderNo(), orgPlan.getItemNo(), orgPlan.getDispDate()).size()>0){
+					throw new ServiceException(MessageCode.LOGIC_ERROR,"该日计划已经生成路单，不可以修改!");
+				}
 				if("30".equals(orgPlan.getStatus())){//如果已停订，跳过
 					continue;
 				}
@@ -1655,7 +1668,7 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 
 	/* (non-Javadoc) 
 	* @title: calculateAmtAndEndDateForFront
-	* @description: 页面计算行项目截止日期和总计数量,总计金额
+	* @description: 页面计算行项目截止日期和总计数量,总计金额，先付款用
 	* @param item
 	* @return 
 	* @see com.nhry.service.order.dao.OrderService#calculateAmtAndEndDateForFront(com.nhry.data.order.domain.TPlanOrderItem) 
@@ -1676,6 +1689,64 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 		resolveEntryEndDispDateForFront(item);
 		
 		return item;
+	}
+	
+	/* (non-Javadoc) 
+	* @title: calculateAmtAndEndDateForFront
+	* @description: 页面计算行项目和总计数量,总计金额，后付款用
+	* @param item
+	* @return 
+	* @see com.nhry.service.order.dao.OrderService#calculateAmtAndEndDateForFront(com.nhry.data.order.domain.TPlanOrderItem) 
+	*/
+	@Override
+	public TPlanOrderItem calculateTotalQtyForFront(TPlanOrderItem item)
+	{
+		SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
+		try
+		{
+			item.setStartDispDate(format.parse(item.getStartDispDateStr()));
+			item.setEndDispDate(format.parse(item.getEndDispDateStr()));
+		}
+		catch (Exception e)
+		{
+			return item;
+		}
+		//计算
+		resolveEntryTotalQtyForFront(item);
+		
+		return item;
+	}
+	
+	/* (non-Javadoc) 
+	* @title: updateOrderAndEntriesDispStartDate
+	* @description: 奶箱修改状态，修改订单行项目起始日期
+	* @param orderNo
+	* @return 
+	* @see com.nhry.service.order.dao.OrderService#updateOrderAndEntriesDispStartDate(java.lang.String) 
+	*/
+	@Override
+	public int updateOrderAndEntriesDispStartDate(String orderNo,List<TPlanOrderItem> entries)
+	{
+		TPreOrder order =tPreOrderMapper.selectByPrimaryKey(orderNo);
+		List<TPlanOrderItem> orgEntries = tPlanOrderItemMapper.selectByOrderCode(orderNo);
+		for(TPlanOrderItem org :orgEntries){
+			for(TPlanOrderItem cur:entries){
+				if(org.getItemNo().equals(cur.getItemNo())){
+					if(!org.getStartDispDate().equals(cur.getStartDispDate())){
+						org.setStartDispDate(cur.getStartDispDate());
+						recalculateEntryEndDate(org);
+						tPlanOrderItemMapper.updateEntryByItemNo(org);
+					}
+					break;
+				}
+			}
+		}
+		
+		//订单截止日期
+		order.setEndDate(calculateFinalDate(orgEntries));
+		tPreOrderMapper.updateOrderEndDate(order);
+		
+		return 1;
 	}
 	
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -2379,6 +2450,7 @@ public class OrderServiceImpl extends BaseService implements OrderService {
    //当订单是预付款时，订单行有配送总数和起始日期，需要计算结束日期,页面用，顺便计算金额
   	private void resolveEntryEndDispDateForFront(TPlanOrderItem entry){
   		SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
+  		
   		try{
      		int total = entry.getDispTotal();
      		if(total<=0 || total%entry.getQty()!=0)throw new ServiceException(MessageCode.LOGIC_ERROR,"行总共配送无法平均分配到每一天!请修改总数或每日配送数");
@@ -2439,5 +2511,110 @@ public class OrderServiceImpl extends BaseService implements OrderService {
   		}
   		
   	}
+	
+   //当订单是后付款时，订单行有结束日期和起始日期，需要计算总配送数,页面用，顺便计算金额
+  	private void resolveEntryTotalQtyForFront(TPlanOrderItem entry){
+  		
+  		try{
+     		Date edate = entry.getEndDispDate();
+     		Date sdate = entry.getStartDispDate();
+     		
+     		int total = 0;
+     		
+     		int afterDays = 0;
+     		BigDecimal amt = new BigDecimal("0.00");//行金额总计
+     		
+     		//判断是按周期送还是按星期送
+    		for(int i=0;i<365;i++){
+    			Date today = afterDate(sdate,afterDays);
+    			
+    			if(today.after(edate)){
+    				entry.setDispTotal(total);
+    				entry.setEntryTotal(amt);
+    				break;
+    			}
+    			
+    			if("10".equals(entry.getRuleType())){
+    				int gapDays = entry.getGapDays() + 1;//间隔天数
+    				if(afterDays%gapDays != 0){
+   					afterDays++;
+   					continue;
+    				}
+    			}
+    			else if("20".equals(entry.getRuleType())){
+    				String weekday = getWeek(today);
+    				List<String> deliverDays = Arrays.asList(entry.getRuleTxt().split(","));
+    				if(!deliverDays.contains(weekday)){
+    					afterDays++;
+    					continue;//如果选择的星期几不送，则跳过今天
+    				}
+    			}
+    			else{
+    				return;
+    			}
+    			
+    			total += entry.getQty();
+    			amt = amt.add(entry.getSalesPrice().multiply(new BigDecimal(String.valueOf(entry.getQty()))));
+    			afterDays++;
+    			
+    		}
+  		}catch(Exception e)
+  		{
+  			entry.setDispTotal(null);
+  			entry.setEntryTotal(null);
+  			return;
+  		}
+  		
+  	}
 
+  	//装箱工单修改时，如果更改起始日期，重新计算行项目
+  	private void recalculateEntryEndDate(TPlanOrderItem entry){
+     		int total = entry.getDispTotal();
+     		
+     		int afterDays = 0;
+     		
+     		//判断是按周期送还是按星期送
+    		for(int i=0;i<365;i++){
+    			Date today = afterDate(entry.getStartDispDate(),afterDays);
+    			
+    			if("10".equals(entry.getRuleType())){
+    				int gapDays = entry.getGapDays() + 1;//间隔天数
+    				if(afterDays%gapDays != 0){
+    					if(entry.getRuleTxt()!=null){
+    						List<String> deliverDays = Arrays.asList(entry.getRuleTxt().split(","));
+    						if(deliverDays.size() > 0){//判断周6，7是否配送
+    							String weekday = getWeek(today);
+    							if(!deliverDays.contains(weekday)){
+    								afterDays++;
+    								continue;
+    							}
+    						}
+    					}else{
+    						afterDays++;
+    						continue;
+    					}
+    				}
+    			}
+    			else if("20".equals(entry.getRuleType())){
+    				String weekday = getWeek(today);
+    				List<String> deliverDays = Arrays.asList(entry.getRuleTxt().split(","));
+    				if(!deliverDays.contains(weekday)){
+    					afterDays++;
+    					continue;//如果选择的星期几不送，则跳过今天
+    				}
+    			}
+    			else{
+    				return;
+    			}
+    			
+    			total = total - entry.getQty();
+    			afterDays++;
+    			
+    			if(total==0){
+    				entry.setEndDispDate(today);
+    				break;
+    			}
+    		}
+  	}
+  	
 }

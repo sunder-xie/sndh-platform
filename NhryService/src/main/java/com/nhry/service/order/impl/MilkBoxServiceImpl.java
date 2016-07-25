@@ -16,9 +16,11 @@ import com.nhry.common.exception.MessageCode;
 import com.nhry.common.exception.ServiceException;
 import com.nhry.data.basic.dao.TMdBranchEmpMapper;
 import com.nhry.data.order.dao.TMilkboxPlanMapper;
+import com.nhry.data.order.dao.TPlanOrderItemMapper;
 import com.nhry.data.order.dao.TPreOrderMapper;
 import com.nhry.data.order.domain.TMilkboxPlan;
 import com.nhry.data.order.domain.TOrderDaliyPlanItem;
+import com.nhry.data.order.domain.TPlanOrderItem;
 import com.nhry.data.order.domain.TPreOrder;
 import com.nhry.model.order.MilkboxCreateModel;
 import com.nhry.model.order.MilkboxSearchModel;
@@ -36,8 +38,12 @@ public class MilkBoxServiceImpl extends BaseService implements MilkBoxService
 	private TMdBranchEmpMapper branchEmpMapper;
 	private OrderService orderService;
 	private PromotionService promotionService;
+	private TPlanOrderItemMapper tPlanOrderItemMapper;
 	
-	
+	public void settPlanOrderItemMapper(TPlanOrderItemMapper tPlanOrderItemMapper)
+	{
+		this.tPlanOrderItemMapper = tPlanOrderItemMapper;
+	}
 	public void setPromotionService(PromotionService promotionService)
 	{
 		this.promotionService = promotionService;
@@ -156,6 +162,10 @@ public class MilkBoxServiceImpl extends BaseService implements MilkBoxService
 		TMilkboxPlan plan = tMilkboxPlanMapper.selectByPrimaryKey(model.getCode());
 		if(plan!=null){
 			SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
+			
+			//如果更改了原订单行的配送起始日期,要更新原来的订单
+			orderService.updateOrderAndEntriesDispStartDate(plan.getOrderNo(),model.getEntries());
+			
 			TPreOrder o = new TPreOrder();
 			o.setOrderNo(plan.getOrderNo());
 			if(StringUtils.isNotBlank(model.getPaymentStatus())){

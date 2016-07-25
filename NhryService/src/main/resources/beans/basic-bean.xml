@@ -69,6 +69,7 @@
 		<property name="milkBoxService" ref="milkBoxService"></property>
 		<property name="priceService" ref="priceService"></property>
 		<property name="promotionService" ref="promotionService"></property>
+		<property name="tDispOrderItemMapper" ref="tDispOrderItemMapper"></property>
 	</bean>
 	<bean id="tPromotionMapper" class="com.nhry.data.order.impl.TPromotionMapperImpl">
 		<property name="sqlSessionTemplate" ref="dynamicSqlSessionTemplate"></property>
@@ -87,6 +88,7 @@
 	<bean id="milkBoxService" class="com.nhry.service.order.impl.MilkBoxServiceImpl">
 		<property name="tMilkboxPlanMapper" ref="tMilkboxPlanMapper"></property>
 		<property name="tPreOrderMapper" ref="tPreOrderMapper"></property>
+		<property name="tPlanOrderItemMapper" ref="tPlanOrderItemMapper"></property>
 		<property name="branchEmpMapper" ref="branchEmpMapper"></property>
 		<property name="userSessionService" ref="userSessionService"></property>
 		<property name="orderService" ref="orderService"></property>

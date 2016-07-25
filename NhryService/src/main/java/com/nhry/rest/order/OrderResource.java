@@ -266,6 +266,15 @@ public class OrderResource extends BaseResource {
 	}
 	
 	@POST
+	@Path("/calculateQtyAndAmtForFront")
+	@Produces(MediaType.APPLICATION_JSON)
+	@Consumes(MediaType.APPLICATION_JSON)
+	@ApiOperation(value = "/calculateQtyAndAmtForFront", response = TPlanOrderItem.class, notes = "计算后付款订单行的行金额，数量")
+	public Response calculateQtyAndAmtForFront(@ApiParam(required=true,name="item",value="订单行json") TPlanOrderItem  item){
+		return convertToRespModel(MessageCode.NORMAL, null, orderService.calculateTotalQtyForFront(item));
+	}
+	
+	@POST
 	@Path("/memo")
 	@Produces(MediaType.APPLICATION_JSON)
 	@Consumes(MediaType.APPLICATION_JSON)

@@ -1,10 +1,12 @@
 package com.nhry.model.order;
 
+import com.nhry.data.order.domain.TPlanOrderItem;
 import com.nhry.model.basic.BaseQueryModel;
 import com.wordnik.swagger.annotations.ApiModel;
 import com.wordnik.swagger.annotations.ApiModelProperty;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Date;
 
 @ApiModel(value = "MilkboxCreateModel", description = "奶箱新建对象")
@@ -17,6 +19,16 @@ public class MilkboxCreateModel implements Serializable {
 	private String empNo;
 	private String addressNo;
 	private String branchNo;
+	private ArrayList<TPlanOrderItem> entries = new ArrayList<TPlanOrderItem>();
+	
+	public ArrayList<TPlanOrderItem> getEntries()
+	{
+		return entries;
+	}
+	public void setEntries(ArrayList<TPlanOrderItem> entries)
+	{
+		this.entries = entries;
+	}
 	public String getEmpNo()
 	{
 		return empNo;
