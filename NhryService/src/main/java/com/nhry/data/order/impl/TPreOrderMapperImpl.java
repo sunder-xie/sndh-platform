@@ -1,14 +1,3 @@
-/**
- * @project:NhryService
- * @package:com.nhry.data.order.impl
- * @copyright: Copyright[2016-2999] [Markor Investment Group Co. LTD]. All Rights Reserved.
- * @filename: TPreOrderMapperImpl.java
- * @description:<描述>
- * @author: Himari
- * @date: 20 Jun 2016-10:17:22 am
- * @version: 1.0
- * @since: JDK 1.8
- */
 package com.nhry.data.order.impl;
 
 import com.github.pagehelper.PageInfo;
@@ -149,6 +138,12 @@ public class TPreOrderMapperImpl implements TPreOrderMapper
 	public List<TPreOrder> selectNodeletedByMilkmemberNo(TPreOrder order)
 	{
 		return sqlSessionTemplate.selectList("selectNodeletedByMilkmemberNo", order);
+	}
+
+	@Override
+	public int updateOrderSolicitor(TPreOrder order)
+	{
+		return sqlSessionTemplate.update("updateOrderSolicitor", order);
 	}
 	
 }

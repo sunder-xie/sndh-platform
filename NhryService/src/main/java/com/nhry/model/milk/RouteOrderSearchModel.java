@@ -17,7 +17,16 @@ public class RouteOrderSearchModel extends BaseQueryModel implements Serializabl
 	private String orderNo;
 	private String branchNo1;
 	private String salesOrg;
+	private String status;
 	
+	public String getStatus()
+	{
+		return status;
+	}
+	public void setStatus(String status)
+	{
+		this.status = status;
+	}
 	public String getBranchNo1()
 	{
 		return branchNo1;

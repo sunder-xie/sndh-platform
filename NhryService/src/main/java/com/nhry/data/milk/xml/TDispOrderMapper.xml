@@ -87,8 +87,11 @@
     <if test="deliverDate != null and deliverDate !=''">
      		AND o.DISP_DATE = #{deliverDate,jdbcType=VARCHAR}
     </if>
-    <if test="orderNo != null and orderNo !=''">
+<!--     <if test="orderNo != null and orderNo !=''">
      		AND o.ORDER_NO = #{orderNo,jdbcType=VARCHAR}
+    </if> -->
+    <if test="status != null and status !=''">
+     		AND o.STATUS = #{status,jdbcType=VARCHAR}
     </if>
     order by o.ORDER_NO desc
   </select>

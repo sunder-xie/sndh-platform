@@ -52,5 +52,7 @@ public interface TPreOrderMapper {
     
     List<TPreOrder> selectNodeletedByMilkmemberNo(TPreOrder order);
     
+    int updateOrderSolicitor(TPreOrder order);
+    
 
 }
