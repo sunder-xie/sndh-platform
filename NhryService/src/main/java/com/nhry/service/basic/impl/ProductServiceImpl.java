@@ -77,7 +77,7 @@ public class ProductServiceImpl extends BaseService implements ProductService {
 	   if(!StringUtils.isBlank(record.getStatus())){
 		   //状态不为空时，更新产品状态
 		   pubProductByCode(record.getMatnr(),record.getStatus(),false);
-		   messService.sendProductsMessages("产品更新了！", record);
+		   messService.sendProductsMessages("产品更新了！", product);
 		}
 		return 1;
 	}

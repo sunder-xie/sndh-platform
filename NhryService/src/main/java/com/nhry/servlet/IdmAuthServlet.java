@@ -44,7 +44,7 @@ public class IdmAuthServlet extends HttpServlet {
 					String token = access_token.split("=")[1].split("&")[0];
 					attrs.put("access_token", token);
 					String msg = HttpUtils.request(EnvContant.getSystemConst("auth_profile"), attrs);
-					System.out.println("-----msg-------"+msg);
+					System.out.println("-------msg--------"+msg);
 				}
 			} else {
 				//跳转到登录页面
