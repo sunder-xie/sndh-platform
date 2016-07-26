@@ -577,6 +577,8 @@
     AND di.GIFT_FLAG is NOT null
     AND di.STATUS = '20'
     and di.MATNR!=di.CONFIRM_MATNR
+    and di.REASON = '10'
+    and di.REPLACE_REASON = '10'
     and e.SALES_ORG = #{salesOrg,jdbcType=VARCHAR}
     and i.PROMOTION = #{promotion,jdbcType=VARCHAR}
     and  ti.DISP_DATE = #{requiredDate,jdbcType=DATE}
@@ -590,7 +592,7 @@ UNION ALL
     where   1=1
     AND di.GIFT_FLAG is NOT null
     AND di.STATUS = '20'
-    and di.MATNR=di.CONFIRM_MATNR
+    and di.MATNR = di.CONFIRM_MATNR
     and e.SALES_ORG = #{salesOrg,jdbcType=VARCHAR}
     and i.PROMOTION = #{promotion,jdbcType=VARCHAR}
     and  ti.DISP_DATE = #{requiredDate,jdbcType=DATE}
@@ -622,6 +624,8 @@ UNION ALL
         where   1=1
        	and di.`STATUS` = '20'
        	and di.MATNR!=di.CONFIRM_MATNR
+       	and di.REASON = '10'
+        and di.REPLACE_REASON = '10'
         AND di.GIFT_FLAG  is  null
         and   disp.DISP_DATE = #{requiredDate}
         and  o.SALES_ORG=#{salesOrg,jdbcType=VARCHAR}
