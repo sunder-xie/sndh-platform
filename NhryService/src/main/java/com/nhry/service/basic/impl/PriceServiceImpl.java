@@ -193,7 +193,7 @@ public class PriceServiceImpl extends BaseService implements PriceService {
 		}
 		int count = priceBranchMapper.findPriceBrachCountByPt(record);
 		if(count > 0){
-			throw new ServiceException(MessageCode.LOGIC_ERROR, "该奶站下面存在该价格组类型的价格组，不允许重复添加同一类型价格组!");
+			throw new ServiceException(MessageCode.LOGIC_ERROR, "该奶站下面存在相同类型的价格组，不允许重复添加同一类型价格组!");
 		}
 		
 		record.setCreateAt(new Date());

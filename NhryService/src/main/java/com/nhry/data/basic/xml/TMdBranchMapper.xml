@@ -149,7 +149,8 @@
     (SELECT i.ITEM_NAME from t_sys_code_item i WHERE i.TYPE_CODE=<include refid="mybaties.constant.storage_location"/>  and i.ITEM_CODE = b.LGORT) LGORT,
     b.CREATE_AT, b.CREATE_BY, b.CREATE_BY_TXT,b.LAST_MODIFIED, b.LAST_MODIFIED_BY, b.LAST_MODIFIED_BY_TXT-->
 
-    from t_md_branch b /*LEFT  JOIN  t_md_dealer d on b.DEALER_NO = d.DEALER_NO*/
+    from t_md_branch b 
+    <!-- LEFT  JOIN  t_md_dealer d on b.DEALER_NO = d.DEALER_NO*/  -->
     where b.SALES_ORG = #{salesOrg,jdbcType=VARCHAR}
     <if test="branchNo!=null and branchNo!=''">
       and  b.BRANCH_NO = #{branchNo,jdbcType=VARCHAR}
@@ -157,7 +158,7 @@
     <if test="dealerNo!=null and dealerNo!=''">
      and  b.DEALER_NO = #{dealerNo,jdbcType=VARCHAR}
     </if>
-    ORDER BY b.CREATE_AT desc
+    ORDER BY b.BRANCH_NAME
   </select>
   <select id="searchBranch" resultMap="BaseResultMap" parameterType="com.nhry.model.basic.BranchQueryModel">
     SELECT

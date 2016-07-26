@@ -42,7 +42,7 @@
       select 
     <include refid="Base_Column_List" />
     from t_md_dealer
-    where SALES_ORG = #{salesOrg,jdbcType=VARCHAR}
+    where SALES_ORG = #{salesOrg,jdbcType=VARCHAR} ORDER BY DEALER_NAME
   </select>
   <insert id="insertDealer" parameterType="com.nhry.data.basic.domain.TMdDealer" >
     insert into t_md_dealer (DEALER_NO, DEALER_NAME, SALES_ORG, 
