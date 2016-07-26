@@ -1547,13 +1547,51 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 	@Override
 	public void resumeDaliyPlanForRouteOrder(BigDecimal confirmQty, TDispOrderItem entry,TPlanOrderItem orgEntry,Date dispDate)
 	{
+		if("10".equals(entry.getReason())){
+			//换货的，只更新原日计划
+			ArrayList<TOrderDaliyPlanItem> daliyPlans = (ArrayList<TOrderDaliyPlanItem>) tOrderDaliyPlanItemMapper.selectDaliyPlansByOrderNoAsc(orgEntry.getOrderNo());
+			for(TOrderDaliyPlanItem p : daliyPlans){
+				if(p.getDispDate().equals(dispDate)){
+					p.setMatnr(entry.getConfirmMatnr());
+					p.setQty(entry.getConfirmQty().intValue());
+					p.setStatus("20");
+				}
+				tOrderDaliyPlanItemMapper.updateDaliyPlanItem(p);
+			}
+			return;
+		}
 //		record 路单详细条回执信息
 //		entry 原路单行详细
 //		orgEntry 原订单行
 		SimpleDateFormat format = new SimpleDateFormat("yyyyMMdd");
 		TPreOrder orgOrder = tPreOrderMapper.selectByPrimaryKey(orgEntry.getOrderNo());
 		
-		if("10".equals(orgOrder.getPaymentmethod()))return;//后付款的不需要往后延期,重新计算订单价格
+		//后付款的不需要往后延期,重新计算订单价格
+		if("10".equals(orgOrder.getPaymentmethod())){
+			//更新后付款订单的订单金额和剩余金额
+			BigDecimal cj = entry.getAmt().subtract(entry.getConfirmAmt());
+			orgOrder.setInitAmt(orgOrder.getInitAmt().subtract(cj));
+			tPreOrderMapper.updateOrderCurAmtAndInitAmt(orgOrder);
+			
+			BigDecimal initAmt = orgOrder.getInitAmt();
+			ArrayList<TOrderDaliyPlanItem> daliyPlans = (ArrayList<TOrderDaliyPlanItem>) tOrderDaliyPlanItemMapper.selectDaliyPlansByOrderNoAsc(orgEntry.getOrderNo());
+			for(TOrderDaliyPlanItem p : daliyPlans){
+				if(!"30".equals(p.getStatus())){
+					if(p.getDispDate().equals(dispDate)){
+						p.setMatnr(entry.getConfirmMatnr());
+						p.setQty(entry.getConfirmQty().intValue());
+						p.setAmt(entry.getConfirmAmt());
+						initAmt = initAmt.subtract(p.getAmt());
+					}else{
+						initAmt = initAmt.subtract(p.getAmt());
+					}
+				}
+				p.setRemainAmt(initAmt);
+				
+				tOrderDaliyPlanItemMapper.updateDaliyPlanItem(p);
+			}
+			return;
+		}
 		
 		ArrayList<TOrderDaliyPlanItem> daliyPlans = (ArrayList<TOrderDaliyPlanItem>) tOrderDaliyPlanItemMapper.selectDaliyPlansByOrderNoAsc(orgEntry.getOrderNo());
 		int daliyEntryNo = tOrderDaliyPlanItemMapper.selectMaxDaliyPlansNoByOrderNo(orgEntry.getOrderNo()) + 1;
@@ -2210,6 +2248,7 @@ public class OrderServiceImpl extends BaseService implements OrderService {
    	List<TOrderDaliyPlanItem> needUpt = new ArrayList<TOrderDaliyPlanItem>();
    	
    	for(TOrderDaliyPlanItem plan : daliyPlans){
+   		if(plan.getGiftQty()!=null)continue;
    		if(plan.getDispDate().compareTo(dispDate) == 0){
    			plan.setRemainAmt(curAmt);
    			plan.setStatus("20");//已确认送达,当天的确认

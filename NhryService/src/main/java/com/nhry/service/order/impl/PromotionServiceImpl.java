@@ -158,7 +158,9 @@ public class PromotionServiceImpl extends BaseService implements PromotionServic
 		for(TOrderDaliyPlanItem plan : daliyPlans){
 			if(entryMap.containsKey(plan.getItemNo())){
 				TPlanOrderItem orgEntry = entryMap.get(plan.getItemNo());
+				
 				int totalGift = orgEntry.getGiftQty();
+				if(totalGift<=0)break;
 				
 				//复制日计划
 				TOrderDaliyPlanItem giftPlan = new TOrderDaliyPlanItem();

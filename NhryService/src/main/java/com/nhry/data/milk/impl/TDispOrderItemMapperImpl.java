@@ -119,7 +119,7 @@ public class TDispOrderItemMapperImpl implements TDispOrderItemMapper
 		if("10".equals(key.getReason()))key.setReplaceReason(record.getReplaceReason());
 		key.setStatus("30");//30 回执确认
 		key.setConfirmMatnr(record.getProductCode());
-		key.setConfirmAmt(key.getConfirmQty().multiply(orgPrice));
+		if(!"10".equals(key.getReason()))key.setConfirmAmt(key.getConfirmQty().multiply(orgPrice));
 		//回瓶规格
 		if(!record.getMatnr().equals(record.getProductCode())){
 			if(productMap.containsKey(record.getProductCode())){
