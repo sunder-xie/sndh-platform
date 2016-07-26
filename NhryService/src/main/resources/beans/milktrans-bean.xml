@@ -43,11 +43,8 @@
 	<bean id="tRecBotDetailMapper" class="com.nhry.data.milktrans.impl.TRecBotDetailMapperImpl">
 		<property name="sqlSessionTemplate"  ref="dynamicSqlSessionTemplate"></property>
 	</bean>
-	<bean id="tRecBotMapper" class="com.nhry.data.milktrans.impl.TRecBotMapperImpl">
-		<property name="sqlSessionTemplate"  ref="dynamicSqlSessionTemplate"></property>
-	</bean>
+
 	<bean id="returnBoxService" class="com.nhry.service.milktrans.impl.ReturnBoxServiceImpl">
-		<property name="tRecBotMapper"  ref="tRecBotMapper"></property>
 		<property name="tRecBotDetailMapper"  ref="tRecBotDetailMapper"></property>
 		<property name="userSessionService" ref="userSessionService"></property>
 		<property name="tDispOrderMapper"  ref="tDispOrderMapper"></property>

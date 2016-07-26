@@ -10,7 +10,6 @@ import com.nhry.data.milk.dao.TDispOrderItemMapper;
 import com.nhry.data.milk.dao.TDispOrderMapper;
 import com.nhry.data.milk.domain.TDispOrder;
 import com.nhry.data.milktrans.dao.TRecBotDetailMapper;
-import com.nhry.data.milktrans.dao.TRecBotMapper;
 import com.nhry.data.milktrans.domain.TRecBotDetail;
 import com.nhry.model.milktrans.ReturnboxSerarch;
 import com.nhry.model.milktrans.UpdateReturnBoxModel;
@@ -26,15 +25,11 @@ import java.util.Map;
  * Created by gongjk on 2016/6/27.
  */
 public class ReturnBoxServiceImpl implements ReturnBoxService {
-    private TRecBotMapper tRecBotMapper;
     private TRecBotDetailMapper tRecBotDetailMapper;
     private TDispOrderMapper tDispOrderMapper;
     private TDispOrderItemMapper tDispOrderItemMapper;
     private TMdBranchEmpMapper empMapper;
     private UserSessionService userSessionService;
-    public void settRecBotMapper(TRecBotMapper tRecBotMapper) {
-        this.tRecBotMapper = tRecBotMapper;
-    }
     public void setEmpMapper(TMdBranchEmpMapper empMapper) {
         this.empMapper = empMapper;
     }
