@@ -500,6 +500,19 @@ public class RequireOrderServiceImpl implements RequireOrderService {
         return 1;
     }
 
+  @Override
+    public int creaSalOrderOfSelftBranch() {
+        TSysUser user = userSessionService.getCurrentUser();
+        TMdBranch branch  = branchMapper.selectBranchByNo(user.getBranchNo());
+        Date today = new Date();
+        if("01".equals(branch.getBranchGroup())){
+            int noprom = this.creatNoPromoSalOrderOfSelftBranch(today);
+            int prom = this.creatPromoSalOrderOfSelftBranch(today);
+            return prom + noprom;
+        }else{
+            throw new ServiceException(MessageCode.LOGIC_ERROR,"该奶站不是自营奶站");
+        }
+    }
     /**
      *添加  销售订单行项目
      * @param item          产品code，产品数量
