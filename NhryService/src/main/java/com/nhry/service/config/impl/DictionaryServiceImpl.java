@@ -110,13 +110,13 @@ public class DictionaryServiceImpl extends BaseService implements DictionaryServ
 	@Override
 	public int addCodeItem(NHSysCodeItem record) {
 		// TODO Auto-generated method stub
-		if(StringUtils.isEmpty(record.getTypeCode()) || StringUtils.isEmpty(record.getItemName())){
-			throw new ServiceException(MessageCode.LOGIC_ERROR, "typeCode、itemName对应的属性值不能为空!");
-		}
-		NHSysCodeType codetype = this.findCodeTypeByCode(record.getTypeCode());
-		if(codetype == null){
-			throw new ServiceException(MessageCode.LOGIC_ERROR, "typeCode对应的字典代码类型不存在!");
-		}
+//		if(StringUtils.isEmpty(record.getTypeCode()) || StringUtils.isEmpty(record.getItemName())){
+//			throw new ServiceException(MessageCode.LOGIC_ERROR, "typeCode、itemName对应的属性值不能为空!");
+//		}
+//		NHSysCodeType codetype = this.findCodeTypeByCode(record.getTypeCode());
+//		if(codetype == null){
+//			throw new ServiceException(MessageCode.LOGIC_ERROR, "typeCode对应的字典代码类型不存在!");
+//		}
 		if(StringUtils.isEmpty(record.getItemCode())){
 			record.setItemCode(PrimaryKeyUtils.generateUuidKey());
 		}
@@ -126,10 +126,10 @@ public class DictionaryServiceImpl extends BaseService implements DictionaryServ
 			NHSysCodeItem codeitem = new NHSysCodeItem();
 			codeitem.setTypeCode(record.getTypeCode());
 			codeitem.setItemCode(record.getParent());
-			NHSysCodeItem _codeitem= this.findCodeItenByCode(codeitem);
-			if(_codeitem == null){
-				throw new ServiceException(MessageCode.LOGIC_ERROR, "parent属性对应的字典代码行项目父节点不存在!");
-			}
+//			NHSysCodeItem _codeitem= this.findCodeItenByCode(codeitem);
+//			if(_codeitem == null){
+//				throw new ServiceException(MessageCode.LOGIC_ERROR, "parent属性对应的字典代码行项目父节点不存在!");
+//			}
 		}
 		record.setCreateAt(new Date());
 		record.setCreateBy(userSessionService.getCurrentUser().getLoginName());

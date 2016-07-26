@@ -20,6 +20,7 @@
 	   <property name="userMapper"  ref="userMapper"></property>
 	   <property name="roleMapper"  ref="roleMapper"></property>
 	   <property name="resService"  ref="resService"></property>
+	   <property name="codeItemMapper" ref="codeItemMapper"></property>
 	   <property name="userSessionService" ref="userSessionService"></property>
 	</bean>
 	<bean id="roleMapper" class="com.nhry.data.auth.impl.TSysRoleMapperImpl">

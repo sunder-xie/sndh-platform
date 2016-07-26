@@ -162,9 +162,11 @@ public class LadpService {
 	public void syncSysUsers(){
 		try {
 			Date date = new Date();
-			DateFormat formatter = new SimpleDateFormat("yyyyMMddHHmmssZ");  
-			String dateStr = formatter.format(date.addMilliseconds(-60));  //60分钟之前
-			String filter = "(&(|(modifyTimestamp>="+dateStr+")(createTimestamp>="+dateStr+"))(smart-authority=Auth_CRM))";
+//			DateFormat formatter = new SimpleDateFormat("yyyyMMddHHmmssZ");  
+			DateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+			String dateStr = formatter.format(date.addMinutes(-(8*60)));  //60分钟之前
+			String filter = "(&(|(modifyTimestamp>="+dateStr+")(createTimestamp>="+dateStr+"))(smart-authority=Auth_dhxt))";
+//			String filter = "(smart-authority=Auth_dhxt)";
 			String basedn = "ou=People,o=newhopedairy,o=isp";
 			List<Map<String, String>> list = getObjectsByFilter(basedn,filter);
 			Map<String,String> spcAttrs = new HashMap<String,String>();
@@ -184,8 +186,7 @@ public class LadpService {
 	public static void main(String[] args) {
 		String[] xmls = new String[]{ "classpath:beans/spring-context.xml","classpath:beans/dataSource.xml","classpath:beans/*-bean.xml"  };
         ApplicationContext context = new ClassPathXmlApplicationContext(xmls);
-        TSysUserMapper userMapper = (TSysUserMapper)context.getBean("userMapper");
-        List<TSysUser> users = userMapper.getloginNamesByOrgsandRid2(new HashMap<String,String>());
-        System.out.println(users.size());
+        LadpService ladpService = (LadpService)context.getBean("ladpService");
+        ladpService.syncSysUsers();
 	}
 }

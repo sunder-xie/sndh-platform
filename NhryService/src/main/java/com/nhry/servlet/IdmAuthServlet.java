@@ -28,7 +28,6 @@ public class IdmAuthServlet extends HttpServlet {
 	public void doPost(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
 		// 获取临时令牌
-		System.out.println("----------code-获取临时令牌------------");
 		try {
 			String code = request.getParameter("code");
 			if (!StringUtils.isEmpty(code)) {
