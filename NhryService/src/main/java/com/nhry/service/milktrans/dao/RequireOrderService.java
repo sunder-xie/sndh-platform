@@ -33,4 +33,6 @@ public interface RequireOrderService {
     int creatNoPromoSalOrderOfSelftBranch(Date requiredDate);
 
     int creatPromoSalOrderOfSelftBranch(Date requiredDate);
+
+    int creaSalOrderOfSelftBranch();
 }

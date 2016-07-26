@@ -3,7 +3,9 @@ package com.nhry.data.milktrans.impl;
 import com.nhry.common.datasource.DynamicSqlSessionTemplate;
 import com.nhry.data.milktrans.domain.TSsmSalOrder;
 import com.nhry.data.milktrans.dao.TSsmSalOrderMapper;
+import com.nhry.model.milktrans.SalOrderModel;
 
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -24,5 +26,10 @@ public class TSsmSalOrderMapperImpl implements TSsmSalOrderMapper {
     @Override
     public int uptVouCherNoByOrderNo(Map map) {
         return sqlSessionTemplate.update("uptVouCherNoByOrderNo",map);
+    }
+
+    @Override
+    public List<TSsmSalOrder> selectSalOrderByDateAndNo(SalOrderModel model) {
+        return sqlSessionTemplate.selectList("selectSalOrderByDateAndNo",model);
     }
 }

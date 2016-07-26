@@ -29,6 +29,7 @@ import com.nhry.service.milk.dao.DeliverMilkService;
 import com.nhry.service.milk.pojo.TDispOrderChangeItem;
 import com.nhry.service.milktrans.dao.ReturnBoxService;
 import com.nhry.service.order.dao.OrderService;
+import com.nhry.service.stock.dao.TSsmStockService;
 import com.nhry.utils.PrimaryKeyUtils;
 import com.nhry.utils.SerialUtil;
 
@@ -49,7 +50,12 @@ public class DeliverMilkServiceImpl extends BaseService implements DeliverMilkSe
 	private OrderService orderService;
 	private ProductService productService;
 	private ReturnBoxService returnBoxService;
-	
+	private TSsmStockService tSsmStockService;
+
+	public void settSsmStockService(TSsmStockService tSsmStockService) {
+		this.tSsmStockService = tSsmStockService;
+	}
+
 	public void setReturnBoxService(ReturnBoxService returnBoxService)
 	{
 		this.returnBoxService = returnBoxService;
@@ -113,8 +119,7 @@ public class DeliverMilkServiceImpl extends BaseService implements DeliverMilkSe
      */
 	@Override
 	public int createInsideSalOrder(String dispOrderNo) {
-
-		String message = "";
+			TSysUser user = userSessionService.getCurrentUser();
 			TMstInsideSalOrder sOrder = tMstInsideSalOrderMapper.getInSalOrderByDispOrderNo(dispOrderNo);
 
 			List<TDispOrderItem> entries = tDispOrderItemMapper.selectItemsByOrderNo(dispOrderNo);
@@ -135,6 +140,7 @@ public class DeliverMilkServiceImpl extends BaseService implements DeliverMilkSe
 				sOrder.setSalEmpNo(order.getDispEmpNo());
 				tMstInsideSalOrderMapper.insertInsideSalOrder(sOrder);
 			}
+
 			for(TDispOrderItem entry : entries){
 				TMstInsideSalOrderItem item = new TMstInsideSalOrderItem();
 				item.setInsOrderNo(sOrder.getInsOrderNo());
@@ -146,6 +152,8 @@ public class DeliverMilkServiceImpl extends BaseService implements DeliverMilkSe
 				item.setQty(entry.getQty().subtract(entry.getConfirmQty()));
 				item.setReason(entry.getReason());
 				tMstInsideSalOrderItemMapper.insertOrderItem(item);
+				//更新库存
+				tSsmStockService.updateStock(sOrder.getBranchNo(),entry.getMatnr(),entry.getQty(),user.getSalesOrg());
 			}
 			return 1;
 
@@ -189,6 +197,8 @@ public class DeliverMilkServiceImpl extends BaseService implements DeliverMilkSe
 				item.setQty(new BigDecimal(model.getQty()));
 				item.setItemNo(SerialUtil.creatSeria());
 				tMstInsideSalOrderItemMapper.insertOrderItem(item);
+				//更新库存
+				tSsmStockService.updateStock(order.getBranchNo(),model.getMatnr(),new BigDecimal(model.getQty()),user.getSalesOrg());
 			}
 			tMstInsideSalOrderMapper.insertInsideSalOrder(order);
 		}else{

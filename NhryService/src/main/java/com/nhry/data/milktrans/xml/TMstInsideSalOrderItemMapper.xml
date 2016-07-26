@@ -34,7 +34,7 @@
                 ORDER_DATE,
             </if>
             <if test="itemNo != null">
-                itemNo,
+                ITEM_NO,
             </if>
             <if test="orgOrderNo != null">
                 ORGG_ORDER_NO,
@@ -71,10 +71,10 @@
             </if>
 
             <if test="qty != null">
-                #{qty,jdbcType=DECEIMAL},
+                #{qty,jdbcType=DECIMAL},
             </if>
             <if test="price != null">
-                #{price,jdbcType=DECEIMAL},
+                #{price,jdbcType=DECIMAL},
             </if>
             <if test="reason != null">
                 #{reason,jdbcType=VARCHAR},

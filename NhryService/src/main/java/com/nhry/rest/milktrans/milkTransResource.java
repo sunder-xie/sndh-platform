@@ -154,6 +154,17 @@ public class milkTransResource extends BaseResource {
 
 
 	@POST
+	@Path("/creaSalOrderOfSelftBranch")
+	@Produces(MediaType.APPLICATION_JSON)
+	@Consumes(MediaType.APPLICATION_JSON)
+	@ApiOperation(value = "/creaSalOrderOfSelftBranch", response = Response.class, notes = "自营奶站 根据路单和内部销售订单 创建销售订单")
+	public Response creaSalOrderOfSelftBranch(){
+		return convertToRespModel(MessageCode.NORMAL, null, requireOrderService.creaSalOrderOfSelftBranch());
+	}
+
+
+
+	@POST
 	@Path("/box/upt")
 	@Produces(MediaType.APPLICATION_JSON)
 	@Consumes(MediaType.APPLICATION_JSON)

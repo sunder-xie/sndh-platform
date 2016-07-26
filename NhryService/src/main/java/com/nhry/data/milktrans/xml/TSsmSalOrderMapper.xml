@@ -1,29 +1,29 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
-<mapper namespace="com.nhry.data.milktrans.dao.TSsmSalOrderMapper" >
+<mapper namespace="com.nhry.data.milktrans.dao.TSsmSalOrderMapper">
 
-    <resultMap id="BaseResultMap" type="com.nhry.data.milktrans.domain.TSsmSalOrder" >
-        <result column="ORDER_NO" property="orderNo" jdbcType="VARCHAR" />
-        <result column="ORDER_DATE" property="orderDate" jdbcType="DATE" />
-        <result column="BRANCH_NO" property="branchNo" jdbcType="VARCHAR" />
-        <result column="REQUIRED_DATE" property="requiredDate" jdbcType="DATE" />
-        <result column="VOUCHER_NO" property="voucherNo" jdbcType="VARCHAR" />
-        <result column="STATUS" property="status" jdbcType="VARCHAR" />
-        <result column="MEMO_TXT" property="memoTxt" jdbcType="VARCHAR" />
+    <resultMap id="BaseResultMap" type="com.nhry.data.milktrans.domain.TSsmSalOrder">
+        <result column="ORDER_NO" property="orderNo" jdbcType="VARCHAR"/>
+        <result column="ORDER_DATE" property="orderDate" jdbcType="DATE"/>
+        <result column="BRANCH_NO" property="branchNo" jdbcType="VARCHAR"/>
+        <result column="REQUIRED_DATE" property="requiredDate" jdbcType="DATE"/>
+        <result column="VOUCHER_NO" property="voucherNo" jdbcType="VARCHAR"/>
+        <result column="STATUS" property="status" jdbcType="VARCHAR"/>
+        <result column="MEMO_TXT" property="memoTxt" jdbcType="VARCHAR"/>
 
-        <result column="SALES_ORG" property="salesOrg" jdbcType="VARCHAR" />
-        <result column="DEALER_NO" property="dealerNo" jdbcType="VARCHAR" />
-        <result column="BRANCH_GROUP" property="branchGroup" jdbcType="VARCHAR" />
-        <result column="PROM_NO" property="promNo" jdbcType="VARCHAR" />
+        <result column="SALES_ORG" property="salesOrg" jdbcType="VARCHAR"/>
+        <result column="DEALER_NO" property="dealerNo" jdbcType="VARCHAR"/>
+        <result column="BRANCH_GROUP" property="branchGroup" jdbcType="VARCHAR"/>
+        <result column="PROM_NO" property="promNo" jdbcType="VARCHAR"/>
 
-        <result column="CREATE_AT" property="createAt" jdbcType="TIMESTAMP" />
-        <result column="CREATE_BY" property="createBy" jdbcType="VARCHAR" />
-        <result column="CREATE_BY_TXT" property="createByTxt" jdbcType="VARCHAR" />
-        <result column="LAST_MODIFIED" property="lastModified" jdbcType="TIMESTAMP" />
-        <result column="LAST_MODIFIED_BY" property="lastModifiedBy" jdbcType="VARCHAR" />
-        <result column="LAST_MODIFIED_BY_TXT" property="lastModifiedByTxt" jdbcType="VARCHAR" />
+        <result column="CREATE_AT" property="createAt" jdbcType="TIMESTAMP"/>
+        <result column="CREATE_BY" property="createBy" jdbcType="VARCHAR"/>
+        <result column="CREATE_BY_TXT" property="createByTxt" jdbcType="VARCHAR"/>
+        <result column="LAST_MODIFIED" property="lastModified" jdbcType="TIMESTAMP"/>
+        <result column="LAST_MODIFIED_BY" property="lastModifiedBy" jdbcType="VARCHAR"/>
+        <result column="LAST_MODIFIED_BY_TXT" property="lastModifiedByTxt" jdbcType="VARCHAR"/>
     </resultMap>
-    <sql id="Base_Column_List" >
+    <sql id="Base_Column_List">
         ORDER_NO,ORDER_DATE,BRANCH_NO,REQUIRED_DATE,VOUCHER_NO,STATUS,MEMO_TXT,
         SALES_ORG,DEALER_NO,BRANCH_GROUP,PROM_NO,
         CREATE_AT,CREATE_BY,CREATE_BY_TXT,
@@ -36,115 +36,120 @@
         where ORDER_NO = #{orderNo}
     </update>
 
-    <insert id="addsalOrder"  parameterType="com.nhry.data.milktrans.domain.TSsmSalOrder" >
+    <insert id="addsalOrder" parameterType="com.nhry.data.milktrans.domain.TSsmSalOrder">
         insert into t_ssm_sal_order
-        <trim prefix="(" suffix=")" suffixOverrides="," >
-            <if test="orderNo != null" >
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="orderNo != null">
                 ORDER_NO,
             </if>
-            <if test="orderDate != null" >
+            <if test="orderDate != null">
                 ORDER_DATE,
             </if>
-            <if test="branchNo != null" >
+            <if test="branchNo != null">
                 BRANCH_NO,
             </if>
-            <if test="requiredDate != null" >
+            <if test="requiredDate != null">
                 REQUIRED_DATE,
             </if>
-            <if test="voucherNo != null" >
+            <if test="voucherNo != null">
                 VOUCHER_NO,
             </if>
-            <if test="status != null" >
+            <if test="status != null">
                 STATUS,
             </if>
-            <if test="memoTxt != null" >
+            <if test="memoTxt != null">
                 MEMO_TXT,
             </if>
-            <if test="salesOrg != null" >
+            <if test="salesOrg != null">
                 SALES_ORG,
-            </if>  <if test="dealerNo != null" >
+            </if>
+            <if test="dealerNo != null">
                 DEALER_NO,
             </if>
-            <if test="branchGroup != null" >
+            <if test="branchGroup != null">
                 BRANCH_GROUP,
             </if>
-            <if test="promNo != null" >
+            <if test="promNo != null">
                 PROM_NO,
             </if>
 
-            <if test="createAt != null" >
+            <if test="createAt != null">
                 CREATE_AT,
             </if>
-            <if test="createBy != null" >
+            <if test="createBy != null">
                 CREATE_BY,
             </if>
-            <if test="createByTxt != null" >
+            <if test="createByTxt != null">
                 CREATE_BY_TXT,
             </if>
-            <if test="lastModified != null" >
+            <if test="lastModified != null">
                 LAST_MODIFIED,
             </if>
-            <if test="lastModifiedBy != null" >
+            <if test="lastModifiedBy != null">
                 LAST_MODIFIED_BY,
             </if>
-            <if test="lastModifiedByTxt != null" >
+            <if test="lastModifiedByTxt != null">
                 LAST_MODIFIED_BY_TXT,
             </if>
         </trim>
-        <trim prefix="values (" suffix=")" suffixOverrides="," >
-            <if test="orderNo != null" >
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="orderNo != null">
                 #{orderNo,jdbcType=VARCHAR},
             </if>
-            <if test="orderDate != null" >
+            <if test="orderDate != null">
                 #{orderDate,jdbcType=DATE},
             </if>
-            <if test="branchNo != null" >
-               #{branchNo,jdbcType=VARCHAR},
-             </if>
-            <if test="requiredDate != null" >
+            <if test="branchNo != null">
+                #{branchNo,jdbcType=VARCHAR},
+            </if>
+            <if test="requiredDate != null">
                 #{requiredDate,jdbcType=DATE},
             </if>
-            <if test="voucherNo != null" >
+            <if test="voucherNo != null">
                 #{voucherNo,jdbcType=VARCHAR},
             </if>
 
-            <if test="status != null" >
+            <if test="status != null">
                 #{status,jdbcType=VARCHAR},
             </if>
-            <if test="memoTxt != null" >
+            <if test="memoTxt != null">
                 #{memoTxt,jdbcType=VARCHAR},
             </if>
-            <if test="salesOrg != null" >
+            <if test="salesOrg != null">
                 #{salesOrg,jdbcType=VARCHAR},
             </if>
-            <if test="dealerNo != null" >
+            <if test="dealerNo != null">
                 #{dealerNo,jdbcType=VARCHAR},
             </if>
-            <if test="branchGroup != null" >
+            <if test="branchGroup != null">
                 #{branchGroup,jdbcType=VARCHAR},
             </if>
-            <if test="promNo != null" >
+            <if test="promNo != null">
                 #{promNo,jdbcType=VARCHAR},
             </if>
-            <if test="createAt != null" >
+            <if test="createAt != null">
                 #{createAt,jdbcType=TIMESTAMP},
             </if>
-            <if test="createBy != null" >
+            <if test="createBy != null">
                 #{createBy,jdbcType=VARCHAR},
             </if>
-            <if test="createByTxt != null" >
+            <if test="createByTxt != null">
                 #{createByTxt,jdbcType=VARCHAR},
             </if>
-            <if test="lastModified != null" >
+            <if test="lastModified != null">
                 #{lastModified,jdbcType=TIMESTAMP},
             </if>
-            <if test="lastModifiedBy != null" >
+            <if test="lastModifiedBy != null">
                 #{lastModifiedBy,jdbcType=VARCHAR},
             </if>
-            <if test="lastModifiedByTxt != null" >
+            <if test="lastModifiedByTxt != null">
                 #{lastModifiedByTxt,jdbcType=VARCHAR},
             </if>
         </trim>
     </insert>
 
+    <select id="selectSalOrderByDateAndNo" resultMap="BaseResultMap"
+            parameterType="com.nhry.model.milktrans.SalOrderModel">
+        SELECT * FROM t_ssm_sal_order WHERE ORDER_DATE = #{requiredDate} AND BRANCH_NO = #{branchNo}
+    </select>
 </mapper>
