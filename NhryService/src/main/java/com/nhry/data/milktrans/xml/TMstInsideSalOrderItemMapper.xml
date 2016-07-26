@@ -37,7 +37,7 @@
                 ITEM_NO,
             </if>
             <if test="orgOrderNo != null">
-                ORGG_ORDER_NO,
+                ORG_ORDER_NO,
             </if>
             <if test="matnr != null">
                 MATNR,
