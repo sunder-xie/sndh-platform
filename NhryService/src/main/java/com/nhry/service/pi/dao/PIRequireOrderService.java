@@ -36,10 +36,16 @@ public interface PIRequireOrderService {
      * @param isDeli 是否是调货单
      * @return
      */
-    String getDelivery(String orderNo,boolean isDeli);
+    String generateDelivery(String orderNo,String branchNo,boolean isDeli);
 
     String execRequieOrder(Date date, String branchNo);
 
     String execSalesOrder(Date date, TMdBranch branch);
 
+    /**
+     * 生成交换单
+     * @param branchNo
+     * @return
+     */
+    public String execDelivery(String branchNo);
 }

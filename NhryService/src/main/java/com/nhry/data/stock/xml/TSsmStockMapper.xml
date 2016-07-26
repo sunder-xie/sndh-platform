@@ -14,7 +14,7 @@
         <result column="SALES_ORG" property="salesOrg" jdbcType="VARCHAR" />        
     </resultMap>
     <sql id="Base_Column_List">
-    BRANCH_NO, MATNR, UNIT, QTY,SPEC_UNIT,SALES_ORG
+    BRANCH_NO, MATNR, UNIT, QTY
   </sql>
     <select id="getStock" resultMap="BaseResultMap" parameterType="com.nhry.data.stock.domain.TSsmStockKey">
         select
@@ -36,8 +36,14 @@
   </insert>
     <update id="updateStock" parameterType="com.nhry.data.stock.domain.TSsmStock">
         update t_ssm_stock
-        set UNIT = #{unit,jdbcType=VARCHAR},
-          QTY = #{qty,jdbcType=DECIMAL}
+        <set >
+          <if test="unit != null" >
+            UNIT = #{unit,jdbcType=VARCHAR},
+          </if>
+          <if test="qty != null" >
+            QTY = QTY + #{qty,jdbcType=DECIMAL},
+          </if>
+        </set>
         where BRANCH_NO = #{branchNo,jdbcType=VARCHAR}
           and MATNR = #{matnr,jdbcType=VARCHAR}
     </update>

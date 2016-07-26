@@ -1,10 +1,13 @@
-package com.nhry.data.stock.dao;
+package com.nhry.service.stock.dao;
 
 import com.nhry.data.stock.domain.TSsmGiOrderItem;
 import com.nhry.data.stock.domain.TSsmGiOrderItemKey;
 import java.util.List;
 
-public interface TSsmGiOrderItemMapper {
+/**
+ * Created by cbz on 7/25/2016.
+ */
+public interface TSsmGiOrderItemService {
     int deleteGiOrderItemByNo(TSsmGiOrderItemKey key);
 
     int insertGiOrderItem(TSsmGiOrderItem record);
@@ -18,4 +21,6 @@ public interface TSsmGiOrderItemMapper {
     int updateGiOrderItem(TSsmGiOrderItem record);
 
     List<TSsmGiOrderItem> findGiOrderItem(String orderNo);
+
+    int updateGiOrderItems(List<TSsmGiOrderItem> giOrderItems);
 }

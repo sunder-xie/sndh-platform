@@ -25,14 +25,25 @@
     <bean class="com.nhry.data.stock.impl.TSsmStockMapperImpl" id="ssmStockMapper">
         <property name="sqlSessionTemplate" ref="dynamicSqlSessionTemplate"/>
     </bean>
-    <bean class="com.nhry.service.stock.impl.TSsmStockServiceImpl" id="ssmStockService">
-        <property name="ssmStockMapper" ref="ssmStockMapper"/>
-    </bean>
     <bean class="com.nhry.data.stock.impl.TSsmVoucherMapperImpl" id="ssmVoucherMapper">
         <property name="sqlSessionTemplate" ref="dynamicSqlSessionTemplate"/>
     </bean>
     <bean class="com.nhry.data.stock.impl.TSsmVoucherItemMapperImpl" id="ssmVoucherItemMapper">
         <property name="sqlSessionTemplate" ref="dynamicSqlSessionTemplate"/>
+    </bean>
+    <bean class="com.nhry.service.stock.impl.TSsmGiOrderServiceImpl" id="giOrderService">
+        <property name="giOrderMapper" ref="ssmGiOrderMapper"/>
+    </bean>
+    <bean class="com.nhry.service.stock.impl.TSsmGiOrderItemServiceImpl" id="giOrderItemService">
+        <property name="giOrderItemMapper" ref="ssmGiOrderItemMapper"/>
+        <property name="giOrderService" ref="giOrderService"/>
+        <property name="ssmStockMapper" ref="ssmStockMapper"/>
+    </bean>
+    <bean class="com.nhry.service.stock.impl.TSsmStockServiceImpl" id="ssmStockService">
+        <property name="ssmStockMapper" ref="ssmStockMapper"/>
+        <property name="ssmReqGoodsOrderMapper" ref="tSsmReqGoodsOrderMapper"/>
+        <property name="giOrderItemService" ref="giOrderItemService"/>
+        <property name="giOrderService" ref="giOrderService"/>
     </bean>
 
 </beans>
