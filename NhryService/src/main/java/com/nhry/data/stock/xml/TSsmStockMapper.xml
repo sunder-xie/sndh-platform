@@ -126,6 +126,6 @@
         t_ssm_stock t
         left join t_md_mara t1 on t.SALES_ORG = t1.SALES_ORG  AND t.MATNR = t1.MATNR
       WHERE
-       t.BRANCH_NO = #{branchNo,jdbcType=VARCHAR}  AND t.QTY is not null    
+       t.BRANCH_NO = #{branchNo,jdbcType=VARCHAR}  AND t.QTY is not null  AND t.QTY > 0
     </select>
 </mapper>

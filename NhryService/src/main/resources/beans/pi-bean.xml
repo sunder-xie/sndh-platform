@@ -48,7 +48,12 @@
     <import resource="classpath:META-INF/cxf/cxf-extension-soap.xml"/>
     <import resource="classpath:META-INF/cxf/cxf-servlet.xml"/>
     -->
-    <bean id="piOrderService" class="com.nhry.service.pi.impl.PIOrderServiceImpl"/>
+    <bean id="piOrderService" class="com.nhry.service.pi.impl.PIOrderServiceImpl">
+        <property name="orderDaliyPlanItemMapper" ref="tOrderDaliyPlanItemMapper"/>
+        <property name="orderMapper" ref="tPreOrderMapper"/>
+        <property name="planOrderItemMapper" ref="tPlanOrderItemMapper"/>
+        <property name="branchMapper" ref="branchMapper"/>
+    </bean>
     <jaxws:endpoint id="piOrderServiceImpl" implementor="#piOrderService"
                     address="/orderService"/>
 </beans>
