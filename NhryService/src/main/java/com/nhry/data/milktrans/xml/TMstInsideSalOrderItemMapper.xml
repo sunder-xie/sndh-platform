@@ -103,6 +103,7 @@
         and i.ITEM_CODE =m.SPEC
         ) SPEC
         FROM t_mst_inside_sal_order_item i
+      LEFT JOIN  t_md_mara m on  i.MATNR = m.MATNR and m.SALES_ORG = #{salesOrg,jdbcType=VARCHAR}
       LEFT JOIN t_md_mara_ex ex on i.MATNR = ex.MATNR and ex.SALES_ORG = #{salesOrg,jdbcType=VARCHAR}
       where 1=1
         and i.INS_ORDER_NO = #{orderNo,jdbcType=VARCHAR}
