@@ -9,6 +9,8 @@ public class TSsmGiOrderItemKey {
 
     private Date orderDate;
 
+    private String salesOrg;
+
     public String getOrderNo() {
         return orderNo;
     }
@@ -31,5 +33,13 @@ public class TSsmGiOrderItemKey {
 
     public void setOrderDate(Date orderDate) {
         this.orderDate = orderDate;
+    }
+
+    public String getSalesOrg() {
+        return salesOrg;
+    }
+
+    public void setSalesOrg(String salesOrg) {
+        this.salesOrg = salesOrg;
     }
 }

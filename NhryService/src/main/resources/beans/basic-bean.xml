@@ -121,6 +121,7 @@
 		<property name="orderService" ref="orderService"></property>
 		<property name="productService" ref="productService"></property>
 		<property name="returnBoxService" ref="returnBoxService"></property>
+		<property name="tSsmStockService" ref="ssmStockService"/>
 	</bean>
 	<!-- 送奶信息维护end -->
 	<bean id="custService" class="com.nhry.service.basic.impl.TVipCustInfoServiceImpl">
