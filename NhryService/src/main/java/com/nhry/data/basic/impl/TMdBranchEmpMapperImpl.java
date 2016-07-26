@@ -50,9 +50,7 @@ public class TMdBranchEmpMapperImpl implements TMdBranchEmpMapper {
 	@Override
 	public int uptBranchEmpByNo(TMdBranchEmp record) {
 		// TODO Auto-generated method stub
-		int emp = this.sqlSessionTemplate.update("uptBranchEmpByNo", record);
-		int role = this.sqlSessionTemplate.insert("uptEmpRole", record);
-		return emp+role;
+		return this.sqlSessionTemplate.update("uptBranchEmpByNo", record);
 	}
 
 	public void setSqlSessionTemplate(DynamicSqlSessionTemplate sqlSessionTemplate) {
