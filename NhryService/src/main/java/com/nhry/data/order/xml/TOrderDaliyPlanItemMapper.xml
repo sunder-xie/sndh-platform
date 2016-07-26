@@ -460,7 +460,7 @@
     from t_mst_order_daliy_plan_item i
     LEFT JOIN t_md_mara m on i.MATNR =  m.MATNR
     LEFT JOIN t_preorder o on 	i.ORDER_NO = o.ORDER_NO
-    LEFT JOIN t_md_mara_ex e on i.MATNR = e.MATNR
+    LEFT JOIN t_md_mara_ex e on i.MATNR = e.MATNR and e.SALES_ORG = #{salesOrg,jdbcType=VARCHAR}
     where   1=1
     and i.STATUS!='30'
     and  ((e.PRE_DAYS= 2 and   i.DISP_DATE = #{secondDay,jdbcType=DATE} ) or (e.PRE_DAYS= 1 and   i.DISP_DATE = #{firstDay,jdbcType=DATE}))
@@ -478,6 +478,7 @@
     LEFT JOIN t_preorder o on i.ORDER_NO = o.ORDER_NO
     where 1=1
     and i.GIFT_QTY is not NULL
+    and i.STATUS !='30'
     and (i.DISP_DATE = #{firstDay,jdbcType=DATE} or  i.DISP_DATE = #{secondDay,jdbcType=DATE})
     and o.BRANCH_NO = #{branchNo,jdbcType=VARCHAR}
     and o.SALES_ORG = #{salesOrg,jdbcType=VARCHAR}
@@ -489,6 +490,7 @@
     from t_mst_order_daliy_plan_item i
     where   1=1
     AND i.GIFT_QTY is not null
+    and i.STATUS !='30'
     and i.PROMOTION_FLAG = #{promotion,jdbcType=VARCHAR}
     and  ( i.DISP_DATE = #{secondDay,jdbcType=DATE}  or i.DISP_DATE = #{firstDay,jdbcType=DATE} )
     GROUP BY i.MATNR
@@ -503,7 +505,7 @@
               from t_mst_order_daliy_plan_item i
               LEFT JOIN t_md_mara m on i.MATNR =  m.MATNR
               LEFT JOIN t_preorder o on 	i.ORDER_NO = o.ORDER_NO
-              LEFT JOIN t_md_mara_ex e on i.MATNR = e.MATNR
+              LEFT JOIN t_md_mara_ex e on i.MATNR = e.MATNR  and e.SALES_ORG = #{salesOrg,jdbcType=VARCHAR}
               where   1=1
               AND i.GIFT_QTY is  null
               and  ((e.PRE_DAYS= 2 and   i.DISP_DATE = #{secondDay,jdbcType=DATE} ) or (e.PRE_DAYS= 1 and   i.DISP_DATE = #{firstDay,jdbcType=DATE}))
@@ -571,7 +573,7 @@
         from t_mst_order_daliy_plan_item i
         LEFT JOIN t_md_mara m on i.MATNR =  m.MATNR
         LEFT JOIN t_preorder o on 	i.ORDER_NO = o.ORDER_NO
-        LEFT JOIN t_md_mara_ex e on i.MATNR = e.MATNR
+        LEFT JOIN t_md_mara_ex e on i.MATNR = e.MATNR  and e.SALES_ORG = #{salesOrg,jdbcType=VARCHAR}
         where   1=1
         AND i.GIFT_QTY is  null
         AND i.STATUS = '20'

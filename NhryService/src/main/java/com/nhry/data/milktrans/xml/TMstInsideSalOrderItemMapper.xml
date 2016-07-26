@@ -93,7 +93,7 @@
     <select id="getInsideSalOrderDetail" resultMap="BaseResultMap" parameterType="com.nhry.model.milktrans.InSideSalOrderDetailSearchModel">
       SELECT
        i.INS_ORDER_NO ,i.ORDER_DATE ,i.ITEM_NO ,i.ORG_ORDER_NO,i.MATNR,i.QTY, i.PRICE, i.REASON,
-       m.MATNR_TXT,
+        ex.SHORT_TXT MATNR_TXT,
        (
         SELECT i.ITEM_NAME from t_sys_code_item i
         WHERE i.TYPE_CODE= <include refid="mybaties.constant.products_second_category"/>
@@ -110,9 +110,10 @@
         and i.ITEM_CODE =m.SPEC
         ) SPEC
         FROM t_mst_inside_sal_order_item i
-      LEFT  JOIN  t_md_mara m on i.MATNR = m.MATNR and m.SALES_ORG = #{salesOrg,jdbcType=VARCHAR}
+     /* LEFT  JOIN  t_md_mara m on i.MATNR = m.MATNR and m.SALES_ORG = #{salesOrg,jdbcType=VARCHAR}*/
+      LEFT JOIN t_md_mara_ex ex on i.MATNR = ex.MATNR and ex.SALES_ORG = #{salesOrg,jdbcType=VARCHAR}
       where 1=1
-      and i.INS_ORDER_NO = #{orderNo,jdbcType=VARCHAR}
+        and i.INS_ORDER_NO = #{orderNo,jdbcType=VARCHAR}
     </select>
 
 </mapper>
