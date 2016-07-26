@@ -33,4 +33,5 @@ public interface BranchService {
      */
     List<TMdBranch> findBranchByDno(String dealerNo);
 
+    TMdBranch getCustBranchInfo();
 }

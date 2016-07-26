@@ -55,6 +55,7 @@
 		<property name="sqlSessionTemplate"  ref="dynamicSqlSessionTemplate"></property>
 	</bean>
 	<bean id="empBillService" class="com.nhry.service.bill.impl.EmpBillServiceImpl">
+		<property name="urMapper"  ref="urMapper"></property>
 		<property name="tMdEmpSalMapper"  ref="tMdEmpSalMapper"></property>
 		<property name="empBillMapper"  ref="empBillMapper"></property>
 		<property name="branchEmpMapper"  ref="branchEmpMapper"></property>

@@ -83,7 +83,7 @@
         LEFT JOIN t_md_branch b on o.BRANCH_NO = b.BRANCH_NO
         LEFT JOIN t_md_dealer d on b.DEALER_NO = d.DEALER_NO
         LEFT JOIN t_md_branch_emp e on o.EMP_NO= e.EMP_NO and e.SALES_ORG = #{salesOrg,jdbcType=VARCHAR}
-        where i.`STATUS` !='30'
+        where i.`STATUS` ='20'
         and i.GIFT_QTY IS NULL
         and o.SALES_ORG = #{salesOrg,jdbcType=VARCHAR}
         <if test="dealerNo!=null and ''!=dealerNo">
@@ -113,7 +113,7 @@
         LEFT JOIN t_md_branch b on o.BRANCH_NO = b.BRANCH_NO
         LEFT JOIN t_md_dealer d on b.DEALER_NO = d.DEALER_NO
         LEFT JOIN t_md_branch_emp e on o.EMP_NO= e.EMP_NO and e.SALES_ORG = #{salesOrg,jdbcType=VARCHAR}
-        where i.`STATUS` !='30'
+        where i.`STATUS` ='20'
         and i.GIFT_QTY IS NOT NULL
         and o.SALES_ORG = #{salesOrg,jdbcType=VARCHAR}
         <if test="dealerNo!=null and ''!=dealerNo">
@@ -299,6 +299,26 @@
         SELECT   (case when SUM(i.QTY ) is null then 0 else SUM(i.QTY )  end)    QTY
         FROM  t_mst_order_daliy_plan_item  i LEFT JOIN t_preorder o on i.ORDER_NO = o.ORDER_NO
         WHERE 1 =1
+        and i.STATUS = '20' and i.GIFT_QTY IS  NULL
+        <if test="branchNo!=null and ''!=branchNo">
+            and o.BRANCH_NO = #{branchNo,jdbcType=VARCHAR}
+        </if>
+        <if test="empNo!=null and ''!=empNo">
+            and  o.EMP_NO = #{empNo,jdbcType=VARCHAR}
+        </if>
+        <if test="startDate!=null and ''!=startDate">
+            and  o.END_DATE &gt;= #{startDate,jdbcType=DATE}
+        </if>
+        <if test="endDate!=null and ''!=endDate">
+            and  o.END_DATE &lt;= #{endDate,jdbcType=DATE}
+        </if>
+    </select>
+
+    <select id="empFreeDispFeeNum"  resultType="INTEGER"  parameterType="com.nhry.model.bill.EmpDispDetialInfoSearch" >
+        SELECT   (case when SUM(i.GIFT_QTY ) is null then 0 else SUM(i.GIFT_QTY )  end)    QTY
+        FROM  t_mst_order_daliy_plan_item  i LEFT JOIN t_preorder o on i.ORDER_NO = o.ORDER_NO
+        WHERE 1 =1
+        and i.STATUS = '20' and i.GIFT_QTY IS  NOT null
         <if test="branchNo!=null and ''!=branchNo">
             and o.BRANCH_NO = #{branchNo,jdbcType=VARCHAR}
         </if>

@@ -6,6 +6,8 @@
         <result column="ORDER_NO" property="orderNo" jdbcType="VARCHAR"/>
         <result column="ORDER_DATE" property="orderDate" jdbcType="DATE"/>
         <result column="BRANCH_NO" property="branchNo" jdbcType="VARCHAR"/>
+        <result column="BRANCH_NAME" property="branchName" jdbcType="VARCHAR"/>
+
         <result column="REQUIRED_DATE" property="requiredDate" jdbcType="DATE"/>
         <result column="VOUCHER_NO" property="voucherNo" jdbcType="VARCHAR"/>
         <result column="STATUS" property="status" jdbcType="VARCHAR"/>
@@ -13,6 +15,8 @@
 
         <result column="SALES_ORG" property="salesOrg" jdbcType="VARCHAR"/>
         <result column="DEALER_NO" property="dealerNo" jdbcType="VARCHAR"/>
+        <result column="DEALER_NAME" property="dealerName" jdbcType="VARCHAR"/>
+
         <result column="BRANCH_GROUP" property="branchGroup" jdbcType="VARCHAR"/>
         <result column="PROM_NO" property="promNo" jdbcType="VARCHAR"/>
 
@@ -153,4 +157,29 @@
         SELECT * FROM t_ssm_sal_order WHERE ORDER_DATE = #{requiredDate} AND BRANCH_NO = #{branchNo}
     </select>
 
+
+    <select id="selectSalOrderByDateAndBranchOrDealerNo" resultMap="BaseResultMap"  parameterType="com.nhry.model.milktrans.SalOrderModel">
+        SELECT
+        o.ORDER_NO,o.ORDER_DATE,o.BRANCH_NO,o.REQUIRED_DATE,o.VOUCHER_NO,o.STATUS,o.MEMO_TXT,
+        o.PROM_NO,b.BRANCH_NAME,o.DEALER_NO,d.DEALER_NAME
+        FROM
+        t_ssm_sal_order o LEFT  JOIN  t_md_branch b on o.BRANCH_NO = b.BRANCH_NO
+        LEFT  JOIN  t_md_dealer d on o.DEALER_NO = d.DEALER_NO
+        WHERE 1=1
+        and ORDER_DATE = #{orderDate,jdbcType=DATE}
+        <if test="branchNo!=null and ''!=branchNo">
+        AND o.BRANCH_NO = #{branchNo}
+        </if>
+        <if test="dealerNo!=null and ''!=dealerNo">
+            AND b.DEALER_NO = #{dealerNo}
+        </if>
+    </select>
+
+    <delete id="delSalOrderByOrderNo"  parameterType="String">
+        DELETE
+        FROM
+        t_ssm_sal_order
+        WHERE 1=1
+        and ORDER_NO = #{orderNo,jdbcType=VARCHAR}
+    </delete>
 </mapper>

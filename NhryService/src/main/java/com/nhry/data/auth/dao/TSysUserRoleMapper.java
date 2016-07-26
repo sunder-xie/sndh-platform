@@ -18,5 +18,6 @@ public interface TSysUserRoleMapper {
     
     public List<TSysUserRole> findUserRoleByRid(String rid);
 
+
     TSysUserRole getUserRoleByLoginName(String loginName);
 }

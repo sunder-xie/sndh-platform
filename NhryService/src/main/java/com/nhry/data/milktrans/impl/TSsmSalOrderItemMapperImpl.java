@@ -24,7 +24,17 @@ public class TSsmSalOrderItemMapperImpl implements TSsmSalOrderItemMapper {
     }
 
     @Override
+    public List<TSsmSalOrderItems> selectItemsBySalOrderNo(Map  map) {
+        return sqlSessionTemplate.selectList("selectItemsBySalOrderNo",map);
+    }
+
+    @Override
     public List<Map<String, String>> findItemsForPI(String orderNo) {
         return sqlSessionTemplate.selectList("findItemsForPI",orderNo);
+    }
+
+    @Override
+    public int delSalOrderItemsByOrderNo(String orderNo) {
+        return sqlSessionTemplate.delete("delSalOrderItemsByOrderNo",orderNo);
     }
 }

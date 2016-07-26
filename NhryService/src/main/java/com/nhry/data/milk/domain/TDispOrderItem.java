@@ -58,8 +58,31 @@ public class TDispOrderItem extends TDispOrderItemKey {
     
     private Integer retQtyM;
     
+    private String replaceReason;
     
-    public Integer getRetQtyB()
+    private String giftFlag;
+    
+    public String getGiftFlag()
+	{
+		return giftFlag;
+	}
+
+	public void setGiftFlag(String giftFlag)
+	{
+		this.giftFlag = giftFlag;
+	}
+
+	public String getReplaceReason()
+	{
+		return replaceReason;
+	}
+
+	public void setReplaceReason(String replaceReason)
+	{
+		this.replaceReason = replaceReason;
+	}
+
+	public Integer getRetQtyB()
 	{
 		return retQtyB;
 	}

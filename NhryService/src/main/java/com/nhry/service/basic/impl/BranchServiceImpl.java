@@ -16,8 +16,6 @@ import com.nhry.model.basic.BranchQueryModel;
 import com.nhry.model.basic.BranchSalesOrgModel;
 import com.nhry.service.BaseService;
 import com.nhry.service.basic.dao.BranchService;
-import com.nhry.service.basic.dao.TSysMessageService;
-
 import org.apache.commons.lang3.StringUtils;
 
 import java.util.HashMap;
@@ -153,6 +151,15 @@ public class BranchServiceImpl extends BaseService implements BranchService {
 		attrs.put("salesOrg", this.userSessionService.getCurrentUser().getSalesOrg());
 		attrs.put("dealerNo",dealerNo);
 		return this.branchMapper.findBranchByDno(attrs);
+	}
+
+	@Override
+	public TMdBranch getCustBranchInfo() {
+		TSysUser user = userSessionService.getCurrentUser();
+		if(StringUtils.isBlank(user.getBranchNo())){
+			throw new ServiceException(MessageCode.LOGIC_ERROR,"当前登录人没有所属奶站");
+		}
+		return  this.selectBranchByNo(user.getBranchNo());
 	}
 
 

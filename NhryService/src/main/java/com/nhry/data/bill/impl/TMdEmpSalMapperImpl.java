@@ -38,4 +38,9 @@ public class TMdEmpSalMapperImpl implements TMdEmpSalMapper {
     public TMdEmpSal getEmpSalByEmpSalLsh(String empSalLsh) {
         return sqlSessionTemplate.selectOne("getEmpSalByEmpSalLsh",empSalLsh);
     }
+
+    @Override
+    public int delEmpSalByEmpNoAndDate(Map<String, String> map) {
+        return sqlSessionTemplate.delete("delEmpSalByEmpNoAndDate",map);
+    }
 }
