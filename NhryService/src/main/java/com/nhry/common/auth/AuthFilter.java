@@ -1,8 +1,6 @@
 package com.nhry.common.auth;
-
 import java.util.ArrayList;
 import java.util.List;
-
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.ws.rs.WebApplicationException;
@@ -12,14 +10,12 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;
-
 import com.nhry.common.exception.MessageCode;
 import com.nhry.model.sys.ResponseModel;
 import com.nhry.utils.CookieUtil;
 import com.nhry.utils.SysContant;
 import com.sun.jersey.spi.container.ContainerRequest;
 import com.sun.jersey.spi.container.ContainerRequestFilter;
-
 public class AuthFilter implements ContainerRequestFilter {
 	private static final Logger LOGGER = Logger.getLogger(AuthFilter.class);
 	private static  List<String> whiteUriList =null;

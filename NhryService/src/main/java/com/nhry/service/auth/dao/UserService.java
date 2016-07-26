@@ -25,6 +25,13 @@ public interface UserService {
 	 */
 	public TSysUser login(TSysUser user);
 	
+	/**
+	 * 根据token获取用户信息
+	 * @param token
+	 * @return
+	 */
+	public TSysUser findUserBytoken(String token);
+	
 	public TSysUser findUserByLoginName(String loginName);
 	
 	public int updateUser(TSysUser record);

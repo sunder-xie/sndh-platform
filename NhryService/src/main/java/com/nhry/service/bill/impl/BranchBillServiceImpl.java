@@ -1,5 +1,7 @@
 package com.nhry.service.bill.impl;
 
+import java.util.List;
+
 import com.github.pagehelper.PageInfo;
 import com.nhry.common.auth.UserSessionService;
 import com.nhry.data.auth.dao.TSysUserRoleMapper;
@@ -35,8 +37,8 @@ public class BranchBillServiceImpl implements BranchBillService {
     @Override
     public PageInfo EmpBranchBill(EmpBranchBillSearch eSearch) {
         TSysUser user = userSessionService.getCurrentUser();
-        TSysUserRole userRole = tSysUserRoleMapper.getUserRoleByLoginName(user.getLoginName());
-        if("1004".equals(userRole.getId())){
+        List<String> rids = tSysUserRoleMapper.getUserRidsByLoginName(user.getLoginName());
+        if(rids.contains("1004")){
             eSearch.setBranchNo(user.getBranchNo());
         }
 
@@ -48,8 +50,8 @@ public class BranchBillServiceImpl implements BranchBillService {
     public PageInfo getEmpBranchBillDetail(EmpBranchBillDetailSearch bsearch) {
         TSysUser user = userSessionService.getCurrentUser();
         bsearch.setSalesOrg(user.getSalesOrg());
-        TSysUserRole userRole = tSysUserRoleMapper.getUserRoleByLoginName(user.getLoginName());
-        if("1004".equals(userRole.getId())){
+        List<String> rids = tSysUserRoleMapper.getUserRidsByLoginName(user.getLoginName());
+        if(rids.contains("1004")){
             bsearch.setBranchNo(user.getBranchNo());
         }
         return branchBillMapper.branchBillEmpItemSearch(bsearch);
@@ -58,8 +60,8 @@ public class BranchBillServiceImpl implements BranchBillService {
     @Override
     public PageInfo CustomerBranchBill(CustBranchBillSearch bsearch) {
         TSysUser user = userSessionService.getCurrentUser();
-        TSysUserRole userRole = tSysUserRoleMapper.getUserRoleByLoginName(user.getLoginName());
-        if("1004".equals(userRole.getId())){
+        List<String> rids = tSysUserRoleMapper.getUserRidsByLoginName(user.getLoginName());
+        if(rids.contains("1004")){
             bsearch.setBranchNo(user.getBranchNo());
         }
         return branchBillMapper.CustomerBranchBill(bsearch);
