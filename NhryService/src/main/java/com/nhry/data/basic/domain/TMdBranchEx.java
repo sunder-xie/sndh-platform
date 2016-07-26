@@ -27,6 +27,8 @@ public class TMdBranchEx {
 
     private String supplPlnt;
 
+    private String reslo;
+
     public String getBranchNo() {
         return branchNo;
     }
@@ -121,5 +123,13 @@ public class TMdBranchEx {
 
     public void setSupplPlnt(String supplPlnt) {
         this.supplPlnt = supplPlnt == null ? null : supplPlnt.trim();
+    }
+
+    public String getReslo() {
+        return reslo;
+    }
+
+    public void setReslo(String reslo) {
+        this.reslo = reslo;
     }
 }

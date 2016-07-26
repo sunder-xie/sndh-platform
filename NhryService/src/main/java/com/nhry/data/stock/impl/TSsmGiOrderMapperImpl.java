@@ -4,6 +4,9 @@ import com.nhry.common.datasource.DynamicDataSource;
 import com.nhry.common.datasource.DynamicSqlSessionTemplate;
 import com.nhry.data.stock.dao.TSsmGiOrderMapper;
 import com.nhry.data.stock.domain.TSsmGiOrder;
+import com.nhry.model.stock.GiOrderModel;
+
+import java.util.List;
 
 /**
  * Created by cbz on 7/7/2016.
@@ -44,5 +47,10 @@ public class TSsmGiOrderMapperImpl implements TSsmGiOrderMapper {
     @Override
     public int updateGiOrder(TSsmGiOrder record) {
         return sqlSessionTemplate.update("updateGiOrder",record);
+    }
+
+    @Override
+    public List<TSsmGiOrder> findGiOrder(GiOrderModel model) {
+        return sqlSessionTemplate.selectList("findGiOrder",model);
     }
 }

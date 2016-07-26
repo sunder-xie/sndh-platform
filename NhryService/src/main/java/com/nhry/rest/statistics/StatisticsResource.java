@@ -43,12 +43,12 @@ public class StatisticsResource extends BaseResource {
     @Path("/branchDayInfo")
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes(MediaType.APPLICATION_JSON)
-    @ApiOperation(value = "/branchDayInfo", response = ResponseModel.class, notes = "奶站日报表")
+    @ApiOperation(value = "/branchDayInfo}", response = ResponseModel.class, notes = "奶站日报表")
     public Response branchDayInfo(@ApiParam(name = "model",value = "奶站日报") BranchInfoModel model){
         TSysUser user = userSessionService.getCurrentUser();
         if(StringUtils.isEmpty(model.getBranchNo()) && StringUtils.isNotEmpty(user.getBranchNo())){
             model.setBranchNo(user.getBranchNo());
-        }else if(StringUtils.isEmpty(model.getDealerId()) && StringUtils.isNotEmpty(user.getDealerId()) && !"-1".equals(user.getDealerId())){
+        }else if(StringUtils.isEmpty(model.getDealerId()) && StringUtils.isNotEmpty(user.getDealerId())){
             model.setDealerId(user.getDealerId());
         }
         if(StringUtils.isNotEmpty(user.getSalesOrg())){
@@ -65,7 +65,7 @@ public class StatisticsResource extends BaseResource {
         TSysUser user = userSessionService.getCurrentUser();
         if(StringUtils.isEmpty(model.getBranchNo()) && StringUtils.isNotEmpty(user.getBranchNo())){
             model.setBranchNo(user.getBranchNo());
-        }else if(StringUtils.isEmpty(model.getDealerId()) && StringUtils.isNotEmpty(user.getDealerId()) && !"-1".equals(user.getDealerId())){
+        }else if(StringUtils.isEmpty(model.getDealerId()) && StringUtils.isNotEmpty(user.getDealerId())){
             model.setDealerId(user.getDealerId());
         }
         if(StringUtils.isNotEmpty(user.getSalesOrg())){
@@ -83,7 +83,7 @@ public class StatisticsResource extends BaseResource {
         TSysUser user = userSessionService.getCurrentUser();
         if(StringUtils.isEmpty(model.getBranchNo()) && StringUtils.isNotEmpty(user.getBranchNo())){
             model.setBranchNo(user.getBranchNo());
-        }else if(StringUtils.isEmpty(model.getDealerId()) && StringUtils.isNotEmpty(user.getDealerId()) && !"-1".equals(user.getDealerId())){
+        }else if(StringUtils.isEmpty(model.getDealerId()) && StringUtils.isNotEmpty(user.getDealerId())){
             model.setDealerId(user.getDealerId());
         }
         if(StringUtils.isNotEmpty(user.getSalesOrg())){

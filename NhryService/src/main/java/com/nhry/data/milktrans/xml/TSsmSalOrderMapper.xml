@@ -152,4 +152,5 @@
             parameterType="com.nhry.model.milktrans.SalOrderModel">
         SELECT * FROM t_ssm_sal_order WHERE ORDER_DATE = #{requiredDate} AND BRANCH_NO = #{branchNo}
     </select>
+
 </mapper>

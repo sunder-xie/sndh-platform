@@ -5,6 +5,8 @@ import com.nhry.data.stock.dao.TSsmGiOrderItemMapper;
 import com.nhry.data.stock.domain.TSsmGiOrderItem;
 import com.nhry.data.stock.domain.TSsmGiOrderItemKey;
 
+import java.util.List;
+
 /**
  * Created by cbz on 7/7/2016.
  */
@@ -43,6 +45,11 @@ public class TSsmGiOrderItemMapperImpl implements TSsmGiOrderItemMapper{
 
     @Override
     public int updateGiOrderItem(TSsmGiOrderItem record) {
-        return sqlSessionTemplate.update("updateGiOrderItem",record);
+        return sqlSessionTemplate.update("updateGiOrderItemByNo",record);
+    }
+
+    @Override
+    public List<TSsmGiOrderItem> findGiOrderItem(String orderNo) {
+        return sqlSessionTemplate.selectList("findGiOrderItem",orderNo);
     }
 }

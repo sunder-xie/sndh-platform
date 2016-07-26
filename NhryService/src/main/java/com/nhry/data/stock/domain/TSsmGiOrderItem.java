@@ -15,6 +15,8 @@ public class TSsmGiOrderItem extends TSsmGiOrderItemKey {
 
     private String itemType;
 
+    private String remark;
+
     public String getMatnr() {
         return matnr;
     }
@@ -61,5 +63,13 @@ public class TSsmGiOrderItem extends TSsmGiOrderItemKey {
 
     public void setItemType(String itemType) {
         this.itemType = itemType == null ? null : itemType.trim();
+    }
+
+    public String getRemark() {
+        return remark;
+    }
+
+    public void setRemark(String remark) {
+        this.remark = remark;
     }
 }

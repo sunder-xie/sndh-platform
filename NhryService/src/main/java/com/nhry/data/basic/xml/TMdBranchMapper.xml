@@ -233,4 +233,7 @@
           </if>
     </where>
   </select>
+  <select id="getBranchByNo" resultMap="BaseResultMap" parameterType="java.lang.String">
+    select <include refid="Base_Column_List"/> from t_md_branch where BRANCH_NO = #{branchNo,jdbcType=VARCHAR}
+  </select>
 </mapper>

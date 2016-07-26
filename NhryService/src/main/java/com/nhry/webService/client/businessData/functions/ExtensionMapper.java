@@ -318,6 +318,11 @@ public class ExtensionMapper {
         }
 
         if ("urn:sap-com:document:sap:rfc:functions".equals(namespaceURI) &&
+                "PR_REF_MAT_type1".equals(typeName)) {
+            return com.nhry.webService.client.businessData.functions.PR_REF_MAT_type1.Factory.parse(reader);
+        }
+
+        if ("urn:sap-com:document:sap:rfc:functions".equals(namespaceURI) &&
                 "LGORT_type5".equals(typeName)) {
             return com.nhry.webService.client.businessData.functions.LGORT_type5.Factory.parse(reader);
         }
