@@ -30,9 +30,7 @@ import com.nhry.utils.HttpUtils;
 import com.nhry.utils.json.JackJson;
 
 public class IdmAuthServlet extends HttpServlet {
-	@Autowired
 	private UserService userService;
-	@Autowired
 	private UserSessionService userSessionService;
 	
 	public void init(ServletConfig config) throws ServletException {
@@ -41,6 +39,7 @@ public class IdmAuthServlet extends HttpServlet {
 		String[] xmls = new String[]{ "classpath:beans/spring-context.xml","classpath:beans/dataSource.xml","classpath:beans/*-bean.xml"  };
         ApplicationContext context = new ClassPathXmlApplicationContext(xmls);
         userSessionService = (UserSessionService)context.getBean("userSessionService");
+        userService = (UserService)context.getBean("userService");
 	}
 	
 	public void doGet(HttpServletRequest request, HttpServletResponse response)
