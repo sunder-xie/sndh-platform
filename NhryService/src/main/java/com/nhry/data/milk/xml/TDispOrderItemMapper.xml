@@ -511,6 +511,6 @@
    <include refid="Base_Column_List"/>
     from t_mst_disp_order_item
     where ORDER_NO = #{dispOrderNo,jdbcType=VARCHAR}
-    and (REASON is not null  and REASON &lt;&gt; '10')
+    and (REASON is not null  and REASON !='10' and REASON !='20')
   </select>
 </mapper>
