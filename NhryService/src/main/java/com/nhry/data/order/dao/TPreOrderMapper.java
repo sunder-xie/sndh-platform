@@ -20,6 +20,8 @@ public interface TPreOrderMapper {
 
     TPreOrder selectByPrimaryKey(String orderNo);
 
+    int updateOrderCurAmtAndInitAmt(TPreOrder record);
+    
     int updateOrderCurAmt(TPreOrder record);
 
     int updateByPrimaryKey(TPreOrder record);
