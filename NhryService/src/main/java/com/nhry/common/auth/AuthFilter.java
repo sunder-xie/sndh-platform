@@ -1,5 +1,6 @@
 package com.nhry.common.auth;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -10,12 +11,15 @@ import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
+
 import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import com.nhry.common.exception.MessageCode;
 import com.nhry.model.sys.ResponseModel;
 import com.nhry.utils.CookieUtil;
+import com.nhry.utils.EnvContant;
 import com.nhry.utils.SysContant;
 import com.sun.jersey.spi.container.ContainerRequest;
 import com.sun.jersey.spi.container.ContainerRequestFilter;
@@ -28,6 +32,8 @@ public class AuthFilter implements ContainerRequestFilter {
 	protected HttpServletRequest request;
 	@Context
 	protected HttpServletResponse response;
+	@Autowired
+	private UserSessionService userSessionService;
 	
 	static{
 		whiteUriList = new ArrayList<String>();
@@ -54,7 +60,9 @@ public class AuthFilter implements ContainerRequestFilter {
 			if(isExsitUri(uri)){
 				return request;
 			}
-			String ak = CookieUtil.getCookieValue(servletRequest, UserSessionService.accessKey);
+//			String ak = CookieUtil.getCookieValue(servletRequest, UserSessionService.accessKey);
+			String ak =request.getHeaderValue("dh_token");
+			System.out.println("--------ak-------"+ak);
 			String userName = CookieUtil.getCookieValue(servletRequest, UserSessionService.uname);
 			//未登录
 			if(StringUtils.isEmpty(ak) || StringUtils.isEmpty(userName)){
@@ -62,9 +70,21 @@ public class AuthFilter implements ContainerRequestFilter {
 					Response response = formatData(MessageCode.UNAUTHORIZED, SysContant.getSystemConst(MessageCode.UNAUTHORIZED), null, Status.UNAUTHORIZED);
 		            throw new WebApplicationException(response); 
 				}
-			}else	if(!MessageCode.NORMAL.equals(UserSessionService.checkIdentity(ak, userName,request,servletRequest))){
-				Response response = formatData(MessageCode.UNAUTHORIZED, SysContant.getSystemConst(MessageCode.UNAUTHORIZED), null, Status.UNAUTHORIZED);
-	            throw new WebApplicationException(response); 
+			}else	if(!MessageCode.NORMAL.equals(userSessionService.checkIdentity(ak, userName,request,servletRequest))){
+//				Response response = formatData(MessageCode.UNAUTHORIZED, SysContant.getSystemConst(MessageCode.UNAUTHORIZED), null, Status.UNAUTHORIZED);
+//	            throw new WebApplicationException(response); 
+				//跳转到登录页面
+				try {
+					servletResponse.sendRedirect(EnvContant.getSystemConst("authurl")
+							+ "?client_id=" + EnvContant.getSystemConst("client_id")
+							+ "&redirect_uri="
+							+ EnvContant.getSystemConst("redirect_uri")
+							+ "&response_type="
+							+ EnvContant.getSystemConst("response_type"));
+				} catch (IOException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
 			}
 		}
 		return request;
