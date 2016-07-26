@@ -270,6 +270,7 @@ public class EmpBillServiceImpl implements EmpBillService {
         if(StringUtils.isBlank(eSearch.getPageNum()) || StringUtils.isBlank(eSearch.getPageSize())){
             throw new ServiceException(MessageCode.LOGIC_ERROR,"pageNum和pageSize不能为空！");
         }
+
         return tMdEmpSalMapper.searchEmpSalaryRep(eSearch);
     }
 

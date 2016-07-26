@@ -107,7 +107,7 @@ public class BillResource extends BaseResource {
     @Path("/emp/setBranchEmpSalary")
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes(MediaType.APPLICATION_JSON)
-    @ApiOperation(value = "/emp/setBranchEmpSalary", response = PageInfo.class, notes = "结算本月本奶站下所有送奶员工资")
+    @ApiOperation(value = "/emp/setBranchEmpSalary", response = PageInfo.class, notes = "结算上月本奶站下所有送奶员工资")
     public Response setBranchEmpSalary(){
         return convertToRespModel(MessageCode.NORMAL, null, empBillService.setBranchEmpSalary());
     }

@@ -83,7 +83,7 @@
         LEFT JOIN t_md_branch b on o.BRANCH_NO = b.BRANCH_NO
         LEFT JOIN t_md_dealer d on b.DEALER_NO = d.DEALER_NO
         LEFT JOIN t_md_branch_emp e on o.EMP_NO= e.EMP_NO and e.SALES_ORG = #{salesOrg,jdbcType=VARCHAR}
-        where i.`STATUS` !='30'
+        where i.`STATUS` ='20'
         and i.GIFT_QTY IS NULL
         and o.SALES_ORG = #{salesOrg,jdbcType=VARCHAR}
         <if test="dealerNo!=null and ''!=dealerNo">
@@ -113,7 +113,7 @@
         LEFT JOIN t_md_branch b on o.BRANCH_NO = b.BRANCH_NO
         LEFT JOIN t_md_dealer d on b.DEALER_NO = d.DEALER_NO
         LEFT JOIN t_md_branch_emp e on o.EMP_NO= e.EMP_NO and e.SALES_ORG = #{salesOrg,jdbcType=VARCHAR}
-        where i.`STATUS` !='30'
+        where i.`STATUS` ='20'
         and i.GIFT_QTY IS NOT NULL
         and o.SALES_ORG = #{salesOrg,jdbcType=VARCHAR}
         <if test="dealerNo!=null and ''!=dealerNo">
