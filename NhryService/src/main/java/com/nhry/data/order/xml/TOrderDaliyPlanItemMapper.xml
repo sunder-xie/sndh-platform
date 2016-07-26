@@ -10,6 +10,7 @@
     <result column="REACH_TIME" property="reachTime" jdbcType="VARCHAR" />
     <result column="REACH_TIME_TYPE" property="reachTimeType" jdbcType="VARCHAR" />
     <result column="MATNR" property="matnr" jdbcType="VARCHAR" />
+    <result column="CONFIRM_MATNR" property="confirmMatnr" jdbcType="VARCHAR" />
     <result column="MATNR_TXT" property="matnrTxt" jdbcType="VARCHAR" />
     <result column="UNIT" property="unit" jdbcType="VARCHAR" />
     <result column="QTY" property="qty" jdbcType="INTEGER" />
@@ -25,6 +26,7 @@
     <result column="LAST_MODIFIED_BY_TXT" property="lastModifiedByTxt" jdbcType="VARCHAR" />
     <result column="GIFT_QTY" property="giftQty" jdbcType="INTEGER" />
     <result column="PROMOTION_FLAG" property="promotionFlag" jdbcType="VARCHAR" />
+
   </resultMap>
   <sql id="Base_Column_List" >
     ORDER_NO, ORDER_DATE, PLAN_ITEM_NO, ITEM_NO, DISP_DATE, REACH_TIME, REACH_TIME_TYPE, 
@@ -566,15 +568,35 @@
     GROUP BY i.PROMOTION_FLAG
   </select>
   <select id="selectProDayPlanOfSelfBranch" resultMap="BaseResultMap" parameterType="com.nhry.model.milktrans.RequireOrderSearch" >
-    select i.MATNR,SUM(i.GIFT_QTY) QTY
-    from t_mst_order_daliy_plan_item i
+    select di.MATNR,SUM(di.CONFIRM_QTY) QTY,di.CONFIRM_MATNR
+    from  t_mst_disp_order_item di
+    LEFT JOIN t_mst_plan_order_item  i on i.ORDER_NO = di.ORG_ORDER_NO and i.ITEM_NO = di.ORG_ITEM_NO and i.MATNR = di.MATNR
+    LEFT JOIN t_preorder o on 	di.ORG_ORDER_NO = o.ORDER_NO
+    LEFT JOIN t_md_mara_ex e on di.MATNR = e.MATNR  and e.SALES_ORG = #{salesOrg,jdbcType=VARCHAR}
     where   1=1
-    AND i.GIFT_QTY is not null
-    AND  i.STATUS = '20'
-    and i.PROMOTION_FLAG = #{promotion,jdbcType=VARCHAR}
-    and  i.DISP_DATE = #{requiredDate,jdbcType=DATE}
-    GROUP BY i.MATNR
-    ORDER BY i.DISP_DATE desc
+    AND di.GIFT_FLAG is NOT null
+    AND di.STATUS = '20'
+    and di.MATNR!=di.CONFIRM_MATNR
+    and di.REASON = '10'
+    and di.REPLACE_REASON = '10'
+    and e.SALES_ORG = #{salesOrg,jdbcType=VARCHAR}
+    and i.PROMOTION = #{promotion,jdbcType=VARCHAR}
+    and  ti.DISP_DATE = #{requiredDate,jdbcType=DATE}
+    GROUP BY di.MATNR
+UNION ALL
+    select di.MATNR,SUM(di.CONFIRM_QTY) QTY,di.CONFIRM_MATNR
+    from  t_mst_disp_order_item di
+    LEFT JOIN t_mst_plan_order_item  i on i.ORDER_NO = di.ORG_ORDER_NO and i.ITEM_NO = di.ORG_ITEM_NO and i.MATNR = di.MATNR
+    LEFT JOIN t_preorder o on 	di.ORG_ORDER_NO = o.ORDER_NO
+    LEFT JOIN t_md_mara_ex e on di.MATNR = e.MATNR  and e.SALES_ORG = #{salesOrg,jdbcType=VARCHAR}
+    where   1=1
+    AND di.GIFT_FLAG is NOT null
+    AND di.STATUS = '20'
+    and di.MATNR = di.CONFIRM_MATNR
+    and e.SALES_ORG = #{salesOrg,jdbcType=VARCHAR}
+    and i.PROMOTION = #{promotion,jdbcType=VARCHAR}
+    and  ti.DISP_DATE = #{requiredDate,jdbcType=DATE}
+    GROUP BY di.MATNR
   </select>
   <select id="selectNoProDayPlanOfSelfBranch" resultMap="BaseResultMap" parameterType="com.nhry.model.milktrans.RequireOrderSearch" >
     SELECT  t.MATNR,SUM(t.QTY) QTY,t.CONFIRM_MATNR
@@ -586,12 +608,29 @@
         LEFT JOIN t_mst_disp_order disp on di.ORDER_NO = disp.ORDER_NO
         where   1=1
        	and di.`STATUS` = '20'
-       	nd di.MATNR=di.CONFIRM_MATNR
+       	and di.MATNR=di.CONFIRM_MATNR
         AND di.GIFT_FLAG is  null
         and   disp.DISP_DATE = #{requiredDate}
         and  o.SALES_ORG=#{salesOrg,jdbcType=VARCHAR}
         and  o.BRANCH_NO = #{branchNo,jdbcType=VARCHAR}
-        GROUP BY i.MATNR
+        GROUP BY di.MATNR
+
+    UNION ALL
+
+        select di.MATNR,SUM(di.CONFIRM_QTY) QTY,di.CONFIRM_MATNR
+        from t_mst_disp_order_item di
+        LEFT JOIN t_preorder o on 	di.ORG_ORDER_NO = o.ORDER_NO
+        LEFT JOIN t_mst_disp_order disp on di.ORDER_NO = disp.ORDER_NO
+        where   1=1
+       	and di.`STATUS` = '20'
+       	and di.MATNR!=di.CONFIRM_MATNR
+       	and di.REASON = '10'
+        and di.REPLACE_REASON = '10'
+        AND di.GIFT_FLAG  is  null
+        and   disp.DISP_DATE = #{requiredDate}
+        and  o.SALES_ORG=#{salesOrg,jdbcType=VARCHAR}
+        and  o.BRANCH_NO = #{branchNo,jdbcType=VARCHAR}
+        GROUP BY di.MATNR
 
 
     UNION ALL
@@ -601,6 +640,8 @@
           FROM t_ssm_req_goods_order_item i
           LEFT JOIN t_ssm_req_goods_order o on i.ORDER_NO = o.ORDER_NO
           where 1=1
+          and i.INCRE_QTY!=null
+          and i.INCRE_QTY!=0
           and i.ORDER_DATE = #{requiredDate,jdbcType=DATE}
           and o.BRANCH_NO =  #{branchNo,jdbcType=VARCHAR}
 

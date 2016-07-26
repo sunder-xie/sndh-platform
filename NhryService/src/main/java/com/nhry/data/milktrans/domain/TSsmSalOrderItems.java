@@ -14,6 +14,15 @@ public class TSsmSalOrderItems {
     private String unit;
     private int qty;
     private String type;
+    private String refMatnr;
+
+    public String getRefMatnr() {
+        return refMatnr;
+    }
+
+    public void setRefMatnr(String refMatnr) {
+        this.refMatnr = refMatnr;
+    }
 
     public String getMatnrTxt() {
         return matnrTxt;
