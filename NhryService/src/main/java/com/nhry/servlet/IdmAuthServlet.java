@@ -67,8 +67,10 @@ public class IdmAuthServlet extends HttpServlet {
 					attrs.put("access_token", token);
 					String userObject = HttpUtils.request(EnvContant.getSystemConst("auth_profile"), attrs);
 					//{"id":"ex_crmsongnaiyuan","attributes":[{"uid":"ex_crmsongnaiyuan"}]}
+					System.out.println("------userObject------"+userObject);
 					JSONObject userJson = new JSONObject(userObject);
 					if(userJson.has("id") && !StringUtils.isEmpty(userJson.getString("id"))){
+						System.out.println("------userJson.getString('id')------"+userJson.getString("id"));
 						TSysUser user = new TSysUser();
 						user.setLoginName(userJson.getString("id"));
 						TSysUser loginuser = userService.login(user);
@@ -110,6 +112,7 @@ public class IdmAuthServlet extends HttpServlet {
 		try {
 			response.setHeader("dh_token", token);
 			response.sendRedirect(EnvContant.getSystemConst("front_home_page"));
+			System.out.println("------------跳转-----------");
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
