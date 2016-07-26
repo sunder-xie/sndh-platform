@@ -9,6 +9,7 @@ import com.nhry.model.order.*;
 import com.nhry.service.order.pojo.OrderRemainData;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -18,6 +19,8 @@ public interface OrderService {
 	PageInfo searchOrders(OrderSearchModel smodel);
 	
 	PageInfo searchDaliyOrders(OrderSearchModel smodel);
+	
+	OrderSearchModel calculateContinueOrder(OrderSearchModel record);
 
 	String createOrder(OrderCreateModel record);
 
@@ -66,4 +69,8 @@ public interface OrderService {
 	CollectOrderModel queryCollectByOrderNo(String orderCode);
 
 	TPlanOrderItem calculateAmtAndEndDateForFront(TPlanOrderItem item);
+	
+	TPlanOrderItem calculateTotalQtyForFront(TPlanOrderItem item);
+	
+	int updateOrderAndEntriesDispStartDate(String orderNo,List<TPlanOrderItem> entries);
 }

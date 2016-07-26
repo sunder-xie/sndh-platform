@@ -13,6 +13,7 @@ import com.nhry.model.milktrans.UnDeliverProductSearch;
 import com.nhry.service.milk.pojo.TDispOrderChangeItem;
 
 import java.math.BigDecimal;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -69,6 +70,16 @@ public class TDispOrderItemMapperImpl implements TDispOrderItemMapper
 	{
 		// TODO Auto-generated method stub
 		return sqlSessionTemplate.selectList("selectDispItemsByKey", record);
+	}
+	
+	@Override
+	public List<TDispOrderItem> selectItemsByOrgOrderAndItemNo(String orderNo, String itemNo, Date date)
+	{
+		TDispOrderItemKey record = new TDispOrderItemKey();
+		record.setOrderNo(orderNo);
+		record.setItemNo(itemNo);
+		record.setOrderDate(date);
+		return sqlSessionTemplate.selectList("selectItemsByOrgOrderAndItemNo", record);
 	}
 	
 	@Override

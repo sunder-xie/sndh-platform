@@ -191,6 +191,15 @@ public class OrderResource extends BaseResource {
 	public Response continueOrder(@ApiParam(required=true,name="smodel",value="SearchModel") OrderSearchModel smodel){
 		return convertToRespModel(MessageCode.NORMAL, null, orderService.continueOrder(smodel));
 	}
+	
+	@POST
+	@Path("/calculateContinueOrder")
+	@Produces(MediaType.APPLICATION_JSON)
+	@Consumes(MediaType.APPLICATION_JSON)
+	@ApiOperation(value = "/calculateContinueOrder", response = OrderSearchModel.class, notes = "订单续订计算截止和续费")
+	public Response calculateContinueOrder(@ApiParam(required=true,name="smodel",value="SearchModel") OrderSearchModel smodel){
+		return convertToRespModel(MessageCode.NORMAL, null, orderService.calculateContinueOrder(smodel));
+	}
 
 	@POST
 	@Path("/manHandSearch")
@@ -263,6 +272,15 @@ public class OrderResource extends BaseResource {
 	@ApiOperation(value = "/calculateAmtAndEndDateForFront", response = TPlanOrderItem.class, notes = "计算预付款订单行的行金额，截止日期")
 	public Response calculateAmtAndEndDateForFront(@ApiParam(required=true,name="item",value="订单行json") TPlanOrderItem  item){
 		return convertToRespModel(MessageCode.NORMAL, null, orderService.calculateAmtAndEndDateForFront(item));
+	}
+	
+	@POST
+	@Path("/calculateQtyAndAmtForFront")
+	@Produces(MediaType.APPLICATION_JSON)
+	@Consumes(MediaType.APPLICATION_JSON)
+	@ApiOperation(value = "/calculateQtyAndAmtForFront", response = TPlanOrderItem.class, notes = "计算后付款订单行的行金额，数量")
+	public Response calculateQtyAndAmtForFront(@ApiParam(required=true,name="item",value="订单行json") TPlanOrderItem  item){
+		return convertToRespModel(MessageCode.NORMAL, null, orderService.calculateTotalQtyForFront(item));
 	}
 	
 	@POST

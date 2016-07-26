@@ -30,12 +30,13 @@
   </sql>
   <select id="selectMilkboxPlanByPlanNo" resultMap="BaseResultMap" parameterType="java.lang.String" >
     select 
-    p.PLAN_NO, p.EMP_NO, p.EMP_NAME, p.ORDER_NO, p.MEMBER_NO, v.VIP_NAME MEMBER_NAME,v.MP MEMBER_TEL, a.ADDRESS_TXT ADRESS_NO, 
+    p.PLAN_NO, p.EMP_NO, p.EMP_NAME, p.ORDER_NO, p.MEMBER_NO, v.VIP_NAME MEMBER_NAME,v.MP MEMBER_TEL, concat(r.RESIDENTIAL_AREA_TXT,a.ADDRESS_TXT) ADRESS_NO, 
     p.BRANCH_NO, p.PLAN_DATE, p.MILKBOX_STAT, p.PAYMENT_STAT, b.MP BRANCH_TEL
     from t_mst_milkbox_plan p
     left join t_vip_cust_info v on v.VIP_CUST_NO = p.MEMBER_NO
     left join t_md_address a on a.ADDRESS_ID = p.ADRESS_NO
     left join t_md_branch b on b.BRANCH_NO = p.BRANCH_NO
+    left join t_md_residential_area r on r.ID = a.RESIDENTIAL_AREA
     where PLAN_NO = #{planNo,jdbcType=VARCHAR}
   </select>
   <select id="selectMilkboxsByPage" resultMap="BaseResultMap" parameterType="com.nhry.model.order.MilkboxSearchModel" >

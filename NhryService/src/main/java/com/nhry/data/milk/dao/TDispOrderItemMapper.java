@@ -10,6 +10,7 @@ import com.nhry.model.milk.RouteOrderSearchModel;
 import com.nhry.model.milktrans.UnDeliverProductSearch;
 import com.nhry.service.milk.pojo.TDispOrderChangeItem;
 
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -20,7 +21,9 @@ public interface TDispOrderItemMapper {
 	 List selectRouteDetails(String routeCode);
 	
     int deleteByPrimaryKey(TDispOrderItemKey key);
-
+    
+    List<TDispOrderItem> selectItemsByOrgOrderAndItemNo(String orderNo, String itemNo, Date date);
+    
     int insert(TDispOrderItem record);
 
     List<TDispOrderItem> selectItemsByKeys(TDispOrderItemKey record);
