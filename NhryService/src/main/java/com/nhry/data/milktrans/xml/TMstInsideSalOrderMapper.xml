@@ -57,13 +57,6 @@
                 #{branchNo,jdbcType=VARCHAR},
             </if>
         </trim>
-      /*    insert into t_mst_inside_sal_order (
-           INS_ORDER_NO,ORDER_DATE,DISP_ORDER_NO,SAL_EMP_NO,BRANCH_NO)
-         values(
-             #{insOrderNo,jdbcType=VARCHAR}, #{orderDate,jdbcType=DATE}, #{dispOrderNo,jdbcType=VARCHAR},
-             #{salEmpNo,jdbcType=VARCHAR}, #{branchNo,jdbcType=VARCHAR}
-         )*/
-
     </insert>
 
 
