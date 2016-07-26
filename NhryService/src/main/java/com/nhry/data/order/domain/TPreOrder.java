@@ -97,6 +97,30 @@ public class TPreOrder {
     private String dealerNo;
     
     private String deleteReason;
+    
+    private String payMan;
+    
+    private Date payDate;
+
+	public String getPayMan()
+	{
+		return payMan;
+	}
+
+	public void setPayMan(String payMan)
+	{
+		this.payMan = payMan;
+	}
+
+	public Date getPayDate()
+	{
+		return payDate;
+	}
+
+	public void setPayDate(Date payDate)
+	{
+		this.payDate = payDate;
+	}
 
 	public String getDeleteReason()
 	{
