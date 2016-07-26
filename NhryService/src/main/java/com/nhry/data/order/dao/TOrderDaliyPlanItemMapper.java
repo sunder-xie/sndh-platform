@@ -19,6 +19,8 @@ public interface TOrderDaliyPlanItemMapper {
 	
 	 int deleteFromDateToDate(TOrderDaliyPlanItem record);
 
+	 int updateDaliyPlanItemRemainAmt(TOrderDaliyPlanItem record);
+	 
     int insert(TOrderDaliyPlanItem record);
 
     BigDecimal selectDaliyPlansRemainAmt(TOrderDaliyPlanItemKey record);

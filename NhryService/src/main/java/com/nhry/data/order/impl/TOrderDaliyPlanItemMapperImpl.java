@@ -53,6 +53,13 @@ public class TOrderDaliyPlanItemMapperImpl implements TOrderDaliyPlanItemMapper
 	}
 	
 	@Override
+	public int updateDaliyPlanItemRemainAmt(TOrderDaliyPlanItem record)
+	{
+		// TODO Auto-generated method stub
+		return sqlSessionTemplate.update("updateDaliyPlanItemRemainAmt", record);
+	}
+	
+	@Override
 	public int updateDaliyPlanItem(TOrderDaliyPlanItem record)
 	{
 		// TODO Auto-generated method stub

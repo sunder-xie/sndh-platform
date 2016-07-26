@@ -385,12 +385,12 @@ public class DeliverMilkServiceImpl extends BaseService implements DeliverMilkSe
 	{
 //		final long startTime = System.currentTimeMillis();
 		
-		TDispOrderKey key = new TDispOrderKey();
-		key.setOrderNo(record.getOrderNo());
-		TDispOrder dispOrder = tDispOrderMapper.selectByPrimaryKey(key);
-		
-		if(dispOrder!=null){
-			Date dispDate = dispOrder.getDispDate();
+//		TDispOrderKey key = new TDispOrderKey();
+//		key.setOrderNo(record.getOrderNo());
+//		TDispOrder dispOrder = tDispOrderMapper.selectByPrimaryKey(key);
+//		
+//		if(dispOrder!=null){
+//			Date dispDate = dispOrder.getDispDate();
 			TDispOrderItemKey itemKey = new TDispOrderItemKey();
 			itemKey.setOrderNo(record.getOrderNo());
 			itemKey.setItemNo(record.getItemNo());
@@ -406,12 +406,12 @@ public class DeliverMilkServiceImpl extends BaseService implements DeliverMilkSe
 //   			//更改路单,少送的，需要往后延期,并重新计算此后日计划的剩余金额
 //   			orderService.resumeDaliyPlanForRouteOrder(record,entryList.get(0),entry,dispDate);
 			}else{
-				throw new ServiceException(MessageCode.LOGIC_ERROR,"没有此路单详细号!");
+				throw new ServiceException(MessageCode.LOGIC_ERROR,record.getOrderNo()+"/"+record.getItemNo()+"[没有此路单详细号!]");
 			}
 			
-		}else{
-			throw new ServiceException(MessageCode.LOGIC_ERROR,"没有此路单号!");
-		}
+//		}else{
+//			throw new ServiceException(MessageCode.LOGIC_ERROR,"没有此路单号!");
+//		}
 		
 //		System.out.println("修改路单 消耗时间："+(System.currentTimeMillis()-startTime)+"毫秒");
 		
@@ -519,8 +519,10 @@ public class DeliverMilkServiceImpl extends BaseService implements DeliverMilkSe
 			for(TOrderDaliyPlanItem plan : daliyPlans){
 				TDispOrderItem item = new TDispOrderItem();
 				totalQty += plan.getQty();
-				totalAmt = totalAmt.add(plan.getAmt());
+				totalAmt = totalAmt.add(plan.getAmt()==null?new BigDecimal("0.00"):plan.getAmt());
 				
+				//如果该行是赠品行，标记
+				if(plan.getGiftQty()!=null)item.setGiftFlag("Y");
 				//路单详细,一个日计划对应一行
 //				if(empNo == null)empNo = plan.getLastModifiedByTxt();//配送人员id,字段临时读取,不需要再增加字段
 				item.setOrderNo(dispOrder.getOrderNo());
@@ -555,7 +557,7 @@ public class DeliverMilkServiceImpl extends BaseService implements DeliverMilkSe
 			//生成路单号
 			dispOrder.setAmt(totalAmt);
 			dispOrder.setTotalQty(totalQty);
-			dispOrder.setDispLineNo(order.getDispLineNo());
+//			dispOrder.setDispLineNo(order.getDispLineNo());
 			dispOrder.setOrderDate(date);
 			dispOrder.setDispDate(date);
 			dispOrder.setStatus("10");//未确认
@@ -715,10 +717,10 @@ public class DeliverMilkServiceImpl extends BaseService implements DeliverMilkSe
 				continue;
 			}
 			
-			change.setYestodayMatnr(item.getMatnr2());
-			change.setTodayMatnr(item.getMatnr1());
-			change.setTodayQty(item.getQty1());
-			change.setYestodayQty(item.getQty2());
+			change.setYestodayMatnr(item.getConfirmMatnr2());
+			change.setTodayMatnr(item.getConfirmMatnr1());
+			change.setTodayQty(item.getConfirmQty1());
+			change.setYestodayQty(item.getConfirmQty2());
 			change.setYestodayReachTimeType(item.getReachTimeType2());
 			change.setTodayReachTimeType(item.getReachTimeType1());
 			//
