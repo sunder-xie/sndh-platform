@@ -3,9 +3,9 @@
 	<!-- 环境标示 -->
 	<config key="app_mode" value="develope123"></config>
 	<config key="redisHost" value="54.222.218.2"></config>
-	<config key="ladp_url" value="ldap://10.6.240.144:1389"></config>
-	<config key="ladp_uname" value="uid=super,ou=People,o=newhopedairy,o=isp"></config>
-	<config key="ladp_password" value="smart123"></config>
+	<config key="ladp_url" value="ldap://54.223.35.93:1389"></config>
+	<config key="ladp_uname" value="cn=Directory Manager"></config>
+	<config key="ladp_password" value="Abcd1234"></config>
 	<!-- idm auth2.0 -->
 	<config key="authurl" value="http://54.222.180.48:8080/siam/oauth2.0/authorize"></config>
 	<config key="auth_token" value="http://54.222.180.48:8080/siam/oauth2.0/accessToken"></config>

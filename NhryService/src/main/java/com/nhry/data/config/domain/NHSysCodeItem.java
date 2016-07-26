@@ -13,6 +13,8 @@ public class NHSysCodeItem implements Serializable {
     private String itemName;
 
     private String parent;
+    
+    private int level;
 
     private String attr1;
 
@@ -174,5 +176,13 @@ public class NHSysCodeItem implements Serializable {
 
 	public void setChildrens(List<NHSysCodeItem> childrens) {
 		this.childrens = childrens;
+	}
+
+	public int getLevel() {
+		return level;
+	}
+
+	public void setLevel(int level) {
+		this.level = level;
 	}
 }
