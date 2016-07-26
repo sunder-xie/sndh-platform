@@ -63,12 +63,12 @@ public class BranchServiceImpl extends BaseService implements BranchService {
 	public List<TMdBranch> findBranchListByOrg() {
 		// TODO Auto-generated method stub
 		TSysUser user = userSessionService.getCurrentUser();
-		TSysUserRole userRole = urMapper.getUserRoleByLoginName(user.getLoginName());
+		List<String> rids = urMapper.getUserRidsByLoginName(user.getLoginName());
 		BranchSalesOrgModel bModel = new BranchSalesOrgModel();
 		bModel.setSalesOrg(user.getSalesOrg());
-		if("10004".equals(userRole.getId())){
+		if(rids.contains("10004")){
 			bModel.setBranchNo(user.getBranchNo());
-		}else if("10005".equals(userRole.getId())){
+		}else if(rids.contains("10005")){
 			//经销商内勤
 			bModel.setDealerNo(user.getDealerId());
 		}
@@ -78,12 +78,12 @@ public class BranchServiceImpl extends BaseService implements BranchService {
 	@Override
 	public PageInfo findBranchListByPage(BranchQueryModel branchModel) {
 		TSysUser user = userSessionService.getCurrentUser();
-		TSysUserRole userRole = urMapper.getUserRoleByLoginName(user.getLoginName());
+		List<String> rids = urMapper.getUserRidsByLoginName(user.getLoginName());
 		branchModel.setSalesOrg(user.getSalesOrg());
 		//部门内勤
-		if("10003".equals(userRole.getId())){
+		if(rids.contains("10003")){
 			branchModel.setRoleId("10003");
-		}else if("10005".equals(userRole.getId())){
+		}else if(rids.contains("10005")){
 			branchModel.setRoleId("10005");
 			//经销商内勤
 			branchModel.setDealerNo(user.getDealerId());

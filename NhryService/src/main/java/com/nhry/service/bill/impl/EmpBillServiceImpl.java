@@ -22,6 +22,7 @@ import com.nhry.model.bill.*;
 import com.nhry.service.bill.dao.EmpBillService;
 import com.nhry.utils.PrimaryKeyUtils;
 import com.nhry.utils.YearLastMonthUtil;
+
 import org.apache.commons.lang3.StringUtils;
 
 import java.math.BigDecimal;
@@ -73,10 +74,10 @@ public class EmpBillServiceImpl implements EmpBillService {
             throw new ServiceException(MessageCode.LOGIC_ERROR,"pageNum和pageSize不能为空！");
         }
         TSysUser user = userSessionService.getCurrentUser();
-        TSysUserRole userRole =urMapper.getUserRoleByLoginName(user.getLoginName());
-        if("10004".equals(userRole.getId())){
+        List<String> rids = urMapper.getUserRidsByLoginName(user.getLoginName());
+        if(rids.contains("10004")){
             eSearch.setBranchNo(user.getBranchNo());
-        } else if("10005".equals(userRole.getId())){
+        } else if(rids.contains("10005")){
             eSearch.setDealerNo(user.getDealerId());
         }
         eSearch.setSalesOrg(user.getSalesOrg());
@@ -285,10 +286,10 @@ public class EmpBillServiceImpl implements EmpBillService {
         }
         String yearMonth = YearLastMonthUtil.getYearMonth(eSearch.getSalDate());
         eSearch.setYearMonth(yearMonth);
-        TSysUserRole userRole =urMapper.getUserRoleByLoginName(user.getLoginName());
-        if("10004".equals(userRole.getId())){
+        List<String> rids = urMapper.getUserRidsByLoginName(user.getLoginName());
+        if(rids.contains("10004")){
             eSearch.setBranchNo(user.getBranchNo());
-        } else if("10005".equals(userRole.getId())){
+        } else if(rids.contains("10005")){
             eSearch.setDealerNo(user.getDealerId());
         }
         eSearch.setSalesOrg(user.getSalesOrg());
