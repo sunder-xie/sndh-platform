@@ -2,6 +2,7 @@ package com.nhry.data.milktrans.dao;
 
 import com.nhry.data.milktrans.domain.TSsmSalOrder;
 import com.nhry.model.milktrans.SalOrderModel;
+
 import java.util.List;
 import java.util.Map;
 
@@ -14,4 +15,8 @@ public interface TSsmSalOrderMapper {
     int uptVouCherNoByOrderNo(Map map);
 
     List<TSsmSalOrder> selectSalOrderByDateAndNo(SalOrderModel model);
+
+    List<TSsmSalOrder> selectSalOrderByDateAndBranchOrDealerNo(SalOrderModel sModel);
+
+    int delSalOrderByOrderNo(String orderNo);
 }

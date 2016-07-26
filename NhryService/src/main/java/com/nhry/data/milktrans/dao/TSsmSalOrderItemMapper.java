@@ -9,5 +9,8 @@ import java.util.List;
  */
 public interface TSsmSalOrderItemMapper {
     int addSalOrderItem(TSsmSalOrderItems salOrderItems);
+    List<TSsmSalOrderItems> selectItemsBySalOrderNo(Map map);
     List<Map<String,String>> findItemsForPI(String orderNo);
+
+    int delSalOrderItemsByOrderNo(String orderNo);
 }
