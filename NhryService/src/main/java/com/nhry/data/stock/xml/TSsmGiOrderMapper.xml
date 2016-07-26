@@ -103,4 +103,7 @@
       STATUS = #{status,jdbcType=VARCHAR}
     where ORDER_NO = #{orderNo,jdbcType=VARCHAR}
   </update>
+  <select id="findGiOrder" parameterType="com.nhry.model.stock.GiOrderModel" resultMap="BaseResultMap">
+    SELECT <include refid="Base_Column_List"/> FROM t_ssm_gi_order WHERE  BRANCH_NO = #{branchNo,jdbcType=VARCHAR} and ORDER_DATE = #{orderDate,jdbcType=DATE}
+  </select>
 </mapper>

@@ -14,10 +14,11 @@
     <result column="PURCH_ORG" property="purchOrg" jdbcType="VARCHAR" />
     <result column="PURCH_GROUP" property="purchGroup" jdbcType="VARCHAR" />
     <result column="SUPPL_PLNT" property="supplPlnt" jdbcType="VARCHAR" />
+    <result column="RESLO" property="reslo" jdbcType="VARCHAR"/>
   </resultMap>
   <sql id="Base_Column_List" >
     BRANCH_NO, CREATE_AT, CREATE_BY, CREATE_BY_TXT, LAST_MODIFIED, LAST_MODIFIED_BY, 
-    LAST_MODIFIED_BY_TXT, COMP_CODE, DOC_TYPE, PURCH_ORG, PURCH_GROUP, SUPPL_PLNT
+    LAST_MODIFIED_BY_TXT, COMP_CODE, DOC_TYPE, PURCH_ORG, PURCH_GROUP, SUPPL_PLNT,RESLO
   </sql>
   <select id="getBranchEx" resultMap="BaseResultMap" parameterType="java.lang.String" >
     select 
@@ -33,12 +34,12 @@
     insert into t_md_branch_ex (BRANCH_NO, CREATE_AT, CREATE_BY, 
       CREATE_BY_TXT, LAST_MODIFIED, LAST_MODIFIED_BY, 
       LAST_MODIFIED_BY_TXT, COMP_CODE, DOC_TYPE, 
-      PURCH_ORG, PURCH_GROUP, SUPPL_PLNT
+      PURCH_ORG, PURCH_GROUP, SUPPL_PLNT,RESLO
       )
     values (#{branchNo,jdbcType=VARCHAR}, #{createAt,jdbcType=TIMESTAMP}, #{createBy,jdbcType=VARCHAR}, 
       #{createByTxt,jdbcType=VARCHAR}, #{lastModified,jdbcType=TIMESTAMP}, #{lastModifiedBy,jdbcType=VARCHAR}, 
       #{lastModifiedByTxt,jdbcType=VARCHAR}, #{compCode,jdbcType=VARCHAR}, #{docType,jdbcType=VARCHAR}, 
-      #{purchOrg,jdbcType=VARCHAR}, #{purchGroup,jdbcType=VARCHAR}, #{supplPlnt,jdbcType=VARCHAR}
+      #{purchOrg,jdbcType=VARCHAR}, #{purchGroup,jdbcType=VARCHAR}, #{supplPlnt,jdbcType=VARCHAR},#{reslo,jdbcType=VARCHAR}
       )
   </insert>
   <insert id="insertBranchExSelective" parameterType="com.nhry.data.basic.domain.TMdBranchEx" >
@@ -80,6 +81,9 @@
       <if test="supplPlnt != null" >
         SUPPL_PLNT,
       </if>
+      <if test="reslo != null">
+        RESLO,
+      </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides="," >
       <if test="branchNo != null" >
@@ -117,6 +121,9 @@
       </if>
       <if test="supplPlnt != null" >
         #{supplPlnt,jdbcType=VARCHAR},
+      </if>
+      <if test="reslo != null">
+        #{reslo,jdbcType=VARCHAR},
       </if>
     </trim>
   </insert>
@@ -156,6 +163,9 @@
       <if test="supplPlnt != null" >
         SUPPL_PLNT = #{supplPlnt,jdbcType=VARCHAR},
       </if>
+      <if test="reslo != null">
+        RESLO = #{reslo,jdbcType=VARCHAR},
+      </if>
     </set>
     where BRANCH_NO = #{branchNo,jdbcType=VARCHAR}
   </update>
@@ -171,7 +181,8 @@
       DOC_TYPE = #{docType,jdbcType=VARCHAR},
       PURCH_ORG = #{purchOrg,jdbcType=VARCHAR},
       PURCH_GROUP = #{purchGroup,jdbcType=VARCHAR},
-      SUPPL_PLNT = #{supplPlnt,jdbcType=VARCHAR}
+      SUPPL_PLNT = #{supplPlnt,jdbcType=VARCHAR},
+      RESLO = #{reslo,jdbcType=VARCHAR}
     where BRANCH_NO = #{branchNo,jdbcType=VARCHAR}
   </update>
 </mapper>

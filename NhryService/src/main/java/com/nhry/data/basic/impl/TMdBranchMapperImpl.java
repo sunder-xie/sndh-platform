@@ -70,6 +70,9 @@ public class TMdBranchMapperImpl implements TMdBranchMapper {
 		return this.sqlSessionTemplate.selectList("findBranchByDno", attrs);
 	}
 
-
+	@Override
+	public TMdBranch getBranchByNo(String branchNo) {
+		return this.sqlSessionTemplate.selectOne("getBranchByNo",branchNo);
+	}
 
 }

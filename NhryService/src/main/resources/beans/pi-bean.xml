@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <beans xmlns="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
        xmlns:context="http://www.springframework.org/schema/context"
+       xmlns:jaxws="http://cxf.apache.org/jaxws"
        xmlns:jdbc="http://www.springframework.org/schema/jdbc"
        xmlns:jee="http://www.springframework.org/schema/jee" xmlns:tx="http://www.springframework.org/schema/tx"
        xmlns:util="http://www.springframework.org/schema/util" xmlns:task="http://www.springframework.org/schema/task"
@@ -12,7 +13,8 @@
 		http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-4.0.xsd
 		http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util-4.0.xsd
 		http://www.springframework.org/schema/task http://www.springframework.org/schema/task/spring-task-4.0.xsd
-		http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-4.0.xsd"
+		http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-4.0.xsd
+		http://cxf.apache.org/jaxws http://cxf.apache.org/schemas/jaxws.xsd"
        default-lazy-init="true">
     <bean id="piProductMapper" class="com.nhry.data.basic.impl.PIProductMapperImpl">
         <property name="sqlSessionFactory" ref="sqlSessionFactory"/>
@@ -28,6 +30,8 @@
         <property name="dealerMapper" ref="dealerMapper"/>
         <property name="maraUnitMapper" ref="maraUnitMapper"/>
         <property name="codeItemMapper" ref="codeItemMapper"/>
+        <property name="branchExMapper" ref="branchExMapper"/>
+        <property name="messageService" ref="messService"/>
     </bean>
     <bean class="com.nhry.service.pi.impl.PIRequireOrderServiceImpl" id="piRequireOrderService">
         <property name="branchExMapper" ref="branchExMapper"/>
@@ -35,5 +39,16 @@
         <property name="ssmGiOrderMapper" ref="ssmGiOrderMapper"/>
         <property name="ssmGiOrderItemMapper" ref="ssmGiOrderItemMapper"/>
         <property name="tSsmReqGoodsOrderMapper" ref="tSsmReqGoodsOrderMapper"/>
+        <property name="tSsmSalOrderItemMapper" ref="tSsmSalOrderItemMapper"/>
+        <property name="branchMapper" ref="branchMapper"/>
+        <property name="ssmSalOrderMapper" ref="tSsmSalOrderMapper"/>
     </bean>
+    <import resource="classpath:META-INF/cxf/cxf.xml"/>
+    <!--
+    <import resource="classpath:META-INF/cxf/cxf-extension-soap.xml"/>
+    <import resource="classpath:META-INF/cxf/cxf-servlet.xml"/>
+    -->
+    <bean id="piOrderService" class="com.nhry.service.pi.impl.PIOrderServiceImpl"/>
+    <jaxws:endpoint id="piOrderServiceImpl" implementor="#piOrderService"
+                    address="/orderService"/>
 </beans>

@@ -11,9 +11,10 @@
     <result column="CONFIRM_QTY" property="confirmQty" jdbcType="DECIMAL" />
     <result column="ITEM_TYPE" property="itemType" jdbcType="VARCHAR" />
     <result column="FACTORY_PRICE" property="factoryPrice" jdbcType="DECIMAL"/>
+    <result column="REMARK" property="remark" jdbcType="VARCHAR"/>
   </resultMap>
   <sql id="Base_Column_List" >
-    ORDER_NO, ITEM_NO, ORDER_DATE, MATNR, UNIT, QTY, CONFIRM_QTY, ITEM_TYPE, FACTORY_PRICE
+    ORDER_NO, ITEM_NO, ORDER_DATE, MATNR, UNIT, QTY, CONFIRM_QTY, ITEM_TYPE, FACTORY_PRICE, REMARK
   </sql>
   <select id="selectGiOrderItemByNo" resultMap="BaseResultMap" parameterType="com.nhry.data.stock.domain.TSsmGiOrderItemKey" >
     select 
@@ -31,11 +32,11 @@
   </delete>
   <insert id="insertGiOrderItem" parameterType="com.nhry.data.stock.domain.TSsmGiOrderItem" >
     insert into t_ssm_gi_order_item (ORDER_NO, ITEM_NO, ORDER_DATE, 
-      MATNR, UNIT, QTY, CONFIRM_QTY, FACTORY_PRICE,
+      MATNR, UNIT, QTY, CONFIRM_QTY, FACTORY_PRICE,REMARK,
       ITEM_TYPE)
     values (#{orderNo,jdbcType=VARCHAR}, #{itemNo,jdbcType=VARCHAR}, #{orderDate,jdbcType=DATE}, 
       #{matnr,jdbcType=VARCHAR}, #{unit,jdbcType=VARCHAR}, #{qty,jdbcType=DECIMAL}, #{confirmQty,jdbcType=DECIMAL}, 
-      #{factoryPrice,jdbcType=DECIMAL},#{itemType,jdbcType=VARCHAR})
+      #{factoryPrice,jdbcType=DECIMAL},#{itemType,jdbcType=VARCHAR},#{remark,jdbcType=VARCHAR})
   </insert>
   <insert id="insertGiOrderItemSelective" parameterType="com.nhry.data.stock.domain.TSsmGiOrderItem" >
     insert into t_ssm_gi_order_item
@@ -67,6 +68,9 @@
       <if test="itemType != null" >
         ITEM_TYPE,
       </if>
+      <if test="remark != null">
+        REMARK,
+      </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides="," >
       <if test="orderNo != null" >
@@ -96,6 +100,9 @@
       <if test="itemType != null" >
         #{itemType,jdbcType=VARCHAR},
       </if>
+      <if test="remark != null">
+        #{remark,jdbcType=VARCHAR},
+      </if>
     </trim>
   </insert>
   <update id="updateGiOrderItemSelective" parameterType="com.nhry.data.stock.domain.TSsmGiOrderItem" >
@@ -119,6 +126,9 @@
       <if test="itemType != null" >
         ITEM_TYPE = #{itemType,jdbcType=VARCHAR},
       </if>
+      <if test="remark != null">
+        REMARK = #{remark,jdbcType=VARCHAR},
+      </if>
     </set>
     where ORDER_NO = #{orderNo,jdbcType=VARCHAR}
       and ITEM_NO = #{itemNo,jdbcType=VARCHAR}
@@ -131,9 +141,14 @@
       QTY = #{qty,jdbcType=DECIMAL},
       CONFIRM_QTY = #{confirmQty,jdbcType=DECIMAL},
       FACTORY_PRICE = #{factoryPrice,jdbcType=DECIMAL},
-      ITEM_TYPE = #{itemType,jdbcType=VARCHAR}
+      ITEM_TYPE = #{itemType,jdbcType=VARCHAR}, REMARK = #{remark,jdbcType=VARCHAR}
     where ORDER_NO = #{orderNo,jdbcType=VARCHAR}
       and ITEM_NO = #{itemNo,jdbcType=VARCHAR}
       and ORDER_DATE = #{orderDate,jdbcType=DATE}
   </update>
+
+  <select id="findGiOrderItem" resultMap="BaseResultMap" parameterType="string">
+    SELECT <include refid="Base_Column_List"/> FROM t_ssm_gi_order_item WHERE ORDER_NO = #{orderNo,jdbcType=VARCHAR}
+  </select>
+
 </mapper>

@@ -130,6 +130,17 @@ public class ZSSD00011 implements org.apache.axis2.databinding.ADBBean {
      */
     protected boolean localPSTYVTracker = false;
 
+    /**
+     * field for PR_REF_MAT
+     */
+    protected com.nhry.webService.client.businessData.functions.PR_REF_MAT_type1 localPR_REF_MAT;
+
+    /*  This tracker boolean wil be used to detect whether the user called the set method
+     *   for this attribute. It will be used to determine whether to include this field
+     *   in the serialized XML
+     */
+    protected boolean localPR_REF_MATTracker = false;
+
     public boolean isMATNRSpecified() {
         return localMATNRTracker;
     }
@@ -360,6 +371,29 @@ public class ZSSD00011 implements org.apache.axis2.databinding.ADBBean {
         this.localPSTYV = param;
     }
 
+    public boolean isPR_REF_MATSpecified() {
+        return localPR_REF_MATTracker;
+    }
+
+    /**
+     * Auto generated getter method
+     * @return com.nhry.webService.client.businessData.functions.PR_REF_MAT_type1
+     */
+    public com.nhry.webService.client.businessData.functions.PR_REF_MAT_type1 getPR_REF_MAT() {
+        return localPR_REF_MAT;
+    }
+
+    /**
+     * Auto generated setter method
+     * @param param PR_REF_MAT
+     */
+    public void setPR_REF_MAT(
+        com.nhry.webService.client.businessData.functions.PR_REF_MAT_type1 param) {
+        localPR_REF_MATTracker = param != null;
+
+        this.localPR_REF_MAT = param;
+    }
+
     /**
      *
      * @param parentQName
@@ -507,6 +541,16 @@ public class ZSSD00011 implements org.apache.axis2.databinding.ADBBean {
 
             localPSTYV.serialize(new javax.xml.namespace.QName("", "PSTYV"),
                 xmlWriter);
+        }
+
+        if (localPR_REF_MATTracker) {
+            if (localPR_REF_MAT == null) {
+                throw new org.apache.axis2.databinding.ADBException(
+                    "PR_REF_MAT cannot be null!!");
+            }
+
+            localPR_REF_MAT.serialize(new javax.xml.namespace.QName("",
+                    "PR_REF_MAT"), xmlWriter);
         }
 
         xmlWriter.writeEndElement();
@@ -940,6 +984,23 @@ public class ZSSD00011 implements org.apache.axis2.databinding.ADBBean {
                         new javax.xml.namespace.QName("", "PSTYV").equals(
                             reader.getName())) {
                     object.setPSTYV(com.nhry.webService.client.businessData.functions.PSTYV_type1.Factory.parse(
+                            reader));
+
+                    reader.next();
+                } // End of if for expected property start element
+
+                else {
+                }
+
+                while (!reader.isStartElement() && !reader.isEndElement())
+                    reader.next();
+
+                if ((reader.isStartElement() &&
+                        new javax.xml.namespace.QName("", "PR_REF_MAT").equals(
+                            reader.getName())) ||
+                        new javax.xml.namespace.QName("", "PR_REF_MAT").equals(
+                            reader.getName())) {
+                    object.setPR_REF_MAT(com.nhry.webService.client.businessData.functions.PR_REF_MAT_type1.Factory.parse(
                             reader));
 
                     reader.next();

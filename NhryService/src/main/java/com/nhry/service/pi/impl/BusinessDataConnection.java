@@ -12,8 +12,6 @@ import org.apache.axis2.client.Options;
 import org.apache.commons.lang.StringUtils;
 
 import java.math.BigDecimal;
-import java.rmi.RemoteException;
-import java.text.ParseException;
 import java.text.ParsePosition;
 import java.text.SimpleDateFormat;
 import java.util.*;
@@ -37,9 +35,10 @@ public class BusinessDataConnection {
         return stub;
     }
 
-    public static PISuccessMessage RequisitionCreate(TMdBranchEx branchEx, java.util.Date reqDate, List<Map<String, String>> items) {
+    public static PISuccessMessage RequisitionCreate(TMdBranchEx branchEx, Date reqDate, List<Map<String, String>> items, String lgort) {
         PISuccessMessage successMessage = new PISuccessMessage();
         try {
+
             ZSD_REQUISITION_CREATE_RFC rfc = new ZSD_REQUISITION_CREATE_RFC();
             ZSD_REQ_EKKO ekko = new ZSD_REQ_EKKO();
             COMP_CODE_type1 comp_code_type1 = new COMP_CODE_type1();
@@ -75,13 +74,13 @@ public class BusinessDataConnection {
                 String qtys = String.valueOf(item.get("SUM_QTY"));
                 BigDecimal qty = new BigDecimal(qtys);
                 String werks = branchEx.getSupplPlnt();
-                String reslo = item.get("RESLO");
+                String reslo = branchEx.getReslo();
                 String base_unit = item.get("BASE_UNIT");
                 String branchNo = branchEx.getSupplPlnt();
                 ZSSD00019 zssd00019 = new ZSSD00019();
-                num = num+10;//TODO 待修改
+                //TODO 待修改
                 EXT_RFX_ITEM_type1 ext_rfx_item_type1 = new EXT_RFX_ITEM_type1();
-                ext_rfx_item_type1.setEXT_RFX_ITEM_type0(item_no==null?num+"":item_no);
+                ext_rfx_item_type1.setEXT_RFX_ITEM_type0(item_no);
                 zssd00019.setEXT_RFX_ITEM(ext_rfx_item_type1);
 
                 EXT_RFX_NUMBER_type1 ext_rfx_number_type1 = new EXT_RFX_NUMBER_type1();
@@ -99,21 +98,21 @@ public class BusinessDataConnection {
                 MENGE_type1 menge_type1 = new MENGE_type1();
                 menge_type1.setMENGE_type0(qty);
                 zssd00019.setMENGE(menge_type1);
-
+                //发货库存地点
                 RESLO_type3 reslo_type3 = new RESLO_type3();
-                reslo_type3.setRESLO_type2("3001");//TODO 待修改
+                reslo_type3.setRESLO_type2(reslo);//TODO 待修改
                 zssd00019.setRESLO(reslo_type3);
-
+                //收货工厂
                 WERKS_type5 werks_type5 = new WERKS_type5();
                 werks_type5.setWERKS_type4(werks);
                 zssd00019.setWERKS(werks_type5);
-
+                //收货库存地点
                 LGORT_type5 lgort_type5 = new LGORT_type5();
-                lgort_type5.setLGORT_type4("4005");
+                lgort_type5.setLGORT_type4(lgort);
                 zssd00019.setLGORT(lgort_type5);
 
                 PO_ITEM_type1 po_item_type1 = new PO_ITEM_type1();
-                po_item_type1.setPO_ITEM_type0(item_no==null? num+"":item_no);
+                po_item_type1.setPO_ITEM_type0(item_no);
                 zssd00019.setPO_ITEM(po_item_type1);
                 it_item_type0.addItem(zssd00019);
             }
@@ -127,6 +126,7 @@ public class BusinessDataConnection {
             if (StringUtils.isNotEmpty(result)) {
                 successMessage.setSuccess(true);
                 successMessage.setData(result);
+                System.out.println(result);
             } else {
                 successMessage.setSuccess(false);
             }
@@ -140,6 +140,7 @@ public class BusinessDataConnection {
                     msg.append(bapiret2.getMESSAGE_V4().getMESSAGE_V4_type0());
                 }
                 successMessage.setMessage(msg.toString());
+                System.out.println(msg.toString());
             } else {
                 successMessage.setMessage("");
             }
@@ -151,7 +152,7 @@ public class BusinessDataConnection {
         return successMessage;
     }
 
-    public static PISuccessMessage SalesOrderCreate(String KUNNR, String KUNWE, String VKORG, String BSTKD, java.util.Date LFDAT, List<Map<String, String>> items, String activityId) {
+    public static PISuccessMessage SalesOrderCreate(String KUNNR, String KUNWE, String VKORG, String BSTKD, Date LFDAT, List<Map<String, String>> items, String activityId, String lgort, String werks) {
         PISuccessMessage successMessage = new PISuccessMessage();
         try {
             IT_ZSSD00011_type0 it_zssd00011_type1 = new IT_ZSSD00011_type0();
@@ -161,21 +162,26 @@ public class BusinessDataConnection {
                 matnr_type1.setMATNR_type0(map.get("MATNR"));
                 zssd00011.setMATNR(matnr_type1);
                 KWMENG_type1 kwmeng_type1 = new KWMENG_type1();
-                BigDecimal kw = new BigDecimal(map.get("SUM_QTY"));
+                BigDecimal kw = new BigDecimal(String.valueOf(map.get("SUM_QTY")));
                 kwmeng_type1.setKWMENG_type0(kw);
                 zssd00011.setKWMENG(kwmeng_type1);
                 VRKME_type1 vrkme_type1 = new VRKME_type1();
                 vrkme_type1.setVRKME_type0(map.get("BASE_UNIT"));
                 zssd00011.setVRKME(vrkme_type1);
                 WERKS_type1 werks_type1 = new WERKS_type1();
-                werks_type1.setWERKS_type0(map.get("WERKS"));
+                werks_type1.setWERKS_type0(werks);
+//                werks_type1.setWERKS_type0("4110");//TODO 待修改
                 zssd00011.setWERKS(werks_type1);
                 LGORT_type1 lgort_type1 = new LGORT_type1();
-                lgort_type1.setLGORT_type0(map.get("LGORT"));
+                lgort_type1.setLGORT_type0(lgort);
+//                lgort_type1.setLGORT_type0("4005");
                 zssd00011.setLGORT(lgort_type1);
                 POSEX_type1 posex_type1 = new POSEX_type1();
-                posex_type1.setPOSEX_type0(map.get("ITEM_NO"));
+                posex_type1.setPOSEX_type0(String.valueOf(map.get("ITEM_NO")));
                 zssd00011.setPOSEX(posex_type1);
+                PR_REF_MAT_type1 pr_ref_mat_type1 = new PR_REF_MAT_type1();
+                pr_ref_mat_type1.setPR_REF_MAT_type0("");//TODO
+                zssd00011.setPR_REF_MAT(pr_ref_mat_type1);
                 it_zssd00011_type1.addItem(zssd00011);
             }
 
@@ -225,12 +231,13 @@ public class BusinessDataConnection {
                 successMessage.setSuccess(false);
             }
             if (bap!=null && bap.length > 0) {
-                BAPIRET2 bapiret2 = bap[0];
-                msg.append(bapiret2.getMESSAGE().getMESSAGE_type0());
-                msg.append(bapiret2.getMESSAGE_V1().getMESSAGE_V1_type0());
-                msg.append(bapiret2.getMESSAGE_V2().getMESSAGE_V2_type0());
-                msg.append(bapiret2.getMESSAGE_V3().getMESSAGE_V3_type0());
-                msg.append(bapiret2.getMESSAGE_V4().getMESSAGE_V4_type0());
+                for(BAPIRET2 bapiret2 : bap) {
+                    msg.append(bapiret2.getMESSAGE().getMESSAGE_type0());
+                    msg.append(bapiret2.getMESSAGE_V1().getMESSAGE_V1_type0());
+                    msg.append(bapiret2.getMESSAGE_V2().getMESSAGE_V2_type0());
+                    msg.append(bapiret2.getMESSAGE_V3().getMESSAGE_V3_type0());
+                    msg.append(bapiret2.getMESSAGE_V4().getMESSAGE_V4_type0());
+                }
                 successMessage.setMessage(msg.toString());
             } else {
                 successMessage.setMessage("");
@@ -244,7 +251,7 @@ public class BusinessDataConnection {
         return successMessage;
     }
 
-    public static List<Delivery> DeliveryQuery(String orderNo, boolean deliveryType) throws RemoteException {
+    public static List<Delivery> DeliveryQuery(String orderNo, boolean deliveryType) throws Exception {
         ZSD_DELIVERY_DATA zsd_delivery_data = new ZSD_DELIVERY_DATA();
         if (deliveryType) {
             I_DELIVERY_type1 i_delivery_type = new I_DELIVERY_type1();
@@ -264,23 +271,7 @@ public class BusinessDataConnection {
         low_type3.setLOW_type2(orderNo);
         zssd00068.setLOW(low_type3);
         it_so_type1.addItem(zssd00068);
-//        if(datum!=null) {
-//            IT_DATUM_type1 it_DATUM_type1 = new IT_DATUM_type1();
-//            ZSSD00070 zssd00070 = new ZSSD00070();
-//            SIGN_type1 sign_type1 = new SIGN_type1();
-//            sign_type1.setSIGN_type0(SIGN);
-//            zssd00070.setSIGN(sign_type1);
-//            ParsePosition pos = new ParsePosition(8);
-//            String dateString = formatter.format(datum);
-//            com.nhry.webService.client.businessData.functions.Date date = new com.nhry.webService.client.businessData.functions.Date();
-//            date.setObject(formatter.parse(dateString, pos));
-//            zssd00070.setLOW(date);
-//            OPTION_type1 option_type1 = new OPTION_type1();
-//            option_type1.setOPTION_type0(EQ);
-//            zssd00070.setOPTION(option_type1);
-//            it_DATUM_type1.addItem(zssd00070);
-//            zsd_delivery_data.setIT_DATUM(it_DATUM_type1);
-//        }
+        zsd_delivery_data.setIT_SO(it_so_type1);
         ZSD_DELIVERY_DATAResponse response = BusinessDataConnection.getConn().deliveryQuery(zsd_delivery_data);
         ET_DATA_type0 et_data_type0 = response.getET_DATA();
         ZSSD00069[] zssd00069s = et_data_type0.getItem();
@@ -297,12 +288,14 @@ public class BusinessDataConnection {
                 delivery.setKUNAG(zssd00069.getKUNAG().getKUNAG_type0());
                 Object o = zssd00069.getLFDAT().getObject();
                 String dateString = formatter.format(o);
-                delivery.setLFDAT(formatter.parse(dateString, new ParsePosition(8)));
+                delivery.setLFDAT(formatter.parse(dateString));
                 delivery.setVBELV(zssd00069.getVBELV().getVBELV_type0());
                 delivery.setPOSNV(zssd00069.getPOSNV().getPOSNV_type0());
                 delivery.setLGORT(zssd00069.getLGORT().getLGORT_type2());
                 delivery.setRESLO(zssd00069.getRESLO().getRESLO_type0());
                 delivery.setCmpre(zssd00069.getCMPRE().getCMPRE_type0());
+                delivery.setMATNR(zssd00069.getMATNR().getMATNR_type2());
+                delivery.setPSTYV(zssd00069.getPSTYV().getPSTYV_type2());
                 deliveries.add(delivery);
             }
         }
