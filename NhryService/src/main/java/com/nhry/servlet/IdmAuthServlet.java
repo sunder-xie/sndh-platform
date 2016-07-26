@@ -15,9 +15,12 @@ import org.apache.commons.lang3.StringUtils;
 import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.support.ClassPathXmlApplicationContext;
 import org.springframework.web.context.support.SpringBeanAutowiringSupport;
 
 import com.nhry.common.auth.UserSessionService;
+import com.nhry.common.ladp.LadpService;
 import com.nhry.data.auth.domain.TSysUser;
 import com.nhry.service.auth.dao.UserService;
 import com.nhry.utils.APIHttpClient;
@@ -33,8 +36,11 @@ public class IdmAuthServlet extends HttpServlet {
 	private UserSessionService userSessionService;
 	
 	public void init(ServletConfig config) throws ServletException {
-		   SpringBeanAutowiringSupport.processInjectionBasedOnServletContext(this,
-		         config.getServletContext());
+//		   SpringBeanAutowiringSupport.processInjectionBasedOnServletContext(this,
+//		         config.getServletContext());
+		String[] xmls = new String[]{ "classpath:beans/spring-context.xml","classpath:beans/dataSource.xml","classpath:beans/*-bean.xml"  };
+        ApplicationContext context = new ClassPathXmlApplicationContext(xmls);
+        userSessionService = (UserSessionService)context.getBean("userSessionService");
 	}
 	
 	public void doGet(HttpServletRequest request, HttpServletResponse response)
