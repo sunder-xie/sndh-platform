@@ -67,24 +67,15 @@ public class AuthFilter implements ContainerRequestFilter {
 			//未登录
 			if(StringUtils.isEmpty(ak) || StringUtils.isEmpty(userName)){
 				if(!whiteUriList.contains(uri)){
-					Response response = formatData(MessageCode.UNAUTHORIZED, SysContant.getSystemConst(MessageCode.UNAUTHORIZED), null, Status.UNAUTHORIZED);
-		            throw new WebApplicationException(response); 
+//					Response response = formatData(MessageCode.UNAUTHORIZED, SysContant.getSystemConst(MessageCode.UNAUTHORIZED), null, Status.UNAUTHORIZED);
+//		            throw new WebApplicationException(response); 
+					sendRedirctToLogin();
 				}
 			}else	if(!MessageCode.NORMAL.equals(userSessionService.checkIdentity(ak, userName,request,servletRequest))){
 //				Response response = formatData(MessageCode.UNAUTHORIZED, SysContant.getSystemConst(MessageCode.UNAUTHORIZED), null, Status.UNAUTHORIZED);
 //	            throw new WebApplicationException(response); 
 				//跳转到登录页面
-				try {
-					servletResponse.sendRedirect(EnvContant.getSystemConst("authurl")
-							+ "?client_id=" + EnvContant.getSystemConst("client_id")
-							+ "&redirect_uri="
-							+ EnvContant.getSystemConst("redirect_uri")
-							+ "&response_type="
-							+ EnvContant.getSystemConst("response_type"));
-				} catch (IOException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
+				sendRedirctToLogin();
 			}
 		}
 		return request;
@@ -110,5 +101,19 @@ public class AuthFilter implements ContainerRequestFilter {
 			}
 		}
 		return false;
+	}
+	
+	private void sendRedirctToLogin(){
+		try {
+			servletResponse.sendRedirect(EnvContant.getSystemConst("authurl")
+					+ "?client_id=" + EnvContant.getSystemConst("client_id")
+					+ "&redirect_uri="
+					+ EnvContant.getSystemConst("redirect_uri")
+					+ "&response_type="
+					+ EnvContant.getSystemConst("response_type"));
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 }
