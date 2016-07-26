@@ -149,7 +149,7 @@ public class UserServiceImpl extends BaseService implements UserService {
 		return user;
 	}
 
-	public RedisTemplate getObjectRedisTemplate() {
-		return objectRedisTemplate;
+	public void setObjectRedisTemplate(RedisTemplate objectRedisTemplate) {
+		this.objectRedisTemplate = objectRedisTemplate;
 	}
 }
