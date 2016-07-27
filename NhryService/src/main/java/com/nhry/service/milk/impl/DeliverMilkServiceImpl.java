@@ -140,7 +140,7 @@ public class DeliverMilkServiceImpl extends BaseService implements DeliverMilkSe
 						item.setItemNo(entry.getItemNo());
 						item.setOrgOrderNo(entry.getOrgOrderNo());
 						item.setMatnr(entry.getMatnr());
-						item.setOrderDate(sOrder.getOrderDate());
+						item.setOrderDate(order.getOrderDate());
 						item.setPrice(entry.getPrice());
 						item.setQty(entry.getQty().subtract(entry.getConfirmQty()));
 						item.setReason(entry.getReason());
