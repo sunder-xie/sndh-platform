@@ -89,20 +89,7 @@ public class RequireOrderServiceImpl implements RequireOrderService {
         }
 
 
-            order = new TSsmReqGoodsOrder();
-            String orderNo = PrimaryKeyUtils.generateUuidKey();
-            order.setRequiredDate(today);
-            order.setStatus("10");
-            order.setOrderNo(orderNo);
-            order.setOrderDate(today);
-            order.setBranchNo(user.getBranchNo());
-            order.setCreateAt(today);
-            order.setCreateBy(user.getLoginName());
-            order.setCreateByTxt(user.getDisplayName());
-            order.setLastModified(today);
-            order.setLastModifiedByTxt(user.getDisplayName());
-            order.setLastModifiedBy(user.getLoginName());
-            tSsmReqGoodsOrderMapper.insertRequireOrder(order);
+
 
         //查看明天和后天的订单
         Calendar calendar = new GregorianCalendar();
@@ -119,6 +106,23 @@ public class RequireOrderServiceImpl implements RequireOrderService {
         List<TOrderDaliyPlanItem> items = tOrderDaliyPlanItemMapper.selectDaliyPlansByBranchAndDay(rModel);
         //将i天后的日订单中符合的产品加入到 生成的要货计划
         if(items!=null && items.size()>0){
+
+            order = new TSsmReqGoodsOrder();
+            String orderNo = PrimaryKeyUtils.generateUuidKey();
+            order.setRequiredDate(today);
+            order.setStatus("10");
+            order.setOrderNo(orderNo);
+            order.setOrderDate(today);
+            order.setBranchNo(user.getBranchNo());
+            order.setCreateAt(today);
+            order.setCreateBy(user.getLoginName());
+            order.setCreateByTxt(user.getDisplayName());
+            order.setLastModified(today);
+            order.setLastModifiedByTxt(user.getDisplayName());
+            order.setLastModifiedBy(user.getLoginName());
+            tSsmReqGoodsOrderMapper.insertRequireOrder(order);
+
+
             for(int j=0 ;j<items.size();j++ ){
                 TOrderDaliyPlanItem entry = items.get(j);
                 TSsmReqGoodsOrderItem item = new TSsmReqGoodsOrderItem();
@@ -133,6 +137,8 @@ public class RequireOrderServiceImpl implements RequireOrderService {
                 item.setIncreQty(0);
                 this.tSsmReqGoodsOrderItemMapper.insertRequireOrderItem(item);
             }
+        }else{
+            throw new ServiceException(MessageCode.LOGIC_ERROR,"今天该奶站没有可以生成要货计划的行项目");
         }
         //查询出今天的要货计划
         return this.searchRequireOrder(today);
