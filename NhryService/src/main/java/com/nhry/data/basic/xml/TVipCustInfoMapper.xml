@@ -872,7 +872,8 @@
 		    	and SUBSCRIBE_DATE &lt;= #{endDate} 
 		    </if>
 		    <if test="content != null and content != ''">
-		        and (VIP_NAME like '%${content}%' or ADDRESS_TXT like '%${content}%' or MP like '%${content}%') 
+		        and (VIP_NAME like '%${content}%' or ADDRESS_TXT like '%${content}%' or MP like '%${content}%' or 
+		        (select a.RESIDENTIAL_AREA_TXT from t_md_residential_area a where a.ID=IFNULL(i.SUBDIST,'-1')) like '%${content}%') 
 		    </if>
 		    <if test="phone != null and phone != ''">
 		       and MP = #{phone}

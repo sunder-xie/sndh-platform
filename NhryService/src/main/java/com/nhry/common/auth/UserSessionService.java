@@ -98,6 +98,8 @@ public class UserSessionService {
 		}
 		
 		TSysUser user = accessKeyThread.get();
+		System.out.println("------accessKeyThread-------"+accessKeyThread.get());
+		System.out.println("------获取的用户信息-------"+user);
 //		AccessKey ak = (AccessKey)objectRedisTemplate.opsForHash().get(SysContant.getSystemConst("app_access_key"), accessKey);
 //		if(ak == null){
 //			//反序列化失败
