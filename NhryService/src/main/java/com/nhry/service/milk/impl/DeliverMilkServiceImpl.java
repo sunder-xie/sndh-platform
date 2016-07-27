@@ -447,7 +447,7 @@ public class DeliverMilkServiceImpl extends BaseService implements DeliverMilkSe
 			
 			for(TDispOrderItem e : entryList){
 				//变化的也更改日计划状态
-				if(StringUtils.isNotBlank(e.getReason()) && e.getConfirmQty().intValue() < e.getQty().intValue()){
+				if( (StringUtils.isNotBlank(e.getReason()) && e.getConfirmQty().intValue() < e.getQty().intValue()) || !e.getMatnr().equals(e.getConfirmMatnr())  ){
 					TPlanOrderItem entry = tPlanOrderItemMapper.selectEntryByEntryNo(e.getOrgItemNo());
 					//更新原订单剩余金额
 					updatePreOrderCurAmt(entry.getOrderNo(),e.getConfirmAmt());
@@ -474,7 +474,7 @@ public class DeliverMilkServiceImpl extends BaseService implements DeliverMilkSe
 			tDispOrderMapper.updateDispOrderStatus(routeCode,"20");
 			
 			//生成变化路单
-			//createRouteChanges(routeCode,dispDate);
+			createRouteChanges(routeCode,dispDate);
 			
 			//创建回瓶管理，调用
 			returnBoxService.createDayRetBox(routeCode);

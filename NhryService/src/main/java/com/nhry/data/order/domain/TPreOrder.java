@@ -101,6 +101,42 @@ public class TPreOrder {
     private String payMan;
     
     private Date payDate;
+    String branchEmpNo;
+    String branchMp;
+    String branchEmpName;
+    String addressTxt;
+
+    public String getBranchEmpNo() {
+        return branchEmpNo;
+    }
+
+    public void setBranchEmpNo(String branchEmpNo) {
+        this.branchEmpNo = branchEmpNo;
+    }
+
+    public String getBranchMp() {
+        return branchMp;
+    }
+
+    public void setBranchMp(String branchMp) {
+        this.branchMp = branchMp;
+    }
+
+    public String getBranchEmpName() {
+        return branchEmpName;
+    }
+
+    public void setBranchEmpName(String branchEmpName) {
+        this.branchEmpName = branchEmpName;
+    }
+
+    public String getAddressTxt() {
+        return addressTxt;
+    }
+
+    public void setAddressTxt(String addressTxt) {
+        this.addressTxt = addressTxt;
+    }
 
 	public String getPayMan()
 	{

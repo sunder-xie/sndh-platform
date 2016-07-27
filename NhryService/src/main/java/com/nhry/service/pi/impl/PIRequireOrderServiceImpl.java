@@ -144,6 +144,7 @@ public class PIRequireOrderServiceImpl implements PIRequireOrderService {
                     ssmGiOrder.setBranchNo(branchNo);
                     ssmGiOrder.setOrderNo(delivery.getBSTKD());
                     ssmGiOrder.setSyncAt(new Date());
+                    ssmGiOrder.setOrderDate(delivery.getLFDAT());
                     ssmGiOrderMapper.updateGiOrder(ssmGiOrder);
                 }
                 for(Delivery d : deliveries) {

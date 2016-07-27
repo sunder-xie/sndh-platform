@@ -53,6 +53,7 @@
         <property name="orderMapper" ref="tPreOrderMapper"/>
         <property name="planOrderItemMapper" ref="tPlanOrderItemMapper"/>
         <property name="branchMapper" ref="branchMapper"/>
+        <property name="addressMapper" ref="addressMapper"/>
     </bean>
     <jaxws:endpoint id="piOrderServiceImpl" implementor="#piOrderService"
                     address="/orderService"/>
