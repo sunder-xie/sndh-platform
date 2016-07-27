@@ -442,6 +442,7 @@ public class RequireOrderServiceImpl implements RequireOrderService {
         if(items!=null && items.size()>0){
             //生成 促销订单
             TSsmSalOrder order = createSaleOrder(user,requiredDate,"branch","");
+
             for(int i=0 ;i<items.size();i++){
                 TOrderDaliyPlanItem item = items.get(i);
                 //生成 促销订单行项目
@@ -455,6 +456,7 @@ public class RequireOrderServiceImpl implements RequireOrderService {
             if(message.isSuccess()){
                 this.uptVouCherNoByOrderNo(order.getOrderNo(),message.getData());
             }
+
         }
         return 1;
     }
