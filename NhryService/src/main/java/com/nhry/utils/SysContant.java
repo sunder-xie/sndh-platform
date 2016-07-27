@@ -6,6 +6,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
+
 import org.apache.log4j.Logger;
 import org.dom4j.Element;
 import org.dom4j.io.SAXReader;
@@ -19,6 +20,12 @@ public class SysContant {
     private static final String SYS_CONFIG="sys/sys-config.xml";
     static Logger log=Logger.getLogger(SysContant.class); 
 	private static  Map<String, String> configs=new HashMap<String, String>() ;
+	public static final String IDM_LOGIN_PAGE=EnvContant.getSystemConst("authurl")
+			+ "?client_id=" + EnvContant.getSystemConst("client_id")
+			+ "&redirect_uri="
+			+ EnvContant.getSystemConst("redirect_uri")
+			+ "&response_type="
+			+ EnvContant.getSystemConst("response_type");
 	 
 	static{
 		try{
