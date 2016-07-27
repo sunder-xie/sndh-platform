@@ -1755,7 +1755,7 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 		tOrderDaliyPlanItemMapper.insert(plan);
 		daliyPlans.add(plan);
 		
-		calculateDaliyPlanRemainAmtAfterUptRoute(daliyPlans,orgOrder,dispDate);
+		calculateDaliyPlanRemainAmtAfterUptRoute(daliyPlans,orgOrder,dispDate,orgEntry);
 		
 	}
 	
@@ -2337,20 +2337,20 @@ public class OrderServiceImpl extends BaseService implements OrderService {
    }
 
    //重新计算当天更新日单后，日计划的剩余金额
-   private void calculateDaliyPlanRemainAmtAfterUptRoute(List<TOrderDaliyPlanItem> daliyPlans , TPreOrder order,Date dispDate){
+   private void calculateDaliyPlanRemainAmtAfterUptRoute(List<TOrderDaliyPlanItem> daliyPlans , TPreOrder order,Date dispDate,TPlanOrderItem orgEntry){
    	BigDecimal curAmt = order.getCurAmt();
    	
    	List<TOrderDaliyPlanItem> needUpt = new ArrayList<TOrderDaliyPlanItem>();
    	
    	for(TOrderDaliyPlanItem plan : daliyPlans){
    		if(plan.getGiftQty()!=null)continue;
-   		if(plan.getDispDate().compareTo(dispDate) == 0){
+   		if(plan.getDispDate().compareTo(dispDate) == 0 && orgEntry.getItemNo().equals(plan.getItemNo())){
    			plan.setRemainAmt(curAmt);
    			plan.setStatus("20");//已确认送达,当天的确认
    			needUpt.add(plan);
    			continue;
    		}
-   		if(!plan.getDispDate().after(dispDate))continue;
+//   		if(!plan.getDispDate().after(dispDate))continue;
    		curAmt = curAmt.subtract(plan.getAmt());
    		plan.setRemainAmt(curAmt);
    		needUpt.add(plan);
