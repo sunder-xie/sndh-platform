@@ -556,7 +556,7 @@ public class RequireOrderServiceImpl implements RequireOrderService {
         TSysUser user = userSessionService.getCurrentUser();
         TMdBranch branch  = branchMapper.selectBranchByNo(user.getBranchNo());
         Date today = new Date();
-        if("01".equals(branch.getBranchGroup())){
+        if("02".equals(branch.getBranchGroup())){
             int noProm = this.creatNoPromoSalOrderOfDealerBranch(today);
             int prom = this.creatPromoSalOrderOfDealerBranch(today);
             return this.getSaleOrderByQueryDate(sMode);
