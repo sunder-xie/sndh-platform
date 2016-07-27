@@ -67,11 +67,11 @@ public class AuthFilter implements ContainerRequestFilter {
 			//未登录
 			if(StringUtils.isEmpty(ak) || StringUtils.isEmpty(userName)){
 				if(!whiteUriList.contains(uri)){
-					Response response = formatData(MessageCode.SESSION_EXPIRE, SysContant.getSystemConst(MessageCode.SESSION_EXPIRE), SysContant.IDM_LOGIN_PAGE, Status.UNAUTHORIZED);
+					Response response = formatData(MessageCode.SESSION_EXPIRE, SysContant.getSystemConst(MessageCode.SESSION_EXPIRE), EnvContant.getIdmLoginPage(), Status.UNAUTHORIZED);
 		            throw new WebApplicationException(response); 
 				}
 			}else	if(!MessageCode.NORMAL.equals(userSessionService.checkIdentity(ak, userName,request,servletRequest))){
-				Response response = formatData(MessageCode.SESSION_EXPIRE, SysContant.getSystemConst(MessageCode.SESSION_EXPIRE), SysContant.IDM_LOGIN_PAGE, Status.UNAUTHORIZED);
+				Response response = formatData(MessageCode.SESSION_EXPIRE, SysContant.getSystemConst(MessageCode.SESSION_EXPIRE), EnvContant.getIdmLoginPage(), Status.UNAUTHORIZED);
 	            throw new WebApplicationException(response); 
 			}
 		}

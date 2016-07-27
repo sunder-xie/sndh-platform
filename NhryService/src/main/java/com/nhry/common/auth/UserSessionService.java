@@ -21,7 +21,7 @@ public class UserSessionService {
 	private static final Logger LOGGER = Logger.getLogger(UserSessionService.class);
 	public static final String accessKey="accessKey";
 	public static final String uname="uname";
-	private static final ThreadLocal<String> accessKeyThread = new ThreadLocal<String>();
+	private static final ThreadLocal<TSysUser> accessKeyThread = new ThreadLocal<TSysUser>();
 	private RedisTemplate objectRedisTemplate;
 	
 	public String checkIdentity(String accessKey,String uname,ContainerRequest request,HttpServletRequest servletRequest){
@@ -31,11 +31,8 @@ public class UserSessionService {
 			LOGGER.warn("当前访问的aceesskey不存在!");
 			 return null;
 		}
-		accessKeyThread.set(accessKey);
-		
-		//身份验证成功，将session推入队列当中缓存中
-//		SessionManager.addSessionsCache(accessKey, uname,servletRequest.getRemoteHost(), new Date(), request.getAbsolutePath().getPath());
-		
+		TSysUser user = (TSysUser)objectRedisTemplate.opsForHash().get(SysContant.getSystemConst("app_user_key"), ak.getUname());
+		accessKeyThread.set(user);
 		return MessageCode.NORMAL;
 	}
 	
@@ -82,14 +79,14 @@ public class UserSessionService {
 			return user;
 		}
 		
-		String accessKey = accessKeyThread.get();
-		AccessKey ak = (AccessKey)objectRedisTemplate.opsForHash().get(SysContant.getSystemConst("app_access_key"), accessKey);
-		if(ak == null){
-			//反序列化失败
-			LOGGER.warn("aceesskey不存在或者反序列化失败!");
-			return null;
-		}
-		TSysUser user = (TSysUser)objectRedisTemplate.opsForHash().get(SysContant.getSystemConst("app_user_key"), ak.getUname());
+		TSysUser user = accessKeyThread.get();
+//		AccessKey ak = (AccessKey)objectRedisTemplate.opsForHash().get(SysContant.getSystemConst("app_access_key"), accessKey);
+//		if(ak == null){
+//			//反序列化失败
+//			LOGGER.warn("aceesskey不存在或者反序列化失败!");
+//			return null;
+//		}
+//		TSysUser user = (TSysUser)objectRedisTemplate.opsForHash().get(SysContant.getSystemConst("app_user_key"), ak.getUname());
 		return user;
 	}
 	
