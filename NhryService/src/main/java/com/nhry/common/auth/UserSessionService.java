@@ -43,9 +43,11 @@ public class UserSessionService {
 			String userObject = HttpUtils.request(EnvContant.getSystemConst("auth_profile"), attrs);
 			System.out.println("------userObject------"+userObject);
 			JSONObject userJson = new JSONObject(userObject);
-			if(userJson.has("id") && !StringUtils.isEmpty(userJson.getString("id"))){
+			System.out.println("-------userJson.getString------"+userJson.getString("id"));
+			if(userJson.has("id") && !StringUtils.isEmpty(userJson.getString("id"))){                                        
 				TSysUser user = (TSysUser)objectRedisTemplate.opsForHash().get(SysContant.getSystemConst("app_user_key"), userJson.getString("id"));
 				accessKeyThread.set(user);
+				System.out.println("-------userJson.getString来了------"+userJson.getString("id"));
 			}
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
