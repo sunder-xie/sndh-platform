@@ -23,6 +23,7 @@ import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Controller;
 
 import javax.activation.MimetypesFileTypeMap;
+import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.ws.rs.GET;
@@ -33,6 +34,7 @@ import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import java.io.*;
+import java.math.BigDecimal;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
@@ -57,7 +59,7 @@ public class ReportResource {
     @Path("/reportCollect")
     @Produces(MediaType.APPLICATION_JSON)
     @ApiOperation(value = "/reportCollect", response = OrderCreateModel.class, notes = "根据订单编号导出收款信息")
-    public Response queryCollectByOrderNo(@ApiParam(required = true, name = "orderCode", value = "订单编号") @QueryParam("orderCode") String orderCode, @Context HttpServletRequest request, @Context HttpServletResponse response) {
+    public void reportCollect(@ApiParam(required = true, name = "orderCode", value = "订单编号") @QueryParam("orderCode") String orderCode, @Context HttpServletRequest request, @Context HttpServletResponse response) {
         CollectOrderModel collect = orderService.queryCollectByOrderNo(orderCode);
         TSysUser user = userSessionService.getCurrentUser();
         String url = request.getServletContext().getRealPath("/");
@@ -72,7 +74,7 @@ public class ReportResource {
             XSSFSheet sheet = workbook.getSheetAt(0);
             XSSFRow row = sheet.getRow(3);
             XSSFCell cell = row.getCell(1);
-
+            
             cell.setCellValue("配送奶站："+order.getBranchName());
             cell = row.getCell(4);
            // 订奶起止日期：2016-7-21—  2016-8-23
@@ -94,6 +96,7 @@ public class ReportResource {
             cell = row.getCell(12);
             cell.setCellValue("客户电话："+order.getCustomerTel());
             sheet.setForceFormulaRecalculation(true);
+            BigDecimal sum = new BigDecimal(0);
             int num = 7;
             if(productItems != null){
                 for(ProductItem item : productItems){
@@ -106,37 +109,42 @@ public class ReportResource {
                     cell.setCellValue(item.getBasePrice().toString());
                     cell = row.getCell(8);
                     cell.setCellValue(item.getQty());
+
                     cell = row.getCell(10);
                     cell.setCellValue(item.getTotalPrice().toString());
+                    if(item.getTotalPrice()!=null)
+                        sum = sum.add(item.getTotalPrice());
                     num++;
                 }
             }
+            row = sheet.getRow(14);
+            cell = row.getCell(10);
+            cell.setCellValue(sum.toString());
+
             row = sheet.getRow(15);
             cell = row.getCell(1);
             cell.setCellValue("奶站地址："+ branch.getAddress());
             cell = row.getCell(7);
             cell.setCellValue("奶站电话："+ branch.getAddress());
-            cell = row.getCell(11);
-            cell.setCellValue("公司电话："+ branch.getAddress());
 
             row = sheet.getRow(18);
             cell = row.getCell(1);
             cell.setCellValue("打印日期："+ format.format(new Date()));
 
-            File targetFilePath = new File(url + File.separator +"WEB-INF"+ File.separator +"reportTemplate"+File.separator+"CollectOrder.xlsx");
-            FileOutputStream fileOut = new FileOutputStream(targetFilePath);
+            response.setContentType("multipart/form-data");
+            response.setHeader("Content-Disposition", "filename="+new String("collectOrder.xlsx".getBytes(),"iso-8859-1"));
+            OutputStream fileOut = response.getOutputStream();
             workbook.write(fileOut);
+            fileOut.flush();
             fileOut.close();
 
-            File out = new File(url + File.separator +"WEB-INF"+ File.separator +"reportTemplate"+File.separator+"devicedSql.txt");
-            String mt = new MimetypesFileTypeMap().getContentType(out);
-            return Response
-                    .ok(out, mt)
-                    .header("Content-disposition","attachment;filename=" + out.getName())
-                    .header("ragma", "No-cache").header("Cache-Control", "no-cache").build();
+//            String mt = new MimetypesFileTypeMap().getContentType(targetFilePath);
+//            return Response
+//                    .ok(targetFilePath, mt)
+//                    .header("Content-disposition","attachment;filename=" + targetFilePath.getName())
+//                    .header("ragma", "No-cache").header("Cache-Control", "no-cache").build();
         } catch (IOException e) {
             e.printStackTrace();
         }
-        return Response.ok().build();
     }
 }
