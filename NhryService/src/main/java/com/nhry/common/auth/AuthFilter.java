@@ -2,6 +2,7 @@ package com.nhry.common.auth;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Enumeration;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
@@ -62,6 +63,12 @@ public class AuthFilter implements ContainerRequestFilter {
 			}
 //			String ak = CookieUtil.getCookieValue(servletRequest, UserSessionService.accessKey);
 			String ak =request.getHeaderValue("dh_token");
+			System.out.println(servletRequest.getHeader("dh_token"));
+			Enumeration<String> enu = servletRequest.getHeaderNames();
+			while(enu.hasMoreElements()){
+				String h = enu.nextElement();
+				  System.out.println("-------headername-----"+h+" ----headervalue----"+servletRequest.getHeader(h));
+			}
 			System.out.println("--------ak-------"+ak);
 			String userName = CookieUtil.getCookieValue(servletRequest, UserSessionService.uname);
 			//未登录
