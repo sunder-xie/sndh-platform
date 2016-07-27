@@ -1621,16 +1621,32 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 	@Override
 	public void resumeDaliyPlanForRouteOrder(BigDecimal confirmQty, TDispOrderItem entry,TPlanOrderItem orgEntry,Date dispDate)
 	{
+		if("Y".equals(entry.getGiftFlag())){
+			//赠品的，只更新原日计划
+			ArrayList<TOrderDaliyPlanItem> daliyPlans = (ArrayList<TOrderDaliyPlanItem>) tOrderDaliyPlanItemMapper.selectDaliyPlansByOrderNoAsc(orgEntry.getOrderNo());
+			for(TOrderDaliyPlanItem p : daliyPlans){
+				if(p.getDispDate().equals(dispDate) && entry.getOrgItemNo().equals(p.getItemNo()) && p.getGiftQty()!= null){
+					p.setMatnr(entry.getConfirmMatnr());
+					p.setQty(entry.getConfirmQty().intValue());
+					p.setStatus("20");
+					tOrderDaliyPlanItemMapper.updateDaliyPlanItem(p);
+					break;
+				}
+			}
+			return;
+		}
+		
 		if("10".equals(entry.getReason())){
 			//换货的，只更新原日计划
 			ArrayList<TOrderDaliyPlanItem> daliyPlans = (ArrayList<TOrderDaliyPlanItem>) tOrderDaliyPlanItemMapper.selectDaliyPlansByOrderNoAsc(orgEntry.getOrderNo());
 			for(TOrderDaliyPlanItem p : daliyPlans){
-				if(p.getDispDate().equals(dispDate)){
+				if(p.getDispDate().equals(dispDate) && entry.getOrgItemNo().equals(p.getItemNo()) && p.getGiftQty()==null){
 					p.setMatnr(entry.getConfirmMatnr());
 					p.setQty(entry.getConfirmQty().intValue());
 					p.setStatus("20");
+					tOrderDaliyPlanItemMapper.updateDaliyPlanItem(p);
+					break;
 				}
-				tOrderDaliyPlanItemMapper.updateDaliyPlanItem(p);
 			}
 			return;
 		}
@@ -1651,10 +1667,11 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 			ArrayList<TOrderDaliyPlanItem> daliyPlans = (ArrayList<TOrderDaliyPlanItem>) tOrderDaliyPlanItemMapper.selectDaliyPlansByOrderNoAsc(orgEntry.getOrderNo());
 			for(TOrderDaliyPlanItem p : daliyPlans){
 				if(!"30".equals(p.getStatus())){
-					if(p.getDispDate().equals(dispDate)){
+					if(p.getDispDate().equals(dispDate) && entry.getOrgItemNo().equals(p.getItemNo()) && p.getGiftQty()==null ){
 						p.setMatnr(entry.getConfirmMatnr());
 						p.setQty(entry.getConfirmQty().intValue());
 						p.setAmt(entry.getConfirmAmt());
+						p.setStatus("20");
 						initAmt = initAmt.subtract(p.getAmt());
 					}else{
 						initAmt = initAmt.subtract(p.getAmt());
