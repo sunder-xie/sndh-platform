@@ -17,6 +17,7 @@ import org.codehaus.jettison.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
+import org.springframework.stereotype.Component;
 import org.springframework.web.context.support.SpringBeanAutowiringSupport;
 
 import com.nhry.common.auth.UserSessionService;
@@ -28,18 +29,15 @@ import com.nhry.utils.CookieUtil;
 import com.nhry.utils.EnvContant;
 import com.nhry.utils.HttpUtils;
 import com.nhry.utils.json.JackJson;
-
+@Component
 public class IdmAuthServlet extends HttpServlet {
+	@Autowired
 	private UserService userService;
+	@Autowired
 	private UserSessionService userSessionService;
 	
 	public void init(ServletConfig config) throws ServletException {
-//		   SpringBeanAutowiringSupport.processInjectionBasedOnServletContext(this,
-//		         config.getServletContext());
-		String[] xmls = new String[]{ "classpath:beans/spring-context.xml","classpath:beans/dataSource.xml","classpath:beans/*-bean.xml"  };
-        ApplicationContext context = new ClassPathXmlApplicationContext(xmls);
-        userSessionService = (UserSessionService)context.getBean("userSessionService");
-        userService = (UserService)context.getBean("userService");
+		 SpringBeanAutowiringSupport.processInjectionBasedOnServletContext(this,config.getServletContext());
 	}
 	
 	public void doGet(HttpServletRequest request, HttpServletResponse response)
@@ -60,16 +58,13 @@ public class IdmAuthServlet extends HttpServlet {
 				attrs.put("redirect_uri", EnvContant.getSystemConst("redirect_uri"));
 				attrs.put("code", code);
 				String access_token = HttpUtils.request(EnvContant.getSystemConst("auth_token"), attrs);
-				System.out.println("-----access_token-------"+access_token);
 				if(!StringUtils.isEmpty(access_token)){
 					attrs.clear();
 					String token = access_token.split("=")[1].split("&")[0];
 					attrs.put("access_token", token);
 					String userObject = HttpUtils.request(EnvContant.getSystemConst("auth_profile"), attrs);
-					System.out.println("------userObject------"+userObject);
 					JSONObject userJson = new JSONObject(userObject);
 					if(userJson.has("id") && !StringUtils.isEmpty(userJson.getString("id"))){
-						System.out.println("------userJson.getString('id')------"+userJson.getString("id"));
 						TSysUser user = new TSysUser();
 						user.setLoginName(userJson.getString("id"));
 						TSysUser loginuser = userService.login(user);
@@ -109,7 +104,6 @@ public class IdmAuthServlet extends HttpServlet {
 		try {
 			response.setHeader("dh_token", token);
 			response.sendRedirect(EnvContant.getSystemConst("front_home_page")+"?dh_token="+token);
-			System.out.println("------------跳转-----------"+EnvContant.getSystemConst("front_home_page"));
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

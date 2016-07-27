@@ -28,6 +28,7 @@ import com.nhry.utils.SysContant;
 import com.sun.jersey.spi.container.ContainerRequest;
 import com.sun.jersey.spi.container.ContainerRequestFilter;
 
+@Component
 public class AuthFilter implements ContainerRequestFilter {
 	private static final Logger LOGGER = Logger.getLogger(AuthFilter.class);
 	private static  List<String> whiteUriList =null;
@@ -36,8 +37,8 @@ public class AuthFilter implements ContainerRequestFilter {
 	protected HttpServletRequest request;
 	@Context
 	protected HttpServletResponse response;
+	@Autowired
 	private UserSessionService userSessionService;
-	static ApplicationContext context = null;
 	
 	static{
 		whiteUriList = new ArrayList<String>();
@@ -49,8 +50,6 @@ public class AuthFilter implements ContainerRequestFilter {
 		whiteHostList.add("127.0.0.1");
 		whiteHostList.add("localhost");
 		whiteHostList.add("test.nhry-dev.com");
-		String[] xmls = new String[]{ "classpath:beans/spring-context.xml","classpath:beans/dataSource.xml","classpath:beans/*-bean.xml"  };
-        context = new ClassPathXmlApplicationContext(xmls);
 	}
 	
 	@Context   
@@ -62,14 +61,12 @@ public class AuthFilter implements ContainerRequestFilter {
 		// TODO Auto-generated method stub
 		String uri = request.getAbsolutePath().getPath();
 		String host = request.getAbsolutePath().getHost();
-		userSessionService = (UserSessionService)context.getBean("userSessionService");
 		if("product".equals(SysContant.getSystemConst("app_mode"))){
 			if(isExsitUri(uri)){
 				return request;
 			}
 //			String ak = CookieUtil.getCookieValue(servletRequest, UserSessionService.accessKey);
 			String ak =request.getHeaderValue("dh-token");
-			System.out.println("--------ak-------"+ak);
 //			String userName = CookieUtil.getCookieValue(servletRequest, UserSessionService.uname);
 			//未登录
 			if(StringUtils.isEmpty(ak)){
