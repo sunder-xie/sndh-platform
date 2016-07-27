@@ -180,7 +180,7 @@ public class BusinessDataConnection {
                 posex_type1.setPOSEX_type0(String.valueOf(map.get("ITEM_NO")));
                 zssd00011.setPOSEX(posex_type1);
                 PR_REF_MAT_type1 pr_ref_mat_type1 = new PR_REF_MAT_type1();
-                pr_ref_mat_type1.setPR_REF_MAT_type0("");//TODO
+                pr_ref_mat_type1.setPR_REF_MAT_type0(map.get("REF_MATNR")==null?"":map.get("REF_MATNR"));
                 zssd00011.setPR_REF_MAT(pr_ref_mat_type1);
                 it_zssd00011_type1.addItem(zssd00011);
             }
