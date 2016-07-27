@@ -16,6 +16,8 @@ import javax.ws.rs.core.Response.Status;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.support.ClassPathXmlApplicationContext;
 import org.springframework.stereotype.Component;
 
 import com.nhry.common.exception.MessageCode;
@@ -34,8 +36,8 @@ public class AuthFilter implements ContainerRequestFilter {
 	protected HttpServletRequest request;
 	@Context
 	protected HttpServletResponse response;
-	@Autowired
 	private UserSessionService userSessionService;
+	static ApplicationContext context = null;
 	
 	static{
 		whiteUriList = new ArrayList<String>();
@@ -47,6 +49,8 @@ public class AuthFilter implements ContainerRequestFilter {
 		whiteHostList.add("127.0.0.1");
 		whiteHostList.add("localhost");
 		whiteHostList.add("test.nhry-dev.com");
+		String[] xmls = new String[]{ "classpath:beans/spring-context.xml","classpath:beans/dataSource.xml","classpath:beans/*-bean.xml"  };
+        context = new ClassPathXmlApplicationContext(xmls);
 	}
 	
 	@Context   
@@ -58,6 +62,7 @@ public class AuthFilter implements ContainerRequestFilter {
 		// TODO Auto-generated method stub
 		String uri = request.getAbsolutePath().getPath();
 		String host = request.getAbsolutePath().getHost();
+		userSessionService = (UserSessionService)context.getBean("userSessionService");
 		if("product".equals(SysContant.getSystemConst("app_mode"))){
 			if(isExsitUri(uri)){
 				return request;
