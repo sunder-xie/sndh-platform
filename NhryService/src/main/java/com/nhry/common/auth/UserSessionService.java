@@ -30,7 +30,7 @@ public class UserSessionService {
 	private static final ThreadLocal<TSysUser> accessKeyThread = new ThreadLocal<TSysUser>();
 	private RedisTemplate objectRedisTemplate;
 	
-	public String checkIdentity(String accessKey,String uname,ContainerRequest request,HttpServletRequest servletRequest){
+	public String checkIdentity(String accessKey,ContainerRequest request,HttpServletRequest servletRequest){
 //		AccessKey ak = (AccessKey) objectRedisTemplate.opsForHash().get(SysContant.getSystemConst("app_access_key"), accessKey);
 //		if(ak == null){
 //			 //access不存在

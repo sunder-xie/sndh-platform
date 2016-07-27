@@ -16,6 +16,7 @@ import javax.ws.rs.core.Response.Status;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
 import com.nhry.common.exception.MessageCode;
 import com.nhry.model.sys.ResponseModel;
@@ -25,6 +26,7 @@ import com.nhry.utils.SysContant;
 import com.sun.jersey.spi.container.ContainerRequest;
 import com.sun.jersey.spi.container.ContainerRequestFilter;
 
+@Component
 public class AuthFilter implements ContainerRequestFilter {
 	private static final Logger LOGGER = Logger.getLogger(AuthFilter.class);
 	private static  List<String> whiteUriList =null;
@@ -62,22 +64,16 @@ public class AuthFilter implements ContainerRequestFilter {
 				return request;
 			}
 //			String ak = CookieUtil.getCookieValue(servletRequest, UserSessionService.accessKey);
-			String ak =request.getHeaderValue("dh_token");
-			System.out.println(servletRequest.getHeader("dh_token"));
-			Enumeration<String> enu = servletRequest.getHeaderNames();
-			while(enu.hasMoreElements()){
-				String h = enu.nextElement();
-				  System.out.println("-------headername-----"+h+" ----headervalue----"+servletRequest.getHeader(h));
-			}
+			String ak =request.getHeaderValue("dh-token");
 			System.out.println("--------ak-------"+ak);
-			String userName = CookieUtil.getCookieValue(servletRequest, UserSessionService.uname);
+//			String userName = CookieUtil.getCookieValue(servletRequest, UserSessionService.uname);
 			//未登录
-			if(StringUtils.isEmpty(ak) || StringUtils.isEmpty(userName)){
+			if(StringUtils.isEmpty(ak)){
 				if(!whiteUriList.contains(uri)){
 					Response response = formatData(MessageCode.SESSION_EXPIRE, SysContant.getSystemConst(MessageCode.SESSION_EXPIRE), EnvContant.getIdmLoginPage(), Status.UNAUTHORIZED);
 		            throw new WebApplicationException(response); 
 				}
-			}else	if(!MessageCode.NORMAL.equals(userSessionService.checkIdentity(ak, userName,request,servletRequest))){
+			}else	if(!MessageCode.NORMAL.equals(userSessionService.checkIdentity(ak,request,servletRequest))){
 				Response response = formatData(MessageCode.SESSION_EXPIRE, SysContant.getSystemConst(MessageCode.SESSION_EXPIRE), EnvContant.getIdmLoginPage(), Status.UNAUTHORIZED);
 	            throw new WebApplicationException(response); 
 			}
