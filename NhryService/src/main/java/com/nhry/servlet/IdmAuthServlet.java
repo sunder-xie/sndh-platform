@@ -108,7 +108,7 @@ public class IdmAuthServlet extends HttpServlet {
 		//跳转到登录页面
 		try {
 			response.setHeader("dh_token", token);
-			response.sendRedirect(EnvContant.getSystemConst("front_home_page"));
+			response.sendRedirect(EnvContant.getSystemConst("front_home_page")+"?dh_token="+token);
 			System.out.println("------------跳转-----------"+EnvContant.getSystemConst("front_home_page"));
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
