@@ -21,11 +21,23 @@ public class RouteDetailUpdateModel {
    
    private String reason;
    
+   private String replaceReason;
+   
    private String confirmQty;
    
    private String matnr;
    
-   public String getOrgOrderNo()
+   public String getReplaceReason()
+	{
+		return replaceReason;
+	}
+
+	public void setReplaceReason(String replaceReason)
+	{
+		this.replaceReason = replaceReason;
+	}
+
+	public String getOrgOrderNo()
 	{
 		return orgOrderNo;
 	}

@@ -17,6 +17,7 @@ import com.nhry.model.basic.EmpQueryModel;
 import com.nhry.service.BaseService;
 import com.nhry.service.basic.dao.BranchEmpService;
 import com.nhry.service.basic.pojo.BranchEmpModel;
+
 import org.apache.commons.lang3.StringUtils;
 
 import java.util.ArrayList;
@@ -117,12 +118,12 @@ public class BranchEmpServiceImpl extends BaseService implements BranchEmpServic
 	@Override
 	public List<TMdBranchEmp> getAllBranchEmpByNo(BranchEmpSearchModel bModel) {
 		TSysUser user = userSessionService.getCurrentUser();
-		TSysUserRole userRole = userRoleMapper.getUserRoleByLoginName(user.getLoginName());
+		List<String> rids = userRoleMapper.getUserRidsByLoginName(user.getLoginName());
 		bModel.setSalesOrg(user.getSalesOrg());
-		if("10004".equals(userRole.getId())){
+		if(rids.contains("10004")){
 			bModel.setBranchNo(user.getBranchNo());
 		}
-		if("10005".equals(userRole.getId())){
+		if(rids.contains("10005")){
 			bModel.setDealerNo(user.getDealerId());
 		}
 
@@ -164,8 +165,8 @@ public class BranchEmpServiceImpl extends BaseService implements BranchEmpServic
 		TSysUser user = userSessionService.getCurrentUser();
 		smodel.setSalesOrg(user.getSalesOrg());
 		if(StringUtils.isBlank(smodel.getBranchNo())){
-			TSysUserRole userRole = userRoleMapper.getUserRoleByLoginName(user.getLoginName());
-			if("10003".equals(userRole.getId())){
+			List<String> rids = userRoleMapper.getUserRidsByLoginName(user.getLoginName());
+			if(rids.contains("10003")){
 				smodel.setBranchNo("");
 			}else{
 				smodel.setBranchNo(user.getBranchNo());

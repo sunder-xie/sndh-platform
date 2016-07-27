@@ -6,22 +6,27 @@ import com.nhry.common.exception.MessageCode;
 import com.nhry.data.auth.domain.TSysUser;
 import com.nhry.model.auth.UserQueryModel;
 import com.nhry.model.auth.UserQueryModel2;
+import com.nhry.model.sys.AccessKey;
 import com.nhry.model.sys.ResponseModel;
 import com.nhry.rest.BaseResource;
 import com.nhry.service.auth.dao.UserService;
 import com.nhry.utils.CookieUtil;
+import com.nhry.utils.SysContant;
 import com.sun.jersey.spi.resource.Singleton;
 import com.wordnik.swagger.annotations.Api;
 import com.wordnik.swagger.annotations.ApiOperation;
 import com.wordnik.swagger.annotations.ApiParam;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Controller;
 
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+
 import java.util.List;
 
 @Path("/user")
@@ -82,6 +87,14 @@ public class UserResource extends BaseResource {
 		CookieUtil.setCookie(request, response, UserSessionService.uname, loginuser.getLoginName());
 		userSessionService.cacheUserSession(user.getLoginName(), accesskey, loginuser,request);
 		return convertToRespModel(MessageCode.NORMAL,null, loginuser);
+	}
+	
+	@POST
+	@Path("/find/{token}")
+	@Produces(MediaType.APPLICATION_JSON)
+	@ApiOperation(value = "/find/{token}", response = ResponseModel.class, notes = "根据token获取用户信息")
+	public Response login(@ApiParam(required = true, name = "token", value = "token") @PathParam("token") String token) {
+		return convertToRespModel(MessageCode.NORMAL,null, userService.findUserBytoken(token));
 	}
 	
 	@POST

@@ -1,12 +1,12 @@
 package com.nhry.service.milktrans.dao;
 
 import com.nhry.data.milktrans.domain.TSsmReqGoodsOrderItem;
-import com.nhry.model.milktrans.ReqGoodsOrderItemSearch;
-import com.nhry.model.milktrans.RequireOrderModel;
-import com.nhry.model.milktrans.UpdateNewRequiredModel;
-import com.nhry.model.milktrans.UpdateRequiredModel;
+import com.nhry.data.milktrans.domain.TSsmSalOrder;
+import com.nhry.data.milktrans.domain.TSsmSalOrderItems;
+import com.nhry.model.milktrans.*;
 
 import java.util.Date;
+import java.util.List;
 
 /**
  * Created by gongjk on 2016/6/24.
@@ -34,5 +34,11 @@ public interface RequireOrderService {
 
     int creatPromoSalOrderOfSelftBranch(Date requiredDate);
 
-    int creaSalOrderOfSelftBranch();
+    List<TSsmSalOrder> creaSalOrderOfSelftBranch();
+
+    List<TSsmSalOrder> creaSalOrderOfDealerBranch();
+
+    List<TSsmSalOrder> getSaleOrderByQueryDate(SalOrderModel sModel);
+
+    List<TSsmSalOrderItems> getSaleOrderDetailByOrderNo(String orderNo);
 }

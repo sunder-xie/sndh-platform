@@ -51,7 +51,13 @@ public class TSysUserRoleMapperImpl extends BaseService implements TSysUserRoleM
 	}
 
 	@Override
-	public TSysUserRole getUserRoleByLoginName(String loginName) {
-		return this.sqlSessionTemplate.selectOne("getUserRoleByLoginName", loginName);
+	public List<TSysUserRole> getUserRoleByLoginName(String loginName) {
+		return this.sqlSessionTemplate.selectList("getUserRoleByLoginName", loginName);
+	}
+
+	@Override
+	public List<String> getUserRidsByLoginName(String loginName) {
+		// TODO Auto-generated method stub
+		return this.sqlSessionTemplate.selectList("getUserRidsByLoginName", loginName);
 	}
 }

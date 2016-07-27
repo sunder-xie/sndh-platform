@@ -5,7 +5,8 @@
         <result column="ORDER_NO" property="orderNo" jdbcType="VARCHAR" />
         <result column="ORDER_DATE" property="orderDate" jdbcType="DATE" />
         <result column="ITEM_NO" property="itemNo" jdbcType="INTEGER" />
-        <result column="MATNR" property="matnr" jdbcType="DATE" />
+        <result column="MATNR" property="matnr" jdbcType="VARCHAR" />
+        <result column="MATNR_TXT" property="matnrTxt" jdbcType="VARCHAR" />
         <result column="UNIT" property="unit" jdbcType="VARCHAR" />
         <result column="QTY" property="qty" jdbcType="INTEGER" />
         <result column="TYPE" property="type" jdbcType="VARCHAR" />
@@ -29,7 +30,9 @@
             <if test="matnr != null" >
                 MATNR,
             </if>
-
+            <if test="refMatnr != null" >
+                REF_MATNR,
+            </if>
             <if test="unit != null" >
                 UNIT,
             </if>
@@ -52,6 +55,9 @@
             </if>
             <if test="matnr != null" >
                 #{matnr,jdbcType=VARCHAR},
+            </if>
+            <if test="refMatnr != null" >
+                #{refMatnr,jdbcType=VARCHAR},
             </if>
             <if test="unit != null" >
                 #{unit,jdbcType=VARCHAR},
@@ -81,4 +87,21 @@
         JOIN t_md_mara_ex ex ON m.MATNR = ex.MATNR
         AND m.SALES_ORG = ex.SALES_ORG
     </select>
+
+    <select id="selectItemsBySalOrderNo" resultMap="BaseResultMap" parameterType="java.util.Map">
+        SELECT
+        i.MATNR,m.MATNR_TXT,i.QTY,i.TYPE,i.UNIT
+        FROM
+        t_ssm_sal_order_items i LEFT JOIN  t_md_mara m ON  i.MATNR = m.MATNR and m.SALES_ORG = #{salesOrg}
+        where 1=1
+        and ORDER_NO = #{orderNo}
+    </select>
+
+    <delete id="delSalOrderItemsByOrderNo" parameterType="string">
+        DELETE
+        FROM
+        t_ssm_sal_order_items
+        where 1=1
+        and ORDER_NO = #{orderNo,jdbcType=VARCHAR}
+    </delete>
 </mapper>

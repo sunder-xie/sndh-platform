@@ -23,7 +23,9 @@ public interface EmpBillService {
 
     PageInfo searchEmpSalaryRep(EmpDispDetialInfoSearch eSearch);
 
-    int setBranchEmpSalary();
+    PageInfo setBranchEmpSalary();
 
     TMdEmpSal getEmpSalaryBySalaryNo(String empSalLsh);
+
+    PageInfo setBranchEmpSalaryThisMonth();
 }

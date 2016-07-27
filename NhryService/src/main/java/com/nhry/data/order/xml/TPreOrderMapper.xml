@@ -706,6 +706,12 @@
     where ORDER_NO = #{orderNo,jdbcType=VARCHAR}
   </update>
   
+  <update id="updateOrderCurAmtAndInitAmt" parameterType="com.nhry.data.order.domain.TPreOrder" >
+    update t_preorder
+    set INIT_AMT =  #{initAmt,jdbcType=DECIMAL}
+    where ORDER_NO = #{orderNo,jdbcType=VARCHAR}
+  </update>
+  
    <update id="updateOrderSolicitor" parameterType="com.nhry.data.order.domain.TPreOrder" >
     update t_preorder
     <set >

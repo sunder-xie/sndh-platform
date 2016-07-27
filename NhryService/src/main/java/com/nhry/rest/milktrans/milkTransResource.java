@@ -163,6 +163,36 @@ public class milkTransResource extends BaseResource {
 	}
 
 
+	@POST
+	@Path("/creaSalOrderOfDealerBranch")
+	@Produces(MediaType.APPLICATION_JSON)
+	@Consumes(MediaType.APPLICATION_JSON)
+	@ApiOperation(value = "/creaSalOrderOfDealerBranch", response = Response.class, notes = "经销商奶站 根据 日订单 创建销售订单")
+	public Response creaSalOrderOfDealerBranch(){
+		return convertToRespModel(MessageCode.NORMAL, null, requireOrderService.creaSalOrderOfDealerBranch());
+	}
+
+
+
+	@POST
+	@Path("/salOrder/getSaleOrderByQueryDate")
+	@Produces(MediaType.APPLICATION_JSON)
+	@Consumes(MediaType.APPLICATION_JSON)
+	@ApiOperation(value = "/salOrder/getSaleOrderByQueryDate", response = Response.class, notes = "查询日期的销售订单")
+	public Response getSaleOrderByQueryDate(@ApiParam(required=true,name="eSearch",value="销售订单日期") SalOrderModel sModel){
+		return convertToRespModel(MessageCode.NORMAL, null, requireOrderService.getSaleOrderByQueryDate(sModel));
+	}
+
+
+	@GET
+	@Path("/salOrder/getSaleOrderDetailByOrderNo")
+	@Produces(MediaType.APPLICATION_JSON)
+	@ApiOperation(value = "/salOrder/getSaleOrderDetailByOrderNo", response = Response.class, notes = "根据销售订单号获取详情")
+	public Response getSaleOrderDetailByOrderNo(@ApiParam(required=true,name="orderNo",value="销售订单号") @QueryParam("orderNo") String orderNo){
+		return convertToRespModel(MessageCode.NORMAL, null, requireOrderService.getSaleOrderDetailByOrderNo(orderNo));
+	}
+
+
 
 	@POST
 	@Path("/box/upt")

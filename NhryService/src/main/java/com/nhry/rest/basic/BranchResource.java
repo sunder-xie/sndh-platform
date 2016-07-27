@@ -53,6 +53,14 @@ public class BranchResource extends BaseResource {
 		return convertToRespModel(MessageCode.NORMAL, null,branchService.selectBranchByNo(branchNo));
 	}
 
+	@GET
+	@Path("/getCustBranchInfo")
+	@Produces(MediaType.APPLICATION_JSON)
+	@ApiOperation(value = "/getCustBranchInfo", response = TMdBranch.class, notes = "获取当前登录人所属奶站")
+	public Response getCustBranchInfo(){
+		return convertToRespModel(MessageCode.NORMAL, null,branchService.getCustBranchInfo());
+	}
+
 
 	@POST
 	@Path("/list")

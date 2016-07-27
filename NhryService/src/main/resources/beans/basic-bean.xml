@@ -120,6 +120,7 @@
 		<property name="userSessionService" ref="userSessionService"></property>
 		<property name="orderService" ref="orderService"></property>
 		<property name="productService" ref="productService"></property>
+		<property name="tSsmStockService" ref="ssmStockService"></property>
 		<property name="returnBoxService" ref="returnBoxService"></property>
 		<property name="tSsmStockService" ref="ssmStockService"/>
 	</bean>

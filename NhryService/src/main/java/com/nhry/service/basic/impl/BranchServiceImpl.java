@@ -16,8 +16,6 @@ import com.nhry.model.basic.BranchQueryModel;
 import com.nhry.model.basic.BranchSalesOrgModel;
 import com.nhry.service.BaseService;
 import com.nhry.service.basic.dao.BranchService;
-import com.nhry.service.basic.dao.TSysMessageService;
-
 import org.apache.commons.lang3.StringUtils;
 
 import java.util.HashMap;
@@ -65,12 +63,12 @@ public class BranchServiceImpl extends BaseService implements BranchService {
 	public List<TMdBranch> findBranchListByOrg() {
 		// TODO Auto-generated method stub
 		TSysUser user = userSessionService.getCurrentUser();
-		TSysUserRole userRole = urMapper.getUserRoleByLoginName(user.getLoginName());
+		List<String> rids = urMapper.getUserRidsByLoginName(user.getLoginName());
 		BranchSalesOrgModel bModel = new BranchSalesOrgModel();
 		bModel.setSalesOrg(user.getSalesOrg());
-		if("10004".equals(userRole.getId())){
+		if(rids.contains("10004")){
 			bModel.setBranchNo(user.getBranchNo());
-		}else if("10005".equals(userRole.getId())){
+		}else if(rids.contains("10005")){
 			//经销商内勤
 			bModel.setDealerNo(user.getDealerId());
 		}
@@ -80,12 +78,12 @@ public class BranchServiceImpl extends BaseService implements BranchService {
 	@Override
 	public PageInfo findBranchListByPage(BranchQueryModel branchModel) {
 		TSysUser user = userSessionService.getCurrentUser();
-		TSysUserRole userRole = urMapper.getUserRoleByLoginName(user.getLoginName());
+		List<String> rids = urMapper.getUserRidsByLoginName(user.getLoginName());
 		branchModel.setSalesOrg(user.getSalesOrg());
 		//部门内勤
-		if("10003".equals(userRole.getId())){
+		if(rids.contains("10003")){
 			branchModel.setRoleId("10003");
-		}else if("10005".equals(userRole.getId())){
+		}else if(rids.contains("10005")){
 			branchModel.setRoleId("10005");
 			//经销商内勤
 			branchModel.setDealerNo(user.getDealerId());
@@ -153,6 +151,15 @@ public class BranchServiceImpl extends BaseService implements BranchService {
 		attrs.put("salesOrg", this.userSessionService.getCurrentUser().getSalesOrg());
 		attrs.put("dealerNo",dealerNo);
 		return this.branchMapper.findBranchByDno(attrs);
+	}
+
+	@Override
+	public TMdBranch getCustBranchInfo() {
+		TSysUser user = userSessionService.getCurrentUser();
+		if(StringUtils.isBlank(user.getBranchNo())){
+			throw new ServiceException(MessageCode.LOGIC_ERROR,"当前登录人没有所属奶站");
+		}
+		return  this.selectBranchByNo(user.getBranchNo());
 	}
 
 

@@ -147,14 +147,14 @@ public class OrderResource extends BaseResource {
 		return convertToRespModel(MessageCode.NORMAL, null, orderService.batchContinueOrder(smodel));
 	}
 	
-	@POST
-	@Path("/batchResumeFromStop")
-	@Produces(MediaType.APPLICATION_JSON)
-	@Consumes(MediaType.APPLICATION_JSON)
-	@ApiOperation(value = "/batchResumeFromStop", response = Integer.class, notes = "订单批量复订")
-	public Response batchResumeFromStop(@ApiParam(required=true,name="smodel",value="SearchModel") OrderSearchModel smodel){
-		return convertToRespModel(MessageCode.NORMAL, null, orderService.batchContinueOrdeAfterStop(smodel));
-	}
+//	@POST
+//	@Path("/batchResumeFromStop")
+//	@Produces(MediaType.APPLICATION_JSON)
+//	@Consumes(MediaType.APPLICATION_JSON)
+//	@ApiOperation(value = "/batchResumeFromStop", response = Integer.class, notes = "订单批量复订")
+//	public Response batchResumeFromStop(@ApiParam(required=true,name="smodel",value="SearchModel") OrderSearchModel smodel){
+//		return convertToRespModel(MessageCode.NORMAL, null, orderService.batchContinueOrdeAfterStop(smodel));
+//	}
 	
 	@POST
 	@Path("/stopOrder")

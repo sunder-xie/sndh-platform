@@ -10,9 +10,27 @@ public class TSsmSalOrderItems {
     private int itemNo;
     private Date orderDate;
     private String matnr;
+    private String matnrTxt;
     private String unit;
     private int qty;
     private String type;
+    private String refMatnr;
+
+    public String getRefMatnr() {
+        return refMatnr;
+    }
+
+    public void setRefMatnr(String refMatnr) {
+        this.refMatnr = refMatnr;
+    }
+
+    public String getMatnrTxt() {
+        return matnrTxt;
+    }
+
+    public void setMatnrTxt(String matnrTxt) {
+        this.matnrTxt = matnrTxt;
+    }
 
     public String getOrderNo() {
         return orderNo;
