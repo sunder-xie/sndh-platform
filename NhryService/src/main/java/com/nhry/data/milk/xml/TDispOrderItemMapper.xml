@@ -492,8 +492,9 @@
 	o.DISP_EMP_NO EMP_NO, SUM(i.QTY) RECEIVE_NUM,ex.BOT_TYPE SPEC,o.BRANCH_NO,o.ORDER_NO DISP_ORDER_NO
     from t_mst_disp_order_item  i
     LEFT JOIN t_mst_disp_order o on  i.ORDER_NO = o.ORDER_NO
-    LEFT JOIN t_md_mara_ex ex on ( i.MATNR = ex.MATNR and ex.RET_BOT_FLAG = "Y")
+    LEFT JOIN t_md_mara_ex ex on i.MATNR = ex.MATNR
 	where o.ORDER_NO = #{dispOrderNo,jdbcType=VARCHAR}
+	and ex.RET_BOT_FLAG = "Y"
 	GROUP BY ex.BOT_TYPE,o.DISP_EMP_NO
   </select>
 
