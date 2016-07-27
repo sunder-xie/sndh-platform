@@ -1781,7 +1781,6 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 	@Override
 	public CollectOrderModel queryCollectByOrderNo(String orderCode) {
 		TSysUser user = userSessionService.getCurrentUser();
-
 		TPreOrder order = tPreOrderMapper.selectByPrimaryKey(orderCode);
 		CollectOrderModel model = new CollectOrderModel();
 		model.setOrder(order);

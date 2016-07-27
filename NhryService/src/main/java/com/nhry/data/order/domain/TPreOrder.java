@@ -92,8 +92,10 @@ public class TPreOrder {
     
     private String sign;
     
+    private String salesOrgName;
+
     private String salesOrg;
-    
+
     private String dealerNo;
     
     private String deleteReason;
@@ -105,6 +107,14 @@ public class TPreOrder {
     String branchMp;
     String branchEmpName;
     String addressTxt;
+
+    public String getSalesOrgName() {
+        return salesOrgName;
+    }
+
+    public void setSalesOrgName(String salesOrgName) {
+        this.salesOrgName = salesOrgName;
+    }
 
     public String getBranchEmpNo() {
         return branchEmpNo;

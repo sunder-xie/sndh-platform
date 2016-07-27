@@ -13,12 +13,21 @@ public class TMstInsideSalOrderItem implements Serializable {
     private String itemNo;
     private String orgOrderNo;
     private String matnr;
+    private String matnrTxt;
     private BigDecimal qty;
     private String reason;
     private BigDecimal price;
     private String spec;
     private String secCate;
     private String zbotCode;
+
+    public String getMatnrTxt() {
+        return matnrTxt;
+    }
+
+    public void setMatnrTxt(String matnrTxt) {
+        this.matnrTxt = matnrTxt;
+    }
 
     public String getSpec() {
         return spec;

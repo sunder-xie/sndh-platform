@@ -10,7 +10,7 @@
         <result column="QTY"          property="qty" jdbcType="DECIMAL" />
         <result column="PRICE"        property="price" jdbcType="DECIMAL" />
         <result column="REASON"       property="reason" jdbcType="VARCHAR" />
-
+        <result column="MATNR_TXT"    property="matnrTxt" jdbcType="VARCHAR" />
         <result column="SPEC"       property="spec" jdbcType="VARCHAR" />
         <result column="SEC_CATE"       property="secCate" jdbcType="VARCHAR" />
         <result column="ZBOT_CODE"       property="zbotCode" jdbcType="VARCHAR" />
