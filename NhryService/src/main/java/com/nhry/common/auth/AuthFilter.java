@@ -49,8 +49,8 @@ public class AuthFilter implements ContainerRequestFilter {
 		whiteHostList.add("127.0.0.1");
 		whiteHostList.add("localhost");
 		whiteHostList.add("test.nhry-dev.com");
-		String[] xmls = new String[]{ "classpath:beans/spring-context.xml","classpath:beans/dataSource.xml","classpath:beans/*-bean.xml"  };
-        context = new ClassPathXmlApplicationContext(xmls);
+//		String[] xmls = new String[]{ "classpath:beans/spring-context.xml","classpath:beans/dataSource.xml","classpath:beans/*-bean.xml"  };
+//        context = new ClassPathXmlApplicationContext(xmls);
 	}
 	
 	@Context   
@@ -62,7 +62,7 @@ public class AuthFilter implements ContainerRequestFilter {
 		// TODO Auto-generated method stub
 		String uri = request.getAbsolutePath().getPath();
 		String host = request.getAbsolutePath().getHost();
-		userSessionService = (UserSessionService)context.getBean("userSessionService");
+//		userSessionService = (UserSessionService)context.getBean("userSessionService");
 		if("product".equals(SysContant.getSystemConst("app_mode"))){
 			if(isExsitUri(uri)){
 				return request;
