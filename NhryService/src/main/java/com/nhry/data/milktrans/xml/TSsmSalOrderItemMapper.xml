@@ -30,7 +30,9 @@
             <if test="matnr != null" >
                 MATNR,
             </if>
-
+            <if test="refMatnr != null" >
+                REF_MATNR,
+            </if>
             <if test="unit != null" >
                 UNIT,
             </if>
@@ -53,6 +55,9 @@
             </if>
             <if test="matnr != null" >
                 #{matnr,jdbcType=VARCHAR},
+            </if>
+            <if test="refMatnr != null" >
+                #{refMatnr,jdbcType=VARCHAR},
             </if>
             <if test="unit != null" >
                 #{unit,jdbcType=VARCHAR},

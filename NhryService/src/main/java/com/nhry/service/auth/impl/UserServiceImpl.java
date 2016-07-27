@@ -12,6 +12,7 @@ import com.nhry.data.config.dao.NHSysCodeItemMapper;
 import com.nhry.data.config.domain.NHSysCodeItem;
 import com.nhry.model.auth.UserQueryModel;
 import com.nhry.model.auth.UserQueryModel2;
+import com.nhry.model.sys.AccessKey;
 import com.nhry.service.BaseService;
 import com.nhry.service.auth.dao.ResourceService;
 import com.nhry.service.auth.dao.RoleService;
@@ -20,6 +21,7 @@ import com.nhry.utils.SysContant;
 import com.nhry.utils.date.Date;
 
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.data.redis.core.RedisTemplate;
 
 import java.util.List;
 import java.util.Map;
@@ -29,6 +31,7 @@ public class UserServiceImpl extends BaseService implements UserService {
 	private TSysRoleMapper roleMapper;
 	private ResourceService resService;
 	private NHSysCodeItemMapper codeItemMapper;
+	private RedisTemplate objectRedisTemplate;
 
 	@Override
 	public PageInfo findUser(UserQueryModel um){
@@ -133,5 +136,20 @@ public class UserServiceImpl extends BaseService implements UserService {
 
 	public void setCodeItemMapper(NHSysCodeItemMapper codeItemMapper) {
 		this.codeItemMapper = codeItemMapper;
+	}
+
+	@Override
+	public TSysUser findUserBytoken(String token) {
+		// TODO Auto-generated method stub
+		AccessKey ak = (AccessKey)objectRedisTemplate.opsForHash().get(SysContant.getSystemConst("app_access_key"), token);
+		if(ak == null){
+			throw new ServiceException(MessageCode.REQUEST_NOT_FOUND);
+		}
+		TSysUser user = (TSysUser)objectRedisTemplate.opsForHash().get(SysContant.getSystemConst("app_user_key"), ak.getUname());
+		return user;
+	}
+
+	public void setObjectRedisTemplate(RedisTemplate objectRedisTemplate) {
+		this.objectRedisTemplate = objectRedisTemplate;
 	}
 }

@@ -671,7 +671,7 @@
     </select>
     <select id="getloginNamesByOrgsandRid" resultMap="BaseResultMap" parameterType="java.util.HashMap">
         SELECT
-        u.LOGIN_NAME,
+       distinct u.LOGIN_NAME,
         u.BRANCH_NO,
         u.SALES_ORG,
         u.DEALER_ID,
@@ -699,7 +699,7 @@
     </select>
     <select id="getloginNamesByOrgsandRid2" resultMap="BaseResultMap" parameterType="java.util.HashMap">
         SELECT
-        u.LOGIN_NAME,
+        distinct u.LOGIN_NAME,
         u.BRANCH_NO,
         u.SALES_ORG,
         u.DEALER_ID,

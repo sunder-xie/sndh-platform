@@ -537,7 +537,7 @@
 		p.DEALER_NO
 		FROM
 		t_md_mara p
-		where 1=1
+		where p. STATUS='Y'
 				and p.SALES_ORG=#{salesOrg}
 				AND ( p.MATNR LIKE '%${matnr}%' OR p.MATNR_TXT like  '%${matnrTxt}%' )
 	</select>

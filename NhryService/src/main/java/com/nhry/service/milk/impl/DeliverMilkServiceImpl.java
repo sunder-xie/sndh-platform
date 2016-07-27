@@ -452,7 +452,7 @@ public class DeliverMilkServiceImpl extends BaseService implements DeliverMilkSe
 					//没有变化的路单更新日计划状态
 					//更新原订单剩余金额
 					TPlanOrderItem entry = tPlanOrderItemMapper.selectEntryByEntryNo(e.getOrgItemNo());
-					
+
 					if(e.getGiftFlag()==null)updatePreOrderCurAmt(entry.getOrderNo(),e.getConfirmAmt());
 					
 					//更新日计划为确认

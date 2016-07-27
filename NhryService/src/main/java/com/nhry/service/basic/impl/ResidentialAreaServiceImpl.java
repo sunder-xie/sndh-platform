@@ -61,8 +61,8 @@ public class ResidentialAreaServiceImpl implements ResidentialAreaService {
     @Override
     public int areaRelBranch(BranchScopeModel bModel) {
         TSysUser user = userSessionService.getCurrentUser();
-        TSysUserRole userRole =urMapper.getUserRoleByLoginName(user.getLoginName());
-        if("10004".equals(userRole.getId())){
+        List<String> rids = urMapper.getUserRidsByLoginName(user.getLoginName());
+        if(rids.contains("10004")){
             throw new ServiceException(MessageCode.LOGIC_ERROR,"奶站内勤 无权进行奶站配送区域分配！");
         }
 
@@ -110,11 +110,11 @@ public class ResidentialAreaServiceImpl implements ResidentialAreaService {
     @Override
     public List<TMdResidentialArea> searchAreaBySalesOrg(AreaSearchModel aModel) {
         TSysUser user = userSessionService.getCurrentUser();
-        TSysUserRole userRole = urMapper.getUserRoleByLoginName(user.getLoginName());
+        List<String> rids = urMapper.getUserRidsByLoginName(user.getLoginName());
         Map<String,String> map = new HashMap<String,String>();
         aModel.setSalesOrg(user.getSalesOrg());
         //奶站内勤，只看该奶站下的
-        if("10004".equals(userRole.getId())){
+        if(rids.contains("10004")){
             aModel.setBranchNo(user.getBranchNo());
         }
         if(!StringUtils.isEmpty(aModel.getContent())){

@@ -442,6 +442,7 @@ public class RequireOrderServiceImpl implements RequireOrderService {
         if(items!=null && items.size()>0){
             //生成 促销订单
             TSsmSalOrder order = createSaleOrder(user,requiredDate,"branch","");
+
             for(int i=0 ;i<items.size();i++){
                 TOrderDaliyPlanItem item = items.get(i);
                 //生成 促销订单行项目
@@ -455,6 +456,7 @@ public class RequireOrderServiceImpl implements RequireOrderService {
             if(message.isSuccess()){
                 this.uptVouCherNoByOrderNo(order.getOrderNo(),message.getData());
             }
+
         }
         return 1;
     }
@@ -594,11 +596,13 @@ public class RequireOrderServiceImpl implements RequireOrderService {
         TSsmSalOrderItems salOrderItems = new TSsmSalOrderItems();
         salOrderItems.setOrderNo(orderNo);
         salOrderItems.setOrderDate(requiredDate);
-        salOrderItems.setMatnr(item.getMatnr());
         salOrderItems.setQty(item.getQty());
         if("dealer".equals(type)){
+            salOrderItems.setMatnr(item.getMatnr());
             salOrderItems.setType("10");
         }else{
+            salOrderItems.setMatnr(item.getConfirmMatnr());
+            salOrderItems.setRefMatnr(item.getMatnr());
             salOrderItems.setType("20");
         }
 

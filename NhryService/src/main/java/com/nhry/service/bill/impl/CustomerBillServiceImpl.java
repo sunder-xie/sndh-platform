@@ -47,11 +47,11 @@ public class CustomerBillServiceImpl implements CustomerBillService {
     @Override
     public PageInfo searchCustomerOrder(CustBillQueryModel cModel) {
         TSysUser user = userSessionService.getCurrentUser();
-        TSysUserRole userRole =urMapper.getUserRoleByLoginName(user.getLoginName());
+        List<String> rids = urMapper.getUserRidsByLoginName(user.getLoginName());
         cModel.setSalesOrg(user.getSalesOrg());
-        if("10004".equals(userRole.getId())){
+        if(rids.contains("10004")){
             cModel.setBranchNo(user.getBranchNo());
-        }else if("10005".equals(userRole.getId())){
+        }else if(rids.contains("10005")){
             cModel.setDealerNo(user.getDealerId());
         }
         // TODO Auto-generated method stub

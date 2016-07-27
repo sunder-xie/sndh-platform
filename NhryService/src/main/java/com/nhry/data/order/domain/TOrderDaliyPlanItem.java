@@ -14,6 +14,7 @@ public class TOrderDaliyPlanItem extends TOrderDaliyPlanItemKey {
 
     private String matnr;
 
+    private String confirmMatnr;
     private String matnrTxt;
 
     private String unit;
@@ -43,7 +44,15 @@ public class TOrderDaliyPlanItem extends TOrderDaliyPlanItemKey {
     private Integer giftQty;
     
     private String promotionFlag;
-    
+
+    public String getConfirmMatnr() {
+        return confirmMatnr;
+    }
+
+    public void setConfirmMatnr(String confirmMatnr) {
+        this.confirmMatnr = confirmMatnr;
+    }
+
     public Integer getGiftQty()
 	{
 		return giftQty;

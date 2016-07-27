@@ -18,6 +18,17 @@ public interface TSysUserRoleMapper {
     
     public List<TSysUserRole> findUserRoleByRid(String rid);
 
-
-    TSysUserRole getUserRoleByLoginName(String loginName);
+    /**
+     * 获取用户角色关系信息列表
+     * @param loginName
+     * @return
+     */
+    List<TSysUserRole> getUserRoleByLoginName(String loginName);
+    
+    /**
+     * 根据用户名获取角色id列表
+     * @param loginName
+     * @return
+     */
+    public List<String> getUserRidsByLoginName(String loginName);
 }
