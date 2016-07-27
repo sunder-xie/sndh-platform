@@ -66,7 +66,6 @@ public class IdmAuthServlet extends HttpServlet {
 					String token = access_token.split("=")[1].split("&")[0];
 					attrs.put("access_token", token);
 					String userObject = HttpUtils.request(EnvContant.getSystemConst("auth_profile"), attrs);
-					//{"id":"ex_crmsongnaiyuan","attributes":[{"uid":"ex_crmsongnaiyuan"}]}
 					System.out.println("------userObject------"+userObject);
 					JSONObject userJson = new JSONObject(userObject);
 					if(userJson.has("id") && !StringUtils.isEmpty(userJson.getString("id"))){
@@ -74,8 +73,6 @@ public class IdmAuthServlet extends HttpServlet {
 						TSysUser user = new TSysUser();
 						user.setLoginName(userJson.getString("id"));
 						TSysUser loginuser = userService.login(user);
-						CookieUtil.setCookie(request, response, UserSessionService.accessKey, access_token);
-						CookieUtil.setCookie(request, response, UserSessionService.uname, loginuser.getLoginName());
 						userSessionService.cacheUserSession(user.getLoginName(), access_token, loginuser,request);
 						sendRedirectToHomePage(request, response, token);
 					}else{

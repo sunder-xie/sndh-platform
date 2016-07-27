@@ -5,16 +5,22 @@ import com.nhry.common.jedis.entity.ObjectRedisTemplate;
 import com.nhry.data.auth.domain.TSysUser;
 import com.nhry.model.sys.AccessKey;
 import com.nhry.utils.Base64Util;
+import com.nhry.utils.EnvContant;
+import com.nhry.utils.HttpUtils;
 import com.nhry.utils.SysContant;
 import com.nhry.utils.date.Date;
 import com.nhry.utils.redis.RedisUtil;
 import com.sun.jersey.spi.container.ContainerRequest;
 
+import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;
+import org.codehaus.jettison.json.JSONObject;
 import org.springframework.data.redis.core.RedisTemplate;
 
 import javax.servlet.http.HttpServletRequest;
 
+import java.io.IOException;
+import java.util.HashMap;
 import java.util.Map;
 
 public class UserSessionService {
@@ -25,14 +31,26 @@ public class UserSessionService {
 	private RedisTemplate objectRedisTemplate;
 	
 	public String checkIdentity(String accessKey,String uname,ContainerRequest request,HttpServletRequest servletRequest){
-		AccessKey ak = (AccessKey) objectRedisTemplate.opsForHash().get(SysContant.getSystemConst("app_access_key"), accessKey);
-		if(ak == null){
-			 //access不存在
-			LOGGER.warn("当前访问的aceesskey不存在!");
-			 return null;
+//		AccessKey ak = (AccessKey) objectRedisTemplate.opsForHash().get(SysContant.getSystemConst("app_access_key"), accessKey);
+//		if(ak == null){
+//			 //access不存在
+//			LOGGER.warn("当前访问的aceesskey不存在!");
+//			 return null;
+//		}
+		try {
+			Map attrs = new HashMap(2);
+			attrs.put("access_token", accessKey);
+			String userObject = HttpUtils.request(EnvContant.getSystemConst("auth_profile"), attrs);
+			System.out.println("------userObject------"+userObject);
+			JSONObject userJson = new JSONObject(userObject);
+			if(userJson.has("id") && !StringUtils.isEmpty(userJson.getString("id"))){
+				TSysUser user = (TSysUser)objectRedisTemplate.opsForHash().get(SysContant.getSystemConst("app_user_key"), userJson.getString("id"));
+				accessKeyThread.set(user);
+			}
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}
-		TSysUser user = (TSysUser)objectRedisTemplate.opsForHash().get(SysContant.getSystemConst("app_user_key"), ak.getUname());
-		accessKeyThread.set(user);
 		return MessageCode.NORMAL;
 	}
 	
@@ -50,14 +68,14 @@ public class UserSessionService {
 		objectRedisTemplate.opsForHash().put(SysContant.getSystemConst("app_user_key"), user.getLoginName(), user);
 		
 		//缓存AccessKey对象
-		AccessKey ak = new AccessKey();
-		ak.setAccessIp(request.getRemoteHost());
-		ak.setVisitFirstTime(new Date());
-		ak.setUname(uName);
-		ak.setAck(accessKey);
-		ak.setVisitCount(1);
-		ak.setVisitEndTime(new Date());
-		objectRedisTemplate.opsForHash().put(SysContant.getSystemConst("app_access_key"), accessKey, ak);
+//		AccessKey ak = new AccessKey();
+//		ak.setAccessIp(request.getRemoteHost());
+//		ak.setVisitFirstTime(new Date());
+//		ak.setUname(uName);
+//		ak.setAck(accessKey);
+//		ak.setVisitCount(1);
+//		ak.setVisitEndTime(new Date());
+//		objectRedisTemplate.opsForHash().put(SysContant.getSystemConst("app_access_key"), accessKey, ak);
 	}
 	
 	/**
