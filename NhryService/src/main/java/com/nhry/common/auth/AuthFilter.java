@@ -36,8 +36,8 @@ public class AuthFilter implements ContainerRequestFilter {
 	protected HttpServletRequest request;
 	@Context
 	protected HttpServletResponse response;
-	private UserSessionService userSessionService;
-	static ApplicationContext context = null;
+//	private UserSessionService userSessionService;
+//	static ApplicationContext context = null;
 	
 	static{
 		whiteUriList = new ArrayList<String>();
@@ -77,10 +77,11 @@ public class AuthFilter implements ContainerRequestFilter {
 					Response response = formatData(MessageCode.SESSION_EXPIRE, SysContant.getSystemConst(MessageCode.SESSION_EXPIRE), EnvContant.getIdmLoginPage(), Status.UNAUTHORIZED);
 		            throw new WebApplicationException(response); 
 				}
-			}else	if(!MessageCode.NORMAL.equals(userSessionService.checkIdentity(ak,request,servletRequest))){
-				Response response = formatData(MessageCode.SESSION_EXPIRE, SysContant.getSystemConst(MessageCode.SESSION_EXPIRE), EnvContant.getIdmLoginPage(), Status.UNAUTHORIZED);
-	            throw new WebApplicationException(response); 
 			}
+//			else	if(!MessageCode.NORMAL.equals(userSessionService.checkIdentity(ak,request,servletRequest))){
+//				Response response = formatData(MessageCode.SESSION_EXPIRE, SysContant.getSystemConst(MessageCode.SESSION_EXPIRE), EnvContant.getIdmLoginPage(), Status.UNAUTHORIZED);
+//	            throw new WebApplicationException(response); 
+//			}
 		}
 		return request;
 	}
