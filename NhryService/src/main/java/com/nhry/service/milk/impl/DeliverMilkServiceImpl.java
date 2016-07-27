@@ -130,7 +130,11 @@ public class DeliverMilkServiceImpl extends BaseService implements DeliverMilkSe
 			if(entries!=null && entries.size()>0){
 				for(TDispOrderItem entry : entries){
 					//更新库存
-					tSsmStockService.updateStock(order.getBranchNo(),entry.getConfirmMatnr(),entry.getConfirmQty(),user.getSalesOrg());
+					if(!"10".equals(entry.getReason()) && !"20".equals(entry.getReason()) && !"30".equals(entry.getReason())) {
+						tSsmStockService.updateStock(order.getBranchNo(), entry.getConfirmMatnr(), entry.getQty(), user.getSalesOrg());
+					}else{
+						tSsmStockService.updateStock(order.getBranchNo(), entry.getConfirmMatnr(), entry.getConfirmQty(), user.getSalesOrg());
+					}
 					if(!"10".equals(entry.getReason()) && !"20".equals(entry.getReason()) && !"30".equals(entry.getReason())){
 						if(insOrderNo==null){
 							insOrderNo = SerialUtil.creatSeria();
