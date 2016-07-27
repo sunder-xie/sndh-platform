@@ -14,7 +14,7 @@ import com.nhry.data.milktrans.domain.TRecBotDetail;
 import com.nhry.model.milktrans.ReturnboxSerarch;
 import com.nhry.model.milktrans.UpdateReturnBoxModel;
 import com.nhry.service.milktrans.dao.ReturnBoxService;
-import com.nhry.utils.SerialUtil;
+import com.nhry.utils.PrimaryKeyUtils;
 
 import java.util.Date;
 import java.util.HashMap;
@@ -96,7 +96,7 @@ public class ReturnBoxServiceImpl implements ReturnBoxService {
                     bot.setCreateBy(user.getLoginName());
                     bot.setCreateByTxt(user.getDisplayName());
                     bot.setStatus("10");
-                    bot.setDetLsh(SerialUtil.creatSeria());
+                    bot.setDetLsh(PrimaryKeyUtils.generateUuidKey());
                     tRecBotDetailMapper.addRecBotItem(bot);
                 }
             }

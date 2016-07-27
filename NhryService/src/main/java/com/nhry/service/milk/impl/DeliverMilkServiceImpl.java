@@ -121,7 +121,7 @@ public class DeliverMilkServiceImpl extends BaseService implements DeliverMilkSe
 	public int createInsideSalOrder(String dispOrderNo) {
 			TSysUser user = userSessionService.getCurrentUser();
 			TMstInsideSalOrder sOrder = tMstInsideSalOrderMapper.getInSalOrderByDispOrderNo(dispOrderNo);
-
+			TDispOrder order = tDispOrderMapper.getDispOrderByNo(dispOrderNo);
 			List<TDispOrderItem> entries = tDispOrderItemMapper.selectItemsByOrderNo(dispOrderNo);
 			if(sOrder!=null){
 				tMstInsideSalOrderItemMapper.delInSalOrderItemByOrderNo(sOrder.getInsOrderNo());
@@ -130,7 +130,7 @@ public class DeliverMilkServiceImpl extends BaseService implements DeliverMilkSe
 			if(entries!=null && entries.size()>0){
 				for(TDispOrderItem entry : entries){
 					//更新库存
-					tSsmStockService.updateStock(sOrder.getBranchNo(),entry.getConfirmMatnr(),entry.getConfirmQty(),user.getSalesOrg());
+					tSsmStockService.updateStock(order.getBranchNo(),entry.getConfirmMatnr(),entry.getConfirmQty(),user.getSalesOrg());
 					if(!"10".equals(entry.getReason()) && !"20".equals(entry.getReason()) && !"30".equals(entry.getReason())){
 						if(insOrderNo==null){
 							insOrderNo = SerialUtil.creatSeria();
@@ -148,7 +148,7 @@ public class DeliverMilkServiceImpl extends BaseService implements DeliverMilkSe
 					}
 				}
 				if(insOrderNo!=null){
-					TDispOrder order = tDispOrderMapper.getDispOrderByNo(dispOrderNo);
+
 					sOrder = new TMstInsideSalOrder();
 					sOrder.setInsOrderNo(insOrderNo);
 					sOrder.setOrderDate(order.getOrderDate());
