@@ -26,7 +26,6 @@ import com.nhry.utils.SysContant;
 import com.sun.jersey.spi.container.ContainerRequest;
 import com.sun.jersey.spi.container.ContainerRequestFilter;
 
-@Component
 public class AuthFilter implements ContainerRequestFilter {
 	private static final Logger LOGGER = Logger.getLogger(AuthFilter.class);
 	private static  List<String> whiteUriList =null;
