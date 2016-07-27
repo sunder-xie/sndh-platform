@@ -689,7 +689,7 @@ UNION ALL
       LEFT JOIN t_md_mara a on i.MATNR = a.MATNR and a.SALES_ORG = #{salesOrg}
       where 1=1
       and i.STATUS !='30'
-      a.SALES_ORG = #{salesOrg}
+      and a.SALES_ORG = #{salesOrg}
       and i.ORDER_NO = #{orderNo}
       and i.GIFT_QTY IS NULL
       GROUP BY i.MATNR
