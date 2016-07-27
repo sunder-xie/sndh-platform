@@ -45,6 +45,7 @@
 	</bean>
 
 	<bean id="returnBoxService" class="com.nhry.service.milktrans.impl.ReturnBoxServiceImpl">
+		<property name="urMapper"  ref="urMapper"></property>
 		<property name="tRecBotDetailMapper"  ref="tRecBotDetailMapper"></property>
 		<property name="userSessionService" ref="userSessionService"></property>
 		<property name="tDispOrderMapper"  ref="tDispOrderMapper"></property>
