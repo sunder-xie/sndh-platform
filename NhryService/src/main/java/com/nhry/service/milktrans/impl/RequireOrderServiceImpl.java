@@ -20,7 +20,6 @@ import com.nhry.service.milktrans.dao.RequireOrderService;
 import com.nhry.service.pi.dao.PIRequireOrderService;
 import com.nhry.utils.DateUtil;
 import com.nhry.utils.PrimaryKeyUtils;
-import com.nhry.utils.SerialUtil;
 import com.nhry.webService.client.PISuccessMessage;
 import org.apache.commons.lang3.StringUtils;
 
@@ -454,10 +453,7 @@ public class RequireOrderServiceImpl implements RequireOrderService {
                 createSaleOrderItem(item,i+1,order.getOrderNo(),requiredDate,"branch");
             }
             //调用 接口
-            // piRequireOrderService.generateRequireOrder();
-            PISuccessMessage message =new PISuccessMessage();
-            message.setData(SerialUtil.creatSeria());
-            message.setSuccess(true);
+            PISuccessMessage  message  = piRequireOrderService.generateSalesOrder(order,order.getDealerNo(),order.getBranchNo(),order.getSalesOrg(),"");
             if(message.isSuccess()){
                 this.uptVouCherNoByOrderNo(order.getOrderNo(),message.getData());
             }
@@ -494,10 +490,7 @@ public class RequireOrderServiceImpl implements RequireOrderService {
                     }
                 }
                 //调用 接口
-                // piRequireOrderService.generateRequireOrder();
-                PISuccessMessage message =new PISuccessMessage();
-                message.setData(SerialUtil.creatSeria());
-                message.setSuccess(true);
+                PISuccessMessage  message  = piRequireOrderService.generateSalesOrder(order,order.getDealerNo(),order.getBranchNo(),order.getSalesOrg(),"");
                 if(message.isSuccess()){
                     this.uptVouCherNoByOrderNo(order.getOrderNo(),message.getData());
                 }
