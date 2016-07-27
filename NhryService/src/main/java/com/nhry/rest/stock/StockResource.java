@@ -4,12 +4,11 @@ import com.nhry.common.auth.UserSessionService;
 import com.nhry.common.exception.MessageCode;
 import com.nhry.data.auth.domain.TSysUser;
 import com.nhry.data.stock.domain.TSsmGiOrderItem;
-import com.nhry.model.basic.MessageModel;
+import com.nhry.data.stock.domain.TSsmGiOrderItemKey;
 import com.nhry.model.stock.GiOrderModel;
 import com.nhry.model.stock.StockModel;
 import com.nhry.model.sys.ResponseModel;
 import com.nhry.rest.BaseResource;
-import com.nhry.service.pi.dao.PIProductService;
 import com.nhry.service.pi.dao.PIRequireOrderService;
 import com.nhry.service.stock.dao.TSsmGiOrderItemService;
 import com.nhry.service.stock.dao.TSsmGiOrderService;
@@ -28,8 +27,6 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
 import java.rmi.RemoteException;
-
-import static org.springframework.http.MediaType.*;
 
 /**
  * Created by cbz on 7/20/2016.
@@ -106,7 +103,11 @@ public class StockResource extends BaseResource {
     @Consumes(MediaType.APPLICATION_JSON)
     @ApiOperation(value = "/findGiOrderItem/{orderNo}", response = ResponseModel.class, notes = "奶站交货单明细列表")
     public Response findStock(@ApiParam(name = "orderNo",value = "orderNo")@PathParam("orderNo") String orderNo){
-        return convertToRespModel(MessageCode.NORMAL,null,giOrderItemService.findGiOrderItem(orderNo));
+        TSysUser user = userSessionService.getCurrentUser();
+        TSsmGiOrderItemKey key = new TSsmGiOrderItemKey();
+        key.setOrderNo(orderNo);
+        key.setSalesOrg(user.getSalesOrg());
+        return convertToRespModel(MessageCode.NORMAL,null,giOrderItemService.findGiOrderItem(key));
     }
     @POST
     @Path("/updateGiOrderItems")
@@ -114,6 +115,8 @@ public class StockResource extends BaseResource {
     @Consumes(MediaType.APPLICATION_JSON)
     @ApiOperation(value = "/updateGiOrderItems}", response = ResponseModel.class, notes = "更新奶站交货单明细列表")
     public Response updateGiOrderItems(@ApiParam(name = "GiOrderItmes",value = "GiOrderItmes")List<TSsmGiOrderItem> giOrderItems){
-        return convertToRespModel(MessageCode.NORMAL,null,giOrderItemService.updateGiOrderItems(giOrderItems));
+        TSysUser user = userSessionService.getCurrentUser();
+        String salesOrg = user.getSalesOrg();
+        return convertToRespModel(MessageCode.NORMAL,null,giOrderItemService.updateGiOrderItems(giOrderItems, salesOrg));
     }
 }

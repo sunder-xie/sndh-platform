@@ -49,7 +49,7 @@ public class TSsmGiOrderItemMapperImpl implements TSsmGiOrderItemMapper{
     }
 
     @Override
-    public List<TSsmGiOrderItem> findGiOrderItem(String orderNo) {
-        return sqlSessionTemplate.selectList("findGiOrderItem",orderNo);
+    public List<TSsmGiOrderItem> findGiOrderItem(TSsmGiOrderItemKey key) {
+        return sqlSessionTemplate.selectList("findGiOrderItem",key);
     }
 }

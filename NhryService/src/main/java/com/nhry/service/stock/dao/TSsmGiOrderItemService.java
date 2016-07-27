@@ -20,7 +20,7 @@ public interface TSsmGiOrderItemService {
 
     int updateGiOrderItem(TSsmGiOrderItem record);
 
-    List<TSsmGiOrderItem> findGiOrderItem(String orderNo);
+    List<TSsmGiOrderItem> findGiOrderItem(TSsmGiOrderItemKey key);
 
-    int updateGiOrderItems(List<TSsmGiOrderItem> giOrderItems);
+    int updateGiOrderItems(List<TSsmGiOrderItem> giOrderItems, String salesOrg);
 }

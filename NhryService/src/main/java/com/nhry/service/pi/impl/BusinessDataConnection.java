@@ -26,7 +26,7 @@ public class BusinessDataConnection {
     private static String SIGN = PIPropertitesUtil.getValue("PI.MasterData.mATQUERY.SIGN");
     private static String EQ = PIPropertitesUtil.getValue("PI.MasterData.mATQUERY.OPTION.EQ");
     private static String I_DELIVERY_D = "D";
-    private static SimpleDateFormat formatter = new SimpleDateFormat("yyyymmdd");
+    private static SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
 
     public static ZT_BusinessData_MaintainServiceStub getConn() throws AxisFault {
         ZT_BusinessData_MaintainServiceStub stub = new ZT_BusinessData_MaintainServiceStub(URL);
@@ -276,7 +276,7 @@ public class BusinessDataConnection {
         ET_DATA_type0 et_data_type0 = response.getET_DATA();
         ZSSD00069[] zssd00069s = et_data_type0.getItem();
         List<Delivery> deliveries = new ArrayList<Delivery>();
-        if (zssd00069s.length > 0) {
+        if (zssd00069s!= null && zssd00069s.length > 0) {
             for (ZSSD00069 zssd00069 : zssd00069s) {
                 Delivery delivery = new Delivery();
                 delivery.setKUNNR(zssd00069.getKUNNR().getKUNNR_type2());
