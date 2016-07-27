@@ -418,7 +418,6 @@ public class RequireOrderServiceImpl implements RequireOrderService {
                 //生成 促销订单行项目
                 createSaleOrderItem(item,i+1,order.getOrderNo(),requiredDate,"dealer");
             }
-
             //调用 接口
             PISuccessMessage  message  = piRequireOrderService.generateSalesOrder(order,order.getDealerNo(),order.getBranchNo(),order.getSalesOrg(),"");
             if(message.isSuccess()){
@@ -573,12 +572,11 @@ public class RequireOrderServiceImpl implements RequireOrderService {
             throw new ServiceException(MessageCode.LOGIC_ERROR,"该用户不存在奶站");
         }
         TMdBranch branch = branchMapper.selectBranchByNo(branchNo);
-        if(branch.getDealerNo()!=null){
-            sModel.setDealerNo(user.getDealerId());
-        }else{
+        if("01".equals(branch.getBranchGroup())){
             sModel.setBranchNo(branchNo);
+        }else{
+            sModel.setDealerNo(user.getDealerId());
         }
-
         return tSsmSalOrderMapper.selectSalOrderByDateAndBranchOrDealerNo(sModel);
     }
 
@@ -627,15 +625,18 @@ public class RequireOrderServiceImpl implements RequireOrderService {
      */
     private TSsmSalOrder  createSaleOrder(TSysUser user, Date requiredDate, String type, String promotion) {
         TSsmSalOrder order = new TSsmSalOrder();
-        order.setDealerNo(user.getDealerId());
+
         String orderNo = PrimaryKeyUtils.generateUuidKey();
         order.setOrderNo(orderNo);
         order.setSalesOrg(user.getSalesOrg());
         order.setRequiredDate(requiredDate);
         order.setBranchNo(user.getBranchNo());
         if("dealer".equals(type)){
+            TMdBranch branch = branchMapper.selectBranchByNo(user.getBranchNo());
+            order.setDealerNo(branch.getDealerNo());
             order.setBranchGroup("10");
         }else{
+            order.setDealerNo(user.getBranchNo());
             order.setBranchGroup("20");
         }
         order.setOrderDate(requiredDate);
