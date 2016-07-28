@@ -1327,6 +1327,7 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 							modiFlag = true;
 							orgEntry.setMatnr(curEntry.getMatnr());
 							orgEntry.setSalesPrice(curEntry.getSalesPrice());
+							orgEntry.setUnit(curEntry.getUnit());
 						}
 						if(orgEntry.getQty() != curEntry.getQty()){//改数量
 							modiFlag = true;
@@ -1422,6 +1423,7 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 							modiFlag = true;
 							orgEntry.setMatnr(curEntry.getMatnr());
 							orgEntry.setSalesPrice(curEntry.getSalesPrice());
+							orgEntry.setUnit(curEntry.getUnit());
 						}
 						if(orgEntry.getQty() != curEntry.getQty()){//改数量
 							modiFlag = true;
