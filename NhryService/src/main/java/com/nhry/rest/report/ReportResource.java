@@ -5,12 +5,16 @@ import com.nhry.common.exception.MessageCode;
 import com.nhry.data.auth.domain.TSysUser;
 import com.nhry.data.basic.domain.TMdAddress;
 import com.nhry.data.basic.domain.TMdBranch;
+import com.nhry.data.milk.domain.TDispOrder;
+import com.nhry.data.milk.domain.TDispOrderItem;
 import com.nhry.data.order.domain.TPreOrder;
+import com.nhry.model.milk.RouteOrderModel;
 import com.nhry.model.order.CollectOrderModel;
 import com.nhry.model.order.OrderCreateModel;
 import com.nhry.model.order.ProductItem;
 import com.nhry.rest.BaseResource;
 import com.nhry.service.basic.dao.BranchService;
+import com.nhry.service.milk.dao.DeliverMilkService;
 import com.nhry.service.order.dao.OrderService;
 import com.nhry.utils.CodeGeneratorUtil;
 import com.sun.jersey.spi.resource.Singleton;
@@ -61,6 +65,8 @@ public class ReportResource extends BaseResource{
     private UserSessionService userSessionService;
     @Autowired
     private BranchService branchService;
+    @Autowired
+    private DeliverMilkService deliverMilkService;
     @GET
     @Path("/reportCollect")
     @Produces(MediaType.APPLICATION_JSON)
@@ -162,6 +168,74 @@ public class ReportResource extends BaseResource{
 //                    .header("ragma", "No-cache").header("Cache-Control", "no-cache").build();
             outUrl = "/report/export/" + fname + "CollectOrder.xlsx";
         } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return convertToRespModel(MessageCode.NORMAL,null,outUrl);
+    }
+    @GET
+    @Path("/reportDeliver")
+    @Produces(MediaType.APPLICATION_JSON)
+    @ApiOperation(value = "/reportDeliver", response = OrderCreateModel.class, notes = "根据路单编号导出路单信息")
+    public Response reportDeliver(@ApiParam(required = true, name = "orderCode", value = "订单编号") @QueryParam("orderCode") String orderCode, @Context HttpServletRequest request, @Context HttpServletResponse response) {
+        List<TDispOrderItem> details = deliverMilkService.searchRouteOrderDetailAll(orderCode);
+        RouteOrderModel model = deliverMilkService.searchRouteDetails(orderCode);
+        String outUrl = "";
+        String url = request.getServletContext().getRealPath("/");
+        try{
+            File file = new File(url +  File.separator + "report"+ File.separator + "template" + File.separator + "DeliverMilkTemplate.xlsx");    //审批单
+            FileInputStream input = new FileInputStream(file);
+            XSSFWorkbook workbook = new XSSFWorkbook(new BufferedInputStream(input));
+            XSSFSheet sheet = workbook.getSheetAt(0);
+            XSSFRow row = sheet.getRow(2);
+            XSSFCell cell = row.getCell(1);
+            TDispOrder order = model.getOrder();
+
+            cell.setCellValue("配送奶站：" + order.getBranchName());
+            cell = row.getCell(7);
+            cell.setCellValue("");
+            cell = row.getCell(9);
+            cell.setCellValue("送奶员："+order.getDispEmpName());
+            row = sheet.getRow(4);
+            cell = row.getCell(7);
+            cell.setCellValue(format.format(order.getOrderDate()));
+            row = sheet.getRow(5);
+            cell = row.getCell(7);
+            cell.setCellValue(order.getReachTimeType()=="10"?"上午配送":"下午配送");
+            row = sheet.getRow(6);
+            cell = row.getCell(7);
+            cell.setCellValue(model.getProducts());
+            int r = 10;
+            if(details!=null){
+                for(TDispOrderItem item : details){
+                    row = sheet.getRow(r);
+                    cell = row.getCell(1);
+                    cell.setCellValue(item.getAddressTxt());
+                    cell = row.getCell(5);
+                    cell.setCellValue(item.getMatnrTxt().concat(item.getConfirmQty().toString()));
+                    cell = row.getCell(6);
+                    cell.setCellValue(item.getCustTel());
+                    cell = row.getCell(7);
+                    cell.setCellValue(item.getCustName());
+                }
+            }
+            String fname = CodeGeneratorUtil.getCode();
+            String rq = format1.format(new Date(new Date().getTime() - 24 * 60 * 60 * 1000));
+            String filePath = url +  File.separator + "report"+ File.separator + "export";
+            File delFiles = new File(filePath);
+            if(delFiles.isDirectory()){
+                for(File del : delFiles.listFiles()){
+                    if(del.getName().contains(rq)){
+                        del.delete();
+                    }
+                }
+            }
+            File export = new File(url +  File.separator + "report"+ File.separator + "export" + File.separator + fname + "DeliverMilk.xlsx");
+            FileOutputStream stream = new FileOutputStream(export);
+            workbook.write(stream);
+            stream.flush();
+            stream.close();
+            outUrl = "/report/export/" + fname + "DeliverMilk.xlsx";
+        }catch (Exception e){
             e.printStackTrace();
         }
         return convertToRespModel(MessageCode.NORMAL,null,outUrl);
