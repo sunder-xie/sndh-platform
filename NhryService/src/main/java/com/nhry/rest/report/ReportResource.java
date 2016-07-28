@@ -72,9 +72,10 @@ public class ReportResource extends BaseResource{
         logger.info("realPath："+url);
         TMdAddress address = collect.getAddress();
         TPreOrder order = collect.getOrder();
+
         TMdBranch branch = branchService.selectBranchByNo(order.getBranchNo());
         List<ProductItem> productItems =collect.getEntries();
-        String outUrl = request.getScheme()+"://"+request.getServerName()+":"+request.getServerPort()+request.getContextPath();
+        String outUrl = "";//request.getScheme()+"://"+request.getServerName()+":"+request.getServerPort()+request.getContextPath();
         try {
             File file = new File(url +  File.separator + "report"+ File.separator + "template" + File.separator + "CollectOrderTemplate.xlsx");    //审批单
             FileInputStream input = new FileInputStream(file);
@@ -159,7 +160,7 @@ public class ReportResource extends BaseResource{
 //                    .ok(targetFilePath, mt)
 //                    .header("Content-disposition","attachment;filename=" + targetFilePath.getName())
 //                    .header("ragma", "No-cache").header("Cache-Control", "no-cache").build();
-            outUrl = outUrl + "/report/export/" + fname + "CollectOrder.xlsx";
+            outUrl = "/report/export/" + fname + "CollectOrder.xlsx";
         } catch (IOException e) {
             e.printStackTrace();
         }
