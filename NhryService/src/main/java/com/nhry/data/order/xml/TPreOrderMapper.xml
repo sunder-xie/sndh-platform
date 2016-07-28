@@ -649,6 +649,35 @@
     WHERE 1 = 1
     and  o.ORDER_NO = #{orderNo,jdbcType=VARCHAR}
   </select>
+  <select id="selectRequiredOrderNum" resultType="INTEGER" parameterType="com.nhry.model.order.OrderSearchModel">
+    select count(*) from t_preorder
+    where PREORDER_STAT = '20'
+    <if test="branchNo != null and branchNo != ''">
+     		AND BRANCH_NO = #{branchNo,jdbcType=VARCHAR}
+    </if>
+    <if test="salesOrg != null and salesOrg != ''">
+     		AND SALES_ORG = #{salesOrg,jdbcType=VARCHAR}
+    </if>
+    <if test="dealerNo != null and dealerNo != ''">
+     		AND DEALER_NO = #{dealerNo,jdbcType=VARCHAR}
+    </if>
+  </select>
+  <select id="selectStopOrderNum" resultType="INTEGER" parameterType="com.nhry.model.order.OrderSearchModel">
+    select count(*) from t_preorder
+    where SIGN = '10'
+    <if test="branchNo != null and branchNo != ''">
+     		AND BRANCH_NO = #{branchNo,jdbcType=VARCHAR}
+    </if>
+    <if test="salesOrg != null and salesOrg != ''">
+     		AND SALES_ORG = #{salesOrg,jdbcType=VARCHAR}
+    </if>
+    <if test="dealerNo != null and dealerNo != ''">
+     		AND DEALER_NO = #{dealerNo,jdbcType=VARCHAR}
+    </if>
+    		AND END_DATE &lt;= #{orderDate,jdbcType=DATE}
+    		AND RESUME_FLAG is null
+    		AND PREORDER_STAT = '10'
+  </select>
   <update id="uptManHandOrder" parameterType="com.nhry.model.order.UpdateManHandOrderModel" >
     update t_preorder
     <set >

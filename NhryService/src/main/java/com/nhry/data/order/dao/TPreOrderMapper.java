@@ -58,5 +58,7 @@ public interface TPreOrderMapper {
     
     int updateOrderSolicitor(TPreOrder order);
     
-
+    int selectRequiredOrderNum(OrderSearchModel smodel);
+    
+    int selectStopOrderNum(OrderSearchModel smodel);
 }
