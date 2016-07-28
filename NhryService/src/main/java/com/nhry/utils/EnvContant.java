@@ -55,11 +55,18 @@ public class EnvContant {
 		return null;
 	}
 
-	public static String getIdmLoginPage() {
-		return getSystemConst("authurl") + "?client_id="
-				+ getSystemConst("client_id") + "&redirect_uri="
-				+ getSystemConst("redirect_uri") + "&response_type="
-				+ getSystemConst("response_type");
+	public static String getIdmLoginPage(String remoteIp) {
+		if(org.apache.commons.lang3.StringUtils.isEmpty(remoteIp)){
+			return getSystemConst("authurl") + "?client_id="
+					+ getSystemConst("client_id") + "&redirect_uri="
+					+ getSystemConst("redirect_uri") + "&response_type="
+					+ getSystemConst("response_type");
+		}else{
+			return getSystemConst("authurl") + "?client_id="
+					+ getSystemConst("client_id") + "&redirect_uri="
+					+ getSystemConst("redirect_uri") + "&response_type="
+					+ getSystemConst("response_type")+"&id="+Base64Util.encodeStr(remoteIp);
+		}
 	}
 
 	public static void main(String[] args) {

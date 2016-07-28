@@ -60,22 +60,24 @@ public class AuthFilter implements ContainerRequestFilter {
 	public ContainerRequest filter(ContainerRequest request) {
 		// TODO Auto-generated method stub
 		String uri = request.getAbsolutePath().getPath();
-		String host = request.getAbsolutePath().getHost();
+		String host = servletRequest.getRemoteHost();
+		System.out.println("----host-------"+host);
 		if("product".equals(SysContant.getSystemConst("app_mode"))){
 			if(isExsitUri(uri)){
 				return request;
 			}
-//			String ak = CookieUtil.getCookieValue(servletRequest, UserSessionService.accessKey);
 			String ak =request.getHeaderValue("dh-token");
-//			String userName = CookieUtil.getCookieValue(servletRequest, UserSessionService.uname);
+			String flag =request.getHeaderValue("nh-flag");
 			//未登录
 			if(StringUtils.isEmpty(ak)){
 				if(!whiteUriList.contains(uri)){
-					Response response = formatData(MessageCode.SESSION_EXPIRE, SysContant.getSystemConst(MessageCode.SESSION_EXPIRE), EnvContant.getIdmLoginPage(), Status.UNAUTHORIZED);
+					Response response = formatData(MessageCode.SESSION_EXPIRE, SysContant.getSystemConst(MessageCode.SESSION_EXPIRE), 
+							StringUtils.isEmpty(flag) ? EnvContant.getIdmLoginPage(null) : EnvContant.getIdmLoginPage(host), Status.UNAUTHORIZED);
 		            throw new WebApplicationException(response); 
 				}
 			}else	if(!MessageCode.NORMAL.equals(userSessionService.checkIdentity(ak,request,servletRequest))){
-				Response response = formatData(MessageCode.SESSION_EXPIRE, SysContant.getSystemConst(MessageCode.SESSION_EXPIRE), EnvContant.getIdmLoginPage(), Status.UNAUTHORIZED);
+				Response response = formatData(MessageCode.SESSION_EXPIRE, SysContant.getSystemConst(MessageCode.SESSION_EXPIRE), 
+						StringUtils.isEmpty(flag) ? EnvContant.getIdmLoginPage(null) : EnvContant.getIdmLoginPage(host), Status.UNAUTHORIZED);
 	            throw new WebApplicationException(response); 
 			}
 		}

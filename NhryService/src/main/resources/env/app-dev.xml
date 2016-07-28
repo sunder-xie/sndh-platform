@@ -18,4 +18,5 @@
 	<config key="auth_profile" value="http://54.222.180.48:8080/siam/oauth2.0/profile"></config>
 	<!-- 前端页面home -->
 	<config key="front_home_page" value="http://10.6.59.152/local/#/newhope/home"></config>
+	<config key="front_short_url" value="/local/#/newhope/home"></config>
 </configs>

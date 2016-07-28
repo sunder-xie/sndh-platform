@@ -50,6 +50,7 @@ public class IdmAuthServlet extends HttpServlet {
 		// 获取临时令牌
 		try {
 			String code = request.getParameter("code");
+			String ip = request.getParameter("id");
 			if (!StringUtils.isEmpty(code)) {
 				Map<String,Object> attrs = new HashMap<String,Object>();
 				attrs.put("client_id", EnvContant.getSystemConst("client_id"));
@@ -69,7 +70,7 @@ public class IdmAuthServlet extends HttpServlet {
 						user.setLoginName(userJson.getString("id"));
 						TSysUser loginuser = userService.login(user);
 						userSessionService.cacheUserSession(user.getLoginName(), access_token, loginuser,request);
-						sendRedirectToHomePage(request, response, token);
+						sendRedirectToHomePage(request, response, token,ip);
 					}else{
 						sendRedirectToLogin(response);
 					}
@@ -99,11 +100,16 @@ public class IdmAuthServlet extends HttpServlet {
 		}
 	}
 	
-	public void sendRedirectToHomePage(HttpServletRequest request, HttpServletResponse response,String token){
+	public void sendRedirectToHomePage(HttpServletRequest request, HttpServletResponse response,String token,String ip){
 		//跳转到登录页面
 		try {
-			response.setHeader("dh_token", token);
-			response.sendRedirect(EnvContant.getSystemConst("front_home_page")+"?dh_token="+token);
+			if(StringUtils.isEmpty(ip)){
+				response.setHeader("dh_token", token);
+				response.sendRedirect(EnvContant.getSystemConst("front_home_page")+"?dh_token="+token);
+			}else{
+				response.setHeader("dh_token", token);
+				response.sendRedirect("http://"+EnvContant.getSystemConst("front_short_url")+"?dh_token="+token);
+			}
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
