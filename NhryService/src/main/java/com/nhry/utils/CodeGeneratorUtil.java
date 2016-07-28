@@ -8,7 +8,7 @@ import java.util.Random;
  * Created by cbz on 7/16/2016.
  */
 public  class CodeGeneratorUtil {
-    private static final SimpleDateFormat format = new SimpleDateFormat("yyMMddkkmmssSSS");
+    private static final SimpleDateFormat format = new SimpleDateFormat("yyMMddHHmmssSSS");
     public static String getCode(){
         int num = new Random().nextInt(89999)+10000;
         return format.format(new Date())+num;
