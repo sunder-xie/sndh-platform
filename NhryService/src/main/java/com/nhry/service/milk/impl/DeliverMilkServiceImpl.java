@@ -668,6 +668,7 @@ public class DeliverMilkServiceImpl extends BaseService implements DeliverMilkSe
 //		
 //		for(TDispOrderItem item : list){
 			TPreOrder order = tPreOrderMapper.selectByPrimaryKey(orderNo);
+			if("10".equals(order.getPaymentmethod()))return 1;//后付款的暂时不处理
 			order.setCurAmt(order.getCurAmt().subtract(amt));
 			tPreOrderMapper.updateOrderCurAmt(order);
 //		}

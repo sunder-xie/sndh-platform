@@ -718,7 +718,8 @@
   
   <update id="updateOrderCurAmtAndInitAmt" parameterType="com.nhry.data.order.domain.TPreOrder" >
     update t_preorder
-    set INIT_AMT =  #{initAmt,jdbcType=DECIMAL}
+    set INIT_AMT =  #{initAmt,jdbcType=DECIMAL},
+        CUR_AMT =  #{curAmt,jdbcType=DECIMAL}
     where ORDER_NO = #{orderNo,jdbcType=VARCHAR}
   </update>
   
