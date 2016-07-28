@@ -58,6 +58,7 @@
         LEFT JOIN t_vip_cust_info cust on  o.MILKMEMBER_NO = cust.VIP_CUST_NO
         LEFT JOIN t_md_branch b on o.BRANCH_NO  = b.BRANCH_NO
         WHERE 1=1
+        and o.BRANCH_NO is not null
         <if test="branchNo!=null and branchNo!=''">
            and o.BRANCH_NO = #{branchNo,jdbcType=VARCHAR}
         </if>
@@ -71,7 +72,7 @@
 
     <select id="branchBillEmpSearch" resultMap="EmpResultMap" parameterType="com.nhry.model.bill.EmpBranchBillSearch">
         SELECT
-        SUM(t1.QTY) QTY,SUM(t1.PRICE * t1.QTY) SALE_PRICE,t1.DISP_DATE,t1.DISP_EMP_NO,e.EMP_NO,e.EMP_NAME
+            SUM(t1.QTY) QTY,SUM(t1.PRICE * t1.QTY) SALE_PRICE,t1.DISP_DATE,t1.DISP_EMP_NO,e.EMP_NO,e.EMP_NAME
         FROM (
                 SELECT
                 i.MATNR,i.QTY,i.PRICE,o.DISP_EMP_NO,o.DISP_DATE
