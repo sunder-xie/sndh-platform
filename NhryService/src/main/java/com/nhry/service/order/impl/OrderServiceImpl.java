@@ -1683,9 +1683,14 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 		//后付款的不需要往后延期,重新计算订单价格
 		if("10".equals(orgOrder.getPaymentmethod())){
 			//更新后付款订单的订单金额和剩余金额
-			BigDecimal cj = entry.getAmt().subtract(entry.getConfirmAmt());
-			orgOrder.setInitAmt(orgOrder.getInitAmt().subtract(cj));
-			tPreOrderMapper.updateOrderCurAmtAndInitAmt(orgOrder);
+				BigDecimal cj = entry.getAmt().subtract(entry.getConfirmAmt());
+				orgOrder.setInitAmt(orgOrder.getInitAmt().subtract(cj));
+				if(entry.getConfirmAmt().floatValue() == 0){
+					orgOrder.setCurAmt(orgOrder.getCurAmt().subtract(entry.getAmt()));
+				}else{
+					orgOrder.setCurAmt(orgOrder.getInitAmt().subtract(entry.getConfirmAmt()));
+				}
+				tPreOrderMapper.updateOrderCurAmtAndInitAmt(orgOrder);
 			
 			BigDecimal initAmt = orgOrder.getInitAmt();
 			ArrayList<TOrderDaliyPlanItem> daliyPlans = (ArrayList<TOrderDaliyPlanItem>) tOrderDaliyPlanItemMapper.selectDaliyPlansByOrderNoAsc(orgEntry.getOrderNo());
