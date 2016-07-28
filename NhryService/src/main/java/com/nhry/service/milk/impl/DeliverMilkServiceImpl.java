@@ -283,7 +283,7 @@ public class DeliverMilkServiceImpl extends BaseService implements DeliverMilkSe
 				}
 			});
 			productMap.keySet().stream().forEach((e)->{
-				sb.append(productNameMap.get(e) + "(" + productMap.get(e) + "瓶),");
+				sb.append(productNameMap.get(e) + "(" + productMap.get(e) + "),");
 			});
 			
 			//返回信息
