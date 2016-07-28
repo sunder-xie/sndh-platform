@@ -530,9 +530,83 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 		if(StringUtils.isNotBlank(record.getOrderNo())){
 			List<String> orderList = Arrays.asList(record.getOrderNo().split(","));
 			orderList.stream().forEach((e)->{
-				record.setOrderNo(e);
-				continueOrder(record);
+				continueOrderAuto(e);
 			});
+		}
+		
+		return 1;
+	}
+	
+	/* (non-Javadoc) 
+	* @title: continueOrder
+	* @description: 订单自动续订
+	* @param record
+	* @return 
+	* @see com.nhry.service.order.dao.OrderService#continueOrder(com.nhry.model.order.OrderSearchModel) 
+	*/
+	@Override
+	public int continueOrderAuto(String orderNo)
+	{
+		SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
+		TPreOrder order = tPreOrderMapper.selectByPrimaryKey(orderNo);
+		ArrayList<TPlanOrderItem> entries = (ArrayList<TPlanOrderItem>) tPlanOrderItemMapper.selectByOrderCode(orderNo);
+		if(order!= null){
+			if("20".equals(order.getMilkboxStat()))throw new ServiceException(MessageCode.LOGIC_ERROR, orderNo+"原订单还没有装箱，不能续订!");
+			if("20".equals(order.getPaymentmethod())&&"10".equals(order.getPaymentStat()))throw new ServiceException(MessageCode.LOGIC_ERROR, orderNo+"原订单为预付款订单，没有付款，不能续订!");
+			//基本参考原单
+			Date sdate = afterDate(order.getEndDate(),1);
+			//新的订单号
+			Date date = new Date();
+			order.setOrderNo(CodeGeneratorUtil.getCode());
+			order.setOrderDate(date);
+         order.setPaymentStat("10");//默认未付款
+			//生成每个订单行
+			List<TPlanOrderItem> entriesList = new ArrayList<TPlanOrderItem>();
+			int index = 0;
+			BigDecimal orderAmt = new BigDecimal("0.00");//订单总价
+			for(TPlanOrderItem entry: entries){
+				entry.setOrderNo(order.getOrderNo());
+				entry.setItemNo(order.getOrderNo() + String.valueOf(index));//行项目编号
+				entry.setRefItemNo(String.valueOf(index));//参考行项目编号
+				entry.setOrderDate(date);//订单日期
+				entry.setCreateAt(date);//创建日期
+				entry.setCreateBy(userSessionService.getCurrentUser().getLoginName());//创建人
+				entry.setCreateByTxt(userSessionService.getCurrentUser().getDisplayName());//创建人姓名
+				Date edate = afterDate(sdate,daysOfTwo(entry.getStartDispDate(),entry.getEndDispDate()));
+				entry.setStartDispDate(sdate);
+				entry.setEndDispDate(edate);
+				BigDecimal entryTotal = calculateEntryAmount(entry);
+				
+				entry.setPromotion("");
+				entry.setBuyQty(0);
+				entry.setGiftQty(0);
+				entry.setGiftMatnr("");
+				entry.setGiftUnit("");
+				
+				orderAmt = orderAmt.add(entryTotal);
+				entriesList.add(entry);
+
+				index++;
+			}
+			
+			//保存订单，订单行
+			order.setCurAmt(orderAmt);//订单价格
+			order.setInitAmt(orderAmt);
+			order.setEndDate(calculateFinalDate(entriesList));//订单截止日期
+			tPreOrderMapper.insert(order);
+			
+			for(TPlanOrderItem entry: entriesList){
+				tPlanOrderItemMapper.insert(entry);
+			}
+			
+			//订户状态更改
+			tVipCustInfoService.discontinue(order.getMilkmemberNo(), "10",null,new com.nhry.utils.date.Date());
+			
+			//生成每日计划
+			createDaliyPlan(order,entriesList);
+			
+		}else{
+			throw new ServiceException(MessageCode.LOGIC_ERROR,orderNo+"原订单不存在");
 		}
 		
 		return 1;
@@ -635,7 +709,7 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 				entry.setGiftQty(0);
 				entry.setGiftMatnr("");
 				entry.setGiftUnit("");
-				entry.setDispTotal(0);
+//				entry.setDispTotal(0);
 				
 				orderAmt = orderAmt.add(entryTotal);
 				entriesList.add(entry);
@@ -1547,16 +1621,32 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 	@Override
 	public void resumeDaliyPlanForRouteOrder(BigDecimal confirmQty, TDispOrderItem entry,TPlanOrderItem orgEntry,Date dispDate)
 	{
+		if("Y".equals(entry.getGiftFlag())){
+			//赠品的，只更新原日计划
+			ArrayList<TOrderDaliyPlanItem> daliyPlans = (ArrayList<TOrderDaliyPlanItem>) tOrderDaliyPlanItemMapper.selectDaliyPlansByOrderNoAsc(orgEntry.getOrderNo());
+			for(TOrderDaliyPlanItem p : daliyPlans){
+				if(p.getDispDate().equals(dispDate) && entry.getOrgItemNo().equals(p.getItemNo()) && p.getGiftQty()!= null){
+					p.setMatnr(entry.getConfirmMatnr());
+					p.setQty(entry.getConfirmQty().intValue());
+					p.setStatus("20");
+					tOrderDaliyPlanItemMapper.updateDaliyPlanItem(p);
+					break;
+				}
+			}
+			return;
+		}
+		
 		if("10".equals(entry.getReason())){
 			//换货的，只更新原日计划
 			ArrayList<TOrderDaliyPlanItem> daliyPlans = (ArrayList<TOrderDaliyPlanItem>) tOrderDaliyPlanItemMapper.selectDaliyPlansByOrderNoAsc(orgEntry.getOrderNo());
 			for(TOrderDaliyPlanItem p : daliyPlans){
-				if(p.getDispDate().equals(dispDate)){
+				if(p.getDispDate().equals(dispDate) && entry.getOrgItemNo().equals(p.getItemNo()) && p.getGiftQty()==null){
 					p.setMatnr(entry.getConfirmMatnr());
 					p.setQty(entry.getConfirmQty().intValue());
 					p.setStatus("20");
+					tOrderDaliyPlanItemMapper.updateDaliyPlanItem(p);
+					break;
 				}
-				tOrderDaliyPlanItemMapper.updateDaliyPlanItem(p);
 			}
 			return;
 		}
@@ -1577,10 +1667,11 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 			ArrayList<TOrderDaliyPlanItem> daliyPlans = (ArrayList<TOrderDaliyPlanItem>) tOrderDaliyPlanItemMapper.selectDaliyPlansByOrderNoAsc(orgEntry.getOrderNo());
 			for(TOrderDaliyPlanItem p : daliyPlans){
 				if(!"30".equals(p.getStatus())){
-					if(p.getDispDate().equals(dispDate)){
+					if(p.getDispDate().equals(dispDate) && entry.getOrgItemNo().equals(p.getItemNo()) && p.getGiftQty()==null ){
 						p.setMatnr(entry.getConfirmMatnr());
 						p.setQty(entry.getConfirmQty().intValue());
 						p.setAmt(entry.getConfirmAmt());
+						p.setStatus("20");
 						initAmt = initAmt.subtract(p.getAmt());
 					}else{
 						initAmt = initAmt.subtract(p.getAmt());
@@ -1664,7 +1755,7 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 		tOrderDaliyPlanItemMapper.insert(plan);
 		daliyPlans.add(plan);
 		
-		calculateDaliyPlanRemainAmtAfterUptRoute(daliyPlans,orgOrder,dispDate);
+		calculateDaliyPlanRemainAmtAfterUptRoute(daliyPlans,orgOrder,dispDate,orgEntry);
 		
 	}
 	
@@ -1690,7 +1781,6 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 	@Override
 	public CollectOrderModel queryCollectByOrderNo(String orderCode) {
 		TSysUser user = userSessionService.getCurrentUser();
-
 		TPreOrder order = tPreOrderMapper.selectByPrimaryKey(orderCode);
 		CollectOrderModel model = new CollectOrderModel();
 		model.setOrder(order);
@@ -1866,6 +1956,7 @@ public class OrderServiceImpl extends BaseService implements OrderService {
    //计算订单行的总价格
    private BigDecimal calculateEntryAmount(TPlanOrderItem entry){
    	
+   	int totalqty = 0;
    	int afterDays = 0;//经过的天数
    	int allDays = daysOfTwo(entry.getStartDispDate(),entry.getEndDispDate())+1;//总共需要配送的天数
    	
@@ -1897,10 +1988,13 @@ public class OrderServiceImpl extends BaseService implements OrderService {
    				continue;
    			}
    		}
+   		totalqty += entry.getQty();
    		goDays++;
    	}
    	//end
    	
+   	//配送总数
+   	entry.setDispTotal(totalqty);
    	//如果有促销，增加促销购买数量字段
    	if(StringUtils.isNotBlank(entry.getPromotion()))entry.setBuyQty(qty.multiply(new BigDecimal(String.valueOf(goDays))).intValue());
    		
@@ -2242,22 +2336,27 @@ public class OrderServiceImpl extends BaseService implements OrderService {
    }
 
    //重新计算当天更新日单后，日计划的剩余金额
-   private void calculateDaliyPlanRemainAmtAfterUptRoute(List<TOrderDaliyPlanItem> daliyPlans , TPreOrder order,Date dispDate){
+   private void calculateDaliyPlanRemainAmtAfterUptRoute(List<TOrderDaliyPlanItem> daliyPlans , TPreOrder order,Date dispDate,TPlanOrderItem orgEntry){
    	BigDecimal curAmt = order.getCurAmt();
+   	BigDecimal initAmt = order.getInitAmt();
    	
    	List<TOrderDaliyPlanItem> needUpt = new ArrayList<TOrderDaliyPlanItem>();
    	
    	for(TOrderDaliyPlanItem plan : daliyPlans){
+   		if("30".equals(plan.getStatus()))continue;
    		if(plan.getGiftQty()!=null)continue;
-   		if(plan.getDispDate().compareTo(dispDate) == 0){
+   		
+   		initAmt = initAmt.subtract(plan.getAmt());
+   		
+   		if(plan.getDispDate().compareTo(dispDate) == 0 && orgEntry.getItemNo().equals(plan.getItemNo())){
    			plan.setRemainAmt(curAmt);
    			plan.setStatus("20");//已确认送达,当天的确认
    			needUpt.add(plan);
    			continue;
    		}
-   		if(!plan.getDispDate().after(dispDate))continue;
-   		curAmt = curAmt.subtract(plan.getAmt());
-   		plan.setRemainAmt(curAmt);
+//   		curAmt = curAmt.subtract(plan.getAmt());
+   		
+   		plan.setRemainAmt(initAmt);
    		needUpt.add(plan);
    	}
    

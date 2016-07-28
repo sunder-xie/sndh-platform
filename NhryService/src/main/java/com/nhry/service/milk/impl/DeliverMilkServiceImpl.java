@@ -121,40 +121,49 @@ public class DeliverMilkServiceImpl extends BaseService implements DeliverMilkSe
 	public int createInsideSalOrder(String dispOrderNo) {
 			TSysUser user = userSessionService.getCurrentUser();
 			TMstInsideSalOrder sOrder = tMstInsideSalOrderMapper.getInSalOrderByDispOrderNo(dispOrderNo);
-
+			TDispOrder order = tDispOrderMapper.getDispOrderByNo(dispOrderNo);
 			List<TDispOrderItem> entries = tDispOrderItemMapper.selectItemsByOrderNo(dispOrderNo);
-			if(entries == null || entries.size() <1){
-//				message = "该路单没有可以生成销售订单的未送达项";
-//				throw new ServiceException(MessageCode.LOGIC_ERROR,message);
-				return 1;
-			}
 			if(sOrder!=null){
 				tMstInsideSalOrderItemMapper.delInSalOrderItemByOrderNo(sOrder.getInsOrderNo());
-			}else{
-				TDispOrder order = tDispOrderMapper.getDispOrderByNo(dispOrderNo);
-				sOrder = new TMstInsideSalOrder();
-				sOrder.setInsOrderNo(SerialUtil.creatSeria());
-				sOrder.setOrderDate(order.getOrderDate());
-				sOrder.setDispOrderNo(order.getOrderNo());
-				sOrder.setBranchNo(order.getBranchNo());
-				sOrder.setSalEmpNo(order.getDispEmpNo());
-				tMstInsideSalOrderMapper.insertInsideSalOrder(sOrder);
+			}
+			String insOrderNo = null;
+			if(entries!=null && entries.size()>0){
+				for(TDispOrderItem entry : entries){
+					//更新库存
+					if( !"20".equals(entry.getReason())) {
+						tSsmStockService.updateStock(order.getBranchNo(), entry.getConfirmMatnr(), entry.getQty(), user.getSalesOrg());
+					}else{
+						tSsmStockService.updateStock(order.getBranchNo(), entry.getConfirmMatnr(), entry.getConfirmQty(), user.getSalesOrg());
+					}
+					if(!"10".equals(entry.getReason()) && !"20".equals(entry.getReason()) && !"30".equals(entry.getReason())){
+						if(insOrderNo==null){
+							insOrderNo = SerialUtil.creatSeria();
+						}
+						TMstInsideSalOrderItem item = new TMstInsideSalOrderItem();
+						item.setInsOrderNo(insOrderNo);
+						item.setItemNo(entry.getItemNo());
+						item.setOrgOrderNo(entry.getOrgOrderNo());
+						item.setMatnr(entry.getMatnr());
+						item.setOrderDate(order.getOrderDate());
+						item.setPrice(entry.getPrice());
+						item.setQty(entry.getQty().subtract(entry.getConfirmQty()));
+						item.setReason(entry.getReason());
+						tMstInsideSalOrderItemMapper.insertOrderItem(item);
+					}
+				}
+				if(insOrderNo!=null){
+
+					sOrder = new TMstInsideSalOrder();
+					sOrder.setInsOrderNo(insOrderNo);
+					sOrder.setOrderDate(order.getOrderDate());
+					sOrder.setDispOrderNo(order.getOrderNo());
+					sOrder.setBranchNo(order.getBranchNo());
+					sOrder.setSalEmpNo(order.getDispEmpNo());
+					tMstInsideSalOrderMapper.insertInsideSalOrder(sOrder);
+				}
+
 			}
 
-			for(TDispOrderItem entry : entries){
-				TMstInsideSalOrderItem item = new TMstInsideSalOrderItem();
-				item.setInsOrderNo(sOrder.getInsOrderNo());
-				item.setItemNo(entry.getItemNo());
-				item.setOrgOrderNo(entry.getOrgOrderNo());
-				item.setMatnr(entry.getMatnr());
-				item.setOrderDate(sOrder.getOrderDate());
-				item.setPrice(entry.getPrice());
-				item.setQty(entry.getQty().subtract(entry.getConfirmQty()));
-				item.setReason(entry.getReason());
-				tMstInsideSalOrderItemMapper.insertOrderItem(item);
-				//更新库存
-				tSsmStockService.updateStock(sOrder.getBranchNo(),entry.getMatnr(),entry.getQty(),user.getSalesOrg());
-			}
 			return 1;
 
 
@@ -442,7 +451,7 @@ public class DeliverMilkServiceImpl extends BaseService implements DeliverMilkSe
 			
 			for(TDispOrderItem e : entryList){
 				//变化的也更改日计划状态
-				if(StringUtils.isNotBlank(e.getReason()) && e.getConfirmQty().intValue() < e.getQty().intValue()){
+				if( (StringUtils.isNotBlank(e.getReason()) && e.getConfirmQty().intValue() < e.getQty().intValue()) || !e.getMatnr().equals(e.getConfirmMatnr())  ){
 					TPlanOrderItem entry = tPlanOrderItemMapper.selectEntryByEntryNo(e.getOrgItemNo());
 					//更新原订单剩余金额
 					updatePreOrderCurAmt(entry.getOrderNo(),e.getConfirmAmt());
@@ -452,7 +461,8 @@ public class DeliverMilkServiceImpl extends BaseService implements DeliverMilkSe
 					//没有变化的路单更新日计划状态
 					//更新原订单剩余金额
 					TPlanOrderItem entry = tPlanOrderItemMapper.selectEntryByEntryNo(e.getOrgItemNo());
-					updatePreOrderCurAmt(entry.getOrderNo(),e.getConfirmAmt());
+
+					if(e.getGiftFlag()==null)updatePreOrderCurAmt(entry.getOrderNo(),e.getConfirmAmt());
 					
 					//更新日计划为确认
 					record.setOrderNo(e.getOrgOrderNo());

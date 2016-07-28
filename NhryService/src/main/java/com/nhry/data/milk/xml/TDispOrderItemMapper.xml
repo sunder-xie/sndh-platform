@@ -132,9 +132,9 @@
        MATNR MATNR1,CONFIRM_QTY CONFIRM_QTY1,QTY QTY1,UNIT UNIT1,PRICE PRICE1,
        ADDRESS_NO ADDRESS_NO1,ORG_ITEM_NO ORG_ITEM_NO1,ORG_ORDER_NO ORG_ORDER_NO1,
        REACH_TIME_TYPE REACH_TIME_TYPE1, DISP_EMP_NO DISP_EMP_NO1
-      from t_mst_disp_order_item a where a.order_date = #{itemNo,jdbcType=DATE}
+      from t_mst_disp_order_item a where a.order_date = #{itemNo,jdbcType=DATE} and a.GIFT_FLAG is null
       <if test="addressNo != null" >
-      	and a.ORDER_NO = #{addressNo,jdbcType=DATE}
+      	and a.ORDER_NO = #{addressNo,jdbcType=VARCHAR}
       </if>	
       ) a1
 		left outer join 
@@ -143,9 +143,9 @@
        MATNR MATNR2,CONFIRM_QTY CONFIRM_QTY2,QTY QTY2,UNIT UNIT2,PRICE PRICE2,
        ADDRESS_NO ADDRESS_NO2,ORG_ITEM_NO ORG_ITEM_NO2,ORG_ORDER_NO ORG_ORDER_NO2,
        REACH_TIME_TYPE REACH_TIME_TYPE2, DISP_EMP_NO DISP_EMP_NO2
-		from t_mst_disp_order_item b where b.order_date = #{orderNo,jdbcType=DATE}
+		from t_mst_disp_order_item b where b.order_date = #{orderNo,jdbcType=DATE} and b.GIFT_FLAG is null
 		<if test="addressNo != null" >
-			and b.ORDER_NO = #{addressNo,jdbcType=DATE}
+			and b.ORDER_NO = #{addressNo,jdbcType=VARCHAR}
 		</if>
 		) b1
 		on a1.org_order_no1 = b1.org_order_no2 and a1.org_item_no1 = b1.org_item_no2
@@ -162,9 +162,9 @@
        MATNR MATNR1,CONFIRM_QTY CONFIRM_QTY1,QTY QTY1,UNIT UNIT1,PRICE PRICE1,
        ADDRESS_NO ADDRESS_NO1,ORG_ITEM_NO ORG_ITEM_NO1,ORG_ORDER_NO ORG_ORDER_NO1,
        REACH_TIME_TYPE REACH_TIME_TYPE1, DISP_EMP_NO DISP_EMP_NO1
-		from t_mst_disp_order_item a where a.order_date = #{itemNo,jdbcType=DATE}
+		from t_mst_disp_order_item a where a.order_date = #{itemNo,jdbcType=DATE} and a.GIFT_FLAG is null
 		<if test="addressNo != null" >
-			and a.ORDER_NO = #{addressNo,jdbcType=DATE} 
+			and a.ORDER_NO = #{addressNo,jdbcType=VARCHAR} 
 		</if>
 		) a1
 		right outer join 
@@ -173,9 +173,9 @@
        MATNR MATNR2,CONFIRM_QTY CONFIRM_QTY2,QTY QTY2,UNIT UNIT2,PRICE PRICE2,
        ADDRESS_NO ADDRESS_NO2,ORG_ITEM_NO ORG_ITEM_NO2,ORG_ORDER_NO ORG_ORDER_NO2,
        REACH_TIME_TYPE REACH_TIME_TYPE2, DISP_EMP_NO DISP_EMP_NO2
-		from t_mst_disp_order_item b where b.order_date = #{orderNo,jdbcType=DATE}
+		from t_mst_disp_order_item b where b.order_date = #{orderNo,jdbcType=DATE} and b.GIFT_FLAG is null
 		<if test="addressNo != null" >
-			and b.ORDER_NO = #{addressNo,jdbcType=DATE}
+			and b.ORDER_NO = #{addressNo,jdbcType=VARCHAR}
 		</if>
 		) b1
 		on a1.org_order_no1 = b1.org_order_no2 and a1.org_item_no1 = b1.org_item_no2
@@ -492,8 +492,9 @@
 	o.DISP_EMP_NO EMP_NO, SUM(i.QTY) RECEIVE_NUM,ex.BOT_TYPE SPEC,o.BRANCH_NO,o.ORDER_NO DISP_ORDER_NO
     from t_mst_disp_order_item  i
     LEFT JOIN t_mst_disp_order o on  i.ORDER_NO = o.ORDER_NO
-    LEFT JOIN t_md_mara_ex ex on ( i.MATNR = ex.MATNR and ex.RET_BOT_FLAG = "Y")
+    LEFT JOIN t_md_mara_ex ex on i.MATNR = ex.MATNR
 	where o.ORDER_NO = #{dispOrderNo,jdbcType=VARCHAR}
+	and ex.RET_BOT_FLAG = "Y"
 	GROUP BY ex.BOT_TYPE,o.DISP_EMP_NO
   </select>
 
@@ -525,6 +526,5 @@
    <include refid="Base_Column_List"/>
     from t_mst_disp_order_item
     where ORDER_NO = #{dispOrderNo,jdbcType=VARCHAR}
-    and (REASON is not null  and REASON !='10' and REASON !='20')
   </select>
 </mapper>

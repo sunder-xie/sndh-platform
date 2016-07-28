@@ -26,7 +26,7 @@ public class BusinessDataConnection {
     private static String SIGN = PIPropertitesUtil.getValue("PI.MasterData.mATQUERY.SIGN");
     private static String EQ = PIPropertitesUtil.getValue("PI.MasterData.mATQUERY.OPTION.EQ");
     private static String I_DELIVERY_D = "D";
-    private static SimpleDateFormat formatter = new SimpleDateFormat("yyyymmdd");
+    private static SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
 
     public static ZT_BusinessData_MaintainServiceStub getConn() throws AxisFault {
         ZT_BusinessData_MaintainServiceStub stub = new ZT_BusinessData_MaintainServiceStub(URL);
@@ -180,7 +180,7 @@ public class BusinessDataConnection {
                 posex_type1.setPOSEX_type0(String.valueOf(map.get("ITEM_NO")));
                 zssd00011.setPOSEX(posex_type1);
                 PR_REF_MAT_type1 pr_ref_mat_type1 = new PR_REF_MAT_type1();
-                pr_ref_mat_type1.setPR_REF_MAT_type0("");//TODO
+                pr_ref_mat_type1.setPR_REF_MAT_type0(map.get("REF_MATNR")==null?"":map.get("REF_MATNR"));
                 zssd00011.setPR_REF_MAT(pr_ref_mat_type1);
                 it_zssd00011_type1.addItem(zssd00011);
             }
@@ -276,7 +276,7 @@ public class BusinessDataConnection {
         ET_DATA_type0 et_data_type0 = response.getET_DATA();
         ZSSD00069[] zssd00069s = et_data_type0.getItem();
         List<Delivery> deliveries = new ArrayList<Delivery>();
-        if (zssd00069s.length > 0) {
+        if (zssd00069s!= null && zssd00069s.length > 0) {
             for (ZSSD00069 zssd00069 : zssd00069s) {
                 Delivery delivery = new Delivery();
                 delivery.setKUNNR(zssd00069.getKUNNR().getKUNNR_type2());

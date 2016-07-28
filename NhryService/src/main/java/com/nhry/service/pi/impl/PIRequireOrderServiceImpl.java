@@ -101,7 +101,7 @@ public class PIRequireOrderServiceImpl implements PIRequireOrderService {
                     throw new ServiceException(MessageCode.SERVER_ERROR,"奶站的扩展信息不完善！");
                 }
             }
-            if(StringUtils.isEmpty(branch.getLgort())){
+            if(StringUtils.isEmpty(branch.getLgort()) && "01".equals(branch.getBranchGroup())){
                 throw new ServiceException(MessageCode.SERVER_ERROR,"奶站的库存地点为空！");
             }
             return BusinessDataConnection.RequisitionCreate(branchEx, ssmReqGoodsOrder.getRequiredDate(), items, branch.getLgort());
@@ -144,6 +144,7 @@ public class PIRequireOrderServiceImpl implements PIRequireOrderService {
                     ssmGiOrder.setBranchNo(branchNo);
                     ssmGiOrder.setOrderNo(delivery.getBSTKD());
                     ssmGiOrder.setSyncAt(new Date());
+                    ssmGiOrder.setOrderDate(delivery.getLFDAT());
                     ssmGiOrderMapper.updateGiOrder(ssmGiOrder);
                 }
                 for(Delivery d : deliveries) {

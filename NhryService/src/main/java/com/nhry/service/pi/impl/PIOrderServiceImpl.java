@@ -12,7 +12,6 @@ import com.nhry.data.order.domain.TPlanOrderItem;
 import com.nhry.data.order.domain.TPreOrder;
 import com.nhry.service.pi.dao.PIOrderService;
 import com.nhry.service.pi.pojo.Order;
-import com.nhry.service.pi.pojo.PIOrder;
 import com.nhry.service.pi.pojo.PIReturnMessage;
 import org.apache.commons.lang.StringUtils;
 
@@ -58,7 +57,7 @@ public class PIOrderServiceImpl implements PIOrderService {
             message.setSuccess(false);
             message.setMessage("订单编号不能为空！");
         }
-        PIOrder order1 = (PIOrder) orderMapper.selectByPrimaryKey(ORDER_NO);
+        TPreOrder order1 = orderMapper.selectByPrimaryKey(ORDER_NO);
         if(order1 == null){
             message.setSuccess(false);
             message.setMessage("订单不存在！");
@@ -67,8 +66,23 @@ public class PIOrderServiceImpl implements PIOrderService {
             TMdBranch branch = branchMapper.getBranchByNo(order1.getBranchNo());
             List<TOrderDaliyPlanItem> orderDaliyPlanItems = orderDaliyPlanItemMapper.selectDaliyPlansByOrderNo(ORDER_NO);
             TMdAddress address = addressMapper.findAddressDetailById(order1.getAdressNo());
-            String attress = address.getProvinceName().concat(address.getCityName()).concat(address.getCountyName()).concat(address.getAddressTxt());
-            order1.setAddressTxt(attress);
+            StringBuilder addressTxt = new StringBuilder();
+            if(StringUtils.isNotEmpty(address.getProvince())){
+                addressTxt.append(address.getProvince());
+            }
+            if(StringUtils.isNotEmpty(address.getCity())){
+                addressTxt.append(address.getCity());
+            }
+            if(StringUtils.isNotEmpty(address.getCounty())){
+                addressTxt.append(address.getCounty());
+            }
+            if(StringUtils.isNotEmpty(address.getResidentialArea())){
+                addressTxt.append(address.getResidentialArea());
+            }
+            if(StringUtils.isNotEmpty(address.getAddressTxt())){
+                addressTxt.append(address.getAddressTxt());
+            }
+            order1.setAddressTxt(addressTxt.toString());
             order1.setBranchMp(branch.getMp());
             order1.setBranchEmpName(branch.getContact());
             order1.setEmpNo(branch.getEmpNo());

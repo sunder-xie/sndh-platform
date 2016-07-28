@@ -62,12 +62,12 @@ public class TSsmGiOrderItemServiceImpl implements TSsmGiOrderItemService {
     }
 
     @Override
-    public List<TSsmGiOrderItem> findGiOrderItem(String orderNo) {
-        return giOrderItemMapper.findGiOrderItem(orderNo);
+    public List<TSsmGiOrderItem> findGiOrderItem(TSsmGiOrderItemKey key) {
+        return giOrderItemMapper.findGiOrderItem(key);
     }
 
     @Override
-    public int updateGiOrderItems(List<TSsmGiOrderItem> giOrderItems) {
+    public int updateGiOrderItems(List<TSsmGiOrderItem> giOrderItems, String salesOrg) {
         for(TSsmGiOrderItem item : giOrderItems){
             TSsmGiOrderItemKey key = new TSsmGiOrderItemKey();
             key.setOrderNo(item.getOrderNo());
@@ -77,11 +77,9 @@ public class TSsmGiOrderItemServiceImpl implements TSsmGiOrderItemService {
             orderItem.setConfirmQty(item.getConfirmQty());
             orderItem.setRemark(item.getRemark());
             giOrderItemMapper.updateGiOrderItem(orderItem);
-
             TSsmGiOrder giOrder = giOrderService.selectGiOrderByNo(item.getOrderNo());
             giOrder.setStatus("30");
             giOrderService.updateGiOrder(giOrder);
-
             TSsmStockKey key1 = new TSsmStockKey();
             key1.setBranchNo(giOrder.getBranchNo());
             key1.setMatnr(item.getMatnr());
@@ -91,9 +89,11 @@ public class TSsmGiOrderItemServiceImpl implements TSsmGiOrderItemService {
                 stock.setBranchNo(giOrder.getBranchNo());
                 stock.setMatnr(item.getMatnr());
                 stock.setQty(item.getConfirmQty());
+                stock.setSalesOrg(salesOrg);
                 ssmStockMapper.insertStock(stock);
             }else{
                 stock.setQty(item.getConfirmQty().add(stock.getQty()));
+                stock.setSalesOrg(salesOrg);
                 ssmStockMapper.updateStock(stock);
             }
         }

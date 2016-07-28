@@ -146,7 +146,7 @@
     select
     d.ORDER_NO, d.ORDER_DATE, d.PLAN_ITEM_NO, d.ITEM_NO, d.DISP_DATE, d.REACH_TIME, d.REACH_TIME_TYPE, 
     d.MATNR, d.UNIT, d.QTY, d.PRICE, d.AMT, d.REMAIN_AMT, d.STATUS, d.CREATE_AT, d.CREATE_BY, o.ADRESS_NO CREATE_BY_TXT, 
-    d.LAST_MODIFIED, d.LAST_MODIFIED_BY,o.emp_no LAST_MODIFIED_BY_TXT 
+    d.LAST_MODIFIED, d.LAST_MODIFIED_BY,o.emp_no LAST_MODIFIED_BY_TXT,d.GIFT_QTY
 	 from t_mst_order_daliy_plan_item d
 	 left join t_preorder o on o.order_no = d.order_no
 	 where d.disp_date = #{planItemNo,jdbcType=DATE}
@@ -570,6 +570,7 @@
   <select id="selectProDayPlanOfSelfBranch" resultMap="BaseResultMap" parameterType="com.nhry.model.milktrans.RequireOrderSearch" >
     select di.MATNR,SUM(di.CONFIRM_QTY) QTY,di.CONFIRM_MATNR
     from  t_mst_disp_order_item di
+   LEFT JOIN  t_mst_disp_order ti ON di.ORDER_NO = ti.ORDER_NO
     LEFT JOIN t_mst_plan_order_item  i on i.ORDER_NO = di.ORG_ORDER_NO and i.ITEM_NO = di.ORG_ITEM_NO and i.MATNR = di.MATNR
     LEFT JOIN t_preorder o on 	di.ORG_ORDER_NO = o.ORDER_NO
     LEFT JOIN t_md_mara_ex e on di.MATNR = e.MATNR  and e.SALES_ORG = #{salesOrg,jdbcType=VARCHAR}
@@ -586,6 +587,7 @@
 UNION ALL
     select di.MATNR,SUM(di.CONFIRM_QTY) QTY,di.CONFIRM_MATNR
     from  t_mst_disp_order_item di
+    LEFT JOIN  t_mst_disp_order ti ON di.ORDER_NO = ti.ORDER_NO
     LEFT JOIN t_mst_plan_order_item  i on i.ORDER_NO = di.ORG_ORDER_NO and i.ITEM_NO = di.ORG_ITEM_NO and i.MATNR = di.MATNR
     LEFT JOIN t_preorder o on 	di.ORG_ORDER_NO = o.ORDER_NO
     LEFT JOIN t_md_mara_ex e on di.MATNR = e.MATNR  and e.SALES_ORG = #{salesOrg,jdbcType=VARCHAR}
@@ -610,7 +612,7 @@ UNION ALL
        	and di.`STATUS` = '20'
        	and di.MATNR=di.CONFIRM_MATNR
         AND di.GIFT_FLAG is  null
-        and   disp.DISP_DATE = #{requiredDate}
+        and   disp.DISP_DATE = #{requiredDate,jdbcType=DATE}
         and  o.SALES_ORG=#{salesOrg,jdbcType=VARCHAR}
         and  o.BRANCH_NO = #{branchNo,jdbcType=VARCHAR}
         GROUP BY di.MATNR
@@ -627,7 +629,7 @@ UNION ALL
        	and di.REASON = '10'
         and di.REPLACE_REASON = '10'
         AND di.GIFT_FLAG  is  null
-        and   disp.DISP_DATE = #{requiredDate}
+        and   disp.DISP_DATE =#{requiredDate,jdbcType=DATE}
         and  o.SALES_ORG=#{salesOrg,jdbcType=VARCHAR}
         and  o.BRANCH_NO = #{branchNo,jdbcType=VARCHAR}
         GROUP BY di.MATNR
@@ -683,9 +685,11 @@ UNION ALL
 
       SELECT
       i.MATNR,i.UNIT,SUM(i.QTY) QTY,i.PRICE,a.MATNR_TXT
-      FROM t_mst_order_daliy_plan_item i  LEFT JOIN t_md_mara a on i.MATNR = a.MATNR and a.SALES_ORG = #{salesOrg}
+      FROM t_mst_order_daliy_plan_item i
+      LEFT JOIN t_md_mara a on i.MATNR = a.MATNR and a.SALES_ORG = #{salesOrg}
       where 1=1
       and i.STATUS !='30'
+      and a.SALES_ORG = #{salesOrg}
       and i.ORDER_NO = #{orderNo}
       and i.GIFT_QTY IS NULL
       GROUP BY i.MATNR

@@ -20,7 +20,6 @@ import com.nhry.service.milktrans.dao.RequireOrderService;
 import com.nhry.service.pi.dao.PIRequireOrderService;
 import com.nhry.utils.DateUtil;
 import com.nhry.utils.PrimaryKeyUtils;
-import com.nhry.utils.SerialUtil;
 import com.nhry.webService.client.PISuccessMessage;
 import org.apache.commons.lang3.StringUtils;
 
@@ -89,20 +88,7 @@ public class RequireOrderServiceImpl implements RequireOrderService {
         }
 
 
-            order = new TSsmReqGoodsOrder();
-            String orderNo = PrimaryKeyUtils.generateUuidKey();
-            order.setRequiredDate(today);
-            order.setStatus("10");
-            order.setOrderNo(orderNo);
-            order.setOrderDate(today);
-            order.setBranchNo(user.getBranchNo());
-            order.setCreateAt(today);
-            order.setCreateBy(user.getLoginName());
-            order.setCreateByTxt(user.getDisplayName());
-            order.setLastModified(today);
-            order.setLastModifiedByTxt(user.getDisplayName());
-            order.setLastModifiedBy(user.getLoginName());
-            tSsmReqGoodsOrderMapper.insertRequireOrder(order);
+
 
         //查看明天和后天的订单
         Calendar calendar = new GregorianCalendar();
@@ -119,6 +105,23 @@ public class RequireOrderServiceImpl implements RequireOrderService {
         List<TOrderDaliyPlanItem> items = tOrderDaliyPlanItemMapper.selectDaliyPlansByBranchAndDay(rModel);
         //将i天后的日订单中符合的产品加入到 生成的要货计划
         if(items!=null && items.size()>0){
+
+            order = new TSsmReqGoodsOrder();
+            String orderNo = PrimaryKeyUtils.generateUuidKey();
+            order.setRequiredDate(today);
+            order.setStatus("10");
+            order.setOrderNo(orderNo);
+            order.setOrderDate(today);
+            order.setBranchNo(user.getBranchNo());
+            order.setCreateAt(today);
+            order.setCreateBy(user.getLoginName());
+            order.setCreateByTxt(user.getDisplayName());
+            order.setLastModified(today);
+            order.setLastModifiedByTxt(user.getDisplayName());
+            order.setLastModifiedBy(user.getLoginName());
+            tSsmReqGoodsOrderMapper.insertRequireOrder(order);
+
+
             for(int j=0 ;j<items.size();j++ ){
                 TOrderDaliyPlanItem entry = items.get(j);
                 TSsmReqGoodsOrderItem item = new TSsmReqGoodsOrderItem();
@@ -133,6 +136,8 @@ public class RequireOrderServiceImpl implements RequireOrderService {
                 item.setIncreQty(0);
                 this.tSsmReqGoodsOrderItemMapper.insertRequireOrderItem(item);
             }
+        }else{
+            throw new ServiceException(MessageCode.LOGIC_ERROR,"今天该奶站没有可以生成要货计划的行项目");
         }
         //查询出今天的要货计划
         return this.searchRequireOrder(today);
@@ -412,7 +417,6 @@ public class RequireOrderServiceImpl implements RequireOrderService {
                 //生成 促销订单行项目
                 createSaleOrderItem(item,i+1,order.getOrderNo(),requiredDate,"dealer");
             }
-
             //调用 接口
             PISuccessMessage  message  = piRequireOrderService.generateSalesOrder(order,order.getDealerNo(),order.getBranchNo(),order.getSalesOrg(),"");
             if(message.isSuccess()){
@@ -442,19 +446,18 @@ public class RequireOrderServiceImpl implements RequireOrderService {
         if(items!=null && items.size()>0){
             //生成 促销订单
             TSsmSalOrder order = createSaleOrder(user,requiredDate,"branch","");
+
             for(int i=0 ;i<items.size();i++){
                 TOrderDaliyPlanItem item = items.get(i);
                 //生成 促销订单行项目
                 createSaleOrderItem(item,i+1,order.getOrderNo(),requiredDate,"branch");
             }
             //调用 接口
-            // piRequireOrderService.generateRequireOrder();
-            PISuccessMessage message =new PISuccessMessage();
-            message.setData(SerialUtil.creatSeria());
-            message.setSuccess(true);
+            PISuccessMessage  message  = piRequireOrderService.generateSalesOrder(order,order.getDealerNo(),order.getBranchNo(),order.getSalesOrg(),"");
             if(message.isSuccess()){
                 this.uptVouCherNoByOrderNo(order.getOrderNo(),message.getData());
             }
+
         }
         return 1;
     }
@@ -487,10 +490,7 @@ public class RequireOrderServiceImpl implements RequireOrderService {
                     }
                 }
                 //调用 接口
-                // piRequireOrderService.generateRequireOrder();
-                PISuccessMessage message =new PISuccessMessage();
-                message.setData(SerialUtil.creatSeria());
-                message.setSuccess(true);
+                PISuccessMessage  message  = piRequireOrderService.generateSalesOrder(order,order.getDealerNo(),order.getBranchNo(),order.getSalesOrg(),"");
                 if(message.isSuccess()){
                     this.uptVouCherNoByOrderNo(order.getOrderNo(),message.getData());
                 }
@@ -548,7 +548,7 @@ public class RequireOrderServiceImpl implements RequireOrderService {
         TSysUser user = userSessionService.getCurrentUser();
         TMdBranch branch  = branchMapper.selectBranchByNo(user.getBranchNo());
         Date today = new Date();
-        if("01".equals(branch.getBranchGroup())){
+        if("02".equals(branch.getBranchGroup())){
             int noProm = this.creatNoPromoSalOrderOfDealerBranch(today);
             int prom = this.creatPromoSalOrderOfDealerBranch(today);
             return this.getSaleOrderByQueryDate(sMode);
@@ -565,12 +565,11 @@ public class RequireOrderServiceImpl implements RequireOrderService {
             throw new ServiceException(MessageCode.LOGIC_ERROR,"该用户不存在奶站");
         }
         TMdBranch branch = branchMapper.selectBranchByNo(branchNo);
-        if(branch.getDealerNo()!=null){
-            sModel.setDealerNo(user.getDealerId());
-        }else{
+        if("01".equals(branch.getBranchGroup())){
             sModel.setBranchNo(branchNo);
+        }else{
+            sModel.setDealerNo(user.getDealerId());
         }
-
         return tSsmSalOrderMapper.selectSalOrderByDateAndBranchOrDealerNo(sModel);
     }
 
@@ -619,15 +618,18 @@ public class RequireOrderServiceImpl implements RequireOrderService {
      */
     private TSsmSalOrder  createSaleOrder(TSysUser user, Date requiredDate, String type, String promotion) {
         TSsmSalOrder order = new TSsmSalOrder();
-        order.setDealerNo(user.getDealerId());
+
         String orderNo = PrimaryKeyUtils.generateUuidKey();
         order.setOrderNo(orderNo);
         order.setSalesOrg(user.getSalesOrg());
         order.setRequiredDate(requiredDate);
         order.setBranchNo(user.getBranchNo());
         if("dealer".equals(type)){
+            TMdBranch branch = branchMapper.selectBranchByNo(user.getBranchNo());
+            order.setDealerNo(branch.getDealerNo());
             order.setBranchGroup("10");
         }else{
+            order.setDealerNo(user.getBranchNo());
             order.setBranchGroup("20");
         }
         order.setOrderDate(requiredDate);

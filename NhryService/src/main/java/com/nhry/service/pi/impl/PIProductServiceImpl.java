@@ -427,7 +427,6 @@ public class PIProductServiceImpl implements PIProductService {
                     branchEx.setReslo(codeItem.getAttr4());
                 }
                 branchEx.setDocType("Z08");
-
                 branchExMapper.insertBranchEx(branchEx);
             }else{
                 branchEx.setCompCode(et_kunnr.getBUKRS());

@@ -38,6 +38,8 @@ public interface OrderService {
 
 	int batchContinueOrder(OrderSearchModel record);
 	
+	int continueOrderAuto(String orderNo);
+	
 	int continueOrder(OrderSearchModel record);
 	
 	int batchContinueOrdeAfterStop(OrderSearchModel record);

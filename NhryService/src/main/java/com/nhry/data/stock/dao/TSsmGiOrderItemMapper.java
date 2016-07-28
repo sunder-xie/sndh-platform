@@ -17,5 +17,5 @@ public interface TSsmGiOrderItemMapper {
 
     int updateGiOrderItem(TSsmGiOrderItem record);
 
-    List<TSsmGiOrderItem> findGiOrderItem(String orderNo);
+    List<TSsmGiOrderItem> findGiOrderItem(TSsmGiOrderItemKey key);
 }

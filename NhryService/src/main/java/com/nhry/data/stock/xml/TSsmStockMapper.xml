@@ -41,7 +41,7 @@
             UNIT = #{unit,jdbcType=VARCHAR},
           </if>
           <if test="qty != null" >
-            QTY = QTY + #{qty,jdbcType=DECIMAL},
+            QTY = #{qty,jdbcType=DECIMAL},
           </if>
         </set>
         where BRANCH_NO = #{branchNo,jdbcType=VARCHAR}

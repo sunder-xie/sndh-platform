@@ -4,6 +4,7 @@ import com.github.pagehelper.PageInfo;
 import com.nhry.common.auth.UserSessionService;
 import com.nhry.common.exception.MessageCode;
 import com.nhry.common.exception.ServiceException;
+import com.nhry.data.auth.dao.TSysUserRoleMapper;
 import com.nhry.data.auth.domain.TSysUser;
 import com.nhry.data.basic.dao.TMdBranchEmpMapper;
 import com.nhry.data.milk.dao.TDispOrderItemMapper;
@@ -14,7 +15,7 @@ import com.nhry.data.milktrans.domain.TRecBotDetail;
 import com.nhry.model.milktrans.ReturnboxSerarch;
 import com.nhry.model.milktrans.UpdateReturnBoxModel;
 import com.nhry.service.milktrans.dao.ReturnBoxService;
-import com.nhry.utils.SerialUtil;
+import com.nhry.utils.PrimaryKeyUtils;
 
 import java.util.Date;
 import java.util.HashMap;
@@ -30,6 +31,12 @@ public class ReturnBoxServiceImpl implements ReturnBoxService {
     private TDispOrderItemMapper tDispOrderItemMapper;
     private TMdBranchEmpMapper empMapper;
     private UserSessionService userSessionService;
+    private TSysUserRoleMapper urMapper;
+
+    public void setUrMapper(TSysUserRoleMapper urMapper) {
+        this.urMapper = urMapper;
+    }
+
     public void setEmpMapper(TMdBranchEmpMapper empMapper) {
         this.empMapper = empMapper;
     }
@@ -96,7 +103,7 @@ public class ReturnBoxServiceImpl implements ReturnBoxService {
                     bot.setCreateBy(user.getLoginName());
                     bot.setCreateByTxt(user.getDisplayName());
                     bot.setStatus("10");
-                    bot.setDetLsh(SerialUtil.creatSeria());
+                    bot.setDetLsh(PrimaryKeyUtils.generateUuidKey());
                     tRecBotDetailMapper.addRecBotItem(bot);
                 }
             }
@@ -106,7 +113,16 @@ public class ReturnBoxServiceImpl implements ReturnBoxService {
 
     @Override
     public PageInfo searchRetBoxPage(ReturnboxSerarch rSearch) {
+
         TSysUser user = userSessionService.getCurrentUser();
+        List<String> rids = urMapper.getUserRidsByLoginName(user.getLoginName());
+        rSearch.setSalesOrg(user.getSalesOrg());
+        if(rids.contains("10004")){
+            rSearch.setBranchNo(user.getBranchNo());
+        }else if(rids.contains("10005")){
+            //经销商内勤
+            rSearch.setDealerNo(user.getDealerId());
+        }
         //返回列表
         PageInfo result = tRecBotDetailMapper.searchRetBoxPage(rSearch);
         return result;

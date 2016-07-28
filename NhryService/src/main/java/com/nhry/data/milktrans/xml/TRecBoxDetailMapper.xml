@@ -83,16 +83,26 @@
 
     <select id="searchRetBoxPage" resultMap="BoxRetResultMap" parameterType="com.nhry.model.milktrans.ReturnboxSerarch">
         SELECT
-        (SELECT i.ITEM_NAME from t_sys_code_item i WHERE i.TYPE_CODE="1009" and i.ITEM_CODE = d.SPEC ) SPEC_NAME,
-        SUM(d.RECEIVE_NUM) RECEIVE_NUM,SUM(d.REAL_NUM) REAL_NUM ,d.REC_DATE,d.STATUS,d.SPEC,
+        (
+          SELECT i.ITEM_NAME from t_sys_code_item i
+          WHERE i.TYPE_CODE= <include refid="mybaties.constant.bot_type"/>
+          and i.ITEM_CODE = d.SPEC
+        ) SPEC_NAME,
+        d.RECEIVE_NUM,
+        d.REAL_NUM ,
+        d.REC_DATE,
+        d.STATUS,
+        d.SPEC,
         d.BRANCH_NO,br.BRANCH_NAME,d.EMP_NO,e.EMP_NAME,br.DEALER_NO,de.DEALER_NAME,d.DET_LSH
         FROM t_rec_bot_detail d
-
-        LEFT JOIN t_md_branch br ON d.BRANCH_NO = br.BRANCH_NO
+        LEFT JOIN t_mst_disp_order o  on d.DISP_ORDER_NO = o.ORDER_NO
+        LEFT JOIN t_md_branch br ON o.BRANCH_NO = br.BRANCH_NO
         LEFT JOIN t_md_dealer de on br.DEALER_NO = de.DEALER_NO
         LEFT JOIN t_md_branch_emp e on d.EMP_NO = e.EMP_NO
-        GROUP BY d.SPEC,d.EMP_NO,d.REC_DATE
-        HAVING 1=1
+        where 1=1
+        <if test="salesOrg!=null and ''!=salesOrg">
+            and  br.SALES_ORG = #{salesOrg,jdbcType=VARCHAR}
+        </if>
         <if test="status!=null and ''!=status">
             and  d.STATUS = #{status,jdbcType=VARCHAR}
         </if>
@@ -103,7 +113,7 @@
             and d.EMP_NO = #{empNo,jdbcType=VARCHAR}
         </if>
         <if test="dealerNo!=null and ''!=dealerNo">
-            and de.DEALER_NO = #{dealerNo,jdbcType=VARCHAR}
+            and br.DEALER_NO = #{dealerNo,jdbcType=VARCHAR}
         </if>
         <if test="startDate!=null">
             and  d.REC_DATE &gt;= #{startDate,jdbcType=DATE}
@@ -111,6 +121,6 @@
         <if test="endDate!=null">
             and d.REC_DATE &lt;= #{endDate,jdbcType=DATE}
         </if>
-        ORDER BY d.REC_DATE asc
+        ORDER BY d.LAST_MODIFIED asc
     </select>
 </mapper>

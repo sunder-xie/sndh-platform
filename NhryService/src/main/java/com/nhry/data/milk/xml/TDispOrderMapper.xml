@@ -380,5 +380,6 @@
     DISP_DATE = #{branchName,jdbcType=DATE}
     and DISP_EMP_NO = #{dispEmpNo,jdbcType=VARCHAR}
     and REACH_TIME_TYPE = #{reachTimeType,jdbcType=VARCHAR}
+    and STATUS = '20'
   </select>
 </mapper>

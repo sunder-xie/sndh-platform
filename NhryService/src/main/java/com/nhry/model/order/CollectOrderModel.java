@@ -15,6 +15,7 @@ public class CollectOrderModel {
     private BigDecimal totalPrice;
     private TMdAddress address;
 
+
     public TMdAddress getAddress() {
         return address;
     }

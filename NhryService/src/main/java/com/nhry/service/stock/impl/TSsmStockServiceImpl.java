@@ -88,6 +88,7 @@ public class TSsmStockServiceImpl implements TSsmStockService {
             }else{
                 ssmStock1.setQty(new BigDecimal("0").subtract(qty));
             }
+            return ssmStockMapper.updateStock(ssmStock1);
         }else{
             ssmStock1 = new TSsmStock();
             ssmStock1.setBranchNo(branchNo);
@@ -96,7 +97,6 @@ public class TSsmStockServiceImpl implements TSsmStockService {
             ssmStock1.setQty(new BigDecimal("0").subtract(qty));
             return ssmStockMapper.insertStock(ssmStock1);
         }
-        return ssmStockMapper.updateStock(ssmStock1);
     }
 
 
