@@ -40,7 +40,6 @@ public class BranchBillServiceImpl implements BranchBillService {
         if(rids.contains("1004")){
             eSearch.setBranchNo(user.getBranchNo());
         }
-
         PageInfo data = branchBillMapper.branchBillEmpSearch(eSearch);
         return data;
     }

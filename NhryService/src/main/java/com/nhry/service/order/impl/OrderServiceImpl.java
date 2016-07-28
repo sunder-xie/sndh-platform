@@ -1064,7 +1064,7 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 		order.setSign("10");//在订状态
 		order.setSalesOrg(userSessionService.getCurrentUser().getSalesOrg());//销售组织
 		order.setDealerNo(userSessionService.getCurrentUser().getDealerId());//进销商
-		//受款日期
+		//征订日期
 		if(StringUtils.isNotBlank(order.getSolicitDateStr())){
 			try
 			{
@@ -1078,7 +1078,7 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 
 		//如果地址信息不为空，为订户创建新的地址
 		if(record.getAddress() != null && "1".equals(record.getAddress().getAddressMode())){
-			if(!"10".equals(order.getPreorderSource())){
+			if("30".equals(order.getPreorderSource()) ){
 				record.getAddress().setVipCustNo(order.getMilkmemberNo());
 				record.getAddress().setRecvName(order.getMilkmemberName());
 				order.setAdressNo(tVipCustInfoService.addAddressForCust(record.getAddress(),null).split(",")[1]);

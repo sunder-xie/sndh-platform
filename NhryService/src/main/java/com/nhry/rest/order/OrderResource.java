@@ -67,7 +67,7 @@ public class OrderResource extends BaseResource {
 	@GET
 	@Path("/queryCollectByOrderNo")
 	@Produces(MediaType.APPLICATION_JSON)
-	@ApiOperation(value = "/queryCollectByOrderNo", response = OrderCreateModel.class, notes = "根据订单编号查询收款信息")
+	@ApiOperation(value = "/queryCollectByOrderNo", response = CollectOrderModel.class, notes = "根据订单编号查询收款信息")
 	public Response queryCollectByOrderNo(@ApiParam(required=true,name="orderCode",value="订单编号") @QueryParam("orderCode") String orderCode){
 		return convertToRespModel(MessageCode.NORMAL, null, orderService.queryCollectByOrderNo(orderCode));
 	}

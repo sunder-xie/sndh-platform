@@ -9,6 +9,7 @@ import com.nhry.model.order.ReturnOrderModel;
 import com.nhry.model.order.UpdateManHandOrderModel;
 import com.nhry.service.order.pojo.OrderRemainData;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 public interface TPreOrderMapper {
@@ -57,7 +58,11 @@ public interface TPreOrderMapper {
     List<TPreOrder> selectNodeletedByMilkmemberNo(TPreOrder order);
     
     int updateOrderSolicitor(TPreOrder order);
-    
+
+    BigDecimal calculateOrderFactoryAmt(String orderNo);
+
+    int updateOrderFacAmt(BigDecimal factAmt, String orderNo);
+
     int selectRequiredOrderNum(OrderSearchModel smodel);
     
     int selectStopOrderNum(OrderSearchModel smodel);

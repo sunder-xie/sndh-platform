@@ -21,6 +21,24 @@ public class ReturnBoxModel {
     private Date recDate;
     private int receiveNum;
     private int realNum;
+    private Date createAt;
+    private Date lastModified;
+
+    public Date getLastModified() {
+        return lastModified;
+    }
+
+    public void setLastModified(Date lastModified) {
+        this.lastModified = lastModified;
+    }
+
+    public Date getCreateAt() {
+        return createAt;
+    }
+
+    public void setCreateAt(Date createAt) {
+        this.createAt = createAt;
+    }
 
     public String getSpecName() {
         return specName;

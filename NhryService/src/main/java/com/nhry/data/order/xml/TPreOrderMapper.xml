@@ -17,6 +17,9 @@
     <result column="CUSTOMER_TEL" property="customerTel" jdbcType="VARCHAR" />
     <result column="MILKMEMBER_NO" property="milkmemberNo" jdbcType="VARCHAR" />
     <result column="MILKMEMBER_NAME" property="milkmemberName" jdbcType="VARCHAR" />
+    <result column="ACCT_AMT" property="acctAmt" jdbcType="DECIMAL" />
+
+    <result column="FACT_AMT" property="factAmt" jdbcType="DECIMAL" />
     <result column="MEMBER_NO" property="memberNo" jdbcType="VARCHAR" />
     <result column="PAYMENT_STAT" property="paymentStat" jdbcType="VARCHAR" />
     <result column="MILKBOX_STAT" property="milkboxStat" jdbcType="VARCHAR" />
@@ -95,13 +98,14 @@
     b.BRANCH_NAME BRANCH_NAME,o.BRANCH_NO, o.MILKMEMBER_NO, o.MEMBER_NO, o.PAYMENT_STAT, o.MILKBOX_STAT, o.INIT_AMT, o.CUR_AMT, 
     o.DISP_LINE_NO, o.EMP_NO,e.EMP_NAME EMP_NAME,o.ADRESS_NO, o.CREATER_NO, o.CREATER_BY, o.PREORDER_STAT, o.MEMO_TXT, 
     o.PAY_METHOD, o.SOLICIT_NO, o.SOLICIT_DATE, o.SOLICITOR_NO,e2.EMP_NAME SOLICIT_BY, o.END_DATE,o.STOP_DATE_START,o.DELIVERY_TYPE,
-    o.STOP_DATE_END,o.STOP_REASON,v.MP CUSTOMER_TEL,v.VIP_NAME MILKMEMBER_NAME,o.SIGN,o.SALES_ORG,
+    o.STOP_DATE_END,o.STOP_REASON,v.MP CUSTOMER_TEL,v.VIP_NAME MILKMEMBER_NAME,o.SIGN,o.SALES_ORG,a.ACCT_AMT,b.TEL BRANCH_TEL,
     (SELECT i.ITEM_NAME from t_sys_code_item i WHERE i.TYPE_CODE= <include refid="mybaties.constant.SALES_ORG_CONSTANT"/> and i.ITEM_CODE = o.SALES_ORG ) SALES_ORG_NAME,
     o.DEALER_NO,o.RESUME_FLAG,
     e3.EMP_NAME PAY_MAN,p.RECEIPT_DATE PAY_DATE
     FROM t_preorder o 
     left join t_md_branch b on o.BRANCH_NO = b.BRANCH_NO
     left join t_vip_cust_info v on v.VIP_CUST_NO = o.MILKMEMBER_NO
+    LEFT JOIN t_vip_acct a ON v.VIP_CUST_NO = a.VIP_CUST_NO
     left join t_md_branch_emp e on e.EMP_NO = o.EMP_NO
     left join t_md_branch_emp e2 on e2.EMP_NO = o.SOLICITOR_NO
     left join t_mst_recv_bill p on p.ORDER_NO = o.ORDER_NO
@@ -771,5 +775,26 @@
     where ORDER_NO = #{orderNo,jdbcType=VARCHAR}
   </update>
 
+  <select id="calculateOrderFactoryAmt" resultType="BIGDECIMAL" parameterType="String">
+   SELECT
+	IFNULL(SUM(t.FACTORY_PRICE * t.QTY),0)
+    from (
+              SELECT
+              i.MATNR,i.QTY,
+              (
+                  SELECT gi.FACTORY_PRICE
+                  FROM t_ssm_gi_order_item gi LEFT JOIN t_ssm_gi_order go on gi.ORDER_NO = go.ORDER_NO
+                  WHERE go.BRANCH_NO = o.BRANCH_NO
+                  and go.ORDER_DATE = o.ORDER_DATE
+                  and gi.MATNR = i.MATNR
+              ) FACTORY_PRICE
+              FROM t_mst_order_daliy_plan_item i
+              LEFT JOIN t_preorder o on i.ORDER_NO = o.ORDER_NO
+              WHERE o.ORDER_NO =  #{orderNo,jdbcType=VARCHAR}
+            )t
+  </select>
 
+  <update id="updateOrderFacAmt" parameterType="java.util.Map">
+    UPDATE  t_preorder  SET  FACT_AMT = #{factAmt} WHERE  ORDER_NO = #{orderNo}
+  </update>
 </mapper>
