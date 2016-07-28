@@ -13,7 +13,7 @@ public class BranchBillEmpModel {
     private Date dispDate;
     private BigDecimal qty;
     private BigDecimal salePrice;
-    private BigDecimal billPirce;
+    private BigDecimal billPrice;
     private List<BranchBillEmpItemModel> entries;
 
     public String getEmpNo() {
@@ -56,12 +56,12 @@ public class BranchBillEmpModel {
         this.salePrice = salePrice;
     }
 
-    public BigDecimal getBillPirce() {
-        return billPirce;
+    public BigDecimal getBillPrice() {
+        return billPrice;
     }
 
-    public void setBillPirce(BigDecimal billPirce) {
-        this.billPirce = billPirce;
+    public void setBillPrice(BigDecimal billPrice) {
+        this.billPrice = billPrice;
     }
 
     public List<BranchBillEmpItemModel> getEntries() {

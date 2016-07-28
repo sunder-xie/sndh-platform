@@ -11,7 +11,10 @@ import com.nhry.model.order.ReturnOrderModel;
 import com.nhry.model.order.UpdateManHandOrderModel;
 import com.nhry.service.order.pojo.OrderRemainData;
 
+import java.math.BigDecimal;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class TPreOrderMapperImpl implements TPreOrderMapper
 {
@@ -151,5 +154,19 @@ public class TPreOrderMapperImpl implements TPreOrderMapper
 	{
 		return sqlSessionTemplate.update("updateOrderSolicitor", order);
 	}
-	
+
+	@Override
+	public BigDecimal calculateOrderFactoryAmt(String orderNo) {
+		return sqlSessionTemplate.selectOne("calculateOrderFactoryAmt",orderNo);
+	}
+
+
+	@Override
+	public int updateOrderFacAmt(BigDecimal factAmt, String orderNo) {
+		Map<String,Object> map =new HashMap<String,Object>();
+		map.put("factAmt",factAmt);
+		map.put("orderNo",orderNo);
+		return sqlSessionTemplate.update("updateOrderFacAmt",map);
+	}
+
 }
