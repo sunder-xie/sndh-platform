@@ -64,8 +64,8 @@ public class EnvContant {
 		}else{
 			return getSystemConst("authurl") + "?client_id="
 					+ getSystemConst("client_id") + "&redirect_uri="
-					+ getSystemConst("redirect_uri") + "&response_type="
-					+ getSystemConst("response_type")+"&id="+Base64Util.encodeStr(remoteIp);
+					+ getSystemConst("redirect_uri") + "?id="+Base64Util.encodeStr(remoteIp)+"&response_type="
+					+ getSystemConst("response_type");
 		}
 	}
 
