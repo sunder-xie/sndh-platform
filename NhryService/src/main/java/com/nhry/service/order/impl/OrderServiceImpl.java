@@ -200,12 +200,22 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 	@Override
 	public int batchStopOrderForTime(OrderSearchModel record)
 	{
-		if(StringUtils.isNotBlank(record.getOrderNo())){
-			List<String> orderList = Arrays.asList(record.getOrderNo().split(","));
-			orderList.stream().forEach((e)->{
-				record.setOrderNo(e);
-				stopOrderForTime(record);
-			});
+		if(StringUtils.isBlank(record.getOrderDateEnd())){
+			if(StringUtils.isNotBlank(record.getOrderNo())){
+				List<String> orderList = Arrays.asList(record.getOrderNo().split(","));
+				orderList.stream().forEach((e)->{
+					record.setOrderNo(e);
+					stopOrderForTime(record);
+				});
+			}
+		}else{
+			if(StringUtils.isNotBlank(record.getOrderNo())){
+				List<String> orderList = Arrays.asList(record.getOrderNo().split(","));
+				orderList.stream().forEach((e)->{
+					record.setOrderNo(e);
+					stopOrderInTime(record);
+				});
+			}
 		}
 		
 		return 1;
