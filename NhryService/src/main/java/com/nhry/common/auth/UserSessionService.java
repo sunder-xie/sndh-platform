@@ -62,7 +62,7 @@
     	 * @return
     	 */
     	public TSysUser getCurrentUser(){
-    		if(!"develope".equals(SysContant.getSystemConst("app_mode"))){
+    		if(!"product".equals(SysContant.getSystemConst("app_mode"))){
     			//测试时使用
     			TSysUser user = new TSysUser();
     			Date date =  new Date();
