@@ -60,14 +60,14 @@ public class AuthFilter implements ContainerRequestFilter {
 	public ContainerRequest filter(ContainerRequest request) {
 		// TODO Auto-generated method stub
 		String uri = request.getAbsolutePath().getPath();
-		String host = servletRequest.getRemoteHost();
-		System.out.println("----host-------"+host);
 		if("product".equals(SysContant.getSystemConst("app_mode"))){
 			if(isExsitUri(uri)){
 				return request;
 			}
 			String ak =request.getHeaderValue("dh-token");
 			String flag =request.getHeaderValue("nh-flag");
+			String host = request.getHeaderValue("Host");
+			System.out.println("-----head host-----"+host);
 			//未登录
 			if(StringUtils.isEmpty(ak)){
 				if(!whiteUriList.contains(uri)){
