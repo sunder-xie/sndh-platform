@@ -121,28 +121,29 @@ public class TDispOrderItemMapperImpl implements TDispOrderItemMapper
 		key.setConfirmMatnr(record.getProductCode());
 		if(!"10".equals(key.getReason()))key.setConfirmAmt(key.getConfirmQty().multiply(orgPrice));
 		//回瓶规格
-		if(!record.getMatnr().equals(record.getProductCode())){
-			if(productMap.containsKey(record.getProductCode())){
-				if(productMap.get(record.getProductCode()).equals("10")){
-					key.setRetQtyS(key.getConfirmQty().intValue());
-				}
-				else if(productMap.get(record.getProductCode()).equals("20")){
-					key.setRetQtyM(key.getConfirmQty().intValue());
-				}
-				else if(productMap.get(record.getProductCode()).equals("30")){
-					key.setRetQtyB(key.getConfirmQty().intValue());
-				}
-				else{
-					key.setRetQtyS(0);
-					key.setRetQtyM(0);
-					key.setRetQtyB(0);
-				}
-			}else{
-				key.setRetQtyS(0);
-				key.setRetQtyM(0);
-				key.setRetQtyB(0);
-			}
-		}
+//		if(!record.getMatnr().equals(record.getProductCode())){
+//			if(productMap.containsKey(record.getProductCode())){
+//				if(productMap.get(record.getProductCode()).equals("10")){
+//					key.setRetQtyS(key.getConfirmQty().intValue());
+//				}
+//				else if(productMap.get(record.getProductCode()).equals("20")){
+//					key.setRetQtyM(key.getConfirmQty().intValue());
+//				}
+//				else if(productMap.get(record.getProductCode()).equals("30")){
+//					key.setRetQtyB(key.getConfirmQty().intValue());
+//				}
+//				else{
+//					key.setRetQtyS(0);
+//					key.setRetQtyM(0);
+//					key.setRetQtyB(0);
+//				}
+//			}else{
+//				key.setRetQtyS(0);
+//				key.setRetQtyM(0);
+//				key.setRetQtyB(0);
+//			}
+//		}
+		
 //		key.setLastModified(new Date());
 //		key.setLastModifiedBy(userSessionService.getCurrentUser().getLoginName());
 //		key.setLastModifiedByTxt(userSessionService.getCurrentUser().getDisplayName());

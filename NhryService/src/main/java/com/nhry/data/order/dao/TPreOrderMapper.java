@@ -12,6 +12,8 @@ import com.nhry.service.order.pojo.OrderRemainData;
 import java.util.List;
 
 public interface TPreOrderMapper {
+	 int updateOrderResumed(String orderNo);
+	
     int deleteByPrimaryKey(String orderNo);
 
     int insert(TPreOrder record);
