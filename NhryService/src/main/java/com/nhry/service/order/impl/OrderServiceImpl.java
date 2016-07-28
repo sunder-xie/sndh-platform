@@ -200,12 +200,22 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 	@Override
 	public int batchStopOrderForTime(OrderSearchModel record)
 	{
-		if(StringUtils.isNotBlank(record.getOrderNo())){
-			List<String> orderList = Arrays.asList(record.getOrderNo().split(","));
-			orderList.stream().forEach((e)->{
-				record.setOrderNo(e);
-				stopOrderForTime(record);
-			});
+		if(StringUtils.isBlank(record.getOrderDateEnd())){
+			if(StringUtils.isNotBlank(record.getOrderNo())){
+				List<String> orderList = Arrays.asList(record.getOrderNo().split(","));
+				orderList.stream().forEach((e)->{
+					record.setOrderNo(e);
+					stopOrderForTime(record);
+				});
+			}
+		}else{
+			if(StringUtils.isNotBlank(record.getOrderNo())){
+				List<String> orderList = Arrays.asList(record.getOrderNo().split(","));
+				orderList.stream().forEach((e)->{
+					record.setOrderNo(e);
+					stopOrderInTime(record);
+				});
+			}
 		}
 		
 		return 1;
@@ -549,6 +559,12 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 	{
 		SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
 		TPreOrder order = tPreOrderMapper.selectByPrimaryKey(orderNo);
+		
+		if("Y".equals(order.getResumeFlag())){
+			throw new ServiceException(MessageCode.LOGIC_ERROR, orderNo+" [订单已经被续订过!]");
+		}
+		tPreOrderMapper.updateOrderResumed(orderNo);//该订单已经被续订
+		
 		ArrayList<TPlanOrderItem> entries = (ArrayList<TPlanOrderItem>) tPlanOrderItemMapper.selectByOrderCode(orderNo);
 		if(order!= null){
 			if("20".equals(order.getMilkboxStat()))throw new ServiceException(MessageCode.LOGIC_ERROR, orderNo+"原订单还没有装箱，不能续订!");
@@ -662,6 +678,12 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 	{
 		SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
 		TPreOrder order = tPreOrderMapper.selectByPrimaryKey(record.getOrderNo());
+		
+		if("Y".equals(order.getResumeFlag())){
+			throw new ServiceException(MessageCode.LOGIC_ERROR, order.getOrderNo()+" [订单已经被续订过!]");
+		}
+		tPreOrderMapper.updateOrderResumed(order.getOrderNo());//该订单已经被续订
+		
 		ArrayList<TPlanOrderItem> entries = (ArrayList<TPlanOrderItem>) tPlanOrderItemMapper.selectByOrderCode(record.getOrderNo());
 		if(order!= null){
 			if("20".equals(order.getMilkboxStat()))throw new ServiceException(MessageCode.LOGIC_ERROR,record.getOrderNo()+"原订单还没有装箱，不能续订!");

@@ -102,13 +102,25 @@ public class TPreOrder {
     
     private String payMan;
     
+    private String resumeFlag;
+    
     private Date payDate;
     String branchEmpNo;
     String branchMp;
     String branchEmpName;
     String addressTxt;
 
-    public String getSalesOrgName() {
+    public String getResumeFlag()
+	{
+		return resumeFlag;
+	}
+
+	public void setResumeFlag(String resumeFlag)
+	{
+		this.resumeFlag = resumeFlag;
+	}
+
+	public String getSalesOrgName() {
         return salesOrgName;
     }
 
