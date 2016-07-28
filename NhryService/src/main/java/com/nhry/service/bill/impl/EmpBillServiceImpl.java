@@ -6,7 +6,6 @@ import com.nhry.common.exception.MessageCode;
 import com.nhry.common.exception.ServiceException;
 import com.nhry.data.auth.dao.TSysUserRoleMapper;
 import com.nhry.data.auth.domain.TSysUser;
-import com.nhry.data.auth.domain.TSysUserRole;
 import com.nhry.data.basic.dao.TMdBranchEmpMapper;
 import com.nhry.data.basic.dao.TMdMaraExMapper;
 import com.nhry.data.basic.domain.TMdBranchEmp;
@@ -22,7 +21,6 @@ import com.nhry.model.bill.*;
 import com.nhry.service.bill.dao.EmpBillService;
 import com.nhry.utils.PrimaryKeyUtils;
 import com.nhry.utils.YearLastMonthUtil;
-
 import org.apache.commons.lang3.StringUtils;
 
 import java.math.BigDecimal;
@@ -89,6 +87,12 @@ public class EmpBillServiceImpl implements EmpBillService {
         TSysUser user = userSessionService.getCurrentUser();
         if(StringUtils.isBlank(eSearch.getPageNum()) || StringUtils.isBlank(eSearch.getPageSize())){
             throw new ServiceException(MessageCode.LOGIC_ERROR,"pageNum和pageSize不能为空！");
+        }
+        List<String> rids = urMapper.getUserRidsByLoginName(user.getLoginName());
+        if(rids.contains("10004")){
+            eSearch.setBranchNo(user.getBranchNo());
+        } else if(rids.contains("10005")){
+            eSearch.setDealerNo(user.getDealerId());
         }
         eSearch.setSalesOrg(user.getSalesOrg());
         return  empBillMapper.empAccountReceAmount(eSearch);

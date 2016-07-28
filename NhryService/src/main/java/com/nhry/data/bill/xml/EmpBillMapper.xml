@@ -17,6 +17,7 @@
 
     <resultMap id="EmpAccountResultMap" type="com.nhry.model.bill.EmpAccountReceAmount" >
         <result column="ORDER_NO" property="orderNo" jdbcType="VARCHAR" />
+        <result column="RECEIPT_NO" property="receiptNo" jdbcType="VARCHAR" />
         <result column="BRANCH_NAME" property="branchName" jdbcType="VARCHAR" />
         <result column="EMP_NAME" property="empName" jdbcType="VARCHAR" />
         <result column="CUST_NAME" property="custName" jdbcType="VARCHAR" />
@@ -182,7 +183,7 @@
 
     <select id="empAccountReceAmount" resultMap="EmpAccountResultMap" parameterType="com.nhry.model.bill.EmpDispDetialInfoSearch">
         SELECT
-        o.ORDER_NO,
+        b.ORDER_NO,
         o.PAYMENTMETHOD,
         e.EMP_NAME,
         c.VIP_NAME CUST_NAME,
@@ -202,13 +203,16 @@
         b.RECEIPT_DATE PAYMENT_DATE
         FROM t_mst_recv_bill b
         LEFT JOIN t_preorder o  on  o.ORDER_NO = b.ORDER_NO
-        LEFT JOIN	t_md_branch_emp e on o.EMP_NO = e.EMP_NO
-        LEFT JOIN t_vip_cust_info c on o.MILKMEMBER_NO = c.VIP_CUST_NO
-        LEFT JOIN t_vip_acct a on c.VIP_CUST_NO = a.VIP_CUST_NO
+        LEFT JOIN	t_md_branch_emp e on b.RECV_EMP = e.EMP_NO
+        LEFT JOIN t_vip_cust_info c on b.VIP_CUST_NO = c.VIP_CUST_NO
+        LEFT JOIN t_vip_acct a on b.VIP_CUST_NO = a.VIP_CUST_NO
         LEFT JOIN t_md_branch br on o.BRANCH_NO = br.BRANCH_NO
         WHERE 1= 1
             <if test="salesOrg!=null and ''!=salesOrg">
                 and o.SALES_ORG = #{salesOrg,jdbcType=VARCHAR}
+            </if>
+            <if test="dealerNo!=null and ''!=dealerNo">
+                and br.DEALER_NO = #{dealerNo,jdbcType=VARCHAR}
             </if>
 
             <if test="branchNo!=null and ''!=branchNo">
