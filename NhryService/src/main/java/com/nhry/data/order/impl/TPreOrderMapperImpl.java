@@ -157,5 +157,17 @@ public class TPreOrderMapperImpl implements TPreOrderMapper
 	{
 		return sqlSessionTemplate.update("updateOrderSolicitor", order);
 	}
+
+	@Override
+	public int selectRequiredOrderNum(OrderSearchModel smodel)
+	{
+		return sqlSessionTemplate.selectOne("selectRequiredOrderNum",smodel);
+	}
+
+	@Override
+	public int selectStopOrderNum(OrderSearchModel smodel)
+	{
+		return sqlSessionTemplate.selectOne("selectStopOrderNum",smodel);
+	}
 	
 }

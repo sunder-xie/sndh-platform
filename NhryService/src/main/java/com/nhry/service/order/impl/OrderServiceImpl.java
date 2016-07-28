@@ -83,6 +83,29 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 		this.milkBoxService = milkBoxService;
 	}
 
+	//登陆页面时，待确认的订单
+	@Override
+	public int selectRequiredOrderNum()
+	{
+		OrderSearchModel smodel = new OrderSearchModel();
+		smodel.setBranchNo(userSessionService.getCurrentUser().getBranchNo());
+		smodel.setSalesOrg(userSessionService.getCurrentUser().getSalesOrg());
+		smodel.setDealerNo(userSessionService.getCurrentUser().getDealerId());
+		return tPreOrderMapper.selectRequiredOrderNum(smodel);
+	}
+
+	//登陆页面时，还有5天就要到期的订单
+	@Override
+	public int selectStopOrderNum()
+	{
+		SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
+		OrderSearchModel smodel = new OrderSearchModel();
+		smodel.setBranchNo(userSessionService.getCurrentUser().getBranchNo());
+		smodel.setSalesOrg(userSessionService.getCurrentUser().getSalesOrg());
+		smodel.setDealerNo(userSessionService.getCurrentUser().getDealerId());
+		smodel.setOrderDate(format.format(afterDate(new Date(),5)));
+		return tPreOrderMapper.selectStopOrderNum(smodel);
+	}
 
 	/* (non-Javadoc)
         * @title: selectOrderByCode
@@ -2822,5 +2845,5 @@ public class OrderServiceImpl extends BaseService implements OrderService {
     			}
     		}
   	}
-  	
+
 }
