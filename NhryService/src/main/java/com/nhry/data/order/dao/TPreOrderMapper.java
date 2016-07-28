@@ -13,6 +13,8 @@ import java.math.BigDecimal;
 import java.util.List;
 
 public interface TPreOrderMapper {
+	 int updateOrderResumed(String orderNo);
+	
     int deleteByPrimaryKey(String orderNo);
 
     int insert(TPreOrder record);
@@ -60,4 +62,8 @@ public interface TPreOrderMapper {
     BigDecimal calculateOrderFactoryAmt(String orderNo);
 
     int updateOrderFacAmt(BigDecimal factAmt, String orderNo);
+
+    int selectRequiredOrderNum(OrderSearchModel smodel);
+    
+    int selectStopOrderNum(OrderSearchModel smodel);
 }

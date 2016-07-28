@@ -24,6 +24,12 @@ public class TPreOrderMapperImpl implements TPreOrderMapper
 	}
 	
 	@Override
+	public int updateOrderResumed(String orderNo) {
+		// TODO Auto-generated method stub
+		return sqlSessionTemplate.update("updateOrderResumed",orderNo);
+	}
+	
+	@Override
 	public PageInfo selectOrdersByPages(OrderSearchModel smodel) {
 		// TODO Auto-generated method stub
 		return sqlSessionTemplate.selectListByPages("searchOrders",smodel, Integer.parseInt(smodel.getPageNum()), Integer.parseInt(smodel.getPageSize()));
@@ -169,4 +175,14 @@ public class TPreOrderMapperImpl implements TPreOrderMapper
 		return sqlSessionTemplate.update("updateOrderFacAmt",map);
 	}
 
+	public int selectRequiredOrderNum(OrderSearchModel smodel)
+	{
+		return sqlSessionTemplate.selectOne("selectRequiredOrderNum",smodel);
+	}
+
+	@Override
+	public int selectStopOrderNum(OrderSearchModel smodel)
+	{
+		return sqlSessionTemplate.selectOne("selectStopOrderNum",smodel);
+	}
 }

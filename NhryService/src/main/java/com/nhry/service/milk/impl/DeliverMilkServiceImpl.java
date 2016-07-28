@@ -257,34 +257,38 @@ public class DeliverMilkServiceImpl extends BaseService implements DeliverMilkSe
 			entries = tDispOrderItemMapper.selectItemsByKeys(record);
 			StringBuffer sb = new StringBuffer();
 			
-			//昨天的回瓶
-			TDispOrder record2 = new TDispOrder();
-			record2.setDispEmpNo(dispOrder.getDispEmpNo());
-			record2.setBranchName(format.format(afterDate(dispOrder.getDispDate(),-1)));//日期
-			record2.setReachTimeType(dispOrder.getReachTimeType());
-			TDispOrder tmpDispOrder = tDispOrderMapper.selectYestodayDispOrderByEmp(record2);
-			if(tmpDispOrder!=null){
-				String yestodayOrderNo = tmpDispOrder.getOrderNo();
-				//查昨日的回瓶管理
-				routeModel.setRetAmt(returnBoxService.getLastDayRets(yestodayOrderNo));
+			try{
+				//昨天的回瓶
+				TDispOrder record2 = new TDispOrder();
+				record2.setDispEmpNo(dispOrder.getDispEmpNo());
+				record2.setBranchName(format.format(afterDate(dispOrder.getDispDate(),-1)));//日期
+				record2.setReachTimeType(dispOrder.getReachTimeType());
+				TDispOrder tmpDispOrder = tDispOrderMapper.selectYestodayDispOrderByEmp(record2);
+				if(tmpDispOrder!=null){
+					String yestodayOrderNo = tmpDispOrder.getOrderNo();
+					//查昨日的回瓶管理
+					routeModel.setRetAmt(returnBoxService.getLastDayRets(yestodayOrderNo));
+				}
+				
+				//处理每个产品应该送多少个
+				Map<String,Integer> productMap = new HashMap<String,Integer>();
+				Map<String,String> productNameMap = new HashMap<String,String>();
+				entries.stream().forEach((e)->{
+					if(!productNameMap.containsKey(e.getMatnr())){
+						productNameMap.put(e.getMatnr(), e.getMatnrTxt());
+					}
+					if(productMap.containsKey(e.getMatnr())){
+						productMap.replace(e.getMatnr(), productMap.get(e.getMatnr()) + e.getQty().intValue());
+					}else{
+						productMap.put(e.getMatnr(), e.getQty().intValue());
+					}
+				});
+				productMap.keySet().stream().forEach((e)->{
+					sb.append(productNameMap.get(e) + "(" + productMap.get(e) + "),");
+				});
+			}catch(Exception e){
+				//暂时不处理
 			}
-			
-			//处理每个产品应该送多少个
-			Map<String,Integer> productMap = new HashMap<String,Integer>();
-			Map<String,String> productNameMap = new HashMap<String,String>();
-			entries.stream().forEach((e)->{
-				if(!productNameMap.containsKey(e.getMatnr())){
-					productNameMap.put(e.getMatnr(), e.getMatnrTxt());
-				}
-				if(productMap.containsKey(e.getMatnr())){
-					productMap.replace(e.getMatnr(), productMap.get(e.getMatnr()) + e.getQty().intValue());
-				}else{
-					productMap.put(e.getMatnr(), e.getQty().intValue());
-				}
-			});
-			productMap.keySet().stream().forEach((e)->{
-				sb.append(productNameMap.get(e) + "(" + productMap.get(e) + "瓶),");
-			});
 			
 			//返回信息
 			routeModel.setOrder(dispOrder);
@@ -664,6 +668,7 @@ public class DeliverMilkServiceImpl extends BaseService implements DeliverMilkSe
 //		
 //		for(TDispOrderItem item : list){
 			TPreOrder order = tPreOrderMapper.selectByPrimaryKey(orderNo);
+			if("10".equals(order.getPaymentmethod()))return 1;//后付款的暂时不处理
 			order.setCurAmt(order.getCurAmt().subtract(amt));
 			tPreOrderMapper.updateOrderCurAmt(order);
 //		}
