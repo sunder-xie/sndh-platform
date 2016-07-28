@@ -25,6 +25,7 @@ import com.nhry.common.ladp.LadpService;
 import com.nhry.data.auth.domain.TSysUser;
 import com.nhry.service.auth.dao.UserService;
 import com.nhry.utils.APIHttpClient;
+import com.nhry.utils.Base64Util;
 import com.nhry.utils.CookieUtil;
 import com.nhry.utils.EnvContant;
 import com.nhry.utils.HttpUtils;
@@ -102,13 +103,14 @@ public class IdmAuthServlet extends HttpServlet {
 	
 	public void sendRedirectToHomePage(HttpServletRequest request, HttpServletResponse response,String token,String ip){
 		//跳转到登录页面
+		System.out.println("------传入-ip------"+ip);
 		try {
 			if(StringUtils.isEmpty(ip)){
 				response.setHeader("dh_token", token);
 				response.sendRedirect(EnvContant.getSystemConst("front_home_page")+"?dh_token="+token);
 			}else{
 				response.setHeader("dh_token", token);
-				response.sendRedirect("http://"+EnvContant.getSystemConst("front_short_url")+"?dh_token="+token);
+				response.sendRedirect("http://"+Base64Util.decodeStr(ip)+EnvContant.getSystemConst("front_short_url")+"?dh_token="+token);
 			}
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
