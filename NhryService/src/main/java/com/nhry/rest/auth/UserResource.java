@@ -90,11 +90,11 @@ public class UserResource extends BaseResource {
 	}
 	
 	@POST
-	@Path("/find/{token}")
+	@Path("/current/logined")
 	@Produces(MediaType.APPLICATION_JSON)
-	@ApiOperation(value = "/find/{token}", response = ResponseModel.class, notes = "根据token获取用户信息")
-	public Response login(@ApiParam(required = true, name = "token", value = "token") @PathParam("token") String token) {
-		return convertToRespModel(MessageCode.NORMAL,null, userService.findUserBytoken(token));
+	@ApiOperation(value = "/current/logined", response = ResponseModel.class, notes = "获取当前登录的用户信息")
+	public Response getCurrentLoginUser() {
+		return convertToRespModel(MessageCode.NORMAL,null, userService.getCurrentLoginUser());
 	}
 	
 	@POST

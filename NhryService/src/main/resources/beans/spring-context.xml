@@ -106,4 +106,6 @@
 	</aop:config>
 
 	<context:component-scan base-package="com.nhry.rest" />
+	<context:component-scan base-package="com.nhry.common.auth" />
+	<context:component-scan base-package="com.nhry.servlet" />
 </beans>

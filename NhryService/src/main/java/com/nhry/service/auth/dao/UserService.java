@@ -30,7 +30,7 @@ public interface UserService {
 	 * @param token
 	 * @return
 	 */
-	public TSysUser findUserBytoken(String token);
+	public TSysUser getCurrentLoginUser();
 	
 	public TSysUser findUserByLoginName(String loginName);
 	

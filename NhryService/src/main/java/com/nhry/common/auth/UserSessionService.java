@@ -66,10 +66,10 @@
     			//测试时使用
     			TSysUser user = new TSysUser();
     			Date date =  new Date();
-    			user.setLoginName("88022396");
+    			user.setLoginName("88888882");
     			user.setDisplayName("测试用户");
-    			user.setBranchNo("");
-    			user.setDealerId("");
+    			user.setBranchNo("0300005940");
+//    			user.setDealerId("");
     			user.setSalesOrg("4111");
     //			user.setSalesOrg("4100");
     			user.setLastModified(date);
