@@ -1,5 +1,8 @@
 package com.nhry.service.external.impl;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import org.codehaus.jettison.json.JSONArray;
 import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONObject;
@@ -10,6 +13,7 @@ import com.nhry.model.order.OrderSearchModel;
 import com.nhry.service.external.EcBaseService;
 import com.nhry.service.external.dao.EcService;
 import com.nhry.utils.EnvContant;
+import com.nhry.utils.HttpUtils;
 
 public class EcServiceImpl extends EcBaseService implements EcService{
 
@@ -42,10 +46,6 @@ public class EcServiceImpl extends EcBaseService implements EcService{
 			branchJson.put("emp_no",branch.getEmpNo());
 			branchJson.put("mp",branch.getMp());
 			branchJson.put("dealer_no",branch.getDealerNo());
-			branchJson.put("emp_no",branch.getEmpNo());
-			branchJson.put("emp_no",branch.getEmpNo());
-			branchJson.put("emp_no",branch.getEmpNo());
-			branchJson.put("emp_no",branch.getEmpNo());
 			data.put(branchJson);
 			ssbi.put("data", data);
 			body.put("SVCSENDBRANCHINFO", ssbi);
@@ -53,7 +53,7 @@ public class EcServiceImpl extends EcBaseService implements EcService{
 			arr.put(json);
 			System.out.println("----------"+arr.toString());
 			pushMessage2Ec(EnvContant.getSystemConst("ec_base_url")+EnvContant.getSystemConst("ec_upt_branch"), arr.toString(), true);
-		} catch (JSONException e) {
+		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
@@ -77,16 +77,16 @@ public class EcServiceImpl extends EcBaseService implements EcService{
 				orderSearchJson.put("ecOrderNo", "");
 				orderSearchJson.put("orderPlatNo", "");
 				orderSearchJson.put("dhOrderNo", "");
-				orderSearchJson.put("vipNo", "");
+				orderSearchJson.put("vipNo", model.getMilkmemberNo());
 				orderSearchJson.put("mobile", "");
 				orderSearchJson.put("buyerName", "");
 				orderSearchJson.put("empMobile", "");
 				orderSearchJson.put("empName", "");
 				orderSearchJson.put("branchName", "");
-				orderSearchJson.put("createDateStart", "");
-				orderSearchJson.put("createDateEnd", "");
+				orderSearchJson.put("createDateStart", model.getOrderDateStart());
+				orderSearchJson.put("createDateEnd", model.getOrderDateEnd());
 				orderSearchJson.put("dhFlag", "");
-				orderSearchJson.put("salesOrg", "");
+				orderSearchJson.put("salesOrg", model.getSalesOrg());
 				
 				data.put(orderSearchJson);
 				ssbi.put("data", data);
