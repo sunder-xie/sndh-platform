@@ -2,27 +2,32 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
 <mapper namespace="com.nhry.data.order.dao.TMilkboxPlanMapper" >
   <resultMap id="BaseResultMap" type="com.nhry.data.order.domain.TMilkboxPlan" >
-    <id column="PLAN_NO" property="planNo" jdbcType="VARCHAR" />
-    <result column="EMP_NO" property="empNo" jdbcType="VARCHAR" />
-    <result column="EMP_NAME" property="empName" jdbcType="VARCHAR" />
-    <result column="ORDER_NO" property="orderNo" jdbcType="VARCHAR" />
-    <result column="MEMBER_NO" property="memberNo" jdbcType="VARCHAR" />
-    <result column="MEMBER_NAME" property="memberName" jdbcType="VARCHAR" />
-    <result column="MEMBER_TEL" property="memberTel" jdbcType="VARCHAR" />
-    <result column="ADRESS_NO" property="adressNo" jdbcType="VARCHAR" />
-    <result column="BRANCH_NO" property="branchNo" jdbcType="VARCHAR" />
-    <result column="PLAN_DATE" property="planDate" jdbcType="DATE" />
-    <result column="MILKBOX_STAT" property="milkboxStat" jdbcType="VARCHAR" />
-    <result column="PAYMENT_STAT" property="paymentStat" jdbcType="VARCHAR" />
-    <result column="CREATE_AT" property="createAt" jdbcType="TIMESTAMP" />
-    <result column="CREATE_BY" property="createBy" jdbcType="VARCHAR" />
-    <result column="CREATE_BY_TXT" property="createByTxt" jdbcType="VARCHAR" />
-    <result column="LAST_MODIFIED" property="lastModified" jdbcType="TIMESTAMP" />
-    <result column="LAST_MODIFIED_BY" property="lastModifiedBy" jdbcType="VARCHAR" />
-    <result column="LAST_MODIFIED_BY_TXT" property="lastModifiedByTxt" jdbcType="VARCHAR" />
-    <result column="PRINT_FLAG" property="printFlag" jdbcType="VARCHAR" />
-    <result column="BRANCH_TEL" property="branchTel" jdbcType="VARCHAR" />
-    <result column="BRANCH_NAME" property="branchName" jdbcType="VARCHAR" />
+  <id column="PLAN_NO" property="planNo" jdbcType="VARCHAR" />
+  <result column="EMP_NO" property="empNo" jdbcType="VARCHAR" />
+  <result column="EMP_NAME" property="empName" jdbcType="VARCHAR" />
+  <result column="ORDER_NO" property="orderNo" jdbcType="VARCHAR" />
+  <result column="MEMBER_NO" property="memberNo" jdbcType="VARCHAR" />
+  <result column="MEMBER_NAME" property="memberName" jdbcType="VARCHAR" />
+  <result column="MEMBER_TEL" property="memberTel" jdbcType="VARCHAR" />
+  <result column="ADRESS_NO" property="adressNo" jdbcType="VARCHAR" />
+  <result column="BRANCH_NO" property="branchNo" jdbcType="VARCHAR" />
+  <result column="PLAN_DATE" property="planDate" jdbcType="DATE" />
+  <result column="MILKBOX_STAT" property="milkboxStat" jdbcType="VARCHAR" />
+  <result column="PAYMENT_STAT" property="paymentStat" jdbcType="VARCHAR" />
+  <result column="CREATE_AT" property="createAt" jdbcType="TIMESTAMP" />
+  <result column="CREATE_BY" property="createBy" jdbcType="VARCHAR" />
+  <result column="CREATE_BY_TXT" property="createByTxt" jdbcType="VARCHAR" />
+  <result column="LAST_MODIFIED" property="lastModified" jdbcType="TIMESTAMP" />
+  <result column="LAST_MODIFIED_BY" property="lastModifiedBy" jdbcType="VARCHAR" />
+  <result column="LAST_MODIFIED_BY_TXT" property="lastModifiedByTxt" jdbcType="VARCHAR" />
+  <result column="PRINT_FLAG" property="printFlag" jdbcType="VARCHAR" />
+  <result column="BRANCH_TEL" property="branchTel" jdbcType="VARCHAR" />
+  <result column="BRANCH_NAME" property="branchName" jdbcType="VARCHAR" />
+</resultMap>
+ <resultMap id="outputResultMap" type="com.nhry.data.order.domain.TMilkboxPlan" extends="BaseResultMap">
+    <result column="INIT_AMT" property="initAmt" jdbcType="DECIMAL" />
+    <result column="PRO_NUM" property="proNum" jdbcType="VARCHAR" />
+
   </resultMap>
   <sql id="Base_Column_List" >
     PLAN_NO, EMP_NO, EMP_NAME, ORDER_NO, MEMBER_NO, MEMBER_NAME, MEMBER_TEL, ADRESS_NO, 
@@ -286,4 +291,60 @@
       LAST_MODIFIED_BY_TXT = #{lastModifiedByTxt,jdbcType=VARCHAR}
     where PLAN_NO = #{planNo,jdbcType=VARCHAR}
   </update>
+  <select id="selectMilkboxPlantoOutput" resultMap="outputResultMap">
+       SELECT
+          tp.INIT_AMT,
+          tp.PAYMENT_STAT,
+          p.EMP_NO,
+          p.EMP_NAME,
+          p.MEMBER_NO,
+          v.VIP_NAME MEMBER_NAME,
+          v.MP MEMBER_TEL,
+          concat(
+              r.RESIDENTIAL_AREA_TXT,
+              a.ADDRESS_TXT
+          ) ADRESS_NO,
+          p.BRANCH_NO,
+          p.PLAN_DATE,
+          p.MILKBOX_STAT,
+          p.PAYMENT_STAT,
+          b.MP BRANCH_TEL,
+          b.BRANCH_NAME BRANCH_NAME,
+          (
+              SELECT
+                  group_concat(
+                      ex.SHORT_TXT,
+                      '-',
+                      e.DISP_TOTAL
+                  )
+              FROM
+                  t_mst_plan_order_item e,
+                  t_md_mara p,
+                  t_md_mara_ex ex
+              WHERE
+                  e.ORDER_NO = tp.ORDER_NO
+              AND tp.ORDER_NO = e.ORDER_NO
+              AND tp.SALES_ORG = p.SALES_ORG
+              AND (
+                  e. STATUS != "30"
+                  OR e. STATUS IS NULL
+              )
+              AND e.MATNR = p.MATNR
+              AND ex.MATNR = p.MATNR
+          ) PRO_NUM
+      FROM
+          t_mst_milkbox_plan p
+      LEFT JOIN t_vip_cust_info v ON v.VIP_CUST_NO = p.MEMBER_NO
+      LEFT JOIN t_md_address a ON a.ADDRESS_ID = p.ADRESS_NO
+      LEFT JOIN t_md_branch b ON b.BRANCH_NO = p.BRANCH_NO
+      LEFT JOIN t_md_residential_area r ON r.ID = a.RESIDENTIAL_AREA
+      LEFT JOIN t_preorder tp ON tp.ORDER_NO = p.ORDER_NO
+      WHERE
+          (
+              tp.PREORDER_STAT != '30'
+              OR tp.PAYMENT_STAT != '40'
+          )
+      AND p.MILKBOX_STAT='20'
+      AND p.EMP_NO = #{empNo,jdbcType=VARCHAR}
+  </select>
 </mapper>
