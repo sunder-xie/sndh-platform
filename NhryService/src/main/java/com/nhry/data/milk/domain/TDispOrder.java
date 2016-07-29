@@ -54,6 +54,18 @@ public class TDispOrder extends TDispOrderKey {
     
     private Integer totalQty;
     
+    private String dealerNo;
+    
+	public String getDealerNo()
+	{
+		return dealerNo;
+	}
+
+	public void setDealerNo(String dealerNo)
+	{
+		this.dealerNo = dealerNo;
+	}
+
 	public String getBranchName()
 	{
 		return branchName;

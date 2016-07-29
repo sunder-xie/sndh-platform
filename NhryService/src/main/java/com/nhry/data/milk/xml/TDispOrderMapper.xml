@@ -29,6 +29,7 @@
     <result column="TOTAL_QTY" property="totalQty" jdbcType="INTEGER" /> 
     <result column="BRANCH_NAME" property="branchName" jdbcType="INTEGER" />
     <result column="DISP_EMP_NAME" property="dispEmpName" jdbcType="INTEGER" />
+    <result column="DEALER_NO" property="dealerNo" jdbcType="VARCHAR" />
   </resultMap>
   <sql id="Base_Column_List" >
     ORDER_NO, ORDER_DATE, DISP_DATE, BRANCH_NO, DISP_LINE_NO, MST_CUST_NO, AMT, CONFIRM_AMT, 
@@ -48,9 +49,13 @@
     o.ORDER_NO, o.ORDER_DATE, o.DISP_DATE, o.BRANCH_NO, o.DISP_LINE_NO, o.MST_CUST_NO, AMT, o.CONFIRM_AMT, 
     o.REACH_TIME_TYPE, o.PAYMENT_TYPE, o.STATUS, o.MEMO_TXT, o.DISP_ORDER, o.DISP_EMP_NO, o.HZ_ORDER_NO, 
     o.DAY_ACCT_FLAG, o.CREATE_AT, o.CREATE_BY, o.CREATE_BY_TXT, o.LAST_MODIFIED, o.LAST_MODIFIED_BY, 
-    o.LAST_MODIFIED_BY_TXT, o.PAYMENT_ORDER_NO, o.SUBSCRIBE_ORDER_NO,o.TOTAL_QTY,b.BRANCH_NAME BRANCH_NAME,e.EMP_NAME DISP_EMP_NAME
-    from t_mst_disp_order o,t_md_branch b,t_md_branch_emp e
-    where o.BRANCH_NO = b.BRANCH_NO and e.EMP_NO = o.DISP_EMP_NO
+    o.LAST_MODIFIED_BY_TXT, o.PAYMENT_ORDER_NO, o.SUBSCRIBE_ORDER_NO,o.TOTAL_QTY,b.BRANCH_NAME BRANCH_NAME,e.EMP_NAME DISP_EMP_NAME,
+    d.DEALER_NAME DEALER_NO
+    from t_mst_disp_order o
+    left join t_md_branch b on o.BRANCH_NO = b.BRANCH_NO
+    left join t_md_branch_emp e on e.EMP_NO = o.DISP_EMP_NO
+    left join t_md_dealer d on d.DEALER_NO = b.DEALER_NO
+    where 1 = 1
     and ORDER_NO = #{orderNo,jdbcType=VARCHAR}
     <if test="orderDate != null and orderDate !=''">
       and ORDER_DATE = #{orderDate,jdbcType=DATE}
