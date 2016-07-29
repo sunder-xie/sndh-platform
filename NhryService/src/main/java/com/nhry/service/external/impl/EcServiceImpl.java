@@ -1,5 +1,7 @@
 package com.nhry.service.external.impl;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -73,19 +75,19 @@ public class EcServiceImpl extends EcBaseService implements EcService{
 				JSONObject orderSearchJson = new JSONObject();
 				
 				orderSearchJson.put("customerId", "DH");
-				orderSearchJson.put("shopId", "");
-				orderSearchJson.put("ecOrderNo", "");
-				orderSearchJson.put("orderPlatNo", "");
-				orderSearchJson.put("dhOrderNo", "");
+				orderSearchJson.put("shopId", model.getShopId());
+				orderSearchJson.put("ecOrderNo", model.getEcOrderNo());
+				orderSearchJson.put("orderPlatNo", model.getOrderPlatNo());
+				orderSearchJson.put("dhOrderNo", model.getDhOrderNo());
 				orderSearchJson.put("vipNo", model.getMilkmemberNo());
-				orderSearchJson.put("mobile", "");
-				orderSearchJson.put("buyerName", "");
-				orderSearchJson.put("empMobile", "");
-				orderSearchJson.put("empName", "");
-				orderSearchJson.put("branchName", "");
+				orderSearchJson.put("mobile", model.getContent());
+				orderSearchJson.put("buyerName", model.getBuyerName());
+				orderSearchJson.put("empMobile", model.getEmpMobile());
+				orderSearchJson.put("empName", model.getEmpName());
+				orderSearchJson.put("branchName", model.getBranchNo());
 				orderSearchJson.put("createDateStart", model.getOrderDateStart());
 				orderSearchJson.put("createDateEnd", model.getOrderDateEnd());
-				orderSearchJson.put("dhFlag", "");
+				orderSearchJson.put("dhFlag", model.getDhFlag());
 				orderSearchJson.put("salesOrg", model.getSalesOrg());
 				
 				data.put(orderSearchJson);
@@ -114,7 +116,7 @@ public class EcServiceImpl extends EcBaseService implements EcService{
 			JSONObject orderSearchJson = new JSONObject();
 			
 			orderSearchJson.put("customerId", "DH");
-			orderSearchJson.put("ecOrderNo", "");
+			orderSearchJson.put("ecOrderNo", model.getOrderNo());
 			
 			data.put(orderSearchJson);
 			ssbi.put("data", data);
@@ -143,10 +145,10 @@ public class EcServiceImpl extends EcBaseService implements EcService{
 			
 			orderStopReJson.put("customerId", "DH");
 			orderStopReJson.put("ecOrderNo", model.getOrderNo());
-			orderStopReJson.put("pauseFlag", "Y");
-			orderStopReJson.put("pauseStartDate", model.getOrderDateStart());
-			orderStopReJson.put("pauseEndDate", model.getOrderDateEnd());
-			orderStopReJson.put("reason", "");
+			orderStopReJson.put("pauseFlag", model.getContent());//停奶标志Y/N
+			orderStopReJson.put("pauseStartDate", model.getOrderDateStart());//停奶开始日期yyyy-mm-dd
+			orderStopReJson.put("pauseEndDate", model.getOrderDateEnd());//停奶截止日期
+			orderStopReJson.put("reason", model.getReason());//原因
 			
 			data.put(orderStopReJson);
 			ssbi.put("data", data);
@@ -163,6 +165,7 @@ public class EcServiceImpl extends EcBaseService implements EcService{
 	@Override
 	public void sendOrderStatus(TPreOrder order)
 	{
+		SimpleDateFormat f = new SimpleDateFormat("yy-MM-dd HH:mm:ss");
 		try {
 			JSONArray arr = new JSONArray();
 			JSONObject json = new JSONObject();
@@ -174,13 +177,13 @@ public class EcServiceImpl extends EcBaseService implements EcService{
 			JSONObject orderStatusReJson = new JSONObject();
 			
 			orderStatusReJson.put("customerId", "DH");
-			orderStatusReJson.put("ecOrderNo", "");
-			orderStatusReJson.put("status", "");
-			orderStatusReJson.put("paymentType", "");
-			orderStatusReJson.put("reFee", "");
-			orderStatusReJson.put("editDate", "");
-			orderStatusReJson.put("empMobile", "");
-			orderStatusReJson.put("empName", "");
+			orderStatusReJson.put("ecOrderNo", order.getOrderNo());
+			orderStatusReJson.put("status", order.getPreorderStat());//已支付：101发货：200交易完成：220退订：300
+			orderStatusReJson.put("paymentType", order.getPaymentmethod());//02微信04现金09卡支付
+			orderStatusReJson.put("reFee", order.getCurAmt());//退款金额
+			orderStatusReJson.put("editDate", f.format(new Date()));
+			orderStatusReJson.put("empMobile", order.getBranchMp());//送奶员手机
+			orderStatusReJson.put("empName", order.getBranchEmpName());//送奶员姓名
 			
 			data.put(orderStatusReJson);
 			ssbi.put("data", data);
@@ -208,7 +211,7 @@ public class EcServiceImpl extends EcBaseService implements EcService{
 			JSONObject orderCommentsReJson = new JSONObject();
 			
 			orderCommentsReJson.put("customerId", "DH");
-			orderCommentsReJson.put("ecOrderNo", "");
+			orderCommentsReJson.put("ecOrderNo", order.getOrderNo());
 			
 			data.put(orderCommentsReJson);
 			ssbi.put("data", data);
@@ -225,6 +228,7 @@ public class EcServiceImpl extends EcBaseService implements EcService{
 	@Override
 	public void sendOrderComments(TPreOrder order)
 	{
+		SimpleDateFormat f = new SimpleDateFormat("yy-MM-dd HH:mm:ss");
 		try {
 			JSONArray arr = new JSONArray();
 			JSONObject json = new JSONObject();
@@ -236,12 +240,12 @@ public class EcServiceImpl extends EcBaseService implements EcService{
 			JSONObject orderCommentsReJson = new JSONObject();
 			
 			orderCommentsReJson.put("customerId", "DH");
-			orderCommentsReJson.put("ecOrderNo", "");
-			orderCommentsReJson.put("type", "");
-			orderCommentsReJson.put("editPerson", "");
-			orderCommentsReJson.put("editDate", "");
-			orderCommentsReJson.put("commentsTitle", "");
-			orderCommentsReJson.put("commentsTxt", "");
+			orderCommentsReJson.put("ecOrderNo", order.getOrderNo());
+			orderCommentsReJson.put("type", order.getOrderType());//备注类别10-地址20-奶站30-其他
+			orderCommentsReJson.put("editPerson", order.getCreaterBy());
+			orderCommentsReJson.put("editDate", f.format(new Date()));
+			orderCommentsReJson.put("commentsTitle", order.getSign());
+			orderCommentsReJson.put("commentsTxt", order.getMemoTxt());
 			
 			data.put(orderCommentsReJson);
 			ssbi.put("data", data);
