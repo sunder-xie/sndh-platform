@@ -7,6 +7,7 @@ import java.math.BigDecimal;
  */
 public class EmpAccountReceAmount {
     private String orderNo;            //订单号
+    private String receiptNo;          //收款单号
     private String empName;            //送奶工名称
     private String custName;           //订户名称
     private String address;            //订户地址
@@ -18,6 +19,14 @@ public class EmpAccountReceAmount {
     private String paymentType;        //付款类型
     private String paymentDate;        //收款日期
     private String branchName;         //奶站名称
+
+    public String getReceiptNo() {
+        return receiptNo;
+    }
+
+    public void setReceiptNo(String receiptNo) {
+        this.receiptNo = receiptNo;
+    }
 
     public BigDecimal getAcctAmt() {
         return acctAmt;

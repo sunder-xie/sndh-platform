@@ -68,4 +68,5 @@ public interface TOrderDaliyPlanItemMapper {
     List<TOrderDaliyPlanItem> selectProDayPlanOfSelfBranch(RequireOrderSearch rModel);
 
     List<TOrderDaliyPlanItem> getProductItemsByOrderNo(String orderCode,String salesOrg);
+
 }

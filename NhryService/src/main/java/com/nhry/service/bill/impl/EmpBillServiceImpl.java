@@ -6,7 +6,6 @@ import com.nhry.common.exception.MessageCode;
 import com.nhry.common.exception.ServiceException;
 import com.nhry.data.auth.dao.TSysUserRoleMapper;
 import com.nhry.data.auth.domain.TSysUser;
-import com.nhry.data.auth.domain.TSysUserRole;
 import com.nhry.data.basic.dao.TMdBranchEmpMapper;
 import com.nhry.data.basic.dao.TMdMaraExMapper;
 import com.nhry.data.basic.domain.TMdBranchEmp;
@@ -22,7 +21,6 @@ import com.nhry.model.bill.*;
 import com.nhry.service.bill.dao.EmpBillService;
 import com.nhry.utils.PrimaryKeyUtils;
 import com.nhry.utils.YearLastMonthUtil;
-
 import org.apache.commons.lang3.StringUtils;
 
 import java.math.BigDecimal;
@@ -90,6 +88,12 @@ public class EmpBillServiceImpl implements EmpBillService {
         if(StringUtils.isBlank(eSearch.getPageNum()) || StringUtils.isBlank(eSearch.getPageSize())){
             throw new ServiceException(MessageCode.LOGIC_ERROR,"pageNum和pageSize不能为空！");
         }
+        List<String> rids = urMapper.getUserRidsByLoginName(user.getLoginName());
+        if(rids.contains("10004")){
+            eSearch.setBranchNo(user.getBranchNo());
+        } else if(rids.contains("10005")){
+            eSearch.setDealerNo(user.getDealerId());
+        }
         eSearch.setSalesOrg(user.getSalesOrg());
         return  empBillMapper.empAccountReceAmount(eSearch);
     }
@@ -140,7 +144,7 @@ public class EmpBillServiceImpl implements EmpBillService {
 
     public BigDecimal CalculateEmpTransRateByProduct(String matnr,String salesOrg){
         TMdMaraEx product = tMdMaraExMapper.getProductTransRateByCode(matnr,salesOrg);
-        if(product == null){
+        if(product == null || product.getRate() == null){
            return new BigDecimal(0);
         }
         return product.getRate();
@@ -293,8 +297,8 @@ public class EmpBillServiceImpl implements EmpBillService {
             eSearch.setDealerNo(user.getDealerId());
         }
         eSearch.setSalesOrg(user.getSalesOrg());
-
-        return tMdEmpSalMapper.searchEmpSalaryRep(eSearch);
+        PageInfo result = tMdEmpSalMapper.searchEmpSalaryRep(eSearch);
+        return result;
     }
 
     /**
@@ -389,20 +393,42 @@ public class EmpBillServiceImpl implements EmpBillService {
             empSal.setEmpNo(empNo);
             //三种配送费
             if("20".equals(emp.getSalaryMet())){
+                //产品数量
+                int dispAllNum = 0;
                 //按产品结算  //产品配送费
                 List<EmpAccoDispFeeByProduct> pro = empBillMapper.empDisByProduct(search);
                 BigDecimal dispFee = this.getEmpDispFee(pro,emp.getSalesOrg());
                 empSal.setDispSal(dispFee);
+                if(pro!=null && pro.size()>0){
+                    for(EmpAccoDispFeeByProduct p : pro ){
+                        dispAllNum = dispAllNum +   p.getQty();
+                    }
+                }
 
 
                 //按产品结算  //内部销售配送费
                 List<EmpAccoDispFeeByProduct> proIn = empBillMapper.empInDispByProduct(search);
                 BigDecimal inDispFee = this.getEmpDispFee(proIn,emp.getSalesOrg());
                 empSal.setInDispSal(inDispFee);
+                if(proIn!=null && proIn.size()>0){
+                    for(EmpAccoDispFeeByProduct p : pro ){
+                        dispAllNum = dispAllNum +   p.getQty();
+                    }
+                }
+
 
                 //按产品结算  //赠品配送费
 
-
+                //按产品结算  //产品配送费
+                List<EmpAccoDispFeeByProduct> proFree = empBillMapper.empFreeDispByProduct(search);
+                BigDecimal dispFreeFee = this.getEmpDispFee(pro,emp.getSalesOrg());
+                empSal.setSendDispSal(dispFreeFee);
+                if(proIn!=null && proIn.size()>0){
+                    for(EmpAccoDispFeeByProduct p : pro ){
+                        dispAllNum = dispAllNum +   p.getQty();
+                    }
+                }
+                empSal.setDispNum(dispAllNum);
             }else{
                 //按数量结算  //产品配送费
                 int dispNum = empBillMapper.empDispFeeNum(search);

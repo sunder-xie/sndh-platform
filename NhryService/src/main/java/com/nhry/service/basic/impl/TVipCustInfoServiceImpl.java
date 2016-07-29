@@ -1,12 +1,5 @@
 package com.nhry.service.basic.impl;
 
-import java.math.BigDecimal;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
-import org.apache.commons.lang3.StringUtils;
-
 import com.github.pagehelper.PageInfo;
 import com.nhry.common.exception.MessageCode;
 import com.nhry.common.exception.ServiceException;
@@ -22,6 +15,11 @@ import com.nhry.service.basic.dao.TVipCustInfoService;
 import com.nhry.service.basic.pojo.Addresses;
 import com.nhry.utils.PrimaryKeyUtils;
 import com.nhry.utils.date.Date;
+import org.apache.commons.lang3.StringUtils;
+
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 public class TVipCustInfoServiceImpl extends BaseService implements TVipCustInfoService {
 	private TVipCustInfoMapper tmdVipcust;
@@ -193,6 +191,7 @@ public class TVipCustInfoServiceImpl extends BaseService implements TVipCustInfo
 				cust.setMp(address.getMp());
 				cust.setVipName(address.getRecvName());
 				cust.setBranchNo(branchNo);
+				cust.setSubdist(address.getResidentialArea());
 				cust.setCreateAt(new Date());
 				cust.setCreateBy(this.userSessionService.getCurrentUser().getLoginName());
 				cust.setCreateByTxt(this.userSessionService.getCurrentUser().getDisplayName());

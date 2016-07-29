@@ -75,4 +75,8 @@ public interface OrderService {
 	TPlanOrderItem calculateTotalQtyForFront(TPlanOrderItem item);
 	
 	int updateOrderAndEntriesDispStartDate(String orderNo,List<TPlanOrderItem> entries);
+	
+   int selectRequiredOrderNum();
+   
+   int selectStopOrderNum();
 }

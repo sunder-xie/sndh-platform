@@ -46,12 +46,28 @@ public class OrderResource extends BaseResource {
 	public Response selectOrderByCode(@ApiParam(required=true,name="orderCode",value="订单编号") @PathParam("orderCode") String orderCode){
 		return convertToRespModel(MessageCode.NORMAL, null, orderService.selectOrderByCode(orderCode));
 	}
+	
+	@GET
+	@Path("/selectRequiredOrderNum")
+	@Produces(MediaType.APPLICATION_JSON)
+	@ApiOperation(value = "/selectRequiredOrderNum", response = OrderCreateModel.class, notes = "该组织下待确认的订单")
+	public Response selectRequiredOrderNum(){
+		return convertToRespModel(MessageCode.NORMAL, null, orderService.selectRequiredOrderNum());
+	}
+	
+	@GET
+	@Path("/selectStopOrderNum")
+	@Produces(MediaType.APPLICATION_JSON)
+	@ApiOperation(value = "/selectStopOrderNum", response = OrderCreateModel.class, notes = "该组织下还有5天就到期没续订的订单")
+	public Response selectStopOrderNum(){
+		return convertToRespModel(MessageCode.NORMAL, null, orderService.selectStopOrderNum());
+	}
 
 
 	@GET
 	@Path("/queryCollectByOrderNo")
 	@Produces(MediaType.APPLICATION_JSON)
-	@ApiOperation(value = "/queryCollectByOrderNo", response = OrderCreateModel.class, notes = "根据订单编号查询收款信息")
+	@ApiOperation(value = "/queryCollectByOrderNo", response = CollectOrderModel.class, notes = "根据订单编号查询收款信息")
 	public Response queryCollectByOrderNo(@ApiParam(required=true,name="orderCode",value="订单编号") @QueryParam("orderCode") String orderCode){
 		return convertToRespModel(MessageCode.NORMAL, null, orderService.queryCollectByOrderNo(orderCode));
 	}
