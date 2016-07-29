@@ -14,6 +14,9 @@
 		http://www.springframework.org/schema/task http://www.springframework.org/schema/task/spring-task-4.0.xsd
 		http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-4.0.xsd"
 	default-lazy-init="true">
+
+	<bean id="getOrderBranchService" class="com.nhry.service.webService.impl.GetOrderBranchServiceImpl">
+	</bean>
 	<!-- 商品信息 -->
 	<bean id="maraMapper" class="com.nhry.data.basic.impl.TMdMaraMapperImpl">
 		<property name="sqlSessionTemplate" ref="dynamicSqlSessionTemplate"></property>
