@@ -1,9 +1,8 @@
 package com.nhry.service.webService.impl;
 
 import com.nhry.model.webService.CustInfoModel;
+import com.nhry.service.external.EcBaseService;
 import com.nhry.service.webService.dao.GetOrderBranchService;
-import com.nhry.utils.APIHttpClient;
-import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONObject;
 
 import java.util.HashMap;
@@ -13,21 +12,19 @@ import java.util.Map;
  * Created by gongjk on 2016/7/27.
  */
 public class GetOrderBranchServiceImpl implements GetOrderBranchService {
+    private EcBaseService ecBaseService;
     @Override
     public String  getOrderBranch(CustInfoModel custInfoModel) {
 
         JSONObject obj = this.dataToJson(custInfoModel);
-        APIHttpClient api = new APIHttpClient("http://ec2-54-222-230-211.cn-north-1.compute.amazonaws.com.cn/FY_MOBILE_SVR/WFY_UNI_SERVICE.json?method=callProcService");
         String strObje = "["+obj.toString()+"]";
-        String str =  api.post(strObje);
-        JSONObject resultJson;
-        try {
-            resultJson  = new JSONObject(str);
-            return resultJson.toString();
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
 
+        String url = "http://ec2-54-222-230-211.cn-north-1.compute.amazonaws.com.cn/FY_MOBILE_SVR/WFY_UNI_SERVICE.json?method=callProcService";
+
+        JSONObject resultJson =  ecBaseService.pushMessage2Ec(url,strObje,false);
+        if(resultJson !=null){
+
+        }
         return null;
     }
 
@@ -64,5 +61,9 @@ public class GetOrderBranchServiceImpl implements GetOrderBranchService {
 
         JSONObject obj = new JSONObject(map);
         return obj;
+    }
+
+    public void setEcBaseService(EcBaseService ecBaseService) {
+        this.ecBaseService = ecBaseService;
     }
 }
