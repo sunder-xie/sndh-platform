@@ -210,6 +210,7 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 		}
 		
 		//需要把订户挂到一个没用的奶站上
+		//TODO
 		
 		r.setRetDate(new Date());
 		r.setRetReason(r.getRetReason().trim());
@@ -1154,6 +1155,11 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 			tPlanOrderItemMapper.insert(entry);
 		});
 		
+		//非奶站订单直接返回
+		if(!"30".equals(order.getPreorderSource())){
+			return order.getOrderNo();
+		}
+		
 		//订户状态更改
 		tVipCustInfoService.discontinue(order.getMilkmemberNo(), "10",new com.nhry.utils.date.Date(),new com.nhry.utils.date.Date());
 			
@@ -1325,11 +1331,21 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 		if("10".equals(record.getPreorderStat())){
 			if(StringUtils.isBlank(order.getMilkmemberNo()))throw new ServiceException(MessageCode.LOGIC_ERROR,"该订单没有订户，请选择订户或新建订户!");
 			//订户状态更改
-			tVipCustInfoService.discontinue(record.getMilkmemberNo(), "10",new com.nhry.utils.date.Date(),new com.nhry.utils.date.Date());
 			tPreOrderMapper.updateOrderStatus(record);
+			tVipCustInfoService.discontinue(record.getMilkmemberNo(), "10",new com.nhry.utils.date.Date(),new com.nhry.utils.date.Date());
 			
-			//电商或者摆台的订单确认后，走线下逻辑
-			
+			//电商或者摆台的订单确认后，走线下逻辑,生成装箱工单
+			if("20".equals(order.getMilkboxStat())){
+				ArrayList<TPlanOrderItem> orgEntries = (ArrayList<TPlanOrderItem>) tPlanOrderItemMapper.selectByOrderCode(order.getOrderNo());
+				MilkboxCreateModel model = new MilkboxCreateModel();
+				model.setCode(order.getOrderNo());
+				milkBoxService.addNewMilkboxPlan(model);
+				
+   			//生成每日计划
+   			List<TOrderDaliyPlanItem> list = createDaliyPlan(order,orgEntries);
+   			//如果有赠品，生成赠品的日计划
+   			promotionService.createDaliyPlanByPromotion(order,orgEntries,list);
+			}
 			
 			return 1;
 		}
@@ -1339,6 +1355,7 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 			List<TPreOrder> list = tPreOrderMapper.selectNodeletedByMilkmemberNo(order);
 			if(list == null || list.size() <= 0 ){
 				System.out.print("删除订户");
+				//TODO
 				
 			}
 			tPreOrderMapper.updateOrderStatus(record);
