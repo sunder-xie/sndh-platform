@@ -139,14 +139,9 @@ public class UserServiceImpl extends BaseService implements UserService {
 	}
 
 	@Override
-	public TSysUser findUserBytoken(String token) {
+	public TSysUser getCurrentLoginUser() {
 		// TODO Auto-generated method stub
-		AccessKey ak = (AccessKey)objectRedisTemplate.opsForHash().get(SysContant.getSystemConst("app_access_key"), token);
-		if(ak == null){
-			throw new ServiceException(MessageCode.REQUEST_NOT_FOUND);
-		}
-		TSysUser user = (TSysUser)objectRedisTemplate.opsForHash().get(SysContant.getSystemConst("app_user_key"), ak.getUname());
-		return user;
+		return this.userSessionService.getCurrentUser();
 	}
 
 	public void setObjectRedisTemplate(RedisTemplate objectRedisTemplate) {

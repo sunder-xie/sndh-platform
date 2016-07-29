@@ -17,6 +17,7 @@ import org.codehaus.jettison.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
+import org.springframework.stereotype.Component;
 import org.springframework.web.context.support.SpringBeanAutowiringSupport;
 
 import com.nhry.common.auth.UserSessionService;
@@ -24,22 +25,20 @@ import com.nhry.common.ladp.LadpService;
 import com.nhry.data.auth.domain.TSysUser;
 import com.nhry.service.auth.dao.UserService;
 import com.nhry.utils.APIHttpClient;
+import com.nhry.utils.Base64Util;
 import com.nhry.utils.CookieUtil;
 import com.nhry.utils.EnvContant;
 import com.nhry.utils.HttpUtils;
 import com.nhry.utils.json.JackJson;
-
+@Component
 public class IdmAuthServlet extends HttpServlet {
+	@Autowired
 	private UserService userService;
+	@Autowired
 	private UserSessionService userSessionService;
 	
 	public void init(ServletConfig config) throws ServletException {
-//		   SpringBeanAutowiringSupport.processInjectionBasedOnServletContext(this,
-//		         config.getServletContext());
-		String[] xmls = new String[]{ "classpath:beans/spring-context.xml","classpath:beans/dataSource.xml","classpath:beans/*-bean.xml"  };
-        ApplicationContext context = new ClassPathXmlApplicationContext(xmls);
-        userSessionService = (UserSessionService)context.getBean("userSessionService");
-        userService = (UserService)context.getBean("userService");
+		 SpringBeanAutowiringSupport.processInjectionBasedOnServletContext(this,config.getServletContext());
 	}
 	
 	public void doGet(HttpServletRequest request, HttpServletResponse response)
@@ -52,6 +51,7 @@ public class IdmAuthServlet extends HttpServlet {
 		// 获取临时令牌
 		try {
 			String code = request.getParameter("code");
+			String ip = request.getParameter("id");
 			if (!StringUtils.isEmpty(code)) {
 				Map<String,Object> attrs = new HashMap<String,Object>();
 				attrs.put("client_id", EnvContant.getSystemConst("client_id"));
@@ -60,24 +60,18 @@ public class IdmAuthServlet extends HttpServlet {
 				attrs.put("redirect_uri", EnvContant.getSystemConst("redirect_uri"));
 				attrs.put("code", code);
 				String access_token = HttpUtils.request(EnvContant.getSystemConst("auth_token"), attrs);
-				System.out.println("-----access_token-------"+access_token);
 				if(!StringUtils.isEmpty(access_token)){
 					attrs.clear();
 					String token = access_token.split("=")[1].split("&")[0];
 					attrs.put("access_token", token);
 					String userObject = HttpUtils.request(EnvContant.getSystemConst("auth_profile"), attrs);
-					//{"id":"ex_crmsongnaiyuan","attributes":[{"uid":"ex_crmsongnaiyuan"}]}
-					System.out.println("------userObject------"+userObject);
 					JSONObject userJson = new JSONObject(userObject);
 					if(userJson.has("id") && !StringUtils.isEmpty(userJson.getString("id"))){
-						System.out.println("------userJson.getString('id')------"+userJson.getString("id"));
 						TSysUser user = new TSysUser();
 						user.setLoginName(userJson.getString("id"));
 						TSysUser loginuser = userService.login(user);
-						CookieUtil.setCookie(request, response, UserSessionService.accessKey, access_token);
-						CookieUtil.setCookie(request, response, UserSessionService.uname, loginuser.getLoginName());
 						userSessionService.cacheUserSession(user.getLoginName(), access_token, loginuser,request);
-						sendRedirectToHomePage(request, response, token);
+						sendRedirectToHomePage(request, response, token,ip);
 					}else{
 						sendRedirectToLogin(response);
 					}
@@ -107,12 +101,16 @@ public class IdmAuthServlet extends HttpServlet {
 		}
 	}
 	
-	public void sendRedirectToHomePage(HttpServletRequest request, HttpServletResponse response,String token){
+	public void sendRedirectToHomePage(HttpServletRequest request, HttpServletResponse response,String token,String ip){
 		//跳转到登录页面
 		try {
-			response.setHeader("dh_token", token);
-			response.sendRedirect(EnvContant.getSystemConst("front_home_page"));
-			System.out.println("------------跳转-----------"+EnvContant.getSystemConst("front_home_page"));
+			if(StringUtils.isEmpty(ip)){
+				response.setHeader("dh_token", token);
+				response.sendRedirect(EnvContant.getSystemConst("front_home_page")+"?dh_token="+token);
+			}else{
+				response.setHeader("dh_token", token);
+				response.sendRedirect("http://"+Base64Util.decodeStr(ip)+EnvContant.getSystemConst("front_short_url")+"?dh_token="+token);
+			}
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

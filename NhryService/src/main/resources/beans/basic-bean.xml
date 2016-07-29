@@ -217,4 +217,13 @@
 		<property name="tPreOrderMapper" ref="tPreOrderMapper"></property>
 		<property name="userSessionService" ref="userSessionService"></property>
 	</bean>
+	<bean id="messLogMapper" class="com.nhry.data.basic.impl.TSysPushMessageLogMapperImpl">
+	    <property name="sqlSessionTemplate" ref="dynamicSqlSessionTemplate" />
+	</bean>
+	<bean id="messLogService" class="com.nhry.service.external.impl.EcServiceImpl">
+		<property name="messLogMapper" ref="messLogMapper"></property>
+	</bean>
+	<bean id="ecBaseService" class="com.nhry.service.external.EcBaseService">
+	   <property name="messLogMapper" ref="messLogMapper"></property>
+	</bean>
 </beans>

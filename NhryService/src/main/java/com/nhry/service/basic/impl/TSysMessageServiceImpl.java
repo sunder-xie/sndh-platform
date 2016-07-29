@@ -109,7 +109,7 @@ public class TSysMessageServiceImpl extends BaseService implements TSysMessageSe
 	
 	/**
 	 * 发送消息
-	 * @param users  发送用户二表
+	 * @param users  发送用户列表
 	 * @param title    消息主题
 	 * @param content  消息内容
 	 * @param type       消息类型(10：产品消息；20：订单消息；30：奶站消息)
