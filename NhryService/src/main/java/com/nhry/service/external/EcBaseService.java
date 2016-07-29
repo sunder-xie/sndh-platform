@@ -26,7 +26,7 @@ public class EcBaseService {
      * @param flag        推送失败时，是否需要记录消息(以便于再次推送) true : 需要   false：不需要
      * @return
      */
-    public boolean pushMessage2Ec(String url,String reqbody,boolean flag){
+    public JSONObject pushMessage2Ec(String url,String reqbody,boolean flag){
     	try {
     		Map<String, Object> params = new HashMap<String,Object>(2);
 			params.put("data", reqbody);
@@ -34,11 +34,11 @@ public class EcBaseService {
         	//成功调用
     		JSONObject json = new JSONObject(msg);
     		if(json.has("success") && json.getBoolean("success")){
-    			return true;
+    			return json;
     		}else{
     			if(!flag){
     				//不需要记录推送失败的消息
-    				return false;
+    				return null;
     			}
     			//推送不成功
     			addMessage(url, reqbody, json.has("errorMessage") ? json.getString("errorMessage") : null, json.has("errorCode") ? json.getString("errorCode") : null);
@@ -48,13 +48,13 @@ public class EcBaseService {
 			e.printStackTrace();
 			if(!flag){
 				//不需要记录推送失败的消息
-				return false;
+				return null;
 			}
     		//调用不成功
     		addMessage(url, reqbody,e.getMessage() ,"SERVEREROR");
-			return false;
+			return null;
 		}
-    	return false;
+    	return null;
     }
     
     /**
