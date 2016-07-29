@@ -1,6 +1,7 @@
 package com.nhry.data.bill.domain;
 
 import java.io.Serializable;
+import java.math.BigDecimal;
 import java.util.Date;
 
 /**
@@ -23,6 +24,15 @@ public class BranchBillOfCust   implements Serializable {
     private String empNo;//送奶工 工号
     private String empName;//送奶工名称
     private Date receiptDate;
+    private BigDecimal factAmt; //订单结算价(出厂价和)
+
+    public BigDecimal getFactAmt() {
+        return factAmt;
+    }
+
+    public void setFactAmt(BigDecimal factAmt) {
+        this.factAmt = factAmt;
+    }
 
     public Date getReceiptDate() {
         return receiptDate;

@@ -35,6 +35,8 @@
         <result column="REC_DATE" property="recDate" jdbcType="DATE" />
         <result column="RECEIVE_NUM" property="receiveNum" jdbcType="INTEGER" />
         <result column="REAL_NUM" property="realNum" jdbcType="INTEGER" />
+        <result column="CREATE_AT" property="createAt" jdbcType="DATE" />
+        <result column="LAST_MODIFIED" property="lastModified" jdbcType="TIMESTAMP" />
     </resultMap>
     <sql id="Base_Column_List" >
       DET_LSH,SPEC,RECEIVE_NUM,REAL_NUM,CREATE_BY,CREATE_BY_TXT,STATUS,
@@ -93,6 +95,7 @@
         d.REC_DATE,
         d.STATUS,
         d.SPEC,
+        d.CREATE_AT,d.LAST_MODIFIED,
         d.BRANCH_NO,br.BRANCH_NAME,d.EMP_NO,e.EMP_NAME,br.DEALER_NO,de.DEALER_NAME,d.DET_LSH
         FROM t_rec_bot_detail d
         LEFT JOIN t_mst_disp_order o  on d.DISP_ORDER_NO = o.ORDER_NO
@@ -116,10 +119,10 @@
             and br.DEALER_NO = #{dealerNo,jdbcType=VARCHAR}
         </if>
         <if test="startDate!=null">
-            and  d.REC_DATE &gt;= #{startDate,jdbcType=DATE}
+            and  d.CREATE_AT &gt;= #{startDate,jdbcType=DATE}
         </if>
         <if test="endDate!=null">
-            and d.REC_DATE &lt;= #{endDate,jdbcType=DATE}
+            and d.CREATE_AT &lt;= #{endDate,jdbcType=DATE}
         </if>
         ORDER BY d.LAST_MODIFIED asc
     </select>

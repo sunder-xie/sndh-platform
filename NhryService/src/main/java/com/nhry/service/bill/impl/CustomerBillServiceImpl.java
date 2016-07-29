@@ -7,9 +7,9 @@ import com.nhry.common.exception.ServiceException;
 import com.nhry.data.auth.dao.TSysUserRoleMapper;
 import com.nhry.data.auth.domain.TSysUser;
 import com.nhry.data.basic.domain.TVipAcct;
-import com.nhry.data.auth.domain.TSysUserRole;
 import com.nhry.data.bill.dao.CustomerBillMapper;
 import com.nhry.data.bill.domain.TMstRecvBill;
+import com.nhry.data.order.dao.TOrderDaliyPlanItemMapper;
 import com.nhry.data.order.dao.TPlanOrderItemMapper;
 import com.nhry.data.order.dao.TPreOrderMapper;
 import com.nhry.data.order.domain.TOrderDaliyPlanItem;
@@ -24,7 +24,6 @@ import com.nhry.service.bill.dao.CustomerBillService;
 import com.nhry.service.order.dao.OrderService;
 import com.nhry.service.order.dao.PromotionService;
 import com.nhry.utils.SerialUtil;
-
 import org.apache.commons.lang3.StringUtils;
 
 import java.math.BigDecimal;
@@ -43,6 +42,7 @@ public class CustomerBillServiceImpl implements CustomerBillService {
     private PromotionService promotionService;
     private TVipCustInfoService tVipCustInfoService;
     private TSysUserRoleMapper urMapper;
+    private TOrderDaliyPlanItemMapper tOrderDaliyPlanItemMapper;
 
     @Override
     public PageInfo searchCustomerOrder(CustBillQueryModel cModel) {
@@ -151,7 +151,9 @@ public class CustomerBillServiceImpl implements CustomerBillService {
                	 List<TOrderDaliyPlanItem> list = orderService.createDaliyPlan(omodel.getOrder(),omodel.getEntries());
                	 promotionService.createDaliyPlanByPromotion(omodel.getOrder(),omodel.getEntries(),list);
                 }
-                
+
+                BigDecimal factAmt = tPreOrderMapper.calculateOrderFactoryAmt(orderNo);
+                int  updateFactAmt = tPreOrderMapper.updateOrderFacAmt(factAmt  == null ? new BigDecimal(0) : factAmt,orderNo);
                 return updateBill+updateOrderStatus;
             }
     }
@@ -186,7 +188,6 @@ public class CustomerBillServiceImpl implements CustomerBillService {
     }
 
 
-
     public void setCustomerBillMapper(CustomerBillMapper customerBillMapper) {
         this.customerBillMapper = customerBillMapper;
     }
@@ -212,6 +213,7 @@ public class CustomerBillServiceImpl implements CustomerBillService {
     public void settVipCustInfoService(TVipCustInfoService tVipCustInfoService) {
        this.tVipCustInfoService = tVipCustInfoService;
     }
+
     public void setUrMapper(TSysUserRoleMapper urMapper) {
         this.urMapper = urMapper;
     }

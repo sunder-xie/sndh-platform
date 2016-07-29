@@ -30,6 +30,10 @@ public class TPreOrder {
     
     private String milkmemberName;
 
+    private BigDecimal acctAmt;
+
+    private BigDecimal factAmt;
+
     private String memberNo;
 
     private String retReason;
@@ -109,6 +113,22 @@ public class TPreOrder {
     String branchMp;
     String branchEmpName;
     String addressTxt;
+
+    public BigDecimal getFactAmt() {
+        return factAmt;
+    }
+
+    public void setFactAmt(BigDecimal factAmt) {
+        this.factAmt = factAmt;
+    }
+
+    public BigDecimal getAcctAmt() {
+        return acctAmt;
+    }
+
+    public void setAcctAmt(BigDecimal acctAmt) {
+        this.acctAmt = acctAmt;
+    }
 
     public String getResumeFlag()
 	{

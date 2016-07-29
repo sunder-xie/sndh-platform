@@ -1,5 +1,6 @@
 package com.nhry.service.webService.impl;
 
+import com.nhry.model.webService.CustInfoModel;
 import com.nhry.service.webService.dao.GetOrderBranchService;
 import org.codehaus.jettison.json.JSONObject;
 
@@ -8,8 +9,7 @@ import org.codehaus.jettison.json.JSONObject;
  */
 public class GetOrderBranchServiceImpl implements GetOrderBranchService {
     @Override
-    public JSONObject getOrderBranch(JSONObject obj) {
-
+    public JSONObject getOrderBranch(CustInfoModel custInfoModel) {
         return null;
     }
 }

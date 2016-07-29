@@ -69,7 +69,7 @@
     			user.setLoginName("88888882");
     			user.setDisplayName("测试用户");
     			user.setBranchNo("0300005940");
-    			user.setDealerId("");
+//    			user.setDealerId("");
     			user.setSalesOrg("4111");
     //			user.setSalesOrg("4100");
     			user.setLastModified(date);

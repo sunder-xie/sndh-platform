@@ -280,15 +280,13 @@
 	      <if test="priceGroup != null and priceGroup !=''">
 	     		AND PRICE_GROUP like '%${priceGroup}%'
 	      </if>
-	      <if test="status != null and status != ''">
-	     		AND STATUS = #{status,jdbcType=VARCHAR}
-	      </if>
 	      <if test="startDate != null and startDate != ''">
 	         AND START_DATE &gt;= #{startDate}
 	      </if>
 	      <if test="endDate != null and endDate != ''">
 	         AND END_DATE &lt;= #{endDate}
 	      </if>
+	      AND STATUS = 'Y'
      </where>
       order by CREATE_AT DESC,LAST_MODIFIED desc,PRICE_TYPE,PRICE_GROUP
   </select>
