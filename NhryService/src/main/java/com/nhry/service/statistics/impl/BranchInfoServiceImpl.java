@@ -49,4 +49,9 @@ public class BranchInfoServiceImpl implements BranchInfoService {
         }
         return branchInfoMapper.findBranchMonthReport(model);
     }
+
+    @Override
+    public PageInfo findReqOrder(BranchInfoModel model) {
+        return branchInfoMapper.findReqOrder(model);
+    }
 }
