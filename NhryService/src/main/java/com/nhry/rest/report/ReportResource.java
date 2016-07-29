@@ -7,14 +7,19 @@ import com.nhry.data.basic.domain.TMdAddress;
 import com.nhry.data.basic.domain.TMdBranch;
 import com.nhry.data.milk.domain.TDispOrder;
 import com.nhry.data.milk.domain.TDispOrderItem;
+import com.nhry.data.order.domain.TMilkboxPlan;
 import com.nhry.data.order.domain.TPreOrder;
 import com.nhry.model.milk.RouteOrderModel;
 import com.nhry.model.order.CollectOrderModel;
+import com.nhry.model.order.MilkboxSearchModel;
 import com.nhry.model.order.OrderCreateModel;
 import com.nhry.model.order.ProductItem;
 import com.nhry.rest.BaseResource;
+import com.nhry.service.basic.dao.BranchEmpService;
 import com.nhry.service.basic.dao.BranchService;
+import com.nhry.service.basic.pojo.BranchEmpModel;
 import com.nhry.service.milk.dao.DeliverMilkService;
+import com.nhry.service.order.dao.MilkBoxService;
 import com.nhry.service.order.dao.OrderService;
 import com.nhry.utils.CodeGeneratorUtil;
 import com.sun.jersey.spi.resource.Singleton;
@@ -34,10 +39,7 @@ import javax.activation.MimetypesFileTypeMap;
 import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.ws.rs.GET;
-import javax.ws.rs.Path;
-import javax.ws.rs.Produces;
-import javax.ws.rs.QueryParam;
+import javax.ws.rs.*;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
@@ -67,6 +69,10 @@ public class ReportResource extends BaseResource{
     private BranchService branchService;
     @Autowired
     private DeliverMilkService deliverMilkService;
+    @Autowired
+    private MilkBoxService milkBoxService;
+    @Autowired
+    private BranchEmpService branchEmpService;
     @GET
     @Path("/reportCollect")
     @Produces(MediaType.APPLICATION_JSON)
@@ -235,6 +241,75 @@ public class ReportResource extends BaseResource{
             stream.flush();
             stream.close();
             outUrl = "/report/export/" + fname + "DeliverMilk.xlsx";
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+        return convertToRespModel(MessageCode.NORMAL,null,outUrl);
+    }
+    @GET
+    @Path("/reportMilkBox/{empNo}")
+    @Produces(MediaType.APPLICATION_JSON)
+    @ApiOperation(value = "/reportMilkBox/{empNo}", response = OrderCreateModel.class, notes = "根据送奶员导出装箱列表信息")
+    public Response reportMilkBox(@ApiParam(required = true, name = "empNo", value = "送奶员编号") @PathParam("empNo") String empNo, @Context HttpServletRequest request, @Context HttpServletResponse response) {
+        List<TMilkboxPlan> details = milkBoxService.findMilkBox(empNo);
+        BranchEmpModel empdata =  branchEmpService.empDetailInfo(empNo);
+        String outUrl = "";
+        String url = request.getServletContext().getRealPath("/");
+        try {
+            File file = new File(url +  File.separator + "report"+ File.separator + "template" + File.separator + "MilkBoxTemplate.xlsx");
+            FileInputStream input = new FileInputStream(file);
+            XSSFWorkbook workbook = new XSSFWorkbook(new BufferedInputStream(input));
+            XSSFSheet sheet = workbook.getSheetAt(0);
+            XSSFRow row = sheet.getRow(1);
+            XSSFCell cell = row.getCell(1);
+            cell.setCellValue(empdata.getEmp().getBranchName());
+            cell = row.getCell(4);
+            cell.setCellValue(empdata.getEmp().getEmpName());
+            cell = row.getCell(7);
+            cell.setCellValue(format.format(new Date()));
+            int r = 3;
+            if(details!=null){
+                for(TMilkboxPlan item : details){
+                    row = sheet.getRow(r);
+                    cell = row.getCell(0);
+                    cell.setCellValue(item.getMemberName());
+                    cell= row.getCell(1);
+                    cell.setCellValue(item.getMemberTel());
+                    cell = row.getCell(2);
+                    cell.setCellValue(item.getAdressNo());
+                    cell = row.getCell(5);
+                    cell.setCellValue(item.getProNum());
+                    cell = row.getCell(6);
+                    cell.setCellValue(item.getInitAmt().toString());
+                    cell = row.getCell(7);
+                    String paymentStatName="";
+                    if(item.getPaymentStat().equals("10")){
+                        paymentStatName="后付款";
+                    }else if(item.getPaymentStat().equals("20")){
+                        paymentStatName="预付款";
+                    }else if(item.getPaymentStat().equals("30")){
+                        paymentStatName="垫付款";
+                    }
+                    cell.setCellValue(paymentStatName);
+                }
+            }
+            String fname = CodeGeneratorUtil.getCode();
+            String rq = format1.format(new Date(new Date().getTime() - 24 * 60 * 60 * 1000));
+            String filePath = url +  File.separator + "report"+ File.separator + "export";
+            File delFiles = new File(filePath);
+            if(delFiles.isDirectory()){
+                for(File del : delFiles.listFiles()){
+                    if(del.getName().contains(rq)){
+                        del.delete();
+                    }
+                }
+            }
+            File export = new File(url +  File.separator + "report"+ File.separator + "export" + File.separator + fname + "MilkBoxTemplate.xlsx");
+            FileOutputStream stream = new FileOutputStream(export);
+            workbook.write(stream);
+            stream.flush();
+            stream.close();
+            outUrl = "/report/export/" + fname + "MilkBoxTemplate.xlsx";
         }catch (Exception e){
             e.printStackTrace();
         }
