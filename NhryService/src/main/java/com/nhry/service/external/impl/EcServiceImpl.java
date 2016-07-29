@@ -12,7 +12,6 @@ import com.nhry.service.external.EcBaseService;
 import com.nhry.service.external.dao.EcService;
 import com.nhry.utils.EnvContant;
 import com.nhry.utils.HttpUtils;
-import com.wfy.beans.callProc.ProcBusinessBean;
 
 public class EcServiceImpl extends EcBaseService implements EcService{
 
