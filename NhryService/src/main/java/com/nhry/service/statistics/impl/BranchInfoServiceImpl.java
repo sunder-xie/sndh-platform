@@ -41,4 +41,12 @@ public class BranchInfoServiceImpl implements BranchInfoService {
 
         return branchInfoMapper.findOrderRatio(model);
     }
+
+    @Override
+    public PageInfo findBranchMonthReport(BranchInfoModel model) {
+        if(StringUtils.isEmpty(model.getPageNum()) || StringUtils.isEmpty(model.getPageSize())){
+            throw new ServiceException(MessageCode.LOGIC_ERROR,"pageNum和pageSize不能为空！");
+        }
+        return branchInfoMapper.findBranchMonthReport(model);
+    }
 }
