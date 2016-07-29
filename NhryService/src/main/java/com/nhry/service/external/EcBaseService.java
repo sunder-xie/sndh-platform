@@ -1,5 +1,8 @@
 package com.nhry.service.external;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import org.apache.commons.lang3.StringUtils;
 import org.apache.http.HttpStatus;
 import org.codehaus.jettison.json.JSONException;
@@ -8,6 +11,8 @@ import org.codehaus.jettison.json.JSONObject;
 import com.nhry.data.basic.dao.TSysPushMessageLogMapper;
 import com.nhry.data.basic.domain.TSysPushMessageLog;
 import com.nhry.utils.APIHttpClient;
+import com.nhry.utils.EnvContant;
+import com.nhry.utils.HttpUtils;
 import com.nhry.utils.PrimaryKeyUtils;
 import com.nhry.utils.date.Date;
 
@@ -23,32 +28,30 @@ public class EcBaseService {
      */
     public boolean pushMessage2Ec(String url,String reqbody,boolean flag){
     	try {
-    		APIHttpClient client = new APIHttpClient(url);
-        	String msg = client.post(reqbody);
-        	if(0==client.getStatus()){
-        		//成功调用
-        		JSONObject json = new JSONObject(msg);
-        		if(json.has("success") && json.getBoolean("success")){
-        			return true;
-        		}else{
-        			if(!flag){
-        				//不需要记录推送失败的消息
-        				return false;
-        			}
-        			//推送不成功
-        			addMessage(url, reqbody, json.has("errorMessage") ? json.getString("errorMessage") : null, json.has("errorCode") ? json.getString("errorCode") : null);
-        		}
-        	}else{
-        		if(!flag){
+    		Map<String, Object> params = new HashMap<String,Object>(2);
+			params.put("data", reqbody);
+        	String msg = HttpUtils.request(url, params);;
+        	//成功调用
+    		JSONObject json = new JSONObject(msg);
+    		if(json.has("success") && json.getBoolean("success")){
+    			return true;
+    		}else{
+    			if(!flag){
     				//不需要记录推送失败的消息
     				return false;
     			}
-        		//调用不成功
-        		addMessage(url, reqbody,msg ,client.getStatus()+"");
-        	}
-		} catch (JSONException e) {
+    			//推送不成功
+    			addMessage(url, reqbody, json.has("errorMessage") ? json.getString("errorMessage") : null, json.has("errorCode") ? json.getString("errorCode") : null);
+    		}
+		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
+			if(!flag){
+				//不需要记录推送失败的消息
+				return false;
+			}
+    		//调用不成功
+    		addMessage(url, reqbody,e.getMessage() ,"SERVEREROR");
 			return false;
 		}
     	return false;

@@ -1,5 +1,8 @@
 package com.nhry.service.external.impl;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import org.codehaus.jettison.json.JSONArray;
 import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONObject;
@@ -8,6 +11,8 @@ import com.nhry.data.basic.domain.TMdBranch;
 import com.nhry.service.external.EcBaseService;
 import com.nhry.service.external.dao.EcService;
 import com.nhry.utils.EnvContant;
+import com.nhry.utils.HttpUtils;
+import com.wfy.beans.callProc.ProcBusinessBean;
 
 public class EcServiceImpl extends EcBaseService implements EcService{
 
@@ -40,10 +45,6 @@ public class EcServiceImpl extends EcBaseService implements EcService{
 			branchJson.put("emp_no",branch.getEmpNo());
 			branchJson.put("mp",branch.getMp());
 			branchJson.put("dealer_no",branch.getDealerNo());
-			branchJson.put("emp_no",branch.getEmpNo());
-			branchJson.put("emp_no",branch.getEmpNo());
-			branchJson.put("emp_no",branch.getEmpNo());
-			branchJson.put("emp_no",branch.getEmpNo());
 			data.put(branchJson);
 			ssbi.put("data", data);
 			body.put("SVCSENDBRANCHINFO", ssbi);
@@ -51,7 +52,7 @@ public class EcServiceImpl extends EcBaseService implements EcService{
 			arr.put(json);
 			System.out.println("----------"+arr.toString());
 			pushMessage2Ec(EnvContant.getSystemConst("ec_base_url")+EnvContant.getSystemConst("ec_upt_branch"), arr.toString(), true);
-		} catch (JSONException e) {
+		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
