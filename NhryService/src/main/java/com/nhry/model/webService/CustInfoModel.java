@@ -12,7 +12,33 @@ public class CustInfoModel implements Serializable{
     private String street;
     private String townName;
     private String address;
-    private String addrGuid;
+    private String vipGuid;
+    private String longitude;
+    private String latitude;
+
+    public String getVipGuid() {
+        return vipGuid;
+    }
+
+    public void setVipGuid(String vipGuid) {
+        this.vipGuid = vipGuid;
+    }
+
+    public String getLongitude() {
+        return longitude;
+    }
+
+    public void setLongitude(String longitude) {
+        this.longitude = longitude;
+    }
+
+    public String getLatitude() {
+        return latitude;
+    }
+
+    public void setLatitude(String latitude) {
+        this.latitude = latitude;
+    }
 
     public String getCity() {
         return city;
@@ -52,14 +78,6 @@ public class CustInfoModel implements Serializable{
 
     public void setAddress(String address) {
         this.address = address;
-    }
-
-    public String getAddrGuid() {
-        return addrGuid;
-    }
-
-    public void setAddrGuid(String addrGuid) {
-        this.addrGuid = addrGuid;
     }
 
     public String getProvince() {
