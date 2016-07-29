@@ -109,7 +109,7 @@
         LEFT JOIN t_md_mara m on m.MATNR = i.CONFIRM_MATNR
         LEFT JOIN t_md_dealer d on b.DEALER_NO = d.DEALER_NO
         where di.`STATUS` ='20'
-        and ( i.REASON = '10' OR  i.REASON = '20' OR  i.REASON = '30')
+        and ( i.REASON = '10' OR  i.REASON = '20' OR  i.REASON = '30' OR i.REASON IS NULL)
         and i.GIFT_FLAG IS NULL
         and i.CONFIRM_QTY is NOT NULL
         and i.CONFIRM_QTY !=0
@@ -156,7 +156,7 @@
         LEFT JOIN t_md_mara m on m.MATNR = i.CONFIRM_MATNR
         LEFT JOIN t_md_dealer d on b.DEALER_NO = d.DEALER_NO
         where di.`STATUS` ='20'
-        and ( i.REASON = '10' OR  i.REASON = '20' OR  i.REASON = '30')
+        and ( i.REASON = '10' OR  i.REASON = '20' OR  i.REASON = '30' OR  i.REASON IS NULL)
         and i.GIFT_FLAG IS NOT NULL
         and i.CONFIRM_QTY is NOT NULL
         and i.CONFIRM_QTY !=0
@@ -355,7 +355,7 @@
         WHERE 1 =1
         and o.STATUS = '20'
         and i.GIFT_FLAG IS  NULL
-        and (i.REASON ='10' OR i.REASON ='30' OR i.REASON ='20')
+        and (i.REASON ='10' OR i.REASON ='30' OR i.REASON ='20' OR i.REASON IS NULL )
         <if test="branchNo!=null and ''!=branchNo">
             and o.BRANCH_NO = #{branchNo,jdbcType=VARCHAR}
         </if>
@@ -376,7 +376,7 @@
         LEFT JOIN t_mst_disp_order o on i.ORDER_NO = o.ORDER_NO
         WHERE 1 =1
         and o.STATUS = '20'
-        and (i.REASON ='10' OR i.REASON ='30' OR i.REASON ='20')
+        and (i.REASON ='10' OR i.REASON ='30' OR i.REASON ='20'  OR i.REASON IS NULL)
         and i.GIFT_FLAG IS NOT NULL
         <if test="branchNo!=null and ''!=branchNo">
             and o.BRANCH_NO = #{branchNo,jdbcType=VARCHAR}
@@ -405,7 +405,7 @@
         WHERE 1=1
         and i.GIFT_FLAG IS NULL
         and o.STATUS = '20'
-        and (i.REASON ='10' OR i.REASON ='30' OR i.REASON ='20')
+        and (i.REASON ='10' OR i.REASON ='30' OR i.REASON ='20'  OR i.REASON IS NULL)
         <if test="branchNo!=null and ''!=branchNo">
             and o.BRANCH_NO = #{branchNo,jdbcType=VARCHAR}
         </if>
@@ -430,7 +430,7 @@
         WHERE 1=1
         and i.GIFT_FLAG IS NOT NULL
         and o.STATUS = '20'
-        and (i.REASON ='10' OR i.REASON ='30' OR i.REASON ='20')
+        and (i.REASON ='10' OR i.REASON ='30' OR i.REASON ='20' OR i.REASON IS NULL)
         <if test="branchNo!=null and ''!=branchNo">
             and o.BRANCH_NO = #{branchNo,jdbcType=VARCHAR}
         </if>
