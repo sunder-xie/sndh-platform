@@ -208,6 +208,9 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 		if( StringUtils.isBlank(r.getRetReason()) || StringUtils.isBlank(r.getOrderNo())) {
 			throw new ServiceException(MessageCode.LOGIC_ERROR, "信息不完整！");
 		}
+		
+		//需要把订户挂到一个没用的奶站上
+		
 		r.setRetDate(new Date());
 		r.setRetReason(r.getRetReason().trim());
 		return tPreOrderMapper.returnOrder(r);
@@ -1301,41 +1304,48 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 	@Override
 	public int modifyOrderStatus(TPreOrder record)
 	{
-		//未收款10、已收款20、垫付款30
-		//已装箱10、未装箱20、无需装箱30
-		//已生效10、未生效20、无效30,作废40
-		//先款10、后付款20
-		//在订10、停订20、退订30
+		//未收款10、已收款20、垫付款30 paymentstat
+		//已装箱10、未装箱20、无需装箱30 milkboxstat
+		//已生效10、未生效20、无效30,作废40 preorderstat
+		//先款10、后付款20  paymentmethod
+		//在订10、停订20、退订30 sign
 		TPreOrder order = tPreOrderMapper.selectByPrimaryKey(record.getOrderNo());
-		if( order == null){
+		if(order == null){
 			throw new ServiceException(MessageCode.LOGIC_ERROR,"该订单号不存在!");
 		}
 		if(record.getMilkmemberNo()!=null){
 			//更改订户
 			tPreOrderMapper.updateOrderStatus(record);
-			//订户状态更改
-			tVipCustInfoService.discontinue(record.getMilkmemberNo(), "10",new com.nhry.utils.date.Date(),new com.nhry.utils.date.Date());
-			
 			return 1;
-		}
-		if("10".equals(record.getPreorderStat())){
-			if(StringUtils.isBlank(order.getMilkmemberNo()))throw new ServiceException(MessageCode.LOGIC_ERROR,"该订单没有订户，请选择订户或新建订户!");
-			//订户状态更改
-			tVipCustInfoService.discontinue(record.getMilkmemberNo(), "10",new com.nhry.utils.date.Date(),new com.nhry.utils.date.Date());
 		}
 		if(StringUtils.isBlank(record.getPaymentStat()) && StringUtils.isBlank(record.getMilkboxStat())
 				&& StringUtils.isBlank(record.getPreorderStat()) && StringUtils.isBlank(record.getSign())){
 			throw new ServiceException(MessageCode.LOGIC_ERROR,"更新信息与状态为空!");
 		}
-		if(!"30".equals(order.getPreorderSource())){
-			//当非奶站订单时，退回或者作废待确认订单时，需要判断是否删除订户和地址
+		if("10".equals(record.getPreorderStat())){
+			if(StringUtils.isBlank(order.getMilkmemberNo()))throw new ServiceException(MessageCode.LOGIC_ERROR,"该订单没有订户，请选择订户或新建订户!");
+			//订户状态更改
+			tVipCustInfoService.discontinue(record.getMilkmemberNo(), "10",new com.nhry.utils.date.Date(),new com.nhry.utils.date.Date());
+			tPreOrderMapper.updateOrderStatus(record);
+			
+			//电商或者摆台的订单确认后，走线下逻辑
+			
+			
+			return 1;
+		}
+		//作废
+		if("40".equals(record.getPreorderStat())){
+			//当非奶站订单时，作废待确认订单时
 			List<TPreOrder> list = tPreOrderMapper.selectNodeletedByMilkmemberNo(order);
 			if(list == null || list.size() <= 0 ){
 				System.out.print("删除订户");
+				
 			}
+			tPreOrderMapper.updateOrderStatus(record);
+			
+			return 1;
 		}
 
-		tPreOrderMapper.updateOrderStatus(record);
 
 		return 1;
 	}
