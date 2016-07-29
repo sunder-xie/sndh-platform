@@ -55,7 +55,6 @@ public class HttpUtils {
     public static String request(String uri, Map<String, Object> params, String encoding) throws IOException {
         long currentTime = System.currentTimeMillis();
         URL postUrl = new URL(uri);
-        // ������
         HttpURLConnection connection = (HttpURLConnection)postUrl.openConnection();
         connection.setDoOutput(true);
         connection.setDoInput(true);
@@ -112,7 +111,6 @@ public class HttpUtils {
     public static byte[] request2(String uri, Map<String, Object> params, String encoding) throws IOException {
         long currentTime = System.currentTimeMillis();
         URL postUrl = new URL(uri);
-        // ������
         HttpURLConnection connection = (HttpURLConnection)postUrl.openConnection();
         connection.setDoOutput(true);
         connection.setDoInput(true);

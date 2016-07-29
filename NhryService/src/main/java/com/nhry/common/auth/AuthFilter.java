@@ -67,7 +67,6 @@ public class AuthFilter implements ContainerRequestFilter {
 			String ak =request.getHeaderValue("dh-token");
 			String flag =request.getHeaderValue("nh-flag");
 			String host = request.getHeaderValue("Host");
-			System.out.println("-----head host-----"+host);
 			//未登录
 			if(StringUtils.isEmpty(ak)){
 				if(!whiteUriList.contains(uri)){

@@ -103,7 +103,6 @@ public class IdmAuthServlet extends HttpServlet {
 	
 	public void sendRedirectToHomePage(HttpServletRequest request, HttpServletResponse response,String token,String ip){
 		//跳转到登录页面
-		System.out.println("------传入-ip------"+ip);
 		try {
 			if(StringUtils.isEmpty(ip)){
 				response.setHeader("dh_token", token);
