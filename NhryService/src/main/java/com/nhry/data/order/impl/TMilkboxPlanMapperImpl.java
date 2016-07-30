@@ -1,5 +1,6 @@
 package com.nhry.data.order.impl;
 
+import java.util.List;
 import java.util.Map;
 
 import com.github.pagehelper.PageInfo;
@@ -82,6 +83,11 @@ public class TMilkboxPlanMapperImpl implements TMilkboxPlanMapper
 		// TODO Auto-generated method stub
 		return sqlSessionTemplate.update("updateMilkboxPlanPrinted", code);
 	}
-	
-	
+
+	@Override
+	public List searchMilkBox(String empNo) {
+		return sqlSessionTemplate.selectList("selectMilkboxPlantoOutput",empNo);
+	}
+
+
 }

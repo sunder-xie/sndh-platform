@@ -64,7 +64,7 @@
             <list>
                 <ref bean="crontestJobTrigger1" />
 				<ref bean="crontestJobTrigger2" />
-				<ref bean="crontestJobTrigger3" />
+				<!--<ref bean="crontestJobTrigger3" />-->
             </list>
         </property>
     </bean>

@@ -108,7 +108,8 @@
         LEFT JOIN t_md_branch_emp e on di.DISP_EMP_NO = e.EMP_NO
         LEFT JOIN t_md_mara m on m.MATNR = i.CONFIRM_MATNR
         LEFT JOIN t_md_dealer d on b.DEALER_NO = d.DEALER_NO
-        where i.`STATUS` ='20'
+        where di.`STATUS` ='20'
+        and ( i.REASON = '10' OR  i.REASON = '20' OR  i.REASON = '30' OR i.REASON IS NULL)
         and i.GIFT_FLAG IS NULL
         and i.CONFIRM_QTY is NOT NULL
         and i.CONFIRM_QTY !=0
@@ -154,7 +155,8 @@
         LEFT JOIN t_md_branch_emp e on di.DISP_EMP_NO = e.EMP_NO
         LEFT JOIN t_md_mara m on m.MATNR = i.CONFIRM_MATNR
         LEFT JOIN t_md_dealer d on b.DEALER_NO = d.DEALER_NO
-        where i.`STATUS` ='20'
+        where di.`STATUS` ='20'
+        and ( i.REASON = '10' OR  i.REASON = '20' OR  i.REASON = '30' OR  i.REASON IS NULL)
         and i.GIFT_FLAG IS NOT NULL
         and i.CONFIRM_QTY is NOT NULL
         and i.CONFIRM_QTY !=0
@@ -328,63 +330,65 @@
 
     <select id="empInDispFeeNum" resultType="INTEGER"  parameterType="com.nhry.model.bill.EmpDispDetialInfoSearch" >
         SELECT (case when SUM(s.QTY ) is null then 0 else SUM(s.QTY )  end)    QTY
-        FROM  t_mst_inside_sal_order_item s LEFT JOIN t_preorder o on s.ORG_ORDER_NO = o.ORDER_NO
+        FROM  t_mst_inside_sal_order_item s
+        LEFT JOIN t_mst_inside_sal_order so on s.INS_ORDER_NO = so.INS_ORDER_NO
+        LEFT JOIN t_mst_disp_order o on so.DISP_ORDER_NO = o.ORDER_NO
         WHERE 1 =1
         <if test="branchNo!=null and ''!=branchNo">
-            and   o.BRANCH_NO = #{branchNo,jdbcType=VARCHAR}
+            and  o.BRANCH_NO = #{branchNo,jdbcType=VARCHAR}
         </if>
         <if test="empNo!=null and ''!=empNo">
-            and  o.EMP_NO = #{empNo,jdbcType=VARCHAR}
+            and  so.SAL_EMP_NO = #{empNo,jdbcType=VARCHAR}
         </if>
         <if test="startDate!=null and ''!=startDate">
-            and  o.END_DATE &gt;= #{startDate,jdbcType=DATE}
+            and  so.ORDER_DATE &gt;= #{startDate,jdbcType=DATE}
         </if>
         <if test="endDate!=null and ''!=endDate">
-            and  o.END_DATE &lt;= #{endDate,jdbcType=DATE}
+            and   so.ORDER_DATE &lt;= #{endDate,jdbcType=DATE}
         </if>
     </select>
 
     <select id="empDispFeeNum"  resultType="INTEGER"  parameterType="com.nhry.model.bill.EmpDispDetialInfoSearch" >
         SELECT   (case when SUM(i.CONFIRM_QTY ) is null then 0 else SUM(i.CONFIRM_QTY )  end)    QTY
         FROM  t_mst_disp_order_item  i
-        LEFT JOIN t_mst_disp_order disp on i.ORDER_NO = disp.ORDER_NO
-        LEFT JOIN t_preorder o on i.ORG_ORDER_NO = o.ORDER_NO
+        LEFT JOIN t_mst_disp_order o on i.ORDER_NO = o.ORDER_NO
         WHERE 1 =1
-        and i.STATUS = '20'
+        and o.STATUS = '20'
         and i.GIFT_FLAG IS  NULL
+        and (i.REASON ='10' OR i.REASON ='30' OR i.REASON ='20' OR i.REASON IS NULL )
         <if test="branchNo!=null and ''!=branchNo">
             and o.BRANCH_NO = #{branchNo,jdbcType=VARCHAR}
         </if>
         <if test="empNo!=null and ''!=empNo">
-            and  disp.DISP_EMP_NO = #{empNo,jdbcType=VARCHAR}
+            and  o.DISP_EMP_NO = #{empNo,jdbcType=VARCHAR}
         </if>
         <if test="startDate!=null and ''!=startDate">
-            and  o.END_DATE &gt;= #{startDate,jdbcType=DATE}
+            and  o.DISP_DATE &gt;= #{startDate,jdbcType=DATE}
         </if>
         <if test="endDate!=null and ''!=endDate">
-            and  o.END_DATE &lt;= #{endDate,jdbcType=DATE}
+            and  o.DISP_DATE &lt;= #{endDate,jdbcType=DATE}
         </if>
     </select>
 
     <select id="empFreeDispFeeNum"  resultType="INTEGER"  parameterType="com.nhry.model.bill.EmpDispDetialInfoSearch" >
         SELECT   (case when SUM(i.CONFIRM_QTY ) is null then 0 else SUM(i.CONFIRM_QTY )  end)    QTY
         FROM  t_mst_disp_order_item  i
-        LEFT JOIN t_mst_disp_order disp on i.ORDER_NO = disp.ORDER_NO
-        LEFT JOIN t_preorder o on i.ORG_ORDER_NO = o.ORDER_NO
+        LEFT JOIN t_mst_disp_order o on i.ORDER_NO = o.ORDER_NO
         WHERE 1 =1
-        and i.STATUS = '20'
+        and o.STATUS = '20'
+        and (i.REASON ='10' OR i.REASON ='30' OR i.REASON ='20'  OR i.REASON IS NULL)
         and i.GIFT_FLAG IS NOT NULL
         <if test="branchNo!=null and ''!=branchNo">
             and o.BRANCH_NO = #{branchNo,jdbcType=VARCHAR}
         </if>
         <if test="empNo!=null and ''!=empNo">
-            and  disp.DISP_EMP_NO = #{empNo,jdbcType=VARCHAR}
+            and  o.DISP_EMP_NO = #{empNo,jdbcType=VARCHAR}
         </if>
         <if test="startDate!=null and ''!=startDate">
-            and  o.END_DATE &gt;= #{startDate,jdbcType=DATE}
+            and  o.DISP_DATE &gt;= #{startDate,jdbcType=DATE}
         </if>
         <if test="endDate!=null and ''!=endDate">
-            and  o.END_DATE &lt;= #{endDate,jdbcType=DATE}
+            and  o.DISP_DATE &lt;= #{endDate,jdbcType=DATE}
         </if>
     </select>
 
@@ -400,7 +404,8 @@
         LEFT JOIN t_preorder p  on i.ORG_ORDER_NO = p.ORDER_NO
         WHERE 1=1
         and i.GIFT_FLAG IS NULL
-        and i.STATUS = '20'
+        and o.STATUS = '20'
+        and (i.REASON ='10' OR i.REASON ='30' OR i.REASON ='20'  OR i.REASON IS NULL)
         <if test="branchNo!=null and ''!=branchNo">
             and o.BRANCH_NO = #{branchNo,jdbcType=VARCHAR}
         </if>
@@ -408,10 +413,10 @@
             and  o.DISP_EMP_NO = #{empNo,jdbcType=VARCHAR}
         </if>
         <if test="startDate!=null and ''!=startDate">
-            and  p.END_DATE &gt;= #{startDate,jdbcType=DATE}
+            and  o.DISP_DATE &gt;= #{startDate,jdbcType=DATE}
         </if>
         <if test="endDate!=null and ''!=endDate">
-            and  p.END_DATE &lt;= #{endDate,jdbcType=DATE}
+            and  o.DISP_DATE &lt;= #{endDate,jdbcType=DATE}
         </if>
         GROUP BY i.MATNR,o.DISP_EMP_NO
     </select>
@@ -424,8 +429,8 @@
         LEFT JOIN t_preorder p  on i.ORG_ORDER_NO = p.ORDER_NO
         WHERE 1=1
         and i.GIFT_FLAG IS NOT NULL
-        and i.STATUS = '20'
-
+        and o.STATUS = '20'
+        and (i.REASON ='10' OR i.REASON ='30' OR i.REASON ='20' OR i.REASON IS NULL)
         <if test="branchNo!=null and ''!=branchNo">
             and o.BRANCH_NO = #{branchNo,jdbcType=VARCHAR}
         </if>
@@ -433,31 +438,33 @@
             and  o.DISP_EMP_NO = #{empNo,jdbcType=VARCHAR}
         </if>
         <if test="startDate!=null and ''!=startDate">
-            and  p.END_DATE &gt;= #{startDate,jdbcType=DATE}
+            and  o.DISP_DATE &gt;= #{startDate,jdbcType=DATE}
         </if>
         <if test="endDate!=null and ''!=endDate">
-            and  p.END_DATE &lt;= #{endDate,jdbcType=DATE}
+            and  o.DISP_DATE &lt;= #{endDate,jdbcType=DATE}
         </if>
         GROUP BY i.MATNR,o.DISP_EMP_NO
     </select>
 
     <select id="empInDispByProduct" resultMap="EmpAccoDispFeeResultMap"  parameterType="com.nhry.model.bill.EmpDispDetialInfoSearch" >
-        SELECT s.MATNR,SUM(s.QTY)
-        FROM  t_mst_inside_sal_order_item s LEFT JOIN t_preorder o on s.ORG_ORDER_NO = o.ORDER_NO
+        SELECT i.MATNR,SUM(i.QTY)
+        FROM  t_mst_inside_sal_order_item i
+        LEFT JOIN t_mst_inside_sal_order so on i.INS_ORDER_NO = so.INS_ORDER_NO
+        LEFT JOIN t_mst_disp_order o on so.DISP_ORDER_NO = o.ORDER_NO
         WHERE 1 = 1
         <if test="branchNo!=null and ''!=branchNo">
             and o.BRANCH_NO = #{branchNo,jdbcType=VARCHAR}
         </if>
         <if test="empNo!=null and ''!=empNo">
-            and  o.EMP_NO = #{empNo,jdbcType=VARCHAR}
+            and  so.SAL_EMP_NO = #{empNo,jdbcType=VARCHAR}
         </if>
         <if test="startDate!=null and ''!=startDate">
-            and  o.END_DATE &gt;= #{startDate,jdbcType=DATE}
+            and so.ORDER_DATE &gt;= #{startDate,jdbcType=DATE}
         </if>
         <if test="endDate!=null and ''!=endDate">
-            and  o.END_DATE &lt;= #{endDate,jdbcType=DATE}
+            and  so.ORDER_DATE &lt;= #{endDate,jdbcType=DATE}
         </if>
-        GROUP BY s.MATNR
+        GROUP BY i.MATNR
     </select>
 
 

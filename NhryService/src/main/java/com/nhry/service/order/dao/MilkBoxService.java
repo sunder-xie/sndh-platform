@@ -4,6 +4,8 @@ import com.github.pagehelper.PageInfo;
 import com.nhry.data.order.domain.TMilkboxPlan;
 import com.nhry.model.order.*;
 
+import java.util.List;
+
 public interface MilkBoxService {
 	
 	PageInfo searchMilkBox(MilkboxSearchModel smodel);
@@ -17,4 +19,6 @@ public interface MilkBoxService {
 	TMilkboxPlan selectMilkboxByPlanNo(String code);
 	
 	int updateMilkboxPlanPrinted(String code);
+
+	List findMilkBox(String empNo);
 }
