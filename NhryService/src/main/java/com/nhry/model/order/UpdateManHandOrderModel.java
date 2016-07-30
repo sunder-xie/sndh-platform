@@ -12,8 +12,19 @@ public class UpdateManHandOrderModel implements Serializable {
 
     private String orderNo;
     private String branchNo;
+    private String salesOrg;
 
-    public String getOrderNo() {
+    public String getSalesOrg()
+	{
+		return salesOrg;
+	}
+
+	public void setSalesOrg(String salesOrg)
+	{
+		this.salesOrg = salesOrg;
+	}
+
+	public String getOrderNo() {
         return orderNo;
     }
 
