@@ -34,7 +34,6 @@
     VIP_CUST_NO,IS_DEFAULT,STREET
   </sql>
   <select id="findAddressById" resultMap="BaseResultMap" parameterType="java.lang.String" >
-    select 
     SELECT
 		ADDRESS_ID,
 		RECV_NAME,
