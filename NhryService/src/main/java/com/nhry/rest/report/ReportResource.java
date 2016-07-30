@@ -14,6 +14,8 @@ import com.nhry.model.order.CollectOrderModel;
 import com.nhry.model.order.MilkboxSearchModel;
 import com.nhry.model.order.OrderCreateModel;
 import com.nhry.model.order.ProductItem;
+import com.nhry.model.statistics.BranchInfoModel;
+import com.nhry.model.sys.ResponseModel;
 import com.nhry.rest.BaseResource;
 import com.nhry.service.basic.dao.BranchEmpService;
 import com.nhry.service.basic.dao.BranchService;
@@ -21,6 +23,7 @@ import com.nhry.service.basic.pojo.BranchEmpModel;
 import com.nhry.service.milk.dao.DeliverMilkService;
 import com.nhry.service.order.dao.MilkBoxService;
 import com.nhry.service.order.dao.OrderService;
+import com.nhry.service.statistics.dao.BranchInfoService;
 import com.nhry.utils.CodeGeneratorUtil;
 import com.sun.jersey.spi.resource.Singleton;
 import com.wordnik.swagger.annotations.Api;
@@ -48,6 +51,7 @@ import java.math.BigDecimal;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created by cbz on 7/27/2016.
@@ -73,6 +77,8 @@ public class ReportResource extends BaseResource{
     private MilkBoxService milkBoxService;
     @Autowired
     private BranchEmpService branchEmpService;
+    @Autowired
+    private BranchInfoService branchInfoService;
     @GET
     @Path("/reportCollect")
     @Produces(MediaType.APPLICATION_JSON)
@@ -310,6 +316,154 @@ public class ReportResource extends BaseResource{
             stream.flush();
             stream.close();
             outUrl = "/report/export/" + fname + "MilkBoxTemplate.xlsx";
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+        return convertToRespModel(MessageCode.NORMAL,null,outUrl);
+    }
+    @POST
+    @Path("/findReqOrderOutput")
+    @Produces(MediaType.APPLICATION_JSON)
+    @Consumes(MediaType.APPLICATION_JSON)
+    @ApiOperation(value = "/findReqOrderOutput}", response = ResponseModel.class, notes = "根据日期,经销商,奶站编号生成要货计划导出")
+    public Response findReqOrderOutput(@ApiParam(name = "model",value = "output要货计划") BranchInfoModel model){
+        List<Map<String,String>>  details = branchInfoService.findReqOrderOutput(model);
+        String outUrl = "";
+        String url = request.getServletContext().getRealPath("/");
+        try {
+            File file = new File(url +  File.separator + "report"+ File.separator + "template" + File.separator + "ReqOrderTemplate.xlsx");
+            FileInputStream input = new FileInputStream(file);
+            XSSFWorkbook workbook = new XSSFWorkbook(new BufferedInputStream(input));
+            XSSFSheet sheet = workbook.getSheetAt(0);
+            XSSFRow row;
+            XSSFCell cell ;
+            int r = 2;
+            if(details!=null){
+                for(Map<String,String> map : details){
+                    row = sheet.createRow(r);r++;
+                    cell=row.createCell(1);
+                    cell.setCellValue(map.get("dealerName"));
+                    cell=row.createCell(2);
+                    cell.setCellValue(map.get("branchName"));
+                    cell=row.createCell(3);
+                    cell.setCellValue(map.get("matnrTxt"));
+
+                    if(map.get("qty")!=null){
+                        cell=row.createCell(4);
+                        cell.setCellValue(String.valueOf(map.get("qty")));
+                    }
+                    if(map.get("increQty")!=null){
+                        cell=row.createCell(5);
+                        cell.setCellValue(String.valueOf(map.get("increQty")));
+                    }
+                    if(map.get("sumQty")!=null){
+                        cell=row.createCell(6);
+                        cell.setCellValue(String.valueOf(map.get("sumQty")));
+                    }
+                    if(map.get("bl")!=null){
+                        cell=row.createCell(7);
+                        cell.setCellValue(String.valueOf(map.get("bl")));
+                    }
+                    cell=row.createCell(8);
+                    cell.setCellValue(map.get("flag"));
+                }
+            }
+            String fname = CodeGeneratorUtil.getCode();
+            String rq = format1.format(new Date(new Date().getTime() - 24 * 60 * 60 * 1000));
+            String filePath = url +  File.separator + "report"+ File.separator + "export";
+            File delFiles = new File(filePath);
+            if(delFiles.isDirectory()){
+                for(File del : delFiles.listFiles()){
+                    if(del.getName().contains(rq)){
+                        del.delete();
+                    }
+                }
+            }
+            File export = new File(url +  File.separator + "report"+ File.separator + "export" + File.separator + fname + "ReqOrderTemplate.xlsx");
+            FileOutputStream stream = new FileOutputStream(export);
+            workbook.write(stream);
+            stream.flush();
+            stream.close();
+            outUrl = "/report/export/" + fname + "ReqOrderTemplate.xlsx";
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+        return convertToRespModel(MessageCode.NORMAL,null,outUrl);
+    }
+    @POST
+    @Path("/branchDayOutput")
+    @Produces(MediaType.APPLICATION_JSON)
+    @Consumes(MediaType.APPLICATION_JSON)
+    @ApiOperation(value = "/branchDayOutput}", response = ResponseModel.class, notes = "奶站日报表")
+    public Response branchDayOutput(@ApiParam(name = "model",value = "奶站日报") BranchInfoModel model){
+        List<Map<String,String>>  details = branchInfoService.branchDayOutput(model);
+        String outUrl = "";
+        String url = request.getServletContext().getRealPath("/");
+        try{
+            File file = new File(url +  File.separator + "report"+ File.separator + "template" + File.separator + "DayReportTemplate.xlsx");
+            FileInputStream input = new FileInputStream(file);
+            com.nhry.utils.date.Date date1 = new com.nhry.utils.date.Date(model.getTheDate());
+            XSSFWorkbook workbook = new XSSFWorkbook(new BufferedInputStream(input));
+            XSSFSheet sheet = workbook.getSheetAt(0);
+            XSSFRow row=sheet.getRow(1);
+            XSSFCell cell = row.getCell(4);
+            cell.setCellValue(date1.addDays(-4).toShortDate());
+            cell = row.getCell(5);
+            cell.setCellValue(date1.addDays(-3).toShortDate());
+            cell = row.getCell(6);
+            cell.setCellValue(date1.addDays(-2).toShortDate());
+            cell = row.getCell(7);
+            cell.setCellValue(date1.addDays(-1).toShortDate());
+            cell = row.getCell(8);
+            cell.setCellValue(format.format(model.getTheDate()));
+            int r = 2;
+            if(details!=null){
+                for(Map<String,String> map : details){
+                    row = sheet.createRow(r);r++;
+/*                    cell=row.createCell(1);
+                    cell.setCellValue(map.get("branchNo"));*/
+                    cell=row.createCell(2);
+                    cell.setCellValue(map.get("branchName"));
+                    cell=row.createCell(3);
+                    String groupName="";
+                    if(map.get("branchGroup").equals("01")){
+                        groupName = "自营奶站";
+                    }else if(map.get("branchGroup").equals("02")){
+                        groupName = "经销商奶站";
+                    }
+                    cell.setCellValue(groupName);
+                    cell = row.createCell(4);
+                    cell.setCellValue(map.get("date1")==null ? "0" :String.valueOf(map.get("date1")));
+                    cell = row.createCell(5);
+                    cell.setCellValue(map.get("date2")==null ? "0" :String.valueOf(map.get("date2")));
+                    cell = row.createCell(6);
+                    cell.setCellValue(map.get("date3")==null ? "0" :String.valueOf(map.get("date3")));
+                    cell = row.createCell(7);
+                    cell.setCellValue(map.get("date4")==null ? "0" :String.valueOf(map.get("date4")));
+                    cell = row.createCell(8);
+                    cell.setCellValue(map.get("date5")==null ? "0" :String.valueOf(map.get("date5")));
+                    cell = row.createCell(9);
+                    cell.setCellValue(map.get("hb")==null ? "0" :String.valueOf(map.get("hb")));
+
+                }
+            }
+            String fname = CodeGeneratorUtil.getCode();
+            String rq = format1.format(new Date(new Date().getTime() - 24 * 60 * 60 * 1000));
+            String filePath = url +  File.separator + "report"+ File.separator + "export";
+            File delFiles = new File(filePath);
+            if(delFiles.isDirectory()){
+                for(File del : delFiles.listFiles()){
+                    if(del.getName().contains(rq)){
+                        del.delete();
+                    }
+                }
+            }
+            File export = new File(url +  File.separator + "report"+ File.separator + "export" + File.separator + fname + "DayReportTemplate.xlsx");
+            FileOutputStream stream = new FileOutputStream(export);
+            workbook.write(stream);
+            stream.flush();
+            stream.close();
+            outUrl = "/report/export/" + fname + "DayReportTemplate.xlsx";
         }catch (Exception e){
             e.printStackTrace();
         }

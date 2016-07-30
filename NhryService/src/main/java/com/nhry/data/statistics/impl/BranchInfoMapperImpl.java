@@ -49,4 +49,12 @@ public class BranchInfoMapperImpl implements BranchInfoMapper{
     public PageInfo findReqOrder(BranchInfoModel model) {
         return sqlSessionTemplate.selectListByPages("findReqOrder",model,Integer.valueOf(model.getPageNum()),Integer.valueOf(model.getPageSize()));
     }
+    @Override
+    public List<Map<String, String>> findReqOrderOutput(BranchInfoModel model){
+        return sqlSessionTemplate.selectList("findReqOrder",model);
+    }
+    @Override
+    public List<Map<String, String>> branchDayOutput(BranchInfoModel model){
+        return sqlSessionTemplate.selectList("branchDayInfo",model);
+    }
 }
