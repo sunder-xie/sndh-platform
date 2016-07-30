@@ -122,6 +122,14 @@ public class PriceResource extends BaseResource {
 	}
 	
 	@POST
+	@Path("/dealers/{salesOrg}")
+	@Produces(MediaType.APPLICATION_JSON)
+	@ApiOperation(value = "/dealers/{salesOrg}", response = TMdDealer.class, notes = "根据销售组织获取该销售组织下的经销商")
+	public Response getDealers(@ApiParam(required=true,name="salesOrg",value="销售组织编号")@PathParam("salesOrg")String salesOrg){
+		return convertToRespModel(MessageCode.NORMAL, null, priceService.getDealers(salesOrg));
+	}
+	
+	@POST
 	@Path("/lists/{branchNo}")
 	@Produces(MediaType.APPLICATION_JSON)
 	@ApiOperation(value = "/lists/{branchNo}", response = TMdPrice.class, notes = "根据奶站编号获取当前销售组织下该奶站已经选择的价格组列表")
