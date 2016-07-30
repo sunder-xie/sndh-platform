@@ -1351,9 +1351,14 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 		if(order == null){
 			throw new ServiceException(MessageCode.LOGIC_ERROR,"该订单号不存在!");
 		}
-		if(record.getMilkmemberNo()!=null){
-			//更改订户
-			tPreOrderMapper.updateOrderStatus(record);
+//		if(record.getMilkmemberNo()!=null){
+//			//更改订户
+//			tPreOrderMapper.updateOrderStatus(record);
+//			return 1;
+//		}
+		if(StringUtils.isNotBlank(record.getEmpNo())){
+			//更改送奶工
+			tPreOrderMapper.updateOrderEmpNo(record);
 			return 1;
 		}
 		if(StringUtils.isBlank(record.getPaymentStat()) && StringUtils.isBlank(record.getMilkboxStat())
@@ -1362,6 +1367,7 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 		}
 		if("10".equals(record.getPreorderStat())){
 			if(StringUtils.isBlank(order.getMilkmemberNo()))throw new ServiceException(MessageCode.LOGIC_ERROR,"该订单没有订户，请选择订户或新建订户!");
+			if(StringUtils.isBlank(order.getEmpNo()))throw new ServiceException(MessageCode.LOGIC_ERROR,"该订单没有送奶员，请选择送奶员!");
 			//订户状态更改
 			tPreOrderMapper.updateOrderStatus(record);
 			tVipCustInfoService.discontinue(record.getMilkmemberNo(), "10",new com.nhry.utils.date.Date(),new com.nhry.utils.date.Date());
