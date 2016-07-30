@@ -34,6 +34,7 @@
 		<property name="notsellListMapper" ref="notsellListMapper"></property>
 		<property name="branchSevice" ref="branchService"></property>
 		<property name="messService" ref="messService"></property>
+		<property name="taskExecutor" ref="taskExecutor"></property>
 		<property name="userSessionService" ref="userSessionService"></property>
 	</bean>
 
@@ -51,6 +52,7 @@
 		<property name="branchMapper" ref="branchMapper"></property>
 		<property name="dealerMapper" ref="dealerMapper"></property>
 		<property name="messService" ref="messService"></property>
+		<property name="taskExecutor" ref="taskExecutor"></property>
 		<property name="userSessionService" ref="userSessionService"></property>
 	</bean>
 
@@ -170,6 +172,7 @@
 		<property name="tMdBranchScopeMapper" ref="tMdBranchScopeMapper"></property>
 		<property name="messService" ref="messService"></property>
 		<property name="branchMapper" ref="branchMapper"></property>
+		<property name="taskExecutor" ref="taskExecutor"></property>
 		<property name="userSessionService" ref="userSessionService"></property>
 	</bean>
 
@@ -180,6 +183,7 @@
 		<property name="tMdBranchScopeMapper" ref="tMdBranchScopeMapper"></property>
 		<property name="tMdResidentialAreaMapper" ref="tMdResidentialAreaMapper"></property>
 		<property name="messService" ref="messService"></property>
+		<property name="taskExecutor" ref="taskExecutor"></property>
 		<property name="branchMapper" ref="branchMapper"></property>
 	</bean>
 
