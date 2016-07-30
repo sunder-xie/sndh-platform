@@ -23,6 +23,7 @@ import com.nhry.service.basic.pojo.ResidentialAreaModel;
 import com.nhry.utils.PrimaryKeyUtils;
 
 import org.apache.commons.lang.StringUtils;
+import org.springframework.core.task.TaskExecutor;
 
 import java.util.Date;
 import java.util.HashMap;
@@ -40,6 +41,7 @@ public class ResidentialAreaServiceImpl implements ResidentialAreaService {
     private TSysUserRoleMapper urMapper;
     private TSysMessageService messService;
     private TMdBranchMapper branchMapper;
+    private TaskExecutor taskExecutor;
 
 
     @Override
@@ -84,10 +86,18 @@ public class ResidentialAreaServiceImpl implements ResidentialAreaService {
                         tMdBranchScopeMapper.addBranchScope(scopeKey);
                 }
                 //奶站的配送发生变化，发生系统消息
-                TMdBranch branch = branchMapper.selectBranchByNo(bModel.getBranchNo());
-                if(branch != null){
-                	messService.sendMessagesForUptBranch(branch, 2);
-                }
+                taskExecutor.execute(new Thread(){
+					@Override
+					public void run() {
+						// TODO Auto-generated method stub
+						super.run();
+						this.setName("sendMessagesForforBranchAddArea");
+						 TMdBranch branch = branchMapper.selectBranchByNo(bModel.getBranchNo());
+			              if(branch != null){
+			              	messService.sendMessagesForUptBranch(branch, 2);
+			              }
+					}
+                });
               }
             return 1;
         }catch (Exception e){
@@ -200,5 +210,9 @@ public class ResidentialAreaServiceImpl implements ResidentialAreaService {
 
 	public void setBranchMapper(TMdBranchMapper branchMapper) {
 		this.branchMapper = branchMapper;
+	}
+
+	public void setTaskExecutor(TaskExecutor taskExecutor) {
+		this.taskExecutor = taskExecutor;
 	}
 }

@@ -10,6 +10,7 @@ import com.nhry.service.basic.dao.TMdBranchScopeService;
 import com.nhry.service.basic.dao.TSysMessageService;
 
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.core.task.TaskExecutor;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -24,6 +25,7 @@ public class TMdBranchScopeServiceImpl implements TMdBranchScopeService {
     private TMdResidentialAreaMapper  tMdResidentialAreaMapper;
     private TSysMessageService messService;
     private TMdBranchMapper branchMapper;
+    private TaskExecutor taskExecutor;
 
 
 
@@ -45,11 +47,19 @@ public class TMdBranchScopeServiceImpl implements TMdBranchScopeService {
                 for(String areaId : list){
                     tMdResidentialAreaMapper.updateStatusToUnDistById(areaId);
                 }
-              //奶站的配送发生变化，发生系统消息
-                TMdBranch branch = branchMapper.selectBranchByNo(branchNo);
-                if(branch != null){
-                	messService.sendMessagesForUptBranch(branch, 2);
-                }
+              //奶站的配送发生变化，发生系统消息(以线程方式)
+                taskExecutor.execute(new Thread(){
+					@Override
+					public void run() {
+						// TODO Auto-generated method stub
+						super.run();
+						this.setName("sendMessagesForBranchDelArea");
+						TMdBranch branch = branchMapper.selectBranchByNo(branchNo);
+		                if(branch != null){
+		                	messService.sendMessagesForUptBranch(branch, 2);
+		                }
+					}
+                });
             }
         }catch (Exception e){
             throw new ServiceException(MessageCode.LOGIC_ERROR,"删除失败");
@@ -72,5 +82,9 @@ public class TMdBranchScopeServiceImpl implements TMdBranchScopeService {
 
 	public void setBranchMapper(TMdBranchMapper branchMapper) {
 		this.branchMapper = branchMapper;
+	}
+
+	public void setTaskExecutor(TaskExecutor taskExecutor) {
+		this.taskExecutor = taskExecutor;
 	}
 }

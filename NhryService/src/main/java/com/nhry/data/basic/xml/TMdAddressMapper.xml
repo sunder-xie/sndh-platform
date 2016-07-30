@@ -34,9 +34,59 @@
     VIP_CUST_NO,IS_DEFAULT,STREET
   </sql>
   <select id="findAddressById" resultMap="BaseResultMap" parameterType="java.lang.String" >
-    select 
-    <include refid="Base_Column_List" />
-    from t_md_address
+    SELECT
+		ADDRESS_ID,
+		RECV_NAME,
+		(
+			SELECT
+				it.ITEM_NAME
+			FROM
+				T_SYS_CODE_ITEM it
+			WHERE
+				it.TYPE_CODE = <include refid="mybaties.constant.COUNTRY_CITY_CONSTANT" /> 
+			AND it.ITEM_CODE = d.PROVINCE
+		) PROVINCE_NAME,
+		d.PROVINCE,
+		(
+			SELECT
+				it.ITEM_NAME
+			FROM
+				T_SYS_CODE_ITEM it
+			WHERE
+				it.TYPE_CODE = <include refid="mybaties.constant.COUNTRY_CITY_CONSTANT" /> 
+			AND it.ITEM_CODE = d.CITY
+		) CITY_NAME,d.CITY,
+		(
+			SELECT
+				it.ITEM_NAME
+			FROM
+				T_SYS_CODE_ITEM it
+			WHERE
+				it.TYPE_CODE = <include refid="mybaties.constant.COUNTRY_CITY_CONSTANT" /> 
+			AND it.ITEM_CODE = d.COUNTY
+		) COUNTY_NAME,d.COUNTY,
+	    d.STREET,
+		MP,
+		TEL,
+		ZIP,
+		ADDRESS_TXT,
+		(
+			SELECT
+				a.RESIDENTIAL_AREA_TXT
+			FROM
+				T_MD_RESIDENTIAL_AREA a
+			WHERE
+				a.ID = d.RESIDENTIAL_AREA
+		) RESIDENTIAL_AREA_NAME,d.RESIDENTIAL_AREA,
+		CREATE_AT,
+		CREATE_BY,
+		CREATE_BY_TXT,
+		LAST_MODIFIED,
+		LAST_MODIFIED_BY,
+		LAST_MODIFIED_BY_TXT,
+		VIP_CUST_NO,
+		IS_DEFAULT
+    from t_md_address d
     where ADDRESS_ID = #{addressId,jdbcType=VARCHAR}
   </select>
   <insert id="addAddressForCust" parameterType="com.nhry.data.basic.domain.TMdAddress" >
