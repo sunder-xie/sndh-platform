@@ -3,6 +3,8 @@ package com.nhry.service.webService.impl;
 import com.nhry.model.webService.CustInfoModel;
 import com.nhry.service.external.EcBaseService;
 import com.nhry.service.webService.dao.GetOrderBranchService;
+import org.codehaus.jettison.json.JSONArray;
+import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONObject;
 
 import java.util.HashMap;
@@ -23,7 +25,14 @@ public class GetOrderBranchServiceImpl implements GetOrderBranchService {
        //String url = "http://wfyerpqd.6655.la:30017/FY_MOBILE_XXW_SVR/WFY_UNI_SERVICE.json?method=callProcService";
         JSONObject resultJson =  ecBaseService.pushMessage2Ec(url,strObje,false);
         if(resultJson !=null){
-
+            try {
+               JSONArray result =  resultJson.getJSONObject("procExecResults").getJSONObject("SVCGETORDERBRANCH").getJSONObject("resultList").getJSONObject("AC_RESULT").getJSONArray("rows");
+                if(result!=null && !result.isNull(0)){
+                    return result.getJSONObject(0).getString("branchno");
+                }
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
         }
         return null;
     }
@@ -43,7 +52,8 @@ public class GetOrderBranchServiceImpl implements GetOrderBranchService {
         data.put("longitude",custInfoModel.getLongitude());
         data.put("latitude",custInfoModel.getLatitude());
 
-        JSONObject obj4 = new JSONObject(data);
+        JSONArray obj4 = new JSONArray();
+        obj4.put(data);
 
         Map<String,Object> map3 = new HashMap<String,Object>();
         map3.put("serviceName","SVCGETORDERBRANCH");
