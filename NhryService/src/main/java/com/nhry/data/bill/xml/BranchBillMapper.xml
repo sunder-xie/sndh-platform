@@ -135,10 +135,10 @@
     <select id="branchBillEmpItemSearch" resultMap="EmpItemResultMap" parameterType="com.nhry.model.bill.EmpBranchBillDetailSearch">
         SELECT  t.MATNR,t.MATNR_TXT,t.QTY,t.PRICE,t.DISP_EMP_NO from (
                 SELECT
-                i.CONFIRM_MATNR MATNR,a.MATNR_TXT,(
+                i.CONFIRM_MATNR MATNR,a.MATNR_TXT,SUM((
                 CASE WHEN (i.REASON = '10' OR i.REASON='20' OR i.REASON ='30' OR i.REASON IS NULL) THEN  i.CONFIRM_QTY
                 ELSE i.QTY  END
-                ) QTY ,i.PRICE ,o.DISP_EMP_NO
+                )) QTY ,i.PRICE ,o.DISP_EMP_NO
                 FROM t_mst_disp_order_item i
                 LEFT JOIN t_mst_disp_order o ON i.ORDER_NO = o.ORDER_NO
                 LEFT JOIN t_md_mara a on i.CONFIRM_MATNR = a.MATNR
@@ -149,10 +149,10 @@
                 </if>
                 and  o.DISP_DATE = #{dispDate,jdbcType=DATE}
                 and  o.DISP_EMP_NO = #{empNo,jdbcType=VARCHAR}
+                GROUP BY i.CONFIRM_MATNR
         )t
         WHERE  t.QTY IS NOT NULL
         and t.QTY!=0
-
     </select>
 
 
