@@ -14,6 +14,10 @@
 		http://www.springframework.org/schema/task http://www.springframework.org/schema/task/spring-task-4.0.xsd
 		http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-4.0.xsd"
 	default-lazy-init="true">
+
+	<bean id="getOrderBranchService" class="com.nhry.service.webService.impl.GetOrderBranchServiceImpl">
+		<property name="ecBaseService" ref="ecBaseService"></property>
+	</bean>
 	<!-- 商品信息 -->
 	<bean id="maraMapper" class="com.nhry.data.basic.impl.TMdMaraMapperImpl">
 		<property name="sqlSessionTemplate" ref="dynamicSqlSessionTemplate"></property>
@@ -222,6 +226,7 @@
 	</bean>
 	<bean id="messLogService" class="com.nhry.service.external.impl.EcServiceImpl">
 		<property name="messLogMapper" ref="messLogMapper"></property>
+		<property name="itemMapper" ref="codeItemMapper"></property>
 	</bean>
 	<bean id="ecBaseService" class="com.nhry.service.external.EcBaseService">
 	   <property name="messLogMapper" ref="messLogMapper"></property>

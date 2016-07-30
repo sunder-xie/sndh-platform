@@ -488,16 +488,24 @@
   </update>
 
   <select id="createRecBotByDispOrder" resultMap="boxDetailMap" parameterType="String">
-    select
-	o.DISP_EMP_NO EMP_NO, SUM(i.CONFIRM_QTY) RECEIVE_NUM,ex.BOT_TYPE SPEC,o.BRANCH_NO,o.ORDER_NO DISP_ORDER_NO
-    from t_mst_disp_order_item  i
-    LEFT JOIN t_mst_disp_order o on  i.ORDER_NO = o.ORDER_NO
-    LEFT JOIN t_md_mara_ex ex on i.CONFIRM_MATNR = ex.MATNR
-    LEFT JOIN  t_md_branch b on o.BRANCH_NO = b.BRANCH_NO
-	where o.ORDER_NO = #{dispOrderNo,jdbcType=VARCHAR}
-	and ex.RET_BOT_FLAG = "Y"
-	and ex.SALES_ORG = b.SALES_ORG
-	GROUP BY ex.BOT_TYPE
+    SELECT
+	t.EMP_NO, SUM(t.RECEIVE_NUM) RECEIVE_NUM,t.SPEC,t.BRANCH_NO,t.DISP_ORDER_NO
+    from (
+        select
+        o.DISP_EMP_NO EMP_NO,(
+        CASE WHEN i.REASON = '40' OR i.REASON = '50' THEN i.QTY - i.CONFIRM_QTY
+        ELSE  i.CONFIRM_QTY END
+        ) RECEIVE_NUM, ex.BOT_TYPE SPEC,o.BRANCH_NO,o.ORDER_NO DISP_ORDER_NO
+        from t_mst_disp_order_item  i
+        LEFT JOIN t_mst_disp_order o on  i.ORDER_NO = o.ORDER_NO
+        LEFT JOIN t_md_mara_ex ex on i.CONFIRM_MATNR = ex.MATNR
+        LEFT JOIN  t_md_branch b on o.BRANCH_NO = b.BRANCH_NO
+        where 1=1
+        and ( i.REASON != '30' OR i.REASON is NULL)
+        and ex.RET_BOT_FLAG = "Y"
+        and ex.SALES_ORG = b.SALES_ORG
+    )t
+    GROUP BY t.SPEC
   </select>
 
 

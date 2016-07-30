@@ -239,6 +239,7 @@ public class BusinessDataConnection {
                     msg.append(bapiret2.getMESSAGE_V4().getMESSAGE_V4_type0());
                 }
                 successMessage.setMessage(msg.toString());
+                System.out.println(msg.toString());
             } else {
                 successMessage.setMessage("");
             }

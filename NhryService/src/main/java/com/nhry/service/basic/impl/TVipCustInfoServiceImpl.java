@@ -3,10 +3,13 @@ package com.nhry.service.basic.impl;
 import com.github.pagehelper.PageInfo;
 import com.nhry.common.exception.MessageCode;
 import com.nhry.common.exception.ServiceException;
+import com.nhry.data.auth.domain.TSysUser;
 import com.nhry.data.basic.dao.TMdAddressMapper;
+import com.nhry.data.basic.dao.TMdBranchMapper;
 import com.nhry.data.basic.dao.TVipAcctMapper;
 import com.nhry.data.basic.dao.TVipCustInfoMapper;
 import com.nhry.data.basic.domain.TMdAddress;
+import com.nhry.data.basic.domain.TMdBranch;
 import com.nhry.data.basic.domain.TVipAcct;
 import com.nhry.data.basic.domain.TVipCustInfo;
 import com.nhry.model.basic.CustQueryModel;
@@ -15,6 +18,7 @@ import com.nhry.service.basic.dao.TVipCustInfoService;
 import com.nhry.service.basic.pojo.Addresses;
 import com.nhry.utils.PrimaryKeyUtils;
 import com.nhry.utils.date.Date;
+
 import org.apache.commons.lang3.StringUtils;
 
 import java.util.HashMap;
@@ -25,6 +29,7 @@ public class TVipCustInfoServiceImpl extends BaseService implements TVipCustInfo
 	private TVipCustInfoMapper tmdVipcust;
 	private TMdAddressMapper addressMapper;
 	private TVipAcctMapper vipAcctMapper;
+	private TMdBranchMapper branchMapper;
 
 	public void setTmdVipcust(TVipCustInfoMapper tmdVipcust) {
 		this.tmdVipcust = tmdVipcust;
@@ -352,5 +357,40 @@ public class TVipCustInfoServiceImpl extends BaseService implements TVipCustInfo
 			}
 		}
 		return 1;
+	}
+
+	@Override
+	public int deleteCustByCustNo(String custNo) {
+		// TODO Auto-generated method stub
+	  //删除订户的地址列表
+	  addressMapper.deleteAddressByCustNo(custNo);
+	  //删除订户
+	  return tmdVipcust.deleteCustByCno(custNo);
+	}
+
+	@Override
+	public String uptCustBranchNo(String custNo, String branchNo) {
+		// TODO Auto-generated method stub
+		if(StringUtils.isEmpty(custNo) || StringUtils.isEmpty(branchNo)){
+			throw new ServiceException(MessageCode.LOGIC_ERROR,"custNo、branchNo参数不能为空！");
+		}
+		TMdBranch branch = branchMapper.selectBranchByNo(branchNo);
+		if(branch == null){
+			throw new ServiceException(MessageCode.LOGIC_ERROR, "该奶站编号对应的奶站不存在!");
+		}
+		TSysUser user = this.userSessionService.getCurrentUser();
+		TVipCustInfo cust = new TVipCustInfo();
+		cust.setSalesOrg(branch.getSalesOrg());
+		cust.setDealerNo(branch.getDealerNo());
+		cust.setBranchNo(branchNo);
+		cust.setLastModified(new Date());
+		cust.setLastModifiedBy(user.getLoginName());
+		cust.setLastModifiedByTxt(user.getDisplayName());
+		tmdVipcust.updateVipCustByNo(cust);
+		return branch.getSalesOrg();
+	}
+
+	public void setBranchMapper(TMdBranchMapper branchMapper) {
+		this.branchMapper = branchMapper;
 	}
 }

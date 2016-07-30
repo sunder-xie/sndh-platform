@@ -140,4 +140,19 @@ public interface TVipCustInfoService {
      * @return
      */
     List<TMdAddress> findCnAddressByCustNo(String custNo);
+    
+    /**
+     * 根据订户编号，删除订户信息(包括订户地址)
+     * @param custNo
+     * @return
+     */
+    public int deleteCustByCustNo(String custNo);
+    
+    /**
+     * 根据订户编号，修改订户的奶站编号
+     * @param custNo
+     * @param branchNo
+     * @return
+     */
+    public String uptCustBranchNo(String custNo,String branchNo);
 }
