@@ -1,5 +1,8 @@
 package com.nhry.data.order.domain;
 
+import org.apache.axis2.databinding.types.soapencoding.Decimal;
+
+import java.math.BigDecimal;
 import java.util.Date;
 
 public class TMilkboxPlan {
@@ -41,10 +44,31 @@ public class TMilkboxPlan {
 
     private String lastModifiedBy;
 
+    public BigDecimal getInitAmt() {
+        return initAmt;
+    }
+
+    public void setInitAmt(BigDecimal initAmt) {
+        this.initAmt = initAmt;
+    }
+
     private String lastModifiedByTxt;
 
     private String printFlag;
-    
+
+    private BigDecimal initAmt;
+
+    public String getProNum() {
+        return proNum;
+    }
+
+    public void setProNum(String proNum) {
+        this.proNum = proNum;
+    }
+
+    private String proNum;
+
+
     public String getBranchName()
 	{
 		return branchName;

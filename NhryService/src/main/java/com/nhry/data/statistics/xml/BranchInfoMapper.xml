@@ -1,30 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
 <mapper namespace="com.nhry.data.statistics.dao.BranchInfoMapper">
-    <select id="branchDayInfo" resultType="hashmap" parameterType="com.nhry.model.statistics.BranchInfoModel">
-        select b.branch_no branchNo,br.BRANCH_NAME branchName,br.branch_group branchGroup,
-        max( CASE b.ORDER_DATE when date_format(DATE_ADD(#{theDate},INTERVAL -4 day),'%Y-%m-%d') then qty else 0 end )
-        as 'date1',
-        max( CASE b.ORDER_DATE when date_format(DATE_ADD(#{theDate},INTERVAL -3 day),'%Y-%m-%d') then qty else 0 end )
-        as 'date2',
-        max( CASE b.ORDER_DATE when date_format(DATE_ADD(#{theDate},INTERVAL -2 day),'%Y-%m-%d') then qty else 0 end )
-        as 'date3',
-        max( CASE b.ORDER_DATE when date_format(DATE_ADD(#{theDate},INTERVAL -1 day),'%Y-%m-%d') then qty else 0 end )
-        as 'date4',
-        max( CASE b.ORDER_DATE when date_format(#{theDate},'%Y-%m-%d') then qty else 0 end ) as 'date5',
-        max( CASE b.ORDER_DATE when date_format(#{theDate},'%Y-%m-%d') then qty else 0 end )/max( CASE b.ORDER_DATE when
-        date_format(DATE_ADD(#{theDate},INTERVAL -1 day),'%Y-%m-%d') then qty else 0 end ) as hb from (
-        SELECT
-        o.BRANCH_NO,
-        o.ORDER_DATE,
-        sum(i.QTY) qty
-        FROM
-        t_mst_disp_order_item i
-        JOIN t_mst_disp_order o ON i.ORDER_NO = o.ORDER_NO
-        AND i.ORDER_DATE BETWEEN DATE_ADD(#{theDate},INTERVAL -4 day) AND #{theDate}
-        AND o.ORDER_DATE = i.ORDER_DATE
-        AND i.`STATUS` = '20'
-        JOIN t_md_branch b ON b.BRANCH_NO = o.BRANCH_NO
+    <sql id="Query_Base_Column">
         <if test="branchNo != null">
             AND b.BRANCH_NO = ${branchNo}
         </if>
@@ -34,7 +11,126 @@
         <if test="salesOrg != null">
             AND b.SALES_ORG = ${salesOrg}
         </if>
-        GROUP BY o.BRANCH_NO) b left join t_md_branch br on b.BRANCH_NO = br.BRANCH_NO group by b.BRANCH_NO
+    </sql>
+    <select id="branchDayInfo" resultType="hashmap" parameterType="com.nhry.model.statistics.BranchInfoModel">
+        SELECT
+        b.branch_no branchNo,
+        br.BRANCH_NAME branchName,
+        br.branch_group branchGroup,
+        max(
+        CASE b.ORDER_DATE
+        WHEN date_format(
+        DATE_ADD(#{theDate,jdbcType=DATE}, INTERVAL - 4 DAY),
+        '%Y-%m-%d'
+        ) THEN
+        qty
+        ELSE
+        0
+        END
+        ) AS 'date1',
+        max(
+        CASE b.ORDER_DATE
+        WHEN date_format(
+        DATE_ADD(#{theDate,jdbcType=DATE}, INTERVAL - 3 DAY),
+        '%Y-%m-%d'
+        ) THEN
+        qty
+        ELSE
+        0
+        END
+        ) AS 'date2',
+        max(
+        CASE b.ORDER_DATE
+        WHEN date_format(
+        DATE_ADD(#{theDate,jdbcType=DATE}, INTERVAL - 2 DAY),
+        '%Y-%m-%d'
+        ) THEN
+        qty
+        ELSE
+        0
+        END
+        ) AS 'date3',
+        max(
+        CASE b.ORDER_DATE
+        WHEN date_format(
+        DATE_ADD(#{theDate,jdbcType=DATE}, INTERVAL - 1 DAY),
+        '%Y-%m-%d'
+        ) THEN
+        qty
+        ELSE
+        0
+        END
+        ) AS 'date4',
+        max(
+        CASE b.ORDER_DATE
+        WHEN date_format(#{theDate,jdbcType=DATE}, '%Y-%m-%d') THEN
+        qty
+        ELSE
+        0
+        END
+        ) AS 'date5',
+        max(
+        CASE b.ORDER_DATE
+        WHEN date_format(#{theDate,jdbcType=DATE}, '%Y-%m-%d') THEN
+        qty
+        ELSE
+        0
+        END
+        ) / max(
+        CASE b.ORDER_DATE
+        WHEN date_format(
+        DATE_ADD(#{theDate,jdbcType=DATE}, INTERVAL - 1 DAY),
+        '%Y-%m-%d'
+        ) THEN
+        qty
+        ELSE
+        0
+        END
+        ) AS hb
+        FROM
+        (
+        SELECT
+        q.BRANCH_NO,
+        q.ORDER_DATE,
+        sum(q.qty) qty
+        FROM
+        (
+        SELECT
+        o.BRANCH_NO,
+        o.ORDER_DATE,
+        i.MATNR,
+        i.QTY
+        FROM
+        t_mst_inside_sal_order_item i
+        JOIN t_mst_inside_sal_order o ON i.INS_ORDER_NO = o.INS_ORDER_NO
+        AND i.ORDER_DATE BETWEEN DATE_ADD(#{theDate,jdbcType=DATE}, INTERVAL - 4 DAY)
+        AND #{theDate,jdbcType=DATE}
+        AND o.ORDER_DATE = i.ORDER_DATE
+        JOIN t_md_branch b ON o.BRANCH_NO = b.BRANCH_NO
+        <include refid="Query_Base_Column"/>
+        UNION ALL
+        SELECT
+        o.BRANCH_NO,
+        o.ORDER_DATE,
+        i.MATNR,
+        i.qty
+        FROM
+        t_mst_disp_order_item i
+        JOIN t_mst_disp_order o ON i.ORDER_NO = o.ORDER_NO
+        AND i.ORDER_DATE BETWEEN DATE_ADD(#{theDate,jdbcType=DATE}, INTERVAL - 4 DAY)
+        AND #{theDate,jdbcType=DATE}
+        AND o.ORDER_DATE = i.ORDER_DATE
+        AND i.`STATUS` = '20'
+        JOIN t_md_branch b ON b.BRANCH_NO = o.BRANCH_NO
+        <include refid="Query_Base_Column"/>
+        ) q
+        GROUP BY
+        q.BRANCH_NO,
+        q.ORDER_DATE
+        ) b
+        LEFT JOIN t_md_branch br ON b.BRANCH_NO = br.BRANCH_NO
+        GROUP BY
+        b.BRANCH_NO
     </select>
 
     <select id="getBranchs" resultType="hashmap" parameterType="com.nhry.model.statistics.DistInfoModel">
@@ -55,91 +151,91 @@
 
     <select id="findOrderRatio" parameterType="com.nhry.model.statistics.BranchInfoModel" resultType="hashMap">
         SELECT
-            z.BRANCH_NO branchNo,
-            br.BRANCH_GROUP branchGroup,
-            br.BRANCH_NAME branchName,
-            z.qty initQty,
-            y.qty validQty,
-            cc.qty infoErrQty,
-            k.qty custQty,
-            q.qty superQty,
-            qt.qty otherQty,
-            y.qty / z.qty ratio
+        z.BRANCH_NO branchNo,
+        br.BRANCH_GROUP branchGroup,
+        br.BRANCH_NAME branchName,
+        z.qty initQty,
+        y.qty validQty,
+        cc.qty infoErrQty,
+        k.qty custQty,
+        q.qty superQty,
+        qt.qty otherQty,
+        y.qty / z.qty ratio
         FROM
-            (
-                SELECT
-                    p.BRANCH_NO,
-                    sum(i.QTY) qty
-                FROM
-                    T_MST_ORDER_DALIY_PLAN_ITEM i
-                JOIN t_preorder p ON i.ORDER_NO = p.ORDER_NO
-                AND p.ORDER_DATE = DATE_FORMAT(
-                    DATE_ADD(#{theDate}, INTERVAL - 3 DAY),
-                    '%y-%m-%d'
-                )
-                GROUP BY
-                    p.BRANCH_NO
-            ) z
+        (
+        SELECT
+        p.BRANCH_NO,
+        sum(i.QTY) qty
+        FROM
+        T_MST_ORDER_DALIY_PLAN_ITEM i
+        JOIN t_preorder p ON i.ORDER_NO = p.ORDER_NO
+        AND p.ORDER_DATE = DATE_FORMAT(
+        DATE_ADD(#{theDate,jdbcType=DATE}, INTERVAL - 3 DAY),
+        '%y-%m-%d'
+        )
+        GROUP BY
+        p.BRANCH_NO
+        ) z
         LEFT JOIN (
-            SELECT
-                p.BRANCH_NO,
-                sum(i.QTY) qty
-            FROM
-                T_MST_ORDER_DALIY_PLAN_ITEM i
-            JOIN t_preorder p ON i.ORDER_NO = p.ORDER_NO
-            AND p.PREORDER_STAT = '10'
-            AND i.`STATUS` != '30'
-            AND p.ORDER_DATE = #{theDate}
-            GROUP BY
-                p.BRANCH_NO
+        SELECT
+        p.BRANCH_NO,
+        sum(i.QTY) qty
+        FROM
+        T_MST_ORDER_DALIY_PLAN_ITEM i
+        JOIN t_preorder p ON i.ORDER_NO = p.ORDER_NO
+        AND p.PREORDER_STAT = '10'
+        AND i.`STATUS` != '30'
+        AND p.ORDER_DATE = #{theDate,jdbcType=DATE}
+        GROUP BY
+        p.BRANCH_NO
         ) y ON z.BRANCH_NO = y.BRANCH_NO
         LEFT JOIN (
-            SELECT
-                p.BRANCH_NO,
-                sum(i.QTY) qty
-            FROM
-                T_MST_ORDER_DALIY_PLAN_ITEM i
-            JOIN t_preorder p ON i.ORDER_NO = p.ORDER_NO
-            AND p.RET_REASON = '20'
-            AND p.ORDER_DATE = #{theDate}
-            GROUP BY
-                p.BRANCH_NO
+        SELECT
+        p.BRANCH_NO,
+        sum(i.QTY) qty
+        FROM
+        T_MST_ORDER_DALIY_PLAN_ITEM i
+        JOIN t_preorder p ON i.ORDER_NO = p.ORDER_NO
+        AND p.RET_REASON = '20'
+        AND p.ORDER_DATE = #{theDate,jdbcType=DATE}
+        GROUP BY
+        p.BRANCH_NO
         ) cc ON cc.BRANCH_NO = z.BRANCH_NO
         LEFT JOIN (
-            SELECT
-                p.BRANCH_NO,
-                sum(i.QTY) qty
-            FROM
-                T_MST_ORDER_DALIY_PLAN_ITEM i
-            JOIN t_preorder p ON i.ORDER_NO = p.ORDER_NO
-            AND p.RET_REASON = '30'
-            AND p.ORDER_DATE = #{theDate}
-            GROUP BY
-                p.BRANCH_NO
+        SELECT
+        p.BRANCH_NO,
+        sum(i.QTY) qty
+        FROM
+        T_MST_ORDER_DALIY_PLAN_ITEM i
+        JOIN t_preorder p ON i.ORDER_NO = p.ORDER_NO
+        AND p.RET_REASON = '30'
+        AND p.ORDER_DATE = #{theDate,jdbcType=DATE}
+        GROUP BY
+        p.BRANCH_NO
         ) k ON k.BRANCH_NO = z.BRANCH_NO
         LEFT JOIN (
-            SELECT
-                p.BRANCH_NO,
-                sum(i.QTY) qty
-            FROM
-                T_MST_ORDER_DALIY_PLAN_ITEM i
-            JOIN t_preorder p ON i.ORDER_NO = p.ORDER_NO
-            AND p.RET_REASON = '10'
-            AND p.ORDER_DATE = #{theDate}
-            GROUP BY
-                p.BRANCH_NO
+        SELECT
+        p.BRANCH_NO,
+        sum(i.QTY) qty
+        FROM
+        T_MST_ORDER_DALIY_PLAN_ITEM i
+        JOIN t_preorder p ON i.ORDER_NO = p.ORDER_NO
+        AND p.RET_REASON = '10'
+        AND p.ORDER_DATE = #{theDate,jdbcType=DATE}
+        GROUP BY
+        p.BRANCH_NO
         ) q ON q.BRANCH_NO = z.BRANCH_NO
         LEFT JOIN (
-            SELECT
-                p.BRANCH_NO,
-                sum(i.QTY) qty
-            FROM
-                T_MST_ORDER_DALIY_PLAN_ITEM i
-            JOIN t_preorder p ON i.ORDER_NO = p.ORDER_NO
-            AND p.RET_REASON = '40'
-            AND p.ORDER_DATE = #{theDate}
-            GROUP BY
-                p.BRANCH_NO
+        SELECT
+        p.BRANCH_NO,
+        sum(i.QTY) qty
+        FROM
+        T_MST_ORDER_DALIY_PLAN_ITEM i
+        JOIN t_preorder p ON i.ORDER_NO = p.ORDER_NO
+        AND p.RET_REASON = '40'
+        AND p.ORDER_DATE = #{theDate,jdbcType=DATE}
+        GROUP BY
+        p.BRANCH_NO
         ) qt ON qt.BRANCH_NO = z.BRANCH_NO
         JOIN t_md_branch br ON br.BRANCH_NO = z.BRANCH_NO
         <if test="branchNo != null">
@@ -151,5 +247,188 @@
         <if test="salesOrg != null">
             AND br.SALES_ORG = ${salesOrg}
         </if>
+    </select>
+
+    <select id="findBranchMonthReport" resultType="hashmap" parameterType="com.nhry.model.statistics.BranchInfoModel">
+        SELECT
+	    monthd.*, b.BRANCH_GROUP branchGroup,
+        b.BRANCH_NAME branchName, dayd.dayPrice,
+	    dayd.dayWeigth/1000 dayWeigth,
+	    dayd.dayQty,
+	    lastd.lastPrice,
+	    lastd.lastQty,
+	    IFNULL(dayd.dayQty, 0) - IFNULL(lastd.lastQty, 0) newQty,
+        (
+            IFNULL(dayd.dayQty, 0) - IFNULL(lastd.lastQty, 0)
+        ) / lastd.lastQty hb
+        FROM
+            (
+                SELECT
+                    a.BRANCH_NO,
+                    sum(a.qty) monthQty,
+                    sum(a.PRICE * a.QTY) montyPrice
+                FROM
+                    (
+                        SELECT
+                            o.BRANCH_NO,
+                            o.ORDER_DATE,
+                            i.MATNR,
+                            m.WEIGHT,
+                            i.QTY,
+                            i.PRICE
+                        FROM
+                            t_mst_inside_sal_order_item i
+                        JOIN t_mst_inside_sal_order o ON i.INS_ORDER_NO = o.INS_ORDER_NO
+                        AND i.ORDER_DATE BETWEEN date_add(
+                            #{theDate,jdbcType=DATE},
+                            INTERVAL - DAY (#{theDate,jdbcType=DATE}) + 1 DAY
+                        )
+                        AND #{theDate,jdbcType=DATE}
+                        AND o.ORDER_DATE = i.ORDER_DATE
+                        JOIN t_md_branch b ON o.BRANCH_NO = b.BRANCH_NO
+                        JOIN t_md_mara m ON i.MATNR = m.MATNR
+                        AND b.SALES_ORG = m.SALES_ORG
+                        UNION ALL
+                            SELECT
+                                o.BRANCH_NO,
+                                o.ORDER_DATE,
+                                i.MATNR,
+                                m.WEIGHT,
+                                i.CONFIRM_QTY qty,
+                                i.PRICE
+                            FROM
+                                t_mst_disp_order_item i
+                            JOIN t_mst_disp_order o ON i.ORDER_NO = o.ORDER_NO
+                            AND i.ORDER_DATE BETWEEN date_add(
+                                #{theDate,jdbcType=DATE},
+                                INTERVAL - DAY (#{theDate,jdbcType=DATE}) + 1 DAY
+                            )
+                            AND #{theDate,jdbcType=DATE}
+                            AND o.ORDER_DATE = i.ORDER_DATE
+                            AND i.`STATUS` = '20'
+                            JOIN t_md_branch b ON b.BRANCH_NO = o.BRANCH_NO
+                            JOIN t_md_mara m ON i.MATNR = m.MATNR
+                            AND b.SALES_ORG = m.SALES_ORG
+                    ) a
+                GROUP BY
+                    a.BRANCH_NO
+            ) monthd
+        LEFT JOIN (
+            SELECT
+                a.BRANCH_NO,
+                sum(a.qty) dayQty,
+                sum(a.PRICE * a.QTY) dayPrice,
+                sum(a.QTY * a.WEIGHT) dayWeigth
+            FROM
+                (
+                    SELECT
+                        o.BRANCH_NO,
+                        o.ORDER_DATE,
+                        i.MATNR,
+                        m.WEIGHT,
+                        i.QTY,
+                        i.PRICE
+                    FROM
+                        t_mst_inside_sal_order_item i
+                    JOIN t_mst_inside_sal_order o ON i.INS_ORDER_NO = o.INS_ORDER_NO
+                    AND i.ORDER_DATE = #{theDate,jdbcType=DATE}
+                    AND o.ORDER_DATE = i.ORDER_DATE
+                    JOIN t_md_branch b ON o.BRANCH_NO = b.BRANCH_NO
+                    JOIN t_md_mara m ON i.MATNR = m.MATNR
+                    AND b.SALES_ORG = m.SALES_ORG
+                    UNION ALL
+                        SELECT
+                            o.BRANCH_NO,
+                            o.ORDER_DATE,
+                            i.MATNR,
+                            m.WEIGHT,
+                            i.CONFIRM_QTY qty,
+                            i.PRICE
+                        FROM
+                            t_mst_disp_order_item i
+                        JOIN t_mst_disp_order o ON i.ORDER_NO = o.ORDER_NO
+                        AND i.ORDER_DATE = #{theDate,jdbcType=DATE}
+                        AND o.ORDER_DATE = i.ORDER_DATE
+                        AND i.`STATUS` = '20'
+                        JOIN t_md_branch b ON b.BRANCH_NO = o.BRANCH_NO
+                        JOIN t_md_mara m ON i.MATNR = m.MATNR
+                        AND b.SALES_ORG = m.SALES_ORG
+                ) a
+            GROUP BY
+                a.BRANCH_NO
+        ) dayd ON monthd.branch_no = dayd.branch_no
+        LEFT JOIN (
+            SELECT
+                a.BRANCH_NO,
+                sum(a.qty) lastQty,
+                sum(a.PRICE * a.QTY) lastPrice
+            FROM
+                (
+                    SELECT
+                        o.BRANCH_NO,
+                        o.ORDER_DATE,
+                        i.MATNR,
+                        m.WEIGHT,
+                        i.QTY,
+                        i.PRICE
+                    FROM
+                        t_mst_inside_sal_order_item i
+                    JOIN t_mst_inside_sal_order o ON i.INS_ORDER_NO = o.INS_ORDER_NO
+                    AND i.ORDER_DATE = date_add(#{theDate,jdbcType=DATE}, INTERVAL - 1 DAY)
+                    AND o.ORDER_DATE = i.ORDER_DATE
+                    JOIN t_md_branch b ON o.BRANCH_NO = b.BRANCH_NO
+                    JOIN t_md_mara m ON i.MATNR = m.MATNR
+                    AND b.SALES_ORG = m.SALES_ORG
+                    UNION ALL
+                        SELECT
+                            o.BRANCH_NO,
+                            o.ORDER_DATE,
+                            i.MATNR,
+                            m.WEIGHT,
+                            i.CONFIRM_QTY qty,
+                            i.PRICE
+                        FROM
+                            t_mst_disp_order_item i
+                        JOIN t_mst_disp_order o ON i.ORDER_NO = o.ORDER_NO
+                        AND i.ORDER_DATE = date_add(#{theDate,jdbcType=DATE}, INTERVAL - 1 DAY)
+                        AND o.ORDER_DATE = i.ORDER_DATE
+                        AND i.`STATUS` = '20'
+                        JOIN t_md_branch b ON b.BRANCH_NO = o.BRANCH_NO
+                        JOIN t_md_mara m ON i.MATNR = m.MATNR
+                        AND b.SALES_ORG = m.SALES_ORG
+                ) a
+            GROUP BY
+                a.BRANCH_NO
+        ) lastd ON monthd.BRANCH_NO = lastd.BRANCH_NO
+        join t_md_branch b on monthd.BRANCH_NO = b.BRANCH_NO
+        <include refid="Query_Base_Column"/>
+    </select>
+
+    <select id="findReqOrder" resultType="hashmap" parameterType="com.nhry.model.statistics.BranchInfoModel">
+        SELECT
+            IFNULL(
+                d.DEALER_NAME,
+                "直营奶站"
+            ) dealerName,
+            b.BRANCH_NAME branchName,
+            m.MATNR_TXT matnrTxt,
+            i.qty qty,i.INCRE_QTY increQty,i.qty+i.INCRE_QTY sumQty, ROUND(i.INCRE_QTY/(i.qty+i.INCRE_QTY),2) bl ,
+        CASE
+        WHEN o.`STATUS` = '10' THEN
+        '初始'
+        WHEN o.`STATUS` = '20' THEN
+        '待发送SAP'
+        WHEN o.`STATUS` = '30' THEN
+        '发送SAP成功'
+        END AS flag
+        FROM
+            t_ssm_req_goods_order_item i
+        JOIN t_ssm_req_goods_order o ON i.ORDER_NO = o.ORDER_NO
+        AND o.ORDER_DATE = #{theDate,jdbcType=DATE}
+        JOIN t_md_branch b ON b.BRANCH_NO = o.BRANCH_NO
+        <include refid="Query_Base_Column"/>
+        LEFT JOIN t_md_dealer d ON d.DEALER_NO = b.DEALER_NO
+        LEFT JOIN t_md_mara m ON m.MATNR = i.MATNR
+        AND b.SALES_ORG = m.SALES_ORG
     </select>
 </mapper>

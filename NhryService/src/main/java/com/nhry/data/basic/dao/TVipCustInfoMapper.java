@@ -87,4 +87,11 @@ public interface TVipCustInfoMapper {
      * @return
      */
     public String getCustNoByPhone(Map<String,String> attrs);
+    
+    /**
+     * 根据订户编号，删除订户信息
+     * @param cno
+     * @return
+     */
+    public int deleteCustByCno(String cno);
 }

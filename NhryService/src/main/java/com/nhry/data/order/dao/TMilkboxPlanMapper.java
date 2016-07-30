@@ -1,5 +1,6 @@
 package com.nhry.data.order.dao;
 
+import java.util.List;
 import java.util.Map;
 
 import com.github.pagehelper.PageInfo;
@@ -25,4 +26,6 @@ public interface TMilkboxPlanMapper {
     int updateMilkboxPlans(Map<String,Object> params);
     
     int updateMilkboxPlanPrinted(String code);
+
+    List searchMilkBox(String empNo);
 }

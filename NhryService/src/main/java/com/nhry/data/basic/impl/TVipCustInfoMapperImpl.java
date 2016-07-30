@@ -83,6 +83,10 @@ public class TVipCustInfoMapperImpl implements TVipCustInfoMapper {
 		// TODO Auto-generated method stub
 		return this.sqlSessionTemplate.selectOne("getCustNoByPhone", attrs);
 	}
-	
-	
+
+	@Override
+	public int deleteCustByCno(String cno) {
+		// TODO Auto-generated method stub
+		return this.sqlSessionTemplate.delete("deleteCustByCno", cno);
+	}
 }

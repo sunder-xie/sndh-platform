@@ -226,6 +226,7 @@
 	</bean>
 	<bean id="messLogService" class="com.nhry.service.external.impl.EcServiceImpl">
 		<property name="messLogMapper" ref="messLogMapper"></property>
+		<property name="itemMapper" ref="codeItemMapper"></property>
 	</bean>
 	<bean id="ecBaseService" class="com.nhry.service.external.EcBaseService">
 	   <property name="messLogMapper" ref="messLogMapper"></property>

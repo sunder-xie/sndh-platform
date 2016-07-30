@@ -39,4 +39,14 @@ public class BranchInfoMapperImpl implements BranchInfoMapper{
     public PageInfo findOrderRatio(BranchInfoModel model) {
         return sqlSessionTemplate.selectListByPages("findOrderRatio",model,Integer.valueOf(model.getPageNum()),Integer.valueOf(model.getPageSize()));
     }
+
+    @Override
+    public PageInfo findBranchMonthReport(BranchInfoModel model) {
+        return sqlSessionTemplate.selectListByPages("findBranchMonthReport",model,Integer.valueOf(model.getPageNum()),Integer.valueOf(model.getPageSize()));
+    }
+
+    @Override
+    public PageInfo findReqOrder(BranchInfoModel model) {
+        return sqlSessionTemplate.selectListByPages("findReqOrder",model,Integer.valueOf(model.getPageNum()),Integer.valueOf(model.getPageSize()));
+    }
 }

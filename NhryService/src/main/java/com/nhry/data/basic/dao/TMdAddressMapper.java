@@ -57,4 +57,11 @@ public interface TMdAddressMapper {
     TMdAddress findAddressDetailById(String id);
     
     int uptCustAddressUnDefault(TMdAddress record);
+    
+    /**
+     * 根据订户编号，删除地址列表
+     * @param custNo
+     * @return
+     */
+    public int deleteAddressByCustNo(String custNo);
 }

@@ -246,4 +246,15 @@ public class MilkBoxServiceImpl extends BaseService implements MilkBoxService
 
 		return date;
 	}
+
+	/**
+	 * 查询奶箱列表不分页,用于导出报表
+	 * @param empNo
+	 * @return smodel
+     */
+	@Override
+	public List findMilkBox(String empNo)
+	{
+		return tMilkboxPlanMapper.searchMilkBox(empNo);
+	}
 }
