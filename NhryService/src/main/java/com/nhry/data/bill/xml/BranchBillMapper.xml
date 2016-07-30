@@ -87,6 +87,7 @@
                 ) FACTORY_PRICE
                 FROM t_mst_disp_order_item i LEFT JOIN t_mst_disp_order o ON i.ORDER_NO = o.ORDER_NO
                 WHERE 1= 1
+                and o.STATUS ='20'
                 and (i.REASON ='40' OR i.REASON ='50')
                 <if test="branchNo!=null and branchNo!=''">
                     and o.BRANCH_NO = #{branchNo,jdbcType=VARCHAR}
@@ -112,6 +113,7 @@
                 ) FACTORY_PRICE
                 FROM t_mst_disp_order_item i LEFT JOIN t_mst_disp_order o ON i.ORDER_NO = o.ORDER_NO
                 WHERE 1= 1
+                and o.STATUS ='20'
                 and (i.REASON IS NULL OR i.REASON ='10' OR i.REASON ='20' OR i.REASON ='30')
                 <if test="branchNo!=null and branchNo!=''">
                     and o.BRANCH_NO = #{branchNo,jdbcType=VARCHAR}
@@ -141,6 +143,7 @@
                 LEFT JOIN t_mst_disp_order o ON i.ORDER_NO = o.ORDER_NO
                 LEFT JOIN t_md_mara a on i.CONFIRM_MATNR = a.MATNR
                 WHERE 1=1
+                and o.STATUS ='20'
                 <if test="branchNo!=null and branchNo!=''">
                     and o.BRANCH_NO = #{branchNo,jdbcType=VARCHAR}
                 </if>
