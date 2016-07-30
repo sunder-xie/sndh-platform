@@ -1,6 +1,9 @@
 package com.nhry.service.external.dao;
 
+import java.util.List;
+
 import com.nhry.data.basic.domain.TMdBranch;
+import com.nhry.data.order.domain.TPlanOrderItem;
 import com.nhry.data.order.domain.TPreOrder;
 import com.nhry.model.order.OrderSearchModel;
 
@@ -40,4 +43,9 @@ public interface EcService {
 	 * 创建订户订单备注
 	 */
 	public void sendOrderComments(TPreOrder order);
+	
+	/**
+	 * 订单创建推送
+	 */
+	public void sendOrderInfo(TPreOrder order,List<TPlanOrderItem> entries);
 }
