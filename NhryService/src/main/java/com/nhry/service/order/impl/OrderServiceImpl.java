@@ -5,6 +5,8 @@ import com.github.pagehelper.PageInfo;
 import com.nhry.common.exception.MessageCode;
 import com.nhry.common.exception.ServiceException;
 import com.nhry.data.auth.domain.TSysUser;
+import com.nhry.data.basic.dao.TMdBranchMapper;
+import com.nhry.data.basic.domain.TMdBranch;
 import com.nhry.data.basic.domain.TVipAcct;
 import com.nhry.data.basic.domain.TVipCustInfo;
 import com.nhry.data.milk.dao.TDispOrderItemMapper;
@@ -24,7 +26,6 @@ import com.nhry.service.order.dao.OrderService;
 import com.nhry.service.order.dao.PromotionService;
 import com.nhry.service.order.pojo.OrderRemainData;
 import com.nhry.utils.CodeGeneratorUtil;
-
 import org.apache.commons.lang3.StringUtils;
 
 import java.math.BigDecimal;
@@ -42,7 +43,12 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 	private PriceService priceService;
 	private PromotionService promotionService;
 	private TDispOrderItemMapper tDispOrderItemMapper;
-	
+	private TMdBranchMapper branchMapper;
+
+	public void setBranchMapper(TMdBranchMapper branchMapper) {
+		this.branchMapper = branchMapper;
+	}
+
 	public void settDispOrderItemMapper(TDispOrderItemMapper tDispOrderItemMapper)
 	{
 		this.tDispOrderItemMapper = tDispOrderItemMapper;
@@ -1074,6 +1080,7 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 		order.setOrderNo(CodeGeneratorUtil.getCode());
 		//其他订单信息
 		order.setOrderDate(date);//订单创建日期
+
 		order.setCreaterBy(userSessionService.getCurrentUser().getLoginName());//创建人
 		order.setCreaterNo(userSessionService.getCurrentUser().getGroupId());//创建人编号
 		if(StringUtils.isBlank(order.getOrderType())){
@@ -1092,8 +1099,15 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 			order.setPreorderStat("10");//订单状态,初始确认
 		}
 		order.setSign("10");//在订状态
-		order.setSalesOrg(userSessionService.getCurrentUser().getSalesOrg());//销售组织
-		order.setDealerNo(userSessionService.getCurrentUser().getDealerId());//进销商
+		//根据传的奶站获取经销商和销售组织
+		if(StringUtils.isNotBlank(order.getBranchNo())){
+			TMdBranch branch = branchMapper.selectBranchByNo(order.getBranchNo());
+			order.setDealerNo(branch.getDealerNo());//进销商
+			order.setSalesOrg(branch.getSalesOrg());
+		}
+		//order.setSalesOrg(userSessionService.getCurrentUser().getSalesOrg());//销售组织
+
+
 		//征订日期
 		if(StringUtils.isNotBlank(order.getSolicitDateStr())){
 			try
