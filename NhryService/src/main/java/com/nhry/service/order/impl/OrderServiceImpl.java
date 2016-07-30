@@ -194,6 +194,18 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 		if(org.apache.commons.lang.StringUtils.isBlank(uptManHandModel.getBranchNo()) || org.apache.commons.lang.StringUtils.isBlank(uptManHandModel.getOrderNo())){
 			throw new ServiceException(MessageCode.LOGIC_ERROR,"奶站号和订单号不能为空！");
 		}
+		//如果更换奶站，可能会更换商品价格
+		TPreOrder order = tPreOrderMapper.selectByPrimaryKey(uptManHandModel.getOrderNo());
+		if(!uptManHandModel.getBranchNo().equals(order.getBranchNo())){
+			ArrayList<TPlanOrderItem> orgEntries = (ArrayList<TPlanOrderItem>) tPlanOrderItemMapper.selectByOrderCode(uptManHandModel.getOrderNo());
+			for(TPlanOrderItem entry : orgEntries){
+				float price = priceService.getMaraPrice(uptManHandModel.getBranchNo(), entry.getMatnr(), order.getDeliveryType());
+				if(price<=0)throw new ServiceException(MessageCode.LOGIC_ERROR,"替换的奶站,产品["+entry.getMatnr()+"]价格小于0，或可能没有该产品，请检查或退订此订单!");
+				entry.setSalesPrice(new BigDecimal(String.valueOf(price)));
+				tPlanOrderItemMapper.updateEntryByItemNo(entry);
+			}
+		}
+		
 		return tPreOrderMapper.uptManHandOrder(uptManHandModel);
 	}
 
