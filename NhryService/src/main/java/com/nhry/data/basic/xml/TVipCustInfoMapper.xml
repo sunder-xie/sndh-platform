@@ -915,4 +915,7 @@
 	        </if>
 	   </where>
 	</select>
+	<delete id="deleteCustByCno" parameterType="String">
+	    delete from t_vip_cust_info where VIP_CUST_NO=#{cno}
+	</delete>
 </mapper>

@@ -33,4 +33,6 @@
   <config key="department_back_office" value="10004"></config>
   <!-- 经销商内勤编号 -->
   <config key="dealer_back_office" value="10004"></config>
+  <!-- 省份对应关系(奶站省份) -->
+  <config key="branch_province" value="2006"></config>
 </configs>
