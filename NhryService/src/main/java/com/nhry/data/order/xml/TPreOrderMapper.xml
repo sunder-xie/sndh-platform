@@ -686,7 +686,9 @@
     update t_preorder
     <set >
         <!-- PREORDER_STAT = '20', -->
-        SALES_ORG = #{salesOrg,jdbcType=VARCHAR},
+        <if test="salesOrg != null and salesOrg != ''">
+     		AND SALES_ORG = #{salesOrg,jdbcType=VARCHAR}
+        </if>
         BRANCH_NO = #{branchNo,jdbcType=VARCHAR},
         RET_REASON = null,
         MEMO_TXT = null,
@@ -797,5 +799,11 @@
 
   <update id="updateOrderFacAmt" parameterType="java.util.Map">
     UPDATE  t_preorder  SET  FACT_AMT = #{factAmt} WHERE  ORDER_NO = #{orderNo}
+  </update>
+  
+    <update id="updateOrderEmpNo" parameterType="com.nhry.data.order.domain.TPreOrder">
+    update t_preorder  
+    set EMP_NO = #{empNo,jdbcType=VARCHAR} 
+    where ORDER_NO = #{orderNo,jdbcType=VARCHAR}
   </update>
 </mapper>

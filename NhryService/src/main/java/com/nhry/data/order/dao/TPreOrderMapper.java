@@ -18,6 +18,8 @@ public interface TPreOrderMapper {
     int deleteByPrimaryKey(String orderNo);
 
     int insert(TPreOrder record);
+    
+    int updateOrderEmpNo(TPreOrder record);
 
     int updateOrderInitAmtAndCurAmt(TPreOrder record);
 

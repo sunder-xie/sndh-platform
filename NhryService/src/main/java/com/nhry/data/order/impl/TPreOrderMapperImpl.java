@@ -41,6 +41,13 @@ public class TPreOrderMapperImpl implements TPreOrderMapper
 		// TODO Auto-generated method stub
 		return sqlSessionTemplate.update("updateOrderStatus", record);
 	}
+	
+	@Override
+	public int updateOrderEmpNo(TPreOrder record)
+	{
+		// TODO Auto-generated method stub
+		return sqlSessionTemplate.update("updateOrderEmpNo", record);
+	}
 
 	@Override
 	public PageInfo searchReturnOrders(ManHandOrderSearchModel manHandModel) {
