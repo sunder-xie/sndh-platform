@@ -108,4 +108,21 @@ public class StatisticsResource extends BaseResource {
         }
         return convertToRespModel(MessageCode.NORMAL, null, branchInfoService.findBranchMonthReport(model));
     }
+    @POST
+    @Path("/findReqOrder")
+    @Produces(MediaType.APPLICATION_JSON)
+    @Consumes(MediaType.APPLICATION_JSON)
+    @ApiOperation(value = "/findReqOrder}", response = ResponseModel.class, notes = "要货计划查询")
+    public Response findReqOrder(@ApiParam(name = "model",value = "要货计划") BranchInfoModel model){
+        TSysUser user = userSessionService.getCurrentUser();
+        if(StringUtils.isEmpty(model.getBranchNo()) && StringUtils.isNotEmpty(user.getBranchNo())){
+            model.setBranchNo(user.getBranchNo());
+        }else if(StringUtils.isEmpty(model.getDealerId()) && StringUtils.isNotEmpty(user.getDealerId())){
+            model.setDealerId(user.getDealerId());
+        }
+        if(StringUtils.isNotEmpty(user.getSalesOrg())){
+            model.setSalesOrg(user.getSalesOrg());
+        }
+        return convertToRespModel(MessageCode.NORMAL, null, branchInfoService.findReqOrder(model));
+    }
 }
