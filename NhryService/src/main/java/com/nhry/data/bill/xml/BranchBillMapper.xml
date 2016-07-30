@@ -77,7 +77,7 @@
             IFNULL(SUM(t1.FACTORY_PRICE*t1.QTY),0) BILL_PRICE
             FROM (
                 SELECT
-                i.CONFIRM_MATNR MATNR,i.QTY-i.CONFIRM_QTY QTY,i.PRICE ,o.DISP_EMP_NO EMP_NO,o.DISP_DATE,
+                i.CONFIRM_MATNR MATNR,i.QTY,i.PRICE ,o.DISP_EMP_NO EMP_NO,o.DISP_DATE,
                 (
                 SELECT  gi.FACTORY_PRICE
                 FROM t_ssm_gi_order_item gi LEFT JOIN t_ssm_gi_order go on gi.ORDER_NO = go.ORDER_NO
@@ -87,6 +87,7 @@
                 ) FACTORY_PRICE
                 FROM t_mst_disp_order_item i LEFT JOIN t_mst_disp_order o ON i.ORDER_NO = o.ORDER_NO
                 WHERE 1= 1
+                and o.STATUS ='20'
                 and (i.REASON ='40' OR i.REASON ='50')
                 <if test="branchNo!=null and branchNo!=''">
                     and o.BRANCH_NO = #{branchNo,jdbcType=VARCHAR}
@@ -112,6 +113,7 @@
                 ) FACTORY_PRICE
                 FROM t_mst_disp_order_item i LEFT JOIN t_mst_disp_order o ON i.ORDER_NO = o.ORDER_NO
                 WHERE 1= 1
+                and o.STATUS ='20'
                 and (i.REASON IS NULL OR i.REASON ='10' OR i.REASON ='20' OR i.REASON ='30')
                 <if test="branchNo!=null and branchNo!=''">
                     and o.BRANCH_NO = #{branchNo,jdbcType=VARCHAR}
@@ -131,31 +133,26 @@
 
 
     <select id="branchBillEmpItemSearch" resultMap="EmpItemResultMap" parameterType="com.nhry.model.bill.EmpBranchBillDetailSearch">
-        SELECT
-        i.MATNR,a.MATNR_TXT,i.QTY,i.PRICE,o.DISP_EMP_NO
-        FROM t_mst_inside_sal_order_item i LEFT JOIN t_mst_inside_sal_order so on i.INS_ORDER_NO = so.INS_ORDER_NO
-        LEFT JOIN t_mst_disp_order o on so.DISP_ORDER_NO = o.ORDER_NO
-        LEFT JOIN t_md_mara a on (i.MATNR = a.MATNR and a.SALES_ORG = #{salesOrg,jdbcType=VARCHAR})
-        WHERE 1=1
-          <if test="branchNo!=null and branchNo!=''">
-              and so.BRANCH_NO = #{branchNo,jdbcType=VARCHAR}
-          </if>
-           and  o.DISP_DATE = #{dispDate,jdbcType=DATE}
-           and  o.DISP_EMP_NO = #{empNo,jdbcType=VARCHAR}
-
-        UNION ALL
-
-        SELECT
-        i.MATNR,a.MATNR_TXT,i.QTY ,i.PRICE ,o.DISP_EMP_NO
-        FROM t_mst_disp_order_item i LEFT JOIN t_mst_disp_order o ON i.ORDER_NO = o.ORDER_NO
-        LEFT JOIN t_md_mara a on (i.MATNR = a.MATNR and a.SALES_ORG = #{salesOrg,jdbcType=VARCHAR})
-        WHERE 1=1
-        <if test="branchNo!=null and branchNo!=''">
-            and o.BRANCH_NO = #{branchNo,jdbcType=VARCHAR}
-        </if>
-          and  o.DISP_DATE = #{dispDate,jdbcType=DATE}
-         and  o.DISP_EMP_NO = #{empNo,jdbcType=VARCHAR}
-
+        SELECT  t.MATNR,t.MATNR_TXT,t.QTY,t.PRICE,t.DISP_EMP_NO from (
+                SELECT
+                i.CONFIRM_MATNR MATNR,a.MATNR_TXT,SUM((
+                CASE WHEN (i.REASON = '10' OR i.REASON='20' OR i.REASON ='30' OR i.REASON IS NULL) THEN  i.CONFIRM_QTY
+                ELSE i.QTY  END
+                )) QTY ,i.PRICE ,o.DISP_EMP_NO
+                FROM t_mst_disp_order_item i
+                LEFT JOIN t_mst_disp_order o ON i.ORDER_NO = o.ORDER_NO
+                LEFT JOIN t_md_mara a on i.CONFIRM_MATNR = a.MATNR
+                WHERE 1=1
+                and o.STATUS ='20'
+                <if test="branchNo!=null and branchNo!=''">
+                    and o.BRANCH_NO = #{branchNo,jdbcType=VARCHAR}
+                </if>
+                and  o.DISP_DATE = #{dispDate,jdbcType=DATE}
+                and  o.DISP_EMP_NO = #{empNo,jdbcType=VARCHAR}
+                GROUP BY i.CONFIRM_MATNR
+        )t
+        WHERE  t.QTY IS NOT NULL
+        and t.QTY!=0
     </select>
 
 
