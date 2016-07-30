@@ -124,7 +124,6 @@
                 <if test="endDate!=null and endDate!=''">
                     and o.DISP_DATE &lt;= #{endDate,jdbcType=DATE}
                 </if>
-
         ) t1 LEFT  JOIN  t_md_branch_emp e on t1.EMP_NO = e.EMP_NO
         GROUP BY t1.DISP_DATE,t1.EMP_NO
 
