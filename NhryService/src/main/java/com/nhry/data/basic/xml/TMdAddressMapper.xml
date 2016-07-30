@@ -393,4 +393,7 @@
         </if>
     </where>
   </select>
+  <delete id="deleteAddressByCustNo" parameterType="String">
+     delete from t_md_address where VIP_CUST_NO=#{custNo}
+  </delete>
 </mapper>
