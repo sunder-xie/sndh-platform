@@ -686,6 +686,7 @@
     update t_preorder
     <set >
         <!-- PREORDER_STAT = '20', -->
+        SALES_ORG = #{salesOrg,jdbcType=VARCHAR},
         BRANCH_NO = #{branchNo,jdbcType=VARCHAR},
         RET_REASON = null,
         MEMO_TXT = null,

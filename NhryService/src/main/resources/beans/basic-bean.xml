@@ -67,6 +67,7 @@
 		<property name="sqlSessionTemplate" ref="dynamicSqlSessionTemplate"></property>
 	</bean>
 	<bean id="orderService" class="com.nhry.service.order.impl.OrderServiceImpl">
+		<property name="branchMapper" ref="branchMapper"></property>
 		<property name="tPreOrderMapper" ref="tPreOrderMapper"></property>
 		<property name="tPlanOrderItemMapper" ref="tPlanOrderItemMapper"></property>
 		<property name="tOrderDaliyPlanItemMapper" ref="tOrderDaliyPlanItemMapper"></property>
@@ -231,6 +232,8 @@
 	<bean id="messLogService" class="com.nhry.service.external.impl.EcServiceImpl">
 		<property name="messLogMapper" ref="messLogMapper"></property>
 		<property name="itemMapper" ref="codeItemMapper"></property>
+		<property name="tVipCustInfoService" ref="custService"></property>
+	   <property name="branchEmpMapper" ref="branchEmpMapper"></property>
 	</bean>
 	<bean id="ecBaseService" class="com.nhry.service.external.EcBaseService">
 	   <property name="messLogMapper" ref="messLogMapper"></property>

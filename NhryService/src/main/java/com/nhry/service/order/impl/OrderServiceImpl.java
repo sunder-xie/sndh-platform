@@ -5,6 +5,8 @@ import com.github.pagehelper.PageInfo;
 import com.nhry.common.exception.MessageCode;
 import com.nhry.common.exception.ServiceException;
 import com.nhry.data.auth.domain.TSysUser;
+import com.nhry.data.basic.dao.TMdBranchMapper;
+import com.nhry.data.basic.domain.TMdBranch;
 import com.nhry.data.basic.domain.TVipAcct;
 import com.nhry.data.basic.domain.TVipCustInfo;
 import com.nhry.data.milk.dao.TDispOrderItemMapper;
@@ -24,7 +26,6 @@ import com.nhry.service.order.dao.OrderService;
 import com.nhry.service.order.dao.PromotionService;
 import com.nhry.service.order.pojo.OrderRemainData;
 import com.nhry.utils.CodeGeneratorUtil;
-
 import org.apache.commons.lang3.StringUtils;
 
 import java.math.BigDecimal;
@@ -42,7 +43,12 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 	private PriceService priceService;
 	private PromotionService promotionService;
 	private TDispOrderItemMapper tDispOrderItemMapper;
-	
+	private TMdBranchMapper branchMapper;
+
+	public void setBranchMapper(TMdBranchMapper branchMapper) {
+		this.branchMapper = branchMapper;
+	}
+
 	public void settDispOrderItemMapper(TDispOrderItemMapper tDispOrderItemMapper)
 	{
 		this.tDispOrderItemMapper = tDispOrderItemMapper;
@@ -194,6 +200,22 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 		if(org.apache.commons.lang.StringUtils.isBlank(uptManHandModel.getBranchNo()) || org.apache.commons.lang.StringUtils.isBlank(uptManHandModel.getOrderNo())){
 			throw new ServiceException(MessageCode.LOGIC_ERROR,"奶站号和订单号不能为空！");
 		}
+		//如果更换奶站，可能会更换商品价格，并把用户挂到该奶站下
+		TPreOrder order = tPreOrderMapper.selectByPrimaryKey(uptManHandModel.getOrderNo());
+		if(!uptManHandModel.getBranchNo().equals(order.getBranchNo())){
+			//订户挂奶站,订单的奶站和销售组织变更
+			String salesOrg = tVipCustInfoService.uptCustBranchNo(order.getMilkmemberNo(),uptManHandModel.getBranchNo());
+			uptManHandModel.setSalesOrg(salesOrg);
+			//换价格
+			ArrayList<TPlanOrderItem> orgEntries = (ArrayList<TPlanOrderItem>) tPlanOrderItemMapper.selectByOrderCode(uptManHandModel.getOrderNo());
+			for(TPlanOrderItem entry : orgEntries){
+				float price = priceService.getMaraPrice(uptManHandModel.getBranchNo(), entry.getMatnr(), order.getDeliveryType());
+				if(price<=0)throw new ServiceException(MessageCode.LOGIC_ERROR,"替换的奶站,产品["+entry.getMatnr()+"]价格小于0，或可能没有该产品，请检查或退订此订单!");
+				entry.setSalesPrice(new BigDecimal(String.valueOf(price)));
+				tPlanOrderItemMapper.updateEntryByItemNo(entry);
+			}
+		}
+		
 		return tPreOrderMapper.uptManHandOrder(uptManHandModel);
 	}
 
@@ -593,6 +615,16 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 		tPreOrderMapper.updateOrderResumed(orderNo);//该订单已经被续订
 		
 		ArrayList<TPlanOrderItem> entries = (ArrayList<TPlanOrderItem>) tPlanOrderItemMapper.selectByOrderCode(orderNo);
+		Date orgFirstDate = null; 
+		Map<String,Integer> entryDateMap = new HashMap<String,Integer>();
+		for(TPlanOrderItem e :entries){
+			if(orgFirstDate==null){
+				orgFirstDate = e.getStartDispDate();
+			}else{
+				
+			}
+		}
+		
 		if(order!= null){
 			if("20".equals(order.getMilkboxStat()))throw new ServiceException(MessageCode.LOGIC_ERROR, orderNo+"原订单还没有装箱，不能续订!");
 			if("20".equals(order.getPaymentmethod())&&"10".equals(order.getPaymentStat()))throw new ServiceException(MessageCode.LOGIC_ERROR, orderNo+"原订单为预付款订单，没有付款，不能续订!");
@@ -1048,6 +1080,7 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 		order.setOrderNo(CodeGeneratorUtil.getCode());
 		//其他订单信息
 		order.setOrderDate(date);//订单创建日期
+
 		order.setCreaterBy(userSessionService.getCurrentUser().getLoginName());//创建人
 		order.setCreaterNo(userSessionService.getCurrentUser().getGroupId());//创建人编号
 		if(StringUtils.isBlank(order.getOrderType())){
@@ -1066,8 +1099,15 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 			order.setPreorderStat("10");//订单状态,初始确认
 		}
 		order.setSign("10");//在订状态
-		order.setSalesOrg(userSessionService.getCurrentUser().getSalesOrg());//销售组织
-		order.setDealerNo(userSessionService.getCurrentUser().getDealerId());//进销商
+		//根据传的奶站获取经销商和销售组织
+		if(StringUtils.isNotBlank(order.getBranchNo())){
+			TMdBranch branch = branchMapper.selectBranchByNo(order.getBranchNo());
+			order.setDealerNo(branch.getDealerNo());//进销商
+			order.setSalesOrg(branch.getSalesOrg());
+		}
+		//order.setSalesOrg(userSessionService.getCurrentUser().getSalesOrg());//销售组织
+
+
 		//征订日期
 		if(StringUtils.isNotBlank(order.getSolicitDateStr())){
 			try
@@ -1354,9 +1394,7 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 			//当非奶站订单时，作废待确认订单时
 			List<TPreOrder> list = tPreOrderMapper.selectNodeletedByMilkmemberNo(order);
 			if(list == null || list.size() <= 0 ){
-				System.out.print("删除订户");
-				//TODO
-				
+				tVipCustInfoService.deleteCustByCustNo(order.getMilkmemberNo());
 			}
 			tPreOrderMapper.updateOrderStatus(record);
 			
@@ -2139,6 +2177,7 @@ public class OrderServiceImpl extends BaseService implements OrderService {
    	
    	List<TOrderDaliyPlanItem> newPlans = new ArrayList<TOrderDaliyPlanItem>();
    	for(TOrderDaliyPlanItem plan : daliyPlans){
+   		if(plan.getGiftQty()!=null)continue;
    		if(changeProducts.containsKey(plan) || changeQtys.containsKey(plan) || stopPlans.containsKey(plan)){
    			continue;
    		}

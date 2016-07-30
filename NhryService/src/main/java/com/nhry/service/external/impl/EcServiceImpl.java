@@ -1,18 +1,28 @@
 package com.nhry.service.external.impl;
 
+import java.math.BigDecimal;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+
 import org.codehaus.jettison.json.JSONArray;
 import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONObject;
+import org.eclipse.jetty.util.StringUtil;
 import org.springframework.core.task.TaskExecutor;
+
+import com.nhry.data.basic.dao.TMdBranchEmpMapper;
+import com.nhry.data.basic.domain.TMdAddress;
 import com.nhry.data.basic.domain.TMdBranch;
+import com.nhry.data.basic.domain.TMdBranchEmp;
 import com.nhry.data.config.dao.NHSysCodeItemMapper;
 import com.nhry.data.config.domain.NHSysCodeItem;
+import com.nhry.data.order.domain.TPlanOrderItem;
 import com.nhry.data.order.domain.TPreOrder;
 import com.nhry.model.order.OrderSearchModel;
+import com.nhry.service.basic.dao.TVipCustInfoService;
 import com.nhry.service.external.EcBaseService;
 import com.nhry.service.external.dao.EcService;
 import com.nhry.utils.EnvContant;
@@ -21,7 +31,19 @@ import com.nhry.utils.SysContant;
 
 public class EcServiceImpl extends EcBaseService implements EcService{
     private NHSysCodeItemMapper itemMapper;
+    private TVipCustInfoService tVipCustInfoService;
+    private TMdBranchEmpMapper branchEmpMapper;
     
+	public void setBranchEmpMapper(TMdBranchEmpMapper branchEmpMapper)
+	{
+		this.branchEmpMapper = branchEmpMapper;
+	}
+
+	public void settVipCustInfoService(TVipCustInfoService tVipCustInfoService)
+	{
+		this.tVipCustInfoService = tVipCustInfoService;
+	}
+
 	@Override
 	public void pushBranch2EcForUpt(TMdBranch branch) {
 		// TODO Auto-generated method stub
@@ -269,4 +291,112 @@ public class EcServiceImpl extends EcBaseService implements EcService{
 		}
 	}
 	
+	@Override
+	public void sendOrderInfo(TPreOrder order, List<TPlanOrderItem> entries)
+	{
+		SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
+		SimpleDateFormat f = new SimpleDateFormat("yy-MM-dd HH:mm:ss");
+		try {
+			JSONArray arr = new JSONArray();
+			JSONObject json = new JSONObject();
+			json.put("businessno", "BUSSSENDORDERINFO");
+			JSONObject body = new JSONObject();
+			JSONObject orderJson = new JSONObject();
+			JSONObject entryJson = new JSONObject();
+			JSONObject promotionJson = new JSONObject();
+			
+			TMdAddress address = tVipCustInfoService.findAddressById(order.getAdressNo());
+			TMdBranchEmp emp = branchEmpMapper.selectBranchEmpByNo(order.getEmpNo());
+			
+			//订单主信息
+			orderJson.put("serviceName", "SVCSENDORDERMAIN");
+			JSONArray data = new JSONArray();
+			JSONObject oorderJson = new JSONObject();
+			oorderJson.put("customerId", "DH");
+			oorderJson.put("orderPlatNo", order.getOrderNo());
+			oorderJson.put("dhOrderNo", order.getOrderNo());
+			oorderJson.put("netShopId", "00006");
+			oorderJson.put("empId", "");
+			oorderJson.put("createDate", format.format(order.getOrderDate()));
+			oorderJson.put("vipNo", order.getMilkmemberNo());
+			oorderJson.put("buyerName", address.getRecvName());
+			oorderJson.put("postFee", "0");
+			oorderJson.put("paidFlag", "N");
+			oorderJson.put("paidDate", "");
+			oorderJson.put("paymentType", "");
+			oorderJson.put("phone", address.getTel());
+			oorderJson.put("mobile", address.getMp());
+			oorderJson.put("addrGuid", order.getAdressNo());
+			oorderJson.put("province", address.getProvince());
+			oorderJson.put("city", address.getCity());
+			oorderJson.put("district", address.getCounty());
+			oorderJson.put("street", "");
+			oorderJson.put("townName", address.getResidentialAreaName()==null?"":address.getResidentialAreaName());
+			oorderJson.put("address", address.getAddressTxt());
+			oorderJson.put("empMobile", emp==null?"":emp.getMp() );
+			oorderJson.put("empName", emp==null?"":emp.getEmpName() );
+			oorderJson.put("branchNo", order.getBranchNo());
+			if("20".equals(order.getMilkboxStat())){
+				oorderJson.put("milkBoxFlag", "Y");
+			}else{
+				oorderJson.put("milkBoxFlag", "N");
+			}
+			if("20".equals(order.getSign())){
+				oorderJson.put("pauseFlag", "Y");
+				oorderJson.put("pauseDateStart", f.format(order.getStopDateStart()));
+				oorderJson.put("pauseDateEnd", f.format(order.getStopDateEnd()));
+			}
+			oorderJson.put("orderSource", "DH");
+			oorderJson.put("remark", order.getMemoTxt());
+			data.put(oorderJson);
+			orderJson.put("data", data);
+			
+			//订单行信息
+			entryJson.put("serviceName", "SVCSENDORDERITEMLIST");
+			JSONArray data2 = new JSONArray();
+			for(TPlanOrderItem e:entries){
+   			JSONObject oentryJson = new JSONObject();
+   			oentryJson.put("as_order_no", "SVCSENDORDERMAIN##@@AS_ECORDERNO");
+   			oentryJson.put("oid", e.getItemNo());
+   			oentryJson.put("salePrice", e.getSalesPrice().floatValue());
+   			oentryJson.put("fee", e.getSalesPrice().multiply(new BigDecimal(e.getQty())).floatValue() );
+   			oentryJson.put("itemNo", e.getMatnr());
+   			oentryJson.put("quantity", e.getDispTotal());
+   			oentryJson.put("dhType", "30");
+   			oentryJson.put("dayQty", e.getQty());
+   			oentryJson.put("ruleType", e.getRuleType().equals("10")?"02":"05");
+   			oentryJson.put("reachTimeType", e.getReachTimeType());
+   			oentryJson.put("plantimeStart", format.format(e.getStartDispDate()));
+   			oentryJson.put("plantimeEnd", format.format(e.getEndDispDate()));
+   			oentryJson.put("remark", "");
+   			data2.put(oentryJson);
+			}
+			entryJson.put("data", data2);
+			
+			//订单的促销信息
+			entryJson.put("serviceName", "SVCSENDORDERTICKETLIST");
+			JSONArray data3 = new JSONArray();
+			for(TPlanOrderItem e:entries){
+				if(StringUtil.isBlank(e.getPromotion()))continue;
+				JSONObject opromotionJson = new JSONObject();
+				opromotionJson.put("as_order_no", "SVCSENDORDERMAIN##@@AS_ECORDERNO");
+				opromotionJson.put("ticketNo", e.getPromotion());
+				data3.put(opromotionJson);
+			}
+			promotionJson.put("data", data3);
+			
+			//推送
+			body.put("SVCSENDORDERMAIN", orderJson);
+			body.put("SVCSENDORDERITEMLIST", entryJson);
+			body.put("SVCSENDORDERTICKETLIST", promotionJson);
+			json.put("body", body);
+			arr.put(json);
+			
+			System.out.println("----------"+arr.toString());
+			pushMessage2Ec(EnvContant.getSystemConst("ec_base_url")+EnvContant.getSystemConst("ec_upt_branch"), arr.toString(), true);
+		} catch (JSONException e) {
+			e.printStackTrace();
+		}
+	}
+
 }

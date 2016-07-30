@@ -501,7 +501,7 @@
         LEFT JOIN t_md_mara_ex ex on i.CONFIRM_MATNR = ex.MATNR
         LEFT JOIN  t_md_branch b on o.BRANCH_NO = b.BRANCH_NO
         where 1=1
-        and o.DISP_ORDER_NO = #{dispOrderNo}
+        and o.ORDER_NO = #{dispOrderNo}
         and ( i.REASON != '30' OR i.REASON is NULL)
         and ex.RET_BOT_FLAG = "Y"
         and ex.SALES_ORG = b.SALES_ORG
