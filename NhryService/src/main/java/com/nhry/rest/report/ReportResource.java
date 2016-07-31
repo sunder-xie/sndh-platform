@@ -469,4 +469,148 @@ public class ReportResource extends BaseResource{
         }
         return convertToRespModel(MessageCode.NORMAL,null,outUrl);
     }
+
+    @POST
+    @Path("/findMonthReportOutput")
+    @Produces(MediaType.APPLICATION_JSON)
+    @Consumes(MediaType.APPLICATION_JSON)
+    @ApiOperation(value = "/findMonthReportOutput}", response = ResponseModel.class, notes = "奶站月任务报表导出")
+    public Response findMonthReportOutput(@ApiParam(name = "model",value = "月任务") BranchInfoModel model){
+        List<Map<String,String>>  details = branchInfoService.findBranchMonthReportOutput(model);
+        String outUrl = "";
+        String url = request.getServletContext().getRealPath("/");
+        try {
+            File file = new File(url +  File.separator + "report"+ File.separator + "template" + File.separator + "MonthReportTemplate.xlsx");
+            FileInputStream input = new FileInputStream(file);
+            com.nhry.utils.date.Date date1 = new com.nhry.utils.date.Date(model.getTheDate());
+            XSSFWorkbook workbook = new XSSFWorkbook(new BufferedInputStream(input));
+            XSSFSheet sheet = workbook.getSheetAt(0);
+            XSSFRow row;
+            XSSFCell cell;
+            int r = 2;
+            if(details!=null){
+                for(Map<String,String> map : details){
+                    row = sheet.createRow(r);r++;
+                    cell=row.createCell(1);
+                    cell.setCellValue(map.get("branchName"));
+                    cell=row.createCell(2);
+                    String groupName="";
+                    if(map.get("branchGroup").equals("01")){
+                        groupName = "自营奶站";
+                    }else if(map.get("branchGroup").equals("02")){
+                        groupName = "经销商奶站";
+                    }
+                    cell.setCellValue(groupName);
+                    cell=row.createCell(4);
+                    cell.setCellValue(map.get("dayQty")==null ? "0" :String.valueOf(map.get("dayQty")));
+                    cell=row.createCell(5);
+                    cell.setCellValue(map.get("monthQty")==null ? "0" :String.valueOf(map.get("monthQty")));
+                    cell=row.createCell(6);
+                    cell.setCellValue(map.get("hb")==null ? "0" :String.valueOf(map.get("hb")));
+                    cell=row.createCell(7);
+                    cell.setCellValue(map.get("newQty")==null ? "0" :String.valueOf(map.get("newQty")));
+                    cell=row.createCell(8);
+                    cell.setCellValue(map.get("dayWeigth")==null ? "0" :String.valueOf(map.get("dayWeigth")));
+                    cell=row.createCell(9);
+                    cell.setCellValue(map.get("dayPrice")==null ? "0" :String.valueOf(map.get("dayPrice")));
+                    cell=row.createCell(10);
+                    cell.setCellValue(map.get("montyPrice")==null ? "0" :String.valueOf(map.get("montyPrice")));
+                }
+            }
+            String fname = CodeGeneratorUtil.getCode();
+            String rq = format1.format(new Date(new Date().getTime() - 24 * 60 * 60 * 1000));
+            String filePath = url +  File.separator + "report"+ File.separator + "export";
+            File delFiles = new File(filePath);
+            if(delFiles.isDirectory()){
+                for(File del : delFiles.listFiles()){
+                    if(del.getName().contains(rq)){
+                        del.delete();
+                    }
+                }
+            }
+            File export = new File(url +  File.separator + "report"+ File.separator + "export" + File.separator + fname + "MonthReportTemplate.xlsx");
+            FileOutputStream stream = new FileOutputStream(export);
+            workbook.write(stream);
+            stream.flush();
+            stream.close();
+            outUrl = "/report/export/" + fname + "MonthReportTemplate.xlsx";
+
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+        return convertToRespModel(MessageCode.NORMAL,null,outUrl);
+    }
+
+    @POST
+    @Path("/findOrderRatioOupput")
+    @Produces(MediaType.APPLICATION_JSON)
+    @Consumes(MediaType.APPLICATION_JSON)
+    @ApiOperation(value = "/findOrderRatioOupput}", response = ResponseModel.class, notes = "奶站订单转化率(T+3)报表导出")
+    public Response findOrderRatioOupput(@ApiParam(name = "model",value = "订单转化率") BranchInfoModel model){
+        List<Map<String,String>>  details = branchInfoService.findOrderRatioOutput(model);
+        String outUrl = "";
+        String url = request.getServletContext().getRealPath("/");
+        try {
+            File file = new File(url +  File.separator + "report"+ File.separator + "template" + File.separator + "OrderRatioTemplate.xlsx");
+            FileInputStream input = new FileInputStream(file);
+            com.nhry.utils.date.Date date1 = new com.nhry.utils.date.Date(model.getTheDate());
+            XSSFWorkbook workbook = new XSSFWorkbook(new BufferedInputStream(input));
+            XSSFSheet sheet = workbook.getSheetAt(0);
+            XSSFRow row=sheet.getRow(1);
+            XSSFCell cell = row.getCell(3);
+            cell.setCellValue(format.format(model.getTheDate()));
+            cell = row.getCell(4);
+            cell.setCellValue(date1.addDays(-3).toShortDate());
+            int r=2;
+            if(details!=null){
+                for(Map<String,String> map : details){
+                    row = sheet.createRow(r);r++;
+                    cell=row.createCell(1);
+                    cell.setCellValue(map.get("branchName"));
+                    cell=row.createCell(2);
+                    String groupName="";
+                    if(map.get("branchGroup").equals("01")){
+                        groupName = "自营奶站";
+                    }else if(map.get("branchGroup").equals("02")){
+                        groupName = "经销商奶站";
+                    }
+                    cell.setCellValue(groupName);
+                    cell = row.createCell(3);
+                    cell.setCellValue(map.get("validQty")==null ? "0" :String.valueOf(map.get("validQty")));
+                    cell = row.createCell(4);
+                    cell.setCellValue(map.get("initQty")==null ? "0" :String.valueOf(map.get("initQty")));
+                    cell = row.createCell(5);
+                    cell.setCellValue(map.get("infoErrQty")==null ? "0" :String.valueOf(map.get("infoErrQty")));
+                    cell = row.createCell(6);
+                    cell.setCellValue(map.get("custQty")==null ? "0" :String.valueOf(map.get("custQty")));
+                    cell = row.createCell(7);
+                    cell.setCellValue(map.get("superQty")==null ? "0" :String.valueOf(map.get("superQty")));
+                    cell = row.createCell(8);
+                    cell.setCellValue(map.get("otherQty")==null ? "0" :String.valueOf(map.get("otherQty")));
+                    cell = row.createCell(9);
+                    cell.setCellValue(map.get("ratio")==null ? "0" :String.valueOf(map.get("ratio")));
+                }
+            }
+            String fname = CodeGeneratorUtil.getCode();
+            String rq = format1.format(new Date(new Date().getTime() - 24 * 60 * 60 * 1000));
+            String filePath = url +  File.separator + "report"+ File.separator + "export";
+            File delFiles = new File(filePath);
+            if(delFiles.isDirectory()){
+                for(File del : delFiles.listFiles()){
+                    if(del.getName().contains(rq)){
+                        del.delete();
+                    }
+                }
+            }
+            File export = new File(url +  File.separator + "report"+ File.separator + "export" + File.separator + fname + "OrderRatioTemplate.xlsx");
+            FileOutputStream stream = new FileOutputStream(export);
+            workbook.write(stream);
+            stream.flush();
+            stream.close();
+            outUrl = "/report/export/" + fname + "OrderRatioTemplate.xlsx";
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+        return convertToRespModel(MessageCode.NORMAL,null,outUrl);
+    }
 }

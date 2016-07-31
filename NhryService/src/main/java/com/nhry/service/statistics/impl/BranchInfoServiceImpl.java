@@ -60,8 +60,19 @@ public class BranchInfoServiceImpl implements BranchInfoService {
    public List<Map<String,String>> findReqOrderOutput(BranchInfoModel model){
         return branchInfoMapper.findReqOrderOutput(model);
     }
+
     @Override
     public List<Map<String,String>> branchDayOutput(BranchInfoModel model){
         return branchInfoMapper.branchDayOutput(model);
+    }
+
+    @Override
+    public List<Map<String,String>> findBranchMonthReportOutput(BranchInfoModel model){
+        return branchInfoMapper.findBranchMonthReportOutput(model);
+    }
+
+    @Override
+    public List<Map<String,String>> findOrderRatioOutput(BranchInfoModel model){
+        return branchInfoMapper.findOrderRatioOutput(model);
     }
 }
