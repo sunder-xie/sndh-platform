@@ -53,8 +53,20 @@ public class BranchInfoMapperImpl implements BranchInfoMapper{
     public List<Map<String, String>> findReqOrderOutput(BranchInfoModel model){
         return sqlSessionTemplate.selectList("findReqOrder",model);
     }
+
     @Override
     public List<Map<String, String>> branchDayOutput(BranchInfoModel model){
         return sqlSessionTemplate.selectList("branchDayInfo",model);
     }
+
+    @Override
+    public List<Map<String, String>> findBranchMonthReportOutput(BranchInfoModel model){
+        return sqlSessionTemplate.selectList("findBranchMonthReport",model);
+    }
+
+    @Override
+    public List<Map<String, String>> findOrderRatioOutput(BranchInfoModel model){
+        return sqlSessionTemplate.selectList("findOrderRatio",model);
+    }
+
 }
