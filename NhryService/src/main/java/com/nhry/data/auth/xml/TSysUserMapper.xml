@@ -544,6 +544,7 @@
         u.MOBILE,
         u.CUSTOMIZED_EMPTYPETXT,
         u.DEPARTMENT_NAME,
+        u.BRANCH_NO, u.DEALER_ID, u.SALES_ORG,
         CASE WHEN r.ID IS NULL THEN false ELSE true end isRole,
         (select group_concat(r.ID) from t_sys_user_role r where r.LOGIN_NAME = u.LOGIN_NAME ) as roleIds
         FROM T_SYS_USER u
@@ -576,6 +577,7 @@
         u.MOBILE,
         u.CUSTOMIZED_EMPTYPETXT,
         u.DEPARTMENT_NAME,
+        u.BRANCH_NO, u.DEALER_ID, u.SALES_ORG,
         CASE WHEN r.ID IS NULL THEN false ELSE true end isRole,
         (select group_concat(r.ID) from t_sys_user_role r where r.LOGIN_NAME = u.LOGIN_NAME ) as roleIds
         FROM T_SYS_USER u
@@ -603,6 +605,9 @@
         <result column="roleIds" jdbcType="VARCHAR" property="roleIds"/>
         <result column="CUSTOMIZED_EMPTYPETXT" jdbcType="VARCHAR" property="customizedEmptypetxt"/>
         <result column="DEPARTMENT_NAME" jdbcType="VARCHAR" property="departmentName"/>
+        <result column="BRANCH_NO" jdbcType="VARCHAR" property="branchNo"/>
+        <result column="DEALER_ID" jdbcType="VARCHAR" property="dealerId"/>
+        <result column="SALES_ORG" jdbcType="VARCHAR" property="salesOrg"/>
         <!--<collection property="roleIds" ofType="com.nhry.data.auth.domain.TSysUserRole">-->
             <!--<id property="id" column="ID"/>-->
         <!--</collection>-->
