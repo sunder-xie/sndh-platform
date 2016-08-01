@@ -477,6 +477,7 @@
     where   1=1
     and o.PREORDER_STAT !='30'
     and o.PREORDER_STAT !='40'
+    and i.`STATUS` !='30'
     and e.SALES_ORG = #{salesOrg,jdbcType=VARCHAR}
     and  ((e.PRE_DAYS= 2 and   i.DISP_DATE = #{secondDay,jdbcType=DATE} ) or (e.PRE_DAYS= 1 and   i.DISP_DATE = #{firstDay,jdbcType=DATE}))
     and m.SALES_ORG=#{salesOrg,jdbcType=VARCHAR}
@@ -504,11 +505,14 @@
   <select id="selectProDayPlanOfDealerBranch" resultMap="BaseResultMap" parameterType="com.nhry.model.milktrans.RequireOrderSearch" >
   select i.MATNR,SUM(i.GIFT_QTY) QTY
     from t_mst_order_daliy_plan_item i
+    LEFT JOIN t_preorder o on i.ORDER_NO = o.ORDER_NO
     where   1=1
     AND i.GIFT_QTY is not null
     and o.PREORDER_STAT !='30'
     and o.PREORDER_STAT !='40'
+    <if test="promotion!=NULL and ''!=promotion">
     and i.PROMOTION_FLAG = #{promotion,jdbcType=VARCHAR}
+    </if>
     and  ( i.DISP_DATE = #{secondDay,jdbcType=DATE}  or i.DISP_DATE = #{firstDay,jdbcType=DATE} )
     GROUP BY i.MATNR
     ORDER BY i.DISP_DATE desc
