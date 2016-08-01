@@ -122,7 +122,7 @@ public class ReportResource extends BaseResource{
             cell = row.getCell(1);
             cell.setCellValue("客户姓名："+order.getMilkmemberName());
             cell = row.getCell(3);
-            cell.setCellValue("配送地址："+address.getAddressTxt());
+            cell.setCellValue("配送地址："+address.getResidentialAreaName()+" "+address.getAddressTxt());
             cell = row.getCell(12);
             cell.setCellValue("客户电话："+order.getCustomerTel());
             sheet.setForceFormulaRecalculation(true);
