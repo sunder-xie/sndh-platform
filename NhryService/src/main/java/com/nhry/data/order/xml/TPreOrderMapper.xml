@@ -116,7 +116,7 @@
     select distinct e.reach_time_type ORDER_TYPE, o.EMP_NO, o.BRANCH_NO
 	 from t_mst_plan_order_item e
 	 left join t_preorder o on e.order_no = o.order_no 
-	 where o.SIGN != '20' and o.SIGN != '30' and o.PREORDER_STAT != '20' and PREORDER_STAT != '30'
+	 where  o.SIGN != '30' and o.PREORDER_STAT != '20' and PREORDER_STAT != '30'
 	        and o.BRANCH_NO = #{branchNo,jdbcType=VARCHAR}
   </select>
   <delete id="deleteByPrimaryKey" parameterType="java.lang.String" >
