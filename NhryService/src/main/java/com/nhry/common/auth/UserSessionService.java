@@ -67,6 +67,9 @@ public class UserSessionService {
 	 */
 	private String checkIdmAuth(String accessKey,HttpServletRequest servletRequest){
 		try {
+			if("-1".equals(accessKey)){
+				return MessageCode.SESSION_EXPIRE;
+			}
 			Map attrs = new HashMap(2);
 			attrs.put("access_token", accessKey);
 			String userObject = HttpUtils.request(EnvContant.getSystemConst("auth_profile"), attrs);
