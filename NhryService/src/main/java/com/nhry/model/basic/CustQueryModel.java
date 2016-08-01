@@ -7,6 +7,7 @@ import com.nhry.utils.date.Date;
 public class CustQueryModel extends BaseQueryModel {
 	private String salesOrg;
 	private String station;
+	private String dealerNo;
 	private String stationType;
 	private String status;
 	private String phone;
@@ -60,5 +61,11 @@ public class CustQueryModel extends BaseQueryModel {
 	}
 	public void setStationType(String stationType) {
 		this.stationType = stationType;
+	}
+	public String getDealerNo() {
+		return dealerNo;
+	}
+	public void setDealerNo(String dealerNo) {
+		this.dealerNo = dealerNo;
 	}
 }
