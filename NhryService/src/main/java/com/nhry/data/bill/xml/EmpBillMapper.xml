@@ -430,7 +430,7 @@
         WHERE 1=1
         and i.GIFT_FLAG IS NOT NULL
         and o.STATUS = '20'
-        and (i.REASON ='10' OR i.REASON ='30' OR i.REASON ='20' OR i.REASON IS NULL)
+        and (i.REASON ='40' OR i.REASON ='50')
         <if test="branchNo!=null and ''!=branchNo">
             and o.BRANCH_NO = #{branchNo,jdbcType=VARCHAR}
         </if>

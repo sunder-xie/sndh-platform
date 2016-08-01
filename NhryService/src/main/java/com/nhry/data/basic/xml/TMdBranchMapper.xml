@@ -64,12 +64,8 @@
 				and i.ITEM_CODE = b.COMPANY_CODE
 			) COMPANY_NAME,
 			b.CONTACT,	b.EMP_NO,b.TEL, b.MP, b.DEALER_NO,d.DEALER_NAME, b.ADDRESS,
-           b.PROVINCE, b.CITY, b.COUNTY,
-
-		  (SELECT i.ITEM_NAME from t_sys_code_item i WHERE i.TYPE_CODE=<include refid="mybaties.constant.COUNTRY_CITY_CONSTANT"/> and i.ITEM_CODE = b.PROVINCE ) PROVINCE_NAME,
-		 (SELECT i.ITEM_NAME from t_sys_code_item i WHERE i.TYPE_CODE=<include refid="mybaties.constant.COUNTRY_CITY_CONSTANT"/> and i.ITEM_CODE = b.CITY ) CITY_NAME,
-		 (SELECT i.ITEM_NAME from t_sys_code_item i WHERE i.TYPE_CODE=<include refid="mybaties.constant.COUNTRY_CITY_CONSTANT"/> and i.ITEM_CODE = b.COUNTY ) COUNTY_NAME,
-
+           b.PROVINCE,  b.CITY, b.COUNTY,
+		  (SELECT i.ITEM_NAME from t_sys_code_item i WHERE i.TYPE_CODE=<include refid="mybaties.constant.branch_province"/> and i.ITEM_CODE = b.PROVINCE ) PROVINCE_NAME,
           (SELECT i.ITEM_NAME from t_sys_code_item i WHERE i.TYPE_CODE=<include refid="mybaties.constant.factory"/> and i.ITEM_CODE = b.WERKS) WERKS,
          (SELECT i.ITEM_NAME from t_sys_code_item i WHERE i.TYPE_CODE=<include refid="mybaties.constant.storage_location"/>  and i.ITEM_CODE = b.LGORT) LGORT,
           b.CREATE_AT, b.CREATE_BY, b.CREATE_BY_TXT,b.LAST_MODIFIED, b.LAST_MODIFIED_BY, b.LAST_MODIFIED_BY_TXT

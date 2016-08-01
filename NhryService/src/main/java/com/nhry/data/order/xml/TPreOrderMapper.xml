@@ -714,6 +714,8 @@
     FROM t_preorder o LEFT JOIN t_md_branch_emp e on o.EMP_NO = e.EMP_NO
     LEFT JOIN  t_vip_cust_info c on o.MILKMEMBER_NO = c.VIP_CUST_NO
     where 1=1
+    and o.PREORDER_STAT != "30"
+    and o.PREORDER_STAT != "40"
     <if test="branchNo !=null and branchNo!=''">
       and  o.BRANCH_NO = #{branchNo,jdbcType=VARCHAR}
     </if>
