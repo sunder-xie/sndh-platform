@@ -39,9 +39,7 @@
     where DEALER_NO = #{dealerNo,jdbcType=VARCHAR}
   </delete>
   <select id="findDealersBySalesOrg" resultMap="BaseResultMap" parameterType="String">
-      select 
-    <include refid="Base_Column_List" />
-    from t_md_dealer
+      select DEALER_NO, DEALER_NAME from t_md_dealer
     where SALES_ORG = #{salesOrg,jdbcType=VARCHAR} ORDER BY DEALER_NAME
   </select>
   <insert id="insertDealer" parameterType="com.nhry.data.basic.domain.TMdDealer" >

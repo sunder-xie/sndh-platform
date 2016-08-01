@@ -56,6 +56,8 @@ public class TPreOrder {
 
     private String empName;
 
+    private String empTel;
+
     private String adressNo;
 
     private String createrNo;
@@ -375,6 +377,14 @@ public class TPreOrder {
 
     public void setEmpName(String empName) {
         this.empName = empName;
+    }
+
+    public String getEmpTel() {
+        return empTel;
+    }
+
+    public void setEmpTel(String empTel) {
+        this.empTel = empTel;
     }
 
     public String getCustomerTel() {

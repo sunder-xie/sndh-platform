@@ -17,6 +17,8 @@ import com.nhry.data.basic.dao.TMdBranchEmpMapper;
 import com.nhry.data.basic.domain.TMdAddress;
 import com.nhry.data.basic.domain.TMdBranch;
 import com.nhry.data.basic.domain.TMdBranchEmp;
+import com.nhry.data.basic.domain.TMdBranchScopeKey;
+import com.nhry.data.basic.domain.TMdResidentialArea;
 import com.nhry.data.config.dao.NHSysCodeItemMapper;
 import com.nhry.data.config.domain.NHSysCodeItem;
 import com.nhry.data.order.domain.TPlanOrderItem;
@@ -400,6 +402,71 @@ public class EcServiceImpl extends EcBaseService implements EcService{
 	}
 	
 	@Override
+	public void sendResidentialArea2Ec(TMdResidentialArea area) {
+		// TODO Auto-generated method stub
+		try {
+			JSONArray arr = new JSONArray();
+			JSONObject json = new JSONObject();
+			json.put("businessno", "BUSSSENDTOWNINFO");
+			JSONObject body = new JSONObject();
+			JSONObject ssbi = new JSONObject();
+			ssbi.put("serviceName", "SVCSENDTOWNINFO");
+			JSONArray data = new JSONArray();
+			JSONObject branchJson = new JSONObject();
+			branchJson.put("customerId", "DH");
+			branchJson.put("residential_area_id", area.getId());
+			branchJson.put("sales_org",area.getSalesOrg());
+			branchJson.put("province", area.getProvince());
+			branchJson.put("city",area.getCity());
+			branchJson.put("county",area.getCounty());
+			branchJson.put("street",area.getStreet());
+			branchJson.put("guideboard",area.getGuideboard());
+			branchJson.put("residential_area_txt",area.getResidentialAreaTxt());
+			branchJson.put("residential_num", area.getResidentialNum());
+			branchJson.put("property_txt",area.getPropertyTxt());
+			branchJson.put("property_tel", area.getPropertyTel());
+			branchJson.put("status",area.getStatus());
+			data.put(branchJson);
+			ssbi.put("data", data);
+			body.put("SVCSENDTOWNINFO", ssbi);
+			json.put("body", body);
+			arr.put(json);
+			pushMessage2Ec(EnvContant.getSystemConst("ec_base_url")+EnvContant.getSystemConst("ec_upt_branch"), arr.toString(), true);
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+
+	@Override
+	public void senduptBranchScope2Ec(TMdBranchScopeKey branchScope,String actionFlag) {
+		// TODO Auto-generated method stub
+		try {
+			JSONArray arr = new JSONArray();
+			JSONObject json = new JSONObject();
+			json.put("businessno", "BUSSSENDBRANCHAREA");
+			JSONObject body = new JSONObject();
+			JSONObject ssbi = new JSONObject();
+			ssbi.put("serviceName", "SVCSENDBRANCHAREA");
+			JSONArray data = new JSONArray();
+			JSONObject branchJson = new JSONObject();
+			branchJson.put("customerId", "DH");
+			branchJson.put("residential_area_id",branchScope.getResidentialAreaId());
+			branchJson.put("branch_no",branchScope.getBranchNo());
+			branchJson.put("type", actionFlag);
+			data.put(branchJson);
+			ssbi.put("data", data);
+			body.put("SVCSENDBRANCHAREA", ssbi);
+			json.put("body", body);
+			arr.put(json);
+			pushMessage2Ec(EnvContant.getSystemConst("ec_base_url")+EnvContant.getSystemConst("ec_upt_branch"), arr.toString(), true);
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+
+	@Override
 	public void sendOrderBranch(TPreOrder order)
 	{
 		try {
@@ -410,6 +477,7 @@ public class EcServiceImpl extends EcBaseService implements EcService{
 			JSONObject ssbi = new JSONObject();
 			ssbi.put("serviceName", "SVCSENDORDERBRANCH");
 			JSONArray data = new JSONArray();
+
 			JSONObject orderStatusReJson = new JSONObject();
 			
 			orderStatusReJson.put("customerId", "DH");
@@ -421,6 +489,7 @@ public class EcServiceImpl extends EcBaseService implements EcService{
 			body.put("SVCSENDORDERBRANCH", ssbi);
 			json.put("body", body);
 			arr.put(json);
+
 			System.out.println("----------"+arr.toString());
 			pushMessage2Ec(EnvContant.getSystemConst("ec_base_url")+EnvContant.getSystemConst("ec_upt_branch"), arr.toString(), true);
 		} catch (JSONException e) {

@@ -476,7 +476,9 @@
     LEFT JOIN t_preorder o on 	i.ORDER_NO = o.ORDER_NO
     LEFT JOIN t_md_mara_ex e on i.MATNR = e.MATNR
     where   1=1
-    and i.STATUS!='30'
+    and o.PREORDER_STAT !='30'
+    and o.PREORDER_STAT !='40'
+    and i.`STATUS` !='30'
     and e.SALES_ORG = #{salesOrg,jdbcType=VARCHAR}
     and  ((e.PRE_DAYS= 2 and   i.DISP_DATE = #{secondDay,jdbcType=DATE} ) or (e.PRE_DAYS= 1 and   i.DISP_DATE = #{firstDay,jdbcType=DATE}))
     and m.SALES_ORG=#{salesOrg,jdbcType=VARCHAR}
@@ -493,7 +495,8 @@
     LEFT JOIN t_preorder o on i.ORDER_NO = o.ORDER_NO
     where 1=1
     and i.GIFT_QTY is not NULL
-    and i.STATUS !='30'
+    and o.PREORDER_STAT !='30'
+    and o.PREORDER_STAT !='40'
     and (i.DISP_DATE = #{firstDay,jdbcType=DATE} or  i.DISP_DATE = #{secondDay,jdbcType=DATE})
     and o.BRANCH_NO = #{branchNo,jdbcType=VARCHAR}
     and o.SALES_ORG = #{salesOrg,jdbcType=VARCHAR}
@@ -503,10 +506,14 @@
   <select id="selectProDayPlanOfDealerBranch" resultMap="BaseResultMap" parameterType="com.nhry.model.milktrans.RequireOrderSearch" >
   select i.MATNR,SUM(i.GIFT_QTY) QTY
     from t_mst_order_daliy_plan_item i
+    LEFT JOIN t_preorder o on i.ORDER_NO = o.ORDER_NO
     where   1=1
     AND i.GIFT_QTY is not null
-    and i.STATUS !='30'
+    and o.PREORDER_STAT !='30'
+    and o.PREORDER_STAT !='40'
+    <if test="promotion!=NULL and ''!=promotion">
     and i.PROMOTION_FLAG = #{promotion,jdbcType=VARCHAR}
+    </if>
     and  ( i.DISP_DATE = #{secondDay,jdbcType=DATE}  or i.DISP_DATE = #{firstDay,jdbcType=DATE} )
     GROUP BY i.MATNR
     ORDER BY i.DISP_DATE desc
@@ -522,6 +529,8 @@
               LEFT JOIN t_preorder o on 	i.ORDER_NO = o.ORDER_NO
               LEFT JOIN t_md_mara_ex e on i.MATNR = e.MATNR  and e.SALES_ORG = #{salesOrg,jdbcType=VARCHAR}
               where   1=1
+              and o.PREORDER_STAT !='30'
+              and o.PREORDER_STAT !='40'
               AND i.GIFT_QTY is  null
               and  ((e.PRE_DAYS= 2 and   i.DISP_DATE = #{secondDay,jdbcType=DATE} ) or (e.PRE_DAYS= 1 and   i.DISP_DATE = #{firstDay,jdbcType=DATE}))
               and m.SALES_ORG=#{salesOrg,jdbcType=VARCHAR}
@@ -536,6 +545,7 @@
               FROM t_ssm_req_goods_order_item i
               LEFT JOIN t_ssm_req_goods_order o on i.ORDER_NO = o.ORDER_NO
               where 1=1
+
               and i.ORDER_DATE = #{requiredDate,jdbcType=DATE}
               and o.BRANCH_NO =  #{branchNo,jdbcType=VARCHAR}
 
@@ -564,7 +574,7 @@
     where 1=1
     and i.GIFT_QTY is not NULL
     and i.DISP_DATE = #{requiredDate,jdbcType=DATE}
-    AND  i.STATUS = '20'
+     AND  i.STATUS = '20'
     and o.BRANCH_NO = #{branchNo,jdbcType=VARCHAR}
     and o.SALES_ORG = #{salesOrg,jdbcType=VARCHAR}
     GROUP BY i.PROMOTION_FLAG
@@ -578,7 +588,7 @@
     LEFT JOIN t_md_mara_ex e on di.MATNR = e.MATNR  and e.SALES_ORG = #{salesOrg,jdbcType=VARCHAR}
     where   1=1
     AND di.GIFT_FLAG is NOT null
-    AND di.STATUS = '20'
+    AND ti.STATUS = '20'
     and di.MATNR!=di.CONFIRM_MATNR
     and di.REASON = '10'
     and di.REPLACE_REASON = '10'
@@ -595,7 +605,7 @@ UNION ALL
     LEFT JOIN t_md_mara_ex e on di.MATNR = e.MATNR  and e.SALES_ORG = #{salesOrg,jdbcType=VARCHAR}
     where   1=1
     AND di.GIFT_FLAG is NOT null
-    AND di.STATUS = '20'
+    AND ti.STATUS = '20'
     and di.MATNR = di.CONFIRM_MATNR
     and e.SALES_ORG = #{salesOrg,jdbcType=VARCHAR}
     and i.PROMOTION = #{promotion,jdbcType=VARCHAR}
@@ -611,7 +621,7 @@ UNION ALL
         LEFT JOIN t_preorder o on 	di.ORG_ORDER_NO = o.ORDER_NO
         LEFT JOIN t_mst_disp_order disp on di.ORDER_NO = disp.ORDER_NO
         where   1=1
-       	and di.`STATUS` = '20'
+       	and disp.`STATUS` = '20'
        	and di.MATNR=di.CONFIRM_MATNR
         AND di.GIFT_FLAG is  null
         and   disp.DISP_DATE = #{requiredDate,jdbcType=DATE}
@@ -626,7 +636,7 @@ UNION ALL
         LEFT JOIN t_preorder o on 	di.ORG_ORDER_NO = o.ORDER_NO
         LEFT JOIN t_mst_disp_order disp on di.ORDER_NO = disp.ORDER_NO
         where   1=1
-       	and di.`STATUS` = '20'
+       	and disp.`STATUS` = '20'
        	and di.MATNR!=di.CONFIRM_MATNR
        	and di.REASON = '10'
         and di.REPLACE_REASON = '10'

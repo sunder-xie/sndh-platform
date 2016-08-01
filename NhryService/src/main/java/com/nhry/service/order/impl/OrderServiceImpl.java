@@ -2031,8 +2031,10 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 	public CollectOrderModel queryCollectByOrderNo(String orderCode) {
 		TSysUser user = userSessionService.getCurrentUser();
 		TPreOrder order = tPreOrderMapper.selectByPrimaryKey(orderCode);
+		TMdBranch branch = branchMapper.selectBranchByNo(order.getBranchNo());
 		CollectOrderModel model = new CollectOrderModel();
 		model.setOrder(order);
+		model.setBranch(branch);
 		BigDecimal totalPrices = new BigDecimal(0);
 		List<ProductItem> entries = new ArrayList<ProductItem>();
 		if("20".equals(order.getPaymentmethod())){

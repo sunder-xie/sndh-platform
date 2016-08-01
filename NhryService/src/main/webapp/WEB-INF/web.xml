@@ -57,19 +57,16 @@
 		<url-pattern>/api/docs</url-pattern>
 	</servlet-mapping>
 	<servlet>
-    <description>swagger api</description>
-    <servlet-name>IdmAuthServlet</servlet-name>
-    <servlet-class>com.nhry.servlet.IdmAuthServlet</servlet-class>
-  </servlet>
-  <servlet-mapping>
-    <servlet-name>IdmAuthServlet</servlet-name>
-    <url-pattern>/idm/auth</url-pattern>
-  </servlet-mapping>
+		<servlet-name>IdmAuthServlet</servlet-name>
+		<servlet-class>com.nhry.servlet.IdmAuthServlet</servlet-class>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>IdmAuthServlet</servlet-name>
+		<url-pattern>/idm/auth</url-pattern>
+	</servlet-mapping>
 	<servlet>
 		<servlet-name>CXFServlet</servlet-name>
-		<servlet-class>
-			org.apache.cxf.transport.servlet.CXFServlet
-		</servlet-class>
+		<servlet-class>org.apache.cxf.transport.servlet.CXFServlet</servlet-class>
 		<load-on-startup>1</load-on-startup>
 	</servlet>
 
@@ -94,7 +91,6 @@
 		</init-param>
 		<load-on-startup>2</load-on-startup>
 	</servlet>
-
 	<filter>
 		<filter-name>springUtf8Encoding</filter-name>
 		<filter-class>org.springframework.web.filter.CharacterEncodingFilter</filter-class>

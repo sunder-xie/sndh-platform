@@ -3,6 +3,8 @@ package com.nhry.service.external.dao;
 import java.util.List;
 
 import com.nhry.data.basic.domain.TMdBranch;
+import com.nhry.data.basic.domain.TMdBranchScopeKey;
+import com.nhry.data.basic.domain.TMdResidentialArea;
 import com.nhry.data.order.domain.TPlanOrderItem;
 import com.nhry.data.order.domain.TPreOrder;
 import com.nhry.model.order.OrderSearchModel;
@@ -53,4 +55,17 @@ public interface EcService {
 	 * 订单奶站信息更新
 	 */
 	public void sendOrderBranch(TPreOrder order);
+	
+	/**
+	 * 推送小区信息给电商
+	 * @param area
+	 */
+	public void sendResidentialArea2Ec(TMdResidentialArea area);
+	
+	/**
+	 * 推送奶站与小区更新信息给电商
+	 * @param branchScope
+	 */
+	public void senduptBranchScope2Ec(TMdBranchScopeKey branchScope,String actionFlag);
+	
 }
