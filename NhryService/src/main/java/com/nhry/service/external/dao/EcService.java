@@ -48,4 +48,9 @@ public interface EcService {
 	 * 订单创建推送
 	 */
 	public void sendOrderInfo(TPreOrder order,List<TPlanOrderItem> entries);
+	
+	/**
+	 * 订单奶站信息更新
+	 */
+	public void sendOrderBranch(TPreOrder order);
 }
