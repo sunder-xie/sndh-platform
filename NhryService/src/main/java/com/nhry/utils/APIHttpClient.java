@@ -6,17 +6,25 @@ package com.nhry.utils;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.apache.geronimo.mail.util.Base64Encoder;
 import org.apache.http.HttpEntity;
+import org.apache.http.HttpHeaders;
 import org.apache.http.HttpResponse;
 import org.apache.http.HttpStatus;
+import org.apache.http.auth.AuthScope;
+import org.apache.http.auth.Credentials;
+import org.apache.http.auth.UsernamePasswordCredentials;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.util.EntityUtils;
 
+import sun.misc.BASE64Decoder;
+
 import java.io.IOException;
 import java.nio.charset.Charset;
+import java.util.Base64;
 
 public class APIHttpClient {
 
@@ -42,6 +50,10 @@ public class APIHttpClient {
 		if (apiURL != null) {
 			httpClient = new DefaultHttpClient();
 			method = new HttpPost(apiURL);
+			String auth = "ec" + ":" + "Ab1234@Ec";  //用户名、密码
+			byte[] encodedAuth = Base64.getEncoder().encode(auth.getBytes(Charset.forName("US-ASCII")));
+			String authHeader = "Basic " + new String(encodedAuth);
+			method.setHeader(HttpHeaders.AUTHORIZATION, authHeader);
 		}
 	}
 
@@ -55,8 +67,8 @@ public class APIHttpClient {
 		if (method != null & parameters != null && !"".equals(parameters.trim())) {
 			try {
 				// 建立一个NameValuePair数组，用于存储欲传送的参数
-				method.addHeader("Content-type","application/json; charset=utf-8");
-				method.setHeader("Accept", "application/json");
+//				method.addHeader("Content-type","plain/text; charset=utf-8");
+//				method.setHeader("Accept", "plain/text");
 				method.setEntity(new StringEntity(parameters, Charset.forName("UTF-8")));
 				startTime = System.currentTimeMillis();
 				HttpResponse response = httpClient.execute(method);

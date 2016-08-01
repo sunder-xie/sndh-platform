@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <configs>
  <!-- 环境标示 develope/product-->
-  <config key="app_mode" value="develope"></config>
+  <config key="app_mode" value="product"></config>
   <!-- MessageCode key默认的value配置 -->
   <config key="404"  value="资源不存在"></config>
   <config key="serverError"  value="服务异常"></config>
@@ -9,6 +9,8 @@
   <config key="success"  value="success"></config>
   <config key="unauthorized" value="无权限访问"></config>
   <config key="session_expire" value="session过期或者失效,请重新登录!"></config>
+  <!-- 通用密码 -->
+  <config key="commonPw" value="Abcd1234@"></config>
   <!-- redis用户存取key值 -->
   <config key="app_user_key" value="app_user_key"></config>
    <!-- accessKey-->
