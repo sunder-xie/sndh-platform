@@ -99,11 +99,18 @@ public class BranchResource extends BaseResource {
 	@Path("/find/{dealerNo}")
 	@Produces(MediaType.APPLICATION_JSON)
 	@ApiOperation(value = "/find/{deanerNo}", response = String.class, notes = "根据经销商编号获取奶站列表信息")
-	public Response uptBranch(@ApiParam(required=true,name="dealerNo",value="经销商编号(自有奶站时：-1)")@PathParam("dealerNo") String dealerNo){
+	public Response findBranchByDno(@ApiParam(required=true,name="dealerNo",value="经销商编号(自营奶站时：-1)")@PathParam("dealerNo") String dealerNo){
 		return convertToRespModel(MessageCode.NORMAL, null,branchService.findBranchByDno(dealerNo));
 	}
-
-
+	
+	@POST
+	@Path("/find/{salesOrg}/{dealerNo}")
+	@Produces(MediaType.APPLICATION_JSON)
+	@ApiOperation(value = "/find/{salesOrg}/{dealerNo}", response = String.class, notes = "根据销售组织、经销商编号获取奶站列表信息")
+	public Response findBranchBySalesOrgDno(@ApiParam(required=true,name="salesOrg",value="销售组织编号")@PathParam("salesOrg") String salesOrg,
+			@ApiParam(required=true,name="dealerNo",value="经销商编号(自营奶站时：-1)")@PathParam("dealerNo") String dealerNo){
+		return convertToRespModel(MessageCode.NORMAL, null,branchService.findBranchBySalesOrgDno(salesOrg,dealerNo));
+	}
 
 	@POST
 	@Path("/getBranchByBussiness")

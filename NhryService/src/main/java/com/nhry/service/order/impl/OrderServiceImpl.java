@@ -621,8 +621,11 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 			if(orgFirstDate==null){
 				orgFirstDate = e.getStartDispDate();
 			}else{
-				
+				orgFirstDate = orgFirstDate.before(e.getStartDispDate())?orgFirstDate:e.getStartDispDate();
 			}
+		}
+		for(TPlanOrderItem e :entries){
+			entryDateMap.put(e.getItemNo(), daysOfTwo(orgFirstDate, e.getStartDispDate()));
 		}
 		
 		if(order!= null){
@@ -641,15 +644,18 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 			BigDecimal orderAmt = new BigDecimal("0.00");//订单总价
 			for(TPlanOrderItem entry: entries){
 				entry.setOrderNo(order.getOrderNo());
+				//设置配送开始时间
+				Date startDate = afterDate(sdate,entryDateMap.get(entry.getItemNo()));
+				Date edate = afterDate(startDate,daysOfTwo(entry.getStartDispDate(),entry.getEndDispDate()));
+				entry.setStartDispDate(startDate);
+				entry.setEndDispDate(edate);
+				
 				entry.setItemNo(order.getOrderNo() + String.valueOf(index));//行项目编号
 				entry.setRefItemNo(String.valueOf(index));//参考行项目编号
 				entry.setOrderDate(date);//订单日期
 				entry.setCreateAt(date);//创建日期
 				entry.setCreateBy(userSessionService.getCurrentUser().getLoginName());//创建人
 				entry.setCreateByTxt(userSessionService.getCurrentUser().getDisplayName());//创建人姓名
-				Date edate = afterDate(sdate,daysOfTwo(entry.getStartDispDate(),entry.getEndDispDate()));
-				entry.setStartDispDate(sdate);
-				entry.setEndDispDate(edate);
 				BigDecimal entryTotal = calculateEntryAmount(entry);
 				
 				entry.setPromotion("");
@@ -1359,9 +1365,14 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 		if(order == null){
 			throw new ServiceException(MessageCode.LOGIC_ERROR,"该订单号不存在!");
 		}
-		if(record.getMilkmemberNo()!=null){
-			//更改订户
-			tPreOrderMapper.updateOrderStatus(record);
+//		if(record.getMilkmemberNo()!=null){
+//			//更改订户
+//			tPreOrderMapper.updateOrderStatus(record);
+//			return 1;
+//		}
+		if(StringUtils.isNotBlank(record.getEmpNo())){
+			//更改送奶工
+			tPreOrderMapper.updateOrderEmpNo(record);
 			return 1;
 		}
 		if(StringUtils.isBlank(record.getPaymentStat()) && StringUtils.isBlank(record.getMilkboxStat())
@@ -1370,6 +1381,7 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 		}
 		if("10".equals(record.getPreorderStat())){
 			if(StringUtils.isBlank(order.getMilkmemberNo()))throw new ServiceException(MessageCode.LOGIC_ERROR,"该订单没有订户，请选择订户或新建订户!");
+			if(StringUtils.isBlank(order.getEmpNo()))throw new ServiceException(MessageCode.LOGIC_ERROR,"该订单没有送奶员，请选择送奶员!");
 			//订户状态更改
 			tPreOrderMapper.updateOrderStatus(record);
 			tVipCustInfoService.discontinue(record.getMilkmemberNo(), "10",new com.nhry.utils.date.Date(),new com.nhry.utils.date.Date());
@@ -2185,7 +2197,7 @@ public class OrderServiceImpl extends BaseService implements OrderService {
    		if(needNewDaliyPlans.containsKey(plan.getItemNo())){
    			//修改，需要的数量，从最后一个日期往前拿(从后往前扣商品数量)
    			if(needNewDaliyPlans.get(plan.getItemNo()) < 0){
-   				   if(plan.getGiftQty()!=null)continue;//跳过促销产品
+//   				   if(plan.getGiftQty()!=null)continue;//跳过促销产品
       				if(plan.getQty() > 0 && (plan.getQty() + needNewDaliyPlans.get(plan.getItemNo()) >= 0) ){
       					plan.setQty(plan.getQty() + needNewDaliyPlans.get(plan.getItemNo()));
       					needNewDaliyPlans.replace(plan.getItemNo(), 0);

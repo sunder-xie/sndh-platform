@@ -12,6 +12,8 @@ import scala.reflect.internal.Trees;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.List;
+import java.util.Map;
 
 /**
  * Created by cbz on 7/18/2016.
@@ -53,5 +55,24 @@ public class BranchInfoServiceImpl implements BranchInfoService {
     @Override
     public PageInfo findReqOrder(BranchInfoModel model) {
         return branchInfoMapper.findReqOrder(model);
+    }
+    @Override
+   public List<Map<String,String>> findReqOrderOutput(BranchInfoModel model){
+        return branchInfoMapper.findReqOrderOutput(model);
+    }
+
+    @Override
+    public List<Map<String,String>> branchDayOutput(BranchInfoModel model){
+        return branchInfoMapper.branchDayOutput(model);
+    }
+
+    @Override
+    public List<Map<String,String>> findBranchMonthReportOutput(BranchInfoModel model){
+        return branchInfoMapper.findBranchMonthReportOutput(model);
+    }
+
+    @Override
+    public List<Map<String,String>> findOrderRatioOutput(BranchInfoModel model){
+        return branchInfoMapper.findOrderRatioOutput(model);
     }
 }

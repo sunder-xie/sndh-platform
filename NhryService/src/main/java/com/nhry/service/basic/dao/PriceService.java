@@ -97,11 +97,18 @@ public interface PriceService {
     public float getMaraPrice(String branchNo,String matnr,String deliveryType);
     
     /**
-     * 根据销售组织获取该公司下面的经销商列表
+     * 根据当前销售组织获取该公司下面的经销商列表
      * @param salesOrg
      * @return
      */
     public List<TMdDealer> getDealers();
+    
+    /**
+     * 根据销售组织获取该公司下面的经销商列表
+     * @param salesOrg
+     * @return
+     */
+    public List<TMdDealer> getDealers(String salesOrg);
     
     /**
      * 根据奶站编号获取选择

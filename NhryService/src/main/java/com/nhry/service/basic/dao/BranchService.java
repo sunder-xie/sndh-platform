@@ -32,6 +32,13 @@ public interface BranchService {
      * @return
      */
     List<TMdBranch> findBranchByDno(String dealerNo);
+    
+    /**
+     * 根据销售组织、经销商编号查询对应的奶站
+     * @param dealerNo
+     * @return
+     */
+    List<TMdBranch> findBranchBySalesOrgDno(String salesOrg,String dealerNo);
 
     TMdBranch getCustBranchInfo();
 }
