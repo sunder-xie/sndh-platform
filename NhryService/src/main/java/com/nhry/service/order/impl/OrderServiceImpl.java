@@ -1899,6 +1899,7 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 	public CollectOrderModel queryCollectByOrderNo(String orderCode) {
 		TSysUser user = userSessionService.getCurrentUser();
 		TPreOrder order = tPreOrderMapper.selectByPrimaryKey(orderCode);
+		TMdBranch branch = branchMapper.selectBranchByNo(order.getBranchNo());
 		CollectOrderModel model = new CollectOrderModel();
 		model.setOrder(order);
 		BigDecimal totalPrices = new BigDecimal(0);
