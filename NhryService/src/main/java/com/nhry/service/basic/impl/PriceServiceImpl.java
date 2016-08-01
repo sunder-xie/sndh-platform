@@ -340,7 +340,7 @@ public class PriceServiceImpl extends BaseService implements PriceService {
 			TMdDealer dealer = new TMdDealer();
 			dealer.setDealerNo("-1");
 			dealer.setDealerName("自营奶站");
-			list.add(dealer);
+			list.add(0,dealer);
 		}
 		return list;
 	}
