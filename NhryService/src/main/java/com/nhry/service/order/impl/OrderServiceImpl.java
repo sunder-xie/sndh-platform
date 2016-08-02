@@ -265,22 +265,23 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 				tPlanOrderItemMapper.updateEntryByItemNo(entry);
 			}
 			
-			tPreOrderMapper.uptManHandOrder(uptManHandModel);
 			
-			//当是电商的订单时，更新EC对应订单的奶站
-			if("10".equals(order.getPreorderSource())){
-				order.setBranchNo(uptManHandModel.getBranchNo());
-				//发送EC
-				taskExecutor.execute(new Thread(){
-					@Override
-					public void run() {
-						super.run();
-						this.setName("updateOrderBranchNo");
-						messLogService.sendOrderBranch(order);
-					}
-				});
-			}
-			
+		}
+		
+		tPreOrderMapper.uptManHandOrder(uptManHandModel);
+		
+		//当是电商的订单时，更新EC对应订单的奶站
+		if("10".equals(order.getPreorderSource())){
+			order.setBranchNo(uptManHandModel.getBranchNo());
+			//发送EC
+			taskExecutor.execute(new Thread(){
+				@Override
+				public void run() {
+					super.run();
+					this.setName("updateOrderBranchNo");
+					messLogService.sendOrderBranch(order);
+				}
+			});
 		}
 		
 		return 1;
@@ -1521,7 +1522,7 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 			if(StringUtils.isBlank(order.getEmpNo()))throw new ServiceException(MessageCode.LOGIC_ERROR,"该订单没有送奶员，请选择送奶员!");
 			//订户状态更改
 			tPreOrderMapper.updateOrderStatus(record);
-			tVipCustInfoService.discontinue(record.getMilkmemberNo(), "10",new com.nhry.utils.date.Date(),new com.nhry.utils.date.Date());
+			tVipCustInfoService.discontinue(order.getMilkmemberNo(), "10",new com.nhry.utils.date.Date(),new com.nhry.utils.date.Date());
 			
 			//电商或者摆台的订单确认后，走线下逻辑,生成装箱工单
 			ArrayList<TPlanOrderItem> orgEntries = (ArrayList<TPlanOrderItem>) tPlanOrderItemMapper.selectByOrderCode(order.getOrderNo());
