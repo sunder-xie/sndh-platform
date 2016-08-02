@@ -1,50 +1,87 @@
 /**
- * ZZFLD0000BD_type1.java
+ * T_ADDR_type0.java
  *
  * This file was auto-generated from WSDL
  * by the Apache Axis2 version: 1.7.3  Built on : May 30, 2016 (04:09:26 BST)
  */
-package com.nhry.webService.client.VipInfoData.functions;
+package com.nhry.webService.client.Address.functions;
 
 
 /**
- *  ZZFLD0000BD_type1 bean class
+ *  T_ADDR_type0 bean class
  */
 @SuppressWarnings({"unchecked",
     "unused"
 })
-public class ZZFLD0000BD_type1 implements org.apache.axis2.databinding.ADBBean {
-    public static final javax.xml.namespace.QName MY_QNAME = new javax.xml.namespace.QName("urn:sap-com:document:sap:rfc:functions",
-            "ZZFLD0000BD_type1", "ns1");
+public class T_ADDR_type0 implements org.apache.axis2.databinding.ADBBean {
+    /* This type was generated from the piece of schema that had
+       name = T_ADDR_type0
+       Namespace URI = urn:sap-com:document:sap:rfc:functions
+       Namespace Prefix = ns1
+     */
 
     /**
-     * field for ZZFLD0000BD_type0
+     * field for Item
+     * This was an Array!
      */
-    protected java.lang.String localZZFLD0000BD_type0;
+    protected com.nhry.webService.client.Address.functions.ZSCRM_ADDR_SHIP_TO[] localItem;
+
+    /*  This tracker boolean wil be used to detect whether the user called the set method
+     *   for this attribute. It will be used to determine whether to include this field
+     *   in the serialized XML
+     */
+    protected boolean localItemTracker = false;
+
+    public boolean isItemSpecified() {
+        return localItemTracker;
+    }
 
     /**
      * Auto generated getter method
-     * @return java.lang.String
+     * @return com.nhry.webService.client.Address.functions.ZSCRM_ADDR_SHIP_TO[]
      */
-    public java.lang.String getZZFLD0000BD_type0() {
-        return localZZFLD0000BD_type0;
+    public com.nhry.webService.client.Address.functions.ZSCRM_ADDR_SHIP_TO[] getItem() {
+        return localItem;
+    }
+
+    /**
+     * validate the array for Item
+     */
+    protected void validateItem(
+        com.nhry.webService.client.Address.functions.ZSCRM_ADDR_SHIP_TO[] param) {
     }
 
     /**
      * Auto generated setter method
-     * @param param ZZFLD0000BD_type0
+     * @param param Item
      */
-    public void setZZFLD0000BD_type0(java.lang.String param) {
-        if ((java.lang.String.valueOf(param).length() <= 10)) {
-            this.localZZFLD0000BD_type0 = param;
-        } else {
-            throw new java.lang.RuntimeException(
-                "Input values do not follow defined XSD restrictions");
-        }
+    public void setItem(
+        com.nhry.webService.client.Address.functions.ZSCRM_ADDR_SHIP_TO[] param) {
+        validateItem(param);
+
+        localItemTracker = param != null;
+
+        this.localItem = param;
     }
 
-    public java.lang.String toString() {
-        return localZZFLD0000BD_type0.toString();
+    /**
+     * Auto generated add method for the array for convenience
+     * @param param com.nhry.webService.client.Address.functions.ZSCRM_ADDR_SHIP_TO
+     */
+    public void addItem(
+        com.nhry.webService.client.Address.functions.ZSCRM_ADDR_SHIP_TO param) {
+        if (localItem == null) {
+            localItem = new com.nhry.webService.client.Address.functions.ZSCRM_ADDR_SHIP_TO[] {
+                    
+                };
+        }
+
+        //update the setting tracker
+        localItemTracker = true;
+
+        java.util.List list = org.apache.axis2.databinding.utils.ConverterUtil.toList(localItem);
+        list.add(param);
+        this.localItem = (com.nhry.webService.client.Address.functions.ZSCRM_ADDR_SHIP_TO[]) list.toArray(new com.nhry.webService.client.Address.functions.ZSCRM_ADDR_SHIP_TO[list.size()]);
     }
 
     /**
@@ -58,7 +95,7 @@ public class ZZFLD0000BD_type1 implements org.apache.axis2.databinding.ADBBean {
         final org.apache.axiom.om.OMFactory factory)
         throws org.apache.axis2.databinding.ADBException {
         return factory.createOMElement(new org.apache.axis2.databinding.ADBDataSource(
-                this, MY_QNAME));
+                this, parentQName));
     }
 
     public void serialize(final javax.xml.namespace.QName parentQName,
@@ -72,40 +109,50 @@ public class ZZFLD0000BD_type1 implements org.apache.axis2.databinding.ADBBean {
         javax.xml.stream.XMLStreamWriter xmlWriter, boolean serializeType)
         throws javax.xml.stream.XMLStreamException,
             org.apache.axis2.databinding.ADBException {
-        //We can safely assume an element has only one type associated with it
-        java.lang.String namespace = parentQName.getNamespaceURI();
-        java.lang.String _localName = parentQName.getLocalPart();
+        String prefix = null;
+        String namespace = null;
 
-        writeStartElement(null, namespace, _localName, xmlWriter);
+        prefix = parentQName.getPrefix();
+        namespace = parentQName.getNamespaceURI();
+        writeStartElement(prefix, namespace, parentQName.getLocalPart(),
+            xmlWriter);
 
-        // add the type details if this is used in a simple type
         if (serializeType) {
-            java.lang.String namespacePrefix = registerPrefix(xmlWriter,
+            String namespacePrefix = registerPrefix(xmlWriter,
                     "urn:sap-com:document:sap:rfc:functions");
 
             if ((namespacePrefix != null) &&
                     (namespacePrefix.trim().length() > 0)) {
                 writeAttribute("xsi",
                     "http://www.w3.org/2001/XMLSchema-instance", "type",
-                    namespacePrefix + ":ZZFLD0000BD_type1", xmlWriter);
+                    namespacePrefix + ":T_ADDR_type0", xmlWriter);
             } else {
                 writeAttribute("xsi",
                     "http://www.w3.org/2001/XMLSchema-instance", "type",
-                    "ZZFLD0000BD_type1", xmlWriter);
+                    "T_ADDR_type0", xmlWriter);
             }
         }
 
-        if (localZZFLD0000BD_type0 == null) {
-            throw new org.apache.axis2.databinding.ADBException(
-                "ZZFLD0000BD_type0 cannot be null !!");
-        } else {
-            xmlWriter.writeCharacters(localZZFLD0000BD_type0);
+        if (localItemTracker) {
+            if (localItem != null) {
+                for (int i = 0; i < localItem.length; i++) {
+                    if (localItem[i] != null) {
+                        localItem[i].serialize(new javax.xml.namespace.QName(
+                                "", "item"), xmlWriter);
+                    } else {
+                        // we don't have to do any thing since minOccures is zero
+                    }
+                }
+            } else {
+                throw new org.apache.axis2.databinding.ADBException(
+                    "item cannot be null!!");
+            }
         }
 
         xmlWriter.writeEndElement();
     }
 
-    private static java.lang.String generatePrefix(java.lang.String namespace) {
+    private static String generatePrefix(String namespace) {
         if (namespace.equals("urn:sap-com:document:sap:rfc:functions")) {
             return "ns1";
         }
@@ -116,11 +163,11 @@ public class ZZFLD0000BD_type1 implements org.apache.axis2.databinding.ADBBean {
     /**
      * Utility method to write an element start tag.
      */
-    private void writeStartElement(java.lang.String prefix,
-        java.lang.String namespace, java.lang.String localPart,
+    private void writeStartElement(String prefix,
+        String namespace, String localPart,
         javax.xml.stream.XMLStreamWriter xmlWriter)
         throws javax.xml.stream.XMLStreamException {
-        java.lang.String writerPrefix = xmlWriter.getPrefix(namespace);
+        String writerPrefix = xmlWriter.getPrefix(namespace);
 
         if (writerPrefix != null) {
             xmlWriter.writeStartElement(writerPrefix, localPart, namespace);
@@ -140,11 +187,11 @@ public class ZZFLD0000BD_type1 implements org.apache.axis2.databinding.ADBBean {
     /**
      * Util method to write an attribute with the ns prefix
      */
-    private void writeAttribute(java.lang.String prefix,
-        java.lang.String namespace, java.lang.String attName,
-        java.lang.String attValue, javax.xml.stream.XMLStreamWriter xmlWriter)
+    private void writeAttribute(String prefix,
+        String namespace, String attName,
+        String attValue, javax.xml.stream.XMLStreamWriter xmlWriter)
         throws javax.xml.stream.XMLStreamException {
-        java.lang.String writerPrefix = xmlWriter.getPrefix(namespace);
+        String writerPrefix = xmlWriter.getPrefix(namespace);
 
         if (writerPrefix != null) {
             xmlWriter.writeAttribute(writerPrefix, namespace, attName, attValue);
@@ -158,8 +205,8 @@ public class ZZFLD0000BD_type1 implements org.apache.axis2.databinding.ADBBean {
     /**
      * Util method to write an attribute without the ns prefix
      */
-    private void writeAttribute(java.lang.String namespace,
-        java.lang.String attName, java.lang.String attValue,
+    private void writeAttribute(String namespace,
+        String attName, String attValue,
         javax.xml.stream.XMLStreamWriter xmlWriter)
         throws javax.xml.stream.XMLStreamException {
         if (namespace.equals("")) {
@@ -173,18 +220,18 @@ public class ZZFLD0000BD_type1 implements org.apache.axis2.databinding.ADBBean {
     /**
      * Util method to write an attribute without the ns prefix
      */
-    private void writeQNameAttribute(java.lang.String namespace,
-        java.lang.String attName, javax.xml.namespace.QName qname,
+    private void writeQNameAttribute(String namespace,
+        String attName, javax.xml.namespace.QName qname,
         javax.xml.stream.XMLStreamWriter xmlWriter)
         throws javax.xml.stream.XMLStreamException {
-        java.lang.String attributeNamespace = qname.getNamespaceURI();
-        java.lang.String attributePrefix = xmlWriter.getPrefix(attributeNamespace);
+        String attributeNamespace = qname.getNamespaceURI();
+        String attributePrefix = xmlWriter.getPrefix(attributeNamespace);
 
         if (attributePrefix == null) {
             attributePrefix = registerPrefix(xmlWriter, attributeNamespace);
         }
 
-        java.lang.String attributeValue;
+        String attributeValue;
 
         if (attributePrefix.trim().length() > 0) {
             attributeValue = attributePrefix + ":" + qname.getLocalPart();
@@ -207,10 +254,10 @@ public class ZZFLD0000BD_type1 implements org.apache.axis2.databinding.ADBBean {
     private void writeQName(javax.xml.namespace.QName qname,
         javax.xml.stream.XMLStreamWriter xmlWriter)
         throws javax.xml.stream.XMLStreamException {
-        java.lang.String namespaceURI = qname.getNamespaceURI();
+        String namespaceURI = qname.getNamespaceURI();
 
         if (namespaceURI != null) {
-            java.lang.String prefix = xmlWriter.getPrefix(namespaceURI);
+            String prefix = xmlWriter.getPrefix(namespaceURI);
 
             if (prefix == null) {
                 prefix = generatePrefix(namespaceURI);
@@ -239,9 +286,9 @@ public class ZZFLD0000BD_type1 implements org.apache.axis2.databinding.ADBBean {
         if (qnames != null) {
             // we have to store this data until last moment since it is not possible to write any
             // namespace data after writing the charactor data
-            java.lang.StringBuffer stringToWrite = new java.lang.StringBuffer();
-            java.lang.String namespaceURI = null;
-            java.lang.String prefix = null;
+            StringBuffer stringToWrite = new StringBuffer();
+            String namespaceURI = null;
+            String prefix = null;
 
             for (int i = 0; i < qnames.length; i++) {
                 if (i > 0) {
@@ -280,10 +327,10 @@ public class ZZFLD0000BD_type1 implements org.apache.axis2.databinding.ADBBean {
     /**
      * Register a namespace prefix
      */
-    private java.lang.String registerPrefix(
-        javax.xml.stream.XMLStreamWriter xmlWriter, java.lang.String namespace)
+    private String registerPrefix(
+        javax.xml.stream.XMLStreamWriter xmlWriter, String namespace)
         throws javax.xml.stream.XMLStreamException {
-        java.lang.String prefix = xmlWriter.getPrefix(namespace);
+        String prefix = xmlWriter.getPrefix(namespace);
 
         if (prefix == null) {
             prefix = generatePrefix(namespace);
@@ -291,7 +338,7 @@ public class ZZFLD0000BD_type1 implements org.apache.axis2.databinding.ADBBean {
             javax.xml.namespace.NamespaceContext nsContext = xmlWriter.getNamespaceContext();
 
             while (true) {
-                java.lang.String uri = nsContext.getNamespaceURI(prefix);
+                String uri = nsContext.getNamespaceURI(prefix);
 
                 if ((uri == null) || (uri.length() == 0)) {
                     break;
@@ -313,32 +360,6 @@ public class ZZFLD0000BD_type1 implements org.apache.axis2.databinding.ADBBean {
     public static class Factory {
         private static org.apache.commons.logging.Log log = org.apache.commons.logging.LogFactory.getLog(Factory.class);
 
-        public static ZZFLD0000BD_type1 fromString(java.lang.String value,
-            java.lang.String namespaceURI) {
-            ZZFLD0000BD_type1 returnValue = new ZZFLD0000BD_type1();
-
-            returnValue.setZZFLD0000BD_type0(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(
-                    value));
-
-            return returnValue;
-        }
-
-        public static ZZFLD0000BD_type1 fromString(
-            javax.xml.stream.XMLStreamReader xmlStreamReader,
-            java.lang.String content) {
-            if (content.indexOf(":") > -1) {
-                java.lang.String prefix = content.substring(0,
-                        content.indexOf(":"));
-                java.lang.String namespaceUri = xmlStreamReader.getNamespaceContext()
-                                                               .getNamespaceURI(prefix);
-
-                return ZZFLD0000BD_type1.Factory.fromString(content,
-                    namespaceUri);
-            } else {
-                return ZZFLD0000BD_type1.Factory.fromString(content, "");
-            }
-        }
-
         /**
          * static method to create the object
          * Precondition:  If this object is an element, the current or next start element starts this object and any intervening reader events are ignorable
@@ -346,15 +367,15 @@ public class ZZFLD0000BD_type1 implements org.apache.axis2.databinding.ADBBean {
          * Postcondition: If this object is an element, the reader is positioned at its end element
          *                If this object is a complex type, the reader is positioned at the end element of its outer element
          */
-        public static ZZFLD0000BD_type1 parse(
-            javax.xml.stream.XMLStreamReader reader) throws java.lang.Exception {
-            ZZFLD0000BD_type1 object = new ZZFLD0000BD_type1();
+        public static T_ADDR_type0 parse(
+            javax.xml.stream.XMLStreamReader reader) throws Exception {
+            T_ADDR_type0 object = new T_ADDR_type0();
 
             int event;
             javax.xml.namespace.QName currentQName = null;
-            java.lang.String nillableValue = null;
-            java.lang.String prefix = "";
-            java.lang.String namespaceuri = "";
+            String nillableValue = null;
+            String prefix = "";
+            String namespaceuri = "";
 
             try {
                 while (!reader.isStartElement() && !reader.isEndElement())
@@ -362,40 +383,104 @@ public class ZZFLD0000BD_type1 implements org.apache.axis2.databinding.ADBBean {
 
                 currentQName = reader.getName();
 
+                if (reader.getAttributeValue(
+                            "http://www.w3.org/2001/XMLSchema-instance", "type") != null) {
+                    String fullTypeName = reader.getAttributeValue("http://www.w3.org/2001/XMLSchema-instance",
+                            "type");
+
+                    if (fullTypeName != null) {
+                        String nsPrefix = null;
+
+                        if (fullTypeName.indexOf(":") > -1) {
+                            nsPrefix = fullTypeName.substring(0,
+                                    fullTypeName.indexOf(":"));
+                        }
+
+                        nsPrefix = (nsPrefix == null) ? "" : nsPrefix;
+
+                        String type = fullTypeName.substring(fullTypeName.indexOf(
+                                    ":") + 1);
+
+                        if (!"T_ADDR_type0".equals(type)) {
+                            //find namespace for the prefix
+                            String nsUri = reader.getNamespaceContext()
+                                                           .getNamespaceURI(nsPrefix);
+
+                            return (T_ADDR_type0) com.nhry.webService.client.Address.functions.ExtensionMapper.getTypeObject(nsUri,
+                                type, reader);
+                        }
+                    }
+                }
+
                 // Note all attributes that were handled. Used to differ normal attributes
                 // from anyAttributes.
                 java.util.Vector handledAttributes = new java.util.Vector();
 
-                while (!reader.isEndElement()) {
-                    if (reader.isStartElement() || reader.hasText()) {
-                        if (reader.isStartElement() || reader.hasText()) {
-                            nillableValue = reader.getAttributeValue("http://www.w3.org/2001/XMLSchema-instance",
-                                    "nil");
+                reader.next();
 
-                            if ("true".equals(nillableValue) ||
-                                    "1".equals(nillableValue)) {
-                                throw new org.apache.axis2.databinding.ADBException(
-                                    "The element: " + "ZZFLD0000BD_type0" +
-                                    "  cannot be null");
-                            }
+                java.util.ArrayList list1 = new java.util.ArrayList();
 
-                            java.lang.String content = reader.getElementText();
+                while (!reader.isStartElement() && !reader.isEndElement())
+                    reader.next();
 
-                            object.setZZFLD0000BD_type0(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(
-                                    content));
-                        } // End of if for expected property start element
+                if ((reader.isStartElement() &&
+                        new javax.xml.namespace.QName("", "item").equals(
+                            reader.getName())) ||
+                        new javax.xml.namespace.QName("", "item").equals(
+                            reader.getName())) {
+                    // Process the array and step past its final element's end.
+                    list1.add(com.nhry.webService.client.Address.functions.ZSCRM_ADDR_SHIP_TO.Factory.parse(
+                            reader));
 
-                        else {
-                            // 3 - A start element we are not expecting indicates an invalid parameter was passed
-                            throw new org.apache.axis2.databinding.ADBException(
-                                "Unexpected subelement " + reader.getName());
-                        }
-                    } else {
+                    //loop until we find a start element that is not part of this array
+                    boolean loopDone1 = false;
+
+                    while (!loopDone1) {
+                        // We should be at the end element, but make sure
+                        while (!reader.isEndElement())
+                            reader.next();
+
+                        // Step out of this element
                         reader.next();
+
+                        // Step to next element event.
+                        while (!reader.isStartElement() &&
+                                !reader.isEndElement())
+                            reader.next();
+
+                        if (reader.isEndElement()) {
+                            //two continuous end elements means we are exiting the xml structure
+                            loopDone1 = true;
+                        } else {
+                            if (new javax.xml.namespace.QName("", "item").equals(
+                                        reader.getName())) {
+                                list1.add(com.nhry.webService.client.Address.functions.ZSCRM_ADDR_SHIP_TO.Factory.parse(
+                                        reader));
+                            } else {
+                                loopDone1 = true;
+                            }
+                        }
                     }
-                } // end of while loop
+
+                    // call the converter utility  to convert and set the array
+                    object.setItem((com.nhry.webService.client.Address.functions.ZSCRM_ADDR_SHIP_TO[]) org.apache.axis2.databinding.utils.ConverterUtil.convertToArray(
+                            com.nhry.webService.client.Address.functions.ZSCRM_ADDR_SHIP_TO.class,
+                            list1));
+                } // End of if for expected property start element
+
+                else {
+                }
+
+                while (!reader.isStartElement() && !reader.isEndElement())
+                    reader.next();
+
+                if (reader.isStartElement()) {
+                    // 2 - A start element we are not expecting indicates a trailing invalid property
+                    throw new org.apache.axis2.databinding.ADBException(
+                        "Unexpected subelement " + reader.getName());
+                }
             } catch (javax.xml.stream.XMLStreamException e) {
-                throw new java.lang.Exception(e);
+                throw new Exception(e);
             }
 
             return object;
