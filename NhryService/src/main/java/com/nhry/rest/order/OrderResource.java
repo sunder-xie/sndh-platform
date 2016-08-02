@@ -62,7 +62,15 @@ public class OrderResource extends BaseResource {
 	public Response selectStopOrderNum(){
 		return convertToRespModel(MessageCode.NORMAL, null, orderService.selectStopOrderNum());
 	}
-
+	
+	@POST
+	@Path("/searchNeedResumeOrders")
+	@Produces(MediaType.APPLICATION_JSON)
+	@Consumes(MediaType.APPLICATION_JSON)
+	@ApiOperation(value = "/searchNeedResumeOrders", response = PageInfo.class, notes = "查询需要续订的订单信息列表")
+	public Response searchNeedResumeOrders(@ApiParam(required=true,name="smodel",value="SearchModel") OrderSearchModel smodel){
+		return convertToRespModel(MessageCode.NORMAL, null, orderService.searchNeedResumeOrders(smodel));
+	}
 
 	@GET
 	@Path("/queryCollectByOrderNo")

@@ -31,6 +31,24 @@
 			<value>matWHWHandler</value>
 		</property>
 	</bean>
+	<bean id="scheduledJobDetail4"
+		  class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean" >
+		<property name="targetObject">
+			<ref  bean="ecBaseService"/>
+		</property>
+		<property name="targetMethod">
+			<value>resendMessage2Ec</value>
+		</property>
+	</bean>
+	<bean id="scheduledJobDetail5"
+		  class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean" >
+		<property name="targetObject">
+			<ref  bean="ladpService"/>
+		</property>
+		<property name="targetMethod">
+			<value>syncSysUsers</value>
+		</property>
+	</bean>
 	 <!-- 调度的配置开始 -->
     <bean id="crontestJobTrigger1" class="org.springframework.scheduling.quartz.CronTriggerBean">
         <property name="jobDetail">
@@ -56,6 +74,22 @@
 			<value>0 55 15 * * ?</value>
 		</property>
 	</bean>
+	<bean id="crontestJobTrigger4" class="org.springframework.scheduling.quartz.CronTriggerBean">
+		<property name="jobDetail">
+			<ref bean="scheduledJobDetail4" />
+		</property>
+		<property name="cronExpression">
+			<value>0 15 * * * ?</value>
+		</property>
+	</bean>
+	<bean id="crontestJobTrigger5" class="org.springframework.scheduling.quartz.CronTriggerBean">
+		<property name="jobDetail">
+			<ref bean="scheduledJobDetail5" />
+		</property>
+		<property name="cronExpression">
+			<value>0 25 * * * ?</value>
+		</property>
+	</bean>
     <!-- 调度的配置结束 -->
 
     <!-- 启动触发器的配置开始 -->
@@ -65,6 +99,8 @@
                 <ref bean="crontestJobTrigger1" />
 				<ref bean="crontestJobTrigger2" />
 				<!--<ref bean="crontestJobTrigger3" />-->
+				<ref bean="crontestJobTrigger4"/>
+				<ref bean="crontestJobTrigger5"/>
             </list>
         </property>
     </bean>

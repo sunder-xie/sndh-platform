@@ -36,7 +36,7 @@ public class UserSessionService {
 	static{
 		authsMap = new HashMap<String,String>();
 		authsMap.put("ec", "Ab1234@Ec");
-		authsMap.put("nt", "Ac1234@Nt");
+		authsMap.put("cisco", "cisco@abc");
 		authsMap.put("app", "Ad1234@App");
 	}
 	
