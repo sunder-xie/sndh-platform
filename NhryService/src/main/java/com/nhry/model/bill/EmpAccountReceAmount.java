@@ -19,6 +19,16 @@ public class EmpAccountReceAmount {
     private String paymentType;        //付款类型
     private String paymentDate;        //收款日期
     private String branchName;         //奶站名称
+    private String paymentmethod;
+
+    public String getPaymentmethod() {
+        return paymentmethod;
+    }
+
+    public void setPaymentmethod(String paymentmethod) {
+        this.paymentmethod = paymentmethod;
+    }
+
 
     public String getReceiptNo() {
         return receiptNo;

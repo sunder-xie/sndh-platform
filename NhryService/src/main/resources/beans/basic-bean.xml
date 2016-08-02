@@ -210,6 +210,7 @@
 		<property name="sqlSessionTemplate" ref="dynamicSqlSessionTemplate" />
 	</bean>
 	<bean id="dealerService" class="com.nhry.service.basic.impl.DealerServiceImpl">
+		<property name="urMapper" ref="urMapper"></property>
 		<property name="dealerMapper" ref="dealerMapper"></property>
 		<property name="userSessionService" ref="userSessionService"></property>
 	</bean>

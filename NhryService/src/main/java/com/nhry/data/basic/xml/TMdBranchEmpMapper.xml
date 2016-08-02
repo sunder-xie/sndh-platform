@@ -227,7 +227,7 @@
 
   <select id="getAllBranchEmpByNo" parameterType="com.nhry.model.basic.BranchEmpSearchModel" resultMap="BaseResultMap">
     select
-    e.EMP_NO,e.EMP_NAME,u.ID ROLE_ID,r.ROLE_NAME
+    e.EMP_NO,e.EMP_NAME
     from T_MD_BRANCH_EMP e LEFT JOIN t_sys_user_role u on e.EMP_NO = u.LOGIN_NAME
     LEFT  JOIN  t_sys_role r on u.ID = r.ID
     where 1=1
@@ -241,5 +241,6 @@
     <if test="dealerNo != null and dealerNo != ''">
       AND  e.DEALER_NO = #{dealerNo,jdbcType=VARCHAR}
     </if>
+    GROUP BY e.EMP_NO
   </select>
 </mapper>

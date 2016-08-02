@@ -9,4 +9,6 @@ import java.util.List;
  */
 public interface DealerService {
     List<TMdDealer> getDealerBySalesOrg();
+
+    List<TMdDealer> getDealerOnAuth();
 }
