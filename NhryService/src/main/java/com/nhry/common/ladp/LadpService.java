@@ -162,13 +162,10 @@ public class LadpService {
 	public void syncSysUsers(){
 		try {
 			Date date = new Date();
-//			DateFormat formatter = new SimpleDateFormat("yyyyMMddHHmmssZ");  
-			DateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-			String dateStr = formatter.format(date.addMinutes(-((26+8)*60)));  //60分钟之前
-//			String filter = "(&(|(modifyTimestamp>="+dateStr+")(createTimestamp>="+dateStr+"))(smart-authority=Auth_dhxt))";
-			String filter = "(smart-authority=Auth_dhxt)";
-			String basedn = "ou=People,o=newhopedairy,o=isp";
-			List<Map<String, String>> list = getObjectsByFilter(basedn,filter);
+			DateFormat formatter = new SimpleDateFormat("yyyyMMddHHmmssZ");  
+			String dateStr = formatter.format(date.addMinutes(-60));  //60分钟之前
+			String filter = "(&(|(modifyTimestamp>="+dateStr+")(createTimestamp>="+dateStr+"))(smart-authority="+EnvContant.getSystemConst("ladp_dh_auth")+"))";
+			List<Map<String, String>> list = getObjectsByFilter(EnvContant.getSystemConst("ladp_basedn"),filter);
 			Map<String,String> spcAttrs = new HashMap<String,String>();
 			spcAttrs.put("CN","setDisplayName");
 			spcAttrs.put("UID","setLoginName");
