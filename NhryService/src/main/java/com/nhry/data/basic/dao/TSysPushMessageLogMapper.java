@@ -20,7 +20,7 @@ public interface TSysPushMessageLogMapper {
     int addPushMessageLog(TSysPushMessageLog record);
     
     /**
-     * 根据No查询失败消息记录
+     * 根据消息编号查询失败消息记录
      * @param mno
      * @return
      */
