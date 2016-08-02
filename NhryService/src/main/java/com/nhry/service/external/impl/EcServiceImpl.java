@@ -400,7 +400,7 @@ public class EcServiceImpl extends EcBaseService implements EcService{
 			e.printStackTrace();
 		}
 	}
-
+	
 	@Override
 	public void sendResidentialArea2Ec(TMdResidentialArea area) {
 		// TODO Auto-generated method stub
@@ -467,8 +467,8 @@ public class EcServiceImpl extends EcBaseService implements EcService{
 	}
 
 	@Override
-	public void updateOrderBranch(String dhOrderNo, String branchNo) {
-		// TODO Auto-generated method stub
+	public void sendOrderBranch(TPreOrder order)
+	{
 		try {
 			JSONArray arr = new JSONArray();
 			JSONObject json = new JSONObject();
@@ -477,19 +477,24 @@ public class EcServiceImpl extends EcBaseService implements EcService{
 			JSONObject ssbi = new JSONObject();
 			ssbi.put("serviceName", "SVCSENDORDERBRANCH");
 			JSONArray data = new JSONArray();
-			JSONObject branchJson = new JSONObject();
-			branchJson.put("customerId", "DH");
-			branchJson.put("dhOrderNo",dhOrderNo);
-			branchJson.put("branchNo",branchNo);
-			data.put(branchJson);
+
+			JSONObject orderStatusReJson = new JSONObject();
+			
+			orderStatusReJson.put("customerId", "DH");
+			orderStatusReJson.put("dhOrderNo", order.getOrderNo());
+			orderStatusReJson.put("branchNo", order.getBranchNo());
+			
+			data.put(orderStatusReJson);
 			ssbi.put("data", data);
 			body.put("SVCSENDORDERBRANCH", ssbi);
 			json.put("body", body);
 			arr.put(json);
+
+			System.out.println("----------"+arr.toString());
 			pushMessage2Ec(EnvContant.getSystemConst("ec_base_url")+EnvContant.getSystemConst("ec_upt_branch"), arr.toString(), true);
-		} catch (Exception e) {
-			// TODO Auto-generated catch block
+		} catch (JSONException e) {
 			e.printStackTrace();
 		}
 	}
+	
 }

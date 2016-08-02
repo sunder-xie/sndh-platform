@@ -21,10 +21,13 @@ import com.nhry.model.bill.CustomerPayMentModel;
 import com.nhry.model.order.OrderCreateModel;
 import com.nhry.service.basic.dao.TVipCustInfoService;
 import com.nhry.service.bill.dao.CustomerBillService;
+import com.nhry.service.external.dao.EcService;
 import com.nhry.service.order.dao.OrderService;
 import com.nhry.service.order.dao.PromotionService;
 import com.nhry.utils.SerialUtil;
+
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.core.task.TaskExecutor;
 
 import java.math.BigDecimal;
 import java.util.*;
@@ -43,6 +46,18 @@ public class CustomerBillServiceImpl implements CustomerBillService {
     private TVipCustInfoService tVipCustInfoService;
     private TSysUserRoleMapper urMapper;
     private TOrderDaliyPlanItemMapper tOrderDaliyPlanItemMapper;
+ 	 private TaskExecutor taskExecutor;
+ 	 private EcService messLogService;
+ 	 
+ 	public void setMessLogService(EcService messLogService)
+ 	{
+ 		this.messLogService = messLogService;
+ 	}
+
+ 	public void setTaskExecutor(TaskExecutor taskExecutor)
+ 	{
+ 		this.taskExecutor = taskExecutor;
+ 	}
 
     @Override
     public PageInfo searchCustomerOrder(CustBillQueryModel cModel) {
@@ -154,6 +169,27 @@ public class CustomerBillServiceImpl implements CustomerBillService {
 
                 BigDecimal factAmt = tPreOrderMapper.calculateOrderFactoryAmt(orderNo);
                 int  updateFactAmt = tPreOrderMapper.updateOrderFacAmt(factAmt  == null ? new BigDecimal(0) : factAmt,orderNo);
+                
+               //发送EC,更新订单状态
+       			TPreOrder sendOrder = new TPreOrder();
+       			sendOrder.setOrderNo(order.getOrderNo());
+       			sendOrder.setPreorderStat("101");
+       			sendOrder.setPaymentmethod(cModel.getPaymentType());
+       			taskExecutor.execute(new Thread(){
+       				@Override
+       				public void run() {
+       					super.run();
+       					this.setName("updateOrderStatus");
+       					messLogService.sendOrderStatus(sendOrder);
+       					
+       					if("20".equals(order.getPaymentmethod()) && !"20".equals(order.getMilkboxStat())){
+       						sendOrder.setPreorderStat("200");
+       						messLogService.sendOrderStatus(sendOrder);
+       					}
+       					
+       				}
+       			 });
+                
                 return updateBill+updateOrderStatus;
             }
     }

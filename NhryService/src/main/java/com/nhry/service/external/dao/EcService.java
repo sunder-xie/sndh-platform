@@ -52,6 +52,11 @@ public interface EcService {
 	public void sendOrderInfo(TPreOrder order,List<TPlanOrderItem> entries);
 	
 	/**
+	 * 订单奶站信息更新
+	 */
+	public void sendOrderBranch(TPreOrder order);
+	
+	/**
 	 * 推送小区信息给电商
 	 * @param area
 	 */
@@ -63,10 +68,4 @@ public interface EcService {
 	 */
 	public void senduptBranchScope2Ec(TMdBranchScopeKey branchScope,String actionFlag);
 	
-	/**
-	 * 更新订单奶站信息
-	 * @param dhOrderNo
-	 * @param branchNo
-	 */
-	public void updateOrderBranch(String dhOrderNo,String branchNo);
 }

@@ -152,7 +152,8 @@
 	 where d.disp_date = #{planItemNo,jdbcType=DATE}
 	 and o.emp_no = #{itemNo,jdbcType=VARCHAR}
 	 and d.reach_time_type = #{orderNo,jdbcType=VARCHAR}
-	 and d.status != "30"
+	 and d.status != "30" 
+	 and d.status != "20"
   </select>
   <delete id="deleteFromDateToDate" parameterType="com.nhry.data.order.domain.TOrderDaliyPlanItem" >
     delete from t_mst_order_daliy_plan_item
