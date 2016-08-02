@@ -201,6 +201,7 @@ public class TVipCustInfoServiceImpl extends BaseService implements TVipCustInfo
 				cust.setMp(address.getMp());
 				cust.setVipName(address.getRecvName());
 				cust.setBranchNo(branchNo);
+				cust.setStatus("10");//在订状态
 				cust.setSubdist(address.getResidentialArea());
 				cust.setCreateAt(new Date());
 				cust.setCreateBy(sysuser.getLoginName());
