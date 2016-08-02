@@ -248,23 +248,22 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 		}
 		//如果更换奶站，可能会更换商品价格，并把用户挂到该奶站下
 		TPreOrder order = tPreOrderMapper.selectByPrimaryKey(uptManHandModel.getOrderNo());
-		if(!uptManHandModel.getBranchNo().equals(order.getBranchNo())){
+//		if(!uptManHandModel.getBranchNo().equals(order.getBranchNo())){
 			
-			//订户挂奶站,订单的奶站和销售组织变更
-			String salesOrg = tVipCustInfoService.uptCustBranchNo(order.getMilkmemberNo(),uptManHandModel.getBranchNo());
-			uptManHandModel.setSalesOrg(salesOrg);
-			
-			//换价格
-			ArrayList<TPlanOrderItem> orgEntries = (ArrayList<TPlanOrderItem>) tPlanOrderItemMapper.selectByOrderCode(uptManHandModel.getOrderNo());
-			for(TPlanOrderItem entry : orgEntries){
-				float price = priceService.getMaraPrice(uptManHandModel.getBranchNo(), entry.getMatnr(), order.getDeliveryType());
-				if(price<=0)throw new ServiceException(MessageCode.LOGIC_ERROR,"替换的奶站,产品["+entry.getMatnr()+"]价格小于0，或可能没有该产品，请检查或退订此订单!");
-				entry.setSalesPrice(new BigDecimal(String.valueOf(price)));
-				tPlanOrderItemMapper.updateEntryByItemNo(entry);
-			}
-			
-			
+		//订户挂奶站,订单的奶站和销售组织变更
+		String salesOrg = tVipCustInfoService.uptCustBranchNo(order.getMilkmemberNo(),uptManHandModel.getBranchNo());
+		uptManHandModel.setSalesOrg(salesOrg);
+		
+		//换价格
+		ArrayList<TPlanOrderItem> orgEntries = (ArrayList<TPlanOrderItem>) tPlanOrderItemMapper.selectByOrderCode(uptManHandModel.getOrderNo());
+		for(TPlanOrderItem entry : orgEntries){
+			float price = priceService.getMaraPrice(uptManHandModel.getBranchNo(), entry.getMatnr(), order.getDeliveryType());
+			if(price<=0)throw new ServiceException(MessageCode.LOGIC_ERROR,"替换的奶站,产品["+entry.getMatnr()+"]价格小于0，或可能没有该产品，请检查或退订此订单!");
+			entry.setSalesPrice(new BigDecimal(String.valueOf(price)));
+			tPlanOrderItemMapper.updateEntryByItemNo(entry);
 		}
+			
+//		}
 		
 		tPreOrderMapper.uptManHandOrder(uptManHandModel);
 		
@@ -860,6 +859,19 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 		tPreOrderMapper.updateOrderResumed(order.getOrderNo());//该订单已经被续订
 		
 		ArrayList<TPlanOrderItem> entries = (ArrayList<TPlanOrderItem>) tPlanOrderItemMapper.selectByOrderCode(record.getOrderNo());
+		Date orgFirstDate = null; 
+		Map<String,Integer> entryDateMap = new HashMap<String,Integer>();
+		for(TPlanOrderItem e :entries){
+			if(orgFirstDate==null){
+				orgFirstDate = e.getStartDispDate();
+			}else{
+				orgFirstDate = orgFirstDate.before(e.getStartDispDate())?orgFirstDate:e.getStartDispDate();
+			}
+		}
+		for(TPlanOrderItem e :entries){
+			entryDateMap.put(e.getItemNo(), daysOfTwo(orgFirstDate, e.getStartDispDate()));
+		}
+		
 		if(order!= null){
 			if("20".equals(order.getMilkboxStat()))throw new ServiceException(MessageCode.LOGIC_ERROR,record.getOrderNo()+"原订单还没有装箱，不能续订!");
 			Date sdate = null;
