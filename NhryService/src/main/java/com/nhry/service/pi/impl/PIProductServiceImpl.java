@@ -7,6 +7,7 @@ import com.nhry.data.basic.domain.*;
 import com.nhry.data.config.dao.NHSysCodeItemMapper;
 import com.nhry.data.config.domain.NHSysCodeItem;
 import com.nhry.service.basic.dao.TSysMessageService;
+import com.nhry.service.external.dao.EcService;
 import com.nhry.service.pi.dao.PIProductService;
 import com.nhry.utils.PIPropertitesUtil;
 import com.nhry.webService.OptionManager;
@@ -15,6 +16,7 @@ import com.nhry.webService.client.masterData.functions.*;
 import com.nhry.webService.client.masterData.model.*;
 import org.apache.axis2.client.Options;
 import org.apache.commons.lang.StringUtils;
+import org.springframework.core.task.TaskExecutor;
 
 import java.rmi.RemoteException;
 import java.util.*;
@@ -33,15 +35,16 @@ public class PIProductServiceImpl implements PIProductService {
     public static String PRODH =PIPropertitesUtil.getValue("PI.PRODH");
     public static String BRANDCHTYPE_ZY = "01";
     public static String BRANDCHTYPE_WB = "02";
-    public PIProductMapper piProductMapper;
-    public TMdMaraMapper maraMapper;
-    public TMdBranchMapper branchMapper;
-    public TMdBranchExMapper branchExMapper;
-    public TMdDealerMapper dealerMapper;
-    public TMdMaraUnitMapper maraUnitMapper;
-    public NHSysCodeItemMapper codeItemMapper;
-    public TSysMessageService messageService;
-
+    private PIProductMapper piProductMapper;
+    private TMdMaraMapper maraMapper;
+    private TMdBranchMapper branchMapper;
+    private TMdBranchExMapper branchExMapper;
+    private TMdDealerMapper dealerMapper;
+    private TMdMaraUnitMapper maraUnitMapper;
+    private NHSysCodeItemMapper codeItemMapper;
+    private TSysMessageService messageService;
+    private TaskExecutor taskExecutor;
+    private EcService ecService;
     public void setMessageService(TSysMessageService messageService) {
         this.messageService = messageService;
     }
@@ -74,6 +77,21 @@ public class PIProductServiceImpl implements PIProductService {
         this.codeItemMapper = codeItemMapper;
     }
 
+    public void setTaskExecutor(TaskExecutor taskExecutor) {
+        this.taskExecutor = taskExecutor;
+    }
+
+    public void setEcService(EcService ecService) {
+        this.ecService = ecService;
+    }
+
+    public TaskExecutor getTaskExecutor() {
+        return taskExecutor;
+    }
+
+    public EcService getEcService() {
+        return ecService;
+    }
     /**
      * 物料查询
      *
@@ -112,6 +130,7 @@ public class PIProductServiceImpl implements PIProductService {
                     }
                     maraMapper.updateProduct(tMdMara);
                 } else {
+                    tMdMara = new TMdMara();
                     tMdMara.setMatnr(etMatnr.getMATNR());
                     tMdMara.setSalesOrg(etMatnr.getVKORG());
                     tMdMara.setBaseUnit(etMatnr.getMEINS());
@@ -164,6 +183,7 @@ public class PIProductServiceImpl implements PIProductService {
             saveDL(clasfMap,"2005");//重点产品分类
         } catch (Exception e) {
             e.printStackTrace();
+            return 0;
         }
         return 1;
     }
@@ -260,6 +280,7 @@ public class PIProductServiceImpl implements PIProductService {
                     String werks = lg.getWERKS();
                     String lgorm = lg.getLGOBE();
                     if (StringUtils.isNotEmpty(werks)) {
+                        System.out.println("lgort"+lgort);
                         saveBranch(et_kunnrs, BRANDCHTYPE_ZY, et_vkorg.getVKORG(), et_vkorg.getKUNNR(), lgort, werks, "");
                     }
                 }
@@ -408,6 +429,18 @@ public class PIProductServiceImpl implements PIProductService {
                 branch.setCompanyCode(et_kunnr.getBUKRS());
                 branchMapper.updateBranch(branch);
             }
+            //Todo
+            final TMdBranch finalBranch = branch;
+            taskExecutor.execute(new Thread() {
+                public void run(){
+                    try{
+                        this.setName(finalBranch.getBranchNo()+new Date());
+                        ecService.pushBranch2EcForUpt(finalBranch);
+                    }catch (ServiceException e){
+                        e.printStackTrace();
+                    }
+                }
+            });
             TMdBranchEx branchEx = branchExMapper.getBranchEx(branch.getBranchNo());
             NHSysCodeItem key = new NHSysCodeItem();
             key.setItemCode(et_kunnr.getBUKRS());
