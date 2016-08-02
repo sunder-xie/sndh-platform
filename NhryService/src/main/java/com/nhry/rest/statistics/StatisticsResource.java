@@ -36,8 +36,6 @@ public class StatisticsResource extends BaseResource {
     @Autowired
     private BranchInfoService branchInfoService;
     @Autowired
-    private UserSessionService userSessionService;
-    @Autowired
     private DistributionInfoService distributionInfoService;
     @POST
     @Path("/branchDayInfo")
@@ -45,15 +43,6 @@ public class StatisticsResource extends BaseResource {
     @Consumes(MediaType.APPLICATION_JSON)
     @ApiOperation(value = "/branchDayInfo}", response = ResponseModel.class, notes = "奶站日报表")
     public Response branchDayInfo(@ApiParam(name = "model",value = "奶站日报") BranchInfoModel model){
-        TSysUser user = userSessionService.getCurrentUser();
-        if(StringUtils.isEmpty(model.getBranchNo()) && StringUtils.isNotEmpty(user.getBranchNo())){
-            model.setBranchNo(user.getBranchNo());
-        }else if(StringUtils.isEmpty(model.getDealerId()) && StringUtils.isNotEmpty(user.getDealerId())){
-            model.setDealerId(user.getDealerId());
-        }
-        if(StringUtils.isNotEmpty(user.getSalesOrg())){
-            model.setSalesOrg(user.getSalesOrg());
-        }
         return convertToRespModel(MessageCode.NORMAL, null, branchInfoService.branchDayInfo(model));
     }
     @POST
@@ -62,15 +51,6 @@ public class StatisticsResource extends BaseResource {
     @Consumes(MediaType.APPLICATION_JSON)
     @ApiOperation(value = "/findDifferInfo}", response = ResponseModel.class, notes = "路单配送差异明细")
     public Response findDifferInfo(@ApiParam(name = "model",value = "路单配送") DistInfoModel model){
-        TSysUser user = userSessionService.getCurrentUser();
-        if(StringUtils.isEmpty(model.getBranchNo()) && StringUtils.isNotEmpty(user.getBranchNo())){
-            model.setBranchNo(user.getBranchNo());
-        }else if(StringUtils.isEmpty(model.getDealerId()) && StringUtils.isNotEmpty(user.getDealerId())){
-            model.setDealerId(user.getDealerId());
-        }
-        if(StringUtils.isNotEmpty(user.getSalesOrg())){
-            model.setSalesOrg(user.getSalesOrg());
-        }
         return convertToRespModel(MessageCode.NORMAL, null, distributionInfoService.findDistDifferInfo(model));
     }
 
@@ -80,15 +60,7 @@ public class StatisticsResource extends BaseResource {
     @Consumes(MediaType.APPLICATION_JSON)
     @ApiOperation(value = "/findOrderRatio}", response = ResponseModel.class, notes = "奶站订单转化率(T+3)报表")
     public Response findOrderRatio(@ApiParam(name = "model",value = "订单转化率") BranchInfoModel model){
-        TSysUser user = userSessionService.getCurrentUser();
-        if(StringUtils.isEmpty(model.getBranchNo()) && StringUtils.isNotEmpty(user.getBranchNo())){
-            model.setBranchNo(user.getBranchNo());
-        }else if(StringUtils.isEmpty(model.getDealerId()) && StringUtils.isNotEmpty(user.getDealerId())){
-            model.setDealerId(user.getDealerId());
-        }
-        if(StringUtils.isNotEmpty(user.getSalesOrg())){
-            model.setSalesOrg(user.getSalesOrg());
-        }
+
         return convertToRespModel(MessageCode.NORMAL, null, branchInfoService.findOrderRatio(model));
     }
     @POST
@@ -97,15 +69,6 @@ public class StatisticsResource extends BaseResource {
     @Consumes(MediaType.APPLICATION_JSON)
     @ApiOperation(value = "/findMonthReport}", response = ResponseModel.class, notes = "奶站月任务报表")
     public Response findMonthReport(@ApiParam(name = "model",value = "月任务") BranchInfoModel model){
-        TSysUser user = userSessionService.getCurrentUser();
-        if(StringUtils.isEmpty(model.getBranchNo()) && StringUtils.isNotEmpty(user.getBranchNo())){
-            model.setBranchNo(user.getBranchNo());
-        }else if(StringUtils.isEmpty(model.getDealerId()) && StringUtils.isNotEmpty(user.getDealerId())){
-            model.setDealerId(user.getDealerId());
-        }
-        if(StringUtils.isNotEmpty(user.getSalesOrg())){
-            model.setSalesOrg(user.getSalesOrg());
-        }
         return convertToRespModel(MessageCode.NORMAL, null, branchInfoService.findBranchMonthReport(model));
     }
     @POST
@@ -114,15 +77,6 @@ public class StatisticsResource extends BaseResource {
     @Consumes(MediaType.APPLICATION_JSON)
     @ApiOperation(value = "/findReqOrder}", response = ResponseModel.class, notes = "要货计划查询")
     public Response findReqOrder(@ApiParam(name = "model",value = "要货计划") BranchInfoModel model){
-        TSysUser user = userSessionService.getCurrentUser();
-        if(StringUtils.isEmpty(model.getBranchNo()) && StringUtils.isNotEmpty(user.getBranchNo())){
-            model.setBranchNo(user.getBranchNo());
-        }else if(StringUtils.isEmpty(model.getDealerId()) && StringUtils.isNotEmpty(user.getDealerId())){
-            model.setDealerId(user.getDealerId());
-        }
-        if(StringUtils.isNotEmpty(user.getSalesOrg())){
-            model.setSalesOrg(user.getSalesOrg());
-        }
         return convertToRespModel(MessageCode.NORMAL, null, branchInfoService.findReqOrder(model));
     }
 }

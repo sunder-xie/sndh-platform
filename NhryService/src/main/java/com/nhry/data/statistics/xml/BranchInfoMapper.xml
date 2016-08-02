@@ -5,7 +5,7 @@
         <if test="branchNo != null">
             AND b.BRANCH_NO = ${branchNo}
         </if>
-        <if test="dealerId != null">
+        <if test="dealerId != null and dealerId != '-1'">
             AND b.DEALER_NO = ${dealerId}
         </if>
         <if test="salesOrg != null">
@@ -241,7 +241,7 @@
         <if test="branchNo != null">
             AND br.BRANCH_NO = ${branchNo}
         </if>
-        <if test="dealerId != null">
+        <if test="dealerId != null and dealerId != '-1'">
             AND br.DEALER_NO = ${dealerId}
         </if>
         <if test="salesOrg != null">

@@ -44,6 +44,8 @@
 	<sql id="packing _type">2004</sql>
 	<!-- 重点产品分类 -->
 	<sql id="major_products_category">2005</sql>
+	<!-- 省份对应关系(奶站省份) -->
+	<sql id="branch_province">2006</sql>
 	<!-- 角色ID  送奶员 -->
 	<sql id="milkman">10001</sql>
 	<!-- 角色ID  送奶员 -->

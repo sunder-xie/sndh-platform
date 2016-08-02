@@ -1,8 +1,10 @@
 package com.nhry.service.statistics.impl;
 
 import com.github.pagehelper.PageInfo;
+import com.nhry.common.auth.UserSessionService;
 import com.nhry.common.exception.MessageCode;
 import com.nhry.common.exception.ServiceException;
+import com.nhry.data.auth.domain.TSysUser;
 import com.nhry.data.statistics.dao.BranchInfoMapper;
 import com.nhry.model.statistics.BranchInfoModel;
 import com.nhry.service.statistics.dao.BranchInfoService;
@@ -21,17 +23,30 @@ import java.util.Map;
 public class BranchInfoServiceImpl implements BranchInfoService {
     private static SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
     private BranchInfoMapper branchInfoMapper;
-
+    private UserSessionService userSessionService;
     public void setBranchInfoMapper(BranchInfoMapper branchInfoMapper) {
         this.branchInfoMapper = branchInfoMapper;
     }
 
+    public void setUserSessionService(UserSessionService userSessionService) {
+        this.userSessionService = userSessionService;
+    }
+
     @Override
     public PageInfo branchDayInfo(BranchInfoModel model) {
+
         if(StringUtils.isEmpty(model.getPageNum()) || StringUtils.isEmpty(model.getPageSize())){
             throw new ServiceException(MessageCode.LOGIC_ERROR,"pageNum和pageSize不能为空！");
         }
-
+        TSysUser user = userSessionService.getCurrentUser();
+        if(StringUtils.isEmpty(model.getBranchNo()) && StringUtils.isNotEmpty(user.getBranchNo())){
+            model.setBranchNo(user.getBranchNo());
+        }else if(StringUtils.isEmpty(model.getDealerId()) && StringUtils.isNotEmpty(user.getDealerId())){
+            model.setDealerId(user.getDealerId());
+        }
+        if(StringUtils.isNotEmpty(user.getSalesOrg())){
+            model.setSalesOrg(user.getSalesOrg());
+        }
         return branchInfoMapper.branchDayInfo(model);
     }
 
@@ -40,7 +55,15 @@ public class BranchInfoServiceImpl implements BranchInfoService {
         if(StringUtils.isEmpty(model.getPageNum()) || StringUtils.isEmpty(model.getPageSize())){
             throw new ServiceException(MessageCode.LOGIC_ERROR,"pageNum和pageSize不能为空！");
         }
-
+        TSysUser user = userSessionService.getCurrentUser();
+        if(StringUtils.isEmpty(model.getBranchNo()) && StringUtils.isNotEmpty(user.getBranchNo())){
+            model.setBranchNo(user.getBranchNo());
+        }else if(StringUtils.isEmpty(model.getDealerId()) && StringUtils.isNotEmpty(user.getDealerId())){
+            model.setDealerId(user.getDealerId());
+        }
+        if(StringUtils.isNotEmpty(user.getSalesOrg())){
+            model.setSalesOrg(user.getSalesOrg());
+        }
         return branchInfoMapper.findOrderRatio(model);
     }
 
@@ -49,30 +72,87 @@ public class BranchInfoServiceImpl implements BranchInfoService {
         if(StringUtils.isEmpty(model.getPageNum()) || StringUtils.isEmpty(model.getPageSize())){
             throw new ServiceException(MessageCode.LOGIC_ERROR,"pageNum和pageSize不能为空！");
         }
+        TSysUser user = userSessionService.getCurrentUser();
+        if(StringUtils.isEmpty(model.getBranchNo()) && StringUtils.isNotEmpty(user.getBranchNo())){
+            model.setBranchNo(user.getBranchNo());
+        }else if(StringUtils.isEmpty(model.getDealerId()) && StringUtils.isNotEmpty(user.getDealerId())){
+            model.setDealerId(user.getDealerId());
+        }
+        if(StringUtils.isNotEmpty(user.getSalesOrg())){
+            model.setSalesOrg(user.getSalesOrg());
+        }
         return branchInfoMapper.findBranchMonthReport(model);
     }
 
     @Override
     public PageInfo findReqOrder(BranchInfoModel model) {
+        if(StringUtils.isEmpty(model.getPageNum()) || StringUtils.isEmpty(model.getPageSize())){
+            throw new ServiceException(MessageCode.LOGIC_ERROR,"pageNum和pageSize不能为空！");
+        }
+        TSysUser user = userSessionService.getCurrentUser();
+        if(StringUtils.isEmpty(model.getBranchNo()) && StringUtils.isNotEmpty(user.getBranchNo())){
+            model.setBranchNo(user.getBranchNo());
+        }else if(StringUtils.isEmpty(model.getDealerId()) && StringUtils.isNotEmpty(user.getDealerId())){
+            model.setDealerId(user.getDealerId());
+        }
+        if(StringUtils.isNotEmpty(user.getSalesOrg())){
+            model.setSalesOrg(user.getSalesOrg());
+        }
         return branchInfoMapper.findReqOrder(model);
     }
     @Override
    public List<Map<String,String>> findReqOrderOutput(BranchInfoModel model){
+        TSysUser user = userSessionService.getCurrentUser();
+        if(StringUtils.isEmpty(model.getBranchNo()) && StringUtils.isNotEmpty(user.getBranchNo())){
+            model.setBranchNo(user.getBranchNo());
+        }else if(StringUtils.isEmpty(model.getDealerId()) && StringUtils.isNotEmpty(user.getDealerId())){
+            model.setDealerId(user.getDealerId());
+        }
+        if(StringUtils.isNotEmpty(user.getSalesOrg())){
+            model.setSalesOrg(user.getSalesOrg());
+        }
         return branchInfoMapper.findReqOrderOutput(model);
     }
 
     @Override
     public List<Map<String,String>> branchDayOutput(BranchInfoModel model){
+        TSysUser user = userSessionService.getCurrentUser();
+        if(StringUtils.isEmpty(model.getBranchNo()) && StringUtils.isNotEmpty(user.getBranchNo())){
+            model.setBranchNo(user.getBranchNo());
+        }else if(StringUtils.isEmpty(model.getDealerId()) && StringUtils.isNotEmpty(user.getDealerId())){
+            model.setDealerId(user.getDealerId());
+        }
+        if(StringUtils.isNotEmpty(user.getSalesOrg())){
+            model.setSalesOrg(user.getSalesOrg());
+        }
         return branchInfoMapper.branchDayOutput(model);
     }
 
     @Override
     public List<Map<String,String>> findBranchMonthReportOutput(BranchInfoModel model){
+        TSysUser user = userSessionService.getCurrentUser();
+        if(StringUtils.isEmpty(model.getBranchNo()) && StringUtils.isNotEmpty(user.getBranchNo())){
+            model.setBranchNo(user.getBranchNo());
+        }else if(StringUtils.isEmpty(model.getDealerId()) && StringUtils.isNotEmpty(user.getDealerId())){
+            model.setDealerId(user.getDealerId());
+        }
+        if(StringUtils.isNotEmpty(user.getSalesOrg())){
+            model.setSalesOrg(user.getSalesOrg());
+        }
         return branchInfoMapper.findBranchMonthReportOutput(model);
     }
 
     @Override
     public List<Map<String,String>> findOrderRatioOutput(BranchInfoModel model){
+        TSysUser user = userSessionService.getCurrentUser();
+        if(StringUtils.isEmpty(model.getBranchNo()) && StringUtils.isNotEmpty(user.getBranchNo())){
+            model.setBranchNo(user.getBranchNo());
+        }else if(StringUtils.isEmpty(model.getDealerId()) && StringUtils.isNotEmpty(user.getDealerId())){
+            model.setDealerId(user.getDealerId());
+        }
+        if(StringUtils.isNotEmpty(user.getSalesOrg())){
+            model.setSalesOrg(user.getSalesOrg());
+        }
         return branchInfoMapper.findOrderRatioOutput(model);
     }
 }

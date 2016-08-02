@@ -27,6 +27,8 @@
 		<property name="orderService"  ref="orderService"></property>
 		<property name="promotionService"  ref="promotionService"></property>
 		<property name="tVipCustInfoService" ref="custService"></property>
+		<property name="messLogService" ref="messLogService"></property>
+		<property name="taskExecutor" ref="taskExecutor"></property>
 	</bean>
 
 	<!--奶站结算-->

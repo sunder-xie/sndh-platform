@@ -79,6 +79,8 @@
 		<property name="priceService" ref="priceService"></property>
 		<property name="promotionService" ref="promotionService"></property>
 		<property name="tDispOrderItemMapper" ref="tDispOrderItemMapper"></property>
+		<property name="messLogService" ref="messLogService"></property>
+		<property name="taskExecutor" ref="taskExecutor"></property>
 	</bean>
 	<bean id="tPromotionMapper" class="com.nhry.data.order.impl.TPromotionMapperImpl">
 		<property name="sqlSessionTemplate" ref="dynamicSqlSessionTemplate"></property>
@@ -102,6 +104,8 @@
 		<property name="userSessionService" ref="userSessionService"></property>
 		<property name="orderService" ref="orderService"></property>
 		<property name="promotionService" ref="promotionService"></property>
+	   <property name="messLogService" ref="messLogService"></property>
+		<property name="taskExecutor" ref="taskExecutor"></property>
 		<!-- <property name="tVipCustInfoService" ref="custService"></property> -->
 	</bean>
 	<!-- 奶箱end -->
