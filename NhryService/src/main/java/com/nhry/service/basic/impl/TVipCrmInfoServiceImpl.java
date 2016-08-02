@@ -15,24 +15,24 @@ public class TVipCrmInfoServiceImpl extends BaseService implements TVipCrmInfoSe
 	}
 
 	@Override
-	public void addVipCust(TVipCrmInfo record) {
-		vipCrmMapper.addVipCust(record);
+	public void addVipCrm(TVipCrmInfo record) {
+		vipCrmMapper.addVipCrm(record);
 	}
 
 	@Override
-	public TVipCrmInfo findVipCustByNo(String vipCustNo) {
-		TVipCrmInfo cust = this.vipCrmMapper.findVipCustByNo(vipCustNo);
-		return cust;
+	public TVipCrmInfo findVipCrmByNo(String vipCrmNo) {
+		TVipCrmInfo crm = this.vipCrmMapper.findVipCrmByNo(vipCrmNo);
+		return crm;
 	}
 
 	@Override
-	public int updateVipCustByNo(TVipCrmInfo record) {
-		return vipCrmMapper.updateVipCustByNo(record);
+	public int updateVipCrmByNo(TVipCrmInfo record) {
+		return vipCrmMapper.updateVipCrmByNo(record);
 	}
 
 	@Override
-	public String getCustNoByPhone(Map<String, String> attrs) {
-		return vipCrmMapper.getCustNoByPhone(attrs);
+	public String getCrmNoByPhone(Map<String, String> attrs) {
+		return vipCrmMapper.getCrmNoByPhone(attrs);
 	}
 
 }
