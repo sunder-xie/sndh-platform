@@ -21,14 +21,12 @@ import com.nhry.model.order.*;
 import com.nhry.service.BaseService;
 import com.nhry.service.basic.dao.PriceService;
 import com.nhry.service.basic.dao.TVipCustInfoService;
-import com.nhry.service.external.EcBaseService;
 import com.nhry.service.external.dao.EcService;
 import com.nhry.service.order.dao.MilkBoxService;
 import com.nhry.service.order.dao.OrderService;
 import com.nhry.service.order.dao.PromotionService;
 import com.nhry.service.order.pojo.OrderRemainData;
 import com.nhry.utils.CodeGeneratorUtil;
-
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.core.task.TaskExecutor;
 
@@ -1521,7 +1519,7 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 			if(StringUtils.isBlank(order.getEmpNo()))throw new ServiceException(MessageCode.LOGIC_ERROR,"该订单没有送奶员，请选择送奶员!");
 			//订户状态更改
 			tPreOrderMapper.updateOrderStatus(record);
-			tVipCustInfoService.discontinue(record.getMilkmemberNo(), "10",new com.nhry.utils.date.Date(),new com.nhry.utils.date.Date());
+			tVipCustInfoService.discontinue(order.getMilkmemberNo(), "10",new com.nhry.utils.date.Date(),new com.nhry.utils.date.Date());
 			
 			//电商或者摆台的订单确认后，走线下逻辑,生成装箱工单
 			ArrayList<TPlanOrderItem> orgEntries = (ArrayList<TPlanOrderItem>) tPlanOrderItemMapper.selectByOrderCode(order.getOrderNo());
