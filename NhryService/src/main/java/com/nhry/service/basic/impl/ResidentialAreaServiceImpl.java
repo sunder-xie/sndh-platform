@@ -20,11 +20,13 @@ import com.nhry.service.basic.dao.TSysMessageService;
 import com.nhry.service.basic.pojo.AreaSearchModel;
 import com.nhry.service.basic.pojo.BranchScopeModel;
 import com.nhry.service.basic.pojo.ResidentialAreaModel;
+import com.nhry.service.external.dao.EcService;
 import com.nhry.utils.PrimaryKeyUtils;
 
 import org.apache.commons.lang.StringUtils;
 import org.springframework.core.task.TaskExecutor;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -42,6 +44,7 @@ public class ResidentialAreaServiceImpl implements ResidentialAreaService {
     private TSysMessageService messService;
     private TMdBranchMapper branchMapper;
     private TaskExecutor taskExecutor;
+    private EcService ecservice;
 
 
     @Override
@@ -78,12 +81,14 @@ public class ResidentialAreaServiceImpl implements ResidentialAreaService {
             }
             //更新奶站 和 配送区域关系
             List<String> newList = bModel.getResidentialAreaIds();
+            List<TMdBranchScopeKey> bscopes = new ArrayList<TMdBranchScopeKey>();
             if(newList!=null && newList.size()>0){
                 for (String id : newList){
                         TMdBranchScopeKey scopeKey = new  TMdBranchScopeKey();
                         scopeKey.setBranchNo(bModel.getBranchNo());
                         scopeKey.setResidentialAreaId(id);
                         tMdBranchScopeMapper.addBranchScope(scopeKey);
+                        bscopes.add(scopeKey);
                 }
                 //奶站的配送发生变化，发生系统消息
                 taskExecutor.execute(new Thread(){
@@ -94,7 +99,11 @@ public class ResidentialAreaServiceImpl implements ResidentialAreaService {
 						this.setName("sendMessagesForforBranchAddArea");
 						 TMdBranch branch = branchMapper.selectBranchByNo(bModel.getBranchNo());
 			              if(branch != null){
-			              	messService.sendMessagesForUptBranch(branch, 2);
+			              	messService.sendMessagesForUptBranch(branch, 2,user);
+			              	//更新奶站小区对应关系
+			              	for(TMdBranchScopeKey bk : bscopes){
+			              		ecservice.senduptBranchScope2Ec(bk, null);
+			              	}
 			              }
 					}
                 });
@@ -169,12 +178,34 @@ public class ResidentialAreaServiceImpl implements ResidentialAreaService {
         tMdResidentialArea.setStatus("10");
         tMdResidentialArea.setCreateAt(new Date());
         tMdResidentialArea.setCreateBy(user.getLoginName());
-        return tMdResidentialAreaMapper.addResidentialArea(tMdResidentialArea);
+        tMdResidentialAreaMapper.addResidentialArea(tMdResidentialArea);
+        //将新增的小区推送给电商
+        taskExecutor.execute(new Thread(){
+			@Override
+			public void run() {
+				// TODO Auto-generated method stub
+				super.run();
+				this.setName("sendResidentialArea2Ec");
+				ecservice.sendResidentialArea2Ec(tMdResidentialArea);
+			}
+        });
+        return 1;
     }
 
     @Override
     public int uptResidentialArea(TMdResidentialArea tMdResidentialArea) {
-        return tMdResidentialAreaMapper.uptResidentialArea(tMdResidentialArea);
+    	tMdResidentialAreaMapper.uptResidentialArea(tMdResidentialArea);
+    	 //将修改的小区推送给电商
+        taskExecutor.execute(new Thread(){
+			@Override
+			public void run() {
+				// TODO Auto-generated method stub
+				super.run();
+				this.setName("sendResidentialAreaUpt2Ec");
+				ecservice.sendResidentialArea2Ec(tMdResidentialArea);
+			}
+        });
+        return 1;
     }
 
     @Override
@@ -214,5 +245,9 @@ public class ResidentialAreaServiceImpl implements ResidentialAreaService {
 
 	public void setTaskExecutor(TaskExecutor taskExecutor) {
 		this.taskExecutor = taskExecutor;
+	}
+
+	public void setEcservice(EcService ecservice) {
+		this.ecservice = ecservice;
 	}
 }

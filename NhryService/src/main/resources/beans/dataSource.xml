@@ -175,12 +175,12 @@
 </bean>  
 <bean id ="taskExecutor"  class ="org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor" >
    <!-- 线程池维护线程的最少数量 --> 
-   <property name ="corePoolSize" value ="5" />
+   <property name ="corePoolSize" value ="${corePoolSize}" />
    <!-- 线程池维护线程所允许的空闲时间 -->
-   <property name ="keepAliveSeconds" value ="30000" />
+   <property name ="keepAliveSeconds" value ="${keepAliveSeconds}" />
    <!-- 线程池维护线程的最大数量 -->
-   <property name ="maxPoolSize" value ="1000" />
+   <property name ="maxPoolSize" value ="${maxPoolSize}" />
     <!-- 线程池所使用的缓冲队列 -->
-    <property name ="queueCapacity" value ="200" />
+    <property name ="queueCapacity" value ="${queueCapacity}" />
 </bean>
 </beans>

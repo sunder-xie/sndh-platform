@@ -1,6 +1,7 @@
 package com.nhry.service.basic.dao;
 
 import com.github.pagehelper.PageInfo;
+import com.nhry.data.auth.domain.TSysUser;
 import com.nhry.data.basic.domain.TMdBranch;
 import com.nhry.data.basic.domain.TMdMara;
 import com.nhry.data.basic.domain.TSysMessage;
@@ -55,7 +56,7 @@ public interface TSysMessageService {
      * @param mara
      * @return
      */
-    public boolean sendProductsMessages(String title,TMdMara mara);
+    public boolean sendProductsMessages(String title,TMdMara mara,TSysUser user);
     
     /**
      * 新产品添加时给部门内勤发送系统消息
@@ -83,5 +84,5 @@ public interface TSysMessageService {
      * @param branch
      * @return
      */
-    public boolean sendMessagesForUptBranch(TMdBranch branch,int flag);
+    public boolean sendMessagesForUptBranch(TMdBranch branch,int flag,TSysUser user);
 }
