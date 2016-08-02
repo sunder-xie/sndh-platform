@@ -1251,9 +1251,9 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 			if("30".equals(order.getPreorderSource()) ){
 				record.getAddress().setVipCustNo(order.getMilkmemberNo());
 				record.getAddress().setRecvName(order.getMilkmemberName());
-				order.setAdressNo(tVipCustInfoService.addAddressForCust(record.getAddress(),null).split(",")[1]);
+				order.setAdressNo(tVipCustInfoService.addAddressForCust(record.getAddress(),null,null).split(",")[1]);
 			}else{
-				String addressAndMilkmember = tVipCustInfoService.addAddressForCust(record.getAddress(),order.getBranchNo());
+				String addressAndMilkmember = tVipCustInfoService.addAddressForCust(record.getAddress(),order.getBranchNo(),null);
 				order.setMilkmemberNo(addressAndMilkmember.split(",")[0]);
 				order.setAdressNo(addressAndMilkmember.split(",")[1]);
 			}
