@@ -263,22 +263,23 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 				tPlanOrderItemMapper.updateEntryByItemNo(entry);
 			}
 			
-			tPreOrderMapper.uptManHandOrder(uptManHandModel);
 			
-			//当是电商的订单时，更新EC对应订单的奶站
-			if("10".equals(order.getPreorderSource())){
-				order.setBranchNo(uptManHandModel.getBranchNo());
-				//发送EC
-				taskExecutor.execute(new Thread(){
-					@Override
-					public void run() {
-						super.run();
-						this.setName("updateOrderBranchNo");
-						messLogService.sendOrderBranch(order);
-					}
-				});
-			}
-			
+		}
+		
+		tPreOrderMapper.uptManHandOrder(uptManHandModel);
+		
+		//当是电商的订单时，更新EC对应订单的奶站
+		if("10".equals(order.getPreorderSource())){
+			order.setBranchNo(uptManHandModel.getBranchNo());
+			//发送EC
+			taskExecutor.execute(new Thread(){
+				@Override
+				public void run() {
+					super.run();
+					this.setName("updateOrderBranchNo");
+					messLogService.sendOrderBranch(order);
+				}
+			});
 		}
 		
 		return 1;
