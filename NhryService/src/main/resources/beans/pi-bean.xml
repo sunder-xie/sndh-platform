@@ -32,6 +32,8 @@
         <property name="codeItemMapper" ref="codeItemMapper"/>
         <property name="branchExMapper" ref="branchExMapper"/>
         <property name="messageService" ref="messService"/>
+        <property name="ecService" ref="messLogService"/>
+        <property name="taskExecutor" ref="taskExecutor"/>
     </bean>
     <bean class="com.nhry.service.pi.impl.PIRequireOrderServiceImpl" id="piRequireOrderService">
         <property name="branchExMapper" ref="branchExMapper"/>
@@ -54,6 +56,15 @@
         <property name="planOrderItemMapper" ref="tPlanOrderItemMapper"/>
         <property name="branchMapper" ref="branchMapper"/>
         <property name="addressMapper" ref="addressMapper"/>
+    </bean>
+    <bean class="com.nhry.data.basic.impl.TVipCrmMapperImpl" id="vipCrmMapper">
+        <property name="sqlSessionTemplate" ref="dynamicSqlSessionTemplate"/>
+    </bean>
+    <bean class="com.nhry.service.basic.impl.TVipCrmInfoServiceImpl" id="vipCrmInfoService">
+        <property name="vipCrmMapper" ref="vipCrmMapper"/>
+    </bean>
+    <bean class="com.nhry.service.pi.impl.PIVipInfoDataServiceImpl" id="piVipInfoDataService">
+        <property name="vipCrmInfoService" ref="vipCrmInfoService"/>
     </bean>
     <jaxws:endpoint id="piOrderServiceImpl" implementor="#piOrderService"
                     address="/orderService"/>
