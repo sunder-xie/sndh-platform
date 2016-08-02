@@ -693,7 +693,7 @@
     <set >
         <!-- PREORDER_STAT = '20', -->
         <if test="salesOrg != null and salesOrg != ''">
-     		AND SALES_ORG = #{salesOrg,jdbcType=VARCHAR}
+     	  SALES_ORG = #{salesOrg,jdbcType=VARCHAR},
         </if>
         BRANCH_NO = #{branchNo,jdbcType=VARCHAR},
         RET_REASON = null,
