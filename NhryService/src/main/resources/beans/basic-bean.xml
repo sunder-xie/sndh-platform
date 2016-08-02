@@ -34,6 +34,8 @@
 		<property name="notsellListMapper" ref="notsellListMapper"></property>
 		<property name="branchSevice" ref="branchService"></property>
 		<property name="messService" ref="messService"></property>
+		<property name="branchMapper"  ref="branchMapper"></property>
+		<property name="stockService" ref="ssmStockService"></property>
 		<property name="taskExecutor" ref="taskExecutor"></property>
 		<property name="userSessionService" ref="userSessionService"></property>
 	</bean>
@@ -173,6 +175,7 @@
 		<property name="tMdBranchScopeMapper" ref="tMdBranchScopeMapper"></property>
 		<property name="messService" ref="messService"></property>
 		<property name="branchMapper" ref="branchMapper"></property>
+		<property name="ecservice" ref="messLogService"></property>
 		<property name="taskExecutor" ref="taskExecutor"></property>
 		<property name="userSessionService" ref="userSessionService"></property>
 	</bean>
@@ -184,8 +187,10 @@
 		<property name="tMdBranchScopeMapper" ref="tMdBranchScopeMapper"></property>
 		<property name="tMdResidentialAreaMapper" ref="tMdResidentialAreaMapper"></property>
 		<property name="messService" ref="messService"></property>
+		<property name="ecservice" ref="messLogService"></property>
 		<property name="taskExecutor" ref="taskExecutor"></property>
 		<property name="branchMapper" ref="branchMapper"></property>
+		<property name="userSessionService" ref="userSessionService"></property>
 	</bean>
 
 	<bean id="custMapper" class="com.nhry.data.basic.impl.TVipCustInfoMapperImpl">

@@ -412,21 +412,21 @@ public class EcServiceImpl extends EcBaseService implements EcService{
 			JSONObject ssbi = new JSONObject();
 			ssbi.put("serviceName", "SVCSENDTOWNINFO");
 			JSONArray data = new JSONArray();
-			JSONObject branchJson = new JSONObject();
-			branchJson.put("customerId", "DH");
-			branchJson.put("residential_area_id", area.getId());
-			branchJson.put("sales_org",area.getSalesOrg());
-			branchJson.put("province", area.getProvince());
-			branchJson.put("city",area.getCity());
-			branchJson.put("county",area.getCounty());
-			branchJson.put("street",area.getStreet());
-			branchJson.put("guideboard",area.getGuideboard());
-			branchJson.put("residential_area_txt",area.getResidentialAreaTxt());
-			branchJson.put("residential_num", area.getResidentialNum());
-			branchJson.put("property_txt",area.getPropertyTxt());
-			branchJson.put("property_tel", area.getPropertyTel());
-			branchJson.put("status",area.getStatus());
-			data.put(branchJson);
+			JSONObject areaJson = new JSONObject();
+			areaJson.put("customerId", "DH");
+			areaJson.put("residential_area_id", area.getId());
+			areaJson.put("sales_org",area.getSalesOrg());
+			areaJson.put("province", area.getProvince());
+			areaJson.put("city",area.getCity());
+			areaJson.put("county",area.getCounty());
+			areaJson.put("street",area.getStreet());
+			areaJson.put("guideboard",area.getGuideboard());
+			areaJson.put("residential_area_txt",area.getResidentialAreaTxt());
+			areaJson.put("residential_num", area.getResidentialNum());
+			areaJson.put("property_txt",area.getPropertyTxt());
+			areaJson.put("property_tel", area.getPropertyTel());
+			areaJson.put("status",area.getStatus());
+			data.put(areaJson);
 			ssbi.put("data", data);
 			body.put("SVCSENDTOWNINFO", ssbi);
 			json.put("body", body);
@@ -449,41 +449,14 @@ public class EcServiceImpl extends EcBaseService implements EcService{
 			JSONObject ssbi = new JSONObject();
 			ssbi.put("serviceName", "SVCSENDBRANCHAREA");
 			JSONArray data = new JSONArray();
-			JSONObject branchJson = new JSONObject();
-			branchJson.put("customerId", "DH");
-			branchJson.put("residential_area_id",branchScope.getResidentialAreaId());
-			branchJson.put("branch_no",branchScope.getBranchNo());
-			branchJson.put("type", actionFlag);
-			data.put(branchJson);
+			JSONObject bkJson = new JSONObject();
+			bkJson.put("customerId", "DH");
+			bkJson.put("residential_area_id",branchScope.getResidentialAreaId());
+			bkJson.put("branch_no",branchScope.getBranchNo());
+			bkJson.put("type", actionFlag);
+			data.put(bkJson);
 			ssbi.put("data", data);
 			body.put("SVCSENDBRANCHAREA", ssbi);
-			json.put("body", body);
-			arr.put(json);
-			pushMessage2Ec(EnvContant.getSystemConst("ec_base_url")+EnvContant.getSystemConst("ec_upt_branch"), arr.toString(), true);
-		} catch (Exception e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-	}
-
-	@Override
-	public void updateOrderBranch(String dhOrderNo, String branchNo) {
-		// TODO Auto-generated method stub
-		try {
-			JSONArray arr = new JSONArray();
-			JSONObject json = new JSONObject();
-			json.put("businessno", "BUSSSENDORDERBRANCH");
-			JSONObject body = new JSONObject();
-			JSONObject ssbi = new JSONObject();
-			ssbi.put("serviceName", "SVCSENDORDERBRANCH");
-			JSONArray data = new JSONArray();
-			JSONObject branchJson = new JSONObject();
-			branchJson.put("customerId", "DH");
-			branchJson.put("dhOrderNo",dhOrderNo);
-			branchJson.put("branchNo",branchNo);
-			data.put(branchJson);
-			ssbi.put("data", data);
-			body.put("SVCSENDORDERBRANCH", ssbi);
 			json.put("body", body);
 			arr.put(json);
 			pushMessage2Ec(EnvContant.getSystemConst("ec_base_url")+EnvContant.getSystemConst("ec_upt_branch"), arr.toString(), true);
