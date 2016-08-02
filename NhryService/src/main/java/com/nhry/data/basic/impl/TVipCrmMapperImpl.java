@@ -14,45 +14,45 @@ public class TVipCrmMapperImpl implements TVipCrmMapper {
 	}
 
 	@Override
-	public int addVipCust(TVipCrmInfo record) {
+	public int addVipCrm(TVipCrmInfo record) {
 		// TODO Auto-generated method stub
-		return this.sqlSessionTemplate.insert("addVipCust",record);
+		return this.sqlSessionTemplate.insert("addVipCrm",record);
 	}
 
 	@Override
-	public TVipCrmInfo findVipCustByNo(String vipCustNo) {
+	public TVipCrmInfo findVipCrmByNo(String vipCrmNo) {
 		// TODO Auto-generated method stub
-		return this.sqlSessionTemplate.selectOne("findVipCustByNo", vipCustNo);
+		return this.sqlSessionTemplate.selectOne("findVipCrmByNo", vipCrmNo);
 	}
 
 	@Override
-	public int updateVipCustByNo(TVipCrmInfo record) {
+	public int updateVipCrmByNo(TVipCrmInfo record) {
 		// TODO Auto-generated method stub
-		return this.sqlSessionTemplate.update("updateVipCustByNo", record);
+		return this.sqlSessionTemplate.update("updateVipCrmByNo", record);
 	}
 
 	@Override
-	public TVipCrmInfo findVipCustByNoForUpt(String vipCustNo) {
+	public TVipCrmInfo findVipCrmByNoForUpt(String vipCrmNo) {
 		// TODO Auto-generated method stub
-		return this.sqlSessionTemplate.selectOne("findVipCustByNoForUpt", vipCustNo);
+		return this.sqlSessionTemplate.selectOne("findVipCrmByNoForUpt", vipCrmNo);
 	}
 
 	@Override
-	public TVipCrmInfo findVipCustOnlyByNo(String vipCustNo) {
+	public TVipCrmInfo findVipCrmOnlyByNo(String vipCrmNo) {
 		// TODO Auto-generated method stub
-		return this.sqlSessionTemplate.selectOne("findVipCustOnlyByNo", vipCustNo);
+		return this.sqlSessionTemplate.selectOne("findVipCrmOnlyByNo", vipCrmNo);
 	}
 
 	@Override
-	public int uptCustStatus(TVipCrmInfo record) {
+	public int uptCrmStatus(TVipCrmInfo record) {
 		// TODO Auto-generated method stub
-		return this.sqlSessionTemplate.update("uptCustStatus", record);
+		return this.sqlSessionTemplate.update("uptCrmStatus", record);
 	}
 
 	@Override
-	public String getCustNoByPhone(Map<String, String> attrs) {
+	public String getCrmNoByPhone(Map<String, String> attrs) {
 		// TODO Auto-generated method stub
-		return this.sqlSessionTemplate.selectOne("getCustNoByPhone", attrs);
+		return this.sqlSessionTemplate.selectOne("getCrmNoByPhone", attrs);
 	}
 	
 }

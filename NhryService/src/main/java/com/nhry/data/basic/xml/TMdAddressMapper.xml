@@ -340,7 +340,7 @@
 		d.IS_DELETE='N' AND d.VIP_CUST_NO = #{custNo} order by IS_DEFAULT desc,LAST_MODIFIED desc,CREATE_AT desc
   </select>
   <select id="findOriginAddressByCustNo" resultMap="BaseResultMap" parameterType="String">
-    SELECT <include refid="Base_Column_List" /> FROM t_md_address WHERE VIP_CUST_NO=#{custNo} where IS_DELETE='N' order by IS_DEFAULT desc,LAST_MODIFIED desc,CREATE_AT desc
+    SELECT <include refid="Base_Column_List" /> FROM t_md_address WHERE VIP_CUST_NO=#{custNo} and IS_DELETE='N' order by IS_DEFAULT desc,LAST_MODIFIED desc,CREATE_AT desc
   </select>
   <select id="findAddressDetailById" resultMap="BaseResultMap" parameterType="String">
      SELECT
