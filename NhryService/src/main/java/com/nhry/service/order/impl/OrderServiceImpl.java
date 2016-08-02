@@ -125,10 +125,39 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 		smodel.setBranchNo(userSessionService.getCurrentUser().getBranchNo());
 		smodel.setSalesOrg(userSessionService.getCurrentUser().getSalesOrg());
 		smodel.setDealerNo(userSessionService.getCurrentUser().getDealerId());
-		smodel.setOrderDate(format.format(afterDate(new Date(),5)));
+		smodel.setOrderDateStart(format.format(afterDate(new Date(),1)));
+		smodel.setOrderDateEnd(format.format(afterDate(new Date(),5)));
 		return tPreOrderMapper.selectStopOrderNum(smodel);
 	}
 
+	/* (non-Javadoc) 
+	* @title: searchNeedResumeOrders
+	* @description: 3天内需要续订的订单列表
+	* @param smodel
+	* @return 
+	* @see com.nhry.service.order.dao.OrderService#searchNeedResumeOrders(com.nhry.model.order.OrderSearchModel) 
+	*/
+	@Override
+	public PageInfo searchNeedResumeOrders(OrderSearchModel smodel)
+	{
+		if(StringUtils.isBlank(smodel.getOrderDateStart()) || StringUtils.isBlank(smodel.getOrderDateEnd())){
+			SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
+			Date today = new Date();
+			smodel.setOrderDateStart(format.format(afterDate(today,1)));
+			smodel.setOrderDateEnd(format.format(afterDate(today,5)));
+		}
+		
+		//权限
+		if(StringUtils.isEmpty(smodel.getPageNum()) || StringUtils.isEmpty(smodel.getPageSize())){
+			throw new ServiceException(MessageCode.LOGIC_ERROR,"pageNum和pageSize不能为空！");
+		}
+		smodel.setBranchNo(userSessionService.getCurrentUser().getBranchNo());
+		smodel.setSalesOrg(userSessionService.getCurrentUser().getSalesOrg());
+		smodel.setDealerNo(userSessionService.getCurrentUser().getDealerId());
+		
+		return tPreOrderMapper.selectNeedResumeOrders(smodel);
+	}
+	
 	/* (non-Javadoc)
         * @title: selectOrderByCode
         * @description: 根据订单号查询订单
@@ -3071,5 +3100,130 @@ public class OrderServiceImpl extends BaseService implements OrderService {
     			}
     		}
   	}
+
+	/* (non-Javadoc) 
+	* @title: createDaliyPlansForIniOrders
+	* @description: 为期初订单生成日计划
+	* @return 
+	* @see com.nhry.service.order.dao.OrderService#createDaliyPlansForIniOrders() 
+	*/
+	@Override
+	public int createDaliyPlansForIniOrders()
+	{
+		List<TPreOrder> orders = tPreOrderMapper.selectIniOrders();
+		
+		orders.stream().forEach((order)->{
+			ArrayList<TPlanOrderItem> entries = (ArrayList<TPlanOrderItem>) tPlanOrderItemMapper.selectByOrderCode(order.getOrderNo());
+			
+			/////////////////////////////
+			//预付款的要付款+装箱才生成日计划
+			if("20".equals(order.getPaymentmethod()) && !"20".equals(order.getPaymentStat())){
+				return;
+			}
+			//生成每日计划,当订户订单装箱状态为已装箱或无需装箱，则系统默认该订单可生成订户日订单
+			if("20".equals(order.getMilkboxStat())){
+				return;
+			}
+
+			BigDecimal curAmt = order.getCurAmt();
+
+			//计算每个行项目总共需要送多少天
+			Map<TPlanOrderItem,Integer> entryMap = new HashMap<TPlanOrderItem,Integer>();
+			int maxEntryDay = 365;
+			Date firstDeliveryDate = null;
+			for(TPlanOrderItem entry: entries){
+				if(firstDeliveryDate==null){
+					firstDeliveryDate = entry.getStartDispDate();
+				}else{
+					firstDeliveryDate = firstDeliveryDate.before(entry.getStartDispDate())?firstDeliveryDate:entry.getStartDispDate();
+				}
+				int entryDays = (daysOfTwo(entry.getStartDispDate(),entry.getEndDispDate())) + 1;
+				entryMap.put(entry,entryDays);
+//				maxEntryDay = maxEntryDay > entryDays ? maxEntryDay : entryDays;
+			}
+
+			//根据最大配送天数的行
+			int afterDays = 0;//经过的天数
+			//行号唯一，需要判断以前最大的行号
+			int daliyEntryNo = 0;//日计划行号
+			
+			outer:for(int i = 0; i < maxEntryDay; i++){
+				for (TPlanOrderItem entry : entryMap.keySet()) {
+					int days = entryMap.get(entry);
+					if(days - 1 >= 0){
+						//判断是按周期送还是按星期送
+						Date today = afterDate(firstDeliveryDate,afterDays);
+						
+						if(entry.getStartDispDate().after(today))continue;
+						
+						entryMap.replace(entry, days-1);//剩余天数减1天
+						
+						if("10".equals(entry.getRuleType())){
+							int gapDays = entry.getGapDays() + 1;//间隔天数
+							if(daysOfTwo(entry.getStartDispDate(),today)%gapDays != 0){
+								if(entry.getRuleTxt()!=null){
+									List<String> deliverDays = Arrays.asList(entry.getRuleTxt().split(","));
+									if(deliverDays.size() > 0){//判断周6，7是否配送
+										String weekday = getWeek(today);
+										if(!deliverDays.contains(weekday)){
+											continue;
+										}
+									}
+								}else{
+									continue;
+								}
+							}
+						}
+						else if("20".equals(entry.getRuleType())){
+							String weekday = getWeek(today);
+							List<String> deliverDays = Arrays.asList(entry.getRuleTxt().split(","));
+							if(!deliverDays.contains(weekday)){
+								continue;//如果选择的星期几不送，则跳过今天生成日计划
+							}
+						}
+
+						//生成该订单行的每日计划
+						TOrderDaliyPlanItem plan = new TOrderDaliyPlanItem();
+						plan.setOrderNo(entry.getOrderNo());//订单编号
+						plan.setOrderDate(order.getOrderDate());//订单日期
+						plan.setPlanItemNo(String.valueOf(daliyEntryNo));//预订单计划行项
+						plan.setItemNo(entry.getItemNo());//预订单日计划行
+						plan.setDispDate(today);//配送日期
+//						plan.setReachTime(entry.getReachTime());//送达时段
+						plan.setReachTimeType(entry.getReachTimeType());//送达时段类型
+						plan.setMatnr(entry.getMatnr());//产品编号
+						plan.setUnit(entry.getUnit());//配送单位
+						plan.setQty(entry.getQty());//产品数量
+						plan.setPrice(entry.getSalesPrice());//产品价格
+						plan.setPromotionFlag(entry.getPromotion());//促销号
+						//日计划行金额和
+						BigDecimal qty = new BigDecimal(entry.getQty().toString());
+						plan.setAmt(entry.getSalesPrice().multiply(qty));//金额小计
+						curAmt = curAmt.subtract(plan.getAmt());
+						
+						//当订单余额小于0时停止
+						if(curAmt.floatValue() < 0)break outer;
+						
+						plan.setRemainAmt(curAmt);//订单余额
+						plan.setStatus("10");//状态
+						plan.setCreateAt(new Date());//创建时间
+						plan.setCreateBy(userSessionService.getCurrentUser().getLoginName());//创建人
+						plan.setCreateByTxt(userSessionService.getCurrentUser().getDisplayName());//创建人姓名
+						
+						tOrderDaliyPlanItemMapper.insert(plan);
+						daliyEntryNo++;
+						
+					}else{
+						continue;
+					}
+				}
+				afterDays++;
+			}
+			/////////////////////////////
+			
+		});
+		
+		return 1;
+	}
 
 }
