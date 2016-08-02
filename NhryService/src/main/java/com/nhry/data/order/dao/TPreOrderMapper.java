@@ -68,4 +68,8 @@ public interface TPreOrderMapper {
     int selectRequiredOrderNum(OrderSearchModel smodel);
     
     int selectStopOrderNum(OrderSearchModel smodel);
+    
+    PageInfo selectNeedResumeOrders(OrderSearchModel smodel);
+    
+    List<TPreOrder> selectIniOrders();
 }

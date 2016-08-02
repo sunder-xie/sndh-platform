@@ -16,6 +16,8 @@ import java.util.List;
 public interface OrderService {
 	List<TOrderDaliyPlanItem> searchDaliyPlansByStatus(String orderNo, String status1,String status2,String status3);
 	
+	PageInfo searchNeedResumeOrders(OrderSearchModel smodel);
+	
 	PageInfo searchOrders(OrderSearchModel smodel);
 	
 	PageInfo searchDaliyOrders(OrderSearchModel smodel);
@@ -79,4 +81,6 @@ public interface OrderService {
    int selectRequiredOrderNum();
    
    int selectStopOrderNum();
+   
+   int createDaliyPlansForIniOrders();
 }
