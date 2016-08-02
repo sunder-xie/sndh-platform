@@ -27,6 +27,7 @@ import com.nhry.data.basic.domain.TMdAddress;
 import com.nhry.data.basic.domain.TVipAcct;
 import com.nhry.data.basic.domain.TVipCustInfo;
 import com.nhry.model.basic.CustQueryModel;
+import com.nhry.model.basic.CustStat;
 import com.nhry.model.sys.ResponseModel;
 import com.nhry.rest.BaseResource;
 import com.nhry.service.basic.dao.TVipCustInfoService;
@@ -160,4 +161,13 @@ public class VipCustResource extends BaseResource {
 			@ApiParam(required=true,name="addressId",value="地址编号")@PathParam("addressId")String addressId) {
 	  return convertToRespModel(MessageCode.NORMAL, null,custService.uptAddressById(status,addressId));
 	}
+	
+	@POST
+	@Path("/status/stat")
+	@Produces(MediaType.APPLICATION_JSON)
+	@ApiOperation(value = "/status/stat", response = CustStat.class, notes = "订户状态信息统计( 10-在订;20-暂停;30-停订;40-退订)")
+	public Response getCustInfoStat() {
+	  return convertToRespModel(MessageCode.NORMAL, null,custService.getCustInfoStat());
+	}
+	
 }

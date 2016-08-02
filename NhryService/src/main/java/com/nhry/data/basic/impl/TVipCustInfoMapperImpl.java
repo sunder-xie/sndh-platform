@@ -10,6 +10,7 @@ import com.nhry.data.basic.dao.TVipCustInfoMapper;
 import com.nhry.data.basic.domain.TMdAddress;
 import com.nhry.data.basic.domain.TVipCustInfo;
 import com.nhry.model.basic.CustQueryModel;
+import com.nhry.model.basic.CustStat;
 
 public class TVipCustInfoMapperImpl implements TVipCustInfoMapper {
 	private DynamicSqlSessionTemplate sqlSessionTemplate;
@@ -88,5 +89,11 @@ public class TVipCustInfoMapperImpl implements TVipCustInfoMapper {
 	public int deleteCustByCno(String cno) {
 		// TODO Auto-generated method stub
 		return this.sqlSessionTemplate.delete("deleteCustByCno", cno);
+	}
+
+	@Override
+	public List<CustStat> getCustInfoStat(Map<String, String> attrs) {
+		// TODO Auto-generated method stub
+		return this.sqlSessionTemplate.selectList("getCustInfoStat", attrs);
 	}
 }

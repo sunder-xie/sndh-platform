@@ -13,6 +13,7 @@ import com.nhry.data.basic.domain.TMdBranch;
 import com.nhry.data.basic.domain.TVipAcct;
 import com.nhry.data.basic.domain.TVipCustInfo;
 import com.nhry.model.basic.CustQueryModel;
+import com.nhry.model.basic.CustStat;
 import com.nhry.service.BaseService;
 import com.nhry.service.basic.dao.TVipCustInfoService;
 import com.nhry.service.basic.pojo.Addresses;
@@ -21,6 +22,7 @@ import com.nhry.utils.date.Date;
 
 import org.apache.commons.lang3.StringUtils;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -339,19 +341,20 @@ public class TVipCustInfoServiceImpl extends BaseService implements TVipCustInfo
 	public int uptAddressById(String status, String addressId) {
 		// TODO Auto-generated method stub
 		TMdAddress address = this.addressMapper.findAddressById(addressId);
+		TSysUser sysuser = this.userSessionService.getCurrentUser();
 		if(address != null){
 			//10 : 删除  20 ： 改成默认状态
 			if("10".equals(status)){
 				 address.setIsDelete("Y");
 				 address.setLastModified(new Date());
-				 address.setLastModifiedBy(this.userSessionService.getCurrentUser().getSalesOrg());
-				 address.setLastModifiedByTxt(this.userSessionService.getCurrentUser().getDisplayName());
+				 address.setLastModifiedBy(sysuser.getSalesOrg());
+				 address.setLastModifiedByTxt(sysuser.getDisplayName());
 				 return this.addressMapper.uptCustAddress(address);
 			}else if("20".equals(status)){
 				 address.setIsDafault("Y");
 				 address.setLastModified(new Date());
-				 address.setLastModifiedBy(this.userSessionService.getCurrentUser().getSalesOrg());
-				 address.setLastModifiedByTxt(this.userSessionService.getCurrentUser().getDisplayName());
+				 address.setLastModifiedBy(sysuser.getSalesOrg());
+				 address.setLastModifiedByTxt(sysuser.getDisplayName());
 				 this.addressMapper.uptCustAddress(address);
 				 //将该订户下的其他详细地址设置为非默认状态
 				return this.addressMapper.uptCustAddressUnDefault(address);
@@ -413,5 +416,49 @@ public class TVipCustInfoServiceImpl extends BaseService implements TVipCustInfo
 
 	public void setBranchMapper(TMdBranchMapper branchMapper) {
 		this.branchMapper = branchMapper;
+	}
+
+	@Override
+	public List<CustStat> getCustInfoStat() {
+		// TODO Auto-generated method stub
+		Map<String, String> attrs = new HashMap<String,String>();
+		TSysUser sysuser = this.userSessionService.getCurrentUser();
+		attrs.put("salesOrg", sysuser.getSalesOrg());
+		attrs.put("dealerNo", sysuser.getDealerId());
+		attrs.put("branchNo", sysuser.getBranchNo());
+		List<CustStat> lists = tmdVipcust.getCustInfoStat(attrs);
+		int am = 0;
+		/**
+		 * 10-在订
+			20-暂停
+			30-停订
+			40-退订
+		 */
+		List<String> status = new ArrayList<String>();
+		status.add("10");
+		status.add("20");
+		status.add("30");
+		status.add("40");
+		
+		outer:for(String sta : status){
+			for(CustStat cs : lists){
+				if(sta.equals(cs.getStatus())){
+					continue outer;
+				}
+			}
+			CustStat cs = new CustStat();
+			cs.setStatus(sta);
+			cs.setAmount("0");
+			lists.add(cs);
+		}
+		
+		for(CustStat cs : lists){
+			am += Integer.parseInt(cs.getAmount());
+		}
+		CustStat cs = new CustStat();
+		cs.setStatus("0");
+		cs.setAmount(am+"");
+		lists.add(cs);
+		return lists;
 	}
 }
