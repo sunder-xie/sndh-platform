@@ -5,7 +5,7 @@
         <if test="branchNo != null">
             AND b.BRANCH_NO = ${branchNo}
         </if>
-        <if test="dealerId != null">
+        <if test="dealerId != null and dealerId != '-1'">
             AND b.DEALER_NO = ${dealerId}
         </if>
         <if test="salesOrg != null">
@@ -113,14 +113,14 @@
         o.BRANCH_NO,
         o.ORDER_DATE,
         i.MATNR,
-        i.qty
+        i.CONFIRM_QTY qty
         FROM
         t_mst_disp_order_item i
         JOIN t_mst_disp_order o ON i.ORDER_NO = o.ORDER_NO
         AND i.ORDER_DATE BETWEEN DATE_ADD(#{theDate,jdbcType=DATE}, INTERVAL - 4 DAY)
         AND #{theDate,jdbcType=DATE}
         AND o.ORDER_DATE = i.ORDER_DATE
-        AND i.`STATUS` = '20'
+        AND o.`STATUS` = '20'
         JOIN t_md_branch b ON b.BRANCH_NO = o.BRANCH_NO
         <include refid="Query_Base_Column"/>
         ) q
@@ -241,7 +241,7 @@
         <if test="branchNo != null">
             AND br.BRANCH_NO = ${branchNo}
         </if>
-        <if test="dealerId != null">
+        <if test="dealerId != null and dealerId != '-1'">
             AND br.DEALER_NO = ${dealerId}
         </if>
         <if test="salesOrg != null">
@@ -305,7 +305,7 @@
                             )
                             AND #{theDate,jdbcType=DATE}
                             AND o.ORDER_DATE = i.ORDER_DATE
-                            AND i.`STATUS` = '20'
+                            AND o.`STATUS` = '20'
                             JOIN t_md_branch b ON b.BRANCH_NO = o.BRANCH_NO
                             JOIN t_md_mara m ON i.MATNR = m.MATNR
                             AND b.SALES_ORG = m.SALES_ORG
@@ -349,7 +349,7 @@
                         JOIN t_mst_disp_order o ON i.ORDER_NO = o.ORDER_NO
                         AND i.ORDER_DATE = #{theDate,jdbcType=DATE}
                         AND o.ORDER_DATE = i.ORDER_DATE
-                        AND i.`STATUS` = '20'
+                        AND o.`STATUS` = '20'
                         JOIN t_md_branch b ON b.BRANCH_NO = o.BRANCH_NO
                         JOIN t_md_mara m ON i.MATNR = m.MATNR
                         AND b.SALES_ORG = m.SALES_ORG
@@ -392,7 +392,7 @@
                         JOIN t_mst_disp_order o ON i.ORDER_NO = o.ORDER_NO
                         AND i.ORDER_DATE = date_add(#{theDate,jdbcType=DATE}, INTERVAL - 1 DAY)
                         AND o.ORDER_DATE = i.ORDER_DATE
-                        AND i.`STATUS` = '20'
+                        AND o.`STATUS` = '20'
                         JOIN t_md_branch b ON b.BRANCH_NO = o.BRANCH_NO
                         JOIN t_md_mara m ON i.MATNR = m.MATNR
                         AND b.SALES_ORG = m.SALES_ORG

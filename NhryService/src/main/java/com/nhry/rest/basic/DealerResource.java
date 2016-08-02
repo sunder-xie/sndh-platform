@@ -1,7 +1,6 @@
 package com.nhry.rest.basic;
 
 import com.nhry.common.exception.MessageCode;
-import com.nhry.data.basic.domain.TMdBranch;
 import com.nhry.rest.BaseResource;
 import com.nhry.service.basic.DealerService;
 import com.sun.jersey.spi.resource.Singleton;
@@ -17,6 +16,7 @@ import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+import java.util.List;
 
 @Path("/dealer")
 @Component
@@ -31,9 +31,18 @@ public class DealerResource extends BaseResource {
 	@GET
 	@Path("/getDealerBySalesOrg")
 	@Produces(MediaType.APPLICATION_JSON)
-	@ApiOperation(value = "/getDealerBySalesOrg", response = TMdBranch.class, notes = "根据销售组织查询经销商信息列表")
+	@ApiOperation(value = "/getDealerBySalesOrg", response = List.class, notes = "根据销售组织查询经销商信息列表")
 	public Response findBranchListByOrg(){
 		return convertToRespModel(MessageCode.NORMAL, null,dealerService.getDealerBySalesOrg());
 	}
+
+	@GET
+	@Path("/getDealerOnAuth")
+	@Produces(MediaType.APPLICATION_JSON)
+	@ApiOperation(value = "/getDealerOnAuth", response = List.class, notes = "查询经销商信息列表")
+	public Response getDealerOnAuth(){
+		return convertToRespModel(MessageCode.NORMAL, null,dealerService.getDealerOnAuth());
+	}
+
 
 }

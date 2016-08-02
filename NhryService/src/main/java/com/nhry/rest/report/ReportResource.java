@@ -11,7 +11,6 @@ import com.nhry.data.order.domain.TMilkboxPlan;
 import com.nhry.data.order.domain.TPreOrder;
 import com.nhry.model.milk.RouteOrderModel;
 import com.nhry.model.order.CollectOrderModel;
-import com.nhry.model.order.MilkboxSearchModel;
 import com.nhry.model.order.OrderCreateModel;
 import com.nhry.model.order.ProductItem;
 import com.nhry.model.statistics.BranchInfoModel;
@@ -38,8 +37,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Controller;
 
-import javax.activation.MimetypesFileTypeMap;
-import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.ws.rs.*;

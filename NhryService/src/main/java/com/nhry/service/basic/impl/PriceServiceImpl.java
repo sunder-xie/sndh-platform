@@ -211,7 +211,7 @@ public class PriceServiceImpl extends BaseService implements PriceService {
 				// TODO Auto-generated method stub
 				super.run();
 				this.setName("sendMessagesForAddPriceBranch");
-				messService.sendMessagesForUptBranch(branch,1);
+				messService.sendMessagesForUptBranch(branch,1,user);
 			}
 		});
 		return 1;
@@ -265,6 +265,7 @@ public class PriceServiceImpl extends BaseService implements PriceService {
 		}
 		priceBranchMapper.delPriceBranch(attrs);
 		//奶站价格组更新，发送系统消息
+		TSysUser user = this.userSessionService.getCurrentUser();
 		taskExecutor.execute(new Thread(){
 			@Override
 			public void run() {
@@ -273,7 +274,7 @@ public class PriceServiceImpl extends BaseService implements PriceService {
 				this.setName("sendMessagesForDelPriceBranch");
 				TMdBranch branch = branchMapper.selectBranchByNo(branchNo);
 				if(branch != null){
-					messService.sendMessagesForUptBranch(branch,1);
+					messService.sendMessagesForUptBranch(branch,1,user);
 				}
 			}
 		});

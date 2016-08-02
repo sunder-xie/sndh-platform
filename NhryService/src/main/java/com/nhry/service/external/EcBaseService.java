@@ -1,6 +1,8 @@
 package com.nhry.service.external;
 
+import java.io.IOException;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.lang3.StringUtils;
@@ -70,6 +72,7 @@ public class EcBaseService {
 		mess.setReqType("POST");
 		mess.setReqUrl(url);
 		mess.setReqContent(reqbody);
+		mess.setStatus("N");
 		mess.setSysFlag("10"); //10 ： 电商
 		mess.setCreateAt(new Date());
 		if(!StringUtils.isEmpty(errorMessage)){
@@ -81,6 +84,43 @@ public class EcBaseService {
 		}
 		mess.setErrorCode(errorCode);
 		messLogMapper.addPushMessageLog(mess);
+    }
+    
+    /**
+     * 再次将上次失败的消息重新推送
+     */
+    public void resendMessage2Ec(){
+    	 try {
+    		 System.out.println("----------定时任务来了--------------");
+			List<TSysPushMessageLog> lists = messLogMapper.findSysPushMessageLogs();
+			 if(lists != null && lists.size() > 0){
+				 for(TSysPushMessageLog log : lists){
+					 if(!StringUtils.isEmpty(log.getReqContent())){
+						 Map<String, Object> params = new HashMap<String,Object>(2);
+						params.put("data", log.getReqContent());
+			        	String msg = HttpUtils.request(log.getReqUrl(), params);;
+			        	//成功调用
+			    		JSONObject json = new JSONObject(msg);
+			    		if(json.has("success") && json.getBoolean("success")){
+			    			log.setLastModified(new Date());
+			    			log.setStatus("Y");
+			    			messLogMapper.updatePushMessageLog(log);
+			    		}
+					 }
+				 }
+			 }
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+    }
+    
+    /**
+     * 获取推送的消息记录列表
+     * @return
+     */
+    public List<TSysPushMessageLog> getMessageLogs(){
+    	return messLogMapper.findSysPushMessageLogs();
     }
     
 	public void setMessLogMapper(TSysPushMessageLogMapper messLogMapper) {

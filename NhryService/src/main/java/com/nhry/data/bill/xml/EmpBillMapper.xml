@@ -27,6 +27,7 @@
         <result column="ACCOUNT_RECE" property="amountRece" jdbcType="DECIMAL" />
         <result column="ACCOUNT_REAL" property="amountReal" jdbcType="DECIMAL" />
         <result column="ACCOUNT_GAP" property="amountGap" jdbcType="DECIMAL" />
+        <result column="PAYMENTMETHOD" property="paymentmethod" jdbcType="VARCHAR" />
         <result column="PAYMENT_TYPE" property="paymentType" jdbcType="VARCHAR" />
         <result column="PAYMENT_DATE" property="paymentDate" jdbcType="DATE" />
     </resultMap>
@@ -192,7 +193,7 @@
         br.BRANCH_NAME,
         a.ACCT_AMT,
         c.MP,
-        c.ADDRESS_TXT ADDRESS,
+        CONCAT(r.RESIDENTIAL_AREA_TXT ,c.ADDRESS_TXT) ADDRESS,
         o.INIT_AMT ACCOUNT_RECE,
         b.AMT ACCOUNT_REAL,
         (b.AMT-o.INIT_AMT) ACCOUNT_GAP,
@@ -209,6 +210,7 @@
         LEFT JOIN t_vip_cust_info c on b.VIP_CUST_NO = c.VIP_CUST_NO
         LEFT JOIN t_vip_acct a on b.VIP_CUST_NO = a.VIP_CUST_NO
         LEFT JOIN t_md_branch br on o.BRANCH_NO = br.BRANCH_NO
+        LEFT JOIN t_md_residential_area r on c.SUBDIST = r.ID
         WHERE 1= 1
             <if test="salesOrg!=null and ''!=salesOrg">
                 and o.SALES_ORG = #{salesOrg,jdbcType=VARCHAR}

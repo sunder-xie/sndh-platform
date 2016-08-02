@@ -21,14 +21,12 @@ import com.nhry.model.order.*;
 import com.nhry.service.BaseService;
 import com.nhry.service.basic.dao.PriceService;
 import com.nhry.service.basic.dao.TVipCustInfoService;
-import com.nhry.service.external.EcBaseService;
 import com.nhry.service.external.dao.EcService;
 import com.nhry.service.order.dao.MilkBoxService;
 import com.nhry.service.order.dao.OrderService;
 import com.nhry.service.order.dao.PromotionService;
 import com.nhry.service.order.pojo.OrderRemainData;
 import com.nhry.utils.CodeGeneratorUtil;
-
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.core.task.TaskExecutor;
 
@@ -1254,9 +1252,13 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 			if("30".equals(order.getPreorderSource()) ){
 				record.getAddress().setVipCustNo(order.getMilkmemberNo());
 				record.getAddress().setRecvName(order.getMilkmemberName());
-				order.setAdressNo(tVipCustInfoService.addAddressForCust(record.getAddress(),null).split(",")[1]);
+				order.setAdressNo(tVipCustInfoService.addAddressForCust(record.getAddress(),null,null).split(",")[1]);
 			}else{
-				String addressAndMilkmember = tVipCustInfoService.addAddressForCust(record.getAddress(),order.getBranchNo());
+				Map<String,String> map = new HashMap<String,String>();
+				map.put("activityNo",order.getSolicitNo());
+				map.put("vipType",order.getDeliveryType());
+				map.put("vipSrc",order.getPreorderSource());
+				String addressAndMilkmember = tVipCustInfoService.addAddressForCust(record.getAddress(),order.getBranchNo(),map);
 				order.setMilkmemberNo(addressAndMilkmember.split(",")[0]);
 				order.setAdressNo(addressAndMilkmember.split(",")[1]);
 			}

@@ -36,7 +36,7 @@ public class UserSessionService {
 	static{
 		authsMap = new HashMap<String,String>();
 		authsMap.put("ec", "Ab1234@Ec");
-		authsMap.put("nt", "Ac1234@Nt");
+		authsMap.put("cisco", "cisco@abc");
 		authsMap.put("app", "Ad1234@App");
 	}
 	
@@ -160,16 +160,7 @@ public class UserSessionService {
 			user.setLastModified(date);
 			return user;
 		}
-		
-		TSysUser user = accessKeyThread.get();
-//		AccessKey ak = (AccessKey)objectRedisTemplate.opsForHash().get(SysContant.getSystemConst("app_access_key"), accessKey);
-//		if(ak == null){
-//			//反序列化失败
-//			LOGGER.warn("aceesskey不存在或者反序列化失败!");
-//			return null;
-//		}
-//		TSysUser user = (TSysUser)objectRedisTemplate.opsForHash().get(SysContant.getSystemConst("app_user_key"), ak.getUname());
-		return user;
+		return accessKeyThread.get();
 	}
 	
 	/**

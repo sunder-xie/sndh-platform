@@ -72,7 +72,7 @@ public class TVipCustInfoServiceImpl extends BaseService implements TVipCustInfo
 			address.setCreateAt(new Date());
 			address.setCreateBy(this.userSessionService.getCurrentUser().getLoginName());
 			address.setCreateByTxt(this.userSessionService.getCurrentUser().getDisplayName());
-			addAddressForCust(address,null);
+			addAddressForCust(address,null,null);
 		}
 		return record.getVipCustNo();
 	}
@@ -172,15 +172,20 @@ public class TVipCustInfoServiceImpl extends BaseService implements TVipCustInfo
 	}
 
 	@Override
-	public String addAddressForCust(TMdAddress address,String branchNo) {
+	public String addAddressForCust(TMdAddress address,String branchNo,Map<String,String> maps) {
 		// TODO Auto-generated method stub
 		if(StringUtils.isEmpty(address.getRecvName()) || StringUtils.isEmpty(address.getAddressTxt()) || StringUtils.isEmpty(address.getProvince()) || StringUtils.isEmpty(address.getCity()) ){
 			throw new ServiceException(MessageCode.LOGIC_ERROR, "订户地址详细信息对应的收货人(recvName)、详细地址(addressTxt)、省份(province)、城市(city)不能为空!");
 		}
 		boolean tag = false;
+		TSysUser sysuser = this.userSessionService.getCurrentUser();
 		if(!StringUtils.isEmpty(branchNo) && StringUtils.isEmpty(address.getVipCustNo())){
 			//来自电商，需要自动创建订户
 			tag = true;
+			TMdBranch branch = branchMapper.selectBranchByNo(branchNo);
+			if(branch == null){
+				throw new ServiceException(MessageCode.LOGIC_ERROR, "该奶站编号的对应的奶站信息不存在!");
+			}
 			Map<String,String> attrs = new HashMap<String,String>();
 			attrs.put("salesOrg", this.userSessionService.getCurrentUser().getSalesOrg());
 			attrs.put("branchNo",branchNo);
@@ -196,11 +201,23 @@ public class TVipCustInfoServiceImpl extends BaseService implements TVipCustInfo
 				cust.setMp(address.getMp());
 				cust.setVipName(address.getRecvName());
 				cust.setBranchNo(branchNo);
+				cust.setStatus("10");//在订状态
 				cust.setSubdist(address.getResidentialArea());
 				cust.setCreateAt(new Date());
-				cust.setCreateBy(this.userSessionService.getCurrentUser().getLoginName());
-				cust.setCreateByTxt(this.userSessionService.getCurrentUser().getDisplayName());
-				cust.setSalesOrg(this.userSessionService.getCurrentUser().getSalesOrg());
+				cust.setCreateBy(sysuser.getLoginName());
+				cust.setCreateByTxt(sysuser.getDisplayName());
+				cust.setSalesOrg(sysuser.getSalesOrg());
+				if(StringUtils.isEmpty(branch.getDealerNo())){
+					cust.setDealerNo("-1");
+				}else{
+					cust.setDealerNo(branch.getDealerNo());
+				}
+				cust.setVipSrc("10"); //电商
+				if(maps != null && maps.size() > 0){
+					cust.setActivityNo(maps.get("activityNo"));  //活动编号
+					cust.setVipType(maps.get("vipType"));  //订户类型
+					cust.setVipSrc(maps.get("vipSrc")); //订户来源
+				}
 				this.tmdVipcust.addVipCust(cust);
 				address.setVipCustNo(cust.getVipCustNo());
 			}else{
@@ -226,9 +243,11 @@ public class TVipCustInfoServiceImpl extends BaseService implements TVipCustInfo
 			}
 		}
 		address.setAddressId(PrimaryKeyUtils.generateUuidKey());
+		address.setIsDafault("Y");
+		address.setIsDelete("N");
 		address.setCreateAt(new Date());
-		address.setCreateBy(this.userSessionService.getCurrentUser().getLoginName());
-		address.setCreateByTxt(this.userSessionService.getCurrentUser().getDisplayName());
+		address.setCreateBy(sysuser.getLoginName());
+		address.setCreateByTxt(sysuser.getDisplayName());
 		this.addressMapper.addAddressForCust(address);
 		return address.getVipCustNo()+","+address.getAddressId();
 	}
@@ -247,9 +266,10 @@ public class TVipCustInfoServiceImpl extends BaseService implements TVipCustInfo
 		if(_address == null){
 			throw new ServiceException(MessageCode.LOGIC_ERROR, "该地址唯一编号(addressId)对应的地址详细信息不存在!");
 		}
+		TSysUser sysuser = this.userSessionService.getCurrentUser();
 		address.setLastModified(new Date());
-		address.setLastModifiedBy(this.userSessionService.getCurrentUser().getLoginName());
-		address.setLastModifiedByTxt(this.userSessionService.getCurrentUser().getDisplayName());
+		address.setLastModifiedBy(sysuser.getLoginName());
+		address.setLastModifiedByTxt(sysuser.getDisplayName());
 	  return this.addressMapper.uptCustAddress(address);
 	}
 
@@ -264,17 +284,18 @@ public class TVipCustInfoServiceImpl extends BaseService implements TVipCustInfo
 			throw new ServiceException(MessageCode.LOGIC_ERROR, "该订户编号对应的订户信息不存在!");
 		}
 		TVipAcct acct = findVipAcctByCustNo(record.getVipCustNo());
+		TSysUser sysuser = this.userSessionService.getCurrentUser();
 		if(acct == null){
 			//添加
 			record.setCreateAt(new Date());
-			record.setCreateBy(this.userSessionService.getCurrentUser().getLoginName());
-			record.setCreateByTxt(this.userSessionService.getCurrentUser().getDisplayName());
+			record.setCreateBy(sysuser.getLoginName());
+			record.setCreateByTxt(sysuser.getDisplayName());
 			return this.vipAcctMapper.addVipAcct(record);
 		}else{
 			//修改  
 			acct.setLastModified(new Date());
-			acct.setLastModifiedBy(this.userSessionService.getCurrentUser().getLoginName());
-			acct.setLastModifiedByTxt(this.userSessionService.getCurrentUser().getDisplayName());
+			acct.setLastModifiedBy(sysuser.getLoginName());
+			acct.setLastModifiedByTxt(sysuser.getDisplayName());
 			acct.setAcctAmt(acct.getAcctAmt().add(record.getAcctAmt()));
 			return this.uptVipAcct(acct);
 	   }
@@ -349,7 +370,7 @@ public class TVipCustInfoServiceImpl extends BaseService implements TVipCustInfo
 			for(TMdAddress ad : record.getAddresses()){
 				if(StringUtils.isBlank(ad.getAddressId())){
 					//新增
-					this.addAddressForCust(ad,null);
+					this.addAddressForCust(ad,null,null);
 				}else{
 					//修改
 					this.addressMapper.uptCustAddress(ad);
