@@ -106,6 +106,7 @@ public class EmpBillServiceImpl implements EmpBillService {
      */
     @Override
     public BigDecimal CalculateEmpTransRateByNum(String empNo,int dispNum) {
+        String message = "";
         TMdBranchEmp emp =branchEmpMapper.selectBranchEmpByNo(empNo);
         if(emp == null){
             throw new ServiceException(MessageCode.LOGIC_ERROR,"该员工不存在！");
@@ -116,6 +117,9 @@ public class EmpBillServiceImpl implements EmpBillService {
         int j = 0;
         List<TMdDispRateItem> oldList = tMdDispRateItemMapper.getDispRateNumBySalOrg(salesOrg);
         //如果是数量
+        if(StringUtils.isBlank(salaryMet)){
+            throw new ServiceException(MessageCode.LOGIC_ERROR,"员工  " +emp.getEmpName() +"  没有维护工资结算方式 信息，请先在员工信息中维护");
+        }
         if("10".equals(salaryMet)){
             if(oldList!=null && oldList.size() >0){
               for(int i=0;i<oldList.size();i++){
@@ -130,7 +134,6 @@ public class EmpBillServiceImpl implements EmpBillService {
             }
             return oldList.get(j).getRate();
         }
-
 
         throw new ServiceException(MessageCode.LOGIC_ERROR,"配送数 不在输入的阶梯范围内!!! 请审查");
     }
@@ -418,13 +421,11 @@ public class EmpBillServiceImpl implements EmpBillService {
 
 
                 //按产品结算  //赠品配送费
-
-                //按产品结算  //产品配送费
                 List<EmpAccoDispFeeByProduct> proFree = empBillMapper.empFreeDispByProduct(search);
-                BigDecimal dispFreeFee = this.getEmpDispFee(pro,emp.getSalesOrg());
+                BigDecimal dispFreeFee = this.getEmpDispFee(proFree,emp.getSalesOrg());
                 empSal.setSendDispSal(dispFreeFee);
-                if(proIn!=null && proIn.size()>0){
-                    for(EmpAccoDispFeeByProduct p : pro ){
+                if(proFree!=null && proFree.size()>0){
+                    for(EmpAccoDispFeeByProduct p : proFree ){
                         dispAllNum = dispAllNum +   p.getQty();
                     }
                 }
