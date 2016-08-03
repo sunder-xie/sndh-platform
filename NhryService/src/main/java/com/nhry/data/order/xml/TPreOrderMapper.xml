@@ -850,6 +850,9 @@
     update t_preorder  
     set EMP_NO = #{content,jdbcType=VARCHAR} 
     where EMP_NO = #{empNo,jdbcType=VARCHAR}
+    		 and PREORDER_STAT != '30'
+    		 and PREORDER_STAT != '40'
+    		 and SIGN != '30'
   </update>
   
   <select id="selectIniOrders" resultMap="BaseResultMap">

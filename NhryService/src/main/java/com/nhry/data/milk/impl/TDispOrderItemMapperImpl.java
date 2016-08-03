@@ -188,4 +188,20 @@ public class TDispOrderItemMapperImpl implements TDispOrderItemMapper
 		return sqlSessionTemplate.update("updateDispOrderItemEmp", order);
 	}
 
+	/* (non-Javadoc) 
+	* @title: selectCountOfTodayByOrgOrder
+	* @description: 判断此订单是否生成过今日路单并且没有确认
+	* @param order
+	* @return 
+	* @see com.nhry.data.milk.dao.TDispOrderItemMapper#selectCountOfTodayByOrgOrder(com.nhry.data.milk.domain.TDispOrder) 
+	*/
+	@Override
+	public int selectCountOfTodayByOrgOrder(String orgOrderNo, String today)
+	{
+		TDispOrder order = new TDispOrder();
+		order.setOrderNo(orgOrderNo);
+		order.setReachTimeType(today);
+		return sqlSessionTemplate.selectOne("selectCountOfTodayByOrgOrder", order);
+	}
+
 }

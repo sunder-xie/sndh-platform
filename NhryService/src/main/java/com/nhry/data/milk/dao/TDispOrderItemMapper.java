@@ -50,4 +50,7 @@ public interface TDispOrderItemMapper {
     List<TRecBotDetail> createRecBotByDispOrder(String dispOrderNo);
     
     int updateDispOrderItemEmp(TDispOrder order);
+    
+    int selectCountOfTodayByOrgOrder(String orgOrderNo, String today);
+    
 }
