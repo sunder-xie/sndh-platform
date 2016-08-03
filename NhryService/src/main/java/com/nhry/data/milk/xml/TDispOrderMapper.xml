@@ -387,4 +387,10 @@
     and REACH_TIME_TYPE = #{reachTimeType,jdbcType=VARCHAR}
     and STATUS = '20'
   </select>
+  
+    <update id="updateDispOrderEmp" parameterType="com.nhry.data.milk.domain.TDispOrder" >
+	    update t_mst_disp_order
+	    set DISP_EMP_NO = #{dispEmpNo,jdbcType=VARCHAR}  
+	    where ORDER_NO = #{orderNo,jdbcType=VARCHAR}
+  	 </update>
 </mapper>

@@ -538,4 +538,10 @@
     from t_mst_disp_order_item
     where ORDER_NO = #{dispOrderNo,jdbcType=VARCHAR}
   </select>
+  
+  <update id="updateDispOrderItemEmp" parameterType="com.nhry.data.milk.domain.TDispOrder" >
+	    update t_mst_disp_order_item
+	    set DISP_EMP_NO = #{dispEmpNo,jdbcType=VARCHAR}  
+	    where ORDER_NO = #{orderNo,jdbcType=VARCHAR}
+  	</update>
 </mapper>

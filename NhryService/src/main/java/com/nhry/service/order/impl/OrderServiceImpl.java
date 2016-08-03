@@ -27,6 +27,7 @@ import com.nhry.service.order.dao.OrderService;
 import com.nhry.service.order.dao.PromotionService;
 import com.nhry.service.order.pojo.OrderRemainData;
 import com.nhry.utils.CodeGeneratorUtil;
+
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.core.task.TaskExecutor;
 
@@ -3239,6 +3240,19 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 		});
 		
 		return 1;
+	}
+
+	/* (non-Javadoc) 
+	* @title: replaceOrdersDispmember
+	* @description: 更换a送奶员的订单为b
+	* @param record
+	* @return 
+	* @see com.nhry.service.order.dao.OrderService#replaceOrdersDispmember(com.nhry.model.order.OrderSearchModel) 
+	*/
+	@Override
+	public int replaceOrdersDispmember(OrderSearchModel record)
+	{
+		return tPreOrderMapper.replaceOrdersDispmember(record);
 	}
 
 }
