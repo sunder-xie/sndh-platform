@@ -47,4 +47,18 @@ public interface TSysUserMapper {
 	 * @return
 	 */
 	List<TSysUser> getloginNamesByOrgsandRid2(Map<String,String> attrs);
+
+	/**
+	 * 查询未分配角色的用户
+	 * @param model
+	 * @return
+     */
+	List<TSysUser> findNotRoleUser(UserQueryModel model);
+
+	/**
+	 * 查询未分配角色的用户分页
+	 * @param model
+	 * @return
+     */
+	PageInfo<TSysUser> findNotRoleUserPage(UserQueryModel model);
 }
