@@ -8,6 +8,7 @@ import com.nhry.data.basic.domain.TMdAddress;
 import com.nhry.data.basic.domain.TVipAcct;
 import com.nhry.data.basic.domain.TVipCustInfo;
 import com.nhry.model.basic.CustQueryModel;
+import com.nhry.model.basic.CustStat;
 import com.nhry.service.basic.pojo.Addresses;
 import com.nhry.utils.date.Date;
 
@@ -155,4 +156,11 @@ public interface TVipCustInfoService {
      * @return
      */
     public String uptCustBranchNo(String custNo,String branchNo);
+    
+    /**
+     * 获取当前组织订户状态统计数据
+     * @param attrs
+     * @return
+     */
+    public List<CustStat> getCustInfoStat();
 }
