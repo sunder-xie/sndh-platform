@@ -24,12 +24,21 @@ public class TMstRecvBill implements Serializable {
     private int totalNum;
     private String recvEmp;
     private String recvEmpName;
+    private BigDecimal accAmt;
     private Date createAt;
     private  String createBy;
     private String createByTxt;
     private Date lastModified;
     private String lastModifiedBy;
     private String lastModifiedByTxt;
+
+    public BigDecimal getAccAmt() {
+        return accAmt;
+    }
+
+    public void setAccAmt(BigDecimal accAmt) {
+        this.accAmt = accAmt;
+    }
 
     public String getOrderNo() {
         return orderNo;
