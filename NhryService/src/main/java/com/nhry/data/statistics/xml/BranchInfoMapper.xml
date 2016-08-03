@@ -69,14 +69,15 @@
         0
         END
         ) AS 'date5',
-        max(
+        ROUND(
+        (max(
         CASE b.ORDER_DATE
         WHEN date_format(#{theDate,jdbcType=DATE}, '%Y-%m-%d') THEN
         qty
         ELSE
         0
         END
-        ) / max(
+        )-max(
         CASE b.ORDER_DATE
         WHEN date_format(
         DATE_ADD(#{theDate,jdbcType=DATE}, INTERVAL - 1 DAY),
@@ -86,7 +87,17 @@
         ELSE
         0
         END
-        ) AS hb
+        ))*100/ max(
+        CASE b.ORDER_DATE
+        WHEN date_format(
+        DATE_ADD(#{theDate,jdbcType=DATE}, INTERVAL - 1 DAY),
+        '%Y-%m-%d'
+        ) THEN
+        qty
+        ELSE
+        0
+        END
+        ),'2') AS hb
         FROM
         (
         SELECT
@@ -258,9 +269,9 @@
 	    lastd.lastPrice,
 	    lastd.lastQty,
 	    IFNULL(dayd.dayQty, 0) - IFNULL(lastd.lastQty, 0) newQty,
-        (
+        ROUND((
             IFNULL(dayd.dayQty, 0) - IFNULL(lastd.lastQty, 0)
-        ) / lastd.lastQty hb
+        )*100 / lastd.lastQty,'2') hb
         FROM
             (
                 SELECT
