@@ -83,4 +83,7 @@ public interface OrderService {
    int selectStopOrderNum();
    
    int createDaliyPlansForIniOrders();
+   
+   int replaceOrdersDispmember(OrderSearchModel record);
+   
 }

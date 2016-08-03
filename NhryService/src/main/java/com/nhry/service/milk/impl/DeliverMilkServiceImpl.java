@@ -130,7 +130,7 @@ public class DeliverMilkServiceImpl extends BaseService implements DeliverMilkSe
 			if(entries!=null && entries.size()>0){
 				for(TDispOrderItem entry : entries){
 					//更新库存
-					if( !"20".equals(entry.getReason())) {
+					if( !"20".equals(entry.getReason()) && !"10".equals(entry.getReason())) {
 						tSsmStockService.updateStock(order.getBranchNo(), entry.getConfirmMatnr(), entry.getQty(), user.getSalesOrg());
 					}else{
 						tSsmStockService.updateStock(order.getBranchNo(), entry.getConfirmMatnr(), entry.getConfirmQty(), user.getSalesOrg());
@@ -379,10 +379,22 @@ public class DeliverMilkServiceImpl extends BaseService implements DeliverMilkSe
 	@Override
 	public int updateRouteOrderAllItems(RouteDetailUpdateListModel record)
 	{
+		//如果更新了送奶员，更新该路单的送奶员
+		TDispOrderKey key = new TDispOrderKey();
+		key.setOrderNo(record.getRouteNo());
+		TDispOrder dispOrder = tDispOrderMapper.selectByPrimaryKey(key);
+		if(dispOrder==null)throw new ServiceException(MessageCode.LOGIC_ERROR,record.getRouteNo()+"[没有此路单号!]");
+		
+		dispOrder.setDispEmpNo(record.getDispEmpNo());
+		tDispOrderMapper.updateDispOrderEmp(dispOrder);
+		tDispOrderItemMapper.updateDispOrderItemEmp(dispOrder);
+		
+		//更新详细项目行
 		Map<String,String> productMap = productService.getMataBotTypes();
 		record.getList().stream().forEach((e)->{
 			updateRouteOrderItems(e,productMap);
 		});
+		
 		return 1;
 	}
 	

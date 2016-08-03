@@ -58,6 +58,7 @@
 	</bean>
 	<bean id="empBillService" class="com.nhry.service.bill.impl.EmpBillServiceImpl">
 		<property name="urMapper"  ref="urMapper"></property>
+		<property name="branchMapper"  ref="branchMapper"></property>
 		<property name="tMdEmpSalMapper"  ref="tMdEmpSalMapper"></property>
 		<property name="empBillMapper"  ref="empBillMapper"></property>
 		<property name="branchEmpMapper"  ref="branchEmpMapper"></property>

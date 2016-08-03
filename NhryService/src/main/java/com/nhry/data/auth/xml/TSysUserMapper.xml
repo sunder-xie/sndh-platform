@@ -558,7 +558,9 @@
         </if>
         <where>
             <if test="uname != null and '' != uname">
-                and (u.LOGIN_NAME like CONCAT('%',#{uname,jdbcType=VARCHAR},'%') or u.DISPLAY_NAME like CONCAT('%',#{uname,jdbcType=VARCHAR},'%') OR u.SMART_IDCARDNUMBER like CONCAT('%',#{uname,jdbcType=VARCHAR},'%') OR
+                and (u.LOGIN_NAME like CONCAT('%',#{uname,jdbcType=VARCHAR},'%') or u.DISPLAY_NAME like
+                CONCAT('%',#{uname,jdbcType=VARCHAR},'%') OR u.SMART_IDCARDNUMBER like
+                CONCAT('%',#{uname,jdbcType=VARCHAR},'%') OR
                 u.MOBILE like CONCAT('%',#{uname,jdbcType=VARCHAR},'%'))
             </if>
             <if test="salesOrg != null and ''!= salesOrg">
@@ -588,7 +590,9 @@
                 r.ID = #{roleId,jdbcType=VARCHAR}
             </if>
             <if test="uname != null and '' != uname">
-                and (u.LOGIN_NAME like CONCAT('%',#{uname,jdbcType=VARCHAR},'%') or u.DISPLAY_NAME like CONCAT('%',#{uname,jdbcType=VARCHAR},'%') OR u.SMART_IDCARDNUMBER like CONCAT('%',#{uname,jdbcType=VARCHAR},'%') OR
+                and (u.LOGIN_NAME like CONCAT('%',#{uname,jdbcType=VARCHAR},'%') or u.DISPLAY_NAME like
+                CONCAT('%',#{uname,jdbcType=VARCHAR},'%') OR u.SMART_IDCARDNUMBER like
+                CONCAT('%',#{uname,jdbcType=VARCHAR},'%') OR
                 u.MOBILE like CONCAT('%',#{uname,jdbcType=VARCHAR},'%'))
             </if>
             <if test="salesOrg != null and ''!= salesOrg">
@@ -609,7 +613,7 @@
         <result column="DEALER_ID" jdbcType="VARCHAR" property="dealerId"/>
         <result column="SALES_ORG" jdbcType="VARCHAR" property="salesOrg"/>
         <!--<collection property="roleIds" ofType="com.nhry.data.auth.domain.TSysUserRole">-->
-            <!--<id property="id" column="ID"/>-->
+        <!--<id property="id" column="ID"/>-->
         <!--</collection>-->
     </resultMap>
     <select id="findUserBack" parameterType="com.nhry.model.auth.UserQueryModel" resultMap="BaseResultMap1">
@@ -641,7 +645,9 @@
         T_SYS_USER u
         <where>
             <if test="uname != null">
-                and (u.LOGIN_NAME like CONCAT('%',#{uname,jdbcType=VARCHAR},'%') or u.DISPLAY_NAME like CONCAT('%',#{uname,jdbcType=VARCHAR},'%') OR u.SMART_IDCARDNUMBER like CONCAT('%',#{uname,jdbcType=VARCHAR},'%') OR
+                and (u.LOGIN_NAME like CONCAT('%',#{uname,jdbcType=VARCHAR},'%') or u.DISPLAY_NAME like
+                CONCAT('%',#{uname,jdbcType=VARCHAR},'%') OR u.SMART_IDCARDNUMBER like
+                CONCAT('%',#{uname,jdbcType=VARCHAR},'%') OR
                 u.MOBILE like CONCAT('%',#{uname,jdbcType=VARCHAR},'%'))
             </if>
             <if test="salesOrg != null">
@@ -676,7 +682,7 @@
     </select>
     <select id="getloginNamesByOrgsandRid" resultMap="BaseResultMap" parameterType="java.util.HashMap">
         SELECT
-       distinct u.LOGIN_NAME,
+        distinct u.LOGIN_NAME,
         u.BRANCH_NO,
         u.SALES_ORG,
         u.DEALER_ID,
@@ -730,5 +736,29 @@
         <if test="rid != null and rid != ''">
             AND r.ID in (${rid})
         </if>
+    </select>
+    <select id="findNotRoleUser" parameterType="com.nhry.model.auth.UserQueryModel" resultMap="BaseResultMap1">
+        SELECT
+            u.LOGIN_NAME,
+            u.DISPLAY_NAME,
+            u.SMART_IDCARDNUMBER,
+            u.MOBILE,
+            u.CUSTOMIZED_EMPTYPETXT,
+            u.DEPARTMENT_NAME,
+            u.BRANCH_NO, u.DEALER_ID, u.SALES_ORG
+        FROM
+            t_sys_user u
+        <where>
+            NOT EXISTS (SELECT 1 FROM t_sys_user_role r WHERE u.LOGIN_NAME = r.LOGIN_NAME )
+            <if test="uname != null">
+                and (u.LOGIN_NAME like CONCAT('%',#{uname,jdbcType=VARCHAR},'%') or u.DISPLAY_NAME like
+                CONCAT('%',#{uname,jdbcType=VARCHAR},'%') OR u.SMART_IDCARDNUMBER like
+                CONCAT('%',#{uname,jdbcType=VARCHAR},'%') OR
+                u.MOBILE like CONCAT('%',#{uname,jdbcType=VARCHAR},'%'))
+            </if>
+            <if test="salesOrg != null">
+                and u.SALES_ORG = #{salesOrg,jdbcType=VARCHAR}
+            </if>
+        </where>
     </select>
 </mapper>

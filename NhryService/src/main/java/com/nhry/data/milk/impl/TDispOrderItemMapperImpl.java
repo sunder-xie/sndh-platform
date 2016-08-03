@@ -3,6 +3,7 @@ package com.nhry.data.milk.impl;
 import com.github.pagehelper.PageInfo;
 import com.nhry.common.datasource.DynamicSqlSessionTemplate;
 import com.nhry.data.milk.dao.TDispOrderItemMapper;
+import com.nhry.data.milk.domain.TDispOrder;
 import com.nhry.data.milk.domain.TDispOrderItem;
 import com.nhry.data.milk.domain.TDispOrderItemKey;
 import com.nhry.data.milktrans.domain.TRecBotDetail;
@@ -172,6 +173,35 @@ public class TDispOrderItemMapperImpl implements TDispOrderItemMapper
 	public List selectRouteDetails(String routeCode)
 	{
 		return sqlSessionTemplate.selectList("selectRouteDetailsAll", routeCode);
+	}
+
+	/* (non-Javadoc) 
+	* @title: updateDispOrderItemEmp
+	* @description: 更新路单送奶员
+	* @param order
+	* @return 
+	* @see com.nhry.data.milk.dao.TDispOrderItemMapper#updateDispOrderItemEmp(com.nhry.data.milk.domain.TDispOrder) 
+	*/
+	@Override
+	public int updateDispOrderItemEmp(TDispOrder order)
+	{
+		return sqlSessionTemplate.update("updateDispOrderItemEmp", order);
+	}
+
+	/* (non-Javadoc) 
+	* @title: selectCountOfTodayByOrgOrder
+	* @description: 判断此订单是否生成过今日路单并且没有确认
+	* @param order
+	* @return 
+	* @see com.nhry.data.milk.dao.TDispOrderItemMapper#selectCountOfTodayByOrgOrder(com.nhry.data.milk.domain.TDispOrder) 
+	*/
+	@Override
+	public int selectCountOfTodayByOrgOrder(String orgOrderNo, String today)
+	{
+		TDispOrder order = new TDispOrder();
+		order.setOrderNo(orgOrderNo);
+		order.setReachTimeType(today);
+		return sqlSessionTemplate.selectOne("selectCountOfTodayByOrgOrder", order);
 	}
 
 }

@@ -20,6 +20,8 @@ public interface TPreOrderMapper {
     int insert(TPreOrder record);
     
     int updateOrderEmpNo(TPreOrder record);
+    
+    int replaceOrdersDispmember(OrderSearchModel smodel);
 
     int updateOrderInitAmtAndCurAmt(TPreOrder record);
 
