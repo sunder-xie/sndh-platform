@@ -369,11 +369,27 @@ public class RequireOrderServiceImpl implements RequireOrderService {
         rModel.setSecondDay(DateUtil.getDayAfterTomorrow(today));
         rModel.setBranchNo(user.getBranchNo());
         rModel.setSalesOrg(user.getSalesOrg());
-        List<String> promotionNolist = tOrderDaliyPlanItemMapper.getDailOrderPromOfDealerBranch(rModel);
+
+        List<TOrderDaliyPlanItem> items = tOrderDaliyPlanItemMapper.selectProDayPlanOfDealerBranch(rModel);
+        if(items !=null && items.size()>0){
+            TSsmSalOrder order = createSaleOrder(user,today,"dealer",null);
+            for(int i = 1; i <=items.size();i++){
+                TOrderDaliyPlanItem item = items.get(i-1);
+                createSaleOrderItem(item,i,order.getOrderNo(),today,"dealer");
+            }
+            //调用 接口
+            PISuccessMessage  message  = piRequireOrderService.generateSalesOrder(order,order.getDealerNo(),order.getBranchNo(),order.getSalesOrg(),null);
+            if(message.isSuccess()){
+                this.uptVouCherNoByOrderNo(order.getOrderNo(),message.getData());
+            }
+        }
+
+
+        /*List<String> promotionNolist = tOrderDaliyPlanItemMapper.getDailOrderPromOfDealerBranch(rModel);
         if(promotionNolist !=null && promotionNolist.size()>0){
             for(String promotion : promotionNolist){
                 //创建一份 销售订单
-                TSsmSalOrder order = createSaleOrder(user,today,"dealer",promotion);
+                TSsmSalOrder order = createSaleOrder(user,today,"dealer",null);
                 rModel.setPromotion(promotion);
                 List<TOrderDaliyPlanItem> items = tOrderDaliyPlanItemMapper.selectProDayPlanOfDealerBranch(rModel);
                 if(items !=null && items.size()>0){
@@ -390,7 +406,7 @@ public class RequireOrderServiceImpl implements RequireOrderService {
                 }
 
             }
-        }
+        }*/
 
         return 1;
     }
@@ -475,7 +491,25 @@ public class RequireOrderServiceImpl implements RequireOrderService {
         rModel.setRequiredDate(requiredDate);
         rModel.setBranchNo(user.getBranchNo());
         rModel.setSalesOrg(user.getSalesOrg());
-        List<String> promotionNolist = tOrderDaliyPlanItemMapper.getDailOrderPromOfSelfBranch(rModel);
+
+
+        List<TOrderDaliyPlanItem> items = tOrderDaliyPlanItemMapper.selectProDayPlanOfSelfBranch(rModel);
+        if(items!=null && items.size()>0){
+            TSsmSalOrder order = createSaleOrder(user,requiredDate,"branch",null);
+            if(items !=null && items.size()>0){
+                for(int i = 1; i <=items.size();i++){
+                    TOrderDaliyPlanItem item = items.get(i-1);
+                    createSaleOrderItem(item,i,order.getOrderNo(),requiredDate,"branch");
+                }
+            }
+            //调用 接口
+            PISuccessMessage  message  = piRequireOrderService.generateSalesOrder(order,order.getDealerNo(),order.getBranchNo(),order.getSalesOrg(),"");
+            if(message.isSuccess()){
+                this.uptVouCherNoByOrderNo(order.getOrderNo(),message.getData());
+            }
+        }
+
+        /*List<String> promotionNolist = tOrderDaliyPlanItemMapper.getDailOrderPromOfSelfBranch(rModel);
         if(promotionNolist !=null && promotionNolist.size()>0){
             for(String promotion : promotionNolist){
                 //创建一份 销售订单
@@ -490,13 +524,13 @@ public class RequireOrderServiceImpl implements RequireOrderService {
                     }
                 }
                 //调用 接口
-                PISuccessMessage  message  = piRequireOrderService.generateSalesOrder(order,order.getDealerNo(),order.getBranchNo(),order.getSalesOrg(),"");
+                PISuccessMessage  message  = piRequireOrderService.generateSalesOrder(order,order.getDealerNo(),order.getBranchNo(),order.getSalesOrg(),promotion);
                 if(message.isSuccess()){
                     this.uptVouCherNoByOrderNo(order.getOrderNo(),message.getData());
                 }
             }
 
-        }
+        }*/
         return 1;
     }
 

@@ -27,6 +27,7 @@
         <result column="ACCOUNT_RECE" property="amountRece" jdbcType="DECIMAL" />
         <result column="ACCOUNT_REAL" property="amountReal" jdbcType="DECIMAL" />
         <result column="ACCOUNT_GAP" property="amountGap" jdbcType="DECIMAL" />
+        <result column="PAYMENTMETHOD" property="paymentmethod" jdbcType="VARCHAR" />
         <result column="PAYMENT_TYPE" property="paymentType" jdbcType="VARCHAR" />
         <result column="PAYMENT_DATE" property="paymentDate" jdbcType="DATE" />
     </resultMap>

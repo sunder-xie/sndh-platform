@@ -740,7 +740,7 @@
     <if test="search !=null">
       and  ( o.ORDER_NO like '%${search}%' or  e.EMP_NAME like'%${search}%' or c.VIP_NAME like '%${search}%')
     </if>
-    ORDER BY ORDER_NO
+    ORDER BY ORDER_NO desc
   </select>
 
   <update id="updateOrderPayMentStatus" parameterType="String" >
