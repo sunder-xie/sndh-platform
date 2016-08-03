@@ -3,6 +3,7 @@ package com.nhry.data.milk.impl;
 import com.github.pagehelper.PageInfo;
 import com.nhry.common.datasource.DynamicSqlSessionTemplate;
 import com.nhry.data.milk.dao.TDispOrderItemMapper;
+import com.nhry.data.milk.domain.TDispOrder;
 import com.nhry.data.milk.domain.TDispOrderItem;
 import com.nhry.data.milk.domain.TDispOrderItemKey;
 import com.nhry.data.milktrans.domain.TRecBotDetail;
@@ -172,6 +173,19 @@ public class TDispOrderItemMapperImpl implements TDispOrderItemMapper
 	public List selectRouteDetails(String routeCode)
 	{
 		return sqlSessionTemplate.selectList("selectRouteDetailsAll", routeCode);
+	}
+
+	/* (non-Javadoc) 
+	* @title: updateDispOrderItemEmp
+	* @description: 更新路单送奶员
+	* @param order
+	* @return 
+	* @see com.nhry.data.milk.dao.TDispOrderItemMapper#updateDispOrderItemEmp(com.nhry.data.milk.domain.TDispOrder) 
+	*/
+	@Override
+	public int updateDispOrderItemEmp(TDispOrder order)
+	{
+		return sqlSessionTemplate.update("updateDispOrderItemEmp", order);
 	}
 
 }

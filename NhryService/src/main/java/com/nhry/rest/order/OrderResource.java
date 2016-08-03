@@ -316,4 +316,13 @@ public class OrderResource extends BaseResource {
 		return convertToRespModel(MessageCode.NORMAL, null, messService.sendOrderMemo(orderModel));
 	}
 	
+	@POST
+	@Path("/updateOrderEmp")
+	@Produces(MediaType.APPLICATION_JSON)
+	@Consumes(MediaType.APPLICATION_JSON)
+	@ApiOperation(value = "/updateOrderEmp", response = Integer.class, notes = "订单换送奶员")
+	public Response updateOrderEmp(@ApiParam(required=true,name="smodel",value="SearchModel") OrderSearchModel smodel){
+		return convertToRespModel(MessageCode.NORMAL, null, orderService.replaceOrdersDispmember(smodel));
+	}
+	
 }

@@ -845,12 +845,18 @@
     </if>
     order by o.END_DATE asc
     </select>
+    
+  <update id="replaceOrdersDispmember" parameterType="com.nhry.model.order.OrderSearchModel">
+    update t_preorder  
+    set EMP_NO = #{content,jdbcType=VARCHAR} 
+    where EMP_NO = #{empNo,jdbcType=VARCHAR}
+  </update>
   
   <select id="selectIniOrders" resultMap="BaseResultMap">
     select 
     <include refid="Base_Column_List" />
     FROM t_preorder
-    WHERE ORDER_NO like 'A%'
+    WHERE ORDER_NO like 'A0001%'
   </select>
   
 </mapper>

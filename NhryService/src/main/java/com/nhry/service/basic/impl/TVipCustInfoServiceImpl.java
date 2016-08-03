@@ -404,6 +404,7 @@ public class TVipCustInfoServiceImpl extends BaseService implements TVipCustInfo
 		}
 		TSysUser user = this.userSessionService.getCurrentUser();
 		TVipCustInfo cust = new TVipCustInfo();
+		cust.setVipCustNo(custNo);
 		cust.setSalesOrg(branch.getSalesOrg());
 		cust.setDealerNo(branch.getDealerNo());
 		cust.setBranchNo(branchNo);

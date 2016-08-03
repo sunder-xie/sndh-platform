@@ -84,5 +84,17 @@ public class TDispOrderMapperImpl implements TDispOrderMapper
 		record.setLastModifiedByTxt(userSessionService.getCurrentUser().getDisplayName());
 		return sqlSessionTemplate.update("updateDispOrder", record);
 	}
+	/* (non-Javadoc) 
+	* @title: updateDispOrderEmp
+	* @description: 更新路单送奶员
+	* @param order
+	* @return 
+	* @see com.nhry.data.milk.dao.TDispOrderMapper#updateDispOrderEmp(com.nhry.data.milk.domain.TDispOrder) 
+	*/
+	@Override
+	public int updateDispOrderEmp(TDispOrder order)
+	{
+		return sqlSessionTemplate.update("updateDispOrderEmp", order);
+	}
 	
 }
