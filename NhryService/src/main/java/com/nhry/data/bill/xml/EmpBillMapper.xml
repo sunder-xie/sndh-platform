@@ -351,7 +351,7 @@
     </select>
 
     <select id="empDispFeeNum"  resultType="INTEGER"  parameterType="com.nhry.model.bill.EmpDispDetialInfoSearch" >
-        SELECT   (case when SUM(i.CONFIRM_QTY ) is null then 0 else SUM(i.CONFIRM_QTY )  end)    QTY
+        SELECT  SUM(case when i.REASON = '40' OR i.REASON = '50' then i.QTY else i.CONFIRM_QTY end) QTY
         FROM  t_mst_disp_order_item  i
         LEFT JOIN t_mst_disp_order o on i.ORDER_NO = o.ORDER_NO
         WHERE 1 =1
@@ -400,7 +400,7 @@
 
     <select id="empDisByProduct" resultMap="EmpAccoDispFeeResultMap"  parameterType="com.nhry.model.bill.EmpDispDetialInfoSearch" >
         SELECT
-        i.CONFIRM_MATNR MATNR ,SUM(i.CONFIRM_QTY) QTY
+        i.CONFIRM_MATNR MATNR ,SUM(case when i.REASON = '40' OR i.REASON = '50' then i.QTY else i.CONFIRM_QTY end) QTY
         from t_mst_disp_order_item i
         LEFT JOIN t_mst_disp_order o on i.ORDER_NO = o.ORDER_NO
         LEFT JOIN t_preorder p  on i.ORG_ORDER_NO = p.ORDER_NO
