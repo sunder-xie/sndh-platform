@@ -10,6 +10,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.lang.StringUtils;
+import org.springframework.core.task.TaskExecutor;
 
 import com.github.pagehelper.PageInfo;
 import com.nhry.common.exception.MessageCode;
@@ -27,6 +28,7 @@ import com.nhry.model.order.MilkboxSearchModel;
 import com.nhry.model.order.OrderCreateModel;
 import com.nhry.model.order.OrderSearchModel;
 import com.nhry.service.BaseService;
+import com.nhry.service.external.dao.EcService;
 import com.nhry.service.order.dao.MilkBoxService;
 import com.nhry.service.order.dao.OrderService;
 import com.nhry.service.order.dao.PromotionService;
@@ -39,6 +41,18 @@ public class MilkBoxServiceImpl extends BaseService implements MilkBoxService
 	private OrderService orderService;
 	private PromotionService promotionService;
 	private TPlanOrderItemMapper tPlanOrderItemMapper;
+	private TaskExecutor taskExecutor;
+	private EcService messLogService;
+	
+	public void setMessLogService(EcService messLogService)
+	{
+		this.messLogService = messLogService;
+	}
+
+	public void setTaskExecutor(TaskExecutor taskExecutor)
+	{
+		this.taskExecutor = taskExecutor;
+	}
 	
 	public void settPlanOrderItemMapper(TPlanOrderItemMapper tPlanOrderItemMapper)
 	{
@@ -186,6 +200,20 @@ public class MilkBoxServiceImpl extends BaseService implements MilkBoxService
 						List<TOrderDaliyPlanItem> list = orderService.createDaliyPlan(omodel.getOrder(), omodel.getEntries());
 						//如果有赠品，生成赠品的日计划
 						promotionService.createDaliyPlanByPromotion(omodel.getOrder(), omodel.getEntries() ,list);
+						
+						//发送EC,更新订单状态
+	       			TPreOrder sendOrder = new TPreOrder();
+	       			sendOrder.setOrderNo(omodel.getOrder().getOrderNo());
+	       			sendOrder.setPreorderStat("200");
+	       			taskExecutor.execute(new Thread(){
+	       				@Override
+	       				public void run() {
+	       					super.run();
+	       					this.setName("updateOrderStatus");
+	       					messLogService.sendOrderStatus(sendOrder);
+	       				}
+	       			});
+	       			
 					}
 				}
 			}

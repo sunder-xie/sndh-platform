@@ -817,17 +817,12 @@
 		i.LAST_MODIFIED_BY_TXT,
 		i.MEMO_TXT,
 		i.DISP_MEMO_TXT,
-		(
-		 SELECT
-				b.BRANCH_NAME
-			FROM
-				T_MD_BRANCH b where b.BRANCH_NO = i.BRANCH_NO
-		) BRANCH_NAME,i.BRANCH_NO,i.DEALER_NO,(CASE i.DEALER_NO
+		b.BRANCH_NAME,i.BRANCH_NO,i.DEALER_NO,(CASE i.DEALER_NO
 			WHEN '-1' THEN '<include refid="mybaties.constant.ownBranch"></include>'
-			ELSE (SELECT d.dealer_name from t_md_dealer d where d.dealer_no=i.DEALER_NO) END) DEALER_NAME  from t_vip_cust_info i 
-		<where>
+			ELSE (SELECT d.dealer_name from t_md_dealer d where d.dealer_no=i.DEALER_NO) END) DEALER_NAME  from t_vip_cust_info i,T_MD_BRANCH b
+			where b.BRANCH_NO = i.BRANCH_NO 
 		     <if test="salesOrg != null and salesOrg !=''">
-		         SALES_ORG = #{salesOrg} 
+		         AND i.SALES_ORG = #{salesOrg} 
 		     </if>
 		    <choose>
 		         <when test="stationType != null and stationType != '' ">
@@ -835,21 +830,24 @@
 		                <when test="stationType=='02'">
 		                	   <!-- 经销商奶站 -->
 					           <choose>
-					               <when test="station != null and station != ''">
-					               		and i.BRANCH_NO in (select b.BRANCH_NO from t_md_branch b where b.BRANCH_GROUP=#{stationType} and b.SALES_ORG=#{salesOrg} and b.dealer_no=#{station})
+					               <when test="(dealerNo != null and dealerNo != '') and (station != null and station != '') ">
+					               		and b.BRANCH_GROUP=#{stationType} and i.DEALER_NO = #{dealerNo} and i.BRANCH_NO = #{station} 
+					               </when>
+					               <when test="(dealerNo != null and dealerNo != '') and (station == null or station == '') ">
+										and b.BRANCH_GROUP=#{stationType} and i.DEALER_NO = #{dealerNo}
 					               </when>
 					               <otherwise>
-					               		and i.BRANCH_NO in (select b.BRANCH_NO from t_md_branch b where b.BRANCH_GROUP=#{stationType} and b.SALES_ORG=#{salesOrg})	
+					               		and b.BRANCH_GROUP=#{stationType} 
 					               </otherwise>
 					           </choose>
 		                </when>
 		                <otherwise>
 		                     <choose>
 					               <when test="station != null and station != ''">
-					               		and i.BRANCH_NO = #{station} 
+					               		and b.BRANCH_GROUP=#{stationType} and i.BRANCH_NO = #{station} 
 					               </when>
 					               <otherwise>
-					               		and i.BRANCH_NO in (select b.BRANCH_NO from t_md_branch b where b.BRANCH_GROUP=#{stationType} and b.SALES_ORG=#{salesOrg})	
+					               		and b.BRANCH_GROUP=#{stationType} 	
 					               </otherwise>
 					           </choose>
 		                </otherwise>
@@ -858,28 +856,27 @@
 		         <otherwise>
 		         <!-- 自有奶站 -->
 		             <if test="station != null and station != ''">
-				    	 and BRANCH_NO = #{station} 
+				    	 and i.BRANCH_NO = #{station} 
 				    </if>
 		         </otherwise>
 		     </choose>
 		    <if test="status != null and status != ''">
-		    	and STATUS = #{status} 
+		    	and i.STATUS = #{status} 
 		    </if>
 		    <if test="startDate != null and startDate != ''">
-		    	and SUBSCRIBE_DATE &gt;= #{startDate} 
+		    	and i.SUBSCRIBE_DATE &gt;= #{startDate} 
 		    </if>
 		    <if test="endDate != null and endDate != ''">
-		    	and SUBSCRIBE_DATE &lt;= #{endDate} 
+		    	and i.SUBSCRIBE_DATE &lt;= #{endDate} 
 		    </if>
 		    <if test="content != null and content != ''">
-		        and (VIP_NAME like '%${content}%' or ADDRESS_TXT like '%${content}%' or MP like '%${content}%' or 
+		        and (i.VIP_NAME like '%${content}%' or i.ADDRESS_TXT like '%${content}%' or MP like '%${content}%' or 
 		        (select a.RESIDENTIAL_AREA_TXT from t_md_residential_area a where a.ID=IFNULL(i.SUBDIST,'-1')) like '%${content}%') 
 		    </if>
 		    <if test="phone != null and phone != ''">
-		       and MP = #{phone}
+		       and i.MP = #{phone}
 		    </if>
-		</where>
-		order by CREATE_AT desc,LAST_MODIFIED desc,BRANCH_NO,DEALER_NO
+		order by i.CREATE_AT desc,i.LAST_MODIFIED desc,i.BRANCH_NO,i.DEALER_NO
 	</select>
 	<select id="getCustCountByPhone"  resultType="Integer" parameterType="java.util.HashMap">
 	   SELECT count(c.VIP_CUST_NO) from t_vip_cust_info c 

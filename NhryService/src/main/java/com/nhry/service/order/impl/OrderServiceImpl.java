@@ -21,12 +21,16 @@ import com.nhry.model.order.*;
 import com.nhry.service.BaseService;
 import com.nhry.service.basic.dao.PriceService;
 import com.nhry.service.basic.dao.TVipCustInfoService;
+import com.nhry.service.external.EcBaseService;
+import com.nhry.service.external.dao.EcService;
 import com.nhry.service.order.dao.MilkBoxService;
 import com.nhry.service.order.dao.OrderService;
 import com.nhry.service.order.dao.PromotionService;
 import com.nhry.service.order.pojo.OrderRemainData;
 import com.nhry.utils.CodeGeneratorUtil;
+
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.core.task.TaskExecutor;
 
 import java.math.BigDecimal;
 import java.text.ParseException;
@@ -44,6 +48,18 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 	private PromotionService promotionService;
 	private TDispOrderItemMapper tDispOrderItemMapper;
 	private TMdBranchMapper branchMapper;
+	private TaskExecutor taskExecutor;
+	private EcService messLogService;
+	
+	public void setMessLogService(EcService messLogService)
+	{
+		this.messLogService = messLogService;
+	}
+
+	public void setTaskExecutor(TaskExecutor taskExecutor)
+	{
+		this.taskExecutor = taskExecutor;
+	}
 
 	public void setBranchMapper(TMdBranchMapper branchMapper) {
 		this.branchMapper = branchMapper;
@@ -124,9 +140,12 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 	public OrderCreateModel selectOrderByCode(String orderCode)
 	{
 		OrderCreateModel orderModel = new OrderCreateModel();
+		TPreOrder order = tPreOrderMapper.selectByPrimaryKey(orderCode);
+		if(order==null)throw new ServiceException(MessageCode.LOGIC_ERROR,"订单不存在！");
+		
 		ArrayList<TPlanOrderItem> entries = (ArrayList<TPlanOrderItem>) tPlanOrderItemMapper.selectByOrderCode(orderCode);
 		orderModel.setEntries(entries);
-		orderModel.setOrder(tPreOrderMapper.selectByPrimaryKey(orderCode));
+		orderModel.setOrder(order);
 //		//帐户
 		orderModel.setAccount(tVipCustInfoService.findVipAcctByCustNo(orderModel.getOrder().getMilkmemberNo()));
 //		//地址信息
@@ -203,9 +222,11 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 		//如果更换奶站，可能会更换商品价格，并把用户挂到该奶站下
 		TPreOrder order = tPreOrderMapper.selectByPrimaryKey(uptManHandModel.getOrderNo());
 		if(!uptManHandModel.getBranchNo().equals(order.getBranchNo())){
+			
 			//订户挂奶站,订单的奶站和销售组织变更
 			String salesOrg = tVipCustInfoService.uptCustBranchNo(order.getMilkmemberNo(),uptManHandModel.getBranchNo());
 			uptManHandModel.setSalesOrg(salesOrg);
+			
 			//换价格
 			ArrayList<TPlanOrderItem> orgEntries = (ArrayList<TPlanOrderItem>) tPlanOrderItemMapper.selectByOrderCode(uptManHandModel.getOrderNo());
 			for(TPlanOrderItem entry : orgEntries){
@@ -214,9 +235,26 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 				entry.setSalesPrice(new BigDecimal(String.valueOf(price)));
 				tPlanOrderItemMapper.updateEntryByItemNo(entry);
 			}
+			
+			tPreOrderMapper.uptManHandOrder(uptManHandModel);
+			
+			//当是电商的订单时，更新EC对应订单的奶站
+			if("10".equals(order.getPreorderSource())){
+				order.setBranchNo(uptManHandModel.getBranchNo());
+				//发送EC
+				taskExecutor.execute(new Thread(){
+					@Override
+					public void run() {
+						super.run();
+						this.setName("updateOrderBranchNo");
+						messLogService.sendOrderBranch(order);
+					}
+				});
+			}
+			
 		}
 		
-		return tPreOrderMapper.uptManHandOrder(uptManHandModel);
+		return 1;
 	}
 
 	/* (non-Javadoc)
@@ -349,8 +387,17 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 			}
 			tPreOrderMapper.updateOrderStatus(order);
 			
-			//订奶收款通知???
-			//todo
+			//发送EC
+			taskExecutor.execute(new Thread(){
+				@Override
+				public void run() {
+					super.run();
+					this.setName("stopOrderForTime");
+					record.setContent("Y");
+					messLogService.sendOrderStopRe(record);
+				}
+			});
+			
 			//订户状态更改???
 			List<TPreOrder> list = tPreOrderMapper.selectByMilkmemberNo(order.getMilkmemberNo());
 			if(list==null||list.size()<=0){
@@ -495,6 +542,17 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 			//更新截止日期
 			tPreOrderMapper.updateOrderEndDate(order);
 			
+			//发送EC
+			taskExecutor.execute(new Thread(){
+				@Override
+				public void run() {
+					super.run();
+					this.setName("stopOrderInTime");
+					record.setContent("N");
+					messLogService.sendOrderStopRe(record);
+				}
+			});
+			
 		}else{
 			throw new ServiceException(MessageCode.LOGIC_ERROR,record.getOrderNo()+"当前订单不存在");
 		}
@@ -568,6 +626,20 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 			if(list==null||list.size()<=0){
 				tVipCustInfoService.discontinue(order.getMilkmemberNo(), "40",null,null);
 			}
+			
+			//发送EC,更新订单状态
+			TPreOrder sendOrder = new TPreOrder();
+			sendOrder.setOrderNo(order.getOrderNo());
+			sendOrder.setPreorderStat("300");
+			sendOrder.setCurAmt(order.getCurAmt());
+			taskExecutor.execute(new Thread(){
+				@Override
+				public void run() {
+					super.run();
+					this.setName("updateOrderStatus");
+					messLogService.sendOrderStatus(sendOrder);
+				}
+			});
 			
 		}else{
 			throw new ServiceException(MessageCode.LOGIC_ERROR,"当前订单不存在");
@@ -685,6 +757,16 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 			
 			//生成每日计划
 			createDaliyPlan(order,entriesList);
+			
+			//创建订单发送EC，发送系统消息(以线程方式),只有奶站的发，摆台的确认时发，电商不发
+			taskExecutor.execute(new Thread(){
+				@Override
+				public void run() {
+					super.run();
+					this.setName("sendOrderToEc");
+					messLogService.sendOrderInfo(order, entriesList);
+				}
+			});
 			
 		}else{
 			throw new ServiceException(MessageCode.LOGIC_ERROR,orderNo+"原订单不存在");
@@ -828,6 +910,16 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 			
 			//生成每日计划
 			createDaliyPlan(order,entriesList);
+			
+			//创建订单发送EC，发送系统消息(以线程方式),只有奶站的发，摆台的确认时发，电商不发
+			taskExecutor.execute(new Thread(){
+				@Override
+				public void run() {
+					super.run();
+					this.setName("sendOrderToEc");
+					messLogService.sendOrderInfo(order, entriesList);
+				}
+			});
 			
 		}else{
 			throw new ServiceException(MessageCode.LOGIC_ERROR,record.getOrderNo()+"原订单不存在");
@@ -1108,6 +1200,7 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 		//根据传的奶站获取经销商和销售组织
 		if(StringUtils.isNotBlank(order.getBranchNo())){
 			TMdBranch branch = branchMapper.selectBranchByNo(order.getBranchNo());
+			if(branch==null)throw new ServiceException(MessageCode.LOGIC_ERROR,"奶站不存在!");
 			order.setDealerNo(branch.getDealerNo());//进销商
 			order.setSalesOrg(branch.getSalesOrg());
 		}
@@ -1222,7 +1315,22 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 		//如果有赠品，生成赠品的日计划
 		promotionService.createDaliyPlanByPromotion(order,entriesList,list);
 		
-		//生成收款单
+		//创建订单发送EC，发送系统消息(以线程方式),只有奶站的发，摆台的确认时发，电商不发
+		taskExecutor.execute(new Thread(){
+			@Override
+			public void run() {
+				super.run();
+				this.setName("sendOrderToEc");
+				messLogService.sendOrderInfo(order, entriesList);
+				
+				if("10".equals(order.getPaymentmethod()) && !"20".equals(order.getMilkboxStat())){
+					TPreOrder sendOrder = new TPreOrder();
+					sendOrder.setOrderNo(order.getOrderNo());
+					sendOrder.setPreorderStat("200");
+					messLogService.sendOrderStatus(sendOrder);
+				}
+			}
+		});
 		
 		return order.getOrderNo();
 	}
@@ -1268,7 +1376,7 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 			//如果找不到最大值
 		}
 		
-		for(int i = 0; i < maxEntryDay; i++){
+		outer:for(int i = 0; i < maxEntryDay; i++){
 			for (TPlanOrderItem entry : entryMap.keySet()) {
 				int days = entryMap.get(entry);
 				if(days - 1 >= 0){
@@ -1323,7 +1431,7 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 					curAmt = curAmt.subtract(plan.getAmt());
 					
 					//当订单余额小于0时停止
-					if(curAmt.floatValue() < 0)break;
+					if(curAmt.floatValue() < 0)break outer;
 					
 					plan.setRemainAmt(curAmt);//订单余额
 					plan.setStatus("10");//状态
@@ -1387,8 +1495,8 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 			tVipCustInfoService.discontinue(record.getMilkmemberNo(), "10",new com.nhry.utils.date.Date(),new com.nhry.utils.date.Date());
 			
 			//电商或者摆台的订单确认后，走线下逻辑,生成装箱工单
+			ArrayList<TPlanOrderItem> orgEntries = (ArrayList<TPlanOrderItem>) tPlanOrderItemMapper.selectByOrderCode(order.getOrderNo());
 			if("20".equals(order.getMilkboxStat())){
-				ArrayList<TPlanOrderItem> orgEntries = (ArrayList<TPlanOrderItem>) tPlanOrderItemMapper.selectByOrderCode(order.getOrderNo());
 				MilkboxCreateModel model = new MilkboxCreateModel();
 				model.setCode(order.getOrderNo());
 				milkBoxService.addNewMilkboxPlan(model);
@@ -1397,6 +1505,18 @@ public class OrderServiceImpl extends BaseService implements OrderService {
    			List<TOrderDaliyPlanItem> list = createDaliyPlan(order,orgEntries);
    			//如果有赠品，生成赠品的日计划
    			promotionService.createDaliyPlanByPromotion(order,orgEntries,list);
+			}
+			
+			//创建订单发送EC，发送系统消息(以线程方式),只有奶站的发，摆台的确认时发，电商不发
+			if("20".equals(order.getPreorderSource())){
+				taskExecutor.execute(new Thread(){
+					@Override
+					public void run() {
+						super.run();
+						this.setName("sendOrderToEc");
+						messLogService.sendOrderInfo(order, orgEntries);
+					}
+				});
 			}
 			
 			return 1;
@@ -2192,13 +2312,21 @@ public class OrderServiceImpl extends BaseService implements OrderService {
    	List<TOrderDaliyPlanItem> newPlans = new ArrayList<TOrderDaliyPlanItem>();
    	for(TOrderDaliyPlanItem plan : daliyPlans){
    		if(plan.getGiftQty()!=null)continue;
-   		if(changeProducts.containsKey(plan) || changeQtys.containsKey(plan) || stopPlans.containsKey(plan)){
-   			continue;
+   		//停订的
+   		if(stopPlans.containsKey(plan)){
+   			TOrderDaliyPlanItem np = new TOrderDaliyPlanItem();
+				int needQty = needNewDaliyPlans.get(plan.getItemNo());//
+				np.setQty(needQty);
+				needNewDaliyPlans.replace(plan.getItemNo(), 0);
+				convertDaliyPlan(plan, np);
+				newPlans.add(np);
+   			break;
    		}
    		if(needNewDaliyPlans.containsKey(plan.getItemNo())){
    			//修改，需要的数量，从最后一个日期往前拿(从后往前扣商品数量)
    			if(needNewDaliyPlans.get(plan.getItemNo()) < 0){
-//   				   if(plan.getGiftQty()!=null)continue;//跳过促销产品
+      				if(changeProducts.containsKey(plan) || changeQtys.containsKey(plan) )continue;
+  				      if("20".equals(plan.getStatus()) || "30".equals(plan.getStatus()) || !plan.getMatnr().equals(relatedEntryMap.get(plan.getItemNo()).getMatnr() ))continue;
       				if(plan.getQty() > 0 && (plan.getQty() + needNewDaliyPlans.get(plan.getItemNo()) >= 0) ){
       					plan.setQty(plan.getQty() + needNewDaliyPlans.get(plan.getItemNo()));
       					needNewDaliyPlans.replace(plan.getItemNo(), 0);
@@ -2213,18 +2341,22 @@ public class OrderServiceImpl extends BaseService implements OrderService {
    			}
    			//修改，需要新增日计划行
    			else if(needNewDaliyPlans.get(plan.getItemNo()) > 0){
-   				TOrderDaliyPlanItem np = new TOrderDaliyPlanItem();
-   				int needQty = needNewDaliyPlans.get(plan.getItemNo());//
-   				int entryQty = relatedEntryMap.get(plan.getItemNo()).getQty();
-   				if(entryQty>=needQty){
-   					np.setQty(needQty);
-   					needNewDaliyPlans.replace(plan.getItemNo(), 0);
-   				}else{
-   					np.setQty(entryQty);
-   					needNewDaliyPlans.replace(plan.getItemNo(), needQty-entryQty);
+   				if(stopPlans.size()>0)continue;
+   				while(needNewDaliyPlans.get(plan.getItemNo()) > 0){
+   					TOrderDaliyPlanItem np = new TOrderDaliyPlanItem();
+   					int needQty = needNewDaliyPlans.get(plan.getItemNo());
+   					int entryQty = relatedEntryMap.get(plan.getItemNo()).getQty();
+   					if(entryQty>=needQty){
+   						np.setQty(needQty);
+   						needNewDaliyPlans.replace(plan.getItemNo(), 0);
+   					}else{
+   						np.setQty(entryQty);
+   						needNewDaliyPlans.replace(plan.getItemNo(), needQty-entryQty);
+   					}
+   					convertDaliyPlanByEntry(plan, np,relatedEntryMap.get(plan.getItemNo()));
+   					newPlans.add(np);
    				}
-   				convertDaliyPlan(plan, np);
-   				newPlans.add(np);
+   				break;
    			}
    		}
    	}
@@ -2397,6 +2529,20 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 		plan.setMatnr(org.getMatnr());//产品编号
 		plan.setUnit(org.getUnit());//配送单位
 		plan.setPrice(org.getPrice());//产品价格
+		plan.setStatus("10");//状态
+		plan.setCreateAt(new Date());//创建时间
+		plan.setCreateBy(userSessionService.getCurrentUser().getLoginName());//创建人
+		plan.setCreateByTxt(userSessionService.getCurrentUser().getDisplayName());//创建人姓名
+   }
+   
+   private void convertDaliyPlanByEntry(TOrderDaliyPlanItem org,TOrderDaliyPlanItem plan,TPlanOrderItem entry){
+   	plan.setOrderNo(org.getOrderNo());//订单编号
+		plan.setOrderDate(org.getOrderDate());//订单日期
+		plan.setItemNo(org.getItemNo());//预订单日计划行
+		plan.setReachTimeType(entry.getReachTimeType());//送达时段类型
+		plan.setMatnr(entry.getMatnr());//产品编号
+		plan.setUnit(entry.getUnit());//配送单位
+		plan.setPrice(entry.getSalesPrice());//产品价格
 		plan.setStatus("10");//状态
 		plan.setCreateAt(new Date());//创建时间
 		plan.setCreateBy(userSessionService.getCurrentUser().getLoginName());//创建人

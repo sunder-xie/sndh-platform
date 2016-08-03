@@ -163,7 +163,7 @@ public class TVipCustInfoServiceImpl extends BaseService implements TVipCustInfo
 	   if(StringUtils.isEmpty(cust.getStationType()) && !StringUtils.isEmpty(this.userSessionService.getCurrentUser().getDealerId())){
 		   //经销商内勤，只能看自己本经销商底下所有的奶站的订户
 		   cust.setStationType("02");
-		   cust.setStation(this.userSessionService.getCurrentUser().getDealerId());
+		   cust.setDealerNo(this.userSessionService.getCurrentUser().getDealerId());
 	   }
 	   if(StringUtils.isEmpty(cust.getStation()) && !StringUtils.isEmpty(this.userSessionService.getCurrentUser().getBranchNo())){
 		   cust.setStation(this.userSessionService.getCurrentUser().getBranchNo());

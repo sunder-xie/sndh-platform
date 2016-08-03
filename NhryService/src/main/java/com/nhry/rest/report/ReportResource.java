@@ -99,8 +99,11 @@ public class ReportResource extends BaseResource{
             FileInputStream input = new FileInputStream(file);
             XSSFWorkbook workbook = new XSSFWorkbook(new BufferedInputStream(input));
             XSSFSheet sheet = workbook.getSheetAt(0);
-            XSSFRow row = sheet.getRow(3);
-            XSSFCell cell = row.getCell(1);
+            XSSFRow row = sheet.getRow(1);
+            XSSFCell cell = row.getCell(2);
+            cell.setCellValue(order.getSalesOrgName());
+            row = sheet.getRow(3);
+            cell = row.getCell(1);
 
             cell.setCellValue("配送奶站："+order.getBranchName());
             cell = row.getCell(4);
@@ -110,16 +113,16 @@ public class ReportResource extends BaseResource{
             orderDate.append("-");
             orderDate.append(format.format(order.getEndDate()));
             cell.setCellValue(orderDate.toString());
-            cell = row.getCell(9);
+            cell = row.getCell(10);
             cell.setCellValue("送奶员："+order.getEmpName());
             row = sheet.getRow(4);
-            cell = row.getCell(9);
-            cell.setCellValue("送奶员电话：");
+            cell = row.getCell(10);
+            cell.setCellValue("送奶员电话："+order.getEmpTel());
             row = sheet.getRow(5);
             cell = row.getCell(1);
             cell.setCellValue("客户姓名："+order.getMilkmemberName());
             cell = row.getCell(3);
-            cell.setCellValue("配送地址："+address.getAddressTxt());
+            cell.setCellValue("配送地址："+address.getResidentialAreaName()+" "+address.getAddressTxt());
             cell = row.getCell(12);
             cell.setCellValue("客户电话："+order.getCustomerTel());
             sheet.setForceFormulaRecalculation(true);
@@ -143,15 +146,25 @@ public class ReportResource extends BaseResource{
                     num++;
                 }
             }
+            row = sheet.getRow(13);
+            cell=row.getCell(10);
+            cell.setCellValue(order.getAcctAmt()==null ? "0" :String.valueOf(order.getAcctAmt()));
             row = sheet.getRow(14);
             cell = row.getCell(10);
+            //首先账户合计减去账户余额 大于0后剩余金额为应收款,为负数时应收款应为0;
+            if(order.getAcctAmt()!=null){
+                sum = sum.subtract(order.getAcctAmt());//合计减去账户金额
+                if(sum.compareTo(new BigDecimal("0"))==-1){
+                    sum = new BigDecimal("0");
+                }
+            }
             cell.setCellValue(sum.toString());
 
             row = sheet.getRow(15);
             cell = row.getCell(1);
             cell.setCellValue("奶站地址："+ branch.getAddress());
             cell = row.getCell(7);
-            cell.setCellValue("奶站电话："+ branch.getAddress());
+            cell.setCellValue("奶站电话："+ branch.getTel());
 
             row = sheet.getRow(18);
             cell = row.getCell(1);
