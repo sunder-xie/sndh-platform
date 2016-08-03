@@ -49,7 +49,7 @@ public class PIVipInfoDataServiceImpl implements PIVipInfoDataService {
         PISuccessTMessage<EvMemb> result = new PISuccessTMessage<EvMemb>();
         Map<String, String> attrs = new HashMap<String, String>();
         attrs.put("phone",vipCustInfo.getMp());
-        String vipno = vipCrmInfoService.getCustNoByPhone(attrs);
+        String vipno = vipCrmInfoService.getCrmNoByPhone(attrs);
         if(StringUtils.isNotEmpty(vipno)){
             result.setSuccess(true);
             result.setMessage("会员已经存在！");
@@ -76,7 +76,7 @@ public class PIVipInfoDataServiceImpl implements PIVipInfoDataService {
             zscrm_memb_upd_dh_input.setSTR_SUPPL1(str_suppl1_type1);
 
             COUNTRY_type1 country_type1 = new COUNTRY_type1();
-            country_type1.setCOUNTRY_type0(vipCustInfo.getCountry());
+           country_type1.setCOUNTRY_type0("001");//(vipCustInfo.getCountry());
             zscrm_memb_upd_dh_input.setCOUNTRY(country_type1);
 
             REGION_type1 region_type1 = new REGION_type1();
@@ -139,10 +139,11 @@ public class PIVipInfoDataServiceImpl implements PIVipInfoDataService {
             sex_type1.setSEX_type0(vipCustInfo.getSex());
             zscrm_memb_upd_dh_input.setSEX(sex_type1);
 
-            Date date = new Date();
-            date.setObject(vipCustInfo.getBirthday());
-            zscrm_memb_upd_dh_input.setBIRTHDT(date);
-
+            if(vipCustInfo.getBirthday()!=null) {
+                Date date = new Date();
+                date.setObject(vipCustInfo.getBirthday());
+                zscrm_memb_upd_dh_input.setBIRTHDT(date);
+            }
             CERT_ID_type1 cert_id_type1 = new CERT_ID_type1();
             cert_id_type1.setCERT_ID_type0(vipCustInfo.getCertId());
             zscrm_memb_upd_dh_input.setCERT_ID(cert_id_type1);
@@ -176,10 +177,11 @@ public class PIVipInfoDataServiceImpl implements PIVipInfoDataService {
             ZZFLD0000B5_type1 zzfld0000B5_type1 = new ZZFLD0000B5_type1();
             zzfld0000B5_type1.setZZFLD0000B5_type0(vipCustInfo.getVipType());
             zscrm_ztab0000LQ.setZZFLD0000B5(zzfld0000B5_type1);
-
-            Date zdDate = new Date();
-            zdDate.setObject(vipCustInfo.getSubscribeDate());
-            zscrm_ztab0000LQ.setZZFLD0000BA(zdDate);
+            if(vipCustInfo.getSubscribeDate()!=null) {
+                Date zdDate = new Date();
+                zdDate.setObject(vipCustInfo.getSubscribeDate());
+                zscrm_ztab0000LQ.setZZFLD0000BA(zdDate);
+            }
             ZZFLD0000B9_type1 zzfld0000B9_type1 = new ZZFLD0000B9_type1();
             zzfld0000B9_type1.setZZFLD0000B9_type0(vipCustInfo.getSubscriber());
             zscrm_ztab0000LQ.setZZFLD0000B9(zzfld0000B9_type1);
@@ -187,9 +189,11 @@ public class PIVipInfoDataServiceImpl implements PIVipInfoDataService {
             ZZFLD0000B7_type1 zzfld0000B7_type1 = new ZZFLD0000B7_type1();
             zzfld0000B7_type1.setZZFLD0000B7_type0(vipCustInfo.getStatus());
             zscrm_ztab0000LQ.setZZFLD0000B7(zzfld0000B7_type1);
-            Date bbDate = new Date();
-            bbDate.setObject(vipCustInfo.getFirstOrderTime());
-            zscrm_ztab0000LQ.setZZFLD0000BB(bbDate);
+            if(vipCustInfo.getFirstOrderTime() != null) {
+                Date bbDate = new Date();
+                bbDate.setObject(vipCustInfo.getFirstOrderTime());
+                zscrm_ztab0000LQ.setZZFLD0000BB(bbDate);
+            }
             ZZFLD0000BD_type1 zzfld0000BD_type1 = new ZZFLD0000BD_type1();
             zzfld0000BD_type1.setZZFLD0000BD_type0(vipCustInfo.getBranchNo());
             zscrm_ztab0000LQ.setZZFLD0000BD(zzfld0000BD_type1);
@@ -220,7 +224,7 @@ public class PIVipInfoDataServiceImpl implements PIVipInfoDataService {
 
             vipCrmInfo.setVipCustNo(evMembGuid);
             vipCrmInfo.setVipCustNoSap(evMembId);
-            vipCrmInfoService.addVipCust(vipCrmInfo);
+            vipCrmInfoService.addVipCrm(vipCrmInfo);
 
         }catch (Exception e){
             result.setSuccess(false);

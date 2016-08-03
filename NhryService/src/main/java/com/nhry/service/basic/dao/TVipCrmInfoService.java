@@ -17,21 +17,21 @@ public interface TVipCrmInfoService {
 	 * @param record
 	 * @return
 	 */
-	void addVipCust(TVipCrmInfo record);
+	void addVipCrm(TVipCrmInfo record);
     
     /**
      * 根据订户编号查询订户信息
-     * @param vipCustNo
+     * @param vipCrmNo
      * @return
      */
-    TVipCrmInfo findVipCustByNo(String vipCustNo);
+    TVipCrmInfo findVipCrmByNo(String vipCrmNo);
     
     /**
      * 修改订户信息
      * @param record
      * @return
      */
-    int updateVipCustByNo(TVipCrmInfo record);
+    int updateVipCrmByNo(TVipCrmInfo record);
 
-	String getCustNoByPhone(Map<String, String> attrs);
+	String getCrmNoByPhone(Map<String, String> attrs);
 }

@@ -11,76 +11,76 @@ public interface TVipCrmMapper {
 	 * @param record
 	 * @return
 	 */
-    int addVipCust(TVipCrmInfo record);
+    int addVipCrm(TVipCrmInfo record);
     
     /**
      * 根据订户编号查询订户信息(包含地址信息)
-     * @param vipCustNo
+     * @param vipCrmNo
      * @return
      */
-    TVipCrmInfo findVipCustByNo(String vipCustNo);
+    TVipCrmInfo findVipCrmByNo(String vipCrmNo);
     
     /**
      * 根据订户编号查询订户信息(包含地址信息)
-     * @param vipCustNo
+     * @param vipCrmNo
      * @return
      */
-    TVipCrmInfo findVipCustByNoForUpt(String vipCustNo);
+    TVipCrmInfo findVipCrmByNoForUpt(String vipCrmNo);
     
     /**
      * 修改订户信息
      * @param record
      * @return
      */
-    int updateVipCustByNo(TVipCrmInfo record);
+    int updateVipCrmByNo(TVipCrmInfo record);
     
 //    /**
 //     * 根据电话查找奶站订户信息
 //     * @param attrs
 //     * @return
 //     */
-//    List<TVipCrmInfo> findStaCustByPhone(Map<String, String> attrs);
+//    List<TVipCrmInfo> findStaCrmByPhone(Map<String, String> attrs);
 //
 //    /**
 //     * 根据电话查找公司订户信息
 //     * @param attrs
 //     * @return
 //     */
-//    List<TVipCrmInfo> findCompanyCustByPhone(Map<String, String> attrs);
+//    List<TVipCrmInfo> findCompanyCrmByPhone(Map<String, String> attrs);
     
     /**
      * 查询订户信息(只查询订户信息本身)
-     * @param vipCustNo
+     * @param vipCrmNo
      * @return
      */
-    TVipCrmInfo findVipCustOnlyByNo(String vipCustNo);
+    TVipCrmInfo findVipCrmOnlyByNo(String vipCrmNo);
     
     /**
      * 修改订户状态
      * @param record
      * @return
      */
-    int uptCustStatus(TVipCrmInfo record);
+    int uptCrmStatus(TVipCrmInfo record);
     
 //    /**
 //     * 根据混合条件查询订户列表信息
-//     * @param cust
+//     * @param Crm
 //     * @return
 //     */
-//    public PageInfo findcustMixedTerms(CustQueryModel cust);
+//    public PageInfo findCrmMixedTerms(CrmQueryModel Crm);
     
 //    /**
 //     * 根据电话号码获取在同一奶站下订户的个数
 //     * @param attrs
 //     * @return
 //     */
-//    public int getCustCountByPhone(Map<String, String> attrs);
+//    public int getCrmCountByPhone(Map<String, String> attrs);
     
     /**
      * 根据电话号码获取在订户编号
      * @param attrs
      * @return
      */
-    public String getCustNoByPhone(Map<String, String> attrs);
+    public String getCrmNoByPhone(Map<String, String> attrs);
 
 }

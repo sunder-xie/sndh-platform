@@ -5,18 +5,21 @@ import com.nhry.common.exception.MessageCode;
 import com.nhry.common.exception.ServiceException;
 import com.nhry.data.auth.domain.TSysUser;
 import com.nhry.data.basic.dao.TBranchNotsellListMapper;
+import com.nhry.data.basic.dao.TMdBranchMapper;
 import com.nhry.data.basic.dao.TMdMaraExMapper;
 import com.nhry.data.basic.dao.TMdMaraMapper;
 import com.nhry.data.basic.domain.TBranchNotsellList;
 import com.nhry.data.basic.domain.TMdBranch;
 import com.nhry.data.basic.domain.TMdMara;
 import com.nhry.data.basic.domain.TMdMaraEx;
+import com.nhry.model.basic.BranchSalesOrgModel;
 import com.nhry.model.basic.ProductQueryModel;
 import com.nhry.service.BaseService;
 import com.nhry.service.basic.dao.BranchService;
 import com.nhry.service.basic.dao.ProductService;
 import com.nhry.service.basic.dao.TSysMessageService;
 import com.nhry.service.basic.pojo.BotType;
+import com.nhry.service.stock.dao.TSsmStockService;
 import com.nhry.utils.PrimaryKeyUtils;
 import com.nhry.utils.SysContant;
 import com.nhry.utils.date.Date;
@@ -24,6 +27,7 @@ import com.nhry.utils.date.Date;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.core.task.TaskExecutor;
 
+import java.math.BigDecimal;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -33,8 +37,10 @@ public class ProductServiceImpl extends BaseService implements ProductService {
 	private TMdMaraExMapper tMdMaraExMapper;
 	private TBranchNotsellListMapper notsellListMapper;
 	private BranchService branchSevice;
+	private TMdBranchMapper branchMapper;
 	private TSysMessageService messService;
 	private TaskExecutor taskExecutor;
+	private TSsmStockService stockService;
 
 	public void settMdMaraMapper(TMdMaraMapper tMdMaraMapper) {
 		this.tMdMaraMapper = tMdMaraMapper;
@@ -62,18 +68,16 @@ public class ProductServiceImpl extends BaseService implements ProductService {
 			throw new ServiceException(MessageCode.LOGIC_ERROR, "该商品信息不存在!");
 		}
 		this.notsellListMapper.delBranchNotsellByMatnr(record.getMatnr());
+		TSysUser sysuser = this.userSessionService.getCurrentUser();
 		if (record.getNotsellList() != null
 				&& record.getNotsellList().size() > 0) {
 			for (TBranchNotsellList nl : record.getNotsellList()) {
 				nl.setListNo(PrimaryKeyUtils.generateUuidKey());
-				nl.setSalesOrg(this.userSessionService.getCurrentUser()
-						.getSalesOrg());
+				nl.setSalesOrg(sysuser.getSalesOrg());
 				nl.setCreateAt(new Date());
 				nl.setMatnr(record.getMatnr());
-				nl.setCreateBy(this.userSessionService.getCurrentUser()
-						.getLoginName());
-				nl.setCreateByTxt(this.userSessionService.getCurrentUser()
-						.getDisplayName());
+				nl.setCreateBy(sysuser.getLoginName());
+				nl.setCreateByTxt(sysuser.getDisplayName());
 				notsellListMapper.addBranchNotSell(nl);
 			}
 		}
@@ -90,7 +94,7 @@ public class ProductServiceImpl extends BaseService implements ProductService {
 					// TODO Auto-generated method stub
 					super.run();
 					this.setName("sendProductsMessagesForUpt");
-					messService.sendProductsMessages("产品更新了！", product);
+					messService.sendProductsMessages("产品更新了！", product,sysuser);
 				}
 			});
 		}
@@ -119,19 +123,16 @@ public class ProductServiceImpl extends BaseService implements ProductService {
 	@Override
 	public TMdMara selectProductAndExByCode(String matnr) {
 		// TODO Auto-generated method stub
-		if (StringUtils.isEmpty(this.userSessionService.getCurrentUser()
-				.getSalesOrg())) {
-			throw new ServiceException(MessageCode.LOGIC_ERROR,
-					"当前用户的关联的组织信息不全,请先维护好当前用户信息!");
+		TSysUser sysuser = this.userSessionService.getCurrentUser();
+		if (StringUtils.isEmpty(sysuser.getSalesOrg())) {
+			throw new ServiceException(MessageCode.LOGIC_ERROR,"当前用户的关联的组织信息不全,请先维护好当前用户信息!");
 		}
 		Map<String, String> attrs = new HashMap<String, String>(2);
 		attrs.put("matnr", matnr);
-		attrs.put("salesOrg", this.userSessionService.getCurrentUser()
-				.getSalesOrg());
+		attrs.put("salesOrg", sysuser.getSalesOrg());
 		TMdMara mara = tMdMaraMapper.selectProductAndExByCode(attrs);
 		if (mara != null) {
-			mara.setNotsellList(this.notsellListMapper
-					.getNotSellListByMatnr(attrs));
+			mara.setNotsellList(this.notsellListMapper.getNotSellListByMatnr(attrs));
 		}
 		return mara;
 	}
@@ -139,10 +140,10 @@ public class ProductServiceImpl extends BaseService implements ProductService {
 	@Override
 	public int pubProductByCode(String code, String status, boolean flag) {
 		// TODO Auto-generated method stub
+		TSysUser user = this.userSessionService.getCurrentUser();
 		Map attrs = new HashMap();
 		attrs.put("matnr", code);
-		attrs.put("salesOrg", this.userSessionService.getCurrentUser()
-				.getSalesOrg());
+		attrs.put("salesOrg", user.getSalesOrg());
 		attrs.put("status", status);
 		attrs.put("lastModified", new Date());
 		TMdMara mara = tMdMaraMapper.selectProductAndExByCode(attrs);
@@ -160,11 +161,39 @@ public class ProductServiceImpl extends BaseService implements ProductService {
 					super.run();
 					if ("Y".equals(status)) {
 						this.setName("sendProductsMessagesForChangeSta1");
-						messService.sendProductsMessages("新品发布通知！", mara);
+						messService.sendProductsMessages("新品发布通知！", mara,user);
+						//调用库存接口
+						BranchSalesOrgModel bModel = new BranchSalesOrgModel();
+						bModel.setSalesOrg(user.getSalesOrg());
+						List<TMdBranch> branchs = branchMapper.findBranchListByOrg(bModel);
+						if(branchs != null && branchs.size() > 0){
+							for(TMdBranch b : branchs){
+								stockService.updateStock(b.getBranchNo(), code, new BigDecimal(0), user.getSalesOrg());
+							}
+						}
 					} else if ("N".equals(status)) {
 						this.setName("sendProductsMessagesForChangeSta2");
-						messService.sendProductsMessages("产品下架通知！", mara);
+						messService.sendProductsMessages("产品下架通知！", mara,user);
 					}
+				}
+			});
+		}else{
+			//以线程方式更新库存
+			taskExecutor.execute(new Thread() {
+				@Override
+				public void run() {
+					// TODO Auto-generated method stub
+					super.run();
+					if ("Y".equals(status)) {
+						this.setName("updateStock");
+						//调用库存接口
+						List<TMdBranch> branchs = branchSevice.findBranchListByOrg();
+						if(branchs != null && branchs.size() > 0){
+							for(TMdBranch b : branchs){
+								stockService.updateStock(b.getBranchNo(), code, null, user.getSalesOrg());
+							}
+						}
+					} 
 				}
 			});
 		}
@@ -295,5 +324,13 @@ public class ProductServiceImpl extends BaseService implements ProductService {
 
 	public void setTaskExecutor(TaskExecutor taskExecutor) {
 		this.taskExecutor = taskExecutor;
+	}
+
+	public void setStockService(TSsmStockService stockService) {
+		this.stockService = stockService;
+	}
+
+	public void setBranchMapper(TMdBranchMapper branchMapper) {
+		this.branchMapper = branchMapper;
 	}
 }
