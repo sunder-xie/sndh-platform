@@ -40,6 +40,26 @@ public interface PIVipInfoDataService {
      */
     PISuccessTMessage queryVipDetailData(String tel,String membGuid,String membId);
 
+    /**
+     * 会员积分活动创建
+     * @param memberActivities
+     * @return
+     */
     PISuccessTMessage createMemberActivities(MemberActivities memberActivities);
+
+    /**
+     * 订户信息更新
+     * @param vipCustInfo
+     * @return
+     */
+    PISuccessTMessage sendSubscriber(TVipCustInfo vipCustInfo);
+
+    /**
+     * 订户地址更新
+     * @param address
+     * @param sapGuid
+     * @return
+     */
+    PISuccessTMessage sendAddress(TMdAddress address,String sapGuid);
 
 }
