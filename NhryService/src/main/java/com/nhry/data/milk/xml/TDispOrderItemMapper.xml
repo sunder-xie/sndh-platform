@@ -531,6 +531,15 @@
 
   </select>
 
+	<!-- 检查该订单是否有项目生成了今日的路单 -->
+	<select id="selectCountOfTodayByOrgOrder" resultType="INTEGER" parameterType="com.nhry.data.milk.domain.TDispOrder">
+      select count(*) from t_mst_disp_order_item i
+		left join t_mst_disp_order o on i.ORDER_NO = o.ORDER_NO
+		where i.ORG_ORDER_NO = #{orderNo,jdbcType=VARCHAR}
+		and o.DISP_DATE = #{reachTimeType,jdbcType=DATE}
+		and o.STATUS = '10'
+   </select>
+  
   <select id="selectItemsByOrderNo" resultMap="BaseResultMap" parameterType="String">
     select
    <include refid="Base_Column_List"/>

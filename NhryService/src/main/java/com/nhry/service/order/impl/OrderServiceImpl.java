@@ -598,25 +598,15 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 	@Override
 	public int backOrder(OrderSearchModel record)
 	{
-//		SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
+		SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
 		TPreOrder order = tPreOrderMapper.selectByPrimaryKey(record.getOrderNo());
 		
 		if(order!= null){
-//			String status = tOrderDaliyPlanItemMapper.getDayOrderStat(record.getOrderNo(), new Date());
-//			if("20".equals(status)){
-//				throw new ServiceException(MessageCode.LOGIC_ERROR,"订单日订单已经确认，不能修改订单!");
-//			}
-			//退订逻辑
-//			try
-//			{
-//				Date sdate = format.parse(record.getOrderDate());
-				order.setBackDate(afterDate(new Date(),1));
-//			}
-//			catch (ParseException e)
-//			{
-//				throw new ServiceException(MessageCode.LOGIC_ERROR,"日期格式不正确!");
-//			}
+//			if(tDispOrderItemMapper.selectCountOfTodayByOrgOrder(order.getOrderNo(),format.format(new Date()))>0)throw new ServiceException(MessageCode.LOGIC_ERROR,"此订单，今日有确认的路单!请等路单确认后再操作!");
+			
+			order.setBackDate(afterDate(new Date(),1));
 			order.setBackReason(record.getReason());
+			
 			String state = order.getPaymentmethod();
 			
 			if("20".equals(state)){//先付款
@@ -628,6 +618,10 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 				   ac.setVipCustNo(order.getMilkmemberNo());
 				   ac.setAcctAmt(order.getCurAmt());
 					tVipCustInfoService.addVipAcct(ac);
+				}else if("10".equals(order.getPaymentStat())){
+					//此处看是否打印过收款单，里面有没有用帐户余额支付的金额，退回
+					//TODO
+					
 				}
 				//用掉的钱
 				BigDecimal remain = order.getInitAmt().subtract(order.getCurAmt());
