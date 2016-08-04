@@ -442,4 +442,54 @@
         LEFT JOIN t_md_mara m ON m.MATNR = i.MATNR
         AND b.SALES_ORG = m.SALES_ORG
     </select>
+    <select id="changeplanStatReport" resultType="hashmap" parameterType="com.nhry.model.statistics.BranchInfoModel">
+            SELECT
+                br.BRANCH_NAME,
+                u.EMP_NAME,
+                i.ORDER_DATE,
+                i.REPLACE_REASON,
+                v.VIP_NAME,
+                v.MP,
+                concat(
+                    r.RESIDENTIAL_AREA_TXT,
+                    a.ADDRESS_TXT
+                ) ADDRESS_TXT,
+                p.SHORT_TXT,
+                i.QTY,
+                ex.SHORT_TXT as CONFIRM_SHORT_TXT,
+                i.CONFIRM_QTY
+
+            FROM
+                t_mst_disp_order_item i
+            LEFT JOIN t_preorder o ON o.ORDER_NO = i.ORG_ORDER_NO
+            LEFT JOIN t_md_mara_ex p ON p.MATNR = i.MATNR
+            AND p.SALES_ORG = o.SALES_ORG
+            LEFT JOIN t_md_mara_ex ex on ex.MATNR = i .CONFIRM_MATNR and ex.SALES_ORG=o.SALES_ORG
+            LEFT JOIN t_md_address a ON a.ADDRESS_ID = i.ADDRESS_NO
+            LEFT JOIN t_vip_cust_info v ON v.VIP_CUST_NO = o.MILKMEMBER_NO
+            LEFT JOIN t_md_residential_area r ON r.ID = a.RESIDENTIAL_AREA
+            LEFT JOIN t_md_branch_emp u on u.EMP_NO=o.EMP_NO
+            LEFT JOIN t_md_branch br on br.BRANCH_NO = o.BRANCH_NO
+            LEFT JOIN t_mst_disp_order od on od.ORDER_NO=i.ORDER_NO
+            WHERE  i.REASON='10' and od.STATUS='20'
+        <if test="branchNo != null">
+            AND br.BRANCH_NO = ${branchNo}
+        </if>
+        <if test="dealerId != null and dealerId != '-1'">
+            AND br.DEALER_NO = ${dealerId}
+        </if>
+        <if test="salesOrg != null">
+            AND br.SALES_ORG = ${salesOrg}
+        </if>
+        <if test="empNo !=null">
+            AND u.EMP_NO = ${empNo}
+        </if>
+        <if test="orderDateStart !=null">
+            AND i.ORDER_DATE  &gt;=  #{orderDateStart,jdbcType=DATE}
+        </if>
+        <if test="orderDateEnd !=null">
+            AND i.ORDER_DATE  &gt;=  #{orderDateEnd,jdbcType=DATE}
+        </if>
+
+    </select>
 </mapper>
