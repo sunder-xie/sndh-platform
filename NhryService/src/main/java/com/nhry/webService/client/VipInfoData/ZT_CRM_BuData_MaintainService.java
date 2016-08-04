@@ -17,7 +17,7 @@ public interface ZT_CRM_BuData_MaintainService {
      * @param z_CRM_MEMB_MSTDATA_UPD_DH0
      */
     public com.nhry.webService.client.VipInfoData.functions.Z_CRM_MEMB_MSTDATA_UPD_DHResponse memberCreate(
-        com.nhry.webService.client.VipInfoData.functions.Z_CRM_MEMB_MSTDATA_UPD_DH z_CRM_MEMB_MSTDATA_UPD_DH0)
+            com.nhry.webService.client.VipInfoData.functions.Z_CRM_MEMB_MSTDATA_UPD_DH z_CRM_MEMB_MSTDATA_UPD_DH0)
         throws java.rmi.RemoteException;
 
     /**
@@ -26,8 +26,8 @@ public interface ZT_CRM_BuData_MaintainService {
      * @param z_CRM_MEMB_MSTDATA_UPD_DH0
      */
     public void startmemberCreate(
-        com.nhry.webService.client.VipInfoData.functions.Z_CRM_MEMB_MSTDATA_UPD_DH z_CRM_MEMB_MSTDATA_UPD_DH0,
-        final com.nhry.webService.client.VipInfoData.ZT_CRM_BuData_MaintainServiceCallbackHandler callback)
+            com.nhry.webService.client.VipInfoData.functions.Z_CRM_MEMB_MSTDATA_UPD_DH z_CRM_MEMB_MSTDATA_UPD_DH0,
+            final ZT_CRM_BuData_MaintainServiceCallbackHandler callback)
         throws java.rmi.RemoteException;
 
     /**
@@ -36,7 +36,7 @@ public interface ZT_CRM_BuData_MaintainService {
      * @param z_CRM_MEMB_ZTAB0000LQ_UPDATE2
      */
     public com.nhry.webService.client.VipInfoData.functions.Z_CRM_MEMB_ZTAB0000LQ_UPDATEResponse subscriberMaintain(
-        com.nhry.webService.client.VipInfoData.functions.Z_CRM_MEMB_ZTAB0000LQ_UPDATE z_CRM_MEMB_ZTAB0000LQ_UPDATE2)
+            com.nhry.webService.client.VipInfoData.functions.Z_CRM_MEMB_ZTAB0000LQ_UPDATE z_CRM_MEMB_ZTAB0000LQ_UPDATE2)
         throws java.rmi.RemoteException;
 
     /**
@@ -45,8 +45,8 @@ public interface ZT_CRM_BuData_MaintainService {
      * @param z_CRM_MEMB_ZTAB0000LQ_UPDATE2
      */
     public void startsubscriberMaintain(
-        com.nhry.webService.client.VipInfoData.functions.Z_CRM_MEMB_ZTAB0000LQ_UPDATE z_CRM_MEMB_ZTAB0000LQ_UPDATE2,
-        final com.nhry.webService.client.VipInfoData.ZT_CRM_BuData_MaintainServiceCallbackHandler callback)
+            com.nhry.webService.client.VipInfoData.functions.Z_CRM_MEMB_ZTAB0000LQ_UPDATE z_CRM_MEMB_ZTAB0000LQ_UPDATE2,
+            final ZT_CRM_BuData_MaintainServiceCallbackHandler callback)
         throws java.rmi.RemoteException;
 
     //

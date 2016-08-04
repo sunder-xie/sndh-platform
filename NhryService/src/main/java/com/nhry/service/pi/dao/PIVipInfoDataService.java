@@ -23,15 +23,6 @@ public interface PIVipInfoDataService {
     PISuccessTMessage<EvMemb> generateVipInfoData(TVipCustInfo vipCustInfo, TMdAddress address);
 
     /**
-     * 会员积分查询
-     * @param tel
-     * @param membGuid
-     * @param membId
-     * @return
-     */
-    PISuccessTMessage<EvMembPoint> queryVipPointData(String tel, String membGuid, String membId);
-
-    /**
      * 会员积分明细查询
      * @param tel
      * @param membGuid

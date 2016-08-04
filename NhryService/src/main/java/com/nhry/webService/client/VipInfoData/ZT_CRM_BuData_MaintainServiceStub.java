@@ -26,7 +26,7 @@ public class ZT_CRM_BuData_MaintainServiceStub extends org.apache.axis2.client.S
      */
     public ZT_CRM_BuData_MaintainServiceStub(
         org.apache.axis2.context.ConfigurationContext configurationContext,
-        java.lang.String targetEndpoint) throws org.apache.axis2.AxisFault {
+        String targetEndpoint) throws org.apache.axis2.AxisFault {
         this(configurationContext, targetEndpoint, false);
     }
 
@@ -35,7 +35,7 @@ public class ZT_CRM_BuData_MaintainServiceStub extends org.apache.axis2.client.S
      */
     public ZT_CRM_BuData_MaintainServiceStub(
         org.apache.axis2.context.ConfigurationContext configurationContext,
-        java.lang.String targetEndpoint, boolean useSeparateListener)
+        String targetEndpoint, boolean useSeparateListener)
         throws org.apache.axis2.AxisFault {
         //To populate AxisService
         populateAxisService();
@@ -72,12 +72,12 @@ public class ZT_CRM_BuData_MaintainServiceStub extends org.apache.axis2.client.S
     /**
      * Constructor taking the target endpoint
      */
-    public ZT_CRM_BuData_MaintainServiceStub(java.lang.String targetEndpoint)
+    public ZT_CRM_BuData_MaintainServiceStub(String targetEndpoint)
         throws org.apache.axis2.AxisFault {
         this(null, targetEndpoint);
     }
 
-    private static synchronized java.lang.String getUniqueSuffix() {
+    private static synchronized String getUniqueSuffix() {
         // reset the counter if it is greater than 99999
         if (counter > 99999) {
             counter = 0;
@@ -85,7 +85,7 @@ public class ZT_CRM_BuData_MaintainServiceStub extends org.apache.axis2.client.S
 
         counter = counter + 1;
 
-        return java.lang.Long.toString(java.lang.System.currentTimeMillis()) +
+        return Long.toString(System.currentTimeMillis()) +
         "_" + counter;
     }
 
@@ -124,7 +124,7 @@ public class ZT_CRM_BuData_MaintainServiceStub extends org.apache.axis2.client.S
     /**
      * Auto generated method signature
      *
-     * @see com.nhry.webService.client.VipInfoData.ZT_CRM_BuData_MaintainService#memberCreate
+     * @see ZT_CRM_BuData_MaintainService#memberCreate
      * @param z_CRM_MEMB_MSTDATA_UPD_DH4
      */
     public com.nhry.webService.client.VipInfoData.functions.Z_CRM_MEMB_MSTDATA_UPD_DHResponse memberCreate(
@@ -173,7 +173,7 @@ public class ZT_CRM_BuData_MaintainServiceStub extends org.apache.axis2.client.S
             org.apache.axis2.context.MessageContext _returnMessageContext = _operationClient.getMessageContext(org.apache.axis2.wsdl.WSDLConstants.MESSAGE_LABEL_IN_VALUE);
             org.apache.axiom.soap.SOAPEnvelope _returnEnv = _returnMessageContext.getEnvelope();
 
-            java.lang.Object object = fromOM(_returnEnv.getBody()
+            Object object = fromOM(_returnEnv.getBody()
                                                        .getFirstElement(),
                     com.nhry.webService.client.VipInfoData.functions.Z_CRM_MEMB_MSTDATA_UPD_DHResponse.class);
 
@@ -187,39 +187,39 @@ public class ZT_CRM_BuData_MaintainServiceStub extends org.apache.axis2.client.S
                                 faultElt.getQName(), "MemberCreate"))) {
                     //make the fault by reflection
                     try {
-                        java.lang.String exceptionClassName = (java.lang.String) faultExceptionClassNameMap.get(new org.apache.axis2.client.FaultMapKey(
+                        String exceptionClassName = (String) faultExceptionClassNameMap.get(new org.apache.axis2.client.FaultMapKey(
                                     faultElt.getQName(), "MemberCreate"));
-                        java.lang.Class exceptionClass = java.lang.Class.forName(exceptionClassName);
-                        java.lang.reflect.Constructor constructor = exceptionClass.getConstructor(java.lang.String.class);
-                        java.lang.Exception ex = (java.lang.Exception) constructor.newInstance(f.getMessage());
+                        Class exceptionClass = Class.forName(exceptionClassName);
+                        java.lang.reflect.Constructor constructor = exceptionClass.getConstructor(String.class);
+                        Exception ex = (Exception) constructor.newInstance(f.getMessage());
 
                         //message class
-                        java.lang.String messageClassName = (java.lang.String) faultMessageMap.get(new org.apache.axis2.client.FaultMapKey(
+                        String messageClassName = (String) faultMessageMap.get(new org.apache.axis2.client.FaultMapKey(
                                     faultElt.getQName(), "MemberCreate"));
-                        java.lang.Class messageClass = java.lang.Class.forName(messageClassName);
-                        java.lang.Object messageObject = fromOM(faultElt,
+                        Class messageClass = Class.forName(messageClassName);
+                        Object messageObject = fromOM(faultElt,
                                 messageClass);
                         java.lang.reflect.Method m = exceptionClass.getMethod("setFaultMessage",
-                                new java.lang.Class[] { messageClass });
-                        m.invoke(ex, new java.lang.Object[] { messageObject });
+                                new Class[] { messageClass });
+                        m.invoke(ex, new Object[] { messageObject });
 
                         throw new java.rmi.RemoteException(ex.getMessage(), ex);
-                    } catch (java.lang.ClassCastException e) {
+                    } catch (ClassCastException e) {
                         // we cannot intantiate the class - throw the original Axis fault
                         throw f;
-                    } catch (java.lang.ClassNotFoundException e) {
+                    } catch (ClassNotFoundException e) {
                         // we cannot intantiate the class - throw the original Axis fault
                         throw f;
-                    } catch (java.lang.NoSuchMethodException e) {
+                    } catch (NoSuchMethodException e) {
                         // we cannot intantiate the class - throw the original Axis fault
                         throw f;
                     } catch (java.lang.reflect.InvocationTargetException e) {
                         // we cannot intantiate the class - throw the original Axis fault
                         throw f;
-                    } catch (java.lang.IllegalAccessException e) {
+                    } catch (IllegalAccessException e) {
                         // we cannot intantiate the class - throw the original Axis fault
                         throw f;
-                    } catch (java.lang.InstantiationException e) {
+                    } catch (InstantiationException e) {
                         // we cannot intantiate the class - throw the original Axis fault
                         throw f;
                     }
@@ -240,12 +240,12 @@ public class ZT_CRM_BuData_MaintainServiceStub extends org.apache.axis2.client.S
     /**
      * Auto generated method signature for Asynchronous Invocations
      *
-     * @see com.nhry.webService.client.VipInfoData.ZT_CRM_BuData_MaintainService#startmemberCreate
+     * @see ZT_CRM_BuData_MaintainService#startmemberCreate
      * @param z_CRM_MEMB_MSTDATA_UPD_DH4
      */
     public void startmemberCreate(
         com.nhry.webService.client.VipInfoData.functions.Z_CRM_MEMB_MSTDATA_UPD_DH z_CRM_MEMB_MSTDATA_UPD_DH4,
-        final com.nhry.webService.client.VipInfoData.ZT_CRM_BuData_MaintainServiceCallbackHandler callback)
+        final ZT_CRM_BuData_MaintainServiceCallbackHandler callback)
         throws java.rmi.RemoteException {
         org.apache.axis2.client.OperationClient _operationClient = _serviceClient.createClient(_operations[0].getName());
         _operationClient.getOptions()
@@ -285,7 +285,7 @@ public class ZT_CRM_BuData_MaintainServiceStub extends org.apache.axis2.client.S
                     try {
                         org.apache.axiom.soap.SOAPEnvelope resultEnv = resultContext.getEnvelope();
 
-                        java.lang.Object object = fromOM(resultEnv.getBody()
+                        Object object = fromOM(resultEnv.getBody()
                                                                   .getFirstElement(),
                                 com.nhry.webService.client.VipInfoData.functions.Z_CRM_MEMB_MSTDATA_UPD_DHResponse.class);
                         callback.receiveResultmemberCreate((com.nhry.webService.client.VipInfoData.functions.Z_CRM_MEMB_MSTDATA_UPD_DHResponse) object);
@@ -294,7 +294,7 @@ public class ZT_CRM_BuData_MaintainServiceStub extends org.apache.axis2.client.S
                     }
                 }
 
-                public void onError(java.lang.Exception error) {
+                public void onError(Exception error) {
                     if (error instanceof org.apache.axis2.AxisFault) {
                         org.apache.axis2.AxisFault f = (org.apache.axis2.AxisFault) error;
                         org.apache.axiom.om.OMElement faultElt = f.getDetail();
@@ -305,43 +305,43 @@ public class ZT_CRM_BuData_MaintainServiceStub extends org.apache.axis2.client.S
                                             faultElt.getQName(), "MemberCreate"))) {
                                 //make the fault by reflection
                                 try {
-                                    java.lang.String exceptionClassName = (java.lang.String) faultExceptionClassNameMap.get(new org.apache.axis2.client.FaultMapKey(
+                                    String exceptionClassName = (String) faultExceptionClassNameMap.get(new org.apache.axis2.client.FaultMapKey(
                                                 faultElt.getQName(),
                                                 "MemberCreate"));
-                                    java.lang.Class exceptionClass = java.lang.Class.forName(exceptionClassName);
-                                    java.lang.reflect.Constructor constructor = exceptionClass.getConstructor(java.lang.String.class);
-                                    java.lang.Exception ex = (java.lang.Exception) constructor.newInstance(f.getMessage());
+                                    Class exceptionClass = Class.forName(exceptionClassName);
+                                    java.lang.reflect.Constructor constructor = exceptionClass.getConstructor(String.class);
+                                    Exception ex = (Exception) constructor.newInstance(f.getMessage());
 
                                     //message class
-                                    java.lang.String messageClassName = (java.lang.String) faultMessageMap.get(new org.apache.axis2.client.FaultMapKey(
+                                    String messageClassName = (String) faultMessageMap.get(new org.apache.axis2.client.FaultMapKey(
                                                 faultElt.getQName(),
                                                 "MemberCreate"));
-                                    java.lang.Class messageClass = java.lang.Class.forName(messageClassName);
-                                    java.lang.Object messageObject = fromOM(faultElt,
+                                    Class messageClass = Class.forName(messageClassName);
+                                    Object messageObject = fromOM(faultElt,
                                             messageClass);
                                     java.lang.reflect.Method m = exceptionClass.getMethod("setFaultMessage",
-                                            new java.lang.Class[] { messageClass });
+                                            new Class[] { messageClass });
                                     m.invoke(ex,
-                                        new java.lang.Object[] { messageObject });
+                                        new Object[] { messageObject });
 
                                     callback.receiveErrormemberCreate(new java.rmi.RemoteException(
                                             ex.getMessage(), ex));
-                                } catch (java.lang.ClassCastException e) {
+                                } catch (ClassCastException e) {
                                     // we cannot intantiate the class - throw the original Axis fault
                                     callback.receiveErrormemberCreate(f);
-                                } catch (java.lang.ClassNotFoundException e) {
+                                } catch (ClassNotFoundException e) {
                                     // we cannot intantiate the class - throw the original Axis fault
                                     callback.receiveErrormemberCreate(f);
-                                } catch (java.lang.NoSuchMethodException e) {
+                                } catch (NoSuchMethodException e) {
                                     // we cannot intantiate the class - throw the original Axis fault
                                     callback.receiveErrormemberCreate(f);
                                 } catch (java.lang.reflect.InvocationTargetException e) {
                                     // we cannot intantiate the class - throw the original Axis fault
                                     callback.receiveErrormemberCreate(f);
-                                } catch (java.lang.IllegalAccessException e) {
+                                } catch (IllegalAccessException e) {
                                     // we cannot intantiate the class - throw the original Axis fault
                                     callback.receiveErrormemberCreate(f);
-                                } catch (java.lang.InstantiationException e) {
+                                } catch (InstantiationException e) {
                                     // we cannot intantiate the class - throw the original Axis fault
                                     callback.receiveErrormemberCreate(f);
                                 } catch (org.apache.axis2.AxisFault e) {
@@ -390,7 +390,7 @@ public class ZT_CRM_BuData_MaintainServiceStub extends org.apache.axis2.client.S
     /**
      * Auto generated method signature
      *
-     * @see com.nhry.webService.client.VipInfoData.ZT_CRM_BuData_MaintainService#subscriberMaintain
+     * @see ZT_CRM_BuData_MaintainService#subscriberMaintain
      * @param z_CRM_MEMB_ZTAB0000LQ_UPDATE6
      */
     public com.nhry.webService.client.VipInfoData.functions.Z_CRM_MEMB_ZTAB0000LQ_UPDATEResponse subscriberMaintain(
@@ -439,7 +439,7 @@ public class ZT_CRM_BuData_MaintainServiceStub extends org.apache.axis2.client.S
             org.apache.axis2.context.MessageContext _returnMessageContext = _operationClient.getMessageContext(org.apache.axis2.wsdl.WSDLConstants.MESSAGE_LABEL_IN_VALUE);
             org.apache.axiom.soap.SOAPEnvelope _returnEnv = _returnMessageContext.getEnvelope();
 
-            java.lang.Object object = fromOM(_returnEnv.getBody()
+            Object object = fromOM(_returnEnv.getBody()
                                                        .getFirstElement(),
                     com.nhry.webService.client.VipInfoData.functions.Z_CRM_MEMB_ZTAB0000LQ_UPDATEResponse.class);
 
@@ -453,39 +453,39 @@ public class ZT_CRM_BuData_MaintainServiceStub extends org.apache.axis2.client.S
                                 faultElt.getQName(), "SubscriberMaintain"))) {
                     //make the fault by reflection
                     try {
-                        java.lang.String exceptionClassName = (java.lang.String) faultExceptionClassNameMap.get(new org.apache.axis2.client.FaultMapKey(
+                        String exceptionClassName = (String) faultExceptionClassNameMap.get(new org.apache.axis2.client.FaultMapKey(
                                     faultElt.getQName(), "SubscriberMaintain"));
-                        java.lang.Class exceptionClass = java.lang.Class.forName(exceptionClassName);
-                        java.lang.reflect.Constructor constructor = exceptionClass.getConstructor(java.lang.String.class);
-                        java.lang.Exception ex = (java.lang.Exception) constructor.newInstance(f.getMessage());
+                        Class exceptionClass = Class.forName(exceptionClassName);
+                        java.lang.reflect.Constructor constructor = exceptionClass.getConstructor(String.class);
+                        Exception ex = (Exception) constructor.newInstance(f.getMessage());
 
                         //message class
-                        java.lang.String messageClassName = (java.lang.String) faultMessageMap.get(new org.apache.axis2.client.FaultMapKey(
+                        String messageClassName = (String) faultMessageMap.get(new org.apache.axis2.client.FaultMapKey(
                                     faultElt.getQName(), "SubscriberMaintain"));
-                        java.lang.Class messageClass = java.lang.Class.forName(messageClassName);
-                        java.lang.Object messageObject = fromOM(faultElt,
+                        Class messageClass = Class.forName(messageClassName);
+                        Object messageObject = fromOM(faultElt,
                                 messageClass);
                         java.lang.reflect.Method m = exceptionClass.getMethod("setFaultMessage",
-                                new java.lang.Class[] { messageClass });
-                        m.invoke(ex, new java.lang.Object[] { messageObject });
+                                new Class[] { messageClass });
+                        m.invoke(ex, new Object[] { messageObject });
 
                         throw new java.rmi.RemoteException(ex.getMessage(), ex);
-                    } catch (java.lang.ClassCastException e) {
+                    } catch (ClassCastException e) {
                         // we cannot intantiate the class - throw the original Axis fault
                         throw f;
-                    } catch (java.lang.ClassNotFoundException e) {
+                    } catch (ClassNotFoundException e) {
                         // we cannot intantiate the class - throw the original Axis fault
                         throw f;
-                    } catch (java.lang.NoSuchMethodException e) {
+                    } catch (NoSuchMethodException e) {
                         // we cannot intantiate the class - throw the original Axis fault
                         throw f;
                     } catch (java.lang.reflect.InvocationTargetException e) {
                         // we cannot intantiate the class - throw the original Axis fault
                         throw f;
-                    } catch (java.lang.IllegalAccessException e) {
+                    } catch (IllegalAccessException e) {
                         // we cannot intantiate the class - throw the original Axis fault
                         throw f;
-                    } catch (java.lang.InstantiationException e) {
+                    } catch (InstantiationException e) {
                         // we cannot intantiate the class - throw the original Axis fault
                         throw f;
                     }
@@ -506,12 +506,12 @@ public class ZT_CRM_BuData_MaintainServiceStub extends org.apache.axis2.client.S
     /**
      * Auto generated method signature for Asynchronous Invocations
      *
-     * @see com.nhry.webService.client.VipInfoData.ZT_CRM_BuData_MaintainService#startsubscriberMaintain
+     * @see ZT_CRM_BuData_MaintainService#startsubscriberMaintain
      * @param z_CRM_MEMB_ZTAB0000LQ_UPDATE6
      */
     public void startsubscriberMaintain(
         com.nhry.webService.client.VipInfoData.functions.Z_CRM_MEMB_ZTAB0000LQ_UPDATE z_CRM_MEMB_ZTAB0000LQ_UPDATE6,
-        final com.nhry.webService.client.VipInfoData.ZT_CRM_BuData_MaintainServiceCallbackHandler callback)
+        final ZT_CRM_BuData_MaintainServiceCallbackHandler callback)
         throws java.rmi.RemoteException {
         org.apache.axis2.client.OperationClient _operationClient = _serviceClient.createClient(_operations[1].getName());
         _operationClient.getOptions()
@@ -552,7 +552,7 @@ public class ZT_CRM_BuData_MaintainServiceStub extends org.apache.axis2.client.S
                     try {
                         org.apache.axiom.soap.SOAPEnvelope resultEnv = resultContext.getEnvelope();
 
-                        java.lang.Object object = fromOM(resultEnv.getBody()
+                        Object object = fromOM(resultEnv.getBody()
                                                                   .getFirstElement(),
                                 com.nhry.webService.client.VipInfoData.functions.Z_CRM_MEMB_ZTAB0000LQ_UPDATEResponse.class);
                         callback.receiveResultsubscriberMaintain((com.nhry.webService.client.VipInfoData.functions.Z_CRM_MEMB_ZTAB0000LQ_UPDATEResponse) object);
@@ -561,7 +561,7 @@ public class ZT_CRM_BuData_MaintainServiceStub extends org.apache.axis2.client.S
                     }
                 }
 
-                public void onError(java.lang.Exception error) {
+                public void onError(Exception error) {
                     if (error instanceof org.apache.axis2.AxisFault) {
                         org.apache.axis2.AxisFault f = (org.apache.axis2.AxisFault) error;
                         org.apache.axiom.om.OMElement faultElt = f.getDetail();
@@ -573,43 +573,43 @@ public class ZT_CRM_BuData_MaintainServiceStub extends org.apache.axis2.client.S
                                             "SubscriberMaintain"))) {
                                 //make the fault by reflection
                                 try {
-                                    java.lang.String exceptionClassName = (java.lang.String) faultExceptionClassNameMap.get(new org.apache.axis2.client.FaultMapKey(
+                                    String exceptionClassName = (String) faultExceptionClassNameMap.get(new org.apache.axis2.client.FaultMapKey(
                                                 faultElt.getQName(),
                                                 "SubscriberMaintain"));
-                                    java.lang.Class exceptionClass = java.lang.Class.forName(exceptionClassName);
-                                    java.lang.reflect.Constructor constructor = exceptionClass.getConstructor(java.lang.String.class);
-                                    java.lang.Exception ex = (java.lang.Exception) constructor.newInstance(f.getMessage());
+                                    Class exceptionClass = Class.forName(exceptionClassName);
+                                    java.lang.reflect.Constructor constructor = exceptionClass.getConstructor(String.class);
+                                    Exception ex = (Exception) constructor.newInstance(f.getMessage());
 
                                     //message class
-                                    java.lang.String messageClassName = (java.lang.String) faultMessageMap.get(new org.apache.axis2.client.FaultMapKey(
+                                    String messageClassName = (String) faultMessageMap.get(new org.apache.axis2.client.FaultMapKey(
                                                 faultElt.getQName(),
                                                 "SubscriberMaintain"));
-                                    java.lang.Class messageClass = java.lang.Class.forName(messageClassName);
-                                    java.lang.Object messageObject = fromOM(faultElt,
+                                    Class messageClass = Class.forName(messageClassName);
+                                    Object messageObject = fromOM(faultElt,
                                             messageClass);
                                     java.lang.reflect.Method m = exceptionClass.getMethod("setFaultMessage",
-                                            new java.lang.Class[] { messageClass });
+                                            new Class[] { messageClass });
                                     m.invoke(ex,
-                                        new java.lang.Object[] { messageObject });
+                                        new Object[] { messageObject });
 
                                     callback.receiveErrorsubscriberMaintain(new java.rmi.RemoteException(
                                             ex.getMessage(), ex));
-                                } catch (java.lang.ClassCastException e) {
+                                } catch (ClassCastException e) {
                                     // we cannot intantiate the class - throw the original Axis fault
                                     callback.receiveErrorsubscriberMaintain(f);
-                                } catch (java.lang.ClassNotFoundException e) {
+                                } catch (ClassNotFoundException e) {
                                     // we cannot intantiate the class - throw the original Axis fault
                                     callback.receiveErrorsubscriberMaintain(f);
-                                } catch (java.lang.NoSuchMethodException e) {
+                                } catch (NoSuchMethodException e) {
                                     // we cannot intantiate the class - throw the original Axis fault
                                     callback.receiveErrorsubscriberMaintain(f);
                                 } catch (java.lang.reflect.InvocationTargetException e) {
                                     // we cannot intantiate the class - throw the original Axis fault
                                     callback.receiveErrorsubscriberMaintain(f);
-                                } catch (java.lang.IllegalAccessException e) {
+                                } catch (IllegalAccessException e) {
                                     // we cannot intantiate the class - throw the original Axis fault
                                     callback.receiveErrorsubscriberMaintain(f);
-                                } catch (java.lang.InstantiationException e) {
+                                } catch (InstantiationException e) {
                                     // we cannot intantiate the class - throw the original Axis fault
                                     callback.receiveErrorsubscriberMaintain(f);
                                 } catch (org.apache.axis2.AxisFault e) {
@@ -761,8 +761,8 @@ public class ZT_CRM_BuData_MaintainServiceStub extends org.apache.axis2.client.S
         return factory.getDefaultEnvelope();
     }
 
-    private java.lang.Object fromOM(org.apache.axiom.om.OMElement param,
-        java.lang.Class type) throws org.apache.axis2.AxisFault {
+    private Object fromOM(org.apache.axiom.om.OMElement param,
+        Class type) throws org.apache.axis2.AxisFault {
         try {
             if (com.nhry.webService.client.VipInfoData.functions.Z_CRM_MEMB_MSTDATA_UPD_DH.class.equals(
                         type)) {
@@ -783,7 +783,7 @@ public class ZT_CRM_BuData_MaintainServiceStub extends org.apache.axis2.client.S
                         type)) {
                 return com.nhry.webService.client.VipInfoData.functions.Z_CRM_MEMB_ZTAB0000LQ_UPDATEResponse.Factory.parse(param.getXMLStreamReaderWithoutCaching());
             }
-        } catch (java.lang.Exception e) {
+        } catch (Exception e) {
             throw org.apache.axis2.AxisFault.makeFault(e);
         }
 

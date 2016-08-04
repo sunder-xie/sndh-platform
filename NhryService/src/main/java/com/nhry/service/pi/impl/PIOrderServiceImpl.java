@@ -50,7 +50,7 @@ public class PIOrderServiceImpl implements PIOrderService {
     }
 
     @Override
-    public PIReturnMessage findOrder(String ORDER_NO, TPreOrder order, List<TPlanOrderItem> planItems, List<TOrderDaliyPlanItem> daliyPlanItems) {
+    public PIReturnMessage findOrder(String ORDER_NO) {
         PIReturnMessage message = new PIReturnMessage();
         Order result = new Order();
         if(StringUtils.isEmpty(ORDER_NO)){

@@ -236,7 +236,7 @@ public class MemberActCreateServiceStub extends org.apache.axis2.client.Stub
      */
     public void startmemberActCreate(
         com.nhry.webService.client.MemberActivities.functions.Z_CRM_MEMB_ACTIVITIES_CREATE z_CRM_MEMB_ACTIVITIES_CREATE2,
-        final com.nhry.webService.client.MemberActivities.MemberActCreateServiceCallbackHandler callback)
+        final MemberActCreateServiceCallbackHandler callback)
         throws java.rmi.RemoteException {
         org.apache.axis2.client.OperationClient _operationClient = _serviceClient.createClient(_operations[0].getName());
         _operationClient.getOptions()
