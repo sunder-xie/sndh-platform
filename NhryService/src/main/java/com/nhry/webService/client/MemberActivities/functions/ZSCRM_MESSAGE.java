@@ -414,7 +414,7 @@ public class ZSCRM_MESSAGE implements org.apache.axis2.databinding.ADBBean {
                             String nsUri = reader.getNamespaceContext()
                                                            .getNamespaceURI(nsPrefix);
 
-                            return (ZSCRM_MESSAGE) com.nhry.webService.client.MemberActivities.functions.ExtensionMapper.getTypeObject(nsUri,
+                            return (ZSCRM_MESSAGE) ExtensionMapper.getTypeObject(nsUri,
                                 type, reader);
                         }
                     }

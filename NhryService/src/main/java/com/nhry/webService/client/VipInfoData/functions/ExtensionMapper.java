@@ -14,242 +14,247 @@ package com.nhry.webService.client.VipInfoData.functions;
     "unused"
 })
 public class ExtensionMapper {
-    public static java.lang.Object getTypeObject(
-        java.lang.String namespaceURI, java.lang.String typeName,
-        javax.xml.stream.XMLStreamReader reader) throws java.lang.Exception {
+    public static Object getTypeObject(
+        String namespaceURI, String typeName,
+        javax.xml.stream.XMLStreamReader reader) throws Exception {
         if ("urn:sap-com:document:sap:rfc:functions".equals(namespaceURI) &&
                 "IV_MEMB_GUID_type1".equals(typeName)) {
-            return com.nhry.webService.client.VipInfoData.functions.IV_MEMB_GUID_type1.Factory.parse(reader);
+            return IV_MEMB_GUID_type1.Factory.parse(reader);
         }
 
         if ("urn:sap-com:document:sap:rfc:functions".equals(namespaceURI) &&
                 "ZZFLD0000DM_type1".equals(typeName)) {
-            return com.nhry.webService.client.VipInfoData.functions.ZZFLD0000DM_type1.Factory.parse(reader);
+            return ZZFLD0000DM_type1.Factory.parse(reader);
         }
 
         if ("urn:sap-com:document:sap:rfc:functions".equals(namespaceURI) &&
                 "ALIPAY_ACCOUNT_type1".equals(typeName)) {
-            return com.nhry.webService.client.VipInfoData.functions.ALIPAY_ACCOUNT_type1.Factory.parse(reader);
+            return ALIPAY_ACCOUNT_type1.Factory.parse(reader);
         }
 
         if ("urn:sap-com:document:sap:rfc:functions".equals(namespaceURI) &&
                 "CERT_ID_type1".equals(typeName)) {
-            return com.nhry.webService.client.VipInfoData.functions.CERT_ID_type1.Factory.parse(reader);
+            return CERT_ID_type1.Factory.parse(reader);
         }
 
         if ("urn:sap-com:document:sap:rfc:functions".equals(namespaceURI) &&
                 "EV_MEMB_GUID_type1".equals(typeName)) {
-            return com.nhry.webService.client.VipInfoData.functions.EV_MEMB_GUID_type1.Factory.parse(reader);
+            return EV_MEMB_GUID_type1.Factory.parse(reader);
         }
 
         if ("urn:sap-com:document:sap:rfc:functions".equals(namespaceURI) &&
                 "CITY1_type1".equals(typeName)) {
-            return com.nhry.webService.client.VipInfoData.functions.CITY1_type1.Factory.parse(reader);
+            return CITY1_type1.Factory.parse(reader);
         }
 
         if ("urn:sap-com:document:sap:rfc:functions".equals(namespaceURI) &&
                 "CREATED_VIA_type1".equals(typeName)) {
-            return com.nhry.webService.client.VipInfoData.functions.CREATED_VIA_type1.Factory.parse(reader);
+            return CREATED_VIA_type1.Factory.parse(reader);
         }
 
         if ("urn:sap-com:document:sap:rfc:functions".equals(namespaceURI) &&
                 "REMARKS_type1".equals(typeName)) {
-            return com.nhry.webService.client.VipInfoData.functions.REMARKS_type1.Factory.parse(reader);
+            return REMARKS_type1.Factory.parse(reader);
         }
 
         if ("urn:sap-com:document:sap:rfc:functions".equals(namespaceURI) &&
                 "SEX_type1".equals(typeName)) {
-            return com.nhry.webService.client.VipInfoData.functions.SEX_type1.Factory.parse(reader);
+            return SEX_type1.Factory.parse(reader);
         }
 
         if ("urn:sap-com:document:sap:rfc:functions".equals(namespaceURI) &&
                 "date".equals(typeName)) {
-            return com.nhry.webService.client.VipInfoData.functions.Date.Factory.parse(reader);
+            return Date.Factory.parse(reader);
         }
 
         if ("urn:sap-com:document:sap:rfc:functions".equals(namespaceURI) &&
                 "ZZFLD0000B7_type1".equals(typeName)) {
-            return com.nhry.webService.client.VipInfoData.functions.ZZFLD0000B7_type1.Factory.parse(reader);
+            return ZZFLD0000B7_type1.Factory.parse(reader);
         }
 
         if ("urn:sap-com:document:sap:rfc:functions".equals(namespaceURI) &&
                 "FLAG_type1".equals(typeName)) {
-            return com.nhry.webService.client.VipInfoData.functions.FLAG_type1.Factory.parse(reader);
+            return FLAG_type1.Factory.parse(reader);
         }
 
         if ("urn:sap-com:document:sap:rfc:functions".equals(namespaceURI) &&
                 "NAME_LAST_type1".equals(typeName)) {
-            return com.nhry.webService.client.VipInfoData.functions.NAME_LAST_type1.Factory.parse(reader);
+            return NAME_LAST_type1.Factory.parse(reader);
         }
 
         if ("urn:sap-com:document:sap:rfc:functions".equals(namespaceURI) &&
                 "EV_MEMB_ID_type1".equals(typeName)) {
-            return com.nhry.webService.client.VipInfoData.functions.EV_MEMB_ID_type1.Factory.parse(reader);
+            return EV_MEMB_ID_type1.Factory.parse(reader);
+        }
+
+        if ("urn:sap-com:document:sap:rfc:functions".equals(namespaceURI) &&
+                "ADDRESS_GUID_type1".equals(typeName)) {
+            return ADDRESS_GUID_type1.Factory.parse(reader);
         }
 
         if ("urn:sap-com:document:sap:rfc:functions".equals(namespaceURI) &&
                 "ZZFLD0000B9_type1".equals(typeName)) {
-            return com.nhry.webService.client.VipInfoData.functions.ZZFLD0000B9_type1.Factory.parse(reader);
+            return ZZFLD0000B9_type1.Factory.parse(reader);
         }
 
         if ("urn:sap-com:document:sap:rfc:functions".equals(namespaceURI) &&
                 "WEBCHAT_NO_type1".equals(typeName)) {
-            return com.nhry.webService.client.VipInfoData.functions.WEBCHAT_NO_type1.Factory.parse(reader);
+            return WEBCHAT_NO_type1.Factory.parse(reader);
         }
 
         if ("urn:sap-com:document:sap:rfc:functions".equals(namespaceURI) &&
                 "T_ZTAB0000LQ_type0".equals(typeName)) {
-            return com.nhry.webService.client.VipInfoData.functions.T_ZTAB0000LQ_type0.Factory.parse(reader);
+            return T_ZTAB0000LQ_type0.Factory.parse(reader);
         }
 
         if ("urn:sap-com:document:sap:rfc:functions".equals(namespaceURI) &&
                 "STR_SUPPL1_type1".equals(typeName)) {
-            return com.nhry.webService.client.VipInfoData.functions.STR_SUPPL1_type1.Factory.parse(reader);
+            return STR_SUPPL1_type1.Factory.parse(reader);
         }
 
         if ("urn:sap-com:document:sap:rfc:functions".equals(namespaceURI) &&
                 "T_ZTAB0000LQ_type1".equals(typeName)) {
-            return com.nhry.webService.client.VipInfoData.functions.T_ZTAB0000LQ_type1.Factory.parse(reader);
+            return T_ZTAB0000LQ_type1.Factory.parse(reader);
         }
 
         if ("urn:sap-com:document:sap:rfc:functions".equals(namespaceURI) &&
                 "T_ZTAB0000LQ_type2".equals(typeName)) {
-            return com.nhry.webService.client.VipInfoData.functions.T_ZTAB0000LQ_type2.Factory.parse(reader);
+            return T_ZTAB0000LQ_type2.Factory.parse(reader);
         }
 
         if ("urn:sap-com:document:sap:rfc:functions".equals(namespaceURI) &&
                 "JD_ACCOUNT_type1".equals(typeName)) {
-            return com.nhry.webService.client.VipInfoData.functions.JD_ACCOUNT_type1.Factory.parse(reader);
+            return JD_ACCOUNT_type1.Factory.parse(reader);
         }
 
         if ("urn:sap-com:document:sap:rfc:functions".equals(namespaceURI) &&
                 "T_ZTAB0000LQ_type3".equals(typeName)) {
-            return com.nhry.webService.client.VipInfoData.functions.T_ZTAB0000LQ_type3.Factory.parse(reader);
+            return T_ZTAB0000LQ_type3.Factory.parse(reader);
         }
 
         if ("urn:sap-com:document:sap:rfc:functions".equals(namespaceURI) &&
                 "IV_MEMB_GUID_type1".equals(typeName)) {
-            return com.nhry.webService.client.VipInfoData.functions.IV_MEMB_GUID_type1.Factory.parse(reader);
+            return IV_MEMB_GUID_type1.Factory.parse(reader);
         }
 
         if ("urn:sap-com:document:sap:rfc:functions".equals(namespaceURI) &&
                 "ZZFLD0000B4_type1".equals(typeName)) {
-            return com.nhry.webService.client.VipInfoData.functions.ZZFLD0000B4_type1.Factory.parse(reader);
+            return ZZFLD0000B4_type1.Factory.parse(reader);
         }
 
         if ("urn:sap-com:document:sap:rfc:functions".equals(namespaceURI) &&
                 "ZSCRM_ZTAB0000LQ".equals(typeName)) {
-            return com.nhry.webService.client.VipInfoData.functions.ZSCRM_ZTAB0000LQ.Factory.parse(reader);
+            return ZSCRM_ZTAB0000LQ.Factory.parse(reader);
         }
 
         if ("urn:sap-com:document:sap:rfc:functions".equals(namespaceURI) &&
                 "TEL_MOBILE_type1".equals(typeName)) {
-            return com.nhry.webService.client.VipInfoData.functions.TEL_MOBILE_type1.Factory.parse(reader);
+            return TEL_MOBILE_type1.Factory.parse(reader);
         }
 
         if ("urn:sap-com:document:sap:rfc:functions".equals(namespaceURI) &&
                 "REGION_type1".equals(typeName)) {
-            return com.nhry.webService.client.VipInfoData.functions.REGION_type1.Factory.parse(reader);
+            return REGION_type1.Factory.parse(reader);
         }
 
         if ("urn:sap-com:document:sap:rfc:functions".equals(namespaceURI) &&
                 "ZSCRM_MESSAGE".equals(typeName)) {
-            return com.nhry.webService.client.VipInfoData.functions.ZSCRM_MESSAGE.Factory.parse(reader);
+            return ZSCRM_MESSAGE.Factory.parse(reader);
         }
 
         if ("urn:sap-com:document:sap:rfc:functions".equals(namespaceURI) &&
                 "TEL_NUMBER_type1".equals(typeName)) {
-            return com.nhry.webService.client.VipInfoData.functions.TEL_NUMBER_type1.Factory.parse(reader);
+            return TEL_NUMBER_type1.Factory.parse(reader);
         }
 
         if ("urn:sap-com:document:sap:rfc:functions".equals(namespaceURI) &&
                 "ZSCRM_MEMB_UPD_DH_INPUT".equals(typeName)) {
-            return com.nhry.webService.client.VipInfoData.functions.ZSCRM_MEMB_UPD_DH_INPUT.Factory.parse(reader);
+            return ZSCRM_MEMB_UPD_DH_INPUT.Factory.parse(reader);
         }
 
         if ("urn:sap-com:document:sap:rfc:functions".equals(namespaceURI) &&
                 "ZZFLD0000B6_type1".equals(typeName)) {
-            return com.nhry.webService.client.VipInfoData.functions.ZZFLD0000B6_type1.Factory.parse(reader);
+            return ZZFLD0000B6_type1.Factory.parse(reader);
         }
 
         if ("urn:sap-com:document:sap:rfc:functions".equals(namespaceURI) &&
                 "NH_EC_ACCOUNT_type1".equals(typeName)) {
-            return com.nhry.webService.client.VipInfoData.functions.NH_EC_ACCOUNT_type1.Factory.parse(reader);
+            return NH_EC_ACCOUNT_type1.Factory.parse(reader);
         }
 
         if ("urn:sap-com:document:sap:rfc:functions".equals(namespaceURI) &&
                 "NAME_CO_type1".equals(typeName)) {
-            return com.nhry.webService.client.VipInfoData.functions.NAME_CO_type1.Factory.parse(reader);
+            return NAME_CO_type1.Factory.parse(reader);
         }
 
         if ("urn:sap-com:document:sap:rfc:functions".equals(namespaceURI) &&
                 "COUNTRY_type1".equals(typeName)) {
-            return com.nhry.webService.client.VipInfoData.functions.COUNTRY_type1.Factory.parse(reader);
+            return COUNTRY_type1.Factory.parse(reader);
         }
 
         if ("urn:sap-com:document:sap:rfc:functions".equals(namespaceURI) &&
                 "SMTP_ADDR_type1".equals(typeName)) {
-            return com.nhry.webService.client.VipInfoData.functions.SMTP_ADDR_type1.Factory.parse(reader);
+            return SMTP_ADDR_type1.Factory.parse(reader);
         }
 
         if ("urn:sap-com:document:sap:rfc:functions".equals(namespaceURI) &&
                 "genericDate".equals(typeName)) {
-            return com.nhry.webService.client.VipInfoData.functions.GenericDate.Factory.parse(reader);
+            return GenericDate.Factory.parse(reader);
         }
 
         if ("urn:sap-com:document:sap:rfc:functions".equals(namespaceURI) &&
                 "CITY2_type1".equals(typeName)) {
-            return com.nhry.webService.client.VipInfoData.functions.CITY2_type1.Factory.parse(reader);
+            return CITY2_type1.Factory.parse(reader);
         }
 
         if ("urn:sap-com:document:sap:rfc:functions".equals(namespaceURI) &&
                 "ZZFLD0000BD_type1".equals(typeName)) {
-            return com.nhry.webService.client.VipInfoData.functions.ZZFLD0000BD_type1.Factory.parse(reader);
+            return ZZFLD0000BD_type1.Factory.parse(reader);
         }
 
         if ("urn:sap-com:document:sap:rfc:functions".equals(namespaceURI) &&
                 "ZZFLD00006T_type1".equals(typeName)) {
-            return com.nhry.webService.client.VipInfoData.functions.ZZFLD00006T_type1.Factory.parse(reader);
+            return ZZFLD00006T_type1.Factory.parse(reader);
         }
 
         if ("urn:sap-com:document:sap:rfc:functions".equals(namespaceURI) &&
                 "ZZFLD0000BE_type1".equals(typeName)) {
-            return com.nhry.webService.client.VipInfoData.functions.ZZFLD0000BE_type1.Factory.parse(reader);
+            return ZZFLD0000BE_type1.Factory.parse(reader);
         }
 
         if ("urn:sap-com:document:sap:rfc:functions".equals(namespaceURI) &&
                 "DELIVER_REMARKS_type1".equals(typeName)) {
-            return com.nhry.webService.client.VipInfoData.functions.DELIVER_REMARKS_type1.Factory.parse(reader);
+            return DELIVER_REMARKS_type1.Factory.parse(reader);
         }
 
         if ("urn:sap-com:document:sap:rfc:functions".equals(namespaceURI) &&
                 "ZZFLD0000B8_type1".equals(typeName)) {
-            return com.nhry.webService.client.VipInfoData.functions.ZZFLD0000B8_type1.Factory.parse(reader);
+            return ZZFLD0000B8_type1.Factory.parse(reader);
         }
 
         if ("urn:sap-com:document:sap:rfc:functions".equals(namespaceURI) &&
                 "MSG_type1".equals(typeName)) {
-            return com.nhry.webService.client.VipInfoData.functions.MSG_type1.Factory.parse(reader);
+            return MSG_type1.Factory.parse(reader);
         }
 
         if ("urn:sap-com:document:sap:rfc:functions".equals(namespaceURI) &&
                 "POST_CODE1_type1".equals(typeName)) {
-            return com.nhry.webService.client.VipInfoData.functions.POST_CODE1_type1.Factory.parse(reader);
+            return POST_CODE1_type1.Factory.parse(reader);
         }
 
         if ("urn:sap-com:document:sap:rfc:functions".equals(namespaceURI) &&
                 "ZZFLD0000B5_type1".equals(typeName)) {
-            return com.nhry.webService.client.VipInfoData.functions.ZZFLD0000B5_type1.Factory.parse(reader);
+            return ZZFLD0000B5_type1.Factory.parse(reader);
         }
 
         if ("urn:sap-com:document:sap:rfc:functions".equals(namespaceURI) &&
                 "STREET_type1".equals(typeName)) {
-            return com.nhry.webService.client.VipInfoData.functions.STREET_type1.Factory.parse(reader);
+            return STREET_type1.Factory.parse(reader);
         }
 
         if ("urn:sap-com:document:sap:rfc:functions".equals(namespaceURI) &&
                 "STR_SUPPL2_type1".equals(typeName)) {
-            return com.nhry.webService.client.VipInfoData.functions.STR_SUPPL2_type1.Factory.parse(reader);
+            return STR_SUPPL2_type1.Factory.parse(reader);
         }
 
         throw new org.apache.axis2.databinding.ADBException("Unsupported type " +

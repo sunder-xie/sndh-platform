@@ -23,7 +23,7 @@ public class ZSCRM_MEMB_UPD_DH_INPUT implements org.apache.axis2.databinding.ADB
     /**
      * field for CREATED_VIA
      */
-    protected com.nhry.webService.client.VipInfoData.functions.CREATED_VIA_type1 localCREATED_VIA;
+    protected CREATED_VIA_type1 localCREATED_VIA;
 
     /*  This tracker boolean wil be used to detect whether the user called the set method
      *   for this attribute. It will be used to determine whether to include this field
@@ -34,7 +34,7 @@ public class ZSCRM_MEMB_UPD_DH_INPUT implements org.apache.axis2.databinding.ADB
     /**
      * field for ZZFLD0000DM
      */
-    protected com.nhry.webService.client.VipInfoData.functions.ZZFLD0000DM_type1 localZZFLD0000DM;
+    protected ZZFLD0000DM_type1 localZZFLD0000DM;
 
     /*  This tracker boolean wil be used to detect whether the user called the set method
      *   for this attribute. It will be used to determine whether to include this field
@@ -45,7 +45,7 @@ public class ZSCRM_MEMB_UPD_DH_INPUT implements org.apache.axis2.databinding.ADB
     /**
      * field for NAME_LAST
      */
-    protected com.nhry.webService.client.VipInfoData.functions.NAME_LAST_type1 localNAME_LAST;
+    protected NAME_LAST_type1 localNAME_LAST;
 
     /*  This tracker boolean wil be used to detect whether the user called the set method
      *   for this attribute. It will be used to determine whether to include this field
@@ -56,7 +56,7 @@ public class ZSCRM_MEMB_UPD_DH_INPUT implements org.apache.axis2.databinding.ADB
     /**
      * field for BIRTHDT
      */
-    protected com.nhry.webService.client.VipInfoData.functions.Date localBIRTHDT;
+    protected Date localBIRTHDT;
 
     /*  This tracker boolean wil be used to detect whether the user called the set method
      *   for this attribute. It will be used to determine whether to include this field
@@ -67,7 +67,7 @@ public class ZSCRM_MEMB_UPD_DH_INPUT implements org.apache.axis2.databinding.ADB
     /**
      * field for SEX
      */
-    protected com.nhry.webService.client.VipInfoData.functions.SEX_type1 localSEX;
+    protected SEX_type1 localSEX;
 
     /*  This tracker boolean wil be used to detect whether the user called the set method
      *   for this attribute. It will be used to determine whether to include this field
@@ -78,7 +78,7 @@ public class ZSCRM_MEMB_UPD_DH_INPUT implements org.apache.axis2.databinding.ADB
     /**
      * field for REMARKS
      */
-    protected com.nhry.webService.client.VipInfoData.functions.REMARKS_type1 localREMARKS;
+    protected REMARKS_type1 localREMARKS;
 
     /*  This tracker boolean wil be used to detect whether the user called the set method
      *   for this attribute. It will be used to determine whether to include this field
@@ -89,7 +89,7 @@ public class ZSCRM_MEMB_UPD_DH_INPUT implements org.apache.axis2.databinding.ADB
     /**
      * field for DELIVER_REMARKS
      */
-    protected com.nhry.webService.client.VipInfoData.functions.DELIVER_REMARKS_type1 localDELIVER_REMARKS;
+    protected DELIVER_REMARKS_type1 localDELIVER_REMARKS;
 
     /*  This tracker boolean wil be used to detect whether the user called the set method
      *   for this attribute. It will be used to determine whether to include this field
@@ -100,7 +100,7 @@ public class ZSCRM_MEMB_UPD_DH_INPUT implements org.apache.axis2.databinding.ADB
     /**
      * field for ZZFLD00006T
      */
-    protected com.nhry.webService.client.VipInfoData.functions.ZZFLD00006T_type1 localZZFLD00006T;
+    protected ZZFLD00006T_type1 localZZFLD00006T;
 
     /*  This tracker boolean wil be used to detect whether the user called the set method
      *   for this attribute. It will be used to determine whether to include this field
@@ -111,7 +111,7 @@ public class ZSCRM_MEMB_UPD_DH_INPUT implements org.apache.axis2.databinding.ADB
     /**
      * field for ALIPAY_ACCOUNT
      */
-    protected com.nhry.webService.client.VipInfoData.functions.ALIPAY_ACCOUNT_type1 localALIPAY_ACCOUNT;
+    protected ALIPAY_ACCOUNT_type1 localALIPAY_ACCOUNT;
 
     /*  This tracker boolean wil be used to detect whether the user called the set method
      *   for this attribute. It will be used to determine whether to include this field
@@ -122,7 +122,7 @@ public class ZSCRM_MEMB_UPD_DH_INPUT implements org.apache.axis2.databinding.ADB
     /**
      * field for WEBCHAT_NO
      */
-    protected com.nhry.webService.client.VipInfoData.functions.WEBCHAT_NO_type1 localWEBCHAT_NO;
+    protected WEBCHAT_NO_type1 localWEBCHAT_NO;
 
     /*  This tracker boolean wil be used to detect whether the user called the set method
      *   for this attribute. It will be used to determine whether to include this field
@@ -133,7 +133,7 @@ public class ZSCRM_MEMB_UPD_DH_INPUT implements org.apache.axis2.databinding.ADB
     /**
      * field for NH_EC_ACCOUNT
      */
-    protected com.nhry.webService.client.VipInfoData.functions.NH_EC_ACCOUNT_type1 localNH_EC_ACCOUNT;
+    protected NH_EC_ACCOUNT_type1 localNH_EC_ACCOUNT;
 
     /*  This tracker boolean wil be used to detect whether the user called the set method
      *   for this attribute. It will be used to determine whether to include this field
@@ -144,7 +144,7 @@ public class ZSCRM_MEMB_UPD_DH_INPUT implements org.apache.axis2.databinding.ADB
     /**
      * field for JD_ACCOUNT
      */
-    protected com.nhry.webService.client.VipInfoData.functions.JD_ACCOUNT_type1 localJD_ACCOUNT;
+    protected JD_ACCOUNT_type1 localJD_ACCOUNT;
 
     /*  This tracker boolean wil be used to detect whether the user called the set method
      *   for this attribute. It will be used to determine whether to include this field
@@ -155,7 +155,7 @@ public class ZSCRM_MEMB_UPD_DH_INPUT implements org.apache.axis2.databinding.ADB
     /**
      * field for CERT_ID
      */
-    protected com.nhry.webService.client.VipInfoData.functions.CERT_ID_type1 localCERT_ID;
+    protected CERT_ID_type1 localCERT_ID;
 
     /*  This tracker boolean wil be used to detect whether the user called the set method
      *   for this attribute. It will be used to determine whether to include this field
@@ -164,9 +164,20 @@ public class ZSCRM_MEMB_UPD_DH_INPUT implements org.apache.axis2.databinding.ADB
     protected boolean localCERT_IDTracker = false;
 
     /**
+     * field for ADDRESS_GUID
+     */
+    protected ADDRESS_GUID_type1 localADDRESS_GUID;
+
+    /*  This tracker boolean wil be used to detect whether the user called the set method
+     *   for this attribute. It will be used to determine whether to include this field
+     *   in the serialized XML
+     */
+    protected boolean localADDRESS_GUIDTracker = false;
+
+    /**
      * field for COUNTRY
      */
-    protected com.nhry.webService.client.VipInfoData.functions.COUNTRY_type1 localCOUNTRY;
+    protected COUNTRY_type1 localCOUNTRY;
 
     /*  This tracker boolean wil be used to detect whether the user called the set method
      *   for this attribute. It will be used to determine whether to include this field
@@ -177,7 +188,7 @@ public class ZSCRM_MEMB_UPD_DH_INPUT implements org.apache.axis2.databinding.ADB
     /**
      * field for REGION
      */
-    protected com.nhry.webService.client.VipInfoData.functions.REGION_type1 localREGION;
+    protected REGION_type1 localREGION;
 
     /*  This tracker boolean wil be used to detect whether the user called the set method
      *   for this attribute. It will be used to determine whether to include this field
@@ -188,7 +199,7 @@ public class ZSCRM_MEMB_UPD_DH_INPUT implements org.apache.axis2.databinding.ADB
     /**
      * field for CITY1
      */
-    protected com.nhry.webService.client.VipInfoData.functions.CITY1_type1 localCITY1;
+    protected CITY1_type1 localCITY1;
 
     /*  This tracker boolean wil be used to detect whether the user called the set method
      *   for this attribute. It will be used to determine whether to include this field
@@ -199,7 +210,7 @@ public class ZSCRM_MEMB_UPD_DH_INPUT implements org.apache.axis2.databinding.ADB
     /**
      * field for CITY2
      */
-    protected com.nhry.webService.client.VipInfoData.functions.CITY2_type1 localCITY2;
+    protected CITY2_type1 localCITY2;
 
     /*  This tracker boolean wil be used to detect whether the user called the set method
      *   for this attribute. It will be used to determine whether to include this field
@@ -210,7 +221,7 @@ public class ZSCRM_MEMB_UPD_DH_INPUT implements org.apache.axis2.databinding.ADB
     /**
      * field for STREET
      */
-    protected com.nhry.webService.client.VipInfoData.functions.STREET_type1 localSTREET;
+    protected STREET_type1 localSTREET;
 
     /*  This tracker boolean wil be used to detect whether the user called the set method
      *   for this attribute. It will be used to determine whether to include this field
@@ -221,7 +232,7 @@ public class ZSCRM_MEMB_UPD_DH_INPUT implements org.apache.axis2.databinding.ADB
     /**
      * field for STR_SUPPL1
      */
-    protected com.nhry.webService.client.VipInfoData.functions.STR_SUPPL1_type1 localSTR_SUPPL1;
+    protected STR_SUPPL1_type1 localSTR_SUPPL1;
 
     /*  This tracker boolean wil be used to detect whether the user called the set method
      *   for this attribute. It will be used to determine whether to include this field
@@ -232,7 +243,7 @@ public class ZSCRM_MEMB_UPD_DH_INPUT implements org.apache.axis2.databinding.ADB
     /**
      * field for STR_SUPPL2
      */
-    protected com.nhry.webService.client.VipInfoData.functions.STR_SUPPL2_type1 localSTR_SUPPL2;
+    protected STR_SUPPL2_type1 localSTR_SUPPL2;
 
     /*  This tracker boolean wil be used to detect whether the user called the set method
      *   for this attribute. It will be used to determine whether to include this field
@@ -243,7 +254,7 @@ public class ZSCRM_MEMB_UPD_DH_INPUT implements org.apache.axis2.databinding.ADB
     /**
      * field for POST_CODE1
      */
-    protected com.nhry.webService.client.VipInfoData.functions.POST_CODE1_type1 localPOST_CODE1;
+    protected POST_CODE1_type1 localPOST_CODE1;
 
     /*  This tracker boolean wil be used to detect whether the user called the set method
      *   for this attribute. It will be used to determine whether to include this field
@@ -254,7 +265,7 @@ public class ZSCRM_MEMB_UPD_DH_INPUT implements org.apache.axis2.databinding.ADB
     /**
      * field for NAME_CO
      */
-    protected com.nhry.webService.client.VipInfoData.functions.NAME_CO_type1 localNAME_CO;
+    protected NAME_CO_type1 localNAME_CO;
 
     /*  This tracker boolean wil be used to detect whether the user called the set method
      *   for this attribute. It will be used to determine whether to include this field
@@ -265,7 +276,7 @@ public class ZSCRM_MEMB_UPD_DH_INPUT implements org.apache.axis2.databinding.ADB
     /**
      * field for TEL_MOBILE
      */
-    protected com.nhry.webService.client.VipInfoData.functions.TEL_MOBILE_type1 localTEL_MOBILE;
+    protected TEL_MOBILE_type1 localTEL_MOBILE;
 
     /*  This tracker boolean wil be used to detect whether the user called the set method
      *   for this attribute. It will be used to determine whether to include this field
@@ -276,7 +287,7 @@ public class ZSCRM_MEMB_UPD_DH_INPUT implements org.apache.axis2.databinding.ADB
     /**
      * field for TEL_NUMBER
      */
-    protected com.nhry.webService.client.VipInfoData.functions.TEL_NUMBER_type1 localTEL_NUMBER;
+    protected TEL_NUMBER_type1 localTEL_NUMBER;
 
     /*  This tracker boolean wil be used to detect whether the user called the set method
      *   for this attribute. It will be used to determine whether to include this field
@@ -287,7 +298,7 @@ public class ZSCRM_MEMB_UPD_DH_INPUT implements org.apache.axis2.databinding.ADB
     /**
      * field for SMTP_ADDR
      */
-    protected com.nhry.webService.client.VipInfoData.functions.SMTP_ADDR_type1 localSMTP_ADDR;
+    protected SMTP_ADDR_type1 localSMTP_ADDR;
 
     /*  This tracker boolean wil be used to detect whether the user called the set method
      *   for this attribute. It will be used to determine whether to include this field
@@ -303,7 +314,7 @@ public class ZSCRM_MEMB_UPD_DH_INPUT implements org.apache.axis2.databinding.ADB
      * Auto generated getter method
      * @return com.nhry.webService.client.VipInfoData.functions.CREATED_VIA_type1
      */
-    public com.nhry.webService.client.VipInfoData.functions.CREATED_VIA_type1 getCREATED_VIA() {
+    public CREATED_VIA_type1 getCREATED_VIA() {
         return localCREATED_VIA;
     }
 
@@ -312,7 +323,7 @@ public class ZSCRM_MEMB_UPD_DH_INPUT implements org.apache.axis2.databinding.ADB
      * @param param CREATED_VIA
      */
     public void setCREATED_VIA(
-        com.nhry.webService.client.VipInfoData.functions.CREATED_VIA_type1 param) {
+        CREATED_VIA_type1 param) {
         localCREATED_VIATracker = param != null;
 
         this.localCREATED_VIA = param;
@@ -326,7 +337,7 @@ public class ZSCRM_MEMB_UPD_DH_INPUT implements org.apache.axis2.databinding.ADB
      * Auto generated getter method
      * @return com.nhry.webService.client.VipInfoData.functions.ZZFLD0000DM_type1
      */
-    public com.nhry.webService.client.VipInfoData.functions.ZZFLD0000DM_type1 getZZFLD0000DM() {
+    public ZZFLD0000DM_type1 getZZFLD0000DM() {
         return localZZFLD0000DM;
     }
 
@@ -335,7 +346,7 @@ public class ZSCRM_MEMB_UPD_DH_INPUT implements org.apache.axis2.databinding.ADB
      * @param param ZZFLD0000DM
      */
     public void setZZFLD0000DM(
-        com.nhry.webService.client.VipInfoData.functions.ZZFLD0000DM_type1 param) {
+        ZZFLD0000DM_type1 param) {
         localZZFLD0000DMTracker = param != null;
 
         this.localZZFLD0000DM = param;
@@ -349,7 +360,7 @@ public class ZSCRM_MEMB_UPD_DH_INPUT implements org.apache.axis2.databinding.ADB
      * Auto generated getter method
      * @return com.nhry.webService.client.VipInfoData.functions.NAME_LAST_type1
      */
-    public com.nhry.webService.client.VipInfoData.functions.NAME_LAST_type1 getNAME_LAST() {
+    public NAME_LAST_type1 getNAME_LAST() {
         return localNAME_LAST;
     }
 
@@ -358,7 +369,7 @@ public class ZSCRM_MEMB_UPD_DH_INPUT implements org.apache.axis2.databinding.ADB
      * @param param NAME_LAST
      */
     public void setNAME_LAST(
-        com.nhry.webService.client.VipInfoData.functions.NAME_LAST_type1 param) {
+        NAME_LAST_type1 param) {
         localNAME_LASTTracker = param != null;
 
         this.localNAME_LAST = param;
@@ -372,7 +383,7 @@ public class ZSCRM_MEMB_UPD_DH_INPUT implements org.apache.axis2.databinding.ADB
      * Auto generated getter method
      * @return com.nhry.webService.client.VipInfoData.functions.Date
      */
-    public com.nhry.webService.client.VipInfoData.functions.Date getBIRTHDT() {
+    public Date getBIRTHDT() {
         return localBIRTHDT;
     }
 
@@ -381,7 +392,7 @@ public class ZSCRM_MEMB_UPD_DH_INPUT implements org.apache.axis2.databinding.ADB
      * @param param BIRTHDT
      */
     public void setBIRTHDT(
-        com.nhry.webService.client.VipInfoData.functions.Date param) {
+        Date param) {
         localBIRTHDTTracker = param != null;
 
         this.localBIRTHDT = param;
@@ -395,7 +406,7 @@ public class ZSCRM_MEMB_UPD_DH_INPUT implements org.apache.axis2.databinding.ADB
      * Auto generated getter method
      * @return com.nhry.webService.client.VipInfoData.functions.SEX_type1
      */
-    public com.nhry.webService.client.VipInfoData.functions.SEX_type1 getSEX() {
+    public SEX_type1 getSEX() {
         return localSEX;
     }
 
@@ -404,7 +415,7 @@ public class ZSCRM_MEMB_UPD_DH_INPUT implements org.apache.axis2.databinding.ADB
      * @param param SEX
      */
     public void setSEX(
-        com.nhry.webService.client.VipInfoData.functions.SEX_type1 param) {
+        SEX_type1 param) {
         localSEXTracker = param != null;
 
         this.localSEX = param;
@@ -418,7 +429,7 @@ public class ZSCRM_MEMB_UPD_DH_INPUT implements org.apache.axis2.databinding.ADB
      * Auto generated getter method
      * @return com.nhry.webService.client.VipInfoData.functions.REMARKS_type1
      */
-    public com.nhry.webService.client.VipInfoData.functions.REMARKS_type1 getREMARKS() {
+    public REMARKS_type1 getREMARKS() {
         return localREMARKS;
     }
 
@@ -427,7 +438,7 @@ public class ZSCRM_MEMB_UPD_DH_INPUT implements org.apache.axis2.databinding.ADB
      * @param param REMARKS
      */
     public void setREMARKS(
-        com.nhry.webService.client.VipInfoData.functions.REMARKS_type1 param) {
+        REMARKS_type1 param) {
         localREMARKSTracker = param != null;
 
         this.localREMARKS = param;
@@ -441,7 +452,7 @@ public class ZSCRM_MEMB_UPD_DH_INPUT implements org.apache.axis2.databinding.ADB
      * Auto generated getter method
      * @return com.nhry.webService.client.VipInfoData.functions.DELIVER_REMARKS_type1
      */
-    public com.nhry.webService.client.VipInfoData.functions.DELIVER_REMARKS_type1 getDELIVER_REMARKS() {
+    public DELIVER_REMARKS_type1 getDELIVER_REMARKS() {
         return localDELIVER_REMARKS;
     }
 
@@ -450,7 +461,7 @@ public class ZSCRM_MEMB_UPD_DH_INPUT implements org.apache.axis2.databinding.ADB
      * @param param DELIVER_REMARKS
      */
     public void setDELIVER_REMARKS(
-        com.nhry.webService.client.VipInfoData.functions.DELIVER_REMARKS_type1 param) {
+        DELIVER_REMARKS_type1 param) {
         localDELIVER_REMARKSTracker = param != null;
 
         this.localDELIVER_REMARKS = param;
@@ -464,7 +475,7 @@ public class ZSCRM_MEMB_UPD_DH_INPUT implements org.apache.axis2.databinding.ADB
      * Auto generated getter method
      * @return com.nhry.webService.client.VipInfoData.functions.ZZFLD00006T_type1
      */
-    public com.nhry.webService.client.VipInfoData.functions.ZZFLD00006T_type1 getZZFLD00006T() {
+    public ZZFLD00006T_type1 getZZFLD00006T() {
         return localZZFLD00006T;
     }
 
@@ -473,7 +484,7 @@ public class ZSCRM_MEMB_UPD_DH_INPUT implements org.apache.axis2.databinding.ADB
      * @param param ZZFLD00006T
      */
     public void setZZFLD00006T(
-        com.nhry.webService.client.VipInfoData.functions.ZZFLD00006T_type1 param) {
+        ZZFLD00006T_type1 param) {
         localZZFLD00006TTracker = param != null;
 
         this.localZZFLD00006T = param;
@@ -487,7 +498,7 @@ public class ZSCRM_MEMB_UPD_DH_INPUT implements org.apache.axis2.databinding.ADB
      * Auto generated getter method
      * @return com.nhry.webService.client.VipInfoData.functions.ALIPAY_ACCOUNT_type1
      */
-    public com.nhry.webService.client.VipInfoData.functions.ALIPAY_ACCOUNT_type1 getALIPAY_ACCOUNT() {
+    public ALIPAY_ACCOUNT_type1 getALIPAY_ACCOUNT() {
         return localALIPAY_ACCOUNT;
     }
 
@@ -496,7 +507,7 @@ public class ZSCRM_MEMB_UPD_DH_INPUT implements org.apache.axis2.databinding.ADB
      * @param param ALIPAY_ACCOUNT
      */
     public void setALIPAY_ACCOUNT(
-        com.nhry.webService.client.VipInfoData.functions.ALIPAY_ACCOUNT_type1 param) {
+        ALIPAY_ACCOUNT_type1 param) {
         localALIPAY_ACCOUNTTracker = param != null;
 
         this.localALIPAY_ACCOUNT = param;
@@ -510,7 +521,7 @@ public class ZSCRM_MEMB_UPD_DH_INPUT implements org.apache.axis2.databinding.ADB
      * Auto generated getter method
      * @return com.nhry.webService.client.VipInfoData.functions.WEBCHAT_NO_type1
      */
-    public com.nhry.webService.client.VipInfoData.functions.WEBCHAT_NO_type1 getWEBCHAT_NO() {
+    public WEBCHAT_NO_type1 getWEBCHAT_NO() {
         return localWEBCHAT_NO;
     }
 
@@ -519,7 +530,7 @@ public class ZSCRM_MEMB_UPD_DH_INPUT implements org.apache.axis2.databinding.ADB
      * @param param WEBCHAT_NO
      */
     public void setWEBCHAT_NO(
-        com.nhry.webService.client.VipInfoData.functions.WEBCHAT_NO_type1 param) {
+        WEBCHAT_NO_type1 param) {
         localWEBCHAT_NOTracker = param != null;
 
         this.localWEBCHAT_NO = param;
@@ -533,7 +544,7 @@ public class ZSCRM_MEMB_UPD_DH_INPUT implements org.apache.axis2.databinding.ADB
      * Auto generated getter method
      * @return com.nhry.webService.client.VipInfoData.functions.NH_EC_ACCOUNT_type1
      */
-    public com.nhry.webService.client.VipInfoData.functions.NH_EC_ACCOUNT_type1 getNH_EC_ACCOUNT() {
+    public NH_EC_ACCOUNT_type1 getNH_EC_ACCOUNT() {
         return localNH_EC_ACCOUNT;
     }
 
@@ -542,7 +553,7 @@ public class ZSCRM_MEMB_UPD_DH_INPUT implements org.apache.axis2.databinding.ADB
      * @param param NH_EC_ACCOUNT
      */
     public void setNH_EC_ACCOUNT(
-        com.nhry.webService.client.VipInfoData.functions.NH_EC_ACCOUNT_type1 param) {
+        NH_EC_ACCOUNT_type1 param) {
         localNH_EC_ACCOUNTTracker = param != null;
 
         this.localNH_EC_ACCOUNT = param;
@@ -556,7 +567,7 @@ public class ZSCRM_MEMB_UPD_DH_INPUT implements org.apache.axis2.databinding.ADB
      * Auto generated getter method
      * @return com.nhry.webService.client.VipInfoData.functions.JD_ACCOUNT_type1
      */
-    public com.nhry.webService.client.VipInfoData.functions.JD_ACCOUNT_type1 getJD_ACCOUNT() {
+    public JD_ACCOUNT_type1 getJD_ACCOUNT() {
         return localJD_ACCOUNT;
     }
 
@@ -565,7 +576,7 @@ public class ZSCRM_MEMB_UPD_DH_INPUT implements org.apache.axis2.databinding.ADB
      * @param param JD_ACCOUNT
      */
     public void setJD_ACCOUNT(
-        com.nhry.webService.client.VipInfoData.functions.JD_ACCOUNT_type1 param) {
+        JD_ACCOUNT_type1 param) {
         localJD_ACCOUNTTracker = param != null;
 
         this.localJD_ACCOUNT = param;
@@ -579,7 +590,7 @@ public class ZSCRM_MEMB_UPD_DH_INPUT implements org.apache.axis2.databinding.ADB
      * Auto generated getter method
      * @return com.nhry.webService.client.VipInfoData.functions.CERT_ID_type1
      */
-    public com.nhry.webService.client.VipInfoData.functions.CERT_ID_type1 getCERT_ID() {
+    public CERT_ID_type1 getCERT_ID() {
         return localCERT_ID;
     }
 
@@ -588,10 +599,33 @@ public class ZSCRM_MEMB_UPD_DH_INPUT implements org.apache.axis2.databinding.ADB
      * @param param CERT_ID
      */
     public void setCERT_ID(
-        com.nhry.webService.client.VipInfoData.functions.CERT_ID_type1 param) {
+        CERT_ID_type1 param) {
         localCERT_IDTracker = param != null;
 
         this.localCERT_ID = param;
+    }
+
+    public boolean isADDRESS_GUIDSpecified() {
+        return localADDRESS_GUIDTracker;
+    }
+
+    /**
+     * Auto generated getter method
+     * @return com.nhry.webService.client.VipInfoData.functions.ADDRESS_GUID_type1
+     */
+    public ADDRESS_GUID_type1 getADDRESS_GUID() {
+        return localADDRESS_GUID;
+    }
+
+    /**
+     * Auto generated setter method
+     * @param param ADDRESS_GUID
+     */
+    public void setADDRESS_GUID(
+        ADDRESS_GUID_type1 param) {
+        localADDRESS_GUIDTracker = param != null;
+
+        this.localADDRESS_GUID = param;
     }
 
     public boolean isCOUNTRYSpecified() {
@@ -602,7 +636,7 @@ public class ZSCRM_MEMB_UPD_DH_INPUT implements org.apache.axis2.databinding.ADB
      * Auto generated getter method
      * @return com.nhry.webService.client.VipInfoData.functions.COUNTRY_type1
      */
-    public com.nhry.webService.client.VipInfoData.functions.COUNTRY_type1 getCOUNTRY() {
+    public COUNTRY_type1 getCOUNTRY() {
         return localCOUNTRY;
     }
 
@@ -611,7 +645,7 @@ public class ZSCRM_MEMB_UPD_DH_INPUT implements org.apache.axis2.databinding.ADB
      * @param param COUNTRY
      */
     public void setCOUNTRY(
-        com.nhry.webService.client.VipInfoData.functions.COUNTRY_type1 param) {
+        COUNTRY_type1 param) {
         localCOUNTRYTracker = param != null;
 
         this.localCOUNTRY = param;
@@ -625,7 +659,7 @@ public class ZSCRM_MEMB_UPD_DH_INPUT implements org.apache.axis2.databinding.ADB
      * Auto generated getter method
      * @return com.nhry.webService.client.VipInfoData.functions.REGION_type1
      */
-    public com.nhry.webService.client.VipInfoData.functions.REGION_type1 getREGION() {
+    public REGION_type1 getREGION() {
         return localREGION;
     }
 
@@ -634,7 +668,7 @@ public class ZSCRM_MEMB_UPD_DH_INPUT implements org.apache.axis2.databinding.ADB
      * @param param REGION
      */
     public void setREGION(
-        com.nhry.webService.client.VipInfoData.functions.REGION_type1 param) {
+        REGION_type1 param) {
         localREGIONTracker = param != null;
 
         this.localREGION = param;
@@ -648,7 +682,7 @@ public class ZSCRM_MEMB_UPD_DH_INPUT implements org.apache.axis2.databinding.ADB
      * Auto generated getter method
      * @return com.nhry.webService.client.VipInfoData.functions.CITY1_type1
      */
-    public com.nhry.webService.client.VipInfoData.functions.CITY1_type1 getCITY1() {
+    public CITY1_type1 getCITY1() {
         return localCITY1;
     }
 
@@ -657,7 +691,7 @@ public class ZSCRM_MEMB_UPD_DH_INPUT implements org.apache.axis2.databinding.ADB
      * @param param CITY1
      */
     public void setCITY1(
-        com.nhry.webService.client.VipInfoData.functions.CITY1_type1 param) {
+        CITY1_type1 param) {
         localCITY1Tracker = param != null;
 
         this.localCITY1 = param;
@@ -671,7 +705,7 @@ public class ZSCRM_MEMB_UPD_DH_INPUT implements org.apache.axis2.databinding.ADB
      * Auto generated getter method
      * @return com.nhry.webService.client.VipInfoData.functions.CITY2_type1
      */
-    public com.nhry.webService.client.VipInfoData.functions.CITY2_type1 getCITY2() {
+    public CITY2_type1 getCITY2() {
         return localCITY2;
     }
 
@@ -680,7 +714,7 @@ public class ZSCRM_MEMB_UPD_DH_INPUT implements org.apache.axis2.databinding.ADB
      * @param param CITY2
      */
     public void setCITY2(
-        com.nhry.webService.client.VipInfoData.functions.CITY2_type1 param) {
+        CITY2_type1 param) {
         localCITY2Tracker = param != null;
 
         this.localCITY2 = param;
@@ -694,7 +728,7 @@ public class ZSCRM_MEMB_UPD_DH_INPUT implements org.apache.axis2.databinding.ADB
      * Auto generated getter method
      * @return com.nhry.webService.client.VipInfoData.functions.STREET_type1
      */
-    public com.nhry.webService.client.VipInfoData.functions.STREET_type1 getSTREET() {
+    public STREET_type1 getSTREET() {
         return localSTREET;
     }
 
@@ -703,7 +737,7 @@ public class ZSCRM_MEMB_UPD_DH_INPUT implements org.apache.axis2.databinding.ADB
      * @param param STREET
      */
     public void setSTREET(
-        com.nhry.webService.client.VipInfoData.functions.STREET_type1 param) {
+        STREET_type1 param) {
         localSTREETTracker = param != null;
 
         this.localSTREET = param;
@@ -717,7 +751,7 @@ public class ZSCRM_MEMB_UPD_DH_INPUT implements org.apache.axis2.databinding.ADB
      * Auto generated getter method
      * @return com.nhry.webService.client.VipInfoData.functions.STR_SUPPL1_type1
      */
-    public com.nhry.webService.client.VipInfoData.functions.STR_SUPPL1_type1 getSTR_SUPPL1() {
+    public STR_SUPPL1_type1 getSTR_SUPPL1() {
         return localSTR_SUPPL1;
     }
 
@@ -726,7 +760,7 @@ public class ZSCRM_MEMB_UPD_DH_INPUT implements org.apache.axis2.databinding.ADB
      * @param param STR_SUPPL1
      */
     public void setSTR_SUPPL1(
-        com.nhry.webService.client.VipInfoData.functions.STR_SUPPL1_type1 param) {
+        STR_SUPPL1_type1 param) {
         localSTR_SUPPL1Tracker = param != null;
 
         this.localSTR_SUPPL1 = param;
@@ -740,7 +774,7 @@ public class ZSCRM_MEMB_UPD_DH_INPUT implements org.apache.axis2.databinding.ADB
      * Auto generated getter method
      * @return com.nhry.webService.client.VipInfoData.functions.STR_SUPPL2_type1
      */
-    public com.nhry.webService.client.VipInfoData.functions.STR_SUPPL2_type1 getSTR_SUPPL2() {
+    public STR_SUPPL2_type1 getSTR_SUPPL2() {
         return localSTR_SUPPL2;
     }
 
@@ -749,7 +783,7 @@ public class ZSCRM_MEMB_UPD_DH_INPUT implements org.apache.axis2.databinding.ADB
      * @param param STR_SUPPL2
      */
     public void setSTR_SUPPL2(
-        com.nhry.webService.client.VipInfoData.functions.STR_SUPPL2_type1 param) {
+        STR_SUPPL2_type1 param) {
         localSTR_SUPPL2Tracker = param != null;
 
         this.localSTR_SUPPL2 = param;
@@ -763,7 +797,7 @@ public class ZSCRM_MEMB_UPD_DH_INPUT implements org.apache.axis2.databinding.ADB
      * Auto generated getter method
      * @return com.nhry.webService.client.VipInfoData.functions.POST_CODE1_type1
      */
-    public com.nhry.webService.client.VipInfoData.functions.POST_CODE1_type1 getPOST_CODE1() {
+    public POST_CODE1_type1 getPOST_CODE1() {
         return localPOST_CODE1;
     }
 
@@ -772,7 +806,7 @@ public class ZSCRM_MEMB_UPD_DH_INPUT implements org.apache.axis2.databinding.ADB
      * @param param POST_CODE1
      */
     public void setPOST_CODE1(
-        com.nhry.webService.client.VipInfoData.functions.POST_CODE1_type1 param) {
+        POST_CODE1_type1 param) {
         localPOST_CODE1Tracker = param != null;
 
         this.localPOST_CODE1 = param;
@@ -786,7 +820,7 @@ public class ZSCRM_MEMB_UPD_DH_INPUT implements org.apache.axis2.databinding.ADB
      * Auto generated getter method
      * @return com.nhry.webService.client.VipInfoData.functions.NAME_CO_type1
      */
-    public com.nhry.webService.client.VipInfoData.functions.NAME_CO_type1 getNAME_CO() {
+    public NAME_CO_type1 getNAME_CO() {
         return localNAME_CO;
     }
 
@@ -795,7 +829,7 @@ public class ZSCRM_MEMB_UPD_DH_INPUT implements org.apache.axis2.databinding.ADB
      * @param param NAME_CO
      */
     public void setNAME_CO(
-        com.nhry.webService.client.VipInfoData.functions.NAME_CO_type1 param) {
+        NAME_CO_type1 param) {
         localNAME_COTracker = param != null;
 
         this.localNAME_CO = param;
@@ -809,7 +843,7 @@ public class ZSCRM_MEMB_UPD_DH_INPUT implements org.apache.axis2.databinding.ADB
      * Auto generated getter method
      * @return com.nhry.webService.client.VipInfoData.functions.TEL_MOBILE_type1
      */
-    public com.nhry.webService.client.VipInfoData.functions.TEL_MOBILE_type1 getTEL_MOBILE() {
+    public TEL_MOBILE_type1 getTEL_MOBILE() {
         return localTEL_MOBILE;
     }
 
@@ -818,7 +852,7 @@ public class ZSCRM_MEMB_UPD_DH_INPUT implements org.apache.axis2.databinding.ADB
      * @param param TEL_MOBILE
      */
     public void setTEL_MOBILE(
-        com.nhry.webService.client.VipInfoData.functions.TEL_MOBILE_type1 param) {
+        TEL_MOBILE_type1 param) {
         localTEL_MOBILETracker = param != null;
 
         this.localTEL_MOBILE = param;
@@ -832,7 +866,7 @@ public class ZSCRM_MEMB_UPD_DH_INPUT implements org.apache.axis2.databinding.ADB
      * Auto generated getter method
      * @return com.nhry.webService.client.VipInfoData.functions.TEL_NUMBER_type1
      */
-    public com.nhry.webService.client.VipInfoData.functions.TEL_NUMBER_type1 getTEL_NUMBER() {
+    public TEL_NUMBER_type1 getTEL_NUMBER() {
         return localTEL_NUMBER;
     }
 
@@ -841,7 +875,7 @@ public class ZSCRM_MEMB_UPD_DH_INPUT implements org.apache.axis2.databinding.ADB
      * @param param TEL_NUMBER
      */
     public void setTEL_NUMBER(
-        com.nhry.webService.client.VipInfoData.functions.TEL_NUMBER_type1 param) {
+        TEL_NUMBER_type1 param) {
         localTEL_NUMBERTracker = param != null;
 
         this.localTEL_NUMBER = param;
@@ -855,7 +889,7 @@ public class ZSCRM_MEMB_UPD_DH_INPUT implements org.apache.axis2.databinding.ADB
      * Auto generated getter method
      * @return com.nhry.webService.client.VipInfoData.functions.SMTP_ADDR_type1
      */
-    public com.nhry.webService.client.VipInfoData.functions.SMTP_ADDR_type1 getSMTP_ADDR() {
+    public SMTP_ADDR_type1 getSMTP_ADDR() {
         return localSMTP_ADDR;
     }
 
@@ -864,7 +898,7 @@ public class ZSCRM_MEMB_UPD_DH_INPUT implements org.apache.axis2.databinding.ADB
      * @param param SMTP_ADDR
      */
     public void setSMTP_ADDR(
-        com.nhry.webService.client.VipInfoData.functions.SMTP_ADDR_type1 param) {
+        SMTP_ADDR_type1 param) {
         localSMTP_ADDRTracker = param != null;
 
         this.localSMTP_ADDR = param;
@@ -895,8 +929,8 @@ public class ZSCRM_MEMB_UPD_DH_INPUT implements org.apache.axis2.databinding.ADB
         javax.xml.stream.XMLStreamWriter xmlWriter, boolean serializeType)
         throws javax.xml.stream.XMLStreamException,
             org.apache.axis2.databinding.ADBException {
-        java.lang.String prefix = null;
-        java.lang.String namespace = null;
+        String prefix = null;
+        String namespace = null;
 
         prefix = parentQName.getPrefix();
         namespace = parentQName.getNamespaceURI();
@@ -904,7 +938,7 @@ public class ZSCRM_MEMB_UPD_DH_INPUT implements org.apache.axis2.databinding.ADB
             xmlWriter);
 
         if (serializeType) {
-            java.lang.String namespacePrefix = registerPrefix(xmlWriter,
+            String namespacePrefix = registerPrefix(xmlWriter,
                     "urn:sap-com:document:sap:rfc:functions");
 
             if ((namespacePrefix != null) &&
@@ -1049,6 +1083,16 @@ public class ZSCRM_MEMB_UPD_DH_INPUT implements org.apache.axis2.databinding.ADB
                 xmlWriter);
         }
 
+        if (localADDRESS_GUIDTracker) {
+            if (localADDRESS_GUID == null) {
+                throw new org.apache.axis2.databinding.ADBException(
+                    "ADDRESS_GUID cannot be null!!");
+            }
+
+            localADDRESS_GUID.serialize(new javax.xml.namespace.QName("",
+                    "ADDRESS_GUID"), xmlWriter);
+        }
+
         if (localCOUNTRYTracker) {
             if (localCOUNTRY == null) {
                 throw new org.apache.axis2.databinding.ADBException(
@@ -1172,7 +1216,7 @@ public class ZSCRM_MEMB_UPD_DH_INPUT implements org.apache.axis2.databinding.ADB
         xmlWriter.writeEndElement();
     }
 
-    private static java.lang.String generatePrefix(java.lang.String namespace) {
+    private static String generatePrefix(String namespace) {
         if (namespace.equals("urn:sap-com:document:sap:rfc:functions")) {
             return "ns1";
         }
@@ -1183,11 +1227,11 @@ public class ZSCRM_MEMB_UPD_DH_INPUT implements org.apache.axis2.databinding.ADB
     /**
      * Utility method to write an element start tag.
      */
-    private void writeStartElement(java.lang.String prefix,
-        java.lang.String namespace, java.lang.String localPart,
+    private void writeStartElement(String prefix,
+        String namespace, String localPart,
         javax.xml.stream.XMLStreamWriter xmlWriter)
         throws javax.xml.stream.XMLStreamException {
-        java.lang.String writerPrefix = xmlWriter.getPrefix(namespace);
+        String writerPrefix = xmlWriter.getPrefix(namespace);
 
         if (writerPrefix != null) {
             xmlWriter.writeStartElement(writerPrefix, localPart, namespace);
@@ -1207,11 +1251,11 @@ public class ZSCRM_MEMB_UPD_DH_INPUT implements org.apache.axis2.databinding.ADB
     /**
      * Util method to write an attribute with the ns prefix
      */
-    private void writeAttribute(java.lang.String prefix,
-        java.lang.String namespace, java.lang.String attName,
-        java.lang.String attValue, javax.xml.stream.XMLStreamWriter xmlWriter)
+    private void writeAttribute(String prefix,
+        String namespace, String attName,
+        String attValue, javax.xml.stream.XMLStreamWriter xmlWriter)
         throws javax.xml.stream.XMLStreamException {
-        java.lang.String writerPrefix = xmlWriter.getPrefix(namespace);
+        String writerPrefix = xmlWriter.getPrefix(namespace);
 
         if (writerPrefix != null) {
             xmlWriter.writeAttribute(writerPrefix, namespace, attName, attValue);
@@ -1225,8 +1269,8 @@ public class ZSCRM_MEMB_UPD_DH_INPUT implements org.apache.axis2.databinding.ADB
     /**
      * Util method to write an attribute without the ns prefix
      */
-    private void writeAttribute(java.lang.String namespace,
-        java.lang.String attName, java.lang.String attValue,
+    private void writeAttribute(String namespace,
+        String attName, String attValue,
         javax.xml.stream.XMLStreamWriter xmlWriter)
         throws javax.xml.stream.XMLStreamException {
         if (namespace.equals("")) {
@@ -1240,18 +1284,18 @@ public class ZSCRM_MEMB_UPD_DH_INPUT implements org.apache.axis2.databinding.ADB
     /**
      * Util method to write an attribute without the ns prefix
      */
-    private void writeQNameAttribute(java.lang.String namespace,
-        java.lang.String attName, javax.xml.namespace.QName qname,
+    private void writeQNameAttribute(String namespace,
+        String attName, javax.xml.namespace.QName qname,
         javax.xml.stream.XMLStreamWriter xmlWriter)
         throws javax.xml.stream.XMLStreamException {
-        java.lang.String attributeNamespace = qname.getNamespaceURI();
-        java.lang.String attributePrefix = xmlWriter.getPrefix(attributeNamespace);
+        String attributeNamespace = qname.getNamespaceURI();
+        String attributePrefix = xmlWriter.getPrefix(attributeNamespace);
 
         if (attributePrefix == null) {
             attributePrefix = registerPrefix(xmlWriter, attributeNamespace);
         }
 
-        java.lang.String attributeValue;
+        String attributeValue;
 
         if (attributePrefix.trim().length() > 0) {
             attributeValue = attributePrefix + ":" + qname.getLocalPart();
@@ -1274,10 +1318,10 @@ public class ZSCRM_MEMB_UPD_DH_INPUT implements org.apache.axis2.databinding.ADB
     private void writeQName(javax.xml.namespace.QName qname,
         javax.xml.stream.XMLStreamWriter xmlWriter)
         throws javax.xml.stream.XMLStreamException {
-        java.lang.String namespaceURI = qname.getNamespaceURI();
+        String namespaceURI = qname.getNamespaceURI();
 
         if (namespaceURI != null) {
-            java.lang.String prefix = xmlWriter.getPrefix(namespaceURI);
+            String prefix = xmlWriter.getPrefix(namespaceURI);
 
             if (prefix == null) {
                 prefix = generatePrefix(namespaceURI);
@@ -1306,9 +1350,9 @@ public class ZSCRM_MEMB_UPD_DH_INPUT implements org.apache.axis2.databinding.ADB
         if (qnames != null) {
             // we have to store this data until last moment since it is not possible to write any
             // namespace data after writing the charactor data
-            java.lang.StringBuffer stringToWrite = new java.lang.StringBuffer();
-            java.lang.String namespaceURI = null;
-            java.lang.String prefix = null;
+            StringBuffer stringToWrite = new StringBuffer();
+            String namespaceURI = null;
+            String prefix = null;
 
             for (int i = 0; i < qnames.length; i++) {
                 if (i > 0) {
@@ -1347,10 +1391,10 @@ public class ZSCRM_MEMB_UPD_DH_INPUT implements org.apache.axis2.databinding.ADB
     /**
      * Register a namespace prefix
      */
-    private java.lang.String registerPrefix(
-        javax.xml.stream.XMLStreamWriter xmlWriter, java.lang.String namespace)
+    private String registerPrefix(
+        javax.xml.stream.XMLStreamWriter xmlWriter, String namespace)
         throws javax.xml.stream.XMLStreamException {
-        java.lang.String prefix = xmlWriter.getPrefix(namespace);
+        String prefix = xmlWriter.getPrefix(namespace);
 
         if (prefix == null) {
             prefix = generatePrefix(namespace);
@@ -1358,7 +1402,7 @@ public class ZSCRM_MEMB_UPD_DH_INPUT implements org.apache.axis2.databinding.ADB
             javax.xml.namespace.NamespaceContext nsContext = xmlWriter.getNamespaceContext();
 
             while (true) {
-                java.lang.String uri = nsContext.getNamespaceURI(prefix);
+                String uri = nsContext.getNamespaceURI(prefix);
 
                 if ((uri == null) || (uri.length() == 0)) {
                     break;
@@ -1388,14 +1432,14 @@ public class ZSCRM_MEMB_UPD_DH_INPUT implements org.apache.axis2.databinding.ADB
          *                If this object is a complex type, the reader is positioned at the end element of its outer element
          */
         public static ZSCRM_MEMB_UPD_DH_INPUT parse(
-            javax.xml.stream.XMLStreamReader reader) throws java.lang.Exception {
+            javax.xml.stream.XMLStreamReader reader) throws Exception {
             ZSCRM_MEMB_UPD_DH_INPUT object = new ZSCRM_MEMB_UPD_DH_INPUT();
 
             int event;
             javax.xml.namespace.QName currentQName = null;
-            java.lang.String nillableValue = null;
-            java.lang.String prefix = "";
-            java.lang.String namespaceuri = "";
+            String nillableValue = null;
+            String prefix = "";
+            String namespaceuri = "";
 
             try {
                 while (!reader.isStartElement() && !reader.isEndElement())
@@ -1405,11 +1449,11 @@ public class ZSCRM_MEMB_UPD_DH_INPUT implements org.apache.axis2.databinding.ADB
 
                 if (reader.getAttributeValue(
                             "http://www.w3.org/2001/XMLSchema-instance", "type") != null) {
-                    java.lang.String fullTypeName = reader.getAttributeValue("http://www.w3.org/2001/XMLSchema-instance",
+                    String fullTypeName = reader.getAttributeValue("http://www.w3.org/2001/XMLSchema-instance",
                             "type");
 
                     if (fullTypeName != null) {
-                        java.lang.String nsPrefix = null;
+                        String nsPrefix = null;
 
                         if (fullTypeName.indexOf(":") > -1) {
                             nsPrefix = fullTypeName.substring(0,
@@ -1418,15 +1462,15 @@ public class ZSCRM_MEMB_UPD_DH_INPUT implements org.apache.axis2.databinding.ADB
 
                         nsPrefix = (nsPrefix == null) ? "" : nsPrefix;
 
-                        java.lang.String type = fullTypeName.substring(fullTypeName.indexOf(
+                        String type = fullTypeName.substring(fullTypeName.indexOf(
                                     ":") + 1);
 
                         if (!"ZSCRM_MEMB_UPD_DH_INPUT".equals(type)) {
                             //find namespace for the prefix
-                            java.lang.String nsUri = reader.getNamespaceContext()
+                            String nsUri = reader.getNamespaceContext()
                                                            .getNamespaceURI(nsPrefix);
 
-                            return (ZSCRM_MEMB_UPD_DH_INPUT) com.nhry.webService.client.VipInfoData.functions.ExtensionMapper.getTypeObject(nsUri,
+                            return (ZSCRM_MEMB_UPD_DH_INPUT) ExtensionMapper.getTypeObject(nsUri,
                                 type, reader);
                         }
                     }
@@ -1446,7 +1490,7 @@ public class ZSCRM_MEMB_UPD_DH_INPUT implements org.apache.axis2.databinding.ADB
                             reader.getName())) ||
                         new javax.xml.namespace.QName("", "CREATED_VIA").equals(
                             reader.getName())) {
-                    object.setCREATED_VIA(com.nhry.webService.client.VipInfoData.functions.CREATED_VIA_type1.Factory.parse(
+                    object.setCREATED_VIA(CREATED_VIA_type1.Factory.parse(
                             reader));
 
                     reader.next();
@@ -1463,7 +1507,7 @@ public class ZSCRM_MEMB_UPD_DH_INPUT implements org.apache.axis2.databinding.ADB
                             reader.getName())) ||
                         new javax.xml.namespace.QName("", "ZZFLD0000DM").equals(
                             reader.getName())) {
-                    object.setZZFLD0000DM(com.nhry.webService.client.VipInfoData.functions.ZZFLD0000DM_type1.Factory.parse(
+                    object.setZZFLD0000DM(ZZFLD0000DM_type1.Factory.parse(
                             reader));
 
                     reader.next();
@@ -1480,7 +1524,7 @@ public class ZSCRM_MEMB_UPD_DH_INPUT implements org.apache.axis2.databinding.ADB
                             reader.getName())) ||
                         new javax.xml.namespace.QName("", "NAME_LAST").equals(
                             reader.getName())) {
-                    object.setNAME_LAST(com.nhry.webService.client.VipInfoData.functions.NAME_LAST_type1.Factory.parse(
+                    object.setNAME_LAST(NAME_LAST_type1.Factory.parse(
                             reader));
 
                     reader.next();
@@ -1497,7 +1541,7 @@ public class ZSCRM_MEMB_UPD_DH_INPUT implements org.apache.axis2.databinding.ADB
                             reader.getName())) ||
                         new javax.xml.namespace.QName("", "BIRTHDT").equals(
                             reader.getName())) {
-                    object.setBIRTHDT(com.nhry.webService.client.VipInfoData.functions.Date.Factory.parse(
+                    object.setBIRTHDT(Date.Factory.parse(
                             reader));
 
                     reader.next();
@@ -1514,7 +1558,7 @@ public class ZSCRM_MEMB_UPD_DH_INPUT implements org.apache.axis2.databinding.ADB
                             reader.getName())) ||
                         new javax.xml.namespace.QName("", "SEX").equals(
                             reader.getName())) {
-                    object.setSEX(com.nhry.webService.client.VipInfoData.functions.SEX_type1.Factory.parse(
+                    object.setSEX(SEX_type1.Factory.parse(
                             reader));
 
                     reader.next();
@@ -1531,7 +1575,7 @@ public class ZSCRM_MEMB_UPD_DH_INPUT implements org.apache.axis2.databinding.ADB
                             reader.getName())) ||
                         new javax.xml.namespace.QName("", "REMARKS").equals(
                             reader.getName())) {
-                    object.setREMARKS(com.nhry.webService.client.VipInfoData.functions.REMARKS_type1.Factory.parse(
+                    object.setREMARKS(REMARKS_type1.Factory.parse(
                             reader));
 
                     reader.next();
@@ -1548,7 +1592,7 @@ public class ZSCRM_MEMB_UPD_DH_INPUT implements org.apache.axis2.databinding.ADB
                             reader.getName())) ||
                         new javax.xml.namespace.QName("", "DELIVER_REMARKS").equals(
                             reader.getName())) {
-                    object.setDELIVER_REMARKS(com.nhry.webService.client.VipInfoData.functions.DELIVER_REMARKS_type1.Factory.parse(
+                    object.setDELIVER_REMARKS(DELIVER_REMARKS_type1.Factory.parse(
                             reader));
 
                     reader.next();
@@ -1565,7 +1609,7 @@ public class ZSCRM_MEMB_UPD_DH_INPUT implements org.apache.axis2.databinding.ADB
                             reader.getName())) ||
                         new javax.xml.namespace.QName("", "ZZFLD00006T").equals(
                             reader.getName())) {
-                    object.setZZFLD00006T(com.nhry.webService.client.VipInfoData.functions.ZZFLD00006T_type1.Factory.parse(
+                    object.setZZFLD00006T(ZZFLD00006T_type1.Factory.parse(
                             reader));
 
                     reader.next();
@@ -1582,7 +1626,7 @@ public class ZSCRM_MEMB_UPD_DH_INPUT implements org.apache.axis2.databinding.ADB
                             reader.getName())) ||
                         new javax.xml.namespace.QName("", "ALIPAY_ACCOUNT").equals(
                             reader.getName())) {
-                    object.setALIPAY_ACCOUNT(com.nhry.webService.client.VipInfoData.functions.ALIPAY_ACCOUNT_type1.Factory.parse(
+                    object.setALIPAY_ACCOUNT(ALIPAY_ACCOUNT_type1.Factory.parse(
                             reader));
 
                     reader.next();
@@ -1599,7 +1643,7 @@ public class ZSCRM_MEMB_UPD_DH_INPUT implements org.apache.axis2.databinding.ADB
                             reader.getName())) ||
                         new javax.xml.namespace.QName("", "WEBCHAT_NO").equals(
                             reader.getName())) {
-                    object.setWEBCHAT_NO(com.nhry.webService.client.VipInfoData.functions.WEBCHAT_NO_type1.Factory.parse(
+                    object.setWEBCHAT_NO(WEBCHAT_NO_type1.Factory.parse(
                             reader));
 
                     reader.next();
@@ -1616,7 +1660,7 @@ public class ZSCRM_MEMB_UPD_DH_INPUT implements org.apache.axis2.databinding.ADB
                             reader.getName())) ||
                         new javax.xml.namespace.QName("", "NH_EC_ACCOUNT").equals(
                             reader.getName())) {
-                    object.setNH_EC_ACCOUNT(com.nhry.webService.client.VipInfoData.functions.NH_EC_ACCOUNT_type1.Factory.parse(
+                    object.setNH_EC_ACCOUNT(NH_EC_ACCOUNT_type1.Factory.parse(
                             reader));
 
                     reader.next();
@@ -1633,7 +1677,7 @@ public class ZSCRM_MEMB_UPD_DH_INPUT implements org.apache.axis2.databinding.ADB
                             reader.getName())) ||
                         new javax.xml.namespace.QName("", "JD_ACCOUNT").equals(
                             reader.getName())) {
-                    object.setJD_ACCOUNT(com.nhry.webService.client.VipInfoData.functions.JD_ACCOUNT_type1.Factory.parse(
+                    object.setJD_ACCOUNT(JD_ACCOUNT_type1.Factory.parse(
                             reader));
 
                     reader.next();
@@ -1650,7 +1694,24 @@ public class ZSCRM_MEMB_UPD_DH_INPUT implements org.apache.axis2.databinding.ADB
                             reader.getName())) ||
                         new javax.xml.namespace.QName("", "CERT_ID").equals(
                             reader.getName())) {
-                    object.setCERT_ID(com.nhry.webService.client.VipInfoData.functions.CERT_ID_type1.Factory.parse(
+                    object.setCERT_ID(CERT_ID_type1.Factory.parse(
+                            reader));
+
+                    reader.next();
+                } // End of if for expected property start element
+
+                else {
+                }
+
+                while (!reader.isStartElement() && !reader.isEndElement())
+                    reader.next();
+
+                if ((reader.isStartElement() &&
+                        new javax.xml.namespace.QName("", "ADDRESS_GUID").equals(
+                            reader.getName())) ||
+                        new javax.xml.namespace.QName("", "ADDRESS_GUID").equals(
+                            reader.getName())) {
+                    object.setADDRESS_GUID(ADDRESS_GUID_type1.Factory.parse(
                             reader));
 
                     reader.next();
@@ -1667,7 +1728,7 @@ public class ZSCRM_MEMB_UPD_DH_INPUT implements org.apache.axis2.databinding.ADB
                             reader.getName())) ||
                         new javax.xml.namespace.QName("", "COUNTRY").equals(
                             reader.getName())) {
-                    object.setCOUNTRY(com.nhry.webService.client.VipInfoData.functions.COUNTRY_type1.Factory.parse(
+                    object.setCOUNTRY(COUNTRY_type1.Factory.parse(
                             reader));
 
                     reader.next();
@@ -1684,7 +1745,7 @@ public class ZSCRM_MEMB_UPD_DH_INPUT implements org.apache.axis2.databinding.ADB
                             reader.getName())) ||
                         new javax.xml.namespace.QName("", "REGION").equals(
                             reader.getName())) {
-                    object.setREGION(com.nhry.webService.client.VipInfoData.functions.REGION_type1.Factory.parse(
+                    object.setREGION(REGION_type1.Factory.parse(
                             reader));
 
                     reader.next();
@@ -1701,7 +1762,7 @@ public class ZSCRM_MEMB_UPD_DH_INPUT implements org.apache.axis2.databinding.ADB
                             reader.getName())) ||
                         new javax.xml.namespace.QName("", "CITY1").equals(
                             reader.getName())) {
-                    object.setCITY1(com.nhry.webService.client.VipInfoData.functions.CITY1_type1.Factory.parse(
+                    object.setCITY1(CITY1_type1.Factory.parse(
                             reader));
 
                     reader.next();
@@ -1718,7 +1779,7 @@ public class ZSCRM_MEMB_UPD_DH_INPUT implements org.apache.axis2.databinding.ADB
                             reader.getName())) ||
                         new javax.xml.namespace.QName("", "CITY2").equals(
                             reader.getName())) {
-                    object.setCITY2(com.nhry.webService.client.VipInfoData.functions.CITY2_type1.Factory.parse(
+                    object.setCITY2(CITY2_type1.Factory.parse(
                             reader));
 
                     reader.next();
@@ -1735,7 +1796,7 @@ public class ZSCRM_MEMB_UPD_DH_INPUT implements org.apache.axis2.databinding.ADB
                             reader.getName())) ||
                         new javax.xml.namespace.QName("", "STREET").equals(
                             reader.getName())) {
-                    object.setSTREET(com.nhry.webService.client.VipInfoData.functions.STREET_type1.Factory.parse(
+                    object.setSTREET(STREET_type1.Factory.parse(
                             reader));
 
                     reader.next();
@@ -1752,7 +1813,7 @@ public class ZSCRM_MEMB_UPD_DH_INPUT implements org.apache.axis2.databinding.ADB
                             reader.getName())) ||
                         new javax.xml.namespace.QName("", "STR_SUPPL1").equals(
                             reader.getName())) {
-                    object.setSTR_SUPPL1(com.nhry.webService.client.VipInfoData.functions.STR_SUPPL1_type1.Factory.parse(
+                    object.setSTR_SUPPL1(STR_SUPPL1_type1.Factory.parse(
                             reader));
 
                     reader.next();
@@ -1769,7 +1830,7 @@ public class ZSCRM_MEMB_UPD_DH_INPUT implements org.apache.axis2.databinding.ADB
                             reader.getName())) ||
                         new javax.xml.namespace.QName("", "STR_SUPPL2").equals(
                             reader.getName())) {
-                    object.setSTR_SUPPL2(com.nhry.webService.client.VipInfoData.functions.STR_SUPPL2_type1.Factory.parse(
+                    object.setSTR_SUPPL2(STR_SUPPL2_type1.Factory.parse(
                             reader));
 
                     reader.next();
@@ -1786,7 +1847,7 @@ public class ZSCRM_MEMB_UPD_DH_INPUT implements org.apache.axis2.databinding.ADB
                             reader.getName())) ||
                         new javax.xml.namespace.QName("", "POST_CODE1").equals(
                             reader.getName())) {
-                    object.setPOST_CODE1(com.nhry.webService.client.VipInfoData.functions.POST_CODE1_type1.Factory.parse(
+                    object.setPOST_CODE1(POST_CODE1_type1.Factory.parse(
                             reader));
 
                     reader.next();
@@ -1803,7 +1864,7 @@ public class ZSCRM_MEMB_UPD_DH_INPUT implements org.apache.axis2.databinding.ADB
                             reader.getName())) ||
                         new javax.xml.namespace.QName("", "NAME_CO").equals(
                             reader.getName())) {
-                    object.setNAME_CO(com.nhry.webService.client.VipInfoData.functions.NAME_CO_type1.Factory.parse(
+                    object.setNAME_CO(NAME_CO_type1.Factory.parse(
                             reader));
 
                     reader.next();
@@ -1820,7 +1881,7 @@ public class ZSCRM_MEMB_UPD_DH_INPUT implements org.apache.axis2.databinding.ADB
                             reader.getName())) ||
                         new javax.xml.namespace.QName("", "TEL_MOBILE").equals(
                             reader.getName())) {
-                    object.setTEL_MOBILE(com.nhry.webService.client.VipInfoData.functions.TEL_MOBILE_type1.Factory.parse(
+                    object.setTEL_MOBILE(TEL_MOBILE_type1.Factory.parse(
                             reader));
 
                     reader.next();
@@ -1837,7 +1898,7 @@ public class ZSCRM_MEMB_UPD_DH_INPUT implements org.apache.axis2.databinding.ADB
                             reader.getName())) ||
                         new javax.xml.namespace.QName("", "TEL_NUMBER").equals(
                             reader.getName())) {
-                    object.setTEL_NUMBER(com.nhry.webService.client.VipInfoData.functions.TEL_NUMBER_type1.Factory.parse(
+                    object.setTEL_NUMBER(TEL_NUMBER_type1.Factory.parse(
                             reader));
 
                     reader.next();
@@ -1854,7 +1915,7 @@ public class ZSCRM_MEMB_UPD_DH_INPUT implements org.apache.axis2.databinding.ADB
                             reader.getName())) ||
                         new javax.xml.namespace.QName("", "SMTP_ADDR").equals(
                             reader.getName())) {
-                    object.setSMTP_ADDR(com.nhry.webService.client.VipInfoData.functions.SMTP_ADDR_type1.Factory.parse(
+                    object.setSMTP_ADDR(SMTP_ADDR_type1.Factory.parse(
                             reader));
 
                     reader.next();
@@ -1872,7 +1933,7 @@ public class ZSCRM_MEMB_UPD_DH_INPUT implements org.apache.axis2.databinding.ADB
                         "Unexpected subelement " + reader.getName());
                 }
             } catch (javax.xml.stream.XMLStreamException e) {
-                throw new java.lang.Exception(e);
+                throw new Exception(e);
             }
 
             return object;

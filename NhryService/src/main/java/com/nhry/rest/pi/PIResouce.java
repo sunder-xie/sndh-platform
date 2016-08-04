@@ -3,18 +3,21 @@ package com.nhry.rest.pi;
 import com.nhry.common.exception.MessageCode;
 import com.nhry.data.basic.domain.TMdAddress;
 import com.nhry.data.basic.domain.TMdBranch;
+import com.nhry.data.basic.domain.TMdResidentialArea;
 import com.nhry.data.basic.domain.TVipCustInfo;
 import com.nhry.data.config.domain.NHSysCodeItem;
 import com.nhry.data.config.impl.NHSysCodeItemMapperImpl;
 import com.nhry.model.sys.ResponseModel;
 import com.nhry.rest.BaseResource;
 import com.nhry.service.basic.dao.BranchService;
+import com.nhry.service.basic.dao.ResidentialAreaService;
 import com.nhry.service.basic.dao.TVipCrmInfoService;
 import com.nhry.service.basic.dao.TVipCustInfoService;
 import com.nhry.service.config.dao.DictionaryService;
 import com.nhry.service.pi.dao.PIProductService;
 import com.nhry.service.pi.dao.PIRequireOrderService;
 import com.nhry.service.pi.dao.PIVipInfoDataService;
+import com.nhry.service.pi.pojo.MemberActivities;
 import com.sun.jersey.spi.resource.Singleton;
 import com.wordnik.swagger.annotations.Api;
 import com.wordnik.swagger.annotations.ApiOperation;
@@ -26,6 +29,7 @@ import org.springframework.stereotype.Controller;
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+import java.math.BigDecimal;
 import java.rmi.RemoteException;
 import java.text.ParseException;
 import java.text.ParsePosition;
@@ -60,6 +64,10 @@ public class PIResouce extends BaseResource{
 
     @Autowired
     public DictionaryService dictionaryService;
+
+    @Autowired
+    public ResidentialAreaService residentialAreaService;
+
 
 
     @GET
@@ -128,8 +136,10 @@ public class PIResouce extends BaseResource{
         vipCustInfo.setBranchName(branch.getBranchName());
         NHSysCodeItem codeItem = new NHSysCodeItem();
         codeItem.setTypeCode("1001");
-        codeItem.setItemCode(vipCustInfo.getProvince());
-        vipCustInfo.setProvince(dictionaryService.findCodeItenByCode(codeItem).getItemName());
+//        codeItem.setItemCode(vipCustInfo.getProvince());
+//        vipCustInfo.setProvince(dictionaryService.findCodeItenByCode(codeItem).getItemName());
+        TMdResidentialArea area = residentialAreaService.selectById(vipCustInfo.getSubdist());
+        vipCustInfo.setSubdist(area.getResidentialAreaTxt());
 
         codeItem.setItemCode(vipCustInfo.getCity());
         vipCustInfo.setCity(dictionaryService.findCodeItenByCode(codeItem).getItemName());
@@ -146,4 +156,29 @@ public class PIResouce extends BaseResource{
         }
         return convertToRespModel(MessageCode.NORMAL,piVipInfoDataService.generateVipInfoData(vipCustInfo,tMdAddress), null);
     }
+    @POST
+    @Path("/createMemberActivities")
+    @Produces(MediaType.APPLICATION_JSON)
+    @Consumes(MediaType.APPLICATION_JSON)
+    @ApiOperation(value = "/createMemberActivities", response = ResponseModel.class, notes = "会员积分活动")
+    public Response createMemberActivities() throws RemoteException, ParseException {
+        MemberActivities ac = new MemberActivities();
+        ac.setActivitydate(new Date());
+        ac.setAmount(new BigDecimal(110));
+        ac.setCardid("0000000323");
+        ac.setCategory("ACCRUAL");
+        ac.setCommit("X");
+        ac.setItemnum("10");
+//        ac.setCurrency("");
+//        ac.setPoints(new BigDecimal(110));
+        ac.setProcesstype("YPOS_ACCRUAL");
+        ac.setMembershipguid("0050568ADF8B1EE696C390EAA540A600");
+        ac.setOrderid("10000000022323232");
+        ac.setProductid("000000023");
+        ac.setProductquantity(new BigDecimal(100));
+        ac.setRetailstoreid("0300005935");
+        ac.setSalesorg("4111");
+        return convertToRespModel(MessageCode.NORMAL, piVipInfoDataService.createMemberActivities(ac), null);
+    }
+
 }

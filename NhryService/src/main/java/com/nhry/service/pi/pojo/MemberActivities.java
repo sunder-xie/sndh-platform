@@ -2,24 +2,89 @@
 package com.nhry.service.pi.pojo;
 
 import java.math.BigDecimal;
+import java.util.Date;
 
 public class MemberActivities {
+    /**
+     * 会员活动类别
+     *
+     * 消费引起的积分获得 ACCRUAL
+     *
+     * 促销类的订单 CATEGORY
+     *
+     * 退货 YRETURN
+     */
     protected String category;
+    /**
+     * PROCESS_TYPE
+     *
+     ** 消费引起的积分获得 YPOS_ACCRUAL
+     *
+     * 促销类的订单 YSUB_PROMOTION
+     *
+     * 退货 YSUB_RETURN
+     */
+
     protected String processtype;
+    /**
+     *会员GUID
+     */
     protected String membershipguid;
+    /**
+     * 销售组织
+     */
     protected String salesorg;
+    /**
+     * 会员卡号
+     */
     protected String cardid;
-    protected BigDecimal activitydate;
+    /**
+     * 时间戳(日期+时间)
+     */
+    protected Date activitydate;
+    /**
+     * 消费金额
+     */
     protected BigDecimal amount;
+    /**
+     * 积分类型
+     */
     protected String pointtype;
+    /**
+     * 积分数
+     */
     protected BigDecimal points;
+    /**
+     * 货币
+     */
     protected String currency;
+    /**
+     * ORDER_ID
+     */
     protected String orderid;
+    /**
+     * 行项目编号
+     */
     protected String itemnum;
+    /**
+     * 产品ID
+     */
     protected String productid;
+    /**
+     * 产品数量
+     */
     protected BigDecimal productquantity;
+    /**
+     * 零售店编号
+     */
     protected String retailstoreid;
+    /**
+     * 交易顺序号
+     */
     protected String transeqnum;
+    /**
+     *
+     */
     protected String tiergroup;
     protected String tier;
     protected String commit;
@@ -65,11 +130,11 @@ public class MemberActivities {
         this.cardid = cardid;
     }
 
-    public BigDecimal getActivitydate() {
+    public Date getActivitydate() {
         return activitydate;
     }
 
-    public void setActivitydate(BigDecimal activitydate) {
+    public void setActivitydate(Date activitydate) {
         this.activitydate = activitydate;
     }
 

@@ -1,42 +1,42 @@
 /**
- * MEMBERSHIP_GUID_type1.java
+ * ADDRESS_GUID_type1.java
  *
  * This file was auto-generated from WSDL
  * by the Apache Axis2 version: 1.7.3  Built on : May 30, 2016 (04:09:26 BST)
  */
-package com.nhry.webService.client.MemberActivities.functions;
+package com.nhry.webService.client.VipInfoData.functions;
 
 
 /**
- *  MEMBERSHIP_GUID_type1 bean class
+ *  ADDRESS_GUID_type1 bean class
  */
 @SuppressWarnings({"unchecked",
     "unused"
 })
-public class MEMBERSHIP_GUID_type1 implements org.apache.axis2.databinding.ADBBean {
+public class ADDRESS_GUID_type1 implements org.apache.axis2.databinding.ADBBean {
     public static final javax.xml.namespace.QName MY_QNAME = new javax.xml.namespace.QName("urn:sap-com:document:sap:rfc:functions",
-            "MEMBERSHIP_GUID_type1", "ns1");
+            "ADDRESS_GUID_type1", "ns1");
 
     /**
-     * field for MEMBERSHIP_GUID_type0
+     * field for ADDRESS_GUID_type0
      */
-    protected String localMEMBERSHIP_GUID_type0;
+    protected String localADDRESS_GUID_type0;
 
     /**
      * Auto generated getter method
      * @return java.lang.String
      */
-    public String getMEMBERSHIP_GUID_type0() {
-        return localMEMBERSHIP_GUID_type0;
+    public String getADDRESS_GUID_type0() {
+        return localADDRESS_GUID_type0;
     }
 
     /**
      * Auto generated setter method
-     * @param param MEMBERSHIP_GUID_type0
+     * @param param ADDRESS_GUID_type0
      */
-    public void setMEMBERSHIP_GUID_type0(String param) {
+    public void setADDRESS_GUID_type0(String param) {
         if ((String.valueOf(param).length() <= 32)) {
-            this.localMEMBERSHIP_GUID_type0 = param;
+            this.localADDRESS_GUID_type0 = param;
         } else {
             throw new RuntimeException(
                 "Input values do not follow defined XSD restrictions");
@@ -44,7 +44,7 @@ public class MEMBERSHIP_GUID_type1 implements org.apache.axis2.databinding.ADBBe
     }
 
     public String toString() {
-        return localMEMBERSHIP_GUID_type0.toString();
+        return localADDRESS_GUID_type0.toString();
     }
 
     /**
@@ -87,19 +87,19 @@ public class MEMBERSHIP_GUID_type1 implements org.apache.axis2.databinding.ADBBe
                     (namespacePrefix.trim().length() > 0)) {
                 writeAttribute("xsi",
                     "http://www.w3.org/2001/XMLSchema-instance", "type",
-                    namespacePrefix + ":MEMBERSHIP_GUID_type1", xmlWriter);
+                    namespacePrefix + ":ADDRESS_GUID_type1", xmlWriter);
             } else {
                 writeAttribute("xsi",
                     "http://www.w3.org/2001/XMLSchema-instance", "type",
-                    "MEMBERSHIP_GUID_type1", xmlWriter);
+                    "ADDRESS_GUID_type1", xmlWriter);
             }
         }
 
-        if (localMEMBERSHIP_GUID_type0 == null) {
+        if (localADDRESS_GUID_type0 == null) {
             throw new org.apache.axis2.databinding.ADBException(
-                "MEMBERSHIP_GUID_type0 cannot be null !!");
+                "ADDRESS_GUID_type0 cannot be null !!");
         } else {
-            xmlWriter.writeCharacters(localMEMBERSHIP_GUID_type0);
+            xmlWriter.writeCharacters(localADDRESS_GUID_type0);
         }
 
         xmlWriter.writeEndElement();
@@ -313,17 +313,17 @@ public class MEMBERSHIP_GUID_type1 implements org.apache.axis2.databinding.ADBBe
     public static class Factory {
         private static org.apache.commons.logging.Log log = org.apache.commons.logging.LogFactory.getLog(Factory.class);
 
-        public static MEMBERSHIP_GUID_type1 fromString(String value,
+        public static ADDRESS_GUID_type1 fromString(String value,
             String namespaceURI) {
-            MEMBERSHIP_GUID_type1 returnValue = new MEMBERSHIP_GUID_type1();
+            ADDRESS_GUID_type1 returnValue = new ADDRESS_GUID_type1();
 
-            returnValue.setMEMBERSHIP_GUID_type0(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(
+            returnValue.setADDRESS_GUID_type0(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(
                     value));
 
             return returnValue;
         }
 
-        public static MEMBERSHIP_GUID_type1 fromString(
+        public static ADDRESS_GUID_type1 fromString(
             javax.xml.stream.XMLStreamReader xmlStreamReader,
             String content) {
             if (content.indexOf(":") > -1) {
@@ -346,9 +346,9 @@ public class MEMBERSHIP_GUID_type1 implements org.apache.axis2.databinding.ADBBe
          * Postcondition: If this object is an element, the reader is positioned at its end element
          *                If this object is a complex type, the reader is positioned at the end element of its outer element
          */
-        public static MEMBERSHIP_GUID_type1 parse(
+        public static ADDRESS_GUID_type1 parse(
             javax.xml.stream.XMLStreamReader reader) throws Exception {
-            MEMBERSHIP_GUID_type1 object = new MEMBERSHIP_GUID_type1();
+            ADDRESS_GUID_type1 object = new ADDRESS_GUID_type1();
 
             int event;
             javax.xml.namespace.QName currentQName = null;
@@ -375,13 +375,13 @@ public class MEMBERSHIP_GUID_type1 implements org.apache.axis2.databinding.ADBBe
                             if ("true".equals(nillableValue) ||
                                     "1".equals(nillableValue)) {
                                 throw new org.apache.axis2.databinding.ADBException(
-                                    "The element: " + "MEMBERSHIP_GUID_type0" +
+                                    "The element: " + "ADDRESS_GUID_type0" +
                                     "  cannot be null");
                             }
 
                             String content = reader.getElementText();
 
-                            object.setMEMBERSHIP_GUID_type0(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(
+                            object.setADDRESS_GUID_type0(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(
                                     content));
                         } // End of if for expected property start element
 

@@ -39,7 +39,7 @@ public class ExtensionMapper {
 
         if ("urn:sap-com:document:sap:rfc:functions".equals(namespaceURI) &&
                 "IV_CARD_ID_type1".equals(typeName)) {
-            return com.nhry.webService.client.VipPoint.functions.IV_CARD_ID_type1.Factory.parse(reader);
+            return IV_CARD_ID_type1.Factory.parse(reader);
         }
 
         if ("urn:sap-com:document:sap:rfc:functions".equals(namespaceURI) &&
@@ -64,12 +64,12 @@ public class ExtensionMapper {
 
         if ("urn:sap-com:document:sap:rfc:functions".equals(namespaceURI) &&
                 "T_BALANCE_OUT_type0".equals(typeName)) {
-            return com.nhry.webService.client.VipPoint.functions.T_BALANCE_OUT_type0.Factory.parse(reader);
+            return T_BALANCE_OUT_type0.Factory.parse(reader);
         }
 
         if ("urn:sap-com:document:sap:rfc:functions".equals(namespaceURI) &&
                 "ZSCRM_PT_BALANCE".equals(typeName)) {
-            return com.nhry.webService.client.VipPoint.functions.ZSCRM_PT_BALANCE.Factory.parse(reader);
+            return ZSCRM_PT_BALANCE.Factory.parse(reader);
         }
 
         if ("urn:sap-com:document:sap:rfc:functions".equals(namespaceURI) &&
@@ -79,7 +79,7 @@ public class ExtensionMapper {
 
         if ("urn:sap-com:document:sap:rfc:functions".equals(namespaceURI) &&
                 "T_BALANCE_OUT_type1".equals(typeName)) {
-            return com.nhry.webService.client.VipPoint.functions.T_BALANCE_OUT_type1.Factory.parse(reader);
+            return T_BALANCE_OUT_type1.Factory.parse(reader);
         }
 
         if ("urn:sap-com:document:sap:rfc:functions".equals(namespaceURI) &&

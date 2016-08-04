@@ -166,7 +166,7 @@ public class ZSCRM_MEMB_ACTIVITIES implements org.apache.axis2.databinding.ADBBe
     /**
      * field for PRODUCT_QUANTITY
      */
-    protected com.nhry.webService.client.MemberActivities.functions.PRODUCT_QUANTITY_type1 localPRODUCT_QUANTITY;
+    protected PRODUCT_QUANTITY_type1 localPRODUCT_QUANTITY;
 
     /*  This tracker boolean wil be used to detect whether the user called the set method
      *   for this attribute. It will be used to determine whether to include this field
@@ -547,7 +547,7 @@ public class ZSCRM_MEMB_ACTIVITIES implements org.apache.axis2.databinding.ADBBe
      * Auto generated getter method
      * @return com.nhry.webService.client.MemberActivities.functions.PRODUCT_QUANTITY_type1
      */
-    public com.nhry.webService.client.MemberActivities.functions.PRODUCT_QUANTITY_type1 getPRODUCT_QUANTITY() {
+    public PRODUCT_QUANTITY_type1 getPRODUCT_QUANTITY() {
         return localPRODUCT_QUANTITY;
     }
 
@@ -556,7 +556,7 @@ public class ZSCRM_MEMB_ACTIVITIES implements org.apache.axis2.databinding.ADBBe
      * @param param PRODUCT_QUANTITY
      */
     public void setPRODUCT_QUANTITY(
-        com.nhry.webService.client.MemberActivities.functions.PRODUCT_QUANTITY_type1 param) {
+        PRODUCT_QUANTITY_type1 param) {
         localPRODUCT_QUANTITYTracker = param != null;
 
         this.localPRODUCT_QUANTITY = param;
@@ -1447,7 +1447,7 @@ public class ZSCRM_MEMB_ACTIVITIES implements org.apache.axis2.databinding.ADBBe
                             reader.getName())) ||
                         new javax.xml.namespace.QName("", "PRODUCT_QUANTITY").equals(
                             reader.getName())) {
-                    object.setPRODUCT_QUANTITY(com.nhry.webService.client.MemberActivities.functions.PRODUCT_QUANTITY_type1.Factory.parse(
+                    object.setPRODUCT_QUANTITY(PRODUCT_QUANTITY_type1.Factory.parse(
                             reader));
 
                     reader.next();

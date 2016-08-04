@@ -68,4 +68,7 @@
     </bean>
     <jaxws:endpoint id="piOrderServiceImpl" implementor="#piOrderService"
                     address="/orderService"/>
+    <bean class="com.nhry.service.pi.impl.PIVipPointServiceImpl" id="piVipPointService">
+
+    </bean>
 </beans>
