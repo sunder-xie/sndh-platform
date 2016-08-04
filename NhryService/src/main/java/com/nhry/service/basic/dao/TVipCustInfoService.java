@@ -77,7 +77,7 @@ public interface TVipCustInfoService {
      * @param vipCustNo
      * @return
      */
-    String addAddressForCust(TMdAddress address,String branchNo,Map<String,String> attrs);
+    public String addAddressForCust(TMdAddress address,String branchNo,Map<String,String> attrs);
     
     /**
      * 修改订户详细地址
