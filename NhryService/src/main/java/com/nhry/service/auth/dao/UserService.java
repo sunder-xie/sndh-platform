@@ -41,4 +41,18 @@ public interface UserService {
 	List<TSysUser> findUserByRoleId(UserQueryModel2 um);
 
 	PageInfo findUserPageByRoleId(UserQueryModel um);
+
+	/**
+	 * 查询未分配角色的用户
+	 * @param model
+	 * @return
+	 */
+	List<TSysUser> findNotRoleUser(UserQueryModel model);
+
+	/**
+	 * 查询未分配角色的用户分页
+	 * @param model
+	 * @return
+	 */
+	PageInfo<TSysUser> findNotRoleUserPage(UserQueryModel model);
 }

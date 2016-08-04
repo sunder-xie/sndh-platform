@@ -320,7 +320,7 @@ public class OrderResource extends BaseResource {
 	@Path("/updateOrderEmp")
 	@Produces(MediaType.APPLICATION_JSON)
 	@Consumes(MediaType.APPLICATION_JSON)
-	@ApiOperation(value = "/updateOrderEmp", response = Integer.class, notes = "订单换送奶员")
+	@ApiOperation(value = "/updateOrderEmp", response = Integer.class, notes = "订单换送奶员,empNo:被替换的员工编号，content:替换员工")
 	public Response updateOrderEmp(@ApiParam(required=true,name="smodel",value="SearchModel") OrderSearchModel smodel){
 		return convertToRespModel(MessageCode.NORMAL, null, orderService.replaceOrdersDispmember(smodel));
 	}

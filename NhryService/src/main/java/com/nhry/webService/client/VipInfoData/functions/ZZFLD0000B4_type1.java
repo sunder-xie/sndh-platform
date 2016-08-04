@@ -35,7 +35,7 @@ public class ZZFLD0000B4_type1 implements org.apache.axis2.databinding.ADBBean {
      * @param param ZZFLD0000B4_type0
      */
     public void setZZFLD0000B4_type0(java.lang.String param) {
-        if ((java.lang.String.valueOf(param).length() <= 8)) {
+        if ((java.lang.String.valueOf(param).length() <= 32)) {
             this.localZZFLD0000B4_type0 = param;
         } else {
             throw new java.lang.RuntimeException(

@@ -123,6 +123,19 @@ public class UserServiceImpl extends BaseService implements UserService {
 		return userMapper.findUserPageByRoleId(um);
 	}
 
+	@Override
+	public List<TSysUser> findNotRoleUser(UserQueryModel model) {
+		return userMapper.findNotRoleUser(model);
+	}
+
+	@Override
+	public PageInfo<TSysUser> findNotRoleUserPage(UserQueryModel model) {
+		if(StringUtils.isEmpty(model.getPageNum()) || StringUtils.isEmpty(model.getPageSize())){
+			throw new ServiceException(MessageCode.LOGIC_ERROR,"pageNum和pageSize不能为空！");
+		}
+		return userMapper.findNotRoleUserPage(model);
+	}
+
 	public void setRoleMapper(TSysRoleMapper roleMapper) {
 		this.roleMapper = roleMapper;
 	}
