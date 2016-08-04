@@ -51,7 +51,7 @@ public class GetOrderBranchServiceImpl implements GetOrderBranchService {
         data.put("address",custInfoModel.getAddress());
         data.put("longitude",custInfoModel.getLongitude());
         data.put("latitude",custInfoModel.getLatitude());
-
+        data.put("townId",custInfoModel.getTownId());
         JSONArray obj4 = new JSONArray();
         obj4.put(data);
 
