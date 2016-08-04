@@ -21,6 +21,7 @@ public class TMstRecvBill implements Serializable {
     private Date endTime;
     private String paymentYearMonth;
     private BigDecimal totalPrice;
+    private BigDecimal custAccAmt; //订户余额
     private int totalNum;
     private String recvEmp;
     private String recvEmpName;
@@ -31,6 +32,14 @@ public class TMstRecvBill implements Serializable {
     private Date lastModified;
     private String lastModifiedBy;
     private String lastModifiedByTxt;
+
+    public BigDecimal getCustAccAmt() {
+        return custAccAmt;
+    }
+
+    public void setCustAccAmt(BigDecimal custAccAmt) {
+        this.custAccAmt = custAccAmt;
+    }
 
     public BigDecimal getAccAmt() {
         return accAmt;

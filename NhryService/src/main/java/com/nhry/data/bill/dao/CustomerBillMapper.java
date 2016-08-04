@@ -9,7 +9,8 @@ public interface CustomerBillMapper {
 
     public TMstRecvBill getRecBillByOrderNo(String orderNo);
 
-    public int customerPayment(TMstRecvBill customerBill);
+    public int insertCustomerPayment(TMstRecvBill customerBill);
 
     public int updateCustomerBillrPayment(TMstRecvBill customerBill);
+
 }

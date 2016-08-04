@@ -16,4 +16,6 @@ public interface CustomerBillService {
 
    public CustomerBillOrder getCustomerOrderDetailByCode(String orderNo);
 
+   public TMstRecvBill createRecBillByOrderNo(String orderNo);
+
 }
