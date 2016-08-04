@@ -195,8 +195,8 @@
         c.MP,
         CONCAT(r.RESIDENTIAL_AREA_TXT ,c.ADDRESS_TXT) ADDRESS,
         o.INIT_AMT ACCOUNT_RECE,
-        b.AMT ACCOUNT_REAL,
-        (b.AMT-o.INIT_AMT) ACCOUNT_GAP,
+         b.AMT+b.ACC_AMT ACCOUNT_REAL,
+        (b.AMT+b.ACC_AMT-o.INIT_AMT) ACCOUNT_GAP,
         (
           SELECT i.ITEM_NAME
           from t_sys_code_item i
@@ -351,7 +351,7 @@
     </select>
 
     <select id="empDispFeeNum"  resultType="INTEGER"  parameterType="com.nhry.model.bill.EmpDispDetialInfoSearch" >
-        SELECT  SUM(case when i.REASON = '40' OR i.REASON = '50' then i.QTY else i.CONFIRM_QTY end) QTY
+        SELECT  SUM(i.CONFIRM_QTY) QTY
         FROM  t_mst_disp_order_item  i
         LEFT JOIN t_mst_disp_order o on i.ORDER_NO = o.ORDER_NO
         WHERE 1 =1

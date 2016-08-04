@@ -53,10 +53,10 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 	private EcService messLogService;
 	private CustomerBillMapper customerBillMapper;
 	
-   public void setCustomerBillMapper(CustomerBillMapper customerBillMapper) {
-      this.customerBillMapper = customerBillMapper;
-   }
-	
+	public void setCustomerBillMapper(CustomerBillMapper customerBillMapper) {
+		this.customerBillMapper = customerBillMapper;
+	}
+
 	public void setMessLogService(EcService messLogService)
 	{
 		this.messLogService = messLogService;
@@ -630,11 +630,11 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 	            if(bill!= null){
 	            	TVipAcct ac = new TVipAcct();
 					   ac.setVipCustNo(order.getMilkmemberNo());
-					   ac.setAcctAmt(bill.getAmt());//TODO 取哪个金额?
+					   ac.setAcctAmt(bill.getAccAmt());//TODO 取哪个金额?
 						tVipCustInfoService.addVipAcct(ac);
 	            }
-					
 				}
+				
 				//用掉的钱
 				BigDecimal remain = order.getInitAmt().subtract(order.getCurAmt());
 				order.setInitAmt(remain);
@@ -2125,10 +2125,32 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 	public CollectOrderModel queryCollectByOrderNo(String orderCode) {
 		TSysUser user = userSessionService.getCurrentUser();
 		TPreOrder order = tPreOrderMapper.selectByPrimaryKey(orderCode);
+		if(order == null){
+			throw  new ServiceException(MessageCode.LOGIC_ERROR,"该订单已不存在");
+		}
 		TMdBranch branch = branchMapper.selectBranchByNo(order.getBranchNo());
+
 		CollectOrderModel model = new CollectOrderModel();
 		model.setOrder(order);
 		model.setBranch(branch);
+		TMstRecvBill customerBill = customerBillMapper.getRecBillByOrderNo(orderCode);
+		if(customerBill!=null){
+			//如果收款单已存在  获取当时录入的订户余额(因为当时已经将余额扣除了)
+			model.setCustAccAmt(customerBill.getCustAccAmt());
+		}else{
+			BigDecimal acLeftAmt = new BigDecimal("0.00");
+			TVipAcct eac = tVipCustInfoService.findVipAcctByCustNo(order.getMilkmemberNo());
+			if(eac!=null){
+				acLeftAmt = eac.getAcctAmt();
+			}else{
+				TVipAcct ac = new TVipAcct();
+				ac.setVipCustNo(order.getMilkmemberNo());
+				ac.setAcctAmt(acLeftAmt);
+				tVipCustInfoService.addVipAcct(ac);
+			}
+			model.setCustAccAmt(acLeftAmt);
+		}
+
 		BigDecimal totalPrices = new BigDecimal(0);
 		List<ProductItem> entries = new ArrayList<ProductItem>();
 		if("20".equals(order.getPaymentmethod())){

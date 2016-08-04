@@ -24,8 +24,8 @@ import com.nhry.service.bill.dao.CustomerBillService;
 import com.nhry.service.external.dao.EcService;
 import com.nhry.service.order.dao.OrderService;
 import com.nhry.service.order.dao.PromotionService;
-import com.nhry.utils.SerialUtil;
-
+import com.nhry.utils.PrimaryKeyUtils;
+import com.nhry.utils.YearLastMonthUtil;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.core.task.TaskExecutor;
 
@@ -79,84 +79,72 @@ public class CustomerBillServiceImpl implements CustomerBillService {
     @Override
     public TMstRecvBill getRecBillByOrderNo(String orderNo) {
         TMstRecvBill result = customerBillMapper.getRecBillByOrderNo(orderNo);
-        if(result == null){
-            throw new ServiceException(MessageCode.LOGIC_ERROR,"该订单还未收款！！！请先收款");
-        }
         return result;
     }
 
     @Override
     public int customerPayment(CustomerPayMentModel cModel) {
-        String errorContent ="";
+             String errorContent ="";
             int updateBill = 0;
             int updateOrderStatus = 0;
             String orderNo = cModel.getOrderNo();
-            TPreOrder order = tPreOrderMapper.selectByPrimaryKey(orderNo);
 
+            TPreOrder order = tPreOrderMapper.selectByPrimaryKey(orderNo);
             if(order == null){
                 errorContent = "该订单不存在！";
                 throw new ServiceException(MessageCode.LOGIC_ERROR,errorContent);
             }
 
-            TMstRecvBill bill = customerBillMapper.getRecBillByOrderNo(orderNo);
-            if(bill!= null && "20".equals(bill.getStatus())){
+            TMstRecvBill customerBill = customerBillMapper.getRecBillByOrderNo(orderNo);
+            if(customerBill!= null && "20".equals(customerBill.getStatus())){
                 errorContent = "该订单已收款";
                 throw new ServiceException(MessageCode.LOGIC_ERROR,errorContent);
-            }else {
+            }
 
-                Calendar calendar =Calendar.getInstance();
-                Date date = new Date();
-                calendar.setTime(date);
+            TSysUser user = userSessionService.getCurrentUser();
+            Date date = new Date();
 
-                TMstRecvBill customerBill = new TMstRecvBill();
-                customerBill.setRecvEmp(cModel.getEmpNo());
-                customerBill.setOrderNo(orderNo);
-                customerBill.setAmt(new BigDecimal(cModel.getAmt()));
-                customerBill.setReceiptDate(date);
-                customerBill.setStatus("20");
-                customerBill.setRecvEmp(order.getEmpNo());
-                customerBill.setPaymentType(cModel.getPaymentType());
-                String month = calendar.get(Calendar.MONTH)+1 < 10 ? "0"+(calendar.get(Calendar.MONTH)+1) : String.valueOf(calendar.get(Calendar.MONTH)+1);
-                String payMentYM = String.valueOf(calendar.get(Calendar.YEAR))+month;
-                TSysUser user = userSessionService.getCurrentUser();
+
+            //录入收款信息
+                BigDecimal accAmt = customerBill.getAccAmt();    //已收的订户余额
+                BigDecimal amt = new BigDecimal(cModel.getAmt());//收款金额
+                int com = accAmt.add(amt).compareTo(order.getInitAmt()); // 收款金额 加上已收的余额 与 订单金额比较
+                //如果收款金额 加上已收的余额 大于订单金额
+                if(com== 1){
+                    //记录收款金额为 订单余额减去 已收的订户余额
+                    customerBill.setAmt(new BigDecimal(cModel.getAmt()));
+                    //并将多出来的金额 放入订户余额中
+                    TVipAcct eac = tVipCustInfoService.findVipAcctByCustNo(order.getMilkmemberNo());
+                    TVipAcct ac = new TVipAcct();
+                    BigDecimal acLeftAmt = new BigDecimal("0.00");
+                    if(eac!=null){
+                        acLeftAmt = eac.getAcctAmt();
+                    }
+                    ac.setVipCustNo(order.getMilkmemberNo());
+                    ac.setAcctAmt(accAmt.add(amt).subtract(order.getInitAmt()));
+                    tVipCustInfoService.addVipAcct(ac);
+                }else if(com == 0){
+                    //如果收款金额 加上已收的余额 等于 订单金额
+                    customerBill.setAmt(new BigDecimal(cModel.getAmt()));
+                }else{
+                    //如果收款金额 加上已收的余额 小于 订单金额
+                    throw new ServiceException(MessageCode.LOGIC_ERROR,"输入的金额和已支付的账户余额不足以支付此订单!");
+                }
                 //备注
                 if(StringUtils.isNoneBlank(cModel.getRemark())){
                     customerBill.setRemark(cModel.getRemark());
                 }
-
-                customerBill.setEndTime(order.getEndDate());
-                customerBill.setVipCustNo(order.getMilkmemberNo());
-                customerBill.setPaymentYearMonth(payMentYM);
+                customerBill.setPaymentType(cModel.getPaymentType());
+                customerBill.setPaymentYearMonth(YearLastMonthUtil.getYearThisMonth());
+                customerBill.setRecvEmp(cModel.getEmpNo());
+                customerBill.setReceiptDate(date);
                 customerBill.setLastModified(date);
                 customerBill.setLastModifiedBy(user.getLoginName());
-                customerBill.setCreateByTxt(user.getDisplayName());
+                customerBill.setLastModifiedByTxt(user.getDisplayName());
+                customerBill.setStatus("20");
+                updateBill =  customerBillMapper.updateCustomerBillrPayment(customerBill);
 
-                //多收或者少收款的，要记回订户帐户
-            	 if(order.getInitAmt()!=null){
-       				TVipAcct ac = new TVipAcct();
-       				BigDecimal acLeftAmt = new BigDecimal("0.00");
-       				TVipAcct eac = tVipCustInfoService.findVipAcctByCustNo(order.getMilkmemberNo());
-       				if(eac!=null){
-       					acLeftAmt = eac.getAcctAmt();
-       				}
-       				if(acLeftAmt.add(customerBill.getAmt()).floatValue() < order.getInitAmt().floatValue())throw new ServiceException(MessageCode.LOGIC_ERROR,"输入的金额和账户余额不足以支付此订单!");
-   				   ac.setVipCustNo(order.getMilkmemberNo());
-   				   ac.setAcctAmt(customerBill.getAmt().subtract(order.getInitAmt()));
-   					tVipCustInfoService.addVipAcct(ac);
-          		 }
-                
-                if(bill!=null && bill.getStatus()=="10"){
-                    updateBill =  customerBillMapper.updateCustomerBillrPayment(customerBill);
-                }else{
-                    if(StringUtils.isBlank(customerBill.getReceiptNo())){
-                        //收款流水号
-                        customerBill.setReceiptNo(SerialUtil.creatSeria());
-                    }
-                    customerBill.setCreateAt(date);
-                    customerBill.setCreateBy(user.getLoginName());
-                    customerBill.setCreateByTxt(user.getDisplayName());
-                    updateBill =  customerBillMapper.customerPayment(customerBill);
-                }
+
                 //更新订单状态为已收款
                 updateOrderStatus = tPreOrderMapper.updateOrderPayMentStatus(orderNo);
                 
@@ -191,7 +179,6 @@ public class CustomerBillServiceImpl implements CustomerBillService {
        			 });
                 
                 return updateBill+updateOrderStatus;
-            }
     }
 
     @Override
@@ -223,6 +210,52 @@ public class CustomerBillServiceImpl implements CustomerBillService {
         return order;
     }
 
+    //根据订单号 创建 收款单
+    @Override
+    public TMstRecvBill createRecBillByOrderNo(String orderNo) {
+        String errorContent ="";
+        TPreOrder order = tPreOrderMapper.selectByPrimaryKey(orderNo);
+        if(order == null){
+            errorContent = "该订单不存在！";
+            throw new ServiceException(MessageCode.LOGIC_ERROR,errorContent);
+        }
+        TMstRecvBill customerBill = customerBillMapper.getRecBillByOrderNo(orderNo);
+        if(customerBill != null ){
+            return customerBill;
+        }
+        TSysUser user = userSessionService.getCurrentUser();
+        customerBill  = new TMstRecvBill();
+        customerBill.setRecvEmp(order.getEmpNo());
+        customerBill.setOrderNo(orderNo);
+       // customerBill.setAmt(order.getInitAmt());
+        customerBill.setStatus("10");
+        customerBill.setReceiptNo(PrimaryKeyUtils.generateUuidKey());
+        customerBill.setVipCustNo(order.getMilkmemberNo());
+        customerBill.setCreateAt(new Date());
+        customerBill.setCreateBy(user.getLoginName());
+        customerBill.setCreateByTxt(user.getDisplayName());
+        customerBill.setEndTime(order.getEndDate());
+        TVipAcct ac = new TVipAcct();
+        BigDecimal acLeftAmt = new BigDecimal("0.00");
+        TVipAcct eac = tVipCustInfoService.findVipAcctByCustNo(order.getMilkmemberNo());
+        if(eac!=null){
+            acLeftAmt = eac.getAcctAmt();
+        }
+        //余额大于0  扣除余额
+        ac.setVipCustNo(order.getMilkmemberNo());
+        customerBill.setCustAccAmt(acLeftAmt);
+        //如果余额大于订单金额  则
+        if(acLeftAmt.compareTo(order.getInitAmt()) == 1){
+            customerBill.setAccAmt(order.getInitAmt());
+            ac.setAcctAmt(order.getInitAmt().multiply(new BigDecimal(-1)));
+        }else{
+            ac.setAcctAmt(acLeftAmt.multiply(new BigDecimal(-1)));
+            customerBill.setAccAmt(acLeftAmt);
+        }
+          tVipCustInfoService.addVipAcct(ac);
+          customerBillMapper.insertCustomerPayment(customerBill);
+        return customerBill;
+    }
 
     public void setCustomerBillMapper(CustomerBillMapper customerBillMapper) {
         this.customerBillMapper = customerBillMapper;

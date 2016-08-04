@@ -194,6 +194,7 @@ public class TVipCustInfoServiceImpl extends BaseService implements TVipCustInfo
 			attrs.put("phone", address.getMp());
 			String custNo = this.tmdVipcust.getCustNoByPhone(attrs);
 			if(StringUtils.isEmpty(custNo)){
+				//创建新订户
 				TVipCustInfo cust = new TVipCustInfo();
 				cust.setVipCustNo(PrimaryKeyUtils.generateUuidKey());
 				cust.setProvince(address.getProvince());
@@ -222,6 +223,7 @@ public class TVipCustInfoServiceImpl extends BaseService implements TVipCustInfo
 				}
 				this.tmdVipcust.addVipCust(cust);
 				address.setVipCustNo(cust.getVipCustNo());
+				address.setIsDafault("Y");
 			}else{
 				address.setVipCustNo(custNo);
 				attrs.clear();
@@ -246,7 +248,6 @@ public class TVipCustInfoServiceImpl extends BaseService implements TVipCustInfo
 			}
 		}
 		address.setAddressId(PrimaryKeyUtils.generateUuidKey());
-		address.setIsDafault("Y");
 		address.setIsDelete("N");
 		address.setCreateAt(new Date());
 		address.setCreateBy(sysuser.getLoginName());

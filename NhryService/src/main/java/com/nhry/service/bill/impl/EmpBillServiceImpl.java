@@ -421,8 +421,6 @@ public class EmpBillServiceImpl implements EmpBillService {
                             dispAllNum = dispAllNum +   p.getQty();
                         }
                     }
-
-
                     //按产品结算  //内部销售配送费
                     List<EmpAccoDispFeeByProduct> proIn = empBillMapper.empInDispByProduct(search);
                     BigDecimal inDispFee = this.getEmpDispFee(proIn,emp.getSalesOrg());
@@ -432,8 +430,6 @@ public class EmpBillServiceImpl implements EmpBillService {
                             dispAllNum = dispAllNum +   p.getQty();
                         }
                     }
-
-
                     //按产品结算  //赠品配送费
                     List<EmpAccoDispFeeByProduct> proFree = empBillMapper.empFreeDispByProduct(search);
                     BigDecimal dispFreeFee = this.getEmpDispFee(proFree,emp.getSalesOrg());
@@ -445,39 +441,20 @@ public class EmpBillServiceImpl implements EmpBillService {
                     }
                     empSal.setDispNum(dispAllNum);
                 }else{
-                    //按数量结算  //产品配送费
                     int dispNum = empBillMapper.empDispFeeNum(search);
-                    if(dispNum == 0){
-                        empSal.setDispSal(new BigDecimal(0));
-                    }else{
-                        BigDecimal dispRate = this.CalculateEmpTransRateByNum(empNo,dispNum);
-                        empSal.setDispSal(dispRate.multiply(new BigDecimal(dispNum)));
-                    }
-
-                    //按数量结算  //内部销售配送费
                     int inDispNum = empBillMapper.empInDispFeeNum(search);
-                    if(inDispNum == 0){
-                        empSal.setInDispSal(new BigDecimal(0));
-                    }else{
-                        BigDecimal inDispRate = this.CalculateEmpTransRateByNum(empNo,inDispNum);
-                        empSal.setInDispSal(inDispRate.multiply(new BigDecimal(inDispNum)));
-                    }
-
-
-
-                    //按数量结算  //赠品配送费
                     int sendDispNum = empBillMapper.empFreeDispFeeNum(search);
-                    if(sendDispNum == 0){
-                        empSal.setSendDispSal(new BigDecimal(0));
-                    }else{
-                        BigDecimal sendDispRate = this.CalculateEmpTransRateByNum(empNo,sendDispNum);
-                        empSal.setSendDispSal(sendDispRate.multiply(new BigDecimal(sendDispNum)));
-                    }
+                    int totaNum = dispNum + inDispNum + sendDispNum;
 
+                    BigDecimal rate =  this.CalculateEmpTransRateByNum(empNo,totaNum);
+                    //按数量结算  //产品配送费
+                    empSal.setDispSal(rate.multiply(new BigDecimal(dispNum)));
+                    //按数量结算  //内部销售配送费
+                    empSal.setInDispSal(rate.multiply(new BigDecimal(inDispNum)));
+                    //按数量结算  //赠品配送费
+                    empSal.setSendDispSal(rate.multiply(new BigDecimal(sendDispNum)));
 
-                    empSal.setDispNum(dispNum+inDispNum+sendDispNum);
-
-
+                    empSal.setDispNum(totaNum);
                 }
                 empSal.setTotalSal(empSal.getInDispSal().add(empSal.getDispSal()).add(new BigDecimal(emp.getBaseSalary())));
             }else{
