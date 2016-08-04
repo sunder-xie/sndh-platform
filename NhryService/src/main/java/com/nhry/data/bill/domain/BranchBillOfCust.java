@@ -25,6 +25,24 @@ public class BranchBillOfCust   implements Serializable {
     private String empName;//送奶工名称
     private Date receiptDate;
     private BigDecimal factAmt; //订单结算价(出厂价和)
+    private BigDecimal accAmt;
+    private BigDecimal amt;
+
+    public BigDecimal getAccAmt() {
+        return accAmt;
+    }
+
+    public void setAccAmt(BigDecimal accAmt) {
+        this.accAmt = accAmt;
+    }
+
+    public BigDecimal getAmt() {
+        return amt;
+    }
+
+    public void setAmt(BigDecimal amt) {
+        this.amt = amt;
+    }
 
     public BigDecimal getFactAmt() {
         return factAmt;
