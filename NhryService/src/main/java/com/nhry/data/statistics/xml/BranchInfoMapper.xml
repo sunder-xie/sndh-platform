@@ -490,6 +490,6 @@
         <if test="orderDateEnd !=null">
             AND i.ORDER_DATE  &gt;=  #{orderDateEnd,jdbcType=DATE}
         </if>
-
+         order by i.ORDER_DATE desc
     </select>
 </mapper>
