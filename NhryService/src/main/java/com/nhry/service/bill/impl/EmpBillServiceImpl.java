@@ -411,34 +411,22 @@ public class EmpBillServiceImpl implements EmpBillService {
             if(flag){
                 if("20".equals(emp.getSalaryMet())){
                     //产品数量
-                    int dispAllNum = 0;
+                    int dispAllNum = empBillMapper.empAccoDispFeeByNum(search);
                     //按产品结算  //产品配送费
                     List<EmpAccoDispFeeByProduct> pro = empBillMapper.empDisByProduct(search);
                     BigDecimal dispFee = this.getEmpDispFee(pro,emp.getSalesOrg());
                     empSal.setDispSal(dispFee);
-                    if(pro!=null && pro.size()>0){
-                        for(EmpAccoDispFeeByProduct p : pro ){
-                            dispAllNum = dispAllNum +   p.getQty();
-                        }
-                    }
+
                     //按产品结算  //内部销售配送费
                     List<EmpAccoDispFeeByProduct> proIn = empBillMapper.empInDispByProduct(search);
                     BigDecimal inDispFee = this.getEmpDispFee(proIn,emp.getSalesOrg());
                     empSal.setInDispSal(inDispFee);
-                    if(proIn!=null && proIn.size()>0){
-                        for(EmpAccoDispFeeByProduct p : pro ){
-                            dispAllNum = dispAllNum +   p.getQty();
-                        }
-                    }
+
                     //按产品结算  //赠品配送费
                     List<EmpAccoDispFeeByProduct> proFree = empBillMapper.empFreeDispByProduct(search);
                     BigDecimal dispFreeFee = this.getEmpDispFee(proFree,emp.getSalesOrg());
                     empSal.setSendDispSal(dispFreeFee);
-                    if(proFree!=null && proFree.size()>0){
-                        for(EmpAccoDispFeeByProduct p : proFree ){
-                            dispAllNum = dispAllNum +   p.getQty();
-                        }
-                    }
+
                     empSal.setDispNum(dispAllNum);
                 }else{
                     int dispNum = empBillMapper.empDispFeeNum(search);
@@ -458,6 +446,10 @@ public class EmpBillServiceImpl implements EmpBillService {
                 }
                 empSal.setTotalSal(empSal.getInDispSal().add(empSal.getDispSal()).add(new BigDecimal(emp.getBaseSalary())));
             }else{
+                //不计算配送费
+                empSal.setInDispSal(BigDecimal.ZERO);
+                empSal.setDispSal(BigDecimal.ZERO);
+                empSal.setSendDispSal(BigDecimal.ZERO);
                 empSal.setTotalSal(new BigDecimal(emp.getBaseSalary()));
             }
 
