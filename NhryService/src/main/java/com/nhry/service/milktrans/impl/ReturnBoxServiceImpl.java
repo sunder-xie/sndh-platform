@@ -151,8 +151,8 @@ public class ReturnBoxServiceImpl implements ReturnBoxService {
 		  
 		  StringBuilder retStr = new StringBuilder("");
 		  retStr.append("大瓶:"+map.get("30"));
-		  retStr.append("中瓶:"+map.get("20"));
-		  retStr.append("小瓶:"+map.get("10"));
+		  retStr.append(" 中瓶:"+map.get("20"));
+		  retStr.append(" 小瓶:"+map.get("10"));
 		  
 		  return retStr.toString();
 	 }

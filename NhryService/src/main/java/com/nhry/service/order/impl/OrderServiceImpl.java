@@ -9,6 +9,8 @@ import com.nhry.data.basic.dao.TMdBranchMapper;
 import com.nhry.data.basic.domain.TMdBranch;
 import com.nhry.data.basic.domain.TVipAcct;
 import com.nhry.data.basic.domain.TVipCustInfo;
+import com.nhry.data.bill.dao.CustomerBillMapper;
+import com.nhry.data.bill.domain.TMstRecvBill;
 import com.nhry.data.milk.dao.TDispOrderItemMapper;
 import com.nhry.data.milk.domain.TDispOrderItem;
 import com.nhry.data.order.dao.TOrderDaliyPlanItemMapper;
@@ -49,6 +51,11 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 	private TMdBranchMapper branchMapper;
 	private TaskExecutor taskExecutor;
 	private EcService messLogService;
+	private CustomerBillMapper customerBillMapper;
+	
+   public void setCustomerBillMapper(CustomerBillMapper customerBillMapper) {
+      this.customerBillMapper = customerBillMapper;
+   }
 	
 	public void setMessLogService(EcService messLogService)
 	{
@@ -374,8 +381,7 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 				Date sdate = format.parse(record.getOrderDateStart());
 				order.setStopDateStart(sdate);
 				if(StringUtils.isNotBlank(record.getOrderDateEnd())){
-					Date edate = format.parse(record.getOrderDateEnd());
-					order.setStopDateEnd(edate);
+					throw new ServiceException(MessageCode.LOGIC_ERROR,"接口访问错误!不能有结束日期!");
 				}else{
 					order.setStopDateEnd(null);
 				}
@@ -614,13 +620,19 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 				
 				//此为多余的钱，如果是预付款，将存入订户账户
 				if(order.getInitAmt()!=null && "20".equals(order.getPaymentStat())){//已经收款的
-				   TVipAcct ac = new TVipAcct();
+					TVipAcct ac = new TVipAcct();
 				   ac.setVipCustNo(order.getMilkmemberNo());
 				   ac.setAcctAmt(order.getCurAmt());
 					tVipCustInfoService.addVipAcct(ac);
 				}else if("10".equals(order.getPaymentStat())){
 					//此处看是否打印过收款单，里面有没有用帐户余额支付的金额，退回
-					//TODO
+					TMstRecvBill bill = customerBillMapper.getRecBillByOrderNo(order.getOrderNo());
+	            if(bill!= null){
+	            	TVipAcct ac = new TVipAcct();
+					   ac.setVipCustNo(order.getMilkmemberNo());
+					   ac.setAcctAmt(bill.getAmt());//TODO 取哪个金额?
+						tVipCustInfoService.addVipAcct(ac);
+	            }
 					
 				}
 				//用掉的钱
@@ -847,6 +859,12 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 	{
 		SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
 		TPreOrder order = tPreOrderMapper.selectByPrimaryKey(record.getOrderNo());
+		
+		//后付款走自动
+		if("10".equals(order.getPaymentmethod())){
+			continueOrderAuto(order.getOrderNo());
+			return 1;
+		}
 		
 		if("Y".equals(order.getResumeFlag())){
 			throw new ServiceException(MessageCode.LOGIC_ERROR, order.getOrderNo()+" [订单已经被续订过!]");
