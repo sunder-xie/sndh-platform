@@ -933,7 +933,7 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 				//设置配送开始时间
 				Date startDate = afterDate(sdate,entryDateMap.get(entry.getItemNo()));
 				Date edate = afterDate(startDate,daysOfTwo(entry.getStartDispDate(),entry.getEndDispDate()));
-				Date edate2 =afterDate(startDate,goDays);
+				Date edate2 = afterDate(startDate,goDays);
 				if(edate2.before(startDate)){
 					continue;//如果需要续订天数不足某一行，这行不需要续订
 				}
@@ -1684,7 +1684,7 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 							orgEntry.setEndDispDate(curEntry.getEndDispDate());
 						}
 						
-						orderAmt = orderUsedAmt.add(calculateEntryAmount(orgEntry));//订单总金额需要重新计算
+						orderAmt = orderAmt.add(calculateEntryAmount(orgEntry));//订单总金额需要重新计算
 						if(!modiFlag){
 							break;
 						}
@@ -1773,11 +1773,11 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 						}
 						//比较配送日期是否修改
 						String startstr = format.format(orgEntry.getStartDispDate());
-//						String endstr = format.format(orgEntry.getEndDispDate());
-						if(!startstr.equals(format.format(curEntry.getStartDispDate())) ){
+						String endstr = format.format(orgEntry.getEndDispDate());
+						if(!startstr.equals(format.format(curEntry.getStartDispDate())) || !endstr.equals(format.format(curEntry.getEndDispDate()))){
 							modiFlag = true;
 							orgEntry.setStartDispDate(curEntry.getStartDispDate());
-//							orgEntry.setEndDispDate(curEntry.getEndDispDate());
+							orgEntry.setEndDispDate(curEntry.getEndDispDate());
 						}
 						
 						if(!modiFlag){
@@ -2857,6 +2857,11 @@ public class OrderServiceImpl extends BaseService implements OrderService {
    //长期修改的订单,要根据订单的余额生成每日计划
  	private List<TOrderDaliyPlanItem> createDaliyPlanForLongEdit(TPreOrder order ,List<TPlanOrderItem> entries, List<TPlanOrderItem> orgEntries){
 
+ 	   //预付款的要付款+装箱才生成日计划
+		if("20".equals(order.getPaymentmethod()) && !"20".equals(order.getPaymentStat())){
+			return null;
+		}
+ 			
  		//生成每日计划,当订户订单装箱状态为已装箱或无需装箱，则系统默认该订单可生成订户日订单
  		if("20".equals(order.getMilkboxStat())){
  			return null;
@@ -2864,6 +2869,7 @@ public class OrderServiceImpl extends BaseService implements OrderService {
  		
 		ArrayList<TOrderDaliyPlanItem> orgDaliyPlans = (ArrayList<TOrderDaliyPlanItem>) tOrderDaliyPlanItemMapper.selectDaliyPlansByOrderNo(order.getOrderNo());
  		BigDecimal curAmt = order.getInitAmt();//订单余额总，金额减去所有未修改的金额
+ 		BigDecimal initAmt = order.getInitAmt();
  		for(TOrderDaliyPlanItem p :orgDaliyPlans){
  			if("30".equals(p.getStatus()))continue;
  			curAmt = curAmt.subtract(p.getAmt());
@@ -2952,8 +2958,32 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 				daliyEntryNo++;
 				
 				daliyPlans.add(0,plan);
+				orgDaliyPlans.add(plan);
  			}
  		}
+ 		
+ 		//更新原日计划的金额 TODO
+ 		//日期排序完
+ 		orgDaliyPlans.sort(new Comparator<TOrderDaliyPlanItem>(){
+			@Override
+			public int compare(TOrderDaliyPlanItem o1, TOrderDaliyPlanItem o2)
+			{
+				if(o1.getDispDate().before(o2.getDispDate()))
+				{
+					return -1;
+				}else{
+					return  1;
+				}
+			}
+   	});
+   	
+ 		//重新计算金额
+   	for(TOrderDaliyPlanItem p:orgDaliyPlans){
+   		if(p.getGiftQty()!=null || "30".equals(p.getStatus()))continue;
+   		initAmt = initAmt.subtract(p.getAmt());
+   		p.setRemainAmt(initAmt);
+   		tOrderDaliyPlanItemMapper.updateDaliyPlanItem(p);
+   	}
  		
  		//更新订单行enddispdate
  		for(TPlanOrderItem entry: entries){
@@ -3213,6 +3243,7 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 			}
 
 			BigDecimal curAmt = order.getCurAmt();
+			BigDecimal allAmt = new BigDecimal("0.00");
 
 			//计算每个行项目总共需要送多少天
 			Map<TPlanOrderItem,Integer> entryMap = new HashMap<TPlanOrderItem,Integer>();
@@ -3291,6 +3322,7 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 						//当订单余额小于0时停止
 						if(curAmt.floatValue() < 0)break outer;
 						
+						allAmt = allAmt.add(plan.getAmt());
 						plan.setRemainAmt(curAmt);//订单余额
 						plan.setStatus("10");//状态
 						plan.setCreateAt(new Date());//创建时间
@@ -3306,7 +3338,7 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 				}
 				afterDays++;
 			}
-			/////////////////////////////
+			/////////////////////////////更新订单的总金额 用allAmt
 			
 		});
 		
