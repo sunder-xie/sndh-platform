@@ -5,6 +5,7 @@ import com.nhry.common.exception.MessageCode;
 import com.nhry.data.auth.domain.TSysUser;
 import com.nhry.model.statistics.BranchInfoModel;
 import com.nhry.model.statistics.DistInfoModel;
+import com.nhry.model.statistics.ExtendBranchInfoModel;
 import com.nhry.model.sys.ResponseModel;
 import com.nhry.rest.BaseResource;
 import com.nhry.service.statistics.dao.BranchInfoService;
@@ -78,5 +79,13 @@ public class StatisticsResource extends BaseResource {
     @ApiOperation(value = "/findReqOrder}", response = ResponseModel.class, notes = "要货计划查询")
     public Response findReqOrder(@ApiParam(name = "model",value = "要货计划") BranchInfoModel model){
         return convertToRespModel(MessageCode.NORMAL, null, branchInfoService.findReqOrder(model));
+    }
+    @POST
+    @Path("/findChangeplanStatReport")
+    @Produces(MediaType.APPLICATION_JSON)
+    @Consumes(MediaType.APPLICATION_JSON)
+    @ApiOperation(value = "/findChangeplanStatReport}", response = ResponseModel.class, notes = "换货差明细")
+    public Response findChangeplanStatReport(@ApiParam(name = "model",value = "换货差异") ExtendBranchInfoModel model){
+        return convertToRespModel(MessageCode.NORMAL, null, branchInfoService.findChangeplanStatReport(model));
     }
 }
