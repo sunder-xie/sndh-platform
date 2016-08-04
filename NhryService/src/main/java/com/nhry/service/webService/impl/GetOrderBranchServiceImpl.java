@@ -1,6 +1,11 @@
 package com.nhry.service.webService.impl;
 
+import com.nhry.data.basic.dao.TMdDealerMapper;
+import com.nhry.data.basic.domain.TMdBranch;
+import com.nhry.data.basic.domain.TMdDealer;
 import com.nhry.model.webService.CustInfoModel;
+import com.nhry.model.webService.DealerBranchModel;
+import com.nhry.service.basic.dao.BranchService;
 import com.nhry.service.external.EcBaseService;
 import com.nhry.service.webService.dao.GetOrderBranchService;
 import org.codehaus.jettison.json.JSONArray;
@@ -15,8 +20,10 @@ import java.util.Map;
  */
 public class GetOrderBranchServiceImpl implements GetOrderBranchService {
     private EcBaseService ecBaseService;
+    private BranchService branchService;
+    private TMdDealerMapper dealerMapper;
     @Override
-    public String  getOrderBranch(CustInfoModel custInfoModel) {
+    public DealerBranchModel getOrderBranch(CustInfoModel custInfoModel) {
 
         JSONObject obj = this.dataToJson(custInfoModel);
         String strObje = "["+obj.toString()+"]";
@@ -25,10 +32,23 @@ public class GetOrderBranchServiceImpl implements GetOrderBranchService {
        //String url = "http://wfyerpqd.6655.la:30017/FY_MOBILE_XXW_SVR/WFY_UNI_SERVICE.json?method=callProcService";
         JSONObject resultJson =  ecBaseService.pushMessage2Ec(url,strObje,false);
         if(resultJson !=null){
+            DealerBranchModel model = new DealerBranchModel();
             try {
                JSONArray result =  resultJson.getJSONObject("procExecResults").getJSONObject("SVCGETORDERBRANCH").getJSONObject("resultList").getJSONObject("AC_RESULT").getJSONArray("rows");
                 if(result!=null && !result.isNull(0)){
-                    return result.getJSONObject(0).getString("branchno");
+                    String branchNo = result.getJSONObject(0).getString("branchno");
+                    TMdBranch branch = branchService.selectBranchByNo(branchNo);
+                    model.setBranch(branch);
+                    if("01".equals(branch.getBranchGroup())){
+                        TMdDealer dealer = new TMdDealer();
+                        dealer.setDealerNo("-1");
+                        dealer.setDealerName("自营奶站");
+                        model.setDealer(dealer);
+                    }else{
+                        TMdDealer dealer = dealerMapper.selectDealerByNo(branch.getDealerNo());
+                        model.setDealer(dealer);
+                    }
+                    return model;
                 }
             } catch (JSONException e) {
                 e.printStackTrace();
@@ -75,5 +95,13 @@ public class GetOrderBranchServiceImpl implements GetOrderBranchService {
 
     public void setEcBaseService(EcBaseService ecBaseService) {
         this.ecBaseService = ecBaseService;
+    }
+
+    public void setBranchService(BranchService branchService) {
+        this.branchService = branchService;
+    }
+
+    public void setDealerMapper(TMdDealerMapper dealerMapper) {
+        this.dealerMapper = dealerMapper;
     }
 }
