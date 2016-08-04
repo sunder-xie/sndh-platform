@@ -3,6 +3,7 @@ package com.nhry.service.basic.dao;
 import com.github.pagehelper.PageInfo;
 import com.nhry.data.basic.domain.TMdAddress;
 import com.nhry.data.basic.domain.TVipAcct;
+import com.nhry.data.basic.domain.TVipCrmAddress;
 import com.nhry.data.basic.domain.TVipCrmInfo;
 import com.nhry.model.basic.CustQueryModel;
 import com.nhry.service.basic.pojo.Addresses;
@@ -34,4 +35,11 @@ public interface TVipCrmInfoService {
     int updateVipCrmByNo(TVipCrmInfo record);
 
 	String getCrmNoByPhone(Map<String, String> attrs);
+	
+	/**
+	 * 修改crm会员地址
+	 * @param address
+	 * @return
+	 */
+	int updateVipCrmAddress(TVipCrmAddress address);
 }
