@@ -11,10 +11,18 @@ public class CustInfoModel implements Serializable{
     private String district;
     private String street;
     private String townName;
+    private String townId;
     private String address;
     private String vipGuid;
     private String longitude;
     private String latitude;
+    public String getTownId() {
+        return townId;
+    }
+
+    public void setTownId(String townId) {
+        this.townId = townId;
+    }
 
     public String getVipGuid() {
         return vipGuid;
