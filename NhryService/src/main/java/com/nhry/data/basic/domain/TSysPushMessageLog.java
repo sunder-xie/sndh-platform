@@ -25,6 +25,8 @@ public class TSysPushMessageLog {
 
     private Date lastModified;
 
+    private Integer amount;
+
     public String getMno() {
         return mno;
     }
@@ -111,5 +113,13 @@ public class TSysPushMessageLog {
 
     public void setLastModified(Date lastModified) {
         this.lastModified = lastModified;
+    }
+
+    public Integer getAmount() {
+        return amount;
+    }
+
+    public void setAmount(Integer amount) {
+        this.amount = amount;
     }
 }
