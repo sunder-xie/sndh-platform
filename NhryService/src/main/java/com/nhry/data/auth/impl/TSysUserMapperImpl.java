@@ -85,4 +85,14 @@ public class TSysUserMapperImpl implements TSysUserMapper {
 		// TODO Auto-generated method stub
 		return this.sqlSessionTemplate.selectList("getloginNamesByOrgsandRid2", attrs);
 	}
+
+	@Override
+	public List<TSysUser> findNotRoleUser(UserQueryModel model) {
+		return this.sqlSessionTemplate.selectList("findNotRoleUser",model);
+	}
+
+	@Override
+	public PageInfo<TSysUser> findNotRoleUserPage(UserQueryModel model) {
+		return this.sqlSessionTemplate.selectListByPages("findNotRoleUser",model,Integer.valueOf(model.getPageNum()),Integer.valueOf(model.getPageSize()));
+	}
 }

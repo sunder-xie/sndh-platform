@@ -149,8 +149,7 @@
 				AND IFNULL(p.STATUS,'N') = #{status,jdbcType=VARCHAR}
 			</if>
 			<if test="matnrTxt != null and matnrTxt != ''">
-				AND (p.MATNR like '%${matnrTxt}%' or
-				p.MATNR_TXT like '%${matnrTxt}%') 
+				AND (p.MATNR like '%${matnrTxt}%' or p.MATNR_TXT like '%${matnrTxt}%' or pex.SHORT_TXT like '%${matnrTxt}%') 
 			</if>
 			<if test="salesOrg != null and salesOrg != ''">
 			   AND p.SALES_ORG=#{salesOrg}

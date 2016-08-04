@@ -8,6 +8,7 @@ import com.nhry.data.auth.domain.TSysUser;
 import com.nhry.data.basic.domain.TMdAddress;
 import com.nhry.data.basic.domain.TVipCustInfo;
 import com.nhry.model.basic.CustQueryModel;
+import com.nhry.model.basic.CustStat;
 
 public interface TVipCustInfoMapper {
 	
@@ -94,4 +95,11 @@ public interface TVipCustInfoMapper {
      * @return
      */
     public int deleteCustByCno(String cno);
+    
+    /**
+     * 获取当前组织订户状态统计数据
+     * @param attrs
+     * @return
+     */
+    public List<CustStat> getCustInfoStat(Map<String,String> attrs);
 }

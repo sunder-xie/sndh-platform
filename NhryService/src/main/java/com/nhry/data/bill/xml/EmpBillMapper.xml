@@ -110,7 +110,7 @@
         LEFT JOIN t_md_mara m on m.MATNR = i.CONFIRM_MATNR
         LEFT JOIN t_md_dealer d on b.DEALER_NO = d.DEALER_NO
         where di.`STATUS` ='20'
-        and ( i.REASON = '10' OR  i.REASON = '20' OR  i.REASON = '30' OR i.REASON IS NULL)
+       /* and ( i.REASON = '10' OR  i.REASON = '20' OR  i.REASON = '30' OR i.REASON IS NULL)*/
         and i.GIFT_FLAG IS NULL
         and i.CONFIRM_QTY is NOT NULL
         and i.CONFIRM_QTY !=0
@@ -157,7 +157,7 @@
         LEFT JOIN t_md_mara m on m.MATNR = i.CONFIRM_MATNR
         LEFT JOIN t_md_dealer d on b.DEALER_NO = d.DEALER_NO
         where di.`STATUS` ='20'
-        and ( i.REASON = '10' OR  i.REASON = '20' OR  i.REASON = '30' OR  i.REASON IS NULL)
+       /* and ( i.REASON = '10' OR  i.REASON = '20' OR  i.REASON = '30' OR  i.REASON IS NULL)*/
         and i.GIFT_FLAG IS NOT NULL
         and i.CONFIRM_QTY is NOT NULL
         and i.CONFIRM_QTY !=0
@@ -351,13 +351,13 @@
     </select>
 
     <select id="empDispFeeNum"  resultType="INTEGER"  parameterType="com.nhry.model.bill.EmpDispDetialInfoSearch" >
-        SELECT   (case when SUM(i.CONFIRM_QTY ) is null then 0 else SUM(i.CONFIRM_QTY )  end)    QTY
+        SELECT  SUM(case when i.REASON = '40' OR i.REASON = '50' then i.QTY else i.CONFIRM_QTY end) QTY
         FROM  t_mst_disp_order_item  i
         LEFT JOIN t_mst_disp_order o on i.ORDER_NO = o.ORDER_NO
         WHERE 1 =1
         and o.STATUS = '20'
         and i.GIFT_FLAG IS  NULL
-        and (i.REASON ='10' OR i.REASON ='30' OR i.REASON ='20' OR i.REASON IS NULL )
+       /* and (i.REASON ='10' OR i.REASON ='30' OR i.REASON ='20' OR i.REASON IS NULL )*/
         <if test="branchNo!=null and ''!=branchNo">
             and o.BRANCH_NO = #{branchNo,jdbcType=VARCHAR}
         </if>
@@ -378,7 +378,7 @@
         LEFT JOIN t_mst_disp_order o on i.ORDER_NO = o.ORDER_NO
         WHERE 1 =1
         and o.STATUS = '20'
-        and (i.REASON ='10' OR i.REASON ='30' OR i.REASON ='20'  OR i.REASON IS NULL)
+       /* and (i.REASON ='10' OR i.REASON ='30' OR i.REASON ='20'  OR i.REASON IS NULL)*/
         and i.GIFT_FLAG IS NOT NULL
         <if test="branchNo!=null and ''!=branchNo">
             and o.BRANCH_NO = #{branchNo,jdbcType=VARCHAR}
@@ -400,14 +400,14 @@
 
     <select id="empDisByProduct" resultMap="EmpAccoDispFeeResultMap"  parameterType="com.nhry.model.bill.EmpDispDetialInfoSearch" >
         SELECT
-        i.CONFIRM_MATNR MATNR ,SUM(i.CONFIRM_QTY) QTY
+        i.CONFIRM_MATNR MATNR ,SUM(case when i.REASON = '40' OR i.REASON = '50' then i.QTY else i.CONFIRM_QTY end) QTY
         from t_mst_disp_order_item i
         LEFT JOIN t_mst_disp_order o on i.ORDER_NO = o.ORDER_NO
         LEFT JOIN t_preorder p  on i.ORG_ORDER_NO = p.ORDER_NO
         WHERE 1=1
         and i.GIFT_FLAG IS NULL
         and o.STATUS = '20'
-        and (i.REASON ='10' OR i.REASON ='30' OR i.REASON ='20'  OR i.REASON IS NULL)
+       /* and (i.REASON ='10' OR i.REASON ='30' OR i.REASON ='20'  OR i.REASON IS NULL)*/
         <if test="branchNo!=null and ''!=branchNo">
             and o.BRANCH_NO = #{branchNo,jdbcType=VARCHAR}
         </if>
@@ -420,7 +420,7 @@
         <if test="endDate!=null and ''!=endDate">
             and  o.DISP_DATE &lt;= #{endDate,jdbcType=DATE}
         </if>
-        GROUP BY i.MATNR,o.DISP_EMP_NO
+        GROUP BY i.CONFIRM_MATNR,o.DISP_EMP_NO
     </select>
 
     <select id="empFreeDispByProduct" resultMap="EmpAccoDispFeeResultMap"  parameterType="com.nhry.model.bill.EmpDispDetialInfoSearch" >
@@ -432,7 +432,7 @@
         WHERE 1=1
         and i.GIFT_FLAG IS NOT NULL
         and o.STATUS = '20'
-        and (i.REASON ='10' OR i.REASON ='30' OR i.REASON ='20' OR i.REASON IS NULL)
+        /*and (i.REASON ='10' OR i.REASON ='30' OR i.REASON ='20' OR i.REASON IS NULL)*/
         <if test="branchNo!=null and ''!=branchNo">
             and o.BRANCH_NO = #{branchNo,jdbcType=VARCHAR}
         </if>
@@ -445,7 +445,7 @@
         <if test="endDate!=null and ''!=endDate">
             and  o.DISP_DATE &lt;= #{endDate,jdbcType=DATE}
         </if>
-        GROUP BY i.MATNR,o.DISP_EMP_NO
+        GROUP BY i.CONFIRM_MATNR,o.DISP_EMP_NO
     </select>
 
     <select id="empInDispByProduct" resultMap="EmpAccoDispFeeResultMap"  parameterType="com.nhry.model.bill.EmpDispDetialInfoSearch" >
