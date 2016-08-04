@@ -1,6 +1,7 @@
 package com.nhry.model.statistics;
 
-import com.nhry.utils.date.Date;
+
+import java.util.Date;
 
 /**
  * Created by huaguan on 2016/8/4.
