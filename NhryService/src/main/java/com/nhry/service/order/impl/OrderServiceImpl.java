@@ -2045,7 +2045,7 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 			if(item.getItemNo().equals(orgEntry.getItemNo())){
 				lastDate = lastDate.after(item.getDispDate())?lastDate : item.getDispDate();
 				//同时更新今天的日计划
-				if(format.format(item.getDispDate()).equals(format.format(dispDate))){
+				if(format.format(item.getDispDate()).equals(format.format(dispDate)) && item.getGiftQty()==null){
 					item.setQty(confirmQty.intValue());
 					item.setAmt(item.getPrice().multiply(confirmQty) );
 				}
@@ -2083,6 +2083,20 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 		
 		tOrderDaliyPlanItemMapper.insert(plan);
 		daliyPlans.add(plan);
+		
+   	//日期排序完
+		daliyPlans.sort(new Comparator<TOrderDaliyPlanItem>(){
+			@Override
+			public int compare(TOrderDaliyPlanItem o1, TOrderDaliyPlanItem o2)
+			{
+				if(o1.getDispDate().before(o2.getDispDate()))
+				{
+					return -1;
+				}else{
+					return  1;
+				}
+			}
+   	});
 		
 		calculateDaliyPlanRemainAmtAfterUptRoute(daliyPlans,orgOrder,dispDate,orgEntry);
 		
@@ -2695,7 +2709,7 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 
    //重新计算当天更新日单后，日计划的剩余金额
    private void calculateDaliyPlanRemainAmtAfterUptRoute(List<TOrderDaliyPlanItem> daliyPlans , TPreOrder order,Date dispDate,TPlanOrderItem orgEntry){
-   	BigDecimal curAmt = order.getCurAmt();
+//   	BigDecimal curAmt = order.getCurAmt();
    	BigDecimal initAmt = order.getInitAmt();
    	
    	List<TOrderDaliyPlanItem> needUpt = new ArrayList<TOrderDaliyPlanItem>();
@@ -2707,7 +2721,7 @@ public class OrderServiceImpl extends BaseService implements OrderService {
    		initAmt = initAmt.subtract(plan.getAmt());
    		
    		if(plan.getDispDate().compareTo(dispDate) == 0 && orgEntry.getItemNo().equals(plan.getItemNo())){
-   			plan.setRemainAmt(curAmt);
+   			plan.setRemainAmt(initAmt);
    			plan.setStatus("20");//已确认送达,当天的确认
    			needUpt.add(plan);
    			continue;
