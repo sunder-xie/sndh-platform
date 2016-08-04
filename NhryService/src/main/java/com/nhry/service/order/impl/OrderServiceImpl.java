@@ -9,6 +9,8 @@ import com.nhry.data.basic.dao.TMdBranchMapper;
 import com.nhry.data.basic.domain.TMdBranch;
 import com.nhry.data.basic.domain.TVipAcct;
 import com.nhry.data.basic.domain.TVipCustInfo;
+import com.nhry.data.bill.dao.CustomerBillMapper;
+import com.nhry.data.bill.domain.TMstRecvBill;
 import com.nhry.data.milk.dao.TDispOrderItemMapper;
 import com.nhry.data.milk.domain.TDispOrderItem;
 import com.nhry.data.order.dao.TOrderDaliyPlanItemMapper;
@@ -49,7 +51,12 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 	private TMdBranchMapper branchMapper;
 	private TaskExecutor taskExecutor;
 	private EcService messLogService;
+	private CustomerBillMapper customerBillMapper;
 	
+	public void setCustomerBillMapper(CustomerBillMapper customerBillMapper) {
+		this.customerBillMapper = customerBillMapper;
+	}
+
 	public void setMessLogService(EcService messLogService)
 	{
 		this.messLogService = messLogService;
@@ -131,7 +138,7 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 
 	/* (non-Javadoc) 
 	* @title: searchNeedResumeOrders
-	* @description: 3天内需要续订的订单列表
+	* @description: 5天内需要续订的订单列表
 	* @param smodel
 	* @return 
 	* @see com.nhry.service.order.dao.OrderService#searchNeedResumeOrders(com.nhry.model.order.OrderSearchModel) 
@@ -374,8 +381,7 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 				Date sdate = format.parse(record.getOrderDateStart());
 				order.setStopDateStart(sdate);
 				if(StringUtils.isNotBlank(record.getOrderDateEnd())){
-					Date edate = format.parse(record.getOrderDateEnd());
-					order.setStopDateEnd(edate);
+					throw new ServiceException(MessageCode.LOGIC_ERROR,"接口访问错误!不能有结束日期!");
 				}else{
 					order.setStopDateEnd(null);
 				}
@@ -614,15 +620,21 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 				
 				//此为多余的钱，如果是预付款，将存入订户账户
 				if(order.getInitAmt()!=null && "20".equals(order.getPaymentStat())){//已经收款的
-				   TVipAcct ac = new TVipAcct();
+					TVipAcct ac = new TVipAcct();
 				   ac.setVipCustNo(order.getMilkmemberNo());
 				   ac.setAcctAmt(order.getCurAmt());
 					tVipCustInfoService.addVipAcct(ac);
 				}else if("10".equals(order.getPaymentStat())){
 					//此处看是否打印过收款单，里面有没有用帐户余额支付的金额，退回
-					//TODO
-					
+					TMstRecvBill bill = customerBillMapper.getRecBillByOrderNo(order.getOrderNo());
+	            if(bill!= null){
+	            	TVipAcct ac = new TVipAcct();
+					   ac.setVipCustNo(order.getMilkmemberNo());
+					   ac.setAcctAmt(bill.getAccAmt());//TODO 取哪个金额?
+						tVipCustInfoService.addVipAcct(ac);
+	            }
 				}
+				
 				//用掉的钱
 				BigDecimal remain = order.getInitAmt().subtract(order.getCurAmt());
 				order.setInitAmt(remain);
@@ -799,7 +811,7 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 	
 	/* (non-Javadoc) 
 	* @title: calculateContinueOrder
-	* @description: 订单续订计算续费和截止日期
+	* @description: 订单续订截止日期
 	* @param record
 	* @return 
 	* @see com.nhry.service.order.dao.OrderService#calContinueOrder(com.nhry.model.order.OrderSearchModel) 
@@ -808,29 +820,42 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 	public OrderSearchModel calculateContinueOrder(OrderSearchModel record)
 	{
 		SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
-		Date startDate = null;
-		try
-		{
-			//续订的起始日期
-			startDate = format.parse(record.getOrderDateStart());
-		}
-		catch (ParseException e)
-		{
-			return record;
-		}
-		
 		TPreOrder order = tPreOrderMapper.selectByPrimaryKey(record.getOrderNo());
-		int goDays = record.getGoDays();//续订多少天
-		ArrayList<TPlanOrderItem> entries = (ArrayList<TPlanOrderItem>) tPlanOrderItemMapper.selectByOrderCode(record.getOrderNo());
-		BigDecimal goAmt = new BigDecimal("0.00");
-		for(TPlanOrderItem e : entries){
-			e.setStartDispDate(startDate);
-			e.setEndDispDate(afterDate(startDate, goDays-1 ));
-			goAmt = goAmt.add(calculateEntryAmount(e));
+		
+		Date startDate = null;
+		if(StringUtils.isBlank(record.getOrderDateStart())){
+			startDate = afterDate(order.getEndDate(),1);
+			record.setOrderDateStart(format.format(startDate));
+		}else{
+			try
+			{
+				//续订的起始日期
+				startDate = format.parse(record.getOrderDateStart());
+			}
+			catch (ParseException e)
+			{
+				return record;
+			}
 		}
 		
-		record.setGoAmt(goAmt.toString());
-		record.setOrderDateEnd(format.format(entries.get(0).getEndDispDate()));
+		int goDays = 0;//续订多少天
+		if(record.getGoDays()==null){
+			Date firstDate = null;
+			ArrayList<TPlanOrderItem> entries = (ArrayList<TPlanOrderItem>) tPlanOrderItemMapper.selectByOrderCode(record.getOrderNo());
+			for(TPlanOrderItem e : entries){
+				if(firstDate == null){
+					firstDate = e.getStartDispDate();
+				}else{
+					firstDate = e.getStartDispDate().before(firstDate)? e.getStartDispDate():firstDate;
+				}
+			}
+			goDays = daysOfTwo(firstDate,order.getEndDate());
+			record.setGoDays(goDays);
+		}else{
+			goDays = record.getGoDays();
+		}
+		
+		record.setOrderDateEnd(format.format(afterDate(startDate,goDays)));
 
 		return record;
 	}
@@ -847,6 +872,12 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 	{
 		SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
 		TPreOrder order = tPreOrderMapper.selectByPrimaryKey(record.getOrderNo());
+		
+		//后付款走自动续订流程
+		if("10".equals(order.getPaymentmethod())){
+			continueOrderAuto(order.getOrderNo());
+			return 1;
+		}
 		
 		if("Y".equals(order.getResumeFlag())){
 			throw new ServiceException(MessageCode.LOGIC_ERROR, order.getOrderNo()+" [订单已经被续订过!]");
@@ -869,6 +900,7 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 		
 		if(order!= null){
 			if("20".equals(order.getMilkboxStat()))throw new ServiceException(MessageCode.LOGIC_ERROR,record.getOrderNo()+"原订单还没有装箱，不能续订!");
+			if("20".equals(order.getPaymentmethod())&&"10".equals(order.getPaymentStat()))throw new ServiceException(MessageCode.LOGIC_ERROR, "原订单为预付款订单，没有付款，不能续订!");
 			Date sdate = null;
 			try
 			{
@@ -883,6 +915,7 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 //			String state = order.getPaymentmethod();
 			
 			//基本参考原单
+			int goDays = record.getGoDays();
 			//新的订单号
 			Date date = new Date();
 			order.setOrderNo(CodeGeneratorUtil.getCode());
@@ -897,14 +930,22 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 			BigDecimal orderAmt = new BigDecimal("0.00");//订单总价
 			for(TPlanOrderItem entry: entries){
 				entry.setOrderNo(order.getOrderNo());
+				//设置配送开始时间
+				Date startDate = afterDate(sdate,entryDateMap.get(entry.getItemNo()));
+				Date edate = afterDate(startDate,daysOfTwo(entry.getStartDispDate(),entry.getEndDispDate()));
+				Date edate2 =afterDate(startDate,goDays);
+				if(edate2.before(startDate)){
+					continue;//如果需要续订天数不足某一行，这行不需要续订
+				}
+			   entry.setEndDispDate(edate.before(edate2)?edate:edate2);
+				entry.setStartDispDate(startDate);
+				
 				entry.setItemNo(order.getOrderNo() + String.valueOf(index));//行项目编号
 				entry.setRefItemNo(String.valueOf(index));//参考行项目编号
 				entry.setOrderDate(date);//订单日期
 				entry.setCreateAt(date);//创建日期
 				entry.setCreateBy(userSessionService.getCurrentUser().getLoginName());//创建人
 				entry.setCreateByTxt(userSessionService.getCurrentUser().getDisplayName());//创建人姓名
-				entry.setStartDispDate(sdate);
-				entry.setEndDispDate(afterDate(sdate,record.getGoDays()-1));
 				BigDecimal entryTotal = calculateEntryAmount(entry);
 				
 				//促销清空
@@ -2004,7 +2045,7 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 			if(item.getItemNo().equals(orgEntry.getItemNo())){
 				lastDate = lastDate.after(item.getDispDate())?lastDate : item.getDispDate();
 				//同时更新今天的日计划
-				if(format.format(item.getDispDate()).equals(format.format(dispDate))){
+				if(format.format(item.getDispDate()).equals(format.format(dispDate)) && item.getGiftQty()==null){
 					item.setQty(confirmQty.intValue());
 					item.setAmt(item.getPrice().multiply(confirmQty) );
 				}
@@ -2043,6 +2084,20 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 		tOrderDaliyPlanItemMapper.insert(plan);
 		daliyPlans.add(plan);
 		
+   	//日期排序完
+		daliyPlans.sort(new Comparator<TOrderDaliyPlanItem>(){
+			@Override
+			public int compare(TOrderDaliyPlanItem o1, TOrderDaliyPlanItem o2)
+			{
+				if(o1.getDispDate().before(o2.getDispDate()))
+				{
+					return -1;
+				}else{
+					return  1;
+				}
+			}
+   	});
+		
 		calculateDaliyPlanRemainAmtAfterUptRoute(daliyPlans,orgOrder,dispDate,orgEntry);
 		
 	}
@@ -2070,10 +2125,32 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 	public CollectOrderModel queryCollectByOrderNo(String orderCode) {
 		TSysUser user = userSessionService.getCurrentUser();
 		TPreOrder order = tPreOrderMapper.selectByPrimaryKey(orderCode);
+		if(order == null){
+			throw  new ServiceException(MessageCode.LOGIC_ERROR,"该订单已不存在");
+		}
 		TMdBranch branch = branchMapper.selectBranchByNo(order.getBranchNo());
+
 		CollectOrderModel model = new CollectOrderModel();
 		model.setOrder(order);
 		model.setBranch(branch);
+		TMstRecvBill customerBill = customerBillMapper.getRecBillByOrderNo(orderCode);
+		if(customerBill!=null){
+			//如果收款单已存在  获取当时录入的订户余额(因为当时已经将余额扣除了)
+			model.setCustAccAmt(customerBill.getCustAccAmt());
+		}else{
+			BigDecimal acLeftAmt = new BigDecimal("0.00");
+			TVipAcct eac = tVipCustInfoService.findVipAcctByCustNo(order.getMilkmemberNo());
+			if(eac!=null){
+				acLeftAmt = eac.getAcctAmt();
+			}else{
+				TVipAcct ac = new TVipAcct();
+				ac.setVipCustNo(order.getMilkmemberNo());
+				ac.setAcctAmt(acLeftAmt);
+				tVipCustInfoService.addVipAcct(ac);
+			}
+			model.setCustAccAmt(acLeftAmt);
+		}
+
 		BigDecimal totalPrices = new BigDecimal(0);
 		List<ProductItem> entries = new ArrayList<ProductItem>();
 		if("20".equals(order.getPaymentmethod())){
@@ -2654,7 +2731,7 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 
    //重新计算当天更新日单后，日计划的剩余金额
    private void calculateDaliyPlanRemainAmtAfterUptRoute(List<TOrderDaliyPlanItem> daliyPlans , TPreOrder order,Date dispDate,TPlanOrderItem orgEntry){
-   	BigDecimal curAmt = order.getCurAmt();
+//   	BigDecimal curAmt = order.getCurAmt();
    	BigDecimal initAmt = order.getInitAmt();
    	
    	List<TOrderDaliyPlanItem> needUpt = new ArrayList<TOrderDaliyPlanItem>();
@@ -2666,7 +2743,7 @@ public class OrderServiceImpl extends BaseService implements OrderService {
    		initAmt = initAmt.subtract(plan.getAmt());
    		
    		if(plan.getDispDate().compareTo(dispDate) == 0 && orgEntry.getItemNo().equals(plan.getItemNo())){
-   			plan.setRemainAmt(curAmt);
+   			plan.setRemainAmt(initAmt);
    			plan.setStatus("20");//已确认送达,当天的确认
    			needUpt.add(plan);
    			continue;

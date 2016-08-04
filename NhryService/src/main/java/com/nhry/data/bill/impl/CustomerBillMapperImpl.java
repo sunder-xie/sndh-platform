@@ -22,7 +22,7 @@ public class CustomerBillMapperImpl implements CustomerBillMapper {
     }
 
     @Override
-    public int customerPayment(TMstRecvBill customerBill) {
+    public int insertCustomerPayment(TMstRecvBill customerBill) {
         return sqlSessionTemplate.insert("customerPayment",customerBill);
 
     }

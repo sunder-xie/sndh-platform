@@ -71,6 +71,15 @@ public class BillResource extends BaseResource {
     }
 
 
+    @GET
+    @Path("/cust/createRecBillByOrderNo")
+    @Produces(MediaType.APPLICATION_JSON)
+    @ApiOperation(value = "/cust/createRecBillByOrderNo", response = Response.class, notes = "根据订单号创建收款单")
+    public Response createRecBillByOrderNo(@ApiParam(required=true,name="orderNo",value="员工工资单流水号") @QueryParam("orderNo") String  orderNo){
+        return convertToRespModel(MessageCode.NORMAL, null, customerBillService.createRecBillByOrderNo(orderNo));
+    }
+
+
     @POST
     @Path("/emp/empDispDetialInfo")
     @Produces(MediaType.APPLICATION_JSON)
@@ -128,6 +137,7 @@ public class BillResource extends BaseResource {
     public Response getEmpSalaryBySalaryNo(@ApiParam(required=true,name="empSalLsh",value="员工工资单流水号") @QueryParam("empSalLsh") String  empSalLsh){
         return convertToRespModel(MessageCode.NORMAL, null, empBillService.getEmpSalaryBySalaryNo(empSalLsh));
     }
+
 
 
     @POST
