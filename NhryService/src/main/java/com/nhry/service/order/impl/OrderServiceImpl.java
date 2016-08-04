@@ -138,7 +138,7 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 
 	/* (non-Javadoc) 
 	* @title: searchNeedResumeOrders
-	* @description: 3天内需要续订的订单列表
+	* @description: 5天内需要续订的订单列表
 	* @param smodel
 	* @return 
 	* @see com.nhry.service.order.dao.OrderService#searchNeedResumeOrders(com.nhry.model.order.OrderSearchModel) 
@@ -811,7 +811,7 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 	
 	/* (non-Javadoc) 
 	* @title: calculateContinueOrder
-	* @description: 订单续订计算续费和截止日期
+	* @description: 订单续订截止日期
 	* @param record
 	* @return 
 	* @see com.nhry.service.order.dao.OrderService#calContinueOrder(com.nhry.model.order.OrderSearchModel) 
@@ -820,29 +820,42 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 	public OrderSearchModel calculateContinueOrder(OrderSearchModel record)
 	{
 		SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
-		Date startDate = null;
-		try
-		{
-			//续订的起始日期
-			startDate = format.parse(record.getOrderDateStart());
-		}
-		catch (ParseException e)
-		{
-			return record;
-		}
-		
 		TPreOrder order = tPreOrderMapper.selectByPrimaryKey(record.getOrderNo());
-		int goDays = record.getGoDays();//续订多少天
-		ArrayList<TPlanOrderItem> entries = (ArrayList<TPlanOrderItem>) tPlanOrderItemMapper.selectByOrderCode(record.getOrderNo());
-		BigDecimal goAmt = new BigDecimal("0.00");
-		for(TPlanOrderItem e : entries){
-			e.setStartDispDate(startDate);
-			e.setEndDispDate(afterDate(startDate, goDays-1 ));
-			goAmt = goAmt.add(calculateEntryAmount(e));
+		
+		Date startDate = null;
+		if(StringUtils.isBlank(record.getOrderDateStart())){
+			startDate = afterDate(order.getEndDate(),1);
+			record.setOrderDateStart(format.format(startDate));
+		}else{
+			try
+			{
+				//续订的起始日期
+				startDate = format.parse(record.getOrderDateStart());
+			}
+			catch (ParseException e)
+			{
+				return record;
+			}
 		}
 		
-		record.setGoAmt(goAmt.toString());
-		record.setOrderDateEnd(format.format(entries.get(0).getEndDispDate()));
+		int goDays = 0;//续订多少天
+		if(record.getGoDays()==null){
+			Date firstDate = null;
+			ArrayList<TPlanOrderItem> entries = (ArrayList<TPlanOrderItem>) tPlanOrderItemMapper.selectByOrderCode(record.getOrderNo());
+			for(TPlanOrderItem e : entries){
+				if(firstDate == null){
+					firstDate = e.getStartDispDate();
+				}else{
+					firstDate = e.getStartDispDate().before(firstDate)? e.getStartDispDate():firstDate;
+				}
+			}
+			goDays = daysOfTwo(firstDate,order.getEndDate());
+			record.setGoDays(goDays);
+		}else{
+			goDays = record.getGoDays();
+		}
+		
+		record.setOrderDateEnd(format.format(afterDate(startDate,goDays)));
 
 		return record;
 	}
@@ -860,7 +873,7 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 		SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
 		TPreOrder order = tPreOrderMapper.selectByPrimaryKey(record.getOrderNo());
 		
-		//后付款走自动
+		//后付款走自动续订流程
 		if("10".equals(order.getPaymentmethod())){
 			continueOrderAuto(order.getOrderNo());
 			return 1;
@@ -887,6 +900,7 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 		
 		if(order!= null){
 			if("20".equals(order.getMilkboxStat()))throw new ServiceException(MessageCode.LOGIC_ERROR,record.getOrderNo()+"原订单还没有装箱，不能续订!");
+			if("20".equals(order.getPaymentmethod())&&"10".equals(order.getPaymentStat()))throw new ServiceException(MessageCode.LOGIC_ERROR, "原订单为预付款订单，没有付款，不能续订!");
 			Date sdate = null;
 			try
 			{
@@ -901,6 +915,7 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 //			String state = order.getPaymentmethod();
 			
 			//基本参考原单
+			int goDays = record.getGoDays();
 			//新的订单号
 			Date date = new Date();
 			order.setOrderNo(CodeGeneratorUtil.getCode());
@@ -915,14 +930,22 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 			BigDecimal orderAmt = new BigDecimal("0.00");//订单总价
 			for(TPlanOrderItem entry: entries){
 				entry.setOrderNo(order.getOrderNo());
+				//设置配送开始时间
+				Date startDate = afterDate(sdate,entryDateMap.get(entry.getItemNo()));
+				Date edate = afterDate(startDate,daysOfTwo(entry.getStartDispDate(),entry.getEndDispDate()));
+				Date edate2 =afterDate(startDate,goDays);
+				if(edate2.before(startDate)){
+					continue;//如果需要续订天数不足某一行，这行不需要续订
+				}
+			   entry.setEndDispDate(edate.before(edate2)?edate:edate2);
+				entry.setStartDispDate(startDate);
+				
 				entry.setItemNo(order.getOrderNo() + String.valueOf(index));//行项目编号
 				entry.setRefItemNo(String.valueOf(index));//参考行项目编号
 				entry.setOrderDate(date);//订单日期
 				entry.setCreateAt(date);//创建日期
 				entry.setCreateBy(userSessionService.getCurrentUser().getLoginName());//创建人
 				entry.setCreateByTxt(userSessionService.getCurrentUser().getDisplayName());//创建人姓名
-				entry.setStartDispDate(sdate);
-				entry.setEndDispDate(afterDate(sdate,record.getGoDays()-1));
 				BigDecimal entryTotal = calculateEntryAmount(entry);
 				
 				//促销清空
