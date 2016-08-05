@@ -492,10 +492,9 @@ public class RequireOrderServiceImpl implements RequireOrderService {
         rModel.setBranchNo(user.getBranchNo());
         rModel.setSalesOrg(user.getSalesOrg());
 
-            /*
                 List<TOrderDaliyPlanItem> items = tOrderDaliyPlanItemMapper.selectProDayPlanOfSelfBranch(rModel);
                 if(items!=null && items.size()>0){
-                    TSsmSalOrder order = createSaleOrder(user,requiredDate,"branch",null);
+                    TSsmSalOrder order = createSaleOrder(user,requiredDate,"branch","free");
                     if(items !=null && items.size()>0){
                         for(int i = 1; i <=items.size();i++){
                             TOrderDaliyPlanItem item = items.get(i-1);
@@ -508,9 +507,8 @@ public class RequireOrderServiceImpl implements RequireOrderService {
                         this.uptVouCherNoByOrderNo(order.getOrderNo(),message.getData());
                     }
                 }
-             */
 
-        List<String> promotionNolist = tOrderDaliyPlanItemMapper.getDailOrderPromOfSelfBranch(rModel);
+       /* List<String> promotionNolist = tOrderDaliyPlanItemMapper.getDailOrderPromOfSelfBranch(rModel);
         if(promotionNolist !=null && promotionNolist.size()>0){
             for(String promotion : promotionNolist){
                 //创建一份 销售订单
@@ -531,7 +529,7 @@ public class RequireOrderServiceImpl implements RequireOrderService {
                 }
             }
 
-        }
+        }*/
         return 1;
     }
 
@@ -666,6 +664,11 @@ public class RequireOrderServiceImpl implements RequireOrderService {
         }else{
             order.setDealerNo(user.getBranchNo());
             order.setBranchGroup("20");
+        }
+        if("free".equals(promotion)){
+            order.setFreeFlag("Y");
+        }else{
+            order.setFreeFlag("N");
         }
         order.setOrderDate(requiredDate);
         order.setCreateAt(requiredDate);
