@@ -19,7 +19,7 @@ public class TSsmSalOrder {
     private String dealerNo;
     private String branchGroup;
     private String promNo;
-
+    private String freeFlag;
     private Date createAt;
     private  String createBy;
     private String createByTxt;
@@ -49,6 +49,14 @@ public class TSsmSalOrder {
 
     public void setPromNo(String promNo) {
         this.promNo = promNo;
+    }
+
+    public String getFreeFlag() {
+        return freeFlag;
+    }
+
+    public void setFreeFlag(String freeFlag) {
+        this.freeFlag = freeFlag;
     }
 
     public String getOrderNo() {
