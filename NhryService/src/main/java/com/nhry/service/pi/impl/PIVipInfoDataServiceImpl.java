@@ -1,9 +1,12 @@
 package com.nhry.service.pi.impl;
 
-import com.nhry.data.basic.domain.TMdAddress;
-import com.nhry.data.basic.domain.TVipCrmInfo;
-import com.nhry.data.basic.domain.TVipCustInfo;
+import com.nhry.data.basic.domain.*;
+import com.nhry.data.config.domain.NHSysCodeItem;
+import com.nhry.service.basic.dao.BranchService;
+import com.nhry.service.basic.dao.ResidentialAreaService;
 import com.nhry.service.basic.dao.TVipCrmInfoService;
+import com.nhry.service.basic.dao.TVipCustInfoService;
+import com.nhry.service.config.dao.DictionaryService;
 import com.nhry.service.pi.dao.PIVipInfoDataService;
 import com.nhry.service.pi.pojo.MemberActivities;
 import com.nhry.utils.PIPropertitesUtil;
@@ -37,6 +40,7 @@ import org.apache.axis2.client.Options;
 import org.apache.commons.beanutils.BeanUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import javax.activation.DataHandler;
 import java.math.BigDecimal;
@@ -49,6 +53,25 @@ import java.util.Map;
 public class PIVipInfoDataServiceImpl implements PIVipInfoDataService {
     private static Logger logger = Logger.getLogger(PIVipInfoDataServiceImpl.class);
     private TVipCrmInfoService vipCrmInfoService;
+    private DictionaryService dictionaryService;
+    private ResidentialAreaService residentialAreaService;
+    private BranchService branchService;
+    private TVipCustInfoService vipCustInfoService;
+    public void setDictionaryService(DictionaryService dictionaryService) {
+        this.dictionaryService = dictionaryService;
+    }
+
+    public void setResidentialAreaService(ResidentialAreaService residentialAreaService) {
+        this.residentialAreaService = residentialAreaService;
+    }
+
+    public void setBranchService(BranchService branchService) {
+        this.branchService = branchService;
+    }
+
+    public void setVipCustInfoService(TVipCustInfoService vipCustInfoService) {
+        this.vipCustInfoService = vipCustInfoService;
+    }
 
     public void setVipCrmInfoService(TVipCrmInfoService vipCrmInfoService) {
         this.vipCrmInfoService = vipCrmInfoService;
@@ -70,8 +93,16 @@ public class PIVipInfoDataServiceImpl implements PIVipInfoDataService {
             return result;
         }
         try {
+            iniVipCustInfo(vipCustInfo);
             TVipCrmInfo vipCrmInfo = new TVipCrmInfo();
             BeanUtils.copyProperties(vipCrmInfo, vipCustInfo);
+            java.util.List<TMdAddress> addresses = vipCustInfoService.findCnAddressByCustNo(vipCustInfo.getVipCustNo());
+
+            for(TMdAddress address1 : addresses){
+                if("Y".equals(address1.getIsDafault())) {
+                    address = address1;
+                }
+            }
 
             if(address != null) {
                 vipCrmInfo.setAddressId(address.getAddressId());
@@ -256,6 +287,19 @@ public class PIVipInfoDataServiceImpl implements PIVipInfoDataService {
         return result;
     }
 
+    private void iniVipCustInfo(TVipCustInfo vipCustInfo) {
+        TMdResidentialArea area = residentialAreaService.selectById(vipCustInfo.getSubdist());
+        vipCustInfo.setSubdist(area.getResidentialAreaTxt());
+        NHSysCodeItem codeItem = new NHSysCodeItem();
+        codeItem.setTypeCode("1001");
+        codeItem.setItemCode(vipCustInfo.getCity());
+        vipCustInfo.setCity(dictionaryService.findCodeItenByCode(codeItem).getItemName());
+        TMdBranch branch = branchService.selectBranchByNo(vipCustInfo.getBranchNo());
+        vipCustInfo.setBranchName(branch.getBranchName());
+        codeItem.setItemCode(vipCustInfo.getCounty());
+        vipCustInfo.setCounty(dictionaryService.findCodeItenByCode(codeItem).getItemName());
+    }
+
 
     @Override
     public PISuccessTMessage queryVipDetailData(String tel, String membGuid, String membId) {
@@ -377,6 +421,7 @@ public class PIVipInfoDataServiceImpl implements PIVipInfoDataService {
     public PISuccessTMessage sendSubscriber(TVipCustInfo vipCustInfo) {
         PISuccessTMessage result = new PISuccessTMessage();
         try {
+            iniVipCustInfo(vipCustInfo);
             ZT_CRM_BuData_MaintainServiceStub stub = connMaintainService();
             Z_CRM_MEMB_ZTAB0000LQ_UPDATE z_crm_memb_ztab0000LQ_update = new Z_CRM_MEMB_ZTAB0000LQ_UPDATE();
             IV_MEMB_GUID_type1 iv_memb_guid_type1 = new IV_MEMB_GUID_type1();
@@ -472,7 +517,7 @@ public class PIVipInfoDataServiceImpl implements PIVipInfoDataService {
             zscrm_addr_ship_to.setCITY2(city2_type1);
 
             com.nhry.webService.client.Address.functions.COUNTRY_type1 country_type1 = new com.nhry.webService.client.Address.functions.COUNTRY_type1();
-            country_type1.setCOUNTRY_type0("001");
+            country_type1.setCOUNTRY_type0("CN");
             zscrm_addr_ship_to.setCOUNTRY(country_type1);
 
             com.nhry.webService.client.Address.functions.TEL_NUMBER_type1 tel_number_type1 = new com.nhry.webService.client.Address.functions.TEL_NUMBER_type1();
