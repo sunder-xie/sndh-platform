@@ -3482,7 +3482,7 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 //					plan.setReachTime(entry.getReachTime());//送达时段
 					plan.setReachTimeType(entry.getReachTimeType());//送达时段类型
 					plan.setMatnr(entry.getMatnr());//产品编号
-					plan.setMatnrTxt(entry.getMatnr());//名称 TODO
+					plan.setMatnrTxt(entry.getMatnrTxt());//名称
 					plan.setUnit(entry.getUnit());//配送单位
 					plan.setQty(entry.getQty());//产品数量
 					plan.setPrice(entry.getSalesPrice());//产品价格
@@ -3518,7 +3518,7 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 		
 		if(entryMap2.size() > 0){
 			for(TOrderDaliyPlanItem plan : daliyPlans){
-				if(entryMap.containsKey(plan.getItemNo())){
+				if(entryMap2.containsKey(plan.getItemNo())){
 					TPlanOrderItem orgEntry = entryMap2.get(plan.getItemNo());
 					
 					int totalGift = orgEntry.getGiftQty();
@@ -3548,10 +3548,10 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 					
 					//赠品数量减少
 					orgEntry.setGiftQty(totalGift-giftPlan.getGiftQty());
+					daliyPlans.add(0,giftPlan);
 					
 					if(orgEntry.getGiftQty()<=0)break;//赠完为止
 					
-					daliyPlans.add(0,giftPlan);
 					
 					daliyEntryNo++;
 				}
