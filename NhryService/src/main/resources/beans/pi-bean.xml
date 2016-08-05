@@ -65,6 +65,10 @@
     </bean>
     <bean class="com.nhry.service.pi.impl.PIVipInfoDataServiceImpl" id="piVipInfoDataService">
         <property name="vipCrmInfoService" ref="vipCrmInfoService"/>
+        <property name="branchService" ref="branchService"/>
+        <property name="dictionaryService" ref="dicService"/>
+        <property name="residentialAreaService" ref="residentialAreaService"/>
+        <property name="vipCustInfoService" ref="custService"/>
     </bean>
     <jaxws:endpoint id="piOrderServiceImpl" implementor="#piOrderService"
                     address="/orderService"/>
