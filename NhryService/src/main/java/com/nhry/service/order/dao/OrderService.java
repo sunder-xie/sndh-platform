@@ -86,4 +86,6 @@ public interface OrderService {
    
    int replaceOrdersDispmember(OrderSearchModel record);
    
+   List<TOrderDaliyPlanItem> viewDaliyPlans(OrderCreateModel record);
+   
 }
