@@ -7,7 +7,9 @@ import com.nhry.common.exception.ServiceException;
 import com.nhry.data.auth.dao.TSysUserRoleMapper;
 import com.nhry.data.auth.domain.TSysUser;
 import com.nhry.data.basic.dao.TMdBranchEmpMapper;
+import com.nhry.data.basic.dao.TMdBranchMapper;
 import com.nhry.data.basic.dao.TMdMaraExMapper;
+import com.nhry.data.basic.domain.TMdBranch;
 import com.nhry.data.basic.domain.TMdBranchEmp;
 import com.nhry.data.basic.domain.TMdMaraEx;
 import com.nhry.data.bill.dao.EmpBillMapper;
@@ -20,6 +22,7 @@ import com.nhry.data.bill.domain.TMdEmpSal;
 import com.nhry.model.bill.*;
 import com.nhry.service.bill.dao.EmpBillService;
 import com.nhry.utils.PrimaryKeyUtils;
+import com.nhry.utils.SysContant;
 import com.nhry.utils.YearLastMonthUtil;
 import org.apache.commons.lang3.StringUtils;
 
@@ -38,6 +41,12 @@ public class EmpBillServiceImpl implements EmpBillService {
     private TMdEmpSalMapper tMdEmpSalMapper;
     private TSysUserRoleMapper urMapper;
     private TMdMaraExMapper tMdMaraExMapper;
+    private TMdBranchMapper branchMapper;
+
+
+    public void setBranchMapper(TMdBranchMapper branchMapper) {
+        this.branchMapper = branchMapper;
+    }
 
     public void setUrMapper(TSysUserRoleMapper urMapper) {
         this.urMapper = urMapper;
@@ -320,12 +329,14 @@ public class EmpBillServiceImpl implements EmpBillService {
         search.setEndDate(YearLastMonthUtil.getLastMonthLastDay());
         //获取上个月  例如今天是2016-07-02  结果是201606
         String setYearMonth = YearLastMonthUtil.getYearLastMonth();
+        List<String> coms = this.getCompanyCodeForDispFee();
+        boolean flag = coms.contains(user.getBranchNo()) ? true : false;
 
         List<TMdBranchEmp> empList =  branchEmpMapper.getAllEmpByBranchNo(user.getBranchNo(),user.getSalesOrg());
         if(empList!=null && empList.size()>0){
             for(TMdBranchEmp emp : empList){
                 search.setEmpNo(emp.getEmpNo());
-                this.setEmpSalary(emp,search,setYearMonth,user);
+                this.setEmpSalary(emp,search,setYearMonth,user,flag);
             }
         }
         EmpDispDetialInfoSearch esearch = new EmpDispDetialInfoSearch();
@@ -350,6 +361,7 @@ public class EmpBillServiceImpl implements EmpBillService {
     @Override
     public PageInfo setBranchEmpSalaryThisMonth() {
         TSysUser user = userSessionService.getCurrentUser();
+        TMdBranch branch = branchMapper.selectBranchByNo(user.getBranchNo());
         EmpDispDetialInfoSearch search = new EmpDispDetialInfoSearch();
         search.setBranchNo(user.getBranchNo());
         //获取这个月的第一天
@@ -358,12 +370,13 @@ public class EmpBillServiceImpl implements EmpBillService {
         search.setEndDate(YearLastMonthUtil.getThisMonthLastDay());
         //获取上个月  例如今天是2016-07-02  结果是201606
         String setYearMonth = YearLastMonthUtil.getYearThisMonth();
-
+        List<String> coms = this.getCompanyCodeForDispFee();
+        boolean flag = coms.contains(branch.getCompanyCode()) ? true : false;
         List<TMdBranchEmp> empList =  branchEmpMapper.getAllEmpByBranchNo(user.getBranchNo(),user.getSalesOrg());
         if(empList!=null && empList.size()>0){
             for(TMdBranchEmp emp : empList){
                 search.setEmpNo(emp.getEmpNo());
-                this.setEmpSalary(emp,search,setYearMonth,user);
+                this.setEmpSalary(emp,search,setYearMonth,user,flag);
             }
         }
 
@@ -380,7 +393,7 @@ public class EmpBillServiceImpl implements EmpBillService {
      * 结算送奶员本月工资,基本工资 + 产品配送费 + 赠品配送费+ 内部销售订单配送费
      * @return
      */
-    public int setEmpSalary(TMdBranchEmp emp,EmpDispDetialInfoSearch search,String setYearMonth,TSysUser user){
+    public int setEmpSalary(TMdBranchEmp emp,EmpDispDetialInfoSearch search,String setYearMonth,TSysUser user,boolean flag){
         String empNo = emp.getEmpNo();
         Map<String,String> map =new HashMap<String,String>();
         map.put("empNo",empNo);
@@ -395,78 +408,53 @@ public class EmpBillServiceImpl implements EmpBillService {
             empSal.setEmpSalLsh(PrimaryKeyUtils.generateUuidKey());
             empSal.setEmpNo(empNo);
             //三种配送费
-            if("20".equals(emp.getSalaryMet())){
-                //产品数量
-                int dispAllNum = 0;
-                //按产品结算  //产品配送费
-                List<EmpAccoDispFeeByProduct> pro = empBillMapper.empDisByProduct(search);
-                BigDecimal dispFee = this.getEmpDispFee(pro,emp.getSalesOrg());
-                empSal.setDispSal(dispFee);
-                if(pro!=null && pro.size()>0){
-                    for(EmpAccoDispFeeByProduct p : pro ){
-                        dispAllNum = dispAllNum +   p.getQty();
-                    }
+            if(flag){
+                if("20".equals(emp.getSalaryMet())){
+                    //产品数量
+                    int dispAllNum = empBillMapper.empAccoDispFeeByNum(search);
+                    //按产品结算  //产品配送费
+                    List<EmpAccoDispFeeByProduct> pro = empBillMapper.empDisByProduct(search);
+                    BigDecimal dispFee = this.getEmpDispFee(pro,emp.getSalesOrg());
+                    empSal.setDispSal(dispFee);
+
+                    //按产品结算  //内部销售配送费
+                    List<EmpAccoDispFeeByProduct> proIn = empBillMapper.empInDispByProduct(search);
+                    BigDecimal inDispFee = this.getEmpDispFee(proIn,emp.getSalesOrg());
+                    empSal.setInDispSal(inDispFee);
+
+                    //按产品结算  //赠品配送费
+                    List<EmpAccoDispFeeByProduct> proFree = empBillMapper.empFreeDispByProduct(search);
+                    BigDecimal dispFreeFee = this.getEmpDispFee(proFree,emp.getSalesOrg());
+                    empSal.setSendDispSal(dispFreeFee);
+
+                    empSal.setDispNum(dispAllNum);
+                }else{
+                    int dispNum = empBillMapper.empDispFeeNum(search);
+                    int inDispNum = empBillMapper.empInDispFeeNum(search);
+                    int sendDispNum = empBillMapper.empFreeDispFeeNum(search);
+                    int totaNum = dispNum + inDispNum + sendDispNum;
+
+                    BigDecimal rate =  this.CalculateEmpTransRateByNum(empNo,totaNum);
+                    //按数量结算  //产品配送费
+                    empSal.setDispSal(rate.multiply(new BigDecimal(dispNum)));
+                    //按数量结算  //内部销售配送费
+                    empSal.setInDispSal(rate.multiply(new BigDecimal(inDispNum)));
+                    //按数量结算  //赠品配送费
+                    empSal.setSendDispSal(rate.multiply(new BigDecimal(sendDispNum)));
+
+                    empSal.setDispNum(totaNum);
                 }
-
-
-                //按产品结算  //内部销售配送费
-                List<EmpAccoDispFeeByProduct> proIn = empBillMapper.empInDispByProduct(search);
-                BigDecimal inDispFee = this.getEmpDispFee(proIn,emp.getSalesOrg());
-                empSal.setInDispSal(inDispFee);
-                if(proIn!=null && proIn.size()>0){
-                    for(EmpAccoDispFeeByProduct p : pro ){
-                        dispAllNum = dispAllNum +   p.getQty();
-                    }
-                }
-
-
-                //按产品结算  //赠品配送费
-                List<EmpAccoDispFeeByProduct> proFree = empBillMapper.empFreeDispByProduct(search);
-                BigDecimal dispFreeFee = this.getEmpDispFee(proFree,emp.getSalesOrg());
-                empSal.setSendDispSal(dispFreeFee);
-                if(proFree!=null && proFree.size()>0){
-                    for(EmpAccoDispFeeByProduct p : proFree ){
-                        dispAllNum = dispAllNum +   p.getQty();
-                    }
-                }
-                empSal.setDispNum(dispAllNum);
+                empSal.setTotalSal(empSal.getInDispSal().add(empSal.getDispSal()).add(new BigDecimal(emp.getBaseSalary())));
             }else{
-                //按数量结算  //产品配送费
-                int dispNum = empBillMapper.empDispFeeNum(search);
-                if(dispNum == 0){
-                    empSal.setDispSal(new BigDecimal(0));
-                }else{
-                    BigDecimal dispRate = this.CalculateEmpTransRateByNum(empNo,dispNum);
-                    empSal.setDispSal(dispRate.multiply(new BigDecimal(dispNum)));
-                }
-
-                //按数量结算  //内部销售配送费
-                int inDispNum = empBillMapper.empInDispFeeNum(search);
-                if(inDispNum == 0){
-                    empSal.setInDispSal(new BigDecimal(0));
-                }else{
-                    BigDecimal inDispRate = this.CalculateEmpTransRateByNum(empNo,inDispNum);
-                    empSal.setInDispSal(inDispRate.multiply(new BigDecimal(inDispNum)));
-                }
-
-
-
-                //按数量结算  //赠品配送费
-                int sendDispNum = empBillMapper.empFreeDispFeeNum(search);
-                if(sendDispNum == 0){
-                    empSal.setSendDispSal(new BigDecimal(0));
-                }else{
-                    BigDecimal sendDispRate = this.CalculateEmpTransRateByNum(empNo,sendDispNum);
-                    empSal.setSendDispSal(sendDispRate.multiply(new BigDecimal(sendDispNum)));
-                }
-
-
-                empSal.setDispNum(dispNum+inDispNum+sendDispNum);
-
-
+                //不计算配送费
+                empSal.setInDispSal(BigDecimal.ZERO);
+                empSal.setDispSal(BigDecimal.ZERO);
+                empSal.setSendDispSal(BigDecimal.ZERO);
+                empSal.setTotalSal(new BigDecimal(emp.getBaseSalary()));
             }
 
-            empSal.setTotalSal(empSal.getInDispSal().add(empSal.getDispSal()).add(new BigDecimal(emp.getBaseSalary())));
+
+
             empSal.setCreateAt(new Date());
             empSal.setSetDate(new Date());
             empSal.setSetYearMonth(setYearMonth);
@@ -490,5 +478,14 @@ public class EmpBillServiceImpl implements EmpBillService {
             }
              return result;
      }
+
+    public  List<String> getCompanyCodeForDispFee(){
+        List<String> result = new ArrayList<String>();
+        String str = SysContant.getSystemConst("COMPANT_DISP_FEE");
+        if(StringUtils.isNoneBlank(str)){
+            result = Arrays.asList(str.split(","));
+        }
+        return result;
+    }
 
 }

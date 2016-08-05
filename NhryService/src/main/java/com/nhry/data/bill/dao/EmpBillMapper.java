@@ -18,7 +18,7 @@ public interface EmpBillMapper {
 
     List<EmpAccoDispFeeByProduct> empAccoDispFeeByProduct(EmpDispDetialInfoSearch eSearch);
 
-    //获取
+    //获取 一共配送的数量
     int empAccoDispFeeByNum(EmpDispDetialInfoSearch eSearch);
 
     //获取送奶工内部销售单产品个数

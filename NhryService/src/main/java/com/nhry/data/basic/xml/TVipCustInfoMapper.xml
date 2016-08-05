@@ -871,7 +871,7 @@
 		    	and i.SUBSCRIBE_DATE &lt;= #{endDate} 
 		    </if>
 		    <if test="content != null and content != ''">
-		        and (i.VIP_NAME like '%${content}%' or i.ADDRESS_TXT like '%${content}%' or MP like '%${content}%' or 
+		        and (i.VIP_NAME like '%${content}%' or i.ADDRESS_TXT like '%${content}%' or i.MP like '%${content}%' or 
 		        (select a.RESIDENTIAL_AREA_TXT from t_md_residential_area a where a.ID=IFNULL(i.SUBDIST,'-1')) like '%${content}%') 
 		    </if>
 		    <if test="phone != null and phone != ''">
@@ -916,4 +916,25 @@
 	<delete id="deleteCustByCno" parameterType="String">
 	    delete from t_vip_cust_info where VIP_CUST_NO=#{cno}
 	</delete>
+	<select id="getCustInfoStat" resultType="com.nhry.model.basic.CustStat" parameterType="java.util.HashMap">
+	   SELECT
+			i. STATUS,
+			count(i. STATUS) amount 
+		FROM
+			t_vip_cust_info i
+		<where>
+		   <if test="salesOrg != null and salesOrg != ''">
+		   		i.SALES_ORG = #{salesOrg}
+		   </if>
+		   <if test="dealerNo != null and dealerNo != ''">
+		   		AND i.DEALER_NO = #{dealerNo}
+		   </if>
+		   <if test="branchNo != null and branchNo != ''">
+		   		AND i.BRANCH_NO = #{branchNo}
+		   </if>
+		   AND i.STATUS IS NOT NULL
+		</where>
+		GROUP BY
+			i. STATUS
+	</select>
 </mapper>

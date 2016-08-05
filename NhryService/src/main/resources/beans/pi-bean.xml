@@ -62,6 +62,10 @@
     </bean>
     <bean class="com.nhry.service.basic.impl.TVipCrmInfoServiceImpl" id="vipCrmInfoService">
         <property name="vipCrmMapper" ref="vipCrmMapper"/>
+        <property name="vipcrmAddressMapper" ref="vipcrmAddressMapper"></property>
+    </bean>
+     <bean class="com.nhry.data.basic.impl.TVipCrmAddressMapperImpl" id="vipcrmAddressMapper">
+        <property name="sqlSessionTemplate" ref="dynamicSqlSessionTemplate"/>
     </bean>
     <bean class="com.nhry.service.pi.impl.PIVipInfoDataServiceImpl" id="piVipInfoDataService">
         <property name="vipCrmInfoService" ref="vipCrmInfoService"/>

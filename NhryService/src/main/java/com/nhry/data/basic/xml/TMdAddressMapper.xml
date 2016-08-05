@@ -441,6 +441,9 @@
         <if test="addressTxt != null and addressTxt != ''">
            and d.ADDRESS_TXT=#{addressTxt}
         </if>
+        <if test="custNo != null and custNo != ''">
+            and d.VIP_CUST_NO=#{custNo}
+        </if>
     </where>
   </select>
   <delete id="deleteAddressByCustNo" parameterType="String">

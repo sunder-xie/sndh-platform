@@ -19,6 +19,8 @@
         <result column="EMP_NO" property="empNo" jdbcType="VARCHAR" />
         <result column="EMP_NAME" property="empName" jdbcType="VARCHAR" />
         <result column="FACT_AMT" property="factAmt" jdbcType="DECIMAL" />
+        <result column="AMT" property="amt" jdbcType="DECIMAL" />
+        <result column="ACC_AMT" property="accAmt" jdbcType="DECIMAL" />
     </resultMap>
 
 
@@ -48,20 +50,23 @@
         MATNR,MATNR_TXT,QTY
     </sql>
     <select id="CustomerBranchBill" resultMap="BranchResultMap" parameterType="com.nhry.model.bill.CustBranchBillSearch">
-        select
-        b.BRANCH_NO BRANCH_NO,b.BRANCH_NAME BRANCH_NAME,o.ORDER_NO ORDER_NO, o.PREORDER_SOURCE PREORDER_SOURCE,o.PAYMENTMETHOD PAYMENT_TYPE,
-        o.INIT_AMT  SATTLEMENT_PRICE,cust.VIP_CUST_NO VIP_CUST_NO,cust.VIP_NAME VIP_Name, cust.MP VIP_MP,cust.TEL VIP_TEL, cust.ADDRESS_TXT ADDRESS,
-        emp.EMP_NO EMP_NO, emp.EMP_NAME EMP_NAME,o.PAYMENT_STAT PAYMENT_STAT,bill.RECEIPT_DATE,o.FACT_AMT,
-        o.INIT_AMT  REAL_COLLECTION,
-        ( CASE when o.PAYMENT_STAT ='20' then bill.PAYMENT_YEAR_MONTH else  '无' END) PAYMENT_DATE
-        FROM t_mst_recv_bill bill  LEFT JOIN t_preorder o ON bill.ORDER_NO = o.ORDER_NO
+        SELECT
+        b.BRANCH_NO ,b.BRANCH_NAME ,o.ORDER_NO , o.PREORDER_SOURCE ,o.PAYMENTMETHOD PAYMENT_TYPE,
+        o.INIT_AMT  SATTLEMENT_PRICE,a.VIP_CUST_NO ,a.RECV_NAME VIP_NAME, a.MP VIP_MP,a.TEL VIP_TEL, CONCAT(r.RESIDENTIAL_AREA_TXT,a.ADDRESS_TXT) ADDRESS,
+        emp.EMP_NO EMP_NO, emp.EMP_NAME EMP_NAME,o.PAYMENT_STAT PAYMENT_STAT,bill.RECEIPT_DATE,o.FACT_AMT,o.INIT_AMT REAL_COLLECTION
+        FROM t_mst_recv_bill bill
+        LEFT JOIN t_preorder o ON bill.ORDER_NO = o.ORDER_NO
         LEFT JOIN t_md_branch_emp emp on  o.EMP_NO = emp.EMP_NO
-        LEFT JOIN t_vip_cust_info cust on  o.MILKMEMBER_NO = cust.VIP_CUST_NO
+        LEFT JOIN t_md_address a on o.ADRESS_NO = a.ADDRESS_ID
+        LEFT JOIN t_md_residential_area r on a.RESIDENTIAL_AREA = r.ID
         LEFT JOIN t_md_branch b on o.BRANCH_NO  = b.BRANCH_NO
         WHERE 1=1
         and o.BRANCH_NO is not null
         <if test="branchNo!=null and branchNo!=''">
            and o.BRANCH_NO = #{branchNo,jdbcType=VARCHAR}
+        </if>
+        <if test="orderNo!=null and orderNo!=''">
+            and bill.ORDER_NO = #{orderNo,jdbcType=VARCHAR}
         </if>
         <if test="startDate!=null and startDate!=''">
             and o.END_DATE &gt;= #{startDate,jdbcType=DATE}

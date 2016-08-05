@@ -502,7 +502,6 @@
         LEFT JOIN  t_md_branch b on o.BRANCH_NO = b.BRANCH_NO
         where 1=1
         and o.ORDER_NO = #{dispOrderNo}
-        and ( i.REASON != '30' OR i.REASON is NULL)
         and ex.RET_BOT_FLAG = "Y"
         and ex.SALES_ORG = b.SALES_ORG
     )t
@@ -532,10 +531,25 @@
 
   </select>
 
+	<!-- 检查该订单是否有项目生成了今日的路单 -->
+	<select id="selectCountOfTodayByOrgOrder" resultType="INTEGER" parameterType="com.nhry.data.milk.domain.TDispOrder">
+      select count(*) from t_mst_disp_order_item i
+		left join t_mst_disp_order o on i.ORDER_NO = o.ORDER_NO
+		where i.ORG_ORDER_NO = #{orderNo,jdbcType=VARCHAR}
+		and o.DISP_DATE = #{reachTimeType,jdbcType=DATE}
+		and o.STATUS = '10'
+   </select>
+  
   <select id="selectItemsByOrderNo" resultMap="BaseResultMap" parameterType="String">
     select
    <include refid="Base_Column_List"/>
     from t_mst_disp_order_item
     where ORDER_NO = #{dispOrderNo,jdbcType=VARCHAR}
   </select>
+  
+  <update id="updateDispOrderItemEmp" parameterType="com.nhry.data.milk.domain.TDispOrder" >
+	    update t_mst_disp_order_item
+	    set DISP_EMP_NO = #{dispEmpNo,jdbcType=VARCHAR}  
+	    where ORDER_NO = #{orderNo,jdbcType=VARCHAR}
+  	</update>
 </mapper>

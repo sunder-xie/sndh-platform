@@ -5,6 +5,7 @@ import com.nhry.common.exception.MessageCode;
 import com.nhry.data.basic.domain.TMdBranch;
 import com.nhry.model.basic.BranchQueryModel;
 import com.nhry.model.webService.CustInfoModel;
+import com.nhry.model.webService.DealerBranchModel;
 import com.nhry.rest.BaseResource;
 import com.nhry.service.basic.dao.BranchService;
 import com.nhry.service.webService.dao.GetOrderBranchService;
@@ -116,7 +117,7 @@ public class BranchResource extends BaseResource {
 	@Path("/getBranchByBussiness")
 	@Produces(MediaType.APPLICATION_JSON)
 	@Consumes(MediaType.APPLICATION_JSON)
-	@ApiOperation(value = "/getBranchByBussiness", response = String.class, notes = "根据收货人地址 通过电商接口获取分配的奶站")
+	@ApiOperation(value = "/getBranchByBussiness", response = DealerBranchModel.class, notes = "根据收货人地址 通过电商接口获取分配的奶站")
 	public Response getBranchByBussiness(@ApiParam(required=true,name="cModel",value="收货人地址") CustInfoModel cModel){
 		return convertToRespModel(MessageCode.NORMAL, null,getOrderBranchService.getOrderBranch(cModel));
 	}

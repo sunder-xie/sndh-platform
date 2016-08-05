@@ -714,10 +714,12 @@
   </update>
   <select id="searchCustomerOrder" resultMap="BaseResultMap" parameterType="com.nhry.model.bill.CustBillQueryModel">
     select
-    o.ORDER_NO, o.END_DATE,o.EMP_NO,e.EMP_NAME EMP_NAME,o.INIT_AMT,o.PAYMENT_STAT,o.MILKMEMBER_NO,c.VIP_NAME MILKMEMBER_NAME
+    o.ORDER_NO,(CASE WHEN o.PAYMENT_STAT='20' THEN emp.EMP_NAME ELSE e.EMP_NAME END) EMP_NAME, o.END_DATE,o.INIT_AMT,o.PAYMENT_STAT,o.MILKMEMBER_NO,c.VIP_NAME MILKMEMBER_NAME
     ,o.PAYMENTMETHOD,o.MILKBOX_STAT
     FROM t_preorder o LEFT JOIN t_md_branch_emp e on o.EMP_NO = e.EMP_NO
     LEFT JOIN  t_vip_cust_info c on o.MILKMEMBER_NO = c.VIP_CUST_NO
+    LEFT JOIN t_mst_recv_bill b on o.ORDER_NO = b.ORDER_NO
+    LEFT JOIN t_md_branch_emp emp on b.RECV_EMP = emp.EMP_NO
     where 1=1
     and o.PREORDER_STAT != "30"
     and o.PREORDER_STAT != "40"
@@ -845,12 +847,21 @@
     </if>
     order by o.END_DATE asc
     </select>
+    
+  <update id="replaceOrdersDispmember" parameterType="com.nhry.model.order.OrderSearchModel">
+    update t_preorder  
+    set EMP_NO = #{content,jdbcType=VARCHAR} 
+    where EMP_NO = #{empNo,jdbcType=VARCHAR}
+    		 and PREORDER_STAT != '30'
+    		 and PREORDER_STAT != '40'
+    		 and SIGN != '30'
+  </update>
   
   <select id="selectIniOrders" resultMap="BaseResultMap">
     select 
     <include refid="Base_Column_List" />
     FROM t_preorder
-    WHERE ORDER_NO like 'A%'
+    WHERE ORDER_NO like 'A0001%'
   </select>
   
 </mapper>

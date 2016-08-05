@@ -1,6 +1,7 @@
 package com.nhry.data.milk.dao;
 
 import com.github.pagehelper.PageInfo;
+import com.nhry.data.milk.domain.TDispOrder;
 import com.nhry.data.milk.domain.TDispOrderItem;
 import com.nhry.data.milk.domain.TDispOrderItemKey;
 import com.nhry.data.milktrans.domain.TRecBotDetail;
@@ -47,4 +48,9 @@ public interface TDispOrderItemMapper {
     List<TDispOrderItem> selectItemsByOrderNo(String dispOrderNo);
 
     List<TRecBotDetail> createRecBotByDispOrder(String dispOrderNo);
+    
+    int updateDispOrderItemEmp(TDispOrder order);
+    
+    int selectCountOfTodayByOrgOrder(String orgOrderNo, String today);
+    
 }

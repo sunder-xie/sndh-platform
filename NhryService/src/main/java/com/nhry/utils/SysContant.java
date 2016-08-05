@@ -21,6 +21,8 @@ import com.nhry.data.auth.domain.TSysUser;
  */
 public class SysContant {
 	private static final String SYS_CONFIG = "sys/sys-config.xml";
+	public final static String DHXT="dhxt";
+	public final static String SN_APP="snapp";
 	static Logger log = Logger.getLogger(SysContant.class);
 	private static Map<String, String> configs = new HashMap<String, String>();
 

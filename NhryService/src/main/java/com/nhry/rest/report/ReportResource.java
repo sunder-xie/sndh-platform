@@ -5,6 +5,7 @@ import com.nhry.common.exception.MessageCode;
 import com.nhry.data.auth.domain.TSysUser;
 import com.nhry.data.basic.domain.TMdAddress;
 import com.nhry.data.basic.domain.TMdBranch;
+import com.nhry.data.bill.domain.TMstRecvBill;
 import com.nhry.data.milk.domain.TDispOrder;
 import com.nhry.data.milk.domain.TDispOrderItem;
 import com.nhry.data.order.domain.TMilkboxPlan;
@@ -19,6 +20,7 @@ import com.nhry.rest.BaseResource;
 import com.nhry.service.basic.dao.BranchEmpService;
 import com.nhry.service.basic.dao.BranchService;
 import com.nhry.service.basic.pojo.BranchEmpModel;
+import com.nhry.service.bill.dao.CustomerBillService;
 import com.nhry.service.milk.dao.DeliverMilkService;
 import com.nhry.service.order.dao.MilkBoxService;
 import com.nhry.service.order.dao.OrderService;
@@ -76,17 +78,24 @@ public class ReportResource extends BaseResource{
     private BranchEmpService branchEmpService;
     @Autowired
     private BranchInfoService branchInfoService;
+    @Autowired
+    private CustomerBillService customerBillService;
     @GET
     @Path("/reportCollect")
     @Produces(MediaType.APPLICATION_JSON)
     @ApiOperation(value = "/reportCollect", response = OrderCreateModel.class, notes = "根据订单编号导出收款信息")
     public Response reportCollect(@ApiParam(required = true, name = "orderCode", value = "订单编号") @QueryParam("orderCode") String orderCode, @Context HttpServletRequest request, @Context HttpServletResponse response) {
+
         CollectOrderModel collect = orderService.queryCollectByOrderNo(orderCode);
         TSysUser user = userSessionService.getCurrentUser();
         String url = request.getServletContext().getRealPath("/");
         logger.info("realPath："+url);
         TMdAddress address = collect.getAddress();
         TPreOrder order = collect.getOrder();
+        TMstRecvBill bill = customerBillService.getRecBillByOrderNo(orderCode);
+        if(bill == null ){
+            bill =  customerBillService.createRecBillByOrderNo(orderCode);
+        }
 
         TMdBranch branch = branchService.selectBranchByNo(order.getBranchNo());
         List<ProductItem> productItems =collect.getEntries();
@@ -145,7 +154,8 @@ public class ReportResource extends BaseResource{
             }
             row = sheet.getRow(13);
             cell=row.getCell(10);
-            cell.setCellValue(order.getAcctAmt()==null ? "0" :String.valueOf(order.getAcctAmt()));
+            cell.setCellValue(bill.getAccAmt()==null ? "0" :String.valueOf(bill.getAccAmt()));
+           // cell.setCellValue(order.getAcctAmt()==null ? "0" :String.valueOf(order.getAcctAmt()));
             row = sheet.getRow(14);
             cell = row.getCell(10);
             //首先账户合计减去账户余额 大于0后剩余金额为应收款,为负数时应收款应为0;
@@ -189,6 +199,7 @@ public class ReportResource extends BaseResource{
 //                    .header("Content-disposition","attachment;filename=" + targetFilePath.getName())
 //                    .header("ragma", "No-cache").header("Cache-Control", "no-cache").build();
             outUrl = "/report/export/" + fname + "CollectOrder.xlsx";
+
         } catch (IOException e) {
             e.printStackTrace();
         }

@@ -25,10 +25,14 @@ import com.nhry.common.auth.UserSessionService;
 import com.nhry.common.exception.MessageCode;
 import com.nhry.data.basic.domain.TMdAddress;
 import com.nhry.data.basic.domain.TVipAcct;
+import com.nhry.data.basic.domain.TVipCrmAddress;
+import com.nhry.data.basic.domain.TVipCrmInfo;
 import com.nhry.data.basic.domain.TVipCustInfo;
 import com.nhry.model.basic.CustQueryModel;
+import com.nhry.model.basic.CustStat;
 import com.nhry.model.sys.ResponseModel;
 import com.nhry.rest.BaseResource;
+import com.nhry.service.basic.dao.TVipCrmInfoService;
 import com.nhry.service.basic.dao.TVipCustInfoService;
 import com.nhry.service.basic.pojo.Addresses;
 import com.sun.jersey.spi.resource.Singleton;
@@ -47,6 +51,8 @@ public class VipCustResource extends BaseResource {
 	private TVipCustInfoService custService;
 	@Autowired
 	private UserSessionService userSessionService;
+	@Autowired
+	private TVipCrmInfoService vipCrmInfoService;
 
 	@POST
 	@Path("/{vipCustNo}")
@@ -159,5 +165,29 @@ public class VipCustResource extends BaseResource {
 	public Response findVipAcctByCustNo(@ApiParam(required=true,name="status",value="状态标示(10 : 删除  20 ： 改成默认地址)")@PathParam("status")String status,
 			@ApiParam(required=true,name="addressId",value="地址编号")@PathParam("addressId")String addressId) {
 	  return convertToRespModel(MessageCode.NORMAL, null,custService.uptAddressById(status,addressId));
+	}
+	
+	@POST
+	@Path("/status/stat")
+	@Produces(MediaType.APPLICATION_JSON)
+	@ApiOperation(value = "/status/stat", response = CustStat.class, notes = "订户状态信息统计( 10-在订;20-暂停;30-停订;40-退订)")
+	public Response getCustInfoStat() {
+	  return convertToRespModel(MessageCode.NORMAL, null,custService.getCustInfoStat());
+	}
+	
+	@POST
+	@Path("/upt/crm/address")
+	@Produces(MediaType.APPLICATION_JSON)
+	@ApiOperation(value = "/upt/crm/address", response = ResponseModel.class, notes = "修改会员详细地址")
+	public Response updateVipCrmAddress(@ApiParam(required=true,name="address",value="crm详细地址对象") TVipCrmAddress address) {
+	  return convertToRespModel(MessageCode.NORMAL, null,vipCrmInfoService.updateVipCrmAddress(address));
+	}
+	
+	@POST
+	@Path("/upt/crm/custinfo")
+	@Produces(MediaType.APPLICATION_JSON)
+	@ApiOperation(value = "/upt/crm/custinfo", response = ResponseModel.class, notes = "修改会员详细地址")
+	public Response addVipCrm(@ApiParam(required=true,name="crminfo",value="会员对象") TVipCrmInfo crminfo) {
+	  return convertToRespModel(MessageCode.NORMAL, null,vipCrmInfoService.updateVipCrmByNo(crminfo));
 	}
 }

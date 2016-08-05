@@ -210,4 +210,17 @@ public class TPreOrderMapperImpl implements TPreOrderMapper
 	{
 		return sqlSessionTemplate.selectList("selectIniOrders");
 	}
+
+	/* (non-Javadoc) 
+	* @title: replaceOrdersDispmember
+	* @description: 替换所有a送奶员的订单为b送奶员
+	* @param smodel
+	* @return 
+	* @see com.nhry.data.order.dao.TPreOrderMapper#replaceOrdersDispmember(com.nhry.model.order.OrderSearchModel) 
+	*/
+	@Override
+	public int replaceOrdersDispmember(OrderSearchModel smodel)
+	{
+		return sqlSessionTemplate.update("replaceOrdersDispmember", smodel);
+	}
 }

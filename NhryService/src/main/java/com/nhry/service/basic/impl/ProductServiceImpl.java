@@ -104,13 +104,10 @@ public class ProductServiceImpl extends BaseService implements ProductService {
 	@Override
 	public PageInfo searchProducts(ProductQueryModel smodel) {
 		// TODO Auto-generated method stub
-		if (StringUtils.isEmpty(smodel.getPageNum())
-				|| StringUtils.isEmpty(smodel.getPageSize())) {
-			throw new ServiceException(MessageCode.LOGIC_ERROR,
-					"pageNum和pageSize不能为空！");
+		if (StringUtils.isEmpty(smodel.getPageNum()) || StringUtils.isEmpty(smodel.getPageSize())) {
+			throw new ServiceException(MessageCode.LOGIC_ERROR,"pageNum和pageSize不能为空！");
 		}
-		smodel.setSalesOrg(this.userSessionService.getCurrentUser()
-				.getSalesOrg());
+		smodel.setSalesOrg(this.userSessionService.getCurrentUser().getSalesOrg());
 		// smodel.setDealerNo(this.userSessionService.getCurrentUser().getDealerId());
 		return tMdMaraMapper.searchProducts(smodel);
 	}

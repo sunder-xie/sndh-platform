@@ -184,7 +184,7 @@ public class OrderResource extends BaseResource {
 	@Path("/stopOrder")
 	@Produces(MediaType.APPLICATION_JSON)
 	@Consumes(MediaType.APPLICATION_JSON)
-	@ApiOperation(value = "/stopOrder", response = Integer.class, notes = "订单停订")
+	@ApiOperation(value = "/stopOrder", response = Integer.class, notes = "订单停订(直接停订，没有结束日期)")
 	public Response stopOrder(@ApiParam(required=true,name="smodel",value="SearchModel") OrderSearchModel smodel){
 		return convertToRespModel(MessageCode.NORMAL, null, orderService.stopOrderForTime(smodel));
 	}
@@ -193,7 +193,7 @@ public class OrderResource extends BaseResource {
 	@Path("/stopOrderInTime")
 	@Produces(MediaType.APPLICATION_JSON)
 	@Consumes(MediaType.APPLICATION_JSON)
-	@ApiOperation(value = "/stopOrderInTime", response = Integer.class, notes = "订单停订(区间)")
+	@ApiOperation(value = "/stopOrderInTime", response = Integer.class, notes = "订单停订(区间暂停，有开始和结束日期)")
 	public Response stopOrderInTime(@ApiParam(required=true,name="smodel",value="SearchModel") OrderSearchModel smodel){
 		return convertToRespModel(MessageCode.NORMAL, null, orderService.stopOrderInTime(smodel));
 	}
@@ -314,6 +314,15 @@ public class OrderResource extends BaseResource {
 	@ApiOperation(value = "/memo", response = ResponseModel.class, notes = "更新订单备注信息")
 	public Response uptOrderComments(@ApiParam(required=true,name="OrderModel",value="订单备注对象") OrderModel  orderModel){
 		return convertToRespModel(MessageCode.NORMAL, null, messService.sendOrderMemo(orderModel));
+	}
+	
+	@POST
+	@Path("/updateOrderEmp")
+	@Produces(MediaType.APPLICATION_JSON)
+	@Consumes(MediaType.APPLICATION_JSON)
+	@ApiOperation(value = "/updateOrderEmp", response = Integer.class, notes = "订单换送奶员,empNo:被替换的员工编号，content:替换员工")
+	public Response updateOrderEmp(@ApiParam(required=true,name="smodel",value="SearchModel") OrderSearchModel smodel){
+		return convertToRespModel(MessageCode.NORMAL, null, orderService.replaceOrdersDispmember(smodel));
 	}
 	
 }

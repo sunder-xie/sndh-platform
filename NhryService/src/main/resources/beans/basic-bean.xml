@@ -17,6 +17,8 @@
 
 	<bean id="getOrderBranchService" class="com.nhry.service.webService.impl.GetOrderBranchServiceImpl">
 		<property name="ecBaseService" ref="ecBaseService"></property>
+		<property name="dealerMapper" ref="dealerMapper"></property>
+		<property name="branchService" ref="branchService"></property>
 	</bean>
 	<!-- 商品信息 -->
 	<bean id="maraMapper" class="com.nhry.data.basic.impl.TMdMaraMapperImpl">
@@ -69,6 +71,7 @@
 		<property name="sqlSessionTemplate" ref="dynamicSqlSessionTemplate"></property>
 	</bean>
 	<bean id="orderService" class="com.nhry.service.order.impl.OrderServiceImpl">
+		<property name="customerBillMapper" ref="customerBillMapper"></property>
 		<property name="branchMapper" ref="branchMapper"></property>
 		<property name="tPreOrderMapper" ref="tPreOrderMapper"></property>
 		<property name="tPlanOrderItemMapper" ref="tPlanOrderItemMapper"></property>
