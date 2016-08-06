@@ -27,5 +27,7 @@
 	<config key="ec_base_url" value="http://ec2-54-222-230-211.cn-north-1.compute.amazonaws.com.cn"></config>
 	<!-- 更新奶站信息 -->
 	<config key="ec_upt_branch" value="/FY_MOBILE_SVR/WFY_UNI_SERVICE.json?method=callProcService"></config>
-	
+	<config key="idm_appcode"  value="wsuser"></config>
+	<config key="idm_salt"  value="232ed9n196h69u5f1a24afc26b51c61e"></config>
+	<config key="idm_validate_url" value="http://10.6.240.143:8080/siam/rest/validate"></config>
 </configs>

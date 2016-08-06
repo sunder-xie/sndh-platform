@@ -2,8 +2,11 @@ package com.nhry.common.auth;
 
 import com.nhry.common.exception.MessageCode;
 import com.nhry.common.jedis.entity.ObjectRedisTemplate;
+import com.nhry.data.auth.domain.TSysAccesskey;
 import com.nhry.data.auth.domain.TSysUser;
 import com.nhry.model.sys.AccessKey;
+import com.nhry.service.auth.dao.TSysAccesskeyService;
+import com.nhry.service.auth.dao.UserService;
 import com.nhry.utils.Base64Util;
 import com.nhry.utils.EnvContant;
 import com.nhry.utils.HttpUtils;
@@ -14,12 +17,17 @@ import com.sun.jersey.spi.container.ContainerRequest;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;
+import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONObject;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
 
 import sun.misc.BASE64Decoder;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.ws.rs.WebApplicationException;
+import javax.ws.rs.core.Response;
+import javax.ws.rs.core.Response.Status;
 
 import java.io.IOException;
 import java.util.HashMap;
@@ -32,6 +40,8 @@ public class UserSessionService {
 	private static final ThreadLocal<TSysUser> accessKeyThread = new ThreadLocal<TSysUser>();
 	private RedisTemplate objectRedisTemplate;
 	private static Map<String,String> authsMap = null;
+	private TSysAccesskeyService isysAkService;
+	private UserService userService;
 	
 	static{
 		authsMap = new HashMap<String,String>();
@@ -41,8 +51,9 @@ public class UserSessionService {
 	}
 	
 	public String checkIdentity(String accessKey,HttpServletRequest servletRequest,String authflag){
-		if(AuthFilter.IDM_AUTH.equals(authflag)){
-		   return checkIdmAuth(accessKey, servletRequest);
+		if(AuthFilter.IDM_AUTH.equals(authflag) || AuthFilter.IDM_REST_AUTH.equals(authflag)){
+			//idm auth2.0   接口rest认证
+		   return checkIdmAuth(accessKey, servletRequest,authflag);
 		}else if(AuthFilter.DH_AUTH.equals(authflag)){
 			TSysUser user = (TSysUser)objectRedisTemplate.opsForHash().get(SysContant.getSystemConst("app_user_key"),accessKey);
 			accessKeyThread.set(user);
@@ -65,21 +76,60 @@ public class UserSessionService {
 	 * @param servletRequest
 	 * @return
 	 */
-	private String checkIdmAuth(String accessKey,HttpServletRequest servletRequest){
+	private String checkIdmAuth(String accessKey,HttpServletRequest servletRequest,String authflag){
 		try {
 			if("-1".equals(accessKey)){
 				return MessageCode.SESSION_EXPIRE;
 			}
-			Map attrs = new HashMap(2);
-			attrs.put("access_token", accessKey);
-			String userObject = HttpUtils.request(EnvContant.getSystemConst("auth_profile"), attrs);
-			JSONObject userJson = new JSONObject(userObject);
-			if(userJson.has("id") && !StringUtils.isEmpty(userJson.getString("id"))){                                        
-				TSysUser user = (TSysUser)objectRedisTemplate.opsForHash().get(SysContant.getSystemConst("app_user_key"), userJson.getString("id"));
-				accessKeyThread.set(user);
-				return MessageCode.NORMAL;
-			}else{
-				return MessageCode.SESSION_EXPIRE;
+			String idm_auth =servletRequest.getHeader("dh-token");
+			String appcode =servletRequest.getHeader("appcode");
+			String appkey = servletRequest.getHeader("appkey");
+			String timestamp = servletRequest.getHeader("timestamp");
+			boolean flag = false;
+			if(HttpUtils.isValidDate(timestamp)){
+				Date fdate = com.nhry.utils.date.Date.parseDate(timestamp,"yyyyMMddHHmmss").addMinutes(6);
+				Date sysdate = new Date();
+				if(sysdate.before(fdate)){
+					//系统时间 小于 前端时间+6分钟
+					String encrypt= HttpUtils.encodePassword(appcode+appkey+timestamp, SysContant.getSystemConst(appcode+"_base_pw")+HttpUtils.getSixpw(timestamp));
+					if(encrypt.equals(idm_auth)){
+						flag = true;
+						TSysAccesskey key = new TSysAccesskey();
+						key.setAccesskey(appkey);
+						key.setType("10");
+						TSysAccesskey ak = isysAkService.findAccesskeyByKey(key);
+						if(ak == null){
+							return MessageCode.SESSION_EXPIRE;
+						}
+						Date lastDate = (Date)ak.getVisitLastTime();
+						if(lastDate.addMonths(2).before(new Date())){
+							//如果上次(第一次)访问时间与系统时间相差2两小时的话，往idm验证一次
+							if(AuthFilter.IDM_AUTH.equals(authflag)){
+								return authenticate4Auth(appkey,ak.getLoginname(),servletRequest.getRemoteHost());
+							}else if(AuthFilter.IDM_REST_AUTH.equals(authflag)){
+								return authenticate4RestAuth(appkey, servletRequest.getRemoteHost());
+							}
+						}else{
+							//如果没有超过2小时直接允许继续访问
+							TSysUser user = new TSysUser();
+							user.setLoginName(ak.getLoginname());
+							TSysUser sysUser = userService.login(user);
+							if(sysUser == null){
+								return MessageCode.SESSION_EXPIRE;
+							}else{
+								accessKeyThread.set(sysUser);
+								return MessageCode.NORMAL;
+							}
+						}
+					}
+				}
+			}
+			if(!flag){
+				if(AuthFilter.IDM_AUTH.equals(authflag)){
+					return MessageCode.SESSION_EXPIRE;
+				}else if(AuthFilter.IDM_REST_AUTH.equals(authflag)){
+					return MessageCode.UNAUTHORIZED;
+				}
 			}
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
@@ -89,44 +139,115 @@ public class UserSessionService {
 	}
 	
 	/**
+	 * idm auth2 校验请求
+	 * @param appkey
+	 * @return
+	 */
+	private String authenticate4Auth(String appkey,String lname,String ip){
+		try {
+			Map attrs = new HashMap(2);
+			attrs.put("access_token", appkey);
+			String userObject = HttpUtils.request(EnvContant.getSystemConst("auth_profile"), attrs);
+			JSONObject userJson = new JSONObject(userObject);
+			if(userJson.has("id") && !StringUtils.isEmpty(userJson.getString("id"))){                                        
+				TSysUser user = new TSysUser();
+				user.setLoginName(lname);
+				TSysUser sysUser = userService.login(user);
+				if(sysUser == null){
+					return MessageCode.SESSION_EXPIRE;
+				}else{
+					TSysAccesskey record = new TSysAccesskey();
+					record.setAccesskey(appkey);
+					record.setType("10");
+					record.setVisitLastTime(new Date());
+					record.setVisitIp(ip);
+					isysAkService.updateIsysAccessKey(record);
+					accessKeyThread.set(sysUser);
+					return MessageCode.NORMAL;
+				}
+			}else{
+				return MessageCode.SESSION_EXPIRE;
+			}
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (JSONException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return MessageCode.SESSION_EXPIRE;
+	}
+	
+	/**
+	 * idm token 接口验证方式
+	 * @param appkey
+	 * @param ip
+	 * @return
+	 */
+	private String authenticate4RestAuth(String appkey,String ip){
+		try {
+			JSONObject json = new JSONObject();
+	    	json.put("username", "88001044");
+	    	json.put("password", "@bcd1234");
+	    	String userObject = HttpUtils.idmAppPost(EnvContant.getSystemConst("idm_validate_url"), json.toString());
+			JSONObject userJson = new JSONObject(userObject);
+			if(userJson.has("status") && "true".equals(userJson.getString("status")) && userJson.has("user") && userJson.getJSONObject("user").has("uid")){
+				TSysUser user = new TSysUser();
+				user.setLoginName(userJson.getJSONObject("user").getString("uid"));
+				TSysUser sysUser = userService.login(user);
+				if(sysUser == null){
+					return MessageCode.UNAUTHORIZED;
+				}else{
+					TSysAccesskey record = new TSysAccesskey();
+					record.setAccesskey(appkey);
+					record.setType("20"); //20 : 送奶app
+					record.setVisitLastTime(new Date());
+					record.setVisitIp(ip);
+					isysAkService.updateIsysAccessKey(record);
+					accessKeyThread.set(sysUser);
+					return MessageCode.NORMAL;
+				}
+			}
+		} catch (JSONException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return MessageCode.UNAUTHORIZED;
+	}
+	
+	/**
 	 * 检查http basic
 	 * @param servletRequest
 	 * @return
 	 */
 	private String checkHeaderAuth(HttpServletRequest servletRequest)  {
-		String auth = servletRequest.getHeader("Authorization");
-		if ((auth != null) && (auth.length() > 6)) {
-			auth = auth.substring(6, auth.length());
-			String decodedAuth = getFromBASE64(auth);
-			if(StringUtils.isEmpty(decodedAuth) || decodedAuth.split(":").length < 2){
-				return MessageCode.UNAUTHORIZED;
-			}
-			String[] auths = decodedAuth.split(":");
-			if(auths != null && auths.length == 2){
-				if(!(authsMap.get(auths[0]) != null && authsMap.get(auths[0]).equals(auths[1]))){
-					return MessageCode.UNAUTHORIZED;
+		String idm_auth =servletRequest.getHeader("dh-token");
+		String appcode =servletRequest.getHeader("appcode");
+		String appkey = servletRequest.getHeader("appkey");
+		String timestamp = servletRequest.getHeader("timestamp");
+		boolean flag = false;
+		if(HttpUtils.isValidDate(timestamp)){
+			Date fdate = com.nhry.utils.date.Date.parseDate(timestamp,"yyyyMMddHHmmss").addMinutes(6);
+			Date sysdate = new Date();
+			if(sysdate.before(fdate)){
+				//系统时间 小于 前端时间+6分钟
+				String encrypt= HttpUtils.encodePassword(appcode+appkey+timestamp, SysContant.getSystemConst(appcode+"_base_pw")+HttpUtils.getSixpw(timestamp));
+				System.out.println("------encrypt--------:"+encrypt);
+				System.out.println("------idm_auth--------:"+idm_auth);
+				if(encrypt.equals(idm_auth)){
+					flag = true;
 				}
-				//构建虚拟用户
-				TSysUser sysuser = new TSysUser();
-				sysuser.setLoginName(auths[0]);
-				sysuser.setDisplayName(auths[0]);
-				accessKeyThread.set(sysuser);
-				return MessageCode.NORMAL;
 			}
-		} 
-		return MessageCode.UNAUTHORIZED;
-	}
-	
-	private String getFromBASE64(String s) {
-		if (s == null)
-			return null;
-		BASE64Decoder decoder = new BASE64Decoder();
-		try {
-			byte[] b = decoder.decodeBuffer(s);
-			return new String(b);
-		} catch (Exception e) {
-			return null;
 		}
+		if(!flag){
+			return MessageCode.UNAUTHORIZED;
+		}
+		//构建虚拟用户
+		TSysUser sysuser = new TSysUser();
+		sysuser.setLoginName(appcode);
+		sysuser.setDisplayName(appcode);
+		accessKeyThread.set(sysuser);
+		return MessageCode.NORMAL;
 	}
 	
 	/**
@@ -154,9 +275,7 @@ public class UserSessionService {
 			user.setLoginName("88888888");
 			user.setDisplayName("测试用户");
 			user.setBranchNo("0300005942");
-//			user.setDealerId("");
 			user.setSalesOrg("4111");
-//			user.setSalesOrg("4100");
 			user.setLastModified(date);
 			return user;
 		}
@@ -173,5 +292,13 @@ public class UserSessionService {
 
 	public void setObjectRedisTemplate(RedisTemplate objectRedisTemplate) {
 		this.objectRedisTemplate = objectRedisTemplate;
+	}
+
+	public void setIsysAkService(TSysAccesskeyService isysAkService) {
+		this.isysAkService = isysAkService;
+	}
+
+	public void setUserService(UserService userService) {
+		this.userService = userService;
 	}
 }
