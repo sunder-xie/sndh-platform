@@ -9,8 +9,7 @@ import com.nhry.model.bill.CustBranchBillSearch;
 import com.nhry.model.bill.EmpBranchBillDetailSearch;
 import com.nhry.model.bill.EmpBranchBillSearch;
 import com.nhry.service.bill.dao.BranchBillService;
-
-import java.util.List;
+import org.apache.commons.lang3.StringUtils;
 
 /**
  * Created by gongjk on 2016/6/27.
@@ -36,9 +35,15 @@ public class BranchBillServiceImpl implements BranchBillService {
     @Override
     public PageInfo EmpBranchBill(EmpBranchBillSearch eSearch) {
         TSysUser user = userSessionService.getCurrentUser();
-        List<String> rids = tSysUserRoleMapper.getUserRidsByLoginName(user.getLoginName());
-        if(rids.contains("1004")){
+        //List<String> rids = tSysUserRoleMapper.getUserRidsByLoginName(user.getLoginName());
+        if(StringUtils.isNotBlank(user.getBranchNo())){
             eSearch.setBranchNo(user.getBranchNo());
+        }
+        if(StringUtils.isNoneBlank(user.getDealerId())){
+            eSearch.setDealerNo(user.getDealerId());
+        }
+        if(StringUtils.isNoneBlank(user.getSalesOrg())){
+            eSearch.setSalesOrg(user.getSalesOrg());
         }
         PageInfo data = branchBillMapper.branchBillEmpSearch(eSearch);
         return data;
@@ -48,9 +53,19 @@ public class BranchBillServiceImpl implements BranchBillService {
     public PageInfo getEmpBranchBillDetail(EmpBranchBillDetailSearch bsearch) {
         TSysUser user = userSessionService.getCurrentUser();
         bsearch.setSalesOrg(user.getSalesOrg());
-        List<String> rids = tSysUserRoleMapper.getUserRidsByLoginName(user.getLoginName());
-        if(rids.contains("1004")){
+      /*  List<String> rids = tSysUserRoleMapper.getUserRidsByLoginName(user.getLoginName());
+        if(rids.contains("10004")){
             bsearch.setBranchNo(user.getBranchNo());
+        }*/
+
+        if(StringUtils.isNotBlank(user.getBranchNo())){
+            bsearch.setBranchNo(user.getBranchNo());
+        }
+        if(StringUtils.isNoneBlank(user.getDealerId())){
+            bsearch.setDealerNo(user.getDealerId());
+        }
+        if(StringUtils.isNoneBlank(user.getSalesOrg())){
+            bsearch.setSalesOrg(user.getSalesOrg());
         }
         return branchBillMapper.branchBillEmpItemSearch(bsearch);
     }
@@ -58,9 +73,18 @@ public class BranchBillServiceImpl implements BranchBillService {
     @Override
     public PageInfo CustomerBranchBill(CustBranchBillSearch bsearch) {
         TSysUser user = userSessionService.getCurrentUser();
-        List<String> rids = tSysUserRoleMapper.getUserRidsByLoginName(user.getLoginName());
-        if(rids.contains("1004")){
+       /* List<String> rids = tSysUserRoleMapper.getUserRidsByLoginName(user.getLoginName());
+        if(rids.contains("10004")){
             bsearch.setBranchNo(user.getBranchNo());
+        }*/
+        if(StringUtils.isNotBlank(user.getBranchNo())){
+            bsearch.setBranchNo(user.getBranchNo());
+        }
+        if(StringUtils.isNoneBlank(user.getDealerId())){
+            bsearch.setDealerNo(user.getDealerId());
+        }
+        if(StringUtils.isNoneBlank(user.getSalesOrg())){
+            bsearch.setSalesOrg(user.getSalesOrg());
         }
         return branchBillMapper.CustomerBranchBill(bsearch);
     }
