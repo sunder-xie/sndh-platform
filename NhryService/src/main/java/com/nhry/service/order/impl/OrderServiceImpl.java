@@ -695,7 +695,12 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 		if(StringUtils.isNotBlank(record.getOrderNo())){
 			List<String> orderList = Arrays.asList(record.getOrderNo().split(","));
 			orderList.stream().forEach((e)->{
-				continueOrderAuto(e);
+				if(!"true".equals(record.getContent())){
+					record.setOrderNo(e);
+					continueOrder(record);
+				}else{
+					continueOrderAuto(e);
+				}
 			});
 		}
 		
@@ -873,8 +878,8 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 		SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
 		TPreOrder order = tPreOrderMapper.selectByPrimaryKey(record.getOrderNo());
 		
-		//后付款走自动续订流程
-		if("10".equals(order.getPaymentmethod())){
+		//在批量续订时，预付款的订单自动续订
+		if("true".equals(record.getContent()) || ("batch".equals(record.getStatus()) && "20".equals(order.getPaymentmethod())) ){
 			continueOrderAuto(order.getOrderNo());
 			return 1;
 		}
@@ -901,21 +906,23 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 		if(order!= null){
 			if("20".equals(order.getMilkboxStat()))throw new ServiceException(MessageCode.LOGIC_ERROR,record.getOrderNo()+"原订单还没有装箱，不能续订!");
 			if("20".equals(order.getPaymentmethod())&&"10".equals(order.getPaymentStat()))throw new ServiceException(MessageCode.LOGIC_ERROR, "原订单为预付款订单，没有付款，不能续订!");
-			Date sdate = null;
+			Date sdate = afterDate(order.getEndDate(),1);
+			Date edate = null;
 			try
 			{
-				sdate = format.parse(record.getOrderDateStart());
+				edate = format.parse(record.getOrderDateEnd());
 			}
 			catch (ParseException e)
 			{
 				throw new ServiceException(MessageCode.LOGIC_ERROR,"日期格式不正确!");
 			}
 			
+			if(edate.before(sdate))throw new ServiceException(MessageCode.LOGIC_ERROR,record.getOrderNo()+"续订截止日期不能小于原订单截止日期!");
 			if(sdate.before(order.getEndDate()))throw new ServiceException(MessageCode.LOGIC_ERROR,record.getOrderNo()+"续订日期不能小于原订单截止日期!"+order.getEndDate());
 //			String state = order.getPaymentmethod();
 			
 			//基本参考原单
-			int goDays = record.getGoDays();
+//			int goDays = record.getGoDays();
 			//新的订单号
 			Date date = new Date();
 			order.setOrderNo(CodeGeneratorUtil.getCode());
@@ -932,12 +939,12 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 				entry.setOrderNo(order.getOrderNo());
 				//设置配送开始时间
 				Date startDate = afterDate(sdate,entryDateMap.get(entry.getItemNo()));
-				Date edate = afterDate(startDate,daysOfTwo(entry.getStartDispDate(),entry.getEndDispDate()));
-				Date edate2 = afterDate(startDate,goDays);
-				if(edate2.before(startDate)){
+//				Date edate = afterDate(startDate,daysOfTwo(entry.getStartDispDate(),entry.getEndDispDate()));
+//				Date edate2 = afterDate(startDate,goDays);
+				if(edate.before(startDate)){
 					continue;//如果需要续订天数不足某一行，这行不需要续订
 				}
-			   entry.setEndDispDate(edate.before(edate2)?edate:edate2);
+			   entry.setEndDispDate(edate);
 				entry.setStartDispDate(startDate);
 				
 				entry.setItemNo(order.getOrderNo() + String.valueOf(index));//行项目编号
@@ -972,14 +979,14 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 			}
 			
 			//续费的金额存入帐户
-			if(StringUtils.isNotBlank(record.getGoAmt())){
+//			if(StringUtils.isNotBlank(record.getGoAmt())){
 //				BigDecimal remain = new BigDecimal(record.getGoAmt()).subtract(orderAmt);
-				TVipAcct account = new TVipAcct();
-				account.setBranchNo(order.getBranchNo());
-				account.setVipCustNo(order.getMilkmemberNo());
-				account.setAcctAmt(new BigDecimal(record.getGoAmt()));
-				tVipCustInfoService.addVipAcct(account);
-			}
+//				TVipAcct account = new TVipAcct();
+//				account.setBranchNo(order.getBranchNo());
+//				account.setVipCustNo(order.getMilkmemberNo());
+//				account.setAcctAmt(new BigDecimal(record.getGoAmt()));
+//				tVipCustInfoService.addVipAcct(account);
+//			}
 			
 			//订户状态更改
 			tVipCustInfoService.discontinue(order.getMilkmemberNo(), "10",null,new com.nhry.utils.date.Date());
