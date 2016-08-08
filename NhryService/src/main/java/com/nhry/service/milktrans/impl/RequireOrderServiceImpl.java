@@ -72,8 +72,14 @@ public class RequireOrderServiceImpl implements RequireOrderService {
     @Override
     public RequireOrderModel creatRequireOrder() {
         RequireOrderSearch rModel = new RequireOrderSearch();
-        Date today = new Date();
+        Date today = null;
         TSysUser user = userSessionService.getCurrentUser();
+        //如果是华西或者天音 则日期为今天  否则为后天
+        if("".equals(user.getSalesOrg())){
+            today = new Date();
+        }else{
+            today = DateUtil.getTomorrow(new Date());
+        }
         rModel.setBranchNo(user.getBranchNo());
         rModel.setRequiredDate(today);
         rModel.setSalesOrg(user.getSalesOrg());
