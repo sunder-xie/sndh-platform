@@ -8,8 +8,8 @@ import java.util.Date;
  */
 public class ExtendBranchInfoModel extends BranchInfoModel {
     String empNo;
-    Date orderDateStart;
-    Date orderDateEnd;
+    Date dateStart;
+    Date dateEnd;
 
     public String getEmpNo() {
         return empNo;
@@ -19,19 +19,19 @@ public class ExtendBranchInfoModel extends BranchInfoModel {
         this.empNo = empNo;
     }
 
-    public Date getOrderDateStart() {
-        return orderDateStart;
+    public Date getDateStart() {
+        return dateStart;
     }
 
-    public void setOrderDateStart(Date orderDateStart) {
-        this.orderDateStart = orderDateStart;
+    public void setDateStart(Date orderDateStart) {
+        this.dateStart = orderDateStart;
     }
 
-    public Date getOrderDateEnd() {
-        return orderDateEnd;
+    public Date getDateEnd() {
+        return dateEnd;
     }
 
-    public void setOrderDateEnd(Date orderDateEnd) {
-        this.orderDateEnd = orderDateEnd;
+    public void setDateEnd(Date orderDateEnd) {
+        this.dateEnd = orderDateEnd;
     }
 }
