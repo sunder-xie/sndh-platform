@@ -325,4 +325,13 @@ public class OrderResource extends BaseResource {
 		return convertToRespModel(MessageCode.NORMAL, null, orderService.replaceOrdersDispmember(smodel));
 	}
 	
+	@POST
+	@Path("/viewDaliyPlans")
+	@Produces(MediaType.APPLICATION_JSON)
+	@Consumes(MediaType.APPLICATION_JSON)
+	@ApiOperation(value = "/viewDaliyPlans", response = Integer.class, notes = "预览日计划")
+	public Response viewDaliyPlans(@ApiParam(required=true,name="smodel",value="OrderCreateModel") OrderCreateModel record){
+		return convertToRespModel(MessageCode.NORMAL, null, orderService.viewDaliyPlans(record));
+	}
+	
 }

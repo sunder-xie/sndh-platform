@@ -20,13 +20,13 @@ public class IV_GUID_type1 implements org.apache.axis2.databinding.ADBBean {
     /**
      * field for IV_GUID_type0
      */
-    protected javax.activation.DataHandler localIV_GUID_type0;
+    protected String localIV_GUID_type0;
 
     /**
      * Auto generated getter method
-     * @return javax.activation.DataHandler
+     * @return java.lang.String
      */
-    public javax.activation.DataHandler getIV_GUID_type0() {
+    public String getIV_GUID_type0() {
         return localIV_GUID_type0;
     }
 
@@ -34,8 +34,8 @@ public class IV_GUID_type1 implements org.apache.axis2.databinding.ADBBean {
      * Auto generated setter method
      * @param param IV_GUID_type0
      */
-    public void setIV_GUID_type0(javax.activation.DataHandler param) {
-        if ((String.valueOf(param).length() <= 16)) {
+    public void setIV_GUID_type0(String param) {
+        if ((String.valueOf(param).length() <= 32)) {
             this.localIV_GUID_type0 = param;
         } else {
             throw new RuntimeException(
@@ -99,8 +99,7 @@ public class IV_GUID_type1 implements org.apache.axis2.databinding.ADBBean {
             throw new org.apache.axis2.databinding.ADBException(
                 "IV_GUID_type0 cannot be null !!");
         } else {
-            xmlWriter.writeCharacters(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(
-                    localIV_GUID_type0));
+            xmlWriter.writeCharacters(localIV_GUID_type0);
         }
 
         xmlWriter.writeEndElement();
@@ -318,7 +317,7 @@ public class IV_GUID_type1 implements org.apache.axis2.databinding.ADBBean {
             String namespaceURI) {
             IV_GUID_type1 returnValue = new IV_GUID_type1();
 
-            returnValue.setIV_GUID_type0(org.apache.axis2.databinding.utils.ConverterUtil.convertToBase64Binary(
+            returnValue.setIV_GUID_type0(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(
                     value));
 
             return returnValue;
@@ -381,7 +380,7 @@ public class IV_GUID_type1 implements org.apache.axis2.databinding.ADBBean {
 
                             String content = reader.getElementText();
 
-                            object.setIV_GUID_type0(org.apache.axis2.databinding.utils.ConverterUtil.convertToBase64Binary(
+                            object.setIV_GUID_type0(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(
                                     content));
                         } // End of if for expected property start element
 

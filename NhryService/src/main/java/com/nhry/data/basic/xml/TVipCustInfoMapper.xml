@@ -161,6 +161,7 @@
 	</select>
 	<select id="findVipCustByNoForUpt" resultMap="BaseResultMap" parameterType="java.lang.String">
 		SELECT
+		i.VIP_CUST_NO_SAP,
 		i.VIP_CUST_NO,
 		i.SALES_ORG,
 		i.VIP_NAME,

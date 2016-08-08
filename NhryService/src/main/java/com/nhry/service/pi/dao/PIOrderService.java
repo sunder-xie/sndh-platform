@@ -8,6 +8,7 @@ import com.nhry.service.pi.pojo.PIReturnMessage;
 
 import javax.jws.WebParam;
 import javax.jws.WebService;
+import javax.xml.bind.annotation.XmlElement;
 import java.util.Date;
 import java.util.List;
 
@@ -16,5 +17,5 @@ import java.util.List;
  */
 @WebService
 public interface PIOrderService {
-   PIReturnMessage findOrder(@WebParam(name = "ORDER_NO") String ORDER_NO, @WebParam(name = "T_PREORDER") TPreOrder T_PREORDER, @WebParam(name = "T_MST_PLAN_ORDER_ITEM") List<TPlanOrderItem> planItems, @WebParam(name = "T_MST_ORDER_DALIY_PLAN_ITEM") List<TOrderDaliyPlanItem> daliyPlanItems);
+   PIReturnMessage findOrder(@XmlElement(required=true) @WebParam(name = "ORDER_NO")  String ORDER_NO);
 }

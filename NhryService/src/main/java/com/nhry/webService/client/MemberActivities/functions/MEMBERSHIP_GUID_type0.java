@@ -20,13 +20,13 @@ public class MEMBERSHIP_GUID_type0 implements org.apache.axis2.databinding.ADBBe
     /**
      * field for MEMBERSHIP_GUID_type0
      */
-    protected javax.activation.DataHandler localMEMBERSHIP_GUID_type0;
+    protected String localMEMBERSHIP_GUID_type0;
 
     /**
      * Auto generated getter method
-     * @return javax.activation.DataHandler
+     * @return java.lang.String
      */
-    public javax.activation.DataHandler getMEMBERSHIP_GUID_type0() {
+    public String getMEMBERSHIP_GUID_type0() {
         return localMEMBERSHIP_GUID_type0;
     }
 
@@ -34,8 +34,8 @@ public class MEMBERSHIP_GUID_type0 implements org.apache.axis2.databinding.ADBBe
      * Auto generated setter method
      * @param param MEMBERSHIP_GUID_type0
      */
-    public void setMEMBERSHIP_GUID_type0(javax.activation.DataHandler param) {
-        if ((String.valueOf(param).length() <= 16)) {
+    public void setMEMBERSHIP_GUID_type0(String param) {
+        if ((String.valueOf(param).length() <= 32)) {
             this.localMEMBERSHIP_GUID_type0 = param;
         } else {
             throw new RuntimeException(
@@ -99,8 +99,7 @@ public class MEMBERSHIP_GUID_type0 implements org.apache.axis2.databinding.ADBBe
             throw new org.apache.axis2.databinding.ADBException(
                 "MEMBERSHIP_GUID_type0 cannot be null !!");
         } else {
-            xmlWriter.writeCharacters(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(
-                    localMEMBERSHIP_GUID_type0));
+            xmlWriter.writeCharacters(localMEMBERSHIP_GUID_type0);
         }
 
         xmlWriter.writeEndElement();
@@ -318,7 +317,7 @@ public class MEMBERSHIP_GUID_type0 implements org.apache.axis2.databinding.ADBBe
             String namespaceURI) {
             MEMBERSHIP_GUID_type0 returnValue = new MEMBERSHIP_GUID_type0();
 
-            returnValue.setMEMBERSHIP_GUID_type0(org.apache.axis2.databinding.utils.ConverterUtil.convertToBase64Binary(
+            returnValue.setMEMBERSHIP_GUID_type0(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(
                     value));
 
             return returnValue;
@@ -382,7 +381,7 @@ public class MEMBERSHIP_GUID_type0 implements org.apache.axis2.databinding.ADBBe
 
                             String content = reader.getElementText();
 
-                            object.setMEMBERSHIP_GUID_type0(org.apache.axis2.databinding.utils.ConverterUtil.convertToBase64Binary(
+                            object.setMEMBERSHIP_GUID_type0(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(
                                     content));
                         } // End of if for expected property start element
 

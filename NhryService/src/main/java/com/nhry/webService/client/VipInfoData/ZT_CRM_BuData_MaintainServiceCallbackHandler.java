@@ -50,7 +50,7 @@ public abstract class ZT_CRM_BuData_MaintainServiceCallbackHandler {
      * auto generated Axis2 Error handler
      * override this method for handling error response from memberCreate operation
      */
-    public void receiveErrormemberCreate(java.lang.Exception e) {
+    public void receiveErrormemberCreate(Exception e) {
     }
 
     /**
@@ -65,6 +65,6 @@ public abstract class ZT_CRM_BuData_MaintainServiceCallbackHandler {
      * auto generated Axis2 Error handler
      * override this method for handling error response from subscriberMaintain operation
      */
-    public void receiveErrorsubscriberMaintain(java.lang.Exception e) {
+    public void receiveErrorsubscriberMaintain(Exception e) {
     }
 }

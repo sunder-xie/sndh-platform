@@ -236,7 +236,7 @@ public class PointQuery_OutServiceStub extends org.apache.axis2.client.Stub
      */
     public void startpointQuery_Out(
         com.nhry.webService.client.VipPoint.functions.Z_CRM_PT_QUERY_RFC z_CRM_PT_QUERY_RFC2,
-        final com.nhry.webService.client.VipPoint.PointQuery_OutServiceCallbackHandler callback)
+        final PointQuery_OutServiceCallbackHandler callback)
         throws java.rmi.RemoteException {
         org.apache.axis2.client.OperationClient _operationClient = _serviceClient.createClient(_operations[0].getName());
         _operationClient.getOptions()
