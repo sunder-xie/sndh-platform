@@ -58,6 +58,7 @@ public class IdmAuthServlet extends HttpServlet {
 			String code = request.getParameter("code");
 			System.out.println("-----code--------"+code);
 			String ip = request.getParameter("id");
+			System.out.println("----- ip--------"+ ip);
 			if (!StringUtils.isEmpty(code)) {
 				Map<String,Object> attrs = new HashMap<String,Object>();
 				attrs.put("client_id", EnvContant.getSystemConst("client_id"));
