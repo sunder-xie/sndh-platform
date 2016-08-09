@@ -249,6 +249,7 @@ public class ReportResource extends BaseResource{
                     cell.setCellValue(item.getCustTel());
                     cell = row.getCell(7);
                     cell.setCellValue(item.getCustName());
+                    r++;
                 }
             }
             String fname = CodeGeneratorUtil.getCode();
@@ -318,6 +319,7 @@ public class ReportResource extends BaseResource{
                         paymentStatName="垫付款";
                     }
                     cell.setCellValue(paymentStatName);
+                    r++;
                 }
             }
             String fname = CodeGeneratorUtil.getCode();
