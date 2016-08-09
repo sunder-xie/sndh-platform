@@ -127,10 +127,10 @@ public class IdmAuthServlet extends HttpServlet {
 			System.out.println("-------开始跳转----------");
 			if(StringUtils.isEmpty(ip)){
 				response.setHeader("appkey", token);
-				response.sendRedirect(EnvContant.getSystemConst("front_home_page")+"?dh_token="+token);
+				response.sendRedirect(EnvContant.getSystemConst("front_home_page")+"?appkey="+token);
 			}else{
 				response.setHeader("appkey", token);
-				response.sendRedirect("http://"+Base64Util.decodeStr(ip)+EnvContant.getSystemConst("front_short_url")+"?dh_token="+token);
+				response.sendRedirect("http://"+Base64Util.decodeStr(ip)+EnvContant.getSystemConst("front_short_url")+"?appkey="+token);
 			}
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
