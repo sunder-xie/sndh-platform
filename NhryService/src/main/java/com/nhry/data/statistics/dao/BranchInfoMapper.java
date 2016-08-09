@@ -22,4 +22,5 @@ public interface BranchInfoMapper {
     List<Map<String,String>> findBranchMonthReportOutput(BranchInfoModel model);
     List<Map<String,String>> findOrderRatioOutput(BranchInfoModel model);
     PageInfo findChangeplanStatReport(ExtendBranchInfoModel model);
+    PageInfo returnBoxStatReport(ExtendBranchInfoModel model);
 }

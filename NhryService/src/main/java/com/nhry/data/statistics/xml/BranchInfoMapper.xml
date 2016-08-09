@@ -442,7 +442,7 @@
         LEFT JOIN t_md_mara m ON m.MATNR = i.MATNR
         AND b.SALES_ORG = m.SALES_ORG
     </select>
-    <select id="changeplanStatReport" resultType="hashmap" parameterType="com.nhry.model.statistics.BranchInfoModel">
+    <select id="changeplanStatReport" resultType="hashmap" parameterType="com.nhry.model.statistics.ExtendBranchInfoModel">
             SELECT
                 br.BRANCH_NAME,
                 u.EMP_NAME,
@@ -484,12 +484,66 @@
         <if test="empNo !=null">
             AND u.EMP_NO = ${empNo}
         </if>
-        <if test="orderDateStart !=null">
-            AND i.ORDER_DATE  &gt;=  #{orderDateStart,jdbcType=DATE}
+        <if test="dateStart !=null">
+            AND i.ORDER_DATE  &gt;=  #{dateStart,jdbcType=DATE}
         </if>
-        <if test="orderDateEnd !=null">
-            AND i.ORDER_DATE  &gt;=  #{orderDateEnd,jdbcType=DATE}
+        <if test="dateEnd !=null">
+            AND i.ORDER_DATE  &gt;=  #{dateEnd,jdbcType=DATE}
         </if>
          order by i.ORDER_DATE desc
+    </select>
+    <select id="returnBoxStatReport" resultType="hashmap" parameterType="com.nhry.model.statistics.ExtendBranchInfoModel">
+        SELECT
+        d.BRANCH_NO,
+        br.BRANCH_NAME,
+        e.EMP_NAME,
+        d.EMP_NO,
+        (
+        SELECT
+        i.ITEM_NAME
+        FROM
+        t_sys_code_item i
+        WHERE
+        i.TYPE_CODE =<include refid="mybaties.constant.bot_type"/>
+        AND i.ITEM_CODE = d.SPEC
+        ) SPEC_NAME,
+        IFNULL(sum(d.RECEIVE_NUM), 0) RECEIVE_NUM,
+        IFNULL(sum(d.REAL_NUM), 0) REAL_NUM,
+        (
+        IFNULL(sum(d.RECEIVE_NUM), 0) - IFNULL(sum(d.REAL_NUM), 0)
+        ) AS dif
+        FROM
+        t_rec_bot_detail d
+        LEFT JOIN t_md_branch br ON d.BRANCH_NO = br.BRANCH_NO
+        LEFT JOIN t_md_dealer de ON br.DEALER_NO = de.DEALER_NO
+        LEFT JOIN t_md_branch_emp e ON d.EMP_NO = e.EMP_NO
+        WHERE
+        1 = 1
+        <if test="salesOrg != null">
+            AND br.SALES_ORG = ${salesOrg}
+        </if>
+        <if test="branchNo != null">
+            AND br.BRANCH_NO = ${branchNo}
+        </if>
+        <if test="dealerId != null and dealerId != '-1'">
+            AND br.DEALER_NO = ${dealerId}
+        </if>
+        <if test="empNo !=null">
+            AND d.EMP_NO = ${empNo}
+        </if>
+        <if test="dateStart !=null">
+            AND d.CREATE_AT  &gt;=  #{dateStart,jdbcType=DATE}
+        </if>
+        <if test="dateEnd !=null">
+            AND d.CREATE_AT  &gt;=  #{dateEnd,jdbcType=DATE}
+        </if>
+        GROUP BY
+        d.BRANCH_NO,
+        e.EMP_NAME,
+        SPEC_NAME
+        ORDER BY
+        d.BRANCH_NO,
+        d.EMP_NO,
+        d.SPEC
     </select>
 </mapper>

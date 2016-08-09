@@ -1995,7 +1995,7 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 				if(entry.getConfirmAmt().floatValue() == 0){
 					orgOrder.setCurAmt(orgOrder.getCurAmt().subtract(entry.getAmt()));
 				}else{
-					orgOrder.setCurAmt(orgOrder.getInitAmt().subtract(entry.getConfirmAmt()));
+					orgOrder.setCurAmt(orgOrder.getCurAmt().subtract(cj).subtract(entry.getConfirmAmt()));
 				}
 				tPreOrderMapper.updateOrderCurAmtAndInitAmt(orgOrder);
 			
