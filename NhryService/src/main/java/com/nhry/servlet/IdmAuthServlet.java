@@ -120,10 +120,10 @@ public class IdmAuthServlet extends HttpServlet {
 		//跳转到登录页面
 		try {
 			if(StringUtils.isEmpty(ip)){
-				response.setHeader("dh_token", token);
+				response.setHeader("appkey", token);
 				response.sendRedirect(EnvContant.getSystemConst("front_home_page")+"?dh_token="+token);
 			}else{
-				response.setHeader("dh_token", token);
+				response.setHeader("appkey", token);
 				response.sendRedirect("http://"+Base64Util.decodeStr(ip)+EnvContant.getSystemConst("front_short_url")+"?dh_token="+token);
 			}
 		} catch (IOException e) {
