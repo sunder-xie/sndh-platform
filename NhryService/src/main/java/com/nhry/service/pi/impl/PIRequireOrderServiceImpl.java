@@ -120,7 +120,7 @@ public class PIRequireOrderServiceImpl implements PIRequireOrderService {
         String auartType = PIPropertitesUtil.getValue("PI.AUART.ZOR");
         String saleOrgTX = PIPropertitesUtil.getValue("PI.SALEORG_TX");
         String freeType = ssmSalOrder.getFreeFlag();
-        if("Y".equals(freeType)){
+        if("N".equals(freeType)){
             if(saleOrgTX.equals(ssmSalOrder.getSalesOrg())){
                 auartType = PIPropertitesUtil.getValue("PI.AUART.ZOR1");
             }else{
