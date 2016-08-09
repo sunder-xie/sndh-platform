@@ -94,7 +94,15 @@
     <bean class="com.nhry.data.promotion.impl.PromotionScopeItemMapperImpl" id="promotionScopeItemMapper">
         <property name="sqlSessionTemplate" ref="dynamicSqlSessionTemplate"/>
     </bean>
+    <bean class="com.nhry.service.promotion.impl.PromotionDataServiceImpl" id="promotionDataService">
+        <property name="promotionScopeItemMapper" ref="promotionScopeItemMapper"/>
+        <property name="promotionConItemMapper" ref="promotionConItemMapper"/>
+        <property name="promotionGiftItemMapper" ref="promotionGiftItemMapper"/>
+        <property name="promotionMapper" ref="promotionMapper"/>
+        <property name="promotionOrigItemMapper" ref="promotionOrigItemMapper"/>
+    </bean>
     <bean class="com.nhry.service.pi.impl.PIPromotionDataServiceImpl" id="piPromotionDataService">
+        <property name="promotionDataService" ref="promotionDataService"/>
     </bean>
     <jaxws:endpoint implementor="#piPromotionDataService" id="piPromotionDataServiceImpl" address="/promotionDataService"/>
 </beans>
