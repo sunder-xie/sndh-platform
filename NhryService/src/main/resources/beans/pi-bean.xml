@@ -79,4 +79,22 @@
     <bean class="com.nhry.service.pi.impl.PIVipPointServiceImpl" id="piVipPointService">
 
     </bean>
+    <bean class="com.nhry.data.promotion.impl.PromotionMapperImpl" id="promotionMapper">
+        <property name="sqlSessionTemplate" ref="dynamicSqlSessionTemplate"/>
+    </bean>
+    <bean class="com.nhry.data.promotion.impl.PromotionConItemMapperImpl" id="promotionConItemMapper">
+        <property name="sqlSessionTemplate" ref="dynamicSqlSessionTemplate"/>
+    </bean>
+    <bean class="com.nhry.data.promotion.impl.PromotionGiftItemMapperImpl" id="promotionGiftItemMapper">
+        <property name="sqlSessionTemplate" ref="dynamicSqlSessionTemplate"/>
+    </bean>
+    <bean class="com.nhry.data.promotion.impl.PromotionOrigItemMapperImpl" id="promotionOrigItemMapper">
+        <property name="sqlSessionTemplate" ref="dynamicSqlSessionTemplate"/>
+    </bean>
+    <bean class="com.nhry.data.promotion.impl.PromotionScopeItemMapperImpl" id="promotionScopeItemMapper">
+        <property name="sqlSessionTemplate" ref="dynamicSqlSessionTemplate"/>
+    </bean>
+    <bean class="com.nhry.service.pi.impl.PIPromotionDataServiceImpl" id="piPromotionDataService">
+    </bean>
+    <jaxws:endpoint implementor="#piPromotionDataService" id="piPromotionDataServiceImpl" address="/promotionDataService"/>
 </beans>

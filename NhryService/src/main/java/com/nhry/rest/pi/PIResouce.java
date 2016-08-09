@@ -165,7 +165,7 @@ public class PIResouce extends BaseResource{
         MemberActivities ac = new MemberActivities();
         ac.setActivitydate(new Date());
         ac.setAmount(new BigDecimal(110));
-        ac.setCardid("0000000323");
+//        ac.setCardid("0000000323");
         ac.setCategory("ACCRUAL");
         ac.setCommit("X");
         ac.setItemnum("10");
@@ -179,6 +179,17 @@ public class PIResouce extends BaseResource{
         ac.setRetailstoreid("0300005935");
         ac.setSalesorg("4111");
         return convertToRespModel(MessageCode.NORMAL, piVipInfoDataService.createMemberActivities(ac), null);
+    }
+
+
+    @POST
+    @Path("/sendSubscriber/{code}")
+    @Produces(MediaType.APPLICATION_JSON)
+    @Consumes(MediaType.APPLICATION_JSON)
+    @ApiOperation(value = "/sendSubscriber/{code}", response = ResponseModel.class, notes = "发送订户数据")
+    public Response sendSubscriber(@PathParam("code") String code){
+        TVipCustInfo vipCustInfo = tVipCustInfoService.findVipCustByNoForUpt(code);
+        return convertToRespModel(MessageCode.NORMAL, piVipInfoDataService.sendSubscriber(vipCustInfo), null);
     }
 
 }
