@@ -120,7 +120,7 @@ public class EcBaseService {
 			    			}
 			    			log.setErrorCode(errorCode);
 			    			log.setLastModified(new Date());
-			    			log.setAmount(log.getAmount()+1);
+			    			log.setAmount(log.getAmount()==null ? 1 : log.getAmount()+1);
 			    			messLogMapper.updatePushMessageLog(log);
 			    		}
 					 }

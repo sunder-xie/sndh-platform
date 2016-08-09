@@ -22,6 +22,8 @@ import org.springframework.stereotype.Component;
 
 import com.nhry.common.exception.MessageCode;
 import com.nhry.model.sys.ResponseModel;
+import com.nhry.service.auth.dao.TSysAccesskeyService;
+import com.nhry.utils.Base64Util;
 import com.nhry.utils.CookieUtil;
 import com.nhry.utils.EnvContant;
 import com.nhry.utils.SysContant;
@@ -34,6 +36,7 @@ public class AuthFilter implements ContainerRequestFilter {
 	protected static  List<String> whiteUriList =null;
 	protected static  List<String> whiteHostList =null;
 	protected static final String IDM_AUTH="idm_auth";
+	protected static final String IDM_REST_AUTH="idm_rest_auth";
 	protected static final String DH_AUTH="dh_auth";
 	protected static final String HTTP_AUTH="http_auth";
 	@Context
@@ -42,6 +45,8 @@ public class AuthFilter implements ContainerRequestFilter {
 	protected HttpServletResponse response;
 	@Autowired
 	protected UserSessionService userSessionService;
+	@Autowired
+	private TSysAccesskeyService isysAkService;
 	
 	static{
 		whiteUriList = new ArrayList<String>();
@@ -64,12 +69,33 @@ public class AuthFilter implements ContainerRequestFilter {
 				//白名单过滤
 				return request;
 			}
+			/**
+			 * dh-token   salt(appcode+appkey+timestamp) 26位(固：010da99b8b994b5794094f2eae)+6位变化的
+			 *             内容：appcode+appkey+timestamp
+			 * appcode 系统标示  
+			 * appkey 对于线下系统调用的是：8位的随机数(字母+数字 组合),线上系统是idm的token
+			 * timestamp yyyyMMddHHmmss
+			 */
 			String idm_auth =request.getHeaderValue("dh-token");
+			String appcode =request.getHeaderValue("appcode");
+			String appkey = request.getHeaderValue("appkey");
+			String timestamp = request.getHeaderValue("timestamp");
 			String dh_ak = CookieUtil.getCookieValue(this.request, UserSessionService.accessKey);
 			String http_auth = request.getHeaderValue("Authorization");
 			if(!StringUtils.isEmpty(idm_auth)){
-				//idm认证
-				return new IdmAuthFilter(this.request,this.response,this.userSessionService).filter(request);
+				if(StringUtils.isEmpty(appcode)){
+					Response response = formatData(MessageCode.UNAUTHORIZED, SysContant.getSystemConst(MessageCode.UNAUTHORIZED), null, Status.UNAUTHORIZED);
+		            throw new WebApplicationException(response);
+				}else if("dhxt".equals(appcode)){
+					//idm auth2.0认证
+					return new IdmAuthFilter(this.request,this.response,this.userSessionService,"dhxt").filter(request);
+				}else if("snapp".equals(appcode)){
+					//送奶员app认证
+					return new IdmAuthFilter(this.request,this.response,this.userSessionService,"snapp").filter(request);
+				}else{
+					//其他系统线下调用 http basic认证
+					return new HttpBasicFilter(this.request,this.response,this.userSessionService).filter(request);
+				}
 			}else if(!StringUtils.isEmpty(http_auth)){
 				//http basic认证
 				return new HttpBasicFilter(this.request,this.response,this.userSessionService).filter(request);
@@ -85,10 +111,6 @@ public class AuthFilter implements ContainerRequestFilter {
 	}
 	
 	protected Response formatData(String type, Object msg, Object data,Status statusCode) {
-//		response.setHeader("Access-Control-Allow-Methods", "GET,POST,PUT,DELETE,OPTIONS");
-//		response.setHeader("Access-Control-Allow-Credentials", "true");  
-//		response.setHeader("Access-Control-Expose-Headers", "Content-Type"); 
-//		response.setHeader("Access-Control-Allow-Origin","*");
 		ResponseModel rsmodel = new ResponseModel();
 		rsmodel.setType(type);
 		rsmodel.setMsg(msg);

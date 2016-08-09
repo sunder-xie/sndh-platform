@@ -518,6 +518,11 @@
 			<version>2.2.7-b41</version>
 		</dependency>
 		<!-- axis2 end -->
+		<dependency>
+		    <groupId>org.springframework.security</groupId>
+		    <artifactId>spring-security-core</artifactId>
+		    <version>4.1.0.RELEASE</version>
+		</dependency>
 	</dependencies>
 	<!-- 插件配置 -->
 	<build>

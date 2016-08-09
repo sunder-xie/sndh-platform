@@ -14,7 +14,9 @@ import sun.misc.BASE64Decoder;
 
 import com.nhry.common.exception.MessageCode;
 import com.nhry.data.auth.domain.TSysUser;
+import com.nhry.utils.HttpUtils;
 import com.nhry.utils.SysContant;
+import com.nhry.utils.date.Date;
 import com.sun.jersey.spi.container.ContainerRequest;
 
 public class HttpBasicFilter extends AuthFilter {

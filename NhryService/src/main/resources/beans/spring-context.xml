@@ -29,6 +29,8 @@
 		<constructor-arg index="0" ref="sqlSessionTemplate" />
 	</bean>
 	<bean id="userSessionService" class="com.nhry.common.auth.UserSessionService">
+	   <property name="isysAkService" ref="isysAkService"></property>
+	   <property name="userService" ref="userService"></property>
 	   <property name="objectRedisTemplate" ref="objectRedisTemplate"></property>
 	</bean>
 	<!-- 定义单个jdbc数据源的事务管理器 -->
