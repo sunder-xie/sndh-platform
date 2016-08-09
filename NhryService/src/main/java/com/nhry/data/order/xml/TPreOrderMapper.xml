@@ -749,7 +749,7 @@
   </if>
   ORDER BY ORDER_NO desc
 </select>
-  <select id="searchCustomerOrderForExp" resultType="java.util.ArrayList" parameterType="com.nhry.model.bill.CustBillQueryModel">
+  <select id="searchCustomerOrderForExp" resultType="String" parameterType="com.nhry.model.bill.CustBillQueryModel">
     select
     o.ORDER_NO
     FROM t_preorder o
