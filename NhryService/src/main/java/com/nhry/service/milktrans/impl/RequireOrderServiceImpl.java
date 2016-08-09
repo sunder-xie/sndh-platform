@@ -75,7 +75,7 @@ public class RequireOrderServiceImpl implements RequireOrderService {
         Date today = null;
         TSysUser user = userSessionService.getCurrentUser();
         //如果是华西或者天音 则日期为今天  否则为后天
-        if("".equals(user.getSalesOrg())){
+        if("4181".equals(user.getSalesOrg()) || "4390".equals(user.getSalesOrg())){
             today = new Date();
         }else{
             today = DateUtil.getTomorrow(new Date());

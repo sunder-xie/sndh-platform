@@ -5,6 +5,7 @@ import com.nhry.common.datasource.DynamicSqlSessionTemplate;
 import com.nhry.data.milktrans.dao.TRecBotDetailMapper;
 import com.nhry.data.milktrans.domain.TRecBotDetail;
 import com.nhry.model.milktrans.ReturnboxSerarch;
+import com.nhry.model.stock.StockModel;
 
 import java.util.List;
 import java.util.Map;
@@ -31,6 +32,11 @@ public class TRecBotDetailMapperImpl implements TRecBotDetailMapper {
     @Override
     public List<TRecBotDetail> selectRetByDispOrderNo(String dispOrderNo) {
         return sqlSessionTemplate.selectList("selectRetByDispOrderNo",dispOrderNo);
+    }
+
+    @Override
+    public List<TRecBotDetail> craeteRetBotByStock(StockModel sModel) {
+        return sqlSessionTemplate.selectList("craeteRetBotByStock",sModel);
     }
 
     @Override
