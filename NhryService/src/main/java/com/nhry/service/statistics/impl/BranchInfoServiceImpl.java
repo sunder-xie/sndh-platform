@@ -173,4 +173,20 @@ public class BranchInfoServiceImpl implements BranchInfoService {
         }
         return branchInfoMapper.findChangeplanStatReport(model);
     }
+    @Override
+    public PageInfo returnBoxStatReport(ExtendBranchInfoModel model){
+        if(StringUtils.isEmpty(model.getPageNum()) || StringUtils.isEmpty(model.getPageSize())){
+            throw new ServiceException(MessageCode.LOGIC_ERROR,"pageNum和pageSize不能为空！");
+        }
+        TSysUser user = userSessionService.getCurrentUser();
+        if(StringUtils.isEmpty(model.getBranchNo()) && StringUtils.isNotEmpty(user.getBranchNo())){
+            model.setBranchNo(user.getBranchNo());
+        }else if(StringUtils.isEmpty(model.getDealerId()) && StringUtils.isNotEmpty(user.getDealerId())){
+            model.setDealerId(user.getDealerId());
+        }
+        if(StringUtils.isNotEmpty(user.getSalesOrg())){
+            model.setSalesOrg(user.getSalesOrg());
+        }
+        return branchInfoMapper.returnBoxStatReport(model);
+    }
 }

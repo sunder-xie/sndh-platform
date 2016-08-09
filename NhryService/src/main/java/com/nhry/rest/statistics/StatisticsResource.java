@@ -88,4 +88,12 @@ public class StatisticsResource extends BaseResource {
     public Response findChangeplanStatReport(@ApiParam(name = "model",value = "换货差异") ExtendBranchInfoModel model){
         return convertToRespModel(MessageCode.NORMAL, null, branchInfoService.findChangeplanStatReport(model));
     }
+    @POST
+    @Path("/returnBoxStatReport")
+    @Produces(MediaType.APPLICATION_JSON)
+    @Consumes(MediaType.APPLICATION_JSON)
+    @ApiOperation(value = "/returnBoxStatReport}", response = ResponseModel.class, notes = "回瓶汇总")
+    public Response returnBoxStatReport(@ApiParam(name = "model",value = "回瓶汇总") ExtendBranchInfoModel model){
+        return convertToRespModel(MessageCode.NORMAL, null, branchInfoService.returnBoxStatReport(model));
+    }
 }
