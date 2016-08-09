@@ -125,11 +125,13 @@ public class IdmAuthServlet extends HttpServlet {
 	public void sendRedirectToHomePage(HttpServletRequest request, HttpServletResponse response,String token,String ip){
 		//跳转到登录页面
 		try {
-			System.out.println("-------开始跳转----------");
+			System.out.println("-------开始跳转----------"+ip);
 			if(StringUtils.isEmpty(ip)){
+				System.out.println("-------开始跳转----1------"+ip);
 				response.setHeader("appkey", token);
 				response.sendRedirect(EnvContant.getSystemConst("front_home_page")+"?appkey="+token);
 			}else{
+				System.out.println("-------开始跳转----2------"+ip);
 				response.setHeader("appkey", token);
 				response.sendRedirect("http://"+Base64Util.decodeStr(ip)+EnvContant.getSystemConst("front_short_url")+"?appkey="+token);
 			}
