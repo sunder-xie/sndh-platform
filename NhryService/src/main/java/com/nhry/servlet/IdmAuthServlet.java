@@ -70,7 +70,7 @@ public class IdmAuthServlet extends HttpServlet {
 				if(!StringUtils.isEmpty(access_token)){
 					attrs.clear();
 					String token = access_token.split("=")[1].split("&")[0];
-					attrs.put("appkey", token);
+					attrs.put("access_token", token);
 					String userObject = HttpUtils.request(EnvContant.getSystemConst("auth_profile"), attrs);
 					System.out.println("-----userObject--------"+userObject);
 					JSONObject userJson = new JSONObject(userObject);
