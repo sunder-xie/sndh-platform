@@ -74,4 +74,6 @@ public interface TPreOrderMapper {
     PageInfo selectNeedResumeOrders(OrderSearchModel smodel);
     
     List<TPreOrder> selectIniOrders();
+
+    List<String> searchCustomerOrderForExp(CustBillQueryModel cModel);
 }
