@@ -141,7 +141,7 @@ public class RequireOrderServiceImpl implements RequireOrderService {
             throw new ServiceException(MessageCode.LOGIC_ERROR,"今天该奶站没有可以生成要货计划的行项目");
         }
         //查询出今天的要货计划
-        return this.searchRequireOrder(requireDate);
+        return this.searchRequireOrder(today);
 
     }
 
