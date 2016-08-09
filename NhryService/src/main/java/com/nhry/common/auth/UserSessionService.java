@@ -85,13 +85,20 @@ public class UserSessionService {
 			String appcode =servletRequest.getHeader("appcode");
 			String appkey = servletRequest.getHeader("appkey");
 			String timestamp = servletRequest.getHeader("timestamp");
+			System.out.println("-----------idm_auth------"+idm_auth);
+			System.out.println("-----------appcode------"+appcode);
+			System.out.println("-----------appkey------"+appkey);
+			System.out.println("-----------timestamp------"+timestamp);
 			boolean flag = false;
 			if(HttpUtils.isValidDate(timestamp)){
+				System.out.println("--------开始验证-----------");
 				Date fdate = com.nhry.utils.date.Date.parseDate(timestamp,"yyyyMMddHHmmss").addMinutes(6);
 				Date sysdate = new Date();
 				if(sysdate.before(fdate)){
+					System.out.println("--------进入验证-----------");
 					//系统时间 小于 前端时间+6分钟
 					String encrypt= HttpUtils.encodePassword(appcode+appkey+timestamp, SysContant.getSystemConst(appcode+"_base_pw")+HttpUtils.getSixpw(timestamp));
+					System.out.println("--------encrypt-----------"+encrypt);
 					if(encrypt.equals(idm_auth)){
 						flag = true;
 						TSysAccesskey key = new TSysAccesskey();
