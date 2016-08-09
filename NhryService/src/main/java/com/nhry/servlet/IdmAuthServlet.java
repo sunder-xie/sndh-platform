@@ -22,13 +22,16 @@ import org.springframework.web.context.support.SpringBeanAutowiringSupport;
 
 import com.nhry.common.auth.UserSessionService;
 import com.nhry.common.ladp.LadpService;
+import com.nhry.data.auth.domain.TSysAccesskey;
 import com.nhry.data.auth.domain.TSysUser;
+import com.nhry.service.auth.dao.TSysAccesskeyService;
 import com.nhry.service.auth.dao.UserService;
 import com.nhry.utils.APIHttpClient;
 import com.nhry.utils.Base64Util;
 import com.nhry.utils.CookieUtil;
 import com.nhry.utils.EnvContant;
 import com.nhry.utils.HttpUtils;
+import com.nhry.utils.date.Date;
 import com.nhry.utils.json.JackJson;
 @Component
 public class IdmAuthServlet extends HttpServlet {
@@ -36,6 +39,8 @@ public class IdmAuthServlet extends HttpServlet {
 	private UserService userService;
 	@Autowired
 	private UserSessionService userSessionService;
+	@Autowired
+	private TSysAccesskeyService isysAkService;
 	
 	public void init(ServletConfig config) throws ServletException {
 		 SpringBeanAutowiringSupport.processInjectionBasedOnServletContext(this,config.getServletContext());
@@ -70,7 +75,17 @@ public class IdmAuthServlet extends HttpServlet {
 						TSysUser user = new TSysUser();
 						user.setLoginName(userJson.getString("id"));
 						TSysUser loginuser = userService.login(user);
-						userSessionService.cacheUserSession(user.getLoginName(), access_token, loginuser,request);
+						if(loginuser == null){
+							sendRedirectToLogin(response);
+							return;
+						}
+						TSysAccesskey ak = new TSysAccesskey();
+						ak.setAccesskey(token);
+						ak.setLoginname(user.getLoginName());
+						ak.setType("10"); //10 : idm auth2.0
+						ak.setVisitFirstTime(new Date());
+						ak.setVisitLastTime(new Date());
+						isysAkService.updateIsysAccessKey(ak);
 						sendRedirectToHomePage(request, response, token,ip);
 					}else{
 						sendRedirectToLogin(response);
@@ -105,11 +120,11 @@ public class IdmAuthServlet extends HttpServlet {
 		//跳转到登录页面
 		try {
 			if(StringUtils.isEmpty(ip)){
-				response.setHeader("dh_token", token);
-				response.sendRedirect(EnvContant.getSystemConst("front_home_page")+"?dh_token="+token);
+				response.setHeader("appkey", token);
+				response.sendRedirect(EnvContant.getSystemConst("front_home_page")+"?appkey="+token);
 			}else{
-				response.setHeader("dh_token", token);
-				response.sendRedirect("http://"+Base64Util.decodeStr(ip)+EnvContant.getSystemConst("front_short_url")+"?dh_token="+token);
+				response.setHeader("appkey", token);
+				response.sendRedirect("http://"+Base64Util.decodeStr(ip)+EnvContant.getSystemConst("front_short_url")+"?appkey="+token);
 			}
 		} catch (IOException e) {
 			// TODO Auto-generated catch block

@@ -151,6 +151,6 @@
       select 
     <include refid="Base_Column_List" />
     from t_sys_push_message_log
-    where STATUS ='N'
+    where AMOUNT &lt;= 10 and STATUS ='N'
   </select>
 </mapper>

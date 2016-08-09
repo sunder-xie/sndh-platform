@@ -429,6 +429,7 @@ public class DeliverMilkServiceImpl extends BaseService implements DeliverMilkSe
 			List<TDispOrderItem> entryList = tDispOrderItemMapper.selectItemsByKeys(itemKey);
 			
 			if(entryList.size() > 0){
+				if("10".equals(record.getReason()) && Integer.parseInt(record.getConfirmQty()) == 0)throw new ServiceException(MessageCode.LOGIC_ERROR,"换货时数量不能是0！");
    			TPlanOrderItem entry = tPlanOrderItemMapper.selectEntryByEntryNo(entryList.get(0).getOrgItemNo());
    			record.setOrgOrderNo(entryList.get(0).getOrgOrderNo());
    			record.setOrgItemNo(entryList.get(0).getOrgItemNo());
