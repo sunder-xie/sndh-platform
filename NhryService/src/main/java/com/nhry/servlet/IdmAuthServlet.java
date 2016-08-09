@@ -85,7 +85,7 @@ public class IdmAuthServlet extends HttpServlet {
 						}
 						System.out.println("-----loginuser123--------"+loginuser);
 						TSysAccesskey ak = new TSysAccesskey();
-						ak.setAccesskey(access_token);
+						ak.setAccesskey(token);
 						ak.setLoginname(user.getLoginName());
 						ak.setType("10"); //10 : idm auth2.0
 						ak.setVisitFirstTime(new Date());

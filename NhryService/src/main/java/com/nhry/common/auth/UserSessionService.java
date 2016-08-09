@@ -78,17 +78,19 @@ public class UserSessionService {
 	 */
 	private String checkIdmAuth(String accessKey,HttpServletRequest servletRequest,String authflag){
 		try {
-			if("-1".equals(accessKey)){
-				return MessageCode.SESSION_EXPIRE;
-			}
 			String idm_auth =servletRequest.getHeader("dh-token");
 			String appcode =servletRequest.getHeader("appcode");
 			String appkey = servletRequest.getHeader("appkey");
 			String timestamp = servletRequest.getHeader("timestamp");
+			if("-1".equals(accessKey) || StringUtils.isEmpty(timestamp)){
+				return MessageCode.SESSION_EXPIRE;
+			}
 			System.out.println("-----------idm_auth------"+idm_auth);
 			System.out.println("-----------appcode------"+appcode);
 			System.out.println("-----------appkey------"+appkey);
 			System.out.println("-----------timestamp------"+timestamp);
+			
+			
 			boolean flag = false;
 			if(HttpUtils.isValidDate(timestamp)){
 				System.out.println("--------开始验证-----------");
