@@ -110,8 +110,9 @@ public class UserSessionService {
 						if(ak == null){
 							return MessageCode.SESSION_EXPIRE;
 						}
-						Date lastDate = (Date)ak.getVisitLastTime();
+						Date lastDate = new Date(ak.getVisitLastTime());
 						if(lastDate.addMonths(2).before(new Date())){
+							System.out.println("-----超过两小时------");
 							//如果上次(第一次)访问时间与系统时间相差2两小时的话，往idm验证一次
 							if(AuthFilter.IDM_AUTH.equals(authflag)){
 								return authenticate4Auth(appkey,ak.getLoginname(),servletRequest.getRemoteHost());
@@ -119,6 +120,7 @@ public class UserSessionService {
 								return authenticate4RestAuth(appkey, servletRequest.getRemoteHost());
 							}
 						}else{
+							System.out.println("-----success------");
 							//如果没有超过2小时直接允许继续访问
 							TSysUser user = new TSysUser();
 							user.setLoginName(ak.getLoginname());
