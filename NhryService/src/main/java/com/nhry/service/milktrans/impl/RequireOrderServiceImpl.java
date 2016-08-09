@@ -299,7 +299,7 @@ public class RequireOrderServiceImpl implements RequireOrderService {
         String salesOrg =user.getSalesOrg();
         String branchNo = user.getBranchNo();
         RequireOrderSearch search = new RequireOrderSearch();
-        search.setRequiredDate(today);
+        search.setOrderDate(today);
         search.setBranchNo(branchNo);
         TSsmReqGoodsOrder order = tSsmReqGoodsOrderMapper.searchRequireOrder(search);
         String errorMessage = "";

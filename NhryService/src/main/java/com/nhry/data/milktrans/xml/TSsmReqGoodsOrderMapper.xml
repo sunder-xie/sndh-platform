@@ -38,7 +38,7 @@
         select
         <include refid="Base_Column_List"/>
         FROM t_ssm_req_goods_order
-        WHERE  REQUIRED_DATE = #{requiredDate,jdbcType=DATE}
+        WHERE  ORDER_DATE = #{requiredDate,jdbcType=DATE}
         AND   BRANCH_NO =#{branchNo,jdbcType=VARCHAR}
     </select>
 
