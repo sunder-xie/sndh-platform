@@ -302,5 +302,6 @@ public class HttpUtils {
 		// System.out.println(encodePassword("eca4495f3e9281a6120160805140156",
 		// "012f88c17c2f4cf9bf9a96fc2e8f2760"));
 //		idmAppPost2("/api/v1/dic/items/1006", body);
+		encodePassword("dhxtTGT-5-JnWrTFuO5bUzanFpziJinAbOMEweDdcMHJdRmUHUADqem27iXl-SIAM", "01@da99b8b994b5794094f2eae689700");
 	}
 }

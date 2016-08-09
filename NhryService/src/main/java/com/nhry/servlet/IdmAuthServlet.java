@@ -56,9 +56,7 @@ public class IdmAuthServlet extends HttpServlet {
 		// 获取临时令牌
 		try {
 			String code = request.getParameter("code");
-			System.out.println("-----code--------"+code);
 			String ip = request.getParameter("id");
-			System.out.println("----- ip--------"+ ip);
 			if (!StringUtils.isEmpty(code)) {
 				Map<String,Object> attrs = new HashMap<String,Object>();
 				attrs.put("client_id", EnvContant.getSystemConst("client_id"));
@@ -67,24 +65,20 @@ public class IdmAuthServlet extends HttpServlet {
 				attrs.put("redirect_uri", EnvContant.getSystemConst("redirect_uri"));
 				attrs.put("code", code);
 				String access_token = HttpUtils.request(EnvContant.getSystemConst("auth_token"), attrs);
-				System.out.println("-----access_token--------"+access_token);
 				if(!StringUtils.isEmpty(access_token)){
 					attrs.clear();
 					String token = access_token.split("=")[1].split("&")[0];
 					attrs.put("access_token", token);
 					String userObject = HttpUtils.request(EnvContant.getSystemConst("auth_profile"), attrs);
-					System.out.println("-----userObject--------"+userObject);
 					JSONObject userJson = new JSONObject(userObject);
 					if(userJson.has("id") && !StringUtils.isEmpty(userJson.getString("id"))){
 						TSysUser user = new TSysUser();
 						user.setLoginName(userJson.getString("id"));
 						TSysUser loginuser = userService.login(user);
 						if(loginuser == null){
-							System.out.println("-----loginuser--------"+loginuser);
 							sendRedirectToLogin(response);
 							return;
 						}
-						System.out.println("-----loginuser123--------"+loginuser);
 						TSysAccesskey ak = new TSysAccesskey();
 						ak.setAccesskey(token);
 						ak.setLoginname(user.getLoginName());
@@ -125,13 +119,10 @@ public class IdmAuthServlet extends HttpServlet {
 	public void sendRedirectToHomePage(HttpServletRequest request, HttpServletResponse response,String token,String ip){
 		//跳转到登录页面
 		try {
-			System.out.println("-------开始跳转----------"+ip);
 			if(StringUtils.isEmpty(ip)){
-				System.out.println("-------开始跳转----1------"+ip);
 				response.setHeader("appkey", token);
 				response.sendRedirect(EnvContant.getSystemConst("front_home_page")+"?appkey="+token);
 			}else{
-				System.out.println("-------开始跳转----2------"+ip);
 				response.setHeader("appkey", token);
 				response.sendRedirect("http://"+Base64Util.decodeStr(ip)+EnvContant.getSystemConst("front_short_url")+"?appkey="+token);
 			}
