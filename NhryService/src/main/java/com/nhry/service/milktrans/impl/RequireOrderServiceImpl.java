@@ -83,6 +83,7 @@ public class RequireOrderServiceImpl implements RequireOrderService {
 
         }
         rModel.setBranchNo(user.getBranchNo());
+        rModel.setOrderDate(today);
         rModel.setRequiredDate(requireDate);
         rModel.setSalesOrg(user.getSalesOrg());
         TSsmReqGoodsOrder order = null;
