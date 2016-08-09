@@ -48,13 +48,13 @@
 
     <select id="empDispDetialInfo" resultMap="EmpDispResultMap" parameterType="com.nhry.model.bill.EmpDispDetialInfoSearch">
         SELECT
-        di.DISP_DATE,
-        di.DISP_EMP_NO EMP_NO,
+        so.ORDER_DATE  DISP_DATE,
+        so.SAL_EMP_NO EMP_NO,
         e.EMP_NAME,
         i.MATNR,
         m.MATNR_TXT,
         SUM(i.QTY) QTY,
-        di.BRANCH_NO,
+        so.BRANCH_NO,
         b.BRANCH_NAME,
         i.INS_ORDER_NO ORDER_NO,
         b.DEALER_NO,
@@ -64,8 +64,8 @@
         LEFT JOIN t_mst_inside_sal_order so on i.INS_ORDER_NO = so.INS_ORDER_NO
         LEFT JOIN t_mst_disp_order di on so.DISP_ORDER_NO = di.ORDER_NO
         LEFT JOIN t_md_mara m on i.MATNR = m.MATNR
-        LEFT JOIN t_md_branch_emp e on di.DISP_EMP_NO = e.EMP_NO
-        LEFT JOIN t_md_branch b on di.BRANCH_NO = b.BRANCH_NO
+        LEFT JOIN t_md_branch_emp e on so.SAL_EMP_NO = e.EMP_NO
+        LEFT JOIN t_md_branch b on so.BRANCH_NO = b.BRANCH_NO
         LEFT JOIN t_md_dealer d on b.DEALER_NO = d.DEALER_NO
         where 1=1
         and m.SALES_ORG =  #{salesOrg,jdbcType=VARCHAR}
@@ -73,18 +73,18 @@
             AND  b.DEALER_NO = #{dealerNo,jdbcType=VARCHAR}
         </if>
         <if test="branchNo!=null and ''!=branchNo">
-            AND  di.BRANCH_NO = #{branchNo,jdbcType=VARCHAR}
+            AND  so.BRANCH_NO = #{branchNo,jdbcType=VARCHAR}
          </if>
         <if test="empNo!=null and ''!=empNo">
-            AND  di.DISP_EMP_NO = #{empNo,jdbcType=VARCHAR}
+            AND  so.SAL_EMP_NO = #{empNo,jdbcType=VARCHAR}
         </if>
         <if test="startDate!=null">
-            AND di.DISP_DATE &gt;= #{startDate,jdbcType=DATE}
+            AND so.ORDER_DATE &gt;= #{startDate,jdbcType=DATE}
         </if>
         <if test="endDate!=null">
-            AND  di.DISP_DATE &lt;= #{endDate,jdbcType=DATE}
+            AND so.ORDER_DATE &lt;= #{endDate,jdbcType=DATE}
         </if>
-        GROUP BY  di.DISP_DATE,di.DISP_EMP_NO,i.MATNR
+        GROUP BY  so.ORDER_DATE,so.SAL_EMP_NO,i.MATNR
 
 
         UNION ALL

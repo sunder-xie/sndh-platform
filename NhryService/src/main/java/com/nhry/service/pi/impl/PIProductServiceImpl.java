@@ -323,17 +323,17 @@ public class PIProductServiceImpl implements PIProductService {
                 if (l.size() > 0)
                     partners.put(kunnr, l);
             }
+            int zxscount=0;
             for (Map.Entry<String, List<ET_PARTNER>> entry : partners.entrySet()) {
                 String key = entry.getKey();
                 List<ET_PARTNER> lists = entry.getValue();
-                int zxscount=0;
                 for (ET_PARTNER partner : lists) {
                     saveBranch(et_kunnrs, BRANDCHTYPE_WB, partner.getVKORG(), partner.getKUNWE(), "", "", key);
                     zxscount++;
                 }
-                System.out.println("经销商奶站"+zxscount+"条");
-                logger.info("经销商奶站"+zxscount+"条");
             }
+            System.out.println("经销商奶站"+zxscount+"条");
+            logger.info("经销商奶站"+zxscount+"条");
             return 1;
         } catch (Exception e) {
             logger.error(e.getMessage());
@@ -400,7 +400,6 @@ public class PIProductServiceImpl implements PIProductService {
             System.out.println(kunnr + "@@@@@@@@@@@@@@@");
         } else {
             TMdBranch branch = branchMapper.getBranchByNo(et_kunnr.getKUNNR());
-
             if (branch == null) {
                 branch = new TMdBranch();
                 branch.setBranchNo(et_kunnr.getKUNNR());
@@ -868,7 +867,7 @@ public class PIProductServiceImpl implements PIProductService {
             String kunner = zt.getKUNNR1().getKUNNR1_type0();
             String lgort = zt.getLGORT().getLGORT_type0();
             String prodh = zt.getPRODH().getPRODH_type0();
-            if (org.apache.commons.lang.StringUtils.isNotEmpty(kunner) && PRODH.equals(prodh)) {
+            if (org.apache.commons.lang.StringUtils.isNotEmpty(kunner)) {
                 map.put(kunner, lgort);
             }
         }

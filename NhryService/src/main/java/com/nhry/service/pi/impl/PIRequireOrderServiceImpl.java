@@ -192,6 +192,8 @@ public class PIRequireOrderServiceImpl implements PIRequireOrderService {
                     }
 
                 }
+            }else {
+                throw new ServiceException(MessageCode.SERVER_ERROR, "要货单"+orderNo+"交货单没有获得到！");
             }
         }catch (Exception e){
             e.printStackTrace();
@@ -203,6 +205,7 @@ public class PIRequireOrderServiceImpl implements PIRequireOrderService {
     public String execRequieOrder(Date date, String branchNo) {
         RequireOrderSearch search = new RequireOrderSearch();
         search.setRequiredDate(date);
+        search.setOrderDate(date);
         search.setBranchNo(branchNo);
         TSsmReqGoodsOrder order = tSsmReqGoodsOrderMapper.searchRequireOrder(search);
         generateRequireOrder(order);
@@ -213,7 +216,7 @@ public class PIRequireOrderServiceImpl implements PIRequireOrderService {
         TMdBranch branch = branchMapper.getBranchByNo(branchNo);
         if("01".equals(branch.getBranchGroup())){
             RequireOrderSearch search = new RequireOrderSearch();
-            search.setRequiredDate(new Date());
+            search.setOrderDate(new Date());
             search.setBranchNo(branchNo);
             TSsmReqGoodsOrder order = tSsmReqGoodsOrderMapper.searchRequireOrder(search);
             if(order == null){

@@ -72,16 +72,19 @@ public class RequireOrderServiceImpl implements RequireOrderService {
     @Override
     public RequireOrderModel creatRequireOrder() {
         RequireOrderSearch rModel = new RequireOrderSearch();
-        Date today = null;
+        Date today = new Date();
+        Date requireDate = null;
         TSysUser user = userSessionService.getCurrentUser();
         //如果是华西或者天音 则日期为今天  否则为后天
-        if("".equals(user.getSalesOrg())){
-            today = new Date();
+        if("4181".equals(user.getSalesOrg()) || "4390".equals(user.getSalesOrg())){
+            requireDate = today;
         }else{
-            today = DateUtil.getTomorrow(new Date());
+            requireDate = DateUtil.getTomorrow(new Date());
+
         }
         rModel.setBranchNo(user.getBranchNo());
-        rModel.setRequiredDate(today);
+        rModel.setOrderDate(today);
+        rModel.setRequiredDate(requireDate);
         rModel.setSalesOrg(user.getSalesOrg());
         TSsmReqGoodsOrder order = null;
         //首先查看今天的要货计划是否已存在
@@ -97,24 +100,16 @@ public class RequireOrderServiceImpl implements RequireOrderService {
 
 
         //查看明天和后天的订单
-        Calendar calendar = new GregorianCalendar();
-        calendar.setTime(today);
-        calendar.add(calendar.DATE,1);//把日期往后增加1天.整数往后推 这个时间就是日期往后推一天的结果
-        Date firstDay = calendar.getTime();
 
-        calendar.setTime(today);
-        calendar.add(calendar.DATE,2);//把日期往后增加2天.整数往后推 这个时间就是日期往后推两天的结果
-        Date secondDay = calendar.getTime();
-
-        rModel.setFirstDay(firstDay);
-        rModel.setSecondDay(secondDay);
+        rModel.setFirstDay(DateUtil.getTomorrow(requireDate));
+        rModel.setSecondDay(DateUtil.getDayAfterTomorrow(requireDate));
         List<TOrderDaliyPlanItem> items = tOrderDaliyPlanItemMapper.selectDaliyPlansByBranchAndDay(rModel);
         //将i天后的日订单中符合的产品加入到 生成的要货计划
         if(items!=null && items.size()>0){
 
             order = new TSsmReqGoodsOrder();
             String orderNo = PrimaryKeyUtils.generateUuidKey();
-            order.setRequiredDate(today);
+            order.setRequiredDate(requireDate);
             order.setStatus("10");
             order.setOrderNo(orderNo);
             order.setOrderDate(today);
@@ -146,7 +141,7 @@ public class RequireOrderServiceImpl implements RequireOrderService {
             throw new ServiceException(MessageCode.LOGIC_ERROR,"今天该奶站没有可以生成要货计划的行项目");
         }
         //查询出今天的要货计划
-        return this.searchRequireOrder(today);
+        return this.searchRequireOrder(requireDate);
 
     }
 
@@ -167,6 +162,7 @@ public class RequireOrderServiceImpl implements RequireOrderService {
         String salesOrg = user.getSalesOrg();
         rModel.setBranchNo(user.getBranchNo());
         rModel.setRequiredDate(requiredDate);
+        rModel.setOrderDate(requiredDate);
         TSsmReqGoodsOrder order  = this.tSsmReqGoodsOrderMapper.searchRequireOrder(rModel);
 
         if(order!= null){
@@ -305,7 +301,7 @@ public class RequireOrderServiceImpl implements RequireOrderService {
         String salesOrg =user.getSalesOrg();
         String branchNo = user.getBranchNo();
         RequireOrderSearch search = new RequireOrderSearch();
-        search.setRequiredDate(today);
+        search.setOrderDate(today);
         search.setBranchNo(branchNo);
         TSsmReqGoodsOrder order = tSsmReqGoodsOrderMapper.searchRequireOrder(search);
         String errorMessage = "";
