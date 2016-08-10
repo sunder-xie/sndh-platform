@@ -175,6 +175,8 @@ public class MilkBoxServiceImpl extends BaseService implements MilkBoxService
 	{
 		TMilkboxPlan plan = tMilkboxPlanMapper.selectByPrimaryKey(model.getCode());
 		if(plan!=null){
+			if(!"20".equals(plan.getMilkboxStat()))return 1;
+			
 			SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
 			
 			//如果更改了原订单行的配送起始日期,要更新原来的订单
