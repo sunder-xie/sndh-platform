@@ -82,8 +82,8 @@
     where EMP_NO = #{empNo}
   </update>
   <delete id="deleteEmpRole"  parameterType="com.nhry.data.basic.domain.TMdBranchEmp" >
-      DELETE  FROM  t_md_emp_role
-      where EMP_NO = #{empNo,jdbcType=VARCHAR}
+      DELETE  FROM  t_sys_user_role
+      where LOGIN_NAME = #{empNo,jdbcType=VARCHAR}
   </delete>
   <insert id="addBranchEmp" parameterType="com.nhry.data.basic.domain.TMdBranchEmp" >
     insert into t_md_branch_emp (EMP_NO, HR_EMP_NO, BRANCH_NO, 
@@ -164,10 +164,10 @@
   </update>
 
   <update id="uptEmpRole" parameterType="com.nhry.data.basic.domain.TMdBranchEmp" >
-    update t_md_emp_role
+    update t_sys_user_role
     set
-        ROLE_ID = #{roleId,jdbcType=VARCHAR}
-    where EMP_NO = #{empNo,jdbcType=VARCHAR}
+        ID = #{roleId,jdbcType=VARCHAR}
+    where LOGIN_NAME = #{empNo,jdbcType=VARCHAR}
   </update>
   <select id="searchBranchEmp" resultMap="BaseResultMap" parameterType="com.nhry.model.basic.EmpQueryModel">
       select emp.EMP_NO, emp.HR_EMP_NO, branch.BRANCH_NAME  BRANCH_NO, role.ROLE_NAME roleId,emp.EMP_NAME,emp.GENDER,
@@ -175,8 +175,8 @@
     from t_md_branch_emp emp
     LEFT JOIN  T_MD_BRANCH branch on emp.BRANCH_NO = branch.BRANCH_NO
 
-    LEFT JOIN T_MD_EMP_ROLE erole on emp.EMP_NO = erole.EMP_NO
-    LEFT JOIN t_sys_role role  on  erole.ROLE_ID = role.ID
+    LEFT JOIN T_SYS_USER_ROLE erole on emp.EMP_NO = erole.LOGIN_NAME
+    LEFT JOIN t_sys_role role  on  erole.ID = role.ID
     where  1=1
     AND emp.SALES_ORG = #{salesOrg,jdbcType=VARCHAR}
      <if test="branchNo != null and branchNo !=''">
@@ -194,8 +194,9 @@
   <select id="selectEmpRoutes" parameterType="String" resultMap="RouteResultMap">
     select
     <include refid="Route_Column_List" />
-    from t_md_residential_area area,T_MD_EMP_SCOPE scope
-    where area.ID = scope.RESIDENTIAL_AREA_ID
+    from t_md_residential_area area
+    LEFT  JOIN  T_MD_EMP_SCOPE scope on  area.ID = scope.RESIDENTIAL_AREA_ID
+    where 1=1
     and scope.EMP_NO =  #{empNo,jdbcType=VARCHAR}
   </select>
 
@@ -205,7 +206,8 @@
     e.EMP_NO, e.HR_EMP_NO, e.BRANCH_NO, e.EMP_NAME,e.GENDER, e.EMP_TYPE, e.TEL,e.MP, e.WEBCHAT, e.ID_NO, e.CREATE_AT,e.SALES_ORG,
     e.CREATE_BY, e.CREATE_BY_TXT, e.LAST_MODIFIED, e.LAST_MODIFIED_BY, e.LAST_MODIFIED_BY_TXT,e.SALARY_MET,e.BASE_SALARY,e.JOIN_DATE,
     e.STATUS
-    from T_MD_BRANCH_EMP e LEFT JOIN t_sys_user_role u on e.EMP_NO = u.LOGIN_NAME
+    from T_MD_BRANCH_EMP e
+    LEFT JOIN t_sys_user_role u on e.EMP_NO = u.LOGIN_NAME
     where 1=1
     and u.ID=  <include refid="mybaties.constant.milkman"/>
     <if test="branchNo != null and branchNo != ''">
