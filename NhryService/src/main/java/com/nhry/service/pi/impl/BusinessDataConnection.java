@@ -178,9 +178,11 @@ public class BusinessDataConnection {
                 POSEX_type1 posex_type1 = new POSEX_type1();
                 posex_type1.setPOSEX_type0(String.valueOf(map.get("ITEM_NO")));
                 zssd00011.setPOSEX(posex_type1);
-                PR_REF_MAT_type1 pr_ref_mat_type1 = new PR_REF_MAT_type1();
-                pr_ref_mat_type1.setPR_REF_MAT_type0(map.get("REF_MATNR")==null?"":map.get("REF_MATNR"));
-                zssd00011.setPR_REF_MAT(pr_ref_mat_type1);
+                if(StringUtils.isNotEmpty(map.get("REF_MATNR"))) {
+                    PR_REF_MAT_type1 pr_ref_mat_type1 = new PR_REF_MAT_type1();
+                    pr_ref_mat_type1.setPR_REF_MAT_type0(map.get("REF_MATNR") == null ? "" : map.get("REF_MATNR"));
+                    zssd00011.setPR_REF_MAT(pr_ref_mat_type1);
+                }
 
                 com.nhry.webService.client.businessData.functions.Date date1 = new com.nhry.webService.client.businessData.functions.Date();
                 date1.setObject(map.get("ORDER_DATE"));
@@ -218,9 +220,11 @@ public class BusinessDataConnection {
             BSTKD_type1 bstkd_type1 = new BSTKD_type1();
             bstkd_type1.setBSTKD_type0(BSTKD);
             zssd00010.setBSTKD(bstkd_type1);
-            CMPGN_EXTID_type1 cmpgn_extid_type1 = new CMPGN_EXTID_type1();
-            cmpgn_extid_type1.setCMPGN_EXTID_type0(activityId);
-            zssd00010.setCMPGN_EXTID(cmpgn_extid_type1);
+            if(StringUtils.isNotEmpty(activityId)) {
+                CMPGN_EXTID_type1 cmpgn_extid_type1 = new CMPGN_EXTID_type1();
+                cmpgn_extid_type1.setCMPGN_EXTID_type0(activityId);
+                zssd00010.setCMPGN_EXTID(cmpgn_extid_type1);
+            }
             rfc.setIT_ZSSD00010(zssd00010);
 
             ZSD_SALESORDER_DATA_RFC_2Response response = BusinessDataConnection.getConn().salesOrderCreate(rfc);
