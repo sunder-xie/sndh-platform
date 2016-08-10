@@ -154,10 +154,12 @@ public class PIRequireOrderServiceImpl implements PIRequireOrderService {
                     ssmGiOrder.setStatus("10");
                     ssmGiOrder.setSyncAt(new Date());
                     ssmGiOrder.setOrderDate(delivery.getLFDAT());
+                    ssmGiOrder.setMemoTxt(delivery.getVBELN());
                     ssmGiOrderMapper.insertGiOrder(ssmGiOrder);
                 } else {
                     ssmGiOrder.setBranchNo(branchNo);
                     ssmGiOrder.setOrderNo(delivery.getBSTKD());
+                    ssmGiOrder.setMemoTxt(delivery.getVBELN());
                     ssmGiOrder.setSyncAt(new Date());
                     ssmGiOrder.setOrderDate(delivery.getLFDAT());
                     ssmGiOrderMapper.updateGiOrder(ssmGiOrder);
