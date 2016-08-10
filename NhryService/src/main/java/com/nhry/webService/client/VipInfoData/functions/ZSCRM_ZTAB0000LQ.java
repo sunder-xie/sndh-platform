@@ -23,7 +23,7 @@ public class ZSCRM_ZTAB0000LQ implements org.apache.axis2.databinding.ADBBean {
     /**
      * field for ZZFLD0000B4
      */
-    protected com.nhry.webService.client.VipInfoData.functions.ZZFLD0000B4_type1 localZZFLD0000B4;
+    protected ZZFLD0000B4_type1 localZZFLD0000B4;
 
     /*  This tracker boolean wil be used to detect whether the user called the set method
      *   for this attribute. It will be used to determine whether to include this field
@@ -34,7 +34,7 @@ public class ZSCRM_ZTAB0000LQ implements org.apache.axis2.databinding.ADBBean {
     /**
      * field for ZZFLD0000B5
      */
-    protected com.nhry.webService.client.VipInfoData.functions.ZZFLD0000B5_type1 localZZFLD0000B5;
+    protected ZZFLD0000B5_type1 localZZFLD0000B5;
 
     /*  This tracker boolean wil be used to detect whether the user called the set method
      *   for this attribute. It will be used to determine whether to include this field
@@ -45,7 +45,7 @@ public class ZSCRM_ZTAB0000LQ implements org.apache.axis2.databinding.ADBBean {
     /**
      * field for ZZFLD0000B6
      */
-    protected com.nhry.webService.client.VipInfoData.functions.ZZFLD0000B6_type1 localZZFLD0000B6;
+    protected ZZFLD0000B6_type1 localZZFLD0000B6;
 
     /*  This tracker boolean wil be used to detect whether the user called the set method
      *   for this attribute. It will be used to determine whether to include this field
@@ -56,7 +56,7 @@ public class ZSCRM_ZTAB0000LQ implements org.apache.axis2.databinding.ADBBean {
     /**
      * field for ZZFLD0000B7
      */
-    protected com.nhry.webService.client.VipInfoData.functions.ZZFLD0000B7_type1 localZZFLD0000B7;
+    protected ZZFLD0000B7_type1 localZZFLD0000B7;
 
     /*  This tracker boolean wil be used to detect whether the user called the set method
      *   for this attribute. It will be used to determine whether to include this field
@@ -67,7 +67,7 @@ public class ZSCRM_ZTAB0000LQ implements org.apache.axis2.databinding.ADBBean {
     /**
      * field for ZZFLD0000B8
      */
-    protected com.nhry.webService.client.VipInfoData.functions.ZZFLD0000B8_type1 localZZFLD0000B8;
+    protected ZZFLD0000B8_type1 localZZFLD0000B8;
 
     /*  This tracker boolean wil be used to detect whether the user called the set method
      *   for this attribute. It will be used to determine whether to include this field
@@ -78,7 +78,7 @@ public class ZSCRM_ZTAB0000LQ implements org.apache.axis2.databinding.ADBBean {
     /**
      * field for ZZFLD0000B9
      */
-    protected com.nhry.webService.client.VipInfoData.functions.ZZFLD0000B9_type1 localZZFLD0000B9;
+    protected ZZFLD0000B9_type1 localZZFLD0000B9;
 
     /*  This tracker boolean wil be used to detect whether the user called the set method
      *   for this attribute. It will be used to determine whether to include this field
@@ -89,7 +89,7 @@ public class ZSCRM_ZTAB0000LQ implements org.apache.axis2.databinding.ADBBean {
     /**
      * field for ZZFLD0000BA
      */
-    protected com.nhry.webService.client.VipInfoData.functions.Date localZZFLD0000BA;
+    protected Date localZZFLD0000BA;
 
     /*  This tracker boolean wil be used to detect whether the user called the set method
      *   for this attribute. It will be used to determine whether to include this field
@@ -100,7 +100,7 @@ public class ZSCRM_ZTAB0000LQ implements org.apache.axis2.databinding.ADBBean {
     /**
      * field for ZZFLD0000BB
      */
-    protected com.nhry.webService.client.VipInfoData.functions.Date localZZFLD0000BB;
+    protected Date localZZFLD0000BB;
 
     /*  This tracker boolean wil be used to detect whether the user called the set method
      *   for this attribute. It will be used to determine whether to include this field
@@ -111,7 +111,7 @@ public class ZSCRM_ZTAB0000LQ implements org.apache.axis2.databinding.ADBBean {
     /**
      * field for ZZFLD0000BC
      */
-    protected com.nhry.webService.client.VipInfoData.functions.Date localZZFLD0000BC;
+    protected Date localZZFLD0000BC;
 
     /*  This tracker boolean wil be used to detect whether the user called the set method
      *   for this attribute. It will be used to determine whether to include this field
@@ -122,7 +122,7 @@ public class ZSCRM_ZTAB0000LQ implements org.apache.axis2.databinding.ADBBean {
     /**
      * field for ZZFLD0000BD
      */
-    protected com.nhry.webService.client.VipInfoData.functions.ZZFLD0000BD_type1 localZZFLD0000BD;
+    protected ZZFLD0000BD_type1 localZZFLD0000BD;
 
     /*  This tracker boolean wil be used to detect whether the user called the set method
      *   for this attribute. It will be used to determine whether to include this field
@@ -133,7 +133,7 @@ public class ZSCRM_ZTAB0000LQ implements org.apache.axis2.databinding.ADBBean {
     /**
      * field for ZZFLD0000BE
      */
-    protected com.nhry.webService.client.VipInfoData.functions.ZZFLD0000BE_type1 localZZFLD0000BE;
+    protected ZZFLD0000BE_type1 localZZFLD0000BE;
 
     /*  This tracker boolean wil be used to detect whether the user called the set method
      *   for this attribute. It will be used to determine whether to include this field
@@ -149,7 +149,7 @@ public class ZSCRM_ZTAB0000LQ implements org.apache.axis2.databinding.ADBBean {
      * Auto generated getter method
      * @return com.nhry.webService.client.VipInfoData.functions.ZZFLD0000B4_type1
      */
-    public com.nhry.webService.client.VipInfoData.functions.ZZFLD0000B4_type1 getZZFLD0000B4() {
+    public ZZFLD0000B4_type1 getZZFLD0000B4() {
         return localZZFLD0000B4;
     }
 
@@ -158,7 +158,7 @@ public class ZSCRM_ZTAB0000LQ implements org.apache.axis2.databinding.ADBBean {
      * @param param ZZFLD0000B4
      */
     public void setZZFLD0000B4(
-        com.nhry.webService.client.VipInfoData.functions.ZZFLD0000B4_type1 param) {
+        ZZFLD0000B4_type1 param) {
         localZZFLD0000B4Tracker = param != null;
 
         this.localZZFLD0000B4 = param;
@@ -172,7 +172,7 @@ public class ZSCRM_ZTAB0000LQ implements org.apache.axis2.databinding.ADBBean {
      * Auto generated getter method
      * @return com.nhry.webService.client.VipInfoData.functions.ZZFLD0000B5_type1
      */
-    public com.nhry.webService.client.VipInfoData.functions.ZZFLD0000B5_type1 getZZFLD0000B5() {
+    public ZZFLD0000B5_type1 getZZFLD0000B5() {
         return localZZFLD0000B5;
     }
 
@@ -181,7 +181,7 @@ public class ZSCRM_ZTAB0000LQ implements org.apache.axis2.databinding.ADBBean {
      * @param param ZZFLD0000B5
      */
     public void setZZFLD0000B5(
-        com.nhry.webService.client.VipInfoData.functions.ZZFLD0000B5_type1 param) {
+        ZZFLD0000B5_type1 param) {
         localZZFLD0000B5Tracker = param != null;
 
         this.localZZFLD0000B5 = param;
@@ -195,7 +195,7 @@ public class ZSCRM_ZTAB0000LQ implements org.apache.axis2.databinding.ADBBean {
      * Auto generated getter method
      * @return com.nhry.webService.client.VipInfoData.functions.ZZFLD0000B6_type1
      */
-    public com.nhry.webService.client.VipInfoData.functions.ZZFLD0000B6_type1 getZZFLD0000B6() {
+    public ZZFLD0000B6_type1 getZZFLD0000B6() {
         return localZZFLD0000B6;
     }
 
@@ -204,7 +204,7 @@ public class ZSCRM_ZTAB0000LQ implements org.apache.axis2.databinding.ADBBean {
      * @param param ZZFLD0000B6
      */
     public void setZZFLD0000B6(
-        com.nhry.webService.client.VipInfoData.functions.ZZFLD0000B6_type1 param) {
+        ZZFLD0000B6_type1 param) {
         localZZFLD0000B6Tracker = param != null;
 
         this.localZZFLD0000B6 = param;
@@ -218,7 +218,7 @@ public class ZSCRM_ZTAB0000LQ implements org.apache.axis2.databinding.ADBBean {
      * Auto generated getter method
      * @return com.nhry.webService.client.VipInfoData.functions.ZZFLD0000B7_type1
      */
-    public com.nhry.webService.client.VipInfoData.functions.ZZFLD0000B7_type1 getZZFLD0000B7() {
+    public ZZFLD0000B7_type1 getZZFLD0000B7() {
         return localZZFLD0000B7;
     }
 
@@ -227,7 +227,7 @@ public class ZSCRM_ZTAB0000LQ implements org.apache.axis2.databinding.ADBBean {
      * @param param ZZFLD0000B7
      */
     public void setZZFLD0000B7(
-        com.nhry.webService.client.VipInfoData.functions.ZZFLD0000B7_type1 param) {
+        ZZFLD0000B7_type1 param) {
         localZZFLD0000B7Tracker = param != null;
 
         this.localZZFLD0000B7 = param;
@@ -241,7 +241,7 @@ public class ZSCRM_ZTAB0000LQ implements org.apache.axis2.databinding.ADBBean {
      * Auto generated getter method
      * @return com.nhry.webService.client.VipInfoData.functions.ZZFLD0000B8_type1
      */
-    public com.nhry.webService.client.VipInfoData.functions.ZZFLD0000B8_type1 getZZFLD0000B8() {
+    public ZZFLD0000B8_type1 getZZFLD0000B8() {
         return localZZFLD0000B8;
     }
 
@@ -250,7 +250,7 @@ public class ZSCRM_ZTAB0000LQ implements org.apache.axis2.databinding.ADBBean {
      * @param param ZZFLD0000B8
      */
     public void setZZFLD0000B8(
-        com.nhry.webService.client.VipInfoData.functions.ZZFLD0000B8_type1 param) {
+        ZZFLD0000B8_type1 param) {
         localZZFLD0000B8Tracker = param != null;
 
         this.localZZFLD0000B8 = param;
@@ -264,7 +264,7 @@ public class ZSCRM_ZTAB0000LQ implements org.apache.axis2.databinding.ADBBean {
      * Auto generated getter method
      * @return com.nhry.webService.client.VipInfoData.functions.ZZFLD0000B9_type1
      */
-    public com.nhry.webService.client.VipInfoData.functions.ZZFLD0000B9_type1 getZZFLD0000B9() {
+    public ZZFLD0000B9_type1 getZZFLD0000B9() {
         return localZZFLD0000B9;
     }
 
@@ -273,7 +273,7 @@ public class ZSCRM_ZTAB0000LQ implements org.apache.axis2.databinding.ADBBean {
      * @param param ZZFLD0000B9
      */
     public void setZZFLD0000B9(
-        com.nhry.webService.client.VipInfoData.functions.ZZFLD0000B9_type1 param) {
+        ZZFLD0000B9_type1 param) {
         localZZFLD0000B9Tracker = param != null;
 
         this.localZZFLD0000B9 = param;
@@ -287,7 +287,7 @@ public class ZSCRM_ZTAB0000LQ implements org.apache.axis2.databinding.ADBBean {
      * Auto generated getter method
      * @return com.nhry.webService.client.VipInfoData.functions.Date
      */
-    public com.nhry.webService.client.VipInfoData.functions.Date getZZFLD0000BA() {
+    public Date getZZFLD0000BA() {
         return localZZFLD0000BA;
     }
 
@@ -296,7 +296,7 @@ public class ZSCRM_ZTAB0000LQ implements org.apache.axis2.databinding.ADBBean {
      * @param param ZZFLD0000BA
      */
     public void setZZFLD0000BA(
-        com.nhry.webService.client.VipInfoData.functions.Date param) {
+        Date param) {
         localZZFLD0000BATracker = param != null;
 
         this.localZZFLD0000BA = param;
@@ -310,7 +310,7 @@ public class ZSCRM_ZTAB0000LQ implements org.apache.axis2.databinding.ADBBean {
      * Auto generated getter method
      * @return com.nhry.webService.client.VipInfoData.functions.Date
      */
-    public com.nhry.webService.client.VipInfoData.functions.Date getZZFLD0000BB() {
+    public Date getZZFLD0000BB() {
         return localZZFLD0000BB;
     }
 
@@ -319,7 +319,7 @@ public class ZSCRM_ZTAB0000LQ implements org.apache.axis2.databinding.ADBBean {
      * @param param ZZFLD0000BB
      */
     public void setZZFLD0000BB(
-        com.nhry.webService.client.VipInfoData.functions.Date param) {
+        Date param) {
         localZZFLD0000BBTracker = param != null;
 
         this.localZZFLD0000BB = param;
@@ -333,7 +333,7 @@ public class ZSCRM_ZTAB0000LQ implements org.apache.axis2.databinding.ADBBean {
      * Auto generated getter method
      * @return com.nhry.webService.client.VipInfoData.functions.Date
      */
-    public com.nhry.webService.client.VipInfoData.functions.Date getZZFLD0000BC() {
+    public Date getZZFLD0000BC() {
         return localZZFLD0000BC;
     }
 
@@ -342,7 +342,7 @@ public class ZSCRM_ZTAB0000LQ implements org.apache.axis2.databinding.ADBBean {
      * @param param ZZFLD0000BC
      */
     public void setZZFLD0000BC(
-        com.nhry.webService.client.VipInfoData.functions.Date param) {
+        Date param) {
         localZZFLD0000BCTracker = param != null;
 
         this.localZZFLD0000BC = param;
@@ -356,7 +356,7 @@ public class ZSCRM_ZTAB0000LQ implements org.apache.axis2.databinding.ADBBean {
      * Auto generated getter method
      * @return com.nhry.webService.client.VipInfoData.functions.ZZFLD0000BD_type1
      */
-    public com.nhry.webService.client.VipInfoData.functions.ZZFLD0000BD_type1 getZZFLD0000BD() {
+    public ZZFLD0000BD_type1 getZZFLD0000BD() {
         return localZZFLD0000BD;
     }
 
@@ -365,7 +365,7 @@ public class ZSCRM_ZTAB0000LQ implements org.apache.axis2.databinding.ADBBean {
      * @param param ZZFLD0000BD
      */
     public void setZZFLD0000BD(
-        com.nhry.webService.client.VipInfoData.functions.ZZFLD0000BD_type1 param) {
+        ZZFLD0000BD_type1 param) {
         localZZFLD0000BDTracker = param != null;
 
         this.localZZFLD0000BD = param;
@@ -379,7 +379,7 @@ public class ZSCRM_ZTAB0000LQ implements org.apache.axis2.databinding.ADBBean {
      * Auto generated getter method
      * @return com.nhry.webService.client.VipInfoData.functions.ZZFLD0000BE_type1
      */
-    public com.nhry.webService.client.VipInfoData.functions.ZZFLD0000BE_type1 getZZFLD0000BE() {
+    public ZZFLD0000BE_type1 getZZFLD0000BE() {
         return localZZFLD0000BE;
     }
 
@@ -388,7 +388,7 @@ public class ZSCRM_ZTAB0000LQ implements org.apache.axis2.databinding.ADBBean {
      * @param param ZZFLD0000BE
      */
     public void setZZFLD0000BE(
-        com.nhry.webService.client.VipInfoData.functions.ZZFLD0000BE_type1 param) {
+        ZZFLD0000BE_type1 param) {
         localZZFLD0000BETracker = param != null;
 
         this.localZZFLD0000BE = param;
@@ -419,8 +419,8 @@ public class ZSCRM_ZTAB0000LQ implements org.apache.axis2.databinding.ADBBean {
         javax.xml.stream.XMLStreamWriter xmlWriter, boolean serializeType)
         throws javax.xml.stream.XMLStreamException,
             org.apache.axis2.databinding.ADBException {
-        java.lang.String prefix = null;
-        java.lang.String namespace = null;
+        String prefix = null;
+        String namespace = null;
 
         prefix = parentQName.getPrefix();
         namespace = parentQName.getNamespaceURI();
@@ -428,7 +428,7 @@ public class ZSCRM_ZTAB0000LQ implements org.apache.axis2.databinding.ADBBean {
             xmlWriter);
 
         if (serializeType) {
-            java.lang.String namespacePrefix = registerPrefix(xmlWriter,
+            String namespacePrefix = registerPrefix(xmlWriter,
                     "urn:sap-com:document:sap:rfc:functions");
 
             if ((namespacePrefix != null) &&
@@ -556,7 +556,7 @@ public class ZSCRM_ZTAB0000LQ implements org.apache.axis2.databinding.ADBBean {
         xmlWriter.writeEndElement();
     }
 
-    private static java.lang.String generatePrefix(java.lang.String namespace) {
+    private static String generatePrefix(String namespace) {
         if (namespace.equals("urn:sap-com:document:sap:rfc:functions")) {
             return "ns1";
         }
@@ -567,11 +567,11 @@ public class ZSCRM_ZTAB0000LQ implements org.apache.axis2.databinding.ADBBean {
     /**
      * Utility method to write an element start tag.
      */
-    private void writeStartElement(java.lang.String prefix,
-        java.lang.String namespace, java.lang.String localPart,
+    private void writeStartElement(String prefix,
+        String namespace, String localPart,
         javax.xml.stream.XMLStreamWriter xmlWriter)
         throws javax.xml.stream.XMLStreamException {
-        java.lang.String writerPrefix = xmlWriter.getPrefix(namespace);
+        String writerPrefix = xmlWriter.getPrefix(namespace);
 
         if (writerPrefix != null) {
             xmlWriter.writeStartElement(writerPrefix, localPart, namespace);
@@ -591,11 +591,11 @@ public class ZSCRM_ZTAB0000LQ implements org.apache.axis2.databinding.ADBBean {
     /**
      * Util method to write an attribute with the ns prefix
      */
-    private void writeAttribute(java.lang.String prefix,
-        java.lang.String namespace, java.lang.String attName,
-        java.lang.String attValue, javax.xml.stream.XMLStreamWriter xmlWriter)
+    private void writeAttribute(String prefix,
+        String namespace, String attName,
+        String attValue, javax.xml.stream.XMLStreamWriter xmlWriter)
         throws javax.xml.stream.XMLStreamException {
-        java.lang.String writerPrefix = xmlWriter.getPrefix(namespace);
+        String writerPrefix = xmlWriter.getPrefix(namespace);
 
         if (writerPrefix != null) {
             xmlWriter.writeAttribute(writerPrefix, namespace, attName, attValue);
@@ -609,8 +609,8 @@ public class ZSCRM_ZTAB0000LQ implements org.apache.axis2.databinding.ADBBean {
     /**
      * Util method to write an attribute without the ns prefix
      */
-    private void writeAttribute(java.lang.String namespace,
-        java.lang.String attName, java.lang.String attValue,
+    private void writeAttribute(String namespace,
+        String attName, String attValue,
         javax.xml.stream.XMLStreamWriter xmlWriter)
         throws javax.xml.stream.XMLStreamException {
         if (namespace.equals("")) {
@@ -624,18 +624,18 @@ public class ZSCRM_ZTAB0000LQ implements org.apache.axis2.databinding.ADBBean {
     /**
      * Util method to write an attribute without the ns prefix
      */
-    private void writeQNameAttribute(java.lang.String namespace,
-        java.lang.String attName, javax.xml.namespace.QName qname,
+    private void writeQNameAttribute(String namespace,
+        String attName, javax.xml.namespace.QName qname,
         javax.xml.stream.XMLStreamWriter xmlWriter)
         throws javax.xml.stream.XMLStreamException {
-        java.lang.String attributeNamespace = qname.getNamespaceURI();
-        java.lang.String attributePrefix = xmlWriter.getPrefix(attributeNamespace);
+        String attributeNamespace = qname.getNamespaceURI();
+        String attributePrefix = xmlWriter.getPrefix(attributeNamespace);
 
         if (attributePrefix == null) {
             attributePrefix = registerPrefix(xmlWriter, attributeNamespace);
         }
 
-        java.lang.String attributeValue;
+        String attributeValue;
 
         if (attributePrefix.trim().length() > 0) {
             attributeValue = attributePrefix + ":" + qname.getLocalPart();
@@ -658,10 +658,10 @@ public class ZSCRM_ZTAB0000LQ implements org.apache.axis2.databinding.ADBBean {
     private void writeQName(javax.xml.namespace.QName qname,
         javax.xml.stream.XMLStreamWriter xmlWriter)
         throws javax.xml.stream.XMLStreamException {
-        java.lang.String namespaceURI = qname.getNamespaceURI();
+        String namespaceURI = qname.getNamespaceURI();
 
         if (namespaceURI != null) {
-            java.lang.String prefix = xmlWriter.getPrefix(namespaceURI);
+            String prefix = xmlWriter.getPrefix(namespaceURI);
 
             if (prefix == null) {
                 prefix = generatePrefix(namespaceURI);
@@ -690,9 +690,9 @@ public class ZSCRM_ZTAB0000LQ implements org.apache.axis2.databinding.ADBBean {
         if (qnames != null) {
             // we have to store this data until last moment since it is not possible to write any
             // namespace data after writing the charactor data
-            java.lang.StringBuffer stringToWrite = new java.lang.StringBuffer();
-            java.lang.String namespaceURI = null;
-            java.lang.String prefix = null;
+            StringBuffer stringToWrite = new StringBuffer();
+            String namespaceURI = null;
+            String prefix = null;
 
             for (int i = 0; i < qnames.length; i++) {
                 if (i > 0) {
@@ -731,10 +731,10 @@ public class ZSCRM_ZTAB0000LQ implements org.apache.axis2.databinding.ADBBean {
     /**
      * Register a namespace prefix
      */
-    private java.lang.String registerPrefix(
-        javax.xml.stream.XMLStreamWriter xmlWriter, java.lang.String namespace)
+    private String registerPrefix(
+        javax.xml.stream.XMLStreamWriter xmlWriter, String namespace)
         throws javax.xml.stream.XMLStreamException {
-        java.lang.String prefix = xmlWriter.getPrefix(namespace);
+        String prefix = xmlWriter.getPrefix(namespace);
 
         if (prefix == null) {
             prefix = generatePrefix(namespace);
@@ -742,7 +742,7 @@ public class ZSCRM_ZTAB0000LQ implements org.apache.axis2.databinding.ADBBean {
             javax.xml.namespace.NamespaceContext nsContext = xmlWriter.getNamespaceContext();
 
             while (true) {
-                java.lang.String uri = nsContext.getNamespaceURI(prefix);
+                String uri = nsContext.getNamespaceURI(prefix);
 
                 if ((uri == null) || (uri.length() == 0)) {
                     break;
@@ -772,14 +772,14 @@ public class ZSCRM_ZTAB0000LQ implements org.apache.axis2.databinding.ADBBean {
          *                If this object is a complex type, the reader is positioned at the end element of its outer element
          */
         public static ZSCRM_ZTAB0000LQ parse(
-            javax.xml.stream.XMLStreamReader reader) throws java.lang.Exception {
+            javax.xml.stream.XMLStreamReader reader) throws Exception {
             ZSCRM_ZTAB0000LQ object = new ZSCRM_ZTAB0000LQ();
 
             int event;
             javax.xml.namespace.QName currentQName = null;
-            java.lang.String nillableValue = null;
-            java.lang.String prefix = "";
-            java.lang.String namespaceuri = "";
+            String nillableValue = null;
+            String prefix = "";
+            String namespaceuri = "";
 
             try {
                 while (!reader.isStartElement() && !reader.isEndElement())
@@ -789,11 +789,11 @@ public class ZSCRM_ZTAB0000LQ implements org.apache.axis2.databinding.ADBBean {
 
                 if (reader.getAttributeValue(
                             "http://www.w3.org/2001/XMLSchema-instance", "type") != null) {
-                    java.lang.String fullTypeName = reader.getAttributeValue("http://www.w3.org/2001/XMLSchema-instance",
+                    String fullTypeName = reader.getAttributeValue("http://www.w3.org/2001/XMLSchema-instance",
                             "type");
 
                     if (fullTypeName != null) {
-                        java.lang.String nsPrefix = null;
+                        String nsPrefix = null;
 
                         if (fullTypeName.indexOf(":") > -1) {
                             nsPrefix = fullTypeName.substring(0,
@@ -802,15 +802,15 @@ public class ZSCRM_ZTAB0000LQ implements org.apache.axis2.databinding.ADBBean {
 
                         nsPrefix = (nsPrefix == null) ? "" : nsPrefix;
 
-                        java.lang.String type = fullTypeName.substring(fullTypeName.indexOf(
+                        String type = fullTypeName.substring(fullTypeName.indexOf(
                                     ":") + 1);
 
                         if (!"ZSCRM_ZTAB0000LQ".equals(type)) {
                             //find namespace for the prefix
-                            java.lang.String nsUri = reader.getNamespaceContext()
+                            String nsUri = reader.getNamespaceContext()
                                                            .getNamespaceURI(nsPrefix);
 
-                            return (ZSCRM_ZTAB0000LQ) com.nhry.webService.client.VipInfoData.functions.ExtensionMapper.getTypeObject(nsUri,
+                            return (ZSCRM_ZTAB0000LQ) ExtensionMapper.getTypeObject(nsUri,
                                 type, reader);
                         }
                     }
@@ -830,7 +830,7 @@ public class ZSCRM_ZTAB0000LQ implements org.apache.axis2.databinding.ADBBean {
                             reader.getName())) ||
                         new javax.xml.namespace.QName("", "ZZFLD0000B4").equals(
                             reader.getName())) {
-                    object.setZZFLD0000B4(com.nhry.webService.client.VipInfoData.functions.ZZFLD0000B4_type1.Factory.parse(
+                    object.setZZFLD0000B4(ZZFLD0000B4_type1.Factory.parse(
                             reader));
 
                     reader.next();
@@ -847,7 +847,7 @@ public class ZSCRM_ZTAB0000LQ implements org.apache.axis2.databinding.ADBBean {
                             reader.getName())) ||
                         new javax.xml.namespace.QName("", "ZZFLD0000B5").equals(
                             reader.getName())) {
-                    object.setZZFLD0000B5(com.nhry.webService.client.VipInfoData.functions.ZZFLD0000B5_type1.Factory.parse(
+                    object.setZZFLD0000B5(ZZFLD0000B5_type1.Factory.parse(
                             reader));
 
                     reader.next();
@@ -864,7 +864,7 @@ public class ZSCRM_ZTAB0000LQ implements org.apache.axis2.databinding.ADBBean {
                             reader.getName())) ||
                         new javax.xml.namespace.QName("", "ZZFLD0000B6").equals(
                             reader.getName())) {
-                    object.setZZFLD0000B6(com.nhry.webService.client.VipInfoData.functions.ZZFLD0000B6_type1.Factory.parse(
+                    object.setZZFLD0000B6(ZZFLD0000B6_type1.Factory.parse(
                             reader));
 
                     reader.next();
@@ -881,7 +881,7 @@ public class ZSCRM_ZTAB0000LQ implements org.apache.axis2.databinding.ADBBean {
                             reader.getName())) ||
                         new javax.xml.namespace.QName("", "ZZFLD0000B7").equals(
                             reader.getName())) {
-                    object.setZZFLD0000B7(com.nhry.webService.client.VipInfoData.functions.ZZFLD0000B7_type1.Factory.parse(
+                    object.setZZFLD0000B7(ZZFLD0000B7_type1.Factory.parse(
                             reader));
 
                     reader.next();
@@ -898,7 +898,7 @@ public class ZSCRM_ZTAB0000LQ implements org.apache.axis2.databinding.ADBBean {
                             reader.getName())) ||
                         new javax.xml.namespace.QName("", "ZZFLD0000B8").equals(
                             reader.getName())) {
-                    object.setZZFLD0000B8(com.nhry.webService.client.VipInfoData.functions.ZZFLD0000B8_type1.Factory.parse(
+                    object.setZZFLD0000B8(ZZFLD0000B8_type1.Factory.parse(
                             reader));
 
                     reader.next();
@@ -915,7 +915,7 @@ public class ZSCRM_ZTAB0000LQ implements org.apache.axis2.databinding.ADBBean {
                             reader.getName())) ||
                         new javax.xml.namespace.QName("", "ZZFLD0000B9").equals(
                             reader.getName())) {
-                    object.setZZFLD0000B9(com.nhry.webService.client.VipInfoData.functions.ZZFLD0000B9_type1.Factory.parse(
+                    object.setZZFLD0000B9(ZZFLD0000B9_type1.Factory.parse(
                             reader));
 
                     reader.next();
@@ -932,7 +932,7 @@ public class ZSCRM_ZTAB0000LQ implements org.apache.axis2.databinding.ADBBean {
                             reader.getName())) ||
                         new javax.xml.namespace.QName("", "ZZFLD0000BA").equals(
                             reader.getName())) {
-                    object.setZZFLD0000BA(com.nhry.webService.client.VipInfoData.functions.Date.Factory.parse(
+                    object.setZZFLD0000BA(Date.Factory.parse(
                             reader));
 
                     reader.next();
@@ -949,7 +949,7 @@ public class ZSCRM_ZTAB0000LQ implements org.apache.axis2.databinding.ADBBean {
                             reader.getName())) ||
                         new javax.xml.namespace.QName("", "ZZFLD0000BB").equals(
                             reader.getName())) {
-                    object.setZZFLD0000BB(com.nhry.webService.client.VipInfoData.functions.Date.Factory.parse(
+                    object.setZZFLD0000BB(Date.Factory.parse(
                             reader));
 
                     reader.next();
@@ -966,7 +966,7 @@ public class ZSCRM_ZTAB0000LQ implements org.apache.axis2.databinding.ADBBean {
                             reader.getName())) ||
                         new javax.xml.namespace.QName("", "ZZFLD0000BC").equals(
                             reader.getName())) {
-                    object.setZZFLD0000BC(com.nhry.webService.client.VipInfoData.functions.Date.Factory.parse(
+                    object.setZZFLD0000BC(Date.Factory.parse(
                             reader));
 
                     reader.next();
@@ -983,7 +983,7 @@ public class ZSCRM_ZTAB0000LQ implements org.apache.axis2.databinding.ADBBean {
                             reader.getName())) ||
                         new javax.xml.namespace.QName("", "ZZFLD0000BD").equals(
                             reader.getName())) {
-                    object.setZZFLD0000BD(com.nhry.webService.client.VipInfoData.functions.ZZFLD0000BD_type1.Factory.parse(
+                    object.setZZFLD0000BD(ZZFLD0000BD_type1.Factory.parse(
                             reader));
 
                     reader.next();
@@ -1000,7 +1000,7 @@ public class ZSCRM_ZTAB0000LQ implements org.apache.axis2.databinding.ADBBean {
                             reader.getName())) ||
                         new javax.xml.namespace.QName("", "ZZFLD0000BE").equals(
                             reader.getName())) {
-                    object.setZZFLD0000BE(com.nhry.webService.client.VipInfoData.functions.ZZFLD0000BE_type1.Factory.parse(
+                    object.setZZFLD0000BE(ZZFLD0000BE_type1.Factory.parse(
                             reader));
 
                     reader.next();
@@ -1018,7 +1018,7 @@ public class ZSCRM_ZTAB0000LQ implements org.apache.axis2.databinding.ADBBean {
                         "Unexpected subelement " + reader.getName());
                 }
             } catch (javax.xml.stream.XMLStreamException e) {
-                throw new java.lang.Exception(e);
+                throw new Exception(e);
             }
 
             return object;

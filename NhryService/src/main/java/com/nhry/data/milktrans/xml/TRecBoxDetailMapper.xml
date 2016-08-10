@@ -21,6 +21,14 @@
         <result column="LAST_MODIFIED_BY_TXT" property="lastModifiedByTxt" jdbcType="VARCHAR" />
     </resultMap>
 
+    <resultMap id="boxDetailMap" type="com.nhry.data.milktrans.domain.TRecBotDetail">
+        <result column="SPEC " property="spec" jdbcType="VARCHAR" />
+        <result column="EMP_NO " property="empNo" jdbcType="VARCHAR" />
+        <result column="BRANCH_NO" property="branchNo" jdbcType="VARCHAR" />
+        <result column="RECEIVE_NUM" property="receiveNum" jdbcType="INTEGER" />
+        <result column="DISP_ORDER_NO " property="dispOrderNo" jdbcType="VARCHAR" />
+    </resultMap>
+
     <resultMap id="BoxRetResultMap" type="com.nhry.model.milktrans.ReturnBoxModel" >
         <result column="SPEC_NAME" property="specName" jdbcType="VARCHAR" />
         <result column="DET_LSH" property="detLsh" jdbcType="VARCHAR" />
@@ -98,8 +106,7 @@
         d.CREATE_AT,d.LAST_MODIFIED,
         d.BRANCH_NO,br.BRANCH_NAME,d.EMP_NO,e.EMP_NAME,br.DEALER_NO,de.DEALER_NAME,d.DET_LSH
         FROM t_rec_bot_detail d
-        LEFT JOIN t_mst_disp_order o  on d.DISP_ORDER_NO = o.ORDER_NO
-        LEFT JOIN t_md_branch br ON o.BRANCH_NO = br.BRANCH_NO
+        LEFT JOIN t_md_branch br ON d.BRANCH_NO = br.BRANCH_NO
         LEFT JOIN t_md_dealer de on br.DEALER_NO = de.DEALER_NO
         LEFT JOIN t_md_branch_emp e on d.EMP_NO = e.EMP_NO
         where 1=1
@@ -125,5 +132,22 @@
             and d.CREATE_AT &lt;= #{endDate,jdbcType=DATE}
         </if>
         ORDER BY d.LAST_MODIFIED asc
+    </select>
+
+
+    <select id="craeteRetBotByStock" resultMap="boxDetailMap" parameterType="com.nhry.model.stock.StockModel">
+	    SELECT
+        SUM(t2.QTY) RECEIVE_NUM,
+        e.BOT_TYPE SPEC,
+        t2.BRANCH_NO
+        FROM t_ssm_stock t2
+        LEFT JOIN t_md_mara_ex e ON t2.MATNR = e.MATNR
+        WHERE 1=1
+        and e.RET_BOT_FLAG = 'Y'
+        and e.BOT_TYPE IS NOT NULL
+        and e.SALES_ORG = t2.SALES_ORG
+        and t2.BRANCH_NO = #{branchNo,jdbcType=VARCHAR}
+        and  t2.QTY is not null  AND t2.QTY > 0
+        GROUP BY e.BOT_TYPE
     </select>
 </mapper>

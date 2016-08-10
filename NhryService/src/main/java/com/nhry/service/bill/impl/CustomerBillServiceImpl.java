@@ -257,6 +257,19 @@ public class CustomerBillServiceImpl implements CustomerBillService {
         return customerBill;
     }
 
+    @Override
+    public List<String> searchCustomerOrderForExp(CustBillQueryModel cModel) {
+        TSysUser user = userSessionService.getCurrentUser();
+        List<String> rids = urMapper.getUserRidsByLoginName(user.getLoginName());
+        cModel.setSalesOrg(user.getSalesOrg());
+        if(rids.contains("10004")){
+            cModel.setBranchNo(user.getBranchNo());
+        }else if(rids.contains("10005")) {
+            cModel.setDealerNo(user.getDealerId());
+        }
+        return tPreOrderMapper.searchCustomerOrderForExp(cModel);
+    }
+
     public void setCustomerBillMapper(CustomerBillMapper customerBillMapper) {
         this.customerBillMapper = customerBillMapper;
     }

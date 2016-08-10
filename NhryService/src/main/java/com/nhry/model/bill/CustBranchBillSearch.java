@@ -13,6 +13,25 @@ public class CustBranchBillSearch extends BaseQueryModel implements Serializable
     private Date endDate;
     private String branchNo;
     private String orderNo;
+    private String salesOrg;
+    private String dealerNo;
+
+    public String getDealerNo() {
+        return dealerNo;
+    }
+
+    public void setDealerNo(String dealerNo) {
+        this.dealerNo = dealerNo;
+    }
+
+    public String getSalesOrg() {
+        return salesOrg;
+    }
+
+    public void setSalesOrg(String salesOrg) {
+        this.salesOrg = salesOrg;
+    }
+
     public String getBranchNo() {
         return branchNo;
     }

@@ -28,7 +28,7 @@
 			<ref  bean="piProductService"/>
 		</property>
 		<property name="targetMethod">
-			<value>matWHWHandler</value>
+			<value>salesQueryHandler</value>
 		</property>
 	</bean>
 	<bean id="scheduledJobDetail4"
@@ -96,9 +96,9 @@
     <bean name="startQuertz1" lazy-init="false" autowire="no" class="org.springframework.scheduling.quartz.SchedulerFactoryBean">
         <property name="triggers">
             <list>
-                <ref bean="crontestJobTrigger1" />
-				<ref bean="crontestJobTrigger2" />
-				<!--<ref bean="crontestJobTrigger3" />-->
+                <ref bean="crontestJobTrigger1"/>
+				<ref bean="crontestJobTrigger2"/>
+				<ref bean="crontestJobTrigger3"/>
 				<ref bean="crontestJobTrigger4"/>
 				<ref bean="crontestJobTrigger5"/>
             </list>

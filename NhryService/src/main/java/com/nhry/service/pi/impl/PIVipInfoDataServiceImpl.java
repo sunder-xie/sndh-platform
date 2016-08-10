@@ -1,9 +1,12 @@
 package com.nhry.service.pi.impl;
 
-import com.nhry.data.basic.domain.TMdAddress;
-import com.nhry.data.basic.domain.TVipCrmInfo;
-import com.nhry.data.basic.domain.TVipCustInfo;
+import com.nhry.data.basic.domain.*;
+import com.nhry.data.config.domain.NHSysCodeItem;
+import com.nhry.service.basic.dao.BranchService;
+import com.nhry.service.basic.dao.ResidentialAreaService;
 import com.nhry.service.basic.dao.TVipCrmInfoService;
+import com.nhry.service.basic.dao.TVipCustInfoService;
+import com.nhry.service.config.dao.DictionaryService;
 import com.nhry.service.pi.dao.PIVipInfoDataService;
 import com.nhry.service.pi.pojo.MemberActivities;
 import com.nhry.utils.PIPropertitesUtil;
@@ -30,20 +33,17 @@ import com.nhry.webService.client.VipInfoData.functions.STR_SUPPL1_type1;
 import com.nhry.webService.client.VipInfoData.functions.STR_SUPPL2_type1;
 import com.nhry.webService.client.VipInfoData.functions.TEL_MOBILE_type1;
 import com.nhry.webService.client.VipInfoData.functions.TEL_NUMBER_type1;
-import com.nhry.webService.client.VipInfoData.functions.ZSCRM_MESSAGE;
 import com.nhry.webService.client.VipPoint.PointQuery_OutServiceStub;
-import com.nhry.webService.client.VipPoint.functions.IV_TEL_type1;
-import com.nhry.webService.client.VipPoint.functions.ZSCRM_PT_BALANCE;
-import com.nhry.webService.client.VipPoint.functions.Z_CRM_PT_QUERY_RFC;
-import com.nhry.webService.client.VipPoint.functions.Z_CRM_PT_QUERY_RFCResponse;
+import com.nhry.webService.client.VipPoint.functions.*;
 import org.apache.axis2.AxisFault;
 import org.apache.axis2.client.Options;
 import org.apache.commons.beanutils.BeanUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
-import org.apache.log4j.spi.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import javax.activation.DataHandler;
+import java.math.BigDecimal;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -53,6 +53,25 @@ import java.util.Map;
 public class PIVipInfoDataServiceImpl implements PIVipInfoDataService {
     private static Logger logger = Logger.getLogger(PIVipInfoDataServiceImpl.class);
     private TVipCrmInfoService vipCrmInfoService;
+    private DictionaryService dictionaryService;
+    private ResidentialAreaService residentialAreaService;
+    private BranchService branchService;
+    private TVipCustInfoService vipCustInfoService;
+    public void setDictionaryService(DictionaryService dictionaryService) {
+        this.dictionaryService = dictionaryService;
+    }
+
+    public void setResidentialAreaService(ResidentialAreaService residentialAreaService) {
+        this.residentialAreaService = residentialAreaService;
+    }
+
+    public void setBranchService(BranchService branchService) {
+        this.branchService = branchService;
+    }
+
+    public void setVipCustInfoService(TVipCustInfoService vipCustInfoService) {
+        this.vipCustInfoService = vipCustInfoService;
+    }
 
     public void setVipCrmInfoService(TVipCrmInfoService vipCrmInfoService) {
         this.vipCrmInfoService = vipCrmInfoService;
@@ -74,8 +93,16 @@ public class PIVipInfoDataServiceImpl implements PIVipInfoDataService {
             return result;
         }
         try {
+            iniVipCustInfo(vipCustInfo);
             TVipCrmInfo vipCrmInfo = new TVipCrmInfo();
             BeanUtils.copyProperties(vipCrmInfo, vipCustInfo);
+            java.util.List<TMdAddress> addresses = vipCustInfoService.findCnAddressByCustNo(vipCustInfo.getVipCustNo());
+
+            for(TMdAddress address1 : addresses){
+                if("Y".equals(address1.getIsDafault())) {
+                    address = address1;
+                }
+            }
 
             if(address != null) {
                 vipCrmInfo.setAddressId(address.getAddressId());
@@ -97,11 +124,11 @@ public class PIVipInfoDataServiceImpl implements PIVipInfoDataService {
             zscrm_memb_upd_dh_input.setSTR_SUPPL1(str_suppl1_type1);
 
             COUNTRY_type1 country_type1 = new COUNTRY_type1();
-           country_type1.setCOUNTRY_type0("001");//(vipCustInfo.getCountry());
+           country_type1.setCOUNTRY_type0("CN");//(vipCustInfo.getCountry());
             zscrm_memb_upd_dh_input.setCOUNTRY(country_type1);
 
             REGION_type1 region_type1 = new REGION_type1();
-            region_type1.setREGION_type0(vipCustInfo.getProvince()==null?"":vipCustInfo.getProvince());
+            region_type1.setREGION_type0(vipCustInfo.getProvince());
             zscrm_memb_upd_dh_input.setREGION(region_type1);
 
             CITY1_type1 city1_type1 = new CITY1_type1();
@@ -131,7 +158,7 @@ public class PIVipInfoDataServiceImpl implements PIVipInfoDataService {
 
 
             ZZFLD0000DM_type1 zzfld0000DM_type1 = new ZZFLD0000DM_type1();
-            zzfld0000DM_type1.setZZFLD0000DM_type0(vipCustInfo.getActivityNo()==null?"111":vipCustInfo.getActivityNo());
+            zzfld0000DM_type1.setZZFLD0000DM_type0(vipCustInfo.getActivityNo()==null?"":vipCustInfo.getActivityNo());
             zscrm_memb_upd_dh_input.setZZFLD0000DM(zzfld0000DM_type1);
 
             POST_CODE1_type1 post_code1_type1 = new POST_CODE1_type1();
@@ -232,7 +259,8 @@ public class PIVipInfoDataServiceImpl implements PIVipInfoDataService {
             z_crm_memb_mstdata_upd_dh.setIS_DATA_INPUT(zscrm_memb_upd_dh_input);
 
             Z_CRM_MEMB_MSTDATA_UPD_DHResponse response = client.memberCreate(z_crm_memb_mstdata_upd_dh);
-            ZSCRM_MESSAGE message = response.getES_RETURN();
+
+            com.nhry.webService.client.VipInfoData.functions.ZSCRM_MESSAGE message = response.getES_RETURN();
             String flag = message.getFLAG().getFLAG_type0().toString();
             String msg = message.getMSG().getMSG_type0().toString();
             result.setMessage(msg);
@@ -259,38 +287,19 @@ public class PIVipInfoDataServiceImpl implements PIVipInfoDataService {
         return result;
     }
 
-    @Override
-    public PISuccessTMessage queryVipPointData(String tel, String membGuid, String membId) {
-        PISuccessTMessage<EvMembPoint> result = new PISuccessTMessage<EvMembPoint>();
-        try {
-            PointQuery_OutServiceStub client = connQueryService();
-            Z_CRM_PT_QUERY_RFC z_crm_pt_query_rfc = new Z_CRM_PT_QUERY_RFC();
-            IV_TEL_type1 iv_tel_type1 = new IV_TEL_type1();
-            iv_tel_type1.setIV_TEL_type0(tel);
-            z_crm_pt_query_rfc.setIV_TEL(iv_tel_type1);
-            z_crm_pt_query_rfc.setIV_TEL(iv_tel_type1);
-            Z_CRM_PT_QUERY_RFCResponse response = client.pointQuery_Out(z_crm_pt_query_rfc);
-            EvMembPoint point = new EvMembPoint();
-            ZSCRM_PT_BALANCE[] balances = response.getT_BALANCE_OUT().getItem();
-            if(balances != null){
-               for(ZSCRM_PT_BALANCE balance :balances){
-                   point.setBalance(balance.getBALANCE().getBALANCE_type0());
-                   point.setEvMembId(balance.getMEMB_ID().getMEMB_ID_type0());
-                   point.setEvMembGuid(balance.getGUID().getGUID_type0().toString());
-                   point.setType(balance.getPT_TYPE().getPT_TYPE_type0());
-               }
-            }
-            String flag = response.getES_RETURN().getFLAG().getFLAG_type0();
-            String msg = response.getES_RETURN().getMSG().getMSG_type0();
-            result.setData(point);
-            result.setSuccess("D".equals(flag));
-            result.setMessage(msg);
-
-        }catch (Exception e){
-            e.printStackTrace();
-        }
-        return result;
+    private void iniVipCustInfo(TVipCustInfo vipCustInfo) {
+        TMdResidentialArea area = residentialAreaService.selectById(vipCustInfo.getSubdist());
+        vipCustInfo.setSubdist(area.getResidentialAreaTxt());
+        NHSysCodeItem codeItem = new NHSysCodeItem();
+        codeItem.setTypeCode("1001");
+        codeItem.setItemCode(vipCustInfo.getCity());
+        vipCustInfo.setCity(dictionaryService.findCodeItenByCode(codeItem).getItemName());
+        TMdBranch branch = branchService.selectBranchByNo(vipCustInfo.getBranchNo());
+        vipCustInfo.setBranchName(branch.getBranchName());
+        codeItem.setItemCode(vipCustInfo.getCounty());
+        vipCustInfo.setCounty(dictionaryService.findCodeItenByCode(codeItem).getItemName());
     }
+
 
     @Override
     public PISuccessTMessage queryVipDetailData(String tel, String membGuid, String membId) {
@@ -305,8 +314,9 @@ public class PIVipInfoDataServiceImpl implements PIVipInfoDataService {
             MemberActCreateServiceStub client = connMemberActService();
             Z_CRM_MEMB_ACTIVITIES_CREATE z_crm_memb_activities_create = new Z_CRM_MEMB_ACTIVITIES_CREATE();
             ZSCRM_MEMB_ACTIVITIES zscrm_memb_activities = new ZSCRM_MEMB_ACTIVITIES();
+
             ACTIVITY_DATE_type1 activity_date_type1 = new ACTIVITY_DATE_type1();
-            activity_date_type1.setACTIVITY_DATE_type0(memberActivities.getActivitydate());
+            activity_date_type1.setACTIVITY_DATE_type0(new BigDecimal(memberActivities.getActivitydate().getTime()));
             zscrm_memb_activities.setACTIVITY_DATE(activity_date_type1);
 
             AMOUNT_type1 amount_type1 = new AMOUNT_type1();
@@ -322,11 +332,11 @@ public class PIVipInfoDataServiceImpl implements PIVipInfoDataService {
             zscrm_memb_activities.setCATEGORY(category_type1);
 
             COMMIT_type1 commit_type1 = new COMMIT_type1();
-            commit_type1.setCOMMIT_type0(memberActivities.getCommit());
+            commit_type1.setCOMMIT_type0(memberActivities.getCommit()==null?"X":memberActivities.getCommit());
             zscrm_memb_activities.setCOMMIT(commit_type1);
 
             CURRENCY_type1 currency_type1 = new CURRENCY_type1();
-            currency_type1.setCURRENCY_type0(memberActivities.getCurrency());
+            currency_type1.setCURRENCY_type0(memberActivities.getCurrency()==null?"":memberActivities.getCurrency());
             zscrm_memb_activities.setCURRENCY(currency_type1);
 
             ITEM_NUM_type1 item_num_type1 = new ITEM_NUM_type1();
@@ -334,23 +344,23 @@ public class PIVipInfoDataServiceImpl implements PIVipInfoDataService {
             zscrm_memb_activities.setITEM_NUM(item_num_type1);
 
             MEMBERSHIP_GUID_type1 membership_guid_type1 = new MEMBERSHIP_GUID_type1();
-            membership_guid_type1.setMEMBERSHIP_GUID_type0(new DataHandler(memberActivities.getMembershipguid(),"string") );
+            membership_guid_type1.setMEMBERSHIP_GUID_type0(memberActivities.getMembershipguid());
             zscrm_memb_activities.setMEMBERSHIP_GUID(membership_guid_type1);
 
             ORDER_ID_type1 order_id_type1 = new ORDER_ID_type1();
-            order_id_type1.setORDER_ID_type0(memberActivities.getOrderid());
+            order_id_type1.setORDER_ID_type0(memberActivities.getOrderid()==null?"":memberActivities.getOrderid());
             zscrm_memb_activities.setORDER_ID(order_id_type1);
 
             POINT_TYPE_type1 point_type_type1 = new POINT_TYPE_type1();
-            point_type_type1.setPOINT_TYPE_type0(memberActivities.getPointtype());
+            point_type_type1.setPOINT_TYPE_type0(memberActivities.getPointtype()==null?"":memberActivities.getPointtype());
             zscrm_memb_activities.setPOINT_TYPE(point_type_type1);
 
             PROCESS_type1 process_type1 = new PROCESS_type1();
-            process_type1.setPROCESS_type0(memberActivities.getProcess());
+            process_type1.setPROCESS_type0(memberActivities.getProcess()==null?"":memberActivities.getProcess());
             zscrm_memb_activities.setPROCESS(process_type1);
 
             PRODUCT_ID_type1 product_id_type1 = new PRODUCT_ID_type1();
-            product_id_type1.setPRODUCT_ID_type0(memberActivities.getProductid());
+            product_id_type1.setPRODUCT_ID_type0(memberActivities.getProductid()==null?"":memberActivities.getProductid());
             zscrm_memb_activities.setPRODUCT_ID(product_id_type1);
 
             PRODUCT_QUANTITY_type1 product_quantity_type1 = new PRODUCT_QUANTITY_type1();
@@ -358,7 +368,7 @@ public class PIVipInfoDataServiceImpl implements PIVipInfoDataService {
             zscrm_memb_activities.setPRODUCT_QUANTITY(product_quantity_type1);
 
             RETAIL_STORE_ID_type1 retail_store_id_type1 = new RETAIL_STORE_ID_type1();
-            retail_store_id_type1.setRETAIL_STORE_ID_type0(memberActivities.getRetailstoreid());
+            retail_store_id_type1.setRETAIL_STORE_ID_type0(memberActivities.getRetailstoreid()==null?"":memberActivities.getRetailstoreid());
             zscrm_memb_activities.setRETAIL_STORE_ID(retail_store_id_type1);
 
             SALES_ORG_type1 sales_org_type1 = new SALES_ORG_type1();
@@ -366,25 +376,25 @@ public class PIVipInfoDataServiceImpl implements PIVipInfoDataService {
             zscrm_memb_activities.setSALES_ORG(sales_org_type1);
 
             TRAN_SEQ_NUM_type1 tran_seq_num_type1 = new TRAN_SEQ_NUM_type1();
-            tran_seq_num_type1.setTRAN_SEQ_NUM_type0(memberActivities.getTranseqnum());
+            tran_seq_num_type1.setTRAN_SEQ_NUM_type0("");
             zscrm_memb_activities.setTRAN_SEQ_NUM(tran_seq_num_type1);
 
             TIER_type1 tier_type1 = new TIER_type1();
-            tier_type1.setTIER_type0(memberActivities.getTier());
+            tier_type1.setTIER_type0(memberActivities.getTier()==null?"":memberActivities.getTier());
             zscrm_memb_activities.setTIER(tier_type1);
 
             TIER_GROUP_type1 tier_group_type1 = new TIER_GROUP_type1();
-            tier_group_type1.setTIER_GROUP_type0(memberActivities.getTiergroup());
+            tier_group_type1.setTIER_GROUP_type0(memberActivities.getTiergroup()==null?"":memberActivities.getTiergroup());
             zscrm_memb_activities.setTIER_GROUP(tier_group_type1);
 
             PROCESS_TYPE_type1 process_type_type1 = new PROCESS_TYPE_type1();
-            process_type_type1.setPROCESS_TYPE_type0(memberActivities.getProcesstype());
+            process_type_type1.setPROCESS_TYPE_type0(memberActivities.getProcesstype()==null?"":memberActivities.getProcesstype());
             zscrm_memb_activities.setPROCESS_TYPE(process_type_type1);
-            z_crm_memb_activities_create.setIS_MEMB_ACT(zscrm_memb_activities);
 
             POINTS_type1 points_type1 = new POINTS_type1();
-            points_type1.setPOINTS_type0(memberActivities.getPoints());
+            points_type1.setPOINTS_type0(new BigDecimal("0"));
             zscrm_memb_activities.setPOINTS(points_type1);
+            z_crm_memb_activities_create.setIS_MEMB_ACT(zscrm_memb_activities);
 
             Z_CRM_MEMB_ACTIVITIES_CREATEResponse response = client.memberActCreate(z_crm_memb_activities_create);
 
@@ -411,10 +421,11 @@ public class PIVipInfoDataServiceImpl implements PIVipInfoDataService {
     public PISuccessTMessage sendSubscriber(TVipCustInfo vipCustInfo) {
         PISuccessTMessage result = new PISuccessTMessage();
         try {
+            iniVipCustInfo(vipCustInfo);
             ZT_CRM_BuData_MaintainServiceStub stub = connMaintainService();
             Z_CRM_MEMB_ZTAB0000LQ_UPDATE z_crm_memb_ztab0000LQ_update = new Z_CRM_MEMB_ZTAB0000LQ_UPDATE();
             IV_MEMB_GUID_type1 iv_memb_guid_type1 = new IV_MEMB_GUID_type1();
-            iv_memb_guid_type1.setIV_MEMB_GUID_type0(new DataHandler(vipCustInfo.getVipCustNoSap(),"string"));
+            iv_memb_guid_type1.setIV_MEMB_GUID_type0(vipCustInfo.getVipCustNoSap());
             z_crm_memb_ztab0000LQ_update.setIV_MEMB_GUID(iv_memb_guid_type1);
             T_ZTAB0000LQ_type2 t_ztab0000LQ_type2 = new T_ZTAB0000LQ_type2();
             ZSCRM_ZTAB0000LQ zscrm_ztab0000LQ = new ZSCRM_ZTAB0000LQ();
@@ -461,7 +472,7 @@ public class PIVipInfoDataServiceImpl implements PIVipInfoDataService {
             z_crm_memb_ztab0000LQ_update.setT_ZTAB0000LQ(t_ztab0000LQ_type2);
 
             Z_CRM_MEMB_ZTAB0000LQ_UPDATEResponse response = stub.subscriberMaintain(z_crm_memb_ztab0000LQ_update);
-            ZSCRM_MESSAGE message =response.getES_RETURN();
+            com.nhry.webService.client.VipInfoData.functions.ZSCRM_MESSAGE message =response.getES_RETURN();
             String flag = message.getFLAG().getFLAG_type0();
             String msg = message.getMSG().getMSG_type0();
             if(MESSAGE_FLAG.equals(flag)){
@@ -494,43 +505,43 @@ public class PIVipInfoDataServiceImpl implements PIVipInfoDataService {
             ZSCRM_ADDR_SHIP_TO zscrm_addr_ship_to = new ZSCRM_ADDR_SHIP_TO();
 
             ADDRESS_GUID_type3 address_guid_type3 = new ADDRESS_GUID_type3();
-            address_guid_type3.setADDRESS_GUID_type2(new DataHandler(address.getAddressId(),"String"));
+            address_guid_type3.setADDRESS_GUID_type2(new DataHandler(address.getAddressId(),"string"));
             zscrm_addr_ship_to.setADDRESS_GUID(address_guid_type3);
 
             com.nhry.webService.client.Address.functions.CITY1_type1 city1_type1 = new com.nhry.webService.client.Address.functions.CITY1_type1();
-            city1_type1.setCITY1_type0(address.getCity());
+            city1_type1.setCITY1_type0(address.getCity()==null?"":address.getCity());
             zscrm_addr_ship_to.setCITY1(city1_type1);
 
             com.nhry.webService.client.Address.functions.CITY2_type1 city2_type1 = new com.nhry.webService.client.Address.functions.CITY2_type1();
-            city2_type1.setCITY2_type0(address.getCounty());
+            city2_type1.setCITY2_type0(address.getCounty()==null?"":address.getCounty());
             zscrm_addr_ship_to.setCITY2(city2_type1);
 
             com.nhry.webService.client.Address.functions.COUNTRY_type1 country_type1 = new com.nhry.webService.client.Address.functions.COUNTRY_type1();
-            country_type1.setCOUNTRY_type0("001");
+            country_type1.setCOUNTRY_type0("CN");
             zscrm_addr_ship_to.setCOUNTRY(country_type1);
 
             com.nhry.webService.client.Address.functions.TEL_NUMBER_type1 tel_number_type1 = new com.nhry.webService.client.Address.functions.TEL_NUMBER_type1();
-            tel_number_type1.setTEL_NUMBER_type0(address.getTel());
+            tel_number_type1.setTEL_NUMBER_type0(address.getTel()==null?"":address.getTel());
             zscrm_addr_ship_to.setTEL_NUMBER(tel_number_type1);
 
             com.nhry.webService.client.Address.functions.TEL_MOBILE_type1 tel_mobile_type1 = new com.nhry.webService.client.Address.functions.TEL_MOBILE_type1();
-            tel_mobile_type1.setTEL_MOBILE_type0(address.getMp());
+            tel_mobile_type1.setTEL_MOBILE_type0(address.getMp()==null?"":address.getMp());
             zscrm_addr_ship_to.setTEL_MOBILE(tel_mobile_type1);
 
             com.nhry.webService.client.Address.functions.STREET_type1 street_type1 = new com.nhry.webService.client.Address.functions.STREET_type1();
-            street_type1.setSTREET_type0(address.getStreet());
+            street_type1.setSTREET_type0(address.getStreet()==null?"":address.getStreet());
             zscrm_addr_ship_to.setSTREET(street_type1);
 
             com.nhry.webService.client.Address.functions.STR_SUPPL2_type1 str_suppl2_type1 = new com.nhry.webService.client.Address.functions.STR_SUPPL2_type1();
-            str_suppl2_type1.setSTR_SUPPL2_type0(address.getResidentialArea());
+            str_suppl2_type1.setSTR_SUPPL2_type0(address.getResidentialArea()==null?"":address.getResidentialArea());
             zscrm_addr_ship_to.setSTR_SUPPL2(str_suppl2_type1);
 
             com.nhry.webService.client.Address.functions.STR_SUPPL1_type1 str_suppl1_type1 = new com.nhry.webService.client.Address.functions.STR_SUPPL1_type1();
-            str_suppl1_type1.setSTR_SUPPL1_type0(address.getAddressTxt());
+            str_suppl1_type1.setSTR_SUPPL1_type0(address.getAddressTxt()==null?"":address.getAddressTxt());
             zscrm_addr_ship_to.setSTR_SUPPL1(str_suppl1_type1);
 
             com.nhry.webService.client.Address.functions.REGION_type1 region_type1 = new com.nhry.webService.client.Address.functions.REGION_type1();
-            region_type1.setREGION_type0(address.getProvince());
+            region_type1.setREGION_type0(address.getProvince()==null?"":address.getProvince());
             zscrm_addr_ship_to.setREGION(region_type1);
 
             com.nhry.webService.client.Address.functions.NAME_CO_type1 name_co_type1 = new com.nhry.webService.client.Address.functions.NAME_CO_type1();
@@ -538,11 +549,11 @@ public class PIVipInfoDataServiceImpl implements PIVipInfoDataService {
             zscrm_addr_ship_to.setNAME_CO(name_co_type1);
 
             com.nhry.webService.client.Address.functions.POST_CODE1_type1 post_code1_type1 = new com.nhry.webService.client.Address.functions.POST_CODE1_type1();
-            post_code1_type1.setPOST_CODE1_type0(address.getZip());
+            post_code1_type1.setPOST_CODE1_type0(address.getZip()==null?"":address.getZip());
             zscrm_addr_ship_to.setPOST_CODE1(post_code1_type1);
 
             MODE_type1 mode_type1 = new MODE_type1();
-            mode_type1.setMODE_type0(address.getAddressMode());
+            mode_type1.setMODE_type0(address.getAddressMode()==null?"":address.getAddressMode());
             zscrm_addr_ship_to.setMODE(mode_type1);
 
             t_addr_type1.addItem(zscrm_addr_ship_to);

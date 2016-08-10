@@ -16,11 +16,11 @@ import com.nhry.data.stock.dao.TSsmGiOrderItemMapper;
 import com.nhry.data.stock.dao.TSsmGiOrderMapper;
 import com.nhry.data.stock.dao.TSsmStockMapper;
 import com.nhry.data.stock.domain.*;
-import com.nhry.model.basic.MessageModel;
 import com.nhry.model.milktrans.ReqGoodsOrderItemSearch;
 import com.nhry.model.milktrans.RequireOrderSearch;
 import com.nhry.model.milktrans.SalOrderModel;
 import com.nhry.service.pi.dao.PIRequireOrderService;
+import com.nhry.utils.PIPropertitesUtil;
 import com.nhry.webService.client.PISuccessMessage;
 import com.nhry.webService.client.businessData.model.Delivery;
 import org.apache.commons.lang.StringUtils;
@@ -117,8 +117,23 @@ public class PIRequireOrderServiceImpl implements PIRequireOrderService {
             lgort = branchEx.getReslo();
         }
         String werks = branchEx.getSupplPlnt();
-
-        return BusinessDataConnection.SalesOrderCreate(kunnr,kunwe,vkorg, ssmSalOrder.getOrderNo(), ssmSalOrder.getRequiredDate(),items,activityId, lgort, werks);
+        String auartType = PIPropertitesUtil.getValue("PI.AUART.ZOR");
+        String saleOrgTX = PIPropertitesUtil.getValue("PI.SALEORG_TX");
+        String freeType = ssmSalOrder.getFreeFlag();
+        if("Y".equals(freeType)){
+            if(saleOrgTX.equals(ssmSalOrder.getSalesOrg())){
+                auartType = PIPropertitesUtil.getValue("PI.AUART.ZOR1");
+            }else{
+                auartType = PIPropertitesUtil.getValue("PI.AUART.ZOR");
+            }
+        }else{
+            if(saleOrgTX.equals(ssmSalOrder.getSalesOrg())){
+                auartType = PIPropertitesUtil.getValue("PI.AUART.ZFD1");
+            }else{
+                auartType = PIPropertitesUtil.getValue("PI.AUART.ZFD");
+            }
+        }
+        return BusinessDataConnection.SalesOrderCreate(kunnr,kunwe,vkorg, ssmSalOrder.getOrderNo(), ssmSalOrder.getRequiredDate(),items,activityId, lgort, werks, auartType);
     }
 
     @Override
@@ -177,6 +192,8 @@ public class PIRequireOrderServiceImpl implements PIRequireOrderService {
                     }
 
                 }
+            }else {
+                throw new ServiceException(MessageCode.SERVER_ERROR, "要货单"+orderNo+"交货单没有获得到！");
             }
         }catch (Exception e){
             e.printStackTrace();
@@ -188,6 +205,7 @@ public class PIRequireOrderServiceImpl implements PIRequireOrderService {
     public String execRequieOrder(Date date, String branchNo) {
         RequireOrderSearch search = new RequireOrderSearch();
         search.setRequiredDate(date);
+        search.setOrderDate(date);
         search.setBranchNo(branchNo);
         TSsmReqGoodsOrder order = tSsmReqGoodsOrderMapper.searchRequireOrder(search);
         generateRequireOrder(order);
@@ -198,7 +216,7 @@ public class PIRequireOrderServiceImpl implements PIRequireOrderService {
         TMdBranch branch = branchMapper.getBranchByNo(branchNo);
         if("01".equals(branch.getBranchGroup())){
             RequireOrderSearch search = new RequireOrderSearch();
-            search.setRequiredDate(new Date());
+            search.setOrderDate(new Date());
             search.setBranchNo(branchNo);
             TSsmReqGoodsOrder order = tSsmReqGoodsOrderMapper.searchRequireOrder(search);
             if(order == null){

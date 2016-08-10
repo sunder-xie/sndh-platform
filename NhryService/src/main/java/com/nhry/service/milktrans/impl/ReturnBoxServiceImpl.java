@@ -12,8 +12,10 @@ import com.nhry.data.milk.dao.TDispOrderMapper;
 import com.nhry.data.milk.domain.TDispOrder;
 import com.nhry.data.milktrans.dao.TRecBotDetailMapper;
 import com.nhry.data.milktrans.domain.TRecBotDetail;
+import com.nhry.data.stock.dao.TSsmStockMapper;
 import com.nhry.model.milktrans.ReturnboxSerarch;
 import com.nhry.model.milktrans.UpdateReturnBoxModel;
+import com.nhry.model.stock.StockModel;
 import com.nhry.service.milktrans.dao.ReturnBoxService;
 import com.nhry.utils.PrimaryKeyUtils;
 
@@ -32,6 +34,7 @@ public class ReturnBoxServiceImpl implements ReturnBoxService {
     private TMdBranchEmpMapper empMapper;
     private UserSessionService userSessionService;
     private TSysUserRoleMapper urMapper;
+    private TSsmStockMapper tSsmStockMapper;
 
     public void setUrMapper(TSysUserRoleMapper urMapper) {
         this.urMapper = urMapper;
@@ -156,5 +159,25 @@ public class ReturnBoxServiceImpl implements ReturnBoxService {
 		  
 		  return retStr.toString();
 	 }
+
+    @Override
+    public int craeteRetBotByStock(StockModel sModel) {
+        Date today = new Date();
+        TSysUser user = userSessionService.getCurrentUser();
+        //生成回瓶详情列表
+        List<TRecBotDetail> entries = tRecBotDetailMapper.craeteRetBotByStock(sModel);
+        if (entries != null && entries.size() > 0) {
+            for (TRecBotDetail bot : entries) {
+                bot.setEmpNo(sModel.getEmpNo());
+                bot.setCreateAt(today);
+                bot.setCreateBy(user.getLoginName());
+                bot.setCreateByTxt(user.getDisplayName());
+                bot.setStatus("10");
+                bot.setDetLsh(PrimaryKeyUtils.generateUuidKey());
+                tRecBotDetailMapper.addRecBotItem(bot);
+            }
+        }
+        return 1;
+    }
 
 }

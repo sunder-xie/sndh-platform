@@ -62,10 +62,47 @@
     </bean>
     <bean class="com.nhry.service.basic.impl.TVipCrmInfoServiceImpl" id="vipCrmInfoService">
         <property name="vipCrmMapper" ref="vipCrmMapper"/>
+        <property name="vipcrmAddressMapper" ref="vipcrmAddressMapper"></property>
+    </bean>
+     <bean class="com.nhry.data.basic.impl.TVipCrmAddressMapperImpl" id="vipcrmAddressMapper">
+        <property name="sqlSessionTemplate" ref="dynamicSqlSessionTemplate"/>
     </bean>
     <bean class="com.nhry.service.pi.impl.PIVipInfoDataServiceImpl" id="piVipInfoDataService">
         <property name="vipCrmInfoService" ref="vipCrmInfoService"/>
+        <property name="branchService" ref="branchService"/>
+        <property name="dictionaryService" ref="dicService"/>
+        <property name="residentialAreaService" ref="residentialAreaService"/>
+        <property name="vipCustInfoService" ref="custService"/>
     </bean>
     <jaxws:endpoint id="piOrderServiceImpl" implementor="#piOrderService"
                     address="/orderService"/>
+    <bean class="com.nhry.service.pi.impl.PIVipPointServiceImpl" id="piVipPointService">
+
+    </bean>
+    <bean class="com.nhry.data.promotion.impl.PromotionMapperImpl" id="promotionMapper">
+        <property name="sqlSessionTemplate" ref="dynamicSqlSessionTemplate"/>
+    </bean>
+    <bean class="com.nhry.data.promotion.impl.PromotionConItemMapperImpl" id="promotionConItemMapper">
+        <property name="sqlSessionTemplate" ref="dynamicSqlSessionTemplate"/>
+    </bean>
+    <bean class="com.nhry.data.promotion.impl.PromotionGiftItemMapperImpl" id="promotionGiftItemMapper">
+        <property name="sqlSessionTemplate" ref="dynamicSqlSessionTemplate"/>
+    </bean>
+    <bean class="com.nhry.data.promotion.impl.PromotionOrigItemMapperImpl" id="promotionOrigItemMapper">
+        <property name="sqlSessionTemplate" ref="dynamicSqlSessionTemplate"/>
+    </bean>
+    <bean class="com.nhry.data.promotion.impl.PromotionScopeItemMapperImpl" id="promotionScopeItemMapper">
+        <property name="sqlSessionTemplate" ref="dynamicSqlSessionTemplate"/>
+    </bean>
+    <bean class="com.nhry.service.promotion.impl.PromotionDataServiceImpl" id="promotionDataService">
+        <property name="promotionScopeItemMapper" ref="promotionScopeItemMapper"/>
+        <property name="promotionConItemMapper" ref="promotionConItemMapper"/>
+        <property name="promotionGiftItemMapper" ref="promotionGiftItemMapper"/>
+        <property name="promotionMapper" ref="promotionMapper"/>
+        <property name="promotionOrigItemMapper" ref="promotionOrigItemMapper"/>
+    </bean>
+    <bean class="com.nhry.service.pi.impl.PIPromotionDataServiceImpl" id="piPromotionDataService">
+        <property name="promotionDataService" ref="promotionDataService"/>
+    </bean>
+    <jaxws:endpoint implementor="#piPromotionDataService" id="piPromotionDataServiceImpl" address="/promotionDataService"/>
 </beans>

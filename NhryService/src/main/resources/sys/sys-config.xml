@@ -11,6 +11,10 @@
   <config key="session_expire" value="session过期或者失效,请重新登录!"></config>
   <!-- 通用密码 -->
   <config key="commonPw" value="abcd1234"></config>
+  <config key="dhxt_base_pw" value="01@da99b8b994b5794094f2eae"></config>
+  <config key="snapp_base_pw" value="010da9@b8b994b5794094f2eae"></config>
+  <config key="ec_base_pw" value="010da99b8b99@b5794094f2eae"></config>
+  <config key="cisco_base_pw" value="010da99b8b994b5@94094f2eae"></config>
   <!-- redis用户存取key值 -->
   <config key="app_user_key" value="app_user_key"></config>
    <!-- accessKey-->

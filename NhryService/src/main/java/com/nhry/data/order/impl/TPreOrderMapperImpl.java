@@ -211,6 +211,11 @@ public class TPreOrderMapperImpl implements TPreOrderMapper
 		return sqlSessionTemplate.selectList("selectIniOrders");
 	}
 
+	@Override
+	public List<String> searchCustomerOrderForExp(CustBillQueryModel cModel) {
+		return sqlSessionTemplate.selectList("searchCustomerOrderForExp",cModel);
+	}
+
 	/* (non-Javadoc) 
 	* @title: replaceOrdersDispmember
 	* @description: 替换所有a送奶员的订单为b送奶员

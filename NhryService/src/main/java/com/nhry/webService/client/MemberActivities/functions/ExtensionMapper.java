@@ -19,7 +19,7 @@ public class ExtensionMapper {
         javax.xml.stream.XMLStreamReader reader) throws Exception {
         if ("urn:sap-com:document:sap:rfc:functions".equals(namespaceURI) &&
                 "EV_OBJECT_ID_type1".equals(typeName)) {
-            return com.nhry.webService.client.MemberActivities.functions.EV_OBJECT_ID_type1.Factory.parse(reader);
+            return EV_OBJECT_ID_type1.Factory.parse(reader);
         }
 
         if ("urn:sap-com:document:sap:rfc:functions".equals(namespaceURI) &&
@@ -29,7 +29,7 @@ public class ExtensionMapper {
 
         if ("urn:sap-com:document:sap:rfc:functions".equals(namespaceURI) &&
                 "ZSCRM_MEMB_ACTIVITIES".equals(typeName)) {
-            return com.nhry.webService.client.MemberActivities.functions.ZSCRM_MEMB_ACTIVITIES.Factory.parse(reader);
+            return ZSCRM_MEMB_ACTIVITIES.Factory.parse(reader);
         }
 
         if ("urn:sap-com:document:sap:rfc:functions".equals(namespaceURI) &&
@@ -39,7 +39,7 @@ public class ExtensionMapper {
 
         if ("urn:sap-com:document:sap:rfc:functions".equals(namespaceURI) &&
                 "TRAN_SEQ_NUM_type1".equals(typeName)) {
-            return com.nhry.webService.client.MemberActivities.functions.TRAN_SEQ_NUM_type1.Factory.parse(reader);
+            return TRAN_SEQ_NUM_type1.Factory.parse(reader);
         }
 
         if ("urn:sap-com:document:sap:rfc:functions".equals(namespaceURI) &&
@@ -59,17 +59,17 @@ public class ExtensionMapper {
 
         if ("urn:sap-com:document:sap:rfc:functions".equals(namespaceURI) &&
                 "POINT_TYPE_type1".equals(typeName)) {
-            return com.nhry.webService.client.MemberActivities.functions.POINT_TYPE_type1.Factory.parse(reader);
+            return POINT_TYPE_type1.Factory.parse(reader);
         }
 
         if ("urn:sap-com:document:sap:rfc:functions".equals(namespaceURI) &&
                 "PRODUCT_ID_type1".equals(typeName)) {
-            return com.nhry.webService.client.MemberActivities.functions.PRODUCT_ID_type1.Factory.parse(reader);
+            return PRODUCT_ID_type1.Factory.parse(reader);
         }
 
         if ("urn:sap-com:document:sap:rfc:functions".equals(namespaceURI) &&
                 "SALES_ORG_type1".equals(typeName)) {
-            return com.nhry.webService.client.MemberActivities.functions.SALES_ORG_type1.Factory.parse(reader);
+            return SALES_ORG_type1.Factory.parse(reader);
         }
 
         if ("urn:sap-com:document:sap:rfc:functions".equals(namespaceURI) &&
@@ -84,17 +84,17 @@ public class ExtensionMapper {
 
         if ("urn:sap-com:document:sap:rfc:functions".equals(namespaceURI) &&
                 "PROCESS_TYPE_type1".equals(typeName)) {
-            return com.nhry.webService.client.MemberActivities.functions.PROCESS_TYPE_type1.Factory.parse(reader);
+            return PROCESS_TYPE_type1.Factory.parse(reader);
         }
 
         if ("urn:sap-com:document:sap:rfc:functions".equals(namespaceURI) &&
                 "EV_OBJECT_ID_type1".equals(typeName)) {
-            return com.nhry.webService.client.MemberActivities.functions.EV_OBJECT_ID_type1.Factory.parse(reader);
+            return EV_OBJECT_ID_type1.Factory.parse(reader);
         }
 
         if ("urn:sap-com:document:sap:rfc:functions".equals(namespaceURI) &&
                 "PRODUCT_QUANTITY_type1".equals(typeName)) {
-            return com.nhry.webService.client.MemberActivities.functions.PRODUCT_QUANTITY_type1.Factory.parse(reader);
+            return PRODUCT_QUANTITY_type1.Factory.parse(reader);
         }
 
         if ("urn:sap-com:document:sap:rfc:functions".equals(namespaceURI) &&
@@ -109,12 +109,12 @@ public class ExtensionMapper {
 
         if ("urn:sap-com:document:sap:rfc:functions".equals(namespaceURI) &&
                 "TIER_GROUP_type1".equals(typeName)) {
-            return com.nhry.webService.client.MemberActivities.functions.TIER_GROUP_type1.Factory.parse(reader);
+            return TIER_GROUP_type1.Factory.parse(reader);
         }
 
         if ("urn:sap-com:document:sap:rfc:functions".equals(namespaceURI) &&
                 "MEMBERSHIP_GUID_type1".equals(typeName)) {
-            return com.nhry.webService.client.MemberActivities.functions.MEMBERSHIP_GUID_type1.Factory.parse(reader);
+            return MEMBERSHIP_GUID_type1.Factory.parse(reader);
         }
 
         if ("urn:sap-com:document:sap:rfc:functions".equals(namespaceURI) &&
@@ -144,12 +144,12 @@ public class ExtensionMapper {
 
         if ("urn:sap-com:document:sap:rfc:functions".equals(namespaceURI) &&
                 "RETAIL_STORE_ID_type1".equals(typeName)) {
-            return com.nhry.webService.client.MemberActivities.functions.RETAIL_STORE_ID_type1.Factory.parse(reader);
+            return RETAIL_STORE_ID_type1.Factory.parse(reader);
         }
 
         if ("urn:sap-com:document:sap:rfc:functions".equals(namespaceURI) &&
                 "ACTIVITY_DATE_type1".equals(typeName)) {
-            return com.nhry.webService.client.MemberActivities.functions.ACTIVITY_DATE_type1.Factory.parse(reader);
+            return ACTIVITY_DATE_type1.Factory.parse(reader);
         }
 
         throw new org.apache.axis2.databinding.ADBException("Unsupported type " +

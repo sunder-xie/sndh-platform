@@ -16,6 +16,7 @@ import com.nhry.webService.client.masterData.functions.*;
 import com.nhry.webService.client.masterData.model.*;
 import org.apache.axis2.client.Options;
 import org.apache.commons.lang.StringUtils;
+import org.apache.log4j.Logger;
 import org.springframework.core.task.TaskExecutor;
 
 import java.rmi.RemoteException;
@@ -26,6 +27,7 @@ import java.util.Date;
  * Created by cbz on 6/21/2016.
  */
 public class PIProductServiceImpl implements PIProductService {
+    private static Logger logger = Logger.getLogger(PIProductServiceImpl.class);
     public static String URL = PIPropertitesUtil.getValue("PI.MasterData.URL");
     public static String VKORG = PIPropertitesUtil.getValue("PI.MasterData.mATQUERY.VKORG");
     public static String OPTION = PIPropertitesUtil.getValue("PI.MasterData.mATQUERY.OPTION.EQ");
@@ -99,6 +101,7 @@ public class PIProductServiceImpl implements PIProductService {
      */
     @Override
     public int matHandler() {
+        logger.info("物料接口调用开始");
         try {
             ZSD_MATERAIL_DATA_RFCResponse response = getMaterailData();
             MARM[] marms = response.getET_MARM().getItem();
@@ -183,8 +186,10 @@ public class PIProductServiceImpl implements PIProductService {
             saveDL(clasfMap,"2005");//重点产品分类
         } catch (Exception e) {
             e.printStackTrace();
+            logger.error("物料接口调用报错！"+e.getMessage());
             return 0;
         }
+        logger.info("物料接口调用开始");
         return 1;
     }
 
@@ -263,6 +268,7 @@ public class PIProductServiceImpl implements PIProductService {
      */
     @Override
     public int customerDataHandle() {
+        logger.info("客户数据调用开始");
         try {
             ZSD_CUSTOMER_DATA_SYN_RFCResponse response = getCustomerData();
             Map<String, ET_KUNNR> et_kunnrs = getET_KUNNR(response);
@@ -272,6 +278,7 @@ public class PIProductServiceImpl implements PIProductService {
             List<ET_VKORG> zys = et_vkorgs.get("01");
             Map<String, String> gcs = getET_DATA(); //客户对应的库存地点
             Map<String, ET_LGORT> ccds = getET_LGORT(); //库存地点对应的工厂
+            int zycount = 0;
             for (ET_VKORG et_vkorg : zys) {
                 String kunnr = et_vkorg.getKUNNR();
                 String lgort = gcs.get(kunnr);//有库存地点的是自营奶站
@@ -280,11 +287,13 @@ public class PIProductServiceImpl implements PIProductService {
                     String werks = lg.getWERKS();
                     String lgorm = lg.getLGOBE();
                     if (StringUtils.isNotEmpty(werks)) {
-                        System.out.println("lgort"+lgort);
+                        zycount++;
                         saveBranch(et_kunnrs, BRANDCHTYPE_ZY, et_vkorg.getVKORG(), et_vkorg.getKUNNR(), lgort, werks, "");
                     }
                 }
             }
+            System.out.println("自营奶站"+zycount+"条");
+            logger.info("自营奶站"+zycount+"条");
             List<ET_VKORG> wbs = et_vkorgs.get("02");
             Map<String, ET_VKORG> jxs = new HashMap<String, ET_VKORG>();
             for (ET_VKORG et_vkorg : wbs) {
@@ -314,17 +323,23 @@ public class PIProductServiceImpl implements PIProductService {
                 if (l.size() > 0)
                     partners.put(kunnr, l);
             }
+            int zxscount=0;
             for (Map.Entry<String, List<ET_PARTNER>> entry : partners.entrySet()) {
                 String key = entry.getKey();
                 List<ET_PARTNER> lists = entry.getValue();
                 for (ET_PARTNER partner : lists) {
                     saveBranch(et_kunnrs, BRANDCHTYPE_WB, partner.getVKORG(), partner.getKUNWE(), "", "", key);
+                    zxscount++;
                 }
             }
+            System.out.println("经销商奶站"+zxscount+"条");
+            logger.info("经销商奶站"+zxscount+"条");
             return 1;
         } catch (Exception e) {
+            logger.error(e.getMessage());
             e.printStackTrace();
         }
+        logger.info("客户数据调用结束");
         return 1;
     }
 
@@ -385,7 +400,6 @@ public class PIProductServiceImpl implements PIProductService {
             System.out.println(kunnr + "@@@@@@@@@@@@@@@");
         } else {
             TMdBranch branch = branchMapper.getBranchByNo(et_kunnr.getKUNNR());
-
             if (branch == null) {
                 branch = new TMdBranch();
                 branch.setBranchNo(et_kunnr.getKUNNR());
@@ -853,7 +867,7 @@ public class PIProductServiceImpl implements PIProductService {
             String kunner = zt.getKUNNR1().getKUNNR1_type0();
             String lgort = zt.getLGORT().getLGORT_type0();
             String prodh = zt.getPRODH().getPRODH_type0();
-            if (org.apache.commons.lang.StringUtils.isNotEmpty(kunner) && PRODH.equals(prodh)) {
+            if (org.apache.commons.lang.StringUtils.isNotEmpty(kunner)) {
                 map.put(kunner, lgort);
             }
         }

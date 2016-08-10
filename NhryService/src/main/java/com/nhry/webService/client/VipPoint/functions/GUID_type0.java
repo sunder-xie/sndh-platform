@@ -20,13 +20,13 @@ public class GUID_type0 implements org.apache.axis2.databinding.ADBBean {
     /**
      * field for GUID_type0
      */
-    protected javax.activation.DataHandler localGUID_type0;
+    protected String localGUID_type0;
 
     /**
      * Auto generated getter method
-     * @return javax.activation.DataHandler
+     * @return java.lang.String
      */
-    public javax.activation.DataHandler getGUID_type0() {
+    public String getGUID_type0() {
         return localGUID_type0;
     }
 
@@ -34,8 +34,8 @@ public class GUID_type0 implements org.apache.axis2.databinding.ADBBean {
      * Auto generated setter method
      * @param param GUID_type0
      */
-    public void setGUID_type0(javax.activation.DataHandler param) {
-        if ((String.valueOf(param).length() <= 16)) {
+    public void setGUID_type0(String param) {
+        if ((String.valueOf(param).length() <= 32)) {
             this.localGUID_type0 = param;
         } else {
             throw new RuntimeException(
@@ -99,8 +99,7 @@ public class GUID_type0 implements org.apache.axis2.databinding.ADBBean {
             throw new org.apache.axis2.databinding.ADBException(
                 "GUID_type0 cannot be null !!");
         } else {
-            xmlWriter.writeCharacters(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(
-                    localGUID_type0));
+            xmlWriter.writeCharacters(localGUID_type0);
         }
 
         xmlWriter.writeEndElement();
@@ -318,7 +317,7 @@ public class GUID_type0 implements org.apache.axis2.databinding.ADBBean {
             String namespaceURI) {
             GUID_type0 returnValue = new GUID_type0();
 
-            returnValue.setGUID_type0(org.apache.axis2.databinding.utils.ConverterUtil.convertToBase64Binary(
+            returnValue.setGUID_type0(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(
                     value));
 
             return returnValue;
@@ -381,7 +380,7 @@ public class GUID_type0 implements org.apache.axis2.databinding.ADBBean {
 
                             String content = reader.getElementText();
 
-                            object.setGUID_type0(org.apache.axis2.databinding.utils.ConverterUtil.convertToBase64Binary(
+                            object.setGUID_type0(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(
                                     content));
                         } // End of if for expected property start element
 

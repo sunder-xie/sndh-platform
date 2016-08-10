@@ -12,6 +12,15 @@ public class EmpBranchBillDetailSearch extends BaseQueryModel {
     private Date dispDate;
     private String salesOrg;
     private String branchNo;
+    private String dealerNo;
+
+    public String getDealerNo() {
+        return dealerNo;
+    }
+
+    public void setDealerNo(String dealerNo) {
+        this.dealerNo = dealerNo;
+    }
 
     public String getBranchNo() {
         return branchNo;

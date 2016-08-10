@@ -35,7 +35,7 @@ public class ORDER_ID_type0 implements org.apache.axis2.databinding.ADBBean {
      * @param param ORDER_ID_type0
      */
     public void setORDER_ID_type0(String param) {
-        if ((String.valueOf(param).length() <= 10)) {
+        if ((String.valueOf(param).length() <= 50)) {
             this.localORDER_ID_type0 = param;
         } else {
             throw new RuntimeException(

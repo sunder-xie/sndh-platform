@@ -74,10 +74,11 @@ public class EcBaseService {
 		mess.setReqContent(reqbody);
 		mess.setStatus("N");
 		mess.setSysFlag("10"); //10 ： 电商
+		mess.setAmount(0);
 		mess.setCreateAt(new Date());
 		if(!StringUtils.isEmpty(errorMessage)){
 			if(errorMessage.length() > 200){
-				mess.setErrorMessage(errorMessage);
+				mess.setErrorMessage(errorMessage.substring(0, 200));
 			}else{
 				mess.setErrorMessage(errorMessage);
 			}
@@ -91,10 +92,12 @@ public class EcBaseService {
      */
     public void resendMessage2Ec(){
     	 try {
-    		 System.out.println("----------定时任务来了--------------");
 			List<TSysPushMessageLog> lists = messLogMapper.findSysPushMessageLogs();
 			 if(lists != null && lists.size() > 0){
 				 for(TSysPushMessageLog log : lists){
+					 if(log.getAmount() != null && log.getAmount() > 10){
+						 continue;
+					 }
 					 if(!StringUtils.isEmpty(log.getReqContent())){
 						 Map<String, Object> params = new HashMap<String,Object>(2);
 						params.put("data", log.getReqContent());
@@ -104,6 +107,20 @@ public class EcBaseService {
 			    		if(json.has("success") && json.getBoolean("success")){
 			    			log.setLastModified(new Date());
 			    			log.setStatus("Y");
+			    			messLogMapper.updatePushMessageLog(log);
+			    		}else{
+			    			String errorMessage = json.has("errorMessage") ? json.getString("errorMessage") : null;
+			    			String errorCode = json.has("errorCode") ? json.getString("errorCode") : null;
+			    			if(!StringUtils.isEmpty(errorMessage)){
+			    				if(errorMessage.length() > 200){
+			    					log.setErrorMessage(errorMessage.substring(0, 200));
+			    				}else{
+			    					log.setErrorMessage(errorMessage);
+			    				}
+			    			}
+			    			log.setErrorCode(errorCode);
+			    			log.setLastModified(new Date());
+			    			log.setAmount(log.getAmount()==null ? 1 : log.getAmount()+1);
 			    			messLogMapper.updatePushMessageLog(log);
 			    		}
 					 }

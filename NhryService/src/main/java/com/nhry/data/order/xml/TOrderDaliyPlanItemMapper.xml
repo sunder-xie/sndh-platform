@@ -511,7 +511,7 @@
     AND i.GIFT_QTY is not null
     and o.PREORDER_STAT !='30'
     and o.PREORDER_STAT !='40'
-    <if test="promotion!=NULL and ''!=promotion">
+    <if test="promotion!=null and ''!=promotion">
     and i.PROMOTION_FLAG = #{promotion,jdbcType=VARCHAR}
     </if>
     and  ( i.DISP_DATE = #{secondDay,jdbcType=DATE}  or i.DISP_DATE = #{firstDay,jdbcType=DATE} )

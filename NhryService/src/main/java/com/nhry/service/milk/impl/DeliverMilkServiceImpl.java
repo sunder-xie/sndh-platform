@@ -23,6 +23,7 @@ import com.nhry.model.milk.*;
 import com.nhry.model.milktrans.CreateInSalOrderModel;
 import com.nhry.model.milktrans.InSideSalOrderDetailSearchModel;
 import com.nhry.model.milktrans.InSideSalOrderSearchModel;
+import com.nhry.model.stock.StockModel;
 import com.nhry.service.BaseService;
 import com.nhry.service.basic.dao.ProductService;
 import com.nhry.service.milk.dao.DeliverMilkService;
@@ -32,7 +33,6 @@ import com.nhry.service.order.dao.OrderService;
 import com.nhry.service.stock.dao.TSsmStockService;
 import com.nhry.utils.PrimaryKeyUtils;
 import com.nhry.utils.SerialUtil;
-
 import org.apache.commons.lang3.StringUtils;
 
 import java.math.BigDecimal;
@@ -210,12 +210,19 @@ public class DeliverMilkServiceImpl extends BaseService implements DeliverMilkSe
 				tSsmStockService.updateStock(order.getBranchNo(),model.getMatnr(),new BigDecimal(model.getQty()),user.getSalesOrg());
 			}
 			tMstInsideSalOrderMapper.insertInsideSalOrder(order);
+
+			//创建回瓶
+			StockModel smodel = new StockModel();
+			smodel.setBranchNo(user.getBranchNo());
+			smodel.setEmpNo(cModel.getEmpNo());
+			returnBoxService.craeteRetBotByStock(smodel);
 		}else{
 			throw new ServiceException(MessageCode.LOGIC_ERROR,"没有选择产品！！！！");
 		}
 
  		return 0;
 	}
+
 
 	/* (non-Javadoc) 
 	* @title: searchOrders

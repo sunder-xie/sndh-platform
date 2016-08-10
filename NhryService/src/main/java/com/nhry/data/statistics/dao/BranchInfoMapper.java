@@ -2,6 +2,7 @@ package com.nhry.data.statistics.dao;
 
 import com.github.pagehelper.PageInfo;
 import com.nhry.model.statistics.BranchInfoModel;
+import com.nhry.model.statistics.ExtendBranchInfoModel;
 
 import java.util.List;
 import java.util.Map;
@@ -20,4 +21,6 @@ public interface BranchInfoMapper {
     List<Map<String,String>> branchDayOutput(BranchInfoModel model);
     List<Map<String,String>> findBranchMonthReportOutput(BranchInfoModel model);
     List<Map<String,String>> findOrderRatioOutput(BranchInfoModel model);
+    PageInfo findChangeplanStatReport(ExtendBranchInfoModel model);
+    PageInfo returnBoxStatReport(ExtendBranchInfoModel model);
 }

@@ -53,7 +53,7 @@ public class Z_CRM_PT_QUERY_RFC implements org.apache.axis2.databinding.ADBBean 
     /**
      * field for T_BALANCE_OUT
      */
-    protected com.nhry.webService.client.VipPoint.functions.T_BALANCE_OUT_type1 localT_BALANCE_OUT;
+    protected T_BALANCE_OUT_type1 localT_BALANCE_OUT;
 
     /*  This tracker boolean wil be used to detect whether the user called the set method
      *   for this attribute. It will be used to determine whether to include this field
@@ -138,7 +138,7 @@ public class Z_CRM_PT_QUERY_RFC implements org.apache.axis2.databinding.ADBBean 
      * Auto generated getter method
      * @return com.nhry.webService.client.VipPoint.functions.T_BALANCE_OUT_type1
      */
-    public com.nhry.webService.client.VipPoint.functions.T_BALANCE_OUT_type1 getT_BALANCE_OUT() {
+    public T_BALANCE_OUT_type1 getT_BALANCE_OUT() {
         return localT_BALANCE_OUT;
     }
 
@@ -147,7 +147,7 @@ public class Z_CRM_PT_QUERY_RFC implements org.apache.axis2.databinding.ADBBean 
      * @param param T_BALANCE_OUT
      */
     public void setT_BALANCE_OUT(
-        com.nhry.webService.client.VipPoint.functions.T_BALANCE_OUT_type1 param) {
+        T_BALANCE_OUT_type1 param) {
         localT_BALANCE_OUTTracker = param != null;
 
         this.localT_BALANCE_OUT = param;
@@ -554,7 +554,7 @@ public class Z_CRM_PT_QUERY_RFC implements org.apache.axis2.databinding.ADBBean 
                                     "T_BALANCE_OUT").equals(reader.getName())) ||
                                 new javax.xml.namespace.QName("",
                                     "T_BALANCE_OUT").equals(reader.getName())) {
-                            object.setT_BALANCE_OUT(com.nhry.webService.client.VipPoint.functions.T_BALANCE_OUT_type1.Factory.parse(
+                            object.setT_BALANCE_OUT(T_BALANCE_OUT_type1.Factory.parse(
                                     reader));
 
                             reader.next();

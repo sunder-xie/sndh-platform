@@ -152,7 +152,7 @@ public class BusinessDataConnection {
         return successMessage;
     }
 
-    public static PISuccessMessage SalesOrderCreate(String KUNNR, String KUNWE, String VKORG, String BSTKD, Date LFDAT, List<Map<String, String>> items, String activityId, String lgort, String werks) {
+    public static PISuccessMessage SalesOrderCreate(String KUNNR, String KUNWE, String VKORG, String BSTKD, Date LFDAT, List<Map<String, String>> items, String activityId, String lgort, String werks, String auartType) {
         PISuccessMessage successMessage = new PISuccessMessage();
         try {
             IT_ZSSD00011_type0 it_zssd00011_type1 = new IT_ZSSD00011_type0();
@@ -170,7 +170,6 @@ public class BusinessDataConnection {
                 zssd00011.setVRKME(vrkme_type1);
                 WERKS_type1 werks_type1 = new WERKS_type1();
                 werks_type1.setWERKS_type0(werks);
-//                werks_type1.setWERKS_type0("4110");//TODO 待修改
                 zssd00011.setWERKS(werks_type1);
                 LGORT_type1 lgort_type1 = new LGORT_type1();
                 lgort_type1.setLGORT_type0(lgort);
@@ -209,7 +208,7 @@ public class BusinessDataConnection {
             spart_type1.setSPART_type0(PIPropertitesUtil.getValue("PI.SPART"));
             zssd00010.setSPART(spart_type1);
             AUART_type1 auart_type1 = new AUART_type1();
-            auart_type1.setAUART_type0(PIPropertitesUtil.getValue("PI.AUART"));
+            auart_type1.setAUART_type0(auartType);
             zssd00010.setAUART(auart_type1);
             ParsePosition pos = new ParsePosition(8);
             String dateString = formatter.format(LFDAT);

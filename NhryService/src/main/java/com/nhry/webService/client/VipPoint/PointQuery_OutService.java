@@ -27,7 +27,7 @@ public interface PointQuery_OutService {
      */
     public void startpointQuery_Out(
             com.nhry.webService.client.VipPoint.functions.Z_CRM_PT_QUERY_RFC z_CRM_PT_QUERY_RFC0,
-            final com.nhry.webService.client.VipPoint.PointQuery_OutServiceCallbackHandler callback)
+            final PointQuery_OutServiceCallbackHandler callback)
         throws java.rmi.RemoteException;
 
     //
