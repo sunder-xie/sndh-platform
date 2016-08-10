@@ -93,6 +93,9 @@ public class UserServiceImpl extends BaseService implements UserService {
 			throw new ServiceException(MessageCode.LOGIC_ERROR, "用户名登录名不能为空！");
 		}
 		record.setLastModified(new Date());
+		if("-1".equals(record.getDealerId())){
+			record.setDealerId(null);
+		}
 		return userMapper.updateUser(record);
 	}
 
