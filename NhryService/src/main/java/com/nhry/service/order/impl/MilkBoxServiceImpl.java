@@ -180,7 +180,7 @@ public class MilkBoxServiceImpl extends BaseService implements MilkBoxService
 			SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
 			
 			//如果更改了原订单行的配送起始日期,要更新原来的订单
-			if(model.getEntries()!=null){
+			if(model.getEntries()!=null && model.getEntries().size()>0){
 				orderService.updateOrderAndEntriesDispStartDate(plan.getOrderNo(),model.getEntries());
 			}
 			
