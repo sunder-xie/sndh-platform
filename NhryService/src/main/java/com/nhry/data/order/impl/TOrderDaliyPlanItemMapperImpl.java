@@ -234,5 +234,18 @@ public class TOrderDaliyPlanItemMapperImpl implements TOrderDaliyPlanItemMapper
 		smodel.setCreateByTxt(status3);
 		return sqlSessionTemplate.selectList("searchDaliyPlansByStatus", smodel);
 	}
+
+	/* (non-Javadoc) 
+	* @title: deletePlansByAmt
+	* @description: 
+	* @param orderNo
+	* @return 
+	* @see com.nhry.data.order.dao.TOrderDaliyPlanItemMapper#deletePlansByAmt(java.lang.String) 
+	*/
+	@Override
+	public int deletePlansByAmt(String orderNo)
+	{
+		return sqlSessionTemplate.delete("deletePlansByAmt",orderNo);
+	}
 	
 }

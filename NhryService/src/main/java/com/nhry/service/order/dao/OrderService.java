@@ -88,4 +88,6 @@ public interface OrderService {
    
    List<TOrderDaliyPlanItem> viewDaliyPlans(OrderCreateModel record);
    
+   int recoverStopDaliyDaliyPlan(TOrderDaliyPlanItem item); 
+   
 }

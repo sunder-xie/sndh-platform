@@ -2,6 +2,7 @@ package com.nhry.rest.order;
 
 import com.github.pagehelper.PageInfo;
 import com.nhry.common.exception.MessageCode;
+import com.nhry.data.order.domain.TOrderDaliyPlanItem;
 import com.nhry.data.order.domain.TPlanOrderItem;
 import com.nhry.data.order.domain.TPreOrder;
 import com.nhry.model.basic.OrderModel;
@@ -142,6 +143,15 @@ public class OrderResource extends BaseResource {
 	@ApiOperation(value = "/uptshort", response = Integer.class, notes = "更新订单信息(短期修改)")
 	public Response uptOrder(@ApiParam(required=true,name="record",value="系统参数json格式") DaliyPlanEditModel record){
 		return convertToRespModel(MessageCode.NORMAL, null,  orderService.editOrderForShort(record));
+	}
+	
+	@POST
+	@Path("/recoverDaliyPlan")
+	@Consumes(MediaType.APPLICATION_JSON)
+	@Produces(MediaType.APPLICATION_JSON)
+	@ApiOperation(value = "/recoverDaliyPlan", response = Integer.class, notes = "日计划恢复")
+	public Response recoverDaliyPlan(@ApiParam(required=true,name="record",value="系统参数json格式") TOrderDaliyPlanItem plan){
+		return convertToRespModel(MessageCode.NORMAL, null,  orderService.recoverStopDaliyDaliyPlan(plan));
 	}
 	
 	@POST

@@ -74,7 +74,7 @@
     from t_mst_order_daliy_plan_item
     where 1 = 1 
       and ORDER_NO = #{orderNo,jdbcType=VARCHAR}
-    order by DISP_DATE desc  
+    order by DISP_DATE desc  , REMAIN_AMT asc
   </select>
    <select id="searchDaliyPlansByStatus" resultMap="BaseResultMap" parameterType="com.nhry.data.order.domain.TOrderDaliyPlanItem" >
     select 
@@ -121,7 +121,7 @@
     from t_mst_order_daliy_plan_item
     where 1 = 1 
       and ORDER_NO = #{orderNo,jdbcType=VARCHAR}
-    order by DISP_DATE asc  
+    order by DISP_DATE asc  , REMAIN_AMT desc
   </select>
   <select id="selectDaliyPlansByEntryNoAndNo" resultMap="BaseResultMap" parameterType="com.nhry.data.order.domain.TOrderDaliyPlanItemKey" >
     select 
@@ -707,6 +707,10 @@ UNION ALL
       GROUP BY i.MATNR
 
   </select>
-
+  <delete id="deletePlansByAmt" parameterType="java.lang.String" >
+    delete from t_mst_order_daliy_plan_item
+    where ORDER_NO = #{orderNo,jdbcType=VARCHAR}
+    and REMAIN_AMT &lt; 0
+  </delete>
 
 </mapper>
