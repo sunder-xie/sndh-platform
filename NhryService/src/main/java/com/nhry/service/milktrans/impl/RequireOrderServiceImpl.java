@@ -75,12 +75,11 @@ public class RequireOrderServiceImpl implements RequireOrderService {
         Date today = new Date();
         Date requireDate = null;
         TSysUser user = userSessionService.getCurrentUser();
-        //如果是华西或者天音 则日期为今天  否则为后天
+        //如果是华西或者天音 则requiredDate日期为今天  否则requiredDate为明天
         if("4181".equals(user.getSalesOrg()) || "4390".equals(user.getSalesOrg())){
             requireDate = today;
         }else{
             requireDate = DateUtil.getTomorrow(new Date());
-
         }
         rModel.setBranchNo(user.getBranchNo());
         rModel.setOrderDate(today);
@@ -100,13 +99,11 @@ public class RequireOrderServiceImpl implements RequireOrderService {
 
 
         //查看明天和后天的订单
-
-        rModel.setFirstDay(DateUtil.getTomorrow(requireDate));
-        rModel.setSecondDay(DateUtil.getDayAfterTomorrow(requireDate));
+        rModel.setFirstDay(DateUtil.getTomorrow(today));
+        rModel.setSecondDay(DateUtil.getDayAfterTomorrow(today));
         List<TOrderDaliyPlanItem> items = tOrderDaliyPlanItemMapper.selectDaliyPlansByBranchAndDay(rModel);
         //将i天后的日订单中符合的产品加入到 生成的要货计划
         if(items!=null && items.size()>0){
-
             order = new TSsmReqGoodsOrder();
             String orderNo = PrimaryKeyUtils.generateUuidKey();
             order.setRequiredDate(requireDate);
@@ -147,12 +144,12 @@ public class RequireOrderServiceImpl implements RequireOrderService {
 
     /**
      * 根据 日期 获取当前登录人所在奶站的 要货计划
-     * @param requiredDate
+     * @param orderDate
      * @return
      */
     @Override
-    public RequireOrderModel searchRequireOrder(Date  requiredDate) {
-        if(requiredDate == null){
+    public RequireOrderModel searchRequireOrder(Date  orderDate) {
+        if(orderDate == null){
             throw new ServiceException(MessageCode.LOGIC_ERROR,"查询要货计划的日期不能为空");
         }
         TSysUser user = userSessionService.getCurrentUser();
@@ -161,10 +158,8 @@ public class RequireOrderServiceImpl implements RequireOrderService {
 
         String salesOrg = user.getSalesOrg();
         rModel.setBranchNo(user.getBranchNo());
-        rModel.setRequiredDate(requiredDate);
-        rModel.setOrderDate(requiredDate);
+        rModel.setOrderDate(orderDate);
         TSsmReqGoodsOrder order  = this.tSsmReqGoodsOrderMapper.searchRequireOrder(rModel);
-
         if(order!= null){
             orderModel.setStatus(order.getStatus());
             orderModel.setRequiredDate(order.getOrderDate());
@@ -318,6 +313,7 @@ public class RequireOrderServiceImpl implements RequireOrderService {
             //自营奶站
             if("01".equals(branch.getBranchGroup())){
                 PISuccessMessage message =  piRequireOrderService.generateRequireOrder(order);
+                order.setVoucherNo(message.getData());
                 if(message.isSuccess()){
                     if(!uptRequireOrderAndDayOrderStatus(order,user)){
                         errorMessage ="修改要货计划或日订单状态失败" ;
@@ -555,6 +551,7 @@ public class RequireOrderServiceImpl implements RequireOrderService {
 
     /**
      * 自营奶站创建  销售订单
+     * 根据已确认的路单生成
      * @return
      */
   @Override
@@ -584,6 +581,7 @@ public class RequireOrderServiceImpl implements RequireOrderService {
 
     /**
      * 经销商奶站创建 销售订单
+     * 根据已生成的日订单 生成
      * @return
      */
     @Override
