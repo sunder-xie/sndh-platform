@@ -885,11 +885,15 @@
     
   <update id="replaceOrdersDispmember" parameterType="com.nhry.model.order.OrderSearchModel">
     update t_preorder  
-    set EMP_NO = #{content,jdbcType=VARCHAR} 
-    where EMP_NO = #{empNo,jdbcType=VARCHAR}
-    		 and PREORDER_STAT != '30'
+    set EMP_NO = #{empNo,jdbcType=VARCHAR} 
+    where PREORDER_STAT != '30'
     		 and PREORDER_STAT != '40'
     		 and SIGN != '30'
+    		 and ORDER_NO in 
+    		 <foreach collection="orders" item="order" index="index"
+            open="(" close=")" separator=",">
+            #{order}
+          </foreach>
   </update>
   
   <select id="selectIniOrders" resultMap="BaseResultMap">

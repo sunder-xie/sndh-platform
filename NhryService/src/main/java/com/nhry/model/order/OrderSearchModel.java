@@ -5,6 +5,8 @@ import com.wordnik.swagger.annotations.ApiModel;
 import com.wordnik.swagger.annotations.ApiModelProperty;
 
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
 
 @ApiModel(value = "OrderSearchModel", description = "订单信息列表查询对象")
 public class OrderSearchModel extends BaseQueryModel implements Serializable {
@@ -31,6 +33,7 @@ public class OrderSearchModel extends BaseQueryModel implements Serializable {
 	private String salesOrg;
 	private String dealerNo;
 	private Integer goDays;
+	private ArrayList<String> orders = new ArrayList<String>();
 	//电商额外字段
 	private String shopId;
 	private String ecOrderNo;
@@ -41,6 +44,14 @@ public class OrderSearchModel extends BaseQueryModel implements Serializable {
 	private String dhFlag;
 	private String buyerName;
 	
+	public ArrayList<String> getOrders()
+	{
+		return orders;
+	}
+	public void setOrders(ArrayList<String> orders)
+	{
+		this.orders = orders;
+	}
 	public String getBuyerName()
 	{
 		return buyerName;
