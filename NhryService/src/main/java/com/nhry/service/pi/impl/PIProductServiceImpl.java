@@ -189,7 +189,7 @@ public class PIProductServiceImpl implements PIProductService {
             logger.error("物料接口调用报错！"+e.getMessage());
             return 0;
         }
-        logger.info("物料接口调用开始");
+        logger.info("物料接口调用结束");
         return 1;
     }
 
