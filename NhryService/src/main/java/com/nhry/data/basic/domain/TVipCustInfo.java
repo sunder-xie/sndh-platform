@@ -30,6 +30,8 @@ public class TVipCustInfo implements Serializable{
     private String road;
 
     private String subdist;
+    
+    private String subdistName;
 
     private String room;
 
@@ -495,5 +497,13 @@ public class TVipCustInfo implements Serializable{
 
 	public void setVipTypeName(String vipTypeName) {
 		this.vipTypeName = vipTypeName;
+	}
+
+	public String getSubdistName() {
+		return subdistName;
+	}
+
+	public void setSubdistName(String subdistName) {
+		this.subdistName = subdistName;
 	}
 }

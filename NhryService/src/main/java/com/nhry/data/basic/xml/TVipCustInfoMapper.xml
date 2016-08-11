@@ -14,6 +14,7 @@
 		<result column="STREET" property="street" jdbcType="VARCHAR" />
 		<result column="ROAD" property="road" jdbcType="VARCHAR" />
 		<result column="SUBDIST" property="subdist" jdbcType="VARCHAR" />
+		<result column="SUBDIST_NAME" property="subdistName" jdbcType="VARCHAR" />
 		<result column="ROOM" property="room" jdbcType="VARCHAR" />
 		<result column="MP" property="mp" jdbcType="VARCHAR" />
 		<result column="TEL" property="tel" jdbcType="VARCHAR" />
@@ -29,8 +30,7 @@
 		<result column="VIP_SRC" property="vipSrc" jdbcType="VARCHAR" />
 		<result column="MILKBOX" property="milkbox" jdbcType="VARCHAR" />
 		<result column="VIP_TYPE" property="vipType" jdbcType="VARCHAR" />
-		<result column="SUBSCRIBE_DATE" property="subscribeDate"
-			jdbcType="DATE" />
+		<result column="SUBSCRIBE_DATE" property="subscribeDate" jdbcType="DATE" />
 		<result column="SUBSCRIBER" property="subscriber" jdbcType="VARCHAR" />
 		<result column="ACTIVITY_NO" property="activityNo" jdbcType="VARCHAR" />
 		<result column="STATUS" property="status" jdbcType="VARCHAR" />
@@ -777,6 +777,7 @@
 		i.STREET,
 		i.ROAD,
 		i.SUBDIST,
+		(select a.RESIDENTIAL_AREA_TXT from t_md_residential_area a where a.ID=i.SUBDIST) SUBDIST_NAME,
 		i.ROOM,
 		i.MP,
 		i.ZIP,
