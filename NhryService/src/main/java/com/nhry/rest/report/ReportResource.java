@@ -247,7 +247,7 @@ public class ReportResource extends BaseResource{
                     cell = row.getCell(1);
                     cell.setCellValue(item.getAddressTxt());
                     cell = row.getCell(5);
-                    cell.setCellValue(item.getMatnrTxt().concat(item.getConfirmQty().toString()));
+                    cell.setCellValue(item.getMatnrTxt().concat("--").concat(item.getConfirmQty().toString()));
                     cell = row.getCell(6);
                     cell.setCellValue(item.getCustTel());
                     cell = row.getCell(7);
