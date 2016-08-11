@@ -91,6 +91,9 @@ public class ReportResource extends BaseResource{
         String url = request.getServletContext().getRealPath("/");
         logger.info("realPath："+url);
         TMdAddress address = collect.getAddress();
+        if(address == null) {
+            return convertToRespModel(MessageCode.LOGIC_ERROR, "配送地址为空，请检查！", null);
+        }
         TPreOrder order = collect.getOrder();
         TMstRecvBill bill = customerBillService.getRecBillByOrderNo(orderCode);
         if(bill == null ){

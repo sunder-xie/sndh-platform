@@ -583,12 +583,15 @@
         u.MOBILE,
         u.CUSTOMIZED_EMPTYPETXT,
         u.DEPARTMENT_NAME,
-        u.BRANCH_NO, u.DEALER_ID, u.SALES_ORG,
+        u.BRANCH_NO, u.DEALER_ID, u.SALES_ORG,de.DEALER_NAME,b.BRANCH_NAME,it.ITEM_NAME SALE_NAME,
         CASE WHEN r.ID IS NULL THEN false ELSE true end isRole,
         (select group_concat(r.ID) from t_sys_user_role r where r.LOGIN_NAME = u.LOGIN_NAME ) as roleIds
         FROM T_SYS_USER u
         JOIN T_SYS_USER_ROLE r
         ON u.LOGIN_NAME = r.LOGIN_NAME
+        LEFT JOIN T_MD_BRANCH b on b.BRANCH_NO = u.BRANCH_NO
+        LEFT JOIN T_MD_DEALER de on de.DEALER_NO = u.DEALER_ID
+        LEFT JOIN T_SYS_CODE_ITEM it on it.ITEM_CODE = u.SALES_ORG and it.TYPE_CODE='1002'
         <where>
             <if test="roleId != null">
                 r.ID = #{roleId,jdbcType=VARCHAR}
@@ -616,6 +619,9 @@
         <result column="BRANCH_NO" jdbcType="VARCHAR" property="branchNo"/>
         <result column="DEALER_ID" jdbcType="VARCHAR" property="dealerId"/>
         <result column="SALES_ORG" jdbcType="VARCHAR" property="salesOrg"/>
+        <result column="BRANCH_NAME" jdbcType="VARCHAR" property="branchName"/>
+        <result column="DEALER_NAME" jdbcType="VARCHAR" property="dealerName"/>
+        <result column="SALE_NAME" jdbcType="VARCHAR" property="saleName"/>
         <!--<collection property="roleIds" ofType="com.nhry.data.auth.domain.TSysUserRole">-->
         <!--<id property="id" column="ID"/>-->
         <!--</collection>-->
@@ -644,9 +650,15 @@
     <select id="findUser" parameterType="com.nhry.model.auth.UserQueryModel" resultMap="BaseResultMap1">
         SELECT
         u.*,
+        b.BRANCH_NAME,
+        de.DEALER_NAME,
+        it.ITEM_NAME SALE_NAME,
         (select group_concat(r.ID) from t_sys_user_role r where r.LOGIN_NAME = u.LOGIN_NAME ) as roleIds
         FROM
         T_SYS_USER u
+        LEFT JOIN T_MD_BRANCH b on b.BRANCH_NO = u.BRANCH_NO
+        LEFT JOIN T_MD_DEALER de on de.DEALER_NO = u.DEALER_ID
+        LEFT JOIN T_SYS_CODE_ITEM it on it.ITEM_CODE = u.SALES_ORG and it.TYPE_CODE='1002'
         <where>
             <if test="uname != null">
                 and (u.LOGIN_NAME like CONCAT('%',#{uname,jdbcType=VARCHAR},'%') or u.DISPLAY_NAME like
