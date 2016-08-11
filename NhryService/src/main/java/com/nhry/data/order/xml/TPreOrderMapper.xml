@@ -484,9 +484,6 @@
     <if test="product != null and product !=''">
      		AND e.MATNR = #{product,jdbcType=VARCHAR}
     </if>
-    <if test="address != null and address !=''">
-     		AND (r.RESIDENTIAL_AREA_TXT like '%${milkmemberNo}%' or a.ADDRESS_TXT like '%${milkmemberNo}%')
-    </if>
     <if test="branchNo != null and branchNo != ''">
      		AND o.BRANCH_NO = #{branchNo,jdbcType=VARCHAR}
     </if>
@@ -500,7 +497,7 @@
      		AND o.EMP_NO = #{empNo,jdbcType=VARCHAR}
     </if>
     <if test="milkmemberNo != null and milkmemberNo !=''">
-     		AND (v.VIP_NAME like '%${milkmemberNo}%' or v.MP like '%${milkmemberNo}%')
+     		AND (v.VIP_NAME like '%${milkmemberNo}%' or v.MP like '%${milkmemberNo}%' or r.RESIDENTIAL_AREA_TXT like '%${milkmemberNo}%' or a.ADDRESS_TXT like '%${milkmemberNo}%')
     </if>
     <if test="paymentStat != null and paymentStat !=''">
      		AND o.PAYMENTMETHOD = #{paymentStat,jdbcType=VARCHAR}
@@ -536,9 +533,6 @@
 			    <if test="product != null and product !=''">
 			     		AND e.MATNR = #{product,jdbcType=VARCHAR}
 			    </if>
-			    <if test="address != null and address !=''">
-			     		AND (r.RESIDENTIAL_AREA_TXT like '%${milkmemberNo}%' or a.ADDRESS_TXT like '%${milkmemberNo}%')
-			    </if>
 			    <if test="branchNo != null and branchNo != ''">
 			     		AND o.BRANCH_NO = #{branchNo,jdbcType=VARCHAR}
 			    </if>
@@ -552,7 +546,7 @@
 			     		AND o.EMP_NO = #{empNo,jdbcType=VARCHAR}
 			    </if>
 			    <if test="milkmemberNo != null and milkmemberNo !=''">
-			     		AND (v.VIP_NAME like '%${milkmemberNo}%' or v.MP like '%${milkmemberNo}%')
+			     		AND (v.VIP_NAME like '%${milkmemberNo}%' or v.MP like '%${milkmemberNo}%' or r.RESIDENTIAL_AREA_TXT like '%${milkmemberNo}%' or a.ADDRESS_TXT like '%${milkmemberNo}%')
 			    </if>
 			    <if test="paymentStat != null and paymentStat !=''">
 			     		AND o.PAYMENTMETHOD = #{paymentStat,jdbcType=VARCHAR}
