@@ -23,6 +23,7 @@ import com.nhry.utils.PrimaryKeyUtils;
 import com.nhry.webService.client.PISuccessMessage;
 import org.apache.commons.lang3.StringUtils;
 
+import java.text.SimpleDateFormat;
 import java.util.*;
 
 /**
@@ -577,8 +578,9 @@ public class RequireOrderServiceImpl implements RequireOrderService {
          if("01".equals(branch.getBranchGroup())){
              int noprom = this.creatNoPromoSalOrderOfSelftBranch(today);
              int prom = this.creatPromoSalOrderOfSelftBranch(today);
-             if(noprom+prom == 0){
-                 throw new ServiceException(MessageCode.LOGIC_ERROR,"该奶站没有  "+today+"  确认的路单");
+             if(noprom + prom == 0){
+                 SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+                 throw new ServiceException(MessageCode.LOGIC_ERROR,"该奶站没有  "+sdf.format(today)+"  确认的路单");
              }
              return this.getSaleOrderByQueryDate(sMode);
           }else{
