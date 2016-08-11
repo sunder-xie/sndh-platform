@@ -45,7 +45,7 @@
   <sql id="Base_Column_List" >
     BRANCH_NO, BRANCH_NAME, SALES_ORG, SALES_CHA, BRANCH_GROUP, BRANCH_LEVEL, CONTACT,EMP_NO,
     TEL, MP, DEALER_NO, ADDRESS, PROVINCE, CITY, COUNTY, WERKS, LGORT, CREATE_AT, CREATE_BY, 
-    CREATE_BY_TXT, LAST_MODIFIED, LAST_MODIFIED_BY, LAST_MODIFIED_BY_TXT
+    CREATE_BY_TXT, LAST_MODIFIED, LAST_MODIFIED_BY, LAST_MODIFIED_BY_TXT,COMPANY_CODE
   </sql>
   <select id="selectBranchByNo" resultMap="BaseResultMap" parameterType="java.lang.String" >
           select
@@ -83,7 +83,7 @@
       ADDRESS, PROVINCE, CITY, 
       COUNTY, WERKS, LGORT, 
       CREATE_AT, CREATE_BY, CREATE_BY_TXT, 
-      LAST_MODIFIED, LAST_MODIFIED_BY, LAST_MODIFIED_BY_TXT
+      LAST_MODIFIED, LAST_MODIFIED_BY, LAST_MODIFIED_BY_TXT,COMPANY_CODE
       )
     values (#{branchNo,jdbcType=VARCHAR}, #{branchName,jdbcType=VARCHAR}, #{salesOrg,jdbcType=VARCHAR}, 
       #{salesCha,jdbcType=VARCHAR}, #{branchGroup,jdbcType=VARCHAR}, #{branchLevel,jdbcType=VARCHAR}, 
@@ -91,7 +91,7 @@
       #{address,jdbcType=VARCHAR}, #{province,jdbcType=VARCHAR}, #{city,jdbcType=VARCHAR}, 
       #{county,jdbcType=VARCHAR}, #{werks,jdbcType=VARCHAR}, #{lgort,jdbcType=VARCHAR}, 
       #{createAt,jdbcType=TIMESTAMP}, #{createBy,jdbcType=VARCHAR}, #{createByTxt,jdbcType=VARCHAR}, 
-      #{lastModified,jdbcType=TIMESTAMP}, #{lastModifiedBy,jdbcType=VARCHAR}, #{lastModifiedByTxt,jdbcType=VARCHAR}
+      #{lastModified,jdbcType=TIMESTAMP}, #{lastModifiedBy,jdbcType=VARCHAR}, #{lastModifiedByTxt,jdbcType=VARCHAR},#{companyCode,jdbcType=VARCHAR}
       )
   </insert>
   <update id="uptBranch" parameterType="com.nhry.data.basic.domain.TMdBranch" >
@@ -117,7 +117,8 @@
       CREATE_BY_TXT = #{createByTxt,jdbcType=VARCHAR},
       LAST_MODIFIED = #{lastModified,jdbcType=TIMESTAMP},
       LAST_MODIFIED_BY = #{lastModifiedBy,jdbcType=VARCHAR},
-      LAST_MODIFIED_BY_TXT = #{lastModifiedByTxt,jdbcType=VARCHAR}
+      LAST_MODIFIED_BY_TXT = #{lastModifiedByTxt,jdbcType=VARCHAR},
+      COMPANY_CODE = #{companyCode,jdbcType=VARCHAR}
     where BRANCH_NO = #{branchNo,jdbcType=VARCHAR}
   </update>
   <select id="findBranchListByOrg" resultMap="BaseResultMap" parameterType="String">
