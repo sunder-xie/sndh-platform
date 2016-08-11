@@ -313,17 +313,39 @@ public class RequireOrderServiceImpl implements RequireOrderService {
                 errorMessage = "今天的要货计划已发送至ERP";
                 throw  new ServiceException(MessageCode.LOGIC_ERROR,errorMessage);
             }
+            TMdBranch branch = branchMapper.selectBranchByNo(branchNo);
+
+            //自营奶站
+            if("01".equals(branch.getBranchGroup())){
+                PISuccessMessage message =  piRequireOrderService.generateRequireOrder(order);
+                if(message.isSuccess()){
+                    if(!uptRequireOrderAndDayOrderStatus(order,user)){
+                        errorMessage ="修改要货计划或日订单状态失败" ;
+                        throw  new ServiceException(MessageCode.LOGIC_ERROR,errorMessage);
+                    }
+                }else{
+                    throw  new ServiceException(MessageCode.LOGIC_ERROR,"自营奶站发送要货计划失败，请重新发送");
+                }
+            }else{
+                //经销商奶站 生成销售订单
+                this.creatNoPromoSalOrderOfDealerBranch(today);
+                this.creatPromoSalOrderOfDealerBranch(today);
+                order.setLastModified(new Date());
+                order.setLastModifiedBy(user.getLoginName());
+                order.setLastModifiedByTxt(user.getDisplayName());
+                order.setStatus("30");
+                tSsmReqGoodsOrderMapper.uptRequireGoodsModifyInfo(order);
+            }
 
 
-           PISuccessMessage message =  piRequireOrderService.generateRequireOrder(order);
-           /* PISuccessMessage message = new PISuccessMessage();
+       /*    PISuccessMessage message =  piRequireOrderService.generateRequireOrder(order);
+           *//* PISuccessMessage message = new PISuccessMessage();
             message.setSuccess(Boolean.TRUE);
             message.setData(PrimaryKeyUtils.generateUuidKey());
-            message.setMessage("成功");*/
+            message.setMessage("成功");*//*
             //如果成功
             if(message.isSuccess()){
                 order.setVoucherNo(message.getData());
-                TMdBranch branch = branchMapper.selectBranchByNo(branchNo);
                 //直营奶站
                 if("01".equals(branch.getBranchGroup())){
                      //修改要货计划状态为已确认状态 并 同步修改订户日订单状态为已确认
@@ -331,28 +353,23 @@ public class RequireOrderServiceImpl implements RequireOrderService {
                         errorMessage ="修改要货计划或日订单状态失败" ;
                         throw  new ServiceException(MessageCode.LOGIC_ERROR,errorMessage);
                     }
-                    // 生成一张调拨单
-
                 }else{
-
                     //要货计划单状态为“确认”，将不能修改
                     order.setLastModified(new Date());
                     order.setLastModifiedBy(user.getLoginName());
                     order.setLastModifiedByTxt(user.getDisplayName());
                     order.setStatus("30");
                     tSsmReqGoodsOrderMapper.uptRequireGoodsModifyInfo(order);
-                    /*上订户系统的大商/小商奶站  自动生成以奶站为单位的销售订单(产品要重新统计，根据产品参加N个促销活动  生成N+1 个销售单 )
+                    *//*上订户系统的大商/小商奶站  自动生成以奶站为单位的销售订单(产品要重新统计，根据产品参加N个促销活动  生成N+1 个销售单 )
                     * 其中 产品增量部分 为不参加促销活动的产品 即 放至 在 1 那个单子中
-                    * */
+                    * *//*
                     this.creatNoPromoSalOrderOfDealerBranch(today);
                     this.creatPromoSalOrderOfDealerBranch(today);
-
-
                 }
 
             }else{
                 throw  new ServiceException(MessageCode.REQUEST_NOT_FOUND,message.getMessage());
-            }
+            }*/
         }
         return 0;
     }
@@ -548,10 +565,10 @@ public class RequireOrderServiceImpl implements RequireOrderService {
         sMode.setOrderDate(new Date());
         List<TSsmSalOrder> result = this.getSaleOrderByQueryDate(sMode);
         if(result!=null && result.size()>0){
-            String orderNo = result.get(0).getOrderNo();
+           /* String orderNo = result.get(0).getOrderNo();
             tSsmSalOrderMapper.delSalOrderByOrderNo(orderNo);
-            tSsmSalOrderItemMapper.delSalOrderItemsByOrderNo(orderNo);
-            // throw new ServiceException(MessageCode.LOGIC_ERROR,"该奶站今天已经创建过销售订单,请直接查询");
+            tSsmSalOrderItemMapper.delSalOrderItemsByOrderNo(orderNo);*/
+            throw new ServiceException(MessageCode.LOGIC_ERROR,"该奶站今天已经创建过销售订单,请直接查询");
         }
 
          Date today = new Date();
