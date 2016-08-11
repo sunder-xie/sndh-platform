@@ -181,6 +181,7 @@
                 <if test="salesOrg!=null and salesOrg!=''">
                     and b.SALES_ORG = #{salesOrg,jdbcType=VARCHAR}
                 </if>
+                and a.SALES_ORG = b.SALES_ORG
                 and  o.DISP_DATE = #{dispDate,jdbcType=DATE}
                 and  o.DISP_EMP_NO = #{empNo,jdbcType=VARCHAR}
                 GROUP BY i.CONFIRM_MATNR
