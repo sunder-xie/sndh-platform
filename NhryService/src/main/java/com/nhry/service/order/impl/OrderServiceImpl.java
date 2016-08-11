@@ -3581,5 +3581,134 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 		return daliyPlans;
 	}
 
+	/* (non-Javadoc) 
+	* @title: recoverStopDaliyDaliyPlan
+	* @description: 恢复停订的日计划,预付款试用
+	* @param item
+	* @return 
+	* @see com.nhry.service.order.dao.OrderService#recoverStopDaliyDaliyPlan(com.nhry.data.order.domain.TOrderDaliyPlanItem) 
+	*/
+	@Override
+	public int recoverStopDaliyDaliyPlan(TOrderDaliyPlanItem item)
+	{
+		SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
+		TPreOrder orgOrder = tPreOrderMapper.selectByPrimaryKey(item.getOrderNo());
+		
+		//validate 今天的日计划也不能恢复todo
+		if("30".equals(orgOrder.getSign()) || !"10".equals(orgOrder.getPreorderStat()) )throw new ServiceException(MessageCode.LOGIC_ERROR,"该订单不能恢复!");
+		if("20".equals(orgOrder.getSign()))throw new ServiceException(MessageCode.LOGIC_ERROR,"已停订的订单不能单日恢复日计划!");
+		
+		//预付款恢复
+		if("20".equals(orgOrder.getPaymentmethod())){
+			ArrayList<TOrderDaliyPlanItem> daliyPlans = (ArrayList<TOrderDaliyPlanItem>) tOrderDaliyPlanItemMapper.selectDaliyPlansByOrderNo(item.getOrderNo());
+			
+			//原订单行单价
+			BigDecimal orgPrice = null;
+			TPlanOrderItem orgEntry = null;
+			ArrayList<TPlanOrderItem> orgEntries = (ArrayList<TPlanOrderItem>) tPlanOrderItemMapper.selectByOrderCode(item.getOrderNo());
+			for(TPlanOrderItem entry :orgEntries){
+				if(entry.getItemNo().equals(item.getItemNo())){
+					orgPrice = entry.getSalesPrice();
+					orgEntry = entry;
+					break;
+				}
+			}
+   		int rate = item.getAmt().divide(orgPrice,2).setScale(2, BigDecimal.ROUND_FLOOR).intValue();//恢复此行需要消耗多少个原商品
+   		
+   		for(TOrderDaliyPlanItem p : daliyPlans){//换商品停订后，延后的日计划如果再换商品会发生问题
+   			if(p.getGiftQty() != null)continue;
+   			if(p.getDispDate().equals(item.getDispDate()) && p.getItemNo().equals(item.getItemNo()))continue;
+   			if("10".equals(p.getStatus()) && p.getItemNo().equals(item.getItemNo()) && p.getMatnr().equals(orgEntry.getMatnr()) ){
+   				int qty = p.getQty();
+   				if(rate - qty >= 0){
+   					rate = rate - qty;
+   					p.setQty(0);
+   					p.setRemainAmt(new BigDecimal("-1"));
+   				}else{
+   					rate = 0;
+   					p.setQty(qty - rate);
+   					p.setAmt(p.getPrice().multiply(new BigDecimal(qty - rate)));
+   				}
+   				if(rate == 0)break;
+   			}
+   		}
+   		if(rate > 0)throw new ServiceException(MessageCode.LOGIC_ERROR,"原商品不足，无法恢复此日计划!");
+   		
+   		//日期排序完 asc
+   		daliyPlans.sort(new Comparator<TOrderDaliyPlanItem>(){
+   			@Override
+   			public int compare(TOrderDaliyPlanItem o1, TOrderDaliyPlanItem o2)
+   			{
+   				if(o1.getDispDate().before(o2.getDispDate()))
+   				{
+   					return -1;
+   				}else{
+   					return  1;
+   				}
+   			}
+      	});
+   		
+			Date endDate = null;
+			BigDecimal initAmt = orgOrder.getInitAmt();
+			
+			for(TOrderDaliyPlanItem plan :daliyPlans){
+				if(plan.getDispDate().equals(item.getDispDate()) && plan.getItemNo().equals(item.getItemNo()))plan.setStatus("10");//恢复
+				if("30".equals(plan.getStatus()) || plan.getGiftQty()!=null)continue;
+				if(plan.getRemainAmt().floatValue() <= 0){
+					tOrderDaliyPlanItemMapper.updateDaliyPlanItem(plan);
+					continue;
+				}
+				initAmt = initAmt.subtract(plan.getAmt());
+				plan.setRemainAmt(initAmt);
+				tOrderDaliyPlanItemMapper.updateDaliyPlanItem(plan);
+				
+				//截止日期更新
+				if(endDate == null){
+					endDate = plan.getDispDate();
+				}else{
+					if(plan.getRemainAmt().floatValue() >= 0){
+						endDate = endDate.after(plan.getDispDate())?endDate:plan.getDispDate();
+					}
+				}
+			}
+			
+			tOrderDaliyPlanItemMapper.deletePlansByAmt(orgOrder.getOrderNo());
+			
+			//更新订单
+			orgOrder.setEndDate(endDate);
+			tPreOrderMapper.updateOrderEndDate(orgOrder);
+			
+		}else{
+		//后付款恢复，重新计算订单金额等信息
+			ArrayList<TOrderDaliyPlanItem> daliyPlans = (ArrayList<TOrderDaliyPlanItem>) tOrderDaliyPlanItemMapper.selectDaliyPlansByOrderNoAsc(item.getOrderNo());
+			
+			orgOrder.setInitAmt(orgOrder.getInitAmt().add(item.getAmt()));
+			orgOrder.setCurAmt(orgOrder.getCurAmt().add(item.getAmt()));
+			BigDecimal initAmt = orgOrder.getInitAmt();
+			Date endDate = null;
+			
+			for(TOrderDaliyPlanItem plan :daliyPlans){
+				if(plan.getDispDate().equals(item.getDispDate()) && plan.getItemNo().equals(item.getItemNo()))plan.setStatus("10");//恢复
+				if(!"30".equals(plan.getStatus())){
+					initAmt = initAmt.subtract(plan.getAmt());
+					//截止日期更新
+					if(endDate == null){
+						endDate = plan.getDispDate();
+					}else{
+						endDate = endDate.after(plan.getDispDate())?endDate:plan.getDispDate();
+					}
+				}
+				plan.setRemainAmt(initAmt);
+				tOrderDaliyPlanItemMapper.updateDaliyPlanItem(plan);
+			}
+			
+			//更新订单
+			orgOrder.setEndDate(endDate);
+			tPreOrderMapper.updateOrderEndDate(orgOrder);
+		}
+		
+		return 1;
+	}
+
 
 }
