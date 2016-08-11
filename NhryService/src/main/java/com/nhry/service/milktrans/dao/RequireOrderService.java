@@ -14,7 +14,7 @@ import java.util.List;
 public interface RequireOrderService {
 
     RequireOrderModel creatRequireOrder();
-    RequireOrderModel searchRequireOrder(Date requiredDate);
+    RequireOrderModel searchRequireOrder(Date orderDate);
 
     int uptNewRequireOrderItem(UpdateNewRequiredModel uModel);
 
