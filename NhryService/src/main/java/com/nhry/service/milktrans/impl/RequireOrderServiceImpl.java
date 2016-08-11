@@ -488,9 +488,11 @@ public class RequireOrderServiceImpl implements RequireOrderService {
             if(message.isSuccess()){
                 this.uptVouCherNoByOrderNo(order.getOrderNo(),message.getData());
             }
-
+            return 1;
+        }else{
+            return 0;
         }
-        return 1;
+
     }
 
 
@@ -521,6 +523,9 @@ public class RequireOrderServiceImpl implements RequireOrderService {
                     if(message.isSuccess()){
                         this.uptVouCherNoByOrderNo(order.getOrderNo(),message.getData());
                     }
+                    return 1;
+                }else{
+                    return 0;
                 }
 
        /* List<String> promotionNolist = tOrderDaliyPlanItemMapper.getDailOrderPromOfSelfBranch(rModel);
@@ -545,7 +550,7 @@ public class RequireOrderServiceImpl implements RequireOrderService {
             }
 
         }*/
-        return 1;
+
     }
 
 
@@ -572,6 +577,9 @@ public class RequireOrderServiceImpl implements RequireOrderService {
          if("01".equals(branch.getBranchGroup())){
              int noprom = this.creatNoPromoSalOrderOfSelftBranch(today);
              int prom = this.creatPromoSalOrderOfSelftBranch(today);
+             if(noprom+prom == 0){
+                 throw new ServiceException(MessageCode.LOGIC_ERROR,"该奶站没有  "+today+"  确认的路单");
+             }
              return this.getSaleOrderByQueryDate(sMode);
           }else{
               throw new ServiceException(MessageCode.LOGIC_ERROR,"该奶站不是自营奶站");
