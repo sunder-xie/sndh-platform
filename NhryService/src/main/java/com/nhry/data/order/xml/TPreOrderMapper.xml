@@ -484,6 +484,9 @@
     <if test="product != null and product !=''">
      		AND e.MATNR = #{product,jdbcType=VARCHAR}
     </if>
+    <if test="address != null and address !=''">
+     		AND (r.RESIDENTIAL_AREA_TXT like '%${address}%' or a.ADDRESS_TXT like '%${address}%')
+    </if>
     <if test="branchNo != null and branchNo != ''">
      		AND o.BRANCH_NO = #{branchNo,jdbcType=VARCHAR}
     </if>
@@ -532,6 +535,9 @@
 			    </if>
 			    <if test="product != null and product !=''">
 			     		AND e.MATNR = #{product,jdbcType=VARCHAR}
+			    </if>
+			    <if test="address != null and address !=''">
+			     		AND (r.RESIDENTIAL_AREA_TXT like '%${address}%' or a.ADDRESS_TXT like '%${address}%')
 			    </if>
 			    <if test="branchNo != null and branchNo != ''">
 			     		AND o.BRANCH_NO = #{branchNo,jdbcType=VARCHAR}
