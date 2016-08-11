@@ -313,6 +313,7 @@ public class RequireOrderServiceImpl implements RequireOrderService {
             //自营奶站
             if("01".equals(branch.getBranchGroup())){
                 PISuccessMessage message =  piRequireOrderService.generateRequireOrder(order);
+                order.setVoucherNo(message.getData());
                 if(message.isSuccess()){
                     if(!uptRequireOrderAndDayOrderStatus(order,user)){
                         errorMessage ="修改要货计划或日订单状态失败" ;
