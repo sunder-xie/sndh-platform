@@ -17,40 +17,20 @@ public class PromotionDataServiceImpl implements PromotionDataService{
     private PromotionGiftItemMapper promotionGiftItemMapper;
     private PromotionScopeItemMapper promotionScopeItemMapper;
 
-    public PromotionMapper getPromotionMapper() {
-        return promotionMapper;
-    }
-
     public void setPromotionMapper(PromotionMapper promotionMapper) {
         this.promotionMapper = promotionMapper;
-    }
-
-    public PromotionOrigItemMapper getPromotionOrigItemMapper() {
-        return promotionOrigItemMapper;
     }
 
     public void setPromotionOrigItemMapper(PromotionOrigItemMapper promotionOrigItemMapper) {
         this.promotionOrigItemMapper = promotionOrigItemMapper;
     }
 
-    public PromotionConItemMapper getPromotionConItemMapper() {
-        return promotionConItemMapper;
-    }
-
     public void setPromotionConItemMapper(PromotionConItemMapper promotionConItemMapper) {
         this.promotionConItemMapper = promotionConItemMapper;
     }
 
-    public PromotionGiftItemMapper getPromotionGiftItemMapper() {
-        return promotionGiftItemMapper;
-    }
-
     public void setPromotionGiftItemMapper(PromotionGiftItemMapper promotionGiftItemMapper) {
         this.promotionGiftItemMapper = promotionGiftItemMapper;
-    }
-
-    public PromotionScopeItemMapper getPromotionScopeItemMapper() {
-        return promotionScopeItemMapper;
     }
 
     public void setPromotionScopeItemMapper(PromotionScopeItemMapper promotionScopeItemMapper) {
@@ -73,7 +53,7 @@ public class PromotionDataServiceImpl implements PromotionDataService{
     }
 
     @Override
-    public PromotionScopeItem selectScopeItemByKey(PromotionScopeItemKey key) {
+    public PromotionScopeItem selectScopeItemByKey(PromotionScopeItem key) {
         return promotionScopeItemMapper.selectScopeItem(key);
     }
 
@@ -133,14 +113,9 @@ public class PromotionDataServiceImpl implements PromotionDataService{
     @Override
     public int savePromotionScopeItem(PromotionScopeItem item) {
         int i = 0;
-        PromotionScopeItemKey key = new PromotionScopeItemKey();
-        key.setItemNo(item.getItemNo());
-        key.setPromNo(item.getPromNo());
-        PromotionScopeItem ScopeItem = this.selectScopeItemByKey(key);
+        PromotionScopeItem ScopeItem = this.selectScopeItemByKey(item);
         if(ScopeItem == null){
             promotionScopeItemMapper.insertScopeItem(item);
-        }else{
-            promotionScopeItemMapper.updateScopeItemSelective(item);
         }
         return i;
     }
