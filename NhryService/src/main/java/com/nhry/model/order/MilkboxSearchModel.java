@@ -10,11 +10,20 @@ import java.io.Serializable;
 public class MilkboxSearchModel extends BaseQueryModel implements Serializable {
 	@ApiModelProperty(value="status",notes="状态")
 	private String status;
+	private String orderNo;
 	private String emp;
 	private String setDateStart;
 	private String setDateEnd;
 	private String branchNo;
 	private String salesOrg;
+	public String getOrderNo()
+	{
+		return orderNo;
+	}
+	public void setOrderNo(String orderNo)
+	{
+		this.orderNo = orderNo;
+	}
 	public String getBranchNo()
 	{
 		return branchNo;
