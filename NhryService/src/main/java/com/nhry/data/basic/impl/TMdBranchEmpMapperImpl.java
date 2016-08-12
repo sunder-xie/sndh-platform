@@ -7,6 +7,7 @@ import com.nhry.data.basic.domain.TMdBranchEmp;
 import com.nhry.data.basic.domain.TMdResidentialArea;
 import com.nhry.model.basic.BranchEmpSearchModel;
 import com.nhry.model.basic.EmpQueryModel;
+import com.nhry.model.bill.EmpSalQueryModel;
 import com.nhry.service.basic.pojo.BranchEmpModel;
 
 import java.util.List;
@@ -69,7 +70,7 @@ public class TMdBranchEmpMapperImpl implements TMdBranchEmpMapper {
 	}
 
 	@Override
-	public List<TMdBranchEmp> getAllEmpByBranchNo(String branchNo,String salesOrg) {
+	public List<TMdBranchEmp> getAllEmpMilkManByBranchNo(String branchNo,String salesOrg) {
 		EmpQueryModel smodel = new EmpQueryModel();
 		smodel.setBranchNo(branchNo);
 		smodel.setSalesOrg(salesOrg);
@@ -79,6 +80,11 @@ public class TMdBranchEmpMapperImpl implements TMdBranchEmpMapper {
 	@Override
 	public List<TMdBranchEmp> getAllBranchEmpByNo(BranchEmpSearchModel bModel) {
 		return sqlSessionTemplate.selectList("getAllBranchEmpByNo",bModel);
+	}
+
+	@Override
+	public List<TMdBranchEmp> getAllRationalMilkManByBranchNo(EmpSalQueryModel smodel) {
+		return sqlSessionTemplate.selectList("getAllRationalMilkManByBranchNo",smodel);
 	}
 
 	@Override

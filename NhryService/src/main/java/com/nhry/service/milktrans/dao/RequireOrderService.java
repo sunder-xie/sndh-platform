@@ -41,4 +41,6 @@ public interface RequireOrderService {
     List<TSsmSalOrder> getSaleOrderByQueryDate(SalOrderModel sModel);
 
     List<TSsmSalOrderItems> getSaleOrderDetailByOrderNo(String orderNo);
+
+    RequireOrderModel creatRequireOrderByDate(ReqGoodsOrderSearch eSearch);
 }

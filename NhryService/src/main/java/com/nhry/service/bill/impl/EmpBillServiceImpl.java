@@ -20,6 +20,7 @@ import com.nhry.data.bill.domain.TMdDispRate;
 import com.nhry.data.bill.domain.TMdDispRateItem;
 import com.nhry.data.bill.domain.TMdEmpSal;
 import com.nhry.model.bill.*;
+import com.nhry.model.bill.EmpSalQueryModel;
 import com.nhry.service.bill.dao.EmpBillService;
 import com.nhry.utils.PrimaryKeyUtils;
 import com.nhry.utils.SysContant;
@@ -314,7 +315,7 @@ public class EmpBillServiceImpl implements EmpBillService {
     }
 
     /**
-     * 结算本月工资（登录人所在奶站下的所有送奶工）
+     * 结算上个月月工资（登录人所在奶站下的所有送奶工）
      * @return
      */
     @Override
@@ -324,15 +325,26 @@ public class EmpBillServiceImpl implements EmpBillService {
         EmpDispDetialInfoSearch search = new EmpDispDetialInfoSearch();
         search.setBranchNo(branchNo);
         //获取上个月的第一天
-        search.setStartDate(YearLastMonthUtil.getLastMonthFirstDay());
+        Date firstDay = YearLastMonthUtil.getLastMonthFirstDay();
+        search.setStartDate(firstDay);
         //获取上个月的最后一天
+        Date lastDay = YearLastMonthUtil.getLastMonthLastDay();
         search.setEndDate(YearLastMonthUtil.getLastMonthLastDay());
         //获取上个月  例如今天是2016-07-02  结果是201606
         String setYearMonth = YearLastMonthUtil.getYearLastMonth();
+
+
         List<String> coms = this.getCompanyCodeForDispFee();
         boolean flag = coms.contains(user.getBranchNo()) ? true : false;
 
-        List<TMdBranchEmp> empList =  branchEmpMapper.getAllEmpByBranchNo(user.getBranchNo(),user.getSalesOrg());
+        EmpSalQueryModel smodel = new EmpSalQueryModel();
+        smodel.setBranchNo(user.getBranchNo());
+        smodel.setSalesOrg(user.getSalesOrg());
+        smodel.setStartDate(firstDay);
+        smodel.setEndDate(lastDay);
+
+        List<TMdBranchEmp> empList =  branchEmpMapper.getAllRationalMilkManByBranchNo(smodel);
+
         if(empList!=null && empList.size()>0){
             for(TMdBranchEmp emp : empList){
                 search.setEmpNo(emp.getEmpNo());
@@ -358,6 +370,11 @@ public class EmpBillServiceImpl implements EmpBillService {
         return tMdEmpSalMapper.getEmpSalByEmpSalLsh(empSalLsh);
     }
 
+
+    /**
+     * 结算本月工资（登录人所在奶站下的所有送奶工）
+     * @return
+     */
     @Override
     public PageInfo setBranchEmpSalaryThisMonth() {
         TSysUser user = userSessionService.getCurrentUser();
@@ -365,14 +382,21 @@ public class EmpBillServiceImpl implements EmpBillService {
         EmpDispDetialInfoSearch search = new EmpDispDetialInfoSearch();
         search.setBranchNo(user.getBranchNo());
         //获取这个月的第一天
-        search.setStartDate(YearLastMonthUtil.getThisMonthFirstDay());
+        Date firstDay = YearLastMonthUtil.getThisMonthFirstDay();
+        search.setStartDate(firstDay);
         //获取这个月的最后一天
-        search.setEndDate(YearLastMonthUtil.getThisMonthLastDay());
+        Date lastDay = YearLastMonthUtil.getThisMonthLastDay();
+        search.setEndDate(lastDay);
         //获取上个月  例如今天是2016-07-02  结果是201606
         String setYearMonth = YearLastMonthUtil.getYearThisMonth();
         List<String> coms = this.getCompanyCodeForDispFee();
         boolean flag = coms.contains(branch.getCompanyCode()) ? true : false;
-        List<TMdBranchEmp> empList =  branchEmpMapper.getAllEmpByBranchNo(user.getBranchNo(),user.getSalesOrg());
+        EmpSalQueryModel smodel = new EmpSalQueryModel();
+        smodel.setBranchNo(user.getBranchNo());
+        smodel.setSalesOrg(user.getSalesOrg());
+        smodel.setStartDate(firstDay);
+        smodel.setEndDate(lastDay);
+        List<TMdBranchEmp> empList =  branchEmpMapper.getAllRationalMilkManByBranchNo(smodel);
         if(empList!=null && empList.size()>0){
             for(TMdBranchEmp emp : empList){
                 search.setEmpNo(emp.getEmpNo());

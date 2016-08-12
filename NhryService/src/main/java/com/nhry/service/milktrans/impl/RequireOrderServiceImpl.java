@@ -89,16 +89,11 @@ public class RequireOrderServiceImpl implements RequireOrderService {
         TSsmReqGoodsOrder order = null;
         //首先查看今天的要货计划是否已存在
        order =  this.tSsmReqGoodsOrderMapper.searchRequireOrder(rModel);
-
         if(order !=null){
             tSsmReqGoodsOrderItemMapper.delRequireOrderItemsByOrderNo(order.getOrderNo());
             tSsmReqGoodsOrderMapper.deleRequireGoodsOrderbyNo(order.getOrderNo());
            // throw new ServiceException(MessageCode.LOGIC_ERROR,"当天要货计划已存在");
         }
-
-
-
-
         //查看明天和后天的订单
         rModel.setFirstDay(DateUtil.getTomorrow(today));
         rModel.setSecondDay(DateUtil.getDayAfterTomorrow(today));
@@ -119,8 +114,6 @@ public class RequireOrderServiceImpl implements RequireOrderService {
             order.setLastModifiedByTxt(user.getDisplayName());
             order.setLastModifiedBy(user.getLoginName());
             tSsmReqGoodsOrderMapper.insertRequireOrder(order);
-
-
             for(int j=0 ;j<items.size();j++ ){
                 TOrderDaliyPlanItem entry = items.get(j);
                 TSsmReqGoodsOrderItem item = new TSsmReqGoodsOrderItem();
@@ -639,6 +632,77 @@ public class RequireOrderServiceImpl implements RequireOrderService {
         map.put("orderNo",orderNo);
         map.put("salesOrg",userSessionService.getCurrentUser().getSalesOrg());
         return tSsmSalOrderItemMapper.selectItemsBySalOrderNo(map);
+    }
+
+    /**
+     * 生成指定日期的要货计划
+     * @param eSearch
+     * @return
+     */
+    @Override
+    public RequireOrderModel creatRequireOrderByDate(ReqGoodsOrderSearch eSearch) {
+        Date orderDate = eSearch.getRequiredDate();
+        RequireOrderSearch rModel = new RequireOrderSearch();
+        Date requireDate = null;
+        TSysUser user = userSessionService.getCurrentUser();
+        //如果是华西或者天音 则requiredDate日期为今天  否则requiredDate为明天
+        if("4181".equals(user.getSalesOrg()) || "4390".equals(user.getSalesOrg())){
+            requireDate = orderDate;
+        }else{
+            requireDate = DateUtil.getTomorrow(new Date());
+        }
+        rModel.setBranchNo(user.getBranchNo());
+        rModel.setOrderDate(orderDate);
+        rModel.setRequiredDate(requireDate);
+        rModel.setSalesOrg(user.getSalesOrg());
+        TSsmReqGoodsOrder order = null;
+        //首先查看今天的要货计划是否已存在
+        order =  this.tSsmReqGoodsOrderMapper.searchRequireOrder(rModel);
+        if(order !=null){
+            tSsmReqGoodsOrderItemMapper.delRequireOrderItemsByOrderNo(order.getOrderNo());
+            tSsmReqGoodsOrderMapper.deleRequireGoodsOrderbyNo(order.getOrderNo());
+            // throw new ServiceException(MessageCode.LOGIC_ERROR,"当天要货计划已存在");
+        }
+        //查看明天和后天的订单
+        rModel.setFirstDay(DateUtil.getTomorrow(orderDate));
+        rModel.setSecondDay(DateUtil.getDayAfterTomorrow(orderDate));
+        List<TOrderDaliyPlanItem> items = tOrderDaliyPlanItemMapper.selectDaliyPlansByBranchAndDay(rModel);
+        //将i天后的日订单中符合的产品加入到 生成的要货计划
+        if(items!=null && items.size()>0){
+            order = new TSsmReqGoodsOrder();
+            String orderNo = PrimaryKeyUtils.generateUuidKey();
+            order.setRequiredDate(requireDate);
+            order.setStatus("10");
+            order.setOrderNo(orderNo);
+            order.setOrderDate(orderDate);
+            order.setBranchNo(user.getBranchNo());
+            order.setCreateAt(orderDate);
+            order.setCreateBy(user.getLoginName());
+            order.setCreateByTxt(user.getDisplayName());
+            order.setLastModified(orderDate);
+            order.setLastModifiedByTxt(user.getDisplayName());
+            order.setLastModifiedBy(user.getLoginName());
+            tSsmReqGoodsOrderMapper.insertRequireOrder(order);
+            for(int j=0 ;j<items.size();j++ ){
+                TOrderDaliyPlanItem entry = items.get(j);
+                TSsmReqGoodsOrderItem item = new TSsmReqGoodsOrderItem();
+                item.setFlag("1");
+                item.setUnit(entry.getUnit());
+                item.setOrderDate(orderDate);
+                item.setItemNo((j+1) * 10);
+                item.setOrderNo(order.getOrderNo());
+                item.setMatnr(entry.getMatnr());
+                item.setMatnrTxt(entry.getMatnrTxt());
+                item.setQty(entry.getQty());
+                item.setIncreQty(0);
+                this.tSsmReqGoodsOrderItemMapper.insertRequireOrderItem(item);
+            }
+        }else{
+            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+            throw new ServiceException(MessageCode.LOGIC_ERROR,"该奶站没有"+sdf.format(orderDate)+" 可以生成要货计划的行项目");
+        }
+        //查询出今天的要货计划
+        return this.searchRequireOrder(orderDate);
     }
 
     /**

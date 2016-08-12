@@ -6,7 +6,6 @@ import com.nhry.common.exception.MessageCode;
 import com.nhry.common.exception.ServiceException;
 import com.nhry.data.auth.dao.TSysUserRoleMapper;
 import com.nhry.data.auth.domain.TSysUser;
-import com.nhry.data.auth.domain.TSysUserRole;
 import com.nhry.data.basic.dao.TMdBranchEmpMapper;
 import com.nhry.data.basic.dao.TMdBranchMapper;
 import com.nhry.data.basic.domain.TMdBranch;
@@ -17,7 +16,6 @@ import com.nhry.model.basic.EmpQueryModel;
 import com.nhry.service.BaseService;
 import com.nhry.service.basic.dao.BranchEmpService;
 import com.nhry.service.basic.pojo.BranchEmpModel;
-
 import org.apache.commons.lang3.StringUtils;
 
 import java.util.ArrayList;
@@ -110,7 +108,7 @@ public class BranchEmpServiceImpl extends BaseService implements BranchEmpServic
 			branchNo = userSessionService.getCurrentUser().getBranchNo();
 		}
 		String salesOrg = userSessionService.getCurrentUser().getSalesOrg();
-		return branchEmpMapper.getAllEmpByBranchNo(branchNo,salesOrg);
+		return branchEmpMapper.getAllEmpMilkManByBranchNo(branchNo,salesOrg);
 	}
 
 	@Override
