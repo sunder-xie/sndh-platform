@@ -753,7 +753,7 @@
             AND r.ID in (${rid})
         </if>
     </select>
-    <select id="findNotRoleUser" parameterType="com.nhry.model.auth.UserQueryModel" resultMap="BaseResultMap1">
+    <select id="findNotRoleUser" parameterType="com.nhry.model.auth.UserQueryModel3" resultMap="BaseResultMap1">
         SELECT
             u.LOGIN_NAME,
             u.DISPLAY_NAME,
@@ -774,6 +774,9 @@
             </if>
             <if test="salesOrg != null">
                 and u.SALES_ORG = #{salesOrg,jdbcType=VARCHAR}
+            </if>
+            <if test="companyCode != null">
+                and u.CUSTOMIZED_HRREGION = #{companyCode,jdbcType=VARCHAR}
             </if>
         </where>
     </select>
