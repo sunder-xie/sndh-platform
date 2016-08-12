@@ -39,11 +39,21 @@ public class TOrderDaliyPlanItem extends TOrderDaliyPlanItemKey {
 
     private String lastModifiedBy;
 
+    public String getWeekly() {
+        return weekly;
+    }
+
+    public void setWeekly(String weekly) {
+        this.weekly = weekly;
+    }
+
     private String lastModifiedByTxt;
     
     private Integer giftQty;
     
     private String promotionFlag;
+
+    private String weekly;
 
     public String getConfirmMatnr() {
         return confirmMatnr;
