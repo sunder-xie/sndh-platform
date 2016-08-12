@@ -6,7 +6,6 @@ import com.nhry.common.exception.MessageCode;
 import com.nhry.common.exception.ServiceException;
 import com.nhry.data.auth.dao.TSysUserRoleMapper;
 import com.nhry.data.auth.domain.TSysUser;
-import com.nhry.data.auth.domain.TSysUserRole;
 import com.nhry.data.basic.dao.TMdBranchMapper;
 import com.nhry.data.basic.dao.TMdDealerMapper;
 import com.nhry.data.basic.domain.TMdBranch;
@@ -16,7 +15,6 @@ import com.nhry.model.basic.BranchQueryModel;
 import com.nhry.model.basic.BranchSalesOrgModel;
 import com.nhry.service.BaseService;
 import com.nhry.service.basic.dao.BranchService;
-
 import org.apache.commons.lang3.StringUtils;
 
 import java.util.HashMap;
@@ -64,40 +62,24 @@ public class BranchServiceImpl extends BaseService implements BranchService {
 	public List<TMdBranch> findBranchListByOrg() {
 		// TODO Auto-generated method stub
 		TSysUser user = userSessionService.getCurrentUser();
-		List<String> rids = urMapper.getUserRidsByLoginName(user.getLoginName());
 		BranchSalesOrgModel bModel = new BranchSalesOrgModel();
 		bModel.setSalesOrg(user.getSalesOrg());
-		if(rids.contains("10004")){
-			bModel.setBranchNo(user.getBranchNo());
-		}else if(rids.contains("10005")){
-			//经销商内勤
-			bModel.setDealerNo(user.getDealerId());
-		}
+		bModel.setDealerNo(user.getDealerId());
+		bModel.setBranchNo(user.getBranchNo());
 		return branchMapper.findBranchListByOrg(bModel);
 	}
 
 	@Override
 	public PageInfo findBranchListByPage(BranchQueryModel branchModel) {
-		TSysUser user = userSessionService.getCurrentUser();
-		List<String> rids = urMapper.getUserRidsByLoginName(user.getLoginName());
-		branchModel.setSalesOrg(user.getSalesOrg());
-		//部门内勤
-		if(rids.contains("10003")){
-			branchModel.setRoleId("10003");
-		}else if(rids.contains("10005")){
-			branchModel.setRoleId("10005");
-			//经销商内勤
-			branchModel.setDealerNo(user.getDealerId());
-		}else {
-			//奶站内勤
-			branchModel.setBranchNo(user.getBranchNo());
-
-		}
-
 		// TODO Auto-generated method stub
 		if(StringUtils.isEmpty(branchModel.getPageNum()) || StringUtils.isEmpty(branchModel.getPageSize())){
 			throw new ServiceException(MessageCode.LOGIC_ERROR,"pageNum和pageSize不能为空！");
 		}
+		TSysUser user = userSessionService.getCurrentUser();
+		branchModel.setSalesOrg(user.getSalesOrg());
+		branchModel.setDealerNo(user.getDealerId());
+		branchModel.setBranchNo(user.getBranchNo());
+
 		return branchMapper.findBranchListByPage(branchModel);
 	}
 
