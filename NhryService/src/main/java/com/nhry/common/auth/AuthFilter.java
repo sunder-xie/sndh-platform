@@ -39,6 +39,9 @@ public class AuthFilter implements ContainerRequestFilter {
 	protected static final String IDM_REST_AUTH="idm_rest_auth";
 	protected static final String DH_AUTH="dh_auth";
 	protected static final String HTTP_AUTH="http_auth";
+	public static String IDM_AUTH2_SIGN="10";  //idm auth2.0 验证方式标记
+	public static String IDM_REST_SIGN="20";	  //idm rest 验证方式标记
+	
 	@Context
 	protected HttpServletRequest request;
 	@Context
@@ -126,6 +129,4 @@ public class AuthFilter implements ContainerRequestFilter {
 		}
 		return false;
 	}
-	
-	
 }
