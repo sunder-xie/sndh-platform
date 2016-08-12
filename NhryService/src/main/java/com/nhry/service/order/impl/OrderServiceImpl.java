@@ -3573,17 +3573,32 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 				{
 					return -1;
 				}else{
-					return  1;
+					if(o1.getDispDate().equals(o2.getDispDate())){
+						if(o1.getRemainAmt().floatValue() > o2.getRemainAmt().floatValue()){
+							return -1;
+						}else{
+							return 1;
+						}
+					}
 				}
+				return 1;
 			}
+			
    	});
+		
+		//后付款显示负数金额
+		if("10".equals(order.getPaymentStat())){
+			for(TOrderDaliyPlanItem p : daliyPlans){
+				p.setRemainAmt(p.getRemainAmt().subtract(order.getInitAmt()));
+			}
+		}
 		
 		return daliyPlans;
 	}
 
 	/* (non-Javadoc) 
 	* @title: recoverStopDaliyDaliyPlan
-	* @description: 恢复停订的日计划,预付款试用
+	* @description: 恢复停订的日计划,预付款(未完成)
 	* @param item
 	* @return 
 	* @see com.nhry.service.order.dao.OrderService#recoverStopDaliyDaliyPlan(com.nhry.data.order.domain.TOrderDaliyPlanItem) 
