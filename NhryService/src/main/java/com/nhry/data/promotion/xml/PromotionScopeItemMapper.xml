@@ -3,45 +3,28 @@
 <mapper namespace="com.nhry.data.promotion.dao.PromotionScopeItemMapper">
   <resultMap id="BaseResultMap" type="com.nhry.data.promotion.domain.PromotionScopeItem">
     <id column="PROM_NO" jdbcType="VARCHAR" property="promNo" />
-    <id column="ITEM_NO" jdbcType="VARCHAR" property="itemNo" />
-    <result column="BRANCH_NO" jdbcType="VARCHAR" property="branchNo" />
+    <id column="BRANCH_NO" jdbcType="VARCHAR" property="branchNo" />
   </resultMap>
   <sql id="Base_Column_List">
-    PROM_NO, ITEM_NO, BRANCH_NO
+    PROM_NO, BRANCH_NO
   </sql>
-  <select id="selectScopeItem" parameterType="com.nhry.data.promotion.domain.PromotionScopeItemKey" resultMap="BaseResultMap">
+  <select id="selectScopeItem" parameterType="com.nhry.data.promotion.domain.PromotionScopeItem" resultMap="BaseResultMap">
     select 
     <include refid="Base_Column_List" />
     from t_prom_scope_item
     where PROM_NO = #{promNo,jdbcType=VARCHAR}
-      and ITEM_NO = #{itemNo,jdbcType=VARCHAR}
+      and BRANCH_NO = #{branchNo,jdbcType=VARCHAR}
   </select>
-  <delete id="deleteScopeItem" parameterType="com.nhry.data.promotion.domain.PromotionScopeItemKey">
+  <delete id="deleteScopeItem" parameterType="com.nhry.data.promotion.domain.PromotionScopeItem">
     delete from t_prom_scope_item
     where PROM_NO = #{promNo,jdbcType=VARCHAR}
-      and ITEM_NO = #{itemNo,jdbcType=VARCHAR}
+      and BRANCH_NO = #{branchNo,jdbcType=VARCHAR}
   </delete>
 
-  <update id="updateScopeItemSelective" parameterType="com.nhry.data.promotion.domain.PromotionScopeItem">
-    update t_prom_scope_item
-    <set>
-      <if test="branchNo != null">
-        BRANCH_NO = #{branchNo,jdbcType=VARCHAR},
-      </if>
-    </set>
-    where PROM_NO = #{promNo,jdbcType=VARCHAR}
-      and ITEM_NO = #{itemNo,jdbcType=VARCHAR}
-  </update>
-  <update id="updateScopeItem" parameterType="com.nhry.data.promotion.domain.PromotionScopeItem">
-    update t_prom_scope_item
-    set BRANCH_NO = #{branchNo,jdbcType=VARCHAR}
-    where PROM_NO = #{promNo,jdbcType=VARCHAR}
-      and ITEM_NO = #{itemNo,jdbcType=VARCHAR}
-  </update>
   <insert id="insertScopeItem" parameterType="com.nhry.data.promotion.domain.PromotionScopeItem">
-    insert into t_prom_scope_item (PROM_NO, ITEM_NO, BRANCH_NO
+    insert into t_prom_scope_item (PROM_NO,BRANCH_NO
       )
-    values (#{promNo,jdbcType=VARCHAR}, #{itemNo,jdbcType=VARCHAR}, #{branchNo,jdbcType=VARCHAR}
+    values (#{promNo,jdbcType=VARCHAR}, #{branchNo,jdbcType=VARCHAR}
       )
   </insert>
   <insert id="insertScopeItemSelective" parameterType="com.nhry.data.promotion.domain.PromotionScopeItem">
@@ -50,9 +33,7 @@
       <if test="promNo != null">
         PROM_NO,
       </if>
-      <if test="itemNo != null">
-        ITEM_NO,
-      </if>
+
       <if test="branchNo != null">
         BRANCH_NO,
       </if>
@@ -61,9 +42,7 @@
       <if test="promNo != null">
         #{promNo,jdbcType=VARCHAR},
       </if>
-      <if test="itemNo != null">
-        #{itemNo,jdbcType=VARCHAR},
-      </if>
+
       <if test="branchNo != null">
         #{branchNo,jdbcType=VARCHAR},
       </if>
