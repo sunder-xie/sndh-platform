@@ -291,7 +291,7 @@
         SELECT SUM(t.QTY) QTY
         FROM
         (
-                    SELECT SUM(i.CONFIRM_QTY) QTY
+                    SELECT IFNULL(0,SUM(i.CONFIRM_QTY))  QTY
                     FROM  t_mst_disp_order_item  i
                     LEFT JOIN t_mst_disp_order di on i.ORDER_NO = di.ORDER_NO
                     WHERE 1 =1
@@ -311,7 +311,7 @@
 
         UNION  ALL
 
-                SELECT SUM(QTY) QTY
+                SELECT  IFNULL(0,SUM(QTY)) QTY
                 FROM  t_mst_inside_sal_order_item s
                 LEFT JOIN t_mst_inside_sal_order so on s.INS_ORDER_NO = so.INS_ORDER_NO
                 LEFT JOIN t_mst_disp_order o on so.DISP_ORDER_NO = o.ORDER_NO

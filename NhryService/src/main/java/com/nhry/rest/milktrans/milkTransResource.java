@@ -90,6 +90,15 @@ public class milkTransResource extends BaseResource {
 	}
 
 	@POST
+	@Path("/creatRequireOrderByDate")
+	@Produces(MediaType.APPLICATION_JSON)
+	@Consumes(MediaType.APPLICATION_JSON)
+	@ApiOperation(value = "/creatRequireOrderByDate", response = RequireOrderModel.class, notes = "生成指定日期的要货计划")
+	public Response creatRequireOrderByDate(@ApiParam(required=true,name="orderDate",value="日期") ReqGoodsOrderSearch eSearch){
+		return convertToRespModel(MessageCode.NORMAL, null, requireOrderService.creatRequireOrderByDate(eSearch));
+	}
+
+	@POST
 	@Path("/queryRequireOrder")
 	@Produces(MediaType.APPLICATION_JSON)
 	@Consumes(MediaType.APPLICATION_JSON)
