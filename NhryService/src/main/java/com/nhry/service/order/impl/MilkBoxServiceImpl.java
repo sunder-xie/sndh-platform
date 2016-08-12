@@ -175,10 +175,14 @@ public class MilkBoxServiceImpl extends BaseService implements MilkBoxService
 	{
 		TMilkboxPlan plan = tMilkboxPlanMapper.selectByPrimaryKey(model.getCode());
 		if(plan!=null){
+			if(!"20".equals(plan.getMilkboxStat()))return 1;
+			
 			SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
 			
 			//如果更改了原订单行的配送起始日期,要更新原来的订单
-			orderService.updateOrderAndEntriesDispStartDate(plan.getOrderNo(),model.getEntries());
+			if(model.getEntries()!=null && model.getEntries().size()>0){
+				orderService.updateOrderAndEntriesDispStartDate(plan.getOrderNo(),model.getEntries());
+			}
 			
 			TPreOrder o = new TPreOrder();
 			o.setOrderNo(plan.getOrderNo());
@@ -241,11 +245,13 @@ public class MilkBoxServiceImpl extends BaseService implements MilkBoxService
 	public int updateMilkboxStatusByList(MilkboxCreateModel model)
 	{
 		List<String> orderCodes = Arrays.asList(model.getCode().split(","));
-		Map<String,Object> params = new HashMap<String,Object>();
-		params.put("milkboxStat", model.getStatus());
-		params.put("orderCodeArray", orderCodes);
 		
-		return tMilkboxPlanMapper.updateMilkboxPlans(params);
+		orderCodes.stream().forEach((e)->{
+			model.setCode(e);
+			updateMilkboxStatus(model);
+		});
+		
+		return 1;
 	}
 	
 	/* (non-Javadoc) 

@@ -105,4 +105,5 @@
         <property name="promotionDataService" ref="promotionDataService"/>
     </bean>
     <jaxws:endpoint implementor="#piPromotionDataService" id="piPromotionDataServiceImpl" address="/promotionDataService"/>
+    <bean class="com.nhry.service.pi.impl.SmsSendServiceImpl" id="smsSendService"/>
 </beans>

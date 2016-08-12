@@ -241,8 +241,7 @@ public class ProductServiceImpl extends BaseService implements ProductService {
 	public PageInfo getBranchSaleMaras(ProductQueryModel pm) {
 		// TODO Auto-generated method stub
 		if (StringUtils.isEmpty(pm.getBranchNo())) {
-			throw new ServiceException(MessageCode.LOGIC_ERROR,
-					"奶站编号(branchNo)不能为空!");
+			throw new ServiceException(MessageCode.LOGIC_ERROR,"奶站编号(branchNo)不能为空!");
 		}
 		TMdBranch branch = branchSevice.selectBranchByNo(pm.getBranchNo());
 		if (branch != null) {

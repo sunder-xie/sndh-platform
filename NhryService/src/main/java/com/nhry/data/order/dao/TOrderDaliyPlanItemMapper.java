@@ -18,6 +18,8 @@ public interface TOrderDaliyPlanItemMapper {
 	 PageInfo selectDaliyOrdersByPages(OrderSearchModel smodel);
 	
 	 int deleteFromDateToDate(TOrderDaliyPlanItem record);
+	 
+	 int deletePlansByAmt(String orderNo);
 
 	 int updateDaliyPlanItemRemainAmt(TOrderDaliyPlanItem record);
 	 

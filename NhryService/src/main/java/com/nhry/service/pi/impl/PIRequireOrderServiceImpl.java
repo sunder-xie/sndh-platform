@@ -120,7 +120,7 @@ public class PIRequireOrderServiceImpl implements PIRequireOrderService {
         String auartType = PIPropertitesUtil.getValue("PI.AUART.ZOR");
         String saleOrgTX = PIPropertitesUtil.getValue("PI.SALEORG_TX");
         String freeType = ssmSalOrder.getFreeFlag();
-        if("Y".equals(freeType)){
+        if("N".equals(freeType)){
             if(saleOrgTX.equals(ssmSalOrder.getSalesOrg())){
                 auartType = PIPropertitesUtil.getValue("PI.AUART.ZOR1");
             }else{
@@ -154,10 +154,12 @@ public class PIRequireOrderServiceImpl implements PIRequireOrderService {
                     ssmGiOrder.setStatus("10");
                     ssmGiOrder.setSyncAt(new Date());
                     ssmGiOrder.setOrderDate(delivery.getLFDAT());
+                    ssmGiOrder.setMemoTxt(delivery.getVBELN());
                     ssmGiOrderMapper.insertGiOrder(ssmGiOrder);
                 } else {
                     ssmGiOrder.setBranchNo(branchNo);
                     ssmGiOrder.setOrderNo(delivery.getBSTKD());
+                    ssmGiOrder.setMemoTxt(delivery.getVBELN());
                     ssmGiOrder.setSyncAt(new Date());
                     ssmGiOrder.setOrderDate(delivery.getLFDAT());
                     ssmGiOrderMapper.updateGiOrder(ssmGiOrder);

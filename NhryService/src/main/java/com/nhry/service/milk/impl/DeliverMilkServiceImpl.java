@@ -499,7 +499,11 @@ public class DeliverMilkServiceImpl extends BaseService implements DeliverMilkSe
 					//更新原订单剩余金额
 					TPlanOrderItem entry = tPlanOrderItemMapper.selectEntryByEntryNo(e.getOrgItemNo());
 
-					if(e.getGiftFlag()==null)updatePreOrderCurAmt(entry.getOrderNo(),e.getConfirmAmt());
+					if(e.getGiftFlag()==null){
+						TPreOrder order = tPreOrderMapper.selectByPrimaryKey(entry.getOrderNo());
+						order.setCurAmt(order.getCurAmt().subtract(e.getConfirmAmt()));
+						tPreOrderMapper.updateOrderCurAmt(order);
+					}
 					
 					//更新日计划为确认
 					record.setOrderNo(e.getOrgOrderNo());

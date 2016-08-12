@@ -45,6 +45,7 @@
 		and oi.GOOD_NO = #{orgMatnr,jdbcType=VARCHAR}
 		and p.PLAN_START_TIME &lt;= #{planStartTime,jdbcType=VARCHAR}
 		and p.PLAN_STOP_TIME &gt;= #{planStartTime,jdbcType=VARCHAR}
+		and p.SALES_ORG = #{salesOrg,jdbcType=VARCHAR}
   </select>
   <select id="selectPromotionByPromNo" resultMap="BaseResultMap" parameterType="com.nhry.data.order.domain.TPromotion" >
 	   select oi.GOOD_NO ORG_MATNR, oi.ORIG_NUM ORG_QTY, gi.GIFT_NO GIFT_MATNR,gi.GIFT_NUM GIFT_QTY,gi.GIFT_UNIT,

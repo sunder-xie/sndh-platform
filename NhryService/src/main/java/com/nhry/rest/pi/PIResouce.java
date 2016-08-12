@@ -17,6 +17,7 @@ import com.nhry.service.config.dao.DictionaryService;
 import com.nhry.service.pi.dao.PIProductService;
 import com.nhry.service.pi.dao.PIRequireOrderService;
 import com.nhry.service.pi.dao.PIVipInfoDataService;
+import com.nhry.service.pi.dao.SmsSendService;
 import com.nhry.service.pi.pojo.MemberActivities;
 import com.sun.jersey.spi.resource.Singleton;
 import com.wordnik.swagger.annotations.Api;
@@ -68,6 +69,8 @@ public class PIResouce extends BaseResource{
     @Autowired
     public ResidentialAreaService residentialAreaService;
 
+    @Autowired
+    public SmsSendService smsSendService;
 
 
     @GET
@@ -191,5 +194,12 @@ public class PIResouce extends BaseResource{
         TVipCustInfo vipCustInfo = tVipCustInfoService.findVipCustByNoForUpt(code);
         return convertToRespModel(MessageCode.NORMAL, piVipInfoDataService.sendSubscriber(vipCustInfo), null);
     }
-
+    @POST
+    @Path("/sendSms/{tel}")
+    @Produces(MediaType.APPLICATION_JSON)
+    @Consumes(MediaType.APPLICATION_JSON)
+    @ApiOperation(value = "/sendSms/{tel}", response = ResponseModel.class, notes = "发送短信")
+    public Response sendSms(@PathParam("tel") String tel){
+        return convertToRespModel(MessageCode.NORMAL, smsSendService.sendMessage("",tel), null);
+    }
 }
