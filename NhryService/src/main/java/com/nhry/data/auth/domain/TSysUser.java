@@ -113,6 +113,8 @@ public class TSysUser implements Serializable{
 
     private boolean isRole;
 
+    private String saleName;
+
 //    private List<TSysUserRole> roleIds = new ArrayList<TSysUserRole>();
     
     public String getLoginName() {
@@ -522,5 +524,13 @@ public class TSysUser implements Serializable{
 
     public void setRole(boolean role) {
         isRole = role;
+    }
+
+    public String getSaleName() {
+        return saleName;
+    }
+
+    public void setSaleName(String saleName) {
+        this.saleName = saleName;
     }
 }

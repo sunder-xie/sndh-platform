@@ -96,4 +96,28 @@ public class StatisticsResource extends BaseResource {
     public Response returnBoxStatReport(@ApiParam(name = "model",value = "回瓶汇总") ExtendBranchInfoModel model){
         return convertToRespModel(MessageCode.NORMAL, null, branchInfoService.returnBoxStatReport(model));
     }
+    @POST
+    @Path("/mstDispNumStat")
+    @Produces(MediaType.APPLICATION_JSON)
+    @Consumes(MediaType.APPLICATION_JSON)
+    @ApiOperation(value = "/mstDispNumStat}", response = ResponseModel.class, notes = "配送数量汇总-送奶员维度")
+    public Response mstDispNumStat(@ApiParam(name = "model",value = "配送数量汇总-送奶员维度") ExtendBranchInfoModel model){
+        return convertToRespModel(MessageCode.NORMAL, null, branchInfoService.mstDispNumStat(model));
+    }
+    @POST
+    @Path("/branchMstDispNumStat")
+    @Produces(MediaType.APPLICATION_JSON)
+    @Consumes(MediaType.APPLICATION_JSON)
+    @ApiOperation(value = "/branchMstDispNumStat}", response = ResponseModel.class, notes = "配送数量汇总-奶站维度")
+    public Response branchMstDispNumStat(@ApiParam(name = "model",value = "配送数量汇总-奶站维度") ExtendBranchInfoModel model){
+        return convertToRespModel(MessageCode.NORMAL, null, branchInfoService.branchMstDispNumStat(model));
+    }
+    @POST
+    @Path("/dayMstDispNumStat")
+    @Produces(MediaType.APPLICATION_JSON)
+    @Consumes(MediaType.APPLICATION_JSON)
+    @ApiOperation(value = "/dayMstDispNumStat}", response = ResponseModel.class, notes = "奶站日配送数量汇总")
+    public Response dayMstDispNumStat(@ApiParam(name = "model",value = "奶站日配送数量汇总") ExtendBranchInfoModel model){
+        return convertToRespModel(MessageCode.NORMAL, null, branchInfoService.dayMstDispNumStat(model));
+    }
 }
