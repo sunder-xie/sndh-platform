@@ -30,7 +30,7 @@ import java.util.*;
  * Created by gongjk on 2016/6/24.
  */
 public class RequireOrderServiceImpl implements RequireOrderService {
-
+    private static final SimpleDateFormat format = new SimpleDateFormat("yyyyMMddHHmmssSSS");
     private TSsmReqGoodsOrderItemMapper tSsmReqGoodsOrderItemMapper;
     private TSsmReqGoodsOrderMapper  tSsmReqGoodsOrderMapper ;
     private TOrderDaliyPlanItemMapper tOrderDaliyPlanItemMapper;
@@ -750,6 +750,42 @@ public class RequireOrderServiceImpl implements RequireOrderService {
         map.put("orderNo",orderNo);
         map.put("voucherNo",voucherNo);
         tSsmSalOrderMapper.uptVouCherNoByOrderNo(map);
+    }
+
+    /**
+     * 销售订单编号
+     * @return
+     */
+    private String generateSal35Id(){
+        TMdBranch branch = branchMapper.getBranchByNo(userSessionService.getCurrentUser().getBranchNo());
+        StringBuilder uuid = new StringBuilder();
+        uuid.append("DH001");
+        uuid.append("A");
+        uuid.append(branch.getCompanyCode());
+        String branchNo = branch.getBranchNo();
+        uuid.append(branchNo.substring(1));
+        uuid.append(format.format(new Date()));
+        uuid.append("1");
+        return uuid.toString();
+    }
+    /**
+     * 要货单编号
+     * @return
+     */
+    private String generateSal30Id(){
+        TMdBranch branch = branchMapper.getBranchByNo(userSessionService.getCurrentUser().getBranchNo());
+        StringBuilder uuid = new StringBuilder();
+        uuid.append("DH001");
+        uuid.append("B");
+        uuid.append(branch.getCompanyCode());
+        if(org.apache.commons.lang.StringUtils.isEmpty(branch.getLgort())){
+            uuid.append(branch.getSalesOrg());
+        }else {
+            uuid.append(branch.getLgort());
+        }
+        uuid.append(format.format(new Date()));
+        uuid.append("1");
+        return uuid.toString();
     }
 
 }
