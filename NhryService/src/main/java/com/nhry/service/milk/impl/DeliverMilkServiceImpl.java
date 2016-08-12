@@ -3,6 +3,7 @@ package com.nhry.service.milk.impl;
 import com.github.pagehelper.PageInfo;
 import com.nhry.common.exception.MessageCode;
 import com.nhry.common.exception.ServiceException;
+import com.nhry.data.auth.dao.TSysUserRoleMapper;
 import com.nhry.data.auth.domain.TSysUser;
 import com.nhry.data.milk.dao.TDispOrderChangeMapper;
 import com.nhry.data.milk.dao.TDispOrderItemMapper;
@@ -51,6 +52,11 @@ public class DeliverMilkServiceImpl extends BaseService implements DeliverMilkSe
 	private ProductService productService;
 	private ReturnBoxService returnBoxService;
 	private TSsmStockService tSsmStockService;
+	private TSysUserRoleMapper urMapper;
+
+	public void setUrMapper(TSysUserRoleMapper urMapper) {
+		this.urMapper = urMapper;
+	}
 
 	public void settSsmStockService(TSsmStockService tSsmStockService) {
 		this.tSsmStockService = tSsmStockService;
@@ -173,7 +179,14 @@ public class DeliverMilkServiceImpl extends BaseService implements DeliverMilkSe
 	@Override
 	public PageInfo getInsideSalOrder(InSideSalOrderSearchModel sModel) {
 		TSysUser user = userSessionService.getCurrentUser();
-		sModel.setBranchNo(user.getBranchNo());
+		List<String> rids = urMapper.getUserRidsByLoginName(user.getLoginName());
+		sModel.setSalesOrg(user.getSalesOrg());
+		if(rids.contains("10004")){
+			sModel.setBranchNo(user.getBranchNo());
+		}else if(rids.contains("10005")){
+			//经销商内勤
+			sModel.setDealerNo(user.getDealerId());
+		}
 		return tMstInsideSalOrderMapper.getAuthAllInsideSalOrder(sModel);
 	}
 

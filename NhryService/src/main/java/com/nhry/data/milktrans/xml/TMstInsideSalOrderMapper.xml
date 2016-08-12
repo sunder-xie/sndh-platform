@@ -67,9 +67,25 @@
         LEFT JOIN t_md_branch_emp e on o.SAL_EMP_NO = e.EMP_NO
         LEFT JOIN  t_md_branch b on o.BRANCH_NO = b.BRANCH_NO
         WHERE 1=1
+        <if test="empNo!=null and ''!=empNo">
+            and  o.SAL_EMP_NO = #{empNo,jdbcType=VARCHAR}
+        </if>
         <if test="branchNo!=null and ''!=branchNo">
           and  o.BRANCH_NO  = #{branchNo,jdbcType=VARCHAR}
         </if>
+        <if test="dealerNo!=null and ''!=dealerNo">
+            and  b.DEALER_NO  = #{dealerNo,jdbcType=VARCHAR}
+        </if>
+        <if test="salesOrg!=null and ''!=salesOrg">
+            and  b.SALES_ORG  = #{salesOrg,jdbcType=VARCHAR}
+        </if>
+        <if test="startDate!=null">
+            and  o.ORDER_DATE &gt;= #{startDate,jdbcType=DATE}
+        </if>
+        <if test="endDate!=null">
+            and o.ORDER_DATE &lt;= #{endDate,jdbcType=DATE}
+        </if>
+
 
     </select>
 </mapper>
