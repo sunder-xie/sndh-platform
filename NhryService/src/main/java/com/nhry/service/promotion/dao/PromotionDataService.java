@@ -9,7 +9,7 @@ public interface PromotionDataService {
     Promotion selectPromotionByNo(String no);
     PromotionOrigItem selectOrigItemByKey(PromotionOrigItemKey key);
     PromotionConItem selectConItemByKey(PromotionConItemKey key);
-    PromotionScopeItem selectScopeItemByKey(PromotionScopeItemKey key);
+    PromotionScopeItem selectScopeItemByKey(PromotionScopeItem key);
     PromotionGiftItem selectGiftItemByKey(PromotionGiftItemKey key);
     int savePromotion(Promotion promotion);
     int savePromotionOrigItem(PromotionOrigItem item);
