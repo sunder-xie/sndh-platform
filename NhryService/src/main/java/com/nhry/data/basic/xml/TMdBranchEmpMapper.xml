@@ -60,7 +60,7 @@
    select emp.EMP_NO,emp.HR_EMP_NO,emp.EMP_NAME,branch.BRANCH_NAME,branch.BRANCH_NO,emp.GENDER,emp.EMP_TYPE,emp.TEL,
           emp.MP,emp.BASE_SALARY,emp.SALARY_MET,emp.JOIN_DATE,emp.WEBCHAT,emp.ID_NO,emp.STATUS,role.ROLE_NAME,role.ID ROLE_ID,emp.SALES_ORG
     from t_md_branch_emp emp
-    left join t_sys_user_role urole on emp.EMP_NO = urole.LOGIN_NAME
+    left join t_sys_user_role urole on emp.HR_EMP_NO = urole.LOGIN_NAME
     LEFT JOIN t_sys_role role on urole.ID = role.ID
     LEFT JOIN T_MD_BRANCH branch on emp.BRANCH_NO = branch.BRANCH_NO
     where 1=1
@@ -175,7 +175,7 @@
     from t_md_branch_emp emp
     LEFT JOIN  T_MD_BRANCH branch on emp.BRANCH_NO = branch.BRANCH_NO
 
-    LEFT JOIN T_SYS_USER_ROLE erole on emp.EMP_NO = erole.LOGIN_NAME
+    LEFT JOIN T_SYS_USER_ROLE erole on emp.HR_EMP_NO = erole.LOGIN_NAME
     LEFT JOIN t_sys_role role  on  erole.ID = role.ID
     where  1=1
     AND emp.SALES_ORG = #{salesOrg,jdbcType=VARCHAR}
@@ -201,20 +201,21 @@
   </select>
 
 
-  <select id="getAllEmpByBranchNo" parameterType="String" resultMap="BaseResultMap">
+  <select id="getAllEmpByBranchNo" parameterType="com.nhry.model.basic.EmpQueryModel" resultMap="BaseResultMap">
     select
     e.EMP_NO, e.HR_EMP_NO, e.BRANCH_NO, e.EMP_NAME,e.GENDER, e.EMP_TYPE, e.TEL,e.MP, e.WEBCHAT, e.ID_NO, e.CREATE_AT,e.SALES_ORG,
     e.CREATE_BY, e.CREATE_BY_TXT, e.LAST_MODIFIED, e.LAST_MODIFIED_BY, e.LAST_MODIFIED_BY_TXT,e.SALARY_MET,e.BASE_SALARY,e.JOIN_DATE,
     e.STATUS
     from T_MD_BRANCH_EMP e
-    LEFT JOIN t_sys_user_role u on e.EMP_NO = u.LOGIN_NAME
+    LEFT JOIN t_sys_user_role u on e.HR_EMP_NO = u.LOGIN_NAME
     where 1=1
+    and e.STATUS='1'
     and u.ID=  <include refid="mybaties.constant.milkman"/>
     <if test="branchNo != null and branchNo != ''">
-     	AND  BRANCH_NO = #{branchNo,jdbcType=VARCHAR}
+     	AND  e.BRANCH_NO = #{branchNo,jdbcType=VARCHAR}
      </if>
      <if test="salesOrg != null and salesOrg != ''">
-     	AND  SALES_ORG = #{salesOrg,jdbcType=VARCHAR}
+     	AND  e.SALES_ORG = #{salesOrg,jdbcType=VARCHAR}
      </if>
 
   </select>
@@ -226,26 +227,62 @@
     <include refid="Base_Column_List" />
     from T_MD_BRANCH_EMP
     where 1=1
+    and STATUS='1'
     and SALES_ORG =  #{salesOrg,jdbcType=VARCHAR}
   </select>
 
 
   <select id="getAllBranchEmpByNo" parameterType="com.nhry.model.basic.BranchEmpSearchModel" resultMap="BaseResultMap">
-    select
+    select DISTINCT
     e.EMP_NO,e.EMP_NAME
-    from T_MD_BRANCH_EMP e LEFT JOIN t_sys_user_role u on e.EMP_NO = u.LOGIN_NAME
+    from T_MD_BRANCH_EMP e
+    LEFT JOIN t_sys_user_role u on e.HR_EMP_NO = u.LOGIN_NAME
     LEFT  JOIN  t_sys_role r on u.ID = r.ID
     where 1=1
+    and e.STATUS='1'
     AND  e.SALES_ORG = #{salesOrg,jdbcType=VARCHAR}
-    <if test="type!=null and type!='' and type=='milkMan'">
-       and u.ID=  <include refid="mybaties.constant.milkman"/>
-    </if>
+   and u.ID=  <include refid="mybaties.constant.milkman"/>
     <if test="branchNo != null and branchNo != ''">
       AND  e.BRANCH_NO = #{branchNo,jdbcType=VARCHAR}
     </if>
-    <if test="dealerNo != null and dealerNo != ''">
-      AND  e.DEALER_NO = #{dealerNo,jdbcType=VARCHAR}
+    GROUP BY e.HR_EMP_NO
+  </select>
+
+  <select id="getAllRationalMilkManByBranchNo" parameterType="com.nhry.model.bill.EmpSalQueryModel" resultMap="BaseResultMap">
+    select DISTINCT
+    e.EMP_NO, e.HR_EMP_NO, e.BRANCH_NO, e.EMP_NAME,e.GENDER, e.EMP_TYPE, e.TEL,e.MP, e.WEBCHAT, e.ID_NO, e.CREATE_AT,e.SALES_ORG,
+    e.CREATE_BY, e.CREATE_BY_TXT, e.LAST_MODIFIED, e.LAST_MODIFIED_BY, e.LAST_MODIFIED_BY_TXT,e.SALARY_MET,e.BASE_SALARY,e.JOIN_DATE,
+    e.STATUS
+    from T_MD_BRANCH_EMP e
+    LEFT JOIN t_sys_user_role u on e.HR_EMP_NO = u.LOGIN_NAME
+    LEFT  JOIN  t_sys_role r on u.ID = r.ID
+    where 1=1
+    and e.STATUS='1'
+    AND  e.SALES_ORG = #{salesOrg,jdbcType=VARCHAR}
+      and u.ID=  <include refid="mybaties.constant.milkman"/>
+    <if test="branchNo != null and branchNo != ''">
+      AND  e.BRANCH_NO = #{branchNo,jdbcType=VARCHAR}
     </if>
-    GROUP BY e.EMP_NO
+    GROUP BY e.HR_EMP_NO
+
+    UNION ALL
+
+    select DISTINCT
+    e.EMP_NO, e.HR_EMP_NO, e.BRANCH_NO, e.EMP_NAME,e.GENDER, e.EMP_TYPE, e.TEL,e.MP, e.WEBCHAT, e.ID_NO, e.CREATE_AT,e.SALES_ORG,
+    e.CREATE_BY, e.CREATE_BY_TXT, e.LAST_MODIFIED, e.LAST_MODIFIED_BY, e.LAST_MODIFIED_BY_TXT,e.SALARY_MET,e.BASE_SALARY,e.JOIN_DATE,
+    e.STATUS
+    from T_MD_BRANCH_EMP e
+    LEFT JOIN t_sys_user_role u on e.HR_EMP_NO = u.LOGIN_NAME
+    LEFT  JOIN  t_sys_role r on u.ID = r.ID
+    where 1=1
+    and e.STATUS='0'
+    AND  e.SALES_ORG = #{salesOrg,jdbcType=VARCHAR}
+    and u.ID=  <include refid="mybaties.constant.milkman"/>
+    <if test="branchNo != null and branchNo != ''">
+      AND  e.BRANCH_NO = #{branchNo,jdbcType=VARCHAR}
+    </if>
+    and e.LEAVE_DATE &gt;= #{startDate,jdbcType=DATE}
+    and e.LEAVE_DATE &lt;= #{endDate,jdbcType=DATE}
+    GROUP BY e.HR_EMP_NO
   </select>
 </mapper>
