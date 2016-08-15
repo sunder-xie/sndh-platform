@@ -44,6 +44,7 @@
         <property name="tSsmSalOrderItemMapper" ref="tSsmSalOrderItemMapper"/>
         <property name="branchMapper" ref="branchMapper"/>
         <property name="ssmSalOrderMapper" ref="tSsmSalOrderMapper"/>
+        <property name="sysCodeItemMapper" ref="codeItemMapper"/>
     </bean>
     <import resource="classpath:META-INF/cxf/cxf.xml"/>
     <!--

@@ -253,4 +253,12 @@
 	<bean id="ecBaseService" class="com.nhry.service.external.EcBaseService">
 	   <property name="messLogMapper" ref="messLogMapper"></property>
 	</bean>
+	<bean class="com.nhry.data.basic.impl.TaskYearMonthPlanMapperImpl" id="taskYearMonthPlanMapper">
+		<property name="sqlSessionTemplate" ref="dynamicSqlSessionTemplate"/>
+	</bean>
+
+	<bean class="com.nhry.service.basic.impl.TaskYearMonthPlanServiceImpl" id="taskYearMonthPlanService">
+		<property name="taskYearMonthPlanMapper" ref="taskYearMonthPlanMapper"/>
+		<property name="userSessionService" ref="userSessionService"/>
+	</bean>
 </beans>
