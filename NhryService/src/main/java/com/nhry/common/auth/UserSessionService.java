@@ -214,6 +214,7 @@ public class UserSessionService {
 					record.setAccesskey(token);
 					record.setType(AuthFilter.IDM_REST_SIGN); //20 : 送奶app
 					record.setVisitLastTime(new Date());
+					record.setVisitFirstTime(new Date());
 					record.setVisitIp(ip);
 					isysAkService.updateIsysAccessKey(record);
 					accessKeyThread.set(sysUser);
