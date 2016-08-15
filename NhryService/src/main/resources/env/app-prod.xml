@@ -7,14 +7,12 @@
 	<config key="ladp_uname" value="cn=Directory Manager"></config>
 	<config key="ladp_password" value="Abcd1234"></config>
 	<config key="ladp_basedn" value="ou=People,o=newhopedairy,o=isp"></config>
-	<!-- 
 	<config key="ladp_dh_auth" value="Auth_dhxt"></config>
-	 -->
-	<config key="ladp_dh_auth" value="Auth_dhxt1"></config>
 	<!-- idm auth2.0 -->
 	<config key="authurl" value="http://aws.newhopedairy.cn:8080/siam/oauth2.0/authorize"></config>
 	<config key="auth_token" value="http://aws.newhopedairy.cn:8080/siam/oauth2.0/accessToken"></config>
-	<config key="client_id" value="Auth_dhxt"></config>
+	<!-- <config key="client_id" value="Auth_dhxt"></config> -->
+	<config key="client_id" value="Auth_dhxt1"></config>
 	<!-- 回调地址
 	<config key="redirect_uri" value="http://54.223.36.200:8080/idm/auth"></config>
 	-->
