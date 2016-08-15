@@ -23,8 +23,10 @@
 	<config key="auth_profile" value="http://aws.newhopedairy.cn:8080/siam/oauth2.0/profile"></config>
 	<!-- app token 校验接口 -->
 	<config key="app_token_validate" value="http://10.6.240.143:8080/siam/rest/validate"></config>
-	<!-- 前端页面home -->
+	<!-- 前端页面home
 	<config key="front_home_page" value="http://test.nhry-dev.com/release/#/newhope/home"></config>
+	 -->
+	 <config key="front_home_page" value="http://localhost/local/#/newhope/home"></config>
 	<config key="front_short_url" value="/local/#/newhope/home"></config>
 	<!-- 电商接口base url -->
 	<config key="ec_base_url" value="http://ec2-54-222-230-211.cn-north-1.compute.amazonaws.com.cn"></config>
