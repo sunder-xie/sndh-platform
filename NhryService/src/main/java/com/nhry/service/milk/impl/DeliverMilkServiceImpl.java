@@ -491,7 +491,9 @@ public class DeliverMilkServiceImpl extends BaseService implements DeliverMilkSe
 				if( (StringUtils.isNotBlank(e.getReason()) && e.getConfirmQty().intValue() < e.getQty().intValue()) || !e.getMatnr().equals(e.getConfirmMatnr())  ){
 					TPlanOrderItem entry = tPlanOrderItemMapper.selectEntryByEntryNo(e.getOrgItemNo());
 					//更新原订单剩余金额
-					updatePreOrderCurAmt(entry.getOrderNo(),e.getConfirmAmt());
+					if(e.getConfirmAmt()!=null){
+						updatePreOrderCurAmt(entry.getOrderNo(),e.getConfirmAmt());
+					}
 					//更改路单,少送的，需要往后延期,并重新计算此后日计划的剩余金额
 					orderService.resumeDaliyPlanForRouteOrder(e.getConfirmQty(), e, entry, dispDate);
 				}else{

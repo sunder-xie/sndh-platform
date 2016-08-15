@@ -103,7 +103,7 @@ public class RequireOrderServiceImpl implements RequireOrderService {
             order = new TSsmReqGoodsOrder();
             String orderNo = PrimaryKeyUtils.generateUuidKey();
             order.setRequiredDate(requireDate);
-            order.setStatus("10");
+            order.setStatus("20");
             order.setOrderNo(orderNo);
             order.setOrderDate(today);
             order.setBranchNo(user.getBranchNo());
@@ -446,6 +446,8 @@ public class RequireOrderServiceImpl implements RequireOrderService {
             PISuccessMessage  message  = piRequireOrderService.generateSalesOrder(order,order.getDealerNo(),order.getBranchNo(),order.getSalesOrg(),"");
             if(message.isSuccess()){
                 this.uptVouCherNoByOrderNo(order.getOrderNo(),message.getData());
+            }else{
+                throw new ServiceException(MessageCode.LOGIC_ERROR,"发送失败");
             }
         }
         return 1;
@@ -481,6 +483,9 @@ public class RequireOrderServiceImpl implements RequireOrderService {
             PISuccessMessage  message  = piRequireOrderService.generateSalesOrder(order,order.getDealerNo(),order.getBranchNo(),order.getSalesOrg(),"");
             if(message.isSuccess()){
                 this.uptVouCherNoByOrderNo(order.getOrderNo(),message.getData());
+
+            }else{
+                throw new ServiceException(MessageCode.LOGIC_ERROR,"创建销售订单失败,请联系开发");
             }
             return 1;
         }else{
@@ -516,6 +521,8 @@ public class RequireOrderServiceImpl implements RequireOrderService {
                     PISuccessMessage  message  = piRequireOrderService.generateSalesOrder(order,order.getDealerNo(),order.getBranchNo(),order.getSalesOrg(),"");
                     if(message.isSuccess()){
                         this.uptVouCherNoByOrderNo(order.getOrderNo(),message.getData());
+                    }else{
+                        throw new ServiceException(MessageCode.LOGIC_ERROR,"创建销售订单失败,请联系开发");
                     }
                     return 1;
                 }else{
@@ -623,7 +630,12 @@ public class RequireOrderServiceImpl implements RequireOrderService {
         }else{
             sModel.setDealerNo(user.getDealerId());
         }
-        return tSsmSalOrderMapper.selectSalOrderByDateAndBranchOrDealerNo(sModel);
+
+        List<TSsmSalOrder> result = tSsmSalOrderMapper.selectSalOrderByDateAndBranchOrDealerNo(sModel);
+        if(result == null ){
+            throw new ServiceException(MessageCode.LOGIC_ERROR,"今天的销售订单还没生成");
+        }
+        return result;
     }
 
     @Override
@@ -704,6 +716,8 @@ public class RequireOrderServiceImpl implements RequireOrderService {
         //查询出今天的要货计划
         return this.searchRequireOrder(orderDate);
     }
+
+
 
     /**
      *添加  销售订单行项目

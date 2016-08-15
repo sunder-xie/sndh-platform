@@ -609,7 +609,6 @@
     and di.REASON = '10'
     and di.REPLACE_REASON = '10'
     and e.SALES_ORG = #{salesOrg,jdbcType=VARCHAR}
-    and i.PROMOTION = #{promotion,jdbcType=VARCHAR}
     and  ti.DISP_DATE = #{requiredDate,jdbcType=DATE}
     GROUP BY di.MATNR
 UNION ALL
@@ -624,7 +623,6 @@ UNION ALL
     AND ti.STATUS = '20'
     and di.MATNR = di.CONFIRM_MATNR
     and e.SALES_ORG = #{salesOrg,jdbcType=VARCHAR}
-    and i.PROMOTION = #{promotion,jdbcType=VARCHAR}
     and  ti.DISP_DATE = #{requiredDate,jdbcType=DATE}
     GROUP BY di.MATNR
   </select>
