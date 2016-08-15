@@ -483,11 +483,11 @@ public class RequireOrderServiceImpl implements RequireOrderService {
             PISuccessMessage  message  = piRequireOrderService.generateSalesOrder(order,order.getDealerNo(),order.getBranchNo(),order.getSalesOrg(),"");
             if(message.isSuccess()){
                 this.uptVouCherNoByOrderNo(order.getOrderNo(),message.getData());
-                return 1;
-            }else{
-                throw new ServiceException(MessageCode.LOGIC_ERROR,"创建销售订单失败");
-            }
 
+            }else{
+                throw new ServiceException(MessageCode.LOGIC_ERROR,"创建销售订单失败,请联系开发");
+            }
+            return 1;
         }else{
             return 0;
         }
@@ -521,6 +521,8 @@ public class RequireOrderServiceImpl implements RequireOrderService {
                     PISuccessMessage  message  = piRequireOrderService.generateSalesOrder(order,order.getDealerNo(),order.getBranchNo(),order.getSalesOrg(),"");
                     if(message.isSuccess()){
                         this.uptVouCherNoByOrderNo(order.getOrderNo(),message.getData());
+                    }else{
+                        throw new ServiceException(MessageCode.LOGIC_ERROR,"创建销售订单失败,请联系开发");
                     }
                     return 1;
                 }else{
@@ -714,6 +716,8 @@ public class RequireOrderServiceImpl implements RequireOrderService {
         //查询出今天的要货计划
         return this.searchRequireOrder(orderDate);
     }
+
+
 
     /**
      *添加  销售订单行项目
