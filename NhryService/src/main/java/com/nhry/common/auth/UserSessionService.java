@@ -82,10 +82,14 @@ public class UserSessionService {
 			String appcode =servletRequest.getHeader("appcode");
 			String appkey = servletRequest.getHeader("appkey");
 			String timestamp = servletRequest.getHeader("timestamp");
+			String ticketName = servletRequest.getHeader("ticketName");
 			if("-1".equals(accessKey) || StringUtils.isEmpty(timestamp)){
 				return MessageCode.SESSION_EXPIRE;
 			}
-			
+			if(AuthFilter.IDM_REST_AUTH.equals(authflag) && StringUtils.isEmpty(ticketName)){
+				//idm rest接口认证方式，ticketName必须传入
+				return MessageCode.UNAUTHORIZED;
+			}
 			boolean flag = false;
 			if(HttpUtils.isValidDate(timestamp)){
 				Date fdate = com.nhry.utils.date.Date.parseDate(timestamp,"yyyyMMddHHmmss").addMinutes(6);
@@ -97,10 +101,16 @@ public class UserSessionService {
 						flag = true;
 						TSysAccesskey key = new TSysAccesskey();
 						key.setAccesskey(appkey);
-						key.setType("10");
+						key.setType(AuthFilter.IDM_AUTH.equals(authflag) ? AuthFilter.IDM_AUTH2_SIGN : AuthFilter.IDM_REST_SIGN);
 						TSysAccesskey ak = isysAkService.findAccesskeyByKey(key);
 						if(ak == null){
-							return MessageCode.SESSION_EXPIRE;
+							if(AuthFilter.IDM_AUTH.equals(authflag)){
+								System.out.println("-------------------"+key.getAccesskey());
+								return MessageCode.SESSION_EXPIRE;
+							}else{
+								//其他认证方式  idm rest 接口认证方式(第一次访问)
+								return authenticate4RestAuth(appkey, servletRequest.getRemoteHost(),ticketName);
+							}
 						}
 						Date lastDate = new Date(ak.getVisitLastTime());
 						if(lastDate.addMonths(2).before(new Date())){
@@ -109,7 +119,7 @@ public class UserSessionService {
 							if(AuthFilter.IDM_AUTH.equals(authflag)){
 								return authenticate4Auth(appkey,ak.getLoginname(),servletRequest.getRemoteHost());
 							}else if(AuthFilter.IDM_REST_AUTH.equals(authflag)){
-								return authenticate4RestAuth(appkey, servletRequest.getRemoteHost());
+								return authenticate4RestAuth(appkey, servletRequest.getRemoteHost(),ticketName);
 							}
 						}else{
 							//如果没有超过2小时直接允许继续访问
@@ -160,7 +170,7 @@ public class UserSessionService {
 				}else{
 					TSysAccesskey record = new TSysAccesskey();
 					record.setAccesskey(appkey);
-					record.setType("10");
+					record.setType(AuthFilter.IDM_AUTH2_SIGN);
 					record.setVisitLastTime(new Date());
 					record.setVisitIp(ip);
 					isysAkService.updateIsysAccessKey(record);
@@ -186,12 +196,12 @@ public class UserSessionService {
 	 * @param ip
 	 * @return
 	 */
-	private String authenticate4RestAuth(String appkey,String ip){
+	private String authenticate4RestAuth(String token,String ip,String ticketName){
 		try {
-			JSONObject json = new JSONObject();
-	    	json.put("username", "88001044");
-	    	json.put("password", "@bcd1234");
-	    	String userObject = HttpUtils.idmAppPost(EnvContant.getSystemConst("idm_validate_url"), json.toString());
+			JSONObject ticketEntry = new JSONObject();
+			ticketEntry.put("ticketName", ticketName);
+			ticketEntry.put("ticketValue", token);
+	    	String userObject = HttpUtils.idmAppPost(EnvContant.getSystemConst("idm_validate_url"),ticketEntry.toString());
 			JSONObject userJson = new JSONObject(userObject);
 			if(userJson.has("status") && "true".equals(userJson.getString("status")) && userJson.has("user") && userJson.getJSONObject("user").has("uid")){
 				TSysUser user = new TSysUser();
@@ -201,8 +211,8 @@ public class UserSessionService {
 					return MessageCode.UNAUTHORIZED;
 				}else{
 					TSysAccesskey record = new TSysAccesskey();
-					record.setAccesskey(appkey);
-					record.setType("20"); //20 : 送奶app
+					record.setAccesskey(token);
+					record.setType(AuthFilter.IDM_REST_SIGN); //20 : 送奶app
 					record.setVisitLastTime(new Date());
 					record.setVisitIp(ip);
 					isysAkService.updateIsysAccessKey(record);
@@ -234,8 +244,6 @@ public class UserSessionService {
 			if(sysdate.before(fdate)){
 				//系统时间 小于 前端时间+6分钟
 				String encrypt= HttpUtils.encodePassword(appcode+appkey+timestamp, SysContant.getSystemConst(appcode+"_base_pw")+HttpUtils.getSixpw(timestamp));
-				System.out.println("------encrypt--------:"+encrypt);
-				System.out.println("------idm_auth--------:"+idm_auth);
 				if(encrypt.equals(idm_auth)){
 					flag = true;
 				}
