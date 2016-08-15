@@ -7,7 +7,6 @@ import com.nhry.common.exception.MessageCode;
 import com.nhry.common.exception.ServiceException;
 import com.nhry.data.auth.dao.TSysUserRoleMapper;
 import com.nhry.data.auth.domain.TSysUser;
-import com.nhry.data.auth.domain.TSysUserRole;
 import com.nhry.data.basic.dao.TMdBranchMapper;
 import com.nhry.data.basic.dao.TMdBranchScopeMapper;
 import com.nhry.data.basic.dao.TMdResidentialAreaMapper;
@@ -22,15 +21,10 @@ import com.nhry.service.basic.pojo.BranchScopeModel;
 import com.nhry.service.basic.pojo.ResidentialAreaModel;
 import com.nhry.service.external.dao.EcService;
 import com.nhry.utils.PrimaryKeyUtils;
-
 import org.apache.commons.lang.StringUtils;
 import org.springframework.core.task.TaskExecutor;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * Created by gongjk on 2016/6/3.
