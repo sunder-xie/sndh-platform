@@ -12,8 +12,12 @@
 	<config key="authurl" value="http://aws.newhopedairy.cn:8080/siam/oauth2.0/authorize"></config>
 	<config key="auth_token" value="http://aws.newhopedairy.cn:8080/siam/oauth2.0/accessToken"></config>
 	<config key="client_id" value="Auth_dhxt"></config>
-	<!-- 回调地址 -->
+	<!-- <config key="client_id" value="Auth_dhxt1"></config> -->
+	<!-- 回调地址-->
 	<config key="redirect_uri" value="http://54.223.36.200:8080/idm/auth"></config>
+	<!-- 
+	<config key="redirect_uri" value="http://54.222.170.10:8070/idm/auth"></config>
+	 -->
 	<config key="response_type" value="code"></config>
 	<config key="client_secret" value="secret"></config>
 	<config key="grant_type" value="authorizaiton_code"></config>
@@ -22,6 +26,9 @@
 	<config key="app_token_validate" value="http://10.6.240.143:8080/siam/rest/validate"></config>
 	<!-- 前端页面home -->
 	<config key="front_home_page" value="http://test.nhry-dev.com/release/#/newhope/home"></config>
+	<!-- 
+	 <config key="front_home_page" value="http://localhost/local/#/newhope/home"></config>
+	  -->
 	<config key="front_short_url" value="/local/#/newhope/home"></config>
 	<!-- 电商接口base url -->
 	<config key="ec_base_url" value="http://ec2-54-222-230-211.cn-north-1.compute.amazonaws.com.cn"></config>
