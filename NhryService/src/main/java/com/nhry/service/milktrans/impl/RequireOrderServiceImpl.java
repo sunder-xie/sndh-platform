@@ -642,13 +642,8 @@ public class RequireOrderServiceImpl implements RequireOrderService {
         if(branchNo == null){
             throw new ServiceException(MessageCode.LOGIC_ERROR,"该用户不存在奶站");
         }
-        TMdBranch branch = branchMapper.selectBranchByNo(branchNo);
-        if("01".equals(branch.getBranchGroup())){
-            sModel.setBranchNo(branchNo);
-        }else{
+            sModel.setBranchNo(user.getBranchNo());
             sModel.setDealerNo(user.getDealerId());
-        }
-
         List<TSsmSalOrder> result = tSsmSalOrderMapper.selectSalOrderByDateAndBranchOrDealerNo(sModel);
         if(result == null ){
             throw new ServiceException(MessageCode.LOGIC_ERROR,"今天的销售订单还没生成");
