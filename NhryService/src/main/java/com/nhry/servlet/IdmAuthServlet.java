@@ -57,7 +57,6 @@ public class IdmAuthServlet extends HttpServlet {
 		try {
 			String code = request.getParameter("code");
 			String ip = request.getParameter("id");
-			System.out.println("---------code-----------"+code);
 			if (!StringUtils.isEmpty(code)) {
 				Map<String,Object> attrs = new HashMap<String,Object>();
 				attrs.put("client_id", EnvContant.getSystemConst("client_id"));
@@ -66,21 +65,17 @@ public class IdmAuthServlet extends HttpServlet {
 				attrs.put("redirect_uri", EnvContant.getSystemConst("redirect_uri"));
 				attrs.put("code", code);
 				String access_token = HttpUtils.request(EnvContant.getSystemConst("auth_token"), attrs);
-				System.out.println("---------access_token-----------"+access_token);
 				if(!StringUtils.isEmpty(access_token)){
 					attrs.clear();
 					String token = access_token.split("=")[1].split("&")[0];
 					attrs.put("access_token", token);
 					String userObject = HttpUtils.request(EnvContant.getSystemConst("auth_profile"), attrs);
-					System.out.println("---------userObject-----------"+userObject);
 					JSONObject userJson = new JSONObject(userObject);
 					if(userJson.has("id") && !StringUtils.isEmpty(userJson.getString("id"))){
 						TSysUser user = new TSysUser();
 						user.setLoginName(userJson.getString("id"));
 						TSysUser loginuser = userService.login(user);
-						System.out.println("---------loginuser-----------"+loginuser.getLoginName());
 						if(loginuser == null){
-							System.out.println("---------找不到登录人-----------");
 							sendRedirectToLogin(response);
 							return;
 						}
