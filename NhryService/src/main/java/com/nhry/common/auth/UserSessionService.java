@@ -200,7 +200,7 @@ public class UserSessionService {
 			JSONObject ticketEntry = new JSONObject();
 			ticketEntry.put("ticketName", ticketName);
 			ticketEntry.put("ticketValue", token);
-	    	String userObject = HttpUtils.idmAppPost(EnvContant.getSystemConst("idm_validate_url"),ticketEntry.toString());
+	    	String userObject = HttpUtils.idmAppPost(EnvContant.getSystemConst("app_token_validate"),ticketEntry.toString());
 			JSONObject userJson = new JSONObject(userObject);
 			if(userJson.has("status") && "true".equals(userJson.getString("status")) && userJson.has("user") && userJson.getJSONObject("user").has("uid")){
 				TSysUser user = new TSysUser();

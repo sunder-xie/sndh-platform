@@ -53,7 +53,10 @@ public class AuthFilter implements ContainerRequestFilter {
 	
 	static{
 		whiteUriList = new ArrayList<String>();
-		whiteUriList.add("/api/v1/user/login");
+		whiteUriList.add("GET;/api/v1/order/");
+		whiteUriList.add("GET;/api/v1/order/dailyPlans/");
+		whiteUriList.add("POST;/api/v1/vipcust/upt/crm/address");
+		whiteUriList.add("POST;/api/v1/vipcust/upt/crm/custinfo");
 	}
 	
 	static{
@@ -68,7 +71,7 @@ public class AuthFilter implements ContainerRequestFilter {
 		// TODO Auto-generated method stub
 		String uri = request.getAbsolutePath().getPath();
 		if("product".equals(SysContant.getSystemConst("app_mode"))){
-			if(isExsitUri(uri)){
+			if(isExsitUri(request.getMethod()+";"+uri)){
 				//白名单过滤
 				return request;
 			}
