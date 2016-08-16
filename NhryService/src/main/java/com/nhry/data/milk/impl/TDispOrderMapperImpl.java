@@ -96,5 +96,23 @@ public class TDispOrderMapperImpl implements TDispOrderMapper
 	{
 		return sqlSessionTemplate.update("updateDispOrderEmp", order);
 	}
-	
+
+	@Override
+	public List<TDispOrder> selectDispOrderByBranchNoAndDay(String branchNo,Date orderDate) {
+		SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
+		TDispOrder key = new TDispOrder();
+		key.setBranchNo(branchNo);
+		key.setBranchName(format.format(orderDate));
+		return sqlSessionTemplate.selectList("selectTodayDispOrderByBranchNo",key);
+	}
+
+	@Override
+	public List<TDispOrder> selectConfirmDispOrderByBranchNoAndDay(String branchNo,Date orderDate) {
+		SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
+		TDispOrder key = new TDispOrder();
+		key.setBranchNo(branchNo);
+		key.setBranchName(format.format(orderDate));
+		return sqlSessionTemplate.selectList("selectConfirmDispOrderByBranchNoAndDay",key);
+	}
+
 }

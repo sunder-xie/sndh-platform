@@ -34,7 +34,9 @@ public interface RequireOrderService {
 
     int creatPromoSalOrderOfSelftBranch(Date requiredDate);
 
-    List<TSsmSalOrder> creaSalOrderOfSelftBranch();
+   // List<TSsmSalOrder> creaSalOrderOfSelftBranch();
+
+    List<TSsmSalOrder> creaSalOrderOfSelftBranchByDate(SalOrderDaySearch search);
 
     List<TSsmSalOrder> creaSalOrderOfDealerBranch();
 
@@ -43,4 +45,6 @@ public interface RequireOrderService {
     List<TSsmSalOrderItems> getSaleOrderDetailByOrderNo(String orderNo);
 
     RequireOrderModel creatRequireOrderByDate(ReqGoodsOrderSearch eSearch);
+
+
 }
