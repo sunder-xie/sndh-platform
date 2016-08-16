@@ -32,6 +32,7 @@ public class OrderSearchModel extends BaseQueryModel implements Serializable {
 	private String orderReturnDateEnd;
 	private String salesOrg;
 	private String dealerNo;
+	private String memoTxt;
 	private Integer goDays;
 	private ArrayList<String> orders = new ArrayList<String>();
 	//电商额外字段
@@ -44,6 +45,14 @@ public class OrderSearchModel extends BaseQueryModel implements Serializable {
 	private String dhFlag;
 	private String buyerName;
 	
+	public String getMemoTxt()
+	{
+		return memoTxt;
+	}
+	public void setMemoTxt(String memoTxt)
+	{
+		this.memoTxt = memoTxt;
+	}
 	public ArrayList<String> getOrders()
 	{
 		return orders;

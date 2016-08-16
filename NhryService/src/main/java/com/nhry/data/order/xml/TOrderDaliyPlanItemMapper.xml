@@ -405,6 +405,9 @@
   <update id="updateDaliyPlanItem" parameterType="com.nhry.data.order.domain.TOrderDaliyPlanItem" >
     update t_mst_order_daliy_plan_item
     <set >
+    	<if test="dispDate != null" >
+        DISP_DATE = #{dispDate,jdbcType=DATE},
+      </if>
       <if test="reachTimeType != null" >
         REACH_TIME_TYPE = #{reachTimeType,jdbcType=VARCHAR},
       </if>
