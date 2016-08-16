@@ -127,6 +127,7 @@ public class TaskYearMonthPlanResource extends BaseResource {
             workbook.write(stream);
             stream.flush();
             stream.close();
+            
             outUrl = "/report/export/" + fname + fileName;
         }catch (Exception e){
             e.printStackTrace();
