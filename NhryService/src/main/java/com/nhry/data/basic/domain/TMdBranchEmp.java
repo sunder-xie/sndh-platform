@@ -3,7 +3,7 @@ package com.nhry.data.basic.domain;
 import java.io.Serializable;
 import java.util.Date;
 
-public class TMdBranchEmp implements Serializable{
+public class TMdBranchEmp implements Serializable,Cloneable {
     private String empNo;
 
     private String hrEmpNo;
@@ -12,7 +12,6 @@ public class TMdBranchEmp implements Serializable{
 
     private String branchName;
     private String salesOrg;
-
 
     private String empName;
 
@@ -51,7 +50,8 @@ public class TMdBranchEmp implements Serializable{
     private int baseSalary;
 
     private String salaryMet;
-
+    
+    private Date leaveDate;
 
     public String getSalesOrg() {
         return salesOrg;
@@ -245,4 +245,18 @@ public class TMdBranchEmp implements Serializable{
     public void setStatus(String status) {
         this.status = status;
     }
+
+	public Date getLeaveDate() {
+		return leaveDate;
+	}
+
+	public void setLeaveDate(Date leaveDate) {
+		this.leaveDate = leaveDate;
+	}
+
+	@Override
+	public Object clone() throws CloneNotSupportedException {
+		// TODO Auto-generated method stub
+		return super.clone();
+	}
 }

@@ -6,6 +6,7 @@ import com.nhry.common.exception.ServiceException;
 import com.nhry.data.auth.dao.TSysRoleMapper;
 import com.nhry.data.auth.dao.TSysUserMapper;
 import com.nhry.data.auth.domain.TSysUser;
+import com.nhry.data.basic.domain.TMdBranchEmp;
 import com.nhry.data.config.dao.NHSysCodeItemMapper;
 import com.nhry.data.config.domain.NHSysCodeItem;
 import com.nhry.model.auth.UserQueryModel;
@@ -14,6 +15,7 @@ import com.nhry.model.auth.UserQueryModel3;
 import com.nhry.service.BaseService;
 import com.nhry.service.auth.dao.ResourceService;
 import com.nhry.service.auth.dao.UserService;
+import com.nhry.service.basic.dao.BranchEmpService;
 import com.nhry.utils.SysContant;
 import com.nhry.utils.date.Date;
 
@@ -28,6 +30,7 @@ public class UserServiceImpl extends BaseService implements UserService {
 	private ResourceService resService;
 	private NHSysCodeItemMapper codeItemMapper;
 	private RedisTemplate objectRedisTemplate;
+	private BranchEmpService branchEmpService;
 
 	@Override
 	public PageInfo findUser(UserQueryModel um){
@@ -88,6 +91,12 @@ public class UserServiceImpl extends BaseService implements UserService {
 		if(StringUtils.isEmpty(record.getLoginName())){
 			throw new ServiceException(MessageCode.LOGIC_ERROR, "用户名登录名不能为空！");
 		}
+		record.setLastModified(new Date());
+		if("-1".equals(record.getDealerId())){
+			record.setDealerId(null);
+		}
+		userMapper.updateUser(record);
+		
 		if(!StringUtils.isEmpty(record.getBranchNo())){
 			//奶站员工
 			TSysUser user = new TSysUser();
@@ -96,20 +105,18 @@ public class UserServiceImpl extends BaseService implements UserService {
 			if(sysuser == null){
 				throw new ServiceException(MessageCode.LOGIC_ERROR, "用户名对应的用户不存在！");
 			}
-			if(StringUtils.isEmpty(sysuser.getBranchNo())){
-				//添加奶站员工
-				
-			}else if(!StringUtils.isEmpty(sysuser.getBranchNo()) && !record.getBranchNo().equals(sysuser.getBranchNo())){
-				//奶站员工变更奶站
-				
-			}
+			TMdBranchEmp emp = new TMdBranchEmp();
+			emp.setEmpNo(sysuser.getLoginName());
+			emp.setHrEmpNo(sysuser.getLoginName());
+			emp.setBranchNo(sysuser.getBranchNo());
+			emp.setSalesOrg(sysuser.getSalesOrg());
+			emp.setEmpName(sysuser.getDisplayName());
+			emp.setMp(sysuser.getMobile());
+			emp.setIdNo(sysuser.getSmartIdcardnumber());
+			emp.setJoinDate(sysuser.getCustomizedJoininworkdate());
+			branchEmpService.addBranchEmp(emp);
 		}
-		
-		record.setLastModified(new Date());
-		if("-1".equals(record.getDealerId())){
-			record.setDealerId(null);
-		}
-		return userMapper.updateUser(record);
+		return 1;
 	}
 
 	@Override
@@ -172,5 +179,9 @@ public class UserServiceImpl extends BaseService implements UserService {
 
 	public void setObjectRedisTemplate(RedisTemplate objectRedisTemplate) {
 		this.objectRedisTemplate = objectRedisTemplate;
+	}
+
+	public void setBranchEmpService(BranchEmpService branchEmpService) {
+		this.branchEmpService = branchEmpService;
 	}
 }

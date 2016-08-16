@@ -26,6 +26,7 @@
     <result column="BASE_SALARY" property="baseSalary" jdbcType="INTEGER" />
     <result column="JOIN_DATE" property="joinDate" jdbcType="DATE" />
     <result column="SALES_ORG" jdbcType="VARCHAR" property="salesOrg" />
+    <result column="LEAVE_DATE" property="leaveDate" jdbcType="DATE" />
   </resultMap>
 
   <resultMap id="RouteResultMap" type="com.nhry.data.basic.domain.TMdResidentialArea">
@@ -67,6 +68,13 @@
     and emp. EMP_NO = #{0}
 </select>
 
+ <select id="selectActiveBranchEmpByNo" resultMap="BaseResultMap" parameterType="java.lang.String" >
+    select
+      <include refid="Base_Column_List"/>
+      from t_md_branch_emp
+      where STATUS='1' and HR_EMP_NO = #{0}
+</select>
+
   <select id="selectBranchEmpByEmpNo" resultMap="BaseResultMap" parameterType="java.lang.String" >
     select
       <include refid="Base_Column_List"/>
@@ -88,15 +96,13 @@
   <insert id="addBranchEmp" parameterType="com.nhry.data.basic.domain.TMdBranchEmp" >
     insert into t_md_branch_emp (EMP_NO, HR_EMP_NO, BRANCH_NO, 
       EMP_NAME,GENDER,EMP_TYPE, TEL,
-      MP, WEBCHAT, ID_NO,
-      CREATE_AT, CREATE_BY, CREATE_BY_TXT,
-      STATUS)
+      MP, WEBCHAT, ID_NO,CREATE_AT, CREATE_BY, CREATE_BY_TXT,
+      STATUS,LEAVE_DATE,JOIN_DATE,SALES_ORG)
     values (#{empNo,jdbcType=VARCHAR}, #{hrEmpNo,jdbcType=VARCHAR}, #{branchNo,jdbcType=VARCHAR}, 
       #{empName,jdbcType=VARCHAR}, #{gender,jdbcType=VARCHAR}, #{empType,jdbcType=VARCHAR}, #{tel,jdbcType=VARCHAR},
       #{mp,jdbcType=VARCHAR}, #{webchat,jdbcType=VARCHAR}, #{idNo,jdbcType=VARCHAR},
       #{createAt,jdbcType=TIMESTAMP}, #{createBy,jdbcType=VARCHAR}, #{createByTxt,jdbcType=VARCHAR},
-      #{status,jdbcType=CHAR})
-
+      #{status,jdbcType=CHAR},#{leaveDate,jdbcType=DATE},#{joinDate,jdbcType=DATE},#{salesOrg,jdbcType=VARCHAR})
   </insert>
 
   <insert id="addEmpRole" parameterType="com.nhry.data.basic.domain.TMdBranchEmp" >
@@ -159,8 +165,75 @@
       <if test="lastModifiedByTxt != null" >
         LAST_MODIFIED_BY_TXT = #{lastModifiedByTxt,jdbcType=VARCHAR},
       </if>
+      <if test="leaveDate != null">
+         LEAVE_DATE = #{leaveDate,jdbcType=DATE}
+      </if>
     </set>
     where EMP_NO = #{empNo,jdbcType=VARCHAR}
+  </update>
+  
+  <update id="uptBranchEmpByBraNo" parameterType="com.nhry.data.basic.domain.TMdBranchEmp" >
+    update t_md_branch_emp
+    <set>
+      <if test="hrEmpNo != null">
+        HR_EMP_NO = #{hrEmpNo,jdbcType=VARCHAR},
+      </if>
+      <if test="branchNo != null">
+        BRANCH_NO = #{branchNo,jdbcType=VARCHAR},
+      </if>
+      <if test="empName != null">
+        EMP_NAME = #{empName,jdbcType=VARCHAR},
+      </if>
+      <if test="gender != null">
+        GENDER = #{gender,jdbcType=VARCHAR},
+      </if>
+      <if test="empType != null">
+        EMP_TYPE = #{empType,jdbcType=VARCHAR},
+      </if>
+      <if test="status != null">
+        Status = #{status,jdbcType=VARCHAR},
+      </if>
+      <if test="tel != null">
+        TEL = #{tel,jdbcType=VARCHAR},
+      </if>
+      <if test="mp != null">
+        MP = #{mp,jdbcType=VARCHAR},
+      </if>
+      <if test="webchat != null">
+        WEBCHAT = #{webchat,jdbcType=VARCHAR},
+      </if>
+      <if test="idNo != null">
+        ID_NO = #{idNo,jdbcType=VARCHAR},
+      </if>
+      <if test="baseSalary != null">
+        BASE_SALARY = #{baseSalary,jdbcType=INTEGER},
+      </if>
+      <if test="salaryMet != null">
+        SALARY_MET = #{salaryMet,jdbcType=VARCHAR},
+      </if>
+      <if test="createAt != null" >
+        CREATE_AT = #{createAt,jdbcType=TIMESTAMP},
+      </if>
+      <if test="createBy != null" >
+        CREATE_BY = #{createBy,jdbcType=VARCHAR},
+      </if>
+      <if test="createByTxt != null" >
+        CREATE_BY_TXT = #{createByTxt,jdbcType=VARCHAR},
+      </if>
+      <if test="lastModified != null" >
+        LAST_MODIFIED = #{lastModified,jdbcType=TIMESTAMP},
+      </if>
+      <if test="lastModifiedBy != null" >
+        LAST_MODIFIED_BY = #{lastModifiedBy,jdbcType=VARCHAR},
+      </if>
+      <if test="lastModifiedByTxt != null" >
+        LAST_MODIFIED_BY_TXT = #{lastModifiedByTxt,jdbcType=VARCHAR},
+      </if>
+      <if test="leaveDate != null">
+         LEAVE_DATE = #{leaveDate,jdbcType=DATE}
+      </if>
+    </set>
+    where Status='1' and BRANCH_NO = #{branchNo,jdbcType=VARCHAR} and HR_EMP_NO = #{empNo,jdbcType=VARCHAR}
   </update>
 
   <update id="uptEmpRole" parameterType="com.nhry.data.basic.domain.TMdBranchEmp" >

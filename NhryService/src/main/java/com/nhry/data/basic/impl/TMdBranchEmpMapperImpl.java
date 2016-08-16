@@ -27,8 +27,8 @@ public class TMdBranchEmpMapperImpl implements TMdBranchEmpMapper {
 	public int addBranchEmp(TMdBranchEmp record) {
 		// TODO Auto-generated method stub
 		int emp = this.sqlSessionTemplate.insert("addBranchEmp", record);
-		int role = this.sqlSessionTemplate.insert("addEmpRole", record);
-		return emp+role;
+//		int role = this.sqlSessionTemplate.insert("addEmpRole", record);
+		return emp;
 	}
 
 	@Override
@@ -52,6 +52,11 @@ public class TMdBranchEmpMapperImpl implements TMdBranchEmpMapper {
 	public int uptBranchEmpByNo(TMdBranchEmp record) {
 		// TODO Auto-generated method stub
 		return this.sqlSessionTemplate.update("uptBranchEmpByNo", record);
+	}
+	
+	@Override
+	public int uptBranchEmpByBraNo(TMdBranchEmp record){
+		return this.sqlSessionTemplate.update("uptBranchEmpByBraNo", record);
 	}
 
 	public void setSqlSessionTemplate(DynamicSqlSessionTemplate sqlSessionTemplate) {
@@ -90,6 +95,12 @@ public class TMdBranchEmpMapperImpl implements TMdBranchEmpMapper {
 	@Override
 	public List<TMdBranchEmp> getAllEmpBySalesOrg(String salesOrg) {
 		return sqlSessionTemplate.selectList("getAllEmpBySalesOrg",salesOrg);
+	}
+
+	@Override
+	public TMdBranchEmp selectActiveBranchEmpByNo(String empNo) {
+		// TODO Auto-generated method stub
+		return this.sqlSessionTemplate.selectOne("selectActiveBranchEmpByNo",empNo);
 	}
 
 
