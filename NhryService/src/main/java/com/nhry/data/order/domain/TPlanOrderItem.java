@@ -74,7 +74,31 @@ public class TPlanOrderItem {
     
     private BigDecimal entryTotal;
     
-    public BigDecimal getEntryTotal()
+    private Integer yGrowth;
+    
+    private Integer yFresh;
+    
+    public Integer getyGrowth()
+	{
+		return yGrowth;
+	}
+
+	public void setyGrowth(Integer yGrowth)
+	{
+		this.yGrowth = yGrowth;
+	}
+
+	public Integer getyFresh()
+	{
+		return yFresh;
+	}
+
+	public void setyFresh(Integer yFresh)
+	{
+		this.yFresh = yFresh;
+	}
+
+	public BigDecimal getEntryTotal()
 	{
 		return entryTotal;
 	}

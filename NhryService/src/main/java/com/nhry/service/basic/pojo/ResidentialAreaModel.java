@@ -14,7 +14,14 @@ public class ResidentialAreaModel extends BaseQueryModel implements Serializable
     private String county;
     private String branchNo;
     private String salesOrg;
+    private String areaTxt;
+    public String getAreaTxt() {
+        return areaTxt;
+    }
 
+    public void setAreaTxt(String areaTxt) {
+        this.areaTxt = areaTxt;
+    }
 
     public String getCounty() {
         return county;

@@ -1,5 +1,6 @@
 package com.nhry.service.stock.impl;
 
+import com.nhry.common.exception.ServiceException;
 import com.nhry.data.stock.dao.TSsmGiOrderItemMapper;
 import com.nhry.data.stock.dao.TSsmStockMapper;
 import com.nhry.data.stock.domain.*;
@@ -68,36 +69,40 @@ public class TSsmGiOrderItemServiceImpl implements TSsmGiOrderItemService {
 
     @Override
     public int updateGiOrderItems(List<TSsmGiOrderItem> giOrderItems, String salesOrg) {
-        for(TSsmGiOrderItem item : giOrderItems){
-            TSsmGiOrderItemKey key = new TSsmGiOrderItemKey();
-            key.setOrderNo(item.getOrderNo());
-            key.setItemNo(item.getItemNo());
-            key.setOrderDate(item.getOrderDate());
-            TSsmGiOrderItem orderItem = selectGiOrderItemByNo(key);
-            orderItem.setConfirmQty(item.getConfirmQty());
-            orderItem.setRemark(item.getRemark());
-            giOrderItemMapper.updateGiOrderItem(orderItem);
-            TSsmGiOrder giOrder = giOrderService.selectGiOrderByNo(item.getOrderNo());
+        if (giOrderItems != null && giOrderItems.size() > 0) {
+            TSsmGiOrder giOrder = giOrderService.selectGiOrderByNo(giOrderItems.get(0).getOrderNo());
+            if ("30".equals(giOrder.getStatus())) {
+                throw new ServiceException("交货单已经确认,不能重复确认！");
+            }
+            for (TSsmGiOrderItem item : giOrderItems) {
+                TSsmGiOrderItemKey key = new TSsmGiOrderItemKey();
+                key.setOrderNo(item.getOrderNo());
+                key.setItemNo(item.getItemNo());
+                key.setOrderDate(item.getOrderDate());
+                TSsmGiOrderItem orderItem = selectGiOrderItemByNo(key);
+                orderItem.setConfirmQty(item.getConfirmQty());
+                orderItem.setRemark(item.getRemark());
+                giOrderItemMapper.updateGiOrderItem(orderItem);
+                TSsmStockKey key1 = new TSsmStockKey();
+                key1.setBranchNo(giOrder.getBranchNo());
+                key1.setMatnr(item.getMatnr());
+                TSsmStock stock = ssmStockMapper.getStock(key1);
+                if (stock == null) {
+                    stock = new TSsmStock();
+                    stock.setBranchNo(giOrder.getBranchNo());
+                    stock.setMatnr(item.getMatnr());
+                    stock.setQty(item.getConfirmQty());
+                    stock.setSalesOrg(salesOrg);
+                    ssmStockMapper.insertStock(stock);
+                } else {
+                    stock.setQty(item.getConfirmQty().add(stock.getQty()));
+                    stock.setSalesOrg(salesOrg);
+                    ssmStockMapper.updateStock(stock);
+                }
+            }
             giOrder.setStatus("30");
             giOrderService.updateGiOrder(giOrder);
-            TSsmStockKey key1 = new TSsmStockKey();
-            key1.setBranchNo(giOrder.getBranchNo());
-            key1.setMatnr(item.getMatnr());
-            TSsmStock stock = ssmStockMapper.getStock(key1);
-            if(stock==null){
-                stock = new TSsmStock();
-                stock.setBranchNo(giOrder.getBranchNo());
-                stock.setMatnr(item.getMatnr());
-                stock.setQty(item.getConfirmQty());
-                stock.setSalesOrg(salesOrg);
-                ssmStockMapper.insertStock(stock);
-            }else{
-                stock.setQty(item.getConfirmQty().add(stock.getQty()));
-                stock.setSalesOrg(salesOrg);
-                ssmStockMapper.updateStock(stock);
-            }
         }
-
         return 1;
     }
 }

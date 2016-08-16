@@ -613,6 +613,7 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 			
 			order.setBackDate(afterDate(new Date(),1));
 			order.setBackReason(record.getReason());
+			order.setMemoTxt(record.getMemoTxt());
 			
 			String state = order.getPaymentmethod();
 			
@@ -2039,13 +2040,13 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 		plan.setItemNo(orgEntry.getItemNo());//预订单日计划行
 //		plan.setDispDate(today);//配送日期
 		plan.setReachTimeType(orgEntry.getReachTimeType());//送达时段类型
-		plan.setMatnr(orgEntry.getMatnr());//产品编号
-		plan.setUnit(orgEntry.getUnit());//配送单位
+		plan.setMatnr(entry.getMatnr());//产品编号
+//		plan.setUnit(orgEntry.getUnit());//配送单位
 		plan.setQty(lackQty);//产品数量
-		plan.setPrice(orgEntry.getSalesPrice());//产品价格
+		plan.setPrice(entry.getPrice());//产品价格
 		//日计划行金额和
 		BigDecimal qty = new BigDecimal(String.valueOf(lackQty));
-		plan.setAmt(orgEntry.getSalesPrice().multiply(qty));//金额小计
+		plan.setAmt(plan.getPrice().multiply(qty));//金额小计
 //		plan.setRemainAmt();//订单余额
 		plan.setStatus("10");//状态
 		plan.setCreateAt(new Date());//创建时间
@@ -2110,6 +2111,10 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 				}
 			}
    	});
+		
+		//订单截止日期修改
+   	orgOrder.setEndDate(daliyPlans.get(daliyPlans.size()-1).getDispDate());
+		tPreOrderMapper.updateOrderEndDate(orgOrder);
 		
 		calculateDaliyPlanRemainAmtAfterUptRoute(daliyPlans,orgOrder,dispDate,orgEntry);
 		
@@ -3604,7 +3609,7 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 
 	/* (non-Javadoc) 
 	* @title: recoverStopDaliyDaliyPlan
-	* @description: 恢复停订的日计划,预付款(未完成)
+	* @description: 恢复停订的日计划
 	* @param item
 	* @return 
 	* @see com.nhry.service.order.dao.OrderService#recoverStopDaliyDaliyPlan(com.nhry.data.order.domain.TOrderDaliyPlanItem) 
@@ -3615,8 +3620,9 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 		SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
 		TPreOrder orgOrder = tPreOrderMapper.selectByPrimaryKey(item.getOrderNo());
 		
-		//validate 今天的日计划也不能恢复todo
-		if("30".equals(orgOrder.getSign()) || !"10".equals(orgOrder.getPreorderStat()) )throw new ServiceException(MessageCode.LOGIC_ERROR,"该订单不能恢复!");
+		//validate
+		if("30".equals(orgOrder.getSign()) || !"10".equals(orgOrder.getPreorderStat()) )throw new ServiceException(MessageCode.LOGIC_ERROR,"该订单的日计划不能恢复!");
+		if(!new Date().before(item.getDispDate()))throw new ServiceException(MessageCode.LOGIC_ERROR,"今日与之前的日计划无法恢复!");
 		if("20".equals(orgOrder.getSign()))throw new ServiceException(MessageCode.LOGIC_ERROR,"已停订的订单不能单日恢复日计划!");
 		
 		//预付款恢复
@@ -3634,23 +3640,53 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 					break;
 				}
 			}
-   		int rate = item.getAmt().divide(orgPrice,2).setScale(2, BigDecimal.ROUND_FLOOR).intValue();//恢复此行需要消耗多少个原商品
-   		
-   		for(TOrderDaliyPlanItem p : daliyPlans){//换商品停订后，延后的日计划如果再换商品会发生问题
-   			if(p.getGiftQty() != null)continue;
-   			if(p.getDispDate().equals(item.getDispDate()) && p.getItemNo().equals(item.getItemNo()))continue;
-   			if("10".equals(p.getStatus()) && p.getItemNo().equals(item.getItemNo()) && p.getMatnr().equals(orgEntry.getMatnr()) ){
-   				int qty = p.getQty();
-   				if(rate - qty >= 0){
-   					rate = rate - qty;
-   					p.setQty(0);
-   					p.setRemainAmt(new BigDecimal("-1"));
-   				}else{
-   					rate = 0;
-   					p.setQty(qty - rate);
-   					p.setAmt(p.getPrice().multiply(new BigDecimal(qty - rate)));
+   		int remainQty = 0;
+   		if(!orgEntry.getMatnr().equals(item.getMatnr())){
+   			for(TOrderDaliyPlanItem p : daliyPlans){
+   				if(p.getItemNo().equals(item.getItemNo()) && p.getMatnr().equals(item.getMatnr())){
+   					remainQty = item.getQty()- p.getQty();
+   					p.setQty(p.getQty() - item.getQty());
+   					if(remainQty > 0){
+   						//需要恢复的数量不够
+   						p.setRemainAmt(new BigDecimal("-1"));
+   					}else if(remainQty == 0){
+   						//刚好够
+   						remainQty = -1;
+   						p.setRemainAmt(new BigDecimal("-1"));
+   					}else{
+   						//还有多
+   						remainQty = -1;
+   						p.setAmt(p.getPrice().multiply(new BigDecimal(p.getQty())));
+   					}
+   					break;
    				}
-   				if(rate == 0)break;
+   			}
+   		}
+   		
+   		int rate = 0 ;
+   		if(remainQty > 0){
+   			rate = new BigDecimal(remainQty).multiply(item.getPrice()).divide(orgPrice,2).setScale(2, BigDecimal.ROUND_CEILING).intValue();//恢复此行需要消耗多少个原商品
+   		}else if(remainQty == 0){
+   			rate = item.getAmt().divide(orgPrice,2).setScale(2, BigDecimal.ROUND_CEILING).intValue();//恢复此行需要消耗多少个原商品
+   		}
+   		
+   		if(rate > 0){
+   			for(TOrderDaliyPlanItem p : daliyPlans){//换商品停订后，延后的日计划如果再换商品会发生问题
+   				if(p.getGiftQty() != null)continue;
+   				if(p.getDispDate().equals(item.getDispDate()) && p.getItemNo().equals(item.getItemNo()))continue;
+   				if("10".equals(p.getStatus()) && p.getItemNo().equals(item.getItemNo()) && p.getMatnr().equals(orgEntry.getMatnr()) ){
+   					int qty = p.getQty();
+   					if(rate - qty >= 0){
+   						rate = rate - qty;
+   						p.setQty(0);
+   						p.setRemainAmt(new BigDecimal("-1"));
+   					}else{
+   						rate = 0;
+   						p.setQty(qty - rate);
+   						p.setAmt(p.getPrice().multiply(new BigDecimal(qty - rate)));
+   					}
+   					if(rate == 0)break;
+   				}
    			}
    		}
    		if(rate > 0)throw new ServiceException(MessageCode.LOGIC_ERROR,"原商品不足，无法恢复此日计划!");
@@ -3672,16 +3708,18 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 			Date endDate = null;
 			BigDecimal initAmt = orgOrder.getInitAmt();
 			
+			List<TOrderDaliyPlanItem> dateList = new ArrayList<TOrderDaliyPlanItem>();
 			for(TOrderDaliyPlanItem plan :daliyPlans){
 				if(plan.getDispDate().equals(item.getDispDate()) && plan.getItemNo().equals(item.getItemNo()))plan.setStatus("10");//恢复
 				if("30".equals(plan.getStatus()) || plan.getGiftQty()!=null)continue;
-				if(plan.getRemainAmt().floatValue() <= 0){
+				if(plan.getRemainAmt().floatValue() < 0){
 					tOrderDaliyPlanItemMapper.updateDaliyPlanItem(plan);
 					continue;
 				}
 				initAmt = initAmt.subtract(plan.getAmt());
 				plan.setRemainAmt(initAmt);
 				tOrderDaliyPlanItemMapper.updateDaliyPlanItem(plan);
+				dateList.add(0,plan);
 				
 				//截止日期更新
 				if(endDate == null){
@@ -3690,6 +3728,20 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 					if(plan.getRemainAmt().floatValue() >= 0){
 						endDate = endDate.after(plan.getDispDate())?endDate:plan.getDispDate();
 					}
+				}
+			}
+			
+			//赠品
+			int idx = 0;
+			Collections.reverse(daliyPlans);
+			for(TOrderDaliyPlanItem plan :daliyPlans){
+				if(plan.getGiftQty()==null || !plan.getItemNo().equals(item.getItemNo()))continue;
+				
+				TOrderDaliyPlanItem dp = dateList.get(idx);
+				idx++;
+				if(dp.getItemNo().equals(plan.getItemNo())){
+					plan.setDispDate(dp.getDispDate());
+					tOrderDaliyPlanItemMapper.updateDaliyPlanItem(plan);
 				}
 			}
 			
@@ -3731,5 +3783,16 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 		return 1;
 	}
 
+	/* (non-Javadoc) 
+	* @title: returnOrderRemainAmtToAcct
+	* @description:  退回所有完结订单的剩余金额到顾客帐户
+	* @see com.nhry.service.order.dao.OrderService#returnOrderRemainAmtToAcct() 
+	*/
+	@Override
+	public void returnOrderRemainAmtToAcct()
+	{
+		
+		
+	}
 
 }

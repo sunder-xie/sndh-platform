@@ -90,4 +90,6 @@ public interface OrderService {
    
    int recoverStopDaliyDaliyPlan(TOrderDaliyPlanItem item); 
    
+   void returnOrderRemainAmtToAcct();
+   
 }
