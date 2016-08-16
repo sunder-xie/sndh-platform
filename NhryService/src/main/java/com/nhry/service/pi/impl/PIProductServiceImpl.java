@@ -399,6 +399,7 @@ public class PIProductServiceImpl implements PIProductService {
      */
     private void saveBranch(Map<String, ET_KUNNR> et_kunnrs, String branchGroup, String vkorg, String kunnr, String lgort, String werks, String dealerNo) {
         ET_KUNNR et_kunnr = et_kunnrs.get(kunnr);
+
         if (et_kunnr != null) {
             TMdBranch branch = branchMapper.getBranchByNo(et_kunnr.getKUNNR());
             if (branch == null) {
