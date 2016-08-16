@@ -177,16 +177,16 @@ public class PIRequireOrderServiceImpl implements PIRequireOrderService {
                 if (ssmGiOrder == null) {
                     ssmGiOrder = new TSsmGiOrder();
                     ssmGiOrder.setBranchNo(branchNo);
-                    ssmGiOrder.setOrderNo(delivery.getBSTKD());
+                    ssmGiOrder.setOrderNo(delivery.getVBELN());
                     ssmGiOrder.setStatus("10");
                     ssmGiOrder.setSyncAt(new Date());
                     ssmGiOrder.setOrderDate(delivery.getLFDAT());
-                    ssmGiOrder.setMemoTxt(delivery.getVBELN());
+                    ssmGiOrder.setMemoTxt(delivery.getBSTKD());
                     ssmGiOrderMapper.insertGiOrder(ssmGiOrder);
                 } else {
                     ssmGiOrder.setBranchNo(branchNo);
-                    ssmGiOrder.setOrderNo(delivery.getBSTKD());
-                    ssmGiOrder.setMemoTxt(delivery.getVBELN());
+                    ssmGiOrder.setOrderNo(delivery.getVBELN());
+                    ssmGiOrder.setMemoTxt(delivery.getBSTKD());
                     ssmGiOrder.setSyncAt(new Date());
                     ssmGiOrder.setOrderDate(delivery.getLFDAT());
                     ssmGiOrderMapper.updateGiOrder(ssmGiOrder);
@@ -195,12 +195,12 @@ public class PIRequireOrderServiceImpl implements PIRequireOrderService {
                     TSsmGiOrderItemKey key = new TSsmGiOrderItemKey();
                     key.setOrderDate(d.getLFDAT());
                     key.setItemNo(d.getPOSNR());
-                    key.setOrderNo(d.getBSTKD());
+                    key.setOrderNo(delivery.getVBELN());
                     TSsmGiOrderItem ssmGiOrderItem = ssmGiOrderItemMapper.selectGiOrderItemByNo(key);
                     BigDecimal sum = new BigDecimal(0);
                     if(ssmGiOrderItem == null) {
                         ssmGiOrderItem = new TSsmGiOrderItem();
-                        ssmGiOrderItem.setOrderNo(d.getBSTKD());
+                        ssmGiOrderItem.setOrderNo(delivery.getVBELN());
                         ssmGiOrderItem.setMatnr(d.getMATNR());
                         ssmGiOrderItem.setUnit(d.getMEINS());
                         ssmGiOrderItem.setItemNo(d.getPOSNR());

@@ -144,16 +144,15 @@
 
   <select id="findPlanByYear" resultMap="BaseResultMap" parameterType="com.nhry.model.basic.MonthPlanModel">
       SELECT
-          b.BRANCH_NO,
+          b.BRANCH_NO BRANCK_NO,
           b.BRANCH_NAME,
           p.TASK_YEAR, p.TASK_JAN, p.TASK_FEB, p.TASK_MAR, p.TASK_APR, p.TASK_MAY,
           p.TASK_JUN, p.TASK_JUL, p.TASK_AUG, p.TASK_SEP, p.TASK_OCT, p.TASK_NOV, p.TASK_DEV, p.TASK_YEAR_PLAN
       FROM
           t_md_branch b
-      LEFT JOIN t_task_year_month_plan p ON p.BRANCK_NO = b.BRANCH_NO
+      LEFT JOIN t_task_year_month_plan p ON p.BRANCK_NO = b.BRANCH_NO AND p.TASK_YEAR = #{taskYear,jdbcType=VARCHAR}
       WHERE
           b.SALES_ORG = #{salesOrg,jdbcType=VARCHAR}
           AND b.BRANCH_GROUP = '01'
-          AND b.TASK_YEAR = #{taskYear,jdbcType=VARCHAR}
   </select>
 </mapper>
