@@ -23,6 +23,7 @@
 	   <property name="codeItemMapper" ref="codeItemMapper"></property>
 	   <property name="objectRedisTemplate" ref="objectRedisTemplate"></property>
 	   <property name="userSessionService" ref="userSessionService"></property>
+	   <property name="branchEmpService" ref="branchEmpService"></property>
 	</bean>
 	<bean id="roleMapper" class="com.nhry.data.auth.impl.TSysRoleMapperImpl">
 	   <property name="sqlSessionTemplate"  ref="dynamicSqlSessionTemplate"></property>

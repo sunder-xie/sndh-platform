@@ -15,6 +15,13 @@ public interface TMdBranchEmpMapper {
     int addBranchEmp(TMdBranchEmp record);
 
     TMdBranchEmp selectBranchEmpByNo(String empNo);
+    
+    /**
+     * 查询有效的员工
+     * @param empNo
+     * @return
+     */
+    TMdBranchEmp selectActiveBranchEmpByNo(String empNo);
 
     BranchEmpModel empDetailInfo(String empNo);
 
@@ -31,4 +38,6 @@ public interface TMdBranchEmpMapper {
     List<TMdBranchEmp> getAllBranchEmpByNo(BranchEmpSearchModel bModel);
 
     List<TMdBranchEmp> getAllRationalMilkManByBranchNo(EmpSalQueryModel smodel);
+    
+    public int uptBranchEmpByBraNo(TMdBranchEmp record);
 }

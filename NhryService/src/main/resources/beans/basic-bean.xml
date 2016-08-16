@@ -161,7 +161,8 @@
 		<property name="branchEmpMapper" ref="branchEmpMapper"></property>
 		<property name="tMdBranchMapper" ref="branchMapper"></property>
 		<property name="userRoleMapper" ref="urMapper"></property>
-
+		<property name="messageService" ref="messService"></property>
+		<property name="taskExecutor" ref="taskExecutor"></property>
 		<property name="userSessionService" ref="userSessionService"></property>
 	</bean>
 
@@ -233,8 +234,7 @@
 	<bean class="com.nhry.data.basic.impl.TSysMessageMapperImpl" id="messMapper">
 		<property name="sqlSessionTemplate" ref="dynamicSqlSessionTemplate" />
 	</bean>
-	<bean class="com.nhry.service.basic.impl.TSysMessageServiceImpl"
-		id="messService">
+	<bean class="com.nhry.service.basic.impl.TSysMessageServiceImpl" id="messService">
 		<property name="messageMapper" ref="messMapper" />
 		<property name="userMapper" ref="userMapper" />
 		<property name="notsellListMapper" ref="notsellListMapper" />

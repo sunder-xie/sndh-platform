@@ -15,8 +15,12 @@ import com.nhry.model.basic.BranchSalesOrgModel;
 import com.nhry.model.basic.EmpQueryModel;
 import com.nhry.service.BaseService;
 import com.nhry.service.basic.dao.BranchEmpService;
+import com.nhry.service.basic.dao.TSysMessageService;
 import com.nhry.service.basic.pojo.BranchEmpModel;
+import com.nhry.utils.PrimaryKeyUtils;
+
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.core.task.TaskExecutor;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -28,6 +32,8 @@ public class BranchEmpServiceImpl extends BaseService implements BranchEmpServic
 	private TMdBranchMapper tMdBranchMapper;
 	private UserSessionService userSessionService;
 	private TSysUserRoleMapper userRoleMapper;
+	private TSysMessageService messageService;
+	private TaskExecutor taskExecutor;
 
 
 
@@ -50,23 +56,57 @@ public class BranchEmpServiceImpl extends BaseService implements BranchEmpServic
 
 	@Override
 	public int addBranchEmp(TMdBranchEmp record) {
-//		if(StringUtils.isEmpty(record.getEmpNo()) || StringUtils.isEmpty(record.getEmpName())){
-//			throw new ServiceException(MessageCode.LOGIC_ERROR, "员工编号、员工姓名不能为空！");
-//		}
 		TSysUser sysuser = userSessionService.getCurrentUser();
-		TMdBranchEmp emp = selectBranchEmpByNo(record.getEmpNo());
-		if(emp != null){
-			if(!emp.getSalesOrg().equals(record.getSalesOrg()) || !emp.getBranchNo().equals(record.getBranchNo())){
-				//员工 变更奶站
-				emp.setSalesOrg(record.getSalesOrg());
-				emp.setBranchNo(record.getBranchNo());
+        this.taskExecutor.execute(new Thread(){
+			@Override
+			public void run() {
+				// TODO Auto-generated method stub
+				super.run();
+				this.setName("sendMessageForEmpUpt");
+				TMdBranchEmp emp = branchEmpMapper.selectActiveBranchEmpByNo(record.getEmpNo());
+				if(emp != null){
+					if(!emp.getBranchNo().equals(record.getBranchNo())){
+						//员工奶站变更(原账号  变成离职，在新奶站建立一个新员工数据)
+						//先处理在新奶站建立一个新员工数据
+						try {
+							TMdBranchEmp newEmp = (TMdBranchEmp)emp.clone();
+							newEmp.setSalesOrg(record.getSalesOrg());
+							newEmp.setBranchNo(record.getBranchNo());
+							newEmp.setEmpNo(PrimaryKeyUtils.generateUuidKey());
+							newEmp.setMp(!StringUtils.isEmpty(record.getMp()) ? record.getMp() : emp.getMp());
+							newEmp.setEmpName(record.getEmpName());
+							newEmp.setLastModified(new Date());
+							newEmp.setLastModifiedBy(sysuser.getLoginName());
+							newEmp.setLastModifiedByTxt(sysuser.getDisplayName());
+							newEmp.setStatus("1");
+							//往调整后的奶站的copy一个员工
+							branchEmpMapper.addBranchEmp(newEmp);
+							messageService.sendMessageForEmpUpt(newEmp, "add", sysuser);
+						} catch (CloneNotSupportedException e) {
+							// TODO Auto-generated catch block
+							e.printStackTrace();
+						}
+						
+						//再处理原奶站员工离职问题
+						emp.setLeaveDate(new Date());
+						emp.setStatus("0");
+						emp.setLastModified(new Date());
+						emp.setLastModifiedBy(sysuser.getLoginName());
+						emp.setLastModifiedByTxt(sysuser.getDisplayName());
+						 branchEmpMapper.uptBranchEmpByBraNo(emp);
+						 messageService.sendMessageForEmpUpt(emp, "upt", sysuser);
+					}
+				}else{
+					record.setCreateAt(new Date());
+					record.setCreateBy(sysuser.getLoginName());
+					record.setCreateByTxt(sysuser.getDisplayName());
+					record.setStatus("1");
+				   branchEmpMapper.addBranchEmp(record);
+				   messageService.sendMessageForEmpUpt(emp, "add", sysuser);
+				}
 			}
-		}
-		record.setCreateAt(new Date());
-		record.setCreateBy(sysuser.getLoginName());
-		record.setCreateByTxt(sysuser.getDisplayName());
-		record.setStatus("1");
-		return branchEmpMapper.addBranchEmp(record);
+        });
+		return 1;
 	}
 
 	@Override
@@ -182,6 +222,14 @@ public class BranchEmpServiceImpl extends BaseService implements BranchEmpServic
 			throw new ServiceException(MessageCode.LOGIC_ERROR,"pageNum和pageSize不能为空！");
 		}
 		return branchEmpMapper.searchBranchEmp(smodel);
+	}
+
+	public void setMessageService(TSysMessageService messageService) {
+		this.messageService = messageService;
+	}
+
+	public void setTaskExecutor(TaskExecutor taskExecutor) {
+		this.taskExecutor = taskExecutor;
 	}
 
 
