@@ -8,6 +8,8 @@ import com.nhry.data.basic.dao.TMdBranchMapper;
 import com.nhry.data.basic.dao.TMdMaraMapper;
 import com.nhry.data.basic.domain.TMdBranch;
 import com.nhry.data.basic.domain.TMdMara;
+import com.nhry.data.milk.dao.TDispOrderMapper;
+import com.nhry.data.milk.domain.TDispOrder;
 import com.nhry.data.milktrans.dao.TSsmReqGoodsOrderItemMapper;
 import com.nhry.data.milktrans.dao.TSsmReqGoodsOrderMapper;
 import com.nhry.data.milktrans.dao.TSsmSalOrderItemMapper;
@@ -34,12 +36,17 @@ public class RequireOrderServiceImpl implements RequireOrderService {
     private TSsmReqGoodsOrderItemMapper tSsmReqGoodsOrderItemMapper;
     private TSsmReqGoodsOrderMapper  tSsmReqGoodsOrderMapper ;
     private TOrderDaliyPlanItemMapper tOrderDaliyPlanItemMapper;
+    private TDispOrderMapper    tDispOrderMapper;
     private UserSessionService userSessionService;
     private PIRequireOrderService piRequireOrderService;
     private TMdBranchMapper branchMapper;
     private TMdMaraMapper tMdMaraMapper;
     private TSsmSalOrderMapper tSsmSalOrderMapper;
     private TSsmSalOrderItemMapper tSsmSalOrderItemMapper;
+
+    public void settDispOrderMapper(TDispOrderMapper tDispOrderMapper) {
+        this.tDispOrderMapper = tDispOrderMapper;
+    }
 
     public void settSsmSalOrderMapper(TSsmSalOrderMapper tSsmSalOrderMapper) {
         this.tSsmSalOrderMapper = tSsmSalOrderMapper;
@@ -91,7 +98,7 @@ public class RequireOrderServiceImpl implements RequireOrderService {
        order =  this.tSsmReqGoodsOrderMapper.searchRequireOrder(rModel);
         if(order !=null){
             if(StringUtils.isNoneBlank(order.getVoucherNo())){
-                //如果已生成，并且已经发送过ERP 
+                //如果已生成，并且已经发送过ERP
                 throw new ServiceException(MessageCode.LOGIC_ERROR,"当天要货计划已生成，并且已经发送过ERP，不能再次生成，请查阅!!!");
             }else{
                 tSsmReqGoodsOrderItemMapper.delRequireOrderItemsByOrderNo(order.getOrderNo());
@@ -566,7 +573,7 @@ public class RequireOrderServiceImpl implements RequireOrderService {
      * 根据已确认的路单生成
      * @return
      */
-  @Override
+ /* @Override
     public List<TSsmSalOrder> creaSalOrderOfSelftBranch() {
         TSysUser user = userSessionService.getCurrentUser();
         TMdBranch branch  = branchMapper.selectBranchByNo(user.getBranchNo());
@@ -574,9 +581,9 @@ public class RequireOrderServiceImpl implements RequireOrderService {
         sMode.setOrderDate(new Date());
         List<TSsmSalOrder> result = this.getSaleOrderByQueryDate(sMode);
         if(result!=null && result.size()>0){
-           /* String orderNo = result.get(0).getOrderNo();
+           *//* String orderNo = result.get(0).getOrderNo();
             tSsmSalOrderMapper.delSalOrderByOrderNo(orderNo);
-            tSsmSalOrderItemMapper.delSalOrderItemsByOrderNo(orderNo);*/
+            tSsmSalOrderItemMapper.delSalOrderItemsByOrderNo(orderNo);*//*
             throw new ServiceException(MessageCode.LOGIC_ERROR,"该奶站今天已经创建过销售订单,请直接查询");
         }
 
@@ -593,7 +600,7 @@ public class RequireOrderServiceImpl implements RequireOrderService {
               throw new ServiceException(MessageCode.LOGIC_ERROR,"该奶站不是自营奶站");
           }
 
-    }
+    }*/
 
     /**
      * 经销商奶站创建 销售订单
@@ -623,6 +630,11 @@ public class RequireOrderServiceImpl implements RequireOrderService {
         }
     }
 
+    /**
+     * 获取指定日期下的 销售订单
+     * @param sModel
+     * @return
+     */
     @Override
     public List<TSsmSalOrder> getSaleOrderByQueryDate(SalOrderModel sModel) {
         TSysUser user = userSessionService.getCurrentUser();
@@ -630,13 +642,8 @@ public class RequireOrderServiceImpl implements RequireOrderService {
         if(branchNo == null){
             throw new ServiceException(MessageCode.LOGIC_ERROR,"该用户不存在奶站");
         }
-        TMdBranch branch = branchMapper.selectBranchByNo(branchNo);
-        if("01".equals(branch.getBranchGroup())){
-            sModel.setBranchNo(branchNo);
-        }else{
+            sModel.setBranchNo(user.getBranchNo());
             sModel.setDealerNo(user.getDealerId());
-        }
-
         List<TSsmSalOrder> result = tSsmSalOrderMapper.selectSalOrderByDateAndBranchOrDealerNo(sModel);
         if(result == null ){
             throw new ServiceException(MessageCode.LOGIC_ERROR,"今天的销售订单还没生成");
@@ -723,6 +730,54 @@ public class RequireOrderServiceImpl implements RequireOrderService {
         return this.searchRequireOrder(orderDate);
     }
 
+    /**
+     * 自营奶站 根据已确认路单  和  内部销售订单 生成销售订单
+     * 创建前 判断是否已经生成 -> 判断今天的路单是否已经生成 -> 判断今天的路单是否已经全部确认(否则给出提示)
+     * @param search
+     * @return
+     */
+    @Override
+    public List<TSsmSalOrder> creaSalOrderOfSelftBranchByDate(SalOrderDaySearch search) {
+        TSysUser user = userSessionService.getCurrentUser();
+        TMdBranch branch  = branchMapper.selectBranchByNo(user.getBranchNo());
+        SalOrderModel sMode = new SalOrderModel();
+        sMode.setOrderDate(search.getOrderDate());
+
+        List<TSsmSalOrder> result = this.getSaleOrderByQueryDate(sMode);
+        if(result!=null && result.size()>0){
+           /* String orderNo = result.get(0).getOrderNo();
+            tSsmSalOrderMapper.delSalOrderByOrderNo(orderNo);
+            tSsmSalOrderItemMapper.delSalOrderItemsByOrderNo(orderNo);*/
+            throw new ServiceException(MessageCode.LOGIC_ERROR,"该奶站今天已经创建过销售订单,请直接查询");
+        }
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+        //判断今天的路单是否已经生成
+        List<TDispOrder>  dispOrders = tDispOrderMapper.selectDispOrderByBranchNoAndDay(user.getBranchNo(),search.getOrderDate());
+        if(dispOrders == null || dispOrders.size() == 0){
+            throw new ServiceException(MessageCode.LOGIC_ERROR,"该奶站今天的路单还没生成，请先生成路单并全部确认后再生成");
+        }else{
+            //判断今天的路单是否已经全部确认
+            List<TDispOrder>  confirmDispOrders = tDispOrderMapper.selectConfirmDispOrderByBranchNoAndDay(user.getBranchNo(),search.getOrderDate());
+            if(confirmDispOrders!=null){
+                if(confirmDispOrders.size() < dispOrders.size()){
+                    throw new ServiceException(MessageCode.LOGIC_ERROR,"该奶站"+sdf.format(search.getOrderDate())+"的路单还有"+(dispOrders.size() - confirmDispOrders.size())+"个路单没确认，请全部确认后再生成");
+                }
+            }else{
+                throw new ServiceException(MessageCode.LOGIC_ERROR,"该奶站"+sdf.format(search.getOrderDate())+"的路单所有的路单都没确认，请全部确认后再生成");
+            }
+        }
+        if("01".equals(branch.getBranchGroup())){
+            int noprom = this.creatNoPromoSalOrderOfSelftBranch(search.getOrderDate());
+            int prom = this.creatPromoSalOrderOfSelftBranch(search.getOrderDate());
+            //TODO  这段应该走不到了
+            if(noprom + prom == 0){
+                throw new ServiceException(MessageCode.LOGIC_ERROR,"该奶站没有  "+sdf.format(search.getOrderDate())+"确认的路单");
+            }
+            return this.getSaleOrderByQueryDate(sMode);
+        }else{
+            throw new ServiceException(MessageCode.LOGIC_ERROR,"该奶站不是自营奶站");
+        }
+    }
 
 
     /**
