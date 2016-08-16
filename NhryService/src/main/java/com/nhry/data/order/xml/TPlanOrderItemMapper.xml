@@ -33,6 +33,8 @@
     <result column="GIFT_MATNR" property="giftMatnr" jdbcType="VARCHAR" />
     <result column="GIFT_UNIT" property="giftUnit" jdbcType="VARCHAR" />
     <result column="DISP_TOTAL" property="dispTotal" jdbcType="INTEGER" />
+    <result column="YGROWTH" property="yGrowth" jdbcType="INTEGER" />
+    <result column="YFRESH" property="yFresh" jdbcType="INTEGER" />
   </resultMap>
 
   <resultMap id="EmpDispDetailResultMap" type="com.nhry.model.bill.EmpDispDetailModel" >

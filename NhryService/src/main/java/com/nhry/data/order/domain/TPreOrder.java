@@ -111,12 +111,49 @@ public class TPreOrder {
     private String resumeFlag;
     
     private Date payDate;
+    
+    private String isIntegration;
+    
+    private Integer yGrowth;
+    
+    private Integer yFresh;
+    
     String branchEmpNo;
     String branchMp;
     String branchEmpName;
     String addressTxt;
 
-    public BigDecimal getFactAmt() {
+    public Integer getyGrowth()
+	{
+		return yGrowth;
+	}
+
+	public void setyGrowth(Integer yGrowth)
+	{
+		this.yGrowth = yGrowth;
+	}
+
+	public Integer getyFresh()
+	{
+		return yFresh;
+	}
+
+	public void setyFresh(Integer yFresh)
+	{
+		this.yFresh = yFresh;
+	}
+
+	public String getIsIntegration()
+	{
+		return isIntegration;
+	}
+
+	public void setIsIntegration(String isIntegration)
+	{
+		this.isIntegration = isIntegration;
+	}
+
+	public BigDecimal getFactAmt() {
         return factAmt;
     }
 
