@@ -88,6 +88,23 @@ public class UserServiceImpl extends BaseService implements UserService {
 		if(StringUtils.isEmpty(record.getLoginName())){
 			throw new ServiceException(MessageCode.LOGIC_ERROR, "用户名登录名不能为空！");
 		}
+		if(!StringUtils.isEmpty(record.getBranchNo())){
+			//奶站员工
+			TSysUser user = new TSysUser();
+			user.setLoginName(record.getLoginName());
+			TSysUser sysuser = userMapper.login(user);
+			if(sysuser == null){
+				throw new ServiceException(MessageCode.LOGIC_ERROR, "用户名对应的用户不存在！");
+			}
+			if(StringUtils.isEmpty(sysuser.getBranchNo())){
+				//添加奶站员工
+				
+			}else if(!StringUtils.isEmpty(sysuser.getBranchNo()) && !record.getBranchNo().equals(sysuser.getBranchNo())){
+				//奶站员工变更奶站
+				
+			}
+		}
+		
 		record.setLastModified(new Date());
 		if("-1".equals(record.getDealerId())){
 			record.setDealerId(null);

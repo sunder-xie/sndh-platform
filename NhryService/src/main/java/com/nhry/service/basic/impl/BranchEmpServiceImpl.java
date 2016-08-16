@@ -50,16 +50,21 @@ public class BranchEmpServiceImpl extends BaseService implements BranchEmpServic
 
 	@Override
 	public int addBranchEmp(TMdBranchEmp record) {
-		if(StringUtils.isEmpty(record.getEmpNo()) || StringUtils.isEmpty(record.getEmpName())){
-			throw new ServiceException(MessageCode.LOGIC_ERROR, "员工编号、员工姓名不能为空！");
-		}
+//		if(StringUtils.isEmpty(record.getEmpNo()) || StringUtils.isEmpty(record.getEmpName())){
+//			throw new ServiceException(MessageCode.LOGIC_ERROR, "员工编号、员工姓名不能为空！");
+//		}
+		TSysUser sysuser = userSessionService.getCurrentUser();
 		TMdBranchEmp emp = selectBranchEmpByNo(record.getEmpNo());
 		if(emp != null){
-			throw new ServiceException(MessageCode.LOGIC_ERROR, "该员工编号已存在，请重新填写！");
+			if(!emp.getSalesOrg().equals(record.getSalesOrg()) || !emp.getBranchNo().equals(record.getBranchNo())){
+				//员工 变更奶站
+				emp.setSalesOrg(record.getSalesOrg());
+				emp.setBranchNo(record.getBranchNo());
+			}
 		}
 		record.setCreateAt(new Date());
-//		record.setCreateBy(userSessionService.getCurrentUser().getLoginName());
-//		record.setCreateByTxt(userSessionService.getCurrentUser().getDisplayName());
+		record.setCreateBy(sysuser.getLoginName());
+		record.setCreateByTxt(sysuser.getDisplayName());
 		record.setStatus("1");
 		return branchEmpMapper.addBranchEmp(record);
 	}
