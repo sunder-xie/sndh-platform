@@ -181,12 +181,8 @@ public class DeliverMilkServiceImpl extends BaseService implements DeliverMilkSe
 		TSysUser user = userSessionService.getCurrentUser();
 		List<String> rids = urMapper.getUserRidsByLoginName(user.getLoginName());
 		sModel.setSalesOrg(user.getSalesOrg());
-		if(rids.contains("10004")){
-			sModel.setBranchNo(user.getBranchNo());
-		}else if(rids.contains("10005")){
-			//经销商内勤
-			sModel.setDealerNo(user.getDealerId());
-		}
+		sModel.setBranchNo(user.getBranchNo());
+		sModel.setDealerNo(user.getDealerId());
 		return tMstInsideSalOrderMapper.getAuthAllInsideSalOrder(sModel);
 	}
 

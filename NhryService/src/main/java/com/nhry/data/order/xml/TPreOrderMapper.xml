@@ -825,10 +825,10 @@
 
   <select id="calculateOrderFactoryAmt" resultType="BIGDECIMAL" parameterType="String">
    SELECT
-	IFNULL(SUM(t.FACTORY_PRICE * t.QTY),0)
+	SUM(t.FACTORY_PRICE * t.QTY)
     from (
               SELECT
-              i.MATNR,i.QTY,
+              i.MATNR,IFNULL(i.QTY,0) QTY,
               (
                   SELECT gi.FACTORY_PRICE
                   FROM t_ssm_gi_order_item gi LEFT JOIN t_ssm_gi_order go on gi.ORDER_NO = go.ORDER_NO

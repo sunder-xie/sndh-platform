@@ -82,12 +82,8 @@ public class EmpBillServiceImpl implements EmpBillService {
             throw new ServiceException(MessageCode.LOGIC_ERROR,"pageNum和pageSize不能为空！");
         }
         TSysUser user = userSessionService.getCurrentUser();
-        List<String> rids = urMapper.getUserRidsByLoginName(user.getLoginName());
-        if(rids.contains("10004")){
-            eSearch.setBranchNo(user.getBranchNo());
-        } else if(rids.contains("10005")){
-            eSearch.setDealerNo(user.getDealerId());
-        }
+        eSearch.setBranchNo(user.getBranchNo());
+        eSearch.setDealerNo(user.getDealerId());
         eSearch.setSalesOrg(user.getSalesOrg());
         return  empBillMapper.empDispDetialInfo(eSearch);
     }
@@ -98,12 +94,8 @@ public class EmpBillServiceImpl implements EmpBillService {
         if(StringUtils.isBlank(eSearch.getPageNum()) || StringUtils.isBlank(eSearch.getPageSize())){
             throw new ServiceException(MessageCode.LOGIC_ERROR,"pageNum和pageSize不能为空！");
         }
-        List<String> rids = urMapper.getUserRidsByLoginName(user.getLoginName());
-        if(rids.contains("10004")){
-            eSearch.setBranchNo(user.getBranchNo());
-        } else if(rids.contains("10005")){
-            eSearch.setDealerNo(user.getDealerId());
-        }
+        eSearch.setBranchNo(user.getBranchNo());
+        eSearch.setDealerNo(user.getDealerId());
         eSearch.setSalesOrg(user.getSalesOrg());
         return  empBillMapper.empAccountReceAmount(eSearch);
     }
@@ -303,13 +295,10 @@ public class EmpBillServiceImpl implements EmpBillService {
         }
         String yearMonth = YearLastMonthUtil.getYearMonth(eSearch.getSalDate());
         eSearch.setYearMonth(yearMonth);
-        List<String> rids = urMapper.getUserRidsByLoginName(user.getLoginName());
-        if(rids.contains("10004")){
-            eSearch.setBranchNo(user.getBranchNo());
-        } else if(rids.contains("10005")){
-            eSearch.setDealerNo(user.getDealerId());
-        }
+        eSearch.setBranchNo(user.getBranchNo());
+        eSearch.setDealerNo(user.getDealerId());
         eSearch.setSalesOrg(user.getSalesOrg());
+
         PageInfo result = tMdEmpSalMapper.searchEmpSalaryRep(eSearch);
         return result;
     }
