@@ -52,6 +52,6 @@ public class PIVipPointResouce extends BaseResource{
     @Consumes(MediaType.APPLICATION_JSON)
     @ApiOperation(value = "/queryVipPointData", response = ResponseModel.class, notes = "获取会员积分数据")
     public Response queryVipPointData(@ApiParam(name = "vipPoint",value = "vipPoint",required = true) VipPointModel vipPoint){
-        return convertToRespModel(MessageCode.NORMAL, piVipPointService.queryVipPointData(vipPoint), null);
+        return convertToRespModel(MessageCode.NORMAL, null, piVipPointService.queryVipPointData(vipPoint).getData());
     }
 }
