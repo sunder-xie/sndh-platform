@@ -4,6 +4,7 @@ import java.math.BigDecimal;
 import java.util.Date;
 
 public class TaskYearMonthPlan extends TaskYearMonthPlanKey {
+
     private String branchName;
 
     private BigDecimal taskJan;
