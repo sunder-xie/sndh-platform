@@ -102,8 +102,10 @@ public class UserSessionService {
 						TSysAccesskey key = new TSysAccesskey();
 						key.setAccesskey(appkey);
 						key.setType(AuthFilter.IDM_AUTH.equals(authflag) ? AuthFilter.IDM_AUTH2_SIGN : AuthFilter.IDM_REST_SIGN);
+						System.out.println("--------type-----------"+key.getType()+" --appkey-- "+appkey);
 						TSysAccesskey ak = isysAkService.findAccesskeyByKey(key);
 						if(ak == null){
+							System.out.println("--------type-----------"+key.getType()+" --appkey-- "+appkey+"-----ak找不到------");
 							if(AuthFilter.IDM_AUTH.equals(authflag)){
 								return MessageCode.SESSION_EXPIRE;
 							}else{
