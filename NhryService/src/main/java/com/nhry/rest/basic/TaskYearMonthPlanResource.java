@@ -39,6 +39,8 @@ import javax.ws.rs.core.Response;
 import java.io.*;
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -150,7 +152,7 @@ public class TaskYearMonthPlanResource extends BaseResource {
     public Response importPlans(FormDataMultiPart form , @Context HttpServletRequest request) throws IOException {
         String url = request.getServletContext().getRealPath("/");
         FormDataBodyPart filePart = form.getField("file");
-        FormDataBodyPart taskYear = form.getField("year");
+        FormDataBodyPart taskYear = form.getField("taskYear");
         InputStream fileInputStream = filePart.getValueAs(InputStream.class);
         FormDataContentDisposition formDataContentDisposition = filePart.getFormDataContentDisposition();
         String source = formDataContentDisposition.getFileName();
@@ -167,7 +169,14 @@ public class TaskYearMonthPlanResource extends BaseResource {
         List<TaskYearMonthPlan> plans = new ArrayList<TaskYearMonthPlan>();
         for(int i=2;i<rowNum;i++) {
             TaskYearMonthPlan plan = new TaskYearMonthPlan();
-            plan.setTaskYear(taskYear.getValue());
+            if(taskYear != null && StringUtils.isNotEmpty(taskYear.getValue())){
+                plan.setTaskYear(taskYear.getValue());
+            }else{
+                Calendar calendar = Calendar.getInstance();
+                calendar.setTime(new Date());
+                int year = calendar.get(Calendar.YEAR);
+                plan.setTaskYear(String.valueOf(year));
+            }
             XSSFRow row = sheet.getRow(i);
             XSSFCell cell = row.getCell(1);
             plan.setBranckNo(cell.toString());
