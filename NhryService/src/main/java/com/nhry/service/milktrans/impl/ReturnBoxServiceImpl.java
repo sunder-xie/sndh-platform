@@ -120,12 +120,8 @@ public class ReturnBoxServiceImpl implements ReturnBoxService {
         TSysUser user = userSessionService.getCurrentUser();
         List<String> rids = urMapper.getUserRidsByLoginName(user.getLoginName());
         rSearch.setSalesOrg(user.getSalesOrg());
-        if(rids.contains("10004")){
-            rSearch.setBranchNo(user.getBranchNo());
-        }else if(rids.contains("10005")){
-            //经销商内勤
-            rSearch.setDealerNo(user.getDealerId());
-        }
+        rSearch.setBranchNo(user.getBranchNo());
+        rSearch.setDealerNo(user.getDealerId());
         //返回列表
         PageInfo result = tRecBotDetailMapper.searchRetBoxPage(rSearch);
         return result;
