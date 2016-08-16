@@ -105,7 +105,6 @@ public class UserSessionService {
 						TSysAccesskey ak = isysAkService.findAccesskeyByKey(key);
 						if(ak == null){
 							if(AuthFilter.IDM_AUTH.equals(authflag)){
-								System.out.println("-------------------"+key.getAccesskey());
 								return MessageCode.SESSION_EXPIRE;
 							}else{
 								//其他认证方式  idm rest 接口认证方式(第一次访问)
@@ -212,6 +211,7 @@ public class UserSessionService {
 				}else{
 					TSysAccesskey record = new TSysAccesskey();
 					record.setAccesskey(token);
+					record.setLoginname(sysUser.getLoginName());
 					record.setType(AuthFilter.IDM_REST_SIGN); //20 : 送奶app
 					record.setVisitLastTime(new Date());
 					record.setVisitFirstTime(new Date());
