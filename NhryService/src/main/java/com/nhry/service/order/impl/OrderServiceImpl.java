@@ -19,6 +19,7 @@ import com.nhry.data.order.dao.TPreOrderMapper;
 import com.nhry.data.order.domain.TOrderDaliyPlanItem;
 import com.nhry.data.order.domain.TPlanOrderItem;
 import com.nhry.data.order.domain.TPreOrder;
+import com.nhry.data.order.domain.TPromotion;
 import com.nhry.model.order.*;
 import com.nhry.service.BaseService;
 import com.nhry.service.basic.dao.PriceService;
@@ -769,11 +770,16 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 				entry.setCreateByTxt(userSessionService.getCurrentUser().getDisplayName());//创建人姓名
 				BigDecimal entryTotal = calculateEntryAmount(entry);
 				
-				entry.setPromotion("");
-				entry.setBuyQty(0);
-				entry.setGiftQty(0);
-				entry.setGiftMatnr("");
-				entry.setGiftUnit("");
+				if("20".equals(order.getPaymentmethod()) && StringUtils.isNotBlank(entry.getPromotion())){
+					TPromotion promotion = promotionService.selectPromotionByPromNo(entry.getPromotion());
+					if(promotion!=null){
+						if(promotion.getPlanStartTime().after(date) || promotion.getPlanStopTime().before(date) ){
+							throw new ServiceException(MessageCode.LOGIC_ERROR,"该订单的促销活动已经结束!");
+						}
+					}
+					entry.setGiftMatnr("");
+					promotionService.calculateEntryPromotion(entry);
+				}
 				
 				orderAmt = orderAmt.add(entryTotal);
 				entriesList.add(entry);
@@ -795,7 +801,7 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 			tVipCustInfoService.discontinue(order.getMilkmemberNo(), "10",null,new com.nhry.utils.date.Date());
 			
 			//生成每日计划
-			createDaliyPlan(order,entriesList);
+			List<TOrderDaliyPlanItem> list = createDaliyPlan(order,entriesList);
 			
 			//创建订单发送EC，发送系统消息(以线程方式),只有奶站的发，摆台的确认时发，电商不发
 			taskExecutor.execute(new Thread(){

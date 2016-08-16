@@ -120,4 +120,20 @@ public class StatisticsResource extends BaseResource {
     public Response dayMstDispNumStat(@ApiParam(name = "model",value = "奶站日配送数量汇总") ExtendBranchInfoModel model){
         return convertToRespModel(MessageCode.NORMAL, null, branchInfoService.dayMstDispNumStat(model));
     }
+    @POST
+    @Path("/branchDayRepo")
+    @Produces(MediaType.APPLICATION_JSON)
+    @Consumes(MediaType.APPLICATION_JSON)
+    @ApiOperation(value = "/branchDayRepo}", response = ResponseModel.class, notes = "公司部门、经销商日统计送奶份数")
+    public Response branchDayRepo(@ApiParam(name = "model",value = "公司部门、经销商日统计送奶份数") ExtendBranchInfoModel model){
+        return convertToRespModel(MessageCode.NORMAL, null, branchInfoService.branchDayRepo(model));
+    }
+    @POST
+    @Path("/branchDayQty")
+    @Produces(MediaType.APPLICATION_JSON)
+    @Consumes(MediaType.APPLICATION_JSON)
+    @ApiOperation(value = "/branchDayQty}", response = ResponseModel.class, notes = "公司部门、经销商当日送奶份数 ")
+    public Response branchDayQty(@ApiParam(name = "model",value = "公司部门、经销商当日送奶份数") ExtendBranchInfoModel model){
+        return convertToRespModel(MessageCode.NORMAL, null, branchInfoService.branchDayQty(model));
+    }
 }

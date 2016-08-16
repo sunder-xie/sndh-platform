@@ -26,4 +26,6 @@ public interface BranchInfoMapper {
     PageInfo mstDispNumStat(ExtendBranchInfoModel model);
     PageInfo branchMstDispNumStat(ExtendBranchInfoModel model);
     PageInfo dayMstDispNumStat(ExtendBranchInfoModel model);
+    List<Map<String,String>> branchDayRepo(BranchInfoModel model);
+    Map<String,String> branchDayQty(BranchInfoModel model);
 }
