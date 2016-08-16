@@ -90,9 +90,15 @@ public class RequireOrderServiceImpl implements RequireOrderService {
         //首先查看今天的要货计划是否已存在
        order =  this.tSsmReqGoodsOrderMapper.searchRequireOrder(rModel);
         if(order !=null){
-            tSsmReqGoodsOrderItemMapper.delRequireOrderItemsByOrderNo(order.getOrderNo());
-            tSsmReqGoodsOrderMapper.deleRequireGoodsOrderbyNo(order.getOrderNo());
-           // throw new ServiceException(MessageCode.LOGIC_ERROR,"当天要货计划已存在");
+            if(StringUtils.isNoneBlank(order.getVoucherNo())){
+                //如果已生成，并且已经发送过ERP 
+                throw new ServiceException(MessageCode.LOGIC_ERROR,"当天要货计划已生成，并且已经发送过ERP，不能再次生成，请查阅!!!");
+            }else{
+                tSsmReqGoodsOrderItemMapper.delRequireOrderItemsByOrderNo(order.getOrderNo());
+                tSsmReqGoodsOrderMapper.deleRequireGoodsOrderbyNo(order.getOrderNo());
+            }
+
+
         }
         //查看明天和后天的订单
         rModel.setFirstDay(DateUtil.getTomorrow(today));

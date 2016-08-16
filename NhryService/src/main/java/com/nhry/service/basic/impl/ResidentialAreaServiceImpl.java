@@ -123,13 +123,9 @@ public class ResidentialAreaServiceImpl implements ResidentialAreaService {
     @Override
     public List<TMdResidentialArea> searchAreaBySalesOrg(AreaSearchModel aModel) {
         TSysUser user = userSessionService.getCurrentUser();
-        List<String> rids = urMapper.getUserRidsByLoginName(user.getLoginName());
         Map<String,String> map = new HashMap<String,String>();
         aModel.setSalesOrg(user.getSalesOrg());
-        //奶站内勤，只看该奶站下的
-        if(rids.contains("10004")){
-            aModel.setBranchNo(user.getBranchNo());
-        }
+        aModel.setBranchNo(user.getBranchNo());
         if(!StringUtils.isEmpty(aModel.getContent())){
         	aModel.setContent(aModel.getContent().trim().replace(" ", "%"));
         }
