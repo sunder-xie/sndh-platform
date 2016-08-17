@@ -172,35 +172,54 @@ public class PIRequireOrderServiceImpl implements PIRequireOrderService {
           List<Delivery> deliveries = BusinessDataConnection.DeliveryQuery(orderNo,isDeli);
             if(deliveries.size()>0){
                 TSsmGiOrder ssmGiOrder = null;
-                Delivery delivery = deliveries.get(0);
-                ssmGiOrder = ssmGiOrderMapper.selectGiOrderByNo(delivery.getBSTKD());
-                if (ssmGiOrder == null) {
-                    ssmGiOrder = new TSsmGiOrder();
-                    ssmGiOrder.setBranchNo(branchNo);
-                    ssmGiOrder.setOrderNo(delivery.getVBELN());
-                    ssmGiOrder.setStatus("10");
-                    ssmGiOrder.setSyncAt(new Date());
-                    ssmGiOrder.setOrderDate(delivery.getLFDAT());
-                    ssmGiOrder.setMemoTxt(delivery.getBSTKD());
-                    ssmGiOrderMapper.insertGiOrder(ssmGiOrder);
-                } else {
-                    ssmGiOrder.setBranchNo(branchNo);
-                    ssmGiOrder.setOrderNo(delivery.getVBELN());
-                    ssmGiOrder.setMemoTxt(delivery.getBSTKD());
-                    ssmGiOrder.setSyncAt(new Date());
-                    ssmGiOrder.setOrderDate(delivery.getLFDAT());
-                    ssmGiOrderMapper.updateGiOrder(ssmGiOrder);
-                }
+//                Delivery delivery = deliveries.get(0);
+//                ssmGiOrder = ssmGiOrderMapper.selectGiOrderByNo(delivery.getVBELN());
+//                if (ssmGiOrder == null) {
+//                    ssmGiOrder = new TSsmGiOrder();
+//                    ssmGiOrder.setBranchNo(branchNo);
+//                    ssmGiOrder.setOrderNo(delivery.getVBELN());
+//                    ssmGiOrder.setStatus("10");
+//                    ssmGiOrder.setSyncAt(new Date());
+//                    ssmGiOrder.setOrderDate(delivery.getLFDAT());
+//                    ssmGiOrder.setMemoTxt(delivery.getBSTKD());
+//                    ssmGiOrderMapper.insertGiOrder(ssmGiOrder);
+//                } else {
+//                    ssmGiOrder.setBranchNo(branchNo);
+//                    ssmGiOrder.setOrderNo(delivery.getVBELN());
+//                    ssmGiOrder.setMemoTxt(delivery.getBSTKD());
+//                    ssmGiOrder.setSyncAt(new Date());
+//                    ssmGiOrder.setOrderDate(delivery.getLFDAT());
+//                    ssmGiOrderMapper.updateGiOrder(ssmGiOrder);
+//                }
                 for(Delivery d : deliveries) {
+                    //防止一个调拨单生成多个交货单
+                    ssmGiOrder = ssmGiOrderMapper.selectGiOrderByNo(d.getVBELN());
+                    if (ssmGiOrder == null) {
+                        ssmGiOrder = new TSsmGiOrder();
+                        ssmGiOrder.setBranchNo(branchNo);
+                        ssmGiOrder.setOrderNo(d.getVBELN());
+                        ssmGiOrder.setStatus("10");
+                        ssmGiOrder.setSyncAt(new Date());
+                        ssmGiOrder.setOrderDate(d.getLFDAT());
+                        ssmGiOrder.setMemoTxt(d.getBSTKD());
+                        ssmGiOrderMapper.insertGiOrder(ssmGiOrder);
+                    } else {
+                        ssmGiOrder.setBranchNo(branchNo);
+                        ssmGiOrder.setOrderNo(d.getVBELN());
+                        ssmGiOrder.setMemoTxt(d.getBSTKD());
+                        ssmGiOrder.setSyncAt(new Date());
+                        ssmGiOrder.setOrderDate(d.getLFDAT());
+                        ssmGiOrderMapper.updateGiOrder(ssmGiOrder);
+                    }
                     TSsmGiOrderItemKey key = new TSsmGiOrderItemKey();
                     key.setOrderDate(d.getLFDAT());
                     key.setItemNo(d.getPOSNR());
-                    key.setOrderNo(delivery.getVBELN());
+                    key.setOrderNo(d.getVBELN());
                     TSsmGiOrderItem ssmGiOrderItem = ssmGiOrderItemMapper.selectGiOrderItemByNo(key);
                     BigDecimal sum = new BigDecimal(0);
                     if(ssmGiOrderItem == null) {
                         ssmGiOrderItem = new TSsmGiOrderItem();
-                        ssmGiOrderItem.setOrderNo(delivery.getVBELN());
+                        ssmGiOrderItem.setOrderNo(d.getVBELN());
                         ssmGiOrderItem.setMatnr(d.getMATNR());
                         ssmGiOrderItem.setUnit(d.getMEINS());
                         ssmGiOrderItem.setItemNo(d.getPOSNR());
