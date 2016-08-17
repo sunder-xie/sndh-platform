@@ -96,9 +96,12 @@
             <if test="createOn != null">
                 CREATE_ON = #{createOn,jdbcType=TIMESTAMP},
             </if>
-            <if test="branchNo != null">
+            <!-- 
+             <if test="branchNo != null">
                 BRANCH_NO = #{branchNo,jdbcType=VARCHAR},
             </if>
+             -->
+             BRANCH_NO = #{branchNo,jdbcType=VARCHAR},
              DEALER_ID = #{dealerId,jdbcType=VARCHAR},
            <!-- 
             <if test="dealerId != null">
