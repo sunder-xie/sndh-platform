@@ -12,6 +12,7 @@ import com.nhry.model.sys.ResponseModel;
 import com.nhry.rest.BaseResource;
 import com.nhry.service.auth.dao.UserService;
 import com.nhry.utils.CookieUtil;
+import com.nhry.utils.EnvContant;
 import com.nhry.utils.SysContant;
 import com.sun.jersey.spi.resource.Singleton;
 import com.wordnik.swagger.annotations.Api;
@@ -88,6 +89,19 @@ public class UserResource extends BaseResource {
 		CookieUtil.setCookie(request, response, UserSessionService.uname, loginuser.getLoginName());
 		userSessionService.cacheUserSession(user.getLoginName(), accesskey, loginuser,request);
 		return convertToRespModel(MessageCode.NORMAL,null, loginuser);
+	}
+	
+	@POST
+	@Path("/logout")
+	@Produces(MediaType.APPLICATION_JSON)
+	@ApiOperation(value = "/login", response = ResponseModel.class, notes = "用户登录")
+	public Response logout(@ApiParam(required = true, name = "tk", value = "token") @QueryParam("tk")String tk) {
+		boolean flag = userService.logout(tk);
+		if(flag){
+			return convertToRespModel(MessageCode.NORMAL,null, EnvContant.getSystemConst("idm_logout_uri")+EnvContant.getSystemConst("redirect_uri"));
+		}else{
+			return convertToRespModel(MessageCode.LOGIC_ERROR,null, "");
+		}
 	}
 	
 	@POST

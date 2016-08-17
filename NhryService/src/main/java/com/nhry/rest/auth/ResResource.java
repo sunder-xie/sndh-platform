@@ -98,4 +98,12 @@ public class ResResource extends BaseResource {
     public Response findComponentByLogName(){
         return convertToRespModel(MessageCode.NORMAL, null, resService.findCurUserComponents());
     }
+    
+    @POST
+    @Path("/find/pages")
+    @Produces(MediaType.APPLICATION_JSON)
+    @ApiOperation(value = "/find/pages", response = TSysResource.class, notes = "根据当前用户拥有页面资源信息列表")
+    public Response findCurUserPages(){
+        return convertToRespModel(MessageCode.NORMAL, null, resService.findCurUserPages());
+    }
 }

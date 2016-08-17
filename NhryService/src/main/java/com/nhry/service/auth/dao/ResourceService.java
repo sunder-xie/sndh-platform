@@ -90,4 +90,10 @@ public interface ResourceService {
      * @return
      */
     public List<TSysResource> findCurUserComponents();
+    
+    /**
+     * 查询当前用户拥有的页面资源列表
+     * @return
+     */
+    public List<TSysResource> findCurUserPages();
 }
