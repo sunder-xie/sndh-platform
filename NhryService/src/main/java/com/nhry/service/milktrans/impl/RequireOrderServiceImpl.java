@@ -32,7 +32,8 @@ import java.util.*;
  * Created by gongjk on 2016/6/24.
  */
 public class RequireOrderServiceImpl implements RequireOrderService {
-    private static final SimpleDateFormat format = new SimpleDateFormat("yyyyMMddHHmmssSSS");
+    private static final SimpleDateFormat format = new SimpleDateFormat("yyyyMMddHHmmss");
+    private static final int  randomNum  = (int)((Math.random()*90)+10);
     private TSsmReqGoodsOrderItemMapper tSsmReqGoodsOrderItemMapper;
     private TSsmReqGoodsOrderMapper  tSsmReqGoodsOrderMapper ;
     private TOrderDaliyPlanItemMapper tOrderDaliyPlanItemMapper;
@@ -114,7 +115,7 @@ public class RequireOrderServiceImpl implements RequireOrderService {
         //将i天后的日订单中符合的产品加入到 生成的要货计划
         if(items!=null && items.size()>0){
             order = new TSsmReqGoodsOrder();
-            String orderNo = PrimaryKeyUtils.generateUuidKey();
+            String orderNo = this.generateSal30Id();
             order.setRequiredDate(requireDate);
             order.setStatus("20");
             order.setOrderNo(orderNo);
@@ -818,7 +819,7 @@ public class RequireOrderServiceImpl implements RequireOrderService {
     private TSsmSalOrder  createSaleOrder(TSysUser user, Date requiredDate, String type, String promotion) {
         TSsmSalOrder order = new TSsmSalOrder();
 
-        String orderNo = PrimaryKeyUtils.generateUuidKey();
+        String orderNo = this.generateSal35Id();
         order.setOrderNo(orderNo);
         order.setSalesOrg(user.getSalesOrg());
         order.setRequiredDate(requiredDate);
@@ -892,7 +893,7 @@ public class RequireOrderServiceImpl implements RequireOrderService {
     }
 
     /**
-     * 销售订单编号
+     * 销售订单编号 35位
      * @return
      */
     private String generateSal35Id(){
@@ -904,11 +905,11 @@ public class RequireOrderServiceImpl implements RequireOrderService {
         String branchNo = branch.getBranchNo();
         uuid.append(branchNo.substring(1));
         uuid.append(format.format(new Date()));
-        uuid.append("1");
+        uuid.append(randomNum);
         return uuid.toString();
     }
     /**
-     * 要货单编号
+     * 要货单编号  30位
      * @return
      */
     private String generateSal30Id(){
@@ -923,7 +924,7 @@ public class RequireOrderServiceImpl implements RequireOrderService {
             uuid.append(branch.getLgort());
         }
         uuid.append(format.format(new Date()));
-        uuid.append("1");
+        uuid.append(randomNum);
         return uuid.toString();
     }
 

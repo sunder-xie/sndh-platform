@@ -161,14 +161,9 @@ public class BranchEmpServiceImpl extends BaseService implements BranchEmpServic
 	@Override
 	public List<TMdBranchEmp> getAllBranchEmpByNo(BranchEmpSearchModel bModel) {
 		TSysUser user = userSessionService.getCurrentUser();
-		List<String> rids = userRoleMapper.getUserRidsByLoginName(user.getLoginName());
 		bModel.setSalesOrg(user.getSalesOrg());
-		if(rids.contains("10004")){
-			bModel.setBranchNo(user.getBranchNo());
-		}
-		if(rids.contains("10005")){
-			bModel.setDealerNo(user.getDealerId());
-		}
+		bModel.setBranchNo(user.getBranchNo());
+		bModel.setDealerNo(user.getDealerId());
 
 		return branchEmpMapper.getAllBranchEmpByNo(bModel);
 	}
@@ -207,14 +202,8 @@ public class BranchEmpServiceImpl extends BaseService implements BranchEmpServic
 	public PageInfo searchBranchEmp(EmpQueryModel smodel) {
 		TSysUser user = userSessionService.getCurrentUser();
 		smodel.setSalesOrg(user.getSalesOrg());
-		if(StringUtils.isBlank(smodel.getBranchNo())){
-			List<String> rids = userRoleMapper.getUserRidsByLoginName(user.getLoginName());
-			if(rids.contains("10003")){
-				smodel.setBranchNo("");
-			}else{
-				smodel.setBranchNo(user.getBranchNo());
-			}
-		}
+		smodel.setBranchNo(user.getBranchNo());
+		smodel.setDealerNo(user.getDealerId());
 
 
 		// TODO Auto-generated method stub
