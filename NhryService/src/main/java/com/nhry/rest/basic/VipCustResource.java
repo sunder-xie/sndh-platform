@@ -73,6 +73,7 @@ public class VipCustResource extends BaseResource {
 
 	@POST
 	@Path("/add/cust")
+	@Produces(MediaType.APPLICATION_JSON)
 	@Consumes(MediaType.APPLICATION_JSON)
 	@ApiOperation(value = "/add/cust", response = ResponseModel.class, notes = "添加订户信息")
 	public Response addVipCust(@ApiParam(required=true,name="cust",value="订户信息对象")TVipCustInfo cust) {
