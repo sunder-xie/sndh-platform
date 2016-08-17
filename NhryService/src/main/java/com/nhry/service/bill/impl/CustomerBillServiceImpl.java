@@ -64,11 +64,9 @@ public class CustomerBillServiceImpl implements CustomerBillService {
         TSysUser user = userSessionService.getCurrentUser();
         List<String> rids = urMapper.getUserRidsByLoginName(user.getLoginName());
         cModel.setSalesOrg(user.getSalesOrg());
-        if(rids.contains("10004")){
-            cModel.setBranchNo(user.getBranchNo());
-        }else if(rids.contains("10005")){
-            cModel.setDealerNo(user.getDealerId());
-        }
+        cModel.setBranchNo(user.getBranchNo());
+        cModel.setDealerNo(user.getDealerId());
+
         // TODO Auto-generated method stub
         if(StringUtils.isEmpty(cModel.getPageNum()) || StringUtils.isEmpty(cModel.getPageSize())){
             throw new ServiceException(MessageCode.LOGIC_ERROR,"pageNum和pageSize不能为空！");
