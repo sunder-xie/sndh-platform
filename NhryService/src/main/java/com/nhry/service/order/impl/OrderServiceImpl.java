@@ -1083,6 +1083,18 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 			//订户状态更改
 			tVipCustInfoService.discontinue(order.getMilkmemberNo(), "10",null,null);
 			
+			//发送EC
+			taskExecutor.execute(new Thread(){
+				@Override
+				public void run() {
+					super.run();
+					this.setName("resumeOrder");
+					record.setOrderDateStart(startDateStr);
+					record.setContent("N");
+					messLogService.sendOrderStopRe(record);
+				}
+			});
+			
 			return 1;
 		}
 		//后付款的
@@ -1170,6 +1182,18 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 		
 		//订户状态更改
 		tVipCustInfoService.discontinue(order.getMilkmemberNo(), "10",null,null);
+		
+		//发送EC
+		taskExecutor.execute(new Thread(){
+			@Override
+			public void run() {
+				super.run();
+				this.setName("resumeOrder");
+				record.setOrderDateStart(startDateStr);
+				record.setContent("N");
+				messLogService.sendOrderStopRe(record);
+			}
+		});
 		
 		return 1;
 	}

@@ -70,7 +70,7 @@ public class BranchEmpResource extends BaseResource {
 	@Path("/search")
 	@Produces(MediaType.APPLICATION_JSON)
 	@Consumes(MediaType.APPLICATION_JSON)
-	@ApiOperation(value = "/{search}", response = NHSysParameter.class, notes = "查询员工信息")
+	@ApiOperation(value = "/{search}", response = NHSysParameter.class, notes = "查询员工信息列表")
 	public Response findBranchEmpByNo(@ApiParam(required=true,name="smodel",value="SearchModel") EmpQueryModel smodel){
 		return convertToRespModel(MessageCode.NORMAL, null,branchEmpService.searchBranchEmp(smodel));
 	}

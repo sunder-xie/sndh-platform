@@ -37,6 +37,15 @@ public interface TMdBranchEmpMapper {
 
     List<TMdBranchEmp> getAllBranchEmpByNo(BranchEmpSearchModel bModel);
 
+    /**
+     * 为了结算奶站下 送奶员 工资 （包含本月内该奶站还在职的送奶员 和 本月内才离职的送奶员）
+     * @param smodel
+     *    String branchNo; 奶站编号
+     *    String salesOrg; 销售组织
+     *    Date startDate;  月份开始
+     *    Date endDate;    月份结束
+     * @return
+     */
     List<TMdBranchEmp> getAllRationalMilkManByBranchNo(EmpSalQueryModel smodel);
     
     public int uptBranchEmpByBraNo(TMdBranchEmp record);

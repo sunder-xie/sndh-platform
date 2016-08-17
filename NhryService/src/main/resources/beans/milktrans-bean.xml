@@ -60,4 +60,8 @@
 	<bean id="tMstInsideSalOrderItemMapper" class="com.nhry.data.milktrans.impl.TMstInsideSalOrderItemMapperImpl">
 		<property name="sqlSessionTemplate"  ref="dynamicSqlSessionTemplate"></property>
 	</bean>
+	<bean class="com.nhry.service.milktrans.impl.OrderPointServiceImpl" id="orderPointService">
+		<property name="ssmSalOrderMapper" ref="tSsmSalOrderMapper"/>
+		<property name="ssmSalOrderItemMapper" ref="tSsmSalOrderItemMapper"/>
+	</bean>
 </beans>
