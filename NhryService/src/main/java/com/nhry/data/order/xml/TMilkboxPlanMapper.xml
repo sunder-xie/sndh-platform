@@ -36,7 +36,7 @@
   </sql>
   <select id="selectMilkboxPlanByPlanNo" resultMap="BaseResultMap" parameterType="java.lang.String" >
     select 
-    p.PLAN_NO, p.EMP_NO, p.EMP_NAME, p.ORDER_NO, p.MEMBER_NO, v.VIP_NAME MEMBER_NAME,v.MP MEMBER_TEL, concat(r.RESIDENTIAL_AREA_TXT,a.ADDRESS_TXT) ADRESS_NO, 
+    p.PLAN_NO, p.EMP_NO, p.EMP_NAME, p.ORDER_NO, p.MEMBER_NO, a.RECV_NAME MEMBER_NAME,a.MP MEMBER_TEL, concat(r.RESIDENTIAL_AREA_TXT,a.ADDRESS_TXT) ADRESS_NO, 
     p.BRANCH_NO, p.PLAN_DATE, p.MILKBOX_STAT, p.PAYMENT_STAT, b.MP BRANCH_TEL , b.BRANCH_NAME BRANCH_NAME
     from t_mst_milkbox_plan p
     left join t_vip_cust_info v on v.VIP_CUST_NO = p.MEMBER_NO

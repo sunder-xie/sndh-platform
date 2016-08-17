@@ -516,7 +516,16 @@ public class DeliverMilkServiceImpl extends BaseService implements DeliverMilkSe
 			
 			//生成内部销售订单，调用
 			createInsideSalOrder(routeCode);
-		
+			
+			//找出今日会完结的预付款订单，如果有退款的，将退回订户帐户
+			List<String> list = new ArrayList<String>();
+			entryList.stream()
+			.filter((e)->!list.contains(e.getOrgOrderNo()))
+			.forEach((e)->{
+				list.add(e.getOrgOrderNo());
+				orderService.returnOrderRemainAmtToAcct(e.getOrgOrderNo(),dispDate);
+			});
+			
 		}else{
 			throw new ServiceException(MessageCode.LOGIC_ERROR,"没有此路单号!");
 		}
