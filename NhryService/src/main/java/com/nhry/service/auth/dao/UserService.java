@@ -26,6 +26,13 @@ public interface UserService {
 	public TSysUser login(TSysUser user);
 	
 	/**
+	 * 用户注销接口
+	 * @param token
+	 * @return
+	 */
+	public boolean logout(String token);
+	
+	/**
 	 * 根据token获取用户信息
 	 * @param token
 	 * @return
