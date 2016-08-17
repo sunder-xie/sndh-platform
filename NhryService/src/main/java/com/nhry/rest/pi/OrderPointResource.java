@@ -41,7 +41,7 @@ public class OrderPointResource extends BaseResource{
     @Consumes(MediaType.APPLICATION_JSON)
     @ApiOperation(value = "/uptOrderPoint", response = ResponseModel.class, notes = "销售订单会员积分明细更新")
     public Response uptOrderPoint(@ApiParam(name = "models",value = "积分明细",required = true)OrderPointListModel models){
-        return convertToRespModel(MessageCode.NORMAL,null,orderPointService.uptYfrechAndYGrowthByOrderNoAndItemNo(models.getModel()));
+        return convertToRespModel(MessageCode.NORMAL,null,orderPointService.uptYfrechAndYGrowthByOrderNoAndItemNo(models.getOrderPoints()));
     }
 
 }
