@@ -1089,10 +1089,8 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 				public void run() {
 					super.run();
 					this.setName("resumeOrder");
-					record.setOrderDateEnd(startDateStr);
-					record.setOrderDateStart(format.format(order.getStopDateStart()));
+					record.setOrderDateStart(startDateStr);
 					record.setContent("N");
-					record.setReason(order.getStopReason());
 					messLogService.sendOrderStopRe(record);
 				}
 			});
@@ -1191,10 +1189,8 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 			public void run() {
 				super.run();
 				this.setName("resumeOrder");
-				record.setOrderDateEnd(startDateStr);
-				record.setOrderDateStart(format.format(order.getStopDateStart()));
+				record.setOrderDateStart(startDateStr);
 				record.setContent("N");
-				record.setReason(order.getStopReason());
 				messLogService.sendOrderStopRe(record);
 			}
 		});
