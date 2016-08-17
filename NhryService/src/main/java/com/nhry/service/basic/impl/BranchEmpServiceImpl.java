@@ -162,7 +162,9 @@ public class BranchEmpServiceImpl extends BaseService implements BranchEmpServic
 	public List<TMdBranchEmp> getAllBranchEmpByNo(BranchEmpSearchModel bModel) {
 		TSysUser user = userSessionService.getCurrentUser();
 		bModel.setSalesOrg(user.getSalesOrg());
-		bModel.setBranchNo(user.getBranchNo());
+		if(StringUtils.isBlank(bModel.getBranchNo())){
+			bModel.setBranchNo(user.getBranchNo());
+		}
 		bModel.setDealerNo(user.getDealerId());
 
 		return branchEmpMapper.getAllBranchEmpByNo(bModel);
@@ -176,8 +178,8 @@ public class BranchEmpServiceImpl extends BaseService implements BranchEmpServic
 			throw new ServiceException(MessageCode.LOGIC_ERROR, "该员工编号对应的员工信息不存在!");
 		}
 		record.setLastModified(new Date());
-		/*record.setLastModifiedBy(userSessionService.getCurrentUser().getLoginName());
-		record.setLastModifiedByTxt(userSessionService.getCurrentUser().getDisplayName());*/
+		record.setLastModifiedBy(userSessionService.getCurrentUser().getLoginName());
+		record.setLastModifiedByTxt(userSessionService.getCurrentUser().getDisplayName());
 		return branchEmpMapper.uptBranchEmpByNo(record);
 	}
 
