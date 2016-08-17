@@ -3,6 +3,8 @@ package com.nhry.data.milktrans.impl;
 import com.nhry.common.datasource.DynamicSqlSessionTemplate;
 import com.nhry.data.milktrans.dao.TSsmSalOrderItemMapper;
 import com.nhry.data.milktrans.domain.TSsmSalOrderItems;
+import com.nhry.model.milktrans.OrderPointModel;
+
 import java.util.Map;
 
 import java.util.List;
@@ -36,5 +38,15 @@ public class TSsmSalOrderItemMapperImpl implements TSsmSalOrderItemMapper {
     @Override
     public int delSalOrderItemsByOrderNo(String orderNo) {
         return sqlSessionTemplate.delete("delSalOrderItemsByOrderNo",orderNo);
+    }
+
+    @Override
+    public int uptYfrechAndYGrowthByOrderNoAndItemNo(OrderPointModel model) {
+        return sqlSessionTemplate.update("uptYfrechAndYGrowthByOrderNoAndItemNo",model);
+    }
+
+    @Override
+    public OrderPointModel getSumYfrechAndYGrowByOrderNo(String orderNo) {
+        return sqlSessionTemplate.selectOne("getSumYfrechAndYGrowByOrderNo",orderNo);
     }
 }
