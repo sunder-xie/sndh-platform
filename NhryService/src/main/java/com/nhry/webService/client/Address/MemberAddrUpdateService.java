@@ -27,7 +27,7 @@ public interface MemberAddrUpdateService {
      */
     public void startmemberAddrUpdate(
             com.nhry.webService.client.Address.functions.Z_CRM_ADDR_UPDATE z_CRM_ADDR_UPDATE0,
-            final com.nhry.webService.client.Address.MemberAddrUpdateServiceCallbackHandler callback)
+            final MemberAddrUpdateServiceCallbackHandler callback)
         throws java.rmi.RemoteException;
 
     //
