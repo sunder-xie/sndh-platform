@@ -179,7 +179,7 @@
                STATUS =  #{status,jdbcType=VARCHAR},
             </if>
             <if test="remark != null">
-               REMARK =  #{remark,jdbcType=VARCHAR},
+               REMARK = #{remark,jdbcType=VARCHAR},
             </if>
             <if test="lastModified != null" >
                 LAST_MODIFIED = #{lastModified,jdbcType=TIMESTAMP},

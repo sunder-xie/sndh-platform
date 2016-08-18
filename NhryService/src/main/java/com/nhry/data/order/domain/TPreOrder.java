@@ -117,11 +117,23 @@ public class TPreOrder {
     private Integer yGrowth;
     
     private Integer yFresh;
-    
+
+    private String receiptNo;
+
+
     String branchEmpNo;
     String branchMp;
     String branchEmpName;
     String addressTxt;
+
+
+    public String getReceiptNo() {
+        return receiptNo;
+    }
+
+    public void setReceiptNo(String receiptNo) {
+        this.receiptNo = receiptNo;
+    }
 
     public Integer getyGrowth()
 	{

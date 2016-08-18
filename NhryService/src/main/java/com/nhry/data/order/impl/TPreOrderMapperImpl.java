@@ -4,6 +4,7 @@ import com.github.pagehelper.PageInfo;
 import com.nhry.common.datasource.DynamicSqlSessionTemplate;
 import com.nhry.data.order.dao.TPreOrderMapper;
 import com.nhry.data.order.domain.TPreOrder;
+import com.nhry.model.bill.CustBatchBillQueryModel;
 import com.nhry.model.bill.CustBillQueryModel;
 import com.nhry.model.order.ManHandOrderSearchModel;
 import com.nhry.model.order.OrderSearchModel;
@@ -214,6 +215,11 @@ public class TPreOrderMapperImpl implements TPreOrderMapper
 	@Override
 	public List<String> searchCustomerOrderForExp(CustBillQueryModel cModel) {
 		return sqlSessionTemplate.selectList("searchCustomerOrderForExp",cModel);
+	}
+
+	@Override
+	public List<TPreOrder> searchCustomerOrderByEmpNo(CustBatchBillQueryModel model) {
+		return sqlSessionTemplate.selectList("searchCustomerOrderByEmpNo",model);
 	}
 
 	/* (non-Javadoc) 
