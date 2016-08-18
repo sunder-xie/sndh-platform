@@ -2408,11 +2408,13 @@ public class OrderServiceImpl extends BaseService implements OrderService {
    		}
    		totalqty += entry.getQty();
    		goDays++;
+   		entry.setEndDispDate(today);
    	}
    	//end
    	
-   	//配送总数
+   	//配送总数和真正截止日期
    	entry.setDispTotal(totalqty);
+   	
    	//如果有促销，增加促销购买数量字段
    	if(StringUtils.isNotBlank(entry.getPromotion()))entry.setBuyQty(qty.multiply(new BigDecimal(String.valueOf(goDays))).intValue());
    		
