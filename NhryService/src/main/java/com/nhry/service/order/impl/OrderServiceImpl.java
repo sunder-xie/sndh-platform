@@ -855,6 +855,7 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 		int goDays = 0;//续订多少天
 		if(record.getGoDays()==null){
 			Date firstDate = null;
+			Date lastDate = null;
 			ArrayList<TPlanOrderItem> entries = (ArrayList<TPlanOrderItem>) tPlanOrderItemMapper.selectByOrderCode(record.getOrderNo());
 			for(TPlanOrderItem e : entries){
 				if(firstDate == null){
@@ -862,8 +863,13 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 				}else{
 					firstDate = e.getStartDispDate().before(firstDate)? e.getStartDispDate():firstDate;
 				}
+				if(lastDate == null){
+					lastDate = e.getEndDispDate();
+				}else{
+					lastDate = e.getEndDispDate().after(lastDate)? e.getEndDispDate():lastDate;
+				}
 			}
-			goDays = daysOfTwo(firstDate,order.getEndDate());
+			goDays = daysOfTwo(firstDate,lastDate);
 			record.setGoDays(goDays);
 		}else{
 			goDays = record.getGoDays();
