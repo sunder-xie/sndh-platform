@@ -509,7 +509,7 @@ public class DeliverMilkServiceImpl extends BaseService implements DeliverMilkSe
 			tDispOrderMapper.updateDispOrderStatus(routeCode,"20");
 			
 			//生成变化路单
-			createRouteChanges(routeCode,dispDate);
+//			createRouteChanges(routeCode,dispDate);
 			
 			//创建回瓶管理，调用
 			returnBoxService.createDayRetBox(routeCode);
@@ -619,6 +619,8 @@ public class DeliverMilkServiceImpl extends BaseService implements DeliverMilkSe
 			tDispOrderMapper.insert(dispOrder);
 			if(dispEntries.size() == 0)continue;
 			tDispOrderItemMapper.batchinsert(dispEntries);
+			
+			createRouteChanges(dispOrder.getOrderNo(),date);
 		}
 		
 		return 1;
