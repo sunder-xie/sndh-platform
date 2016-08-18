@@ -660,6 +660,9 @@
   <select id="selectRequiredOrderNum" resultType="INTEGER" parameterType="com.nhry.model.order.OrderSearchModel">
     select count(*) from t_preorder
     where PREORDER_STAT = '20'
+    AND PREORDER_STAT != "30"
+    AND PREORDER_STAT != "40"
+    and RET_DATE is null
     <if test="branchNo != null and branchNo != ''">
      		AND BRANCH_NO = #{branchNo,jdbcType=VARCHAR}
     </if>
