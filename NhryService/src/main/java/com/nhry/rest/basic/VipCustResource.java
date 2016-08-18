@@ -23,6 +23,8 @@ import org.springframework.stereotype.Controller;
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+import java.util.HashMap;
+import java.util.Map;
 
 @Path("/vipcust")
 @Component
@@ -175,4 +177,15 @@ public class VipCustResource extends BaseResource {
 	public Response addVipCrm(@ApiParam(required=true,name="crminfo",value="会员对象") TVipCrmInfo crminfo) {
 	  return convertToRespModel(MessageCode.NORMAL, null,vipCrmInfoService.updateVipCrmByNo(crminfo));
 	}
+
+	@POST
+	@Path("/crm/isVip/{mp}")
+	@Produces(MediaType.APPLICATION_JSON)
+	@ApiOperation(value = "/crm/isVip/{mp}", response = ResponseModel.class, notes = "是否是会员")
+	public Response isVip(@ApiParam(required=true,name="mp",value="会员手机号码")@PathParam("mp") String mp) {
+		Map<String,String> map = new HashMap<String,String>();
+		map.put("phone",mp);
+		return convertToRespModel(MessageCode.NORMAL, null,vipCrmInfoService.getCrmNoByPhone(map));
+	}
+
 }
