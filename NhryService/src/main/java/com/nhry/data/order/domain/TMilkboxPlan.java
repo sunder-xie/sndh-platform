@@ -68,6 +68,15 @@ public class TMilkboxPlan {
 
     private String proNum;
 
+    private String paymentmethod;
+
+    public String getPaymentmethod() {
+        return paymentmethod;
+    }
+
+    public void setPaymentmethod(String paymentmethod) {
+        this.paymentmethod = paymentmethod;
+    }
 
     public String getBranchName()
 	{

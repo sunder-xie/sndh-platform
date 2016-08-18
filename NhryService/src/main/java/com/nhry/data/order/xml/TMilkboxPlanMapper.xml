@@ -27,7 +27,7 @@
  <resultMap id="outputResultMap" type="com.nhry.data.order.domain.TMilkboxPlan" extends="BaseResultMap">
     <result column="INIT_AMT" property="initAmt" jdbcType="DECIMAL" />
     <result column="PRO_NUM" property="proNum" jdbcType="VARCHAR" />
-
+     <result column="PAYMENTMETHOD" property="paymentmethod" jdbcType="VARCHAR" />
   </resultMap>
   <sql id="Base_Column_List" >
     PLAN_NO, EMP_NO, EMP_NAME, ORDER_NO, MEMBER_NO, MEMBER_NAME, MEMBER_TEL, ADRESS_NO, 
@@ -297,7 +297,7 @@
   <select id="selectMilkboxPlantoOutput" resultMap="outputResultMap">
        SELECT
           tp.INIT_AMT,
-          tp.PAYMENT_STAT,
+          tp.PAYMENTMETHOD,
           p.EMP_NO,
           p.EMP_NAME,
           p.MEMBER_NO,
