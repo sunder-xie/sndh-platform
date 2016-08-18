@@ -847,6 +847,7 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 			}
 			catch (ParseException e)
 			{
+				record.setContent(null);
 				return record;
 			}
 		}
@@ -862,13 +863,14 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 					firstDate = e.getStartDispDate().before(firstDate)? e.getStartDispDate():firstDate;
 				}
 			}
-			goDays = daysOfTwo(firstDate,order.getEndDate());
+			goDays = daysOfTwo(firstDate,order.getEndDate()) - 1;
 			record.setGoDays(goDays);
 		}else{
 			goDays = record.getGoDays();
 		}
 		
 		record.setOrderDateEnd(format.format(afterDate(startDate,goDays)));
+		record.setContent(null);
 
 		return record;
 	}
@@ -2527,7 +2529,7 @@ public class OrderServiceImpl extends BaseService implements OrderService {
    	//删除数量为0的日计划,并重新生成新加的日计划
    	Map<String,Date> dateMap = new HashMap<String,Date>();//每个订单行的最后配送时间
    	for(TOrderDaliyPlanItem plan : daliyPlans){
-   		if(plan.getQty() > 0){
+   		if(plan.getQty() > 0 || "20".equals(plan.getStatus())){
    			if(dateMap.containsKey(plan.getItemNo())){
    				Date lastDate = dateMap.get(plan.getItemNo()).before(plan.getDispDate())?plan.getDispDate():dateMap.get(plan.getItemNo());
    				dateMap.replace(plan.getItemNo(), lastDate);
@@ -2902,6 +2904,9 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 
  	   //预付款的要付款+装箱才生成日计划
 		if("20".equals(order.getPaymentmethod()) && !"20".equals(order.getPaymentStat())){
+			for(TPlanOrderItem e :entries){
+				resolveEntryEndDispDate(e);
+			}
 			return null;
 		}
  			
