@@ -2912,6 +2912,11 @@ public class OrderServiceImpl extends BaseService implements OrderService {
  			
  		//生成每日计划,当订户订单装箱状态为已装箱或无需装箱，则系统默认该订单可生成订户日订单
  		if("20".equals(order.getMilkboxStat())){
+ 			if("20".equals(order.getPaymentmethod())){
+ 				for(TPlanOrderItem e :entries){
+ 					resolveEntryEndDispDate(e);
+ 				}
+ 			}
  			return null;
  		}
  		
