@@ -15,7 +15,16 @@ public class RequireOrderModel implements Serializable {
     private String orderNo;
     private Date requiredDate;
     private String status;
+    private Date orderDate;
     List<OrderRequireItem> entries;
+
+    public Date getOrderDate() {
+        return orderDate;
+    }
+
+    public void setOrderDate(Date orderDate) {
+        this.orderDate = orderDate;
+    }
 
     public String getBranchNo() {
         return branchNo;

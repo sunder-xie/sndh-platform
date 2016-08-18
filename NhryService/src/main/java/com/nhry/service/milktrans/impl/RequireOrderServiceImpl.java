@@ -173,6 +173,7 @@ public class RequireOrderServiceImpl implements RequireOrderService {
             orderModel.setRequiredDate(order.getOrderDate());
             orderModel.setBranchNo(order.getBranchNo());
             orderModel.setOrderNo(order.getOrderNo());
+            orderModel.setOrderDate(order.getOrderDate());
             List<TSsmReqGoodsOrderItem> items = this.tSsmReqGoodsOrderItemMapper.getReqGoodsItemsByOrderNo(order.getOrderNo());
             List<OrderRequireItem> entries = new ArrayList<OrderRequireItem>();
             for(TSsmReqGoodsOrderItem item :items){
