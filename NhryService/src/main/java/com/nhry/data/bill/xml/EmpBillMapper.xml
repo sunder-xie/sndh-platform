@@ -192,7 +192,7 @@
         c.VIP_NAME CUST_NAME,
         br.BRANCH_NAME,
         /*a.ACCT_AMT,*/
-        b.ACC_AMT ACCT_AMT,
+        b.CUST_ACC_AMT ACCT_AMT,
         c.MP,
         CONCAT(r.RESIDENTIAL_AREA_TXT ,c.ADDRESS_TXT) ADDRESS,
         o.INIT_AMT ACCOUNT_RECE,
