@@ -617,6 +617,7 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 			
 			String state = order.getPaymentmethod();
 			
+			BigDecimal leftAmt = order.getCurAmt();
 			if("20".equals(state)){//先付款
 				tOrderDaliyPlanItemMapper.updateDaliyPlansToBack(order);
 				
@@ -667,7 +668,7 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 			TPreOrder sendOrder = new TPreOrder();
 			sendOrder.setOrderNo(order.getOrderNo());
 			sendOrder.setPreorderStat("300");
-			sendOrder.setCurAmt(order.getCurAmt());
+			sendOrder.setCurAmt("20".equals(state)?leftAmt:order.getCurAmt());
 			taskExecutor.execute(new Thread(){
 				@Override
 				public void run() {
@@ -3813,10 +3814,19 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 	* @see com.nhry.service.order.dao.OrderService#returnOrderRemainAmtToAcct() 
 	*/
 	@Override
-	public void returnOrderRemainAmtToAcct()
+	public void returnOrderRemainAmtToAcct(String orderNo,Date dispDate)
 	{
+		TPreOrder order = tPreOrderMapper.selectByPrimaryKey(orderNo);
 		
+		//完结日期不是配送那天，非预付款单，剩余金额不大于0, return
+		if(order==null)return;
+		if(!order.getEndDate().equals(dispDate) || !"20".equals(order.getPaymentmethod()) || order.getCurAmt().floatValue() <= 0)return;
 		
+		//退回剩余金额
+		TVipAcct ac = new TVipAcct();
+	   ac.setVipCustNo(order.getMilkmemberNo());
+	   ac.setAcctAmt(order.getCurAmt());
+		tVipCustInfoService.addVipAcct(ac);
 	}
 
 }

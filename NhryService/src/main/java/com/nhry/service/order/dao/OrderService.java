@@ -90,6 +90,6 @@ public interface OrderService {
    
    int recoverStopDaliyDaliyPlan(TOrderDaliyPlanItem item); 
    
-   void returnOrderRemainAmtToAcct();
+   void returnOrderRemainAmtToAcct(String orderNo,Date dispDate);
    
 }

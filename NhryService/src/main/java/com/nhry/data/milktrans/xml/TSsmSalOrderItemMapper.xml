@@ -107,11 +107,11 @@
 
     <update id="uptYfrechAndYGrowthByOrderNoAndItemNo" parameterType="com.nhry.model.milktrans.OrderPointModel">
         UPDATE  t_ssm_sal_order_items
-        SET   YFRESH = #{yfresh} and YGROWTH = #{ygrowth}
-        where ORDER_NO = #{orderNo} and ITEM_NO = #{itemNo}
+        SET   YFRESH = #{yfresh,jdbcType=DECIMAL},YGROWTH = #{ygrowth,jdbcType=DECIMAL}
+        where ORDER_NO = #{orderNo,jdbcType=VARCHAR} and ITEM_NO = #{itemNo,jdbcType=INTEGER}
     </update>
 
-    <select id="getSumYfrechAndYGrowByOrderNo" resultType="com.nhry.model.milktrans.OrderPointModel">
-        SELECT ORDER_NO ,sum(YFRESH) yfresh,sum(YGROWTH) ygrowth FROM t_ssm_sal_order_items where ORDER_NO = #{orderNo}
+    <select id="getSumYfrechAndYGrowByOrderNo" resultType="com.nhry.model.milktrans.OrderPointModel" parameterType="string">
+        SELECT ORDER_NO orderNo ,sum(YFRESH) yfresh,sum(YGROWTH) ygrowth FROM t_ssm_sal_order_items where ORDER_NO = #{orderNo,jdbcType=VARCHAR}
     </select>
 </mapper>

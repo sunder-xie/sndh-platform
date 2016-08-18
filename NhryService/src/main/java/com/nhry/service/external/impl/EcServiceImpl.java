@@ -378,13 +378,13 @@ public class EcServiceImpl extends EcBaseService implements EcService{
 			//订单的促销信息
 			entryJson.put("serviceName", "SVCSENDORDERTICKETLIST");
 			JSONArray data3 = new JSONArray();
-			for(TPlanOrderItem e:entries){
-				if(StringUtil.isBlank(e.getPromotion()))continue;
-				JSONObject opromotionJson = new JSONObject();
-				opromotionJson.put("as_order_no", "SVCSENDORDERMAIN##@@AS_ECORDERNO");
-				opromotionJson.put("ticketNo", e.getPromotion());
-				data3.put(opromotionJson);
-			}
+//			for(TPlanOrderItem e:entries){
+//				if(StringUtil.isBlank(e.getPromotion()))continue;
+//				JSONObject opromotionJson = new JSONObject();
+//				opromotionJson.put("as_order_no", "SVCSENDORDERMAIN##@@AS_ECORDERNO");
+//				opromotionJson.put("ticketNo", e.getPromotion());
+//				data3.put(opromotionJson);
+//			}
 			promotionJson.put("data", data3);
 			
 			//推送

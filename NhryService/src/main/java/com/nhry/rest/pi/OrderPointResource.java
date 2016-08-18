@@ -1,6 +1,7 @@
 package com.nhry.rest.pi;
 
 import com.nhry.common.exception.MessageCode;
+import com.nhry.model.milktrans.OrderPointListModel;
 import com.nhry.model.milktrans.OrderPointModel;
 import com.nhry.model.sys.ResponseModel;
 import com.nhry.rest.BaseResource;
@@ -13,13 +14,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Controller;
-import java.util.List;
+
 import javax.ws.rs.Consumes;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+import java.util.List;
 
 /**
  * Created by cbz on 8/17/2016.
@@ -38,8 +40,8 @@ public class OrderPointResource extends BaseResource{
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes(MediaType.APPLICATION_JSON)
     @ApiOperation(value = "/uptOrderPoint", response = ResponseModel.class, notes = "销售订单会员积分明细更新")
-    public Response uptOrderPoint(@ApiParam(name = "model",value = "model",required = true)List<OrderPointModel> models){
-        return convertToRespModel(MessageCode.NORMAL,null,orderPointService.uptYfrechAndYGrowthByOrderNoAndItemNo(models));
+    public Response uptOrderPoint(@ApiParam(name = "models",value = "积分明细",required = true)OrderPointListModel models){
+        return convertToRespModel(MessageCode.NORMAL,null,orderPointService.uptYfrechAndYGrowthByOrderNoAndItemNo(models.getOrderPoints()));
     }
 
 }

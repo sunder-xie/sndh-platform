@@ -36,6 +36,9 @@ public class TPromotionMapperImpl implements TPromotionMapper
 		return sqlSessionTemplate.selectOne("selectPromotionByPromNo", record);
 	}
 	
-	
+	@Override
+	public PageInfo selectPromotionsrsByPage(OrderSearchModel smodel) {
+		return sqlSessionTemplate.selectListByPages("searchPromotionsByPage",smodel, Integer.parseInt(smodel.getPageNum()), Integer.parseInt(smodel.getPageSize()));
+	}
 	
 }
