@@ -863,7 +863,7 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 					firstDate = e.getStartDispDate().before(firstDate)? e.getStartDispDate():firstDate;
 				}
 			}
-			goDays = daysOfTwo(firstDate,order.getEndDate()) - 1;
+			goDays = daysOfTwo(firstDate,order.getEndDate());
 			record.setGoDays(goDays);
 		}else{
 			goDays = record.getGoDays();
