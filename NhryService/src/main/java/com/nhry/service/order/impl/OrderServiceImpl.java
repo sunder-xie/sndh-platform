@@ -847,6 +847,7 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 			}
 			catch (ParseException e)
 			{
+				record.setContent(null);
 				return record;
 			}
 		}
@@ -854,6 +855,7 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 		int goDays = 0;//续订多少天
 		if(record.getGoDays()==null){
 			Date firstDate = null;
+			Date lastDate = null;
 			ArrayList<TPlanOrderItem> entries = (ArrayList<TPlanOrderItem>) tPlanOrderItemMapper.selectByOrderCode(record.getOrderNo());
 			for(TPlanOrderItem e : entries){
 				if(firstDate == null){
@@ -861,14 +863,20 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 				}else{
 					firstDate = e.getStartDispDate().before(firstDate)? e.getStartDispDate():firstDate;
 				}
+				if(lastDate == null){
+					lastDate = e.getEndDispDate();
+				}else{
+					lastDate = e.getEndDispDate().after(lastDate)? e.getEndDispDate():lastDate;
+				}
 			}
-			goDays = daysOfTwo(firstDate,order.getEndDate());
+			goDays = daysOfTwo(firstDate,lastDate);
 			record.setGoDays(goDays);
 		}else{
 			goDays = record.getGoDays();
 		}
 		
 		record.setOrderDateEnd(format.format(afterDate(startDate,goDays)));
+		record.setContent(null);
 
 		return record;
 	}
@@ -1091,7 +1099,7 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 					super.run();
 					this.setName("resumeOrder");
 					record.setOrderDateStart(startDateStr);
-					record.setContent("N");
+					record.setContent("Y");
 					messLogService.sendOrderStopRe(record);
 				}
 			});
@@ -1191,7 +1199,7 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 				super.run();
 				this.setName("resumeOrder");
 				record.setOrderDateStart(startDateStr);
-				record.setContent("N");
+				record.setContent("Y");
 				messLogService.sendOrderStopRe(record);
 			}
 		});
@@ -2400,11 +2408,13 @@ public class OrderServiceImpl extends BaseService implements OrderService {
    		}
    		totalqty += entry.getQty();
    		goDays++;
+   		entry.setEndDispDate(today);
    	}
    	//end
    	
-   	//配送总数
+   	//配送总数和真正截止日期
    	entry.setDispTotal(totalqty);
+   	
    	//如果有促销，增加促销购买数量字段
    	if(StringUtils.isNotBlank(entry.getPromotion()))entry.setBuyQty(qty.multiply(new BigDecimal(String.valueOf(goDays))).intValue());
    		
@@ -2527,7 +2537,7 @@ public class OrderServiceImpl extends BaseService implements OrderService {
    	//删除数量为0的日计划,并重新生成新加的日计划
    	Map<String,Date> dateMap = new HashMap<String,Date>();//每个订单行的最后配送时间
    	for(TOrderDaliyPlanItem plan : daliyPlans){
-   		if(plan.getQty() > 0){
+   		if(plan.getQty() > 0 || "20".equals(plan.getStatus())){
    			if(dateMap.containsKey(plan.getItemNo())){
    				Date lastDate = dateMap.get(plan.getItemNo()).before(plan.getDispDate())?plan.getDispDate():dateMap.get(plan.getItemNo());
    				dateMap.replace(plan.getItemNo(), lastDate);
@@ -2902,11 +2912,19 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 
  	   //预付款的要付款+装箱才生成日计划
 		if("20".equals(order.getPaymentmethod()) && !"20".equals(order.getPaymentStat())){
+			for(TPlanOrderItem e :entries){
+				resolveEntryEndDispDate(e);
+			}
 			return null;
 		}
  			
  		//生成每日计划,当订户订单装箱状态为已装箱或无需装箱，则系统默认该订单可生成订户日订单
  		if("20".equals(order.getMilkboxStat())){
+ 			if("20".equals(order.getPaymentmethod())){
+ 				for(TPlanOrderItem e :entries){
+ 					resolveEntryEndDispDate(e);
+ 				}
+ 			}
  			return null;
  		}
  		
