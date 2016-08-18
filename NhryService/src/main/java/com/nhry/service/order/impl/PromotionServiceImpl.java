@@ -8,6 +8,7 @@ import java.util.Map;
 
 import org.apache.commons.lang3.StringUtils;
 
+import com.github.pagehelper.PageInfo;
 import com.nhry.common.exception.MessageCode;
 import com.nhry.common.exception.ServiceException;
 import com.nhry.data.order.dao.TOrderDaliyPlanItemMapper;
@@ -16,6 +17,7 @@ import com.nhry.data.order.domain.TOrderDaliyPlanItem;
 import com.nhry.data.order.domain.TPlanOrderItem;
 import com.nhry.data.order.domain.TPreOrder;
 import com.nhry.data.order.domain.TPromotion;
+import com.nhry.model.order.OrderSearchModel;
 import com.nhry.service.BaseService;
 import com.nhry.service.order.dao.PromotionService;
 
@@ -33,6 +35,19 @@ public class PromotionServiceImpl extends BaseService implements PromotionServic
 		this.tOrderDaliyPlanItemMapper = tOrderDaliyPlanItemMapper;
 	}
 
+	/* (non-Javadoc) 
+	* @title: selectPromotionsrsByPage
+	* @description: 查询销售组织下的所有促销规则
+	* @param smodel
+	* @return 
+	* @see com.nhry.service.order.dao.PromotionService#selectPromotionsrsByPage(com.nhry.model.order.OrderSearchModel) 
+	*/
+	@Override
+	public PageInfo selectPromotionsrsByPage(OrderSearchModel smodel)
+	{
+		smodel.setSalesOrg(userSessionService.getCurrentUser().getSalesOrg());
+		return tPromotionMapper.selectPromotionsrsByPage(smodel);
+	}
 
 	/* (non-Javadoc) 
 	* @title: getPromotionByMatnr
@@ -198,8 +213,6 @@ public class PromotionServiceImpl extends BaseService implements PromotionServic
 		}
 		
 	}
-	
-	
 	
 	
 }

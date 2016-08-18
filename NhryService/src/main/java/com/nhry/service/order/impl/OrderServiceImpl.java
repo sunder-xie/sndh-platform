@@ -617,6 +617,7 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 			
 			String state = order.getPaymentmethod();
 			
+			BigDecimal leftAmt = order.getCurAmt();
 			if("20".equals(state)){//先付款
 				tOrderDaliyPlanItemMapper.updateDaliyPlansToBack(order);
 				
@@ -667,7 +668,7 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 			TPreOrder sendOrder = new TPreOrder();
 			sendOrder.setOrderNo(order.getOrderNo());
 			sendOrder.setPreorderStat("300");
-			sendOrder.setCurAmt(order.getCurAmt());
+			sendOrder.setCurAmt("20".equals(state)?leftAmt:order.getCurAmt());
 			taskExecutor.execute(new Thread(){
 				@Override
 				public void run() {

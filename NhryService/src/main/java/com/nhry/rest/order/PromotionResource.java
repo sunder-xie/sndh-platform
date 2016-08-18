@@ -53,13 +53,13 @@ public class PromotionResource extends BaseResource {
 		return convertToRespModel(MessageCode.NORMAL, null, promotionService.selectPromotionByPromNo(promNo));
 	}
 	
-//	@POST
-//	@Path("/uptByList")
-//	@Produces(MediaType.APPLICATION_JSON)
-//	@Consumes(MediaType.APPLICATION_JSON)
-//	@ApiOperation(value = "/uptByList", response = Integer.class, notes = "批量更新奶箱")
-//	public Response uptByList(@ApiParam(required=true,name="smodel",value="SearchModel") MilkboxCreateModel smodel){
-//		return convertToRespModel(MessageCode.NORMAL, null, milkBoxService.updateMilkboxStatusByList(smodel));
-//	}
+	@POST
+	@Path("/searchPromotionsByPage")
+	@Produces(MediaType.APPLICATION_JSON)
+	@Consumes(MediaType.APPLICATION_JSON)
+	@ApiOperation(value = "/searchPromotionsByPage", response = Integer.class, notes = "查询所有促销规则")
+	public Response searchPromotionsByPage(@ApiParam(required=true,name="smodel",value="SearchModel") OrderSearchModel smodel){
+		return convertToRespModel(MessageCode.NORMAL, null, promotionService.selectPromotionsrsByPage(smodel));
+	}
 	
 }
