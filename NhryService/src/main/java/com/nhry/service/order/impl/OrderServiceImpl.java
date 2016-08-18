@@ -1099,7 +1099,7 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 					super.run();
 					this.setName("resumeOrder");
 					record.setOrderDateStart(startDateStr);
-					record.setContent("N");
+					record.setContent("Y");
 					messLogService.sendOrderStopRe(record);
 				}
 			});
@@ -1199,7 +1199,7 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 				super.run();
 				this.setName("resumeOrder");
 				record.setOrderDateStart(startDateStr);
-				record.setContent("N");
+				record.setContent("Y");
 				messLogService.sendOrderStopRe(record);
 			}
 		});
