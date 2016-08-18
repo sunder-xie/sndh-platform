@@ -314,11 +314,11 @@ public class ReportResource extends BaseResource{
                     cell.setCellValue(item.getInitAmt().toString());
                     cell = row.getCell(7);
                     String paymentStatName="";
-                    if(item.getPaymentStat().equals("10")){
-                        paymentStatName="未付款";
-                    }else if(item.getPaymentStat().equals("20")){
-                        paymentStatName="已付款";
-                    }else if(item.getPaymentStat().equals("30")){
+                    if(item.getPaymentmethod().equals("10")){
+                        paymentStatName="后付款";
+                    }else if(item.getPaymentmethod().equals("20")){
+                        paymentStatName="预付款";
+                    }else if(item.getPaymentmethod().equals("30")){
                         paymentStatName="垫付费";
                     }
                     cell.setCellValue(paymentStatName);
