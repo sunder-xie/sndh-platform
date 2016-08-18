@@ -16,11 +16,18 @@ import org.apache.poi.ss.formula.functions.T;
 public interface PIVipInfoDataService {
     /**
      * 会员创建更新
-     * @param vipCustInfo
-     * @param address
+     * @param custId
+     * @param vipTel
      * @return
      */
-    PISuccessTMessage<EvMemb> generateVipInfoData(TVipCustInfo vipCustInfo, TMdAddress address);
+    PISuccessTMessage<EvMemb> generateVipInfoData(String custId, String vipTel);
+
+    /**
+     * 线程会员创建更新
+     * @param custId
+     * @param vipTel
+     */
+    void executeVipInfoData(String custId, String vipTel);
 
     /**
      * 会员积分明细查询
@@ -52,5 +59,7 @@ public interface PIVipInfoDataService {
      * @return
      */
     PISuccessTMessage sendAddress(TMdAddress address,String sapGuid);
+
+
 
 }

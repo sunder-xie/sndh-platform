@@ -39,6 +39,10 @@ public class PIPromotionDataServiceImpl implements PIPromotionDataService {
 
             if (origItems != null) {
                 for (PromotionOrigItem origItem : origItems) {
+                    String goodNo = origItem.getGoodNo();
+                    if(goodNo.length()>18) {
+                        origItem.setGoodNo(goodNo.substring(goodNo.length()-18));
+                    }
                     promotionDataService.savePromotionOrigItem(origItem);
                 }
             }
@@ -50,6 +54,10 @@ public class PIPromotionDataServiceImpl implements PIPromotionDataService {
             }
             if (giftItems != null) {
                 for (PromotionGiftItem giftItem : giftItems) {
+                    String giftNo = giftItem.getGiftNo();
+                    if(giftNo.length() > 18) {
+                        giftItem.setGiftNo(giftNo.substring(giftNo.length() - 18));
+                    }
                     promotionDataService.savePromotionGiftItem(giftItem);
                 }
             }

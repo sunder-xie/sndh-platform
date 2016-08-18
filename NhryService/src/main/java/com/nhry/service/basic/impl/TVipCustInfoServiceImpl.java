@@ -464,4 +464,9 @@ public class TVipCustInfoServiceImpl extends BaseService implements TVipCustInfo
 		lists.add(cs);
 		return lists;
 	}
+
+	@Override
+	public int updateSapNo(TVipCustInfo vipCustInfo) {
+		return tmdVipcust.updateSapNo(vipCustInfo);
+	}
 }

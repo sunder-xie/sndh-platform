@@ -24,7 +24,7 @@ public class T_ADDR_type1 implements org.apache.axis2.databinding.ADBBean {
      * field for Item
      * This was an Array!
      */
-    protected com.nhry.webService.client.Address.functions.ZSCRM_ADDR_SHIP_TO[] localItem;
+    protected ZSCRM_ADDR_SHIP_TO[] localItem;
 
     /*  This tracker boolean wil be used to detect whether the user called the set method
      *   for this attribute. It will be used to determine whether to include this field
@@ -40,7 +40,7 @@ public class T_ADDR_type1 implements org.apache.axis2.databinding.ADBBean {
      * Auto generated getter method
      * @return com.nhry.webService.client.Address.functions.ZSCRM_ADDR_SHIP_TO[]
      */
-    public com.nhry.webService.client.Address.functions.ZSCRM_ADDR_SHIP_TO[] getItem() {
+    public ZSCRM_ADDR_SHIP_TO[] getItem() {
         return localItem;
     }
 
@@ -48,7 +48,7 @@ public class T_ADDR_type1 implements org.apache.axis2.databinding.ADBBean {
      * validate the array for Item
      */
     protected void validateItem(
-        com.nhry.webService.client.Address.functions.ZSCRM_ADDR_SHIP_TO[] param) {
+        ZSCRM_ADDR_SHIP_TO[] param) {
     }
 
     /**
@@ -56,7 +56,7 @@ public class T_ADDR_type1 implements org.apache.axis2.databinding.ADBBean {
      * @param param Item
      */
     public void setItem(
-        com.nhry.webService.client.Address.functions.ZSCRM_ADDR_SHIP_TO[] param) {
+        ZSCRM_ADDR_SHIP_TO[] param) {
         validateItem(param);
 
         localItemTracker = param != null;
@@ -69,9 +69,9 @@ public class T_ADDR_type1 implements org.apache.axis2.databinding.ADBBean {
      * @param param com.nhry.webService.client.Address.functions.ZSCRM_ADDR_SHIP_TO
      */
     public void addItem(
-        com.nhry.webService.client.Address.functions.ZSCRM_ADDR_SHIP_TO param) {
+        ZSCRM_ADDR_SHIP_TO param) {
         if (localItem == null) {
-            localItem = new com.nhry.webService.client.Address.functions.ZSCRM_ADDR_SHIP_TO[] {
+            localItem = new ZSCRM_ADDR_SHIP_TO[] {
                     
                 };
         }
@@ -81,7 +81,7 @@ public class T_ADDR_type1 implements org.apache.axis2.databinding.ADBBean {
 
         java.util.List list = org.apache.axis2.databinding.utils.ConverterUtil.toList(localItem);
         list.add(param);
-        this.localItem = (com.nhry.webService.client.Address.functions.ZSCRM_ADDR_SHIP_TO[]) list.toArray(new com.nhry.webService.client.Address.functions.ZSCRM_ADDR_SHIP_TO[list.size()]);
+        this.localItem = (ZSCRM_ADDR_SHIP_TO[]) list.toArray(new ZSCRM_ADDR_SHIP_TO[list.size()]);
     }
 
     /**
@@ -406,7 +406,7 @@ public class T_ADDR_type1 implements org.apache.axis2.databinding.ADBBean {
                             String nsUri = reader.getNamespaceContext()
                                                            .getNamespaceURI(nsPrefix);
 
-                            return (T_ADDR_type1) com.nhry.webService.client.Address.functions.ExtensionMapper.getTypeObject(nsUri,
+                            return (T_ADDR_type1) ExtensionMapper.getTypeObject(nsUri,
                                 type, reader);
                         }
                     }
@@ -429,7 +429,7 @@ public class T_ADDR_type1 implements org.apache.axis2.databinding.ADBBean {
                         new javax.xml.namespace.QName("", "item").equals(
                             reader.getName())) {
                     // Process the array and step past its final element's end.
-                    list1.add(com.nhry.webService.client.Address.functions.ZSCRM_ADDR_SHIP_TO.Factory.parse(
+                    list1.add(ZSCRM_ADDR_SHIP_TO.Factory.parse(
                             reader));
 
                     //loop until we find a start element that is not part of this array
@@ -454,7 +454,7 @@ public class T_ADDR_type1 implements org.apache.axis2.databinding.ADBBean {
                         } else {
                             if (new javax.xml.namespace.QName("", "item").equals(
                                         reader.getName())) {
-                                list1.add(com.nhry.webService.client.Address.functions.ZSCRM_ADDR_SHIP_TO.Factory.parse(
+                                list1.add(ZSCRM_ADDR_SHIP_TO.Factory.parse(
                                         reader));
                             } else {
                                 loopDone1 = true;
@@ -463,8 +463,8 @@ public class T_ADDR_type1 implements org.apache.axis2.databinding.ADBBean {
                     }
 
                     // call the converter utility  to convert and set the array
-                    object.setItem((com.nhry.webService.client.Address.functions.ZSCRM_ADDR_SHIP_TO[]) org.apache.axis2.databinding.utils.ConverterUtil.convertToArray(
-                            com.nhry.webService.client.Address.functions.ZSCRM_ADDR_SHIP_TO.class,
+                    object.setItem((ZSCRM_ADDR_SHIP_TO[]) org.apache.axis2.databinding.utils.ConverterUtil.convertToArray(
+                            ZSCRM_ADDR_SHIP_TO.class,
                             list1));
                 } // End of if for expected property start element
 

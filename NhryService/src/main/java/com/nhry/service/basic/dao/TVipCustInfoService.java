@@ -165,4 +165,11 @@ public interface TVipCustInfoService {
      * @return
      */
     public List<CustStat> getCustInfoStat();
+
+    /**
+     * 更新会员编号
+     * @param vipCustInfo
+     * @return
+     */
+    public int updateSapNo(TVipCustInfo vipCustInfo);
 }
