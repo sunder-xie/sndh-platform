@@ -15,6 +15,7 @@ import com.nhry.data.order.dao.TPreOrderMapper;
 import com.nhry.data.order.domain.TOrderDaliyPlanItem;
 import com.nhry.data.order.domain.TPlanOrderItem;
 import com.nhry.data.order.domain.TPreOrder;
+import com.nhry.model.bill.CustBatchBillQueryModel;
 import com.nhry.model.bill.CustBillQueryModel;
 import com.nhry.model.bill.CustomerBillOrder;
 import com.nhry.model.bill.CustomerPayMentModel;
@@ -158,8 +159,10 @@ public class CustomerBillServiceImpl implements CustomerBillService {
                	 promotionService.createDaliyPlanByPromotion(omodel.getOrder(),omodel.getEntries(),list);
                 }
 
+              /*
                 BigDecimal factAmt = tPreOrderMapper.calculateOrderFactoryAmt(orderNo);
                 int  updateFactAmt = tPreOrderMapper.updateOrderFacAmt(factAmt  == null ? new BigDecimal(0) : factAmt,orderNo);
+               */
                 
                //发送EC,更新订单状态
        			TPreOrder sendOrder = new TPreOrder();
@@ -188,9 +191,7 @@ public class CustomerBillServiceImpl implements CustomerBillService {
     public CustomerBillOrder getCustomerOrderDetailByCode(String orderNo) {
         TMstRecvBill bill = customerBillMapper.getRecBillByOrderNo(orderNo);
         TSysUser user = userSessionService.getCurrentUser();
-        if(bill == null){
-            throw new ServiceException(MessageCode.LOGIC_ERROR,"该订单还未收款！！请先收款");
-        }
+
         int totalNum = 0;
         BigDecimal totalPrice = new BigDecimal(0);
         List<TPlanOrderItem> entries = new  ArrayList<TPlanOrderItem>();
@@ -271,6 +272,29 @@ public class CustomerBillServiceImpl implements CustomerBillService {
             cModel.setDealerNo(user.getDealerId());
         }
         return tPreOrderMapper.searchCustomerOrderForExp(cModel);
+    }
+
+    @Override
+    public int custBatchCollect(CustBatchBillQueryModel model) {
+        TSysUser user = userSessionService.getCurrentUser();
+        model.setSalesOrg(user.getSalesOrg());
+        model.setBranchNo(user.getBranchNo());
+        model.setDealerNo(user.getDealerId());
+        List<TPreOrder> orderList = tPreOrderMapper.searchCustomerOrderByEmpNo(model);
+        if(orderList !=null && orderList.size()>0){
+            for(TPreOrder order : orderList){
+                //判断该订单 对应的收款单是否创建 如果没有先创建
+                TMstRecvBill  bill = this.createRecBillByOrderNo(order.getOrderNo());
+                CustomerPayMentModel cmodel = new CustomerPayMentModel();
+                cmodel.setAmt(order.getInitAmt().subtract(bill.getAccAmt()).toString());
+                cmodel.setEmpNo(order.getEmpNo());
+                cmodel.setOrderNo(bill.getOrderNo());
+                cmodel.setPaymentType("10");
+                this.customerPayment(cmodel);
+            }
+        }
+
+        return 1;
     }
 
     public void setCustomerBillMapper(CustomerBillMapper customerBillMapper) {
