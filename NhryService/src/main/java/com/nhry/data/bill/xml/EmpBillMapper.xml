@@ -227,13 +227,16 @@
             <if test="empNo!=null and ''!=empNo">
                and  b.RECV_EMP = #{empNo,jdbcType=VARCHAR}
             </if>
+            <if test="vipCustNo!=null and ''!=vipCustNo">
+                and  b.VIP_CUST_NO = #{vipCustNo,jdbcType=VARCHAR}
+            </if>
             <if test="startDate!=null and ''!=startDate">
                and  b.RECEIPT_DATE &gt;= #{startDate,jdbcType=DATE}
             </if>
             <if test="endDate!=null and ''!=endDate">
                and  b.RECEIPT_DATE &lt;= #{endDate,jdbcType=DATE}
             </if>
-        ORDER  BY    b.VIP_CUST_NO,b.RECEIPT_DATE DESC
+        ORDER  BY   b.RECEIPT_DATE DESC,b.VIP_CUST_NO
     </select>
 
     <select id="empSalaryRep" resultMap="EmpSalaryResultMap"  parameterType="com.nhry.model.bill.EmpDispDetialInfoSearch" >
