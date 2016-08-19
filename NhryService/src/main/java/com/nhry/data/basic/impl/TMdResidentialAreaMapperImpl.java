@@ -103,9 +103,7 @@ public class TMdResidentialAreaMapperImpl implements TMdResidentialAreaMapper {
 
     @Override
     public int uptResidentialArea(TMdResidentialArea tMdResidentialArea) {
-        int area = sqlSessionTemplate.update("uptArea",tMdResidentialArea);
-        int areaBranch =  sqlSessionTemplate.update("uptBranchArea",tMdResidentialArea);
-        return area + areaBranch;
+        return sqlSessionTemplate.update("uptArea",tMdResidentialArea);
     }
 
     @Override

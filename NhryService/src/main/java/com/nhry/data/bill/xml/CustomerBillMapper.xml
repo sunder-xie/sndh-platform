@@ -25,6 +25,37 @@
         <result column="LAST_MODIFIED_BY" property="lastModifiedBy" jdbcType="VARCHAR" />
         <result column="LAST_MODIFIED_BY_TXT" property="lastModifiedByTxt" jdbcType="VARCHAR" />
     </resultMap>
+
+
+    <resultMap id="CollectResultMap" type="com.nhry.model.bill.CollectOrderBillModel" >
+        <id column="ORDER_NO" property="orderNo" jdbcType="VARCHAR" />
+        <result column="BRANCH_NO" property="branchNo" jdbcType="VARCHAR" />
+        <result column="BRANCH_NAME" property="branchName" jdbcType="VARCHAR" />
+        <result column="BRANCH_TEL" property="branchTel" jdbcType="VARCHAR" />
+        <result column="BRANCH_ADDRESS" property="branchAddress" jdbcType="VARCHAR" />
+        <result column="VIP_CUST_NO" property="vipCustNo" jdbcType="VARCHAR" />
+        <result column="VIP_NAME" property="vipName" jdbcType="VARCHAR" />
+        <result column="CUST_TEL" property="custTel" jdbcType="VARCHAR" />
+        <result column="CUST_ADDRESS" property="custAddress" jdbcType="VARCHAR" />
+        <result column="EMP_NO" property="empNo" jdbcType="VARCHAR" />
+        <result column="EMP_NAME" property="empName" jdbcType="VARCHAR" />
+        <result column="EMP_TEL" property="empTel" jdbcType="VARCHAR" />
+        <result column="ORDER_AMT" property="orderAmt" jdbcType="DECIMAL" />
+        <result column="ACC_AMT" property="accAmt" jdbcType="DECIMAL" />
+        <result column="CUST_ACC_AMT" property="custAccAmt" jdbcType="DECIMAL" />
+        <association property="entries" resultMap="MARAMAP"></association>
+    </resultMap>
+
+    <resultMap id="MARAMAP" type="com.nhry.model.order.ProductItem" >
+        <id column="MATNR" property="matnr" jdbcType="VARCHAR" />
+        <result column="UNIT" property="unit" jdbcType="VARCHAR" />
+        <result column="MATNR_TXT" property="matnrTxt" jdbcType="VARCHAR" />
+        <result column="QTY" property="qty" jdbcType="INTEGER" />
+        <result column="BASE_PRICE" property="basePrice" jdbcType="DECIMAL" />
+        <result column="TOTAL_PRICE" property="totalPrice" jdbcType="DECIMAL" />
+    </resultMap>
+
+
     <sql id="Base_Column_List" >
         RECEIPT_NO,RECEIPT_DATE,ORDER_NO,PAYMENT_TYPE,STATUS,AMT,VIP_CUST_NO,START_TIME,END_TIME,REMARK,
        PAYMENT_YEAR_MONTH,RECV_EMP,CREATE_AT,CREATE_BY,CREATE_BY_TXT,LAST_MODIFIED,LAST_MODIFIED_BY,LAST_MODIFIED_BY_TXT
@@ -193,4 +224,41 @@
         </set>
         WHERE  RECEIPT_NO = #{receiptNo,jdbcType=VARCHAR}
     </update>
+
+
+
+    <select id="queryCollectByOrderNo" resultMap="CollectResultMap" parameterType="String">
+      SELECT
+        o.ORDER_NO,o.BRANCH_NO,b.BRANCH_NAME,o.EMP_NO,e.TEL EMP_TEL,e.EMP_NAME,c.VIP_NAME,
+        c.MP CUST_TEL,b.TEL BRANCH_TEL,o.INIT_AMT,acct.ACCT_AMT,
+        concat(
+                  (
+                    SELECT i.ITEM_NAME from t_sys_code_item i WHERE i.TYPE_CODE=<include refid="mybaties.constant.branch_province"/> and i.ITEM_CODE = b.PROVINCE
+                  ),b.CITY,IFNULL(b.COUNTY,''),b.ADDRESS
+              ) BRANCH_ADDRESS,
+      concat(
+          (SELECT it.ITEM_NAME FROM T_SYS_CODE_ITEM it WHERE it.TYPE_CODE =<include refid="mybaties.constant.COUNTRY_CITY_CONSTANT"/>
+            AND it.ITEM_CODE = c.PROVINCE),
+          (SELECT it.ITEM_NAME FROM T_SYS_CODE_ITEM it WHERE it.TYPE_CODE =<include refid="mybaties.constant.COUNTRY_CITY_CONSTANT"/>
+            AND it.ITEM_CODE = c.CITY),
+          (SELECT it.ITEM_NAME FROM T_SYS_CODE_ITEM it WHERE it.TYPE_CODE =<include refid="mybaties.constant.COUNTRY_CITY_CONSTANT"/>
+            AND it.ITEM_CODE = c.COUNTY),
+          IFNULL( (SELECT ra.ADDRESS_TXT from t_md_residential_area ra WHERE ra.ID =  c.SUBDIST),''),
+          IFNULL((SELECT ra.RESIDENTIAL_AREA_TXT from t_md_residential_area ra  WHERE  ra.ID = c.SUBDIST),''),
+          IFNULL(c.ADDRESS_TXT,'')
+	  )CUST_ADDRESS,
+    (CASE  WHEN acct.ACCT_AMT > o.INIT_AMT THEN 0 ELSE (o.INIT_AMT - acct.ACCT_AMT) END) ORDER_AMT,
+     i.MATNR,a.MATNR_TXT,i.UNIT,i.QTY,i.PRICE BASE_PRICE,i.AMT TOTAL_PRICE
+    from t_preorder o
+    LEFT JOIN t_md_branch b on o.BRANCH_NO = b.BRANCH_NO
+    LEFT JOIN t_md_branch_emp e on o.EMP_NO = e.EMP_NO
+
+    LEFT JOIN t_vip_cust_info  c on c.VIP_CUST_NO = o.MILKMEMBER_NO
+    LEFT JOIN t_vip_acct acct on o.MILKMEMBER_NO =acct.VIP_CUST_NO
+    LEFT JOIN t_mst_order_daliy_plan_item i on i.ORDER_NO = o.ORDER_NO
+     LEFT JOIN  t_md_mara a on i.MATNR = a.MATNR
+    WHERE 1=1
+    and b.SALES_ORG = a.SALES_ORG
+    and o.ORDER_NO = #{orderCode,jdbcType=VARCHAR}
+    </select>
 </mapper>

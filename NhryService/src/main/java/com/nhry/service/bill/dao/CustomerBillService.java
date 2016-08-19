@@ -2,10 +2,7 @@ package com.nhry.service.bill.dao;
 
 import com.github.pagehelper.PageInfo;
 import com.nhry.data.bill.domain.TMstRecvBill;
-import com.nhry.model.bill.CustBatchBillQueryModel;
-import com.nhry.model.bill.CustBillQueryModel;
-import com.nhry.model.bill.CustomerBillOrder;
-import com.nhry.model.bill.CustomerPayMentModel;
+import com.nhry.model.bill.*;
 
 import java.util.List;
 
@@ -26,4 +23,6 @@ public interface CustomerBillService {
    List<String> searchCustomerOrderForExp(CustBillQueryModel cModel);
 
    int custBatchCollect(CustBatchBillQueryModel cModel);
+
+   CollectOrderBillModel queryCollectByOrderNo(String orderCode);
 }

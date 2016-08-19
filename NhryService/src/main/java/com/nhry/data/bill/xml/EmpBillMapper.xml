@@ -194,7 +194,7 @@
         /*a.ACCT_AMT,*/
         b.CUST_ACC_AMT ACCT_AMT,
         c.MP,
-        CONCAT(r.RESIDENTIAL_AREA_TXT ,c.ADDRESS_TXT) ADDRESS,
+        CONCAT(IFNULL(r.RESIDENTIAL_AREA_TXT,'') ,IFNULL(c.ADDRESS_TXT,'')) ADDRESS,
         o.INIT_AMT ACCOUNT_RECE,
         /* b.AMT+b.ACC_AMT ACCOUNT_REAL,*/
         b.AMT  ACCOUNT_REAL,
@@ -221,12 +221,14 @@
             <if test="dealerNo!=null and ''!=dealerNo">
                 and br.DEALER_NO = #{dealerNo,jdbcType=VARCHAR}
             </if>
-
             <if test="branchNo!=null and ''!=branchNo">
                 and o.BRANCH_NO = #{branchNo,jdbcType=VARCHAR}
             </if>
             <if test="empNo!=null and ''!=empNo">
-               and  o.EMP_NO = #{empNo,jdbcType=VARCHAR}
+               and  b.RECV_EMP = #{empNo,jdbcType=VARCHAR}
+            </if>
+            <if test="vipCustNo!=null and ''!=vipCustNo">
+                and  b.VIP_CUST_NO = #{vipCustNo,jdbcType=VARCHAR}
             </if>
             <if test="startDate!=null and ''!=startDate">
                and  b.RECEIPT_DATE &gt;= #{startDate,jdbcType=DATE}
@@ -234,6 +236,7 @@
             <if test="endDate!=null and ''!=endDate">
                and  b.RECEIPT_DATE &lt;= #{endDate,jdbcType=DATE}
             </if>
+        ORDER  BY   b.RECEIPT_DATE DESC,b.VIP_CUST_NO
     </select>
 
     <select id="empSalaryRep" resultMap="EmpSalaryResultMap"  parameterType="com.nhry.model.bill.EmpDispDetialInfoSearch" >
