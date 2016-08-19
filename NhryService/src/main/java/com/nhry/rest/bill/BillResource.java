@@ -208,4 +208,26 @@ public class BillResource extends BaseResource {
     public Response getEmpBranchBillDetail (@ApiParam(required=true,name="customerBill",value="根据送奶员和日期获取详情") EmpBranchBillDetailSearch bsearch){
         return convertToRespModel(MessageCode.NORMAL, null, branchBillService.getEmpBranchBillDetail(bsearch));
     }
+
+
+
+    @POST
+    @Path("/cust/queryCollectByOrderNo")
+    @Produces(MediaType.APPLICATION_JSON)
+    @Consumes(MediaType.APPLICATION_JSON)
+    @ApiOperation(value = "/cust/queryCollectByOrderNo", response = PageInfo.class, notes = "根据订单号 获取 收款单信息")
+    public Response queryCollectByOrderNo (@ApiParam(required=true,name="orderCode",value="订单号") @QueryParam("orderCode") String orderCode){
+        return convertToRespModel(MessageCode.NORMAL, null, customerBillService.queryCollectByOrderNo(orderCode));
+    }
+
+
+
+    @POST
+    @Path("/cust/custPayment")
+    @Produces(MediaType.APPLICATION_JSON)
+    @Consumes(MediaType.APPLICATION_JSON)
+    @ApiOperation(value = "/cust/custPayment", response = int.class, notes = "送奶工APP收款方法")
+    public Response custPayment(@ApiParam(required=true,name="cModel",value="收款信息") CustomerPayMentModel cModel){
+        return convertToRespModel(MessageCode.NORMAL, null, customerBillService.custPayment(cModel));
+    }
 }

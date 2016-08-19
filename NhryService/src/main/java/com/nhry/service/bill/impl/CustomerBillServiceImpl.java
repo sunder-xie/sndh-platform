@@ -15,10 +15,7 @@ import com.nhry.data.order.dao.TPreOrderMapper;
 import com.nhry.data.order.domain.TOrderDaliyPlanItem;
 import com.nhry.data.order.domain.TPlanOrderItem;
 import com.nhry.data.order.domain.TPreOrder;
-import com.nhry.model.bill.CustBatchBillQueryModel;
-import com.nhry.model.bill.CustBillQueryModel;
-import com.nhry.model.bill.CustomerBillOrder;
-import com.nhry.model.bill.CustomerPayMentModel;
+import com.nhry.model.bill.*;
 import com.nhry.model.order.OrderCreateModel;
 import com.nhry.service.basic.dao.TVipCustInfoService;
 import com.nhry.service.bill.dao.CustomerBillService;
@@ -83,7 +80,7 @@ public class CustomerBillServiceImpl implements CustomerBillService {
 
     @Override
     public int customerPayment(CustomerPayMentModel cModel) {
-             String errorContent ="";
+            String errorContent ="";
             int updateBill = 0;
             int updateOrderStatus = 0;
             String orderNo = cModel.getOrderNo();
@@ -295,6 +292,33 @@ public class CustomerBillServiceImpl implements CustomerBillService {
         }
 
         return 1;
+    }
+
+    @Override
+    public CollectOrderBillModel queryCollectByOrderNo(String orderCode) {
+        return customerBillMapper.queryCollectByOrderNo(orderCode);
+    }
+
+    @Override
+    public int custPayment(CustomerPayMentModel cModel) {
+       /* String orderNo = cModel.getOrderNo();
+
+        TPreOrder order = tPreOrderMapper.selectByPrimaryKey(orderNo);
+        if(order == null){
+            throw new ServiceException(MessageCode.LOGIC_ERROR,"该订单不存在！");
+        }
+        TMstRecvBill customerBill = customerBillMapper.getRecBillByOrderNo(orderNo);
+
+        if(customerBill!= null && "20".equals(customerBill.getStatus())){
+            throw new ServiceException(MessageCode.LOGIC_ERROR,"该订单已收款");
+        }
+        if(customerBill == null){
+            this.createRecBillByOrderNo(orderNo);
+        }
+
+        TSysUser user = userSessionService.getCurrentUser();
+        Date date = new Date();*/
+        return 0;
     }
 
     public void setCustomerBillMapper(CustomerBillMapper customerBillMapper) {
