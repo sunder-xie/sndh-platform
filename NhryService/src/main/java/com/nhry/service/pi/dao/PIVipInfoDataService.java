@@ -23,7 +23,7 @@ public interface PIVipInfoDataService {
     PISuccessTMessage<EvMemb> generateVipInfoData(String custId, String vipTel);
 
     /**
-     * 线程会员创建更新
+     * 线程池方式会员创建更新
      * @param custId
      * @param vipTel
      */
@@ -53,13 +53,23 @@ public interface PIVipInfoDataService {
     PISuccessTMessage sendSubscriber(TVipCustInfo vipCustInfo);
 
     /**
+     * 线程池方式订户信息更新
+     * @param vipCustInfo
+     */
+    void executeUptVipCust(TVipCustInfo vipCustInfo);
+    /**
      * 订户地址更新
      * @param address
      * @param sapGuid
      * @return
      */
     PISuccessTMessage sendAddress(TMdAddress address,String sapGuid);
-
-
+    /**
+     * 线程池方式订户地址更新
+     * @param address
+     * @param sapGuid
+     * @return
+     */
+    void executeSendAddress(TMdAddress address,String sapGuid);
 
 }

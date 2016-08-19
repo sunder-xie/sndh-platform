@@ -50,7 +50,7 @@ public abstract class ZT_BusinessData_MaintainServiceCallbackHandler {
      * auto generated Axis2 Error handler
      * override this method for handling error response from deliveryQuery operation
      */
-    public void receiveErrordeliveryQuery(java.lang.Exception e) {
+    public void receiveErrordeliveryQuery(Exception e) {
     }
 
     /**
@@ -65,7 +65,7 @@ public abstract class ZT_BusinessData_MaintainServiceCallbackHandler {
      * auto generated Axis2 Error handler
      * override this method for handling error response from salesOrderCreate operation
      */
-    public void receiveErrorsalesOrderCreate(java.lang.Exception e) {
+    public void receiveErrorsalesOrderCreate(Exception e) {
     }
 
     /**
@@ -80,6 +80,6 @@ public abstract class ZT_BusinessData_MaintainServiceCallbackHandler {
      * auto generated Axis2 Error handler
      * override this method for handling error response from requisitionCreate operation
      */
-    public void receiveErrorrequisitionCreate(java.lang.Exception e) {
+    public void receiveErrorrequisitionCreate(Exception e) {
     }
 }

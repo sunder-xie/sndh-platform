@@ -20,7 +20,7 @@ public class ZSD_SALESORDER_DATA_RFC_2 implements org.apache.axis2.databinding.A
     /**
      * field for IT_ZSSD00010
      */
-    protected com.nhry.webService.client.businessData.functions.ZSSD00010 localIT_ZSSD00010;
+    protected ZSSD00010 localIT_ZSSD00010;
 
     /*  This tracker boolean wil be used to detect whether the user called the set method
      *   for this attribute. It will be used to determine whether to include this field
@@ -31,7 +31,7 @@ public class ZSD_SALESORDER_DATA_RFC_2 implements org.apache.axis2.databinding.A
     /**
      * field for I_MONI
      */
-    protected com.nhry.webService.client.businessData.functions.I_MONI_type1 localI_MONI;
+    protected I_MONI_type1 localI_MONI;
 
     /*  This tracker boolean wil be used to detect whether the user called the set method
      *   for this attribute. It will be used to determine whether to include this field
@@ -42,7 +42,7 @@ public class ZSD_SALESORDER_DATA_RFC_2 implements org.apache.axis2.databinding.A
     /**
      * field for ET_BAPIRETURN1
      */
-    protected com.nhry.webService.client.businessData.functions.ET_BAPIRETURN1_type0 localET_BAPIRETURN1;
+    protected ET_BAPIRETURN1_type0 localET_BAPIRETURN1;
 
     /*  This tracker boolean wil be used to detect whether the user called the set method
      *   for this attribute. It will be used to determine whether to include this field
@@ -53,7 +53,7 @@ public class ZSD_SALESORDER_DATA_RFC_2 implements org.apache.axis2.databinding.A
     /**
      * field for IT_ZSSD00011
      */
-    protected com.nhry.webService.client.businessData.functions.IT_ZSSD00011_type0 localIT_ZSSD00011;
+    protected IT_ZSSD00011_type0 localIT_ZSSD00011;
 
     /*  This tracker boolean wil be used to detect whether the user called the set method
      *   for this attribute. It will be used to determine whether to include this field
@@ -69,7 +69,7 @@ public class ZSD_SALESORDER_DATA_RFC_2 implements org.apache.axis2.databinding.A
      * Auto generated getter method
      * @return com.nhry.webService.client.businessData.functions.ZSSD00010
      */
-    public com.nhry.webService.client.businessData.functions.ZSSD00010 getIT_ZSSD00010() {
+    public ZSSD00010 getIT_ZSSD00010() {
         return localIT_ZSSD00010;
     }
 
@@ -78,7 +78,7 @@ public class ZSD_SALESORDER_DATA_RFC_2 implements org.apache.axis2.databinding.A
      * @param param IT_ZSSD00010
      */
     public void setIT_ZSSD00010(
-        com.nhry.webService.client.businessData.functions.ZSSD00010 param) {
+        ZSSD00010 param) {
         localIT_ZSSD00010Tracker = param != null;
 
         this.localIT_ZSSD00010 = param;
@@ -92,7 +92,7 @@ public class ZSD_SALESORDER_DATA_RFC_2 implements org.apache.axis2.databinding.A
      * Auto generated getter method
      * @return com.nhry.webService.client.businessData.functions.I_MONI_type1
      */
-    public com.nhry.webService.client.businessData.functions.I_MONI_type1 getI_MONI() {
+    public I_MONI_type1 getI_MONI() {
         return localI_MONI;
     }
 
@@ -101,7 +101,7 @@ public class ZSD_SALESORDER_DATA_RFC_2 implements org.apache.axis2.databinding.A
      * @param param I_MONI
      */
     public void setI_MONI(
-        com.nhry.webService.client.businessData.functions.I_MONI_type1 param) {
+        I_MONI_type1 param) {
         localI_MONITracker = param != null;
 
         this.localI_MONI = param;
@@ -115,7 +115,7 @@ public class ZSD_SALESORDER_DATA_RFC_2 implements org.apache.axis2.databinding.A
      * Auto generated getter method
      * @return com.nhry.webService.client.businessData.functions.ET_BAPIRETURN1_type0
      */
-    public com.nhry.webService.client.businessData.functions.ET_BAPIRETURN1_type0 getET_BAPIRETURN1() {
+    public ET_BAPIRETURN1_type0 getET_BAPIRETURN1() {
         return localET_BAPIRETURN1;
     }
 
@@ -124,7 +124,7 @@ public class ZSD_SALESORDER_DATA_RFC_2 implements org.apache.axis2.databinding.A
      * @param param ET_BAPIRETURN1
      */
     public void setET_BAPIRETURN1(
-        com.nhry.webService.client.businessData.functions.ET_BAPIRETURN1_type0 param) {
+        ET_BAPIRETURN1_type0 param) {
         localET_BAPIRETURN1Tracker = param != null;
 
         this.localET_BAPIRETURN1 = param;
@@ -138,7 +138,7 @@ public class ZSD_SALESORDER_DATA_RFC_2 implements org.apache.axis2.databinding.A
      * Auto generated getter method
      * @return com.nhry.webService.client.businessData.functions.IT_ZSSD00011_type0
      */
-    public com.nhry.webService.client.businessData.functions.IT_ZSSD00011_type0 getIT_ZSSD00011() {
+    public IT_ZSSD00011_type0 getIT_ZSSD00011() {
         return localIT_ZSSD00011;
     }
 
@@ -147,7 +147,7 @@ public class ZSD_SALESORDER_DATA_RFC_2 implements org.apache.axis2.databinding.A
      * @param param IT_ZSSD00011
      */
     public void setIT_ZSSD00011(
-        com.nhry.webService.client.businessData.functions.IT_ZSSD00011_type0 param) {
+        IT_ZSSD00011_type0 param) {
         localIT_ZSSD00011Tracker = param != null;
 
         this.localIT_ZSSD00011 = param;
@@ -178,8 +178,8 @@ public class ZSD_SALESORDER_DATA_RFC_2 implements org.apache.axis2.databinding.A
         javax.xml.stream.XMLStreamWriter xmlWriter, boolean serializeType)
         throws javax.xml.stream.XMLStreamException,
             org.apache.axis2.databinding.ADBException {
-        java.lang.String prefix = null;
-        java.lang.String namespace = null;
+        String prefix = null;
+        String namespace = null;
 
         prefix = parentQName.getPrefix();
         namespace = parentQName.getNamespaceURI();
@@ -187,7 +187,7 @@ public class ZSD_SALESORDER_DATA_RFC_2 implements org.apache.axis2.databinding.A
             xmlWriter);
 
         if (serializeType) {
-            java.lang.String namespacePrefix = registerPrefix(xmlWriter,
+            String namespacePrefix = registerPrefix(xmlWriter,
                     "urn:sap-com:document:sap:rfc:functions");
 
             if ((namespacePrefix != null) &&
@@ -245,7 +245,7 @@ public class ZSD_SALESORDER_DATA_RFC_2 implements org.apache.axis2.databinding.A
         xmlWriter.writeEndElement();
     }
 
-    private static java.lang.String generatePrefix(java.lang.String namespace) {
+    private static String generatePrefix(String namespace) {
         if (namespace.equals("urn:sap-com:document:sap:rfc:functions")) {
             return "ns1";
         }
@@ -256,11 +256,11 @@ public class ZSD_SALESORDER_DATA_RFC_2 implements org.apache.axis2.databinding.A
     /**
      * Utility method to write an element start tag.
      */
-    private void writeStartElement(java.lang.String prefix,
-        java.lang.String namespace, java.lang.String localPart,
+    private void writeStartElement(String prefix,
+        String namespace, String localPart,
         javax.xml.stream.XMLStreamWriter xmlWriter)
         throws javax.xml.stream.XMLStreamException {
-        java.lang.String writerPrefix = xmlWriter.getPrefix(namespace);
+        String writerPrefix = xmlWriter.getPrefix(namespace);
 
         if (writerPrefix != null) {
             xmlWriter.writeStartElement(writerPrefix, localPart, namespace);
@@ -280,11 +280,11 @@ public class ZSD_SALESORDER_DATA_RFC_2 implements org.apache.axis2.databinding.A
     /**
      * Util method to write an attribute with the ns prefix
      */
-    private void writeAttribute(java.lang.String prefix,
-        java.lang.String namespace, java.lang.String attName,
-        java.lang.String attValue, javax.xml.stream.XMLStreamWriter xmlWriter)
+    private void writeAttribute(String prefix,
+        String namespace, String attName,
+        String attValue, javax.xml.stream.XMLStreamWriter xmlWriter)
         throws javax.xml.stream.XMLStreamException {
-        java.lang.String writerPrefix = xmlWriter.getPrefix(namespace);
+        String writerPrefix = xmlWriter.getPrefix(namespace);
 
         if (writerPrefix != null) {
             xmlWriter.writeAttribute(writerPrefix, namespace, attName, attValue);
@@ -298,8 +298,8 @@ public class ZSD_SALESORDER_DATA_RFC_2 implements org.apache.axis2.databinding.A
     /**
      * Util method to write an attribute without the ns prefix
      */
-    private void writeAttribute(java.lang.String namespace,
-        java.lang.String attName, java.lang.String attValue,
+    private void writeAttribute(String namespace,
+        String attName, String attValue,
         javax.xml.stream.XMLStreamWriter xmlWriter)
         throws javax.xml.stream.XMLStreamException {
         if (namespace.equals("")) {
@@ -313,18 +313,18 @@ public class ZSD_SALESORDER_DATA_RFC_2 implements org.apache.axis2.databinding.A
     /**
      * Util method to write an attribute without the ns prefix
      */
-    private void writeQNameAttribute(java.lang.String namespace,
-        java.lang.String attName, javax.xml.namespace.QName qname,
+    private void writeQNameAttribute(String namespace,
+        String attName, javax.xml.namespace.QName qname,
         javax.xml.stream.XMLStreamWriter xmlWriter)
         throws javax.xml.stream.XMLStreamException {
-        java.lang.String attributeNamespace = qname.getNamespaceURI();
-        java.lang.String attributePrefix = xmlWriter.getPrefix(attributeNamespace);
+        String attributeNamespace = qname.getNamespaceURI();
+        String attributePrefix = xmlWriter.getPrefix(attributeNamespace);
 
         if (attributePrefix == null) {
             attributePrefix = registerPrefix(xmlWriter, attributeNamespace);
         }
 
-        java.lang.String attributeValue;
+        String attributeValue;
 
         if (attributePrefix.trim().length() > 0) {
             attributeValue = attributePrefix + ":" + qname.getLocalPart();
@@ -347,10 +347,10 @@ public class ZSD_SALESORDER_DATA_RFC_2 implements org.apache.axis2.databinding.A
     private void writeQName(javax.xml.namespace.QName qname,
         javax.xml.stream.XMLStreamWriter xmlWriter)
         throws javax.xml.stream.XMLStreamException {
-        java.lang.String namespaceURI = qname.getNamespaceURI();
+        String namespaceURI = qname.getNamespaceURI();
 
         if (namespaceURI != null) {
-            java.lang.String prefix = xmlWriter.getPrefix(namespaceURI);
+            String prefix = xmlWriter.getPrefix(namespaceURI);
 
             if (prefix == null) {
                 prefix = generatePrefix(namespaceURI);
@@ -379,9 +379,9 @@ public class ZSD_SALESORDER_DATA_RFC_2 implements org.apache.axis2.databinding.A
         if (qnames != null) {
             // we have to store this data until last moment since it is not possible to write any
             // namespace data after writing the charactor data
-            java.lang.StringBuffer stringToWrite = new java.lang.StringBuffer();
-            java.lang.String namespaceURI = null;
-            java.lang.String prefix = null;
+            StringBuffer stringToWrite = new StringBuffer();
+            String namespaceURI = null;
+            String prefix = null;
 
             for (int i = 0; i < qnames.length; i++) {
                 if (i > 0) {
@@ -420,10 +420,10 @@ public class ZSD_SALESORDER_DATA_RFC_2 implements org.apache.axis2.databinding.A
     /**
      * Register a namespace prefix
      */
-    private java.lang.String registerPrefix(
-        javax.xml.stream.XMLStreamWriter xmlWriter, java.lang.String namespace)
+    private String registerPrefix(
+        javax.xml.stream.XMLStreamWriter xmlWriter, String namespace)
         throws javax.xml.stream.XMLStreamException {
-        java.lang.String prefix = xmlWriter.getPrefix(namespace);
+        String prefix = xmlWriter.getPrefix(namespace);
 
         if (prefix == null) {
             prefix = generatePrefix(namespace);
@@ -431,7 +431,7 @@ public class ZSD_SALESORDER_DATA_RFC_2 implements org.apache.axis2.databinding.A
             javax.xml.namespace.NamespaceContext nsContext = xmlWriter.getNamespaceContext();
 
             while (true) {
-                java.lang.String uri = nsContext.getNamespaceURI(prefix);
+                String uri = nsContext.getNamespaceURI(prefix);
 
                 if ((uri == null) || (uri.length() == 0)) {
                     break;
@@ -461,14 +461,14 @@ public class ZSD_SALESORDER_DATA_RFC_2 implements org.apache.axis2.databinding.A
          *                If this object is a complex type, the reader is positioned at the end element of its outer element
          */
         public static ZSD_SALESORDER_DATA_RFC_2 parse(
-            javax.xml.stream.XMLStreamReader reader) throws java.lang.Exception {
+            javax.xml.stream.XMLStreamReader reader) throws Exception {
             ZSD_SALESORDER_DATA_RFC_2 object = new ZSD_SALESORDER_DATA_RFC_2();
 
             int event;
             javax.xml.namespace.QName currentQName = null;
-            java.lang.String nillableValue = null;
-            java.lang.String prefix = "";
-            java.lang.String namespaceuri = "";
+            String nillableValue = null;
+            String prefix = "";
+            String namespaceuri = "";
 
             try {
                 while (!reader.isStartElement() && !reader.isEndElement())
@@ -478,11 +478,11 @@ public class ZSD_SALESORDER_DATA_RFC_2 implements org.apache.axis2.databinding.A
 
                 if (reader.getAttributeValue(
                             "http://www.w3.org/2001/XMLSchema-instance", "type") != null) {
-                    java.lang.String fullTypeName = reader.getAttributeValue("http://www.w3.org/2001/XMLSchema-instance",
+                    String fullTypeName = reader.getAttributeValue("http://www.w3.org/2001/XMLSchema-instance",
                             "type");
 
                     if (fullTypeName != null) {
-                        java.lang.String nsPrefix = null;
+                        String nsPrefix = null;
 
                         if (fullTypeName.indexOf(":") > -1) {
                             nsPrefix = fullTypeName.substring(0,
@@ -491,15 +491,15 @@ public class ZSD_SALESORDER_DATA_RFC_2 implements org.apache.axis2.databinding.A
 
                         nsPrefix = (nsPrefix == null) ? "" : nsPrefix;
 
-                        java.lang.String type = fullTypeName.substring(fullTypeName.indexOf(
+                        String type = fullTypeName.substring(fullTypeName.indexOf(
                                     ":") + 1);
 
                         if (!"ZSD_SALESORDER_DATA_RFC_2".equals(type)) {
                             //find namespace for the prefix
-                            java.lang.String nsUri = reader.getNamespaceContext()
+                            String nsUri = reader.getNamespaceContext()
                                                            .getNamespaceURI(nsPrefix);
 
-                            return (ZSD_SALESORDER_DATA_RFC_2) com.nhry.webService.client.businessData.functions.ExtensionMapper.getTypeObject(nsUri,
+                            return (ZSD_SALESORDER_DATA_RFC_2) ExtensionMapper.getTypeObject(nsUri,
                                 type, reader);
                         }
                     }
@@ -518,7 +518,7 @@ public class ZSD_SALESORDER_DATA_RFC_2 implements org.apache.axis2.databinding.A
                                     reader.getName())) ||
                                 new javax.xml.namespace.QName("", "IT_ZSSD00010").equals(
                                     reader.getName())) {
-                            object.setIT_ZSSD00010(com.nhry.webService.client.businessData.functions.ZSSD00010.Factory.parse(
+                            object.setIT_ZSSD00010(ZSSD00010.Factory.parse(
                                     reader));
 
                             reader.next();
@@ -530,7 +530,7 @@ public class ZSD_SALESORDER_DATA_RFC_2 implements org.apache.axis2.databinding.A
                                     reader.getName())) ||
                                 new javax.xml.namespace.QName("", "I_MONI").equals(
                                     reader.getName())) {
-                            object.setI_MONI(com.nhry.webService.client.businessData.functions.I_MONI_type1.Factory.parse(
+                            object.setI_MONI(I_MONI_type1.Factory.parse(
                                     reader));
 
                             reader.next();
@@ -542,7 +542,7 @@ public class ZSD_SALESORDER_DATA_RFC_2 implements org.apache.axis2.databinding.A
                                     "ET_BAPIRETURN1").equals(reader.getName())) ||
                                 new javax.xml.namespace.QName("",
                                     "ET_BAPIRETURN1").equals(reader.getName())) {
-                            object.setET_BAPIRETURN1(com.nhry.webService.client.businessData.functions.ET_BAPIRETURN1_type0.Factory.parse(
+                            object.setET_BAPIRETURN1(ET_BAPIRETURN1_type0.Factory.parse(
                                     reader));
 
                             reader.next();
@@ -554,7 +554,7 @@ public class ZSD_SALESORDER_DATA_RFC_2 implements org.apache.axis2.databinding.A
                                     reader.getName())) ||
                                 new javax.xml.namespace.QName("", "IT_ZSSD00011").equals(
                                     reader.getName())) {
-                            object.setIT_ZSSD00011(com.nhry.webService.client.businessData.functions.IT_ZSSD00011_type0.Factory.parse(
+                            object.setIT_ZSSD00011(IT_ZSSD00011_type0.Factory.parse(
                                     reader));
 
                             reader.next();
@@ -570,7 +570,7 @@ public class ZSD_SALESORDER_DATA_RFC_2 implements org.apache.axis2.databinding.A
                     }
                 } // end of while loop
             } catch (javax.xml.stream.XMLStreamException e) {
-                throw new java.lang.Exception(e);
+                throw new Exception(e);
             }
 
             return object;

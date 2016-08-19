@@ -23,7 +23,7 @@ public class ZSD_REQ_EKKO implements org.apache.axis2.databinding.ADBBean {
     /**
      * field for COMP_CODE
      */
-    protected com.nhry.webService.client.businessData.functions.COMP_CODE_type1 localCOMP_CODE;
+    protected COMP_CODE_type1 localCOMP_CODE;
 
     /*  This tracker boolean wil be used to detect whether the user called the set method
      *   for this attribute. It will be used to determine whether to include this field
@@ -34,7 +34,7 @@ public class ZSD_REQ_EKKO implements org.apache.axis2.databinding.ADBBean {
     /**
      * field for DOC_TYPE
      */
-    protected com.nhry.webService.client.businessData.functions.DOC_TYPE_type1 localDOC_TYPE;
+    protected DOC_TYPE_type1 localDOC_TYPE;
 
     /*  This tracker boolean wil be used to detect whether the user called the set method
      *   for this attribute. It will be used to determine whether to include this field
@@ -45,7 +45,7 @@ public class ZSD_REQ_EKKO implements org.apache.axis2.databinding.ADBBean {
     /**
      * field for PURCH_ORG
      */
-    protected com.nhry.webService.client.businessData.functions.PURCH_ORG_type1 localPURCH_ORG;
+    protected PURCH_ORG_type1 localPURCH_ORG;
 
     /*  This tracker boolean wil be used to detect whether the user called the set method
      *   for this attribute. It will be used to determine whether to include this field
@@ -56,7 +56,7 @@ public class ZSD_REQ_EKKO implements org.apache.axis2.databinding.ADBBean {
     /**
      * field for PUR_GROUP
      */
-    protected com.nhry.webService.client.businessData.functions.PUR_GROUP_type1 localPUR_GROUP;
+    protected PUR_GROUP_type1 localPUR_GROUP;
 
     /*  This tracker boolean wil be used to detect whether the user called the set method
      *   for this attribute. It will be used to determine whether to include this field
@@ -67,7 +67,7 @@ public class ZSD_REQ_EKKO implements org.apache.axis2.databinding.ADBBean {
     /**
      * field for SUPPL_PLNT
      */
-    protected com.nhry.webService.client.businessData.functions.SUPPL_PLNT_type1 localSUPPL_PLNT;
+    protected SUPPL_PLNT_type1 localSUPPL_PLNT;
 
     /*  This tracker boolean wil be used to detect whether the user called the set method
      *   for this attribute. It will be used to determine whether to include this field
@@ -78,7 +78,7 @@ public class ZSD_REQ_EKKO implements org.apache.axis2.databinding.ADBBean {
     /**
      * field for I_DATUM
      */
-    protected com.nhry.webService.client.businessData.functions.Date localI_DATUM;
+    protected Date localI_DATUM;
 
     /*  This tracker boolean wil be used to detect whether the user called the set method
      *   for this attribute. It will be used to determine whether to include this field
@@ -94,7 +94,7 @@ public class ZSD_REQ_EKKO implements org.apache.axis2.databinding.ADBBean {
      * Auto generated getter method
      * @return com.nhry.webService.client.businessData.functions.COMP_CODE_type1
      */
-    public com.nhry.webService.client.businessData.functions.COMP_CODE_type1 getCOMP_CODE() {
+    public COMP_CODE_type1 getCOMP_CODE() {
         return localCOMP_CODE;
     }
 
@@ -103,7 +103,7 @@ public class ZSD_REQ_EKKO implements org.apache.axis2.databinding.ADBBean {
      * @param param COMP_CODE
      */
     public void setCOMP_CODE(
-        com.nhry.webService.client.businessData.functions.COMP_CODE_type1 param) {
+        COMP_CODE_type1 param) {
         localCOMP_CODETracker = param != null;
 
         this.localCOMP_CODE = param;
@@ -117,7 +117,7 @@ public class ZSD_REQ_EKKO implements org.apache.axis2.databinding.ADBBean {
      * Auto generated getter method
      * @return com.nhry.webService.client.businessData.functions.DOC_TYPE_type1
      */
-    public com.nhry.webService.client.businessData.functions.DOC_TYPE_type1 getDOC_TYPE() {
+    public DOC_TYPE_type1 getDOC_TYPE() {
         return localDOC_TYPE;
     }
 
@@ -126,7 +126,7 @@ public class ZSD_REQ_EKKO implements org.apache.axis2.databinding.ADBBean {
      * @param param DOC_TYPE
      */
     public void setDOC_TYPE(
-        com.nhry.webService.client.businessData.functions.DOC_TYPE_type1 param) {
+        DOC_TYPE_type1 param) {
         localDOC_TYPETracker = param != null;
 
         this.localDOC_TYPE = param;
@@ -140,7 +140,7 @@ public class ZSD_REQ_EKKO implements org.apache.axis2.databinding.ADBBean {
      * Auto generated getter method
      * @return com.nhry.webService.client.businessData.functions.PURCH_ORG_type1
      */
-    public com.nhry.webService.client.businessData.functions.PURCH_ORG_type1 getPURCH_ORG() {
+    public PURCH_ORG_type1 getPURCH_ORG() {
         return localPURCH_ORG;
     }
 
@@ -149,7 +149,7 @@ public class ZSD_REQ_EKKO implements org.apache.axis2.databinding.ADBBean {
      * @param param PURCH_ORG
      */
     public void setPURCH_ORG(
-        com.nhry.webService.client.businessData.functions.PURCH_ORG_type1 param) {
+        PURCH_ORG_type1 param) {
         localPURCH_ORGTracker = param != null;
 
         this.localPURCH_ORG = param;
@@ -163,7 +163,7 @@ public class ZSD_REQ_EKKO implements org.apache.axis2.databinding.ADBBean {
      * Auto generated getter method
      * @return com.nhry.webService.client.businessData.functions.PUR_GROUP_type1
      */
-    public com.nhry.webService.client.businessData.functions.PUR_GROUP_type1 getPUR_GROUP() {
+    public PUR_GROUP_type1 getPUR_GROUP() {
         return localPUR_GROUP;
     }
 
@@ -172,7 +172,7 @@ public class ZSD_REQ_EKKO implements org.apache.axis2.databinding.ADBBean {
      * @param param PUR_GROUP
      */
     public void setPUR_GROUP(
-        com.nhry.webService.client.businessData.functions.PUR_GROUP_type1 param) {
+        PUR_GROUP_type1 param) {
         localPUR_GROUPTracker = param != null;
 
         this.localPUR_GROUP = param;
@@ -186,7 +186,7 @@ public class ZSD_REQ_EKKO implements org.apache.axis2.databinding.ADBBean {
      * Auto generated getter method
      * @return com.nhry.webService.client.businessData.functions.SUPPL_PLNT_type1
      */
-    public com.nhry.webService.client.businessData.functions.SUPPL_PLNT_type1 getSUPPL_PLNT() {
+    public SUPPL_PLNT_type1 getSUPPL_PLNT() {
         return localSUPPL_PLNT;
     }
 
@@ -195,7 +195,7 @@ public class ZSD_REQ_EKKO implements org.apache.axis2.databinding.ADBBean {
      * @param param SUPPL_PLNT
      */
     public void setSUPPL_PLNT(
-        com.nhry.webService.client.businessData.functions.SUPPL_PLNT_type1 param) {
+        SUPPL_PLNT_type1 param) {
         localSUPPL_PLNTTracker = param != null;
 
         this.localSUPPL_PLNT = param;
@@ -209,7 +209,7 @@ public class ZSD_REQ_EKKO implements org.apache.axis2.databinding.ADBBean {
      * Auto generated getter method
      * @return com.nhry.webService.client.businessData.functions.Date
      */
-    public com.nhry.webService.client.businessData.functions.Date getI_DATUM() {
+    public Date getI_DATUM() {
         return localI_DATUM;
     }
 
@@ -218,7 +218,7 @@ public class ZSD_REQ_EKKO implements org.apache.axis2.databinding.ADBBean {
      * @param param I_DATUM
      */
     public void setI_DATUM(
-        com.nhry.webService.client.businessData.functions.Date param) {
+        Date param) {
         localI_DATUMTracker = param != null;
 
         this.localI_DATUM = param;
@@ -249,8 +249,8 @@ public class ZSD_REQ_EKKO implements org.apache.axis2.databinding.ADBBean {
         javax.xml.stream.XMLStreamWriter xmlWriter, boolean serializeType)
         throws javax.xml.stream.XMLStreamException,
             org.apache.axis2.databinding.ADBException {
-        java.lang.String prefix = null;
-        java.lang.String namespace = null;
+        String prefix = null;
+        String namespace = null;
 
         prefix = parentQName.getPrefix();
         namespace = parentQName.getNamespaceURI();
@@ -258,7 +258,7 @@ public class ZSD_REQ_EKKO implements org.apache.axis2.databinding.ADBBean {
             xmlWriter);
 
         if (serializeType) {
-            java.lang.String namespacePrefix = registerPrefix(xmlWriter,
+            String namespacePrefix = registerPrefix(xmlWriter,
                     "urn:sap-com:document:sap:rfc:functions");
 
             if ((namespacePrefix != null) &&
@@ -336,7 +336,7 @@ public class ZSD_REQ_EKKO implements org.apache.axis2.databinding.ADBBean {
         xmlWriter.writeEndElement();
     }
 
-    private static java.lang.String generatePrefix(java.lang.String namespace) {
+    private static String generatePrefix(String namespace) {
         if (namespace.equals("urn:sap-com:document:sap:rfc:functions")) {
             return "ns1";
         }
@@ -347,11 +347,11 @@ public class ZSD_REQ_EKKO implements org.apache.axis2.databinding.ADBBean {
     /**
      * Utility method to write an element start tag.
      */
-    private void writeStartElement(java.lang.String prefix,
-        java.lang.String namespace, java.lang.String localPart,
+    private void writeStartElement(String prefix,
+        String namespace, String localPart,
         javax.xml.stream.XMLStreamWriter xmlWriter)
         throws javax.xml.stream.XMLStreamException {
-        java.lang.String writerPrefix = xmlWriter.getPrefix(namespace);
+        String writerPrefix = xmlWriter.getPrefix(namespace);
 
         if (writerPrefix != null) {
             xmlWriter.writeStartElement(writerPrefix, localPart, namespace);
@@ -371,11 +371,11 @@ public class ZSD_REQ_EKKO implements org.apache.axis2.databinding.ADBBean {
     /**
      * Util method to write an attribute with the ns prefix
      */
-    private void writeAttribute(java.lang.String prefix,
-        java.lang.String namespace, java.lang.String attName,
-        java.lang.String attValue, javax.xml.stream.XMLStreamWriter xmlWriter)
+    private void writeAttribute(String prefix,
+        String namespace, String attName,
+        String attValue, javax.xml.stream.XMLStreamWriter xmlWriter)
         throws javax.xml.stream.XMLStreamException {
-        java.lang.String writerPrefix = xmlWriter.getPrefix(namespace);
+        String writerPrefix = xmlWriter.getPrefix(namespace);
 
         if (writerPrefix != null) {
             xmlWriter.writeAttribute(writerPrefix, namespace, attName, attValue);
@@ -389,8 +389,8 @@ public class ZSD_REQ_EKKO implements org.apache.axis2.databinding.ADBBean {
     /**
      * Util method to write an attribute without the ns prefix
      */
-    private void writeAttribute(java.lang.String namespace,
-        java.lang.String attName, java.lang.String attValue,
+    private void writeAttribute(String namespace,
+        String attName, String attValue,
         javax.xml.stream.XMLStreamWriter xmlWriter)
         throws javax.xml.stream.XMLStreamException {
         if (namespace.equals("")) {
@@ -404,18 +404,18 @@ public class ZSD_REQ_EKKO implements org.apache.axis2.databinding.ADBBean {
     /**
      * Util method to write an attribute without the ns prefix
      */
-    private void writeQNameAttribute(java.lang.String namespace,
-        java.lang.String attName, javax.xml.namespace.QName qname,
+    private void writeQNameAttribute(String namespace,
+        String attName, javax.xml.namespace.QName qname,
         javax.xml.stream.XMLStreamWriter xmlWriter)
         throws javax.xml.stream.XMLStreamException {
-        java.lang.String attributeNamespace = qname.getNamespaceURI();
-        java.lang.String attributePrefix = xmlWriter.getPrefix(attributeNamespace);
+        String attributeNamespace = qname.getNamespaceURI();
+        String attributePrefix = xmlWriter.getPrefix(attributeNamespace);
 
         if (attributePrefix == null) {
             attributePrefix = registerPrefix(xmlWriter, attributeNamespace);
         }
 
-        java.lang.String attributeValue;
+        String attributeValue;
 
         if (attributePrefix.trim().length() > 0) {
             attributeValue = attributePrefix + ":" + qname.getLocalPart();
@@ -438,10 +438,10 @@ public class ZSD_REQ_EKKO implements org.apache.axis2.databinding.ADBBean {
     private void writeQName(javax.xml.namespace.QName qname,
         javax.xml.stream.XMLStreamWriter xmlWriter)
         throws javax.xml.stream.XMLStreamException {
-        java.lang.String namespaceURI = qname.getNamespaceURI();
+        String namespaceURI = qname.getNamespaceURI();
 
         if (namespaceURI != null) {
-            java.lang.String prefix = xmlWriter.getPrefix(namespaceURI);
+            String prefix = xmlWriter.getPrefix(namespaceURI);
 
             if (prefix == null) {
                 prefix = generatePrefix(namespaceURI);
@@ -470,9 +470,9 @@ public class ZSD_REQ_EKKO implements org.apache.axis2.databinding.ADBBean {
         if (qnames != null) {
             // we have to store this data until last moment since it is not possible to write any
             // namespace data after writing the charactor data
-            java.lang.StringBuffer stringToWrite = new java.lang.StringBuffer();
-            java.lang.String namespaceURI = null;
-            java.lang.String prefix = null;
+            StringBuffer stringToWrite = new StringBuffer();
+            String namespaceURI = null;
+            String prefix = null;
 
             for (int i = 0; i < qnames.length; i++) {
                 if (i > 0) {
@@ -511,10 +511,10 @@ public class ZSD_REQ_EKKO implements org.apache.axis2.databinding.ADBBean {
     /**
      * Register a namespace prefix
      */
-    private java.lang.String registerPrefix(
-        javax.xml.stream.XMLStreamWriter xmlWriter, java.lang.String namespace)
+    private String registerPrefix(
+        javax.xml.stream.XMLStreamWriter xmlWriter, String namespace)
         throws javax.xml.stream.XMLStreamException {
-        java.lang.String prefix = xmlWriter.getPrefix(namespace);
+        String prefix = xmlWriter.getPrefix(namespace);
 
         if (prefix == null) {
             prefix = generatePrefix(namespace);
@@ -522,7 +522,7 @@ public class ZSD_REQ_EKKO implements org.apache.axis2.databinding.ADBBean {
             javax.xml.namespace.NamespaceContext nsContext = xmlWriter.getNamespaceContext();
 
             while (true) {
-                java.lang.String uri = nsContext.getNamespaceURI(prefix);
+                String uri = nsContext.getNamespaceURI(prefix);
 
                 if ((uri == null) || (uri.length() == 0)) {
                     break;
@@ -552,14 +552,14 @@ public class ZSD_REQ_EKKO implements org.apache.axis2.databinding.ADBBean {
          *                If this object is a complex type, the reader is positioned at the end element of its outer element
          */
         public static ZSD_REQ_EKKO parse(
-            javax.xml.stream.XMLStreamReader reader) throws java.lang.Exception {
+            javax.xml.stream.XMLStreamReader reader) throws Exception {
             ZSD_REQ_EKKO object = new ZSD_REQ_EKKO();
 
             int event;
             javax.xml.namespace.QName currentQName = null;
-            java.lang.String nillableValue = null;
-            java.lang.String prefix = "";
-            java.lang.String namespaceuri = "";
+            String nillableValue = null;
+            String prefix = "";
+            String namespaceuri = "";
 
             try {
                 while (!reader.isStartElement() && !reader.isEndElement())
@@ -569,11 +569,11 @@ public class ZSD_REQ_EKKO implements org.apache.axis2.databinding.ADBBean {
 
                 if (reader.getAttributeValue(
                             "http://www.w3.org/2001/XMLSchema-instance", "type") != null) {
-                    java.lang.String fullTypeName = reader.getAttributeValue("http://www.w3.org/2001/XMLSchema-instance",
+                    String fullTypeName = reader.getAttributeValue("http://www.w3.org/2001/XMLSchema-instance",
                             "type");
 
                     if (fullTypeName != null) {
-                        java.lang.String nsPrefix = null;
+                        String nsPrefix = null;
 
                         if (fullTypeName.indexOf(":") > -1) {
                             nsPrefix = fullTypeName.substring(0,
@@ -582,15 +582,15 @@ public class ZSD_REQ_EKKO implements org.apache.axis2.databinding.ADBBean {
 
                         nsPrefix = (nsPrefix == null) ? "" : nsPrefix;
 
-                        java.lang.String type = fullTypeName.substring(fullTypeName.indexOf(
+                        String type = fullTypeName.substring(fullTypeName.indexOf(
                                     ":") + 1);
 
                         if (!"ZSD_REQ_EKKO".equals(type)) {
                             //find namespace for the prefix
-                            java.lang.String nsUri = reader.getNamespaceContext()
+                            String nsUri = reader.getNamespaceContext()
                                                            .getNamespaceURI(nsPrefix);
 
-                            return (ZSD_REQ_EKKO) com.nhry.webService.client.businessData.functions.ExtensionMapper.getTypeObject(nsUri,
+                            return (ZSD_REQ_EKKO) ExtensionMapper.getTypeObject(nsUri,
                                 type, reader);
                         }
                     }
@@ -610,7 +610,7 @@ public class ZSD_REQ_EKKO implements org.apache.axis2.databinding.ADBBean {
                             reader.getName())) ||
                         new javax.xml.namespace.QName("", "COMP_CODE").equals(
                             reader.getName())) {
-                    object.setCOMP_CODE(com.nhry.webService.client.businessData.functions.COMP_CODE_type1.Factory.parse(
+                    object.setCOMP_CODE(COMP_CODE_type1.Factory.parse(
                             reader));
 
                     reader.next();
@@ -627,7 +627,7 @@ public class ZSD_REQ_EKKO implements org.apache.axis2.databinding.ADBBean {
                             reader.getName())) ||
                         new javax.xml.namespace.QName("", "DOC_TYPE").equals(
                             reader.getName())) {
-                    object.setDOC_TYPE(com.nhry.webService.client.businessData.functions.DOC_TYPE_type1.Factory.parse(
+                    object.setDOC_TYPE(DOC_TYPE_type1.Factory.parse(
                             reader));
 
                     reader.next();
@@ -644,7 +644,7 @@ public class ZSD_REQ_EKKO implements org.apache.axis2.databinding.ADBBean {
                             reader.getName())) ||
                         new javax.xml.namespace.QName("", "PURCH_ORG").equals(
                             reader.getName())) {
-                    object.setPURCH_ORG(com.nhry.webService.client.businessData.functions.PURCH_ORG_type1.Factory.parse(
+                    object.setPURCH_ORG(PURCH_ORG_type1.Factory.parse(
                             reader));
 
                     reader.next();
@@ -661,7 +661,7 @@ public class ZSD_REQ_EKKO implements org.apache.axis2.databinding.ADBBean {
                             reader.getName())) ||
                         new javax.xml.namespace.QName("", "PUR_GROUP").equals(
                             reader.getName())) {
-                    object.setPUR_GROUP(com.nhry.webService.client.businessData.functions.PUR_GROUP_type1.Factory.parse(
+                    object.setPUR_GROUP(PUR_GROUP_type1.Factory.parse(
                             reader));
 
                     reader.next();
@@ -678,7 +678,7 @@ public class ZSD_REQ_EKKO implements org.apache.axis2.databinding.ADBBean {
                             reader.getName())) ||
                         new javax.xml.namespace.QName("", "SUPPL_PLNT").equals(
                             reader.getName())) {
-                    object.setSUPPL_PLNT(com.nhry.webService.client.businessData.functions.SUPPL_PLNT_type1.Factory.parse(
+                    object.setSUPPL_PLNT(SUPPL_PLNT_type1.Factory.parse(
                             reader));
 
                     reader.next();
@@ -695,7 +695,7 @@ public class ZSD_REQ_EKKO implements org.apache.axis2.databinding.ADBBean {
                             reader.getName())) ||
                         new javax.xml.namespace.QName("", "I_DATUM").equals(
                             reader.getName())) {
-                    object.setI_DATUM(com.nhry.webService.client.businessData.functions.Date.Factory.parse(
+                    object.setI_DATUM(Date.Factory.parse(
                             reader));
 
                     reader.next();
@@ -713,7 +713,7 @@ public class ZSD_REQ_EKKO implements org.apache.axis2.databinding.ADBBean {
                         "Unexpected subelement " + reader.getName());
                 }
             } catch (javax.xml.stream.XMLStreamException e) {
-                throw new java.lang.Exception(e);
+                throw new Exception(e);
             }
 
             return object;

@@ -1,5 +1,5 @@
 /**
- * VRKME_type0.java
+ * WBS_ELEM_type0.java
  *
  * This file was auto-generated from WSDL
  * by the Apache Axis2 version: 1.7.3  Built on : May 30, 2016 (04:09:26 BST)
@@ -8,35 +8,35 @@ package com.nhry.webService.client.businessData.functions;
 
 
 /**
- *  VRKME_type0 bean class
+ *  WBS_ELEM_type0 bean class
  */
 @SuppressWarnings({"unchecked",
     "unused"
 })
-public class VRKME_type0 implements org.apache.axis2.databinding.ADBBean {
+public class WBS_ELEM_type0 implements org.apache.axis2.databinding.ADBBean {
     public static final javax.xml.namespace.QName MY_QNAME = new javax.xml.namespace.QName("urn:sap-com:document:sap:rfc:functions",
-            "VRKME_type0", "ns1");
+            "WBS_ELEM_type0", "ns1");
 
     /**
-     * field for VRKME_type0
+     * field for WBS_ELEM_type0
      */
-    protected String localVRKME_type0;
+    protected String localWBS_ELEM_type0;
 
     /**
      * Auto generated getter method
      * @return java.lang.String
      */
-    public String getVRKME_type0() {
-        return localVRKME_type0;
+    public String getWBS_ELEM_type0() {
+        return localWBS_ELEM_type0;
     }
 
     /**
      * Auto generated setter method
-     * @param param VRKME_type0
+     * @param param WBS_ELEM_type0
      */
-    public void setVRKME_type0(String param) {
-        if ((String.valueOf(param).length() <= 3)) {
-            this.localVRKME_type0 = param;
+    public void setWBS_ELEM_type0(String param) {
+        if ((String.valueOf(param).length() <= 24)) {
+            this.localWBS_ELEM_type0 = param;
         } else {
             throw new RuntimeException(
                 "Input values do not follow defined XSD restrictions");
@@ -44,7 +44,7 @@ public class VRKME_type0 implements org.apache.axis2.databinding.ADBBean {
     }
 
     public String toString() {
-        return localVRKME_type0.toString();
+        return localWBS_ELEM_type0.toString();
     }
 
     /**
@@ -87,19 +87,19 @@ public class VRKME_type0 implements org.apache.axis2.databinding.ADBBean {
                     (namespacePrefix.trim().length() > 0)) {
                 writeAttribute("xsi",
                     "http://www.w3.org/2001/XMLSchema-instance", "type",
-                    namespacePrefix + ":VRKME_type0", xmlWriter);
+                    namespacePrefix + ":WBS_ELEM_type0", xmlWriter);
             } else {
                 writeAttribute("xsi",
                     "http://www.w3.org/2001/XMLSchema-instance", "type",
-                    "VRKME_type0", xmlWriter);
+                    "WBS_ELEM_type0", xmlWriter);
             }
         }
 
-        if (localVRKME_type0 == null) {
+        if (localWBS_ELEM_type0 == null) {
             throw new org.apache.axis2.databinding.ADBException(
-                "VRKME_type0 cannot be null !!");
+                "WBS_ELEM_type0 cannot be null !!");
         } else {
-            xmlWriter.writeCharacters(localVRKME_type0);
+            xmlWriter.writeCharacters(localWBS_ELEM_type0);
         }
 
         xmlWriter.writeEndElement();
@@ -313,17 +313,17 @@ public class VRKME_type0 implements org.apache.axis2.databinding.ADBBean {
     public static class Factory {
         private static org.apache.commons.logging.Log log = org.apache.commons.logging.LogFactory.getLog(Factory.class);
 
-        public static VRKME_type0 fromString(String value,
+        public static WBS_ELEM_type0 fromString(String value,
             String namespaceURI) {
-            VRKME_type0 returnValue = new VRKME_type0();
+            WBS_ELEM_type0 returnValue = new WBS_ELEM_type0();
 
-            returnValue.setVRKME_type0(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(
+            returnValue.setWBS_ELEM_type0(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(
                     value));
 
             return returnValue;
         }
 
-        public static VRKME_type0 fromString(
+        public static WBS_ELEM_type0 fromString(
             javax.xml.stream.XMLStreamReader xmlStreamReader,
             String content) {
             if (content.indexOf(":") > -1) {
@@ -345,9 +345,9 @@ public class VRKME_type0 implements org.apache.axis2.databinding.ADBBean {
          * Postcondition: If this object is an element, the reader is positioned at its end element
          *                If this object is a complex type, the reader is positioned at the end element of its outer element
          */
-        public static VRKME_type0 parse(javax.xml.stream.XMLStreamReader reader)
-            throws Exception {
-            VRKME_type0 object = new VRKME_type0();
+        public static WBS_ELEM_type0 parse(
+            javax.xml.stream.XMLStreamReader reader) throws Exception {
+            WBS_ELEM_type0 object = new WBS_ELEM_type0();
 
             int event;
             javax.xml.namespace.QName currentQName = null;
@@ -374,13 +374,13 @@ public class VRKME_type0 implements org.apache.axis2.databinding.ADBBean {
                             if ("true".equals(nillableValue) ||
                                     "1".equals(nillableValue)) {
                                 throw new org.apache.axis2.databinding.ADBException(
-                                    "The element: " + "VRKME_type0" +
+                                    "The element: " + "WBS_ELEM_type0" +
                                     "  cannot be null");
                             }
 
                             String content = reader.getElementText();
 
-                            object.setVRKME_type0(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(
+                            object.setWBS_ELEM_type0(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(
                                     content));
                         } // End of if for expected property start element
 
