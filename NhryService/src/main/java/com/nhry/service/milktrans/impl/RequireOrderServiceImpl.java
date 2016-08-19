@@ -795,7 +795,11 @@ public class RequireOrderServiceImpl implements RequireOrderService {
         salOrderItems.setOrderNo(orderNo);
         salOrderItems.setOrderDate(requiredDate);
         salOrderItems.setQty(item.getQty());
+        if(StringUtils.isNotBlank(item.getPlanItemNo())){
+            salOrderItems.setPromNo(item.getPlanItemNo());
+        }
         if("dealer".equals(type)){
+            //salOrderItems.setRefMatnr(item.getMatnr());
             salOrderItems.setMatnr(item.getMatnr());
             salOrderItems.setType("10");
         }else{

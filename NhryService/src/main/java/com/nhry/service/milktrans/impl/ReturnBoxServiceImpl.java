@@ -10,19 +10,18 @@ import com.nhry.data.basic.dao.TMdBranchEmpMapper;
 import com.nhry.data.milk.dao.TDispOrderItemMapper;
 import com.nhry.data.milk.dao.TDispOrderMapper;
 import com.nhry.data.milk.domain.TDispOrder;
+import com.nhry.data.milk.domain.TDispOrderItem;
 import com.nhry.data.milktrans.dao.TRecBotDetailMapper;
 import com.nhry.data.milktrans.domain.TRecBotDetail;
 import com.nhry.data.stock.dao.TSsmStockMapper;
+import com.nhry.model.milk.RouteDetailUpdateModel;
 import com.nhry.model.milktrans.ReturnboxSerarch;
 import com.nhry.model.milktrans.UpdateReturnBoxModel;
 import com.nhry.model.stock.StockModel;
 import com.nhry.service.milktrans.dao.ReturnBoxService;
 import com.nhry.utils.PrimaryKeyUtils;
 
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * Created by gongjk on 2016/6/27.
@@ -91,7 +90,6 @@ public class ReturnBoxServiceImpl implements ReturnBoxService {
      */
     @Override
     public int createDayRetBox(String dispOrderNo) {
-        Date today = new Date();
         TSysUser user = userSessionService.getCurrentUser();
         TDispOrder dispOrder = tDispOrderMapper.getDispOrderByNo(dispOrderNo);
         List<TRecBotDetail> tRecBot = tRecBotDetailMapper.selectRetByDispOrderNo(dispOrderNo);
@@ -102,7 +100,7 @@ public class ReturnBoxServiceImpl implements ReturnBoxService {
                 for (TRecBotDetail bot : entries) {
                     bot.setEmpNo(dispOrder.getDispEmpNo());
                     bot.setDispOrderNo(dispOrderNo);
-                    bot.setCreateAt(today);
+                    bot.setCreateAt(dispOrder.getDispDate());
                     bot.setCreateBy(user.getLoginName());
                     bot.setCreateByTxt(user.getDisplayName());
                     bot.setStatus("10");
@@ -118,7 +116,6 @@ public class ReturnBoxServiceImpl implements ReturnBoxService {
     public PageInfo searchRetBoxPage(ReturnboxSerarch rSearch) {
 
         TSysUser user = userSessionService.getCurrentUser();
-        List<String> rids = urMapper.getUserRidsByLoginName(user.getLoginName());
         rSearch.setSalesOrg(user.getSalesOrg());
         rSearch.setBranchNo(user.getBranchNo());
         rSearch.setDealerNo(user.getDealerId());
@@ -174,6 +171,18 @@ public class ReturnBoxServiceImpl implements ReturnBoxService {
             }
         }
         return 1;
+    }
+
+    /**
+     * 更新路单时  更新回瓶信息
+     * @param newItem
+     *  @param orgItem
+     * @return
+     */
+    @Override
+    public int uptBoxReturnByDispOrder(RouteDetailUpdateModel newItem , TDispOrderItem orgItem) {
+
+      return 0;
     }
 
 }

@@ -9,6 +9,7 @@
         <result column="STATUS" property="status" jdbcType="VARCHAR" />
         <result column="REMARK" property="remark" jdbcType="VARCHAR" />
         <result column="AMT" property="amt" jdbcType="DECIMAL" />
+        <result column="SUPP_AMT" property="suppAmt" jdbcType="DECIMAL" />
         <result column="ACC_AMT" property="accAmt" jdbcType="DECIMAL" />
         <result column="CUST_ACC_AMT" property="custAccAmt" jdbcType="DECIMAL" />
         <result column="VIP_CUST_NO" property="vipCustNo" jdbcType="VARCHAR" />
@@ -93,6 +94,9 @@
             <if test="amt != null">
                 AMT,
             </if>
+            <if test="suppAmt != null">
+                SUPP_AMT,
+            </if>
             <if test="accAmt != null">
                 ACC_AMT,
             </if>
@@ -142,6 +146,9 @@
             </if>
             <if test="amt!= null">
                 #{amt,jdbcType=DECIMAL},
+            </if>
+            <if test="suppAmt != null">
+                #{suppAmt,jdbcType=DECIMAL},
             </if>
             <if test="accAmt != null">
               #{accAmt,jdbcType=DECIMAL},

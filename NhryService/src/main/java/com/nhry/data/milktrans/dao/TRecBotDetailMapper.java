@@ -23,4 +23,6 @@ public interface TRecBotDetailMapper {
     List<TRecBotDetail> selectRetByDispOrderNo(String dispOrderNo);
 
     List<TRecBotDetail> craeteRetBotByStock(StockModel sModel);
+
+    int delBotDetailByDetLsh(String detLsh);
 }
