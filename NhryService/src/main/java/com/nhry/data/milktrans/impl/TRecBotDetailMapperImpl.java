@@ -40,6 +40,11 @@ public class TRecBotDetailMapperImpl implements TRecBotDetailMapper {
     }
 
     @Override
+    public int delBotDetailByDetLsh(String detLsh) {
+        return sqlSessionTemplate.delete("delBotDetailByDetLsh",detLsh);
+    }
+
+    @Override
     public int uptRecBotDetail(TRecBotDetail entry) {
         return sqlSessionTemplate.update("uptRecBotDetail",entry);
     }

@@ -751,8 +751,20 @@ public class DeliverMilkServiceImpl extends BaseService implements DeliverMilkSe
 		
 		return 1;
 	}
-	
-	
+
+	/**
+	 * 更新路单后  修改 内部销售订单 和 库存
+	 * @param newItem
+	 * @param orgItem
+     * @return
+     */
+	@Override
+	public int updateInSalOrderAndStockByUpdateDiapOrder(RouteDetailUpdateModel newItem, TDispOrderItem orgItem) {
+
+		return 0;
+	}
+
+
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	
 	//日期往前后加n天
