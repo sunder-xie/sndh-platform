@@ -1,6 +1,7 @@
 package com.nhry.service.milk.dao;
 
 import com.github.pagehelper.PageInfo;
+import com.nhry.data.milk.domain.TDispOrderItem;
 import com.nhry.model.milk.*;
 import com.nhry.model.milktrans.CreateInSalOrderModel;
 import com.nhry.model.milktrans.InSideSalOrderDetailSearchModel;
@@ -43,4 +44,6 @@ public interface DeliverMilkService {
 	PageInfo getInsideSalOrderDetail(InSideSalOrderDetailSearchModel sModel);
 
 	int createInsideSalOrderByStock(CreateInSalOrderModel cModel);
+	
+	int reEditRouteDetail(TDispOrderItem item);
 }
