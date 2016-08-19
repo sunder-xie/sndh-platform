@@ -35,13 +35,12 @@ public class BillResource extends BaseResource {
     private EmpBillService empBillService;
 
 
-
     @POST
     @Path("/cust/search")
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes(MediaType.APPLICATION_JSON)
     @ApiOperation(value = "/cust/search", response = PageInfo.class, notes = "查询订户订单列表")
-    public Response searchCustomerOrder(@ApiParam(required=true,name="cModel",value="cModel") CustBillQueryModel cModel){
+    public Response searchCustomerOrder(@ApiParam(required = true, name = "cModel", value = "cModel") CustBillQueryModel cModel) {
         return convertToRespModel(MessageCode.NORMAL, null, customerBillService.searchCustomerOrder(cModel));
     }
 
@@ -51,7 +50,7 @@ public class BillResource extends BaseResource {
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes(MediaType.APPLICATION_JSON)
     @ApiOperation(value = "/cust/search", response = PageInfo.class, notes = "获取条件下的订单编号（批量导出收款单用）")
-    public Response searchForExp(@ApiParam(required=true,name="cModel",value="cModel") CustBillQueryModel cModel){
+    public Response searchForExp(@ApiParam(required = true, name = "cModel", value = "cModel") CustBillQueryModel cModel) {
         return convertToRespModel(MessageCode.NORMAL, null, customerBillService.searchCustomerOrderForExp(cModel));
     }
 
@@ -59,15 +58,15 @@ public class BillResource extends BaseResource {
     @Path("/cust/getCustomerOrderDetialByCode")
     @Produces(MediaType.APPLICATION_JSON)
     @ApiOperation(value = "/cust/getCustomerOrderByCode", response = Response.class, notes = "查询订户收款表详情")
-    public Response getCustomerOrderByCode(@ApiParam(required=true,name="orderNo",value="订单号") @QueryParam("orderNo") String orderNo){
-         return convertToRespModel(MessageCode.NORMAL, null, customerBillService.getCustomerOrderDetailByCode(orderNo));
+    public Response getCustomerOrderByCode(@ApiParam(required = true, name = "orderNo", value = "订单号") @QueryParam("orderNo") String orderNo) {
+        return convertToRespModel(MessageCode.NORMAL, null, customerBillService.getCustomerOrderDetailByCode(orderNo));
     }
 
     @GET
     @Path("/cust/getRecBillByOrderNo")
     @Produces(MediaType.APPLICATION_JSON)
     @ApiOperation(value = "/cust/getRecBillByOrderNo", response = Response.class, notes = "根据订单号获取收款单")
-    public Response getRecBillByOrderNo(@ApiParam(required=true,name="orderNo",value="订单号") @QueryParam("orderNo") String orderNo){
+    public Response getRecBillByOrderNo(@ApiParam(required = true, name = "orderNo", value = "订单号") @QueryParam("orderNo") String orderNo) {
         return convertToRespModel(MessageCode.NORMAL, null, customerBillService.getRecBillByOrderNo(orderNo));
     }
 
@@ -76,8 +75,18 @@ public class BillResource extends BaseResource {
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes(MediaType.APPLICATION_JSON)
     @ApiOperation(value = "/cust/customerPayment", response = int.class, notes = "订户收款")
-    public Response customerPayment(@ApiParam(required=true,name="cModel",value="收款信息") CustomerPayMentModel cModel){
+    public Response customerPayment(@ApiParam(required = true, name = "cModel", value = "收款信息") CustomerPayMentModel cModel) {
         return convertToRespModel(MessageCode.NORMAL, null, customerBillService.customerPayment(cModel));
+    }
+
+
+    @POST
+    @Path("/cust/custBatchCollect")
+    @Produces(MediaType.APPLICATION_JSON)
+    @Consumes(MediaType.APPLICATION_JSON)
+    @ApiOperation(value = "/cust/custBatchCollect", response = int.class, notes = "订户批量收款")
+    public Response custBatchCollect(@ApiParam(required = true, name = "cModel", value = "收款信息") CustBatchBillQueryModel cModel) {
+        return convertToRespModel(MessageCode.NORMAL, null, customerBillService.custBatchCollect(cModel));
     }
 
 
@@ -85,7 +94,7 @@ public class BillResource extends BaseResource {
     @Path("/cust/createRecBillByOrderNo")
     @Produces(MediaType.APPLICATION_JSON)
     @ApiOperation(value = "/cust/createRecBillByOrderNo", response = Response.class, notes = "根据订单号创建收款单")
-    public Response createRecBillByOrderNo(@ApiParam(required=true,name="orderNo",value="员工工资单流水号") @QueryParam("orderNo") String  orderNo){
+    public Response createRecBillByOrderNo(@ApiParam(required = true, name = "orderNo", value = "员工工资单流水号") @QueryParam("orderNo") String orderNo) {
         return convertToRespModel(MessageCode.NORMAL, null, customerBillService.createRecBillByOrderNo(orderNo));
     }
 
@@ -95,7 +104,7 @@ public class BillResource extends BaseResource {
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes(MediaType.APPLICATION_JSON)
     @ApiOperation(value = "/emp/empDispDetialInfo", response = Response.class, notes = "获取送奶工配送数量明细结算表")
-    public Response empDispDetialInfo(@ApiParam(required=true,name="eSearch",value="收款信息") EmpDispDetialInfoSearch eSearch){
+    public Response empDispDetialInfo(@ApiParam(required = true, name = "eSearch", value = "收款信息") EmpDispDetialInfoSearch eSearch) {
         return convertToRespModel(MessageCode.NORMAL, null, empBillService.empDispDetialInfo(eSearch));
     }
 
@@ -104,11 +113,9 @@ public class BillResource extends BaseResource {
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes(MediaType.APPLICATION_JSON)
     @ApiOperation(value = "/emp/empAccountReceAmount", response = Response.class, notes = "送奶员收款金额核算")
-    public Response empAccountReceAmount(@ApiParam(required=true,name="eSearch",value="收款信息") EmpDispDetialInfoSearch eSearch){
+    public Response empAccountReceAmount(@ApiParam(required = true, name = "eSearch", value = "收款信息") EmpDispDetialInfoSearch eSearch) {
         return convertToRespModel(MessageCode.NORMAL, null, empBillService.empAccountReceAmount(eSearch));
     }
-
-
 
 
     @POST
@@ -116,10 +123,9 @@ public class BillResource extends BaseResource {
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes(MediaType.APPLICATION_JSON)
     @ApiOperation(value = "/emp/searchEmpSalaryRep", response = PageInfo.class, notes = "送奶员工资报表")
-    public Response searchEmpSalaryRep(@ApiParam(required=true,name="eSearch",value="查询条件") EmpDispDetialInfoSearch eSearch){
+    public Response searchEmpSalaryRep(@ApiParam(required = true, name = "eSearch", value = "查询条件") EmpDispDetialInfoSearch eSearch) {
         return convertToRespModel(MessageCode.NORMAL, null, empBillService.searchEmpSalaryRep(eSearch));
     }
-
 
 
     @POST
@@ -127,7 +133,7 @@ public class BillResource extends BaseResource {
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes(MediaType.APPLICATION_JSON)
     @ApiOperation(value = "/emp/setBranchEmpSalary", response = Response.class, notes = "结算上月本奶站下所有送奶员工资")
-    public Response setBranchEmpSalary(){
+    public Response setBranchEmpSalary() {
         return convertToRespModel(MessageCode.NORMAL, null, empBillService.setBranchEmpSalary());
     }
 
@@ -136,7 +142,7 @@ public class BillResource extends BaseResource {
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes(MediaType.APPLICATION_JSON)
     @ApiOperation(value = "/emp/setBranchEmpSalaryThisMonth", response = Response.class, notes = "结算本月本奶站下所有送奶员工资")
-    public Response setBranchEmpSalaryThisMonth(){
+    public Response setBranchEmpSalaryThisMonth() {
         return convertToRespModel(MessageCode.NORMAL, null, empBillService.setBranchEmpSalaryThisMonth());
     }
 
@@ -144,10 +150,9 @@ public class BillResource extends BaseResource {
     @Path("/emp/getEmpSalaryBySalaryNo")
     @Produces(MediaType.APPLICATION_JSON)
     @ApiOperation(value = "/emp/getEmpSalaryBySalaryNo", response = PageInfo.class, notes = "根据工资单流水号获取详情")
-    public Response getEmpSalaryBySalaryNo(@ApiParam(required=true,name="empSalLsh",value="员工工资单流水号") @QueryParam("empSalLsh") String  empSalLsh){
+    public Response getEmpSalaryBySalaryNo(@ApiParam(required = true, name = "empSalLsh", value = "员工工资单流水号") @QueryParam("empSalLsh") String empSalLsh) {
         return convertToRespModel(MessageCode.NORMAL, null, empBillService.getEmpSalaryBySalaryNo(empSalLsh));
     }
-
 
 
     @POST
@@ -155,7 +160,7 @@ public class BillResource extends BaseResource {
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes(MediaType.APPLICATION_JSON)
     @ApiOperation(value = "/emp/getSalesOrgDispRate", response = Response.class, notes = "获取当前登录人所在的 销售组织下的配送率")
-    public Response getSalesOrgDispRate(){
+    public Response getSalesOrgDispRate() {
         return convertToRespModel(MessageCode.NORMAL, null, empBillService.getSalesOrgDispRate());
     }
 
@@ -165,7 +170,7 @@ public class BillResource extends BaseResource {
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes(MediaType.APPLICATION_JSON)
     @ApiOperation(value = "/emp/uptEmpDispRate", response = int.class, notes = "更新销售组织 配送率")
-    public Response uptEmpDispRate(@ApiParam(required=true,name="sModel",value="JSON 格式") SaleOrgDispRateModel sModel){
+    public Response uptEmpDispRate(@ApiParam(required = true, name = "sModel", value = "JSON 格式") SaleOrgDispRateModel sModel) {
         return convertToRespModel(MessageCode.NORMAL, null, empBillService.uptEmpDispRate(sModel));
     }
 
@@ -175,7 +180,7 @@ public class BillResource extends BaseResource {
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes(MediaType.APPLICATION_JSON)
     @ApiOperation(value = "/branch/customerBranchBill", response = PageInfo.class, notes = "奶站结算-订户维度")
-    public Response branchBill(@ApiParam(required=true,name="customerBill",value="奶站结算") CustBranchBillSearch bsearch){
+    public Response branchBill(@ApiParam(required = true, name = "customerBill", value = "奶站结算") CustBranchBillSearch bsearch) {
         return convertToRespModel(MessageCode.NORMAL, null, branchBillService.CustomerBranchBill(bsearch));
     }
 
@@ -184,10 +189,9 @@ public class BillResource extends BaseResource {
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes(MediaType.APPLICATION_JSON)
     @ApiOperation(value = "/branch/empBranchBill", response = PageInfo.class, notes = "奶站结算-送奶工维度")
-    public Response branchBill(@ApiParam(required=true,name="customerBill",value="奶站结算") EmpBranchBillSearch eSearch){
+    public Response branchBill(@ApiParam(required = true, name = "customerBill", value = "奶站结算") EmpBranchBillSearch eSearch) {
         return convertToRespModel(MessageCode.NORMAL, null, branchBillService.EmpBranchBill(eSearch));
     }
-
 
 
     @POST
@@ -195,7 +199,18 @@ public class BillResource extends BaseResource {
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes(MediaType.APPLICATION_JSON)
     @ApiOperation(value = "/branch/getEmpBranchBillDetail", response = PageInfo.class, notes = "奶站结算-送奶员维度-详情")
-    public Response getEmpBranchBillDetail (@ApiParam(required=true,name="customerBill",value="根据送奶员和日期获取详情") EmpBranchBillDetailSearch bsearch){
+    public Response getEmpBranchBillDetail(@ApiParam(required = true, name = "customerBill", value = "根据送奶员和日期获取详情") EmpBranchBillDetailSearch bsearch) {
         return convertToRespModel(MessageCode.NORMAL, null, branchBillService.getEmpBranchBillDetail(bsearch));
     }
+
+
+    @POST
+    @Path("/cust/queryCollectByOrderNo")
+    @Produces(MediaType.APPLICATION_JSON)
+    @Consumes(MediaType.APPLICATION_JSON)
+    @ApiOperation(value = "/cust/queryCollectByOrderNo", response = PageInfo.class, notes = "根据订单号 获取 收款单信息")
+    public Response queryCollectByOrderNo(@ApiParam(required = true, name = "orderCode", value = "订单号") @QueryParam("orderCode") String orderCode) {
+        return convertToRespModel(MessageCode.NORMAL, null, customerBillService.queryCollectByOrderNo(orderCode));
+    }
+
 }

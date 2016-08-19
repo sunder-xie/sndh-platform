@@ -4,9 +4,9 @@ import com.github.pagehelper.PageInfo;
 import com.nhry.data.auth.domain.TSysUser;
 import com.nhry.model.auth.UserQueryModel;
 import com.nhry.model.auth.UserQueryModel2;
+import com.nhry.model.auth.UserQueryModel3;
 
 import java.util.List;
-import java.util.Map;
 
 public interface UserService {
 	public PageInfo findUser(UserQueryModel um);
@@ -24,6 +24,13 @@ public interface UserService {
 	 * @return
 	 */
 	public TSysUser login(TSysUser user);
+	
+	/**
+	 * 用户注销接口
+	 * @param token
+	 * @return
+	 */
+	public boolean logout(String token);
 	
 	/**
 	 * 根据token获取用户信息
@@ -47,12 +54,12 @@ public interface UserService {
 	 * @param model
 	 * @return
 	 */
-	List<TSysUser> findNotRoleUser(UserQueryModel model);
+	List<TSysUser> findNotRoleUser(UserQueryModel3 model);
 
 	/**
 	 * 查询未分配角色的用户分页
 	 * @param model
 	 * @return
 	 */
-	PageInfo<TSysUser> findNotRoleUserPage(UserQueryModel model);
+	PageInfo<TSysUser> findNotRoleUserPage(UserQueryModel3 model);
 }

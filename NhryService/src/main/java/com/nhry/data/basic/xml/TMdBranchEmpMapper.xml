@@ -26,6 +26,7 @@
     <result column="BASE_SALARY" property="baseSalary" jdbcType="INTEGER" />
     <result column="JOIN_DATE" property="joinDate" jdbcType="DATE" />
     <result column="SALES_ORG" jdbcType="VARCHAR" property="salesOrg" />
+    <result column="LEAVE_DATE" property="leaveDate" jdbcType="DATE" />
   </resultMap>
 
   <resultMap id="RouteResultMap" type="com.nhry.data.basic.domain.TMdResidentialArea">
@@ -57,11 +58,21 @@
 
 
   <select id="selectBranchEmpByNo" resultMap="BaseResultMap" parameterType="java.lang.String" >
-  select emp.EMP_NO,emp.HR_EMP_NO,emp.EMP_NAME,branch.BRANCH_NAME BRANCH_NAME,branch.BRANCH_NO BRANCH_NO,emp.GENDER,emp.EMP_TYPE,emp.TEL,
-  emp.MP,emp.BASE_SALARY,emp.SALARY_MET,emp.JOIN_DATE,emp.WEBCHAT,emp.ID_NO,emp.STATUS,role.ROLE_NAME ROLE_NAME,role.ID ROLE_ID,emp.SALES_ORG
-  from t_md_branch_emp emp,T_MD_EMP_ROLE erole,t_sys_role role,T_MD_BRANCH branch
-  where erole.ROLE_ID = role.ID and emp.EMP_NO = erole.EMP_NO and emp.BRANCH_NO = branch.BRANCH_NO
-  and erole. EMP_NO = #{0}
+   select emp.EMP_NO,emp.HR_EMP_NO,emp.EMP_NAME,branch.BRANCH_NAME,branch.BRANCH_NO,emp.GENDER,emp.EMP_TYPE,emp.TEL,
+          emp.MP,emp.BASE_SALARY,emp.SALARY_MET,emp.JOIN_DATE,emp.WEBCHAT,emp.ID_NO,emp.STATUS,role.ROLE_NAME,role.ID ROLE_ID,emp.SALES_ORG
+    from t_md_branch_emp emp
+    left join t_sys_user_role urole on emp.HR_EMP_NO = urole.LOGIN_NAME
+    LEFT JOIN t_sys_role role on urole.ID = role.ID
+    LEFT JOIN T_MD_BRANCH branch on emp.BRANCH_NO = branch.BRANCH_NO
+    where 1=1
+    and emp. EMP_NO = #{0}
+</select>
+
+ <select id="selectActiveBranchEmpByNo" resultMap="BaseResultMap" parameterType="java.lang.String" >
+    select
+      <include refid="Base_Column_List"/>
+      from t_md_branch_emp
+      where STATUS='1' and HR_EMP_NO = #{0}
 </select>
 
   <select id="selectBranchEmpByEmpNo" resultMap="BaseResultMap" parameterType="java.lang.String" >
@@ -79,21 +90,19 @@
     where EMP_NO = #{empNo}
   </update>
   <delete id="deleteEmpRole"  parameterType="com.nhry.data.basic.domain.TMdBranchEmp" >
-      DELETE  FROM  t_md_emp_role
-      where EMP_NO = #{empNo,jdbcType=VARCHAR}
+      DELETE  FROM  t_sys_user_role
+      where LOGIN_NAME = #{empNo,jdbcType=VARCHAR}
   </delete>
   <insert id="addBranchEmp" parameterType="com.nhry.data.basic.domain.TMdBranchEmp" >
     insert into t_md_branch_emp (EMP_NO, HR_EMP_NO, BRANCH_NO, 
       EMP_NAME,GENDER,EMP_TYPE, TEL,
-      MP, WEBCHAT, ID_NO,
-      CREATE_AT, CREATE_BY, CREATE_BY_TXT,
-      STATUS)
+      MP, WEBCHAT, ID_NO,CREATE_AT, CREATE_BY, CREATE_BY_TXT,
+      STATUS,LEAVE_DATE,JOIN_DATE,SALES_ORG)
     values (#{empNo,jdbcType=VARCHAR}, #{hrEmpNo,jdbcType=VARCHAR}, #{branchNo,jdbcType=VARCHAR}, 
       #{empName,jdbcType=VARCHAR}, #{gender,jdbcType=VARCHAR}, #{empType,jdbcType=VARCHAR}, #{tel,jdbcType=VARCHAR},
       #{mp,jdbcType=VARCHAR}, #{webchat,jdbcType=VARCHAR}, #{idNo,jdbcType=VARCHAR},
       #{createAt,jdbcType=TIMESTAMP}, #{createBy,jdbcType=VARCHAR}, #{createByTxt,jdbcType=VARCHAR},
-      #{status,jdbcType=CHAR})
-
+      #{status,jdbcType=CHAR},#{leaveDate,jdbcType=DATE},#{joinDate,jdbcType=DATE},#{salesOrg,jdbcType=VARCHAR})
   </insert>
 
   <insert id="addEmpRole" parameterType="com.nhry.data.basic.domain.TMdBranchEmp" >
@@ -156,60 +165,134 @@
       <if test="lastModifiedByTxt != null" >
         LAST_MODIFIED_BY_TXT = #{lastModifiedByTxt,jdbcType=VARCHAR},
       </if>
+      <if test="leaveDate != null">
+         LEAVE_DATE = #{leaveDate,jdbcType=DATE}
+      </if>
     </set>
     where EMP_NO = #{empNo,jdbcType=VARCHAR}
   </update>
+  
+  <update id="uptBranchEmpByBraNo" parameterType="com.nhry.data.basic.domain.TMdBranchEmp" >
+    update t_md_branch_emp
+    <set>
+      <if test="hrEmpNo != null">
+        HR_EMP_NO = #{hrEmpNo,jdbcType=VARCHAR},
+      </if>
+      <if test="branchNo != null">
+        BRANCH_NO = #{branchNo,jdbcType=VARCHAR},
+      </if>
+      <if test="empName != null">
+        EMP_NAME = #{empName,jdbcType=VARCHAR},
+      </if>
+      <if test="gender != null">
+        GENDER = #{gender,jdbcType=VARCHAR},
+      </if>
+      <if test="empType != null">
+        EMP_TYPE = #{empType,jdbcType=VARCHAR},
+      </if>
+      <if test="status != null">
+        Status = #{status,jdbcType=VARCHAR},
+      </if>
+      <if test="tel != null">
+        TEL = #{tel,jdbcType=VARCHAR},
+      </if>
+      <if test="mp != null">
+        MP = #{mp,jdbcType=VARCHAR},
+      </if>
+      <if test="webchat != null">
+        WEBCHAT = #{webchat,jdbcType=VARCHAR},
+      </if>
+      <if test="idNo != null">
+        ID_NO = #{idNo,jdbcType=VARCHAR},
+      </if>
+      <if test="baseSalary != null">
+        BASE_SALARY = #{baseSalary,jdbcType=INTEGER},
+      </if>
+      <if test="salaryMet != null">
+        SALARY_MET = #{salaryMet,jdbcType=VARCHAR},
+      </if>
+      <if test="createAt != null" >
+        CREATE_AT = #{createAt,jdbcType=TIMESTAMP},
+      </if>
+      <if test="createBy != null" >
+        CREATE_BY = #{createBy,jdbcType=VARCHAR},
+      </if>
+      <if test="createByTxt != null" >
+        CREATE_BY_TXT = #{createByTxt,jdbcType=VARCHAR},
+      </if>
+      <if test="lastModified != null" >
+        LAST_MODIFIED = #{lastModified,jdbcType=TIMESTAMP},
+      </if>
+      <if test="lastModifiedBy != null" >
+        LAST_MODIFIED_BY = #{lastModifiedBy,jdbcType=VARCHAR},
+      </if>
+      <if test="lastModifiedByTxt != null" >
+        LAST_MODIFIED_BY_TXT = #{lastModifiedByTxt,jdbcType=VARCHAR},
+      </if>
+      <if test="leaveDate != null">
+         LEAVE_DATE = #{leaveDate,jdbcType=DATE}
+      </if>
+    </set>
+    where Status='1' and BRANCH_NO = #{branchNo,jdbcType=VARCHAR} and HR_EMP_NO = #{empNo,jdbcType=VARCHAR}
+  </update>
 
   <update id="uptEmpRole" parameterType="com.nhry.data.basic.domain.TMdBranchEmp" >
-    update t_md_emp_role
+    update t_sys_user_role
     set
-        ROLE_ID = #{roleId,jdbcType=VARCHAR}
-    where EMP_NO = #{empNo,jdbcType=VARCHAR}
+        ID = #{roleId,jdbcType=VARCHAR}
+    where LOGIN_NAME = #{empNo,jdbcType=VARCHAR}
   </update>
   <select id="searchBranchEmp" resultMap="BaseResultMap" parameterType="com.nhry.model.basic.EmpQueryModel">
       select emp.EMP_NO, emp.HR_EMP_NO, branch.BRANCH_NAME  BRANCH_NO, role.ROLE_NAME roleId,emp.EMP_NAME,emp.GENDER,
     emp.EMP_TYPE, emp.TEL, emp.MP, emp.WEBCHAT, emp.ID_NO,emp.STATUS
     from t_md_branch_emp emp
     LEFT JOIN  T_MD_BRANCH branch on emp.BRANCH_NO = branch.BRANCH_NO
-
-    LEFT JOIN T_MD_EMP_ROLE erole on emp.EMP_NO = erole.EMP_NO
-    LEFT JOIN t_sys_role role  on  erole.ROLE_ID = role.ID
+    LEFT JOIN T_SYS_USER_ROLE erole on emp.HR_EMP_NO = erole.LOGIN_NAME
+    LEFT JOIN t_sys_role role  on  erole.ID = role.ID
     where  1=1
     AND emp.SALES_ORG = #{salesOrg,jdbcType=VARCHAR}
      <if test="branchNo != null and branchNo !=''">
      		AND emp.BRANCH_NO = #{branchNo,jdbcType=VARCHAR}
      </if>
+    <if test="dealerNo != null and dealerNo !=''">
+      AND branch.DEALER_NO = #{dealerNo,jdbcType=VARCHAR}
+    </if>
+    <if test="salesOrg != null and salesOrg !=''">
+      AND branch.SALES_ORG = #{salesOrg,jdbcType=VARCHAR}
+    </if>
      <if test="status != null and status != ''">
      	AND  emp.STATUS = #{status,jdbcType=VARCHAR}
      </if>
-
-    <if test="roleId != null and roleId != ''">
-      AND role.ID = #{roleId,jdbcType=VARCHAR}
+    <if test="dealerNo != null and dealerNo != ''">
+      AND role.ID = #{dealerNo,jdbcType=VARCHAR}
     </if>
   </select>
 
   <select id="selectEmpRoutes" parameterType="String" resultMap="RouteResultMap">
     select
     <include refid="Route_Column_List" />
-    from t_md_residential_area area,T_MD_EMP_SCOPE scope
-    where area.ID = scope.RESIDENTIAL_AREA_ID
+    from t_md_residential_area area
+    LEFT  JOIN  T_MD_EMP_SCOPE scope on  area.ID = scope.RESIDENTIAL_AREA_ID
+    where 1=1
     and scope.EMP_NO =  #{empNo,jdbcType=VARCHAR}
   </select>
 
 
-  <select id="getAllEmpByBranchNo" parameterType="String" resultMap="BaseResultMap">
+  <select id="getAllEmpByBranchNo" parameterType="com.nhry.model.basic.EmpQueryModel" resultMap="BaseResultMap">
     select
     e.EMP_NO, e.HR_EMP_NO, e.BRANCH_NO, e.EMP_NAME,e.GENDER, e.EMP_TYPE, e.TEL,e.MP, e.WEBCHAT, e.ID_NO, e.CREATE_AT,e.SALES_ORG,
     e.CREATE_BY, e.CREATE_BY_TXT, e.LAST_MODIFIED, e.LAST_MODIFIED_BY, e.LAST_MODIFIED_BY_TXT,e.SALARY_MET,e.BASE_SALARY,e.JOIN_DATE,
     e.STATUS
-    from T_MD_BRANCH_EMP e LEFT JOIN t_sys_user_role u on e.EMP_NO = u.LOGIN_NAME
+    from T_MD_BRANCH_EMP e
+    LEFT JOIN t_sys_user_role u on e.HR_EMP_NO = u.LOGIN_NAME
     where 1=1
+    and e.STATUS='1'
     and u.ID=  <include refid="mybaties.constant.milkman"/>
     <if test="branchNo != null and branchNo != ''">
-     	AND  BRANCH_NO = #{branchNo,jdbcType=VARCHAR}
+     	AND  e.BRANCH_NO = #{branchNo,jdbcType=VARCHAR}
      </if>
      <if test="salesOrg != null and salesOrg != ''">
-     	AND  SALES_ORG = #{salesOrg,jdbcType=VARCHAR}
+     	AND  e.SALES_ORG = #{salesOrg,jdbcType=VARCHAR}
      </if>
 
   </select>
@@ -221,26 +304,62 @@
     <include refid="Base_Column_List" />
     from T_MD_BRANCH_EMP
     where 1=1
+    and STATUS='1'
     and SALES_ORG =  #{salesOrg,jdbcType=VARCHAR}
   </select>
 
 
   <select id="getAllBranchEmpByNo" parameterType="com.nhry.model.basic.BranchEmpSearchModel" resultMap="BaseResultMap">
-    select
+    select DISTINCT
     e.EMP_NO,e.EMP_NAME
-    from T_MD_BRANCH_EMP e LEFT JOIN t_sys_user_role u on e.EMP_NO = u.LOGIN_NAME
+    from T_MD_BRANCH_EMP e
+    LEFT JOIN t_sys_user_role u on e.HR_EMP_NO = u.LOGIN_NAME
     LEFT  JOIN  t_sys_role r on u.ID = r.ID
     where 1=1
+    and e.STATUS='1'
     AND  e.SALES_ORG = #{salesOrg,jdbcType=VARCHAR}
-    <if test="type!=null and type!='' and type=='milkMan'">
-       and u.ID=  <include refid="mybaties.constant.milkman"/>
-    </if>
+   and u.ID=  <include refid="mybaties.constant.milkman"/>
     <if test="branchNo != null and branchNo != ''">
       AND  e.BRANCH_NO = #{branchNo,jdbcType=VARCHAR}
     </if>
-    <if test="dealerNo != null and dealerNo != ''">
-      AND  e.DEALER_NO = #{dealerNo,jdbcType=VARCHAR}
+    GROUP BY e.HR_EMP_NO
+  </select>
+
+  <select id="getAllRationalMilkManByBranchNo" parameterType="com.nhry.model.bill.EmpSalQueryModel" resultMap="BaseResultMap">
+    select DISTINCT
+    e.EMP_NO, e.HR_EMP_NO, e.BRANCH_NO, e.EMP_NAME,e.GENDER, e.EMP_TYPE, e.TEL,e.MP, e.WEBCHAT, e.ID_NO, e.CREATE_AT,e.SALES_ORG,
+    e.CREATE_BY, e.CREATE_BY_TXT, e.LAST_MODIFIED, e.LAST_MODIFIED_BY, e.LAST_MODIFIED_BY_TXT,e.SALARY_MET,e.BASE_SALARY,e.JOIN_DATE,
+    e.STATUS
+    from T_MD_BRANCH_EMP e
+    LEFT JOIN t_sys_user_role u on e.HR_EMP_NO = u.LOGIN_NAME
+    LEFT  JOIN  t_sys_role r on u.ID = r.ID
+    where 1=1
+    and e.STATUS='1'
+    AND  e.SALES_ORG = #{salesOrg,jdbcType=VARCHAR}
+      and u.ID=  <include refid="mybaties.constant.milkman"/>
+    <if test="branchNo != null and branchNo != ''">
+      AND  e.BRANCH_NO = #{branchNo,jdbcType=VARCHAR}
     </if>
-    GROUP BY e.EMP_NO
+    GROUP BY e.HR_EMP_NO
+
+    UNION ALL
+
+    select DISTINCT
+    e.EMP_NO, e.HR_EMP_NO, e.BRANCH_NO, e.EMP_NAME,e.GENDER, e.EMP_TYPE, e.TEL,e.MP, e.WEBCHAT, e.ID_NO, e.CREATE_AT,e.SALES_ORG,
+    e.CREATE_BY, e.CREATE_BY_TXT, e.LAST_MODIFIED, e.LAST_MODIFIED_BY, e.LAST_MODIFIED_BY_TXT,e.SALARY_MET,e.BASE_SALARY,e.JOIN_DATE,
+    e.STATUS
+    from T_MD_BRANCH_EMP e
+    LEFT JOIN t_sys_user_role u on e.HR_EMP_NO = u.LOGIN_NAME
+    LEFT  JOIN  t_sys_role r on u.ID = r.ID
+    where 1=1
+    and e.STATUS='0'
+    AND  e.SALES_ORG = #{salesOrg,jdbcType=VARCHAR}
+    and u.ID=  <include refid="mybaties.constant.milkman"/>
+    <if test="branchNo != null and branchNo != ''">
+      AND  e.BRANCH_NO = #{branchNo,jdbcType=VARCHAR}
+    </if>
+    and e.LEAVE_DATE &gt;= #{startDate,jdbcType=DATE}
+    and e.LEAVE_DATE &lt;= #{endDate,jdbcType=DATE}
+    GROUP BY e.HR_EMP_NO
   </select>
 </mapper>

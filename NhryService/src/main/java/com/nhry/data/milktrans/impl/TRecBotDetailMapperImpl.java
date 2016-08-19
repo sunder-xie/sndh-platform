@@ -30,6 +30,11 @@ public class TRecBotDetailMapperImpl implements TRecBotDetailMapper {
     }
 
     @Override
+    public TRecBotDetail selectBotDetailByOrderAndSpec(Map<String, String> map) {
+        return sqlSessionTemplate.selectOne("selectBotDetailByOrderAndSpec",map);
+    }
+
+    @Override
     public List<TRecBotDetail> selectRetByDispOrderNo(String dispOrderNo) {
         return sqlSessionTemplate.selectList("selectRetByDispOrderNo",dispOrderNo);
     }
@@ -37,6 +42,11 @@ public class TRecBotDetailMapperImpl implements TRecBotDetailMapper {
     @Override
     public List<TRecBotDetail> craeteRetBotByStock(StockModel sModel) {
         return sqlSessionTemplate.selectList("craeteRetBotByStock",sModel);
+    }
+
+    @Override
+    public int delBotDetailByDetLsh(String detLsh) {
+        return sqlSessionTemplate.delete("delBotDetailByDetLsh",detLsh);
     }
 
     @Override

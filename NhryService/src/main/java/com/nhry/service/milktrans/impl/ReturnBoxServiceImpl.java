@@ -82,6 +82,10 @@ public class ReturnBoxServiceImpl implements ReturnBoxService {
 
     }
 
+    @Override
+    public int uptBoxReturnDetail(TRecBotDetail boxModel) {
+        return tRecBotDetailMapper.uptRecBotDetail(boxModel);
+    }
 
 
     /**
@@ -91,7 +95,6 @@ public class ReturnBoxServiceImpl implements ReturnBoxService {
      */
     @Override
     public int createDayRetBox(String dispOrderNo) {
-        Date today = new Date();
         TSysUser user = userSessionService.getCurrentUser();
         TDispOrder dispOrder = tDispOrderMapper.getDispOrderByNo(dispOrderNo);
         List<TRecBotDetail> tRecBot = tRecBotDetailMapper.selectRetByDispOrderNo(dispOrderNo);
@@ -102,7 +105,7 @@ public class ReturnBoxServiceImpl implements ReturnBoxService {
                 for (TRecBotDetail bot : entries) {
                     bot.setEmpNo(dispOrder.getDispEmpNo());
                     bot.setDispOrderNo(dispOrderNo);
-                    bot.setCreateAt(today);
+                    bot.setCreateAt(dispOrder.getDispDate());
                     bot.setCreateBy(user.getLoginName());
                     bot.setCreateByTxt(user.getDisplayName());
                     bot.setStatus("10");
@@ -116,16 +119,10 @@ public class ReturnBoxServiceImpl implements ReturnBoxService {
 
     @Override
     public PageInfo searchRetBoxPage(ReturnboxSerarch rSearch) {
-
         TSysUser user = userSessionService.getCurrentUser();
-        List<String> rids = urMapper.getUserRidsByLoginName(user.getLoginName());
         rSearch.setSalesOrg(user.getSalesOrg());
-        if(rids.contains("10004")){
-            rSearch.setBranchNo(user.getBranchNo());
-        }else if(rids.contains("10005")){
-            //经销商内勤
-            rSearch.setDealerNo(user.getDealerId());
-        }
+        rSearch.setBranchNo(user.getBranchNo());
+        rSearch.setDealerNo(user.getDealerId());
         //返回列表
         PageInfo result = tRecBotDetailMapper.searchRetBoxPage(rSearch);
         return result;
@@ -178,6 +175,20 @@ public class ReturnBoxServiceImpl implements ReturnBoxService {
             }
         }
         return 1;
+    }
+
+    @Override
+    public int addRecBotItem(TRecBotDetail botDetail) {
+        return tRecBotDetailMapper.addRecBotItem(botDetail);
+    }
+
+
+    @Override
+    public TRecBotDetail getTRecBotDetailByDispOrderNo(String dispOrderNo,String type) {
+        Map<String,String> map = new HashMap<String,String>();
+        map.put("dispOrderNo",dispOrderNo);
+        map.put("spec",type);
+        return tRecBotDetailMapper.selectBotDetailByDetLsh(map);
     }
 
 }

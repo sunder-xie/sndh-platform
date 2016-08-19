@@ -42,6 +42,9 @@
             <if test="type != null" >
                 TYPE,
             </if>
+            <if test="promNo != null" >
+                PROM_NO,
+            </if>
         </trim>
         <trim prefix="values (" suffix=")" suffixOverrides="," >
             <if test="orderNo != null" >
@@ -67,6 +70,9 @@
             </if>
             <if test="type != null" >
                 #{type,jdbcType=VARCHAR},
+            </if>
+            <if test="promNo != null" >
+                #{promNo,jdbcType=VARCHAR},
             </if>
         </trim>
     </insert>
@@ -104,4 +110,14 @@
         where 1=1
         and ORDER_NO = #{orderNo,jdbcType=VARCHAR}
     </delete>
+
+    <update id="uptYfrechAndYGrowthByOrderNoAndItemNo" parameterType="com.nhry.model.milktrans.OrderPointModel">
+        UPDATE  t_ssm_sal_order_items
+        SET   YFRESH = #{yfresh,jdbcType=DECIMAL},YGROWTH = #{ygrowth,jdbcType=DECIMAL}
+        where ORDER_NO = #{orderNo,jdbcType=VARCHAR} and ITEM_NO = #{itemNo,jdbcType=INTEGER}
+    </update>
+
+    <select id="getSumYfrechAndYGrowByOrderNo" resultType="com.nhry.model.milktrans.OrderPointModel" parameterType="string">
+        SELECT ORDER_NO orderNo ,sum(YFRESH) yfresh,sum(YGROWTH) ygrowth FROM t_ssm_sal_order_items where ORDER_NO = #{orderNo,jdbcType=VARCHAR}
+    </select>
 </mapper>

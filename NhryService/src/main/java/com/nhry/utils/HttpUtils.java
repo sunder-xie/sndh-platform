@@ -197,7 +197,7 @@ public class HttpUtils {
 			SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMddHHmmss");
 			String date = sdf.format(new Date()) + "Z";
 			httpConnection.setRequestProperty("timestamp", date);
-			String encode = encodePassword("wsuser" + "1234567890qweasd" + date,EnvContant.getSystemConst("idm_salt"));
+			String encode = encodePasswordLtOne(EnvContant.getSystemConst("idm_appcode") + "1234567890qweasd" + date,EnvContant.getSystemConst("idm_salt"));
 			httpConnection.setRequestProperty("encode", encode);
 			OutputStream outputStream = httpConnection.getOutputStream();
 			outputStream.write(body.getBytes());
@@ -219,53 +219,21 @@ public class HttpUtils {
 		return null;
 	}
 	
-	
-	public static String idmAppPost2(String url, String body) {
-		try {
-			URL restServiceURL = new URL(url);
-			HttpURLConnection httpConnection = (HttpURLConnection) restServiceURL.openConnection();
-			httpConnection.setRequestMethod("POST");
-			httpConnection.setDoOutput(true);
-			httpConnection.setRequestProperty("Content-Type","application/json");
-			httpConnection.setRequestProperty("appcode","cisco");
-			httpConnection.setRequestProperty("appkey", PrimaryKeyUtils.generateUuidKey().substring(0, 8));
-			SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMddHHmmss");
-			String date = sdf.format(new Date());
-			httpConnection.setRequestProperty("timestamp", date);
-			String encode = encodePassword("cisco" + "010da99b8b994b5@94094f2eae"+getSixpw(date) + date,EnvContant.getSystemConst("idm_salt"));
-			httpConnection.setRequestProperty("dh-token", encode);
-			OutputStream outputStream = httpConnection.getOutputStream();
-			outputStream.write(body.getBytes());
-			outputStream.flush();
-			if (httpConnection.getResponseCode() != 200) {
-				throw new RuntimeException("Failed : HTTP error code : "
-						+ httpConnection.getResponseCode());
-			}
-			BufferedReader responseBuffer = new BufferedReader(
-					new InputStreamReader((httpConnection.getInputStream())));
-			String output = responseBuffer.readLine();
-			httpConnection.disconnect();
-			return output;
-		} catch (MalformedURLException e) {
-			e.printStackTrace();
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-		return null;
-	}
 
 	/**
 	 * sha256加密
-	 * 
-	 * @param plainPassword
-	 *            加密密码
-	 * @param salt
-	 *            原始字符串
+	 * @param plainPassword  加密密码
+	 * @param salt   原始字符串
 	 * @return
 	 */
 	public static String encodePassword(String plainPassword, String salt) {
 		MessageDigestPasswordEncoder encoder = new ShaPasswordEncoder(256);
 		encoder.setIterations(2);
+		return encoder.encodePassword(plainPassword, salt);
+	}
+	
+	public static String encodePasswordLtOne(String plainPassword, String salt) {
+		MessageDigestPasswordEncoder encoder = new ShaPasswordEncoder(256);
 		return encoder.encodePassword(plainPassword, salt);
 	}
 

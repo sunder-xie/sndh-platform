@@ -26,6 +26,7 @@
     <result column="LAST_MODIFIED_BY_TXT" property="lastModifiedByTxt" jdbcType="VARCHAR" />
     <result column="GIFT_QTY" property="giftQty" jdbcType="INTEGER" />
     <result column="PROMOTION_FLAG" property="promotionFlag" jdbcType="VARCHAR" />
+    <result column="WEEKLY" property="weekly" jdbcType="VARCHAR" />
 
   </resultMap>
   <sql id="Base_Column_List" >
@@ -35,7 +36,22 @@
   </sql>
   <select id="searchDaliyOrdersByPage" resultMap="BaseResultMap" parameterType="com.nhry.model.order.OrderSearchModel" >
     select 
-    d.ORDER_NO, d.ORDER_DATE, d.PLAN_ITEM_NO, d.ITEM_NO, d.DISP_DATE, d.REACH_TIME, d.REACH_TIME_TYPE, 
+    d.ORDER_NO, d.ORDER_DATE, d.PLAN_ITEM_NO, d.ITEM_NO, d.DISP_DATE,(CASE dayofweek(d.DISP_DATE)
+		WHEN 1 THEN
+			'星期日'
+		WHEN 2 THEN
+			'星期一'
+		WHEN 3 THEN
+			'星期二'
+		WHEN 4 THEN
+			'星期三'
+		WHEN 5 THEN
+			'星期四'
+		WHEN 6 THEN
+			'星期五'
+		WHEN 7 THEN
+			'星期六'
+		END	) WEEKLY, d.REACH_TIME, d.REACH_TIME_TYPE,
     d.MATNR, UNIT, d.QTY, d.PRICE, d.AMT, d.REMAIN_AMT, d.STATUS, d.CREATE_AT, d.CREATE_BY, d.CREATE_BY_TXT, 
     d.LAST_MODIFIED, d.LAST_MODIFIED_BY, d.LAST_MODIFIED_BY_TXT, p.MATNR_TXT MATNR_TXT
     from t_mst_order_daliy_plan_item d , t_md_mara p ,t_preorder o
@@ -507,18 +523,16 @@
   </select>
 
   <select id="selectProDayPlanOfDealerBranch" resultMap="BaseResultMap" parameterType="com.nhry.model.milktrans.RequireOrderSearch" >
-  select i.MATNR,SUM(i.GIFT_QTY) QTY
+  select i.MATNR,SUM(i.GIFT_QTY) QTY,PROMOTION_FLAG
     from t_mst_order_daliy_plan_item i
     LEFT JOIN t_preorder o on i.ORDER_NO = o.ORDER_NO
     where   1=1
     AND i.GIFT_QTY is not null
-    and o.PREORDER_STAT !='30'
+    and i.GIFT_QTY !=''
+    and o.PREORDER_STAT !='20'
     and o.PREORDER_STAT !='40'
-    <if test="promotion!=null and ''!=promotion">
-    and i.PROMOTION_FLAG = #{promotion,jdbcType=VARCHAR}
-    </if>
     and  ( i.DISP_DATE = #{secondDay,jdbcType=DATE}  or i.DISP_DATE = #{firstDay,jdbcType=DATE} )
-    GROUP BY i.MATNR
+    GROUP BY i.PROMOTION_FLAG,i.MATNR
     ORDER BY i.DISP_DATE desc
   </select>
 
@@ -596,7 +610,6 @@
     and di.REASON = '10'
     and di.REPLACE_REASON = '10'
     and e.SALES_ORG = #{salesOrg,jdbcType=VARCHAR}
-    and i.PROMOTION = #{promotion,jdbcType=VARCHAR}
     and  ti.DISP_DATE = #{requiredDate,jdbcType=DATE}
     GROUP BY di.MATNR
 UNION ALL
@@ -611,7 +624,6 @@ UNION ALL
     AND ti.STATUS = '20'
     and di.MATNR = di.CONFIRM_MATNR
     and e.SALES_ORG = #{salesOrg,jdbcType=VARCHAR}
-    and i.PROMOTION = #{promotion,jdbcType=VARCHAR}
     and  ti.DISP_DATE = #{requiredDate,jdbcType=DATE}
     GROUP BY di.MATNR
   </select>

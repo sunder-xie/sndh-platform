@@ -236,7 +236,7 @@ public class MemberAddrUpdateServiceStub extends org.apache.axis2.client.Stub
      */
     public void startmemberAddrUpdate(
         com.nhry.webService.client.Address.functions.Z_CRM_ADDR_UPDATE z_CRM_ADDR_UPDATE2,
-        final com.nhry.webService.client.Address.MemberAddrUpdateServiceCallbackHandler callback)
+        final MemberAddrUpdateServiceCallbackHandler callback)
         throws java.rmi.RemoteException {
         org.apache.axis2.client.OperationClient _operationClient = _serviceClient.createClient(_operations[0].getName());
         _operationClient.getOptions()

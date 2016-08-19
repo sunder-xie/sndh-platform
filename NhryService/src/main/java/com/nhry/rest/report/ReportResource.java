@@ -91,6 +91,9 @@ public class ReportResource extends BaseResource{
         String url = request.getServletContext().getRealPath("/");
         logger.info("realPath："+url);
         TMdAddress address = collect.getAddress();
+        if(address == null) {
+            return convertToRespModel(MessageCode.LOGIC_ERROR, "配送地址为空，请检查！", null);
+        }
         TPreOrder order = collect.getOrder();
         TMstRecvBill bill = customerBillService.getRecBillByOrderNo(orderCode);
         if(bill == null ){
@@ -244,7 +247,7 @@ public class ReportResource extends BaseResource{
                     cell = row.getCell(1);
                     cell.setCellValue(item.getAddressTxt());
                     cell = row.getCell(5);
-                    cell.setCellValue(item.getMatnrTxt().concat(item.getConfirmQty().toString()));
+                    cell.setCellValue(item.getMatnrTxt().concat("--").concat(item.getConfirmQty().toString()));
                     cell = row.getCell(6);
                     cell.setCellValue(item.getCustTel());
                     cell = row.getCell(7);
@@ -311,12 +314,12 @@ public class ReportResource extends BaseResource{
                     cell.setCellValue(item.getInitAmt().toString());
                     cell = row.getCell(7);
                     String paymentStatName="";
-                    if(item.getPaymentStat().equals("10")){
+                    if(item.getPaymentmethod().equals("10")){
                         paymentStatName="后付款";
-                    }else if(item.getPaymentStat().equals("20")){
+                    }else if(item.getPaymentmethod().equals("20")){
                         paymentStatName="预付款";
-                    }else if(item.getPaymentStat().equals("30")){
-                        paymentStatName="垫付款";
+                    }else if(item.getPaymentmethod().equals("30")){
+                        paymentStatName="垫付费";
                     }
                     cell.setCellValue(paymentStatName);
                     r++;

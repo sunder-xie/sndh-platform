@@ -39,6 +39,9 @@ public class AuthFilter implements ContainerRequestFilter {
 	protected static final String IDM_REST_AUTH="idm_rest_auth";
 	protected static final String DH_AUTH="dh_auth";
 	protected static final String HTTP_AUTH="http_auth";
+	public static String IDM_AUTH2_SIGN="10";  //idm auth2.0 验证方式标记
+	public static String IDM_REST_SIGN="20";	  //idm rest 验证方式标记
+	
 	@Context
 	protected HttpServletRequest request;
 	@Context
@@ -50,7 +53,12 @@ public class AuthFilter implements ContainerRequestFilter {
 	
 	static{
 		whiteUriList = new ArrayList<String>();
-		whiteUriList.add("/api/v1/user/login");
+		whiteUriList.add("POST;/api/v1/user/login");
+		whiteUriList.add("GET;/api/v1/order/");
+		whiteUriList.add("GET;/api/v1/order/dailyPlans/");
+		whiteUriList.add("POST;/api/v1/vipcust/upt/crm/address");
+		whiteUriList.add("POST;/api/v1/vipcust/upt/crm/custinfo");
+		whiteUriList.add("POST;/api/v1/orderPoint/uptOrderPoint");
 	}
 	
 	static{
@@ -65,10 +73,6 @@ public class AuthFilter implements ContainerRequestFilter {
 		// TODO Auto-generated method stub
 		String uri = request.getAbsolutePath().getPath();
 		if("product".equals(SysContant.getSystemConst("app_mode"))){
-			if(isExsitUri(uri)){
-				//白名单过滤
-				return request;
-			}
 			/**
 			 * dh-token   salt(appcode+appkey+timestamp) 26位(固：010da99b8b994b5794094f2eae)+6位变化的
 			 *             内容：appcode+appkey+timestamp
@@ -103,6 +107,10 @@ public class AuthFilter implements ContainerRequestFilter {
 				//订户系统原来的登录方式
 				return new DhAuthFilter(this.request,this.response,this.userSessionService).filter(request);
 			}else{
+				if(isExsitUri(request.getMethod()+";"+uri)){
+					//白名单过滤
+					return request;
+				}
 				Response response = formatData(MessageCode.UNAUTHORIZED, SysContant.getSystemConst(MessageCode.UNAUTHORIZED), null, Status.UNAUTHORIZED);
 	            throw new WebApplicationException(response); 
 			}
@@ -126,6 +134,4 @@ public class AuthFilter implements ContainerRequestFilter {
 		}
 		return false;
 	}
-	
-	
 }

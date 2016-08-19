@@ -1,6 +1,7 @@
 package com.nhry.service.pi.impl;
 
 import com.nhry.data.basic.domain.TMdBranchEx;
+import com.nhry.service.pi.pojo.SalesOrderHeader;
 import com.nhry.utils.PIPropertitesUtil;
 import com.nhry.webService.OptionManager;
 import com.nhry.webService.client.PISuccessMessage;
@@ -10,6 +11,7 @@ import com.nhry.webService.client.businessData.model.Delivery;
 import org.apache.axis2.AxisFault;
 import org.apache.axis2.client.Options;
 import org.apache.commons.lang.StringUtils;
+import org.apache.log4j.Logger;
 
 import java.math.BigDecimal;
 import java.text.ParsePosition;
@@ -22,11 +24,12 @@ import java.util.Date;
  */
 public class BusinessDataConnection {
 
-    private static String URL = PIPropertitesUtil.getValue("PI.BusinessData.URL");
-    private static String SIGN = PIPropertitesUtil.getValue("PI.MasterData.mATQUERY.SIGN");
-    private static String EQ = PIPropertitesUtil.getValue("PI.MasterData.mATQUERY.OPTION.EQ");
-    private static String I_DELIVERY_D = "D";
-    private static SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
+    private static final String URL = PIPropertitesUtil.getValue("PI.BusinessData.URL");
+    private static final String SIGN = PIPropertitesUtil.getValue("PI.MasterData.mATQUERY.SIGN");
+    private static final String EQ = PIPropertitesUtil.getValue("PI.MasterData.mATQUERY.OPTION.EQ");
+    private static final String I_DELIVERY_D = "D";
+    private static final SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
+    private static final Logger logger = Logger.getLogger(BusinessDataConnection.class);
 
     public static ZT_BusinessData_MaintainServiceStub getConn() throws AxisFault {
         ZT_BusinessData_MaintainServiceStub stub = new ZT_BusinessData_MaintainServiceStub(URL);
@@ -36,9 +39,9 @@ public class BusinessDataConnection {
     }
 
     public static PISuccessMessage RequisitionCreate(TMdBranchEx branchEx, Date reqDate, List<Map<String, String>> items, String lgort) {
+        logger.info("获取要货单开始"+branchEx.getBranchNo() +"&"+ formatter.format(reqDate));
         PISuccessMessage successMessage = new PISuccessMessage();
         try {
-
             ZSD_REQUISITION_CREATE_RFC rfc = new ZSD_REQUISITION_CREATE_RFC();
             ZSD_REQ_EKKO ekko = new ZSD_REQ_EKKO();
             COMP_CODE_type1 comp_code_type1 = new COMP_CODE_type1();
@@ -126,7 +129,7 @@ public class BusinessDataConnection {
             if (StringUtils.isNotEmpty(result)) {
                 successMessage.setSuccess(true);
                 successMessage.setData(result);
-                System.out.println(result);
+                logger.info("要货单编号"+result);
             } else {
                 successMessage.setSuccess(false);
             }
@@ -140,19 +143,23 @@ public class BusinessDataConnection {
                     msg.append(bapiret2.getMESSAGE_V4().getMESSAGE_V4_type0());
                 }
                 successMessage.setMessage(msg.toString());
-                System.out.println(msg.toString());
+                logger.info(message.toString());
             } else {
                 successMessage.setMessage("");
             }
         } catch (Exception e) {
+            logger.error(e.getMessage());
             successMessage.setSuccess(false);
             successMessage.setData("");
             successMessage.setMessage("要货单接口异常，请联系管理员");
         }
+        logger.info("获取要货单结束！");
         return successMessage;
     }
 
-    public static PISuccessMessage SalesOrderCreate(String KUNNR, String KUNWE, String VKORG, String BSTKD, Date LFDAT, List<Map<String, String>> items, String activityId, String lgort, String werks, String auartType) {
+    public static PISuccessMessage SalesOrderCreate(List<Map<String, String>> items, SalesOrderHeader orderHeader) {
+
+        logger.info("获取销售订单开始！"+ orderHeader.toString());
         PISuccessMessage successMessage = new PISuccessMessage();
         try {
             IT_ZSSD00011_type0 it_zssd00011_type1 = new IT_ZSSD00011_type0();
@@ -169,22 +176,28 @@ public class BusinessDataConnection {
                 vrkme_type1.setVRKME_type0(map.get("BASE_UNIT"));
                 zssd00011.setVRKME(vrkme_type1);
                 WERKS_type1 werks_type1 = new WERKS_type1();
-                werks_type1.setWERKS_type0(werks);
+                werks_type1.setWERKS_type0(orderHeader.getWerks());
                 zssd00011.setWERKS(werks_type1);
                 LGORT_type1 lgort_type1 = new LGORT_type1();
-                lgort_type1.setLGORT_type0(lgort);
+                lgort_type1.setLGORT_type0(orderHeader.getLgort());
 //                lgort_type1.setLGORT_type0("4005");
                 zssd00011.setLGORT(lgort_type1);
                 POSEX_type1 posex_type1 = new POSEX_type1();
                 posex_type1.setPOSEX_type0(String.valueOf(map.get("ITEM_NO")));
                 zssd00011.setPOSEX(posex_type1);
-                PR_REF_MAT_type1 pr_ref_mat_type1 = new PR_REF_MAT_type1();
-                pr_ref_mat_type1.setPR_REF_MAT_type0(map.get("REF_MATNR")==null?"":map.get("REF_MATNR"));
-                zssd00011.setPR_REF_MAT(pr_ref_mat_type1);
+                if(StringUtils.isNotEmpty(map.get("REF_MATNR"))) {
+                    PR_REF_MAT_type1 pr_ref_mat_type1 = new PR_REF_MAT_type1();
+                    pr_ref_mat_type1.setPR_REF_MAT_type0(map.get("REF_MATNR") == null ? "" : map.get("REF_MATNR"));
+                    zssd00011.setPR_REF_MAT(pr_ref_mat_type1);
+                }
 
                 com.nhry.webService.client.businessData.functions.Date date1 = new com.nhry.webService.client.businessData.functions.Date();
                 date1.setObject(map.get("ORDER_DATE"));
                 zssd00011.setREQ_DATE(date1);
+
+                WBS_ELEM_type1 wbs_elem_type1 = new WBS_ELEM_type1();
+                wbs_elem_type1.setWBS_ELEM_type0(map.get("ACTIVITY_ID"));
+                zssd00011.setWBS_ELEM(wbs_elem_type1);
 
                 it_zssd00011_type1.addItem(zssd00011);
             }
@@ -193,13 +206,13 @@ public class BusinessDataConnection {
             rfc.setIT_ZSSD00011(it_zssd00011_type1);
             ZSSD00010 zssd00010 = new ZSSD00010();
             KUNNR_type1 kunnr_type1 = new KUNNR_type1();
-            kunnr_type1.setKUNNR_type0(KUNNR);
+            kunnr_type1.setKUNNR_type0(orderHeader.getKUNNR());
             zssd00010.setKUNNR(kunnr_type1);
             KUNWE_type1 kunwe_type1 = new KUNWE_type1();
-            kunwe_type1.setKUNWE_type0(KUNWE);
+            kunwe_type1.setKUNWE_type0(orderHeader.getKUNWE());
             zssd00010.setKUNWE(kunwe_type1);
             VKORG_type1 vkorg_type1 = new VKORG_type1();
-            vkorg_type1.setVKORG_type0(VKORG);
+            vkorg_type1.setVKORG_type0(orderHeader.getVKORG());
             zssd00010.setVKORG(vkorg_type1);
             VTWEG_type1 vtweg_type1 = new VTWEG_type1();
             vtweg_type1.setVTWEG_type0(PIPropertitesUtil.getValue("PI.MasterData.mATQUERY.VKORG"));
@@ -208,19 +221,36 @@ public class BusinessDataConnection {
             spart_type1.setSPART_type0(PIPropertitesUtil.getValue("PI.SPART"));
             zssd00010.setSPART(spart_type1);
             AUART_type1 auart_type1 = new AUART_type1();
-            auart_type1.setAUART_type0(auartType);
+            auart_type1.setAUART_type0(orderHeader.getAuartType());
             zssd00010.setAUART(auart_type1);
             ParsePosition pos = new ParsePosition(8);
-            String dateString = formatter.format(LFDAT);
+            String dateString = formatter.format(orderHeader.getLFDAT());
             com.nhry.webService.client.businessData.functions.Date date = new com.nhry.webService.client.businessData.functions.Date();
             date.setObject(formatter.parse(dateString));
             zssd00010.setLFDAT(date);
             BSTKD_type1 bstkd_type1 = new BSTKD_type1();
-            bstkd_type1.setBSTKD_type0(BSTKD);
+            bstkd_type1.setBSTKD_type0(orderHeader.getBSTKD());
             zssd00010.setBSTKD(bstkd_type1);
-            CMPGN_EXTID_type1 cmpgn_extid_type1 = new CMPGN_EXTID_type1();
-            cmpgn_extid_type1.setCMPGN_EXTID_type0(activityId);
-            zssd00010.setCMPGN_EXTID(cmpgn_extid_type1);
+            if(StringUtils.isNotEmpty(orderHeader.getActivityId())) {
+                CMPGN_EXTID_type1 cmpgn_extid_type1 = new CMPGN_EXTID_type1();
+                cmpgn_extid_type1.setCMPGN_EXTID_type0(orderHeader.getActivityId());
+                zssd00010.setCMPGN_EXTID(cmpgn_extid_type1);
+            }
+            if(StringUtils.isNotEmpty(orderHeader.getAugru())) {
+                AUGRU_type1 augru_type1 = new AUGRU_type1();
+                augru_type1.setAUGRU_type0(orderHeader.getAugru());
+                zssd00010.setAUGRU(augru_type1);
+            }
+            if(StringUtils.isNotEmpty(orderHeader.getZz001())) {
+                ZZ001_type1 zz001_type1 = new ZZ001_type1();
+                zz001_type1.setZZ001_type0(orderHeader.getZz001());
+                zssd00010.setZZ001(zz001_type1);
+            }
+            if(StringUtils.isNotEmpty(orderHeader.getKostl())) {
+                KOSTL_type1 kostl_type1 = new KOSTL_type1();
+                kostl_type1.setKOSTL_type0(orderHeader.getKostl());
+                zssd00010.setKOSTL(kostl_type1);
+            }
             rfc.setIT_ZSSD00010(zssd00010);
 
             ZSD_SALESORDER_DATA_RFC_2Response response = BusinessDataConnection.getConn().salesOrderCreate(rfc);
@@ -243,16 +273,18 @@ public class BusinessDataConnection {
                     msg.append(bapiret2.getMESSAGE_V4().getMESSAGE_V4_type0());
                 }
                 successMessage.setMessage(msg.toString());
-                System.out.println(msg.toString());
+                logger.info(msg.toString());
             } else {
                 successMessage.setMessage("");
             }
         } catch (Exception e) {
             e.printStackTrace();
+            logger.error(e.getMessage());
             successMessage.setSuccess(false);
             successMessage.setData("");
             successMessage.setMessage("销售订单接口异常，请联系管理员！");
         }
+        logger.info("获取销售订单结束");
         return successMessage;
     }
 

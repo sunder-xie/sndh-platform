@@ -3,20 +3,22 @@ package com.nhry.service.auth.impl;
 import com.github.pagehelper.PageInfo;
 import com.nhry.common.exception.MessageCode;
 import com.nhry.common.exception.ServiceException;
-import com.nhry.data.auth.dao.TSysResourceMapper;
 import com.nhry.data.auth.dao.TSysRoleMapper;
 import com.nhry.data.auth.dao.TSysUserMapper;
-import com.nhry.data.auth.dao.TSysUserRoleMapper;
+import com.nhry.data.auth.domain.TSysAccesskey;
 import com.nhry.data.auth.domain.TSysUser;
+import com.nhry.data.basic.domain.TMdBranchEmp;
 import com.nhry.data.config.dao.NHSysCodeItemMapper;
 import com.nhry.data.config.domain.NHSysCodeItem;
 import com.nhry.model.auth.UserQueryModel;
 import com.nhry.model.auth.UserQueryModel2;
-import com.nhry.model.sys.AccessKey;
+import com.nhry.model.auth.UserQueryModel3;
 import com.nhry.service.BaseService;
 import com.nhry.service.auth.dao.ResourceService;
-import com.nhry.service.auth.dao.RoleService;
+import com.nhry.service.auth.dao.TSysAccesskeyService;
 import com.nhry.service.auth.dao.UserService;
+import com.nhry.service.basic.dao.BranchEmpService;
+import com.nhry.utils.Base64Util;
 import com.nhry.utils.SysContant;
 import com.nhry.utils.date.Date;
 
@@ -24,7 +26,6 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.data.redis.core.RedisTemplate;
 
 import java.util.List;
-import java.util.Map;
 
 public class UserServiceImpl extends BaseService implements UserService {
 	private TSysUserMapper userMapper;
@@ -32,6 +33,8 @@ public class UserServiceImpl extends BaseService implements UserService {
 	private ResourceService resService;
 	private NHSysCodeItemMapper codeItemMapper;
 	private RedisTemplate objectRedisTemplate;
+	private BranchEmpService branchEmpService;
+	private TSysAccesskeyService accessKeyService;
 
 	@Override
 	public PageInfo findUser(UserQueryModel um){
@@ -96,7 +99,28 @@ public class UserServiceImpl extends BaseService implements UserService {
 		if("-1".equals(record.getDealerId())){
 			record.setDealerId(null);
 		}
-		return userMapper.updateUser(record);
+		userMapper.updateUser(record);
+		
+		if(!StringUtils.isEmpty(record.getBranchNo())){
+			//奶站员工
+			TSysUser user = new TSysUser();
+			user.setLoginName(record.getLoginName());
+			TSysUser sysuser = userMapper.login(user);
+			if(sysuser == null){
+				throw new ServiceException(MessageCode.LOGIC_ERROR, "用户名对应的用户不存在！");
+			}
+			TMdBranchEmp emp = new TMdBranchEmp();
+			emp.setEmpNo(sysuser.getLoginName());
+			emp.setHrEmpNo(sysuser.getLoginName());
+			emp.setBranchNo(sysuser.getBranchNo());
+			emp.setSalesOrg(sysuser.getSalesOrg());
+			emp.setEmpName(sysuser.getDisplayName());
+			emp.setMp(sysuser.getMobile());
+			emp.setIdNo(sysuser.getSmartIdcardnumber());
+			emp.setJoinDate(sysuser.getCustomizedJoininworkdate());
+			branchEmpService.addBranchEmp(emp);
+		}
+		return 1;
 	}
 
 	@Override
@@ -127,12 +151,12 @@ public class UserServiceImpl extends BaseService implements UserService {
 	}
 
 	@Override
-	public List<TSysUser> findNotRoleUser(UserQueryModel model) {
+	public List<TSysUser> findNotRoleUser(UserQueryModel3 model) {
 		return userMapper.findNotRoleUser(model);
 	}
 
 	@Override
-	public PageInfo<TSysUser> findNotRoleUserPage(UserQueryModel model) {
+	public PageInfo<TSysUser> findNotRoleUserPage(UserQueryModel3 model) {
 		if(StringUtils.isEmpty(model.getPageNum()) || StringUtils.isEmpty(model.getPageSize())){
 			throw new ServiceException(MessageCode.LOGIC_ERROR,"pageNum和pageSize不能为空！");
 		}
@@ -159,5 +183,28 @@ public class UserServiceImpl extends BaseService implements UserService {
 
 	public void setObjectRedisTemplate(RedisTemplate objectRedisTemplate) {
 		this.objectRedisTemplate = objectRedisTemplate;
+	}
+
+	public void setBranchEmpService(BranchEmpService branchEmpService) {
+		this.branchEmpService = branchEmpService;
+	}
+
+	@Override
+	public boolean logout(String token) {
+		// TODO Auto-generated method stub
+		TSysAccesskey key = new TSysAccesskey();
+		key.setAccesskey(Base64Util.decodeStr(token));
+		key.setType("10");
+		TSysAccesskey ak = accessKeyService.findAccesskeyByKey(key);
+		if(ak == null){
+			return false;
+		}else{
+			accessKeyService.deleteAccesskeyByAk(key);
+		}
+		return true;
+	}
+
+	public void setAccessKeyService(TSysAccesskeyService accessKeyService) {
+		this.accessKeyService = accessKeyService;
 	}
 }

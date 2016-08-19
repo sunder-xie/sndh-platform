@@ -20,7 +20,7 @@ public class Z_CRM_ADDR_UPDATE implements org.apache.axis2.databinding.ADBBean {
     /**
      * field for IV_MEMB_GUID
      */
-    protected com.nhry.webService.client.Address.functions.IV_MEMB_GUID_type1 localIV_MEMB_GUID;
+    protected IV_MEMB_GUID_type1 localIV_MEMB_GUID;
 
     /*  This tracker boolean wil be used to detect whether the user called the set method
      *   for this attribute. It will be used to determine whether to include this field
@@ -47,7 +47,7 @@ public class Z_CRM_ADDR_UPDATE implements org.apache.axis2.databinding.ADBBean {
      * Auto generated getter method
      * @return com.nhry.webService.client.Address.functions.IV_MEMB_GUID_type1
      */
-    public com.nhry.webService.client.Address.functions.IV_MEMB_GUID_type1 getIV_MEMB_GUID() {
+    public IV_MEMB_GUID_type1 getIV_MEMB_GUID() {
         return localIV_MEMB_GUID;
     }
 
@@ -56,7 +56,7 @@ public class Z_CRM_ADDR_UPDATE implements org.apache.axis2.databinding.ADBBean {
      * @param param IV_MEMB_GUID
      */
     public void setIV_MEMB_GUID(
-        com.nhry.webService.client.Address.functions.IV_MEMB_GUID_type1 param) {
+        IV_MEMB_GUID_type1 param) {
         localIV_MEMB_GUIDTracker = param != null;
 
         this.localIV_MEMB_GUID = param;
@@ -430,7 +430,7 @@ public class Z_CRM_ADDR_UPDATE implements org.apache.axis2.databinding.ADBBean {
                                     reader.getName())) ||
                                 new javax.xml.namespace.QName("", "IV_MEMB_GUID").equals(
                                     reader.getName())) {
-                            object.setIV_MEMB_GUID(com.nhry.webService.client.Address.functions.IV_MEMB_GUID_type1.Factory.parse(
+                            object.setIV_MEMB_GUID(IV_MEMB_GUID_type1.Factory.parse(
                                     reader));
 
                             reader.next();

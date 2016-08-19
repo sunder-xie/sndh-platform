@@ -7,7 +7,6 @@ import com.nhry.common.exception.MessageCode;
 import com.nhry.common.exception.ServiceException;
 import com.nhry.data.auth.dao.TSysUserRoleMapper;
 import com.nhry.data.auth.domain.TSysUser;
-import com.nhry.data.auth.domain.TSysUserRole;
 import com.nhry.data.basic.dao.TMdBranchMapper;
 import com.nhry.data.basic.dao.TMdBranchScopeMapper;
 import com.nhry.data.basic.dao.TMdResidentialAreaMapper;
@@ -22,15 +21,10 @@ import com.nhry.service.basic.pojo.BranchScopeModel;
 import com.nhry.service.basic.pojo.ResidentialAreaModel;
 import com.nhry.service.external.dao.EcService;
 import com.nhry.utils.PrimaryKeyUtils;
-
 import org.apache.commons.lang.StringUtils;
 import org.springframework.core.task.TaskExecutor;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * Created by gongjk on 2016/6/3.
@@ -129,13 +123,9 @@ public class ResidentialAreaServiceImpl implements ResidentialAreaService {
     @Override
     public List<TMdResidentialArea> searchAreaBySalesOrg(AreaSearchModel aModel) {
         TSysUser user = userSessionService.getCurrentUser();
-        List<String> rids = urMapper.getUserRidsByLoginName(user.getLoginName());
         Map<String,String> map = new HashMap<String,String>();
         aModel.setSalesOrg(user.getSalesOrg());
-        //奶站内勤，只看该奶站下的
-        if(rids.contains("10004")){
-            aModel.setBranchNo(user.getBranchNo());
-        }
+        aModel.setBranchNo(user.getBranchNo());
         if(!StringUtils.isEmpty(aModel.getContent())){
         	aModel.setContent(aModel.getContent().trim().replace(" ", "%"));
         }

@@ -1,33 +1,9 @@
 package com.nhry.rest.basic;
 
-import java.util.HashMap;
-import java.util.Map;
-
-import javax.ws.rs.Consumes;
-import javax.ws.rs.GET;
-import javax.ws.rs.OPTIONS;
-import javax.ws.rs.POST;
-import javax.ws.rs.Path;
-import javax.ws.rs.PathParam;
-import javax.ws.rs.Produces;
-import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.Response;
-
-import org.apache.commons.lang3.StringUtils;
-import org.codehaus.jettison.json.JSONObject;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Scope;
-import org.springframework.stereotype.Component;
-import org.springframework.stereotype.Controller;
-
 import com.github.pagehelper.PageInfo;
 import com.nhry.common.auth.UserSessionService;
 import com.nhry.common.exception.MessageCode;
-import com.nhry.data.basic.domain.TMdAddress;
-import com.nhry.data.basic.domain.TVipAcct;
-import com.nhry.data.basic.domain.TVipCrmAddress;
-import com.nhry.data.basic.domain.TVipCrmInfo;
-import com.nhry.data.basic.domain.TVipCustInfo;
+import com.nhry.data.basic.domain.*;
 import com.nhry.model.basic.CustQueryModel;
 import com.nhry.model.basic.CustStat;
 import com.nhry.model.sys.ResponseModel;
@@ -39,6 +15,16 @@ import com.sun.jersey.spi.resource.Singleton;
 import com.wordnik.swagger.annotations.Api;
 import com.wordnik.swagger.annotations.ApiOperation;
 import com.wordnik.swagger.annotations.ApiParam;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Scope;
+import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Controller;
+
+import javax.ws.rs.*;
+import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
+import java.util.HashMap;
+import java.util.Map;
 
 @Path("/vipcust")
 @Component
@@ -73,6 +59,7 @@ public class VipCustResource extends BaseResource {
 
 	@POST
 	@Path("/add/cust")
+	@Produces(MediaType.APPLICATION_JSON)
 	@Consumes(MediaType.APPLICATION_JSON)
 	@ApiOperation(value = "/add/cust", response = ResponseModel.class, notes = "添加订户信息")
 	public Response addVipCust(@ApiParam(required=true,name="cust",value="订户信息对象")TVipCustInfo cust) {
@@ -186,8 +173,19 @@ public class VipCustResource extends BaseResource {
 	@POST
 	@Path("/upt/crm/custinfo")
 	@Produces(MediaType.APPLICATION_JSON)
-	@ApiOperation(value = "/upt/crm/custinfo", response = ResponseModel.class, notes = "修改会员详细地址")
+	@ApiOperation(value = "/upt/crm/custinfo", response = ResponseModel.class, notes = "修改会员详细信息")
 	public Response addVipCrm(@ApiParam(required=true,name="crminfo",value="会员对象") TVipCrmInfo crminfo) {
 	  return convertToRespModel(MessageCode.NORMAL, null,vipCrmInfoService.updateVipCrmByNo(crminfo));
 	}
+
+	@POST
+	@Path("/crm/isVip/{mp}")
+	@Produces(MediaType.APPLICATION_JSON)
+	@ApiOperation(value = "/crm/isVip/{mp}", response = ResponseModel.class, notes = "是否是会员")
+	public Response isVip(@ApiParam(required=true,name="mp",value="会员手机号码")@PathParam("mp") String mp) {
+		Map<String,String> map = new HashMap<String,String>();
+		map.put("phone",mp);
+		return convertToRespModel(MessageCode.NORMAL, null,vipCrmInfoService.getCrmNoByPhone(map));
+	}
+
 }

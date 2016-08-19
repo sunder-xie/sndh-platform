@@ -74,7 +74,9 @@ public interface TVipCustInfoService {
     
     /**
      * 为订户添加详细地址信息
-     * @param vipCustNo
+     * @param address
+     * @param branchNo
+     * 如果 该地址 所属的订户不存在则创建 还要创建新订户
      * @return
      */
     public String addAddressForCust(TMdAddress address,String branchNo,Map<String,String> attrs);
@@ -163,4 +165,11 @@ public interface TVipCustInfoService {
      * @return
      */
     public List<CustStat> getCustInfoStat();
+
+    /**
+     * 更新会员编号
+     * @param vipCustInfo
+     * @return
+     */
+    public int updateSapNo(TVipCustInfo vipCustInfo);
 }

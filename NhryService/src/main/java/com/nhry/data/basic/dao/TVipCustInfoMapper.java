@@ -102,4 +102,9 @@ public interface TVipCustInfoMapper {
      * @return
      */
     public List<CustStat> getCustInfoStat(Map<String,String> attrs);
+
+    /**
+     * 更新会员编号
+     */
+    public int updateSapNo(TVipCustInfo vipCustInfo);
 }

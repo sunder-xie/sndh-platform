@@ -20,6 +20,7 @@ import com.nhry.data.auth.domain.TSysUser;
 import com.nhry.data.basic.dao.TBranchNotsellListMapper;
 import com.nhry.data.basic.dao.TSysMessageMapper;
 import com.nhry.data.basic.domain.TMdBranch;
+import com.nhry.data.basic.domain.TMdBranchEmp;
 import com.nhry.data.basic.domain.TMdMara;
 import com.nhry.data.basic.domain.TSysMessage;
 import com.nhry.data.order.dao.TPreOrderMapper;
@@ -284,5 +285,28 @@ public class TSysMessageServiceImpl extends BaseService implements TSysMessageSe
 		attrs.put("loginName", this.userSessionService.getCurrentUser().getLoginName());
 		attrs.put("messageNo", messageNo);
 		return this.messageMapper.closeSysMessage(attrs);
+	}
+
+	@Override
+	public int sendMessageForEmpUpt(TMdBranchEmp emp, String tag,TSysUser user) {
+		// TODO Auto-generated method stub
+		Map<String,String> attrs = new HashMap<String,String>();
+		attrs.put("salesOrg", emp.getSalesOrg());
+		attrs.put("branchNo", emp.getBranchNo());
+		attrs.put("rid", "'"+SysContant.getSystemConst("branch_back_office")+"'");
+		List<TSysUser> users = userMapper.getloginNamesByOrgsandRid2(attrs);
+		if(users == null || users.size() == 0){
+			LOGGER.warn("该销售组织下："+emp.getSalesOrg()+"目前没有奶站内勤！");
+			return -1;
+		}else{
+			if("add".equals(tag)){
+				//新增员工
+				this.sendMessage(users, "奶站新增员啦！员工编号："+emp.getHrEmpNo(), "奶站新增员消息！员工编号："+emp.getHrEmpNo()+" 员工姓名："+emp.getEmpName()+"，敬请关注！", "30","10",user);
+			}else if("upt".equals(tag)){
+				//员工变更奶站
+				this.sendMessage(users, "奶站有员工离职啦！员工编号："+emp.getHrEmpNo(), "奶站员工离职消息！员工编号："+emp.getHrEmpNo()+" 员工姓名："+emp.getEmpName()+"，敬请关注！", "30","10",user);
+			}
+		}
+		return 1;
 	}
 }

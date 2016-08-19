@@ -166,7 +166,7 @@
     <select id="selectSalOrderByDateAndBranchOrDealerNo" resultMap="BaseResultMap"  parameterType="com.nhry.model.milktrans.SalOrderModel">
         SELECT
         o.ORDER_NO,o.ORDER_DATE,o.BRANCH_NO,o.REQUIRED_DATE,o.VOUCHER_NO,o.STATUS,o.MEMO_TXT,
-        o.PROM_NO,b.BRANCH_NAME,o.DEALER_NO,d.DEALER_NAME
+        o.PROM_NO,b.BRANCH_NAME,b.DEALER_NO,d.DEALER_NAME
         FROM
         t_ssm_sal_order o LEFT  JOIN  t_md_branch b on o.BRANCH_NO = b.BRANCH_NO
         LEFT  JOIN  t_md_dealer d on o.DEALER_NO = d.DEALER_NO
@@ -187,4 +187,10 @@
         WHERE 1=1
         and ORDER_NO = #{orderNo,jdbcType=VARCHAR}
     </delete>
+
+    <update id="uptYfrechAndYGrowthByOrderNo" parameterType="com.nhry.model.milktrans.OrderPointModel">
+        UPDATE  t_ssm_sal_order
+        SET   YFRESH = #{yfresh,jdbcType=DECIMAL} , YGROWTH = #{ygrowth,jdbcType=DECIMAL}
+        where ORDER_NO = #{orderNo,jdbcType=VARCHAR}
+    </update>
 </mapper>

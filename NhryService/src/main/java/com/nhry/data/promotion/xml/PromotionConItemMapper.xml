@@ -12,20 +12,20 @@
   <sql id="Base_Column_List">
     PROM_NO, ITEM_NO, CON_TYPE, OPT, HIGH, LOW
   </sql>
-  <select id="selectByPrimaryKey" parameterType="com.nhry.data.promotion.domain.PromotionConItemKey" resultMap="BaseResultMap">
+  <select id="selectConItem" parameterType="com.nhry.data.promotion.domain.PromotionConItemKey" resultMap="BaseResultMap">
     select 
     <include refid="Base_Column_List" />
     from t_promotion_con_item
     where PROM_NO = #{promNo,jdbcType=VARCHAR}
       and ITEM_NO = #{itemNo,jdbcType=VARCHAR}
   </select>
-  <delete id="deleteByPrimaryKey" parameterType="com.nhry.data.promotion.domain.PromotionConItemKey">
+  <delete id="deleteConItem" parameterType="com.nhry.data.promotion.domain.PromotionConItemKey">
     delete from t_promotion_con_item
     where PROM_NO = #{promNo,jdbcType=VARCHAR}
       and ITEM_NO = #{itemNo,jdbcType=VARCHAR}
   </delete>
 
-  <update id="updateByPrimaryKeySelective" parameterType="com.nhry.data.promotion.domain.PromotionConItem">
+  <update id="updateConItemSelective" parameterType="com.nhry.data.promotion.domain.PromotionConItem">
     update t_promotion_con_item
     <set>
       <if test="conType != null">
@@ -44,7 +44,7 @@
     where PROM_NO = #{promNo,jdbcType=VARCHAR}
       and ITEM_NO = #{itemNo,jdbcType=VARCHAR}
   </update>
-  <update id="updateByPrimaryKey" parameterType="com.nhry.data.promotion.domain.PromotionConItem">
+  <update id="updateConItem" parameterType="com.nhry.data.promotion.domain.PromotionConItem">
     update t_promotion_con_item
     set CON_TYPE = #{conType,jdbcType=VARCHAR},
       OPT = #{opt,jdbcType=VARCHAR},

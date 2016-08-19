@@ -2,6 +2,7 @@ package com.nhry.data.order.dao;
 
 import com.github.pagehelper.PageInfo;
 import com.nhry.data.order.domain.TPreOrder;
+import com.nhry.model.bill.CustBatchBillQueryModel;
 import com.nhry.model.bill.CustBillQueryModel;
 import com.nhry.model.order.ManHandOrderSearchModel;
 import com.nhry.model.order.OrderSearchModel;
@@ -76,4 +77,6 @@ public interface TPreOrderMapper {
     List<TPreOrder> selectIniOrders();
 
     List<String> searchCustomerOrderForExp(CustBillQueryModel cModel);
+
+    List<TPreOrder> searchCustomerOrderByEmpNo(CustBatchBillQueryModel model);
 }

@@ -3,6 +3,8 @@ package com.nhry.data.basic.impl;
 import java.util.List;
 import java.util.Map;
 
+import com.github.pagehelper.ISelect;
+import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import com.nhry.common.datasource.DynamicSqlSessionTemplate;
 import com.nhry.data.auth.domain.TSysUser;
@@ -70,7 +72,12 @@ public class TVipCustInfoMapperImpl implements TVipCustInfoMapper {
 	@Override
 	public PageInfo findcustMixedTerms(CustQueryModel cust) {
 		// TODO Auto-generated method stub
-		return this.sqlSessionTemplate.selectListByPages("findcustMixedTerms",cust, Integer.parseInt(cust.getPageNum()), Integer.parseInt(cust.getPageSize()));
+		 // 核心分页代码
+		PageHelper.startPage(Integer.parseInt(cust.getPageNum()), Integer.parseInt(cust.getPageSize()),false);
+		PageInfo pageinfo = new PageInfo(this.sqlSessionTemplate.selectList("findcustMixedTerms",cust));
+		pageinfo.setTotal(sqlSessionTemplate.selectOne("findcustMixedTermsCount", cust));
+		return pageinfo;
+//		return this.sqlSessionTemplate.selectListByPages("findcustMixedTerms",cust, Integer.parseInt(cust.getPageNum()), Integer.parseInt(cust.getPageSize()));
 	}
 
 	@Override
@@ -95,5 +102,10 @@ public class TVipCustInfoMapperImpl implements TVipCustInfoMapper {
 	public List<CustStat> getCustInfoStat(Map<String, String> attrs) {
 		// TODO Auto-generated method stub
 		return this.sqlSessionTemplate.selectList("getCustInfoStat", attrs);
+	}
+
+	@Override
+	public int updateSapNo(TVipCustInfo vipCustInfo) {
+		return this.sqlSessionTemplate.update("updateSapNo",vipCustInfo);
 	}
 }

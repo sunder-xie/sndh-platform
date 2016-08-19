@@ -15,9 +15,7 @@ import com.nhry.data.order.dao.TPreOrderMapper;
 import com.nhry.data.order.domain.TOrderDaliyPlanItem;
 import com.nhry.data.order.domain.TPlanOrderItem;
 import com.nhry.data.order.domain.TPreOrder;
-import com.nhry.model.bill.CustBillQueryModel;
-import com.nhry.model.bill.CustomerBillOrder;
-import com.nhry.model.bill.CustomerPayMentModel;
+import com.nhry.model.bill.*;
 import com.nhry.model.order.OrderCreateModel;
 import com.nhry.service.basic.dao.TVipCustInfoService;
 import com.nhry.service.bill.dao.CustomerBillService;
@@ -64,11 +62,9 @@ public class CustomerBillServiceImpl implements CustomerBillService {
         TSysUser user = userSessionService.getCurrentUser();
         List<String> rids = urMapper.getUserRidsByLoginName(user.getLoginName());
         cModel.setSalesOrg(user.getSalesOrg());
-        if(rids.contains("10004")){
-            cModel.setBranchNo(user.getBranchNo());
-        }else if(rids.contains("10005")){
-            cModel.setDealerNo(user.getDealerId());
-        }
+        cModel.setBranchNo(user.getBranchNo());
+        cModel.setDealerNo(user.getDealerId());
+
         // TODO Auto-generated method stub
         if(StringUtils.isEmpty(cModel.getPageNum()) || StringUtils.isEmpty(cModel.getPageSize())){
             throw new ServiceException(MessageCode.LOGIC_ERROR,"pageNum和pageSize不能为空！");
@@ -79,12 +75,13 @@ public class CustomerBillServiceImpl implements CustomerBillService {
     @Override
     public TMstRecvBill getRecBillByOrderNo(String orderNo) {
         TMstRecvBill result = customerBillMapper.getRecBillByOrderNo(orderNo);
+
         return result;
     }
 
     @Override
     public int customerPayment(CustomerPayMentModel cModel) {
-             String errorContent ="";
+            String errorContent ="";
             int updateBill = 0;
             int updateOrderStatus = 0;
             String orderNo = cModel.getOrderNo();
@@ -160,8 +157,10 @@ public class CustomerBillServiceImpl implements CustomerBillService {
                	 promotionService.createDaliyPlanByPromotion(omodel.getOrder(),omodel.getEntries(),list);
                 }
 
+              /*
                 BigDecimal factAmt = tPreOrderMapper.calculateOrderFactoryAmt(orderNo);
                 int  updateFactAmt = tPreOrderMapper.updateOrderFacAmt(factAmt  == null ? new BigDecimal(0) : factAmt,orderNo);
+               */
                 
                //发送EC,更新订单状态
        			TPreOrder sendOrder = new TPreOrder();
@@ -190,9 +189,7 @@ public class CustomerBillServiceImpl implements CustomerBillService {
     public CustomerBillOrder getCustomerOrderDetailByCode(String orderNo) {
         TMstRecvBill bill = customerBillMapper.getRecBillByOrderNo(orderNo);
         TSysUser user = userSessionService.getCurrentUser();
-        if(bill == null){
-            throw new ServiceException(MessageCode.LOGIC_ERROR,"该订单还未收款！！请先收款");
-        }
+
         int totalNum = 0;
         BigDecimal totalPrice = new BigDecimal(0);
         List<TPlanOrderItem> entries = new  ArrayList<TPlanOrderItem>();
@@ -252,10 +249,12 @@ public class CustomerBillServiceImpl implements CustomerBillService {
         //如果余额大于订单金额  则
         if(acLeftAmt.compareTo(order.getInitAmt()) == 1){
             customerBill.setAccAmt(order.getInitAmt());
+            customerBill.setSuppAmt(BigDecimal.ZERO);
             ac.setAcctAmt(order.getInitAmt().multiply(new BigDecimal(-1)));
         }else{
             ac.setAcctAmt(acLeftAmt.multiply(new BigDecimal(-1)));
             customerBill.setAccAmt(acLeftAmt);
+            customerBill.setSuppAmt(order.getInitAmt().subtract(acLeftAmt));
         }
           tVipCustInfoService.addVipAcct(ac);
           customerBillMapper.insertCustomerPayment(customerBill);
@@ -273,6 +272,34 @@ public class CustomerBillServiceImpl implements CustomerBillService {
             cModel.setDealerNo(user.getDealerId());
         }
         return tPreOrderMapper.searchCustomerOrderForExp(cModel);
+    }
+
+    @Override
+    public int custBatchCollect(CustBatchBillQueryModel model) {
+        TSysUser user = userSessionService.getCurrentUser();
+        model.setSalesOrg(user.getSalesOrg());
+        model.setBranchNo(user.getBranchNo());
+        model.setDealerNo(user.getDealerId());
+        List<TPreOrder> orderList = tPreOrderMapper.searchCustomerOrderByEmpNo(model);
+        if(orderList !=null && orderList.size()>0){
+            for(TPreOrder order : orderList){
+                //判断该订单 对应的收款单是否创建 如果没有先创建
+                TMstRecvBill  bill = this.createRecBillByOrderNo(order.getOrderNo());
+                CustomerPayMentModel cmodel = new CustomerPayMentModel();
+                cmodel.setAmt(order.getInitAmt().subtract(bill.getAccAmt()).toString());
+                cmodel.setEmpNo(order.getEmpNo());
+                cmodel.setOrderNo(bill.getOrderNo());
+                cmodel.setPaymentType("10");
+                this.customerPayment(cmodel);
+            }
+        }
+
+        return 1;
+    }
+
+    @Override
+    public CollectOrderBillModel queryCollectByOrderNo(String orderCode) {
+        return customerBillMapper.queryCollectByOrderNo(orderCode);
     }
 
     public void setCustomerBillMapper(CustomerBillMapper customerBillMapper) {

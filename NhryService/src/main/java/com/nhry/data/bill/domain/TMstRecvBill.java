@@ -13,7 +13,8 @@ public class TMstRecvBill implements Serializable {
     private String orderNo;
     private String paymentType;
     private String status;
-    private BigDecimal amt;
+    private BigDecimal amt;    //记录实际收款金额
+    private BigDecimal suppAmt; //记录应收钱数
     private String vipCustNo;
     private String vipCustName;
     private String remark;
@@ -21,7 +22,7 @@ public class TMstRecvBill implements Serializable {
     private Date endTime;
     private String paymentYearMonth;
     private BigDecimal totalPrice;
-    private BigDecimal custAccAmt; //订户余额
+    private BigDecimal custAccAmt; //当时订户余额
     private int totalNum;
     private String recvEmp;
     private String recvEmpName;
@@ -32,6 +33,12 @@ public class TMstRecvBill implements Serializable {
     private Date lastModified;
     private String lastModifiedBy;
     private String lastModifiedByTxt;
+    public BigDecimal getSuppAmt() {
+        return suppAmt;
+    }
+    public void setSuppAmt(BigDecimal suppAmt) {
+        this.suppAmt = suppAmt;
+    }
 
     public BigDecimal getCustAccAmt() {
         return custAccAmt;

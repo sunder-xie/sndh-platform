@@ -6,11 +6,13 @@ import com.nhry.common.exception.MessageCode;
 import com.nhry.data.auth.domain.TSysUser;
 import com.nhry.model.auth.UserQueryModel;
 import com.nhry.model.auth.UserQueryModel2;
+import com.nhry.model.auth.UserQueryModel3;
 import com.nhry.model.sys.AccessKey;
 import com.nhry.model.sys.ResponseModel;
 import com.nhry.rest.BaseResource;
 import com.nhry.service.auth.dao.UserService;
 import com.nhry.utils.CookieUtil;
+import com.nhry.utils.EnvContant;
 import com.nhry.utils.SysContant;
 import com.sun.jersey.spi.resource.Singleton;
 import com.wordnik.swagger.annotations.Api;
@@ -90,6 +92,19 @@ public class UserResource extends BaseResource {
 	}
 	
 	@POST
+	@Path("/logout")
+	@Produces(MediaType.APPLICATION_JSON)
+	@ApiOperation(value = "/login", response = ResponseModel.class, notes = "用户登录")
+	public Response logout(@ApiParam(required = true, name = "tk", value = "token") @QueryParam("tk")String tk) {
+		boolean flag = userService.logout(tk);
+		if(flag){
+			return convertToRespModel(MessageCode.NORMAL,null, EnvContant.getSystemConst("idm_logout_uri")+EnvContant.getSystemConst("redirect_uri"));
+		}else{
+			return convertToRespModel(MessageCode.LOGIC_ERROR,null, "");
+		}
+	}
+	
+	@POST
 	@Path("/current/logined")
 	@Produces(MediaType.APPLICATION_JSON)
 	@ApiOperation(value = "/current/logined", response = ResponseModel.class, notes = "获取当前登录的用户信息")
@@ -127,16 +142,16 @@ public class UserResource extends BaseResource {
 	@Path("/findNotRoleUser")
 	@Produces(MediaType.APPLICATION_JSON)
 	@Consumes(MediaType.APPLICATION_JSON)
-	@ApiOperation(value = "/findNotRoleUser", response = PageInfo.class, notes = "根据用户名(或者中文名)销售组织查询人员列表")
-	public Response findNotRoleUser(@ApiParam(required = false, name = "um", value = "用户登录名、中文名、销售组织") UserQueryModel um) {
+	@ApiOperation(value = "/findNotRoleUser", response = PageInfo.class, notes = "根据用户名(或者中文名)公司编码查询人员列表")
+	public Response findNotRoleUser(@ApiParam(required = false, name = "um", value = "用户登录名、中文名、公司编码") UserQueryModel3 um) {
 		return convertToRespModel(MessageCode.NORMAL, null, userService.findNotRoleUser(um));
 	}
 	@POST
 	@Path("/findNotRoleUserPage")
 	@Produces(MediaType.APPLICATION_JSON)
 	@Consumes(MediaType.APPLICATION_JSON)
-	@ApiOperation(value = "/findNotRoleUserPage", response = PageInfo.class, notes = "根据用户名(或者中文名)销售组织查询人员列表 分页")
-	public Response findNotRoleUserPage(@ApiParam(required = true, name = "um", value = "用户登录名、中文名、销售组织") UserQueryModel um) {
+	@ApiOperation(value = "/findNotRoleUserPage", response = PageInfo.class, notes = "根据用户名(或者中文名)公司编码查询未分配角色人员列表 分页")
+	public Response findNotRoleUserPage(@ApiParam(required = true, name = "um", value = "用户登录名、中文名、公司编码") UserQueryModel3 um) {
 		return convertToRespModel(MessageCode.NORMAL, null, userService.findNotRoleUserPage(um));
 	}
 }

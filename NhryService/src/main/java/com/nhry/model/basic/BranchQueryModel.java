@@ -13,14 +13,13 @@ public class BranchQueryModel extends BaseQueryModel implements Serializable {
 	private String branchNo;
 	private String branchGroup;
 	private String salesOrg;
-	private String roleId;
-
-	public String getRoleId() {
-		return roleId;
+	private String branchN;
+	public String getBranchN() {
+		return branchN;
 	}
 
-	public void setRoleId(String roleId) {
-		this.roleId = roleId;
+	public void setBranchN(String branchN) {
+		this.branchN = branchN;
 	}
 
 	public String getSalesOrg() {

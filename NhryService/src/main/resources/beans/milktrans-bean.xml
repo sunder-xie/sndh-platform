@@ -37,6 +37,7 @@
 		<property name="tOrderDaliyPlanItemMapper"  ref="tOrderDaliyPlanItemMapper"></property>
 		<property name="branchMapper"  ref="branchMapper"></property>
 		<property name="tMdMaraMapper"  ref="maraMapper"></property>
+		<property name="tDispOrderMapper"  ref="tDispOrderMapper"></property>
 	</bean>
 
 	<!--回瓶管理-->
@@ -58,5 +59,9 @@
 	</bean>
 	<bean id="tMstInsideSalOrderItemMapper" class="com.nhry.data.milktrans.impl.TMstInsideSalOrderItemMapperImpl">
 		<property name="sqlSessionTemplate"  ref="dynamicSqlSessionTemplate"></property>
+	</bean>
+	<bean class="com.nhry.service.milktrans.impl.OrderPointServiceImpl" id="orderPointService">
+		<property name="ssmSalOrderMapper" ref="tSsmSalOrderMapper"/>
+		<property name="ssmSalOrderItemMapper" ref="tSsmSalOrderItemMapper"/>
 	</bean>
 </beans>

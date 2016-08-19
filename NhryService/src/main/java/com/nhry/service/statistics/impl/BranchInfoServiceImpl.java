@@ -10,6 +10,7 @@ import com.nhry.model.statistics.BranchInfoModel;
 import com.nhry.model.statistics.ExtendBranchInfoModel;
 import com.nhry.service.statistics.dao.BranchInfoService;
 import org.apache.commons.lang.StringUtils;
+import org.springframework.security.access.method.P;
 import scala.reflect.internal.Trees;
 
 import java.text.SimpleDateFormat;
@@ -188,5 +189,79 @@ public class BranchInfoServiceImpl implements BranchInfoService {
             model.setSalesOrg(user.getSalesOrg());
         }
         return branchInfoMapper.returnBoxStatReport(model);
+    }
+    @Override
+    public PageInfo mstDispNumStat(ExtendBranchInfoModel model){
+        if(StringUtils.isEmpty(model.getPageNum()) || StringUtils.isEmpty(model.getPageSize())){
+            throw new ServiceException(MessageCode.LOGIC_ERROR,"pageNum和pageSize不能为空！");
+        }
+        TSysUser user = userSessionService.getCurrentUser();
+        if(StringUtils.isEmpty(model.getBranchNo()) && StringUtils.isNotEmpty(user.getBranchNo())){
+            model.setBranchNo(user.getBranchNo());
+        }else if(StringUtils.isEmpty(model.getDealerId()) && StringUtils.isNotEmpty(user.getDealerId())){
+            model.setDealerId(user.getDealerId());
+        }
+        if(StringUtils.isNotEmpty(user.getSalesOrg())){
+            model.setSalesOrg(user.getSalesOrg());
+        }
+        return branchInfoMapper.mstDispNumStat(model);
+    }
+    @Override
+    public PageInfo branchMstDispNumStat(ExtendBranchInfoModel model){
+        if(StringUtils.isEmpty(model.getPageNum()) || StringUtils.isEmpty(model.getPageSize())){
+            throw new ServiceException(MessageCode.LOGIC_ERROR,"pageNum和pageSize不能为空！");
+        }
+        TSysUser user = userSessionService.getCurrentUser();
+        if(StringUtils.isEmpty(model.getBranchNo()) && StringUtils.isNotEmpty(user.getBranchNo())){
+            model.setBranchNo(user.getBranchNo());
+        }else if(StringUtils.isEmpty(model.getDealerId()) && StringUtils.isNotEmpty(user.getDealerId())){
+            model.setDealerId(user.getDealerId());
+        }
+        if(StringUtils.isNotEmpty(user.getSalesOrg())){
+            model.setSalesOrg(user.getSalesOrg());
+        }
+        return branchInfoMapper.branchMstDispNumStat(model);
+    }
+    @Override
+    public PageInfo dayMstDispNumStat(ExtendBranchInfoModel model){
+        if(StringUtils.isEmpty(model.getPageNum()) || StringUtils.isEmpty(model.getPageSize())){
+            throw new ServiceException(MessageCode.LOGIC_ERROR,"pageNum和pageSize不能为空！");
+        }
+        TSysUser user = userSessionService.getCurrentUser();
+        if(StringUtils.isEmpty(model.getBranchNo()) && StringUtils.isNotEmpty(user.getBranchNo())){
+            model.setBranchNo(user.getBranchNo());
+        }else if(StringUtils.isEmpty(model.getDealerId()) && StringUtils.isNotEmpty(user.getDealerId())){
+            model.setDealerId(user.getDealerId());
+        }
+        if(StringUtils.isNotEmpty(user.getSalesOrg())){
+            model.setSalesOrg(user.getSalesOrg());
+        }
+        return branchInfoMapper.dayMstDispNumStat(model);
+    }
+    @Override
+    public List<Map<String,String>> branchDayRepo(BranchInfoModel model){
+        TSysUser user = userSessionService.getCurrentUser();
+        if(StringUtils.isEmpty(model.getBranchNo()) && StringUtils.isNotEmpty(user.getBranchNo())){
+            model.setBranchNo(user.getBranchNo());
+        }else if(StringUtils.isEmpty(model.getDealerId()) && StringUtils.isNotEmpty(user.getDealerId())){
+            model.setDealerId(user.getDealerId());
+        }
+        if(StringUtils.isNotEmpty(user.getSalesOrg())){
+            model.setSalesOrg(user.getSalesOrg());
+        }
+        return branchInfoMapper.branchDayRepo(model);
+    }
+    @Override
+    public Map<String,String> branchDayQty(BranchInfoModel model){
+        TSysUser user = userSessionService.getCurrentUser();
+        if(StringUtils.isEmpty(model.getBranchNo()) && StringUtils.isNotEmpty(user.getBranchNo())){
+            model.setBranchNo(user.getBranchNo());
+        }else if(StringUtils.isEmpty(model.getDealerId()) && StringUtils.isNotEmpty(user.getDealerId())){
+            model.setDealerId(user.getDealerId());
+        }
+        if(StringUtils.isNotEmpty(user.getSalesOrg())){
+            model.setSalesOrg(user.getSalesOrg());
+        }
+        return branchInfoMapper.branchDayQty(model);
     }
 }

@@ -17,6 +17,7 @@ import com.nhry.model.basic.CustStat;
 import com.nhry.service.BaseService;
 import com.nhry.service.basic.dao.TVipCustInfoService;
 import com.nhry.service.basic.pojo.Addresses;
+import com.nhry.service.pi.dao.PIVipInfoDataService;
 import com.nhry.utils.PrimaryKeyUtils;
 import com.nhry.utils.date.Date;
 
@@ -32,6 +33,7 @@ public class TVipCustInfoServiceImpl extends BaseService implements TVipCustInfo
 	private TMdAddressMapper addressMapper;
 	private TVipAcctMapper vipAcctMapper;
 	private TMdBranchMapper branchMapper;
+	private PIVipInfoDataService vipInfoDataService;
 
 	public void setTmdVipcust(TVipCustInfoMapper tmdVipcust) {
 		this.tmdVipcust = tmdVipcust;
@@ -76,6 +78,7 @@ public class TVipCustInfoServiceImpl extends BaseService implements TVipCustInfo
 			address.setCreateByTxt(this.userSessionService.getCurrentUser().getDisplayName());
 			addAddressForCust(address,null,null);
 		}
+		vipInfoDataService.executeVipInfoData(record.getVipCustNo(),"");
 		return record.getVipCustNo();
 	}
 
@@ -115,6 +118,7 @@ public class TVipCustInfoServiceImpl extends BaseService implements TVipCustInfo
 			ad.setAddresses(record.getAddresses());
 			this.batchUptCustAddress(ad);
 		}
+		vipInfoDataService.executeVipInfoData(record.getVipCustNo(),"");
 		return 1;
 	}
 
@@ -253,6 +257,7 @@ public class TVipCustInfoServiceImpl extends BaseService implements TVipCustInfo
 		address.setCreateBy(sysuser.getLoginName());
 		address.setCreateByTxt(sysuser.getDisplayName());
 		this.addressMapper.addAddressForCust(address);
+		vipInfoDataService.executeVipInfoData(address.getVipCustNo(),"");
 		return address.getVipCustNo()+","+address.getAddressId();
 	}
 
@@ -274,7 +279,9 @@ public class TVipCustInfoServiceImpl extends BaseService implements TVipCustInfo
 		address.setLastModified(new Date());
 		address.setLastModifiedBy(sysuser.getLoginName());
 		address.setLastModifiedByTxt(sysuser.getDisplayName());
-	  return this.addressMapper.uptCustAddress(address);
+	   	int i = this.addressMapper.uptCustAddress(address);
+		vipInfoDataService.executeSendAddress(address,"");
+		return i;
 	}
 
 	@Override
@@ -351,7 +358,9 @@ public class TVipCustInfoServiceImpl extends BaseService implements TVipCustInfo
 				 address.setLastModified(new Date());
 				 address.setLastModifiedBy(sysuser.getSalesOrg());
 				 address.setLastModifiedByTxt(sysuser.getDisplayName());
-				 return this.addressMapper.uptCustAddress(address);
+				 int i = this.addressMapper.uptCustAddress(address);
+				 vipInfoDataService.executeSendAddress(address,"");
+				 return i;
 			}else if("20".equals(status)){
 				 address.setIsDafault("Y");
 				 address.setLastModified(new Date());
@@ -359,7 +368,9 @@ public class TVipCustInfoServiceImpl extends BaseService implements TVipCustInfo
 				 address.setLastModifiedByTxt(sysuser.getDisplayName());
 				 this.addressMapper.uptCustAddress(address);
 				 //将该订户下的其他详细地址设置为非默认状态
-				return this.addressMapper.uptCustAddressUnDefault(address);
+				int i = this.addressMapper.uptCustAddressUnDefault(address);
+				vipInfoDataService.executeSendAddress(address,"");
+				return i;
 			}else{
 				throw new ServiceException(MessageCode.LOGIC_ERROR, "状态标示不符合约定条件!");
 			}
@@ -379,6 +390,7 @@ public class TVipCustInfoServiceImpl extends BaseService implements TVipCustInfo
 				}else{
 					//修改
 					this.addressMapper.uptCustAddress(ad);
+					vipInfoDataService.executeSendAddress(ad,"");
 				}
 			}
 		}
@@ -463,5 +475,14 @@ public class TVipCustInfoServiceImpl extends BaseService implements TVipCustInfo
 		cs.setAmount(am+"");
 		lists.add(cs);
 		return lists;
+	}
+
+	@Override
+	public int updateSapNo(TVipCustInfo vipCustInfo) {
+		return tmdVipcust.updateSapNo(vipCustInfo);
+	}
+
+	public void setVipInfoDataService(PIVipInfoDataService vipInfoDataService) {
+		this.vipInfoDataService = vipInfoDataService;
 	}
 }

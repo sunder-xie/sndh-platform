@@ -6,6 +6,8 @@ import com.nhry.data.basic.dao.TMdBranchExMapper;
 import com.nhry.data.basic.dao.TMdBranchMapper;
 import com.nhry.data.basic.domain.TMdBranch;
 import com.nhry.data.basic.domain.TMdBranchEx;
+import com.nhry.data.config.dao.NHSysCodeItemMapper;
+import com.nhry.data.config.domain.NHSysCodeItem;
 import com.nhry.data.milktrans.dao.TSsmReqGoodsOrderItemMapper;
 import com.nhry.data.milktrans.dao.TSsmReqGoodsOrderMapper;
 import com.nhry.data.milktrans.dao.TSsmSalOrderItemMapper;
@@ -14,16 +16,19 @@ import com.nhry.data.milktrans.domain.TSsmReqGoodsOrder;
 import com.nhry.data.milktrans.domain.TSsmSalOrder;
 import com.nhry.data.stock.dao.TSsmGiOrderItemMapper;
 import com.nhry.data.stock.dao.TSsmGiOrderMapper;
-import com.nhry.data.stock.dao.TSsmStockMapper;
-import com.nhry.data.stock.domain.*;
+import com.nhry.data.stock.domain.TSsmGiOrder;
+import com.nhry.data.stock.domain.TSsmGiOrderItem;
+import com.nhry.data.stock.domain.TSsmGiOrderItemKey;
 import com.nhry.model.milktrans.ReqGoodsOrderItemSearch;
 import com.nhry.model.milktrans.RequireOrderSearch;
 import com.nhry.model.milktrans.SalOrderModel;
 import com.nhry.service.pi.dao.PIRequireOrderService;
+import com.nhry.service.pi.pojo.SalesOrderHeader;
 import com.nhry.utils.PIPropertitesUtil;
 import com.nhry.webService.client.PISuccessMessage;
 import com.nhry.webService.client.businessData.model.Delivery;
 import org.apache.commons.lang.StringUtils;
+import org.apache.log4j.Logger;
 
 import java.math.BigDecimal;
 import java.util.Date;
@@ -35,6 +40,8 @@ import java.util.Map;
  * Created by cbz on 7/4/2016.
  */
 public class PIRequireOrderServiceImpl implements PIRequireOrderService {
+
+    private static final Logger logger = Logger.getLogger(PIRequireOrderServiceImpl.class);
 
     private TMdBranchExMapper branchExMapper;
 
@@ -52,7 +59,7 @@ public class PIRequireOrderServiceImpl implements PIRequireOrderService {
 
     private TMdBranchMapper branchMapper;
 
-    private TSsmStockMapper ssmStockMapper;
+    private NHSysCodeItemMapper sysCodeItemMapper;
 
     public void setBranchMapper(TMdBranchMapper branchMapper) {
         this.branchMapper = branchMapper;
@@ -86,6 +93,10 @@ public class PIRequireOrderServiceImpl implements PIRequireOrderService {
         this.ssmSalOrderMapper = ssmSalOrderMapper;
     }
 
+    public void setSysCodeItemMapper(NHSysCodeItemMapper sysCodeItemMapper) {
+        this.sysCodeItemMapper = sysCodeItemMapper;
+    }
+
     @Override
     public PISuccessMessage generateRequireOrder(TSsmReqGoodsOrder ssmReqGoodsOrder)  {
             TMdBranchEx branchEx = branchExMapper.getBranchEx(ssmReqGoodsOrder.getBranchNo());
@@ -109,6 +120,11 @@ public class PIRequireOrderServiceImpl implements PIRequireOrderService {
 
     @Override
     public PISuccessMessage generateSalesOrder(TSsmSalOrder ssmSalOrder, String kunnr, String kunwe, String vkorg, String activityId) {
+        SalesOrderHeader orderHeader = new SalesOrderHeader();
+        orderHeader.setKUNNR(kunnr);
+        orderHeader.setKUNWE(kunwe);
+        orderHeader.setVKORG(vkorg);
+        orderHeader.setActivityId(activityId);
         List<Map<String,String>> items = tSsmSalOrderItemMapper.findItemsForPI(ssmSalOrder.getOrderNo());
         TMdBranch branch = branchMapper.getBranchByNo(ssmSalOrder.getBranchNo());
         TMdBranchEx branchEx = branchExMapper.getBranchEx(ssmSalOrder.getBranchNo());
@@ -116,62 +132,97 @@ public class PIRequireOrderServiceImpl implements PIRequireOrderService {
         if("02".equals(branch.getBranchGroup())){
             lgort = branchEx.getReslo();
         }
+        orderHeader.setLgort(lgort);
         String werks = branchEx.getSupplPlnt();
+        orderHeader.setWerks(werks);
         String auartType = PIPropertitesUtil.getValue("PI.AUART.ZOR");
         String saleOrgTX = PIPropertitesUtil.getValue("PI.SALEORG_TX");
         String freeType = ssmSalOrder.getFreeFlag();
-        if("Y".equals(freeType)){
+        if("N".equals(freeType)){
             if(saleOrgTX.equals(ssmSalOrder.getSalesOrg())){
                 auartType = PIPropertitesUtil.getValue("PI.AUART.ZOR1");
             }else{
                 auartType = PIPropertitesUtil.getValue("PI.AUART.ZOR");
             }
         }else{
+            NHSysCodeItem key = new NHSysCodeItem();
+            key.setTypeCode("1016");
+            key.setItemCode(vkorg);
+            NHSysCodeItem codeItem = sysCodeItemMapper.findCodeItenByCode(key);
+            if(codeItem!=null){
+                orderHeader.setAugru(codeItem.getAttr1());
+                orderHeader.setKostl(codeItem.getAttr2());
+                orderHeader.setZz001(codeItem.getAttr3());
+            }
             if(saleOrgTX.equals(ssmSalOrder.getSalesOrg())){
                 auartType = PIPropertitesUtil.getValue("PI.AUART.ZFD1");
             }else{
                 auartType = PIPropertitesUtil.getValue("PI.AUART.ZFD");
             }
         }
-        return BusinessDataConnection.SalesOrderCreate(kunnr,kunwe,vkorg, ssmSalOrder.getOrderNo(), ssmSalOrder.getRequiredDate(),items,activityId, lgort, werks, auartType);
+        orderHeader.setAuartType(auartType);
+        orderHeader.setBSTKD(ssmSalOrder.getOrderNo());
+        orderHeader.setLFDAT(ssmSalOrder.getRequiredDate());
+        return BusinessDataConnection.SalesOrderCreate(items, orderHeader);
     }
 
     @Override
     public String generateDelivery(String orderNo,String branchNo,boolean isDeli){
         if(StringUtils.isEmpty(orderNo)){
-            throw new ServiceException(MessageCode.SERVER_ERROR,"销售订单凭证没有生成！");
+            throw new ServiceException(MessageCode.SERVER_ERROR,"调拨单或销售订单凭证没有生成！");
         }
         try{
           List<Delivery> deliveries = BusinessDataConnection.DeliveryQuery(orderNo,isDeli);
             if(deliveries.size()>0){
                 TSsmGiOrder ssmGiOrder = null;
-                Delivery delivery = deliveries.get(0);
-                ssmGiOrder = ssmGiOrderMapper.selectGiOrderByNo(delivery.getBSTKD());
-                if (ssmGiOrder == null) {
-                    ssmGiOrder = new TSsmGiOrder();
-                    ssmGiOrder.setBranchNo(branchNo);
-                    ssmGiOrder.setOrderNo(delivery.getBSTKD());
-                    ssmGiOrder.setStatus("10");
-                    ssmGiOrder.setSyncAt(new Date());
-                    ssmGiOrder.setOrderDate(delivery.getLFDAT());
-                    ssmGiOrderMapper.insertGiOrder(ssmGiOrder);
-                } else {
-                    ssmGiOrder.setBranchNo(branchNo);
-                    ssmGiOrder.setOrderNo(delivery.getBSTKD());
-                    ssmGiOrder.setSyncAt(new Date());
-                    ssmGiOrder.setOrderDate(delivery.getLFDAT());
-                    ssmGiOrderMapper.updateGiOrder(ssmGiOrder);
-                }
+//                Delivery delivery = deliveries.get(0);
+//                ssmGiOrder = ssmGiOrderMapper.selectGiOrderByNo(delivery.getVBELN());
+//                if (ssmGiOrder == null) {
+//                    ssmGiOrder = new TSsmGiOrder();
+//                    ssmGiOrder.setBranchNo(branchNo);
+//                    ssmGiOrder.setOrderNo(delivery.getVBELN());
+//                    ssmGiOrder.setStatus("10");
+//                    ssmGiOrder.setSyncAt(new Date());
+//                    ssmGiOrder.setOrderDate(delivery.getLFDAT());
+//                    ssmGiOrder.setMemoTxt(delivery.getBSTKD());
+//                    ssmGiOrderMapper.insertGiOrder(ssmGiOrder);
+//                } else {
+//                    ssmGiOrder.setBranchNo(branchNo);
+//                    ssmGiOrder.setOrderNo(delivery.getVBELN());
+//                    ssmGiOrder.setMemoTxt(delivery.getBSTKD());
+//                    ssmGiOrder.setSyncAt(new Date());
+//                    ssmGiOrder.setOrderDate(delivery.getLFDAT());
+//                    ssmGiOrderMapper.updateGiOrder(ssmGiOrder);
+//                }
                 for(Delivery d : deliveries) {
+                    //防止一个调拨单生成多个交货单
+                    ssmGiOrder = ssmGiOrderMapper.selectGiOrderByNo(d.getVBELN());
+                    if (ssmGiOrder == null) {
+                        ssmGiOrder = new TSsmGiOrder();
+                        ssmGiOrder.setBranchNo(branchNo);
+                        ssmGiOrder.setOrderNo(d.getVBELN());
+                        ssmGiOrder.setStatus("10");
+                        ssmGiOrder.setSyncAt(new Date());
+                        ssmGiOrder.setOrderDate(d.getLFDAT());
+                        ssmGiOrder.setMemoTxt(d.getBSTKD());
+                        ssmGiOrderMapper.insertGiOrder(ssmGiOrder);
+                    } else {
+                        ssmGiOrder.setBranchNo(branchNo);
+                        ssmGiOrder.setOrderNo(d.getVBELN());
+                        ssmGiOrder.setMemoTxt(d.getBSTKD());
+                        ssmGiOrder.setSyncAt(new Date());
+                        ssmGiOrder.setOrderDate(d.getLFDAT());
+                        ssmGiOrderMapper.updateGiOrder(ssmGiOrder);
+                    }
                     TSsmGiOrderItemKey key = new TSsmGiOrderItemKey();
                     key.setOrderDate(d.getLFDAT());
                     key.setItemNo(d.getPOSNR());
-                    key.setOrderNo(d.getBSTKD());
+                    key.setOrderNo(d.getVBELN());
                     TSsmGiOrderItem ssmGiOrderItem = ssmGiOrderItemMapper.selectGiOrderItemByNo(key);
                     BigDecimal sum = new BigDecimal(0);
                     if(ssmGiOrderItem == null) {
                         ssmGiOrderItem = new TSsmGiOrderItem();
-                        ssmGiOrderItem.setOrderNo(d.getBSTKD());
+                        ssmGiOrderItem.setOrderNo(d.getVBELN());
                         ssmGiOrderItem.setMatnr(d.getMATNR());
                         ssmGiOrderItem.setUnit(d.getMEINS());
                         ssmGiOrderItem.setItemNo(d.getPOSNR());
@@ -190,13 +241,14 @@ public class PIRequireOrderServiceImpl implements PIRequireOrderService {
                         ssmGiOrderItem.setFactoryPrice(d.getCmpre());
                         ssmGiOrderItemMapper.updateGiOrderItem(ssmGiOrderItem);
                     }
-
                 }
             }else {
-                throw new ServiceException(MessageCode.SERVER_ERROR, "要货单"+orderNo+"交货单没有获得到！");
+                throw new ServiceException(MessageCode.SERVER_ERROR, "要货单"+orderNo+"在ECC中没有得到交换单！");
             }
         }catch (Exception e){
             e.printStackTrace();
+            logger.error("要货单"+orderNo +"获取交货单异常！原因："+ e.getMessage());
+            throw new ServiceException(MessageCode.SERVER_ERROR, "获取交货单异常,请联系管理员!");
         }
         return "1";
     }

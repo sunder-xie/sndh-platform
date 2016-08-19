@@ -35,7 +35,7 @@ public class MemberActivities {
      */
     protected String salesorg;
     /**
-     * 会员卡号
+     * 会员卡号可为空
      */
     protected String cardid;
     /**
@@ -47,15 +47,15 @@ public class MemberActivities {
      */
     protected BigDecimal amount;
     /**
-     * 积分类型
+     * 积分类型 可为空
      */
     protected String pointtype;
     /**
-     * 积分数
+     * 积分数 可为空
      */
     protected BigDecimal points;
     /**
-     * 货币
+     * 货币可为空
      */
     protected String currency;
     /**
@@ -75,19 +75,28 @@ public class MemberActivities {
      */
     protected BigDecimal productquantity;
     /**
-     * 零售店编号
+     * 零售店编号 奶站
      */
     protected String retailstoreid;
     /**
-     * 交易顺序号
+     * 交易顺序号 可为空
      */
     protected String transeqnum;
     /**
-     *
+     *可为空
      */
     protected String tiergroup;
+    /**
+     * 可为空
+     */
     protected String tier;
+    /**
+     * 立即提交   传  X
+     */
     protected String commit;
+    /**
+     * 可为空
+     */
     protected String process;
 
     public String getCategory() {

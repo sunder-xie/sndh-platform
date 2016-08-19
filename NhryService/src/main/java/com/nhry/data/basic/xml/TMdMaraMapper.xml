@@ -499,7 +499,7 @@
 			FROM
 				T_BRANCH_NOTSELL_LIST nl
 			WHERE
-				nl.dealer_no = NULL
+				nl.dealer_no = '-1'
 			AND nl.sales_org = #{salesOrg}
 		)
 		AND p.SALES_ORG = #{salesOrg}

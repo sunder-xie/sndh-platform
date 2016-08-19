@@ -20,6 +20,7 @@ import org.springframework.stereotype.Controller;
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+import java.util.Date;
 
 @Path("/milkTrans")
 @Component
@@ -87,6 +88,15 @@ public class milkTransResource extends BaseResource {
 	@ApiOperation(value = "/creatRequireOrder", response = RequireOrderModel.class, notes = "生成要货计划")
 	public Response creatRequireOrder(){
 		return convertToRespModel(MessageCode.NORMAL, null, requireOrderService.creatRequireOrder());
+	}
+
+	@POST
+	@Path("/creatRequireOrderByDate")
+	@Produces(MediaType.APPLICATION_JSON)
+	@Consumes(MediaType.APPLICATION_JSON)
+	@ApiOperation(value = "/creatRequireOrderByDate", response = RequireOrderModel.class, notes = "生成指定日期的要货计划")
+	public Response creatRequireOrderByDate(@ApiParam(required=true,name="orderDate",value="日期") ReqGoodsOrderSearch eSearch){
+		return convertToRespModel(MessageCode.NORMAL, null, requireOrderService.creatRequireOrderByDate(eSearch));
 	}
 
 	@POST
@@ -159,9 +169,19 @@ public class milkTransResource extends BaseResource {
 	@Consumes(MediaType.APPLICATION_JSON)
 	@ApiOperation(value = "/creaSalOrderOfSelftBranch", response = Response.class, notes = "自营奶站 根据路单和内部销售订单 创建销售订单")
 	public Response creaSalOrderOfSelftBranch(){
-		return convertToRespModel(MessageCode.NORMAL, null, requireOrderService.creaSalOrderOfSelftBranch());
+		SalOrderDaySearch search = new SalOrderDaySearch();
+		search.setOrderDate(new Date());
+		return convertToRespModel(MessageCode.NORMAL, null, requireOrderService.creaSalOrderOfSelftBranchByDate(search));
 	}
 
+	@POST
+	@Path("/creaSalOrderOfSelftBranchByDate")
+	@Produces(MediaType.APPLICATION_JSON)
+	@Consumes(MediaType.APPLICATION_JSON)
+	@ApiOperation(value = "/creaSalOrderOfSelftBranchByDate", response = Response.class, notes = "自营奶站 根据指定日期的 路单和内部销售订单 创建销售订单")
+	public Response creaSalOrderOfSelftBranchByDate(@ApiParam(required=true,name="search",value="日期") SalOrderDaySearch search){
+		return convertToRespModel(MessageCode.NORMAL, null, requireOrderService.creaSalOrderOfSelftBranchByDate(search));
+	}
 
 	@POST
 	@Path("/creaSalOrderOfDealerBranch")

@@ -77,5 +77,24 @@ public class BranchInfoMapperImpl implements BranchInfoMapper{
     public PageInfo returnBoxStatReport(ExtendBranchInfoModel model){
         return sqlSessionTemplate.selectListByPages("returnBoxStatReport",model,Integer.valueOf(model.getPageNum()),Integer.valueOf(model.getPageSize()));
     }
-
+    @Override
+    public PageInfo mstDispNumStat(ExtendBranchInfoModel model){
+        return sqlSessionTemplate.selectListByPages("mstDispNumStat",model,Integer.valueOf(model.getPageNum()),Integer.valueOf(model.getPageSize()));
+    }
+    @Override
+    public PageInfo branchMstDispNumStat(ExtendBranchInfoModel model){
+        return sqlSessionTemplate.selectListByPages("branchMstDispNumStat",model,Integer.valueOf(model.getPageNum()),Integer.valueOf(model.getPageSize()));
+    }
+    @Override
+    public PageInfo dayMstDispNumStat(ExtendBranchInfoModel model){
+        return sqlSessionTemplate.selectListByPages("dayMstDispNumStat",model,Integer.valueOf(model.getPageNum()),Integer.valueOf(model.getPageSize()));
+    }
+    @Override
+    public List<Map<String, String>> branchDayRepo(BranchInfoModel model){
+        return sqlSessionTemplate.selectList("branchDayRepo",model);
+    }
+    @Override
+    public Map<String, String> branchDayQty(BranchInfoModel model){
+        return sqlSessionTemplate.selectOne("branchDayQty",model);
+    }
 }
