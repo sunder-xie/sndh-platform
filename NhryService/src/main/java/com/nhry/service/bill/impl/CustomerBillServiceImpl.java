@@ -75,6 +75,7 @@ public class CustomerBillServiceImpl implements CustomerBillService {
     @Override
     public TMstRecvBill getRecBillByOrderNo(String orderNo) {
         TMstRecvBill result = customerBillMapper.getRecBillByOrderNo(orderNo);
+
         return result;
     }
 
@@ -248,10 +249,12 @@ public class CustomerBillServiceImpl implements CustomerBillService {
         //如果余额大于订单金额  则
         if(acLeftAmt.compareTo(order.getInitAmt()) == 1){
             customerBill.setAccAmt(order.getInitAmt());
+            customerBill.setSuppAmt(BigDecimal.ZERO);
             ac.setAcctAmt(order.getInitAmt().multiply(new BigDecimal(-1)));
         }else{
             ac.setAcctAmt(acLeftAmt.multiply(new BigDecimal(-1)));
             customerBill.setAccAmt(acLeftAmt);
+            customerBill.setSuppAmt(order.getInitAmt().subtract(acLeftAmt));
         }
           tVipCustInfoService.addVipAcct(ac);
           customerBillMapper.insertCustomerPayment(customerBill);
@@ -297,28 +300,6 @@ public class CustomerBillServiceImpl implements CustomerBillService {
     @Override
     public CollectOrderBillModel queryCollectByOrderNo(String orderCode) {
         return customerBillMapper.queryCollectByOrderNo(orderCode);
-    }
-
-    @Override
-    public int custPayment(CustomerPayMentModel cModel) {
-       /* String orderNo = cModel.getOrderNo();
-
-        TPreOrder order = tPreOrderMapper.selectByPrimaryKey(orderNo);
-        if(order == null){
-            throw new ServiceException(MessageCode.LOGIC_ERROR,"该订单不存在！");
-        }
-        TMstRecvBill customerBill = customerBillMapper.getRecBillByOrderNo(orderNo);
-
-        if(customerBill!= null && "20".equals(customerBill.getStatus())){
-            throw new ServiceException(MessageCode.LOGIC_ERROR,"该订单已收款");
-        }
-        if(customerBill == null){
-            this.createRecBillByOrderNo(orderNo);
-        }
-
-        TSysUser user = userSessionService.getCurrentUser();
-        Date date = new Date();*/
-        return 0;
     }
 
     public void setCustomerBillMapper(CustomerBillMapper customerBillMapper) {

@@ -25,6 +25,4 @@ public interface CustomerBillService {
    int custBatchCollect(CustBatchBillQueryModel cModel);
 
    CollectOrderBillModel queryCollectByOrderNo(String orderCode);
-
-   public int  custPayment(CustomerPayMentModel cModel);
 }
