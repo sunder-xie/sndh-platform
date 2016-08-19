@@ -794,7 +794,7 @@ public class DeliverMilkServiceImpl extends BaseService implements DeliverMilkSe
 			}
 			
 			//其他操作
-			//TODO
+			updateInSalOrderAndStockByUpdateDiapOrder(entry,newEntryList.get(0));
 			
 		}else{
 			throw new ServiceException(MessageCode.LOGIC_ERROR, item.getOrderNo()+"/"+item.getItemNo()+"[没有此路单详细号!]");
