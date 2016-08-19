@@ -72,6 +72,7 @@
         <property name="residentialAreaService" ref="residentialAreaService"/>
         <property name="vipCustInfoService" ref="custService"/>
         <property name="vipCrmAddressMapper" ref="vipcrmAddressMapper"/>
+        <property name="taskExecutor" ref="taskExecutor"/>
     </bean>
     <jaxws:endpoint id="piOrderServiceImpl" implementor="#piOrderService"
                     address="/orderService"/>

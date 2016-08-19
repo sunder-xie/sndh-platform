@@ -16,7 +16,6 @@ import com.nhry.webService.OptionManager;
 import com.nhry.webService.client.Address.MemberAddrUpdateServiceStub;
 import com.nhry.webService.client.Address.functions.*;
 import com.nhry.webService.client.EvMemb;
-import com.nhry.webService.client.EvMembPoint;
 import com.nhry.webService.client.MemberActivities.MemberActCreateServiceStub;
 import com.nhry.webService.client.MemberActivities.functions.*;
 import com.nhry.webService.client.PISuccessTMessage;
@@ -37,16 +36,13 @@ import com.nhry.webService.client.VipInfoData.functions.STR_SUPPL2_type1;
 import com.nhry.webService.client.VipInfoData.functions.TEL_MOBILE_type1;
 import com.nhry.webService.client.VipInfoData.functions.TEL_NUMBER_type1;
 import com.nhry.webService.client.VipPoint.PointQuery_OutServiceStub;
-import com.nhry.webService.client.VipPoint.functions.*;
 import org.apache.axis2.AxisFault;
 import org.apache.axis2.client.Options;
 import org.apache.commons.beanutils.BeanUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.task.TaskExecutor;
 
-import javax.activation.DataHandler;
 import java.math.BigDecimal;
 import java.util.*;
 
@@ -61,7 +57,7 @@ public class PIVipInfoDataServiceImpl implements PIVipInfoDataService {
     private BranchService branchService;
     private TVipCustInfoService vipCustInfoService;
     private TVipCrmAddressMapper vipCrmAddressMapper;
-
+    private TaskExecutor taskExecutor;
 
     public void setDictionaryService(DictionaryService dictionaryService) {
         this.dictionaryService = dictionaryService;
@@ -85,6 +81,10 @@ public class PIVipInfoDataServiceImpl implements PIVipInfoDataService {
 
     public void setVipCrmAddressMapper(TVipCrmAddressMapper vipCrmAddressMapper) {
         this.vipCrmAddressMapper = vipCrmAddressMapper;
+    }
+
+    public void setTaskExecutor(TaskExecutor taskExecutor) {
+        this.taskExecutor = taskExecutor;
     }
 
     private static final String URL = PIPropertitesUtil.getValue("PI.VipInfoData.URL");
@@ -322,12 +322,16 @@ public class PIVipInfoDataServiceImpl implements PIVipInfoDataService {
 
     @Override
     public void executeVipInfoData(String custId, String vipTel) {
-        TaskExecutor taskExecutor = new TaskExecutor() {
-            @Override
-            public void execute(Runnable runnable) {
-                generateVipInfoData(custId,vipTel);
+        taskExecutor.execute(new Thread() {
+            public void run() {
+                try {
+                    this.setName(custId);
+                    generateVipInfoData(custId,vipTel);
+                } catch (ServiceException e) {
+                    e.printStackTrace();
+                }
             }
-        };
+        });
     }
 
     private void iniVipCustInfo(TVipCustInfo vipCustInfo) {
@@ -535,6 +539,20 @@ public class PIVipInfoDataServiceImpl implements PIVipInfoDataService {
     }
 
     @Override
+    public void executeUptVipCust(TVipCustInfo vipCustInfo) {
+        taskExecutor.execute(new Thread() {
+            public void run() {
+                try {
+                    this.setName(vipCustInfo.getVipCustNo());
+                    sendSubscriber(vipCustInfo);
+                } catch (ServiceException e) {
+                    e.printStackTrace();
+                }
+            }
+        });
+    }
+
+    @Override
     public PISuccessTMessage sendAddress(TMdAddress address, String sapGuid) {
         PISuccessTMessage result = new PISuccessTMessage();
         try {
@@ -546,11 +564,17 @@ public class PIVipInfoDataServiceImpl implements PIVipInfoDataService {
             codeItem.setTypeCode("1001");
             if(StringUtils.isEmpty(address.getCityName())) {
                 codeItem.setItemCode(address.getCity());
-                address.setCity(dictionaryService.findCodeItenByCode(codeItem).getItemName());
+                NHSysCodeItem item = dictionaryService.findCodeItenByCode(codeItem);
+                if (item !=null) {
+                    address.setCity(item.getItemName());
+                }
             }
             if(StringUtils.isEmpty(address.getCountyName())) {
                 codeItem.setItemCode(address.getCounty());
-                address.setCounty(dictionaryService.findCodeItenByCode(codeItem).getItemName());
+                NHSysCodeItem item = dictionaryService.findCodeItenByCode(codeItem);
+                if(item != null) {
+                    address.setCounty(item.getItemName());
+                }
             }
             MemberAddrUpdateServiceStub stub = connMemberAddrService();
             Z_CRM_ADDR_UPDATE z_crm_addr_update = new Z_CRM_ADDR_UPDATE();
@@ -634,6 +658,20 @@ public class PIVipInfoDataServiceImpl implements PIVipInfoDataService {
             logger.error(e.getMessage());
         }
         return result;
+    }
+
+    @Override
+    public void executeSendAddress(TMdAddress address, String sapGuid) {
+        taskExecutor.execute(new Thread() {
+            public void run() {
+                try {
+                    this.setName(address.getAddressId());
+                    sendAddress(address,sapGuid);
+                } catch (ServiceException e) {
+                    e.printStackTrace();
+                }
+            }
+        });
     }
 
     /**
