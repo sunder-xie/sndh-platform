@@ -30,6 +30,11 @@ public class TRecBotDetailMapperImpl implements TRecBotDetailMapper {
     }
 
     @Override
+    public TRecBotDetail selectBotDetailByOrderAndSpec(Map<String, String> map) {
+        return sqlSessionTemplate.selectOne("selectBotDetailByOrderAndSpec",map);
+    }
+
+    @Override
     public List<TRecBotDetail> selectRetByDispOrderNo(String dispOrderNo) {
         return sqlSessionTemplate.selectList("selectRetByDispOrderNo",dispOrderNo);
     }

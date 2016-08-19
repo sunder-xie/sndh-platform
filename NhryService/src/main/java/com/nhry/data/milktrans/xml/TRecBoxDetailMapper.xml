@@ -69,6 +69,17 @@
         and SPEC = #{spec}
     </select>
 
+
+    <select id="selectBotDetailByOrderAndSpec" resultMap="BaseResultMap" parameterType="java.util.Map">
+        SELECT
+        DET_LSH,SPEC,
+        (SELECT i.ITEM_NAME from t_sys_code_item i WHERE i.TYPE_CODE= <include refid="mybaties.constant.bot_type"></include> and i.ITEM_CODE = SPEC ) SPEC_NAME,
+        RECEIVE_NUM,REAL_NUM,STATUS
+        from t_rec_bot_detail
+        where DISP_ORDER_NO = #{dispOrderNo}
+        and SPEC = #{spec}
+    </select>
+
     <update id="uptRecBotDetail" parameterType="com.nhry.data.milktrans.domain.TRecBotDetail">
         update T_REC_BOT_DETAIL
         <set>

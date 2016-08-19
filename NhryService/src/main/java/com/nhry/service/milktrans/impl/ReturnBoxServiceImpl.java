@@ -10,18 +10,19 @@ import com.nhry.data.basic.dao.TMdBranchEmpMapper;
 import com.nhry.data.milk.dao.TDispOrderItemMapper;
 import com.nhry.data.milk.dao.TDispOrderMapper;
 import com.nhry.data.milk.domain.TDispOrder;
-import com.nhry.data.milk.domain.TDispOrderItem;
 import com.nhry.data.milktrans.dao.TRecBotDetailMapper;
 import com.nhry.data.milktrans.domain.TRecBotDetail;
 import com.nhry.data.stock.dao.TSsmStockMapper;
-import com.nhry.model.milk.RouteDetailUpdateModel;
 import com.nhry.model.milktrans.ReturnboxSerarch;
 import com.nhry.model.milktrans.UpdateReturnBoxModel;
 import com.nhry.model.stock.StockModel;
 import com.nhry.service.milktrans.dao.ReturnBoxService;
 import com.nhry.utils.PrimaryKeyUtils;
 
-import java.util.*;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * Created by gongjk on 2016/6/27.
@@ -81,6 +82,10 @@ public class ReturnBoxServiceImpl implements ReturnBoxService {
 
     }
 
+    @Override
+    public int uptBoxReturnDetail(TRecBotDetail boxModel) {
+        return tRecBotDetailMapper.uptRecBotDetail(boxModel);
+    }
 
 
     /**
@@ -114,7 +119,6 @@ public class ReturnBoxServiceImpl implements ReturnBoxService {
 
     @Override
     public PageInfo searchRetBoxPage(ReturnboxSerarch rSearch) {
-
         TSysUser user = userSessionService.getCurrentUser();
         rSearch.setSalesOrg(user.getSalesOrg());
         rSearch.setBranchNo(user.getBranchNo());
@@ -173,16 +177,18 @@ public class ReturnBoxServiceImpl implements ReturnBoxService {
         return 1;
     }
 
-    /**
-     * 更新路单时  更新回瓶信息
-     * @param newItem
-     *  @param orgItem
-     * @return
-     */
     @Override
-    public int uptBoxReturnByDispOrder(RouteDetailUpdateModel newItem , TDispOrderItem orgItem) {
+    public int addRecBotItem(TRecBotDetail botDetail) {
+        return tRecBotDetailMapper.addRecBotItem(botDetail);
+    }
 
-      return 0;
+
+    @Override
+    public TRecBotDetail getTRecBotDetailByDispOrderNo(String dispOrderNo,String type) {
+        Map<String,String> map = new HashMap<String,String>();
+        map.put("dispOrderNo",dispOrderNo);
+        map.put("spec",type);
+        return tRecBotDetailMapper.selectBotDetailByDetLsh(map);
     }
 
 }
