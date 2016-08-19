@@ -23,7 +23,7 @@ public class BAPIRET2 implements org.apache.axis2.databinding.ADBBean {
     /**
      * field for TYPE
      */
-    protected com.nhry.webService.client.businessData.functions.TYPE_type1 localTYPE;
+    protected TYPE_type1 localTYPE;
 
     /*  This tracker boolean wil be used to detect whether the user called the set method
      *   for this attribute. It will be used to determine whether to include this field
@@ -34,7 +34,7 @@ public class BAPIRET2 implements org.apache.axis2.databinding.ADBBean {
     /**
      * field for ID
      */
-    protected com.nhry.webService.client.businessData.functions.ID_type1 localID;
+    protected ID_type1 localID;
 
     /*  This tracker boolean wil be used to detect whether the user called the set method
      *   for this attribute. It will be used to determine whether to include this field
@@ -45,7 +45,7 @@ public class BAPIRET2 implements org.apache.axis2.databinding.ADBBean {
     /**
      * field for NUMBER
      */
-    protected com.nhry.webService.client.businessData.functions.NUMBER_type1 localNUMBER;
+    protected NUMBER_type1 localNUMBER;
 
     /*  This tracker boolean wil be used to detect whether the user called the set method
      *   for this attribute. It will be used to determine whether to include this field
@@ -56,7 +56,7 @@ public class BAPIRET2 implements org.apache.axis2.databinding.ADBBean {
     /**
      * field for MESSAGE
      */
-    protected com.nhry.webService.client.businessData.functions.MESSAGE_type1 localMESSAGE;
+    protected MESSAGE_type1 localMESSAGE;
 
     /*  This tracker boolean wil be used to detect whether the user called the set method
      *   for this attribute. It will be used to determine whether to include this field
@@ -67,7 +67,7 @@ public class BAPIRET2 implements org.apache.axis2.databinding.ADBBean {
     /**
      * field for LOG_NO
      */
-    protected com.nhry.webService.client.businessData.functions.LOG_NO_type1 localLOG_NO;
+    protected LOG_NO_type1 localLOG_NO;
 
     /*  This tracker boolean wil be used to detect whether the user called the set method
      *   for this attribute. It will be used to determine whether to include this field
@@ -78,7 +78,7 @@ public class BAPIRET2 implements org.apache.axis2.databinding.ADBBean {
     /**
      * field for LOG_MSG_NO
      */
-    protected com.nhry.webService.client.businessData.functions.LOG_MSG_NO_type1 localLOG_MSG_NO;
+    protected LOG_MSG_NO_type1 localLOG_MSG_NO;
 
     /*  This tracker boolean wil be used to detect whether the user called the set method
      *   for this attribute. It will be used to determine whether to include this field
@@ -89,7 +89,7 @@ public class BAPIRET2 implements org.apache.axis2.databinding.ADBBean {
     /**
      * field for MESSAGE_V1
      */
-    protected com.nhry.webService.client.businessData.functions.MESSAGE_V1_type1 localMESSAGE_V1;
+    protected MESSAGE_V1_type1 localMESSAGE_V1;
 
     /*  This tracker boolean wil be used to detect whether the user called the set method
      *   for this attribute. It will be used to determine whether to include this field
@@ -100,7 +100,7 @@ public class BAPIRET2 implements org.apache.axis2.databinding.ADBBean {
     /**
      * field for MESSAGE_V2
      */
-    protected com.nhry.webService.client.businessData.functions.MESSAGE_V2_type1 localMESSAGE_V2;
+    protected MESSAGE_V2_type1 localMESSAGE_V2;
 
     /*  This tracker boolean wil be used to detect whether the user called the set method
      *   for this attribute. It will be used to determine whether to include this field
@@ -111,7 +111,7 @@ public class BAPIRET2 implements org.apache.axis2.databinding.ADBBean {
     /**
      * field for MESSAGE_V3
      */
-    protected com.nhry.webService.client.businessData.functions.MESSAGE_V3_type1 localMESSAGE_V3;
+    protected MESSAGE_V3_type1 localMESSAGE_V3;
 
     /*  This tracker boolean wil be used to detect whether the user called the set method
      *   for this attribute. It will be used to determine whether to include this field
@@ -122,7 +122,7 @@ public class BAPIRET2 implements org.apache.axis2.databinding.ADBBean {
     /**
      * field for MESSAGE_V4
      */
-    protected com.nhry.webService.client.businessData.functions.MESSAGE_V4_type1 localMESSAGE_V4;
+    protected MESSAGE_V4_type1 localMESSAGE_V4;
 
     /*  This tracker boolean wil be used to detect whether the user called the set method
      *   for this attribute. It will be used to determine whether to include this field
@@ -133,7 +133,7 @@ public class BAPIRET2 implements org.apache.axis2.databinding.ADBBean {
     /**
      * field for PARAMETER
      */
-    protected com.nhry.webService.client.businessData.functions.PARAMETER_type1 localPARAMETER;
+    protected PARAMETER_type1 localPARAMETER;
 
     /*  This tracker boolean wil be used to detect whether the user called the set method
      *   for this attribute. It will be used to determine whether to include this field
@@ -155,7 +155,7 @@ public class BAPIRET2 implements org.apache.axis2.databinding.ADBBean {
     /**
      * field for FIELD
      */
-    protected com.nhry.webService.client.businessData.functions.FIELD_type1 localFIELD;
+    protected FIELD_type1 localFIELD;
 
     /*  This tracker boolean wil be used to detect whether the user called the set method
      *   for this attribute. It will be used to determine whether to include this field
@@ -166,7 +166,7 @@ public class BAPIRET2 implements org.apache.axis2.databinding.ADBBean {
     /**
      * field for SYSTEM
      */
-    protected com.nhry.webService.client.businessData.functions.SYSTEM_type1 localSYSTEM;
+    protected SYSTEM_type1 localSYSTEM;
 
     /*  This tracker boolean wil be used to detect whether the user called the set method
      *   for this attribute. It will be used to determine whether to include this field
@@ -182,7 +182,7 @@ public class BAPIRET2 implements org.apache.axis2.databinding.ADBBean {
      * Auto generated getter method
      * @return com.nhry.webService.client.businessData.functions.TYPE_type1
      */
-    public com.nhry.webService.client.businessData.functions.TYPE_type1 getTYPE() {
+    public TYPE_type1 getTYPE() {
         return localTYPE;
     }
 
@@ -191,7 +191,7 @@ public class BAPIRET2 implements org.apache.axis2.databinding.ADBBean {
      * @param param TYPE
      */
     public void setTYPE(
-        com.nhry.webService.client.businessData.functions.TYPE_type1 param) {
+        TYPE_type1 param) {
         localTYPETracker = param != null;
 
         this.localTYPE = param;
@@ -205,7 +205,7 @@ public class BAPIRET2 implements org.apache.axis2.databinding.ADBBean {
      * Auto generated getter method
      * @return com.nhry.webService.client.businessData.functions.ID_type1
      */
-    public com.nhry.webService.client.businessData.functions.ID_type1 getID() {
+    public ID_type1 getID() {
         return localID;
     }
 
@@ -214,7 +214,7 @@ public class BAPIRET2 implements org.apache.axis2.databinding.ADBBean {
      * @param param ID
      */
     public void setID(
-        com.nhry.webService.client.businessData.functions.ID_type1 param) {
+        ID_type1 param) {
         localIDTracker = param != null;
 
         this.localID = param;
@@ -228,7 +228,7 @@ public class BAPIRET2 implements org.apache.axis2.databinding.ADBBean {
      * Auto generated getter method
      * @return com.nhry.webService.client.businessData.functions.NUMBER_type1
      */
-    public com.nhry.webService.client.businessData.functions.NUMBER_type1 getNUMBER() {
+    public NUMBER_type1 getNUMBER() {
         return localNUMBER;
     }
 
@@ -237,7 +237,7 @@ public class BAPIRET2 implements org.apache.axis2.databinding.ADBBean {
      * @param param NUMBER
      */
     public void setNUMBER(
-        com.nhry.webService.client.businessData.functions.NUMBER_type1 param) {
+        NUMBER_type1 param) {
         localNUMBERTracker = param != null;
 
         this.localNUMBER = param;
@@ -251,7 +251,7 @@ public class BAPIRET2 implements org.apache.axis2.databinding.ADBBean {
      * Auto generated getter method
      * @return com.nhry.webService.client.businessData.functions.MESSAGE_type1
      */
-    public com.nhry.webService.client.businessData.functions.MESSAGE_type1 getMESSAGE() {
+    public MESSAGE_type1 getMESSAGE() {
         return localMESSAGE;
     }
 
@@ -260,7 +260,7 @@ public class BAPIRET2 implements org.apache.axis2.databinding.ADBBean {
      * @param param MESSAGE
      */
     public void setMESSAGE(
-        com.nhry.webService.client.businessData.functions.MESSAGE_type1 param) {
+        MESSAGE_type1 param) {
         localMESSAGETracker = param != null;
 
         this.localMESSAGE = param;
@@ -274,7 +274,7 @@ public class BAPIRET2 implements org.apache.axis2.databinding.ADBBean {
      * Auto generated getter method
      * @return com.nhry.webService.client.businessData.functions.LOG_NO_type1
      */
-    public com.nhry.webService.client.businessData.functions.LOG_NO_type1 getLOG_NO() {
+    public LOG_NO_type1 getLOG_NO() {
         return localLOG_NO;
     }
 
@@ -283,7 +283,7 @@ public class BAPIRET2 implements org.apache.axis2.databinding.ADBBean {
      * @param param LOG_NO
      */
     public void setLOG_NO(
-        com.nhry.webService.client.businessData.functions.LOG_NO_type1 param) {
+        LOG_NO_type1 param) {
         localLOG_NOTracker = param != null;
 
         this.localLOG_NO = param;
@@ -297,7 +297,7 @@ public class BAPIRET2 implements org.apache.axis2.databinding.ADBBean {
      * Auto generated getter method
      * @return com.nhry.webService.client.businessData.functions.LOG_MSG_NO_type1
      */
-    public com.nhry.webService.client.businessData.functions.LOG_MSG_NO_type1 getLOG_MSG_NO() {
+    public LOG_MSG_NO_type1 getLOG_MSG_NO() {
         return localLOG_MSG_NO;
     }
 
@@ -306,7 +306,7 @@ public class BAPIRET2 implements org.apache.axis2.databinding.ADBBean {
      * @param param LOG_MSG_NO
      */
     public void setLOG_MSG_NO(
-        com.nhry.webService.client.businessData.functions.LOG_MSG_NO_type1 param) {
+        LOG_MSG_NO_type1 param) {
         localLOG_MSG_NOTracker = param != null;
 
         this.localLOG_MSG_NO = param;
@@ -320,7 +320,7 @@ public class BAPIRET2 implements org.apache.axis2.databinding.ADBBean {
      * Auto generated getter method
      * @return com.nhry.webService.client.businessData.functions.MESSAGE_V1_type1
      */
-    public com.nhry.webService.client.businessData.functions.MESSAGE_V1_type1 getMESSAGE_V1() {
+    public MESSAGE_V1_type1 getMESSAGE_V1() {
         return localMESSAGE_V1;
     }
 
@@ -329,7 +329,7 @@ public class BAPIRET2 implements org.apache.axis2.databinding.ADBBean {
      * @param param MESSAGE_V1
      */
     public void setMESSAGE_V1(
-        com.nhry.webService.client.businessData.functions.MESSAGE_V1_type1 param) {
+        MESSAGE_V1_type1 param) {
         localMESSAGE_V1Tracker = param != null;
 
         this.localMESSAGE_V1 = param;
@@ -343,7 +343,7 @@ public class BAPIRET2 implements org.apache.axis2.databinding.ADBBean {
      * Auto generated getter method
      * @return com.nhry.webService.client.businessData.functions.MESSAGE_V2_type1
      */
-    public com.nhry.webService.client.businessData.functions.MESSAGE_V2_type1 getMESSAGE_V2() {
+    public MESSAGE_V2_type1 getMESSAGE_V2() {
         return localMESSAGE_V2;
     }
 
@@ -352,7 +352,7 @@ public class BAPIRET2 implements org.apache.axis2.databinding.ADBBean {
      * @param param MESSAGE_V2
      */
     public void setMESSAGE_V2(
-        com.nhry.webService.client.businessData.functions.MESSAGE_V2_type1 param) {
+        MESSAGE_V2_type1 param) {
         localMESSAGE_V2Tracker = param != null;
 
         this.localMESSAGE_V2 = param;
@@ -366,7 +366,7 @@ public class BAPIRET2 implements org.apache.axis2.databinding.ADBBean {
      * Auto generated getter method
      * @return com.nhry.webService.client.businessData.functions.MESSAGE_V3_type1
      */
-    public com.nhry.webService.client.businessData.functions.MESSAGE_V3_type1 getMESSAGE_V3() {
+    public MESSAGE_V3_type1 getMESSAGE_V3() {
         return localMESSAGE_V3;
     }
 
@@ -375,7 +375,7 @@ public class BAPIRET2 implements org.apache.axis2.databinding.ADBBean {
      * @param param MESSAGE_V3
      */
     public void setMESSAGE_V3(
-        com.nhry.webService.client.businessData.functions.MESSAGE_V3_type1 param) {
+        MESSAGE_V3_type1 param) {
         localMESSAGE_V3Tracker = param != null;
 
         this.localMESSAGE_V3 = param;
@@ -389,7 +389,7 @@ public class BAPIRET2 implements org.apache.axis2.databinding.ADBBean {
      * Auto generated getter method
      * @return com.nhry.webService.client.businessData.functions.MESSAGE_V4_type1
      */
-    public com.nhry.webService.client.businessData.functions.MESSAGE_V4_type1 getMESSAGE_V4() {
+    public MESSAGE_V4_type1 getMESSAGE_V4() {
         return localMESSAGE_V4;
     }
 
@@ -398,7 +398,7 @@ public class BAPIRET2 implements org.apache.axis2.databinding.ADBBean {
      * @param param MESSAGE_V4
      */
     public void setMESSAGE_V4(
-        com.nhry.webService.client.businessData.functions.MESSAGE_V4_type1 param) {
+        MESSAGE_V4_type1 param) {
         localMESSAGE_V4Tracker = param != null;
 
         this.localMESSAGE_V4 = param;
@@ -412,7 +412,7 @@ public class BAPIRET2 implements org.apache.axis2.databinding.ADBBean {
      * Auto generated getter method
      * @return com.nhry.webService.client.businessData.functions.PARAMETER_type1
      */
-    public com.nhry.webService.client.businessData.functions.PARAMETER_type1 getPARAMETER() {
+    public PARAMETER_type1 getPARAMETER() {
         return localPARAMETER;
     }
 
@@ -421,7 +421,7 @@ public class BAPIRET2 implements org.apache.axis2.databinding.ADBBean {
      * @param param PARAMETER
      */
     public void setPARAMETER(
-        com.nhry.webService.client.businessData.functions.PARAMETER_type1 param) {
+        PARAMETER_type1 param) {
         localPARAMETERTracker = param != null;
 
         this.localPARAMETER = param;
@@ -457,7 +457,7 @@ public class BAPIRET2 implements org.apache.axis2.databinding.ADBBean {
      * Auto generated getter method
      * @return com.nhry.webService.client.businessData.functions.FIELD_type1
      */
-    public com.nhry.webService.client.businessData.functions.FIELD_type1 getFIELD() {
+    public FIELD_type1 getFIELD() {
         return localFIELD;
     }
 
@@ -466,7 +466,7 @@ public class BAPIRET2 implements org.apache.axis2.databinding.ADBBean {
      * @param param FIELD
      */
     public void setFIELD(
-        com.nhry.webService.client.businessData.functions.FIELD_type1 param) {
+        FIELD_type1 param) {
         localFIELDTracker = param != null;
 
         this.localFIELD = param;
@@ -480,7 +480,7 @@ public class BAPIRET2 implements org.apache.axis2.databinding.ADBBean {
      * Auto generated getter method
      * @return com.nhry.webService.client.businessData.functions.SYSTEM_type1
      */
-    public com.nhry.webService.client.businessData.functions.SYSTEM_type1 getSYSTEM() {
+    public SYSTEM_type1 getSYSTEM() {
         return localSYSTEM;
     }
 
@@ -489,7 +489,7 @@ public class BAPIRET2 implements org.apache.axis2.databinding.ADBBean {
      * @param param SYSTEM
      */
     public void setSYSTEM(
-        com.nhry.webService.client.businessData.functions.SYSTEM_type1 param) {
+        SYSTEM_type1 param) {
         localSYSTEMTracker = param != null;
 
         this.localSYSTEM = param;
@@ -520,8 +520,8 @@ public class BAPIRET2 implements org.apache.axis2.databinding.ADBBean {
         javax.xml.stream.XMLStreamWriter xmlWriter, boolean serializeType)
         throws javax.xml.stream.XMLStreamException,
             org.apache.axis2.databinding.ADBException {
-        java.lang.String prefix = null;
-        java.lang.String namespace = null;
+        String prefix = null;
+        String namespace = null;
 
         prefix = parentQName.getPrefix();
         namespace = parentQName.getNamespaceURI();
@@ -529,7 +529,7 @@ public class BAPIRET2 implements org.apache.axis2.databinding.ADBBean {
             xmlWriter);
 
         if (serializeType) {
-            java.lang.String namespacePrefix = registerPrefix(xmlWriter,
+            String namespacePrefix = registerPrefix(xmlWriter,
                     "urn:sap-com:document:sap:rfc:functions");
 
             if ((namespacePrefix != null) &&
@@ -692,7 +692,7 @@ public class BAPIRET2 implements org.apache.axis2.databinding.ADBBean {
         xmlWriter.writeEndElement();
     }
 
-    private static java.lang.String generatePrefix(java.lang.String namespace) {
+    private static String generatePrefix(String namespace) {
         if (namespace.equals("urn:sap-com:document:sap:rfc:functions")) {
             return "ns1";
         }
@@ -703,11 +703,11 @@ public class BAPIRET2 implements org.apache.axis2.databinding.ADBBean {
     /**
      * Utility method to write an element start tag.
      */
-    private void writeStartElement(java.lang.String prefix,
-        java.lang.String namespace, java.lang.String localPart,
+    private void writeStartElement(String prefix,
+        String namespace, String localPart,
         javax.xml.stream.XMLStreamWriter xmlWriter)
         throws javax.xml.stream.XMLStreamException {
-        java.lang.String writerPrefix = xmlWriter.getPrefix(namespace);
+        String writerPrefix = xmlWriter.getPrefix(namespace);
 
         if (writerPrefix != null) {
             xmlWriter.writeStartElement(writerPrefix, localPart, namespace);
@@ -727,11 +727,11 @@ public class BAPIRET2 implements org.apache.axis2.databinding.ADBBean {
     /**
      * Util method to write an attribute with the ns prefix
      */
-    private void writeAttribute(java.lang.String prefix,
-        java.lang.String namespace, java.lang.String attName,
-        java.lang.String attValue, javax.xml.stream.XMLStreamWriter xmlWriter)
+    private void writeAttribute(String prefix,
+        String namespace, String attName,
+        String attValue, javax.xml.stream.XMLStreamWriter xmlWriter)
         throws javax.xml.stream.XMLStreamException {
-        java.lang.String writerPrefix = xmlWriter.getPrefix(namespace);
+        String writerPrefix = xmlWriter.getPrefix(namespace);
 
         if (writerPrefix != null) {
             xmlWriter.writeAttribute(writerPrefix, namespace, attName, attValue);
@@ -745,8 +745,8 @@ public class BAPIRET2 implements org.apache.axis2.databinding.ADBBean {
     /**
      * Util method to write an attribute without the ns prefix
      */
-    private void writeAttribute(java.lang.String namespace,
-        java.lang.String attName, java.lang.String attValue,
+    private void writeAttribute(String namespace,
+        String attName, String attValue,
         javax.xml.stream.XMLStreamWriter xmlWriter)
         throws javax.xml.stream.XMLStreamException {
         if (namespace.equals("")) {
@@ -760,18 +760,18 @@ public class BAPIRET2 implements org.apache.axis2.databinding.ADBBean {
     /**
      * Util method to write an attribute without the ns prefix
      */
-    private void writeQNameAttribute(java.lang.String namespace,
-        java.lang.String attName, javax.xml.namespace.QName qname,
+    private void writeQNameAttribute(String namespace,
+        String attName, javax.xml.namespace.QName qname,
         javax.xml.stream.XMLStreamWriter xmlWriter)
         throws javax.xml.stream.XMLStreamException {
-        java.lang.String attributeNamespace = qname.getNamespaceURI();
-        java.lang.String attributePrefix = xmlWriter.getPrefix(attributeNamespace);
+        String attributeNamespace = qname.getNamespaceURI();
+        String attributePrefix = xmlWriter.getPrefix(attributeNamespace);
 
         if (attributePrefix == null) {
             attributePrefix = registerPrefix(xmlWriter, attributeNamespace);
         }
 
-        java.lang.String attributeValue;
+        String attributeValue;
 
         if (attributePrefix.trim().length() > 0) {
             attributeValue = attributePrefix + ":" + qname.getLocalPart();
@@ -794,10 +794,10 @@ public class BAPIRET2 implements org.apache.axis2.databinding.ADBBean {
     private void writeQName(javax.xml.namespace.QName qname,
         javax.xml.stream.XMLStreamWriter xmlWriter)
         throws javax.xml.stream.XMLStreamException {
-        java.lang.String namespaceURI = qname.getNamespaceURI();
+        String namespaceURI = qname.getNamespaceURI();
 
         if (namespaceURI != null) {
-            java.lang.String prefix = xmlWriter.getPrefix(namespaceURI);
+            String prefix = xmlWriter.getPrefix(namespaceURI);
 
             if (prefix == null) {
                 prefix = generatePrefix(namespaceURI);
@@ -826,9 +826,9 @@ public class BAPIRET2 implements org.apache.axis2.databinding.ADBBean {
         if (qnames != null) {
             // we have to store this data until last moment since it is not possible to write any
             // namespace data after writing the charactor data
-            java.lang.StringBuffer stringToWrite = new java.lang.StringBuffer();
-            java.lang.String namespaceURI = null;
-            java.lang.String prefix = null;
+            StringBuffer stringToWrite = new StringBuffer();
+            String namespaceURI = null;
+            String prefix = null;
 
             for (int i = 0; i < qnames.length; i++) {
                 if (i > 0) {
@@ -867,10 +867,10 @@ public class BAPIRET2 implements org.apache.axis2.databinding.ADBBean {
     /**
      * Register a namespace prefix
      */
-    private java.lang.String registerPrefix(
-        javax.xml.stream.XMLStreamWriter xmlWriter, java.lang.String namespace)
+    private String registerPrefix(
+        javax.xml.stream.XMLStreamWriter xmlWriter, String namespace)
         throws javax.xml.stream.XMLStreamException {
-        java.lang.String prefix = xmlWriter.getPrefix(namespace);
+        String prefix = xmlWriter.getPrefix(namespace);
 
         if (prefix == null) {
             prefix = generatePrefix(namespace);
@@ -878,7 +878,7 @@ public class BAPIRET2 implements org.apache.axis2.databinding.ADBBean {
             javax.xml.namespace.NamespaceContext nsContext = xmlWriter.getNamespaceContext();
 
             while (true) {
-                java.lang.String uri = nsContext.getNamespaceURI(prefix);
+                String uri = nsContext.getNamespaceURI(prefix);
 
                 if ((uri == null) || (uri.length() == 0)) {
                     break;
@@ -908,14 +908,14 @@ public class BAPIRET2 implements org.apache.axis2.databinding.ADBBean {
          *                If this object is a complex type, the reader is positioned at the end element of its outer element
          */
         public static BAPIRET2 parse(javax.xml.stream.XMLStreamReader reader)
-            throws java.lang.Exception {
+            throws Exception {
             BAPIRET2 object = new BAPIRET2();
 
             int event;
             javax.xml.namespace.QName currentQName = null;
-            java.lang.String nillableValue = null;
-            java.lang.String prefix = "";
-            java.lang.String namespaceuri = "";
+            String nillableValue = null;
+            String prefix = "";
+            String namespaceuri = "";
 
             try {
                 while (!reader.isStartElement() && !reader.isEndElement())
@@ -925,11 +925,11 @@ public class BAPIRET2 implements org.apache.axis2.databinding.ADBBean {
 
                 if (reader.getAttributeValue(
                             "http://www.w3.org/2001/XMLSchema-instance", "type") != null) {
-                    java.lang.String fullTypeName = reader.getAttributeValue("http://www.w3.org/2001/XMLSchema-instance",
+                    String fullTypeName = reader.getAttributeValue("http://www.w3.org/2001/XMLSchema-instance",
                             "type");
 
                     if (fullTypeName != null) {
-                        java.lang.String nsPrefix = null;
+                        String nsPrefix = null;
 
                         if (fullTypeName.indexOf(":") > -1) {
                             nsPrefix = fullTypeName.substring(0,
@@ -938,15 +938,15 @@ public class BAPIRET2 implements org.apache.axis2.databinding.ADBBean {
 
                         nsPrefix = (nsPrefix == null) ? "" : nsPrefix;
 
-                        java.lang.String type = fullTypeName.substring(fullTypeName.indexOf(
+                        String type = fullTypeName.substring(fullTypeName.indexOf(
                                     ":") + 1);
 
                         if (!"BAPIRET2".equals(type)) {
                             //find namespace for the prefix
-                            java.lang.String nsUri = reader.getNamespaceContext()
+                            String nsUri = reader.getNamespaceContext()
                                                            .getNamespaceURI(nsPrefix);
 
-                            return (BAPIRET2) com.nhry.webService.client.businessData.functions.ExtensionMapper.getTypeObject(nsUri,
+                            return (BAPIRET2) ExtensionMapper.getTypeObject(nsUri,
                                 type, reader);
                         }
                     }
@@ -966,7 +966,7 @@ public class BAPIRET2 implements org.apache.axis2.databinding.ADBBean {
                             reader.getName())) ||
                         new javax.xml.namespace.QName("", "TYPE").equals(
                             reader.getName())) {
-                    object.setTYPE(com.nhry.webService.client.businessData.functions.TYPE_type1.Factory.parse(
+                    object.setTYPE(TYPE_type1.Factory.parse(
                             reader));
 
                     reader.next();
@@ -983,7 +983,7 @@ public class BAPIRET2 implements org.apache.axis2.databinding.ADBBean {
                             reader.getName())) ||
                         new javax.xml.namespace.QName("", "ID").equals(
                             reader.getName())) {
-                    object.setID(com.nhry.webService.client.businessData.functions.ID_type1.Factory.parse(
+                    object.setID(ID_type1.Factory.parse(
                             reader));
 
                     reader.next();
@@ -1000,7 +1000,7 @@ public class BAPIRET2 implements org.apache.axis2.databinding.ADBBean {
                             reader.getName())) ||
                         new javax.xml.namespace.QName("", "NUMBER").equals(
                             reader.getName())) {
-                    object.setNUMBER(com.nhry.webService.client.businessData.functions.NUMBER_type1.Factory.parse(
+                    object.setNUMBER(NUMBER_type1.Factory.parse(
                             reader));
 
                     reader.next();
@@ -1017,7 +1017,7 @@ public class BAPIRET2 implements org.apache.axis2.databinding.ADBBean {
                             reader.getName())) ||
                         new javax.xml.namespace.QName("", "MESSAGE").equals(
                             reader.getName())) {
-                    object.setMESSAGE(com.nhry.webService.client.businessData.functions.MESSAGE_type1.Factory.parse(
+                    object.setMESSAGE(MESSAGE_type1.Factory.parse(
                             reader));
 
                     reader.next();
@@ -1034,7 +1034,7 @@ public class BAPIRET2 implements org.apache.axis2.databinding.ADBBean {
                             reader.getName())) ||
                         new javax.xml.namespace.QName("", "LOG_NO").equals(
                             reader.getName())) {
-                    object.setLOG_NO(com.nhry.webService.client.businessData.functions.LOG_NO_type1.Factory.parse(
+                    object.setLOG_NO(LOG_NO_type1.Factory.parse(
                             reader));
 
                     reader.next();
@@ -1051,7 +1051,7 @@ public class BAPIRET2 implements org.apache.axis2.databinding.ADBBean {
                             reader.getName())) ||
                         new javax.xml.namespace.QName("", "LOG_MSG_NO").equals(
                             reader.getName())) {
-                    object.setLOG_MSG_NO(com.nhry.webService.client.businessData.functions.LOG_MSG_NO_type1.Factory.parse(
+                    object.setLOG_MSG_NO(LOG_MSG_NO_type1.Factory.parse(
                             reader));
 
                     reader.next();
@@ -1068,7 +1068,7 @@ public class BAPIRET2 implements org.apache.axis2.databinding.ADBBean {
                             reader.getName())) ||
                         new javax.xml.namespace.QName("", "MESSAGE_V1").equals(
                             reader.getName())) {
-                    object.setMESSAGE_V1(com.nhry.webService.client.businessData.functions.MESSAGE_V1_type1.Factory.parse(
+                    object.setMESSAGE_V1(MESSAGE_V1_type1.Factory.parse(
                             reader));
 
                     reader.next();
@@ -1085,7 +1085,7 @@ public class BAPIRET2 implements org.apache.axis2.databinding.ADBBean {
                             reader.getName())) ||
                         new javax.xml.namespace.QName("", "MESSAGE_V2").equals(
                             reader.getName())) {
-                    object.setMESSAGE_V2(com.nhry.webService.client.businessData.functions.MESSAGE_V2_type1.Factory.parse(
+                    object.setMESSAGE_V2(MESSAGE_V2_type1.Factory.parse(
                             reader));
 
                     reader.next();
@@ -1102,7 +1102,7 @@ public class BAPIRET2 implements org.apache.axis2.databinding.ADBBean {
                             reader.getName())) ||
                         new javax.xml.namespace.QName("", "MESSAGE_V3").equals(
                             reader.getName())) {
-                    object.setMESSAGE_V3(com.nhry.webService.client.businessData.functions.MESSAGE_V3_type1.Factory.parse(
+                    object.setMESSAGE_V3(MESSAGE_V3_type1.Factory.parse(
                             reader));
 
                     reader.next();
@@ -1119,7 +1119,7 @@ public class BAPIRET2 implements org.apache.axis2.databinding.ADBBean {
                             reader.getName())) ||
                         new javax.xml.namespace.QName("", "MESSAGE_V4").equals(
                             reader.getName())) {
-                    object.setMESSAGE_V4(com.nhry.webService.client.businessData.functions.MESSAGE_V4_type1.Factory.parse(
+                    object.setMESSAGE_V4(MESSAGE_V4_type1.Factory.parse(
                             reader));
 
                     reader.next();
@@ -1136,7 +1136,7 @@ public class BAPIRET2 implements org.apache.axis2.databinding.ADBBean {
                             reader.getName())) ||
                         new javax.xml.namespace.QName("", "PARAMETER").equals(
                             reader.getName())) {
-                    object.setPARAMETER(com.nhry.webService.client.businessData.functions.PARAMETER_type1.Factory.parse(
+                    object.setPARAMETER(PARAMETER_type1.Factory.parse(
                             reader));
 
                     reader.next();
@@ -1162,7 +1162,7 @@ public class BAPIRET2 implements org.apache.axis2.databinding.ADBBean {
                             "The element: " + "ROW" + "  cannot be null");
                     }
 
-                    java.lang.String content = reader.getElementText();
+                    String content = reader.getElementText();
 
                     object.setROW(org.apache.axis2.databinding.utils.ConverterUtil.convertToInteger(
                             content));
@@ -1181,7 +1181,7 @@ public class BAPIRET2 implements org.apache.axis2.databinding.ADBBean {
                             reader.getName())) ||
                         new javax.xml.namespace.QName("", "FIELD").equals(
                             reader.getName())) {
-                    object.setFIELD(com.nhry.webService.client.businessData.functions.FIELD_type1.Factory.parse(
+                    object.setFIELD(FIELD_type1.Factory.parse(
                             reader));
 
                     reader.next();
@@ -1198,7 +1198,7 @@ public class BAPIRET2 implements org.apache.axis2.databinding.ADBBean {
                             reader.getName())) ||
                         new javax.xml.namespace.QName("", "SYSTEM").equals(
                             reader.getName())) {
-                    object.setSYSTEM(com.nhry.webService.client.businessData.functions.SYSTEM_type1.Factory.parse(
+                    object.setSYSTEM(SYSTEM_type1.Factory.parse(
                             reader));
 
                     reader.next();
@@ -1216,7 +1216,7 @@ public class BAPIRET2 implements org.apache.axis2.databinding.ADBBean {
                         "Unexpected subelement " + reader.getName());
                 }
             } catch (javax.xml.stream.XMLStreamException e) {
-                throw new java.lang.Exception(e);
+                throw new Exception(e);
             }
 
             return object;

@@ -31,7 +31,7 @@ public interface TDispOrderItemMapper {
 
     List<TDispOrderItem> selectNotDeliveryItemsByKeys(String code);
     
-    List<TDispOrderChangeItem> selectDispItemsChange(String yestoday,String today,String orderNo);
+    List<TDispOrderChangeItem> selectDispItemsChange(String yestoday,String today,String orderNo,String dispEmp,String reachTimeType);
 
     int updateByPrimaryKeySelective(TDispOrderItem record);
 

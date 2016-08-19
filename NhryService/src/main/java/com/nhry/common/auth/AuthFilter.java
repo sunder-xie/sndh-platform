@@ -58,6 +58,7 @@ public class AuthFilter implements ContainerRequestFilter {
 		whiteUriList.add("GET;/api/v1/order/dailyPlans/");
 		whiteUriList.add("POST;/api/v1/vipcust/upt/crm/address");
 		whiteUriList.add("POST;/api/v1/vipcust/upt/crm/custinfo");
+		whiteUriList.add("POST;/api/v1/orderPoint/uptOrderPoint");
 	}
 	
 	static{

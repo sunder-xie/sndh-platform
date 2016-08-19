@@ -126,7 +126,7 @@
     WHOLESALE_PRICE_1, ADDRESS_NO,ORG_ITEM_NO,ORG_ORDER_NO,REACH_TIME_TYPE,REPLACE_REASON,GIFT_FLAG
   </sql>
   <select id="selectDispItemsChange" resultMap="BaseChangeResultMap" parameterType="com.nhry.data.milk.domain.TDispOrderItem" >
-    select * from (
+    select distinct * from (
 		(select 
        ORDER_NO ORDER_NO1,ORDER_DATE ORDER_DATE1,ITEM_NO ITEM_NO1,CONFIRM_MATNR CONFIRM_MATNR1, 
        MATNR MATNR1,CONFIRM_QTY CONFIRM_QTY1,QTY QTY1,UNIT UNIT1,PRICE PRICE1,
@@ -135,7 +135,10 @@
       from t_mst_disp_order_item a where a.order_date = #{itemNo,jdbcType=DATE} and a.GIFT_FLAG is null
       <if test="addressNo != null" >
       	and a.ORDER_NO = #{addressNo,jdbcType=VARCHAR}
-      </if>	
+      </if>
+      <if test="dispEmpNo != null" >
+      and a.DISP_EMP_NO = #{dispEmpNo,jdbcType=VARCHAR}
+      </if>
       ) a1
 		left outer join 
 		(select 
@@ -144,9 +147,9 @@
        ADDRESS_NO ADDRESS_NO2,ORG_ITEM_NO ORG_ITEM_NO2,ORG_ORDER_NO ORG_ORDER_NO2,
        REACH_TIME_TYPE REACH_TIME_TYPE2, DISP_EMP_NO DISP_EMP_NO2
 		from t_mst_disp_order_item b where b.order_date = #{orderNo,jdbcType=DATE} and b.GIFT_FLAG is null
-		<if test="addressNo != null" >
-			and b.ORDER_NO = #{addressNo,jdbcType=VARCHAR}
-		</if>
+		<if test="dispEmpNo != null" >
+      and b.DISP_EMP_NO = #{dispEmpNo,jdbcType=VARCHAR}
+      </if>
 		) b1
 		on a1.org_order_no1 = b1.org_order_no2 and a1.org_item_no1 = b1.org_item_no2
 		)
@@ -156,7 +159,7 @@
 		
 		union
 		
-		select * from (
+		select distinct * from (
 		(select 
 		 ORDER_NO ORDER_NO1,ORDER_DATE ORDER_DATE1,ITEM_NO ITEM_NO1,CONFIRM_MATNR CONFIRM_MATNR1, 
        MATNR MATNR1,CONFIRM_QTY CONFIRM_QTY1,QTY QTY1,UNIT UNIT1,PRICE PRICE1,
@@ -166,6 +169,9 @@
 		<if test="addressNo != null" >
 			and a.ORDER_NO = #{addressNo,jdbcType=VARCHAR} 
 		</if>
+		<if test="dispEmpNo != null" >
+      and a.DISP_EMP_NO = #{dispEmpNo,jdbcType=VARCHAR}
+      </if>
 		) a1
 		right outer join 
 		(select 
@@ -174,9 +180,9 @@
        ADDRESS_NO ADDRESS_NO2,ORG_ITEM_NO ORG_ITEM_NO2,ORG_ORDER_NO ORG_ORDER_NO2,
        REACH_TIME_TYPE REACH_TIME_TYPE2, DISP_EMP_NO DISP_EMP_NO2
 		from t_mst_disp_order_item b where b.order_date = #{orderNo,jdbcType=DATE} and b.GIFT_FLAG is null
-		<if test="addressNo != null" >
-			and b.ORDER_NO = #{addressNo,jdbcType=VARCHAR}
-		</if>
+		<if test="dispEmpNo != null" >
+      and b.DISP_EMP_NO = #{dispEmpNo,jdbcType=VARCHAR}
+      </if>
 		) b1
 		on a1.org_order_no1 = b1.org_order_no2 and a1.org_item_no1 = b1.org_item_no2
 		)

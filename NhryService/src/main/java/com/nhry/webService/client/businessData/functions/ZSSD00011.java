@@ -23,7 +23,7 @@ public class ZSSD00011 implements org.apache.axis2.databinding.ADBBean {
     /**
      * field for MATNR
      */
-    protected com.nhry.webService.client.businessData.functions.MATNR_type1 localMATNR;
+    protected MATNR_type1 localMATNR;
 
     /*  This tracker boolean wil be used to detect whether the user called the set method
      *   for this attribute. It will be used to determine whether to include this field
@@ -34,7 +34,7 @@ public class ZSSD00011 implements org.apache.axis2.databinding.ADBBean {
     /**
      * field for KWMENG
      */
-    protected com.nhry.webService.client.businessData.functions.KWMENG_type1 localKWMENG;
+    protected KWMENG_type1 localKWMENG;
 
     /*  This tracker boolean wil be used to detect whether the user called the set method
      *   for this attribute. It will be used to determine whether to include this field
@@ -45,7 +45,7 @@ public class ZSSD00011 implements org.apache.axis2.databinding.ADBBean {
     /**
      * field for VRKME
      */
-    protected com.nhry.webService.client.businessData.functions.VRKME_type1 localVRKME;
+    protected VRKME_type1 localVRKME;
 
     /*  This tracker boolean wil be used to detect whether the user called the set method
      *   for this attribute. It will be used to determine whether to include this field
@@ -56,7 +56,7 @@ public class ZSSD00011 implements org.apache.axis2.databinding.ADBBean {
     /**
      * field for WERKS
      */
-    protected com.nhry.webService.client.businessData.functions.WERKS_type1 localWERKS;
+    protected WERKS_type1 localWERKS;
 
     /*  This tracker boolean wil be used to detect whether the user called the set method
      *   for this attribute. It will be used to determine whether to include this field
@@ -67,7 +67,7 @@ public class ZSSD00011 implements org.apache.axis2.databinding.ADBBean {
     /**
      * field for LGORT
      */
-    protected com.nhry.webService.client.businessData.functions.LGORT_type1 localLGORT;
+    protected LGORT_type1 localLGORT;
 
     /*  This tracker boolean wil be used to detect whether the user called the set method
      *   for this attribute. It will be used to determine whether to include this field
@@ -78,7 +78,7 @@ public class ZSSD00011 implements org.apache.axis2.databinding.ADBBean {
     /**
      * field for POSEX
      */
-    protected com.nhry.webService.client.businessData.functions.POSEX_type1 localPOSEX;
+    protected POSEX_type1 localPOSEX;
 
     /*  This tracker boolean wil be used to detect whether the user called the set method
      *   for this attribute. It will be used to determine whether to include this field
@@ -89,7 +89,7 @@ public class ZSSD00011 implements org.apache.axis2.databinding.ADBBean {
     /**
      * field for AUGRU
      */
-    protected com.nhry.webService.client.businessData.functions.AUGRU_type3 localAUGRU;
+    protected AUGRU_type3 localAUGRU;
 
     /*  This tracker boolean wil be used to detect whether the user called the set method
      *   for this attribute. It will be used to determine whether to include this field
@@ -100,7 +100,7 @@ public class ZSSD00011 implements org.apache.axis2.databinding.ADBBean {
     /**
      * field for KBETR
      */
-    protected com.nhry.webService.client.businessData.functions.KBETR_type1 localKBETR;
+    protected KBETR_type1 localKBETR;
 
     /*  This tracker boolean wil be used to detect whether the user called the set method
      *   for this attribute. It will be used to determine whether to include this field
@@ -111,7 +111,7 @@ public class ZSSD00011 implements org.apache.axis2.databinding.ADBBean {
     /**
      * field for REQ_DATE
      */
-    protected com.nhry.webService.client.businessData.functions.Date localREQ_DATE;
+    protected Date localREQ_DATE;
 
     /*  This tracker boolean wil be used to detect whether the user called the set method
      *   for this attribute. It will be used to determine whether to include this field
@@ -122,7 +122,7 @@ public class ZSSD00011 implements org.apache.axis2.databinding.ADBBean {
     /**
      * field for PSTYV
      */
-    protected com.nhry.webService.client.businessData.functions.PSTYV_type1 localPSTYV;
+    protected PSTYV_type1 localPSTYV;
 
     /*  This tracker boolean wil be used to detect whether the user called the set method
      *   for this attribute. It will be used to determine whether to include this field
@@ -133,13 +133,24 @@ public class ZSSD00011 implements org.apache.axis2.databinding.ADBBean {
     /**
      * field for PR_REF_MAT
      */
-    protected com.nhry.webService.client.businessData.functions.PR_REF_MAT_type1 localPR_REF_MAT;
+    protected PR_REF_MAT_type1 localPR_REF_MAT;
 
     /*  This tracker boolean wil be used to detect whether the user called the set method
      *   for this attribute. It will be used to determine whether to include this field
      *   in the serialized XML
      */
     protected boolean localPR_REF_MATTracker = false;
+
+    /**
+     * field for WBS_ELEM
+     */
+    protected com.nhry.webService.client.businessData.functions.WBS_ELEM_type1 localWBS_ELEM;
+
+    /*  This tracker boolean wil be used to detect whether the user called the set method
+     *   for this attribute. It will be used to determine whether to include this field
+     *   in the serialized XML
+     */
+    protected boolean localWBS_ELEMTracker = false;
 
     public boolean isMATNRSpecified() {
         return localMATNRTracker;
@@ -149,7 +160,7 @@ public class ZSSD00011 implements org.apache.axis2.databinding.ADBBean {
      * Auto generated getter method
      * @return com.nhry.webService.client.businessData.functions.MATNR_type1
      */
-    public com.nhry.webService.client.businessData.functions.MATNR_type1 getMATNR() {
+    public MATNR_type1 getMATNR() {
         return localMATNR;
     }
 
@@ -158,7 +169,7 @@ public class ZSSD00011 implements org.apache.axis2.databinding.ADBBean {
      * @param param MATNR
      */
     public void setMATNR(
-        com.nhry.webService.client.businessData.functions.MATNR_type1 param) {
+        MATNR_type1 param) {
         localMATNRTracker = param != null;
 
         this.localMATNR = param;
@@ -172,7 +183,7 @@ public class ZSSD00011 implements org.apache.axis2.databinding.ADBBean {
      * Auto generated getter method
      * @return com.nhry.webService.client.businessData.functions.KWMENG_type1
      */
-    public com.nhry.webService.client.businessData.functions.KWMENG_type1 getKWMENG() {
+    public KWMENG_type1 getKWMENG() {
         return localKWMENG;
     }
 
@@ -181,7 +192,7 @@ public class ZSSD00011 implements org.apache.axis2.databinding.ADBBean {
      * @param param KWMENG
      */
     public void setKWMENG(
-        com.nhry.webService.client.businessData.functions.KWMENG_type1 param) {
+        KWMENG_type1 param) {
         localKWMENGTracker = param != null;
 
         this.localKWMENG = param;
@@ -195,7 +206,7 @@ public class ZSSD00011 implements org.apache.axis2.databinding.ADBBean {
      * Auto generated getter method
      * @return com.nhry.webService.client.businessData.functions.VRKME_type1
      */
-    public com.nhry.webService.client.businessData.functions.VRKME_type1 getVRKME() {
+    public VRKME_type1 getVRKME() {
         return localVRKME;
     }
 
@@ -204,7 +215,7 @@ public class ZSSD00011 implements org.apache.axis2.databinding.ADBBean {
      * @param param VRKME
      */
     public void setVRKME(
-        com.nhry.webService.client.businessData.functions.VRKME_type1 param) {
+        VRKME_type1 param) {
         localVRKMETracker = param != null;
 
         this.localVRKME = param;
@@ -218,7 +229,7 @@ public class ZSSD00011 implements org.apache.axis2.databinding.ADBBean {
      * Auto generated getter method
      * @return com.nhry.webService.client.businessData.functions.WERKS_type1
      */
-    public com.nhry.webService.client.businessData.functions.WERKS_type1 getWERKS() {
+    public WERKS_type1 getWERKS() {
         return localWERKS;
     }
 
@@ -227,7 +238,7 @@ public class ZSSD00011 implements org.apache.axis2.databinding.ADBBean {
      * @param param WERKS
      */
     public void setWERKS(
-        com.nhry.webService.client.businessData.functions.WERKS_type1 param) {
+        WERKS_type1 param) {
         localWERKSTracker = param != null;
 
         this.localWERKS = param;
@@ -241,7 +252,7 @@ public class ZSSD00011 implements org.apache.axis2.databinding.ADBBean {
      * Auto generated getter method
      * @return com.nhry.webService.client.businessData.functions.LGORT_type1
      */
-    public com.nhry.webService.client.businessData.functions.LGORT_type1 getLGORT() {
+    public LGORT_type1 getLGORT() {
         return localLGORT;
     }
 
@@ -250,7 +261,7 @@ public class ZSSD00011 implements org.apache.axis2.databinding.ADBBean {
      * @param param LGORT
      */
     public void setLGORT(
-        com.nhry.webService.client.businessData.functions.LGORT_type1 param) {
+        LGORT_type1 param) {
         localLGORTTracker = param != null;
 
         this.localLGORT = param;
@@ -264,7 +275,7 @@ public class ZSSD00011 implements org.apache.axis2.databinding.ADBBean {
      * Auto generated getter method
      * @return com.nhry.webService.client.businessData.functions.POSEX_type1
      */
-    public com.nhry.webService.client.businessData.functions.POSEX_type1 getPOSEX() {
+    public POSEX_type1 getPOSEX() {
         return localPOSEX;
     }
 
@@ -273,7 +284,7 @@ public class ZSSD00011 implements org.apache.axis2.databinding.ADBBean {
      * @param param POSEX
      */
     public void setPOSEX(
-        com.nhry.webService.client.businessData.functions.POSEX_type1 param) {
+        POSEX_type1 param) {
         localPOSEXTracker = param != null;
 
         this.localPOSEX = param;
@@ -287,7 +298,7 @@ public class ZSSD00011 implements org.apache.axis2.databinding.ADBBean {
      * Auto generated getter method
      * @return com.nhry.webService.client.businessData.functions.AUGRU_type3
      */
-    public com.nhry.webService.client.businessData.functions.AUGRU_type3 getAUGRU() {
+    public AUGRU_type3 getAUGRU() {
         return localAUGRU;
     }
 
@@ -296,7 +307,7 @@ public class ZSSD00011 implements org.apache.axis2.databinding.ADBBean {
      * @param param AUGRU
      */
     public void setAUGRU(
-        com.nhry.webService.client.businessData.functions.AUGRU_type3 param) {
+        AUGRU_type3 param) {
         localAUGRUTracker = param != null;
 
         this.localAUGRU = param;
@@ -310,7 +321,7 @@ public class ZSSD00011 implements org.apache.axis2.databinding.ADBBean {
      * Auto generated getter method
      * @return com.nhry.webService.client.businessData.functions.KBETR_type1
      */
-    public com.nhry.webService.client.businessData.functions.KBETR_type1 getKBETR() {
+    public KBETR_type1 getKBETR() {
         return localKBETR;
     }
 
@@ -319,7 +330,7 @@ public class ZSSD00011 implements org.apache.axis2.databinding.ADBBean {
      * @param param KBETR
      */
     public void setKBETR(
-        com.nhry.webService.client.businessData.functions.KBETR_type1 param) {
+        KBETR_type1 param) {
         localKBETRTracker = param != null;
 
         this.localKBETR = param;
@@ -333,7 +344,7 @@ public class ZSSD00011 implements org.apache.axis2.databinding.ADBBean {
      * Auto generated getter method
      * @return com.nhry.webService.client.businessData.functions.Date
      */
-    public com.nhry.webService.client.businessData.functions.Date getREQ_DATE() {
+    public Date getREQ_DATE() {
         return localREQ_DATE;
     }
 
@@ -342,7 +353,7 @@ public class ZSSD00011 implements org.apache.axis2.databinding.ADBBean {
      * @param param REQ_DATE
      */
     public void setREQ_DATE(
-        com.nhry.webService.client.businessData.functions.Date param) {
+        Date param) {
         localREQ_DATETracker = param != null;
 
         this.localREQ_DATE = param;
@@ -356,7 +367,7 @@ public class ZSSD00011 implements org.apache.axis2.databinding.ADBBean {
      * Auto generated getter method
      * @return com.nhry.webService.client.businessData.functions.PSTYV_type1
      */
-    public com.nhry.webService.client.businessData.functions.PSTYV_type1 getPSTYV() {
+    public PSTYV_type1 getPSTYV() {
         return localPSTYV;
     }
 
@@ -365,7 +376,7 @@ public class ZSSD00011 implements org.apache.axis2.databinding.ADBBean {
      * @param param PSTYV
      */
     public void setPSTYV(
-        com.nhry.webService.client.businessData.functions.PSTYV_type1 param) {
+        PSTYV_type1 param) {
         localPSTYVTracker = param != null;
 
         this.localPSTYV = param;
@@ -379,7 +390,7 @@ public class ZSSD00011 implements org.apache.axis2.databinding.ADBBean {
      * Auto generated getter method
      * @return com.nhry.webService.client.businessData.functions.PR_REF_MAT_type1
      */
-    public com.nhry.webService.client.businessData.functions.PR_REF_MAT_type1 getPR_REF_MAT() {
+    public PR_REF_MAT_type1 getPR_REF_MAT() {
         return localPR_REF_MAT;
     }
 
@@ -388,10 +399,33 @@ public class ZSSD00011 implements org.apache.axis2.databinding.ADBBean {
      * @param param PR_REF_MAT
      */
     public void setPR_REF_MAT(
-        com.nhry.webService.client.businessData.functions.PR_REF_MAT_type1 param) {
+        PR_REF_MAT_type1 param) {
         localPR_REF_MATTracker = param != null;
 
         this.localPR_REF_MAT = param;
+    }
+
+    public boolean isWBS_ELEMSpecified() {
+        return localWBS_ELEMTracker;
+    }
+
+    /**
+     * Auto generated getter method
+     * @return com.nhry.webService.client.businessData.functions.WBS_ELEM_type1
+     */
+    public com.nhry.webService.client.businessData.functions.WBS_ELEM_type1 getWBS_ELEM() {
+        return localWBS_ELEM;
+    }
+
+    /**
+     * Auto generated setter method
+     * @param param WBS_ELEM
+     */
+    public void setWBS_ELEM(
+        com.nhry.webService.client.businessData.functions.WBS_ELEM_type1 param) {
+        localWBS_ELEMTracker = param != null;
+
+        this.localWBS_ELEM = param;
     }
 
     /**
@@ -419,8 +453,8 @@ public class ZSSD00011 implements org.apache.axis2.databinding.ADBBean {
         javax.xml.stream.XMLStreamWriter xmlWriter, boolean serializeType)
         throws javax.xml.stream.XMLStreamException,
             org.apache.axis2.databinding.ADBException {
-        java.lang.String prefix = null;
-        java.lang.String namespace = null;
+        String prefix = null;
+        String namespace = null;
 
         prefix = parentQName.getPrefix();
         namespace = parentQName.getNamespaceURI();
@@ -428,7 +462,7 @@ public class ZSSD00011 implements org.apache.axis2.databinding.ADBBean {
             xmlWriter);
 
         if (serializeType) {
-            java.lang.String namespacePrefix = registerPrefix(xmlWriter,
+            String namespacePrefix = registerPrefix(xmlWriter,
                     "urn:sap-com:document:sap:rfc:functions");
 
             if ((namespacePrefix != null) &&
@@ -553,10 +587,20 @@ public class ZSSD00011 implements org.apache.axis2.databinding.ADBBean {
                     "PR_REF_MAT"), xmlWriter);
         }
 
+        if (localWBS_ELEMTracker) {
+            if (localWBS_ELEM == null) {
+                throw new org.apache.axis2.databinding.ADBException(
+                    "WBS_ELEM cannot be null!!");
+            }
+
+            localWBS_ELEM.serialize(new javax.xml.namespace.QName("", "WBS_ELEM"),
+                xmlWriter);
+        }
+
         xmlWriter.writeEndElement();
     }
 
-    private static java.lang.String generatePrefix(java.lang.String namespace) {
+    private static String generatePrefix(String namespace) {
         if (namespace.equals("urn:sap-com:document:sap:rfc:functions")) {
             return "ns1";
         }
@@ -567,11 +611,11 @@ public class ZSSD00011 implements org.apache.axis2.databinding.ADBBean {
     /**
      * Utility method to write an element start tag.
      */
-    private void writeStartElement(java.lang.String prefix,
-        java.lang.String namespace, java.lang.String localPart,
+    private void writeStartElement(String prefix,
+        String namespace, String localPart,
         javax.xml.stream.XMLStreamWriter xmlWriter)
         throws javax.xml.stream.XMLStreamException {
-        java.lang.String writerPrefix = xmlWriter.getPrefix(namespace);
+        String writerPrefix = xmlWriter.getPrefix(namespace);
 
         if (writerPrefix != null) {
             xmlWriter.writeStartElement(writerPrefix, localPart, namespace);
@@ -591,11 +635,11 @@ public class ZSSD00011 implements org.apache.axis2.databinding.ADBBean {
     /**
      * Util method to write an attribute with the ns prefix
      */
-    private void writeAttribute(java.lang.String prefix,
-        java.lang.String namespace, java.lang.String attName,
-        java.lang.String attValue, javax.xml.stream.XMLStreamWriter xmlWriter)
+    private void writeAttribute(String prefix,
+        String namespace, String attName,
+        String attValue, javax.xml.stream.XMLStreamWriter xmlWriter)
         throws javax.xml.stream.XMLStreamException {
-        java.lang.String writerPrefix = xmlWriter.getPrefix(namespace);
+        String writerPrefix = xmlWriter.getPrefix(namespace);
 
         if (writerPrefix != null) {
             xmlWriter.writeAttribute(writerPrefix, namespace, attName, attValue);
@@ -609,8 +653,8 @@ public class ZSSD00011 implements org.apache.axis2.databinding.ADBBean {
     /**
      * Util method to write an attribute without the ns prefix
      */
-    private void writeAttribute(java.lang.String namespace,
-        java.lang.String attName, java.lang.String attValue,
+    private void writeAttribute(String namespace,
+        String attName, String attValue,
         javax.xml.stream.XMLStreamWriter xmlWriter)
         throws javax.xml.stream.XMLStreamException {
         if (namespace.equals("")) {
@@ -624,18 +668,18 @@ public class ZSSD00011 implements org.apache.axis2.databinding.ADBBean {
     /**
      * Util method to write an attribute without the ns prefix
      */
-    private void writeQNameAttribute(java.lang.String namespace,
-        java.lang.String attName, javax.xml.namespace.QName qname,
+    private void writeQNameAttribute(String namespace,
+        String attName, javax.xml.namespace.QName qname,
         javax.xml.stream.XMLStreamWriter xmlWriter)
         throws javax.xml.stream.XMLStreamException {
-        java.lang.String attributeNamespace = qname.getNamespaceURI();
-        java.lang.String attributePrefix = xmlWriter.getPrefix(attributeNamespace);
+        String attributeNamespace = qname.getNamespaceURI();
+        String attributePrefix = xmlWriter.getPrefix(attributeNamespace);
 
         if (attributePrefix == null) {
             attributePrefix = registerPrefix(xmlWriter, attributeNamespace);
         }
 
-        java.lang.String attributeValue;
+        String attributeValue;
 
         if (attributePrefix.trim().length() > 0) {
             attributeValue = attributePrefix + ":" + qname.getLocalPart();
@@ -658,10 +702,10 @@ public class ZSSD00011 implements org.apache.axis2.databinding.ADBBean {
     private void writeQName(javax.xml.namespace.QName qname,
         javax.xml.stream.XMLStreamWriter xmlWriter)
         throws javax.xml.stream.XMLStreamException {
-        java.lang.String namespaceURI = qname.getNamespaceURI();
+        String namespaceURI = qname.getNamespaceURI();
 
         if (namespaceURI != null) {
-            java.lang.String prefix = xmlWriter.getPrefix(namespaceURI);
+            String prefix = xmlWriter.getPrefix(namespaceURI);
 
             if (prefix == null) {
                 prefix = generatePrefix(namespaceURI);
@@ -690,9 +734,9 @@ public class ZSSD00011 implements org.apache.axis2.databinding.ADBBean {
         if (qnames != null) {
             // we have to store this data until last moment since it is not possible to write any
             // namespace data after writing the charactor data
-            java.lang.StringBuffer stringToWrite = new java.lang.StringBuffer();
-            java.lang.String namespaceURI = null;
-            java.lang.String prefix = null;
+            StringBuffer stringToWrite = new StringBuffer();
+            String namespaceURI = null;
+            String prefix = null;
 
             for (int i = 0; i < qnames.length; i++) {
                 if (i > 0) {
@@ -731,10 +775,10 @@ public class ZSSD00011 implements org.apache.axis2.databinding.ADBBean {
     /**
      * Register a namespace prefix
      */
-    private java.lang.String registerPrefix(
-        javax.xml.stream.XMLStreamWriter xmlWriter, java.lang.String namespace)
+    private String registerPrefix(
+        javax.xml.stream.XMLStreamWriter xmlWriter, String namespace)
         throws javax.xml.stream.XMLStreamException {
-        java.lang.String prefix = xmlWriter.getPrefix(namespace);
+        String prefix = xmlWriter.getPrefix(namespace);
 
         if (prefix == null) {
             prefix = generatePrefix(namespace);
@@ -742,7 +786,7 @@ public class ZSSD00011 implements org.apache.axis2.databinding.ADBBean {
             javax.xml.namespace.NamespaceContext nsContext = xmlWriter.getNamespaceContext();
 
             while (true) {
-                java.lang.String uri = nsContext.getNamespaceURI(prefix);
+                String uri = nsContext.getNamespaceURI(prefix);
 
                 if ((uri == null) || (uri.length() == 0)) {
                     break;
@@ -772,14 +816,14 @@ public class ZSSD00011 implements org.apache.axis2.databinding.ADBBean {
          *                If this object is a complex type, the reader is positioned at the end element of its outer element
          */
         public static ZSSD00011 parse(javax.xml.stream.XMLStreamReader reader)
-            throws java.lang.Exception {
+            throws Exception {
             ZSSD00011 object = new ZSSD00011();
 
             int event;
             javax.xml.namespace.QName currentQName = null;
-            java.lang.String nillableValue = null;
-            java.lang.String prefix = "";
-            java.lang.String namespaceuri = "";
+            String nillableValue = null;
+            String prefix = "";
+            String namespaceuri = "";
 
             try {
                 while (!reader.isStartElement() && !reader.isEndElement())
@@ -789,11 +833,11 @@ public class ZSSD00011 implements org.apache.axis2.databinding.ADBBean {
 
                 if (reader.getAttributeValue(
                             "http://www.w3.org/2001/XMLSchema-instance", "type") != null) {
-                    java.lang.String fullTypeName = reader.getAttributeValue("http://www.w3.org/2001/XMLSchema-instance",
+                    String fullTypeName = reader.getAttributeValue("http://www.w3.org/2001/XMLSchema-instance",
                             "type");
 
                     if (fullTypeName != null) {
-                        java.lang.String nsPrefix = null;
+                        String nsPrefix = null;
 
                         if (fullTypeName.indexOf(":") > -1) {
                             nsPrefix = fullTypeName.substring(0,
@@ -802,15 +846,15 @@ public class ZSSD00011 implements org.apache.axis2.databinding.ADBBean {
 
                         nsPrefix = (nsPrefix == null) ? "" : nsPrefix;
 
-                        java.lang.String type = fullTypeName.substring(fullTypeName.indexOf(
+                        String type = fullTypeName.substring(fullTypeName.indexOf(
                                     ":") + 1);
 
                         if (!"ZSSD00011".equals(type)) {
                             //find namespace for the prefix
-                            java.lang.String nsUri = reader.getNamespaceContext()
+                            String nsUri = reader.getNamespaceContext()
                                                            .getNamespaceURI(nsPrefix);
 
-                            return (ZSSD00011) com.nhry.webService.client.businessData.functions.ExtensionMapper.getTypeObject(nsUri,
+                            return (ZSSD00011) ExtensionMapper.getTypeObject(nsUri,
                                 type, reader);
                         }
                     }
@@ -830,7 +874,7 @@ public class ZSSD00011 implements org.apache.axis2.databinding.ADBBean {
                             reader.getName())) ||
                         new javax.xml.namespace.QName("", "MATNR").equals(
                             reader.getName())) {
-                    object.setMATNR(com.nhry.webService.client.businessData.functions.MATNR_type1.Factory.parse(
+                    object.setMATNR(MATNR_type1.Factory.parse(
                             reader));
 
                     reader.next();
@@ -847,7 +891,7 @@ public class ZSSD00011 implements org.apache.axis2.databinding.ADBBean {
                             reader.getName())) ||
                         new javax.xml.namespace.QName("", "KWMENG").equals(
                             reader.getName())) {
-                    object.setKWMENG(com.nhry.webService.client.businessData.functions.KWMENG_type1.Factory.parse(
+                    object.setKWMENG(KWMENG_type1.Factory.parse(
                             reader));
 
                     reader.next();
@@ -864,7 +908,7 @@ public class ZSSD00011 implements org.apache.axis2.databinding.ADBBean {
                             reader.getName())) ||
                         new javax.xml.namespace.QName("", "VRKME").equals(
                             reader.getName())) {
-                    object.setVRKME(com.nhry.webService.client.businessData.functions.VRKME_type1.Factory.parse(
+                    object.setVRKME(VRKME_type1.Factory.parse(
                             reader));
 
                     reader.next();
@@ -881,7 +925,7 @@ public class ZSSD00011 implements org.apache.axis2.databinding.ADBBean {
                             reader.getName())) ||
                         new javax.xml.namespace.QName("", "WERKS").equals(
                             reader.getName())) {
-                    object.setWERKS(com.nhry.webService.client.businessData.functions.WERKS_type1.Factory.parse(
+                    object.setWERKS(WERKS_type1.Factory.parse(
                             reader));
 
                     reader.next();
@@ -898,7 +942,7 @@ public class ZSSD00011 implements org.apache.axis2.databinding.ADBBean {
                             reader.getName())) ||
                         new javax.xml.namespace.QName("", "LGORT").equals(
                             reader.getName())) {
-                    object.setLGORT(com.nhry.webService.client.businessData.functions.LGORT_type1.Factory.parse(
+                    object.setLGORT(LGORT_type1.Factory.parse(
                             reader));
 
                     reader.next();
@@ -915,7 +959,7 @@ public class ZSSD00011 implements org.apache.axis2.databinding.ADBBean {
                             reader.getName())) ||
                         new javax.xml.namespace.QName("", "POSEX").equals(
                             reader.getName())) {
-                    object.setPOSEX(com.nhry.webService.client.businessData.functions.POSEX_type1.Factory.parse(
+                    object.setPOSEX(POSEX_type1.Factory.parse(
                             reader));
 
                     reader.next();
@@ -932,7 +976,7 @@ public class ZSSD00011 implements org.apache.axis2.databinding.ADBBean {
                             reader.getName())) ||
                         new javax.xml.namespace.QName("", "AUGRU").equals(
                             reader.getName())) {
-                    object.setAUGRU(com.nhry.webService.client.businessData.functions.AUGRU_type3.Factory.parse(
+                    object.setAUGRU(AUGRU_type3.Factory.parse(
                             reader));
 
                     reader.next();
@@ -949,7 +993,7 @@ public class ZSSD00011 implements org.apache.axis2.databinding.ADBBean {
                             reader.getName())) ||
                         new javax.xml.namespace.QName("", "KBETR").equals(
                             reader.getName())) {
-                    object.setKBETR(com.nhry.webService.client.businessData.functions.KBETR_type1.Factory.parse(
+                    object.setKBETR(KBETR_type1.Factory.parse(
                             reader));
 
                     reader.next();
@@ -966,7 +1010,7 @@ public class ZSSD00011 implements org.apache.axis2.databinding.ADBBean {
                             reader.getName())) ||
                         new javax.xml.namespace.QName("", "REQ_DATE").equals(
                             reader.getName())) {
-                    object.setREQ_DATE(com.nhry.webService.client.businessData.functions.Date.Factory.parse(
+                    object.setREQ_DATE(Date.Factory.parse(
                             reader));
 
                     reader.next();
@@ -983,7 +1027,7 @@ public class ZSSD00011 implements org.apache.axis2.databinding.ADBBean {
                             reader.getName())) ||
                         new javax.xml.namespace.QName("", "PSTYV").equals(
                             reader.getName())) {
-                    object.setPSTYV(com.nhry.webService.client.businessData.functions.PSTYV_type1.Factory.parse(
+                    object.setPSTYV(PSTYV_type1.Factory.parse(
                             reader));
 
                     reader.next();
@@ -1000,7 +1044,24 @@ public class ZSSD00011 implements org.apache.axis2.databinding.ADBBean {
                             reader.getName())) ||
                         new javax.xml.namespace.QName("", "PR_REF_MAT").equals(
                             reader.getName())) {
-                    object.setPR_REF_MAT(com.nhry.webService.client.businessData.functions.PR_REF_MAT_type1.Factory.parse(
+                    object.setPR_REF_MAT(PR_REF_MAT_type1.Factory.parse(
+                            reader));
+
+                    reader.next();
+                } // End of if for expected property start element
+
+                else {
+                }
+
+                while (!reader.isStartElement() && !reader.isEndElement())
+                    reader.next();
+
+                if ((reader.isStartElement() &&
+                        new javax.xml.namespace.QName("", "WBS_ELEM").equals(
+                            reader.getName())) ||
+                        new javax.xml.namespace.QName("", "WBS_ELEM").equals(
+                            reader.getName())) {
+                    object.setWBS_ELEM(com.nhry.webService.client.businessData.functions.WBS_ELEM_type1.Factory.parse(
                             reader));
 
                     reader.next();
@@ -1018,7 +1079,7 @@ public class ZSSD00011 implements org.apache.axis2.databinding.ADBBean {
                         "Unexpected subelement " + reader.getName());
                 }
             } catch (javax.xml.stream.XMLStreamException e) {
-                throw new java.lang.Exception(e);
+                throw new Exception(e);
             }
 
             return object;

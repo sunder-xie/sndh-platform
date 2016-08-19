@@ -19,7 +19,7 @@ public class ExtensionMapper {
         javax.xml.stream.XMLStreamReader reader) throws Exception {
         if ("urn:sap-com:document:sap:rfc:functions".equals(namespaceURI) &&
                 "IV_MEMB_GUID_type1".equals(typeName)) {
-            return com.nhry.webService.client.Address.functions.IV_MEMB_GUID_type1.Factory.parse(reader);
+            return IV_MEMB_GUID_type1.Factory.parse(reader);
         }
 
         if ("urn:sap-com:document:sap:rfc:functions".equals(namespaceURI) &&
@@ -29,7 +29,7 @@ public class ExtensionMapper {
 
         if ("urn:sap-com:document:sap:rfc:functions".equals(namespaceURI) &&
                 "TEL_NUMBER_type1".equals(typeName)) {
-            return com.nhry.webService.client.Address.functions.TEL_NUMBER_type1.Factory.parse(reader);
+            return TEL_NUMBER_type1.Factory.parse(reader);
         }
 
         if ("urn:sap-com:document:sap:rfc:functions".equals(namespaceURI) &&
@@ -54,7 +54,7 @@ public class ExtensionMapper {
 
         if ("urn:sap-com:document:sap:rfc:functions".equals(namespaceURI) &&
                 "ZSCRM_ADDR_SHIP_TO".equals(typeName)) {
-            return com.nhry.webService.client.Address.functions.ZSCRM_ADDR_SHIP_TO.Factory.parse(reader);
+            return ZSCRM_ADDR_SHIP_TO.Factory.parse(reader);
         }
 
         if ("urn:sap-com:document:sap:rfc:functions".equals(namespaceURI) &&
@@ -64,22 +64,22 @@ public class ExtensionMapper {
 
         if ("urn:sap-com:document:sap:rfc:functions".equals(namespaceURI) &&
                 "ADDRESS_GUID_type1".equals(typeName)) {
-            return com.nhry.webService.client.Address.functions.ADDRESS_GUID_type1.Factory.parse(reader);
+            return ADDRESS_GUID_type1.Factory.parse(reader);
         }
 
         if ("urn:sap-com:document:sap:rfc:functions".equals(namespaceURI) &&
                 "ADDRESS_GUID_type3".equals(typeName)) {
-            return com.nhry.webService.client.Address.functions.ADDRESS_GUID_type3.Factory.parse(reader);
+            return ADDRESS_GUID_type3.Factory.parse(reader);
         }
 
         if ("urn:sap-com:document:sap:rfc:functions".equals(namespaceURI) &&
                 "STR_SUPPL1_type1".equals(typeName)) {
-            return com.nhry.webService.client.Address.functions.STR_SUPPL1_type1.Factory.parse(reader);
+            return STR_SUPPL1_type1.Factory.parse(reader);
         }
 
         if ("urn:sap-com:document:sap:rfc:functions".equals(namespaceURI) &&
                 "IV_MEMB_GUID_type1".equals(typeName)) {
-            return com.nhry.webService.client.Address.functions.IV_MEMB_GUID_type1.Factory.parse(reader);
+            return IV_MEMB_GUID_type1.Factory.parse(reader);
         }
 
         if ("urn:sap-com:document:sap:rfc:functions".equals(namespaceURI) &&
@@ -104,12 +104,12 @@ public class ExtensionMapper {
 
         if ("urn:sap-com:document:sap:rfc:functions".equals(namespaceURI) &&
                 "POST_CODE1_type1".equals(typeName)) {
-            return com.nhry.webService.client.Address.functions.POST_CODE1_type1.Factory.parse(reader);
+            return POST_CODE1_type1.Factory.parse(reader);
         }
 
         if ("urn:sap-com:document:sap:rfc:functions".equals(namespaceURI) &&
                 "ZSCRM_ADDR_UPDATE_RETURN".equals(typeName)) {
-            return com.nhry.webService.client.Address.functions.ZSCRM_ADDR_UPDATE_RETURN.Factory.parse(reader);
+            return ZSCRM_ADDR_UPDATE_RETURN.Factory.parse(reader);
         }
 
         if ("urn:sap-com:document:sap:rfc:functions".equals(namespaceURI) &&
@@ -119,12 +119,12 @@ public class ExtensionMapper {
 
         if ("urn:sap-com:document:sap:rfc:functions".equals(namespaceURI) &&
                 "STR_SUPPL2_type1".equals(typeName)) {
-            return com.nhry.webService.client.Address.functions.STR_SUPPL2_type1.Factory.parse(reader);
+            return STR_SUPPL2_type1.Factory.parse(reader);
         }
 
         if ("urn:sap-com:document:sap:rfc:functions".equals(namespaceURI) &&
                 "TEL_MOBILE_type1".equals(typeName)) {
-            return com.nhry.webService.client.Address.functions.TEL_MOBILE_type1.Factory.parse(reader);
+            return TEL_MOBILE_type1.Factory.parse(reader);
         }
 
         throw new org.apache.axis2.databinding.ADBException("Unsupported type " +

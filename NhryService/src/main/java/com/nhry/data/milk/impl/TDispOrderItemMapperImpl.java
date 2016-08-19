@@ -91,12 +91,14 @@ public class TDispOrderItemMapperImpl implements TDispOrderItemMapper
 	}
 
 	@Override
-	public List<TDispOrderChangeItem> selectDispItemsChange(String yestoday,String today,String orderNo)
+	public List<TDispOrderChangeItem> selectDispItemsChange(String yestoday,String today,String orderNo,String dispEmp,String reachTimeType)
 	{
 		TDispOrderItem key = new TDispOrderItem();
 		key.setOrderNo(yestoday);
 		key.setItemNo(today);
 		key.setAddressNo(orderNo);
+		key.setDispEmpNo(dispEmp);
+		key.setReachTimeType(reachTimeType);
 		return sqlSessionTemplate.selectList("selectDispItemsChange", key);
 	}
 

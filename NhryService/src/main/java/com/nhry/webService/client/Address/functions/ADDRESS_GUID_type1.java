@@ -20,13 +20,13 @@ public class ADDRESS_GUID_type1 implements org.apache.axis2.databinding.ADBBean 
     /**
      * field for ADDRESS_GUID_type0
      */
-    protected javax.activation.DataHandler localADDRESS_GUID_type0;
+    protected String localADDRESS_GUID_type0;
 
     /**
      * Auto generated getter method
-     * @return javax.activation.DataHandler
+     * @return java.lang.String
      */
-    public javax.activation.DataHandler getADDRESS_GUID_type0() {
+    public String getADDRESS_GUID_type0() {
         return localADDRESS_GUID_type0;
     }
 
@@ -34,8 +34,8 @@ public class ADDRESS_GUID_type1 implements org.apache.axis2.databinding.ADBBean 
      * Auto generated setter method
      * @param param ADDRESS_GUID_type0
      */
-    public void setADDRESS_GUID_type0(javax.activation.DataHandler param) {
-        if ((String.valueOf(param).length() <= 16)) {
+    public void setADDRESS_GUID_type0(String param) {
+        if ((String.valueOf(param).length() <= 32)) {
             this.localADDRESS_GUID_type0 = param;
         } else {
             throw new RuntimeException(
@@ -99,8 +99,7 @@ public class ADDRESS_GUID_type1 implements org.apache.axis2.databinding.ADBBean 
             throw new org.apache.axis2.databinding.ADBException(
                 "ADDRESS_GUID_type0 cannot be null !!");
         } else {
-            xmlWriter.writeCharacters(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(
-                    localADDRESS_GUID_type0));
+            xmlWriter.writeCharacters(localADDRESS_GUID_type0);
         }
 
         xmlWriter.writeEndElement();
@@ -318,7 +317,7 @@ public class ADDRESS_GUID_type1 implements org.apache.axis2.databinding.ADBBean 
             String namespaceURI) {
             ADDRESS_GUID_type1 returnValue = new ADDRESS_GUID_type1();
 
-            returnValue.setADDRESS_GUID_type0(org.apache.axis2.databinding.utils.ConverterUtil.convertToBase64Binary(
+            returnValue.setADDRESS_GUID_type0(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(
                     value));
 
             return returnValue;
@@ -382,7 +381,7 @@ public class ADDRESS_GUID_type1 implements org.apache.axis2.databinding.ADBBean 
 
                             String content = reader.getElementText();
 
-                            object.setADDRESS_GUID_type0(org.apache.axis2.databinding.utils.ConverterUtil.convertToBase64Binary(
+                            object.setADDRESS_GUID_type0(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(
                                     content));
                         } // End of if for expected property start element
 

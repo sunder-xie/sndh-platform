@@ -1135,7 +1135,7 @@
         SELECT
         SALES_ORG,
         ORDER_DATE,
-        qty
+        sum(qty) as qty
         FROM
         (
         SELECT

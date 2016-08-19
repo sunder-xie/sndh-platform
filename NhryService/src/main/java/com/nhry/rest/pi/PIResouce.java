@@ -19,9 +19,12 @@ import com.nhry.service.pi.dao.PIRequireOrderService;
 import com.nhry.service.pi.dao.PIVipInfoDataService;
 import com.nhry.service.pi.dao.SmsSendService;
 import com.nhry.service.pi.pojo.MemberActivities;
+import com.nhry.webService.client.PISuccessTMessage;
 import com.sun.jersey.spi.resource.Singleton;
 import com.wordnik.swagger.annotations.Api;
 import com.wordnik.swagger.annotations.ApiOperation;
+import com.wordnik.swagger.annotations.ApiParam;
+import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
@@ -129,35 +132,13 @@ public class PIResouce extends BaseResource{
         return convertToRespModel(MessageCode.NORMAL, requireOrderService.execSalesOrder(format.parse(date),branch), null);
     }
     @GET
-    @Path("/generateVipInfoData/{custId}")
+    @Path("/generateVipInfoData/{custId}/{vipTel}")
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes(MediaType.APPLICATION_JSON)
-    @ApiOperation(value = "/generateVipInfoData/{custId}", response = ResponseModel.class, notes = "获取订户信息数据")
-    public Response generateVipInfoData(@PathParam("custId") String custId) throws RemoteException, ParseException {
-        TVipCustInfo vipCustInfo = tVipCustInfoService.findVipCustByNoForUpt(custId);
-        TMdBranch branch = branchService.selectBranchByNo(vipCustInfo.getBranchNo());
-        vipCustInfo.setBranchName(branch.getBranchName());
-        NHSysCodeItem codeItem = new NHSysCodeItem();
-        codeItem.setTypeCode("1001");
-//        codeItem.setItemCode(vipCustInfo.getProvince());
-//        vipCustInfo.setProvince(dictionaryService.findCodeItenByCode(codeItem).getItemName());
-        TMdResidentialArea area = residentialAreaService.selectById(vipCustInfo.getSubdist());
-        vipCustInfo.setSubdist(area.getResidentialAreaTxt());
-
-        codeItem.setItemCode(vipCustInfo.getCity());
-        vipCustInfo.setCity(dictionaryService.findCodeItenByCode(codeItem).getItemName());
-
-        codeItem.setItemCode(vipCustInfo.getCounty());
-        vipCustInfo.setCounty(dictionaryService.findCodeItenByCode(codeItem).getItemName());
-
-        java.util.List<TMdAddress> addresses = tVipCustInfoService.findCnAddressByCustNo(custId);
-        TMdAddress tMdAddress = null;
-        for(TMdAddress address : addresses){
-           if("Y".equals(address.getIsDafault())) {
-               tMdAddress = address;
-           }
-        }
-        return convertToRespModel(MessageCode.NORMAL,piVipInfoDataService.generateVipInfoData(vipCustInfo,tMdAddress), null);
+    @ApiOperation(value = "/generateVipInfoData/{custId}/{vipTel}", response = ResponseModel.class, notes = "创建会员信息数据")
+    public Response generateVipInfoData(@ApiParam(name = "custId",value = "订户编号",required = true)@PathParam("custId") String custId,@ApiParam(name = "vipTel",value = "会员电话",required = true)@PathParam("vipTel") String vipTel){
+        String message = piVipInfoDataService.generateVipInfoData(custId, vipTel).getMessage();
+        return convertToRespModel(MessageCode.NORMAL,message, null);
     }
     @POST
     @Path("/createMemberActivities")
@@ -201,5 +182,15 @@ public class PIResouce extends BaseResource{
     @ApiOperation(value = "/sendSms/{tel}", response = ResponseModel.class, notes = "发送短信")
     public Response sendSms(@PathParam("tel") String tel){
         return convertToRespModel(MessageCode.NORMAL, smsSendService.sendMessage("",tel), null);
+    }
+
+    @GET
+    @Path("/executeVipInfoData/{custId}/{vipTel}")
+    @Produces(MediaType.APPLICATION_JSON)
+    @Consumes(MediaType.APPLICATION_JSON)
+    @ApiOperation(value = "/executeVipInfoData/{custId}/{vipTel}", response = ResponseModel.class, notes = "创建会员信息数据")
+    public Response executeVipInfoData(@ApiParam(name = "custId",value = "订户编号",required = true)@PathParam("custId") String custId,@ApiParam(name = "vipTel",value = "会员电话",required = true)@PathParam("vipTel") String vipTel){
+         piVipInfoDataService.executeVipInfoData(custId, vipTel);
+        return convertToRespModel(MessageCode.NORMAL,null, null);
     }
 }

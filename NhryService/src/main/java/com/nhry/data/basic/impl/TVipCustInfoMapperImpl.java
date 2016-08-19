@@ -103,4 +103,9 @@ public class TVipCustInfoMapperImpl implements TVipCustInfoMapper {
 		// TODO Auto-generated method stub
 		return this.sqlSessionTemplate.selectList("getCustInfoStat", attrs);
 	}
+
+	@Override
+	public int updateSapNo(TVipCustInfo vipCustInfo) {
+		return this.sqlSessionTemplate.update("updateSapNo",vipCustInfo);
+	}
 }

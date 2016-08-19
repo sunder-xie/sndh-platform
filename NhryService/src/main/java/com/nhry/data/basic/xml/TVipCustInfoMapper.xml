@@ -51,6 +51,7 @@
 		<result column="DEALER_NAME" property="dealerName" jdbcType="VARCHAR" />
 		<result column="VIP_SRC_NAME" property="vipSrcName" jdbcType="VARCHAR" />
 		<result column="VIP_TYPE_NAME" property="vipTypeName" jdbcType="VARCHAR" />
+		<result column="VIP_MP" property="vipMp" jdbcType="VARCHAR"/>
 	</resultMap>
 	<sql id="Base_Column_List">
 		VIP_CUST_NO, VIP_CUST_NO_SAP, SALES_ORG, VIP_NAME,
@@ -65,7 +66,7 @@
 		CREATE_BY, CREATE_BY_TXT,
 		LAST_MODIFIED,
 		LAST_MODIFIED_BY,DEALER_NO,
-		LAST_MODIFIED_BY_TXT, MEMO_TXT, DISP_MEMO_TXT, BRANCH_NO,
+		LAST_MODIFIED_BY_TXT, MEMO_TXT, DISP_MEMO_TXT, BRANCH_NO,VIP_MP,
 		date_format(FIRST_ORDER_TIME, '%Y-%m-%d') FIRST_ORDER_TIME,date_format(LAST_ORDER_TIME, '%Y-%m-%d') LAST_ORDER_TIME
 	</sql>
 	<select id="findVipCustByNo" resultMap="BaseResultMap" parameterType="java.lang.String">
@@ -110,6 +111,7 @@
 		i.SUBDIST,
 		i.ROOM,
 		i.MP,
+		i.VIP_MP,
 		i.ZIP,
 		i.Email,
 		i.SEX,
@@ -174,6 +176,7 @@
 		i.SUBDIST,
 		i.ROOM,
 		i.MP,
+		i.VIP_MP,
 		i.ZIP,
 		i.Email,
 		i.SEX,
@@ -215,6 +218,7 @@
 		i.SUBDIST,
 		i.ROOM,
 		i.MP,
+		i.VIP_MP,
 		i.ZIP,
 		i.Email,
 		i.SEX,
@@ -365,6 +369,9 @@
 			<if test="dealerNo != null">
 			    DEALER_NO,
 			</if>
+			<if test="vipMp != null">
+				VIP_MP,
+			</if>
 		</trim>
 		<trim prefix="values (" suffix=")" suffixOverrides=",">
 			<if test="vipCustNo != null">
@@ -493,6 +500,9 @@
 			<if test="dealerNo != null">
 			    #{dealerNo,jdbcType=VARCHAR},
 			</if>
+			<if test="vipMp != null">
+				#{vipMp,jdbcType=VARCHAR},
+			</if>
 		</trim>
 	</insert>
 	<update id="updateVipCustByNo" parameterType="com.nhry.data.basic.domain.TVipCustInfo">
@@ -619,6 +629,9 @@
 			<if test="branchNo != null">
 				BRANCH_NO = #{branchNo,jdbcType=VARCHAR},
 			</if>
+			<if test="vipMp != null">
+				VIP_MP = #{vipMp,jdbcType=VARCHAR},
+			</if>
 		</set>
 		where VIP_CUST_NO = #{vipCustNo,jdbcType=VARCHAR}
 	</update>
@@ -687,7 +700,8 @@
 		DISP_MEMO_TXT =
 		#{dispMemoTxt,jdbcType=VARCHAR},
 		BRANCH_NO =
-		#{branchNo,jdbcType=VARCHAR}
+		#{branchNo,jdbcType=VARCHAR},
+		VIP_MP = #{vipMp,jdbcType=VARCHAR}
 		where VIP_CUST_NO =
 		#{vipCustNo,jdbcType=VARCHAR}
 	</update>
@@ -780,6 +794,7 @@
 		(select a.RESIDENTIAL_AREA_TXT from t_md_residential_area a where a.ID=i.SUBDIST) SUBDIST_NAME,
 		i.ROOM,
 		i.MP,
+		i.VIP_MP,
 		i.ZIP,
 		i.Email,
 		i.SEX,
@@ -997,5 +1012,8 @@
 		</where>
 		GROUP BY
 			i. STATUS
+	</select>
+	<select id="updateSapNo" parameterType="com.nhry.data.basic.domain.TVipCustInfo">
+		UPDATE t_vip_cust_info set VIP_CUST_NO_SAP=#{vipCustNoSap} WHERE VIP_CUST_NO = #{vipCustNo}
 	</select>
 </mapper>
