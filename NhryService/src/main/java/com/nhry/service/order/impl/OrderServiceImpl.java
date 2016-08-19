@@ -3946,13 +3946,15 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 			//预付款的恢复
 				int qty = orgItem.getQty().intValue() - orgItem.getConfirmQty().intValue();
 				for(TOrderDaliyPlanItem p : daliyPlans){//找到原日计划恢复
-					if("20".equals(p.getStatus())||"30".equals(p.getStatus())||p.getGiftQty()!=null)continue;
+					if("30".equals(p.getStatus())||p.getGiftQty()!=null)continue;
 					if(p.getItemNo().equals(orgItem.getOrgItemNo()) && p.getDispDate().equals(dispDate) ){
 						p.setQty(orgItem.getQty().intValue());
 						p.setAmt(orgItem.getQty().multiply(p.getPrice()));
+						break;
 					}
 				}
 				for(TOrderDaliyPlanItem p : daliyPlans){//取消延后的日计划
+					if("20".equals(p.getStatus())||"30".equals(p.getStatus())||p.getGiftQty()!=null)continue;
 					if(p.getItemNo().equals(orgItem.getOrgItemNo()) && orgItem.getConfirmMatnr().equals(p.getMatnr())){
 						qty = qty - p.getQty();
 						if(qty >= 0 ){
@@ -3968,10 +3970,25 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 				}
 				if(qty > 0)throw new ServiceException(MessageCode.LOGIC_ERROR,"找不到延后的日计划或原商品不足！");
 				
-				tOrderDaliyPlanItemMapper.deletePlansByAmt(order.getOrderNo());
-				
 				order.setCurAmt(order.getCurAmt().add(orgItem.getConfirmAmt()));
 				tPreOrderMapper.updateOrderCurAmt(order);
+				
+				//重新计算剩余金额
+				Collections.reverse(daliyPlans);
+				BigDecimal initAmt = order.getInitAmt();
+				for(TOrderDaliyPlanItem p : daliyPlans){
+					if(p.getRemainAmt().floatValue() < 0){
+						tOrderDaliyPlanItemMapper.updateDaliyPlanItem(p);
+						continue;
+					}
+					if(!"30".equals(p.getStatus())){
+						initAmt = initAmt.subtract(p.getAmt());
+					}
+					p.setRemainAmt(initAmt);
+					tOrderDaliyPlanItemMapper.updateDaliyPlanItem(p);
+				}
+				
+				tOrderDaliyPlanItemMapper.deletePlansByAmt(order.getOrderNo());
 				
 			}else{
 			//后付款的恢复	
@@ -3981,7 +3998,7 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 					if(p.getDispDate().equals(dispDate) && orgItem.getOrgItemNo().equals(p.getItemNo()) && p.getGiftQty()==null){
 						p.setMatnr(orgItem.getMatnr());
 						p.setQty(orgItem.getQty().intValue());
-						tOrderDaliyPlanItemMapper.updateDaliyPlanItem(p);
+						p.setAmt(orgItem.getQty().multiply(orgItem.getPrice()));
 						break;
 					}
 				}
@@ -3989,6 +4006,17 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 				order.setInitAmt(order.getInitAmt().add(cj));
 				order.setCurAmt(order.getCurAmt().add(orgItem.getAmt()));
 				tPreOrderMapper.updateOrderCurAmtAndInitAmt(order);
+				
+				//重新计算剩余金额
+				Collections.reverse(daliyPlans);
+				BigDecimal initAmt = order.getInitAmt();
+				for(TOrderDaliyPlanItem p : daliyPlans){
+					if(!"30".equals(p.getStatus())){
+						initAmt = initAmt.subtract(p.getAmt());
+					}
+					p.setRemainAmt(initAmt);
+					tOrderDaliyPlanItemMapper.updateDaliyPlanItem(p);
+				}
 				
 			}
 			

@@ -33,6 +33,7 @@ import com.nhry.service.order.dao.OrderService;
 import com.nhry.service.stock.dao.TSsmStockService;
 import com.nhry.utils.PrimaryKeyUtils;
 import com.nhry.utils.SerialUtil;
+
 import org.apache.commons.lang3.StringUtils;
 
 import java.math.BigDecimal;
@@ -743,7 +744,14 @@ public class DeliverMilkServiceImpl extends BaseService implements DeliverMilkSe
 				
 		if(entryList.size() > 0){
 			entry = entryList.get(0);
-			if(!entry.getOrderDate().before(new Date()))throw new ServiceException(MessageCode.LOGIC_ERROR,"非今日的路单已经不能重新修改！");
+			
+			//未修改任何操作
+			if(!"10".equals(item.getReason()))item.setProductCode(item.getMatnr());
+			if( (item.getReason()==null?"":item.getReason()).equals(entry.getReason()==null?"":entry.getReason()) && Integer.parseInt(item.getConfirmQty()) == entry.getConfirmQty().intValue() && item.getProductCode().equals(entry.getConfirmMatnr())){
+				return 0;
+			}
+			
+			if(!new Date().before(entry.getOrderDate()))throw new ServiceException(MessageCode.LOGIC_ERROR,"非今日的路单已经不能重新修改！");
 			if(!"10".equals(item.getReason()) && Integer.parseInt(item.getConfirmQty()) > entry.getQty().intValue())throw new ServiceException(MessageCode.LOGIC_ERROR,"非换货时实际数量不能大于应送数量！");
 			if("10".equals(item.getReason()) && Integer.parseInt(item.getConfirmQty()) == 0)throw new ServiceException(MessageCode.LOGIC_ERROR,"换货时数量不能是0！");
 			tDispOrderItemMapper.updateDispOrderItem(item , entry , null);
@@ -753,19 +761,20 @@ public class DeliverMilkServiceImpl extends BaseService implements DeliverMilkSe
 			
 			List<TDispOrderItem> newEntryList = tDispOrderItemMapper.selectItemsByKeys(itemKey);
 			for(TDispOrderItem e : newEntryList){
+				if("Y".equals(e.getGiftFlag()))break;
 				//变化的也更改日计划状态
 				if( (StringUtils.isNotBlank(e.getReason()) && e.getConfirmQty().intValue() < e.getQty().intValue()) || !e.getMatnr().equals(e.getConfirmMatnr())  ){
 					TPlanOrderItem orderEntry = tPlanOrderItemMapper.selectEntryByEntryNo(e.getOrgItemNo());
 					//更新原订单剩余金额
 					if(e.getConfirmAmt()!=null){
-						updatePreOrderCurAmt(entry.getOrderNo(),e.getConfirmAmt());
+						updatePreOrderCurAmt(entry.getOrgOrderNo(),e.getConfirmAmt());
 					}
 					//更改路单,少送的，需要往后延期,并重新计算此后日计划的剩余金额
 					orderService.resumeDaliyPlanForRouteOrder(e.getConfirmQty(), e, orderEntry, e.getOrderDate());
 				}else{
 					//没有变化的路单更新日计划状态
 					if(e.getGiftFlag()==null){
-						TPreOrder order = tPreOrderMapper.selectByPrimaryKey(entry.getOrderNo());
+						TPreOrder order = tPreOrderMapper.selectByPrimaryKey(entry.getOrgOrderNo());
 						order.setCurAmt(order.getCurAmt().subtract(e.getConfirmAmt()));
 						tPreOrderMapper.updateOrderCurAmt(order);
 					}

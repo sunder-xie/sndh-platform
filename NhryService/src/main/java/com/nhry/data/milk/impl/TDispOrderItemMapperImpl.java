@@ -18,6 +18,8 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.commons.lang3.StringUtils;
+
 public class TDispOrderItemMapperImpl implements TDispOrderItemMapper
 {
 	private DynamicSqlSessionTemplate sqlSessionTemplate;
@@ -129,6 +131,7 @@ public class TDispOrderItemMapperImpl implements TDispOrderItemMapper
 		}else{
 			key.setConfirmAmt(entry.getQty().multiply(orgPrice));
 		}
+		if(StringUtils.isBlank(record.getReason()))key.setReason("");
 		//回瓶规格
 //		if(!record.getMatnr().equals(record.getProductCode())){
 //			if(productMap.containsKey(record.getProductCode())){
