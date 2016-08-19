@@ -729,18 +729,18 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 		tPreOrderMapper.updateOrderResumed(orderNo);//该订单已经被续订
 		
 		ArrayList<TPlanOrderItem> entries = (ArrayList<TPlanOrderItem>) tPlanOrderItemMapper.selectByOrderCode(orderNo);
-		Date orgFirstDate = null; 
-		Map<String,Integer> entryDateMap = new HashMap<String,Integer>();
-		for(TPlanOrderItem e :entries){
-			if(orgFirstDate==null){
-				orgFirstDate = e.getStartDispDate();
-			}else{
-				orgFirstDate = orgFirstDate.before(e.getStartDispDate())?orgFirstDate:e.getStartDispDate();
-			}
-		}
-		for(TPlanOrderItem e :entries){
-			entryDateMap.put(e.getItemNo(), daysOfTwo(orgFirstDate, e.getStartDispDate()));
-		}
+//		Date orgFirstDate = null; 
+//		Map<String,Integer> entryDateMap = new HashMap<String,Integer>();
+//		for(TPlanOrderItem e :entries){
+//			if(orgFirstDate==null){
+//				orgFirstDate = e.getStartDispDate();
+//			}else{
+//				orgFirstDate = orgFirstDate.before(e.getStartDispDate())?orgFirstDate:e.getStartDispDate();
+//			}
+//		}
+//		for(TPlanOrderItem e :entries){
+//			entryDateMap.put(e.getItemNo(), daysOfTwo(orgFirstDate, e.getStartDispDate()));
+//		}
 		
 		if(order!= null){
 			if("20".equals(order.getMilkboxStat()))throw new ServiceException(MessageCode.LOGIC_ERROR, orderNo+"原订单还没有装箱，不能续订!");
@@ -759,9 +759,9 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 			for(TPlanOrderItem entry: entries){
 				entry.setOrderNo(order.getOrderNo());
 				//设置配送开始时间
-				Date startDate = afterDate(sdate,entryDateMap.get(entry.getItemNo()));
-				Date edate = afterDate(startDate,daysOfTwo(entry.getStartDispDate(),entry.getEndDispDate()));
-				entry.setStartDispDate(startDate);
+				int days = daysOfTwo(entry.getStartDispDate(),entry.getEndDispDate());
+				calculateEntryStartDate(entry); 
+				Date edate = afterDate(entry.getStartDispDate(), days);
 				entry.setEndDispDate(edate);
 				
 				entry.setItemNo(order.getOrderNo() + String.valueOf(index));//行项目编号
@@ -2371,6 +2371,35 @@ public class OrderServiceImpl extends BaseService implements OrderService {
        return weeks[week_index];  
    }
    
+   //计算续订的订单的开始日期
+   private void calculateEntryStartDate(TPlanOrderItem entry){
+   	
+   	int gapDays = entry.getGapDays() + 1;//间隔天数
+   	List<String> deliverDays = null;
+   	if(entry.getRuleTxt()!=null){
+   		deliverDays = Arrays.asList(entry.getRuleTxt().split(","));
+   	}
+   	
+   	for(int afterDays = 1; afterDays < 365; afterDays++){
+   		
+   		Date today = afterDate(entry.getEndDispDate(),afterDays);
+   		if("10".equals(entry.getRuleType())){
+   			if(afterDays%gapDays != 0){
+   				continue;
+   			}
+   		}else if("20".equals(entry.getRuleType())){
+   			String weekday = getWeek(today);
+   			if(!deliverDays.contains(weekday)){
+   				continue;
+   			}
+   		}
+   		
+   		entry.setStartDispDate(today);
+   		break;
+   	}
+   	
+   }
+   
    //计算订单行的总价格
    private BigDecimal calculateEntryAmount(TPlanOrderItem entry){
    	
@@ -3303,8 +3332,9 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 				return;
 			}
 
-			BigDecimal curAmt = order.getCurAmt();
 			BigDecimal allAmt = new BigDecimal("0.00");
+			//重新计算每个行项目的数量，金额,截止日期等
+			BigDecimal curAmt = order.getCurAmt();
 
 			//计算每个行项目总共需要送多少天
 			Map<TPlanOrderItem,Integer> entryMap = new HashMap<TPlanOrderItem,Integer>();
@@ -3400,6 +3430,8 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 				afterDays++;
 			}
 			/////////////////////////////更新订单的总金额 用allAmt
+//			order.setInitAmt(allAmt);
+//			order.setCurAmt(allAmt);
 			
 		});
 		

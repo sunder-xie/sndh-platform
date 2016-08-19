@@ -736,6 +736,22 @@ public class DeliverMilkServiceImpl extends BaseService implements DeliverMilkSe
 		return tDispOrderChangeMapper.searchRouteChangeOrder(code);
 	}
 	
+	/* (non-Javadoc) 
+	* @title: searchRouteChangeOrder
+	* @description: 路单重新修改
+	* @param code
+	* @return 
+	* @see com.nhry.service.milk.dao.DeliverMilkService#searchRouteChangeOrder(java.lang.String) 
+	*/
+	@Override
+	public int reEditRouteDetail(TDispOrderItem item)
+	{
+		
+		
+		
+		return 1;
+	}
+	
 	
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	
