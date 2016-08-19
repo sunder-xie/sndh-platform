@@ -45,5 +45,5 @@ public interface DeliverMilkService {
 
 	int createInsideSalOrderByStock(CreateInSalOrderModel cModel);
 	
-	int reEditRouteDetail(TDispOrderItem item);
+	int reEditRouteDetail(RouteDetailUpdateModel record);
 }

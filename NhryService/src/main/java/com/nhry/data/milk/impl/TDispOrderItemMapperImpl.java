@@ -110,10 +110,10 @@ public class TDispOrderItemMapperImpl implements TDispOrderItemMapper
 	}
 
 	@Override
-	public int updateDispOrderItem(RouteDetailUpdateModel record,TPlanOrderItem entry,Map<String,String>productMap)
+	public int updateDispOrderItem(RouteDetailUpdateModel record,TDispOrderItem entry,Map<String,String>productMap)
 	{
 		//用原订单行的价格
-		BigDecimal orgPrice = entry.getSalesPrice();
+		BigDecimal orgPrice = entry.getPrice();
 		TDispOrderItem key = new TDispOrderItem();
 		key.setOrderNo(record.getOrderNo());
 		key.setItemNo(record.getItemNo());
@@ -126,6 +126,8 @@ public class TDispOrderItemMapperImpl implements TDispOrderItemMapper
 			key.setConfirmMatnr(entry.getMatnr());
 			key.setReplaceReason("");
 			key.setConfirmAmt(key.getConfirmQty().multiply(orgPrice));
+		}else{
+			key.setConfirmAmt(entry.getQty().multiply(orgPrice));
 		}
 		//回瓶规格
 //		if(!record.getMatnr().equals(record.getProductCode())){
