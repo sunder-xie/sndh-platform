@@ -95,7 +95,7 @@ public class PIVipInfoDataServiceImpl implements PIVipInfoDataService {
     @Override
     public PISuccessTMessage generateVipInfoData(String custId, String vipTel) {
         PISuccessTMessage<EvMemb> result = new PISuccessTMessage<EvMemb>();
-        if (StringUtils.isNotEmpty(vipTel)) {
+        if (StringUtils.isNotEmpty(custId)) {
             TVipCustInfo vipCustInfo = vipCustInfoService.findVipCustByNoForUpt(custId);
             Map<String, String> attrs = new HashMap<String, String>();
             if(StringUtils.isEmpty(vipTel)){
@@ -306,6 +306,7 @@ public class PIVipInfoDataServiceImpl implements PIVipInfoDataService {
                     vipCrmAddress.setIsDelete("N");
                     vipCrmAddressMapper.addVipCrmAddress(vipCrmAddress);
                     vipCustInfo.setVipCustNoSap(evMembGuid);
+                    vipCustInfo.setVipMp(vipTel);
                     vipCustInfoService.updateSapNo(vipCustInfo);
                 } else {
                     result.setSuccess(false);
@@ -626,7 +627,7 @@ public class PIVipInfoDataServiceImpl implements PIVipInfoDataService {
             zscrm_addr_ship_to.setREGION(region_type1);
 
             com.nhry.webService.client.Address.functions.NAME_CO_type1 name_co_type1 = new com.nhry.webService.client.Address.functions.NAME_CO_type1();
-            name_co_type1.setNAME_CO_type0(address.getRecvName());
+            name_co_type1.setNAME_CO_type0(address.getRecvName()==null?"":address.getRecvName());
             zscrm_addr_ship_to.setNAME_CO(name_co_type1);
 
             com.nhry.webService.client.Address.functions.POST_CODE1_type1 post_code1_type1 = new com.nhry.webService.client.Address.functions.POST_CODE1_type1();
@@ -634,7 +635,12 @@ public class PIVipInfoDataServiceImpl implements PIVipInfoDataService {
             zscrm_addr_ship_to.setPOST_CODE1(post_code1_type1);
 
             MODE_type1 mode_type1 = new MODE_type1();
-            mode_type1.setMODE_type0(address.getIsDelete().equals("Y") ? "D" : "");
+            String isdelete = address.getIsDelete();
+            if(StringUtils.isNotEmpty(isdelete) && !"Y".equals(isdelete)){
+                mode_type1.setMODE_type0("D");
+            }else{
+                mode_type1.setMODE_type0("");
+            }
             zscrm_addr_ship_to.setMODE(mode_type1);
 
             t_addr_type1.addItem(zscrm_addr_ship_to);

@@ -195,6 +195,10 @@ public class BusinessDataConnection {
                 date1.setObject(map.get("ORDER_DATE"));
                 zssd00011.setREQ_DATE(date1);
 
+                WBS_ELEM_type1 wbs_elem_type1 = new WBS_ELEM_type1();
+                wbs_elem_type1.setWBS_ELEM_type0(map.get("ACTIVITY_ID"));
+                zssd00011.setWBS_ELEM(wbs_elem_type1);
+
                 it_zssd00011_type1.addItem(zssd00011);
             }
 
