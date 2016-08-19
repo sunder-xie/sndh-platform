@@ -61,6 +61,16 @@ public class ProductServiceImpl extends BaseService implements ProductService {
 	}
 
 	@Override
+	public TMdMaraEx getMaraExByMatnrAndSalesOrg(String matnr,String salesOrg) {
+		Map<String,String> attrs = new HashMap<String,String>();
+		attrs.put("matnr", matnr);
+		attrs.put("salesOrg", salesOrg);
+		TMdMaraEx ex = this.tMdMaraExMapper.findProductExByCode(attrs);
+		return ex;
+
+	}
+
+	@Override
 	public int uptProductByCode(TMdMara record) {
 		// TODO Auto-generated method stub
 		TMdMara product = this.selectProductByCode(record.getMatnr());

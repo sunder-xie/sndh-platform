@@ -9,6 +9,8 @@
         <result column="BRANCH_NO"       property="branchNo" jdbcType="VARCHAR" />
         <result column="EMP_NAME"        property="empName" jdbcType="VARCHAR" />
         <result column="BRANCH_NAME"       property="branchName" jdbcType="VARCHAR" />
+        <result column="CREATE_AT"        property="createAt" jdbcType="DATE" />
+        <result column="CREATE_BY"       property="createBy" jdbcType="VARCHAR" />
     </resultMap>
     <sql id="Base_Column_List" >
        INS_ORDER_NO,ORDER_DATE,DISP_ORDER_NO,SAL_EMP_NO,BRANCH_NO
@@ -39,6 +41,12 @@
             <if test="branchNo != null">
                 BRANCH_NO,
             </if>
+            <if test="createAt != null">
+                CREATE_AT,
+            </if>
+            <if test="createBy != null">
+                CREATE_BY,
+            </if>
         </trim>
         <trim prefix="values (" suffix=")" suffixOverrides=",">
             <if test="insOrderNo != null">
@@ -55,6 +63,12 @@
             </if>
             <if test="branchNo != null">
                 #{branchNo,jdbcType=VARCHAR},
+            </if>
+            <if test="createAt != null">
+               #{createAt,jdbcType=DATE},
+            </if>
+            <if test="createBy != null">
+                #{createBy,jdbcType=VARCHAR},
             </if>
         </trim>
     </insert>

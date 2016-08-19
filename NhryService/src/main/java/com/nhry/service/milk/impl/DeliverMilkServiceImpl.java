@@ -5,6 +5,7 @@ import com.nhry.common.exception.MessageCode;
 import com.nhry.common.exception.ServiceException;
 import com.nhry.data.auth.dao.TSysUserRoleMapper;
 import com.nhry.data.auth.domain.TSysUser;
+import com.nhry.data.basic.domain.TMdMaraEx;
 import com.nhry.data.milk.dao.TDispOrderChangeMapper;
 import com.nhry.data.milk.dao.TDispOrderItemMapper;
 import com.nhry.data.milk.dao.TDispOrderMapper;
@@ -13,6 +14,7 @@ import com.nhry.data.milktrans.dao.TMstInsideSalOrderItemMapper;
 import com.nhry.data.milktrans.dao.TMstInsideSalOrderMapper;
 import com.nhry.data.milktrans.domain.TMstInsideSalOrder;
 import com.nhry.data.milktrans.domain.TMstInsideSalOrderItem;
+import com.nhry.data.milktrans.domain.TRecBotDetail;
 import com.nhry.data.order.dao.TOrderDaliyPlanItemMapper;
 import com.nhry.data.order.dao.TPlanOrderItemMapper;
 import com.nhry.data.order.dao.TPreOrderMapper;
@@ -158,13 +160,14 @@ public class DeliverMilkServiceImpl extends BaseService implements DeliverMilkSe
 					}
 				}
 				if(insOrderNo!=null){
-
 					sOrder = new TMstInsideSalOrder();
 					sOrder.setInsOrderNo(insOrderNo);
 					sOrder.setOrderDate(order.getOrderDate());
 					sOrder.setDispOrderNo(order.getOrderNo());
 					sOrder.setBranchNo(order.getBranchNo());
 					sOrder.setSalEmpNo(order.getDispEmpNo());
+					sOrder.setCreateAt(new Date());
+					sOrder.setCreateBy(user.getLoginName());
 					tMstInsideSalOrderMapper.insertInsideSalOrder(sOrder);
 				}
 
@@ -753,15 +756,89 @@ public class DeliverMilkServiceImpl extends BaseService implements DeliverMilkSe
 	}
 
 	/**
-	 * 更新路单后  修改 内部销售订单 和 库存
+	 * 更新路单后  修改 内部销售订单 和 库存  和 回瓶
 	 * @param newItem
 	 * @param orgItem
      * @return
      */
 	@Override
-	public int updateInSalOrderAndStockByUpdateDiapOrder(RouteDetailUpdateModel newItem, TDispOrderItem orgItem) {
+	public int updateInSalOrderAndStockByUpdateDiapOrder(TDispOrderItem newItem, TDispOrderItem orgItem) {
+		TPreOrder order = tPreOrderMapper.selectByPrimaryKey(orgItem.getOrgOrderNo());
+		TSysUser user = userSessionService.getCurrentUser();
+		//首先改回库存
+		if( !"20".equals(orgItem.getReason()) && !"10".equals(orgItem.getReason())) {
+			tSsmStockService.updateStock(order.getBranchNo(), orgItem.getConfirmMatnr(), orgItem.getQty().multiply(new BigDecimal(-1)), order.getSalesOrg());
+		}else{
+			tSsmStockService.updateStock(order.getBranchNo(), orgItem.getConfirmMatnr(), orgItem.getConfirmQty().multiply(new BigDecimal(-1)), order.getSalesOrg());
+		}
+		//重新扣库存
+		if( !"20".equals(orgItem.getReason()) && !"10".equals(orgItem.getReason())) {
+			tSsmStockService.updateStock(order.getBranchNo(), newItem.getConfirmMatnr(), newItem.getQty(), order.getSalesOrg());
+		}else{
+			tSsmStockService.updateStock(order.getBranchNo(), newItem.getConfirmMatnr(), newItem.getConfirmQty(), order.getSalesOrg());
+		}
+		TMstInsideSalOrder sOrder = tMstInsideSalOrderMapper.getInSalOrderByDispOrderNo(orgItem.getOrderNo());
+			// 将orgItem 产生的 内部销售订单数量 去除
+		if("40".equals(orgItem.getReason()) || "50".equals(orgItem.getReason())){
+			Map<String,String> map = new HashMap<String,String>();
+			map.put("insOrderNo",sOrder.getInsOrderNo());
+			map.put("matnr",orgItem.getMatnr());
+			map.put("reason",orgItem.getReason());
+			tMstInsideSalOrderItemMapper.deleteInSalOrderItemByMap(map);
+		}
+		if("40".equals(newItem.getReason()) || "50".equals(newItem.getReason())){
+			if(sOrder == null){
+				String insOrderNo = PrimaryKeyUtils.generateUuidKey();
+				sOrder = new TMstInsideSalOrder();
+				sOrder.setInsOrderNo(insOrderNo);
+				sOrder.setOrderDate(orgItem.getOrderDate());
+				sOrder.setDispOrderNo(order.getOrderNo());
+				sOrder.setBranchNo(order.getBranchNo());
+				sOrder.setSalEmpNo(order.getEmpNo());
+				sOrder.setCreateAt(newItem.getOrderDate());
+				sOrder.setCreateBy(user.getLoginName());
+				tMstInsideSalOrderMapper.insertInsideSalOrder(sOrder);
+			}
+				TMstInsideSalOrderItem item = new TMstInsideSalOrderItem();
+				item.setInsOrderNo(sOrder.getInsOrderNo());
+				item.setItemNo(newItem.getItemNo());
+				item.setOrgOrderNo(newItem.getOrgOrderNo());
+				item.setMatnr(newItem.getMatnr());
+				item.setOrderDate(newItem.getOrderDate());
+				item.setPrice(newItem.getPrice());
+				item.setQty(newItem.getQty().subtract(newItem.getConfirmQty()));
+				item.setReason(newItem.getReason());
+				tMstInsideSalOrderItemMapper.insertOrderItem(item);
+		}
+		//修改回瓶
+		//如果原 行产品 需要回瓶 则更新
+		TMdMaraEx oldEx = productService.getMaraExByMatnrAndSalesOrg(orgItem.getMatnr(),order.getSalesOrg());
+		if("Y".equals(oldEx.getRetBotFlag())){
+			TRecBotDetail detail = returnBoxService.getTRecBotDetailByDispOrderNo(orgItem.getOrderNo(),oldEx.getBotType());
+			detail.setReceiveNum(detail.getReceiveNum() - orgItem.getConfirmQty().intValue());
+			returnBoxService.uptBoxReturnDetail(detail);
+		}
+		//如果原 行产品 需要回瓶 则更新
+		TMdMaraEx newEx = productService.getMaraExByMatnrAndSalesOrg(newItem.getMatnr(),order.getSalesOrg());
+		if("Y".equals(newEx.getRetBotFlag())){
+			TRecBotDetail detail = returnBoxService.getTRecBotDetailByDispOrderNo(orgItem.getOrderNo(),newEx.getBotType());
+			if(detail == null){
+				TRecBotDetail bot = new TRecBotDetail();
+				bot.setEmpNo(order.getEmpNo());
+				bot.setDispOrderNo(newItem.getOrderNo());
+				bot.setCreateAt(newItem.getOrderDate());
+				bot.setCreateBy(user.getLoginName());
+				bot.setCreateByTxt(user.getDisplayName());
+				bot.setStatus("10");
+				bot.setDetLsh(PrimaryKeyUtils.generateUuidKey());
+				returnBoxService.addRecBotItem(bot);
+			}else{
+				detail.setReceiveNum(detail.getReceiveNum() + newItem.getConfirmQty().intValue());
+				returnBoxService.uptBoxReturnDetail(detail);
+			}
 
-		return 0;
+		}
+		return 1;
 	}
 
 

@@ -6,6 +6,7 @@ package com.nhry.model.milktrans;
 public class UpdateReturnBoxModel {
     private String detLsh;
     private String spec;
+    private int receiveNum;
     private int realNum;
 
     public int getRealNum() {

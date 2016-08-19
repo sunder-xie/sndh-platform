@@ -47,5 +47,5 @@ public interface DeliverMilkService {
 	
 	int reEditRouteDetail(TDispOrderItem item);
 
-	int updateInSalOrderAndStockByUpdateDiapOrder(RouteDetailUpdateModel newItem , TDispOrderItem orgItem);
+	int updateInSalOrderAndStockByUpdateDiapOrder(TDispOrderItem newItem , TDispOrderItem orgItem);
 }

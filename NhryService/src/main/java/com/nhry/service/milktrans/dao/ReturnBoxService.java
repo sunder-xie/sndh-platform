@@ -1,8 +1,7 @@
 package com.nhry.service.milktrans.dao;
 
 import com.github.pagehelper.PageInfo;
-import com.nhry.data.milk.domain.TDispOrderItem;
-import com.nhry.model.milk.RouteDetailUpdateModel;
+import com.nhry.data.milktrans.domain.TRecBotDetail;
 import com.nhry.model.milktrans.ReturnboxSerarch;
 import com.nhry.model.milktrans.UpdateReturnBoxModel;
 import com.nhry.model.stock.StockModel;
@@ -14,6 +13,8 @@ public interface ReturnBoxService {
 
     int uptBoxRetrun(UpdateReturnBoxModel boxModel);
 
+    int uptBoxReturnDetail(TRecBotDetail boxModel);
+
     public  int createDayRetBox(String dispOrderNo);
 
     public PageInfo searchRetBoxPage(ReturnboxSerarch rSearch);
@@ -22,6 +23,7 @@ public interface ReturnBoxService {
 
     public int craeteRetBotByStock(StockModel sModel);
 
-    //更新录单时  重新录入回瓶记录 （update）
-    public int  uptBoxReturnByDispOrder(RouteDetailUpdateModel newItem , TDispOrderItem orgItem);
+    int addRecBotItem(TRecBotDetail botDetail);
+
+    TRecBotDetail getTRecBotDetailByDispOrderNo(String dispOrderNo,String type);
 }

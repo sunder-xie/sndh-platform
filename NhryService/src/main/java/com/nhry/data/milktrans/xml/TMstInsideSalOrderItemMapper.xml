@@ -109,4 +109,10 @@
         and i.INS_ORDER_NO = #{orderNo,jdbcType=VARCHAR}
     </select>
 
+    <delete id="deleteInSalOrderItemByMap"  parameterType="java.util.Map" >
+        DELETE  FROM  t_mst_inside_sal_order_item
+        WHERE  INS_ORDER_NO = #{insOrderNo,jdbcType=VARCHAR}
+        and MATNR = #{matnr,jdbcType=VARCHAR}
+        and REASON = #{reason,jdbcType=VARCHAR}
+    </delete>
 </mapper>

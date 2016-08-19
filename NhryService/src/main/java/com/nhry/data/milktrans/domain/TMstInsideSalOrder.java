@@ -14,6 +14,25 @@ public class TMstInsideSalOrder implements Serializable {
     private String empName;
     private String branchNo;
     private String branchName;
+    private Date createAt;
+    private String createBy;
+
+
+    public Date getCreateAt() {
+        return createAt;
+    }
+
+    public void setCreateAt(Date createAt) {
+        this.createAt = createAt;
+    }
+
+    public String getCreateBy() {
+        return createBy;
+    }
+
+    public void setCreateBy(String createBy) {
+        this.createBy = createBy;
+    }
 
     public String getEmpName() {
         return empName;

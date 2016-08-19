@@ -15,6 +15,14 @@ public interface ProductService {
 	 * @return
 	 */
     TMdMara selectProductByCode(String productCode);
+
+    /**
+     * 判断某产品是否需要回瓶
+     * matnr 产品编号
+     * salesOrg 销售组织
+     * @return
+     */
+    TMdMaraEx getMaraExByMatnrAndSalesOrg(String matnr,String salesOrg);
     
     /**
      * 修改产品信息
