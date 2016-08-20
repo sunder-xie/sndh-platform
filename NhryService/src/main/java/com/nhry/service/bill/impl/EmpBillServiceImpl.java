@@ -159,8 +159,9 @@ public class EmpBillServiceImpl implements EmpBillService {
     public int uptEmpDispRate(SaleOrgDispRateModel sModel) {
        try{
            TMdDispRate dispRate =  null;
-           String salesOrg = sModel.getSalesOrg();
+//           String salesOrg = sModel.getSalesOrg();
            TSysUser user =  userSessionService.getCurrentUser();
+           String salesOrg = user.getSalesOrg();
            dispRate = tMdDispRateMapper.getDispRateBySaleOrg(salesOrg);
            //原来的结算方式已有 则更新
            if(dispRate!=null){
