@@ -927,7 +927,11 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 			Date edate = null;
 			try
 			{
-				sdate = format.parse(record.getOrderDateStart());
+				if(StringUtils.isBlank(record.getOrderDateStart())){
+					sdate = afterDate(order.getEndDate(),1);
+				}else{
+					sdate = format.parse(record.getOrderDateStart());
+				}
 				edate = format.parse(record.getOrderDateEnd());
 			}
 			catch (ParseException e)
