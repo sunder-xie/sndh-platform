@@ -263,8 +263,8 @@
      <if test="status != null and status != ''">
      	AND  emp.STATUS = #{status,jdbcType=VARCHAR}
      </if>
-    <if test="dealerNo != null and dealerNo != ''">
-      AND role.ID = #{dealerNo,jdbcType=VARCHAR}
+    <if test="roleId != null and roleId != ''">
+      AND role.ID = #{roleId,jdbcType=VARCHAR}
     </if>
   </select>
 
