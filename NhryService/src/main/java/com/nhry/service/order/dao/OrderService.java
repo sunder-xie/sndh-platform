@@ -5,6 +5,7 @@ import com.nhry.data.milk.domain.TDispOrderItem;
 import com.nhry.data.order.domain.TOrderDaliyPlanItem;
 import com.nhry.data.order.domain.TPlanOrderItem;
 import com.nhry.data.order.domain.TPreOrder;
+import com.nhry.model.milk.RouteDetailUpdateModel;
 import com.nhry.model.order.*;
 import com.nhry.service.order.pojo.OrderRemainData;
 
@@ -91,5 +92,7 @@ public interface OrderService {
    int recoverStopDaliyDaliyPlan(TOrderDaliyPlanItem item); 
    
    void returnOrderRemainAmtToAcct(String orderNo,Date dispDate);
+   
+   void reEditDaliyPlansByRouteDetail(RouteDetailUpdateModel newItem , TDispOrderItem orgItem , Date dispDate);
    
 }

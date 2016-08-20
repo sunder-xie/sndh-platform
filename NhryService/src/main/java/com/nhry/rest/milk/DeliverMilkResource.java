@@ -127,4 +127,15 @@ public class DeliverMilkResource extends BaseResource {
 		return convertToRespModel(MessageCode.NORMAL, null, deliverMilkService.updateRouteOrderAllItems(smodel));
 	}
 	
+	@POST
+	@Path("/reEditRouteDetail")
+	@Produces(MediaType.APPLICATION_JSON)
+	@Consumes(MediaType.APPLICATION_JSON)
+	@ApiOperation(value = "/reEditRouteDetail", response = Integer.class, notes = "重新修改某路单行项目")
+	public Response reEditRouteDetail(@ApiParam(required=true,name="smodel",value="SearchModel") RouteDetailUpdateModel smodel){
+		return convertToRespModel(MessageCode.NORMAL, null, deliverMilkService.reEditRouteDetail(smodel));
+	}
+	
+	
+	
 }

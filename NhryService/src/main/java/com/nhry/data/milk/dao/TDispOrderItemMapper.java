@@ -35,7 +35,7 @@ public interface TDispOrderItemMapper {
 
     int updateByPrimaryKeySelective(TDispOrderItem record);
 
-    int updateDispOrderItem(RouteDetailUpdateModel record,TPlanOrderItem entry,Map<String,String>productMap);
+    int updateDispOrderItem(RouteDetailUpdateModel record,TDispOrderItem entry,Map<String,String>productMap);
     
     int batchinsert(List<TDispOrderItem> records);
     

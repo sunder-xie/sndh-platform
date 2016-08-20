@@ -18,6 +18,8 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.commons.lang3.StringUtils;
+
 public class TDispOrderItemMapperImpl implements TDispOrderItemMapper
 {
 	private DynamicSqlSessionTemplate sqlSessionTemplate;
@@ -110,10 +112,10 @@ public class TDispOrderItemMapperImpl implements TDispOrderItemMapper
 	}
 
 	@Override
-	public int updateDispOrderItem(RouteDetailUpdateModel record,TPlanOrderItem entry,Map<String,String>productMap)
+	public int updateDispOrderItem(RouteDetailUpdateModel record,TDispOrderItem entry,Map<String,String>productMap)
 	{
 		//用原订单行的价格
-		BigDecimal orgPrice = entry.getSalesPrice();
+		BigDecimal orgPrice = entry.getPrice();
 		TDispOrderItem key = new TDispOrderItem();
 		key.setOrderNo(record.getOrderNo());
 		key.setItemNo(record.getItemNo());
@@ -126,7 +128,10 @@ public class TDispOrderItemMapperImpl implements TDispOrderItemMapper
 			key.setConfirmMatnr(entry.getMatnr());
 			key.setReplaceReason("");
 			key.setConfirmAmt(key.getConfirmQty().multiply(orgPrice));
+		}else{
+			key.setConfirmAmt(entry.getQty().multiply(orgPrice));
 		}
+		if(StringUtils.isBlank(record.getReason()))key.setReason("");
 		//回瓶规格
 //		if(!record.getMatnr().equals(record.getProductCode())){
 //			if(productMap.containsKey(record.getProductCode())){
