@@ -19,6 +19,7 @@ import org.springframework.stereotype.Controller;
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+import java.math.BigDecimal;
 
 @Path("/bill")
 @Component
@@ -84,7 +85,7 @@ public class BillResource extends BaseResource {
     @Path("/cust/custBatchCollect")
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes(MediaType.APPLICATION_JSON)
-    @ApiOperation(value = "/cust/custBatchCollect", response = int.class, notes = "订户批量收款")
+    @ApiOperation(value = "/cust/custBatchCollect", response = BigDecimal.class, notes = "订户批量收款")
     public Response custBatchCollect(@ApiParam(required = true, name = "cModel", value = "收款信息") CustBatchBillQueryModel cModel) {
         return convertToRespModel(MessageCode.NORMAL, null, customerBillService.custBatchCollect(cModel));
     }
