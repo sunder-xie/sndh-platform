@@ -833,6 +833,7 @@ public class DeliverMilkServiceImpl extends BaseService implements DeliverMilkSe
 			map.put("matnr",orgItem.getMatnr());
 			map.put("reason",orgItem.getReason());
 			tMstInsideSalOrderItemMapper.deleteInSalOrderItemByMap(map);
+			tMstInsideSalOrderMapper.deleteInSalOrderByDispOrderNo(sOrder.getInsOrderNo());
 		}
 		if("40".equals(newItem.getReason()) || "50".equals(newItem.getReason())){
 			if(sOrder == null){
@@ -840,7 +841,7 @@ public class DeliverMilkServiceImpl extends BaseService implements DeliverMilkSe
 				sOrder = new TMstInsideSalOrder();
 				sOrder.setInsOrderNo(insOrderNo);
 				sOrder.setOrderDate(orgItem.getOrderDate());
-				sOrder.setDispOrderNo(order.getOrderNo());
+				sOrder.setDispOrderNo(orgItem.getOrderNo());
 				sOrder.setBranchNo(order.getBranchNo());
 				sOrder.setSalEmpNo(order.getEmpNo());
 				sOrder.setCreateAt(newItem.getOrderDate());

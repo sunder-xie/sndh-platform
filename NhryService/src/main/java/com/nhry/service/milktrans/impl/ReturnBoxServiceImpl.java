@@ -188,7 +188,7 @@ public class ReturnBoxServiceImpl implements ReturnBoxService {
         Map<String,String> map = new HashMap<String,String>();
         map.put("dispOrderNo",dispOrderNo);
         map.put("spec",type);
-        return tRecBotDetailMapper.selectBotDetailByDetLsh(map);
+        return tRecBotDetailMapper.selectBotDetailByOrderAndSpec(map);
     }
 
 }
