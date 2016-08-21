@@ -29,6 +29,6 @@ public interface TPlanOrderItemMapper {
 
 
     List<MemberActivities> selectBeforePayActivitiesByOrderNo(Map<String, String> planOrderMap);
-    List<MemberActivities> selectAfterPayActivitiesByOrderNo(Map<String, String> planOrderMap);
+   List<MemberActivities> selectAfterPayActivitiesByOrderNo(Map<String, String> planOrderMap);
 
 }

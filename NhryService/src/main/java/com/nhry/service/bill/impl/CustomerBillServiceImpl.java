@@ -170,24 +170,22 @@ public class CustomerBillServiceImpl implements CustomerBillService {
                         Map<String,String> planOrderMap = new HashMap<String,String>();
                         planOrderMap.put("salesOrg",user.getSalesOrg());
                         planOrderMap.put("orderNo",orderNo);
-                        List<MemberActivities> items = new ArrayList<MemberActivities>();
+                        List<MemberActivities> items;
                         if("20".equals(order.getPaymentmethod())){
                             items   = tPlanOrderItemMapper.selectBeforePayActivitiesByOrderNo(planOrderMap);
                         }else{
                             items  = tPlanOrderItemMapper.selectAfterPayActivitiesByOrderNo(planOrderMap);
                         }
                         if(items.size()>0){
-                            for (int i=0;i<items.size();i++){
-                                MemberActivities item = items.get(i);
-                              /*   if(StringUtils.isBlank(item.getItemnum())){
-                                     item.setItemnum(""+i);
-                             }*/
-                                item.setItemnum(""+i);
-                                item.setActivitydate(date);
+                            BigDecimal totalprice = new BigDecimal(0);
+                            for (MemberActivities item : items){
+                                if(item.getActivitydate() == null){
+                                    item.setActivitydate(date);
+                                }
                                 try{
                                     piVipInfoDataService.createMemberActivities(item);
                                 }catch (Exception e){
-                                    throw new ServiceException(MessageCode.LOGIC_ERROR,"失败");
+                                         continue;
                                 }
                             }
                         }
@@ -195,12 +193,12 @@ public class CustomerBillServiceImpl implements CustomerBillService {
                     }
                 });
 
+                if("10".equals(order.getPaymentmethod())){
+                    BigDecimal factAmt = tPreOrderMapper.calculateOrderFactoryAmt(orderNo);
+                    int  updateFactAmt = tPreOrderMapper.updateOrderFacAmt(factAmt  == null ? new BigDecimal(0) : factAmt,orderNo);
+                }
 
-              /*
-                BigDecimal factAmt = tPreOrderMapper.calculateOrderFactoryAmt(orderNo);
-                int  updateFactAmt = tPreOrderMapper.updateOrderFacAmt(factAmt  == null ? new BigDecimal(0) : factAmt,orderNo);
-               */
-                
+
                //发送EC,更新订单状态
        			TPreOrder sendOrder = new TPreOrder();
        			sendOrder.setOrderNo(order.getOrderNo());

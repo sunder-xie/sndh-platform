@@ -445,7 +445,8 @@
          (CASE WHEN i.PROMOTION is null or i.PROMOTION ='' THEN 'ACCRUAL' ELSE 'CATEGORY' END) CATE_GORY,
          (CASE WHEN i.PROMOTION is null or i.PROMOTION ='' THEN 'YPOS_ACCRUAL' ELSE 'YSUB_PROMOTION' END) PROCESS_TYPE,
           c.VIP_CUST_NO MEMBERSHIP_GUID,o.SALES_ORG,c.VIP_CUST_NO_SAP CARD_ID ,i.DISP_TOTAL * i.SALES_PRICE  AMOUNT,o.ORDER_NO ORDER_ID,
-          i.ITEM_NO ITEM_NUM,i.MATNR PRODUCT_ID,i.DISP_TOTAL PRODUCT_QUANTITY,o.BRANCH_NO RETAIL_STORE_ID
+          substring(i.ITEM_NO,21,LENGTH(i.ITEM_NO)-20) ITEM_NUM,i.MATNR PRODUCT_ID,i.DISP_TOTAL PRODUCT_QUANTITY,o.BRANCH_NO RETAIL_STORE_ID,
+          now() ACTIVITY_DATE
       from t_mst_plan_order_item i
       LEFT JOIN t_preorder o on i.ORDER_NO = o.ORDER_NO
       LEFT JOIN t_vip_crm_info c on o.MEMBER_NO =c.VIP_CUST_NO
@@ -453,15 +454,18 @@
   </select>
 
   <select id="selectAfterPayActivitiesByOrderNo" resultMap="ActivityResultMap" parameterType="java.util.Map" >
-   SELECT
-       (CASE WHEN i.PROMOTION_FLAG is null or i.PROMOTION_FLAG ='' THEN 'ACCRUAL' ELSE 'CATEGORY' END) CATE_GORY,
+  	SELECT
+        substring(i.ITEM_NO,21,LENGTH(i.ITEM_NO)-20) ITEM_NUM,
+        (CASE WHEN i.PROMOTION_FLAG is null or i.PROMOTION_FLAG ='' THEN 'ACCRUAL' ELSE 'CATEGORY' END) CATE_GORY,
        (CASE WHEN i.PROMOTION_FLAG is null or i.PROMOTION_FLAG ='' THEN 'YPOS_ACCRUAL' ELSE 'YSUB_PROMOTION' END) PROCESS_TYPE,
-        c.VIP_CUST_NO  MEMBERSHIP_GUID,o.SALES_ORG,c.VIP_CUST_NO_SAP CARD_ID, SUM(i.AMT)  AMOUNT,o.ORDER_NO ORDER_ID,
-        i.MATNR PRODUCT_ID,SUM(i.QTY) PRODUCT_QUANTITY,o.BRANCH_NO RETAIL_STORE_ID
-     FROM
-        t_mst_order_daliy_plan_item i
+        c.VIP_CUST_NO  MEMBERSHIP_GUID,o.SALES_ORG,c.VIP_CUST_NO_SAP CARD_ID, o.ORDER_NO ORDER_ID,
+        SUM(i.AMT)  AMOUNT,p.MATNR PRODUCT_ID,SUM(i.QTY) PRODUCT_QUANTITY,o.BRANCH_NO RETAIL_STORE_ID, now() ACTIVITY_DATE
+		FROM  t_mst_order_daliy_plan_item i
         LEFT JOIN t_preorder o on i.ORDER_NO = o.ORDER_NO
+				LEFT JOIN t_mst_plan_order_item p on i.ITEM_NO = p.ITEM_NO
         LEFT JOIN t_vip_crm_info c on o.MEMBER_NO = c.VIP_CUST_NO
-    WHERE i.ORDER_NO = #{orderNo}
+       WHERE i.ORDER_NO = #{orderNo}
+				GROUP BY i.ITEM_NO
+
     </select>
 </mapper>
