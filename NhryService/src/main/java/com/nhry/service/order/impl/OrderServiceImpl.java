@@ -1278,10 +1278,12 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 		}
 		PageInfo pages = tOrderDaliyPlanItemMapper.selectDaliyOrdersByPages(smodel);
 		//后付款显示负数金额
-		if("10".equals(orgOrder.getPaymentmethod())){
-			for(Object e : pages.getList()){
-				TOrderDaliyPlanItem p = ((TOrderDaliyPlanItem)e);
-				p.setRemainAmt(p.getRemainAmt().subtract(orgOrder.getInitAmt()));
+		if(pages.getList()!=null && pages.getList().size() > 0){
+			if("10".equals(orgOrder.getPaymentmethod())){
+				for(Object e : pages.getList()){
+					TOrderDaliyPlanItem p = ((TOrderDaliyPlanItem)e);
+					p.setRemainAmt(p.getRemainAmt().subtract(orgOrder.getInitAmt()));
+				}
 			}
 		}
 	
