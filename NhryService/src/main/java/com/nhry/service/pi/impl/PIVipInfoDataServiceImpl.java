@@ -557,6 +557,7 @@ public class PIVipInfoDataServiceImpl implements PIVipInfoDataService {
     public PISuccessTMessage sendAddress(TMdAddress address, String sapGuid) {
         PISuccessTMessage result = new PISuccessTMessage();
         try {
+            address = vipCustInfoService.findAddressById(address.getAddressId());
             if(StringUtils.isEmpty(sapGuid)){
                 TVipCustInfo custInfo = vipCustInfoService.findVipCustByNoForUpt(address.getVipCustNo());
                 sapGuid = custInfo.getVipCustNoSap();
@@ -615,7 +616,7 @@ public class PIVipInfoDataServiceImpl implements PIVipInfoDataService {
             zscrm_addr_ship_to.setSTREET(street_type1);
 
             com.nhry.webService.client.Address.functions.STR_SUPPL2_type1 str_suppl2_type1 = new com.nhry.webService.client.Address.functions.STR_SUPPL2_type1();
-            str_suppl2_type1.setSTR_SUPPL2_type0(address.getResidentialArea() == null ? "" : address.getResidentialArea());
+            str_suppl2_type1.setSTR_SUPPL2_type0(address.getResidentialAreaName() == null ? "" : address.getResidentialAreaName());
             zscrm_addr_ship_to.setSTR_SUPPL2(str_suppl2_type1);
 
             com.nhry.webService.client.Address.functions.STR_SUPPL1_type1 str_suppl1_type1 = new com.nhry.webService.client.Address.functions.STR_SUPPL1_type1();

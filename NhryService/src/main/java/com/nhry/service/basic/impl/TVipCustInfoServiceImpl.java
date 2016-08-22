@@ -53,7 +53,7 @@ public class TVipCustInfoServiceImpl extends BaseService implements TVipCustInfo
 		if(count > 0){
 			throw new ServiceException(MessageCode.LOGIC_ERROR, "改电话号码对应的订户信息已存在！");
 		}
-		record.setVipCustNo(PrimaryKeyUtils.generateUuidKey());
+		record.setVipCustNo(PrimaryKeyUtils.generateUpperUuidKey());
 		record.setCreateAt(new Date());
 		record.setCreateBy(this.userSessionService.getCurrentUser().getLoginName());
 		record.setCreateByTxt(this.userSessionService.getCurrentUser().getDisplayName());
@@ -200,7 +200,7 @@ public class TVipCustInfoServiceImpl extends BaseService implements TVipCustInfo
 			if(StringUtils.isEmpty(custNo)){
 				//创建新订户
 				TVipCustInfo cust = new TVipCustInfo();
-				cust.setVipCustNo(PrimaryKeyUtils.generateUuidKey());
+				cust.setVipCustNo(PrimaryKeyUtils.generateUpperUuidKey());
 				cust.setProvince(address.getProvince());
 				cust.setCity(address.getCity());
 				cust.setCounty(address.getCounty());
@@ -251,7 +251,7 @@ public class TVipCustInfoServiceImpl extends BaseService implements TVipCustInfo
 				 throw new ServiceException(MessageCode.LOGIC_ERROR,"该订户地址详细信息中vipCustNo对应的订户信息不存在!");
 			}
 		}
-		address.setAddressId(PrimaryKeyUtils.generateUuidKey());
+		address.setAddressId(PrimaryKeyUtils.generateUpperUuidKey());
 		address.setIsDelete("N");
 		address.setCreateAt(new Date());
 		address.setCreateBy(sysuser.getLoginName());
