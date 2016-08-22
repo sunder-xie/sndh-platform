@@ -1364,6 +1364,10 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 				order.setAdressNo(addressAndMilkmember.split(",")[1]);
 			}
 		}
+		
+		//会员号
+		TVipCustInfo vip = tVipCustInfoService.findVipCustByNoForUpt(order.getMilkmemberNo());
+		if(vip!=null)order.setMemberNo(vip.getVipCustNoSap());
 
 		//生成每个订单行
 		int index = 0;
