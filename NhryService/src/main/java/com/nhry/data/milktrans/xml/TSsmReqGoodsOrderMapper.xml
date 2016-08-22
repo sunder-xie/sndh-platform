@@ -7,7 +7,7 @@
         <result column="ORDER_DATE" property="orderDate" jdbcType="DATE" />
         <result column="BRANCH_NO" property="branchNo" jdbcType="VARCHAR" />
         <result column="REQUIRED_DATE" property="requiredDate" jdbcType="VARCHAR" />
-        <result column="VOUCHER_NO" property="voucherNo" jdbcType="INTEGER" />
+        <result column="VOUCHER_NO" property="voucherNo" jdbcType="VARCHAR" />
         <result column="STATUS" property="status" jdbcType="INTEGER" />
         <result column="MEMO_TXT" property="memoTxt" jdbcType="VARCHAR" />
         <result column="CREATE_AT" property="createAt" jdbcType="TIMESTAMP" />
