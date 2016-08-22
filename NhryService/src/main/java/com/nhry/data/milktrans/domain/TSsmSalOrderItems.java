@@ -15,7 +15,16 @@ public class TSsmSalOrderItems {
     private int qty;
     private String type;
     private String refMatnr;
+    private String refMatnrTxt;
     private String promNo;
+
+    public String getRefMatnrTxt() {
+        return refMatnrTxt;
+    }
+
+    public void setRefMatnrTxt(String refMatnrTxt) {
+        this.refMatnrTxt = refMatnrTxt;
+    }
 
     public String getPromNo() {
         return promNo;
