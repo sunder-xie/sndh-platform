@@ -213,7 +213,7 @@ public class TVipCustInfoServiceImpl extends BaseService implements TVipCustInfo
 				cust.setCreateAt(new Date());
 				cust.setCreateBy(sysuser.getLoginName());
 				cust.setCreateByTxt(sysuser.getDisplayName());
-				cust.setSalesOrg(sysuser.getSalesOrg());
+				cust.setSalesOrg(branch.getSalesOrg());
 				if(StringUtils.isEmpty(branch.getDealerNo())){
 					cust.setDealerNo("-1");
 				}else{
