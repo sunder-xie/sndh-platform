@@ -1,6 +1,7 @@
 package com.nhry.data.order.dao;
 
 import com.nhry.data.order.domain.TPlanOrderItem;
+import com.nhry.service.pi.pojo.MemberActivities;
 
 import java.util.List;
 import java.util.Map;
@@ -26,5 +27,8 @@ public interface TPlanOrderItemMapper {
 
     List<TPlanOrderItem> selectEntriesByOrderNo(Map<String, String> map);
 
+
+    List<MemberActivities> selectBeforePayActivitiesByOrderNo(Map<String, String> planOrderMap);
+   List<MemberActivities> selectAfterPayActivitiesByOrderNo(Map<String, String> planOrderMap);
 
 }
