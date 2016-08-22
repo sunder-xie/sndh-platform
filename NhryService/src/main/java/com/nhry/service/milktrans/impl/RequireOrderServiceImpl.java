@@ -799,7 +799,6 @@ public class RequireOrderServiceImpl implements RequireOrderService {
             salOrderItems.setPromNo(item.getPlanItemNo());
         }
         if("dealer".equals(type)){
-            //salOrderItems.setRefMatnr(item.getMatnr());
             salOrderItems.setMatnr(item.getMatnr());
             salOrderItems.setType("10");
         }else{

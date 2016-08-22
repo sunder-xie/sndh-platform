@@ -55,6 +55,29 @@
     <result column="IN_SALE_QTY" property="inSaleQty" jdbcType="INTEGER" />
   </resultMap>
 
+  <resultMap id="ActivityResultMap" type="com.nhry.service.pi.pojo.MemberActivities" >
+    <result column="CATE_GORY" property="category" jdbcType="VARCHAR" />
+    <result column="PROCESS_TYPE" property="processtype" jdbcType="VARCHAR" />
+    <result column="MEMBERSHIP_GUID" property="membershipguid" jdbcType="VARCHAR" />
+    <result column="SALES_ORG" property="salesorg" jdbcType="VARCHAR" />
+    <result column="CARD_ID" property="cardid" jdbcType="VARCHAR" />
+    <result column="ACTIVITY_DATE" property="activitydate" jdbcType="DATE" />
+    <result column="AMOUNT" property="amount" jdbcType="DECIMAL" />
+    <result column="POINT_TYPE" property="pointtype" jdbcType="VARCHAR" />
+    <result column="POINTS" property="points" jdbcType="DECIMAL" />
+    <result column="CURRENCY" property="currency" jdbcType="VARCHAR" />
+    <result column="ORDER_ID" property="orderid" jdbcType="VARCHAR" />
+    <result column="ITEM_NUM" property="itemnum" jdbcType="VARCHAR" />
+    <result column="PRODUCT_ID" property="productid" jdbcType="VARCHAR" />
+    <result column="PRODUCT_QUANTITY" property="productquantity" jdbcType="DECIMAL" />
+    <result column="RETAIL_STORE_ID" property="retailstoreid" jdbcType="VARCHAR" />
+    <result column="TRANSEQ_NUM" property="transeqnum" jdbcType="VARCHAR" />
+    <result column="TIER_GROUP" property="tiergroup" jdbcType="VARCHAR" />
+    <result column="TIER" property="tier" jdbcType="VARCHAR" />
+    <result column="COMMIT" property="commit" jdbcType="VARCHAR" />
+    <result column="PROCESS" property="process" jdbcType="VARCHAR" />
+  </resultMap>
+
   <sql id="Base_Column_List" >
     ITEM_NO, ORDER_NO, ORDER_DATE, REF_ITEM_NO, NEW_ROW_FLAG, MATNR, UNIT, QTY, SALES_PRICE, 
     RULE_TYPE, DISP_DAYS, GAP_DAYS, RULE_TXT, REACH_TIME_TYPE, START_DISP_DATE, END_DISP_DATE, 
@@ -424,4 +447,33 @@
     SELECT ORDER_NO orderNo ,sum(YFRESH) yfresh,sum(YGROWTH) ygrowth FROM t_mst_plan_order_item where ORDER_NO = #{orderNo,jdbcType=VARCHAR}
   </select>
 
+
+  <select id="selectBeforePayActivitiesByOrderNo" resultMap="ActivityResultMap" parameterType="java.util.Map" >
+    SELECT
+         (CASE WHEN i.PROMOTION is null or i.PROMOTION ='' THEN 'ACCRUAL' ELSE 'CATEGORY' END) CATE_GORY,
+         (CASE WHEN i.PROMOTION is null or i.PROMOTION ='' THEN 'YPOS_ACCRUAL' ELSE 'YSUB_PROMOTION' END) PROCESS_TYPE,
+          c.VIP_CUST_NO MEMBERSHIP_GUID,o.SALES_ORG,c.VIP_CUST_NO_SAP CARD_ID ,i.DISP_TOTAL * i.SALES_PRICE  AMOUNT,o.ORDER_NO ORDER_ID,
+          substring(i.ITEM_NO,21,LENGTH(i.ITEM_NO)-20) ITEM_NUM,i.MATNR PRODUCT_ID,i.DISP_TOTAL PRODUCT_QUANTITY,o.BRANCH_NO RETAIL_STORE_ID,
+          now() ACTIVITY_DATE
+      from t_mst_plan_order_item i
+      LEFT JOIN t_preorder o on i.ORDER_NO = o.ORDER_NO
+      LEFT JOIN t_vip_crm_info c on o.MEMBER_NO =c.VIP_CUST_NO
+      WHERE i.ORDER_NO = #{orderNo}
+  </select>
+
+  <select id="selectAfterPayActivitiesByOrderNo" resultMap="ActivityResultMap" parameterType="java.util.Map" >
+  	SELECT
+        substring(i.ITEM_NO,21,LENGTH(i.ITEM_NO)-20) ITEM_NUM,
+        (CASE WHEN i.PROMOTION_FLAG is null or i.PROMOTION_FLAG ='' THEN 'ACCRUAL' ELSE 'CATEGORY' END) CATE_GORY,
+       (CASE WHEN i.PROMOTION_FLAG is null or i.PROMOTION_FLAG ='' THEN 'YPOS_ACCRUAL' ELSE 'YSUB_PROMOTION' END) PROCESS_TYPE,
+        c.VIP_CUST_NO  MEMBERSHIP_GUID,o.SALES_ORG,c.VIP_CUST_NO_SAP CARD_ID, o.ORDER_NO ORDER_ID,
+        SUM(i.AMT)  AMOUNT,p.MATNR PRODUCT_ID,SUM(i.QTY) PRODUCT_QUANTITY,o.BRANCH_NO RETAIL_STORE_ID, now() ACTIVITY_DATE
+		FROM  t_mst_order_daliy_plan_item i
+        LEFT JOIN t_preorder o on i.ORDER_NO = o.ORDER_NO
+				LEFT JOIN t_mst_plan_order_item p on i.ITEM_NO = p.ITEM_NO
+        LEFT JOIN t_vip_crm_info c on o.MEMBER_NO = c.VIP_CUST_NO
+       WHERE i.ORDER_NO = #{orderNo}
+				GROUP BY i.ITEM_NO
+
+    </select>
 </mapper>

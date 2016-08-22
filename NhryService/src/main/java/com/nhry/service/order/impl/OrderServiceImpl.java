@@ -1278,10 +1278,12 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 		}
 		PageInfo pages = tOrderDaliyPlanItemMapper.selectDaliyOrdersByPages(smodel);
 		//后付款显示负数金额
-		if("10".equals(orgOrder.getPaymentmethod())){
-			for(Object e : pages.getList()){
-				TOrderDaliyPlanItem p = ((TOrderDaliyPlanItem)e);
-				p.setRemainAmt(p.getRemainAmt().subtract(orgOrder.getInitAmt()));
+		if(pages.getList()!=null && pages.getList().size() > 0){
+			if("10".equals(orgOrder.getPaymentmethod())){
+				for(Object e : pages.getList()){
+					TOrderDaliyPlanItem p = ((TOrderDaliyPlanItem)e);
+					p.setRemainAmt(p.getRemainAmt().subtract(orgOrder.getInitAmt()));
+				}
 			}
 		}
 	
@@ -1364,6 +1366,10 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 				order.setAdressNo(addressAndMilkmember.split(",")[1]);
 			}
 		}
+		
+		//会员号
+		TVipCustInfo vip = tVipCustInfoService.findVipCustByNoForUpt(order.getMilkmemberNo());
+		if(vip!=null)order.setMemberNo(vip.getVipCustNoSap());
 
 		//生成每个订单行
 		int index = 0;

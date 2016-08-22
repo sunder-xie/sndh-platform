@@ -6,7 +6,6 @@ import com.nhry.data.order.dao.TOrderDaliyPlanItemMapper;
 import com.nhry.data.order.domain.TOrderDaliyPlanItem;
 import com.nhry.data.order.domain.TOrderDaliyPlanItemKey;
 import com.nhry.data.order.domain.TPreOrder;
-import com.nhry.model.bill.OrderItemFactoryPrice;
 import com.nhry.model.milktrans.RequireOrderSearch;
 import com.nhry.model.order.OrderSearchModel;
 import com.nhry.model.order.ReturnOrderModel;
@@ -156,6 +155,7 @@ public class TOrderDaliyPlanItemMapperImpl implements TOrderDaliyPlanItemMapper
 		map.put("salesOrg",salesOrg);
 		return sqlSessionTemplate.selectList("getProductItemsByOrderNo", map);
 	}
+
 
 
 	/**
