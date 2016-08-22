@@ -1,7 +1,7 @@
 package com.nhry.data.milktrans.dao;
 
 import com.nhry.data.milktrans.domain.TSsmSalOrderItems;
-import com.nhry.model.milktrans.OrderPointModel;
+import com.nhry.model.order.OrderPointModel;
 
 import java.util.Map;
 import java.util.List;

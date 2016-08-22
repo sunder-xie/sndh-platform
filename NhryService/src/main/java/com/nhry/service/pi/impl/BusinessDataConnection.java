@@ -194,13 +194,11 @@ public class BusinessDataConnection {
                 com.nhry.webService.client.businessData.functions.Date date1 = new com.nhry.webService.client.businessData.functions.Date();
                 date1.setObject(map.get("ORDER_DATE"));
                 zssd00011.setREQ_DATE(date1);
-                if(StringUtils.isNotBlank(map.get("ACTIVITY_ID"))){
+                if(StringUtils.isNotEmpty(map.get("PROM_NO"))){
                     WBS_ELEM_type1 wbs_elem_type1 = new WBS_ELEM_type1();
-                    wbs_elem_type1.setWBS_ELEM_type0(map.get("ACTIVITY_ID"));
+                    wbs_elem_type1.setWBS_ELEM_type0(map.get("PROM_NO"));
                     zssd00011.setWBS_ELEM(wbs_elem_type1);
                 }
-
-
                 it_zssd00011_type1.addItem(zssd00011);
             }
 
@@ -317,25 +315,28 @@ public class BusinessDataConnection {
         List<Delivery> deliveries = new ArrayList<Delivery>();
         if (zssd00069s!= null && zssd00069s.length > 0) {
             for (ZSSD00069 zssd00069 : zssd00069s) {
-                Delivery delivery = new Delivery();
-                delivery.setKUNNR(zssd00069.getKUNNR().getKUNNR_type2());
-                delivery.setBSTKD(zssd00069.getBSTKD().getBSTKD_type2());
-                delivery.setVBELN(zssd00069.getVBELN().getVBELN_type0());
-                delivery.setPOSNR(zssd00069.getPOSNR().getPOSNR_type0());
-                delivery.setLFIMG(zssd00069.getLFIMG().getLFIMG_type0());
-                delivery.setMEINS(zssd00069.getMEINS().getMEINS_type0());
-                delivery.setKUNAG(zssd00069.getKUNAG().getKUNAG_type0());
-                Object o = zssd00069.getLFDAT().getObject();
-                String dateString = formatter.format(o);
-                delivery.setLFDAT(formatter.parse(dateString));
-                delivery.setVBELV(zssd00069.getVBELV().getVBELV_type0());
-                delivery.setPOSNV(zssd00069.getPOSNV().getPOSNV_type0());
-                delivery.setLGORT(zssd00069.getLGORT().getLGORT_type2());
-                delivery.setRESLO(zssd00069.getRESLO().getRESLO_type0());
-                delivery.setCmpre(zssd00069.getCMPRE().getCMPRE_type0());
-                delivery.setMATNR(zssd00069.getMATNR().getMATNR_type2());
-                delivery.setPSTYV(zssd00069.getPSTYV().getPSTYV_type2());
-                deliveries.add(delivery);
+                String wbstk = zssd00069.getWBSTK().getWBSTK_type0();
+                if("C".equals(wbstk)) {
+                    Delivery delivery = new Delivery();
+                    delivery.setKUNNR(zssd00069.getKUNNR().getKUNNR_type2());
+                    delivery.setBSTKD(zssd00069.getBSTKD().getBSTKD_type2());
+                    delivery.setVBELN(zssd00069.getVBELN().getVBELN_type0());
+                    delivery.setPOSNR(zssd00069.getPOSNR().getPOSNR_type0());
+                    delivery.setLFIMG(zssd00069.getLFIMG().getLFIMG_type0());
+                    delivery.setMEINS(zssd00069.getMEINS().getMEINS_type0());
+                    delivery.setKUNAG(zssd00069.getKUNAG().getKUNAG_type0());
+                    Object o = zssd00069.getLFDAT().getObject();
+                    String dateString = formatter.format(o);
+                    delivery.setLFDAT(formatter.parse(dateString));
+                    delivery.setVBELV(zssd00069.getVBELV().getVBELV_type0());
+                    delivery.setPOSNV(zssd00069.getPOSNV().getPOSNV_type0());
+                    delivery.setLGORT(zssd00069.getLGORT().getLGORT_type2());
+                    delivery.setRESLO(zssd00069.getRESLO().getRESLO_type0());
+                    delivery.setCmpre(zssd00069.getCMPRE().getCMPRE_type0());
+                    delivery.setMATNR(zssd00069.getMATNR().getMATNR_type2());
+                    delivery.setPSTYV(zssd00069.getPSTYV().getPSTYV_type2());
+                    deliveries.add(delivery);
+                }
             }
         }
         return deliveries;

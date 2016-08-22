@@ -6,10 +6,7 @@ import com.nhry.data.order.dao.TPreOrderMapper;
 import com.nhry.data.order.domain.TPreOrder;
 import com.nhry.model.bill.CustBatchBillQueryModel;
 import com.nhry.model.bill.CustBillQueryModel;
-import com.nhry.model.order.ManHandOrderSearchModel;
-import com.nhry.model.order.OrderSearchModel;
-import com.nhry.model.order.ReturnOrderModel;
-import com.nhry.model.order.UpdateManHandOrderModel;
+import com.nhry.model.order.*;
 import com.nhry.service.order.pojo.OrderRemainData;
 
 import java.math.BigDecimal;
@@ -220,6 +217,11 @@ public class TPreOrderMapperImpl implements TPreOrderMapper
 	@Override
 	public List<TPreOrder> searchCustomerOrderByEmpNo(CustBatchBillQueryModel model) {
 		return sqlSessionTemplate.selectList("searchCustomerOrderByEmpNo",model);
+	}
+
+	@Override
+	public int uptYfrechAndYGrowthByOrderNo(OrderPointModel model) {
+		return sqlSessionTemplate.update("uptYfrechAndYGrowthByOrderNo",model);
 	}
 
 	/* (non-Javadoc) 

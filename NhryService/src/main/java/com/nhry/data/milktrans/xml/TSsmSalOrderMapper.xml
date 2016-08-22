@@ -188,9 +188,4 @@
         and ORDER_NO = #{orderNo,jdbcType=VARCHAR}
     </delete>
 
-    <update id="uptYfrechAndYGrowthByOrderNo" parameterType="com.nhry.model.milktrans.OrderPointModel">
-        UPDATE  t_ssm_sal_order
-        SET   YFRESH = #{yfresh,jdbcType=DECIMAL} , YGROWTH = #{ygrowth,jdbcType=DECIMAL}
-        where ORDER_NO = #{orderNo,jdbcType=VARCHAR}
-    </update>
 </mapper>

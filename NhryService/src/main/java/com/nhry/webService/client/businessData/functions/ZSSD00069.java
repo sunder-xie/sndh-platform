@@ -229,6 +229,28 @@ public class ZSSD00069 implements org.apache.axis2.databinding.ADBBean {
      */
     protected boolean localCMPRETracker = false;
 
+    /**
+     * field for ORMNG
+     */
+    protected ORMNG_type1 localORMNG;
+
+    /*  This tracker boolean wil be used to detect whether the user called the set method
+     *   for this attribute. It will be used to determine whether to include this field
+     *   in the serialized XML
+     */
+    protected boolean localORMNGTracker = false;
+
+    /**
+     * field for WBSTK
+     */
+    protected com.nhry.webService.client.businessData.functions.WBSTK_type1 localWBSTK;
+
+    /*  This tracker boolean wil be used to detect whether the user called the set method
+     *   for this attribute. It will be used to determine whether to include this field
+     *   in the serialized XML
+     */
+    protected boolean localWBSTKTracker = false;
+
     public boolean isBSTKDSpecified() {
         return localBSTKDTracker;
     }
@@ -666,6 +688,52 @@ public class ZSSD00069 implements org.apache.axis2.databinding.ADBBean {
         this.localCMPRE = param;
     }
 
+    public boolean isORMNGSpecified() {
+        return localORMNGTracker;
+    }
+
+    /**
+     * Auto generated getter method
+     * @return com.nhry.webService.client.businessData.functions.ORMNG_type1
+     */
+    public ORMNG_type1 getORMNG() {
+        return localORMNG;
+    }
+
+    /**
+     * Auto generated setter method
+     * @param param ORMNG
+     */
+    public void setORMNG(
+        ORMNG_type1 param) {
+        localORMNGTracker = param != null;
+
+        this.localORMNG = param;
+    }
+
+    public boolean isWBSTKSpecified() {
+        return localWBSTKTracker;
+    }
+
+    /**
+     * Auto generated getter method
+     * @return com.nhry.webService.client.businessData.functions.WBSTK_type1
+     */
+    public com.nhry.webService.client.businessData.functions.WBSTK_type1 getWBSTK() {
+        return localWBSTK;
+    }
+
+    /**
+     * Auto generated setter method
+     * @param param WBSTK
+     */
+    public void setWBSTK(
+        com.nhry.webService.client.businessData.functions.WBSTK_type1 param) {
+        localWBSTKTracker = param != null;
+
+        this.localWBSTK = param;
+    }
+
     /**
      *
      * @param parentQName
@@ -902,6 +970,26 @@ public class ZSSD00069 implements org.apache.axis2.databinding.ADBBean {
             }
 
             localCMPRE.serialize(new javax.xml.namespace.QName("", "CMPRE"),
+                xmlWriter);
+        }
+
+        if (localORMNGTracker) {
+            if (localORMNG == null) {
+                throw new org.apache.axis2.databinding.ADBException(
+                    "ORMNG cannot be null!!");
+            }
+
+            localORMNG.serialize(new javax.xml.namespace.QName("", "ORMNG"),
+                xmlWriter);
+        }
+
+        if (localWBSTKTracker) {
+            if (localWBSTK == null) {
+                throw new org.apache.axis2.databinding.ADBException(
+                    "WBSTK cannot be null!!");
+            }
+
+            localWBSTK.serialize(new javax.xml.namespace.QName("", "WBSTK"),
                 xmlWriter);
         }
 
@@ -1489,6 +1577,40 @@ public class ZSSD00069 implements org.apache.axis2.databinding.ADBBean {
                         new javax.xml.namespace.QName("", "CMPRE").equals(
                             reader.getName())) {
                     object.setCMPRE(CMPRE_type1.Factory.parse(
+                            reader));
+
+                    reader.next();
+                } // End of if for expected property start element
+
+                else {
+                }
+
+                while (!reader.isStartElement() && !reader.isEndElement())
+                    reader.next();
+
+                if ((reader.isStartElement() &&
+                        new javax.xml.namespace.QName("", "ORMNG").equals(
+                            reader.getName())) ||
+                        new javax.xml.namespace.QName("", "ORMNG").equals(
+                            reader.getName())) {
+                    object.setORMNG(ORMNG_type1.Factory.parse(
+                            reader));
+
+                    reader.next();
+                } // End of if for expected property start element
+
+                else {
+                }
+
+                while (!reader.isStartElement() && !reader.isEndElement())
+                    reader.next();
+
+                if ((reader.isStartElement() &&
+                        new javax.xml.namespace.QName("", "WBSTK").equals(
+                            reader.getName())) ||
+                        new javax.xml.namespace.QName("", "WBSTK").equals(
+                            reader.getName())) {
+                    object.setWBSTK(com.nhry.webService.client.businessData.functions.WBSTK_type1.Factory.parse(
                             reader));
 
                     reader.next();

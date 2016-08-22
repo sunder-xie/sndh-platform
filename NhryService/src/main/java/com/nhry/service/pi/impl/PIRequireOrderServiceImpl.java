@@ -24,6 +24,7 @@ import com.nhry.model.milktrans.RequireOrderSearch;
 import com.nhry.model.milktrans.SalOrderModel;
 import com.nhry.service.pi.dao.PIRequireOrderService;
 import com.nhry.service.pi.pojo.SalesOrderHeader;
+import com.nhry.utils.DateUtil;
 import com.nhry.utils.PIPropertitesUtil;
 import com.nhry.webService.client.PISuccessMessage;
 import com.nhry.webService.client.businessData.model.Delivery;
@@ -206,14 +207,15 @@ public class PIRequireOrderServiceImpl implements PIRequireOrderService {
                         ssmGiOrder.setOrderDate(d.getLFDAT());
                         ssmGiOrder.setMemoTxt(d.getBSTKD());
                         ssmGiOrderMapper.insertGiOrder(ssmGiOrder);
-                    } else {
-                        ssmGiOrder.setBranchNo(branchNo);
-                        ssmGiOrder.setOrderNo(d.getVBELN());
-                        ssmGiOrder.setMemoTxt(d.getBSTKD());
-                        ssmGiOrder.setSyncAt(new Date());
-                        ssmGiOrder.setOrderDate(d.getLFDAT());
-                        ssmGiOrderMapper.updateGiOrder(ssmGiOrder);
                     }
+//                    else {
+//                        ssmGiOrder.setBranchNo(branchNo);
+//                        ssmGiOrder.setOrderNo(d.getVBELN());
+//                        ssmGiOrder.setMemoTxt(d.getBSTKD());
+//                        ssmGiOrder.setSyncAt(new Date());
+//                        ssmGiOrder.setOrderDate(d.getLFDAT());
+//                        ssmGiOrderMapper.updateGiOrder(ssmGiOrder);
+//                    }
                     TSsmGiOrderItemKey key = new TSsmGiOrderItemKey();
                     key.setOrderDate(d.getLFDAT());
                     key.setItemNo(d.getPOSNR());
@@ -248,7 +250,7 @@ public class PIRequireOrderServiceImpl implements PIRequireOrderService {
         }catch (Exception e){
             e.printStackTrace();
             logger.error("要货单"+orderNo +"获取交货单异常！原因："+ e.getMessage());
-            throw new ServiceException(MessageCode.SERVER_ERROR, "获取交货单异常,请联系管理员!");
+            throw new ServiceException(MessageCode.SERVER_ERROR, "获取交货单异常,请联系管理员!"+e.getMessage());
         }
         return "1";
     }
@@ -266,9 +268,17 @@ public class PIRequireOrderServiceImpl implements PIRequireOrderService {
 
     public String execDelivery(String branchNo){
         TMdBranch branch = branchMapper.getBranchByNo(branchNo);
+        Date curDate = null;
+        String salesOrg = branch.getSalesOrg();
+        //如果是华西或者天音 则requiredDate日期为今天  否则requiredDate为明天
+        if("4181".equals(salesOrg) || "4390".equals(salesOrg)){
+            curDate = new Date();
+        }else{
+            curDate = DateUtil.getTomorrow(new Date());
+        }
         if("01".equals(branch.getBranchGroup())){
             RequireOrderSearch search = new RequireOrderSearch();
-            search.setOrderDate(new Date());
+            search.setOrderDate(curDate);
             search.setBranchNo(branchNo);
             TSsmReqGoodsOrder order = tSsmReqGoodsOrderMapper.searchRequireOrder(search);
             if(order == null){
@@ -279,7 +289,7 @@ public class PIRequireOrderServiceImpl implements PIRequireOrderService {
         }else{
             SalOrderModel model = new SalOrderModel();
             model.setBranchNo(branchNo);
-            model.setOrderDate(new Date());
+            model.setOrderDate(curDate);
             List<TSsmSalOrder> orders = ssmSalOrderMapper.selectSalOrderByDateAndNo(model);
             if(orders != null){
                 for(TSsmSalOrder order : orders){

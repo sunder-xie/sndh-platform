@@ -4,10 +4,7 @@ import com.github.pagehelper.PageInfo;
 import com.nhry.data.order.domain.TPreOrder;
 import com.nhry.model.bill.CustBatchBillQueryModel;
 import com.nhry.model.bill.CustBillQueryModel;
-import com.nhry.model.order.ManHandOrderSearchModel;
-import com.nhry.model.order.OrderSearchModel;
-import com.nhry.model.order.ReturnOrderModel;
-import com.nhry.model.order.UpdateManHandOrderModel;
+import com.nhry.model.order.*;
 import com.nhry.service.order.pojo.OrderRemainData;
 
 import java.math.BigDecimal;
@@ -79,4 +76,6 @@ public interface TPreOrderMapper {
     List<String> searchCustomerOrderForExp(CustBillQueryModel cModel);
 
     List<TPreOrder> searchCustomerOrderByEmpNo(CustBatchBillQueryModel model);
+
+    int uptYfrechAndYGrowthByOrderNo(OrderPointModel model);
 }

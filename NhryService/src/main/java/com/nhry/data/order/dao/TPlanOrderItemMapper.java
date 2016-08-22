@@ -1,6 +1,7 @@
 package com.nhry.data.order.dao;
 
 import com.nhry.data.order.domain.TPlanOrderItem;
+import com.nhry.model.order.OrderPointModel;
 
 import java.util.List;
 import java.util.Map;
@@ -26,5 +27,7 @@ public interface TPlanOrderItemMapper {
 
     List<TPlanOrderItem> selectEntriesByOrderNo(Map<String, String> map);
 
+    int uptYfrechAndYGrowthByOrderNoAndItemNo(OrderPointModel model);
 
+    OrderPointModel getSumYfrechAndYGrowByOrderNo(String orderNo);
 }

@@ -3,6 +3,7 @@ package com.nhry.data.order.impl;
 import com.nhry.common.datasource.DynamicSqlSessionTemplate;
 import com.nhry.data.order.dao.TPlanOrderItemMapper;
 import com.nhry.data.order.domain.TPlanOrderItem;
+import com.nhry.model.order.OrderPointModel;
 
 import java.util.List;
 import java.util.Map;
@@ -42,6 +43,16 @@ public class TPlanOrderItemMapperImpl implements TPlanOrderItemMapper
 	@Override
 	public List<TPlanOrderItem> selectEntriesByOrderNo(Map<String, String> map) {
 		return sqlSessionTemplate.selectList("selectEntriesByOrderNo",map);
+	}
+
+	@Override
+	public int uptYfrechAndYGrowthByOrderNoAndItemNo(OrderPointModel model) {
+		return sqlSessionTemplate.update("uptYfrechAndYGrowthByOrderNoAndItemNo",model);
+	}
+
+	@Override
+	public OrderPointModel getSumYfrechAndYGrowByOrderNo(String orderNo) {
+		return sqlSessionTemplate.selectOne("getSumYfrechAndYGrowByOrderNo",orderNo);
 	}
 
 
