@@ -25,6 +25,8 @@ public class SysContant {
 	public final static String SN_APP="snapp";
 	static Logger log = Logger.getLogger(SysContant.class);
 	private static Map<String, String> configs = new HashMap<String, String>();
+	
+	public static final String INDEX_NAME = "nhdb_dev";  
 
 	static {
 		try {
