@@ -50,7 +50,7 @@
 		</property>
 	</bean>
 	 <!-- 调度的配置开始 -->
-    <bean id="crontestJobTrigger1" class="org.springframework.scheduling.quartz.CronTriggerBean">
+    <bean id="crontestJobTrigger1" class="org.springframework.scheduling.quartz.CronTriggerFactoryBean">
         <property name="jobDetail">
             <ref bean="scheduledJobDetail1" />
         </property>
@@ -58,7 +58,7 @@
 			<value>0 59 23 * * ?</value>
 		</property>
     </bean>
-	<bean id="crontestJobTrigger2" class="org.springframework.scheduling.quartz.CronTriggerBean">
+	<bean id="crontestJobTrigger2" class="org.springframework.scheduling.quartz.CronTriggerFactoryBean">
 		<property name="jobDetail">
 			<ref bean="scheduledJobDetail2" />
 		</property>
@@ -66,7 +66,7 @@
 			<value>0 59 1 * * ?</value>
 		</property>
 	</bean>
-	<bean id="crontestJobTrigger3" class="org.springframework.scheduling.quartz.CronTriggerBean">
+	<bean id="crontestJobTrigger3" class="org.springframework.scheduling.quartz.CronTriggerFactoryBean">
 		<property name="jobDetail">
 			<ref bean="scheduledJobDetail3" />
 		</property>
@@ -74,7 +74,7 @@
 			<value>0 55 15 * * ?</value>
 		</property>
 	</bean>
-	<bean id="crontestJobTrigger4" class="org.springframework.scheduling.quartz.CronTriggerBean">
+	<bean id="crontestJobTrigger4" class="org.springframework.scheduling.quartz.CronTriggerFactoryBean">
 		<property name="jobDetail">
 			<ref bean="scheduledJobDetail4" />
 		</property>
@@ -82,7 +82,7 @@
 			<value>0 15 * * * ?</value>
 		</property>
 	</bean>
-	<bean id="crontestJobTrigger5" class="org.springframework.scheduling.quartz.CronTriggerBean">
+	<bean id="crontestJobTrigger5" class="org.springframework.scheduling.quartz.CronTriggerFactoryBean">
 		<property name="jobDetail">
 			<ref bean="scheduledJobDetail5" />
 		</property>
