@@ -171,7 +171,7 @@ public class PIRequireOrderServiceImpl implements PIRequireOrderService {
     public String generateDelivery(String orderNo,String branchNo,boolean isDeli){
         String message = "";
         if(StringUtils.isEmpty(orderNo)){
-            throw new ServiceException(MessageCode.SERVER_ERROR,"调拨单或销售订单凭证没有生成！");
+            throw new ServiceException(MessageCode.LOGIC_ERROR,"调拨单或销售订单凭证没有生成！");
         }
         try{
           List<Delivery> deliveries = BusinessDataConnection.DeliveryQuery(orderNo,isDeli);
