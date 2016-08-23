@@ -3,7 +3,14 @@ package com.nhry.data.order.domain;
 import java.math.BigDecimal;
 import java.util.Date;
 
+import org.springframework.data.annotation.Id;
+import org.springframework.data.elasticsearch.annotations.Document;
+
+import com.nhry.utils.SysContant;
+
+@Document(indexName = SysContant.INDEX_NAME, type = "t_preorder")
 public class TPreOrder {
+	@Id
     private String orderNo;
 
     private String orderType;
