@@ -24,7 +24,7 @@ public interface RequireOrderService {
 
     int uptRequireOrder(UpdateRequiredModel uModel);
 
-    int sendRequireOrderToERP();
+    String sendRequireOrderToERP();
 
     int creatPromoSalOrderOfDealerBranch(Date today);
 
