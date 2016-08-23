@@ -12,6 +12,7 @@ import com.nhry.service.config.dao.DictionaryService;
 import com.nhry.service.pi.dao.PIVipInfoDataService;
 import com.nhry.service.pi.pojo.MemberActivities;
 import com.nhry.utils.PIPropertitesUtil;
+import com.nhry.utils.PrimaryKeyUtils;
 import com.nhry.webService.OptionManager;
 import com.nhry.webService.client.Address.MemberAddrUpdateServiceStub;
 import com.nhry.webService.client.Address.functions.*;
@@ -403,7 +404,7 @@ public class PIVipInfoDataServiceImpl implements PIVipInfoDataService {
             zscrm_memb_activities.setCURRENCY(currency_type1);
 
             ITEM_NUM_type1 item_num_type1 = new ITEM_NUM_type1();
-            item_num_type1.setITEM_NUM_type0(memberActivities.getItemnum());
+            item_num_type1.setITEM_NUM_type0(memberActivities.getItemnum() == null ? "":memberActivities.getItemnum());
             zscrm_memb_activities.setITEM_NUM(item_num_type1);
 
             MEMBERSHIP_GUID_type1 membership_guid_type1 = new MEMBERSHIP_GUID_type1();
@@ -426,9 +427,11 @@ public class PIVipInfoDataServiceImpl implements PIVipInfoDataService {
             product_id_type1.setPRODUCT_ID_type0(memberActivities.getProductid() == null ? "" : memberActivities.getProductid());
             zscrm_memb_activities.setPRODUCT_ID(product_id_type1);
 
-            PRODUCT_QUANTITY_type1 product_quantity_type1 = new PRODUCT_QUANTITY_type1();
-            product_quantity_type1.setPRODUCT_QUANTITY_type0(memberActivities.getProductquantity());
-            zscrm_memb_activities.setPRODUCT_QUANTITY(product_quantity_type1);
+            if(memberActivities.getProductquantity() != null) {
+                PRODUCT_QUANTITY_type1 product_quantity_type1 = new PRODUCT_QUANTITY_type1();
+                product_quantity_type1.setPRODUCT_QUANTITY_type0(memberActivities.getProductquantity());
+                zscrm_memb_activities.setPRODUCT_QUANTITY(product_quantity_type1);
+            }
 
             RETAIL_STORE_ID_type1 retail_store_id_type1 = new RETAIL_STORE_ID_type1();
             retail_store_id_type1.setRETAIL_STORE_ID_type0(memberActivities.getRetailstoreid() == null ? "" : memberActivities.getRetailstoreid());
@@ -454,9 +457,11 @@ public class PIVipInfoDataServiceImpl implements PIVipInfoDataService {
             process_type_type1.setPROCESS_TYPE_type0(memberActivities.getProcesstype() == null ? "" : memberActivities.getProcesstype());
             zscrm_memb_activities.setPROCESS_TYPE(process_type_type1);
 
-            POINTS_type1 points_type1 = new POINTS_type1();
-            points_type1.setPOINTS_type0(new BigDecimal("0"));
-            zscrm_memb_activities.setPOINTS(points_type1);
+            if(memberActivities.getPoints()!=null) {
+                POINTS_type1 points_type1 = new POINTS_type1();
+                points_type1.setPOINTS_type0(memberActivities.getPoints());
+                zscrm_memb_activities.setPOINTS(points_type1);
+            }
             z_crm_memb_activities_create.setIS_MEMB_ACT(zscrm_memb_activities);
 
             Z_CRM_MEMB_ACTIVITIES_CREATEResponse response = client.memberActCreate(z_crm_memb_activities_create);
@@ -655,7 +660,7 @@ public class PIVipInfoDataServiceImpl implements PIVipInfoDataService {
 
                 MODE_type1 mode_type1 = new MODE_type1();
                 String isdelete = address.getIsDelete();
-                if (StringUtils.isNotEmpty(isdelete) && !"Y".equals(isdelete)) {
+                if (StringUtils.isNotEmpty(isdelete) && "Y".equals(isdelete)) {
                     mode_type1.setMODE_type0("D");
                 } else {
                     mode_type1.setMODE_type0("");
@@ -695,6 +700,21 @@ public class PIVipInfoDataServiceImpl implements PIVipInfoDataService {
                     this.setName(address.getAddressId());
                     List<TMdAddress> addresses = new ArrayList<TMdAddress>();
                     addresses.add(address);
+                    sendAddress(addresses, sapGuid);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        });
+    }
+
+    @Override
+    public void executeSendAddresses(List<TMdAddress> addresses, String sapGuid) {
+        taskExecutor.execute(new Thread() {
+            public void run() {
+                try {
+                    Thread.sleep(8000);
+                    this.setName(PrimaryKeyUtils.generateUpperUuidKey());
                     sendAddress(addresses, sapGuid);
                 } catch (Exception e) {
                     e.printStackTrace();

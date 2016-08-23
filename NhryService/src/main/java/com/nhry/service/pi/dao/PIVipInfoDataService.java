@@ -69,5 +69,12 @@ public interface PIVipInfoDataService {
      * @return
      */
     void executeSendAddress(TMdAddress address,String sapGuid);
+    /**
+     * 线程池方式订户地址更新
+     * @param addresses
+     * @param sapGuid
+     * @return
+     */
+    void executeSendAddresses(List<TMdAddress> addresses,String sapGuid);
 
 }
