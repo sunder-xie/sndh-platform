@@ -43,6 +43,13 @@
 		left join t_md_mara pro2 on pro2.matnr = gi.GIFT_NO
 		where 1 = 1
 		and p.SALES_ORG = #{salesOrg,jdbcType=VARCHAR}
+		<if test="orderDateStart != null and orderDateStart !=''">
+     		AND p.PLAN_START_TIME  &gt;=  #{orderDateStart}
+      </if>
+      <if test="orderDateEnd != null and orderDateEnd !=''">
+     		AND p.PLAN_STOP_TIME  &lt;=  #{orderDateEnd}
+      </if>
+		order by p.PROM_NO desc
   </select>
   <select id="selectPromotionByMatnr" resultMap="BaseResultMap" parameterType="com.nhry.data.order.domain.TPromotion" >
 	   select distinct 

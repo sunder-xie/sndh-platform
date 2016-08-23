@@ -14,8 +14,8 @@
         <result column="ADDRESS" property="address" jdbcType="VARCHAR" />
         <result column="PAYMENT_DATE" property="paymentDate" jdbcType="DATE" />
         <result column="RECEIPT_DATE" property="receiptDate" jdbcType="DATE" />
-        <result column="REAL_COLLECTION" property="realCollection" jdbcType="VARCHAR" />
-        <result column="SATTLEMENT_PRICE" property="settlementPrice" jdbcType="VARCHAR" />
+        <result column="REAL_COLLECTION" property="realCollection" jdbcType="DECIMAL" />
+        <result column="SATTLEMENT_PRICE" property="settlementPrice" jdbcType="DECIMAL" />
         <result column="EMP_NO" property="empNo" jdbcType="VARCHAR" />
         <result column="EMP_NAME" property="empName" jdbcType="VARCHAR" />
         <result column="FACT_AMT" property="factAmt" jdbcType="DECIMAL" />

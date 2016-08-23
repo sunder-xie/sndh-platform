@@ -30,6 +30,8 @@ import com.nhry.service.order.dao.MilkBoxService;
 import com.nhry.service.order.dao.OrderService;
 import com.nhry.service.order.dao.PromotionService;
 import com.nhry.service.order.pojo.OrderRemainData;
+import com.nhry.service.pi.dao.PIVipInfoDataService;
+import com.nhry.service.pi.pojo.MemberActivities;
 import com.nhry.utils.CodeGeneratorUtil;
 
 import org.apache.commons.lang3.StringUtils;
@@ -54,6 +56,11 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 	private TaskExecutor taskExecutor;
 	private EcService messLogService;
 	private CustomerBillMapper customerBillMapper;
+	private PIVipInfoDataService piVipInfoDataService;
+	
+	public void setPiVipInfoDataService(PIVipInfoDataService piVipInfoDataService) {
+      this.piVipInfoDataService = piVipInfoDataService;
+   }
 	
 	public void setCustomerBillMapper(CustomerBillMapper customerBillMapper) {
 		this.customerBillMapper = customerBillMapper;
@@ -610,7 +617,7 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 		TPreOrder order = tPreOrderMapper.selectByPrimaryKey(record.getOrderNo());
 		
 		if(order!= null){
-//			if(tDispOrderItemMapper.selectCountOfTodayByOrgOrder(order.getOrderNo(),format.format(new Date()))>0)throw new ServiceException(MessageCode.LOGIC_ERROR,"此订单，今日有确认的路单!请等路单确认后再操作!");
+//			if(tDispOrderItemMapper.selectCountOfTodayByOrgOrder(order.getOrderNo(),format.format(new Date()))>0)throw new ServiceException(MessageCode.LOGIC_ERROR,"此订单，今日有未确认的路单!请等路单确认后再操作!");
 			
 			order.setBackDate(afterDate(new Date(),1));
 			order.setBackReason(record.getReason());
@@ -619,6 +626,7 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 			String state = order.getPaymentmethod();
 			
 			BigDecimal leftAmt = order.getCurAmt();
+			BigDecimal initAmt = order.getInitAmt();
 			if("20".equals(state)){//先付款
 				tOrderDaliyPlanItemMapper.updateDaliyPlansToBack(order);
 				
@@ -678,6 +686,35 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 					messLogService.sendOrderStatus(sendOrder);
 				}
 			});
+			
+			//积分扣减
+			if("20".equals(order.getPaymentmethod())&&"20".equals(order.getPaymentStat())&&"Y".equals(order.getIsIntegration())){
+				taskExecutor.execute(new Thread(){
+					@Override
+					public void run() {
+						super.run();
+						this.setName("minusVipPoint");
+						BigDecimal gRate = leftAmt.divide(initAmt,2).multiply(new BigDecimal(order.getyGrowth()==null?0:order.getyGrowth()));//成长
+						BigDecimal fRate = leftAmt.divide(initAmt,2).multiply(new BigDecimal(order.getyFresh()==null?0:order.getyFresh()));//鲜峰
+						MemberActivities item = new MemberActivities();
+						Date date = new Date();
+						item.setActivitydate(date);
+						item.setSalesorg(order.getSalesOrg());
+						item.setCategory("YRETURN");
+						item.setProcesstype("YSUB_RETURN");
+						item.setOrderid(order.getOrderNo());
+						item.setMembershipguid(order.getMemberNo());
+						item.setPointtype("YGROWTH");
+						item.setPoints(gRate);
+						//第1遍传成长
+						piVipInfoDataService.createMemberActivities(item);
+						//第2遍传先锋
+						item.setPointtype("YFRESH");
+						item.setPoints(fRate);
+						piVipInfoDataService.createMemberActivities(item);
+					}
+				});
+			}
 			
 		}else{
 			throw new ServiceException(MessageCode.LOGIC_ERROR,"当前订单不存在");
@@ -959,15 +996,22 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 			BigDecimal orderAmt = new BigDecimal("0.00");//订单总价
 			for(TPlanOrderItem entry: entries){
 				entry.setOrderNo(order.getOrderNo());
+				
 				//设置配送开始时间
-				Date startDate = afterDate(sdate,entryDateMap.get(entry.getItemNo()));
-//				Date edate = afterDate(startDate,daysOfTwo(entry.getStartDispDate(),entry.getEndDispDate()));
-//				Date edate2 = afterDate(startDate,goDays);
-				if(edate.before(startDate)){
-					continue;//如果需要续订天数不足某一行，这行不需要续订
+				if(StringUtils.isBlank(record.getOrderDateStart())){
+					calculateEntryStartDate(entry);
+					if(edate.before(entry.getStartDispDate())){
+						continue;//如果需要续订天数不足某一行，这行不需要续订
+					}
+					entry.setEndDispDate(edate);
+				}else{
+					Date startDate = afterDate(sdate,entryDateMap.get(entry.getItemNo()));
+					if(edate.before(startDate)){
+						continue;//如果需要续订天数不足某一行，这行不需要续订
+					}
+					entry.setEndDispDate(edate);
+					entry.setStartDispDate(startDate);
 				}
-			   entry.setEndDispDate(edate);
-				entry.setStartDispDate(startDate);
 				
 				entry.setItemNo(order.getOrderNo() + String.valueOf(index));//行项目编号
 				entry.setRefItemNo(String.valueOf(index));//参考行项目编号
@@ -990,6 +1034,9 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 
 				index++;
 			}
+			
+			if(entriesList.size()==0)throw new ServiceException(MessageCode.LOGIC_ERROR,"在日期内"+record.getOrderNo()+"无法续订，没有订单行项目!");
+			
 			//保存订单，订单行
 			order.setCurAmt(orderAmt);//订单价格
 			order.setInitAmt(orderAmt);
