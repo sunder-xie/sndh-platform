@@ -2,7 +2,6 @@ package com.nhry.rest.pi;
 
 import com.nhry.common.exception.MessageCode;
 import com.nhry.model.milktrans.OrderPointListModel;
-import com.nhry.model.milktrans.OrderPointModel;
 import com.nhry.model.sys.ResponseModel;
 import com.nhry.rest.BaseResource;
 import com.nhry.service.milktrans.dao.OrderPointService;
@@ -21,7 +20,6 @@ import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
-import java.util.List;
 
 /**
  * Created by cbz on 8/17/2016.

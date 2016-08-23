@@ -941,5 +941,9 @@
     </if>
     ORDER BY ORDER_NO desc
   </select>
-  
+  <update id="uptYfrechAndYGrowthByOrderNo" parameterType="com.nhry.model.order.OrderPointModel">
+    UPDATE  t_preorder
+    SET   YFRESH = #{yfresh,jdbcType=DECIMAL} , YGROWTH = #{ygrowth,jdbcType=DECIMAL}
+    where ORDER_NO = #{orderNo,jdbcType=VARCHAR}
+  </update>
 </mapper>

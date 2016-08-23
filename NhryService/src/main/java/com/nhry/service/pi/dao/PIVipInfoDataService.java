@@ -3,12 +3,10 @@ package com.nhry.service.pi.dao;
 import com.nhry.data.basic.domain.TMdAddress;
 import com.nhry.data.basic.domain.TVipCustInfo;
 import com.nhry.service.pi.pojo.MemberActivities;
-import com.nhry.service.pi.pojo.PIReturnMessage;
 import com.nhry.webService.client.EvMemb;
-import com.nhry.webService.client.EvMembPoint;
-import com.nhry.webService.client.PISuccessMessage;
 import com.nhry.webService.client.PISuccessTMessage;
-import org.apache.poi.ss.formula.functions.T;
+
+import java.util.List;
 
 /**
  * Created by cbz on 7/30/2016.
@@ -16,18 +14,18 @@ import org.apache.poi.ss.formula.functions.T;
 public interface PIVipInfoDataService {
     /**
      * 会员创建更新
-     * @param custId
+     * @param vipCustInfo
      * @param vipTel
      * @return
      */
-    PISuccessTMessage<EvMemb> generateVipInfoData(String custId, String vipTel);
+    PISuccessTMessage<EvMemb> generateVipInfoData(TVipCustInfo vipCustInfo, String vipTel);
 
     /**
      * 线程池方式会员创建更新
-     * @param custId
+     * @param vipCustInfo
      * @param vipTel
      */
-    void executeVipInfoData(String custId, String vipTel);
+    void executeVipInfoData(TVipCustInfo vipCustInfo, String vipTel);
 
     /**
      * 会员积分明细查询
@@ -59,11 +57,11 @@ public interface PIVipInfoDataService {
     void executeUptVipCust(TVipCustInfo vipCustInfo);
     /**
      * 订户地址更新
-     * @param address
+     * @param addresss
      * @param sapGuid
      * @return
      */
-    PISuccessTMessage sendAddress(TMdAddress address,String sapGuid);
+    PISuccessTMessage sendAddress(List<TMdAddress> addresss, String sapGuid);
     /**
      * 线程池方式订户地址更新
      * @param address

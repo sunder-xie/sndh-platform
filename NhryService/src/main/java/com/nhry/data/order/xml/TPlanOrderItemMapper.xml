@@ -437,7 +437,15 @@
       LAST_MODIFIED_BY_TXT = #{lastModifiedByTxt,jdbcType=VARCHAR}
     where ITEM_NO = #{itemNo,jdbcType=VARCHAR}
   </update>
+  <update id="uptYfrechAndYGrowthByOrderNoAndItemNo" parameterType="com.nhry.model.order.OrderPointModel">
+    UPDATE  t_mst_plan_order_item
+    SET   YFRESH = #{yfresh,jdbcType=DECIMAL},YGROWTH = #{ygrowth,jdbcType=DECIMAL}
+    where ITEM_NO = #{itemNo,jdbcType=INTEGER}
+  </update>
 
+  <select id="getSumYfrechAndYGrowByOrderNo" resultType="com.nhry.model.order.OrderPointModel" parameterType="string">
+    SELECT ORDER_NO orderNo ,sum(YFRESH) yfresh,sum(YGROWTH) ygrowth FROM t_mst_plan_order_item where ORDER_NO = #{orderNo,jdbcType=VARCHAR}
+  </select>
 
 
   <select id="selectBeforePayActivitiesByOrderNo" resultMap="ActivityResultMap" parameterType="java.util.Map" >

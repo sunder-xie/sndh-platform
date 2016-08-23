@@ -104,19 +104,19 @@ public class PIResouce extends BaseResource{
     }
 
     @GET
-    @Path("/getJHD/{id}")
+    @Path("/getJHD/{orderNo}/{branchNo}/{isReq}")
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes(MediaType.APPLICATION_JSON)
-    @ApiOperation(value = "/getJHD/{id}", response = ResponseModel.class, notes = "获取交货单数据")
-    public Response gegetJHDZD(@PathParam("id") String id) throws RemoteException {
-        return convertToRespModel(MessageCode.NORMAL, null, null);
+    @ApiOperation(value = "/getJHD/{orderNo}/{branchNo}/{isReq}", response = ResponseModel.class, notes = "获取交货单数据")
+    public Response gegetJHDZD(@PathParam("orderNo") String orderNo,@PathParam("branchNo") String branchNo,@PathParam("isReq")boolean isReq) throws RemoteException {
+        return convertToRespModel(MessageCode.NORMAL, null, requireOrderService.generateDelivery(orderNo,branchNo,isReq));
     }
 
     @POST
     @Path("/getYHD/{date}/{branchNo}")
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes(MediaType.APPLICATION_JSON)
-    @ApiOperation(value = "/getYHD/{date}/{branchNo}", response = ResponseModel.class, notes = "获取交货单数据")
+    @ApiOperation(value = "/getYHD/{date}/{branchNo}", response = ResponseModel.class, notes = "获取要货单数据")
     public Response getYHD(@PathParam("date") String date,@PathParam("branchNo") String branchNo) throws RemoteException, ParseException {
         SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
         return convertToRespModel(MessageCode.NORMAL, requireOrderService.execRequieOrder(format.parse(date),branchNo), null);
@@ -137,7 +137,8 @@ public class PIResouce extends BaseResource{
     @Consumes(MediaType.APPLICATION_JSON)
     @ApiOperation(value = "/generateVipInfoData/{custId}/{vipTel}", response = ResponseModel.class, notes = "创建会员信息数据")
     public Response generateVipInfoData(@ApiParam(name = "custId",value = "订户编号",required = true)@PathParam("custId") String custId,@ApiParam(name = "vipTel",value = "会员电话",required = true)@PathParam("vipTel") String vipTel){
-        String message = piVipInfoDataService.generateVipInfoData(custId, vipTel).getMessage();
+        TVipCustInfo vipCustInfo = tVipCustInfoService.findVipCustByNoForUpt(custId);
+        String message = piVipInfoDataService.generateVipInfoData(vipCustInfo, vipTel).getMessage();
         return convertToRespModel(MessageCode.NORMAL,message, null);
     }
     @POST
@@ -190,7 +191,10 @@ public class PIResouce extends BaseResource{
     @Consumes(MediaType.APPLICATION_JSON)
     @ApiOperation(value = "/executeVipInfoData/{custId}/{vipTel}", response = ResponseModel.class, notes = "创建会员信息数据")
     public Response executeVipInfoData(@ApiParam(name = "custId",value = "订户编号",required = true)@PathParam("custId") String custId,@ApiParam(name = "vipTel",value = "会员电话",required = true)@PathParam("vipTel") String vipTel){
-         piVipInfoDataService.executeVipInfoData(custId, vipTel);
+        TVipCustInfo vipCustInfo = tVipCustInfoService.findVipCustByNoForUpt(custId);
+        piVipInfoDataService.executeVipInfoData(vipCustInfo, vipTel);
         return convertToRespModel(MessageCode.NORMAL,null, null);
     }
+
+
 }

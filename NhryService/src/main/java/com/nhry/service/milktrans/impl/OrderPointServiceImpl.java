@@ -3,7 +3,9 @@ package com.nhry.service.milktrans.impl;
 import com.nhry.common.exception.ServiceException;
 import com.nhry.data.milktrans.dao.TSsmSalOrderItemMapper;
 import com.nhry.data.milktrans.dao.TSsmSalOrderMapper;
-import com.nhry.model.milktrans.OrderPointModel;
+import com.nhry.data.order.dao.TPlanOrderItemMapper;
+import com.nhry.data.order.dao.TPreOrderMapper;
+import com.nhry.model.order.OrderPointModel;
 import com.nhry.service.milktrans.dao.OrderPointService;
 import org.apache.log4j.Logger;
 
@@ -17,36 +19,37 @@ import java.util.Map;
 public class OrderPointServiceImpl implements OrderPointService {
     private static final Logger logger = Logger.getLogger(OrderPointServiceImpl.class);
 
-    private TSsmSalOrderMapper ssmSalOrderMapper;
+    private TPreOrderMapper preOrderMapper;
 
-    public void setSsmSalOrderMapper(TSsmSalOrderMapper ssmSalOrderMapper) {
-        this.ssmSalOrderMapper = ssmSalOrderMapper;
+    private TPlanOrderItemMapper planOrderItemMapper;
+
+    public void setPreOrderMapper(TPreOrderMapper preOrderMapper) {
+        this.preOrderMapper = preOrderMapper;
     }
 
-    private TSsmSalOrderItemMapper ssmSalOrderItemMapper;
-
-    public void setSsmSalOrderItemMapper(TSsmSalOrderItemMapper ssmSalOrderItemMapper) {
-        this.ssmSalOrderItemMapper = ssmSalOrderItemMapper;
+    public void setPlanOrderItemMapper(TPlanOrderItemMapper planOrderItemMapper) {
+        this.planOrderItemMapper = planOrderItemMapper;
     }
 
     @Override
     public int uptYfrechAndYGrowthByOrderNoAndItemNo(List<OrderPointModel> models) {
-        logger.info("销售订单明细积分更新开始");
+        logger.info("订单明细积分更新开始");
         try {
             Map<String, String> map = new HashMap<String, String>();
             for (OrderPointModel model : models) {
                 map.put(model.getOrderNo(), model.getItemNo());
-                ssmSalOrderItemMapper.uptYfrechAndYGrowthByOrderNoAndItemNo(model);
+                model.setItemNo(model.getOrderNo().concat(model.getItemNo()));
+                planOrderItemMapper.uptYfrechAndYGrowthByOrderNoAndItemNo(model);
             }
             for (Map.Entry<String, String> entry : map.entrySet()) {
-                OrderPointModel orderPoint = ssmSalOrderItemMapper.getSumYfrechAndYGrowByOrderNo(entry.getKey());
-                ssmSalOrderMapper.uptYfrechAndYGrowthByOrderNo(orderPoint);
+                OrderPointModel orderPoint = planOrderItemMapper.getSumYfrechAndYGrowByOrderNo(entry.getKey());
+                preOrderMapper.uptYfrechAndYGrowthByOrderNo(orderPoint);
             }
         }catch (Exception e){
-            logger.error("销售订单明细积分更新失败！"+e.getMessage());
-            throw new ServiceException("销售订单明细积分更新失败！");
+            logger.error("订单明细积分更新失败！"+e.getMessage());
+            throw new ServiceException("订单明细积分更新失败！");
         }
-        logger.info("销售订单明细积分更新结束");
+        logger.info("订单明细积分更新结束");
         return 1;
     }
 }

@@ -1,4 +1,4 @@
-package com.nhry.model.milktrans;
+package com.nhry.model.order;
 
 /**
  * Created by cbz on 8/17/2016.

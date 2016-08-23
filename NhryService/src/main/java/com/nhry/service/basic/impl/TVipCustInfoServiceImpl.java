@@ -78,7 +78,7 @@ public class TVipCustInfoServiceImpl extends BaseService implements TVipCustInfo
 			address.setCreateByTxt(this.userSessionService.getCurrentUser().getDisplayName());
 			addAddressForCust(address,null,null);
 		}
-		vipInfoDataService.executeVipInfoData(record.getVipCustNo(),"");
+		vipInfoDataService.executeVipInfoData(record,record.getVipMp());
 		return record.getVipCustNo();
 	}
 
@@ -118,7 +118,7 @@ public class TVipCustInfoServiceImpl extends BaseService implements TVipCustInfo
 			ad.setAddresses(record.getAddresses());
 			this.batchUptCustAddress(ad);
 		}
-		vipInfoDataService.executeVipInfoData(record.getVipCustNo(),"");
+		vipInfoDataService.executeVipInfoData(record,record.getVipMp());
 		return 1;
 	}
 
@@ -257,7 +257,7 @@ public class TVipCustInfoServiceImpl extends BaseService implements TVipCustInfo
 		address.setCreateBy(sysuser.getLoginName());
 		address.setCreateByTxt(sysuser.getDisplayName());
 		this.addressMapper.addAddressForCust(address);
-		vipInfoDataService.executeVipInfoData(address.getVipCustNo(),"");
+		vipInfoDataService.executeSendAddress(address,"");
 		return address.getVipCustNo()+","+address.getAddressId();
 	}
 

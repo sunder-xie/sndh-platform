@@ -144,7 +144,7 @@ public class ZSSD00011 implements org.apache.axis2.databinding.ADBBean {
     /**
      * field for WBS_ELEM
      */
-    protected com.nhry.webService.client.businessData.functions.WBS_ELEM_type1 localWBS_ELEM;
+    protected WBS_ELEM_type1 localWBS_ELEM;
 
     /*  This tracker boolean wil be used to detect whether the user called the set method
      *   for this attribute. It will be used to determine whether to include this field
@@ -413,7 +413,7 @@ public class ZSSD00011 implements org.apache.axis2.databinding.ADBBean {
      * Auto generated getter method
      * @return com.nhry.webService.client.businessData.functions.WBS_ELEM_type1
      */
-    public com.nhry.webService.client.businessData.functions.WBS_ELEM_type1 getWBS_ELEM() {
+    public WBS_ELEM_type1 getWBS_ELEM() {
         return localWBS_ELEM;
     }
 
@@ -422,7 +422,7 @@ public class ZSSD00011 implements org.apache.axis2.databinding.ADBBean {
      * @param param WBS_ELEM
      */
     public void setWBS_ELEM(
-        com.nhry.webService.client.businessData.functions.WBS_ELEM_type1 param) {
+        WBS_ELEM_type1 param) {
         localWBS_ELEMTracker = param != null;
 
         this.localWBS_ELEM = param;
@@ -1061,7 +1061,7 @@ public class ZSSD00011 implements org.apache.axis2.databinding.ADBBean {
                             reader.getName())) ||
                         new javax.xml.namespace.QName("", "WBS_ELEM").equals(
                             reader.getName())) {
-                    object.setWBS_ELEM(com.nhry.webService.client.businessData.functions.WBS_ELEM_type1.Factory.parse(
+                    object.setWBS_ELEM(WBS_ELEM_type1.Factory.parse(
                             reader));
 
                     reader.next();
