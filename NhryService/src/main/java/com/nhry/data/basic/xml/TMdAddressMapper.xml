@@ -85,7 +85,8 @@
 		LAST_MODIFIED_BY,
 		LAST_MODIFIED_BY_TXT,
 		VIP_CUST_NO,
-		IS_DEFAULT
+		IS_DEFAULT,
+        IS_DELETE
     from t_md_address d
     where ADDRESS_ID = #{addressId,jdbcType=VARCHAR}
   </select>

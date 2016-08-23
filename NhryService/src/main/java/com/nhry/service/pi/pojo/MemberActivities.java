@@ -48,6 +48,10 @@ public class MemberActivities {
     protected BigDecimal amount;
     /**
      * 积分类型 可为空
+     *
+     *YFRESH
+     *YGROWTH
+     *
      */
     protected String pointtype;
     /**
