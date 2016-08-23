@@ -763,7 +763,7 @@ public class DeliverMilkServiceImpl extends BaseService implements DeliverMilkSe
 				return 0;
 			}
 			
-			if(!new Date().before(entry.getOrderDate()))throw new ServiceException(MessageCode.LOGIC_ERROR,"非今日的路单已经不能重新修改！");
+			if(!new Date().before(afterDate(entry.getOrderDate(),1)))throw new ServiceException(MessageCode.LOGIC_ERROR,"非今日的路单已经不能重新修改！");
 			if(!"10".equals(item.getReason()) && Integer.parseInt(item.getConfirmQty()) > entry.getQty().intValue())throw new ServiceException(MessageCode.LOGIC_ERROR,"非换货时实际数量不能大于应送数量！");
 			if("10".equals(item.getReason()) && Integer.parseInt(item.getConfirmQty()) == 0)throw new ServiceException(MessageCode.LOGIC_ERROR,"换货时数量不能是0！");
 			tDispOrderItemMapper.updateDispOrderItem(item , entry , null);
