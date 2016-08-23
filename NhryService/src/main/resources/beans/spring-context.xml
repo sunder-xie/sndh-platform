@@ -57,7 +57,7 @@
 	</bean>
 	
 	 <!-- 调度的配置开始 -->
-    <bean id="crontestJobTrigger" class="org.springframework.scheduling.quartz.CronTriggerBean">
+    <bean id="crontestJobTrigger" class="org.springframework.scheduling.quartz.CronTriggerFactoryBean">
         <property name="jobDetail">
             <ref bean="sessioncleanJob" />
         </property>
