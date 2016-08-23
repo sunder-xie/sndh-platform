@@ -699,6 +699,7 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 						MemberActivities item = new MemberActivities();
 						Date date = new Date();
 						item.setActivitydate(date);
+						item.setSalesorg(order.getSalesOrg());
 						item.setCategory("YRETURN");
 						item.setProcesstype("YSUB_RETURN");
 						item.setOrderid(order.getOrderNo());
