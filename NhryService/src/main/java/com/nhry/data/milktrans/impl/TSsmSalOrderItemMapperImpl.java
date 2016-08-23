@@ -3,7 +3,7 @@ package com.nhry.data.milktrans.impl;
 import com.nhry.common.datasource.DynamicSqlSessionTemplate;
 import com.nhry.data.milktrans.dao.TSsmSalOrderItemMapper;
 import com.nhry.data.milktrans.domain.TSsmSalOrderItems;
-import com.nhry.model.milktrans.OrderPointModel;
+import com.nhry.model.order.OrderPointModel;
 
 import java.util.Map;
 

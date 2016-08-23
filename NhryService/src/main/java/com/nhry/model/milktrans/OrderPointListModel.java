@@ -1,4 +1,6 @@
 package com.nhry.model.milktrans;
+import com.nhry.model.order.OrderPointModel;
+
 import java.util.ArrayList;
 import java.util.List;
 

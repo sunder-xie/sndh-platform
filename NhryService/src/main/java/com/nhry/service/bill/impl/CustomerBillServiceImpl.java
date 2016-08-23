@@ -9,7 +9,6 @@ import com.nhry.data.auth.domain.TSysUser;
 import com.nhry.data.basic.domain.TVipAcct;
 import com.nhry.data.bill.dao.CustomerBillMapper;
 import com.nhry.data.bill.domain.TMstRecvBill;
-import com.nhry.data.order.dao.TOrderDaliyPlanItemMapper;
 import com.nhry.data.order.dao.TPlanOrderItemMapper;
 import com.nhry.data.order.dao.TPreOrderMapper;
 import com.nhry.data.order.domain.TOrderDaliyPlanItem;
@@ -22,6 +21,8 @@ import com.nhry.service.bill.dao.CustomerBillService;
 import com.nhry.service.external.dao.EcService;
 import com.nhry.service.order.dao.OrderService;
 import com.nhry.service.order.dao.PromotionService;
+import com.nhry.service.pi.dao.PIVipInfoDataService;
+import com.nhry.service.pi.pojo.MemberActivities;
 import com.nhry.utils.PrimaryKeyUtils;
 import com.nhry.utils.YearLastMonthUtil;
 import org.apache.commons.lang3.StringUtils;
@@ -43,11 +44,15 @@ public class CustomerBillServiceImpl implements CustomerBillService {
     private PromotionService promotionService;
     private TVipCustInfoService tVipCustInfoService;
     private TSysUserRoleMapper urMapper;
-    private TOrderDaliyPlanItemMapper tOrderDaliyPlanItemMapper;
  	 private TaskExecutor taskExecutor;
  	 private EcService messLogService;
- 	 
- 	public void setMessLogService(EcService messLogService)
+    private PIVipInfoDataService piVipInfoDataService;
+
+    public void setPiVipInfoDataService(PIVipInfoDataService piVipInfoDataService) {
+        this.piVipInfoDataService = piVipInfoDataService;
+    }
+
+    public void setMessLogService(EcService messLogService)
  	{
  		this.messLogService = messLogService;
  	}
@@ -141,7 +146,6 @@ public class CustomerBillServiceImpl implements CustomerBillService {
                 customerBill.setStatus("20");
                 updateBill =  customerBillMapper.updateCustomerBillrPayment(customerBill);
 
-
                 //更新订单状态为已收款
                 updateOrderStatus = tPreOrderMapper.updateOrderPayMentStatus(orderNo);
                 //预付款的,更新订单行起始日期
@@ -157,11 +161,44 @@ public class CustomerBillServiceImpl implements CustomerBillService {
                	 promotionService.createDaliyPlanByPromotion(omodel.getOrder(),omodel.getEntries(),list);
                 }
 
-              /*
-                BigDecimal factAmt = tPreOrderMapper.calculateOrderFactoryAmt(orderNo);
-                int  updateFactAmt = tPreOrderMapper.updateOrderFacAmt(factAmt  == null ? new BigDecimal(0) : factAmt,orderNo);
-               */
-                
+                //会员积分
+
+                taskExecutor.execute(new Thread(){
+                    @Override
+                    public void run() {
+                        super.run();
+                        this.setName("updateVip");
+                           Map<String,String> planOrderMap = new HashMap<String,String>();
+                            planOrderMap.put("salesOrg",user.getSalesOrg());
+                            planOrderMap.put("orderNo",orderNo);
+                            List<MemberActivities> items;
+                            if("20".equals(order.getPaymentmethod())){
+                                items   = tPlanOrderItemMapper.selectBeforePayActivitiesByOrderNo(planOrderMap);
+                            }else{
+                                items  = tPlanOrderItemMapper.selectAfterPayActivitiesByOrderNo(planOrderMap);
+                            }
+                            if(items.size()>0){
+                                BigDecimal totalprice = new BigDecimal(0);
+                                for (MemberActivities item : items){
+                                        item.setProcess("X");
+                                        Calendar calendar = new GregorianCalendar();
+                                        calendar.setTime(date);
+                                        Date firstDay = calendar.getTime();
+                                        item.setActivitydate(firstDay);
+                                        piVipInfoDataService.createMemberActivities(item);
+
+                                }
+                            }
+
+                    }
+                });
+
+                if("10".equals(order.getPaymentmethod())){
+                    BigDecimal factAmt = tPreOrderMapper.calculateOrderFactoryAmt(orderNo);
+                    int  updateFactAmt = tPreOrderMapper.updateOrderFacAmt(factAmt  == null ? new BigDecimal(0) : factAmt,orderNo);
+                }
+
+
                //发送EC,更新订单状态
        			TPreOrder sendOrder = new TPreOrder();
        			sendOrder.setOrderNo(order.getOrderNo());
@@ -173,12 +210,12 @@ public class CustomerBillServiceImpl implements CustomerBillService {
        					super.run();
        					this.setName("updateOrderStatus");
        					messLogService.sendOrderStatus(sendOrder);
-       					
+
        					if("20".equals(order.getPaymentmethod()) && !"20".equals(order.getMilkboxStat())){
        						sendOrder.setPreorderStat("200");
        						messLogService.sendOrderStatus(sendOrder);
        					}
-       					
+
        				}
        			 });
                 
@@ -275,12 +312,13 @@ public class CustomerBillServiceImpl implements CustomerBillService {
     }
 
     @Override
-    public int custBatchCollect(CustBatchBillQueryModel model) {
+    public BigDecimal custBatchCollect(CustBatchBillQueryModel model) {
         TSysUser user = userSessionService.getCurrentUser();
         model.setSalesOrg(user.getSalesOrg());
         model.setBranchNo(user.getBranchNo());
         model.setDealerNo(user.getDealerId());
         List<TPreOrder> orderList = tPreOrderMapper.searchCustomerOrderByEmpNo(model);
+        BigDecimal totalPayment = new BigDecimal(0);
         if(orderList !=null && orderList.size()>0){
             for(TPreOrder order : orderList){
                 //判断该订单 对应的收款单是否创建 如果没有先创建
@@ -291,10 +329,11 @@ public class CustomerBillServiceImpl implements CustomerBillService {
                 cmodel.setOrderNo(bill.getOrderNo());
                 cmodel.setPaymentType("10");
                 this.customerPayment(cmodel);
+                totalPayment =  totalPayment.add(order.getInitAmt());
             }
         }
 
-        return 1;
+        return totalPayment;
     }
 
     @Override

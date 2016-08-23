@@ -44,6 +44,7 @@ import org.apache.log4j.Logger;
 import org.springframework.core.task.TaskExecutor;
 
 import java.math.BigDecimal;
+import java.text.SimpleDateFormat;
 import java.util.*;
 
 /**
@@ -51,6 +52,7 @@ import java.util.*;
  */
 public class PIVipInfoDataServiceImpl implements PIVipInfoDataService {
     private static Logger logger = Logger.getLogger(PIVipInfoDataServiceImpl.class);
+    private static final SimpleDateFormat formatter = new SimpleDateFormat("yyyyMMddhhmmss");
     private TVipCrmInfoService vipCrmInfoService;
     private DictionaryService dictionaryService;
     private ResidentialAreaService residentialAreaService;
@@ -93,15 +95,15 @@ public class PIVipInfoDataServiceImpl implements PIVipInfoDataService {
     private static final String MESSAGE_FLAG = PIPropertitesUtil.getValue("PI.MESSAGE.FLAG.OK");
 
     @Override
-    public PISuccessTMessage generateVipInfoData(String custId, String vipTel) {
+    public PISuccessTMessage generateVipInfoData(TVipCustInfo vipCustInfo, String vipTel) {
         PISuccessTMessage<EvMemb> result = new PISuccessTMessage<EvMemb>();
-        if (StringUtils.isNotEmpty(custId)) {
-            TVipCustInfo vipCustInfo = vipCustInfoService.findVipCustByNoForUpt(custId);
+        if (vipCustInfo != null) {
+//            TVipCustInfo vipCustInfo = vipCustInfoService.findVipCustByNoForUpt(vipCustInfo);
             Map<String, String> attrs = new HashMap<String, String>();
-            if(StringUtils.isEmpty(vipTel)){
-                attrs.put("phone",vipCustInfo.getMp());
+            if (StringUtils.isEmpty(vipTel)) {
+                attrs.put("phone", vipCustInfo.getMp());
                 vipTel = vipCustInfo.getMp();
-            }else {
+            } else {
                 attrs.put("phone", vipTel);
             }
             String vipno = vipCrmInfoService.getCrmNoByPhone(attrs);
@@ -113,10 +115,8 @@ public class PIVipInfoDataServiceImpl implements PIVipInfoDataService {
                 vipCustInfo.setVipMp(vipTel);
                 vipCustInfoService.updateSapNo(vipCustInfo);
                 sendSubscriber(vipCustInfo);
-                java.util.List<TMdAddress> addresses =vipCustInfoService.findCnAddressByCustNo(vipCustInfo.getVipCustNo());
-                for(TMdAddress address1 : addresses){
-                    sendAddress(address1,vipno);
-                }
+                java.util.List<TMdAddress> addresses = vipCustInfoService.findCnAddressByCustNo(vipCustInfo.getVipCustNo());
+                sendAddress(addresses, vipno);
                 return result;
             }
             try {
@@ -124,13 +124,13 @@ public class PIVipInfoDataServiceImpl implements PIVipInfoDataService {
                 TVipCrmInfo vipCrmInfo = new TVipCrmInfo();
                 BeanUtils.copyProperties(vipCrmInfo, vipCustInfo);
                 vipCrmInfo.setMp(vipTel);
-                TVipCrmAddress vipCrmAddress = new TVipCrmAddress();
                 java.util.List<TMdAddress> addresses = vipCustInfoService.findCnAddressByCustNo(vipCustInfo.getVipCustNo());
                 for (TMdAddress address1 : addresses) {
                     if ("Y".equals(address1.getIsDafault())) {
                         address = address1;
                     }
                 }
+                TVipCrmAddress vipCrmAddress = new TVipCrmAddress();
                 if (address != null) {
                     BeanUtils.copyProperties(vipCrmAddress, address);
                     vipCrmInfo.setAddressId(address.getAddressId());
@@ -312,23 +312,24 @@ public class PIVipInfoDataServiceImpl implements PIVipInfoDataService {
                     result.setSuccess(false);
                 }
                 logger.info(msg);
-        }catch(Exception e){
-            result.setSuccess(false);
-            logger.error(e.getMessage());
-            result.setMessage("会员账号创建失败！");
-        }
+            } catch (Exception e) {
+                result.setSuccess(false);
+                logger.error("会员账号创建失败！" + e.getMessage());
+                result.setMessage("会员账号创建失败！");
+            }
         }
         return result;
     }
 
     @Override
-    public void executeVipInfoData(String custId, String vipTel) {
+    public void executeVipInfoData(TVipCustInfo vipCustInfo, String vipTel) {
         taskExecutor.execute(new Thread() {
             public void run() {
                 try {
-                    this.setName(custId);
-                    generateVipInfoData(custId,vipTel);
-                } catch (ServiceException e) {
+                    Thread.sleep(8000);
+                    this.setName(vipCustInfo.getVipCustNo());
+                    generateVipInfoData(vipCustInfo, vipTel);
+                } catch (Exception e) {
                     e.printStackTrace();
                 }
             }
@@ -336,16 +337,28 @@ public class PIVipInfoDataServiceImpl implements PIVipInfoDataService {
     }
 
     private void iniVipCustInfo(TVipCustInfo vipCustInfo) {
-        TMdResidentialArea area = residentialAreaService.selectById(vipCustInfo.getSubdist());
-        vipCustInfo.setSubdist(area.getResidentialAreaTxt());
+        if (StringUtils.isNotEmpty(vipCustInfo.getSubdist())) {
+            TMdResidentialArea area = residentialAreaService.selectById(vipCustInfo.getSubdist());
+            if (area != null) {
+                vipCustInfo.setSubdist(area.getResidentialAreaTxt());
+            }
+        }
         NHSysCodeItem codeItem = new NHSysCodeItem();
         codeItem.setTypeCode("1001");
         codeItem.setItemCode(vipCustInfo.getCity());
-        vipCustInfo.setCity(dictionaryService.findCodeItenByCode(codeItem).getItemName());
+        NHSysCodeItem city = dictionaryService.findCodeItenByCode(codeItem);
+        if (city != null) {
+            vipCustInfo.setCity(city.getItemName());
+        }
         TMdBranch branch = branchService.selectBranchByNo(vipCustInfo.getBranchNo());
-        vipCustInfo.setBranchName(branch.getBranchName());
+        if (branch != null) {
+            vipCustInfo.setBranchName(branch.getBranchName());
+        }
         codeItem.setItemCode(vipCustInfo.getCounty());
-        vipCustInfo.setCounty(dictionaryService.findCodeItenByCode(codeItem).getItemName());
+        NHSysCodeItem county = dictionaryService.findCodeItenByCode(codeItem);
+        if (county != null) {
+            vipCustInfo.setCounty(county.getItemName());
+        }
     }
 
 
@@ -364,16 +377,18 @@ public class PIVipInfoDataServiceImpl implements PIVipInfoDataService {
             ZSCRM_MEMB_ACTIVITIES zscrm_memb_activities = new ZSCRM_MEMB_ACTIVITIES();
 
             ACTIVITY_DATE_type1 activity_date_type1 = new ACTIVITY_DATE_type1();
-            activity_date_type1.setACTIVITY_DATE_type0(new BigDecimal(memberActivities.getActivitydate().getTime()));
+            activity_date_type1.setACTIVITY_DATE_type0(new BigDecimal(formatter.format(memberActivities.getActivitydate())));
             zscrm_memb_activities.setACTIVITY_DATE(activity_date_type1);
 
-            AMOUNT_type1 amount_type1 = new AMOUNT_type1();
-            amount_type1.setAMOUNT_type0(memberActivities.getAmount());
-            zscrm_memb_activities.setAMOUNT(amount_type1);
+            if(memberActivities.getAmount()!=null) {
+                AMOUNT_type1 amount_type1 = new AMOUNT_type1();
+                amount_type1.setAMOUNT_type0(memberActivities.getAmount());
+                zscrm_memb_activities.setAMOUNT(amount_type1);
+            }
 
-            CARD_ID_type1 card_id_type1 = new CARD_ID_type1();
-            card_id_type1.setCARD_ID_type0(memberActivities.getCardid());
-            zscrm_memb_activities.setCARD_ID(card_id_type1);
+//            CARD_ID_type1 card_id_type1 = new CARD_ID_type1();
+//            card_id_type1.setCARD_ID_type0(memberActivities.getCardid());
+//            zscrm_memb_activities.setCARD_ID(card_id_type1);
 
             CATEGORY_type1 category_type1 = new CATEGORY_type1();
             category_type1.setCATEGORY_type0(memberActivities.getCategory());
@@ -554,97 +569,102 @@ public class PIVipInfoDataServiceImpl implements PIVipInfoDataService {
     }
 
     @Override
-    public PISuccessTMessage sendAddress(TMdAddress address, String sapGuid) {
+    public PISuccessTMessage sendAddress(List<TMdAddress> addresss, String sapGuid) {
         PISuccessTMessage result = new PISuccessTMessage();
         try {
-            if(StringUtils.isEmpty(sapGuid)){
-                TVipCustInfo custInfo = vipCustInfoService.findVipCustByNoForUpt(address.getVipCustNo());
-                sapGuid = custInfo.getVipCustNoSap();
-            }
-            NHSysCodeItem codeItem = new NHSysCodeItem();
-            codeItem.setTypeCode("1001");
-            if(StringUtils.isEmpty(address.getCityName())) {
-                codeItem.setItemCode(address.getCity());
-                NHSysCodeItem item = dictionaryService.findCodeItenByCode(codeItem);
-                if (item !=null) {
-                    address.setCity(item.getItemName());
-                }
-            }
-            if(StringUtils.isEmpty(address.getCountyName())) {
-                codeItem.setItemCode(address.getCounty());
-                NHSysCodeItem item = dictionaryService.findCodeItenByCode(codeItem);
-                if(item != null) {
-                    address.setCounty(item.getItemName());
-                }
-            }
             MemberAddrUpdateServiceStub stub = connMemberAddrService();
             Z_CRM_ADDR_UPDATE z_crm_addr_update = new Z_CRM_ADDR_UPDATE();
+            for(TMdAddress address : addresss) {
+                address = vipCustInfoService.findAddressById(address.getAddressId());
+                if (StringUtils.isEmpty(sapGuid)) {
+                    TVipCustInfo custInfo = vipCustInfoService.findVipCustByNoForUpt(address.getVipCustNo());
+                    sapGuid = custInfo.getVipCustNoSap();
+                }
+                NHSysCodeItem codeItem = new NHSysCodeItem();
+                codeItem.setTypeCode("1001");
+                if (StringUtils.isEmpty(address.getCityName())) {
+                    codeItem.setItemCode(address.getCity());
+                    NHSysCodeItem item = dictionaryService.findCodeItenByCode(codeItem);
+                    if (item != null) {
+                        address.setCity(item.getItemName());
+                    }
+                }
+                if (StringUtils.isEmpty(address.getCountyName())) {
+                    codeItem.setItemCode(address.getCounty());
+                    NHSysCodeItem item = dictionaryService.findCodeItenByCode(codeItem);
+                    if (item != null) {
+                        address.setCounty(item.getItemName());
+                    }
+                }
 
-            com.nhry.webService.client.Address.functions.IV_MEMB_GUID_type1 iv_memb_guid_type1 = new com.nhry.webService.client.Address.functions.IV_MEMB_GUID_type1();
-            iv_memb_guid_type1.setIV_MEMB_GUID_type0(sapGuid);
-            z_crm_addr_update.setIV_MEMB_GUID(iv_memb_guid_type1);
-            T_ADDR_type1 t_addr_type1 = new T_ADDR_type1();
-            ZSCRM_ADDR_SHIP_TO zscrm_addr_ship_to = new ZSCRM_ADDR_SHIP_TO();
+                if (StringUtils.isNotEmpty(sapGuid)) {
+                    com.nhry.webService.client.Address.functions.IV_MEMB_GUID_type1 iv_memb_guid_type1 = new com.nhry.webService.client.Address.functions.IV_MEMB_GUID_type1();
+                    iv_memb_guid_type1.setIV_MEMB_GUID_type0(sapGuid);
+                    z_crm_addr_update.setIV_MEMB_GUID(iv_memb_guid_type1);
+                }
+                T_ADDR_type1 t_addr_type1 = new T_ADDR_type1();
+                ZSCRM_ADDR_SHIP_TO zscrm_addr_ship_to = new ZSCRM_ADDR_SHIP_TO();
 
-            ADDRESS_GUID_type3 address_guid_type3 = new ADDRESS_GUID_type3();
-            address_guid_type3.setADDRESS_GUID_type2(address.getAddressId());
-            zscrm_addr_ship_to.setADDRESS_GUID(address_guid_type3);
+                ADDRESS_GUID_type3 address_guid_type3 = new ADDRESS_GUID_type3();
+                address_guid_type3.setADDRESS_GUID_type2(address.getAddressId());
+                zscrm_addr_ship_to.setADDRESS_GUID(address_guid_type3);
 
-            com.nhry.webService.client.Address.functions.CITY1_type1 city1_type1 = new com.nhry.webService.client.Address.functions.CITY1_type1();
-            city1_type1.setCITY1_type0(address.getCityName() == null ? "" : address.getCityName());
-            zscrm_addr_ship_to.setCITY1(city1_type1);
+                com.nhry.webService.client.Address.functions.CITY1_type1 city1_type1 = new com.nhry.webService.client.Address.functions.CITY1_type1();
+                city1_type1.setCITY1_type0(address.getCityName() == null ? "" : address.getCityName());
+                zscrm_addr_ship_to.setCITY1(city1_type1);
 
-            com.nhry.webService.client.Address.functions.CITY2_type1 city2_type1 = new com.nhry.webService.client.Address.functions.CITY2_type1();
-            city2_type1.setCITY2_type0(address.getCountyName() == null ? "" : address.getCountyName());
-            zscrm_addr_ship_to.setCITY2(city2_type1);
+                com.nhry.webService.client.Address.functions.CITY2_type1 city2_type1 = new com.nhry.webService.client.Address.functions.CITY2_type1();
+                city2_type1.setCITY2_type0(address.getCountyName() == null ? "" : address.getCountyName());
+                zscrm_addr_ship_to.setCITY2(city2_type1);
 
-            com.nhry.webService.client.Address.functions.COUNTRY_type1 country_type1 = new com.nhry.webService.client.Address.functions.COUNTRY_type1();
-            country_type1.setCOUNTRY_type0("CN");
-            zscrm_addr_ship_to.setCOUNTRY(country_type1);
+                com.nhry.webService.client.Address.functions.COUNTRY_type1 country_type1 = new com.nhry.webService.client.Address.functions.COUNTRY_type1();
+                country_type1.setCOUNTRY_type0("CN");
+                zscrm_addr_ship_to.setCOUNTRY(country_type1);
 
-            com.nhry.webService.client.Address.functions.TEL_NUMBER_type1 tel_number_type1 = new com.nhry.webService.client.Address.functions.TEL_NUMBER_type1();
-            tel_number_type1.setTEL_NUMBER_type0(address.getTel() == null ? "" : address.getTel());
-            zscrm_addr_ship_to.setTEL_NUMBER(tel_number_type1);
+                com.nhry.webService.client.Address.functions.TEL_NUMBER_type1 tel_number_type1 = new com.nhry.webService.client.Address.functions.TEL_NUMBER_type1();
+                tel_number_type1.setTEL_NUMBER_type0(address.getTel() == null ? "" : address.getTel());
+                zscrm_addr_ship_to.setTEL_NUMBER(tel_number_type1);
 
-            com.nhry.webService.client.Address.functions.TEL_MOBILE_type1 tel_mobile_type1 = new com.nhry.webService.client.Address.functions.TEL_MOBILE_type1();
-            tel_mobile_type1.setTEL_MOBILE_type0(address.getMp() == null ? "" : address.getMp());
-            zscrm_addr_ship_to.setTEL_MOBILE(tel_mobile_type1);
+                com.nhry.webService.client.Address.functions.TEL_MOBILE_type1 tel_mobile_type1 = new com.nhry.webService.client.Address.functions.TEL_MOBILE_type1();
+                tel_mobile_type1.setTEL_MOBILE_type0(address.getMp() == null ? "" : address.getMp());
+                zscrm_addr_ship_to.setTEL_MOBILE(tel_mobile_type1);
 
-            com.nhry.webService.client.Address.functions.STREET_type1 street_type1 = new com.nhry.webService.client.Address.functions.STREET_type1();
-            street_type1.setSTREET_type0(address.getStreet() == null ? "" : address.getStreet());
-            zscrm_addr_ship_to.setSTREET(street_type1);
+                com.nhry.webService.client.Address.functions.STREET_type1 street_type1 = new com.nhry.webService.client.Address.functions.STREET_type1();
+                street_type1.setSTREET_type0(address.getStreet() == null ? "" : address.getStreet());
+                zscrm_addr_ship_to.setSTREET(street_type1);
 
-            com.nhry.webService.client.Address.functions.STR_SUPPL2_type1 str_suppl2_type1 = new com.nhry.webService.client.Address.functions.STR_SUPPL2_type1();
-            str_suppl2_type1.setSTR_SUPPL2_type0(address.getResidentialArea() == null ? "" : address.getResidentialArea());
-            zscrm_addr_ship_to.setSTR_SUPPL2(str_suppl2_type1);
+                com.nhry.webService.client.Address.functions.STR_SUPPL2_type1 str_suppl2_type1 = new com.nhry.webService.client.Address.functions.STR_SUPPL2_type1();
+                str_suppl2_type1.setSTR_SUPPL2_type0(address.getResidentialAreaName() == null ? "" : address.getResidentialAreaName());
+                zscrm_addr_ship_to.setSTR_SUPPL2(str_suppl2_type1);
 
-            com.nhry.webService.client.Address.functions.STR_SUPPL1_type1 str_suppl1_type1 = new com.nhry.webService.client.Address.functions.STR_SUPPL1_type1();
-            str_suppl1_type1.setSTR_SUPPL1_type0(address.getAddressTxt() == null ? "" : address.getAddressTxt());
-            zscrm_addr_ship_to.setSTR_SUPPL1(str_suppl1_type1);
+                com.nhry.webService.client.Address.functions.STR_SUPPL1_type1 str_suppl1_type1 = new com.nhry.webService.client.Address.functions.STR_SUPPL1_type1();
+                str_suppl1_type1.setSTR_SUPPL1_type0(address.getAddressTxt() == null ? "" : address.getAddressTxt());
+                zscrm_addr_ship_to.setSTR_SUPPL1(str_suppl1_type1);
 
-            com.nhry.webService.client.Address.functions.REGION_type1 region_type1 = new com.nhry.webService.client.Address.functions.REGION_type1();
-            region_type1.setREGION_type0(address.getProvince() == null ? "" : address.getProvince());
-            zscrm_addr_ship_to.setREGION(region_type1);
+                com.nhry.webService.client.Address.functions.REGION_type1 region_type1 = new com.nhry.webService.client.Address.functions.REGION_type1();
+                region_type1.setREGION_type0(address.getProvince() == null ? "" : address.getProvince());
+                zscrm_addr_ship_to.setREGION(region_type1);
 
-            com.nhry.webService.client.Address.functions.NAME_CO_type1 name_co_type1 = new com.nhry.webService.client.Address.functions.NAME_CO_type1();
-            name_co_type1.setNAME_CO_type0(address.getRecvName()==null?"":address.getRecvName());
-            zscrm_addr_ship_to.setNAME_CO(name_co_type1);
+                com.nhry.webService.client.Address.functions.NAME_CO_type1 name_co_type1 = new com.nhry.webService.client.Address.functions.NAME_CO_type1();
+                name_co_type1.setNAME_CO_type0(address.getRecvName() == null ? "" : address.getRecvName());
+                zscrm_addr_ship_to.setNAME_CO(name_co_type1);
 
-            com.nhry.webService.client.Address.functions.POST_CODE1_type1 post_code1_type1 = new com.nhry.webService.client.Address.functions.POST_CODE1_type1();
-            post_code1_type1.setPOST_CODE1_type0(address.getZip() == null ? "" : address.getZip());
-            zscrm_addr_ship_to.setPOST_CODE1(post_code1_type1);
+                com.nhry.webService.client.Address.functions.POST_CODE1_type1 post_code1_type1 = new com.nhry.webService.client.Address.functions.POST_CODE1_type1();
+                post_code1_type1.setPOST_CODE1_type0(address.getZip() == null ? "" : address.getZip());
+                zscrm_addr_ship_to.setPOST_CODE1(post_code1_type1);
 
-            MODE_type1 mode_type1 = new MODE_type1();
-            String isdelete = address.getIsDelete();
-            if(StringUtils.isNotEmpty(isdelete) && !"Y".equals(isdelete)){
-                mode_type1.setMODE_type0("D");
-            }else{
-                mode_type1.setMODE_type0("");
+                MODE_type1 mode_type1 = new MODE_type1();
+                String isdelete = address.getIsDelete();
+                if (StringUtils.isNotEmpty(isdelete) && !"Y".equals(isdelete)) {
+                    mode_type1.setMODE_type0("D");
+                } else {
+                    mode_type1.setMODE_type0("");
+                }
+                zscrm_addr_ship_to.setMODE(mode_type1);
+
+                t_addr_type1.addItem(zscrm_addr_ship_to);
+                z_crm_addr_update.setT_ADDR(t_addr_type1);
             }
-            zscrm_addr_ship_to.setMODE(mode_type1);
-
-            t_addr_type1.addItem(zscrm_addr_ship_to);
-            z_crm_addr_update.setT_ADDR(t_addr_type1);
 
             Z_CRM_ADDR_UPDATEResponse response = stub.memberAddrUpdate(z_crm_addr_update);
             ZSCRM_ADDR_UPDATE_RETURN message = response.getES_RETURN();
@@ -671,9 +691,12 @@ public class PIVipInfoDataServiceImpl implements PIVipInfoDataService {
         taskExecutor.execute(new Thread() {
             public void run() {
                 try {
+                    Thread.sleep(8000);
                     this.setName(address.getAddressId());
-                    sendAddress(address,sapGuid);
-                } catch (ServiceException e) {
+                    List<TMdAddress> addresses = new ArrayList<TMdAddress>();
+                    addresses.add(address);
+                    sendAddress(addresses, sapGuid);
+                } catch (Exception e) {
                     e.printStackTrace();
                 }
             }

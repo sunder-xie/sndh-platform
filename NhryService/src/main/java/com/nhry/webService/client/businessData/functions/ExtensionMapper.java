@@ -188,6 +188,11 @@ public class ExtensionMapper {
         }
 
         if ("urn:sap-com:document:sap:rfc:functions".equals(namespaceURI) &&
+                "WBSTK_type1".equals(typeName)) {
+            return WBSTK_type1.Factory.parse(reader);
+        }
+
+        if ("urn:sap-com:document:sap:rfc:functions".equals(namespaceURI) &&
                 "OPTION_type7".equals(typeName)) {
             return OPTION_type7.Factory.parse(reader);
         }
@@ -410,6 +415,11 @@ public class ExtensionMapper {
         if ("urn:sap-com:document:sap:rfc:functions".equals(namespaceURI) &&
                 "RESLO_type1".equals(typeName)) {
             return RESLO_type1.Factory.parse(reader);
+        }
+
+        if ("urn:sap-com:document:sap:rfc:functions".equals(namespaceURI) &&
+                "ORMNG_type1".equals(typeName)) {
+            return ORMNG_type1.Factory.parse(reader);
         }
 
         if ("urn:sap-com:document:sap:rfc:functions".equals(namespaceURI) &&

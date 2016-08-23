@@ -24,6 +24,7 @@ import com.nhry.model.milktrans.RequireOrderSearch;
 import com.nhry.model.milktrans.SalOrderModel;
 import com.nhry.service.pi.dao.PIRequireOrderService;
 import com.nhry.service.pi.pojo.SalesOrderHeader;
+import com.nhry.utils.DateUtil;
 import com.nhry.utils.PIPropertitesUtil;
 import com.nhry.webService.client.PISuccessMessage;
 import com.nhry.webService.client.businessData.model.Delivery;
@@ -168,6 +169,7 @@ public class PIRequireOrderServiceImpl implements PIRequireOrderService {
 
     @Override
     public String generateDelivery(String orderNo,String branchNo,boolean isDeli){
+        String message = "";
         if(StringUtils.isEmpty(orderNo)){
             throw new ServiceException(MessageCode.SERVER_ERROR,"调拨单或销售订单凭证没有生成！");
         }
@@ -206,14 +208,15 @@ public class PIRequireOrderServiceImpl implements PIRequireOrderService {
                         ssmGiOrder.setOrderDate(d.getLFDAT());
                         ssmGiOrder.setMemoTxt(d.getBSTKD());
                         ssmGiOrderMapper.insertGiOrder(ssmGiOrder);
-                    } else {
-                        ssmGiOrder.setBranchNo(branchNo);
-                        ssmGiOrder.setOrderNo(d.getVBELN());
-                        ssmGiOrder.setMemoTxt(d.getBSTKD());
-                        ssmGiOrder.setSyncAt(new Date());
-                        ssmGiOrder.setOrderDate(d.getLFDAT());
-                        ssmGiOrderMapper.updateGiOrder(ssmGiOrder);
                     }
+//                    else {
+//                        ssmGiOrder.setBranchNo(branchNo);
+//                        ssmGiOrder.setOrderNo(d.getVBELN());
+//                        ssmGiOrder.setMemoTxt(d.getBSTKD());
+//                        ssmGiOrder.setSyncAt(new Date());
+//                        ssmGiOrder.setOrderDate(d.getLFDAT());
+//                        ssmGiOrderMapper.updateGiOrder(ssmGiOrder);
+//                    }
                     TSsmGiOrderItemKey key = new TSsmGiOrderItemKey();
                     key.setOrderDate(d.getLFDAT());
                     key.setItemNo(d.getPOSNR());
@@ -243,14 +246,14 @@ public class PIRequireOrderServiceImpl implements PIRequireOrderService {
                     }
                 }
             }else {
-                throw new ServiceException(MessageCode.SERVER_ERROR, "要货单"+orderNo+"在ECC中没有得到交换单！");
+                message = "要货单"+orderNo+"单据在ERP中未过账！";
             }
         }catch (Exception e){
             e.printStackTrace();
             logger.error("要货单"+orderNo +"获取交货单异常！原因："+ e.getMessage());
-            throw new ServiceException(MessageCode.SERVER_ERROR, "获取交货单异常,请联系管理员!");
+            throw new ServiceException(MessageCode.SERVER_ERROR, "要货单"+orderNo +"获取交货单异常！原因："+ e.getMessage());
         }
-        return "1";
+        return message;
     }
 
     @Override
@@ -265,31 +268,40 @@ public class PIRequireOrderServiceImpl implements PIRequireOrderService {
     }
 
     public String execDelivery(String branchNo){
+        String message = "";
         TMdBranch branch = branchMapper.getBranchByNo(branchNo);
+        Date curDate = null;
+        String salesOrg = branch.getSalesOrg();
+        //如果是华西或者天音 则requiredDate日期为今天  否则requiredDate为明天
+        if("4181".equals(salesOrg) || "4390".equals(salesOrg)){
+            curDate = new Date();
+        }else{
+            curDate = DateUtil.getTomorrow(new Date());
+        }
         if("01".equals(branch.getBranchGroup())){
             RequireOrderSearch search = new RequireOrderSearch();
-            search.setOrderDate(new Date());
+            search.setOrderDate(curDate);
             search.setBranchNo(branchNo);
             TSsmReqGoodsOrder order = tSsmReqGoodsOrderMapper.searchRequireOrder(search);
             if(order == null){
                 throw new ServiceException(MessageCode.SERVER_ERROR,"要货单没有生成！");
             }else {
-                generateDelivery(order.getVoucherNo(), branchNo, true);
+                message = generateDelivery(order.getVoucherNo(), branchNo, true);
             }
         }else{
             SalOrderModel model = new SalOrderModel();
             model.setBranchNo(branchNo);
-            model.setOrderDate(new Date());
+            model.setOrderDate(curDate);
             List<TSsmSalOrder> orders = ssmSalOrderMapper.selectSalOrderByDateAndNo(model);
             if(orders != null){
                 for(TSsmSalOrder order : orders){
-                    generateDelivery(order.getVoucherNo(), branchNo, false);
+                  message =  generateDelivery(order.getVoucherNo(), branchNo, false);
                 }
             }else{
                 throw new ServiceException(MessageCode.SERVER_ERROR,"销售订单没有生成！");
             }
         }
-        return "1";
+        return message;
     }
 
 

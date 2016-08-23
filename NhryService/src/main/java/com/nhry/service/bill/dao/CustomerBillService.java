@@ -4,6 +4,7 @@ import com.github.pagehelper.PageInfo;
 import com.nhry.data.bill.domain.TMstRecvBill;
 import com.nhry.model.bill.*;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 /**
@@ -22,7 +23,7 @@ public interface CustomerBillService {
 
    List<String> searchCustomerOrderForExp(CustBillQueryModel cModel);
 
-   int custBatchCollect(CustBatchBillQueryModel cModel);
+   BigDecimal custBatchCollect(CustBatchBillQueryModel cModel);
 
    CollectOrderBillModel queryCollectByOrderNo(String orderCode);
 }

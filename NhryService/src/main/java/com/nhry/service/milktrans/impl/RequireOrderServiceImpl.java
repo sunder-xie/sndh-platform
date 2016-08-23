@@ -174,6 +174,9 @@ public class RequireOrderServiceImpl implements RequireOrderService {
             orderModel.setBranchNo(order.getBranchNo());
             orderModel.setOrderNo(order.getOrderNo());
             orderModel.setOrderDate(order.getOrderDate());
+            if(StringUtils.isNotBlank(order.getVoucherNo())){
+                orderModel.setVoucherNo(order.getVoucherNo());
+            }
             List<TSsmReqGoodsOrderItem> items = this.tSsmReqGoodsOrderItemMapper.getReqGoodsItemsByOrderNo(order.getOrderNo());
             List<OrderRequireItem> entries = new ArrayList<OrderRequireItem>();
             for(TSsmReqGoodsOrderItem item :items){
@@ -299,7 +302,8 @@ public class RequireOrderServiceImpl implements RequireOrderService {
     }
 
     @Override
-    public int sendRequireOrderToERP() {
+    public String sendRequireOrderToERP() {
+        String result = "";
         Date today = new Date();
         TSysUser user = userSessionService.getCurrentUser();
         String salesOrg =user.getSalesOrg();
@@ -324,10 +328,12 @@ public class RequireOrderServiceImpl implements RequireOrderService {
                 PISuccessMessage message =  piRequireOrderService.generateRequireOrder(order);
                 order.setVoucherNo(message.getData());
                 if(message.isSuccess()){
+
                     if(!uptRequireOrderAndDayOrderStatus(order,user)){
                         errorMessage ="修改要货计划或日订单状态失败" ;
                         throw  new ServiceException(MessageCode.LOGIC_ERROR,errorMessage);
                     }
+                    result = message.getData();
                 }else{
                     throw  new ServiceException(MessageCode.LOGIC_ERROR,"自营奶站发送要货计划失败，请重新发送");
                 }
@@ -376,7 +382,7 @@ public class RequireOrderServiceImpl implements RequireOrderService {
                 throw  new ServiceException(MessageCode.REQUEST_NOT_FOUND,message.getMessage());
             }*/
         }
-        return 0;
+        return result;
     }
 
     /**
@@ -799,7 +805,6 @@ public class RequireOrderServiceImpl implements RequireOrderService {
             salOrderItems.setPromNo(item.getPlanItemNo());
         }
         if("dealer".equals(type)){
-            //salOrderItems.setRefMatnr(item.getMatnr());
             salOrderItems.setMatnr(item.getMatnr());
             salOrderItems.setType("10");
         }else{

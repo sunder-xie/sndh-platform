@@ -15,4 +15,5 @@ public interface TMstInsideSalOrderMapper {
    PageInfo getAuthAllInsideSalOrder(InSideSalOrderSearchModel sModel);
 
 
+   int deleteInSalOrderByDispOrderNo(String insOrderNo);
 }
