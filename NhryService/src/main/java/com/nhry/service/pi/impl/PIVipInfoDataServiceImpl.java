@@ -44,6 +44,7 @@ import org.apache.log4j.Logger;
 import org.springframework.core.task.TaskExecutor;
 
 import java.math.BigDecimal;
+import java.text.SimpleDateFormat;
 import java.util.*;
 
 /**
@@ -51,6 +52,7 @@ import java.util.*;
  */
 public class PIVipInfoDataServiceImpl implements PIVipInfoDataService {
     private static Logger logger = Logger.getLogger(PIVipInfoDataServiceImpl.class);
+    private static final SimpleDateFormat formatter = new SimpleDateFormat("yyyyMMddhhmmss");
     private TVipCrmInfoService vipCrmInfoService;
     private DictionaryService dictionaryService;
     private ResidentialAreaService residentialAreaService;
@@ -375,16 +377,18 @@ public class PIVipInfoDataServiceImpl implements PIVipInfoDataService {
             ZSCRM_MEMB_ACTIVITIES zscrm_memb_activities = new ZSCRM_MEMB_ACTIVITIES();
 
             ACTIVITY_DATE_type1 activity_date_type1 = new ACTIVITY_DATE_type1();
-            activity_date_type1.setACTIVITY_DATE_type0(new BigDecimal(memberActivities.getActivitydate().getTime()));
+            activity_date_type1.setACTIVITY_DATE_type0(new BigDecimal(formatter.format(memberActivities.getActivitydate())));
             zscrm_memb_activities.setACTIVITY_DATE(activity_date_type1);
 
-            AMOUNT_type1 amount_type1 = new AMOUNT_type1();
-            amount_type1.setAMOUNT_type0(memberActivities.getAmount());
-            zscrm_memb_activities.setAMOUNT(amount_type1);
+            if(memberActivities.getAmount()!=null) {
+                AMOUNT_type1 amount_type1 = new AMOUNT_type1();
+                amount_type1.setAMOUNT_type0(memberActivities.getAmount());
+                zscrm_memb_activities.setAMOUNT(amount_type1);
+            }
 
-            CARD_ID_type1 card_id_type1 = new CARD_ID_type1();
-            card_id_type1.setCARD_ID_type0(memberActivities.getCardid());
-            zscrm_memb_activities.setCARD_ID(card_id_type1);
+//            CARD_ID_type1 card_id_type1 = new CARD_ID_type1();
+//            card_id_type1.setCARD_ID_type0(memberActivities.getCardid());
+//            zscrm_memb_activities.setCARD_ID(card_id_type1);
 
             CATEGORY_type1 category_type1 = new CATEGORY_type1();
             category_type1.setCATEGORY_type0(memberActivities.getCategory());
