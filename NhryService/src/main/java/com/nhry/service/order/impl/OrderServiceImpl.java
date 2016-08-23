@@ -959,15 +959,22 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 			BigDecimal orderAmt = new BigDecimal("0.00");//订单总价
 			for(TPlanOrderItem entry: entries){
 				entry.setOrderNo(order.getOrderNo());
+				
 				//设置配送开始时间
-				Date startDate = afterDate(sdate,entryDateMap.get(entry.getItemNo()));
-//				Date edate = afterDate(startDate,daysOfTwo(entry.getStartDispDate(),entry.getEndDispDate()));
-//				Date edate2 = afterDate(startDate,goDays);
-				if(edate.before(startDate)){
-					continue;//如果需要续订天数不足某一行，这行不需要续订
+				if(StringUtils.isBlank(record.getOrderDateStart())){
+					calculateEntryStartDate(entry);
+					if(edate.before(entry.getStartDispDate())){
+						continue;//如果需要续订天数不足某一行，这行不需要续订
+					}
+					entry.setEndDispDate(edate);
+				}else{
+					Date startDate = afterDate(sdate,entryDateMap.get(entry.getItemNo()));
+					if(edate.before(startDate)){
+						continue;//如果需要续订天数不足某一行，这行不需要续订
+					}
+					entry.setEndDispDate(edate);
+					entry.setStartDispDate(startDate);
 				}
-			   entry.setEndDispDate(edate);
-				entry.setStartDispDate(startDate);
 				
 				entry.setItemNo(order.getOrderNo() + String.valueOf(index));//行项目编号
 				entry.setRefItemNo(String.valueOf(index));//参考行项目编号
@@ -990,6 +997,9 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 
 				index++;
 			}
+			
+			if(entriesList.size()==0)throw new ServiceException(MessageCode.LOGIC_ERROR,"在日期内"+record.getOrderNo()+"无法续订，没有订单行项目!");
+			
 			//保存订单，订单行
 			order.setCurAmt(orderAmt);//订单价格
 			order.setInitAmt(orderAmt);
