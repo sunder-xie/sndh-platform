@@ -84,6 +84,7 @@
 		<property name="tDispOrderItemMapper" ref="tDispOrderItemMapper"></property>
 		<property name="messLogService" ref="messLogService"></property>
 		<property name="taskExecutor" ref="taskExecutor"></property>
+		<property name="piVipInfoDataService" ref="piVipInfoDataService"></property>
 	</bean>
 	<bean id="tPromotionMapper" class="com.nhry.data.order.impl.TPromotionMapperImpl">
 		<property name="sqlSessionTemplate" ref="dynamicSqlSessionTemplate"></property>

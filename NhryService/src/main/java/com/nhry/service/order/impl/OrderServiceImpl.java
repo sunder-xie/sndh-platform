@@ -30,6 +30,8 @@ import com.nhry.service.order.dao.MilkBoxService;
 import com.nhry.service.order.dao.OrderService;
 import com.nhry.service.order.dao.PromotionService;
 import com.nhry.service.order.pojo.OrderRemainData;
+import com.nhry.service.pi.dao.PIVipInfoDataService;
+import com.nhry.service.pi.pojo.MemberActivities;
 import com.nhry.utils.CodeGeneratorUtil;
 
 import org.apache.commons.lang3.StringUtils;
@@ -54,6 +56,11 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 	private TaskExecutor taskExecutor;
 	private EcService messLogService;
 	private CustomerBillMapper customerBillMapper;
+	private PIVipInfoDataService piVipInfoDataService;
+	
+	public void setPiVipInfoDataService(PIVipInfoDataService piVipInfoDataService) {
+      this.piVipInfoDataService = piVipInfoDataService;
+   }
 	
 	public void setCustomerBillMapper(CustomerBillMapper customerBillMapper) {
 		this.customerBillMapper = customerBillMapper;
@@ -619,6 +626,7 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 			String state = order.getPaymentmethod();
 			
 			BigDecimal leftAmt = order.getCurAmt();
+			BigDecimal initAmt = order.getInitAmt();
 			if("20".equals(state)){//先付款
 				tOrderDaliyPlanItemMapper.updateDaliyPlansToBack(order);
 				
@@ -678,6 +686,34 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 					messLogService.sendOrderStatus(sendOrder);
 				}
 			});
+			
+			//积分扣减
+			if("20".equals(order.getPaymentmethod())&&"20".equals(order.getPaymentStat())&&"Y".equals(order.getIsIntegration())){
+				taskExecutor.execute(new Thread(){
+					@Override
+					public void run() {
+						super.run();
+						this.setName("minusVipPoint");
+						BigDecimal gRate = leftAmt.divide(initAmt,2).multiply(new BigDecimal(order.getyGrowth()==null?0:order.getyGrowth()));//成长
+						BigDecimal fRate = leftAmt.divide(initAmt,2).multiply(new BigDecimal(order.getyFresh()==null?0:order.getyFresh()));//鲜峰
+						MemberActivities item = new MemberActivities();
+						Date date = new Date();
+						item.setActivitydate(date);
+						item.setCategory("YRETURN");
+						item.setProcesstype("YSUB_RETURN");
+						item.setOrderid(order.getOrderNo());
+						item.setMembershipguid(order.getMemberNo());
+						item.setPointtype("YGROWTH");
+						item.setPoints(gRate);
+						//第1遍传成长
+						piVipInfoDataService.createMemberActivities(item);
+						//第2遍传先锋
+						item.setPointtype("YFRESH");
+						item.setPoints(fRate);
+						piVipInfoDataService.createMemberActivities(item);
+					}
+				});
+			}
 			
 		}else{
 			throw new ServiceException(MessageCode.LOGIC_ERROR,"当前订单不存在");
