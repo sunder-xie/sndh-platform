@@ -162,13 +162,13 @@ public class CustomerBillServiceImpl implements CustomerBillService {
                 }
 
                 //会员积分
-
-                taskExecutor.execute(new Thread(){
-                    @Override
-                    public void run() {
-                        super.run();
-                        this.setName("updateVip");
-                           Map<String,String> planOrderMap = new HashMap<String,String>();
+                if("Y".equals(order.getIsIntegration())){
+                    taskExecutor.execute(new Thread(){
+                        @Override
+                        public void run() {
+                            super.run();
+                            this.setName("updateVip");
+                            Map<String,String> planOrderMap = new HashMap<String,String>();
                             planOrderMap.put("salesOrg",user.getSalesOrg());
                             planOrderMap.put("orderNo",orderNo);
                             List<MemberActivities> items;
@@ -180,18 +180,23 @@ public class CustomerBillServiceImpl implements CustomerBillService {
                             if(items.size()>0){
                                 BigDecimal totalprice = new BigDecimal(0);
                                 for (MemberActivities item : items){
-                                        item.setProcess("X");
-                                        Calendar calendar = new GregorianCalendar();
-                                        calendar.setTime(date);
-                                        Date firstDay = calendar.getTime();
-                                        item.setActivitydate(firstDay);
-                                        piVipInfoDataService.createMemberActivities(item);
+                                    item.setProcess("X");
+                                    Calendar calendar = new GregorianCalendar();
+                                    calendar.setTime(date);
+                                    Date firstDay = calendar.getTime();
+                                    item.setActivitydate(firstDay);
+                                    if(StringUtils.isNotBlank(item.getCardid())){
+                                        item.setCardid("");
+                                    }
+                                    piVipInfoDataService.createMemberActivities(item);
 
                                 }
                             }
 
-                    }
-                });
+                        }
+                    });
+                }
+
 
                 if("10".equals(order.getPaymentmethod())){
                     BigDecimal factAmt = tPreOrderMapper.calculateOrderFactoryAmt(orderNo);
