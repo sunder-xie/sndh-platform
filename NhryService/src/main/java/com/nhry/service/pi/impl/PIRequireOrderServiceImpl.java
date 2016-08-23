@@ -169,6 +169,7 @@ public class PIRequireOrderServiceImpl implements PIRequireOrderService {
 
     @Override
     public String generateDelivery(String orderNo,String branchNo,boolean isDeli){
+        String message = "";
         if(StringUtils.isEmpty(orderNo)){
             throw new ServiceException(MessageCode.SERVER_ERROR,"调拨单或销售订单凭证没有生成！");
         }
@@ -245,14 +246,14 @@ public class PIRequireOrderServiceImpl implements PIRequireOrderService {
                     }
                 }
             }else {
-                throw new ServiceException(MessageCode.SERVER_ERROR, "要货单"+orderNo+"在ECC中没有得到交换单！");
+                message = "要货单"+orderNo+"单据在ERP中未过账！";
             }
         }catch (Exception e){
             e.printStackTrace();
             logger.error("要货单"+orderNo +"获取交货单异常！原因："+ e.getMessage());
-            throw new ServiceException(MessageCode.SERVER_ERROR, "获取交货单异常,请联系管理员!"+e.getMessage());
+            throw new ServiceException(MessageCode.SERVER_ERROR, "要货单"+orderNo +"获取交货单异常！原因："+ e.getMessage());
         }
-        return "1";
+        return message;
     }
 
     @Override
@@ -267,6 +268,7 @@ public class PIRequireOrderServiceImpl implements PIRequireOrderService {
     }
 
     public String execDelivery(String branchNo){
+        String message = "";
         TMdBranch branch = branchMapper.getBranchByNo(branchNo);
         Date curDate = null;
         String salesOrg = branch.getSalesOrg();
@@ -284,7 +286,7 @@ public class PIRequireOrderServiceImpl implements PIRequireOrderService {
             if(order == null){
                 throw new ServiceException(MessageCode.SERVER_ERROR,"要货单没有生成！");
             }else {
-                generateDelivery(order.getVoucherNo(), branchNo, true);
+                message = generateDelivery(order.getVoucherNo(), branchNo, true);
             }
         }else{
             SalOrderModel model = new SalOrderModel();
@@ -293,13 +295,13 @@ public class PIRequireOrderServiceImpl implements PIRequireOrderService {
             List<TSsmSalOrder> orders = ssmSalOrderMapper.selectSalOrderByDateAndNo(model);
             if(orders != null){
                 for(TSsmSalOrder order : orders){
-                    generateDelivery(order.getVoucherNo(), branchNo, false);
+                  message =  generateDelivery(order.getVoucherNo(), branchNo, false);
                 }
             }else{
                 throw new ServiceException(MessageCode.SERVER_ERROR,"销售订单没有生成！");
             }
         }
-        return "1";
+        return message;
     }
 
 

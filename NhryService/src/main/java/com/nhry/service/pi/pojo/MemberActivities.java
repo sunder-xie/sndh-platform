@@ -18,7 +18,7 @@ public class MemberActivities {
     /**
      * PROCESS_TYPE
      *
-     ** 消费引起的积分获得 YPOS_ACCRUAL
+     ** 消费引起的积分获得 YSUB_ACCRUAL
      *
      * 促销类的订单 YSUB_PROMOTION
      *
@@ -95,7 +95,7 @@ public class MemberActivities {
      */
     protected String commit;
     /**
-     * 可为空
+     * 立即提交   传  X
      */
     protected String process;
 
