@@ -53,4 +53,9 @@ public class TSsmGiOrderMapperImpl implements TSsmGiOrderMapper {
     public List<TSsmGiOrder> findGiOrder(GiOrderModel model) {
         return sqlSessionTemplate.selectList("findGiOrder",model);
     }
+
+    @Override
+    public TSsmGiOrder findGiOrderByReqOrderNo(String reqOrderNo) {
+        return sqlSessionTemplate.selectOne("findGiOrderByReqOrderNo",reqOrderNo);
+    }
 }

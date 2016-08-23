@@ -17,6 +17,8 @@ public class TSsmGiOrder {
 
     private String status;
 
+    private String reqOrderNo;
+
     public String getOrderNo() {
         return orderNo;
     }
@@ -62,5 +64,13 @@ public class TSsmGiOrder {
 
     public void setStatus(String status) {
         this.status = status == null ? null : status.trim();
+    }
+
+    public String getReqOrderNo() {
+        return reqOrderNo;
+    }
+
+    public void setReqOrderNo(String reqOrderNo) {
+        this.reqOrderNo = reqOrderNo;
     }
 }

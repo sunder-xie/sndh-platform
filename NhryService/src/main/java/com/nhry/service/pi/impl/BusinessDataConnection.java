@@ -1,10 +1,13 @@
 package com.nhry.service.pi.impl;
 
+import com.nhry.common.exception.MessageCode;
+import com.nhry.common.exception.ServiceException;
 import com.nhry.data.basic.domain.TMdBranchEx;
 import com.nhry.service.pi.pojo.SalesOrderHeader;
 import com.nhry.utils.PIPropertitesUtil;
 import com.nhry.webService.OptionManager;
 import com.nhry.webService.client.PISuccessMessage;
+import com.nhry.webService.client.PISuccessTMessage;
 import com.nhry.webService.client.businessData.ZT_BusinessData_MaintainServiceStub;
 import com.nhry.webService.client.businessData.functions.*;
 import com.nhry.webService.client.businessData.model.Delivery;
@@ -14,6 +17,7 @@ import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 
 import java.math.BigDecimal;
+import java.rmi.ServerException;
 import java.text.ParsePosition;
 import java.text.SimpleDateFormat;
 import java.util.*;
@@ -288,60 +292,81 @@ public class BusinessDataConnection {
         return successMessage;
     }
 
-    public static List<Delivery> DeliveryQuery(String orderNo, boolean deliveryType) throws Exception {
-        ZSD_DELIVERY_DATA zsd_delivery_data = new ZSD_DELIVERY_DATA();
-        if (deliveryType) {
-            I_DELIVERY_type1 i_delivery_type = new I_DELIVERY_type1();
-            i_delivery_type.setI_DELIVERY_type0(I_DELIVERY_D);
-            zsd_delivery_data.setI_DELIVERY(i_delivery_type);
-        }
-        //销售订单/要货单号
-        IT_SO_type1 it_so_type1 = new IT_SO_type1();
-        ZSSD00068 zssd00068 = new ZSSD00068();
-        SIGN_type5 sign_type5 = new SIGN_type5();
-        sign_type5.setSIGN_type4(SIGN);
-        zssd00068.setSIGN(sign_type5);
-        OPTION_type5 option_type5 = new OPTION_type5();
-        option_type5.setOPTION_type4(EQ);
-        zssd00068.setOPTION(option_type5);
-        LOW_type3 low_type3 = new LOW_type3();
-        low_type3.setLOW_type2(orderNo);
-        zssd00068.setLOW(low_type3);
-        it_so_type1.addItem(zssd00068);
-        zsd_delivery_data.setIT_SO(it_so_type1);
-        ZSD_DELIVERY_DATAResponse response = BusinessDataConnection.getConn().deliveryQuery(zsd_delivery_data);
-        ET_DATA_type0 et_data_type0 = response.getET_DATA();
-        ZSSD00069[] zssd00069s = et_data_type0.getItem();
-        List<Delivery> deliveries = new ArrayList<Delivery>();
-        if (zssd00069s != null && zssd00069s.length > 0) {
-            for (ZSSD00069 zssd00069 : zssd00069s) {
-                if (zssd00069.getWBSTK() != null && StringUtils.isNotEmpty(zssd00069.getWBSTK().getWBSTK_type0())) {
-                    String wbstk = zssd00069.getWBSTK().getWBSTK_type0();
-                    if ("C".equals(wbstk)) {
-                        Delivery delivery = new Delivery();
-                        delivery.setKUNNR(zssd00069.getKUNNR().getKUNNR_type2());
-                        delivery.setBSTKD(zssd00069.getBSTKD().getBSTKD_type2());
-                        delivery.setVBELN(zssd00069.getVBELN().getVBELN_type0());
-                        delivery.setPOSNR(zssd00069.getPOSNR().getPOSNR_type0());
-                        delivery.setLFIMG(zssd00069.getLFIMG().getLFIMG_type0());
-                        delivery.setMEINS(zssd00069.getMEINS().getMEINS_type0());
-                        delivery.setKUNAG(zssd00069.getKUNAG().getKUNAG_type0());
-                        Object o = zssd00069.getLFDAT().getObject();
-                        String dateString = formatter.format(o);
-                        delivery.setLFDAT(formatter.parse(dateString));
-                        delivery.setVBELV(zssd00069.getVBELV().getVBELV_type0());
-                        delivery.setPOSNV(zssd00069.getPOSNV().getPOSNV_type0());
-                        delivery.setLGORT(zssd00069.getLGORT().getLGORT_type2());
-                        delivery.setRESLO(zssd00069.getRESLO().getRESLO_type0());
-                        delivery.setCmpre(zssd00069.getCMPRE().getCMPRE_type0());
-                        delivery.setMATNR(zssd00069.getMATNR().getMATNR_type2());
-                        delivery.setPSTYV(zssd00069.getPSTYV().getPSTYV_type2());
-                        deliveries.add(delivery);
-                    }
-                }
+    public static PISuccessTMessage<List<Delivery>> DeliveryQuery(String orderNo, boolean deliveryType) {
+        PISuccessTMessage message = new PISuccessTMessage();
+        try {
+            ZSD_DELIVERY_DATA zsd_delivery_data = new ZSD_DELIVERY_DATA();
+            if (deliveryType) {
+                I_DELIVERY_type1 i_delivery_type = new I_DELIVERY_type1();
+                i_delivery_type.setI_DELIVERY_type0(I_DELIVERY_D);
+                zsd_delivery_data.setI_DELIVERY(i_delivery_type);
             }
+            //销售订单/要货单号
+            IT_SO_type1 it_so_type1 = new IT_SO_type1();
+            ZSSD00068 zssd00068 = new ZSSD00068();
+            SIGN_type5 sign_type5 = new SIGN_type5();
+            sign_type5.setSIGN_type4(SIGN);
+            zssd00068.setSIGN(sign_type5);
+            OPTION_type5 option_type5 = new OPTION_type5();
+            option_type5.setOPTION_type4(EQ);
+            zssd00068.setOPTION(option_type5);
+            LOW_type3 low_type3 = new LOW_type3();
+            low_type3.setLOW_type2(orderNo);
+            zssd00068.setLOW(low_type3);
+            it_so_type1.addItem(zssd00068);
+            zsd_delivery_data.setIT_SO(it_so_type1);
+            ZSD_DELIVERY_DATAResponse response = BusinessDataConnection.getConn().deliveryQuery(zsd_delivery_data);
+            ET_DATA_type0 et_data_type0 = response.getET_DATA();
+            ZSSD00069[] zssd00069s = et_data_type0.getItem();
+            List<Delivery> deliveries = new ArrayList<Delivery>();
+            if (zssd00069s != null && zssd00069s.length > 0) {
+                for (ZSSD00069 zssd00069 : zssd00069s) {
+                    if (zssd00069.getWBSTK() != null && StringUtils.isNotEmpty(zssd00069.getWBSTK().getWBSTK_type0())) {
+                        String wbstk = zssd00069.getWBSTK().getWBSTK_type0();
+                        if ("C".equals(wbstk)) {
+                            Delivery delivery = new Delivery();
+                            delivery.setKUNNR(zssd00069.getKUNNR().getKUNNR_type2());
+                            delivery.setBSTKD(zssd00069.getBSTKD().getBSTKD_type2());
+                            delivery.setVBELN(zssd00069.getVBELN().getVBELN_type0());
+                            delivery.setPOSNR(zssd00069.getPOSNR().getPOSNR_type0());
+                            delivery.setLFIMG(zssd00069.getLFIMG().getLFIMG_type0());
+                            delivery.setMEINS(zssd00069.getMEINS().getMEINS_type0());
+                            delivery.setKUNAG(zssd00069.getKUNAG().getKUNAG_type0());
+                            Object o = zssd00069.getLFDAT().getObject();
+                            try {
+                                String dateString = formatter.format(o);
+                                delivery.setLFDAT(formatter.parse(dateString));
+                            } catch (Exception e) {
+                                e.printStackTrace();
+                            }
+                            delivery.setVBELV(zssd00069.getVBELV().getVBELV_type0());
+                            delivery.setPOSNV(zssd00069.getPOSNV().getPOSNV_type0());
+                            delivery.setLGORT(zssd00069.getLGORT().getLGORT_type2());
+                            delivery.setRESLO(zssd00069.getRESLO().getRESLO_type0());
+                            delivery.setCmpre(zssd00069.getCMPRE().getCMPRE_type0());
+                            delivery.setMATNR(zssd00069.getMATNR().getMATNR_type2());
+                            delivery.setPSTYV(zssd00069.getPSTYV().getPSTYV_type2());
+                            deliveries.add(delivery);
+                        }
+                    }
+                    if (deliveries.size() < 1) {
+                        message.setSuccess(false);
+                        message.setMessage("交货单未过账！");
+                    }
+
+                }
+                message.setSuccess(true);
+                message.setData(deliveries);
+            } else {
+                message.setSuccess(false);
+                message.setMessage("交货单没有生成！");
+            }
+        }catch (Exception e){
+            e.printStackTrace();
+            message.setMessage(e.getMessage());
+            message.setSuccess(false);
         }
-        return deliveries;
+        return message;
     }
 
 

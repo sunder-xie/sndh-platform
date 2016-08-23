@@ -251,7 +251,9 @@ public class TVipCustInfoServiceImpl extends BaseService implements TVipCustInfo
 				 throw new ServiceException(MessageCode.LOGIC_ERROR,"该订户地址详细信息中vipCustNo对应的订户信息不存在!");
 			}
 		}
-		address.setAddressId(PrimaryKeyUtils.generateUpperUuidKey());
+		if(StringUtils.isEmpty(address.getAddressId())) {
+			address.setAddressId(PrimaryKeyUtils.generateUpperUuidKey());
+		}
 		address.setIsDelete("N");
 		address.setCreateAt(new Date());
 		address.setCreateBy(sysuser.getLoginName());
@@ -386,11 +388,11 @@ public class TVipCustInfoServiceImpl extends BaseService implements TVipCustInfo
 			for(TMdAddress ad : record.getAddresses()){
 				if(StringUtils.isBlank(ad.getAddressId())){
 					//新增
+					ad.setAddressId(PrimaryKeyUtils.generateUpperUuidKey());
 					this.addAddressForCust(ad,null,null);
 				}else{
 					//修改
 					this.addressMapper.uptCustAddress(ad);
-					vipInfoDataService.executeSendAddress(ad,"");
 				}
 			}
 		}
@@ -426,6 +428,7 @@ public class TVipCustInfoServiceImpl extends BaseService implements TVipCustInfo
 		cust.setLastModifiedBy(user.getLoginName());
 		cust.setLastModifiedByTxt(user.getDisplayName());
 		tmdVipcust.updateVipCustByNo(cust);
+		vipInfoDataService.executeUptVipCust(cust);
 		return branch.getSalesOrg();
 	}
 
