@@ -270,14 +270,14 @@ public class PIRequireOrderServiceImpl implements PIRequireOrderService {
     public String execDelivery(String branchNo){
         String message = "";
         TMdBranch branch = branchMapper.getBranchByNo(branchNo);
-        Date curDate = null;
-        String salesOrg = branch.getSalesOrg();
+        Date curDate = new Date();
+//        String salesOrg = branch.getSalesOrg();
         //如果是华西或者天音 则requiredDate日期为今天  否则requiredDate为明天
-        if("4181".equals(salesOrg) || "4390".equals(salesOrg)){
-            curDate = new Date();
-        }else{
-            curDate = DateUtil.getTomorrow(new Date());
-        }
+//        if("4181".equals(salesOrg) || "4390".equals(salesOrg)){
+//            curDate = new Date();
+//        }else{
+//            curDate = DateUtil.getTomorrow(new Date());
+//        }
         if("01".equals(branch.getBranchGroup())){
             RequireOrderSearch search = new RequireOrderSearch();
             search.setOrderDate(curDate);
