@@ -30,4 +30,10 @@ public interface TSysAccesskeyService {
      * @return
      */
     int updateIsysAccessKey(TSysAccesskey record);
+    
+    /**
+     * 删除过期的token
+     * @return
+     */
+    public int deleteExpiredAccesskey(); 
 }

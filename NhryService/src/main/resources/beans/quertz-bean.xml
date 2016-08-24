@@ -49,6 +49,14 @@
 			<value>syncSysUsers</value>
 		</property>
 	</bean>
+	<bean id="scheduledJobDetail6" class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean" >
+		<property name="targetObject">
+			<ref  bean="isysAkService"/>
+		</property>
+		<property name="targetMethod">
+			<value>deleteExpiredAccesskey</value>
+		</property>
+	</bean>
 	 <!-- 调度的配置开始 -->
     <bean id="crontestJobTrigger1" class="org.springframework.scheduling.quartz.CronTriggerFactoryBean">
         <property name="jobDetail">
@@ -90,6 +98,14 @@
 			<value>0 25 * * * ?</value>
 		</property>
 	</bean>
+	<bean id="crontestJobTrigger6" class="org.springframework.scheduling.quartz.CronTriggerFactoryBean">
+		<property name="jobDetail">
+			<ref bean="scheduledJobDetail6" />
+		</property>
+		<property name="cronExpression">
+			<value>0 35 * * * ?</value>
+		</property>
+	</bean>
     <!-- 调度的配置结束 -->
 
     <!-- 启动触发器的配置开始 -->
@@ -101,6 +117,7 @@
 				<ref bean="crontestJobTrigger3"/>
 				<ref bean="crontestJobTrigger4"/>
 				<ref bean="crontestJobTrigger5"/>
+				<ref bean="crontestJobTrigger6"/>
             </list>
         </property>
     </bean>

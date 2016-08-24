@@ -108,4 +108,7 @@
     where ACCESSKEY = #{accesskey,jdbcType=VARCHAR}
       and TYPE = #{type,jdbcType=VARCHAR}
   </update>
+  <delete id="deleteExpiredAccesskey">
+     DELETE FROM t_sys_accesskey where hour(timediff(SYSDATE(),VISIT_LAST_TIME))>8
+  </delete>
 </mapper>

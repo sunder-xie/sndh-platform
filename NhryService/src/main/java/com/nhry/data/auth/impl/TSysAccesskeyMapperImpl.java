@@ -33,4 +33,10 @@ public class TSysAccesskeyMapperImpl implements TSysAccesskeyMapper {
 	public void setSqlSessionTemplate(DynamicSqlSessionTemplate sqlSessionTemplate) {
 		this.sqlSessionTemplate = sqlSessionTemplate;
 	}
+
+	@Override
+	public int deleteExpiredAccesskey() {
+		// TODO Auto-generated method stub
+		return this.sqlSessionTemplate.delete("deleteExpiredAccesskey");
+	}
 }
