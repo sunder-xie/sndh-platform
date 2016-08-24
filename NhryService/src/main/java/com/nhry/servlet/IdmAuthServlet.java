@@ -76,7 +76,7 @@ public class IdmAuthServlet extends HttpServlet {
 						user.setLoginName(userJson.getString("id"));
 						TSysUser loginuser = userService.login(user);
 						if(loginuser == null){
-							sendRedirectToLogin(response);
+							sendRedirectToLogout(response);
 							return;
 						}
 						TSysAccesskey ak = new TSysAccesskey();
@@ -88,7 +88,7 @@ public class IdmAuthServlet extends HttpServlet {
 						isysAkService.updateIsysAccessKey(ak);
 						sendRedirectToHomePage(request, response, token,ip);
 					}else{
-						sendRedirectToLogin(response);
+						sendRedirectToLogout(response);
 					}
 				}
 			} else {
@@ -101,6 +101,10 @@ public class IdmAuthServlet extends HttpServlet {
 		}
 	}
 	
+	/**
+	 * 跳转到登录
+	 * @param response
+	 */
 	public void sendRedirectToLogin(HttpServletResponse response){
 		//跳转到登录页面
 		try {
@@ -110,6 +114,20 @@ public class IdmAuthServlet extends HttpServlet {
 					+ EnvContant.getSystemConst("redirect_uri")
 					+ "&response_type="
 					+ EnvContant.getSystemConst("response_type"));
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+	
+	/**
+	 * 跳转到登出
+	 * @param response
+	 */
+	public void sendRedirectToLogout(HttpServletResponse response){
+		//跳转到登出页面
+		try {
+			response.sendRedirect(EnvContant.getSystemConst("idm_logout_uri")+EnvContant.getSystemConst("redirect_uri"));
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

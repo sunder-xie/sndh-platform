@@ -72,9 +72,9 @@ public class AuthFilter implements ContainerRequestFilter {
 	public ContainerRequest filter(ContainerRequest request) {
 		// TODO Auto-generated method stub
 		String uri = request.getAbsolutePath().getPath();
-		if("product".equals(SysContant.getSystemConst("app_mode"))){
+//		if("product".equals(SysContant.getSystemConst("app_mode"))){
 			/**
-			 * dh-token   salt(appcode+appkey+timestamp) 26位(固：010da99b8b994b5794094f2eae)+6位变化的
+			 * dh-token   salt(appcode+appkey+timestamp) 26位(固定：010da99b8b994b5794094f2eae)+6位变化的
 			 *             内容：appcode+appkey+timestamp
 			 * appcode 系统标示  
 			 * appkey 对于线下系统调用的是：8位的随机数(字母+数字 组合),线上系统是idm的token
@@ -82,8 +82,6 @@ public class AuthFilter implements ContainerRequestFilter {
 			 */
 			String idm_auth =request.getHeaderValue("dh-token");
 			String appcode =request.getHeaderValue("appcode");
-			String appkey = request.getHeaderValue("appkey");
-			String timestamp = request.getHeaderValue("timestamp");
 			String dh_ak = CookieUtil.getCookieValue(this.request, UserSessionService.accessKey);
 			String http_auth = request.getHeaderValue("Authorization");
 			if(!StringUtils.isEmpty(idm_auth)){
@@ -114,8 +112,8 @@ public class AuthFilter implements ContainerRequestFilter {
 				Response response = formatData(MessageCode.UNAUTHORIZED, SysContant.getSystemConst(MessageCode.UNAUTHORIZED), null, Status.UNAUTHORIZED);
 	            throw new WebApplicationException(response); 
 			}
-		}
-		return request;
+//		}
+		//		return request;
 	}
 	
 	protected Response formatData(String type, Object msg, Object data,Status statusCode) {
