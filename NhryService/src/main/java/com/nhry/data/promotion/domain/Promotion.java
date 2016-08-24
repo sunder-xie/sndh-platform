@@ -18,13 +18,13 @@ public class Promotion {
 
     private String promStat;
 
-    private Date planStartTime;
+    private String planStartTime;
 
-    private Date planStopTime;
+    private String planStopTime;
 
-    private Date buyStartTime;
+    private String buyStartTime;
 
-    private Date buyStopTime;
+    private String buyStopTime;
 
     private BigDecimal buyAmt;
 
@@ -98,35 +98,35 @@ public class Promotion {
         this.promStat = promStat == null ? null : promStat.trim();
     }
 
-    public Date getPlanStartTime() {
+    public String getPlanStartTime() {
         return planStartTime;
     }
 
-    public void setPlanStartTime(Date planStartTime) {
+    public void setPlanStartTime(String planStartTime) {
         this.planStartTime = planStartTime;
     }
 
-    public Date getPlanStopTime() {
+    public String getPlanStopTime() {
         return planStopTime;
     }
 
-    public void setPlanStopTime(Date planStopTime) {
+    public void setPlanStopTime(String planStopTime) {
         this.planStopTime = planStopTime;
     }
 
-    public Date getBuyStartTime() {
+    public String getBuyStartTime() {
         return buyStartTime;
     }
 
-    public void setBuyStartTime(Date buyStartTime) {
+    public void setBuyStartTime(String buyStartTime) {
         this.buyStartTime = buyStartTime;
     }
 
-    public Date getBuyStopTime() {
+    public String getBuyStopTime() {
         return buyStopTime;
     }
 
-    public void setBuyStopTime(Date buyStopTime) {
+    public void setBuyStopTime(String buyStopTime) {
         this.buyStopTime = buyStopTime;
     }
 
