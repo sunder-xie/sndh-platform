@@ -32,6 +32,7 @@
         <property name="ecService" ref="messLogService"/>
         <property name="taskExecutor" ref="taskExecutor"/>
     </bean>
+
     <bean class="com.nhry.service.pi.impl.PIRequireOrderServiceImpl" id="piRequireOrderService">
         <property name="branchExMapper" ref="branchExMapper"/>
         <property name="tSsmReqGoodsOrderItemMapper" ref="tSsmReqGoodsOrderItemMapper"/>
@@ -42,6 +43,8 @@
         <property name="branchMapper" ref="branchMapper"/>
         <property name="ssmSalOrderMapper" ref="tSsmSalOrderMapper"/>
         <property name="sysCodeItemMapper" ref="codeItemMapper"/>
+        <property name="ssmSalFactoryPriceMapper" ref="ssmSalFactoryPriceMapper"/>
+        <property name="userSessionService" ref="userSessionService"/>
     </bean>
     <import resource="classpath:META-INF/cxf/cxf.xml"/>
     <!--

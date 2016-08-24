@@ -45,5 +45,7 @@
         <property name="giOrderItemService" ref="giOrderItemService"/>
         <property name="giOrderService" ref="giOrderService"/>
     </bean>
-
+    <bean class="com.nhry.data.stock.impl.TSsmSalFactoryPriceMapperImpl" id="ssmSalFactoryPriceMapper">
+        <property name="sqlSessionTemplate" ref="dynamicSqlSessionTemplate"/>
+    </bean>
 </beans>
