@@ -1,7 +1,5 @@
 package com.nhry.service.pi.impl;
 
-import com.nhry.common.exception.MessageCode;
-import com.nhry.common.exception.ServiceException;
 import com.nhry.data.basic.domain.TMdBranchEx;
 import com.nhry.service.pi.pojo.SalesOrderHeader;
 import com.nhry.utils.PIPropertitesUtil;
@@ -17,7 +15,6 @@ import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 
 import java.math.BigDecimal;
-import java.rmi.ServerException;
 import java.text.ParsePosition;
 import java.text.SimpleDateFormat;
 import java.util.*;
@@ -292,7 +289,7 @@ public class BusinessDataConnection {
         return successMessage;
     }
 
-    public static PISuccessTMessage<List<Delivery>> DeliveryQuery(String orderNo, boolean deliveryType) {
+    public static PISuccessTMessage<List<Delivery>> DeliveryQuery(String orderNo, boolean deliveryType, boolean isZy) {
         PISuccessTMessage message = new PISuccessTMessage();
         try {
             ZSD_DELIVERY_DATA zsd_delivery_data = new ZSD_DELIVERY_DATA();
@@ -323,7 +320,7 @@ public class BusinessDataConnection {
                 for (ZSSD00069 zssd00069 : zssd00069s) {
                     if (zssd00069.getWBSTK() != null && StringUtils.isNotEmpty(zssd00069.getWBSTK().getWBSTK_type0())) {
                         String wbstk = zssd00069.getWBSTK().getWBSTK_type0();
-                        if ("C".equals(wbstk)) {
+                        if ("C".equals(wbstk) || isZy) {
                             Delivery delivery = new Delivery();
                             delivery.setKUNNR(zssd00069.getKUNNR().getKUNNR_type2());
                             delivery.setBSTKD(zssd00069.getBSTKD().getBSTKD_type2());
@@ -349,10 +346,8 @@ public class BusinessDataConnection {
                             deliveries.add(delivery);
                         }
                     }
-
-
                 }
-                if (deliveries.size() < 1) {
+                if (deliveries.size() == 0) {
                     message.setSuccess(false);
                     message.setMessage("交货单未过账！");
                 }else {
