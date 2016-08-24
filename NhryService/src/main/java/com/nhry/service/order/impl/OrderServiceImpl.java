@@ -4041,7 +4041,6 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 				.forEach((e)->{dateList.add(e);});
 				//赠品日期调整
 				int index = 0;
-				Collections.reverse(daliyPlans);
 				for(TOrderDaliyPlanItem p : daliyPlans){
 					if(p.getGiftQty()==null || !p.getItemNo().equals(orgItem.getOrgItemNo()) )continue;
 					p.setDispDate(dateList.get(index).getDispDate());
@@ -4050,6 +4049,7 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 				}
 				
 				//重新计算剩余金额
+				Collections.reverse(daliyPlans);
 				BigDecimal initAmt = order.getInitAmt();
 				for(TOrderDaliyPlanItem p : daliyPlans){
 					if(p.getGiftQty()!=null)continue;
