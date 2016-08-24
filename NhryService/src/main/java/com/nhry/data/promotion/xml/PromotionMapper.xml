@@ -9,10 +9,10 @@
     <result column="SALES_DIST" jdbcType="VARCHAR" property="salesDist" />
     <result column="CUSTOMER_TYPE" jdbcType="VARCHAR" property="customerType" />
     <result column="PROM_STAT" jdbcType="VARCHAR" property="promStat" />
-    <result column="PLAN_START_TIME" jdbcType="TIMESTAMP" property="planStartTime" />
-    <result column="PLAN_STOP_TIME" jdbcType="TIMESTAMP" property="planStopTime" />
-    <result column="BUY_START_TIME" jdbcType="TIMESTAMP" property="buyStartTime" />
-    <result column="BUY_STOP_TIME" jdbcType="TIMESTAMP" property="buyStopTime" />
+    <result column="PLAN_START_TIME" jdbcType="DATE" property="planStartTime" />
+    <result column="PLAN_STOP_TIME" jdbcType="DATE" property="planStopTime" />
+    <result column="BUY_START_TIME" jdbcType="DATE" property="buyStartTime" />
+    <result column="BUY_STOP_TIME" jdbcType="DATE" property="buyStopTime" />
     <result column="BUY_AMT" jdbcType="DECIMAL" property="buyAmt" />
     <result column="GIFT_AMT" jdbcType="DECIMAL" property="giftAmt" />
     <result column="CREATE_AT" jdbcType="TIMESTAMP" property="createAt" />
@@ -60,16 +60,16 @@
         PROM_STAT = #{promStat,jdbcType=VARCHAR},
       </if>
       <if test="planStartTime != null">
-        PLAN_START_TIME = #{planStartTime,jdbcType=TIMESTAMP},
+        PLAN_START_TIME = #{planStartTime,jdbcType=DATE},
       </if>
       <if test="planStopTime != null">
-        PLAN_STOP_TIME = #{planStopTime,jdbcType=TIMESTAMP},
+        PLAN_STOP_TIME = #{planStopTime,jdbcType=DATE},
       </if>
       <if test="buyStartTime != null">
-        BUY_START_TIME = #{buyStartTime,jdbcType=TIMESTAMP},
+        BUY_START_TIME = #{buyStartTime,jdbcType=DATE},
       </if>
       <if test="buyStopTime != null">
-        BUY_STOP_TIME = #{buyStopTime,jdbcType=TIMESTAMP},
+        BUY_STOP_TIME = #{buyStopTime,jdbcType=DATE},
       </if>
       <if test="buyAmt != null">
         BUY_AMT = #{buyAmt,jdbcType=DECIMAL},
@@ -106,10 +106,10 @@
       SALES_DIST = #{salesDist,jdbcType=VARCHAR},
       CUSTOMER_TYPE = #{customerType,jdbcType=VARCHAR},
       PROM_STAT = #{promStat,jdbcType=VARCHAR},
-      PLAN_START_TIME = #{planStartTime,jdbcType=TIMESTAMP},
-      PLAN_STOP_TIME = #{planStopTime,jdbcType=TIMESTAMP},
-      BUY_START_TIME = #{buyStartTime,jdbcType=TIMESTAMP},
-      BUY_STOP_TIME = #{buyStopTime,jdbcType=TIMESTAMP},
+      PLAN_START_TIME = #{planStartTime,jdbcType=DATE},
+      PLAN_STOP_TIME = #{planStopTime,jdbcType=DATE},
+      BUY_START_TIME = #{buyStartTime,jdbcType=DATE},
+      BUY_STOP_TIME = #{buyStopTime,jdbcType=DATE},
       BUY_AMT = #{buyAmt,jdbcType=DECIMAL},
       GIFT_AMT = #{giftAmt,jdbcType=DECIMAL},
       CREATE_AT = #{createAt,jdbcType=TIMESTAMP},
@@ -131,8 +131,8 @@
       LAST_MODIFIED_BY_TXT)
     values (#{promNo,jdbcType=VARCHAR}, #{promDes,jdbcType=VARCHAR}, #{promType,jdbcType=VARCHAR}, 
       #{salesOrg,jdbcType=VARCHAR}, #{salesDist,jdbcType=VARCHAR}, #{customerType,jdbcType=VARCHAR}, 
-      #{promStat,jdbcType=VARCHAR}, #{planStartTime,jdbcType=TIMESTAMP}, #{planStopTime,jdbcType=TIMESTAMP}, 
-      #{buyStartTime,jdbcType=TIMESTAMP}, #{buyStopTime,jdbcType=TIMESTAMP}, #{buyAmt,jdbcType=DECIMAL}, 
+      #{promStat,jdbcType=VARCHAR}, #{planStartTime,jdbcType=DATE}, #{planStopTime,jdbcType=DATE},
+      #{buyStartTime,jdbcType=DATE}, #{buyStopTime,jdbcType=DATE}, #{buyAmt,jdbcType=DECIMAL},
       #{giftAmt,jdbcType=DECIMAL}, #{createAt,jdbcType=TIMESTAMP}, #{createBy,jdbcType=VARCHAR}, 
       #{createByTxt,jdbcType=VARCHAR}, #{lastModified,jdbcType=TIMESTAMP}, #{lastModifiedBy,jdbcType=VARCHAR}, 
       #{lastModifiedByTxt,jdbcType=VARCHAR})
@@ -221,16 +221,16 @@
         #{promStat,jdbcType=VARCHAR},
       </if>
       <if test="planStartTime != null">
-        #{planStartTime,jdbcType=TIMESTAMP},
+        #{planStartTime,jdbcType=DATE},
       </if>
       <if test="planStopTime != null">
-        #{planStopTime,jdbcType=TIMESTAMP},
+        #{planStopTime,jdbcType=DATE},
       </if>
       <if test="buyStartTime != null">
-        #{buyStartTime,jdbcType=TIMESTAMP},
+        #{buyStartTime,jdbcType=DATE},
       </if>
       <if test="buyStopTime != null">
-        #{buyStopTime,jdbcType=TIMESTAMP},
+        #{buyStopTime,jdbcType=DATE},
       </if>
       <if test="buyAmt != null">
         #{buyAmt,jdbcType=DECIMAL},

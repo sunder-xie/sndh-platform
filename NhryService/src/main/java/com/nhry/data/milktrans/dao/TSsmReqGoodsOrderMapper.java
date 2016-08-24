@@ -2,6 +2,7 @@ package com.nhry.data.milktrans.dao;
 
 import com.nhry.data.milktrans.domain.TSsmReqGoodsOrder;
 import com.nhry.model.milktrans.RequireOrderSearch;
+import java.util.List;
 
 /**
  * Created by gongjk on 2016/6/22.
@@ -19,4 +20,6 @@ public interface TSsmReqGoodsOrderMapper {
     TSsmReqGoodsOrder getRequireOrderByVoucherNo(String voucherNo);
 
     int deleRequireGoodsOrderbyNo(String orderNo);
+
+    List<TSsmReqGoodsOrder> searchRequireOrderByRequireDate(RequireOrderSearch rModel);
 }
