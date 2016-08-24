@@ -349,14 +349,16 @@ public class BusinessDataConnection {
                             deliveries.add(delivery);
                         }
                     }
-                    if (deliveries.size() < 1) {
-                        message.setSuccess(false);
-                        message.setMessage("交货单未过账！");
-                    }
+
 
                 }
-                message.setSuccess(true);
-                message.setData(deliveries);
+                if (deliveries.size() < 1) {
+                    message.setSuccess(false);
+                    message.setMessage("交货单未过账！");
+                }else {
+                    message.setSuccess(true);
+                    message.setData(deliveries);
+                }
             } else {
                 message.setSuccess(false);
                 message.setMessage("交货单没有生成！");
