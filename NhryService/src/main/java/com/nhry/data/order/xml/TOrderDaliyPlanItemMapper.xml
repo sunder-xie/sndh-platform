@@ -499,6 +499,7 @@
     and o.PREORDER_STAT !='40'
     and i.`STATUS` !='30'
     and e.SALES_ORG = #{salesOrg,jdbcType=VARCHAR}
+    and i.QTY &gt; 0
     and  ((e.PRE_DAYS= 2 and   i.DISP_DATE = #{secondDay,jdbcType=DATE} ) or (e.PRE_DAYS= 1 and   i.DISP_DATE = #{firstDay,jdbcType=DATE}))
     and m.SALES_ORG=#{salesOrg,jdbcType=VARCHAR}
     and o.BRANCH_NO = #{branchNo,jdbcType=VARCHAR}
@@ -630,10 +631,10 @@ UNION ALL
     GROUP BY di.MATNR
   </select>
   <select id="selectNoProDayPlanOfSelfBranch" resultMap="BaseResultMap" parameterType="com.nhry.model.milktrans.RequireOrderSearch" >
-    SELECT  t.MATNR,SUM(t.QTY) QTY, (select NULL from DUAL) t.CONFIRM_MATNR
+    SELECT  t.MATNR,SUM(t.QTY) QTY,  t.CONFIRM_MATNR
     FROM
     (
-       	select di.MATNR,SUM(di.CONFIRM_QTY) QTY,di.CONFIRM_MATNR
+       	select di.MATNR,SUM(di.CONFIRM_QTY) QTY,(select NULL from DUAL) CONFIRM_MATNR
         from t_mst_disp_order_item di
         LEFT JOIN t_preorder o on 	di.ORG_ORDER_NO = o.ORDER_NO
         LEFT JOIN t_mst_disp_order disp on di.ORDER_NO = disp.ORDER_NO
@@ -728,6 +729,11 @@ UNION ALL
     delete from t_mst_order_daliy_plan_item
     where ORDER_NO = #{orderNo,jdbcType=VARCHAR}
     and REMAIN_AMT &lt; 0
+  </delete>
+
+  <delete id="deletePlansByOrder" parameterType="java.lang.String" >
+    delete from t_mst_order_daliy_plan_item
+    where ORDER_NO = #{orderNo,jdbcType=VARCHAR}
   </delete>
 
 </mapper>

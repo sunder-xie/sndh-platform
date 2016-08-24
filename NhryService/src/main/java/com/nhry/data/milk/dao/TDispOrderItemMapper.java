@@ -5,7 +5,6 @@ import com.nhry.data.milk.domain.TDispOrder;
 import com.nhry.data.milk.domain.TDispOrderItem;
 import com.nhry.data.milk.domain.TDispOrderItemKey;
 import com.nhry.data.milktrans.domain.TRecBotDetail;
-import com.nhry.data.order.domain.TPlanOrderItem;
 import com.nhry.model.milk.RouteDetailUpdateModel;
 import com.nhry.model.milk.RouteOrderSearchModel;
 import com.nhry.model.milktrans.UnDeliverProductSearch;
@@ -52,5 +51,8 @@ public interface TDispOrderItemMapper {
     int updateDispOrderItemEmp(TDispOrder order);
     
     int selectCountOfTodayByOrgOrder(String orgOrderNo, String today);
+
+    //查询 该订单下生成的路单数
+    int selectDispOrderNumByPreOrderNo(String orderNo);
     
 }

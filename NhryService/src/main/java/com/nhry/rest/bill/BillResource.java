@@ -3,6 +3,7 @@ package com.nhry.rest.bill;
 import com.github.pagehelper.PageInfo;
 import com.nhry.common.exception.MessageCode;
 import com.nhry.model.bill.*;
+import com.nhry.model.order.OrderSearchModel;
 import com.nhry.rest.BaseResource;
 import com.nhry.service.bill.dao.BranchBillService;
 import com.nhry.service.bill.dao.CustomerBillService;
@@ -71,6 +72,14 @@ public class BillResource extends BaseResource {
         return convertToRespModel(MessageCode.NORMAL, null, customerBillService.getRecBillByOrderNo(orderNo));
     }
 
+    @GET
+    @Path("/cust/customerOffset")
+    @Produces(MediaType.APPLICATION_JSON)
+    @ApiOperation(value = "/cust/customerOffset", response = int.class, notes = "订户冲销")
+    public Response customerOffset(@ApiParam(required = true, name = "receiptNo", value = "收款单号") @QueryParam("receiptNo") String receiptNo) {
+        return convertToRespModel(MessageCode.NORMAL, null, customerBillService.customerOffset(receiptNo));
+    }
+
     @POST
     @Path("/cust/customerPayment")
     @Produces(MediaType.APPLICATION_JSON)
@@ -85,9 +94,18 @@ public class BillResource extends BaseResource {
     @Path("/cust/custBatchCollect")
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes(MediaType.APPLICATION_JSON)
-    @ApiOperation(value = "/cust/custBatchCollect", response = BigDecimal.class, notes = "订户批量收款")
+    @ApiOperation(value = "/cust/custBatchCollect", response = BigDecimal.class, notes = "选择收款人批量收款")
     public Response custBatchCollect(@ApiParam(required = true, name = "cModel", value = "收款信息") CustBatchBillQueryModel cModel) {
         return convertToRespModel(MessageCode.NORMAL, null, customerBillService.custBatchCollect(cModel));
+    }
+
+    @POST
+    @Path("/cust/custBatchCollectBySelect")
+    @Produces(MediaType.APPLICATION_JSON)
+    @Consumes(MediaType.APPLICATION_JSON)
+    @ApiOperation(value = "/cust/custBatchCollectBySelect", response = BigDecimal.class, notes = "选择收款人批量收款")
+    public Response custBatchCollectBySelect(@ApiParam(required = true, name = "cModel", value = "收款信息") OrderSearchModel oModel) {
+        return convertToRespModel(MessageCode.NORMAL, null, customerBillService.custBatchCollectBySelect(oModel));
     }
 
 

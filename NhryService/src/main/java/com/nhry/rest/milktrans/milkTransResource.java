@@ -157,7 +157,7 @@ public class milkTransResource extends BaseResource {
 	@Path("/sendRequireOrderToERP")
 	@Produces(MediaType.APPLICATION_JSON)
 	@Consumes(MediaType.APPLICATION_JSON)
-	@ApiOperation(value = "/sendRequireOrderToERP", response = Response.class, notes = "传到ERP系统")
+	@ApiOperation(value = "/sendRequireOrderToERP", response = String.class, notes = "传到ERP系统")
 	public Response sendRequireOrderToERP(){
 		return convertToRespModel(MessageCode.NORMAL, null, requireOrderService.sendRequireOrderToERP());
 	}
