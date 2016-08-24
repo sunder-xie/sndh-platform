@@ -11,6 +11,12 @@ public interface TSysAccesskeyMapper {
     int deleteAccesskeyByAk(TSysAccesskey key);
     
     /**
+     * 删除过期的token
+     * @return
+     */
+    int deleteExpiredAccesskey();
+    
+    /**
      * 添加ak
      * @param record
      * @return
