@@ -19,7 +19,13 @@ public interface TVipCustInfoService {
 	 * @return
 	 */
 	String addVipCust(TVipCustInfo record);
-    
+	
+	/**
+	 * 为导入的订户新建会员编号
+	 * @param record
+	 * @return
+	 */
+	int batchAddVipCustSapNo();
     /**
      * 根据订户编号查询订户信息
      * @param vipCustNo

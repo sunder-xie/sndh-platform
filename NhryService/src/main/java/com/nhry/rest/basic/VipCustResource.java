@@ -15,6 +15,7 @@ import com.sun.jersey.spi.resource.Singleton;
 import com.wordnik.swagger.annotations.Api;
 import com.wordnik.swagger.annotations.ApiOperation;
 import com.wordnik.swagger.annotations.ApiParam;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
@@ -23,6 +24,7 @@ import org.springframework.stereotype.Controller;
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+
 import java.util.HashMap;
 import java.util.Map;
 
@@ -39,7 +41,15 @@ public class VipCustResource extends BaseResource {
 	private UserSessionService userSessionService;
 	@Autowired
 	private TVipCrmInfoService vipCrmInfoService;
-
+	
+	@GET
+	@Path("/batchAddVipSapNo")
+	@Produces(MediaType.APPLICATION_JSON)
+	@ApiOperation(value = "/getProductByCodeOrName", response = Integer.class, notes = "为导入的订户生成会员号")
+	public Response getProductByCodeOrName(){
+		return convertToRespModel(MessageCode.NORMAL, null, custService.batchAddVipCustSapNo());
+	}
+	
 	@POST
 	@Path("/{vipCustNo}")
 	@Produces(MediaType.APPLICATION_JSON)

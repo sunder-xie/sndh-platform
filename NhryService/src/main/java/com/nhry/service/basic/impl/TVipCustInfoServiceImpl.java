@@ -81,6 +81,17 @@ public class TVipCustInfoServiceImpl extends BaseService implements TVipCustInfo
 		vipInfoDataService.executeVipInfoData(record,record.getVipMp());
 		return record.getVipCustNo();
 	}
+	
+	@Override
+	public int batchAddVipCustSapNo() {
+		String salesOrg = this.userSessionService.getCurrentUser().getSalesOrg();
+		List<TVipCustInfo> VipList= tmdVipcust.findVipCustByNoSapNo(salesOrg);
+		int i = 0;
+		VipList.stream().forEach((e)->{
+			vipInfoDataService.executeVipInfoData(e,e.getVipMp());
+		});
+		return 1;
+	}
 
 	@Override
 	public TVipCustInfo findVipCustByNo(String vipCustNo) {

@@ -32,6 +32,12 @@ public class TVipCustInfoMapperImpl implements TVipCustInfoMapper {
 		// TODO Auto-generated method stub
 		return this.sqlSessionTemplate.selectOne("findVipCustByNo", vipCustNo);
 	}
+	
+	@Override
+	public List<TVipCustInfo> findVipCustByNoSapNo(String salesOrg) {
+		// TODO Auto-generated method stub
+		return this.sqlSessionTemplate.selectList("findVipCustByNoSapNo", salesOrg);
+	}
 
 	@Override
 	public int updateVipCustByNo(TVipCustInfo record) {
