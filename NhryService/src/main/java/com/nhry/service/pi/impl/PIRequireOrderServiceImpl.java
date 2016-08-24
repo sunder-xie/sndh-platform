@@ -22,9 +22,9 @@ import com.nhry.data.stock.domain.TSsmGiOrderItemKey;
 import com.nhry.model.milktrans.ReqGoodsOrderItemSearch;
 import com.nhry.model.milktrans.RequireOrderSearch;
 import com.nhry.model.milktrans.SalOrderModel;
+import com.nhry.model.stock.StockModel;
 import com.nhry.service.pi.dao.PIRequireOrderService;
 import com.nhry.service.pi.pojo.SalesOrderHeader;
-import com.nhry.utils.DateUtil;
 import com.nhry.utils.PIPropertitesUtil;
 import com.nhry.webService.client.PISuccessMessage;
 import com.nhry.webService.client.PISuccessTMessage;
@@ -32,8 +32,6 @@ import com.nhry.webService.client.businessData.model.Delivery;
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 
-import java.math.BigDecimal;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -240,35 +238,38 @@ public class PIRequireOrderServiceImpl implements PIRequireOrderService {
         return "1";
     }
 
-    public String execDelivery(String branchNo) {
+    public String execDelivery(StockModel model) {
         String message = "";
-        TMdBranch branch = branchMapper.getBranchByNo(branchNo);
+        TMdBranch branch = branchMapper.getBranchByNo(model.getBranchNo());
         Date curDate = new Date();
 //        String salesOrg = branch.getSalesOrg();
-        //如果是华西或者天音 则requiredDate日期为今天  否则requiredDate为明天
+//        如果是华西或者天音 则requiredDate日期为今天  否则requiredDate为明天
 //        if("4181".equals(salesOrg) || "4390".equals(salesOrg)){
 //            curDate = new Date();
 //        }else{
 //            curDate = DateUtil.getTomorrow(new Date());
 //        }
+        if(model.getCurDate() != null){
+            curDate = model.getCurDate();
+        }
         if ("01".equals(branch.getBranchGroup())) {
             RequireOrderSearch search = new RequireOrderSearch();
-            search.setOrderDate(curDate);
-            search.setBranchNo(branchNo);
-            TSsmReqGoodsOrder order = tSsmReqGoodsOrderMapper.searchRequireOrder(search);
-            if (order == null) {
+            search.setRequiredDate(curDate);
+            search.setBranchNo(model.getBranchNo());
+            List<TSsmReqGoodsOrder> order1 = tSsmReqGoodsOrderMapper.searchRequireOrderByRequireDate(search);
+            if (order1.size()==0) {
                 throw new ServiceException(MessageCode.SERVER_ERROR, "要货单没有生成！");
             } else {
-                message = generateDelivery(order.getVoucherNo(), branchNo, true);
+                message = generateDelivery(order1.get(0).getVoucherNo(), model.getBranchNo(), true);
             }
         } else {
-            SalOrderModel model = new SalOrderModel();
-            model.setBranchNo(branchNo);
-            model.setOrderDate(curDate);
-            List<TSsmSalOrder> orders = ssmSalOrderMapper.selectSalOrderByDateAndNo(model);
+            SalOrderModel model1 = new SalOrderModel();
+            model1.setBranchNo(model.getBranchNo());
+            model1.setOrderDate(curDate);
+            List<TSsmSalOrder> orders = ssmSalOrderMapper.selectSalOrderByDateAndNo(model1);
             if (orders != null) {
                 for (TSsmSalOrder order : orders) {
-                    message = generateDelivery(order.getVoucherNo(), branchNo, false);
+                    message = generateDelivery(order.getVoucherNo(), model.getBranchNo(), false);
                 }
             } else {
                 throw new ServiceException(MessageCode.SERVER_ERROR, "销售订单没有生成！");
