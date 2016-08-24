@@ -21,7 +21,6 @@ import com.nhry.model.milktrans.*;
 import com.nhry.service.milktrans.dao.RequireOrderService;
 import com.nhry.service.pi.dao.PIRequireOrderService;
 import com.nhry.utils.DateUtil;
-import com.nhry.utils.PrimaryKeyUtils;
 import com.nhry.webService.client.PISuccessMessage;
 import org.apache.commons.lang3.StringUtils;
 
@@ -703,7 +702,7 @@ public class RequireOrderServiceImpl implements RequireOrderService {
         //将i天后的日订单中符合的产品加入到 生成的要货计划
         if(items!=null && items.size()>0){
             order = new TSsmReqGoodsOrder();
-            String orderNo = PrimaryKeyUtils.generateUuidKey();
+            String orderNo = this.generateSal30Id();
             order.setRequiredDate(requireDate);
             order.setStatus("10");
             order.setOrderNo(orderNo);
