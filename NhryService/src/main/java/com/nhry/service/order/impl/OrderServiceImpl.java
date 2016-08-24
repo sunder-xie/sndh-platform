@@ -591,7 +591,7 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 				public void run() {
 					super.run();
 					this.setName("stopOrderInTime");
-					record.setContent("N");
+					record.setContent("Y");
 					messLogService.sendOrderStopRe(record);
 				}
 			});
