@@ -204,6 +204,43 @@
 		t_vip_cust_info i 
 		WHERE i.VIP_CUST_NO =#{vipCustNo,jdbcType=VARCHAR}
 	</select>
+	<select id="findVipCustByNoSapNo" resultMap="BaseResultMap" parameterType="java.lang.String">
+		SELECT
+		i.VIP_CUST_NO,
+		i.SALES_ORG,
+		i.VIP_NAME,
+		i.ADDRESS_TXT,
+		i.PROVINCE,
+		i.CITY,
+		i.COUNTY,
+		i.STREET,
+		i.ROAD,
+		i.SUBDIST,
+		i.ROOM,
+		i.MP,
+		i.VIP_MP,
+		i.ZIP,
+		i.Email,
+		i.SEX,
+		i.BIRTHDAY,
+		i.CERT_ID,
+		i.VIP_SRC,
+		i.MILKBOX,
+		i.VIP_TYPE,
+		i.SUBSCRIBE_DATE,
+		i.SUBSCRIBER,
+		i.ACTIVITY_NO,
+		i. STATUS,
+		i.VIP_AMT,
+		i.MEMO_TXT,
+		i.DISP_MEMO_TXT,
+		i.BRANCH_NO,i.DEALER_NO,
+		date_format(FIRST_ORDER_TIME, '%Y-%m-%d') FIRST_ORDER_TIME,date_format(LAST_ORDER_TIME, '%Y-%m-%d') LAST_ORDER_TIME 
+		FROM
+		t_vip_cust_info i 
+		WHERE i.SALES_ORG =#{salesOrg,jdbcType=VARCHAR}
+		AND (i.VIP_CUST_NO_SAP is null or i.VIP_CUST_NO_SAP = '')
+	</select>
 	<select id="findVipCustOnlyByNo" resultMap="BaseResultMap" parameterType="java.lang.String">
 		SELECT
 		i.VIP_CUST_NO,

@@ -34,6 +34,13 @@ public interface TVipCustInfoMapper {
     TVipCustInfo findVipCustByNoForUpt(String vipCustNo);
     
     /**
+     * 找出该销售组织下没有会员编号的订户
+     * @param record
+     * @return
+     */
+    List<TVipCustInfo> findVipCustByNoSapNo(String salesOrg);
+    
+    /**
      * 修改订户信息
      * @param record
      * @return

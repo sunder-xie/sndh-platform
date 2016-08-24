@@ -4033,10 +4033,26 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 				order.setCurAmt(order.getCurAmt().add(orgItem.getConfirmAmt()));
 				tPreOrderMapper.updateOrderCurAmt(order);
 				
+				List<TOrderDaliyPlanItem> dateList = new ArrayList<TOrderDaliyPlanItem>();
+				daliyPlans.stream()
+				.filter((e)->e.getGiftQty()==null)
+				.filter((e)->e.getItemNo().equals(orgItem.getOrgItemNo()) )
+				.filter((e)->e.getRemainAmt().floatValue()>=0)
+				.forEach((e)->{dateList.add(e);});
+				//赠品日期调整
+				int index = 0;
+				for(TOrderDaliyPlanItem p : daliyPlans){
+					if(p.getGiftQty()==null || !p.getItemNo().equals(orgItem.getOrgItemNo()) )continue;
+					p.setDispDate(dateList.get(index).getDispDate());
+					tOrderDaliyPlanItemMapper.updateDaliyPlanItem(p);
+					index++;
+				}
+				
 				//重新计算剩余金额
 				Collections.reverse(daliyPlans);
 				BigDecimal initAmt = order.getInitAmt();
 				for(TOrderDaliyPlanItem p : daliyPlans){
+					if(p.getGiftQty()!=null)continue;
 					if(p.getRemainAmt().floatValue() < 0){
 						tOrderDaliyPlanItemMapper.updateDaliyPlanItem(p);
 						continue;
