@@ -23,7 +23,7 @@
         <result column="CUST_NAME" property="custName" jdbcType="VARCHAR" />
         <result column="MP" property="mp" jdbcType="VARCHAR" />
         <result column="ADDRESS" property="address" jdbcType="VARCHAR" />
-        <result column="CUST_ACCT_AMT" property="acctAmt" jdbcType="DECIMAL" />
+        <result column="CUST_ACCT_AMT" property="custAcctAmt" jdbcType="DECIMAL" />
         <result column="ACCT_AMT" property="acctAmt" jdbcType="DECIMAL" />
         <result column="ACCOUNT_RECE" property="amountRece" jdbcType="DECIMAL" />
         <result column="ACCOUNT_REAL" property="amountReal" jdbcType="DECIMAL" />
