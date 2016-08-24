@@ -156,6 +156,10 @@ public class TOrderDaliyPlanItemMapperImpl implements TOrderDaliyPlanItemMapper
 		return sqlSessionTemplate.selectList("getProductItemsByOrderNo", map);
 	}
 
+	@Override
+	public int deletePlansByOrder(String orderNo) {
+		return sqlSessionTemplate.delete("deletePlansByOrder",orderNo);
+	}
 
 
 	/**

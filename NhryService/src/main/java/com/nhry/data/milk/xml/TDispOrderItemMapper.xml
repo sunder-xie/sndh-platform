@@ -559,4 +559,11 @@
 	    set DISP_EMP_NO = #{dispEmpNo,jdbcType=VARCHAR}  
 	    where ORDER_NO = #{orderNo,jdbcType=VARCHAR}
   	</update>
+
+  <select id="selectDispOrderNumByPreOrderNo" resultType="INTEGER" parameterType="String" >
+      SELECT
+    COUNT(*)
+    FROM t_mst_disp_order_item i
+    WHERE i.ORG_ORDER_NO = #{orderNo,jdbcType=VARCHAR}
+  </select>
 </mapper>

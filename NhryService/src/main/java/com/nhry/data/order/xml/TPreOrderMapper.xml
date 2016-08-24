@@ -112,9 +112,10 @@
     LEFT JOIN t_vip_acct a ON v.VIP_CUST_NO = a.VIP_CUST_NO
     left join t_md_branch_emp e on e.EMP_NO = o.EMP_NO
     left join t_md_branch_emp e2 on e2.EMP_NO = o.SOLICITOR_NO
-    left join t_mst_recv_bill p on p.ORDER_NO = o.ORDER_NO
+    left join t_mst_recv_bill p on p.ORDER_NO = o.ORDER_NO  and p.HAD_OFFSET = 'N'
     left join t_md_branch_emp e3 on e3.EMP_NO = p.RECV_EMP
-    WHERE o.ORDER_NO = #{orderNo,jdbcType=VARCHAR}
+    WHERE 1=1
+    and o.ORDER_NO = #{orderNo,jdbcType=VARCHAR}
   </select>
   <select id="selectDispNoByGroup" resultMap="BaseResultMap" parameterType="java.lang.String">
     select distinct e.reach_time_type ORDER_TYPE, o.EMP_NO, o.BRANCH_NO
@@ -742,12 +743,13 @@
   ,o.PAYMENTMETHOD,o.MILKBOX_STAT
   FROM t_preorder o LEFT JOIN t_md_branch_emp e on o.EMP_NO = e.EMP_NO
   LEFT JOIN  t_vip_cust_info c on o.MILKMEMBER_NO = c.VIP_CUST_NO
-  LEFT JOIN t_mst_recv_bill b on o.ORDER_NO = b.ORDER_NO
+  LEFT JOIN t_mst_recv_bill b on o.ORDER_NO = b.ORDER_NO   and b.HAD_OFFSET= 'N'
   LEFT JOIN t_md_branch_emp emp on b.RECV_EMP = emp.EMP_NO
   where 1=1
   and o.PREORDER_STAT != "20"
   and o.PREORDER_STAT != "40"
   and o.INIT_AMT &gt;0
+
   <if test="branchNo !=null and branchNo!=''">
     and  o.BRANCH_NO = #{branchNo,jdbcType=VARCHAR}
   </if>
@@ -780,7 +782,7 @@
     FROM t_preorder o
     LEFT JOIN t_md_branch_emp e on o.EMP_NO = e.EMP_NO
     LEFT JOIN  t_vip_cust_info c on o.MILKMEMBER_NO = c.VIP_CUST_NO
-    LEFT JOIN t_mst_recv_bill b on o.ORDER_NO = b.ORDER_NO
+    LEFT JOIN t_mst_recv_bill b on o.ORDER_NO = b.ORDER_NO   and b.HAD_OFFSET= 'N'
     where 1=1
     and o.PREORDER_STAT != "30"
     and o.PREORDER_STAT != "40"
@@ -935,7 +937,7 @@
     ,o.PAYMENTMETHOD,o.MILKBOX_STAT,b.RECEIPT_NO
     FROM t_preorder o LEFT JOIN t_md_branch_emp e on o.EMP_NO = e.EMP_NO
     LEFT JOIN  t_vip_cust_info c on o.MILKMEMBER_NO = c.VIP_CUST_NO
-    LEFT JOIN t_mst_recv_bill b on o.ORDER_NO = b.ORDER_NO
+    LEFT JOIN t_mst_recv_bill b on o.ORDER_NO = b.ORDER_NO    and b.HAD_OFFSET= 'N'
     where 1=1
     and o.PREORDER_STAT != "20"
     and o.PREORDER_STAT != "40"
@@ -964,4 +966,21 @@
     SET   YFRESH = #{yfresh,jdbcType=DECIMAL} , YGROWTH = #{ygrowth,jdbcType=DECIMAL}
     where ORDER_NO = #{orderNo,jdbcType=VARCHAR}
   </update>
+
+
+
+  <select id="selectCustBatchCollect" resultMap="BaseResultMap"  parameterType="com.nhry.model.order.OrderSearchModel">
+    select
+    o.ORDER_NO,e.EMP_NAME, o.END_DATE,o.INIT_AMT,o.PAYMENT_STAT,o.MILKMEMBER_NO,c.VIP_NAME MILKMEMBER_NAME
+    ,o.PAYMENTMETHOD,o.MILKBOX_STAT,b.RECEIPT_NO
+    FROM t_preorder o LEFT JOIN t_md_branch_emp e on o.EMP_NO = e.EMP_NO
+    LEFT JOIN  t_vip_cust_info c on o.MILKMEMBER_NO = c.VIP_CUST_NO
+    LEFT JOIN t_mst_recv_bill b on o.ORDER_NO = b.ORDER_NO   and b.HAD_OFFSET= 'N'
+    WHERE  1=1
+    and o.ORDER_NO in
+    <foreach collection="orders" item="order" index="index"
+             open="(" close=")" separator=",">
+      #{order}
+    </foreach>
+  </select>
 </mapper>

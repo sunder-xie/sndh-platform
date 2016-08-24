@@ -332,7 +332,7 @@ public class RequireOrderServiceImpl implements RequireOrderService {
                         errorMessage ="修改要货计划或日订单状态失败" ;
                         throw  new ServiceException(MessageCode.LOGIC_ERROR,errorMessage);
                     }
-                    result = message.getData();
+                    result =order.getVoucherNo();
                 }else{
                     throw  new ServiceException(MessageCode.LOGIC_ERROR,"自营奶站发送要货计划失败，请重新发送");
                 }

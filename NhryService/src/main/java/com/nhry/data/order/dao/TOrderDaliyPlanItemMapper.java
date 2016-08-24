@@ -6,12 +6,10 @@ import com.nhry.data.order.domain.TOrderDaliyPlanItemKey;
 import com.nhry.data.order.domain.TPreOrder;
 import com.nhry.model.milktrans.RequireOrderSearch;
 import com.nhry.model.order.OrderSearchModel;
-import com.nhry.service.pi.pojo.MemberActivities;
 
 import java.math.BigDecimal;
 import java.util.Date;
 import java.util.List;
-import java.util.Map;
 
 public interface TOrderDaliyPlanItemMapper {
 	
@@ -73,4 +71,5 @@ public interface TOrderDaliyPlanItemMapper {
 
     List<TOrderDaliyPlanItem> getProductItemsByOrderNo(String orderCode,String salesOrg);
 
+    int deletePlansByOrder(String orderNo);
 }
