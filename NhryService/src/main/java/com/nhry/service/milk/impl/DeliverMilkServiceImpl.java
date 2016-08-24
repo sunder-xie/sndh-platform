@@ -835,6 +835,7 @@ public class DeliverMilkServiceImpl extends BaseService implements DeliverMilkSe
 			tMstInsideSalOrderItemMapper.deleteInSalOrderItemByMap(map);
 			tMstInsideSalOrderMapper.deleteInSalOrderByDispOrderNo(sOrder.getInsOrderNo());
 		}
+		sOrder = tMstInsideSalOrderMapper.getInSalOrderByDispOrderNo(newItem.getOrderNo());
 		if("40".equals(newItem.getReason()) || "50".equals(newItem.getReason())){
 			if(sOrder == null){
 				String insOrderNo = PrimaryKeyUtils.generateUuidKey();
