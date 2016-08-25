@@ -97,7 +97,7 @@ public class PromotionServiceImpl extends BaseService implements PromotionServic
  		}
  		
  		//处理,满赠,满n个a产品赠m个b产品
- 		if("10".equals(promotion.getPromType())){
+ 		if("Z008".equals(promotion.getPromType())){
  			int giftQty = entry.getBuyQty()/promotion.getOrgQty().intValue()*promotion.getGiftQty().intValue();
  			if(giftQty<=0)throw new ServiceException(MessageCode.LOGIC_ERROR,entry.getMatnr()+"产品没有达到满赠要求，请修改正品数量或不参加促销!");
  			entry.setGiftQty(giftQty);//赠送赠品的数量
@@ -125,7 +125,7 @@ public class PromotionServiceImpl extends BaseService implements PromotionServic
  		}
  		
  		//处理,满赠,满n个a产品赠m个b产品
- 		if("10".equals(promotion.getPromType())){
+ 		if("Z008".equals(promotion.getPromType())){
  			int giftQty = entry.getBuyQty()/promotion.getOrgQty().intValue()*promotion.getGiftQty().intValue();
  			if(giftQty<=0)return;
  			entry.setGiftQty(giftQty);//赠送赠品的数量
