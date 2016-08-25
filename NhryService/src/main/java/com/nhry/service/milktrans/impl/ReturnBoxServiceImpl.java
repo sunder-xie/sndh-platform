@@ -17,6 +17,7 @@ import com.nhry.model.milktrans.ReturnboxSerarch;
 import com.nhry.model.milktrans.UpdateReturnBoxModel;
 import com.nhry.model.stock.StockModel;
 import com.nhry.service.milktrans.dao.ReturnBoxService;
+import com.nhry.utils.DateUtil;
 import com.nhry.utils.PrimaryKeyUtils;
 
 import java.util.Date;
@@ -105,7 +106,7 @@ public class ReturnBoxServiceImpl implements ReturnBoxService {
                 for (TRecBotDetail bot : entries) {
                     bot.setEmpNo(dispOrder.getDispEmpNo());
                     bot.setDispOrderNo(dispOrderNo);
-                    bot.setCreateAt(dispOrder.getDispDate());
+                    bot.setCreateAt(DateUtil.getTomorrow(dispOrder.getDispDate()));
                     bot.setCreateBy(user.getLoginName());
                     bot.setCreateByTxt(user.getDisplayName());
                     bot.setStatus("10");
