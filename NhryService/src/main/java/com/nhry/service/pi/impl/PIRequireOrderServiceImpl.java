@@ -243,6 +243,7 @@ public class PIRequireOrderServiceImpl implements PIRequireOrderService {
                             ssmGiOrder.setSyncAt(new Date());
                             ssmGiOrder.setOrderDate(d.getLFDAT());
                             ssmGiOrder.setMemoTxt(d.getBSTKD());
+                            ssmGiOrder.setReqOrderNo(d.getVBELV());
                             ssmGiOrderMapper.insertGiOrder(ssmGiOrder);
                         }
                         TSsmGiOrderItemKey key = new TSsmGiOrderItemKey();
