@@ -1,6 +1,7 @@
 package com.nhry.service.order.impl;
 
 import java.math.BigDecimal;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -59,11 +60,12 @@ public class PromotionServiceImpl extends BaseService implements PromotionServic
 	@Override
 	public List<TPromotion> getPromotionByMatnr(String code)
 	{
+  		SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
 		TPromotion record = new TPromotion();
 		record.setOrgMatnr(code);
 		record.setBranchNo(userSessionService.getCurrentUser().getBranchNo());
 		record.setSalesOrg(userSessionService.getCurrentUser().getSalesOrg());
-		record.setPlanStartTime(new Date());
+		record.setCreateBy(format.format(new Date()));
 		return tPromotionMapper.selectPromotionByMatnr(record);
 	}
 

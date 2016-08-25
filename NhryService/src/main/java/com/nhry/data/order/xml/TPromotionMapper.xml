@@ -67,8 +67,8 @@
 		left join t_md_mara pro2 on pro2.matnr = gi.GIFT_NO
 		where 1 = 1
 		and oi.GOOD_NO = #{orgMatnr,jdbcType=VARCHAR}
-		and p.PLAN_START_TIME &lt;= #{planStartTime,jdbcType=VARCHAR}
-		and p.PLAN_STOP_TIME &gt;= #{planStartTime,jdbcType=VARCHAR}
+		and p.PLAN_START_TIME &lt;= #{createBy,jdbcType=DATE}
+		and p.PLAN_STOP_TIME &gt;= #{createBy,jdbcType=DATE}
 		and p.SALES_ORG = #{salesOrg,jdbcType=VARCHAR}
   </select>
   <select id="selectPromotionByPromNo" resultMap="BaseResultMap" parameterType="com.nhry.data.order.domain.TPromotion" >
