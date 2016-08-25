@@ -43,11 +43,11 @@ public class VipCustResource extends BaseResource {
 	private TVipCrmInfoService vipCrmInfoService;
 	
 	@GET
-	@Path("/batchAddVipSapNo")
+	@Path("/batchAddVipSapNo/{salesOrg}")
 	@Produces(MediaType.APPLICATION_JSON)
-	@ApiOperation(value = "/getProductByCodeOrName", response = Integer.class, notes = "为导入的订户生成会员号")
-	public Response getProductByCodeOrName(){
-		return convertToRespModel(MessageCode.NORMAL, null, custService.batchAddVipCustSapNo());
+	@ApiOperation(value = "/getProductByCodeOrName/{salesOrg}", response = Integer.class, notes = "为导入的订户生成会员号")
+	public Response getProductByCodeOrName(@ApiParam(required=true,name="salesOrg",value="销售组织") @PathParam("salesOrg")String salesOrg){
+		return convertToRespModel(MessageCode.NORMAL, null, custService.batchAddVipCustSapNo(salesOrg));
 	}
 	
 	@POST

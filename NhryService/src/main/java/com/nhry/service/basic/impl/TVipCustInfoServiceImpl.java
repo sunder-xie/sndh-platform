@@ -83,8 +83,10 @@ public class TVipCustInfoServiceImpl extends BaseService implements TVipCustInfo
 	}
 	
 	@Override
-	public int batchAddVipCustSapNo() {
-		String salesOrg = this.userSessionService.getCurrentUser().getSalesOrg();
+	public int batchAddVipCustSapNo(String salesOrg) {
+		if(StringUtils.isBlank(salesOrg)){
+			throw new ServiceException(MessageCode.LOGIC_ERROR, "请传入销售组织！");
+		}
 		List<TVipCustInfo> VipList= tmdVipcust.findVipCustByNoSapNo(salesOrg);
 		int i = 0;
 		VipList.stream().forEach((e)->{
