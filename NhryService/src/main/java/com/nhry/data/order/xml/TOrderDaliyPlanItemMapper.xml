@@ -651,7 +651,7 @@ UNION ALL
     UNION ALL
 
         select
-        (select NULL from DUAL) MATNR,di.QTY,i.MATNR CONFIRM_MATNR
+        (select NULL from DUAL) MATNR,di.QTY,di.MATNR CONFIRM_MATNR
         di.MATNR,SUM(di.CONFIRM_QTY) QTY,di.CONFIRM_MATNR
         from t_mst_disp_order_item di
         LEFT JOIN t_preorder o on 	di.ORG_ORDER_NO = o.ORDER_NO
