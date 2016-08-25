@@ -25,7 +25,7 @@ public interface TVipCustInfoService {
 	 * @param record
 	 * @return
 	 */
-	int batchAddVipCustSapNo();
+	int batchAddVipCustSapNo(String salesOrg);
     /**
      * 根据订户编号查询订户信息
      * @param vipCustNo
