@@ -47,4 +47,5 @@ public interface RequireOrderService {
     RequireOrderModel creatRequireOrderByDate(ReqGoodsOrderSearch eSearch);
 
 
+    String sendRequireOrderToERPByDate(ReqGoodsOrderSearch eSearch);
 }
