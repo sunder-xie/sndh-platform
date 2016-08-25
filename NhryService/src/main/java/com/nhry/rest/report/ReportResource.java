@@ -30,11 +30,10 @@ import com.sun.jersey.spi.resource.Singleton;
 import com.wordnik.swagger.annotations.Api;
 import com.wordnik.swagger.annotations.ApiOperation;
 import com.wordnik.swagger.annotations.ApiParam;
+import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
-import org.apache.poi.xssf.usermodel.XSSFCell;
-import org.apache.poi.xssf.usermodel.XSSFRow;
-import org.apache.poi.xssf.usermodel.XSSFSheet;
-import org.apache.poi.xssf.usermodel.XSSFWorkbook;
+import org.apache.poi.ss.util.CellRangeAddress;
+import org.apache.poi.xssf.usermodel.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Controller;
@@ -240,20 +239,51 @@ public class ReportResource extends BaseResource{
             row = sheet.getRow(6);
             cell = row.getCell(7);
             cell.setCellValue(model.getProducts());
+            XSSFCellStyle styleBold = workbook.createCellStyle();
+            styleBold.setBorderBottom(XSSFCellStyle.BORDER_THIN); //下边框
+            styleBold.setBorderLeft(XSSFCellStyle.BORDER_THIN);//左边框
+            styleBold.setBorderTop(XSSFCellStyle.BORDER_THIN);//上边框
+            styleBold.setBorderRight(XSSFCellStyle.BORDER_THIN);//右边框
+
             int r = 10;
             if(details!=null){
-                for(TDispOrderItem item : details){
+                for(TDispOrderItem item : details) {
                     row = sheet.createRow(r);
                     cell = row.createCell(1);
+                    cell.setCellStyle(styleBold);
                     cell.setCellValue(item.getAddressTxt());
+                    cell = row.createCell(2);
+                    cell.setCellValue(" ");
+                    cell.setCellStyle(styleBold);
+                    cell = row.createCell(3);
+                    cell.setCellValue(" ");
+                    cell.setCellStyle(styleBold);
+                    cell = row.createCell(4);
+                    cell.setCellValue(" ");//设置第五列为空字符串
+                    cell.setCellStyle(styleBold);
+                    sheet.addMergedRegion(new CellRangeAddress(row.getRowNum(), row.getRowNum(), 1, 4));
+
                     cell = row.createCell(5);
-                    cell.setCellValue(item.getMatnrTxt().concat("--").concat(item.getConfirmQty().toString()));
+                    cell.setCellStyle(styleBold);
+                    if (StringUtils.isNotEmpty(item.getMatnrTxt())){
+                        cell.setCellValue(item.getMatnrTxt().concat("--").concat(item.getConfirmQty()==null?"" : item.getConfirmQty().toBigInteger().toString()));
+                    }
                     cell = row.createCell(6);
+                    cell.setCellStyle(styleBold);
                     cell.setCellValue(item.getCustTel());
                     cell = row.createCell(7);
+                    cell.setCellStyle(styleBold);
                     cell.setCellValue(item.getCustName());
+                    cell = row.createCell(8);
+                    cell.setCellStyle(styleBold);
+                    cell = row.createCell(9);
+                    cell.setCellStyle(styleBold);
+                    cell = row.createCell(10);
+                    cell.setCellStyle(styleBold);
                     r++;
                 }
+
+                sheet.setForceFormulaRecalculation(true);
             }
             String fname = CodeGeneratorUtil.getCode();
             String rq = format1.format(new Date(new Date().getTime() - 24 * 60 * 60 * 1000));
