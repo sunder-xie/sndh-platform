@@ -737,6 +737,56 @@ public class RequireOrderServiceImpl implements RequireOrderService {
         return this.searchRequireOrder(orderDate);
     }
 
+    @Override
+    public String sendRequireOrderToERPByDate(ReqGoodsOrderSearch eSearch) {
+        String result = "";
+        Date today = eSearch.getRequiredDate();
+        TSysUser user = userSessionService.getCurrentUser();
+        String salesOrg =user.getSalesOrg();
+        String branchNo = user.getBranchNo();
+        RequireOrderSearch search = new RequireOrderSearch();
+        search.setOrderDate(today);
+        search.setBranchNo(branchNo);
+        TSsmReqGoodsOrder order = tSsmReqGoodsOrderMapper.searchRequireOrder(search);
+        String errorMessage = "";
+        if(order == null){
+            errorMessage = "今天的要货计划还未创建";
+            throw  new ServiceException(MessageCode.LOGIC_ERROR,errorMessage);
+        }else{
+            if( "30".equals(order.getStatus())){
+                errorMessage = "今天的要货计划已发送至ERP";
+                throw  new ServiceException(MessageCode.LOGIC_ERROR,errorMessage);
+            }
+            TMdBranch branch = branchMapper.selectBranchByNo(branchNo);
+
+            //自营奶站
+            if("01".equals(branch.getBranchGroup())){
+                PISuccessMessage message =  piRequireOrderService.generateRequireOrder(order);
+                order.setVoucherNo(message.getData());
+                if(message.isSuccess()){
+
+                    if(!uptRequireOrderAndDayOrderStatus(order,user)){
+                        errorMessage ="修改要货计划或日订单状态失败" ;
+                        throw  new ServiceException(MessageCode.LOGIC_ERROR,errorMessage);
+                    }
+                    result =order.getVoucherNo();
+                }else{
+                    throw  new ServiceException(MessageCode.LOGIC_ERROR,"自营奶站发送要货计划失败，请重新发送");
+                }
+            }else{
+                //经销商奶站 生成销售订单
+                this.creatNoPromoSalOrderOfDealerBranch(today);
+                this.creatPromoSalOrderOfDealerBranch(today);
+                order.setLastModified(new Date());
+                order.setLastModifiedBy(user.getLoginName());
+                order.setLastModifiedByTxt(user.getDisplayName());
+                order.setStatus("30");
+                tSsmReqGoodsOrderMapper.uptRequireGoodsModifyInfo(order);
+            }
+        }
+        return result;
+    }
+
     /**
      * 自营奶站 根据已确认路单  和  内部销售订单 生成销售订单
      * 创建前 判断是否已经生成 -> 判断今天的路单是否已经生成 -> 判断今天的路单是否已经全部确认(否则给出提示)
