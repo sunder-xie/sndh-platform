@@ -3731,6 +3731,7 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 					return -1;
 				}else{
 					if(o1.getDispDate().equals(o2.getDispDate())){
+						if(o1.getGiftQty()!=null||o2.getGiftQty()!=null)return -1;
 						if(o1.getRemainAmt().floatValue() > o2.getRemainAmt().floatValue()){
 							return -1;
 						}else{
