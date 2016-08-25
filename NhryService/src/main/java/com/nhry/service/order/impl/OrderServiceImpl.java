@@ -673,6 +673,9 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 				tVipCustInfoService.discontinue(order.getMilkmemberNo(), "40",null,null);
 			}
 			
+			//删除装箱单
+			milkBoxService.deleteMilkBoxByOrderNo(order.getOrderNo());
+			
 			//发送EC,更新订单状态
 			TPreOrder sendOrder = new TPreOrder();
 			sendOrder.setOrderNo(order.getOrderNo());

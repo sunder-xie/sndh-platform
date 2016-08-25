@@ -11,7 +11,7 @@ public interface TMilkboxPlanMapper {
 	
 	 PageInfo selectMilkboxsByPage(MilkboxSearchModel smodel);
 	
-    int deleteByPrimaryKey(String planNo);
+    int deleteMilkBoxByOrderNo(String orderNo);
 
     int insert(TMilkboxPlan record);
 
