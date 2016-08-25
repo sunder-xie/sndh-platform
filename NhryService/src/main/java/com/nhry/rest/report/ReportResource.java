@@ -243,14 +243,14 @@ public class ReportResource extends BaseResource{
             int r = 10;
             if(details!=null){
                 for(TDispOrderItem item : details){
-                    row = sheet.getRow(r);
-                    cell = row.getCell(1);
+                    row = sheet.createRow(r);
+                    cell = row.createCell(1);
                     cell.setCellValue(item.getAddressTxt());
-                    cell = row.getCell(5);
+                    cell = row.createCell(5);
                     cell.setCellValue(item.getMatnrTxt().concat("--").concat(item.getConfirmQty().toString()));
-                    cell = row.getCell(6);
+                    cell = row.createCell(6);
                     cell.setCellValue(item.getCustTel());
-                    cell = row.getCell(7);
+                    cell = row.createCell(7);
                     cell.setCellValue(item.getCustName());
                     r++;
                 }

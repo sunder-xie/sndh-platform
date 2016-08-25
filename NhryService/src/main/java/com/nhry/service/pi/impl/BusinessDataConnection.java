@@ -1,5 +1,7 @@
 package com.nhry.service.pi.impl;
 
+import com.nhry.common.exception.MessageCode;
+import com.nhry.common.exception.ServiceException;
 import com.nhry.data.basic.domain.TMdBranchEx;
 import com.nhry.service.pi.pojo.SalesOrderHeader;
 import com.nhry.utils.PIPropertitesUtil;
@@ -163,6 +165,12 @@ public class BusinessDataConnection {
         logger.info("获取销售订单开始！" + orderHeader.toString());
         PISuccessMessage successMessage = new PISuccessMessage();
         try {
+            if(items.size() == 0){
+                successMessage.setSuccess(false);
+                successMessage.setData("");
+                successMessage.setMessage("销售订单没有获取到行项目！");
+                return successMessage;
+            }
             IT_ZSSD00011_type0 it_zssd00011_type1 = new IT_ZSSD00011_type0();
             for (Map<String, String> map : items) {
                 ZSSD00011 zssd00011 = new ZSSD00011();
