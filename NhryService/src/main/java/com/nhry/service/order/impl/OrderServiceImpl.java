@@ -3501,6 +3501,7 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 			/////////////////////////////更新订单的总金额 用allAmt
 //			order.setInitAmt(allAmt);
 //			order.setCurAmt(allAmt);
+			System.out.println(order.getOrderNo()+"完毕！");
 			
 		});
 		
