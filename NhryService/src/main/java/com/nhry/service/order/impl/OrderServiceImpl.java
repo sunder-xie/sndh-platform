@@ -3680,9 +3680,9 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 									  entryMap2.put(e.getItemNo(), e);
 		});
 		
-		if(entryMap2.size() > 0){
+		for(String itemNo : entryMap2.keySet()){
 			for(TOrderDaliyPlanItem plan : daliyPlans){
-				if(entryMap2.containsKey(plan.getItemNo())){
+				if(plan.getItemNo().equals(itemNo)){
 					TPlanOrderItem orgEntry = entryMap2.get(plan.getItemNo());
 					
 					int totalGift = orgEntry.getGiftQty();
