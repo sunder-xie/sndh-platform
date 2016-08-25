@@ -170,47 +170,50 @@ public class PromotionServiceImpl extends BaseService implements PromotionServic
 		
 		int daliyEntryNo = Integer.parseInt(daliyPlans.get(0).getPlanItemNo()) + 1;//日计划行号
 		
-		for(TOrderDaliyPlanItem plan : daliyPlans){
-			if(entryMap.containsKey(plan.getItemNo())){
-				TPlanOrderItem orgEntry = entryMap.get(plan.getItemNo());
-				
-				int totalGift = orgEntry.getGiftQty();
-				if(totalGift<=0)break;
-				
-				//复制日计划
-				TOrderDaliyPlanItem giftPlan = new TOrderDaliyPlanItem();
-				giftPlan.setOrderNo(plan.getOrderNo());//订单编号
-				giftPlan.setOrderDate(plan.getOrderDate());//订单日期
-				giftPlan.setPlanItemNo(String.valueOf(daliyEntryNo));//预订单计划行项
-				giftPlan.setItemNo(plan.getItemNo());//预订单日计划行
-				giftPlan.setDispDate(plan.getDispDate());//配送日期
-				giftPlan.setReachTimeType(plan.getReachTimeType());//送达时段类型
-				giftPlan.setMatnr(orgEntry.getGiftMatnr());//产品编号
-				giftPlan.setUnit(orgEntry.getGiftUnit());//配送单位
-				giftPlan.setPromotionFlag(orgEntry.getPromotion());//促销号
-				
-				//产品数量
-				if(totalGift>=plan.getQty()){
-					giftPlan.setQty(plan.getQty());
-				}else{
-					giftPlan.setQty(totalGift);
+		for(String itemNo : entryMap.keySet()){
+			for(TOrderDaliyPlanItem plan : daliyPlans){
+				if(plan.getItemNo().equals(itemNo)){
+					TPlanOrderItem orgEntry = entryMap.get(plan.getItemNo());
+					
+					int totalGift = orgEntry.getGiftQty();
+					if(totalGift<=0)break;
+					
+					//复制日计划
+					TOrderDaliyPlanItem giftPlan = new TOrderDaliyPlanItem();
+					giftPlan.setOrderNo(plan.getOrderNo());//订单编号
+					giftPlan.setOrderDate(plan.getOrderDate());//订单日期
+					giftPlan.setPlanItemNo(String.valueOf(daliyEntryNo));//预订单计划行项
+					giftPlan.setItemNo(plan.getItemNo());//预订单日计划行
+					giftPlan.setDispDate(plan.getDispDate());//配送日期
+					giftPlan.setReachTimeType(plan.getReachTimeType());//送达时段类型
+					giftPlan.setMatnr(orgEntry.getGiftMatnr());//产品编号
+					giftPlan.setUnit(orgEntry.getGiftUnit());//配送单位
+					giftPlan.setPromotionFlag(orgEntry.getPromotion());//促销号
+					
+					//产品数量
+					if(totalGift>=plan.getQty()){
+						giftPlan.setQty(plan.getQty());
+					}else{
+						giftPlan.setQty(totalGift);
+					}
+					giftPlan.setGiftQty(giftPlan.getQty());//赠品数量
+					giftPlan.setStatus("10");//状态
+					giftPlan.setCreateAt(new Date());//创建时间
+					giftPlan.setCreateBy(userSessionService.getCurrentUser().getLoginName());//创建人
+					giftPlan.setCreateByTxt(userSessionService.getCurrentUser().getDisplayName());//创建人姓名
+					
+					tOrderDaliyPlanItemMapper.insert(giftPlan);
+					
+					//赠品数量减少
+					orgEntry.setGiftQty(totalGift-giftPlan.getGiftQty());
+					
+					if(orgEntry.getGiftQty()<=0)break;//赠完为止
+					
+					daliyEntryNo++;
 				}
-				giftPlan.setGiftQty(giftPlan.getQty());//赠品数量
-				giftPlan.setStatus("10");//状态
-				giftPlan.setCreateAt(new Date());//创建时间
-				giftPlan.setCreateBy(userSessionService.getCurrentUser().getLoginName());//创建人
-				giftPlan.setCreateByTxt(userSessionService.getCurrentUser().getDisplayName());//创建人姓名
-				
-				tOrderDaliyPlanItemMapper.insert(giftPlan);
-				
-				//赠品数量减少
-				orgEntry.setGiftQty(totalGift-giftPlan.getGiftQty());
-				
-				if(orgEntry.getGiftQty()<=0)break;//赠完为止
-				
-				daliyEntryNo++;
 			}
 		}
+		
 		
 	}
 	

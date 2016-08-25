@@ -2771,18 +2771,19 @@ public class OrderServiceImpl extends BaseService implements OrderService {
    	orgOrder.setEndDate(newPlans.get(newPlans.size()-1).getDispDate());
 		tPreOrderMapper.updateOrderEndDate(orgOrder);
    	
-   	int i=0;
    	for(TOrderDaliyPlanItem plan:newPlans){
    		if(plan.getGiftQty()==null)continue;
-   		if(!dateList.get(i).getItemNo().equals(plan.getItemNo())){
-   			i++;
-   			continue;
+   		for(TOrderDaliyPlanItem datePlan:dateList){
+   			if(!datePlan.getItemNo().equals(plan.getItemNo())){
+   				continue;
+   			}
+   			plan.setDispDate(datePlan.getDispDate());
+   			datePlan.setItemNo("-1");//占用过,下次不占用
+   			plan.setPlanItemNo(String.valueOf(index));
+   			index++;
+   			tOrderDaliyPlanItemMapper.insert(plan);
+   			break;
    		}
-			plan.setDispDate(dateList.get(i).getDispDate());
-			plan.setPlanItemNo(String.valueOf(index));
-			index++;
-			i++;
-			tOrderDaliyPlanItemMapper.insert(plan);
    	}
    	
    }
@@ -3501,6 +3502,7 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 			/////////////////////////////更新订单的总金额 用allAmt
 //			order.setInitAmt(allAmt);
 //			order.setCurAmt(allAmt);
+			System.out.println(order.getOrderNo()+"完毕！");
 			
 		});
 		
