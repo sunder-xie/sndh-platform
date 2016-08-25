@@ -835,7 +835,10 @@ public class DeliverMilkServiceImpl extends BaseService implements DeliverMilkSe
 			map.put("matnr",orgItem.getMatnr());
 			map.put("reason",orgItem.getReason());
 			tMstInsideSalOrderItemMapper.deleteInSalOrderItemByMap(map);
-			tMstInsideSalOrderMapper.deleteInSalOrderByDispOrderNo(sOrder.getInsOrderNo());
+			List<TMstInsideSalOrderItem> entries = tMstInsideSalOrderItemMapper.getItemsByNo(sOrder.getInsOrderNo());
+			if(entries == null || entries.size()==0){
+				tMstInsideSalOrderMapper.deleteInSalOrderByDispOrderNo(sOrder.getInsOrderNo());
+			}
 		}
 		sOrder = tMstInsideSalOrderMapper.getInSalOrderByDispOrderNo(newItem.getOrderNo());
 		if("40".equals(newItem.getReason()) || "50".equals(newItem.getReason())){
