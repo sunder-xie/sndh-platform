@@ -603,6 +603,7 @@
    LEFT JOIN  t_mst_disp_order ti ON di.ORDER_NO = ti.ORDER_NO
     LEFT JOIN t_mst_plan_order_item  i on i.ORDER_NO = di.ORG_ORDER_NO and i.ITEM_NO = di.ORG_ITEM_NO and i.MATNR = di.MATNR
     LEFT JOIN t_preorder o on 	di.ORG_ORDER_NO = o.ORDER_NO
+    LEFT JOIN t_mst_plan_order_item p on di.ORG_ITEM_NO = p.ITEM_NO
     LEFT JOIN t_md_mara_ex e on di.MATNR = e.MATNR  and e.SALES_ORG = #{salesOrg,jdbcType=VARCHAR}
     where   1=1
     AND di.GIFT_FLAG is NOT null
@@ -610,7 +611,7 @@
     and di.MATNR!=di.CONFIRM_MATNR
     and di.REASON = '10'
     and di.REPLACE_REASON = '10'
-    LEFT JOIN t_mst_plan_order_item p on di.ORG_ITEM_NO = p.ITEM_NO
+
      and  o.BRANCH_NO = #{branchNo,jdbcType=VARCHAR}
     and e.SALES_ORG = #{salesOrg,jdbcType=VARCHAR}
     and  ti.DISP_DATE = #{requiredDate,jdbcType=DATE}
