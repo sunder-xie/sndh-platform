@@ -760,7 +760,9 @@ public class DeliverMilkServiceImpl extends BaseService implements DeliverMilkSe
 			//未修改任何操作
 			if(!"10".equals(item.getReason()))item.setProductCode(item.getMatnr());
 			if( (item.getReason()==null?"":item.getReason()).equals(entry.getReason()==null?"":entry.getReason()) && Integer.parseInt(item.getConfirmQty()) == entry.getConfirmQty().intValue() && item.getProductCode().equals(entry.getConfirmMatnr())){
-				return 0;
+				if((item.getReplaceReason()==null?"":item.getReplaceReason()).equals(entry.getReplaceReason()==null?"":entry.getReplaceReason())){
+					return 0;
+				}
 			}
 			
 			if(!new Date().before(afterDate(entry.getOrderDate(),1)))throw new ServiceException(MessageCode.LOGIC_ERROR,"非今日的路单已经不能重新修改！");
