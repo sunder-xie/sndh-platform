@@ -617,7 +617,7 @@
     and  ti.DISP_DATE = #{requiredDate,jdbcType=DATE}
     GROUP BY di.MATNR
 UNION ALL
-    select di.MATNR,SUM(di.CONFIRM_QTY) QTY, (select NULL from DUAL)  CONFIRM_MATNR,p.PROMOTION PROMOTION_FLAG
+    select  (select NULL from DUAL) MATNR,SUM(di.CONFIRM_QTY) QTY,di.MATNR   CONFIRM_MATNR,p.PROMOTION PROMOTION_FLAG
     from  t_mst_disp_order_item di
     LEFT JOIN  t_mst_disp_order ti ON di.ORDER_NO = ti.ORDER_NO
     LEFT JOIN t_mst_plan_order_item  i on i.ORDER_NO = di.ORG_ORDER_NO and i.ITEM_NO = di.ORG_ITEM_NO and i.MATNR = di.MATNR
