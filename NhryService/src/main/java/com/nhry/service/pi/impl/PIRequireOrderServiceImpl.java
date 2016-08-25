@@ -280,6 +280,7 @@ public class PIRequireOrderServiceImpl implements PIRequireOrderService {
                         price.setMatnr(d.getMATNR());
                         price.setOrderDate(d.getLFDAT());
                         price.setSalesOrg(user.getSalesOrg());
+                        price.setFactoryPrice(d.getCmpre());
                         ssmSalFactoryPriceMapper.insertFactoryPrice(price);
                     }
                 }
