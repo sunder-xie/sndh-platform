@@ -634,7 +634,8 @@ UNION ALL
     SELECT  t.MATNR,SUM(t.QTY) QTY,  t.CONFIRM_MATNR
     FROM
     (
-       	select di.MATNR,SUM(di.CONFIRM_QTY) QTY,(select NULL from DUAL) CONFIRM_MATNR
+       	select
+       	(select NULL from DUAL)  MATNR,SUM(di.CONFIRM_QTY) QTY, di.CONFIRM_MATNR
         from t_mst_disp_order_item di
         LEFT JOIN t_preorder o on 	di.ORG_ORDER_NO = o.ORDER_NO
         LEFT JOIN t_mst_disp_order disp on di.ORDER_NO = disp.ORDER_NO
@@ -649,7 +650,9 @@ UNION ALL
 
     UNION ALL
 
-        select di.MATNR,SUM(di.CONFIRM_QTY) QTY,di.CONFIRM_MATNR
+        select
+        (select NULL from DUAL) MATNR,di.QTY,i.MATNR CONFIRM_MATNR
+        di.MATNR,SUM(di.CONFIRM_QTY) QTY,di.CONFIRM_MATNR
         from t_mst_disp_order_item di
         LEFT JOIN t_preorder o on 	di.ORG_ORDER_NO = o.ORDER_NO
         LEFT JOIN t_mst_disp_order disp on di.ORDER_NO = disp.ORDER_NO
@@ -664,11 +667,10 @@ UNION ALL
         and  o.BRANCH_NO = #{branchNo,jdbcType=VARCHAR}
         GROUP BY di.MATNR
 
-
     UNION ALL
 
           SELECT
-          i.MATNR,SUM(i.INCRE_QTY) QTY,(select NULL from DUAL) CONFIRM_MATNR
+          (select NULL from DUAL) MATNR ,SUM(i.INCRE_QTY) QTY,i.MATNR  CONFIRM_MATNR
           FROM t_ssm_req_goods_order_item i
           LEFT JOIN t_ssm_req_goods_order o on i.ORDER_NO = o.ORDER_NO
           where 1=1
@@ -676,30 +678,33 @@ UNION ALL
           and i.INCRE_QTY!=0
           and i.ORDER_DATE = #{requiredDate,jdbcType=DATE}
           and o.BRANCH_NO =  #{branchNo,jdbcType=VARCHAR}
+           GROUP BY i.MATNR
 
     UNION ALL
           SELECT
-          i.MATNR,SUM(i.QTY) QTY,(select NULL from DUAL)  CONFIRM_MATNR
+          (select NULL from DUAL) MATNR ,SUM(i.QTY) QTY, i.MATNR CONFIRM_MATNR
           FROM t_ssm_req_goods_order_item i
           LEFT JOIN t_ssm_req_goods_order o on i.ORDER_NO = o.ORDER_NO
           where 1=1
           and i.FLAG = 2
           and i.ORDER_DATE = #{requiredDate,jdbcType=DATE}
           and o.BRANCH_NO =  #{branchNo,jdbcType=VARCHAR}
+          GROUP BY i.MATNR
+
     UNION ALL
         SELECT
-        i.MATNR,i.QTY,(select NULL from DUAL)  CONFIRM_MATNR
+       (select NULL from DUAL)  MATNR,i.QTY,i.MATNR CONFIRM_MATNR
         FROM t_mst_inside_sal_order_item i
         LEFT JOIN t_mst_inside_sal_order o on i.INS_ORDER_NO = o.INS_ORDER_NO
         LEFT JOIN t_mst_disp_order disp on o.DISP_ORDER_NO = disp.ORDER_NO
         WHERE 1=1
         and o.BRANCH_NO =  #{branchNo,jdbcType=VARCHAR}
         and disp.DISP_DATE = #{requiredDate,jdbcType=DATE}
-
+        GROUP BY i.MATNR
     )t
     where 1=1
-    and t.MATNR IS NOT NULL
-    GROUP BY t.MATNR
+    and t.CONFIRM_MATNR IS NOT NULL
+    GROUP BY t.CONFIRM_MATNR
 
   </select>
 
