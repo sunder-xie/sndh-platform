@@ -253,15 +253,22 @@ public class PIRequireOrderServiceImpl implements PIRequireOrderService {
                     }
                     if(!isDeli){
                         TSysUser user = userSessionService.getCurrentUser();
-                        TSsmSalFactoryPrice price = new TSsmSalFactoryPrice();
-                        price.setCreateAt(new Date());
-                        price.setCreateBy(user.getLoginName());
-                        price.setBranchNo(branchNo);
-                        price.setMatnr(d.getMATNR());
-                        price.setOrderDate(d.getLFDAT());
-                        price.setSalesOrg(user.getSalesOrg());
-                        price.setFactoryPrice(d.getCmpre());
-                        ssmSalFactoryPriceMapper.insertFactoryPrice(price);
+                        TSsmSalFactoryPriceKey key = new TSsmSalFactoryPriceKey();
+                        key.setOrderDate(d.getLFDAT());
+                        key.setMatnr(d.getMATNR());
+                        key.setBranchNo(branchNo);
+                        TSsmSalFactoryPrice price =ssmSalFactoryPriceMapper.selectFactoryPrice(key);
+                        if(price == null) {
+                            price = new TSsmSalFactoryPrice();
+                            price.setCreateAt(new Date());
+                            price.setCreateBy(user.getLoginName());
+                            price.setBranchNo(branchNo);
+                            price.setMatnr(d.getMATNR());
+                            price.setOrderDate(d.getLFDAT());
+                            price.setSalesOrg(user.getSalesOrg());
+                            price.setFactoryPrice(d.getCmpre());
+                            ssmSalFactoryPriceMapper.insertFactoryPrice(price);
+                        }
                     }
                 }
             }
