@@ -1,6 +1,7 @@
 package com.nhry.data.milktrans.dao;
 
 import com.nhry.data.milktrans.domain.TSsmSalOrder;
+import com.nhry.data.stock.domain.TSsmGiOrder;
 import com.nhry.model.order.OrderPointModel;
 import com.nhry.model.milktrans.SalOrderModel;
 
@@ -21,5 +22,7 @@ public interface TSsmSalOrderMapper {
 
     int delSalOrderByOrderNo(String orderNo);
 
+    List<TSsmSalOrder> findGidOrderByNotWBSTK();
 
+    int updateWBSTK(String orderNo);
 }

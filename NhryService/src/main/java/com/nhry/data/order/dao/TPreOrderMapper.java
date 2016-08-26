@@ -78,4 +78,8 @@ public interface TPreOrderMapper {
     List<TPreOrder> searchCustomerOrderByEmpNo(CustBatchBillQueryModel model);
 
     int uptYfrechAndYGrowthByOrderNo(OrderPointModel model);
+
+    List<TPreOrder> selectCustBatchCollect(OrderSearchModel oModel);
+
+    BigDecimal calculateAfterOrderFactoryAmt(String orderNo);
 }

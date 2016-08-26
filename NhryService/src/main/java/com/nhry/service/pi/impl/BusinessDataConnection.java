@@ -17,7 +17,6 @@ import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 
 import java.math.BigDecimal;
-import java.rmi.ServerException;
 import java.text.ParsePosition;
 import java.text.SimpleDateFormat;
 import java.util.*;
@@ -162,10 +161,16 @@ public class BusinessDataConnection {
     }
 
     public static PISuccessMessage SalesOrderCreate(List<Map<String, String>> items, SalesOrderHeader orderHeader) {
-
+        long begin = System.currentTimeMillis();
         logger.info("获取销售订单开始！" + orderHeader.toString());
         PISuccessMessage successMessage = new PISuccessMessage();
         try {
+            if(items.size() == 0){
+                successMessage.setSuccess(false);
+                successMessage.setData("");
+                successMessage.setMessage("销售订单没有获取到行项目！");
+                return successMessage;
+            }
             IT_ZSSD00011_type0 it_zssd00011_type1 = new IT_ZSSD00011_type0();
             for (Map<String, String> map : items) {
                 ZSSD00011 zssd00011 = new ZSSD00011();
@@ -288,11 +293,12 @@ public class BusinessDataConnection {
             successMessage.setData("");
             successMessage.setMessage("销售订单接口异常，请联系管理员！");
         }
-        logger.info("获取销售订单结束");
+        long end = System.currentTimeMillis();
+        logger.info("获取销售订单结束"+(end - begin));
         return successMessage;
     }
 
-    public static PISuccessTMessage<List<Delivery>> DeliveryQuery(String orderNo, boolean deliveryType) {
+    public static PISuccessTMessage<List<Delivery>> DeliveryQuery(String orderNo, boolean deliveryType, boolean isZy) {
         PISuccessTMessage message = new PISuccessTMessage();
         try {
             ZSD_DELIVERY_DATA zsd_delivery_data = new ZSD_DELIVERY_DATA();
@@ -323,7 +329,7 @@ public class BusinessDataConnection {
                 for (ZSSD00069 zssd00069 : zssd00069s) {
                     if (zssd00069.getWBSTK() != null && StringUtils.isNotEmpty(zssd00069.getWBSTK().getWBSTK_type0())) {
                         String wbstk = zssd00069.getWBSTK().getWBSTK_type0();
-                        if ("C".equals(wbstk)) {
+                        if ("C".equals(wbstk) || isZy) {
                             Delivery delivery = new Delivery();
                             delivery.setKUNNR(zssd00069.getKUNNR().getKUNNR_type2());
                             delivery.setBSTKD(zssd00069.getBSTKD().getBSTKD_type2());
@@ -349,17 +355,22 @@ public class BusinessDataConnection {
                             deliveries.add(delivery);
                         }
                     }
-                    if (deliveries.size() < 1) {
-                        message.setSuccess(false);
-                        message.setMessage("交货单未过账！");
-                    }
-
                 }
-                message.setSuccess(true);
-                message.setData(deliveries);
+                if (deliveries.size() == 0) {
+                    message.setSuccess(false);
+                    message.setMessage("交货单未过账！");
+                }else {
+                    message.setSuccess(true);
+                    message.setData(deliveries);
+                }
             } else {
+
                 message.setSuccess(false);
-                message.setMessage("交货单没有生成！");
+                if(isZy){
+                    message.setMessage("获取出厂价格失败，销售订单生成失败！");
+                }else{
+                    message.setMessage("交货单没有生成！");
+                }
             }
         }catch (Exception e){
             e.printStackTrace();

@@ -3,6 +3,7 @@ package com.nhry.data.milktrans.impl;
 import com.nhry.common.datasource.DynamicSqlSessionTemplate;
 import com.nhry.data.milktrans.dao.TSsmSalOrderMapper;
 import com.nhry.data.milktrans.domain.TSsmSalOrder;
+import com.nhry.data.stock.domain.TSsmGiOrder;
 import com.nhry.model.order.OrderPointModel;
 import com.nhry.model.milktrans.SalOrderModel;
 
@@ -44,4 +45,13 @@ public class TSsmSalOrderMapperImpl implements TSsmSalOrderMapper {
         return sqlSessionTemplate.delete("delSalOrderByOrderNo",orderNo);
     }
 
+    @Override
+    public List<TSsmSalOrder> findGidOrderByNotWBSTK() {
+        return sqlSessionTemplate.selectList("findGidOrderByNotWBSTK");
+    }
+
+    @Override
+    public int updateWBSTK(String orderNo) {
+        return sqlSessionTemplate.update("updateWBSTK",orderNo);
+    }
 }

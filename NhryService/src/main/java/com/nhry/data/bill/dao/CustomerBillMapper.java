@@ -1,6 +1,7 @@
 package com.nhry.data.bill.dao;
 
 import com.nhry.data.bill.domain.TMstRecvBill;
+import com.nhry.data.bill.domain.TMstRecvOffset;
 import com.nhry.model.bill.CollectOrderBillModel;
 
 /**
@@ -15,4 +16,8 @@ public interface CustomerBillMapper {
     public int updateCustomerBillrPayment(TMstRecvBill customerBill);
 
     CollectOrderBillModel queryCollectByOrderNo(String orderCode);
+
+    TMstRecvBill getRecBillByReceoptNo(String receiptNo);
+
+    int addOffset(TMstRecvOffset offset);
 }

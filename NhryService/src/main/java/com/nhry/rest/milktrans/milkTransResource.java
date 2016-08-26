@@ -157,11 +157,19 @@ public class milkTransResource extends BaseResource {
 	@Path("/sendRequireOrderToERP")
 	@Produces(MediaType.APPLICATION_JSON)
 	@Consumes(MediaType.APPLICATION_JSON)
-	@ApiOperation(value = "/sendRequireOrderToERP", response = Response.class, notes = "传到ERP系统")
+	@ApiOperation(value = "/sendRequireOrderToERP", response = String.class, notes = "传到ERP系统")
 	public Response sendRequireOrderToERP(){
 		return convertToRespModel(MessageCode.NORMAL, null, requireOrderService.sendRequireOrderToERP());
 	}
 
+	@POST
+	@Path("/sendRequireOrderToERPByDate")
+	@Produces(MediaType.APPLICATION_JSON)
+	@Consumes(MediaType.APPLICATION_JSON)
+	@ApiOperation(value = "/sendRequireOrderToERPByDate", response = String.class, notes = "传到指定日期的要货计划ERP系统")
+	public Response sendRequireOrderToERPByDate(@ApiParam(required=true,name="orderDate",value="日期") ReqGoodsOrderSearch eSearch){
+		return convertToRespModel(MessageCode.NORMAL, null, requireOrderService.sendRequireOrderToERPByDate(eSearch));
+	}
 
 	@POST
 	@Path("/creaSalOrderOfSelftBranch")

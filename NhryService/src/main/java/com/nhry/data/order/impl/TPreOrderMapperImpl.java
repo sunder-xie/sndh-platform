@@ -224,6 +224,16 @@ public class TPreOrderMapperImpl implements TPreOrderMapper
 		return sqlSessionTemplate.update("uptYfrechAndYGrowthByOrderNo",model);
 	}
 
+	@Override
+	public List<TPreOrder> selectCustBatchCollect(OrderSearchModel smodel) {
+		return sqlSessionTemplate.selectList("selectCustBatchCollect",smodel);
+	}
+
+	@Override
+	public BigDecimal calculateAfterOrderFactoryAmt(String orderNo) {
+		return sqlSessionTemplate.selectOne("calculateAfterOrderFactoryAmt", orderNo);
+	}
+
 	/* (non-Javadoc) 
 	* @title: replaceOrdersDispmember
 	* @description: 替换所有a送奶员的订单为b送奶员

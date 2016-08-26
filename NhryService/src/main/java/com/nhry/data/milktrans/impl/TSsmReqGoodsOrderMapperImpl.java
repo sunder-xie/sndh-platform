@@ -4,6 +4,7 @@ import com.nhry.common.datasource.DynamicSqlSessionTemplate;
 import com.nhry.data.milktrans.dao.TSsmReqGoodsOrderMapper;
 import com.nhry.data.milktrans.domain.TSsmReqGoodsOrder;
 import com.nhry.model.milktrans.RequireOrderSearch;
+import java.util.List;
 
 /**
  * Created by gongjk on 2016/6/22.
@@ -44,5 +45,10 @@ public class TSsmReqGoodsOrderMapperImpl implements TSsmReqGoodsOrderMapper {
     @Override
     public int deleRequireGoodsOrderbyNo(String orderNo) {
         return sqlSessionTemplate.delete("deleRequireGoodsOrderbyNo",orderNo);
+    }
+
+    @Override
+    public List<TSsmReqGoodsOrder> searchRequireOrderByRequireDate(RequireOrderSearch rModel) {
+        return sqlSessionTemplate.selectList("searchRequireOrderByRequireDate",rModel);
     }
 }

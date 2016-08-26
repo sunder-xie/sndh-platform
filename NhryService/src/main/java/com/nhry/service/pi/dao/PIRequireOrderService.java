@@ -3,6 +3,7 @@ package com.nhry.service.pi.dao;
 import com.nhry.data.basic.domain.TMdBranch;
 import com.nhry.data.milktrans.domain.TSsmReqGoodsOrder;
 import com.nhry.data.milktrans.domain.TSsmSalOrder;
+import com.nhry.model.stock.StockModel;
 import com.nhry.webService.client.PISuccessMessage;
 
 import java.util.Date;
@@ -44,8 +45,15 @@ public interface PIRequireOrderService {
 
     /**
      * 生成交换单
-     * @param branchNo
+     * @param model
      * @return
      */
-    public String execDelivery(String branchNo);
+    String execDelivery(StockModel model);
+
+    /**
+     * 任务调度执行获取ECC出厂价格
+     * @return
+     */
+    String saveFactoryPrice();
+
 }

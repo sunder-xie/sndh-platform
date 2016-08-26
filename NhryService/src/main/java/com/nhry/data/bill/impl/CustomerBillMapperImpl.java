@@ -3,6 +3,7 @@ package com.nhry.data.bill.impl;
 import com.nhry.common.datasource.DynamicSqlSessionTemplate;
 import com.nhry.data.bill.dao.CustomerBillMapper;
 import com.nhry.data.bill.domain.TMstRecvBill;
+import com.nhry.data.bill.domain.TMstRecvOffset;
 import com.nhry.model.bill.CollectOrderBillModel;
 
 /**
@@ -36,6 +37,16 @@ public class CustomerBillMapperImpl implements CustomerBillMapper {
     @Override
     public CollectOrderBillModel queryCollectByOrderNo(String orderCode) {
         return sqlSessionTemplate.selectOne("queryCollectByOrderNo",orderCode);
+    }
+
+    @Override
+    public TMstRecvBill getRecBillByReceoptNo(String receiptNo) {
+        return sqlSessionTemplate.selectOne("getRecBillByReceoptNo",receiptNo);
+    }
+
+    @Override
+    public int addOffset(TMstRecvOffset offset) {
+        return sqlSessionTemplate.insert("addOffset",offset);
     }
 
 }

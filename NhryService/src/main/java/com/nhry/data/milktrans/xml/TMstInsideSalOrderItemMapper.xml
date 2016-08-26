@@ -115,4 +115,10 @@
         and MATNR = #{matnr,jdbcType=VARCHAR}
         and REASON = #{reason,jdbcType=VARCHAR}
     </delete>
+    <select id="getItemsByNo" resultMap="BaseResultMap" parameterType="String">
+        SELECT
+        <include refid="Base_Column_List" />
+        from t_mst_inside_sal_order_item
+        WHERE  INS_ORDER_NO = #{insOrderNo,jdbcType=VARCHAR}
+    </select>
 </mapper>

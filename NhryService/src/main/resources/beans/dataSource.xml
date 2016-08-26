@@ -91,51 +91,13 @@
 		<property name="filters" value="stat" />
 	</bean>
 
-	<bean id="slaveDs2" class="com.alibaba.druid.pool.DruidDataSource"
-		init-method="init" destroy-method="close">
-		<!-- 基本属性 url、user、password -->
-		<property name="url" value="${slave2.jdbc.url}" />
-		<property name="username" value="${slave2.jdbc.username}" />
-		<property name="password" value="${slave2.jdbc.password}" />
-
-		<!-- 配置初始化大小、最小、最大 -->
-		<property name="initialSize" value="${jdbc.initialSize}" />
-		<property name="minIdle" value="${jdbc.minIdle}" />
-		<property name="maxActive" value="${jdbc.maxActive}" />
-
-		<!-- 配置获取连接等待超时的时间 -->
-		<property name="maxWait" value="${jdbc.maxWait}" />
-
-		<!-- 配置间隔多久才进行一次检测，检测需要关闭的空闲连接，单位是毫秒 -->
-		<property name="timeBetweenEvictionRunsMillis" value="${jdbc.timeBetweenEvictionRunsMillis}" />
-
-		<!-- 配置一个连接在池中最小生存的时间，单位是毫秒 -->
-		<property name="minEvictableIdleTimeMillis" value="${jdbc.minEvictableIdleTimeMillis}" />
-
-		<property name="validationQuery" value="${jdbc.testSql}" />
-		<property name="testWhileIdle" value="true" />
-		<property name="testOnBorrow" value="false" />
-		<property name="testOnReturn" value="false" />
-
-		<!-- 打开PSCache，并且指定每个连接上PSCache的大小 -->
-		<property name="poolPreparedStatements" value="true" />
-		<property name="maxPoolPreparedStatementPerConnectionSize"
-			value="${jdbc.maxPoolPreparedStatementPerConnectionSize}" />
-
-		<!-- 配置监控统计拦截的filters，去掉后监控界面sql无法统计 -->
-		<property name="filters" value="stat" />
-	</bean>
-
 	<bean id="dataSource" class="com.nhry.common.datasource.DynamicDataSource">
 		<property name="master" ref="masterDs1" />
-		<!-- 
 		<property name="slaves">
 			<list>
 				<ref bean="slaveDs1" />
-				<ref bean="slaveDs2" />
 			</list>
 		</property>
-		 -->
 	</bean>
 	
 	<bean id="redisPoolConfig" class="redis.clients.jedis.JedisPoolConfig">  

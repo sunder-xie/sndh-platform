@@ -4,6 +4,7 @@ import com.nhry.model.basic.BaseQueryModel;
 
 import java.io.Serializable;
 import java.text.SimpleDateFormat;
+import java.util.Date;
 
 /**
  * Created by cbz on 7/16/2016.
@@ -12,6 +13,7 @@ public class StockModel extends BaseQueryModel implements Serializable {
     private static final SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
     String branchNo;
     String empNo;
+    Date curDate;
 
     public String getEmpNo() {
         return empNo;
@@ -29,5 +31,11 @@ public class StockModel extends BaseQueryModel implements Serializable {
         this.branchNo = branchNo;
     }
 
+    public Date getCurDate() {
+        return curDate;
+    }
 
+    public void setCurDate(Date curDate) {
+        this.curDate = curDate;
+    }
 }

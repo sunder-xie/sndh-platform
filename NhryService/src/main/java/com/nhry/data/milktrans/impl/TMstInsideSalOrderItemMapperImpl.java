@@ -6,6 +6,7 @@ import com.nhry.data.milktrans.dao.TMstInsideSalOrderItemMapper;
 import com.nhry.data.milktrans.domain.TMstInsideSalOrderItem;
 import com.nhry.model.milktrans.InSideSalOrderDetailSearchModel;
 
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -36,5 +37,10 @@ public class TMstInsideSalOrderItemMapperImpl implements TMstInsideSalOrderItemM
     @Override
     public int deleteInSalOrderItemByMap(Map<String, String> map) {
         return sqlSessionTemplate.delete("deleteInSalOrderItemByMap",map);
+    }
+
+    @Override
+    public List<TMstInsideSalOrderItem> getItemsByNo(String insOrderNo) {
+        return sqlSessionTemplate.selectList("getItemsByNo",insOrderNo);
     }
 }

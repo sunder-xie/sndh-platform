@@ -76,4 +76,13 @@
         DELETE  FROM t_ssm_req_goods_order
         WHERE  ORDER_NO = #{orderNo,jdbcType=VARCHAR}
     </delete>
+
+
+    <select id="searchRequireOrderByRequireDate" resultMap="BaseResultMap" parameterType="com.nhry.model.milktrans.RequireOrderSearch" >
+        select
+        <include refid="Base_Column_List"/>
+        FROM t_ssm_req_goods_order
+        WHERE  REQUIRED_DATE = #{requiredDate,jdbcType=DATE}
+        AND   BRANCH_NO =#{branchNo,jdbcType=VARCHAR}
+    </select>
 </mapper>

@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
 <configs>
- <!-- 环境标示 develope/product-->
+ <!-- 环境标示(开发/生产/测试) develope/product/test -->
   <config key="app_mode" value="product"></config>
   <!-- MessageCode key默认的value配置 -->
   <config key="404"  value="资源不存在"></config>

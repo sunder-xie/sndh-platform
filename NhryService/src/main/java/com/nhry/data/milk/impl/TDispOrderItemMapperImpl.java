@@ -7,18 +7,16 @@ import com.nhry.data.milk.domain.TDispOrder;
 import com.nhry.data.milk.domain.TDispOrderItem;
 import com.nhry.data.milk.domain.TDispOrderItemKey;
 import com.nhry.data.milktrans.domain.TRecBotDetail;
-import com.nhry.data.order.domain.TPlanOrderItem;
 import com.nhry.model.milk.RouteDetailUpdateModel;
 import com.nhry.model.milk.RouteOrderSearchModel;
 import com.nhry.model.milktrans.UnDeliverProductSearch;
 import com.nhry.service.milk.pojo.TDispOrderChangeItem;
+import org.apache.commons.lang3.StringUtils;
 
 import java.math.BigDecimal;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
-
-import org.apache.commons.lang3.StringUtils;
 
 public class TDispOrderItemMapperImpl implements TDispOrderItemMapper
 {
@@ -214,5 +212,11 @@ public class TDispOrderItemMapperImpl implements TDispOrderItemMapper
 		order.setReachTimeType(today);
 		return sqlSessionTemplate.selectOne("selectCountOfTodayByOrgOrder", order);
 	}
+
+	@Override
+	public int selectDispOrderNumByPreOrderNo(String orderNo) {
+		return sqlSessionTemplate.selectOne("selectDispOrderNumByPreOrderNo",orderNo);
+	}
+
 
 }

@@ -8,6 +8,7 @@ import java.util.Date;
  * Created by gongjk on 2016/6/23.
  */
 public class TMstRecvBill implements Serializable {
+    private String hadOffset;
     private String receiptNo;
     private Date receiptDate;
     private String orderNo;
@@ -36,6 +37,15 @@ public class TMstRecvBill implements Serializable {
     public BigDecimal getSuppAmt() {
         return suppAmt;
     }
+
+    public String getHadOffset() {
+        return hadOffset;
+    }
+
+    public void setHadOffset(String hadOffset) {
+        this.hadOffset = hadOffset;
+    }
+
     public void setSuppAmt(BigDecimal suppAmt) {
         this.suppAmt = suppAmt;
     }

@@ -38,9 +38,17 @@ public class TSysAccesskeyServiceImpl implements TSysAccesskeyService {
 			return this.isysAkmapper.updateIsysAccessKey(record);
 		}
 	}
+	
+	
 
 	public void setIsysAkmapper(TSysAccesskeyMapper isysAkmapper) {
 		this.isysAkmapper = isysAkmapper;
+	}
+
+	@Override
+	public int deleteExpiredAccesskey() {
+		// TODO Auto-generated method stub
+		return this.isysAkmapper.deleteExpiredAccesskey();
 	}
 
 }

@@ -21,7 +21,6 @@ import com.nhry.model.milktrans.*;
 import com.nhry.service.milktrans.dao.RequireOrderService;
 import com.nhry.service.pi.dao.PIRequireOrderService;
 import com.nhry.utils.DateUtil;
-import com.nhry.utils.PrimaryKeyUtils;
 import com.nhry.webService.client.PISuccessMessage;
 import org.apache.commons.lang3.StringUtils;
 
@@ -88,7 +87,7 @@ public class RequireOrderServiceImpl implements RequireOrderService {
         if("4181".equals(user.getSalesOrg()) || "4390".equals(user.getSalesOrg())){
             requireDate = today;
         }else{
-            requireDate = DateUtil.getTomorrow(new Date());
+            requireDate = DateUtil.getTomorrow(today);
         }
         rModel.setBranchNo(user.getBranchNo());
         rModel.setOrderDate(today);
@@ -333,7 +332,7 @@ public class RequireOrderServiceImpl implements RequireOrderService {
                         errorMessage ="修改要货计划或日订单状态失败" ;
                         throw  new ServiceException(MessageCode.LOGIC_ERROR,errorMessage);
                     }
-                    result = message.getData();
+                    result =order.getVoucherNo();
                 }else{
                     throw  new ServiceException(MessageCode.LOGIC_ERROR,"自营奶站发送要货计划失败，请重新发送");
                 }
@@ -682,7 +681,7 @@ public class RequireOrderServiceImpl implements RequireOrderService {
         if("4181".equals(user.getSalesOrg()) || "4390".equals(user.getSalesOrg())){
             requireDate = orderDate;
         }else{
-            requireDate = DateUtil.getTomorrow(new Date());
+            requireDate = DateUtil.getTomorrow(orderDate);
         }
         rModel.setBranchNo(user.getBranchNo());
         rModel.setOrderDate(orderDate);
@@ -703,7 +702,7 @@ public class RequireOrderServiceImpl implements RequireOrderService {
         //将i天后的日订单中符合的产品加入到 生成的要货计划
         if(items!=null && items.size()>0){
             order = new TSsmReqGoodsOrder();
-            String orderNo = PrimaryKeyUtils.generateUuidKey();
+            String orderNo = this.generateSal30Id();
             order.setRequiredDate(requireDate);
             order.setStatus("10");
             order.setOrderNo(orderNo);
@@ -736,6 +735,56 @@ public class RequireOrderServiceImpl implements RequireOrderService {
         }
         //查询出今天的要货计划
         return this.searchRequireOrder(orderDate);
+    }
+
+    @Override
+    public String sendRequireOrderToERPByDate(ReqGoodsOrderSearch eSearch) {
+        String result = "";
+        Date today = eSearch.getRequiredDate();
+        TSysUser user = userSessionService.getCurrentUser();
+        String salesOrg =user.getSalesOrg();
+        String branchNo = user.getBranchNo();
+        RequireOrderSearch search = new RequireOrderSearch();
+        search.setOrderDate(today);
+        search.setBranchNo(branchNo);
+        TSsmReqGoodsOrder order = tSsmReqGoodsOrderMapper.searchRequireOrder(search);
+        String errorMessage = "";
+        if(order == null){
+            errorMessage = "今天的要货计划还未创建";
+            throw  new ServiceException(MessageCode.LOGIC_ERROR,errorMessage);
+        }else{
+            if( "30".equals(order.getStatus())){
+                errorMessage = "今天的要货计划已发送至ERP";
+                throw  new ServiceException(MessageCode.LOGIC_ERROR,errorMessage);
+            }
+            TMdBranch branch = branchMapper.selectBranchByNo(branchNo);
+
+            //自营奶站
+            if("01".equals(branch.getBranchGroup())){
+                PISuccessMessage message =  piRequireOrderService.generateRequireOrder(order);
+                order.setVoucherNo(message.getData());
+                if(message.isSuccess()){
+
+                    if(!uptRequireOrderAndDayOrderStatus(order,user)){
+                        errorMessage ="修改要货计划或日订单状态失败" ;
+                        throw  new ServiceException(MessageCode.LOGIC_ERROR,errorMessage);
+                    }
+                    result =order.getVoucherNo();
+                }else{
+                    throw  new ServiceException(MessageCode.LOGIC_ERROR,"自营奶站发送要货计划失败，请重新发送");
+                }
+            }else{
+                //经销商奶站 生成销售订单
+                this.creatNoPromoSalOrderOfDealerBranch(today);
+                this.creatPromoSalOrderOfDealerBranch(today);
+                order.setLastModified(new Date());
+                order.setLastModifiedBy(user.getLoginName());
+                order.setLastModifiedByTxt(user.getDisplayName());
+                order.setStatus("30");
+                tSsmReqGoodsOrderMapper.uptRequireGoodsModifyInfo(order);
+            }
+        }
+        return result;
     }
 
     /**
@@ -801,8 +850,8 @@ public class RequireOrderServiceImpl implements RequireOrderService {
         salOrderItems.setOrderNo(orderNo);
         salOrderItems.setOrderDate(requiredDate);
         salOrderItems.setQty(item.getQty());
-        if(StringUtils.isNotBlank(item.getPlanItemNo())){
-            salOrderItems.setPromNo(item.getPlanItemNo());
+        if(StringUtils.isNotBlank(item.getPromotionFlag())){
+            salOrderItems.setPromNo(item.getPromotionFlag());
         }
         if("dealer".equals(type)){
             salOrderItems.setMatnr(item.getMatnr());

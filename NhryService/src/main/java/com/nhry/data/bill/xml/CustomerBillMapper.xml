@@ -6,6 +6,7 @@
         <result column="RECEIPT_DATE" property="receiptDate" jdbcType="DATE" />
         <result column="ORDER_NO" property="orderNo" jdbcType="VARCHAR" />
         <result column="PAYMENT_TYPE" property="paymentType" jdbcType="VARCHAR" />
+        <result column="HAD_OFFSET" property="hadOffset" jdbcType="VARCHAR" />
         <result column="STATUS" property="status" jdbcType="VARCHAR" />
         <result column="REMARK" property="remark" jdbcType="VARCHAR" />
         <result column="AMT" property="amt" jdbcType="DECIMAL" />
@@ -58,11 +59,11 @@
 
 
     <sql id="Base_Column_List" >
-        RECEIPT_NO,RECEIPT_DATE,ORDER_NO,PAYMENT_TYPE,STATUS,AMT,VIP_CUST_NO,START_TIME,END_TIME,REMARK,
+        RECEIPT_NO,RECEIPT_DATE,ORDER_NO,PAYMENT_TYPE,STATUS,AMT,VIP_CUST_NO,START_TIME,END_TIME,REMARK,HAD_OFFSET,
        PAYMENT_YEAR_MONTH,RECV_EMP,CREATE_AT,CREATE_BY,CREATE_BY_TXT,LAST_MODIFIED,LAST_MODIFIED_BY,LAST_MODIFIED_BY_TXT
     </sql>
     <sql id="Full_Column_List" >
-       RECEIPT_NO,RECEIPT_DATE,ORDER_NO,PAYMENT_TYPE,STATUS,AMT,VIP_CUST_NO,START_TIME,END_TIME,
+       RECEIPT_NO,RECEIPT_DATE,ORDER_NO,PAYMENT_TYPE,STATUS,AMT,VIP_CUST_NO,START_TIME,END_TIME,HAD_OFFSET,
        PAYMENT_YEAR_MONTH,RECV_EMP,CREATE_AT,CREATE_BY,CREATE_BY_TXT,LAST_MODIFIED,LAST_MODIFIED_BY,LAST_MODIFIED_BY_TXT
     </sql>
     <select id="getCustomerOrderByCode" resultMap="BaseResultMap" parameterType="String">
@@ -74,6 +75,7 @@
               LEFT JOIN t_vip_cust_info cust on b.VIP_CUST_NO = cust.VIP_CUST_NO
               LEFT JOIN t_md_branch_emp e on b.RECV_EMP = e.EMP_NO
 	    WHERE 1=1
+	          and HAD_OFFSET = 'N'
               and ORDER_NO = #{orderNo,jdbcType=VARCHAR}
     </select>
     <insert id="customerPayment" parameterType="com.nhry.data.bill.domain.TMstRecvBill" >
@@ -207,6 +209,9 @@
             <if test="paymentType != null">
                PAYMENT_TYPE =  #{paymentType,jdbcType=VARCHAR},
             </if>
+            <if test="hadOffset != null">
+                HAD_OFFSET =  #{hadOffset,jdbcType=VARCHAR},
+            </if>
             <if test="vipCustNo != null">
                VIP_CUST_NO =  #{vipCustNo,jdbcType=VARCHAR},
             </if>
@@ -265,7 +270,89 @@
     LEFT JOIN t_mst_order_daliy_plan_item i on i.ORDER_NO = o.ORDER_NO
      LEFT JOIN  t_md_mara a on i.MATNR = a.MATNR
     WHERE 1=1
+
     and b.SALES_ORG = a.SALES_ORG
     and o.ORDER_NO = #{orderCode,jdbcType=VARCHAR}
     </select>
+
+    <select id="getRecBillByReceoptNo" resultMap="BaseResultMap" parameterType="String">
+        select
+        b.RECV_EMP,e.EMP_NAME RECV_EMP_NAME,b.RECEIPT_NO,b.RECEIPT_DATE,b.ORDER_NO,b.PAYMENT_TYPE,b.STATUS,b.AMT,
+        b.VIP_CUST_NO,cust.VIP_NAME VIP_CUST_NAME,b.START_TIME,b.END_TIME,b.REMARK,b.PAYMENT_YEAR_MONTH,b.CREATE_AT,
+        b.CREATE_BY,b.CREATE_BY_TXT,b.LAST_MODIFIED,b.LAST_MODIFIED_BY,b.LAST_MODIFIED_BY_TXT,b.CUST_ACC_AMT,b.ACC_AMT
+        FROM t_mst_recv_bill b
+        LEFT JOIN t_vip_cust_info cust on b.VIP_CUST_NO = cust.VIP_CUST_NO
+        LEFT JOIN t_md_branch_emp e on b.RECV_EMP = e.EMP_NO
+        WHERE 1=1
+        and RECEIPT_NO = #{receiptNo,jdbcType=VARCHAR}
+    </select>
+
+
+    <insert id="addOffset" parameterType="com.nhry.data.bill.domain.TMstRecvBill" >
+        insert into t_mst_recv_offset
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="offsetNo != null">
+                OFFSET_NO,
+            </if>
+            <if test="offsetDate != null">
+                OFFSET_DATE,
+            </if>
+            <if test="receiptNo != null">
+                RECEIPT_NO,
+            </if>
+            <if test="orderNo != null">
+                ORDER_NO,
+            </if>
+            <if test="amt != null">
+                AMT,
+            </if>
+            <if test="accAmt != null">
+                ACC_AMT,
+            </if>
+            <if test="vipCustNo != null">
+                VIP_CUST_NO,
+            </if>
+            <if test="createAt != null">
+                CREATE_AT,
+            </if>
+            <if test="createBy != null">
+                CREATE_BY,
+            </if>
+            <if test="createByTxt != null">
+                CREATE_BY_TXT,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="offsetNo != null">
+                #{offsetNo,jdbcType=VARCHAR},
+            </if>
+            <if test="offsetDate != null">
+                #{offsetDate,jdbcType=DATE},
+            </if>
+            <if test="receiptNo != null">
+                #{receiptNo,jdbcType=VARCHAR},
+            </if>
+            <if test="orderNo != null">
+                #{orderNo,jdbcType=VARCHAR},
+            </if>
+            <if test="amt!= null">
+                #{amt,jdbcType=DECIMAL},
+            </if>
+            <if test="accAmt != null">
+                #{accAmt,jdbcType=DECIMAL},
+            </if>
+            <if test="vipCustNo != null">
+                #{vipCustNo,jdbcType=VARCHAR},
+            </if>
+            <if test="createAt != null">
+                #{createAt,jdbcType=TIMESTAMP},
+            </if>
+            <if test="createBy != null">
+                #{createBy,jdbcType=VARCHAR},
+            </if>
+            <if test="createByTxt != null">
+                #{createByTxt,jdbcType=VARCHAR},
+            </if>
+        </trim>
+    </insert>
 </mapper>

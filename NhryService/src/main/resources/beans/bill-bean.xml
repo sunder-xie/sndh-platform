@@ -30,6 +30,8 @@
 		<property name="messLogService" ref="messLogService"></property>
 		<property name="taskExecutor" ref="taskExecutor"></property>
 		<property name="piVipInfoDataService" ref="piVipInfoDataService"></property>
+		<property name="tDispOrderItemMapper" ref="tDispOrderItemMapper"></property>
+		<property name="tOrderDaliyPlanItemMapper" ref="tOrderDaliyPlanItemMapper"></property>
 	</bean>
 
 	<!--奶站结算-->

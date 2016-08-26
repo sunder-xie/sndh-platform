@@ -23,6 +23,7 @@
         <result column="CUST_NAME" property="custName" jdbcType="VARCHAR" />
         <result column="MP" property="mp" jdbcType="VARCHAR" />
         <result column="ADDRESS" property="address" jdbcType="VARCHAR" />
+        <result column="CUST_ACCT_AMT" property="custAcctAmt" jdbcType="DECIMAL" />
         <result column="ACCT_AMT" property="acctAmt" jdbcType="DECIMAL" />
         <result column="ACCOUNT_RECE" property="amountRece" jdbcType="DECIMAL" />
         <result column="ACCOUNT_REAL" property="amountReal" jdbcType="DECIMAL" />
@@ -192,7 +193,8 @@
         c.VIP_NAME CUST_NAME,
         br.BRANCH_NAME,
         /*a.ACCT_AMT,*/
-        b.CUST_ACC_AMT ACCT_AMT,
+        b.CUST_ACC_AMT CUST_ACCT_AMT,
+        b.ACC_AMT ACCT_AMT,
         c.MP,
         CONCAT(IFNULL(r.RESIDENTIAL_AREA_TXT,'') ,IFNULL(c.ADDRESS_TXT,'')) ADDRESS,
         o.INIT_AMT ACCOUNT_RECE,
@@ -214,6 +216,7 @@
         LEFT JOIN t_md_branch br on o.BRANCH_NO = br.BRANCH_NO
         LEFT JOIN t_md_residential_area r on c.SUBDIST = r.ID
         WHERE 1= 1
+        and b.HAD_OFFSET = 'N'
         and  b.RECEIPT_DATE IS  NOT  NULL
             <if test="salesOrg!=null and ''!=salesOrg">
                 and o.SALES_ORG = #{salesOrg,jdbcType=VARCHAR}

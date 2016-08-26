@@ -83,7 +83,7 @@ public class StockResource extends BaseResource {
         if(StringUtils.isEmpty(model.getBranchNo()) && StringUtils.isNotEmpty(user.getBranchNo())){
             model.setBranchNo(user.getBranchNo());
         }
-        return convertToRespModel(MessageCode.NORMAL,null,requireOrderService.execDelivery(model.getBranchNo()));
+        return convertToRespModel(MessageCode.NORMAL,null,requireOrderService.execDelivery(model));
     }
     @POST
     @Path("/findGiOrder")

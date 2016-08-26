@@ -9,6 +9,9 @@ import com.nhry.data.auth.domain.TSysUser;
 import com.nhry.data.basic.domain.TVipAcct;
 import com.nhry.data.bill.dao.CustomerBillMapper;
 import com.nhry.data.bill.domain.TMstRecvBill;
+import com.nhry.data.bill.domain.TMstRecvOffset;
+import com.nhry.data.milk.dao.TDispOrderItemMapper;
+import com.nhry.data.order.dao.TOrderDaliyPlanItemMapper;
 import com.nhry.data.order.dao.TPlanOrderItemMapper;
 import com.nhry.data.order.dao.TPreOrderMapper;
 import com.nhry.data.order.domain.TOrderDaliyPlanItem;
@@ -16,6 +19,7 @@ import com.nhry.data.order.domain.TPlanOrderItem;
 import com.nhry.data.order.domain.TPreOrder;
 import com.nhry.model.bill.*;
 import com.nhry.model.order.OrderCreateModel;
+import com.nhry.model.order.OrderSearchModel;
 import com.nhry.service.basic.dao.TVipCustInfoService;
 import com.nhry.service.bill.dao.CustomerBillService;
 import com.nhry.service.external.dao.EcService;
@@ -47,6 +51,17 @@ public class CustomerBillServiceImpl implements CustomerBillService {
  	 private TaskExecutor taskExecutor;
  	 private EcService messLogService;
     private PIVipInfoDataService piVipInfoDataService;
+    private TDispOrderItemMapper tDispOrderItemMapper;
+    private TOrderDaliyPlanItemMapper tOrderDaliyPlanItemMapper;
+
+
+    public void settOrderDaliyPlanItemMapper(TOrderDaliyPlanItemMapper tOrderDaliyPlanItemMapper) {
+        this.tOrderDaliyPlanItemMapper = tOrderDaliyPlanItemMapper;
+    }
+
+    public void settDispOrderItemMapper(TDispOrderItemMapper tDispOrderItemMapper) {
+        this.tDispOrderItemMapper = tDispOrderItemMapper;
+    }
 
     public void setPiVipInfoDataService(PIVipInfoDataService piVipInfoDataService) {
         this.piVipInfoDataService = piVipInfoDataService;
@@ -340,11 +355,122 @@ public class CustomerBillServiceImpl implements CustomerBillService {
 
         return totalPayment;
     }
+    @Override
+    public BigDecimal custBatchCollectBySelect(OrderSearchModel oModel) {
+        if(oModel.getOrders() == null || !(oModel.getOrders().size()>0)){
+            throw new ServiceException(MessageCode.LOGIC_ERROR,"没有选择的订单");
+        }
+        List<TPreOrder> ordersList = tPreOrderMapper.selectCustBatchCollect(oModel);
+        BigDecimal total = new BigDecimal(0);
+        if(ordersList !=null && ordersList.size()>0){
+            for(TPreOrder order : ordersList){
+                //判断该订单 对应的收款单是否创建 如果没有先创建
+                TMstRecvBill  bill = this.createRecBillByOrderNo(order.getOrderNo());
+                CustomerPayMentModel cmodel = new CustomerPayMentModel();
+                cmodel.setAmt(order.getInitAmt().subtract(bill.getAccAmt()).toString());
+                cmodel.setEmpNo(order.getEmpNo());
+                cmodel.setOrderNo(bill.getOrderNo());
+                cmodel.setPaymentType("10");
+                this.customerPayment(cmodel);
+                total =  total.add(order.getInitAmt());
+            }
+        }
+        return total;
+    }
+
+    @Override
+    public int customerOffset(String receiptNo) {
+        TMstRecvBill  bill = customerBillMapper.getRecBillByReceoptNo(receiptNo);
+        if("10".equals(bill.getStatus())){
+            throw  new ServiceException(MessageCode.LOGIC_ERROR,"该订单还未收款！！！");
+        }else if("Y".equals(bill.getHadOffset())){
+            throw  new ServiceException(MessageCode.LOGIC_ERROR,"该订单已经冲销过了！！！");
+        } else{
+            int orderNum = tDispOrderItemMapper.selectDispOrderNumByPreOrderNo(bill.getOrderNo());
+            if(orderNum > 0 ){
+                throw  new ServiceException(MessageCode.LOGIC_ERROR,"该订单已生成了路单，不能冲销！！！");
+            }
+
+            TPreOrder preOrder = tPreOrderMapper.selectByPrimaryKey(bill.getOrderNo());
+            //扣除余额
+            if(preOrder.getInitAmt().compareTo(bill.getAmt())!=0){
+                //返回积分
+                TVipAcct eac = tVipCustInfoService.findVipAcctByCustNo(preOrder.getMilkmemberNo());
+                TVipAcct ac = new TVipAcct();
+                BigDecimal acLeftAmt = new BigDecimal("0.00");
+                if(eac!=null){
+                    acLeftAmt = eac.getAcctAmt();
+                }
+                ac.setVipCustNo(preOrder.getMilkmemberNo());
+                if(preOrder.getInitAmt().compareTo(bill.getAmt())==-1){
+                    ac.setAcctAmt(preOrder.getInitAmt().subtract(bill.getAmt()));
+                }else{
+                    ac.setAcctAmt(preOrder.getInitAmt().subtract(bill.getAmt()));
+                }
+
+                tVipCustInfoService.addVipAcct(ac);
+            }
+            //判断是否需要 返还积分
+            if("Y".equals(preOrder.getIsIntegration())){
+                taskExecutor.execute(new Thread(){
+                    @Override
+                    public void run() {
+                        super.run();
+                        this.setName("minusVipPoint");
+                        BigDecimal gRate = BigDecimal.ONE.multiply(new BigDecimal(preOrder.getyGrowth()==null?0:preOrder.getyGrowth()));//成长
+                        BigDecimal fRate = BigDecimal.ONE.multiply(new BigDecimal(preOrder.getyFresh()==null?0:preOrder.getyFresh()));//鲜峰
+                        MemberActivities item = new MemberActivities();
+                        Date date = new Date();
+                        item.setActivitydate(date);
+                        item.setSalesorg(preOrder.getSalesOrg());
+                        item.setCategory("YRETURN");
+                        item.setProcesstype("YSUB_RETURN");
+                        item.setOrderid(preOrder.getOrderNo());
+                        item.setMembershipguid(preOrder.getMemberNo());
+                        item.setPointtype("YGROWTH");
+                        item.setPoints(gRate);
+                        //第1遍传成长
+                        piVipInfoDataService.createMemberActivities(item);
+                        //第2遍传先锋
+                        item.setPointtype("YFRESH");
+                        item.setPoints(fRate);
+                        piVipInfoDataService.createMemberActivities(item);
+                    }
+                });
+            }
+            //将 收款单置为 已冲销
+            TMstRecvBill newBill = new TMstRecvBill();
+            newBill.setReceiptNo(bill.getReceiptNo());
+            newBill.setHadOffset("Y");
+            customerBillMapper.updateCustomerBillrPayment(newBill);
+            //删除 日订单
+            tOrderDaliyPlanItemMapper.deletePlansByOrder(bill.getOrderNo());
+            //生成对应的冲销单
+            TSysUser user = userSessionService.getCurrentUser();
+            TMstRecvOffset offset  = new TMstRecvOffset();
+            offset.setOrderNo(bill.getOrderNo());
+            offset.setVipCustNo(bill.getVipCustNo());
+            offset.setCreateAt(new Date());
+            offset.setReceiptNo(bill.getReceiptNo());
+            offset.setOffsetNo(PrimaryKeyUtils.generateUuidKey());
+            offset.setOffsetDate(new Date());
+            offset.setAmt(bill.getAmt());
+            offset.setAccAmt(bill.getAccAmt());
+            customerBillMapper.addOffset(offset);
+            TPreOrder order = new TPreOrder();
+            order.setOrderNo(bill.getOrderNo());
+            order.setPaymentStat("10");
+            tPreOrderMapper.updateOrderStatus(order);
+        }
+
+        return 1;
+    }
 
     @Override
     public CollectOrderBillModel queryCollectByOrderNo(String orderCode) {
         return customerBillMapper.queryCollectByOrderNo(orderCode);
     }
+
 
     public void setCustomerBillMapper(CustomerBillMapper customerBillMapper) {
         this.customerBillMapper = customerBillMapper;
