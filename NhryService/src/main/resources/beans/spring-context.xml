@@ -85,6 +85,8 @@
 				rollback-for="com.nhry.common.exception.ServiceException" />
 			<tx:method name="insert*" propagation="REQUIRED" read-only="false"
 				rollback-for="com.nhry.common.exception.ServiceException" />
+			<tx:method name="create*" propagation="REQUIRED" read-only="false"
+					   rollback-for="com.nhry.common.exception.ServiceException" />
 			<tx:method name="delete*" propagation="REQUIRED" read-only="false"
 				rollback-for="com.nhry.common.exception.ServiceException" />
 			<tx:method name="del*" propagation="REQUIRED" read-only="false"
@@ -95,8 +97,18 @@
 				rollback-for="com.nhry.common.exception.ServiceException" />
 			<tx:method name="proc*" propagation="REQUIRED" read-only="false"
 				rollback-for="com.nhry.common.exception.ServiceException" />
+			<tx:method name="edit*" propagation="REQUIRED" read-only="false"
+				rollback-for="com.nhry.common.exception.ServiceException" />
+			<tx:method name="reEdit*" propagation="REQUIRED" read-only="false"
+				rollback-for="com.nhry.common.exception.ServiceException" />
+			<tx:method name="batch*" propagation="REQUIRED" read-only="false"
+				rollback-for="com.nhry.common.exception.ServiceException" />
+			<tx:method name="modify*" propagation="REQUIRED" read-only="false"
+				rollback-for="com.nhry.common.exception.ServiceException" />
+			<tx:method name="find*" read-only="true"  rollback-for="com.nhry.common.exception.ServiceException" />
 			<tx:method name="select*" read-only="true"  rollback-for="com.nhry.common.exception.ServiceException" />
 			<tx:method name="search*" read-only="true"  rollback-for="com.nhry.common.exception.ServiceException" />
+			<tx:method name="get*" read-only="true"  rollback-for="com.nhry.common.exception.ServiceException" />
 			<tx:method name="*" read-only="false"  rollback-for="com.nhry.common.exception.ServiceException" />
 			<!-- <tx:method name="*" read-only="true" /> -->
 		</tx:attributes>
