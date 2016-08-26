@@ -458,7 +458,7 @@ public class EmpBillServiceImpl implements EmpBillService {
 
                     empSal.setDispNum(totaNum);
                 }
-                empSal.setTotalSal(empSal.getInDispSal().add(empSal.getDispSal()).add(new BigDecimal(emp.getBaseSalary())));
+                empSal.setTotalSal(empSal.getInDispSal().add(empSal.getDispSal()).add(empSal.getSendDispSal()).add(new BigDecimal(emp.getBaseSalary())));
             }else{
                 //不计算配送费
                 empSal.setInDispSal(BigDecimal.ZERO);

@@ -681,7 +681,7 @@ public class RequireOrderServiceImpl implements RequireOrderService {
         if("4181".equals(user.getSalesOrg()) || "4390".equals(user.getSalesOrg())){
             requireDate = orderDate;
         }else{
-            requireDate = DateUtil.getTomorrow(new Date());
+            requireDate = DateUtil.getTomorrow(orderDate);
         }
         rModel.setBranchNo(user.getBranchNo());
         rModel.setOrderDate(orderDate);
