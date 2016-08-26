@@ -232,11 +232,11 @@ public class BusinessDataConnection {
             AUART_type1 auart_type1 = new AUART_type1();
             auart_type1.setAUART_type0(orderHeader.getAuartType());
             zssd00010.setAUART(auart_type1);
-            ParsePosition pos = new ParsePosition(8);
             String dateString = formatter.format(orderHeader.getLFDAT());
             com.nhry.webService.client.businessData.functions.Date date = new com.nhry.webService.client.businessData.functions.Date();
             date.setObject(formatter.parse(dateString));
             zssd00010.setLFDAT(date);
+            zssd00010.setAUDAT(date);
             BSTKD_type1 bstkd_type1 = new BSTKD_type1();
             bstkd_type1.setBSTKD_type0(orderHeader.getBSTKD());
             zssd00010.setBSTKD(bstkd_type1);
