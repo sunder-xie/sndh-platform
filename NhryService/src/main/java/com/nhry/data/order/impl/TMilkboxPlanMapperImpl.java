@@ -36,10 +36,10 @@ public class TMilkboxPlanMapperImpl implements TMilkboxPlanMapper
 	}
 	
 	@Override
-	public int deleteByPrimaryKey(String planNo)
+	public int deleteMilkBoxByOrderNo(String orderNo)
 	{
 		// TODO Auto-generated method stub
-		return 0;
+		return sqlSessionTemplate.delete("deleteMilkBoxByOrderNo",orderNo);
 	}
 	
 	@Override

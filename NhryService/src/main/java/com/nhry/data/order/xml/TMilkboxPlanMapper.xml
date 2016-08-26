@@ -75,9 +75,9 @@
     </if>
     order by o.ORDER_NO desc
   </select>
-  <delete id="deleteByPrimaryKey" parameterType="java.lang.String" >
+  <delete id="deleteMilkBoxByOrderNo" parameterType="java.lang.String" >
     delete from t_mst_milkbox_plan
-    where PLAN_NO = #{planNo,jdbcType=VARCHAR}
+    where ORDER_NO = #{orderNo,jdbcType=VARCHAR}
   </delete>
   <insert id="addNewMilkboxPlan" parameterType="com.nhry.data.order.domain.TMilkboxPlan" >
     insert into t_mst_milkbox_plan
