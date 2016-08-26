@@ -161,7 +161,7 @@ public class BusinessDataConnection {
     }
 
     public static PISuccessMessage SalesOrderCreate(List<Map<String, String>> items, SalesOrderHeader orderHeader) {
-
+        long begin = System.currentTimeMillis();
         logger.info("获取销售订单开始！" + orderHeader.toString());
         PISuccessMessage successMessage = new PISuccessMessage();
         try {
@@ -293,7 +293,8 @@ public class BusinessDataConnection {
             successMessage.setData("");
             successMessage.setMessage("销售订单接口异常，请联系管理员！");
         }
-        logger.info("获取销售订单结束");
+        long end = System.currentTimeMillis();
+        logger.info("获取销售订单结束"+(end - begin));
         return successMessage;
     }
 
@@ -363,8 +364,13 @@ public class BusinessDataConnection {
                     message.setData(deliveries);
                 }
             } else {
+
                 message.setSuccess(false);
-                message.setMessage("交货单没有生成！");
+                if(isZy){
+                    message.setMessage("获取出厂价格失败，销售订单生成失败！");
+                }else{
+                    message.setMessage("交货单没有生成！");
+                }
             }
         }catch (Exception e){
             e.printStackTrace();

@@ -57,6 +57,14 @@
 			<value>deleteExpiredAccesskey</value>
 		</property>
 	</bean>
+	<bean id="scheduledJobDetail7" class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean" >
+		<property name="targetObject">
+			<ref bean="piRequireOrderService"/>
+		</property>
+		<property name="targetMethod">
+			<value>saveFactoryPrice</value>
+		</property>
+	</bean>
 	 <!-- 调度的配置开始 -->
     <bean id="crontestJobTrigger1" class="org.springframework.scheduling.quartz.CronTriggerFactoryBean">
         <property name="jobDetail">
@@ -106,6 +114,14 @@
 			<value>0 35 * * * ?</value>
 		</property>
 	</bean>
+	<bean id="crontestJobTrigger7" class="org.springframework.scheduling.quartz.CronTriggerFactoryBean">
+		<property name="jobDetail">
+			<ref bean="scheduledJobDetail7" />
+		</property>
+		<property name="cronExpression">
+			<value>0 15 18 * * ?</value>
+		</property>
+	</bean>
     <!-- 调度的配置结束 -->
 
     <!-- 启动触发器的配置开始 -->
@@ -118,6 +134,7 @@
 				<ref bean="crontestJobTrigger4"/>
 				<ref bean="crontestJobTrigger5"/>
 				<ref bean="crontestJobTrigger6"/>
+				<ref bean="crontestJobTrigger7"/>
             </list>
         </property>
     </bean>
