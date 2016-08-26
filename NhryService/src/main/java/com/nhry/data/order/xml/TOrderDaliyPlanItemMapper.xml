@@ -615,7 +615,7 @@
              and  o.BRANCH_NO = #{branchNo,jdbcType=VARCHAR}
             and e.SALES_ORG = #{salesOrg,jdbcType=VARCHAR}
             and  ti.DISP_DATE = #{requiredDate,jdbcType=DATE}
-            GROUP BY di.MATNR,p.PROMOTION
+            GROUP BY di.MATNR,di.CONFIRM_MATNR,p.PROMOTION
         UNION ALL
             SELECT  (select NULL from DUAL) MATNR,SUM(di.CONFIRM_QTY) QTY,di.MATNR   CONFIRM_MATNR,p.PROMOTION PROMOTION_FLAG
             from  t_mst_disp_order_item di
@@ -650,7 +650,7 @@
               and   disp.DISP_DATE = #{requiredDate,jdbcType=DATE}
               and  o.SALES_ORG=#{salesOrg,jdbcType=VARCHAR}
               and  o.BRANCH_NO = #{branchNo,jdbcType=VARCHAR}
-              GROUP BY di.MATNR
+              GROUP BY di.MATNR,di.CONFIRM_MATNR
 
           UNION ALL
 
