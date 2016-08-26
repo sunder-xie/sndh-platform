@@ -92,11 +92,13 @@
                 SELECT
                 i.CONFIRM_MATNR MATNR,i.QTY,i.PRICE ,o.DISP_EMP_NO EMP_NO,o.DISP_DATE,
                 (
-                SELECT  gi.FACTORY_PRICE
-                FROM t_ssm_gi_order_item gi LEFT JOIN t_ssm_gi_order go on gi.ORDER_NO = go.ORDER_NO
-                where go.BRANCH_NO = o.BRANCH_NO
-                and gi.MATNR = i.CONFIRM_MATNR
-                and go.ORDER_DATE = o.DISP_DATE
+                    SELECT  p.FACTORY_PRICE
+                    FROM t_ssm_sal_factory_price p
+                    where 1=1
+
+                    and p.MATNR = i.CONFIRM_MATNR
+                    and p.BRANCH_NO = o.BRANCH_NO
+                    and p.ORDER_DATE = o.DISP_DATE
                 ) FACTORY_PRICE
                 FROM t_mst_disp_order_item i
                 LEFT JOIN t_mst_disp_order o ON i.ORDER_NO = o.ORDER_NO
@@ -126,11 +128,13 @@
                 SELECT
                 i.CONFIRM_MATNR MATNR,i.CONFIRM_QTY QTY ,i.PRICE ,o.DISP_EMP_NO EMP_NO,o.DISP_DATE,
                 (
-                SELECT  gi.FACTORY_PRICE
-                FROM t_ssm_gi_order_item gi LEFT JOIN t_ssm_gi_order go on gi.ORDER_NO = go.ORDER_NO
-                where go.BRANCH_NO = o.BRANCH_NO
-                and gi.MATNR = i.CONFIRM_MATNR
-                and go.ORDER_DATE = o.DISP_DATE
+                        SELECT  p.FACTORY_PRICE
+                        FROM t_ssm_sal_factory_price p
+                        where 1=1
+
+                        and p.MATNR = i.CONFIRM_MATNR
+                        and p.BRANCH_NO = o.BRANCH_NO
+                        and p.ORDER_DATE = o.DISP_DATE
                 ) FACTORY_PRICE
                 FROM t_mst_disp_order_item i
                 LEFT JOIN t_mst_disp_order o ON i.ORDER_NO = o.ORDER_NO

@@ -598,117 +598,117 @@
     GROUP BY i.PROMOTION_FLAG
   </select>
   <select id="selectProDayPlanOfSelfBranch" resultMap="BaseResultMap" parameterType="com.nhry.model.milktrans.RequireOrderSearch" >
-    select di.MATNR,SUM(di.CONFIRM_QTY) QTY,di.CONFIRM_MATNR,p.PROMOTION PROMOTION_FLAG
-    from  t_mst_disp_order_item di
-   LEFT JOIN  t_mst_disp_order ti ON di.ORDER_NO = ti.ORDER_NO
-    LEFT JOIN t_mst_plan_order_item  i on i.ORDER_NO = di.ORG_ORDER_NO and i.ITEM_NO = di.ORG_ITEM_NO and i.MATNR = di.MATNR
-    LEFT JOIN t_preorder o on 	di.ORG_ORDER_NO = o.ORDER_NO
-    LEFT JOIN t_mst_plan_order_item p on di.ORG_ITEM_NO = p.ITEM_NO
-    LEFT JOIN t_md_mara_ex e on di.MATNR = e.MATNR  and e.SALES_ORG = #{salesOrg,jdbcType=VARCHAR}
-    where   1=1
-    AND di.GIFT_FLAG is NOT null
-    AND ti.STATUS = '20'
-    and di.MATNR!=di.CONFIRM_MATNR
-    and di.REASON = '10'
-    and di.REPLACE_REASON = '10'
-
-     and  o.BRANCH_NO = #{branchNo,jdbcType=VARCHAR}
-    and e.SALES_ORG = #{salesOrg,jdbcType=VARCHAR}
-    and  ti.DISP_DATE = #{requiredDate,jdbcType=DATE}
-    GROUP BY di.MATNR
-UNION ALL
-    select  (select NULL from DUAL) MATNR,SUM(di.CONFIRM_QTY) QTY,di.MATNR   CONFIRM_MATNR,p.PROMOTION PROMOTION_FLAG
-    from  t_mst_disp_order_item di
-    LEFT JOIN  t_mst_disp_order ti ON di.ORDER_NO = ti.ORDER_NO
-    LEFT JOIN t_mst_plan_order_item  i on i.ORDER_NO = di.ORG_ORDER_NO and i.ITEM_NO = di.ORG_ITEM_NO and i.MATNR = di.MATNR
-    LEFT JOIN t_preorder o on 	di.ORG_ORDER_NO = o.ORDER_NO
-    LEFT JOIN t_md_mara_ex e on di.MATNR = e.MATNR  and e.SALES_ORG = #{salesOrg,jdbcType=VARCHAR}
-    LEFT JOIN t_mst_plan_order_item p on di.ORG_ITEM_NO = p.ITEM_NO
-    where   1=1
-    AND di.GIFT_FLAG is NOT null
-    AND ti.STATUS = '20'
-    and di.MATNR = di.CONFIRM_MATNR
-
-    and  o.BRANCH_NO = #{branchNo,jdbcType=VARCHAR}
-    and e.SALES_ORG = #{salesOrg,jdbcType=VARCHAR}
-    and  ti.DISP_DATE = #{requiredDate,jdbcType=DATE}
-    GROUP BY di.MATNR
+         SELECT di.MATNR,SUM(di.CONFIRM_QTY) QTY,di.CONFIRM_MATNR,p.PROMOTION PROMOTION_FLAG
+            from  t_mst_disp_order_item di
+           LEFT JOIN  t_mst_disp_order ti ON di.ORDER_NO = ti.ORDER_NO
+            LEFT JOIN t_mst_plan_order_item  i on i.ORDER_NO = di.ORG_ORDER_NO and i.ITEM_NO = di.ORG_ITEM_NO and i.MATNR = di.MATNR
+            LEFT JOIN t_preorder o on 	di.ORG_ORDER_NO = o.ORDER_NO
+            LEFT JOIN t_mst_plan_order_item p on di.ORG_ITEM_NO = p.ITEM_NO
+            LEFT JOIN t_md_mara_ex e on di.MATNR = e.MATNR  and e.SALES_ORG = #{salesOrg,jdbcType=VARCHAR}
+            where   1=1
+            AND di.GIFT_FLAG is NOT null
+            AND ti.STATUS = '20'
+            and di.CONFIRM_QTY>0
+            and di.MATNR!=di.CONFIRM_MATNR
+            and di.REASON = '10'
+            and di.REPLACE_REASON = '10'
+             and  o.BRANCH_NO = #{branchNo,jdbcType=VARCHAR}
+            and e.SALES_ORG = #{salesOrg,jdbcType=VARCHAR}
+            and  ti.DISP_DATE = #{requiredDate,jdbcType=DATE}
+            GROUP BY di.MATNR,p.PROMOTION
+        UNION ALL
+            SELECT  (select NULL from DUAL) MATNR,SUM(di.CONFIRM_QTY) QTY,di.MATNR   CONFIRM_MATNR,p.PROMOTION PROMOTION_FLAG
+            from  t_mst_disp_order_item di
+            LEFT JOIN  t_mst_disp_order ti ON di.ORDER_NO = ti.ORDER_NO
+            LEFT JOIN t_mst_plan_order_item  i on i.ORDER_NO = di.ORG_ORDER_NO and i.ITEM_NO = di.ORG_ITEM_NO and i.MATNR = di.MATNR
+            LEFT JOIN t_preorder o on 	di.ORG_ORDER_NO = o.ORDER_NO
+            LEFT JOIN t_md_mara_ex e on di.MATNR = e.MATNR  and e.SALES_ORG = #{salesOrg,jdbcType=VARCHAR}
+            LEFT JOIN t_mst_plan_order_item p on di.ORG_ITEM_NO = p.ITEM_NO
+            where   1=1
+            AND di.GIFT_FLAG is NOT null
+            AND ti.STATUS = '20'
+            and di.MATNR = di.CONFIRM_MATNR
+            and di.CONFIRM_QTY>0
+            and  o.BRANCH_NO = #{branchNo,jdbcType=VARCHAR}
+            and e.SALES_ORG = #{salesOrg,jdbcType=VARCHAR}
+            and  ti.DISP_DATE = #{requiredDate,jdbcType=DATE}
+            GROUP BY di.MATNR,p.PROMOTION
   </select>
   <select id="selectNoProDayPlanOfSelfBranch" resultMap="BaseResultMap" parameterType="com.nhry.model.milktrans.RequireOrderSearch" >
-    SELECT  t.MATNR,SUM(t.QTY) QTY,  t.CONFIRM_MATNR
-    FROM
-    (
-       	select
-       	(select NULL from DUAL)  MATNR,SUM(di.CONFIRM_QTY) QTY, di.CONFIRM_MATNR
-        from t_mst_disp_order_item di
-        LEFT JOIN t_preorder o on 	di.ORG_ORDER_NO = o.ORDER_NO
-        LEFT JOIN t_mst_disp_order disp on di.ORDER_NO = disp.ORDER_NO
-        where   1=1
-       	and disp.`STATUS` = '20'
-       	and di.MATNR=di.CONFIRM_MATNR
-        AND di.GIFT_FLAG is  null
-        and   disp.DISP_DATE = #{requiredDate,jdbcType=DATE}
-        and  o.SALES_ORG=#{salesOrg,jdbcType=VARCHAR}
-        and  o.BRANCH_NO = #{branchNo,jdbcType=VARCHAR}
-        GROUP BY di.MATNR
+         SELECT  t.MATNR,SUM(t.QTY) QTY,  t.CONFIRM_MATNR
+          FROM
+          (
+              select
+              (select NULL from DUAL)  MATNR,SUM(di.CONFIRM_QTY) QTY, di.CONFIRM_MATNR
+              from t_mst_disp_order_item di
+              LEFT JOIN t_preorder o on 	di.ORG_ORDER_NO = o.ORDER_NO
+              LEFT JOIN t_mst_disp_order disp on di.ORDER_NO = disp.ORDER_NO
+              where   1=1
+              and disp.`STATUS` = '20'
+              and di.MATNR=di.CONFIRM_MATNR
+              AND di.GIFT_FLAG is  null
+              and   disp.DISP_DATE = #{requiredDate,jdbcType=DATE}
+              and  o.SALES_ORG=#{salesOrg,jdbcType=VARCHAR}
+              and  o.BRANCH_NO = #{branchNo,jdbcType=VARCHAR}
+              GROUP BY di.MATNR
 
-    UNION ALL
+          UNION ALL
 
-        select
-        di.MATNR,SUM(di.CONFIRM_QTY) QTY,di.CONFIRM_MATNR
-        from t_mst_disp_order_item di
-        LEFT JOIN t_preorder o on 	di.ORG_ORDER_NO = o.ORDER_NO
-        LEFT JOIN t_mst_disp_order disp on di.ORDER_NO = disp.ORDER_NO
-        where   1=1
-       	and disp.`STATUS` = '20'
-       	and di.MATNR!=di.CONFIRM_MATNR
-       	and di.REASON = '10'
-        and di.REPLACE_REASON = '10'
-        AND di.GIFT_FLAG  is  null
-        and   disp.DISP_DATE =#{requiredDate,jdbcType=DATE}
-        and  o.SALES_ORG=#{salesOrg,jdbcType=VARCHAR}
-        and  o.BRANCH_NO = #{branchNo,jdbcType=VARCHAR}
-        GROUP BY di.MATNR
+              select
+              di.MATNR,SUM(di.CONFIRM_QTY) QTY,di.CONFIRM_MATNR
+              from t_mst_disp_order_item di
+              LEFT JOIN t_preorder o on 	di.ORG_ORDER_NO = o.ORDER_NO
+              LEFT JOIN t_mst_disp_order disp on di.ORDER_NO = disp.ORDER_NO
+              where   1=1
+              and disp.`STATUS` = '20'
+              and di.MATNR!=di.CONFIRM_MATNR
+              and di.REASON = '10'
+              and di.REPLACE_REASON = '10'
+              AND di.GIFT_FLAG  is  null
+              and   disp.DISP_DATE =#{requiredDate,jdbcType=DATE}
+              and  o.SALES_ORG=#{salesOrg,jdbcType=VARCHAR}
+              and  o.BRANCH_NO = #{branchNo,jdbcType=VARCHAR}
+              GROUP BY di.MATNR
 
-    UNION ALL
+          UNION ALL
 
-          SELECT
-          (select NULL from DUAL) MATNR ,SUM(i.INCRE_QTY) QTY,i.MATNR  CONFIRM_MATNR
-          FROM t_ssm_req_goods_order_item i
-          LEFT JOIN t_ssm_req_goods_order o on i.ORDER_NO = o.ORDER_NO
+                SELECT
+                (select NULL from DUAL) MATNR ,SUM(i.INCRE_QTY) QTY,i.MATNR  CONFIRM_MATNR
+                FROM t_ssm_req_goods_order_item i
+                LEFT JOIN t_ssm_req_goods_order o on i.ORDER_NO = o.ORDER_NO
+                where 1=1
+                and i.INCRE_QTY!=null
+                and i.INCRE_QTY!=0
+                and i.ORDER_DATE = #{requiredDate,jdbcType=DATE}
+                and o.BRANCH_NO =  #{branchNo,jdbcType=VARCHAR}
+                 GROUP BY i.MATNR
+
+          UNION ALL
+                SELECT
+                (select NULL from DUAL) MATNR ,SUM(i.QTY) QTY, i.MATNR CONFIRM_MATNR
+                FROM t_ssm_req_goods_order_item i
+                LEFT JOIN t_ssm_req_goods_order o on i.ORDER_NO = o.ORDER_NO
+                where 1=1
+                and i.FLAG = 2
+                and i.ORDER_DATE = #{requiredDate,jdbcType=DATE}
+                and o.BRANCH_NO =  #{branchNo,jdbcType=VARCHAR}
+                GROUP BY i.MATNR
+
+          UNION ALL
+              SELECT
+             (select NULL from DUAL)  MATNR,i.QTY,i.MATNR CONFIRM_MATNR
+              FROM t_mst_inside_sal_order_item i
+              LEFT JOIN t_mst_inside_sal_order o on i.INS_ORDER_NO = o.INS_ORDER_NO
+              LEFT JOIN t_mst_disp_order disp on o.DISP_ORDER_NO = disp.ORDER_NO
+              WHERE 1=1
+              and o.BRANCH_NO =  #{branchNo,jdbcType=VARCHAR}
+              and disp.DISP_DATE = #{requiredDate,jdbcType=DATE}
+              GROUP BY i.MATNR
+          )t
           where 1=1
-          and i.INCRE_QTY!=null
-          and i.INCRE_QTY!=0
-          and i.ORDER_DATE = #{requiredDate,jdbcType=DATE}
-          and o.BRANCH_NO =  #{branchNo,jdbcType=VARCHAR}
-           GROUP BY i.MATNR
-
-    UNION ALL
-          SELECT
-          (select NULL from DUAL) MATNR ,SUM(i.QTY) QTY, i.MATNR CONFIRM_MATNR
-          FROM t_ssm_req_goods_order_item i
-          LEFT JOIN t_ssm_req_goods_order o on i.ORDER_NO = o.ORDER_NO
-          where 1=1
-          and i.FLAG = 2
-          and i.ORDER_DATE = #{requiredDate,jdbcType=DATE}
-          and o.BRANCH_NO =  #{branchNo,jdbcType=VARCHAR}
-          GROUP BY i.MATNR
-
-    UNION ALL
-        SELECT
-       (select NULL from DUAL)  MATNR,i.QTY,i.MATNR CONFIRM_MATNR
-        FROM t_mst_inside_sal_order_item i
-        LEFT JOIN t_mst_inside_sal_order o on i.INS_ORDER_NO = o.INS_ORDER_NO
-        LEFT JOIN t_mst_disp_order disp on o.DISP_ORDER_NO = disp.ORDER_NO
-        WHERE 1=1
-        and o.BRANCH_NO =  #{branchNo,jdbcType=VARCHAR}
-        and disp.DISP_DATE = #{requiredDate,jdbcType=DATE}
-        GROUP BY i.MATNR
-    )t
-    where 1=1
-    and t.CONFIRM_MATNR IS NOT NULL
-    GROUP BY t.CONFIRM_MATNR
-
+          AND t.QTY>0
+          and t.CONFIRM_MATNR IS NOT NULL
+          GROUP BY t.CONFIRM_MATNR,t.MATNR
   </select>
 
   <select id="getProductItemsByOrderNo" resultMap="BaseResultMap" parameterType="java.util.Map">
