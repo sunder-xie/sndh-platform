@@ -1366,7 +1366,7 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 			order.setOrderType("20");//订单类型 页面都是线下
 		}
 		if(StringUtils.isBlank(order.getPreorderSource())){
-			order.setPreorderSource("30");//订单来源  页面中来源都是30（奶站）
+			order.setPreorderSource("30");//订单来源  页面中来源都是30（奶站） 10电商20征订40牛奶钱包50送奶工APP
 		}
 		if(StringUtils.isBlank(order.getIsIntegration())){
 			order.setIsIntegration("Y");//默认是积分订单
