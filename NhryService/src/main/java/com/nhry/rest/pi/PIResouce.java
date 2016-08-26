@@ -75,7 +75,6 @@ public class PIResouce extends BaseResource{
     @Autowired
     public SmsSendService smsSendService;
 
-
     @GET
     @Path("/getProducts")
     @Produces(MediaType.APPLICATION_JSON)
@@ -195,6 +194,13 @@ public class PIResouce extends BaseResource{
         piVipInfoDataService.executeVipInfoData(vipCustInfo, vipTel);
         return convertToRespModel(MessageCode.NORMAL,null, null);
     }
-
+    @POST
+    @Path("/saveFactoryPrice")
+    @Produces(MediaType.APPLICATION_JSON)
+    @Consumes(MediaType.APPLICATION_JSON)
+    @ApiOperation(value = "/saveFactoryPrice", response = ResponseModel.class, notes = "保存自营奶站出厂价格")
+    public Response saveFactoryPrice(){
+        return convertToRespModel(MessageCode.NORMAL, requireOrderService.saveFactoryPrice(), null);
+    }
 
 }

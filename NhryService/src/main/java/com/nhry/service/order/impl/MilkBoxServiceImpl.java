@@ -291,4 +291,17 @@ public class MilkBoxServiceImpl extends BaseService implements MilkBoxService
 	{
 		return tMilkboxPlanMapper.searchMilkBox(empNo);
 	}
+
+	/* (non-Javadoc) 
+	* @title: deleteMilkBoxByOrderNo
+	* @description: 
+	* @param code
+	* @return 
+	* @see com.nhry.service.order.dao.MilkBoxService#deleteMilkBoxByOrderNo(java.lang.String) 
+	*/
+	@Override
+	public int deleteMilkBoxByOrderNo(String code)
+	{
+		return tMilkboxPlanMapper.deleteMilkBoxByOrderNo(code);
+	}
 }

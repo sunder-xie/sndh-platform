@@ -19,6 +19,8 @@ public interface MilkBoxService {
 	TMilkboxPlan selectMilkboxByPlanNo(String code);
 	
 	int updateMilkboxPlanPrinted(String code);
+	
+	int deleteMilkBoxByOrderNo(String code);
 
 	List findMilkBox(String empNo);
 }

@@ -187,5 +187,10 @@
         WHERE 1=1
         and ORDER_NO = #{orderNo,jdbcType=VARCHAR}
     </delete>
-
+    <select id="findGidOrderByNotWBSTK" resultMap="BaseResultMap">
+        SELECT <include refid="Base_Column_List"/> FROM t_ssm_sal_order o WHERE o.IS_WBSTK = 'N' AND o.FREE_FLAG = 'N' AND o.VOUCHER_NO is not null and EXISTS (select 1 from t_md_branch t where t.branch_no = o.BRANCH_NO and t.branch_group = '01')
+    </select>
+    <update id="updateWBSTK" parameterType="string">
+        UPDATE t_ssm_sal_order SET IS_WBSTK = "Y" WHERE ORDER_NO = #{orderNo,jdbcType=VARCHAR}
+    </update>
 </mapper>

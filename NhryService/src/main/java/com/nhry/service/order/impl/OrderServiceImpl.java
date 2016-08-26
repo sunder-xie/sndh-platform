@@ -673,6 +673,9 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 				tVipCustInfoService.discontinue(order.getMilkmemberNo(), "40",null,null);
 			}
 			
+			//删除装箱单
+			milkBoxService.deleteMilkBoxByOrderNo(order.getOrderNo());
+			
 			//发送EC,更新订单状态
 			TPreOrder sendOrder = new TPreOrder();
 			sendOrder.setOrderNo(order.getOrderNo());
@@ -1483,8 +1486,8 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 			tPlanOrderItemMapper.insert(entry);
 		});
 		
-		//非奶站订单直接返回
-		if(!"30".equals(order.getPreorderSource())){
+		//非确认的订单直接返回
+		if(!"10".equals(order.getPreorderStat())){
 			return order.getOrderNo();
 		}
 		

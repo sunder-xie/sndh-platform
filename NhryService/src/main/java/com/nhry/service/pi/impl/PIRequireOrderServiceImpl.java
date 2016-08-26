@@ -19,10 +19,7 @@ import com.nhry.data.milktrans.domain.TSsmSalOrder;
 import com.nhry.data.stock.dao.TSsmGiOrderItemMapper;
 import com.nhry.data.stock.dao.TSsmGiOrderMapper;
 import com.nhry.data.stock.dao.TSsmSalFactoryPriceMapper;
-import com.nhry.data.stock.domain.TSsmGiOrder;
-import com.nhry.data.stock.domain.TSsmGiOrderItem;
-import com.nhry.data.stock.domain.TSsmGiOrderItemKey;
-import com.nhry.data.stock.domain.TSsmSalFactoryPrice;
+import com.nhry.data.stock.domain.*;
 import com.nhry.model.milktrans.ReqGoodsOrderItemSearch;
 import com.nhry.model.milktrans.RequireOrderSearch;
 import com.nhry.model.milktrans.SalOrderModel;
@@ -185,29 +182,12 @@ public class PIRequireOrderServiceImpl implements PIRequireOrderService {
         orderHeader.setBSTKD(ssmSalOrder.getOrderNo());
         orderHeader.setLFDAT(ssmSalOrder.getRequiredDate());
         PISuccessMessage message = BusinessDataConnection.SalesOrderCreate(items, orderHeader);
-        if(message.isSuccess()) {
-            String orderNo = message.getData();
-            if (isZy) {
-                savePriceAndGiOrder(orderNo, ssmSalOrder.getBranchNo(),false,true);
-//                PISuccessTMessage<List<Delivery>> message1 = BusinessDataConnection.DeliveryQuery(orderNo, false, true);
-//                if (message1.isSuccess()) {
-//                    List<Delivery> deliveries = message1.getData();
-//                    if (deliveries.size() > 0) {
-//                        for (Delivery d : deliveries) {
-//                            TSysUser user = userSessionService.getCurrentUser();
-//                            TSsmSalFactoryPrice price = new TSsmSalFactoryPrice();
-//                            price.setCreateAt(new Date());
-//                            price.setCreateBy(user.getLoginName());
-//                            price.setBranchNo(ssmSalOrder.getBranchNo());
-//                            price.setMatnr(d.getMATNR());
-//                            price.setOrderDate(d.getLFDAT());
-//                            price.setSalesOrg(user.getSalesOrg());
-//                            ssmSalFactoryPriceMapper.insertFactoryPrice(price);
-//                        }
-//                    }
-//                }
-            }
-        }
+//        if(message.isSuccess()) {
+//            String orderNo = message.getData();
+//            if (isZy) {
+//                savePriceAndGiOrder(orderNo, ssmSalOrder.getBranchNo(),false,true);
+//            }
+//        }
         return message;
     }
 
@@ -218,7 +198,7 @@ public class PIRequireOrderServiceImpl implements PIRequireOrderService {
         } else {
             TSsmGiOrder order = ssmGiOrderMapper.findGiOrderByReqOrderNo(orderNo);
             if(order != null){
-                throw new ServiceException(MessageCode.LOGIC_ERROR, "交货单已生成！");
+                throw new ServiceException(MessageCode.LOGIC_ERROR, "交货单已生成,请直接查询");
             }
             savePriceAndGiOrder(orderNo, branchNo, isDeli,false);
         }
@@ -280,6 +260,7 @@ public class PIRequireOrderServiceImpl implements PIRequireOrderService {
                         price.setMatnr(d.getMATNR());
                         price.setOrderDate(d.getLFDAT());
                         price.setSalesOrg(user.getSalesOrg());
+                        price.setFactoryPrice(d.getCmpre());
                         ssmSalFactoryPriceMapper.insertFactoryPrice(price);
                     }
                 }
@@ -338,6 +319,42 @@ public class PIRequireOrderServiceImpl implements PIRequireOrderService {
             }
         }
         return message;
+    }
+
+    @Override
+    public String saveFactoryPrice() {
+        List<TSsmSalOrder> orders = ssmSalOrderMapper.findGidOrderByNotWBSTK();
+        if(orders.size() >0){
+            for(TSsmSalOrder order : orders){
+                PISuccessTMessage<List<Delivery>> message1 = BusinessDataConnection.DeliveryQuery(order.getVoucherNo(), false, true);
+                if(message1.isSuccess()) {
+                    List<Delivery> deliveries = message1.getData();
+                    if (deliveries.size() > 0) {
+                        for (Delivery d : deliveries) {
+                            TSysUser user = userSessionService.getCurrentUser();
+                            TSsmSalFactoryPriceKey key = new TSsmSalFactoryPriceKey();
+                            key.setOrderDate(d.getLFDAT());
+                            key.setMatnr(d.getMATNR());
+                            key.setBranchNo(order.getBranchNo());
+                            TSsmSalFactoryPrice price =ssmSalFactoryPriceMapper.selectFactoryPrice(key);
+                            if(price == null) {
+                                price = new TSsmSalFactoryPrice();
+                                price.setCreateAt(new Date());
+                                price.setCreateBy(user.getLoginName());
+                                price.setBranchNo(order.getBranchNo());
+                                price.setMatnr(d.getMATNR());
+                                price.setOrderDate(d.getLFDAT());
+                                price.setSalesOrg(user.getSalesOrg());
+                                price.setFactoryPrice(d.getCmpre());
+                                ssmSalFactoryPriceMapper.insertFactoryPrice(price);
+                            }
+                        }
+                        ssmSalOrderMapper.updateWBSTK(order.getOrderNo());
+                    }
+                }
+            }
+        }
+        return "1";
     }
 
 

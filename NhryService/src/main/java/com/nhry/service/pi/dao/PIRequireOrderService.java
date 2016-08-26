@@ -48,5 +48,12 @@ public interface PIRequireOrderService {
      * @param model
      * @return
      */
-    public String execDelivery(StockModel model);
+    String execDelivery(StockModel model);
+
+    /**
+     * 任务调度执行获取ECC出厂价格
+     * @return
+     */
+    String saveFactoryPrice();
+
 }
