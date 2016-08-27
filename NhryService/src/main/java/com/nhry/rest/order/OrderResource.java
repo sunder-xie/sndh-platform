@@ -49,6 +49,14 @@ public class OrderResource extends BaseResource {
 	}
 	
 	@GET
+	@Path("/selectLatestOrder/{vipNo}")
+	@Produces(MediaType.APPLICATION_JSON)
+	@ApiOperation(value = "/selectLatestOrder/{vipNo}", response = OrderCreateModel.class, notes = "查询该用户上一张订单的送奶员和订单号")
+	public Response selectLatestOrder(@ApiParam(required=true,name="vipNo",value="订户编号") @PathParam("vipNo") String vipNo){
+		return convertToRespModel(MessageCode.NORMAL, null, orderService.selectLatestOrder(vipNo));
+	}
+	
+	@GET
 	@Path("/selectRequiredOrderNum")
 	@Produces(MediaType.APPLICATION_JSON)
 	@ApiOperation(value = "/selectRequiredOrderNum", response = OrderCreateModel.class, notes = "该组织下待确认的订单")

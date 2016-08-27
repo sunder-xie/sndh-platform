@@ -197,6 +197,19 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 		
 		return orderModel;
 	}
+	
+	/* (non-Javadoc)
+    * @title: selectLatestOrder
+    * @description: 查询该用户上一张订单的送奶员和订单号
+    * @param orderCode
+    * @return
+    * @see com.nhry.service.order.dao.OrderService#selectLatestOrder(java.lang.String)
+    */
+   @Override
+   public TPreOrder selectLatestOrder(String vipNo)
+   {
+   	return tPreOrderMapper.selectLastOrder(vipNo);
+   }
 
 	/* (non-Javadoc)
     * @title: selectOrderByCode

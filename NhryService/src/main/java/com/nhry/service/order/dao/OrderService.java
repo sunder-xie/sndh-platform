@@ -15,6 +15,9 @@ import java.util.Date;
 import java.util.List;
 
 public interface OrderService {
+	
+	TPreOrder selectLatestOrder(String vipNo);
+	
 	List<TOrderDaliyPlanItem> searchDaliyPlansByStatus(String orderNo, String status1,String status2,String status3);
 	
 	PageInfo searchNeedResumeOrders(OrderSearchModel smodel);

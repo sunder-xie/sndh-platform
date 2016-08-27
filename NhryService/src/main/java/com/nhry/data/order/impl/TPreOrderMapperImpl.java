@@ -22,6 +22,12 @@ public class TPreOrderMapperImpl implements TPreOrderMapper
 	}
 	
 	@Override
+	public TPreOrder selectLastOrder(String vipNo) {
+		// TODO Auto-generated method stub
+		return sqlSessionTemplate.selectOne("selectLastestOrder",vipNo);
+	}
+	
+	@Override
 	public int updateOrderResumed(String orderNo) {
 		// TODO Auto-generated method stub
 		return sqlSessionTemplate.update("updateOrderResumed",orderNo);

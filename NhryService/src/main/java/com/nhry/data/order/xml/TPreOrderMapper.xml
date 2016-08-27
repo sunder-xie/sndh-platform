@@ -68,6 +68,16 @@
     PAY_METHOD, SOLICIT_NO, SOLICIT_DATE, SOLICITOR_NO, SOLICIT_BY,RET_REASON,RET_DATE,DELIVERY_TYPE,STOP_DATE_START,STOP_DATE_END,STOP_REASON
   	 SIGN,SALES_ORG
   </sql>
+  <select id="selectLastestOrder" resultMap="BaseResultMap" parameterType="java.lang.String" >
+	   select o.ORDER_NO ORDER_NO,e.EMP_NAME EMP_NAME,e.MP EMP_TEL
+	   from t_preorder o 
+		left join t_md_branch_emp e on o.EMP_NO = e.EMP_NO
+		where order_date = (
+			select DATE_FORMAT(last_order_time,'%Y-%m-%d') from t_vip_cust_info 
+			where VIP_CUST_NO = #{vipNo,jdbcType=VARCHAR}
+		)
+		ORDER BY o.order_no desc limit 1
+  </select>
   <select id="selectOrderRemainAndAmt" resultMap="BaseRemainResultMap" parameterType="java.lang.String" >
 	   select sum(d.QTY) QTY,(select sum(INIT_AMT - CUR_AMT) 
 		from t_preorder
