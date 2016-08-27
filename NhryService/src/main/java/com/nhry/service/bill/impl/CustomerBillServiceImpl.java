@@ -467,6 +467,11 @@ public class CustomerBillServiceImpl implements CustomerBillService {
     }
 
     @Override
+    public BigDecimal calculateTotalBeforBatch(CustBatchBillQueryModel cModel) {
+        return tPreOrderMapper.calculateTotalBeforBatch(cModel);
+    }
+
+    @Override
     public CollectOrderBillModel queryCollectByOrderNo(String orderCode) {
         return customerBillMapper.queryCollectByOrderNo(orderCode);
     }

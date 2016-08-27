@@ -11,15 +11,23 @@ import java.util.Date;
 public class CustBillQueryModel extends BaseQueryModel implements Serializable {
 
     private  String status;
-
     private Date orderStartDate;
-
     private Date orderEndDate;
     private String search;
+   // private
     private String branchNo ;
     private String dealerNo;
     private String salesOrg;
     private String empNo;
+    private String paymentmethod;
+
+    public String getPaymentmethod() {
+        return paymentmethod;
+    }
+
+    public void setPaymentmethod(String paymentmethod) {
+        this.paymentmethod = paymentmethod;
+    }
 
     public String getSearch() {
         return search;
