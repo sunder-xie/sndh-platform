@@ -209,6 +209,7 @@ public class MilkBoxServiceImpl extends BaseService implements MilkBoxService
 	       			TPreOrder sendOrder = new TPreOrder();
 	       			sendOrder.setOrderNo(omodel.getOrder().getOrderNo());
 	       			sendOrder.setPreorderStat("200");
+	       			sendOrder.setEmpNo(omodel.getOrder().getEmpNo());
 	       			taskExecutor.execute(new Thread(){
 	       				@Override
 	       				public void run() {

@@ -232,6 +232,7 @@ public class CustomerBillServiceImpl implements CustomerBillService {
        					messLogService.sendOrderStatus(sendOrder);
 
        					if("20".equals(order.getPaymentmethod()) && !"20".equals(order.getMilkboxStat())){
+       						sendOrder.setEmpNo(order.getEmpNo());
        						sendOrder.setPreorderStat("200");
        						messLogService.sendOrderStatus(sendOrder);
        					}
