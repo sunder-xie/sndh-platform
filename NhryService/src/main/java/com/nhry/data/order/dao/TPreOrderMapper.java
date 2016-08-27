@@ -85,4 +85,6 @@ public interface TPreOrderMapper {
     List<TPreOrder> selectCustBatchCollect(OrderSearchModel oModel);
 
     BigDecimal calculateAfterOrderFactoryAmt(String orderNo);
+    //选择收款人批量收款前 计算订单总金额
+    BigDecimal calculateTotalBeforBatch(CustBatchBillQueryModel cModel);
 }

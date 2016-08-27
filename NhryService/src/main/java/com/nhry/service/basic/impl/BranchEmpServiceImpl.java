@@ -203,11 +203,15 @@ public class BranchEmpServiceImpl extends BaseService implements BranchEmpServic
 	@Override
 	public PageInfo searchBranchEmp(EmpQueryModel smodel) {
 		TSysUser user = userSessionService.getCurrentUser();
-		smodel.setSalesOrg(user.getSalesOrg());
-		smodel.setBranchNo(user.getBranchNo());
-		smodel.setDealerNo(user.getDealerId());
-
-
+		if(smodel.getBranchNo() == null){
+			smodel.setBranchNo(user.getBranchNo());
+		}
+		if(smodel.getSalesOrg() == null){
+			smodel.setSalesOrg(user.getSalesOrg());
+		}
+		if(smodel.getDealerNo() == null){
+			smodel.setDealerNo(user.getDealerId());
+		}
 		// TODO Auto-generated method stub
 		if(StringUtils.isEmpty(smodel.getPageNum()) || StringUtils.isEmpty(smodel.getPageSize())){
 			throw new ServiceException(MessageCode.LOGIC_ERROR,"pageNum和pageSize不能为空！");

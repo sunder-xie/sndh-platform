@@ -240,6 +240,11 @@ public class TPreOrderMapperImpl implements TPreOrderMapper
 		return sqlSessionTemplate.selectOne("calculateAfterOrderFactoryAmt", orderNo);
 	}
 
+	@Override
+	public BigDecimal calculateTotalBeforBatch(CustBatchBillQueryModel cModel) {
+		return sqlSessionTemplate.selectOne("calculateTotalBeforBatch", cModel);
+	}
+
 	/* (non-Javadoc) 
 	* @title: replaceOrdersDispmember
 	* @description: 替换所有a送奶员的订单为b送奶员
