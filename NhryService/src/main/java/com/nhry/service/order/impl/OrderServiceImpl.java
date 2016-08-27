@@ -1152,7 +1152,7 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 			//不修改，把路单置回原样
 			TOrderDaliyPlanItem uptKey= new TOrderDaliyPlanItem(); 
 			uptKey.setOrderNo(order.getOrderNo());
-			uptKey.setDispDateStr(startDateStr);
+			uptKey.setDispDateStr(format.format(order.getStopDateStart()));
 			tOrderDaliyPlanItemMapper.updateFromDateToDate(uptKey);
 			
 			order.setSign("10");//标示在订
