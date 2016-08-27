@@ -1532,6 +1532,7 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 					TPreOrder sendOrder = new TPreOrder();
 					sendOrder.setOrderNo(order.getOrderNo());
 					sendOrder.setPreorderStat("200");
+					sendOrder.setEmpNo(order.getEmpNo());
 					messLogService.sendOrderStatus(sendOrder);
 				}
 			}

@@ -25,6 +25,7 @@ import com.nhry.data.order.domain.TPlanOrderItem;
 import com.nhry.data.order.domain.TPreOrder;
 import com.nhry.model.order.OrderSearchModel;
 import com.nhry.service.basic.dao.TVipCustInfoService;
+import com.nhry.service.basic.pojo.BranchEmpModel;
 import com.nhry.service.external.EcBaseService;
 import com.nhry.service.external.dao.EcService;
 import com.nhry.utils.EnvContant;
@@ -218,6 +219,13 @@ public class EcServiceImpl extends EcBaseService implements EcService{
 			orderStatusReJson.put("editDate", f.format(new Date()));
 			orderStatusReJson.put("empMobile", order.getBranchMp());//送奶员手机
 			orderStatusReJson.put("empName", order.getBranchEmpName());//送奶员姓名
+			if("200".equals(order.getPreorderStat())){
+				BranchEmpModel emp = branchEmpMapper.empDetailInfo(order.getEmpNo());
+				if(emp!=null){
+					orderStatusReJson.put("empMobile", emp.getEmp().getMp());//送奶员手机
+					orderStatusReJson.put("empName", emp.getEmp().getEmpName());//送奶员姓名
+				}
+			}
 			
 			data.put(orderStatusReJson);
 			ssbi.put("data", data);
