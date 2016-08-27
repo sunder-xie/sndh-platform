@@ -11,6 +11,9 @@ import java.math.BigDecimal;
 import java.util.List;
 
 public interface TPreOrderMapper {
+	
+	 TPreOrder selectLastOrder(String vipNo);
+	
 	 int updateOrderResumed(String orderNo);
 	
     int deleteByPrimaryKey(String orderNo);
