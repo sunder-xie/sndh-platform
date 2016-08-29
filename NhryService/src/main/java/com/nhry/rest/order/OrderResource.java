@@ -16,7 +16,6 @@ import com.sun.jersey.spi.resource.Singleton;
 import com.wordnik.swagger.annotations.Api;
 import com.wordnik.swagger.annotations.ApiOperation;
 import com.wordnik.swagger.annotations.ApiParam;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
@@ -25,7 +24,6 @@ import org.springframework.stereotype.Controller;
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
-
 import java.util.ArrayList;
 
 @Path("/order")
@@ -351,5 +349,12 @@ public class OrderResource extends BaseResource {
 	public Response viewDaliyPlans(@ApiParam(required=true,name="smodel",value="OrderCreateModel") OrderCreateModel record){
 		return convertToRespModel(MessageCode.NORMAL, null, orderService.viewDaliyPlans(record));
 	}
-	
+
+	@GET
+	@Path("/selectUnfinishOrderNum")
+	@Produces(MediaType.APPLICATION_JSON)
+	@ApiOperation(value = "/selectUnfinishOrderNum", response = Integer.class, notes = "判断该订户是否有未完成的订单")
+	public Response selectUnfinishOrderNum(@ApiParam(required=true,name="vipCustNo",value="订户号") @QueryParam("vipCustNo") String vipCustNo){
+		return convertToRespModel(MessageCode.NORMAL, null, orderService.selectUnfinishOrderNum(vipCustNo));
+	}
 }

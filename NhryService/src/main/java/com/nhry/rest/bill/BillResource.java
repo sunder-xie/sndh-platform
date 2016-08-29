@@ -81,6 +81,15 @@ public class BillResource extends BaseResource {
     }
 
     @POST
+    @Path("/cust/custRefund")
+    @Produces(MediaType.APPLICATION_JSON)
+    @Consumes(MediaType.APPLICATION_JSON)
+    @ApiOperation(value = "/cust/custRefund", response = int.class, notes = "订户退款")
+    public Response custRefund(@ApiParam(required = true, name = "cModel", value = "订户退款信息") CustomerRefundModel cModel) {
+        return convertToRespModel(MessageCode.NORMAL, null, customerBillService.custRefund(cModel));
+    }
+
+    @POST
     @Path("/cust/customerPayment")
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes(MediaType.APPLICATION_JSON)

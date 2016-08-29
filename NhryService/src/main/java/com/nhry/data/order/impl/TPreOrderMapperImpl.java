@@ -245,6 +245,11 @@ public class TPreOrderMapperImpl implements TPreOrderMapper
 		return sqlSessionTemplate.selectOne("calculateTotalBeforBatch", cModel);
 	}
 
+	@Override
+	public int selectUnfinishOrderNum(String vipCustNo) {
+		return sqlSessionTemplate.selectOne("selectUnfinishOrderNum",vipCustNo);
+	}
+
 	/* (non-Javadoc) 
 	* @title: replaceOrdersDispmember
 	* @description: 替换所有a送奶员的订单为b送奶员

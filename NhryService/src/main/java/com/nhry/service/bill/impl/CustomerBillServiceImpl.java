@@ -10,6 +10,7 @@ import com.nhry.data.basic.domain.TVipAcct;
 import com.nhry.data.bill.dao.CustomerBillMapper;
 import com.nhry.data.bill.domain.TMstRecvBill;
 import com.nhry.data.bill.domain.TMstRecvOffset;
+import com.nhry.data.bill.domain.TMstRefund;
 import com.nhry.data.milk.dao.TDispOrderItemMapper;
 import com.nhry.data.order.dao.TOrderDaliyPlanItemMapper;
 import com.nhry.data.order.dao.TPlanOrderItemMapper;
@@ -470,6 +471,33 @@ public class CustomerBillServiceImpl implements CustomerBillService {
     @Override
     public BigDecimal calculateTotalBeforBatch(CustBatchBillQueryModel cModel) {
         return tPreOrderMapper.calculateTotalBeforBatch(cModel);
+    }
+
+    @Override
+    public int custRefund(CustomerRefundModel cModel) {
+        TSysUser user = userSessionService.getCurrentUser();
+        //返回积分
+        TVipAcct eac = tVipCustInfoService.findVipAcctByCustNo(cModel.getVipCustNo());
+        TVipAcct ac = new TVipAcct();
+        BigDecimal acLeftAmt = new BigDecimal("0.00");
+        if(eac!=null){
+            acLeftAmt = eac.getAcctAmt();
+        }
+        ac.setVipCustNo(cModel.getVipCustNo());
+        ac.setAcctAmt(cModel.getRefundAmount());
+        int custInfo = tVipCustInfoService.addVipAcct(ac);
+        TMstRefund refund = new TMstRefund();
+        refund.setRefundNo(PrimaryKeyUtils.generateUpperUuidKey());
+        refund.setAmt(cModel.getRefundAmount());
+        refund.setCreateAt(new Date());
+        refund.setVipCustNo(cModel.getVipCustNo());
+        refund.setCreateBy(user.getLoginName());
+        refund.setCreateByTxt(user.getDisplayName());
+        if(StringUtils.isNotBlank(cModel.getRemark())){
+            refund.setRemark(cModel.getRemark());
+        }
+        int refundInfo =  customerBillMapper.addRefund(refund);
+        return refundInfo + custInfo;
     }
 
     @Override

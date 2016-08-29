@@ -355,4 +355,54 @@
             </if>
         </trim>
     </insert>
+
+    <insert id="addRefund" parameterType="com.nhry.data.bill.domain.TMstRefund" >
+        insert into t_mst_refund
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="refundNo != null">
+                REFUND_NO,
+            </if>
+            <if test="amt != null">
+                AMT,
+            </if>
+            <if test="remark != null">
+                REMARK,
+            </if>
+            <if test="vipCustNo != null">
+                VIP_CUST_NO,
+            </if>
+            <if test="createAt != null">
+                CREATE_AT,
+            </if>
+            <if test="createBy != null">
+                CREATE_BY,
+            </if>
+            <if test="createByTxt != null">
+                CREATE_BY_TXT,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="refundNo != null">
+                #{refundNo,jdbcType=VARCHAR},
+            </if>
+            <if test="amt != null">
+                #{amt,jdbcType=DECIMAL},
+            </if>
+            <if test="remark != null">
+                #{remark,jdbcType=VARCHAR},
+            </if>
+            <if test="vipCustNo != null">
+                #{vipCustNo,jdbcType=VARCHAR},
+            </if>
+            <if test="createAt != null">
+                #{createAt,jdbcType=TIMESTAMP},
+            </if>
+            <if test="createBy != null">
+                #{createBy,jdbcType=VARCHAR},
+            </if>
+            <if test="createByTxt != null">
+                #{createByTxt,jdbcType=VARCHAR},
+            </if>
+        </trim>
+    </insert>
 </mapper>

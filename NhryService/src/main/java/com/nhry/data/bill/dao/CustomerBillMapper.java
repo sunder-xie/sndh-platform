@@ -2,6 +2,7 @@ package com.nhry.data.bill.dao;
 
 import com.nhry.data.bill.domain.TMstRecvBill;
 import com.nhry.data.bill.domain.TMstRecvOffset;
+import com.nhry.data.bill.domain.TMstRefund;
 import com.nhry.model.bill.CollectOrderBillModel;
 
 /**
@@ -20,4 +21,6 @@ public interface CustomerBillMapper {
     TMstRecvBill getRecBillByReceoptNo(String receiptNo);
 
     int addOffset(TMstRecvOffset offset);
+
+    int  addRefund(TMstRefund refund);
 }

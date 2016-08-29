@@ -10,7 +10,6 @@ import com.nhry.model.order.*;
 import com.nhry.service.order.pojo.OrderRemainData;
 
 import java.math.BigDecimal;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -97,5 +96,6 @@ public interface OrderService {
    void returnOrderRemainAmtToAcct(String orderNo,Date dispDate);
    
    void reEditDaliyPlansByRouteDetail(RouteDetailUpdateModel newItem , TDispOrderItem orgItem , Date dispDate);
-   
+
+	int selectUnfinishOrderNum(String vipCustNo);
 }

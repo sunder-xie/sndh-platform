@@ -33,4 +33,6 @@ public interface CustomerBillService {
    int customerOffset(String receiptNo);
 
    BigDecimal  calculateTotalBeforBatch(CustBatchBillQueryModel cModel);
+
+   int custRefund(CustomerRefundModel cModel);
 }

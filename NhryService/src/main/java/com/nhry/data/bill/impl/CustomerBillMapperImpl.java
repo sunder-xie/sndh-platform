@@ -4,7 +4,9 @@ import com.nhry.common.datasource.DynamicSqlSessionTemplate;
 import com.nhry.data.bill.dao.CustomerBillMapper;
 import com.nhry.data.bill.domain.TMstRecvBill;
 import com.nhry.data.bill.domain.TMstRecvOffset;
+import com.nhry.data.bill.domain.TMstRefund;
 import com.nhry.model.bill.CollectOrderBillModel;
+
 
 /**
  * Created by gongjk on 2016/6/23.
@@ -47,6 +49,11 @@ public class CustomerBillMapperImpl implements CustomerBillMapper {
     @Override
     public int addOffset(TMstRecvOffset offset) {
         return sqlSessionTemplate.insert("addOffset",offset);
+    }
+
+    @Override
+    public int addRefund(TMstRefund refund) {
+        return sqlSessionTemplate.insert("addRefund",refund);
     }
 
 }

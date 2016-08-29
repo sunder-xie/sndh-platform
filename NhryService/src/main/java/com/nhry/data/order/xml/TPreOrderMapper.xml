@@ -1037,4 +1037,12 @@
     </if>
     ORDER BY ORDER_NO desc
   </select>
+
+  <select id="selectUnfinishOrderNum" resultType="INTEGER" parameterType="String">
+   SELECT
+  IFNULL( COUNT(*),0) num
+  FROM t_preorder o
+  WHERE o.PAYMENT_STAT = '10'
+  and o.MILKMEMBER_NO = #{vipCustNo,jdbcType=VARCHAR}
+  </select>
 </mapper>
