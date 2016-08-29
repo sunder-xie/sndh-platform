@@ -133,6 +133,17 @@ public class ResidentialAreaServiceImpl implements ResidentialAreaService {
     }
 
     @Override
+    public List<TMdResidentialArea> searchSalesOrgArea(AreaSearchModel aModel) {
+        TSysUser user = userSessionService.getCurrentUser();
+        Map<String,String> map = new HashMap<String,String>();
+        aModel.setSalesOrg(user.getSalesOrg());
+        if(!StringUtils.isEmpty(aModel.getContent())){
+            aModel.setContent(aModel.getContent().trim().replace(" ", "%"));
+        }
+        return tMdResidentialAreaMapper.searchAreaBySalesOrg(aModel);
+    }
+
+    @Override
     public List<TMdResidentialArea> getAreaByBranchNo(String branchNo) {
         return tMdResidentialAreaMapper.getAreaByBranchNo(branchNo);
     }

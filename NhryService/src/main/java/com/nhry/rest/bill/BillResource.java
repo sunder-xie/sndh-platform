@@ -56,6 +56,16 @@ public class BillResource extends BaseResource {
         return convertToRespModel(MessageCode.NORMAL, null, customerBillService.searchCustomerOrderForExp(cModel));
     }
 
+
+    @POST
+    @Path("/cust/BatchPrintForExp")
+    @Produces(MediaType.APPLICATION_JSON)
+    @Consumes(MediaType.APPLICATION_JSON)
+    @ApiOperation(value = "/cust/BatchPrintForExp", response = PageInfo.class, notes = "获取条件下的订单编号（批量导出收款单用）")
+    public Response BatchPrintForExp(@ApiParam(required = true, name = "cModel", value = "cModel") CustBillQueryModel cModel) {
+        return convertToRespModel(MessageCode.NORMAL, null, customerBillService.BatchPrintForExp(cModel));
+    }
+
     @GET
     @Path("/cust/getCustomerOrderDetialByCode")
     @Produces(MediaType.APPLICATION_JSON)
@@ -78,6 +88,15 @@ public class BillResource extends BaseResource {
     @ApiOperation(value = "/cust/customerOffset", response = int.class, notes = "订户冲销")
     public Response customerOffset(@ApiParam(required = true, name = "receiptNo", value = "收款单号") @QueryParam("receiptNo") String receiptNo) {
         return convertToRespModel(MessageCode.NORMAL, null, customerBillService.customerOffset(receiptNo));
+    }
+
+    @POST
+    @Path("/cust/custRefund")
+    @Produces(MediaType.APPLICATION_JSON)
+    @Consumes(MediaType.APPLICATION_JSON)
+    @ApiOperation(value = "/cust/custRefund", response = int.class, notes = "订户退款")
+    public Response custRefund(@ApiParam(required = true, name = "cModel", value = "订户退款信息") CustomerRefundModel cModel) {
+        return convertToRespModel(MessageCode.NORMAL, null, customerBillService.custRefund(cModel));
     }
 
     @POST

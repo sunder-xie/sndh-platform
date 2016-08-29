@@ -10,6 +10,7 @@ import com.nhry.data.basic.domain.TVipAcct;
 import com.nhry.data.bill.dao.CustomerBillMapper;
 import com.nhry.data.bill.domain.TMstRecvBill;
 import com.nhry.data.bill.domain.TMstRecvOffset;
+import com.nhry.data.bill.domain.TMstRefund;
 import com.nhry.data.milk.dao.TDispOrderItemMapper;
 import com.nhry.data.order.dao.TOrderDaliyPlanItemMapper;
 import com.nhry.data.order.dao.TPlanOrderItemMapper;
@@ -322,11 +323,12 @@ public class CustomerBillServiceImpl implements CustomerBillService {
     @Override
     public List<String> searchCustomerOrderForExp(CustBillQueryModel cModel) {
         TSysUser user = userSessionService.getCurrentUser();
-        List<String> rids = urMapper.getUserRidsByLoginName(user.getLoginName());
+
         cModel.setSalesOrg(user.getSalesOrg());
-        if(rids.contains("10004")){
+        if(StringUtils.isBlank(cModel.getBranchNo())){
             cModel.setBranchNo(user.getBranchNo());
-        }else if(rids.contains("10005")) {
+        }
+        if(StringUtils.isBlank(cModel.getDealerNo())) {
             cModel.setDealerNo(user.getDealerId());
         }
         return tPreOrderMapper.searchCustomerOrderForExp(cModel);
@@ -473,8 +475,58 @@ public class CustomerBillServiceImpl implements CustomerBillService {
     }
 
     @Override
+    public int custRefund(CustomerRefundModel cModel) {
+        TSysUser user = userSessionService.getCurrentUser();
+        //返回积分
+        TVipAcct eac = tVipCustInfoService.findVipAcctByCustNo(cModel.getVipCustNo());
+        TVipAcct ac = new TVipAcct();
+        BigDecimal acLeftAmt = new BigDecimal("0.00");
+        if(eac!=null){
+            acLeftAmt = eac.getAcctAmt();
+        }
+        ac.setVipCustNo(cModel.getVipCustNo());
+        ac.setAcctAmt(cModel.getRefundAmount());
+        int custInfo = tVipCustInfoService.addVipAcct(ac);
+        TMstRefund refund = new TMstRefund();
+        refund.setRefundNo(PrimaryKeyUtils.generateUpperUuidKey());
+        refund.setAmt(cModel.getRefundAmount());
+        refund.setCreateAt(new Date());
+        refund.setVipCustNo(cModel.getVipCustNo());
+        refund.setCreateBy(user.getLoginName());
+        refund.setCreateByTxt(user.getDisplayName());
+        if(StringUtils.isNotBlank(cModel.getRemark())){
+            refund.setRemark(cModel.getRemark());
+        }
+        int refundInfo =  customerBillMapper.addRefund(refund);
+        return refundInfo + custInfo;
+    }
+
+    @Override
+    public List<CollectOrderBillModel> BatchPrintForExp(CustBillQueryModel cModel) {
+        List<CollectOrderBillModel> result = new ArrayList<CollectOrderBillModel>();
+        List<String> advancePayOrders = tPreOrderMapper.selectAdvanceOrderNos(cModel);
+        if(advancePayOrders!=null && advancePayOrders.size()>0){
+            List<CollectOrderBillModel> before = customerBillMapper.selectBeforeCollectByOrders("20",advancePayOrders);
+            if(before!=null && before.size()>0){
+                result.addAll(before);
+            }
+        }
+
+        List<String> afterPayOrders = tPreOrderMapper.selectAfterOrderNos(cModel);
+        if(afterPayOrders!=null && afterPayOrders.size()>0) {
+            List<CollectOrderBillModel> after = customerBillMapper.selectAfterCollectByOrders("10", afterPayOrders);
+            if (after != null && after.size() > 0) {
+                result.addAll(after);
+            }
+        }
+        return result;
+    }
+
+
+    @Override
     public CollectOrderBillModel queryCollectByOrderNo(String orderCode) {
-        return customerBillMapper.queryCollectByOrderNo(orderCode);
+        TPreOrder order = tPreOrderMapper.selectByPrimaryKey(orderCode);
+        return customerBillMapper.queryCollectByOrderNo(orderCode,order.getPaymentmethod());
     }
 
 

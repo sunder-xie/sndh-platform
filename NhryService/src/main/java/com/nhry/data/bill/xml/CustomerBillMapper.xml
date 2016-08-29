@@ -70,7 +70,7 @@
         select
            b.RECV_EMP,e.EMP_NAME RECV_EMP_NAME,b.RECEIPT_NO,b.RECEIPT_DATE,b.ORDER_NO,b.PAYMENT_TYPE,b.STATUS,b.AMT,
            b.VIP_CUST_NO,cust.VIP_NAME VIP_CUST_NAME,b.START_TIME,b.END_TIME,b.REMARK,b.PAYMENT_YEAR_MONTH,b.CREATE_AT,
-           b.CREATE_BY,b.CREATE_BY_TXT,b.LAST_MODIFIED,b.LAST_MODIFIED_BY,b.LAST_MODIFIED_BY_TXT,b.CUST_ACC_AMT,b.ACC_AMT
+           b.CREATE_BY,b.CREATE_BY_TXT,b.LAST_MODIFIED,b.LAST_MODIFIED_BY,b.LAST_MODIFIED_BY_TXT,b.CUST_ACC_AMT,b.ACC_AMT,b.SUPP_AMT
         FROM t_mst_recv_bill b
               LEFT JOIN t_vip_cust_info cust on b.VIP_CUST_NO = cust.VIP_CUST_NO
               LEFT JOIN t_md_branch_emp e on b.RECV_EMP = e.EMP_NO
@@ -239,7 +239,7 @@
 
 
 
-    <select id="queryCollectByOrderNo" resultMap="CollectResultMap" parameterType="String">
+    <select id="queryCollectByOrderNo" resultMap="CollectResultMap" parameterType="java.util.Map">
       SELECT
         o.ORDER_NO,o.BRANCH_NO,b.BRANCH_NAME,o.EMP_NO,e.TEL EMP_TEL,e.EMP_NAME,c.VIP_NAME,
         c.MP CUST_TEL,b.TEL BRANCH_TEL,o.INIT_AMT,acct.ACCT_AMT,
@@ -260,19 +260,30 @@
           IFNULL(c.ADDRESS_TXT,'')
 	  )CUST_ADDRESS,
     (CASE  WHEN acct.ACCT_AMT > o.INIT_AMT THEN 0 ELSE (o.INIT_AMT - acct.ACCT_AMT) END) ORDER_AMT,
-     i.MATNR,a.MATNR_TXT,i.UNIT,i.QTY,i.PRICE BASE_PRICE,i.AMT TOTAL_PRICE
+    <if test="paymentmethod = '20'">
+         i.MATNR,a.MATNR_TXT,i.UNIT,i.QTY,i.PRICE BASE_PRICE,i.AMT TOTAL_PRICE
+    </if>
+
+    <if test="paymentmethod = '10'">
+        i.MATNR,a.MATNR_TXT,i.UNIT,i.QTY,i.SALES_PRICE BASE_PRICE,(i.QTY * i.SALES_PRICE) TOTAL_PRICE
+    </if>
     from t_preorder o
     LEFT JOIN t_md_branch b on o.BRANCH_NO = b.BRANCH_NO
     LEFT JOIN t_md_branch_emp e on o.EMP_NO = e.EMP_NO
-
     LEFT JOIN t_vip_cust_info  c on c.VIP_CUST_NO = o.MILKMEMBER_NO
     LEFT JOIN t_vip_acct acct on o.MILKMEMBER_NO =acct.VIP_CUST_NO
-    LEFT JOIN t_mst_order_daliy_plan_item i on i.ORDER_NO = o.ORDER_NO
+    <if test="paymentmethod = '10'">
+      LEFT JOIN t_mst_order_daliy_plan_item i on i.ORDER_NO = o.ORDER_NO
+    </if>
+    <if test="paymentmethod = '20'">
+        LEFT JOIN t_mst_plan_order_item i on o.ORDER_NO = i.ORDER_NO
+    </if>
      LEFT JOIN  t_md_mara a on i.MATNR = a.MATNR
     WHERE 1=1
-
     and b.SALES_ORG = a.SALES_ORG
+    and b.SALES_ORG = o.SALES_ORG
     and o.ORDER_NO = #{orderCode,jdbcType=VARCHAR}
+
     </select>
 
     <select id="getRecBillByReceoptNo" resultMap="BaseResultMap" parameterType="String">
@@ -355,4 +366,139 @@
             </if>
         </trim>
     </insert>
+
+    <insert id="addRefund" parameterType="com.nhry.data.bill.domain.TMstRefund" >
+        insert into t_mst_refund
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="refundNo != null">
+                REFUND_NO,
+            </if>
+            <if test="amt != null">
+                AMT,
+            </if>
+            <if test="remark != null">
+                REMARK,
+            </if>
+            <if test="vipCustNo != null">
+                VIP_CUST_NO,
+            </if>
+            <if test="createAt != null">
+                CREATE_AT,
+            </if>
+            <if test="createBy != null">
+                CREATE_BY,
+            </if>
+            <if test="createByTxt != null">
+                CREATE_BY_TXT,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="refundNo != null">
+                #{refundNo,jdbcType=VARCHAR},
+            </if>
+            <if test="amt != null">
+                #{amt,jdbcType=DECIMAL},
+            </if>
+            <if test="remark != null">
+                #{remark,jdbcType=VARCHAR},
+            </if>
+            <if test="vipCustNo != null">
+                #{vipCustNo,jdbcType=VARCHAR},
+            </if>
+            <if test="createAt != null">
+                #{createAt,jdbcType=TIMESTAMP},
+            </if>
+            <if test="createBy != null">
+                #{createBy,jdbcType=VARCHAR},
+            </if>
+            <if test="createByTxt != null">
+                #{createByTxt,jdbcType=VARCHAR},
+            </if>
+        </trim>
+    </insert>
+
+
+
+
+    <select id="queryCollectByBeforeOrders" resultMap="CollectResultMap" parameterType="com.nhry.model.bill.CollectOrderSearchModel">
+        SELECT
+        o.ORDER_NO,o.BRANCH_NO,b.BRANCH_NAME,o.EMP_NO,e.TEL EMP_TEL,e.EMP_NAME,c.VIP_NAME,
+        c.MP CUST_TEL,b.TEL BRANCH_TEL,o.INIT_AMT,acct.ACCT_AMT,
+        concat(
+        (
+        SELECT i.ITEM_NAME from t_sys_code_item i WHERE i.TYPE_CODE=<include refid="mybaties.constant.branch_province"/> and i.ITEM_CODE = b.PROVINCE
+        ),b.CITY,IFNULL(b.COUNTY,''),b.ADDRESS
+        ) BRANCH_ADDRESS,
+        concat(
+        (SELECT it.ITEM_NAME FROM T_SYS_CODE_ITEM it WHERE it.TYPE_CODE =<include refid="mybaties.constant.COUNTRY_CITY_CONSTANT"/>
+        AND it.ITEM_CODE = c.PROVINCE),
+        (SELECT it.ITEM_NAME FROM T_SYS_CODE_ITEM it WHERE it.TYPE_CODE =<include refid="mybaties.constant.COUNTRY_CITY_CONSTANT"/>
+        AND it.ITEM_CODE = c.CITY),
+        (SELECT it.ITEM_NAME FROM T_SYS_CODE_ITEM it WHERE it.TYPE_CODE =<include refid="mybaties.constant.COUNTRY_CITY_CONSTANT"/>
+        AND it.ITEM_CODE = c.COUNTY),
+        IFNULL( (SELECT ra.ADDRESS_TXT from t_md_residential_area ra WHERE ra.ID =  c.SUBDIST),''),
+        IFNULL((SELECT ra.RESIDENTIAL_AREA_TXT from t_md_residential_area ra  WHERE  ra.ID = c.SUBDIST),''),
+        IFNULL(c.ADDRESS_TXT,'')
+        )CUST_ADDRESS,
+        (CASE  WHEN acct.ACCT_AMT > o.INIT_AMT THEN 0 ELSE (o.INIT_AMT - acct.ACCT_AMT) END) ORDER_AMT
+        ,i.MATNR,a.MATNR_TXT,i.UNIT,i.QTY,i.SALES_PRICE BASE_PRICE,(i.QTY * i.SALES_PRICE) TOTAL_PRICE
+
+
+        from t_preorder o
+        LEFT JOIN t_md_branch b on o.BRANCH_NO = b.BRANCH_NO
+        LEFT JOIN t_md_branch_emp e on o.EMP_NO = e.EMP_NO
+        LEFT JOIN t_vip_cust_info  c on c.VIP_CUST_NO = o.MILKMEMBER_NO
+        LEFT JOIN t_vip_acct acct on o.MILKMEMBER_NO =acct.VIP_CUST_NO
+        LEFT JOIN t_mst_plan_order_item i on o.ORDER_NO = i.ORDER_NO
+        LEFT JOIN  t_md_mara a on i.MATNR = a.MATNR
+        WHERE 1=1
+        and b.SALES_ORG = a.SALES_ORG
+        and b.SALES_ORG = o.SALES_ORG
+        and LOCATE(o.ORDER_NO,
+            <foreach item="order" collection="orders" separator="," open="'" close="'" index="">
+                ${order}
+            </foreach>
+        )>0
+    </select>
+
+
+    <select id="queryCollectByAfterOrders" resultMap="CollectResultMap" parameterType="com.nhry.model.bill.CollectOrderSearchModel">
+        SELECT
+        o.ORDER_NO,o.BRANCH_NO,b.BRANCH_NAME,o.EMP_NO,e.TEL EMP_TEL,e.EMP_NAME,c.VIP_NAME,
+        c.MP CUST_TEL,b.TEL BRANCH_TEL,o.INIT_AMT,acct.ACCT_AMT,
+        concat(
+        (
+        SELECT i.ITEM_NAME from t_sys_code_item i WHERE i.TYPE_CODE=<include refid="mybaties.constant.branch_province"/> and i.ITEM_CODE = b.PROVINCE
+        ),b.CITY,IFNULL(b.COUNTY,''),b.ADDRESS
+        ) BRANCH_ADDRESS,
+        concat(
+        (SELECT it.ITEM_NAME FROM T_SYS_CODE_ITEM it WHERE it.TYPE_CODE =<include refid="mybaties.constant.COUNTRY_CITY_CONSTANT"/>
+        AND it.ITEM_CODE = c.PROVINCE),
+        (SELECT it.ITEM_NAME FROM T_SYS_CODE_ITEM it WHERE it.TYPE_CODE =<include refid="mybaties.constant.COUNTRY_CITY_CONSTANT"/>
+        AND it.ITEM_CODE = c.CITY),
+        (SELECT it.ITEM_NAME FROM T_SYS_CODE_ITEM it WHERE it.TYPE_CODE =<include refid="mybaties.constant.COUNTRY_CITY_CONSTANT"/>
+        AND it.ITEM_CODE = c.COUNTY),
+        IFNULL( (SELECT ra.ADDRESS_TXT from t_md_residential_area ra WHERE ra.ID =  c.SUBDIST),''),
+        IFNULL((SELECT ra.RESIDENTIAL_AREA_TXT from t_md_residential_area ra  WHERE  ra.ID = c.SUBDIST),''),
+        IFNULL(c.ADDRESS_TXT,'')
+        )CUST_ADDRESS,
+        (CASE  WHEN acct.ACCT_AMT > o.INIT_AMT THEN 0 ELSE (o.INIT_AMT - acct.ACCT_AMT) END) ORDER_AMT
+        ,i.MATNR,a.MATNR_TXT,i.UNIT,i.QTY,i.PRICE BASE_PRICE,i.AMT TOTAL_PRICE
+        from t_preorder o
+        LEFT JOIN t_md_branch b on o.BRANCH_NO = b.BRANCH_NO
+        LEFT JOIN t_md_branch_emp e on o.EMP_NO = e.EMP_NO
+        LEFT JOIN t_vip_cust_info  c on c.VIP_CUST_NO = o.MILKMEMBER_NO
+        LEFT JOIN t_vip_acct acct on o.MILKMEMBER_NO =acct.VIP_CUST_NO
+        LEFT JOIN t_mst_order_daliy_plan_item i on i.ORDER_NO = o.ORDER_NO
+        LEFT JOIN  t_md_mara a on i.MATNR = a.MATNR
+        WHERE 1=1
+        and b.SALES_ORG = a.SALES_ORG
+        and b.SALES_ORG = o.SALES_ORG
+        and LOCATE(o.ORDER_NO,
+        <foreach item="order" collection="orders" separator="," open="'" close="'" index="">
+            ${order}
+        </foreach>
+        )>0
+
+    </select>
 </mapper>

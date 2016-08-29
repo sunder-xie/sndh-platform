@@ -4120,4 +4120,9 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 	
 	}
 
+	@Override
+	public int selectUnfinishOrderNum(String vipCustNo) {
+		return  tPreOrderMapper.selectUnfinishOrderNum(vipCustNo);
+	}
+
 }
