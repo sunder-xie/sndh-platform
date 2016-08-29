@@ -250,6 +250,16 @@ public class TPreOrderMapperImpl implements TPreOrderMapper
 		return sqlSessionTemplate.selectOne("selectUnfinishOrderNum",vipCustNo);
 	}
 
+	@Override
+	public List<String> selectAdvanceOrderNos(CustBillQueryModel cModel) {
+		return sqlSessionTemplate.selectList("selectAdvanceOrderNos",cModel);
+	}
+
+	@Override
+	public List<String> selectAfterOrderNos(CustBillQueryModel cModel) {
+		return sqlSessionTemplate.selectList("selectAfterOrderNos",cModel);
+	}
+
 	/* (non-Javadoc) 
 	* @title: replaceOrdersDispmember
 	* @description: 替换所有a送奶员的订单为b送奶员

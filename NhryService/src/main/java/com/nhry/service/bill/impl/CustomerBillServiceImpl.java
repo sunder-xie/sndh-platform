@@ -323,11 +323,12 @@ public class CustomerBillServiceImpl implements CustomerBillService {
     @Override
     public List<String> searchCustomerOrderForExp(CustBillQueryModel cModel) {
         TSysUser user = userSessionService.getCurrentUser();
-        List<String> rids = urMapper.getUserRidsByLoginName(user.getLoginName());
+
         cModel.setSalesOrg(user.getSalesOrg());
-        if(rids.contains("10004")){
+        if(StringUtils.isBlank(cModel.getBranchNo())){
             cModel.setBranchNo(user.getBranchNo());
-        }else if(rids.contains("10005")) {
+        }
+        if(StringUtils.isBlank(cModel.getDealerNo())) {
             cModel.setDealerNo(user.getDealerId());
         }
         return tPreOrderMapper.searchCustomerOrderForExp(cModel);
@@ -501,8 +502,31 @@ public class CustomerBillServiceImpl implements CustomerBillService {
     }
 
     @Override
+    public List<CollectOrderBillModel> BatchPrintForExp(CustBillQueryModel cModel) {
+        List<CollectOrderBillModel> result = new ArrayList<CollectOrderBillModel>();
+        List<String> advancePayOrders = tPreOrderMapper.selectAdvanceOrderNos(cModel);
+        if(advancePayOrders!=null && advancePayOrders.size()>0){
+            List<CollectOrderBillModel> before = customerBillMapper.selectBeforeCollectByOrders("20",advancePayOrders);
+            if(before!=null && before.size()>0){
+                result.addAll(before);
+            }
+        }
+
+        List<String> afterPayOrders = tPreOrderMapper.selectAfterOrderNos(cModel);
+        if(afterPayOrders!=null && afterPayOrders.size()>0) {
+            List<CollectOrderBillModel> after = customerBillMapper.selectAfterCollectByOrders("10", afterPayOrders);
+            if (after != null && after.size() > 0) {
+                result.addAll(after);
+            }
+        }
+        return result;
+    }
+
+
+    @Override
     public CollectOrderBillModel queryCollectByOrderNo(String orderCode) {
-        return customerBillMapper.queryCollectByOrderNo(orderCode);
+        TPreOrder order = tPreOrderMapper.selectByPrimaryKey(orderCode);
+        return customerBillMapper.queryCollectByOrderNo(orderCode,order.getPaymentmethod());
     }
 
 

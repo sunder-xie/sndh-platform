@@ -35,4 +35,6 @@ public interface CustomerBillService {
    BigDecimal  calculateTotalBeforBatch(CustBatchBillQueryModel cModel);
 
    int custRefund(CustomerRefundModel cModel);
+
+   List<CollectOrderBillModel> BatchPrintForExp(CustBillQueryModel cModel);
 }

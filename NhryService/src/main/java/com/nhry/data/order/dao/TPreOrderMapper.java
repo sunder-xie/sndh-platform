@@ -89,4 +89,8 @@ public interface TPreOrderMapper {
     BigDecimal calculateTotalBeforBatch(CustBatchBillQueryModel cModel);
 
     int selectUnfinishOrderNum(String vipCustNo);
+
+    List<String> selectAdvanceOrderNos(CustBillQueryModel cModel);
+
+    List<String> selectAfterOrderNos(CustBillQueryModel cModel);
 }

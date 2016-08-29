@@ -1045,4 +1045,37 @@
   WHERE o.PAYMENT_STAT = '10'
   and o.MILKMEMBER_NO = #{vipCustNo,jdbcType=VARCHAR}
   </select>
+
+
+  <select id="selectAdvanceOrderNos" resultType="String" parameterType="com.nhry.model.bill.CustBillQueryModel">
+    SELECT
+    o.ORDER_NO
+    FROM t_preorder o
+    WHERE  1=1
+    and o.PAYMENT_STAT = '10'
+    and o.PAYMENTMETHOD = '20'
+    and o.EMP_NO = #{empNo,jdbcType=VARCHAR}
+    <if test="branchNo!=null and ''!=branchNo">
+      o.BRANCH_NO = #{branchNo,jdbcType=VARCHAR}
+    </if>
+    <if test="branchNo!=null and ''!=branchNo">
+      o.BRANCH_NO = #{branchNo,jdbcType=VARCHAR}
+    </if>
+  </select>
+
+  <select id="selectAfterOrderNos" resultType="String" parameterType="com.nhry.model.bill.CustBillQueryModel">
+    SELECT
+    o.ORDER_NO
+    FROM t_preorder o
+    WHERE 1=1
+    and o.PAYMENT_STAT = '10'
+    and o.EMP_NO = #{empNo,jdbcType=VARCHAR}
+    and o.PAYMENTMETHOD = '10'
+    <if test="branchNo!=null and ''!=branchNo">
+      o.BRANCH_NO = #{branchNo,jdbcType=VARCHAR}
+    </if>
+    <if test="branchNo!=null and ''!=branchNo">
+      o.BRANCH_NO = #{branchNo,jdbcType=VARCHAR}
+    </if>
+  </select>
 </mapper>

@@ -6,6 +6,7 @@
 		<result column="VIP_CUST_NO_SAP" property="vipCustNoSap" jdbcType="VARCHAR" />
 		<result column="SALES_ORG" property="salesOrg" jdbcType="VARCHAR" />
 		<result column="VIP_NAME" property="vipName" jdbcType="VARCHAR" />
+		<result column="ACCT_AMT" property="acctAmt" jdbcType="DECIMAL" />
 		<result column="ADDRESS_TXT" property="addressTxt" jdbcType="VARCHAR" />
 		<result column="COUNTRY" property="country" jdbcType="VARCHAR" />
 		<result column="PROVINCE" property="province" jdbcType="VARCHAR" />
@@ -790,7 +791,7 @@
 		where VIP_CUST_NO = #{vipCustNo,jdbcType=VARCHAR}
 	</update>
 	<select id="findcustMixedTerms" resultMap="BaseResultMap" parameterType="com.nhry.model.basic.CustQueryModel">
-		 select i.VIP_CUST_NO,
+		 select (SELECT a.ACCT_AMT from t_vip_acct a WHERE i.VIP_CUST_NO = a.VIP_CUST_NO) ACCT_AMT ,i.VIP_CUST_NO,
 		(
 		SELECT
 		it.ITEM_NAME
@@ -873,7 +874,8 @@
 		i.DISP_MEMO_TXT,
 		b.BRANCH_NAME,i.BRANCH_NO,i.DEALER_NO,(CASE i.DEALER_NO
 			WHEN '-1' THEN '<include refid="mybaties.constant.ownBranch"></include>'
-			ELSE (SELECT d.dealer_name from t_md_dealer d where d.dealer_no=i.DEALER_NO) END) DEALER_NAME  from t_vip_cust_info i,T_MD_BRANCH b
+			ELSE (SELECT d.dealer_name from t_md_dealer d where d.dealer_no=i.DEALER_NO) END) DEALER_NAME
+		from t_vip_cust_info i,T_MD_BRANCH b
 			where b.BRANCH_NO = i.BRANCH_NO 
 		     <if test="salesOrg != null and salesOrg !=''">
 		         AND i.SALES_ORG = #{salesOrg} 
