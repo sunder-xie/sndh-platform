@@ -109,6 +109,16 @@ public class TVipCustInfo implements Serializable{
 
     public String vipMp;
 
+    private BigDecimal acctAmt;
+
+    public BigDecimal getAcctAmt() {
+        return acctAmt;
+    }
+
+    public void setAcctAmt(BigDecimal acctAmt) {
+        this.acctAmt = acctAmt;
+    }
+
     public String getVipCustNo() {
         return vipCustNo;
     }

@@ -33,4 +33,6 @@ public interface ResidentialAreaService {
     List<TMdResidentialArea> getUnDistAreas();
 
     List<TMdResidentialArea>  searchAreaBySalesOrg( AreaSearchModel aModel);
+
+    List<TMdResidentialArea>  searchSalesOrgArea(AreaSearchModel aModel);
 }

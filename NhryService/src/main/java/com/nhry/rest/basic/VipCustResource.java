@@ -150,7 +150,7 @@ public class VipCustResource extends BaseResource {
 	@POST
 	@Path("/find/cust/acct/{custNo}")
 	@Produces(MediaType.APPLICATION_JSON)
-	@ApiOperation(value = "/find/cust/address/{custNo}", response = TVipAcct.class, notes = "根据订户编号查询订户的资金订户信息")
+	@ApiOperation(value = "/find/cust/acct/{custNo}", response = TVipAcct.class, notes = "根据订户编号查询订户的资金订户信息")
 	public Response findVipAcctByCustNo(@ApiParam(required=true,name="custNo",value="订户编号")@PathParam("custNo")String custNo) {
 	  return convertToRespModel(MessageCode.NORMAL, null,custService.findVipAcctByCustNo(custNo));
 	}
