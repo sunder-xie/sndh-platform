@@ -3,6 +3,7 @@ package com.nhry.service.promotion.impl;
 import com.nhry.data.promotion.dao.*;
 import com.nhry.data.promotion.domain.*;
 import com.nhry.service.promotion.dao.PromotionDataService;
+import org.apache.commons.lang.StringUtils;
 
 import java.util.Date;
 
@@ -67,6 +68,9 @@ public class PromotionDataServiceImpl implements PromotionDataService{
         int i = 0;
         Promotion p = this.selectPromotionByNo(promotion.getPromNo());
         if(p == null){
+            if(StringUtils.isEmpty(promotion.getPromStat())){
+                promotion.setPromStat("E0006");
+            }
             promotion.setCreateAt(new Date());
             promotion.setCreateByTxt("CRM");
             promotion.setCreateBy("CRM");

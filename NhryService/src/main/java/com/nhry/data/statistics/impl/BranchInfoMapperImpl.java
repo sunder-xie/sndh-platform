@@ -97,4 +97,9 @@ public class BranchInfoMapperImpl implements BranchInfoMapper{
     public Map<String, String> branchDayQty(BranchInfoModel model){
         return sqlSessionTemplate.selectOne("branchDayQty",model);
     }
+
+    @Override
+    public List<Map<String, String>> exportOrderByModel(BranchInfoModel model) {
+        return sqlSessionTemplate.selectList("exportOrderByModel",model);
+    }
 }
