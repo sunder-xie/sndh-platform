@@ -17,6 +17,20 @@ public class BranchInfoModel extends BaseQueryModel implements Serializable {
     String branchNo;
     String dealerId;
     String salesOrg;
+    String reachTimeType;
+
+    public static SimpleDateFormat getFormat() {
+        return format;
+    }
+
+    public String getReachTimeType() {
+        return reachTimeType;
+    }
+
+    public void setReachTimeType(String reachTimeType) {
+        this.reachTimeType = reachTimeType;
+    }
+
     Date theDate = new Date();
     public String getBranchNo() {
         return branchNo;
