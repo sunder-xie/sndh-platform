@@ -28,4 +28,5 @@ public interface BranchInfoMapper {
     PageInfo dayMstDispNumStat(ExtendBranchInfoModel model);
     List<Map<String,String>> branchDayRepo(BranchInfoModel model);
     Map<String,String> branchDayQty(BranchInfoModel model);
+    List<Map<String,String>> exportOrderByModel(BranchInfoModel model);
 }

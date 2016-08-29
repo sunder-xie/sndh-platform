@@ -264,4 +264,9 @@ public class BranchInfoServiceImpl implements BranchInfoService {
         }
         return branchInfoMapper.branchDayQty(model);
     }
+
+    @Override
+    public List<Map<String, String>> exportOrderByModel(BranchInfoModel model) {
+        return branchInfoMapper.exportOrderByModel(model);
+    }
 }
