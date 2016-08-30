@@ -35,6 +35,8 @@ import com.wordnik.swagger.annotations.ApiParam;
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 import org.apache.poi.ss.usermodel.PageOrder;
+import org.apache.poi.ss.usermodel.PrintOrientation;
+import org.apache.poi.ss.usermodel.PrintSetup;
 import org.apache.poi.ss.util.CellRangeAddress;
 import org.apache.poi.xssf.usermodel.*;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -697,15 +699,15 @@ public class ReportResource extends BaseResource{
 //        List<ProductItem> productItems =collect.getEntries();
         String outUrl = "";
         try {
-            XSSFWorkbook workbook = new XSSFWorkbook();
-            XSSFSheet sheet = workbook.createSheet("sheet");
-//            File file = new File(url +  File.separator + "report"+ File.separator + "template" + File.separator + "CollectOrderTemplate.xlsx");    //审批单
-//            FileInputStream input = new FileInputStream(file);
-//            XSSFWorkbook workbook = new XSSFWorkbook(new BufferedInputStream(input));
-//            XSSFSheet sheet = workbook.getSheetAt(0);
-            sheet.setDefaultColumnWidth((short)8);
-            sheet.setColumnWidth(0,(short)3 * 100);
-            sheet.setColumnWidth(14,(short)3 * 100);
+//            XSSFWorkbook workbook = new XSSFWorkbook();
+//            XSSFSheet sheet = workbook.createSheet("sheet");
+            File file = new File(url +  File.separator + "report"+ File.separator + "template" + File.separator + "CollectOrderTemplate.xlsx");    //审批单
+            FileInputStream input = new FileInputStream(file);
+            XSSFWorkbook workbook = new XSSFWorkbook(new BufferedInputStream(input));
+            XSSFSheet sheet = workbook.getSheetAt(0);
+//            sheet.setDefaultColumnWidth((short)8);
+//            sheet.setColumnWidth(0,(short)3 * 100);
+//            sheet.setColumnWidth(14,(short)3 * 100);
 
             int rowNum = 0;
             for(int i=0;i<3;i++) {
@@ -916,10 +918,19 @@ public class ReportResource extends BaseResource{
                     0, //start row
                     rowNum //end row
             );
-            XSSFPrintSetup ps = sheet.getPrintSetup();
-            ps.setPaperSize((short)0);
-            sheet.setPrintGridlines(true);
-            sheet.setDisplayGridlines(true);
+//            sheet.setMargin(XSSFSheet.BottomMargin, (double)0.3); //页边距（下）
+//            sheet.setMargin(XSSFSheet.LeftMargin, (double)0.3); //页边距（左）
+//            sheet.setMargin(XSSFSheet.RightMargin, (double)0.3); //页边距（右）
+//            sheet.setMargin(XSSFSheet.TopMargin, (double)0.3); //页边距（上）
+//            sheet.setHorizontallyCenter(true); //设置打印页面为水平居中
+//            sheet.setAutobreaks(true);
+//            XSSFPrintSetup ps = sheet.getPrintSetup();
+//            ps.setPaperSize(PrintSetup.A4_PAPERSIZE);
+//            ps.setOrientation(PrintOrientation.PORTRAIT);
+//            sheet.setPrintGridlines(true);
+//            sheet.setDisplayGridlines(true);
+//            ps.setFitWidth((short)22);
+//            ps.setFitHeight((short)9);
             String fname = CodeGeneratorUtil.getCode();
             String rq = format1.format(new Date(new Date().getTime() - 24 * 60 * 60 * 1000));
             String filePath = url +  File.separator + "report"+ File.separator + "export";
