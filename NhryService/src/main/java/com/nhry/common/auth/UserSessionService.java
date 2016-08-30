@@ -92,7 +92,8 @@ public class UserSessionService {
 			}
 			boolean flag = false;
 			if(HttpUtils.isValidDate(timestamp)){
-				Date fdate = com.nhry.utils.date.Date.parseDate(timestamp,"yyyyMMddHHmmss").addMinutes(6);
+//				Date fdate = com.nhry.utils.date.Date.parseDate(timestamp,"yyyyMMddHHmmss").addMinutes(6);
+				Date fdate = com.nhry.utils.date.Date.parseDate(timestamp,"yyyyMMddHHmmss").addMinutes(60*8);
 				Date sysdate = new Date();
 				if(sysdate.before(fdate)){
 					//系统时间 小于 前端时间+6分钟
