@@ -28,7 +28,7 @@ public class ExcelUtil {
         XSSFCellStyle cellStyle = workbook.createCellStyle();
         XSSFFont font = workbook.createFont();
         font.setFontName("微软雅黑");
-        font.setFontHeightInPoints((short)12);
+        font.setFontHeightInPoints((short)7);
         cellStyle.setFont(font);
         cellStyle.setAlignment(XSSFCellStyle.ALIGN_CENTER);//水平居中
         cellStyle.setVerticalAlignment(XSSFCellStyle.VERTICAL_CENTER);//垂直居中
@@ -39,10 +39,10 @@ public class ExcelUtil {
         XSSFCellStyle cellStyle = workbook.createCellStyle();
         XSSFFont font = workbook.createFont();
         font.setFontName("微软雅黑");
-        font.setFontHeightInPoints((short)10);
+        font.setFontHeightInPoints((short)7);
         cellStyle.setFont(font);
         cellStyle.setAlignment(XSSFCellStyle.ALIGN_LEFT);//水平居中
-        cellStyle.setVerticalAlignment(XSSFCellStyle.VERTICAL_CENTER);//垂直居中
+        cellStyle.setVerticalAlignment(XSSFCellStyle.VERTICAL_TOP);//垂直居中
         return cellStyle;
     }
 
@@ -50,10 +50,21 @@ public class ExcelUtil {
         XSSFCellStyle cellStyle = workbook.createCellStyle();
         XSSFFont font = workbook.createFont();
         font.setFontName("微软雅黑");
-        font.setFontHeightInPoints((short)10);
+        font.setFontHeightInPoints((short)7);
         cellStyle.setFont(font);
-//        cellStyle.setAlignment(XSSFCellStyle.ALIGN_LEFT);//水平居中
-//        cellStyle.setVerticalAlignment(XSSFCellStyle.VERTICAL_CENTER);//垂直居中
+        cellStyle.setAlignment(XSSFCellStyle.ALIGN_LEFT);//水平居左
+        cellStyle.setVerticalAlignment(XSSFCellStyle.VERTICAL_CENTER);//垂直居中
+        return cellStyle;
+    }
+
+    public static XSSFCellStyle getCellStyle4(XSSFWorkbook workbook){
+        XSSFCellStyle cellStyle = workbook.createCellStyle();
+        XSSFFont font = workbook.createFont();
+        font.setFontName("微软雅黑");
+        font.setFontHeightInPoints((short)7);
+        cellStyle.setFont(font);
+        cellStyle.setAlignment(XSSFCellStyle.ALIGN_RIGHT);//水平居右
+        cellStyle.setVerticalAlignment(XSSFCellStyle.VERTICAL_CENTER);//垂直居中
         return cellStyle;
     }
 
@@ -77,5 +88,16 @@ public class ExcelUtil {
         styleBold.setVerticalAlignment(XSSFCellStyle.VERTICAL_CENTER);//垂直居中
         styleBold.setWrapText(true);
         return styleBold;
+    }
+
+    public static XSSFCellStyle setFontStype(XSSFWorkbook workbook){
+        XSSFCellStyle cellStyle2 = workbook.createCellStyle();
+        XSSFFont font2 = workbook.createFont();
+        font2.setFontName("微软雅黑");
+        font2.setFontHeightInPoints((short) 7);
+        cellStyle2.setFont(font2);
+        cellStyle2.setAlignment(XSSFCellStyle.ALIGN_CENTER);//水平居中
+        cellStyle2.setVerticalAlignment(XSSFCellStyle.VERTICAL_CENTER);//垂直居中
+        return cellStyle2;
     }
 }
