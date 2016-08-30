@@ -5,6 +5,8 @@ import com.nhry.service.pi.dao.PIPromotionDataService;
 import com.nhry.service.pi.pojo.PIMessage;
 import com.nhry.service.pi.pojo.PIPromotion;
 import com.nhry.service.promotion.dao.PromotionDataService;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.jws.WebService;
 import java.util.List;
@@ -12,6 +14,7 @@ import java.util.List;
  * Created by cbz on 8/8/2016.
  */
 @WebService
+@Transactional(readOnly = false,propagation = Propagation.REQUIRED)
 public class PIPromotionDataServiceImpl implements PIPromotionDataService {
     PromotionDataService promotionDataService;
 
@@ -37,6 +40,12 @@ public class PIPromotionDataServiceImpl implements PIPromotionDataService {
                 }
             }
 
+            if (scopeItems != null) {
+                for (PromotionScopeItem scopeItem : scopeItems) {
+                    promotionDataService.savePromotionScopeItem(scopeItem);
+                }
+            }
+
             if (origItems != null) {
                 for (PromotionOrigItem origItem : origItems) {
                     String goodNo = origItem.getGoodNo();
@@ -47,11 +56,6 @@ public class PIPromotionDataServiceImpl implements PIPromotionDataService {
                 }
             }
 
-            if (scopeItems != null) {
-                for (PromotionScopeItem scopeItem : scopeItems) {
-                    promotionDataService.savePromotionScopeItem(scopeItem);
-                }
-            }
             if (giftItems != null) {
                 for (PromotionGiftItem giftItem : giftItems) {
                     String giftNo = giftItem.getGiftNo();

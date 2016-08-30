@@ -20,6 +20,6 @@ public interface TSsmGiOrderMapper {
 
     List<TSsmGiOrder> findGiOrder(GiOrderModel model);
 
-    TSsmGiOrder findGiOrderByReqOrderNo(String reqOrderNo);
+    List<TSsmGiOrder> findGiOrderByReqOrderNo(String reqOrderNo);
 
 }

@@ -2,7 +2,12 @@ package com.nhry.data.promotion.domain;
 
 import java.math.BigDecimal;
 
-public class PromotionOrigItem extends PromotionOrigItemKey {
+public class PromotionOrigItem{
+
+    private String promNo;
+
+    private String itemNo;
+
     private String goodNo;
 
     private BigDecimal origNum;
@@ -31,5 +36,21 @@ public class PromotionOrigItem extends PromotionOrigItemKey {
 
     public void setUnit(String unit) {
         this.unit = unit == null ? null : unit.trim();
+    }
+
+    public String getPromNo() {
+        return promNo;
+    }
+
+    public void setPromNo(String promNo) {
+        this.promNo = promNo == null ? null : promNo.trim();
+    }
+
+    public String getItemNo() {
+        return itemNo;
+    }
+
+    public void setItemNo(String itemNo) {
+        this.itemNo = itemNo == null ? null : itemNo.trim();
     }
 }
