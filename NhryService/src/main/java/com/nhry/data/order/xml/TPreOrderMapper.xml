@@ -503,11 +503,9 @@
     left join t_md_branch b on o.BRANCH_NO = b.BRANCH_NO 
     left join t_vip_cust_info v on v.VIP_CUST_NO = o.MILKMEMBER_NO
     left join t_md_address a on a.ADDRESS_ID = o.ADRESS_NO
-    left join t_mst_plan_order_item e on e.ORDER_NO = o.ORDER_NO
     left join t_md_residential_area r on r.ID = a.RESIDENTIAL_AREA
-    WHERE 1=1
-    <!-- AND o.PREORDER_STAT = "10" -->
-     AND (o.RET_DATE is null
+    WHERE 
+    		o.RET_DATE is null
     <if test="orderNo != null and orderNo !=''">
      		AND o.ORDER_NO = #{orderNo,jdbcType=VARCHAR}
     </if>
@@ -515,7 +513,7 @@
      		AND o.SIGN = #{status,jdbcType=VARCHAR}
     </if>
     <if test="product != null and product !=''">
-     		AND e.MATNR = #{product,jdbcType=VARCHAR}
+     		AND o.ORDER_NO in (select e.ORDER_NO from t_mst_plan_order_item e where e.ORDER_NO = o.ORDER_NO and e.MATNR = #{product,jdbcType=VARCHAR})
     </if>
     <if test="branchNo != null and branchNo != ''">
      		AND o.BRANCH_NO = #{branchNo,jdbcType=VARCHAR}
@@ -530,7 +528,7 @@
      		AND o.EMP_NO = #{empNo,jdbcType=VARCHAR}
     </if>
     <if test="milkmemberNo != null and milkmemberNo !=''">
-      AND(v.VIP_NAME like '%${milkmemberNo}%'or v.MP like '%${milkmemberNo}%' or r.RESIDENTIAL_AREA_TXT like '%${milkmemberNo}%' or a.ADDRESS_TXT like '%${milkmemberNo}%' or CONCAT(r.RESIDENTIAL_AREA_TXT,a.ADDRESS_TXT) like  '%${milkmemberNo}%')
+      	AND(v.VIP_NAME like '%${milkmemberNo}%'or v.MP like '%${milkmemberNo}%' or r.RESIDENTIAL_AREA_TXT like '%${milkmemberNo}%' or a.ADDRESS_TXT like '%${milkmemberNo}%' or CONCAT(r.RESIDENTIAL_AREA_TXT,a.ADDRESS_TXT) like  '%${milkmemberNo}%')
     </if>
     <if test="paymentStat != null and paymentStat !=''">
      		AND o.PAYMENTMETHOD = #{paymentStat,jdbcType=VARCHAR}
@@ -539,7 +537,12 @@
      		AND o.MILKBOX_STAT = #{milkboxStat,jdbcType=VARCHAR}
     </if>
     <if test="preorderStat != null and preorderStat !=''">
-     		AND o.PREORDER_STAT = #{preorderStat,jdbcType=VARCHAR}
+     		AND (
+     		o.PREORDER_STAT = #{preorderStat,jdbcType=VARCHAR}
+     		<if test="reason != null or reason !=''">
+    		OR o.PREORDER_STAT = "30"
+    		</if>
+    		)
     </if>
     <!-- <if test="companyName != null and companyName !=''">
      		AND b.SALES_ORG = #{companyName,jdbcType=VARCHAR}
@@ -550,11 +553,13 @@
     <if test="orderDateEnd != null and orderDateEnd !=''">
      		AND o.ORDER_DATE  &lt;=  #{orderDateEnd}
     </if>
-     AND o.PREORDER_STAT != "30"
-     AND o.PREORDER_STAT != "40"
-     )
+    <if test="reason == null or reason ==''">
+     		AND o.PREORDER_STAT != "30"
+    </if>
+     		AND o.PREORDER_STAT != "40"
      
     <!-- 订单列表里要包括已经取消的订单 -->
+    <!-- 
     <if test="reason != null and reason !=''">
      	   OR ( 1=1
 	     		 <if test="orderNo != null and orderNo !=''">
@@ -564,7 +569,7 @@
 			     		AND o.SIGN = #{status,jdbcType=VARCHAR}
 			    </if>
 			    <if test="product != null and product !=''">
-			     		AND e.MATNR = #{product,jdbcType=VARCHAR}
+			     		AND o.ORDER_NO in (select e.ORDER_NO from t_mst_plan_order_item e where e.ORDER_NO = o.ORDER_NO and e.MATNR = #{product,jdbcType=VARCHAR})
 			    </if>
 			    <if test="branchNo != null and branchNo != ''">
 			     		AND o.BRANCH_NO = #{branchNo,jdbcType=VARCHAR}
@@ -587,9 +592,11 @@
 			    <if test="milkboxStat != null and milkboxStat !=''">
 			     		AND o.MILKBOX_STAT = #{milkboxStat,jdbcType=VARCHAR}
 			    </if>
+			     -->
 			    <!-- <if test="companyName != null and companyName !=''">
 			     		AND b.SALES_ORG = #{companyName,jdbcType=VARCHAR}
 			    </if> -->
+			    <!-- 
 			    <if test="orderDateStart != null and orderDateStart !=''">
 			     		AND o.ORDER_DATE  &gt;=  #{orderDateStart}
 			    </if>
@@ -600,6 +607,7 @@
 			     		AND o.PREORDER_STAT != "40"
 			     		)
 			    </if>
+			     -->
      ORDER BY o.ORDER_NO desc
   </select>
 
