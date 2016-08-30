@@ -56,4 +56,11 @@ public interface PIRequireOrderService {
      */
     String saveFactoryPrice();
 
+    /**
+     * 通过要货单或者销售订单生成交换单
+     * @param orderNo
+     * @return
+     */
+    String execDeliveryByOrderNo(String orderNo);
+
 }
