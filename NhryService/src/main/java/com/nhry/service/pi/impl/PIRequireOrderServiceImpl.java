@@ -196,8 +196,8 @@ public class PIRequireOrderServiceImpl implements PIRequireOrderService {
         if (StringUtils.isEmpty(orderNo)) {
             throw new ServiceException(MessageCode.LOGIC_ERROR, "调拨单或销售订单凭证没有生成！");
         } else {
-            TSsmGiOrder order = ssmGiOrderMapper.findGiOrderByReqOrderNo(orderNo);
-            if(order != null){
+            List<TSsmGiOrder> order = ssmGiOrderMapper.findGiOrderByReqOrderNo(orderNo);
+            if(order.size()>0){
                 throw new ServiceException(MessageCode.LOGIC_ERROR, "交货单已生成,请直接查询");
             }
             savePriceAndGiOrder(orderNo, branchNo, isDeli,false);
