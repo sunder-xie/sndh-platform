@@ -1179,7 +1179,7 @@
         LEFT JOIN t_md_branch_emp e on e.EMP_NO = i.DISP_EMP_NO
         left join t_mst_disp_order mdo on mdo.ORDER_NO = i.ORDER_NO
         where
-        i.ORDER_DATE = #{theDate,jdbcType=VARCHAR}
+        mdo.DISP_DATE = #{theDate,jdbcType=VARCHAR}
 			and o.BRANCH_NO=#{branchNo,jdbcType=VARCHAR}
         <if test="reachTimeType!=null and ''!=reachTimeType">
             AND  mdo.REACH_TIME_TYPE &lt;= #{reachTimeType,jdbcType=DATE}
