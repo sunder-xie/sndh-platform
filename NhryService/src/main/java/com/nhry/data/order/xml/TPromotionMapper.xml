@@ -70,6 +70,7 @@
 		and p.PLAN_START_TIME &lt;= #{createBy,jdbcType=DATE}
 		and p.PLAN_STOP_TIME &gt;= #{createBy,jdbcType=DATE}
 		and p.SALES_ORG = #{salesOrg,jdbcType=VARCHAR}
+		and si.branch_no = #{branchNo,jdbcType=VARCHAR}
   </select>
   <select id="selectPromotionByPromNo" resultMap="BaseResultMap" parameterType="com.nhry.data.order.domain.TPromotion" >
 	   select oi.GOOD_NO ORG_MATNR, oi.ORIG_NUM ORG_QTY, gi.GIFT_NO GIFT_MATNR,gi.GIFT_NUM GIFT_QTY,gi.GIFT_UNIT,
@@ -83,7 +84,7 @@
       from t_promotion p
 		left join t_promotion_orig_item oi on p.PROM_NO = oi.PROM_NO
 		left join t_promotion_gift_item gi on p.PROM_NO = gi.PROM_NO
-		left join t_prom_scope_item si on p.PROM_NO = si.PROM_NO
+		<!-- left join t_prom_scope_item si on p.PROM_NO = si.PROM_NO -->
 		where 1 = 1
 		and p.PROM_NO = #{promNo,jdbcType=VARCHAR}
   </select>
