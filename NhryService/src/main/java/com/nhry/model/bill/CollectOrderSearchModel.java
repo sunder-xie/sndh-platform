@@ -7,7 +7,16 @@ import java.util.List;
  */
 public class CollectOrderSearchModel {
     private String paymentmehod ;
+    private String orderNo;
     private List<String> orders;
+
+    public String getOrderNo() {
+        return orderNo;
+    }
+
+    public void setOrderNo(String orderNo) {
+        this.orderNo = orderNo;
+    }
 
     public String getPaymentmehod() {
         return paymentmehod;

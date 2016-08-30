@@ -8,9 +8,7 @@ import com.nhry.data.bill.domain.TMstRefund;
 import com.nhry.model.bill.CollectOrderBillModel;
 import com.nhry.model.bill.CollectOrderSearchModel;
 
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 
 /**
@@ -43,10 +41,15 @@ public class CustomerBillMapperImpl implements CustomerBillMapper {
 
     @Override
     public CollectOrderBillModel queryCollectByOrderNo(String orderCode,String paymentmethod) {
-        Map<String,String> map = new HashMap<String,String>();
-        map.put("orderCode",orderCode);
-        map.put("paymentmethod",paymentmethod);
-        return sqlSessionTemplate.selectOne("queryCollectByOrderNo",map);
+        CollectOrderSearchModel model = new CollectOrderSearchModel();
+        model.setOrderNo(orderCode);
+        model.setPaymentmehod(paymentmethod);
+        if("20".equals(paymentmethod)){
+            return sqlSessionTemplate.selectOne("queryCollectByBeforeOrderNo",model);
+        }else{
+            return  sqlSessionTemplate.selectOne("queryCollectByAfterOrderNo",model);
+        }
+
     }
 
     @Override
