@@ -76,6 +76,7 @@
 			select DATE_FORMAT(last_order_time,'%Y-%m-%d') from t_vip_cust_info 
 			where VIP_CUST_NO = #{vipNo,jdbcType=VARCHAR}
 		)
+		and preorder_stat = '10'
 		ORDER BY o.order_no desc limit 1
   </select>
   <select id="selectOrderRemainAndAmt" resultMap="BaseRemainResultMap" parameterType="java.lang.String" >
