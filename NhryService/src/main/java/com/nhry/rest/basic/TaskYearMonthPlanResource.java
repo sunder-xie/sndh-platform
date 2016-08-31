@@ -55,7 +55,7 @@ import java.util.List;
 public class TaskYearMonthPlanResource extends BaseResource {
     @Autowired
     private TaskYearMonthPlanService taskYearMonthPlanService;
-    
+
     @POST
     @Path("/findPlan")
     @Produces(MediaType.APPLICATION_JSON)
