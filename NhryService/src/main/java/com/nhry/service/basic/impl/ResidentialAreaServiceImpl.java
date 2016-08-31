@@ -192,7 +192,16 @@ public class ResidentialAreaServiceImpl implements ResidentialAreaService {
         });
         return 1;
     }
-
+    @Override
+    public int addResidentialAreas(List<TMdResidentialArea> areas) {
+        int i = 0;
+        if(areas != null){
+            for(TMdResidentialArea area : areas){
+                i = addResidentialArea(area);
+            }
+        }
+        return i;
+    }
     @Override
     public int uptResidentialArea(TMdResidentialArea tMdResidentialArea) {
     	tMdResidentialAreaMapper.uptResidentialArea(tMdResidentialArea);
