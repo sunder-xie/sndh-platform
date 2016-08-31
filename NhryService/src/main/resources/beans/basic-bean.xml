@@ -176,6 +176,7 @@
 		<property name="branchMapper" ref="branchMapper"></property>
 		<property name="dealerMapper" ref="dealerMapper"></property>
 		<property name="userSessionService" ref="userSessionService"></property>
+		<property name="branchExMapper" ref="branchExMapper"/>
 	</bean>
 
 	<bean id="tMdResidentialAreaMapper" class="com.nhry.data.basic.impl.TMdResidentialAreaMapperImpl">
