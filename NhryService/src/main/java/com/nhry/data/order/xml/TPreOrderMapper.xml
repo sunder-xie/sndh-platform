@@ -99,6 +99,15 @@
     	    and SIGN != '20'
     	    and SIGN != '30'
   </select>
+  <select id="selectByMilkmemberNoRetOrder" resultMap="BaseResultMap" parameterType="java.lang.String" >
+    select 
+    <include refid="Base_Column_List" />
+    FROM t_preorder
+    WHERE MILKMEMBER_NO = #{MILKMEMBER_NO,jdbcType=VARCHAR}
+    	    and PREORDER_STAT = '10'
+    	    and END_DATE &gt; curdate()
+    	    and SIGN != '30'
+  </select>
   <select id="selectNodeletedByMilkmemberNo" resultMap="BaseResultMap" parameterType="com.nhry.data.order.domain.TPreOrder" >
     select 
     <include refid="Base_Column_List" />
