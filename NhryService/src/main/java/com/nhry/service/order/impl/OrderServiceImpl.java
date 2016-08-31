@@ -1388,7 +1388,11 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 //		order.setEmpNo(empNo);//送奶员编号
 //		order.setInitAmt(initAmt);//页面输入的初始订单金额
 		order.setPaymentmethod(order.getPaymentStat());//10 后款 20 先款 30 殿付款
-		order.setPaymentStat("10");//付款状态,生成时未付款
+		if("Y".equals(order.getIsPaid())){
+			order.setPaymentStat("20");//付款状态,生成时已经付款
+		}else{
+			order.setPaymentStat("10");//付款状态,生成时未付款
+		}
 		order.setMilkboxStat(StringUtils.isBlank(order.getMilkboxStat()) == true ? "20": order.getMilkboxStat());//奶箱状态
 		if(StringUtils.isBlank(order.getPreorderStat())){
 			order.setPreorderStat("10");//订单状态,初始确认
