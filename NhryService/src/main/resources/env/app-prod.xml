@@ -8,27 +8,27 @@
 	<config key="ladp_basedn" value="ou=People,o=newhopedairy,o=isp"></config>
 	<config key="ladp_dh_auth" value="Auth_dhxt"></config>
 	<!-- idm auth2.0 -->
-	<config key="authurl" value="http://myditest.newhopedairy.cn:8080/siam/oauth2.0/authorize"></config>
-	<config key="auth_token" value="http://myditest.newhopedairy.cn:8080/siam/oauth2.0/accessToken"></config>
-	<config key="client_id" value="Auth_dhxt2"></config>
+	<config key="authurl" value="https://login.newhopedairy.cn/oauth2.0/authorize"></config>
+	<config key="auth_token" value="https://login.newhopedairy.cn/oauth2.0/accessToken"></config>
+	<config key="client_id" value="Auth_dhxt"></config>
 	<!-- 回调地址-->
 	<config key="redirect_uri" value="http://hdms.newhopedairy.cn/b-service/idm/auth"></config>
 	<config key="response_type" value="code"></config>
 	<config key="client_secret" value="secret"></config>
 	<config key="grant_type" value="authorizaiton_code"></config>
-	<config key="auth_profile" value="http://myditest.newhopedairy.cn:8080/siam/oauth2.0/profile"></config>
+	<config key="auth_profile" value="https://login.newhopedairy.cn/oauth2.0/profile"></config>
 	<!-- app token 校验接口 -->
-	<config key="app_token_validate"  value="http://myditest.newhopedairy.cn:8080/siam/rest/validate"></config>
+	<config key="app_token_validate"  value="https://login.newhopedairy.cn/rest/validate"></config>
 	<!-- 前端页面home -->
 	<config key="front_home_page" value="http://hdms.newhopedairy.cn/#/newhope/home"></config>
 	<config key="front_short_url" value="/local/#/newhope/home"></config>
 	<!-- 电商接口base url -->
-	<config key="ec_base_url" value="http://ec2-54-222-230-211.cn-north-1.compute.amazonaws.com.cn"></config>
+	<config key="ec_base_url" value="http://emw.newhopedairy.cn"></config>
 	<!-- 更新奶站信息 -->
 	<config key="ec_upt_branch" value="/FY_MOBILE_SVR/WFY_UNI_SERVICE.json?method=callProcService"></config>
 	<!-- idm rest验证接口 appcode、salt  -->
 	<config key="idm_appcode"  value="wsuser"></config>
 	<config key="idm_salt"  value="232ed9n196h69u5f1a24afc26b51c61e"></config>
 	<!-- idm 登录接口 -->
-	<config key="idm_logout_uri" value="http://myditest.newhopedairy.cn:8080/siam/logout?service="></config>
+	<config key="idm_logout_uri" value="https://login.newhopedairy.cn/logout?service="></config>
 </configs>

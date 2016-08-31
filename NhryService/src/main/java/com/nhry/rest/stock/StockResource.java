@@ -3,6 +3,7 @@ package com.nhry.rest.stock;
 import com.nhry.common.auth.UserSessionService;
 import com.nhry.common.exception.MessageCode;
 import com.nhry.data.auth.domain.TSysUser;
+import com.nhry.data.basic.domain.TMdBranch;
 import com.nhry.data.stock.domain.TSsmGiOrderItem;
 import com.nhry.data.stock.domain.TSsmGiOrderItemKey;
 import com.nhry.model.stock.GiOrderModel;
@@ -118,5 +119,13 @@ public class StockResource extends BaseResource {
         TSysUser user = userSessionService.getCurrentUser();
         String salesOrg = user.getSalesOrg();
         return convertToRespModel(MessageCode.NORMAL,null,giOrderItemService.updateGiOrderItems(giOrderItems, salesOrg));
+    }
+    @GET
+    @Path("/getJHD/{orderNo}")
+    @Produces(MediaType.APPLICATION_JSON)
+    @Consumes(MediaType.APPLICATION_JSON)
+    @ApiOperation(value = "/getJHD/{orderNo}", response = ResponseModel.class, notes = "获取交货单数据")
+    public Response getJHD(@PathParam("orderNo") String orderNo) throws RemoteException {
+        return convertToRespModel(MessageCode.NORMAL, null, requireOrderService.execDeliveryByOrderNo(orderNo));
     }
 }
