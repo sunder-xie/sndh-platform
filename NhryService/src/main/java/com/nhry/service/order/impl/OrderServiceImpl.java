@@ -1532,7 +1532,7 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 				this.setName("sendOrderToEc");
 				messLogService.sendOrderInfo(order, entriesList);
 				
-				if("10".equals(order.getPaymentmethod()) && !"20".equals(order.getMilkboxStat())){
+				if("20".equals(order.getPaymentStat()) && !"20".equals(order.getMilkboxStat())){
 					TPreOrder sendOrder = new TPreOrder();
 					sendOrder.setOrderNo(order.getOrderNo());
 					sendOrder.setPreorderStat("200");
