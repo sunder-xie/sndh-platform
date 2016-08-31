@@ -11,9 +11,45 @@ public class TMstRefund {
     private BigDecimal amt;
     private String remark;
     private String vipCustNo;
+    private String branchNo;
+    private String dealerNo;
+    private String salesOrg;
+    private String vipName;
     private String createBy;
     private Date createAt;
     private String createByTxt;
+
+    public String getBranchNo() {
+        return branchNo;
+    }
+
+    public void setBranchNo(String branchNo) {
+        this.branchNo = branchNo;
+    }
+
+    public String getDealerNo() {
+        return dealerNo;
+    }
+
+    public void setDealerNo(String dealerNo) {
+        this.dealerNo = dealerNo;
+    }
+
+    public String getSalesOrg() {
+        return salesOrg;
+    }
+
+    public void setSalesOrg(String salesOrg) {
+        this.salesOrg = salesOrg;
+    }
+
+    public String getVipName() {
+        return vipName;
+    }
+
+    public void setVipName(String vipName) {
+        this.vipName = vipName;
+    }
 
     public String getRefundNo() {
         return refundNo;

@@ -485,15 +485,19 @@ public class CustomerBillServiceImpl implements CustomerBillService {
             acLeftAmt = eac.getAcctAmt();
         }
         ac.setVipCustNo(cModel.getVipCustNo());
-        ac.setAcctAmt(cModel.getRefundAmount());
+        ac.setAcctAmt(acLeftAmt.multiply(new BigDecimal(-1)));
         int custInfo = tVipCustInfoService.addVipAcct(ac);
         TMstRefund refund = new TMstRefund();
         refund.setRefundNo(PrimaryKeyUtils.generateUpperUuidKey());
-        refund.setAmt(cModel.getRefundAmount());
+        refund.setAmt(acLeftAmt);
         refund.setCreateAt(new Date());
         refund.setVipCustNo(cModel.getVipCustNo());
         refund.setCreateBy(user.getLoginName());
         refund.setCreateByTxt(user.getDisplayName());
+        refund.setVipName(cModel.getVipName());
+        refund.setBranchNo(user.getBranchNo());
+        refund.setDealerNo(user.getDealerId());
+        refund.setSalesOrg(user.getSalesOrg());
         if(StringUtils.isNotBlank(cModel.getRemark())){
             refund.setRemark(cModel.getRemark());
         }

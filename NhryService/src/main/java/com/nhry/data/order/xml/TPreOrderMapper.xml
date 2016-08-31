@@ -1053,8 +1053,8 @@
   IFNULL( COUNT(*),0) num
   FROM t_preorder o
   WHERE 1=1
-  and o.SIGN = '10'
   and o.PREORDER_STAT ='10'
+  and o.END_DATE > CURDATE()
   and o.MILKMEMBER_NO = #{vipCustNo,jdbcType=VARCHAR}
   </select>
 
