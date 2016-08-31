@@ -336,6 +336,18 @@
             <if test="vipCustNo != null">
                 VIP_CUST_NO,
             </if>
+            <if test="vipName != null">
+                VIP_NAME,
+            </if>
+            <if test="branchNo != null">
+                BRANCH_NO,
+            </if>
+            <if test="dealerNo != null">
+                DEALER_NO,
+            </if>
+            <if test="salesOrg != null">
+                SALES_ORG,
+            </if>
             <if test="createAt != null">
                 CREATE_AT,
             </if>
@@ -358,6 +370,18 @@
             </if>
             <if test="vipCustNo != null">
                 #{vipCustNo,jdbcType=VARCHAR},
+            </if>
+            <if test="vipName != null">
+                #{vipName,jdbcType=VARCHAR},
+            </if>
+            <if test="branchNo != null">
+                #{branchNo,jdbcType=VARCHAR},
+            </if>
+            <if test="dealerNo != null">
+                #{dealerNo,jdbcType=VARCHAR},
+            </if>
+            <if test="salesOrg != null">
+                #{salesOrg,jdbcType=VARCHAR},
             </if>
             <if test="createAt != null">
                 #{createAt,jdbcType=TIMESTAMP},

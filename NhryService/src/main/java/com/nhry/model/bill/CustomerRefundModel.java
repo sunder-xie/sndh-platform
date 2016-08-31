@@ -1,14 +1,20 @@
 package com.nhry.model.bill;
 
-import java.math.BigDecimal;
-
 /**
  * Created by gongjk on 2016/8/29.
  */
 public class CustomerRefundModel {
     private String vipCustNo;
     private String remark;
-    private BigDecimal refundAmount;
+    private String vipName;
+
+    public String getVipName() {
+        return vipName;
+    }
+
+    public void setVipName(String vipName) {
+        this.vipName = vipName;
+    }
 
     public String getVipCustNo() {
         return vipCustNo;
@@ -26,11 +32,4 @@ public class CustomerRefundModel {
         this.remark = remark;
     }
 
-    public BigDecimal getRefundAmount() {
-        return refundAmount;
-    }
-
-    public void setRefundAmount(BigDecimal refundAmount) {
-        this.refundAmount = refundAmount;
-    }
 }

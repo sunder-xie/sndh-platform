@@ -102,8 +102,8 @@ public class TDispOrderMapperImpl implements TDispOrderMapper
 		SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
 		TDispOrder key = new TDispOrder();
 		key.setBranchNo(branchNo);
-		key.setBranchName(format.format(orderDate));
-		return sqlSessionTemplate.selectList("selectTodayDispOrderByBranchNo",key);
+		key.setDispDate(orderDate);
+		return sqlSessionTemplate.selectList("selectDispOrderByBranchNoAndDay",key);
 	}
 
 
