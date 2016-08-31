@@ -171,7 +171,7 @@ public class ResidentialAreaServiceImpl implements ResidentialAreaService {
         TSysUser user = userSessionService.getCurrentUser();
         TMdResidentialArea area = tMdResidentialAreaMapper.getAreaByAreaName(tMdResidentialArea.getResidentialAreaTxt(),user.getSalesOrg());
         if(area!=null){
-            throw new ServiceException(MessageCode.LOGIC_ERROR,"该小区名称已存在！");
+            throw new ServiceException(MessageCode.LOGIC_ERROR,user.getSalesOrg()+"销售组织编号下的   "+tMdResidentialArea.getResidentialAreaTxt()+"小区名称已存在！");
         }
 
         tMdResidentialArea.setSalesOrg(user.getSalesOrg());
