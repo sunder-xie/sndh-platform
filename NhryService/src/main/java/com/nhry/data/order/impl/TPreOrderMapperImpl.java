@@ -202,7 +202,11 @@ public class TPreOrderMapperImpl implements TPreOrderMapper
 	{
 		return sqlSessionTemplate.selectOne("selectStopOrderNum",smodel);
 	}
-	
+	@Override
+	public int searchReturnOrdersNum(OrderSearchModel smodel)
+	{
+		return sqlSessionTemplate.selectOne("searchReturnOrdersNum",smodel);
+	}
 	@Override
 	public PageInfo selectNeedResumeOrders(OrderSearchModel smodel) {
 

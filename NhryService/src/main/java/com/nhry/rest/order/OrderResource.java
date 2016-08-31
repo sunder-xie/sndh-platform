@@ -61,7 +61,15 @@ public class OrderResource extends BaseResource {
 	public Response selectRequiredOrderNum(){
 		return convertToRespModel(MessageCode.NORMAL, null, orderService.selectRequiredOrderNum());
 	}
-	
+
+	@GET
+	@Path("/searchReturnOrdersNum")
+	@Produces(MediaType.APPLICATION_JSON)
+	@ApiOperation(value = "/searchReturnOrdersNum", response = OrderCreateModel.class, notes = "该组织下人工分单")
+	public Response searchReturnOrdersNum(){
+		return convertToRespModel(MessageCode.NORMAL, null, orderService.searchReturnOrdersNum());
+	}
+
 	@GET
 	@Path("/selectStopOrderNum")
 	@Produces(MediaType.APPLICATION_JSON)
