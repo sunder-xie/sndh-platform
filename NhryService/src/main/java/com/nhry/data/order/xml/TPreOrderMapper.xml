@@ -1049,10 +1049,12 @@
   </select>
 
   <select id="selectUnfinishOrderNum" resultType="INTEGER" parameterType="String">
-   SELECT
+  SELECT
   IFNULL( COUNT(*),0) num
   FROM t_preorder o
-  WHERE o.PAYMENT_STAT = '10'
+  WHERE 1=1
+  and o.SIGN = '10'
+  and o.PREORDER_STAT ='10'
   and o.MILKMEMBER_NO = #{vipCustNo,jdbcType=VARCHAR}
   </select>
 
