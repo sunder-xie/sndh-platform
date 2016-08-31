@@ -3,6 +3,7 @@ package com.nhry.data.basic.impl;
 import com.nhry.common.datasource.DynamicSqlSessionTemplate;
 import com.nhry.data.basic.dao.TMdBranchExMapper;
 import com.nhry.data.basic.domain.TMdBranchEx;
+import com.nhry.model.basic.BranchExkostlModel;
 
 /**
  * Created by cbz on 7/5/2016.
@@ -43,5 +44,10 @@ public class TMdBranchExMapperImpl implements TMdBranchExMapper {
     @Override
     public int updateBranchEx(TMdBranchEx record) {
         return sqlSessionTemplate.update("updateBranchEx",record);
+    }
+
+    @Override
+    public int updateBranchKostl(BranchExkostlModel record) {
+        return sqlSessionTemplate.update("updateBranchKostl",record);
     }
 }
