@@ -241,6 +241,8 @@ public class TVipCustInfoServiceImpl extends BaseService implements TVipCustInfo
 				this.tmdVipcust.addVipCust(cust);
 				address.setVipCustNo(cust.getVipCustNo());
 				address.setIsDafault("Y");
+				//创建会员
+				vipInfoDataService.executeVipInfoData(cust,cust.getVipMp());
 			}else{
 				address.setVipCustNo(custNo);
 				attrs.clear();
