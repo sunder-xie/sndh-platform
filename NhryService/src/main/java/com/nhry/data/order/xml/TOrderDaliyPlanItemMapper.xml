@@ -532,6 +532,7 @@
     and i.GIFT_QTY >0
     and o.PREORDER_STAT !='20'
     and o.PREORDER_STAT !='40'
+    and o.BRANCH_NO = #{branchNo,jdbcType=VARCHAR}
     and  ( i.DISP_DATE = #{secondDay,jdbcType=DATE}  or i.DISP_DATE = #{firstDay,jdbcType=DATE} )
     GROUP BY i.PROMOTION_FLAG,i.MATNR
     ORDER BY i.DISP_DATE desc
