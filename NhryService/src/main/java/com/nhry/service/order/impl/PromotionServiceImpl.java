@@ -47,6 +47,7 @@ public class PromotionServiceImpl extends BaseService implements PromotionServic
 	public PageInfo selectPromotionsrsByPage(OrderSearchModel smodel)
 	{
 		smodel.setSalesOrg(userSessionService.getCurrentUser().getSalesOrg());
+		smodel.setBranchNo(userSessionService.getCurrentUser().getBranchNo());
 		return tPromotionMapper.selectPromotionsrsByPage(smodel);
 	}
 
