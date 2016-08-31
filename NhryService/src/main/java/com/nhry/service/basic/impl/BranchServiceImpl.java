@@ -6,10 +6,13 @@ import com.nhry.common.exception.MessageCode;
 import com.nhry.common.exception.ServiceException;
 import com.nhry.data.auth.dao.TSysUserRoleMapper;
 import com.nhry.data.auth.domain.TSysUser;
+import com.nhry.data.basic.dao.TMdBranchExMapper;
 import com.nhry.data.basic.dao.TMdBranchMapper;
 import com.nhry.data.basic.dao.TMdDealerMapper;
 import com.nhry.data.basic.domain.TMdBranch;
+import com.nhry.data.basic.domain.TMdBranchEx;
 import com.nhry.data.basic.domain.TMdDealer;
+import com.nhry.model.basic.BranchExkostlModel;
 import com.nhry.model.basic.BranchOrDealerList;
 import com.nhry.model.basic.BranchQueryModel;
 import com.nhry.model.basic.BranchSalesOrgModel;
@@ -26,6 +29,7 @@ public class BranchServiceImpl extends BaseService implements BranchService {
 	private TMdDealerMapper dealerMapper;
 	private UserSessionService userSessionService;
 	private TSysUserRoleMapper urMapper;
+	private TMdBranchExMapper branchExMapper;
 	
 
 	@Override
@@ -146,11 +150,33 @@ public class BranchServiceImpl extends BaseService implements BranchService {
 	}
 
 	@Override
+	public int updateBranchKostl(BranchExkostlModel record) {
+		if(org.apache.commons.lang.StringUtils.isEmpty(record.getBranchNo())){
+			throw new ServiceException(MessageCode.LOGIC_ERROR,"奶站编号不能为空！");
+		}
+		if(org.apache.commons.lang.StringUtils.isEmpty(record.getKostl())){
+			throw new ServiceException(MessageCode.LOGIC_ERROR,"成品中心编码不能为空！");
+		}else if(record.getKostl().length()>10){
+			throw new ServiceException(MessageCode.LOGIC_ERROR,"成品中心编码长度过长！");
+		}
+		return branchExMapper.updateBranchKostl(record);
+	}
+
+	@Override
+	public TMdBranchEx getBranchEx(String branchNo) {
+		return branchExMapper.getBranchEx(branchNo);
+	}
+
+	@Override
 	public List<TMdBranch> findBranchBySalesOrgDno(String salesOrg,String dealerNo) {
 		// TODO Auto-generated method stub
 		Map<String,String> attrs = new HashMap<String,String>();
 		attrs.put("salesOrg", salesOrg);
 		attrs.put("dealerNo",dealerNo);
 		return this.branchMapper.findBranchByDno(attrs);
+	}
+
+	public void setBranchExMapper(TMdBranchExMapper branchExMapper) {
+		this.branchExMapper = branchExMapper;
 	}
 }

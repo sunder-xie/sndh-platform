@@ -3,6 +3,8 @@ package com.nhry.rest.basic;
 import com.github.pagehelper.PageInfo;
 import com.nhry.common.exception.MessageCode;
 import com.nhry.data.basic.domain.TMdBranch;
+import com.nhry.data.basic.domain.TMdBranchEx;
+import com.nhry.model.basic.BranchExkostlModel;
 import com.nhry.model.basic.BranchQueryModel;
 import com.nhry.model.webService.CustInfoModel;
 import com.nhry.model.webService.DealerBranchModel;
@@ -122,4 +124,20 @@ public class BranchResource extends BaseResource {
 		return convertToRespModel(MessageCode.NORMAL, null,getOrderBranchService.getOrderBranch(cModel));
 	}
 
+	@POST
+	@Path("/uptKostl")
+	@Produces(MediaType.APPLICATION_JSON)
+	@Consumes(MediaType.APPLICATION_JSON)
+	@ApiOperation(value = "/uptKostl", response = String.class, notes = "更新网点客户(奶站)成品中心属性")
+	public Response uptKostl(@ApiParam(required=true,name="Model",value="model") BranchExkostlModel model){
+		return convertToRespModel(MessageCode.NORMAL, null,branchService.updateBranchKostl(model));
+	}
+
+	@GET
+	@Path("/getBranchEx/{branchNo}")
+	@Produces(MediaType.APPLICATION_JSON)
+	@ApiOperation(value = "/getBranchEx/{branchNo}", response = TMdBranchEx.class, notes = "获取所属奶站的扩展信息")
+	public Response getCustBranchInfo(@ApiParam(required = true,name = "branchNo",value = "branchNo") @PathParam("branchNo") String branchNo){
+		return convertToRespModel(MessageCode.NORMAL, null,branchService.getBranchEx(branchNo));
+	}
 }

@@ -29,6 +29,8 @@ public class TMdBranchEx {
 
     private String reslo;
 
+    private String kostl;
+
     public String getBranchNo() {
         return branchNo;
     }
@@ -131,5 +133,13 @@ public class TMdBranchEx {
 
     public void setReslo(String reslo) {
         this.reslo = reslo;
+    }
+
+    public String getKostl() {
+        return kostl;
+    }
+
+    public void setKostl(String kostl) {
+        this.kostl = kostl;
     }
 }

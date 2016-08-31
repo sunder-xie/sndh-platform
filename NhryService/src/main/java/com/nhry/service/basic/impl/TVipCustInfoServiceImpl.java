@@ -45,6 +45,7 @@ public class TVipCustInfoServiceImpl extends BaseService implements TVipCustInfo
 		if(StringUtils.isEmpty(record.getVipName()) || StringUtils.isEmpty(record.getMp()) || StringUtils.isEmpty(record.getBranchNo())){
 			throw new ServiceException(MessageCode.LOGIC_ERROR, "会员姓名(vipName)、手机号码(mp)、订户奶站(branchNo) 必须填写!");
 		}
+		TSysUser sysuser = this.userSessionService.getCurrentUser();
 		Map<String,String> attrs = new HashMap<String,String>();
 		attrs.put("salesOrg", this.userSessionService.getCurrentUser().getSalesOrg());
 		attrs.put("branchNo", record.getBranchNo());
@@ -55,12 +56,11 @@ public class TVipCustInfoServiceImpl extends BaseService implements TVipCustInfo
 		}
 		record.setVipCustNo(PrimaryKeyUtils.generateUpperUuidKey());
 		record.setCreateAt(new Date());
-		record.setCreateBy(this.userSessionService.getCurrentUser().getLoginName());
-		record.setCreateByTxt(this.userSessionService.getCurrentUser().getDisplayName());
-		record.setSalesOrg(this.userSessionService.getCurrentUser().getSalesOrg());
+		record.setCreateBy(sysuser.getLoginName());
+		record.setCreateByTxt(sysuser.getDisplayName());
+		record.setSalesOrg(sysuser.getSalesOrg());
 		this.tmdVipcust.addVipCust(record);
-		if(!StringUtils.isBlank(record.getAddressTxt()) && !StringUtils.isBlank(record.getProvince()) && !StringUtils.isBlank(record.getCity()) &&
-				!StringUtils.isBlank(record.getCounty())){
+		if(!StringUtils.isBlank(record.getAddressTxt()) && !StringUtils.isBlank(record.getProvince()) && !StringUtils.isBlank(record.getCity())){
 			TMdAddress address = new TMdAddress();
 			address.setAddressTxt(record.getAddressTxt());
 			address.setProvince(record.getProvince());
@@ -74,8 +74,8 @@ public class TVipCustInfoServiceImpl extends BaseService implements TVipCustInfo
 			address.setVipCustNo(record.getVipCustNo());
 			address.setIsDafault("Y");
 			address.setCreateAt(new Date());
-			address.setCreateBy(this.userSessionService.getCurrentUser().getLoginName());
-			address.setCreateByTxt(this.userSessionService.getCurrentUser().getDisplayName());
+			address.setCreateBy(sysuser.getLoginName());
+			address.setCreateByTxt(sysuser.getDisplayName());
 			addAddressForCust(address,null,null);
 		}
 		vipInfoDataService.executeVipInfoData(record,record.getVipMp());
@@ -241,6 +241,8 @@ public class TVipCustInfoServiceImpl extends BaseService implements TVipCustInfo
 				this.tmdVipcust.addVipCust(cust);
 				address.setVipCustNo(cust.getVipCustNo());
 				address.setIsDafault("Y");
+				//创建会员
+				vipInfoDataService.executeVipInfoData(cust,cust.getVipMp());
 			}else{
 				address.setVipCustNo(custNo);
 				attrs.clear();
