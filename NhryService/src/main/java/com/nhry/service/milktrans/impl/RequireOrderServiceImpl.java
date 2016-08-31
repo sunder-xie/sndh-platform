@@ -410,6 +410,8 @@ public class RequireOrderServiceImpl implements RequireOrderService {
             PISuccessMessage  message  = piRequireOrderService.generateSalesOrder(order,order.getDealerNo(),order.getBranchNo(),order.getSalesOrg(),null);
             if(message.isSuccess()){
                 this.uptVouCherNoByOrderNo(order.getOrderNo(),message.getData());
+            }else{
+                throw new ServiceException(MessageCode.LOGIC_ERROR,message.getMessage());
             }
         }
 
@@ -467,7 +469,7 @@ public class RequireOrderServiceImpl implements RequireOrderService {
             if(message.isSuccess()){
                 this.uptVouCherNoByOrderNo(order.getOrderNo(),message.getData());
             }else{
-                throw new ServiceException(MessageCode.LOGIC_ERROR,"发送失败");
+                throw new ServiceException(MessageCode.LOGIC_ERROR,message.getMessage());
             }
         }
         return 1;
@@ -505,7 +507,7 @@ public class RequireOrderServiceImpl implements RequireOrderService {
                 this.uptVouCherNoByOrderNo(order.getOrderNo(),message.getData());
 
             }else{
-                throw new ServiceException(MessageCode.LOGIC_ERROR,"创建销售订单失败,请联系开发");
+                throw new ServiceException(MessageCode.LOGIC_ERROR,message.getMessage());
             }
             return 1;
         }else{
@@ -542,7 +544,7 @@ public class RequireOrderServiceImpl implements RequireOrderService {
                     if(message.isSuccess()){
                         this.uptVouCherNoByOrderNo(order.getOrderNo(),message.getData());
                     }else{
-                        throw new ServiceException(MessageCode.LOGIC_ERROR,"创建销售订单失败,请联系开发");
+                        throw new ServiceException(MessageCode.LOGIC_ERROR,message.getMessage());
                     }
                     return 1;
                 }else{
@@ -775,7 +777,7 @@ public class RequireOrderServiceImpl implements RequireOrderService {
                     }
                     result =order.getVoucherNo();
                 }else{
-                    throw  new ServiceException(MessageCode.LOGIC_ERROR,"自营奶站发送要货计划失败，请重新发送");
+                    throw new ServiceException(MessageCode.LOGIC_ERROR,message.getMessage());
                 }
             }else{
                 //经销商奶站 生成销售订单
