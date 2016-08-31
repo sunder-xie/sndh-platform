@@ -681,7 +681,7 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 			tPreOrderMapper.updateOrderEndDate(order);
 			
 			//订户状态更改???
-			List<TPreOrder> list = tPreOrderMapper.selectByMilkmemberNo(order.getMilkmemberNo());
+			List<TPreOrder> list = tPreOrderMapper.selectByMilkmemberNoRetOrder(order.getMilkmemberNo());
 			if(list==null||list.size()<=0){
 				tVipCustInfoService.discontinue(order.getMilkmemberNo(), "40",null,null);
 			}
@@ -1445,6 +1445,14 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 		int index = 0;
 		BigDecimal orderAmt = new BigDecimal("0.00");//订单总价
 		for(TPlanOrderItem entry: record.getEntries()){
+			
+			//非奶站订单要重新计算金额
+			if(!"30".equals(order.getPreorderSource())){
+				float price = priceService.getMaraPrice(order.getBranchNo(), entry.getMatnr(), order.getDeliveryType());
+				if(price<=0)throw new ServiceException(MessageCode.LOGIC_ERROR,"替换的产品价格小于0,请检查传入的商品号，奶站和配送方式!");
+				entry.setSalesPrice(new BigDecimal(String.valueOf(price)));
+			}
+			
 			entry.setOrderNo(order.getOrderNo());
 			entry.setItemNo(order.getOrderNo() + String.valueOf(index));//行项目编号
 			entry.setRefItemNo(String.valueOf(index));//参考行项目编号

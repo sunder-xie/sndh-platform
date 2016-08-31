@@ -328,7 +328,7 @@ public class EcServiceImpl extends EcBaseService implements EcService{
 			oorderJson.put("netShopId", "00006");
 			oorderJson.put("empId", "");
 			oorderJson.put("createDate", format.format(order.getOrderDate()));
-			oorderJson.put("vipNo", order.getMilkmemberNo());
+			oorderJson.put("vipNo", order.getMemberNo());
 			oorderJson.put("buyerName", address.getRecvName());
 			oorderJson.put("postFee", "0");
 			oorderJson.put("paidFlag", "N");
