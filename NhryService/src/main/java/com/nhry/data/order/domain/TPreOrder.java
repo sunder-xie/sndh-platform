@@ -126,6 +126,8 @@ public class TPreOrder {
     private Integer yFresh;
 
     private String receiptNo;
+    
+    private String isPaid;
 
 
     String branchEmpNo;
@@ -134,7 +136,17 @@ public class TPreOrder {
     String addressTxt;
 
 
-    public String getReceiptNo() {
+    public String getIsPaid()
+	{
+		return isPaid;
+	}
+
+	public void setIsPaid(String isPaid)
+	{
+		this.isPaid = isPaid;
+	}
+
+	public String getReceiptNo() {
         return receiptNo;
     }
 
