@@ -564,6 +564,9 @@ public class DeliverMilkServiceImpl extends BaseService implements DeliverMilkSe
 		Date date = afterDate(new Date(),1);
 		Map<String,String> productMap = productService.getMataBotTypes();
 		for(TPreOrder order : empNos){
+			
+			if(StringUtils.isBlank(order.getEmpNo()))continue;
+			
 			dispOrder = new TDispOrder();
 			dispEntries = new ArrayList<TDispOrderItem>();
 			int totalQty = 0;
