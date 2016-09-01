@@ -27,8 +27,8 @@
 	<!-- 更新奶站信息 -->
 	<config key="ec_upt_branch" value="/FY_MOBILE_SVR/WFY_UNI_SERVICE.json?method=callProcService"></config>
 	<!-- idm rest验证接口 appcode、salt  -->
-	<config key="idm_appcode"  value="wsuser"></config>
-	<config key="idm_salt"  value="232ed9n196h69u5f1a24afc26b51c61e"></config>
+	<config key="idm_appcode"  value="restUser"></config>
+	<config key="idm_salt"  value="1612665125f26d531124gfs3g24gd32a"></config>
 	<!-- idm 登录接口 -->
 	<config key="idm_logout_uri" value="https://login.newhopedairy.cn/logout?service="></config>
 </configs>
