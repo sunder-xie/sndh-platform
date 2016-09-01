@@ -137,6 +137,7 @@
 				<ref bean="crontestJobTrigger7"/>
             </list>
         </property>
+        <property name="stringRedisTemplate" ref="stringRedisTemplate"></property>
     </bean>
 
 </beans>
