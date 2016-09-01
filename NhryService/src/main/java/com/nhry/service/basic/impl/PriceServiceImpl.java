@@ -318,6 +318,36 @@ public class PriceServiceImpl extends BaseService implements PriceService {
 		}
 		return -1.0f;
 	}
+	
+	@Override
+	public float getMaraPriceForCreateOrder(String branchNo, String matnr, String deliveryType,String salesOrg) {
+		// TODO Auto-generated method stub
+		Map<String,String> attrs = new HashMap<String,String>();
+		attrs.put("salesOrg",salesOrg);
+		attrs.put("branchNo", branchNo);
+		attrs.put("matnr", matnr);
+		//先查询该奶站上该商品关联的价格组列表
+		List<PriceGroup> prices = this.tMdPriceMapper.findMaraPriceBymatnrAndNo(attrs);
+		PriceGroup price = null;
+		if(prices != null && prices.size() > 0){
+			price = prices.get(0);
+		}else{
+			//奶站上没有关联如何价格组、查询公司上的价格组(渠道价格组)
+			price = this.tMdPriceMapper.findMaraPriceBymatnrAndOrg(attrs);
+		}
+		if(price == null){
+			//如果公司和奶站对于该商品都适用的价格组
+			return -1.0f;
+		}
+		if("10".equals(deliveryType)){
+			//自取价
+			return price.getPrice1();
+		}else if("20".equals(deliveryType)){
+			//订户价
+			return price.getPrice2();
+		}
+		return -1.0f;
+	}
 
 	public void setDealerMapper(TMdDealerMapper dealerMapper) {
 		this.dealerMapper = dealerMapper;

@@ -1405,8 +1405,8 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 		}
 		order.setSign("10");//在订状态
 		//根据传的奶站获取经销商和销售组织
+		TMdBranch branch = branchMapper.selectBranchByNo(order.getBranchNo());
 		if(StringUtils.isNotBlank(order.getBranchNo())){
-			TMdBranch branch = branchMapper.selectBranchByNo(order.getBranchNo());
 			if(branch==null)throw new ServiceException(MessageCode.LOGIC_ERROR,"奶站不存在!");
 			order.setDealerNo(branch.getDealerNo());//进销商
 			order.setSalesOrg(branch.getSalesOrg());
@@ -1454,8 +1454,8 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 			
 			//非奶站订单要重新计算金额
 			if(!"30".equals(order.getPreorderSource())){
-				float price = priceService.getMaraPrice(order.getBranchNo(), entry.getMatnr(), order.getDeliveryType());
-				if(price<=0)throw new ServiceException(MessageCode.LOGIC_ERROR,"替换的产品价格小于0,请检查传入的商品号，奶站和配送方式!");
+				float price = priceService.getMaraPriceForCreateOrder(order.getBranchNo(), entry.getMatnr(), order.getDeliveryType(), branch.getSalesOrg());
+				if(price<=0)throw new ServiceException(MessageCode.LOGIC_ERROR,"产品价格小于0,请检查传入的商品号，奶站和配送方式!信息："+"奶站："+order.getBranchNo()+"商品号："+entry.getMatnr()+"配送方式："+order.getDeliveryType()+"销售组织："+branch.getSalesOrg());
 				entry.setSalesPrice(new BigDecimal(String.valueOf(price)));
 			}
 			
