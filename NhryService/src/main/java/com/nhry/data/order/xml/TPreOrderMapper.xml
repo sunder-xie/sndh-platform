@@ -1079,9 +1079,7 @@
     <if test="branchNo!=null and ''!=branchNo">
       o.BRANCH_NO = #{branchNo,jdbcType=VARCHAR}
     </if>
-    <if test="branchNo!=null and ''!=branchNo">
-      o.BRANCH_NO = #{branchNo,jdbcType=VARCHAR}
-    </if>
+
   </select>
 
   <select id="selectAfterOrderNos" resultType="String" parameterType="com.nhry.model.bill.CustBillQueryModel">
@@ -1095,9 +1093,7 @@
     <if test="branchNo!=null and ''!=branchNo">
       o.BRANCH_NO = #{branchNo,jdbcType=VARCHAR}
     </if>
-    <if test="branchNo!=null and ''!=branchNo">
-      o.BRANCH_NO = #{branchNo,jdbcType=VARCHAR}
-    </if>
+
   </select>
   <select id="searchReturnOrdersNum" resultType="INTEGER" parameterType="com.nhry.model.order.OrderSearchModel">
     select
