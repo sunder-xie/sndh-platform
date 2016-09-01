@@ -1718,12 +1718,12 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 				MilkboxCreateModel model = new MilkboxCreateModel();
 				model.setCode(order.getOrderNo());
 				milkBoxService.addNewMilkboxPlan(model);
-				
-   			//生成每日计划
-   			List<TOrderDaliyPlanItem> list = createDaliyPlan(order,orgEntries);
-   			//如果有赠品，生成赠品的日计划
-   			promotionService.createDaliyPlanByPromotion(order,orgEntries,list);
 			}
+			
+			//生成每日计划
+			List<TOrderDaliyPlanItem> list = createDaliyPlan(order,orgEntries);
+			//如果有赠品，生成赠品的日计划
+			promotionService.createDaliyPlanByPromotion(order,orgEntries,list);
 			
 			//创建订单发送EC，发送系统消息(以线程方式),只有奶站的发，摆台的确认时发，电商不发
 			if("20".equals(order.getPreorderSource())){
