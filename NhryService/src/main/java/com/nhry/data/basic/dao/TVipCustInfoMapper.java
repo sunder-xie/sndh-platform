@@ -18,7 +18,7 @@ public interface TVipCustInfoMapper {
 	 * @return
 	 */
     int addVipCust(TVipCustInfo record);
-    
+
     /**
      * 根据订户编号查询订户信息(包含地址信息)
      * @param vipCustNo

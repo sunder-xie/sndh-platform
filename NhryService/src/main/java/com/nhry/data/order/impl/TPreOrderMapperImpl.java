@@ -202,7 +202,11 @@ public class TPreOrderMapperImpl implements TPreOrderMapper
 	{
 		return sqlSessionTemplate.selectOne("selectStopOrderNum",smodel);
 	}
-	
+	@Override
+	public int searchReturnOrdersNum(OrderSearchModel smodel)
+	{
+		return sqlSessionTemplate.selectOne("searchReturnOrdersNum",smodel);
+	}
 	@Override
 	public PageInfo selectNeedResumeOrders(OrderSearchModel smodel) {
 
@@ -244,6 +248,26 @@ public class TPreOrderMapperImpl implements TPreOrderMapper
 	@Override
 	public BigDecimal calculateAfterOrderFactoryAmt(String orderNo) {
 		return sqlSessionTemplate.selectOne("calculateAfterOrderFactoryAmt", orderNo);
+	}
+
+	@Override
+	public BigDecimal calculateTotalBeforBatch(CustBatchBillQueryModel cModel) {
+		return sqlSessionTemplate.selectOne("calculateTotalBeforBatch", cModel);
+	}
+
+	@Override
+	public int selectUnfinishOrderNum(String vipCustNo) {
+		return sqlSessionTemplate.selectOne("selectUnfinishOrderNum",vipCustNo);
+	}
+
+	@Override
+	public List<String> selectAdvanceOrderNos(CustBillQueryModel cModel) {
+		return sqlSessionTemplate.selectList("selectAdvanceOrderNos",cModel);
+	}
+
+	@Override
+	public List<String> selectAfterOrderNos(CustBillQueryModel cModel) {
+		return sqlSessionTemplate.selectList("selectAfterOrderNos",cModel);
 	}
 
 	/* (non-Javadoc) 

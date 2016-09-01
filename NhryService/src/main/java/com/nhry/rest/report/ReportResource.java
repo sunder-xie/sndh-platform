@@ -10,6 +10,8 @@ import com.nhry.data.milk.domain.TDispOrder;
 import com.nhry.data.milk.domain.TDispOrderItem;
 import com.nhry.data.order.domain.TMilkboxPlan;
 import com.nhry.data.order.domain.TPreOrder;
+import com.nhry.model.bill.CollectOrderBillModel;
+import com.nhry.model.bill.CustBillQueryModel;
 import com.nhry.model.milk.RouteOrderModel;
 import com.nhry.model.order.CollectOrderModel;
 import com.nhry.model.order.OrderCreateModel;
@@ -26,12 +28,16 @@ import com.nhry.service.order.dao.MilkBoxService;
 import com.nhry.service.order.dao.OrderService;
 import com.nhry.service.statistics.dao.BranchInfoService;
 import com.nhry.utils.CodeGeneratorUtil;
+import com.nhry.utils.ExcelUtil;
 import com.sun.jersey.spi.resource.Singleton;
 import com.wordnik.swagger.annotations.Api;
 import com.wordnik.swagger.annotations.ApiOperation;
 import com.wordnik.swagger.annotations.ApiParam;
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
+import org.apache.poi.ss.usermodel.PageOrder;
+import org.apache.poi.ss.usermodel.PrintOrientation;
+import org.apache.poi.ss.usermodel.PrintSetup;
 import org.apache.poi.ss.util.CellRangeAddress;
 import org.apache.poi.xssf.usermodel.*;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -47,9 +53,7 @@ import javax.ws.rs.core.Response;
 import java.io.*;
 import java.math.BigDecimal;
 import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * Created by cbz on 7/27/2016.
@@ -669,4 +673,310 @@ public class ReportResource extends BaseResource{
         }
         return convertToRespModel(MessageCode.NORMAL,null,outUrl);
     }
+
+    @POST
+    @Path("/reportCollectByEmp")
+    @Produces(MediaType.APPLICATION_JSON)
+    @ApiOperation(value = "/reportCollectByEmp", response = OrderCreateModel.class, notes = "根据订单编号导出收款信息")
+    public Response reportCollectByEmp(@ApiParam(required = true, name = "model", value = "送奶员编号")CustBillQueryModel model, @Context HttpServletRequest request, @Context HttpServletResponse response) {
+        List<CollectOrderBillModel> orderBillModel1 = customerBillService.BatchPrintForExp(model);
+        String url = request.getServletContext().getRealPath("/");
+//        logger.info("realPath："+url);
+        String outUrl = "";
+        try {
+//            XSSFWorkbook workbook = new XSSFWorkbook();
+//            XSSFSheet sheet = workbook.createSheet("sheet");
+            File file = new File(url +  File.separator + "report"+ File.separator + "template" + File.separator + "CollectOrderTemplate.xlsx");    //审批单
+            FileInputStream input = new FileInputStream(file);
+            XSSFWorkbook workbook = new XSSFWorkbook(new BufferedInputStream(input));
+
+//            sheet.setDefaultColumnWidth((short)8);
+//            sheet.setDefaultRowHeightInPoints((short)12.75);
+//            sheet.setColumnWidth(0,(short)3 * 100);
+//            sheet.setColumnWidth(14,(short)3 * 100);
+            List<CollectOrderBillModel> gt6 = new ArrayList<CollectOrderBillModel>();
+            List<CollectOrderBillModel> lt6 = new ArrayList<CollectOrderBillModel>();
+            if(orderBillModel1.size() > 0) {
+                for(CollectOrderBillModel orderBillModel : orderBillModel1){
+                    List<ProductItem> productItems = orderBillModel.getEntries();
+                    if(productItems.size()>6){
+                        gt6.add(orderBillModel);
+                    }else{
+                        lt6.add(orderBillModel);
+                    }
+                }
+                if(lt6.size()>0){
+                    XSSFSheet sheet = workbook.getSheetAt(0);
+                    executeSheet(lt6, workbook, sheet);
+                }
+                if(gt6.size()>0){
+                    XSSFSheet sheet = workbook.createSheet("特殊结款单");
+                    executeSheet(gt6, workbook, sheet);
+                }
+            }
+//            ps.setOrientation(PrintOrientation.PORTRAIT);
+//            sheet.setPrintGridlines(true);
+//            sheet.setDisplayGridlines(true);
+//            ps.setFitWidth((short)22);
+//            ps.setFitHeight((short)9);
+            String fname = CodeGeneratorUtil.getCode();
+            String rq = format1.format(new Date(new Date().getTime() - 24 * 60 * 60 * 1000));
+            String filePath = url +  File.separator + "report"+ File.separator + "export";
+            File delFiles = new File(filePath);
+            if(delFiles.isDirectory()){
+                for(File del : delFiles.listFiles()){
+                    if(del.getName().contains(rq)){
+                        del.delete();
+                    }
+                }
+            }
+            File export = new File(url +  File.separator + "report"+ File.separator + "export" + File.separator + fname + "CollectOrder.xlsx");
+            FileOutputStream stream = new FileOutputStream(export);
+            workbook.write(stream);
+            stream.flush();
+            stream.close();
+
+//            String mt = new MimetypesFileTypeMap().getContentType(targetFilePath);
+//            return Response
+//                    .ok(targetFilePath, mt)
+//                    .header("Content-disposition","attachment;filename=" + targetFilePath.getName())
+//                    .header("ragma", "No-cache").header("Cache-Control", "no-cache").build();
+            outUrl = "/report/export/" + fname + "CollectOrder.xlsx";
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return convertToRespModel(MessageCode.NORMAL,null,outUrl);
+    }
+
+    private void executeSheet(List<CollectOrderBillModel> orderBillModel1, XSSFWorkbook workbook, XSSFSheet sheet) {
+        int rowNum = 0;
+        for(CollectOrderBillModel orderBillModel : orderBillModel1) {
+//                XSSFRow rownull = sheet.createRow(rowNum++);
+//                rownull.setHeightInPoints((float) 8);
+            List<ProductItem> productItems = orderBillModel.getEntries();
+            XSSFRow row = sheet.createRow(rowNum++);
+            XSSFCell cell = row.createCell(1);
+            cell.setCellValue(orderBillModel.getSalesOrgName());
+            XSSFCellStyle cellStyle = workbook.createCellStyle();
+            XSSFFont font = workbook.createFont();
+            font.setFontName("微软雅黑");
+            font.setFontHeightInPoints((short) 11);
+            cellStyle.setFont(font);
+            cellStyle.setAlignment(XSSFCellStyle.ALIGN_CENTER);//水平居中
+            cellStyle.setVerticalAlignment(XSSFCellStyle.VERTICAL_CENTER);//垂直居中
+            cell.setCellStyle(cellStyle);
+            sheet.addMergedRegion(new CellRangeAddress(row.getRowNum(), row.getRowNum(), 1, 13));
+
+            XSSFRow row1 = sheet.createRow(rowNum++);
+            XSSFCell cell1 = row1.createCell(1);
+            cell1.setCellValue("订奶专用收据");
+            XSSFCellStyle cellStyle1 = workbook.createCellStyle();
+            XSSFFont font1 = workbook.createFont();
+            font1.setFontName("微软雅黑");
+            font1.setFontHeightInPoints((short) 6);
+            cellStyle1.setFont(font1);
+            cellStyle1.setAlignment(XSSFCellStyle.ALIGN_CENTER);//水平居中
+            cellStyle1.setVerticalAlignment(XSSFCellStyle.VERTICAL_CENTER);//垂直居中
+            cell1.setCellStyle(cellStyle1);
+            sheet.addMergedRegion(new CellRangeAddress(row1.getRowNum(), row1.getRowNum(), 1, 13));
+
+            XSSFRow row2 = sheet.createRow(rowNum++);
+            XSSFRow row3 = sheet.createRow(rowNum++);
+
+            ExcelUtil.createCell(row2,1,"配送奶站："+orderBillModel.getBranchName(),ExcelUtil.setFontStype(workbook));
+            sheet.addMergedRegion(new CellRangeAddress(row2.getRowNum(), row2.getRowNum() + 1, 1, 4));
+
+            ExcelUtil.createCell(row2,5,"订奶起止日期："+ format.format(orderBillModel.getStartDate()) +"--"+ format.format(orderBillModel.getEndDate()) +"",ExcelUtil.setFontStype(workbook));
+            sheet.addMergedRegion(new CellRangeAddress(row2.getRowNum(), row2.getRowNum() + 1, 5, 9));
+
+            ExcelUtil.createCell(row2,10,"送奶员："+orderBillModel.getEmpName(),ExcelUtil.getCellStyle4(workbook));
+            sheet.addMergedRegion(new CellRangeAddress(row2.getRowNum(), row2.getRowNum(), 10, 13));
+
+            ExcelUtil.createCell(row3,10,"送奶员电话："+orderBillModel.getEmpTel(),ExcelUtil.getCellStyle4(workbook));
+            sheet.addMergedRegion(new CellRangeAddress(row3.getRowNum(), row3.getRowNum(), 10, 13));
+
+            XSSFRow row4 = sheet.createRow(rowNum++);
+            ExcelUtil.createCell(row4,1,"客户姓名："+orderBillModel.getVipName(),ExcelUtil.setFontStype(workbook));
+            sheet.addMergedRegion(new CellRangeAddress(row4.getRowNum(), row4.getRowNum(), 1, 2));
+
+            ExcelUtil.createCell(row4,3,"配送地址："+orderBillModel.getCustAddress(),ExcelUtil.setFontStype(workbook));
+            sheet.addMergedRegion(new CellRangeAddress(row4.getRowNum(), row4.getRowNum(), 3, 10));
+
+            ExcelUtil.createCell(row4,11,"客户电话："+orderBillModel.getEmpTel(),ExcelUtil.getCellStyle4(workbook));
+            sheet.addMergedRegion(new CellRangeAddress(row4.getRowNum(), row4.getRowNum(), 11, 13));
+
+            XSSFRow row5 = sheet.createRow(rowNum++);
+            ExcelUtil.createCell(row5,1,"产品",ExcelUtil.setFontStype(workbook));
+            sheet.addMergedRegion(new CellRangeAddress(row5.getRowNum(), row5.getRowNum(), 1, 4));
+
+            ExcelUtil.createCell(row5,5,"单位",ExcelUtil.setFontStype(workbook));
+            ExcelUtil.createCell(row5,6,"单价",ExcelUtil.setFontStype(workbook));
+
+            ExcelUtil.createCell(row5,7,"数量",ExcelUtil.setFontStype(workbook));
+            sheet.addMergedRegion(new CellRangeAddress(row5.getRowNum(), row5.getRowNum(), 7, 8));
+
+            ExcelUtil.createCell(row5,9,"金额",ExcelUtil.setFontStype(workbook));
+            sheet.addMergedRegion(new CellRangeAddress(row5.getRowNum(), row5.getRowNum(), 9, 10));
+
+            ExcelUtil.createCell(row5,11,"产品备注",ExcelUtil.setFontStype(workbook));
+            sheet.addMergedRegion(new CellRangeAddress(row5.getRowNum(), row5.getRowNum(), 11, 13));
+
+            for(ProductItem item : productItems){
+                XSSFRow rows = ExcelUtil.createRow(sheet,rowNum++);
+                rows.setHeightInPoints((short)12);
+                ExcelUtil.createCell(rows,1,item.getMatnrTxt(),ExcelUtil.getCellStyle3(workbook));
+                ExcelUtil.addMergedRegion(sheet,rows.getRowNum(),rows.getRowNum(),1,4);
+                ExcelUtil.createCell(rows,5,item.getUnit(),ExcelUtil.getCellStyle1(workbook));
+                ExcelUtil.createCell(rows,6,item.getBasePrice().toString(),ExcelUtil.getCellStyle1(workbook));
+                ExcelUtil.createCell(rows,7,String.valueOf(item.getQty()),ExcelUtil.getCellStyle1(workbook));
+                ExcelUtil.addMergedRegion(sheet,rows.getRowNum(),rows.getRowNum(),7,8);
+                ExcelUtil.createCell(rows,9,String.valueOf(item.getTotalPrice()),ExcelUtil.getCellStyle1(workbook));
+                ExcelUtil.addMergedRegion(sheet,rows.getRowNum(),rows.getRowNum(),9,10);
+                ExcelUtil.createCell(rows,11,"",ExcelUtil.getCellStyle1(workbook));
+                ExcelUtil.addMergedRegion(sheet,rows.getRowNum(),rows.getRowNum(),11,13);
+            }
+            if(productItems.size() < 6){
+                rowNum=rowNum + 6 - productItems.size();
+            }
+            XSSFRow row14 = sheet.createRow(rowNum++);
+            ExcelUtil.createCell(row14,1,"账号余额",ExcelUtil.setFontStype(workbook));
+            sheet.addMergedRegion(new CellRangeAddress(row14.getRowNum(), row14.getRowNum(), 1, 9));
+
+            ExcelUtil.createCell(row14,10,orderBillModel.getAccAmt()!=null?orderBillModel.getAccAmt().toString():"0",ExcelUtil.setFontStype(workbook));
+
+
+            XSSFRow row15 = sheet.createRow(rowNum++);
+            ExcelUtil.createCell(row15,1,"应收款",ExcelUtil.setFontStype(workbook));
+            sheet.addMergedRegion(new CellRangeAddress(row15.getRowNum(), row15.getRowNum(), 1, 9));
+
+            ExcelUtil.createCell(row15,10,orderBillModel.getOrderAmt()!=null?orderBillModel.getOrderAmt().toString():"0",ExcelUtil.setFontStype(workbook));
+
+            XSSFRow row16 = sheet.createRow(rowNum++);
+            ExcelUtil.createCell(row16,1,"奶站地址："+orderBillModel.getBranchAddress(),ExcelUtil.setFontStype(workbook));
+            sheet.addMergedRegion(new CellRangeAddress(row16.getRowNum(), row16.getRowNum(), 1, 6));
+
+            ExcelUtil.createCell(row16,7,"奶站电话："+orderBillModel.getBranchTel(),ExcelUtil.setFontStype(workbook));
+            sheet.addMergedRegion(new CellRangeAddress(row16.getRowNum(), row16.getRowNum(), 7, 10));
+
+            ExcelUtil.createCell(row16,11,"公司电话：4008850555",ExcelUtil.setFontStype(workbook));
+            sheet.addMergedRegion(new CellRangeAddress(row16.getRowNum(), row16.getRowNum(), 11, 13));
+
+            XSSFRow row17 = sheet.createRow(rowNum++);
+            ExcelUtil.createCell(row17,1,"备注：",ExcelUtil.getCellStyle2(workbook));
+            sheet.addMergedRegion(new CellRangeAddress(row17.getRowNum(), row17.getRowNum() + 1, 1, 13));
+            rowNum++;
+            XSSFRow row19 = sheet.createRow(rowNum++);
+            XSSFCell cell19_1 = row19.createCell(1);
+
+            ExcelUtil.createCell(row19,1,"打印日期："+format.format(new Date()),ExcelUtil.setFontStype(workbook));
+            sheet.addMergedRegion(new CellRangeAddress(row19.getRowNum(), row19.getRowNum(), 1, 9));
+
+            ExcelUtil.createCell(row19,10,"客户签字：",ExcelUtil.setFontStype(workbook));
+            sheet.addMergedRegion(new CellRangeAddress(row19.getRowNum(), row19.getRowNum(), 10, 13));
+
+            XSSFRow rowend = sheet.createRow(rowNum++);
+            rowend.setHeightInPoints((float) 12);
+        }
+        workbook.setPrintArea(
+                0, //sheet index
+                0, //start column
+                14, //end column
+                0, //start row
+                rowNum //end row
+        );
+        sheet.setMargin(XSSFSheet.BottomMargin, (double)0); //页边距（下）
+        sheet.setMargin(XSSFSheet.LeftMargin, (double)0); //页边距（左）
+        sheet.setMargin(XSSFSheet.RightMargin, (double)0); //页边距（右）
+        sheet.setMargin(XSSFSheet.TopMargin, (double)0); //页边距（上）
+        sheet.setHorizontallyCenter(true); //设置打印页面为水平居中
+        sheet.setAutobreaks(true);
+        XSSFPrintSetup ps = sheet.getPrintSetup();
+        System.out.println(ps.getPaperSize());
+        ps.setPaperSize((short)133);
+    }
+
+    @POST
+    @Path("/exportOrderByModel")
+    @Produces(MediaType.APPLICATION_JSON)
+    @Consumes(MediaType.APPLICATION_JSON)
+    @ApiOperation(value = "/exportOrderByModel}", response = ResponseModel.class, notes = "导出奶站分奶表")
+    public Response exportOrderByModel(@ApiParam(name = "model",value = "路单") BranchInfoModel model){
+        String url = request.getServletContext().getRealPath("/");
+        String outUrl = "";
+        try {
+            if(StringUtils.isEmpty(model.getBranchNo())){
+                TSysUser user = userSessionService.getCurrentUser();
+                model.setBranchNo(user.getBranchNo());
+            }
+            List<Map<String, String>> orders = branchInfoService.exportOrderByModel(model);
+            File file = new File(url +  File.separator + "report"+ File.separator + "template" + File.separator + "FnbTemplate.xlsx");    //审批单
+            FileInputStream input = new FileInputStream(file);
+            XSSFWorkbook workbook = new XSSFWorkbook(new BufferedInputStream(input));
+            XSSFSheet sheet = workbook.getSheetAt(0);
+//            XSSFWorkbook workbook = new XSSFWorkbook();
+//            XSSFSheet sheet = workbook.createSheet("sheet");
+            int rowNum = 0;
+            Map<String, String> projectMap = new HashMap<String, String>();
+            Map<String, String> empMap = new HashMap<String, String>();
+            for (Map<String, String> map : orders) {
+                projectMap.put(map.get("CONFIRM_MATNR"), map.get("MATNR_TXT"));
+                empMap.put(map.get("DISP_EMP_NO"), map.get("EMP_NAME"));
+            }
+            int columnNum = 1;
+            XSSFRow row1 = sheet.getRow(0);
+
+            for (Map.Entry<String, String> entry : projectMap.entrySet()) {
+                XSSFCell cell = row1.createCell(columnNum++);
+                cell.setCellValue(entry.getValue());
+                cell.setCellStyle(ExcelUtil.setBorderStyle(workbook));
+            }
+            rowNum++;
+            for (Map.Entry<String, String> entry : empMap.entrySet()) {
+                int cNum = 0;
+                XSSFRow row = sheet.createRow(rowNum++);
+                XSSFCell cell = row.createCell(cNum++);
+                String empNo = entry.getKey();
+                cell.setCellValue(entry.getValue());
+                cell.setCellStyle(ExcelUtil.setBorderStyle(workbook));
+                for (Map.Entry<String, String> entry1 : projectMap.entrySet()) {
+                    XSSFCell cell1 = row.createCell(cNum++);
+                    cell1.setCellStyle(ExcelUtil.setBorderStyle(workbook));
+                    String matnr = entry1.getKey();
+//                    cell1.setCellValue(matnr);
+                    for (Map<String, String> map : orders) {
+                        String matnrT =map.get("CONFIRM_MATNR");
+                        String empNoT = map.get("DISP_EMP_NO");
+                        if(empNo.equals(empNoT) && matnr.equals(matnrT)){
+                            if(map.get("CONFIRM_QTY")!=null) {
+                                cell1.setCellValue(new BigDecimal(String.valueOf(map.get("CONFIRM_QTY"))).intValue());
+                            }
+                        }
+                    }
+                }
+            }
+
+            String fname = CodeGeneratorUtil.getCode();
+            String rq = format1.format(new Date(new Date().getTime() - 24 * 60 * 60 * 1000));
+            String filePath = url + File.separator + "report" + File.separator + "export";
+            File delFiles = new File(filePath);
+            if (delFiles.isDirectory()) {
+                for (File del : delFiles.listFiles()) {
+                    if (del.getName().contains(rq)) {
+                        del.delete();
+                    }
+                }
+            }
+            File export = new File(url + File.separator + "report" + File.separator + "export" + File.separator + fname + "fnb.xlsx");
+            FileOutputStream stream = new FileOutputStream(export);
+            workbook.write(stream);
+            stream.flush();
+            stream.close();
+            outUrl = "/report/export/" + fname + "fnb.xlsx";
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+        return convertToRespModel(MessageCode.NORMAL,null,outUrl);
+    }
+
 }

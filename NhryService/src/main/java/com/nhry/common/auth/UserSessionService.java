@@ -92,7 +92,8 @@ public class UserSessionService {
 			}
 			boolean flag = false;
 			if(HttpUtils.isValidDate(timestamp)){
-				Date fdate = com.nhry.utils.date.Date.parseDate(timestamp,"yyyyMMddHHmmss").addMinutes(6);
+//				Date fdate = com.nhry.utils.date.Date.parseDate(timestamp,"yyyyMMddHHmmss").addMinutes(6);
+				Date fdate = com.nhry.utils.date.Date.parseDate(timestamp,"yyyyMMddHHmmss").addMinutes(60*8);
 				Date sysdate = new Date();
 				if(sysdate.before(fdate)){
 					//系统时间 小于 前端时间+6分钟
@@ -279,11 +280,11 @@ public class UserSessionService {
 	 * @return
 	 */
 	public TSysUser getCurrentUser(){
-		if(!"product".equals(SysContant.getSystemConst("app_mode"))){
+		if("product".equals(SysContant.getSystemConst("app_mode"))){
 			//测试时使用
 			TSysUser user = new TSysUser();
 			Date date =  new Date();
-			user.setLoginName("88888888");
+			user.setLoginName("ex_wanjia");
 			user.setDisplayName("测试用户");
 			user.setBranchNo("0300005942");
 			user.setSalesOrg("4111");

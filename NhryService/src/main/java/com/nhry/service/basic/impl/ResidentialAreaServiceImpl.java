@@ -133,6 +133,17 @@ public class ResidentialAreaServiceImpl implements ResidentialAreaService {
     }
 
     @Override
+    public List<TMdResidentialArea> searchSalesOrgArea(AreaSearchModel aModel) {
+        TSysUser user = userSessionService.getCurrentUser();
+        Map<String,String> map = new HashMap<String,String>();
+        aModel.setSalesOrg(user.getSalesOrg());
+        if(!StringUtils.isEmpty(aModel.getContent())){
+            aModel.setContent(aModel.getContent().trim().replace(" ", "%"));
+        }
+        return tMdResidentialAreaMapper.searchAreaBySalesOrg(aModel);
+    }
+
+    @Override
     public List<TMdResidentialArea> getAreaByBranchNo(String branchNo) {
         return tMdResidentialAreaMapper.getAreaByBranchNo(branchNo);
     }
@@ -160,7 +171,7 @@ public class ResidentialAreaServiceImpl implements ResidentialAreaService {
         TSysUser user = userSessionService.getCurrentUser();
         TMdResidentialArea area = tMdResidentialAreaMapper.getAreaByAreaName(tMdResidentialArea.getResidentialAreaTxt(),user.getSalesOrg());
         if(area!=null){
-            throw new ServiceException(MessageCode.LOGIC_ERROR,"该小区名称已存在！");
+            throw new ServiceException(MessageCode.LOGIC_ERROR,user.getSalesOrg()+"销售组织编号下的   "+tMdResidentialArea.getResidentialAreaTxt()+"小区名称已存在！");
         }
 
         tMdResidentialArea.setSalesOrg(user.getSalesOrg());
@@ -181,7 +192,45 @@ public class ResidentialAreaServiceImpl implements ResidentialAreaService {
         });
         return 1;
     }
+    /**
+     * 为批量导入使用，主健由外部传入
+     * */
+    @Override
+    public int importResidentialArea(TMdResidentialArea tMdResidentialArea) {
+        TSysUser user = userSessionService.getCurrentUser();
+        TMdResidentialArea area = tMdResidentialAreaMapper.getAreaByAreaName(tMdResidentialArea.getResidentialAreaTxt(),user.getSalesOrg());
+        if(area!=null){
+            throw new ServiceException(MessageCode.LOGIC_ERROR,user.getSalesOrg()+"销售组织编号下的   "+tMdResidentialArea.getResidentialAreaTxt()+"小区名称已存在！");
+        }
 
+        tMdResidentialArea.setSalesOrg(user.getSalesOrg());
+        //tMdResidentialArea.setId(PrimaryKeyUtils.generateUuidKey());
+        tMdResidentialArea.setStatus("10");
+        tMdResidentialArea.setCreateAt(new Date());
+        tMdResidentialArea.setCreateBy(user.getLoginName());
+        tMdResidentialAreaMapper.addResidentialArea(tMdResidentialArea);
+        //将新增的小区推送给电商
+        taskExecutor.execute(new Thread(){
+            @Override
+            public void run() {
+                // TODO Auto-generated method stub
+                super.run();
+                this.setName("sendResidentialArea2Ec");
+                ecservice.sendResidentialArea2Ec(tMdResidentialArea);
+            }
+        });
+        return 1;
+    }
+    @Override
+    public int addResidentialAreas(List<TMdResidentialArea> areas) {
+        int i = 0;
+        if(areas != null){
+            for(TMdResidentialArea area : areas){
+                i = importResidentialArea(area);
+            }
+        }
+        return i;
+    }
     @Override
     public int uptResidentialArea(TMdResidentialArea tMdResidentialArea) {
     	tMdResidentialAreaMapper.uptResidentialArea(tMdResidentialArea);

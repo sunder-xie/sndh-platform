@@ -22,6 +22,10 @@ public interface ResidentialAreaService {
 
     int  addResidentialArea(TMdResidentialArea area);
 
+    int importResidentialArea(TMdResidentialArea area);
+
+    int addResidentialAreas(List<TMdResidentialArea> area);
+
     int  uptResidentialArea(TMdResidentialArea area);
 
     int deleteAreaById(String id);
@@ -33,4 +37,6 @@ public interface ResidentialAreaService {
     List<TMdResidentialArea> getUnDistAreas();
 
     List<TMdResidentialArea>  searchAreaBySalesOrg( AreaSearchModel aModel);
+
+    List<TMdResidentialArea>  searchSalesOrgArea(AreaSearchModel aModel);
 }

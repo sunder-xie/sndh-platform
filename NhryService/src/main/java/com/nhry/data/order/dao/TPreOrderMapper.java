@@ -76,6 +76,8 @@ public interface TPreOrderMapper {
     int selectRequiredOrderNum(OrderSearchModel smodel);
     
     int selectStopOrderNum(OrderSearchModel smodel);
+
+    int searchReturnOrdersNum(OrderSearchModel smodel);
     
     PageInfo selectNeedResumeOrders(OrderSearchModel smodel);
     
@@ -90,4 +92,12 @@ public interface TPreOrderMapper {
     List<TPreOrder> selectCustBatchCollect(OrderSearchModel oModel);
 
     BigDecimal calculateAfterOrderFactoryAmt(String orderNo);
+    //选择收款人批量收款前 计算订单总金额
+    BigDecimal calculateTotalBeforBatch(CustBatchBillQueryModel cModel);
+
+    int selectUnfinishOrderNum(String vipCustNo);
+
+    List<String> selectAdvanceOrderNos(CustBillQueryModel cModel);
+
+    List<String> selectAfterOrderNos(CustBillQueryModel cModel);
 }

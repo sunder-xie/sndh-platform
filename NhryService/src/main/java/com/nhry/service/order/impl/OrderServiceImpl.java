@@ -130,7 +130,13 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 		smodel.setDealerNo(userSessionService.getCurrentUser().getDealerId());
 		return tPreOrderMapper.selectRequiredOrderNum(smodel);
 	}
-
+	@Override
+	public int searchReturnOrdersNum(){
+		OrderSearchModel smodel = new OrderSearchModel();
+		smodel.setSalesOrg(userSessionService.getCurrentUser().getSalesOrg());
+		smodel.setDealerNo(userSessionService.getCurrentUser().getDealerId());
+		return tPreOrderMapper.searchReturnOrdersNum(smodel);
+	}
 	//登陆页面时，还有5天就要到期的订单
 	@Override
 	public int selectStopOrderNum()
@@ -4156,6 +4162,11 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 			//订户状态更改
 			tVipCustInfoService.discontinue(order.getMilkmemberNo(), "20",null,null);
 		}
+	}
+	
+	@Override
+	public int selectUnfinishOrderNum(String vipCustNo) {
+		return  tPreOrderMapper.selectUnfinishOrderNum(vipCustNo);
 	}
 
 }

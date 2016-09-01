@@ -1,6 +1,7 @@
 package com.nhry.data.basic.dao;
 
 import com.nhry.data.basic.domain.TMdBranchEx;
+import com.nhry.model.basic.BranchExkostlModel;
 
 /**
  * 奶站扩展数据
@@ -17,4 +18,6 @@ public interface TMdBranchExMapper {
     int updateBranchExSelective(TMdBranchEx record);
 
     int updateBranchEx(TMdBranchEx record);
+
+    int updateBranchKostl(BranchExkostlModel record);
 }

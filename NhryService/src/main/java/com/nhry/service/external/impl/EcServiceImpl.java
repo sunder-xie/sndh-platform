@@ -66,6 +66,7 @@ public class EcServiceImpl extends EcBaseService implements EcService{
 			branchJson.put("customerId", "DH");
 			branchJson.put("branch_no", branch.getBranchNo());
 			branchJson.put("sales_org", branch.getSalesOrg());
+			branchJson.put("company_code", branch.getCompanyCode());
 			branchJson.put("branch_name", branch.getBranchName());
 			branchJson.put("branch_group",branch.getBranchGroup());
 			branchJson.put("sales_cha",branch.getSalesCha());

@@ -24,11 +24,17 @@ public interface CustomerBillService {
 
    List<String> searchCustomerOrderForExp(CustBillQueryModel cModel);
 
-   BigDecimal custBatchCollect(CustBatchBillQueryModel cModel);
+   BatChCollectResultModel custBatchCollect(CustBatchBillQueryModel cModel);
 
    CollectOrderBillModel queryCollectByOrderNo(String orderCode);
 
-   BigDecimal custBatchCollectBySelect(OrderSearchModel oModel);
+   BatChCollectResultModel custBatchCollectBySelect(OrderSearchModel oModel);
 
    int customerOffset(String receiptNo);
+
+   BigDecimal  calculateTotalBeforBatch(CustBatchBillQueryModel cModel);
+
+   int custRefund(CustomerRefundModel cModel);
+
+   List<CollectOrderBillModel> BatchPrintForExp(CustBillQueryModel cModel);
 }

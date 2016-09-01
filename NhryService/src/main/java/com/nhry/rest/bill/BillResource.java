@@ -56,6 +56,16 @@ public class BillResource extends BaseResource {
         return convertToRespModel(MessageCode.NORMAL, null, customerBillService.searchCustomerOrderForExp(cModel));
     }
 
+
+    @POST
+    @Path("/cust/BatchPrintForExp")
+    @Produces(MediaType.APPLICATION_JSON)
+    @Consumes(MediaType.APPLICATION_JSON)
+    @ApiOperation(value = "/cust/BatchPrintForExp", response = PageInfo.class, notes = "获取条件下的订单编号（批量导出收款单用）")
+    public Response BatchPrintForExp(@ApiParam(required = true, name = "cModel", value = "cModel") CustBillQueryModel cModel) {
+        return convertToRespModel(MessageCode.NORMAL, null, customerBillService.BatchPrintForExp(cModel));
+    }
+
     @GET
     @Path("/cust/getCustomerOrderDetialByCode")
     @Produces(MediaType.APPLICATION_JSON)
@@ -81,6 +91,15 @@ public class BillResource extends BaseResource {
     }
 
     @POST
+    @Path("/cust/custRefund")
+    @Produces(MediaType.APPLICATION_JSON)
+    @Consumes(MediaType.APPLICATION_JSON)
+    @ApiOperation(value = "/cust/custRefund", response = int.class, notes = "订户退款")
+    public Response custRefund(@ApiParam(required = true, name = "cModel", value = "订户退款信息") CustomerRefundModel cModel) {
+        return convertToRespModel(MessageCode.NORMAL, null, customerBillService.custRefund(cModel));
+    }
+
+    @POST
     @Path("/cust/customerPayment")
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes(MediaType.APPLICATION_JSON)
@@ -89,12 +108,21 @@ public class BillResource extends BaseResource {
         return convertToRespModel(MessageCode.NORMAL, null, customerBillService.customerPayment(cModel));
     }
 
+    @POST
+    @Path("/cust/cacularTotalBeforBatch")
+    @Produces(MediaType.APPLICATION_JSON)
+    @Consumes(MediaType.APPLICATION_JSON)
+    @ApiOperation(value = "/cust/cacularTotalBeforBatch", response = BigDecimal.class, notes = "选择收款人批量收款前 计算订单总金额")
+    public Response cacularTotalBeforBatch(@ApiParam(required = true, name = "cModel", value = "收款信息") CustBatchBillQueryModel cModel) {
+        return convertToRespModel(MessageCode.NORMAL, null, customerBillService.calculateTotalBeforBatch(cModel));
+    }
+
 
     @POST
     @Path("/cust/custBatchCollect")
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes(MediaType.APPLICATION_JSON)
-    @ApiOperation(value = "/cust/custBatchCollect", response = BigDecimal.class, notes = "选择收款人批量收款")
+    @ApiOperation(value = "/cust/custBatchCollect", response = BatChCollectResultModel.class, notes = "选择收款人批量收款")
     public Response custBatchCollect(@ApiParam(required = true, name = "cModel", value = "收款信息") CustBatchBillQueryModel cModel) {
         return convertToRespModel(MessageCode.NORMAL, null, customerBillService.custBatchCollect(cModel));
     }
@@ -103,8 +131,8 @@ public class BillResource extends BaseResource {
     @Path("/cust/custBatchCollectBySelect")
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes(MediaType.APPLICATION_JSON)
-    @ApiOperation(value = "/cust/custBatchCollectBySelect", response = BigDecimal.class, notes = "选择收款人批量收款")
-    public Response custBatchCollectBySelect(@ApiParam(required = true, name = "cModel", value = "收款信息") OrderSearchModel oModel) {
+    @ApiOperation(value = "/cust/custBatchCollectBySelect", response = BatChCollectResultModel.class, notes = "选择订单批量收款")
+    public Response custBatchCollectBySelect(@ApiParam(required = true, name = "orders", value = "订单号list") OrderSearchModel oModel) {
         return convertToRespModel(MessageCode.NORMAL, null, customerBillService.custBatchCollectBySelect(oModel));
     }
 

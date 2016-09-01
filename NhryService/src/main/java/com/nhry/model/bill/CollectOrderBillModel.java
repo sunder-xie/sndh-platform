@@ -3,6 +3,7 @@ package com.nhry.model.bill;
 import com.nhry.model.order.ProductItem;
 
 import java.math.BigDecimal;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -24,7 +25,34 @@ public class CollectOrderBillModel {
     private String empTel;          //送奶工电话
     private BigDecimal initAmt;     //订单金额
     private BigDecimal orderAmt;         //应收金额
+    private Date startDate;          //订奶起始日期
+    private Date endDate;             //订奶结束日期
+    private String salesOrgName;      //销售组织名称
     private List<ProductItem> entries; // 产品
+
+    public String getSalesOrgName() {
+        return salesOrgName;
+    }
+
+    public void setSalesOrgName(String salesOrgName) {
+        this.salesOrgName = salesOrgName;
+    }
+
+    public Date getStartDate() {
+        return startDate;
+    }
+
+    public void setStartDate(Date startDate) {
+        this.startDate = startDate;
+    }
+
+    public Date getEndDate() {
+        return endDate;
+    }
+
+    public void setEndDate(Date endDate) {
+        this.endDate = endDate;
+    }
 
     public List<ProductItem> getEntries() {
         return entries;

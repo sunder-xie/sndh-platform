@@ -196,8 +196,8 @@ public class PIRequireOrderServiceImpl implements PIRequireOrderService {
         if (StringUtils.isEmpty(orderNo)) {
             throw new ServiceException(MessageCode.LOGIC_ERROR, "调拨单或销售订单凭证没有生成！");
         } else {
-            TSsmGiOrder order = ssmGiOrderMapper.findGiOrderByReqOrderNo(orderNo);
-            if(order != null){
+            List<TSsmGiOrder> order = ssmGiOrderMapper.findGiOrderByReqOrderNo(orderNo);
+            if(order.size()>0){
                 throw new ServiceException(MessageCode.LOGIC_ERROR, "交货单已生成,请直接查询");
             }
             savePriceAndGiOrder(orderNo, branchNo, isDeli,false);
@@ -362,6 +362,20 @@ public class PIRequireOrderServiceImpl implements PIRequireOrderService {
             }
         }
         return "1";
+    }
+
+    @Override
+    public String execDeliveryByOrderNo(String orderNo) {
+        String message = "";
+        TSysUser user = userSessionService.getCurrentUser();
+        TMdBranch branch = branchMapper.getBranchByNo(user.getBranchNo());
+        String group = branch.getBranchGroup();
+        if("01".equals(group)){
+            message = generateDelivery(orderNo, branch.getBranchNo(), true);
+        }else{
+            message = generateDelivery(orderNo, branch.getBranchNo(), false);
+        }
+        return message;
     }
 
 

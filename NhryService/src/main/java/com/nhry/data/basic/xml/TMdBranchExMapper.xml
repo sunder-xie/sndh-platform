@@ -15,10 +15,11 @@
     <result column="PURCH_GROUP" property="purchGroup" jdbcType="VARCHAR" />
     <result column="SUPPL_PLNT" property="supplPlnt" jdbcType="VARCHAR" />
     <result column="RESLO" property="reslo" jdbcType="VARCHAR"/>
+    <result column="KOSTL" property="kostl" jdbcType="VARCHAR"/>
   </resultMap>
   <sql id="Base_Column_List" >
     BRANCH_NO, CREATE_AT, CREATE_BY, CREATE_BY_TXT, LAST_MODIFIED, LAST_MODIFIED_BY, 
-    LAST_MODIFIED_BY_TXT, COMP_CODE, DOC_TYPE, PURCH_ORG, PURCH_GROUP, SUPPL_PLNT,RESLO
+    LAST_MODIFIED_BY_TXT, COMP_CODE, DOC_TYPE, PURCH_ORG, PURCH_GROUP, SUPPL_PLNT,RESLO,KOSTL
   </sql>
   <select id="getBranchEx" resultMap="BaseResultMap" parameterType="java.lang.String" >
     select 
@@ -182,7 +183,13 @@
       PURCH_ORG = #{purchOrg,jdbcType=VARCHAR},
       PURCH_GROUP = #{purchGroup,jdbcType=VARCHAR},
       SUPPL_PLNT = #{supplPlnt,jdbcType=VARCHAR},
-      RESLO = #{reslo,jdbcType=VARCHAR}
+      RESLO = #{reslo,jdbcType=VARCHAR},
+      KOSTL = #{kostl,jdbcType=VARCHAR}
+    where BRANCH_NO = #{branchNo,jdbcType=VARCHAR}
+  </update>
+  <update id="updateBranchKostl" parameterType="com.nhry.model.basic.BranchExkostlModel">
+    update t_md_branch_ex
+    set KOSTL = #{kostl,jdbcType=VARCHAR}
     where BRANCH_NO = #{branchNo,jdbcType=VARCHAR}
   </update>
 </mapper>
