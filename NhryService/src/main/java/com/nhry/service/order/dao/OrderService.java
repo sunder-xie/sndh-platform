@@ -98,4 +98,6 @@ public interface OrderService {
    void reEditDaliyPlansByRouteDetail(RouteDetailUpdateModel newItem , TDispOrderItem orgItem , Date dispDate);
 
 	int selectUnfinishOrderNum(String vipCustNo);
+
+	int searchReturnOrdersNum();
 }

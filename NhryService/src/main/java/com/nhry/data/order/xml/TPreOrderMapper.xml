@@ -99,6 +99,15 @@
     	    and SIGN != '20'
     	    and SIGN != '30'
   </select>
+  <select id="selectByMilkmemberNoRetOrder" resultMap="BaseResultMap" parameterType="java.lang.String" >
+    select 
+    <include refid="Base_Column_List" />
+    FROM t_preorder
+    WHERE MILKMEMBER_NO = #{MILKMEMBER_NO,jdbcType=VARCHAR}
+    	    and PREORDER_STAT = '10'
+    	    and END_DATE &gt; curdate()
+    	    and SIGN != '30'
+  </select>
   <select id="selectNodeletedByMilkmemberNo" resultMap="BaseResultMap" parameterType="com.nhry.data.order.domain.TPreOrder" >
     select 
     <include refid="Base_Column_List" />
@@ -1085,5 +1094,24 @@
       o.BRANCH_NO = #{branchNo,jdbcType=VARCHAR}
     </if>
 
+  </select>
+  <select id="searchReturnOrdersNum" resultType="INTEGER" parameterType="com.nhry.model.order.OrderSearchModel">
+    select
+    count(*)
+    FROM t_preorder o
+    left join t_md_branch b on o.BRANCH_NO  = b.BRANCH_NO
+    left join t_vip_cust_info c on o.MILKMEMBER_NO = c.VIP_CUST_NO
+
+    WHERE  1=1
+    and (o.RET_DATE is not null or o.BRANCH_NO is null or o.BRANCH_NO = '')
+    <!-- and o.SIGN = "30" -->
+    and o.PREORDER_STAT != "30"
+    and o.PREORDER_STAT != "40"
+    <if test="dealerNo !=null and dealerNo!=''">
+      and  o.DEALER_NO = #{dealerNo,jdbcType=VARCHAR}
+    </if>
+    <if test="salesOrg != null and salesOrg !=''">
+      AND o.SALES_ORG = #{salesOrg,jdbcType=VARCHAR}
+    </if>
   </select>
 </mapper>

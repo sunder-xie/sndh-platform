@@ -159,6 +159,12 @@ public class TPreOrderMapperImpl implements TPreOrderMapper
 	{
 		return sqlSessionTemplate.selectList("selectByMilkmemberNo", memberNo);
 	}
+	
+	@Override
+	public List<TPreOrder> selectByMilkmemberNoRetOrder(String memberNo)
+	{
+		return sqlSessionTemplate.selectList("selectByMilkmemberNoRetOrder", memberNo);
+	}
 
 	@Override
 	public List<TPreOrder> selectNodeletedByMilkmemberNo(TPreOrder order)
@@ -196,7 +202,11 @@ public class TPreOrderMapperImpl implements TPreOrderMapper
 	{
 		return sqlSessionTemplate.selectOne("selectStopOrderNum",smodel);
 	}
-	
+	@Override
+	public int searchReturnOrdersNum(OrderSearchModel smodel)
+	{
+		return sqlSessionTemplate.selectOne("searchReturnOrdersNum",smodel);
+	}
 	@Override
 	public PageInfo selectNeedResumeOrders(OrderSearchModel smodel) {
 

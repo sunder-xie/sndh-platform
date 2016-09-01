@@ -130,7 +130,13 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 		smodel.setDealerNo(userSessionService.getCurrentUser().getDealerId());
 		return tPreOrderMapper.selectRequiredOrderNum(smodel);
 	}
-
+	@Override
+	public int searchReturnOrdersNum(){
+		OrderSearchModel smodel = new OrderSearchModel();
+		smodel.setSalesOrg(userSessionService.getCurrentUser().getSalesOrg());
+		smodel.setDealerNo(userSessionService.getCurrentUser().getDealerId());
+		return tPreOrderMapper.searchReturnOrdersNum(smodel);
+	}
 	//登陆页面时，还有5天就要到期的订单
 	@Override
 	public int selectStopOrderNum()
@@ -681,7 +687,7 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 			tPreOrderMapper.updateOrderEndDate(order);
 			
 			//订户状态更改???
-			List<TPreOrder> list = tPreOrderMapper.selectByMilkmemberNo(order.getMilkmemberNo());
+			List<TPreOrder> list = tPreOrderMapper.selectByMilkmemberNoRetOrder(order.getMilkmemberNo());
 			if(list==null||list.size()<=0){
 				tVipCustInfoService.discontinue(order.getMilkmemberNo(), "40",null,null);
 			}
@@ -1445,6 +1451,14 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 		int index = 0;
 		BigDecimal orderAmt = new BigDecimal("0.00");//订单总价
 		for(TPlanOrderItem entry: record.getEntries()){
+			
+			//非奶站订单要重新计算金额
+			if(!"30".equals(order.getPreorderSource())){
+				float price = priceService.getMaraPrice(order.getBranchNo(), entry.getMatnr(), order.getDeliveryType());
+				if(price<=0)throw new ServiceException(MessageCode.LOGIC_ERROR,"替换的产品价格小于0,请检查传入的商品号，奶站和配送方式!");
+				entry.setSalesPrice(new BigDecimal(String.valueOf(price)));
+			}
+			
 			entry.setOrderNo(order.getOrderNo());
 			entry.setItemNo(order.getOrderNo() + String.valueOf(index));//行项目编号
 			entry.setRefItemNo(String.valueOf(index));//参考行项目编号
@@ -1532,7 +1546,7 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 				this.setName("sendOrderToEc");
 				messLogService.sendOrderInfo(order, entriesList);
 				
-				if("10".equals(order.getPaymentmethod()) && !"20".equals(order.getMilkboxStat())){
+				if("20".equals(order.getPaymentStat()) && !"20".equals(order.getMilkboxStat())){
 					TPreOrder sendOrder = new TPreOrder();
 					sendOrder.setOrderNo(order.getOrderNo());
 					sendOrder.setPreorderStat("200");
@@ -1710,12 +1724,12 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 				MilkboxCreateModel model = new MilkboxCreateModel();
 				model.setCode(order.getOrderNo());
 				milkBoxService.addNewMilkboxPlan(model);
-				
-   			//生成每日计划
-   			List<TOrderDaliyPlanItem> list = createDaliyPlan(order,orgEntries);
-   			//如果有赠品，生成赠品的日计划
-   			promotionService.createDaliyPlanByPromotion(order,orgEntries,list);
 			}
+			
+			//生成每日计划
+			List<TOrderDaliyPlanItem> list = createDaliyPlan(order,orgEntries);
+			//如果有赠品，生成赠品的日计划
+			promotionService.createDaliyPlanByPromotion(order,orgEntries,list);
 			
 			//创建订单发送EC，发送系统消息(以线程方式),只有奶站的发，摆台的确认时发，电商不发
 			if("20".equals(order.getPreorderSource())){

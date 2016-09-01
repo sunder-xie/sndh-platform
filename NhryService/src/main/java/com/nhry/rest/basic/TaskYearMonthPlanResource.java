@@ -1,11 +1,13 @@
 package com.nhry.rest.basic;
 
 import com.nhry.common.exception.MessageCode;
+import com.nhry.data.basic.domain.TMdResidentialArea;
 import com.nhry.data.basic.domain.TaskYearMonthPlan;
 import com.nhry.model.basic.MonthPlanModel;
 import com.nhry.model.order.OrderCreateModel;
 import com.nhry.model.sys.ResponseModel;
 import com.nhry.rest.BaseResource;
+import com.nhry.service.basic.dao.ResidentialAreaService;
 import com.nhry.service.basic.dao.TaskYearMonthPlanService;
 import com.nhry.utils.CodeGeneratorUtil;
 import com.sun.jersey.core.header.FormDataContentDisposition;

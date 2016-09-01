@@ -60,6 +60,8 @@ public interface TPreOrderMapper {
     
     List<TPreOrder> selectByMilkmemberNo(String memberNo);
     
+    List<TPreOrder> selectByMilkmemberNoRetOrder(String memberNo);
+    
     List<TPreOrder> selectNodeletedByMilkmemberNo(TPreOrder order);
     
     int updateOrderSolicitor(TPreOrder order);
@@ -71,6 +73,8 @@ public interface TPreOrderMapper {
     int selectRequiredOrderNum(OrderSearchModel smodel);
     
     int selectStopOrderNum(OrderSearchModel smodel);
+
+    int searchReturnOrdersNum(OrderSearchModel smodel);
     
     PageInfo selectNeedResumeOrders(OrderSearchModel smodel);
     
