@@ -213,7 +213,7 @@ public class CustomerBillServiceImpl implements CustomerBillService {
                     });
                 }
 
-
+                //计算订单结算价
                 if("10".equals(order.getPaymentmethod())){
                     BigDecimal factAmt = tPreOrderMapper.calculateOrderFactoryAmt(orderNo);
                     int  updateFactAmt = tPreOrderMapper.updateOrderFacAmt(factAmt  == null ? new BigDecimal(0) : factAmt,orderNo);
@@ -335,13 +335,16 @@ public class CustomerBillServiceImpl implements CustomerBillService {
     }
 
     @Override
-    public BigDecimal custBatchCollect(CustBatchBillQueryModel model) {
+    public BatChCollectResultModel custBatchCollect(CustBatchBillQueryModel model) {
         TSysUser user = userSessionService.getCurrentUser();
         model.setSalesOrg(user.getSalesOrg());
         model.setBranchNo(user.getBranchNo());
         model.setDealerNo(user.getDealerId());
         List<TPreOrder> orderList = tPreOrderMapper.searchCustomerOrderByEmpNo(model);
         BigDecimal totalPayment = new BigDecimal(0);
+        BigDecimal totalAcctAmt = new BigDecimal(0);
+        BigDecimal totalAmt = new BigDecimal(0);
+        BatChCollectResultModel resultModel = new BatChCollectResultModel();
         if(orderList !=null && orderList.size()>0){
             for(TPreOrder order : orderList){
                 //判断该订单 对应的收款单是否创建 如果没有先创建
@@ -353,18 +356,26 @@ public class CustomerBillServiceImpl implements CustomerBillService {
                 cmodel.setPaymentType("10");
                 this.customerPayment(cmodel);
                 totalPayment =  totalPayment.add(order.getInitAmt());
+                totalAcctAmt = totalAcctAmt.add(bill.getAccAmt());
+                totalAmt = totalAmt.add(order.getInitAmt().subtract(bill.getAccAmt()));
             }
+            resultModel.setTotalAcctAmt(totalAcctAmt);
+            resultModel.setTotalAmt(totalAmt);
+            resultModel.setTotalPayment(totalPayment);
         }
 
-        return totalPayment;
+        return resultModel;
     }
     @Override
-    public BigDecimal custBatchCollectBySelect(OrderSearchModel oModel) {
+    public BatChCollectResultModel custBatchCollectBySelect(OrderSearchModel oModel) {
         if(oModel.getOrders() == null || !(oModel.getOrders().size()>0)){
             throw new ServiceException(MessageCode.LOGIC_ERROR,"没有选择的订单");
         }
         List<TPreOrder> ordersList = tPreOrderMapper.selectCustBatchCollect(oModel);
-        BigDecimal total = new BigDecimal(0);
+        BigDecimal totalPayment = new BigDecimal(0);
+        BigDecimal totalAcctAmt = new BigDecimal(0);
+        BigDecimal totalAmt = new BigDecimal(0);
+        BatChCollectResultModel resultModel = new BatChCollectResultModel();
         if(ordersList !=null && ordersList.size()>0){
             for(TPreOrder order : ordersList){
                 //判断该订单 对应的收款单是否创建 如果没有先创建
@@ -375,10 +386,15 @@ public class CustomerBillServiceImpl implements CustomerBillService {
                 cmodel.setOrderNo(bill.getOrderNo());
                 cmodel.setPaymentType("10");
                 this.customerPayment(cmodel);
-                total =  total.add(order.getInitAmt());
+                totalAcctAmt = totalAcctAmt.add(bill.getAccAmt());
+                totalPayment =  totalPayment.add(order.getInitAmt());
+                totalAmt = totalAmt.add(order.getInitAmt().subtract(bill.getAccAmt()));
             }
+            resultModel.setTotalAcctAmt(totalAcctAmt);
+            resultModel.setTotalAmt(totalAmt);
+            resultModel.setTotalPayment(totalPayment);
         }
-        return total;
+        return resultModel;
     }
 
     @Override
