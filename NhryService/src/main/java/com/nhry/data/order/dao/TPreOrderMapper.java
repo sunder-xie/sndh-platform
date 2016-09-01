@@ -11,7 +11,10 @@ import java.math.BigDecimal;
 import java.util.List;
 
 public interface TPreOrderMapper {
+	 int selectNumOfdeletedByMilkmemberNo();
 	
+	 int updateOrderToFinish(String orderNo);
+	 
 	 TPreOrder selectLastOrder(String vipNo);
 	
 	 int updateOrderResumed(String orderNo);

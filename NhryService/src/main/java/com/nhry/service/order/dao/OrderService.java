@@ -95,6 +95,8 @@ public interface OrderService {
    
    void returnOrderRemainAmtToAcct(String orderNo,Date dispDate);
    
+   void setOrderToFinish(String orderNo,Date dispDate);
+   
    void reEditDaliyPlansByRouteDetail(RouteDetailUpdateModel newItem , TDispOrderItem orgItem , Date dispDate);
 
 	int selectUnfinishOrderNum(String vipCustNo);
