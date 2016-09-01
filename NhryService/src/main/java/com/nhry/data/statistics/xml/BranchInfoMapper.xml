@@ -3,13 +3,13 @@
 <mapper namespace="com.nhry.data.statistics.dao.BranchInfoMapper">
     <sql id="Query_Base_Column">
         <if test="branchNo != null">
-            AND b.BRANCH_NO = ${branchNo}
+            AND b.BRANCH_NO = #{branchNo}
         </if>
         <if test="dealerId != null and dealerId != '-1'">
-            AND b.DEALER_NO = ${dealerId}
+            AND b.DEALER_NO = #{dealerId}
         </if>
         <if test="salesOrg != null">
-            AND b.SALES_ORG = ${salesOrg}
+            AND b.SALES_ORG = #{salesOrg}
         </if>
     </sql>
     <select id="branchDayInfo" resultType="hashmap" parameterType="com.nhry.model.statistics.BranchInfoModel">
