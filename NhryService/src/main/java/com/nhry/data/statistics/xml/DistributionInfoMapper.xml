@@ -3,42 +3,55 @@
 <mapper namespace="com.nhry.data.statistics.dao.DistributionInfoMapper">
     <select id="findDistDifferInfo" resultType="hashmap" parameterType="com.nhry.model.statistics.DistInfoModel">
         SELECT
-            o.BRANCH_NO branchNo,
-            b.BRANCH_NAME branchName,
-            o.DISP_EMP_NO dispEmpNo,
-            e.EMP_NAME empName,
-            o.MST_CUST_NO mstCustNo,
-            f.VIP_NAME vipName,
-            o.ORDER_DATE orderDate,
-            i.REASON reason,
-            i.MATNR matnr,
-            i.QTY qty,
-            o.DAY_ACCT_FLAG dayAcctFlag
+        o.BRANCH_NO branchNo,
+        b.BRANCH_NAME branchName,
+        o.DISP_EMP_NO dispEmpNo,
+        e.EMP_NAME empName,
+        p.MILKMEMBER_NO mstCustNo,
+        f.VIP_NAME vipName,
+        o.ORDER_DATE orderDate,
+        CASE i.REASON
+        WHEN '20' THEN
+        '缺货'
+        WHEN '30' THEN
+        '质量原因'
+        WHEN '40' THEN
+        '损毁'
+        WHEN '50' THEN
+        '拒收'
+        END reason,
+        i.MATNR matnr,
+        i.CONFIRM_QTY qty,
+        i.ORDER_NO
         FROM
-            t_mst_disp_order_item i
+        t_mst_disp_order_item i
         JOIN t_mst_disp_order o ON i.ORDER_NO = o.ORDER_NO
+        AND i.REASON IN ('20', '30', '40', '50')
+        AND o.`STATUS` = '20'
         AND o.ORDER_DATE = i.ORDER_DATE
         <if test="theDate != null">
-            AND i.ORDER_DATE = #{theDate}
+            AND i.ORDER_DATE = #{theDate,jdbcType=DATE}
         </if>
         <if test="beginDate != null">
-            AND i.ORDER_DATE &gt;= #{beginDate}
+            AND i.ORDER_DATE &gt;= #{beginDate,jdbcType=DATE}
         </if>
         <if test="endDate != null">
-            AND i.ORDER_DATE &lt;= #{endDate}
+            AND i.ORDER_DATE &lt;= #{endDate,jdbcType=DATE}
         </if>
         join t_md_branch b on b.BRANCH_NO = o.BRANCH_NO
         <if test="branchNo != null">
-            AND b.BRANCH_NO = ${branchNo}
+            AND b.BRANCH_NO = #{branchNo,jdbcType=VARCHAR}
         </if>
         <if test="dealerId != null">
-            AND b.DEALER_NO = ${dealerId}
+            AND b.DEALER_NO = #{dealerId,jdbcType=VARCHAR}
         </if>
         <if test="salesOrg != null">
-            AND b.SALES_ORG = ${salesOrg}
+            AND b.SALES_ORG = #{salesOrg,jdbcType=VARCHAR}
         </if>
-        left join t_vip_cust_info f on f.VIP_CUST_NO = o.MST_CUST_NO
-        left join t_md_branch_emp e on e.EMP_NO = o.DISP_EMP_NO
-        order by o.ORDER_DATE
+        LEFT JOIN t_preorder p ON p.ORDER_NO = i.ORG_ORDER_NO
+        LEFT JOIN t_vip_cust_info f ON f.VIP_CUST_NO = p.MILKMEMBER_NO
+        LEFT JOIN t_md_branch_emp e ON e.EMP_NO = o.DISP_EMP_NO
+        ORDER BY
+        o.ORDER_DATE
     </select>
 </mapper>
