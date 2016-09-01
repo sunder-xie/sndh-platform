@@ -103,7 +103,7 @@ public interface PriceService {
      * @param deliveryType 配送类型(10:自取；20：送奶到户)
      * @return
      */
-    public float getMaraPriceForCreateOrder(String branchNo, String matnr, String deliveryType,String salesOrg)
+    public float getMaraPriceForCreateOrder(String branchNo, String matnr, String deliveryType,String salesOrg);
     /**
      * 根据当前销售组织获取该公司下面的经销商列表
      * @param salesOrg
