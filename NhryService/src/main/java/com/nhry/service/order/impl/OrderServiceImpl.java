@@ -1684,9 +1684,9 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 	{
 		//未收款10、已收款20、垫付款30 paymentstat
 		//已装箱10、未装箱20、无需装箱30 milkboxstat
-		//已生效10、未生效20、无效30,作废40 preorderstat
+		//已生效10、未生效20、无效30,作废40, preorderstat
 		//先款10、后付款20  paymentmethod
-		//在订10、停订20、退订30 sign
+		//在订10、停订20、退订30  完结40 sign
 		TPreOrder order = tPreOrderMapper.selectByPrimaryKey(record.getOrderNo());
 		if(order == null){
 			throw new ServiceException(MessageCode.LOGIC_ERROR,"该订单号不存在!");
@@ -3977,6 +3977,7 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 		TVipAcct ac = new TVipAcct();
 	   ac.setVipCustNo(order.getMilkmemberNo());
 	   ac.setAcctAmt(order.getCurAmt());
+	   System.out.println(orderNo+" 退回账户 "+order.getCurAmt());
 		tVipCustInfoService.addVipAcct(ac);
 	}
 	
@@ -4130,6 +4131,31 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 			
 		}
 	
+	}
+
+	/* (non-Javadoc) 
+	* @title: setOrderToFinish
+	* @description: 查看订单是否完结，完结
+	* @param orderNo
+	* @param dispDate 
+	* @see com.nhry.service.order.dao.OrderService#setOrderToFinish(java.lang.String, java.util.Date) 
+	*/
+	@Override
+	public void setOrderToFinish(String orderNo, Date dispDate)
+	{
+		TPreOrder order = tPreOrderMapper.selectByPrimaryKey(orderNo);
+		
+		//完结日期不是配送那天 return
+		if(order==null)return;
+		if(!order.getEndDate().equals(dispDate))return;
+		
+		//订单成完结
+		tPreOrderMapper.updateOrderToFinish(order.getOrderNo());
+		
+		if(tPreOrderMapper.selectNumOfdeletedByMilkmemberNo()<=0){
+			//订户状态更改
+			tVipCustInfoService.discontinue(order.getMilkmemberNo(), "20",null,null);
+		}
 	}
 
 }

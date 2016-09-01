@@ -537,6 +537,15 @@ public class DeliverMilkServiceImpl extends BaseService implements DeliverMilkSe
 				orderService.returnOrderRemainAmtToAcct(e.getOrgOrderNo(),dispDate);
 			});
 			
+			//做完结订单
+			List<String> oList = new ArrayList<String>();
+			entryList.stream()
+			.filter((e)->!oList.contains(e.getOrgOrderNo()))
+			.forEach((e)->{
+				list.add(e.getOrgOrderNo());
+				orderService.setOrderToFinish(e.getOrgOrderNo(),dispDate);
+			});
+			
 		}else{
 			throw new ServiceException(MessageCode.LOGIC_ERROR,"没有此路单号!");
 		}

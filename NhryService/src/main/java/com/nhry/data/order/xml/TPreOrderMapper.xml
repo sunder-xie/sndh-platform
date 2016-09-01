@@ -96,8 +96,7 @@
     FROM t_preorder
     WHERE MILKMEMBER_NO = #{MILKMEMBER_NO,jdbcType=VARCHAR}
     	    and PREORDER_STAT = '10'
-    	    and SIGN != '20'
-    	    and SIGN != '30'
+    	    and SIGN = '10'
   </select>
   <select id="selectByMilkmemberNoRetOrder" resultMap="BaseResultMap" parameterType="java.lang.String" >
     select 
@@ -106,7 +105,8 @@
     WHERE MILKMEMBER_NO = #{MILKMEMBER_NO,jdbcType=VARCHAR}
     	    and PREORDER_STAT = '10'
     	    and END_DATE &gt; curdate()
-    	    and SIGN != '30'
+    	    and SIGN = '10'
+    	    and SIGN = '20'
   </select>
   <select id="selectNodeletedByMilkmemberNo" resultMap="BaseResultMap" parameterType="com.nhry.data.order.domain.TPreOrder" >
     select 
@@ -115,6 +115,13 @@
     WHERE MILKMEMBER_NO = #{milkmemberNo,jdbcType=VARCHAR}
     	    and PREORDER_STAT != '40'
     	    and ORDER_NO != #{orderNo,jdbcType=VARCHAR}
+  </select>
+  <select id="selectNumOfdeletedByMilkmemberNo" resultType="INTEGER">
+    select 
+    count(*)
+    FROM t_preorder
+    WHERE MILKMEMBER_NO = #{milkmemberNo,jdbcType=VARCHAR}
+    	    and PREORDER_STAT = '10'
   </select>
   <select id="selectByOrderCode" resultMap="BaseResultMap" parameterType="java.lang.String" >
     select 
@@ -631,9 +638,7 @@
 
     WHERE  1=1
     and (o.RET_DATE is not null or o.BRANCH_NO is null or o.BRANCH_NO = '')
-    <!-- and o.SIGN = "30" -->
-    and o.PREORDER_STAT != "30"
-    and o.PREORDER_STAT != "40"
+    and o.PREORDER_STAT = "20"
 
     <if test="orderDateStart != null and orderDateStart !=''">
       AND o.RET_DATE &gt;= #{orderDateStart,jdbcType=DATE}
@@ -999,7 +1004,11 @@
     where ORDER_NO = #{orderNo,jdbcType=VARCHAR}
   </update>
 
-
+	<update id="updateOrderToFinish" parameterType="java.lang.String">
+    UPDATE t_preorder
+    SET SIGN = '40'
+    where ORDER_NO = #{orderNo,jdbcType=VARCHAR}
+  </update>
 
   <select id="selectCustBatchCollect" resultMap="BaseResultMap"  parameterType="com.nhry.model.order.OrderSearchModel">
     select
