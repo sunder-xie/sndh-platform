@@ -34,6 +34,7 @@ public class NhrySchedulerFactoryBean extends SchedulerFactoryBean {
 			    String key = stringRedisTemplate.opsForValue().get(timer_execute_location);
 			    InetAddress netAddress = getInetAddress(); 
 			    String hostName = getHostName(netAddress);
+			    System.out.println("----------当前机器---hostName---------"+hostName);
 			    if(StringUtils.isEmpty(hostName)){
 			    	//获取不到当前的机器名，直接启动
 			    	this.setAutoStartup(true);
