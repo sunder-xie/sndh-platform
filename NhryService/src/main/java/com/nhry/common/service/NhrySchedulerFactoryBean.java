@@ -51,6 +51,7 @@ public class NhrySchedulerFactoryBean extends SchedulerFactoryBean {
 			    					this.setAutoStartup(true);
 			    					this.setStartupDelay(5);
 			    					stringRedisTemplate.opsForValue().set(timer_execute_location, hostName+";"+new Date().toLongDate());
+			    					System.out.println("----------定时任务启动---hostName---------"+hostName);
 				    			}else{
 				    				this.setAutoStartup(false);
 				    			}
@@ -58,15 +59,18 @@ public class NhrySchedulerFactoryBean extends SchedulerFactoryBean {
 			    				this.setAutoStartup(true);
 		    					this.setStartupDelay(5);
 		    					stringRedisTemplate.opsForValue().set(timer_execute_location, hostName+";"+new Date().toLongDate());
+		    					System.out.println("----------定时任务启动---hostName---------"+hostName);
 			    			}
 			    		}else{
 			    			this.setAutoStartup(true);
 			    			stringRedisTemplate.opsForValue().set(timer_execute_location, hostName+";"+new Date().toLongDate());
+			    			System.out.println("----------定时任务启动---hostName---------"+hostName);
 			    		}
 			    	}else if(test_execute_computes.contains(hostName)){
 			    		//测试环境
 			    		this.setAutoStartup(true);
     					this.setStartupDelay(5);
+    					System.out.println("----------定时任务启动---hostName---------"+hostName);
 			    	}else{
 			    		this.setAutoStartup(false);
 			    	}
