@@ -97,6 +97,14 @@ public interface PriceService {
     public float getMaraPrice(String branchNo,String matnr,String deliveryType);
     
     /**
+     * 根据奶站编号、产品编号、配送类型 获取产品价格(createOrder)
+     * @param branchNo 奶站编号
+     * @param matnr       产品编号
+     * @param deliveryType 配送类型(10:自取；20：送奶到户)
+     * @return
+     */
+    public float getMaraPriceForCreateOrder(String branchNo, String matnr, String deliveryType,String salesOrg)
+    /**
      * 根据当前销售组织获取该公司下面的经销商列表
      * @param salesOrg
      * @return
