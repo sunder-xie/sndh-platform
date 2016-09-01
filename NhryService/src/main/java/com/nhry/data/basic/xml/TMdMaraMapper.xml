@@ -500,6 +500,7 @@
 				T_BRANCH_NOTSELL_LIST nl
 			WHERE
 				nl.dealer_no = '-1'
+			AND nl.BRANCH_NO=#{branchNo}
 			AND nl.sales_org = #{salesOrg}
 		)
 		AND p.SALES_ORG = #{salesOrg}
@@ -540,10 +541,6 @@
 				and p.SALES_ORG=#{salesOrg}
 				AND ( p.MATNR LIKE '%${matnr}%' OR p.MATNR_TXT like  '%${matnrTxt}%' )
 	</select>
-
-
-
-
 	<select id="listsBySalesOrg" resultMap="BaseResultMap" parameterType="com.nhry.model.basic.ProductQueryModel">
 		SELECT
 		p.MATNR,
@@ -581,6 +578,5 @@
 		)
 		AND p.SALES_ORG = #{salesOrg}
 		AND p.STATUS='Y'
-
 	</select>
 </mapper>
