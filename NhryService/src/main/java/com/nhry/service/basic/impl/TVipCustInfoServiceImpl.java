@@ -81,7 +81,58 @@ public class TVipCustInfoServiceImpl extends BaseService implements TVipCustInfo
 		vipInfoDataService.executeVipInfoData(record,record.getVipMp());
 		return record.getVipCustNo();
 	}
-	
+	@Override
+	public String importVipCust(TVipCustInfo record) {
+		// TODO Auto-generated method stub
+		if(StringUtils.isEmpty(record.getVipName()) || StringUtils.isEmpty(record.getMp()) || StringUtils.isEmpty(record.getBranchNo())){
+			throw new ServiceException(MessageCode.LOGIC_ERROR, "会员姓名(vipName)、手机号码(mp)、订户奶站(branchNo) 必须填写!");
+		}
+		TSysUser sysuser = this.userSessionService.getCurrentUser();
+		Map<String,String> attrs = new HashMap<String,String>();
+		attrs.put("salesOrg", this.userSessionService.getCurrentUser().getSalesOrg());
+		attrs.put("branchNo", record.getBranchNo());
+		attrs.put("phone", record.getMp());
+		int count = this.tmdVipcust.getCustCountByPhone(attrs);
+		if(count > 0){
+			throw new ServiceException(MessageCode.LOGIC_ERROR, "该电话号码对应的订户信息已存在！");
+		}
+		//record.setVipCustNo(PrimaryKeyUtils.generateUpperUuidKey());
+		record.setCreateAt(new Date());
+		record.setCreateBy(sysuser.getLoginName());
+		record.setCreateByTxt(sysuser.getDisplayName());
+		record.setSalesOrg(sysuser.getSalesOrg());
+		this.tmdVipcust.addVipCust(record);
+		if(!StringUtils.isBlank(record.getAddressTxt()) && !StringUtils.isBlank(record.getProvince()) && !StringUtils.isBlank(record.getCity())){
+			TMdAddress address = new TMdAddress();
+			address.setAddressTxt(record.getAddressTxt());
+			address.setProvince(record.getProvince());
+			address.setCity(record.getCity());
+			address.setCounty(record.getCounty());
+			address.setMp(record.getMp());
+			address.setRecvName(record.getVipName());
+			address.setZip(record.getZip());
+			address.setResidentialArea(record.getSubdist());
+			address.setStreet(record.getStreet());
+			address.setVipCustNo(record.getVipCustNo());
+			address.setIsDafault("Y");
+			address.setCreateAt(new Date());
+			address.setCreateBy(sysuser.getLoginName());
+			address.setCreateByTxt(sysuser.getDisplayName());
+			addAddressForCust(address,null,null);
+		}
+		vipInfoDataService.executeVipInfoData(record,record.getVipMp());
+		return record.getVipCustNo();
+	}
+	@Override
+	public String addVipCusts(List<TVipCustInfo> records) {
+		String s = "";
+		if(records != null){
+			for(TVipCustInfo record : records){
+				s.concat(importVipCust(record));
+			}
+		}
+		return s;
+	}
 	@Override
 	public int batchAddVipCustSapNo(String salesOrg) {
 		if(StringUtils.isBlank(salesOrg)){

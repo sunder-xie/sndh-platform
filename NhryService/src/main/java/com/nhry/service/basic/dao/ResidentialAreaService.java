@@ -22,6 +22,8 @@ public interface ResidentialAreaService {
 
     int  addResidentialArea(TMdResidentialArea area);
 
+    int importResidentialArea(TMdResidentialArea area);
+
     int addResidentialAreas(List<TMdResidentialArea> area);
 
     int  uptResidentialArea(TMdResidentialArea area);
