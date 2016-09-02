@@ -81,6 +81,10 @@
 	<!-- 配置事务的传播特性 -->
 	<tx:advice id="txAdvice" transaction-manager="transactionManager">
 		<tx:attributes>
+			<tx:method name="sendRequireOrderToERPByDate" propagation="REQUIRES_NEW" read-only="false"
+					    no-rollback-for="com.nhry.common.exception.ServiceException" />
+			<tx:method name="creaSalOrderOfDealerBranchByDate" propagation="REQUIRES_NEW" read-only="false"
+					   no-rollback-for="com.nhry.common.exception.ServiceException" />
 			<tx:method name="add*" propagation="REQUIRED" read-only="false" rollback-for="com.nhry.common.exception.ServiceException" />
 			<tx:method name="insert*" propagation="REQUIRED" read-only="false" rollback-for="com.nhry.common.exception.ServiceException" />
 			<tx:method name="create*" propagation="REQUIRED" read-only="false"  rollback-for="com.nhry.common.exception.ServiceException" />

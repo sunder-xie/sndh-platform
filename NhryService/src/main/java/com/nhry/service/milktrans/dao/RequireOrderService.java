@@ -24,21 +24,17 @@ public interface RequireOrderService {
 
     int uptRequireOrder(UpdateRequiredModel uModel);
 
-    String sendRequireOrderToERP();
+    TSsmSalOrder creatPromoSalOrderOfDealerBranch(Date today);
 
-    int creatPromoSalOrderOfDealerBranch(Date today);
+    TSsmSalOrder creatNoPromoSalOrderOfDealerBranch(Date requiredDate);
 
-    int creatNoPromoSalOrderOfDealerBranch(Date requiredDate);
+    TSsmSalOrder creatNoPromoSalOrderOfSelftBranch(Date requiredDate);
 
-    int creatNoPromoSalOrderOfSelftBranch(Date requiredDate);
-
-    int creatPromoSalOrderOfSelftBranch(Date requiredDate);
-
-   // List<TSsmSalOrder> creaSalOrderOfSelftBranch();
+    TSsmSalOrder creatPromoSalOrderOfSelftBranch(Date requiredDate);
 
     List<TSsmSalOrder> creaSalOrderOfSelftBranchByDate(SalOrderDaySearch search);
 
-    List<TSsmSalOrder> creaSalOrderOfDealerBranch();
+    int creaSalOrderOfDealerBranchByDate(Date orderDate);
 
     List<TSsmSalOrder> getSaleOrderByQueryDate(SalOrderModel sModel);
 
@@ -48,4 +44,8 @@ public interface RequireOrderService {
 
 
     String sendRequireOrderToERPByDate(ReqGoodsOrderSearch eSearch);
+
+    TSsmSalOrder creatNoPromoSalOrderAndSendOfSelftBranch(Date orderDate);
+
+    TSsmSalOrder creatPromoSalOrderAndSendOfSelftBranch(Date orderDate);
 }
