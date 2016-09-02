@@ -822,7 +822,7 @@ public class RequireOrderServiceImpl implements RequireOrderService {
         String branchNo = branch.getBranchNo();
         uuid.append(branchNo.substring(1));
         uuid.append(new SimpleDateFormat("yyyyMMddHHmmss").format(new Date()));
-        uuid.append(new Random().nextInt(90)+i);
+        uuid.append(new Random().nextInt(80)+10+i);
         System.out.println("------------------------"+ uuid.toString());
         return uuid.toString();
     }

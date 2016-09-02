@@ -1123,4 +1123,59 @@
       AND o.SALES_ORG = #{salesOrg,jdbcType=VARCHAR}
     </if>
   </select>
+  <!-- 短信接口用start -->
+  	<!-- 预付款的 -->
+  	<select id="searchPrePayOrdersForSendMessage" resultMap="BaseResultMap" parameterType="java.lang.String">
+    select
+    o.ORDER_NO,
+    a.MP CUSTOMER_TEL,
+    a.RECV_NAME MILKMEMBER_NAME,
+    b.TEL BRANCH_NO
+    FROM t_preorder o
+    left join t_md_address a on a.ADDRESS_ID = o.ADRESS_NO
+    left join t_md_branch b on b.BRANCH_NO = o.BRANCH_NO
+    WHERE 
+    o.PREORDER_SOURCE != '10' 
+    and o.PREORDER_SOURCE != '50'
+    and o.PREORDER_STAT = '10' 
+    and o.SIGN = '10'
+    and o.PAYMENT_STAT = '10'
+    and o.PAYMENTMETHOD = '20'
+    and o.END_DATE = #{endDate,jdbcType=DATE}
+  </select>
+  	<!-- 后付款的 -->
+  	<select id="searchAfPayOrdersForSendMessage" resultMap="BaseResultMap" parameterType="java.lang.String">
+    select
+    o.ORDER_NO,
+    a.MP CUSTOMER_TEL,
+    a.RECV_NAME MILKMEMBER_NAME,
+    o.INIT_AMT,
+    (select sum(qty) from t_mst_order_daliy_plan_item i where i.ORDER_NO = o.ORDER_NO and i.STATUS != '30') YGROWTH
+    FROM t_preorder o
+    left join t_md_address a on a.ADDRESS_ID = o.ADRESS_NO
+    WHERE 
+    o.PREORDER_SOURCE != '10' 
+    and o.PREORDER_SOURCE != '50'
+    and o.PREORDER_STAT = '10' 
+    and o.SIGN = '10'
+    and o.PAYMENT_STAT = '10'
+    and o.PAYMENTMETHOD = '10'
+    and o.END_DATE = #{endDate,jdbcType=DATE}
+  </select>
+  	<!-- 电商的 -->
+  	<select id="searchECOrdersForSendMessage" resultMap="BaseResultMap" parameterType="java.lang.String">
+    select
+    o.ORDER_NO,
+    a.MP CUSTOMER_TEL,
+    a.RECV_NAME MILKMEMBER_NAME
+    FROM t_preorder o
+    left join t_md_address a on a.ADDRESS_ID = o.ADRESS_NO
+    WHERE 
+    o.PREORDER_STAT = '10' 
+    and (o.PREORDER_SOURCE = '10' or o.PREORDER_SOURCE = '50')
+    and o.SIGN = '10'
+    and o.PAYMENT_STAT = '10'
+    and o.END_DATE = #{endDate,jdbcType=DATE}
+  </select>
+  <!-- 短信接口用end -->
 </mapper>

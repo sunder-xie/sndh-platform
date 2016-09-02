@@ -163,15 +163,22 @@ public class PIRequireOrderServiceImpl implements PIRequireOrderService {
                 auartType = PIPropertitesUtil.getValue("PI.AUART.ZOR");
             }
         } else {
-            NHSysCodeItem key = new NHSysCodeItem();
-            key.setTypeCode("1016");
-            key.setItemCode(vkorg);
-            NHSysCodeItem codeItem = sysCodeItemMapper.findCodeItenByCode(key);
-            if (codeItem != null) {
-                orderHeader.setAugru(codeItem.getAttr1());
-                orderHeader.setKostl(codeItem.getAttr2());
-                orderHeader.setZz001(codeItem.getAttr3());
+//            NHSysCodeItem key = new NHSysCodeItem();
+//            key.setTypeCode("1016");
+//            key.setItemCode(vkorg);
+//            NHSysCodeItem codeItem = sysCodeItemMapper.findCodeItenByCode(key);
+//            if (codeItem != null) {
+            if(StringUtils.isNotEmpty(branchEx.getKostl())){
+                orderHeader.setAugru(PIPropertitesUtil.getValue("PI.AUGRU"));
+                orderHeader.setKostl(branchEx.getKostl());
+                orderHeader.setZz001(PIPropertitesUtil.getValue("PI.ZZ001"));
+            }else{
+                PISuccessMessage message = new PISuccessMessage();
+                message.setSuccess(false);
+                message.setMessage("免费订单创建失败，请维护奶站成品中心！");
+                return message;
             }
+//            }
             if (saleOrgTX.equals(ssmSalOrder.getSalesOrg())) {
                 auartType = PIPropertitesUtil.getValue("PI.AUART.ZFD1");
             } else {

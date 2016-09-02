@@ -61,6 +61,8 @@ public class HttpUtils {
 	 */
 	public static String request(String uri, Map<String, Object> params,
 			String encoding) throws IOException {
+		System.setProperty("javax.net.ssl.trustStore", "/opt/java/jdk1.8.0_72/jre/lib/security/cacerts");
+		System.setProperty("javax.net.ssl.trustStorePassword", "changeit");
 		long currentTime = System.currentTimeMillis();
 		URL postUrl = new URL(uri);
 		HttpURLConnection connection = (HttpURLConnection) postUrl
@@ -126,6 +128,8 @@ public class HttpUtils {
 	public static byte[] request2(String uri, Map<String, Object> params,
 			String encoding) throws IOException {
 		long currentTime = System.currentTimeMillis();
+		System.setProperty("javax.net.ssl.trustStore", "/opt/java/jdk1.8.0_72/jre/lib/security/cacerts");
+		System.setProperty("javax.net.ssl.trustStorePassword", "changeit");
 		URL postUrl = new URL(uri);
 		HttpURLConnection connection = (HttpURLConnection) postUrl
 				.openConnection();

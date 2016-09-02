@@ -104,4 +104,6 @@ public interface OrderService {
 	int searchReturnOrdersNum();
 
 	BigDecimal calPreOrderTotalFactoryPrice(String orderNo);
+
+	void selectOrdersAndSendMessage();
 }
