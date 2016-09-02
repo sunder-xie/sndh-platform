@@ -20,6 +20,7 @@ import com.nhry.data.order.domain.TOrderDaliyPlanItem;
 import com.nhry.data.order.domain.TPlanOrderItem;
 import com.nhry.data.order.domain.TPreOrder;
 import com.nhry.data.order.domain.TPromotion;
+import com.nhry.data.stock.dao.TSsmGiOrderItemMapper;
 import com.nhry.model.milk.RouteDetailUpdateModel;
 import com.nhry.model.order.*;
 import com.nhry.service.BaseService;
@@ -58,8 +59,12 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 	private EcService messLogService;
 	private CustomerBillMapper customerBillMapper;
 	private PIVipInfoDataService piVipInfoDataService;
+	private TSsmGiOrderItemMapper tSsmGiOrderItemMapper;
 	private SmsSendService smsSendService;
-	
+
+	public void settSsmGiOrderItemMapper(TSsmGiOrderItemMapper tSsmGiOrderItemMapper) {
+		this.tSsmGiOrderItemMapper = tSsmGiOrderItemMapper;
+	}
 	public SmsSendService getSmsSendService()
 	{
 		return smsSendService;
@@ -149,6 +154,22 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 		smodel.setDealerNo(userSessionService.getCurrentUser().getDealerId());
 		return tPreOrderMapper.searchReturnOrdersNum(smodel);
 	}
+
+	@Override
+	public BigDecimal calPreOrderTotalFactoryPrice(String orderNo) {
+		TPreOrder order = tPreOrderMapper.selectByPrimaryKey(orderNo);
+		BigDecimal result = new BigDecimal(0);
+		if("20".equals(order.getPaymentmethod())){
+			List<TPlanOrderItem> items = tPlanOrderItemMapper.selectByOrderCode(orderNo);
+			if(items!=null && items.size()>0){
+				for(TPlanOrderItem item : items){
+					BigDecimal factoryPrice = tSsmGiOrderItemMapper.selectProximalFactoryPrice(item.getMatnr(),order.getBranchNo());
+				}
+			}
+		}
+		return result;
+	}
+
 	//登陆页面时，还有5天就要到期的订单
 	@Override
 	public int selectStopOrderNum()

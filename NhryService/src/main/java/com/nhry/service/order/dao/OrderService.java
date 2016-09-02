@@ -102,6 +102,8 @@ public interface OrderService {
 	int selectUnfinishOrderNum(String vipCustNo);
 
 	int searchReturnOrdersNum();
-	
+
+	BigDecimal calPreOrderTotalFactoryPrice(String orderNo);
+
 	void selectOrdersAndSendMessage();
 }

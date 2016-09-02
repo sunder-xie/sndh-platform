@@ -31,8 +31,6 @@ import java.util.*;
  * Created by gongjk on 2016/6/24.
  */
 public class RequireOrderServiceImpl implements RequireOrderService {
-    private static final SimpleDateFormat format = new SimpleDateFormat("yyyyMMddHHmmss");
-    private static final int randomNum = (int) ((Math.random() * 90) + 10);
     private TSsmReqGoodsOrderItemMapper tSsmReqGoodsOrderItemMapper;
     private TSsmReqGoodsOrderMapper tSsmReqGoodsOrderMapper;
     private TOrderDaliyPlanItemMapper tOrderDaliyPlanItemMapper;
@@ -327,7 +325,7 @@ public class RequireOrderServiceImpl implements RequireOrderService {
 
         List<TOrderDaliyPlanItem> items = tOrderDaliyPlanItemMapper.selectProDayPlanOfDealerBranch(rModel);
         if (items != null && items.size() > 0) {
-            TSsmSalOrder order = createSaleOrder(user, orderDate, "dealer", null);
+            TSsmSalOrder order = createSaleOrder(user, orderDate, "dealer", null,2);
             for (int i = 1; i <= items.size(); i++) {
                 TOrderDaliyPlanItem item = items.get(i - 1);
                 createSaleOrderItem(item, i, order.getOrderNo(), orderDate, "dealer");
@@ -354,7 +352,7 @@ public class RequireOrderServiceImpl implements RequireOrderService {
         List<TOrderDaliyPlanItem> items = tOrderDaliyPlanItemMapper.selectNoProDayPlanOfDealerBranch(rModel);
         if (items != null && items.size() > 0) {
             //生成 促销订单
-            TSsmSalOrder order = createSaleOrder(user, orderDate, "dealer", "");
+            TSsmSalOrder order = createSaleOrder(user, orderDate, "dealer", "",1);
             for (int i = 0; i < items.size(); i++) {
                 TOrderDaliyPlanItem item = items.get(i);
                 //生成 促销订单行项目
@@ -383,7 +381,7 @@ public class RequireOrderServiceImpl implements RequireOrderService {
         List<TOrderDaliyPlanItem> items = tOrderDaliyPlanItemMapper.selectNoProDayPlanOfSelfBranch(rModel);
         if (items != null && items.size() > 0) {
             //生成 促销订单
-            TSsmSalOrder order = createSaleOrder(user, requiredDate, "branch", "");
+            TSsmSalOrder order = createSaleOrder(user, requiredDate, "branch", "",1);
 
             for (int i = 0; i < items.size(); i++) {
                 TOrderDaliyPlanItem item = items.get(i);
@@ -413,7 +411,7 @@ public class RequireOrderServiceImpl implements RequireOrderService {
         rModel.setSalesOrg(user.getSalesOrg());
         List<TOrderDaliyPlanItem> items = tOrderDaliyPlanItemMapper.selectProDayPlanOfSelfBranch(rModel);
         if (items != null && items.size() > 0) {
-            TSsmSalOrder order = createSaleOrder(user, requiredDate, "branch", "free");
+            TSsmSalOrder order = createSaleOrder(user, requiredDate, "branch", "free",2);
             if (items != null && items.size() > 0) {
                 for (int i = 1; i <= items.size(); i++) {
                     TOrderDaliyPlanItem item = items.get(i - 1);
@@ -440,12 +438,10 @@ public class RequireOrderServiceImpl implements RequireOrderService {
         if (branchNo == null) {
             throw new ServiceException(MessageCode.LOGIC_ERROR, "该用户不存在奶站");
         }
-        sModel.setBranchNo(user.getBranchNo());
-        sModel.setDealerNo(user.getDealerId());
-        List<TSsmSalOrder> result = tSsmSalOrderMapper.selectSalOrderByDateAndBranchOrDealerNo(sModel);
-        if (result == null) {
-            throw new ServiceException(MessageCode.LOGIC_ERROR, "今天的销售订单还没生成");
+        if(sModel.getBranchNo() == null){
+            sModel.setBranchNo(user.getBranchNo());
         }
+        List<TSsmSalOrder> result = tSsmSalOrderMapper.selectSalOrderByDateAndBranchNo(sModel);
         return result;
     }
 
@@ -659,7 +655,6 @@ public class RequireOrderServiceImpl implements RequireOrderService {
     @Override
     public int creaSalOrderOfDealerBranchByDate(Date orderDate) {
         TSysUser user = userSessionService.getCurrentUser();
-        TMdBranch branch = branchMapper.selectBranchByNo(user.getBranchNo());
         SalOrderModel sMode = new SalOrderModel();
         sMode.setOrderDate(orderDate);
         sMode.setBranchNo(user.getBranchNo());
@@ -687,6 +682,7 @@ public class RequireOrderServiceImpl implements RequireOrderService {
                 if(promOrder !=null){
                     generateSalesOrderAnduptVouCher(promOrder);
                 }
+
         }
         return 0;
     }
@@ -729,9 +725,9 @@ public class RequireOrderServiceImpl implements RequireOrderService {
      * @param promotion         如果促销号不为空，则该销售订单为一个参加促销的销售订单，否则为正品促销订单
      * @return
      */
-    private TSsmSalOrder  createSaleOrder(TSysUser user, Date requiredDate, String type, String promotion) {
+    private TSsmSalOrder  createSaleOrder(TSysUser user, Date requiredDate, String type, String promotion,int i) {
         TSsmSalOrder order = new TSsmSalOrder();
-        String orderNo = this.generateSal35Id();
+        String orderNo = this.generateSal35Id(i);
         order.setOrderNo(orderNo);
         order.setSalesOrg(user.getSalesOrg());
         TMdBranch branch = branchMapper.selectBranchByNo(user.getBranchNo());
@@ -817,7 +813,7 @@ public class RequireOrderServiceImpl implements RequireOrderService {
      * 销售订单编号 35位
      * @return
      */
-    private String generateSal35Id(){
+    private String generateSal35Id(int  i){
         TMdBranch branch = branchMapper.getBranchByNo(userSessionService.getCurrentUser().getBranchNo());
         StringBuilder uuid = new StringBuilder();
         uuid.append("DH001");
@@ -825,8 +821,9 @@ public class RequireOrderServiceImpl implements RequireOrderService {
         uuid.append(branch.getCompanyCode());
         String branchNo = branch.getBranchNo();
         uuid.append(branchNo.substring(1));
-        uuid.append(format.format(new Date()));
-        uuid.append(randomNum);
+        uuid.append(new SimpleDateFormat("yyyyMMddHHmmss").format(new Date()));
+        uuid.append(new Random().nextInt(80)+10+i);
+        System.out.println("------------------------"+ uuid.toString());
         return uuid.toString();
     }
     /**
@@ -844,8 +841,8 @@ public class RequireOrderServiceImpl implements RequireOrderService {
         }else {
             uuid.append(branch.getLgort());
         }
-        uuid.append(format.format(new Date()));
-        uuid.append(randomNum);
+        uuid.append(new SimpleDateFormat("yyyyMMddHHmmss").format(new Date()));
+        uuid.append((int) ((Math.random() * 90) + 10));
         return uuid.toString();
     }
 
@@ -853,9 +850,9 @@ public class RequireOrderServiceImpl implements RequireOrderService {
         TMdBranch branch = branchMapper.selectBranchByNo(order.getBranchNo());
         PISuccessMessage  message = null;
         if("01".equals(branch.getBranchGroup())){
-              message = piRequireOrderService.generateSalesOrder(order, order.getBranchNo(), order.getBranchNo(), branch.getSalesOrg(), "");
+              message = piRequireOrderService.generateSalesOrder(order, order.getDealerNo(), order.getBranchNo(), order.getSalesOrg(), "");
         }else{
-              message = piRequireOrderService.generateSalesOrder(order, order.getDealerNo(), order.getBranchNo(), branch.getSalesOrg(), "");
+              message = piRequireOrderService.generateSalesOrder(order, order.getDealerNo(), order.getBranchNo(), order.getSalesOrg(), "");
         }
         if (message.isSuccess()) {
             this.uptVouCherNoByOrderNo(order.getOrderNo(), message.getData());

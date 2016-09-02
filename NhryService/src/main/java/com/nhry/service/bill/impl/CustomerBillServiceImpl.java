@@ -217,6 +217,8 @@ public class CustomerBillServiceImpl implements CustomerBillService {
                 if("10".equals(order.getPaymentmethod())){
                     BigDecimal factAmt = tPreOrderMapper.calculateOrderFactoryAmt(orderNo);
                     int  updateFactAmt = tPreOrderMapper.updateOrderFacAmt(factAmt  == null ? new BigDecimal(0) : factAmt,orderNo);
+                }else{
+                    //List<>
                 }
 
 

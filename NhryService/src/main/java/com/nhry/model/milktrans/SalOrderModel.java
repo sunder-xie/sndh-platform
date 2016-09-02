@@ -6,16 +6,9 @@ import java.util.Date;
 
 public class SalOrderModel implements Serializable {
     private String branchNo;
-    private String dealerNo;
     private Date orderDate;
 
-    public String getDealerNo() {
-        return dealerNo;
-    }
 
-    public void setDealerNo(String dealerNo) {
-        this.dealerNo = dealerNo;
-    }
 
     public String getBranchNo() {
         return branchNo;
