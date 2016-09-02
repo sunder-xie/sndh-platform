@@ -61,7 +61,7 @@ public class ImportTableResource extends BaseResource {
     @Path("/importResidentialArea")
     @Consumes(MediaType.MULTIPART_FORM_DATA)
     @Produces(MediaType.APPLICATION_JSON)
-    @ApiOperation(value = "/importResidentialArea", response = ResponseModel.class, notes = "导入计划")
+    @ApiOperation(value = "/importResidentialArea", response = ResponseModel.class, notes = "导入小区主数据")
     public Response importResidentialArea(FormDataMultiPart form, @Context HttpServletRequest request) throws IOException {
         String url = request.getServletContext().getRealPath("/");
         FormDataBodyPart filePart = form.getField("file");
@@ -80,7 +80,6 @@ public class ImportTableResource extends BaseResource {
         List<TMdResidentialArea> areas = new ArrayList<TMdResidentialArea>();//配送区域
         for (int i = 2; i <= rowNum; i++){
             TMdResidentialArea area = new TMdResidentialArea();
-            TVipCustInfo record = new TVipCustInfo();
 
             int j = 1;
             XSSFRow row = sheet.getRow(i);
@@ -104,6 +103,67 @@ public class ImportTableResource extends BaseResource {
         }
         return convertToRespModel(MessageCode.NORMAL, null,residentialAreaService.addResidentialAreas(areas));
     }
+    @POST
+    @Path("/importVipcustInfo")
+    @Consumes(MediaType.MULTIPART_FORM_DATA)
+    @Produces(MediaType.APPLICATION_JSON)
+    @ApiOperation(value = "/importVipcustInfo", response = ResponseModel.class, notes = "导入订户主数据")
+    public Response importVipcustInfo(FormDataMultiPart form, @Context HttpServletRequest request) throws IOException {
+        FormDataBodyPart filePart = form.getField("file");
+        InputStream fileInputStream = filePart.getValueAs(InputStream.class);
+        FormDataContentDisposition formDataContentDisposition = filePart.getFormDataContentDisposition();
+        XSSFWorkbook workbook = new XSSFWorkbook(new BufferedInputStream(fileInputStream));
+        XSSFSheet sheet = workbook.getSheetAt(0);
+        int rowNum = sheet.getLastRowNum();
+        List<TVipCustInfo> vipcusts = new ArrayList<TVipCustInfo>();//订户
+        for (int i = 2; i <= rowNum; i++){
+            TVipCustInfo vipcust = new TVipCustInfo();
+            int j = 1;
+            XSSFRow row = sheet.getRow(i);
+            XSSFCell cell = row.getCell(j++);
+            //start 导入小区信息
+            vipcust.setVipCustNo(cell.toString());//主键编号
+            cell = row.getCell(j++);
+            vipcust.setVipName(cell.toString());
+            cell = row.getCell(j++);
+            vipcust.setAddressTxt(cell.toString());
+            cell = row.getCell(j++);
+            vipcust.setSubdist(cell.toString());
+            //需要通过小区编号查询出小区信息并写入到订户地址中
+            TMdResidentialArea area = new TMdResidentialArea();
+            area = residentialAreaService.selectById(vipcust.getSubdist());
+            vipcust.setProvince(area.getProvince());
+            vipcust.setCity(area.getCity());
+            vipcust.setCounty(area.getCounty());
+            cell = row.getCell(j++);
+            vipcust.setMp(cell.toString());
+            cell = row.getCell(j++);
+            if (cell != null && StringUtils.isNotEmpty(cell.toString())) {
+                vipcust.setZip(cell.toString());
+            }
+            cell = row.getCell(j++);
+            if (cell != null && StringUtils.isNotEmpty(cell.toString())) {
+                vipcust.setSex(cell.toString());
+            }
+            cell = row.getCell(j++);
+            vipcust.setVipSrc(cell.toString());
+            cell = row.getCell(j++);
+            vipcust.setVipType(cell.toString());
+            cell = row.getCell(j++);
+            vipcust.setStatus(cell.toString());
+            cell = row.getCell(j++);
+            vipcust.setSalesOrg(cell.toString());
+            cell = row.getCell(j++);
+            if (cell != null && StringUtils.isNotEmpty(cell.toString())) {
+                vipcust.setDealerNo(cell.toString());
+            }
+            cell = row.getCell(j++);
+            vipcust.setBranchNo(cell.toString());
+            vipcusts.add(vipcust);
+        }
+        return convertToRespModel(MessageCode.NORMAL, null,tVipCustInfoService.addVipCusts(vipcusts));
+    }
+
     private BigDecimal getCellValue(XSSFCell cell) {
         BigDecimal value = new BigDecimal(0);
         if (null != cell) {
