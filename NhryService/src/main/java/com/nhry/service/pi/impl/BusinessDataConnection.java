@@ -201,7 +201,7 @@ public class BusinessDataConnection {
                 }
 
                 com.nhry.webService.client.businessData.functions.Date date1 = new com.nhry.webService.client.businessData.functions.Date();
-                date1.setObject(map.get("ORDER_DATE"));
+                date1.setObject(orderHeader.getLFDAT());
                 zssd00011.setREQ_DATE(date1);
                 if (StringUtils.isNotEmpty(map.get("PROM_NO"))) {
                     WBS_ELEM_type1 wbs_elem_type1 = new WBS_ELEM_type1();
