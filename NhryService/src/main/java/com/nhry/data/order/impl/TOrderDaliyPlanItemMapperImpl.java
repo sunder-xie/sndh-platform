@@ -23,7 +23,14 @@ public class TOrderDaliyPlanItemMapperImpl implements TOrderDaliyPlanItemMapper
 	public void setSqlSessionTemplate(DynamicSqlSessionTemplate sqlSessionTemplate) {
 		this.sqlSessionTemplate = sqlSessionTemplate;
 	}
-
+	
+	@Override
+	public int deletePlansForLongEdit(TOrderDaliyPlanItem record)
+	{
+		// TODO Auto-generated method stub
+		return sqlSessionTemplate.delete("deletePlansForLongEdit", record); 
+	}
+	
 	@Override
 	public int deleteFromDateToDate(TOrderDaliyPlanItem record)
 	{
