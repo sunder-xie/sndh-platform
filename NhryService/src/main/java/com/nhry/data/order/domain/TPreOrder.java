@@ -128,15 +128,25 @@ public class TPreOrder {
     private String receiptNo;
     
     private String isPaid;
-
+    
+    private String validDate;
 
     String branchEmpNo;
     String branchMp;
     String branchEmpName;
     String addressTxt;
 
+	public String getValidDate()
+	{
+		return validDate;
+	}
 
-    public String getIsPaid()
+	public void setValidDate(String validDate)
+	{
+		this.validDate = validDate;
+	}
+
+	public String getIsPaid()
 	{
 		return isPaid;
 	}

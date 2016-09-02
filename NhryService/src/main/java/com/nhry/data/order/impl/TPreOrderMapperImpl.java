@@ -282,4 +282,29 @@ public class TPreOrderMapperImpl implements TPreOrderMapper
 	{
 		return sqlSessionTemplate.update("replaceOrdersDispmember", smodel);
 	}
+
+	/* (non-Javadoc) 
+	* @title: updateOrderToFinish
+	* @description: 订单完结
+	* @param orderNo
+	* @return 
+	* @see com.nhry.data.order.dao.TPreOrderMapper#updateOrderToFinish(java.lang.String) 
+	*/
+	@Override
+	public int updateOrderToFinish(String orderNo)
+	{
+		return sqlSessionTemplate.update("updateOrderToFinish", orderNo);
+	}
+
+	/* (non-Javadoc) 
+	* @title: selectNumOfdeletedByMilkmemberNo
+	* @description: 在订的订单数量
+	* @return 
+	* @see com.nhry.data.order.dao.TPreOrderMapper#selectNumOfdeletedByMilkmemberNo() 
+	*/
+	@Override
+	public int selectNumOfdeletedByMilkmemberNo()
+	{
+		return sqlSessionTemplate.selectOne("selectNumOfdeletedByMilkmemberNo");
+	}
 }

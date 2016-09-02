@@ -111,7 +111,7 @@
 			<ref bean="scheduledJobDetail6" />
 		</property>
 		<property name="cronExpression">
-			<value>0 35 * * * ?</value>
+			<value>0 24 * * * ?</value>
 		</property>
 	</bean>
 	<bean id="crontestJobTrigger7" class="org.springframework.scheduling.quartz.CronTriggerFactoryBean">
@@ -125,7 +125,7 @@
     <!-- 调度的配置结束 -->
 
     <!-- 启动触发器的配置开始 -->
-    <bean name="startQuertz1" lazy-init="false" autowire="no" class="org.springframework.scheduling.quartz.SchedulerFactoryBean">
+    <bean name="startQuertz1" lazy-init="false" autowire="no" init-method="init" class="com.nhry.common.service.NhrySchedulerFactoryBean">
         <property name="triggers">
             <list>
                 <ref bean="crontestJobTrigger1"/>
@@ -137,6 +137,7 @@
 				<ref bean="crontestJobTrigger7"/>
             </list>
         </property>
+        <property name="stringRedisTemplate" ref="stringRedisTemplate"></property>
     </bean>
 
 </beans>

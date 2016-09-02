@@ -284,7 +284,7 @@ public class UserSessionService {
 			//测试时使用
 			TSysUser user = new TSysUser();
 			Date date =  new Date();
-			user.setLoginName("88888888");
+			user.setLoginName("ex_wanjia");
 			user.setDisplayName("测试用户");
 			user.setBranchNo("0300005942");
 			user.setSalesOrg("4111");
