@@ -102,4 +102,6 @@ public interface OrderService {
 	int selectUnfinishOrderNum(String vipCustNo);
 
 	int searchReturnOrdersNum();
+	
+	void selectOrdersAndSendMessage();
 }

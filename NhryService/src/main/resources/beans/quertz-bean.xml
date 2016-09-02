@@ -65,6 +65,14 @@
 			<value>saveFactoryPrice</value>
 		</property>
 	</bean>
+	<bean id="sendMessageToCustomer" class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean" >
+		<property name="targetObject">
+			<ref bean="orderService"/>
+		</property>
+		<property name="targetMethod">
+			<value>selectOrdersAndSendMessage</value>
+		</property>
+	</bean>
 	 <!-- 调度的配置开始 -->
     <bean id="crontestJobTrigger1" class="org.springframework.scheduling.quartz.CronTriggerFactoryBean">
         <property name="jobDetail">
@@ -122,6 +130,14 @@
 			<value>0 15 18 * * ?</value>
 		</property>
 	</bean>
+	<bean id="crontestJobTrigger8" class="org.springframework.scheduling.quartz.CronTriggerFactoryBean">
+		<property name="jobDetail">
+			<ref bean="sendMessageToCustomer" />
+		</property>
+		<property name="cronExpression">
+			<value>0 10 09 * * ?</value>
+		</property>
+	</bean>
     <!-- 调度的配置结束 -->
 
     <!-- 启动触发器的配置开始 -->
@@ -135,6 +151,7 @@
 				<ref bean="crontestJobTrigger5"/>
 				<ref bean="crontestJobTrigger6"/>
 				<ref bean="crontestJobTrigger7"/>
+				<ref bean="crontestJobTrigger8"/>
             </list>
         </property>
         <property name="stringRedisTemplate" ref="stringRedisTemplate"></property>

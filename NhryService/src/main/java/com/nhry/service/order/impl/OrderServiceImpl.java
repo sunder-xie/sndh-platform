@@ -31,6 +31,7 @@ import com.nhry.service.order.dao.OrderService;
 import com.nhry.service.order.dao.PromotionService;
 import com.nhry.service.order.pojo.OrderRemainData;
 import com.nhry.service.pi.dao.PIVipInfoDataService;
+import com.nhry.service.pi.dao.SmsSendService;
 import com.nhry.service.pi.pojo.MemberActivities;
 import com.nhry.utils.CodeGeneratorUtil;
 
@@ -57,7 +58,18 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 	private EcService messLogService;
 	private CustomerBillMapper customerBillMapper;
 	private PIVipInfoDataService piVipInfoDataService;
+	private SmsSendService smsSendService;
 	
+	public SmsSendService getSmsSendService()
+	{
+		return smsSendService;
+	}
+
+	public void setSmsSendService(SmsSendService smsSendService)
+	{
+		this.smsSendService = smsSendService;
+	}
+
 	public void setPiVipInfoDataService(PIVipInfoDataService piVipInfoDataService) {
       this.piVipInfoDataService = piVipInfoDataService;
    }
@@ -1174,7 +1186,7 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 					super.run();
 					this.setName("resumeOrder");
 					record.setOrderDateStart(startDateStr);
-					record.setContent("Y");
+					record.setContent("N");
 					messLogService.sendOrderStopRe(record);
 				}
 			});
@@ -1274,7 +1286,7 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 				super.run();
 				this.setName("resumeOrder");
 				record.setOrderDateStart(startDateStr);
-				record.setContent("Y");
+				record.setContent("N");
 				messLogService.sendOrderStopRe(record);
 			}
 		});
@@ -4401,6 +4413,70 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 	@Override
 	public int selectUnfinishOrderNum(String vipCustNo) {
 		return  tPreOrderMapper.selectUnfinishOrderNum(vipCustNo);
+	}
+	
+	@Override
+	public void selectOrdersAndSendMessage() {
+		SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
+		Date today = new Date();
+		Date endDate = afterDate(today,5);
+		String todayStr = format.format(today);
+		String endStr = format.format(endDate);
+		
+		if(false){
+//			预付款：
+//			尊敬的XX 客户：
+//			您本期订奶预计将于5天后到期，我们将于5日内上门收取下期奶款，感谢您的支持！奶站电话：
+//			自动触发条件：订单截止日期前5天。
+			taskExecutor.execute(new Thread(){
+				@Override
+				public void run() {
+					super.run();
+					this.setName("sendMessagePrePayOrder");
+					List<TPreOrder> list = tPreOrderMapper.searchPrePayOrdersForSendMessage(endStr);
+					list.stream().forEach((e)->{
+						String str = "尊敬的" + e.getMilkmemberName() + "客户:您本期订奶预计将于5天后到期，我们将于5日内上门收取下期奶款，感谢您的支持！奶站电话：" + e.getBranchNo();
+						smsSendService.sendMessage(str, e.getCustomerTel());
+					});
+				}
+			});
+			
+//			后付款：
+//			尊敬的XX 客户：
+//			您本期订奶共XX瓶，总计XX元，我们将于5日内上门收取本期奶款，感谢您的支持！
+//			自动触发条件：订单截止日触发。
+			taskExecutor.execute(new Thread(){
+				@Override
+				public void run() {
+					super.run();
+					this.setName("sendMessageAfPayOrder");
+					List<TPreOrder> list = tPreOrderMapper.searchAfPayOrdersForSendMessage(todayStr);
+					list.stream().forEach((e)->{
+						String str = "尊敬的" + e.getMilkmemberName() + "客户:您本期订奶共" + e.getyGrowth() + "瓶，总计" + e.getInitAmt() + "元，我们将于5日内上门收取本期奶款，感谢您的支持！";
+						smsSendService.sendMessage(str, e.getCustomerTel());
+					});
+				}
+			});
+			
+//			电商订购：
+//			尊敬的XX 客户：
+//			您本期订奶预计将于5天后到期，请及时续费，感谢您的支持！公司电话：400—xxxxxxxx
+//			自动触发条件：订单截止日期前5天。
+			taskExecutor.execute(new Thread(){
+				@Override
+				public void run() {
+					super.run();
+					this.setName("sendMessageEcOrder");
+					List<TPreOrder> list = tPreOrderMapper.searchECOrdersForSendMessage(endStr);
+					list.stream().forEach((e)->{
+						String str = "尊敬的" + e.getMilkmemberName() + "客户:您本期订奶预计将于5天后到期，请及时续费，感谢您的支持！公司电话：400—88888888";
+						smsSendService.sendMessage(str, e.getCustomerTel());
+					});
+				}
+			});
+		}
+		
+		return;
 	}
 
 }
