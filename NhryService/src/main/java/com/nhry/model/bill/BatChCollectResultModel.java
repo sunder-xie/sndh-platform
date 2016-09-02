@@ -8,7 +8,7 @@ import java.math.BigDecimal;
 public class BatChCollectResultModel {
     private BigDecimal totalPayment;
     private BigDecimal totalAcctAmt;
-        private BigDecimal totalAmt;
+    private BigDecimal totalAmt;
 
     public BigDecimal getTotalAcctAmt() {
         return totalAcctAmt;
