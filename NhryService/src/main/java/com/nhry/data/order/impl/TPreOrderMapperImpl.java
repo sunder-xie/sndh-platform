@@ -307,4 +307,22 @@ public class TPreOrderMapperImpl implements TPreOrderMapper
 	{
 		return sqlSessionTemplate.selectOne("selectNumOfdeletedByMilkmemberNo");
 	}
+
+	//发送短信用start
+	@Override
+	public List<TPreOrder> searchPrePayOrdersForSendMessage(String endDate)
+	{
+		return sqlSessionTemplate.selectList("searchPrePayOrdersForSendMessage", endDate);
+	}
+	@Override
+	public List<TPreOrder> searchAfPayOrdersForSendMessage(String endDate)
+	{
+		return sqlSessionTemplate.selectList("searchAfPayOrdersForSendMessage", endDate);
+	}
+	@Override
+	public List<TPreOrder> searchECOrdersForSendMessage(String endDate)
+	{
+		return sqlSessionTemplate.selectList("searchECOrdersForSendMessage", endDate);
+	}
+	//发送短信用end
 }
