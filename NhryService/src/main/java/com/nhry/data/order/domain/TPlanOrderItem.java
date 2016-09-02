@@ -77,8 +77,8 @@ public class TPlanOrderItem {
     private Integer yGrowth;
     
     private Integer yFresh;
-    
-    public Integer getyGrowth()
+
+   public Integer getyGrowth()
 	{
 		return yGrowth;
 	}
