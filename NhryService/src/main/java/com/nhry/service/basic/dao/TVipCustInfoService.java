@@ -24,12 +24,6 @@ public interface TVipCustInfoService {
      * @param record
      * @return
      */
-    String importVipCust(TVipCustInfo record);
-    /**
-     * 批量导入订户信息
-     * @param record
-     * @return
-     */
     String addVipCusts(List<TVipCustInfo> record);
 	/**
 	 * 为导入的订户新建会员编号

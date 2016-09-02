@@ -1375,7 +1375,11 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 		validateOrderInfo(record);
 		//暂时生成订单号
 		Date date = new Date();
-		order.setOrderNo(CodeGeneratorUtil.getCode());
+		//判断如果新增订单时订单编号不为空，则代表是订户数据导入
+		if(StringUtils.isBlank(order.getOrderNo())){
+			order.setOrderNo(CodeGeneratorUtil.getCode());
+		}
+
 		//其他订单信息
 		order.setOrderDate(date);//订单创建日期
 
