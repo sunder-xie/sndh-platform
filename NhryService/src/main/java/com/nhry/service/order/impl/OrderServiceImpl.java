@@ -58,7 +58,12 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 	private EcService messLogService;
 	private CustomerBillMapper customerBillMapper;
 	private PIVipInfoDataService piVipInfoDataService;
-	
+	private TSsmGiOrderItemMapper tSsmGiOrderItemMapper;
+
+	public void settSsmGiOrderItemMapper(TSsmGiOrderItemMapper tSsmGiOrderItemMapper) {
+		this.tSsmGiOrderItemMapper = tSsmGiOrderItemMapper;
+	}
+
 	public void setPiVipInfoDataService(PIVipInfoDataService piVipInfoDataService) {
       this.piVipInfoDataService = piVipInfoDataService;
    }
