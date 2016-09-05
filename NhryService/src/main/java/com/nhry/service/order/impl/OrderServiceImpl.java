@@ -2685,13 +2685,15 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 	//计算间隔天数
 	public static int daysOfTwo(Date fDate, Date oDate) {
 
-		Calendar aCalendar = Calendar.getInstance();
-		aCalendar.setTime(fDate);
-		int day1 = aCalendar.get(Calendar.DAY_OF_YEAR);
-		aCalendar.setTime(oDate);
-		int day2 = aCalendar.get(Calendar.DAY_OF_YEAR);
-
-		return day2 - day1;
+		SimpleDateFormat sdf=new SimpleDateFormat("yyyy-MM-dd");  
+      Calendar cal = Calendar.getInstance();    
+      cal.setTime(fDate);    
+      long time1 = cal.getTimeInMillis();                 
+      cal.setTime(oDate);    
+      long time2 = cal.getTimeInMillis();         
+      long between_days=(time2-time1)/(1000*3600*24);  
+          
+      return Integer.parseInt(String.valueOf(between_days));
 	}
 
 	//日期往前后加n天
