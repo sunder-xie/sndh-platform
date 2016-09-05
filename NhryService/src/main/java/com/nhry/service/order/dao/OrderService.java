@@ -29,6 +29,8 @@ public interface OrderService {
 
 	String createOrder(OrderCreateModel record);
 
+	String createOrders(List<OrderCreateModel> record);
+
 	int editOrderForLong(OrderEditModel record);
 
 	int editOrderForShort(DaliyPlanEditModel record);

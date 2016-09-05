@@ -47,7 +47,12 @@ public class TVipCustInfoServiceImpl extends BaseService implements TVipCustInfo
 		}
 		TSysUser sysuser = this.userSessionService.getCurrentUser();
 		Map<String,String> attrs = new HashMap<String,String>();
-		attrs.put("salesOrg", this.userSessionService.getCurrentUser().getSalesOrg());
+		if(StringUtils.isEmpty(record.getSalesOrg())){
+			attrs.put("salesOrg", this.userSessionService.getCurrentUser().getSalesOrg());
+			record.setSalesOrg(sysuser.getSalesOrg());
+		}else{
+			attrs.put("salesOrg",record.getSalesOrg());
+		}
 		attrs.put("branchNo", record.getBranchNo());
 		attrs.put("phone", record.getMp());
 		int count = this.tmdVipcust.getCustCountByPhone(attrs);
@@ -61,7 +66,7 @@ public class TVipCustInfoServiceImpl extends BaseService implements TVipCustInfo
 		record.setCreateAt(new Date());
 		record.setCreateBy(sysuser.getLoginName());
 		record.setCreateByTxt(sysuser.getDisplayName());
-		record.setSalesOrg(sysuser.getSalesOrg());
+
 		this.tmdVipcust.addVipCust(record);
 		if(!StringUtils.isBlank(record.getAddressTxt()) && !StringUtils.isBlank(record.getProvince()) && !StringUtils.isBlank(record.getCity())){
 			TMdAddress address = new TMdAddress();
