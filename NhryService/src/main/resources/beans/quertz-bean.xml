@@ -79,7 +79,7 @@
             <ref bean="scheduledJobDetail1" />
         </property>
         <property name="cronExpression">
-			<value>0 59 23 * * ?</value>
+			<value>0 10 18 * * ?</value>
 		</property>
     </bean>
 	<bean id="crontestJobTrigger2" class="org.springframework.scheduling.quartz.CronTriggerFactoryBean">
@@ -87,7 +87,7 @@
 			<ref bean="scheduledJobDetail2" />
 		</property>
 		<property name="cronExpression">
-			<value>0 59 1 * * ?</value>
+			<value>0 59 17 * * ?</value>
 		</property>
 	</bean>
 	<bean id="crontestJobTrigger3" class="org.springframework.scheduling.quartz.CronTriggerFactoryBean">
@@ -95,7 +95,7 @@
 			<ref bean="scheduledJobDetail3" />
 		</property>
 		<property name="cronExpression">
-			<value>0 55 15 * * ?</value>
+			<value>0 50 17 * * ?</value>
 		</property>
 	</bean>
 	<bean id="crontestJobTrigger4" class="org.springframework.scheduling.quartz.CronTriggerFactoryBean">
