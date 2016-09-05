@@ -21,8 +21,8 @@ public class NhrySchedulerFactoryBean extends SchedulerFactoryBean {
     
 	static{
 		prd_execute_computes = new ArrayList<String>();
-		prd_execute_computes.add("ip-10-6-239-24");
-		prd_execute_computes.add("ip-10-6-237-80");
+		prd_execute_computes.add("ip-10-6-239-23");
+		prd_execute_computes.add("ip-10-6-237-79");
 		
 		test_execute_computes = new ArrayList<String>();
 		test_execute_computes.add("0481fe3d2929");
