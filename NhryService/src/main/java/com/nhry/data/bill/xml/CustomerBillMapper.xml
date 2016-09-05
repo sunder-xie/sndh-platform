@@ -422,7 +422,6 @@
         (CASE  WHEN acct.ACCT_AMT > o.INIT_AMT THEN 0 ELSE (o.INIT_AMT - acct.ACCT_AMT) END) ORDER_AMT
         ,i.MATNR,a.MATNR_TXT,i.UNIT,i.DISP_TOTAL QTY,i.SALES_PRICE BASE_PRICE,(i.DISP_TOTAL * i.SALES_PRICE) TOTAL_PRICE
 
-
         from t_preorder o
         LEFT JOIN t_md_branch b on o.BRANCH_NO = b.BRANCH_NO
         LEFT JOIN t_md_branch_emp e on o.EMP_NO = e.EMP_NO
@@ -433,11 +432,8 @@
         WHERE 1=1
         and b.SALES_ORG = a.SALES_ORG
         and b.SALES_ORG = o.SALES_ORG
-        and LOCATE(o.ORDER_NO,
-            <foreach item="order" collection="orders" separator="," open="'" close="'" index="">
-                ${order}
-            </foreach>
-        )>0
+        and LOCATE(o.ORDER_NO,<foreach item="order" collection="orders" separator="," open="'" close="'" index="">${order}</foreach>)>0
+        GROUP BY o.ORDER_NO
     </select>
 
 
@@ -474,12 +470,8 @@
         WHERE 1=1
         and b.SALES_ORG = a.SALES_ORG
         and b.SALES_ORG = o.SALES_ORG
-        and LOCATE(o.ORDER_NO,
-        <foreach item="order" collection="orders" separator="," open="'" close="'" index="">
-            ${order}
-        </foreach>
-        )>0
-
+        and LOCATE(o.ORDER_NO,<foreach item="order" collection="orders" separator="," open="'" close="'" index="">${order}</foreach>)>0
+        GROUP BY o.ORDER_NO
     </select>
 
     <select id="queryCollectByAfterOrderNo" resultMap="CollectResultMap" parameterType="com.nhry.model.bill.CollectOrderSearchModel">
@@ -539,8 +531,6 @@
         )CUST_ADDRESS,
         (CASE  WHEN acct.ACCT_AMT > o.INIT_AMT THEN 0 ELSE (o.INIT_AMT - acct.ACCT_AMT) END) ORDER_AMT
         ,i.MATNR,a.MATNR_TXT,i.UNIT,i.QTY,i.SALES_PRICE BASE_PRICE,(i.QTY * i.SALES_PRICE) TOTAL_PRICE
-
-
         from t_preorder o
         LEFT JOIN t_md_branch b on o.BRANCH_NO = b.BRANCH_NO
         LEFT JOIN t_md_branch_emp e on o.EMP_NO = e.EMP_NO
