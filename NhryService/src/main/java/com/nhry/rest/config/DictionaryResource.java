@@ -15,6 +15,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Controller;
 
 import com.nhry.common.exception.MessageCode;
+import com.nhry.common.ladp.LadpService;
 import com.nhry.data.config.domain.NHSysCodeItem;
 import com.nhry.data.config.domain.NHSysCodeType;
 import com.nhry.data.config.domain.NHSysParameter;
@@ -35,6 +36,10 @@ import com.wordnik.swagger.annotations.ApiParam;
 public class DictionaryResource extends BaseResource {
 	@Autowired
 	private DictionaryService dicService;
+	
+	@Autowired
+	private LadpService ladpService;
+	
 	@POST
 	@Path("/items/{typecode}")
 	@Produces(MediaType.APPLICATION_JSON)
@@ -135,5 +140,22 @@ public class DictionaryResource extends BaseResource {
 	@ApiOperation(value = "/allTypeCodes", response = String.class, notes = "获取所有字典代码类型")
 	public Response getAllTypeCodes(){
 		return convertToRespModel(MessageCode.NORMAL, null,  dicService.findAllTypeCodes());
+	}
+	
+	
+	@POST
+	@Path("/sync/users/all")
+	@Produces(MediaType.APPLICATION_JSON)
+	@ApiOperation(value = "/sync/users/all", response = ResponseModel.class, notes = "全量同步idm订户系统用户")
+	public Response syncSysUsers(){
+		return convertToRespModel(MessageCode.NORMAL, null,  ladpService.syncSysUsers(true));
+	}
+	
+	@POST
+	@Path("/sync/users/upt")
+	@Produces(MediaType.APPLICATION_JSON)
+	@ApiOperation(value = "/sync/users/upt", response = ResponseModel.class, notes = "增量同步idm订户系统用户")
+	public Response syncSysUsersForUpt(){
+		return convertToRespModel(MessageCode.NORMAL, null,  ladpService.syncSysUsers(false));
 	}
 }
