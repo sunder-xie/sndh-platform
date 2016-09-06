@@ -323,7 +323,7 @@ public class PIRequireOrderServiceImpl implements PIRequireOrderService {
             SalOrderModel model1 = new SalOrderModel();
             model1.setBranchNo(model.getBranchNo());
             model1.setOrderDate(curDate);
-            List<TSsmSalOrder> orders = ssmSalOrderMapper.selectSalOrderByDateAndNo(model1);
+            List<TSsmSalOrder> orders = ssmSalOrderMapper.selectSalOrderByRequiredDateAndNo(model1);
             if (orders.size() != 0) {
                 for (TSsmSalOrder order : orders) {
                     message = generateDelivery(order.getVoucherNo(), model.getBranchNo(), false);
