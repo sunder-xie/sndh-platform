@@ -648,7 +648,7 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 		TPreOrder order = tPreOrderMapper.selectByPrimaryKey(record.getOrderNo());
 		
 		if(order!= null){
-//			if(tDispOrderItemMapper.selectCountOfTodayByOrgOrder(order.getOrderNo(),format.format(new Date()))>0)throw new ServiceException(MessageCode.LOGIC_ERROR,"此订单，今日有未确认的路单!请等路单确认后再操作!");
+			if(tDispOrderItemMapper.selectCountOfTodayByOrgOrder(order.getOrderNo())>0)throw new ServiceException(MessageCode.LOGIC_ERROR,"此订单，有未确认的路单!请等路单确认后再操作!");
 			
 			order.setBackDate(afterDate(new Date(),1));
 			order.setBackReason(record.getReason());

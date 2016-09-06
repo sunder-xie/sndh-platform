@@ -205,11 +205,10 @@ public class TDispOrderItemMapperImpl implements TDispOrderItemMapper
 	* @see com.nhry.data.milk.dao.TDispOrderItemMapper#selectCountOfTodayByOrgOrder(com.nhry.data.milk.domain.TDispOrder) 
 	*/
 	@Override
-	public int selectCountOfTodayByOrgOrder(String orgOrderNo, String today)
+	public int selectCountOfTodayByOrgOrder(String orgOrderNo)
 	{
 		TDispOrder order = new TDispOrder();
 		order.setOrderNo(orgOrderNo);
-		order.setReachTimeType(today);
 		return sqlSessionTemplate.selectOne("selectCountOfTodayByOrgOrder", order);
 	}
 
