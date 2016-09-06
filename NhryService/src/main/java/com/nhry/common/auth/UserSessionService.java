@@ -92,11 +92,11 @@ public class UserSessionService {
 			}
 			boolean flag = false;
 			if(HttpUtils.isValidDate(timestamp)){
-//				Date fdate = com.nhry.utils.date.Date.parseDate(timestamp,"yyyyMMddHHmmss").addMinutes(6);
-				Date fdate = com.nhry.utils.date.Date.parseDate(timestamp,"yyyyMMddHHmmss").addMinutes(60*8);
+				Date fdate = com.nhry.utils.date.Date.parseDate(timestamp,"yyyyMMddHHmmss").addMinutes(3);
+//				Date fdate = com.nhry.utils.date.Date.parseDate(timestamp,"yyyyMMddHHmmss").addMinutes(60*8);
 				Date sysdate = new Date();
 				if(sysdate.before(fdate)){
-					//系统时间 小于 前端时间+6分钟
+					//系统时间 小于 前端时间+3分钟
 					String encrypt= HttpUtils.encodePassword(appcode+appkey+timestamp, SysContant.getSystemConst(appcode+"_base_pw")+HttpUtils.getSixpw(timestamp));
 					if(encrypt.equals(idm_auth)){
 						flag = true;
