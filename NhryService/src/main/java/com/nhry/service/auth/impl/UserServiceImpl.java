@@ -68,6 +68,9 @@ public class UserServiceImpl extends BaseService implements UserService {
 			user.setLastModified(new Date());
 			return userMapper.addUser(user);
 		}else{
+			user.setSalesOrg(u.getSalesOrg());
+			user.setDealerId(u.getDealerId());
+			user.setBranchNo(u.getBranchNo());
 			user.setLastModified(new Date());
 			return this.userMapper.updateUser(user);
 		}
