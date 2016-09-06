@@ -992,7 +992,6 @@
 		    <if test="phone != null and phone != ''">
 		       and i.MP = #{phone}
 		    </if>
-		order by i.CREATE_AT desc,i.LAST_MODIFIED desc,i.BRANCH_NO,i.DEALER_NO
 	</select>
 	<select id="getCustCountByPhone"  resultType="Integer" parameterType="java.util.HashMap">
 	   SELECT count(c.VIP_CUST_NO) from t_vip_cust_info c 
