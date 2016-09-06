@@ -1595,7 +1595,17 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 		
 		return order.getOrderNo();
 	}
-
+	//批量订单导入
+	@Override
+	public String createOrders(List<OrderCreateModel> records) {
+		String s = "";
+		if(records != null){
+			for(OrderCreateModel record : records){
+				s.concat(createOrder(record));
+			}
+		}
+		return s;
+	}
 	//根据订单行生成每日计划
 	@Override
 	public List<TOrderDaliyPlanItem> createDaliyPlan(TPreOrder order ,List<TPlanOrderItem> entries){
