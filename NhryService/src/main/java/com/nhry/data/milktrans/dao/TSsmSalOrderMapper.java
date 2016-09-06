@@ -18,6 +18,8 @@ public interface TSsmSalOrderMapper {
 
     List<TSsmSalOrder> selectSalOrderByDateAndBranchNo(SalOrderModel sModel);
 
+    List<TSsmSalOrder> selectSalOrderByRequiredDateAndNo(SalOrderModel model);
+
     int delSalOrderByOrderNo(String orderNo);
 
     List<TSsmSalOrder> findGidOrderByNotWBSTK();

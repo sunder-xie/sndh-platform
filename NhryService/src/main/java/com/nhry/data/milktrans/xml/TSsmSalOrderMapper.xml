@@ -161,7 +161,10 @@
             parameterType="com.nhry.model.milktrans.SalOrderModel">
         SELECT * FROM t_ssm_sal_order WHERE ORDER_DATE = #{orderDate,jdbcType=DATE} AND BRANCH_NO = #{branchNo}
     </select>
-
+    <select id="selectSalOrderByRequiredDateAndNo" resultMap="BaseResultMap"
+            parameterType="com.nhry.model.milktrans.SalOrderModel">
+        SELECT * FROM t_ssm_sal_order WHERE REQUIRED_DATE = #{orderDate,jdbcType=DATE} AND BRANCH_NO = #{branchNo}
+    </select>
 
     <select id="selectSalOrderByDateAndBranchNo" resultMap="BaseResultMap"  parameterType="com.nhry.model.milktrans.SalOrderModel">
         SELECT

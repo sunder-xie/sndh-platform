@@ -39,6 +39,11 @@ public class TSsmSalOrderMapperImpl implements TSsmSalOrderMapper {
     }
 
     @Override
+    public List<TSsmSalOrder> selectSalOrderByRequiredDateAndNo(SalOrderModel model) {
+        return sqlSessionTemplate.selectList("selectSalOrderByRequiredDateAndNo",model);
+    }
+
+    @Override
     public int delSalOrderByOrderNo(String orderNo) {
         return sqlSessionTemplate.delete("delSalOrderByOrderNo",orderNo);
     }
