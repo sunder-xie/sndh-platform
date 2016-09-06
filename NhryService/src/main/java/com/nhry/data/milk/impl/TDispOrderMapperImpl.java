@@ -50,12 +50,12 @@ public class TDispOrderMapperImpl implements TDispOrderMapper
 	}
 	
 	@Override
-	public List<TDispOrder> selectTodayDispOrderByBranchNo(String branchNo)
+	public List<TDispOrder> selectTodayDispOrderByBranchNo(String branchNo,Date date)
 	{
 		SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
 		TDispOrder key = new TDispOrder();
 		key.setBranchNo(branchNo);
-		key.setBranchName(format.format(new Date()));
+		key.setBranchName(format.format(date));
 		return sqlSessionTemplate.selectList("selectTodayDispOrderByBranchNo",key);
 	}
 

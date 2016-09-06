@@ -669,7 +669,7 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 		TPreOrder order = tPreOrderMapper.selectByPrimaryKey(record.getOrderNo());
 		
 		if(order!= null){
-//			if(tDispOrderItemMapper.selectCountOfTodayByOrgOrder(order.getOrderNo(),format.format(new Date()))>0)throw new ServiceException(MessageCode.LOGIC_ERROR,"此订单，今日有未确认的路单!请等路单确认后再操作!");
+			if(tDispOrderItemMapper.selectCountOfTodayByOrgOrder(order.getOrderNo())>0)throw new ServiceException(MessageCode.LOGIC_ERROR,"此订单，有未确认的路单!请等路单确认后再操作!");
 			
 			order.setBackDate(afterDate(new Date(),1));
 			order.setBackReason(record.getReason());
@@ -2757,7 +2757,11 @@ public class OrderServiceImpl extends BaseService implements OrderService {
    //计算续订的订单的开始日期
    private void calculateEntryStartDate(TPlanOrderItem entry){
    	
-   	int gapDays = entry.getGapDays() + 1;//间隔天数
+   	int gapDays = 0;
+   	if(entry.getGapDays()!=null){
+   		gapDays = entry.getGapDays() + 1;//间隔天数
+   	}
+   	
    	List<String> deliverDays = null;
    	if(entry.getRuleTxt()!=null){
    		deliverDays = Arrays.asList(entry.getRuleTxt().split(","));

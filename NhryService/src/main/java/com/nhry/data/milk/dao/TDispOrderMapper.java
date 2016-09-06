@@ -12,7 +12,7 @@ import java.util.List;
 
 public interface TDispOrderMapper {
     //查询今天奶站下的路单数
-    List<TDispOrder> selectTodayDispOrderByBranchNo(String branchNo);
+    List<TDispOrder> selectTodayDispOrderByBranchNo(String branchNo,Date date);
 
     int insert(TDispOrder record);
 
