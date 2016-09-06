@@ -25,7 +25,7 @@ public class NhrySchedulerFactoryBean extends SchedulerFactoryBean {
 		prd_execute_computes.add("ip-10-6-237-79");
 		
 		test_execute_computes = new ArrayList<String>();
-		test_execute_computes.add("0481fe3d2929");
+		test_execute_computes.add("f84b4fa022e9");
 	}
 	
 	public void init() {
@@ -66,13 +66,13 @@ public class NhrySchedulerFactoryBean extends SchedulerFactoryBean {
 			    			stringRedisTemplate.opsForValue().set(timer_execute_location, hostName+";"+new Date().toLongDate());
 			    			System.out.println("----------定时任务启动---hostName---------"+hostName);
 			    		}
-			    	}else if(test_execute_computes.contains(hostName)){
+			    	}/*else if(test_execute_computes.contains(hostName)){
 			    		//测试环境
 			    		this.setAutoStartup(true);
     					this.setStartupDelay(5);
     					System.out.println("----------定时任务启动---hostName---------"+hostName);
-			    	}else{
-			    		this.setAutoStartup(false);
+			    	}*/else{
+			    		this.setAutoStartup(true);
 			    	}
 			    }
 		 }else{
