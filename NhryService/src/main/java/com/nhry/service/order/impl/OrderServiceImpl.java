@@ -2722,7 +2722,11 @@ public class OrderServiceImpl extends BaseService implements OrderService {
    //计算续订的订单的开始日期
    private void calculateEntryStartDate(TPlanOrderItem entry){
    	
-   	int gapDays = entry.getGapDays() + 1;//间隔天数
+   	int gapDays = 0;
+   	if(entry.getGapDays()!=null){
+   		gapDays = entry.getGapDays() + 1;//间隔天数
+   	}
+   	
    	List<String> deliverDays = null;
    	if(entry.getRuleTxt()!=null){
    		deliverDays = Arrays.asList(entry.getRuleTxt().split(","));
