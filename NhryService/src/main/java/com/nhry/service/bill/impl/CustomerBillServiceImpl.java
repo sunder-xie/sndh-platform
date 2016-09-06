@@ -548,10 +548,13 @@ public class CustomerBillServiceImpl implements CustomerBillService {
             }
         }else{
             List<String> advancePayOrders = tPreOrderMapper.selectAdvanceOrderNos(cModel);
-            List<CollectOrderBillModel> before = customerBillMapper.selectBeforeCollectByOrders("20",advancePayOrders);
-            if(before!=null && before.size()>0){
-                result.addAll(before);
+            if(advancePayOrders!=null && advancePayOrders.size()>0){
+                List<CollectOrderBillModel> before = customerBillMapper.selectBeforeCollectByOrders("20",advancePayOrders);
+                if(before!=null && before.size()>0){
+                    result.addAll(before);
+                }
             }
+
             List<String> afterPayOrders = tPreOrderMapper.selectAfterOrderNos(cModel);
             if(afterPayOrders!=null && afterPayOrders.size()>0) {
                 List<CollectOrderBillModel> after = customerBillMapper.selectAfterCollectByOrders("10", afterPayOrders);
