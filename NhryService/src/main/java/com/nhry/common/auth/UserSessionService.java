@@ -113,7 +113,7 @@ public class UserSessionService {
 							}
 						}
 						Date lastDate = new Date(ak.getVisitLastTime());
-						if(lastDate.addMonths(2).before(new Date())){
+						if(lastDate.addHours(2).before(new Date())){
 							System.out.println("-----超过两小时------");
 							//如果上次(第一次)访问时间与系统时间相差2两小时的话，往idm验证一次
 							if(AuthFilter.IDM_AUTH.equals(authflag)){
