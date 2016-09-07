@@ -3671,7 +3671,7 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 	public int createDaliyPlansForIniOrders()
 	{
 		List<TPreOrder> orders = tPreOrderMapper.selectIniOrders();
-		
+		if(orders == null || orders.size()<1000)return 0;
 		orders.stream().forEach((order)->{
 			ArrayList<TPlanOrderItem> entries = (ArrayList<TPlanOrderItem>) tPlanOrderItemMapper.selectByOrderCode(order.getOrderNo());
 			
