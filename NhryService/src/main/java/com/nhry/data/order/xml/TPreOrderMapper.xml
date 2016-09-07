@@ -977,7 +977,7 @@
     select 
     <include refid="Base_Column_List" />
     FROM t_preorder
-    WHERE ORDER_NO like 'A0001%'
+    WHERE ORDER_NO like '0A001%'
   </select>
 
 
