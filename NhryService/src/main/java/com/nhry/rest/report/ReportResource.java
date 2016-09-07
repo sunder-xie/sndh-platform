@@ -803,7 +803,7 @@ public class ReportResource extends BaseResource{
             ExcelUtil.createCell(row4,3,"配送地址："+orderBillModel.getCustAddress(),ExcelUtil.setFontStype(workbook));
             sheet.addMergedRegion(new CellRangeAddress(row4.getRowNum(), row4.getRowNum(), 3, 10));
 
-            ExcelUtil.createCell(row4,11,"客户电话："+orderBillModel.getEmpTel(),ExcelUtil.getCellStyle4(workbook));
+            ExcelUtil.createCell(row4,11,"客户电话："+orderBillModel.getCustTel(),ExcelUtil.getCellStyle4(workbook));
             sheet.addMergedRegion(new CellRangeAddress(row4.getRowNum(), row4.getRowNum(), 11, 13));
 
             XSSFRow row5 = sheet.createRow(rowNum++);
