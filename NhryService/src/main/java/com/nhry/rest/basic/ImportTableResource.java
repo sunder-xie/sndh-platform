@@ -14,6 +14,7 @@ import com.nhry.service.basic.dao.BranchService;
 import com.nhry.service.basic.dao.PriceService;
 import com.nhry.service.basic.dao.ResidentialAreaService;
 import com.nhry.service.basic.dao.TVipCustInfoService;
+import com.nhry.service.basic.pojo.BranchScopeModel;
 import com.nhry.service.order.dao.OrderService;
 import com.nhry.utils.PrimaryKeyUtils;
 import com.nhry.utils.date.Date;
@@ -287,6 +288,31 @@ public class ImportTableResource extends BaseResource {
 
         }
         return convertToRespModel(MessageCode.NORMAL, null,orderService.createOrders(OrderModels));
+    }
+    @POST
+    @Path("/importLinks")
+    @Consumes(MediaType.MULTIPART_FORM_DATA)
+    @Produces(MediaType.APPLICATION_JSON)
+    @ApiOperation(value = "/importLinks", response = ResponseModel.class, notes = "导入奶站关联小区信息")
+    public Response importLinks(FormDataMultiPart form, @Context HttpServletRequest request) throws IOException{
+        FormDataBodyPart filePart = form.getField("file");
+        InputStream fileInputStream = filePart.getValueAs(InputStream.class);
+        FormDataContentDisposition formDataContentDisposition = filePart.getFormDataContentDisposition();
+        XSSFWorkbook workbook = new XSSFWorkbook(new BufferedInputStream(fileInputStream));
+        XSSFSheet sheet = workbook.getSheetAt(0);
+        int rowNum = sheet.getLastRowNum();
+        BranchScopeModel model = new BranchScopeModel();
+        model.setBranchNo(sheet.getRow(0).getCell(0).toString());
+        List<String> areaids = new ArrayList<String>();
+        for (int i = 2; i <= rowNum; i++){
+            int j = 1;
+            XSSFRow row = sheet.getRow(i);
+            XSSFCell cell = row.getCell(j++);
+            //start 导入小区信息
+            areaids.add(cell.toString());//小区编号
+        }
+        model.setResidentialAreaIds(areaids);
+        return convertToRespModel(MessageCode.NORMAL, null,residentialAreaService.areaRelBranch(model));
     }
     private BigDecimal getCellValue(XSSFCell cell) {
         BigDecimal value = new BigDecimal(0);
