@@ -250,13 +250,13 @@
         ) qt ON qt.BRANCH_NO = z.BRANCH_NO
         JOIN t_md_branch br ON br.BRANCH_NO = z.BRANCH_NO
         <if test="branchNo != null">
-            AND br.BRANCH_NO = ${branchNo}
+            AND br.BRANCH_NO =  #{branchNo}
         </if>
         <if test="dealerId != null and dealerId != '-1'">
-            AND br.DEALER_NO = ${dealerId}
+            AND br.DEALER_NO =  #{dealerId}
         </if>
         <if test="salesOrg != null">
-            AND br.SALES_ORG = ${salesOrg}
+            AND br.SALES_ORG =  #{salesOrg}
         </if>
     </select>
 
@@ -508,16 +508,16 @@
             LEFT JOIN t_mst_disp_order od on od.ORDER_NO=i.ORDER_NO
             WHERE  i.REASON='10' and od.STATUS='20'
         <if test="branchNo != null">
-            AND br.BRANCH_NO = ${branchNo}
+            AND br.BRANCH_NO =  #{branchNo}
         </if>
         <if test="dealerId != null and dealerId != '-1'">
-            AND br.DEALER_NO = ${dealerId}
+            AND br.DEALER_NO =  #{dealerId}
         </if>
         <if test="salesOrg != null">
-            AND br.SALES_ORG = ${salesOrg}
+            AND br.SALES_ORG =  #{salesOrg}
         </if>
         <if test="empNo !=null">
-            AND u.EMP_NO = ${empNo}
+            AND u.EMP_NO =  #{empNo}
         </if>
         <if test="dateStart !=null">
             AND i.ORDER_DATE  &gt;=  #{dateStart,jdbcType=DATE}
@@ -555,16 +555,16 @@
         WHERE
         1 = 1
         <if test="salesOrg != null">
-            AND br.SALES_ORG = ${salesOrg}
+            AND br.SALES_ORG =  #{salesOrg}
         </if>
         <if test="branchNo != null">
-            AND br.BRANCH_NO = ${branchNo}
+            AND br.BRANCH_NO =  #{branchNo}
         </if>
         <if test="dealerId != null and dealerId != '-1'">
-            AND br.DEALER_NO = ${dealerId}
+            AND br.DEALER_NO =  #{dealerId}
         </if>
         <if test="empNo !=null">
-            AND d.EMP_NO = ${empNo}
+            AND d.EMP_NO =  #{empNo,jdbcType=VARCHAR}
         </if>
         <if test="dateStart !=null">
             AND d.CREATE_AT  &gt;=  #{dateStart,jdbcType=DATE}
