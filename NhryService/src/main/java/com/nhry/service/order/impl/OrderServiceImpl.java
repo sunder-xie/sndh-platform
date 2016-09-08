@@ -670,6 +670,7 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 		TPreOrder order = tPreOrderMapper.selectByPrimaryKey(record.getOrderNo());
 		
 		if(order!= null){
+			if("10".equals(order.getPreorderSource()))throw new ServiceException(MessageCode.LOGIC_ERROR,"电商的订单不能退订!");
 			if(tDispOrderItemMapper.selectCountOfTodayByOrgOrder(order.getOrderNo())>0)throw new ServiceException(MessageCode.LOGIC_ERROR,"此订单，有未确认的路单!请等路单确认后再操作!");
 			
 			order.setBackDate(afterDate(new Date(),1));
@@ -3704,11 +3705,15 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 	* @see com.nhry.service.order.dao.OrderService#createDaliyPlansForIniOrders() 
 	*/
 	@Override
-	public int createDaliyPlansForIniOrders()
+	public int createDaliyPlansForIniOrders(String str)
 	{
-		List<TPreOrder> orders = tPreOrderMapper.selectIniOrders();
-		if(orders == null || orders.size()<1000)return 0;
-		orders.stream().forEach((order)->{
+		if(StringUtils.isBlank(str) || str.length()<5)throw new ServiceException(MessageCode.LOGIC_ERROR,"请输入5位或以上字符串");
+		
+		TPreOrder model = new TPreOrder();
+		model.setOrderNo(str);
+		List<TPreOrder> orders = tPreOrderMapper.selectIniOrders(model);
+		
+		orders.stream().forEach((order)->{ 
 			ArrayList<TPlanOrderItem> entries = (ArrayList<TPlanOrderItem>) tPlanOrderItemMapper.selectByOrderCode(order.getOrderNo());
 			
 			/////////////////////////////
@@ -3825,6 +3830,7 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 			
 		});
 		
+		System.out.println("========================生成导入订单的日计划已经全部完毕！==============================");
 		return 1;
 	}
 

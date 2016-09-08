@@ -973,11 +973,11 @@
           </foreach>
   </update>
   
-  <select id="selectIniOrders" resultMap="BaseResultMap">
+  <select id="selectIniOrders" resultMap="BaseResultMap" parameterType="com.nhry.data.order.domain.TPreOrder">
     select 
     <include refid="Base_Column_List" />
     FROM t_preorder
-    WHERE ORDER_NO like '0A001%'
+    WHERE ORDER_NO like '${orderNo}%'
   </select>
 
 

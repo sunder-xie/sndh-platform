@@ -220,9 +220,9 @@ public class TPreOrderMapperImpl implements TPreOrderMapper
 	* @see com.nhry.data.order.dao.TPreOrderMapper#selectIniOrders() 
 	*/
 	@Override
-	public List<TPreOrder> selectIniOrders()
+	public List<TPreOrder> selectIniOrders(TPreOrder order)
 	{
-		return sqlSessionTemplate.selectList("selectIniOrders");
+		return sqlSessionTemplate.selectList("selectIniOrders",order);
 	}
 
 	@Override
