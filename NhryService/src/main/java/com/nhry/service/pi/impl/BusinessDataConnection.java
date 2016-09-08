@@ -4,6 +4,7 @@ import com.nhry.common.exception.MessageCode;
 import com.nhry.common.exception.ServiceException;
 import com.nhry.data.basic.domain.TMdBranchEx;
 import com.nhry.service.pi.pojo.SalesOrderHeader;
+import com.nhry.utils.EnvContant;
 import com.nhry.utils.PIPropertitesUtil;
 import com.nhry.webService.OptionManager;
 import com.nhry.webService.client.PISuccessMessage;
@@ -27,7 +28,7 @@ import java.util.Date;
  */
 public class BusinessDataConnection {
 
-    private static final String URL = PIPropertitesUtil.getValue("PI.BusinessData.URL");
+    private static final String URL = EnvContant.getSystemConst("PI.BusinessData.URL");
     private static final String SIGN = PIPropertitesUtil.getValue("PI.MasterData.mATQUERY.SIGN");
     private static final String EQ = PIPropertitesUtil.getValue("PI.MasterData.mATQUERY.OPTION.EQ");
     private static final String I_DELIVERY_D = "D";

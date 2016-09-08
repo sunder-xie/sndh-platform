@@ -2,6 +2,7 @@ package com.nhry.service.pi.impl;
 
 import com.nhry.model.webService.VipPointModel;
 import com.nhry.service.pi.dao.PIVipPointService;
+import com.nhry.utils.EnvContant;
 import com.nhry.utils.PIPropertitesUtil;
 import com.nhry.webService.OptionManager;
 import com.nhry.webService.client.EvMembPoint;
@@ -16,11 +17,21 @@ import org.apache.commons.lang.StringUtils;
  * Created by cbz on 7/6/2016.
  */
 public class PIVipPointServiceImpl implements PIVipPointService {
-    private static String POINTURL = PIPropertitesUtil.getValue("PI.VipPointData.URL");
+    private static String POINTURL = EnvContant.getSystemConst("PI.VipPointData.URL");
     private static String MESSAGE_FLAG = PIPropertitesUtil.getValue("PI.MESSAGE.FLAG.OK");
+    private static String PICRMEXEC = EnvContant.getSystemConst("PI.CRM.EXEC");
+    public static void main(String []args){
+        System.out.println(POINTURL);
+        System.out.println(PICRMEXEC);
+    }
     @Override
     public PISuccessTMessage queryVipPointData(VipPointModel model) {
         PISuccessTMessage<java.util.List<EvMembPoint>> result = new PISuccessTMessage<java.util.List<EvMembPoint>>();
+        if(!"on".equals(PICRMEXEC)){
+            result.setSuccess(false);
+            result.setMessage("暂停使用！");
+            return result;
+        }
         try {
             PointQuery_OutServiceStub client = connQueryService();
             Z_CRM_PT_QUERY_RFC z_crm_pt_query_rfc = new Z_CRM_PT_QUERY_RFC();
