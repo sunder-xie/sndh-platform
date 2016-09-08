@@ -3668,9 +3668,9 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 	* @see com.nhry.service.order.dao.OrderService#createDaliyPlansForIniOrders() 
 	*/
 	@Override
-	public int createDaliyPlansForIniOrders()
+	public int createDaliyPlansForIniOrders(String str)
 	{
-		List<TPreOrder> orders = tPreOrderMapper.selectIniOrders();
+		List<TPreOrder> orders = tPreOrderMapper.selectIniOrders(str);
 		if(orders == null || orders.size()<1000)return 0;
 		orders.stream().forEach((order)->{
 			ArrayList<TPlanOrderItem> entries = (ArrayList<TPlanOrderItem>) tPlanOrderItemMapper.selectByOrderCode(order.getOrderNo());
