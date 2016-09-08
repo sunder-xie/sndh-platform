@@ -78,12 +78,19 @@ public class UserServiceImpl extends BaseService implements UserService {
 			user.setSalesOrg(u.getSalesOrg());
 			user.setDealerId(u.getDealerId());
 			user.setBranchNo(u.getBranchNo());
-			
 			user.setLastModified(new Date());
+			this.userMapper.updateUser(user);
+			
 			if("true".equals(user.getDsPwpAccountDisabled()) && !StringUtils.isEmpty(u.getBranchNo())){
 				//账号被禁用
 				TMdBranchEmp emp = branchEmpMapper.selectActiveBranchEmpByNo(user.getLoginName());
 				if(emp != null){
+					emp.setLeaveDate(new Date());
+					emp.setStatus("0");
+					emp.setLastModified(new Date());
+					emp.setLastModifiedBy(SysContant.getSysUser().getLoginName());
+					emp.setLastModifiedByTxt(SysContant.getSysUser().getDisplayName());
+					branchEmpMapper.uptBranchEmpByBraNo(emp);
 					messageService.sendMessageForEmpUpt(emp, "upt", SysContant.getSysUser());
 				}
 			}else if(!StringUtils.isEmpty(u.getBranchNo())){
@@ -100,7 +107,7 @@ public class UserServiceImpl extends BaseService implements UserService {
 				emp.setLastModifiedByTxt(SysContant.getSysUser().getDisplayName());
 				branchEmpMapper.uptBranchEmpByBraNo(emp);
 			}
-			return this.userMapper.updateUser(user);
+			return 1;
 		}
 	}
 
