@@ -55,7 +55,7 @@ public class BranchEmpServiceImpl extends BaseService implements BranchEmpServic
 	}
 
 	@Override
-	public int addBranchEmp(TMdBranchEmp record) {
+	public int addBranchEmp(TMdBranchEmp record,boolean isLeave) {
 		TSysUser sysuser = userSessionService.getCurrentUser();
         this.taskExecutor.execute(new Thread(){
 			@Override
@@ -68,23 +68,26 @@ public class BranchEmpServiceImpl extends BaseService implements BranchEmpServic
 					if(!emp.getBranchNo().equals(record.getBranchNo())){
 						//员工奶站变更(原账号  变成离职，在新奶站建立一个新员工数据)
 						//先处理在新奶站建立一个新员工数据
-						try {
-							TMdBranchEmp newEmp = (TMdBranchEmp)emp.clone();
-							newEmp.setSalesOrg(record.getSalesOrg());
-							newEmp.setBranchNo(record.getBranchNo());
-							newEmp.setEmpNo(PrimaryKeyUtils.generateUuidKey());
-							newEmp.setMp(!StringUtils.isEmpty(record.getMp()) ? record.getMp() : emp.getMp());
-							newEmp.setEmpName(record.getEmpName());
-							newEmp.setLastModified(new Date());
-							newEmp.setLastModifiedBy(sysuser.getLoginName());
-							newEmp.setLastModifiedByTxt(sysuser.getDisplayName());
-							newEmp.setStatus("1");
-							//往调整后的奶站的copy一个员工
-							branchEmpMapper.addBranchEmp(newEmp);
-							messageService.sendMessageForEmpUpt(newEmp, "add", sysuser);
-						} catch (CloneNotSupportedException e) {
-							// TODO Auto-generated catch block
-							e.printStackTrace();
+						if(!isLeave){
+							//建立新员工
+							try {
+								TMdBranchEmp newEmp = (TMdBranchEmp)emp.clone();
+								newEmp.setSalesOrg(record.getSalesOrg());
+								newEmp.setBranchNo(record.getBranchNo());
+								newEmp.setEmpNo(PrimaryKeyUtils.generateUuidKey());
+								newEmp.setMp(!StringUtils.isEmpty(record.getMp()) ? record.getMp() : emp.getMp());
+								newEmp.setEmpName(record.getEmpName());
+								newEmp.setLastModified(new Date());
+								newEmp.setLastModifiedBy(sysuser.getLoginName());
+								newEmp.setLastModifiedByTxt(sysuser.getDisplayName());
+								newEmp.setStatus("1");
+								//往调整后的奶站的copy一个员工
+								branchEmpMapper.addBranchEmp(newEmp);
+								messageService.sendMessageForEmpUpt(newEmp, "add", sysuser);
+							} catch (CloneNotSupportedException e) {
+								// TODO Auto-generated catch block
+								e.printStackTrace();
+							}
 						}
 						
 						//再处理原奶站员工离职问题

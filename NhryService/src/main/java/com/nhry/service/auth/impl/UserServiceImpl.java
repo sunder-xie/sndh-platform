@@ -7,7 +7,9 @@ import com.nhry.data.auth.dao.TSysRoleMapper;
 import com.nhry.data.auth.dao.TSysUserMapper;
 import com.nhry.data.auth.domain.TSysAccesskey;
 import com.nhry.data.auth.domain.TSysUser;
+import com.nhry.data.basic.dao.TMdBranchEmpMapper;
 import com.nhry.data.basic.domain.TMdBranchEmp;
+import com.nhry.data.basic.domain.TSysMessage;
 import com.nhry.data.config.dao.NHSysCodeItemMapper;
 import com.nhry.data.config.domain.NHSysCodeItem;
 import com.nhry.model.auth.UserQueryModel;
@@ -18,6 +20,7 @@ import com.nhry.service.auth.dao.ResourceService;
 import com.nhry.service.auth.dao.TSysAccesskeyService;
 import com.nhry.service.auth.dao.UserService;
 import com.nhry.service.basic.dao.BranchEmpService;
+import com.nhry.service.basic.dao.TSysMessageService;
 import com.nhry.utils.Base64Util;
 import com.nhry.utils.SysContant;
 import com.nhry.utils.date.Date;
@@ -35,7 +38,10 @@ public class UserServiceImpl extends BaseService implements UserService {
 	private RedisTemplate objectRedisTemplate;
 	private BranchEmpService branchEmpService;
 	private TSysAccesskeyService accessKeyService;
-
+	private TMdBranchEmpMapper branchEmpMapper;
+	private TSysMessageService messageService;
+    
+	
 	@Override
 	public PageInfo findUser(UserQueryModel um){
 		// TODO Auto-generated method stub
@@ -74,6 +80,26 @@ public class UserServiceImpl extends BaseService implements UserService {
 			user.setBranchNo(u.getBranchNo());
 			
 			user.setLastModified(new Date());
+			if("true".equals(user.getDsPwpAccountDisabled()) && !StringUtils.isEmpty(u.getBranchNo())){
+				//账号被禁用
+				TMdBranchEmp emp = branchEmpMapper.selectActiveBranchEmpByNo(user.getLoginName());
+				if(emp != null){
+					messageService.sendMessageForEmpUpt(emp, "upt", SysContant.getSysUser());
+				}
+			}else if(!StringUtils.isEmpty(u.getBranchNo())){
+				TMdBranchEmp emp = new TMdBranchEmp();
+				emp.setEmpNo(u.getLoginName());
+				emp.setHrEmpNo(u.getLoginName());
+				emp.setBranchNo(u.getBranchNo());
+				emp.setEmpName(u.getDisplayName());
+				emp.setMp(u.getMobile());
+				emp.setIdNo(u.getSmartIdcardnumber());
+				emp.setJoinDate(u.getCustomizedJoininworkdate());
+				emp.setLastModified(new Date());
+				emp.setLastModifiedBy(SysContant.getSysUser().getLoginName());
+				emp.setLastModifiedByTxt(SysContant.getSysUser().getDisplayName());
+				branchEmpMapper.uptBranchEmpByBraNo(emp);
+			}
 			return this.userMapper.updateUser(user);
 		}
 	}
@@ -107,30 +133,39 @@ public class UserServiceImpl extends BaseService implements UserService {
 		if(StringUtils.isEmpty(record.getLoginName())){
 			throw new ServiceException(MessageCode.LOGIC_ERROR, "用户名登录名不能为空！");
 		}
+		TSysUser user = new TSysUser();
+		user.setLoginName(record.getLoginName());
+		TSysUser oldSysuser = userMapper.login(user);
+		if(oldSysuser == null){
+			throw new ServiceException(MessageCode.LOGIC_ERROR, "该用户名对应的用户不存在！");
+		}
+		
 		record.setLastModified(new Date());
 		if("-1".equals(record.getDealerId())){
 			record.setDealerId(null);
 		}
 		userMapper.updateUser(record);
 		
-		if(!StringUtils.isEmpty(record.getBranchNo())){
-			//奶站员工
-			TSysUser user = new TSysUser();
-			user.setLoginName(record.getLoginName());
-			TSysUser sysuser = userMapper.login(user);
-			if(sysuser == null){
-				throw new ServiceException(MessageCode.LOGIC_ERROR, "用户名对应的用户不存在！");
-			}
+		if(!StringUtils.isEmpty(oldSysuser.getBranchNo()) && StringUtils.isEmpty(record.getBranchNo())){
+			//奶站员工离职操作
 			TMdBranchEmp emp = new TMdBranchEmp();
-			emp.setEmpNo(sysuser.getLoginName());
-			emp.setHrEmpNo(sysuser.getLoginName());
-			emp.setBranchNo(sysuser.getBranchNo());
-			emp.setSalesOrg(sysuser.getSalesOrg());
-			emp.setEmpName(sysuser.getDisplayName());
-			emp.setMp(sysuser.getMobile());
-			emp.setIdNo(sysuser.getSmartIdcardnumber());
-			emp.setJoinDate(sysuser.getCustomizedJoininworkdate());
-			branchEmpService.addBranchEmp(emp);
+			emp.setEmpNo(oldSysuser.getLoginName());
+			branchEmpService.addBranchEmp(emp,true);
+		}else{
+			TSysUser sysuser = userMapper.login(user);
+			if(!StringUtils.isEmpty(record.getBranchNo())){
+				//奶站员工
+				TMdBranchEmp emp = new TMdBranchEmp();
+				emp.setEmpNo(sysuser.getLoginName());
+				emp.setHrEmpNo(sysuser.getLoginName());
+				emp.setBranchNo(sysuser.getBranchNo());
+				emp.setSalesOrg(sysuser.getSalesOrg());
+				emp.setEmpName(sysuser.getDisplayName());
+				emp.setMp(sysuser.getMobile());
+				emp.setIdNo(sysuser.getSmartIdcardnumber());
+				emp.setJoinDate(sysuser.getCustomizedJoininworkdate());
+				branchEmpService.addBranchEmp(emp,false);
+			}
 		}
 		return 1;
 	}
@@ -225,5 +260,13 @@ public class UserServiceImpl extends BaseService implements UserService {
 
 	public void setAccessKeyService(TSysAccesskeyService accessKeyService) {
 		this.accessKeyService = accessKeyService;
+	}
+
+	public void setBranchEmpMapper(TMdBranchEmpMapper branchEmpMapper) {
+		this.branchEmpMapper = branchEmpMapper;
+	}
+
+	public void setMessageService(TSysMessageService messageService) {
+		this.messageService = messageService;
 	}
 }
