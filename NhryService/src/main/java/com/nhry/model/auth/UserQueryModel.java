@@ -9,6 +9,7 @@ public class UserQueryModel extends BaseQueryModel implements Serializable {
     private String uname;
     private String roleId;
     private String salesOrg;
+    private String cmpCode;
 
     public String getUname() {
         return uname;
@@ -33,4 +34,12 @@ public class UserQueryModel extends BaseQueryModel implements Serializable {
     public void setSalesOrg(String salesOrg) {
         this.salesOrg = salesOrg;
     }
+
+	public String getCmpCode() {
+		return cmpCode;
+	}
+
+	public void setCmpCode(String cmpCode) {
+		this.cmpCode = cmpCode;
+	}
 }

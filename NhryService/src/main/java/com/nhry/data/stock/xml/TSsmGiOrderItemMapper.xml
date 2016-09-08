@@ -157,4 +157,15 @@
     SELECT i.*,m.MATNR_TXT,m.BASE_UNIT FROM t_ssm_gi_order_item i left join t_md_mara m ON i.MATNR = m.MATNR and m.SALES_ORG = #{salesOrg,jdbcType=VARCHAR} WHERE ORDER_NO = #{orderNo,jdbcType=VARCHAR}
   </select>
 
+    <select id="selectProximalFactoryPrice" resultType="BigDecimal" parameterType="java.util.Map">
+        SELECT
+        IFNULL((SELECT i.FACTORY_PRICE from t_ssm_gi_order_item i WHERE i.ORDER_DATE = MAX(gi.ORDER_DATE) and i.ORDER_NO = gi.ORDER_NO and i.MATNR = gi.MATNR),0) FACTORY_PRICE
+        FROM t_ssm_gi_order_item gi
+        LEFT JOIN t_ssm_gi_order go on go.ORDER_NO = gi.ORDER_NO
+        WHERE  1=1
+        and go.BRANCH_NO = #{branchNo}
+        and gi.MATNR =#{matnr}
+        and gi.ORDER_DATE &lt; curdate()
+    </select>
+
 </mapper>

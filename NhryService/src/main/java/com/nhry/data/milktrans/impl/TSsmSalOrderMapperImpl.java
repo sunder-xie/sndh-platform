@@ -3,8 +3,6 @@ package com.nhry.data.milktrans.impl;
 import com.nhry.common.datasource.DynamicSqlSessionTemplate;
 import com.nhry.data.milktrans.dao.TSsmSalOrderMapper;
 import com.nhry.data.milktrans.domain.TSsmSalOrder;
-import com.nhry.data.stock.domain.TSsmGiOrder;
-import com.nhry.model.order.OrderPointModel;
 import com.nhry.model.milktrans.SalOrderModel;
 
 import java.util.List;
@@ -36,8 +34,13 @@ public class TSsmSalOrderMapperImpl implements TSsmSalOrderMapper {
     }
 
     @Override
-    public List<TSsmSalOrder> selectSalOrderByDateAndBranchOrDealerNo(SalOrderModel sModel) {
-        return sqlSessionTemplate.selectList("selectSalOrderByDateAndBranchOrDealerNo",sModel);
+    public List<TSsmSalOrder> selectSalOrderByDateAndBranchNo(SalOrderModel sModel) {
+        return sqlSessionTemplate.selectList("selectSalOrderByDateAndBranchNo",sModel);
+    }
+
+    @Override
+    public List<TSsmSalOrder> selectSalOrderByRequiredDateAndNo(SalOrderModel model) {
+        return sqlSessionTemplate.selectList("selectSalOrderByRequiredDateAndNo",model);
     }
 
     @Override

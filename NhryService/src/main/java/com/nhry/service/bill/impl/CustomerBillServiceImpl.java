@@ -217,6 +217,8 @@ public class CustomerBillServiceImpl implements CustomerBillService {
                 if("10".equals(order.getPaymentmethod())){
                     BigDecimal factAmt = tPreOrderMapper.calculateOrderFactoryAmt(orderNo);
                     int  updateFactAmt = tPreOrderMapper.updateOrderFacAmt(factAmt  == null ? new BigDecimal(0) : factAmt,orderNo);
+                }else{
+                    //List<>
                 }
 
 
@@ -523,22 +525,48 @@ public class CustomerBillServiceImpl implements CustomerBillService {
 
     @Override
     public List<CollectOrderBillModel> BatchPrintForExp(CustBillQueryModel cModel) {
+        TSysUser user = userSessionService.getCurrentUser();
+        cModel.setBranchNo(user.getBranchNo());
         List<CollectOrderBillModel> result = new ArrayList<CollectOrderBillModel>();
-        List<String> advancePayOrders = tPreOrderMapper.selectAdvanceOrderNos(cModel);
-        if(advancePayOrders!=null && advancePayOrders.size()>0){
-            List<CollectOrderBillModel> before = customerBillMapper.selectBeforeCollectByOrders("20",advancePayOrders);
-            if(before!=null && before.size()>0){
-                result.addAll(before);
+        if(StringUtils.isNotBlank(cModel.getPaymentmethod()) ){
+            if( "20".equals(cModel.getPaymentmethod())){
+                List<String> advancePayOrders = tPreOrderMapper.selectAdvanceOrderNos(cModel);
+                if(advancePayOrders!=null && advancePayOrders.size()>0){
+                    List<CollectOrderBillModel> before = customerBillMapper.selectBeforeCollectByOrders("20",advancePayOrders);
+                    if(before!=null && before.size()>0){
+                        result.addAll(before);
+                    }
+                }
+            }else{
+                List<String> afterPayOrders = tPreOrderMapper.selectAfterOrderNos(cModel);
+                if(afterPayOrders!=null && afterPayOrders.size()>0) {
+                    List<CollectOrderBillModel> after = customerBillMapper.selectAfterCollectByOrders("10", afterPayOrders);
+                    if (after != null && after.size() > 0) {
+                        result.addAll(after);
+                    }
+                }
             }
+        }else{
+            List<String> advancePayOrders = tPreOrderMapper.selectAdvanceOrderNos(cModel);
+            if(advancePayOrders!=null && advancePayOrders.size()>0){
+                List<CollectOrderBillModel> before = customerBillMapper.selectBeforeCollectByOrders("20",advancePayOrders);
+                if(before!=null && before.size()>0){
+                    result.addAll(before);
+                }
+            }
+
+            List<String> afterPayOrders = tPreOrderMapper.selectAfterOrderNos(cModel);
+            if(afterPayOrders!=null && afterPayOrders.size()>0) {
+                List<CollectOrderBillModel> after = customerBillMapper.selectAfterCollectByOrders("10", afterPayOrders);
+                if (after != null && after.size() > 0) {
+                    result.addAll(after);
+                }
+            }
+
         }
 
-        List<String> afterPayOrders = tPreOrderMapper.selectAfterOrderNos(cModel);
-        if(afterPayOrders!=null && afterPayOrders.size()>0) {
-            List<CollectOrderBillModel> after = customerBillMapper.selectAfterCollectByOrders("10", afterPayOrders);
-            if (after != null && after.size() > 0) {
-                result.addAll(after);
-            }
-        }
+
+
         return result;
     }
 

@@ -39,6 +39,13 @@ public class UserServiceImpl extends BaseService implements UserService {
 	@Override
 	public PageInfo findUser(UserQueryModel um){
 		// TODO Auto-generated method stub
+		TSysUser sysuser = this.userSessionService.getCurrentUser();
+		if(!StringUtils.isEmpty(sysuser.getSalesOrg())){
+			um.setSalesOrg(sysuser.getSalesOrg());
+		}
+		if(!StringUtils.isEmpty(sysuser.getCustomizedHrregion())){
+			um.setCmpCode(sysuser.getCustomizedHrregion());
+		}
 		return userMapper.findUser(um);
 	}
 
@@ -61,6 +68,11 @@ public class UserServiceImpl extends BaseService implements UserService {
 			user.setLastModified(new Date());
 			return userMapper.addUser(user);
 		}else{
+			//用户修改时，不同步组织属性
+			user.setSalesOrg(u.getSalesOrg());
+			user.setDealerId(u.getDealerId());
+			user.setBranchNo(u.getBranchNo());
+			
 			user.setLastModified(new Date());
 			return this.userMapper.updateUser(user);
 		}
@@ -146,6 +158,13 @@ public class UserServiceImpl extends BaseService implements UserService {
 	public PageInfo findUserPageByRoleId(UserQueryModel um) {
 		if(StringUtils.isEmpty(um.getPageNum()) || StringUtils.isEmpty(um.getPageSize()) || StringUtils.isEmpty(um.getRoleId())){
 			throw new ServiceException(MessageCode.LOGIC_ERROR,"roleId,pageNum和pageSize不能为空！");
+		}
+		TSysUser sysuser = this.userSessionService.getCurrentUser();
+		if(!StringUtils.isEmpty(sysuser.getSalesOrg())){
+			um.setSalesOrg(sysuser.getSalesOrg());
+		}
+		if(!StringUtils.isEmpty(sysuser.getCustomizedHrregion())){
+			um.setCmpCode(sysuser.getCustomizedHrregion());
 		}
 		return userMapper.findUserPageByRoleId(um);
 	}

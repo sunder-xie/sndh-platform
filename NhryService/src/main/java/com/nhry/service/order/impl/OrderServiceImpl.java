@@ -20,6 +20,7 @@ import com.nhry.data.order.domain.TOrderDaliyPlanItem;
 import com.nhry.data.order.domain.TPlanOrderItem;
 import com.nhry.data.order.domain.TPreOrder;
 import com.nhry.data.order.domain.TPromotion;
+import com.nhry.data.stock.dao.TSsmGiOrderItemMapper;
 import com.nhry.model.milk.RouteDetailUpdateModel;
 import com.nhry.model.order.*;
 import com.nhry.service.BaseService;
@@ -58,8 +59,12 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 	private EcService messLogService;
 	private CustomerBillMapper customerBillMapper;
 	private PIVipInfoDataService piVipInfoDataService;
+	private TSsmGiOrderItemMapper tSsmGiOrderItemMapper;
 	private SmsSendService smsSendService;
-	
+
+	public void settSsmGiOrderItemMapper(TSsmGiOrderItemMapper tSsmGiOrderItemMapper) {
+		this.tSsmGiOrderItemMapper = tSsmGiOrderItemMapper;
+	}
 	public SmsSendService getSmsSendService()
 	{
 		return smsSendService;
@@ -149,6 +154,22 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 		smodel.setDealerNo(userSessionService.getCurrentUser().getDealerId());
 		return tPreOrderMapper.searchReturnOrdersNum(smodel);
 	}
+
+	@Override
+	public BigDecimal calPreOrderTotalFactoryPrice(String orderNo) {
+		TPreOrder order = tPreOrderMapper.selectByPrimaryKey(orderNo);
+		BigDecimal result = new BigDecimal(0);
+		if("20".equals(order.getPaymentmethod())){
+			List<TPlanOrderItem> items = tPlanOrderItemMapper.selectByOrderCode(orderNo);
+			if(items!=null && items.size()>0){
+				for(TPlanOrderItem item : items){
+					BigDecimal factoryPrice = tSsmGiOrderItemMapper.selectProximalFactoryPrice(item.getMatnr(),order.getBranchNo());
+				}
+			}
+		}
+		return result;
+	}
+
 	//登陆页面时，还有5天就要到期的订单
 	@Override
 	public int selectStopOrderNum()
@@ -648,6 +669,7 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 		TPreOrder order = tPreOrderMapper.selectByPrimaryKey(record.getOrderNo());
 		
 		if(order!= null){
+			if("10".equals(order.getPreorderSource()))throw new ServiceException(MessageCode.LOGIC_ERROR,"电商的订单不能退订!");
 			if(tDispOrderItemMapper.selectCountOfTodayByOrgOrder(order.getOrderNo())>0)throw new ServiceException(MessageCode.LOGIC_ERROR,"此订单，有未确认的路单!请等路单确认后再操作!");
 			
 			order.setBackDate(afterDate(new Date(),1));
@@ -1387,7 +1409,11 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 		validateOrderInfo(record);
 		//暂时生成订单号
 		Date date = new Date();
-		order.setOrderNo(CodeGeneratorUtil.getCode());
+		//判断如果新增订单时订单编号不为空，则代表是订户数据导入
+		if(StringUtils.isBlank(order.getOrderNo())){
+			order.setOrderNo(CodeGeneratorUtil.getCode());
+		}
+
 		//其他订单信息
 		order.setOrderDate(date);//订单创建日期
 
@@ -1570,7 +1596,17 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 		
 		return order.getOrderNo();
 	}
-
+	//批量订单导入
+	@Override
+	public String createOrders(List<OrderCreateModel> records) {
+		String s = "";
+		if(records != null){
+			for(OrderCreateModel record : records){
+				s.concat(createOrder(record));
+			}
+		}
+		return s;
+	}
 	//根据订单行生成每日计划
 	@Override
 	public List<TOrderDaliyPlanItem> createDaliyPlan(TPreOrder order ,List<TPlanOrderItem> entries){
@@ -3670,9 +3706,13 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 	@Override
 	public int createDaliyPlansForIniOrders(String str)
 	{
-		List<TPreOrder> orders = tPreOrderMapper.selectIniOrders(str);
-		if(orders == null || orders.size()<1000)return 0;
-		orders.stream().forEach((order)->{
+		if(StringUtils.isBlank(str) || str.length()<5)throw new ServiceException(MessageCode.LOGIC_ERROR,"请输入5位或以上字符串");
+		
+		TPreOrder model = new TPreOrder();
+		model.setOrderNo(str);
+		List<TPreOrder> orders = tPreOrderMapper.selectIniOrders(model);
+		
+		orders.stream().forEach((order)->{ 
 			ArrayList<TPlanOrderItem> entries = (ArrayList<TPlanOrderItem>) tPlanOrderItemMapper.selectByOrderCode(order.getOrderNo());
 			
 			/////////////////////////////
@@ -3789,6 +3829,7 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 			
 		});
 		
+		System.out.println("========================生成导入订单的日计划已经全部完毕！==============================");
 		return 1;
 	}
 

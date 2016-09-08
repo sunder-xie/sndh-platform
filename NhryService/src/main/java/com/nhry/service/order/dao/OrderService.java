@@ -29,6 +29,8 @@ public interface OrderService {
 
 	String createOrder(OrderCreateModel record);
 
+	String createOrders(List<OrderCreateModel> record);
+
 	int editOrderForLong(OrderEditModel record);
 
 	int editOrderForShort(DaliyPlanEditModel record);
@@ -102,6 +104,8 @@ public interface OrderService {
 	int selectUnfinishOrderNum(String vipCustNo);
 
 	int searchReturnOrdersNum();
-	
+
+	BigDecimal calPreOrderTotalFactoryPrice(String orderNo);
+
 	void selectOrdersAndSendMessage();
 }

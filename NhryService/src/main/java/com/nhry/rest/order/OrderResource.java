@@ -47,6 +47,14 @@ public class OrderResource extends BaseResource {
 	}
 	
 	@GET
+	@Path("/createDaliyPlansForIniOrders/{str}")
+	@Produces(MediaType.APPLICATION_JSON)
+	@ApiOperation(value = "/{str}", response = OrderCreateModel.class, notes = "为导入的订单生成日计划")
+	public Response createDaliyPlansForIniOrders(@ApiParam(required=true,name="str",value="模糊字符串,订单号前5位") @PathParam("str") String str){
+		return convertToRespModel(MessageCode.NORMAL, null, orderService.createDaliyPlansForIniOrders(str));
+	}
+	
+	@GET
 	@Path("/selectLatestOrder/{vipNo}")
 	@Produces(MediaType.APPLICATION_JSON)
 	@ApiOperation(value = "/selectLatestOrder/{vipNo}", response = OrderCreateModel.class, notes = "查询该用户上一张订单的送奶员和订单号")

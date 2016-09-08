@@ -161,22 +161,23 @@
             parameterType="com.nhry.model.milktrans.SalOrderModel">
         SELECT * FROM t_ssm_sal_order WHERE ORDER_DATE = #{orderDate,jdbcType=DATE} AND BRANCH_NO = #{branchNo}
     </select>
+    <select id="selectSalOrderByRequiredDateAndNo" resultMap="BaseResultMap"
+            parameterType="com.nhry.model.milktrans.SalOrderModel">
+        SELECT * FROM t_ssm_sal_order WHERE REQUIRED_DATE = #{orderDate,jdbcType=DATE} AND BRANCH_NO = #{branchNo}
+    </select>
 
-
-    <select id="selectSalOrderByDateAndBranchOrDealerNo" resultMap="BaseResultMap"  parameterType="com.nhry.model.milktrans.SalOrderModel">
+    <select id="selectSalOrderByDateAndBranchNo" resultMap="BaseResultMap"  parameterType="com.nhry.model.milktrans.SalOrderModel">
         SELECT
         o.ORDER_NO,o.ORDER_DATE,o.BRANCH_NO,o.REQUIRED_DATE,o.VOUCHER_NO,o.STATUS,o.MEMO_TXT,
         o.PROM_NO,b.BRANCH_NAME,b.DEALER_NO,d.DEALER_NAME
         FROM
-        t_ssm_sal_order o LEFT  JOIN  t_md_branch b on o.BRANCH_NO = b.BRANCH_NO
-        LEFT  JOIN  t_md_dealer d on o.DEALER_NO = d.DEALER_NO
+           t_ssm_sal_order o
+        LEFT  JOIN  t_md_branch b on o.BRANCH_NO = b.BRANCH_NO
+        LEFT  JOIN  t_md_dealer d on b.DEALER_NO = d.DEALER_NO
         WHERE 1=1
         and ORDER_DATE = #{orderDate,jdbcType=DATE}
         <if test="branchNo!=null and ''!=branchNo">
-        AND o.BRANCH_NO = #{branchNo}
-        </if>
-        <if test="dealerNo!=null and ''!=dealerNo">
-            AND b.DEALER_NO = #{dealerNo}
+             AND o.BRANCH_NO = #{branchNo}
         </if>
     </select>
 

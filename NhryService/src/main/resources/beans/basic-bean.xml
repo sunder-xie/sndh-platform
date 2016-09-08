@@ -84,6 +84,7 @@
 		<property name="tDispOrderItemMapper" ref="tDispOrderItemMapper"></property>
 		<property name="messLogService" ref="messLogService"></property>
 		<property name="taskExecutor" ref="taskExecutor"></property>
+		<property name="tSsmGiOrderItemMapper" ref="ssmGiOrderItemMapper"></property>
 		<property name="piVipInfoDataService" ref="piVipInfoDataService"></property>
 		<property name="smsSendService" ref="smsSendService"></property>
 	</bean>

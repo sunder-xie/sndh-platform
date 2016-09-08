@@ -2,6 +2,8 @@ package com.nhry.data.stock.dao;
 
 import com.nhry.data.stock.domain.TSsmGiOrderItem;
 import com.nhry.data.stock.domain.TSsmGiOrderItemKey;
+
+import java.math.BigDecimal;
 import java.util.List;
 
 public interface TSsmGiOrderItemMapper {
@@ -18,4 +20,6 @@ public interface TSsmGiOrderItemMapper {
     int updateGiOrderItem(TSsmGiOrderItem record);
 
     List<TSsmGiOrderItem> findGiOrderItem(TSsmGiOrderItemKey key);
+
+    BigDecimal selectProximalFactoryPrice(String matnr, String branchNo);
 }
