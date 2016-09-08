@@ -9,7 +9,6 @@ import com.nhry.data.basic.dao.TMdBranchMapper;
 import com.nhry.data.basic.domain.TMdBranch;
 import com.nhry.data.basic.domain.TMdBranchEx;
 import com.nhry.data.config.dao.NHSysCodeItemMapper;
-import com.nhry.data.config.domain.NHSysCodeItem;
 import com.nhry.data.milktrans.dao.TSsmReqGoodsOrderItemMapper;
 import com.nhry.data.milktrans.dao.TSsmReqGoodsOrderMapper;
 import com.nhry.data.milktrans.dao.TSsmSalOrderItemMapper;
@@ -32,7 +31,6 @@ import com.nhry.webService.client.PISuccessTMessage;
 import com.nhry.webService.client.businessData.model.Delivery;
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
-import org.springframework.core.task.TaskExecutor;
 
 import java.util.Date;
 import java.util.List;
