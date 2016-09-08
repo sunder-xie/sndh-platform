@@ -734,12 +734,16 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 			TPreOrder sendOrder = new TPreOrder();
 			sendOrder.setOrderNo(order.getOrderNo());
 			sendOrder.setPreorderStat("300");
-			sendOrder.setCurAmt("20".equals(state)?leftAmt:order.getCurAmt());
 			taskExecutor.execute(new Thread(){
 				@Override
 				public void run() {
 					super.run();
 					this.setName("updateOrderStatus");
+					if("20".equals(state) && "20".equals(order.getPaymentStat())){
+						sendOrder.setCurAmt(leftAmt);
+					}else{
+						sendOrder.setCurAmt(new BigDecimal("0.00"));
+					}
 					messLogService.sendOrderStatus(sendOrder);
 				}
 			});
