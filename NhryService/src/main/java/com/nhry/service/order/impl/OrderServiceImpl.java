@@ -2067,6 +2067,7 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 				int index =  tPlanOrderItemMapper.selectEntriesQtyByOrderCode(record.getOrder().getOrderNo());
 				for(TPlanOrderItem entry : curEntries){
 					if("Y".equals(entry.getNewFlag())){
+						if(entry.getStartDate()==null||entry.getStartDate().before(entry.getStartDispDate())||entry.getStartDate().after(entry.getEndDispDate()))throw new ServiceException(MessageCode.LOGIC_ERROR, "开始配送日期填写有误，请检查");
 						entry.setOrderNo(orgOrder.getOrderNo());
 						entry.setItemNo(orgOrder.getOrderNo() + String.valueOf(index));//行项目编号
 						entry.setRefItemNo(String.valueOf(index));//参考行项目编号
