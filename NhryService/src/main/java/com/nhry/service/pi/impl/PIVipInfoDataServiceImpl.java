@@ -99,7 +99,7 @@ public class PIVipInfoDataServiceImpl implements PIVipInfoDataService {
     private static final String MEMBERADDR = EnvContant.getSystemConst("PI.MemberAddrUpdate.URL");
     private static final String PICRMEXEC = EnvContant.getSystemConst("PI.CRM.EXEC");
 
-    public static void main(String []args){
+    public static void main(String[] args) {
         System.out.println(URL);
         System.out.println(POINTURL);
         System.out.println(DetailURL);
@@ -170,7 +170,7 @@ public class PIVipInfoDataServiceImpl implements PIVipInfoDataService {
                 zscrm_memb_upd_dh_input.setCOUNTRY(country_type1);
 
                 REGION_type1 region_type1 = new REGION_type1();
-                region_type1.setREGION_type0(vipCustInfo.getProvince());
+                region_type1.setREGION_type0(vipCustInfo.getProvince() == null ? "" : vipCustInfo.getProvince());
                 zscrm_memb_upd_dh_input.setREGION(region_type1);
 
                 CITY1_type1 city1_type1 = new CITY1_type1();
@@ -338,7 +338,7 @@ public class PIVipInfoDataServiceImpl implements PIVipInfoDataService {
 
     @Override
     public void executeVipInfoData(TVipCustInfo vipCustInfo, String vipTel) {
-        if ("no".equals(PICRMEXEC)) {
+        if ("on".equals(PICRMEXEC)) {
             taskExecutor.execute(new Thread() {
                 public void run() {
                     try {
@@ -582,7 +582,7 @@ public class PIVipInfoDataServiceImpl implements PIVipInfoDataService {
 
     @Override
     public void executeUptVipCust(TVipCustInfo vipCustInfo) {
-        if ("no".equals(PICRMEXEC)) {
+        if ("on".equals(PICRMEXEC)) {
             taskExecutor.execute(new Thread() {
                 public void run() {
                     try {
@@ -716,7 +716,7 @@ public class PIVipInfoDataServiceImpl implements PIVipInfoDataService {
 
     @Override
     public void executeSendAddress(TMdAddress address, String sapGuid) {
-        if ("no".equals(PICRMEXEC)) {
+        if ("on".equals(PICRMEXEC)) {
             taskExecutor.execute(new Thread() {
                 public void run() {
                     try {
@@ -735,7 +735,7 @@ public class PIVipInfoDataServiceImpl implements PIVipInfoDataService {
 
     @Override
     public void executeSendAddresses(List<TMdAddress> addresses, String sapGuid) {
-        if ("no".equals(PICRMEXEC)) {
+        if ("on".equals(PICRMEXEC)) {
             taskExecutor.execute(new Thread() {
                 public void run() {
                     try {
