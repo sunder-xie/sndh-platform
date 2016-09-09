@@ -173,8 +173,10 @@ public class ResidentialAreaServiceImpl implements ResidentialAreaService {
         if(area!=null){
             throw new ServiceException(MessageCode.LOGIC_ERROR,user.getSalesOrg()+"销售组织编号下的   "+tMdResidentialArea.getResidentialAreaTxt()+"小区名称已存在！");
         }
+        if(StringUtils.isBlank(tMdResidentialArea.getSalesOrg())){
+            tMdResidentialArea.setSalesOrg(user.getSalesOrg());
+        }
 
-        tMdResidentialArea.setSalesOrg(user.getSalesOrg());
         //判断如果新增小区时小区编号不为空，则代表是小区数据导入
         if(StringUtils.isBlank(tMdResidentialArea.getId())){
             tMdResidentialArea.setId(PrimaryKeyUtils.generateUuidKey());
