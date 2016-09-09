@@ -66,6 +66,16 @@ public class BranchEmpServiceImpl extends BaseService implements BranchEmpServic
 				TMdBranchEmp emp = branchEmpMapper.selectActiveBranchEmpByNo(record.getEmpNo());
 				if(emp != null){
 					if(!emp.getBranchNo().equals(record.getBranchNo())){
+						//再处理原奶站员工离职问题
+						emp.setEmpNo(record.getEmpNo());
+						emp.setLeaveDate(new Date());
+						emp.setStatus("0");
+						emp.setLastModified(new Date());
+						emp.setLastModifiedBy(sysuser.getLoginName());
+						emp.setLastModifiedByTxt(sysuser.getDisplayName());
+					    branchEmpMapper.uptBranchEmpByBraNo(emp);
+						messageService.sendMessageForEmpUpt(emp, "upt", sysuser);
+						
 						//员工奶站变更(原账号  变成离职，在新奶站建立一个新员工数据)
 						//先处理在新奶站建立一个新员工数据
 						if(!isLeave){
@@ -89,15 +99,6 @@ public class BranchEmpServiceImpl extends BaseService implements BranchEmpServic
 								e.printStackTrace();
 							}
 						}
-						
-						//再处理原奶站员工离职问题
-						emp.setLeaveDate(new Date());
-						emp.setStatus("0");
-						emp.setLastModified(new Date());
-						emp.setLastModifiedBy(sysuser.getLoginName());
-						emp.setLastModifiedByTxt(sysuser.getDisplayName());
-						 branchEmpMapper.uptBranchEmpByBraNo(emp);
-						 messageService.sendMessageForEmpUpt(emp, "upt", sysuser);
 					}
 				}else{
 					record.setCreateAt(new Date());

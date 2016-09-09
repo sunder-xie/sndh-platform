@@ -212,7 +212,7 @@ public class UserServiceImpl extends BaseService implements UserService {
 	}
 
 	@Override
-	public List<TSysUser> findNotRoleUser(UserQueryModel3 model) {
+	public PageInfo findNotRoleUser(UserQueryModel3 model) {
 		return userMapper.findNotRoleUser(model);
 	}
 
