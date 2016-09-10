@@ -1919,6 +1919,7 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 		ArrayList<TPlanOrderItem> orgEntries = (ArrayList<TPlanOrderItem>) tPlanOrderItemMapper.selectByOrderCode(record.getOrder().getOrderNo());
 		ArrayList<TPlanOrderItem> curEntries = record.getEntries();
 		ArrayList<TPlanOrderItem> modifiedEntries = new ArrayList<TPlanOrderItem>();
+		ArrayList<TPlanOrderItem> removedEntries = new ArrayList<TPlanOrderItem>();
 		
 		String state = orgOrder.getPaymentmethod();
 		if("10".equals(state)){
@@ -2000,7 +2001,6 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 						}
 					}
 					if(delFlag){
-						orgEntries.remove(orgEntry);
 						//此行删除了，删除所有剩余的日单
 						orgEntry.setStatus("30");//30表示删除的行
 						tPlanOrderItemMapper.updateEntryByItemNo(orgEntry);
@@ -2021,6 +2021,7 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 				BigDecimal initAmt = new BigDecimal("0.00");
 				BigDecimal usedAmt = new BigDecimal("0.00");
 				for(TOrderDaliyPlanItem plan : daliyPlans){
+					if("30".equals(plan.getStatus()))continue;
 					initAmt = initAmt.add(plan.getAmt());
 					if("20".equals(plan.getStatus())){
 						usedAmt.add(plan.getAmt());
@@ -2122,7 +2123,7 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 						}
 					}
 					if(delFlag){
-						orgEntries.remove(orgEntry);
+						removedEntries.add(orgEntry);
 						//此行删除了，删除所有剩余的日单
 						orgEntry.setStatus("30");//30表示删除的行
 						tPlanOrderItemMapper.updateEntryByItemNo(orgEntry);
@@ -2135,6 +2136,8 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 					}
 					
 				}
+				
+				orgEntries.removeAll(removedEntries);
 				//更新订单
 	   		orgOrder.setInitAmt(orderAmt);
 	   		orgOrder.setCurAmt(orderAmt.subtract(orderUsedAmt));
@@ -2219,7 +2222,7 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 				}
 				if(delFlag){
 					//此行删除了，删除所有剩余的日单
-					orgEntries.remove(orgEntry);
+					removedEntries.add(orgEntry);
 					orgEntry.setStatus("30");//30表示删除的行
 					tPlanOrderItemMapper.updateEntryByItemNo(orgEntry);
 					TOrderDaliyPlanItem newPlan = new TOrderDaliyPlanItem();
@@ -2232,6 +2235,7 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 				
 			}
 			
+			orgEntries.removeAll(removedEntries);
 			//生成新的每日订单
    		createDaliyPlanForLongEdit(orgOrder , modifiedEntries ,orgEntries);
    		
