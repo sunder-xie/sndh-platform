@@ -349,6 +349,7 @@ public class RequireOrderServiceImpl implements RequireOrderService {
         rModel.setSecondDay(DateUtil.getDayAfterTomorrow(orderDate));
         rModel.setBranchNo(user.getBranchNo());
         rModel.setSalesOrg(user.getSalesOrg());
+        rModel.setOrderDate(orderDate);
         List<TOrderDaliyPlanItem> items = tOrderDaliyPlanItemMapper.selectNoProDayPlanOfDealerBranch(rModel);
         if (items != null && items.size() > 0) {
             //生成 促销订单
