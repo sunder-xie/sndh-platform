@@ -525,6 +525,7 @@
     and i.GIFT_QTY is not NULL
     and o.PREORDER_STAT !='30'
     and o.PREORDER_STAT !='40'
+    and i.`STATUS` !='30'
     and (i.DISP_DATE = #{firstDay,jdbcType=DATE} or  i.DISP_DATE = #{secondDay,jdbcType=DATE})
     and o.BRANCH_NO = #{branchNo,jdbcType=VARCHAR}
     and o.SALES_ORG = #{salesOrg,jdbcType=VARCHAR}
@@ -540,6 +541,7 @@
     and i.GIFT_QTY >0
     and o.PREORDER_STAT !='20'
     and o.PREORDER_STAT !='40'
+    and i.`STATUS` !='30'
     and o.BRANCH_NO = #{branchNo,jdbcType=VARCHAR}
     and  ( i.DISP_DATE = #{secondDay,jdbcType=DATE}  or i.DISP_DATE = #{firstDay,jdbcType=DATE} )
     GROUP BY i.PROMOTION_FLAG,i.MATNR
@@ -558,6 +560,7 @@
               where   1=1
               and o.PREORDER_STAT !='30'
               and o.PREORDER_STAT !='40'
+              and i.`STATUS` !='30'
               AND i.GIFT_QTY is  null
               and  ((e.PRE_DAYS= 2 and   i.DISP_DATE = #{secondDay,jdbcType=DATE} ) or (e.PRE_DAYS= 1 and   i.DISP_DATE = #{firstDay,jdbcType=DATE}))
               and m.SALES_ORG=#{salesOrg,jdbcType=VARCHAR}

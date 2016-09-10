@@ -86,7 +86,6 @@ public class CustomerBillServiceImpl implements CustomerBillService {
         cModel.setBranchNo(user.getBranchNo());
         cModel.setDealerNo(user.getDealerId());
 
-        // TODO Auto-generated method stub
         if(StringUtils.isEmpty(cModel.getPageNum()) || StringUtils.isEmpty(cModel.getPageSize())){
             throw new ServiceException(MessageCode.LOGIC_ERROR,"pageNum和pageSize不能为空！");
         }
