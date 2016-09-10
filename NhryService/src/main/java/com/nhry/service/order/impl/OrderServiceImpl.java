@@ -4474,7 +4474,7 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 		Date endDate = afterDate(today,5);
 		String todayStr = format.format(today);
 		String endStr = format.format(endDate);
-		
+		System.out.println("===========执行发送短信接口================");
 		if("true".equals(EnvContant.getSystemConst("send_message_flag"))){
 //			预付款：
 //			尊敬的XX 客户：
@@ -4486,9 +4486,11 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 					super.run();
 					this.setName("sendMessagePrePayOrder");
 					List<TPreOrder> list = tPreOrderMapper.searchPrePayOrdersForSendMessage(endStr);
+					System.out.println("===========执行发送短信接口==订单数量=============="+list.size());
 					list.stream().forEach((e)->{
 						String str = "尊敬的" + e.getMilkmemberName() + "客户:您本期订奶预计将于5天后到期，我们将于5日内上门收取下期奶款，感谢您的支持！奶站电话：" + e.getBranchNo();
 						smsSendService.sendMessage(str, e.getCustomerTel());
+						System.out.println("===========发送短信====pre============"+e.getMilkmemberName()+" == "+e.getCustomerTel());
 					});
 				}
 			});
@@ -4506,6 +4508,7 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 					list.stream().forEach((e)->{
 						String str = "尊敬的" + e.getMilkmemberName() + "客户:您本期订奶共" + e.getyGrowth() + "瓶，总计" + e.getInitAmt() + "元，我们将于5日内上门收取本期奶款，感谢您的支持！";
 						smsSendService.sendMessage(str, e.getCustomerTel());
+						System.out.println("===========发送短信===af============="+e.getMilkmemberName()+" == "+e.getCustomerTel());
 					});
 				}
 			});
@@ -4523,6 +4526,7 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 					list.stream().forEach((e)->{
 						String str = "尊敬的" + e.getMilkmemberName() + "客户:您本期订奶预计将于5天后到期，请及时续费，感谢您的支持！公司电话：400—88888888";
 						smsSendService.sendMessage(str, e.getCustomerTel());
+						System.out.println("===========发送短信================"+e.getMilkmemberName()+" == "+e.getCustomerTel());
 					});
 				}
 			});
