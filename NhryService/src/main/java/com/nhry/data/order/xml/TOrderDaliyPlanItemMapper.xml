@@ -549,52 +549,55 @@
   </select>
 
   <select id="selectNoProDayPlanOfDealerBranch" resultMap="BaseResultMap" parameterType="com.nhry.model.milktrans.RequireOrderSearch" >
-    SELECT  t.MATNR,SUM(t.QTY) QTY
-    FROM
-    (
-           select i.MATNR,SUM(i.QTY) QTY
-              from t_mst_order_daliy_plan_item i
-              LEFT JOIN t_md_mara m on i.MATNR =  m.MATNR
-              LEFT JOIN t_preorder o on 	i.ORDER_NO = o.ORDER_NO
-              LEFT JOIN t_md_mara_ex e on i.MATNR = e.MATNR  and e.SALES_ORG = #{salesOrg,jdbcType=VARCHAR}
-              where   1=1
-              and o.PREORDER_STAT !='30'
-              and o.PREORDER_STAT !='40'
-              and i.`STATUS` !='30'
-              AND i.GIFT_QTY is  null
-              and  ((e.PRE_DAYS= 2 and   i.DISP_DATE = #{secondDay,jdbcType=DATE} ) or (e.PRE_DAYS= 1 and   i.DISP_DATE = #{firstDay,jdbcType=DATE}))
-              and m.SALES_ORG=#{salesOrg,jdbcType=VARCHAR}
-              and o.BRANCH_NO = #{branchNo,jdbcType=VARCHAR}
-              GROUP BY i.MATNR
+    SELECT  t1.MATNR,t1.QTY
+	from (
+		SELECT  t.MATNR,SUM(t.QTY) QTY
+		FROM
+		(
+			   select i.MATNR,SUM(i.QTY) QTY
+				  from t_mst_order_daliy_plan_item i
+				  LEFT JOIN t_md_mara m on i.MATNR =  m.MATNR
+				  LEFT JOIN t_preorder o on 	i.ORDER_NO = o.ORDER_NO
+				  LEFT JOIN t_md_mara_ex e on i.MATNR = e.MATNR  and e.SALES_ORG = #{salesOrg,jdbcType=VARCHAR}
+				  where   1=1
+				  and o.PREORDER_STAT !='30'
+				  and o.PREORDER_STAT !='40'
+				  and i.`STATUS` !='30'
+				  AND i.GIFT_QTY is  null
+				  and  ((e.PRE_DAYS= 2 and   i.DISP_DATE = #{secondDay,jdbcType=DATE} ) or (e.PRE_DAYS= 1 and   i.DISP_DATE = #{firstDay,jdbcType=DATE}))
+				  and m.SALES_ORG=#{salesOrg,jdbcType=VARCHAR}
+				  and o.BRANCH_NO = #{branchNo,jdbcType=VARCHAR}
+				  GROUP BY i.MATNR
 
 
-    UNION ALL
+		UNION ALL
 
-              SELECT
-              i.MATNR,SUM(i.INCRE_QTY) QTY
-              FROM t_ssm_req_goods_order_item i
-              LEFT JOIN t_ssm_req_goods_order o on i.ORDER_NO = o.ORDER_NO
-              where 1=1
+				  SELECT
+				  i.MATNR,SUM(i.INCRE_QTY) QTY
+				  FROM t_ssm_req_goods_order_item i
+				  LEFT JOIN t_ssm_req_goods_order o on i.ORDER_NO = o.ORDER_NO
+				  where 1=1
 
-              and o.ORDER_DATE = #{orderDate,jdbcType=DATE}
-              and o.BRANCH_NO =  #{branchNo,jdbcType=VARCHAR}
-              GROUP BY i.MATNR
-     UNION ALL
-				SELECT
-				i.MATNR,SUM(i.QTY) QTY
-				FROM t_ssm_req_goods_order_item i
-				LEFT JOIN t_ssm_req_goods_order o on i.ORDER_NO = o.ORDER_NO
-				where 1=1
-				and i.FLAG = 2
-				and o.ORDER_DATE = #{orderDate,jdbcType=DATE}
-				and o.BRANCH_NO =  #{branchNo,jdbcType=VARCHAR}
-				GROUP BY i.MATNR
+				  and o.ORDER_DATE = #{orderDate,jdbcType=DATE}
+				  and o.BRANCH_NO =  #{branchNo,jdbcType=VARCHAR}
+				  GROUP BY i.MATNR
+		 UNION ALL
+					SELECT
+					i.MATNR,SUM(i.QTY) QTY
+					FROM t_ssm_req_goods_order_item i
+					LEFT JOIN t_ssm_req_goods_order o on i.ORDER_NO = o.ORDER_NO
+					where 1=1
+					and i.FLAG = 2
+					and o.ORDER_DATE = #{orderDate,jdbcType=DATE}
+					and o.BRANCH_NO =  #{branchNo,jdbcType=VARCHAR}
+					GROUP BY i.MATNR
 
-    )t
-    where 1=1
-    and t.QTY>0
-    and t.MATNR IS NOT NULL
-    GROUP BY t.MATNR
+		)t
+		where 1=1
+		and t.MATNR IS NOT NULL
+		GROUP BY t.MATNR
+
+	)t1 WHERE t1.QTY >0
 
   </select>
 
