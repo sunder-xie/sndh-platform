@@ -8,6 +8,7 @@ import com.nhry.model.milktrans.InSideSalOrderDetailSearchModel;
 import com.nhry.model.milktrans.InSideSalOrderSearchModel;
 
 import java.math.BigDecimal;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -31,7 +32,7 @@ public interface DeliverMilkService {
 	
 	int updateDaliyPlanByRouteOrder(String orderCode);
 	
-	int createDayRouteOder();
+	int createDayRouteOder(String dateStr);
 	
 	int createRouteChanges();
 	

@@ -78,11 +78,11 @@ public class DeliverMilkResource extends BaseResource {
 	}
 	
 	@GET
-	@Path("/createRouteOrders")
+	@Path("/createRouteOrders/{dateStr}")
 	@Produces(MediaType.APPLICATION_JSON)
-	@ApiOperation(value = "/createRouteOrders", response = Integer.class, notes = "生成路单")
-	public Response createRouteOrders(){
-		return convertToRespModel(MessageCode.NORMAL, null, deliverMilkService.createDayRouteOder());
+	@ApiOperation(value = "/createRouteOrders/{dateStr}", response = Integer.class, notes = "生成路单")
+	public Response createRouteOrders(@ApiParam(required=true,name="dateStr",value="日期编号") @PathParam("dateStr") String dateStr){
+		return convertToRespModel(MessageCode.NORMAL, null, deliverMilkService.createDayRouteOder(dateStr));
 	}
 	
 	@GET
