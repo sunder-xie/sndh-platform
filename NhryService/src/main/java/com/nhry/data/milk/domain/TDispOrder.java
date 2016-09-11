@@ -3,7 +3,6 @@ package com.nhry.data.milk.domain;
 import java.math.BigDecimal;
 import java.util.Date;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
 
 public class TDispOrder extends TDispOrderKey {
     private Date dispDate;
