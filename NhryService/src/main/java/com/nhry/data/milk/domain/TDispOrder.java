@@ -97,7 +97,6 @@ public class TDispOrder extends TDispOrderKey {
 	{
 		this.totalQty = totalQty;
 	}
-	@JsonFormat(pattern="yyyy-MM-dd",timezone = "GMT+8") 
 	public Date getDispDate() {
         return dispDate;
     }
