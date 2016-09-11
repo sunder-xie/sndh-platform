@@ -17,6 +17,8 @@ public interface TSysUserMapper {
 	public int addUser(TSysUser user);
 
 	TSysUser findUserByLoginName(String loginName);
+	
+	TSysUser findUserByLoginName2(String loginName);
 
 	int updateUser(TSysUser record);
 	
