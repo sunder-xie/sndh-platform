@@ -3,6 +3,8 @@ package com.nhry.data.order.domain;
 import java.math.BigDecimal;
 import java.util.Date;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+
 public class TPlanOrderItem {
     private String itemNo;
 
@@ -283,7 +285,8 @@ public class TPlanOrderItem {
     public void setReachTimeType(String reachTimeType) {
         this.reachTimeType = reachTimeType == null ? null : reachTimeType.trim();
     }
-
+    
+    @JsonFormat(pattern="yyyy-MM-dd",timezone = "GMT+8") 
     public Date getStartDispDate() {
         return startDispDate;
     }
@@ -291,7 +294,7 @@ public class TPlanOrderItem {
     public void setStartDispDate(Date startDispDate) {
         this.startDispDate = startDispDate;
     }
-
+    @JsonFormat(pattern="yyyy-MM-dd HH:mm:ss",timezone = "GMT+8") 
     public Date getEndDispDate() {
         return endDispDate;
     }
