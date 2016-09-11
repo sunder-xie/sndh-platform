@@ -2,6 +2,8 @@ package com.nhry.data.order.domain;
 
 import org.apache.axis2.databinding.types.soapencoding.Decimal;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+
 import java.math.BigDecimal;
 import java.util.Date;
 
@@ -177,7 +179,7 @@ public class TMilkboxPlan {
     public void setBranchNo(String branchNo) {
         this.branchNo = branchNo == null ? null : branchNo.trim();
     }
-
+    @JsonFormat(pattern="yyyy-MM-dd",timezone = "GMT+8") 
     public Date getPlanDate() {
         return planDate;
     }
