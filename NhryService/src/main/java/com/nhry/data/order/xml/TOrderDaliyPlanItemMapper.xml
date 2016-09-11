@@ -592,6 +592,7 @@
 
     )t
     where 1=1
+    and t.QTY>0
     and t.MATNR IS NOT NULL
     GROUP BY t.MATNR
 
@@ -658,6 +659,7 @@
               LEFT JOIN t_mst_disp_order disp on di.ORDER_NO = disp.ORDER_NO
               where   1=1
               and disp.`STATUS` = '20'
+              and di.CONFIRM_QTY>0
               and di.MATNR=di.CONFIRM_MATNR
               AND di.GIFT_FLAG is  null
               and   disp.DISP_DATE = #{requiredDate,jdbcType=DATE}
@@ -677,6 +679,7 @@
               and di.MATNR!=di.CONFIRM_MATNR
               and di.REASON = '10'
               and di.REPLACE_REASON = '10'
+              and di.CONFIRM_QTY>0
               AND di.GIFT_FLAG  is  null
               and   disp.DISP_DATE =#{requiredDate,jdbcType=DATE}
               and  o.SALES_ORG=#{salesOrg,jdbcType=VARCHAR}
@@ -703,6 +706,7 @@
                 LEFT JOIN t_ssm_req_goods_order o on i.ORDER_NO = o.ORDER_NO
                 where 1=1
                 and i.FLAG = 2
+                and i.QTY>0
                 and i.ORDER_DATE = #{requiredDate,jdbcType=DATE}
                 and o.BRANCH_NO =  #{branchNo,jdbcType=VARCHAR}
                 GROUP BY i.MATNR
@@ -714,6 +718,7 @@
               LEFT JOIN t_mst_inside_sal_order o on i.INS_ORDER_NO = o.INS_ORDER_NO
               LEFT JOIN t_mst_disp_order disp on o.DISP_ORDER_NO = disp.ORDER_NO
               WHERE 1=1
+              and i.QTY>0
               and o.BRANCH_NO =  #{branchNo,jdbcType=VARCHAR}
               and disp.DISP_DATE = #{requiredDate,jdbcType=DATE}
               GROUP BY i.MATNR
