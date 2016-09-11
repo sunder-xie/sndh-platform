@@ -76,7 +76,7 @@ public class EnvContant {
 	}
 
 	public static void main(String[] args) {
-		System.out.println(getSystemConst("app_mode"));
+		System.out.println(getSystemConst("PI.MasterData.URL"));
 	}
 
 }

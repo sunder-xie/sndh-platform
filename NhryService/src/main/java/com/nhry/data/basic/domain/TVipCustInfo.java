@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+
 public class TVipCustInfo implements Serializable{
     private String vipCustNo;
 
@@ -294,7 +295,6 @@ public class TVipCustInfo implements Serializable{
     public void setSex(String sex) {
         this.sex = sex == null ? null : sex.trim();
     }
-
     public Date getBirthday() {
         return birthday;
     }
@@ -334,7 +334,6 @@ public class TVipCustInfo implements Serializable{
     public void setVipType(String vipType) {
         this.vipType = vipType == null ? null : vipType.trim();
     }
-
     public Date getSubscribeDate() {
         return subscribeDate;
     }
@@ -454,7 +453,6 @@ public class TVipCustInfo implements Serializable{
 	public void setAddresses(List<TMdAddress> addresses) {
 		this.addresses = addresses;
 	}
-
 	public Date getFirstOrderTime() {
 		return firstOrderTime;
 	}
@@ -462,7 +460,6 @@ public class TVipCustInfo implements Serializable{
 	public void setFirstOrderTime(Date firstOrderTime) {
 		this.firstOrderTime = firstOrderTime;
 	}
-
 	public Date getLastOrderTime() {
 		return lastOrderTime;
 	}

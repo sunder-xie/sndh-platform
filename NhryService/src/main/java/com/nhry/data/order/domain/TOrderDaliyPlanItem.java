@@ -3,6 +3,8 @@ package com.nhry.data.order.domain;
 import java.math.BigDecimal;
 import java.util.Date;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+
 public class TOrderDaliyPlanItem extends TOrderDaliyPlanItemKey {
     private Date dispDate;
     
@@ -92,7 +94,8 @@ public class TOrderDaliyPlanItem extends TOrderDaliyPlanItemKey {
  	 {
  		  this.dispDateStr = dispDateStr;
  	 }
-
+ 	 
+ 	@JsonFormat(pattern="yyyy-MM-dd HH:mm:ss",timezone = "GMT+8") 
     public Date getDispDate() {
         return dispDate;
     }

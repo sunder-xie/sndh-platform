@@ -3,6 +3,7 @@ package com.nhry.data.order.domain;
 import java.math.BigDecimal;
 import java.util.Date;
 
+
 public class TPlanOrderItem {
     private String itemNo;
 
@@ -331,7 +332,7 @@ public class TPlanOrderItem {
     public void setReachTimeType(String reachTimeType) {
         this.reachTimeType = reachTimeType == null ? null : reachTimeType.trim();
     }
-
+    
     public Date getStartDispDate() {
         return startDispDate;
     }
@@ -339,7 +340,6 @@ public class TPlanOrderItem {
     public void setStartDispDate(Date startDispDate) {
         this.startDispDate = startDispDate;
     }
-
     public Date getEndDispDate() {
         return endDispDate;
     }

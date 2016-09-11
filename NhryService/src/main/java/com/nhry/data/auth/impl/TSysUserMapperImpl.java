@@ -88,8 +88,8 @@ public class TSysUserMapperImpl implements TSysUserMapper {
 	}
 
 	@Override
-	public List<TSysUser> findNotRoleUser(UserQueryModel3 model) {
-		return this.sqlSessionTemplate.selectList("findNotRoleUser",model);
+	public PageInfo findNotRoleUser(UserQueryModel3 model) {
+		return this.sqlSessionTemplate.selectListByPages("findNotRoleUser",model, Integer.parseInt(model.getPageNum()), Integer.parseInt(model.getPageSize()));
 	}
 
 	@Override

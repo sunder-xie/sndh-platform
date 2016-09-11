@@ -11,6 +11,7 @@ import com.nhry.service.basic.dao.TVipCustInfoService;
 import com.nhry.service.config.dao.DictionaryService;
 import com.nhry.service.pi.dao.PIVipInfoDataService;
 import com.nhry.service.pi.pojo.MemberActivities;
+import com.nhry.utils.EnvContant;
 import com.nhry.utils.PIPropertitesUtil;
 import com.nhry.utils.PrimaryKeyUtils;
 import com.nhry.webService.OptionManager;
@@ -90,13 +91,26 @@ public class PIVipInfoDataServiceImpl implements PIVipInfoDataService {
         this.taskExecutor = taskExecutor;
     }
 
-    private static final String URL = PIPropertitesUtil.getValue("PI.VipInfoData.URL");
-    private static final String POINTURL = PIPropertitesUtil.getValue("PI.VipPointData.URL");
-    private static final String DetailURL = PIPropertitesUtil.getValue("PI.VipDetialData.URL");
+    private static final String URL = EnvContant.getSystemConst("PI.VipInfoData.URL");
+    private static final String POINTURL = EnvContant.getSystemConst("PI.VipPointData.URL");
+    private static final String DetailURL = EnvContant.getSystemConst("PI.VipDetialData.URL");
     private static final String MESSAGE_FLAG = PIPropertitesUtil.getValue("PI.MESSAGE.FLAG.OK");
+    private static final String MEMBERACTURL = EnvContant.getSystemConst("PI.MemberActCreate.URL");
+    private static final String MEMBERADDR = EnvContant.getSystemConst("PI.MemberAddrUpdate.URL");
+    private static final String PICRMEXEC = EnvContant.getSystemConst("PI.CRM.EXEC");
+
+    public static void main(String[] args) {
+        System.out.println(URL);
+        System.out.println(POINTURL);
+        System.out.println(DetailURL);
+        System.out.println(MEMBERACTURL);
+        System.out.println(MEMBERADDR);
+        System.out.println(PICRMEXEC);
+    }
 
     @Override
     public PISuccessTMessage generateVipInfoData(TVipCustInfo vipCustInfo, String vipTel) {
+
         PISuccessTMessage<EvMemb> result = new PISuccessTMessage<EvMemb>();
         if (vipCustInfo != null) {
 //            TVipCustInfo vipCustInfo = vipCustInfoService.findVipCustByNoForUpt(vipCustInfo);
@@ -156,7 +170,7 @@ public class PIVipInfoDataServiceImpl implements PIVipInfoDataService {
                 zscrm_memb_upd_dh_input.setCOUNTRY(country_type1);
 
                 REGION_type1 region_type1 = new REGION_type1();
-                region_type1.setREGION_type0(vipCustInfo.getProvince());
+                region_type1.setREGION_type0(vipCustInfo.getProvince() == null ? "" : vipCustInfo.getProvince());
                 zscrm_memb_upd_dh_input.setREGION(region_type1);
 
                 CITY1_type1 city1_type1 = new CITY1_type1();
@@ -324,17 +338,19 @@ public class PIVipInfoDataServiceImpl implements PIVipInfoDataService {
 
     @Override
     public void executeVipInfoData(TVipCustInfo vipCustInfo, String vipTel) {
-        taskExecutor.execute(new Thread() {
-            public void run() {
-                try {
-                    Thread.sleep(8000);
-                    this.setName(vipCustInfo.getVipCustNo());
-                    generateVipInfoData(vipCustInfo, vipTel);
-                } catch (Exception e) {
-                    e.printStackTrace();
+        if ("on".equals(PICRMEXEC)) {
+            taskExecutor.execute(new Thread() {
+                public void run() {
+                    try {
+                        Thread.sleep(8000);
+                        this.setName(vipCustInfo.getVipCustNo());
+                        generateVipInfoData(vipCustInfo, vipTel);
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
                 }
-            }
-        });
+            });
+        }
     }
 
     private void iniVipCustInfo(TVipCustInfo vipCustInfo) {
@@ -372,6 +388,11 @@ public class PIVipInfoDataServiceImpl implements PIVipInfoDataService {
     @Override
     public PISuccessTMessage createMemberActivities(MemberActivities memberActivities) {
         PISuccessTMessage result = new PISuccessTMessage();
+        if ("off".equals(PICRMEXEC)) {
+            result.setSuccess(true);
+            result.setMessage("暂停使用！");
+            return result;
+        }
         try {
             MemberActCreateServiceStub client = connMemberActService();
             Z_CRM_MEMB_ACTIVITIES_CREATE z_crm_memb_activities_create = new Z_CRM_MEMB_ACTIVITIES_CREATE();
@@ -381,7 +402,7 @@ public class PIVipInfoDataServiceImpl implements PIVipInfoDataService {
             activity_date_type1.setACTIVITY_DATE_type0(new BigDecimal(formatter.format(memberActivities.getActivitydate())));
             zscrm_memb_activities.setACTIVITY_DATE(activity_date_type1);
 
-            if(memberActivities.getAmount()!=null) {
+            if (memberActivities.getAmount() != null) {
                 AMOUNT_type1 amount_type1 = new AMOUNT_type1();
                 amount_type1.setAMOUNT_type0(memberActivities.getAmount());
                 zscrm_memb_activities.setAMOUNT(amount_type1);
@@ -404,7 +425,7 @@ public class PIVipInfoDataServiceImpl implements PIVipInfoDataService {
             zscrm_memb_activities.setCURRENCY(currency_type1);
 
             ITEM_NUM_type1 item_num_type1 = new ITEM_NUM_type1();
-            item_num_type1.setITEM_NUM_type0(memberActivities.getItemnum() == null ? "":memberActivities.getItemnum());
+            item_num_type1.setITEM_NUM_type0(memberActivities.getItemnum() == null ? "" : memberActivities.getItemnum());
             zscrm_memb_activities.setITEM_NUM(item_num_type1);
 
             MEMBERSHIP_GUID_type1 membership_guid_type1 = new MEMBERSHIP_GUID_type1();
@@ -427,7 +448,7 @@ public class PIVipInfoDataServiceImpl implements PIVipInfoDataService {
             product_id_type1.setPRODUCT_ID_type0(memberActivities.getProductid() == null ? "" : memberActivities.getProductid());
             zscrm_memb_activities.setPRODUCT_ID(product_id_type1);
 
-            if(memberActivities.getProductquantity() != null) {
+            if (memberActivities.getProductquantity() != null) {
                 PRODUCT_QUANTITY_type1 product_quantity_type1 = new PRODUCT_QUANTITY_type1();
                 product_quantity_type1.setPRODUCT_QUANTITY_type0(memberActivities.getProductquantity());
                 zscrm_memb_activities.setPRODUCT_QUANTITY(product_quantity_type1);
@@ -457,7 +478,7 @@ public class PIVipInfoDataServiceImpl implements PIVipInfoDataService {
             process_type_type1.setPROCESS_TYPE_type0(memberActivities.getProcesstype() == null ? "" : memberActivities.getProcesstype());
             zscrm_memb_activities.setPROCESS_TYPE(process_type_type1);
 
-            if(memberActivities.getPoints()!=null) {
+            if (memberActivities.getPoints() != null) {
                 POINTS_type1 points_type1 = new POINTS_type1();
                 points_type1.setPOINTS_type0(memberActivities.getPoints());
                 zscrm_memb_activities.setPOINTS(points_type1);
@@ -561,16 +582,18 @@ public class PIVipInfoDataServiceImpl implements PIVipInfoDataService {
 
     @Override
     public void executeUptVipCust(TVipCustInfo vipCustInfo) {
-        taskExecutor.execute(new Thread() {
-            public void run() {
-                try {
-                    this.setName(vipCustInfo.getVipCustNo());
-                    sendSubscriber(vipCustInfo);
-                } catch (ServiceException e) {
-                    e.printStackTrace();
+        if ("on".equals(PICRMEXEC)) {
+            taskExecutor.execute(new Thread() {
+                public void run() {
+                    try {
+                        this.setName(vipCustInfo.getVipCustNo());
+                        sendSubscriber(vipCustInfo);
+                    } catch (ServiceException e) {
+                        e.printStackTrace();
+                    }
                 }
-            }
-        });
+            });
+        }
     }
 
     @Override
@@ -579,7 +602,7 @@ public class PIVipInfoDataServiceImpl implements PIVipInfoDataService {
         try {
             MemberAddrUpdateServiceStub stub = connMemberAddrService();
             Z_CRM_ADDR_UPDATE z_crm_addr_update = new Z_CRM_ADDR_UPDATE();
-            for(TMdAddress address : addresss) {
+            for (TMdAddress address : addresss) {
                 address = vipCustInfoService.findAddressById(address.getAddressId());
                 if (StringUtils.isEmpty(sapGuid)) {
                     TVipCustInfo custInfo = vipCustInfoService.findVipCustByNoForUpt(address.getVipCustNo());
@@ -693,34 +716,38 @@ public class PIVipInfoDataServiceImpl implements PIVipInfoDataService {
 
     @Override
     public void executeSendAddress(TMdAddress address, String sapGuid) {
-        taskExecutor.execute(new Thread() {
-            public void run() {
-                try {
-                    Thread.sleep(8000);
-                    this.setName(address.getAddressId());
-                    List<TMdAddress> addresses = new ArrayList<TMdAddress>();
-                    addresses.add(address);
-                    sendAddress(addresses, sapGuid);
-                } catch (Exception e) {
-                    e.printStackTrace();
+        if ("on".equals(PICRMEXEC)) {
+            taskExecutor.execute(new Thread() {
+                public void run() {
+                    try {
+                        Thread.sleep(8000);
+                        this.setName(address.getAddressId());
+                        List<TMdAddress> addresses = new ArrayList<TMdAddress>();
+                        addresses.add(address);
+                        sendAddress(addresses, sapGuid);
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
                 }
-            }
-        });
+            });
+        }
     }
 
     @Override
     public void executeSendAddresses(List<TMdAddress> addresses, String sapGuid) {
-        taskExecutor.execute(new Thread() {
-            public void run() {
-                try {
-                    Thread.sleep(8000);
-                    this.setName(PrimaryKeyUtils.generateUpperUuidKey());
-                    sendAddress(addresses, sapGuid);
-                } catch (Exception e) {
-                    e.printStackTrace();
+        if ("on".equals(PICRMEXEC)) {
+            taskExecutor.execute(new Thread() {
+                public void run() {
+                    try {
+                        Thread.sleep(8000);
+                        this.setName(PrimaryKeyUtils.generateUpperUuidKey());
+                        sendAddress(addresses, sapGuid);
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
                 }
-            }
-        });
+            });
+        }
     }
 
     /**
@@ -763,13 +790,13 @@ public class PIVipInfoDataServiceImpl implements PIVipInfoDataService {
     }
 
     /**
-     * 会员积分计算
+     * 会员积分创建
      *
      * @return
      * @throws AxisFault
      */
     private MemberActCreateServiceStub connMemberActService() throws AxisFault {
-        MemberActCreateServiceStub client = new MemberActCreateServiceStub();
+        MemberActCreateServiceStub client = new MemberActCreateServiceStub(MEMBERACTURL);
         Options options = client._getServiceClient().getOptions();
         client._getServiceClient().setOptions(OptionManager.initializable(options));
         return client;
@@ -782,7 +809,7 @@ public class PIVipInfoDataServiceImpl implements PIVipInfoDataService {
      * @throws AxisFault
      */
     private MemberAddrUpdateServiceStub connMemberAddrService() throws AxisFault {
-        MemberAddrUpdateServiceStub client = new MemberAddrUpdateServiceStub();
+        MemberAddrUpdateServiceStub client = new MemberAddrUpdateServiceStub(MEMBERADDR);
         Options options = client._getServiceClient().getOptions();
         client._getServiceClient().setOptions(OptionManager.initializable(options));
         return client;

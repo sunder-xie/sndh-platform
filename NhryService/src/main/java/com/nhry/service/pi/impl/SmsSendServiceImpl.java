@@ -3,6 +3,7 @@ package com.nhry.service.pi.impl;
 import com.nhry.service.pi.dao.SmsSendService;
 import com.nhry.service.pi.pojo.PIMessage;
 import com.nhry.utils.CodeGeneratorUtil;
+import com.nhry.utils.EnvContant;
 import com.nhry.utils.PIPropertitesUtil;
 import com.nhry.webService.client.PISuccessMessage;
 import com.nhry.webService.client.sms.SmsStub;
@@ -24,10 +25,17 @@ import java.util.Map;
  */
 public class SmsSendServiceImpl implements SmsSendService {
     private static SimpleDateFormat format = new SimpleDateFormat("yyyyMMddHHmmssSSS");
-    private static String URL = PIPropertitesUtil.getValue("SMS.URL");
-    private static String SPCODE = PIPropertitesUtil.getValue("SMS.SpCode");
-    private static String LOGINNAME = PIPropertitesUtil.getValue("SMS.LoginName");
-    private static String PASSWORD = PIPropertitesUtil.getValue("SMS.Password");
+    private static String URL = EnvContant.getSystemConst("SMS.URL");
+    private static String SPCODE = EnvContant.getSystemConst("SMS.SpCode");
+    private static String LOGINNAME = EnvContant.getSystemConst("SMS.LoginName");
+    private static String PASSWORD = EnvContant.getSystemConst("SMS.Password");
+
+    public static void main(String []args){
+        System.out.println(URL);
+        System.out.println(SPCODE);
+        System.out.println(LOGINNAME);
+        System.out.println(PASSWORD);
+    }
     private static Logger logger = Logger.getLogger(SmsSendServiceImpl.class);
     @Override
     public PIMessage sendMessage(String context, String tel) {

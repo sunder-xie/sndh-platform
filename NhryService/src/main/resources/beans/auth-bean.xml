@@ -25,6 +25,8 @@
 	   <property name="userSessionService" ref="userSessionService"></property>
 	   <property name="branchEmpService" ref="branchEmpService"></property>
 	   <property name="accessKeyService" ref="isysAkService"></property>
+	   <property name="branchEmpMapper" ref="branchEmpMapper"></property>
+	   <property name="messageService" ref="messService"></property>
 	</bean>
 	<bean id="roleMapper" class="com.nhry.data.auth.impl.TSysRoleMapperImpl">
 	   <property name="sqlSessionTemplate"  ref="dynamicSqlSessionTemplate"></property>

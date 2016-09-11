@@ -2,6 +2,7 @@ package com.nhry.data.order.domain;
 
 import org.apache.axis2.databinding.types.soapencoding.Decimal;
 
+
 import java.math.BigDecimal;
 import java.util.Date;
 
@@ -177,7 +178,6 @@ public class TMilkboxPlan {
     public void setBranchNo(String branchNo) {
         this.branchNo = branchNo == null ? null : branchNo.trim();
     }
-
     public Date getPlanDate() {
         return planDate;
     }

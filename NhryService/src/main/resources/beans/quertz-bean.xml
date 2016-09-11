@@ -79,7 +79,7 @@
             <ref bean="scheduledJobDetail1" />
         </property>
         <property name="cronExpression">
-			<value>0 32 10 * * ?</value>
+			<value>0 32 23 * * ?</value>
 		</property>
     </bean>
 	<bean id="crontestJobTrigger2" class="org.springframework.scheduling.quartz.CronTriggerFactoryBean">
@@ -87,7 +87,7 @@
 			<ref bean="scheduledJobDetail2" />
 		</property>
 		<property name="cronExpression">
-			<value>0 27 10 * * ?</value>
+			<value>0 27 23 * * ?</value>
 		</property>
 	</bean>
 	<bean id="crontestJobTrigger3" class="org.springframework.scheduling.quartz.CronTriggerFactoryBean">
@@ -95,7 +95,7 @@
 			<ref bean="scheduledJobDetail3" />
 		</property>
 		<property name="cronExpression">
-			<value>0 22 10 * * ?</value>
+			<value>0 22 23 * * ?</value>
 		</property>
 	</bean>
 	<bean id="crontestJobTrigger4" class="org.springframework.scheduling.quartz.CronTriggerFactoryBean">
@@ -135,7 +135,7 @@
 			<ref bean="sendMessageToCustomer" />
 		</property>
 		<property name="cronExpression">
-			<value>0 10 09 * * ?</value>
+			<value>0 0 10 * * ?</value>
 		</property>
 	</bean>
     <!-- 调度的配置结束 -->

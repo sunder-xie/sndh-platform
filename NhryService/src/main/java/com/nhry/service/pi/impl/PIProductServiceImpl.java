@@ -9,6 +9,7 @@ import com.nhry.data.config.domain.NHSysCodeItem;
 import com.nhry.service.basic.dao.TSysMessageService;
 import com.nhry.service.external.dao.EcService;
 import com.nhry.service.pi.dao.PIProductService;
+import com.nhry.utils.EnvContant;
 import com.nhry.utils.PIPropertitesUtil;
 import com.nhry.webService.OptionManager;
 import com.nhry.webService.client.masterData.ZT_MasterDataQueryServiceStub;
@@ -29,7 +30,7 @@ import java.util.Date;
 @SuppressWarnings("unchecked")
 public class PIProductServiceImpl implements PIProductService {
     private static Logger logger = Logger.getLogger(PIProductServiceImpl.class);
-    public static String URL = PIPropertitesUtil.getValue("PI.MasterData.URL");
+    public static String URL = EnvContant.getSystemConst("PI.MasterData.URL");
     public static String VKORG = PIPropertitesUtil.getValue("PI.MasterData.mATQUERY.VKORG");
     public static String OPTION = PIPropertitesUtil.getValue("PI.MasterData.mATQUERY.OPTION.EQ");
     public static String SIGN = PIPropertitesUtil.getValue("PI.MasterData.mATQUERY.SIGN");
