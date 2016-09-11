@@ -34,6 +34,7 @@ import com.sun.jersey.spi.resource.Singleton;
 import com.wordnik.swagger.annotations.Api;
 import com.wordnik.swagger.annotations.ApiOperation;
 import com.wordnik.swagger.annotations.ApiParam;
+import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 import org.apache.poi.ss.usermodel.PageOrder;
@@ -309,7 +310,6 @@ public class ReportResource extends BaseResource{
             workbook.write(stream);
             stream.flush();
             stream.close();
-
 //            File targetFilePath = new File(url +  File.separator + "report"+ File.separator + "export" + File.separator + fname + "DeliverMilk.xlsx");
 
 //            String mt = new MimetypesFileTypeMap().getContentType(targetFilePath);
@@ -319,7 +319,7 @@ public class ReportResource extends BaseResource{
 //                    .header("Content-disposition","attachment;filename=" + targetFilePath.getName())
 //                    .header("ragma", "No-cache").header("Cache-Control", "no-cache").build();
 
-//            outUrl = "/report/export/" + fname + "DeliverMilk.xlsx";
+            outUrl = "/report/export/" + fname + "DeliverMilk.xlsx";
         }catch (Exception e){
             e.printStackTrace();
         }
