@@ -504,16 +504,23 @@ public class PIProductServiceImpl implements PIProductService {
     @Override
     public int matWHWHandler() throws RemoteException {
         Map<String, String> etMap = getET_DATA();
-        Map<String, ET_LGORT> lgMap = getET_LGORT();
+        Map<String, ET_LGORT> lgMap = getET_LGORTs();
+        StringBuilder sb = new StringBuilder();
         for (Map.Entry<String, String> entry : etMap.entrySet()) {
             TMdBranch branch = branchMapper.getBranchByNo(entry.getKey());
-            ET_LGORT et = lgMap.get(entry.getValue());
-            if (et != null && branch != null) {
-                branch.setWerks(et.getWERKS());
-                branch.setLgort(entry.getValue());
-                branchMapper.updateBranch(branch);
+            String lgort = entry.getValue();
+            if(lgort != null && branch != null) {
+                ET_LGORT et = lgMap.get(lgort.concat(branch.getBranchName()));
+                sb.append(lgort.concat(branch.getBranchName())+"<br>");
+                if(et != null) {
+                    branch.setWerks(et.getWERKS());
+                    sb.append(et.getWERKS()+"<br>");
+                    branch.setLgort(entry.getValue());
+                    branchMapper.updateBranch(branch);
+                }
             }
         }
+        System.out.println(sb);
         return 1;
     }
 
@@ -893,6 +900,27 @@ public class PIProductServiceImpl implements PIProductService {
             et.setLGOBE(t001L.getLGOBE().getLGOBE_type0());
             et.setLGORT(t001L.getLGORT().getLGORT_type2());
             result.put(t001L.getLGORT().getLGORT_type2(), et);
+        }
+        return result;
+    }
+
+    /**
+     * 库存地点和工厂对应关系
+     *
+     * @return
+     * @throws RemoteException
+     */
+    private Map<String, ET_LGORT> getET_LGORTs() throws RemoteException {
+        ZMM_POS_24DATAResponse response = getMatWHQuery();
+        ET_LGORT_type0 et_lgort_type0 = response.getET_LGORT();
+        T001L[] t001Ls = et_lgort_type0.getItem();
+        Map<String, ET_LGORT> result = new HashMap<String, ET_LGORT>();
+        for (T001L t001L : t001Ls) {
+            ET_LGORT et = new ET_LGORT();
+            et.setWERKS(t001L.getWERKS().getWERKS_type6());
+            et.setLGOBE(t001L.getLGOBE().getLGOBE_type0());
+            et.setLGORT(t001L.getLGORT().getLGORT_type2());
+            result.put(t001L.getLGORT().getLGORT_type2().concat(t001L.getLGOBE().getLGOBE_type0()), et);
         }
         return result;
     }
