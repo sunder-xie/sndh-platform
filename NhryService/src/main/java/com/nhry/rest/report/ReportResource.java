@@ -28,6 +28,7 @@ import com.nhry.service.order.dao.MilkBoxService;
 import com.nhry.service.order.dao.OrderService;
 import com.nhry.service.statistics.dao.BranchInfoService;
 import com.nhry.utils.CodeGeneratorUtil;
+import com.nhry.utils.EnvContant;
 import com.nhry.utils.ExcelUtil;
 import com.sun.jersey.spi.resource.Singleton;
 import com.wordnik.swagger.annotations.Api;
@@ -219,10 +220,9 @@ public class ReportResource extends BaseResource{
         List<TDispOrderItem> details = deliverMilkService.searchRouteOrderDetailAll(orderCode);
         RouteOrderModel model = deliverMilkService.searchRouteDetails(orderCode);
         String outUrl = "";
-        logger.info("##################"+request.getServletContext());
-        logger.info("@@@@@@@@@@@@@@"+request.getServletPath());
-        logger.info("$$$$$$$$$$$$$"+request.getServletContext().getRealPath("/"));
-        String url = request.getServletContext().getRealPath("/");
+        logger.info("##################"+EnvContant.getSystemConst("filePath"));
+//        String url = request.getServletContext().getRealPath("/");
+        String url = EnvContant.getSystemConst("filePath");
         try{
             File file = new File(url +  File.separator + "report"+ File.separator + "template" + File.separator + "DeliverMilkTemplate.xlsx");    //审批单
             FileInputStream input = new FileInputStream(file);
