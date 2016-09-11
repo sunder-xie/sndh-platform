@@ -576,9 +576,9 @@
               LEFT JOIN t_ssm_req_goods_order o on i.ORDER_NO = o.ORDER_NO
               where 1=1
 
-              and i.ORDER_DATE = #{orderDate,jdbcType=DATE}
+              and o.ORDER_DATE = #{orderDate,jdbcType=DATE}
               and o.BRANCH_NO =  #{branchNo,jdbcType=VARCHAR}
-
+              GROUP BY i.MATNR
      UNION ALL
 				SELECT
 				i.MATNR,SUM(i.QTY) QTY
@@ -586,8 +586,9 @@
 				LEFT JOIN t_ssm_req_goods_order o on i.ORDER_NO = o.ORDER_NO
 				where 1=1
 				and i.FLAG = 2
-				and i.ORDER_DATE = #{orderDate,jdbcType=DATE}
+				and o.ORDER_DATE = #{orderDate,jdbcType=DATE}
 				and o.BRANCH_NO =  #{branchNo,jdbcType=VARCHAR}
+				GROUP BY i.MATNR
 
     )t
     where 1=1
