@@ -54,7 +54,7 @@ public interface TSysUserMapper {
 	 * @param model
 	 * @return
      */
-	List<TSysUser> findNotRoleUser(UserQueryModel3 model);
+	PageInfo findNotRoleUser(UserQueryModel3 model);
 
 	/**
 	 * 查询未分配角色的用户分页

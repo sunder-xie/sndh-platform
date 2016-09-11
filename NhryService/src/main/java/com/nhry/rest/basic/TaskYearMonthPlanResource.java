@@ -10,6 +10,7 @@ import com.nhry.rest.BaseResource;
 import com.nhry.service.basic.dao.ResidentialAreaService;
 import com.nhry.service.basic.dao.TaskYearMonthPlanService;
 import com.nhry.utils.CodeGeneratorUtil;
+import com.nhry.utils.EnvContant;
 import com.sun.jersey.core.header.FormDataContentDisposition;
 import com.sun.jersey.multipart.FormDataBodyPart;
 import com.sun.jersey.multipart.FormDataMultiPart;
@@ -89,7 +90,7 @@ public class TaskYearMonthPlanResource extends BaseResource {
     @ApiOperation(value = "/exportTemplate", response = OrderCreateModel.class, notes = "导出月任务模板")
     public Response exportTemplate(@ApiParam(name = "model", value = "model", required = false) MonthPlanModel model, @Context HttpServletRequest request, @Context HttpServletResponse response) {
         List<TaskYearMonthPlan> plans = taskYearMonthPlanService.findPlanByYear(model);
-        String url = request.getServletContext().getRealPath("/");
+        String url = EnvContant.getSystemConst("filePath");
         String outUrl = "";
         String fileName = "MonthTaskTemplate.xlsx";
         try {
@@ -160,7 +161,7 @@ public class TaskYearMonthPlanResource extends BaseResource {
     @Produces(MediaType.APPLICATION_JSON)
     @ApiOperation(value = "/importPlans", response = ResponseModel.class, notes = "导入计划")
     public Response importPlans(FormDataMultiPart form, @Context HttpServletRequest request) throws IOException {
-        String url = request.getServletContext().getRealPath("/");
+        String url = EnvContant.getSystemConst("filePath");
         FormDataBodyPart filePart = form.getField("file");
         FormDataBodyPart taskYear = form.getField("taskYear");
         InputStream fileInputStream = filePart.getValueAs(InputStream.class);

@@ -35,11 +35,11 @@
 	<config key="send_message_flag" value="true"></config>
 
 	<!--#主数据-->
-	<config key="PI.MasterData.URL" value="http://piprd.newhopedairy.com:50200/XISOAPAdapter/MessageServlet?senderParty=&amp;senderService=ZT_Q&amp;receiverParty=&amp;receiverService=&amp;interface=ZT_MasterDataQuery&amp;interfaceNamespace=urn%3Anewhopedairy.cn%3AZT%3AMasterData"/>
+	<config key="PI.MasterData.URL" value="http://piprd.newhopedairy.com:50200/XISOAPAdapter/MessageServlet?senderParty=&amp;senderService=ZT_P&amp;receiverParty=&amp;receiverService=&amp;interface=ZT_MasterDataQuery&amp;interfaceNamespace=urn%3Anewhopedairy.cn%3AZT%3AMasterData"/>
 	<!--#业务数据-->
-	<config key="PI.BusinessData.URL" value="http://piprd.newhopedairy.com:50200/XISOAPAdapter/MessageServlet?senderParty=&amp;senderService=ZT_Q&amp;receiverParty=&amp;receiverService=&amp;interface=ZT_BusinessData_Maintain&amp;interfaceNamespace=urn%3Anewhopedairy.cn%3AZT%3ABusinessData"/>
+	<config key="PI.BusinessData.URL" value="http://piprd.newhopedairy.com:50200/XISOAPAdapter/MessageServlet?senderParty=&amp;senderService=ZT_P&amp;receiverParty=&amp;receiverService=&amp;interface=ZT_BusinessData_Maintain&amp;interfaceNamespace=urn%3Anewhopedairy.cn%3AZT%3ABusinessData"/>
 	<!--#会员创建 / 订户维护-->
-	<config key="PI.VipInfoData.URL" value="http://piprd.newhopedairy.com:50200/XISOAPAdapter/MessageServlet?senderParty=&amp;senderService=ZT_Q&amp;receiverParty=&amp;receiverService=&amp;interface=ZT_CRM_BuData_Maintain&amp;interfaceNamespace=urn%3Anewhopedairy.cn%3AZT%3ABusinessData" />
+	<config key="PI.VipInfoData.URL" value="http://piprd.newhopedairy.com:50200/XISOAPAdapter/MessageServlet?senderParty=&amp;senderService=ZT_P&amp;receiverParty=&amp;receiverService=&amp;interface=ZT_CRM_BuData_Maintain&amp;interfaceNamespace=urn%3Anewhopedairy.cn%3AZT%3ABusinessData" />
 	<!--#积分余额-->
 	<config key="PI.VipPointData.URL" value="http://piprd.newhopedairy.com:50200/XISOAPAdapter/MessageServlet?senderParty=&amp;senderService=BC_Common_CRM&amp;receiverParty=&amp;receiverService=&amp;interface=PointQuery_Out&amp;interfaceNamespace=urn%3Anewhopedairy.cn%3ACRM%3ACommonData"/>
 	<!--#积分明细-->
@@ -57,4 +57,6 @@
 	<config key="SMS.SpCode" value="228672"/>
 	<config key="SMS.LoginName" value="sc_xhry"/>
 	<config key="SMS.Password" value="ry85953221.com"/>
+
+	<config key="filePath" value="/opt/apache/apache-tomcat-6.0.29/webapps/b-service/"/>
 </configs>

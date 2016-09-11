@@ -1919,6 +1919,7 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 		ArrayList<TPlanOrderItem> orgEntries = (ArrayList<TPlanOrderItem>) tPlanOrderItemMapper.selectByOrderCode(record.getOrder().getOrderNo());
 		ArrayList<TPlanOrderItem> curEntries = record.getEntries();
 		ArrayList<TPlanOrderItem> modifiedEntries = new ArrayList<TPlanOrderItem>();
+		ArrayList<TPlanOrderItem> removedEntries = new ArrayList<TPlanOrderItem>();
 		
 		String state = orgOrder.getPaymentmethod();
 		if("10".equals(state)){
@@ -2000,7 +2001,6 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 						}
 					}
 					if(delFlag){
-						orgEntries.remove(orgEntry);
 						//此行删除了，删除所有剩余的日单
 						orgEntry.setStatus("30");//30表示删除的行
 						tPlanOrderItemMapper.updateEntryByItemNo(orgEntry);
@@ -2021,6 +2021,7 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 				BigDecimal initAmt = new BigDecimal("0.00");
 				BigDecimal usedAmt = new BigDecimal("0.00");
 				for(TOrderDaliyPlanItem plan : daliyPlans){
+					if("30".equals(plan.getStatus()))continue;
 					initAmt = initAmt.add(plan.getAmt());
 					if("20".equals(plan.getStatus())){
 						usedAmt.add(plan.getAmt());
@@ -2122,7 +2123,7 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 						}
 					}
 					if(delFlag){
-						orgEntries.remove(orgEntry);
+						removedEntries.add(orgEntry);
 						//此行删除了，删除所有剩余的日单
 						orgEntry.setStatus("30");//30表示删除的行
 						tPlanOrderItemMapper.updateEntryByItemNo(orgEntry);
@@ -2135,6 +2136,8 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 					}
 					
 				}
+				
+				orgEntries.removeAll(removedEntries);
 				//更新订单
 	   		orgOrder.setInitAmt(orderAmt);
 	   		orgOrder.setCurAmt(orderAmt.subtract(orderUsedAmt));
@@ -2219,7 +2222,7 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 				}
 				if(delFlag){
 					//此行删除了，删除所有剩余的日单
-					orgEntries.remove(orgEntry);
+					removedEntries.add(orgEntry);
 					orgEntry.setStatus("30");//30表示删除的行
 					tPlanOrderItemMapper.updateEntryByItemNo(orgEntry);
 					TOrderDaliyPlanItem newPlan = new TOrderDaliyPlanItem();
@@ -2232,6 +2235,7 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 				
 			}
 			
+			orgEntries.removeAll(removedEntries);
 			//生成新的每日订单
    		createDaliyPlanForLongEdit(orgOrder , modifiedEntries ,orgEntries);
    		
@@ -4470,7 +4474,7 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 		Date endDate = afterDate(today,5);
 		String todayStr = format.format(today);
 		String endStr = format.format(endDate);
-		
+		System.out.println("===========执行发送短信接口================");
 		if("true".equals(EnvContant.getSystemConst("send_message_flag"))){
 //			预付款：
 //			尊敬的XX 客户：
@@ -4482,9 +4486,11 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 					super.run();
 					this.setName("sendMessagePrePayOrder");
 					List<TPreOrder> list = tPreOrderMapper.searchPrePayOrdersForSendMessage(endStr);
+					System.out.println("===========执行发送短信接口==订单数量=============="+list.size());
 					list.stream().forEach((e)->{
 						String str = "尊敬的" + e.getMilkmemberName() + "客户:您本期订奶预计将于5天后到期，我们将于5日内上门收取下期奶款，感谢您的支持！奶站电话：" + e.getBranchNo();
 						smsSendService.sendMessage(str, e.getCustomerTel());
+						System.out.println("===========发送短信====pre============"+e.getMilkmemberName()+" == "+e.getCustomerTel());
 					});
 				}
 			});
@@ -4502,6 +4508,7 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 					list.stream().forEach((e)->{
 						String str = "尊敬的" + e.getMilkmemberName() + "客户:您本期订奶共" + e.getyGrowth() + "瓶，总计" + e.getInitAmt() + "元，我们将于5日内上门收取本期奶款，感谢您的支持！";
 						smsSendService.sendMessage(str, e.getCustomerTel());
+						System.out.println("===========发送短信===af============="+e.getMilkmemberName()+" == "+e.getCustomerTel());
 					});
 				}
 			});
@@ -4519,6 +4526,7 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 					list.stream().forEach((e)->{
 						String str = "尊敬的" + e.getMilkmemberName() + "客户:您本期订奶预计将于5天后到期，请及时续费，感谢您的支持！公司电话：400—88888888";
 						smsSendService.sendMessage(str, e.getCustomerTel());
+						System.out.println("===========发送短信================"+e.getMilkmemberName()+" == "+e.getCustomerTel());
 					});
 				}
 			});

@@ -237,7 +237,9 @@ public class ImportTableResource extends BaseResource {
                         cell1 = row1.getCell(t++);
                         entrie.setEndDispDateStr(cell1.toString());
                     cell1 = row1.getCell(t++);
-                    entrie.setDispTotal(cell1.getCellType());
+                    if (cell1 != null && StringUtils.isNotEmpty(cell1.toString())) {
+                        entrie.setDispTotal(cell1.getCellType());
+                    }
                     float price = priceService.getMaraPriceForCreateOrder(order.getBranchNo(), entrie.getMatnr(), order.getDeliveryType(), salesOrg);
                     if(price<=0)throw new ServiceException(MessageCode.LOGIC_ERROR,"产品价格小于0,请检查传入的商品号，奶站和配送方式!信息："+"奶站："+order.getBranchNo()+"商品号："+entrie.getMatnr()+"配送方式："+order.getDeliveryType()+"销售组织："+salesOrg);
                     entrie.setSalesPrice(new BigDecimal(String.valueOf(price)));

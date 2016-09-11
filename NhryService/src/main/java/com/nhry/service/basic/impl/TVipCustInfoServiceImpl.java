@@ -332,6 +332,7 @@ public class TVipCustInfoServiceImpl extends BaseService implements TVipCustInfo
 		TSysUser sysuser = this.userSessionService.getCurrentUser();
 		if(acct == null){
 			//添加
+			record.setBranchNo(cust.getBranchNo());
 			record.setCreateAt(new Date());
 			record.setCreateBy(sysuser.getLoginName());
 			record.setCreateByTxt(sysuser.getDisplayName());

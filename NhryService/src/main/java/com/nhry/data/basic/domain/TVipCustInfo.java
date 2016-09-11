@@ -6,6 +6,8 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+
 public class TVipCustInfo implements Serializable{
     private String vipCustNo;
 
@@ -294,7 +296,7 @@ public class TVipCustInfo implements Serializable{
     public void setSex(String sex) {
         this.sex = sex == null ? null : sex.trim();
     }
-
+    @JsonFormat(pattern="yyyy-MM-dd",timezone = "GMT+8") 
     public Date getBirthday() {
         return birthday;
     }
@@ -334,7 +336,7 @@ public class TVipCustInfo implements Serializable{
     public void setVipType(String vipType) {
         this.vipType = vipType == null ? null : vipType.trim();
     }
-
+    @JsonFormat(pattern="yyyy-MM-dd",timezone = "GMT+8") 
     public Date getSubscribeDate() {
         return subscribeDate;
     }
@@ -454,7 +456,7 @@ public class TVipCustInfo implements Serializable{
 	public void setAddresses(List<TMdAddress> addresses) {
 		this.addresses = addresses;
 	}
-
+	@JsonFormat(pattern="yyyy-MM-dd",timezone = "GMT+8") 
 	public Date getFirstOrderTime() {
 		return firstOrderTime;
 	}
@@ -462,7 +464,7 @@ public class TVipCustInfo implements Serializable{
 	public void setFirstOrderTime(Date firstOrderTime) {
 		this.firstOrderTime = firstOrderTime;
 	}
-
+	@JsonFormat(pattern="yyyy-MM-dd",timezone = "GMT+8") 
 	public Date getLastOrderTime() {
 		return lastOrderTime;
 	}

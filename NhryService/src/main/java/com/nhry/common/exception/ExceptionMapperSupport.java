@@ -41,18 +41,6 @@ public class ExceptionMapperSupport implements ExceptionMapper<Exception> {
 	 */
 	public Response toResponse(Exception exception) {
 		exception.printStackTrace();
-//		try {
-//			ServletInputStream inStream = request.getInputStream();
-//			String  contentStr= IOUtils.toString(inStream, "utf-8");
-//			System.out.println("-------------------------------");
-//			System.out.println();
-//			System.out.println(contentStr);
-//			System.out.println();
-//			System.out.println("-------------------------------");
-//		} catch (IOException e) {
-//			// TODO Auto-generated catch block
-//			e.printStackTrace();
-//		}
 		String code = MessageCode.SERVER_ERROR;
 		Object msg = null;
 		Status statusCode = Status.INTERNAL_SERVER_ERROR;
