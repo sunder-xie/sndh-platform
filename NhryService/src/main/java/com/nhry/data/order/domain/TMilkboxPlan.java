@@ -179,7 +179,6 @@ public class TMilkboxPlan {
     public void setBranchNo(String branchNo) {
         this.branchNo = branchNo == null ? null : branchNo.trim();
     }
-    @JsonFormat(pattern="yyyy-MM-dd",timezone = "GMT+8") 
     public Date getPlanDate() {
         return planDate;
     }

@@ -9,7 +9,6 @@ import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
 
 public class NHSysCodeItem implements Serializable {
 	private String typeCode;
@@ -112,7 +111,6 @@ public class NHSysCodeItem implements Serializable {
         this.idx = idx;
     }
     
-    @JsonFormat(pattern="yyyy-MM-dd HH:mm:ss",timezone = "GMT+8")
     public Date getCreateAt() {
         return createAt;
     }
@@ -137,7 +135,6 @@ public class NHSysCodeItem implements Serializable {
         this.createByTxt = createByTxt == null ? null : createByTxt.trim();
     }
     
-    @JsonFormat(pattern="yyyy-MM-dd HH:mm:ss",timezone = "GMT+8") 
     public Date getLastModified() {
         return lastModified;
     }
