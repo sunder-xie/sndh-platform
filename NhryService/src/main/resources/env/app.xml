@@ -50,7 +50,7 @@
 	<!--#会员地址更新-->
 	<config key="PI.MemberAddrUpdate.URL" value="http://pidev.newhope.com:50000/XISOAPAdapter/MessageServlet?senderParty=&amp;senderService=BC_Common_CRM&amp;receiverParty=&amp;receiverService=&amp;interface=MemberAddrUpdate&amp;interfaceNamespace=urn%3Anewhopedairy.cn%3ACRM%3ACommonData" />
 	<config key="PI.MasterData.USERNAME" value="ZT_CONN"/>
-	<config key="PI.MasterData.PASSWORD" value="CANDYTOZT"/>
+	<config key="PI.MasterData.PASSWORD" value="PRD2dinghu"/>
 	<!-- CRM接口开关 -->
 	<config key="PI.CRM.EXEC" value="on"/>
 	<!-- 短信 -->
@@ -58,4 +58,6 @@
 	<config key="SMS.SpCode" value="228672"/>
 	<config key="SMS.LoginName" value="sc_xhry"/>
 	<config key="SMS.Password" value="ry85953221.com"/>
+
+	<config key="filePath" value="/opt/apache/apache-tomcat-6.0.29/b-service/"/>
 </configs>
