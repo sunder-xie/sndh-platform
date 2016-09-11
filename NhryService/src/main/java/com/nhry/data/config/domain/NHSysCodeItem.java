@@ -5,6 +5,12 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
+
+import com.fasterxml.jackson.annotation.JsonFormat;
+
 public class NHSysCodeItem implements Serializable {
 	private String typeCode;
 
@@ -27,13 +33,13 @@ public class NHSysCodeItem implements Serializable {
     private String attr5;
 
     private Integer idx;
-
+    
     private Date createAt;
 
     private String createBy;
 
     private String createByTxt;
-
+    
     private Date lastModified;
 
     private String lastModifiedBy;
@@ -105,7 +111,8 @@ public class NHSysCodeItem implements Serializable {
     public void setIdx(Integer idx) {
         this.idx = idx;
     }
-
+    
+    @JsonFormat(pattern="yyyy-MM-dd HH:mm:ss",timezone = "GMT+8")
     public Date getCreateAt() {
         return createAt;
     }
@@ -129,7 +136,8 @@ public class NHSysCodeItem implements Serializable {
     public void setCreateByTxt(String createByTxt) {
         this.createByTxt = createByTxt == null ? null : createByTxt.trim();
     }
-
+    
+    @JsonFormat(pattern="yyyy-MM-dd HH:mm:ss",timezone = "GMT+8") 
     public Date getLastModified() {
         return lastModified;
     }
