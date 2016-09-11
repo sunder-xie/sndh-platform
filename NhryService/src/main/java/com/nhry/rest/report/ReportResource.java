@@ -45,6 +45,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Controller;
 
+import javax.activation.MimetypesFileTypeMap;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.ws.rs.*;
@@ -308,7 +309,17 @@ public class ReportResource extends BaseResource{
             workbook.write(stream);
             stream.flush();
             stream.close();
-            outUrl = "/report/export/" + fname + "DeliverMilk.xlsx";
+
+//            File targetFilePath = new File(url +  File.separator + "report"+ File.separator + "export" + File.separator + fname + "DeliverMilk.xlsx");
+
+//            String mt = new MimetypesFileTypeMap().getContentType(targetFilePath);
+//
+//            return Response
+//                    .ok(targetFilePath, mt)
+//                    .header("Content-disposition","attachment;filename=" + targetFilePath.getName())
+//                    .header("ragma", "No-cache").header("Cache-Control", "no-cache").build();
+
+//            outUrl = "/report/export/" + fname + "DeliverMilk.xlsx";
         }catch (Exception e){
             e.printStackTrace();
         }
@@ -322,7 +333,7 @@ public class ReportResource extends BaseResource{
         List<TMilkboxPlan> details = milkBoxService.findMilkBox(empNo);
         BranchEmpModel empdata =  branchEmpService.empDetailInfo(empNo);
         String outUrl = "";
-        String url = request.getServletContext().getRealPath("/");
+        String url = EnvContant.getSystemConst("filePath");
         try {
             File file = new File(url +  File.separator + "report"+ File.separator + "template" + File.separator + "MilkBoxTemplate.xlsx");
             FileInputStream input = new FileInputStream(file);
@@ -392,7 +403,7 @@ public class ReportResource extends BaseResource{
     public Response findReqOrderOutput(@ApiParam(name = "model",value = "output要货计划") BranchInfoModel model){
         List<Map<String,String>>  details = branchInfoService.findReqOrderOutput(model);
         String outUrl = "";
-        String url = request.getServletContext().getRealPath("/");
+        String url = EnvContant.getSystemConst("filePath");
         try {
             File file = new File(url +  File.separator + "report"+ File.separator + "template" + File.separator + "ReqOrderTemplate.xlsx");
             FileInputStream input = new FileInputStream(file);
@@ -461,7 +472,7 @@ public class ReportResource extends BaseResource{
     public Response branchDayOutput(@ApiParam(name = "model",value = "奶站日报") BranchInfoModel model){
         List<Map<String,String>>  details = branchInfoService.branchDayOutput(model);
         String outUrl = "";
-        String url = request.getServletContext().getRealPath("/");
+        String url = EnvContant.getSystemConst("filePath");
         try{
             File file = new File(url +  File.separator + "report"+ File.separator + "template" + File.separator + "DayReportTemplate.xlsx");
             FileInputStream input = new FileInputStream(file);
@@ -541,7 +552,7 @@ public class ReportResource extends BaseResource{
     public Response findMonthReportOutput(@ApiParam(name = "model",value = "月任务") BranchInfoModel model){
         List<Map<String,String>>  details = branchInfoService.findBranchMonthReportOutput(model);
         String outUrl = "";
-        String url = request.getServletContext().getRealPath("/");
+        String url = EnvContant.getSystemConst("filePath");
         try {
             File file = new File(url +  File.separator + "report"+ File.separator + "template" + File.separator + "MonthReportTemplate.xlsx");
             FileInputStream input = new FileInputStream(file);
@@ -612,7 +623,7 @@ public class ReportResource extends BaseResource{
     public Response findOrderRatioOupput(@ApiParam(name = "model",value = "订单转化率") BranchInfoModel model){
         List<Map<String,String>>  details = branchInfoService.findOrderRatioOutput(model);
         String outUrl = "";
-        String url = request.getServletContext().getRealPath("/");
+        String url = EnvContant.getSystemConst("filePath");
         try {
             File file = new File(url +  File.separator + "report"+ File.separator + "template" + File.separator + "OrderRatioTemplate.xlsx");
             FileInputStream input = new FileInputStream(file);
@@ -683,7 +694,7 @@ public class ReportResource extends BaseResource{
     @ApiOperation(value = "/reportCollectByEmp", response = OrderCreateModel.class, notes = "根据订单编号导出收款信息")
     public Response reportCollectByEmp(@ApiParam(required = true, name = "model", value = "送奶员编号")CustBillQueryModel model, @Context HttpServletRequest request, @Context HttpServletResponse response) {
         List<CollectOrderBillModel> orderBillModel1 = customerBillService.BatchPrintForExp(model);
-        String url = request.getServletContext().getRealPath("/");
+        String url = EnvContant.getSystemConst("filePath");
 //        logger.info("realPath："+url);
         String outUrl = "";
         try {
@@ -905,7 +916,7 @@ public class ReportResource extends BaseResource{
     @Consumes(MediaType.APPLICATION_JSON)
     @ApiOperation(value = "/exportOrderByModel}", response = ResponseModel.class, notes = "导出奶站分奶表")
     public Response exportOrderByModel(@ApiParam(name = "model",value = "路单") BranchInfoModel model){
-        String url = request.getServletContext().getRealPath("/");
+        String url = EnvContant.getSystemConst("filePath");
         String outUrl = "";
         try {
             if(StringUtils.isEmpty(model.getBranchNo())){
