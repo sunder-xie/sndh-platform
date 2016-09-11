@@ -268,7 +268,7 @@
     <!-- left join t_vip_cust_info v on v.VIP_CUST_NO = o.MILKMEMBER_NO -->
     left join t_md_residential_area r on r.ID = a.RESIDENTIAL_AREA
     where i.ORDER_NO = #{orderNo,jdbcType=VARCHAR}
-    order by r.ID, a.ADDRESS_TXT asc
+    order by r.RESIDENTIAL_AREA_TXT, a.ADDRESS_TXT asc
   </select>
   <insert id="insertSelective" parameterType="com.nhry.data.milk.domain.TDispOrderItem" >
     insert into t_mst_disp_order_item
