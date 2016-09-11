@@ -203,4 +203,13 @@ public class PIResouce extends BaseResource{
         return convertToRespModel(MessageCode.NORMAL, requireOrderService.saveFactoryPrice(), null);
     }
 
+    @GET
+    @Path("/getWerks")
+    @Produces(MediaType.APPLICATION_JSON)
+    @Consumes(MediaType.APPLICATION_JSON)
+    @ApiOperation(value = "/getWerks", response = ResponseModel.class, notes = "更新库存对应的工厂数据")
+    public Response getWerks() throws RemoteException {
+        return convertToRespModel(MessageCode.NORMAL, piProductService.matWHWHandler(), null);
+    }
+
 }
