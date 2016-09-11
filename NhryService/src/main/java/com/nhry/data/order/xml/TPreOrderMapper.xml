@@ -106,8 +106,7 @@
     WHERE MILKMEMBER_NO = #{MILKMEMBER_NO,jdbcType=VARCHAR}
     	    and PREORDER_STAT = '10'
     	    and END_DATE &gt; curdate()
-    	    and SIGN = '10'
-    	    and SIGN = '20'
+    	    and (SIGN = '10'   OR SIGN = '20')
   </select>
   <select id="selectNodeletedByMilkmemberNo" resultMap="BaseResultMap" parameterType="com.nhry.data.order.domain.TPreOrder" >
     select 
