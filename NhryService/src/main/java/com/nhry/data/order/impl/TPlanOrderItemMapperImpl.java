@@ -25,6 +25,13 @@ public class TPlanOrderItemMapperImpl implements TPlanOrderItemMapper
 	}
 	
 	@Override
+	public int selectEntriesQtyByOrderCode(String orderCode)
+	{
+		// TODO Auto-generated method stub
+		return sqlSessionTemplate.selectOne("selectEntriesQtyByOrderCode", orderCode);
+	}
+	
+	@Override
 	public List<TPlanOrderItem> selectByOrderCode(String orderCode)
 	{
 		return sqlSessionTemplate.selectList("selectEntriesByOrderCode", orderCode);

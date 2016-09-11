@@ -3,6 +3,7 @@ package com.nhry.data.order.dao;
 import com.nhry.data.order.domain.TPlanOrderItem;
 import com.nhry.model.order.OrderPointModel;
 import com.nhry.service.pi.pojo.MemberActivities;
+
 import java.util.List;
 import java.util.Map;
 
@@ -10,6 +11,8 @@ public interface TPlanOrderItemMapper {
     int deleteByEntryItemNo(String itemNo);
 
     int insert(TPlanOrderItem record);
+    
+    int selectEntriesQtyByOrderCode(String orderCode);
 
     int insertSelective(TPlanOrderItem record);
 

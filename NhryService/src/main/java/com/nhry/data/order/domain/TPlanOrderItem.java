@@ -14,6 +14,8 @@ public class TPlanOrderItem {
     private String refItemNo;
 
     private String newRowFlag;
+    
+    private String newFlag;
 
     private String matnr;
 
@@ -38,6 +40,8 @@ public class TPlanOrderItem {
     private String reachTimeType;
 
     private Date startDispDate;
+    
+    private Date startDate;
 
     private Date endDispDate;
     
@@ -78,8 +82,52 @@ public class TPlanOrderItem {
     private Integer yGrowth;
     
     private Integer yFresh;
+    
+    private String isDeletedFlag;
+    
+    private String deletePlansFlag;
 
-   public Integer getyGrowth()
+	public String getIsDeletedFlag()
+	{
+		return isDeletedFlag;
+	}
+
+	public void setIsDeletedFlag(String isDeletedFlag)
+	{
+		this.isDeletedFlag = isDeletedFlag;
+	}
+
+	public String getDeletePlansFlag()
+	{
+		return deletePlansFlag;
+	}
+
+	public void setDeletePlansFlag(String deletePlansFlag)
+	{
+		this.deletePlansFlag = deletePlansFlag;
+	}
+
+	public String getNewFlag()
+	{
+		return newFlag;
+	}
+
+	public void setNewFlag(String newFlag)
+	{
+		this.newFlag = newFlag;
+	}
+
+	public Date getStartDate()
+	{
+		return startDate;
+	}
+
+	public void setStartDate(Date startDate)
+	{
+		this.startDate = startDate;
+	}
+
+	public Integer getyGrowth()
 	{
 		return yGrowth;
 	}

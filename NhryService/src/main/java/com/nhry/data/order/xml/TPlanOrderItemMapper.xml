@@ -84,6 +84,12 @@
     PROMOTION, PROM_DAYS, STATUS, BUY_QTY, GIFT_QTY, CREATE_AT, CREATE_BY, CREATE_BY_TXT, 
     LAST_MODIFIED, LAST_MODIFIED_BY, LAST_MODIFIED_BY_TXT
   </sql>
+  <select id="selectEntriesQtyByOrderCode" resultType="INTEGER" parameterType="java.lang.String" >
+    select 
+    count(*)
+    from t_mst_plan_order_item
+    where ORDER_NO = #{orderCode,jdbcType=VARCHAR}
+  </select>
   <select id="selectEntriesByOrderCode" resultMap="BaseResultMap" parameterType="java.lang.String" >
     select 
     e.ITEM_NO, e.ORDER_NO, e.ORDER_DATE, e.REF_ITEM_NO, e.NEW_ROW_FLAG, e.MATNR, e.UNIT, e.QTY, e.SALES_PRICE,
