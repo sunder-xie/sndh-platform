@@ -325,8 +325,8 @@ public class ReportResource extends BaseResource{
     @Produces(MediaType.APPLICATION_JSON)
     @ApiOperation(value = "/reportFile/{fileName}", response = OrderCreateModel.class, notes = "下载文件")
     public Response reportFile(@ApiParam(required = true,value = "fileName",defaultValue = "fileName")@PathParam("fileName") String fileName,@Context HttpServletRequest request, @Context HttpServletResponse response){
-        String url = EnvContant.getSystemConst("filePath");
-        String dhtoken = request.getHeader("dh-token");
+//        String url = EnvContant.getSystemConst("filePath");
+        String url = request.getServletContext().getRealPath("/");
         String urlPath = url +  File.separator + "report"+ File.separator + "export" + File.separator + fileName;
         return convertToFile(urlPath);
     }
