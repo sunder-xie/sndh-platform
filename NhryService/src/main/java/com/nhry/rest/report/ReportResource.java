@@ -31,6 +31,7 @@ import com.nhry.utils.CodeGeneratorUtil;
 import com.nhry.utils.EnvContant;
 import com.nhry.utils.ExcelUtil;
 import com.sun.jersey.spi.resource.Singleton;
+import com.sun.tools.doclint.Env;
 import com.wordnik.swagger.annotations.Api;
 import com.wordnik.swagger.annotations.ApiOperation;
 import com.wordnik.swagger.annotations.ApiParam;
@@ -225,7 +226,7 @@ public class ReportResource extends BaseResource{
         logger.info("##################"+EnvContant.getSystemConst("filePath"));
         logger.info("##################"+request.getServletContext().getRealPath("/"));
         String url = request.getServletContext().getRealPath("/");
-//        String url = EnvContant.getSystemConst("filePath");
+        String url1 = EnvContant.getSystemConst("filePath");
         try{
             File file = new File(url +  File.separator + "report"+ File.separator + "template" + File.separator + "DeliverMilkTemplate.xlsx");    //审批单
             FileInputStream input = new FileInputStream(file);
@@ -306,7 +307,8 @@ public class ReportResource extends BaseResource{
                     }
                 }
             }
-            File export = new File(url +  File.separator + "report"+ File.separator + "export" + File.separator + fname + "DeliverMilk.xlsx");
+//            File export = new File(url +  File.separator + "report"+ File.separator + "export" + File.separator + fname + "DeliverMilk.xlsx");
+            File export = new File(url1 + fname + "DeliverMilk.xlsx");
             FileOutputStream stream = new FileOutputStream(export);
             workbook.write(stream);
             stream.flush();
@@ -325,9 +327,10 @@ public class ReportResource extends BaseResource{
     @Produces(MediaType.APPLICATION_JSON)
     @ApiOperation(value = "/reportFile/{fileName}", response = OrderCreateModel.class, notes = "下载文件")
     public Response reportFile(@ApiParam(required = true,value = "fileName",defaultValue = "fileName")@PathParam("fileName") String fileName,@Context HttpServletRequest request, @Context HttpServletResponse response){
-//        String url = EnvContant.getSystemConst("filePath");
-        String url = request.getServletContext().getRealPath("/");
-        String urlPath = url +  File.separator + "report"+ File.separator + "export" + File.separator + fileName;
+        String url = EnvContant.getSystemConst("filePath");
+//        String url = request.getServletContext().getRealPath("/");
+//        String urlPath = url +  File.separator + "report"+ File.separator + "export" + File.separator + fileName;
+        String urlPath = url +  File.separator + fileName;
         return convertToFile(urlPath);
     }
 
