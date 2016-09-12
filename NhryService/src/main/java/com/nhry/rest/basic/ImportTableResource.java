@@ -2,6 +2,7 @@ package com.nhry.rest.basic;
 
 import com.nhry.common.exception.MessageCode;
 import com.nhry.common.exception.ServiceException;
+import com.nhry.data.basic.domain.TMdBranch;
 import com.nhry.data.basic.domain.TMdResidentialArea;
 import com.nhry.data.basic.domain.TVipCustInfo;
 import com.nhry.data.basic.domain.TaskYearMonthPlan;
@@ -204,7 +205,8 @@ public class ImportTableResource extends BaseResource {
             order.setOrderNo(cell.toString());
             cell = row.getCell(j++);
             order.setBranchNo(cell.toString());
-            String salesOrg = branchService.selectBranchByNo(order.getBranchNo()).getSalesOrg();
+            TMdBranch branch = branchService.selectBranchByNo(order.getBranchNo());
+            String salesOrg  = branch.getSalesOrg();
             cell = row.getCell(j++);
             order.setDeliveryType(cell.toString());
             ArrayList<TPlanOrderItem> entries = new ArrayList<TPlanOrderItem>();//订单行项目
@@ -229,7 +231,9 @@ public class ImportTableResource extends BaseResource {
                         entrie.setGapDays(cell1.getCellType());
                     }
                     cell1 = row1.getCell(t++);
-                    entrie.setRuleTxt(cell1.toString());
+                    if (cell1 != null && StringUtils.isNotEmpty(cell1.toString())) {
+                        entrie.setRuleTxt(cell1.toString());
+                    }
                     cell1 = row1.getCell(t++);
                     entrie.setReachTimeType(cell1.toString());
                         cell1 = row1.getCell(t++);
