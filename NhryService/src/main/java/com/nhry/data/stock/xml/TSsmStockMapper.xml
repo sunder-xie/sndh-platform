@@ -30,9 +30,9 @@
   </delete>
     <insert id="insertStock" parameterType="com.nhry.data.stock.domain.TSsmStock">
     insert into t_ssm_stock (BRANCH_NO, MATNR, UNIT, 
-      QTY)
+      QTY,SALES_ORG)
     values (#{branchNo,jdbcType=VARCHAR}, #{matnr,jdbcType=VARCHAR}, #{unit,jdbcType=VARCHAR}, 
-      #{qty,jdbcType=DECIMAL})
+      #{qty,jdbcType=DECIMAL},#{salesOrg,jdbcType=VARCHAR})
   </insert>
     <update id="updateStock" parameterType="com.nhry.data.stock.domain.TSsmStock">
         update t_ssm_stock
@@ -42,6 +42,9 @@
           </if>
           <if test="qty != null" >
             QTY = #{qty,jdbcType=DECIMAL},
+          </if>
+          <if test="salesOrg != null" >
+            SALES_ORG = #{salesOrg,jdbcType=VARCHAR},
           </if>
         </set>
         where BRANCH_NO = #{branchNo,jdbcType=VARCHAR}
