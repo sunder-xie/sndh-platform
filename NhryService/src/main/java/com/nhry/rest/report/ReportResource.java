@@ -223,8 +223,9 @@ public class ReportResource extends BaseResource{
         RouteOrderModel model = deliverMilkService.searchRouteDetails(orderCode);
         String outUrl = "";
         logger.info("##################"+EnvContant.getSystemConst("filePath"));
-//        String url = request.getServletContext().getRealPath("/");
-        String url = EnvContant.getSystemConst("filePath");
+        logger.info("##################"+request.getServletContext().getRealPath("/"));
+        String url = request.getServletContext().getRealPath("/");
+//        String url = EnvContant.getSystemConst("filePath");
         try{
             File file = new File(url +  File.separator + "report"+ File.separator + "template" + File.separator + "DeliverMilkTemplate.xlsx");    //审批单
             FileInputStream input = new FileInputStream(file);
