@@ -310,21 +310,26 @@ public class ReportResource extends BaseResource{
             workbook.write(stream);
             stream.flush();
             stream.close();
-//            File targetFilePath = new File(url +  File.separator + "report"+ File.separator + "export" + File.separator + fname + "DeliverMilk.xlsx");
 
-//            String mt = new MimetypesFileTypeMap().getContentType(targetFilePath);
-//
-//            return Response
-//                    .ok(targetFilePath, mt)
-//                    .header("Content-disposition","attachment;filename=" + targetFilePath.getName())
-//                    .header("ragma", "No-cache").header("Cache-Control", "no-cache").build();
-
-            outUrl = "/report/export/" + fname + "DeliverMilk.xlsx";
+//            String urlPath = url +  File.separator + "report"+ File.separator + "export" + File.separator + fname + "DeliverMilk.xlsx";
+//            return convertToFile(urlPath);
+            outUrl = fname + "DeliverMilk.xlsx";
         }catch (Exception e){
             e.printStackTrace();
         }
         return convertToRespModel(MessageCode.NORMAL,null,outUrl);
     }
+    @GET
+    @Path("/reportFile/{fileName}")
+    @Produces(MediaType.APPLICATION_JSON)
+    @ApiOperation(value = "/reportFile/{fileName}", response = OrderCreateModel.class, notes = "下载文件")
+    public Response reportFile(@ApiParam(required = true,value = "fileName",defaultValue = "fileName")@PathParam("fileName") String fileName,@Context HttpServletRequest request, @Context HttpServletResponse response){
+        String url = EnvContant.getSystemConst("filePath");
+        String dhtoken = request.getHeader("dh-token");
+        String urlPath = url +  File.separator + "report"+ File.separator + "export" + File.separator + fileName;
+        return convertToFile(urlPath);
+    }
+
     @GET
     @Path("/reportMilkBox/{empNo}")
     @Produces(MediaType.APPLICATION_JSON)
