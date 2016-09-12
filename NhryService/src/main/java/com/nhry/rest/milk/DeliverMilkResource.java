@@ -86,6 +86,14 @@ public class DeliverMilkResource extends BaseResource {
 	}
 	
 	@GET
+	@Path("/deleteRouteOrders/{dateStr}")
+	@Produces(MediaType.APPLICATION_JSON)
+	@ApiOperation(value = "/deleteRouteOrders/{dateStr}", response = Integer.class, notes = "删除路单")
+	public Response deleteRouteOrders(@ApiParam(required=true,name="dateStr",value="日期编号") @PathParam("dateStr") String dateStr){
+		return convertToRespModel(MessageCode.NORMAL, null, deliverMilkService.deleteDispOrderByDate(dateStr));
+	}
+	
+	@GET
 	@Path("/createRouteChanges")
 	@Produces(MediaType.APPLICATION_JSON)
 	@ApiOperation(value = "/createRouteChanges", response = Integer.class, notes = "生成路单变化单")

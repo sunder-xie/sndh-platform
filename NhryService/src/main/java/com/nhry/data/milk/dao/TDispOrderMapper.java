@@ -11,6 +11,9 @@ import java.util.Date;
 import java.util.List;
 
 public interface TDispOrderMapper {
+	 List<TDispOrder> selectConfirmedDispOrderByDate(String branchNo,String date);
+	
+	 int deleteDispOrderByOrderNo(List<String> codeList);
     //查询今天奶站下的路单数
     List<TDispOrder> selectTodayDispOrderByBranchNo(String branchNo,Date date);
 

@@ -115,5 +115,20 @@ public class TDispOrderMapperImpl implements TDispOrderMapper
 		key.setBranchName(format.format(orderDate));
 		return sqlSessionTemplate.selectList("selectConfirmDispOrderByBranchNoAndDay",key);
 	}
+	
+	@Override
+	public List<TDispOrder> selectConfirmedDispOrderByDate(String branchNo,String date)
+	{
+		TDispOrder key = new TDispOrder();
+		key.setBranchNo(branchNo);
+		key.setBranchName(date);
+		return sqlSessionTemplate.selectList("selectConfirmedDispOrderByDate",key);
+	}
+	
+	@Override
+	public int deleteDispOrderByOrderNo(List<String> codeList)
+	{
+		return sqlSessionTemplate.delete("deleteDispOrderByOrderNo",codeList);
+	}
 
 }
