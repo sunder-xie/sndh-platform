@@ -2,10 +2,7 @@ package com.nhry.rest.basic;
 
 import com.nhry.common.exception.MessageCode;
 import com.nhry.common.exception.ServiceException;
-import com.nhry.data.basic.domain.TMdBranch;
-import com.nhry.data.basic.domain.TMdResidentialArea;
-import com.nhry.data.basic.domain.TVipCustInfo;
-import com.nhry.data.basic.domain.TaskYearMonthPlan;
+import com.nhry.data.basic.domain.*;
 import com.nhry.data.order.domain.TPlanOrderItem;
 import com.nhry.data.order.domain.TPreOrder;
 import com.nhry.model.order.OrderCreateModel;
@@ -287,8 +284,9 @@ public class ImportTableResource extends BaseResource {
             order.setOrderType("20");
             order.setPreorderSource("30");
             //通过订户查询到地址信息，并写入到订单里
+            TMdAddress tMdAddress = tVipCustInfoService.findAddressByCustNoISDefault(order.getMilkmemberNo());
             TVipCustInfo custinfo = tVipCustInfoService.findVipCustByNo(order.getMilkmemberNo());
-            order.setAdressNo(custinfo.getSubdist());
+            order.setAdressNo(tMdAddress.getAddressId());
             OrderModel.setOrder(order);
             OrderModels.add(OrderModel);
 
