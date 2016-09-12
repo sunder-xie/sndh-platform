@@ -91,6 +91,7 @@ public class BranchEmpServiceImpl extends BaseService implements BranchEmpServic
 								newEmp.setLastModifiedBy(sysuser.getLoginName());
 								newEmp.setLastModifiedByTxt(sysuser.getDisplayName());
 								newEmp.setStatus("1");
+								newEmp.setLeaveDate(null);
 								//往调整后的奶站的copy一个员工
 								branchEmpMapper.addBranchEmp(newEmp);
 								messageService.sendMessageForEmpUpt(newEmp, "add", sysuser);
