@@ -997,4 +997,28 @@ public class DeliverMilkServiceImpl extends BaseService implements DeliverMilkSe
 		return 0;
 	}
 
+	/* (non-Javadoc) 
+	* @title: deleteDispOrderByDate
+	* @description: 删除指定日期和奶站的路单，有确认是不允许删除
+	* @param date
+	* @return 
+	* @see com.nhry.service.milk.dao.DeliverMilkService#deleteDispOrderByDate(java.lang.String) 
+	*/
+	@Override
+	public int deleteDispOrderByDate(String date)
+	{
+		if(userSessionService.getCurrentUser().getBranchNo()==null)throw new ServiceException(MessageCode.LOGIC_ERROR,"登陆人没有奶站，非奶站人员无法创建路单!");
+		List<TDispOrder> list = tDispOrderMapper.selectConfirmedDispOrderByDate(userSessionService.getCurrentUser().getBranchNo(), date);
+		if(list==null||list.size()<=0)throw new ServiceException(MessageCode.LOGIC_ERROR,"没有需要删除的路单!");
+		if(list.stream().anyMatch((e)->"20".equals(e.getStatus())))throw new ServiceException(MessageCode.LOGIC_ERROR, date + " 此日期有确认的路单，不能删除!");
+		List<String> newList = new ArrayList<String>();
+		list.stream().forEach((e)->{
+			newList.add(e.getOrderNo());
+		});
+		tDispOrderChangeMapper.deleteDispOrderChangeByOrderNo(newList);
+		tDispOrderItemMapper.deleteDispOrderItemByOrderNo(newList);
+		tDispOrderMapper.deleteDispOrderByOrderNo(newList);
+		return 1;
+	}
+
 }

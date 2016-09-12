@@ -69,5 +69,9 @@ public class TDispOrderChangeMapperImpl implements TDispOrderChangeMapper
 		return sqlSessionTemplate.selectList("searchRouteChangeOrder", code);
 	}
 	
-
+	@Override
+	public int deleteDispOrderChangeByOrderNo(List<String> codeList)
+	{
+		return sqlSessionTemplate.delete("deleteDispOrderChangeByOrderNo", codeList);
+	}
 }

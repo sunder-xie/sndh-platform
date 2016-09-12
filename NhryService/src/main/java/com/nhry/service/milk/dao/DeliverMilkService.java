@@ -13,6 +13,8 @@ import java.util.List;
 import java.util.Map;
 
 public interface DeliverMilkService {
+	int deleteDispOrderByDate(String date);
+	
 	PageInfo searchRouteOrders(RouteOrderSearchModel smodel);
 	
 	PageInfo searchRouteOrderDetail(RouteOrderSearchModel smodel);

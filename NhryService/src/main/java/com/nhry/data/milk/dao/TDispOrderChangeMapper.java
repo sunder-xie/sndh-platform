@@ -6,6 +6,9 @@ import com.nhry.data.milk.domain.TDispOrderChange;
 import com.nhry.data.milk.domain.TDispOrderChangeKey;
 
 public interface TDispOrderChangeMapper {
+	
+	 int deleteDispOrderChangeByOrderNo(List<String> codeList);
+	
     int deleteByPrimaryKey(TDispOrderChangeKey key);
 
     int insert(TDispOrderChange record);

@@ -219,4 +219,11 @@
       and ORG_ORDER_NO = #{orgOrderNo,jdbcType=VARCHAR}
       and ORG_ITEM_NO = #{orgItemNo,jdbcType=VARCHAR}
   </update>
+  <delete id="deleteDispOrderChangeByOrderNo" >
+    delete from t_mst_disp_order_change
+    where ORDER_NO in 
+    <foreach item="codeStr" collection="list" separator="," open="(" close=")" index="">  
+      	#{codeStr}
+    </foreach>  
+  </delete>
 </mapper>
