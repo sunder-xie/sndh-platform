@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.nhry.data.auth.dao.TSysUserMapper">
-	<cache type="org.mybatis.caches.redis.RedisCache" /> 
+	<cache type="org.mybatis.caches.redis.RedisCache"  /> 
     <resultMap id="BaseResultMap" type="com.nhry.data.auth.domain.TSysUser">
         <id column="LOGIN_NAME" jdbcType="VARCHAR" property="loginName"/>
         <result column="DISPLAY_NAME" jdbcType="VARCHAR" property="displayName"/>
@@ -225,6 +225,22 @@
 		u.CREATE_ON,
 		u.LAST_MODIFIED,
 		(select b.BRANCH_NAME from t_md_branch b where b.BRANCH_NO=u.BRANCH_NO) BRANCH_NO,
+		u.DEALER_ID,
+		u.SALES_ORG,
+		u.LAST_LOGIN
+	FROM
+		t_sys_user u 
+	WHERE
+		 LOGIN_NAME = #{loginName,jdbcType=VARCHAR}
+  </select>
+  <select id="findUserByLoginName2" parameterType="java.lang.String" resultMap="BaseResultMap">
+	    SELECT
+		u.LOGIN_NAME,
+		u.DISPLAY_NAME,
+		u.GROUP_ID,
+		u.CREATE_ON,
+		u.LAST_MODIFIED,
+		u.BRANCH_NO,
 		u.DEALER_ID,
 		u.SALES_ORG,
 		u.LAST_LOGIN

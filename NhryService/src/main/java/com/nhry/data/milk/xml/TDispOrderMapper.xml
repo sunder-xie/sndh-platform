@@ -414,5 +414,20 @@
 	    where ORDER_NO = #{orderNo,jdbcType=VARCHAR}
   	 </update>
 
+	<select id="selectConfirmedDispOrderByDate" resultMap="BaseResultMap" parameterType="com.nhry.data.milk.domain.TDispOrder" >
+    SELECT
+    <include refid="Base_Column_List" />
+    FROM t_mst_disp_order
+    WHERE BRANCH_NO = #{branchNo,jdbcType=VARCHAR}
+    AND DISP_DATE = #{branchName,jdbcType=DATE}
+  </select>
+  
+  <delete id="deleteDispOrderByOrderNo" >
+    delete from t_mst_disp_order
+    where ORDER_NO in 
+    <foreach item="codeStr" collection="list" separator="," open="(" close=")" index="">  
+      	#{codeStr}  
+    </foreach>  
+  </delete>
 
 </mapper>
