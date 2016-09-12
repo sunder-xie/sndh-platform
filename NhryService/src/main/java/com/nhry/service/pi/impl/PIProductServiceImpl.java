@@ -37,6 +37,7 @@ public class PIProductServiceImpl implements PIProductService {
     public static String LOW = PIPropertitesUtil.getValue("PI.MasterData.mATQUERY.LOW");
     public static String ZORM = PIPropertitesUtil.getValue("PI.MasterData.mATQUERY.ZORM");
     public static String PRODH = PIPropertitesUtil.getValue("PI.PRODH");
+    public static String CANCELSALESORG = PIPropertitesUtil.getValue("PI.CANCEL_SALEORG");
     public static String BRANDCHTYPE_ZY = "01";
     public static String BRANDCHTYPE_WB = "02";
     private PIProductMapper piProductMapper;
@@ -503,21 +504,17 @@ public class PIProductServiceImpl implements PIProductService {
      */
     @Override
     public int matWHWHandler() throws RemoteException {
-        Map<String, String> etMap = getET_DATA();
-        Map<String, ET_LGORT> lgMap = getET_LGORTs();
+        Map<String,ZTSD00024> etMap = getET_DATAs();
         StringBuilder sb = new StringBuilder();
-        for (Map.Entry<String, String> entry : etMap.entrySet()) {
+        for (Map.Entry<String, ZTSD00024> entry : etMap.entrySet()) {
             TMdBranch branch = branchMapper.getBranchByNo(entry.getKey());
-            String lgort = entry.getValue();
+            ZTSD00024 lgort = entry.getValue();
             if(lgort != null && branch != null) {
-                ET_LGORT et = lgMap.get(lgort.concat(branch.getBranchName()));
-                sb.append(lgort.concat(branch.getBranchName())+"<br>");
-                if(et != null) {
-                    branch.setWerks(et.getWERKS());
-                    sb.append(et.getWERKS()+"<br>");
-                    branch.setLgort(entry.getValue());
-                    branchMapper.updateBranch(branch);
-                }
+                branch.setWerks(lgort.getBUKRS().getBUKRS_type6());
+                branch.setLgort(lgort.getLGORT().getLGORT_type0());
+                sb.append("---"+lgort.getBUKRS().getBUKRS_type6());
+                sb.append(lgort.getLGORT().getLGORT_type0());
+                branchMapper.updateBranch(branch);
             }
         }
         System.out.println(sb);
@@ -863,7 +860,7 @@ public class PIProductServiceImpl implements PIProductService {
     }
 
     /**
-     * 客户对应的库存地点
+     * 客户对应的库存地点和工厂
      *
      * @return
      */
@@ -882,7 +879,20 @@ public class PIProductServiceImpl implements PIProductService {
         }
         return map;
     }
-
+    private Map<String, ZTSD00024> getET_DATAs() throws RemoteException {
+        ZMM_POS_24DATAResponse response = getMatWHQuery();
+        ET_DATA_type0 et_data_type0 = response.getET_DATA();
+        ZTSD00024[] ztsd00024s = et_data_type0.getItem();
+        Map<String, ZTSD00024> map = new HashMap<String, ZTSD00024>();
+        for (ZTSD00024 zt : ztsd00024s) {
+            String kunner = zt.getKUNNR1().getKUNNR1_type0();
+            String lgort = zt.getLGORT().getLGORT_type0();
+            if (StringUtils.isNotEmpty(kunner) && StringUtils.isNotEmpty(lgort)) {
+                map.put(kunner, zt);
+            }
+        }
+        return map;
+    }
     /**
      * 库存地点和工厂对应关系
      *
@@ -917,10 +927,13 @@ public class PIProductServiceImpl implements PIProductService {
         Map<String, ET_LGORT> result = new HashMap<String, ET_LGORT>();
         for (T001L t001L : t001Ls) {
             ET_LGORT et = new ET_LGORT();
-            et.setWERKS(t001L.getWERKS().getWERKS_type6());
-            et.setLGOBE(t001L.getLGOBE().getLGOBE_type0());
-            et.setLGORT(t001L.getLGORT().getLGORT_type2());
-            result.put(t001L.getLGORT().getLGORT_type2().concat(t001L.getLGOBE().getLGOBE_type0()), et);
+            String werks = t001L.getWERKS().getWERKS_type6();
+            if(!CANCELSALESORG.equals(werks)) {
+                et.setWERKS(werks);
+                et.setLGOBE(t001L.getLGOBE().getLGOBE_type0());
+                et.setLGORT(t001L.getLGORT().getLGORT_type2());
+                result.put(t001L.getLGORT().getLGORT_type2().concat(t001L.getLGOBE().getLGOBE_type0()), et);
+            }
         }
         return result;
     }
