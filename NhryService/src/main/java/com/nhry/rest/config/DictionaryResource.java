@@ -160,7 +160,7 @@ public class DictionaryResource extends BaseResource {
 		return convertToRespModel(MessageCode.NORMAL, null,  ladpService.syncSysUsers(false));
 	}
 	
-	@POST
+	@GET
 	@Path("/sys/date")
 	@Produces(MediaType.APPLICATION_JSON)
 	@ApiOperation(value = "/sys/date", response = ResponseModel.class, notes = "获取系统时间")
