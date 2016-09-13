@@ -4549,7 +4549,7 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 		String todayStr = format.format(today);
 		String endStr = format.format(endDate);
 		System.out.println("===========执行发送短信接口================");
-		if("true".equals(EnvContant.getSystemConst("send_message_flag"))){
+		if(true){
 //			预付款：
 //			尊敬的XX 客户：
 //			您本期订奶预计将于5天后到期，我们将于5日内上门收取下期奶款，感谢您的支持！奶站电话：
