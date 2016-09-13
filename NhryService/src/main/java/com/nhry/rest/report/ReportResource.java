@@ -223,8 +223,8 @@ public class ReportResource extends BaseResource{
         List<TDispOrderItem> details = deliverMilkService.searchRouteOrderDetailAll(orderCode);
         RouteOrderModel model = deliverMilkService.searchRouteDetails(orderCode);
         String outUrl = "";
-        logger.info("##################"+EnvContant.getSystemConst("filePath"));
-        logger.info("##################"+request.getServletContext().getRealPath("/"));
+        logger.debug("##################"+EnvContant.getSystemConst("filePath"));
+        logger.debug("##################"+request.getServletContext().getRealPath("/"));
         String url = request.getServletContext().getRealPath("/");
         String url1 = EnvContant.getSystemConst("filePath");
         try{
@@ -314,8 +314,6 @@ public class ReportResource extends BaseResource{
             stream.flush();
             stream.close();
 
-//            String urlPath = url +  File.separator + "report"+ File.separator + "export" + File.separator + fname + "DeliverMilk.xlsx";
-//            return convertToFile(urlPath);
             outUrl = fname + "DeliverMilk.xlsx";
         }catch (Exception e){
             e.printStackTrace();
@@ -330,7 +328,7 @@ public class ReportResource extends BaseResource{
         String url = EnvContant.getSystemConst("filePath");
 //        String url = request.getServletContext().getRealPath("/");
 //        String urlPath = url +  File.separator + "report"+ File.separator + "export" + File.separator + fileName;
-        String urlPath = url +  File.separator + fileName;
+        String urlPath = url + fileName;
         return convertToFile(urlPath);
     }
 
