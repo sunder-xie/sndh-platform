@@ -59,4 +59,6 @@
 	<config key="SMS.Password" value="ry85953221.com"/>
 
 	<config key="filePath" value="/opt/s3/"/>
+	<!-- 没有配置组织时，提示页面地址 -->
+	<config key="info_page_uri" value="http://localhost/local/#/error/NoSalesOrg"></config>
 </configs>
