@@ -324,11 +324,12 @@ public class ReportResource extends BaseResource{
     @Path("/reportFile/{fileName}")
     @Produces(MediaType.APPLICATION_JSON)
     @ApiOperation(value = "/reportFile/{fileName}", response = OrderCreateModel.class, notes = "下载文件")
-    public Response reportFile(@ApiParam(required = true,value = "fileName",defaultValue = "fileName")@PathParam("fileName") String fileName,@Context HttpServletRequest request, @Context HttpServletResponse response){
+    public Response reportFile(@ApiParam(required = true,value = "fileName",defaultValue = "fileName")@PathParam("fileName") String fileName){
         String url = EnvContant.getSystemConst("filePath");
 //        String url = request.getServletContext().getRealPath("/");
 //        String urlPath = url +  File.separator + "report"+ File.separator + "export" + File.separator + fileName;
         String urlPath = url + fileName;
+        logger.info("##########"+urlPath);
         return convertToFile(urlPath);
     }
 
