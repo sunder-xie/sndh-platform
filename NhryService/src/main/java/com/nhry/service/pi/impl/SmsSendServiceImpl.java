@@ -39,6 +39,7 @@ public class SmsSendServiceImpl implements SmsSendService {
     private static Logger logger = Logger.getLogger(SmsSendServiceImpl.class);
     @Override
     public PIMessage sendMessage(String context, String tel) {
+        logger.info("-----context--------"+context+"-------------"+"----tel-----"+tel);
         PIMessage message = new PIMessage();
         try {
             SmsStub smsStub = new SmsStub(URL);
