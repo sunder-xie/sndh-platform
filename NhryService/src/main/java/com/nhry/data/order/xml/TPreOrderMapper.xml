@@ -1198,7 +1198,7 @@
     and o.SIGN = '10'
     and o.PAYMENT_STAT = '10'
     and o.PAYMENTMETHOD = '20'
-    and o.END_DATE = #{endDate,jdbcType=DATE}
+    and o.END_DATE = #{endDate,jdbcType=DATE}  and o.ORDER_NO ='16091306583199365943'
   </select>
   	<!-- 后付款的 -->
   	<select id="searchAfPayOrdersForSendMessage" resultMap="BaseResultMap" parameterType="java.lang.String">
@@ -1217,7 +1217,7 @@
     and o.SIGN = '10'
     and o.PAYMENT_STAT = '10'
     and o.PAYMENTMETHOD = '10'
-    and o.END_DATE = #{endDate,jdbcType=DATE}
+    and o.END_DATE = #{endDate,jdbcType=DATE} and o.ORDER_NO ='16091306562831491943'
   </select>
   	<!-- 电商的 -->
   	<select id="searchECOrdersForSendMessage" resultMap="BaseResultMap" parameterType="java.lang.String">
