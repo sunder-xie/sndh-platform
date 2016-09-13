@@ -3,6 +3,7 @@ package com.nhry.servlet;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import javax.servlet.ServletConfig;
@@ -22,6 +23,7 @@ import org.springframework.web.context.support.SpringBeanAutowiringSupport;
 
 import com.nhry.common.auth.UserSessionService;
 import com.nhry.common.ladp.LadpService;
+import com.nhry.data.auth.dao.TSysUserRoleMapper;
 import com.nhry.data.auth.domain.TSysAccesskey;
 import com.nhry.data.auth.domain.TSysUser;
 import com.nhry.service.auth.dao.TSysAccesskeyService;
@@ -31,6 +33,7 @@ import com.nhry.utils.Base64Util;
 import com.nhry.utils.CookieUtil;
 import com.nhry.utils.EnvContant;
 import com.nhry.utils.HttpUtils;
+import com.nhry.utils.SysContant;
 import com.nhry.utils.date.Date;
 import com.nhry.utils.json.JackJson;
 @Component
@@ -41,6 +44,8 @@ public class IdmAuthServlet extends HttpServlet {
 	private UserSessionService userSessionService;
 	@Autowired
 	private TSysAccesskeyService isysAkService;
+	@Autowired
+	private TSysUserRoleMapper urMapper;
 	
 	public void init(ServletConfig config) throws ServletException {
 		 SpringBeanAutowiringSupport.processInjectionBasedOnServletContext(this,config.getServletContext());
@@ -78,6 +83,18 @@ public class IdmAuthServlet extends HttpServlet {
 						if(loginuser == null){
 							sendRedirectToLogout(response);
 							return;
+						}
+						if(StringUtils.isEmpty(loginuser.getSalesOrg())){
+							List<String> roles = urMapper.getUserRidsByLoginName(loginuser.getLoginName());
+							if(roles == null || roles.size() == 0){
+								sendRedirectToInfoPage(response);
+								return;
+							}else{
+								if(!roles.contains(SysContant.getSystemConst("sys_manager_no"))){
+									sendRedirectToInfoPage(response);
+									return;
+								}
+							}
 						}
 						TSysAccesskey ak = new TSysAccesskey();
 						ak.setAccesskey(token);
@@ -144,6 +161,20 @@ public class IdmAuthServlet extends HttpServlet {
 				response.setHeader("appkey", token);
 				response.sendRedirect("http://"+Base64Util.decodeStr(ip)+EnvContant.getSystemConst("front_short_url")+"?appkey="+token);
 			}
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+	
+	/**
+	 * 跳转到消息提示页面
+	 * @param response
+	 */
+	public void sendRedirectToInfoPage(HttpServletResponse response){
+		//跳转到登出页面
+		try {
+			response.sendRedirect(EnvContant.getSystemConst("info_page_uri"));
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
