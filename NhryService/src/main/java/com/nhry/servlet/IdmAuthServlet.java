@@ -84,6 +84,15 @@ public class IdmAuthServlet extends HttpServlet {
 							sendRedirectToLogout(response);
 							return;
 						}
+						TSysAccesskey ak = new TSysAccesskey();
+						ak.setAccesskey(token);
+						ak.setLoginname(user.getLoginName());
+						ak.setType("10"); //10 : idm auth2.0
+						ak.setVisitFirstTime(new Date());
+						ak.setVisitLastTime(new Date());
+						isysAkService.updateIsysAccessKey(ak);
+						
+						//判断当前用户销售组织是否存在
 						if(StringUtils.isEmpty(loginuser.getSalesOrg())){
 							List<String> roles = urMapper.getUserRidsByLoginName(loginuser.getLoginName());
 							if(roles == null || roles.size() == 0){
@@ -96,13 +105,7 @@ public class IdmAuthServlet extends HttpServlet {
 								}
 							}
 						}
-						TSysAccesskey ak = new TSysAccesskey();
-						ak.setAccesskey(token);
-						ak.setLoginname(user.getLoginName());
-						ak.setType("10"); //10 : idm auth2.0
-						ak.setVisitFirstTime(new Date());
-						ak.setVisitLastTime(new Date());
-						isysAkService.updateIsysAccessKey(ak);
+						
 						sendRedirectToHomePage(request, response, token,ip);
 					}else{
 						sendRedirectToLogout(response);
