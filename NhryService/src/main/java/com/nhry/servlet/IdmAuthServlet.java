@@ -87,11 +87,11 @@ public class IdmAuthServlet extends HttpServlet {
 						if(StringUtils.isEmpty(loginuser.getSalesOrg())){
 							List<String> roles = urMapper.getUserRidsByLoginName(loginuser.getLoginName());
 							if(roles == null || roles.size() == 0){
-								sendRedirectToInfoPage(response);
+								sendRedirectToInfoPage(response,token);
 								return;
 							}else{
 								if(!roles.contains(SysContant.getSystemConst("sys_manager_no"))){
-									sendRedirectToInfoPage(response);
+									sendRedirectToInfoPage(response,token);
 									return;
 								}
 							}
@@ -171,10 +171,10 @@ public class IdmAuthServlet extends HttpServlet {
 	 * 跳转到消息提示页面
 	 * @param response
 	 */
-	public void sendRedirectToInfoPage(HttpServletResponse response){
+	public void sendRedirectToInfoPage(HttpServletResponse response,String token){
 		//跳转到登出页面
 		try {
-			response.sendRedirect(EnvContant.getSystemConst("info_page_uri"));
+			response.sendRedirect(EnvContant.getSystemConst("info_page_uri")+"?appkey="+token);
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
