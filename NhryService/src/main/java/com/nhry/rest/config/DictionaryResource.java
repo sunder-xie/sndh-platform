@@ -22,6 +22,7 @@ import com.nhry.data.config.domain.NHSysParameter;
 import com.nhry.model.sys.ResponseModel;
 import com.nhry.rest.BaseResource;
 import com.nhry.service.config.dao.DictionaryService;
+import com.nhry.utils.date.Date;
 import com.sun.jersey.spi.resource.Singleton;
 import com.wordnik.swagger.annotations.Api;
 import com.wordnik.swagger.annotations.ApiOperation;
@@ -157,5 +158,13 @@ public class DictionaryResource extends BaseResource {
 	@ApiOperation(value = "/sync/users/upt", response = ResponseModel.class, notes = "增量同步idm订户系统用户")
 	public Response syncSysUsersForUpt(){
 		return convertToRespModel(MessageCode.NORMAL, null,  ladpService.syncSysUsers(false));
+	}
+	
+	@POST
+	@Path("/sys/date")
+	@Produces(MediaType.APPLICATION_JSON)
+	@ApiOperation(value = "/sys/date", response = ResponseModel.class, notes = "获取系统时间")
+	public Response getSysDate(){
+		return convertToRespModel(MessageCode.NORMAL, null,  new Date().toTimeStamp());
 	}
 }
