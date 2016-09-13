@@ -70,6 +70,7 @@ public class SmsSendServiceImpl implements SmsSendService {
             if(map.containsKey("description")) {
                 message.setMessage(map.get("description").toString());
             }
+            logger.info("$$$$$$$$$$$"+context);
         } catch (Exception e) {
             e.printStackTrace();
             message.setSuccess(false);

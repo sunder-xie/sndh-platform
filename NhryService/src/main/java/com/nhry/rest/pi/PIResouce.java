@@ -176,12 +176,12 @@ public class PIResouce extends BaseResource{
         return convertToRespModel(MessageCode.NORMAL, piVipInfoDataService.sendSubscriber(vipCustInfo), null);
     }
     @POST
-    @Path("/sendSms/{tel}")
+    @Path("/sendSms/{tel}/{context}")
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes(MediaType.APPLICATION_JSON)
-    @ApiOperation(value = "/sendSms/{tel}", response = ResponseModel.class, notes = "发送短信")
-    public Response sendSms(@PathParam("tel") String tel){
-        return convertToRespModel(MessageCode.NORMAL, smsSendService.sendMessage("",tel), null);
+    @ApiOperation(value = "/sendSms/{tel}/{context}", response = ResponseModel.class, notes = "发送短信")
+    public Response sendSms(@PathParam("tel") String tel,@PathParam("context") String context){
+        return convertToRespModel(MessageCode.NORMAL, smsSendService.sendMessage(context,tel), null);
     }
 
     @GET
