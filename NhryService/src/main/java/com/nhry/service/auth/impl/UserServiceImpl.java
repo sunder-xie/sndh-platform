@@ -68,7 +68,7 @@ public class UserServiceImpl extends BaseService implements UserService {
 				user.setSalesOrg(items.get(0).getItemCode());
 			}
 		}
-		TSysUser u = this.userMapper.findUserByLoginName(user.getLoginName());
+		TSysUser u = this.userMapper.findUserByLoginName2(user.getLoginName());
 		if(u == null){
 			user.setCreateOn(new Date());
 			user.setLastModified(new Date());

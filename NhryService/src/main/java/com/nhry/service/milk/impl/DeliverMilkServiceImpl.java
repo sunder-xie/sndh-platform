@@ -40,6 +40,7 @@ import com.nhry.utils.SerialUtil;
 import org.apache.commons.lang3.StringUtils;
 
 import java.math.BigDecimal;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
@@ -562,11 +563,20 @@ public class DeliverMilkServiceImpl extends BaseService implements DeliverMilkSe
 	* @see com.nhry.service.milk.dao.DeliverMilkService#createDayRouteOder() 
 	*/
 	@Override
-	public int createDayRouteOder()
+	public int createDayRouteOder(String dateStr)
 	{
 		SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
 		if(userSessionService.getCurrentUser().getBranchNo()==null)throw new ServiceException(MessageCode.LOGIC_ERROR,"登陆人没有奶站，非奶站人员无法创建路单!");
-		Date date = afterDate(new Date(),1);
+//		Date date = afterDate(new Date(),1);
+		Date date = null;
+		try
+		{
+			date = format.parse(dateStr);
+		}
+		catch (ParseException e)
+		{
+			throw new ServiceException(MessageCode.LOGIC_ERROR,"日期格式有误!");
+		}
 		if(tDispOrderMapper.selectTodayDispOrderByBranchNo(userSessionService.getCurrentUser().getBranchNo(),date).size()>0)throw new ServiceException(MessageCode.LOGIC_ERROR,"本日该奶站已经创建过路单!");
 		List<TPreOrder> empNos = tPreOrderMapper.selectDispNoByGroup(userSessionService.getCurrentUser().getBranchNo());
 		TDispOrder dispOrder = null;
@@ -985,6 +995,30 @@ public class DeliverMilkServiceImpl extends BaseService implements DeliverMilkSe
 	{
 		System.out.print("qqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqq-----------------------------------------");
 		return 0;
+	}
+
+	/* (non-Javadoc) 
+	* @title: deleteDispOrderByDate
+	* @description: 删除指定日期和奶站的路单，有确认是不允许删除
+	* @param date
+	* @return 
+	* @see com.nhry.service.milk.dao.DeliverMilkService#deleteDispOrderByDate(java.lang.String) 
+	*/
+	@Override
+	public int deleteDispOrderByDate(String date)
+	{
+		if(userSessionService.getCurrentUser().getBranchNo()==null)throw new ServiceException(MessageCode.LOGIC_ERROR,"登陆人没有奶站，非奶站人员无法删除路单!");
+		List<TDispOrder> list = tDispOrderMapper.selectConfirmedDispOrderByDate(userSessionService.getCurrentUser().getBranchNo(), date);
+		if(list==null||list.size()<=0)throw new ServiceException(MessageCode.LOGIC_ERROR,"没有需要删除的路单!");
+		if(list.stream().anyMatch((e)->"20".equals(e.getStatus())))throw new ServiceException(MessageCode.LOGIC_ERROR, date + " 此日期有确认的路单，不能删除!");
+		List<String> newList = new ArrayList<String>();
+		list.stream().forEach((e)->{
+			newList.add(e.getOrderNo());
+		});
+		tDispOrderChangeMapper.deleteDispOrderChangeByOrderNo(newList);
+		tDispOrderItemMapper.deleteDispOrderItemByOrderNo(newList);
+		tDispOrderMapper.deleteDispOrderByOrderNo(newList);
+		return 1;
 	}
 
 }

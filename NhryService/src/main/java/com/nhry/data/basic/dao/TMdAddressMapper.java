@@ -64,4 +64,10 @@ public interface TMdAddressMapper {
      * @return
      */
     public int deleteAddressByCustNo(String custNo);
+    /**
+     * 根据地址id，查询默认地址详细信息
+     * @param id
+     * @return
+     */
+    TMdAddress findAddressByCustNoISDefault(String id);
 }

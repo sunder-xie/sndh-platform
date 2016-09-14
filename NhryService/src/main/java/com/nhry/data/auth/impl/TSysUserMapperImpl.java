@@ -96,4 +96,10 @@ public class TSysUserMapperImpl implements TSysUserMapper {
 	public PageInfo<TSysUser> findNotRoleUserPage(UserQueryModel3 model) {
 		return this.sqlSessionTemplate.selectListByPages("findNotRoleUser",model,Integer.valueOf(model.getPageNum()),Integer.valueOf(model.getPageSize()));
 	}
+
+	@Override
+	public TSysUser findUserByLoginName2(String loginName) {
+		// TODO Auto-generated method stub
+		return this.sqlSessionTemplate.selectOne("findUserByLoginName2", loginName);
+	}
 }

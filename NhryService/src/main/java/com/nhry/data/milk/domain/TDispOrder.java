@@ -3,7 +3,6 @@ package com.nhry.data.milk.domain;
 import java.math.BigDecimal;
 import java.util.Date;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
 
 public class TDispOrder extends TDispOrderKey {
     private Date dispDate;
@@ -97,7 +96,6 @@ public class TDispOrder extends TDispOrderKey {
 	{
 		this.totalQty = totalQty;
 	}
-	@JsonFormat(pattern="yyyy-MM-dd",timezone = "GMT+8") 
 	public Date getDispDate() {
         return dispDate;
     }

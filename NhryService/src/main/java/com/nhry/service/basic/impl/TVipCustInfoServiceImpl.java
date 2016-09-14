@@ -521,4 +521,9 @@ public class TVipCustInfoServiceImpl extends BaseService implements TVipCustInfo
 	public void setVipInfoDataService(PIVipInfoDataService vipInfoDataService) {
 		this.vipInfoDataService = vipInfoDataService;
 	}
+	@Override
+	public TMdAddress findAddressByCustNoISDefault(String id) {
+		// TODO Auto-generated method stub
+		return this.addressMapper.findAddressByCustNoISDefault(id);
+	}
 }

@@ -3,7 +3,6 @@ package com.nhry.data.order.domain;
 import java.math.BigDecimal;
 import java.util.Date;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
 
 public class TPlanOrderItem {
     private String itemNo;
@@ -15,6 +14,8 @@ public class TPlanOrderItem {
     private String refItemNo;
 
     private String newRowFlag;
+    
+    private String newFlag;
 
     private String matnr;
 
@@ -39,6 +40,8 @@ public class TPlanOrderItem {
     private String reachTimeType;
 
     private Date startDispDate;
+    
+    private Date startDate;
 
     private Date endDispDate;
     
@@ -79,8 +82,52 @@ public class TPlanOrderItem {
     private Integer yGrowth;
     
     private Integer yFresh;
+    
+    private String isDeletedFlag;
+    
+    private String deletePlansFlag;
 
-   public Integer getyGrowth()
+	public String getIsDeletedFlag()
+	{
+		return isDeletedFlag;
+	}
+
+	public void setIsDeletedFlag(String isDeletedFlag)
+	{
+		this.isDeletedFlag = isDeletedFlag;
+	}
+
+	public String getDeletePlansFlag()
+	{
+		return deletePlansFlag;
+	}
+
+	public void setDeletePlansFlag(String deletePlansFlag)
+	{
+		this.deletePlansFlag = deletePlansFlag;
+	}
+
+	public String getNewFlag()
+	{
+		return newFlag;
+	}
+
+	public void setNewFlag(String newFlag)
+	{
+		this.newFlag = newFlag;
+	}
+
+	public Date getStartDate()
+	{
+		return startDate;
+	}
+
+	public void setStartDate(Date startDate)
+	{
+		this.startDate = startDate;
+	}
+
+	public Integer getyGrowth()
 	{
 		return yGrowth;
 	}
@@ -286,7 +333,6 @@ public class TPlanOrderItem {
         this.reachTimeType = reachTimeType == null ? null : reachTimeType.trim();
     }
     
-    @JsonFormat(pattern="yyyy-MM-dd",timezone = "GMT+8") 
     public Date getStartDispDate() {
         return startDispDate;
     }
@@ -294,7 +340,6 @@ public class TPlanOrderItem {
     public void setStartDispDate(Date startDispDate) {
         this.startDispDate = startDispDate;
     }
-    @JsonFormat(pattern="yyyy-MM-dd HH:mm:ss",timezone = "GMT+8") 
     public Date getEndDispDate() {
         return endDispDate;
     }

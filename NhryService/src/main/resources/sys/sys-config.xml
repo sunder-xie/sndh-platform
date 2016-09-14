@@ -36,9 +36,11 @@
   <!-- 奶站内勤编号 -->
   <config key="branch_back_office" value="10004"></config>
   <!-- 部门内勤编号 -->
-  <config key="department_back_office" value="10004"></config>
+  <config key="department_back_office" value="10003"></config>
   <!-- 经销商内勤编号 -->
-  <config key="dealer_back_office" value="10004"></config>
+  <config key="dealer_back_office" value="10005"></config>
+  <!-- 系统管理员编号 -->
+  <config key="sys_manager_no" value="10008"></config>
   <!-- 省份对应关系(奶站省份) -->
   <config key="branch_province" value="2006"></config>
   <config key="COMPANT_DISP_FEE" value="4150,4110"></config>

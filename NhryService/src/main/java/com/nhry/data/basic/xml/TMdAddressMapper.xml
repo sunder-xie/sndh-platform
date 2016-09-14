@@ -450,4 +450,17 @@
   <delete id="deleteAddressByCustNo" parameterType="String">
      delete from t_md_address where VIP_CUST_NO=#{custNo}
   </delete>
+    <select id="findAddressByCustNoISDefault" resultMap="BaseResultMap" parameterType="String">
+       SELECT
+            t.ADDRESS_ID,
+            t.PROVINCE,
+            t.COUNTY,
+            t.CITY,
+            t.ADDRESS_TXT
+        FROM
+            t_md_address t
+        WHERE
+            t.VIP_CUST_NO = #{custNo,jdbcType=VARCHAR}
+        AND t.IS_DEFAULT = 'Y'
+     </select>
 </mapper>

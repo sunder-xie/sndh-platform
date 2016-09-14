@@ -11,6 +11,7 @@ import com.nhry.model.milk.RouteDetailUpdateModel;
 import com.nhry.model.milk.RouteOrderSearchModel;
 import com.nhry.model.milktrans.UnDeliverProductSearch;
 import com.nhry.service.milk.pojo.TDispOrderChangeItem;
+
 import org.apache.commons.lang3.StringUtils;
 
 import java.math.BigDecimal;
@@ -217,5 +218,9 @@ public class TDispOrderItemMapperImpl implements TDispOrderItemMapper
 		return sqlSessionTemplate.selectOne("selectDispOrderNumByPreOrderNo",orderNo);
 	}
 
-
+	@Override
+	public int deleteDispOrderItemByOrderNo(List<String> codeList) {
+		return sqlSessionTemplate.delete("deleteDispOrderItemByOrderNo",codeList);
+	}
+	
 }

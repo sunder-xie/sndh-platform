@@ -73,7 +73,24 @@
 			<value>selectOrdersAndSendMessage</value>
 		</property>
 	</bean>
+	<bean id="scheduledJobDetail9"
+		  class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean" >
+		<property name="targetObject">
+			<ref  bean="piProductService"/>
+		</property>
+		<property name="targetMethod">
+			<value>matWHWHandler</value>
+		</property>
+	</bean>
 	 <!-- 调度的配置开始 -->
+	<bean id="crontestJobTrigger9" class="org.springframework.scheduling.quartz.CronTriggerFactoryBean">
+		<property name="jobDetail">
+			<ref bean="scheduledJobDetail9" />
+		</property>
+		<property name="cronExpression">
+			<value>0 52 1 * * ?</value>
+		</property>
+	</bean>
     <bean id="crontestJobTrigger1" class="org.springframework.scheduling.quartz.CronTriggerFactoryBean">
         <property name="jobDetail">
             <ref bean="scheduledJobDetail1" />
@@ -135,7 +152,7 @@
 			<ref bean="sendMessageToCustomer" />
 		</property>
 		<property name="cronExpression">
-			<value>0 0 10 * * ?</value>
+			<value>0 23 07 * * ?</value>
 		</property>
 	</bean>
     <!-- 调度的配置结束 -->
@@ -152,6 +169,7 @@
 				<ref bean="crontestJobTrigger6"/>
 				<ref bean="crontestJobTrigger7"/>
 				<ref bean="crontestJobTrigger8"/>
+				<ref bean="crontestJobTrigger9"/>
             </list>
         </property>
         <property name="stringRedisTemplate" ref="stringRedisTemplate"></property>

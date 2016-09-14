@@ -183,4 +183,10 @@ public interface TVipCustInfoService {
      * @return
      */
     public int updateSapNo(TVipCustInfo vipCustInfo);
+    /**
+     * 根据id查询默认地址详细信息
+     * @param id
+     * @return
+     */
+    TMdAddress findAddressByCustNoISDefault(String id);
 }

@@ -180,7 +180,7 @@
         FROM
         T_MST_ORDER_DALIY_PLAN_ITEM i
         JOIN t_preorder p ON i.ORDER_NO = p.ORDER_NO
-        AND p.ORDER_DATE = DATE_FORMAT(
+        AND i.DISP_DATE = DATE_FORMAT(
         DATE_ADD(#{theDate,jdbcType=DATE}, INTERVAL - 3 DAY),
         '%y-%m-%d'
         )
@@ -196,7 +196,7 @@
         JOIN t_preorder p ON i.ORDER_NO = p.ORDER_NO
         AND p.PREORDER_STAT = '10'
         AND i.`STATUS` != '30'
-        AND p.ORDER_DATE = #{theDate,jdbcType=DATE}
+        AND i.DISP_DATE = #{theDate,jdbcType=DATE}
         GROUP BY
         p.BRANCH_NO
         ) y ON z.BRANCH_NO = y.BRANCH_NO
@@ -208,7 +208,7 @@
         T_MST_ORDER_DALIY_PLAN_ITEM i
         JOIN t_preorder p ON i.ORDER_NO = p.ORDER_NO
         AND p.RET_REASON = '20'
-        AND p.ORDER_DATE = #{theDate,jdbcType=DATE}
+        AND i.DISP_DATE = #{theDate,jdbcType=DATE}
         GROUP BY
         p.BRANCH_NO
         ) cc ON cc.BRANCH_NO = z.BRANCH_NO
@@ -220,7 +220,7 @@
         T_MST_ORDER_DALIY_PLAN_ITEM i
         JOIN t_preorder p ON i.ORDER_NO = p.ORDER_NO
         AND p.RET_REASON = '30'
-        AND p.ORDER_DATE = #{theDate,jdbcType=DATE}
+        AND i.DISP_DATE = #{theDate,jdbcType=DATE}
         GROUP BY
         p.BRANCH_NO
         ) k ON k.BRANCH_NO = z.BRANCH_NO
@@ -232,7 +232,7 @@
         T_MST_ORDER_DALIY_PLAN_ITEM i
         JOIN t_preorder p ON i.ORDER_NO = p.ORDER_NO
         AND p.RET_REASON = '10'
-        AND p.ORDER_DATE = #{theDate,jdbcType=DATE}
+        AND i.DISP_DATE = #{theDate,jdbcType=DATE}
         GROUP BY
         p.BRANCH_NO
         ) q ON q.BRANCH_NO = z.BRANCH_NO
@@ -244,7 +244,7 @@
         T_MST_ORDER_DALIY_PLAN_ITEM i
         JOIN t_preorder p ON i.ORDER_NO = p.ORDER_NO
         AND p.RET_REASON = '40'
-        AND p.ORDER_DATE = #{theDate,jdbcType=DATE}
+        AND i.DISP_DATE = #{theDate,jdbcType=DATE}
         GROUP BY
         p.BRANCH_NO
         ) qt ON qt.BRANCH_NO = z.BRANCH_NO
