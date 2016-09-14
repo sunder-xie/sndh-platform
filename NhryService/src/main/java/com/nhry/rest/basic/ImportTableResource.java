@@ -199,6 +199,9 @@ public class ImportTableResource extends BaseResource {
             int j = 1;
             XSSFRow row = sheet.getRow(i);
             XSSFCell cell = row.getCell(j++);
+            if(cell == null){
+            	continue;
+            }
             order.setOrderNo(cell.toString());
             cell = row.getCell(j++);
             order.setBranchNo(cell.toString());
