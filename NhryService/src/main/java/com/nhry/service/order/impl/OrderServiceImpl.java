@@ -1247,7 +1247,7 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 			order.setInitAmt(orderAmt);
 			
 			for(TOrderDaliyPlanItem p :daliyPlans){
-				if("10".equals(p.getStatus())){
+				if(!"30".equals(p.getStatus())){
 					BigDecimal planAmt = p.getPrice().multiply(new BigDecimal(p.getQty().toString()));
 					orderAmt = orderAmt.subtract(planAmt);
 					p.setRemainAmt(orderAmt);
