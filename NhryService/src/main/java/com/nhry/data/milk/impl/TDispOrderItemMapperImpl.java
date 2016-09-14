@@ -222,5 +222,23 @@ public class TDispOrderItemMapperImpl implements TDispOrderItemMapper
 	public int deleteDispOrderItemByOrderNo(List<String> codeList) {
 		return sqlSessionTemplate.delete("deleteDispOrderItemByOrderNo",codeList);
 	}
+
+	@Override
+	public int selectCountByOrgOrder(String orgOrderNo)
+	{
+		TDispOrder order = new TDispOrder();
+		order.setOrderNo(orgOrderNo);
+		return sqlSessionTemplate.selectOne("selectCountByOrgOrder", order);
+	}
+
+	@Override
+	public int selectCountByOrgOrderAndOrgItemNo(String orderNo, String itemNo, String dispDate)
+	{
+		TDispOrder order = new TDispOrder();
+		order.setOrderNo(orderNo);
+		order.setDispLineNo(itemNo);
+		order.setBranchName(dispDate);
+		return sqlSessionTemplate.selectOne("selectCountByOrgOrderAndOrgItemNo", order);
+	}
 	
 }
