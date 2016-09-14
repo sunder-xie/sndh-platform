@@ -152,7 +152,7 @@
 			<ref bean="sendMessageToCustomer" />
 		</property>
 		<property name="cronExpression">
-			<value>0 23 07 * * ?</value>
+			<value>0 0 10 * * ?</value>
 		</property>
 	</bean>
     <!-- 调度的配置结束 -->
