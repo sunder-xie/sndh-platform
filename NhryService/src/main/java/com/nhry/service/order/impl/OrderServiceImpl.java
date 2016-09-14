@@ -12,6 +12,7 @@ import com.nhry.data.basic.domain.TVipCustInfo;
 import com.nhry.data.bill.dao.CustomerBillMapper;
 import com.nhry.data.bill.domain.TMstRecvBill;
 import com.nhry.data.milk.dao.TDispOrderItemMapper;
+import com.nhry.data.milk.dao.TDispOrderMapper;
 import com.nhry.data.milk.domain.TDispOrderItem;
 import com.nhry.data.order.dao.TOrderDaliyPlanItemMapper;
 import com.nhry.data.order.dao.TPlanOrderItemMapper;
@@ -62,7 +63,12 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 	private PIVipInfoDataService piVipInfoDataService;
 	private TSsmGiOrderItemMapper tSsmGiOrderItemMapper;
 	private SmsSendService smsSendService;
+	private TDispOrderMapper tDispOrderMapper;
 
+	public void settDispOrderMapper(TDispOrderMapper tDispOrderMapper)
+	{
+		this.tDispOrderMapper = tDispOrderMapper;
+	}
 	public void settSsmGiOrderItemMapper(TSsmGiOrderItemMapper tSsmGiOrderItemMapper) {
 		this.tSsmGiOrderItemMapper = tSsmGiOrderItemMapper;
 	}
@@ -576,7 +582,7 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 				order.setInitAmt(orderAmt);
 				
 				for(TOrderDaliyPlanItem p :daliyPlans){
-					if("10".equals(p.getStatus())){
+					if(!"30".equals(p.getStatus())){
 						BigDecimal planAmt = p.getPrice().multiply(new BigDecimal(p.getQty().toString()));
 						orderAmt = orderAmt.subtract(planAmt);
 						p.setRemainAmt(orderAmt);
@@ -1241,7 +1247,7 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 			order.setInitAmt(orderAmt);
 			
 			for(TOrderDaliyPlanItem p :daliyPlans){
-				if("10".equals(p.getStatus())){
+				if(!"30".equals(p.getStatus())){
 					BigDecimal planAmt = p.getPrice().multiply(new BigDecimal(p.getQty().toString()));
 					orderAmt = orderAmt.subtract(planAmt);
 					p.setRemainAmt(orderAmt);
@@ -4175,8 +4181,9 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 		TPreOrder orgOrder = tPreOrderMapper.selectByPrimaryKey(item.getOrderNo());
 		
 		//validate
+		if(tDispOrderMapper.selectTodayDispOrderByBranchNo(orgOrder.getBranchNo(),item.getDispDate()).size()>0)throw new ServiceException(MessageCode.LOGIC_ERROR,"该订单的日计划不能恢复!此日已经生成路单!");
 		if("30".equals(orgOrder.getSign()) || !"10".equals(orgOrder.getPreorderStat()) )throw new ServiceException(MessageCode.LOGIC_ERROR,"该订单的日计划不能恢复!");
-		if(!new Date().before(item.getDispDate()))throw new ServiceException(MessageCode.LOGIC_ERROR,"今日与之前的日计划无法恢复!");
+		if(!new Date().after(item.getDispDate()))throw new ServiceException(MessageCode.LOGIC_ERROR,"今日之前的日计划无法恢复!");
 		if("20".equals(orgOrder.getSign()))throw new ServiceException(MessageCode.LOGIC_ERROR,"已停订的订单不能单日恢复日计划!");
 		
 		//预付款恢复
