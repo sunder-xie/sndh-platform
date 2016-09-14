@@ -13,6 +13,8 @@ import com.nhry.data.order.domain.TPreOrder;
 import com.nhry.model.bill.CollectOrderBillModel;
 import com.nhry.model.bill.CustBillQueryModel;
 import com.nhry.model.milk.RouteOrderModel;
+import com.nhry.model.milktrans.DispOrderReportEntityModel;
+import com.nhry.model.milktrans.DispOrderReportModel;
 import com.nhry.model.order.CollectOrderModel;
 import com.nhry.model.order.OrderCreateModel;
 import com.nhry.model.order.ProductItem;
@@ -31,6 +33,7 @@ import com.nhry.utils.CodeGeneratorUtil;
 import com.nhry.utils.EnvContant;
 import com.nhry.utils.ExcelUtil;
 import com.sun.jersey.spi.resource.Singleton;
+import com.sun.tools.doclint.Env;
 import com.wordnik.swagger.annotations.Api;
 import com.wordnik.swagger.annotations.ApiOperation;
 import com.wordnik.swagger.annotations.ApiParam;
@@ -94,7 +97,8 @@ public class ReportResource extends BaseResource{
 
         CollectOrderModel collect = orderService.queryCollectByOrderNo(orderCode);
         TSysUser user = userSessionService.getCurrentUser();
-        String url = request.getServletContext().getRealPath("/");
+//        String url = request.getServletContext().getRealPath("/");
+        String url = EnvContant.getSystemConst("filePath");
         logger.info("realPath："+url);
         TMdAddress address = collect.getAddress();
         if(address == null) {
@@ -207,7 +211,7 @@ public class ReportResource extends BaseResource{
 //                    .ok(targetFilePath, mt)
 //                    .header("Content-disposition","attachment;filename=" + targetFilePath.getName())
 //                    .header("ragma", "No-cache").header("Cache-Control", "no-cache").build();
-            outUrl = "/report/export/" + fname + "CollectOrder.xlsx";
+            outUrl = fname + "CollectOrder.xlsx";
 
         } catch (IOException e) {
             e.printStackTrace();
@@ -222,7 +226,7 @@ public class ReportResource extends BaseResource{
         List<TDispOrderItem> details = deliverMilkService.searchRouteOrderDetailAll(orderCode);
         RouteOrderModel model = deliverMilkService.searchRouteDetails(orderCode);
         String outUrl = "";
-        logger.info("##################"+EnvContant.getSystemConst("filePath"));
+        logger.debug("##################"+EnvContant.getSystemConst("filePath"));
 //        String url = request.getServletContext().getRealPath("/");
         String url = EnvContant.getSystemConst("filePath");
         try{
@@ -310,21 +314,26 @@ public class ReportResource extends BaseResource{
             workbook.write(stream);
             stream.flush();
             stream.close();
-//            File targetFilePath = new File(url +  File.separator + "report"+ File.separator + "export" + File.separator + fname + "DeliverMilk.xlsx");
 
-//            String mt = new MimetypesFileTypeMap().getContentType(targetFilePath);
-//
-//            return Response
-//                    .ok(targetFilePath, mt)
-//                    .header("Content-disposition","attachment;filename=" + targetFilePath.getName())
-//                    .header("ragma", "No-cache").header("Cache-Control", "no-cache").build();
-
-            outUrl = "/report/export/" + fname + "DeliverMilk.xlsx";
+            outUrl = fname + "DeliverMilk.xlsx";
         }catch (Exception e){
             e.printStackTrace();
         }
         return convertToRespModel(MessageCode.NORMAL,null,outUrl);
     }
+    @GET
+    @Path("/reportFile/{fileName}")
+    @Produces(MediaType.APPLICATION_JSON)
+    @ApiOperation(value = "/reportFile/{fileName}", response = OrderCreateModel.class, notes = "下载文件")
+    public Response reportFile(@ApiParam(required = true,value = "fileName",defaultValue = "fileName")@PathParam("fileName") String fileName){
+        String url = EnvContant.getSystemConst("filePath");
+//        String url = request.getServletContext().getRealPath("/");
+        String urlPath = url +  File.separator + "report"+ File.separator + "export" + File.separator + fileName;
+//        String urlPath = url + fileName;
+        logger.info("##########"+urlPath);
+        return convertToFile(urlPath);
+    }
+
     @GET
     @Path("/reportMilkBox/{empNo}")
     @Produces(MediaType.APPLICATION_JSON)
@@ -389,7 +398,7 @@ public class ReportResource extends BaseResource{
             workbook.write(stream);
             stream.flush();
             stream.close();
-            outUrl = "/report/export/" + fname + "MilkBoxTemplate.xlsx";
+            outUrl = fname + "MilkBoxTemplate.xlsx";
         }catch (Exception e){
             e.printStackTrace();
         }
@@ -458,7 +467,7 @@ public class ReportResource extends BaseResource{
             workbook.write(stream);
             stream.flush();
             stream.close();
-            outUrl = "/report/export/" + fname + "ReqOrderTemplate.xlsx";
+            outUrl = fname + "ReqOrderTemplate.xlsx";
         }catch (Exception e){
             e.printStackTrace();
         }
@@ -537,7 +546,7 @@ public class ReportResource extends BaseResource{
             workbook.write(stream);
             stream.flush();
             stream.close();
-            outUrl = "/report/export/" + fname + "DayReportTemplate.xlsx";
+            outUrl = fname + "DayReportTemplate.xlsx";
         }catch (Exception e){
             e.printStackTrace();
         }
@@ -607,7 +616,7 @@ public class ReportResource extends BaseResource{
             workbook.write(stream);
             stream.flush();
             stream.close();
-            outUrl = "/report/export/" + fname + "MonthReportTemplate.xlsx";
+            outUrl = fname + "MonthReportTemplate.xlsx";
 
         }catch (Exception e){
             e.printStackTrace();
@@ -681,7 +690,7 @@ public class ReportResource extends BaseResource{
             workbook.write(stream);
             stream.flush();
             stream.close();
-            outUrl = "/report/export/" + fname + "OrderRatioTemplate.xlsx";
+            outUrl = fname + "OrderRatioTemplate.xlsx";
         }catch (Exception e){
             e.printStackTrace();
         }
@@ -755,7 +764,7 @@ public class ReportResource extends BaseResource{
 //                    .ok(targetFilePath, mt)
 //                    .header("Content-disposition","attachment;filename=" + targetFilePath.getName())
 //                    .header("ragma", "No-cache").header("Cache-Control", "no-cache").build();
-            outUrl = "/report/export/" + fname + "CollectOrder.xlsx";
+            outUrl = fname + "CollectOrder.xlsx";
 
         } catch (IOException e) {
             e.printStackTrace();
@@ -970,23 +979,98 @@ public class ReportResource extends BaseResource{
                 }
             }
 
-            String fname = CodeGeneratorUtil.getCode();
-            String rq = format1.format(new Date(new Date().getTime() - 24 * 60 * 60 * 1000));
-            String filePath = url + File.separator + "report" + File.separator + "export";
-            File delFiles = new File(filePath);
-            if (delFiles.isDirectory()) {
-                for (File del : delFiles.listFiles()) {
-                    if (del.getName().contains(rq)) {
-                        del.delete();
-                    }
+            String fname = saveFile(url, workbook,"Fnb.xlsx");
+            outUrl = fname + "fnb.xlsx";
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+        return convertToRespModel(MessageCode.NORMAL,null,outUrl);
+    }
+
+    private String saveFile(String url, XSSFWorkbook workbook,String fileName) throws IOException {
+        String fname = CodeGeneratorUtil.getCode() + fileName;
+        String rq = format1.format(new Date(new Date().getTime() - 24 * 60 * 60 * 1000));
+        String filePath = url + File.separator + "report" + File.separator + "export";
+        File delFiles = new File(filePath);
+        if (delFiles.isDirectory()) {
+            for (File del : delFiles.listFiles()) {
+                if (del.getName().contains(rq)) {
+                    del.delete();
                 }
             }
-            File export = new File(url + File.separator + "report" + File.separator + "export" + File.separator + fname + "fnb.xlsx");
-            FileOutputStream stream = new FileOutputStream(export);
-            workbook.write(stream);
-            stream.flush();
-            stream.close();
-            outUrl = "/report/export/" + fname + "fnb.xlsx";
+        }
+        File export = new File(url +  File.separator + "report"+ File.separator + "export" + File.separator + fname);
+        FileOutputStream stream = new FileOutputStream(export);
+        workbook.write(stream);
+        stream.flush();
+        stream.close();
+        return fname;
+    }
+
+    @POST
+    @Path("/reportDispItem")
+    @Produces(MediaType.APPLICATION_JSON)
+    @Consumes(MediaType.APPLICATION_JSON)
+    @ApiOperation(value = "/reportDispItem",response = ResponseModel.class,notes = "导出路单明细")
+    public Response reportDispItem(@ApiParam(value = "路单参数",required = true,name = "model") DispOrderReportModel model){
+        String outUrl = "";
+        String url = EnvContant.getSystemConst("filePath");
+        List<DispOrderReportEntityModel> lists = deliverMilkService.reportDispOrderItemByParams(model);
+        try {
+            XSSFWorkbook workbook = new XSSFWorkbook();
+            XSSFSheet sheet = workbook.createSheet("sheet1");
+
+            int rowNum = 0;
+            XSSFRow row = sheet.createRow(rowNum++);
+            int rawNum = 0;
+            XSSFCell cell = row.createCell(rawNum++);
+            cell.setCellValue("送奶员");
+            cell = row.createCell(rawNum++);
+            cell.setCellValue("送奶日期");
+            cell = row.createCell(rawNum++);
+            cell.setCellValue("送奶时间");
+            cell = row.createCell(rawNum++);
+            cell.setCellValue("配送地址");
+            cell = row.createCell(rawNum++);
+            cell.setCellValue("联系电话");
+            cell = row.createCell(rawNum++);
+            cell.setCellValue("订户姓名");
+            cell = row.createCell(rawNum++);
+            cell.setCellValue("应送产品");
+            cell = row.createCell(rawNum++);
+            cell.setCellValue("应送数量");
+            cell = row.createCell(rawNum++);
+            cell.setCellValue("实送产品");
+            cell = row.createCell(rawNum++);
+            cell.setCellValue("实送数量");
+            for (DispOrderReportEntityModel entity : lists) {
+                int raw = 0;
+                row = sheet.createRow(rowNum++);
+                cell = row.createCell(raw++);
+                cell.setCellValue(entity.getEmpName());
+                cell = row.createCell(raw++);
+                cell.setCellValue(format.format(entity.getDispDate()));
+                cell = row.createCell(raw++);
+                cell.setCellValue(entity.getReachTimeType());
+                cell = row.createCell(raw++);
+                cell.setCellValue(entity.getAddressTxt());
+                cell = row.createCell(raw++);
+                cell.setCellValue(entity.getMp());
+                cell = row.createCell(raw++);
+                cell.setCellValue(entity.getVipName());
+                cell = row.createCell(raw++);
+                cell.setCellValue(entity.getMatnrTxt());
+                cell = row.createCell(raw++);
+                cell.setCellValue(entity.getQty().toString());
+                cell = row.createCell(raw++);
+                cell.setCellValue(entity.getConfirmMatnrTxt());
+                cell = row.createCell(raw++);
+                cell.setCellValue(entity.getConfirmQty().toString());
+            }
+            for(int i=0;i<rawNum;i++){
+                sheet.setColumnWidth(i,(short)50*100);
+            }
+            outUrl = saveFile(url, workbook,"DispItem.xlsx");
         }catch (Exception e){
             e.printStackTrace();
         }

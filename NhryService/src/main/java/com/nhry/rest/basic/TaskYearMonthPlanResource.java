@@ -148,7 +148,7 @@ public class TaskYearMonthPlanResource extends BaseResource {
             stream.flush();
             stream.close();
 
-            outUrl = "/report/export/" + fname + fileName;
+            outUrl = fname + fileName;
         } catch (Exception e) {
             e.printStackTrace();
         }

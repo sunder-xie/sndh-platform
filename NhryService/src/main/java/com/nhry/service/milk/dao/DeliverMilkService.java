@@ -3,9 +3,7 @@ package com.nhry.service.milk.dao;
 import com.github.pagehelper.PageInfo;
 import com.nhry.data.milk.domain.TDispOrderItem;
 import com.nhry.model.milk.*;
-import com.nhry.model.milktrans.CreateInSalOrderModel;
-import com.nhry.model.milktrans.InSideSalOrderDetailSearchModel;
-import com.nhry.model.milktrans.InSideSalOrderSearchModel;
+import com.nhry.model.milktrans.*;
 
 import java.math.BigDecimal;
 import java.util.Date;
@@ -51,4 +49,6 @@ public interface DeliverMilkService {
 	int reEditRouteDetail(RouteDetailUpdateModel record);
 
 	int updateInSalOrderAndStockByUpdateDiapOrder(TDispOrderItem newItem , TDispOrderItem orgItem);
+
+	List<DispOrderReportEntityModel> reportDispOrderItemByParams(DispOrderReportModel model);
 }

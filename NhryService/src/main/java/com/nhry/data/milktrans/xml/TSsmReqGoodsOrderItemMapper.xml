@@ -87,6 +87,7 @@
         t_ssm_req_goods_order_item i
         JOIN t_ssm_req_goods_order o ON i.ORDER_NO = o.ORDER_NO
         AND i.ORDER_NO = #{orderNo,jdbcType=VARCHAR}
+        AND (i.INCRE_QTY+i.QTY) > 0
         JOIN t_md_branch b ON b.BRANCH_NO = o.BRANCH_NO
         JOIN t_md_mara m ON m.MATNR = i.MATNR
         AND m.SALES_ORG = b.SALES_ORG

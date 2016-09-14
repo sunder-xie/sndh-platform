@@ -176,12 +176,12 @@ public class PIResouce extends BaseResource{
         return convertToRespModel(MessageCode.NORMAL, piVipInfoDataService.sendSubscriber(vipCustInfo), null);
     }
     @POST
-    @Path("/sendSms/{tel}")
+    @Path("/sendSms/{tel}/{context}")
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes(MediaType.APPLICATION_JSON)
-    @ApiOperation(value = "/sendSms/{tel}", response = ResponseModel.class, notes = "发送短信")
-    public Response sendSms(@PathParam("tel") String tel){
-        return convertToRespModel(MessageCode.NORMAL, smsSendService.sendMessage("",tel), null);
+    @ApiOperation(value = "/sendSms/{tel}/{context}", response = ResponseModel.class, notes = "发送短信")
+    public Response sendSms(@PathParam("tel") String tel,@PathParam("context") String context){
+        return convertToRespModel(MessageCode.NORMAL, smsSendService.sendMessage(context,tel), null);
     }
 
     @GET
@@ -201,6 +201,15 @@ public class PIResouce extends BaseResource{
     @ApiOperation(value = "/saveFactoryPrice", response = ResponseModel.class, notes = "保存自营奶站出厂价格")
     public Response saveFactoryPrice(){
         return convertToRespModel(MessageCode.NORMAL, requireOrderService.saveFactoryPrice(), null);
+    }
+
+    @GET
+    @Path("/getWerks")
+    @Produces(MediaType.APPLICATION_JSON)
+    @Consumes(MediaType.APPLICATION_JSON)
+    @ApiOperation(value = "/getWerks", response = ResponseModel.class, notes = "更新库存对应的工厂数据")
+    public Response getWerks() throws RemoteException {
+        return convertToRespModel(MessageCode.NORMAL, piProductService.matWHWHandler(), null);
     }
 
 }

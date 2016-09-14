@@ -88,4 +88,18 @@ public interface TMdMaraMapper {
     List<TMdMara>  getProductByCodeOrNameAndSalesOrg(Map<String,String> attrs);
 
     PageInfo listsBySalesOrg(ProductQueryModel pm);
+    
+    /**
+     * 获取经销商可销售的产品列表
+     * @param pm
+     * @return
+     */
+    public List<TMdMara> getDealerMarasList(ProductQueryModel pm);
+    
+    /**
+     * 获取自营奶站可销售的产品列表
+     * @param pm
+     * @return
+     */
+    public List<TMdMara> getCompMarasList(ProductQueryModel pm);
 }

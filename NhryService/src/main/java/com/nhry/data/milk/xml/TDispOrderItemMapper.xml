@@ -587,4 +587,54 @@
       	#{codeStr} 
     </foreach>  
   </delete>
+
+  <select id="reportDispOrderItemByParams" parameterType="com.nhry.model.milktrans.DispOrderReportModel" resultType="com.nhry.model.milktrans.DispOrderReportEntityModel">
+    SELECT
+    e.EMP_NAME empName,
+    o.DISP_DATE dispDate,
+    (CASE o.REACH_TIME_TYPE WHEN '10' THEN '上午配送' WHEN '20' THEN '下午配送' END)  reachTimeType,
+    CONCAT(ar.RESIDENTIAL_AREA_TXT,a.ADDRESS_TXT) addressTxt,
+    a.mp,
+    c.VIP_NAME vipName,
+    m1.SHORT_TXT matnrTxt,
+    i.QTY qty,
+    m2.SHORT_TXT confirmMatnrTxt,
+    i.CONFIRM_QTY confirmQty
+    FROM
+    t_mst_disp_order_item i
+    JOIN t_mst_disp_order o ON i.ORDER_NO = o.ORDER_NO
+    <if test="empNos!=null and empNos!=''">
+      and i.DISP_EMP_NO in
+      <foreach item="empNo" collection="empNos" separator="," open="(" close=")" index="">
+        #{empNo}
+      </foreach>
+    </if>
+    <if test="beginDate != null">
+      and o.DISP_DATE >= #{beginDate,jdbcType=DATE}
+    </if>
+    <if test="endDate != null">
+      and o.DISP_DATE &lt;= #{endDate,jdbcType=DATE}
+    </if>
+    <if test="reachTimeType!=null and reachTimeType!=''">
+      and o.REACH_TIME_TYPE = #{reachTimeType,jdbcType=VARCHAR}
+    </if>
+    <if test="confirmMatnrs!=null">
+      and i.CONFIRM_MATNR in
+      <foreach collection="confirmMatnrs" item="confirmMatnr" open="(" close=")" index="" separator=",">
+        #{confirmMatnr}
+      </foreach>
+    </if>
+    <if test="branchNo!=null and branchNo!=''">
+      and o.BRANCH_NO = #{branchNo,jdbcType=VARCHAR}
+    </if>
+    LEFT JOIN t_preorder p ON p.ORDER_NO = i.ORG_ORDER_NO
+    left JOIN t_md_branch_emp e ON e.EMP_NO = o.DISP_EMP_NO
+    LEFT JOIN t_md_address a ON a.ADDRESS_ID = i.ADDRESS_NO
+    LEFT JOIN t_md_residential_area ar ON a.RESIDENTIAL_AREA = ar.ID
+    LEFT JOIN t_md_mara_ex m1 ON m1.MATNR = i.MATNR and m1.SALES_ORG = p.SALES_ORG
+    LEFT JOIN t_md_mara_ex m2 ON m2.MATNR = i.CONFIRM_MATNR and m2.SALES_ORG = p.SALES_ORG
+    LEFT JOIN t_vip_cust_info c on c.VIP_CUST_NO = p.MILKMEMBER_NO
+    ORDER BY o.DISP_DATE,ar.RESIDENTIAL_AREA_TXT,a.ADDRESS_TXT
+  </select>
+
 </mapper>

@@ -2,9 +2,7 @@ package com.nhry.rest.basic;
 
 import com.nhry.common.exception.MessageCode;
 import com.nhry.common.exception.ServiceException;
-import com.nhry.data.basic.domain.TMdResidentialArea;
-import com.nhry.data.basic.domain.TVipCustInfo;
-import com.nhry.data.basic.domain.TaskYearMonthPlan;
+import com.nhry.data.basic.domain.*;
 import com.nhry.data.order.domain.TPlanOrderItem;
 import com.nhry.data.order.domain.TPreOrder;
 import com.nhry.model.order.OrderCreateModel;
@@ -204,7 +202,8 @@ public class ImportTableResource extends BaseResource {
             order.setOrderNo(cell.toString());
             cell = row.getCell(j++);
             order.setBranchNo(cell.toString());
-            String salesOrg = branchService.selectBranchByNo(order.getBranchNo()).getSalesOrg();
+            TMdBranch branch = branchService.selectBranchByNo(order.getBranchNo());
+            String salesOrg  = branch.getSalesOrg();
             cell = row.getCell(j++);
             order.setDeliveryType(cell.toString());
             ArrayList<TPlanOrderItem> entries = new ArrayList<TPlanOrderItem>();//订单行项目
@@ -226,10 +225,12 @@ public class ImportTableResource extends BaseResource {
                    // entrie.setDispDays();
                     cell1 = row1.getCell(t++);
                     if (cell1 != null && StringUtils.isNotEmpty(cell1.toString())) {
-                        entrie.setGapDays(cell1.getCellType());
+                        entrie.setGapDays(Integer.valueOf(cell1.getStringCellValue()));
                     }
                     cell1 = row1.getCell(t++);
-                    entrie.setRuleTxt(cell1.toString());
+                    if (cell1 != null && StringUtils.isNotEmpty(cell1.toString())) {
+                        entrie.setRuleTxt(cell1.toString());
+                    }
                     cell1 = row1.getCell(t++);
                     entrie.setReachTimeType(cell1.toString());
                         cell1 = row1.getCell(t++);
@@ -238,7 +239,7 @@ public class ImportTableResource extends BaseResource {
                         entrie.setEndDispDateStr(cell1.toString());
                     cell1 = row1.getCell(t++);
                     if (cell1 != null && StringUtils.isNotEmpty(cell1.toString())) {
-                        entrie.setDispTotal(cell1.getCellType());
+                        entrie.setDispTotal(Integer.valueOf(cell1.getStringCellValue()));
                     }
                     float price = priceService.getMaraPriceForCreateOrder(order.getBranchNo(), entrie.getMatnr(), order.getDeliveryType(), salesOrg);
                     if(price<=0)throw new ServiceException(MessageCode.LOGIC_ERROR,"产品价格小于0,请检查传入的商品号，奶站和配送方式!信息："+"奶站："+order.getBranchNo()+"商品号："+entrie.getMatnr()+"配送方式："+order.getDeliveryType()+"销售组织："+salesOrg);
@@ -283,8 +284,9 @@ public class ImportTableResource extends BaseResource {
             order.setOrderType("20");
             order.setPreorderSource("30");
             //通过订户查询到地址信息，并写入到订单里
+            TMdAddress tMdAddress = tVipCustInfoService.findAddressByCustNoISDefault(order.getMilkmemberNo());
             TVipCustInfo custinfo = tVipCustInfoService.findVipCustByNo(order.getMilkmemberNo());
-            order.setAdressNo(custinfo.getSubdist());
+            order.setAdressNo(tMdAddress.getAddressId());
             OrderModel.setOrder(order);
             OrderModels.add(OrderModel);
 
