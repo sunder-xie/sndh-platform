@@ -198,10 +198,10 @@ public class ImportTableResource extends BaseResource {
             TPreOrder order = new TPreOrder();
             int j = 1;
             XSSFRow row = sheet.getRow(i);
-            XSSFCell cell = row.getCell(j++);
-            if(cell == null){
-            	continue;
+            if(row == null){
+            	break;
             }
+            XSSFCell cell = row.getCell(j++);
             order.setOrderNo(cell.toString());
             cell = row.getCell(j++);
             order.setBranchNo(cell.toString());
