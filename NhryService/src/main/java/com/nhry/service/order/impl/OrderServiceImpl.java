@@ -3469,6 +3469,8 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 				
 				if(entry.getStartDispDate().after(today))continue;
 				
+				if(orgDaliyPlans.stream().anyMatch((e)->e.getItemNo().equals(entry.getItemNo()) &&e.getDispDate().equals(today)) )continue;
+				
 				if("10".equals(entry.getRuleType())){
 					int gapDays = entry.getGapDays() + 1;//间隔天数
 					if(daysOfTwo(entry.getStartDispDate(),today)%gapDays != 0){
@@ -3493,8 +3495,6 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 					}
 				}
 				
-				//行项目生成到这天
-				entry.setEndDispDate(today);
 				
 				//生成该订单行的每日计划
 				TOrderDaliyPlanItem plan = new TOrderDaliyPlanItem();
@@ -3515,6 +3515,9 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 				
 				//当订单余额小于0时停止
 				if(curAmt.floatValue() < 0)break outer;
+				
+				//行项目生成到这天
+				entry.setEndDispDate(today);
 				
 				plan.setRemainAmt(curAmt);//订单余额
 				plan.setStatus("10");//状态
