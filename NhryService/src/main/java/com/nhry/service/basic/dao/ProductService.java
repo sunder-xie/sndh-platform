@@ -90,4 +90,10 @@ public interface ProductService {
     Map<String,String> getMataBotTypes();
 
     PageInfo listsBySalesOrg(ProductQueryModel pmodel);
+    
+    /**
+     * 获取奶站可销售的产品列表
+     * @return
+     */
+    public List<TMdMara> getBranchSaleMaras();
 }

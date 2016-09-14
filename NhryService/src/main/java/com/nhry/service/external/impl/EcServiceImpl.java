@@ -131,7 +131,6 @@ public class EcServiceImpl extends EcBaseService implements EcService{
 				body.put("SVCGETORDERLIST", ssbi);
 				json.put("body", body);
 				arr.put(json);
-				System.out.println("----------"+arr.toString());
 				pushMessage2Ec(EnvContant.getSystemConst("ec_base_url")+EnvContant.getSystemConst("ec_upt_branch"), arr.toString(), true);
 			} catch (JSONException e) {
 				e.printStackTrace();
@@ -159,7 +158,6 @@ public class EcServiceImpl extends EcBaseService implements EcService{
 			body.put("SVCGETORDERDETAIL", ssbi);
 			json.put("body", body);
 			arr.put(json);
-			System.out.println("----------"+arr.toString());
 			pushMessage2Ec(EnvContant.getSystemConst("ec_base_url")+EnvContant.getSystemConst("ec_upt_branch"), arr.toString(), true);
 		} catch (JSONException e) {
 			e.printStackTrace();
@@ -191,7 +189,6 @@ public class EcServiceImpl extends EcBaseService implements EcService{
 			body.put("SVCSENDORDERSTOPRE", ssbi);
 			json.put("body", body);
 			arr.put(json);
-			System.out.println("----------"+arr.toString());
 			pushMessage2Ec(EnvContant.getSystemConst("ec_base_url")+EnvContant.getSystemConst("ec_upt_branch"), arr.toString(), true);
 		} catch (JSONException e) {
 			e.printStackTrace();
@@ -233,7 +230,6 @@ public class EcServiceImpl extends EcBaseService implements EcService{
 			body.put("SVCSENDORDERSTATUS", ssbi);
 			json.put("body", body);
 			arr.put(json);
-			System.out.println("----------"+arr.toString());
 			pushMessage2Ec(EnvContant.getSystemConst("ec_base_url")+EnvContant.getSystemConst("ec_upt_branch"), arr.toString(), true);
 		} catch (JSONException e) {
 			e.printStackTrace();
@@ -261,7 +257,6 @@ public class EcServiceImpl extends EcBaseService implements EcService{
 			body.put("SVCGETORDERCOMMENTS", ssbi);
 			json.put("body", body);
 			arr.put(json);
-			System.out.println("----------"+arr.toString());
 			pushMessage2Ec(EnvContant.getSystemConst("ec_base_url")+EnvContant.getSystemConst("ec_upt_branch"), arr.toString(), true);
 		} catch (JSONException e) {
 			e.printStackTrace();
@@ -295,7 +290,6 @@ public class EcServiceImpl extends EcBaseService implements EcService{
 			body.put("SVCSENDORDERCOMMENTS", ssbi);
 			json.put("body", body);
 			arr.put(json);
-			System.out.println("----------"+arr.toString());
 			pushMessage2Ec(EnvContant.getSystemConst("ec_base_url")+EnvContant.getSystemConst("ec_upt_branch"), arr.toString(), true);
 		} catch (JSONException e) {
 			e.printStackTrace();
@@ -403,7 +397,6 @@ public class EcServiceImpl extends EcBaseService implements EcService{
 			json.put("body", body);
 			arr.put(json);
 			
-			System.out.println("----------"+arr.toString());
 			pushMessage2Ec(EnvContant.getSystemConst("ec_base_url")+EnvContant.getSystemConst("ec_upt_branch"), arr.toString(), true);
 		} catch (JSONException e) {
 			e.printStackTrace();
@@ -499,7 +492,6 @@ public class EcServiceImpl extends EcBaseService implements EcService{
 			json.put("body", body);
 			arr.put(json);
 
-			System.out.println("----------"+arr.toString());
 			pushMessage2Ec(EnvContant.getSystemConst("ec_base_url")+EnvContant.getSystemConst("ec_upt_branch"), arr.toString(), true);
 		} catch (JSONException e) {
 			e.printStackTrace();
