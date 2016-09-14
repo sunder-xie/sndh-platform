@@ -95,7 +95,8 @@ public class ReportResource extends BaseResource{
 
         CollectOrderModel collect = orderService.queryCollectByOrderNo(orderCode);
         TSysUser user = userSessionService.getCurrentUser();
-        String url = request.getServletContext().getRealPath("/");
+//        String url = request.getServletContext().getRealPath("/");
+        String url = EnvContant.getSystemConst("filePath");
         logger.info("realPath："+url);
         TMdAddress address = collect.getAddress();
         if(address == null) {
@@ -208,7 +209,7 @@ public class ReportResource extends BaseResource{
 //                    .ok(targetFilePath, mt)
 //                    .header("Content-disposition","attachment;filename=" + targetFilePath.getName())
 //                    .header("ragma", "No-cache").header("Cache-Control", "no-cache").build();
-            outUrl = "/report/export/" + fname + "CollectOrder.xlsx";
+            outUrl = fname + "CollectOrder.xlsx";
 
         } catch (IOException e) {
             e.printStackTrace();
@@ -224,9 +225,8 @@ public class ReportResource extends BaseResource{
         RouteOrderModel model = deliverMilkService.searchRouteDetails(orderCode);
         String outUrl = "";
         logger.debug("##################"+EnvContant.getSystemConst("filePath"));
-        logger.debug("##################"+request.getServletContext().getRealPath("/"));
-        String url = request.getServletContext().getRealPath("/");
-        String url1 = EnvContant.getSystemConst("filePath");
+//        String url = request.getServletContext().getRealPath("/");
+        String url = EnvContant.getSystemConst("filePath");
         try{
             File file = new File(url +  File.separator + "report"+ File.separator + "template" + File.separator + "DeliverMilkTemplate.xlsx");    //审批单
             FileInputStream input = new FileInputStream(file);
@@ -307,8 +307,7 @@ public class ReportResource extends BaseResource{
                     }
                 }
             }
-//            File export = new File(url +  File.separator + "report"+ File.separator + "export" + File.separator + fname + "DeliverMilk.xlsx");
-            File export = new File(url1 + fname + "DeliverMilk.xlsx");
+            File export = new File(url +  File.separator + "report"+ File.separator + "export" + File.separator + fname + "DeliverMilk.xlsx");
             FileOutputStream stream = new FileOutputStream(export);
             workbook.write(stream);
             stream.flush();
@@ -327,8 +326,8 @@ public class ReportResource extends BaseResource{
     public Response reportFile(@ApiParam(required = true,value = "fileName",defaultValue = "fileName")@PathParam("fileName") String fileName){
         String url = EnvContant.getSystemConst("filePath");
 //        String url = request.getServletContext().getRealPath("/");
-//        String urlPath = url +  File.separator + "report"+ File.separator + "export" + File.separator + fileName;
-        String urlPath = url + fileName;
+        String urlPath = url +  File.separator + "report"+ File.separator + "export" + File.separator + fileName;
+//        String urlPath = url + fileName;
         logger.info("##########"+urlPath);
         return convertToFile(urlPath);
     }
@@ -397,7 +396,7 @@ public class ReportResource extends BaseResource{
             workbook.write(stream);
             stream.flush();
             stream.close();
-            outUrl = "/report/export/" + fname + "MilkBoxTemplate.xlsx";
+            outUrl = fname + "MilkBoxTemplate.xlsx";
         }catch (Exception e){
             e.printStackTrace();
         }
@@ -466,7 +465,7 @@ public class ReportResource extends BaseResource{
             workbook.write(stream);
             stream.flush();
             stream.close();
-            outUrl = "/report/export/" + fname + "ReqOrderTemplate.xlsx";
+            outUrl = fname + "ReqOrderTemplate.xlsx";
         }catch (Exception e){
             e.printStackTrace();
         }
@@ -545,7 +544,7 @@ public class ReportResource extends BaseResource{
             workbook.write(stream);
             stream.flush();
             stream.close();
-            outUrl = "/report/export/" + fname + "DayReportTemplate.xlsx";
+            outUrl = fname + "DayReportTemplate.xlsx";
         }catch (Exception e){
             e.printStackTrace();
         }
@@ -615,7 +614,7 @@ public class ReportResource extends BaseResource{
             workbook.write(stream);
             stream.flush();
             stream.close();
-            outUrl = "/report/export/" + fname + "MonthReportTemplate.xlsx";
+            outUrl = fname + "MonthReportTemplate.xlsx";
 
         }catch (Exception e){
             e.printStackTrace();
@@ -689,7 +688,7 @@ public class ReportResource extends BaseResource{
             workbook.write(stream);
             stream.flush();
             stream.close();
-            outUrl = "/report/export/" + fname + "OrderRatioTemplate.xlsx";
+            outUrl = fname + "OrderRatioTemplate.xlsx";
         }catch (Exception e){
             e.printStackTrace();
         }
@@ -763,7 +762,7 @@ public class ReportResource extends BaseResource{
 //                    .ok(targetFilePath, mt)
 //                    .header("Content-disposition","attachment;filename=" + targetFilePath.getName())
 //                    .header("ragma", "No-cache").header("Cache-Control", "no-cache").build();
-            outUrl = "/report/export/" + fname + "CollectOrder.xlsx";
+            outUrl = fname + "CollectOrder.xlsx";
 
         } catch (IOException e) {
             e.printStackTrace();
@@ -994,7 +993,7 @@ public class ReportResource extends BaseResource{
             workbook.write(stream);
             stream.flush();
             stream.close();
-            outUrl = "/report/export/" + fname + "fnb.xlsx";
+            outUrl = fname + "fnb.xlsx";
         }catch (Exception e){
             e.printStackTrace();
         }
