@@ -23,9 +23,7 @@ import com.nhry.data.order.domain.TPlanOrderItem;
 import com.nhry.data.order.domain.TPreOrder;
 import com.nhry.model.basic.MatnrAndQtyModel;
 import com.nhry.model.milk.*;
-import com.nhry.model.milktrans.CreateInSalOrderModel;
-import com.nhry.model.milktrans.InSideSalOrderDetailSearchModel;
-import com.nhry.model.milktrans.InSideSalOrderSearchModel;
+import com.nhry.model.milktrans.*;
 import com.nhry.model.stock.StockModel;
 import com.nhry.service.BaseService;
 import com.nhry.service.basic.dao.ProductService;
@@ -917,8 +915,6 @@ public class DeliverMilkServiceImpl extends BaseService implements DeliverMilkSe
 		}
 		return 1;
 	}
-
-
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	
 	//日期往前后加n天
@@ -1019,6 +1015,14 @@ public class DeliverMilkServiceImpl extends BaseService implements DeliverMilkSe
 		tDispOrderItemMapper.deleteDispOrderItemByOrderNo(newList);
 		tDispOrderMapper.deleteDispOrderByOrderNo(newList);
 		return 1;
+	}
+
+	@Override
+	public List<DispOrderReportEntityModel> reportDispOrderItemByParams(DispOrderReportModel model) {
+		if(org.apache.commons.lang.StringUtils.isEmpty(model.getBranchNo())){
+			model.setBranchNo(userSessionService.getCurrentUser().getBranchNo());
+		}
+		return tDispOrderItemMapper.reportDispOrderItemByParams(model);
 	}
 
 }
