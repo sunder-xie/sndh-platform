@@ -72,11 +72,22 @@ public class TMdMaraMapperImpl implements TMdMaraMapper {
 		// TODO Auto-generated method stub
 		return this.sqlSessionTemplate.selectListByPages("getDealerMaras", pm,Integer.parseInt(pm.getPageNum()),Integer.parseInt(pm.getPageSize()));
 	}
+	
+	public List<TMdMara> getDealerMarasList(ProductQueryModel pm) {
+		// TODO Auto-generated method stub
+		return this.sqlSessionTemplate.selectList("getDealerMaras", pm);
+	}
 
 	@Override
 	public PageInfo getCompMaras(ProductQueryModel pm) {
 		// TODO Auto-generated method stub
 		return this.sqlSessionTemplate.selectListByPages("getCompMaras",pm,Integer.parseInt(pm.getPageNum()),Integer.parseInt(pm.getPageSize()));
+	}
+	
+	@Override
+	public List<TMdMara> getCompMarasList(ProductQueryModel pm) {
+		// TODO Auto-generated method stub
+		return this.sqlSessionTemplate.selectList("getCompMaras",pm);
 	}
 
     @Override
