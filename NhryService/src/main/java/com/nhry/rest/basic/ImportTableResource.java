@@ -288,6 +288,7 @@ public class ImportTableResource extends BaseResource {
             order.setPayMethod(cell.toString());
             //如果是已付款，那么调整付款状态为10，并且
             if("20".equals(order.getPaymentStat())){
+                order.setPaymentStat("10");
                 order.setIsPaid("Y");
             }
             cell = row.getCell(j++);
