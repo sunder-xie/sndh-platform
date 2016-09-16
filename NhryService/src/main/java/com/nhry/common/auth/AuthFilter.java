@@ -106,7 +106,7 @@ public class AuthFilter implements ContainerRequestFilter {
 				//订户系统原来的登录方式
 				return new DhAuthFilter(this.request,this.response,this.userSessionService).filter(request);
 			}else{
-				if(isExsitUri(request.getMethod()+";"+uri)){
+				if(isExsitUri(request.getMethod(),uri)){
 					//白名单过滤
 					return request;
 				}
@@ -125,9 +125,11 @@ public class AuthFilter implements ContainerRequestFilter {
 		return Response.ok(rsmodel,MediaType.APPLICATION_JSON).status(statusCode).build();
 	}
 	
-	private boolean isExsitUri(String uri){
+	private boolean isExsitUri(String type,String uri){
 		for(String u : whiteUriList){
-			if(uri.contains(u)){
+			String _type = u.split(";")[0];
+			String _uri = u.split(";")[1];
+			if(_type.equalsIgnoreCase(type) && uri.contains(_uri)){
 				return true;
 			}
 		}
