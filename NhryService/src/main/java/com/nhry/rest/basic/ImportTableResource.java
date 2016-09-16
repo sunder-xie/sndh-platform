@@ -286,11 +286,6 @@ public class ImportTableResource extends BaseResource {
             }
             cell = row.getCell(j++);
             order.setPayMethod(cell.toString());
-            //如果是已付款，那么调整付款状态为10，并且
-            if("20".equals(order.getPaymentStat())){
-                order.setPaymentStat("10");
-                order.setIsPaid("Y");
-            }
             cell = row.getCell(j++);
             order.setSign(cell.toString());
             order.setOrderType("20");
@@ -305,7 +300,7 @@ public class ImportTableResource extends BaseResource {
         orderService.createOrders(OrderModels);
         for(int om=0;om < OrderModels.size();om++){
             OrderCreateModel ocm = OrderModels.get(om);
-            if("Y".equals(ocm.getOrder().getIsPaid())){
+            if("20".equals(ocm.getOrder().getPaymentmethod())){
                 customerBillService.createRecBillByOrderNo(ocm.getOrder().getOrderNo());
                 CustomerPayMentModel cModel = new CustomerPayMentModel();
                 cModel.setOrderNo(ocm.getOrder().getOrderNo());
