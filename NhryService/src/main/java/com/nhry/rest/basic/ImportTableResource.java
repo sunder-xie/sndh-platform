@@ -5,6 +5,7 @@ import com.nhry.common.exception.ServiceException;
 import com.nhry.data.basic.domain.*;
 import com.nhry.data.order.domain.TPlanOrderItem;
 import com.nhry.data.order.domain.TPreOrder;
+import com.nhry.model.bill.CustomerPayMentModel;
 import com.nhry.model.order.OrderCreateModel;
 import com.nhry.model.sys.ResponseModel;
 import com.nhry.rest.BaseResource;
@@ -13,6 +14,7 @@ import com.nhry.service.basic.dao.PriceService;
 import com.nhry.service.basic.dao.ResidentialAreaService;
 import com.nhry.service.basic.dao.TVipCustInfoService;
 import com.nhry.service.basic.pojo.BranchScopeModel;
+import com.nhry.service.bill.dao.CustomerBillService;
 import com.nhry.service.order.dao.OrderService;
 import com.nhry.utils.PrimaryKeyUtils;
 import com.nhry.utils.date.Date;
@@ -70,6 +72,8 @@ public class ImportTableResource extends BaseResource {
     private PriceService priceService;
     @Autowired
     private BranchService branchService;
+    @Autowired
+    private CustomerBillService customerBillService;
 
     @POST
     @Path("/importResidentialArea")
@@ -288,13 +292,26 @@ public class ImportTableResource extends BaseResource {
             order.setPreorderSource("30");
             //通过订户查询到地址信息，并写入到订单里
             TMdAddress tMdAddress = tVipCustInfoService.findAddressByCustNoISDefault(order.getMilkmemberNo());
-            TVipCustInfo custinfo = tVipCustInfoService.findVipCustByNo(order.getMilkmemberNo());
             order.setAdressNo(tMdAddress.getAddressId());
             OrderModel.setOrder(order);
             OrderModels.add(OrderModel);
 
         }
-        return convertToRespModel(MessageCode.NORMAL, null,orderService.createOrders(OrderModels));
+        orderService.createOrders(OrderModels);
+        for(int om=0;om < OrderModels.size();om++){
+            OrderCreateModel ocm = OrderModels.get(om);
+            if("20".equals(ocm.getOrder().getPaymentmethod())){
+                customerBillService.createRecBillByOrderNo(ocm.getOrder().getOrderNo());
+                CustomerPayMentModel cModel = new CustomerPayMentModel();
+                cModel.setOrderNo(ocm.getOrder().getOrderNo());
+                cModel.setAmt(ocm.getOrder().getCurAmt().toString());
+                cModel.setPaymentType(ocm.getOrder().getPayMethod());
+                cModel.setEmpNo(ocm.getOrder().getEmpNo());
+                customerBillService.customerPayment(cModel);
+            }
+        }
+
+        return convertToRespModel(MessageCode.NORMAL, null,null);
     }
     @POST
     @Path("/importLinks")

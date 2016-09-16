@@ -167,8 +167,6 @@ public class CustomerBillServiceImpl implements CustomerBillService {
                 if("20".equals(order.getPaymentmethod()) && cModel.getEntries()!=null && cModel.getEntries().size() > 0){
                	 orderService.updateOrderAndEntriesDispStartDate(order.getOrderNo(),cModel.getEntries());
                 }
-                
-                
                 //预付款的，付款后生成日计划
                 if("20".equals(order.getPaymentmethod()) && !"20".equals(order.getMilkboxStat()) ){
                	 OrderCreateModel omodel = orderService.selectOrderByCode(orderNo);
