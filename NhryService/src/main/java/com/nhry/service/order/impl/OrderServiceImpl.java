@@ -1444,7 +1444,7 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 //		order.setInitAmt(initAmt);//页面输入的初始订单金额
 		order.setPaymentmethod(order.getPaymentStat());//10 后款 20 先款 30 殿付款
 		if("Y".equals(order.getIsPaid())){
-			order.setPaymentmethod(order.getPaymentmethod());
+			//order.setPaymentmethod(order.getPaymentmethod());
 			order.setPaymentStat("20");//付款状态,生成时已经付款
 		}else{
 			order.setPaymentStat("10");//付款状态,生成时未付款
