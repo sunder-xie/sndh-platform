@@ -979,8 +979,8 @@ public class ReportResource extends BaseResource{
                 }
             }
 
-            String fname = saveFile(url, workbook,"Fnb.xlsx");
-            outUrl = fname + "fnb.xlsx";
+            outUrl = saveFile(url, workbook,"Fnb.xlsx");
+//            outUrl = fname + "fnb.xlsx";
         }catch (Exception e){
             e.printStackTrace();
         }
