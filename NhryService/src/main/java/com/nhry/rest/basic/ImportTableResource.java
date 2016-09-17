@@ -16,6 +16,7 @@ import com.nhry.service.basic.dao.TVipCustInfoService;
 import com.nhry.service.basic.pojo.BranchScopeModel;
 import com.nhry.service.bill.dao.CustomerBillService;
 import com.nhry.service.order.dao.OrderService;
+import com.nhry.utils.EnvContant;
 import com.nhry.utils.PrimaryKeyUtils;
 import com.nhry.utils.date.Date;
 import com.sun.jersey.core.header.FormDataContentDisposition;
@@ -81,17 +82,18 @@ public class ImportTableResource extends BaseResource {
     @Produces(MediaType.APPLICATION_JSON)
     @ApiOperation(value = "/importResidentialArea", response = ResponseModel.class, notes = "导入小区主数据")
     public Response importResidentialArea(FormDataMultiPart form, @Context HttpServletRequest request) throws IOException {
-        String url = request.getServletContext().getRealPath("/");
+       // String url = request.getServletContext().getRealPath("/");
+       // String url = EnvContant.getSystemConst("filePath");
         FormDataBodyPart filePart = form.getField("file");
         InputStream fileInputStream = filePart.getValueAs(InputStream.class);
         FormDataContentDisposition formDataContentDisposition = filePart.getFormDataContentDisposition();
-        String source = formDataContentDisposition.getFileName();
+       /* String source = formDataContentDisposition.getFileName();
         if (!source.endsWith("xlsx")) {
             return convertToRespModel(MessageCode.LOGIC_ERROR, "文件类型错误！", "");
         }
         String result = new String(source.getBytes("ISO8859-1"), "UTF-8");
         String filePath = url + File.separator + "report" + File.separator + "template" + File.separator + result;
-        File file = new File(filePath);
+        File file = new File(filePath);*/
         XSSFWorkbook workbook = new XSSFWorkbook(new BufferedInputStream(fileInputStream));
         XSSFSheet sheet = workbook.getSheetAt(0);
         int rowNum = sheet.getLastRowNum();
