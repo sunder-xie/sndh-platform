@@ -9,6 +9,8 @@ import com.nhry.data.milk.domain.TDispOrderItemKey;
 import com.nhry.data.milktrans.domain.TRecBotDetail;
 import com.nhry.model.milk.RouteDetailUpdateModel;
 import com.nhry.model.milk.RouteOrderSearchModel;
+import com.nhry.model.milktrans.DispOrderReportEntityModel;
+import com.nhry.model.milktrans.DispOrderReportModel;
 import com.nhry.model.milktrans.UnDeliverProductSearch;
 import com.nhry.service.milk.pojo.TDispOrderChangeItem;
 
@@ -219,8 +221,31 @@ public class TDispOrderItemMapperImpl implements TDispOrderItemMapper
 	}
 
 	@Override
+	public List<DispOrderReportEntityModel> reportDispOrderItemByParams(DispOrderReportModel model) {
+		return sqlSessionTemplate.selectList("reportDispOrderItemByParams",model);
+	}
+
+	@Override
 	public int deleteDispOrderItemByOrderNo(List<String> codeList) {
 		return sqlSessionTemplate.delete("deleteDispOrderItemByOrderNo",codeList);
+	}
+
+	@Override
+	public int selectCountByOrgOrder(String orgOrderNo)
+	{
+		TDispOrder order = new TDispOrder();
+		order.setOrderNo(orgOrderNo);
+		return sqlSessionTemplate.selectOne("selectCountByOrgOrder", order);
+	}
+
+	@Override
+	public int selectCountByOrgOrderAndOrgItemNo(String orderNo, String itemNo, String dispDate)
+	{
+		TDispOrder order = new TDispOrder();
+		order.setOrderNo(orderNo);
+		order.setDispLineNo(itemNo);
+		order.setBranchName(dispDate);
+		return sqlSessionTemplate.selectOne("selectCountByOrgOrderAndOrgItemNo", order);
 	}
 	
 }

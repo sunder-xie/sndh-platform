@@ -7,6 +7,8 @@ import com.nhry.data.milk.domain.TDispOrderItemKey;
 import com.nhry.data.milktrans.domain.TRecBotDetail;
 import com.nhry.model.milk.RouteDetailUpdateModel;
 import com.nhry.model.milk.RouteOrderSearchModel;
+import com.nhry.model.milktrans.DispOrderReportEntityModel;
+import com.nhry.model.milktrans.DispOrderReportModel;
 import com.nhry.model.milktrans.UnDeliverProductSearch;
 import com.nhry.service.milk.pojo.TDispOrderChangeItem;
 
@@ -53,7 +55,13 @@ public interface TDispOrderItemMapper {
     
     int selectCountOfTodayByOrgOrder(String orgOrderNo);
 
-    //查询 该订单下生成的路单数
+    //查询 该订单下生成的路单数 非确认的
     int selectDispOrderNumByPreOrderNo(String orderNo);
+    //查询 该订单下生成的路单数
+    int selectCountByOrgOrder(String orderNo);
+    //查询该行该日期是否有路单
+    int selectCountByOrgOrderAndOrgItemNo(String orderNo,String itemNo,String dispDate);
+
+    List<DispOrderReportEntityModel> reportDispOrderItemByParams(DispOrderReportModel model);
     
 }

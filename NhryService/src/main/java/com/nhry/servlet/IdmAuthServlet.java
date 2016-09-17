@@ -13,6 +13,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.lang3.StringUtils;
+import org.apache.log4j.Logger;
 import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,6 +22,7 @@ import org.springframework.context.support.ClassPathXmlApplicationContext;
 import org.springframework.stereotype.Component;
 import org.springframework.web.context.support.SpringBeanAutowiringSupport;
 
+import com.nhry.common.auth.AuthFilter;
 import com.nhry.common.auth.UserSessionService;
 import com.nhry.common.ladp.LadpService;
 import com.nhry.data.auth.dao.TSysUserRoleMapper;
@@ -38,6 +40,7 @@ import com.nhry.utils.date.Date;
 import com.nhry.utils.json.JackJson;
 @Component
 public class IdmAuthServlet extends HttpServlet {
+	private static final Logger LOGGER = Logger.getLogger(IdmAuthServlet.class);
 	@Autowired
 	private UserService userService;
 	@Autowired
@@ -117,6 +120,8 @@ public class IdmAuthServlet extends HttpServlet {
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
+			LOGGER.warn("IdmAuthServlet error message  client_id： "+EnvContant.getSystemConst("client_id")+" client_secret : "+EnvContant.getSystemConst("client_secret")+" grant_type : "+
+					EnvContant.getSystemConst("grant_type")+" redirect_uri : "+EnvContant.getSystemConst("redirect_uri")+" code : "+request.getParameter("code"));
 			sendRedirectToLogin(response);
 		}
 	}
