@@ -24,6 +24,8 @@ import com.nhry.data.order.domain.TPreOrder;
 import com.nhry.model.basic.MatnrAndQtyModel;
 import com.nhry.model.milk.*;
 import com.nhry.model.milktrans.*;
+import com.nhry.model.order.OrderDaliyPlanReportEntityModel;
+import com.nhry.model.order.OrderDaliyPlanReportModel;
 import com.nhry.model.stock.StockModel;
 import com.nhry.service.BaseService;
 import com.nhry.service.basic.dao.ProductService;
@@ -1024,5 +1026,14 @@ public class DeliverMilkServiceImpl extends BaseService implements DeliverMilkSe
 		}
 		return tDispOrderItemMapper.reportDispOrderItemByParams(model);
 	}
+
+	@Override
+	public List<OrderDaliyPlanReportEntityModel> reportOrderDaliyPlanByParams(OrderDaliyPlanReportModel model) {
+		if(org.apache.commons.lang.StringUtils.isEmpty(model.getBranchNo())){
+			model.setBranchNo(userSessionService.getCurrentUser().getBranchNo());
+		}
+		return tOrderDaliyPlanItemMapper.reportOrderDaliyPlanByParams(model);
+	}
+
 
 }

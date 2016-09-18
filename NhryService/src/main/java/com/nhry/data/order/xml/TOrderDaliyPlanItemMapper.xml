@@ -774,4 +774,51 @@
     where ORDER_NO = #{orderNo,jdbcType=VARCHAR}
   </delete>
 
+  <select id="reportOrderDaliyPlanByParams" resultType="com.nhry.model.order.OrderDaliyPlanReportEntityModel" parameterType="com.nhry.model.order.OrderDaliyPlanReportModel">
+    SELECT
+    t2.MP mp,
+    CONCAT(t5.RESIDENTIAL_AREA_TXT,t4.ADDRESS_TXT) addressTxt,
+    t2.VIP_NAME vipName,
+    t.DISP_DATE dispDate,
+    t3.SHORT_TXT matnrTxt,
+    t1.CUR_AMT curAmt,
+    t.QTY qty,
+    t.PRICE price,
+    t6.EMP_NAME empName,
+    t.ORDER_NO orderNo,
+    case t.`STATUS` when '10' then '生成' when '20' then '确认' when '30' then '已停订' when '40' then '已送达' END as status,
+    CASE t.REACH_TIME_TYPE WHEN '10' THEN '上午配送' WHEN '20' THEN '下午配送' END reachTimeType
+    FROM
+    t_mst_order_daliy_plan_item t
+    inner JOIN t_preorder t1 ON t1.ORDER_NO = t.ORDER_NO
+    <if test="branchNo!=null and branchNo!=''">
+      and t1.BRANCH_NO = #{branchNo,jdbcType=VARCHAR}
+    </if>
+    <if test="beginDate!=null and beginDate!=''">
+      and t.DISP_DATE >= #{beginDate,jdbcType=DATE}
+    </if>
+    <if test="endDate!=null and beginDate!=''">
+      and t.DISP_DATE &lt;= #{endDate,jdbcType=DATE}
+    </if>
+    <if test="empNos!=null">
+      and t1.EMP_NO in
+      <foreach collection="empNos" item="empNo" open="(" close=")" separator="," index="">
+        #{empNo}
+      </foreach>
+    </if>
+    inner JOIN t_vip_cust_info t2 ON t2.VIP_CUST_NO = t1.MILKMEMBER_NO
+    inner JOIN t_md_mara_ex t3 ON t3.MATNR = t.MATNR
+    inner join t_md_address t4 on t4.ADDRESS_ID = t1.ADRESS_NO
+    inner join t_md_residential_area t5 on t5.ID = t4.RESIDENTIAL_AREA
+    inner join t_md_branch_emp t6 on t6.EMP_NO = t1.EMP_NO
+    AND t2.SALES_ORG = t3.SALES_ORG
+    <if test="matnrs!=null">
+      and t.MATNR in
+      <foreach collection="matnrs" item="matnr" open="(" close=")" separator="," index="">
+        #{matnr}
+      </foreach>
+    </if>
+    order by t.DISP_DATE,t5.RESIDENTIAL_AREA_TXT,t4.ADDRESS_TXT
+
+  </select>
 </mapper>

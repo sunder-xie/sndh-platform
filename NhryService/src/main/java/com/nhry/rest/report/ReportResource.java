@@ -15,9 +15,7 @@ import com.nhry.model.bill.CustBillQueryModel;
 import com.nhry.model.milk.RouteOrderModel;
 import com.nhry.model.milktrans.DispOrderReportEntityModel;
 import com.nhry.model.milktrans.DispOrderReportModel;
-import com.nhry.model.order.CollectOrderModel;
-import com.nhry.model.order.OrderCreateModel;
-import com.nhry.model.order.ProductItem;
+import com.nhry.model.order.*;
 import com.nhry.model.statistics.BranchInfoModel;
 import com.nhry.model.sys.ResponseModel;
 import com.nhry.rest.BaseResource;
@@ -1076,5 +1074,81 @@ public class ReportResource extends BaseResource{
         }
         return convertToRespModel(MessageCode.NORMAL,null,outUrl);
     }
+    @POST
+    @Path("/reportOrderDaliyPlan")
+    @Produces(MediaType.APPLICATION_JSON)
+    @Consumes(MediaType.APPLICATION_JSON)
+    @ApiOperation(value = "/reportOrderDaliyPlan",response = ResponseModel.class,notes = "导出日计划明细报表")
+    public Response reportOrderDaliyPlan(@ApiParam(value = "日计划明细参数",required = true,name = "model") OrderDaliyPlanReportModel model){
+        String outUrl = "";
+        String url = EnvContant.getSystemConst("filePath");
+        List<OrderDaliyPlanReportEntityModel> lists = deliverMilkService.reportOrderDaliyPlanByParams(model);
+        try {
+            XSSFWorkbook workbook = new XSSFWorkbook();
+            XSSFSheet sheet = workbook.createSheet("日计划明细");
+            int rowNum = 0;
+            XSSFRow row = sheet.createRow(rowNum++);
+            int rawNum = 0;
+            XSSFCell cell = row.createCell(rawNum++);
+            cell.setCellValue("订户电话");
+            cell = row.createCell(rawNum++);
+            cell.setCellValue("订户地址");
+            cell = row.createCell(rawNum++);
+            cell.setCellValue("订户姓名");
+            cell = row.createCell(rawNum++);
+            cell.setCellValue("配送日期");
+            cell = row.createCell(rawNum++);
+            cell.setCellValue("产品简称");
+            cell = row.createCell(rawNum++);
+            cell.setCellValue("订单余额");
+            cell = row.createCell(rawNum++);
+            cell.setCellValue("数量");
+            cell = row.createCell(rawNum++);
+            cell.setCellValue("单价");
+            cell = row.createCell(rawNum++);
+            cell.setCellValue("配送时间");
+            cell = row.createCell(rawNum++);
+            cell.setCellValue("送奶员");
+            cell = row.createCell(rawNum++);
+            cell.setCellValue("订户订单");
+            cell = row.createCell(rawNum++);
+            cell.setCellValue("状态");
+            for(OrderDaliyPlanReportEntityModel entity : lists){
+                int raw = 0;
+                row = sheet.createRow(rowNum++);
+                cell = row.createCell(raw++);
+                cell.setCellValue(entity.getMp());
+                cell = row.createCell(raw++);
+                cell.setCellValue(entity.getAddressTxt());
+                cell = row.createCell(raw++);
+                cell.setCellValue(entity.getVipName());
+                cell = row.createCell(raw++);
+                cell.setCellValue(format.format(entity.getDispDate()));
+                cell = row.createCell(raw++);
+                cell.setCellValue(entity.getMatnrTxt());
+                cell = row.createCell(raw++);
+                cell.setCellValue(entity.getCurAmt()!=null?entity.getCurAmt().toString():"");
+                cell = row.createCell(raw++);
+                cell.setCellValue(entity.getQty()!=null?entity.getQty().toString():"");
+                cell = row.createCell(raw++);
+                cell.setCellValue(entity.getPrice()!=null?entity.getPrice().toString():"");
+                cell = row.createCell(raw++);
+                cell.setCellValue(entity.getReachTimeType());
+                cell = row.createCell(raw++);
+                cell.setCellValue(entity.getEmpName());
+                cell = row.createCell(raw++);
+                cell.setCellValue(entity.getOrderNo());
+                cell = row.createCell(raw++);
+                cell.setCellValue(entity.getStatus());
 
+            }
+            for(int i=0;i<rawNum;i++){
+                sheet.setColumnWidth(i,(short)50*100);
+            }
+            outUrl = saveFile(url, workbook,"OrderDaliyPlan.xlsx");
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+        return convertToRespModel(MessageCode.NORMAL,null,outUrl);
+    }
 }
