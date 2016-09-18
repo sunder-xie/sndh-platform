@@ -12,6 +12,18 @@ public class OrderEditModel {
 	private TPreOrder order;
 	
 	private ArrayList<TPlanOrderItem> entries = new ArrayList<TPlanOrderItem>();
+	
+	private String editDate;
+
+	public String getEditDate()
+	{
+		return editDate;
+	}
+
+	public void setEditDate(String editDate)
+	{
+		this.editDate = editDate;
+	}
 
 	public TPreOrder getOrder()
 	{

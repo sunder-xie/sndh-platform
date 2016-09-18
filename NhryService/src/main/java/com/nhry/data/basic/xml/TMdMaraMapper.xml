@@ -428,6 +428,7 @@
 	    SELECT
 			p.MATNR,
 			p.MATNR_TXT,
+			exm.SHORT_TXT,
 			p.BASE_UNIT,
 			p. STATUS,
 			p.LAST_MODIFIED MARA_LAST_MODIFIED,
@@ -451,6 +452,7 @@
 			p.DEALER_NO 
 		FROM
 			t_md_mara p
+			LEFT JOIN t_md_mara_ex exm on exm.MATNR = p.MATNR
 		where p.MATNR NOT IN (
 			SELECT
 				nl.matnr
@@ -471,6 +473,7 @@
 	    SELECT
 			p.MATNR,
 			p.MATNR_TXT,
+			exm.SHORT_TXT,
 			p.BASE_UNIT,
 			p. STATUS,
 			p.LAST_MODIFIED MARA_LAST_MODIFIED,
@@ -493,7 +496,9 @@
 			p.SALES_ORG,
 			p.DEALER_NO 
 		FROM
-			t_md_mara p WHERE p.MATNR not in (
+			t_md_mara p 
+			LEFT JOIN t_md_mara_ex exm on exm.MATNR = p.MATNR
+			WHERE p.MATNR not in (
 			SELECT
 				nl.matnr
 			FROM
