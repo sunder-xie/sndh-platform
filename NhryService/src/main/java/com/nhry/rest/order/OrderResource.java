@@ -16,6 +16,7 @@ import com.sun.jersey.spi.resource.Singleton;
 import com.wordnik.swagger.annotations.Api;
 import com.wordnik.swagger.annotations.ApiOperation;
 import com.wordnik.swagger.annotations.ApiParam;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
@@ -24,7 +25,9 @@ import org.springframework.stereotype.Controller;
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+
 import java.util.ArrayList;
+import java.util.List;
 
 @Path("/order")
 @Component
@@ -157,6 +160,15 @@ public class OrderResource extends BaseResource {
 	public Response uptOrder(@ApiParam(required=true,name="record",value="系统参数json格式") OrderEditModel record){
 		return convertToRespModel(MessageCode.NORMAL, null,  orderService.editOrderForLong(record));
 	}	
+	
+	@POST
+	@Path("/editOrderForLongForViewPlans")
+	@Consumes(MediaType.APPLICATION_JSON)
+	@Produces(MediaType.APPLICATION_JSON)
+	@ApiOperation(value = "/editOrderForLongForViewPlans", response = List.class, notes = "更新订单信息(长期修改),看日计划")
+	public Response editOrderForLongForViewPlans(@ApiParam(required=true,name="record",value="系统参数json格式") OrderEditModel record){
+		return convertToRespModel(MessageCode.NORMAL, null,  orderService.editOrderForLongForViewPlans(record));
+	}
 	
 	@POST
 	@Path("/uptshort")

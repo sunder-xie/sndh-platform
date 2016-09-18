@@ -41,8 +41,6 @@ public class TPlanOrderItem {
 
     private Date startDispDate;
     
-    private Date startDate;
-    
     private Date stopStartDate;
     
     private Date stopEndDate;
@@ -131,16 +129,6 @@ public class TPlanOrderItem {
 	public void setNewFlag(String newFlag)
 	{
 		this.newFlag = newFlag;
-	}
-
-	public Date getStartDate()
-	{
-		return startDate;
-	}
-
-	public void setStartDate(Date startDate)
-	{
-		this.startDate = startDate;
 	}
 
 	public Integer getyGrowth()

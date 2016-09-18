@@ -14,6 +14,9 @@ import java.util.Date;
 import java.util.List;
 
 public interface TOrderDaliyPlanItemMapper {
+	
+	 List<TOrderDaliyPlanItem> selectDaliyOrdersAll(OrderSearchModel smodel);
+	 
 	 int updateDaliyPlansToStopDateToDate(TOrderDaliyPlanItem record);
 	
 	 int deletePlansForLongEdit(TOrderDaliyPlanItem record);
