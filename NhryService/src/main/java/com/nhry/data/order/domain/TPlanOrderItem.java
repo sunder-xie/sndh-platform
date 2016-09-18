@@ -42,6 +42,10 @@ public class TPlanOrderItem {
     private Date startDispDate;
     
     private Date startDate;
+    
+    private Date stopStartDate;
+    
+    private Date stopEndDate;
 
     private Date endDispDate;
     
@@ -83,28 +87,40 @@ public class TPlanOrderItem {
     
     private Integer yFresh;
     
-    private String isDeletedFlag;
+//    private String isDeletedFlag;
     
-    private String deletePlansFlag;
-
-	public String getIsDeletedFlag()
+//    private String deletePlansFlag;
+    
+    private String isStop;
+    
+	public Date getStopStartDate()
 	{
-		return isDeletedFlag;
+		return stopStartDate;
 	}
 
-	public void setIsDeletedFlag(String isDeletedFlag)
+	public void setStopStartDate(Date stopStartDate)
 	{
-		this.isDeletedFlag = isDeletedFlag;
+		this.stopStartDate = stopStartDate;
 	}
 
-	public String getDeletePlansFlag()
+	public Date getStopEndDate()
 	{
-		return deletePlansFlag;
+		return stopEndDate;
 	}
 
-	public void setDeletePlansFlag(String deletePlansFlag)
+	public void setStopEndDate(Date stopEndDate)
 	{
-		this.deletePlansFlag = deletePlansFlag;
+		this.stopEndDate = stopEndDate;
+	}
+
+	public String getIsStop()
+	{
+		return isStop;
+	}
+
+	public void setIsStop(String isStop)
+	{
+		this.isStop = isStop;
 	}
 
 	public String getNewFlag()

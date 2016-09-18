@@ -200,6 +200,13 @@
       </if>
       and DISP_DATE &gt;= #{dispDateStr,jdbcType=DATE}
   </update>
+  <update id="updateDaliyPlansToStopDateToDate" parameterType="com.nhry.data.order.domain.TOrderDaliyPlanItem" >
+    update t_mst_order_daliy_plan_item set STATUS = '30'
+    where ORDER_NO = #{orderNo,jdbcType=VARCHAR}
+	 and ITEM_NO = #{itemNo,jdbcType=VARCHAR}
+    and DISP_DATE &gt;= #{dispDateStr,jdbcType=DATE}
+    and DISP_DATE &lt;= #{reachTime,jdbcType=DATE}
+  </update>
   <insert id="insert" parameterType="com.nhry.data.order.domain.TOrderDaliyPlanItem" >
     insert into t_mst_order_daliy_plan_item (ORDER_NO, ORDER_DATE, PLAN_ITEM_NO, 
       ITEM_NO, DISP_DATE, REACH_TIME, 

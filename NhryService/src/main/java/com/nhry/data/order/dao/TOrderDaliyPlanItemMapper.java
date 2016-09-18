@@ -12,6 +12,7 @@ import java.util.Date;
 import java.util.List;
 
 public interface TOrderDaliyPlanItemMapper {
+	 int updateDaliyPlansToStopDateToDate(TOrderDaliyPlanItem record);
 	
 	 int deletePlansForLongEdit(TOrderDaliyPlanItem record);
 	

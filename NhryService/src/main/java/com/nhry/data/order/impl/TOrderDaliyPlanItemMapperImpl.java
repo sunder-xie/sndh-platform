@@ -25,6 +25,13 @@ public class TOrderDaliyPlanItemMapperImpl implements TOrderDaliyPlanItemMapper
 	}
 	
 	@Override
+	public int updateDaliyPlansToStopDateToDate(TOrderDaliyPlanItem record)
+	{
+		// TODO Auto-generated method stub
+		return sqlSessionTemplate.update("updateDaliyPlansToStopDateToDate", record); 
+	}
+	
+	@Override
 	public int deletePlansForLongEdit(TOrderDaliyPlanItem record)
 	{
 		// TODO Auto-generated method stub
