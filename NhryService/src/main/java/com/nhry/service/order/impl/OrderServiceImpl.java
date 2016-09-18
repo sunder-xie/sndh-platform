@@ -867,6 +867,7 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 			int index = 0;
 			BigDecimal orderAmt = new BigDecimal("0.00");//订单总价
 			for(TPlanOrderItem entry: entries){
+				if("Y".equals(entry.getIsStop()))continue;//续订标示
 				entry.setOrderNo(order.getOrderNo());
 				//设置配送开始时间
 				int days = daysOfTwo(entry.getStartDispDate(),entry.getEndDispDate());
@@ -899,6 +900,8 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 				index++;
 			}
 			
+			if(entriesList.size()==0)throw new ServiceException(MessageCode.LOGIC_ERROR,"在日期内"+ orderNo +"无法续订，没有订单行项目!");
+
 			//保存订单，订单行
 			order.setCurAmt(orderAmt);//订单价格
 			order.setInitAmt(orderAmt);
@@ -1067,6 +1070,7 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 			int index = 0;
 			BigDecimal orderAmt = new BigDecimal("0.00");//订单总价
 			for(TPlanOrderItem entry: entries){
+				if("Y".equals(entry.getIsStop()))continue;//续订标示
 				entry.setOrderNo(order.getOrderNo());
 				
 				//设置配送开始时间
@@ -1842,7 +1846,7 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 			if("20".equals(order.getMilkboxStat())){
 				return;
 			}
-
+			
 			BigDecimal replaceAmt = new BigDecimal("0.00");
 			for(TOrderDaliyPlanItem p :daliyPlans){
 				System.out.println("日计划日期:" + p.getDispDate()+"/修改日期" + startDate);
@@ -2020,6 +2024,544 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 	}
 	
 	/* (non-Javadoc) 
+	* @title: editOrderForLongForViewPlans
+	* @description: 长期修改订单(预览日计划)
+	* @param record
+	* @return
+	* @see com.nhry.service.order.dao.OrderService#editOrder(com.nhry.model.order.OrderCreateModel)
+	*/
+	@Override
+	public List editOrderForLongForViewPlans(OrderEditModel record)
+	{
+			List<TOrderDaliyPlanItem> backData = null;
+		
+			if(record.getEntries()==null||record.getEntries().size()<=0)throw new ServiceException(MessageCode.LOGIC_ERROR,"不能删除所有的行项目，请退订订单!");
+			convertEntryDate(record.getEntries());
+			SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
+			TPreOrder orgOrder = tPreOrderMapper.selectByPrimaryKey(record.getOrder().getOrderNo());
+			ArrayList<TPlanOrderItem> orgEntries = (ArrayList<TPlanOrderItem>) tPlanOrderItemMapper.selectByOrderCode(record.getOrder().getOrderNo());
+			ArrayList<TPlanOrderItem> curEntries = record.getEntries();
+			ArrayList<TPlanOrderItem> modifiedEntries = new ArrayList<TPlanOrderItem>();
+			ArrayList<TPlanOrderItem> removedEntries = new ArrayList<TPlanOrderItem>();
+			
+			String state = orgOrder.getPaymentmethod();
+			if("10".equals(state)){
+				//后付款
+				ArrayList<TOrderDaliyPlanItem> daliyPlans = (ArrayList<TOrderDaliyPlanItem>) tOrderDaliyPlanItemMapper.selectDaliyPlansByOrderNo(orgOrder.getOrderNo());
+				//有路单一定作为有效期修改，*日期提前或者没有日计划，不作为有效期修改
+				if((daliyPlans!=null&&daliyPlans.size() > 0&&StringUtils.isBlank(record.getEditDate()))||tDispOrderItemMapper.selectCountByOrgOrder(orgOrder.getOrderNo()) > 0 ){
+					//作为有效期修改
+					//修改订单根据行项目编号来确定行是否修改，换商品或改数量
+					for(TPlanOrderItem orgEntry : orgEntries){
+						boolean delFlag = true;
+						boolean modiFlag = false;
+						for(TPlanOrderItem curEntry : curEntries){
+							if(orgEntry.getItemNo().equals(curEntry.getItemNo())){
+								delFlag = false;
+//								if(StringUtils.isNotBlank(curEntry.getDeletePlansFlag())||StringUtils.isNotBlank(curEntry.getIsDeletedFlag()))break;
+								if(!orgEntry.getMatnr().equals(curEntry.getMatnr())){//换商品
+									modiFlag = true;
+									orgEntry.setMatnr(curEntry.getMatnr());
+									orgEntry.setSalesPrice(curEntry.getSalesPrice());
+									orgEntry.setUnit(curEntry.getUnit());
+								}
+								if(orgEntry.getQty() != curEntry.getQty()){//改数量
+									modiFlag = true;
+									orgEntry.setQty(curEntry.getQty());
+								}
+								if(!orgEntry.getRuleType().equals(curEntry.getRuleType())){//周期变更
+									modiFlag = true;
+									orgEntry.setRuleType(curEntry.getRuleType());
+									orgEntry.setGapDays(curEntry.getGapDays());
+									orgEntry.setRuleTxt(curEntry.getRuleTxt());
+								}else{
+									//相同时判断是周期送还是星期送
+									if("10".equals(orgEntry.getRuleType()) && (!curEntry.getGapDays().equals(orgEntry.getGapDays()) ) ){
+										modiFlag = true;
+										orgEntry.setGapDays(curEntry.getGapDays());
+										orgEntry.setRuleTxt(curEntry.getRuleTxt());
+									}else if("20".equals(orgEntry.getRuleType()) && !curEntry.getRuleTxt().equals(orgEntry.getRuleTxt()) ){
+										modiFlag = true;
+										orgEntry.setRuleTxt(curEntry.getRuleTxt());
+									}
+								}
+								if(!orgEntry.getReachTimeType().equals(curEntry.getReachTimeType())){//送奶时段变更
+									modiFlag = true;
+									orgEntry.setReachTimeType(curEntry.getReachTimeType());
+								}
+								//比较配送日期是否修改
+								String startstr = format.format(orgEntry.getStartDispDate());
+								String endstr = format.format(orgEntry.getEndDispDate());
+								String curStartstr = format.format(curEntry.getStartDispDate());
+								String curEndstr = format.format(curEntry.getEndDispDate());
+								if(!startstr.equals(curStartstr) || !endstr.equals(curEndstr) ){
+									modiFlag = true;
+								}
+								
+								if(!modiFlag){
+									break;
+								}
+//								if(StringUtils.isNotBlank(orgEntry.getPromotion()))throw new ServiceException(MessageCode.LOGIC_ERROR,"促销商品行不能更改!");
+								if(curEntry.getStartDispDate().before(orgEntry.getStartDispDate())||curEntry.getEndDispDate().after(orgEntry.getEndDispDate()))throw new ServiceException(MessageCode.LOGIC_ERROR,curEntry.getStartDispDate()+"到"+curEntry.getEndDispDate()+"有效期不能在配送日期之外!");
+								daliyPlans.stream().filter((e)->"20".equals(e.getStatus())&&e.getItemNo().equals(orgEntry.getItemNo()))
+							   	.forEach((e)->{
+							   	if(!e.getDispDate().before(curEntry.getStartDispDate()))throw new ServiceException(MessageCode.LOGIC_ERROR,"该日期内已经有完结的日计划，请修改时间!");
+							   });
+								
+								//删除不需要的日单
+								TOrderDaliyPlanItem newPlan = new TOrderDaliyPlanItem();
+								newPlan.setOrderNo(orgOrder.getOrderNo());
+								newPlan.setItemNo(orgEntry.getItemNo());
+								newPlan.setDispDateStr(curStartstr);
+								newPlan.setUnit(curEndstr);
+								tOrderDaliyPlanItemMapper.deletePlansForLongEdit(newPlan);
+								
+								createDaliyPlanForAfterPay(orgOrder,orgEntry,curEntry.getStartDispDate(),curEntry.getEndDispDate());
+								//保存修改后的该行
+								tPlanOrderItemMapper.updateEntryByItemNo(orgEntry);
+								
+								//行修改完毕
+								break;
+							}
+						}
+						if(delFlag){
+							if(tDispOrderItemMapper.selectCountByOrgOrderAndOrgItemNo(orgEntry.getOrderNo(),orgEntry.getItemNo(),null) > 0)throw new ServiceException(MessageCode.LOGIC_ERROR,orgEntry.getItemNo() + "[已经生成了路单，不可以删除此行!]");
+							//此行删除了，删除所有剩余的日单
+							orgEntry.setStatus("30");//30表示删除的行
+							tPlanOrderItemMapper.updateEntryByItemNo(orgEntry);
+							TOrderDaliyPlanItem newPlan = new TOrderDaliyPlanItem();
+							newPlan.setOrderNo(orgOrder.getOrderNo());
+							newPlan.setItemNo(orgEntry.getItemNo());
+							newPlan.setStatus("10");
+							newPlan.setDispDateStr(format.format(orgEntry.getStartDispDate()));//关于从什么地方删除日单??
+							tOrderDaliyPlanItemMapper.deleteFromDateToDate(newPlan);
+						}
+						
+					}
+					
+					//行项目停订的,日期内的日计划停订
+					TOrderDaliyPlanItem dRecord = new TOrderDaliyPlanItem();
+					dRecord.setOrderNo(orgOrder.getOrderNo());
+					for(TPlanOrderItem curEntry : curEntries){
+						for(TPlanOrderItem orgEntry : orgEntries){
+							if(orgEntry.getItemNo().equals(curEntry.getItemNo())){
+								if(curEntry.getStopStartDate()!=null&&curEntry.getStopEndDate()!=null){
+									if(curEntry.getStopStartDate().before(orgEntry.getStartDispDate())||curEntry.getStopEndDate().after(orgEntry.getEndDispDate()))throw new ServiceException(MessageCode.LOGIC_ERROR,"停订的日期不能在配送日期之外!");
+									daliyPlans.stream().filter((e)->"20".equals(e.getStatus())&&e.getItemNo().equals(curEntry.getItemNo()))
+									.forEach((e)->{
+										if(!e.getDispDate().before(curEntry.getStopStartDate()))throw new ServiceException(MessageCode.LOGIC_ERROR,"该日期内已经有完结的日计划，请修改时间!");
+									});
+									dRecord.setItemNo(curEntry.getItemNo());
+									dRecord.setDispDateStr(format.format(curEntry.getStopStartDate()));
+									dRecord.setReachTime(format.format(curEntry.getStopEndDate()));
+									tOrderDaliyPlanItemMapper.updateDaliyPlansToStopDateToDate(dRecord);
+								}
+								if(!(orgEntry.getIsStop()==null?"":orgEntry.getIsStop()).equals(curEntry.getIsStop()==null?"":curEntry.getIsStop())){
+									orgEntry.setIsStop(curEntry.getIsStop());
+									tPlanOrderItemMapper.updateEntryByItemNo(orgEntry);
+								}
+								break;
+							}
+						}
+					}
+					
+					//新增的行项目
+					int index =  tPlanOrderItemMapper.selectEntriesQtyByOrderCode(record.getOrder().getOrderNo());
+					for(TPlanOrderItem entry : curEntries){
+						if("Y".equals(entry.getNewFlag())){
+//							if(entry.getStartDate()==null||entry.getStartDate().before(entry.getStartDispDate())||entry.getStartDate().after(entry.getEndDispDate()))throw new ServiceException(MessageCode.LOGIC_ERROR, "开始配送日期填写有误，请检查");
+							entry.setOrderNo(orgOrder.getOrderNo());
+							entry.setItemNo(orgOrder.getOrderNo() + String.valueOf(index));//行项目编号
+							entry.setRefItemNo(String.valueOf(index));//参考行项目编号
+							entry.setOrderDate(orgOrder.getOrderDate());//订单日期
+							entry.setCreateAt(new Date());//创建日期
+							entry.setCreateBy(userSessionService.getCurrentUser().getLoginName());//创建人
+							entry.setCreateByTxt(userSessionService.getCurrentUser().getDisplayName());//创建人姓名
+							calculateEntryAmount(entry);
+							Date tmp = entry.getEndDispDate();
+							createDaliyPlanForAfterPay(orgOrder,entry,entry.getStartDispDate(),entry.getEndDispDate());
+							entry.setEndDispDate(tmp);
+							tPlanOrderItemMapper.insert(entry);
+							index++;
+						}
+					}
+		   		
+					//生成新的每日订单
+					daliyPlans = (ArrayList<TOrderDaliyPlanItem>) tOrderDaliyPlanItemMapper.selectDaliyPlansByOrderNo(orgOrder.getOrderNo());
+					
+					//更新订单金额等
+					BigDecimal initAmt = new BigDecimal("0.00");
+					BigDecimal usedAmt = new BigDecimal("0.00");
+					for(TOrderDaliyPlanItem plan : daliyPlans){
+						if("30".equals(plan.getStatus()))continue;
+						initAmt = initAmt.add(plan.getAmt());
+						if("20".equals(plan.getStatus())){
+							usedAmt.add(plan.getAmt());
+						}
+					}
+					orgOrder.setInitAmt(initAmt);
+					orgOrder.setCurAmt(initAmt.subtract(usedAmt));
+
+					//订单截止日期修改
+					for(TOrderDaliyPlanItem plan : daliyPlans){
+						if(!"30".equals(plan.getStatus())){
+							orgOrder.setEndDate(plan.getDispDate());
+							break;
+						}
+					}
+					
+					Collections.reverse(daliyPlans);
+					for(TOrderDaliyPlanItem plan : daliyPlans){
+			   		if("30".equals(plan.getStatus())){
+			   			plan.setRemainAmt(initAmt);
+			   			tOrderDaliyPlanItemMapper.updateDaliyPlanItem(plan);
+			   			continue;
+			   		}
+			   		plan.setRemainAmt(initAmt.subtract(plan.getAmt()));
+			   		initAmt = initAmt.subtract(plan.getAmt());
+			   		tOrderDaliyPlanItemMapper.updateDaliyPlanItem(plan);
+			   	}
+					
+				}else{
+					//修改订单根据行项目编号来确定行是否修改，换商品或改数量
+					BigDecimal orderUsedAmt = orgOrder.getInitAmt().subtract(orgOrder.getCurAmt());
+					BigDecimal orderAmt = new BigDecimal("0.00").add(orderUsedAmt);
+					for(TPlanOrderItem orgEntry : orgEntries){
+						boolean delFlag = true;
+						boolean modiFlag = false;
+						for(TPlanOrderItem curEntry : curEntries){
+							if(orgEntry.getItemNo().equals(curEntry.getItemNo())){
+								delFlag = false;
+								if(!orgEntry.getMatnr().equals(curEntry.getMatnr())){//换商品
+									modiFlag = true;
+									orgEntry.setMatnr(curEntry.getMatnr());
+									orgEntry.setSalesPrice(curEntry.getSalesPrice());
+									orgEntry.setUnit(curEntry.getUnit());
+								}
+								if(orgEntry.getQty() != curEntry.getQty()){//改数量
+									modiFlag = true;
+									orgEntry.setQty(curEntry.getQty());
+								}
+								if(!orgEntry.getRuleType().equals(curEntry.getRuleType())){//周期变更
+									modiFlag = true;
+									orgEntry.setRuleType(curEntry.getRuleType());
+									orgEntry.setGapDays(curEntry.getGapDays());
+									orgEntry.setRuleTxt(curEntry.getRuleTxt());
+								}else{
+									//相同时判断是周期送还是星期送
+									if("10".equals(orgEntry.getRuleType()) && (!curEntry.getGapDays().equals(orgEntry.getGapDays()) ) ){
+										modiFlag = true;
+										orgEntry.setGapDays(curEntry.getGapDays());
+										orgEntry.setRuleTxt(curEntry.getRuleTxt());
+									}else if("20".equals(orgEntry.getRuleType()) && !curEntry.getRuleTxt().equals(orgEntry.getRuleTxt()) ){
+										modiFlag = true;
+										orgEntry.setRuleTxt(curEntry.getRuleTxt());
+									}
+								}
+								if(!orgEntry.getReachTimeType().equals(curEntry.getReachTimeType())){//送奶时段变更
+									modiFlag = true;
+									orgEntry.setReachTimeType(curEntry.getReachTimeType());
+								}
+								//比较配送日期是否修改
+								String startstr = format.format(orgEntry.getStartDispDate());
+								String endstr = format.format(orgEntry.getEndDispDate());
+								if(!startstr.equals(format.format(curEntry.getStartDispDate())) || !endstr.equals(format.format(curEntry.getEndDispDate())) ){
+									modiFlag = true;
+									orgEntry.setStartDispDate(curEntry.getStartDispDate());
+									orgEntry.setEndDispDate(curEntry.getEndDispDate());
+								}
+								
+								orderAmt = orderAmt.add(calculateEntryAmount(orgEntry));//订单总金额需要重新计算
+								if(!modiFlag){
+									break;
+								}
+								if(StringUtils.isNotBlank(orgEntry.getPromotion()))throw new ServiceException(MessageCode.LOGIC_ERROR,"促销商品行不能更改!");
+								
+								//保存修改后的该行
+								tPlanOrderItemMapper.updateEntryByItemNo(orgEntry);
+								//删除不需要的日单
+								TOrderDaliyPlanItem newPlan = new TOrderDaliyPlanItem();
+								newPlan.setOrderNo(orgOrder.getOrderNo());
+								newPlan.setItemNo(orgEntry.getItemNo());
+								newPlan.setStatus("10");
+								newPlan.setDispDateStr(startstr);
+								tOrderDaliyPlanItemMapper.deleteFromDateToDate(newPlan);
+								//行修改完毕
+								modifiedEntries.add(orgEntry);
+								break;
+							}
+						}
+						if(delFlag){
+							if(tDispOrderItemMapper.selectCountByOrgOrderAndOrgItemNo(orgEntry.getOrderNo(),orgEntry.getItemNo(),null) > 0)throw new ServiceException(MessageCode.LOGIC_ERROR,orgEntry.getItemNo() + "[已经生成了路单，不可以删除此行!]");
+							removedEntries.add(orgEntry);
+							//此行删除了，删除所有剩余的日单
+							orgEntry.setStatus("30");//30表示删除的行
+							tPlanOrderItemMapper.updateEntryByItemNo(orgEntry);
+							TOrderDaliyPlanItem newPlan = new TOrderDaliyPlanItem();
+							newPlan.setOrderNo(orgOrder.getOrderNo());
+							newPlan.setItemNo(orgEntry.getItemNo());
+							newPlan.setStatus("10");
+							newPlan.setDispDateStr(format.format(orgEntry.getStartDispDate()));//关于从什么地方删除日单??
+							tOrderDaliyPlanItemMapper.deleteFromDateToDate(newPlan);
+						}
+						
+					}
+					
+					orgEntries.removeAll(removedEntries);
+					//更新订单
+		   		orgOrder.setInitAmt(orderAmt);
+		   		orgOrder.setCurAmt(orderAmt.subtract(orderUsedAmt));
+		   		
+					//生成新的每日订单
+					createDaliyPlan(orgOrder , modifiedEntries);
+					daliyPlans = (ArrayList<TOrderDaliyPlanItem>) tOrderDaliyPlanItemMapper.selectDaliyPlansByOrderNo(orgOrder.getOrderNo());
+					calculateDaliyPlanRemainAmt(orgOrder,daliyPlans);
+					
+				}
+				
+			}else{
+				
+				ArrayList<TOrderDaliyPlanItem> daliyPlans = (ArrayList<TOrderDaliyPlanItem>) tOrderDaliyPlanItemMapper.selectDaliyPlansByOrderNo(orgOrder.getOrderNo());
+				if((daliyPlans!=null&&daliyPlans.size() > 0&&StringUtils.isBlank(record.getEditDate()))||tDispOrderItemMapper.selectCountByOrgOrder(orgOrder.getOrderNo()) > 0 ){
+					//有效期修改
+					for(TPlanOrderItem orgEntry : orgEntries){
+						boolean delFlag = true;
+						boolean modiFlag = false;
+						for(TPlanOrderItem curEntry : curEntries){
+							if(orgEntry.getItemNo().equals(curEntry.getItemNo())){
+								delFlag = false;
+								if(!orgEntry.getMatnr().equals(curEntry.getMatnr())){//换商品
+									modiFlag = true;
+									orgEntry.setMatnr(curEntry.getMatnr());
+									orgEntry.setSalesPrice(curEntry.getSalesPrice());
+									orgEntry.setUnit(curEntry.getUnit());
+								}
+								if(orgEntry.getQty() != curEntry.getQty()){//改数量
+									modiFlag = true;
+									orgEntry.setQty(curEntry.getQty());
+								}
+								if(!orgEntry.getRuleType().equals(curEntry.getRuleType())){//周期变更
+									modiFlag = true;
+									orgEntry.setRuleType(curEntry.getRuleType());
+									orgEntry.setGapDays(curEntry.getGapDays());
+									orgEntry.setRuleTxt(curEntry.getRuleTxt());
+								}else{
+									//相同时判断是周期送还是星期送
+									if("10".equals(orgEntry.getRuleType()) && (!curEntry.getGapDays().equals(orgEntry.getGapDays()) ) ){
+										modiFlag = true;
+										orgEntry.setGapDays(curEntry.getGapDays());
+										orgEntry.setRuleTxt(curEntry.getRuleTxt());
+									}else if("20".equals(orgEntry.getRuleType()) && !curEntry.getRuleTxt().equals(orgEntry.getRuleTxt()) ){
+										modiFlag = true;
+										orgEntry.setRuleTxt(curEntry.getRuleTxt());
+									}
+								}
+								if(!orgEntry.getReachTimeType().equals(curEntry.getReachTimeType())){//送奶时段变更
+									modiFlag = true;
+									orgEntry.setReachTimeType(curEntry.getReachTimeType());
+								}
+								//比较配送日期是否修改
+								String startstr = format.format(orgEntry.getStartDispDate());
+								String endstr = format.format(orgEntry.getEndDispDate());
+								String curStartstr = format.format(curEntry.getStartDispDate());
+								String curEndstr = format.format(curEntry.getEndDispDate());
+								if(!startstr.equals(curStartstr) || !endstr.equals(curEndstr) ){
+									modiFlag = true;
+								}
+								
+								if(!modiFlag){
+									break;
+								}
+								
+								if(curEntry.getStartDispDate().before(orgEntry.getStartDispDate())||curEntry.getEndDispDate().after(orgEntry.getEndDispDate()))throw new ServiceException(MessageCode.LOGIC_ERROR,curEntry.getStartDispDate()+"到"+curEntry.getEndDispDate()+"[有效期不能在配送日期之外!]");
+								daliyPlans.stream().filter((e)->"20".equals(e.getStatus())&&e.getItemNo().equals(orgEntry.getItemNo()))
+							   	.forEach((e)->{
+							   	if(!e.getDispDate().before(curEntry.getStartDispDate()))throw new ServiceException(MessageCode.LOGIC_ERROR,"该日期内已经有完结的日计划，请修改时间!");
+							   });
+
+								//删除不需要的日单
+								TOrderDaliyPlanItem newPlan = new TOrderDaliyPlanItem();
+								newPlan.setOrderNo(orgOrder.getOrderNo());
+								newPlan.setItemNo(orgEntry.getItemNo());
+								newPlan.setDispDateStr(curStartstr);
+								newPlan.setUnit(curEndstr);
+								tOrderDaliyPlanItemMapper.deletePlansForLongEdit(newPlan);
+								
+								createDaliyPlanForPrePay(orgOrder,orgEntry,curEntry.getStartDispDate(),curEntry.getEndDispDate(),daliyPlans);
+								//保存修改后的该行
+								tPlanOrderItemMapper.updateEntryByItemNo(orgEntry);
+								
+								//行修改完毕
+								break;
+							}
+						}
+						if(delFlag){
+							if(tDispOrderItemMapper.selectCountByOrgOrderAndOrgItemNo(orgEntry.getOrderNo(),orgEntry.getItemNo(),null) > 0)throw new ServiceException(MessageCode.LOGIC_ERROR,orgEntry.getItemNo() + "[已经生成了路单，不可以删除此行!]");
+							//此行删除了，删除所有剩余的日单
+							orgEntry.setStatus("30");//30表示删除的行
+							tPlanOrderItemMapper.updateEntryByItemNo(orgEntry);
+							TOrderDaliyPlanItem newPlan = new TOrderDaliyPlanItem();
+							newPlan.setOrderNo(orgOrder.getOrderNo());
+							newPlan.setItemNo(orgEntry.getItemNo());
+							newPlan.setStatus("10");
+							newPlan.setDispDateStr(format.format(orgEntry.getStartDispDate()));//关于从什么地方删除日单??
+							tOrderDaliyPlanItemMapper.deleteFromDateToDate(newPlan);
+						}
+						
+					}
+					
+					//行项目停订的,日期内的日计划停订
+					TOrderDaliyPlanItem dRecord = new TOrderDaliyPlanItem();
+					dRecord.setOrderNo(orgOrder.getOrderNo());
+					for(TPlanOrderItem curEntry : curEntries){
+						for(TPlanOrderItem orgEntry : orgEntries){
+							if(orgEntry.getItemNo().equals(curEntry.getItemNo())){
+								if(curEntry.getStopStartDate()!=null&&curEntry.getStopEndDate()!=null){
+									if(curEntry.getStopStartDate().before(orgEntry.getStartDispDate())||curEntry.getStopEndDate().after(orgEntry.getEndDispDate()))throw new ServiceException(MessageCode.LOGIC_ERROR,"停订的日期不能在配送日期之外!");
+									daliyPlans.stream().filter((e)->"20".equals(e.getStatus())&&e.getItemNo().equals(curEntry.getItemNo()))
+									.forEach((e)->{
+										if(!e.getDispDate().before(curEntry.getStopStartDate()))throw new ServiceException(MessageCode.LOGIC_ERROR,"该日期内已经有完结的日计划，请修改时间!");
+									});
+									dRecord.setItemNo(curEntry.getItemNo());
+									dRecord.setDispDateStr(format.format(curEntry.getStopStartDate()));
+									dRecord.setReachTime(format.format(curEntry.getStopEndDate()));
+									tOrderDaliyPlanItemMapper.updateDaliyPlansToStopDateToDate(dRecord);
+								}
+								if(!(orgEntry.getIsStop()==null?"":orgEntry.getIsStop()).equals(curEntry.getIsStop()==null?"":curEntry.getIsStop())){
+									orgEntry.setIsStop(curEntry.getIsStop());
+									tPlanOrderItemMapper.updateEntryByItemNo(orgEntry);
+								}
+								break;
+							}
+						}
+					}
+					
+					//生成新的每日订单
+					daliyPlans = (ArrayList<TOrderDaliyPlanItem>) tOrderDaliyPlanItemMapper.selectDaliyPlansByOrderNo(orgOrder.getOrderNo());
+					
+					//更新订单金额等
+					BigDecimal initAmt = orgOrder.getInitAmt();
+
+					//订单截止日期修改
+					for(TOrderDaliyPlanItem plan : daliyPlans){
+						if(!"30".equals(plan.getStatus())){
+							orgOrder.setEndDate(plan.getDispDate());
+							break;
+						}
+					}
+					
+					Collections.reverse(daliyPlans);
+					for(TOrderDaliyPlanItem plan : daliyPlans){
+			   		if("30".equals(plan.getStatus())){
+			   			plan.setRemainAmt(initAmt);
+			   			tOrderDaliyPlanItemMapper.updateDaliyPlanItem(plan);
+			   			continue;
+			   		}
+			   		plan.setRemainAmt(initAmt.subtract(plan.getAmt()));
+			   		initAmt = initAmt.subtract(plan.getAmt());
+			   		tOrderDaliyPlanItemMapper.updateDaliyPlanItem(plan);
+			   	}
+					
+				}else{
+					//先付款,订单总金额不变,配送到金额为0为止
+					//修改订单根据行项目编号来确定行是否修改，换商品或改数量
+					for(TPlanOrderItem orgEntry : orgEntries){
+						boolean delFlag = true;
+						boolean modiFlag = false;
+						for(TPlanOrderItem curEntry : curEntries){
+							if(orgEntry.getItemNo().equals(curEntry.getItemNo())){
+								delFlag = false;
+								if(!orgEntry.getMatnr().equals(curEntry.getMatnr())){//换商品
+									modiFlag = true;
+									orgEntry.setMatnr(curEntry.getMatnr());
+									orgEntry.setSalesPrice(curEntry.getSalesPrice());
+									orgEntry.setUnit(curEntry.getUnit());
+								}
+								if(orgEntry.getQty() != curEntry.getQty()){//改数量
+									modiFlag = true;
+									orgEntry.setQty(curEntry.getQty());
+								}
+								if(!orgEntry.getRuleType().equals(curEntry.getRuleType())){//周期变更
+									modiFlag = true;
+									orgEntry.setRuleType(curEntry.getRuleType());
+									orgEntry.setGapDays(curEntry.getGapDays());
+									orgEntry.setRuleTxt(curEntry.getRuleTxt());
+								}else{
+									//相同时判断是周期送还是星期送
+									if("10".equals(orgEntry.getRuleType()) && (!curEntry.getGapDays().equals(orgEntry.getGapDays()) ) ){
+										modiFlag = true;
+										orgEntry.setGapDays(curEntry.getGapDays());
+										orgEntry.setRuleTxt(curEntry.getRuleTxt());
+									}else if("20".equals(orgEntry.getRuleType()) && !curEntry.getRuleTxt().equals(orgEntry.getRuleTxt()) ){
+										modiFlag = true;
+										orgEntry.setRuleTxt(curEntry.getRuleTxt());
+									}
+								}
+								if(!orgEntry.getReachTimeType().equals(curEntry.getReachTimeType())){//送奶时段变更
+									modiFlag = true;
+									orgEntry.setReachTimeType(curEntry.getReachTimeType());
+								}
+								//比较配送日期是否修改
+								String startstr = format.format(orgEntry.getStartDispDate());
+								String endstr = format.format(orgEntry.getEndDispDate());
+								if(!startstr.equals(format.format(curEntry.getStartDispDate())) || !endstr.equals(format.format(curEntry.getEndDispDate()))){
+									modiFlag = true;
+									orgEntry.setStartDispDate(curEntry.getStartDispDate());
+									orgEntry.setEndDispDate(curEntry.getEndDispDate());
+								}
+								
+								if(!modiFlag){
+									break;
+								}
+								if(StringUtils.isNotBlank(orgEntry.getPromotion()))throw new ServiceException(MessageCode.LOGIC_ERROR,"促销商品行不能更改!");
+								
+								//保存修改后的该行
+//								tPlanOrderItemMapper.updateEntryByItemNo(orgEntry);
+								//删除不需要的日单
+								TOrderDaliyPlanItem newPlan = new TOrderDaliyPlanItem();
+								newPlan.setOrderNo(orgOrder.getOrderNo());
+								newPlan.setItemNo(orgEntry.getItemNo());
+								newPlan.setStatus("10");
+								newPlan.setDispDateStr(startstr);
+								tOrderDaliyPlanItemMapper.deleteFromDateToDate(newPlan);
+								//行修改完毕
+								modifiedEntries.add(orgEntry);
+								break;
+							}
+						}
+						if(delFlag){
+							if(tDispOrderItemMapper.selectCountByOrgOrderAndOrgItemNo(orgEntry.getOrderNo(),orgEntry.getItemNo(),null) > 0)throw new ServiceException(MessageCode.LOGIC_ERROR,orgEntry.getItemNo() + "[已经生成了路单，不可以删除此行!]");
+							//此行删除了，删除所有剩余的日单
+							removedEntries.add(orgEntry);
+							orgEntry.setStatus("30");//30表示删除的行
+							tPlanOrderItemMapper.updateEntryByItemNo(orgEntry);
+							TOrderDaliyPlanItem newPlan = new TOrderDaliyPlanItem();
+							newPlan.setOrderNo(orgOrder.getOrderNo());
+							newPlan.setItemNo(orgEntry.getItemNo());
+							newPlan.setStatus("10");
+							newPlan.setDispDateStr(format.format(orgEntry.getStartDispDate()));//关于从什么地方删除日单??
+							tOrderDaliyPlanItemMapper.deleteFromDateToDate(newPlan);
+						}
+						
+					}
+					
+					orgEntries.removeAll(removedEntries);
+					//生成新的每日订单
+		   		createDaliyPlanForLongEdit(orgOrder , modifiedEntries ,orgEntries);
+		   		
+				}
+				
+			}
+			
+			OrderSearchModel mo = new OrderSearchModel();
+			mo.setOrderNo(orgOrder.getOrderNo());
+			backData = tOrderDaliyPlanItemMapper.selectDaliyOrdersAll(mo);
+			
+			throw new ServiceException(MessageCode.LOGIC_ERROR, backData);
+			
+	}
+	
+	/* (non-Javadoc) 
 	* @title: editOrderForLong
 	* @description: 长期修改订单
 	* @param record
@@ -2030,7 +2572,7 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 	public int editOrderForLong(OrderEditModel record)
 	{
 		if(record.getEntries()==null||record.getEntries().size()<=0)throw new ServiceException(MessageCode.LOGIC_ERROR,"不能删除所有的行项目，请退订订单!");
-		
+		convertEntryDate(record.getEntries());
 		SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
 		TPreOrder orgOrder = tPreOrderMapper.selectByPrimaryKey(record.getOrder().getOrderNo());
 		ArrayList<TPlanOrderItem> orgEntries = (ArrayList<TPlanOrderItem>) tPlanOrderItemMapper.selectByOrderCode(record.getOrder().getOrderNo());
@@ -4878,6 +5420,24 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 	@Override
 	public int selectUnfinishOrderNum(String vipCustNo) {
 		return  tPreOrderMapper.selectUnfinishOrderNum(vipCustNo);
+	}
+	
+	//转换时间,不考虑小时数
+	private void convertEntryDate(List<TPlanOrderItem> curEntries){
+		SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
+		curEntries.stream().forEach((e)->{
+			try
+			{
+				if(e.getStartDispDate()!=null)e.setStartDispDate(format.parse(format.format(e.getStartDispDate())));
+				if(e.getEndDispDate()!=null)e.setEndDispDate(format.parse(format.format(e.getEndDispDate())));
+				if(e.getStopStartDate()!=null)e.setStopStartDate(format.parse(format.format(e.getStopStartDate())));
+				if(e.getStopEndDate()!=null)e.setStopEndDate(format.parse(format.format(e.getStopEndDate())));
+			}
+			catch (Exception e1)
+			{
+				throw new ServiceException(MessageCode.LOGIC_ERROR,"日期格式有问题！");
+			}
+		});
 	}
 	
 	@Override

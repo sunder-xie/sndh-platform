@@ -14,6 +14,7 @@ import java.util.Date;
 import java.util.List;
 
 public interface OrderService {
+	List editOrderForLongForViewPlans(OrderEditModel record);
 	
 	TPreOrder selectLatestOrder(String vipNo);
 	
