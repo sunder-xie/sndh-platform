@@ -12,6 +12,7 @@
     <result column="UNIT" property="unit" jdbcType="VARCHAR" />
     <result column="PRICE" property="price" jdbcType="DECIMAL" />
     <result column="AMT" property="amt" jdbcType="DECIMAL" />
+    <result column="REMAIN_AMT" property="remainAmt" jdbcType="DECIMAL" />
     <result column="CONFIRM_AMT" property="confirmAmt" jdbcType="DECIMAL" />
     <result column="STATUS" property="status" jdbcType="VARCHAR" />
     <result column="PICKUP_ORDER_NO" property="pickupOrderNo" jdbcType="VARCHAR" />
@@ -105,6 +106,7 @@
     <result column="UNIT" property="unit" jdbcType="VARCHAR" />
     <result column="PRICE" property="price" jdbcType="DECIMAL" />
     <result column="AMT" property="amt" jdbcType="DECIMAL" />
+    <result column="REMAIN_AMT" property="remainAmt" jdbcType="DECIMAL" />
     <result column="CONFIRM_AMT" property="confirmAmt" jdbcType="DECIMAL" />
     <result column="STATUS" property="status" jdbcType="VARCHAR" />
     <result column="PICKUP_ORDER_NO" property="pickupOrderNo" jdbcType="VARCHAR" />
@@ -256,7 +258,7 @@
   </select>
   <select id="selectRouteDetailsAll" resultMap="BaseResultMap" parameterType="java.lang.String">
   	 select 
-    i.ORDER_NO, i.ORDER_DATE, i.ITEM_NO,i.CONFIRM_MATNR, i.MATNR, i.CONFIRM_QTY, i.QTY, i.UNIT, i.PRICE, i.AMT, i.CONFIRM_AMT, 
+    i.ORDER_NO, i.ORDER_DATE, i.ITEM_NO,i.CONFIRM_MATNR, i.MATNR, i.CONFIRM_QTY, i.QTY, i.UNIT, i.PRICE, i.AMT,i.REMAIN_AMT, i.CONFIRM_AMT,
     i.STATUS, i.PICKUP_ORDER_NO, i.PICKUP_ORDER_ITEM_NO, i.REASON, i.REDISP_DATE, i.WHOLESALE_PRICE,
     i.WHOLESALE_PRICE_1, i.ADDRESS_NO,i.ORG_ITEM_NO,i.ORG_ORDER_NO,i.REACH_TIME_TYPE,p.SHORT_TXT MATNR_TXT,concat(r.RESIDENTIAL_AREA_TXT,a.ADDRESS_TXT) ADDRESS_TXT,
     i.REPLACE_REASON,i.GIFT_FLAG,
@@ -393,16 +395,16 @@
   </insert>
   <insert id="batchAddNewDispOrderItems" parameterType="java.util.List" >
     insert into t_mst_disp_order_item
-    (ORDER_NO, ORDER_DATE, ITEM_NO,CONFIRM_MATNR, MATNR, CONFIRM_QTY, QTY, UNIT, PRICE, AMT, CONFIRM_AMT, 
+    (ORDER_NO, ORDER_DATE, ITEM_NO,CONFIRM_MATNR, MATNR, CONFIRM_QTY, QTY, UNIT, PRICE, AMT,REMAIN_AMT, CONFIRM_AMT,
     STATUS, PICKUP_ORDER_NO, PICKUP_ORDER_ITEM_NO, REASON, REDISP_DATE, WHOLESALE_PRICE,
     WHOLESALE_PRICE_1,DISP_EMP_NO,ADDRESS_NO,ORG_ITEM_NO,ORG_ORDER_NO,REACH_TIME_TYPE,RET_QTY_S,RET_QTY_M,RET_QTY_B,GIFT_FLAG) values
     <foreach collection="list" item="item" index="index"  
         separator=",">  
         ( #{item.orderNo}, #{item.orderDate}, #{item.itemNo},  
         #{item.confirmMatnr}, #{item.matnr},  
-        #{item.confirmQty},#{item.qty}, #{item.unit},  
-        #{item.price}, #{item.amt},  
-        #{item.confirmAmt}, #{item.status}, #{item.pickupOrderNo},  
+        #{item.confirmQty},#{item.qty}, #{item.unit},
+        #{item.price}, #{item.amt},#{item.remainAmt},
+        #{item.confirmAmt}, #{item.status}, #{item.pickupOrderNo},
         #{item.pickupOrderItemNo}, #{item.reason}, #{item.redispDate},
         #{item.wholesalePrice}, #{item.wholesalePrice1}, #{item.dispEmpNo}, #{item.addressNo}, #{item.orgItemNo}, #{item.orgOrderNo},#{item.reachTimeType},
          #{item.retQtyS},#{item.retQtyM},#{item.retQtyB},#{item.giftFlag})  
