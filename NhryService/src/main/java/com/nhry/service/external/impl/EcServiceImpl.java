@@ -364,7 +364,7 @@ public class EcServiceImpl extends EcBaseService implements EcService{
    			oentryJson.put("as_order_no", "SVCSENDORDERMAIN##@@AS_ECORDERNO");
    			oentryJson.put("oid", e.getItemNo());
    			oentryJson.put("salePrice", e.getSalesPrice().floatValue());
-   			oentryJson.put("fee", e.getSalesPrice().multiply(new BigDecimal(e.getQty())).floatValue() );
+   			oentryJson.put("fee", e.getSalesPrice().multiply(new BigDecimal(e.getDispTotal())).floatValue() );
    			oentryJson.put("itemNo", e.getMatnr());
    			oentryJson.put("quantity", e.getDispTotal());
    			oentryJson.put("dhType", "30");
