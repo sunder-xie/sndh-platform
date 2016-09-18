@@ -21,7 +21,15 @@ public class UpdateManHandOrderModel implements Serializable {
     private String empNo;         //选择送奶员
     private String memoTxt;       //退回备注
     private Date retDate;        //退回日期
+    private String preorderStat;
 
+    public String getPreorderStat() {
+        return preorderStat;
+    }
+
+    public void setPreorderStat(String preorderStat) {
+        this.preorderStat = preorderStat;
+    }
 
     public String getMemoTxt() {
         return memoTxt;
