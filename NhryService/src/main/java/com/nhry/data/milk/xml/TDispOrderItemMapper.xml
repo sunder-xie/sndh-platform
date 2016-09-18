@@ -605,7 +605,7 @@
     FROM
     t_mst_disp_order_item i
     JOIN t_mst_disp_order o ON i.ORDER_NO = o.ORDER_NO
-    <if test="empNos!=null and empNos!=''">
+    <if test="empNos!=null and empNos.size()>0">
       and i.DISP_EMP_NO in
       <foreach item="empNo" collection="empNos" separator="," open="(" close=")" index="">
         #{empNo}
@@ -620,7 +620,7 @@
     <if test="reachTimeType!=null and reachTimeType!=''">
       and o.REACH_TIME_TYPE = #{reachTimeType,jdbcType=VARCHAR}
     </if>
-    <if test="confirmMatnrs!=null">
+    <if test="confirmMatnrs!=null and confirmMatnrs.size()>0">
       and i.CONFIRM_MATNR in
       <foreach collection="confirmMatnrs" item="confirmMatnr" open="(" close=")" index="" separator=",">
         #{confirmMatnr}
