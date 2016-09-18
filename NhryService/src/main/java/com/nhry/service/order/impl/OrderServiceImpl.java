@@ -1845,6 +1845,8 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 
 			BigDecimal replaceAmt = new BigDecimal("0.00");
 			for(TOrderDaliyPlanItem p :daliyPlans){
+				System.out.println("日计划日期:" + p.getDispDate()+"/修改日期" + startDate);
+				System.out.println("日计划日期:" + p.getDispDate()+"/修改日期" + endDate);
 				if(p.getItemNo().equals(entry.getItemNo())&&!p.getDispDate().after(endDate)&&!p.getDispDate().before(startDate)){
 					if("10".equals(p.getStatus())){
 						replaceAmt = replaceAmt.add(p.getAmt());
@@ -1913,7 +1915,7 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 				BigDecimal qty = new BigDecimal(entry.getQty().toString());
 				plan.setAmt(entry.getSalesPrice().multiply(qty));//金额小计
 				
-				replaceAmt.subtract(plan.getAmt());//TODO
+				replaceAmt = replaceAmt.subtract(plan.getAmt());//TODO
 				if(replaceAmt.floatValue() < 0)throw new ServiceException(MessageCode.LOGIC_ERROR,"订单金额不够替换商品或改变数量!");
 				
 				plan.setStatus("10");//状态
@@ -2094,7 +2096,7 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 								break;
 							}
 //							if(StringUtils.isNotBlank(orgEntry.getPromotion()))throw new ServiceException(MessageCode.LOGIC_ERROR,"促销商品行不能更改!");
-							if(curEntry.getStartDispDate().before(orgEntry.getStartDispDate())||curEntry.getEndDispDate().after(orgEntry.getEndDispDate()))throw new ServiceException(MessageCode.LOGIC_ERROR,"已经生成路单，有效期不能在配送日期之外!");
+							if(curEntry.getStartDispDate().before(orgEntry.getStartDispDate())||curEntry.getEndDispDate().after(orgEntry.getEndDispDate()))throw new ServiceException(MessageCode.LOGIC_ERROR,curEntry.getStartDispDate()+"到"+curEntry.getEndDispDate()+"有效期不能在配送日期之外!");
 							daliyPlans.stream().filter((e)->"20".equals(e.getStatus())&&e.getItemNo().equals(orgEntry.getItemNo()))
 						   	.forEach((e)->{
 						   	if(!e.getDispDate().before(curEntry.getStartDispDate()))throw new ServiceException(MessageCode.LOGIC_ERROR,"该日期内已经有完结的日计划，请修改时间!");
@@ -2417,7 +2419,7 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 								break;
 							}
 							
-							if(curEntry.getStartDispDate().before(orgEntry.getStartDispDate())||curEntry.getEndDispDate().after(orgEntry.getEndDispDate()))throw new ServiceException(MessageCode.LOGIC_ERROR,"已经生成路单，有效期不能在配送日期之外!");
+							if(curEntry.getStartDispDate().before(orgEntry.getStartDispDate())||curEntry.getEndDispDate().after(orgEntry.getEndDispDate()))throw new ServiceException(MessageCode.LOGIC_ERROR,curEntry.getStartDispDate()+"到"+curEntry.getEndDispDate()+"[有效期不能在配送日期之外!]");
 							daliyPlans.stream().filter((e)->"20".equals(e.getStatus())&&e.getItemNo().equals(orgEntry.getItemNo()))
 						   	.forEach((e)->{
 						   	if(!e.getDispDate().before(curEntry.getStartDispDate()))throw new ServiceException(MessageCode.LOGIC_ERROR,"该日期内已经有完结的日计划，请修改时间!");
@@ -3719,7 +3721,9 @@ public class OrderServiceImpl extends BaseService implements OrderService {
  		
  		List<TOrderDaliyPlanItem> daliyPlans = new ArrayList<TOrderDaliyPlanItem>();
  		Date firstDeliveryDate = null;
+ 		Map<TPlanOrderItem,Date> dateMap = new HashMap<TPlanOrderItem,Date>();
  		for(TPlanOrderItem entry: entries){
+ 			dateMap.put(entry, entry.getEndDispDate());
  			if(firstDeliveryDate==null){
 				firstDeliveryDate = entry.getStartDispDate();
 			}else{
@@ -3741,7 +3745,7 @@ public class OrderServiceImpl extends BaseService implements OrderService {
  			//判断是按周期送还是按星期送
 				Date today = afterDate(firstDeliveryDate,afterDays);
 				
-				if(entry.getStartDispDate().after(today) || entry.getEndDispDate().before(today))continue;
+				if(entry.getStartDispDate().after(today) || dateMap.get(entry).before(today))continue;
 				
 //				if(orgDaliyPlans.stream().anyMatch((e)->e.getItemNo().equals(entry.getItemNo()) &&e.getDispDate().equals(today)) )continue;
 				
@@ -3930,14 +3934,14 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 				}
 			}
 			
-			total = total + entry.getQty();
 			entryTotal = entryTotal.subtract(new BigDecimal(entry.getQty()).multiply(entry.getSalesPrice()));
 			afterDays++;
 			
-			if(entryTotal.floatValue() <= 0){
+			if(entryTotal.floatValue() < 0){
 				break;
 			}
 			
+			total = total + entry.getQty();
 			entry.setEndDispDate(today);
 			entry.setDispTotal(total);
 			
