@@ -5,6 +5,8 @@ import com.nhry.data.order.domain.TOrderDaliyPlanItem;
 import com.nhry.data.order.domain.TOrderDaliyPlanItemKey;
 import com.nhry.data.order.domain.TPreOrder;
 import com.nhry.model.milktrans.RequireOrderSearch;
+import com.nhry.model.order.OrderDaliyPlanReportEntityModel;
+import com.nhry.model.order.OrderDaliyPlanReportModel;
 import com.nhry.model.order.OrderSearchModel;
 
 import java.math.BigDecimal;
@@ -75,4 +77,6 @@ public interface TOrderDaliyPlanItemMapper {
     List<TOrderDaliyPlanItem> getProductItemsByOrderNo(String orderCode,String salesOrg);
 
     int deletePlansByOrder(String orderNo);
+
+    List<OrderDaliyPlanReportEntityModel> reportOrderDaliyPlanByParams(OrderDaliyPlanReportModel model);
 }
