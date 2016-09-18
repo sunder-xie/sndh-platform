@@ -616,6 +616,7 @@ public class DeliverMilkServiceImpl extends BaseService implements DeliverMilkSe
 				item.setUnit(plan.getUnit());
 				item.setPrice(plan.getPrice());
 				item.setAmt(plan.getAmt());
+				item.setRemainAmt(plan.getRemainAmt());
 				item.setConfirmAmt(plan.getAmt());
 				item.setQty(new BigDecimal(plan.getQty()));
 				item.setConfirmQty(new BigDecimal(plan.getQty()));

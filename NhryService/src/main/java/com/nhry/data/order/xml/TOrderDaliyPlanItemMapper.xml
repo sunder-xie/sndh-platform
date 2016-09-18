@@ -674,7 +674,7 @@
               and di.CONFIRM_QTY>0
               and di.MATNR=di.CONFIRM_MATNR
               AND di.GIFT_FLAG is  null
-              and   disp.DISP_DATE = #{requiredDate,jdbcType=DATE}
+              and   disp.DISP_DATE = #{orderDate,jdbcType=DATE}
               and  o.SALES_ORG=#{salesOrg,jdbcType=VARCHAR}
               and  o.BRANCH_NO = #{branchNo,jdbcType=VARCHAR}
               GROUP BY di.CONFIRM_MATNR
@@ -693,7 +693,7 @@
               and di.REPLACE_REASON = '10'
               and di.CONFIRM_QTY>0
               AND di.GIFT_FLAG  is  null
-              and   disp.DISP_DATE =#{requiredDate,jdbcType=DATE}
+              and   disp.DISP_DATE =#{orderDate,jdbcType=DATE}
               and  o.SALES_ORG=#{salesOrg,jdbcType=VARCHAR}
               and  o.BRANCH_NO = #{branchNo,jdbcType=VARCHAR}
               GROUP BY di.MATNR,di.CONFIRM_MATNR
@@ -707,7 +707,7 @@
                 where 1=1
                 and i.INCRE_QTY!=null
                 and i.INCRE_QTY!=0
-                and i.ORDER_DATE = #{requiredDate,jdbcType=DATE}
+                and i.ORDER_DATE = #{orderDate,jdbcType=DATE}
                 and o.BRANCH_NO =  #{branchNo,jdbcType=VARCHAR}
                  GROUP BY i.MATNR
 
@@ -719,7 +719,7 @@
                 where 1=1
                 and i.FLAG = 2
                 and i.QTY>0
-                and i.ORDER_DATE = #{requiredDate,jdbcType=DATE}
+                and i.ORDER_DATE = #{orderDate,jdbcType=DATE}
                 and o.BRANCH_NO =  #{branchNo,jdbcType=VARCHAR}
                 GROUP BY i.MATNR
 
@@ -732,7 +732,7 @@
               WHERE 1=1
               and i.QTY>0
               and o.BRANCH_NO =  #{branchNo,jdbcType=VARCHAR}
-              and disp.DISP_DATE = #{requiredDate,jdbcType=DATE}
+              and disp.DISP_DATE = #{orderDate,jdbcType=DATE}
               GROUP BY i.MATNR
           )t
           where 1=1

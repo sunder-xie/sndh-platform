@@ -382,26 +382,26 @@ public class RequireOrderServiceImpl implements RequireOrderService {
     /**
      * 自营奶站   创建 不参加促销的销售订单
      * 此时还没有发送
-     * @param requiredDate
+     * @param orderDate
      * @return
      */
 
     @Override
-    public TSsmSalOrder creatNoPromoSalOrderOfSelftBranch(Date requiredDate) {
+    public TSsmSalOrder creatNoPromoSalOrderOfSelftBranch(Date orderDate) {
         TSysUser user = userSessionService.getCurrentUser();
         RequireOrderSearch rModel = new RequireOrderSearch();
-        rModel.setRequiredDate(requiredDate);
+        rModel.setOrderDate(orderDate);
         rModel.setBranchNo(user.getBranchNo());
         rModel.setSalesOrg(user.getSalesOrg());
         List<TOrderDaliyPlanItem> items = tOrderDaliyPlanItemMapper.selectNoProDayPlanOfSelfBranch(rModel);
         if (items != null && items.size() > 0) {
             //生成 促销订单
-            TSsmSalOrder order = createSaleOrder(user, requiredDate, "branch", "",1);
+            TSsmSalOrder order = createSaleOrder(user, orderDate, "branch", "",1);
 
             for (int i = 0; i < items.size(); i++) {
                 TOrderDaliyPlanItem item = items.get(i);
                 //生成 促销订单行项目
-                createSaleOrderItem(item, i + 1, order.getOrderNo(), requiredDate, "branch");
+                createSaleOrderItem(item, i + 1, order.getOrderNo(), orderDate, "branch");
             }
             return order;
         } else {
@@ -414,23 +414,23 @@ public class RequireOrderServiceImpl implements RequireOrderService {
     /**
      * 自营奶站   创建 参加促销的销售订单
      * 此时还没有发送
-     * @param requiredDate
+     * @param orderDate
      * @return
      */
     @Override
-    public TSsmSalOrder creatPromoSalOrderOfSelftBranch(Date requiredDate) {
+    public TSsmSalOrder creatPromoSalOrderOfSelftBranch(Date orderDate) {
         TSysUser user = userSessionService.getCurrentUser();
         RequireOrderSearch rModel = new RequireOrderSearch();
-        rModel.setOrderDate(requiredDate);
+        rModel.setOrderDate(orderDate);
         rModel.setBranchNo(user.getBranchNo());
         rModel.setSalesOrg(user.getSalesOrg());
         List<TOrderDaliyPlanItem> items = tOrderDaliyPlanItemMapper.selectProDayPlanOfSelfBranch(rModel);
         if (items != null && items.size() > 0) {
-            TSsmSalOrder order = createSaleOrder(user, requiredDate, "branch", "free",2);
+            TSsmSalOrder order = createSaleOrder(user, orderDate, "branch", "free",2);
             if (items != null && items.size() > 0) {
                 for (int i = 1; i <= items.size(); i++) {
                     TOrderDaliyPlanItem item = items.get(i - 1);
-                    createSaleOrderItem(item, i, order.getOrderNo(), requiredDate, "branch");
+                    createSaleOrderItem(item, i, order.getOrderNo(), orderDate, "branch");
                 }
             }
             return order;
@@ -862,13 +862,13 @@ public class RequireOrderServiceImpl implements RequireOrderService {
      * @param item          产品code，产品数量
      * @param i             用来生成itemNo
      * @param orderNo       销售单号
-     * @param requiredDate  日期
+     * @param orderDate  日期
      * @param type          如果type=dealer 则为经销商订单行项目，否则为自营奶站订单行项目
      */
-    private void createSaleOrderItem(TOrderDaliyPlanItem item, int i, String orderNo,Date requiredDate,String type) {
+    private void createSaleOrderItem(TOrderDaliyPlanItem item, int i, String orderNo,Date orderDate,String type) {
         TSsmSalOrderItems salOrderItems = new TSsmSalOrderItems();
         salOrderItems.setOrderNo(orderNo);
-        salOrderItems.setOrderDate(requiredDate);
+        salOrderItems.setOrderDate(orderDate);
         salOrderItems.setQty(item.getQty());
         if(StringUtils.isNotBlank(item.getPromotionFlag())){
             salOrderItems.setPromNo(item.getPromotionFlag());

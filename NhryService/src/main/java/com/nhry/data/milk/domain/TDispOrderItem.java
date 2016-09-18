@@ -18,6 +18,8 @@ public class TDispOrderItem extends TDispOrderItemKey {
 
     private BigDecimal amt;
 
+	private BigDecimal remainAmt;
+
     private BigDecimal confirmAmt;
 
     private String status;
@@ -61,8 +63,16 @@ public class TDispOrderItem extends TDispOrderItemKey {
     private String replaceReason;
     
     private String giftFlag;
-    
-    public String getGiftFlag()
+
+	public BigDecimal getRemainAmt() {
+		return remainAmt;
+	}
+
+	public void setRemainAmt(BigDecimal remainAmt) {
+		this.remainAmt = remainAmt;
+	}
+
+	public String getGiftFlag()
 	{
 		return giftFlag;
 	}
