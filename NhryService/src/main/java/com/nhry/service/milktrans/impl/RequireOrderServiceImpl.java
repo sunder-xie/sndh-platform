@@ -726,12 +726,12 @@ public class RequireOrderServiceImpl implements RequireOrderService {
                             }
                         }
 
-//                        if(noprom!=null){
-//                            generateSalesOrderAnduptVouCher(noprom);
-//                        }
-//                        if(prom!=null){
-//                            generateSalesOrderAnduptVouCher(prom);
-//                        }
+                        if(noprom!=null){
+                            generateSalesOrderAnduptVouCher(noprom);
+                        }
+                        if(prom!=null){
+                            generateSalesOrderAnduptVouCher(prom);
+                        }
                         return this.getSaleOrderByQueryDate(sMode);
                     } else {
                         throw new ServiceException(MessageCode.LOGIC_ERROR, "该奶站不是自营奶站");
