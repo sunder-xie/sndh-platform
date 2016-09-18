@@ -126,9 +126,9 @@ public class CustomerBillServiceImpl implements CustomerBillService {
                 BigDecimal accAmt = customerBill.getAccAmt();    //已收的订户余额
                 BigDecimal amt = new BigDecimal(cModel.getAmt());//收款金额
                 int com = accAmt.add(amt).compareTo(order.getInitAmt()); // 收款金额 加上已收的余额 与 订单金额比较
-                //如果收款金额 加上已收的余额 大于订单金额
+                //如果收款金额 加上已收的余额 大于订单金额 (将多余的钱退回余额)
                 if(com== 1){
-                    //记录收款金额为 订单余额减去 已收的订户余额
+                    //记录收款金额
                     customerBill.setAmt(new BigDecimal(cModel.getAmt()));
                     //并将多出来的金额 放入订户余额中
                     TVipAcct eac = tVipCustInfoService.findVipAcctByCustNo(order.getMilkmemberNo());

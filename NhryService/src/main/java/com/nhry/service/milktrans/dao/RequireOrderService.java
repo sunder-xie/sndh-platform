@@ -48,4 +48,6 @@ public interface RequireOrderService {
     TSsmSalOrder creatNoPromoSalOrderAndSendOfSelftBranch(Date orderDate);
 
     TSsmSalOrder creatPromoSalOrderAndSendOfSelftBranch(Date orderDate);
+
+    List<TSsmSalOrder> creaSalOrderOfSelftBranchByDate2(SalOrderDaySearch search);
 }
