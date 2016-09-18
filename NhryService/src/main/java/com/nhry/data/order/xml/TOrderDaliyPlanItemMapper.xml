@@ -800,7 +800,7 @@
     <if test="endDate!=null and beginDate!=''">
       and t.DISP_DATE &lt;= #{endDate,jdbcType=DATE}
     </if>
-    <if test="empNos!=null">
+    <if test="empNos!=null and empNos.size>0">
       and t1.EMP_NO in
       <foreach collection="empNos" item="empNo" open="(" close=")" separator="," index="">
         #{empNo}
@@ -812,7 +812,7 @@
     inner join t_md_residential_area t5 on t5.ID = t4.RESIDENTIAL_AREA
     inner join t_md_branch_emp t6 on t6.EMP_NO = t1.EMP_NO
     AND t2.SALES_ORG = t3.SALES_ORG
-    <if test="matnrs!=null">
+    <if test="matnrs!=null and matnrs.size>0">
       and t.MATNR in
       <foreach collection="matnrs" item="matnr" open="(" close=")" separator="," index="">
         #{matnr}
