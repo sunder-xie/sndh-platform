@@ -633,7 +633,7 @@
             and di.REPLACE_REASON = '10'
              and  o.BRANCH_NO = #{branchNo,jdbcType=VARCHAR}
             and e.SALES_ORG = #{salesOrg,jdbcType=VARCHAR}
-            and  ti.DISP_DATE = #{requiredDate,jdbcType=DATE}
+            and  ti.DISP_DATE = #{orderDate,jdbcType=DATE}
             GROUP BY di.MATNR,di.CONFIRM_MATNR,p.PROMOTION
         UNION ALL
             SELECT  (select NULL from DUAL) MATNR,SUM(di.CONFIRM_QTY) QTY,di.MATNR   CONFIRM_MATNR,p.PROMOTION PROMOTION_FLAG
@@ -650,7 +650,7 @@
             and di.CONFIRM_QTY>0
             and  o.BRANCH_NO = #{branchNo,jdbcType=VARCHAR}
             and e.SALES_ORG = #{salesOrg,jdbcType=VARCHAR}
-            and  ti.DISP_DATE = #{requiredDate,jdbcType=DATE}
+            and  ti.DISP_DATE = #{orderDate,jdbcType=DATE}
             GROUP BY di.MATNR,p.PROMOTION
   </select>
   <select id="selectNoProDayPlanOfSelfBranch" resultMap="BaseResultMap" parameterType="com.nhry.model.milktrans.RequireOrderSearch" >

@@ -1,9 +1,11 @@
 package com.nhry.data.stock.impl;
 
 import com.nhry.common.datasource.DynamicSqlSessionTemplate;
+import com.nhry.data.order.domain.TOrderDaliyPlanItem;
 import com.nhry.data.stock.dao.TSsmGiOrderItemMapper;
 import com.nhry.data.stock.domain.TSsmGiOrderItem;
 import com.nhry.data.stock.domain.TSsmGiOrderItemKey;
+import com.nhry.model.milktrans.RequireOrderSearch;
 
 import java.math.BigDecimal;
 import java.util.HashMap;
@@ -62,5 +64,10 @@ public class TSsmGiOrderItemMapperImpl implements TSsmGiOrderItemMapper{
             map.put("branchNo",branchNo);
             map.put("matnr",matnr);
         return sqlSessionTemplate.selectOne("selectProximalFactoryPrice",map);
+    }
+
+    @Override
+    public List<TOrderDaliyPlanItem> selectNoProDayPlanOfSelfBranch(RequireOrderSearch rModel) {
+        return sqlSessionTemplate.selectList("selectNoProDayPlanOfSelfBranch2",rModel);
     }
 }

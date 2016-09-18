@@ -15,6 +15,15 @@ public class RequireOrderSearch  implements Serializable {
     private Date firstDay;
     private Date secondDay;
     private String promotion;
+    private String reqOrderNo;
+
+    public String getReqOrderNo() {
+        return reqOrderNo;
+    }
+
+    public void setReqOrderNo(String reqOrderNo) {
+        this.reqOrderNo = reqOrderNo;
+    }
 
     public Date getOrderDate() {
         return orderDate;

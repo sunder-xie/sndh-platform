@@ -38,6 +38,8 @@
 		<property name="branchMapper"  ref="branchMapper"></property>
 		<property name="tMdMaraMapper"  ref="maraMapper"></property>
 		<property name="tDispOrderMapper"  ref="tDispOrderMapper"></property>
+		<property name="tSsmGiOrderMapper"  ref="ssmGiOrderMapper"></property>
+		<property name="tSsmGiOrderItemMapper"  ref="ssmGiOrderItemMapper"></property>
 	</bean>
 
 	<!--回瓶管理-->

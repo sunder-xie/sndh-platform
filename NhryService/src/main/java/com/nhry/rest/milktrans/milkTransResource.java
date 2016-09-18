@@ -173,11 +173,11 @@ public class milkTransResource extends BaseResource {
 	@Path("/creaSalOrderOfSelftBranch")
 	@Produces(MediaType.APPLICATION_JSON)
 	@Consumes(MediaType.APPLICATION_JSON)
-	@ApiOperation(value = "/creaSalOrderOfSelftBranch", response = Response.class, notes = "自营奶站 根据路单和内部销售订单 创建今天的销售订单")
+	@ApiOperation(value = "/creaSalOrderOfSelftBranch", response = Response.class, notes = "自营奶站 根据（路单和内部销售订单）交货单(不参加促销的) 和 参加促销（路单中）产品  创建今天的销售订单")
 	public Response creaSalOrderOfSelftBranch(){
 		SalOrderDaySearch search = new SalOrderDaySearch();
 		search.setOrderDate(new Date());
-		return convertToRespModel(MessageCode.NORMAL, null, requireOrderService.creaSalOrderOfSelftBranchByDate(search));
+		return convertToRespModel(MessageCode.NORMAL, null, requireOrderService.creaSalOrderOfSelftBranchByDate2(search));
 	}
 
 	@POST
@@ -186,7 +186,7 @@ public class milkTransResource extends BaseResource {
 	@Consumes(MediaType.APPLICATION_JSON)
 	@ApiOperation(value = "/creaSalOrderOfSelftBranchByDate", response = Response.class, notes = "自营奶站 根据指定日期的 路单和内部销售订单 创建销售订单")
 	public Response creaSalOrderOfSelftBranchByDate(@ApiParam(required=true,name="search",value="日期") SalOrderDaySearch search){
-		return convertToRespModel(MessageCode.NORMAL, null, requireOrderService.creaSalOrderOfSelftBranchByDate(search));
+		return convertToRespModel(MessageCode.NORMAL, null, requireOrderService.creaSalOrderOfSelftBranchByDate2(search));
 	}
 
 	@POST

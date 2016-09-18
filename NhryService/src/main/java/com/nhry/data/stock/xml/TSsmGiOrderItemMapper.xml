@@ -14,6 +14,14 @@
         <result column="REMARK" property="remark" jdbcType="VARCHAR"/>
     </resultMap>
 
+    <resultMap id="OrderDaliyResultMap" type="com.nhry.data.order.domain.TOrderDaliyPlanItem">
+        <result column="MATNR" property="matnr" jdbcType="VARCHAR"/>
+        <result column="CONFIRM_MATNR" property="confirmMatnr" jdbcType="VARCHAR"/>
+        <result column="UNIT" property="unit" jdbcType="VARCHAR"/>
+        <result column="QTY" property="qty" jdbcType="INTEGER"/>
+    </resultMap>
+
+
     <resultMap id="ShowResultMap" extends="BaseResultMap" type="com.nhry.data.stock.domain.TSsmGiOrderItem">
             <result column="MATNR_TXT" property="matnrTxt" jdbcType="VARCHAR"/>
             <result column="BASE_UNIT" property="baseUnit" jdbcType="VARCHAR"/>
@@ -168,4 +176,17 @@
         and gi.ORDER_DATE &lt; curdate()
     </select>
 
+
+    <select id="selectNoProDayPlanOfSelfBranch2" resultMap="OrderDaliyResultMap" parameterType="com.nhry.model.milktrans.RequireOrderSearch">
+        SELECT
+        i.MATNR CONFIRM_MATNR,SUM(i.CONFIRM_QTY) QTY
+        from t_ssm_gi_order_item i
+        LEFT JOIN t_ssm_gi_order  o on i.ORDER_NO = o.ORDER_NO
+        WHERE 1=1
+        and o.BRANCH_NO =  #{branchNo,jdbcType=VARCHAR}
+        and o.ORDER_DATE = #{orderDate,jdbcType=DATE}
+        and o.`STATUS`= '30'
+        and o.REQ_ORDER_NO =  #{reqOrderNo,jdbcType=VARCHAR}
+        GROUP BY i.MATNR
+    </select>
 </mapper>
