@@ -4,6 +4,8 @@ import com.github.pagehelper.PageInfo;
 import com.nhry.data.milk.domain.TDispOrderItem;
 import com.nhry.model.milk.*;
 import com.nhry.model.milktrans.*;
+import com.nhry.model.order.OrderDaliyPlanReportEntityModel;
+import com.nhry.model.order.OrderDaliyPlanReportModel;
 
 import java.math.BigDecimal;
 import java.util.Date;
@@ -51,4 +53,6 @@ public interface DeliverMilkService {
 	int updateInSalOrderAndStockByUpdateDiapOrder(TDispOrderItem newItem , TDispOrderItem orgItem);
 
 	List<DispOrderReportEntityModel> reportDispOrderItemByParams(DispOrderReportModel model);
+
+	List<OrderDaliyPlanReportEntityModel> reportOrderDaliyPlanByParams(OrderDaliyPlanReportModel model);
 }

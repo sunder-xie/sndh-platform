@@ -35,6 +35,7 @@
     <result column="DISP_TOTAL" property="dispTotal" jdbcType="INTEGER" />
     <result column="YGROWTH" property="yGrowth" jdbcType="INTEGER" />
     <result column="YFRESH" property="yFresh" jdbcType="INTEGER" />
+    <result column="IS_STOP" property="isStop" jdbcType="VARCHAR" />
   </resultMap>
 
   <resultMap id="EmpDispDetailResultMap" type="com.nhry.model.bill.EmpDispDetailModel" >
@@ -95,7 +96,7 @@
     e.ITEM_NO, e.ORDER_NO, e.ORDER_DATE, e.REF_ITEM_NO, e.NEW_ROW_FLAG, e.MATNR, e.UNIT, e.QTY, e.SALES_PRICE,
     e.RULE_TYPE, e.DISP_DAYS, e.GAP_DAYS, e.RULE_TXT, e.REACH_TIME_TYPE, e.START_DISP_DATE, e.END_DISP_DATE,
     e.PROMOTION, e.PROM_DAYS, e.STATUS, e.BUY_QTY, e.GIFT_QTY, e.CREATE_AT, e.CREATE_BY, e.CREATE_BY_TXT,
-    e.LAST_MODIFIED, e.LAST_MODIFIED_BY, e.LAST_MODIFIED_BY_TXT,e.GIFT_MATNR,e.GIFT_UNIT,e.DISP_TOTAL,
+    e.LAST_MODIFIED, e.LAST_MODIFIED_BY, e.LAST_MODIFIED_BY_TXT,e.GIFT_MATNR,e.GIFT_UNIT,e.DISP_TOTAL,e.IS_STOP,
     p.MATNR_TXT MATNR_TXT
     from t_mst_plan_order_item e, t_md_mara p,t_preorder o
     where e.ORDER_NO = #{orderCode,jdbcType=VARCHAR}
@@ -409,6 +410,9 @@
       </if>
       <if test="dispTotal != null" >
         DISP_TOTAL = #{dispTotal,jdbcType=INTEGER},
+      </if>
+       <if test="isStop != null" >
+        IS_STOP = #{isStop,jdbcType=VARCHAR},
       </if>
     </set>
     where ITEM_NO = #{itemNo,jdbcType=VARCHAR}

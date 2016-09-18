@@ -557,7 +557,9 @@
 		left join t_mst_disp_order o on i.ORDER_NO = o.ORDER_NO
 		where i.ORG_ORDER_NO = #{orderNo,jdbcType=VARCHAR}
 		and i.ORG_ITEM_NO = #{dispLineNo,jdbcType=VARCHAR}
-		and o.DISP_DATE = #{branchName,jdbcType=VARCHAR}
+		<if test="branchName!=null and ''!=branchName">
+			and o.DISP_DATE = #{branchName,jdbcType=VARCHAR}
+		</if>
    </select>
   
   <select id="selectItemsByOrderNo" resultMap="BaseResultMap" parameterType="String">
