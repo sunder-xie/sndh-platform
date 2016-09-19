@@ -36,6 +36,7 @@ import com.nhry.service.milk.pojo.TDispOrderChangeItem;
 import com.nhry.service.milktrans.dao.ReturnBoxService;
 import com.nhry.service.order.dao.OrderService;
 import com.nhry.service.stock.dao.TSsmStockService;
+import com.nhry.utils.DateUtil;
 import com.nhry.utils.PrimaryKeyUtils;
 import com.nhry.utils.SerialUtil;
 import org.apache.commons.lang3.StringUtils;
@@ -815,7 +816,7 @@ public class DeliverMilkServiceImpl extends BaseService implements DeliverMilkSe
 				}
 			}
 			
-			if(!new Date().before(afterDate(entry.getOrderDate(),1)))throw new ServiceException(MessageCode.LOGIC_ERROR,"非今日的路单已经不能重新修改！");
+			if(!DateUtil.sameDateOrYestaday(new Date(),entry.getOrderDate()))throw new ServiceException(MessageCode.LOGIC_ERROR,"非今日或昨天的路单已经不能重新修改！");
 			if(!"10".equals(item.getReason()) && Integer.parseInt(item.getConfirmQty()) > entry.getQty().intValue())throw new ServiceException(MessageCode.LOGIC_ERROR,"非换货时实际数量不能大于应送数量！");
 			if("10".equals(item.getReason()) && Integer.parseInt(item.getConfirmQty()) == 0)throw new ServiceException(MessageCode.LOGIC_ERROR,"换货时数量不能是0！");
 			tDispOrderItemMapper.updateDispOrderItem(item , entry , null);
@@ -865,30 +866,56 @@ public class DeliverMilkServiceImpl extends BaseService implements DeliverMilkSe
 	public int updateInSalOrderAndStockByUpdateDiapOrder(TDispOrderItem newItem, TDispOrderItem orgItem) {
 		TPreOrder order = tPreOrderMapper.selectByPrimaryKey(orgItem.getOrgOrderNo());
 		TSysUser user = userSessionService.getCurrentUser();
-
-		//首先改回库存
+	//修改库存
 		if( "30".equals(orgItem.getReason()) || "40".equals(orgItem.getReason()) || "50".equals(orgItem.getReason())) {
 			tSsmStockService.updateStock(order.getBranchNo(), orgItem.getConfirmMatnr(), orgItem.getQty().multiply(new BigDecimal(-1)), order.getSalesOrg());
-		}else{
+		}else {
 			tSsmStockService.updateStock(order.getBranchNo(), orgItem.getConfirmMatnr(), orgItem.getConfirmQty().multiply(new BigDecimal(-1)), order.getSalesOrg());
-			if("60".equals(orgItem.getReason())){
-				//将拒收复送的也改回
-				TMstRefuseResend resend = new TMstRefuseResend();
-				resend.setBranchNo(user.getBranchNo());
-				resend.setMatnr(orgItem.getMatnr());
-				resend.setEmpNo(orgItem.getDispEmpNo());
-				resend.setDispDate(orgItem.getOrderDate());
-				resend.setDispOrderNo(orgItem.getOrderNo());
-				resendMapper.delRefuseResendByDispAndMatnr(resend);
-				tSsmStockService.updateTmpStock(order.getBranchNo(),orgItem.getConfirmMatnr(),orgItem.getQty().subtract(orgItem.getConfirmQty()),order.getSalesOrg());
-			}
 		}
-		//重新扣库存
+
 		if( "30".equals(newItem.getReason()) || "40".equals(newItem.getReason()) ||"50".equals(newItem.getReason())) {
 			tSsmStockService.updateStock(order.getBranchNo(), newItem.getConfirmMatnr(), newItem.getQty(), order.getSalesOrg());
 		}else{
 			tSsmStockService.updateStock(order.getBranchNo(), newItem.getConfirmMatnr(), newItem.getConfirmQty(), order.getSalesOrg());
-			if("60".equals(newItem.getReason())){
+		}
+	//修改拒收复送
+		if("60".equals(orgItem.getReason())){
+				TMstRefuseResend oldResend = resendMapper.findByBranchEmpSendDateAndMatnr(order.getBranchNo(),orgItem.getDispEmpNo(),orgItem.getOrderDate(),orgItem.getMatnr());
+				//如果 将原来的原因60(产生了拒收复送) 和 更改后的原因也是60，但是更改后变化的数量(减少的拒收复送量) 小于剩余的拒收复送量不能修改
+			if(oldResend!=null){
+				if("60".equals(newItem.getReason())){
+					BigDecimal newResendQty = newItem.getQty().subtract(newItem.getConfirmQty());
+					BigDecimal oldResendQty = orgItem.getQty().subtract(orgItem.getConfirmQty());
+					BigDecimal changeQty = newResendQty.subtract(oldResendQty);
+					//如果变化量  加上 剩余量 小于0 不能修改
+					if(changeQty.add(oldResend.getRemainQty()).compareTo(BigDecimal.ZERO)==-1){
+						throw  new ServiceException(MessageCode.LOGIC_ERROR,"不能修改，该产品做了拒收复送，并且部分已经做了要货或内部销售订单应用，剩余的数量不足以修改");
+					}
+					//如果变化量  加上 剩余量 大于0 可以修改(更新数量  和 库存)
+					oldResend.setQty(oldResend.getQty().add(changeQty));
+					oldResend.setRemainQty(oldResend.getRemainQty().add(changeQty));
+					resendMapper.uptRefuseResend(oldResend);
+				}else{
+					if(oldResend.getConfirmQty()!=null && oldResend.getConfirmQty().compareTo(BigDecimal.ZERO)==1){
+						throw  new ServiceException(MessageCode.LOGIC_ERROR,"不能修改，该拒收复送产品，已经做为要货应用");
+					}
+					if(oldResend.getInsideQty()!=null && oldResend.getInsideQty().compareTo(BigDecimal.ZERO)==1){
+						throw  new ServiceException(MessageCode.LOGIC_ERROR,"不能修改，该拒收复送产品，已经做为内部销售订单应用");
+					}
+					//将拒收复送的也改回
+					TMstRefuseResend resend = new TMstRefuseResend();
+					resend.setBranchNo(order.getBranchNo());
+					resend.setMatnr(orgItem.getMatnr());
+					resend.setEmpNo(orgItem.getDispEmpNo());
+					resend.setDispDate(orgItem.getOrderDate());
+					resend.setDispOrderNo(orgItem.getOrderNo());
+					resendMapper.delRefuseResendByDispAndMatnr(resend);
+					tSsmStockService.updateTmpStock(order.getBranchNo(),orgItem.getConfirmMatnr(),orgItem.getQty().subtract(orgItem.getConfirmQty()),order.getSalesOrg());
+				}
+			}
+
+		}else {
+			if ("60".equals(newItem.getReason())) {
 				//产生拒收复送
 				TMstRefuseResend resend = new TMstRefuseResend();
 				resend.setResendOrderNo(PrimaryKeyUtils.generateUpperUuidKey());
@@ -904,11 +931,12 @@ public class DeliverMilkServiceImpl extends BaseService implements DeliverMilkSe
 				resend.setDispDate(newItem.getOrderDate());
 				resend.setDispOrderNo(newItem.getOrderNo());
 				resendMapper.addTMstRefuseResend(resend);
-				tSsmStockService.updateTmpStock(order.getBranchNo(),orgItem.getConfirmMatnr(),newItem.getConfirmQty().subtract(newItem.getQty()),order.getSalesOrg());
+				tSsmStockService.updateTmpStock(order.getBranchNo(), orgItem.getConfirmMatnr(), newItem.getConfirmQty().subtract(newItem.getQty()), order.getSalesOrg());
 			}
 		}
+		//修改 内部销售订单
 		TMstInsideSalOrder sOrder = tMstInsideSalOrderMapper.getInSalOrderByDispOrderNo(orgItem.getOrderNo());
-			// 将orgItem 产生的 内部销售订单数量 去除
+		// 将orgItem 产生的 内部销售订单数量 去除
 		if("40".equals(orgItem.getReason()) || "50".equals(orgItem.getReason())){
 			Map<String,String> map = new HashMap<String,String>();
 			map.put("insOrderNo",sOrder.getInsOrderNo());
@@ -934,26 +962,30 @@ public class DeliverMilkServiceImpl extends BaseService implements DeliverMilkSe
 				sOrder.setCreateBy(user.getLoginName());
 				tMstInsideSalOrderMapper.insertInsideSalOrder(sOrder);
 			}
-				TMstInsideSalOrderItem item = new TMstInsideSalOrderItem();
-				item.setInsOrderNo(sOrder.getInsOrderNo());
-				item.setItemNo(newItem.getItemNo());
-				item.setOrgOrderNo(newItem.getOrgOrderNo());
-				item.setMatnr(newItem.getMatnr());
-				item.setOrderDate(newItem.getOrderDate());
-				item.setPrice(newItem.getPrice());
-				item.setQty(newItem.getQty().subtract(newItem.getConfirmQty()));
-				item.setReason(newItem.getReason());
-				tMstInsideSalOrderItemMapper.insertOrderItem(item);
+			TMstInsideSalOrderItem item = new TMstInsideSalOrderItem();
+			item.setInsOrderNo(sOrder.getInsOrderNo());
+			item.setItemNo(newItem.getItemNo());
+			item.setOrgOrderNo(newItem.getOrgOrderNo());
+			item.setMatnr(newItem.getMatnr());
+			item.setOrderDate(newItem.getOrderDate());
+			item.setPrice(newItem.getPrice());
+			item.setQty(newItem.getQty().subtract(newItem.getConfirmQty()));
+			item.setReason(newItem.getReason());
+			tMstInsideSalOrderItemMapper.insertOrderItem(item);
 		}
 		//修改回瓶
+
 		//如果原 行产品 需要回瓶 则更新
 		TMdMaraEx oldEx = productService.getMaraExByMatnrAndSalesOrg(orgItem.getMatnr(),order.getSalesOrg());
 		if("Y".equals(oldEx.getRetBotFlag())){
 			TRecBotDetail detail = returnBoxService.getTRecBotDetailByDispOrderNo(orgItem.getOrderNo(),oldEx.getBotType());
+			if("20".equals(detail.getStatus())){
+				throw  new ServiceException("该路单行已产品回瓶，不能修改");
+			}
 			detail.setReceiveNum(detail.getReceiveNum() - orgItem.getConfirmQty().intValue());
 			returnBoxService.uptBoxReturnDetail(detail);
 		}
-		//如果原 行产品 需要回瓶 则更新
+		//如果新 行产品 需要回瓶 则更新
 		TMdMaraEx newEx = productService.getMaraExByMatnrAndSalesOrg(newItem.getMatnr(),order.getSalesOrg());
 		if("Y".equals(newEx.getRetBotFlag())){
 			TRecBotDetail detail = returnBoxService.getTRecBotDetailByDispOrderNo(orgItem.getOrderNo(),newEx.getBotType());
@@ -971,10 +1003,11 @@ public class DeliverMilkServiceImpl extends BaseService implements DeliverMilkSe
 				detail.setReceiveNum(detail.getReceiveNum() + newItem.getConfirmQty().intValue());
 				returnBoxService.uptBoxReturnDetail(detail);
 			}
-
 		}
+
 		return 1;
 	}
+
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	
 	//日期往前后加n天

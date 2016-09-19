@@ -43,4 +43,14 @@ public class DateUtil {
         return secondDay;
     }
 
+    public static  boolean sameDateOrYestaday(Date day1 , Date day2){
+        if(day1.compareTo(day2)==0){
+            return true;
+        }else if(day2.compareTo(getYestoday(day1))==0){
+            return true;
+        }else {
+            return false;
+        }
+    }
+
 }
