@@ -280,16 +280,16 @@ public class PIProductServiceImpl implements PIProductService {
             List<ET_PARTNER> et_partner = getET_PARTNER(response);
             Map<String, List<ET_PARTNER>> partners = new HashMap<String, List<ET_PARTNER>>();
             List<ET_VKORG> zys = et_vkorgs.get("01");
-            Map<String, String> gcs = getET_DATA(); //客户对应的库存地点
+//            Map<String, String> gcs = getET_DATA(); //客户对应的库存地点
+            Map<String,ZTSD00024> gcss = getET_DATAs();
             Map<String, ET_LGORT> ccds = getET_LGORT(); //库存地点对应的工厂
             int zycount = 0;
             for (ET_VKORG et_vkorg : zys) {
                 String kunnr = et_vkorg.getKUNNR();
-                String lgort = gcs.get(kunnr);//有库存地点的是自营奶站
-                if (StringUtils.isNotEmpty(lgort)) {
-                    ET_LGORT lg = ccds.get(lgort);
-                    String werks = lg.getWERKS();
-                    String lgorm = lg.getLGOBE();
+                ZTSD00024 ztsd00024 = gcss.get(kunnr);
+                if (ztsd00024 != null) {
+                    String lgort  = ztsd00024.getLGORT().getLGORT_type0();
+                    String werks = ztsd00024.getBUKRS().getBUKRS_type6();
                     if (StringUtils.isNotEmpty(werks)) {
                         zycount++;
                         saveBranch(et_kunnrs, BRANDCHTYPE_ZY, et_vkorg.getVKORG(), et_vkorg.getKUNNR(), lgort, werks, "");
