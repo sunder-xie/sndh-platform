@@ -21,6 +21,8 @@ public class TPlanOrderItem {
 
     private String matnrTxt;
     
+    private String shortTxt;
+    
     private String unit;
 
     private Integer qty;
@@ -91,6 +93,16 @@ public class TPlanOrderItem {
     
     private String isStop;
     
+	public String getShortTxt()
+	{
+		return shortTxt;
+	}
+
+	public void setShortTxt(String shortTxt)
+	{
+		this.shortTxt = shortTxt;
+	}
+
 	public Date getStopStartDate()
 	{
 		return stopStartDate;

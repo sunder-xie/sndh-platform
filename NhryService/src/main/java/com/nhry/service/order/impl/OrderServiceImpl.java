@@ -2452,6 +2452,7 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 					
 					Collections.reverse(daliyPlans);
 					for(TOrderDaliyPlanItem plan : daliyPlans){
+						if(plan.getGiftQty()!=null)continue;
 			   		if("30".equals(plan.getStatus())){
 			   			plan.setRemainAmt(initAmt);
 			   			tOrderDaliyPlanItemMapper.updateDaliyPlanItem(plan);
@@ -3040,6 +3041,7 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 				
 				Collections.reverse(daliyPlans);
 				for(TOrderDaliyPlanItem plan : daliyPlans){
+					if(plan.getGiftQty()!=null)continue;
 		   		if("30".equals(plan.getStatus())){
 		   			plan.setRemainAmt(initAmt);
 		   			tOrderDaliyPlanItemMapper.updateDaliyPlanItem(plan);
