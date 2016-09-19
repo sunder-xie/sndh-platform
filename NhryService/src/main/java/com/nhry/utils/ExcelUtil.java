@@ -1,8 +1,13 @@
 package com.nhry.utils;
 
+import com.nhry.common.exception.MessageCode;
+import com.nhry.common.exception.ServiceException;
+import org.apache.commons.lang.StringUtils;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.ss.util.CellRangeAddress;
 import org.apache.poi.xssf.usermodel.*;
+
+import java.text.DecimalFormat;
 
 /**
  * Created by cbz on 8/27/2016.
@@ -99,5 +104,23 @@ public class ExcelUtil {
         cellStyle2.setAlignment(XSSFCellStyle.ALIGN_CENTER);//水平居中
         cellStyle2.setVerticalAlignment(XSSFCellStyle.VERTICAL_CENTER);//垂直居中
         return cellStyle2;
+    }
+
+    public static String getCellValue(XSSFCell cell,XSSFRow row){
+        String cellValue = "";
+        switch (cell.getCellType()) {
+            case XSSFCell.CELL_TYPE_STRING:
+                cellValue = cell.toString();
+                break;
+            default:
+                throw new RuntimeException("请使用正规模板！数据格式非文本类型，错误位置是第"+(row.getRowNum()+1)+"行,"+"第"+ (cell.getColumnIndex()+1) +"列。请校验同样问题！");
+        }
+        return cellValue;
+    }
+
+    public static void isNullCell(XSSFCell cell,XSSFRow row,int j){
+        if(cell == null || StringUtils.isEmpty(cell.toString())){
+            throw new RuntimeException("请使用正规模板！数据不能为空！，错误位置是第"+(row.getRowNum()+1)+"行,"+"第"+ j +"列。请校验同样问题！");
+        }
     }
 }
