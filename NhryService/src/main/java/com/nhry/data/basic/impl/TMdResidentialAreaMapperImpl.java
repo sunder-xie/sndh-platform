@@ -83,7 +83,7 @@ public class TMdResidentialAreaMapperImpl implements TMdResidentialAreaMapper {
     }
 
     @Override
-    public TMdResidentialArea getAreaByAreaName(String residentialAreaTxt,String salesOrg) {
+    public List<TMdResidentialArea> getAreaByAreaName(String residentialAreaTxt,String salesOrg) {
         Map<String,String> map = new HashMap<String,String>();
         map.put("salesOrg",salesOrg);
         map.put("residentialAreaTxt",residentialAreaTxt);
