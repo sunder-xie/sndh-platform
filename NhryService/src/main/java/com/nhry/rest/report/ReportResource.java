@@ -7,6 +7,7 @@ import com.nhry.data.basic.domain.TMdAddress;
 import com.nhry.data.basic.domain.TMdBranch;
 import com.nhry.data.bill.domain.TMstRecvBill;
 import com.nhry.data.milk.domain.TDispOrder;
+import com.nhry.data.milk.domain.TDispOrderChange;
 import com.nhry.data.milk.domain.TDispOrderItem;
 import com.nhry.data.order.domain.TMilkboxPlan;
 import com.nhry.data.order.domain.TPreOrder;
@@ -222,6 +223,7 @@ public class ReportResource extends BaseResource{
     @ApiOperation(value = "/reportDeliver", response = OrderCreateModel.class, notes = "根据路单编号导出路单信息")
     public Response reportDeliver(@ApiParam(required = true, name = "orderCode", value = "订单编号") @QueryParam("orderCode") String orderCode, @Context HttpServletRequest request, @Context HttpServletResponse response) {
         List<TDispOrderItem> details = deliverMilkService.searchRouteOrderDetailAll(orderCode);
+        List<TDispOrderChange> ChangeOrders  = deliverMilkService.searchRouteChangeOrder(orderCode);
         RouteOrderModel model = deliverMilkService.searchRouteDetails(orderCode);
         String outUrl = "";
         logger.debug("##################"+EnvContant.getSystemConst("filePath"));
@@ -239,17 +241,17 @@ public class ReportResource extends BaseResource{
             cell.setCellValue("配送奶站：" + order.getBranchName());
             cell = row.getCell(7);
             cell.setCellValue("");
-            cell = row.getCell(9);
+            cell = row.getCell(11);
             cell.setCellValue("送奶员："+order.getDispEmpName());
             row = sheet.getRow(4);
-            cell = row.getCell(7);
+            cell = row.getCell(9);
             cell.setCellValue(format.format(order.getOrderDate()));
             row = sheet.getRow(5);
-            cell = row.getCell(7);
+            cell = row.getCell(9);
             cell.setCellValue(order.getReachTimeType()=="10"?"上午配送":"下午配送");
             row = sheet.getRow(6);
-            cell = row.getCell(7);
-            cell.setCellValue(model.getProducts());
+            cell = row.getCell(9);
+            cell.setCellValue(order.getTotalQty()==null?"":order.getTotalQty().toString().concat("--").concat(model.getProducts()));
             XSSFCellStyle styleBold = workbook.createCellStyle();
             styleBold.setBorderBottom(XSSFCellStyle.BORDER_THIN); //下边框
             styleBold.setBorderLeft(XSSFCellStyle.BORDER_THIN);//左边框
@@ -276,24 +278,98 @@ public class ReportResource extends BaseResource{
 
                     cell = row.createCell(5);
                     cell.setCellStyle(styleBold);
-                    if (StringUtils.isNotEmpty(item.getMatnrTxt())){
-                        cell.setCellValue(item.getMatnrTxt().concat("--").concat(item.getConfirmQty()==null?"" : item.getConfirmQty().toBigInteger().toString()));
+                    if(ChangeOrders!=null){
+                        for(TDispOrderChange ocitems:ChangeOrders){
+                            if(ocitems.getOrgItemNo().equals(item.getOrgItemNo())){
+                                cell.setCellValue(ocitems.getYestodayMatnr()==null?"":ocitems.getYestodayMatnr().concat("--").concat(ocitems.getYestodayQty()==null?"" :ocitems.getYestodayQty().toString()));
+                            }
+                        }
                     }
                     cell = row.createCell(6);
                     cell.setCellStyle(styleBold);
-                    cell.setCellValue(item.getCustTel());
+                    if (StringUtils.isNotEmpty(item.getMatnrTxt())){
+                        cell.setCellValue(item.getMatnrTxt().concat("--").concat(item.getConfirmQty()==null?"" : item.getConfirmQty().toBigInteger().toString()));
+                    }
                     cell = row.createCell(7);
                     cell.setCellStyle(styleBold);
-                    cell.setCellValue(item.getCustName());
+                    cell.setCellValue(item.getRemainAmt()==null?"" : item.getRemainAmt().toBigInteger().toString());
+
                     cell = row.createCell(8);
                     cell.setCellStyle(styleBold);
+                    cell.setCellValue(item.getCustTel());
                     cell = row.createCell(9);
                     cell.setCellStyle(styleBold);
+                    cell.setCellValue(item.getCustName());
                     cell = row.createCell(10);
                     cell.setCellStyle(styleBold);
+                    cell = row.createCell(11);
+                    cell.setCellStyle(styleBold);
+                    cell = row.createCell(12);
+                    cell.setCellStyle(styleBold);
+                    String status="";
+                    if(ChangeOrders!=null){
+                        for(TDispOrderChange ocitems:ChangeOrders){
+                            if(ocitems.getOrgItemNo().equals(item.getOrgItemNo())){
+                                switch (ocitems.getReason()){
+                                    case "10":status="产品变更";break;
+                                    case "20":status="数量变更";break;
+                                    case "30":status="新增订户";break;
+                                    case "40":status="减少订户";break;
+                                    case "50":status="更改配送时间";break;
+                                }
+                                cell.setCellValue(status);
+                            }
+                        }
+                    }
                     r++;
                 }
+                int r1 = details.size()+10;
+                if(ChangeOrders!=null){
+                    for(TDispOrderChange ocitems:ChangeOrders){
+                        if(ocitems.getReason()!=null&ocitems.getReason().equals("40")){
+                            row = sheet.createRow(r1);
+                            cell = row.createCell(1);
+                            cell.setCellStyle(styleBold);
+                            cell.setCellValue(ocitems.getAddressNo());
+                            cell = row.createCell(2);
+                            cell.setCellValue(" ");
+                            cell.setCellStyle(styleBold);
+                            cell = row.createCell(3);
+                            cell.setCellValue(" ");
+                            cell.setCellStyle(styleBold);
+                            cell = row.createCell(4);
+                            cell.setCellValue(" ");//设置第五列为空字符串
+                            cell.setCellStyle(styleBold);
+                            sheet.addMergedRegion(new CellRangeAddress(row.getRowNum(), row.getRowNum(), 1, 4));
 
+                            cell = row.createCell(5);
+                            cell.setCellStyle(styleBold);
+                            cell.setCellValue(ocitems.getYestodayMatnr()==null?"":ocitems.getYestodayMatnr().concat("--").concat(ocitems.getYestodayQty()==null?"" :ocitems.getYestodayQty().toBigInteger().toString()));
+                            cell = row.createCell(6);
+                            cell.setCellStyle(styleBold);
+                            cell = row.createCell(7);
+                            cell.setCellStyle(styleBold);
+                            cell = row.createCell(8);
+                            cell.setCellStyle(styleBold);
+                            cell.setCellValue(ocitems.getCustTel());
+                            cell = row.createCell(9);
+                            cell.setCellStyle(styleBold);
+                            cell.setCellValue(ocitems.getMilkmemberNo());
+                            cell = row.createCell(10);
+                            cell.setCellStyle(styleBold);
+                            cell = row.createCell(11);
+                            cell.setCellStyle(styleBold);
+                            cell = row.createCell(12);
+                            cell.setCellStyle(styleBold);
+                            String reasonName="";
+                            if(ocitems.getReason().equals("40")){
+                                reasonName = "减少订户";
+                            }
+                            cell.setCellValue(reasonName);
+                            r1++;
+                        }
+                    }
+                }
                 sheet.setForceFormulaRecalculation(true);
             }
             String fname = CodeGeneratorUtil.getCode();
