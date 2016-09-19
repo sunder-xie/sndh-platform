@@ -141,13 +141,21 @@ public class TVipCustInfoServiceImpl extends BaseService implements TVipCustInfo
 		record.setLastModified(new Date());
 		record.setLastModifiedBy(this.userSessionService.getCurrentUser().getLoginName());
 		record.setLastModifiedByTxt(this.userSessionService.getCurrentUser().getDisplayName());
-		this.tmdVipcust.updateVipCustByNo(record);
+
 		//更新地址列表信息
 		if(record.getAddresses() != null && record.getAddresses().size() > 0){
 			Addresses ad = new Addresses();
 			ad.setAddresses(record.getAddresses());
 			this.batchUptCustAddress(ad);
+			for(TMdAddress address : record.getAddresses()){
+				if("Y".equals(address.getIsDafault())){
+					//更新订户的地址信息和小区
+					record.setAddressTxt(address.getAddressTxt());
+					record.setSubdist(address.getResidentialArea());
+				}
+			}
 		}
+		this.tmdVipcust.updateVipCustByNo(record);
 		vipInfoDataService.executeVipInfoData(record,record.getVipMp());
 		return 1;
 	}
