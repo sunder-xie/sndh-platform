@@ -24,7 +24,7 @@
 	<config key="front_home_page" value="http://test.nhry-dev.com/release/#/newhope/home"></config>
 	<config key="front_short_url" value="/local/#/newhope/home"></config>
 	<!-- 电商接口base url -->
-	<config key="ec_base_url" value="http://ec2-54-222-230-211.cn-north-1.compute.amazonaws.com.cn"></config>
+	<config key="ec_base_url" value="http://ec2-54-222-233-1.cn-north-1.compute.amazonaws.com.cn"></config>
 	<!-- 更新奶站信息 -->
 	<config key="ec_upt_branch" value="/FY_MOBILE_SVR/WFY_UNI_SERVICE.json?method=callProcService"></config>
 	<!-- idm rest验证接口 appcode、salt  -->
