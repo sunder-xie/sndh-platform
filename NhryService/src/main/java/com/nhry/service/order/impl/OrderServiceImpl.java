@@ -1849,10 +1849,10 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 			
 			BigDecimal replaceAmt = new BigDecimal("0.00");
 			for(TOrderDaliyPlanItem p :daliyPlans){
-				System.out.println("日计划日期:" + p.getDispDate()+"/修改日期" + startDate);
-				System.out.println("日计划日期:" + p.getDispDate()+"/修改日期" + endDate);
 				if(p.getItemNo().equals(entry.getItemNo())&&!p.getDispDate().after(endDate)&&!p.getDispDate().before(startDate)){
 					if("10".equals(p.getStatus())){
+						System.out.println("日计划日期d:" + p.getDispDate()+"/修改日期s" + startDate);
+						System.out.println("日计划日期d:" + p.getDispDate()+"/修改日期e" + endDate);
 						replaceAmt = replaceAmt.add(p.getAmt());
 					}
 				}
@@ -1920,16 +1920,17 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 				plan.setAmt(entry.getSalesPrice().multiply(qty));//金额小计
 				
 				replaceAmt = replaceAmt.subtract(plan.getAmt());//TODO
-				if(replaceAmt.floatValue() < 0)throw new ServiceException(MessageCode.LOGIC_ERROR,"订单金额不够替换商品或改变数量!");
+				
+				if(replaceAmt.floatValue() < 0)break;
 				
 				plan.setStatus("10");//状态
 				plan.setCreateAt(new Date());//创建时间
 				plan.setCreateBy(userSessionService.getCurrentUser().getLoginName());//创建人
 				plan.setCreateByTxt(userSessionService.getCurrentUser().getDisplayName());//创建人姓名
 				
-				if(!endDate.before(entry.getEndDispDate())){
-					entry.setEndDispDate(today);
-				}
+//				if(!endDate.before(entry.getEndDispDate())){
+//					entry.setEndDispDate(today);
+//				}
 				
 				tOrderDaliyPlanItemMapper.insert(plan);
 				daliyEntryNo++;
