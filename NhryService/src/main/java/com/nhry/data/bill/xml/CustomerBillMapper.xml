@@ -420,7 +420,7 @@
         IFNULL(c.ADDRESS_TXT,'')
         )CUST_ADDRESS,
         (CASE  WHEN acct.ACCT_AMT > o.INIT_AMT THEN 0 ELSE (o.INIT_AMT - acct.ACCT_AMT) END) ORDER_AMT
-        ,i.MATNR,a.MATNR_TXT,i.UNIT,i.DISP_TOTAL QTY,i.SALES_PRICE BASE_PRICE,(i.DISP_TOTAL * i.SALES_PRICE) TOTAL_PRICE
+        ,i.MATNR,ex.SHORT_TXT MATNR_TXT,i.UNIT,i.DISP_TOTAL QTY,i.SALES_PRICE BASE_PRICE,(i.DISP_TOTAL * i.SALES_PRICE) TOTAL_PRICE
 
         from t_preorder o
         LEFT JOIN t_md_branch b on o.BRANCH_NO = b.BRANCH_NO
@@ -428,9 +428,8 @@
         LEFT JOIN t_vip_cust_info  c on c.VIP_CUST_NO = o.MILKMEMBER_NO
         LEFT JOIN t_vip_acct acct on o.MILKMEMBER_NO =acct.VIP_CUST_NO
         LEFT JOIN t_mst_plan_order_item i on o.ORDER_NO = i.ORDER_NO
-        LEFT JOIN  t_md_mara a on i.MATNR = a.MATNR
+        LEFT JOIN  t_md_mara_ex ex on i.MATNR = ex.MATNR  and b.SALES_ORG = ex.SALES_ORG
         WHERE 1=1
-        and b.SALES_ORG = a.SALES_ORG
         and b.SALES_ORG = o.SALES_ORG
         and LOCATE(o.ORDER_NO,<foreach item="order" collection="orders" separator="," open="'" close="'" index="">${order}</foreach>)>0
         GROUP BY o.ORDER_NO,i.MATNR
@@ -439,7 +438,7 @@
 
     <select id="queryCollectByAfterOrders" resultMap="CollectResultMap" parameterType="com.nhry.model.bill.CollectOrderSearchModel">
         SELECT
-        o.ORDER_NO,o.BRANCH_NO,b.BRANCH_NAME,o.EMP_NO,e.TEL EMP_TEL,e.EMP_NAME,c.VIP_NAME,
+        o.ORDER_NO,o.BRANCH_NO,b.BRANCH_NAME,o.EMP_NO,e.MP EMP_TEL,e.EMP_NAME,c.VIP_NAME,
         c.MP CUST_TEL,b.TEL BRANCH_TEL,o.INIT_AMT,acct.ACCT_AMT,o.END_DATE,MIN(i.DISP_DATE) START_DATE,
         (SELECT item.ITEM_NAME  from t_sys_code_item item WHERE item.TYPE_CODE = <include refid="mybaties.constant.SALES_ORG_CONSTANT"/>  and item.ITEM_CODE= o.SALES_ORG) SALES_ORG_NAME,
         concat(
@@ -459,14 +458,14 @@
         IFNULL(c.ADDRESS_TXT,'')
         )CUST_ADDRESS,
         (CASE  WHEN acct.ACCT_AMT > o.INIT_AMT THEN 0 ELSE (o.INIT_AMT - acct.ACCT_AMT) END) ORDER_AMT
-        ,i.MATNR,a.MATNR_TXT,i.UNIT,i.QTY,i.PRICE BASE_PRICE,i.AMT TOTAL_PRICE
+        ,i.MATNR,ex.SHORT_TXT MATNR_TXT,i.UNIT,SUM(i.QTY) QTY,i.PRICE BASE_PRICE,sum(i.AMT) TOTAL_PRICE
         from t_preorder o
         LEFT JOIN t_md_branch b on o.BRANCH_NO = b.BRANCH_NO
         LEFT JOIN t_md_branch_emp e on o.EMP_NO = e.EMP_NO
         LEFT JOIN t_vip_cust_info  c on c.VIP_CUST_NO = o.MILKMEMBER_NO
         LEFT JOIN t_vip_acct acct on o.MILKMEMBER_NO =acct.VIP_CUST_NO
         LEFT JOIN t_mst_order_daliy_plan_item i on i.ORDER_NO = o.ORDER_NO
-        LEFT JOIN  t_md_mara a on i.MATNR = a.MATNR  and b.SALES_ORG = a.SALES_ORG
+        LEFT JOIN  t_md_mara_ex ex on i.MATNR = ex.MATNR  and b.SALES_ORG = ex.SALES_ORG
         WHERE 1=1
         and b.SALES_ORG = o.SALES_ORG
         and LOCATE(o.ORDER_NO,<foreach item="order" collection="orders" separator="," open="'" close="'" index="">${order}</foreach>)>0
@@ -475,7 +474,7 @@
 
     <select id="queryCollectByAfterOrderNo" resultMap="CollectResultMap" parameterType="com.nhry.model.bill.CollectOrderSearchModel">
         SELECT
-        o.ORDER_NO,o.BRANCH_NO,b.BRANCH_NAME,o.EMP_NO,e.TEL EMP_TEL,e.EMP_NAME,c.VIP_NAME,
+        o.ORDER_NO,o.BRANCH_NO,b.BRANCH_NAME,o.EMP_NO,e.MP EMP_TEL,e.EMP_NAME,c.VIP_NAME,
         c.MP CUST_TEL,b.TEL BRANCH_TEL,o.INIT_AMT,acct.ACCT_AMT,
         concat(
         (
@@ -494,7 +493,7 @@
         IFNULL(c.ADDRESS_TXT,'')
         )CUST_ADDRESS,
         (CASE  WHEN acct.ACCT_AMT > o.INIT_AMT THEN 0 ELSE (o.INIT_AMT - acct.ACCT_AMT) END) ORDER_AMT
-        ,i.MATNR,a.MATNR_TXT,i.UNIT,i.QTY,i.PRICE BASE_PRICE,i.AMT TOTAL_PRICE
+        ,i.MATNR,a.MATNR_TXT,i.UNIT,SUM(i.QTY) QTY,i.PRICE BASE_PRICE,sum(i.AMT) TOTAL_PRICE
         from t_preorder o
         LEFT JOIN t_md_branch b on o.BRANCH_NO = b.BRANCH_NO
         LEFT JOIN t_md_branch_emp e on o.EMP_NO = e.EMP_NO
