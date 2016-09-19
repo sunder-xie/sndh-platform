@@ -36,6 +36,7 @@
     <result column="YGROWTH" property="yGrowth" jdbcType="INTEGER" />
     <result column="YFRESH" property="yFresh" jdbcType="INTEGER" />
     <result column="IS_STOP" property="isStop" jdbcType="VARCHAR" />
+    <result column="SHORT_TXT" property="shortTxt" jdbcType="VARCHAR" />
   </resultMap>
 
   <resultMap id="EmpDispDetailResultMap" type="com.nhry.model.bill.EmpDispDetailModel" >
@@ -97,12 +98,13 @@
     e.RULE_TYPE, e.DISP_DAYS, e.GAP_DAYS, e.RULE_TXT, e.REACH_TIME_TYPE, e.START_DISP_DATE, e.END_DISP_DATE,
     e.PROMOTION, e.PROM_DAYS, e.STATUS, e.BUY_QTY, e.GIFT_QTY, e.CREATE_AT, e.CREATE_BY, e.CREATE_BY_TXT,
     e.LAST_MODIFIED, e.LAST_MODIFIED_BY, e.LAST_MODIFIED_BY_TXT,e.GIFT_MATNR,e.GIFT_UNIT,e.DISP_TOTAL,e.IS_STOP,
-    p.MATNR_TXT MATNR_TXT
-    from t_mst_plan_order_item e, t_md_mara p,t_preorder o
+    p.MATNR_TXT MATNR_TXT,ex.SHORT_TXT SHORT_TXT
+    from t_mst_plan_order_item e
+    left join t_preorder o on o.ORDER_NO = e.ORDER_NO 
+    left join t_md_mara_ex ex on (ex.MATNR = e.MATNR and o.SALES_ORG = ex.SALES_ORG)
+    left join t_md_mara p on (e.MATNR = p.MATNR and o.SALES_ORG = p.SALES_ORG)
     where e.ORDER_NO = #{orderCode,jdbcType=VARCHAR}
-    and o.ORDER_NO= e.ORDER_NO and o.SALES_ORG = p.SALES_ORG
     and (e.STATUS != "30" or e.STATUS is null)
-    and e.MATNR = p.MATNR
   </select>
 
   <select id="selectEntriesByOrderNo" resultMap="BaseResultMap" parameterType="java.util.Map" >
