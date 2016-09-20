@@ -231,7 +231,7 @@ public class TVipCustInfoServiceImpl extends BaseService implements TVipCustInfo
 				throw new ServiceException(MessageCode.LOGIC_ERROR, "该奶站编号的对应的奶站信息不存在!");
 			}
 			Map<String,String> attrs = new HashMap<String,String>();
-			attrs.put("salesOrg", this.userSessionService.getCurrentUser().getSalesOrg());
+			attrs.put("salesOrg", branch.getSalesOrg());
 			attrs.put("branchNo",branchNo);
 			attrs.put("phone", address.getMp());
 			String custNo = this.tmdVipcust.getCustNoByPhone(attrs);
