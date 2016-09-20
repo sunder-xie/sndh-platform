@@ -62,6 +62,11 @@ public class TVipCustInfoServiceImpl extends BaseService implements TVipCustInfo
 		//判断如果新增订户时订户编号不为空，则代表是订户数据导入
 		if(StringUtils.isBlank(record.getVipCustNo())){
 			record.setVipCustNo(PrimaryKeyUtils.generateUpperUuidKey());
+		}else{
+			TVipCustInfo vipCustInfo = tmdVipcust.findVipCustByNo(record.getVipCustNo());
+			if(vipCustInfo!=null){
+				throw new ServiceException(MessageCode.LOGIC_ERROR, "该订户"+vipCustInfo.getVipCustNo()+"对应的订户信息已存在！");
+			}
 		}
 		record.setCreateAt(new Date());
 		record.setCreateBy(sysuser.getLoginName());
