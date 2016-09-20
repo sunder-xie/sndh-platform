@@ -248,7 +248,7 @@ public class ReportResource extends BaseResource{
             cell.setCellValue(format.format(order.getOrderDate()));
             row = sheet.getRow(5);
             cell = row.getCell(9);
-            cell.setCellValue(order.getReachTimeType()=="10"?"上午配送":"下午配送");
+            cell.setCellValue("10".equals(order.getReachTimeType())?"上午配送":"下午配送");
             row = sheet.getRow(6);
             cell = row.getCell(9);
             cell.setCellValue(order.getTotalQty()==null?"":order.getTotalQty().toString().concat("--").concat(model.getProducts()));
