@@ -368,50 +368,52 @@ public class ImportTableResource extends BaseResource {
             e.printStackTrace();
             return convertToRespModel(MessageCode.LOGIC_ERROR, e.getMessage(), "");
         }
-        for(OrderCreateModel orderModel : OrderModels){
-            TPreOrder order = orderModel.getOrder();
-            if(org.apache.commons.lang3.StringUtils.isBlank(order.getPaymentStat())){
-                throw new ServiceException(MessageCode.LOGIC_ERROR,"订单编号"+order.getOrderNo()+"请选择付款方式!");
-            }
-            if(org.apache.commons.lang3.StringUtils.isBlank(order.getMilkboxStat())){
-                throw new ServiceException(MessageCode.LOGIC_ERROR,"订单编号"+order.getOrderNo()+"请选择奶箱状态!");
-            }
-            if(org.apache.commons.lang3.StringUtils.isBlank(order.getEmpNo())){
-                if(!"10".equals(order.getPreorderSource())&&!"20".equals(order.getPreorderSource())){
-                    throw new ServiceException(MessageCode.LOGIC_ERROR,"订单编号"+order.getOrderNo()+"请选择送奶员!");
+        if(OrderModels.size()>0) {
+            for (OrderCreateModel orderModel : OrderModels) {
+                TPreOrder order = orderModel.getOrder();
+                if (org.apache.commons.lang3.StringUtils.isBlank(order.getPaymentStat())) {
+                    throw new ServiceException(MessageCode.LOGIC_ERROR, "订单编号" + order.getOrderNo() + "请选择付款方式!");
+                }
+                if (org.apache.commons.lang3.StringUtils.isBlank(order.getMilkboxStat())) {
+                    throw new ServiceException(MessageCode.LOGIC_ERROR, "订单编号" + order.getOrderNo() + "请选择奶箱状态!");
+                }
+                if (org.apache.commons.lang3.StringUtils.isBlank(order.getEmpNo())) {
+                    if (!"10".equals(order.getPreorderSource()) && !"20".equals(order.getPreorderSource())) {
+                        throw new ServiceException(MessageCode.LOGIC_ERROR, "订单编号" + order.getOrderNo() + "请选择送奶员!");
+                    }
+                }
+                if (orderModel.getEntries() == null || orderModel.getEntries().size() == 0) {
+                    throw new ServiceException(MessageCode.LOGIC_ERROR, "订单编号" + order.getOrderNo() + "请选择商品行!");
+                }
+                if (org.apache.commons.lang3.StringUtils.isBlank(order.getMilkmemberNo())) {
+                    if (!"10".equals(order.getPreorderSource()) && !"20".equals(order.getPreorderSource())) {//电商不交验订户
+                        throw new ServiceException(MessageCode.LOGIC_ERROR, "订单编号" + order.getOrderNo() + "请选择订户!");
+                    }
+                }
+                if (org.apache.commons.lang3.StringUtils.isBlank(order.getAdressNo())) {
+                    if (orderModel.getAddress() == null) {
+                        throw new ServiceException(MessageCode.LOGIC_ERROR, "订单编号" + order.getOrderNo() + "请选择或输入地址!");
+                    }
+                }
+                for (TPlanOrderItem e : orderModel.getEntries()) {
+                    if (org.apache.commons.lang3.StringUtils.isBlank(e.getRuleType())) {
+                        throw new ServiceException(MessageCode.LOGIC_ERROR, "订单编号" + order.getOrderNo() + "商品行必须要有配送规律!");
+                    }
                 }
             }
-            if(orderModel.getEntries()==null || orderModel.getEntries().size() == 0){
-                throw new ServiceException(MessageCode.LOGIC_ERROR,"订单编号"+order.getOrderNo()+"请选择商品行!");
-            }
-            if(org.apache.commons.lang3.StringUtils.isBlank(order.getMilkmemberNo())){
-                if(!"10".equals(order.getPreorderSource())&&!"20".equals(order.getPreorderSource())){//电商不交验订户
-                    throw new ServiceException(MessageCode.LOGIC_ERROR,"订单编号"+order.getOrderNo()+"请选择订户!");
-                }
-            }
-            if(org.apache.commons.lang3.StringUtils.isBlank(order.getAdressNo())){
-                if(orderModel.getAddress() == null){
-                    throw new ServiceException(MessageCode.LOGIC_ERROR,"订单编号"+order.getOrderNo()+"请选择或输入地址!");
-                }
-            }
-            for(TPlanOrderItem e:orderModel.getEntries()){
-                if(org.apache.commons.lang3.StringUtils.isBlank(e.getRuleType())){
-                    throw new ServiceException(MessageCode.LOGIC_ERROR,"订单编号"+order.getOrderNo()+"商品行必须要有配送规律!");
-                }
-            }
-        }
 
-        orderService.createOrders(OrderModels);
-        for (int om = 0; om < OrderModels.size(); om++) {
-            OrderCreateModel ocm = OrderModels.get(om);
-            if ("20".equals(ocm.getOrder().getPaymentmethod())) {
-                customerBillService.createRecBillByOrderNo(ocm.getOrder().getOrderNo());
-                CustomerPayMentModel cModel = new CustomerPayMentModel();
-                cModel.setOrderNo(ocm.getOrder().getOrderNo());
-                cModel.setAmt(ocm.getOrder().getCurAmt().toString());
-                cModel.setPaymentType(ocm.getOrder().getPayMethod());
-                cModel.setEmpNo(ocm.getOrder().getEmpNo());
-                customerBillService.customerPayment(cModel);
+            orderService.createOrders(OrderModels);
+            for (int om = 0; om < OrderModels.size(); om++) {
+                OrderCreateModel ocm = OrderModels.get(om);
+                if ("20".equals(ocm.getOrder().getPaymentmethod())) {
+                    customerBillService.createRecBillByOrderNo(ocm.getOrder().getOrderNo());
+                    CustomerPayMentModel cModel = new CustomerPayMentModel();
+                    cModel.setOrderNo(ocm.getOrder().getOrderNo());
+                    cModel.setAmt(ocm.getOrder().getCurAmt().toString());
+                    cModel.setPaymentType(ocm.getOrder().getPayMethod());
+                    cModel.setEmpNo(ocm.getOrder().getEmpNo());
+                    customerBillService.customerPayment(cModel);
+                }
             }
         }
         return convertToRespModel(MessageCode.NORMAL, "保存成功！", null);
