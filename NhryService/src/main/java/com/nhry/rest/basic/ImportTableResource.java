@@ -188,7 +188,22 @@ public class ImportTableResource extends BaseResource {
                 vipcust.setBranchNo(ExcelUtil.getCellValue(cell,row));
                 vipcusts.add(vipcust);
             }
+
+            //校验手机号是否重复
+            for(int k=0;k<vipcusts.size()-1;k++){
+                TVipCustInfo tmp1 = vipcusts.get(k);
+                for(int l=1;l<vipcusts.size()-1;l++){
+                    TVipCustInfo tmp2 = vipcusts.get(l);
+                    if(tmp1.getVipCustNo().equals(tmp2.getVipCustNo())){
+                        return convertToRespModel(MessageCode.NORMAL, "模板中"+tmp1.getVipCustNo()+"的订户号重复，请重新校验数据！","");
+                    }
+                    if(tmp1.getMp().equals(tmp2.getMp())){
+                        return convertToRespModel(MessageCode.NORMAL, "模板中"+tmp1.getMp()+"的手机号重复，请重新校验数据！","");
+                    }
+                }
+            }
         }catch (Exception e){
+            e.printStackTrace();
             return convertToRespModel(MessageCode.LOGIC_ERROR, e.getMessage(), "");
         }
         return convertToRespModel(MessageCode.NORMAL, "保存成功！",tVipCustInfoService.addVipCusts(vipcusts));

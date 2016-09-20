@@ -57,7 +57,7 @@ public class TVipCustInfoServiceImpl extends BaseService implements TVipCustInfo
 		attrs.put("phone", record.getMp());
 		int count = this.tmdVipcust.getCustCountByPhone(attrs);
 		if(count > 0){
-			throw new ServiceException(MessageCode.LOGIC_ERROR, "该电话号码对应的订户信息已存在！");
+			throw new ServiceException(MessageCode.LOGIC_ERROR, "该电话号码"+record.getMp()+"对应的订户信息已存在！");
 		}
 		//判断如果新增订户时订户编号不为空，则代表是订户数据导入
 		if(StringUtils.isBlank(record.getVipCustNo())){
