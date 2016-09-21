@@ -684,7 +684,7 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 			if("10".equals(order.getPreorderSource()))throw new ServiceException(MessageCode.LOGIC_ERROR,"电商的订单不能退订!");
 			if(tDispOrderItemMapper.selectCountOfTodayByOrgOrder(order.getOrderNo())>0)throw new ServiceException(MessageCode.LOGIC_ERROR,"此订单，有未确认的路单!请等路单确认后再操作!");
 			
-			order.setBackDate(afterDate(new Date(),1));
+			order.setBackDate(afterDate(new Date(),0));
 			order.setBackReason(record.getReason());
 			order.setMemoTxt(record.getMemoTxt());
 			
