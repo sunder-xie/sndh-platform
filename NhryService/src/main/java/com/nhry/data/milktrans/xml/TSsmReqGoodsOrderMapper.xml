@@ -38,7 +38,13 @@
         select
         <include refid="Base_Column_List"/>
         FROM t_ssm_req_goods_order
-        WHERE  ORDER_DATE = #{orderDate,jdbcType=DATE}
+        WHERE  1=1
+        <if test="orderDate!=null">
+            and  ORDER_DATE = #{orderDate,jdbcType=DATE}
+        </if>
+        <if test="requiredDate!=null">
+            and  REQUIRED_DATE = #{requiredDate,jdbcType=DATE}
+        </if>
         AND   BRANCH_NO =#{branchNo,jdbcType=VARCHAR}
     </select>
 

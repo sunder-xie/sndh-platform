@@ -9,10 +9,21 @@ import java.util.GregorianCalendar;
  */
 public class DateUtil {
 
-   /* public static void main(String[] args){
-        System.out.println(getTomorrow(new Date()));
-        System.out.println(getDayAfterTomorrow(new Date()));
-    }*/
+//    public static void main(String[] args){
+//        System.out.println(getYestoday(new Date()));
+//        System.out.println(getTomorrow(new Date()));
+//
+//        System.out.println(getDayAfterTomorrow(new Date()));
+//    }
+
+    //获取date 日期的明天
+    public static Date getYestoday(Date today) {
+        Calendar calendar = new GregorianCalendar();
+        calendar.setTime(today);
+        calendar.add(calendar.DATE,-1);//把日期往后增加1天.整数往后推 这个时间就是日期往后推一天的结果
+        Date firstDay = calendar.getTime();
+        return firstDay;
+    }
 
 
     //获取date 日期的明天
