@@ -147,7 +147,8 @@ public class ImportTableResource extends BaseResource {
                 int j = 1;
                 XSSFRow row = sheet.getRow(i);
                 XSSFCell cell = row.getCell(j++);
-                vipcust.setVipCustNo(ExcelUtil.getCellValue(cell, row));
+                String vipCustNo = ExcelUtil.getCellValue(cell, row);
+
                 //start 导入小区信息
 //                vipcust.setVipCustNo(cell.toString());//主键编号
                 cell = row.getCell(j++);
@@ -187,7 +188,9 @@ public class ImportTableResource extends BaseResource {
                     vipcust.setDealerNo(ExcelUtil.getCellValue(cell, row));
                 }
                 cell = row.getCell(j++);
-                vipcust.setBranchNo(ExcelUtil.getCellValue(cell, row));
+                String branchNo = ExcelUtil.getCellValue(cell, row);
+                vipcust.setBranchNo(branchNo);
+                vipcust.setVipCustNo(branchNo.substring(branchNo.length()-6).concat(vipCustNo));
                 vipcusts.add(vipcust);
             }
 
@@ -245,6 +248,7 @@ public class ImportTableResource extends BaseResource {
                 XSSFCell cell = row.getCell(j++);
                 order.setOrderNo(cell.toString());
                 cell = row.getCell(j++);
+                String branchNo = cell.toString();
                 order.setBranchNo(cell.toString());
                 TMdBranch branch = branchService.selectBranchByNo(order.getBranchNo());
                 if (branch == null) {
@@ -272,9 +276,12 @@ public class ImportTableResource extends BaseResource {
                 }
                 cell = row.getCell(j++);
                 ExcelUtil.isNullCell(cell, row, j);
-                order.setMilkmemberNo(ExcelUtil.getCellValue(cell, row));
+                //订户编码规则是
+                String vipCustNo = ExcelUtil.getCellValue(cell, row);
+                String vipCust = branchNo.substring(branchNo.length()-6).concat(vipCustNo);
+                order.setMilkmemberNo(vipCust);
                 //通过订户查询到地址信息，并写入到订单里
-                TMdAddress tMdAddress = tVipCustInfoService.findAddressByCustNoISDefault(order.getMilkmemberNo());
+                TMdAddress tMdAddress = tVipCustInfoService.findAddressByCustNoISDefault(vipCust);
                 if (tMdAddress == null) {
                     throw new RuntimeException("第" + (row.getRowNum() + 1) + "行,第" + (cell.getColumnIndex() + 1) + "列" + cell.toString() + "的订户编码没有对应的地址信息，请校验数据是否正确！");
                 }
