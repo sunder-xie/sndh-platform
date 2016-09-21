@@ -783,6 +783,7 @@
   left join t_md_residential_area r on r.ID = a.RESIDENTIAL_AREA
   where 1=1
   and o.PREORDER_SOURCE!='10'
+  and o.PREORDER_SOURCE !='40'
   and (o.PREORDER_STAT = "10" OR o.PREORDER_STAT = "30")
   and o.INIT_AMT &gt;0
   <if test="branchNo !=null and branchNo!=''">
@@ -832,6 +833,7 @@
     </if>
     where 1=1
     and o.PREORDER_SOURCE!='10'
+    and o.PREORDER_SOURCE !='40'
     and (o.PREORDER_STAT = "10" OR o.PREORDER_STAT = "30")
     <if test="branchNo !=null and branchNo!=''">
       and  o.BRANCH_NO = #{branchNo,jdbcType=VARCHAR}
@@ -990,6 +992,7 @@
     LEFT JOIN t_mst_recv_bill b on o.ORDER_NO = b.ORDER_NO    and b.HAD_OFFSET= 'N'
     where 1=1
     and o.PREORDER_SOURCE!='10'
+    and o.PREORDER_SOURCE !='40'
     and o.PREORDER_STAT != "20"
     and o.PREORDER_STAT != "40"
     and o.PAYMENT_STAT = '10'
@@ -1047,6 +1050,7 @@
     FROM t_preorder o
     where 1=1
     and o.PREORDER_SOURCE!='10'
+    and o.PREORDER_SOURCE !='40'
     and o.PREORDER_STAT != "20"
     and o.PREORDER_STAT != "40"
     and o.PAYMENT_STAT = '10'
@@ -1093,6 +1097,7 @@
     </if>
     WHERE  1=1
     and o.PREORDER_SOURCE!='10'
+    and o.PREORDER_SOURCE !='40'
     and o.PAYMENTMETHOD = '20'
     and ( o.PREORDER_STAT = "10" OR o.PREORDER_STAT = "30" )
     and o.INIT_AMT &gt;0
@@ -1137,6 +1142,7 @@
     WHERE 1=1
     and o.PAYMENTMETHOD = '10'
     and o.PREORDER_SOURCE!='10'
+    and o.PREORDER_SOURCE !='40'
     and (o.PREORDER_STAT = "10" OR o.PREORDER_STAT = "30")
     and o.INIT_AMT &gt;0
     <if test="branchNo!=null and ''!=branchNo">
