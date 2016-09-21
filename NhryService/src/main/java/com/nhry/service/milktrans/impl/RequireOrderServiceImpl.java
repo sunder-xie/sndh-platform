@@ -611,7 +611,7 @@ public class RequireOrderServiceImpl implements RequireOrderService {
         Date orderDate = search.getOrderDate();
         RequireOrderSearch rModel = new RequireOrderSearch();
         rModel.setBranchNo(user.getBranchNo());
-        rModel.setRequiredDate(orderDate);
+        rModel.setOrderDate(DateUtil.getYestoday(orderDate));
         rModel.setSalesOrg(user.getSalesOrg());
         //获取要的货是今天的要货计划
         TSsmReqGoodsOrder reqGoodsOrder = this.tSsmReqGoodsOrderMapper.searchRequireOrder(rModel);
