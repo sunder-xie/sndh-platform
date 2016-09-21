@@ -21,7 +21,6 @@ import com.nhry.data.stock.dao.TSsmGiOrderItemMapper;
 import com.nhry.data.stock.dao.TSsmGiOrderMapper;
 import com.nhry.data.stock.domain.TSsmGiOrder;
 import com.nhry.model.milktrans.*;
-import com.nhry.model.stock.GiOrderModel;
 import com.nhry.service.milktrans.dao.RequireOrderService;
 import com.nhry.service.pi.dao.PIRequireOrderService;
 import com.nhry.utils.DateUtil;
@@ -612,22 +611,17 @@ public class RequireOrderServiceImpl implements RequireOrderService {
         Date orderDate = search.getOrderDate();
         RequireOrderSearch rModel = new RequireOrderSearch();
         rModel.setBranchNo(user.getBranchNo());
-        rModel.setOrderDate(orderDate);
+        rModel.setRequiredDate(orderDate);
         rModel.setSalesOrg(user.getSalesOrg());
+        //获取要的货是今天的要货计划
         TSsmReqGoodsOrder reqGoodsOrder = this.tSsmReqGoodsOrderMapper.searchRequireOrder(rModel);
-        if(reqGoodsOrder == null){
-            throw  new ServiceException(MessageCode.LOGIC_ERROR,"今天的要货计划还未生成");
+        if(reqGoodsOrder == null || StringUtils.isBlank(reqGoodsOrder.getVoucherNo())){
+            throw  new ServiceException(MessageCode.LOGIC_ERROR,"今天还没要货");
         }else{
-            if(StringUtils.isBlank(reqGoodsOrder.getVoucherNo())){
-                throw  new ServiceException(MessageCode.LOGIC_ERROR,"今天的要货计划还未发送ERP");
-            }
-            //判断交货单 是否生成 若没生成 提示还没生成
-            GiOrderModel model = new GiOrderModel();
-            model.setBranchNo(branch.getBranchNo());
-            model.setOrderDate(search.getOrderDate());
+            //判断要货计划对应的 交货单 是否生成 若没生成 提示还没生成
             List<TSsmGiOrder>  giOrders = tSsmGiOrderMapper.findGiOrderByReqOrderNo(reqGoodsOrder.getVoucherNo());
             if(giOrders == null || giOrders.size()<=0){
-                throw  new ServiceException(MessageCode.LOGIC_ERROR,"该自营奶站今天的交货单还没有生成，请先获取交货单");
+                throw  new ServiceException(MessageCode.LOGIC_ERROR,"该奶站的交货单还没有生成，请先获取交货单");
             }else{
                 //判断所有的交货计划是否都已确认过
                 if(giOrders.stream().anyMatch(
@@ -676,7 +670,7 @@ public class RequireOrderServiceImpl implements RequireOrderService {
                     }
 
                     if ("01".equals(branch.getBranchGroup())) {
-                        rModel.setReqOrderNo(reqGoodsOrder.getVoucherNo());
+                        rModel.setOrderDate(search.getOrderDate());
                         //获取确认后的路单中的参加促销的产品
                         List<TOrderDaliyPlanItem> items = tOrderDaliyPlanItemMapper.selectProDayPlanOfSelfBranch(rModel);
                         //获取交货单中的产品
