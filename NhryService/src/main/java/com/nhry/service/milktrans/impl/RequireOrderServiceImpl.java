@@ -670,7 +670,7 @@ public class RequireOrderServiceImpl implements RequireOrderService {
                     }
 
                     if ("01".equals(branch.getBranchGroup())) {
-                        rModel.setOrderDate(search.getOrderDate());
+                        rModel.setReqOrderNo(reqGoodsOrder.getVoucherNo());
                         //获取确认后的路单中的参加促销的产品
                         List<TOrderDaliyPlanItem> items = tOrderDaliyPlanItemMapper.selectProDayPlanOfSelfBranch(rModel);
                         //获取交货单中的产品
