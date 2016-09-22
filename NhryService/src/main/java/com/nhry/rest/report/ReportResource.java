@@ -248,7 +248,7 @@ public class ReportResource extends BaseResource{
             cell.setCellValue(format.format(order.getOrderDate()));
             row = sheet.getRow(5);
             cell = row.getCell(9);
-            cell.setCellValue(order.getReachTimeType()=="10"?"上午配送":"下午配送");
+            cell.setCellValue("10".equals(order.getReachTimeType())?"上午配送":"下午配送");
             row = sheet.getRow(6);
             cell = row.getCell(9);
             cell.setCellValue(order.getTotalQty()==null?"":order.getTotalQty().toString().concat("--").concat(model.getProducts()));
@@ -889,8 +889,8 @@ public class ReportResource extends BaseResource{
 
             ExcelUtil.createCell(row2,10,"送奶员："+orderBillModel.getEmpName(),ExcelUtil.getCellStyle4(workbook));
             sheet.addMergedRegion(new CellRangeAddress(row2.getRowNum(), row2.getRowNum(), 10, 13));
-
-            ExcelUtil.createCell(row3,10,"送奶员电话："+orderBillModel.getEmpTel(),ExcelUtil.getCellStyle4(workbook));
+            String empTel = StringUtils.isNotEmpty(orderBillModel.getEmpTel())?orderBillModel.getEmpTel():"";
+            ExcelUtil.createCell(row3,10,"送奶员电话：" + empTel,ExcelUtil.getCellStyle4(workbook));
             sheet.addMergedRegion(new CellRangeAddress(row3.getRowNum(), row3.getRowNum(), 10, 13));
 
             XSSFRow row4 = sheet.createRow(rowNum++);
@@ -937,7 +937,7 @@ public class ReportResource extends BaseResource{
                 rowNum=rowNum + 6 - productItems.size();
             }
             XSSFRow row14 = sheet.createRow(rowNum++);
-            ExcelUtil.createCell(row14,1,"账号余额",ExcelUtil.getCellStyle4(workbook));
+            ExcelUtil.createCell(row14,1,"账户余额",ExcelUtil.getCellStyle4(workbook));
             sheet.addMergedRegion(new CellRangeAddress(row14.getRowNum(), row14.getRowNum(), 1, 9));
 
             ExcelUtil.createCell(row14,10,orderBillModel.getAccAmt()!=null?orderBillModel.getAccAmt().toString():"0",ExcelUtil.setFontStype(workbook));

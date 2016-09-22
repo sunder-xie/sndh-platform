@@ -24,10 +24,10 @@ import com.nhry.webService.client.PISuccessTMessage;
 import com.nhry.webService.client.VipDetailData.PTDetailQuery_OutServiceStub;
 import com.nhry.webService.client.VipInfoData.ZT_CRM_BuData_MaintainServiceStub;
 import com.nhry.webService.client.VipInfoData.functions.*;
+import com.nhry.webService.client.VipInfoData.functions.ADDRESS_GUID_type1;
 import com.nhry.webService.client.VipInfoData.functions.CITY1_type1;
 import com.nhry.webService.client.VipInfoData.functions.CITY2_type1;
 import com.nhry.webService.client.VipInfoData.functions.COUNTRY_type1;
-import com.nhry.webService.client.VipInfoData.functions.Date;
 import com.nhry.webService.client.VipInfoData.functions.IV_MEMB_GUID_type1;
 import com.nhry.webService.client.VipInfoData.functions.NAME_CO_type1;
 import com.nhry.webService.client.VipInfoData.functions.POST_CODE1_type1;
@@ -47,7 +47,10 @@ import org.springframework.core.task.TaskExecutor;
 
 import java.math.BigDecimal;
 import java.text.SimpleDateFormat;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * Created by cbz on 7/30/2016.
@@ -156,6 +159,12 @@ public class PIVipInfoDataServiceImpl implements PIVipInfoDataService {
                 NAME_LAST_type1 name_last_type1 = new NAME_LAST_type1();
                 name_last_type1.setNAME_LAST_type0(vipCustInfo.getVipName());
                 zscrm_memb_upd_dh_input.setNAME_LAST(name_last_type1);
+
+                if(address!=null) {
+                    ADDRESS_GUID_type1 address_guid_type1 = new ADDRESS_GUID_type1();
+                    address_guid_type1.setADDRESS_GUID_type0(address.getAddressId());
+                    zscrm_memb_upd_dh_input.setADDRESS_GUID(address_guid_type1);
+                }
 
                 NAME_CO_type1 name_co_type1 = new NAME_CO_type1();
                 name_co_type1.setNAME_CO_type0(vipCustInfo.getVipName());

@@ -145,11 +145,21 @@
     and o.ORDER_NO = #{orderNo,jdbcType=VARCHAR}
   </select>
   <select id="selectDispNoByGroup" resultMap="BaseResultMap" parameterType="java.lang.String">
-    select distinct e.reach_time_type ORDER_TYPE, o.EMP_NO, o.BRANCH_NO
+    select distinct o.EMP_NO, o.BRANCH_NO,'10' ORDER_TYPE
 	 from t_mst_plan_order_item e
 	 left join t_preorder o on e.order_no = o.order_no 
-	 where  o.SIGN != '30' and o.PREORDER_STAT != '20' and PREORDER_STAT != '30'
+	 where  o.PREORDER_STAT != '40'  
+			  and o.PREORDER_STAT != '20' 
+	        and o.EMP_NO is not null
 	        and o.BRANCH_NO = #{branchNo,jdbcType=VARCHAR}
+	 UNION 	 
+	 select distinct o.EMP_NO, o.BRANCH_NO,'20' ORDER_TYPE
+	 from t_mst_plan_order_item e
+	 left join t_preorder o on e.order_no = o.order_no 
+	 where  o.PREORDER_STAT != '40'  
+			  and o.PREORDER_STAT != '20' 
+		     and o.EMP_NO is not null
+		     and o.BRANCH_NO = #{branchNo,jdbcType=VARCHAR}
   </select>
   <delete id="deleteByPrimaryKey" parameterType="java.lang.String" >
     delete from t_preorder

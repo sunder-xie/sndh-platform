@@ -169,9 +169,15 @@ public class ResidentialAreaServiceImpl implements ResidentialAreaService {
     @Override
     public int addResidentialArea(TMdResidentialArea tMdResidentialArea) {
         TSysUser user = userSessionService.getCurrentUser();
-        TMdResidentialArea area = tMdResidentialAreaMapper.getAreaByAreaName(tMdResidentialArea.getResidentialAreaTxt(),user.getSalesOrg());
-        if(area!=null){
-            throw new ServiceException(MessageCode.LOGIC_ERROR,user.getSalesOrg()+"销售组织编号下的   "+tMdResidentialArea.getResidentialAreaTxt()+"小区名称已存在！");
+        if(StringUtils.isNotEmpty(user.getSalesOrg())) {
+            List<TMdResidentialArea> area = tMdResidentialAreaMapper.getAreaByAreaName(tMdResidentialArea.getResidentialAreaTxt(), user.getSalesOrg());
+            if (area != null && area.size() > 0) {
+                throw new ServiceException(MessageCode.LOGIC_ERROR, user.getSalesOrg() + "销售组织编号下的   " + tMdResidentialArea.getResidentialAreaTxt() + "小区名称已存在！");
+            }
+        }
+        TMdResidentialArea tmpArea = tMdResidentialAreaMapper.getAreaById(tMdResidentialArea.getId());
+        if(tmpArea!=null) {
+            throw new ServiceException(MessageCode.LOGIC_ERROR,"编号："+ tMdResidentialArea.getId()+ "小区名称已存在！");
         }
         if(StringUtils.isBlank(tMdResidentialArea.getSalesOrg())){
             tMdResidentialArea.setSalesOrg(user.getSalesOrg());

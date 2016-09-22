@@ -57,11 +57,16 @@ public class TVipCustInfoServiceImpl extends BaseService implements TVipCustInfo
 		attrs.put("phone", record.getMp());
 		int count = this.tmdVipcust.getCustCountByPhone(attrs);
 		if(count > 0){
-			throw new ServiceException(MessageCode.LOGIC_ERROR, "该电话号码对应的订户信息已存在！");
+			throw new ServiceException(MessageCode.LOGIC_ERROR, "该电话号码"+record.getMp()+"对应的订户信息已存在！");
 		}
 		//判断如果新增订户时订户编号不为空，则代表是订户数据导入
 		if(StringUtils.isBlank(record.getVipCustNo())){
 			record.setVipCustNo(PrimaryKeyUtils.generateUpperUuidKey());
+		}else{
+			TVipCustInfo vipCustInfo = tmdVipcust.findVipCustByNo(record.getVipCustNo());
+			if(vipCustInfo!=null){
+				throw new ServiceException(MessageCode.LOGIC_ERROR, "该订户"+vipCustInfo.getVipCustNo()+"对应的订户信息已存在！");
+			}
 		}
 		record.setCreateAt(new Date());
 		record.setCreateBy(sysuser.getLoginName());
@@ -231,7 +236,7 @@ public class TVipCustInfoServiceImpl extends BaseService implements TVipCustInfo
 				throw new ServiceException(MessageCode.LOGIC_ERROR, "该奶站编号的对应的奶站信息不存在!");
 			}
 			Map<String,String> attrs = new HashMap<String,String>();
-			attrs.put("salesOrg", this.userSessionService.getCurrentUser().getSalesOrg());
+			attrs.put("salesOrg", branch.getSalesOrg());
 			attrs.put("branchNo",branchNo);
 			attrs.put("phone", address.getMp());
 			String custNo = this.tmdVipcust.getCustNoByPhone(attrs);
