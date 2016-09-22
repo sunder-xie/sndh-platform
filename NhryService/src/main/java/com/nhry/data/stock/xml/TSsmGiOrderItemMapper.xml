@@ -184,7 +184,6 @@
         LEFT JOIN t_ssm_gi_order  o on i.ORDER_NO = o.ORDER_NO
         WHERE 1=1
         and o.BRANCH_NO =  #{branchNo,jdbcType=VARCHAR}
-        and o.ORDER_DATE = #{orderDate,jdbcType=DATE}
         and o.`STATUS`= '30'
         and o.REQ_ORDER_NO =  #{reqOrderNo,jdbcType=VARCHAR}
         GROUP BY i.MATNR
