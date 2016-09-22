@@ -845,7 +845,7 @@ public class DeliverMilkServiceImpl extends BaseService implements DeliverMilkSe
 			tSsmStockService.updateStock(order.getBranchNo(), orgItem.getConfirmMatnr(), orgItem.getConfirmQty().multiply(new BigDecimal(-1)), order.getSalesOrg());
 		}
 		//重新扣库存
-		if( !"20".equals(orgItem.getReason()) && !"10".equals(orgItem.getReason())) {
+		if( !"20".equals(newItem.getReason()) && !"10".equals(newItem.getReason())) {
 			tSsmStockService.updateStock(order.getBranchNo(), newItem.getConfirmMatnr(), newItem.getQty(), order.getSalesOrg());
 		}else{
 			tSsmStockService.updateStock(order.getBranchNo(), newItem.getConfirmMatnr(), newItem.getConfirmQty(), order.getSalesOrg());

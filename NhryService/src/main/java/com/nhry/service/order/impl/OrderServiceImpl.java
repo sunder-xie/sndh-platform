@@ -4097,7 +4097,7 @@ public class OrderServiceImpl extends BaseService implements OrderService {
    		throw new ServiceException(MessageCode.LOGIC_ERROR,"请选择奶箱状态!");
 		}
    	if(StringUtils.isBlank(order.getEmpNo())){
-   		if(!"10".equals(order.getPreorderSource())&&!"20".equals(order.getPreorderSource())&&!"40".equals(order.getPreorderSource()){
+   		if(!"10".equals(order.getPreorderSource())&&!"20".equals(order.getPreorderSource())&&!"40".equals(order.getPreorderSource())){
    			throw new ServiceException(MessageCode.LOGIC_ERROR,"请选择送奶员!");
    		}
 		}
