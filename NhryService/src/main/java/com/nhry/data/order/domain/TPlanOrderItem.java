@@ -87,12 +87,24 @@ public class TPlanOrderItem {
     
     private Integer yFresh;
     
+    private boolean isModified;
+    
 //    private String isDeletedFlag;
     
 //    private String deletePlansFlag;
     
     private String isStop;
     
+	public boolean isModified()
+	{
+		return isModified;
+	}
+
+	public void setModified(boolean isModified)
+	{
+		this.isModified = isModified;
+	}
+
 	public String getShortTxt()
 	{
 		return shortTxt;
