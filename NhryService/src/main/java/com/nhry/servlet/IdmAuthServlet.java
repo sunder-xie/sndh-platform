@@ -164,11 +164,9 @@ public class IdmAuthServlet extends HttpServlet {
 		try {
 			if(StringUtils.isEmpty(ip)){
 				response.setHeader("appkey", token);
-//				getServletContext().getRequestDispatcher(EnvContant.getSystemConst("front_home_page")).forward(request,response);
 				response.sendRedirect(EnvContant.getSystemConst("front_home_page")+"?appkey="+token);
 			}else{
 				response.setHeader("appkey", token);
-//				getServletContext().getRequestDispatcher("http://"+Base64Util.decodeStr(ip)+EnvContant.getSystemConst("front_short_url"));
 				response.sendRedirect("http://"+Base64Util.decodeStr(ip)+EnvContant.getSystemConst("front_short_url")+"?appkey="+token);
 			}
 		} catch (Exception e) {
@@ -185,8 +183,7 @@ public class IdmAuthServlet extends HttpServlet {
 		//跳转到登出页面
 		try {
 			response.setHeader("appkey", token);
-			getServletContext().getRequestDispatcher(EnvContant.getSystemConst("info_page_uri")).forward(null,response);
-//			response.sendRedirect(EnvContant.getSystemConst("info_page_uri")+"?appkey="+token);
+			response.sendRedirect(EnvContant.getSystemConst("info_page_uri")+"?appkey="+token);
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
