@@ -95,6 +95,18 @@ public class TPlanOrderItem {
     
     private String isStop;
     
+    private String toStop;
+    
+	public String getToStop()
+	{
+		return toStop;
+	}
+
+	public void setToStop(String toStop)
+	{
+		this.toStop = toStop;
+	}
+
 	public boolean isModified()
 	{
 		return isModified;
