@@ -30,6 +30,7 @@ import com.nhry.data.auth.domain.TSysAccesskey;
 import com.nhry.data.auth.domain.TSysUser;
 import com.nhry.service.auth.dao.TSysAccesskeyService;
 import com.nhry.service.auth.dao.UserService;
+import com.nhry.utils.AES;
 import com.nhry.utils.APIHttpClient;
 import com.nhry.utils.Base64Util;
 import com.nhry.utils.CookieUtil;
@@ -164,12 +165,16 @@ public class IdmAuthServlet extends HttpServlet {
 		try {
 			if(StringUtils.isEmpty(ip)){
 				response.setHeader("appkey", token);
+				CookieUtil.setCookie(request, response, "appkey", token,180);
 				response.sendRedirect(EnvContant.getSystemConst("front_home_page")+"?appkey="+token);
+//				response.sendRedirect(EnvContant.getSystemConst("front_home_page"));
 			}else{
 				response.setHeader("appkey", token);
+				CookieUtil.setCookie(request, response, "appkey", token,180);
 				response.sendRedirect("http://"+Base64Util.decodeStr(ip)+EnvContant.getSystemConst("front_short_url")+"?appkey="+token);
+//				response.sendRedirect("http://"+Base64Util.decodeStr(ip)+EnvContant.getSystemConst("front_short_url"));
 			}
-		} catch (IOException e) {
+		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
@@ -182,8 +187,9 @@ public class IdmAuthServlet extends HttpServlet {
 	public void sendRedirectToInfoPage(HttpServletResponse response,String token){
 		//跳转到登出页面
 		try {
+			response.setHeader("appkey", token);
 			response.sendRedirect(EnvContant.getSystemConst("info_page_uri")+"?appkey="+token);
-		} catch (IOException e) {
+		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
