@@ -165,12 +165,12 @@ public class IdmAuthServlet extends HttpServlet {
 		try {
 			if(StringUtils.isEmpty(ip)){
 				response.setHeader("appkey", token);
-//				CookieUtil.setCookie(request, response, "appkey", token,180);
+				CookieUtil.setCookie(request, response, "appkey", token,180);
 				response.sendRedirect(EnvContant.getSystemConst("front_home_page")+"?appkey="+token);
 //				response.sendRedirect(EnvContant.getSystemConst("front_home_page"));
 			}else{
 				response.setHeader("appkey", token);
-//				CookieUtil.setCookie(request, response, "appkey", token,180);
+				CookieUtil.setCookie(request, response, "appkey", token,180);
 				response.sendRedirect("http://"+Base64Util.decodeStr(ip)+EnvContant.getSystemConst("front_short_url")+"?appkey="+token);
 //				response.sendRedirect("http://"+Base64Util.decodeStr(ip)+EnvContant.getSystemConst("front_short_url"));
 			}
