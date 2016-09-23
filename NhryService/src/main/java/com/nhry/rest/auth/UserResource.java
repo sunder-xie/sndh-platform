@@ -13,6 +13,7 @@ import com.nhry.rest.BaseResource;
 import com.nhry.service.auth.dao.UserService;
 import com.nhry.utils.CookieUtil;
 import com.nhry.utils.EnvContant;
+import com.nhry.utils.HttpUtils;
 import com.nhry.utils.SysContant;
 import com.sun.jersey.spi.resource.Singleton;
 import com.wordnik.swagger.annotations.Api;
@@ -29,7 +30,10 @@ import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
+import java.io.IOException;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Path("/user")
 @Component
@@ -153,5 +157,22 @@ public class UserResource extends BaseResource {
 	@ApiOperation(value = "/findNotRoleUserPage", response = PageInfo.class, notes = "根据用户名(或者中文名)公司编码查询未分配角色人员列表 分页")
 	public Response findNotRoleUserPage(@ApiParam(required = true, name = "um", value = "用户登录名、中文名、公司编码") UserQueryModel3 um) {
 		return convertToRespModel(MessageCode.NORMAL, null, userService.findNotRoleUserPage(um));
+	}
+	
+	@POST
+	@Path("/find/user/{ak}")
+	@Produces(MediaType.APPLICATION_JSON)
+	@ApiOperation(value = "/find/user/{ak}", response = PageInfo.class, notes = "根据ak获取登录用户信息")
+	public Response findNotRoleUserPage(@ApiParam(required = true, name = "ak", value = "ak") String ak) {
+		String userObject = "no value";
+		try {
+			Map<String,Object> attrs = new HashMap<String,Object>();
+			attrs.put("access_token", ak);
+			userObject = HttpUtils.request(EnvContant.getSystemConst("auth_profile"), attrs);
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return convertToRespModel(MessageCode.NORMAL, null, userObject);
 	}
 }
