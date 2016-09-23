@@ -163,7 +163,7 @@ public class UserResource extends BaseResource {
 	@Path("/find/user/{ak}")
 	@Produces(MediaType.APPLICATION_JSON)
 	@ApiOperation(value = "/find/user/{ak}", response = PageInfo.class, notes = "根据ak获取登录用户信息")
-	public Response findNotRoleUserPage(@ApiParam(required = true, name = "ak", value = "ak") String ak) {
+	public Response findNotRoleUserPage(@ApiParam(required = true, name = "ak", value = "ak") @PathParam("ak")String ak) {
 		String userObject = "no value";
 		try {
 			Map<String,Object> attrs = new HashMap<String,Object>();
