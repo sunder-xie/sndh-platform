@@ -18,7 +18,7 @@ public class OptionManager{
         authenticator1.setPassword(EnvContant.getSystemConst("PI.MasterData.PASSWORD"));
         authenticator1.setUsername(EnvContant.getSystemConst("PI.MasterData.USERNAME"));
         options.setProperty(HTTPConstants.AUTHENTICATE, authenticator1);
-        options.setProperty(HTTPConstants.SO_TIMEOUT,new Integer(300000));
+        options.setProperty(HTTPConstants.SO_TIMEOUT,new Integer(7200000));
         return options;
     }
 }
