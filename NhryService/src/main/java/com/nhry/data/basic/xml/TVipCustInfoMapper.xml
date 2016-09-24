@@ -1054,4 +1054,8 @@
 	<select id="updateSapNo" parameterType="com.nhry.data.basic.domain.TVipCustInfo">
 		UPDATE t_vip_cust_info set VIP_CUST_NO_SAP=#{vipCustNoSap},VIP_MP=#{vipMp} WHERE VIP_CUST_NO = #{vipCustNo}
 	</select>
+
+	<update id="updateVipMp" parameterType="com.nhry.data.basic.domain.TVipCustInfo">
+		UPDATE t_vip_cust_info set VIP_MP=#{vipMp} WHERE VIP_CUST_NO_SAP=#{vipCustNoSap}
+	</update>
 </mapper>

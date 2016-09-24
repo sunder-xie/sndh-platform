@@ -114,4 +114,9 @@ public class TVipCustInfoMapperImpl implements TVipCustInfoMapper {
 	public int updateSapNo(TVipCustInfo vipCustInfo) {
 		return this.sqlSessionTemplate.update("updateSapNo",vipCustInfo);
 	}
+
+	@Override
+	public int updateVipMp(TVipCustInfo vipCustInfo) {
+		return this.sqlSessionTemplate.update("updateVipMp",vipCustInfo);
+	}
 }
