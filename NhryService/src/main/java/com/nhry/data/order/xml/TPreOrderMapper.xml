@@ -960,6 +960,12 @@
     <if test="salesOrg != null and salesOrg != ''">
      		AND o.SALES_ORG = #{salesOrg,jdbcType=VARCHAR}
     </if>
+    <if test="empNo != null and empNo != ''">
+     		AND o.EMP_NO = #{empNo,jdbcType=VARCHAR}
+    </if>
+    <if test="paymentStat != null and paymentStat != ''">
+     		AND o.PAYMENTMETHOD = #{paymentStat,jdbcType=VARCHAR}
+    </if>
     <if test="dealerNo != null and dealerNo != ''">
      		AND o.DEALER_NO = #{dealerNo,jdbcType=VARCHAR}
     </if>
