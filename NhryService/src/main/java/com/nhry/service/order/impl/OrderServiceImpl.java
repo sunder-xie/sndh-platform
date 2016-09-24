@@ -1008,10 +1008,10 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 		TPreOrder order = tPreOrderMapper.selectByPrimaryKey(record.getOrderNo());
 		
 		//在批量续订时，预付款的订单自动续订
-		if("true".equals(record.getContent()) || ("batch".equals(record.getStatus()) && "20".equals(order.getPaymentmethod())) ){
-			continueOrderAuto(order.getOrderNo());
-			return 1;
-		}
+//		if("true".equals(record.getContent()) || ("batch".equals(record.getStatus()) && "20".equals(order.getPaymentmethod())) ){
+//			continueOrderAuto(order.getOrderNo());
+//			return 1;
+//		}
 		
 		if("Y".equals(order.getResumeFlag())){
 			throw new ServiceException(MessageCode.LOGIC_ERROR, order.getOrderNo()+" [订单已经被续订过!]");
