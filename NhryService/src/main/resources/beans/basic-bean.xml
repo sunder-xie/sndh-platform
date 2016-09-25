@@ -152,6 +152,7 @@
 		<property name="branchMapper" ref="branchMapper"></property>
 		<property name="userSessionService" ref="userSessionService"></property>
 		<property name="vipInfoDataService" ref="piVipInfoDataService"/>
+		<property name="taskExecutor" ref="taskExecutor"/>
 	</bean>
 	<bean id="addressMapper" class="com.nhry.data.basic.impl.TMdAddressMapperImpl">
 		<property name="sqlSessionTemplate" ref="dynamicSqlSessionTemplate"></property>

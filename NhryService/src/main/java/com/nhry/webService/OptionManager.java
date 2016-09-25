@@ -17,9 +17,11 @@ public class OptionManager{
         HttpTransportPropertiesImpl.Authenticator authenticator1 = new HttpTransportPropertiesImpl.Authenticator();
         authenticator1.setPassword(EnvContant.getSystemConst("PI.MasterData.PASSWORD"));
         authenticator1.setUsername(EnvContant.getSystemConst("PI.MasterData.USERNAME"));
-        options.setTimeOutInMilliSeconds(60000L);
+//        options.setTimeOutInMilliSeconds(600000L);
+        int timeOutInMilliSeconds = 3 * 60 * 1000;
         options.setProperty(HTTPConstants.AUTHENTICATE, authenticator1);
-        options.setProperty(HTTPConstants.SO_TIMEOUT,new Integer(600000));
+        options.setProperty(HTTPConstants.CONNECTION_TIMEOUT,new Integer(timeOutInMilliSeconds));
+        options.setProperty(HTTPConstants.SO_TIMEOUT,new Integer(timeOutInMilliSeconds));
         return options;
     }
 }
