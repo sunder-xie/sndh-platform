@@ -1008,12 +1008,12 @@ public class ReportResource extends BaseResource{
             XSSFWorkbook workbook = new XSSFWorkbook(new BufferedInputStream(input));
 
             XSSFSheet sheet = workbook.getSheetAt(0);
-            XSSFRow row = sheet.createRow(1);
-            XSSFCell cell = row.createCell(1);
+            XSSFRow row = sheet.getRow(1);
+            XSSFCell cell = row.getCell(1);
             cell.setCellStyle(ExcelUtil.setBorderStyle(workbook));
             cell.setCellValue("配送奶站："+empModel.getEmp().getBranchName());
 
-            cell = row.createCell(5);
+            cell = row.getCell(5);
             cell.setCellStyle(ExcelUtil.setBorderStyle(workbook));
             cell.setCellValue("送奶员: "+empModel.getEmp().getEmpName());
             int rowNum = 4;
@@ -1029,11 +1029,11 @@ public class ReportResource extends BaseResource{
                     cell.setCellValue(orderBillModel.getCustTel());
                     cell = row.createCell(3);cell.setCellType(Cell.CELL_TYPE_STRING);
                     cell.setCellStyle(ExcelUtil.setBorderStyle(workbook));
-                    String pitem="";
+                    StringBuilder pitemstr = new StringBuilder();
                     for(ProductItem pItems : productItems){
-                        pitem = pItems.getMatnrTxt().concat("--").concat(String.valueOf(pItems.getQty())).concat("  ");
+                        pitemstr.append(pItems.getMatnrTxt().concat("--").concat(String.valueOf(pItems.getQty())).concat("  "));
                     }
-                    cell.setCellValue(pitem);
+                    cell.setCellValue(pitemstr.toString());
                     cell = row.createCell(4);cell.setCellType(Cell.CELL_TYPE_STRING);
                     cell.setCellStyle(ExcelUtil.setBorderStyle(workbook));
                     cell.setCellValue(orderBillModel.getInitAmt()!=null?orderBillModel.getInitAmt().toString():"0");
