@@ -21,7 +21,7 @@
 	<!-- app token 校验接口 -->
 	<config key="app_token_validate"  value="http://myditest.newhopedairy.cn:8080/siam/rest/validate"></config>
 	<!-- 前端页面home -->
-	<config key="front_home_page" value="http://test.nhry-dev.com/release/#/newhope/home"></config>
+	<config key="front_home_page" value="http://test.nhry-dev.com/release/#/authed"></config>
 	<config key="front_short_url" value="/local/#/newhope/home"></config>
 	<!-- 电商接口base url -->
 	<config key="ec_base_url" value="http://ec2-54-222-233-1.cn-north-1.compute.amazonaws.com.cn"></config>
@@ -59,7 +59,7 @@
 	<config key="SMS.LoginName" value="sc_xhry"/>
 	<config key="SMS.Password" value="ry85953221.com"/>
 
-	<config key="filePath" value="/opt/s3/"/>
+	<config key="filePath" value="C:\works\coding\nhry-platform-cbz\NhryService\target\NhryService\"/>
 	<!-- 没有配置组织时，提示页面地址 -->
 	<config key="info_page_uri" value="http://test.nhry-dev.com/release/#/error/NoSalesOrg"></config>
 </configs>
