@@ -48,6 +48,7 @@
         <result column="CUST_ACC_AMT" property="custAccAmt" jdbcType="DECIMAL" />
         <result column="START_DATE" property="startDate" jdbcType="DATE" />
         <result column="END_DATE" property="endDate" jdbcType="DATE" />
+        <result column="INIT_AMT" property="initAmt" jdbcType="DECIMAL"/>
         <result column="SALES_ORG_NAME" property="salesOrgName" jdbcType="VARCHAR" />
         <collection property="entries" resultMap="MARAMAP"></collection>
     </resultMap>

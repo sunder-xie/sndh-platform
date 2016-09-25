@@ -1008,12 +1008,12 @@ public class ReportResource extends BaseResource{
             XSSFWorkbook workbook = new XSSFWorkbook(new BufferedInputStream(input));
 
             XSSFSheet sheet = workbook.getSheetAt(0);
-            XSSFRow row = sheet.createRow(1);
-            XSSFCell cell = row.createCell(1);
+            XSSFRow row = sheet.getRow(1);
+            XSSFCell cell = row.getCell(1);
             cell.setCellStyle(ExcelUtil.setBorderStyle(workbook));
             cell.setCellValue("配送奶站："+empModel.getEmp().getBranchName());
 
-            cell = row.createCell(5);
+            cell = row.getCell(5);
             cell.setCellStyle(ExcelUtil.setBorderStyle(workbook));
             cell.setCellValue("送奶员: "+empModel.getEmp().getEmpName());
             int rowNum = 4;
