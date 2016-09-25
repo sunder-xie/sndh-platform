@@ -465,7 +465,7 @@
         c.MP CUST_TEL,b.TEL BRANCH_TEL,o.INIT_AMT,
         (
         CASE
-        WHEN bill.CUST_ACC_AMT >0 and o.INIT_AMT - bill.CUST_ACC_AMT >0 THEN  o.INIT_AMT-bill.CUST_ACC_AMT
+        WHEN bill.CUST_ACC_AMT >=0 and o.INIT_AMT - bill.CUST_ACC_AMT >0 THEN  o.INIT_AMT-bill.CUST_ACC_AMT
         WHEN bill.CUST_ACC_AMT IS NULL and  o.INIT_AMT - acct.ACCT_AMT  >0 THEN  o.INIT_AMT - acct.ACCT_AMT
         ELSE 0 END
         )ORDER_AMT,
