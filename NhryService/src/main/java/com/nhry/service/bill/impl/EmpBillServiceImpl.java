@@ -425,22 +425,24 @@ public class EmpBillServiceImpl implements EmpBillService {
             if(flag){
                 if("20".equals(emp.getSalaryMet())){
                     //产品数量
-                    int dispAllNum = empBillMapper.empAccoDispFeeByNum(search);
+                    int dispAllNum =0;
                     //按产品结算  //产品配送费
                     List<EmpAccoDispFeeByProduct> pro = empBillMapper.empDisByProduct(search);
                     BigDecimal dispFee = this.getEmpDispFee(pro,emp.getSalesOrg());
+                    dispAllNum = dispAllNum +( pro !=null || pro.size()>0 ? pro.size() : 0);
                     empSal.setDispSal(dispFee);
 
                     //按产品结算  //内部销售配送费
                     List<EmpAccoDispFeeByProduct> proIn = empBillMapper.empInDispByProduct(search);
+                    dispAllNum = dispAllNum +( proIn !=null || proIn.size()>0 ? proIn.size() : 0);
                     BigDecimal inDispFee = this.getEmpDispFee(proIn,emp.getSalesOrg());
                     empSal.setInDispSal(inDispFee);
 
                     //按产品结算  //赠品配送费
                     List<EmpAccoDispFeeByProduct> proFree = empBillMapper.empFreeDispByProduct(search);
                     BigDecimal dispFreeFee = this.getEmpDispFee(proFree,emp.getSalesOrg());
+                    dispAllNum = dispAllNum +( proFree !=null || proFree.size()>0 ? proFree.size() : 0);
                     empSal.setSendDispSal(dispFreeFee);
-
                     empSal.setDispNum(dispAllNum);
                 }else{
                     int dispNum = empBillMapper.empDispFeeNum(search);
