@@ -20,6 +20,7 @@ public class CollectOrderBillModel {
     private String custTel;         //订户电话
     private BigDecimal accAmt;      //订户余额(当时)
     private String custAddress;     //订户地址
+    private String custAddressShort;//订户地址(不包括省市区)
     private String empNo;           //送奶工号
     private String empName;         //送奶工名称
     private String empTel;          //送奶工电话
@@ -29,6 +30,15 @@ public class CollectOrderBillModel {
     private Date endDate;             //订奶结束日期
     private String salesOrgName;      //销售组织名称
     private List<ProductItem> entries; // 产品
+
+
+    public String getCustAddressShort() {
+        return custAddressShort;
+    }
+
+    public void setCustAddressShort(String custAddressShort) {
+        this.custAddressShort = custAddressShort;
+    }
 
     public String getSalesOrgName() {
         return salesOrgName;
