@@ -29,6 +29,7 @@
         FROM t_ssm_req_goods_order_item
         WHERE  1=1
         and ORDER_NO =  #{orderNo,jdbcType=VARCHAR}
+        ORDER BY ITEM_NO ASC
     </select>
     <select id="getReqGoodsItemsByMatnrAndOrderNo" resultMap="BaseResultMap" parameterType="com.nhry.model.milktrans.ReqGoodsOrderItemSearch" >
         select

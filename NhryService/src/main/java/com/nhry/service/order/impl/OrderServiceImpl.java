@@ -186,14 +186,14 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 		smodel.setBranchNo(userSessionService.getCurrentUser().getBranchNo());
 		smodel.setSalesOrg(userSessionService.getCurrentUser().getSalesOrg());
 		smodel.setDealerNo(userSessionService.getCurrentUser().getDealerId());
-		smodel.setOrderDateStart(format.format(afterDate(new Date(),1)));
-		smodel.setOrderDateEnd(format.format(afterDate(new Date(),5)));
+		smodel.setOrderDateStart(format.format(afterDate(new Date(),0)));
+		smodel.setOrderDateEnd(format.format(afterDate(new Date(),7)));
 		return tPreOrderMapper.selectStopOrderNum(smodel);
 	}
 
 	/* (non-Javadoc) 
 	* @title: searchNeedResumeOrders
-	* @description: 5天内需要续订的订单列表
+	* @description: 5天内需要续订的订单列表 (0-7 天)
 	* @param smodel
 	* @return 
 	* @see com.nhry.service.order.dao.OrderService#searchNeedResumeOrders(com.nhry.model.order.OrderSearchModel) 
@@ -204,8 +204,8 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 		if(StringUtils.isBlank(smodel.getOrderDateStart()) || StringUtils.isBlank(smodel.getOrderDateEnd())){
 			SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
 			Date today = new Date();
-			smodel.setOrderDateStart(format.format(afterDate(today,1)));
-			smodel.setOrderDateEnd(format.format(afterDate(today,5)));
+			smodel.setOrderDateStart(format.format(afterDate(today,0)));
+			smodel.setOrderDateEnd(format.format(afterDate(today,7)));
 		}
 		
 		//权限
@@ -5674,15 +5674,15 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 	public void selectOrdersAndSendMessage() {
 		SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
 		Date today = new Date();
-		Date endDate = afterDate(today,5);
+		Date endDate = afterDate(today,7);
 		String todayStr = format.format(today);
 		String endStr = format.format(endDate);
 		System.out.println("===========执行发送短信接口================");
 		if("true".equals(EnvContant.getSystemConst("send_message_flag"))){
 //			预付款：
 //			尊敬的XX 客户：
-//			您本期订奶预计将于5天后到期，我们将于5日内上门收取下期奶款，感谢您的支持！奶站电话：
-//			自动触发条件：订单截止日期前5天。
+//			您本期订奶预计将于7天后到期，我们将于7日内上门收取下期奶款，感谢您的支持！奶站电话：
+//			自动触发条件：订单截止日期前7天。
 			taskExecutor.execute(new Thread(){
 				@Override
 				public void run() {
@@ -5691,7 +5691,7 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 					List<TPreOrder> list = tPreOrderMapper.searchPrePayOrdersForSendMessage(endStr);
 					System.out.println("===========执行发送短信接口==订单数量=============="+list.size());
 					list.stream().forEach((e)->{
-						String str = "尊敬的" + e.getMilkmemberName() + "客户:您本期订奶预计将于5天后到期，我们将于5日内上门收取下期奶款，感谢您的支持！奶站电话：" + e.getBranchNo();
+						String str = "尊敬的" + e.getMilkmemberName() + "客户:您本期订奶预计将于7天后到期，我们将于7日内上门收取下期奶款，感谢您的支持！奶站电话：" + e.getBranchNo();
 						smsSendService.sendMessage(str, e.getCustomerTel());
 						System.out.println("===========发送短信====pre============"+e.getMilkmemberName()+" == "+e.getCustomerTel());
 					});
@@ -5709,7 +5709,7 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 					this.setName("sendMessageAfPayOrder");
 					List<TPreOrder> list = tPreOrderMapper.searchAfPayOrdersForSendMessage(todayStr);
 					list.stream().forEach((e)->{
-						String str = "尊敬的" + e.getMilkmemberName() + "客户:您本期订奶共" + e.getyGrowth() + "瓶，总计" + e.getInitAmt() + "元，我们将于5日内上门收取本期奶款，感谢您的支持！";
+						String str = "尊敬的" + e.getMilkmemberName() + "客户:您本期订奶共" + e.getyGrowth() + "瓶，总计" + e.getInitAmt() + "元，我们将于7日内上门收取本期奶款，感谢您的支持！";
 						smsSendService.sendMessage(str, e.getCustomerTel());
 						System.out.println("===========发送短信===af============="+e.getMilkmemberName()+" == "+e.getCustomerTel());
 					});
@@ -5719,7 +5719,7 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 //			电商订购：
 //			尊敬的XX 客户：
 //			您本期订奶预计将于5天后到期，请及时续费，感谢您的支持！公司电话：400—xxxxxxxx
-//			自动触发条件：订单截止日期前5天。
+//			自动触发条件：订单截止日期前7天。
 			taskExecutor.execute(new Thread(){
 				@Override
 				public void run() {

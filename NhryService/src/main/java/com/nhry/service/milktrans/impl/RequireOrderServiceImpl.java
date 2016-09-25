@@ -270,7 +270,7 @@ public class RequireOrderServiceImpl implements RequireOrderService {
         TSsmReqGoodsOrder orderModel = this.tSsmReqGoodsOrderMapper.getRequireOrderByNo(orderNo);
 
         if ("30".equals(orderModel.getStatus())) {
-            message = "今天的要货计划已确定，不可再添加或修改";
+            message = "这天的要货计划已确定，不可再添加或修改";
             throw new ServiceException(MessageCode.LOGIC_ERROR, message);
         }
         orderModel.setLastModified(new Date());
