@@ -902,6 +902,12 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 			
 			if(entriesList.size()==0)throw new ServiceException(MessageCode.LOGIC_ERROR,"在日期内"+ orderNo +"无法续订，没有订单行项目!");
 
+			//会员号
+			if(order.getMemberNo()==null){
+				TVipCustInfo vip = tVipCustInfoService.findVipCustByNoForUpt(order.getMilkmemberNo());
+				if(vip!=null)order.setMemberNo(vip.getVipCustNoSap());
+			}
+			
 			//保存订单，订单行
 			order.setCurAmt(orderAmt);//订单价格
 			order.setInitAmt(orderAmt);
@@ -1112,6 +1118,12 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 			}
 			
 			if(entriesList.size()==0)throw new ServiceException(MessageCode.LOGIC_ERROR,"在日期内"+record.getOrderNo()+"无法续订，没有订单行项目!");
+			
+			//会员号
+			if(order.getMemberNo()==null){
+				TVipCustInfo vip = tVipCustInfoService.findVipCustByNoForUpt(order.getMilkmemberNo());
+				if(vip!=null)order.setMemberNo(vip.getVipCustNoSap());
+			}
 			
 			//保存订单，订单行
 			order.setCurAmt(orderAmt);//订单价格
