@@ -409,7 +409,7 @@
             WHEN bill.CUST_ACC_AMT >=0 and o.INIT_AMT - bill.CUST_ACC_AMT >0 THEN  o.INIT_AMT-bill.CUST_ACC_AMT
         ELSE 0 END
         )ORDER_AMT,
-        bill.CUST_ACC_AMT  ACCT_AMT,
+        bill.CUST_ACC_AMT,
         MIN(i.START_DISP_DATE)  START_DATE,o.END_DATE,
         (SELECT item.ITEM_NAME  from t_sys_code_item item WHERE item.TYPE_CODE = <include refid="mybaties.constant.SALES_ORG_CONSTANT"/> and item.ITEM_CODE= o.SALES_ORG) SALES_ORG_NAME,
 
@@ -463,7 +463,7 @@
         WHEN bill.CUST_ACC_AMT >=0 and o.INIT_AMT - bill.CUST_ACC_AMT >0 THEN  o.INIT_AMT-bill.CUST_ACC_AMT
         ELSE 0 END
         ) ORDER_AMT,
-        bill.CUST_ACC_AMT  ACCT_AMT,
+        bill.CUST_ACC_AMT,
         o.END_DATE,MIN(i.DISP_DATE) START_DATE,
         (SELECT item.ITEM_NAME  from t_sys_code_item item WHERE item.TYPE_CODE = <include refid="mybaties.constant.SALES_ORG_CONSTANT"/>  and item.ITEM_CODE= o.SALES_ORG) SALES_ORG_NAME,
 

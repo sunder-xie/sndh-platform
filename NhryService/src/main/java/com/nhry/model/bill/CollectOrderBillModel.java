@@ -18,7 +18,8 @@ public class CollectOrderBillModel {
     private String vipCustNo;       //订户号
     private String vipName;         //订户名称
     private String custTel;         //订户电话
-    private BigDecimal accAmt;      //订户余额(当时)
+    private BigDecimal custAccAmt;  //订户余额
+    private BigDecimal accAmt;      //订户余额（收取的订户余额)
     private String custAddress;     //订户地址
     private String custAddressShort;//订户地址(不包括省市区)
     private String empNo;           //送奶工号
@@ -31,6 +32,14 @@ public class CollectOrderBillModel {
     private String salesOrgName;      //销售组织名称
     private List<ProductItem> entries; // 产品
 
+
+    public BigDecimal getCustAccAmt() {
+        return custAccAmt;
+    }
+
+    public void setCustAccAmt(BigDecimal custAccAmt) {
+        this.custAccAmt = custAccAmt;
+    }
 
     public String getCustAddressShort() {
         return custAddressShort;
