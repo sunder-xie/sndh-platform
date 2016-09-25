@@ -22,6 +22,8 @@ import com.nhry.utils.PrimaryKeyUtils;
 import com.nhry.utils.date.Date;
 
 import org.apache.commons.lang3.StringUtils;
+import org.apache.log4j.Logger;
+import org.springframework.core.task.TaskExecutor;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -34,9 +36,15 @@ public class TVipCustInfoServiceImpl extends BaseService implements TVipCustInfo
 	private TVipAcctMapper vipAcctMapper;
 	private TMdBranchMapper branchMapper;
 	private PIVipInfoDataService vipInfoDataService;
-
+	private static Logger logger = Logger.getLogger(TVipCustInfoServiceImpl.class);
 	public void setTmdVipcust(TVipCustInfoMapper tmdVipcust) {
 		this.tmdVipcust = tmdVipcust;
+	}
+
+	private TaskExecutor taskExecutor;
+
+	public void setTaskExecutor(TaskExecutor taskExecutor) {
+		this.taskExecutor = taskExecutor;
 	}
 
 	@Override
@@ -106,13 +114,23 @@ public class TVipCustInfoServiceImpl extends BaseService implements TVipCustInfo
 	}
 	@Override
 	public int batchAddVipCustSapNo(String salesOrg) {
+
 		if(StringUtils.isBlank(salesOrg)){
 			throw new ServiceException(MessageCode.LOGIC_ERROR, "请传入销售组织！");
 		}
 		List<TVipCustInfo> VipList= tmdVipcust.findVipCustByNoSapNo(salesOrg);
 		int i = 0;
-		VipList.stream().forEach((e)->{
-			vipInfoDataService.executeVipInfoData(e,e.getVipMp());
+		taskExecutor.execute(new Thread(){
+			@Override
+			public void run() {
+				this.setName("batchAddVipCustSapNo"+System.currentTimeMillis());
+				logger.info("批量更新订户会员开始");
+				VipList.stream().forEach((e)->{
+					vipInfoDataService.generateVipInfoData(e,e.getVipMp());
+				});
+
+				logger.info("批量更新订户会员结束");
+			}
 		});
 		return 1;
 	}

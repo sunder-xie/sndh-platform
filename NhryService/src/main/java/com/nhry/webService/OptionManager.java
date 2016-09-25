@@ -12,13 +12,16 @@ import org.apache.log4j.Logger;
 public class OptionManager{
     private static Logger logger = Logger.getLogger(OptionManager.class);
     public static Options initializable(Options options){
-        logger.info("---------------------"+EnvContant.getSystemConst("PI.MasterData.USERNAME"));
-        logger.info("---------------------"+EnvContant.getSystemConst("PI.MasterData.PASSWORD"));
+//        logger.info("---------------------"+EnvContant.getSystemConst("PI.MasterData.USERNAME"));
+//        logger.info("---------------------"+EnvContant.getSystemConst("PI.MasterData.PASSWORD"));
         HttpTransportPropertiesImpl.Authenticator authenticator1 = new HttpTransportPropertiesImpl.Authenticator();
         authenticator1.setPassword(EnvContant.getSystemConst("PI.MasterData.PASSWORD"));
         authenticator1.setUsername(EnvContant.getSystemConst("PI.MasterData.USERNAME"));
+//        options.setTimeOutInMilliSeconds(600000L);
+        int timeOutInMilliSeconds = 3 * 60 * 1000;
         options.setProperty(HTTPConstants.AUTHENTICATE, authenticator1);
-        options.setProperty(HTTPConstants.SO_TIMEOUT,new Integer(300000));
+        options.setProperty(HTTPConstants.CONNECTION_TIMEOUT,new Integer(timeOutInMilliSeconds));
+        options.setProperty(HTTPConstants.SO_TIMEOUT,new Integer(timeOutInMilliSeconds));
         return options;
     }
 }

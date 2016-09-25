@@ -4,6 +4,7 @@ import com.nhry.data.promotion.dao.*;
 import com.nhry.data.promotion.domain.*;
 import com.nhry.service.promotion.dao.PromotionDataService;
 import org.apache.commons.lang.StringUtils;
+import org.apache.log4j.Logger;
 
 import java.util.Date;
 
@@ -11,7 +12,7 @@ import java.util.Date;
  * Created by cbz on 8/9/2016.
  */
 public class PromotionDataServiceImpl implements PromotionDataService{
-
+    private static Logger logger = Logger.getLogger(PromotionDataServiceImpl.class);
     private PromotionMapper promotionMapper;
     private PromotionOrigItemMapper promotionOrigItemMapper;
     private PromotionConItemMapper promotionConItemMapper;
@@ -65,6 +66,7 @@ public class PromotionDataServiceImpl implements PromotionDataService{
 
     @Override
     public int savePromotion(Promotion promotion) {
+        logger.info("促销活动开始："+promotion.getPromNo());
         int i = 0;
         Promotion p = this.selectPromotionByNo(promotion.getPromNo());
         if(p == null){
@@ -81,6 +83,7 @@ public class PromotionDataServiceImpl implements PromotionDataService{
             promotion.setLastModifiedByTxt("CRM");
             i = promotionMapper.updatePromotionSelective(promotion);
         }
+        logger.info("促销活动结束");
         return i;
     }
 

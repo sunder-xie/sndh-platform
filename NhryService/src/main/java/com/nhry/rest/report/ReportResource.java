@@ -39,6 +39,7 @@ import com.wordnik.swagger.annotations.ApiParam;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
+import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.PageOrder;
 import org.apache.poi.ss.usermodel.PrintOrientation;
 import org.apache.poi.ss.usermodel.PrintSetup;
@@ -992,7 +993,110 @@ public class ReportResource extends BaseResource{
         System.out.println(ps.getPaperSize());
         ps.setPaperSize((short)133);
     }
+    @POST
+    @Path("/reportBatchCollectByEmp")
+    @Produces(MediaType.APPLICATION_JSON)
+    @ApiOperation(value = "/reportBatchCollectByEmp", response = OrderCreateModel.class, notes = "根据订单编号批量导出收款信息")
+    public Response reportBatchCollectByEmp(@ApiParam(required = true, name = "model", value = "送奶员编号")CustBillQueryModel model, @Context HttpServletRequest request, @Context HttpServletResponse response) {
+        List<CollectOrderBillModel> orderBillModel1 = customerBillService.BatchPrintForExp(model);
+        BranchEmpModel empModel = branchEmpService.empDetailInfo(model.getEmpNo());
+        String url = EnvContant.getSystemConst("filePath");
+        String outUrl = "";
+        try {
+            File file = new File(url +  File.separator + "report"+ File.separator + "template" + File.separator + "BatchCollectOrderTemplate.xlsx");    //审批单
+            FileInputStream input = new FileInputStream(file);
+            XSSFWorkbook workbook = new XSSFWorkbook(new BufferedInputStream(input));
 
+            XSSFSheet sheet = workbook.getSheetAt(0);
+            XSSFRow row = sheet.getRow(1);
+            XSSFCell cell = row.getCell(1);
+            cell.setCellStyle(ExcelUtil.setBorderStyle(workbook));
+            cell.setCellValue("配送奶站："+empModel.getEmp().getBranchName());
+
+            cell = row.getCell(5);
+            cell.setCellStyle(ExcelUtil.setBorderStyle(workbook));
+            cell.setCellValue("送奶员: "+empModel.getEmp().getEmpName());
+            int rowNum = 4;
+            if(orderBillModel1.size() > 0) {
+                for(CollectOrderBillModel orderBillModel : orderBillModel1){
+                    List<ProductItem> productItems = orderBillModel.getEntries();
+                    row = sheet.createRow(rowNum);
+                    cell = row.createCell(1);
+                    cell.setCellStyle(ExcelUtil.setBorderStyle(workbook));
+                    cell.setCellValue(orderBillModel.getCustAddressShort());
+                    cell = row.createCell(2);cell.setCellType(Cell.CELL_TYPE_STRING);
+                    cell.setCellStyle(ExcelUtil.setBorderStyle(workbook));
+                    cell.setCellValue(orderBillModel.getCustTel());
+                    cell = row.createCell(3);cell.setCellType(Cell.CELL_TYPE_STRING);
+                    cell.setCellStyle(ExcelUtil.setBorderStyle(workbook));
+                    StringBuilder pitemstr = new StringBuilder();
+                    for(ProductItem pItems : productItems){
+                        pitemstr.append(pItems.getMatnrTxt().concat("--").concat(String.valueOf(pItems.getQty())).concat("  "));
+                    }
+                    cell.setCellValue(pitemstr.toString());
+                    cell = row.createCell(4);cell.setCellType(Cell.CELL_TYPE_STRING);
+                    cell.setCellStyle(ExcelUtil.setBorderStyle(workbook));
+                    cell.setCellValue(orderBillModel.getInitAmt()!=null?orderBillModel.getInitAmt().toString():"0");
+                    cell = row.createCell(5);cell.setCellType(Cell.CELL_TYPE_STRING);
+                    cell.setCellStyle(ExcelUtil.setBorderStyle(workbook));
+                    cell.setCellValue(orderBillModel.getAccAmt()!=null?orderBillModel.getAccAmt().toString():"0");
+                    cell = row.createCell(6);cell.setCellType(Cell.CELL_TYPE_STRING);
+                    cell.setCellStyle(ExcelUtil.setBorderStyle(workbook));
+                    cell.setCellValue(orderBillModel.getOrderAmt()!=null?orderBillModel.getOrderAmt().toString():"0");
+                    cell = row.createCell(7);cell.setCellType(Cell.CELL_TYPE_STRING);
+                    cell.setCellStyle(ExcelUtil.setBorderStyle(workbook));
+                    cell.setCellValue(format.format(orderBillModel.getStartDate()));
+                    rowNum++;
+
+                }
+                //executeBatchSheet(lt6, workbook, sheet);
+            }
+
+            String fname = CodeGeneratorUtil.getCode();
+            String rq = format1.format(new Date(new Date().getTime() - 24 * 60 * 60 * 1000));
+            String filePath = url +  File.separator + "report"+ File.separator + "export";
+            File delFiles = new File(filePath);
+            if(delFiles.isDirectory()){
+                for(File del : delFiles.listFiles()){
+                    if(del.getName().contains(rq)){
+                        del.delete();
+                    }
+                }
+            }
+            File export = new File(url +  File.separator + "report"+ File.separator + "export" + File.separator + fname + "BatchCollectOrder.xlsx");
+            FileOutputStream stream = new FileOutputStream(export);
+            workbook.write(stream);
+            stream.flush();
+            stream.close();
+            outUrl = fname + "BatchCollectOrder.xlsx";
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return convertToRespModel(MessageCode.NORMAL,null,outUrl);
+    }
+
+    private void executeBatchSheet(List<CollectOrderBillModel> orderBillModel1, XSSFWorkbook workbook, XSSFSheet sheet){
+        int rowNum = 0;
+        for(CollectOrderBillModel orderBillModel : orderBillModel1) {
+            List<ProductItem> productItems = orderBillModel.getEntries();
+            XSSFRow row = sheet.createRow(rowNum++);
+            XSSFCell cell = row.createCell(1);
+            cell.setCellValue(orderBillModel.getSalesOrgName());
+            XSSFCellStyle cellStyle = workbook.createCellStyle();
+            XSSFFont font = workbook.createFont();
+            font.setFontName("微软雅黑");
+            font.setFontHeightInPoints((short) 11);
+            cellStyle.setFont(font);
+            cellStyle.setAlignment(XSSFCellStyle.ALIGN_CENTER);//水平居中
+            cellStyle.setVerticalAlignment(XSSFCellStyle.VERTICAL_CENTER);//垂直居中
+            cell.setCellStyle(cellStyle);
+            //sheet.addMergedRegion(new CellRangeAddress(row.getRowNum(), row.getRowNum(), 1, 13));
+
+            XSSFRow row2 = sheet.createRow(rowNum++);
+
+        }
+    }
     @POST
     @Path("/exportOrderByModel")
     @Produces(MediaType.APPLICATION_JSON)
