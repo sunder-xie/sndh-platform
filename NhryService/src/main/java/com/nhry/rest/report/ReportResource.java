@@ -1010,11 +1010,11 @@ public class ReportResource extends BaseResource{
             XSSFSheet sheet = workbook.getSheetAt(0);
             XSSFRow row = sheet.getRow(1);
             XSSFCell cell = row.getCell(1);
-            cell.setCellStyle(ExcelUtil.setBorderStyle(workbook));
+//            cell.setCellStyle(ExcelUtil.setBorderStyle(workbook));
             cell.setCellValue("配送奶站："+empModel.getEmp().getBranchName());
 
             cell = row.getCell(5);
-            cell.setCellStyle(ExcelUtil.setBorderStyle(workbook));
+//            cell.setCellStyle(ExcelUtil.setBorderStyle(workbook));
             cell.setCellValue("送奶员: "+empModel.getEmp().getEmpName());
             int rowNum = 4;
             if(orderBillModel1.size() > 0) {
