@@ -64,6 +64,7 @@
     <bean class="com.nhry.service.basic.impl.TVipCrmInfoServiceImpl" id="vipCrmInfoService">
         <property name="vipCrmMapper" ref="vipCrmMapper"/>
         <property name="vipcrmAddressMapper" ref="vipcrmAddressMapper"></property>
+        <property name="vipCustInfoMapper" ref="custMapper"/>
     </bean>
      <bean class="com.nhry.data.basic.impl.TVipCrmAddressMapperImpl" id="vipcrmAddressMapper">
         <property name="sqlSessionTemplate" ref="dynamicSqlSessionTemplate"/>

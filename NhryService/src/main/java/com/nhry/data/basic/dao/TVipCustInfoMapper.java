@@ -114,4 +114,6 @@ public interface TVipCustInfoMapper {
      * 更新会员编号
      */
     public int updateSapNo(TVipCustInfo vipCustInfo);
+
+    public int updateVipMp(TVipCustInfo vipCustInfo);
 }
