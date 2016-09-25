@@ -902,6 +902,12 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 			
 			if(entriesList.size()==0)throw new ServiceException(MessageCode.LOGIC_ERROR,"在日期内"+ orderNo +"无法续订，没有订单行项目!");
 
+			//会员号
+			if(order.getMemberNo()==null){
+				TVipCustInfo vip = tVipCustInfoService.findVipCustByNoForUpt(order.getMilkmemberNo());
+				if(vip!=null)order.setMemberNo(vip.getVipCustNoSap());
+			}
+			
 			//保存订单，订单行
 			order.setCurAmt(orderAmt);//订单价格
 			order.setInitAmt(orderAmt);
@@ -1007,11 +1013,11 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 		SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
 		TPreOrder order = tPreOrderMapper.selectByPrimaryKey(record.getOrderNo());
 		
-		//在批量续订时，预付款的订单自动续订
-//		if("true".equals(record.getContent()) || ("batch".equals(record.getStatus()) && "20".equals(order.getPaymentmethod())) ){
-//			continueOrderAuto(order.getOrderNo());
-//			return 1;
-//		}
+//		在批量续订时，预付款的订单自动续订[已不适用]// || ("batch".equals(record.getStatus()) && "20".equals(order.getPaymentmethod()))
+		if("true".equals(record.getContent())){
+			continueOrderAuto(order.getOrderNo());
+			return 1;
+		}
 		
 		if("Y".equals(order.getResumeFlag())){
 			throw new ServiceException(MessageCode.LOGIC_ERROR, order.getOrderNo()+" [订单已经被续订过!]");
@@ -1112,6 +1118,12 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 			}
 			
 			if(entriesList.size()==0)throw new ServiceException(MessageCode.LOGIC_ERROR,"在日期内"+record.getOrderNo()+"无法续订，没有订单行项目!");
+			
+			//会员号
+			if(order.getMemberNo()==null){
+				TVipCustInfo vip = tVipCustInfoService.findVipCustByNoForUpt(order.getMilkmemberNo());
+				if(vip!=null)order.setMemberNo(vip.getVipCustNoSap());
+			}
 			
 			//保存订单，订单行
 			order.setCurAmt(orderAmt);//订单价格
@@ -2261,7 +2273,7 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 									break;
 								}
 //								if(StringUtils.isNotBlank(orgEntry.getPromotion()))throw new ServiceException(MessageCode.LOGIC_ERROR,"促销商品行不能更改!");
-								if(curEntry.getStartDispDate().before(orgEntry.getStartDispDate())||curEntry.getEndDispDate().after(orgEntry.getEndDispDate()))throw new ServiceException(MessageCode.LOGIC_ERROR,curEntry.getStartDispDate()+"到"+curEntry.getEndDispDate()+"有效期不能在配送日期之外!");
+								if(curEntry.getStartDispDate().before(orgEntry.getStartDispDate()))throw new ServiceException(MessageCode.LOGIC_ERROR,curEntry.getStartDispDate()+"有效期不能在配送日期之外!");
 								daliyPlans.stream().filter((e)->"20".equals(e.getStatus())&&e.getItemNo().equals(orgEntry.getItemNo()))
 							   	.forEach((e)->{
 							   	if(!e.getDispDate().before(curEntry.getStartDispDate()))throw new ServiceException(MessageCode.LOGIC_ERROR,"该日期内已经有完结的日计划，请修改时间!");
@@ -2843,7 +2855,7 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 								break;
 							}
 //							if(StringUtils.isNotBlank(orgEntry.getPromotion()))throw new ServiceException(MessageCode.LOGIC_ERROR,"促销商品行不能更改!");
-							if(curEntry.getStartDispDate().before(orgEntry.getStartDispDate())||curEntry.getEndDispDate().after(orgEntry.getEndDispDate()))throw new ServiceException(MessageCode.LOGIC_ERROR,curEntry.getStartDispDate()+"到"+curEntry.getEndDispDate()+"有效期不能在配送日期之外!");
+							if(curEntry.getStartDispDate().before(orgEntry.getStartDispDate()))throw new ServiceException(MessageCode.LOGIC_ERROR,curEntry.getStartDispDate()+"有效期不能在配送日期之外!");
 							daliyPlans.stream().filter((e)->"20".equals(e.getStatus())&&e.getItemNo().equals(orgEntry.getItemNo()))
 						   	.forEach((e)->{
 						   	if(!e.getDispDate().before(curEntry.getStartDispDate()))throw new ServiceException(MessageCode.LOGIC_ERROR,"该日期内已经有完结的日计划，请修改时间!");
