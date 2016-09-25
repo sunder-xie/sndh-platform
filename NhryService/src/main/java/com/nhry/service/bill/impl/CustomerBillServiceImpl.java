@@ -525,10 +525,15 @@ public class CustomerBillServiceImpl implements CustomerBillService {
         TSysUser user = userSessionService.getCurrentUser();
         cModel.setBranchNo(user.getBranchNo());
         List<CollectOrderBillModel> result = new ArrayList<CollectOrderBillModel>();
+
         if(StringUtils.isNotBlank(cModel.getPaymentmethod()) ){
             if( "20".equals(cModel.getPaymentmethod())){
                 List<String> advancePayOrders = tPreOrderMapper.selectAdvanceOrderNos(cModel);
                 if(advancePayOrders!=null && advancePayOrders.size()>0){
+                    for(String orderNo : advancePayOrders){
+                        //创建收款单  如果有会直接返回
+                        createRecBillByOrderNo(orderNo);
+                    }
                     List<CollectOrderBillModel> before = customerBillMapper.selectBeforeCollectByOrders("20",advancePayOrders);
                     if(before!=null && before.size()>0){
                         result.addAll(before);
@@ -537,6 +542,10 @@ public class CustomerBillServiceImpl implements CustomerBillService {
             }else{
                 List<String> afterPayOrders = tPreOrderMapper.selectAfterOrderNos(cModel);
                 if(afterPayOrders!=null && afterPayOrders.size()>0) {
+                    for(String orderNo : afterPayOrders){
+                        //创建收款单  如果有会直接返回
+                        createRecBillByOrderNo(orderNo);
+                    }
                     List<CollectOrderBillModel> after = customerBillMapper.selectAfterCollectByOrders("10", afterPayOrders);
                     if (after != null && after.size() > 0) {
                         result.addAll(after);
@@ -546,6 +555,10 @@ public class CustomerBillServiceImpl implements CustomerBillService {
         }else{
             List<String> advancePayOrders = tPreOrderMapper.selectAdvanceOrderNos(cModel);
             if(advancePayOrders!=null && advancePayOrders.size()>0){
+                for(String orderNo : advancePayOrders){
+                    //创建收款单  如果有会直接返回
+                    createRecBillByOrderNo(orderNo);
+                }
                 List<CollectOrderBillModel> before = customerBillMapper.selectBeforeCollectByOrders("20",advancePayOrders);
                 if(before!=null && before.size()>0){
                     result.addAll(before);
@@ -554,6 +567,10 @@ public class CustomerBillServiceImpl implements CustomerBillService {
 
             List<String> afterPayOrders = tPreOrderMapper.selectAfterOrderNos(cModel);
             if(afterPayOrders!=null && afterPayOrders.size()>0) {
+                for(String orderNo : afterPayOrders){
+                    //创建收款单  如果有会直接返回
+                    createRecBillByOrderNo(orderNo);
+                }
                 List<CollectOrderBillModel> after = customerBillMapper.selectAfterCollectByOrders("10", afterPayOrders);
                 if (after != null && after.size() > 0) {
                     result.addAll(after);
