@@ -339,7 +339,7 @@ public class PIVipInfoDataServiceImpl implements PIVipInfoDataService {
                 vipCustInfo.setVipMp(vipTel);
                 vipCustInfoService.updateSapNo(vipCustInfo);
                 executeUptVipCust(vipCustInfo);
-                executeSendAddresses(addresses, vipno);
+                sendAddress(addresses, vipno);
             }
         }
         return result;
@@ -347,11 +347,13 @@ public class PIVipInfoDataServiceImpl implements PIVipInfoDataService {
 
     @Override
     public void executeVipInfoData(TVipCustInfo vipCustInfo, String vipTel) {
+
         if ("on".equals(PICRMEXEC)) {
+
             taskExecutor.execute(new Thread() {
                 public void run() {
                     try {
-                        Thread.sleep(8000);
+                        Thread.sleep(2000);
                         this.setName(vipCustInfo.getVipCustNo());
                         generateVipInfoData(vipCustInfo, vipTel);
                     } catch (Exception e) {
@@ -732,7 +734,7 @@ public class PIVipInfoDataServiceImpl implements PIVipInfoDataService {
             taskExecutor.execute(new Thread() {
                 public void run() {
                     try {
-                        Thread.sleep(8000);
+                        Thread.sleep(2000);
                         this.setName(address.getAddressId());
                         List<TMdAddress> addresses = new ArrayList<TMdAddress>();
                         addresses.add(address);
@@ -751,7 +753,7 @@ public class PIVipInfoDataServiceImpl implements PIVipInfoDataService {
             taskExecutor.execute(new Thread() {
                 public void run() {
                     try {
-                        Thread.sleep(8000);
+                        Thread.sleep(2000);
                         this.setName(PrimaryKeyUtils.generateUpperUuidKey());
                         sendAddress(addresses, sapGuid);
                     } catch (Exception e) {
