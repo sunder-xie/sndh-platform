@@ -1,15 +1,8 @@
 package com.nhry.service.basic.dao;
 
-import com.github.pagehelper.PageInfo;
 import com.nhry.data.basic.domain.TMdAddress;
-import com.nhry.data.basic.domain.TVipAcct;
-import com.nhry.data.basic.domain.TVipCrmAddress;
 import com.nhry.data.basic.domain.TVipCrmInfo;
-import com.nhry.model.basic.CustQueryModel;
-import com.nhry.service.basic.pojo.Addresses;
-import com.nhry.utils.date.Date;
 
-import java.util.List;
 import java.util.Map;
 
 public interface TVipCrmInfoService {
@@ -41,5 +34,5 @@ public interface TVipCrmInfoService {
 	 * @param address
 	 * @return
 	 */
-	int updateVipCrmAddress(TVipCrmAddress address);
+	int updateVipCrmAddress(TMdAddress address);
 }

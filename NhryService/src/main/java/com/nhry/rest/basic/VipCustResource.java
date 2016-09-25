@@ -176,7 +176,7 @@ public class VipCustResource extends BaseResource {
 	@Path("/upt/crm/address")
 	@Produces(MediaType.APPLICATION_JSON)
 	@ApiOperation(value = "/upt/crm/address", response = ResponseModel.class, notes = "修改会员详细地址")
-	public Response updateVipCrmAddress(@ApiParam(required=true,name="address",value="crm详细地址对象") TVipCrmAddress address) {
+	public Response updateVipCrmAddress(@ApiParam(required=true,name="address",value="crm详细地址对象") TMdAddress address) {
 	  return convertToRespModel(MessageCode.NORMAL, null,vipCrmInfoService.updateVipCrmAddress(address));
 	}
 	

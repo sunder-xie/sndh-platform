@@ -334,12 +334,18 @@ public class PIVipInfoDataServiceImpl implements PIVipInfoDataService {
                     result.setMessage("会员账号创建失败！");
                 }
             }
+
             if(result.isSuccess()){
-                vipCustInfo.setVipCustNoSap(vipno);
-                vipCustInfo.setVipMp(vipTel);
-                vipCustInfoService.updateSapNo(vipCustInfo);
-                executeUptVipCust(vipCustInfo);
-                sendAddress(addresses, vipno);
+                try {
+                    vipCustInfo.setVipCustNoSap(vipno);
+                    vipCustInfo.setVipMp(vipTel);
+                    vipCustInfoService.updateSapNo(vipCustInfo);
+                    sendAddress(addresses, vipno);
+//                executeUptVipCust(vipCustInfo);
+                }catch (Exception e){
+                    e.printStackTrace();
+                    logger.error(e.getMessage());
+                }
             }
         }
         return result;

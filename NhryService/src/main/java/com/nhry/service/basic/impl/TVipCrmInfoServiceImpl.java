@@ -1,9 +1,10 @@
 package com.nhry.service.basic.impl;
 
+import com.nhry.data.basic.dao.TMdAddressMapper;
 import com.nhry.data.basic.dao.TVipCrmAddressMapper;
 import com.nhry.data.basic.dao.TVipCrmMapper;
 import com.nhry.data.basic.dao.TVipCustInfoMapper;
-import com.nhry.data.basic.domain.TVipCrmAddress;
+import com.nhry.data.basic.domain.TMdAddress;
 import com.nhry.data.basic.domain.TVipCrmInfo;
 import com.nhry.data.basic.domain.TVipCustInfo;
 import com.nhry.service.BaseService;
@@ -17,6 +18,11 @@ public class TVipCrmInfoServiceImpl extends BaseService implements TVipCrmInfoSe
 	private TVipCrmMapper vipCrmMapper;
 	private TVipCrmAddressMapper vipcrmAddressMapper;
 	private TVipCustInfoMapper vipCustInfoMapper;
+	private TMdAddressMapper addressMapper;
+
+	public void setAddressMapper(TMdAddressMapper addressMapper) {
+		this.addressMapper = addressMapper;
+	}
 
 	public void setVipCrmMapper(TVipCrmMapper vipCrmMapper) {
 		this.vipCrmMapper = vipCrmMapper;
@@ -28,7 +34,11 @@ public class TVipCrmInfoServiceImpl extends BaseService implements TVipCrmInfoSe
 
 	@Override
 	public void addVipCrm(TVipCrmInfo record) {
-		vipCrmMapper.addVipCrm(record);
+		if(findVipCrmByNo(record.getVipCustNo())== null) {
+			vipCrmMapper.addVipCrm(record);
+		}else{
+			updateVipCrmByNo(record);
+		}
 	}
 
 	@Override
@@ -57,9 +67,9 @@ public class TVipCrmInfoServiceImpl extends BaseService implements TVipCrmInfoSe
 	}
 
 	@Override
-	public int updateVipCrmAddress(TVipCrmAddress address) {
+	public int updateVipCrmAddress(TMdAddress address) {
 		// TODO Auto-generated method stub
-		
-		return vipcrmAddressMapper.uptVipCrmAddress(address);
+//		return addressMapper.uptCustAddress(address);
+		return -1;
 	}
 }

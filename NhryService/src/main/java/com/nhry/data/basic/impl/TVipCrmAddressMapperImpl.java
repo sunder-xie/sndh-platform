@@ -8,8 +8,12 @@ public class TVipCrmAddressMapperImpl implements TVipCrmAddressMapper {
 	private DynamicSqlSessionTemplate sqlSessionTemplate;
 	@Override
 	public int addVipCrmAddress(TVipCrmAddress record) {
-		// TODO Auto-generated method stub
-		return this.sqlSessionTemplate.insert("addVipCrmAddress", record);
+		if (findVipCrmAddress(record.getAddressId()) != null) {
+			uptVipCrmAddress(record);
+		} else {           // TODO Auto-generated method stub
+			this.sqlSessionTemplate.insert("addVipCrmAddress", record);
+		}
+		return 1;
 	}
 
 	@Override
