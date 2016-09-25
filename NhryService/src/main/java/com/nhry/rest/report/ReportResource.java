@@ -1029,11 +1029,11 @@ public class ReportResource extends BaseResource{
                     cell.setCellValue(orderBillModel.getCustTel());
                     cell = row.createCell(3);cell.setCellType(Cell.CELL_TYPE_STRING);
                     cell.setCellStyle(ExcelUtil.setBorderStyle(workbook));
-                    String pitem="";
+                    StringBuilder pitemstr = new StringBuilder();
                     for(ProductItem pItems : productItems){
-                        pitem = pItems.getMatnrTxt().concat("--").concat(String.valueOf(pItems.getQty())).concat("  ");
+                        pitemstr.append(pItems.getMatnrTxt().concat("--").concat(String.valueOf(pItems.getQty())).concat("  "));
                     }
-                    cell.setCellValue(pitem);
+                    cell.setCellValue(pitemstr.toString());
                     cell = row.createCell(4);cell.setCellType(Cell.CELL_TYPE_STRING);
                     cell.setCellStyle(ExcelUtil.setBorderStyle(workbook));
                     cell.setCellValue(orderBillModel.getInitAmt()!=null?orderBillModel.getInitAmt().toString():"0");
