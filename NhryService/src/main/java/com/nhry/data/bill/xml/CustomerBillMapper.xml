@@ -466,7 +466,7 @@
         (
         CASE
         WHEN bill.CUST_ACC_AMT >0 and o.INIT_AMT - bill.CUST_ACC_AMT >0 THEN  o.INIT_AMT-bill.CUST_ACC_AMT
-        WHEN bill.CUST_ACC_AMT IS NULL and  o.INIT_AMTT - acct.ACCT_AM  >0 THEN  o.INIT_AMT - acct.ACCT_AMT
+        WHEN bill.CUST_ACC_AMT IS NULL and  o.INIT_AMT - acct.ACCT_AMT  >0 THEN  o.INIT_AMT - acct.ACCT_AMT
         ELSE 0 END
         )ORDER_AMT,
         (
