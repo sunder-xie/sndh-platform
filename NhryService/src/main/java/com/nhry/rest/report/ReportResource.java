@@ -1039,7 +1039,7 @@ public class ReportResource extends BaseResource{
                     cell.setCellValue(orderBillModel.getInitAmt()!=null?orderBillModel.getInitAmt().toString():"0");
                     cell = row.createCell(5);cell.setCellType(Cell.CELL_TYPE_STRING);
                     cell.setCellStyle(ExcelUtil.setBorderStyle(workbook));
-                    cell.setCellValue(orderBillModel.getAccAmt()!=null?orderBillModel.getAccAmt().toString():"0");
+                    cell.setCellValue(orderBillModel.getCustAccAmt()!=null?orderBillModel.getCustAccAmt().toString():"0");
                     cell = row.createCell(6);cell.setCellType(Cell.CELL_TYPE_STRING);
                     cell.setCellStyle(ExcelUtil.setBorderStyle(workbook));
                     cell.setCellValue(orderBillModel.getOrderAmt()!=null?orderBillModel.getOrderAmt().toString():"0");
