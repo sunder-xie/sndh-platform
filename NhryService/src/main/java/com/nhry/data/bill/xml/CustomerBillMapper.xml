@@ -39,6 +39,7 @@
         <result column="VIP_NAME" property="vipName" jdbcType="VARCHAR" />
         <result column="CUST_TEL" property="custTel" jdbcType="VARCHAR" />
         <result column="CUST_ADDRESS" property="custAddress" jdbcType="VARCHAR" />
+        <result column="CUST_ADDRESS_SHORT" property="custAddressShort" jdbcType="VARCHAR" />
         <result column="EMP_NO" property="empNo" jdbcType="VARCHAR" />
         <result column="EMP_NAME" property="empName" jdbcType="VARCHAR" />
         <result column="EMP_TEL" property="empTel" jdbcType="VARCHAR" />
@@ -416,12 +417,32 @@
         ) ACCT_AMT,
         MIN(i.START_DISP_DATE)  START_DATE,o.END_DATE,
         (SELECT item.ITEM_NAME  from t_sys_code_item item WHERE item.TYPE_CODE = <include refid="mybaties.constant.SALES_ORG_CONSTANT"/> and item.ITEM_CODE= o.SALES_ORG) SALES_ORG_NAME,
-        b.ADDRESS  BRANCH_ADDRESS,
+
+        concat(
+        (
+        SELECT i.ITEM_NAME from t_sys_code_item i WHERE i.TYPE_CODE=<include refid="mybaties.constant.branch_province"/> and i.ITEM_CODE = b.PROVINCE
+        ),b.CITY,IFNULL(b.COUNTY,''),b.ADDRESS
+        ) BRANCH_ADDRESS,
+
+        concat(
+        (SELECT it.ITEM_NAME FROM T_SYS_CODE_ITEM it WHERE it.TYPE_CODE =<include refid="mybaties.constant.COUNTRY_CITY_CONSTANT"/>
+        AND it.ITEM_CODE = c.PROVINCE),
+        (SELECT it.ITEM_NAME FROM T_SYS_CODE_ITEM it WHERE it.TYPE_CODE =<include refid="mybaties.constant.COUNTRY_CITY_CONSTANT"/>
+        AND it.ITEM_CODE = c.CITY),
+        (SELECT it.ITEM_NAME FROM T_SYS_CODE_ITEM it WHERE it.TYPE_CODE =<include refid="mybaties.constant.COUNTRY_CITY_CONSTANT"/>
+        AND it.ITEM_CODE = c.COUNTY),
+        IFNULL( (SELECT ra.ADDRESS_TXT from t_md_residential_area ra WHERE ra.ID =  c.SUBDIST),''),
+        IFNULL((SELECT ra.RESIDENTIAL_AREA_TXT from t_md_residential_area ra  WHERE  ra.ID = c.SUBDIST),''),
+        IFNULL(c.ADDRESS_TXT,'')
+        )CUST_ADDRESS,
+
+
         concat(
         IFNULL( (SELECT ra.ADDRESS_TXT from t_md_residential_area ra WHERE ra.ID =  c.SUBDIST),''),
         IFNULL((SELECT ra.RESIDENTIAL_AREA_TXT from t_md_residential_area ra  WHERE  ra.ID = c.SUBDIST),''),
         IFNULL(c.ADDRESS_TXT,'')
-        )CUST_ADDRESS
+        )CUST_ADDRESS_SHORT
+
         ,i.MATNR,ex.SHORT_TXT MATNR_TXT,i.UNIT,i.DISP_TOTAL QTY,i.SALES_PRICE BASE_PRICE,(i.DISP_TOTAL * i.SALES_PRICE) TOTAL_PRICE
         from t_preorder o
         LEFT JOIN t_mst_recv_bill bill on o.ORDER_NO = bill.ORDER_NO and bill.HAD_OFFSET = 'N'
@@ -456,12 +477,30 @@
         ) ACCT_AMT,
         o.END_DATE,MIN(i.DISP_DATE) START_DATE,
         (SELECT item.ITEM_NAME  from t_sys_code_item item WHERE item.TYPE_CODE = <include refid="mybaties.constant.SALES_ORG_CONSTANT"/>  and item.ITEM_CODE= o.SALES_ORG) SALES_ORG_NAME,
-        b.ADDRESS  BRANCH_ADDRESS,
+
+        concat(
+        (
+        SELECT i.ITEM_NAME from t_sys_code_item i WHERE i.TYPE_CODE=<include refid="mybaties.constant.branch_province"/> and i.ITEM_CODE = b.PROVINCE
+        ),b.CITY,IFNULL(b.COUNTY,''),b.ADDRESS
+        ) BRANCH_ADDRESS,
+
+        concat(
+        (SELECT it.ITEM_NAME FROM T_SYS_CODE_ITEM it WHERE it.TYPE_CODE =<include refid="mybaties.constant.COUNTRY_CITY_CONSTANT"/>
+        AND it.ITEM_CODE = c.PROVINCE),
+        (SELECT it.ITEM_NAME FROM T_SYS_CODE_ITEM it WHERE it.TYPE_CODE =<include refid="mybaties.constant.COUNTRY_CITY_CONSTANT"/>
+        AND it.ITEM_CODE = c.CITY),
+        (SELECT it.ITEM_NAME FROM T_SYS_CODE_ITEM it WHERE it.TYPE_CODE =<include refid="mybaties.constant.COUNTRY_CITY_CONSTANT"/>
+        AND it.ITEM_CODE = c.COUNTY),
+        IFNULL( (SELECT ra.ADDRESS_TXT from t_md_residential_area ra WHERE ra.ID =  c.SUBDIST),''),
+        IFNULL((SELECT ra.RESIDENTIAL_AREA_TXT from t_md_residential_area ra  WHERE  ra.ID = c.SUBDIST),''),
+        IFNULL(c.ADDRESS_TXT,'')
+        )CUST_ADDRESS,
+
         concat(
         IFNULL( (SELECT ra.ADDRESS_TXT from t_md_residential_area ra WHERE ra.ID =  c.SUBDIST),''),
         IFNULL((SELECT ra.RESIDENTIAL_AREA_TXT from t_md_residential_area ra  WHERE  ra.ID = c.SUBDIST),''),
         IFNULL(c.ADDRESS_TXT,'')
-        )CUST_ADDRESS
+        )CUST_ADDRESS_SHORT
         ,i.ORDER_NO,i.MATNR,ex.SHORT_TXT MATNR_TXT,i.UNIT,SUM(i.QTY) QTY,i.PRICE BASE_PRICE,sum(i.AMT) TOTAL_PRICE
         from t_preorder o
         LEFT JOIN t_md_branch b on o.BRANCH_NO = b.BRANCH_NO
