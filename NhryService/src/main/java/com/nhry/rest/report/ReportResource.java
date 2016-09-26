@@ -941,7 +941,7 @@ public class ReportResource extends BaseResource{
             ExcelUtil.createCell(row14,1,"账户余额",ExcelUtil.getCellStyle4(workbook));
             sheet.addMergedRegion(new CellRangeAddress(row14.getRowNum(), row14.getRowNum(), 1, 9));
 
-            ExcelUtil.createCell(row14,10,orderBillModel.getAccAmt()!=null?orderBillModel.getAccAmt().toString():"0",ExcelUtil.setFontStype(workbook));
+            ExcelUtil.createCell(row14,10,orderBillModel.getCustAccAmt()!=null?orderBillModel.getCustAccAmt().toString():"0",ExcelUtil.setFontStype(workbook));
 
 
             XSSFRow row15 = sheet.createRow(rowNum++);
@@ -1039,7 +1039,7 @@ public class ReportResource extends BaseResource{
                     cell.setCellValue(orderBillModel.getInitAmt()!=null?orderBillModel.getInitAmt().toString():"0");
                     cell = row.createCell(5);cell.setCellType(Cell.CELL_TYPE_STRING);
                     cell.setCellStyle(ExcelUtil.setBorderStyle(workbook));
-                    cell.setCellValue(orderBillModel.getAccAmt()!=null?orderBillModel.getAccAmt().toString():"0");
+                    cell.setCellValue(orderBillModel.getCustAccAmt()!=null?orderBillModel.getCustAccAmt().toString():"0");
                     cell = row.createCell(6);cell.setCellType(Cell.CELL_TYPE_STRING);
                     cell.setCellStyle(ExcelUtil.setBorderStyle(workbook));
                     cell.setCellValue(orderBillModel.getOrderAmt()!=null?orderBillModel.getOrderAmt().toString():"0");
