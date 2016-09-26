@@ -451,7 +451,7 @@
         and b.SALES_ORG = o.SALES_ORG
         and LOCATE(o.ORDER_NO,<foreach item="order" collection="orders" separator="," open="'" close="'" index="">${order}</foreach>)>0
         GROUP BY o.ORDER_NO,i.MATNR
-        ORDER BY o.ADRESS_NO,CUST_ADDRESS
+        ORDER BY c.SUBDIST,c.ADDRESS_TXT,CUST_ADDRESS_SHORT
     </select>
 
 
@@ -504,7 +504,7 @@
         and b.SALES_ORG = o.SALES_ORG
         and LOCATE(o.ORDER_NO,<foreach item="order" collection="orders" separator="," open="'" close="'" index="">${order}</foreach>)>0
         GROUP BY o.ORDER_NO,i.MATNR
-        ORDER BY o.ADRESS_NO,CUST_ADDRESS
+        ORDER BY c.SUBDIST,c.ADDRESS_TXT,CUST_ADDRESS_SHORT
     </select>
 
     <select id="queryCollectByAfterOrderNo" resultMap="CollectResultMap" parameterType="com.nhry.model.bill.CollectOrderSearchModel">
