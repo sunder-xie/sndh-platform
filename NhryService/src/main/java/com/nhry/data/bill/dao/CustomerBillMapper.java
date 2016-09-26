@@ -33,4 +33,6 @@ public interface CustomerBillMapper {
     List<CollectOrderBillModel> selectAfterCollectByOrders(String paymentmethod, List<String> advancePayOrders);
 
     List<CollectOrderBillModel> selectBeforeCollectByOrders(String paymentmethod, List<String> advancePayOrders);
+
+    int delReceipt(String receiptNo);
 }

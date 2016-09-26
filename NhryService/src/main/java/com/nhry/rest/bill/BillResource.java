@@ -90,6 +90,14 @@ public class BillResource extends BaseResource {
         return convertToRespModel(MessageCode.NORMAL, null, customerBillService.customerOffset(receiptNo));
     }
 
+    @GET
+    @Path("/cust/delReceipt")
+    @Produces(MediaType.APPLICATION_JSON)
+    @ApiOperation(value = "/cust/delReceipt", response = int.class, notes = "删除收款单")
+    public Response delReceipt(@ApiParam(required = true, name = "receiptNo", value = "收款单号") @QueryParam("receiptNo") String receiptNo) {
+        return convertToRespModel(MessageCode.NORMAL, null, customerBillService.delReceipt(receiptNo));
+    }
+
     @POST
     @Path("/cust/custRefund")
     @Produces(MediaType.APPLICATION_JSON)

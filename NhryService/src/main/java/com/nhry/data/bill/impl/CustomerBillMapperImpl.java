@@ -83,4 +83,9 @@ public class CustomerBillMapperImpl implements CustomerBillMapper {
         return sqlSessionTemplate.selectList("queryCollectByBeforeOrders",model);
     }
 
+    @Override
+    public int delReceipt(String receiptNo) {
+        return sqlSessionTemplate.delete("delReceipt",receiptNo);
+    }
+
 }
