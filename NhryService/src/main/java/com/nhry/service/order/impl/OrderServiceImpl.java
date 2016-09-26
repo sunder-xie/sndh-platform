@@ -898,6 +898,18 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 		if(order!= null){
 			if("20".equals(order.getMilkboxStat()))throw new ServiceException(MessageCode.LOGIC_ERROR, orderNo+"原订单还没有装箱，不能续订!");
 			if("20".equals(order.getPaymentmethod())&&"10".equals(order.getPaymentStat()))throw new ServiceException(MessageCode.LOGIC_ERROR, orderNo+"原订单为预付款订单，没有付款，不能续订!");
+			
+			//预付款可能有日计划单独延后的，要新算开始日期
+			Map<String,Date> entryMap = new HashMap<String,Date>();
+			if("20".equals(order.getPaymentmethod())){
+				ArrayList<TOrderDaliyPlanItem> daliyPlans = (ArrayList<TOrderDaliyPlanItem>) tOrderDaliyPlanItemMapper.selectDaliyPlansByOrderNo(order.getOrderNo());
+				daliyPlans.stream().filter((e)->!"30".equals(e.getStatus())).forEach((e)->{
+					if(!entryMap.containsKey(e.getItemNo())){
+						entryMap.put(e.getItemNo(), e.getDispDate());
+					}
+				});
+			}
+			
 			//基本参考原单
 			Date sdate = afterDate(order.getEndDate(),1);
 			//新的订单号
@@ -914,6 +926,11 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 				entry.setOrderNo(order.getOrderNo());
 				//设置配送开始时间
 				int days = daysOfTwo(entry.getStartDispDate(),entry.getEndDispDate());
+				
+				//重新算的开始日期
+				Date newDate = entryMap.get(entry.getItemNo());
+				if(newDate!=null&&newDate.after(entry.getStartDispDate()))entry.setEndDispDate(entryMap.get(entry.getItemNo()));
+				
 				calculateEntryStartDate(entry); 
 				Date edate = afterDate(entry.getStartDispDate(), days);
 				entry.setEndDispDate(edate);
@@ -1104,6 +1121,17 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 			if(sdate.before(order.getEndDate()))throw new ServiceException(MessageCode.LOGIC_ERROR,record.getOrderNo()+"续订日期不能小于原订单截止日期!"+order.getEndDate());
 //			String state = order.getPaymentmethod();
 			
+			//预付款可能有日计划单独延后的，要新算开始日期
+			Map<String,Date> entryMap = new HashMap<String,Date>();
+			if("20".equals(order.getPaymentmethod())){
+				ArrayList<TOrderDaliyPlanItem> daliyPlans = (ArrayList<TOrderDaliyPlanItem>) tOrderDaliyPlanItemMapper.selectDaliyPlansByOrderNo(order.getOrderNo());
+				daliyPlans.stream().filter((e)->!"30".equals(e.getStatus())).forEach((e)->{
+					if(!entryMap.containsKey(e.getItemNo())){
+						entryMap.put(e.getItemNo(), e.getDispDate());
+					}
+				});
+			}
+			
 			//基本参考原单
 //			int goDays = record.getGoDays();
 			//新的订单号
@@ -1124,6 +1152,11 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 				
 				//设置配送开始时间
 				if(StringUtils.isBlank(record.getOrderDateStart())){
+					
+					//重新算的开始日期
+					Date newDate = entryMap.get(entry.getItemNo());
+					if(newDate!=null&&newDate.after(entry.getStartDispDate()))entry.setEndDispDate(entryMap.get(entry.getItemNo()));
+					
 					calculateEntryStartDate(entry);
 					if(edate.before(entry.getStartDispDate())){
 						continue;//如果需要续订天数不足某一行，这行不需要续订
