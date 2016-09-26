@@ -173,6 +173,9 @@ public class CustomerBillServiceImpl implements CustomerBillService {
                	 List<TOrderDaliyPlanItem> list = orderService.createDaliyPlan(omodel.getOrder(),omodel.getEntries());
                	 promotionService.createDaliyPlanByPromotion(omodel.getOrder(),omodel.getEntries(),list);
                 }
+                if("10".equals(order.getPaymentmethod()) && !"20".equals(order.getMilkboxStat())){
+                    tPreOrderMapper.updateOrderToFinish(orderNo);
+                }
 
                 //会员积分
                 if("Y".equals(order.getIsIntegration())){
@@ -582,6 +585,11 @@ public class CustomerBillServiceImpl implements CustomerBillService {
 
 
         return result;
+    }
+
+    @Override
+    public int delReceipt(String receiptNo) {
+        return customerBillMapper.delReceipt(receiptNo);
     }
 
 

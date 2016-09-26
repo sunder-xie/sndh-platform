@@ -37,4 +37,6 @@ public interface CustomerBillService {
    int custRefund(CustomerRefundModel cModel);
 
    List<CollectOrderBillModel> BatchPrintForExp(CustBillQueryModel cModel);
+
+   int delReceipt(String receiptNo);
 }
