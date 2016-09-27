@@ -407,10 +407,10 @@ public class CustomerBillServiceImpl implements CustomerBillService {
         }else if("Y".equals(bill.getHadOffset())){
             throw  new ServiceException(MessageCode.LOGIC_ERROR,"该订单已经冲销过了！！！");
         } else{
-            int orderNum = tDispOrderItemMapper.selectDispOrderNumByPreOrderNo(bill.getOrderNo());
+           /* int orderNum = tDispOrderItemMapper.selectDispOrderNumByPreOrderNo(bill.getOrderNo());
             if(orderNum > 0 ){
                 throw  new ServiceException(MessageCode.LOGIC_ERROR,"该订单已生成了路单，不能冲销！！！");
-            }
+            }*/
 
             TPreOrder preOrder = tPreOrderMapper.selectByPrimaryKey(bill.getOrderNo());
             //扣除余额
@@ -464,8 +464,10 @@ public class CustomerBillServiceImpl implements CustomerBillService {
             newBill.setReceiptNo(bill.getReceiptNo());
             newBill.setHadOffset("Y");
             customerBillMapper.updateCustomerBillrPayment(newBill);
-            //删除 日订单
+           /*
+           //删除 日订单
             tOrderDaliyPlanItemMapper.deletePlansByOrder(bill.getOrderNo());
+            */
             //生成对应的冲销单
             TSysUser user = userSessionService.getCurrentUser();
             TMstRecvOffset offset  = new TMstRecvOffset();
