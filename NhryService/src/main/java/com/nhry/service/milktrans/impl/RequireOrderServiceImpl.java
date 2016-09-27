@@ -134,7 +134,7 @@ public class RequireOrderServiceImpl implements RequireOrderService {
             order = new TSsmReqGoodsOrder();
             String orderNo = this.generateSal30Id();
             order.setRequiredDate(requireDate);
-            order.setStatus("20");
+            order.setStatus("10");
             order.setOrderNo(orderNo);
             order.setOrderDate(today);
             order.setBranchNo(user.getBranchNo());

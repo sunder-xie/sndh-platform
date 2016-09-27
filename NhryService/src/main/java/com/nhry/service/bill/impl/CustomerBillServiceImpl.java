@@ -173,10 +173,10 @@ public class CustomerBillServiceImpl implements CustomerBillService {
                	 List<TOrderDaliyPlanItem> list = orderService.createDaliyPlan(omodel.getOrder(),omodel.getEntries());
                	 promotionService.createDaliyPlanByPromotion(omodel.getOrder(),omodel.getEntries(),list);
                 }
-                if("10".equals(order.getPaymentmethod()) && !"20".equals(order.getMilkboxStat())){
+              /*  if("10".equals(order.getPaymentmethod()) && !"20".equals(order.getMilkboxStat())){
                     tPreOrderMapper.updateOrderToFinish(orderNo);
                 }
-
+*/
                 //会员积分
                 if("Y".equals(order.getIsIntegration())){
                     taskExecutor.execute(new Thread(){
