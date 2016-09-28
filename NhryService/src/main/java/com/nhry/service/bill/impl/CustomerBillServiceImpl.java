@@ -448,11 +448,12 @@ public class CustomerBillServiceImpl implements CustomerBillService {
                         item.setProcesstype("YSUB_RETURN");
                         item.setOrderid(preOrder.getOrderNo());
                         item.setMembershipguid(preOrder.getMemberNo());
-                        item.setPointtype("YGROWTH");
-                        item.setPoints(gRate);
+//                        item.setPointtype("YGROWTH");
+//                        item.setPoints(gRate);
                         //第1遍传成长
-                        piVipInfoDataService.createMemberActivities(item);
+//                        piVipInfoDataService.createMemberActivities(item);
                         //第2遍传先锋
+                        item.setAmount(preOrder.getInitAmt());
                         item.setPointtype("YFRESH");
                         item.setPoints(fRate);
                         piVipInfoDataService.createMemberActivities(item);
