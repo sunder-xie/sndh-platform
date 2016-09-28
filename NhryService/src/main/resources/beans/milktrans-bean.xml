@@ -37,17 +37,18 @@
 		<property name="tOrderDaliyPlanItemMapper"  ref="tOrderDaliyPlanItemMapper"></property>
 		<property name="branchMapper"  ref="branchMapper"></property>
 		<property name="tMdMaraMapper"  ref="maraMapper"></property>
+		<property name="tDispOrderMapper"  ref="tDispOrderMapper"></property>
+		<property name="tSsmGiOrderMapper"  ref="ssmGiOrderMapper"></property>
+		<property name="tSsmGiOrderItemMapper"  ref="ssmGiOrderItemMapper"></property>
 	</bean>
 
 	<!--回瓶管理-->
 	<bean id="tRecBotDetailMapper" class="com.nhry.data.milktrans.impl.TRecBotDetailMapperImpl">
 		<property name="sqlSessionTemplate"  ref="dynamicSqlSessionTemplate"></property>
 	</bean>
-	<bean id="tRecBotMapper" class="com.nhry.data.milktrans.impl.TRecBotMapperImpl">
-		<property name="sqlSessionTemplate"  ref="dynamicSqlSessionTemplate"></property>
-	</bean>
+
 	<bean id="returnBoxService" class="com.nhry.service.milktrans.impl.ReturnBoxServiceImpl">
-		<property name="tRecBotMapper"  ref="tRecBotMapper"></property>
+		<property name="urMapper"  ref="urMapper"></property>
 		<property name="tRecBotDetailMapper"  ref="tRecBotDetailMapper"></property>
 		<property name="userSessionService" ref="userSessionService"></property>
 		<property name="tDispOrderMapper"  ref="tDispOrderMapper"></property>
@@ -60,5 +61,9 @@
 	</bean>
 	<bean id="tMstInsideSalOrderItemMapper" class="com.nhry.data.milktrans.impl.TMstInsideSalOrderItemMapperImpl">
 		<property name="sqlSessionTemplate"  ref="dynamicSqlSessionTemplate"></property>
+	</bean>
+	<bean class="com.nhry.service.milktrans.impl.OrderPointServiceImpl" id="orderPointService">
+		<property name="planOrderItemMapper" ref="tPlanOrderItemMapper"/>
+		<property name="preOrderMapper" ref="tPreOrderMapper"/>
 	</bean>
 </beans>

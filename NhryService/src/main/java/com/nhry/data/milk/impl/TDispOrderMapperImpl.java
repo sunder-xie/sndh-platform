@@ -50,12 +50,12 @@ public class TDispOrderMapperImpl implements TDispOrderMapper
 	}
 	
 	@Override
-	public List<TDispOrder> selectTodayDispOrderByBranchNo(String branchNo)
+	public List<TDispOrder> selectTodayDispOrderByBranchNo(String branchNo,Date date)
 	{
 		SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
 		TDispOrder key = new TDispOrder();
 		key.setBranchNo(branchNo);
-		key.setBranchName(format.format(new Date()));
+		key.setBranchName(format.format(date));
 		return sqlSessionTemplate.selectList("selectTodayDispOrderByBranchNo",key);
 	}
 
@@ -84,5 +84,51 @@ public class TDispOrderMapperImpl implements TDispOrderMapper
 		record.setLastModifiedByTxt(userSessionService.getCurrentUser().getDisplayName());
 		return sqlSessionTemplate.update("updateDispOrder", record);
 	}
+	/* (non-Javadoc) 
+	* @title: updateDispOrderEmp
+	* @description: 更新路单送奶员
+	* @param order
+	* @return 
+	* @see com.nhry.data.milk.dao.TDispOrderMapper#updateDispOrderEmp(com.nhry.data.milk.domain.TDispOrder) 
+	*/
+	@Override
+	public int updateDispOrderEmp(TDispOrder order)
+	{
+		return sqlSessionTemplate.update("updateDispOrderEmp", order);
+	}
+
+	@Override
+	public List<TDispOrder> selectDispOrderByBranchNoAndDay(String branchNo,Date orderDate) {
+		SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
+		TDispOrder key = new TDispOrder();
+		key.setBranchNo(branchNo);
+		key.setDispDate(orderDate);
+		return sqlSessionTemplate.selectList("selectDispOrderByBranchNoAndDay",key);
+	}
+
+
+	@Override
+	public List<TDispOrder> selectConfirmDispOrderByBranchNoAndDay(String branchNo,Date orderDate) {
+		SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
+		TDispOrder key = new TDispOrder();
+		key.setBranchNo(branchNo);
+		key.setBranchName(format.format(orderDate));
+		return sqlSessionTemplate.selectList("selectConfirmDispOrderByBranchNoAndDay",key);
+	}
 	
+	@Override
+	public List<TDispOrder> selectConfirmedDispOrderByDate(String branchNo,String date)
+	{
+		TDispOrder key = new TDispOrder();
+		key.setBranchNo(branchNo);
+		key.setBranchName(date);
+		return sqlSessionTemplate.selectList("selectConfirmedDispOrderByDate",key);
+	}
+	
+	@Override
+	public int deleteDispOrderByOrderNo(List<String> codeList)
+	{
+		return sqlSessionTemplate.delete("deleteDispOrderByOrderNo",codeList);
+	}
+
 }

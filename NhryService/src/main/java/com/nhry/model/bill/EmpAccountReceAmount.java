@@ -7,17 +7,45 @@ import java.math.BigDecimal;
  */
 public class EmpAccountReceAmount {
     private String orderNo;            //订单号
+    private String receiptNo;          //收款单号
     private String empName;            //送奶工名称
     private String custName;           //订户名称
     private String address;            //订户地址
     private String mp;                 //订户电话
     private BigDecimal amountRece;     //应收账款
     private BigDecimal amountReal;     //实收账款
-    private BigDecimal acctAmt;        //订户余额
+    private BigDecimal acctAmt;        //订户余额付款金额
+    private BigDecimal custAcctAmt;   //订户付款时余额
     private BigDecimal amountGap;      //差额
     private String paymentType;        //付款类型
     private String paymentDate;        //收款日期
     private String branchName;         //奶站名称
+    private String paymentmethod;
+
+    public BigDecimal getCustAcctAmt() {
+        return custAcctAmt;
+    }
+
+    public void setCustAcctAmt(BigDecimal custAcctAmt) {
+        this.custAcctAmt = custAcctAmt;
+    }
+
+    public String getPaymentmethod() {
+        return paymentmethod;
+    }
+
+    public void setPaymentmethod(String paymentmethod) {
+        this.paymentmethod = paymentmethod;
+    }
+
+
+    public String getReceiptNo() {
+        return receiptNo;
+    }
+
+    public void setReceiptNo(String receiptNo) {
+        this.receiptNo = receiptNo;
+    }
 
     public BigDecimal getAcctAmt() {
         return acctAmt;

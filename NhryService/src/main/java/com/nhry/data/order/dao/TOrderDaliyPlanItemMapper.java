@@ -5,6 +5,8 @@ import com.nhry.data.order.domain.TOrderDaliyPlanItem;
 import com.nhry.data.order.domain.TOrderDaliyPlanItemKey;
 import com.nhry.data.order.domain.TPreOrder;
 import com.nhry.model.milktrans.RequireOrderSearch;
+import com.nhry.model.order.OrderDaliyPlanReportEntityModel;
+import com.nhry.model.order.OrderDaliyPlanReportModel;
 import com.nhry.model.order.OrderSearchModel;
 
 import java.math.BigDecimal;
@@ -13,12 +15,22 @@ import java.util.List;
 
 public interface TOrderDaliyPlanItemMapper {
 	
+	 List<TOrderDaliyPlanItem> selectDaliyOrdersAll(OrderSearchModel smodel);
+	 
+	 int updateDaliyPlansToStopDateToDate(TOrderDaliyPlanItem record);
+	
+	 int deletePlansForLongEdit(TOrderDaliyPlanItem record);
+	
 	 List<TOrderDaliyPlanItem> searchDaliyPlansByStatus(String orderNo, String status1,String status2,String status3);
 	
 	 PageInfo selectDaliyOrdersByPages(OrderSearchModel smodel);
 	
 	 int deleteFromDateToDate(TOrderDaliyPlanItem record);
+	 
+	 int deletePlansByAmt(String orderNo);
 
+	 int updateDaliyPlanItemRemainAmt(TOrderDaliyPlanItem record);
+	 
     int insert(TOrderDaliyPlanItem record);
 
     BigDecimal selectDaliyPlansRemainAmt(TOrderDaliyPlanItemKey record);
@@ -66,4 +78,8 @@ public interface TOrderDaliyPlanItemMapper {
     List<TOrderDaliyPlanItem> selectProDayPlanOfSelfBranch(RequireOrderSearch rModel);
 
     List<TOrderDaliyPlanItem> getProductItemsByOrderNo(String orderCode,String salesOrg);
+
+    int deletePlansByOrder(String orderNo);
+
+    List<OrderDaliyPlanReportEntityModel> reportOrderDaliyPlanByParams(OrderDaliyPlanReportModel model);
 }

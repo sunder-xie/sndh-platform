@@ -38,7 +38,7 @@ public class BranchEmpResource extends BaseResource {
 	@Produces(MediaType.APPLICATION_JSON)
 	@ApiOperation(value = "/add", response = ResponseModel.class, notes = "增加网点员工")
 	public Response addBranchEmp(@ApiParam(required=true,name="record",value="系统参数json格式")TMdBranchEmp record){
-		return convertToRespModel(MessageCode.NORMAL, null,  branchEmpService.addBranchEmp(record));
+		return convertToRespModel(MessageCode.NORMAL, null,  branchEmpService.addBranchEmp(record,true));
 	}
 	
 	@POST
@@ -70,7 +70,7 @@ public class BranchEmpResource extends BaseResource {
 	@Path("/search")
 	@Produces(MediaType.APPLICATION_JSON)
 	@Consumes(MediaType.APPLICATION_JSON)
-	@ApiOperation(value = "/{search}", response = NHSysParameter.class, notes = "查询员工信息")
+	@ApiOperation(value = "/{search}", response = NHSysParameter.class, notes = "查询员工信息列表")
 	public Response findBranchEmpByNo(@ApiParam(required=true,name="smodel",value="SearchModel") EmpQueryModel smodel){
 		return convertToRespModel(MessageCode.NORMAL, null,branchEmpService.searchBranchEmp(smodel));
 	}

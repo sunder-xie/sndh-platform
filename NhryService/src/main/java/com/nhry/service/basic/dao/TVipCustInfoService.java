@@ -8,6 +8,7 @@ import com.nhry.data.basic.domain.TMdAddress;
 import com.nhry.data.basic.domain.TVipAcct;
 import com.nhry.data.basic.domain.TVipCustInfo;
 import com.nhry.model.basic.CustQueryModel;
+import com.nhry.model.basic.CustStat;
 import com.nhry.service.basic.pojo.Addresses;
 import com.nhry.utils.date.Date;
 
@@ -18,7 +19,18 @@ public interface TVipCustInfoService {
 	 * @return
 	 */
 	String addVipCust(TVipCustInfo record);
-    
+    /**
+     *批量导入订户信息 不创建主键
+     * @param record
+     * @return
+     */
+    String addVipCusts(List<TVipCustInfo> record);
+	/**
+	 * 为导入的订户新建会员编号
+	 * @param record
+	 * @return
+	 */
+	int batchAddVipCustSapNo(String salesOrg);
     /**
      * 根据订户编号查询订户信息
      * @param vipCustNo
@@ -73,10 +85,12 @@ public interface TVipCustInfoService {
     
     /**
      * 为订户添加详细地址信息
-     * @param vipCustNo
+     * @param address
+     * @param branchNo
+     * 如果 该地址 所属的订户不存在则创建 还要创建新订户
      * @return
      */
-    String addAddressForCust(TMdAddress address,String branchNo);
+    public String addAddressForCust(TMdAddress address,String branchNo,Map<String,String> attrs);
     
     /**
      * 修改订户详细地址
@@ -140,4 +154,39 @@ public interface TVipCustInfoService {
      * @return
      */
     List<TMdAddress> findCnAddressByCustNo(String custNo);
+    
+    /**
+     * 根据订户编号，删除订户信息(包括订户地址)
+     * @param custNo
+     * @return
+     */
+    public int deleteCustByCustNo(String custNo);
+    
+    /**
+     * 根据订户编号，修改订户的奶站编号
+     * @param custNo
+     * @param branchNo
+     * @return
+     */
+    public String uptCustBranchNo(String custNo,String branchNo);
+    
+    /**
+     * 获取当前组织订户状态统计数据
+     * @param attrs
+     * @return
+     */
+    public List<CustStat> getCustInfoStat();
+
+    /**
+     * 更新会员编号
+     * @param vipCustInfo
+     * @return
+     */
+    public int updateSapNo(TVipCustInfo vipCustInfo);
+    /**
+     * 根据id查询默认地址详细信息
+     * @param id
+     * @return
+     */
+    TMdAddress findAddressByCustNoISDefault(String id);
 }

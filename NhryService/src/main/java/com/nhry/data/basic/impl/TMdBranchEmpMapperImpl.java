@@ -7,6 +7,7 @@ import com.nhry.data.basic.domain.TMdBranchEmp;
 import com.nhry.data.basic.domain.TMdResidentialArea;
 import com.nhry.model.basic.BranchEmpSearchModel;
 import com.nhry.model.basic.EmpQueryModel;
+import com.nhry.model.bill.EmpSalQueryModel;
 import com.nhry.service.basic.pojo.BranchEmpModel;
 
 import java.util.List;
@@ -26,8 +27,8 @@ public class TMdBranchEmpMapperImpl implements TMdBranchEmpMapper {
 	public int addBranchEmp(TMdBranchEmp record) {
 		// TODO Auto-generated method stub
 		int emp = this.sqlSessionTemplate.insert("addBranchEmp", record);
-		int role = this.sqlSessionTemplate.insert("addEmpRole", record);
-		return emp+role;
+//		int role = this.sqlSessionTemplate.insert("addEmpRole", record);
+		return emp;
 	}
 
 	@Override
@@ -50,9 +51,12 @@ public class TMdBranchEmpMapperImpl implements TMdBranchEmpMapper {
 	@Override
 	public int uptBranchEmpByNo(TMdBranchEmp record) {
 		// TODO Auto-generated method stub
-		int emp = this.sqlSessionTemplate.update("uptBranchEmpByNo", record);
-		int role = this.sqlSessionTemplate.insert("uptEmpRole", record);
-		return emp+role;
+		return this.sqlSessionTemplate.update("uptBranchEmpByNo", record);
+	}
+	
+	@Override
+	public int uptBranchEmpByBraNo(TMdBranchEmp record){
+		return this.sqlSessionTemplate.update("uptBranchEmpByBraNo", record);
 	}
 
 	public void setSqlSessionTemplate(DynamicSqlSessionTemplate sqlSessionTemplate) {
@@ -71,7 +75,7 @@ public class TMdBranchEmpMapperImpl implements TMdBranchEmpMapper {
 	}
 
 	@Override
-	public List<TMdBranchEmp> getAllEmpByBranchNo(String branchNo,String salesOrg) {
+	public List<TMdBranchEmp> getAllEmpMilkManByBranchNo(String branchNo,String salesOrg) {
 		EmpQueryModel smodel = new EmpQueryModel();
 		smodel.setBranchNo(branchNo);
 		smodel.setSalesOrg(salesOrg);
@@ -84,8 +88,19 @@ public class TMdBranchEmpMapperImpl implements TMdBranchEmpMapper {
 	}
 
 	@Override
+	public List<TMdBranchEmp> getAllRationalMilkManByBranchNo(EmpSalQueryModel smodel) {
+		return sqlSessionTemplate.selectList("getAllRationalMilkManByBranchNo",smodel);
+	}
+
+	@Override
 	public List<TMdBranchEmp> getAllEmpBySalesOrg(String salesOrg) {
 		return sqlSessionTemplate.selectList("getAllEmpBySalesOrg",salesOrg);
+	}
+
+	@Override
+	public TMdBranchEmp selectActiveBranchEmpByNo(String empNo) {
+		// TODO Auto-generated method stub
+		return this.sqlSessionTemplate.selectOne("selectActiveBranchEmpByNo",empNo);
 	}
 
 

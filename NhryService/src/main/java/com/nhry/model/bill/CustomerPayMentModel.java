@@ -1,5 +1,9 @@
 package com.nhry.model.bill;
 
+import java.util.ArrayList;
+
+import com.nhry.data.order.domain.TPlanOrderItem;
+
 /**
  * Created by gongjk on 2016/6/29.
  */
@@ -9,8 +13,19 @@ public class CustomerPayMentModel  {
     private String paymentType;
     private String empNo;
     private String remark;
+    private ArrayList<TPlanOrderItem> entries = new ArrayList<TPlanOrderItem>();
+    
+    public ArrayList<TPlanOrderItem> getEntries()
+	{
+		return entries;
+	}
 
-    public String getEmpNo() {
+	public void setEntries(ArrayList<TPlanOrderItem> entries)
+	{
+		this.entries = entries;
+	}
+
+	public String getEmpNo() {
         return empNo;
     }
 

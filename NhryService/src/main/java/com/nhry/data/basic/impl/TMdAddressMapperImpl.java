@@ -60,4 +60,15 @@ public class TMdAddressMapperImpl implements TMdAddressMapper{
 		// TODO Auto-generated method stub
 		return this.sqlSessionTemplate.selectList("findAddressByMixedTerms", attrs);
 	}
+
+	@Override
+	public int deleteAddressByCustNo(String custNo) {
+		// TODO Auto-generated method stub
+		return this.sqlSessionTemplate.delete("deleteAddressByCustNo", custNo);
+	}
+	@Override
+	public TMdAddress findAddressByCustNoISDefault(String id){
+		// TODO Auto-generated method stub
+		return this.sqlSessionTemplate.selectOne("findAddressByCustNoISDefault", id);
+	}
 }

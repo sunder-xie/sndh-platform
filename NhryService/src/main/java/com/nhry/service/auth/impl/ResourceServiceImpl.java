@@ -199,4 +199,10 @@ public class ResourceServiceImpl extends BaseService implements ResourceService 
 		// TODO Auto-generated method stub
 		return resMapper.findComponentByLogName(this.userSessionService.getCurrentUser().getLoginName());
 	}
+
+	@Override
+	public List<TSysResource> findCurUserPages() {
+		// TODO Auto-generated method stub
+		return this.resMapper.findPagesByLogName(this.userSessionService.getCurrentUser().getLoginName());
+	}
 }

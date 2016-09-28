@@ -14,6 +14,9 @@ public class TSysUser implements Serializable{
 	private static final long serialVersionUID = 1L;
 
 	private String loginName;
+	
+	//员工号
+	private String empNo;  
 
     private String displayName;
 
@@ -113,8 +116,8 @@ public class TSysUser implements Serializable{
 
     private boolean isRole;
 
-//    private List<TSysUserRole> roleIds = new ArrayList<TSysUserRole>();
-    
+    private String saleName;
+
     public String getLoginName() {
         return loginName;
     }
@@ -523,4 +526,20 @@ public class TSysUser implements Serializable{
     public void setRole(boolean role) {
         isRole = role;
     }
+
+    public String getSaleName() {
+        return saleName;
+    }
+
+    public void setSaleName(String saleName) {
+        this.saleName = saleName;
+    }
+
+	public String getEmpNo() {
+		return empNo;
+	}
+
+	public void setEmpNo(String empNo) {
+		this.empNo = empNo;
+	}
 }

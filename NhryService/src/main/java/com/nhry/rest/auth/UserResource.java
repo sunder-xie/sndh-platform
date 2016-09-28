@@ -6,23 +6,34 @@ import com.nhry.common.exception.MessageCode;
 import com.nhry.data.auth.domain.TSysUser;
 import com.nhry.model.auth.UserQueryModel;
 import com.nhry.model.auth.UserQueryModel2;
+import com.nhry.model.auth.UserQueryModel3;
+import com.nhry.model.sys.AccessKey;
 import com.nhry.model.sys.ResponseModel;
 import com.nhry.rest.BaseResource;
 import com.nhry.service.auth.dao.UserService;
 import com.nhry.utils.CookieUtil;
+import com.nhry.utils.EnvContant;
+import com.nhry.utils.HttpUtils;
+import com.nhry.utils.SysContant;
 import com.sun.jersey.spi.resource.Singleton;
 import com.wordnik.swagger.annotations.Api;
 import com.wordnik.swagger.annotations.ApiOperation;
 import com.wordnik.swagger.annotations.ApiParam;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Controller;
 
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+
+import java.io.IOException;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Path("/user")
 @Component
@@ -85,6 +96,27 @@ public class UserResource extends BaseResource {
 	}
 	
 	@POST
+	@Path("/logout")
+	@Produces(MediaType.APPLICATION_JSON)
+	@ApiOperation(value = "/login", response = ResponseModel.class, notes = "用户登录")
+	public Response logout(@ApiParam(required = true, name = "tk", value = "token") @QueryParam("tk")String tk) {
+		boolean flag = userService.logout(tk);
+		if(flag){
+			return convertToRespModel(MessageCode.NORMAL,null, EnvContant.getSystemConst("idm_logout_uri")+EnvContant.getSystemConst("redirect_uri"));
+		}else{
+			return convertToRespModel(MessageCode.LOGIC_ERROR,null, "");
+		}
+	}
+	
+	@POST
+	@Path("/current/logined")
+	@Produces(MediaType.APPLICATION_JSON)
+	@ApiOperation(value = "/current/logined", response = ResponseModel.class, notes = "获取当前登录的用户信息")
+	public Response getCurrentLoginUser() {
+		return convertToRespModel(MessageCode.NORMAL,null, userService.getCurrentLoginUser());
+	}
+	
+	@POST
 	@Path("/delete/{loginName}")
 	@Produces(MediaType.APPLICATION_JSON)
 	@ApiOperation(value = "/delete/{loginName}", response = ResponseModel.class, notes = "失效指定用户")
@@ -109,6 +141,38 @@ public class UserResource extends BaseResource {
 	public Response findByRoleId(	@ApiParam(required = true, name = "um", value = "角色 用户登录名、中文名") UserQueryModel2 um) {
 		return convertToRespModel(MessageCode.NORMAL, null, userService.findUserByRoleId(um));
 	}
+
+	@POST
+	@Path("/findNotRoleUser")
+	@Produces(MediaType.APPLICATION_JSON)
+	@Consumes(MediaType.APPLICATION_JSON)
+	@ApiOperation(value = "/findNotRoleUser", response = PageInfo.class, notes = "根据用户名(或者中文名)公司编码查询人员列表")
+	public Response findNotRoleUser(@ApiParam(required = false, name = "um", value = "用户登录名、中文名、公司编码") UserQueryModel3 um) {
+		return convertToRespModel(MessageCode.NORMAL, null, userService.findNotRoleUser(um));
+	}
+	@POST
+	@Path("/findNotRoleUserPage")
+	@Produces(MediaType.APPLICATION_JSON)
+	@Consumes(MediaType.APPLICATION_JSON)
+	@ApiOperation(value = "/findNotRoleUserPage", response = PageInfo.class, notes = "根据用户名(或者中文名)公司编码查询未分配角色人员列表 分页")
+	public Response findNotRoleUserPage(@ApiParam(required = true, name = "um", value = "用户登录名、中文名、公司编码") UserQueryModel3 um) {
+		return convertToRespModel(MessageCode.NORMAL, null, userService.findNotRoleUserPage(um));
+	}
 	
-	
+	@POST
+	@Path("/find/user/{ak}")
+	@Produces(MediaType.APPLICATION_JSON)
+	@ApiOperation(value = "/find/user/{ak}", response = PageInfo.class, notes = "根据ak获取登录用户信息")
+	public Response findNotRoleUserPage(@ApiParam(required = true, name = "ak", value = "ak") @PathParam("ak")String ak) {
+		String userObject = "no value";
+		try {
+			Map<String,Object> attrs = new HashMap<String,Object>();
+			attrs.put("access_token", ak);
+			userObject = HttpUtils.request(EnvContant.getSystemConst("auth_profile"), attrs);
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return convertToRespModel(MessageCode.NORMAL, null, userObject);
+	}
 }

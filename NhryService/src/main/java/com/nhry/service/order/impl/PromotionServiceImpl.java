@@ -1,6 +1,7 @@
 package com.nhry.service.order.impl;
 
 import java.math.BigDecimal;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -8,6 +9,7 @@ import java.util.Map;
 
 import org.apache.commons.lang3.StringUtils;
 
+import com.github.pagehelper.PageInfo;
 import com.nhry.common.exception.MessageCode;
 import com.nhry.common.exception.ServiceException;
 import com.nhry.data.order.dao.TOrderDaliyPlanItemMapper;
@@ -16,6 +18,7 @@ import com.nhry.data.order.domain.TOrderDaliyPlanItem;
 import com.nhry.data.order.domain.TPlanOrderItem;
 import com.nhry.data.order.domain.TPreOrder;
 import com.nhry.data.order.domain.TPromotion;
+import com.nhry.model.order.OrderSearchModel;
 import com.nhry.service.BaseService;
 import com.nhry.service.order.dao.PromotionService;
 
@@ -33,6 +36,20 @@ public class PromotionServiceImpl extends BaseService implements PromotionServic
 		this.tOrderDaliyPlanItemMapper = tOrderDaliyPlanItemMapper;
 	}
 
+	/* (non-Javadoc) 
+	* @title: selectPromotionsrsByPage
+	* @description: 查询销售组织下的所有促销规则
+	* @param smodel
+	* @return 
+	* @see com.nhry.service.order.dao.PromotionService#selectPromotionsrsByPage(com.nhry.model.order.OrderSearchModel) 
+	*/
+	@Override
+	public PageInfo selectPromotionsrsByPage(OrderSearchModel smodel)
+	{
+		smodel.setSalesOrg(userSessionService.getCurrentUser().getSalesOrg());
+		smodel.setBranchNo(userSessionService.getCurrentUser().getBranchNo());
+		return tPromotionMapper.selectPromotionsrsByPage(smodel);
+	}
 
 	/* (non-Javadoc) 
 	* @title: getPromotionByMatnr
@@ -44,11 +61,12 @@ public class PromotionServiceImpl extends BaseService implements PromotionServic
 	@Override
 	public List<TPromotion> getPromotionByMatnr(String code)
 	{
+  		SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
 		TPromotion record = new TPromotion();
 		record.setOrgMatnr(code);
 		record.setBranchNo(userSessionService.getCurrentUser().getBranchNo());
 		record.setSalesOrg(userSessionService.getCurrentUser().getSalesOrg());
-		record.setPlanStartTime(new Date());
+		record.setCreateBy(format.format(new Date()));
 		return tPromotionMapper.selectPromotionByMatnr(record);
 	}
 
@@ -82,7 +100,7 @@ public class PromotionServiceImpl extends BaseService implements PromotionServic
  		}
  		
  		//处理,满赠,满n个a产品赠m个b产品
- 		if("10".equals(promotion.getPromType())){
+ 		if("Z008".equals(promotion.getPromType())){
  			int giftQty = entry.getBuyQty()/promotion.getOrgQty().intValue()*promotion.getGiftQty().intValue();
  			if(giftQty<=0)throw new ServiceException(MessageCode.LOGIC_ERROR,entry.getMatnr()+"产品没有达到满赠要求，请修改正品数量或不参加促销!");
  			entry.setGiftQty(giftQty);//赠送赠品的数量
@@ -110,7 +128,7 @@ public class PromotionServiceImpl extends BaseService implements PromotionServic
  		}
  		
  		//处理,满赠,满n个a产品赠m个b产品
- 		if("10".equals(promotion.getPromType())){
+ 		if("Z008".equals(promotion.getPromType())){
  			int giftQty = entry.getBuyQty()/promotion.getOrgQty().intValue()*promotion.getGiftQty().intValue();
  			if(giftQty<=0)return;
  			entry.setGiftQty(giftQty);//赠送赠品的数量
@@ -155,49 +173,52 @@ public class PromotionServiceImpl extends BaseService implements PromotionServic
 		
 		int daliyEntryNo = Integer.parseInt(daliyPlans.get(0).getPlanItemNo()) + 1;//日计划行号
 		
-		for(TOrderDaliyPlanItem plan : daliyPlans){
-			if(entryMap.containsKey(plan.getItemNo())){
-				TPlanOrderItem orgEntry = entryMap.get(plan.getItemNo());
-				int totalGift = orgEntry.getGiftQty();
-				
-				//复制日计划
-				TOrderDaliyPlanItem giftPlan = new TOrderDaliyPlanItem();
-				giftPlan.setOrderNo(plan.getOrderNo());//订单编号
-				giftPlan.setOrderDate(plan.getOrderDate());//订单日期
-				giftPlan.setPlanItemNo(String.valueOf(daliyEntryNo));//预订单计划行项
-				giftPlan.setItemNo(plan.getItemNo());//预订单日计划行
-				giftPlan.setDispDate(plan.getDispDate());//配送日期
-				giftPlan.setReachTimeType(plan.getReachTimeType());//送达时段类型
-				giftPlan.setMatnr(orgEntry.getGiftMatnr());//产品编号
-				giftPlan.setUnit(orgEntry.getGiftUnit());//配送单位
-				giftPlan.setPromotionFlag(orgEntry.getPromotion());//促销号
-				
-				//产品数量
-				if(totalGift>=plan.getQty()){
-					giftPlan.setQty(plan.getQty());
-				}else{
-					giftPlan.setQty(totalGift);
+		for(String itemNo : entryMap.keySet()){
+			for(TOrderDaliyPlanItem plan : daliyPlans){
+				if(plan.getItemNo().equals(itemNo)){
+					TPlanOrderItem orgEntry = entryMap.get(plan.getItemNo());
+					
+					int totalGift = orgEntry.getGiftQty();
+					if(totalGift<=0)break;
+					
+					//复制日计划
+					TOrderDaliyPlanItem giftPlan = new TOrderDaliyPlanItem();
+					giftPlan.setOrderNo(plan.getOrderNo());//订单编号
+					giftPlan.setOrderDate(plan.getOrderDate());//订单日期
+					giftPlan.setPlanItemNo(String.valueOf(daliyEntryNo));//预订单计划行项
+					giftPlan.setItemNo(plan.getItemNo());//预订单日计划行
+					giftPlan.setDispDate(plan.getDispDate());//配送日期
+					giftPlan.setReachTimeType(plan.getReachTimeType());//送达时段类型
+					giftPlan.setMatnr(orgEntry.getGiftMatnr());//产品编号
+					giftPlan.setUnit(orgEntry.getGiftUnit());//配送单位
+					giftPlan.setPromotionFlag(orgEntry.getPromotion());//促销号
+					
+					//产品数量
+					if(totalGift>=plan.getQty()){
+						giftPlan.setQty(plan.getQty());
+					}else{
+						giftPlan.setQty(totalGift);
+					}
+					giftPlan.setGiftQty(giftPlan.getQty());//赠品数量
+					giftPlan.setStatus("10");//状态
+					giftPlan.setCreateAt(new Date());//创建时间
+					giftPlan.setCreateBy(userSessionService.getCurrentUser().getLoginName());//创建人
+					giftPlan.setCreateByTxt(userSessionService.getCurrentUser().getDisplayName());//创建人姓名
+					
+					tOrderDaliyPlanItemMapper.insert(giftPlan);
+					
+					//赠品数量减少
+					orgEntry.setGiftQty(totalGift-giftPlan.getGiftQty());
+					
+					if(orgEntry.getGiftQty()<=0)break;//赠完为止
+					
+					daliyEntryNo++;
 				}
-				giftPlan.setGiftQty(giftPlan.getQty());//赠品数量
-				giftPlan.setStatus("10");//状态
-				giftPlan.setCreateAt(new Date());//创建时间
-				giftPlan.setCreateBy(userSessionService.getCurrentUser().getLoginName());//创建人
-				giftPlan.setCreateByTxt(userSessionService.getCurrentUser().getDisplayName());//创建人姓名
-				
-				tOrderDaliyPlanItemMapper.insert(giftPlan);
-				
-				//赠品数量减少
-				orgEntry.setGiftQty(totalGift-giftPlan.getGiftQty());
-				
-				if(orgEntry.getGiftQty()<=0)break;//赠完为止
-				
-				daliyEntryNo++;
 			}
 		}
 		
+		
 	}
-	
-	
 	
 	
 }

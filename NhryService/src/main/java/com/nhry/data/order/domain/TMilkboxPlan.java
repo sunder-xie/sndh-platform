@@ -1,5 +1,9 @@
 package com.nhry.data.order.domain;
 
+import org.apache.axis2.databinding.types.soapencoding.Decimal;
+
+
+import java.math.BigDecimal;
 import java.util.Date;
 
 public class TMilkboxPlan {
@@ -21,6 +25,8 @@ public class TMilkboxPlan {
 
     private String branchNo;
     
+    private String branchName;
+    
     private String branchTel;
 
     private Date planDate;
@@ -39,11 +45,51 @@ public class TMilkboxPlan {
 
     private String lastModifiedBy;
 
+    public BigDecimal getInitAmt() {
+        return initAmt;
+    }
+
+    public void setInitAmt(BigDecimal initAmt) {
+        this.initAmt = initAmt;
+    }
+
     private String lastModifiedByTxt;
 
     private String printFlag;
-    
-    public String getBranchTel()
+
+    private BigDecimal initAmt;
+
+    public String getProNum() {
+        return proNum;
+    }
+
+    public void setProNum(String proNum) {
+        this.proNum = proNum;
+    }
+
+    private String proNum;
+
+    private String paymentmethod;
+
+    public String getPaymentmethod() {
+        return paymentmethod;
+    }
+
+    public void setPaymentmethod(String paymentmethod) {
+        this.paymentmethod = paymentmethod;
+    }
+
+    public String getBranchName()
+	{
+		return branchName;
+	}
+
+	public void setBranchName(String branchName)
+	{
+		this.branchName = branchName;
+	}
+
+	public String getBranchTel()
 	{
 		return branchTel;
 	}
@@ -132,7 +178,6 @@ public class TMilkboxPlan {
     public void setBranchNo(String branchNo) {
         this.branchNo = branchNo == null ? null : branchNo.trim();
     }
-
     public Date getPlanDate() {
         return planDate;
     }

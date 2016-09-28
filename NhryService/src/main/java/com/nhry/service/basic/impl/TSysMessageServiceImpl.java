@@ -6,6 +6,8 @@ import java.util.Map;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;
+import org.apache.ws.commons.schema.constants.Constants.SystemConstants;
+import org.springframework.core.task.TaskExecutor;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -18,6 +20,7 @@ import com.nhry.data.auth.domain.TSysUser;
 import com.nhry.data.basic.dao.TBranchNotsellListMapper;
 import com.nhry.data.basic.dao.TSysMessageMapper;
 import com.nhry.data.basic.domain.TMdBranch;
+import com.nhry.data.basic.domain.TMdBranchEmp;
 import com.nhry.data.basic.domain.TMdMara;
 import com.nhry.data.basic.domain.TSysMessage;
 import com.nhry.data.order.dao.TPreOrderMapper;
@@ -71,7 +74,7 @@ public class TSysMessageServiceImpl extends BaseService implements TSysMessageSe
 
 	@Override
 	@Transactional(propagation=Propagation.REQUIRES_NEW)
-	public boolean sendProductsMessages(String title,TMdMara mara) {
+	public boolean sendProductsMessages(String title,TMdMara mara,TSysUser user) {
 		// TODO Auto-generated method stub
 		Map<String,String> attrs = new HashMap<String,String>();
 		attrs.put("salesOrg", mara.getSalesOrg());
@@ -102,20 +105,20 @@ public class TSysMessageServiceImpl extends BaseService implements TSysMessageSe
 		}
 		if(users != null && users.size() > 0){
 			sendMessage(users, title+"！产品编号："+mara.getMatnr(), "产品编号："+mara.getMatnr()+"  产品名称："+mara.getMatnrTxt()+" 产品简称："+mara.getMaraEx().getShortTxt()+" 报货提前天数："
-					+mara.getMaraEx().getPreDays(), "10","10");
+					+mara.getMaraEx().getPreDays(), "10","10",user);
 		}
 		return true;
 	}
 	
 	/**
 	 * 发送消息
-	 * @param users  发送用户二表
+	 * @param users  发送用户列表
 	 * @param title    消息主题
 	 * @param content  消息内容
 	 * @param type       消息类型(10：产品消息；20：订单消息；30：奶站消息)
 	 * @param source    消息来源(10:系统本身；20：电商系统)
 	 */
-	private void sendMessage(List<TSysUser> users,String title,String content,String type,String source){
+	private void sendMessage(List<TSysUser> users,String title,String content,String type,String source,TSysUser sysuser){
 		if(users != null && users.size() > 0){
 			for(TSysUser user : users){
 				TSysMessage mess = new TSysMessage();
@@ -129,8 +132,8 @@ public class TSysMessageServiceImpl extends BaseService implements TSysMessageSe
 				mess.setFinishFlag("N");
 				mess.setMessageNo(PrimaryKeyUtils.generateUuidKey());
 				mess.setCreateAt(new Date());
-				mess.setCreateBy(this.userSessionService.getCurrentUser().getLoginName());
-				mess.setCreateByTxt(this.userSessionService.getCurrentUser().getDisplayName());
+				mess.setCreateBy(sysuser.getLoginName());
+				mess.setCreateByTxt(sysuser.getDisplayName());
 				mess.setSource("10");
 				mess.setTitle(title);
 				mess.setContent(content);
@@ -154,6 +157,7 @@ public class TSysMessageServiceImpl extends BaseService implements TSysMessageSe
 			throw new ServiceException(MessageCode.LOGIC_ERROR,"该订单编号(orderNo)对应的订单不存在，请检查你的订单编号!");
 		}
 		List<TSysUser> users = null;
+		TSysUser sysuser = this.userSessionService.getCurrentUser();
 		//10-送部门内勤 20-送该订单奶站内勤 30-送部门内勤和奶站内勤
 		Map<String,String> attrs = new HashMap<String,String>();
 		attrs.put("salesOrg", order.getSalesOrg());
@@ -164,7 +168,7 @@ public class TSysMessageServiceImpl extends BaseService implements TSysMessageSe
 			if(users == null || users.size() == 0){
 				throw new ServiceException(MessageCode.LOGIC_ERROR, "该组织下没有找到相应的部门内勤人员!");
 			}
-			this.sendMessage(users, om.getMemoTitle(), om.getMemoContent(), "20","20");
+			this.sendMessage(users, om.getMemoTitle(), om.getMemoContent(), "20","20",sysuser);
 			if(!StringUtils.isEmpty(order.getDealerNo())){
 				//经销商奶站订单
 				attrs.put("dealerNo", order.getDealerNo());
@@ -173,7 +177,7 @@ public class TSysMessageServiceImpl extends BaseService implements TSysMessageSe
 				if(users == null || users.size() == 0){
 					throw new ServiceException(MessageCode.LOGIC_ERROR, "该组织下没有找到相应的经销商内勤人员!");
 				}
-				this.sendMessage(users, om.getMemoTitle(), om.getMemoContent(), "20","20");
+				this.sendMessage(users, om.getMemoTitle(), om.getMemoContent(), "20","20",sysuser);
 			}
 		}else if("20".equals(om.getMemoType())){
 			//奶站内勤
@@ -184,7 +188,7 @@ public class TSysMessageServiceImpl extends BaseService implements TSysMessageSe
 			if(users == null || users.size() == 0){
 				throw new ServiceException(MessageCode.LOGIC_ERROR, "该组织下没有找到相应的奶站内勤人员!");
 			}
-			this.sendMessage(users, om.getMemoTitle(), om.getMemoContent(), "20","20");
+			this.sendMessage(users, om.getMemoTitle(), om.getMemoContent(), "20","20",sysuser);
 		}else if("30".equals(om.getMemoType())){
 			//部门内勤和奶站内勤
 			om.setMemoType("10");
@@ -213,7 +217,7 @@ public class TSysMessageServiceImpl extends BaseService implements TSysMessageSe
 			LOGGER.warn("该销售组织下："+mara.getSalesOrg()+"目前没有部门内勤！");
 			return false;
 		}else{
-			this.sendMessage(users, "新品添加消息！商品编号："+mara.getMatnr(), "新品添加消息！商品编号："+mara.getMatnr()+" 商品名称："+mara.getMatnrTxt(), "30","10");
+			this.sendMessage(users, "新品添加消息！商品编号："+mara.getMatnr(), "新品添加消息！商品编号："+mara.getMatnr()+" 商品名称："+mara.getMatnrTxt(), "30","10",SysContant.getSysUser());
 		}
 		return true;
 	}
@@ -222,6 +226,7 @@ public class TSysMessageServiceImpl extends BaseService implements TSysMessageSe
 	@Transactional(propagation=Propagation.REQUIRES_NEW)
 	public boolean sendMessagesForCreateBranch(TMdBranch branch) {
 		// TODO Auto-generated method stub
+		
 		Map<String,String> attrs = new HashMap<String,String>();
 		attrs.put("salesOrg", branch.getSalesOrg());
 		//部门内勤
@@ -231,14 +236,14 @@ public class TSysMessageServiceImpl extends BaseService implements TSysMessageSe
 			LOGGER.warn("该销售组织下："+branch.getSalesOrg()+"目前没有部门内勤！");
 			return false;
 		}else{
-			this.sendMessage(users, "奶站新建消息！奶站编号："+branch.getBranchNo(), "奶站新建消息！奶站编号："+branch.getBranchNo()+" 奶站名称："+branch.getBranchName(), "30","10");
+			this.sendMessage(users, "奶站新建消息！奶站编号："+branch.getBranchNo(), "奶站新建消息！奶站编号："+branch.getBranchNo()+" 奶站名称："+branch.getBranchName(), "30","10",SysContant.getSysUser());
 		}
 		return true;
 	}
 
 	@Override
 	@Transactional(propagation=Propagation.REQUIRES_NEW)
-	public boolean sendMessagesForUptBranch(TMdBranch branch,int flag) {
+	public boolean sendMessagesForUptBranch(TMdBranch branch,int flag,TSysUser user) {
 		// TODO Auto-generated method stub
 		if(StringUtils.isEmpty(branch.getSalesOrg()) || StringUtils.isEmpty(branch.getBranchNo())){
 			return false;
@@ -255,10 +260,10 @@ public class TSysMessageServiceImpl extends BaseService implements TSysMessageSe
 		}else{
 			if(1 == flag){
 				//价格组发生变化
-				this.sendMessage(users, "奶站更新价格组消息！奶站编号："+branch.getBranchNo(), "奶站配置更新消息！奶站编号："+branch.getBranchNo()+" 奶站名称："+branch.getBranchName()+" 价格组配置发生变化，敬请关注！", "30","10");
+				this.sendMessage(users, "奶站更新价格组消息！奶站编号："+branch.getBranchNo(), "奶站配置更新消息！奶站编号："+branch.getBranchNo()+" 奶站名称："+branch.getBranchName()+" 价格组配置发生变化，敬请关注！", "30","10",user);
 			}else if(2 == flag){
 				//配送区域发生变化
-				this.sendMessage(users, "奶站更新配送消息！奶站编号："+branch.getBranchNo(), "奶站配置更新消息！奶站编号："+branch.getBranchNo()+" 奶站名称："+branch.getBranchName()+" 配送区域发生变化，敬请关注！", "30","10");
+				this.sendMessage(users, "奶站更新配送消息！奶站编号："+branch.getBranchNo(), "奶站配置更新消息！奶站编号："+branch.getBranchNo()+" 奶站名称："+branch.getBranchName()+" 配送区域发生变化，敬请关注！", "30","10",user);
 			}
 		}
 		return true;
@@ -280,5 +285,28 @@ public class TSysMessageServiceImpl extends BaseService implements TSysMessageSe
 		attrs.put("loginName", this.userSessionService.getCurrentUser().getLoginName());
 		attrs.put("messageNo", messageNo);
 		return this.messageMapper.closeSysMessage(attrs);
+	}
+
+	@Override
+	public int sendMessageForEmpUpt(TMdBranchEmp emp, String tag,TSysUser user) {
+		// TODO Auto-generated method stub
+		Map<String,String> attrs = new HashMap<String,String>();
+		attrs.put("salesOrg", emp.getSalesOrg());
+		attrs.put("branchNo", emp.getBranchNo());
+		attrs.put("rid", "'"+SysContant.getSystemConst("branch_back_office")+"'");
+		List<TSysUser> users = userMapper.getloginNamesByOrgsandRid2(attrs);
+		if(users == null || users.size() == 0){
+			LOGGER.warn("该销售组织下："+emp.getSalesOrg()+"目前没有奶站内勤！");
+			return -1;
+		}else{
+			if("add".equals(tag)){
+				//新增员工
+				this.sendMessage(users, "奶站新增员啦！员工编号："+emp.getHrEmpNo(), "奶站新增员消息！员工编号："+emp.getHrEmpNo()+" 员工姓名："+emp.getEmpName()+"，敬请关注！", "30","10",user);
+			}else if("upt".equals(tag)){
+				//员工变更奶站
+				this.sendMessage(users, "奶站有员工离职啦！员工编号："+emp.getHrEmpNo(), "奶站员工离职消息！员工编号："+emp.getHrEmpNo()+" 员工姓名："+emp.getEmpName()+"，敬请关注！", "30","10",user);
+			}
+		}
+		return 1;
 	}
 }

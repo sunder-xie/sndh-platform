@@ -1,5 +1,6 @@
 package com.nhry.data.order.dao;
 
+import java.util.List;
 import java.util.Map;
 
 import com.github.pagehelper.PageInfo;
@@ -10,7 +11,7 @@ public interface TMilkboxPlanMapper {
 	
 	 PageInfo selectMilkboxsByPage(MilkboxSearchModel smodel);
 	
-    int deleteByPrimaryKey(String planNo);
+    int deleteMilkBoxByOrderNo(String orderNo);
 
     int insert(TMilkboxPlan record);
 
@@ -25,4 +26,6 @@ public interface TMilkboxPlanMapper {
     int updateMilkboxPlans(Map<String,Object> params);
     
     int updateMilkboxPlanPrinted(String code);
+
+    List searchMilkBox(String empNo);
 }

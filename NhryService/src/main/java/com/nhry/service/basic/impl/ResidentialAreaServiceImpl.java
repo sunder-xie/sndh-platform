@@ -7,7 +7,6 @@ import com.nhry.common.exception.MessageCode;
 import com.nhry.common.exception.ServiceException;
 import com.nhry.data.auth.dao.TSysUserRoleMapper;
 import com.nhry.data.auth.domain.TSysUser;
-import com.nhry.data.auth.domain.TSysUserRole;
 import com.nhry.data.basic.dao.TMdBranchMapper;
 import com.nhry.data.basic.dao.TMdBranchScopeMapper;
 import com.nhry.data.basic.dao.TMdResidentialAreaMapper;
@@ -20,14 +19,12 @@ import com.nhry.service.basic.dao.TSysMessageService;
 import com.nhry.service.basic.pojo.AreaSearchModel;
 import com.nhry.service.basic.pojo.BranchScopeModel;
 import com.nhry.service.basic.pojo.ResidentialAreaModel;
+import com.nhry.service.external.dao.EcService;
 import com.nhry.utils.PrimaryKeyUtils;
-
 import org.apache.commons.lang.StringUtils;
+import org.springframework.core.task.TaskExecutor;
 
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * Created by gongjk on 2016/6/3.
@@ -40,6 +37,8 @@ public class ResidentialAreaServiceImpl implements ResidentialAreaService {
     private TSysUserRoleMapper urMapper;
     private TSysMessageService messService;
     private TMdBranchMapper branchMapper;
+    private TaskExecutor taskExecutor;
+    private EcService ecservice;
 
 
     @Override
@@ -61,8 +60,8 @@ public class ResidentialAreaServiceImpl implements ResidentialAreaService {
     @Override
     public int areaRelBranch(BranchScopeModel bModel) {
         TSysUser user = userSessionService.getCurrentUser();
-        TSysUserRole userRole =urMapper.getUserRoleByLoginName(user.getLoginName());
-        if("10004".equals(userRole.getId())){
+        List<String> rids = urMapper.getUserRidsByLoginName(user.getLoginName());
+        if(rids.contains("10004")){
             throw new ServiceException(MessageCode.LOGIC_ERROR,"奶站内勤 无权进行奶站配送区域分配！");
         }
 
@@ -76,18 +75,32 @@ public class ResidentialAreaServiceImpl implements ResidentialAreaService {
             }
             //更新奶站 和 配送区域关系
             List<String> newList = bModel.getResidentialAreaIds();
+            List<TMdBranchScopeKey> bscopes = new ArrayList<TMdBranchScopeKey>();
             if(newList!=null && newList.size()>0){
                 for (String id : newList){
                         TMdBranchScopeKey scopeKey = new  TMdBranchScopeKey();
                         scopeKey.setBranchNo(bModel.getBranchNo());
                         scopeKey.setResidentialAreaId(id);
                         tMdBranchScopeMapper.addBranchScope(scopeKey);
+                        bscopes.add(scopeKey);
                 }
                 //奶站的配送发生变化，发生系统消息
-                TMdBranch branch = branchMapper.selectBranchByNo(bModel.getBranchNo());
-                if(branch != null){
-                	messService.sendMessagesForUptBranch(branch, 2);
-                }
+                taskExecutor.execute(new Thread(){
+					@Override
+					public void run() {
+						// TODO Auto-generated method stub
+						super.run();
+						this.setName("sendMessagesForforBranchAddArea");
+						 TMdBranch branch = branchMapper.selectBranchByNo(bModel.getBranchNo());
+			              if(branch != null){
+			              	messService.sendMessagesForUptBranch(branch, 2,user);
+			              	//更新奶站小区对应关系
+			              	for(TMdBranchScopeKey bk : bscopes){
+			              		ecservice.senduptBranchScope2Ec(bk, null);
+			              	}
+			              }
+					}
+                });
               }
             return 1;
         }catch (Exception e){
@@ -110,15 +123,22 @@ public class ResidentialAreaServiceImpl implements ResidentialAreaService {
     @Override
     public List<TMdResidentialArea> searchAreaBySalesOrg(AreaSearchModel aModel) {
         TSysUser user = userSessionService.getCurrentUser();
-        TSysUserRole userRole = urMapper.getUserRoleByLoginName(user.getLoginName());
         Map<String,String> map = new HashMap<String,String>();
         aModel.setSalesOrg(user.getSalesOrg());
-        //奶站内勤，只看该奶站下的
-        if("10004".equals(userRole.getId())){
-            aModel.setBranchNo(user.getBranchNo());
-        }
+        aModel.setBranchNo(user.getBranchNo());
         if(!StringUtils.isEmpty(aModel.getContent())){
         	aModel.setContent(aModel.getContent().trim().replace(" ", "%"));
+        }
+        return tMdResidentialAreaMapper.searchAreaBySalesOrg(aModel);
+    }
+
+    @Override
+    public List<TMdResidentialArea> searchSalesOrgArea(AreaSearchModel aModel) {
+        TSysUser user = userSessionService.getCurrentUser();
+        Map<String,String> map = new HashMap<String,String>();
+        aModel.setSalesOrg(user.getSalesOrg());
+        if(!StringUtils.isEmpty(aModel.getContent())){
+            aModel.setContent(aModel.getContent().trim().replace(" ", "%"));
         }
         return tMdResidentialAreaMapper.searchAreaBySalesOrg(aModel);
     }
@@ -149,22 +169,64 @@ public class ResidentialAreaServiceImpl implements ResidentialAreaService {
     @Override
     public int addResidentialArea(TMdResidentialArea tMdResidentialArea) {
         TSysUser user = userSessionService.getCurrentUser();
-        TMdResidentialArea area = tMdResidentialAreaMapper.getAreaByAreaName(tMdResidentialArea.getResidentialAreaTxt(),user.getSalesOrg());
-        if(area!=null){
-            throw new ServiceException(MessageCode.LOGIC_ERROR,"该小区名称已存在！");
+        if(StringUtils.isNotEmpty(user.getSalesOrg())) {
+            List<TMdResidentialArea> area = tMdResidentialAreaMapper.getAreaByAreaName(tMdResidentialArea.getResidentialAreaTxt(), user.getSalesOrg());
+            if (area != null && area.size() > 0) {
+                throw new ServiceException(MessageCode.LOGIC_ERROR, user.getSalesOrg() + "销售组织编号下的   " + tMdResidentialArea.getResidentialAreaTxt() + "小区名称已存在！");
+            }
+        }
+        TMdResidentialArea tmpArea = tMdResidentialAreaMapper.getAreaById(tMdResidentialArea.getId());
+        if(tmpArea!=null) {
+            throw new ServiceException(MessageCode.LOGIC_ERROR,"编号："+ tMdResidentialArea.getId()+ "小区名称已存在！");
+        }
+        if(StringUtils.isBlank(tMdResidentialArea.getSalesOrg())){
+            tMdResidentialArea.setSalesOrg(user.getSalesOrg());
         }
 
-        tMdResidentialArea.setSalesOrg(user.getSalesOrg());
-        tMdResidentialArea.setId(PrimaryKeyUtils.generateUuidKey());
+        //判断如果新增小区时小区编号不为空，则代表是小区数据导入
+        if(StringUtils.isBlank(tMdResidentialArea.getId())){
+            tMdResidentialArea.setId(PrimaryKeyUtils.generateUuidKey());
+        }
         tMdResidentialArea.setStatus("10");
         tMdResidentialArea.setCreateAt(new Date());
         tMdResidentialArea.setCreateBy(user.getLoginName());
-        return tMdResidentialAreaMapper.addResidentialArea(tMdResidentialArea);
+        tMdResidentialAreaMapper.addResidentialArea(tMdResidentialArea);
+        //将新增的小区推送给电商
+        taskExecutor.execute(new Thread(){
+			@Override
+			public void run() {
+				// TODO Auto-generated method stub
+				super.run();
+				this.setName("sendResidentialArea2Ec");
+				ecservice.sendResidentialArea2Ec(tMdResidentialArea);
+			}
+        });
+        return 1;
     }
-
+    @Override
+    public int addResidentialAreas(List<TMdResidentialArea> areas) {
+        int i = 0;
+        if(areas != null){
+            for(TMdResidentialArea area : areas){
+                i = addResidentialArea(area);
+            }
+        }
+        return i;
+    }
     @Override
     public int uptResidentialArea(TMdResidentialArea tMdResidentialArea) {
-        return tMdResidentialAreaMapper.uptResidentialArea(tMdResidentialArea);
+    	tMdResidentialAreaMapper.uptResidentialArea(tMdResidentialArea);
+    	 //将修改的小区推送给电商
+        taskExecutor.execute(new Thread(){
+			@Override
+			public void run() {
+				// TODO Auto-generated method stub
+				super.run();
+				this.setName("sendResidentialAreaUpt2Ec");
+				ecservice.sendResidentialArea2Ec(tMdResidentialArea);
+			}
+        });
+        return 1;
     }
 
     @Override
@@ -200,5 +262,13 @@ public class ResidentialAreaServiceImpl implements ResidentialAreaService {
 
 	public void setBranchMapper(TMdBranchMapper branchMapper) {
 		this.branchMapper = branchMapper;
+	}
+
+	public void setTaskExecutor(TaskExecutor taskExecutor) {
+		this.taskExecutor = taskExecutor;
+	}
+
+	public void setEcservice(EcService ecservice) {
+		this.ecservice = ecservice;
 	}
 }

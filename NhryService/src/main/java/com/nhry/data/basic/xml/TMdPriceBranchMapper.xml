@@ -74,7 +74,7 @@
 	WHERE
 		p.ID = pb.id
 	AND p.PRICE_TYPE = #{priceType}
-	AND pb.id = #{id}
+	<!-- AND pb.id = #{id} -->
 	AND pb.BRANCH_NO = #{branchNo}
   </select>
 </mapper>

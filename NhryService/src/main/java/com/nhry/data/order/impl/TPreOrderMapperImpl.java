@@ -1,34 +1,36 @@
-/**
- * @project:NhryService
- * @package:com.nhry.data.order.impl
- * @copyright: Copyright[2016-2999] [Markor Investment Group Co. LTD]. All Rights Reserved.
- * @filename: TPreOrderMapperImpl.java
- * @description:<描述>
- * @author: Himari
- * @date: 20 Jun 2016-10:17:22 am
- * @version: 1.0
- * @since: JDK 1.8
- */
 package com.nhry.data.order.impl;
 
 import com.github.pagehelper.PageInfo;
 import com.nhry.common.datasource.DynamicSqlSessionTemplate;
 import com.nhry.data.order.dao.TPreOrderMapper;
 import com.nhry.data.order.domain.TPreOrder;
+import com.nhry.model.bill.CustBatchBillQueryModel;
 import com.nhry.model.bill.CustBillQueryModel;
-import com.nhry.model.order.ManHandOrderSearchModel;
-import com.nhry.model.order.OrderSearchModel;
-import com.nhry.model.order.ReturnOrderModel;
-import com.nhry.model.order.UpdateManHandOrderModel;
+import com.nhry.model.order.*;
 import com.nhry.service.order.pojo.OrderRemainData;
 
+import java.math.BigDecimal;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class TPreOrderMapperImpl implements TPreOrderMapper
 {
 	private DynamicSqlSessionTemplate sqlSessionTemplate;
 	public void setSqlSessionTemplate(DynamicSqlSessionTemplate sqlSessionTemplate) {
 		this.sqlSessionTemplate = sqlSessionTemplate;
+	}
+	
+	@Override
+	public TPreOrder selectLastOrder(String vipNo) {
+		// TODO Auto-generated method stub
+		return sqlSessionTemplate.selectOne("selectLastestOrder",vipNo);
+	}
+	
+	@Override
+	public int updateOrderResumed(String orderNo) {
+		// TODO Auto-generated method stub
+		return sqlSessionTemplate.update("updateOrderResumed",orderNo);
 	}
 	
 	@Override
@@ -42,6 +44,13 @@ public class TPreOrderMapperImpl implements TPreOrderMapper
 	{
 		// TODO Auto-generated method stub
 		return sqlSessionTemplate.update("updateOrderStatus", record);
+	}
+	
+	@Override
+	public int updateOrderEmpNo(TPreOrder record)
+	{
+		// TODO Auto-generated method stub
+		return sqlSessionTemplate.update("updateOrderEmpNo", record);
 	}
 
 	@Override
@@ -126,6 +135,12 @@ public class TPreOrderMapperImpl implements TPreOrderMapper
 	}
 	
 	@Override
+	public int updateOrderCurAmtAndInitAmt(TPreOrder record)
+	{
+		return sqlSessionTemplate.update("updateOrderCurAmtAndInitAmt", record);
+	}
+	
+	@Override
 	public int updateByPrimaryKey(TPreOrder record)
 	{
 		// TODO Auto-generated method stub
@@ -144,11 +159,170 @@ public class TPreOrderMapperImpl implements TPreOrderMapper
 	{
 		return sqlSessionTemplate.selectList("selectByMilkmemberNo", memberNo);
 	}
+	
+	@Override
+	public List<TPreOrder> selectByMilkmemberNoRetOrder(String memberNo)
+	{
+		return sqlSessionTemplate.selectList("selectByMilkmemberNoRetOrder", memberNo);
+	}
 
 	@Override
 	public List<TPreOrder> selectNodeletedByMilkmemberNo(TPreOrder order)
 	{
 		return sqlSessionTemplate.selectList("selectNodeletedByMilkmemberNo", order);
 	}
-	
+
+	@Override
+	public int updateOrderSolicitor(TPreOrder order)
+	{
+		return sqlSessionTemplate.update("updateOrderSolicitor", order);
+	}
+
+	@Override
+	public BigDecimal calculateOrderFactoryAmt(String orderNo) {
+		return sqlSessionTemplate.selectOne("calculateOrderFactoryAmt",orderNo);
+	}
+
+
+	@Override
+	public int updateOrderFacAmt(BigDecimal factAmt, String orderNo) {
+		Map<String,Object> map =new HashMap<String,Object>();
+		map.put("factAmt",factAmt);
+		map.put("orderNo",orderNo);
+		return sqlSessionTemplate.update("updateOrderFacAmt",map);
+	}
+
+	public int selectRequiredOrderNum(OrderSearchModel smodel)
+	{
+		return sqlSessionTemplate.selectOne("selectRequiredOrderNum",smodel);
+	}
+
+	@Override
+	public int selectStopOrderNum(OrderSearchModel smodel)
+	{
+		return sqlSessionTemplate.selectOne("selectStopOrderNum",smodel);
+	}
+	@Override
+	public int searchReturnOrdersNum(OrderSearchModel smodel)
+	{
+		return sqlSessionTemplate.selectOne("searchReturnOrdersNum",smodel);
+	}
+	@Override
+	public PageInfo selectNeedResumeOrders(OrderSearchModel smodel) {
+
+		return sqlSessionTemplate.selectListByPages("selectNeedResumeOrders",smodel, Integer.parseInt(smodel.getPageNum()), Integer.parseInt(smodel.getPageSize()));
+	}
+
+	/* (non-Javadoc) 
+	* @title: selectIniOrders
+	* @description: 查找所有期初订单
+	* @return 
+	* @see com.nhry.data.order.dao.TPreOrderMapper#selectIniOrders() 
+	*/
+	@Override
+	public List<TPreOrder> selectIniOrders(TPreOrder order)
+	{
+		return sqlSessionTemplate.selectList("selectIniOrders",order);
+	}
+
+	@Override
+	public List<String> searchCustomerOrderForExp(CustBillQueryModel cModel) {
+		return sqlSessionTemplate.selectList("searchCustomerOrderForExp",cModel);
+	}
+
+	@Override
+	public List<TPreOrder> searchCustomerOrderByEmpNo(CustBatchBillQueryModel model) {
+		return sqlSessionTemplate.selectList("searchCustomerOrderByEmpNo",model);
+	}
+
+	@Override
+	public int uptYfrechAndYGrowthByOrderNo(OrderPointModel model) {
+		return sqlSessionTemplate.update("uptYfrechAndYGrowthByOrderNo",model);
+	}
+
+	@Override
+	public List<TPreOrder> selectCustBatchCollect(OrderSearchModel smodel) {
+		return sqlSessionTemplate.selectList("selectCustBatchCollect",smodel);
+	}
+
+	@Override
+	public BigDecimal calculateAfterOrderFactoryAmt(String orderNo) {
+		return sqlSessionTemplate.selectOne("calculateAfterOrderFactoryAmt", orderNo);
+	}
+
+	@Override
+	public BigDecimal calculateTotalBeforBatch(CustBatchBillQueryModel cModel) {
+		return sqlSessionTemplate.selectOne("calculateTotalBeforBatch", cModel);
+	}
+
+	@Override
+	public int selectUnfinishOrderNum(String vipCustNo) {
+		return sqlSessionTemplate.selectOne("selectUnfinishOrderNum",vipCustNo);
+	}
+
+	@Override
+	public List<String> selectAdvanceOrderNos(CustBillQueryModel cModel) {
+		return sqlSessionTemplate.selectList("selectAdvanceOrderNos",cModel);
+	}
+
+	@Override
+	public List<String> selectAfterOrderNos(CustBillQueryModel cModel) {
+		return sqlSessionTemplate.selectList("selectAfterOrderNos",cModel);
+	}
+
+	/* (non-Javadoc) 
+	* @title: replaceOrdersDispmember
+	* @description: 替换所有a送奶员的订单为b送奶员
+	* @param smodel
+	* @return 
+	* @see com.nhry.data.order.dao.TPreOrderMapper#replaceOrdersDispmember(com.nhry.model.order.OrderSearchModel) 
+	*/
+	@Override
+	public int replaceOrdersDispmember(OrderSearchModel smodel)
+	{
+		return sqlSessionTemplate.update("replaceOrdersDispmember", smodel);
+	}
+
+	/* (non-Javadoc) 
+	* @title: updateOrderToFinish
+	* @description: 订单完结
+	* @param orderNo
+	* @return 
+	* @see com.nhry.data.order.dao.TPreOrderMapper#updateOrderToFinish(java.lang.String) 
+	*/
+	@Override
+	public int updateOrderToFinish(String orderNo)
+	{
+		return sqlSessionTemplate.update("updateOrderToFinish", orderNo);
+	}
+
+	/* (non-Javadoc) 
+	* @title: selectNumOfdeletedByMilkmemberNo
+	* @description: 在订的订单数量
+	* @return 
+	* @see com.nhry.data.order.dao.TPreOrderMapper#selectNumOfdeletedByMilkmemberNo() 
+	*/
+	@Override
+	public int selectNumOfdeletedByMilkmemberNo()
+	{
+		return sqlSessionTemplate.selectOne("selectNumOfdeletedByMilkmemberNo");
+	}
+
+	//发送短信用start
+	@Override
+	public List<TPreOrder> searchPrePayOrdersForSendMessage(String endDate)
+	{
+		return sqlSessionTemplate.selectList("searchPrePayOrdersForSendMessage", endDate);
+	}
+	@Override
+	public List<TPreOrder> searchAfPayOrdersForSendMessage(String endDate)
+	{
+		return sqlSessionTemplate.selectList("searchAfPayOrdersForSendMessage", endDate);
+	}
+	@Override
+	public List<TPreOrder> searchECOrdersForSendMessage(String endDate)
+	{
+		return sqlSessionTemplate.selectList("searchECOrdersForSendMessage", endDate);
+	}
+	//发送短信用end
 }

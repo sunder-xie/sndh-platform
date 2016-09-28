@@ -1,6 +1,8 @@
 package com.nhry.data.milktrans.dao;
 
 import com.nhry.data.milktrans.domain.TSsmSalOrderItems;
+import com.nhry.model.order.OrderPointModel;
+
 import java.util.Map;
 import java.util.List;
 
@@ -9,5 +11,11 @@ import java.util.List;
  */
 public interface TSsmSalOrderItemMapper {
     int addSalOrderItem(TSsmSalOrderItems salOrderItems);
+    List<TSsmSalOrderItems> selectItemsBySalOrderNo(Map map);
     List<Map<String,String>> findItemsForPI(String orderNo);
+
+    int delSalOrderItemsByOrderNo(String orderNo);
+    int uptYfrechAndYGrowthByOrderNoAndItemNo(OrderPointModel model);
+
+    OrderPointModel getSumYfrechAndYGrowByOrderNo(String orderNo);
 }

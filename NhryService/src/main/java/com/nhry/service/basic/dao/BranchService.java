@@ -2,6 +2,8 @@ package com.nhry.service.basic.dao;
 
 import com.github.pagehelper.PageInfo;
 import com.nhry.data.basic.domain.TMdBranch;
+import com.nhry.data.basic.domain.TMdBranchEx;
+import com.nhry.model.basic.BranchExkostlModel;
 import com.nhry.model.basic.BranchOrDealerList;
 import com.nhry.model.basic.BranchQueryModel;
 
@@ -32,5 +34,17 @@ public interface BranchService {
      * @return
      */
     List<TMdBranch> findBranchByDno(String dealerNo);
+    
+    /**
+     * 根据销售组织、经销商编号查询对应的奶站
+     * @param dealerNo
+     * @return
+     */
+    List<TMdBranch> findBranchBySalesOrgDno(String salesOrg,String dealerNo);
 
+    TMdBranch getCustBranchInfo();
+
+    int updateBranchKostl(BranchExkostlModel record);
+
+    TMdBranchEx getBranchEx(String branchNo);
 }

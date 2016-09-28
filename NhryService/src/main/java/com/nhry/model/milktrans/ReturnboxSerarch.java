@@ -8,12 +8,21 @@ import java.util.Date;
  * Created by gongjk on 2016/7/6.
  */
 public class ReturnboxSerarch extends BaseQueryModel{
+    private String salesOrg;
     private String branchNo;
     private String empNo;
     private String dealerNo;
     private String status;
     private Date startDate;
     private Date endDate;
+
+    public String getSalesOrg() {
+        return salesOrg;
+    }
+
+    public void setSalesOrg(String salesOrg) {
+        this.salesOrg = salesOrg;
+    }
 
     public String getBranchNo() {
         return branchNo;

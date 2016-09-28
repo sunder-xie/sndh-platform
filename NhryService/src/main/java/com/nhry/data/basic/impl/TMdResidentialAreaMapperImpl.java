@@ -83,7 +83,7 @@ public class TMdResidentialAreaMapperImpl implements TMdResidentialAreaMapper {
     }
 
     @Override
-    public TMdResidentialArea getAreaByAreaName(String residentialAreaTxt,String salesOrg) {
+    public List<TMdResidentialArea> getAreaByAreaName(String residentialAreaTxt,String salesOrg) {
         Map<String,String> map = new HashMap<String,String>();
         map.put("salesOrg",salesOrg);
         map.put("residentialAreaTxt",residentialAreaTxt);
@@ -103,9 +103,7 @@ public class TMdResidentialAreaMapperImpl implements TMdResidentialAreaMapper {
 
     @Override
     public int uptResidentialArea(TMdResidentialArea tMdResidentialArea) {
-        int area = sqlSessionTemplate.update("uptArea",tMdResidentialArea);
-        int areaBranch =  sqlSessionTemplate.update("uptBranchArea",tMdResidentialArea);
-        return area + areaBranch;
+        return sqlSessionTemplate.update("uptArea",tMdResidentialArea);
     }
 
     @Override

@@ -3,6 +3,8 @@ package com.nhry.data.order.domain;
 import java.math.BigDecimal;
 import java.util.Date;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+
 public class TOrderDaliyPlanItem extends TOrderDaliyPlanItemKey {
     private Date dispDate;
     
@@ -14,6 +16,7 @@ public class TOrderDaliyPlanItem extends TOrderDaliyPlanItemKey {
 
     private String matnr;
 
+    private String confirmMatnr;
     private String matnrTxt;
 
     private String unit;
@@ -38,12 +41,30 @@ public class TOrderDaliyPlanItem extends TOrderDaliyPlanItemKey {
 
     private String lastModifiedBy;
 
+    public String getWeekly() {
+        return weekly;
+    }
+
+    public void setWeekly(String weekly) {
+        this.weekly = weekly;
+    }
+
     private String lastModifiedByTxt;
     
     private Integer giftQty;
     
     private String promotionFlag;
-    
+
+    private String weekly;
+
+    public String getConfirmMatnr() {
+        return confirmMatnr;
+    }
+
+    public void setConfirmMatnr(String confirmMatnr) {
+        this.confirmMatnr = confirmMatnr;
+    }
+
     public Integer getGiftQty()
 	{
 		return giftQty;
@@ -73,7 +94,8 @@ public class TOrderDaliyPlanItem extends TOrderDaliyPlanItemKey {
  	 {
  		  this.dispDateStr = dispDateStr;
  	 }
-
+ 	 
+ 	@JsonFormat(pattern="yyyy-MM-dd HH:mm:ss",timezone = "GMT+8") 
     public Date getDispDate() {
         return dispDate;
     }

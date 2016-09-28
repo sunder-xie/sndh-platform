@@ -1,5 +1,6 @@
 package com.nhry.data.order.impl;
 
+import java.util.List;
 import java.util.Map;
 
 import com.github.pagehelper.PageInfo;
@@ -35,10 +36,10 @@ public class TMilkboxPlanMapperImpl implements TMilkboxPlanMapper
 	}
 	
 	@Override
-	public int deleteByPrimaryKey(String planNo)
+	public int deleteMilkBoxByOrderNo(String orderNo)
 	{
 		// TODO Auto-generated method stub
-		return 0;
+		return sqlSessionTemplate.delete("deleteMilkBoxByOrderNo",orderNo);
 	}
 	
 	@Override
@@ -82,6 +83,11 @@ public class TMilkboxPlanMapperImpl implements TMilkboxPlanMapper
 		// TODO Auto-generated method stub
 		return sqlSessionTemplate.update("updateMilkboxPlanPrinted", code);
 	}
-	
-	
+
+	@Override
+	public List searchMilkBox(String empNo) {
+		return sqlSessionTemplate.selectList("selectMilkboxPlantoOutput",empNo);
+	}
+
+
 }

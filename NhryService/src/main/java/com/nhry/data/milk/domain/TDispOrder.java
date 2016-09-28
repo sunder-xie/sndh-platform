@@ -3,6 +3,7 @@ package com.nhry.data.milk.domain;
 import java.math.BigDecimal;
 import java.util.Date;
 
+
 public class TDispOrder extends TDispOrderKey {
     private Date dispDate;
 
@@ -54,6 +55,18 @@ public class TDispOrder extends TDispOrderKey {
     
     private Integer totalQty;
     
+    private String dealerNo;
+    
+	public String getDealerNo()
+	{
+		return dealerNo;
+	}
+
+	public void setDealerNo(String dealerNo)
+	{
+		this.dealerNo = dealerNo;
+	}
+
 	public String getBranchName()
 	{
 		return branchName;
@@ -83,7 +96,6 @@ public class TDispOrder extends TDispOrderKey {
 	{
 		this.totalQty = totalQty;
 	}
-
 	public Date getDispDate() {
         return dispDate;
     }

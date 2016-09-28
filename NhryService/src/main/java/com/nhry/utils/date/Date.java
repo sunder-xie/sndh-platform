@@ -166,6 +166,17 @@ public class Date extends java.util.Date {
 			return null;
 		}
 	}
+	
+	public static Date parseDate(String dateStr,String format) {
+		SimpleDateFormat sdf = new SimpleDateFormat(format);
+		try {
+			java.util.Date d = sdf.parse(dateStr);
+			return new Date(d.getTime());
+		} catch (ParseException e) {
+			e.printStackTrace();
+			return null;
+		}
+	}
 
 	/**
 	 * 功能：当前时间增加毫秒数。

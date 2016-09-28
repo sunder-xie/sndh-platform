@@ -2,6 +2,7 @@ package com.nhry.rest.order;
 
 import com.github.pagehelper.PageInfo;
 import com.nhry.common.exception.MessageCode;
+import com.nhry.data.order.domain.TOrderDaliyPlanItem;
 import com.nhry.data.order.domain.TPlanOrderItem;
 import com.nhry.data.order.domain.TPreOrder;
 import com.nhry.model.basic.OrderModel;
@@ -26,6 +27,7 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
 import java.util.ArrayList;
+import java.util.List;
 
 @Path("/order")
 @Component
@@ -46,12 +48,60 @@ public class OrderResource extends BaseResource {
 	public Response selectOrderByCode(@ApiParam(required=true,name="orderCode",value="订单编号") @PathParam("orderCode") String orderCode){
 		return convertToRespModel(MessageCode.NORMAL, null, orderService.selectOrderByCode(orderCode));
 	}
+	
+	@GET
+	@Path("/createDaliyPlansForIniOrders/{str}")
+	@Produces(MediaType.APPLICATION_JSON)
+	@ApiOperation(value = "/{str}", response = OrderCreateModel.class, notes = "为导入的订单生成日计划")
+	public Response createDaliyPlansForIniOrders(@ApiParam(required=true,name="str",value="模糊字符串,订单号前5位") @PathParam("str") String str){
+		return convertToRespModel(MessageCode.NORMAL, null, orderService.createDaliyPlansForIniOrders(str));
+	}
+	
+	@GET
+	@Path("/selectLatestOrder/{vipNo}")
+	@Produces(MediaType.APPLICATION_JSON)
+	@ApiOperation(value = "/selectLatestOrder/{vipNo}", response = OrderCreateModel.class, notes = "查询该用户上一张订单的送奶员和订单号")
+	public Response selectLatestOrder(@ApiParam(required=true,name="vipNo",value="订户编号") @PathParam("vipNo") String vipNo){
+		return convertToRespModel(MessageCode.NORMAL, null, orderService.selectLatestOrder(vipNo));
+	}
+	
+	@GET
+	@Path("/selectRequiredOrderNum")
+	@Produces(MediaType.APPLICATION_JSON)
+	@ApiOperation(value = "/selectRequiredOrderNum", response = OrderCreateModel.class, notes = "该组织下待确认的订单")
+	public Response selectRequiredOrderNum(){
+		return convertToRespModel(MessageCode.NORMAL, null, orderService.selectRequiredOrderNum());
+	}
 
+	@GET
+	@Path("/searchReturnOrdersNum")
+	@Produces(MediaType.APPLICATION_JSON)
+	@ApiOperation(value = "/searchReturnOrdersNum", response = OrderCreateModel.class, notes = "该组织下人工分单")
+	public Response searchReturnOrdersNum(){
+		return convertToRespModel(MessageCode.NORMAL, null, orderService.searchReturnOrdersNum());
+	}
+
+	@GET
+	@Path("/selectStopOrderNum")
+	@Produces(MediaType.APPLICATION_JSON)
+	@ApiOperation(value = "/selectStopOrderNum", response = OrderCreateModel.class, notes = "该组织下还有5天就到期没续订的订单")
+	public Response selectStopOrderNum(){
+		return convertToRespModel(MessageCode.NORMAL, null, orderService.selectStopOrderNum());
+	}
+	
+	@POST
+	@Path("/searchNeedResumeOrders")
+	@Produces(MediaType.APPLICATION_JSON)
+	@Consumes(MediaType.APPLICATION_JSON)
+	@ApiOperation(value = "/searchNeedResumeOrders", response = PageInfo.class, notes = "查询需要续订的订单信息列表")
+	public Response searchNeedResumeOrders(@ApiParam(required=true,name="smodel",value="SearchModel") OrderSearchModel smodel){
+		return convertToRespModel(MessageCode.NORMAL, null, orderService.searchNeedResumeOrders(smodel));
+	}
 
 	@GET
 	@Path("/queryCollectByOrderNo")
 	@Produces(MediaType.APPLICATION_JSON)
-	@ApiOperation(value = "/queryCollectByOrderNo", response = OrderCreateModel.class, notes = "根据订单编号查询收款信息")
+	@ApiOperation(value = "/queryCollectByOrderNo", response = CollectOrderModel.class, notes = "根据订单编号查询收款信息")
 	public Response queryCollectByOrderNo(@ApiParam(required=true,name="orderCode",value="订单编号") @QueryParam("orderCode") String orderCode){
 		return convertToRespModel(MessageCode.NORMAL, null, orderService.queryCollectByOrderNo(orderCode));
 	}
@@ -112,12 +162,30 @@ public class OrderResource extends BaseResource {
 	}	
 	
 	@POST
+	@Path("/editOrderForLongForViewPlans")
+	@Consumes(MediaType.APPLICATION_JSON)
+	@Produces(MediaType.APPLICATION_JSON)
+	@ApiOperation(value = "/editOrderForLongForViewPlans", response = List.class, notes = "更新订单信息(长期修改),看日计划")
+	public Response editOrderForLongForViewPlans(@ApiParam(required=true,name="record",value="系统参数json格式") OrderEditModel record){
+		return convertToRespModel(MessageCode.NORMAL, null,  orderService.editOrderForLongForViewPlans(record));
+	}
+	
+	@POST
 	@Path("/uptshort")
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
 	@ApiOperation(value = "/uptshort", response = Integer.class, notes = "更新订单信息(短期修改)")
 	public Response uptOrder(@ApiParam(required=true,name="record",value="系统参数json格式") DaliyPlanEditModel record){
 		return convertToRespModel(MessageCode.NORMAL, null,  orderService.editOrderForShort(record));
+	}
+	
+	@POST
+	@Path("/recoverDaliyPlan")
+	@Consumes(MediaType.APPLICATION_JSON)
+	@Produces(MediaType.APPLICATION_JSON)
+	@ApiOperation(value = "/recoverDaliyPlan", response = Integer.class, notes = "日计划恢复")
+	public Response recoverDaliyPlan(@ApiParam(required=true,name="record",value="系统参数json格式") TOrderDaliyPlanItem plan){
+		return convertToRespModel(MessageCode.NORMAL, null,  orderService.recoverStopDaliyDaliyPlan(plan));
 	}
 	
 	@POST
@@ -147,20 +215,20 @@ public class OrderResource extends BaseResource {
 		return convertToRespModel(MessageCode.NORMAL, null, orderService.batchContinueOrder(smodel));
 	}
 	
-	@POST
-	@Path("/batchResumeFromStop")
-	@Produces(MediaType.APPLICATION_JSON)
-	@Consumes(MediaType.APPLICATION_JSON)
-	@ApiOperation(value = "/batchResumeFromStop", response = Integer.class, notes = "订单批量复订")
-	public Response batchResumeFromStop(@ApiParam(required=true,name="smodel",value="SearchModel") OrderSearchModel smodel){
-		return convertToRespModel(MessageCode.NORMAL, null, orderService.batchContinueOrdeAfterStop(smodel));
-	}
+//	@POST
+//	@Path("/batchResumeFromStop")
+//	@Produces(MediaType.APPLICATION_JSON)
+//	@Consumes(MediaType.APPLICATION_JSON)
+//	@ApiOperation(value = "/batchResumeFromStop", response = Integer.class, notes = "订单批量复订")
+//	public Response batchResumeFromStop(@ApiParam(required=true,name="smodel",value="SearchModel") OrderSearchModel smodel){
+//		return convertToRespModel(MessageCode.NORMAL, null, orderService.batchContinueOrdeAfterStop(smodel));
+//	}
 	
 	@POST
 	@Path("/stopOrder")
 	@Produces(MediaType.APPLICATION_JSON)
 	@Consumes(MediaType.APPLICATION_JSON)
-	@ApiOperation(value = "/stopOrder", response = Integer.class, notes = "订单停订")
+	@ApiOperation(value = "/stopOrder", response = Integer.class, notes = "订单停订(直接停订，没有结束日期)")
 	public Response stopOrder(@ApiParam(required=true,name="smodel",value="SearchModel") OrderSearchModel smodel){
 		return convertToRespModel(MessageCode.NORMAL, null, orderService.stopOrderForTime(smodel));
 	}
@@ -169,7 +237,7 @@ public class OrderResource extends BaseResource {
 	@Path("/stopOrderInTime")
 	@Produces(MediaType.APPLICATION_JSON)
 	@Consumes(MediaType.APPLICATION_JSON)
-	@ApiOperation(value = "/stopOrderInTime", response = Integer.class, notes = "订单停订(区间)")
+	@ApiOperation(value = "/stopOrderInTime", response = Integer.class, notes = "订单停订(区间暂停，有开始和结束日期)")
 	public Response stopOrderInTime(@ApiParam(required=true,name="smodel",value="SearchModel") OrderSearchModel smodel){
 		return convertToRespModel(MessageCode.NORMAL, null, orderService.stopOrderInTime(smodel));
 	}
@@ -190,6 +258,15 @@ public class OrderResource extends BaseResource {
 	@ApiOperation(value = "/continueOrder", response = Integer.class, notes = "订单续订")
 	public Response continueOrder(@ApiParam(required=true,name="smodel",value="SearchModel") OrderSearchModel smodel){
 		return convertToRespModel(MessageCode.NORMAL, null, orderService.continueOrder(smodel));
+	}
+	
+	@POST
+	@Path("/calculateContinueOrder")
+	@Produces(MediaType.APPLICATION_JSON)
+	@Consumes(MediaType.APPLICATION_JSON)
+	@ApiOperation(value = "/calculateContinueOrder", response = OrderSearchModel.class, notes = "订单续订计算截止和续费")
+	public Response calculateContinueOrder(@ApiParam(required=true,name="smodel",value="SearchModel") OrderSearchModel smodel){
+		return convertToRespModel(MessageCode.NORMAL, null, orderService.calculateContinueOrder(smodel));
 	}
 
 	@POST
@@ -266,6 +343,15 @@ public class OrderResource extends BaseResource {
 	}
 	
 	@POST
+	@Path("/calculateQtyAndAmtForFront")
+	@Produces(MediaType.APPLICATION_JSON)
+	@Consumes(MediaType.APPLICATION_JSON)
+	@ApiOperation(value = "/calculateQtyAndAmtForFront", response = TPlanOrderItem.class, notes = "计算后付款订单行的行金额，数量")
+	public Response calculateQtyAndAmtForFront(@ApiParam(required=true,name="item",value="订单行json") TPlanOrderItem  item){
+		return convertToRespModel(MessageCode.NORMAL, null, orderService.calculateTotalQtyForFront(item));
+	}
+	
+	@POST
 	@Path("/memo")
 	@Produces(MediaType.APPLICATION_JSON)
 	@Consumes(MediaType.APPLICATION_JSON)
@@ -274,4 +360,29 @@ public class OrderResource extends BaseResource {
 		return convertToRespModel(MessageCode.NORMAL, null, messService.sendOrderMemo(orderModel));
 	}
 	
+	@POST
+	@Path("/updateOrderEmp")
+	@Produces(MediaType.APPLICATION_JSON)
+	@Consumes(MediaType.APPLICATION_JSON)
+	@ApiOperation(value = "/updateOrderEmp", response = Integer.class, notes = "订单换送奶员,empNo:被替换的员工编号，content:替换员工")
+	public Response updateOrderEmp(@ApiParam(required=true,name="smodel",value="SearchModel") OrderSearchModel smodel){
+		return convertToRespModel(MessageCode.NORMAL, null, orderService.replaceOrdersDispmember(smodel));
+	}
+	
+	@POST
+	@Path("/viewDaliyPlans")
+	@Produces(MediaType.APPLICATION_JSON)
+	@Consumes(MediaType.APPLICATION_JSON)
+	@ApiOperation(value = "/viewDaliyPlans", response = Integer.class, notes = "预览日计划")
+	public Response viewDaliyPlans(@ApiParam(required=true,name="smodel",value="OrderCreateModel") OrderCreateModel record){
+		return convertToRespModel(MessageCode.NORMAL, null, orderService.viewDaliyPlans(record));
+	}
+
+	@GET
+	@Path("/selectUnfinishOrderNum")
+	@Produces(MediaType.APPLICATION_JSON)
+	@ApiOperation(value = "/selectUnfinishOrderNum", response = Integer.class, notes = "判断该订户是否有未完成的订单")
+	public Response selectUnfinishOrderNum(@ApiParam(required=true,name="vipCustNo",value="订户号") @QueryParam("vipCustNo") String vipCustNo){
+		return convertToRespModel(MessageCode.NORMAL, null, orderService.selectUnfinishOrderNum(vipCustNo));
+	}
 }

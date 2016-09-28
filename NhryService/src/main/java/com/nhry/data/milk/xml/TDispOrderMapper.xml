@@ -29,6 +29,7 @@
     <result column="TOTAL_QTY" property="totalQty" jdbcType="INTEGER" /> 
     <result column="BRANCH_NAME" property="branchName" jdbcType="INTEGER" />
     <result column="DISP_EMP_NAME" property="dispEmpName" jdbcType="INTEGER" />
+    <result column="DEALER_NO" property="dealerNo" jdbcType="VARCHAR" />
   </resultMap>
   <sql id="Base_Column_List" >
     ORDER_NO, ORDER_DATE, DISP_DATE, BRANCH_NO, DISP_LINE_NO, MST_CUST_NO, AMT, CONFIRM_AMT, 
@@ -43,14 +44,38 @@
     where BRANCH_NO = #{branchNo,jdbcType=VARCHAR}
     and ORDER_DATE = #{branchName,jdbcType=DATE}
   </select>
+
+  <select id="selectDispOrderByBranchNoAndDay" resultMap="BaseResultMap" parameterType="com.nhry.data.milk.domain.TDispOrder" >
+    select
+    <include refid="Base_Column_List" />
+    from t_mst_disp_order
+    where BRANCH_NO = #{branchNo,jdbcType=VARCHAR}
+    and DISP_DATE = #{dispDate,jdbcType=DATE}
+  </select>
+
+  <select id="selectConfirmDispOrderByBranchNoAndDay" resultMap="BaseResultMap" parameterType="com.nhry.data.milk.domain.TDispOrder" >
+    select
+    <include refid="Base_Column_List" />
+    from t_mst_disp_order
+    where 1=1
+    AND STATUS = '20'
+    AND BRANCH_NO = #{branchNo,jdbcType=VARCHAR}
+    and ORDER_DATE = #{branchName,jdbcType=DATE}
+  </select>
+
+
   <select id="selectDispOrderByOrderNo" resultMap="BaseResultMap" parameterType="com.nhry.data.milk.domain.TDispOrderKey" >
     select 
     o.ORDER_NO, o.ORDER_DATE, o.DISP_DATE, o.BRANCH_NO, o.DISP_LINE_NO, o.MST_CUST_NO, AMT, o.CONFIRM_AMT, 
     o.REACH_TIME_TYPE, o.PAYMENT_TYPE, o.STATUS, o.MEMO_TXT, o.DISP_ORDER, o.DISP_EMP_NO, o.HZ_ORDER_NO, 
     o.DAY_ACCT_FLAG, o.CREATE_AT, o.CREATE_BY, o.CREATE_BY_TXT, o.LAST_MODIFIED, o.LAST_MODIFIED_BY, 
-    o.LAST_MODIFIED_BY_TXT, o.PAYMENT_ORDER_NO, o.SUBSCRIBE_ORDER_NO,o.TOTAL_QTY,b.BRANCH_NAME BRANCH_NAME,e.EMP_NAME DISP_EMP_NAME
-    from t_mst_disp_order o,t_md_branch b,t_md_branch_emp e
-    where o.BRANCH_NO = b.BRANCH_NO and e.EMP_NO = o.DISP_EMP_NO
+    o.LAST_MODIFIED_BY_TXT, o.PAYMENT_ORDER_NO, o.SUBSCRIBE_ORDER_NO,o.TOTAL_QTY,b.BRANCH_NAME BRANCH_NAME,e.EMP_NAME DISP_EMP_NAME,
+    d.DEALER_NAME DEALER_NO
+    from t_mst_disp_order o
+    left join t_md_branch b on o.BRANCH_NO = b.BRANCH_NO
+    left join t_md_branch_emp e on e.EMP_NO = o.DISP_EMP_NO
+    left join t_md_dealer d on d.DEALER_NO = b.DEALER_NO
+    where 1 = 1
     and ORDER_NO = #{orderNo,jdbcType=VARCHAR}
     <if test="orderDate != null and orderDate !=''">
       and ORDER_DATE = #{orderDate,jdbcType=DATE}
@@ -87,10 +112,13 @@
     <if test="deliverDate != null and deliverDate !=''">
      		AND o.DISP_DATE = #{deliverDate,jdbcType=VARCHAR}
     </if>
-    <if test="orderNo != null and orderNo !=''">
+<!--     <if test="orderNo != null and orderNo !=''">
      		AND o.ORDER_NO = #{orderNo,jdbcType=VARCHAR}
+    </if> -->
+    <if test="status != null and status !=''">
+     		AND o.STATUS = #{status,jdbcType=VARCHAR}
     </if>
-    order by o.ORDER_NO desc
+    order by o.ORDER_DATE desc, o.REACH_TIME_TYPE asc
   </select>
   <insert id="addNewDispOrder" parameterType="com.nhry.data.milk.domain.TDispOrder" >
     insert into t_mst_disp_order
@@ -377,5 +405,29 @@
     DISP_DATE = #{branchName,jdbcType=DATE}
     and DISP_EMP_NO = #{dispEmpNo,jdbcType=VARCHAR}
     and REACH_TIME_TYPE = #{reachTimeType,jdbcType=VARCHAR}
+    and STATUS = '20'
   </select>
+
+    <update id="updateDispOrderEmp" parameterType="com.nhry.data.milk.domain.TDispOrder" >
+	    update t_mst_disp_order
+	    set DISP_EMP_NO = #{dispEmpNo,jdbcType=VARCHAR}  
+	    where ORDER_NO = #{orderNo,jdbcType=VARCHAR}
+  	 </update>
+
+	<select id="selectConfirmedDispOrderByDate" resultMap="BaseResultMap" parameterType="com.nhry.data.milk.domain.TDispOrder" >
+    SELECT
+    <include refid="Base_Column_List" />
+    FROM t_mst_disp_order
+    WHERE BRANCH_NO = #{branchNo,jdbcType=VARCHAR}
+    AND DISP_DATE = #{branchName,jdbcType=DATE}
+  </select>
+  
+  <delete id="deleteDispOrderByOrderNo" >
+    delete from t_mst_disp_order
+    where ORDER_NO in 
+    <foreach item="codeStr" collection="list" separator="," open="(" close=")" index="">  
+      	#{codeStr}  
+    </foreach>  
+  </delete>
+
 </mapper>

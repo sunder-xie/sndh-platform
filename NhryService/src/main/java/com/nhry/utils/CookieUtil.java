@@ -76,7 +76,7 @@ public class CookieUtil {
         cookie.setPath(getPath(request));
         cookie.setPath("/");
         cookie.setHttpOnly(true);
-//        cookie.setDomain("localhost");
+//        cookie.setDomain(".test.nhry-dev.com");
         response.addCookie(cookie);
     }
 

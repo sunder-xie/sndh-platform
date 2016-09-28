@@ -1,6 +1,7 @@
 package com.nhry.model.order;
 
 import com.nhry.data.basic.domain.TMdAddress;
+import com.nhry.data.basic.domain.TMdBranch;
 import com.nhry.data.order.domain.TPreOrder;
 
 import java.math.BigDecimal;
@@ -14,6 +15,23 @@ public class CollectOrderModel {
     private List<ProductItem> entries;
     private BigDecimal totalPrice;
     private TMdAddress address;
+    private TMdBranch branch;
+    private BigDecimal custAccAmt;//订户余额
+    public BigDecimal getCustAccAmt() {
+        return custAccAmt;
+    }
+
+    public void setCustAccAmt(BigDecimal custAccAmt) {
+        this.custAccAmt = custAccAmt;
+    }
+
+    public TMdBranch getBranch() {
+        return branch;
+    }
+
+    public void setBranch(TMdBranch branch) {
+        this.branch = branch;
+    }
 
     public TMdAddress getAddress() {
         return address;

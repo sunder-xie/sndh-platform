@@ -1,16 +1,20 @@
 package com.nhry.service.milk.dao;
 
 import com.github.pagehelper.PageInfo;
+import com.nhry.data.milk.domain.TDispOrderItem;
 import com.nhry.model.milk.*;
-import com.nhry.model.milktrans.CreateInSalOrderModel;
-import com.nhry.model.milktrans.InSideSalOrderDetailSearchModel;
-import com.nhry.model.milktrans.InSideSalOrderSearchModel;
+import com.nhry.model.milktrans.*;
+import com.nhry.model.order.OrderDaliyPlanReportEntityModel;
+import com.nhry.model.order.OrderDaliyPlanReportModel;
 
 import java.math.BigDecimal;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
 public interface DeliverMilkService {
+	int deleteDispOrderByDate(String date);
+	
 	PageInfo searchRouteOrders(RouteOrderSearchModel smodel);
 	
 	PageInfo searchRouteOrderDetail(RouteOrderSearchModel smodel);
@@ -30,7 +34,7 @@ public interface DeliverMilkService {
 	
 	int updateDaliyPlanByRouteOrder(String orderCode);
 	
-	int createDayRouteOder();
+	int createDayRouteOder(String dateStr);
 	
 	int createRouteChanges();
 	
@@ -43,4 +47,12 @@ public interface DeliverMilkService {
 	PageInfo getInsideSalOrderDetail(InSideSalOrderDetailSearchModel sModel);
 
 	int createInsideSalOrderByStock(CreateInSalOrderModel cModel);
+	
+	int reEditRouteDetail(RouteDetailUpdateModel record);
+
+	int updateInSalOrderAndStockByUpdateDiapOrder(TDispOrderItem newItem , TDispOrderItem orgItem);
+
+	List<DispOrderReportEntityModel> reportDispOrderItemByParams(DispOrderReportModel model);
+
+	List<OrderDaliyPlanReportEntityModel> reportOrderDaliyPlanByParams(OrderDaliyPlanReportModel model);
 }

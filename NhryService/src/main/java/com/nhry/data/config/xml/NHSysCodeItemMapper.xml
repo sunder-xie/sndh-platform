@@ -7,6 +7,7 @@
     <id column="ITEM_CODE" property="itemCode" jdbcType="VARCHAR" />
     <result column="ITEM_NAME" property="itemName" jdbcType="VARCHAR" />
     <result column="PARENT" property="parent" jdbcType="VARCHAR" />
+    <result column="LEVEL" property="level" javaType="INTEGER"/>
     <result column="ATTR1" property="attr1" jdbcType="VARCHAR" />
     <result column="ATTR2" property="attr2" jdbcType="VARCHAR" />
     <result column="ATTR3" property="attr3" jdbcType="VARCHAR" />
@@ -21,7 +22,7 @@
     <result column="LAST_MODIFIED_BY_TXT" property="lastModifiedByTxt" jdbcType="VARCHAR" />
   </resultMap>
   <sql id="Base_Column_List" >
-    TYPE_CODE, ITEM_CODE, ITEM_NAME, PARENT, ATTR1, ATTR2, ATTR3, ATTR4, ATTR5, IDX,
+    TYPE_CODE, ITEM_CODE, ITEM_NAME, PARENT, ATTR1, ATTR2, ATTR3, ATTR4, ATTR5, IDX,LEVEL,
     CREATE_AT, CREATE_BY, CREATE_BY_TXT, LAST_MODIFIED, LAST_MODIFIED_BY, LAST_MODIFIED_BY_TXT
   </sql>
   <select id="findCodeItenByCode" resultMap="BaseResultMap" parameterType="com.nhry.data.config.domain.NHSysCodeItem" >
@@ -42,13 +43,13 @@
       ATTR3, ATTR4, ATTR5, 
       IDX, CREATE_AT, CREATE_BY, 
       CREATE_BY_TXT, LAST_MODIFIED, LAST_MODIFIED_BY, 
-      LAST_MODIFIED_BY_TXT)
+      LAST_MODIFIED_BY_TXT,LEVEL)
     values (#{typeCode,jdbcType=VARCHAR}, #{itemCode,jdbcType=VARCHAR}, #{itemName,jdbcType=VARCHAR}, 
       #{parent,jdbcType=VARCHAR}, #{attr1,jdbcType=VARCHAR}, #{attr2,jdbcType=VARCHAR}, 
       #{attr3,jdbcType=VARCHAR}, #{attr4,jdbcType=VARCHAR}, #{attr5,jdbcType=VARCHAR}, 
       #{idx,jdbcType=INTEGER}, #{createAt,jdbcType=TIMESTAMP}, #{createBy,jdbcType=VARCHAR}, 
       #{createByTxt,jdbcType=VARCHAR}, #{lastModified,jdbcType=TIMESTAMP}, #{lastModifiedBy,jdbcType=VARCHAR}, 
-      #{lastModifiedByTxt,jdbcType=VARCHAR})
+      #{lastModifiedByTxt,jdbcType=VARCHAR},#{level,jdbcType=INTEGER})
   </insert>
   <update id="updateCodeItemByCode" parameterType="com.nhry.data.config.domain.NHSysCodeItem" >
     update t_sys_code_item
@@ -65,7 +66,8 @@
       CREATE_BY_TXT = #{createByTxt,jdbcType=VARCHAR},
       LAST_MODIFIED = #{lastModified,jdbcType=TIMESTAMP},
       LAST_MODIFIED_BY = #{lastModifiedBy,jdbcType=VARCHAR},
-      LAST_MODIFIED_BY_TXT = #{lastModifiedByTxt,jdbcType=VARCHAR}
+      LAST_MODIFIED_BY_TXT = #{lastModifiedByTxt,jdbcType=VARCHAR},
+       LEVEL = #{level,jdbcType=INTEGER}
     where TYPE_CODE = #{typeCode,jdbcType=VARCHAR}
       and ITEM_CODE = #{itemCode,jdbcType=VARCHAR}
   </update>

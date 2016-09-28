@@ -6,7 +6,6 @@ import com.nhry.common.exception.MessageCode;
 import com.nhry.common.exception.ServiceException;
 import com.nhry.data.auth.dao.TSysUserRoleMapper;
 import com.nhry.data.auth.domain.TSysUser;
-import com.nhry.data.auth.domain.TSysUserRole;
 import com.nhry.data.basic.dao.TMdBranchEmpMapper;
 import com.nhry.data.basic.dao.TMdBranchMapper;
 import com.nhry.data.basic.domain.TMdBranch;
@@ -16,8 +15,12 @@ import com.nhry.model.basic.BranchSalesOrgModel;
 import com.nhry.model.basic.EmpQueryModel;
 import com.nhry.service.BaseService;
 import com.nhry.service.basic.dao.BranchEmpService;
+import com.nhry.service.basic.dao.TSysMessageService;
 import com.nhry.service.basic.pojo.BranchEmpModel;
+import com.nhry.utils.PrimaryKeyUtils;
+
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.core.task.TaskExecutor;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -29,6 +32,8 @@ public class BranchEmpServiceImpl extends BaseService implements BranchEmpServic
 	private TMdBranchMapper tMdBranchMapper;
 	private UserSessionService userSessionService;
 	private TSysUserRoleMapper userRoleMapper;
+	private TSysMessageService messageService;
+	private TaskExecutor taskExecutor;
 
 
 
@@ -50,19 +55,63 @@ public class BranchEmpServiceImpl extends BaseService implements BranchEmpServic
 	}
 
 	@Override
-	public int addBranchEmp(TMdBranchEmp record) {
-		if(StringUtils.isEmpty(record.getEmpNo()) || StringUtils.isEmpty(record.getEmpName())){
-			throw new ServiceException(MessageCode.LOGIC_ERROR, "员工编号、员工姓名不能为空！");
-		}
-		TMdBranchEmp emp = selectBranchEmpByNo(record.getEmpNo());
-		if(emp != null){
-			throw new ServiceException(MessageCode.LOGIC_ERROR, "该员工编号已存在，请重新填写！");
-		}
-		record.setCreateAt(new Date());
-//		record.setCreateBy(userSessionService.getCurrentUser().getLoginName());
-//		record.setCreateByTxt(userSessionService.getCurrentUser().getDisplayName());
-		record.setStatus("1");
-		return branchEmpMapper.addBranchEmp(record);
+	public int addBranchEmp(TMdBranchEmp record,boolean isLeave) {
+		TSysUser sysuser = userSessionService.getCurrentUser();
+        this.taskExecutor.execute(new Thread(){
+			@Override
+			public void run() {
+				// TODO Auto-generated method stub
+				super.run();
+				this.setName("sendMessageForEmpUpt");
+				TMdBranchEmp emp = branchEmpMapper.selectActiveBranchEmpByNo(record.getEmpNo());
+				if(emp != null){
+					if(!emp.getBranchNo().equals(record.getBranchNo())){
+						//再处理原奶站员工离职问题
+						emp.setEmpNo(record.getEmpNo());
+						emp.setLeaveDate(new Date());
+						emp.setStatus("0");
+						emp.setLastModified(new Date());
+						emp.setLastModifiedBy(sysuser.getLoginName());
+						emp.setLastModifiedByTxt(sysuser.getDisplayName());
+					    branchEmpMapper.uptBranchEmpByBraNo(emp);
+						messageService.sendMessageForEmpUpt(emp, "upt", sysuser);
+						
+						//员工奶站变更(原账号  变成离职，在新奶站建立一个新员工数据)
+						//先处理在新奶站建立一个新员工数据
+						if(!isLeave){
+							//建立新员工
+							try {
+								TMdBranchEmp newEmp = (TMdBranchEmp)emp.clone();
+								newEmp.setSalesOrg(record.getSalesOrg());
+								newEmp.setBranchNo(record.getBranchNo());
+								newEmp.setEmpNo(PrimaryKeyUtils.generateUuidKey());
+								newEmp.setMp(!StringUtils.isEmpty(record.getMp()) ? record.getMp() : emp.getMp());
+								newEmp.setEmpName(record.getEmpName());
+								newEmp.setLastModified(new Date());
+								newEmp.setLastModifiedBy(sysuser.getLoginName());
+								newEmp.setLastModifiedByTxt(sysuser.getDisplayName());
+								newEmp.setStatus("1");
+								newEmp.setLeaveDate(null);
+								//往调整后的奶站的copy一个员工
+								branchEmpMapper.addBranchEmp(newEmp);
+								messageService.sendMessageForEmpUpt(newEmp, "add", sysuser);
+							} catch (CloneNotSupportedException e) {
+								// TODO Auto-generated catch block
+								e.printStackTrace();
+							}
+						}
+					}
+				}else{
+					record.setCreateAt(new Date());
+					record.setCreateBy(sysuser.getLoginName());
+					record.setCreateByTxt(sysuser.getDisplayName());
+					record.setStatus("1");
+				   branchEmpMapper.addBranchEmp(record);
+				   messageService.sendMessageForEmpUpt(emp, "add", sysuser);
+				}
+			}
+        });
+		return 1;
 	}
 
 	@Override
@@ -104,7 +153,7 @@ public class BranchEmpServiceImpl extends BaseService implements BranchEmpServic
 			branchNo = userSessionService.getCurrentUser().getBranchNo();
 		}
 		String salesOrg = userSessionService.getCurrentUser().getSalesOrg();
-		return branchEmpMapper.getAllEmpByBranchNo(branchNo,salesOrg);
+		return branchEmpMapper.getAllEmpMilkManByBranchNo(branchNo,salesOrg);
 	}
 
 	@Override
@@ -117,14 +166,11 @@ public class BranchEmpServiceImpl extends BaseService implements BranchEmpServic
 	@Override
 	public List<TMdBranchEmp> getAllBranchEmpByNo(BranchEmpSearchModel bModel) {
 		TSysUser user = userSessionService.getCurrentUser();
-		TSysUserRole userRole = userRoleMapper.getUserRoleByLoginName(user.getLoginName());
 		bModel.setSalesOrg(user.getSalesOrg());
-		if("10004".equals(userRole.getId())){
+		if(StringUtils.isBlank(bModel.getBranchNo())){
 			bModel.setBranchNo(user.getBranchNo());
 		}
-		if("10005".equals(userRole.getId())){
-			bModel.setDealerNo(user.getDealerId());
-		}
+		bModel.setDealerNo(user.getDealerId());
 
 		return branchEmpMapper.getAllBranchEmpByNo(bModel);
 	}
@@ -137,8 +183,8 @@ public class BranchEmpServiceImpl extends BaseService implements BranchEmpServic
 			throw new ServiceException(MessageCode.LOGIC_ERROR, "该员工编号对应的员工信息不存在!");
 		}
 		record.setLastModified(new Date());
-		/*record.setLastModifiedBy(userSessionService.getCurrentUser().getLoginName());
-		record.setLastModifiedByTxt(userSessionService.getCurrentUser().getDisplayName());*/
+		record.setLastModifiedBy(userSessionService.getCurrentUser().getLoginName());
+		record.setLastModifiedByTxt(userSessionService.getCurrentUser().getDisplayName());
 		return branchEmpMapper.uptBranchEmpByNo(record);
 	}
 
@@ -162,22 +208,28 @@ public class BranchEmpServiceImpl extends BaseService implements BranchEmpServic
 	@Override
 	public PageInfo searchBranchEmp(EmpQueryModel smodel) {
 		TSysUser user = userSessionService.getCurrentUser();
-		smodel.setSalesOrg(user.getSalesOrg());
-		if(StringUtils.isBlank(smodel.getBranchNo())){
-			TSysUserRole userRole = userRoleMapper.getUserRoleByLoginName(user.getLoginName());
-			if("10003".equals(userRole.getId())){
-				smodel.setBranchNo("");
-			}else{
-				smodel.setBranchNo(user.getBranchNo());
-			}
+		if(smodel.getBranchNo() == null){
+			smodel.setBranchNo(user.getBranchNo());
 		}
-
-
+		if(smodel.getSalesOrg() == null){
+			smodel.setSalesOrg(user.getSalesOrg());
+		}
+		if(smodel.getDealerNo() == null){
+			smodel.setDealerNo(user.getDealerId());
+		}
 		// TODO Auto-generated method stub
 		if(StringUtils.isEmpty(smodel.getPageNum()) || StringUtils.isEmpty(smodel.getPageSize())){
 			throw new ServiceException(MessageCode.LOGIC_ERROR,"pageNum和pageSize不能为空！");
 		}
 		return branchEmpMapper.searchBranchEmp(smodel);
+	}
+
+	public void setMessageService(TSysMessageService messageService) {
+		this.messageService = messageService;
+	}
+
+	public void setTaskExecutor(TaskExecutor taskExecutor) {
+		this.taskExecutor = taskExecutor;
 	}
 
 

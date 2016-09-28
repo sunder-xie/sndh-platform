@@ -21,6 +21,30 @@ public class OrderCreateModel {
    
    private TVipAcct account;
    
+   private String hasPlans;
+   
+   private String hasRoute;
+   
+	public String getHasPlans()
+	{
+		return hasPlans;
+	}
+
+	public void setHasPlans(String hasPlans)
+	{
+		this.hasPlans = hasPlans;
+	}
+
+	public String getHasRoute()
+	{
+		return hasRoute;
+	}
+
+	public void setHasRoute(String hasRoute)
+	{
+		this.hasRoute = hasRoute;
+	}
+
 	public TVipAcct getAccount()
 	{
 		return account;

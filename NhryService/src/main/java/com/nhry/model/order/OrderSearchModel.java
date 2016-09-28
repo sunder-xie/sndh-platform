@@ -5,6 +5,8 @@ import com.wordnik.swagger.annotations.ApiModel;
 import com.wordnik.swagger.annotations.ApiModelProperty;
 
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
 
 @ApiModel(value = "OrderSearchModel", description = "订单信息列表查询对象")
 public class OrderSearchModel extends BaseQueryModel implements Serializable {
@@ -30,7 +32,107 @@ public class OrderSearchModel extends BaseQueryModel implements Serializable {
 	private String orderReturnDateEnd;
 	private String salesOrg;
 	private String dealerNo;
+	private String memoTxt;
+	private Integer goDays;
+	private ArrayList<String> orders = new ArrayList<String>();
+	//电商额外字段
+	private String shopId;
+	private String ecOrderNo;
+	private String orderPlatNo;
+	private String dhOrderNo;
+	private String empMobile;
+	private String empName;
+	private String dhFlag;
+	private String buyerName;
 	
+	public String getMemoTxt()
+	{
+		return memoTxt;
+	}
+	public void setMemoTxt(String memoTxt)
+	{
+		this.memoTxt = memoTxt;
+	}
+	public ArrayList<String> getOrders()
+	{
+		return orders;
+	}
+	public void setOrders(ArrayList<String> orders)
+	{
+		this.orders = orders;
+	}
+	public String getBuyerName()
+	{
+		return buyerName;
+	}
+	public void setBuyerName(String buyerName)
+	{
+		this.buyerName = buyerName;
+	}
+	public String getShopId()
+	{
+		return shopId;
+	}
+	public void setShopId(String shopId)
+	{
+		this.shopId = shopId;
+	}
+	public String getEcOrderNo()
+	{
+		return ecOrderNo;
+	}
+	public void setEcOrderNo(String ecOrderNo)
+	{
+		this.ecOrderNo = ecOrderNo;
+	}
+	public String getOrderPlatNo()
+	{
+		return orderPlatNo;
+	}
+	public void setOrderPlatNo(String orderPlatNo)
+	{
+		this.orderPlatNo = orderPlatNo;
+	}
+	public String getDhOrderNo()
+	{
+		return dhOrderNo;
+	}
+	public void setDhOrderNo(String dhOrderNo)
+	{
+		this.dhOrderNo = dhOrderNo;
+	}
+	public String getEmpMobile()
+	{
+		return empMobile;
+	}
+	public void setEmpMobile(String empMobile)
+	{
+		this.empMobile = empMobile;
+	}
+	public String getEmpName()
+	{
+		return empName;
+	}
+	public void setEmpName(String empName)
+	{
+		this.empName = empName;
+	}
+	public String getDhFlag()
+	{
+		return dhFlag;
+	}
+	public void setDhFlag(String dhFlag)
+	{
+		this.dhFlag = dhFlag;
+	}
+	public Integer getGoDays()
+	{
+		return goDays;
+	}
+	public void setGoDays(Integer goDays)
+	{
+		this.goDays = goDays;
+	}
 	public String getDealerNo()
 	{
 		return dealerNo;

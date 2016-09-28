@@ -3,6 +3,7 @@ package com.nhry.data.milktrans.dao;
 import com.github.pagehelper.PageInfo;
 import com.nhry.data.milktrans.domain.TRecBotDetail;
 import com.nhry.model.milktrans.ReturnboxSerarch;
+import com.nhry.model.stock.StockModel;
 
 import java.util.List;
 import java.util.Map;
@@ -19,5 +20,12 @@ public interface TRecBotDetailMapper {
 
     TRecBotDetail selectBotDetailByDetLsh(Map<String, String> map);
 
+    TRecBotDetail selectBotDetailByOrderAndSpec(Map<String, String> map);
+
     List<TRecBotDetail> selectRetByDispOrderNo(String dispOrderNo);
+
+    List<TRecBotDetail> craeteRetBotByStock(StockModel sModel);
+
+    int delBotDetailByDetLsh(String detLsh);
+
 }

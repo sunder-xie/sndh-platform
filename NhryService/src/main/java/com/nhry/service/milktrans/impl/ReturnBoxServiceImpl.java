@@ -4,18 +4,21 @@ import com.github.pagehelper.PageInfo;
 import com.nhry.common.auth.UserSessionService;
 import com.nhry.common.exception.MessageCode;
 import com.nhry.common.exception.ServiceException;
+import com.nhry.data.auth.dao.TSysUserRoleMapper;
 import com.nhry.data.auth.domain.TSysUser;
 import com.nhry.data.basic.dao.TMdBranchEmpMapper;
 import com.nhry.data.milk.dao.TDispOrderItemMapper;
 import com.nhry.data.milk.dao.TDispOrderMapper;
 import com.nhry.data.milk.domain.TDispOrder;
 import com.nhry.data.milktrans.dao.TRecBotDetailMapper;
-import com.nhry.data.milktrans.dao.TRecBotMapper;
 import com.nhry.data.milktrans.domain.TRecBotDetail;
+import com.nhry.data.stock.dao.TSsmStockMapper;
 import com.nhry.model.milktrans.ReturnboxSerarch;
 import com.nhry.model.milktrans.UpdateReturnBoxModel;
+import com.nhry.model.stock.StockModel;
 import com.nhry.service.milktrans.dao.ReturnBoxService;
-import com.nhry.utils.SerialUtil;
+import com.nhry.utils.DateUtil;
+import com.nhry.utils.PrimaryKeyUtils;
 
 import java.util.Date;
 import java.util.HashMap;
@@ -26,15 +29,18 @@ import java.util.Map;
  * Created by gongjk on 2016/6/27.
  */
 public class ReturnBoxServiceImpl implements ReturnBoxService {
-    private TRecBotMapper tRecBotMapper;
     private TRecBotDetailMapper tRecBotDetailMapper;
     private TDispOrderMapper tDispOrderMapper;
     private TDispOrderItemMapper tDispOrderItemMapper;
     private TMdBranchEmpMapper empMapper;
     private UserSessionService userSessionService;
-    public void settRecBotMapper(TRecBotMapper tRecBotMapper) {
-        this.tRecBotMapper = tRecBotMapper;
+    private TSysUserRoleMapper urMapper;
+    private TSsmStockMapper tSsmStockMapper;
+
+    public void setUrMapper(TSysUserRoleMapper urMapper) {
+        this.urMapper = urMapper;
     }
+
     public void setEmpMapper(TMdBranchEmpMapper empMapper) {
         this.empMapper = empMapper;
     }
@@ -77,6 +83,10 @@ public class ReturnBoxServiceImpl implements ReturnBoxService {
 
     }
 
+    @Override
+    public int uptBoxReturnDetail(TRecBotDetail boxModel) {
+        return tRecBotDetailMapper.uptRecBotDetail(boxModel);
+    }
 
 
     /**
@@ -86,7 +96,6 @@ public class ReturnBoxServiceImpl implements ReturnBoxService {
      */
     @Override
     public int createDayRetBox(String dispOrderNo) {
-        Date today = new Date();
         TSysUser user = userSessionService.getCurrentUser();
         TDispOrder dispOrder = tDispOrderMapper.getDispOrderByNo(dispOrderNo);
         List<TRecBotDetail> tRecBot = tRecBotDetailMapper.selectRetByDispOrderNo(dispOrderNo);
@@ -97,11 +106,11 @@ public class ReturnBoxServiceImpl implements ReturnBoxService {
                 for (TRecBotDetail bot : entries) {
                     bot.setEmpNo(dispOrder.getDispEmpNo());
                     bot.setDispOrderNo(dispOrderNo);
-                    bot.setCreateAt(today);
+                    bot.setCreateAt(DateUtil.getTomorrow(dispOrder.getDispDate()));
                     bot.setCreateBy(user.getLoginName());
                     bot.setCreateByTxt(user.getDisplayName());
                     bot.setStatus("10");
-                    bot.setDetLsh(SerialUtil.creatSeria());
+                    bot.setDetLsh(PrimaryKeyUtils.generateUuidKey());
                     tRecBotDetailMapper.addRecBotItem(bot);
                 }
             }
@@ -112,6 +121,9 @@ public class ReturnBoxServiceImpl implements ReturnBoxService {
     @Override
     public PageInfo searchRetBoxPage(ReturnboxSerarch rSearch) {
         TSysUser user = userSessionService.getCurrentUser();
+        rSearch.setSalesOrg(user.getSalesOrg());
+        rSearch.setBranchNo(user.getBranchNo());
+        rSearch.setDealerNo(user.getDealerId());
         //返回列表
         PageInfo result = tRecBotDetailMapper.searchRetBoxPage(rSearch);
         return result;
@@ -140,10 +152,44 @@ public class ReturnBoxServiceImpl implements ReturnBoxService {
 		  
 		  StringBuilder retStr = new StringBuilder("");
 		  retStr.append("大瓶:"+map.get("30"));
-		  retStr.append("中瓶:"+map.get("20"));
-		  retStr.append("小瓶:"+map.get("10"));
+		  retStr.append(" 中瓶:"+map.get("20"));
+		  retStr.append(" 小瓶:"+map.get("10"));
 		  
 		  return retStr.toString();
 	 }
+
+    @Override
+    public int craeteRetBotByStock(StockModel sModel) {
+        Date today = new Date();
+        TSysUser user = userSessionService.getCurrentUser();
+        //生成回瓶详情列表
+        List<TRecBotDetail> entries = tRecBotDetailMapper.craeteRetBotByStock(sModel);
+        if (entries != null && entries.size() > 0) {
+            for (TRecBotDetail bot : entries) {
+                bot.setEmpNo(sModel.getEmpNo());
+                bot.setCreateAt(today);
+                bot.setCreateBy(user.getLoginName());
+                bot.setCreateByTxt(user.getDisplayName());
+                bot.setStatus("10");
+                bot.setDetLsh(PrimaryKeyUtils.generateUuidKey());
+                tRecBotDetailMapper.addRecBotItem(bot);
+            }
+        }
+        return 1;
+    }
+
+    @Override
+    public int addRecBotItem(TRecBotDetail botDetail) {
+        return tRecBotDetailMapper.addRecBotItem(botDetail);
+    }
+
+
+    @Override
+    public TRecBotDetail getTRecBotDetailByDispOrderNo(String dispOrderNo,String type) {
+        Map<String,String> map = new HashMap<String,String>();
+        map.put("dispOrderNo",dispOrderNo);
+        map.put("spec",type);
+        return tRecBotDetailMapper.selectBotDetailByOrderAndSpec(map);
+    }
 
 }

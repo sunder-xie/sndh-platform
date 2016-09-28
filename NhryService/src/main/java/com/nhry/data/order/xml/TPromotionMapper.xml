@@ -27,6 +27,31 @@
     <result column="GIFT_QTY" property="giftQty" jdbcType="DECIMAL" />
     <result column="GIFT_UNIT" property="giftUnit" jdbcType="DECIMAL" />
   </resultMap>
+  <select id="searchPromotionsByPage" resultMap="BaseResultMap" parameterType="com.nhry.model.order.OrderSearchModel" >
+	   select distinct
+	   pro1.MATNR_TXT ORG_MATNR, oi.ORIG_NUM ORG_QTY, pro2.MATNR_TXT GIFT_MATNR,gi.GIFT_NUM GIFT_QTY,
+	   p.PROM_NO, p.PROM_DES, p.PROM_TYPE, 
+      p.SALES_ORG, p.SALES_DIST, p.CUSTOMER_TYPE, 
+      p.PROM_STAT, p.PLAN_START_TIME, p.PLAN_STOP_TIME, 
+      p.BUY_START_TIME, p.BUY_STOP_TIME, p.BUY_AMT, 
+      p.GIFT_AMT
+		from t_promotion p
+		left join t_promotion_orig_item oi on p.PROM_NO = oi.PROM_NO
+		left join t_promotion_gift_item gi on p.PROM_NO = gi.PROM_NO
+		left join t_prom_scope_item si on p.PROM_NO = si.PROM_NO
+		left join t_md_mara pro1 on pro1.matnr = oi.GOOD_NO
+		left join t_md_mara pro2 on pro2.matnr = gi.GIFT_NO
+		where 1 = 1
+		and p.SALES_ORG = #{salesOrg,jdbcType=VARCHAR}
+		and si.BRANCH_NO = #{branchNo,jdbcType=VARCHAR}
+		<if test="orderDateStart != null and orderDateStart !=''">
+     		AND p.PLAN_START_TIME  &gt;=  #{orderDateStart}
+      </if>
+      <if test="orderDateEnd != null and orderDateEnd !=''">
+     		AND p.PLAN_STOP_TIME  &lt;=  #{orderDateEnd}
+      </if>
+		order by p.PROM_NO desc
+  </select>
   <select id="selectPromotionByMatnr" resultMap="BaseResultMap" parameterType="com.nhry.data.order.domain.TPromotion" >
 	   select distinct 
 	   pro1.MATNR_TXT ORG_MATNR, oi.ORIG_NUM ORG_QTY, pro2.MATNR_TXT GIFT_MATNR,gi.GIFT_NUM GIFT_QTY,
@@ -43,8 +68,10 @@
 		left join t_md_mara pro2 on pro2.matnr = gi.GIFT_NO
 		where 1 = 1
 		and oi.GOOD_NO = #{orgMatnr,jdbcType=VARCHAR}
-		and p.PLAN_START_TIME &lt;= #{planStartTime,jdbcType=VARCHAR}
-		and p.PLAN_STOP_TIME &gt;= #{planStartTime,jdbcType=VARCHAR}
+		and p.PLAN_START_TIME &lt;= #{createBy,jdbcType=DATE}
+		and p.PLAN_STOP_TIME &gt;= #{createBy,jdbcType=DATE}
+		and p.SALES_ORG = #{salesOrg,jdbcType=VARCHAR}
+		and si.branch_no = #{branchNo,jdbcType=VARCHAR}
   </select>
   <select id="selectPromotionByPromNo" resultMap="BaseResultMap" parameterType="com.nhry.data.order.domain.TPromotion" >
 	   select oi.GOOD_NO ORG_MATNR, oi.ORIG_NUM ORG_QTY, gi.GIFT_NO GIFT_MATNR,gi.GIFT_NUM GIFT_QTY,gi.GIFT_UNIT,
@@ -58,7 +85,7 @@
       from t_promotion p
 		left join t_promotion_orig_item oi on p.PROM_NO = oi.PROM_NO
 		left join t_promotion_gift_item gi on p.PROM_NO = gi.PROM_NO
-		left join t_prom_scope_item si on p.PROM_NO = si.PROM_NO
+		<!-- left join t_prom_scope_item si on p.PROM_NO = si.PROM_NO -->
 		where 1 = 1
 		and p.PROM_NO = #{promNo,jdbcType=VARCHAR}
   </select>

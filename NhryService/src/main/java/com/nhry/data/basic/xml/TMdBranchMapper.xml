@@ -45,7 +45,7 @@
   <sql id="Base_Column_List" >
     BRANCH_NO, BRANCH_NAME, SALES_ORG, SALES_CHA, BRANCH_GROUP, BRANCH_LEVEL, CONTACT,EMP_NO,
     TEL, MP, DEALER_NO, ADDRESS, PROVINCE, CITY, COUNTY, WERKS, LGORT, CREATE_AT, CREATE_BY, 
-    CREATE_BY_TXT, LAST_MODIFIED, LAST_MODIFIED_BY, LAST_MODIFIED_BY_TXT
+    CREATE_BY_TXT, LAST_MODIFIED, LAST_MODIFIED_BY, LAST_MODIFIED_BY_TXT,COMPANY_CODE
   </sql>
   <select id="selectBranchByNo" resultMap="BaseResultMap" parameterType="java.lang.String" >
           select
@@ -64,12 +64,8 @@
 				and i.ITEM_CODE = b.COMPANY_CODE
 			) COMPANY_NAME,
 			b.CONTACT,	b.EMP_NO,b.TEL, b.MP, b.DEALER_NO,d.DEALER_NAME, b.ADDRESS,
-           b.PROVINCE, b.CITY, b.COUNTY,
-
-		  (SELECT i.ITEM_NAME from t_sys_code_item i WHERE i.TYPE_CODE=<include refid="mybaties.constant.COUNTRY_CITY_CONSTANT"/> and i.ITEM_CODE = b.PROVINCE ) PROVINCE_NAME,
-		 (SELECT i.ITEM_NAME from t_sys_code_item i WHERE i.TYPE_CODE=<include refid="mybaties.constant.COUNTRY_CITY_CONSTANT"/> and i.ITEM_CODE = b.CITY ) CITY_NAME,
-		 (SELECT i.ITEM_NAME from t_sys_code_item i WHERE i.TYPE_CODE=<include refid="mybaties.constant.COUNTRY_CITY_CONSTANT"/> and i.ITEM_CODE = b.COUNTY ) COUNTY_NAME,
-
+           b.PROVINCE,  b.CITY, b.COUNTY,
+		  (SELECT i.ITEM_NAME from t_sys_code_item i WHERE i.TYPE_CODE=<include refid="mybaties.constant.branch_province"/> and i.ITEM_CODE = b.PROVINCE ) PROVINCE_NAME,
           (SELECT i.ITEM_NAME from t_sys_code_item i WHERE i.TYPE_CODE=<include refid="mybaties.constant.factory"/> and i.ITEM_CODE = b.WERKS) WERKS,
          (SELECT i.ITEM_NAME from t_sys_code_item i WHERE i.TYPE_CODE=<include refid="mybaties.constant.storage_location"/>  and i.ITEM_CODE = b.LGORT) LGORT,
           b.CREATE_AT, b.CREATE_BY, b.CREATE_BY_TXT,b.LAST_MODIFIED, b.LAST_MODIFIED_BY, b.LAST_MODIFIED_BY_TXT
@@ -87,7 +83,7 @@
       ADDRESS, PROVINCE, CITY, 
       COUNTY, WERKS, LGORT, 
       CREATE_AT, CREATE_BY, CREATE_BY_TXT, 
-      LAST_MODIFIED, LAST_MODIFIED_BY, LAST_MODIFIED_BY_TXT
+      LAST_MODIFIED, LAST_MODIFIED_BY, LAST_MODIFIED_BY_TXT,COMPANY_CODE
       )
     values (#{branchNo,jdbcType=VARCHAR}, #{branchName,jdbcType=VARCHAR}, #{salesOrg,jdbcType=VARCHAR}, 
       #{salesCha,jdbcType=VARCHAR}, #{branchGroup,jdbcType=VARCHAR}, #{branchLevel,jdbcType=VARCHAR}, 
@@ -95,7 +91,7 @@
       #{address,jdbcType=VARCHAR}, #{province,jdbcType=VARCHAR}, #{city,jdbcType=VARCHAR}, 
       #{county,jdbcType=VARCHAR}, #{werks,jdbcType=VARCHAR}, #{lgort,jdbcType=VARCHAR}, 
       #{createAt,jdbcType=TIMESTAMP}, #{createBy,jdbcType=VARCHAR}, #{createByTxt,jdbcType=VARCHAR}, 
-      #{lastModified,jdbcType=TIMESTAMP}, #{lastModifiedBy,jdbcType=VARCHAR}, #{lastModifiedByTxt,jdbcType=VARCHAR}
+      #{lastModified,jdbcType=TIMESTAMP}, #{lastModifiedBy,jdbcType=VARCHAR}, #{lastModifiedByTxt,jdbcType=VARCHAR},#{companyCode,jdbcType=VARCHAR}
       )
   </insert>
   <update id="uptBranch" parameterType="com.nhry.data.basic.domain.TMdBranch" >
@@ -121,7 +117,8 @@
       CREATE_BY_TXT = #{createByTxt,jdbcType=VARCHAR},
       LAST_MODIFIED = #{lastModified,jdbcType=TIMESTAMP},
       LAST_MODIFIED_BY = #{lastModifiedBy,jdbcType=VARCHAR},
-      LAST_MODIFIED_BY_TXT = #{lastModifiedByTxt,jdbcType=VARCHAR}
+      LAST_MODIFIED_BY_TXT = #{lastModifiedByTxt,jdbcType=VARCHAR},
+      COMPANY_CODE = #{companyCode,jdbcType=VARCHAR}
     where BRANCH_NO = #{branchNo,jdbcType=VARCHAR}
   </update>
   <select id="findBranchListByOrg" resultMap="BaseResultMap" parameterType="String">
@@ -149,7 +146,8 @@
     (SELECT i.ITEM_NAME from t_sys_code_item i WHERE i.TYPE_CODE=<include refid="mybaties.constant.storage_location"/>  and i.ITEM_CODE = b.LGORT) LGORT,
     b.CREATE_AT, b.CREATE_BY, b.CREATE_BY_TXT,b.LAST_MODIFIED, b.LAST_MODIFIED_BY, b.LAST_MODIFIED_BY_TXT-->
 
-    from t_md_branch b /*LEFT  JOIN  t_md_dealer d on b.DEALER_NO = d.DEALER_NO*/
+    from t_md_branch b 
+    <!-- LEFT  JOIN  t_md_dealer d on b.DEALER_NO = d.DEALER_NO*/  -->
     where b.SALES_ORG = #{salesOrg,jdbcType=VARCHAR}
     <if test="branchNo!=null and branchNo!=''">
       and  b.BRANCH_NO = #{branchNo,jdbcType=VARCHAR}
@@ -157,7 +155,7 @@
     <if test="dealerNo!=null and dealerNo!=''">
      and  b.DEALER_NO = #{dealerNo,jdbcType=VARCHAR}
     </if>
-    ORDER BY b.CREATE_AT desc
+    ORDER BY b.BRANCH_NAME
   </select>
   <select id="searchBranch" resultMap="BaseResultMap" parameterType="com.nhry.model.basic.BranchQueryModel">
     SELECT
@@ -169,16 +167,11 @@
     b.MP,b.TEL
     from T_MD_BRANCH b LEFT JOIN t_md_dealer d on b.DEALER_NO = d.DEALER_NO
     where 1=1
-      <choose>
-          <when test="roleId !=null">
-              and ( b.BRANCH_NO like '%${branchNo}%' or b.BRANCH_NAME like '%${branchNo}%')
-          </when>
-          <otherwise>
-              and  b.BRANCH_NO = #{branchNo,jdbcType=VARCHAR}
-          </otherwise>
-      </choose>
+      <if test="branchN !=null and ''!=branchN">
+          and ( b.BRANCH_NO like '%${branchN}%' or b.BRANCH_NAME like '%${branchN}%')
+      </if>
       <if test="branchNo != null and branchNo != ''">
-
+        and  b.BRANCH_NO = #{branchNo,jdbcType=VARCHAR}
       </if>
       <if test="dealerNo != null and dealerNo != ''">
         AND b.DEALER_NO = #{dealerNo,jdbcType=VARCHAR}
@@ -231,5 +224,8 @@
              </choose>
           </if>
     </where>
+  </select>
+  <select id="getBranchByNo" resultMap="BaseResultMap" parameterType="java.lang.String">
+    select <include refid="Base_Column_List"/> from t_md_branch where BRANCH_NO = #{branchNo,jdbcType=VARCHAR}
   </select>
 </mapper>

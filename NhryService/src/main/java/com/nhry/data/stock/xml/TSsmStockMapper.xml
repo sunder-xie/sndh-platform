@@ -14,7 +14,7 @@
         <result column="SALES_ORG" property="salesOrg" jdbcType="VARCHAR" />        
     </resultMap>
     <sql id="Base_Column_List">
-    BRANCH_NO, MATNR, UNIT, QTY,SPEC_UNIT,SALES_ORG
+    BRANCH_NO, MATNR, UNIT, QTY
   </sql>
     <select id="getStock" resultMap="BaseResultMap" parameterType="com.nhry.data.stock.domain.TSsmStockKey">
         select
@@ -30,14 +30,23 @@
   </delete>
     <insert id="insertStock" parameterType="com.nhry.data.stock.domain.TSsmStock">
     insert into t_ssm_stock (BRANCH_NO, MATNR, UNIT, 
-      QTY)
+      QTY,SALES_ORG)
     values (#{branchNo,jdbcType=VARCHAR}, #{matnr,jdbcType=VARCHAR}, #{unit,jdbcType=VARCHAR}, 
-      #{qty,jdbcType=DECIMAL})
+      #{qty,jdbcType=DECIMAL},#{salesOrg,jdbcType=VARCHAR})
   </insert>
     <update id="updateStock" parameterType="com.nhry.data.stock.domain.TSsmStock">
         update t_ssm_stock
-        set UNIT = #{unit,jdbcType=VARCHAR},
-          QTY = #{qty,jdbcType=DECIMAL}
+        <set >
+          <if test="unit != null" >
+            UNIT = #{unit,jdbcType=VARCHAR},
+          </if>
+          <if test="qty != null" >
+            QTY = #{qty,jdbcType=DECIMAL},
+          </if>
+          <if test="salesOrg != null" >
+            SALES_ORG = #{salesOrg,jdbcType=VARCHAR},
+          </if>
+        </set>
         where BRANCH_NO = #{branchNo,jdbcType=VARCHAR}
           and MATNR = #{matnr,jdbcType=VARCHAR}
     </update>
@@ -120,6 +129,6 @@
         t_ssm_stock t
         left join t_md_mara t1 on t.SALES_ORG = t1.SALES_ORG  AND t.MATNR = t1.MATNR
       WHERE
-       t.BRANCH_NO = #{branchNo,jdbcType=VARCHAR}  AND t.QTY is not null    
+       t.BRANCH_NO = #{branchNo,jdbcType=VARCHAR}  AND t.QTY is not null  AND t.QTY > 0
     </select>
 </mapper>

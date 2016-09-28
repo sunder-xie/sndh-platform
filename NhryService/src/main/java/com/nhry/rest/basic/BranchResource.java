@@ -3,9 +3,14 @@ package com.nhry.rest.basic;
 import com.github.pagehelper.PageInfo;
 import com.nhry.common.exception.MessageCode;
 import com.nhry.data.basic.domain.TMdBranch;
+import com.nhry.data.basic.domain.TMdBranchEx;
+import com.nhry.model.basic.BranchExkostlModel;
 import com.nhry.model.basic.BranchQueryModel;
+import com.nhry.model.webService.CustInfoModel;
+import com.nhry.model.webService.DealerBranchModel;
 import com.nhry.rest.BaseResource;
 import com.nhry.service.basic.dao.BranchService;
+import com.nhry.service.webService.dao.GetOrderBranchService;
 import com.sun.jersey.spi.resource.Singleton;
 import com.wordnik.swagger.annotations.Api;
 import com.wordnik.swagger.annotations.ApiOperation;
@@ -28,6 +33,8 @@ import javax.ws.rs.core.Response;
 public class BranchResource extends BaseResource {
 	@Autowired
 	private BranchService branchService;
+	@Autowired
+	private GetOrderBranchService getOrderBranchService;
 
 	@GET
 	@Path("/searchBySalesOrg")
@@ -51,6 +58,14 @@ public class BranchResource extends BaseResource {
 	@ApiOperation(value = "/getBranchInfo/{branchNo}", response = TMdBranch.class, notes = "根据网点编号查询网点客户信息列表")
 	public Response getBranchByNo(@ApiParam(required=true,name="branchNo",value="网点客户编号")  @PathParam("branchNo") String branchNo){
 		return convertToRespModel(MessageCode.NORMAL, null,branchService.selectBranchByNo(branchNo));
+	}
+
+	@GET
+	@Path("/getCustBranchInfo")
+	@Produces(MediaType.APPLICATION_JSON)
+	@ApiOperation(value = "/getCustBranchInfo", response = TMdBranch.class, notes = "获取当前登录人所属奶站")
+	public Response getCustBranchInfo(){
+		return convertToRespModel(MessageCode.NORMAL, null,branchService.getCustBranchInfo());
 	}
 
 
@@ -87,11 +102,42 @@ public class BranchResource extends BaseResource {
 	@Path("/find/{dealerNo}")
 	@Produces(MediaType.APPLICATION_JSON)
 	@ApiOperation(value = "/find/{deanerNo}", response = String.class, notes = "根据经销商编号获取奶站列表信息")
-	public Response uptBranch(@ApiParam(required=true,name="dealerNo",value="经销商编号(自有奶站时：-1)")@PathParam("dealerNo") String dealerNo){
+	public Response findBranchByDno(@ApiParam(required=true,name="dealerNo",value="经销商编号(自营奶站时：-1)")@PathParam("dealerNo") String dealerNo){
 		return convertToRespModel(MessageCode.NORMAL, null,branchService.findBranchByDno(dealerNo));
 	}
+	
+	@POST
+	@Path("/find/{salesOrg}/{dealerNo}")
+	@Produces(MediaType.APPLICATION_JSON)
+	@ApiOperation(value = "/find/{salesOrg}/{dealerNo}", response = String.class, notes = "根据销售组织、经销商编号获取奶站列表信息")
+	public Response findBranchBySalesOrgDno(@ApiParam(required=true,name="salesOrg",value="销售组织编号")@PathParam("salesOrg") String salesOrg,
+			@ApiParam(required=true,name="dealerNo",value="经销商编号(自营奶站时：-1)")@PathParam("dealerNo") String dealerNo){
+		return convertToRespModel(MessageCode.NORMAL, null,branchService.findBranchBySalesOrgDno(salesOrg,dealerNo));
+	}
 
+	@POST
+	@Path("/getBranchByBussiness")
+	@Produces(MediaType.APPLICATION_JSON)
+	@Consumes(MediaType.APPLICATION_JSON)
+	@ApiOperation(value = "/getBranchByBussiness", response = DealerBranchModel.class, notes = "根据收货人地址 通过电商接口获取分配的奶站")
+	public Response getBranchByBussiness(@ApiParam(required=true,name="cModel",value="收货人地址") CustInfoModel cModel){
+		return convertToRespModel(MessageCode.NORMAL, null,getOrderBranchService.getOrderBranch(cModel));
+	}
 
+	@POST
+	@Path("/uptKostl")
+	@Produces(MediaType.APPLICATION_JSON)
+	@Consumes(MediaType.APPLICATION_JSON)
+	@ApiOperation(value = "/uptKostl", response = String.class, notes = "更新网点客户(奶站)成品中心属性")
+	public Response uptKostl(@ApiParam(required=true,name="Model",value="model") BranchExkostlModel model){
+		return convertToRespModel(MessageCode.NORMAL, null,branchService.updateBranchKostl(model));
+	}
 
-
+	@GET
+	@Path("/getBranchEx/{branchNo}")
+	@Produces(MediaType.APPLICATION_JSON)
+	@ApiOperation(value = "/getBranchEx/{branchNo}", response = TMdBranchEx.class, notes = "获取所属奶站的扩展信息")
+	public Response getCustBranchInfo(@ApiParam(required = true,name = "branchNo",value = "branchNo") @PathParam("branchNo") String branchNo){
+		return convertToRespModel(MessageCode.NORMAL, null,branchService.getBranchEx(branchNo));
+	}
 }

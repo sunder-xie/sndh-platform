@@ -149,8 +149,7 @@
 				AND IFNULL(p.STATUS,'N') = #{status,jdbcType=VARCHAR}
 			</if>
 			<if test="matnrTxt != null and matnrTxt != ''">
-				AND (p.MATNR like '%${matnrTxt}%' or
-				p.MATNR_TXT like '%${matnrTxt}%') 
+				AND (p.MATNR like '%${matnrTxt}%' or p.MATNR_TXT like '%${matnrTxt}%' or pex.SHORT_TXT like '%${matnrTxt}%') 
 			</if>
 			<if test="salesOrg != null and salesOrg != ''">
 			   AND p.SALES_ORG=#{salesOrg}
@@ -429,6 +428,7 @@
 	    SELECT
 			p.MATNR,
 			p.MATNR_TXT,
+			exm.SHORT_TXT,
 			p.BASE_UNIT,
 			p. STATUS,
 			p.LAST_MODIFIED MARA_LAST_MODIFIED,
@@ -452,6 +452,7 @@
 			p.DEALER_NO 
 		FROM
 			t_md_mara p
+			LEFT JOIN t_md_mara_ex exm on exm.MATNR = p.MATNR
 		where p.MATNR NOT IN (
 			SELECT
 				nl.matnr
@@ -472,6 +473,7 @@
 	    SELECT
 			p.MATNR,
 			p.MATNR_TXT,
+			exm.SHORT_TXT,
 			p.BASE_UNIT,
 			p. STATUS,
 			p.LAST_MODIFIED MARA_LAST_MODIFIED,
@@ -494,13 +496,16 @@
 			p.SALES_ORG,
 			p.DEALER_NO 
 		FROM
-			t_md_mara p WHERE p.MATNR not in (
+			t_md_mara p 
+			LEFT JOIN t_md_mara_ex exm on exm.MATNR = p.MATNR
+			WHERE p.MATNR not in (
 			SELECT
 				nl.matnr
 			FROM
 				T_BRANCH_NOTSELL_LIST nl
 			WHERE
-				nl.dealer_no = NULL
+				nl.dealer_no = '-1'
+			AND nl.BRANCH_NO=#{branchNo}
 			AND nl.sales_org = #{salesOrg}
 		)
 		AND p.SALES_ORG = #{salesOrg}
@@ -537,14 +542,10 @@
 		p.DEALER_NO
 		FROM
 		t_md_mara p
-		where 1=1
+		where p. STATUS='Y'
 				and p.SALES_ORG=#{salesOrg}
 				AND ( p.MATNR LIKE '%${matnr}%' OR p.MATNR_TXT like  '%${matnrTxt}%' )
 	</select>
-
-
-
-
 	<select id="listsBySalesOrg" resultMap="BaseResultMap" parameterType="com.nhry.model.basic.ProductQueryModel">
 		SELECT
 		p.MATNR,
@@ -582,6 +583,5 @@
 		)
 		AND p.SALES_ORG = #{salesOrg}
 		AND p.STATUS='Y'
-
 	</select>
 </mapper>

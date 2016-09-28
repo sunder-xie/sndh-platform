@@ -5,6 +5,7 @@ import com.nhry.data.milk.domain.TDispOrderItem;
 import com.nhry.data.order.domain.TOrderDaliyPlanItem;
 import com.nhry.data.order.domain.TPlanOrderItem;
 import com.nhry.data.order.domain.TPreOrder;
+import com.nhry.model.milk.RouteDetailUpdateModel;
 import com.nhry.model.order.*;
 import com.nhry.service.order.pojo.OrderRemainData;
 
@@ -13,13 +14,23 @@ import java.util.Date;
 import java.util.List;
 
 public interface OrderService {
+	List editOrderForLongForViewPlans(OrderEditModel record);
+	
+	TPreOrder selectLatestOrder(String vipNo);
+	
 	List<TOrderDaliyPlanItem> searchDaliyPlansByStatus(String orderNo, String status1,String status2,String status3);
+	
+	PageInfo searchNeedResumeOrders(OrderSearchModel smodel);
 	
 	PageInfo searchOrders(OrderSearchModel smodel);
 	
 	PageInfo searchDaliyOrders(OrderSearchModel smodel);
+	
+	OrderSearchModel calculateContinueOrder(OrderSearchModel record);
 
 	String createOrder(OrderCreateModel record);
+
+	String createOrders(List<OrderCreateModel> record);
 
 	int editOrderForLong(OrderEditModel record);
 
@@ -34,6 +45,8 @@ public interface OrderService {
 	int backOrder(OrderSearchModel record);
 
 	int batchContinueOrder(OrderSearchModel record);
+	
+	int continueOrderAuto(String orderNo);
 	
 	int continueOrder(OrderSearchModel record);
 	
@@ -66,4 +79,34 @@ public interface OrderService {
 	CollectOrderModel queryCollectByOrderNo(String orderCode);
 
 	TPlanOrderItem calculateAmtAndEndDateForFront(TPlanOrderItem item);
+	
+	TPlanOrderItem calculateTotalQtyForFront(TPlanOrderItem item);
+	
+	int updateOrderAndEntriesDispStartDate(String orderNo,List<TPlanOrderItem> entries);
+	
+   int selectRequiredOrderNum();
+   
+   int selectStopOrderNum();
+   
+   int createDaliyPlansForIniOrders(String str);
+   
+   int replaceOrdersDispmember(OrderSearchModel record);
+   
+   List<TOrderDaliyPlanItem> viewDaliyPlans(OrderCreateModel record);
+   
+   int recoverStopDaliyDaliyPlan(TOrderDaliyPlanItem item); 
+   
+   void returnOrderRemainAmtToAcct(String orderNo,Date dispDate);
+   
+   void setOrderToFinish(String orderNo,Date dispDate);
+   
+   void reEditDaliyPlansByRouteDetail(RouteDetailUpdateModel newItem , TDispOrderItem orgItem , Date dispDate);
+
+	int selectUnfinishOrderNum(String vipCustNo);
+
+	int searchReturnOrdersNum();
+
+	BigDecimal calPreOrderTotalFactoryPrice(String orderNo);
+
+	void selectOrdersAndSendMessage();
 }

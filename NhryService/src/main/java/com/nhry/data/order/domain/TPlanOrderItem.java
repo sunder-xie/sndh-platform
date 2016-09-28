@@ -3,6 +3,7 @@ package com.nhry.data.order.domain;
 import java.math.BigDecimal;
 import java.util.Date;
 
+
 public class TPlanOrderItem {
     private String itemNo;
 
@@ -13,10 +14,14 @@ public class TPlanOrderItem {
     private String refItemNo;
 
     private String newRowFlag;
+    
+    private String newFlag;
 
     private String matnr;
 
     private String matnrTxt;
+    
+    private String shortTxt;
     
     private String unit;
 
@@ -37,6 +42,10 @@ public class TPlanOrderItem {
     private String reachTimeType;
 
     private Date startDispDate;
+    
+    private Date stopStartDate;
+    
+    private Date stopEndDate;
 
     private Date endDispDate;
     
@@ -74,7 +83,111 @@ public class TPlanOrderItem {
     
     private BigDecimal entryTotal;
     
-    public BigDecimal getEntryTotal()
+    private Integer yGrowth;
+    
+    private Integer yFresh;
+    
+    private boolean isModified;
+    
+//    private String isDeletedFlag;
+    
+//    private String deletePlansFlag;
+    
+    private String isStop;
+    
+    private String toStop;
+    
+	public String getToStop()
+	{
+		return toStop;
+	}
+
+	public void setToStop(String toStop)
+	{
+		this.toStop = toStop;
+	}
+
+	public boolean isModified()
+	{
+		return isModified;
+	}
+
+	public void setModified(boolean isModified)
+	{
+		this.isModified = isModified;
+	}
+
+	public String getShortTxt()
+	{
+		return shortTxt;
+	}
+
+	public void setShortTxt(String shortTxt)
+	{
+		this.shortTxt = shortTxt;
+	}
+
+	public Date getStopStartDate()
+	{
+		return stopStartDate;
+	}
+
+	public void setStopStartDate(Date stopStartDate)
+	{
+		this.stopStartDate = stopStartDate;
+	}
+
+	public Date getStopEndDate()
+	{
+		return stopEndDate;
+	}
+
+	public void setStopEndDate(Date stopEndDate)
+	{
+		this.stopEndDate = stopEndDate;
+	}
+
+	public String getIsStop()
+	{
+		return isStop;
+	}
+
+	public void setIsStop(String isStop)
+	{
+		this.isStop = isStop;
+	}
+
+	public String getNewFlag()
+	{
+		return newFlag;
+	}
+
+	public void setNewFlag(String newFlag)
+	{
+		this.newFlag = newFlag;
+	}
+
+	public Integer getyGrowth()
+	{
+		return yGrowth;
+	}
+
+	public void setyGrowth(Integer yGrowth)
+	{
+		this.yGrowth = yGrowth;
+	}
+
+	public Integer getyFresh()
+	{
+		return yFresh;
+	}
+
+	public void setyFresh(Integer yFresh)
+	{
+		this.yFresh = yFresh;
+	}
+
+	public BigDecimal getEntryTotal()
 	{
 		return entryTotal;
 	}
@@ -259,7 +372,7 @@ public class TPlanOrderItem {
     public void setReachTimeType(String reachTimeType) {
         this.reachTimeType = reachTimeType == null ? null : reachTimeType.trim();
     }
-
+    
     public Date getStartDispDate() {
         return startDispDate;
     }
@@ -267,7 +380,6 @@ public class TPlanOrderItem {
     public void setStartDispDate(Date startDispDate) {
         this.startDispDate = startDispDate;
     }
-
     public Date getEndDispDate() {
         return endDispDate;
     }

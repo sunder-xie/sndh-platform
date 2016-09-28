@@ -240,11 +240,8 @@
     (SELECT i.ITEM_NAME from t_sys_code_item i WHERE i.TYPE_CODE= <include refid="mybaties.constant.COUNTRY_CITY_CONSTANT"></include> and i.ITEM_CODE = a.CITY ) CITY_NAME,
     (SELECT i.ITEM_NAME from t_sys_code_item i WHERE i.TYPE_CODE= <include refid="mybaties.constant.COUNTRY_CITY_CONSTANT"></include> and i.ITEM_CODE = a.COUNTY ) COUNTY_NAME,
     (SELECT i.ITEM_NAME from t_sys_code_item i WHERE i.TYPE_CODE= <include refid="mybaties.constant.COUNTRY_CITY_CONSTANT"></include> and i.ITEM_CODE = a.STREET ) STREET_NAME,
-       s.BRANCH_NO,b.BRANCH_NAME, a.GUIDEBOARD, a.STATUS,  a.ADDRESS_TXT,b.BRANCH_NO,b.BRANCH_NAME,
-       a.RESIDENTIAL_NUM,a.SALES_ORG,  a.PROPERTY_TXT,  a.PROPERTY_TEL
+    a.GUIDEBOARD, a.STATUS,  a.ADDRESS_TXT,a.RESIDENTIAL_NUM,a.SALES_ORG,  a.PROPERTY_TXT,  a.PROPERTY_TEL
     from t_md_residential_area a
-        left JOIN t_md_branch_scope s on a.ID = s.RESIDENTIAL_AREA_ID
-        LEFT JOIN t_md_branch b ON s.BRANCH_NO = b.BRANCH_NO
     where 1=1
     and  ID = #{id,jdbcType=VARCHAR}
   </select>
@@ -272,6 +269,9 @@
     </if>
     <if test="status != null and status != ''">
       AND a.STATUS = #{status,jdbcType=VARCHAR}
+    </if>
+    <if test="areaTxt != null and areaTxt != ''">
+      AND a.RESIDENTIAL_AREA_TXT like '%${areaTxt}%'
     </if>
     ORDER BY a.CREATE_AT desc
   </select>
@@ -313,13 +313,16 @@
 
   <select id="searchAreaBySalesOrg" resultMap="BaseResultMap" parameterType="com.nhry.service.basic.pojo.AreaSearchModel">
     SELECT * FROM (
-    SELECT
+    SELECT DISTINCT
     a.ID,a.RESIDENTIAL_AREA_TXT,a.GUIDEBOARD,a.RESIDENTIAL_NUM,a.SALES_ORG,a.PROPERTY_TXT,a.PROPERTY_TEL,a.STATUS,a.ADDRESS_TXT,a.PROVINCE,a.CITY,a.COUNTY,a.STREET,
     (SELECT i.ITEM_NAME from t_sys_code_item i WHERE i.TYPE_CODE= <include refid="mybaties.constant.COUNTRY_CITY_CONSTANT"></include> and i.ITEM_CODE = a.PROVINCE ) PROVINCE_NAME,
     (SELECT i.ITEM_NAME from t_sys_code_item i WHERE i.TYPE_CODE= <include refid="mybaties.constant.COUNTRY_CITY_CONSTANT"></include> and i.ITEM_CODE = a.CITY ) CITY_NAME,
     (SELECT i.ITEM_NAME from t_sys_code_item i WHERE i.TYPE_CODE= <include refid="mybaties.constant.COUNTRY_CITY_CONSTANT"></include> and i.ITEM_CODE = a.COUNTY ) COUNTY_NAME,
     (SELECT i.ITEM_NAME from t_sys_code_item i WHERE i.TYPE_CODE= <include refid="mybaties.constant.COUNTRY_CITY_CONSTANT"></include> and i.ITEM_CODE = a.STREET ) STREET_NAME
-    from t_md_residential_area a LEFT JOIN t_md_branch_scope s on a.ID = s.RESIDENTIAL_AREA_ID
+    from t_md_residential_area a
+    <if test="branchNo != null and branchNo !=''">
+        LEFT JOIN t_md_branch_scope s on a.ID = s.RESIDENTIAL_AREA_ID
+    </if>
     where a.SALES_ORG = #{salesOrg,jdbcType=VARCHAR}
     <if test="branchNo != null and branchNo !=''">
       AND s.BRANCH_NO = #{branchNo,jdbcType=VARCHAR}

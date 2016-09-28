@@ -159,14 +159,16 @@ public class LadpService {
 	/**
 	 * 同步系统用户
 	 */
-	public void syncSysUsers(){
+	public boolean syncSysUsers(boolean isCompletely){
 		try {
 			Date date = new Date();
 			DateFormat formatter = new SimpleDateFormat("yyyyMMddHHmmssZ");  
-			String dateStr = formatter.format(date.addMilliseconds(-60));  //60分钟之前
-			String filter = "(&(|(modifyTimestamp>="+dateStr+")(createTimestamp>="+dateStr+"))(smart-authority=Auth_CRM))";
-			String basedn = "ou=People,o=newhopedairy,o=isp";
-			List<Map<String, String>> list = getObjectsByFilter(basedn,filter);
+			String dateStr = formatter.format(date.addMinutes(-60));  //60分钟之前
+			String filter = "(&(|(modifyTimestamp>="+dateStr+")(createTimestamp>="+dateStr+"))(smart-authority="+EnvContant.getSystemConst("ladp_dh_auth")+"))";
+			if(isCompletely){
+				filter = "(smart-authority="+EnvContant.getSystemConst("ladp_dh_auth")+")";
+			}
+			List<Map<String, String>> list = getObjectsByFilter(EnvContant.getSystemConst("ladp_basedn"),filter);
 			Map<String,String> spcAttrs = new HashMap<String,String>();
 			spcAttrs.put("CN","setDisplayName");
 			spcAttrs.put("UID","setLoginName");
@@ -178,14 +180,22 @@ public class LadpService {
 		} catch (NamingException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
+			return false;
 		}
+		return true;
+	}
+	
+	/**
+	 * 增量同步用户
+	 */
+	public void syncSysUsersForUpt(){
+		syncSysUsers(false);
 	}
 	
 	public static void main(String[] args) {
 		String[] xmls = new String[]{ "classpath:beans/spring-context.xml","classpath:beans/dataSource.xml","classpath:beans/*-bean.xml"  };
         ApplicationContext context = new ClassPathXmlApplicationContext(xmls);
-        TSysUserMapper userMapper = (TSysUserMapper)context.getBean("userMapper");
-        List<TSysUser> users = userMapper.getloginNamesByOrgsandRid2(new HashMap<String,String>());
-        System.out.println(users.size());
+        LadpService ladpService = (LadpService)context.getBean("ladpService");
+        ladpService.syncSysUsers(false);
 	}
 }

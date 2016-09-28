@@ -8,9 +8,10 @@
     <result column="MEMO_TXT" property="memoTxt" jdbcType="VARCHAR" />
     <result column="SYNC_AT" property="syncAt" jdbcType="TIMESTAMP" />
     <result column="STATUS" property="status" jdbcType="VARCHAR" />
+    <result column="REQ_ORDER_NO" property="reqOrderNo" jdbcType="VARCHAR"/>
   </resultMap>
   <sql id="Base_Column_List" >
-    ORDER_NO, ORDER_DATE, BRANCH_NO, MEMO_TXT, SYNC_AT, STATUS
+    ORDER_NO, ORDER_DATE, BRANCH_NO, MEMO_TXT, SYNC_AT, STATUS,REQ_ORDER_NO
   </sql>
   <select id="selectGiOrderByNo" resultMap="BaseResultMap" parameterType="java.lang.String" >
     select 
@@ -24,10 +25,10 @@
   </delete>
   <insert id="insertGiOrder" parameterType="com.nhry.data.stock.domain.TSsmGiOrder" >
     insert into t_ssm_gi_order (ORDER_NO, ORDER_DATE, BRANCH_NO, 
-      MEMO_TXT, SYNC_AT, STATUS
+      MEMO_TXT, SYNC_AT, STATUS,REQ_ORDER_NO
       )
     values (#{orderNo,jdbcType=VARCHAR}, #{orderDate,jdbcType=DATE}, #{branchNo,jdbcType=VARCHAR}, 
-      #{memoTxt,jdbcType=VARCHAR}, #{syncAt,jdbcType=TIMESTAMP}, #{status,jdbcType=VARCHAR}
+      #{memoTxt,jdbcType=VARCHAR}, #{syncAt,jdbcType=TIMESTAMP}, #{status,jdbcType=VARCHAR},#{reqOrderNo,jdbcType=VARCHAR}
       )
   </insert>
   <insert id="insertGiOrderSelective" parameterType="com.nhry.data.stock.domain.TSsmGiOrder" >
@@ -51,6 +52,9 @@
       <if test="status != null" >
         STATUS,
       </if>
+      <if test="reqOrderNo != null">
+        REQ_ORDER_NO,
+      </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides="," >
       <if test="orderNo != null" >
@@ -70,6 +74,9 @@
       </if>
       <if test="status != null" >
         #{status,jdbcType=VARCHAR},
+      </if>
+      <if test="reqOrderNo != null">
+        #{reqOrderNo,jdbcType=VARCHAR},
       </if>
     </trim>
   </insert>
@@ -91,6 +98,9 @@
       <if test="status != null" >
         STATUS = #{status,jdbcType=VARCHAR},
       </if>
+      <if test="reqOrderNo != null">
+        REQ_ORDER_NO = #{reqOrderNo,jdbcType=VARCHAR},
+      </if>
     </set>
     where ORDER_NO = #{orderNo,jdbcType=VARCHAR}
   </update>
@@ -100,7 +110,14 @@
       BRANCH_NO = #{branchNo,jdbcType=VARCHAR},
       MEMO_TXT = #{memoTxt,jdbcType=VARCHAR},
       SYNC_AT = #{syncAt,jdbcType=TIMESTAMP},
+      REQ_ORDER_NO = #{reqOrderNo,jdbcType=VARCHAR},
       STATUS = #{status,jdbcType=VARCHAR}
     where ORDER_NO = #{orderNo,jdbcType=VARCHAR}
   </update>
+  <select id="findGiOrder" parameterType="com.nhry.model.stock.GiOrderModel" resultMap="BaseResultMap">
+    SELECT <include refid="Base_Column_List"/> FROM t_ssm_gi_order WHERE  BRANCH_NO = #{branchNo,jdbcType=VARCHAR} and ORDER_DATE = #{orderDate,jdbcType=DATE}
+  </select>
+  <select id="findGiOrderByReqOrderNo" parameterType="string" resultMap="BaseResultMap">
+    SELECT <include refid="Base_Column_List"/> FROM t_ssm_gi_order WHERE  REQ_ORDER_NO = #{reqOrderNo,jdbcType=VARCHAR}
+  </select>
 </mapper>

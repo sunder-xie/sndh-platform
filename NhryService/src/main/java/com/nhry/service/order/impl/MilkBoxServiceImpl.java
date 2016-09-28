@@ -10,21 +10,25 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.lang.StringUtils;
+import org.springframework.core.task.TaskExecutor;
 
 import com.github.pagehelper.PageInfo;
 import com.nhry.common.exception.MessageCode;
 import com.nhry.common.exception.ServiceException;
 import com.nhry.data.basic.dao.TMdBranchEmpMapper;
 import com.nhry.data.order.dao.TMilkboxPlanMapper;
+import com.nhry.data.order.dao.TPlanOrderItemMapper;
 import com.nhry.data.order.dao.TPreOrderMapper;
 import com.nhry.data.order.domain.TMilkboxPlan;
 import com.nhry.data.order.domain.TOrderDaliyPlanItem;
+import com.nhry.data.order.domain.TPlanOrderItem;
 import com.nhry.data.order.domain.TPreOrder;
 import com.nhry.model.order.MilkboxCreateModel;
 import com.nhry.model.order.MilkboxSearchModel;
 import com.nhry.model.order.OrderCreateModel;
 import com.nhry.model.order.OrderSearchModel;
 import com.nhry.service.BaseService;
+import com.nhry.service.external.dao.EcService;
 import com.nhry.service.order.dao.MilkBoxService;
 import com.nhry.service.order.dao.OrderService;
 import com.nhry.service.order.dao.PromotionService;
@@ -36,8 +40,24 @@ public class MilkBoxServiceImpl extends BaseService implements MilkBoxService
 	private TMdBranchEmpMapper branchEmpMapper;
 	private OrderService orderService;
 	private PromotionService promotionService;
+	private TPlanOrderItemMapper tPlanOrderItemMapper;
+	private TaskExecutor taskExecutor;
+	private EcService messLogService;
 	
+	public void setMessLogService(EcService messLogService)
+	{
+		this.messLogService = messLogService;
+	}
+
+	public void setTaskExecutor(TaskExecutor taskExecutor)
+	{
+		this.taskExecutor = taskExecutor;
+	}
 	
+	public void settPlanOrderItemMapper(TPlanOrderItemMapper tPlanOrderItemMapper)
+	{
+		this.tPlanOrderItemMapper = tPlanOrderItemMapper;
+	}
 	public void setPromotionService(PromotionService promotionService)
 	{
 		this.promotionService = promotionService;
@@ -155,7 +175,15 @@ public class MilkBoxServiceImpl extends BaseService implements MilkBoxService
 	{
 		TMilkboxPlan plan = tMilkboxPlanMapper.selectByPrimaryKey(model.getCode());
 		if(plan!=null){
+			if(!"20".equals(plan.getMilkboxStat()))return 1;
+			
 			SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
+			
+			//如果更改了原订单行的配送起始日期,要更新原来的订单
+			if(model.getEntries()!=null && model.getEntries().size()>0){
+				orderService.updateOrderAndEntriesDispStartDate(plan.getOrderNo(),model.getEntries());
+			}
+			
 			TPreOrder o = new TPreOrder();
 			o.setOrderNo(plan.getOrderNo());
 			if(StringUtils.isNotBlank(model.getPaymentStatus())){
@@ -176,6 +204,21 @@ public class MilkBoxServiceImpl extends BaseService implements MilkBoxService
 						List<TOrderDaliyPlanItem> list = orderService.createDaliyPlan(omodel.getOrder(), omodel.getEntries());
 						//如果有赠品，生成赠品的日计划
 						promotionService.createDaliyPlanByPromotion(omodel.getOrder(), omodel.getEntries() ,list);
+						
+						//发送EC,更新订单状态
+	       			TPreOrder sendOrder = new TPreOrder();
+	       			sendOrder.setOrderNo(omodel.getOrder().getOrderNo());
+	       			sendOrder.setPreorderStat("200");
+	       			sendOrder.setEmpNo(omodel.getOrder().getEmpNo());
+	       			taskExecutor.execute(new Thread(){
+	       				@Override
+	       				public void run() {
+	       					super.run();
+	       					this.setName("updateOrderStatus");
+	       					messLogService.sendOrderStatus(sendOrder);
+	       				}
+	       			});
+	       			
 					}
 				}
 			}
@@ -203,11 +246,13 @@ public class MilkBoxServiceImpl extends BaseService implements MilkBoxService
 	public int updateMilkboxStatusByList(MilkboxCreateModel model)
 	{
 		List<String> orderCodes = Arrays.asList(model.getCode().split(","));
-		Map<String,Object> params = new HashMap<String,Object>();
-		params.put("milkboxStat", model.getStatus());
-		params.put("orderCodeArray", orderCodes);
 		
-		return tMilkboxPlanMapper.updateMilkboxPlans(params);
+		orderCodes.stream().forEach((e)->{
+			model.setCode(e);
+			updateMilkboxStatus(model);
+		});
+		
+		return 1;
 	}
 	
 	/* (non-Javadoc) 
@@ -235,5 +280,29 @@ public class MilkBoxServiceImpl extends BaseService implements MilkBoxService
 		date=aCalendar.getTime();   //这个时间就是日期往后推一天的结果
 
 		return date;
+	}
+
+	/**
+	 * 查询奶箱列表不分页,用于导出报表
+	 * @param empNo
+	 * @return smodel
+     */
+	@Override
+	public List findMilkBox(String empNo)
+	{
+		return tMilkboxPlanMapper.searchMilkBox(empNo);
+	}
+
+	/* (non-Javadoc) 
+	* @title: deleteMilkBoxByOrderNo
+	* @description: 
+	* @param code
+	* @return 
+	* @see com.nhry.service.order.dao.MilkBoxService#deleteMilkBoxByOrderNo(java.lang.String) 
+	*/
+	@Override
+	public int deleteMilkBoxByOrderNo(String code)
+	{
+		return tMilkboxPlanMapper.deleteMilkBoxByOrderNo(code);
 	}
 }

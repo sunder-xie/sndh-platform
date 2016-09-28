@@ -20,7 +20,7 @@ public class ZSD_REQUISITION_CREATE_RFC implements org.apache.axis2.databinding.
     /**
      * field for I_EKKO
      */
-    protected com.nhry.webService.client.businessData.functions.ZSD_REQ_EKKO localI_EKKO;
+    protected ZSD_REQ_EKKO localI_EKKO;
 
     /*  This tracker boolean wil be used to detect whether the user called the set method
      *   for this attribute. It will be used to determine whether to include this field
@@ -31,7 +31,7 @@ public class ZSD_REQUISITION_CREATE_RFC implements org.apache.axis2.databinding.
     /**
      * field for ET_MESSAGE
      */
-    protected com.nhry.webService.client.businessData.functions.ET_MESSAGE_type0 localET_MESSAGE;
+    protected ET_MESSAGE_type0 localET_MESSAGE;
 
     /*  This tracker boolean wil be used to detect whether the user called the set method
      *   for this attribute. It will be used to determine whether to include this field
@@ -42,7 +42,7 @@ public class ZSD_REQUISITION_CREATE_RFC implements org.apache.axis2.databinding.
     /**
      * field for IT_ITEM
      */
-    protected com.nhry.webService.client.businessData.functions.IT_ITEM_type0 localIT_ITEM;
+    protected IT_ITEM_type0 localIT_ITEM;
 
     /*  This tracker boolean wil be used to detect whether the user called the set method
      *   for this attribute. It will be used to determine whether to include this field
@@ -58,7 +58,7 @@ public class ZSD_REQUISITION_CREATE_RFC implements org.apache.axis2.databinding.
      * Auto generated getter method
      * @return com.nhry.webService.client.businessData.functions.ZSD_REQ_EKKO
      */
-    public com.nhry.webService.client.businessData.functions.ZSD_REQ_EKKO getI_EKKO() {
+    public ZSD_REQ_EKKO getI_EKKO() {
         return localI_EKKO;
     }
 
@@ -67,7 +67,7 @@ public class ZSD_REQUISITION_CREATE_RFC implements org.apache.axis2.databinding.
      * @param param I_EKKO
      */
     public void setI_EKKO(
-        com.nhry.webService.client.businessData.functions.ZSD_REQ_EKKO param) {
+        ZSD_REQ_EKKO param) {
         localI_EKKOTracker = param != null;
 
         this.localI_EKKO = param;
@@ -81,7 +81,7 @@ public class ZSD_REQUISITION_CREATE_RFC implements org.apache.axis2.databinding.
      * Auto generated getter method
      * @return com.nhry.webService.client.businessData.functions.ET_MESSAGE_type0
      */
-    public com.nhry.webService.client.businessData.functions.ET_MESSAGE_type0 getET_MESSAGE() {
+    public ET_MESSAGE_type0 getET_MESSAGE() {
         return localET_MESSAGE;
     }
 
@@ -90,7 +90,7 @@ public class ZSD_REQUISITION_CREATE_RFC implements org.apache.axis2.databinding.
      * @param param ET_MESSAGE
      */
     public void setET_MESSAGE(
-        com.nhry.webService.client.businessData.functions.ET_MESSAGE_type0 param) {
+        ET_MESSAGE_type0 param) {
         localET_MESSAGETracker = param != null;
 
         this.localET_MESSAGE = param;
@@ -104,7 +104,7 @@ public class ZSD_REQUISITION_CREATE_RFC implements org.apache.axis2.databinding.
      * Auto generated getter method
      * @return com.nhry.webService.client.businessData.functions.IT_ITEM_type0
      */
-    public com.nhry.webService.client.businessData.functions.IT_ITEM_type0 getIT_ITEM() {
+    public IT_ITEM_type0 getIT_ITEM() {
         return localIT_ITEM;
     }
 
@@ -113,7 +113,7 @@ public class ZSD_REQUISITION_CREATE_RFC implements org.apache.axis2.databinding.
      * @param param IT_ITEM
      */
     public void setIT_ITEM(
-        com.nhry.webService.client.businessData.functions.IT_ITEM_type0 param) {
+        IT_ITEM_type0 param) {
         localIT_ITEMTracker = param != null;
 
         this.localIT_ITEM = param;
@@ -144,8 +144,8 @@ public class ZSD_REQUISITION_CREATE_RFC implements org.apache.axis2.databinding.
         javax.xml.stream.XMLStreamWriter xmlWriter, boolean serializeType)
         throws javax.xml.stream.XMLStreamException,
             org.apache.axis2.databinding.ADBException {
-        java.lang.String prefix = null;
-        java.lang.String namespace = null;
+        String prefix = null;
+        String namespace = null;
 
         prefix = parentQName.getPrefix();
         namespace = parentQName.getNamespaceURI();
@@ -153,7 +153,7 @@ public class ZSD_REQUISITION_CREATE_RFC implements org.apache.axis2.databinding.
             xmlWriter);
 
         if (serializeType) {
-            java.lang.String namespacePrefix = registerPrefix(xmlWriter,
+            String namespacePrefix = registerPrefix(xmlWriter,
                     "urn:sap-com:document:sap:rfc:functions");
 
             if ((namespacePrefix != null) &&
@@ -201,7 +201,7 @@ public class ZSD_REQUISITION_CREATE_RFC implements org.apache.axis2.databinding.
         xmlWriter.writeEndElement();
     }
 
-    private static java.lang.String generatePrefix(java.lang.String namespace) {
+    private static String generatePrefix(String namespace) {
         if (namespace.equals("urn:sap-com:document:sap:rfc:functions")) {
             return "ns1";
         }
@@ -212,11 +212,11 @@ public class ZSD_REQUISITION_CREATE_RFC implements org.apache.axis2.databinding.
     /**
      * Utility method to write an element start tag.
      */
-    private void writeStartElement(java.lang.String prefix,
-        java.lang.String namespace, java.lang.String localPart,
+    private void writeStartElement(String prefix,
+        String namespace, String localPart,
         javax.xml.stream.XMLStreamWriter xmlWriter)
         throws javax.xml.stream.XMLStreamException {
-        java.lang.String writerPrefix = xmlWriter.getPrefix(namespace);
+        String writerPrefix = xmlWriter.getPrefix(namespace);
 
         if (writerPrefix != null) {
             xmlWriter.writeStartElement(writerPrefix, localPart, namespace);
@@ -236,11 +236,11 @@ public class ZSD_REQUISITION_CREATE_RFC implements org.apache.axis2.databinding.
     /**
      * Util method to write an attribute with the ns prefix
      */
-    private void writeAttribute(java.lang.String prefix,
-        java.lang.String namespace, java.lang.String attName,
-        java.lang.String attValue, javax.xml.stream.XMLStreamWriter xmlWriter)
+    private void writeAttribute(String prefix,
+        String namespace, String attName,
+        String attValue, javax.xml.stream.XMLStreamWriter xmlWriter)
         throws javax.xml.stream.XMLStreamException {
-        java.lang.String writerPrefix = xmlWriter.getPrefix(namespace);
+        String writerPrefix = xmlWriter.getPrefix(namespace);
 
         if (writerPrefix != null) {
             xmlWriter.writeAttribute(writerPrefix, namespace, attName, attValue);
@@ -254,8 +254,8 @@ public class ZSD_REQUISITION_CREATE_RFC implements org.apache.axis2.databinding.
     /**
      * Util method to write an attribute without the ns prefix
      */
-    private void writeAttribute(java.lang.String namespace,
-        java.lang.String attName, java.lang.String attValue,
+    private void writeAttribute(String namespace,
+        String attName, String attValue,
         javax.xml.stream.XMLStreamWriter xmlWriter)
         throws javax.xml.stream.XMLStreamException {
         if (namespace.equals("")) {
@@ -269,18 +269,18 @@ public class ZSD_REQUISITION_CREATE_RFC implements org.apache.axis2.databinding.
     /**
      * Util method to write an attribute without the ns prefix
      */
-    private void writeQNameAttribute(java.lang.String namespace,
-        java.lang.String attName, javax.xml.namespace.QName qname,
+    private void writeQNameAttribute(String namespace,
+        String attName, javax.xml.namespace.QName qname,
         javax.xml.stream.XMLStreamWriter xmlWriter)
         throws javax.xml.stream.XMLStreamException {
-        java.lang.String attributeNamespace = qname.getNamespaceURI();
-        java.lang.String attributePrefix = xmlWriter.getPrefix(attributeNamespace);
+        String attributeNamespace = qname.getNamespaceURI();
+        String attributePrefix = xmlWriter.getPrefix(attributeNamespace);
 
         if (attributePrefix == null) {
             attributePrefix = registerPrefix(xmlWriter, attributeNamespace);
         }
 
-        java.lang.String attributeValue;
+        String attributeValue;
 
         if (attributePrefix.trim().length() > 0) {
             attributeValue = attributePrefix + ":" + qname.getLocalPart();
@@ -303,10 +303,10 @@ public class ZSD_REQUISITION_CREATE_RFC implements org.apache.axis2.databinding.
     private void writeQName(javax.xml.namespace.QName qname,
         javax.xml.stream.XMLStreamWriter xmlWriter)
         throws javax.xml.stream.XMLStreamException {
-        java.lang.String namespaceURI = qname.getNamespaceURI();
+        String namespaceURI = qname.getNamespaceURI();
 
         if (namespaceURI != null) {
-            java.lang.String prefix = xmlWriter.getPrefix(namespaceURI);
+            String prefix = xmlWriter.getPrefix(namespaceURI);
 
             if (prefix == null) {
                 prefix = generatePrefix(namespaceURI);
@@ -335,9 +335,9 @@ public class ZSD_REQUISITION_CREATE_RFC implements org.apache.axis2.databinding.
         if (qnames != null) {
             // we have to store this data until last moment since it is not possible to write any
             // namespace data after writing the charactor data
-            java.lang.StringBuffer stringToWrite = new java.lang.StringBuffer();
-            java.lang.String namespaceURI = null;
-            java.lang.String prefix = null;
+            StringBuffer stringToWrite = new StringBuffer();
+            String namespaceURI = null;
+            String prefix = null;
 
             for (int i = 0; i < qnames.length; i++) {
                 if (i > 0) {
@@ -376,10 +376,10 @@ public class ZSD_REQUISITION_CREATE_RFC implements org.apache.axis2.databinding.
     /**
      * Register a namespace prefix
      */
-    private java.lang.String registerPrefix(
-        javax.xml.stream.XMLStreamWriter xmlWriter, java.lang.String namespace)
+    private String registerPrefix(
+        javax.xml.stream.XMLStreamWriter xmlWriter, String namespace)
         throws javax.xml.stream.XMLStreamException {
-        java.lang.String prefix = xmlWriter.getPrefix(namespace);
+        String prefix = xmlWriter.getPrefix(namespace);
 
         if (prefix == null) {
             prefix = generatePrefix(namespace);
@@ -387,7 +387,7 @@ public class ZSD_REQUISITION_CREATE_RFC implements org.apache.axis2.databinding.
             javax.xml.namespace.NamespaceContext nsContext = xmlWriter.getNamespaceContext();
 
             while (true) {
-                java.lang.String uri = nsContext.getNamespaceURI(prefix);
+                String uri = nsContext.getNamespaceURI(prefix);
 
                 if ((uri == null) || (uri.length() == 0)) {
                     break;
@@ -417,14 +417,14 @@ public class ZSD_REQUISITION_CREATE_RFC implements org.apache.axis2.databinding.
          *                If this object is a complex type, the reader is positioned at the end element of its outer element
          */
         public static ZSD_REQUISITION_CREATE_RFC parse(
-            javax.xml.stream.XMLStreamReader reader) throws java.lang.Exception {
+            javax.xml.stream.XMLStreamReader reader) throws Exception {
             ZSD_REQUISITION_CREATE_RFC object = new ZSD_REQUISITION_CREATE_RFC();
 
             int event;
             javax.xml.namespace.QName currentQName = null;
-            java.lang.String nillableValue = null;
-            java.lang.String prefix = "";
-            java.lang.String namespaceuri = "";
+            String nillableValue = null;
+            String prefix = "";
+            String namespaceuri = "";
 
             try {
                 while (!reader.isStartElement() && !reader.isEndElement())
@@ -434,11 +434,11 @@ public class ZSD_REQUISITION_CREATE_RFC implements org.apache.axis2.databinding.
 
                 if (reader.getAttributeValue(
                             "http://www.w3.org/2001/XMLSchema-instance", "type") != null) {
-                    java.lang.String fullTypeName = reader.getAttributeValue("http://www.w3.org/2001/XMLSchema-instance",
+                    String fullTypeName = reader.getAttributeValue("http://www.w3.org/2001/XMLSchema-instance",
                             "type");
 
                     if (fullTypeName != null) {
-                        java.lang.String nsPrefix = null;
+                        String nsPrefix = null;
 
                         if (fullTypeName.indexOf(":") > -1) {
                             nsPrefix = fullTypeName.substring(0,
@@ -447,15 +447,15 @@ public class ZSD_REQUISITION_CREATE_RFC implements org.apache.axis2.databinding.
 
                         nsPrefix = (nsPrefix == null) ? "" : nsPrefix;
 
-                        java.lang.String type = fullTypeName.substring(fullTypeName.indexOf(
+                        String type = fullTypeName.substring(fullTypeName.indexOf(
                                     ":") + 1);
 
                         if (!"ZSD_REQUISITION_CREATE_RFC".equals(type)) {
                             //find namespace for the prefix
-                            java.lang.String nsUri = reader.getNamespaceContext()
+                            String nsUri = reader.getNamespaceContext()
                                                            .getNamespaceURI(nsPrefix);
 
-                            return (ZSD_REQUISITION_CREATE_RFC) com.nhry.webService.client.businessData.functions.ExtensionMapper.getTypeObject(nsUri,
+                            return (ZSD_REQUISITION_CREATE_RFC) ExtensionMapper.getTypeObject(nsUri,
                                 type, reader);
                         }
                     }
@@ -474,7 +474,7 @@ public class ZSD_REQUISITION_CREATE_RFC implements org.apache.axis2.databinding.
                                     reader.getName())) ||
                                 new javax.xml.namespace.QName("", "I_EKKO").equals(
                                     reader.getName())) {
-                            object.setI_EKKO(com.nhry.webService.client.businessData.functions.ZSD_REQ_EKKO.Factory.parse(
+                            object.setI_EKKO(ZSD_REQ_EKKO.Factory.parse(
                                     reader));
 
                             reader.next();
@@ -486,7 +486,7 @@ public class ZSD_REQUISITION_CREATE_RFC implements org.apache.axis2.databinding.
                                     reader.getName())) ||
                                 new javax.xml.namespace.QName("", "ET_MESSAGE").equals(
                                     reader.getName())) {
-                            object.setET_MESSAGE(com.nhry.webService.client.businessData.functions.ET_MESSAGE_type0.Factory.parse(
+                            object.setET_MESSAGE(ET_MESSAGE_type0.Factory.parse(
                                     reader));
 
                             reader.next();
@@ -498,7 +498,7 @@ public class ZSD_REQUISITION_CREATE_RFC implements org.apache.axis2.databinding.
                                     reader.getName())) ||
                                 new javax.xml.namespace.QName("", "IT_ITEM").equals(
                                     reader.getName())) {
-                            object.setIT_ITEM(com.nhry.webService.client.businessData.functions.IT_ITEM_type0.Factory.parse(
+                            object.setIT_ITEM(IT_ITEM_type0.Factory.parse(
                                     reader));
 
                             reader.next();
@@ -514,7 +514,7 @@ public class ZSD_REQUISITION_CREATE_RFC implements org.apache.axis2.databinding.
                     }
                 } // end of while loop
             } catch (javax.xml.stream.XMLStreamException e) {
-                throw new java.lang.Exception(e);
+                throw new Exception(e);
             }
 
             return object;

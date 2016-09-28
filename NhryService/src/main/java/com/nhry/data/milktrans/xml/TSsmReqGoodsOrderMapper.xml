@@ -7,7 +7,7 @@
         <result column="ORDER_DATE" property="orderDate" jdbcType="DATE" />
         <result column="BRANCH_NO" property="branchNo" jdbcType="VARCHAR" />
         <result column="REQUIRED_DATE" property="requiredDate" jdbcType="VARCHAR" />
-        <result column="VOUCHER_NO" property="voucherNo" jdbcType="INTEGER" />
+        <result column="VOUCHER_NO" property="voucherNo" jdbcType="VARCHAR" />
         <result column="STATUS" property="status" jdbcType="INTEGER" />
         <result column="MEMO_TXT" property="memoTxt" jdbcType="VARCHAR" />
         <result column="CREATE_AT" property="createAt" jdbcType="TIMESTAMP" />
@@ -38,7 +38,13 @@
         select
         <include refid="Base_Column_List"/>
         FROM t_ssm_req_goods_order
-        WHERE  REQUIRED_DATE = #{requiredDate,jdbcType=DATE}
+        WHERE  1=1
+        <if test="orderDate!=null">
+            and  ORDER_DATE = #{orderDate,jdbcType=DATE}
+        </if>
+        <if test="requiredDate!=null">
+            and  REQUIRED_DATE = #{requiredDate,jdbcType=DATE}
+        </if>
         AND   BRANCH_NO =#{branchNo,jdbcType=VARCHAR}
     </select>
 
@@ -76,4 +82,13 @@
         DELETE  FROM t_ssm_req_goods_order
         WHERE  ORDER_NO = #{orderNo,jdbcType=VARCHAR}
     </delete>
+
+
+    <select id="searchRequireOrderByRequireDate" resultMap="BaseResultMap" parameterType="com.nhry.model.milktrans.RequireOrderSearch" >
+        select
+        <include refid="Base_Column_List"/>
+        FROM t_ssm_req_goods_order
+        WHERE  REQUIRED_DATE = #{requiredDate,jdbcType=DATE}
+        AND   BRANCH_NO =#{branchNo,jdbcType=VARCHAR}
+    </select>
 </mapper>

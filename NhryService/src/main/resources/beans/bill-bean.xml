@@ -27,6 +27,11 @@
 		<property name="orderService"  ref="orderService"></property>
 		<property name="promotionService"  ref="promotionService"></property>
 		<property name="tVipCustInfoService" ref="custService"></property>
+		<property name="messLogService" ref="messLogService"></property>
+		<property name="taskExecutor" ref="taskExecutor"></property>
+		<property name="piVipInfoDataService" ref="piVipInfoDataService"></property>
+		<property name="tDispOrderItemMapper" ref="tDispOrderItemMapper"></property>
+		<property name="tOrderDaliyPlanItemMapper" ref="tOrderDaliyPlanItemMapper"></property>
 	</bean>
 
 	<!--奶站结算-->
@@ -55,6 +60,8 @@
 		<property name="sqlSessionTemplate"  ref="dynamicSqlSessionTemplate"></property>
 	</bean>
 	<bean id="empBillService" class="com.nhry.service.bill.impl.EmpBillServiceImpl">
+		<property name="urMapper"  ref="urMapper"></property>
+		<property name="branchMapper"  ref="branchMapper"></property>
 		<property name="tMdEmpSalMapper"  ref="tMdEmpSalMapper"></property>
 		<property name="empBillMapper"  ref="empBillMapper"></property>
 		<property name="branchEmpMapper"  ref="branchEmpMapper"></property>

@@ -6,10 +6,12 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.core.task.TaskExecutor;
 
 import com.github.pagehelper.PageInfo;
 import com.nhry.common.exception.MessageCode;
 import com.nhry.common.exception.ServiceException;
+import com.nhry.data.auth.domain.TSysUser;
 import com.nhry.data.basic.dao.TMaraPriceRelMapper;
 import com.nhry.data.basic.dao.TMdBranchMapper;
 import com.nhry.data.basic.dao.TMdDealerMapper;
@@ -36,6 +38,7 @@ public class PriceServiceImpl extends BaseService implements PriceService {
 	private TMdBranchMapper branchMapper;
 	private TMdDealerMapper dealerMapper;
 	private TSysMessageService messService;
+	private TaskExecutor taskExecutor;
 
 	public void settMdPriceMapper(TMdPriceMapper tMdPriceMapper) {
 		this.tMdPriceMapper = tMdPriceMapper;
@@ -53,10 +56,11 @@ public class PriceServiceImpl extends BaseService implements PriceService {
 		if(record.getMprices() == null || record.getMprices().size() == 0){
 			throw new ServiceException(MessageCode.LOGIC_ERROR,"价格组至少关联一个商品!");
 		}
+		TSysUser user = this.userSessionService.getCurrentUser();
 		if(SysContant.getSystemConst("price_type_comp").equals(record.getPriceType()) || (SysContant.getSystemConst("price_type_area").equals(record.getPriceType())
 				&& !"-1".equals(record.getScope()))){
 			Map<String,String> attrs=new HashMap<String,String>(2);
-			attrs.put("salesOrg", this.userSessionService.getCurrentUser().getSalesOrg());
+			attrs.put("salesOrg", user.getSalesOrg());
 			attrs.put("priceType", record.getPriceType());
 			attrs.put("scope", record.getScope());
 			int count = this.tMdPriceMapper.getCompPriceGroupCount(attrs);
@@ -65,11 +69,11 @@ public class PriceServiceImpl extends BaseService implements PriceService {
 			}
 		}
 		record.setId(PrimaryKeyUtils.generateUuidKey());
-		record.setCreateBy(this.userSessionService.getCurrentUser().getLoginName());
-		record.setCreateByTxt(this.userSessionService.getCurrentUser().getDisplayName());
+		record.setCreateBy(user.getLoginName());
+		record.setCreateByTxt(user.getDisplayName());
 		record.setCreateAt(new Date());
 		record.setStatus("Y");
-		record.setSalesOrg(this.userSessionService.getCurrentUser().getSalesOrg());
+		record.setSalesOrg(user.getSalesOrg());
 		tMdPriceMapper.addNewPriceGroup(record);
 		//维护产品与价格组关系
 		mergeMaraPriceRel(record.getId(),record.getMprices());
@@ -84,7 +88,7 @@ public class PriceServiceImpl extends BaseService implements PriceService {
 					return 1;
 				}
 				Map<String,String> attrs = new HashMap<String,String>();
-				attrs.put("salesOrg", this.userSessionService.getCurrentUser().getSalesOrg());
+				attrs.put("salesOrg", user.getSalesOrg());
 				attrs.put("dealerNo", record.getScope());
 				List<TMdBranch> branchs = branchMapper.findBranchByDno(attrs);
 				for(TMdBranch tb : branchs){
@@ -92,8 +96,8 @@ public class PriceServiceImpl extends BaseService implements PriceService {
 					pb.setBranchNo(tb.getBranchNo());
 					pb.setId(record.getId());
 					pb.setCreateAt(new Date());
-					pb.setCreateBy(this.userSessionService.getCurrentUser().getLoginName());
-					pb.setCreateByTxt(this.userSessionService.getCurrentUser().getDisplayName());
+					pb.setCreateBy(user.getLoginName());
+					pb.setCreateByTxt(user.getDisplayName());
 					this.priceBranchMapper.addPriceBranch(pb);
 				}
 			}
@@ -193,15 +197,24 @@ public class PriceServiceImpl extends BaseService implements PriceService {
 		}
 		int count = priceBranchMapper.findPriceBrachCountByPt(record);
 		if(count > 0){
-			throw new ServiceException(MessageCode.LOGIC_ERROR, "该奶站下面存在该价格组类型的价格组，不允许重复添加同一类型价格组!");
+			throw new ServiceException(MessageCode.LOGIC_ERROR, "该奶站下面存在相同类型的价格组，不允许重复添加同一类型价格组!");
 		}
-		
+		TSysUser user = this.userSessionService.getCurrentUser();
 		record.setCreateAt(new Date());
-		record.setCreateBy(this.userSessionService.getCurrentUser().getLoginName());
-		record.setCreateByTxt(this.userSessionService.getCurrentUser().getDisplayName());
+		record.setCreateBy(user.getLoginName());
+		record.setCreateByTxt(user.getDisplayName());
 		this.priceBranchMapper.addPriceBranch(record);
-		//奶站价格组更新，发送系统消息
-		return messService.sendMessagesForUptBranch(branch,1) ? 1 : 0;
+		//奶站价格组更新，发送系统消息(以线程方式)
+		taskExecutor.execute(new Thread(){
+			@Override
+			public void run() {
+				// TODO Auto-generated method stub
+				super.run();
+				this.setName("sendMessagesForAddPriceBranch");
+				messService.sendMessagesForUptBranch(branch,1,user);
+			}
+		});
+		return 1;
 	}
 
 	@Override
@@ -252,12 +265,20 @@ public class PriceServiceImpl extends BaseService implements PriceService {
 		}
 		priceBranchMapper.delPriceBranch(attrs);
 		//奶站价格组更新，发送系统消息
-		TMdBranch branch = branchMapper.selectBranchByNo(branchNo);
-		if(branch != null){
-			return messService.sendMessagesForUptBranch(branch,1) ? 1 : 0;
-		}else{
-			return 0;
-		}
+		TSysUser user = this.userSessionService.getCurrentUser();
+		taskExecutor.execute(new Thread(){
+			@Override
+			public void run() {
+				// TODO Auto-generated method stub
+				super.run();
+				this.setName("sendMessagesForDelPriceBranch");
+				TMdBranch branch = branchMapper.selectBranchByNo(branchNo);
+				if(branch != null){
+					messService.sendMessagesForUptBranch(branch,1,user);
+				}
+			}
+		});
+		return 1;
 	}
 
 	public void setPriceBranchMapper(TMdPriceBranchMapper priceBranchMapper) {
@@ -273,6 +294,36 @@ public class PriceServiceImpl extends BaseService implements PriceService {
 		// TODO Auto-generated method stub
 		Map<String,String> attrs = new HashMap<String,String>();
 		attrs.put("salesOrg",this.userSessionService.getCurrentUser().getSalesOrg());
+		attrs.put("branchNo", branchNo);
+		attrs.put("matnr", matnr);
+		//先查询该奶站上该商品关联的价格组列表
+		List<PriceGroup> prices = this.tMdPriceMapper.findMaraPriceBymatnrAndNo(attrs);
+		PriceGroup price = null;
+		if(prices != null && prices.size() > 0){
+			price = prices.get(0);
+		}else{
+			//奶站上没有关联如何价格组、查询公司上的价格组(渠道价格组)
+			price = this.tMdPriceMapper.findMaraPriceBymatnrAndOrg(attrs);
+		}
+		if(price == null){
+			//如果公司和奶站对于该商品都适用的价格组
+			return -1.0f;
+		}
+		if("10".equals(deliveryType)){
+			//自取价
+			return price.getPrice1();
+		}else if("20".equals(deliveryType)){
+			//订户价
+			return price.getPrice2();
+		}
+		return -1.0f;
+	}
+	
+	@Override
+	public float getMaraPriceForCreateOrder(String branchNo, String matnr, String deliveryType,String salesOrg) {
+		// TODO Auto-generated method stub
+		Map<String,String> attrs = new HashMap<String,String>();
+		attrs.put("salesOrg",salesOrg);
 		attrs.put("branchNo", branchNo);
 		attrs.put("matnr", matnr);
 		//先查询该奶站上该商品关联的价格组列表
@@ -320,7 +371,7 @@ public class PriceServiceImpl extends BaseService implements PriceService {
 			TMdDealer dealer = new TMdDealer();
 			dealer.setDealerNo("-1");
 			dealer.setDealerName("自营奶站");
-			list.add(dealer);
+			list.add(0,dealer);
 		}
 		return list;
 	}
@@ -379,5 +430,32 @@ public class PriceServiceImpl extends BaseService implements PriceService {
 
 	public void setMessService(TSysMessageService messService) {
 		this.messService = messService;
+	}
+
+	public void setTaskExecutor(TaskExecutor taskExecutor) {
+		this.taskExecutor = taskExecutor;
+	}
+
+	@Override
+	public List<TMdDealer> getDealers(String salesOrg) {
+		// TODO Auto-generated method stub
+		List<TMdDealer> list = this.dealerMapper.findDealersBySalesOrg(salesOrg);
+		if(list == null){
+			list = new ArrayList<TMdDealer>();
+		}
+		boolean flag = false;
+		for(TMdDealer dealer : list){
+			if("-1".equals(dealer.getDealerNo())){
+				flag = true;
+				break;
+			}
+		}
+		if(!flag){
+			TMdDealer dealer = new TMdDealer();
+			dealer.setDealerNo("-1");
+			dealer.setDealerName("自营奶站");
+			list.add(dealer);
+		}
+		return list;
 	}
 }

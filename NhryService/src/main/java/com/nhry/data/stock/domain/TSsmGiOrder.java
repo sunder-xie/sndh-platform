@@ -1,10 +1,12 @@
 package com.nhry.data.stock.domain;
 
+import org.springframework.format.annotation.DateTimeFormat;
+
 import java.util.Date;
 
 public class TSsmGiOrder {
     private String orderNo;
-
+    @DateTimeFormat(pattern = "yyyy-MM-dd")
     private Date orderDate;
 
     private String branchNo;
@@ -15,6 +17,8 @@ public class TSsmGiOrder {
 
     private String status;
 
+    private String reqOrderNo;
+
     public String getOrderNo() {
         return orderNo;
     }
@@ -22,8 +26,7 @@ public class TSsmGiOrder {
     public void setOrderNo(String orderNo) {
         this.orderNo = orderNo == null ? null : orderNo.trim();
     }
-
-    public Date getOrderDate() {
+    public Date getOrderDate(){
         return orderDate;
     }
 
@@ -61,5 +64,13 @@ public class TSsmGiOrder {
 
     public void setStatus(String status) {
         this.status = status == null ? null : status.trim();
+    }
+
+    public String getReqOrderNo() {
+        return reqOrderNo;
+    }
+
+    public void setReqOrderNo(String reqOrderNo) {
+        this.reqOrderNo = reqOrderNo;
     }
 }

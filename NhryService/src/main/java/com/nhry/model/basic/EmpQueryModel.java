@@ -9,10 +9,19 @@ import java.io.Serializable;
 public class EmpQueryModel extends BaseQueryModel implements Serializable {
 	@ApiModelProperty(value="branchNo",notes="网点编号")
 	private String branchNo;
+	private String dealerNo;
 	private String status;
 	private String salesOrg;
 	private String roleId;
-	
+
+	public String getDealerNo() {
+		return dealerNo;
+	}
+
+	public void setDealerNo(String dealerNo) {
+		this.dealerNo = dealerNo;
+	}
+
 	public String getBranchNo() {
 		return branchNo;
 	}

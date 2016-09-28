@@ -15,12 +15,14 @@ import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Controller;
 
 import com.nhry.common.exception.MessageCode;
+import com.nhry.common.ladp.LadpService;
 import com.nhry.data.config.domain.NHSysCodeItem;
 import com.nhry.data.config.domain.NHSysCodeType;
 import com.nhry.data.config.domain.NHSysParameter;
 import com.nhry.model.sys.ResponseModel;
 import com.nhry.rest.BaseResource;
 import com.nhry.service.config.dao.DictionaryService;
+import com.nhry.utils.date.Date;
 import com.sun.jersey.spi.resource.Singleton;
 import com.wordnik.swagger.annotations.Api;
 import com.wordnik.swagger.annotations.ApiOperation;
@@ -35,6 +37,10 @@ import com.wordnik.swagger.annotations.ApiParam;
 public class DictionaryResource extends BaseResource {
 	@Autowired
 	private DictionaryService dicService;
+	
+	@Autowired
+	private LadpService ladpService;
+	
 	@POST
 	@Path("/items/{typecode}")
 	@Produces(MediaType.APPLICATION_JSON)
@@ -135,5 +141,30 @@ public class DictionaryResource extends BaseResource {
 	@ApiOperation(value = "/allTypeCodes", response = String.class, notes = "获取所有字典代码类型")
 	public Response getAllTypeCodes(){
 		return convertToRespModel(MessageCode.NORMAL, null,  dicService.findAllTypeCodes());
+	}
+	
+	
+	@POST
+	@Path("/sync/users/all")
+	@Produces(MediaType.APPLICATION_JSON)
+	@ApiOperation(value = "/sync/users/all", response = ResponseModel.class, notes = "全量同步idm订户系统用户")
+	public Response syncSysUsers(){
+		return convertToRespModel(MessageCode.NORMAL, null,  ladpService.syncSysUsers(true));
+	}
+	
+	@POST
+	@Path("/sync/users/upt")
+	@Produces(MediaType.APPLICATION_JSON)
+	@ApiOperation(value = "/sync/users/upt", response = ResponseModel.class, notes = "增量同步idm订户系统用户")
+	public Response syncSysUsersForUpt(){
+		return convertToRespModel(MessageCode.NORMAL, null,  ladpService.syncSysUsers(false));
+	}
+	
+	@GET
+	@Path("/sys/date")
+	@Produces(MediaType.APPLICATION_JSON)
+	@ApiOperation(value = "/sys/date", response = ResponseModel.class, notes = "获取系统时间")
+	public Response getSysDate(){
+		return convertToRespModel(MessageCode.NORMAL, null,  new Date().toTimeStamp());
 	}
 }

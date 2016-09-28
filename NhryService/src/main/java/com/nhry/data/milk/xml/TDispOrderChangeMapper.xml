@@ -42,10 +42,11 @@
     select
     c.ORDER_NO, c.ORDER_DATE, c.ORG_ORDER_NO, c.ORG_ITEM_NO,ex1.SHORT_TXT YESTODAY_MATNR,ex2.SHORT_TXT TODAY_MATNR, c.YESTODAY_QTY, 
     c.TODAY_QTY, c.YESTODAY_REACH_TIME_TYPE, c.TODAY_REACH_TIME_TYPE, c.REASON, v.VIP_NAME MILKMEMBER_NO, 
-    a.ADDRESS_TXT ADDRESS_NO,e.EMP_NAME  EMP_NO, v.MP CUST_TEL
+    concat(r.RESIDENTIAL_AREA_TXT,a.ADDRESS_TXT) ADDRESS_NO,e.EMP_NAME  EMP_NO, v.MP CUST_TEL
     from t_mst_disp_order_change c
     left join t_preorder o on c.ORG_ORDER_NO = o.ORDER_NO
     left join t_md_address a on c.ADDRESS_NO = a.ADDRESS_ID
+    left join t_md_residential_area r on r.ID = a.RESIDENTIAL_AREA
     left join t_vip_cust_info v on a.VIP_CUST_NO = v.VIP_CUST_NO
 	 left join t_md_branch_emp e on e.EMP_NO = c.EMP_NO
 	 left join t_md_mara_ex ex1 on ex1.MATNR = c.YESTODAY_MATNR and o.SALES_ORG = ex1.SALES_ORG
@@ -218,4 +219,11 @@
       and ORG_ORDER_NO = #{orgOrderNo,jdbcType=VARCHAR}
       and ORG_ITEM_NO = #{orgItemNo,jdbcType=VARCHAR}
   </update>
+  <delete id="deleteDispOrderChangeByOrderNo" >
+    delete from t_mst_disp_order_change
+    where ORDER_NO in 
+    <foreach item="codeStr" collection="list" separator="," open="(" close=")" index="">  
+      	#{codeStr}
+    </foreach>  
+  </delete>
 </mapper>

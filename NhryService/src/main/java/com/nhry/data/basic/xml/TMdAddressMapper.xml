@@ -34,9 +34,60 @@
     VIP_CUST_NO,IS_DEFAULT,STREET
   </sql>
   <select id="findAddressById" resultMap="BaseResultMap" parameterType="java.lang.String" >
-    select 
-    <include refid="Base_Column_List" />
-    from t_md_address
+    SELECT
+		ADDRESS_ID,
+		RECV_NAME,
+		(
+			SELECT
+				it.ITEM_NAME
+			FROM
+				T_SYS_CODE_ITEM it
+			WHERE
+				it.TYPE_CODE = <include refid="mybaties.constant.COUNTRY_CITY_CONSTANT" /> 
+			AND it.ITEM_CODE = d.PROVINCE
+		) PROVINCE_NAME,
+		d.PROVINCE,
+		(
+			SELECT
+				it.ITEM_NAME
+			FROM
+				T_SYS_CODE_ITEM it
+			WHERE
+				it.TYPE_CODE = <include refid="mybaties.constant.COUNTRY_CITY_CONSTANT" /> 
+			AND it.ITEM_CODE = d.CITY
+		) CITY_NAME,d.CITY,
+		(
+			SELECT
+				it.ITEM_NAME
+			FROM
+				T_SYS_CODE_ITEM it
+			WHERE
+				it.TYPE_CODE = <include refid="mybaties.constant.COUNTRY_CITY_CONSTANT" /> 
+			AND it.ITEM_CODE = d.COUNTY
+		) COUNTY_NAME,d.COUNTY,
+	    d.STREET,
+		MP,
+		TEL,
+		ZIP,
+		ADDRESS_TXT,
+		(
+			SELECT
+				a.RESIDENTIAL_AREA_TXT
+			FROM
+				T_MD_RESIDENTIAL_AREA a
+			WHERE
+				a.ID = d.RESIDENTIAL_AREA
+		) RESIDENTIAL_AREA_NAME,d.RESIDENTIAL_AREA,
+		CREATE_AT,
+		CREATE_BY,
+		CREATE_BY_TXT,
+		LAST_MODIFIED,
+		LAST_MODIFIED_BY,
+		LAST_MODIFIED_BY_TXT,
+		VIP_CUST_NO,
+		IS_DEFAULT,
+        IS_DELETE
+    from t_md_address d
     where ADDRESS_ID = #{addressId,jdbcType=VARCHAR}
   </select>
   <insert id="addAddressForCust" parameterType="com.nhry.data.basic.domain.TMdAddress" >
@@ -290,7 +341,7 @@
 		d.IS_DELETE='N' AND d.VIP_CUST_NO = #{custNo} order by IS_DEFAULT desc,LAST_MODIFIED desc,CREATE_AT desc
   </select>
   <select id="findOriginAddressByCustNo" resultMap="BaseResultMap" parameterType="String">
-    SELECT <include refid="Base_Column_List" /> FROM t_md_address WHERE VIP_CUST_NO=#{custNo} where IS_DELETE='N' order by IS_DEFAULT desc,LAST_MODIFIED desc,CREATE_AT desc
+    SELECT <include refid="Base_Column_List" /> FROM t_md_address WHERE VIP_CUST_NO=#{custNo} and IS_DELETE='N' order by IS_DEFAULT desc,LAST_MODIFIED desc,CREATE_AT desc
   </select>
   <select id="findAddressDetailById" resultMap="BaseResultMap" parameterType="String">
      SELECT
@@ -391,6 +442,25 @@
         <if test="addressTxt != null and addressTxt != ''">
            and d.ADDRESS_TXT=#{addressTxt}
         </if>
+        <if test="custNo != null and custNo != ''">
+            and d.VIP_CUST_NO=#{custNo}
+        </if>
     </where>
   </select>
+  <delete id="deleteAddressByCustNo" parameterType="String">
+     delete from t_md_address where VIP_CUST_NO=#{custNo}
+  </delete>
+    <select id="findAddressByCustNoISDefault" resultMap="BaseResultMap" parameterType="String">
+       SELECT
+            t.ADDRESS_ID,
+            t.PROVINCE,
+            t.COUNTY,
+            t.CITY,
+            t.ADDRESS_TXT
+        FROM
+            t_md_address t
+        WHERE
+            t.VIP_CUST_NO = #{custNo,jdbcType=VARCHAR}
+        AND t.IS_DEFAULT = 'Y'
+     </select>
 </mapper>

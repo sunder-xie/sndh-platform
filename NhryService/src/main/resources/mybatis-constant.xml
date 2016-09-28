@@ -26,6 +26,8 @@
 	<sql id="storage_location">1011</sql>
 	<!-- 系统资源类型 -->
 	<sql id="sys_res_type">1012</sql>
+	<!-- 系统资源类型 页面资源-->
+	<sql id="sys_res_type_pages">10</sql>
 	<!-- 系统资源类型 页面组件-->
 	<sql id="sys_res_type_component">20</sql>
 	<!-- 采购组 -->
@@ -44,6 +46,8 @@
 	<sql id="packing _type">2004</sql>
 	<!-- 重点产品分类 -->
 	<sql id="major_products_category">2005</sql>
+	<!-- 省份对应关系(奶站省份) -->
+	<sql id="branch_province">2006</sql>
 	<!-- 角色ID  送奶员 -->
 	<sql id="milkman">10001</sql>
 	<!-- 角色ID  送奶员 -->

@@ -6,6 +6,7 @@ import com.nhry.data.auth.dao.TSysUserMapper;
 import com.nhry.data.auth.domain.TSysUser;
 import com.nhry.model.auth.UserQueryModel;
 import com.nhry.model.auth.UserQueryModel2;
+import com.nhry.model.auth.UserQueryModel3;
 
 import java.util.List;
 import java.util.Map;
@@ -84,5 +85,21 @@ public class TSysUserMapperImpl implements TSysUserMapper {
 	public List<TSysUser> getloginNamesByOrgsandRid2(Map<String, String> attrs) {
 		// TODO Auto-generated method stub
 		return this.sqlSessionTemplate.selectList("getloginNamesByOrgsandRid2", attrs);
+	}
+
+	@Override
+	public PageInfo findNotRoleUser(UserQueryModel3 model) {
+		return this.sqlSessionTemplate.selectListByPages("findNotRoleUser",model, Integer.parseInt(model.getPageNum()), Integer.parseInt(model.getPageSize()));
+	}
+
+	@Override
+	public PageInfo<TSysUser> findNotRoleUserPage(UserQueryModel3 model) {
+		return this.sqlSessionTemplate.selectListByPages("findNotRoleUser",model,Integer.valueOf(model.getPageNum()),Integer.valueOf(model.getPageSize()));
+	}
+
+	@Override
+	public TSysUser findUserByLoginName2(String loginName) {
+		// TODO Auto-generated method stub
+		return this.sqlSessionTemplate.selectOne("findUserByLoginName2", loginName);
 	}
 }

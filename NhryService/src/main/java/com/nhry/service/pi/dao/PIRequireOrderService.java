@@ -3,6 +3,7 @@ package com.nhry.service.pi.dao;
 import com.nhry.data.basic.domain.TMdBranch;
 import com.nhry.data.milktrans.domain.TSsmReqGoodsOrder;
 import com.nhry.data.milktrans.domain.TSsmSalOrder;
+import com.nhry.model.stock.StockModel;
 import com.nhry.webService.client.PISuccessMessage;
 
 import java.util.Date;
@@ -36,10 +37,30 @@ public interface PIRequireOrderService {
      * @param isDeli 是否是调货单
      * @return
      */
-    String getDelivery(String orderNo,boolean isDeli);
+    String generateDelivery(String orderNo,String branchNo,boolean isDeli);
 
     String execRequieOrder(Date date, String branchNo);
 
     String execSalesOrder(Date date, TMdBranch branch);
+
+    /**
+     * 生成交换单
+     * @param model
+     * @return
+     */
+    String execDelivery(StockModel model);
+
+    /**
+     * 任务调度执行获取ECC出厂价格
+     * @return
+     */
+    String saveFactoryPrice();
+
+    /**
+     * 通过要货单或者销售订单生成交换单
+     * @param orderNo
+     * @return
+     */
+    String execDeliveryByOrderNo(String orderNo);
 
 }

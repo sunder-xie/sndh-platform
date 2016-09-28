@@ -8,6 +8,7 @@ import com.nhry.data.auth.domain.TSysUser;
 import com.nhry.data.basic.domain.TMdAddress;
 import com.nhry.data.basic.domain.TVipCustInfo;
 import com.nhry.model.basic.CustQueryModel;
+import com.nhry.model.basic.CustStat;
 
 public interface TVipCustInfoMapper {
 	
@@ -17,7 +18,7 @@ public interface TVipCustInfoMapper {
 	 * @return
 	 */
     int addVipCust(TVipCustInfo record);
-    
+
     /**
      * 根据订户编号查询订户信息(包含地址信息)
      * @param vipCustNo
@@ -31,6 +32,13 @@ public interface TVipCustInfoMapper {
      * @return
      */
     TVipCustInfo findVipCustByNoForUpt(String vipCustNo);
+    
+    /**
+     * 找出该销售组织下没有会员编号的订户
+     * @param record
+     * @return
+     */
+    List<TVipCustInfo> findVipCustByNoSapNo(String salesOrg);
     
     /**
      * 修改订户信息
@@ -87,4 +95,25 @@ public interface TVipCustInfoMapper {
      * @return
      */
     public String getCustNoByPhone(Map<String,String> attrs);
+    
+    /**
+     * 根据订户编号，删除订户信息
+     * @param cno
+     * @return
+     */
+    public int deleteCustByCno(String cno);
+    
+    /**
+     * 获取当前组织订户状态统计数据
+     * @param attrs
+     * @return
+     */
+    public List<CustStat> getCustInfoStat(Map<String,String> attrs);
+
+    /**
+     * 更新会员编号
+     */
+    public int updateSapNo(TVipCustInfo vipCustInfo);
+
+    public int updateVipMp(TVipCustInfo vipCustInfo);
 }

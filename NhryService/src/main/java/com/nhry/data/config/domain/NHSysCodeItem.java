@@ -5,6 +5,11 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
+
+
 public class NHSysCodeItem implements Serializable {
 	private String typeCode;
 
@@ -13,6 +18,8 @@ public class NHSysCodeItem implements Serializable {
     private String itemName;
 
     private String parent;
+    
+    private int level;
 
     private String attr1;
 
@@ -25,13 +32,13 @@ public class NHSysCodeItem implements Serializable {
     private String attr5;
 
     private Integer idx;
-
+    
     private Date createAt;
 
     private String createBy;
 
     private String createByTxt;
-
+    
     private Date lastModified;
 
     private String lastModifiedBy;
@@ -103,7 +110,7 @@ public class NHSysCodeItem implements Serializable {
     public void setIdx(Integer idx) {
         this.idx = idx;
     }
-
+    
     public Date getCreateAt() {
         return createAt;
     }
@@ -127,7 +134,7 @@ public class NHSysCodeItem implements Serializable {
     public void setCreateByTxt(String createByTxt) {
         this.createByTxt = createByTxt == null ? null : createByTxt.trim();
     }
-
+    
     public Date getLastModified() {
         return lastModified;
     }
@@ -174,5 +181,13 @@ public class NHSysCodeItem implements Serializable {
 
 	public void setChildrens(List<NHSysCodeItem> childrens) {
 		this.childrens = childrens;
+	}
+
+	public int getLevel() {
+		return level;
+	}
+
+	public void setLevel(int level) {
+		this.level = level;
 	}
 }

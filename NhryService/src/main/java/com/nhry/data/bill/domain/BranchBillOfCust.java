@@ -1,6 +1,7 @@
 package com.nhry.data.bill.domain;
 
 import java.io.Serializable;
+import java.math.BigDecimal;
 import java.util.Date;
 
 /**
@@ -17,12 +18,39 @@ public class BranchBillOfCust   implements Serializable {
     private String vipTel;//订户电话
     private String vipMp;//订户手机
     private String address;//订户地址
-    private Integer realCollection;//实收款
-    private Integer settlementPrice; //结算价
+    private BigDecimal realCollection;//实收款
+    private BigDecimal settlementPrice; //结算价
     private String paymentDate;//付款日期
     private String empNo;//送奶工 工号
     private String empName;//送奶工名称
     private Date receiptDate;
+    private BigDecimal factAmt; //订单结算价(出厂价和)
+    private BigDecimal accAmt;
+    private BigDecimal amt;
+
+    public BigDecimal getAccAmt() {
+        return accAmt;
+    }
+
+    public void setAccAmt(BigDecimal accAmt) {
+        this.accAmt = accAmt;
+    }
+
+    public BigDecimal getAmt() {
+        return amt;
+    }
+
+    public void setAmt(BigDecimal amt) {
+        this.amt = amt;
+    }
+
+    public BigDecimal getFactAmt() {
+        return factAmt;
+    }
+
+    public void setFactAmt(BigDecimal factAmt) {
+        this.factAmt = factAmt;
+    }
 
     public Date getReceiptDate() {
         return receiptDate;
@@ -112,19 +140,19 @@ public class BranchBillOfCust   implements Serializable {
         this.address = address;
     }
 
-    public Integer getRealCollection() {
+    public BigDecimal getRealCollection() {
         return realCollection;
     }
 
-    public void setRealCollection(Integer realCollection) {
+    public void setRealCollection(BigDecimal realCollection) {
         this.realCollection = realCollection;
     }
 
-    public Integer getSettlementPrice() {
+    public BigDecimal getSettlementPrice() {
         return settlementPrice;
     }
 
-    public void setSettlementPrice(Integer settlementPrice) {
+    public void setSettlementPrice(BigDecimal settlementPrice) {
         this.settlementPrice = settlementPrice;
     }
 

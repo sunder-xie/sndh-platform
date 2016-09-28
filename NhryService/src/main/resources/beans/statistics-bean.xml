@@ -19,11 +19,13 @@
     </bean>
     <bean class="com.nhry.service.statistics.impl.DistributionInfoServiceImpl" id="distributionInfoService">
         <property name="distributionInfoMapper" ref="distributionInfoMapper"/>
+        <property name="userSessionService" ref="userSessionService"/>
     </bean>
     <bean class="com.nhry.data.statistics.impl.BranchInfoMapperImpl" id="branchInfoMapper">
         <property name="sqlSessionTemplate" ref="dynamicSqlSessionTemplate"/>
     </bean>
     <bean class="com.nhry.service.statistics.impl.BranchInfoServiceImpl" id="branchInfoService">
         <property name="branchInfoMapper" ref="branchInfoMapper"/>
+        <property name="userSessionService" ref="userSessionService"/>
     </bean>
 </beans>

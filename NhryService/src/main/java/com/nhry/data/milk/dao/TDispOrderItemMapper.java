@@ -1,37 +1,43 @@
 package com.nhry.data.milk.dao;
 
 import com.github.pagehelper.PageInfo;
+import com.nhry.data.milk.domain.TDispOrder;
 import com.nhry.data.milk.domain.TDispOrderItem;
 import com.nhry.data.milk.domain.TDispOrderItemKey;
 import com.nhry.data.milktrans.domain.TRecBotDetail;
-import com.nhry.data.order.domain.TPlanOrderItem;
 import com.nhry.model.milk.RouteDetailUpdateModel;
 import com.nhry.model.milk.RouteOrderSearchModel;
+import com.nhry.model.milktrans.DispOrderReportEntityModel;
+import com.nhry.model.milktrans.DispOrderReportModel;
 import com.nhry.model.milktrans.UnDeliverProductSearch;
 import com.nhry.service.milk.pojo.TDispOrderChangeItem;
 
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
 public interface TDispOrderItemMapper {
+	 int deleteDispOrderItemByOrderNo(List<String> codeList); 
 	
 	 PageInfo selectRouteDetailsByPage(RouteOrderSearchModel smodel);
 	 
 	 List selectRouteDetails(String routeCode);
 	
     int deleteByPrimaryKey(TDispOrderItemKey key);
-
+    
+    List<TDispOrderItem> selectItemsByOrgOrderAndItemNo(String orderNo, String itemNo, Date date);
+    
     int insert(TDispOrderItem record);
 
     List<TDispOrderItem> selectItemsByKeys(TDispOrderItemKey record);
 
     List<TDispOrderItem> selectNotDeliveryItemsByKeys(String code);
     
-    List<TDispOrderChangeItem> selectDispItemsChange(String yestoday,String today,String orderNo);
+    List<TDispOrderChangeItem> selectDispItemsChange(String yestoday,String today,String orderNo,String dispEmp,String reachTimeType);
 
     int updateByPrimaryKeySelective(TDispOrderItem record);
 
-    int updateDispOrderItem(RouteDetailUpdateModel record,TPlanOrderItem entry,Map<String,String>productMap);
+    int updateDispOrderItem(RouteDetailUpdateModel record,TDispOrderItem entry,Map<String,String>productMap);
     
     int batchinsert(List<TDispOrderItem> records);
     
@@ -44,4 +50,18 @@ public interface TDispOrderItemMapper {
     List<TDispOrderItem> selectItemsByOrderNo(String dispOrderNo);
 
     List<TRecBotDetail> createRecBotByDispOrder(String dispOrderNo);
+    
+    int updateDispOrderItemEmp(TDispOrder order);
+    
+    int selectCountOfTodayByOrgOrder(String orgOrderNo);
+
+    //查询 该订单下生成的路单数 非确认的
+    int selectDispOrderNumByPreOrderNo(String orderNo);
+    //查询 该订单下生成的路单数
+    int selectCountByOrgOrder(String orderNo);
+    //查询该行该日期是否有路单
+    int selectCountByOrgOrderAndOrgItemNo(String orderNo,String itemNo,String dispDate);
+
+    List<DispOrderReportEntityModel> reportDispOrderItemByParams(DispOrderReportModel model);
+    
 }

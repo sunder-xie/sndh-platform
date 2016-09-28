@@ -6,18 +6,18 @@ import com.nhry.common.exception.MessageCode;
 import com.nhry.common.exception.ServiceException;
 import com.nhry.data.auth.dao.TSysUserRoleMapper;
 import com.nhry.data.auth.domain.TSysUser;
-import com.nhry.data.auth.domain.TSysUserRole;
+import com.nhry.data.basic.dao.TMdBranchExMapper;
 import com.nhry.data.basic.dao.TMdBranchMapper;
 import com.nhry.data.basic.dao.TMdDealerMapper;
 import com.nhry.data.basic.domain.TMdBranch;
+import com.nhry.data.basic.domain.TMdBranchEx;
 import com.nhry.data.basic.domain.TMdDealer;
+import com.nhry.model.basic.BranchExkostlModel;
 import com.nhry.model.basic.BranchOrDealerList;
 import com.nhry.model.basic.BranchQueryModel;
 import com.nhry.model.basic.BranchSalesOrgModel;
 import com.nhry.service.BaseService;
 import com.nhry.service.basic.dao.BranchService;
-import com.nhry.service.basic.dao.TSysMessageService;
-
 import org.apache.commons.lang3.StringUtils;
 
 import java.util.HashMap;
@@ -29,6 +29,7 @@ public class BranchServiceImpl extends BaseService implements BranchService {
 	private TMdDealerMapper dealerMapper;
 	private UserSessionService userSessionService;
 	private TSysUserRoleMapper urMapper;
+	private TMdBranchExMapper branchExMapper;
 	
 
 	@Override
@@ -65,40 +66,24 @@ public class BranchServiceImpl extends BaseService implements BranchService {
 	public List<TMdBranch> findBranchListByOrg() {
 		// TODO Auto-generated method stub
 		TSysUser user = userSessionService.getCurrentUser();
-		TSysUserRole userRole = urMapper.getUserRoleByLoginName(user.getLoginName());
 		BranchSalesOrgModel bModel = new BranchSalesOrgModel();
 		bModel.setSalesOrg(user.getSalesOrg());
-		if("10004".equals(userRole.getId())){
-			bModel.setBranchNo(user.getBranchNo());
-		}else if("10005".equals(userRole.getId())){
-			//经销商内勤
-			bModel.setDealerNo(user.getDealerId());
-		}
+		bModel.setDealerNo(user.getDealerId());
+		bModel.setBranchNo(user.getBranchNo());
 		return branchMapper.findBranchListByOrg(bModel);
 	}
 
 	@Override
 	public PageInfo findBranchListByPage(BranchQueryModel branchModel) {
-		TSysUser user = userSessionService.getCurrentUser();
-		TSysUserRole userRole = urMapper.getUserRoleByLoginName(user.getLoginName());
-		branchModel.setSalesOrg(user.getSalesOrg());
-		//部门内勤
-		if("10003".equals(userRole.getId())){
-			branchModel.setRoleId("10003");
-		}else if("10005".equals(userRole.getId())){
-			branchModel.setRoleId("10005");
-			//经销商内勤
-			branchModel.setDealerNo(user.getDealerId());
-		}else {
-			//奶站内勤
-			branchModel.setBranchNo(user.getBranchNo());
-
-		}
-
 		// TODO Auto-generated method stub
 		if(StringUtils.isEmpty(branchModel.getPageNum()) || StringUtils.isEmpty(branchModel.getPageSize())){
 			throw new ServiceException(MessageCode.LOGIC_ERROR,"pageNum和pageSize不能为空！");
 		}
+		TSysUser user = userSessionService.getCurrentUser();
+		branchModel.setSalesOrg(user.getSalesOrg());
+		branchModel.setDealerNo(user.getDealerId());
+		branchModel.setBranchNo(user.getBranchNo());
+
 		return branchMapper.findBranchListByPage(branchModel);
 	}
 
@@ -155,5 +140,43 @@ public class BranchServiceImpl extends BaseService implements BranchService {
 		return this.branchMapper.findBranchByDno(attrs);
 	}
 
+	@Override
+	public TMdBranch getCustBranchInfo() {
+		TSysUser user = userSessionService.getCurrentUser();
+		if(StringUtils.isBlank(user.getBranchNo())){
+			throw new ServiceException(MessageCode.LOGIC_ERROR,"当前登录人没有所属奶站");
+		}
+		return  this.selectBranchByNo(user.getBranchNo());
+	}
 
+	@Override
+	public int updateBranchKostl(BranchExkostlModel record) {
+		if(org.apache.commons.lang.StringUtils.isEmpty(record.getBranchNo())){
+			throw new ServiceException(MessageCode.LOGIC_ERROR,"奶站编号不能为空！");
+		}
+		if(org.apache.commons.lang.StringUtils.isEmpty(record.getKostl())){
+			throw new ServiceException(MessageCode.LOGIC_ERROR,"成品中心编码不能为空！");
+		}else if(record.getKostl().length()>10){
+			throw new ServiceException(MessageCode.LOGIC_ERROR,"成品中心编码长度过长！");
+		}
+		return branchExMapper.updateBranchKostl(record);
+	}
+
+	@Override
+	public TMdBranchEx getBranchEx(String branchNo) {
+		return branchExMapper.getBranchEx(branchNo);
+	}
+
+	@Override
+	public List<TMdBranch> findBranchBySalesOrgDno(String salesOrg,String dealerNo) {
+		// TODO Auto-generated method stub
+		Map<String,String> attrs = new HashMap<String,String>();
+		attrs.put("salesOrg", salesOrg);
+		attrs.put("dealerNo",dealerNo);
+		return this.branchMapper.findBranchByDno(attrs);
+	}
+
+	public void setBranchExMapper(TMdBranchExMapper branchExMapper) {
+		this.branchExMapper = branchExMapper;
+	}
 }

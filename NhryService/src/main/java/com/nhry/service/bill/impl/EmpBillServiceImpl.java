@@ -4,9 +4,12 @@ import com.github.pagehelper.PageInfo;
 import com.nhry.common.auth.UserSessionService;
 import com.nhry.common.exception.MessageCode;
 import com.nhry.common.exception.ServiceException;
+import com.nhry.data.auth.dao.TSysUserRoleMapper;
 import com.nhry.data.auth.domain.TSysUser;
 import com.nhry.data.basic.dao.TMdBranchEmpMapper;
+import com.nhry.data.basic.dao.TMdBranchMapper;
 import com.nhry.data.basic.dao.TMdMaraExMapper;
+import com.nhry.data.basic.domain.TMdBranch;
 import com.nhry.data.basic.domain.TMdBranchEmp;
 import com.nhry.data.basic.domain.TMdMaraEx;
 import com.nhry.data.bill.dao.EmpBillMapper;
@@ -17,8 +20,10 @@ import com.nhry.data.bill.domain.TMdDispRate;
 import com.nhry.data.bill.domain.TMdDispRateItem;
 import com.nhry.data.bill.domain.TMdEmpSal;
 import com.nhry.model.bill.*;
+import com.nhry.model.bill.EmpSalQueryModel;
 import com.nhry.service.bill.dao.EmpBillService;
 import com.nhry.utils.PrimaryKeyUtils;
+import com.nhry.utils.SysContant;
 import com.nhry.utils.YearLastMonthUtil;
 import org.apache.commons.lang3.StringUtils;
 
@@ -35,8 +40,19 @@ public class EmpBillServiceImpl implements EmpBillService {
     private TMdBranchEmpMapper branchEmpMapper;
     private UserSessionService userSessionService;
     private TMdEmpSalMapper tMdEmpSalMapper;
-
+    private TSysUserRoleMapper urMapper;
     private TMdMaraExMapper tMdMaraExMapper;
+    private TMdBranchMapper branchMapper;
+
+
+    public void setBranchMapper(TMdBranchMapper branchMapper) {
+        this.branchMapper = branchMapper;
+    }
+
+    public void setUrMapper(TSysUserRoleMapper urMapper) {
+        this.urMapper = urMapper;
+    }
+
     public void settMdEmpSalMapper(TMdEmpSalMapper tMdEmpSalMapper) {
         this.tMdEmpSalMapper = tMdEmpSalMapper;
     }
@@ -66,6 +82,8 @@ public class EmpBillServiceImpl implements EmpBillService {
             throw new ServiceException(MessageCode.LOGIC_ERROR,"pageNum和pageSize不能为空！");
         }
         TSysUser user = userSessionService.getCurrentUser();
+        eSearch.setBranchNo(user.getBranchNo());
+        eSearch.setDealerNo(user.getDealerId());
         eSearch.setSalesOrg(user.getSalesOrg());
         return  empBillMapper.empDispDetialInfo(eSearch);
     }
@@ -76,6 +94,8 @@ public class EmpBillServiceImpl implements EmpBillService {
         if(StringUtils.isBlank(eSearch.getPageNum()) || StringUtils.isBlank(eSearch.getPageSize())){
             throw new ServiceException(MessageCode.LOGIC_ERROR,"pageNum和pageSize不能为空！");
         }
+        eSearch.setBranchNo(user.getBranchNo());
+        eSearch.setDealerNo(user.getDealerId());
         eSearch.setSalesOrg(user.getSalesOrg());
         return  empBillMapper.empAccountReceAmount(eSearch);
     }
@@ -88,6 +108,7 @@ public class EmpBillServiceImpl implements EmpBillService {
      */
     @Override
     public BigDecimal CalculateEmpTransRateByNum(String empNo,int dispNum) {
+        String message = "";
         TMdBranchEmp emp =branchEmpMapper.selectBranchEmpByNo(empNo);
         if(emp == null){
             throw new ServiceException(MessageCode.LOGIC_ERROR,"该员工不存在！");
@@ -98,6 +119,9 @@ public class EmpBillServiceImpl implements EmpBillService {
         int j = 0;
         List<TMdDispRateItem> oldList = tMdDispRateItemMapper.getDispRateNumBySalOrg(salesOrg);
         //如果是数量
+        if(StringUtils.isBlank(salaryMet)){
+            throw new ServiceException(MessageCode.LOGIC_ERROR,"员工  " +emp.getEmpName() +"  没有维护工资结算方式 信息，请先在员工信息中维护");
+        }
         if("10".equals(salaryMet)){
             if(oldList!=null && oldList.size() >0){
               for(int i=0;i<oldList.size();i++){
@@ -113,7 +137,6 @@ public class EmpBillServiceImpl implements EmpBillService {
             return oldList.get(j).getRate();
         }
 
-
         throw new ServiceException(MessageCode.LOGIC_ERROR,"配送数 不在输入的阶梯范围内!!! 请审查");
     }
 
@@ -126,7 +149,7 @@ public class EmpBillServiceImpl implements EmpBillService {
 
     public BigDecimal CalculateEmpTransRateByProduct(String matnr,String salesOrg){
         TMdMaraEx product = tMdMaraExMapper.getProductTransRateByCode(matnr,salesOrg);
-        if(product == null){
+        if(product == null || product.getRate() == null){
            return new BigDecimal(0);
         }
         return product.getRate();
@@ -136,8 +159,9 @@ public class EmpBillServiceImpl implements EmpBillService {
     public int uptEmpDispRate(SaleOrgDispRateModel sModel) {
        try{
            TMdDispRate dispRate =  null;
-           String salesOrg = sModel.getSalesOrg();
+//           String salesOrg = sModel.getSalesOrg();
            TSysUser user =  userSessionService.getCurrentUser();
+           String salesOrg = user.getSalesOrg();
            dispRate = tMdDispRateMapper.getDispRateBySaleOrg(salesOrg);
            //原来的结算方式已有 则更新
            if(dispRate!=null){
@@ -270,34 +294,60 @@ public class EmpBillServiceImpl implements EmpBillService {
         if(StringUtils.isBlank(eSearch.getPageNum()) || StringUtils.isBlank(eSearch.getPageSize())){
             throw new ServiceException(MessageCode.LOGIC_ERROR,"pageNum和pageSize不能为空！");
         }
-        return tMdEmpSalMapper.searchEmpSalaryRep(eSearch);
+        String yearMonth = YearLastMonthUtil.getYearMonth(eSearch.getSalDate());
+        eSearch.setYearMonth(yearMonth);
+        eSearch.setBranchNo(user.getBranchNo());
+        eSearch.setDealerNo(user.getDealerId());
+        eSearch.setSalesOrg(user.getSalesOrg());
+
+        PageInfo result = tMdEmpSalMapper.searchEmpSalaryRep(eSearch);
+        return result;
     }
 
     /**
-     * 结算本月工资（登录人所在奶站下的所有送奶工）
+     * 结算上个月月工资（登录人所在奶站下的所有送奶工）
      * @return
      */
     @Override
-    public int setBranchEmpSalary() {
+    public PageInfo setBranchEmpSalary() {
         TSysUser user = userSessionService.getCurrentUser();
         String branchNo = user.getBranchNo();
         EmpDispDetialInfoSearch search = new EmpDispDetialInfoSearch();
         search.setBranchNo(branchNo);
         //获取上个月的第一天
-        search.setStartDate(YearLastMonthUtil.getLastMonthFirstDay());
+        Date firstDay = YearLastMonthUtil.getLastMonthFirstDay();
+        search.setStartDate(firstDay);
         //获取上个月的最后一天
+        Date lastDay = YearLastMonthUtil.getLastMonthLastDay();
         search.setEndDate(YearLastMonthUtil.getLastMonthLastDay());
         //获取上个月  例如今天是2016-07-02  结果是201606
         String setYearMonth = YearLastMonthUtil.getYearLastMonth();
 
-        List<TMdBranchEmp> empList =  branchEmpMapper.getAllEmpByBranchNo(user.getBranchNo(),user.getSalesOrg());
+
+        List<String> coms = this.getCompanyCodeForDispFee();
+        boolean flag = coms.contains(user.getBranchNo()) ? true : false;
+
+        EmpSalQueryModel smodel = new EmpSalQueryModel();
+        smodel.setBranchNo(user.getBranchNo());
+        smodel.setSalesOrg(user.getSalesOrg());
+        smodel.setStartDate(firstDay);
+        smodel.setEndDate(lastDay);
+
+        List<TMdBranchEmp> empList =  branchEmpMapper.getAllRationalMilkManByBranchNo(smodel);
+
         if(empList!=null && empList.size()>0){
             for(TMdBranchEmp emp : empList){
                 search.setEmpNo(emp.getEmpNo());
-                this.setEmpSalary(emp,search,setYearMonth,user);
+                this.setEmpSalary(emp,search,setYearMonth,user,flag);
             }
         }
-        return 1;
+        EmpDispDetialInfoSearch esearch = new EmpDispDetialInfoSearch();
+        esearch.setBranchNo(user.getBranchNo());
+        esearch.setSalesOrg(user.getSalesOrg());
+        esearch.setSalDate(YearLastMonthUtil.getLastMonthFirstDay());
+        esearch.setPageNum("1");
+        esearch.setPageSize("10");
+        return this.searchEmpSalaryRep(esearch);
     }
 
     /**
@@ -310,66 +360,117 @@ public class EmpBillServiceImpl implements EmpBillService {
         return tMdEmpSalMapper.getEmpSalByEmpSalLsh(empSalLsh);
     }
 
+
+    /**
+     * 结算本月工资（登录人所在奶站下的所有送奶工）
+     * @return
+     */
+    @Override
+    public PageInfo setBranchEmpSalaryThisMonth() {
+        TSysUser user = userSessionService.getCurrentUser();
+        TMdBranch branch = branchMapper.selectBranchByNo(user.getBranchNo());
+        EmpDispDetialInfoSearch search = new EmpDispDetialInfoSearch();
+        search.setBranchNo(user.getBranchNo());
+        //获取这个月的第一天
+        Date firstDay = YearLastMonthUtil.getThisMonthFirstDay();
+        search.setStartDate(firstDay);
+        //获取这个月的最后一天
+        Date lastDay = YearLastMonthUtil.getThisMonthLastDay();
+        search.setEndDate(lastDay);
+        //获取上个月  例如今天是2016-07-02  结果是201606
+        String setYearMonth = YearLastMonthUtil.getYearThisMonth();
+        List<String> coms = this.getCompanyCodeForDispFee();
+        boolean flag = coms.contains(branch.getCompanyCode()) ? true : false;
+        EmpSalQueryModel smodel = new EmpSalQueryModel();
+        smodel.setBranchNo(user.getBranchNo());
+        smodel.setSalesOrg(user.getSalesOrg());
+        smodel.setStartDate(firstDay);
+        smodel.setEndDate(lastDay);
+        List<TMdBranchEmp> empList =  branchEmpMapper.getAllRationalMilkManByBranchNo(smodel);
+        if(empList!=null && empList.size()>0){
+            for(TMdBranchEmp emp : empList){
+                search.setEmpNo(emp.getEmpNo());
+                this.setEmpSalary(emp,search,setYearMonth,user,flag);
+            }
+        }
+
+        EmpDispDetialInfoSearch esearch = new EmpDispDetialInfoSearch();
+        esearch.setBranchNo(user.getBranchNo());
+        esearch.setSalesOrg(user.getSalesOrg());
+        esearch.setSalDate(new Date());
+        esearch.setPageNum("1");
+        esearch.setPageSize("10");
+        return this.searchEmpSalaryRep(esearch);
+    }
+
     /**
      * 结算送奶员本月工资,基本工资 + 产品配送费 + 赠品配送费+ 内部销售订单配送费
      * @return
      */
-    public int setEmpSalary(TMdBranchEmp emp,EmpDispDetialInfoSearch search,String setYearMonth,TSysUser user){
+    public int setEmpSalary(TMdBranchEmp emp,EmpDispDetialInfoSearch search,String setYearMonth,TSysUser user,boolean flag){
         String empNo = emp.getEmpNo();
         Map<String,String> map =new HashMap<String,String>();
         map.put("empNo",empNo);
         map.put("setYearMonth",setYearMonth);
         TMdEmpSal empSal = tMdEmpSalMapper.getEmpSalByEmpNoAndDate(map);
+        if(empSal!=null){
+            tMdEmpSalMapper.delEmpSalByEmpNoAndDate(map);
+        }
+        empSal = tMdEmpSalMapper.getEmpSalByEmpNoAndDate(map);
         if(empSal == null){
             empSal = new TMdEmpSal();
             empSal.setEmpSalLsh(PrimaryKeyUtils.generateUuidKey());
             empSal.setEmpNo(empNo);
             //三种配送费
-            if("20".equals(emp.getSalaryMet())){
-                //按产品结算  //产品配送费
-                List<EmpAccoDispFeeByProduct> pro = empBillMapper.empDisByProduct(search);
-                BigDecimal dispFee = this.getEmpDispFee(pro,emp.getSalesOrg());
-                empSal.setDispSal(dispFee);
+            if(flag){
+                if("20".equals(emp.getSalaryMet())){
+                    //产品数量
+                    int dispAllNum =0;
+                    //按产品结算  //产品配送费
+                    List<EmpAccoDispFeeByProduct> pro = empBillMapper.empDisByProduct(search);
+                    BigDecimal dispFee = this.getEmpDispFee(pro,emp.getSalesOrg());
+                    dispAllNum = dispAllNum +( pro !=null || pro.size()>0 ? pro.size() : 0);
+                    empSal.setDispSal(dispFee);
 
+                    //按产品结算  //内部销售配送费
+                    List<EmpAccoDispFeeByProduct> proIn = empBillMapper.empInDispByProduct(search);
+                    dispAllNum = dispAllNum +( proIn !=null || proIn.size()>0 ? proIn.size() : 0);
+                    BigDecimal inDispFee = this.getEmpDispFee(proIn,emp.getSalesOrg());
+                    empSal.setInDispSal(inDispFee);
 
-                //按产品结算  //内部销售配送费
-                List<EmpAccoDispFeeByProduct> proIn = empBillMapper.empInDispByProduct(search);
-                BigDecimal inDispFee = this.getEmpDispFee(proIn,emp.getSalesOrg());
-                empSal.setInDispSal(inDispFee);
+                    //按产品结算  //赠品配送费
+                    List<EmpAccoDispFeeByProduct> proFree = empBillMapper.empFreeDispByProduct(search);
+                    BigDecimal dispFreeFee = this.getEmpDispFee(proFree,emp.getSalesOrg());
+                    dispAllNum = dispAllNum +( proFree !=null || proFree.size()>0 ? proFree.size() : 0);
+                    empSal.setSendDispSal(dispFreeFee);
+                    empSal.setDispNum(dispAllNum);
+                }else{
+                    int dispNum = empBillMapper.empDispFeeNum(search);
+                    int inDispNum = empBillMapper.empInDispFeeNum(search);
+                    int sendDispNum = empBillMapper.empFreeDispFeeNum(search);
+                    int totaNum = dispNum + inDispNum + sendDispNum;
 
-                //按产品结算  //赠品配送费
+                    BigDecimal rate =  this.CalculateEmpTransRateByNum(empNo,totaNum);
+                    //按数量结算  //产品配送费
+                    empSal.setDispSal(rate.multiply(new BigDecimal(dispNum)));
+                    //按数量结算  //内部销售配送费
+                    empSal.setInDispSal(rate.multiply(new BigDecimal(inDispNum)));
+                    //按数量结算  //赠品配送费
+                    empSal.setSendDispSal(rate.multiply(new BigDecimal(sendDispNum)));
 
-
+                    empSal.setDispNum(totaNum);
+                }
+                empSal.setTotalSal(empSal.getInDispSal().add(empSal.getDispSal()).add(empSal.getSendDispSal()).add(new BigDecimal(emp.getBaseSalary())));
             }else{
-                //按数量结算  //产品配送费
-                int dispNum = empBillMapper.empDispFeeNum(search);
-                if(dispNum == 0){
-                    empSal.setDispSal(new BigDecimal(0));
-                }else{
-                    BigDecimal dispRate = this.CalculateEmpTransRateByNum(empNo,dispNum);
-                    empSal.setDispSal(dispRate.multiply(new BigDecimal(dispNum)));
-                }
-
-                //按数量结算  //内部销售配送费
-                int inDispNum = empBillMapper.empInDispFeeNum(search);
-                if(inDispNum == 0){
-                    empSal.setInDispSal(new BigDecimal(0));
-                }else{
-                    BigDecimal inDispRate = this.CalculateEmpTransRateByNum(empNo,inDispNum);
-                    empSal.setInDispSal(inDispRate.multiply(new BigDecimal(inDispNum)));
-                }
-
-                empSal.setDispNum(dispNum+inDispNum);
-
-                //按数量结算  //赠品配送费
-                int sendDispNum = empBillMapper.empFreeDispFeeNum(search);
-                BigDecimal sendDispRate = this.CalculateEmpTransRateByNum(empNo,sendDispNum);
-                empSal.setSendDispSal(sendDispRate.multiply(new BigDecimal(sendDispNum)));
-
-
+                //不计算配送费
+                empSal.setInDispSal(BigDecimal.ZERO);
+                empSal.setDispSal(BigDecimal.ZERO);
+                empSal.setSendDispSal(BigDecimal.ZERO);
+                empSal.setTotalSal(new BigDecimal(emp.getBaseSalary()));
             }
 
-            empSal.setTotalSal(empSal.getInDispSal().add(empSal.getDispSal()).add(new BigDecimal(emp.getBaseSalary())));
+
+
             empSal.setCreateAt(new Date());
             empSal.setSetDate(new Date());
             empSal.setSetYearMonth(setYearMonth);
@@ -393,5 +494,14 @@ public class EmpBillServiceImpl implements EmpBillService {
             }
              return result;
      }
+
+    public  List<String> getCompanyCodeForDispFee(){
+        List<String> result = new ArrayList<String>();
+        String str = SysContant.getSystemConst("COMPANT_DISP_FEE");
+        if(StringUtils.isNoneBlank(str)){
+            result = Arrays.asList(str.split(","));
+        }
+        return result;
+    }
 
 }

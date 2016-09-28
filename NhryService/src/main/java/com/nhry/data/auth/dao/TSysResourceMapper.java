@@ -96,4 +96,11 @@ public interface TSysResourceMapper {
      * @return
      */
     List<TSysResource> findComponentByLogName(String userId);
+    
+    /**
+     * 根据登录名获取用拥有的页面资源列表
+     * @param userId
+     * @return
+     */
+    List<TSysResource> findPagesByLogName(String userId);
 }

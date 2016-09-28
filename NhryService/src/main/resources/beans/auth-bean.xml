@@ -20,7 +20,13 @@
 	   <property name="userMapper"  ref="userMapper"></property>
 	   <property name="roleMapper"  ref="roleMapper"></property>
 	   <property name="resService"  ref="resService"></property>
+	   <property name="codeItemMapper" ref="codeItemMapper"></property>
+	   <property name="objectRedisTemplate" ref="objectRedisTemplate"></property>
 	   <property name="userSessionService" ref="userSessionService"></property>
+	   <property name="branchEmpService" ref="branchEmpService"></property>
+	   <property name="accessKeyService" ref="isysAkService"></property>
+	   <property name="branchEmpMapper" ref="branchEmpMapper"></property>
+	   <property name="messageService" ref="messService"></property>
 	</bean>
 	<bean id="roleMapper" class="com.nhry.data.auth.impl.TSysRoleMapperImpl">
 	   <property name="sqlSessionTemplate"  ref="dynamicSqlSessionTemplate"></property>
@@ -55,5 +61,11 @@
 	</bean>
 	<bean id="ladpService" class="com.nhry.common.ladp.LadpService" init-method="init">
 	   <property name="userService" ref="userService"></property>
+	</bean>
+	<bean id="isysAkmapper" class="com.nhry.data.auth.impl.TSysAccesskeyMapperImpl">
+	  <property name="sqlSessionTemplate"  ref="dynamicSqlSessionTemplate"></property>
+	</bean>
+	<bean id="isysAkService" class="com.nhry.service.auth.impl.TSysAccesskeyServiceImpl">
+		<property name="isysAkmapper" ref="isysAkmapper"></property>
 	</bean>
 </beans>

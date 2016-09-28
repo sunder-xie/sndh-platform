@@ -16,6 +16,34 @@ public class EmpDispDetialInfoSearch  extends BaseQueryModel implements Serializ
     private Date startDate;
     private Date endDate;
     private String salesOrg;
+    private Date salDate;
+    private String yearMonth;
+    private String vipCustNo;
+
+    public String getVipCustNo() {
+        return vipCustNo;
+    }
+
+    public void setVipCustNo(String vipCustNo) {
+        this.vipCustNo = vipCustNo;
+    }
+
+    public String getYearMonth() {
+        return yearMonth;
+    }
+
+    public void setYearMonth(String yearMonth) {
+        this.yearMonth = yearMonth;
+    }
+
+    public Date getSalDate() {
+        return salDate;
+    }
+
+    public void setSalDate(Date salDate) {
+        this.salDate = salDate;
+    }
+
 
     public String getDealerNo() {
         return dealerNo;

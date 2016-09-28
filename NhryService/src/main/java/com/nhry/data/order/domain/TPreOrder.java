@@ -3,7 +3,14 @@ package com.nhry.data.order.domain;
 import java.math.BigDecimal;
 import java.util.Date;
 
+import org.springframework.data.annotation.Id;
+import org.springframework.data.elasticsearch.annotations.Document;
+
+import com.nhry.utils.SysContant;
+
+@Document(indexName = SysContant.INDEX_NAME, type = "t_preorder")
 public class TPreOrder {
+	@Id
     private String orderNo;
 
     private String orderType;
@@ -30,6 +37,10 @@ public class TPreOrder {
     
     private String milkmemberName;
 
+    private BigDecimal acctAmt;
+
+    private BigDecimal factAmt;
+
     private String memberNo;
 
     private String retReason;
@@ -51,6 +62,8 @@ public class TPreOrder {
     private String empNo;
 
     private String empName;
+
+    private String empTel;
 
     private String adressNo;
 
@@ -92,11 +105,180 @@ public class TPreOrder {
     
     private String sign;
     
+    private String salesOrgName;
+
     private String salesOrg;
-    
+
     private String dealerNo;
     
     private String deleteReason;
+    
+    private String payMan;
+    
+    private String resumeFlag;
+    
+    private Date payDate;
+    
+    private String isIntegration;
+    
+    private Integer yGrowth;
+    
+    private Integer yFresh;
+
+    private String receiptNo;
+    
+    private String isPaid;
+    
+    private String validDate;
+
+    String branchEmpNo;
+    String branchMp;
+    String branchEmpName;
+    String addressTxt;
+
+	public String getValidDate()
+	{
+		return validDate;
+	}
+
+	public void setValidDate(String validDate)
+	{
+		this.validDate = validDate;
+	}
+
+	public String getIsPaid()
+	{
+		return isPaid;
+	}
+
+	public void setIsPaid(String isPaid)
+	{
+		this.isPaid = isPaid;
+	}
+
+	public String getReceiptNo() {
+        return receiptNo;
+    }
+
+    public void setReceiptNo(String receiptNo) {
+        this.receiptNo = receiptNo;
+    }
+
+    public Integer getyGrowth()
+	{
+		return yGrowth;
+	}
+
+	public void setyGrowth(Integer yGrowth)
+	{
+		this.yGrowth = yGrowth;
+	}
+
+	public Integer getyFresh()
+	{
+		return yFresh;
+	}
+
+	public void setyFresh(Integer yFresh)
+	{
+		this.yFresh = yFresh;
+	}
+
+	public String getIsIntegration()
+	{
+		return isIntegration;
+	}
+
+	public void setIsIntegration(String isIntegration)
+	{
+		this.isIntegration = isIntegration;
+	}
+
+	public BigDecimal getFactAmt() {
+        return factAmt;
+    }
+
+    public void setFactAmt(BigDecimal factAmt) {
+        this.factAmt = factAmt;
+    }
+
+    public BigDecimal getAcctAmt() {
+        return acctAmt;
+    }
+
+    public void setAcctAmt(BigDecimal acctAmt) {
+        this.acctAmt = acctAmt;
+    }
+
+    public String getResumeFlag()
+	{
+		return resumeFlag;
+	}
+
+	public void setResumeFlag(String resumeFlag)
+	{
+		this.resumeFlag = resumeFlag;
+	}
+
+	public String getSalesOrgName() {
+        return salesOrgName;
+    }
+
+    public void setSalesOrgName(String salesOrgName) {
+        this.salesOrgName = salesOrgName;
+    }
+
+    public String getBranchEmpNo() {
+        return branchEmpNo;
+    }
+
+    public void setBranchEmpNo(String branchEmpNo) {
+        this.branchEmpNo = branchEmpNo;
+    }
+
+    public String getBranchMp() {
+        return branchMp;
+    }
+
+    public void setBranchMp(String branchMp) {
+        this.branchMp = branchMp;
+    }
+
+    public String getBranchEmpName() {
+        return branchEmpName;
+    }
+
+    public void setBranchEmpName(String branchEmpName) {
+        this.branchEmpName = branchEmpName;
+    }
+
+    public String getAddressTxt() {
+        return addressTxt;
+    }
+
+    public void setAddressTxt(String addressTxt) {
+        this.addressTxt = addressTxt;
+    }
+
+	public String getPayMan()
+	{
+		return payMan;
+	}
+
+	public void setPayMan(String payMan)
+	{
+		this.payMan = payMan;
+	}
+
+	public Date getPayDate()
+	{
+		return payDate;
+	}
+
+	public void setPayDate(Date payDate)
+	{
+		this.payDate = payDate;
+	}
 
 	public String getDeleteReason()
 	{
@@ -273,6 +455,14 @@ public class TPreOrder {
 
     public void setEmpName(String empName) {
         this.empName = empName;
+    }
+
+    public String getEmpTel() {
+        return empTel;
+    }
+
+    public void setEmpTel(String empTel) {
+        this.empTel = empTel;
     }
 
     public String getCustomerTel() {

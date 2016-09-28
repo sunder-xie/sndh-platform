@@ -7,6 +7,8 @@ import com.nhry.data.order.domain.TOrderDaliyPlanItem;
 import com.nhry.data.order.domain.TOrderDaliyPlanItemKey;
 import com.nhry.data.order.domain.TPreOrder;
 import com.nhry.model.milktrans.RequireOrderSearch;
+import com.nhry.model.order.OrderDaliyPlanReportEntityModel;
+import com.nhry.model.order.OrderDaliyPlanReportModel;
 import com.nhry.model.order.OrderSearchModel;
 import com.nhry.model.order.ReturnOrderModel;
 
@@ -23,7 +25,21 @@ public class TOrderDaliyPlanItemMapperImpl implements TOrderDaliyPlanItemMapper
 	public void setSqlSessionTemplate(DynamicSqlSessionTemplate sqlSessionTemplate) {
 		this.sqlSessionTemplate = sqlSessionTemplate;
 	}
-
+	
+	@Override
+	public int updateDaliyPlansToStopDateToDate(TOrderDaliyPlanItem record)
+	{
+		// TODO Auto-generated method stub
+		return sqlSessionTemplate.update("updateDaliyPlansToStopDateToDate", record); 
+	}
+	
+	@Override
+	public int deletePlansForLongEdit(TOrderDaliyPlanItem record)
+	{
+		// TODO Auto-generated method stub
+		return sqlSessionTemplate.delete("deletePlansForLongEdit", record); 
+	}
+	
 	@Override
 	public int deleteFromDateToDate(TOrderDaliyPlanItem record)
 	{
@@ -50,6 +66,13 @@ public class TOrderDaliyPlanItemMapperImpl implements TOrderDaliyPlanItemMapper
 	{
 		// TODO Auto-generated method stub
 		return sqlSessionTemplate.update("updateDaliyPlanItemStatus", record);
+	}
+	
+	@Override
+	public int updateDaliyPlanItemRemainAmt(TOrderDaliyPlanItem record)
+	{
+		// TODO Auto-generated method stub
+		return sqlSessionTemplate.update("updateDaliyPlanItemRemainAmt", record);
 	}
 	
 	@Override
@@ -149,6 +172,17 @@ public class TOrderDaliyPlanItemMapperImpl implements TOrderDaliyPlanItemMapper
 		return sqlSessionTemplate.selectList("getProductItemsByOrderNo", map);
 	}
 
+	@Override
+	public int deletePlansByOrder(String orderNo) {
+		return sqlSessionTemplate.delete("deletePlansByOrder",orderNo);
+	}
+
+	@Override
+	public List<OrderDaliyPlanReportEntityModel> reportOrderDaliyPlanByParams(OrderDaliyPlanReportModel model) {
+		return sqlSessionTemplate.selectList("reportOrderDaliyPlanByParams",model);
+	}
+
+
 	/**
 	 * 根据订单号和日期获取当前日期的日订单状态
 	 * @param orderNo
@@ -208,6 +242,13 @@ public class TOrderDaliyPlanItemMapperImpl implements TOrderDaliyPlanItemMapper
 		// TODO Auto-generated method stub
 		return sqlSessionTemplate.selectListByPages("searchDaliyOrdersByPage",smodel, Integer.parseInt(smodel.getPageNum()), Integer.parseInt(smodel.getPageSize()));	
 	}
+	
+	@Override
+	public List<TOrderDaliyPlanItem> selectDaliyOrdersAll(OrderSearchModel smodel)
+	{
+		// TODO Auto-generated method stub
+		return sqlSessionTemplate.selectList("searchDaliyOrdersByPage",smodel);	
+	}
 
 	@Override
 	public List<TOrderDaliyPlanItem> searchDaliyOrdersByOrderNoAndFinalStop(OrderSearchModel smodel)
@@ -224,6 +265,19 @@ public class TOrderDaliyPlanItemMapperImpl implements TOrderDaliyPlanItemMapper
 		smodel.setCreateBy(status2);
 		smodel.setCreateByTxt(status3);
 		return sqlSessionTemplate.selectList("searchDaliyPlansByStatus", smodel);
+	}
+
+	/* (non-Javadoc) 
+	* @title: deletePlansByAmt
+	* @description: 
+	* @param orderNo
+	* @return 
+	* @see com.nhry.data.order.dao.TOrderDaliyPlanItemMapper#deletePlansByAmt(java.lang.String) 
+	*/
+	@Override
+	public int deletePlansByAmt(String orderNo)
+	{
+		return sqlSessionTemplate.delete("deletePlansByAmt",orderNo);
 	}
 	
 }

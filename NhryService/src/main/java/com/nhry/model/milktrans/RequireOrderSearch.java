@@ -9,11 +9,29 @@ import java.util.Date;
 public class RequireOrderSearch  implements Serializable {
     private String branchNo;
     private Date requiredDate;
+    private Date orderDate;
     private int preDays;
     private String salesOrg;
     private Date firstDay;
     private Date secondDay;
     private String promotion;
+    private String reqOrderNo;
+
+    public String getReqOrderNo() {
+        return reqOrderNo;
+    }
+
+    public void setReqOrderNo(String reqOrderNo) {
+        this.reqOrderNo = reqOrderNo;
+    }
+
+    public Date getOrderDate() {
+        return orderDate;
+    }
+
+    public void setOrderDate(Date orderDate) {
+        this.orderDate = orderDate;
+    }
 
     public String getPromotion() {
         return promotion;

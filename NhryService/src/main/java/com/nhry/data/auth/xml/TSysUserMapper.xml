@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.nhry.data.auth.dao.TSysUserMapper">
+	<cache type="org.mybatis.caches.redis.RedisCache"  /> 
     <resultMap id="BaseResultMap" type="com.nhry.data.auth.domain.TSysUser">
         <id column="LOGIN_NAME" jdbcType="VARCHAR" property="loginName"/>
         <result column="DISPLAY_NAME" jdbcType="VARCHAR" property="displayName"/>
@@ -49,6 +50,7 @@
         <result column="BRANCH_NAME" property="branchName" jdbcType="VARCHAR"/>
         <result column="ORG_NAME" property="orgName" jdbcType="VARCHAR"/>
         <result column="DEALER_NAME" property="dealerName" jdbcType="VARCHAR"/>
+        <result column="EMP_NO" property="empNo" jdbcType="VARCHAR"/>
     </resultMap>
     <sql id="Base_Column_List">
         LOGIN_NAME, DISPLAY_NAME, DEPARTMENT_NUMBER, DEPARTMENT_NAME, CUSTOMIZED_POSITIONID,
@@ -65,12 +67,14 @@
         <include refid="mybaties.constant.SALES_ORG_CONSTANT"></include>
         and i.ITEM_CODE=t_sys_user.SALES_ORG) ORG_NAME,
         (SELECT b.BRANCH_NAME FROM t_md_branch b where b.BRANCH_NO=t_sys_user.BRANCH_NO) BRANCH_NAME,
-        (select d.DEALER_NAME from t_md_dealer d where d.DEALER_NO=t_sys_user.DEALER_ID) DEALER_NAME
+        (select d.DEALER_NAME from t_md_dealer d where d.DEALER_NO=t_sys_user.DEALER_ID) DEALER_NAME,
+        (SELECT e.EMP_NO FROM t_md_branch_emp e where e.STATUS='1' and e.BRANCH_NO=IFNULL(t_sys_user.BRANCH_NO,'-1') and 
+         e.HR_EMP_NO=t_sys_user.LOGIN_NAME) EMP_NO
     </sql>
-    <delete id="deleteByPrimaryKey" parameterType="java.lang.String">
-    delete from t_sys_user
-    where LOGIN_NAME = #{loginName,jdbcType=VARCHAR}
-  </delete>
+	<delete id="deleteByPrimaryKey" parameterType="java.lang.String">
+		delete from t_sys_user
+		where LOGIN_NAME = #{loginName,jdbcType=VARCHAR}
+	</delete>
     <update id="updateUser" parameterType="com.nhry.data.auth.domain.TSysUser">
         update t_sys_user
         <set>
@@ -95,15 +99,22 @@
             <if test="createOn != null">
                 CREATE_ON = #{createOn,jdbcType=TIMESTAMP},
             </if>
-            <if test="branchNo != null">
+            <!-- 
+             <if test="branchNo != null">
                 BRANCH_NO = #{branchNo,jdbcType=VARCHAR},
             </if>
+             -->
+             BRANCH_NO = #{branchNo,jdbcType=VARCHAR},
+             DEALER_ID = #{dealerId,jdbcType=VARCHAR},
+             SALES_ORG = #{salesOrg,jdbcType=VARCHAR},
+           <!-- 
             <if test="dealerId != null">
                 DEALER_ID = #{dealerId,jdbcType=VARCHAR},
             </if>
             <if test="salesOrg != null">
                 SALES_ORG = #{salesOrg,jdbcType=VARCHAR},
             </if>
+            -->
             <if test="lastLogin != null">
                 LAST_LOGIN = #{lastLogin,jdbcType=TIMESTAMP},
             </if>
@@ -213,7 +224,23 @@
 		u.GROUP_ID,
 		u.CREATE_ON,
 		u.LAST_MODIFIED,
-		(select b.BRANCH_Name from t_md_branch b where b.BRANCH_NO=u.BRANCH_NO) BRANCH_NO,
+		(select b.BRANCH_NAME from t_md_branch b where b.BRANCH_NO=u.BRANCH_NO) BRANCH_NO,
+		u.DEALER_ID,
+		u.SALES_ORG,
+		u.LAST_LOGIN
+	FROM
+		t_sys_user u 
+	WHERE
+		 LOGIN_NAME = #{loginName,jdbcType=VARCHAR}
+  </select>
+  <select id="findUserByLoginName2" parameterType="java.lang.String" resultMap="BaseResultMap">
+	    SELECT
+		u.LOGIN_NAME,
+		u.DISPLAY_NAME,
+		u.GROUP_ID,
+		u.CREATE_ON,
+		u.LAST_MODIFIED,
+		u.BRANCH_NO,
 		u.DEALER_ID,
 		u.SALES_ORG,
 		u.LAST_LOGIN
@@ -535,7 +562,7 @@
         (SELECT b.BRANCH_NAME FROM t_md_branch b where b.BRANCH_NO=u.BRANCH_NO) BRANCH_NAME
     </sql>
 
-    <select id="findUserByRoleId" parameterType="com.nhry.model.auth.UserQueryModel2" resultMap="BaseResultMap1">
+    <select id="findUserByRoleId" parameterType="com.nhry.model.auth.UserQueryModel2" resultMap="BaseResultMap1" useCache="false">
         SELECT
         DISTINCT
         u.LOGIN_NAME,
@@ -544,6 +571,7 @@
         u.MOBILE,
         u.CUSTOMIZED_EMPTYPETXT,
         u.DEPARTMENT_NAME,
+        u.BRANCH_NO, u.DEALER_ID, u.SALES_ORG,
         CASE WHEN r.ID IS NULL THEN false ELSE true end isRole,
         (select group_concat(r.ID) from t_sys_user_role r where r.LOGIN_NAME = u.LOGIN_NAME ) as roleIds
         FROM T_SYS_USER u
@@ -557,7 +585,9 @@
         </if>
         <where>
             <if test="uname != null and '' != uname">
-                and (u.LOGIN_NAME like CONCAT('%',#{uname,jdbcType=VARCHAR},'%') or u.DISPLAY_NAME like CONCAT('%',#{uname,jdbcType=VARCHAR},'%') OR u.SMART_IDCARDNUMBER like CONCAT('%',#{uname,jdbcType=VARCHAR},'%') OR
+                and (u.LOGIN_NAME like CONCAT('%',#{uname,jdbcType=VARCHAR},'%') or u.DISPLAY_NAME like
+                CONCAT('%',#{uname,jdbcType=VARCHAR},'%') OR u.SMART_IDCARDNUMBER like
+                CONCAT('%',#{uname,jdbcType=VARCHAR},'%') OR
                 u.MOBILE like CONCAT('%',#{uname,jdbcType=VARCHAR},'%'))
             </if>
             <if test="salesOrg != null and ''!= salesOrg">
@@ -567,7 +597,7 @@
         order by u.CREATE_ON desc,u.LAST_MODIFIED desc
     </select>
 
-    <select id="findPageByRoleId" parameterType="com.nhry.model.auth.UserQueryModel" resultMap="BaseResultMap1">
+    <select id="findPageByRoleId" parameterType="com.nhry.model.auth.UserQueryModel" resultMap="BaseResultMap1" useCache="false">
         SELECT
         DISTINCT
         u.LOGIN_NAME,
@@ -576,22 +606,42 @@
         u.MOBILE,
         u.CUSTOMIZED_EMPTYPETXT,
         u.DEPARTMENT_NAME,
+        u.BRANCH_NO, u.DEALER_ID, u.SALES_ORG,de.DEALER_NAME,b.BRANCH_NAME,it.ITEM_NAME SALE_NAME,
         CASE WHEN r.ID IS NULL THEN false ELSE true end isRole,
         (select group_concat(r.ID) from t_sys_user_role r where r.LOGIN_NAME = u.LOGIN_NAME ) as roleIds
         FROM T_SYS_USER u
         JOIN T_SYS_USER_ROLE r
         ON u.LOGIN_NAME = r.LOGIN_NAME
+        LEFT JOIN T_MD_BRANCH b on b.BRANCH_NO = u.BRANCH_NO
+        LEFT JOIN T_MD_DEALER de on de.DEALER_NO = u.DEALER_ID
+        LEFT JOIN T_SYS_CODE_ITEM it on it.ITEM_CODE = u.SALES_ORG and it.TYPE_CODE='1002'
         <where>
             <if test="roleId != null">
                 r.ID = #{roleId,jdbcType=VARCHAR}
             </if>
             <if test="uname != null and '' != uname">
-                and (u.LOGIN_NAME like CONCAT('%',#{uname,jdbcType=VARCHAR},'%') or u.DISPLAY_NAME like CONCAT('%',#{uname,jdbcType=VARCHAR},'%') OR u.SMART_IDCARDNUMBER like CONCAT('%',#{uname,jdbcType=VARCHAR},'%') OR
+                and (u.LOGIN_NAME like CONCAT('%',#{uname,jdbcType=VARCHAR},'%') or u.DISPLAY_NAME like
+                CONCAT('%',#{uname,jdbcType=VARCHAR},'%') OR u.SMART_IDCARDNUMBER like
+                CONCAT('%',#{uname,jdbcType=VARCHAR},'%') OR
                 u.MOBILE like CONCAT('%',#{uname,jdbcType=VARCHAR},'%'))
             </if>
-            <if test="salesOrg != null and ''!= salesOrg">
-                and u.SALES_ORG = #{salesOrg,jdbcType=VARCHAR}
-            </if>
+            <choose>
+               <when test="cmpCode != null and cmpCode != ''">
+                   <choose>
+                       <when test="salesOrg != null and salesOrg != '' ">
+                           and u.SALES_ORG = #{salesOrg,jdbcType=VARCHAR} or (u.CUSTOMIZED_HRREGION=#{cmpCode,jdbcType=VARCHAR} and (u.SALES_ORG is null or  u.SALES_ORG=''))
+                       </when>
+                       <otherwise>
+                          and u.CUSTOMIZED_HRREGION=#{cmpCode,jdbcType=VARCHAR}
+                       </otherwise>
+                   </choose>
+               </when>
+               <otherwise>
+                   <if test="salesOrg != null and salesOrg != '' ">
+                        and u.SALES_ORG = #{salesOrg,jdbcType=VARCHAR}
+                  </if>
+               </otherwise>
+            </choose>
         </where>
         order by u.CREATE_ON desc,u.LAST_MODIFIED desc
     </select>
@@ -603,11 +653,17 @@
         <result column="roleIds" jdbcType="VARCHAR" property="roleIds"/>
         <result column="CUSTOMIZED_EMPTYPETXT" jdbcType="VARCHAR" property="customizedEmptypetxt"/>
         <result column="DEPARTMENT_NAME" jdbcType="VARCHAR" property="departmentName"/>
+        <result column="BRANCH_NO" jdbcType="VARCHAR" property="branchNo"/>
+        <result column="DEALER_ID" jdbcType="VARCHAR" property="dealerId"/>
+        <result column="SALES_ORG" jdbcType="VARCHAR" property="salesOrg"/>
+        <result column="BRANCH_NAME" jdbcType="VARCHAR" property="branchName"/>
+        <result column="DEALER_NAME" jdbcType="VARCHAR" property="dealerName"/>
+        <result column="SALE_NAME" jdbcType="VARCHAR" property="saleName"/>
         <!--<collection property="roleIds" ofType="com.nhry.data.auth.domain.TSysUserRole">-->
-            <!--<id property="id" column="ID"/>-->
+        <!--<id property="id" column="ID"/>-->
         <!--</collection>-->
     </resultMap>
-    <select id="findUserBack" parameterType="com.nhry.model.auth.UserQueryModel" resultMap="BaseResultMap1">
+    <select id="findUserBack" parameterType="com.nhry.model.auth.UserQueryModel" resultMap="BaseResultMap1" useCache="false">
         SELECT
         u.*,
         r.id
@@ -628,24 +684,46 @@
     <resultMap id="BaseResultMap2" type="com.nhry.data.auth.domain.TSysUser" extends="BaseResultMap">
         <result property="roleIds" column="roleIds"/>
     </resultMap>
-    <select id="findUser" parameterType="com.nhry.model.auth.UserQueryModel" resultMap="BaseResultMap1">
+    <select id="findUser" parameterType="com.nhry.model.auth.UserQueryModel" resultMap="BaseResultMap1" useCache="false">
         SELECT
         u.*,
+        b.BRANCH_NAME,
+        de.DEALER_NAME,
+        it.ITEM_NAME SALE_NAME,
         (select group_concat(r.ID) from t_sys_user_role r where r.LOGIN_NAME = u.LOGIN_NAME ) as roleIds
         FROM
         T_SYS_USER u
+        LEFT JOIN T_MD_BRANCH b on b.BRANCH_NO = u.BRANCH_NO
+        LEFT JOIN T_MD_DEALER de on de.DEALER_NO = u.DEALER_ID
+        LEFT JOIN T_SYS_CODE_ITEM it on it.ITEM_CODE = u.SALES_ORG and it.TYPE_CODE='1002'
         <where>
-            <if test="uname != null">
-                and (u.LOGIN_NAME like CONCAT('%',#{uname,jdbcType=VARCHAR},'%') or u.DISPLAY_NAME like CONCAT('%',#{uname,jdbcType=VARCHAR},'%') OR u.SMART_IDCARDNUMBER like CONCAT('%',#{uname,jdbcType=VARCHAR},'%') OR
+            <if test="uname != null and uname != ''">
+                and (u.LOGIN_NAME like CONCAT('%',#{uname,jdbcType=VARCHAR},'%') or u.DISPLAY_NAME like
+                CONCAT('%',#{uname,jdbcType=VARCHAR},'%') OR u.SMART_IDCARDNUMBER like
+                CONCAT('%',#{uname,jdbcType=VARCHAR},'%') OR
                 u.MOBILE like CONCAT('%',#{uname,jdbcType=VARCHAR},'%'))
             </if>
-            <if test="salesOrg != null">
-                and u.SALES_ORG = #{salesOrg,jdbcType=VARCHAR}
-            </if>
+            <choose>
+               <when test="cmpCode != null and cmpCode != ''">
+                   <choose>
+                       <when test="salesOrg != null and salesOrg != '' ">
+                           and u.SALES_ORG = #{salesOrg,jdbcType=VARCHAR} or (u.CUSTOMIZED_HRREGION=#{cmpCode,jdbcType=VARCHAR} and (u.SALES_ORG is null or  u.SALES_ORG=''))
+                       </when>
+                       <otherwise>
+                          and u.CUSTOMIZED_HRREGION=#{cmpCode,jdbcType=VARCHAR}
+                       </otherwise>
+                   </choose>
+               </when>
+               <otherwise>
+                 <if test="salesOrg != null and salesOrg != '' ">
+                        and u.SALES_ORG = #{salesOrg,jdbcType=VARCHAR}
+                  </if>
+               </otherwise>
+            </choose>
         </where>
         order by u.CREATE_ON desc,LAST_MODIFIED desc
     </select>
-    <select id="getUsersByRidandOrgs" resultMap="BaseResultMap" parameterType="java.util.HashMap">
+    <select id="getUsersByRidandOrgs" resultMap="BaseResultMap" parameterType="java.util.HashMap" useCache="false">
         SELECT
         u.LOGIN_NAME,
         u.BRANCH_NO,
@@ -671,7 +749,7 @@
     </select>
     <select id="getloginNamesByOrgsandRid" resultMap="BaseResultMap" parameterType="java.util.HashMap">
         SELECT
-        u.LOGIN_NAME,
+        distinct u.LOGIN_NAME,
         u.BRANCH_NO,
         u.SALES_ORG,
         u.DEALER_ID,
@@ -697,9 +775,9 @@
             AND r.ID = #{rid}
         </if>
     </select>
-    <select id="getloginNamesByOrgsandRid2" resultMap="BaseResultMap" parameterType="java.util.HashMap">
+    <select id="getloginNamesByOrgsandRid2" resultMap="BaseResultMap" parameterType="java.util.HashMap" useCache="false">
         SELECT
-        u.LOGIN_NAME,
+        distinct u.LOGIN_NAME,
         u.BRANCH_NO,
         u.SALES_ORG,
         u.DEALER_ID,
@@ -725,5 +803,32 @@
         <if test="rid != null and rid != ''">
             AND r.ID in (${rid})
         </if>
+    </select>
+    <select id="findNotRoleUser" parameterType="com.nhry.model.auth.UserQueryModel3" resultMap="BaseResultMap1">
+        SELECT
+            u.LOGIN_NAME,
+            u.DISPLAY_NAME,
+            u.SMART_IDCARDNUMBER,
+            u.MOBILE,
+            u.CUSTOMIZED_EMPTYPETXT,
+            u.DEPARTMENT_NAME,
+            u.BRANCH_NO, u.DEALER_ID, u.SALES_ORG
+        FROM
+            t_sys_user u
+        <where>
+            NOT EXISTS (SELECT 1 FROM t_sys_user_role r WHERE u.LOGIN_NAME = r.LOGIN_NAME )
+            <if test="uname != null">
+                and (u.LOGIN_NAME like CONCAT('%',#{uname,jdbcType=VARCHAR},'%') or u.DISPLAY_NAME like
+                CONCAT('%',#{uname,jdbcType=VARCHAR},'%') OR u.SMART_IDCARDNUMBER like
+                CONCAT('%',#{uname,jdbcType=VARCHAR},'%') OR
+                u.MOBILE like CONCAT('%',#{uname,jdbcType=VARCHAR},'%'))
+            </if>
+            <if test="salesOrg != null">
+                and u.SALES_ORG = #{salesOrg,jdbcType=VARCHAR}
+            </if>
+            <if test="companyCode != null">
+                and u.CUSTOMIZED_HRREGION = #{companyCode,jdbcType=VARCHAR}
+            </if>
+        </where>
     </select>
 </mapper>

@@ -29,6 +29,8 @@
 		<constructor-arg index="0" ref="sqlSessionTemplate" />
 	</bean>
 	<bean id="userSessionService" class="com.nhry.common.auth.UserSessionService">
+	   <property name="isysAkService" ref="isysAkService"></property>
+	   <property name="userService" ref="userService"></property>
 	   <property name="objectRedisTemplate" ref="objectRedisTemplate"></property>
 	</bean>
 	<!-- 定义单个jdbc数据源的事务管理器 -->
@@ -36,65 +38,32 @@
 		<property name="dataSource" ref="dataSource" />
 	</bean>
 
-	<bean id="sessionManager" class="com.nhry.common.auth.SessionManager">
-	   <property name="objectRedisTemplate" ref="objectRedisTemplate"></property>
-	</bean>
-	<!-- spring bean全部加载完之后执行方法 -->
-	<bean class="com.nhry.common.service.ContainerService">
-		<property name="services">
-			<list>
-				<ref bean="sessionManager" />
-			</list>
-		</property>
-	</bean>
-	
-	<bean id="sessioncleanJob" class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
-		<property name="targetObject" ref="sessionManager" />
-		<property name="targetMethod" value="cleanRedisSession" />
-		<property name="concurrent" value="false" /><!-- 作业不并发调度 -->
-	</bean>
-	
-	 <!-- 调度的配置开始 -->
-    <bean id="crontestJobTrigger" class="org.springframework.scheduling.quartz.CronTriggerBean">
-        <property name="jobDetail">
-            <ref bean="sessioncleanJob" />
-        </property>
-        <property name="cronExpression">
-			<value>10 40 3 * * ?</value>  
-		</property>
-    </bean>
-    <!-- 调度的配置结束 -->
-
-    <!-- 启动触发器的配置开始 -->
-    <bean name="startQuertz" lazy-init="false" autowire="no" class="org.springframework.scheduling.quartz.SchedulerFactoryBean">
-        <property name="triggers">
-            <list>
-                <ref bean="crontestJobTrigger" />
-            </list>
-        </property>
-    </bean>
 	<!-- 以 @Transactional 标注来定义事务 -->
 	<tx:annotation-driven transaction-manager="transactionManager" proxy-target-class="true" />
 
 	<!-- 配置事务的传播特性 -->
 	<tx:advice id="txAdvice" transaction-manager="transactionManager">
 		<tx:attributes>
-			<tx:method name="add*" propagation="REQUIRED" read-only="false"
-				rollback-for="com.nhry.common.exception.ServiceException" />
-			<tx:method name="insert*" propagation="REQUIRED" read-only="false"
-				rollback-for="com.nhry.common.exception.ServiceException" />
-			<tx:method name="delete*" propagation="REQUIRED" read-only="false"
-				rollback-for="com.nhry.common.exception.ServiceException" />
-			<tx:method name="del*" propagation="REQUIRED" read-only="false"
-				rollback-for="com.nhry.common.exception.ServiceException" />
-			<tx:method name="update*" propagation="REQUIRED" read-only="false"
-				rollback-for="com.nhry.common.exception.ServiceException" />
-			<tx:method name="upt*" propagation="REQUIRED" read-only="false"
-				rollback-for="com.nhry.common.exception.ServiceException" />
-			<tx:method name="proc*" propagation="REQUIRED" read-only="false"
-				rollback-for="com.nhry.common.exception.ServiceException" />
+			<tx:method name="sendRequireOrderToERPByDate" propagation="REQUIRES_NEW" read-only="false"
+					    no-rollback-for="com.nhry.common.exception.ServiceException" />
+			<tx:method name="creaSalOrderOfDealerBranchByDate" propagation="REQUIRES_NEW" read-only="false"
+					   no-rollback-for="com.nhry.common.exception.ServiceException" />
+			<tx:method name="add*" propagation="REQUIRED" read-only="false" rollback-for="com.nhry.common.exception.ServiceException" />
+			<tx:method name="insert*" propagation="REQUIRED" read-only="false" rollback-for="com.nhry.common.exception.ServiceException" />
+			<tx:method name="create*" propagation="REQUIRED" read-only="false"  rollback-for="com.nhry.common.exception.ServiceException" />
+			<tx:method name="delete*" propagation="REQUIRED" read-only="false" rollback-for="com.nhry.common.exception.ServiceException" />
+			<tx:method name="del*" propagation="REQUIRED" read-only="false" rollback-for="com.nhry.common.exception.ServiceException" />
+			<tx:method name="update*" propagation="REQUIRED" read-only="false" rollback-for="com.nhry.common.exception.ServiceException" />
+			<tx:method name="upt*" propagation="REQUIRED" read-only="false" rollback-for="com.nhry.common.exception.ServiceException" />
+			<tx:method name="proc*" propagation="REQUIRED" read-only="false" rollback-for="com.nhry.common.exception.ServiceException" />
+			<tx:method name="edit*" propagation="REQUIRED" read-only="false" rollback-for="com.nhry.common.exception.ServiceException" />
+			<tx:method name="reEdit*" propagation="REQUIRED" read-only="false" rollback-for="com.nhry.common.exception.ServiceException" />
+			<tx:method name="batch*" propagation="REQUIRED" read-only="false" rollback-for="com.nhry.common.exception.ServiceException" />
+			<tx:method name="modify*" propagation="REQUIRED" read-only="false" rollback-for="com.nhry.common.exception.ServiceException" />
+			<tx:method name="find*" read-only="true"  rollback-for="com.nhry.common.exception.ServiceException" />
 			<tx:method name="select*" read-only="true"  rollback-for="com.nhry.common.exception.ServiceException" />
 			<tx:method name="search*" read-only="true"  rollback-for="com.nhry.common.exception.ServiceException" />
+			<tx:method name="get*" read-only="true"  rollback-for="com.nhry.common.exception.ServiceException" />
 			<tx:method name="*" read-only="false"  rollback-for="com.nhry.common.exception.ServiceException" />
 			<!-- <tx:method name="*" read-only="true" /> -->
 		</tx:attributes>
@@ -104,6 +73,7 @@
 		<aop:pointcut id="allManagerMethod" expression="execution(* com.nhry.service..impl..*(..))" />
 		<aop:advisor pointcut-ref="allManagerMethod" advice-ref="txAdvice" />
 	</aop:config>
-
 	<context:component-scan base-package="com.nhry.rest" />
+	<context:component-scan base-package="com.nhry.common.auth" />
+	<context:component-scan base-package="com.nhry.servlet" />
 </beans>

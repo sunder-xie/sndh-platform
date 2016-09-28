@@ -4,6 +4,7 @@ import com.github.pagehelper.PageInfo;
 import com.nhry.data.auth.domain.TSysUser;
 import com.nhry.model.auth.UserQueryModel;
 import com.nhry.model.auth.UserQueryModel2;
+import com.nhry.model.auth.UserQueryModel3;
 
 import java.util.List;
 import java.util.Map;
@@ -16,6 +17,8 @@ public interface TSysUserMapper {
 	public int addUser(TSysUser user);
 
 	TSysUser findUserByLoginName(String loginName);
+	
+	TSysUser findUserByLoginName2(String loginName);
 
 	int updateUser(TSysUser record);
 	
@@ -47,4 +50,18 @@ public interface TSysUserMapper {
 	 * @return
 	 */
 	List<TSysUser> getloginNamesByOrgsandRid2(Map<String,String> attrs);
+
+	/**
+	 * 查询未分配角色的用户
+	 * @param model
+	 * @return
+     */
+	PageInfo findNotRoleUser(UserQueryModel3 model);
+
+	/**
+	 * 查询未分配角色的用户分页
+	 * @param model
+	 * @return
+     */
+	PageInfo<TSysUser> findNotRoleUserPage(UserQueryModel3 model);
 }

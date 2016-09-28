@@ -11,7 +11,7 @@ import java.util.*;
 public interface BranchEmpService {
 	int deleteBranchEmpByNo(String empNo);
 
-    int addBranchEmp(TMdBranchEmp record);
+    int addBranchEmp(TMdBranchEmp record,boolean isLeave);
 
     TMdBranchEmp selectBranchEmpByNo(String empNo);
 

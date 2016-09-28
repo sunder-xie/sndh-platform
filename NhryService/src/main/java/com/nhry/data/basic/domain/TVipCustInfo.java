@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+
 public class TVipCustInfo implements Serializable{
     private String vipCustNo;
 
@@ -30,6 +31,8 @@ public class TVipCustInfo implements Serializable{
     private String road;
 
     private String subdist;
+    
+    private String subdistName;
 
     private String room;
 
@@ -104,6 +107,18 @@ public class TVipCustInfo implements Serializable{
     private String dealerName;
     
     private List<TMdAddress> addresses = new ArrayList<TMdAddress>();
+
+    public String vipMp;
+
+    private BigDecimal acctAmt;
+
+    public BigDecimal getAcctAmt() {
+        return acctAmt;
+    }
+
+    public void setAcctAmt(BigDecimal acctAmt) {
+        this.acctAmt = acctAmt;
+    }
 
     public String getVipCustNo() {
         return vipCustNo;
@@ -280,7 +295,6 @@ public class TVipCustInfo implements Serializable{
     public void setSex(String sex) {
         this.sex = sex == null ? null : sex.trim();
     }
-
     public Date getBirthday() {
         return birthday;
     }
@@ -320,7 +334,6 @@ public class TVipCustInfo implements Serializable{
     public void setVipType(String vipType) {
         this.vipType = vipType == null ? null : vipType.trim();
     }
-
     public Date getSubscribeDate() {
         return subscribeDate;
     }
@@ -440,7 +453,6 @@ public class TVipCustInfo implements Serializable{
 	public void setAddresses(List<TMdAddress> addresses) {
 		this.addresses = addresses;
 	}
-
 	public Date getFirstOrderTime() {
 		return firstOrderTime;
 	}
@@ -448,7 +460,6 @@ public class TVipCustInfo implements Serializable{
 	public void setFirstOrderTime(Date firstOrderTime) {
 		this.firstOrderTime = firstOrderTime;
 	}
-
 	public Date getLastOrderTime() {
 		return lastOrderTime;
 	}
@@ -496,4 +507,20 @@ public class TVipCustInfo implements Serializable{
 	public void setVipTypeName(String vipTypeName) {
 		this.vipTypeName = vipTypeName;
 	}
+
+	public String getSubdistName() {
+		return subdistName;
+	}
+
+	public void setSubdistName(String subdistName) {
+		this.subdistName = subdistName;
+	}
+
+    public String getVipMp() {
+        return vipMp;
+    }
+
+    public void setVipMp(String vipMp) {
+        this.vipMp = vipMp;
+    }
 }

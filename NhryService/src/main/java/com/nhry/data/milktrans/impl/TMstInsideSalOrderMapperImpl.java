@@ -31,5 +31,10 @@ public class TMstInsideSalOrderMapperImpl implements TMstInsideSalOrderMapper {
         return sqlSessionTemplate.selectListByPages("getAuthAllInsideSalOrder",smodel, Integer.parseInt(smodel.getPageNum()), Integer.parseInt(smodel.getPageSize()));
     }
 
+    @Override
+    public int deleteInSalOrderByDispOrderNo(String insOrderNo) {
+        return sqlSessionTemplate.delete("deleteInSalOrderByDispOrderNo",insOrderNo);
+    }
+
 
 }

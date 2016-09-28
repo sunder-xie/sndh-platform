@@ -9,6 +9,8 @@ public class TSsmSalOrder {
     private String orderNo;
     private Date   orderDate;
     private String branchNo;
+    private String branchName;
+    private String dealerName;
     private Date   requiredDate;
     private String voucherNo;
     private String status;
@@ -17,7 +19,7 @@ public class TSsmSalOrder {
     private String dealerNo;
     private String branchGroup;
     private String promNo;
-
+    private String freeFlag;
     private Date createAt;
     private  String createBy;
     private String createByTxt;
@@ -25,12 +27,36 @@ public class TSsmSalOrder {
     private String lastModifiedBy;
     private String lastModifiedByTxt;
 
+    public String getDealerName() {
+        return dealerName;
+    }
+
+    public void setDealerName(String dealerName) {
+        this.dealerName = dealerName;
+    }
+
+    public String getBranchName() {
+        return branchName;
+    }
+
+    public void setBranchName(String branchName) {
+        this.branchName = branchName;
+    }
+
     public String getPromNo() {
         return promNo;
     }
 
     public void setPromNo(String promNo) {
         this.promNo = promNo;
+    }
+
+    public String getFreeFlag() {
+        return freeFlag;
+    }
+
+    public void setFreeFlag(String freeFlag) {
+        this.freeFlag = freeFlag;
     }
 
     public String getOrderNo() {
