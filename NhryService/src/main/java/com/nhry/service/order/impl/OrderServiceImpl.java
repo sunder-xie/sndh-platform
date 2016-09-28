@@ -809,7 +809,7 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 					public void run() {
 						super.run();
 						this.setName("minusVipPoint");
-						BigDecimal gRate = leftAmt.divide(initAmt,2).multiply(new BigDecimal(order.getyGrowth()==null?0:order.getyGrowth()));//成长
+//						BigDecimal gRate = leftAmt.divide(initAmt,2).multiply(new BigDecimal(order.getyGrowth()==null?0:order.getyGrowth()));//成长
 						BigDecimal fRate = leftAmt.divide(initAmt,2).multiply(new BigDecimal(order.getyFresh()==null?0:order.getyFresh()));//鲜峰
 						MemberActivities item = new MemberActivities();
 						Date date = new Date();
@@ -819,13 +819,15 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 						item.setProcesstype("YSUB_RETURN");
 						item.setOrderid(order.getOrderNo());
 						item.setMembershipguid(order.getMemberNo());
-						item.setPointtype("YGROWTH");
-						item.setPoints(gRate);
-						//第1遍传成长
-						piVipInfoDataService.createMemberActivities(item);
+//						item.setPointtype("YGROWTH");
+//						item.setPoints(gRate);
+//						//第1遍传成长
+//						piVipInfoDataService.createMemberActivities(item);
 						//第2遍传先锋
 						item.setPointtype("YFRESH");
 						item.setPoints(fRate);
+						item.setAmount(leftAmt);
+						item.setProcess("X");
 						piVipInfoDataService.createMemberActivities(item);
 					}
 				});
