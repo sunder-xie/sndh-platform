@@ -2962,6 +2962,8 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 		ArrayList<TPlanOrderItem> modifiedEntries = new ArrayList<TPlanOrderItem>();
 		ArrayList<TPlanOrderItem> removedEntries = new ArrayList<TPlanOrderItem>();
 		
+		boolean orderPromotionFlag = record.getEntries().stream().anyMatch((e)->StringUtils.isNotBlank(e.getPromotion()));
+		
 		String state = orgOrder.getPaymentmethod();
 		if("10".equals(state)){
 			//后付款
@@ -3255,6 +3257,7 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 			ArrayList<TOrderDaliyPlanItem> daliyPlans = (ArrayList<TOrderDaliyPlanItem>) tOrderDaliyPlanItemMapper.selectDaliyPlansByOrderNo(orgOrder.getOrderNo());
 			if((daliyPlans!=null&&daliyPlans.size() > 0&&StringUtils.isBlank(record.getEditDate()))||tDispOrderItemMapper.selectCountByOrgOrder(orgOrder.getOrderNo()) > 0 ){
 				//有效期修改
+				if(orderPromotionFlag)throw new ServiceException(MessageCode.LOGIC_ERROR,"促销订单不能有修改!");
 				for(TPlanOrderItem orgEntry : orgEntries){
 					boolean delFlag = true;
 					boolean modiFlag = false;
@@ -3437,6 +3440,7 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 				if("20".equals(orgOrder.getPaymentStat())){//已经付过钱
 					//先付款,订单总金额不变,配送到金额为0为止
 					//修改订单根据行项目编号来确定行是否修改，换商品或改数量
+					if(orderPromotionFlag)throw new ServiceException(MessageCode.LOGIC_ERROR,"促销订单不能有修改!");
 					for(TPlanOrderItem orgEntry : orgEntries){
 						boolean delFlag = true;
 						boolean modiFlag = false;
