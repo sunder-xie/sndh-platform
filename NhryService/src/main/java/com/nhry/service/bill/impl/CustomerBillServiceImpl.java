@@ -456,6 +456,7 @@ public class CustomerBillServiceImpl implements CustomerBillService {
                         item.setAmount(preOrder.getInitAmt());
                         item.setPointtype("YFRESH");
                         item.setPoints(fRate);
+                        item.setProcess("X");
                         piVipInfoDataService.createMemberActivities(item);
                     }
                 });

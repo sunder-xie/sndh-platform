@@ -827,6 +827,7 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 						item.setPointtype("YFRESH");
 						item.setPoints(fRate);
 						item.setAmount(leftAmt);
+						item.setProcess("X");
 						piVipInfoDataService.createMemberActivities(item);
 					}
 				});
