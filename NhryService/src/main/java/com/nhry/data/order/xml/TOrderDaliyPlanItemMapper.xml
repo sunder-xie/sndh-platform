@@ -167,6 +167,7 @@
 	 left join t_preorder o on o.order_no = d.order_no
 	 where d.disp_date = #{planItemNo,jdbcType=DATE}
 	 and o.emp_no = #{itemNo,jdbcType=VARCHAR}
+	 and o.branch_no = #{tmpBranch,jdbcType=VARCHAR}
 	 and d.reach_time_type = #{orderNo,jdbcType=VARCHAR}
 	 and d.status != "30" 
 	 and d.status != "20"

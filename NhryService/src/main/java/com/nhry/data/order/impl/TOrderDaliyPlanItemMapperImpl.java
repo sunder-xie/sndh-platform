@@ -213,12 +213,13 @@ public class TOrderDaliyPlanItemMapperImpl implements TOrderDaliyPlanItemMapper
 	}
 
 	@Override
-	public List<TOrderDaliyPlanItem> selectbyDispLineNo(String empNo , String date ,String reachTimeType)
+	public List<TOrderDaliyPlanItem> selectbyDispLineNo(String empNo , String date ,String reachTimeType,String branch)
 	{
 		TOrderDaliyPlanItemKey key = new TOrderDaliyPlanItemKey();
 		key.setPlanItemNo(date);
 		key.setItemNo(empNo);
 		key.setOrderNo(reachTimeType);
+		key.setTmpBranch(branch);
 		return sqlSessionTemplate.selectList("selectDaliyPlansByDispNo", key);
 	}
 
