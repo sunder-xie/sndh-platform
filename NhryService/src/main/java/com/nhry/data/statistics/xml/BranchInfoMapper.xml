@@ -1207,7 +1207,7 @@
         i.DISP_EMP_NO,i.CONFIRM_MATNR, sum(i.CONFIRM_QTY) as CONFIRM_QTY,
         p.SHORT_TXT MATNR_TXT,e.EMP_NAME
         from t_mst_disp_order_item i
-        left join t_preorder o on o.ORDER_NO = i.ORG_ORDER_NO
+        left join t_mst_disp_order mdo on mdo.ORDER_NO = i.ORDER_NO
         left join t_md_mara_ex p on p.MATNR = i.CONFIRM_MATNR and p.SALES_ORG = o.SALES_ORG
         left join t_md_address a on a.ADDRESS_ID = i.ADDRESS_NO
         left join t_md_residential_area r on r.ID = a.RESIDENTIAL_AREA
