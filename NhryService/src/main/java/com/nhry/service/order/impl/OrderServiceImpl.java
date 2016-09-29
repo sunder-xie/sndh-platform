@@ -216,7 +216,11 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 		smodel.setSalesOrg(userSessionService.getCurrentUser().getSalesOrg());
 		smodel.setDealerNo(userSessionService.getCurrentUser().getDealerId());
 		
-		return tPreOrderMapper.selectNeedResumeOrders(smodel);
+		final long startTime = System.currentTimeMillis();
+		PageInfo pageinfo = tPreOrderMapper.selectNeedResumeOrders(smodel);
+		System.out.println("查询待续订列表 消耗时间："+(System.currentTimeMillis()-startTime)+"毫秒");
+		
+		return pageinfo;
 	}
 	
 	/* (non-Javadoc)
