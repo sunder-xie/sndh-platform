@@ -3552,6 +3552,7 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 							for(TPlanOrderItem curEntry : curEntries){
 								if(orgEntry.getItemNo().equals(curEntry.getItemNo())){
 									delFlag = false;
+									BigDecimal orgEntryAmt = calculateEntryAmount(orgEntry);
 									if(!orgEntry.getMatnr().equals(curEntry.getMatnr())){//换商品
 										modiFlag = true;
 										orgEntry.setMatnr(curEntry.getMatnr());
@@ -3597,6 +3598,11 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 									if(StringUtils.isNotBlank(orgEntry.getPromotion()))throw new ServiceException(MessageCode.LOGIC_ERROR,"促销商品行不能更改!");
 									
 									//保存修改后的该行
+									orgOrder.setInitAmt(orgOrder.getInitAmt().subtract(orgEntryAmt));
+									orgOrder.setCurAmt(orgOrder.getCurAmt().subtract(orgEntryAmt));
+									BigDecimal entryTotal = calculateEntryAmount(orgEntry);
+									orgOrder.setInitAmt(orgOrder.getInitAmt().add(entryTotal));
+									orgOrder.setCurAmt(orgOrder.getCurAmt().add(entryTotal));
 //									tPlanOrderItemMapper.updateEntryByItemNo(orgEntry);
 									//删除不需要的日单
 									TOrderDaliyPlanItem newPlan = new TOrderDaliyPlanItem();
