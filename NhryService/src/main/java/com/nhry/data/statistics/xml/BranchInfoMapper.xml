@@ -1208,14 +1208,14 @@
         p.SHORT_TXT MATNR_TXT,e.EMP_NAME
         from t_mst_disp_order_item i
         left join t_mst_disp_order mdo on mdo.ORDER_NO = i.ORDER_NO
-        left join t_md_mara_ex p on p.MATNR = i.CONFIRM_MATNR and p.SALES_ORG = o.SALES_ORG
+        left join t_md_branch b on mdo.BRANCH_NO = b.BRANCH_NO
+        left join t_md_mara_ex p on p.MATNR = i.CONFIRM_MATNR and p.SALES_ORG = b.SALES_ORG
         left join t_md_address a on a.ADDRESS_ID = i.ADDRESS_NO
         left join t_md_residential_area r on r.ID = a.RESIDENTIAL_AREA
         LEFT JOIN t_md_branch_emp e on e.EMP_NO = i.DISP_EMP_NO
-        left join t_mst_disp_order mdo on mdo.ORDER_NO = i.ORDER_NO
         where
         mdo.DISP_DATE = #{theDate,jdbcType=VARCHAR}
-			and o.BRANCH_NO=#{branchNo,jdbcType=VARCHAR}
+			and mdo.BRANCH_NO=#{branchNo,jdbcType=VARCHAR}
         <if test="reachTimeType!=null and ''!=reachTimeType">
             AND  mdo.REACH_TIME_TYPE &lt;= #{reachTimeType,jdbcType=DATE}
         </if>
