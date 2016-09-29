@@ -789,9 +789,9 @@
             left join t_md_address a on a.ADDRESS_ID = o.ADRESS_NO
             LEFT JOIN t_md_branch_emp e on o.EMP_NO = e.EMP_NO
             left join t_md_residential_area r on r.ID = a.RESIDENTIAL_AREA
-             WHERE o.PAYMENT_STAT = '10'
+             WHERE  1=1
             and (o.PREORDER_SOURCE='20' OR o.PREORDER_SOURCE ='30' OR  o.PREORDER_SOURCE ='50')
-            and (o.PREORDER_STAT = "10" OR o.PREORDER_STAT = '30')
+            and (o.PREORDER_STAT = '10' OR o.PREORDER_STAT = '30')
             <if test="branchNo !=null and branchNo!=''">
               and  o.BRANCH_NO = #{branchNo,jdbcType=VARCHAR}
             </if>
@@ -826,53 +826,7 @@
               or CONCAT(r.RESIDENTIAL_AREA_TXT,a.ADDRESS_TXT) like  '%${search}%'
               )
             </if>
-           UNION ALL
-        select
-        o.ORDER_NO,e.EMP_NAME, o.END_DATE,o.INIT_AMT,o.PAYMENT_STAT,o.MILKMEMBER_NO,c.VIP_NAME MILKMEMBER_NAME
-        ,o.PAYMENTMETHOD,c.MP CUSTOMER_TEL,CONCAT(IFNULL(r.RESIDENTIAL_AREA_TXT,''),IFNULL(a.ADDRESS_TXT,'')) ADRESS_NO
-        FROM t_preorder o
-        LEFT JOIN  t_vip_cust_info c on o.MILKMEMBER_NO = c.VIP_CUST_NO
-        left join t_md_address a on a.ADDRESS_ID = o.ADRESS_NO
-        LEFT JOIN t_mst_recv_bill bill on bill.ORDER_NO = o.ORDER_NO and bill.HAD_OFFSET = 'N'
-        LEFT JOIN t_md_branch_emp e on bill.RECV_EMP = e.EMP_NO
-        left join t_md_residential_area r on r.ID = a.RESIDENTIAL_AREA
-        where o.PAYMENT_STAT='20'
-        and (o.PREORDER_SOURCE='20' OR o.PREORDER_SOURCE ='30' OR  o.PREORDER_SOURCE ='50')
-        and (o.PREORDER_STAT = "10" OR o.PREORDER_STAT = '30')
-    <if test="branchNo !=null and branchNo!=''">
-      and  o.BRANCH_NO = #{branchNo,jdbcType=VARCHAR}
-    </if>
-    <if test="empNo !=null and empNo!=''">
-      and  o.EMP_NO = #{empNo,jdbcType=VARCHAR}
-    </if>
-    <if test="paymentmethod !=null and paymentmethod!=''">
-      and  o.PAYMENTMETHOD = #{paymentmethod,jdbcType=VARCHAR}
-    </if>
-    <if test="dealerNo !=null and dealerNo!=''">
-      and  o.DEALER_NO = #{dealerNo,jdbcType=VARCHAR}
-    </if>
-    <if test="salesOrg !=null and salesOrg!=''">
-      and  o.SALES_ORG = #{salesOrg,jdbcType=VARCHAR}
-    </if>
-    <if test="status !=null and status!=''">
-      and  o.PAYMENT_STAT = #{status,jdbcType=VARCHAR}
-    </if>
-    <if test="orderStartDate !=null and ''!=orderStartDate">
-      and o.END_DATE &gt;= #{orderStartDate,jdbcType=DATE}
-    </if>
-    <if test="orderEndDate !=null and ''!=orderEndDate">
-      and   o.END_DATE &lt;= #{orderEndDate,jdbcType=DATE}
-    </if>
-    <if test="search !=null and '' !=search" >
-      and  ( o.ORDER_NO like '%${search}%'
-      or  e.EMP_NAME like'%${search}%'
-      or c.VIP_NAME like '%${search}%'
-      or c.MP like '%${search}%'
-      or r.RESIDENTIAL_AREA_TXT like '%${search}%'
-      or a.ADDRESS_TXT like '%${search}%'
-      or CONCAT(r.RESIDENTIAL_AREA_TXT,a.ADDRESS_TXT) like  '%${search}%'
-      )
-    </if>
+
     ORDER BY ORDER_NO desc
 
 </select>
