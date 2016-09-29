@@ -591,7 +591,7 @@ public class DeliverMilkServiceImpl extends BaseService implements DeliverMilkSe
 			int totalQty = 0;
 			BigDecimal totalAmt = new BigDecimal("0.00");
 			//生成一条路线，一个配送时段的路单
-			List<TOrderDaliyPlanItem> daliyPlans = tOrderDaliyPlanItemMapper.selectbyDispLineNo(order.getEmpNo(),format.format(date),order.getOrderType());
+			List<TOrderDaliyPlanItem> daliyPlans = tOrderDaliyPlanItemMapper.selectbyDispLineNo(order.getEmpNo(),format.format(date),order.getOrderType(),userSessionService.getCurrentUser().getBranchNo());
 			
 			if(daliyPlans == null || daliyPlans.size() <= 0)continue;
 				

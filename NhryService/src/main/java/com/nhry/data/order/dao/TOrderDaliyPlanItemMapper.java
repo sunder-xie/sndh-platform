@@ -35,7 +35,7 @@ public interface TOrderDaliyPlanItemMapper {
 
     BigDecimal selectDaliyPlansRemainAmt(TOrderDaliyPlanItemKey record);
 
-    List<TOrderDaliyPlanItem> selectbyDispLineNo(String empNo , String date,String reachTimeType);
+    List<TOrderDaliyPlanItem> selectbyDispLineNo(String empNo , String date,String reachTimeType,String branch);
 
     int updateByPrimaryKeySelective(TOrderDaliyPlanItem record);
 

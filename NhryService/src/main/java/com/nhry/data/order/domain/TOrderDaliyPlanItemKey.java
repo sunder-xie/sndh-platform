@@ -10,8 +10,20 @@ public class TOrderDaliyPlanItemKey {
     private String planItemNo;
 
     private String itemNo;
+    
+    private String tmpBranch;
 
-    public String getOrderNo() {
+    public String getTmpBranch()
+	{
+		return tmpBranch;
+	}
+
+	public void setTmpBranch(String tmpBranch)
+	{
+		this.tmpBranch = tmpBranch;
+	}
+
+	public String getOrderNo() {
         return orderNo;
     }
 
