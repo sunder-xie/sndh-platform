@@ -976,6 +976,7 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 			order.setEndDate(calculateFinalDate(entriesList));//订单截止日期
 			//将订单状态置为 在订状态（10）
 			order.setSign("10");
+			order.setResumeFlag("N");
 			//备注
 			order.setMemoTxt(memoTxt);
 			tPreOrderMapper.insert(order);
@@ -1213,6 +1214,7 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 			order.setEndDate(calculateFinalDate(entriesList));//订单截止日期
 			//将订单状态置为 在订状态（10）
 			order.setSign("10");
+			order.setResumeFlag("N");
 			//备注
 			order.setMemoTxt(record.getMemoTxt());
 			tPreOrderMapper.insert(order);
@@ -1749,6 +1751,7 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 		
 		order.setEndDate(calculateFinalDate(entriesList));//订单截止日期
 		order.setInitAmt(orderAmt);
+		order.setResumeFlag("N");
 		
 		//保存订单和行项目
 		tPreOrderMapper.insert(record.getOrder());
