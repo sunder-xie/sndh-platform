@@ -2106,6 +2106,7 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 						//判断是按周期送还是按星期送
 						Date today = afterDate(firstDeliveryDate,afterDays);
 						if(today.before(entry.getStartDispDate()))continue;
+						if(daliyPlans.stream().anyMatch((e)->e.getItemNo().equals(entry.getItemNo()) &&e.getDispDate().equals(today)))continue;//有此行，此日期的，就不生成日计划
 						
 						if("10".equals(entry.getRuleType())){
 							int gapDays = entry.getGapDays() + 1;//间隔天数
@@ -2167,6 +2168,7 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 						if(curEntry.getStopStartDate()!=null){
 							if(!today.before(curEntry.getStopStartDate()))continue;
 						}
+						if(daliyPlans.stream().anyMatch((e)->e.getItemNo().equals(entry.getItemNo()) &&e.getDispDate().equals(today)))continue;//有此行，此日期的，就不生成日计划
 						
 						if(today.before(entriesMap.get(entry).getStartDispDate())){
 							//中间部分按原来的行项目生成日日计划
