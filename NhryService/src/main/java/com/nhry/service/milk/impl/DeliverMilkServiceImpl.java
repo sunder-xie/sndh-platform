@@ -543,7 +543,7 @@ public class DeliverMilkServiceImpl extends BaseService implements DeliverMilkSe
 			entryList.stream()
 			.filter((e)->!oList.contains(e.getOrgOrderNo()))
 			.forEach((e)->{
-				list.add(e.getOrgOrderNo());
+				oList.add(e.getOrgOrderNo());
 				orderService.setOrderToFinish(e.getOrgOrderNo(),dispDate);
 			});
 			

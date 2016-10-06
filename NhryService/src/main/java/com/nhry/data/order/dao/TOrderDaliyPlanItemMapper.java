@@ -82,4 +82,7 @@ public interface TOrderDaliyPlanItemMapper {
     int deletePlansByOrder(String orderNo);
 
     List<OrderDaliyPlanReportEntityModel> reportOrderDaliyPlanByParams(OrderDaliyPlanReportModel model);
+
+    BigDecimal getOrderOrderDailyFinishAmtByOrderNo(String orderNo);
+
 }

@@ -84,7 +84,7 @@ public class OrderResource extends BaseResource {
 	@GET
 	@Path("/selectStopOrderNum")
 	@Produces(MediaType.APPLICATION_JSON)
-	@ApiOperation(value = "/selectStopOrderNum", response = OrderCreateModel.class, notes = "该组织下还有5天就到期没续订的订单")
+	@ApiOperation(value = "/selectStopOrderNum", response = OrderCreateModel.class, notes = "该组织下还有7天就到期没续订的订单")
 	public Response selectStopOrderNum(){
 		return convertToRespModel(MessageCode.NORMAL, null, orderService.selectStopOrderNum());
 	}

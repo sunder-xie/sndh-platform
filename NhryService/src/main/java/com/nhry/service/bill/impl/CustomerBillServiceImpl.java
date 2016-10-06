@@ -80,6 +80,7 @@ public class CustomerBillServiceImpl implements CustomerBillService {
 
     @Override
     public PageInfo searchCustomerOrder(CustBillQueryModel cModel) {
+        final long startTime = System.currentTimeMillis();
         TSysUser user = userSessionService.getCurrentUser();
         List<String> rids = urMapper.getUserRidsByLoginName(user.getLoginName());
         cModel.setSalesOrg(user.getSalesOrg());
@@ -89,6 +90,7 @@ public class CustomerBillServiceImpl implements CustomerBillService {
         if(StringUtils.isEmpty(cModel.getPageNum()) || StringUtils.isEmpty(cModel.getPageSize())){
             throw new ServiceException(MessageCode.LOGIC_ERROR,"pageNum和pageSize不能为空！");
         }
+        System.out.println("查询订单收款列表  消耗时间："+(System.currentTimeMillis()-startTime)+"毫秒");
         return tPreOrderMapper.searchCustomerOrder(cModel);
     }
 
