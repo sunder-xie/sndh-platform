@@ -41,6 +41,8 @@
     <result column="LAST_MODIFIED" property="lastModified" jdbcType="TIMESTAMP" />
     <result column="LAST_MODIFIED_BY" property="lastModifiedBy" jdbcType="VARCHAR" />
     <result column="LAST_MODIFIED_BY_TXT" property="lastModifiedByTxt" jdbcType="VARCHAR" />
+    <result column="IS_VALID" property="isValid" jdbcType="VARCHAR" />
+    <result column="ONLINE_DATE" property="onlineDate" jdbcType="DATE" />
   </resultMap>
   <sql id="Base_Column_List" >
     BRANCH_NO, BRANCH_NAME, SALES_ORG, SALES_CHA, BRANCH_GROUP, BRANCH_LEVEL, CONTACT,EMP_NO,
@@ -94,6 +96,12 @@
       #{lastModified,jdbcType=TIMESTAMP}, #{lastModifiedBy,jdbcType=VARCHAR}, #{lastModifiedByTxt,jdbcType=VARCHAR},#{companyCode,jdbcType=VARCHAR}
       )
   </insert>
+  <update id="uptValidBranch" parameterType="com.nhry.data.basic.domain.TMdBranch">
+    update t_md_branch
+    set   IS_VALID = #{isValid,jdbcType=VARCHAR},
+           ONLINE_DATE = #{onlineDate,jdbcType=DATE}
+    where BRANCH_NO = #{branchNo,jdbcType=VARCHAR}
+  </update>
   <update id="uptBranch" parameterType="com.nhry.data.basic.domain.TMdBranch" >
     update t_md_branch
     set BRANCH_NAME = #{branchName,jdbcType=VARCHAR},
@@ -118,7 +126,9 @@
       LAST_MODIFIED = #{lastModified,jdbcType=TIMESTAMP},
       LAST_MODIFIED_BY = #{lastModifiedBy,jdbcType=VARCHAR},
       LAST_MODIFIED_BY_TXT = #{lastModifiedByTxt,jdbcType=VARCHAR},
-      COMPANY_CODE = #{companyCode,jdbcType=VARCHAR}
+      COMPANY_CODE = #{companyCode,jdbcType=VARCHAR},
+      IS_VALID = #{isValid,jdbcType=VARCHAR},
+      ONLINE_DATE = #{onlineDate,jdbcType=DATE}
     where BRANCH_NO = #{branchNo,jdbcType=VARCHAR}
   </update>
   <select id="findBranchListByOrg" resultMap="BaseResultMap" parameterType="String">
@@ -164,7 +174,7 @@
     SALES_ORG,b.SALES_CHA,
     BRANCH_GROUP,b.BRANCH_LEVEL,b.DEALER_NO,d.DEALER_NAME,
    /* (select count(t.VIP_CUST_NO) from t_vip_cust_info t where t.BRANCH_NO=b.BRANCH_NO) TOTAL_CUS,*/
-    b.MP,b.TEL
+    b.MP,b.TEL,b.IS_VALID,b.ONLINE_DATE
     from T_MD_BRANCH b LEFT JOIN t_md_dealer d on b.DEALER_NO = d.DEALER_NO
     where 1=1
       <if test="branchN !=null and ''!=branchN">
