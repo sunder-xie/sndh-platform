@@ -43,7 +43,7 @@ public class LadpService {
 		env.put(Context.SECURITY_AUTHENTICATION, "simple");
 		env.put(Context.SECURITY_PRINCIPAL,EnvContant.getSystemConst("ladp_uname"));
 		env.put(Context.SECURITY_CREDENTIALS,EnvContant.getSystemConst("ladp_password"));
-		env.put("com.sun.jndi.ldap.connect.pool", "true");
+		env.put("com.sun.jndi.ldap.connect.pool", "false");
 		try {
 			ctx = new InitialDirContext(env);
 			flag = true;
