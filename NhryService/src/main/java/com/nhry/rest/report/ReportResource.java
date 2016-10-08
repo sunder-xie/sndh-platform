@@ -282,14 +282,14 @@ public class ReportResource extends BaseResource{
                     if(ChangeOrders!=null){
                         for(TDispOrderChange ocitems:ChangeOrders){
                             if(ocitems.getOrgItemNo().equals(item.getOrgItemNo())){
-                                cell.setCellValue(ocitems.getYestodayMatnr()==null?"":ocitems.getYestodayMatnr().concat("--").concat(ocitems.getYestodayQty()==null?"" :ocitems.getYestodayQty().toString()));
+                                cell.setCellValue(ocitems.getYestodayQty()==null?"" :ocitems.getYestodayQty().toString().concat("--").concat(ocitems.getYestodayMatnr()==null?"":ocitems.getYestodayMatnr()));
                             }
                         }
                     }
                     cell = row.createCell(6);
                     cell.setCellStyle(styleBold);
                     if (StringUtils.isNotEmpty(item.getMatnrTxt())){
-                        cell.setCellValue(item.getMatnrTxt().concat("--").concat(item.getConfirmQty()==null?"" : item.getConfirmQty().toBigInteger().toString()));
+                        cell.setCellValue(item.getConfirmQty()==null?"" : item.getConfirmQty().toBigInteger().toString().concat("--").concat(item.getMatnrTxt()));
                     }
                     cell = row.createCell(7);
                     cell.setCellStyle(styleBold);
@@ -345,7 +345,7 @@ public class ReportResource extends BaseResource{
 
                             cell = row.createCell(5);
                             cell.setCellStyle(styleBold);
-                            cell.setCellValue(ocitems.getYestodayMatnr()==null?"":ocitems.getYestodayMatnr().concat("--").concat(ocitems.getYestodayQty()==null?"" :ocitems.getYestodayQty().toBigInteger().toString()));
+                            cell.setCellValue(ocitems.getYestodayQty()==null?"" :ocitems.getYestodayQty().toBigInteger().toString().concat("--").concat(ocitems.getYestodayMatnr()==null?"":ocitems.getYestodayMatnr()));
                             cell = row.createCell(6);
                             cell.setCellStyle(styleBold);
                             cell = row.createCell(7);
