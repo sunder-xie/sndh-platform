@@ -279,6 +279,7 @@
     <if test="roleId != null and roleId != ''">
       AND role.ID = #{roleId,jdbcType=VARCHAR}
     </if>
+    ORDER BY emp.STATUS desc
   </select>
 
   <select id="selectEmpRoutes" parameterType="String" resultMap="RouteResultMap">
