@@ -68,19 +68,19 @@ public class CustomerBillMapperImpl implements CustomerBillMapper {
     }
 
     @Override
-    public List<CollectOrderBillModel> selectAfterCollectByOrders(String paymentmethod, List<String> advancePayOrders) {
+    public List<CollectOrderBillModel> selectHasItemsCollectByOrders(String paymentmethod, List<String> advancePayOrders) {
         CollectOrderSearchModel model = new CollectOrderSearchModel();
         model.setOrders(advancePayOrders);
         model.setPaymentmehod(paymentmethod);
-        return sqlSessionTemplate.selectList("queryCollectByAfterOrders",model);
+        return sqlSessionTemplate.selectList("selectHasItemsCollectByOrders",model);
     }
 
     @Override
-    public List<CollectOrderBillModel> selectBeforeCollectByOrders(String paymentmethod, List<String> advancePayOrders) {
+    public List<CollectOrderBillModel> selectNoItemsCollectByOrders(String paymentmethod, List<String> advancePayOrders) {
         CollectOrderSearchModel model = new CollectOrderSearchModel();
         model.setOrders(advancePayOrders);
         model.setPaymentmehod(paymentmethod);
-        return sqlSessionTemplate.selectList("queryCollectByBeforeOrders",model);
+        return sqlSessionTemplate.selectList("selectNoItemsCollectByOrders",model);
     }
 
     @Override
