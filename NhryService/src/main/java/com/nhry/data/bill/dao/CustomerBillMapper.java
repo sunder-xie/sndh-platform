@@ -30,9 +30,9 @@ public interface CustomerBillMapper {
 
     int  addRefund(TMstRefund refund);
 
-    List<CollectOrderBillModel> selectAfterCollectByOrders(String paymentmethod, List<String> advancePayOrders);
+    List<CollectOrderBillModel> selectHasItemsCollectByOrders(String paymentmethod, List<String> advancePayOrders);
 
-    List<CollectOrderBillModel> selectBeforeCollectByOrders(String paymentmethod, List<String> advancePayOrders);
+    List<CollectOrderBillModel> selectNoItemsCollectByOrders(String paymentmethod, List<String> advancePayOrders);
 
     int delReceipt(String receiptNo);
 }

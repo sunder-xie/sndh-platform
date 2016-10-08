@@ -4028,33 +4028,55 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 
 		BigDecimal totalPrices = new BigDecimal(0);
 		List<ProductItem> entries = new ArrayList<ProductItem>();
-		//如果是预付款订单（此时还没有生成日计划 查询订单行项目）
+		//如果是预付款订单（如果此时还没有生成日计划 查询订单行项目，如果有 则查看有效的日订单）
 		//如果是后付款订单(统计所有有效的的日订单)
 		if("20".equals(order.getPaymentmethod())){
-			List<TPlanOrderItem> items = tPlanOrderItemMapper.selectByOrderCode(order.getOrderNo());
-			if(items!=null && items.size()>0){
-				for(TPlanOrderItem item : items ){
-					BigDecimal price = item.getSalesPrice();
-					if(price == null ){
-						throw  new ServiceException(MessageCode.LOGIC_ERROR,"该预付款订单中的  "+item.getMatnr()+"   "+item.getMatnrTxt()+"   产品价格不存在请查看");
+			List<TOrderDaliyPlanItem> planItems = tOrderDaliyPlanItemMapper.getProductItemsByOrderNo(orderCode,user.getSalesOrg());
+			if(planItems != null || planItems.size() > 0){
+					for(TOrderDaliyPlanItem planItem : planItems ){
+						BigDecimal price = planItem.getPrice();
+						if(price == null ){
+							throw  new ServiceException(MessageCode.LOGIC_ERROR,"该预付款订单  "+ orderCode+"  中的  "+planItem.getMatnr()+"   "+planItem.getMatnrTxt()+"   产品价格不存在请查看");
+						}
+						ProductItem entry = new ProductItem();
+						entry.setUnit(planItem.getUnit());
+						entry.setBasePrice(price);
+						entry.setMatnr(planItem.getMatnr());
+						entry.setMatnrTxt(planItem.getMatnrTxt());
+						entry.setQty(planItem.getQty());
+						entry.setTotalPrice(price.multiply(new BigDecimal(planItem.getQty())));
+						totalPrices = totalPrices.add(entry.getTotalPrice());
+						entries.add(entry);
 					}
-					ProductItem entry = new ProductItem();
-					entry.setMatnr(item.getMatnr());
-					entry.setMatnrTxt(item.getMatnrTxt());
-					entry.setMatnr(item.getMatnr());
-					if(item.getDispTotal() == null){
-						throw  new ServiceException(MessageCode.LOGIC_ERROR,"该预付款订单中的  "+item.getMatnr()+"   "+item.getMatnrTxt()+"   产品的总配送数量不存在 请查看");
-					}else{
-						entry.setQty(item.getDispTotal());
+			}else{
+				List<TPlanOrderItem> items = tPlanOrderItemMapper.selectByOrderCode(order.getOrderNo());
+				if(items!=null && items.size()>0){
+					for(TPlanOrderItem item : items ){
+						BigDecimal price = item.getSalesPrice();
+						if(price == null ){
+							throw  new ServiceException(MessageCode.LOGIC_ERROR,"该预付款订单中的  "+item.getMatnr()+"   "+item.getMatnrTxt()+"   产品价格不存在请查看");
+						}
+						ProductItem entry = new ProductItem();
+						entry.setMatnr(item.getMatnr());
+						entry.setMatnrTxt(item.getMatnrTxt());
+						entry.setMatnr(item.getMatnr());
+						if(item.getDispTotal() == null){
+							throw  new ServiceException(MessageCode.LOGIC_ERROR,"该预付款订单中的  "+item.getMatnr()+"   "+item.getMatnrTxt()+"   产品的总配送数量不存在 请查看");
+						}else{
+							entry.setQty(item.getDispTotal());
+						}
+						entry.setUnit(item.getUnit());
+						entry.setBasePrice(price);
+						entry.setTotalPrice(price.multiply(new BigDecimal(entry.getQty())));
+						totalPrices = totalPrices.add(entry.getTotalPrice());
+						entries.add(entry);
 					}
-					entry.setUnit(item.getUnit());
-					entry.setBasePrice(price);
-					entry.setTotalPrice(price.multiply(new BigDecimal(entry.getQty())));
-					totalPrices = totalPrices.add(entry.getTotalPrice());
-					entries.add(entry);
 				}
 			}
+
 		}else{
+			// 预付款 如果没有生成日订单
+
 			List<TOrderDaliyPlanItem> items = tOrderDaliyPlanItemMapper.getProductItemsByOrderNo(orderCode,user.getSalesOrg());
 
 			if(items!=null && items.size()>0){
