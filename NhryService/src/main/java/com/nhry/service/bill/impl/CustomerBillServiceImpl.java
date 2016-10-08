@@ -448,15 +448,13 @@ public class CustomerBillServiceImpl implements CustomerBillService {
                         item.setProcesstype("YSUB_RETURN");
                         item.setOrderid(preOrder.getOrderNo());
                         item.setMembershipguid(preOrder.getMemberNo());
-//                        item.setPointtype("YGROWTH");
-//                        item.setPoints(gRate);
+                        item.setPointtype("YGROWTH");
+                        item.setPoints(gRate);
                         //第1遍传成长
-//                        piVipInfoDataService.createMemberActivities(item);
+                        piVipInfoDataService.createMemberActivities(item);
                         //第2遍传先锋
-                        item.setAmount(preOrder.getInitAmt());
                         item.setPointtype("YFRESH");
                         item.setPoints(fRate);
-                        item.setProcess("X");
                         piVipInfoDataService.createMemberActivities(item);
                     }
                 });
@@ -536,34 +534,15 @@ public class CustomerBillServiceImpl implements CustomerBillService {
         if(StringUtils.isNotBlank(cModel.getPaymentmethod()) ){
             if( "20".equals(cModel.getPaymentmethod())){
                 List<String> advancePayOrders = tPreOrderMapper.selectAdvanceOrderNos(cModel);
-                // advancePayNoItemOrders  存放没有生成日订单的订单号
-                List<String> advancePayNoItemOrders = new ArrayList<String>();
-                // advancePayHasItemOrders  存放生成日订单的订单号
-                List<String> advancePayHasItemOrders = new ArrayList<String>();
                 if(advancePayOrders!=null && advancePayOrders.size()>0){
                     for(String orderNo : advancePayOrders){
-                        List<TOrderDaliyPlanItem> planItems = tOrderDaliyPlanItemMapper.getProductItemsByOrderNo(orderNo,user.getSalesOrg());
-                        if(planItems!=null && planItems.size()>0){
-                            advancePayHasItemOrders.add(orderNo);
-                        }else{
-                            advancePayNoItemOrders.add(orderNo);
-                        }
                         //创建收款单  如果有会直接返回
                         createRecBillByOrderNo(orderNo);
                     }
-                    if(advancePayHasItemOrders.size()>0){
-                        List<CollectOrderBillModel> hasItem = customerBillMapper.selectHasItemsCollectByOrders("20", advancePayHasItemOrders);
+                        List<CollectOrderBillModel> hasItem = customerBillMapper.selectNoItemsCollectByOrders("20", advancePayOrders);
                         if (hasItem != null && hasItem.size() > 0){
                             result.addAll(hasItem);
                         }
-                    }
-
-                    if(advancePayNoItemOrders.size()>0){
-                        List<CollectOrderBillModel> noItem = customerBillMapper.selectNoItemsCollectByOrders("20",advancePayNoItemOrders);
-                        if(noItem!=null && noItem.size()>0){
-                            result.addAll(noItem);
-                        }
-                    }
                 }
             }else{
                 List<String> afterPayOrders = tPreOrderMapper.selectAfterOrderNos(cModel);
@@ -582,34 +561,14 @@ public class CustomerBillServiceImpl implements CustomerBillService {
             List<String> advancePayOrders = tPreOrderMapper.selectAdvanceOrderNos(cModel);
             //预付款的
             if(advancePayOrders!=null && advancePayOrders.size()>0){
-                // advancePayNoItemOrders  存放没有生成日订单的订单号
-                List<String> advancePayNoItemOrders = new ArrayList<String>();
-                // advancePayHasItemOrders  存放生成日订单的订单号
-                List<String> advancePayHasItemOrders = new ArrayList<String>();
                 for(String orderNo : advancePayOrders){
-                    List<TOrderDaliyPlanItem> planItems = tOrderDaliyPlanItemMapper.getProductItemsByOrderNo(orderNo,user.getSalesOrg());
-                    if(planItems!=null && planItems.size()>0){
-                        advancePayHasItemOrders.add(orderNo);
-                    }else{
-                        advancePayNoItemOrders.add(orderNo);
-                    }
                     //创建收款单  如果有会直接返回
                     createRecBillByOrderNo(orderNo);
                 }
-                if(advancePayHasItemOrders.size()>0){
-                    List<CollectOrderBillModel> hasItem = customerBillMapper.selectHasItemsCollectByOrders("20", advancePayHasItemOrders);
-                    if (hasItem != null && hasItem.size() > 0) {
-                        result.addAll(hasItem);
+                    List<CollectOrderBillModel> before = customerBillMapper.selectNoItemsCollectByOrders("20", advancePayOrders);
+                    if (before != null && before.size() > 0) {
+                        result.addAll(before);
                     }
-                }
-
-                if(advancePayNoItemOrders.size()>0){
-                    List<CollectOrderBillModel> noItem = customerBillMapper.selectNoItemsCollectByOrders("20",advancePayNoItemOrders);
-                    if(noItem!=null && noItem.size()>0){
-                        result.addAll(noItem);
-                    }
-                }
-
             }
             //后付款的 一定有日订单
             List<String> afterPayOrders = tPreOrderMapper.selectAfterOrderNos(cModel);
