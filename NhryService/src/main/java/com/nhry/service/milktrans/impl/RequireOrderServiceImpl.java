@@ -615,13 +615,14 @@ public class RequireOrderServiceImpl implements RequireOrderService {
         rModel.setSalesOrg(user.getSalesOrg());
         //获取要的货是今天的要货计划
         TSsmReqGoodsOrder reqGoodsOrder = this.tSsmReqGoodsOrderMapper.searchRequireOrder(rModel);
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
         if(reqGoodsOrder == null || StringUtils.isBlank(reqGoodsOrder.getVoucherNo())){
             throw  new ServiceException(MessageCode.LOGIC_ERROR,"今天还没要货");
         }else{
             //判断要货计划对应的 交货单 是否生成 若没生成 提示还没生成
             List<TSsmGiOrder>  giOrders = tSsmGiOrderMapper.findGiOrderByReqOrderNo(reqGoodsOrder.getVoucherNo());
             if(giOrders == null || giOrders.size()<=0){
-                throw  new ServiceException(MessageCode.LOGIC_ERROR,"该奶站的交货单还没有生成，请先获取交货单");
+                throw  new ServiceException(MessageCode.LOGIC_ERROR,"该奶站" + sdf.format(search.getOrderDate()) +"的交货单还没有生成，请先获取交货单");
             }else{
                 //判断所有的交货计划是否都已确认过
                 if(giOrders.stream().anyMatch(
@@ -652,11 +653,11 @@ public class RequireOrderServiceImpl implements RequireOrderService {
                     }
                     return this.getSaleOrderByQueryDate(sMode);
                 }else{
-                    SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+
                     //判断今天的路单是否已经生成
                     List<TDispOrder> dispOrders = tDispOrderMapper.selectDispOrderByBranchNoAndDay(user.getBranchNo(), search.getOrderDate());
                     if (dispOrders == null || dispOrders.size() == 0) {
-                        throw new ServiceException(MessageCode.LOGIC_ERROR, "该奶站今天的路单还没生成，请先生成路单并全部确认后再生成");
+                        throw new ServiceException(MessageCode.LOGIC_ERROR, "该奶站" + sdf.format(search.getOrderDate()) +"的路单还没生成，请先生成路单并全部确认后再生成");
                     }else{
                         //判断今天的路单是否已经全部确认
                         List<TDispOrder> confirmDispOrders = tDispOrderMapper.selectConfirmDispOrderByBranchNoAndDay(user.getBranchNo(), search.getOrderDate());
@@ -670,10 +671,15 @@ public class RequireOrderServiceImpl implements RequireOrderService {
                     }
 
                     if ("01".equals(branch.getBranchGroup())) {
-                        rModel.setReqOrderNo(reqGoodsOrder.getVoucherNo());
+                        RequireOrderSearch   rsModel = new RequireOrderSearch();
+                        rsModel.setBranchNo(user.getBranchNo());
+                        rsModel.setSalesOrg(user.getSalesOrg());
+                        rsModel.setOrderDate(orderDate);
+
                         //获取确认后的路单中的参加促销的产品
-                        List<TOrderDaliyPlanItem> items = tOrderDaliyPlanItemMapper.selectProDayPlanOfSelfBranch(rModel);
+                        List<TOrderDaliyPlanItem> items = tOrderDaliyPlanItemMapper.selectProDayPlanOfSelfBranch(rsModel);
                         //获取交货单中的产品
+                        rModel.setReqOrderNo(reqGoodsOrder.getVoucherNo());
                         List<TOrderDaliyPlanItem>  planItems = tSsmGiOrderItemMapper.selectNoProDayPlanOfSelfBranch(rModel);
                         Map<String,Integer>  entries =  new HashMap<String,Integer>();
                         if(planItems!=null && planItems.size()>0){
@@ -766,6 +772,7 @@ public class RequireOrderServiceImpl implements RequireOrderService {
         SalOrderModel sMode = new SalOrderModel();
         sMode.setOrderDate(search.getOrderDate());
         sMode.setBranchNo(branch.getBranchNo());
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
         List<TSsmSalOrder> result = tSsmSalOrderMapper.selectSalOrderByDateAndNo(sMode);
         if (result != null && result.size() > 0) {
             Boolean flag = true;
@@ -778,15 +785,15 @@ public class RequireOrderServiceImpl implements RequireOrderService {
                 }
             }
             if(flag){
-                throw new ServiceException(MessageCode.LOGIC_ERROR, "该奶站今天已经创建所有销售订单,请直接查询");
+                throw new ServiceException(MessageCode.LOGIC_ERROR, "该奶站" + sdf.format(search.getOrderDate()) + "已经创建所有销售订单,请直接查询");
             }
             return this.getSaleOrderByQueryDate(sMode);
         }else{
-            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+
             //判断今天的路单是否已经生成
             List<TDispOrder> dispOrders = tDispOrderMapper.selectDispOrderByBranchNoAndDay(user.getBranchNo(), search.getOrderDate());
             if (dispOrders == null || dispOrders.size() == 0) {
-                throw new ServiceException(MessageCode.LOGIC_ERROR, "该奶站今天的路单还没生成，请先生成路单并全部确认后再生成");
+                throw new ServiceException(MessageCode.LOGIC_ERROR, "该奶站" + sdf.format(search.getOrderDate()) + " 这天的路单还没生成，请先生成路单并全部确认后再生成");
             }else{
                 //判断今天的路单是否已经全部确认
                 List<TDispOrder> confirmDispOrders = tDispOrderMapper.selectConfirmDispOrderByBranchNoAndDay(user.getBranchNo(), search.getOrderDate());

@@ -400,7 +400,7 @@
 
 
 
-    <select id="queryCollectByBeforeOrders" resultMap="CollectResultMap" parameterType="com.nhry.model.bill.CollectOrderSearchModel">
+    <select id="selectNoItemsCollectByOrders" resultMap="CollectResultMap" parameterType="com.nhry.model.bill.CollectOrderSearchModel">
         SELECT
         o.ORDER_NO,o.BRANCH_NO,b.BRANCH_NAME,o.EMP_NO,e.TEL EMP_TEL,e.EMP_NAME,c.VIP_NAME,
         c.MP CUST_TEL,b.TEL BRANCH_TEL,o.INIT_AMT,
@@ -449,13 +449,14 @@
         LEFT JOIN  t_md_mara_ex ex on i.MATNR = ex.MATNR  and b.SALES_ORG = ex.SALES_ORG
         WHERE 1=1
         and b.SALES_ORG = o.SALES_ORG
+        and i.STATUS !='30'
         and LOCATE(o.ORDER_NO,<foreach item="order" collection="orders" separator="," open="'" close="'" index="">${order}</foreach>)>0
         GROUP BY o.ORDER_NO,i.MATNR
         ORDER BY c.SUBDIST,c.ADDRESS_TXT,CUST_ADDRESS_SHORT
     </select>
 
 
-    <select id="queryCollectByAfterOrders" resultMap="CollectResultMap" parameterType="com.nhry.model.bill.CollectOrderSearchModel">
+    <select id="selectHasItemsCollectByOrders" resultMap="CollectResultMap" parameterType="com.nhry.model.bill.CollectOrderSearchModel">
         SELECT
         o.ORDER_NO,o.BRANCH_NO,b.BRANCH_NAME,o.EMP_NO,e.MP EMP_TEL,e.EMP_NAME,c.VIP_NAME,
         c.MP CUST_TEL,b.TEL BRANCH_TEL,o.INIT_AMT,
@@ -502,6 +503,7 @@
         LEFT JOIN  t_md_mara_ex ex on i.MATNR = ex.MATNR  and b.SALES_ORG = ex.SALES_ORG
         WHERE 1=1
         and b.SALES_ORG = o.SALES_ORG
+        and i.STATUS !='30'
         and LOCATE(o.ORDER_NO,<foreach item="order" collection="orders" separator="," open="'" close="'" index="">${order}</foreach>)>0
         GROUP BY o.ORDER_NO,i.MATNR
         ORDER BY c.SUBDIST,c.ADDRESS_TXT,CUST_ADDRESS_SHORT
@@ -557,7 +559,7 @@
         and o.ORDER_NO = #{o.ORDER_NO,jdbcType=VARCHAR}
     </select>
 
-    <select id="queryCollectByBeforeOrderNo" resultMap="CollectResultMap" parameterType="com.nhry.model.bill.CollectOrderSearchModel">
+    <select id="selectNoItemsCollectByOrder" resultMap="CollectResultMap" parameterType="com.nhry.model.bill.CollectOrderSearchModel">
         SELECT
         o.ORDER_NO,o.BRANCH_NO,b.BRANCH_NAME,o.EMP_NO,e.TEL EMP_TEL,e.EMP_NAME,c.VIP_NAME,
         c.MP CUST_TEL,b.TEL BRANCH_TEL,o.INIT_AMT,
