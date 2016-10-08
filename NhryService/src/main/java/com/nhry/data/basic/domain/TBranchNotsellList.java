@@ -101,7 +101,7 @@ public class TBranchNotsellList implements Serializable{
     }
 
     public String getLastModifiedByTxt() {
-        return lastModifiedByTxt; //hhh
+        return lastModifiedByTxt;
     }
 
     public void setLastModifiedByTxt(String lastModifiedByTxt) {
