@@ -17,8 +17,17 @@ public class CollectOrderModel {
     private TMdAddress address;
     private TMdBranch branch;
     private BigDecimal custAccAmt;//订户余额
+    private BigDecimal suppAmt;   //应收金额
     public BigDecimal getCustAccAmt() {
         return custAccAmt;
+    }
+
+    public BigDecimal getSuppAmt() {
+        return suppAmt;
+    }
+
+    public void setSuppAmt(BigDecimal suppAmt) {
+        this.suppAmt = suppAmt;
     }
 
     public void setCustAccAmt(BigDecimal custAccAmt) {

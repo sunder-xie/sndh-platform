@@ -4012,6 +4012,7 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 		if(customerBill!=null){
 			//如果收款单已存在  获取当时录入的订户余额(因为当时已经将余额扣除了)
 			model.setCustAccAmt(customerBill.getCustAccAmt());
+			model.setSuppAmt(customerBill.getSuppAmt());
 		}else{
 			BigDecimal acLeftAmt = new BigDecimal("0.00");
 			TVipAcct eac = tVipCustInfoService.findVipAcctByCustNo(order.getMilkmemberNo());
@@ -4024,31 +4025,18 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 				tVipCustInfoService.addVipAcct(ac);
 			}
 			model.setCustAccAmt(acLeftAmt);
+			if(acLeftAmt.compareTo(order.getInitAmt()) == 1){
+				model.setSuppAmt(BigDecimal.ZERO);
+			}else{
+				model.setSuppAmt(order.getInitAmt().subtract(acLeftAmt));
+			}
 		}
 
 		BigDecimal totalPrices = new BigDecimal(0);
 		List<ProductItem> entries = new ArrayList<ProductItem>();
-		//如果是预付款订单（如果此时还没有生成日计划 查询订单行项目，如果有 则查看有效的日订单）
+		//如果是预付款订单（ 查询订单行项目）
 		//如果是后付款订单(统计所有有效的的日订单)
 		if("20".equals(order.getPaymentmethod())){
-			List<TOrderDaliyPlanItem> planItems = tOrderDaliyPlanItemMapper.getProductItemsByOrderNo(orderCode,user.getSalesOrg());
-			if(planItems != null || planItems.size() > 0){
-					for(TOrderDaliyPlanItem planItem : planItems ){
-						BigDecimal price = planItem.getPrice();
-						if(price == null ){
-							throw  new ServiceException(MessageCode.LOGIC_ERROR,"该预付款订单  "+ orderCode+"  中的  "+planItem.getMatnr()+"   "+planItem.getMatnrTxt()+"   产品价格不存在请查看");
-						}
-						ProductItem entry = new ProductItem();
-						entry.setUnit(planItem.getUnit());
-						entry.setBasePrice(price);
-						entry.setMatnr(planItem.getMatnr());
-						entry.setMatnrTxt(planItem.getMatnrTxt());
-						entry.setQty(planItem.getQty());
-						entry.setTotalPrice(price.multiply(new BigDecimal(planItem.getQty())));
-						totalPrices = totalPrices.add(entry.getTotalPrice());
-						entries.add(entry);
-					}
-			}else{
 				List<TPlanOrderItem> items = tPlanOrderItemMapper.selectByOrderCode(order.getOrderNo());
 				if(items!=null && items.size()>0){
 					for(TPlanOrderItem item : items ){
@@ -4072,10 +4060,7 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 						entries.add(entry);
 					}
 				}
-			}
-
 		}else{
-			// 预付款 如果没有生成日订单
 
 			List<TOrderDaliyPlanItem> items = tOrderDaliyPlanItemMapper.getProductItemsByOrderNo(orderCode,user.getSalesOrg());
 
