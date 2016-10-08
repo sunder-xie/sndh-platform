@@ -365,11 +365,13 @@
       <if test="dispDays != null" >
         DISP_DAYS = #{dispDays,jdbcType=INTEGER},
       </if>
-      <if test="gapDays != null" >
+      <if test="ruleType == '10' and gapDays != null" >
         GAP_DAYS = #{gapDays,jdbcType=INTEGER},
+        RULE_TXT = null,
       </if>
-      <if test="ruleTxt != null" >
+      <if test="ruleType == '20' and ruleTxt != null" >
         RULE_TXT = #{ruleTxt,jdbcType=VARCHAR},
+        GAP_DAYS = null,
       </if>
       <if test="reachTimeType != null" >
         REACH_TIME_TYPE = #{reachTimeType,jdbcType=VARCHAR},
