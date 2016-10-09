@@ -1,12 +1,11 @@
 package com.nhry.data.order.domain;
 
-import java.math.BigDecimal;
-import java.util.Date;
-
+import com.nhry.utils.SysContant;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.elasticsearch.annotations.Document;
 
-import com.nhry.utils.SysContant;
+import java.math.BigDecimal;
+import java.util.Date;
 
 @Document(indexName = SysContant.INDEX_NAME, type = "t_preorder")
 public class TPreOrder {
@@ -22,6 +21,8 @@ public class TPreOrder {
     private String paymentmethod;
 
     private String preorderSource;
+
+    private String onlineSourceType;
 
     private String onlineorderNo;
 
@@ -136,7 +137,16 @@ public class TPreOrder {
     String branchEmpName;
     String addressTxt;
 
-	public String getValidDate()
+
+    public String getOnlineSourceType() {
+        return onlineSourceType;
+    }
+
+    public void setOnlineSourceType(String onlineSourceType) {
+        this.onlineSourceType = onlineSourceType;
+    }
+
+    public String getValidDate()
 	{
 		return validDate;
 	}

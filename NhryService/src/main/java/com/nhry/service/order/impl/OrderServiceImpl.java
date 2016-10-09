@@ -1715,7 +1715,11 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 			{
 				entry.setStartDispDate(format.parse(entry.getStartDispDateStr()));
 				if("20".equals(order.getPaymentmethod())){
-					resolveEntryEndDispDate(entry);
+					if(StringUtils.isNotBlank(entry.getEndDispDateStr())){
+						entry.setEndDispDate(format.parse(entry.getEndDispDateStr()));
+					}else{
+						resolveEntryEndDispDate(entry);
+					}
 				}else{
 					entry.setEndDispDate(format.parse(entry.getEndDispDateStr()));
 				}
@@ -1833,7 +1837,7 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 
 		//计算每个行项目总共需要送多少天
 		Map<TPlanOrderItem,Integer> entryMap = new HashMap<TPlanOrderItem,Integer>();
-		int maxEntryDay = 365;
+		int maxEntryDay = 3650;
 		Date firstDeliveryDate = null;
 		for(TPlanOrderItem entry: entries){
 			if(firstDeliveryDate==null){
@@ -1946,7 +1950,7 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 			}
 
 			//计算每个行项目总共需要送多少天
-			int maxEntryDay = 365;
+			int maxEntryDay = 3650;
 
 			//根据最大配送天数的行
 			int afterDays = 0;//经过的天数
@@ -2092,7 +2096,7 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 				}
 			}
 			
-			int maxEntryDay = 365;
+			int maxEntryDay = 3650;
 
 			//根据最大配送天数的行
 			int afterDays = 0;//经过的天数
@@ -3926,7 +3930,7 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 		//判断哪天送
 		if("10".equals(orgEntry.getRuleType())){
 			int gapDays = orgEntry.getGapDays() + 1;//间隔天数
-			for(int i=1;i<365;i++){
+			for(int i=1;i<3650;i++){
 				Date today = afterDate(lastDate,i);
 				if(i%gapDays !=0){
 					if(orgEntry.getRuleTxt()!=null){
@@ -3942,7 +3946,7 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 		}
 		else if("20".equals(orgEntry.getRuleType())){
 			List<String> deliverDays = Arrays.asList(orgEntry.getRuleTxt().split(","));
-			for(int i=1;i<365;i++){
+			for(int i=1;i<3650;i++){
 				Date today = afterDate(lastDate,i);
 				String weekday = getWeek(today);
 				if(deliverDays.contains(weekday)){
@@ -4225,7 +4229,7 @@ public class OrderServiceImpl extends BaseService implements OrderService {
    		deliverDays = Arrays.asList(entry.getRuleTxt().split(","));
    	}
    	
-   	for(int afterDays = 1; afterDays < 365; afterDays++){
+   	for(int afterDays = 1; afterDays < 3650; afterDays++){
    		
    		Date today = afterDate(entry.getEndDispDate(),afterDays);
    		if("10".equals(entry.getRuleType())){
@@ -4474,7 +4478,7 @@ public class OrderServiceImpl extends BaseService implements OrderService {
    			//判断是按周期送还是按星期送
 				if("10".equals(entry.getRuleType())){
 					int gapDays = entry.getGapDays() + 1;//间隔天数
-					for(int i=1;i<365;i++){
+					for(int i=1;i<3650;i++){
 						Date today = afterDate(lastDate,i);
 						if(daysOfTwo(dateMap.get(plan.getItemNo()),today)%gapDays !=0){
 //							if(entry.getRuleTxt()!=null){
@@ -4493,7 +4497,7 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 				}
 				else if("20".equals(entry.getRuleType())){
 					List<String> deliverDays = Arrays.asList(entry.getRuleTxt().split(","));
-					for(int i=1;i<365;i++){
+					for(int i=1;i<3650;i++){
 						Date today = afterDate(lastDate,i);
 						String weekday = getWeek(today);
 						if(deliverDays.contains(weekday)){
@@ -4694,7 +4698,7 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 
  		//计算每个行项目总共需要送多少天
  		Map<String,TPlanOrderItem> entryMap = new HashMap<String,TPlanOrderItem>();
- 		int maxEntryDay = 365;
+ 		int maxEntryDay = 3650;
  		for(TPlanOrderItem entry: entries){
  			entryMap.put(entry.getItemNo(), entry);
  		}
@@ -4828,7 +4832,7 @@ public class OrderServiceImpl extends BaseService implements OrderService {
  			//如果找不到最大值
  		}
  		
- 		outer:for(int afterDays = 0; afterDays < 365 ; afterDays ++){
+ 		outer:for(int afterDays = 0; afterDays < 3650 ; afterDays ++){
  			for(TPlanOrderItem entry : entries){
  				
  			//判断是按周期送还是按星期送
@@ -4941,11 +4945,10 @@ public class OrderServiceImpl extends BaseService implements OrderService {
  		if(total<=0 || total%entry.getQty()!=0)throw new ServiceException(MessageCode.LOGIC_ERROR,"行总共配送无法平均分配到每一天!请修改总数或每日配送数");
  		
  		int afterDays = 0;
- 		
  		//判断是按周期送还是按星期送
-		for(int i=0;i<365;i++){
-			Date today = afterDate(entry.getStartDispDate(),afterDays);
-			
+		Date today = entry.getStartDispDate();
+		while(total> 0){
+			 today = afterDate(entry.getStartDispDate(),afterDays);
 			if("10".equals(entry.getRuleType())){
 				int gapDays = entry.getGapDays() + 1;//间隔天数
 				if(afterDays%gapDays != 0){
@@ -4972,17 +4975,11 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 					continue;//如果选择的星期几不送，则跳过今天
 				}
 			}
-			
 			total = total - entry.getQty();
 			afterDays++;
-			
-			if(total==0){
-				entry.setEndDispDate(today);
-				break;
-			}
-			
 		}
-		
+		entry.setEndDispDate(today);
+
  	}
  	
    //当订单是预付款时，订单行有配送总数和单价和起始日期，需要计算结束日期
@@ -4995,7 +4992,7 @@ public class OrderServiceImpl extends BaseService implements OrderService {
  		//判断是按周期送还是按星期送
 		for(int i=0;i<365;i++){
 			Date today = afterDate(entry.getStartDispDate(),afterDays);
-			
+
 			if("10".equals(entry.getRuleType())){
 				int gapDays = entry.getGapDays() + 1;//间隔天数
 				if(afterDays%gapDays != 0){
@@ -5049,7 +5046,7 @@ public class OrderServiceImpl extends BaseService implements OrderService {
      		BigDecimal amt = new BigDecimal("0.00");//行金额总计
      		
      		//判断是按周期送还是按星期送
-    		for(int i=0;i<365;i++){
+    		for(int i=0;i<3650;i++){
     			Date today = afterDate(entry.getStartDispDate(),afterDays);
     			
     			if("10".equals(entry.getRuleType())){
@@ -5115,7 +5112,7 @@ public class OrderServiceImpl extends BaseService implements OrderService {
      		BigDecimal amt = new BigDecimal("0.00");//行金额总计
      		
      		//判断是按周期送还是按星期送
-    		for(int i=0;i<365;i++){
+    		for(int i=0;i<3650;i++){
     			Date today = afterDate(sdate,afterDays);
     			
     			if(today.after(edate)){
@@ -5164,7 +5161,7 @@ public class OrderServiceImpl extends BaseService implements OrderService {
      		int afterDays = 0;
      		
      		//判断是按周期送还是按星期送
-    		for(int i=0;i<365;i++){
+    		for(int i=0;i<3650;i++){
     			Date today = afterDate(entry.getStartDispDate(),afterDays);
     			
     			if("10".equals(entry.getRuleType())){
@@ -5241,7 +5238,7 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 
 			//计算每个行项目总共需要送多少天
 			Map<TPlanOrderItem,Integer> entryMap = new HashMap<TPlanOrderItem,Integer>();
-			int maxEntryDay = 365;
+			int maxEntryDay = 3650;
 			Date firstDeliveryDate = null;
 			for(TPlanOrderItem entry: entries){
 				if(firstDeliveryDate==null){
@@ -5419,7 +5416,7 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 		BigDecimal curAmt = order.getCurAmt();
 		//计算每个行项目总共需要送多少天
 		Map<TPlanOrderItem,Integer> entryMap = new HashMap<TPlanOrderItem,Integer>();
-		int maxEntryDay = 365;
+		int maxEntryDay = 3650;
 		Date firstDeliveryDate = null;
 		for(TPlanOrderItem entry: entriesList){
 			if(firstDeliveryDate==null){
@@ -5967,7 +5964,7 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 			tVipCustInfoService.discontinue(order.getMilkmemberNo(), "20",null,null);
 		}
 	}
-	
+	//获取订户下未完成的订单数
 	@Override
 	public int selectUnfinishOrderNum(String vipCustNo) {
 		return  tPreOrderMapper.selectUnfinishOrderNum(vipCustNo);
@@ -5990,7 +5987,7 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 			}
 		});
 	}
-	
+	//订单行项目克隆
 	private void cloneOrderEntry(TPlanOrderItem newEntry, TPlanOrderItem orgEntry){
 		newEntry.setGapDays(orgEntry.getGapDays());//间隔天数
 		newEntry.setRuleTxt(orgEntry.getRuleTxt());
