@@ -10,6 +10,7 @@
     <result column="RET_REASON" property="retReason" jdbcType="VARCHAR" />
     <result column="PAYMENTMETHOD" property="paymentmethod" jdbcType="VARCHAR" />
     <result column="PREORDER_SOURCE" property="preorderSource" jdbcType="VARCHAR" />
+    <result column="ONLINE_SOURCE_TYPE" property="onlineSourceType" jdbcType="VARCHAR" />
     <result column="ONLINEORDER_NO" property="onlineorderNo" jdbcType="VARCHAR" />
     <result column="BRANCH_NO" property="branchNo" jdbcType="VARCHAR" />
     <result column="BRANCH_NAME" property="branchName" jdbcType="VARCHAR" />
@@ -203,6 +204,9 @@
       <if test="preorderSource != null" >
         PREORDER_SOURCE,
       </if>
+      <if test="onlineSourceType != null" >
+        ONLINE_SOURCE_TYPE,
+      </if>
       <if test="onlineorderNo != null" >
         ONLINEORDER_NO,
       </if>
@@ -306,6 +310,9 @@
       </if>
       <if test="preorderSource != null" >
         #{preorderSource,jdbcType=VARCHAR},
+      </if>
+      <if test="onlineSourceType != null" >
+        #{onlineSourceType,jdbcType=VARCHAR},
       </if>
       <if test="onlineorderNo != null" >
         #{onlineorderNo,jdbcType=VARCHAR},

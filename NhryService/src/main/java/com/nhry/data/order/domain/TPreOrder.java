@@ -14,6 +14,8 @@ public class TPreOrder {
 
     private String orderType;
 
+    private String hadBranchFlag;
+
     private Date orderDate;
 
     private Date endDate;
@@ -137,6 +139,14 @@ public class TPreOrder {
     String branchEmpName;
     String addressTxt;
 
+
+    public String getHadBranchFlag() {
+        return hadBranchFlag;
+    }
+
+    public void setHadBranchFlag(String hadBranchFlag) {
+        this.hadBranchFlag = hadBranchFlag;
+    }
 
     public String getOnlineSourceType() {
         return onlineSourceType;

@@ -27,7 +27,7 @@ public interface TVipCustInfoService {
     String addVipCusts(List<TVipCustInfo> record);
 	/**
 	 * 为导入的订户新建会员编号
-	 * @param record
+	 * @param salesOrg
 	 * @return
 	 */
 	int batchAddVipCustSapNo(String salesOrg);
@@ -91,7 +91,16 @@ public interface TVipCustInfoService {
      * @return
      */
     public String addAddressForCust(TMdAddress address,String branchNo,Map<String,String> attrs);
-    
+
+
+    /**
+     * 为订户添加详细地址信息  （没有奶站的）
+     * @param address
+     * 如果 该地址 所属的订户不存在则创建 还要创建新订户
+     * @return
+     */
+    public String addAddressNoBrnachForCust(TMdAddress address,String salesOrg,Map<String,String> attrs);
+
     /**
      * 修改订户详细地址
      * @param record

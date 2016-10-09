@@ -1638,7 +1638,7 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 //		order.setMilkmemberNo(milkmemberNo);//喝奶人编号
 //		order.setEmpNo(empNo);//送奶员编号
 //		order.setInitAmt(initAmt);//页面输入的初始订单金额
-		order.setPaymentmethod(order.getPaymentStat());//10 后款 20 先款 30 殿付款
+		order.setPaymentmethod(order.getPaymentStat());//10 后款 20 先款( 30 殿付款)
 		if("Y".equals(order.getIsPaid())){
 			order.setPaymentStat("20");//付款状态,生成时已经付款
 		}else{
@@ -1650,11 +1650,18 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 		}
 		order.setSign("10");//在订状态
 		//根据传的奶站获取经销商和销售组织
+		// 如果是电商来的  可以是无奶站
 		TMdBranch branch = branchMapper.selectBranchByNo(order.getBranchNo());
-		if(StringUtils.isNotBlank(order.getBranchNo())){
+		//如果是正常订单
+		if("Y".equals(order.getHadBranchFlag())){
+			if(StringUtils.isBlank(order.getBranchNo())) throw new ServiceException(MessageCode.LOGIC_ERROR,"该订单奶站编号不能为空!");
+
 			if(branch==null)throw new ServiceException(MessageCode.LOGIC_ERROR,"奶站不存在!");
 			order.setDealerNo(branch.getDealerNo());//进销商
 			order.setSalesOrg(branch.getSalesOrg());
+		}else{
+			//如果是无奶站订单
+			order.setSalesOrg(order.getSalesOrg());
 		}
 		//order.setSalesOrg(userSessionService.getCurrentUser().getSalesOrg());//销售组织
 
@@ -1678,13 +1685,26 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 				record.getAddress().setRecvName(order.getMilkmemberName());
 				order.setAdressNo(tVipCustInfoService.addAddressForCust(record.getAddress(),null,null).split(",")[1]);
 			}else{
-				Map<String,String> map = new HashMap<String,String>();
-				map.put("activityNo",order.getSolicitNo());
-				map.put("vipType",order.getDeliveryType());
-				map.put("vipSrc",order.getPreorderSource());
-				String addressAndMilkmember = tVipCustInfoService.addAddressForCust(record.getAddress(),order.getBranchNo(),map);
-				order.setMilkmemberNo(addressAndMilkmember.split(",")[0]);
-				order.setAdressNo(addressAndMilkmember.split(",")[1]);
+				//电商来的 无奶站订单  处理订户信息
+				if("N".equals(order.getHadBranchFlag()) && "10".equals(order.getPreorderSource())){
+					if(StringUtils.isBlank(order.getSalesOrg())) throw new ServiceException(MessageCode.LOGIC_ERROR,"电商的无奶站订单，不能没有销售组织");
+					Map<String,String> map = new HashMap<String,String>();
+					map.put("activityNo",order.getSolicitNo());
+					map.put("vipType",order.getDeliveryType());
+					map.put("vipSrc",order.getPreorderSource());
+					String addressAndMilkmember = tVipCustInfoService.addAddressNoBrnachForCust(record.getAddress(),order.getSalesOrg(),map);
+					order.setMilkmemberNo(addressAndMilkmember.split(",")[0]);
+					order.setAdressNo(addressAndMilkmember.split(",")[1]);
+				}else{
+					Map<String,String> map = new HashMap<String,String>();
+					map.put("activityNo",order.getSolicitNo());
+					map.put("vipType",order.getDeliveryType());
+					map.put("vipSrc",order.getPreorderSource());
+					String addressAndMilkmember = tVipCustInfoService.addAddressForCust(record.getAddress(),order.getBranchNo(),map);
+					order.setMilkmemberNo(addressAndMilkmember.split(",")[0]);
+					order.setAdressNo(addressAndMilkmember.split(",")[1]);
+				}
+
 			}
 		}
 		
@@ -1695,13 +1715,19 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 		//生成每个订单行
 		int index = 0;
 		BigDecimal orderAmt = new BigDecimal("0.00");//订单总价
+
+
 		for(TPlanOrderItem entry: record.getEntries()){
 			
 			//非奶站订单要重新计算金额
 			if(!"30".equals(order.getPreorderSource())){
-				float price = priceService.getMaraPriceForCreateOrder(order.getBranchNo(), entry.getMatnr(), order.getDeliveryType(), branch.getSalesOrg());
-				if(price<=0)throw new ServiceException(MessageCode.LOGIC_ERROR,"产品价格小于0,请检查传入的商品号，奶站和配送方式!信息："+"奶站："+order.getBranchNo()+"商品号："+entry.getMatnr()+"配送方式："+order.getDeliveryType()+"销售组织："+branch.getSalesOrg());
-				entry.setSalesPrice(new BigDecimal(String.valueOf(price)));
+				//如果是 电商过来的 没有奶站的订单  不重新计算金额
+				if(!("10".equals(order.getPreorderSource()) && "N".equals(order.getHadBranchFlag()))){
+					float price = priceService.getMaraPriceForCreateOrder(order.getBranchNo(), entry.getMatnr(), order.getDeliveryType(),"Y".equals(order.getHadBranchFlag())?branch.getSalesOrg():order.getSalesOrg());
+					if(price<=0)throw new ServiceException(MessageCode.LOGIC_ERROR,"产品价格小于0,请检查传入的商品号，奶站和配送方式!信息："+"奶站："+order.getBranchNo()+"商品号："+entry.getMatnr()+"配送方式："+order.getDeliveryType()+"销售组织："+branch.getSalesOrg());
+					entry.setSalesPrice(new BigDecimal(String.valueOf(price)));
+				}
+
 			}
 			
 			entry.setOrderNo(order.getOrderNo());
@@ -1731,7 +1757,12 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 			{
 				throw new ServiceException(MessageCode.LOGIC_ERROR,"日期格式有误");
 			}
-			orderAmt = orderAmt.add(calculateEntryAmount(entry));
+			if(!("10".equals(order.getPreorderSource()) && "N".equals(order.getHadBranchFlag()))){
+				orderAmt = orderAmt.add(calculateEntryAmount(entry));
+			}else{
+				orderAmt =  orderAmt.add(order.getInitAmt());
+			}
+
 			
 			//促销判断
 			if(StringUtils.isNotBlank(entry.getPromotion())&&"10".equals(order.getPaymentmethod()))throw new ServiceException(MessageCode.LOGIC_ERROR,"后付款的订单不能参加促销!");
