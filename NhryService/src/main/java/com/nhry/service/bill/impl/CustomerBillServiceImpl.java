@@ -351,6 +351,7 @@ public class CustomerBillServiceImpl implements CustomerBillService {
             for(TPreOrder order : orderList){
                 //判断该订单 对应的收款单是否创建 如果没有先创建
                 TMstRecvBill  bill = this.createRecBillByOrderNo(order.getOrderNo());
+                if("20".equals(bill.getStatus())) continue;
                 CustomerPayMentModel cmodel = new CustomerPayMentModel();
                 cmodel.setAmt(order.getInitAmt().subtract(bill.getAccAmt()).toString());
                 cmodel.setEmpNo(order.getEmpNo());
@@ -382,6 +383,8 @@ public class CustomerBillServiceImpl implements CustomerBillService {
             for(TPreOrder order : ordersList){
                 //判断该订单 对应的收款单是否创建 如果没有先创建
                 TMstRecvBill  bill = this.createRecBillByOrderNo(order.getOrderNo());
+                //已收过款
+                if("20".equals(bill.getStatus())) continue;
                 CustomerPayMentModel cmodel = new CustomerPayMentModel();
                 cmodel.setAmt(order.getInitAmt().subtract(bill.getAccAmt()).toString());
                 cmodel.setEmpNo(order.getEmpNo());

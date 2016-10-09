@@ -240,10 +240,7 @@ public class TVipCustInfoServiceImpl extends BaseService implements TVipCustInfo
 
 	@Override
 	public String addAddressForCust(TMdAddress address,String branchNo,Map<String,String> maps) {
-		// TODO Auto-generated method stub
-		if(StringUtils.isEmpty(address.getRecvName()) || StringUtils.isEmpty(address.getAddressTxt()) || StringUtils.isEmpty(address.getProvince()) || StringUtils.isEmpty(address.getCity()) ){
-			throw new ServiceException(MessageCode.LOGIC_ERROR, "订户地址详细信息对应的收货人(recvName)、详细地址(addressTxt)、省份(province)、城市(city)不能为空!");
-		}
+		validateAddressData(address);
 		boolean tag = false;
 		TSysUser sysuser = this.userSessionService.getCurrentUser();
 		if(!StringUtils.isEmpty(branchNo) && StringUtils.isEmpty(address.getVipCustNo())){
@@ -326,6 +323,86 @@ public class TVipCustInfoServiceImpl extends BaseService implements TVipCustInfo
 		return address.getVipCustNo()+","+address.getAddressId();
 	}
 
+	@Override
+	public String addAddressNoBrnachForCust(TMdAddress address,String salesOrg,Map<String,String> maps) {
+		validateAddressData(address);
+		boolean tag = false;
+		TSysUser sysuser = this.userSessionService.getCurrentUser();
+		if(StringUtils.isEmpty(address.getVipCustNo())){
+			//来自电商，需要自动创建订户(没有奶站)
+			tag = true;
+			Map<String,String> attrs = new HashMap<String,String>();
+			attrs.put("salesOrg",salesOrg);
+			attrs.put("phone", address.getMp());
+			String custNo = this.tmdVipcust.getCustNoByPhone(attrs);
+			if(StringUtils.isEmpty(custNo)){
+				//创建新订户
+				TVipCustInfo cust = new TVipCustInfo();
+				cust.setVipCustNo(PrimaryKeyUtils.generateUpperUuidKey());
+				cust.setProvince(address.getProvince());
+				cust.setCity(address.getCity());
+				cust.setCounty(address.getCounty());
+				cust.setAddressTxt(address.getAddressTxt());
+				cust.setMp(address.getMp());
+				cust.setVipName(address.getRecvName());
+				cust.setStatus("10");//在订状态
+				cust.setSubdist(address.getResidentialArea());
+				cust.setCreateAt(new Date());
+				cust.setCreateBy(sysuser.getLoginName());
+				cust.setCreateByTxt(sysuser.getDisplayName());
+				cust.setSalesOrg(salesOrg);
+				cust.setVipSrc("10"); //电商
+				if(maps != null && maps.size() > 0){
+					cust.setActivityNo(maps.get("activityNo"));  //活动编号
+					cust.setVipType(maps.get("vipType"));  //订户类型
+					cust.setVipSrc(maps.get("vipSrc")); //订户来源
+				}
+				this.tmdVipcust.addVipCust(cust);
+				address.setVipCustNo(cust.getVipCustNo());
+				address.setIsDafault("Y");
+				//创建会员
+				vipInfoDataService.executeVipInfoData(cust,cust.getVipMp());
+			}else{
+				address.setVipCustNo(custNo);
+				attrs.clear();
+				attrs.put("province", address.getProvince());
+				attrs.put("city", address.getCity());
+				attrs.put("county", address.getCounty());
+				attrs.put("residentialArea", address.getResidentialArea());
+				attrs.put("addressTxt", address.getAddressTxt());
+				attrs.put("custNo", address.getVipCustNo());
+				List<TMdAddress> addresses = this.addressMapper.findAddressByMixedTerms(attrs);
+				if(addresses != null && addresses.size() > 0){
+					return custNo+","+addresses.get(0).getAddressId();
+				}
+			}
+		}else if(StringUtils.isEmpty(address.getVipCustNo())){
+			throw new ServiceException(MessageCode.LOGIC_ERROR, "订户地址详细信息对应的订户编号(vipCustNo)不能为空!");
+		}
+
+		TVipCustInfo cust = this.tmdVipcust.findVipCustOnlyByNo(address.getVipCustNo());
+
+		if(cust == null){
+			throw new ServiceException(MessageCode.LOGIC_ERROR,"该订户地址详细信息中vipCustNo对应的订户信息不存在!");
+		}
+		if(StringUtils.isEmpty(address.getAddressId())) {
+			address.setAddressId(PrimaryKeyUtils.generateUpperUuidKey());
+		}
+		address.setIsDelete("N");
+		address.setCreateAt(new Date());
+		address.setCreateBy(sysuser.getLoginName());
+		address.setCreateByTxt(sysuser.getDisplayName());
+		this.addressMapper.addAddressForCust(address);
+		vipInfoDataService.executeSendAddress(address,"");
+		return address.getVipCustNo()+","+address.getAddressId();
+	}
+
+	public void validateAddressData(TMdAddress address){
+		// TODO Auto-generated method stub
+		if(StringUtils.isEmpty(address.getRecvName()) || StringUtils.isEmpty(address.getAddressTxt()) || StringUtils.isEmpty(address.getProvince()) || StringUtils.isEmpty(address.getCity()) ){
+			throw new ServiceException(MessageCode.LOGIC_ERROR, "订户地址详细信息对应的收货人(recvName)、详细地址(addressTxt)、省份(province)、城市(city)不能为空!");
+		}
+	}
 	public void setAddressMapper(TMdAddressMapper addressMapper) {
 		this.addressMapper = addressMapper;
 	}
