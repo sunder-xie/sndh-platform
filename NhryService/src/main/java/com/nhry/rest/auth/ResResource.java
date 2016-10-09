@@ -6,10 +6,12 @@ import com.nhry.data.auth.domain.TSysResource;
 import com.nhry.model.sys.ResponseModel;
 import com.nhry.rest.BaseResource;
 import com.nhry.service.auth.dao.ResourceService;
+import com.nhry.utils.PrimaryKeyUtils;
 import com.sun.jersey.spi.resource.Singleton;
 import com.wordnik.swagger.annotations.Api;
 import com.wordnik.swagger.annotations.ApiOperation;
 import com.wordnik.swagger.annotations.ApiParam;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
@@ -18,6 +20,8 @@ import org.springframework.stereotype.Controller;
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -105,5 +109,17 @@ public class ResResource extends BaseResource {
     @ApiOperation(value = "/find/pages", response = TSysResource.class, notes = "根据当前用户拥有页面资源信息列表")
     public Response findCurUserPages(){
         return convertToRespModel(MessageCode.NORMAL, null, resService.findCurUserPages());
+    }
+    
+    @GET
+    @Path("/createUUID")
+    @Produces(MediaType.APPLICATION_JSON)
+    @ApiOperation(value = "/createUUID", response = TSysResource.class, notes = "批量生成UUID")
+    public Response createUUID(@ApiParam(required = true, name = "count", value = "生成个数")@QueryParam("count")int count){
+    	List<String> uuids = new ArrayList<String>();
+    	for(int i = 0; i < count; i++) {
+    		uuids.add(PrimaryKeyUtils.generateUpperUuidKey());
+    	}
+    	return convertToRespModel(MessageCode.NORMAL, null, uuids);
     }
 }
