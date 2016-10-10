@@ -17,6 +17,8 @@ public interface BranchService {
     TMdBranch selectBranchByNo(String branchNo);
 
     int updateBranch(TMdBranch record);
+
+    int uptValidBranch(TMdBranch record);
     
     public List<TMdBranch> findBranchListByOrg();
 

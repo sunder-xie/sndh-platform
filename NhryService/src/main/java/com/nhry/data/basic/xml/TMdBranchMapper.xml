@@ -96,6 +96,12 @@
       #{lastModified,jdbcType=TIMESTAMP}, #{lastModifiedBy,jdbcType=VARCHAR}, #{lastModifiedByTxt,jdbcType=VARCHAR},#{companyCode,jdbcType=VARCHAR}
       )
   </insert>
+  <update id="uptValidBranch" parameterType="com.nhry.data.basic.domain.TMdBranch">
+    update t_md_branch
+    set   IS_VALID = #{isValid,jdbcType=VARCHAR},
+           ONLINE_DATE = #{onlineDate,jdbcType=DATE}
+    where BRANCH_NO = #{branchNo,jdbcType=VARCHAR}
+  </update>
   <update id="uptBranch" parameterType="com.nhry.data.basic.domain.TMdBranch" >
     update t_md_branch
     set BRANCH_NAME = #{branchName,jdbcType=VARCHAR},
