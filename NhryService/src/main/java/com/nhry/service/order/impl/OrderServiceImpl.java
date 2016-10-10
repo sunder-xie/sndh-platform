@@ -37,7 +37,6 @@ import com.nhry.service.pi.dao.SmsSendService;
 import com.nhry.service.pi.pojo.MemberActivities;
 import com.nhry.utils.CodeGeneratorUtil;
 import com.nhry.utils.EnvContant;
-
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.core.task.TaskExecutor;
 
@@ -751,12 +750,12 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 				}else if("10".equals(order.getPaymentStat())){
 					//此处看是否打印过收款单，里面有没有用帐户余额支付的金额，退回
 					TMstRecvBill bill = customerBillMapper.getRecBillByOrderNo(order.getOrderNo());
-	            if(bill!= null){
-	            	TVipAcct ac = new TVipAcct();
-					   ac.setVipCustNo(order.getMilkmemberNo());
-					   ac.setAcctAmt(bill.getAccAmt());//TODO 取哪个金额?
-						tVipCustInfoService.addVipAcct(ac);
-	            }
+					if(bill!= null && (bill.getAccAmt().compareTo(BigDecimal.ZERO)==1)){
+						TVipAcct ac = new TVipAcct();
+						   ac.setVipCustNo(order.getMilkmemberNo());
+						   ac.setAcctAmt(bill.getAccAmt());
+							tVipCustInfoService.addVipAcct(ac);
+					}
 				}
 				
 				//用掉的钱
@@ -1653,15 +1652,14 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 		// 如果是电商来的  可以是无奶站
 		TMdBranch branch = branchMapper.selectBranchByNo(order.getBranchNo());
 		//如果是正常订单
-		if("Y".equals(order.getHadBranchFlag())){
+		if("N".equals(order.getHadBranchFlag()) && "10".equals(order.getPreorderSource())){
+			//如果是无奶站订单
+			order.setSalesOrg(order.getSalesOrg());
+		}else{
 			if(StringUtils.isBlank(order.getBranchNo())) throw new ServiceException(MessageCode.LOGIC_ERROR,"该订单奶站编号不能为空!");
-
 			if(branch==null)throw new ServiceException(MessageCode.LOGIC_ERROR,"奶站不存在!");
 			order.setDealerNo(branch.getDealerNo());//进销商
 			order.setSalesOrg(branch.getSalesOrg());
-		}else{
-			//如果是无奶站订单
-			order.setSalesOrg(order.getSalesOrg());
 		}
 		//order.setSalesOrg(userSessionService.getCurrentUser().getSalesOrg());//销售组织
 
@@ -5985,15 +5983,19 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 		
 		//完结日期不是配送那天 return
 		if(order==null)return;
-		if(!order.getEndDate().equals(dispDate))return;
-		
-		//订单成完结
-		tPreOrderMapper.updateOrderToFinish(order.getOrderNo());
-		
-		if(tPreOrderMapper.selectNumOfdeletedByMilkmemberNo()<=0){
-			//订户状态更改
-			tVipCustInfoService.discontinue(order.getMilkmemberNo(), "20",null,null);
+		if(!order.getEndDate().equals(dispDate)) {
+			return;
+		}else{
+			//订单成完结
+			tPreOrderMapper.updateOrderToFinish(order.getOrderNo());
+
+			if(tPreOrderMapper.selectNumOfdeletedByMilkmemberNo()<=0){
+				//订户状态更改
+				tVipCustInfoService.discontinue(order.getMilkmemberNo(), "20",null,null);
+			}
 		}
+		
+
 	}
 	//获取订户下未完成的订单数
 	@Override
