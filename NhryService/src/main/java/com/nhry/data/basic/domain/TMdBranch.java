@@ -60,11 +60,31 @@ public class TMdBranch implements Serializable{
 
     private String lastModifiedBy;
 
+    public String getIsValid() {
+        return isValid;
+    }
+
+    public void setIsValid(String isValid) {
+        this.isValid = isValid;
+    }
+
+    public Date getOnlineDate() {
+        return onlineDate;
+    }
+
+    public void setOnlineDate(Date onlineDate) {
+        this.onlineDate = onlineDate;
+    }
+
     private String lastModifiedByTxt;
 
     private String companyCode;
 
     private String companyName;
+
+    private String isValid;
+
+    private Date onlineDate;
 
     public String getProvinceName() {
         return provinceName;
