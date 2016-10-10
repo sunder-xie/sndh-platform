@@ -22,6 +22,8 @@ public interface TMdBranchMapper {
 
     int updateBranch(TMdBranch tMdBranch);
 
+    int uptValidBranch(TMdBranch tMdBranch);
+
     List<TMdBranch> getBranchByCodeOrName(Map<String, String> map);
 
     List<TMdBranch> findBranchListByOrgAndAuto(String salesOrg);
