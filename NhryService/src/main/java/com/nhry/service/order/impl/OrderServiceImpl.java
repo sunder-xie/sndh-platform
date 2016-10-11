@@ -495,7 +495,7 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 					if("30".equals(plan.getStatus()))continue;
 					initAmt = initAmt.add(plan.getAmt());
 					if("20".equals(plan.getStatus())){
-						usedAmt.add(plan.getAmt());
+						usedAmt = usedAmt.add(plan.getAmt());
 					}
 				}
 				
@@ -765,9 +765,10 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 				
 			}else{//后付款
 				tOrderDaliyPlanItemMapper.updateDaliyPlansToBack(order);
-				
+
 				//用掉的钱
 				BigDecimal remain = order.getInitAmt().subtract(order.getCurAmt());
+				//BigDecimal remain = tOrderDaliyPlanItemMapper.getOrderOrderDailyFinishAmtByOrderNo(order.getOrderNo());
 				order.setInitAmt(remain);
 				order.setCurAmt(new BigDecimal("0.00"));
 			}
@@ -1654,6 +1655,9 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 		//如果是正常订单
 		if("N".equals(order.getHadBranchFlag()) && "10".equals(order.getPreorderSource())){
 			//如果是无奶站订单
+			if(StringUtils.isBlank(order.getSalesOrg())){
+				throw new ServiceException(MessageCode.LOGIC_ERROR,"无奶站订单，销售组织编号不能为空!");
+			}
 			order.setSalesOrg(order.getSalesOrg());
 		}else{
 			if(StringUtils.isBlank(order.getBranchNo())) throw new ServiceException(MessageCode.LOGIC_ERROR,"该订单奶站编号不能为空!");

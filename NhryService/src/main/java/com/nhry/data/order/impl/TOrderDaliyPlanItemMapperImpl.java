@@ -182,6 +182,11 @@ public class TOrderDaliyPlanItemMapperImpl implements TOrderDaliyPlanItemMapper
 		return sqlSessionTemplate.selectList("reportOrderDaliyPlanByParams",model);
 	}
 
+	@Override
+	public BigDecimal getOrderOrderDailyFinishAmtByOrderNo(String orderNo) {
+		return sqlSessionTemplate.selectOne("getOrderOrderDailyFinishAmtByOrderNo",orderNo);
+	}
+
 
 	/**
 	 * 根据订单号和日期获取当前日期的日订单状态
