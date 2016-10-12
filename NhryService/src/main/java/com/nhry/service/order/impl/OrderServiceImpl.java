@@ -336,10 +336,20 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 		//如果更换奶站，可能会更换商品价格，并把用户挂到该奶站下
 		TPreOrder order = tPreOrderMapper.selectByPrimaryKey(orderNo);
 //		if(!uptManHandModel.getBranchNo().equals(order.getBranchNo())){
-			
-		//订户挂奶站,订单的奶站和销售组织变更
-		String salesOrg = tVipCustInfoService.uptCustBranchNo(order.getMilkmemberNo(),branchNo);
-		uptManHandModel.setSalesOrg(salesOrg);
+		TVipCustInfo newVip = tVipCustInfoService.findVipCustByNo(order.getMilkmemberNo());
+		Map<String,String> custMap = new HashMap<String,String>();
+		custMap.put("branchNo",branchNo);
+		custMap.put("phone",newVip.getMp());
+		TVipCustInfo oldVip = tVipCustInfoService.findStaCustByPhone(custMap);
+		if(oldVip!=null && oldVip.getBranchNo().equals(newVip.getBranchNo())){
+			//如果已经该奶站有这个订户电话  则删除 保存的无奶站订户
+			tVipCustInfoService.deleteCustByCustNo(order.getMilkmemberNo());
+		}else{
+			//订户挂奶站,订单的奶站和销售组织变更
+			String salesOrg = tVipCustInfoService.uptCustBranchNo(order.getMilkmemberNo(),branchNo);
+			uptManHandModel.setSalesOrg(salesOrg);
+		}
+
 		
 		//换价格
 		ArrayList<TPlanOrderItem> orgEntries = (ArrayList<TPlanOrderItem>) tPlanOrderItemMapper.selectByOrderCode(orderNo);
@@ -1667,7 +1677,7 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 			order.setSalesOrg(order.getSalesOrg());
 		}else{
 			if(StringUtils.isBlank(order.getBranchNo())) throw new ServiceException(MessageCode.LOGIC_ERROR,"该订单奶站编号不能为空!");
-			if(branch==null)throw new ServiceException(MessageCode.LOGIC_ERROR,"奶站不存在!");
+			if(branch==null)throw new ServiceException(MessageCode.LOGIC_ERROR,"奶站号为"+order.getBranchNo()+" 的奶站在订户系统中不存在!");
 			order.setDealerNo(branch.getDealerNo());//进销商
 			order.setSalesOrg(branch.getSalesOrg());
 		}
@@ -1767,7 +1777,8 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 			if(StringUtils.isNotBlank(order.getBranchNo())){
 				orderAmt = orderAmt.add(calculateEntryAmount(entry));
 			}else{
-				orderAmt =  orderAmt.add(order.getInitAmt());
+			//TODO 无奶站订单如果订单金额没传 是否设为0  因为这个金额会在分奶站后重新算
+				orderAmt =  orderAmt.add(order.getInitAmt() == null ? BigDecimal.ZERO : order.getInitAmt());
 			}
 
 			
@@ -4673,25 +4684,25 @@ public class OrderServiceImpl extends BaseService implements OrderService {
    	TPreOrder order = record.getOrder();
    	if(StringUtils.isBlank(order.getPaymentStat())){
    		throw new ServiceException(MessageCode.LOGIC_ERROR,"请选择付款方式!");
-		}
+	}
    	if(StringUtils.isBlank(order.getMilkboxStat())){
    		throw new ServiceException(MessageCode.LOGIC_ERROR,"请选择奶箱状态!");
-		}
+	}
    	if(StringUtils.isBlank(order.getEmpNo())){
    		//if(!"10".equals(order.getPreorderSource())&&!"20".equals(order.getPreorderSource())&&!"40".equals(order.getPreorderSource())){
 		if("30".equals(order.getPreorderSource())){
    				throw new ServiceException(MessageCode.LOGIC_ERROR,"请选择送奶员!");
    		}
-		}
+	}
    	if(record.getEntries()==null || record.getEntries().size() == 0){
    		throw new ServiceException(MessageCode.LOGIC_ERROR,"请选择商品行!");
-		}
+	}
    	if(StringUtils.isBlank(order.getMilkmemberNo())){
    		//if(!"10".equals(order.getPreorderSource())&&!"20".equals(order.getPreorderSource())){//电商不交验订户
 		if("30".equals(order.getPreorderSource())){
 			throw new ServiceException(MessageCode.LOGIC_ERROR,"请选择订户!");
    		}
-		}
+	}
    	if(StringUtils.isBlank(order.getAdressNo())){
    		if(record.getAddress() == null){
    			throw new ServiceException(MessageCode.LOGIC_ERROR,"请选择或输入地址!");
