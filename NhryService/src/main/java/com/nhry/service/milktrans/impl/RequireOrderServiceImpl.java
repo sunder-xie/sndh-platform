@@ -338,7 +338,7 @@ public class RequireOrderServiceImpl implements RequireOrderService {
 
         List<TOrderDaliyPlanItem> items = tOrderDaliyPlanItemMapper.selectProDayPlanOfDealerBranch(rModel);
         if (items != null && items.size() > 0) {
-            TSsmSalOrder order = createSaleOrder(user, orderDate, "dealer", null,2);
+            TSsmSalOrder order = createSaleOrder(user, orderDate, "dealer", "free",2);
             for (int i = 1; i <= items.size(); i++) {
                 TOrderDaliyPlanItem item = items.get(i - 1);
                 createSaleOrderItem(item, i, order.getOrderNo(), orderDate, "dealer");

@@ -50,7 +50,7 @@ public interface TVipCustInfoService {
      * @param attrs
      * @return
      */
-    List<TVipCustInfo> findStaCustByPhone(Map<String,String> attrs);
+    TVipCustInfo findStaCustByPhone(Map<String,String> attrs);
     
     /**
      * 根据电话查找公司订户信息
@@ -198,4 +198,5 @@ public interface TVipCustInfoService {
      * @return
      */
     TMdAddress findAddressByCustNoISDefault(String id);
+
 }
