@@ -123,4 +123,10 @@ public class ExcelUtil {
             throw new RuntimeException("请使用正规模板！数据不能为空！，错误位置是第"+(row.getRowNum()+1)+"行,"+"第"+ j +"列。请校验同样问题！");
         }
     }
+    
+    public static String getFormula(String fma,int sRow, int sCol, int eRow, int eCol){
+        String fmaStr = "";
+        fmaStr = fma + "(INDIRECT(\"R" + sRow + "C" + sCol + "\",0):INDIRECT(\"R" + eRow + "C" + eCol + "\",0))";
+        return fmaStr;
+    }
 }
