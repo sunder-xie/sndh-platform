@@ -38,6 +38,11 @@ public class TMdBranchMapperImpl implements TMdBranchMapper {
 	}
 
 	@Override
+	public int uptValidBranch(TMdBranch tMdBranch) {
+		return sqlSessionTemplate.update("uptValidBranch",tMdBranch);
+	}
+
+	@Override
 	public List<TMdBranch> getBranchByCodeOrName(Map<String, String> map) {
 		return sqlSessionTemplate.selectList("getBranchByCodeOrName",map);
 	}

@@ -184,7 +184,7 @@ public class TVipCustInfoServiceImpl extends BaseService implements TVipCustInfo
 	}
 
 	@Override
-	public List<TVipCustInfo> findStaCustByPhone(Map<String, String> attrs) {
+	public TVipCustInfo findStaCustByPhone(Map<String, String> attrs) {
 		// TODO Auto-generated method stub
 		return this.tmdVipcust.findStaCustByPhone(attrs);
 	}
@@ -334,8 +334,6 @@ public class TVipCustInfoServiceImpl extends BaseService implements TVipCustInfo
 			Map<String,String> attrs = new HashMap<String,String>();
 			attrs.put("salesOrg",salesOrg);
 			attrs.put("phone", address.getMp());
-			String custNo = this.tmdVipcust.getCustNoByPhone(attrs);
-			if(StringUtils.isEmpty(custNo)){
 				//创建新订户
 				TVipCustInfo cust = new TVipCustInfo();
 				cust.setVipCustNo(PrimaryKeyUtils.generateUpperUuidKey());
@@ -361,21 +359,7 @@ public class TVipCustInfoServiceImpl extends BaseService implements TVipCustInfo
 				address.setVipCustNo(cust.getVipCustNo());
 				address.setIsDafault("Y");
 				//创建会员
-				vipInfoDataService.executeVipInfoData(cust,cust.getVipMp());
-			}else{
-				address.setVipCustNo(custNo);
-				attrs.clear();
-				attrs.put("province", address.getProvince());
-				attrs.put("city", address.getCity());
-				attrs.put("county", address.getCounty());
-				attrs.put("residentialArea", address.getResidentialArea());
-				attrs.put("addressTxt", address.getAddressTxt());
-				attrs.put("custNo", address.getVipCustNo());
-				List<TMdAddress> addresses = this.addressMapper.findAddressByMixedTerms(attrs);
-				if(addresses != null && addresses.size() > 0){
-					return custNo+","+addresses.get(0).getAddressId();
-				}
-			}
+				//vipInfoDataService.executeVipInfoData(cust,cust.getVipMp());
 		}else if(StringUtils.isEmpty(address.getVipCustNo())){
 			throw new ServiceException(MessageCode.LOGIC_ERROR, "订户地址详细信息对应的订户编号(vipCustNo)不能为空!");
 		}
@@ -393,7 +377,7 @@ public class TVipCustInfoServiceImpl extends BaseService implements TVipCustInfo
 		address.setCreateBy(sysuser.getLoginName());
 		address.setCreateByTxt(sysuser.getDisplayName());
 		this.addressMapper.addAddressForCust(address);
-		vipInfoDataService.executeSendAddress(address,"");
+		//vipInfoDataService.executeSendAddress(address,"");
 		return address.getVipCustNo()+","+address.getAddressId();
 	}
 
@@ -559,6 +543,8 @@ public class TVipCustInfoServiceImpl extends BaseService implements TVipCustInfo
 		if(branch == null){
 			throw new ServiceException(MessageCode.LOGIC_ERROR, "该奶站编号对应的奶站不存在!");
 		}
+
+
 		TSysUser user = this.userSessionService.getCurrentUser();
 		TVipCustInfo cust = new TVipCustInfo();
 		cust.setVipCustNo(custNo);
