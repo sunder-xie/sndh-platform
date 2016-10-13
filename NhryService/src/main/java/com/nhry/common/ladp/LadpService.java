@@ -102,6 +102,7 @@ public class LadpService {
 			SearchControls constraints = new SearchControls();
 			constraints.setSearchScope(SearchControls.SUBTREE_SCOPE);
 			constraints.setReturningAttributes(attrs);
+			init();
 			en = ctx.search(basedn, s, constraints);
 		} catch (Exception e) {
 			System.out.println("Exception in search():" + e);
