@@ -133,12 +133,19 @@ public class TPreOrder {
     private String isPaid;
     
     private String validDate;
-
+    private String isValid;
     String branchEmpNo;
     String branchMp;
     String branchEmpName;
     String addressTxt;
 
+    public String getIsValid() {
+        return isValid;
+    }
+
+    public void setIsValid(String isValid) {
+        this.isValid = isValid;
+    }
 
     public String getHadBranchFlag() {
         return hadBranchFlag;
