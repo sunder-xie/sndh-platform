@@ -64,7 +64,9 @@ public interface OrderService {
 
 	int uptManHandOrder(UpdateManHandOrderModel uptManHandModel);
 
-	int returnOrder(ReturnOrderModel returnOrderModel);
+	int returnOrder(UpdateManHandOrderModel uptManHandModel);
+
+	int orderConfirm(UpdateManHandOrderModel uptManHandModel);
 
 	int canOrderUnsubscribe(String orderNo);
 
@@ -109,4 +111,5 @@ public interface OrderService {
 	BigDecimal calPreOrderTotalFactoryPrice(String orderNo);
 
 	void selectOrdersAndSendMessage();
+
 }

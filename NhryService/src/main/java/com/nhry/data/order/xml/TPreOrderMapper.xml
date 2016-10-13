@@ -55,6 +55,7 @@
     <result column="PAY_DATE" property="payDate" jdbcType="DATE" />
     <result column="RESUME_FLAG" property="resumeFlag" jdbcType="VARCHAR" />
     <result column="IS_INTEGRATION" property="isIntegration" jdbcType="VARCHAR" />
+    <result column="IS_VALID" property="isValid" jdbcType="VARCHAR" />
     <result column="YGROWTH" property="yGrowth" jdbcType="INTEGER" />
     <result column="YFRESH" property="yFresh" jdbcType="INTEGER" />
   </resultMap>
@@ -655,7 +656,9 @@
     WHERE  1=1
     and (o.RET_DATE is not null or o.BRANCH_NO is null or o.BRANCH_NO = '')
     and o.PREORDER_STAT = "20"
-
+    <if test="orderNo !=null and orderNo!=''">
+      and  o.ORDER_NO = #{orderNo,jdbcType=VARCHAR}
+    </if>
     <if test="orderDateStart != null and orderDateStart !=''">
       AND o.RET_DATE &gt;= #{orderDateStart,jdbcType=DATE}
     </if>
@@ -770,18 +773,46 @@
         <if test="salesOrg != null and salesOrg != ''">
      	  SALES_ORG = #{salesOrg,jdbcType=VARCHAR},
         </if>
+         <if test="dealerNo != null and dealerNo != ''">
+        DEALER_NO = #{dealerNo,jdbcType=VARCHAR},
+         </if>
+        <if test="retReason != null and retReason != ''">
+          RET_REASON = #{retReason,jdbcType=VARCHAR},
+        </if>
+        <if test="milkmemberNo != null and milkmemberNo != ''">
+          MILKMEMBER_NO = #{milkmemberNo,jdbcType=VARCHAR},
+        </if>
+        IS_VALID = #{isValid,jdbcType=VARCHAR},
         BRANCH_NO = #{branchNo,jdbcType=VARCHAR},
-        RET_REASON = null,
         MEMO_TXT = null,
         RET_DATE = null
     </set>
     where ORDER_NO = #{orderNo,jdbcType=VARCHAR}
   </update>
-  <update id="returnOrder" parameterType="com.nhry.model.order.ReturnOrderModel" >
+  <update id="orderConfirm" parameterType="com.nhry.model.order.UpdateManHandOrderModel" >
     update t_preorder
     <set >
+      <if test="retReason != null and retReason != ''">
+        RET_REASON = #{retReason,jdbcType=VARCHAR},
+      </if>
+      PREORDER_STAT = '10',
+      IS_VALID = #{isValid,jdbcType=VARCHAR},
+    </set>
+    where ORDER_NO = #{orderNo,jdbcType=VARCHAR}
+  </update>
+  <update id="returnOrder" parameterType="com.nhry.model.order.UpdateManHandOrderModel" >
+    update t_preorder
+    <set >
+       DEALER_NO = #{dealerNo,jdbcType=VARCHAR},
+      <if test="retReason != null and retReason != ''">
+        RET_REASON = #{retReason,jdbcType=VARCHAR},
+      </if>
+      <if test="milkmemberNo != null and milkmemberNo != ''">
+        MILKMEMBER_NO = #{milkmemberNo,jdbcType=VARCHAR},
+      </if>
+      IS_VALID = #{isValid,jdbcType=VARCHAR},
+      BRANCH_NO = #{branchNo,jdbcType=VARCHAR},
       PREORDER_STAT = '20',
-      RET_REASON =  #{retReason,jdbcType=VARCHAR},
       MEMO_TXT=  #{memoTxt,jdbcType=VARCHAR},
       RET_DATE = #{retDate,jdbcType=DATE}
     </set>

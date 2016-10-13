@@ -51,7 +51,7 @@ public interface TPreOrderMapper {
 
     int uptManHandOrder(UpdateManHandOrderModel uptManHandModel);
 
-    int returnOrder(ReturnOrderModel returnOrderModel);
+    int returnOrder(UpdateManHandOrderModel returnOrderModel);
 
     int orderUnsubscribe(String orderNo);
     
@@ -104,4 +104,6 @@ public interface TPreOrderMapper {
     List<String> selectAdvanceOrderNos(CustBillQueryModel cModel);
 
     List<String> selectAfterOrderNos(CustBillQueryModel cModel);
+
+    int orderConfirm(UpdateManHandOrderModel uptManHandModel);
 }
