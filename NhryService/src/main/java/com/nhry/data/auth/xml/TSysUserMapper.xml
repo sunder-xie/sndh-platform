@@ -788,21 +788,25 @@
         t_md_branch b
         WHERE
         u.LOGIN_NAME = r.LOGIN_NAME
-        AND u.BRANCH_NO = b.BRANCH_NO
+
         <if test="dealerNo != null and dealerNo != ''">
+            AND u.DEALER_NO = b.DEALER_NO
             AND b.DEALER_NO = #{dealerNo}
         </if>
         <if test="branchNo != null and branchNo != ''">
+            AND u.BRANCH_NO = b.BRANCH_NO
             AND u.BRANCH_NO = #{branchNo}
             AND b.BRANCH_NO = #{branchNo}
         </if>
         <if test="salesOrg != null and salesOrg != ''">
+            AND u.SALES_ORG = b.SALES_ORG
             AND b.SALES_ORG = #{salesOrg}
             AND u.SALES_ORG = #{salesOrg}
         </if>
         <if test="rid != null and rid != ''">
             AND r.ID in (${rid})
         </if>
+
     </select>
     <select id="findNotRoleUser" parameterType="com.nhry.model.auth.UserQueryModel3" resultMap="BaseResultMap1">
         SELECT
