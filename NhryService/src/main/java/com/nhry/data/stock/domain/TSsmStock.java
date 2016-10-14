@@ -27,6 +27,8 @@ public class TSsmStock extends TSsmStockKey {
 
     private String salesOrg;
 
+    private BigDecimal tmpQty;
+
     public String getUnit() {
         return unit;
     }
@@ -43,6 +45,13 @@ public class TSsmStock extends TSsmStockKey {
         this.qty = qty;
     }
 
+    public BigDecimal getTmpQty() {
+        return tmpQty;
+    }
+
+    public void setTmpQty(BigDecimal tmpQty) {
+        this.tmpQty = tmpQty;
+    }
 
     public String getZbotCodeName() {
         return zbotCodeName;
