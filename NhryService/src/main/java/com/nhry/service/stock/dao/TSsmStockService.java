@@ -24,6 +24,7 @@ public interface TSsmStockService {
      */
     PageInfo findStock(StockModel mode);
     PageInfo findStockinsidesal(StockModel mode);
+    BigDecimal findStockTotal(StockModel mode);
     int genarateStock(StockModel mode);
 
     /**
