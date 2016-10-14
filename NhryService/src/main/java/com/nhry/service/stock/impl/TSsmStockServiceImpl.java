@@ -99,5 +99,28 @@ public class TSsmStockServiceImpl implements TSsmStockService {
         }
     }
 
+    @Override
+    public int updateTmpStock(String branchNo, String matnr, BigDecimal tmpQty, String salesOrg) {
+        TSsmStockKey key = new TSsmStockKey();
+        key.setBranchNo(branchNo);
+        key.setMatnr(matnr);
+        TSsmStock ssmStock1 = getStock(key);
+        if(ssmStock1!=null && tmpQty!= null){
+            if(ssmStock1.getTmpQty() != null){
+                ssmStock1.setTmpQty(ssmStock1.getTmpQty().subtract(tmpQty));
+            }else{
+                ssmStock1.setTmpQty(new BigDecimal("0").subtract(tmpQty));
+            }
+            return ssmStockMapper.updateStock(ssmStock1);
+        }else{
+            ssmStock1 = new TSsmStock();
+            ssmStock1.setBranchNo(branchNo);
+            ssmStock1.setMatnr(matnr);
+            ssmStock1.setSalesOrg(salesOrg);
+            ssmStock1.setTmpQty(new BigDecimal("0").subtract(tmpQty));
+            return ssmStockMapper.insertStock(ssmStock1);
+        }
+    }
+
 
 }

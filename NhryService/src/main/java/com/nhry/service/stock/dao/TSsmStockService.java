@@ -35,7 +35,14 @@ public interface TSsmStockService {
      * @return
      */
     int updateStock(String branchNo, String matnr, BigDecimal qty, String salesOrg);
-
-
+    /**
+     * 更新临时退库库存
+     * @param branchNo
+     * @param matnr
+     * @param qty
+     * @param salesOrg
+     * @return
+     */
+    int updateTmpStock(String branchNo, String matnr, BigDecimal tmpQty, String salesOrg);
 
 }
