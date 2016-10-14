@@ -70,8 +70,8 @@ public class TPreOrderMapperImpl implements TPreOrderMapper
 	}
 
 	@Override
-	public int returnOrder(ReturnOrderModel returnOrderModel) {
-		return sqlSessionTemplate.update("returnOrder", returnOrderModel);
+	public int returnOrder(UpdateManHandOrderModel uptManHandModel) {
+		return sqlSessionTemplate.update("returnOrder", uptManHandModel);
 	}
 
 	@Override
@@ -268,6 +268,11 @@ public class TPreOrderMapperImpl implements TPreOrderMapper
 	@Override
 	public List<String> selectAfterOrderNos(CustBillQueryModel cModel) {
 		return sqlSessionTemplate.selectList("selectAfterOrderNos",cModel);
+	}
+
+	@Override
+	public int orderConfirm(UpdateManHandOrderModel uptManHandModel) {
+		return sqlSessionTemplate.update("orderConfirm", uptManHandModel);
 	}
 
 	/* (non-Javadoc) 

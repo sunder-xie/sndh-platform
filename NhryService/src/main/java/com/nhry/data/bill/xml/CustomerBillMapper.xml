@@ -451,7 +451,6 @@
         LEFT JOIN  t_md_mara_ex ex on i.MATNR = ex.MATNR  and b.SALES_ORG = ex.SALES_ORG
         WHERE 1=1
         and b.SALES_ORG = o.SALES_ORG
-        and i.STATUS !='30'
         and LOCATE(o.ORDER_NO,<foreach item="order" collection="orders" separator="," open="'" close="'" index="">${order}</foreach>)>0
         GROUP BY o.ORDER_NO,i.MATNR
         ORDER BY c.SUBDIST,c.ADDRESS_TXT,CUST_ADDRESS_SHORT

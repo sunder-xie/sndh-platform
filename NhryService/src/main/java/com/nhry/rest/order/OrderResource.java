@@ -284,9 +284,20 @@ public class OrderResource extends BaseResource {
 	@Produces(MediaType.APPLICATION_JSON)
 	@Consumes(MediaType.APPLICATION_JSON)
 	@ApiOperation(value = "/returnOrder", response = PageInfo.class, notes = "待确认订单退回")
-	public Response returnOrder(@ApiParam(required=true,name="manHandModel",value="ReturnOrderModel") ReturnOrderModel returnOrderModel){
-		return convertToRespModel(MessageCode.NORMAL, null, orderService.returnOrder(returnOrderModel));
+	public Response returnOrder(@ApiParam(required=true,name="manHandModel",value="uptManHandModel") UpdateManHandOrderModel uptManHandModel){
+		return convertToRespModel(MessageCode.NORMAL, null, orderService.returnOrder(uptManHandModel));
 	}
+
+
+	@POST
+	@Path("/orderConfirm")
+	@Produces(MediaType.APPLICATION_JSON)
+	@Consumes(MediaType.APPLICATION_JSON)
+	@ApiOperation(value = "/orderConfirm", response = PageInfo.class, notes = "待确认订单确认")
+	public Response orderConfirm(@ApiParam(required=true,name="uptManHandModel",value="uptManHandModel") UpdateManHandOrderModel uptManHandModel){
+		return convertToRespModel(MessageCode.NORMAL, null, orderService.orderConfirm(uptManHandModel));
+	}
+
 
 	@POST
 	@Path("/manHandOrderDetail/{orderCode}")
@@ -301,7 +312,7 @@ public class OrderResource extends BaseResource {
 	@Path("/uptManHandOrder")
 	@Produces(MediaType.APPLICATION_JSON)
 	@Consumes(MediaType.APPLICATION_JSON)
-	@ApiOperation(value = "/manHandSearch", response = Response.class, notes = "人工分单(修改订单的所属奶站)")
+	@ApiOperation(value = "/uptManHandOrder", response = Response.class, notes = "人工分单(修改订单的所属奶站)")
 	public Response uptManHandOrder(@ApiParam(required=true,name="uptManHandModel",value="奶站号和订单号对象") UpdateManHandOrderModel uptManHandModel){
 		return convertToRespModel(MessageCode.NORMAL, null, orderService.uptManHandOrder(uptManHandModel));
 	}

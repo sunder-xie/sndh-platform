@@ -6,6 +6,7 @@
         <id column="MATNR" property="matnr" jdbcType="VARCHAR"/>
         <result column="UNIT" property="unit" jdbcType="VARCHAR"/>
         <result column="QTY" property="qty" jdbcType="DECIMAL"/>
+        <result column="TMP_QTY" property="tmpQty" jdbcType="DECIMAL"/>
         <result column="MATNR_TXT" property="matnrTxt" jdbcType="VARCHAR"/>
         <result column="ZBOT_CODE_NAME" property="zbotCodeName" jdbcType="VARCHAR" />
         <result column="SEC_CATE_NAME" property="secCateName" jdbcType="VARCHAR" />
@@ -30,9 +31,9 @@
   </delete>
     <insert id="insertStock" parameterType="com.nhry.data.stock.domain.TSsmStock">
     insert into t_ssm_stock (BRANCH_NO, MATNR, UNIT, 
-      QTY,SALES_ORG)
+      QTY,SALES_ORG,TMP_QTY)
     values (#{branchNo,jdbcType=VARCHAR}, #{matnr,jdbcType=VARCHAR}, #{unit,jdbcType=VARCHAR}, 
-      #{qty,jdbcType=DECIMAL},#{salesOrg,jdbcType=VARCHAR})
+      #{qty,jdbcType=DECIMAL},#{salesOrg,jdbcType=VARCHAR},#{tmpQty,jdbcType=DECIMAL})
   </insert>
     <update id="updateStock" parameterType="com.nhry.data.stock.domain.TSsmStock">
         update t_ssm_stock
@@ -42,6 +43,9 @@
           </if>
           <if test="qty != null" >
             QTY = #{qty,jdbcType=DECIMAL},
+          </if>
+          <if test="tmpQty != null" >
+            QTY = #{tmpQty,jdbcType=DECIMAL},
           </if>
           <if test="salesOrg != null" >
             SALES_ORG = #{salesOrg,jdbcType=VARCHAR},
@@ -56,6 +60,7 @@
         t1.MATNR_TXT,
         t1.SPEC_UNIT,
         t.QTY,
+        t.TMP_QTY,
         (
           SELECT
             I.ITEM_NAME
@@ -109,6 +114,7 @@
         t1.SPEC_UNIT,
         t.SALES_ORG,
         t.QTY,
+        t.TMP_QTY,
         (
           SELECT
             I.ITEM_NAME

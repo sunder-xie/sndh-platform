@@ -469,10 +469,12 @@ public class CustomerBillServiceImpl implements CustomerBillService {
             newBill.setReceiptNo(bill.getReceiptNo());
             newBill.setHadOffset("Y");
             customerBillMapper.updateCustomerBillrPayment(newBill);
-           /*
-           //删除 日订单
-            tOrderDaliyPlanItemMapper.deletePlansByOrder(bill.getOrderNo());
-            */
+
+            // 如果该订单为预付款订单，且没有产生路单，则删除 所有日订单
+            if("20".equals(preOrder.getPaymentmethod()) && tDispOrderItemMapper.selectCountByOrgOrder(preOrder.getOrderNo()) == 0) {
+                tOrderDaliyPlanItemMapper.deletePlansByOrder(bill.getOrderNo());
+            }
+
             //生成对应的冲销单
             TSysUser user = userSessionService.getCurrentUser();
             TMstRecvOffset offset  = new TMstRecvOffset();
