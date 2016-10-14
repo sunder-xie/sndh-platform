@@ -217,6 +217,12 @@ public class PIRequireOrderServiceImpl implements PIRequireOrderService {
             if (deliveries.size() > 0) {
                 TSsmGiOrder ssmGiOrder = null;
                 for (Delivery d : deliveries) {
+                    if(!"C".equals(d.getWbstk())){
+                        //判断是否过账，有没过账的返回提示信息
+                        throw new ServiceException(MessageCode.LOGIC_ERROR,d.getVBELN()+"交货单未过账！");
+                    }
+                }
+                for (Delivery d : deliveries) {
                     //防止一个调拨单生成多个交货单
                     if(!isZy) {
                         ssmGiOrder = ssmGiOrderMapper.selectGiOrderByNo(d.getVBELN());
@@ -256,6 +262,7 @@ public class PIRequireOrderServiceImpl implements PIRequireOrderService {
                             ssmGiOrderItemMapper.updateGiOrderItem(ssmGiOrderItem);
                         }
                     }
+                    //是销售订单生成的交货单保存奶站产品的出厂价格
                     if(!isDeli){
                         TSysUser user = userSessionService.getCurrentUser();
                         TSsmSalFactoryPriceKey key = new TSsmSalFactoryPriceKey();
@@ -276,6 +283,8 @@ public class PIRequireOrderServiceImpl implements PIRequireOrderService {
                         }
                     }
                 }
+            }else{
+                throw new ServiceException(MessageCode.LOGIC_ERROR,"交货单未过账！");
             }
         }else{
             throw new ServiceException(MessageCode.LOGIC_ERROR,message1.getMessage());

@@ -27,6 +27,7 @@ public class Delivery {
     protected String lgort;
     protected String reslo;
     protected BigDecimal cmpre;
+    protected String wbstk;
 
 
     /**
@@ -419,5 +420,13 @@ public class Delivery {
 
     public void setCmpre(BigDecimal cmpre) {
         this.cmpre = cmpre;
+    }
+
+    public String getWbstk() {
+        return wbstk;
+    }
+
+    public void setWbstk(String wbstk) {
+        this.wbstk = wbstk;
     }
 }

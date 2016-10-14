@@ -330,42 +330,42 @@ public class BusinessDataConnection {
                 for (ZSSD00069 zssd00069 : zssd00069s) {
                     if (zssd00069.getWBSTK() != null && StringUtils.isNotEmpty(zssd00069.getWBSTK().getWBSTK_type0())) {
                         String wbstk = zssd00069.getWBSTK().getWBSTK_type0();
-                        if ("C".equals(wbstk) || isZy) {
-                            Delivery delivery = new Delivery();
-                            delivery.setKUNNR(zssd00069.getKUNNR().getKUNNR_type2());
-                            delivery.setBSTKD(zssd00069.getBSTKD().getBSTKD_type2());
-                            delivery.setVBELN(zssd00069.getVBELN().getVBELN_type0());
-                            delivery.setPOSNR(zssd00069.getPOSNR().getPOSNR_type0());
-                            delivery.setLFIMG(zssd00069.getLFIMG().getLFIMG_type0());
-                            delivery.setMEINS(zssd00069.getMEINS().getMEINS_type0());
-                            delivery.setKUNAG(zssd00069.getKUNAG().getKUNAG_type0());
-                            Object o = zssd00069.getLFDAT().getObject();
-                            try {
-                                String dateString = formatter.format(o);
-                                delivery.setLFDAT(formatter.parse(dateString));
-                            } catch (Exception e) {
-                                e.printStackTrace();
-                            }
-                            delivery.setVBELV(zssd00069.getVBELV().getVBELV_type0());
-                            delivery.setPOSNV(zssd00069.getPOSNV().getPOSNV_type0());
-                            delivery.setLGORT(zssd00069.getLGORT().getLGORT_type2());
-                            delivery.setRESLO(zssd00069.getRESLO().getRESLO_type0());
-                            delivery.setCmpre(zssd00069.getCMPRE().getCMPRE_type0());
-                            delivery.setMATNR(zssd00069.getMATNR().getMATNR_type2());
-                            delivery.setPSTYV(zssd00069.getPSTYV().getPSTYV_type2());
-                            deliveries.add(delivery);
+//                        if ("C".equals(wbstk) || isZy) {
+                        Delivery delivery = new Delivery();
+                        delivery.setWbstk(wbstk);
+                        delivery.setKUNNR(zssd00069.getKUNNR().getKUNNR_type2());
+                        delivery.setBSTKD(zssd00069.getBSTKD().getBSTKD_type2());
+                        delivery.setVBELN(zssd00069.getVBELN().getVBELN_type0());
+                        delivery.setPOSNR(zssd00069.getPOSNR().getPOSNR_type0());
+                        delivery.setLFIMG(zssd00069.getLFIMG().getLFIMG_type0());
+                        delivery.setMEINS(zssd00069.getMEINS().getMEINS_type0());
+                        delivery.setKUNAG(zssd00069.getKUNAG().getKUNAG_type0());
+                        Object o = zssd00069.getLFDAT().getObject();
+                        try {
+                            String dateString = formatter.format(o);
+                            delivery.setLFDAT(formatter.parse(dateString));
+                        } catch (Exception e) {
+                            e.printStackTrace();
                         }
+                        delivery.setVBELV(zssd00069.getVBELV().getVBELV_type0());
+                        delivery.setPOSNV(zssd00069.getPOSNV().getPOSNV_type0());
+                        delivery.setLGORT(zssd00069.getLGORT().getLGORT_type2());
+                        delivery.setRESLO(zssd00069.getRESLO().getRESLO_type0());
+                        delivery.setCmpre(zssd00069.getCMPRE().getCMPRE_type0());
+                        delivery.setMATNR(zssd00069.getMATNR().getMATNR_type2());
+                        delivery.setPSTYV(zssd00069.getPSTYV().getPSTYV_type2());
+                        deliveries.add(delivery);
+//                        }
                     }
                 }
-                if (deliveries.size() == 0) {
-                    message.setSuccess(false);
-                    message.setMessage("交货单未过账！");
-                }else {
+//                if (deliveries.size() == 0) {
+//                    message.setSuccess(false);
+//                    message.setMessage("交货单未过账！");
+//                }else {
                     message.setSuccess(true);
                     message.setData(deliveries);
-                }
+//                }
             } else {
-
                 message.setSuccess(false);
                 if(isZy){
                     message.setMessage("获取出厂价格失败，销售订单生成失败！");
