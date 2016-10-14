@@ -426,7 +426,7 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 			tVipCustInfoService.updateVipCustByNo(orderCust);
 		}else{
 			//将订户地址 恢复到原来创建订户下面
-			TMdAddress  address = addressMapper.findAddressByCustNoISDefault(order.getAdressNo());
+			TMdAddress  address = addressMapper.findAddressById(order.getAdressNo());
 			address.setVipCustNo(order.getRetReason());
 			addressMapper.uptCustAddress(address);
 			//将订单订户恢复到创建时状态
