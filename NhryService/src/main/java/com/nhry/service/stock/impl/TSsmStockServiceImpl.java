@@ -67,6 +67,11 @@ public class TSsmStockServiceImpl implements TSsmStockService {
     }
 
     @Override
+    public BigDecimal findStockTotal(StockModel mode) {
+        return ssmStockMapper.findStockTotal(mode);
+    }
+
+    @Override
     public PageInfo findStockinsidesal(StockModel mode) {
         return ssmStockMapper.findStockinsidesal(mode);
     }

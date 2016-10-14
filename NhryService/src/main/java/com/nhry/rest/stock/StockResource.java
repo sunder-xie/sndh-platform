@@ -61,6 +61,21 @@ public class StockResource extends BaseResource {
         }
         return convertToRespModel(MessageCode.NORMAL,null,ssmStockService.findStock(model));
     }
+
+    @POST
+    @Path("/findStockTotal")
+    @Produces(MediaType.APPLICATION_JSON)
+    @Consumes(MediaType.APPLICATION_JSON)
+    @ApiOperation(value = "/findStockTotal", response = ResponseModel.class, notes = "奶站库存数量合计")
+
+    public Response findStockTotal(@ApiParam(name = "model",value = "model")StockModel model){
+        TSysUser user = userSessionService.getCurrentUser();
+        if(StringUtils.isEmpty(model.getBranchNo()) && StringUtils.isNotEmpty(user.getBranchNo())){
+            model.setBranchNo(user.getBranchNo());
+        }
+        return convertToRespModel(MessageCode.NORMAL,null,ssmStockService.findStockTotal(model));
+    }
+
     @POST
     @Path("/findStockinsidesal")
     @Produces(MediaType.APPLICATION_JSON)

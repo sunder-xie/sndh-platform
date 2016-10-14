@@ -5,6 +5,8 @@ import com.nhry.data.stock.domain.TSsmStock;
 import com.nhry.data.stock.domain.TSsmStockKey;
 import com.nhry.model.stock.StockModel;
 
+import java.math.BigDecimal;
+
 public interface TSsmStockMapper {
     int deleteStock(TSsmStockKey key);
 
@@ -17,4 +19,6 @@ public interface TSsmStockMapper {
     PageInfo findStockinsidesal(StockModel model);
 
     PageInfo findStock(StockModel model);
+
+    BigDecimal findStockTotal(StockModel model);
 }

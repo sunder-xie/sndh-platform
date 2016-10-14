@@ -7,6 +7,8 @@ import com.nhry.data.stock.domain.TSsmStock;
 import com.nhry.data.stock.domain.TSsmStockKey;
 import com.nhry.model.stock.StockModel;
 
+import java.math.BigDecimal;
+
 /**
  * Created by cbz on 7/19/2016.
  */
@@ -45,5 +47,10 @@ public class TSsmStockMapperImpl implements TSsmStockMapper {
     @Override
     public PageInfo findStock(StockModel model) {
         return sqlSessionTemplate.selectListByPages("findStock",model,Integer.valueOf(model.getPageNum()),Integer.valueOf(model.getPageSize()));
+    }
+
+    @Override
+    public BigDecimal findStockTotal(StockModel model) {
+        return sqlSessionTemplate.selectOne("findStockTotal",model);
     }
 }

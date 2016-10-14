@@ -91,6 +91,17 @@
       AND t.MATNR = t1.MATNR
       AND t.BRANCH_NO = #{branchNo,jdbcType=VARCHAR}
     </select>
+    <select id="findStockTotal" resultType="BigDecimal" parameterType="com.nhry.model.stock.StockModel">
+      SELECT
+      IFNULL(sum(t.QTY), 0)
+      FROM
+      t_ssm_stock t,
+      t_md_mara t1
+      WHERE
+      t.SALES_ORG = t1.SALES_ORG
+      AND t.MATNR = t1.MATNR
+      AND t.BRANCH_NO = #{branchNo,jdbcType=VARCHAR}
+    </select>
     <select id="findStockinsidesal" resultMap="BaseResultMap" parameterType="com.nhry.model.stock.StockModel">
       SELECT
         t1.MATNR,
