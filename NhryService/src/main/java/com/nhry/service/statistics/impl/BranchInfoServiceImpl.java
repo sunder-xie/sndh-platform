@@ -10,12 +10,8 @@ import com.nhry.model.statistics.BranchInfoModel;
 import com.nhry.model.statistics.ExtendBranchInfoModel;
 import com.nhry.service.statistics.dao.BranchInfoService;
 import org.apache.commons.lang.StringUtils;
-import org.springframework.security.access.method.P;
-import scala.reflect.internal.Trees;
 
 import java.text.SimpleDateFormat;
-import java.util.Calendar;
-import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -268,5 +264,10 @@ public class BranchInfoServiceImpl implements BranchInfoService {
     @Override
     public List<Map<String, String>> exportOrderByModel(BranchInfoModel model) {
         return branchInfoMapper.exportOrderByModel(model);
+    }
+
+    @Override
+    public PageInfo Refuse2receiveResend(ExtendBranchInfoModel model) {
+        return branchInfoMapper.Refuse2receiveResend(model);
     }
 }

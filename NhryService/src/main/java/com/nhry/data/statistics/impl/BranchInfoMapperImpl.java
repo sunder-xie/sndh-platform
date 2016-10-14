@@ -6,7 +6,6 @@ import com.nhry.data.statistics.dao.BranchInfoMapper;
 import com.nhry.model.statistics.BranchInfoModel;
 import com.nhry.model.statistics.ExtendBranchInfoModel;
 
-import java.text.SimpleDateFormat;
 import java.util.List;
 import java.util.Map;
 
@@ -101,5 +100,10 @@ public class BranchInfoMapperImpl implements BranchInfoMapper{
     @Override
     public List<Map<String, String>> exportOrderByModel(BranchInfoModel model) {
         return sqlSessionTemplate.selectList("exportOrderByModel",model);
+    }
+
+    @Override
+    public PageInfo Refuse2receiveResend(ExtendBranchInfoModel model) {
+        return sqlSessionTemplate.selectListByPages("Refuse2receiveResend",model,Integer.valueOf(model.getPageNum()),Integer.valueOf(model.getPageSize()));
     }
 }

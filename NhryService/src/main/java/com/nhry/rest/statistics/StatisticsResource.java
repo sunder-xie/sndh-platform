@@ -1,8 +1,6 @@
 package com.nhry.rest.statistics;
 
-import com.nhry.common.auth.UserSessionService;
 import com.nhry.common.exception.MessageCode;
-import com.nhry.data.auth.domain.TSysUser;
 import com.nhry.model.statistics.BranchInfoModel;
 import com.nhry.model.statistics.DistInfoModel;
 import com.nhry.model.statistics.ExtendBranchInfoModel;
@@ -14,10 +12,10 @@ import com.sun.jersey.spi.resource.Singleton;
 import com.wordnik.swagger.annotations.Api;
 import com.wordnik.swagger.annotations.ApiOperation;
 import com.wordnik.swagger.annotations.ApiParam;
-import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Controller;
+
 import javax.ws.rs.Consumes;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
@@ -135,5 +133,14 @@ public class StatisticsResource extends BaseResource {
     @ApiOperation(value = "/branchDayQty}", response = ResponseModel.class, notes = "公司部门、经销商当日送奶份数 ")
     public Response branchDayQty(@ApiParam(name = "model",value = "公司部门、经销商当日送奶份数") ExtendBranchInfoModel model){
         return convertToRespModel(MessageCode.NORMAL, null, branchInfoService.branchDayQty(model));
+    }
+
+    @POST
+    @Path("/Refuse2receiveResend")
+    @Produces(MediaType.APPLICATION_JSON)
+    @Consumes(MediaType.APPLICATION_JSON)
+    @ApiOperation(value = "/Refuse2receiveResend}", response = ResponseModel.class, notes = "公司部门、经销商当日送奶份数 ")
+    public Response Refuse2receive(@ApiParam(name = "model",value = "公司部门、经销商当日送奶份数") ExtendBranchInfoModel model){
+        return convertToRespModel(MessageCode.NORMAL, null, branchInfoService.Refuse2receiveResend(model));
     }
 }

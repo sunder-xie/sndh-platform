@@ -1221,4 +1221,8 @@
         </if>
 			group by i.DISP_EMP_NO,i.CONFIRM_MATNR
     </select>
+
+    <select id="Refuse2receiveResend" resultType="hashmap" parameterType="com.nhry.model.statistics.ExtendBranchInfoModel">
+
+    </select>
 </mapper>
