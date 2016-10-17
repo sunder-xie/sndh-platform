@@ -1221,4 +1221,28 @@
         </if>
 			group by i.DISP_EMP_NO,i.CONFIRM_MATNR
     </select>
+
+    <select id="Refuse2receiveResend" resultType="hashmap" parameterType="com.nhry.model.statistics.ExtendBranchInfoModel">
+        SELECT
+        i.DISP_EMP_NO,e.EMP_NAME,i.ORDER_DATE,i.CONFIRM_MATNR,(i.QTY - i.CONFIRM_QTY) QTY
+        from t_mst_disp_order_item i
+        LEFT JOIN t_mst_disp_order o on i.ORDER_NO = o.ORDER_NO
+        LEFT JOIN t_md_branch_emp e on i.DISP_EMP_NO = e.EMP_NO
+        LEFT JOIN t_md_mara_ex ex on i.CONFIRM_MATNR = ex.MATNR and ex.SALES_ORG = #{salesOrg,jdbcType=VARCHAR}
+        WHERE 1=1
+        and i.REASON = '60'
+        <if test="branchNo!=null and ''!=branchNo">
+            AND o.BRANCH_NO = #{branchNo,jdbcType=VARCHAR}
+        </if>
+        <if test="empNo!=null and ''!=empNo">
+            and i.DISP_EMP_NO = #{empNo,jdbcType=VARCHAR}
+        </if>
+        <if test="dateStart!=null and ''!=dateStart">
+            and i.ORDER_DATE  &gt;= #{dateStart,jdbcType=DATE}
+         </if>
+        <if test="dateEnd!=null and ''!=dateEnd">
+            and i.ORDER_DATE &lt;= #{dateEnd,jdbcType=DATE}
+        </if>
+
+    </select>
 </mapper>

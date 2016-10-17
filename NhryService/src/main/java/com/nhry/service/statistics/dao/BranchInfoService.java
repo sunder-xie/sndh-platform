@@ -1,6 +1,5 @@
 package com.nhry.service.statistics.dao;
 
-import com.github.pagehelper.Page;
 import com.github.pagehelper.PageInfo;
 import com.nhry.model.statistics.BranchInfoModel;
 import com.nhry.model.statistics.ExtendBranchInfoModel;
@@ -28,4 +27,6 @@ public interface BranchInfoService {
     List<Map<String,String>> branchDayRepo(BranchInfoModel model);
     Map<String,String> branchDayQty(BranchInfoModel model);
     List<Map<String,String>> exportOrderByModel(BranchInfoModel model);
+
+    PageInfo Refuse2receiveResend(ExtendBranchInfoModel model);
 }
