@@ -367,17 +367,6 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 			String salesOrg = tVipCustInfoService.uptCustBranchNo(order.getMilkmemberNo(),branchNo);
 			uptManHandModel.setSalesOrg(salesOrg);
 		}
-
-		
-		//换价格
-		ArrayList<TPlanOrderItem> orgEntries = (ArrayList<TPlanOrderItem>) tPlanOrderItemMapper.selectByOrderCode(orderNo);
-		for(TPlanOrderItem entry : orgEntries){
-			float price = priceService.getMaraPrice(branchNo, entry.getMatnr(), order.getDeliveryType());
-			if(price<=0)throw new ServiceException(MessageCode.LOGIC_ERROR,"替换的奶站,产品["+entry.getMatnr()+"]价格小于0，或可能没有该产品，请检查或退订此订单!");
-			entry.setSalesPrice(new BigDecimal(String.valueOf(price)));
-			tPlanOrderItemMapper.updateEntryByItemNo(entry);
-		}
-
 //		}
 		//查看该奶站是否已经上线
 		if("10".equals(branch.getIsValid())  &&  new Date().after(branch.getOnlineDate())){
@@ -455,10 +444,13 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 		}
 		TPreOrder order = tPreOrderMapper.selectByPrimaryKey(uptManHandModel.getOrderNo());
 		//如果 该奶站原有这个电话  的订户，将创建订单时的订户删除
-		if(!order.getRetReason().equals(order.getMilkmemberNo())){
-			uptManHandModel.setRetReason(null);
-			tVipCustInfoService.deleteCustByCustNo(order.getRetReason());
+		if(tVipCustInfoService.findVipCustByNo(order.getRetReason())!=null){
+			if(!order.getRetReason().equals(order.getMilkmemberNo())){
+				uptManHandModel.setRetReason(null);
+				tVipCustInfoService.deleteCustByCustNo(order.getRetReason());
+			}
 		}
+
 		TMdBranch branch = branchMapper.selectBranchByNo(order.getBranchNo());
 		//如果该奶站已上线
 		if("Y".equals(branch.getIsValid()) && new Date().after(branch.getOnlineDate())){
@@ -496,9 +488,30 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 			//保存订单金额 和 状态
 			tPreOrderMapper.updateOrderCurAmtAndInitAmt(order);
 			tPreOrderMapper.orderConfirm(uptManHandModel);
+
+			taskExecutor.execute(new Thread(){
+				@Override
+				public void run() {
+					super.run();
+					this.setName("sendOrderToEc");
+					messLogService.sendOrderInfo(order, entries);
+
+					if("20".equals(order.getPaymentStat()) && !"20".equals(order.getMilkboxStat())){
+						TPreOrder sendOrder = new TPreOrder();
+						sendOrder.setOrderNo(order.getOrderNo());
+						sendOrder.setPreorderStat("200");
+						sendOrder.setEmpNo(order.getEmpNo());
+						messLogService.sendOrderStatus(sendOrder);
+					}
+				}
+			});
 		}
+
+
 		return  1;
 	}
+
+
 	
 	/* (non-Javadoc) 
 	* @title: batchStopOrderForTime
