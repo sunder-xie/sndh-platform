@@ -1,18 +1,6 @@
 package com.nhry.service.basic.impl;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
-import org.apache.commons.lang3.StringUtils;
-import org.apache.log4j.Logger;
-import org.apache.ws.commons.schema.constants.Constants.SystemConstants;
-import org.springframework.core.task.TaskExecutor;
-import org.springframework.transaction.annotation.Propagation;
-import org.springframework.transaction.annotation.Transactional;
-
 import com.github.pagehelper.PageInfo;
-import com.nhry.common.exception.ExceptionMapperSupport;
 import com.nhry.common.exception.MessageCode;
 import com.nhry.common.exception.ServiceException;
 import com.nhry.data.auth.dao.TSysUserMapper;
@@ -32,6 +20,14 @@ import com.nhry.service.basic.dao.TSysMessageService;
 import com.nhry.utils.PrimaryKeyUtils;
 import com.nhry.utils.SysContant;
 import com.nhry.utils.date.Date;
+import org.apache.commons.lang3.StringUtils;
+import org.apache.log4j.Logger;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
+
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 public class TSysMessageServiceImpl extends BaseService implements TSysMessageService {
 	private static final Logger LOGGER = Logger.getLogger(TSysMessageServiceImpl.class);
@@ -156,6 +152,8 @@ public class TSysMessageServiceImpl extends BaseService implements TSysMessageSe
 		if(order == null){
 			throw new ServiceException(MessageCode.LOGIC_ERROR,"该订单编号(orderNo)对应的订单不存在，请检查你的订单编号!");
 		}
+		String memoContent = om.getMemoContent()+"  订单编号为："+order.getOrderNo();
+
 		List<TSysUser> users = null;
 		TSysUser sysuser = this.userSessionService.getCurrentUser();
 		//10-送部门内勤 20-送该订单奶站内勤 30-送部门内勤和奶站内勤
@@ -168,7 +166,7 @@ public class TSysMessageServiceImpl extends BaseService implements TSysMessageSe
 			if(users == null || users.size() == 0){
 				throw new ServiceException(MessageCode.LOGIC_ERROR, "该组织下没有找到相应的部门内勤人员!");
 			}
-			this.sendMessage(users, om.getMemoTitle(), om.getMemoContent(), "20","20",sysuser);
+			this.sendMessage(users, om.getMemoTitle(),memoContent, "20","20",sysuser);
 			if(!StringUtils.isEmpty(order.getDealerNo())){
 				//经销商奶站订单
 				attrs.put("dealerNo", order.getDealerNo());
@@ -177,7 +175,7 @@ public class TSysMessageServiceImpl extends BaseService implements TSysMessageSe
 				if(users == null || users.size() == 0){
 					throw new ServiceException(MessageCode.LOGIC_ERROR, "该组织下没有找到相应的经销商内勤人员!");
 				}
-				this.sendMessage(users, om.getMemoTitle(), om.getMemoContent(), "20","20",sysuser);
+				this.sendMessage(users, om.getMemoTitle(),memoContent , "20","20",sysuser);
 			}
 		}else if("20".equals(om.getMemoType())){
 			//奶站内勤
@@ -188,7 +186,7 @@ public class TSysMessageServiceImpl extends BaseService implements TSysMessageSe
 			if(users == null || users.size() == 0){
 				throw new ServiceException(MessageCode.LOGIC_ERROR, "该组织下没有找到相应的奶站内勤人员!");
 			}
-			this.sendMessage(users, om.getMemoTitle(), om.getMemoContent(), "20","20",sysuser);
+			this.sendMessage(users, om.getMemoTitle(), memoContent, "20","20",sysuser);
 		}else if("30".equals(om.getMemoType())){
 			//部门内勤和奶站内勤
 			om.setMemoType("10");
