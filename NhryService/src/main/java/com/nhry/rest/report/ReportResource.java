@@ -223,15 +223,16 @@ public class ReportResource extends BaseResource{
     @Produces(MediaType.APPLICATION_JSON)
     @ApiOperation(value = "/reportDeliver", response = OrderCreateModel.class, notes = "根据路单编号导出路单信息")
     public Response reportDeliver(@ApiParam(required = true, name = "orderCode", value = "订单编号") @QueryParam("orderCode") String orderCode, @Context HttpServletRequest request, @Context HttpServletResponse response) {
-        List<TDispOrderItem> details = deliverMilkService.searchRouteOrderDetailAll(orderCode);
+        List<TDispOrderItem> details = deliverMilkService.selectRouteDetailsAllforDeliver(orderCode);
         List<TDispOrderChange> ChangeOrders  = deliverMilkService.searchRouteChangeOrder(orderCode);
         RouteOrderModel model = deliverMilkService.searchRouteDetails(orderCode);
+        List<TDispOrderItem> modelDeliver =  deliverMilkService.searchRouteDetailsForDeliver(orderCode);
         String outUrl = "";
         logger.debug("##################"+EnvContant.getSystemConst("filePath"));
 //        String url = request.getServletContext().getRealPath("/");
         String url = EnvContant.getSystemConst("filePath");
         try{
-            File file = new File(url +  File.separator + "report"+ File.separator + "template" + File.separator + "DeliverMilkTemplate.xlsx");    //审批单
+            File file = new File(url +  File.separator + "report"+ File.separator + "template" + File.separator + "NewDeliverMilkTemplate.xlsx");    //审批单
             FileInputStream input = new FileInputStream(file);
             XSSFWorkbook workbook = new XSSFWorkbook(new BufferedInputStream(input));
             XSSFSheet sheet = workbook.getSheetAt(0);
@@ -239,73 +240,52 @@ public class ReportResource extends BaseResource{
             XSSFCell cell = row.getCell(1);
             TDispOrder order = model.getOrder();
 
-            cell.setCellValue("配送奶站：" + order.getBranchName());
-            cell = row.getCell(7);
-            cell.setCellValue("");
-            cell = row.getCell(11);
-            cell.setCellValue("送奶员："+order.getDispEmpName());
+            cell.setCellValue("配送人员：" + order.getDispEmpName().concat("-").concat(order.getBranchName()));
+            row = sheet.getRow(3);
+            cell = row.getCell(1);
+            cell.setCellValue("送奶日期："+format.format(order.getOrderDate()));
             row = sheet.getRow(4);
-            cell = row.getCell(9);
-            cell.setCellValue(format.format(order.getOrderDate()));
+            cell = row.getCell(1);
+            cell.setCellValue("送奶时间：".concat("10".equals(order.getReachTimeType())?"上午配送":"下午配送"));
             row = sheet.getRow(5);
-            cell = row.getCell(9);
-            cell.setCellValue("10".equals(order.getReachTimeType())?"上午配送":"下午配送");
-            row = sheet.getRow(6);
-            cell = row.getCell(9);
-            cell.setCellValue(order.getTotalQty()==null?"":order.getTotalQty().toString().concat("--").concat(model.getProducts()));
-            XSSFCellStyle styleBold = workbook.createCellStyle();
-            styleBold.setBorderBottom(XSSFCellStyle.BORDER_THIN); //下边框
-            styleBold.setBorderLeft(XSSFCellStyle.BORDER_THIN);//左边框
-            styleBold.setBorderTop(XSSFCellStyle.BORDER_THIN);//上边框
-            styleBold.setBorderRight(XSSFCellStyle.BORDER_THIN);//右边框
+            cell = row.getCell(1);
+            cell.setCellValue("应送总数：".concat(order.getTotalQty()==null?"":order.getTotalQty().toString().concat("--").concat(model.getProducts())));
 
-            int r = 10;
+            XSSFCellStyle styleBold = workbook.createCellStyle();
+            styleBold.setBorderBottom(XSSFCellStyle.BORDER_HAIR); //下边框
+            styleBold.setBorderLeft(XSSFCellStyle.BORDER_HAIR);//左边框
+            styleBold.setBorderTop(XSSFCellStyle.BORDER_HAIR);//上边框
+            styleBold.setBorderRight(XSSFCellStyle.BORDER_HAIR);//右边框
+
+            int r = 8;
             if(details!=null){
                 for(TDispOrderItem item : details) {
                     row = sheet.createRow(r);
                     cell = row.createCell(1);
                     cell.setCellStyle(styleBold);
-                    cell.setCellValue(item.getAddressTxt());
-                    cell = row.createCell(2);
-                    cell.setCellValue(" ");
-                    cell.setCellStyle(styleBold);
-                    cell = row.createCell(3);
-                    cell.setCellValue(" ");
-                    cell.setCellStyle(styleBold);
-                    cell = row.createCell(4);
-                    cell.setCellValue(" ");//设置第五列为空字符串
-                    cell.setCellStyle(styleBold);
-                    sheet.addMergedRegion(new CellRangeAddress(row.getRowNum(), row.getRowNum(), 1, 4));
-
-                    cell = row.createCell(5);
-                    cell.setCellStyle(styleBold);
-                    if(ChangeOrders!=null){
-                        for(TDispOrderChange ocitems:ChangeOrders){
-                            if(ocitems.getOrgItemNo().equals(item.getOrgItemNo())){
-                                cell.setCellValue(ocitems.getYestodayQty()==null?"" :ocitems.getYestodayQty().toString().concat("--").concat(ocitems.getYestodayMatnr()==null?"":ocitems.getYestodayMatnr()));
-                            }
-                        }
-                    }
-                    cell = row.createCell(6);
+                    cell.setCellValue(item.getAddressTxt());//配送地址
+                    cell = row.createCell(2);//今日配送
                     cell.setCellStyle(styleBold);
                     if (StringUtils.isNotEmpty(item.getMatnrTxt())){
-                        cell.setCellValue(item.getConfirmQty()==null?"" : item.getConfirmQty().toBigInteger().toString().concat("--").concat(item.getMatnrTxt()));
+                        cell.setCellValue(item.getMatnrTxt());
                     }
-                    cell = row.createCell(7);
+                    cell = row.createCell(3);
+                    cell.setCellStyle(styleBold);
+                    cell.setCellValue(item.getCustTel());//订户电话
+                    cell = row.createCell(4);
+                    cell.setCellStyle(styleBold);
+                    cell.setCellValue(item.getCustName());//订户姓名
+
+                    cell = row.createCell(5);//余额
                     cell.setCellStyle(styleBold);
                     cell.setCellValue(item.getRemainAmt()==null?"" : item.getRemainAmt().toBigInteger().toString());
-
+                    cell = row.createCell(6);
+                    cell.setCellValue(" ");
+                    cell.setCellStyle(styleBold);
+                    cell = row.createCell(7);
+                    cell.setCellValue(" ");//设置第五列为空字符串
+                    cell.setCellStyle(styleBold);
                     cell = row.createCell(8);
-                    cell.setCellStyle(styleBold);
-                    cell.setCellValue(item.getCustTel());
-                    cell = row.createCell(9);
-                    cell.setCellStyle(styleBold);
-                    cell.setCellValue(item.getCustName());
-                    cell = row.createCell(10);
-                    cell.setCellStyle(styleBold);
-                    cell = row.createCell(11);
-                    cell.setCellStyle(styleBold);
-                    cell = row.createCell(12);
                     cell.setCellStyle(styleBold);
                     String status="";
                     if(ChangeOrders!=null){
@@ -324,52 +304,19 @@ public class ReportResource extends BaseResource{
                     }
                     r++;
                 }
-                int r1 = details.size()+10;
-                if(ChangeOrders!=null){
-                    for(TDispOrderChange ocitems:ChangeOrders){
-                        if(ocitems.getReason()!=null&ocitems.getReason().equals("40")){
-                            row = sheet.createRow(r1);
-                            cell = row.createCell(1);
-                            cell.setCellStyle(styleBold);
-                            cell.setCellValue(ocitems.getAddressNo());
-                            cell = row.createCell(2);
-                            cell.setCellValue(" ");
-                            cell.setCellStyle(styleBold);
-                            cell = row.createCell(3);
-                            cell.setCellValue(" ");
-                            cell.setCellStyle(styleBold);
-                            cell = row.createCell(4);
-                            cell.setCellValue(" ");//设置第五列为空字符串
-                            cell.setCellStyle(styleBold);
-                            sheet.addMergedRegion(new CellRangeAddress(row.getRowNum(), row.getRowNum(), 1, 4));
-
-                            cell = row.createCell(5);
-                            cell.setCellStyle(styleBold);
-                            cell.setCellValue(ocitems.getYestodayQty()==null?"" :ocitems.getYestodayQty().toBigInteger().toString().concat("--").concat(ocitems.getYestodayMatnr()==null?"":ocitems.getYestodayMatnr()));
-                            cell = row.createCell(6);
-                            cell.setCellStyle(styleBold);
-                            cell = row.createCell(7);
-                            cell.setCellStyle(styleBold);
-                            cell = row.createCell(8);
-                            cell.setCellStyle(styleBold);
-                            cell.setCellValue(ocitems.getCustTel());
-                            cell = row.createCell(9);
-                            cell.setCellStyle(styleBold);
-                            cell.setCellValue(ocitems.getMilkmemberNo());
-                            cell = row.createCell(10);
-                            cell.setCellStyle(styleBold);
-                            cell = row.createCell(11);
-                            cell.setCellStyle(styleBold);
-                            cell = row.createCell(12);
-                            cell.setCellStyle(styleBold);
-                            String reasonName="";
-                            if(ocitems.getReason().equals("40")){
-                                reasonName = "减少订户";
-                            }
-                            cell.setCellValue(reasonName);
-                            r1++;
-                        }
+                int r1 = details.size()+9;
+                row = sheet.createRow(r1);
+                cell = row.createCell(1);
+                cell.setCellValue("按小区合计:");
+                if(modelDeliver!=null){
+                    for(TDispOrderItem deliverItem : modelDeliver){
+                        row = sheet.createRow(r1+1);
+                        cell = row.createCell(1);
+                        cell.setCellValue(deliverItem.getAddressTxt().concat(":").concat(deliverItem.getTotalQty()==null?"" : deliverItem.getTotalQty().toString()).concat("--").concat(deliverItem.getMatnrTxt()));//小区名称
+                        sheet.addMergedRegion(new CellRangeAddress(row.getRowNum(), row.getRowNum(), 1, 9));
+                        r1++;
                     }
+
                 }
                 sheet.setForceFormulaRecalculation(true);
             }

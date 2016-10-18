@@ -75,7 +75,14 @@ public class TDispOrderItemMapperImpl implements TDispOrderItemMapper
 		// TODO Auto-generated method stub
 		return sqlSessionTemplate.selectList("selectDispItemsByKey", record);
 	}
-	
+
+	@Override
+	public List<TDispOrderItem> selectDispItemsByKeyForDeliver(TDispOrderItemKey record)
+	{
+		// TODO Auto-generated method stub
+		return sqlSessionTemplate.selectList("selectDispItemsByKeyForDeliver", record);
+	}
+
 	@Override
 	public List<TDispOrderItem> selectItemsByOrgOrderAndItemNo(String orderNo, String itemNo, Date date)
 	{
@@ -185,6 +192,12 @@ public class TDispOrderItemMapperImpl implements TDispOrderItemMapper
 	public List selectRouteDetails(String routeCode)
 	{
 		return sqlSessionTemplate.selectList("selectRouteDetailsAll", routeCode);
+	}
+
+	@Override
+	public List selectRouteDetailsAllforDeliver(String routeCode)
+	{
+		return sqlSessionTemplate.selectList("selectRouteDetailsAllforDeliver", routeCode);
 	}
 
 	/* (non-Javadoc) 
