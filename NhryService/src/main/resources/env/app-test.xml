@@ -13,7 +13,7 @@
 	<config key="client_id" value="Auth_dhxt"></config>
 	<!-- <config key="client_id" value="Auth_dhxt1"></config> -->
 	<!-- 回调地址-->
-	<config key="redirect_uri" value="http://54.223.191.208:8080/idm/auth"></config>
+	<config key="redirect_uri" value="http://54.223.36.200:8080/idm/auth"></config>
 	<!-- 
 	<config key="redirect_uri" value="http://54.222.170.10:8070/idm/auth"></config>
 	 -->
