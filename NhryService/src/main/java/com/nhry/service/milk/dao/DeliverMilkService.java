@@ -20,10 +20,14 @@ public interface DeliverMilkService {
 	PageInfo searchRouteOrderDetail(RouteOrderSearchModel smodel);
 	
 	List searchRouteOrderDetailAll(String code);
+
+	List selectRouteDetailsAllforDeliver(String code);
 	
 	List searchRouteChangeOrder(String code);
 	
 	RouteOrderModel searchRouteDetails(String orderNo);
+
+	List<TDispOrderItem> searchRouteDetailsForDeliver(String orderNo);
 	
 	int updateRouteOrder(RouteUpdateModel record);
 	

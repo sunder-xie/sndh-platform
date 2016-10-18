@@ -35,6 +35,7 @@
     <result column="RET_QTY_M" property="retQtyM" jdbcType="INTEGER" />
     <result column="REPLACE_REASON" property="replaceReason" jdbcType="VARCHAR" />
     <result column="GIFT_FLAG" property="giftFlag" jdbcType="VARCHAR" />
+    <result column="TOTAL_QTY" property="totalQty" jdbcType="INTEGER" />
   </resultMap>
   <resultMap id="BaseChangeResultMap" type="com.nhry.service.milk.pojo.TDispOrderChangeItem" >
     <result column="ORDER_NO1" property="orderNo1" jdbcType="VARCHAR" />
@@ -228,6 +229,33 @@
       and ORDER_DATE = #{orderDate,jdbcType=DATE}
       and ITEM_NO = #{itemNo,jdbcType=VARCHAR}
   </delete>
+  <select id="selectDispItemsByKeyForDeliver" resultMap="BaseResultMap" parameterType="com.nhry.data.milk.domain.TDispOrderItemKey">
+    SELECT
+    RESIDENTIAL_AREA,RESIDENTIAL_AREA_TXT as  ADDRESS_TXT,
+    GROUP_CONCAT(SHORT_TXT, '(', qty, ')') AS MATNR_TXT,
+    sum(qty) AS TOTAL_QTY
+    FROM
+    (
+    SELECT
+    a.RESIDENTIAL_AREA,
+    r.RESIDENTIAL_AREA_TXT,
+    p.SHORT_TXT,
+    ROUND(sum(i.qty)) AS qty
+    FROM
+    t_mst_disp_order_item i
+    LEFT JOIN t_preorder o ON o.ORDER_NO = i.ORG_ORDER_NO
+    LEFT JOIN t_md_mara_ex p ON p.MATNR = i.MATNR
+    AND p.SALES_ORG = o.SALES_ORG
+    LEFT JOIN t_md_address a ON a.ADDRESS_ID = i.ADDRESS_NO
+    LEFT JOIN t_md_residential_area r ON r.ID = a.RESIDENTIAL_AREA
+    where  i.ORDER_NO = #{orderNo,jdbcType=VARCHAR}
+    <if test="orderDate != null" >
+      and i.ORDER_DATE = #{orderDate,jdbcType=DATE}
+    </if>
+    group by a.RESIDENTIAL_AREA,p.SHORT_TXT) t
+    GROUP BY RESIDENTIAL_AREA
+
+  </select>
   <select id="selectDispItemsByKey" resultMap="BaseResultMap" parameterType="com.nhry.data.milk.domain.TDispOrderItemKey">
   	 select 
     i.ORDER_NO, i.ORDER_DATE, i.ITEM_NO,i.CONFIRM_MATNR, i.MATNR, i.CONFIRM_QTY, i.QTY, i.UNIT, i.PRICE, i.AMT, i.CONFIRM_AMT, 
@@ -255,6 +283,60 @@
     left join t_md_mara p on p.MATNR = i.MATNR 
     left join t_md_address a on a.ADDRESS_ID = i.ADDRESS_NO
     where i.ORDER_NO = #{orderNo,jdbcType=VARCHAR}
+  </select>
+  <select id="selectRouteDetailsAllforDeliver" resultMap="BaseResultMap" parameterType="java.lang.String">
+      SELECT
+          i.ORDER_NO,
+          i.ORDER_DATE,
+          i.ITEM_NO,
+          i.CONFIRM_MATNR,
+          i.MATNR,
+          i.CONFIRM_QTY,
+          i.QTY,
+          i.UNIT,
+          i.PRICE,
+          i.AMT,
+          i.CONFIRM_AMT,
+          i. STATUS,
+          i.PICKUP_ORDER_NO,
+          i.PICKUP_ORDER_ITEM_NO,
+          i.REASON,
+          i.REDISP_DATE,
+          i.WHOLESALE_PRICE,
+          i.WHOLESALE_PRICE_1,
+          i.ADDRESS_NO,
+          i.ORG_ITEM_NO,
+          i.ORG_ORDER_NO,
+          CASE o.PAYMENTMETHOD
+          WHEN 10 THEN
+            min(i.REMAIN_AMT) - o.INIT_AMT
+          ELSE
+            min(i.REMAIN_AMT)
+          END AS REMAIN_AMT,
+          GROUP_CONCAT(i.REACH_TIME_TYPE) as REACH_TIME_TYPE,
+          GROUP_CONCAT(round(i.qty),'-',p.SHORT_TXT) as MATNR_TXT,
+          concat(
+              r.RESIDENTIAL_AREA_TXT,
+              a.ADDRESS_TXT
+          ) ADDRESS_TXT,
+          i.REPLACE_REASON,
+          i.GIFT_FLAG,
+          a.RECV_NAME CUST_NAME,
+          a.MP CUST_TEL
+      FROM
+          t_mst_disp_order_item i
+      LEFT JOIN t_preorder o ON o.ORDER_NO = i.ORG_ORDER_NO
+      LEFT JOIN t_md_mara_ex p ON p.MATNR = i.MATNR
+      AND p.SALES_ORG = o.SALES_ORG
+      LEFT JOIN t_md_address a ON a.ADDRESS_ID = i.ADDRESS_NO
+      LEFT JOIN t_md_residential_area r ON r.ID = a.RESIDENTIAL_AREA
+      WHERE
+          i.ORDER_NO =  #{orderNo,jdbcType=VARCHAR}
+       GROUP BY i.ORG_ORDER_NO
+
+      ORDER BY
+          r.RESIDENTIAL_AREA_TXT,
+          a.ADDRESS_TXT ASC
   </select>
   <select id="selectRouteDetailsAll" resultMap="BaseResultMap" parameterType="java.lang.String">
   	 select 

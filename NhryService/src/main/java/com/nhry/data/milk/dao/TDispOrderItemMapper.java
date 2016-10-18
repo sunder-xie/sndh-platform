@@ -22,6 +22,8 @@ public interface TDispOrderItemMapper {
 	 PageInfo selectRouteDetailsByPage(RouteOrderSearchModel smodel);
 	 
 	 List selectRouteDetails(String routeCode);
+
+    List selectRouteDetailsAllforDeliver(String routeCode);
 	
     int deleteByPrimaryKey(TDispOrderItemKey key);
     
@@ -30,6 +32,8 @@ public interface TDispOrderItemMapper {
     int insert(TDispOrderItem record);
 
     List<TDispOrderItem> selectItemsByKeys(TDispOrderItemKey record);
+
+    List<TDispOrderItem> selectDispItemsByKeyForDeliver(TDispOrderItemKey record);
 
     List<TDispOrderItem> selectNotDeliveryItemsByKeys(String code);
     
