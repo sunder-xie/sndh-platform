@@ -140,12 +140,13 @@ public class DeliverMilkServiceImpl extends BaseService implements DeliverMilkSe
 			if(entries!=null && entries.size()>0){
 				for(TDispOrderItem entry : entries){
 					//更新库存
-					if( !"20".equals(entry.getReason()) && !"10".equals(entry.getReason())) {
+					if( "30".equals(entry.getReason()) || "40".equals(entry.getReason()) || "50".equals(entry.getReason())) {
 						tSsmStockService.updateStock(order.getBranchNo(), entry.getConfirmMatnr(), entry.getQty(), user.getSalesOrg());
 					}else{
 						tSsmStockService.updateStock(order.getBranchNo(), entry.getConfirmMatnr(), entry.getConfirmQty(), user.getSalesOrg());
+						//如果原因是 60 （拒收复送） 库存
 					}
-					if(entry.getReason()!=null && !"10".equals(entry.getReason()) && !"20".equals(entry.getReason()) && !"30".equals(entry.getReason())){
+					if(entry.getReason()!=null && ("40".equals(entry.getReason()) || "50".equals(entry.getReason()) )){
 						if(insOrderNo==null){
 							insOrderNo = SerialUtil.creatSeria();
 						}
