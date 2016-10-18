@@ -562,7 +562,7 @@
      		AND o.EMP_NO = #{empNo,jdbcType=VARCHAR}
     </if>
     <if test="milkmemberNo != null and milkmemberNo !=''">
-      	AND(v.VIP_NAME like '%${milkmemberNo}%'or v.MP like '%${milkmemberNo}%' or r.RESIDENTIAL_AREA_TXT like '%${milkmemberNo}%' or a.ADDRESS_TXT like '%${milkmemberNo}%' or CONCAT(r.RESIDENTIAL_AREA_TXT,a.ADDRESS_TXT) like  '%${milkmemberNo}%')
+      	AND(v.VIP_NAME like '%${milkmemberNo}%'or v.MP like '%${milkmemberNo}%' or r.RESIDENTIAL_AREA_TXT like '%${milkmemberNo}%' or a.ADDRESS_TXT like '%${milkmemberNo}%' or CONCAT(r.RESIDENTIAL_AREA_TXT,a.ADDRESS_TXT) like  '%${milkmemberNo}%' or o.ORDER_NO like '%${milkmemberNo}%')
     </if>
     <if test="paymentStat != null and paymentStat !=''">
      		AND o.PAYMENTMETHOD = #{paymentStat,jdbcType=VARCHAR}
