@@ -378,7 +378,7 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 		tPreOrderMapper.uptManHandOrder(uptManHandModel);
 		
 		//当是电商的订单时，更新EC对应订单的奶站
-		if("10".equals(order.getPreorderSource())){
+		if(!"30".equals(order.getPreorderSource()) && !"20".equals(order.getPreorderSource())){
 			order.setBranchNo(uptManHandModel.getBranchNo());
 			if("01".equals(branch.getBranchGroup())){
 				order.setDealerNo(branch.getBranchNo());
@@ -469,7 +469,7 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 		BigDecimal orderAmt = new BigDecimal("0.00");//订单总价
 
 		//非奶站订单要重新计算金额
-		if(!"30".equals(order.getPreorderSource())) {
+		if(!"30".equals(order.getPreorderSource()) && !"20".equals(order.getPreorderSource())) {
 			Map<String,String> map = new HashMap<String,String>();
 			map.put("orderNo",order.getOrderNo());
 			map.put("salesOrg",order.getSalesOrg());
