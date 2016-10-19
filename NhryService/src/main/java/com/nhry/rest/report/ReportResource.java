@@ -1065,9 +1065,9 @@ public class ReportResource extends BaseResource{
 //            XSSFWorkbook workbook = new XSSFWorkbook();
 //            XSSFSheet sheet = workbook.createSheet("sheet");
             int rowNum = 0;
-//            XSSFCell cellDate = sheet.createRow(0).createCell(0);
-//            SimpleDateFormat dateFmt = new SimpleDateFormat("yyyy-MM-dd");
-//            cellDate.setCellValue("分奶表日期： "+ dateFmt.format(model.getTheDate()));
+            XSSFCell cellDate = sheet.createRow(0).createCell(0);
+            SimpleDateFormat dateFmt = new SimpleDateFormat("yyyy-MM-dd");
+            cellDate.setCellValue("分奶表日期： "+ dateFmt.format(model.getTheDate()));
             
             Map<String, String> projectMap = new HashMap<String, String>();
             Map<String, String> empMap = new HashMap<String, String>();
@@ -1076,8 +1076,7 @@ public class ReportResource extends BaseResource{
                 empMap.put(map.get("DISP_EMP_NO"), map.get("EMP_NAME"));
             }
             int columnNum = 1;
-//            XSSFRow row1 = sheet.getRow(2);
-            XSSFRow row1 = sheet.getRow(0);
+            XSSFRow row1 = sheet.getRow(2);
 
             for (Map.Entry<String, String> entry : projectMap.entrySet()) {
                 XSSFCell cell = row1.createCell(columnNum++);
@@ -1088,8 +1087,7 @@ public class ReportResource extends BaseResource{
             cellSumTitle.setCellValue("合计");
             cellSumTitle.setCellStyle(ExcelUtil.setBorderStyle(workbook));
 
-//            rowNum = 3;
-            rowNum++;
+            rowNum = 3;
             for (Map.Entry<String, String> entry : empMap.entrySet()) {
                 int cNum = 0;
                 XSSFRow row = sheet.createRow(rowNum++);
@@ -1124,13 +1122,11 @@ public class ReportResource extends BaseResource{
             for (Map.Entry<String, String> entry1 : projectMap.entrySet()) {
             	XSSFCell cell = row.createCell(scNum++);
             	cell.setCellStyle(ExcelUtil.setBorderStyle(workbook));
-//            	cell.setCellFormula(ExcelUtil.getFormula("SUM", 4, scNum, rowNum, scNum));
-                cell.setCellFormula(ExcelUtil.getFormula("SUM", 2, scNum, rowNum, scNum));
+            	cell.setCellFormula(ExcelUtil.getFormula("SUM", 4, scNum, rowNum, scNum));
             }
             XSSFCell cellTotolSum = row.createCell(scNum++);
             cellTotolSum.setCellStyle(ExcelUtil.setBorderStyle(workbook));
-//            cellTotolSum.setCellFormula(ExcelUtil.getFormula("SUM", 4, scNum, rowNum, scNum));
-            cellTotolSum.setCellFormula(ExcelUtil.getFormula("SUM", 2, scNum, rowNum, scNum));
+            cellTotolSum.setCellFormula(ExcelUtil.getFormula("SUM", 4, scNum, rowNum, scNum));
 
             outUrl = saveFile(url, workbook,"Fnb.xlsx");
 //            outUrl = fname + "fnb.xlsx";
