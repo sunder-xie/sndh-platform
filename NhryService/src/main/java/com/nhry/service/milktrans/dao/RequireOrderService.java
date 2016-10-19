@@ -54,5 +54,5 @@ public interface RequireOrderService {
 
     List<TMstRefuseResend> queryRefuseResendByMatnr(String matnr);
 
-    RequireOrderModel uptRequireOrderByResendItem(UptReqOrderByResendItemMode umodel);
+    int uptRequireOrderByResendItem(UptReqOrderByResendItemMode umodel);
 }

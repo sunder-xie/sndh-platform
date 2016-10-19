@@ -18,7 +18,7 @@
 
   </resultMap>
   <sql id="Base_Column_List" >
-    SALES_ORG,BRANCH_NO, DISP_ORDER_NO,DISP_DATE,QTY,CONFIRM_QTY,MATNR,STATUS,EMP_NO,REQ_ORDER_NO
+    SALES_ORG,BRANCH_NO, DISP_ORDER_NO,DISP_DATE,QTY,CONFIRM_QTY,REMAIN_QTY,MATNR,STATUS,EMP_NO,RESEND_ORDER_NO
   </sql>
 
   <insert id="addTMstRefuseResend" parameterType="com.nhry.data.milktrans.domain.TMstRefuseResend" >
@@ -98,13 +98,13 @@
     update t_mst_refuse_resend
     <set >
       <if test="confirmQty != null" >
-        #{confirmQty,jdbcType=DECIMAL},
+        CONFIRM_QTY =  #{confirmQty,jdbcType=DECIMAL},
       </if>
       <if test="remainQty != null" >
-        #{remainQty,jdbcType=DECIMAL},
+        REMAIN_QTY = #{remainQty,jdbcType=DECIMAL},
       </if>
       <if test="status != null" >
-        #{status,jdbcType=VARCHAR},
+        STATUS = #{status,jdbcType=VARCHAR},
       </if>
     </set>
     where 1=1
@@ -112,19 +112,19 @@
      and  BRANCH_NO = #{branchNo,jdbcType=VARCHAR}
     </if>
     <if test="empNo!=null and ''!=empNo">
-     and  EMP_NO = #{empNo,jdbcType=VARCHAR},
+     and  EMP_NO = #{empNo,jdbcType=VARCHAR}
     </if>
-    <if test="reqOrderNo != null" >
-     and   RESEND_ORDER_NO = #{resendOrderNo,jdbcType=VARCHAR},
+    <if test="resendOrderNo != null" >
+      and   RESEND_ORDER_NO = #{resendOrderNo,jdbcType=VARCHAR}
     </if>
     <if test="matnr != null" >
-    and MATNR = #{matnr,jdbcType=VARCHAR}
+       and MATNR = #{matnr,jdbcType=VARCHAR}
     </if>
     <if test="dispDate != null and ''!=dispDate" >
-    and DISP_DATE = #{dispDate,jdbcType=DATE}
+      and DISP_DATE = #{dispDate,jdbcType=DATE}
     </if>
     <if test="dispOrderNo != null and ''!=dispOrderNo" >
-      and DISP_ORDER_NO =  #{dispOrderNo,jdbcType=VARCHAR},
+      and DISP_ORDER_NO =  #{dispOrderNo,jdbcType=VARCHAR}
     </if>
   </update>
 <delete id="delRefuseResendByDispAndMatnr" parameterType="com.nhry.data.milktrans.domain.TMstRefuseResend">
@@ -156,8 +156,7 @@
     rr.RESEND_ORDER_NO,rr.MATNR,ex.SHORT_TXT MATNR_TXT,rr.REMAIN_QTY,rr.DISP_DATE,rr.EMP_NO,e.EMP_NAME
     FROM t_mst_refuse_resend  rr
     LEFT JOIN t_md_branch_emp e on rr.EMP_NO = e.EMP_NO
-    LEFT JOIN t_md_branch b on rr.BRANCH_NO = b.BRANCH_NO
-    LEFT JOIN t_md_mara_ex ex on rr.MATNR = ex.MATNR and ex.SALES_ORG= b.SALES_ORG
+    LEFT JOIN t_md_mara_ex ex on rr.MATNR = ex.MATNR and ex.SALES_ORG= rr.SALES_ORG
     WHERE rr.BRANCH_NO = #{branchNo}
     and rr.MATNR = #{matnr}
   </select>

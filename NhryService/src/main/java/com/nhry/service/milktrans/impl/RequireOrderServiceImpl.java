@@ -788,7 +788,7 @@ public class RequireOrderServiceImpl implements RequireOrderService {
     }
 
     @Override
-    public RequireOrderModel uptRequireOrderByResendItem(UptReqOrderByResendItemMode umodel) {
+    public int uptRequireOrderByResendItem(UptReqOrderByResendItemMode umodel) {
         List<TMstRefuseResend> resendlist = umodel.getEntries();
         if(resendlist !=null &&  resendlist.size()>0){
             TSsmReqGoodsOrderItem item = tSsmReqGoodsOrderItemMapper.getReqGoodsItemsByMatnrAndOrderNo(umodel.getReqOrderNo(),umodel.getMatnr());
@@ -809,11 +809,11 @@ public class RequireOrderServiceImpl implements RequireOrderService {
                 resendItem.setType("10");
                 resendItem.setCreateAt(new Date());
                 resendItem.setCreateBy(user.getLoginName());
-                resendItem.setQty(resend.getConfirmQty());
+                resendItem.setQty(resend.getUseQty());
                 resendItemMapper.addResendItem(resendItem);
 
                 //库存
-                stockService.updateStock(oldResend.getBranchNo(),oldResend.getMatnr(),resend.getUseQty(),user.getSalesOrg());
+                stockService.updateTmpStock(oldResend.getBranchNo(),oldResend.getMatnr(),resend.getUseQty(),user.getSalesOrg());
                 //更新拒收复送 信息
                 BigDecimal remainQty = oldResend.getRemainQty().subtract(resend.getUseQty());
                 oldResend.setRemainQty(remainQty);
@@ -835,9 +835,9 @@ public class RequireOrderServiceImpl implements RequireOrderService {
             }
             uptItem.setResendQty(total);
             uptItem.setOrderNo(item.getOrderNo());
-            uptItem.setMatnr(item.getMatnr());
+            uptItem.setOldMatnr(item.getMatnr());
             tSsmReqGoodsOrderItemMapper.uptNewReqGoodsItem(uptItem);
-            return this.searchRequireOrder(item.getOrderDate());
+            return 1;
         }else{
             throw  new ServiceException(MessageCode.LOGIC_ERROR,"拒收复送参数不能为空");
         }
