@@ -1,0 +1,164 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.nhry.data.milk.dao.TMstRefuseResendMapper" >
+  <resultMap id="BaseResultMap" type="com.nhry.data.milktrans.domain.TMstRefuseResend" >
+    <result column="RESEND_ORDER_NO" property="resendOrderNo" jdbcType="VARCHAR" />
+    <result column="SALES_ORG" property="salesOrg" jdbcType="VARCHAR" />
+    <result column="BRANCH_NO" property="branchNo" jdbcType="VARCHAR" />
+    <result column="REMAIN_QTY" property="remainQty" jdbcType="DECIMAL" />
+    <result column="CONFIRM_QTY" property="confirmQty" jdbcType="DECIMAL" />
+    <result column="QTY" property="qty" jdbcType="DECIMAL" />
+    <result column="STATUS" property="status" jdbcType="VARCHAR" />
+    <result column="MATNR" property="matnr" jdbcType="VARCHAR" />
+    <result column="MATNR_TXT" property="matnrTxt" jdbcType="VARCHAR" />
+    <result column="DISP_ORDER_NO" property="dispOrderNo" jdbcType="VARCHAR" />
+    <result column="EMP_NO" property="empNo" jdbcType="VARCHAR" />
+    <result column="EMP_NAME" property="empName" jdbcType="VARCHAR" />
+    <result column="DISP_DATE" property="dispDate" jdbcType="DATE" />
+
+  </resultMap>
+  <sql id="Base_Column_List" >
+    SALES_ORG,BRANCH_NO, DISP_ORDER_NO,DISP_DATE,QTY,CONFIRM_QTY,MATNR,STATUS,EMP_NO,REQ_ORDER_NO
+  </sql>
+
+  <insert id="addTMstRefuseResend" parameterType="com.nhry.data.milktrans.domain.TMstRefuseResend" >
+    insert into t_mst_refuse_resend
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="resendOrderNo != null" >
+        RESEND_ORDER_NO,
+      </if>
+      <if test="salesOrg != null" >
+        SALES_ORG,
+      </if>
+      <if test="branchNo != null" >
+        BRANCH_NO,
+      </if>
+      <if test="dispOrderNo != null" >
+        DISP_ORDER_NO,
+      </if>
+      <if test="dispDate != null" >
+        DISP_DATE,
+      </if>
+      <if test="empNo != null" >
+        EMP_NO,
+      </if>
+      <if test="qty!= null" >
+        QTY,
+      </if>
+      <if test="confirmQty != null" >
+        CONFIRM_QTY,
+      </if>
+      <if test="remainQty != null" >
+        REMAIN_QTY,
+      </if>
+      <if test="status != null" >
+        STATUS,
+      </if>
+      <if test="matnr != null" >
+        MATNR,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="resendOrderNo != null" >
+        #{resendOrderNo,jdbcType=VARCHAR},
+      </if>
+      <if test="salesOrg != null" >
+        #{salesOrg,jdbcType=VARCHAR},
+      </if>
+      <if test="branchNo != null" >
+        #{branchNo,jdbcType=VARCHAR},
+      </if>
+      <if test="dispOrderNo != null" >
+        #{dispOrderNo,jdbcType=VARCHAR},
+      </if>
+      <if test="dispDate != null" >
+        #{dispDate,jdbcType=DATE},
+      </if>
+      <if test="empNo != null" >
+        #{empNo,jdbcType=VARCHAR},
+      </if>
+      <if test="qty != null" >
+        #{qty,jdbcType=DECIMAL},
+      </if>
+      <if test="confirmQty != null" >
+        #{confirmQty,jdbcType=DECIMAL},
+      </if>
+      <if test="remainQty != null" >
+        #{remainQty,jdbcType=DECIMAL},
+      </if>
+      <if test="status != null" >
+        #{status,jdbcType=VARCHAR},
+      </if>
+      <if test="matnr != null" >
+        #{matnr,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="uptRefuseResend" parameterType="com.nhry.data.milktrans.domain.TMstRefuseResend" >
+    update t_mst_refuse_resend
+    <set >
+      <if test="confirmQty != null" >
+        #{confirmQty,jdbcType=DECIMAL},
+      </if>
+      <if test="remainQty != null" >
+        #{remainQty,jdbcType=DECIMAL},
+      </if>
+      <if test="status != null" >
+        #{status,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where 1=1
+    <if test="branchNo!=null and ''!=branchNo">
+     and  BRANCH_NO = #{branchNo,jdbcType=VARCHAR}
+    </if>
+    <if test="empNo!=null and ''!=empNo">
+     and  EMP_NO = #{empNo,jdbcType=VARCHAR},
+    </if>
+    <if test="reqOrderNo != null" >
+     and   RESEND_ORDER_NO = #{resendOrderNo,jdbcType=VARCHAR},
+    </if>
+    <if test="matnr != null" >
+    and MATNR = #{matnr,jdbcType=VARCHAR}
+    </if>
+    <if test="dispDate != null and ''!=dispDate" >
+    and DISP_DATE = #{dispDate,jdbcType=DATE}
+    </if>
+    <if test="dispOrderNo != null and ''!=dispOrderNo" >
+      and DISP_ORDER_NO =  #{dispOrderNo,jdbcType=VARCHAR},
+    </if>
+  </update>
+<delete id="delRefuseResendByDispAndMatnr" parameterType="com.nhry.data.milktrans.domain.TMstRefuseResend">
+  DELETE FROM t_mst_refuse_resend
+  WHERE  1=1
+  and MATNR = #{matnr,jdbcType=VARCHAR}
+  <if test="empNo!=null and ''!=empNo">
+    EMP_NO=#{empNo,jdbcType=VARCHAR}
+  </if>
+  and DISP_DATE = #{dispDate,jdbcType=DATE}
+  and DISP_ORDER_NO =  #{dispOrderNo,jdbcType=VARCHAR}
+</delete>
+  <select id="findNoUsedRefuseResend" resultMap="BaseResultMap" parameterType="String">
+    SELECT
+        rs.MATNR,
+        SUM(rs.REMAIND_QTY) QTY
+    FROM
+        t_mst_refuse_resend rs
+    WHERE
+        rs.REMAIND_QTY > 0
+    AND rs.BRANCH_NO = #{branchNo,jdbcType=VARCHAR}
+    GROUP BY
+        rs.MATNR
+  </select>
+
+
+  <select id="queryRefuseResendByMatnr" parameterType="java.util.HashMap" resultMap="BaseResultMap">
+   SELECT
+    rr.MATNR,ex.SHORT_TXT MATNR_TXT,rr.REMAIND_QTY,rr.DISP_DATE,rr.EMP_NO,e.EMP_NAME
+    FROM t_mst_refuse_resend  rr
+    LEFT JOIN t_md_branch_emp e on rr.EMP_NO = e.EMP_NO
+    LEFT JOIN t_md_branch b on rr.BRANCH_NO = b.BRANCH_NO
+    LEFT JOIN t_md_mara_ex ex on rr.MATNR = ex.MATNR and ex.SALES_ORG= b.SALES_ORG
+    WHERE rr.BRANCH_NO = #{branchNo}
+    and rr.MATNR = #{matnr}
+  </select>
+</mapper>

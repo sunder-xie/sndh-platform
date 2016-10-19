@@ -9,11 +9,13 @@ import com.nhry.data.basic.domain.TMdMaraEx;
 import com.nhry.data.milk.dao.TDispOrderChangeMapper;
 import com.nhry.data.milk.dao.TDispOrderItemMapper;
 import com.nhry.data.milk.dao.TDispOrderMapper;
+import com.nhry.data.milk.dao.TMstRefuseResendMapper;
 import com.nhry.data.milk.domain.*;
 import com.nhry.data.milktrans.dao.TMstInsideSalOrderItemMapper;
 import com.nhry.data.milktrans.dao.TMstInsideSalOrderMapper;
 import com.nhry.data.milktrans.domain.TMstInsideSalOrder;
 import com.nhry.data.milktrans.domain.TMstInsideSalOrderItem;
+import com.nhry.data.milktrans.domain.TMstRefuseResend;
 import com.nhry.data.milktrans.domain.TRecBotDetail;
 import com.nhry.data.order.dao.TOrderDaliyPlanItemMapper;
 import com.nhry.data.order.dao.TPlanOrderItemMapper;
@@ -36,7 +38,6 @@ import com.nhry.service.order.dao.OrderService;
 import com.nhry.service.stock.dao.TSsmStockService;
 import com.nhry.utils.PrimaryKeyUtils;
 import com.nhry.utils.SerialUtil;
-
 import org.apache.commons.lang3.StringUtils;
 
 import java.math.BigDecimal;
@@ -57,6 +58,11 @@ public class DeliverMilkServiceImpl extends BaseService implements DeliverMilkSe
 	private ReturnBoxService returnBoxService;
 	private TSsmStockService tSsmStockService;
 	private TSysUserRoleMapper urMapper;
+	private TMstRefuseResendMapper resendMapper;
+
+	public void setResendMapper(TMstRefuseResendMapper resendMapper) {
+		this.resendMapper = resendMapper;
+	}
 
 	public void setUrMapper(TSysUserRoleMapper urMapper) {
 		this.urMapper = urMapper;
@@ -123,7 +129,9 @@ public class DeliverMilkServiceImpl extends BaseService implements DeliverMilkSe
 	}
 
 	/**
-	 * 根据  路单号 生成 对应的内部销售订单
+	 * 路单确认后  扣除库存
+	 * 产生拒收复送记录
+	 * 生成 对应的内部销售订单
 	 * @param dispOrderNo
 	 * @return
      */
@@ -144,7 +152,23 @@ public class DeliverMilkServiceImpl extends BaseService implements DeliverMilkSe
 						tSsmStockService.updateStock(order.getBranchNo(), entry.getConfirmMatnr(), entry.getQty(), user.getSalesOrg());
 					}else{
 						tSsmStockService.updateStock(order.getBranchNo(), entry.getConfirmMatnr(), entry.getConfirmQty(), user.getSalesOrg());
-						//如果原因是 60 （拒收复送） 库存
+						//如果原因是 60 （拒收复送）拒收部分保存至库存中
+						//T创建产品拒收复送记录，包括路单日期、奶站、送奶员、产品、拒收复送数量，（应用要货标识和部分应用要货标识、应用要货数量）
+						if("60".equals(entry.getReason()) && entry.getQty().subtract(entry.getConfirmQty()).compareTo(BigDecimal.ZERO)!=0){
+							TMstRefuseResend resend = new TMstRefuseResend();
+							resend.setResendOrderNo(PrimaryKeyUtils.generateUpperUuidKey());
+							resend.setBranchNo(user.getBranchNo());
+							resend.setEmpNo(order.getDispEmpNo());
+							resend.setQty(entry.getQty().subtract(entry.getConfirmQty()));
+							resend.setRemainQty(entry.getQty().subtract(entry.getConfirmQty()));
+							resend.setMatnr(entry.getMatnr());
+							resend.setStatus("10");
+							resend.setSalesOrg(user.getSalesOrg());
+							resend.setDispDate(entry.getOrderDate());
+							resend.setDispOrderNo(entry.getOrderNo());
+							resendMapper.addTMstRefuseResend(resend);
+							tSsmStockService.updateTmpStock(order.getBranchNo(), entry.getConfirmMatnr(), entry.getConfirmQty().subtract(entry.getQty()), user.getSalesOrg());
+						}
 					}
 					if(entry.getReason()!=null && ("40".equals(entry.getReason()) || "50".equals(entry.getReason()) )){
 						if(insOrderNo==null){
@@ -527,7 +551,7 @@ public class DeliverMilkServiceImpl extends BaseService implements DeliverMilkSe
 			//创建回瓶管理，调用
 			returnBoxService.createDayRetBox(routeCode);
 			
-			//生成内部销售订单，调用
+			//生成内部销售订单（扣库存）调用
 			createInsideSalOrder(routeCode);
 			
 			//找出今日会完结的预付款订单，如果有退款的，将退回订户帐户
@@ -839,17 +863,45 @@ public class DeliverMilkServiceImpl extends BaseService implements DeliverMilkSe
 	public int updateInSalOrderAndStockByUpdateDiapOrder(TDispOrderItem newItem, TDispOrderItem orgItem) {
 		TPreOrder order = tPreOrderMapper.selectByPrimaryKey(orgItem.getOrgOrderNo());
 		TSysUser user = userSessionService.getCurrentUser();
+
 		//首先改回库存
-		if( !"20".equals(orgItem.getReason()) && !"10".equals(orgItem.getReason())) {
+		if( "30".equals(orgItem.getReason()) || "40".equals(orgItem.getReason()) || "50".equals(orgItem.getReason())) {
 			tSsmStockService.updateStock(order.getBranchNo(), orgItem.getConfirmMatnr(), orgItem.getQty().multiply(new BigDecimal(-1)), order.getSalesOrg());
 		}else{
 			tSsmStockService.updateStock(order.getBranchNo(), orgItem.getConfirmMatnr(), orgItem.getConfirmQty().multiply(new BigDecimal(-1)), order.getSalesOrg());
+			if("60".equals(orgItem.getReason())){
+				//将拒收复送的也改回
+				TMstRefuseResend resend = new TMstRefuseResend();
+				resend.setBranchNo(user.getBranchNo());
+				resend.setMatnr(orgItem.getMatnr());
+				resend.setEmpNo(orgItem.getDispEmpNo());
+				resend.setDispDate(orgItem.getOrderDate());
+				resend.setDispOrderNo(orgItem.getOrderNo());
+				resendMapper.delRefuseResendByDispAndMatnr(resend);
+				tSsmStockService.updateTmpStock(order.getBranchNo(),orgItem.getConfirmMatnr(),orgItem.getQty().subtract(orgItem.getConfirmQty()),order.getSalesOrg());
+			}
 		}
 		//重新扣库存
-		if( !"20".equals(newItem.getReason()) && !"10".equals(newItem.getReason())) {
+		if( "30".equals(newItem.getReason()) || "40".equals(newItem.getReason()) ||"50".equals(newItem.getReason())) {
 			tSsmStockService.updateStock(order.getBranchNo(), newItem.getConfirmMatnr(), newItem.getQty(), order.getSalesOrg());
 		}else{
 			tSsmStockService.updateStock(order.getBranchNo(), newItem.getConfirmMatnr(), newItem.getConfirmQty(), order.getSalesOrg());
+			if("60".equals(newItem.getReason())){
+				//产生拒收复送
+				TMstRefuseResend resend = new TMstRefuseResend();
+				resend.setResendOrderNo(PrimaryKeyUtils.generateUpperUuidKey());
+				resend.setBranchNo(user.getBranchNo());
+				resend.setEmpNo(newItem.getDispEmpNo());
+				resend.setQty(newItem.getQty().subtract(newItem.getConfirmQty()));
+				resend.setRemainQty(newItem.getQty().subtract(newItem.getConfirmQty()));
+				resend.setMatnr(newItem.getMatnr());
+				resend.setStatus("10");
+				resend.setSalesOrg(user.getSalesOrg());
+				resend.setDispDate(newItem.getOrderDate());
+				resend.setDispOrderNo(newItem.getOrderNo());
+				resendMapper.addTMstRefuseResend(resend);
+				tSsmStockService.updateTmpStock(order.getBranchNo(),orgItem.getConfirmMatnr(),newItem.getConfirmQty().subtract(newItem.getQty()),order.getSalesOrg());
+			}
 		}
 		TMstInsideSalOrder sOrder = tMstInsideSalOrderMapper.getInSalOrderByDispOrderNo(orgItem.getOrderNo());
 			// 将orgItem 产生的 内部销售订单数量 去除

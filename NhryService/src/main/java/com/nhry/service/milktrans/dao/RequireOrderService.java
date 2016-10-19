@@ -1,5 +1,6 @@
 package com.nhry.service.milktrans.dao;
 
+import com.nhry.data.milktrans.domain.TMstRefuseResend;
 import com.nhry.data.milktrans.domain.TSsmReqGoodsOrderItem;
 import com.nhry.data.milktrans.domain.TSsmSalOrder;
 import com.nhry.data.milktrans.domain.TSsmSalOrderItems;
@@ -13,7 +14,7 @@ import java.util.List;
  */
 public interface RequireOrderService {
 
-    RequireOrderModel creatRequireOrder();
+   // RequireOrderModel creatRequireOrder();
     RequireOrderModel searchRequireOrder(Date orderDate);
 
     int uptNewRequireOrderItem(UpdateNewRequiredModel uModel);
@@ -50,4 +51,6 @@ public interface RequireOrderService {
     TSsmSalOrder creatPromoSalOrderAndSendOfSelftBranch(Date orderDate);
 
     List<TSsmSalOrder> creaSalOrderOfSelftBranchByDate2(SalOrderDaySearch search);
+
+    List<TMstRefuseResend> queryRefuseResendByMatnr(String matnr);
 }

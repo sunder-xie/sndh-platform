@@ -1,24 +1,7 @@
 package com.nhry.service.external.impl;
 
-import java.math.BigDecimal;
-import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
-import org.codehaus.jettison.json.JSONArray;
-import org.codehaus.jettison.json.JSONException;
-import org.codehaus.jettison.json.JSONObject;
-import org.eclipse.jetty.util.StringUtil;
-import org.springframework.core.task.TaskExecutor;
-
 import com.nhry.data.basic.dao.TMdBranchEmpMapper;
-import com.nhry.data.basic.domain.TMdAddress;
-import com.nhry.data.basic.domain.TMdBranch;
-import com.nhry.data.basic.domain.TMdBranchEmp;
-import com.nhry.data.basic.domain.TMdBranchScopeKey;
-import com.nhry.data.basic.domain.TMdResidentialArea;
+import com.nhry.data.basic.domain.*;
 import com.nhry.data.config.dao.NHSysCodeItemMapper;
 import com.nhry.data.config.domain.NHSysCodeItem;
 import com.nhry.data.order.domain.TPlanOrderItem;
@@ -29,14 +12,21 @@ import com.nhry.service.basic.pojo.BranchEmpModel;
 import com.nhry.service.external.EcBaseService;
 import com.nhry.service.external.dao.EcService;
 import com.nhry.utils.EnvContant;
-import com.nhry.utils.HttpUtils;
 import com.nhry.utils.SysContant;
+import org.codehaus.jettison.json.JSONArray;
+import org.codehaus.jettison.json.JSONException;
+import org.codehaus.jettison.json.JSONObject;
+
+import java.math.BigDecimal;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.List;
 
 public class EcServiceImpl extends EcBaseService implements EcService{
     private NHSysCodeItemMapper itemMapper;
     private TVipCustInfoService tVipCustInfoService;
     private TMdBranchEmpMapper branchEmpMapper;
-    
+
 	public void setBranchEmpMapper(TMdBranchEmpMapper branchEmpMapper)
 	{
 		this.branchEmpMapper = branchEmpMapper;
@@ -485,7 +475,7 @@ public class EcServiceImpl extends EcBaseService implements EcService{
 			orderStatusReJson.put("customerId", "DH");
 			orderStatusReJson.put("dhOrderNo", order.getOrderNo());
 			orderStatusReJson.put("branchNo", order.getBranchNo());
-			
+			orderStatusReJson.put("cusNo",order.getDealerNo());
 			data.put(orderStatusReJson);
 			ssbi.put("data", data);
 			body.put("SVCSENDORDERBRANCH", ssbi);

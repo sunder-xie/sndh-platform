@@ -75,16 +75,27 @@ public class milkTransResource extends BaseResource {
 		return convertToRespModel(MessageCode.NORMAL, null,  requireOrderService.creatPromoSalOrderAndSendOfSelftBranch(rSearch.getRequiredDate()));
 	}
 
-
-
 	@POST
 	@Path("/creatRequireOrder")
 	@Produces(MediaType.APPLICATION_JSON)
 	@Consumes(MediaType.APPLICATION_JSON)
 	@ApiOperation(value = "/creatRequireOrder", response = RequireOrderModel.class, notes = "生成要货计划")
 	public Response creatRequireOrder(){
-		return convertToRespModel(MessageCode.NORMAL, null, requireOrderService.creatRequireOrder());
+		ReqGoodsOrderSearch eSearch = new ReqGoodsOrderSearch();
+		eSearch.setRequiredDate(new Date());
+		return convertToRespModel(MessageCode.NORMAL, null, requireOrderService.creatRequireOrderByDate(eSearch));
 	}
+
+
+	@POST
+	@Path("/queryRefuseResendByMatnr/{matnr}")
+	@Produces(MediaType.APPLICATION_JSON)
+	@Consumes(MediaType.APPLICATION_JSON)
+	@ApiOperation(value = "/queryRefuseResendByMatnr", response = RequireOrderModel.class, notes = "查询奶站下拒收复送产品信息")
+	public Response queryRefuseResendByMatnr(@ApiParam(required=true,name="eSearch",value="产品编号") @PathParam("matnr") String matnr) {
+		return convertToRespModel(MessageCode.NORMAL, null, requireOrderService.queryRefuseResendByMatnr(matnr));
+	}
+
 
 	@POST
 	@Path("/creatRequireOrderByDate")

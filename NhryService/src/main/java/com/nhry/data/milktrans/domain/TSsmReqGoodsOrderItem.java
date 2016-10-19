@@ -13,8 +13,17 @@ public class TSsmReqGoodsOrderItem {
     private String unit;
     private int qty;
     private int increQty;
+    private boolean hasTmp;
     private String flag;
     private int itemNo;
+
+    public boolean isHasTmp() {
+        return hasTmp;
+    }
+
+    public void setHasTmp(boolean hasTmp) {
+        this.hasTmp = hasTmp;
+    }
 
     public int getItemNo() {
         return itemNo;

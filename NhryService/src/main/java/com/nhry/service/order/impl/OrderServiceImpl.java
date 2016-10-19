@@ -380,6 +380,12 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 		//当是电商的订单时，更新EC对应订单的奶站
 		if("10".equals(order.getPreorderSource())){
 			order.setBranchNo(uptManHandModel.getBranchNo());
+			if("01".equals(branch.getBranchGroup())){
+				order.setDealerNo(branch.getBranchNo());
+			}else{
+				order.setDealerNo(branch.getDealerNo());
+			}
+
 			//发送EC
 			taskExecutor.execute(new Thread(){
 				@Override
