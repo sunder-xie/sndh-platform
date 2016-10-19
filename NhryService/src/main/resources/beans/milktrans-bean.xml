@@ -40,6 +40,7 @@
 		<property name="tDispOrderMapper"  ref="tDispOrderMapper"></property>
 		<property name="tSsmGiOrderMapper"  ref="ssmGiOrderMapper"></property>
 		<property name="tSsmGiOrderItemMapper"  ref="ssmGiOrderItemMapper"></property>
+		<property name="resendMapper"  ref="resendMapper"></property>
 	</bean>
 
 	<!--回瓶管理-->

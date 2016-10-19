@@ -64,6 +64,16 @@ public class TDispOrderItem extends TDispOrderItemKey {
     
     private String giftFlag;
 
+	private Integer totalQty;
+
+	public Integer getTotalQty() {
+		return totalQty;
+	}
+
+	public void setTotalQty(Integer totalQty) {
+		this.totalQty = totalQty;
+	}
+
 	public BigDecimal getRemainAmt() {
 		return remainAmt;
 	}
