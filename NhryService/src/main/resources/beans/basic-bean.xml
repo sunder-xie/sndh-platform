@@ -99,6 +99,11 @@
 		<property name="userSessionService" ref="userSessionService"></property>
 	</bean>
 	<!-- 订单end -->
+	<!-- 拒收复送-->
+	<bean id="resendMapper" class="com.nhry.data.milk.impl.TMstRefuseResendMapperImpl">
+		<property name="sqlSessionTemplate" ref="dynamicSqlSessionTemplate"></property>
+	</bean>
+	<!-- 拒收复送end -->
 
 	<!-- 奶箱 -->
 	<bean id="tMilkboxPlanMapper" class="com.nhry.data.order.impl.TMilkboxPlanMapperImpl">
@@ -144,6 +149,7 @@
 		<property name="productService" ref="productService"></property>
 		<property name="tSsmStockService" ref="ssmStockService"></property>
 		<property name="returnBoxService" ref="returnBoxService"></property>
+		<property name="resendMapper" ref="resendMapper"></property>
 	</bean>
 	<!-- 送奶信息维护end -->
 	<bean id="custService" class="com.nhry.service.basic.impl.TVipCustInfoServiceImpl">

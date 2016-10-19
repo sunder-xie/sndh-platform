@@ -9,6 +9,15 @@ public class OrderRequireItem {
     private Integer  qty;
     private Integer increQty;
     private String flag;
+    private boolean hasTmp;
+
+    public boolean isHasTmp() {
+        return hasTmp;
+    }
+
+    public void setHasTmp(boolean hasTmp) {
+        this.hasTmp = hasTmp;
+    }
 
     public String getMatnr() {
         return matnr;

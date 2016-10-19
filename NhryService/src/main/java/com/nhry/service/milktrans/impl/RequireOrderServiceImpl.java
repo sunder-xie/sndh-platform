@@ -9,6 +9,7 @@ import com.nhry.data.basic.dao.TMdMaraMapper;
 import com.nhry.data.basic.domain.TMdBranch;
 import com.nhry.data.basic.domain.TMdMara;
 import com.nhry.data.milk.dao.TDispOrderMapper;
+import com.nhry.data.milk.dao.TMstRefuseResendMapper;
 import com.nhry.data.milk.domain.TDispOrder;
 import com.nhry.data.milktrans.dao.TSsmReqGoodsOrderItemMapper;
 import com.nhry.data.milktrans.dao.TSsmReqGoodsOrderMapper;
@@ -46,6 +47,11 @@ public class RequireOrderServiceImpl implements RequireOrderService {
     private TSsmSalOrderItemMapper tSsmSalOrderItemMapper;
     private TSsmGiOrderMapper tSsmGiOrderMapper;
     private TSsmGiOrderItemMapper tSsmGiOrderItemMapper;
+    private TMstRefuseResendMapper resendMapper;
+
+    public void setResendMapper(TMstRefuseResendMapper resendMapper) {
+        this.resendMapper = resendMapper;
+    }
 
     public void settSsmGiOrderItemMapper(TSsmGiOrderItemMapper tSsmGiOrderItemMapper) {
         this.tSsmGiOrderItemMapper = tSsmGiOrderItemMapper;
@@ -95,7 +101,7 @@ public class RequireOrderServiceImpl implements RequireOrderService {
         this.tMdMaraMapper = tMdMaraMapper;
     }
 
-    @Override
+  /*  @Override
     public RequireOrderModel creatRequireOrder() {
         RequireOrderSearch rModel = new RequireOrderSearch();
         Date today = new Date();
@@ -165,7 +171,7 @@ public class RequireOrderServiceImpl implements RequireOrderService {
         //查询出今天的要货计划
         return this.searchRequireOrder(today);
 
-    }
+    }*/
 
     /**
      * 根据 日期 获取当前登录人所在奶站的 要货计划
@@ -187,6 +193,16 @@ public class RequireOrderServiceImpl implements RequireOrderService {
         rModel.setOrderDate(orderDate);
         TSsmReqGoodsOrder order = this.tSsmReqGoodsOrderMapper.searchRequireOrder(rModel);
         if (order != null) {
+
+            List<TMstRefuseResend>  resendList = resendMapper.findNoUsedRefuseResend(user.getBranchNo());
+            Map<String,Integer> matnrMap = new HashMap<String,Integer>();
+            if(resendList!=null && resendList.size()>0){
+                resendList.stream().forEach(resend->{
+                    matnrMap.put(resend.getMatnr(),resend.getQty().intValue());
+                });
+            }
+
+
             orderModel.setStatus(order.getStatus());
             orderModel.setRequiredDate(order.getOrderDate());
             orderModel.setBranchNo(order.getBranchNo());
@@ -203,6 +219,11 @@ public class RequireOrderServiceImpl implements RequireOrderService {
                 map.put("salesOrg", salesOrg);
                 map.put("matnr", item.getMatnr());
                 TMdMara mara = tMdMaraMapper.selectProductByCode(map);
+                if(matnrMap.containsKey(item.getMatnr())){
+                    entry.setHasTmp(true);
+                }else{
+                    entry.setHasTmp(false);
+                }
                 entry.setMatnr(item.getMatnr());
                 entry.setMatnrTxt(mara.getMatnrTxt());
                 entry.setQty(item.getQty());
@@ -501,6 +522,8 @@ public class RequireOrderServiceImpl implements RequireOrderService {
                 tSsmReqGoodsOrderMapper.deleRequireGoodsOrderbyNo(order.getOrderNo());
             }
         }
+
+
         //查看明天和后天的订单
         rModel.setFirstDay(DateUtil.getTomorrow(orderDate));
         rModel.setSecondDay(DateUtil.getDayAfterTomorrow(orderDate));
@@ -522,8 +545,11 @@ public class RequireOrderServiceImpl implements RequireOrderService {
             order.setLastModifiedBy(user.getLoginName());
             tSsmReqGoodsOrderMapper.insertRequireOrder(order);
             for (int j = 0; j < items.size(); j++) {
+
                 TOrderDaliyPlanItem entry = items.get(j);
+
                 TSsmReqGoodsOrderItem item = new TSsmReqGoodsOrderItem();
+
                 item.setFlag("1");
                 item.setUnit(entry.getUnit());
                 item.setOrderDate(orderDate);
@@ -740,6 +766,12 @@ public class RequireOrderServiceImpl implements RequireOrderService {
             }
         }
         //如果销售订单已存在，判断是否存在发送成功的 如果有 重新发送，如果没有 则提示已经创建所有的销售订单，请直接查询
+    }
+
+    @Override
+    public List<TMstRefuseResend>  queryRefuseResendByMatnr(String matnr) {
+        TSysUser user = userSessionService.getCurrentUser();
+        return resendMapper.queryRefuseResendByMatnr(matnr,user.getBranchNo());
     }
 
 
