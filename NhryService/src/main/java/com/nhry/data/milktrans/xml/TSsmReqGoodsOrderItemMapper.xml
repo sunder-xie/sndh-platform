@@ -50,24 +50,25 @@
         and ORDER_NO =  #{orderNo,jdbcType=VARCHAR}
     </select>
 
-    <update id="uptNewReqGoodsItem" parameterType="com.nhry.data.milktrans.domain.TSsmReqGoodsOrderItemUpt" >
-        update t_ssm_req_goods_order_item
-        set
+<update id="uptNewReqGoodsItem" parameterType="com.nhry.data.milktrans.domain.TSsmReqGoodsOrderItemUpt" >
+    update t_ssm_req_goods_order_item
+    <set>
         <if test="unit != null" >
             UNIT = #{unit,jdbcType=VARCHAR},
         </if>
         <if test="increQty != null" >
-        INCRE_QTY = #{increQty,jdbcType=INTEGER},
+           INCRE_QTY = #{increQty,jdbcType=INTEGER},
         </if>
         <if test="matnr != null" >
           MATNR = #{matnr,jdbcType=VARCHAR},
-        </if>>
+        </if>
         <if test="qty != null" >
-          QTY = #{qty,jdbcType=INTEGER}
+          QTY = #{qty,jdbcType=INTEGER},
         </if>
         <if test="resendQty != null" >
-            RESEND_QTY = #{resendQty,jdbcType=INTEGER}
+            RESEND_QTY = #{resendQty,jdbcType=INTEGER},
         </if>
+    </set>
         where  ORDER_NO = #{orderNo,jdbcType=VARCHAR}
         and MATNR = #{oldMatnr,jdbcType=VARCHAR}
     </update>

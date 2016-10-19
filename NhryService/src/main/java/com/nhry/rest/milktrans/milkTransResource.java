@@ -98,6 +98,7 @@ public class milkTransResource extends BaseResource {
 	@POST
 	@Path("/uptRequireOrderByResendItem")
 	@Produces(MediaType.APPLICATION_JSON)
+	@Consumes(MediaType.APPLICATION_JSON)
 	@ApiOperation(value = "/uptRequireOrderByResendItem", response = RequireOrderModel.class, notes = "要货计划 确认使用拒收复送产品信息")
 	public Response uptRequireOrderByResendItem(@ApiParam(required=true,name="eSearch",value="产品编号") UptReqOrderByResendItemMode umodel) {
 		return convertToRespModel(MessageCode.NORMAL, null, requireOrderService.uptRequireOrderByResendItem(umodel));

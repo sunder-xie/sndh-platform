@@ -15,7 +15,7 @@
         <result column="SALES_ORG" property="salesOrg" jdbcType="VARCHAR" />        
     </resultMap>
     <sql id="Base_Column_List">
-    BRANCH_NO, MATNR, UNIT, QTY
+    BRANCH_NO, MATNR, UNIT, QTY,TMP_QTY,SALES_ORG
   </sql>
     <select id="getStock" resultMap="BaseResultMap" parameterType="com.nhry.data.stock.domain.TSsmStockKey">
         select
@@ -45,7 +45,7 @@
             QTY = #{qty,jdbcType=DECIMAL},
           </if>
           <if test="tmpQty != null" >
-            QTY = #{tmpQty,jdbcType=DECIMAL},
+            TMP_QTY = #{tmpQty,jdbcType=DECIMAL},
           </if>
           <if test="salesOrg != null" >
             SALES_ORG = #{salesOrg,jdbcType=VARCHAR},
