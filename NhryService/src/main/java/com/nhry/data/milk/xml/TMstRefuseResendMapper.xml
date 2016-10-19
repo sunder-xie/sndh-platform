@@ -140,11 +140,11 @@
   <select id="findNoUsedRefuseResend" resultMap="BaseResultMap" parameterType="String">
     SELECT
         rs.MATNR,
-        SUM(rs.REMAIND_QTY) QTY
+        SUM(rs.REMAIN_QTY) QTY
     FROM
         t_mst_refuse_resend rs
     WHERE
-        rs.REMAIND_QTY > 0
+        rs.REMAIN_QTY > 0
     AND rs.BRANCH_NO = #{branchNo,jdbcType=VARCHAR}
     GROUP BY
         rs.MATNR
@@ -153,12 +153,20 @@
 
   <select id="queryRefuseResendByMatnr" parameterType="java.util.HashMap" resultMap="BaseResultMap">
    SELECT
-    rr.MATNR,ex.SHORT_TXT MATNR_TXT,rr.REMAIND_QTY,rr.DISP_DATE,rr.EMP_NO,e.EMP_NAME
+    rr.RESEND_ORDER_NO,rr.MATNR,ex.SHORT_TXT MATNR_TXT,rr.REMAIN_QTY,rr.DISP_DATE,rr.EMP_NO,e.EMP_NAME
     FROM t_mst_refuse_resend  rr
     LEFT JOIN t_md_branch_emp e on rr.EMP_NO = e.EMP_NO
     LEFT JOIN t_md_branch b on rr.BRANCH_NO = b.BRANCH_NO
     LEFT JOIN t_md_mara_ex ex on rr.MATNR = ex.MATNR and ex.SALES_ORG= b.SALES_ORG
     WHERE rr.BRANCH_NO = #{branchNo}
     and rr.MATNR = #{matnr}
+  </select>
+
+
+  <select id="selectRefuseResendByNo" parameterType="String" resultMap="BaseResultMap">
+    SELECT
+   <include refid="Base_Column_List"/>
+    FROM t_mst_refuse_resend
+    WHERE RESEND_ORDER_NO = #{resendOrderNo,jdbcType=VARCHAR}
   </select>
 </mapper>

@@ -22,7 +22,15 @@ public class TMstRefuseResend implements Serializable {
     private BigDecimal remainQty;
     private Date  dispDate;
     private String dispOrderNo;
+    private BigDecimal useQty;
 
+    public BigDecimal getUseQty() {
+        return useQty;
+    }
+
+    public void setUseQty(BigDecimal useQty) {
+        this.useQty = useQty;
+    }
 
     public BigDecimal getRemainQty() {
         return remainQty;

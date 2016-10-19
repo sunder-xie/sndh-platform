@@ -13,9 +13,19 @@ public class TSsmReqGoodsOrderItem {
     private String unit;
     private int qty;
     private int increQty;
+    private int resendQty;
     private boolean hasTmp;
     private String flag;
     private int itemNo;
+
+
+    public int getResendQty() {
+        return resendQty;
+    }
+
+    public void setResendQty(int resendQty) {
+        this.resendQty = resendQty;
+    }
 
     public boolean isHasTmp() {
         return hasTmp;

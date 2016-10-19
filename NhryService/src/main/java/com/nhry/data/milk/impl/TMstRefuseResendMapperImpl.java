@@ -46,4 +46,9 @@ public class TMstRefuseResendMapperImpl implements TMstRefuseResendMapper {
         map.put("branchNo",branchNo);
         return sqlSessionTemplate.selectList("queryRefuseResendByMatnr",map);
     }
+
+    @Override
+    public TMstRefuseResend selectRefuseResendByNo(String resendOrderNo) {
+        return sqlSessionTemplate.selectOne("selectRefuseResendByNo",resendOrderNo);
+    }
 }

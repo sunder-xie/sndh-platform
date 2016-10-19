@@ -8,11 +8,12 @@
         <result column="MATNR_TXT" property="matnrTxt" jdbcType="VARCHAR" />
         <result column="UNIT" property="unit" jdbcType="VARCHAR" />
         <result column="QTY" property="qty" jdbcType="INTEGER" />
+        <result column="RESEND_QTY" property="resendQty" jdbcType="INTEGER" />
         <result column="INCRE_QTY" property="increQty" jdbcType="INTEGER" />
         <result column="FLAG" property="flag" jdbcType="VARCHAR" />
     </resultMap>
     <sql id="Base_Column_List" >
-        ORDER_NO,ORDER_DATE,MATNR,UNIT,QTY,INCRE_QTY,FLAG
+        ORDER_NO,ORDER_DATE,MATNR,UNIT,QTY,INCRE_QTY,RESEND_QTY,FLAG
     </sql>
 
     <insert id="insertRequireOrderItem" parameterType="com.nhry.data.milktrans.domain.TSsmReqGoodsOrderItem" >
@@ -55,9 +56,18 @@
         <if test="unit != null" >
             UNIT = #{unit,jdbcType=VARCHAR},
         </if>
+        <if test="increQty != null" >
         INCRE_QTY = #{increQty,jdbcType=INTEGER},
-        MATNR = #{matnr,jdbcType=VARCHAR},
-        QTY = #{qty,jdbcType=INTEGER}
+        </if>
+        <if test="matnr != null" >
+          MATNR = #{matnr,jdbcType=VARCHAR},
+        </if>>
+        <if test="qty != null" >
+          QTY = #{qty,jdbcType=INTEGER}
+        </if>
+        <if test="resendQty != null" >
+            RESEND_QTY = #{resendQty,jdbcType=INTEGER}
+        </if>
         where  ORDER_NO = #{orderNo,jdbcType=VARCHAR}
         and MATNR = #{oldMatnr,jdbcType=VARCHAR}
     </update>

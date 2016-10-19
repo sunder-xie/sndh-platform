@@ -103,6 +103,9 @@
 	<bean id="resendMapper" class="com.nhry.data.milk.impl.TMstRefuseResendMapperImpl">
 		<property name="sqlSessionTemplate" ref="dynamicSqlSessionTemplate"></property>
 	</bean>
+	<bean id="resendItemMapper" class="com.nhry.data.milk.impl.TMstRefuseResendItemMapperImpl">
+		<property name="sqlSessionTemplate" ref="dynamicSqlSessionTemplate"></property>
+	</bean>
 	<!-- 拒收复送end -->
 
 	<!-- 奶箱 -->

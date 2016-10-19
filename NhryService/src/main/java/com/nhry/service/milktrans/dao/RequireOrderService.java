@@ -53,4 +53,6 @@ public interface RequireOrderService {
     List<TSsmSalOrder> creaSalOrderOfSelftBranchByDate2(SalOrderDaySearch search);
 
     List<TMstRefuseResend> queryRefuseResendByMatnr(String matnr);
+
+    RequireOrderModel uptRequireOrderByResendItem(UptReqOrderByResendItemMode umodel);
 }

@@ -11,6 +11,15 @@ public class TSsmReqGoodsOrderItemUpt {
     private String unit;
     private int qty;
     private int increQty;
+    private int resendQty;
+
+    public int getResendQty() {
+        return resendQty;
+    }
+
+    public void setResendQty(int resendQty) {
+        this.resendQty = resendQty;
+    }
 
     public String getOrderNo() {
         return orderNo;
