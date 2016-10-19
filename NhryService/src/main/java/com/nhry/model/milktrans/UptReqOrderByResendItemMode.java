@@ -10,10 +10,10 @@ import java.util.ArrayList;
  * Created by gongjk on 2016/10/19.
  */
 public class UptReqOrderByResendItemMode {
-    List<TMstRefuseResend> entries = new ArrayList<TMstRefuseResend>();
-    String matnr;
-    String reqOrderNo;
-    BigDecimal qty;
+    private List<TMstRefuseResend> entries = new ArrayList<TMstRefuseResend>();
+    private String matnr;
+    private String reqOrderNo;
+    private BigDecimal qty;
 
     public List<TMstRefuseResend> getEntries() {
         return entries;
