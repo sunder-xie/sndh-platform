@@ -1,15 +1,16 @@
 package com.nhry.model.milktrans;
 
 import com.nhry.data.milktrans.domain.TMstRefuseResend;
-import com.sun.tools.javac.util.List;
+import java.util.List;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
 
 /**
  * Created by gongjk on 2016/10/19.
  */
 public class UptReqOrderByResendItemMode {
-    List<TMstRefuseResend> entries;
+    List<TMstRefuseResend> entries = new ArrayList<TMstRefuseResend>();
     String matnr;
     String reqOrderNo;
     BigDecimal qty;
