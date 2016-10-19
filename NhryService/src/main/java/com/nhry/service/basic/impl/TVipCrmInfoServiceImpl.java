@@ -34,10 +34,14 @@ public class TVipCrmInfoServiceImpl extends BaseService implements TVipCrmInfoSe
 
 	@Override
 	public void addVipCrm(TVipCrmInfo record) {
-		if(findVipCrmByNo(record.getVipCustNo())== null) {
+		TVipCrmInfo tmp = findVipCrmByNo(record.getVipCustNo());
+		if(tmp == null) {
 			vipCrmMapper.addVipCrm(record);
 		}else{
-			updateVipCrmByNo(record);
+			tmp.setMp(record.getMp());
+			tmp.setVipCustNoSap(record.getVipCustNoSap());
+			tmp.setVipCustNo(record.getVipCustNo());
+			vipCrmMapper.updateVipCrmByNo(tmp);
 		}
 	}
 
