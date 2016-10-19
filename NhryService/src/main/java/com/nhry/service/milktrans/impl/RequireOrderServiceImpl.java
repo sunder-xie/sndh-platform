@@ -9,6 +9,7 @@ import com.nhry.data.basic.dao.TMdMaraMapper;
 import com.nhry.data.basic.domain.TMdBranch;
 import com.nhry.data.basic.domain.TMdMara;
 import com.nhry.data.milk.dao.TDispOrderMapper;
+import com.nhry.data.milk.dao.TMstRefuseResendItemMapper;
 import com.nhry.data.milk.dao.TMstRefuseResendMapper;
 import com.nhry.data.milk.domain.TDispOrder;
 import com.nhry.data.milktrans.dao.TSsmReqGoodsOrderItemMapper;
@@ -24,10 +25,12 @@ import com.nhry.data.stock.domain.TSsmGiOrder;
 import com.nhry.model.milktrans.*;
 import com.nhry.service.milktrans.dao.RequireOrderService;
 import com.nhry.service.pi.dao.PIRequireOrderService;
+import com.nhry.service.stock.dao.TSsmStockService;
 import com.nhry.utils.DateUtil;
 import com.nhry.webService.client.PISuccessMessage;
 import org.apache.commons.lang3.StringUtils;
 
+import java.math.BigDecimal;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
@@ -48,6 +51,16 @@ public class RequireOrderServiceImpl implements RequireOrderService {
     private TSsmGiOrderMapper tSsmGiOrderMapper;
     private TSsmGiOrderItemMapper tSsmGiOrderItemMapper;
     private TMstRefuseResendMapper resendMapper;
+    private TMstRefuseResendItemMapper resendItemMapper;
+    private TSsmStockService stockService;
+
+    public void setStockService(TSsmStockService stockService) {
+        this.stockService = stockService;
+    }
+
+    public void setResendItemMapper(TMstRefuseResendItemMapper resendItemMapper) {
+        this.resendItemMapper = resendItemMapper;
+    }
 
     public void setResendMapper(TMstRefuseResendMapper resendMapper) {
         this.resendMapper = resendMapper;
@@ -772,6 +785,63 @@ public class RequireOrderServiceImpl implements RequireOrderService {
     public List<TMstRefuseResend>  queryRefuseResendByMatnr(String matnr) {
         TSysUser user = userSessionService.getCurrentUser();
         return resendMapper.queryRefuseResendByMatnr(matnr,user.getBranchNo());
+    }
+
+    @Override
+    public RequireOrderModel uptRequireOrderByResendItem(UptReqOrderByResendItemMode umodel) {
+        List<TMstRefuseResend> resendlist = umodel.getEntries();
+        if(resendlist !=null &&  resendlist.size()>0){
+            TSsmReqGoodsOrderItem item = tSsmReqGoodsOrderItemMapper.getReqGoodsItemsByMatnrAndOrderNo(umodel.getReqOrderNo(),umodel.getMatnr());
+
+            TSysUser user = userSessionService.getCurrentUser();
+            String resendOrderNo = resendlist.get(0).getResendOrderNo();
+            String reqOrderNo = item.getOrderNo();
+            int  total = resendlist.stream().mapToInt(r->r.getUseQty().intValue()).sum();
+            if(item.getQty() + item.getIncreQty() < total){
+                throw new ServiceException(MessageCode.LOGIC_ERROR,"选择的拒收复送总数不应该大于要货数量");
+            }
+            for(TMstRefuseResend resend : resendlist){
+                //生成使用拒收复送详情
+                TMstRefuseResend oldResend = resendMapper.selectRefuseResendByNo(resend.getResendOrderNo());
+                TMstRefuseResendItem resendItem = new TMstRefuseResendItem();
+                resendItem.setResendOrderNo(resendOrderNo);
+                resendItem.setOrderNo(reqOrderNo);
+                resendItem.setType("10");
+                resendItem.setCreateAt(new Date());
+                resendItem.setCreateBy(user.getLoginName());
+                resendItem.setQty(resend.getConfirmQty());
+                resendItemMapper.addResendItem(resendItem);
+
+                //库存
+                stockService.updateStock(oldResend.getBranchNo(),oldResend.getMatnr(),resend.getUseQty(),user.getSalesOrg());
+                //更新拒收复送 信息
+                BigDecimal remainQty = oldResend.getRemainQty().subtract(resend.getUseQty());
+                oldResend.setRemainQty(remainQty);
+                oldResend.setConfirmQty(oldResend.getConfirmQty().add(resend.getUseQty()));
+                if(remainQty.compareTo(BigDecimal.ZERO) == 0 || remainQty.compareTo(BigDecimal.ZERO)==1){
+                    oldResend.setStatus("20");
+                }else{
+                    oldResend.setStatus("30");
+                }
+                resendMapper.uptRefuseResend(oldResend);
+            }
+            //更新 要货计划行信息
+            TSsmReqGoodsOrderItemUpt uptItem = new TSsmReqGoodsOrderItemUpt();
+            if(item.getQty() < total){
+                uptItem.setQty(0);
+                uptItem.setIncreQty(0);
+            }else{
+                uptItem.setQty(item.getQty() - total);
+            }
+            uptItem.setResendQty(total);
+            uptItem.setOrderNo(item.getOrderNo());
+            uptItem.setMatnr(item.getMatnr());
+            tSsmReqGoodsOrderItemMapper.uptNewReqGoodsItem(uptItem);
+            return this.searchRequireOrder(item.getOrderDate());
+        }else{
+            throw  new ServiceException(MessageCode.LOGIC_ERROR,"拒收复送参数不能为空");
+        }
+
     }
 
 

@@ -90,10 +90,17 @@ public class milkTransResource extends BaseResource {
 	@POST
 	@Path("/queryRefuseResendByMatnr/{matnr}")
 	@Produces(MediaType.APPLICATION_JSON)
-	@Consumes(MediaType.APPLICATION_JSON)
-	@ApiOperation(value = "/queryRefuseResendByMatnr", response = RequireOrderModel.class, notes = "查询奶站下拒收复送产品信息")
-	public Response queryRefuseResendByMatnr(@ApiParam(required=true,name="eSearch",value="产品编号") @PathParam("matnr") String matnr) {
+	@ApiOperation(value = "/queryRefuseResendByMatnr/{matnr}", response = RequireOrderModel.class, notes = "查询奶站下拒收复送产品信息")
+	public Response queryRefuseResendByMatnr(@ApiParam(required=true,name="matnr",value="产品编号") @PathParam("matnr") String matnr) {
 		return convertToRespModel(MessageCode.NORMAL, null, requireOrderService.queryRefuseResendByMatnr(matnr));
+	}
+
+	@POST
+	@Path("/uptRequireOrderByResendItem")
+	@Produces(MediaType.APPLICATION_JSON)
+	@ApiOperation(value = "/uptRequireOrderByResendItem", response = RequireOrderModel.class, notes = "要货计划 确认使用拒收复送产品信息")
+	public Response uptRequireOrderByResendItem(@ApiParam(required=true,name="eSearch",value="产品编号") UptReqOrderByResendItemMode umodel) {
+		return convertToRespModel(MessageCode.NORMAL, null, requireOrderService.uptRequireOrderByResendItem(umodel));
 	}
 
 

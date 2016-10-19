@@ -41,6 +41,8 @@
 		<property name="tSsmGiOrderMapper"  ref="ssmGiOrderMapper"></property>
 		<property name="tSsmGiOrderItemMapper"  ref="ssmGiOrderItemMapper"></property>
 		<property name="resendMapper"  ref="resendMapper"></property>
+		<property name="resendItemMapper"  ref="resendItemMapper"></property>
+		<property name="stockService"  ref="ssmStockService"></property>
 	</bean>
 
 	<!--回瓶管理-->
