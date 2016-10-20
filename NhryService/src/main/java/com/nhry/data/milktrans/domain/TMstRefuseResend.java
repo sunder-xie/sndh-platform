@@ -20,9 +20,18 @@ public class TMstRefuseResend implements Serializable {
     private BigDecimal qty;
     private BigDecimal confirmQty;
     private BigDecimal remainQty;
+    private BigDecimal insideQty;
     private Date  dispDate;
     private String dispOrderNo;
     private BigDecimal useQty;
+
+    public BigDecimal getInsideQty() {
+        return insideQty;
+    }
+
+    public void setInsideQty(BigDecimal insideQty) {
+        this.insideQty = insideQty;
+    }
 
     public BigDecimal getUseQty() {
         return useQty;
