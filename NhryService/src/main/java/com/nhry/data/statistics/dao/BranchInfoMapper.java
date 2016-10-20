@@ -3,7 +3,6 @@ package com.nhry.data.statistics.dao;
 import com.github.pagehelper.PageInfo;
 import com.nhry.model.statistics.BranchInfoModel;
 import com.nhry.model.statistics.ExtendBranchInfoModel;
-import com.nhry.model.statistics.RefuseResendDetailModel;
 
 import java.util.List;
 import java.util.Map;
@@ -32,5 +31,5 @@ public interface BranchInfoMapper {
     List<Map<String,String>> exportOrderByModel(BranchInfoModel model);
     PageInfo Refuse2receiveResend(ExtendBranchInfoModel model);
 
-    PageInfo Refuse2receiveResendDetail(RefuseResendDetailModel rModel);
+    List<Map<String,String>> Refuse2receiveResendDetail(String  resendOrderNo);
 }

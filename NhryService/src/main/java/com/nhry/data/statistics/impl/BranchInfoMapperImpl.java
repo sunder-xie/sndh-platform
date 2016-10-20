@@ -5,7 +5,6 @@ import com.nhry.common.datasource.DynamicSqlSessionTemplate;
 import com.nhry.data.statistics.dao.BranchInfoMapper;
 import com.nhry.model.statistics.BranchInfoModel;
 import com.nhry.model.statistics.ExtendBranchInfoModel;
-import com.nhry.model.statistics.RefuseResendDetailModel;
 
 import java.util.List;
 import java.util.Map;
@@ -109,8 +108,8 @@ public class BranchInfoMapperImpl implements BranchInfoMapper{
     }
 
     @Override
-    public PageInfo Refuse2receiveResendDetail(RefuseResendDetailModel rModel) {
-        return sqlSessionTemplate.selectListByPages("Refuse2receiveResendDetail",rModel,Integer.valueOf(rModel.getPageNum()),Integer.valueOf(rModel.getPageSize()));
+    public List<Map<String,String>> Refuse2receiveResendDetail(String  resendOrderNo){
+        return sqlSessionTemplate.selectList("Refuse2receiveResendDetail",resendOrderNo);
 
     }
 
