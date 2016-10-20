@@ -7,6 +7,7 @@
     <result column="BRANCH_NO" property="branchNo" jdbcType="VARCHAR" />
     <result column="REMAIN_QTY" property="remainQty" jdbcType="DECIMAL" />
     <result column="CONFIRM_QTY" property="confirmQty" jdbcType="DECIMAL" />
+    <result column="INSIDE_QTY" property="insideQty" jdbcType="DECIMAL" />
     <result column="QTY" property="qty" jdbcType="DECIMAL" />
     <result column="STATUS" property="status" jdbcType="VARCHAR" />
     <result column="MATNR" property="matnr" jdbcType="VARCHAR" />
@@ -18,7 +19,8 @@
 
   </resultMap>
   <sql id="Base_Column_List" >
-    SALES_ORG,BRANCH_NO, DISP_ORDER_NO,DISP_DATE,QTY,CONFIRM_QTY,REMAIN_QTY,MATNR,STATUS,EMP_NO,RESEND_ORDER_NO
+    SALES_ORG,BRANCH_NO, DISP_ORDER_NO,DISP_DATE,QTY,IFNULL(CONFIRM_QTY,0) CONFIRM_QTY,IFNULL(REMAIN_QTY,0) REMAIN_QTY,
+    MATNR,STATUS,EMP_NO,RESEND_ORDER_NO,IFNULL(INSIDE_QTY,0) INSIDE_QTY
   </sql>
 
   <insert id="addTMstRefuseResend" parameterType="com.nhry.data.milktrans.domain.TMstRefuseResend" >
@@ -50,6 +52,9 @@
       </if>
       <if test="remainQty != null" >
         REMAIN_QTY,
+      </if>
+      <if test="insideQty != null" >
+        INSIDE_QTY,
       </if>
       <if test="status != null" >
         STATUS,
@@ -86,6 +91,9 @@
       <if test="remainQty != null" >
         #{remainQty,jdbcType=DECIMAL},
       </if>
+      <if test="insideQty != null" >
+        #{insideQty,jdbcType=DECIMAL},
+      </if>
       <if test="status != null" >
         #{status,jdbcType=VARCHAR},
       </if>
@@ -102,6 +110,9 @@
       </if>
       <if test="remainQty != null" >
         REMAIN_QTY = #{remainQty,jdbcType=DECIMAL},
+      </if>
+      <if test="insideQty != null" >
+       INSIDE_QTY =  #{insideQty,jdbcType=DECIMAL},
       </if>
       <if test="status != null" >
         STATUS = #{status,jdbcType=VARCHAR},
@@ -159,6 +170,7 @@
     LEFT JOIN t_md_mara_ex ex on rr.MATNR = ex.MATNR and ex.SALES_ORG= rr.SALES_ORG
     WHERE rr.BRANCH_NO = #{branchNo}
     and rr.MATNR = #{matnr}
+    and rr.REMAIN_QTY > 0
   </select>
 
 

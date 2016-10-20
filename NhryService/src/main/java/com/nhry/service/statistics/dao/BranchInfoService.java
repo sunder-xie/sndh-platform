@@ -29,4 +29,6 @@ public interface BranchInfoService {
     List<Map<String,String>> exportOrderByModel(BranchInfoModel model);
 
     PageInfo Refuse2receiveResend(ExtendBranchInfoModel model);
+
+    PageInfo Refuse2receiveResendDetail(String resendNo);
 }

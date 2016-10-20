@@ -793,7 +793,6 @@ public class RequireOrderServiceImpl implements RequireOrderService {
         List<TMstRefuseResend> resendlist = umodel.getEntries();
         if(resendlist !=null &&  resendlist.size()>0){
             TSsmReqGoodsOrderItem item = tSsmReqGoodsOrderItemMapper.getReqGoodsItemsByMatnrAndOrderNo(umodel.getReqOrderNo(),umodel.getMatnr());
-
             TSysUser user = userSessionService.getCurrentUser();
             String resendOrderNo = resendlist.get(0).getResendOrderNo();
             String reqOrderNo = item.getOrderNo();

@@ -16,10 +16,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Controller;
 
-import javax.ws.rs.Consumes;
-import javax.ws.rs.POST;
-import javax.ws.rs.Path;
-import javax.ws.rs.Produces;
+import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
@@ -139,8 +136,16 @@ public class StatisticsResource extends BaseResource {
     @Path("/Refuse2receiveResend")
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes(MediaType.APPLICATION_JSON)
-    @ApiOperation(value = "/Refuse2receiveResend}", response = ResponseModel.class, notes = "公司部门、经销商当日送奶份数 ")
+    @ApiOperation(value = "/Refuse2receiveResend}", response = ResponseModel.class, notes = "拒收复送报表")
     public Response Refuse2receive(@ApiParam(name = "model",value = "公司部门、经销商当日送奶份数") ExtendBranchInfoModel model){
         return convertToRespModel(MessageCode.NORMAL, null, branchInfoService.Refuse2receiveResend(model));
+    }
+
+    @POST
+    @Path("/Refuse2receiveResendDetail/{resendNo}")
+    @Produces(MediaType.APPLICATION_JSON)
+    @ApiOperation(value = "/Refuse2receiveResendDetail/{resendNo}", response = ResponseModel.class, notes = "拒收复送详情")
+    public Response Refuse2receiveResendDetail(@ApiParam(name = "resendNo",value = "单号") @PathParam("resendNo") String resendNo){
+        return convertToRespModel(MessageCode.NORMAL, null, branchInfoService.Refuse2receiveResendDetail(resendNo));
     }
 }

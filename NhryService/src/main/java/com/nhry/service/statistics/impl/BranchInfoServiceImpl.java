@@ -284,4 +284,9 @@ public class BranchInfoServiceImpl implements BranchInfoService {
 
         return branchInfoMapper.Refuse2receiveResend(model);
     }
+
+    @Override
+    public PageInfo Refuse2receiveResendDetail(String resendNo) {
+        return branchInfoMapper.Refuse2receiveResendDetail(resendNo);
+    }
 }

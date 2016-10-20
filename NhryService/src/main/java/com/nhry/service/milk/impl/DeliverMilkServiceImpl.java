@@ -161,6 +161,8 @@ public class DeliverMilkServiceImpl extends BaseService implements DeliverMilkSe
 							resend.setEmpNo(order.getDispEmpNo());
 							resend.setQty(entry.getQty().subtract(entry.getConfirmQty()));
 							resend.setRemainQty(entry.getQty().subtract(entry.getConfirmQty()));
+							resend.setConfirmQty(BigDecimal.ZERO);
+							resend.setInsideQty(BigDecimal.ZERO);
 							resend.setMatnr(entry.getMatnr());
 							resend.setStatus("10");
 							resend.setSalesOrg(user.getSalesOrg());
@@ -929,6 +931,8 @@ public class DeliverMilkServiceImpl extends BaseService implements DeliverMilkSe
 				resend.setEmpNo(newItem.getDispEmpNo());
 				resend.setQty(newItem.getQty().subtract(newItem.getConfirmQty()));
 				resend.setRemainQty(newItem.getQty().subtract(newItem.getConfirmQty()));
+				resend.setConfirmQty(BigDecimal.ZERO);
+				resend.setInsideQty(BigDecimal.ZERO);
 				resend.setMatnr(newItem.getMatnr());
 				resend.setStatus("10");
 				resend.setSalesOrg(user.getSalesOrg());

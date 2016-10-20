@@ -106,4 +106,9 @@ public class BranchInfoMapperImpl implements BranchInfoMapper{
     public PageInfo Refuse2receiveResend(ExtendBranchInfoModel model) {
         return sqlSessionTemplate.selectListByPages("Refuse2receiveResend",model,Integer.valueOf(model.getPageNum()),Integer.valueOf(model.getPageSize()));
     }
+
+    @Override
+    public PageInfo Refuse2receiveResendDetail(String resendNo) {
+        return null;
+    }
 }
