@@ -1248,7 +1248,7 @@
             and rr.EMP_NO =#{empNo}
         </if>
         <if test="branchNo!=null and ''!=branchNo">
-            and rr.BRANCH_NO =#{empNo}
+            and rr.BRANCH_NO =#{branchNo}
         </if>
         <if test="dateStart!=null and ''!=dateStart">
             and rr.DISP_DATE &gt;= #{dateStart}
@@ -1256,5 +1256,30 @@
         <if test="dateEnd!=null and ''!=dateEnd">
             and rr.DISP_DATE &lt;= #{dateEnd}
         </if>
+    </select>
+
+    <select id="Refuse2receiveResendDetail" resultType="hashmap" parameterType="com.nhry.model.statistics.ExtendBranchInfoModel">
+        SELECT
+        rr.EMP_NO,
+        e.EMP_NAME,
+        rr.BRANCH_NO,
+        b.BRANCH_NAME,
+        d.DEALER_NO,
+        d.DEALER_NAME,
+        rr.DISP_DATE,
+        rr.MATNR,
+        ex.SHORT_TXT MATNR_TXT,
+        rr.CONFIRM_QTY,
+        rr.INSIDE_QTY,
+        rr.QTY,
+        rr.REMAIN_QTY
+        FROM
+        t_mst_refuse_resend rr
+        LEFT  JOIN  t_md_branch b on rr.BRANCH_NO = b.BRANCH_NO
+        LEFT JOIN t_md_dealer d on b.DEALER_NO = d.DEALER_NO
+        LEFT JOIN t_md_branch_emp e ON rr.EMP_NO = e.EMP_NO
+        LEFT JOIN t_md_mara_ex ex ON rr.MATNR = ex.MATNR and ex.SALES_ORG = rr.SALES_ORG
+        WHERE  1=1
+       and RESEND_ORDER_NO = #{resendOrderNo}
     </select>
 </mapper>

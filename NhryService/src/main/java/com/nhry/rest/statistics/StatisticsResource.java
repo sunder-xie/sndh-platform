@@ -4,6 +4,7 @@ import com.nhry.common.exception.MessageCode;
 import com.nhry.model.statistics.BranchInfoModel;
 import com.nhry.model.statistics.DistInfoModel;
 import com.nhry.model.statistics.ExtendBranchInfoModel;
+import com.nhry.model.statistics.RefuseResendDetailModel;
 import com.nhry.model.sys.ResponseModel;
 import com.nhry.rest.BaseResource;
 import com.nhry.service.statistics.dao.BranchInfoService;
@@ -142,10 +143,10 @@ public class StatisticsResource extends BaseResource {
     }
 
     @POST
-    @Path("/Refuse2receiveResendDetail/{resendNo}")
+    @Path("/Refuse2receiveResendDetail")
     @Produces(MediaType.APPLICATION_JSON)
-    @ApiOperation(value = "/Refuse2receiveResendDetail/{resendNo}", response = ResponseModel.class, notes = "拒收复送详情")
-    public Response Refuse2receiveResendDetail(@ApiParam(name = "resendNo",value = "单号") @PathParam("resendNo") String resendNo){
-        return convertToRespModel(MessageCode.NORMAL, null, branchInfoService.Refuse2receiveResendDetail(resendNo));
+    @ApiOperation(value = "/Refuse2receiveResendDetail", response = ResponseModel.class, notes = "拒收复送详情")
+    public Response Refuse2receiveResendDetail(@ApiParam(name = "resendOrderNo",value = "单号") RefuseResendDetailModel rModel){
+        return convertToRespModel(MessageCode.NORMAL, null, branchInfoService.Refuse2receiveResendDetail(rModel));
     }
 }
