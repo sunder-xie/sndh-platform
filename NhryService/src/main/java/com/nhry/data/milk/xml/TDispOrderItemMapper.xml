@@ -36,6 +36,7 @@
     <result column="REPLACE_REASON" property="replaceReason" jdbcType="VARCHAR" />
     <result column="GIFT_FLAG" property="giftFlag" jdbcType="VARCHAR" />
     <result column="TOTAL_QTY" property="totalQty" jdbcType="INTEGER" />
+    <result column="MEMO_TXT" property="memoTxt" jdbcType="VARCHAR" />
   </resultMap>
   <resultMap id="BaseChangeResultMap" type="com.nhry.service.milk.pojo.TDispOrderChangeItem" >
     <result column="ORDER_NO1" property="orderNo1" jdbcType="VARCHAR" />
@@ -287,6 +288,7 @@
   <select id="selectRouteDetailsAllforDeliver" resultMap="BaseResultMap" parameterType="java.lang.String">
       SELECT
           i.ORDER_NO,
+          o.MEMO_TXT,
           i.ORDER_DATE,
           i.ITEM_NO,
           i.CONFIRM_MATNR,
