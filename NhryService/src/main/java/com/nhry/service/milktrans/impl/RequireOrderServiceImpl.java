@@ -834,7 +834,7 @@ public class RequireOrderServiceImpl implements RequireOrderService {
             }else{
                 uptItem.setQty(item.getQty() - total);
             }
-            uptItem.setResendQty(total);
+            uptItem.setResendQty(item.getResendQty()+total);
             uptItem.setOrderNo(item.getOrderNo());
             uptItem.setOldMatnr(item.getMatnr());
             tSsmReqGoodsOrderItemMapper.uptNewReqGoodsItem(uptItem);

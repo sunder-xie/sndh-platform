@@ -1,8 +1,5 @@
 package com.nhry.data.order.domain;
 
-import org.apache.axis2.databinding.types.soapencoding.Decimal;
-
-
 import java.math.BigDecimal;
 import java.util.Date;
 
@@ -22,6 +19,8 @@ public class TMilkboxPlan {
     private String memberTel;
 
     private String adressNo;
+
+    private String custAddress;
 
     private String branchNo;
     
@@ -44,6 +43,14 @@ public class TMilkboxPlan {
     private Date lastModified;
 
     private String lastModifiedBy;
+
+    public String getCustAddress() {
+        return custAddress;
+    }
+
+    public void setCustAddress(String custAddress) {
+        this.custAddress = custAddress;
+    }
 
     public BigDecimal getInitAmt() {
         return initAmt;
