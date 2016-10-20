@@ -237,6 +237,7 @@ public class RequireOrderServiceImpl implements RequireOrderService {
                 }else{
                     entry.setHasTmp(false);
                 }
+                entry.setResendQty(item.getResendQty());
                 entry.setMatnr(item.getMatnr());
                 entry.setMatnrTxt(mara.getMatnrTxt());
                 entry.setQty(item.getQty());

@@ -9,7 +9,16 @@ public class OrderRequireItem {
     private Integer  qty;
     private Integer increQty;
     private String flag;
+    private Integer resendQty;
     private boolean hasTmp;
+
+    public Integer getResendQty() {
+        return resendQty;
+    }
+
+    public void setResendQty(Integer resendQty) {
+        this.resendQty = resendQty;
+    }
 
     public boolean isHasTmp() {
         return hasTmp;
