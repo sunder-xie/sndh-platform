@@ -461,8 +461,10 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 		TMdBranch branch = branchMapper.selectBranchByNo(order.getBranchNo());
 		//如果该奶站已上线
 		if("Y".equals(branch.getIsValid()) && new Date().after(branch.getOnlineDate())){
+			uptManHandModel.setPreorderStat("10");
 			uptManHandModel.setIsValid("Y");
 		}else{
+			uptManHandModel.setPreorderStat("20");
 			uptManHandModel.setIsValid("N");
 		}
 		tPreOrderMapper.orderConfirm(uptManHandModel);
@@ -493,19 +495,15 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 			order.setInitAmt(orderAmt);
 			//保存订单金额 和 状态
 			tPreOrderMapper.updateOrderCurAmtAndInitAmt(order);
+
+			order.setPreorderStat("10");
+			order.setIsValid("Y");
 			taskExecutor.execute(new Thread(){
 				@Override
 				public void run() {
 					super.run();
-					this.setName("sendOrderToEc");
-					messLogService.sendOrderInfo(order, entries);
-					if("20".equals(order.getPaymentStat()) && !"20".equals(order.getMilkboxStat())){
-						TPreOrder sendOrder = new TPreOrder();
-						sendOrder.setOrderNo(order.getOrderNo());
-						sendOrder.setPreorderStat("200");
-						sendOrder.setEmpNo(order.getEmpNo());
-						messLogService.sendOrderStatus(sendOrder);
-					}
+					this.setName("updateOrderBranchNo");
+					messLogService.sendOrderBranch(order);
 				}
 			});
 		}
@@ -557,11 +555,15 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 	{
 		SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
 		TPreOrder order = tPreOrderMapper.selectByPrimaryKey(record.getOrderNo());
-		
+		if("20".equals(order.getPreorderStat())){
+			throw new ServiceException(MessageCode.LOGIC_ERROR,"暂无法进行此操作，请联系在线客服");
+		}
 		if("10".equals(order.getPaymentmethod())){
 			if(customerBillMapper.getRecBillByOrderNo(order.getOrderNo())!=null)throw new ServiceException(MessageCode.LOGIC_ERROR,"该后付款已经有收款单了，请不要修改订单，或者去删除收款单!");
 		}
-		
+		if("10".equals(order.getPreorderSource())){
+			throw new ServiceException(MessageCode.LOGIC_ERROR,"暂无法进行此操作，请联系在线客服");
+		}
 		if(order!= null){
 			if("20".equals(order.getSign())){
 				throw new ServiceException(MessageCode.LOGIC_ERROR,record.getOrderNo()+"该订单已经停订，不能修改停订!");
@@ -846,7 +848,10 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 	{
 		SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
 		TPreOrder order = tPreOrderMapper.selectByPrimaryKey(record.getOrderNo());
-		
+		if("20".equals(order.getPreorderStat())){
+			throw new ServiceException(MessageCode.LOGIC_ERROR,"暂无法进行此操作，请联系在线客服");
+		}
+
 		if(order!= null){
 			
 			if("10".equals(order.getPaymentmethod())){
@@ -1419,7 +1424,9 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 	{
 		SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
 		TPreOrder order = tPreOrderMapper.selectByPrimaryKey(record.getOrderNo());
-		
+		if("20".equals(order.getPreorderStat())){
+			throw new ServiceException(MessageCode.LOGIC_ERROR,"暂无法进行此操作，请联系在线客服");
+		}
 		if("10".equals(order.getSign())){
 			throw new ServiceException(MessageCode.LOGIC_ERROR,record.getOrderNo()+"在订的订单，不能修改复订!");
 		}

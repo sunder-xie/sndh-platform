@@ -795,8 +795,12 @@
       <if test="retReason != null and retReason != ''">
         RET_REASON = #{retReason,jdbcType=VARCHAR},
       </if>
-      PREORDER_STAT = '10',
-      IS_VALID = #{isValid,jdbcType=VARCHAR},
+      <if test="preorderStat != null and preorderStat != ''">
+        PREORDER_STAT = #{preorderStat,jdbcType=VARCHAR},
+      </if>
+      <if test="isValid != null and isValid != ''">
+        IS_VALID = #{isValid,jdbcType=VARCHAR},
+      </if>
     </set>
     where ORDER_NO = #{orderNo,jdbcType=VARCHAR}
   </update>
