@@ -26,11 +26,11 @@
     </insert>
     <select id="getReqGoodsItemsByOrderNo" resultMap="BaseResultMap" parameterType="String" >
         select
-          ORDER_NO,ORDER_DATE,MATNR,UNIT,QTY,INCRE_QTY,FLAG
+          ORDER_NO,ORDER_DATE,MATNR,UNIT,QTY,INCRE_QTY,FLAG,IFNULL(RESEND_QTY,0) RESEND_QTY
         FROM t_ssm_req_goods_order_item
         WHERE  1=1
         and ORDER_NO =  #{orderNo,jdbcType=VARCHAR}
-        ORDER BY ITEM_NO ASC
+        ORDER BY MATNR ASC
     </select>
     <select id="getReqGoodsItemsByMatnrAndOrderNo" resultMap="BaseResultMap" parameterType="com.nhry.model.milktrans.ReqGoodsOrderItemSearch" >
         select

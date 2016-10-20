@@ -97,11 +97,13 @@
 
     <select id="selectItemsBySalOrderNo" resultMap="BaseResultMap" parameterType="java.util.Map">
         SELECT
-        i.MATNR,m.MATNR_TXT,i.QTY,i.TYPE,i.UNIT
+          i.MATNR,ex.SHORT_TXT MATNR_TXT,i.QTY,i.TYPE,i.UNIT
         FROM
-        t_ssm_sal_order_items i LEFT JOIN  t_md_mara m ON  i.MATNR = m.MATNR and m.SALES_ORG = #{salesOrg}
+        t_ssm_sal_order_items i
+        LEFT JOIN  t_md_mara_ex ex ON  i.MATNR = ex.MATNR and ex.SALES_ORG #{salesOrg}
         where 1=1
         and ORDER_NO = #{orderNo}
+        ORDER  BY  i.MATNR ASC
     </select>
 
     <delete id="delSalOrderItemsByOrderNo" parameterType="string">
