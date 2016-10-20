@@ -143,10 +143,10 @@ public class StatisticsResource extends BaseResource {
     }
 
     @POST
-    @Path("/Refuse2receiveResendDetail")
+    @Path("/Refuse2receiveResendDetail/{resendOrderNo}")
     @Produces(MediaType.APPLICATION_JSON)
-    @ApiOperation(value = "/Refuse2receiveResendDetail", response = ResponseModel.class, notes = "拒收复送详情")
-    public Response Refuse2receiveResendDetail(@ApiParam(name = "resendOrderNo",value = "单号") RefuseResendDetailModel rModel){
-        return convertToRespModel(MessageCode.NORMAL, null, branchInfoService.Refuse2receiveResendDetail(rModel));
+    @ApiOperation(value = "/Refuse2receiveResendDetail/{resendOrderNo}", response = ResponseModel.class, notes = "拒收复送详情")
+    public Response Refuse2receiveResendDetail(@ApiParam(name = "resendOrderNo",value = "单号") @PathParam("resendOrderNo") String resendOrderNo){
+        return convertToRespModel(MessageCode.NORMAL, null, branchInfoService.Refuse2receiveResendDetail(resendOrderNo));
     }
 }
