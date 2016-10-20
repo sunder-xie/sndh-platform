@@ -4,7 +4,6 @@ import com.nhry.common.exception.MessageCode;
 import com.nhry.model.statistics.BranchInfoModel;
 import com.nhry.model.statistics.DistInfoModel;
 import com.nhry.model.statistics.ExtendBranchInfoModel;
-import com.nhry.model.statistics.RefuseResendDetailModel;
 import com.nhry.model.sys.ResponseModel;
 import com.nhry.rest.BaseResource;
 import com.nhry.service.statistics.dao.BranchInfoService;

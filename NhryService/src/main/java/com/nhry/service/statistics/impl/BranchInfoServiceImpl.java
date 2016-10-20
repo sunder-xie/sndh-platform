@@ -8,7 +8,6 @@ import com.nhry.data.auth.domain.TSysUser;
 import com.nhry.data.statistics.dao.BranchInfoMapper;
 import com.nhry.model.statistics.BranchInfoModel;
 import com.nhry.model.statistics.ExtendBranchInfoModel;
-import com.nhry.model.statistics.RefuseResendDetailModel;
 import com.nhry.service.statistics.dao.BranchInfoService;
 import org.apache.commons.lang.StringUtils;
 
@@ -272,7 +271,6 @@ public class BranchInfoServiceImpl implements BranchInfoService {
         if(StringUtils.isEmpty(model.getPageNum()) || StringUtils.isEmpty(model.getPageSize())){
             throw new ServiceException(MessageCode.LOGIC_ERROR,"pageNum和pageSize不能为空！");
         }
-
         TSysUser user = userSessionService.getCurrentUser();
         if(StringUtils.isBlank(model.getBranchNo()) &&StringUtils.isNotBlank(user.getBranchNo())){
             model.setBranchNo(user.getBranchNo());

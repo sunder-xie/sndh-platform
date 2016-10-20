@@ -1224,7 +1224,7 @@
 
     <select id="Refuse2receiveResend" resultType="hashmap" parameterType="com.nhry.model.statistics.ExtendBranchInfoModel">
         SELECT
-            rr.RESEND_ORDER_NO
+            rr.RESEND_ORDER_NO,
             rr.EMP_NO,
             e.EMP_NAME,
             rr.BRANCH_NO,
@@ -1278,6 +1278,6 @@
         LEFT JOIN t_mst_refuse_resend rr ON ri.RESEND_ORDER_NO = rr.RESEND_ORDER_NO
         LEFT JOIN t_md_mara_ex ex ON rr.MATNR = ex.MATNR and ex.SALES_ORG = rr.SALES_ORG
         where 1=1
-       and RESEND_ORDER_NO = #{resendOrderNo}
+       and ri.RESEND_ORDER_NO = #{resendOrderNo}
     </select>
 </mapper>

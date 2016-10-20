@@ -803,15 +803,18 @@
   <update id="returnOrder" parameterType="com.nhry.model.order.UpdateManHandOrderModel" >
     update t_preorder
     <set >
-       DEALER_NO = #{dealerNo,jdbcType=VARCHAR},
+
       <if test="retReason != null and retReason != ''">
         RET_REASON = #{retReason,jdbcType=VARCHAR},
       </if>
       <if test="milkmemberNo != null and milkmemberNo != ''">
         MILKMEMBER_NO = #{milkmemberNo,jdbcType=VARCHAR},
       </if>
-      IS_VALID = #{isValid,jdbcType=VARCHAR},
-      BRANCH_NO = #{branchNo,jdbcType=VARCHAR},
+      <if test="isValid != null and isValid != ''">
+        IS_VALID = #{isValid,jdbcType=VARCHAR},
+      </if>
+      DEALER_NO = null,
+      BRANCH_NO = null,
       PREORDER_STAT = '20',
       MEMO_TXT=  #{memoTxt,jdbcType=VARCHAR},
       RET_DATE = #{retDate,jdbcType=DATE}

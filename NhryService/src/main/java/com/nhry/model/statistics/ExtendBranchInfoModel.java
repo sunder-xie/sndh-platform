@@ -11,6 +11,7 @@ public class ExtendBranchInfoModel extends BranchInfoModel {
     Date dateStart;
     Date dateEnd;
 
+
     public String getEmpNo() {
         return empNo;
     }
