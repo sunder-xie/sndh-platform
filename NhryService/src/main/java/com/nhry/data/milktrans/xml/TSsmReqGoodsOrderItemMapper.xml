@@ -34,7 +34,7 @@
     </select>
     <select id="getReqGoodsItemsByMatnrAndOrderNo" resultMap="BaseResultMap" parameterType="com.nhry.model.milktrans.ReqGoodsOrderItemSearch" >
         select
-        <include refid="Base_Column_List"/>
+        ORDER_NO,ORDER_DATE,MATNR,UNIT,QTY,INCRE_QTY,IFNULL(RESEND_QTY,0) RESEND_QTY,FLAG
         FROM t_ssm_req_goods_order_item
         WHERE 1=1
         and ORDER_NO =  #{orderNo,jdbcType=VARCHAR}
