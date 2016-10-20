@@ -224,7 +224,7 @@ public class ReportResource extends BaseResource{
     @ApiOperation(value = "/reportDeliver", response = OrderCreateModel.class, notes = "根据路单编号导出路单信息")
     public Response reportDeliver(@ApiParam(required = true, name = "orderCode", value = "订单编号") @QueryParam("orderCode") String orderCode, @Context HttpServletRequest request, @Context HttpServletResponse response) {
         List<TDispOrderItem> details = deliverMilkService.selectRouteDetailsAllforDeliver(orderCode);
-        List<TDispOrderChange> ChangeOrders  = deliverMilkService.searchRouteChangeOrder(orderCode);
+        //List<TDispOrderChange> ChangeOrders  = deliverMilkService.searchRouteChangeOrder(orderCode);
         RouteOrderModel model = deliverMilkService.searchRouteDetails(orderCode);
         List<TDispOrderItem> modelDeliver =  deliverMilkService.searchRouteDetailsForDeliver(orderCode);
         String outUrl = "";
@@ -287,7 +287,8 @@ public class ReportResource extends BaseResource{
                     cell.setCellStyle(styleBold);
                     cell = row.createCell(8);
                     cell.setCellStyle(styleBold);
-                    String status="";
+                    cell.setCellValue(item.getMemoTxt());
+                   /* String status="";
                     if(ChangeOrders!=null){
                         for(TDispOrderChange ocitems:ChangeOrders){
                             if(ocitems.getOrgItemNo().equals(item.getOrgItemNo())){
@@ -301,7 +302,7 @@ public class ReportResource extends BaseResource{
                                 cell.setCellValue(status);
                             }
                         }
-                    }
+                    }*/
                     r++;
                 }
                 int r1 = details.size()+9;

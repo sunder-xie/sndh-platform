@@ -61,10 +61,20 @@ public class TDispOrderItem extends TDispOrderItemKey {
     private Integer retQtyM;
     
     private String replaceReason;
-    
-    private String giftFlag;
+
+	public String getMemoTxt() {
+		return memoTxt;
+	}
+
+	public void setMemoTxt(String memoTxt) {
+		this.memoTxt = memoTxt;
+	}
+
+	private String giftFlag;
 
 	private Integer totalQty;
+
+	private String memoTxt;
 
 	public Integer getTotalQty() {
 		return totalQty;
