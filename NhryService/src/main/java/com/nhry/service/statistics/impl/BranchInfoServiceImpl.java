@@ -8,6 +8,7 @@ import com.nhry.data.auth.domain.TSysUser;
 import com.nhry.data.statistics.dao.BranchInfoMapper;
 import com.nhry.model.statistics.BranchInfoModel;
 import com.nhry.model.statistics.ExtendBranchInfoModel;
+import com.nhry.model.statistics.RefuseResendDetailModel;
 import com.nhry.service.statistics.dao.BranchInfoService;
 import org.apache.commons.lang.StringUtils;
 
@@ -286,7 +287,7 @@ public class BranchInfoServiceImpl implements BranchInfoService {
     }
 
     @Override
-    public PageInfo Refuse2receiveResendDetail(String resendNo) {
-        return branchInfoMapper.Refuse2receiveResendDetail(resendNo);
+    public PageInfo Refuse2receiveResendDetail(RefuseResendDetailModel rModel) {
+        return branchInfoMapper.Refuse2receiveResendDetail(rModel);
     }
 }
