@@ -411,21 +411,22 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 		if( StringUtils.isBlank(r.getRetReason()) || StringUtils.isBlank(r.getOrderNo())) {
 			throw new ServiceException(MessageCode.LOGIC_ERROR, "信息不完整！");
 		}
-		
 		TPreOrder  order = tPreOrderMapper.selectByPrimaryKey(r.getOrderNo());
-		if(order.getRetReason().equals(order.getMilkmemberNo())){
-			//如果 分配奶站当时 没有该电话的订户  将订户退回，将订单退回
-			//订户设为 无奶站订户
-			TVipCustInfo orderCust = tVipCustInfoService.findVipCustByNo(order.getRetReason());
-			orderCust.setBranchNo(null);
-			tVipCustInfoService.updateVipCustByNo(orderCust);
-		}else{
-			//将订户地址 恢复到原来创建订户下面
-			TMdAddress  address = addressMapper.findAddressById(order.getAdressNo());
-			address.setVipCustNo(order.getRetReason());
-			addressMapper.uptCustAddress(address);
-			//将订单订户恢复到创建时状态
-			r.setMilkmemberNo(order.getRetReason());
+		if(StringUtils.isNotBlank(order.getRetReason())){
+			if(order.getRetReason().equals(order.getMilkmemberNo())){
+				//如果 分配奶站当时 没有该电话的订户  将订户退回，将订单退回
+				//订户设为 无奶站订户
+				TVipCustInfo orderCust = tVipCustInfoService.findVipCustByNo(order.getRetReason());
+				orderCust.setBranchNo(null);
+				tVipCustInfoService.updateVipCustByNo(orderCust);
+			}else{
+				//将订户地址 恢复到原来创建订户下面
+				TMdAddress  address = addressMapper.findAddressById(order.getAdressNo());
+				address.setVipCustNo(order.getRetReason());
+				addressMapper.uptCustAddress(address);
+				//将订单订户恢复到创建时状态
+				r.setMilkmemberNo(order.getRetReason());
+			}
 		}
 		r.setBranchNo("");
 		r.setDealerNo(null);
@@ -449,8 +450,8 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 			throw new ServiceException(MessageCode.LOGIC_ERROR, "信息不完整！");
 		}
 		TPreOrder order = tPreOrderMapper.selectByPrimaryKey(uptManHandModel.getOrderNo());
-		//如果 该奶站原有这个电话  的订户，将创建订单时的订户删除
-		if(tVipCustInfoService.findVipCustByNo(order.getRetReason())!=null){
+		//如果(分单过来的) 该奶站原有这个电话  的订户，将创建订单时的订户删除
+		if(StringUtils.isNoneBlank(order.getRetReason()) && tVipCustInfoService.findVipCustByNo(order.getRetReason())!=null){
 			if(!order.getRetReason().equals(order.getMilkmemberNo())){
 				uptManHandModel.setRetReason(null);
 				tVipCustInfoService.deleteCustByCustNo(order.getRetReason());
@@ -464,12 +465,11 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 		}else{
 			uptManHandModel.setIsValid("N");
 		}
-
+		tPreOrderMapper.orderConfirm(uptManHandModel);
 		// 更新订单  金额
 		BigDecimal orderAmt = new BigDecimal("0.00");//订单总价
-
 		//非奶站订单要重新计算金额
-		if(!"30".equals(order.getPreorderSource()) && !"20".equals(order.getPreorderSource())) {
+		if(!"30".equals(order.getPreorderSource())) {
 			Map<String,String> map = new HashMap<String,String>();
 			map.put("orderNo",order.getOrderNo());
 			map.put("salesOrg",order.getSalesOrg());
@@ -493,15 +493,12 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 			order.setInitAmt(orderAmt);
 			//保存订单金额 和 状态
 			tPreOrderMapper.updateOrderCurAmtAndInitAmt(order);
-			tPreOrderMapper.orderConfirm(uptManHandModel);
-
 			taskExecutor.execute(new Thread(){
 				@Override
 				public void run() {
 					super.run();
 					this.setName("sendOrderToEc");
 					messLogService.sendOrderInfo(order, entries);
-
 					if("20".equals(order.getPaymentStat()) && !"20".equals(order.getMilkboxStat())){
 						TPreOrder sendOrder = new TPreOrder();
 						sendOrder.setOrderNo(order.getOrderNo());
@@ -512,8 +509,6 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 				}
 			});
 		}
-
-
 		return  1;
 	}
 
@@ -858,7 +853,7 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 				if(customerBillMapper.getRecBillByOrderNo(order.getOrderNo())!=null)throw new ServiceException(MessageCode.LOGIC_ERROR,"已经有收款单了，请不要操作，或者去删除收款单!");
 			}
 			
-			if("10".equals(order.getPreorderSource()))throw new ServiceException(MessageCode.LOGIC_ERROR,"电商的订单不能退订!");
+			if("10".equals(order.getPreorderSource()))throw new ServiceException(MessageCode.LOGIC_ERROR,"暂无法进行此操作，请联系在线客服!");
 			if(tDispOrderItemMapper.selectCountOfTodayByOrgOrder(order.getOrderNo())>0)throw new ServiceException(MessageCode.LOGIC_ERROR,"此订单，有未确认的路单!请等路单确认后再操作!");
 			
 			order.setBackDate(afterDate(new Date(),0));

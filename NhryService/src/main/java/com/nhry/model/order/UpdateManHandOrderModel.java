@@ -19,7 +19,6 @@ public class UpdateManHandOrderModel implements Serializable {
     private String retReason;     //保存原订单的订户编号
     private String milkmemberNo;  //分配奶站后保存的订户编号
     private String empNo;         //选择送奶员
-
     private String memoTxt;       //退回备注
     private Date retDate;        //退回日期
 
