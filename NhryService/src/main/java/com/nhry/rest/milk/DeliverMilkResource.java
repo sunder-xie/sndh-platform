@@ -2,11 +2,7 @@ package com.nhry.rest.milk;
 
 import com.github.pagehelper.PageInfo;
 import com.nhry.common.exception.MessageCode;
-import com.nhry.model.milk.RouteDetailUpdateListModel;
-import com.nhry.model.milk.RouteDetailUpdateModel;
-import com.nhry.model.milk.RouteOrderModel;
-import com.nhry.model.milk.RouteOrderSearchModel;
-import com.nhry.model.milk.RouteUpdateModel;
+import com.nhry.model.milk.*;
 import com.nhry.rest.BaseResource;
 import com.nhry.service.milk.dao.DeliverMilkService;
 import com.sun.jersey.spi.resource.Singleton;
@@ -83,6 +79,15 @@ public class DeliverMilkResource extends BaseResource {
 	@ApiOperation(value = "/createRouteOrders/{dateStr}", response = Integer.class, notes = "生成路单")
 	public Response createRouteOrders(@ApiParam(required=true,name="dateStr",value="日期编号") @PathParam("dateStr") String dateStr){
 		return convertToRespModel(MessageCode.NORMAL, null, deliverMilkService.createDayRouteOder(dateStr));
+	}
+
+	@GET
+	@Path("/createTemRouteOrders")
+	@Produces(MediaType.APPLICATION_JSON)
+	@Consumes(MediaType.APPLICATION_JSON)
+	@ApiOperation(value = "/createTemRouteOrders", response = Integer.class, notes = "生成路单")
+	public Response createTemRouteOrders(@ApiParam(required=true,name="dateStr",value="日期编号") TemporaryDispOrderModel tModel){
+		return convertToRespModel(MessageCode.NORMAL, null, deliverMilkService.createTemRouteOrders(tModel));
 	}
 	
 	@GET

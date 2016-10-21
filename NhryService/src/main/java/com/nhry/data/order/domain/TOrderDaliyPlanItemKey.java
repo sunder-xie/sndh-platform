@@ -1,6 +1,7 @@
 package com.nhry.data.order.domain;
 
 import java.util.Date;
+import java.util.List;
 
 public class TOrderDaliyPlanItemKey {
     private String orderNo;
@@ -12,6 +13,17 @@ public class TOrderDaliyPlanItemKey {
     private String itemNo;
     
     private String tmpBranch;
+
+    private List<String> orderNos;
+
+
+    public List<String> getOrderNos() {
+        return orderNos;
+    }
+
+    public void setOrderNos(List<String> orderNos) {
+        this.orderNos = orderNos;
+    }
 
     public String getTmpBranch()
 	{

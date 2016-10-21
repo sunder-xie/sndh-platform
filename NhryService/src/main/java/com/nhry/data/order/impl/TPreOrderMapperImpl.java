@@ -275,6 +275,14 @@ public class TPreOrderMapperImpl implements TPreOrderMapper
 		return sqlSessionTemplate.update("orderConfirm", uptManHandModel);
 	}
 
+	@Override
+	public List<TPreOrder> selectDispNoByGroupAndOrders(String branchNo, List<String> orderNos) {
+		Map<String,Object> map = new HashMap<String,Object>();
+		map.put("branchNo",branchNo);
+		map.put("orderNos",orderNos);
+		return sqlSessionTemplate.selectList("selectDispNoByGroupAndOrders",map);
+	}
+
 	/* (non-Javadoc) 
 	* @title: replaceOrdersDispmember
 	* @description: 替换所有a送奶员的订单为b送奶员

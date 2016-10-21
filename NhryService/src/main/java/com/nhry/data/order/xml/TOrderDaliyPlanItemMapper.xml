@@ -171,6 +171,9 @@
 	 and d.reach_time_type = #{orderNo,jdbcType=VARCHAR}
 	 and d.status != "30" 
 	 and d.status != "20"
+	 <if test="orderNos!=null">
+       and LOCATE(o.ORDER_NO,<foreach item="order" collection="orders" separator="," open="'" close="'" index="">${orderNos}</foreach>)>0
+     </if>
   </select>
   <delete id="deleteFromDateToDate" parameterType="com.nhry.data.order.domain.TOrderDaliyPlanItem" >
     delete from t_mst_order_daliy_plan_item

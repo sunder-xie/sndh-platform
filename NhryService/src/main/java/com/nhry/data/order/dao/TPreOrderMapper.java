@@ -106,4 +106,6 @@ public interface TPreOrderMapper {
     List<String> selectAfterOrderNos(CustBillQueryModel cModel);
 
     int orderConfirm(UpdateManHandOrderModel uptManHandModel);
+
+    List<TPreOrder> selectDispNoByGroupAndOrders(String branchNo,List<String> orderNos);
 }
