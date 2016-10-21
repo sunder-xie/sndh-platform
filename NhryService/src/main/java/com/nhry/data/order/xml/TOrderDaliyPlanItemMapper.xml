@@ -172,7 +172,7 @@
 	 and d.status != "30" 
 	 and d.status != "20"
 	 <if test="orderNos!=null">
-       and LOCATE(o.ORDER_NO,<foreach item="order" collection="orders" separator="," open="'" close="'" index="">${orderNos}</foreach>)>0
+       and LOCATE(o.ORDER_NO,<foreach item="order" collection="orderNos" separator="," open="'" close="'" index="">${orderNos}</foreach>)>0
      </if>
   </select>
   <delete id="deleteFromDateToDate" parameterType="com.nhry.data.order.domain.TOrderDaliyPlanItem" >
