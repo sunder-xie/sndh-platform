@@ -8,7 +8,6 @@ import com.nhry.model.order.OrderDaliyPlanReportEntityModel;
 import com.nhry.model.order.OrderDaliyPlanReportModel;
 
 import java.math.BigDecimal;
-import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -55,4 +54,6 @@ public interface DeliverMilkService {
 	List<DispOrderReportEntityModel> reportDispOrderItemByParams(DispOrderReportModel model);
 
 	List<OrderDaliyPlanReportEntityModel> reportOrderDaliyPlanByParams(OrderDaliyPlanReportModel model);
+
+	int createTemRouteOrders(TemporaryDispOrderModel tModel);
 }

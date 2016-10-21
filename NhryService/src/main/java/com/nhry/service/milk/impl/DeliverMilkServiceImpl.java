@@ -667,6 +667,7 @@ public class DeliverMilkServiceImpl extends BaseService implements DeliverMilkSe
 			}
 			
 			//生成路单号
+			dispOrder.setType("10");
 			dispOrder.setAmt(totalAmt);
 			dispOrder.setTotalQty(totalQty);
 //			dispOrder.setDispLineNo(order.getDispLineNo());
@@ -1126,5 +1127,108 @@ public class DeliverMilkServiceImpl extends BaseService implements DeliverMilkSe
 		return tOrderDaliyPlanItemMapper.reportOrderDaliyPlanByParams(model);
 	}
 
+	/**
+	 * 生成临时路单
+	 * @param tModel
+	 * @return
+     */
+	@Override
+	public int createTemRouteOrders(TemporaryDispOrderModel tModel) {
+		SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
+		if (userSessionService.getCurrentUser().getBranchNo() == null)
+			throw new ServiceException(MessageCode.LOGIC_ERROR, "登陆人没有奶站，非奶站人员无法创建路单!");
+		String dateStr = tModel.getDateStr();
+		Date date = null;
+		try {
+			date = format.parse(dateStr);
+		} catch (ParseException e) {
+			throw new ServiceException(MessageCode.LOGIC_ERROR, "日期格式有误!");
+		}
+		List<String> orderNos = tModel.getOrders();
+		StringBuffer  hadDispNos = new StringBuffer("");
+		orderNos.stream().forEach(e->{
+			if(tDispOrderItemMapper.selectCountByOrgOrder(e) > 0){
+				hadDispNos.append(","+e);
+			}
+		});
+		if(StringUtils.isNotBlank(hadDispNos.toString().trim())){
+			throw new ServiceException(MessageCode.LOGIC_ERROR,hadDispNos.toString()+dateStr+"的日订单已经生成过路单");
+		}
 
+
+			List<TPreOrder> empNos = tPreOrderMapper.selectDispNoByGroupAndOrders(userSessionService.getCurrentUser().getBranchNo(), orderNos);
+			TDispOrder dispOrder = null;
+			List<TDispOrderItem> dispEntries = null;
+			Map<String, String> productMap = productService.getMataBotTypes();
+			for (TPreOrder order : empNos) {
+				if (StringUtils.isBlank(order.getEmpNo())) continue;
+				dispOrder = new TDispOrder();
+				dispEntries = new ArrayList<TDispOrderItem>();
+				int totalQty = 0;
+				BigDecimal totalAmt = new BigDecimal("0.00");
+				//生成一条路线，一个配送时段的路单
+				List<TOrderDaliyPlanItem> daliyPlans = tOrderDaliyPlanItemMapper.selectbyDispLineNoByOrderNos(order.getEmpNo(), format.format(date), order.getOrderType(), userSessionService.getCurrentUser().getBranchNo(), orderNos);
+				if (daliyPlans == null || daliyPlans.size() <= 0) continue;
+				dispOrder.setOrderNo(PrimaryKeyUtils.generateUuidKey());
+				//对每日计划的统计
+				int index = 0;
+				String empNo = order.getEmpNo();
+				for (TOrderDaliyPlanItem plan : daliyPlans) {
+					TDispOrderItem item = new TDispOrderItem();
+					totalQty += plan.getQty();
+					totalAmt = totalAmt.add(plan.getAmt() == null ? new BigDecimal("0.00") : plan.getAmt());
+
+					//如果该行是赠品行，标记
+					if (plan.getGiftQty() != null) item.setGiftFlag("Y");
+					//路单详细,一个日计划对应一行
+//				if(empNo == null)empNo = plan.getLastModifiedByTxt();//配送人员id,字段临时读取,不需要再增加字段
+					item.setOrderNo(dispOrder.getOrderNo());
+					item.setOrderDate(date);
+					item.setItemNo(String.valueOf(index));
+					item.setMatnr(plan.getMatnr());
+					item.setConfirmMatnr(plan.getMatnr());
+					item.setUnit(plan.getUnit());
+					item.setPrice(plan.getPrice());
+					item.setAmt(plan.getAmt());
+					item.setRemainAmt(plan.getRemainAmt());
+					item.setConfirmAmt(plan.getAmt());
+					item.setQty(new BigDecimal(plan.getQty()));
+					item.setConfirmQty(new BigDecimal(plan.getQty()));
+					item.setAddressNo(plan.getCreateByTxt());//配送地址用创建人字段临时读取,不需要再增加字段
+					item.setStatus("20");//取消发货，待发货，已回执
+					item.setReachTimeType(plan.getReachTimeType());
+					item.setOrgItemNo(plan.getItemNo());//对应原订单，订单行编号
+					item.setOrgOrderNo(plan.getOrderNo());//对应原订单，订单编号
+					item.setDispEmpNo(empNo);
+
+					//回瓶规格
+					if (productMap.containsKey(item.getMatnr())) {
+						if (productMap.get(item.getMatnr()).equals("10")) item.setRetQtyS(item.getQty().intValue());
+						if (productMap.get(item.getMatnr()).equals("20")) item.setRetQtyM(item.getQty().intValue());
+						if (productMap.get(item.getMatnr()).equals("30")) item.setRetQtyB(item.getQty().intValue());
+					}
+
+					dispEntries.add(item);
+					index++;
+				}
+
+				//生成临时路单号
+				dispOrder.setType("20");
+				dispOrder.setAmt(totalAmt);
+				dispOrder.setTotalQty(totalQty);
+				dispOrder.setOrderDate(date);
+				dispOrder.setDispDate(date);
+				dispOrder.setStatus("10");//未确认
+				dispOrder.setReachTimeType(order.getOrderType());
+				dispOrder.setBranchNo(order.getBranchNo());
+				dispOrder.setDispEmpNo(empNo);
+				//保存日单与日单行
+				tDispOrderMapper.insert(dispOrder);
+				if (dispEntries.size() == 0) continue;
+				tDispOrderItemMapper.batchinsert(dispEntries);
+
+			}
+
+			return 1;
+		}
 }

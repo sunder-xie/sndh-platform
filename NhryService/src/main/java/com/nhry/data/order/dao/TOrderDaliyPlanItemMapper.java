@@ -85,4 +85,5 @@ public interface TOrderDaliyPlanItemMapper {
 
     BigDecimal getOrderOrderDailyFinishAmtByOrderNo(String orderNo);
 
+    List<TOrderDaliyPlanItem> selectbyDispLineNoByOrderNos(String empNo, String format, String orderType, String branchNo, List<String> orderNos);
 }

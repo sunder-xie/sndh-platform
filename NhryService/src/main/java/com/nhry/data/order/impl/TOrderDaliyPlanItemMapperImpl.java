@@ -187,6 +187,17 @@ public class TOrderDaliyPlanItemMapperImpl implements TOrderDaliyPlanItemMapper
 		return sqlSessionTemplate.selectOne("getOrderOrderDailyFinishAmtByOrderNo",orderNo);
 	}
 
+	@Override
+	public List<TOrderDaliyPlanItem> selectbyDispLineNoByOrderNos(String empNo, String date ,String reachTimeType,String branch, List<String> orderNos) {
+		TOrderDaliyPlanItemKey key = new TOrderDaliyPlanItemKey();
+		key.setPlanItemNo(date);
+		key.setItemNo(empNo);
+		key.setOrderNo(reachTimeType);
+		key.setTmpBranch(branch);
+		key.setOrderNos(orderNos);
+		return sqlSessionTemplate.selectList("selectDaliyPlansByDispNo", key);
+	}
+
 
 	/**
 	 * 根据订单号和日期获取当前日期的日订单状态

@@ -6,6 +6,7 @@
     <id column="ORDER_DATE" property="orderDate" jdbcType="DATE" />
     <result column="DISP_DATE" property="dispDate" jdbcType="DATE" />
     <result column="BRANCH_NO" property="branchNo" jdbcType="VARCHAR" />
+    <result column="TYPE" property="type" jdbcType="VARCHAR" />
     <result column="DISP_LINE_NO" property="dispLineNo" jdbcType="VARCHAR" />
     <result column="MST_CUST_NO" property="mstCustNo" jdbcType="VARCHAR" />
     <result column="AMT" property="amt" jdbcType="DECIMAL" />
@@ -35,7 +36,7 @@
     ORDER_NO, ORDER_DATE, DISP_DATE, BRANCH_NO, DISP_LINE_NO, MST_CUST_NO, AMT, CONFIRM_AMT, 
     REACH_TIME_TYPE, PAYMENT_TYPE, STATUS, MEMO_TXT, DISP_ORDER, DISP_EMP_NO, HZ_ORDER_NO, 
     DAY_ACCT_FLAG, CREATE_AT, CREATE_BY, CREATE_BY_TXT, LAST_MODIFIED, LAST_MODIFIED_BY, 
-    LAST_MODIFIED_BY_TXT, PAYMENT_ORDER_NO, SUBSCRIBE_ORDER_NO,TOTAL_QTY
+    LAST_MODIFIED_BY_TXT, PAYMENT_ORDER_NO, SUBSCRIBE_ORDER_NO,TOTAL_QTY,TYPE
   </sql>
   <select id="selectTodayDispOrderByBranchNo" resultMap="BaseResultMap" parameterType="com.nhry.data.milk.domain.TDispOrder" >
     select 
@@ -91,7 +92,7 @@
     o.ORDER_NO, o.ORDER_DATE, o.DISP_DATE, o.BRANCH_NO, o.MST_CUST_NO, o.AMT, o.CONFIRM_AMT, 
     o.REACH_TIME_TYPE, o.PAYMENT_TYPE, o.STATUS, o.MEMO_TXT, o.DISP_ORDER, e.EMP_NAME DISP_EMP_NO, o.HZ_ORDER_NO, 
     o.DAY_ACCT_FLAG, o.CREATE_AT, o.CREATE_BY, o.CREATE_BY_TXT, o.LAST_MODIFIED, o.LAST_MODIFIED_BY, 
-    o.LAST_MODIFIED_BY_TXT, o.PAYMENT_ORDER_NO, o.SUBSCRIBE_ORDER_NO,o.TOTAL_QTY
+    o.LAST_MODIFIED_BY_TXT, o.PAYMENT_ORDER_NO, o.SUBSCRIBE_ORDER_NO,o.TOTAL_QTY,o.TYPE
     from t_mst_disp_order o , t_md_branch_emp e , t_md_branch b
     where o.DISP_EMP_NO = e.EMP_NO and o.BRANCH_NO = b.BRANCH_NO
     	<if test="branchNo1 != null and branchNo1 !=''">
@@ -125,6 +126,9 @@
     <trim prefix="(" suffix=")" suffixOverrides="," >
       <if test="orderNo != null" >
         ORDER_NO,
+      </if>
+      <if test="type != null" >
+        TYPE,
       </if>
       <if test="orderDate != null" >
         ORDER_DATE,
@@ -202,6 +206,9 @@
     <trim prefix="values (" suffix=")" suffixOverrides="," >
       <if test="orderNo != null" >
         #{orderNo,jdbcType=VARCHAR},
+      </if>
+      <if test="type != null" >
+        #{type,jdbcType=VARCHAR},
       </if>
       <if test="orderDate != null" >
         #{orderDate,jdbcType=DATE},

@@ -15,6 +15,8 @@ public class TDispOrder extends TDispOrderKey {
 
     private String mstCustNo;
 
+    private String type;
+
     private BigDecimal amt;
 
     private BigDecimal confirmAmt;
@@ -56,8 +58,16 @@ public class TDispOrder extends TDispOrderKey {
     private Integer totalQty;
     
     private String dealerNo;
-    
-	public String getDealerNo()
+
+    public String getType() {
+        return type;
+    }
+
+    public void setType(String type) {
+        this.type = type;
+    }
+
+    public String getDealerNo()
 	{
 		return dealerNo;
 	}
