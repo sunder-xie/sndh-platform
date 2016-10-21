@@ -2,6 +2,7 @@ package com.nhry.data.milk.dao;
 
 import com.nhry.data.milktrans.domain.TMstRefuseResend;
 
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -22,4 +23,5 @@ public interface TMstRefuseResendMapper {
     List<TMstRefuseResend>  queryRefuseResendByMatnr(String matnr,String branchNo);
 
     TMstRefuseResend selectRefuseResendByNo(String resendOrderNo);
+    TMstRefuseResend findByBranchEmpSendDateAndMatnr(String branchNO, String empNo, Date dispDate,String matnr);
 }

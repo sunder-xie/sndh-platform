@@ -4,6 +4,7 @@ import com.nhry.common.datasource.DynamicSqlSessionTemplate;
 import com.nhry.data.milk.dao.TMstRefuseResendMapper;
 import com.nhry.data.milktrans.domain.TMstRefuseResend;
 
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -49,6 +50,18 @@ public class TMstRefuseResendMapperImpl implements TMstRefuseResendMapper {
 
     @Override
     public TMstRefuseResend selectRefuseResendByNo(String resendOrderNo) {
-        return sqlSessionTemplate.selectOne("selectRefuseResendByNo",resendOrderNo);
+        TMstRefuseResend resend = new TMstRefuseResend();
+        resend.setResendOrderNo(resendOrderNo);
+        return sqlSessionTemplate.selectOne("selectRefuseResend",resendOrderNo);
+    }
+
+    @Override
+    public TMstRefuseResend findByBranchEmpSendDateAndMatnr(String branchNo, String empNo, Date dispDate, String matnr) {
+        TMstRefuseResend resend = new TMstRefuseResend();
+        resend.setBranchNo(branchNo);
+        resend.setEmpNo(empNo);
+        resend.setDispDate(dispDate);
+        resend.setMatnr(matnr);
+        return sqlSessionTemplate.selectOne("selectRefuseResend",resend);
     }
 }
