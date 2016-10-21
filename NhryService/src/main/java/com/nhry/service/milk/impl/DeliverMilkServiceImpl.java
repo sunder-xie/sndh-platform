@@ -867,6 +867,7 @@ public class DeliverMilkServiceImpl extends BaseService implements DeliverMilkSe
 	public int updateInSalOrderAndStockByUpdateDiapOrder(TDispOrderItem newItem, TDispOrderItem orgItem) {
 		TPreOrder order = tPreOrderMapper.selectByPrimaryKey(orgItem.getOrgOrderNo());
 		TSysUser user = userSessionService.getCurrentUser();
+		TDispOrder dispOrder = tDispOrderMapper.getDispOrderByNo(orgItem.getOrderNo());
 	//修改库存
 		if( "30".equals(orgItem.getReason()) || "40".equals(orgItem.getReason()) || "50".equals(orgItem.getReason())) {
 			tSsmStockService.updateStock(order.getBranchNo(), orgItem.getConfirmMatnr(), orgItem.getQty().multiply(new BigDecimal(-1)), order.getSalesOrg());
@@ -881,7 +882,7 @@ public class DeliverMilkServiceImpl extends BaseService implements DeliverMilkSe
 		}
 	//修改拒收复送
 		if("60".equals(orgItem.getReason())){
-				TMstRefuseResend oldResend = resendMapper.findByBranchEmpSendDateAndMatnr(order.getBranchNo(),orgItem.getDispEmpNo(),orgItem.getOrderDate(),orgItem.getMatnr());
+				TMstRefuseResend oldResend = resendMapper.findByBranchEmpSendDateAndMatnr(order.getBranchNo(),dispOrder.getDispEmpNo(),orgItem.getOrderDate(),orgItem.getMatnr());
 				//如果 将原来的原因60(产生了拒收复送) 和 更改后的原因也是60，但是更改后变化的数量(减少的拒收复送量) 小于剩余的拒收复送量不能修改
 			if(oldResend!=null){
 				if("60".equals(newItem.getReason())){
@@ -907,7 +908,7 @@ public class DeliverMilkServiceImpl extends BaseService implements DeliverMilkSe
 					TMstRefuseResend resend = new TMstRefuseResend();
 					resend.setBranchNo(order.getBranchNo());
 					resend.setMatnr(orgItem.getMatnr());
-					resend.setEmpNo(orgItem.getDispEmpNo());
+					resend.setEmpNo(dispOrder.getDispEmpNo());
 					resend.setDispDate(orgItem.getOrderDate());
 					resend.setDispOrderNo(orgItem.getOrderNo());
 					resendMapper.delRefuseResendByDispAndMatnr(resend);
@@ -921,7 +922,7 @@ public class DeliverMilkServiceImpl extends BaseService implements DeliverMilkSe
 				TMstRefuseResend resend = new TMstRefuseResend();
 				resend.setResendOrderNo(PrimaryKeyUtils.generateUpperUuidKey());
 				resend.setBranchNo(user.getBranchNo());
-				resend.setEmpNo(newItem.getDispEmpNo());
+				resend.setEmpNo(dispOrder.getDispEmpNo());
 				resend.setQty(newItem.getQty().subtract(newItem.getConfirmQty()));
 				resend.setRemainQty(newItem.getQty().subtract(newItem.getConfirmQty()));
 				resend.setConfirmQty(BigDecimal.ZERO);
@@ -958,7 +959,7 @@ public class DeliverMilkServiceImpl extends BaseService implements DeliverMilkSe
 				sOrder.setOrderDate(orgItem.getOrderDate());
 				sOrder.setDispOrderNo(orgItem.getOrderNo());
 				sOrder.setBranchNo(order.getBranchNo());
-				sOrder.setSalEmpNo(order.getEmpNo());
+				sOrder.setSalEmpNo(dispOrder.getDispEmpNo());
 				sOrder.setCreateAt(newItem.getOrderDate());
 				sOrder.setCreateBy(user.getLoginName());
 				tMstInsideSalOrderMapper.insertInsideSalOrder(sOrder);
@@ -992,7 +993,7 @@ public class DeliverMilkServiceImpl extends BaseService implements DeliverMilkSe
 			TRecBotDetail detail = returnBoxService.getTRecBotDetailByDispOrderNo(orgItem.getOrderNo(),newEx.getBotType());
 			if(detail == null){
 				TRecBotDetail bot = new TRecBotDetail();
-				bot.setEmpNo(order.getEmpNo());
+				bot.setEmpNo(dispOrder.getDispEmpNo());
 				bot.setDispOrderNo(newItem.getOrderNo());
 				bot.setCreateAt(newItem.getOrderDate());
 				bot.setCreateBy(user.getLoginName());
