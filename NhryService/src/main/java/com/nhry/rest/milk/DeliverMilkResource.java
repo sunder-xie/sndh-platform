@@ -81,7 +81,7 @@ public class DeliverMilkResource extends BaseResource {
 		return convertToRespModel(MessageCode.NORMAL, null, deliverMilkService.createDayRouteOder(dateStr));
 	}
 
-	@GET
+	@POST
 	@Path("/createTemRouteOrders")
 	@Produces(MediaType.APPLICATION_JSON)
 	@Consumes(MediaType.APPLICATION_JSON)
