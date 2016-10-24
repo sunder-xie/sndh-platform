@@ -1,11 +1,11 @@
 package com.nhry.data.basic.impl;
 
-import java.util.List;
-import java.util.Map;
-
 import com.nhry.common.datasource.DynamicSqlSessionTemplate;
 import com.nhry.data.basic.dao.TMdAddressMapper;
 import com.nhry.data.basic.domain.TMdAddress;
+
+import java.util.List;
+import java.util.Map;
 
 public class TMdAddressMapperImpl implements TMdAddressMapper{
 	private DynamicSqlSessionTemplate sqlSessionTemplate;
@@ -70,5 +70,10 @@ public class TMdAddressMapperImpl implements TMdAddressMapper{
 	public TMdAddress findAddressByCustNoISDefault(String id){
 		// TODO Auto-generated method stub
 		return this.sqlSessionTemplate.selectOne("findAddressByCustNoISDefault", id);
+	}
+
+	@Override
+	public String findAddressTxtByMap(Map<String, String> map) {
+		return this.sqlSessionTemplate.selectOne("findAddressTxtByMap", map);
 	}
 }

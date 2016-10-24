@@ -451,16 +451,84 @@
      delete from t_md_address where VIP_CUST_NO=#{custNo}
   </delete>
     <select id="findAddressByCustNoISDefault" resultMap="BaseResultMap" parameterType="String">
-       SELECT
-            t.ADDRESS_ID,
-            t.PROVINCE,
-            t.COUNTY,
-            t.CITY,
-            t.ADDRESS_TXT
+           SELECT
+                t.ADDRESS_ID,
+                t.PROVINCE,
+                t.COUNTY,
+                t.CITY,
+                t.ADDRESS_TXT
+            FROM
+                t_md_address t
+            WHERE
+                t.VIP_CUST_NO = #{custNo,jdbcType=VARCHAR}
+            AND t.IS_DEFAULT = 'Y'
+         </select>
+
+
+
+<select id="findAddressTxtByMap" resultType="String" parameterType="java.util.HashMap" >
+    SELECT
+            CONCAT(
+                IFNULL(
+                    (
+                        SELECT
+                            ITEM_NAME
+                        FROM
+                            t_sys_code_item
+                        WHERE
+                            TYPE_CODE = '1001'
+                        AND ITEM_CODE = #{province}
+                    ),
+                    ''
+                ),
+                IFNULL(
+                    (
+                        SELECT
+                            ITEM_NAME
+                        FROM
+                            t_sys_code_item
+                        WHERE
+                            TYPE_CODE = '1001'
+                        AND ITEM_CODE = #{city}
+                    ),
+                    ''
+                ),
+                IFNULL(
+                    (
+                        SELECT
+                            ITEM_NAME
+                        FROM
+                            t_sys_code_item
+                        WHERE
+                            TYPE_CODE = '1001'
+                        AND ITEM_CODE = #{county}
+                    ),
+                    ''
+                ),
+                IFNULL(
+                    (
+                        SELECT
+                            a.RESIDENTIAL_AREA_TXT
+                        FROM
+                            T_MD_RESIDENTIAL_AREA a
+                        WHERE
+                            a.ID = #{residentialArea}
+                    ),
+                    ''
+                ),
+                IFNULL(
+                    (
+                        SELECT
+                            CONCAT(IFNULL(a.RESIDENTIAL_AREA_TXT,''),IFNULL(a.ADDRESS_TXT,''))
+                        FROM
+                            T_MD_RESIDENTIAL_AREA a
+                        WHERE
+                            a.ID = #{residentialArea}
+                    ),
+                    ''
+                )
+            ) ADDRESS_TXT
         FROM
-            t_md_address t
-        WHERE
-            t.VIP_CUST_NO = #{custNo,jdbcType=VARCHAR}
-        AND t.IS_DEFAULT = 'Y'
-     </select>
+            DUAL
+    </select>
 </mapper>

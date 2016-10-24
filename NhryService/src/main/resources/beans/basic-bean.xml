@@ -278,4 +278,11 @@
 		<property name="taskYearMonthPlanMapper" ref="taskYearMonthPlanMapper"/>
 		<property name="userSessionService" ref="userSessionService"/>
 	</bean>
+
+
+	<!-- 日志-->
+	<bean id="operationLogMapper" class="com.nhry.data.basic.impl.TMdOperationLogMapperImpl">
+		<property name="sqlSessionTemplate" ref="dynamicSqlSessionTemplate"></property>
+	</bean>
+	<!-- 日志end -->
 </beans>
