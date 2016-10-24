@@ -152,7 +152,7 @@
       FROM
         t_ssm_stock t
         left join t_md_mara t1 on t.SALES_ORG = t1.SALES_ORG  AND t.MATNR = t1.MATNR
-        left join t_md_mara_ex t2 on t2.MATNR = t1.MATNR AND t1.SALES_ORG=t2.SALES_FLAG
+        left join t_md_mara_ex t2 on t2.MATNR = t1.MATNR AND t1.SALES_ORG=t2.SALES_ORG
       WHERE
        t.BRANCH_NO = #{branchNo,jdbcType=VARCHAR}  AND t.QTY is not null  AND t.QTY > 0
     </select>
