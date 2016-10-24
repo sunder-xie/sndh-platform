@@ -17,6 +17,7 @@ import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.math.BigDecimal;
+import java.util.List;
 
 /**
  * Created by cbz on 7/19/2016.
@@ -85,7 +86,7 @@ public class TSsmStockServiceImpl implements TSsmStockService {
     }
 
     @Override
-    public PageInfo findStockinsidesal(StockModel mode) {
+    public List<StockModel> findStockinsidesal(StockModel mode) {
         return ssmStockMapper.findStockinsidesal(mode);
     }
     @Override
