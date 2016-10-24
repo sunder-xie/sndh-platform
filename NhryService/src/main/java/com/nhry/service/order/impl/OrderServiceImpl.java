@@ -368,33 +368,34 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 			uptManHandModel.setSalesOrg(salesOrg);
 		}
 //		}
-		//查看该奶站是否已经上线
+		/*//查看该奶站是否已经上线
 		if("10".equals(branch.getIsValid())  &&  new Date().after(branch.getOnlineDate())){
 			//该奶站已上线
 			uptManHandModel.setIsValid("Y");
 		}else{
 			uptManHandModel.setIsValid("N");
-		}
+		}*/
+		uptManHandModel.setIsValid("N");
 		tPreOrderMapper.uptManHandOrder(uptManHandModel);
 		
 		//当是电商的订单时，更新EC对应订单的奶站
-		if(!"30".equals(order.getPreorderSource()) && !"20".equals(order.getPreorderSource())){
-			order.setBranchNo(uptManHandModel.getBranchNo());
-			if("01".equals(branch.getBranchGroup())){
-				order.setDealerNo(branch.getBranchNo());
-			}else{
-				order.setDealerNo(branch.getDealerNo());
-			}
-
-			//发送EC
-			taskExecutor.execute(new Thread(){
-				@Override
-				public void run() {
-					super.run();
-					this.setName("updateOrderBranchNo");
-					messLogService.sendOrderBranch(order);
+			if(!"30".equals(order.getPreorderSource()) && !"20".equals(order.getPreorderSource())){
+				order.setBranchNo(uptManHandModel.getBranchNo());
+				if("01".equals(branch.getBranchGroup())){
+					order.setDealerNo(branch.getBranchNo());
+				}else{
+					order.setDealerNo(branch.getDealerNo());
 				}
-			});
+
+				//发送EC
+				taskExecutor.execute(new Thread(){
+					@Override
+					public void run() {
+						super.run();
+						this.setName("updateOrderBranchNo");
+						messLogService.sendOrderBranch(order);
+					}
+				});
 		}
 		
 		return 1;

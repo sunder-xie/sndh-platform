@@ -4,27 +4,23 @@ import com.github.pagehelper.PageInfo;
 import com.nhry.common.exception.MessageCode;
 import com.nhry.common.exception.ServiceException;
 import com.nhry.data.auth.domain.TSysUser;
-import com.nhry.data.basic.dao.TMdAddressMapper;
-import com.nhry.data.basic.dao.TMdBranchMapper;
-import com.nhry.data.basic.dao.TVipAcctMapper;
-import com.nhry.data.basic.dao.TVipCustInfoMapper;
-import com.nhry.data.basic.domain.TMdAddress;
-import com.nhry.data.basic.domain.TMdBranch;
-import com.nhry.data.basic.domain.TVipAcct;
-import com.nhry.data.basic.domain.TVipCustInfo;
+import com.nhry.data.basic.dao.*;
+import com.nhry.data.basic.domain.*;
 import com.nhry.model.basic.CustQueryModel;
 import com.nhry.model.basic.CustStat;
 import com.nhry.service.BaseService;
 import com.nhry.service.basic.dao.TVipCustInfoService;
 import com.nhry.service.basic.pojo.Addresses;
 import com.nhry.service.pi.dao.PIVipInfoDataService;
+import com.nhry.utils.ContentDiffrentUtil;
+import com.nhry.utils.OperationLogUtil;
 import com.nhry.utils.PrimaryKeyUtils;
 import com.nhry.utils.date.Date;
-
 import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;
 import org.springframework.core.task.TaskExecutor;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -36,12 +32,17 @@ public class TVipCustInfoServiceImpl extends BaseService implements TVipCustInfo
 	private TVipAcctMapper vipAcctMapper;
 	private TMdBranchMapper branchMapper;
 	private PIVipInfoDataService vipInfoDataService;
+	private TMdOperationLogMapper operationLogMapper;
 	private static Logger logger = Logger.getLogger(TVipCustInfoServiceImpl.class);
 	public void setTmdVipcust(TVipCustInfoMapper tmdVipcust) {
 		this.tmdVipcust = tmdVipcust;
 	}
 
 	private TaskExecutor taskExecutor;
+
+	public void setOperationLogMapper(TMdOperationLogMapper operationLogMapper) {
+		this.operationLogMapper = operationLogMapper;
+	}
 
 	public void setTaskExecutor(TaskExecutor taskExecutor) {
 		this.taskExecutor = taskExecutor;
@@ -100,6 +101,7 @@ public class TVipCustInfoServiceImpl extends BaseService implements TVipCustInfo
 			addAddressForCust(address,null,null);
 		}
 		vipInfoDataService.executeVipInfoData(record,record.getVipMp());
+		OperationLogUtil.saveHistoryOperation(record.getVipCustNo(), LogType.VIP_CUST,null,null,"创建",null,null,sysuser,operationLogMapper);
 		return record.getVipCustNo();
 	}
 	@Override
@@ -159,11 +161,12 @@ public class TVipCustInfoServiceImpl extends BaseService implements TVipCustInfo
 		attrs.put("custNo", record.getVipCustNo());
 		int count = this.tmdVipcust.getCustCountByPhone(attrs);
 		if(count > 0){
-			throw new ServiceException(MessageCode.LOGIC_ERROR, "改电话号码对应的订户信息已存在！");
+			throw new ServiceException(MessageCode.LOGIC_ERROR, "该电话号码对应的订户信息已存在！");
 		}
+		TSysUser user = this.userSessionService.getCurrentUser();
 		record.setLastModified(new Date());
-		record.setLastModifiedBy(this.userSessionService.getCurrentUser().getLoginName());
-		record.setLastModifiedByTxt(this.userSessionService.getCurrentUser().getDisplayName());
+		record.setLastModifiedBy(user.getLoginName());
+		record.setLastModifiedByTxt(user.getDisplayName());
 
 		//更新地址列表信息
 		if(record.getAddresses() != null && record.getAddresses().size() > 0){
@@ -178,6 +181,7 @@ public class TVipCustInfoServiceImpl extends BaseService implements TVipCustInfo
 				}
 			}
 		}
+		this.uptCustLog(record,user);
 		this.tmdVipcust.updateVipCustByNo(record);
 		vipInfoDataService.executeVipInfoData(record,record.getVipMp());
 		return 1;
@@ -187,6 +191,97 @@ public class TVipCustInfoServiceImpl extends BaseService implements TVipCustInfo
 	public TVipCustInfo findStaCustByPhone(Map<String, String> attrs) {
 		// TODO Auto-generated method stub
 		return this.tmdVipcust.findStaCustByPhone(attrs);
+	}
+
+	public void uptCustAddressDefault(TMdAddress oldAddress, TMdAddress newAddress){
+		TSysUser user = userSessionService.getCurrentUser();
+		Map<String,String> map = new HashMap<String,String>();
+		map.put("province",newAddress.getProvince());
+		map.put("city",newAddress.getCity());
+		map.put("county",newAddress.getCounty());
+		map.put("residentialArea",newAddress.getResidentialArea());
+		String newAddressTxt = addressMapper.findAddressTxtByMap(map);
+		map.clear();
+		map.put("province",oldAddress.getProvince());
+		map.put("city",oldAddress.getCity());
+		map.put("county",oldAddress.getCounty());
+		map.put("residentialArea",oldAddress.getResidentialArea());
+		String oldaddressTxt = addressMapper.findAddressTxtByMap(map);
+		//设置默认
+		OperationLogUtil.saveHistoryOperation(newAddress.getVipCustNo(),LogType.VIP_CUST,VipCustEnum.UPT_ADDRESS_DEFAULT,oldaddressTxt,newAddressTxt,null,null,user,operationLogMapper);
+
+	}
+
+	public void uptCustAddressLog(TMdAddress oldAddress, TMdAddress newAddress){
+		TSysUser user = userSessionService.getCurrentUser();
+
+		if(oldAddress == null && newAddress!=null){
+			Map<String,String> map = new HashMap<String,String>();
+			map.put("province",newAddress.getProvince());
+			map.put("city",newAddress.getCity());
+			map.put("county",newAddress.getCounty());
+			map.put("residentialArea",newAddress.getResidentialArea());
+			String newAddressTxt = addressMapper.findAddressTxtByMap(map);
+
+			//添加地址
+			OperationLogUtil.saveHistoryOperation(newAddress.getVipCustNo(),LogType.VIP_CUST,VipCustEnum.ADD_ADDRESS,null,newAddressTxt,null,null,user,operationLogMapper);
+		}
+		if("Y".equals(newAddress.getIsDelete())){
+			Map<String,String> map = new HashMap<String,String>();
+			map.put("province",oldAddress.getProvince());
+			map.put("city",oldAddress.getCity());
+			map.put("county",oldAddress.getCounty());
+			map.put("residentialArea",oldAddress.getResidentialArea());
+			String oldaddressTxt = addressMapper.findAddressTxtByMap(map);
+
+			//删除地址
+			OperationLogUtil.saveHistoryOperation(newAddress.getVipCustNo(),LogType.VIP_CUST,VipCustEnum.DEL_ADDRESS,oldaddressTxt,null,null,null,user,operationLogMapper);
+		}
+	}
+	public void uptCustLog(TVipCustInfo record,TSysUser user){
+		SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
+		TVipCustInfo oldCust = tmdVipcust.findVipCustByNo(record.getVipCustNo());
+		//姓名
+		if(ContentDiffrentUtil.isDiffrent(record.getVipName(),oldCust.getVipName())){
+			OperationLogUtil.saveHistoryOperation(record.getVipCustNo(), LogType.VIP_CUST,VipCustEnum.VIP_NAME,oldCust.getVipName(),record.getVipName(),null,null,user,operationLogMapper);
+		}
+		//电话
+		if(ContentDiffrentUtil.isDiffrent(record.getMp(),oldCust.getMp())){
+			OperationLogUtil.saveHistoryOperation(record.getVipCustNo(), LogType.VIP_CUST,VipCustEnum.MP,oldCust.getMp(),record.getMp(),null,null,user,operationLogMapper);
+		}
+		//邮箱
+		if(ContentDiffrentUtil.isDiffrent(record.getEmail(),oldCust.getEmail())){
+			OperationLogUtil.saveHistoryOperation(record.getVipCustNo(), LogType.VIP_CUST,VipCustEnum.EMAIL,oldCust.getEmail(),record.getEmail(),null,null,user,operationLogMapper);
+		}
+		//性别
+		if(ContentDiffrentUtil.isDiffrent(record.getSex(),oldCust.getSex())){
+			OperationLogUtil.saveHistoryOperation(record.getVipCustNo(), LogType.VIP_CUST,VipCustEnum.SEX,oldCust.getSex(),record.getSex(),null,null,user,operationLogMapper);
+		}
+		//身份证号
+		if(ContentDiffrentUtil.isDiffrent(record.getCertId(),oldCust.getCertId())){
+			OperationLogUtil.saveHistoryOperation(record.getVipCustNo(), LogType.VIP_CUST,VipCustEnum.CERT_ID,oldCust.getCertId(),record.getCertId(),null,null,user,operationLogMapper);
+		}
+		//生日
+		if(ContentDiffrentUtil.isDiffrent(record.getBirthday(),oldCust.getBirthday())){
+			OperationLogUtil.saveHistoryOperation(record.getVipCustNo(), LogType.VIP_CUST,VipCustEnum.BIRTH_DAY,format.format(oldCust.getBirthday()),format.format(record.getBirthday()),null,null,user,operationLogMapper);
+		}
+		//类型
+		if(ContentDiffrentUtil.isDiffrent(record.getVipType(),oldCust.getVipType())){
+			OperationLogUtil.saveHistoryOperation(record.getVipCustNo(), LogType.VIP_CUST,VipCustEnum.VIP_TYPE,oldCust.getVipType(),record.getVipType(),null,null,user,operationLogMapper);
+		}
+		//来源
+		if(ContentDiffrentUtil.isDiffrent(record.getVipSrc(),oldCust.getVipSrc())){
+			OperationLogUtil.saveHistoryOperation(record.getVipCustNo(), LogType.VIP_CUST,VipCustEnum.VIP_SRC,oldCust.getVipSrc(),record.getVipSrc(),null,null,user,operationLogMapper);
+		}
+		//活动号
+		if(ContentDiffrentUtil.isDiffrent(record.getActivityNo(),oldCust.getActivityNo())){
+			OperationLogUtil.saveHistoryOperation(record.getVipCustNo(), LogType.VIP_CUST,VipCustEnum.ACTIVITY_NO,oldCust.getActivityNo(),record.getActivityNo(),null,null,user,operationLogMapper);
+		}
+		//备注
+		if(ContentDiffrentUtil.isDiffrent(record.getMemoTxt(),oldCust.getMemoTxt())){
+			OperationLogUtil.saveHistoryOperation(record.getVipCustNo(), LogType.VIP_CUST,VipCustEnum.MEMO_TXT,oldCust.getMemoTxt(),record.getMemoTxt(),null,null,user,operationLogMapper);
+		}
+
 	}
 
 	@Override
@@ -510,14 +605,32 @@ public class TVipCustInfoServiceImpl extends BaseService implements TVipCustInfo
 	public int batchUptCustAddress(Addresses record) {
 		// TODO Auto-generated method stub
 		if(record != null){
+			TMdAddress oldDefault = null;
+			TMdAddress newDefault = null;
+			boolean defaultFlag = false;
 			for(TMdAddress ad : record.getAddresses()){
 				if(StringUtils.isBlank(ad.getAddressId())){
 					//新增
 					ad.setAddressId(PrimaryKeyUtils.generateUpperUuidKey());
 					this.addAddressForCust(ad,null,null);
+					this.uptCustAddressLog(null,ad);
 				}else{
 					//修改
+					TMdAddress oldAd = addressMapper.findAddressById(ad.getAddressId());
+
+					if("N".equals(oldAd.getIsDafault()) && "Y".equals(ad.getIsDafault())){
+						newDefault = oldAd;
+					}
+					if("Y".equals(oldAd.getIsDafault()) && "N".equals(ad.getIsDafault())){
+						oldDefault = oldAd;
+					}
+					if(!defaultFlag && newDefault!=null && oldDefault!=null){
+						this.uptCustAddressDefault(oldDefault,newDefault);
+						defaultFlag = true;
+					}
+					this.uptCustAddressLog(oldAd,ad);
 					this.addressMapper.uptCustAddress(ad);
+
 				}
 			}
 		}

@@ -70,4 +70,7 @@ public interface TMdAddressMapper {
      * @return
      */
     TMdAddress findAddressByCustNoISDefault(String id);
+
+
+    String findAddressTxtByMap(Map<String, String> map);
 }
