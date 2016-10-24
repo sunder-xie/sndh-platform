@@ -8,6 +8,7 @@ import com.nhry.data.stock.domain.TSsmStockKey;
 import com.nhry.model.stock.StockModel;
 
 import java.math.BigDecimal;
+import java.util.List;
 
 /**
  * Created by cbz on 7/19/2016.
@@ -46,8 +47,8 @@ public class TSsmStockMapperImpl implements TSsmStockMapper {
     }
 
     @Override
-    public PageInfo findStockinsidesal(StockModel model) {
-        return sqlSessionTemplate.selectListByPages("findStockinsidesal",model,Integer.valueOf(model.getPageNum()),Integer.valueOf(model.getPageSize()));
+    public List<StockModel> findStockinsidesal(StockModel model) {
+        return sqlSessionTemplate.selectList("findStockinsidesal",model);
     }
 
     @Override
