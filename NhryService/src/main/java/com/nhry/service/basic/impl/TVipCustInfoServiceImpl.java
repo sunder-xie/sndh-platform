@@ -429,6 +429,9 @@ public class TVipCustInfoServiceImpl extends BaseService implements TVipCustInfo
 			Map<String,String> attrs = new HashMap<String,String>();
 			attrs.put("salesOrg",salesOrg);
 			attrs.put("phone", address.getMp());
+
+			if(StringUtils.isBlank(address.getAddressId())){
+				TMdAddress custAddress = addressMapper.findAddressById(address.getAddressId());
 				//创建新订户
 				TVipCustInfo cust = new TVipCustInfo();
 				cust.setVipCustNo(PrimaryKeyUtils.generateUpperUuidKey());
@@ -453,6 +456,8 @@ public class TVipCustInfoServiceImpl extends BaseService implements TVipCustInfo
 				this.tmdVipcust.addVipCust(cust);
 				address.setVipCustNo(cust.getVipCustNo());
 				address.setIsDafault("Y");
+			}
+
 				//创建会员
 				//vipInfoDataService.executeVipInfoData(cust,cust.getVipMp());
 		}else if(StringUtils.isEmpty(address.getVipCustNo())){

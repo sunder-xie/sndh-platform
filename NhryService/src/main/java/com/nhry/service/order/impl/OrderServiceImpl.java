@@ -1827,13 +1827,52 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 				// 无奶站订单  处理订户信息
 				if(StringUtils.isBlank(order.getBranchNo())){
 					if(StringUtils.isBlank(order.getSalesOrg())) throw new ServiceException(MessageCode.LOGIC_ERROR,"无奶站订单，不能没有销售组织");
-					Map<String,String> map = new HashMap<String,String>();
-					map.put("activityNo",order.getSolicitNo());
-					map.put("vipType",order.getDeliveryType());
-					map.put("vipSrc",order.getPreorderSource());
-					String addressAndMilkmember = tVipCustInfoService.addAddressNoBrnachForCust(record.getAddress(),order.getSalesOrg(),map);
-					order.setMilkmemberNo(addressAndMilkmember.split(",")[0]);
-					order.setAdressNo(addressAndMilkmember.split(",")[1]);
+					String addressId = record.getAddress().getAddressId();
+					if(StringUtils.isNotBlank(addressId) ){
+						TMdAddress cAddress = addressMapper.findAddressById(addressId);
+						if(cAddress!=null){
+							if(cAddress.getProvince().equals(record.getAddress().getProvince())
+									||cAddress.getCity().equals(record.getAddress().getCity())
+									||cAddress.getCounty().equals(record.getAddress().getCounty())
+									||cAddress.getResidentialArea().equals(record.getAddress().getResidentialArea())
+									||cAddress.getAddressTxt().trim().equals(record.getAddress().getAddressTxt().trim())
+								)
+							{
+								throw new ServiceException(MessageCode.LOGIC_ERROR,"该地址ID在订户系统已存在，但是对应的地址信息不同，请核对信息");
+
+							}
+							String custNo = cAddress.getVipCustNo();
+							if(StringUtils.isNotBlank(custNo)){
+								TVipCustInfo cst = tVipCustInfoService.findVipCustByNo(custNo);
+								if(!custNo.equals(order.getMilkmemberNo())){
+									throw new ServiceException(MessageCode.LOGIC_ERROR,"该地址ID在订户系统已分配给"+custNo+" "+cst!=null?cst.getVipName():""+"订户了，请核对信息");
+								}
+								if(StringUtils.isBlank(cst.getBranchNo())){
+									throw new ServiceException(MessageCode.LOGIC_ERROR,"该地址ID在订户系统已分配给"+custNo+" "+cst!=null?cst.getVipName():""+"订户了，但是该订户没有奶站，请核对信息");
+								}
+								order.setBranchNo(cst.getBranchNo());
+							}else{
+								throw new ServiceException(MessageCode.LOGIC_ERROR,"该地址ID在订户系统存在，但是订户地址详细信息对应的订户编号(vipCustNo)为空!，请核对信息");
+							}
+						}else{
+							Map<String,String> map = new HashMap<String,String>();
+							map.put("activityNo",order.getSolicitNo());
+							map.put("vipType",order.getDeliveryType());
+							map.put("vipSrc",order.getPreorderSource());
+							String addressAndMilkmember = tVipCustInfoService.addAddressNoBrnachForCust(record.getAddress(),order.getSalesOrg(),map);
+							order.setMilkmemberNo(addressAndMilkmember.split(",")[0]);
+							order.setAdressNo(addressAndMilkmember.split(",")[1]);
+						}
+					}else{
+						Map<String,String> map = new HashMap<String,String>();
+						map.put("activityNo",order.getSolicitNo());
+						map.put("vipType",order.getDeliveryType());
+						map.put("vipSrc",order.getPreorderSource());
+						String addressAndMilkmember = tVipCustInfoService.addAddressNoBrnachForCust(record.getAddress(),order.getSalesOrg(),map);
+						order.setMilkmemberNo(addressAndMilkmember.split(",")[0]);
+						order.setAdressNo(addressAndMilkmember.split(",")[1]);
+					}
+
 				}else{
 					Map<String,String> map = new HashMap<String,String>();
 					map.put("activityNo",order.getSolicitNo());
