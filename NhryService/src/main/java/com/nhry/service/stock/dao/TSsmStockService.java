@@ -6,6 +6,7 @@ import com.nhry.data.stock.domain.TSsmStockKey;
 import com.nhry.model.stock.StockModel;
 
 import java.math.BigDecimal;
+import java.util.List;
 
 /**
  * Created by cbz on 7/19/2016.
@@ -23,7 +24,7 @@ public interface TSsmStockService {
      * @return
      */
     PageInfo findStock(StockModel mode);
-    PageInfo findStockinsidesal(StockModel mode);
+    List<StockModel> findStockinsidesal(StockModel mode);
     BigDecimal findStockTotal(StockModel mode);
     int genarateStock(StockModel mode);
 
@@ -45,5 +46,9 @@ public interface TSsmStockService {
      * @return
      */
     int updateTmpStock(String branchNo, String matnr, BigDecimal tmpQty, String salesOrg);
+    /**
+     * 根据奶站执行库存清零
+     * */
+    int updateStockToZero();
 
 }

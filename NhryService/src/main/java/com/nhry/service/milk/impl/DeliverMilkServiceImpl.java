@@ -350,6 +350,27 @@ public class DeliverMilkServiceImpl extends BaseService implements DeliverMilkSe
 		return routeModel;
 	}
 
+	@Override
+	public List<TDispOrderItem> searchRouteDetailsForDeliver(String orderNo)
+	{
+		SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
+		TDispOrderKey key = new TDispOrderKey();
+		key.setOrderNo(orderNo);
+		TDispOrder dispOrder = tDispOrderMapper.selectByPrimaryKey(key);
+		List<TDispOrderItem> entries = null;
+
+		if(dispOrder!=null){
+			TDispOrderItemKey record = new TDispOrderItemKey();
+			record.setOrderNo(orderNo);
+			record.setOrderDate(dispOrder.getOrderDate());
+			entries = tDispOrderItemMapper.selectDispItemsByKeyForDeliver(record);
+		}else{
+			throw new ServiceException(MessageCode.LOGIC_ERROR,"没有此路单号!");
+		}
+
+		return entries;
+	}
+
 	/* (non-Javadoc) 
 	* @title: searchRouteOrderDetail
 	* @description: 搜索路单详情内详细表分页
@@ -390,6 +411,20 @@ public class DeliverMilkServiceImpl extends BaseService implements DeliverMilkSe
 		TDispOrder dispOrder = tDispOrderMapper.selectByPrimaryKey(key);
 		if(dispOrder!=null){
 			return tDispOrderItemMapper.selectRouteDetails(code);
+		}else{
+			throw new ServiceException(MessageCode.LOGIC_ERROR,"没有此路单号!");
+		}
+	}
+
+	@Override
+	public List selectRouteDetailsAllforDeliver(String code)
+	{
+		//查询
+		TDispOrderKey key = new TDispOrderKey();
+		key.setOrderNo(code);
+		TDispOrder dispOrder = tDispOrderMapper.selectByPrimaryKey(key);
+		if(dispOrder!=null){
+			return tDispOrderItemMapper.selectRouteDetailsAllforDeliver(code);
 		}else{
 			throw new ServiceException(MessageCode.LOGIC_ERROR,"没有此路单号!");
 		}

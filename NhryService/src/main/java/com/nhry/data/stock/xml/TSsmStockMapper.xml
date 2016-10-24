@@ -54,6 +54,13 @@
         where BRANCH_NO = #{branchNo,jdbcType=VARCHAR}
           and MATNR = #{matnr,jdbcType=VARCHAR}
     </update>
+  <update id="updateStockToZero" parameterType="java.lang.String">
+       update t_ssm_stock
+    <set >
+        QTY = 0
+    </set>
+    where BRANCH_NO = #{branchNo,jdbcType=VARCHAR}
+  </update>
     <select id="findStock" resultMap="BaseResultMap" parameterType="com.nhry.model.stock.StockModel">
       SELECT
         t1.MATNR,
@@ -110,7 +117,7 @@
     <select id="findStockinsidesal" resultMap="BaseResultMap" parameterType="com.nhry.model.stock.StockModel">
       SELECT
         t1.MATNR,
-        t1.MATNR_TXT,
+        t2.SHORT_TXT AS MATNR_TXT,
         t1.SPEC_UNIT,
         t.SALES_ORG,
         t.QTY,
@@ -145,6 +152,7 @@
       FROM
         t_ssm_stock t
         left join t_md_mara t1 on t.SALES_ORG = t1.SALES_ORG  AND t.MATNR = t1.MATNR
+        left join t_md_mara_ex t2 on t2.MATNR = t1.MATNR AND t1.SALES_ORG=t2.SALES_ORG
       WHERE
        t.BRANCH_NO = #{branchNo,jdbcType=VARCHAR}  AND t.QTY is not null  AND t.QTY > 0
     </select>
