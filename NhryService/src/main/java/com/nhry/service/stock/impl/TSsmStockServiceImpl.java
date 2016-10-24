@@ -14,6 +14,7 @@ import com.nhry.service.stock.dao.TSsmGiOrderItemService;
 import com.nhry.service.stock.dao.TSsmGiOrderService;
 import com.nhry.service.stock.dao.TSsmStockService;
 import org.apache.commons.lang.StringUtils;
+import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.math.BigDecimal;
@@ -31,6 +32,8 @@ public class TSsmStockServiceImpl implements TSsmStockService {
     private TSsmGiOrderService giOrderService;
 
     private TSsmGiOrderItemService giOrderItemService;
+
+    private static Logger logger = Logger.getLogger(TSsmStockServiceImpl.class);
 
     @Autowired
     private UserSessionService userSessionService;
@@ -107,6 +110,7 @@ public class TSsmStockServiceImpl implements TSsmStockService {
             }else{
                 ssmStock1.setQty(new BigDecimal("0").subtract(qty));
             }
+            logger.info("奶站："+branchNo+"产品："+matnr+"核减库存数量："+ssmStock1.getQty()+"-"+qty);
             return ssmStockMapper.updateStock(ssmStock1);
         }else{
             ssmStock1 = new TSsmStock();
@@ -114,6 +118,7 @@ public class TSsmStockServiceImpl implements TSsmStockService {
             ssmStock1.setMatnr(matnr);
             ssmStock1.setSalesOrg(salesOrg);
             ssmStock1.setQty(new BigDecimal("0").subtract(qty));
+            logger.info("奶站："+branchNo+"--产品："+matnr+"--核减库存数量："+ssmStock1.getQty()+"-"+qty);
             return ssmStockMapper.insertStock(ssmStock1);
         }
     }
@@ -130,6 +135,7 @@ public class TSsmStockServiceImpl implements TSsmStockService {
             }else{
                 ssmStock1.setTmpQty(new BigDecimal("0").subtract(tmpQty));
             }
+            logger.info("奶站："+branchNo+"产品："+matnr+"拒收复送核减库存数量："+ssmStock1.getTmpQty()+"-"+tmpQty);
             return ssmStockMapper.updateStock(ssmStock1);
         }else{
             ssmStock1 = new TSsmStock();
@@ -137,6 +143,7 @@ public class TSsmStockServiceImpl implements TSsmStockService {
             ssmStock1.setMatnr(matnr);
             ssmStock1.setSalesOrg(salesOrg);
             ssmStock1.setTmpQty(new BigDecimal("0").subtract(tmpQty));
+            logger.info("奶站："+branchNo+"产品："+matnr+"拒收复送核减库存数量："+ssmStock1.getTmpQty()+"-"+tmpQty);
             return ssmStockMapper.insertStock(ssmStock1);
         }
     }
