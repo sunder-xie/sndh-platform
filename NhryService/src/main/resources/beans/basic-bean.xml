@@ -163,6 +163,7 @@
 		<property name="userSessionService" ref="userSessionService"></property>
 		<property name="vipInfoDataService" ref="piVipInfoDataService"/>
 		<property name="taskExecutor" ref="taskExecutor"/>
+		<property name="operationLogMapper" ref="operationLogMapper"/>
 	</bean>
 	<bean id="addressMapper" class="com.nhry.data.basic.impl.TMdAddressMapperImpl">
 		<property name="sqlSessionTemplate" ref="dynamicSqlSessionTemplate"></property>
@@ -283,6 +284,9 @@
 	<!-- 日志-->
 	<bean id="operationLogMapper" class="com.nhry.data.basic.impl.TMdOperationLogMapperImpl">
 		<property name="sqlSessionTemplate" ref="dynamicSqlSessionTemplate"></property>
+	</bean>
+	<bean id="operationLogService" class="com.nhry.service.basic.impl.OperationLogServiceImpl">
+		<property name="operationLogMapper" ref="operationLogMapper"></property>
 	</bean>
 	<!-- 日志end -->
 </beans>
