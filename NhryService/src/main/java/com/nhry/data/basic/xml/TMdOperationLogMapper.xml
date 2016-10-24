@@ -91,4 +91,23 @@
       </if>
     </trim>
   </insert>
+  <select id="getCustOperationLog" resultType="hashmap" parameterType="com.nhry.model.basic.CustOperationQueryModel">
+  SELECT
+	l.LOG_NO,
+	i.VIP_NAME,
+	l.LOG_NAME,
+	l.ORIGINAL_VALUE,
+	l.NEW_VALUE,
+	l.CREATE_AT,
+	l.CREATE_BY_TXT
+FROM
+	t_md_operation_log l
+LEFT JOIN t_vip_cust_info i ON l.LOG_NO = i.VIP_CUST_NO
+WHERE
+	l.LOG_TYPE = '10'
+	<if test="">
+
+    </if>
+
+  </select>
 </mapper>
