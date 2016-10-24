@@ -1,6 +1,10 @@
 package com.nhry.service.stock.impl;
 
 import com.github.pagehelper.PageInfo;
+import com.nhry.common.auth.UserSessionService;
+import com.nhry.common.exception.MessageCode;
+import com.nhry.common.exception.ServiceException;
+import com.nhry.data.auth.domain.TSysUser;
 import com.nhry.data.milktrans.dao.TSsmReqGoodsOrderMapper;
 import com.nhry.data.stock.dao.TSsmStockMapper;
 import com.nhry.data.stock.domain.TSsmStock;
@@ -9,6 +13,8 @@ import com.nhry.model.stock.StockModel;
 import com.nhry.service.stock.dao.TSsmGiOrderItemService;
 import com.nhry.service.stock.dao.TSsmGiOrderService;
 import com.nhry.service.stock.dao.TSsmStockService;
+import org.apache.commons.lang.StringUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import java.math.BigDecimal;
 
@@ -24,6 +30,13 @@ public class TSsmStockServiceImpl implements TSsmStockService {
     private TSsmGiOrderService giOrderService;
 
     private TSsmGiOrderItemService giOrderItemService;
+    
+    @Autowired
+    private UserSessionService userSessionService;
+
+    public void setUserSessionService(UserSessionService userSessionService) {
+        this.userSessionService = userSessionService;
+    }
 
     public void setSsmStockMapper(TSsmStockMapper ssmStockMapper) {
         this.ssmStockMapper = ssmStockMapper;
@@ -125,6 +138,17 @@ public class TSsmStockServiceImpl implements TSsmStockService {
             ssmStock1.setTmpQty(new BigDecimal("0").subtract(tmpQty));
             return ssmStockMapper.insertStock(ssmStock1);
         }
+    }
+
+    @Override
+    public int updateStockToZero(){
+        TSysUser user = userSessionService.getCurrentUser();
+        if(StringUtils.isNotEmpty(user.getBranchNo())){
+            return ssmStockMapper.updateStockToZero(user.getBranchNo());
+        }else{
+            throw new ServiceException(MessageCode.LOGIC_ERROR,"登录人当前无奶站信息，请更换账户登录！");
+        }
+
     }
 
 

@@ -40,6 +40,12 @@ public class TSsmStockMapperImpl implements TSsmStockMapper {
     }
 
     @Override
+    public int updateStockToZero(String BranchNo){
+        return sqlSessionTemplate.update("updateStockToZero",BranchNo);
+
+    }
+
+    @Override
     public PageInfo findStockinsidesal(StockModel model) {
         return sqlSessionTemplate.selectListByPages("findStockinsidesal",model,Integer.valueOf(model.getPageNum()),Integer.valueOf(model.getPageSize()));
     }
