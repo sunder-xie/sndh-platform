@@ -105,9 +105,14 @@ FROM
 LEFT JOIN t_vip_cust_info i ON l.LOG_NO = i.VIP_CUST_NO
 WHERE
 	l.LOG_TYPE = '10'
-	<if test="">
-
+    <if test="dateStart!=null and ''!=dateStart">
+    and l.LOG_DATE &gt;= dateStart
     </if>
-
+    <if test="dateEnd!=null and ''!=dateEnd">
+     and  l.LOG_DATE &lt;= dateEnd
+    </if>
+    <if test="search!=null and ''!=search">
+      and (i.VIP_NAME like '%${search}%' OR i.MP like '%${search}%' OR l.CREATE_BY like '%${search}%' OR l.CREATE_BY_TXT like '%${search}%')
+    </if>
   </select>
 </mapper>
