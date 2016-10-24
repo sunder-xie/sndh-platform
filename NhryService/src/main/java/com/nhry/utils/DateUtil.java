@@ -1,5 +1,6 @@
 package com.nhry.utils;
 
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
@@ -9,12 +10,27 @@ import java.util.GregorianCalendar;
  */
 public class DateUtil {
 
-//    public static void main(String[] args){
+  public static void main(String[] args){
 //        System.out.println(getYestoday(new Date()));
 //        System.out.println(getTomorrow(new Date()));
 //
 //        System.out.println(getDayAfterTomorrow(new Date()));
-//    }
+
+          System.out.println(getYmd(new Date()));
+    }
+
+    //获取date 日期的明天
+    public static Date getYmd(Date today) {
+        Calendar calendar = new GregorianCalendar();
+        calendar.set(Calendar.YEAR,today.getYear());
+        calendar.set(Calendar.MONTH,today.getYear());
+        calendar.set(Calendar.DAY_OF_YEAR,today.getDay());
+        calendar.set( Calendar.HOUR_OF_DAY, 0);
+        calendar.set( Calendar.MINUTE, 0);
+        calendar.set(Calendar.SECOND, 0);
+        Date day = calendar.getTime();
+        return day;
+    }
 
     //获取date 日期的明天
     public static Date getYestoday(Date today) {
@@ -44,13 +60,15 @@ public class DateUtil {
     }
 
     public static  boolean sameDateOrYestaday(Date day1 , Date day2){
-        if(day1.compareTo(day2)==0){
+        SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
+        if(format.format(day1).equals(format.format(day2))){
             return true;
-        }else if(day2.compareTo(getYestoday(day1))==0){
+        }else if(format.format(day2).equals(format.format(getYestoday(day1)))){
             return true;
         }else {
             return false;
         }
     }
+
 
 }

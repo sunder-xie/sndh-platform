@@ -51,7 +51,7 @@
   </sql>
   <select id="selectBranchByNo" resultMap="BaseResultMap" parameterType="java.lang.String" >
           select
-			b.BRANCH_NO, b.BRANCH_NAME, b.SALES_CHA, b.BRANCH_GROUP,b.BRANCH_LEVEL,  b.SALES_ORG,b.IS_VALID,b.VALID_DATE,
+			b.BRANCH_NO, b.BRANCH_NAME, b.SALES_CHA, b.BRANCH_GROUP,b.BRANCH_LEVEL,  b.SALES_ORG,b.IS_VALID,b.ONLINE_DATE,
 			(
 				SELECT i.ITEM_NAME
 					from t_sys_code_item i
