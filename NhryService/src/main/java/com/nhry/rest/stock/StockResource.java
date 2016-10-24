@@ -143,4 +143,13 @@ public class StockResource extends BaseResource {
     public Response getJHD(@PathParam("orderNo") String orderNo) throws RemoteException {
         return convertToRespModel(MessageCode.NORMAL, null, requireOrderService.execDeliveryByOrderNo(orderNo));
     }
+
+    @POST
+    @Path("/updateStockToZero")
+    @Produces(MediaType.APPLICATION_JSON)
+    @Consumes(MediaType.APPLICATION_JSON)
+    @ApiOperation(value = "/updateStockToZero", response = Response.class, notes = "库存清零")
+    public Response updateStockToZero() {
+        return convertToRespModel(MessageCode.NORMAL, null, ssmStockService.updateStockToZero());
+    }
 }

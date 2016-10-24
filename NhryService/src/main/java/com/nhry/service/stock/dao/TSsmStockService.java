@@ -45,5 +45,9 @@ public interface TSsmStockService {
      * @return
      */
     int updateTmpStock(String branchNo, String matnr, BigDecimal tmpQty, String salesOrg);
+    /**
+     * 根据奶站执行库存清零
+     * */
+    int updateStockToZero();
 
 }
