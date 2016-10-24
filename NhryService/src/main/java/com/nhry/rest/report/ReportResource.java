@@ -378,21 +378,41 @@ public class ReportResource extends BaseResource{
             cell.setCellValue(empdata.getEmp().getEmpName());
             cell = row.getCell(7);
             cell.setCellValue(format.format(new Date()));
+
+            XSSFCellStyle styleBold = workbook.createCellStyle();
+            styleBold.setBorderBottom(XSSFCellStyle.BORDER_THIN); //下边框
+            styleBold.setBorderLeft(XSSFCellStyle.BORDER_THIN);//左边框
+            styleBold.setBorderTop(XSSFCellStyle.BORDER_THIN);//上边框
+            styleBold.setBorderRight(XSSFCellStyle.BORDER_THIN);//右边框
+
             int r = 3;
             if(details!=null){
                 for(TMilkboxPlan item : details){
-                    row = sheet.getRow(r);
-                    cell = row.getCell(0);
+                    row = sheet.createRow(r);
+                    cell = row.createCell(0);
+                    cell.setCellStyle(styleBold);
                     cell.setCellValue(item.getMemberName());
-                    cell= row.getCell(1);
+                    cell= row.createCell(1);
+                    cell.setCellStyle(styleBold);
                     cell.setCellValue(item.getMemberTel());
-                    cell = row.getCell(2);
+                    cell = row.createCell(2);
+                    cell.setCellStyle(styleBold);
                     cell.setCellValue(item.getAdressNo());
-                    cell = row.getCell(5);
+                    cell = row.createCell(3);
+                    cell.setCellStyle(styleBold);
+                    cell.setCellValue("");
+                    cell = row.createCell(4);
+                    cell.setCellStyle(styleBold);
+                    cell.setCellValue("");
+                    sheet.addMergedRegion(new CellRangeAddress(row.getRowNum(), row.getRowNum(), 2, 4));
+                    cell = row.createCell(5);
+                    cell.setCellStyle(styleBold);
                     cell.setCellValue(item.getProNum());
-                    cell = row.getCell(6);
+                    cell = row.createCell(6);
+                    cell.setCellStyle(styleBold);
                     cell.setCellValue(item.getInitAmt().toString());
-                    cell = row.getCell(7);
+                    cell = row.createCell(7);
+                    cell.setCellStyle(styleBold);
                     String paymentStatName="";
                     if(item.getPaymentmethod().equals("10")){
                         paymentStatName="后付款";
@@ -402,6 +422,12 @@ public class ReportResource extends BaseResource{
                         paymentStatName="垫付费";
                     }
                     cell.setCellValue(paymentStatName);
+                    cell = row.createCell(8);
+                    cell.setCellStyle(styleBold);
+                    cell.setCellValue("");
+                    cell = row.createCell(9);
+                    cell.setCellStyle(styleBold);
+                    cell.setCellValue("");
                     r++;
                 }
             }

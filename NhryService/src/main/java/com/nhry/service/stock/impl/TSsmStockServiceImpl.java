@@ -30,7 +30,7 @@ public class TSsmStockServiceImpl implements TSsmStockService {
     private TSsmGiOrderService giOrderService;
 
     private TSsmGiOrderItemService giOrderItemService;
-    
+
     @Autowired
     private UserSessionService userSessionService;
 
