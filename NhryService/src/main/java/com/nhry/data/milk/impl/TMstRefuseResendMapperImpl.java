@@ -52,7 +52,7 @@ public class TMstRefuseResendMapperImpl implements TMstRefuseResendMapper {
     public TMstRefuseResend selectRefuseResendByNo(String resendOrderNo) {
         TMstRefuseResend resend = new TMstRefuseResend();
         resend.setResendOrderNo(resendOrderNo);
-        return sqlSessionTemplate.selectOne("selectRefuseResend",resendOrderNo);
+        return sqlSessionTemplate.selectOne("selectRefuseResend",resend);
     }
 
     @Override
