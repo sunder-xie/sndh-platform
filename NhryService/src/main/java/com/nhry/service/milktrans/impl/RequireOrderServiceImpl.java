@@ -532,6 +532,26 @@ public class RequireOrderServiceImpl implements RequireOrderService {
                 //如果已生成，并且已经发送过ERP
                 throw new ServiceException(MessageCode.LOGIC_ERROR, "当天要货计划已生成，并且已经发送过ERP，不能再次生成，请查阅!!!");
             } else {
+                //将 拒收复送  复原
+                List<TMstRefuseResendItem> entries = resendItemMapper.selectItemByRequireOrder(order.getOrderNo());
+                if(entries!=null && entries.size()>0){
+                    //key  拒收复送单号，value 数量
+                    Map<String, BigDecimal> matnrList = new HashMap<String,BigDecimal>();
+                    entries.stream().filter(e->(e.getQty().intValue()>0)).forEach(e->{
+                           matnrList.put(e.getResendOrderNo(),e.getQty());
+                    });
+                    //有拒收复送产品,更新拒收复送数量，删除子项
+                    if(matnrList.size()>0){
+                        for(String resendOrderNo : matnrList.keySet()){
+                            BigDecimal uptQty = matnrList.get(resendOrderNo);
+                            TMstRefuseResend resend = resendMapper.selectRefuseResendByNo(resendOrderNo);
+                            resend.setConfirmQty(resend.getConfirmQty().subtract(uptQty));
+                            resend.setRemainQty(resend.getRemainQty().add(uptQty));
+                           resendMapper.uptRefuseResend(resend);
+                        }
+                        resendItemMapper.delResendItemByRequireOrderNoAndType(order.getOrderNo(),"10");
+                    }
+                }
                 tSsmReqGoodsOrderItemMapper.delRequireOrderItemsByOrderNo(order.getOrderNo());
                 tSsmReqGoodsOrderMapper.deleRequireGoodsOrderbyNo(order.getOrderNo());
             }
