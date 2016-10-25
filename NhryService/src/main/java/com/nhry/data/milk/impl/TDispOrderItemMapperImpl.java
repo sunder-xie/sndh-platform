@@ -252,6 +252,15 @@ public class TDispOrderItemMapperImpl implements TDispOrderItemMapper
 	}
 
 	@Override
+	public int selectCountByOrgOrderAndDate(String orgOrderNo,Date  date)
+	{
+		TDispOrder order = new TDispOrder();
+		order.setOrderNo(orgOrderNo);
+		order.setDispDate(date);
+		return sqlSessionTemplate.selectOne("selectCountByOrgOrder", order);
+	}
+
+	@Override
 	public int selectCountByOrgOrderAndOrgItemNo(String orderNo, String itemNo, String dispDate)
 	{
 		TDispOrder order = new TDispOrder();

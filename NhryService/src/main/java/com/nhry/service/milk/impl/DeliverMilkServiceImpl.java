@@ -1182,13 +1182,21 @@ public class DeliverMilkServiceImpl extends BaseService implements DeliverMilkSe
 		}
 		List<String> orderNos = tModel.getOrders();
 		StringBuffer  hadDispNos = new StringBuffer("");
-		orderNos.stream().forEach(e->{
-			if(tDispOrderItemMapper.selectCountByOrgOrder(e) > 0){
-				hadDispNos.append(","+e);
+		StringBuffer  errOrderNos = new StringBuffer("");
+		for(String orderNo : orderNos){
+			if(tDispOrderItemMapper.selectCountByOrgOrderAndDate(orderNo,date) > 0){
+				hadDispNos.append(" "+orderNo);
 			}
-		});
+
+			if(tOrderDaliyPlanItemMapper.selectDaliyPlanByOrderAndDispDate(orderNo,date) == null){
+				errOrderNos.append(" "+orderNo);
+			}
+		}
 		if(StringUtils.isNotBlank(hadDispNos.toString().trim())){
 			throw new ServiceException(MessageCode.LOGIC_ERROR,hadDispNos.toString()+dateStr+"的日订单已经生成过路单");
+		}
+		if(StringUtils.isNotBlank(errOrderNos.toString().trim())){
+			throw new ServiceException(MessageCode.LOGIC_ERROR,errOrderNos.toString()+"  "+dateStr+"的日订单不存在");
 		}
 
 

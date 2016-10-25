@@ -88,11 +88,12 @@ public class milkTransResource extends BaseResource {
 
 
 	@POST
-	@Path("/queryRefuseResendByMatnr/{matnr}")
+	@Path("/queryRefuseResendByMatnr/{matnr}/{orderNo}")
 	@Produces(MediaType.APPLICATION_JSON)
-	@ApiOperation(value = "/queryRefuseResendByMatnr/{matnr}", response = RequireOrderModel.class, notes = "查询奶站下拒收复送产品信息")
-	public Response queryRefuseResendByMatnr(@ApiParam(required=true,name="matnr",value="产品编号") @PathParam("matnr") String matnr) {
-		return convertToRespModel(MessageCode.NORMAL, null, requireOrderService.queryRefuseResendByMatnr(matnr));
+	@ApiOperation(value = "/queryRefuseResendByMatnr/{matnr}/{reqOrderNo}", response = RequireOrderModel.class, notes = "查询奶站下拒收复送产品信息")
+	public Response queryRefuseResendByMatnr(@ApiParam(required=true,name="matnr",value="产品编号") @PathParam("matnr") String matnr,
+											 @ApiParam(required=true,name="reqOrderNo",value="产品编号")@PathParam("orderNo") String orderNo) {
+		return convertToRespModel(MessageCode.NORMAL, null, requireOrderService.queryRefuseResendByMatnr(matnr,orderNo));
 	}
 
 	@POST

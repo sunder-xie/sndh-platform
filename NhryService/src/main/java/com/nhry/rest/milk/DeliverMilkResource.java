@@ -85,7 +85,7 @@ public class DeliverMilkResource extends BaseResource {
 	@Path("/createTemRouteOrders")
 	@Produces(MediaType.APPLICATION_JSON)
 	@Consumes(MediaType.APPLICATION_JSON)
-	@ApiOperation(value = "/createTemRouteOrders", response = Integer.class, notes = "生成路单")
+	@ApiOperation(value = "/createTemRouteOrders", response = Integer.class, notes = "生成临时路单")
 	public Response createTemRouteOrders(@ApiParam(required=true,name="dateStr",value="日期编号") TemporaryDispOrderModel tModel){
 		return convertToRespModel(MessageCode.NORMAL, null, deliverMilkService.createTemRouteOrders(tModel));
 	}

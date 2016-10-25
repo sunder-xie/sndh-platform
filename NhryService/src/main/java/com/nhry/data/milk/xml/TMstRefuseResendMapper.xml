@@ -8,6 +8,7 @@
     <result column="REMAIN_QTY" property="remainQty" jdbcType="DECIMAL" />
     <result column="CONFIRM_QTY" property="confirmQty" jdbcType="DECIMAL" />
     <result column="INSIDE_QTY" property="insideQty" jdbcType="DECIMAL" />
+    <result column="USE_QTY" property="useQty" jdbcType="DECIMAL" />
     <result column="QTY" property="qty" jdbcType="DECIMAL" />
     <result column="STATUS" property="status" jdbcType="VARCHAR" />
     <result column="MATNR" property="matnr" jdbcType="VARCHAR" />
@@ -161,16 +162,53 @@
         rs.MATNR
   </select>
 
+  <select id="findNoUsedAndUsedRefuseResend" resultMap="BaseResultMap" parameterType="java.util.HashMap">
+    SELECT
+        t.MATNR
+    FROM
+        (
+            SELECT
+                rr.MATNR
+            FROM
+                t_mst_refuse_resend rr
+            WHERE
+                rr.REMAIN_QTY > 0
+            AND rr.BRANCH_NO = #{branchNo}
+            UNION
+                SELECT
+                    rr.MATNR
+                FROM
+                    t_mst_refuse_resend_item i
+                LEFT JOIN t_mst_refuse_resend rr ON i.RESEND_ORDER_NO =  rr.RESEND_ORDER_NO
+                WHERE
+                    i.ORDER_NO = #{orderNo}
+                AND rr.MATNR IS NOT NULL
+        ) t
+    GROUP BY
+        t.MATNR
+
+
+  </select>
 
   <select id="queryRefuseResendByMatnr" parameterType="java.util.HashMap" resultMap="BaseResultMap">
-   SELECT
-    rr.RESEND_ORDER_NO,rr.MATNR,ex.SHORT_TXT MATNR_TXT,rr.REMAIN_QTY,rr.DISP_DATE,rr.EMP_NO,e.EMP_NAME
+    SELECT
+    rr.RESEND_ORDER_NO,rr.MATNR,ex.SHORT_TXT MATNR_TXT,rr.REMAIN_QTY,rr.DISP_DATE,rr.EMP_NO,e.EMP_NAME,''USE_QTY
     FROM t_mst_refuse_resend  rr
     LEFT JOIN t_md_branch_emp e on rr.EMP_NO = e.EMP_NO
     LEFT JOIN t_md_mara_ex ex on rr.MATNR = ex.MATNR and ex.SALES_ORG= rr.SALES_ORG
     WHERE rr.BRANCH_NO = #{branchNo}
     and rr.MATNR = #{matnr}
     and rr.REMAIN_QTY > 0
+
+    UNION
+		 SELECT
+			rr.RESEND_ORDER_NO,rr.MATNR,ex.SHORT_TXT MATNR_TXT,i.QTY REMAIN_QTY,rr.DISP_DATE,rr.EMP_NO,e.EMP_NAME,i.QTY USE_QTY
+		 FROM t_mst_refuse_resend_item i
+		LEFT JOIN t_mst_refuse_resend rr on i.RESEND_ORDER_NO = rr.RESEND_ORDER_NO
+		LEFT JOIN t_md_branch_emp e on rr.EMP_NO = e.EMP_NO
+		LEFT JOIN t_md_mara_ex ex on rr.MATNR = ex.MATNR and ex.SALES_ORG= rr.SALES_ORG
+		WHERE i.ORDER_NO = #{orderNo}
+		and rr.MATNR = #{matnr}
   </select>
 
 

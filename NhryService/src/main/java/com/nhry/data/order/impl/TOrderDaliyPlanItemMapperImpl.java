@@ -198,6 +198,14 @@ public class TOrderDaliyPlanItemMapperImpl implements TOrderDaliyPlanItemMapper
 		return sqlSessionTemplate.selectList("selectDaliyPlansByDispNo", key);
 	}
 
+	@Override
+	public TOrderDaliyPlanItem selectDaliyPlanByOrderAndDispDate(String orderNo, Date date) {
+		TOrderDaliyPlanItem item = new TOrderDaliyPlanItem();
+		item.setOrderNo(orderNo);
+		item.setDispDate(date);
+		return sqlSessionTemplate.selectOne("selectDaliyPlanByOrderAndDispDate",item);
+	}
+
 
 	/**
 	 * 根据订单号和日期获取当前日期的日订单状态

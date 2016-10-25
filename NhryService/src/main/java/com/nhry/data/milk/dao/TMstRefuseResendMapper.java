@@ -20,9 +20,10 @@ public interface TMstRefuseResendMapper {
      */
     List<TMstRefuseResend> findNoUsedRefuseResend(String branchNo);
 
-    List<TMstRefuseResend>  queryRefuseResendByMatnr(String matnr,String branchNo);
+    List<TMstRefuseResend>  queryRefuseResendByMatnr(String matnr,String branchNo,String reqOrderNo);
 
     TMstRefuseResend selectRefuseResendByNo(String resendOrderNo);
     TMstRefuseResend findByBranchEmpSendDateAndMatnr(String branchNO, String empNo, Date dispDate,String matnr);
 
+    List<TMstRefuseResend> findNoUsedAndUsedRefuseResend(String branchNo,String orderNo);
 }

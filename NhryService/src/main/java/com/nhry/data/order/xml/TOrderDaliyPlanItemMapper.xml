@@ -156,7 +156,7 @@
     select max(cast(REMAIN_AMT as decimal(10,2)))
     from t_mst_order_daliy_plan_item 
     where ORDER_NO = #{orderNo,jdbcType=VARCHAR}
-			 and DISP_DATE &gt;= #{itemNo,jdbcType=VARCHAR}
+     and DISP_DATE &gt;= #{itemNo,jdbcType=VARCHAR}
   </select>
   <select id="selectDaliyPlansByDispNo" resultMap="BaseResultMap" parameterType="com.nhry.data.order.domain.TOrderDaliyPlanItemKey" >
     select
@@ -835,4 +835,13 @@
       WHERE ORDER_NO = #{orderNo,jdbcType=VARCHAR}
       and STATUS ='20'
   </select>
+  <select id="selectDaliyPlanByOrderAndDispDate" parameterType="com.nhry.data.order.domain.TOrderDaliyPlanItem"  resultMap="BaseResultMap">
+    SELECT
+    ORDER_NO,DISP_DATE
+    FROM t_mst_order_daliy_plan_item
+    WHERE ORDER_NO = #{orderNo,jdbcType=VARCHAR}
+    and DISP_DATE = #{dispDate,jdbcType=DATE}
+  </select>
+
+
 </mapper>

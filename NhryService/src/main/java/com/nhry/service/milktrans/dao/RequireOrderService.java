@@ -52,7 +52,7 @@ public interface RequireOrderService {
 
     List<TSsmSalOrder> creaSalOrderOfSelftBranchByDate2(SalOrderDaySearch search);
 
-    List<TMstRefuseResend> queryRefuseResendByMatnr(String matnr);
+    List<TMstRefuseResend> queryRefuseResendByMatnr(String matnr,String reqOrderNo);
 
     int uptRequireOrderByResendItem(UptReqOrderByResendItemMode umodel);
 }

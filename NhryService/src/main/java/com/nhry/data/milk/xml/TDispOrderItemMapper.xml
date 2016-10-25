@@ -636,6 +636,9 @@
       select count(*) from t_mst_disp_order_item i
 		left join t_mst_disp_order o on i.ORDER_NO = o.ORDER_NO
 		where i.ORG_ORDER_NO = #{orderNo,jdbcType=VARCHAR}
+		<if test="dispDate!=null">
+          and i.ORDER_DATE = #{dispDate,jdbcType=DATE}
+        </if>
    </select>
    <!-- 检查某个行项目是否生成了路单 -->
    <select id="selectCountByOrgOrderAndOrgItemNo" resultType="INTEGER" parameterType="com.nhry.data.milk.domain.TDispOrder">
