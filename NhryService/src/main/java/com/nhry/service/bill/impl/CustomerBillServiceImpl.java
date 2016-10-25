@@ -355,7 +355,7 @@ public class CustomerBillServiceImpl implements CustomerBillService {
                 TMstRecvBill  bill = this.createRecBillByOrderNo(order.getOrderNo());
                 if("20".equals(bill.getStatus())) continue;
                 CustomerPayMentModel cmodel = new CustomerPayMentModel();
-                cmodel.setAmt(order.getInitAmt().subtract(bill.getAccAmt()).toString());
+                cmodel.setAmt(bill.getSuppAmt().toString());
                 cmodel.setEmpNo(order.getEmpNo());
                 cmodel.setOrderNo(bill.getOrderNo());
                 cmodel.setPaymentType("10");
@@ -388,7 +388,7 @@ public class CustomerBillServiceImpl implements CustomerBillService {
                 //已收过款
                 if("20".equals(bill.getStatus())) continue;
                 CustomerPayMentModel cmodel = new CustomerPayMentModel();
-                cmodel.setAmt(order.getInitAmt().subtract(bill.getAccAmt()).toString());
+                cmodel.setAmt(bill.getSuppAmt().toString());
                 cmodel.setEmpNo(order.getEmpNo());
                 cmodel.setOrderNo(bill.getOrderNo());
                 cmodel.setPaymentType("10");

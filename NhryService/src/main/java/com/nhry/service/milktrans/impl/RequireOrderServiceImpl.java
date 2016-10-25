@@ -207,11 +207,11 @@ public class RequireOrderServiceImpl implements RequireOrderService {
         TSsmReqGoodsOrder order = this.tSsmReqGoodsOrderMapper.searchRequireOrder(rModel);
         if (order != null) {
 
-            List<TMstRefuseResend>  resendList = resendMapper.findNoUsedRefuseResend(user.getBranchNo());
-            Map<String,Integer> matnrMap = new HashMap<String,Integer>();
+            List<TMstRefuseResend>  resendList = resendMapper.findNoUsedAndUsedRefuseResend(user.getBranchNo(),order.getOrderNo());
+            Set<String> matnrMap = new HashSet<String>();
             if(resendList!=null && resendList.size()>0){
                 resendList.stream().forEach(resend->{
-                    matnrMap.put(resend.getMatnr(),resend.getQty().intValue());
+                    matnrMap.add(resend.getMatnr());
                 });
             }
 
@@ -232,7 +232,7 @@ public class RequireOrderServiceImpl implements RequireOrderService {
                 map.put("salesOrg", salesOrg);
                 map.put("matnr", item.getMatnr());
                 TMdMara mara = tMdMaraMapper.selectProductByCode(map);
-                if(matnrMap.containsKey(item.getMatnr())){
+                if(matnrMap.contains(item.getMatnr())){
                     entry.setHasTmp(true);
                 }else{
                     entry.setHasTmp(false);
@@ -803,9 +803,9 @@ public class RequireOrderServiceImpl implements RequireOrderService {
     }
 
     @Override
-    public List<TMstRefuseResend>  queryRefuseResendByMatnr(String matnr) {
+    public List<TMstRefuseResend>  queryRefuseResendByMatnr(String matnr,String reqOrderNo) {
         TSysUser user = userSessionService.getCurrentUser();
-        return resendMapper.queryRefuseResendByMatnr(matnr,user.getBranchNo());
+        return resendMapper.queryRefuseResendByMatnr(matnr,user.getBranchNo(),reqOrderNo);
     }
 
     @Override
@@ -820,40 +820,73 @@ public class RequireOrderServiceImpl implements RequireOrderService {
             if(item.getQty() + item.getIncreQty() < total){
                 throw new ServiceException(MessageCode.LOGIC_ERROR,"选择的拒收复送总数不应该大于要货数量");
             }
+            //要货减少量
+            int uptReqQty = 0;
             for(TMstRefuseResend resend : resendlist){
                 //生成使用拒收复送详情
                 TMstRefuseResend oldResend = resendMapper.selectRefuseResendByNo(resend.getResendOrderNo());
-                TMstRefuseResendItem resendItem = new TMstRefuseResendItem();
-                resendItem.setResendOrderNo(resendOrderNo);
-                resendItem.setOrderNo(reqOrderNo);
-                resendItem.setType("10");
-                resendItem.setCreateAt(new Date());
-                resendItem.setCreateBy(user.getLoginName());
-                resendItem.setQty(resend.getUseQty());
-                resendItemMapper.addResendItem(resendItem);
+                TMstRefuseResendItem oldResendItem = resendItemMapper.selectItemByReqorderAndNo(umodel.getReqOrderNo(),resend.getResendOrderNo());
+                if(oldResendItem != null){
+                        oldResendItem.setResendOrderNo(resendOrderNo);
+                        oldResendItem.setOrderNo(reqOrderNo);
+                        oldResendItem.setType("10");
+                    //如果等于0 说明不再应用
+                    if(resend.getUseQty().compareTo(BigDecimal.ZERO) == 0){
+                        uptReqQty = uptReqQty +oldResendItem.getQty().intValue();
+                        resendItemMapper.delResendItemByReOrderNoAndResendOrderNo(umodel.getReqOrderNo(),oldResend.getResendOrderNo());
+                    }else{
+                        uptReqQty = uptReqQty +oldResendItem.getQty().subtract(resend.getUseQty()).intValue();
+                        //如果大于零  说明减少应用
+                        oldResendItem.setQty(resend.getUseQty());
+                        resendItemMapper.uptResendItem(oldResendItem);
 
-                //库存
-                stockService.updateTmpStock(oldResend.getBranchNo(),oldResend.getMatnr(),resend.getUseQty(),user.getSalesOrg());
-                //更新拒收复送 信息
-                BigDecimal remainQty = oldResend.getRemainQty().subtract(resend.getUseQty());
-                oldResend.setRemainQty(remainQty);
-                oldResend.setConfirmQty(oldResend.getConfirmQty().add(resend.getUseQty()));
-                if(remainQty.compareTo(BigDecimal.ZERO) == 0 || remainQty.compareTo(BigDecimal.ZERO)==1){
-                    oldResend.setStatus("20");
+                    }
+                    //库存
+                    stockService.updateTmpStock(oldResend.getBranchNo(),oldResend.getMatnr(),resend.getUseQty().subtract(oldResendItem.getQty()),user.getSalesOrg());
                 }else{
-                    oldResend.setStatus("30");
+                    if(resend.getUseQty().compareTo(BigDecimal.ZERO) == 0){
+                        continue;
+                    }else{
+                        uptReqQty = uptReqQty + resend.getUseQty().multiply(new BigDecimal(-1)).intValue();
+                        TMstRefuseResendItem resendItem = new TMstRefuseResendItem();
+                        resendItem.setResendOrderNo(resendOrderNo);
+                        resendItem.setOrderNo(reqOrderNo);
+                        resendItem.setType("10");
+                        resendItem.setCreateAt(new Date());
+                        resendItem.setCreateBy(user.getLoginName());
+                        resendItem.setQty(resend.getUseQty());
+                        resendItemMapper.addResendItem(resendItem);
+                        //库存
+                        stockService.updateTmpStock(oldResend.getBranchNo(),oldResend.getMatnr(),resend.getUseQty(),user.getSalesOrg());
+                    }
                 }
-                resendMapper.uptRefuseResend(oldResend);
+                if(resend.getUseQty().compareTo(BigDecimal.ZERO)==0 && oldResendItem==null){
+                    continue;
+                }else{
+                    BigDecimal remainQty = BigDecimal.ZERO;
+                    BigDecimal confirmQty = BigDecimal.ZERO;
+                    if(oldResendItem!=null){
+                        remainQty  = oldResend.getRemainQty().add(oldResendItem.getQty().subtract(resend.getUseQty()));
+                        confirmQty = oldResend.getConfirmQty().subtract(oldResendItem.getQty());
+                    }else{
+                        remainQty = oldResend.getRemainQty().subtract(resend.getUseQty());
+                        confirmQty = oldResend.getConfirmQty().add(resend.getUseQty());
+                    }
+                    //更新拒收复送 信息
+                    oldResend.setRemainQty(remainQty);
+                    oldResend.setConfirmQty(confirmQty);
+                    if(remainQty.compareTo(BigDecimal.ZERO) == 0 || remainQty.compareTo(BigDecimal.ZERO)==1){
+                        oldResend.setStatus("20");
+                    }else{
+                        oldResend.setStatus("30");
+                    }
+                    resendMapper.uptRefuseResend(oldResend);
+                }
             }
             //更新 要货计划行信息
             TSsmReqGoodsOrderItemUpt uptItem = new TSsmReqGoodsOrderItemUpt();
-            if(item.getQty() < total){
-                uptItem.setQty(0);
-                uptItem.setIncreQty(0);
-            }else{
-                uptItem.setQty(item.getQty() - total);
-            }
-            uptItem.setResendQty(item.getResendQty()+total);
+            uptItem.setResendQty(item.getResendQty()-uptReqQty);
+            uptItem.setQty(item.getQty()+uptReqQty);
             uptItem.setOrderNo(item.getOrderNo());
             uptItem.setOldMatnr(item.getMatnr());
             tSsmReqGoodsOrderItemMapper.uptNewReqGoodsItem(uptItem);

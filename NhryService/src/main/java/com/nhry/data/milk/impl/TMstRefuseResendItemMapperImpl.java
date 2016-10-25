@@ -27,7 +27,8 @@ public class TMstRefuseResendItemMapperImpl implements TMstRefuseResendItemMappe
 
     @Override
     public List<TMstRefuseResendItem> selectItemByRequireOrder(String orderNo) {
-        return sqlSessionTemplate.selectList("selectItemByRequireOrder",orderNo);
+
+        return sqlSessionTemplate.selectList("selectItemByRequireOrder", orderNo);
     }
 
     @Override
@@ -35,6 +36,29 @@ public class TMstRefuseResendItemMapperImpl implements TMstRefuseResendItemMappe
         Map<String,String> map = new HashMap<String,String>();
         map.put("orderNo",orderNo);
         map.put("type",type);
-        return sqlSessionTemplate.delete("delResendItemByRequireOrderNoAndType",map);
+        return sqlSessionTemplate.delete("delResendItemByMap",map);
+
     }
+    @Override
+    public int delResendItemByReOrderNoAndResendOrderNo(String orderNo, String resendOrderNo) {
+        Map<String,String> map = new HashMap<String,String>();
+        map.put("orderNo",orderNo);
+        map.put("resendOrderNo",resendOrderNo);
+        return sqlSessionTemplate.delete("delResendItemByMap",map);
+    }
+
+    @Override
+    public TMstRefuseResendItem selectItemByReqorderAndNo(String reqOrderNo, String resendOrderNo) {
+        Map<String,String> map = new HashMap<String,String>();
+        map.put("orderNo",reqOrderNo);
+        map.put("resendOrderNo",resendOrderNo);
+        return sqlSessionTemplate.selectOne("selectItemByReqorderAndNo",map);
+    }
+
+    @Override
+    public int uptResendItem(TMstRefuseResendItem oldResendItem) {
+        return sqlSessionTemplate.selectOne("uptResendItem",oldResendItem);
+    }
+
+
 }
