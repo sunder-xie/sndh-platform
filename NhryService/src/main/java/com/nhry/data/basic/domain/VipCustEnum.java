@@ -7,6 +7,7 @@ import java.io.Serializable;
  */
 public class  VipCustEnum implements Serializable
 {
+    public final static  String CREATE_VIP = "创建订户";
     public final static  String VIP_NAME = "订户姓名";
     public final static  String MP = "订户电话";
     public final static  String EMAIL = "订户邮箱";

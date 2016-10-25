@@ -101,7 +101,7 @@ public class TVipCustInfoServiceImpl extends BaseService implements TVipCustInfo
 			addAddressForCust(address,null,null);
 		}
 		vipInfoDataService.executeVipInfoData(record,record.getVipMp());
-		OperationLogUtil.saveHistoryOperation(record.getVipCustNo(), LogType.VIP_CUST,null,null,"创建",null,null,sysuser,operationLogMapper);
+		OperationLogUtil.saveHistoryOperation(record.getVipCustNo(), LogType.VIP_CUST,VipCustEnum.CREATE_VIP,null,"创建",null,null,sysuser,operationLogMapper);
 		return record.getVipCustNo();
 	}
 	@Override
