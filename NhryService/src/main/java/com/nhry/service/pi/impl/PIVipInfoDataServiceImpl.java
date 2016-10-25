@@ -127,9 +127,12 @@ public class PIVipInfoDataServiceImpl implements PIVipInfoDataService {
             java.util.List<TMdAddress> addresses = vipCustInfoService.findCnAddressByCustNo(vipCustInfo.getVipCustNo());
             TMdAddress address = null;
             if (StringUtils.isNotEmpty(vipno)) {
+                vipCustInfo.setVipCustNoSap(vipno);
+                vipCustInfo.setVipMp(vipTel);
+                vipCustInfoService.updateSapNo(vipCustInfo);
                 result.setSuccess(true);
                 result.setMessage("会员已经存在！");
-            }else {
+            } else {
                 try {
                     iniVipCustInfo(vipCustInfo);
                     TVipCrmInfo vipCrmInfo = new TVipCrmInfo();
@@ -321,28 +324,26 @@ public class PIVipInfoDataServiceImpl implements PIVipInfoDataService {
                         vipCrmAddress.setIsDefault("Y");
                         vipCrmAddress.setIsDelete("N");
                         vipCrmAddressMapper.addVipCrmAddress(vipCrmAddress);
-//                        vipCustInfo.setVipCustNoSap(vipno);
-//                        vipCustInfo.setVipMp(vipTel);
-//                        vipCustInfoService.updateSapNo(vipCustInfo);
+                        vipCustInfo.setVipCustNoSap(vipno);
+                        vipCustInfo.setVipMp(vipTel);
+                        vipCustInfoService.updateSapNo(vipCustInfo);
                     } else {
+                        logger.info("会员账号创建失败！返回状态是：" + flag );
                         result.setSuccess(false);
                     }
                     logger.info(msg);
                 } catch (Exception e) {
                     result.setSuccess(false);
-                    logger.error("会员账号创建失败！" + e.getMessage());
-                    result.setMessage("会员账号创建失败！");
+                    logger.error("会员账号创建失败！" + vipCustInfo.getMp() + e.getMessage());
+                    result.setMessage("会员账号创建失败！"+vipCustInfo.getMp());
                 }
             }
-
-            if(result.isSuccess()){
+            if (result.isSuccess()) {
                 try {
-                    vipCustInfo.setVipCustNoSap(vipno);
-                    vipCustInfo.setVipMp(vipTel);
-                    vipCustInfoService.updateSapNo(vipCustInfo);
+                    //发送地址
                     sendAddress(addresses, vipno);
 //                executeUptVipCust(vipCustInfo);
-                }catch (Exception e){
+                } catch (Exception e) {
                     e.printStackTrace();
                     logger.error(e.getMessage());
                 }
@@ -353,9 +354,7 @@ public class PIVipInfoDataServiceImpl implements PIVipInfoDataService {
 
     @Override
     public void executeVipInfoData(TVipCustInfo vipCustInfo, String vipTel) {
-
         if ("on".equals(PICRMEXEC)) {
-
             taskExecutor.execute(new Thread() {
                 public void run() {
                     try {
@@ -458,7 +457,7 @@ public class PIVipInfoDataServiceImpl implements PIVipInfoDataService {
             zscrm_memb_activities.setPOINT_TYPE(point_type_type1);
 
             PROCESS_type1 process_type1 = new PROCESS_type1();
-            process_type1.setPROCESS_type0(memberActivities.getProcess() == null ? "" : memberActivities.getProcess());
+            process_type1.setPROCESS_type0(memberActivities.getProcess() == null ? "X" : memberActivities.getProcess());
             zscrm_memb_activities.setPROCESS(process_type1);
 
             PRODUCT_ID_type1 product_id_type1 = new PRODUCT_ID_type1();
@@ -558,7 +557,7 @@ public class PIVipInfoDataServiceImpl implements PIVipInfoDataService {
             zzfld0000B9_type1.setZZFLD0000B9_type0(vipCustInfo.getSubscriber() == null ? "" : vipCustInfo.getSubscriber());
             zscrm_ztab0000LQ.setZZFLD0000B9(zzfld0000B9_type1);
 
-            if(vipCustInfo.getFirstOrderTime() != null){
+            if (vipCustInfo.getFirstOrderTime() != null) {
                 Date data = new Date();
                 data.setObject(vipCustInfo.getFirstOrderTime());
                 zscrm_ztab0000LQ.setZZFLD0000BC(data);
@@ -620,111 +619,118 @@ public class PIVipInfoDataServiceImpl implements PIVipInfoDataService {
     public PISuccessTMessage sendAddress(List<TMdAddress> addresss, String sapGuid) {
         PISuccessTMessage result = new PISuccessTMessage();
         try {
-            MemberAddrUpdateServiceStub stub = connMemberAddrService();
-            Z_CRM_ADDR_UPDATE z_crm_addr_update = new Z_CRM_ADDR_UPDATE();
             for (TMdAddress address : addresss) {
                 address = vipCustInfoService.findAddressById(address.getAddressId());
                 if (StringUtils.isEmpty(sapGuid)) {
                     TVipCustInfo custInfo = vipCustInfoService.findVipCustByNoForUpt(address.getVipCustNo());
                     sapGuid = custInfo.getVipCustNoSap();
                 }
-                NHSysCodeItem codeItem = new NHSysCodeItem();
-                codeItem.setTypeCode("1001");
-                if (StringUtils.isEmpty(address.getCityName())) {
-                    codeItem.setItemCode(address.getCity());
-                    NHSysCodeItem item = dictionaryService.findCodeItenByCode(codeItem);
-                    if (item != null) {
-                        address.setCity(item.getItemName());
-                    }
-                }
-                if (StringUtils.isEmpty(address.getCountyName())) {
-                    codeItem.setItemCode(address.getCounty());
-                    NHSysCodeItem item = dictionaryService.findCodeItenByCode(codeItem);
-                    if (item != null) {
-                        address.setCounty(item.getItemName());
-                    }
-                }
-
                 if (StringUtils.isNotEmpty(sapGuid)) {
-                    com.nhry.webService.client.Address.functions.IV_MEMB_GUID_type1 iv_memb_guid_type1 = new com.nhry.webService.client.Address.functions.IV_MEMB_GUID_type1();
-                    iv_memb_guid_type1.setIV_MEMB_GUID_type0(sapGuid);
-                    z_crm_addr_update.setIV_MEMB_GUID(iv_memb_guid_type1);
+                    MemberAddrUpdateServiceStub stub = connMemberAddrService();
+                    Z_CRM_ADDR_UPDATE z_crm_addr_update = new Z_CRM_ADDR_UPDATE();
+
+                    NHSysCodeItem codeItem = new NHSysCodeItem();
+                    codeItem.setTypeCode("1001");
+                    if (StringUtils.isEmpty(address.getCityName())) {
+                        codeItem.setItemCode(address.getCity());
+                        NHSysCodeItem item = dictionaryService.findCodeItenByCode(codeItem);
+                        if (item != null) {
+                            address.setCity(item.getItemName());
+                        }
+                    }
+                    if (StringUtils.isEmpty(address.getCountyName())) {
+                        codeItem.setItemCode(address.getCounty());
+                        NHSysCodeItem item = dictionaryService.findCodeItenByCode(codeItem);
+                        if (item != null) {
+                            address.setCounty(item.getItemName());
+                        }
+                    }
+
+                    if (StringUtils.isNotEmpty(sapGuid)) {
+                        com.nhry.webService.client.Address.functions.IV_MEMB_GUID_type1 iv_memb_guid_type1 = new com.nhry.webService.client.Address.functions.IV_MEMB_GUID_type1();
+                        iv_memb_guid_type1.setIV_MEMB_GUID_type0(sapGuid);
+                        z_crm_addr_update.setIV_MEMB_GUID(iv_memb_guid_type1);
+                    }
+                    T_ADDR_type1 t_addr_type1 = new T_ADDR_type1();
+                    ZSCRM_ADDR_SHIP_TO zscrm_addr_ship_to = new ZSCRM_ADDR_SHIP_TO();
+
+                    ADDRESS_GUID_type3 address_guid_type3 = new ADDRESS_GUID_type3();
+                    address_guid_type3.setADDRESS_GUID_type2(address.getAddressId());
+                    zscrm_addr_ship_to.setADDRESS_GUID(address_guid_type3);
+
+                    com.nhry.webService.client.Address.functions.CITY1_type1 city1_type1 = new com.nhry.webService.client.Address.functions.CITY1_type1();
+                    city1_type1.setCITY1_type0(address.getCityName() == null ? "" : address.getCityName());
+                    zscrm_addr_ship_to.setCITY1(city1_type1);
+
+                    com.nhry.webService.client.Address.functions.CITY2_type1 city2_type1 = new com.nhry.webService.client.Address.functions.CITY2_type1();
+                    city2_type1.setCITY2_type0(address.getCountyName() == null ? "" : address.getCountyName());
+                    zscrm_addr_ship_to.setCITY2(city2_type1);
+
+                    com.nhry.webService.client.Address.functions.COUNTRY_type1 country_type1 = new com.nhry.webService.client.Address.functions.COUNTRY_type1();
+                    country_type1.setCOUNTRY_type0("CN");
+                    zscrm_addr_ship_to.setCOUNTRY(country_type1);
+
+                    com.nhry.webService.client.Address.functions.TEL_NUMBER_type1 tel_number_type1 = new com.nhry.webService.client.Address.functions.TEL_NUMBER_type1();
+                    tel_number_type1.setTEL_NUMBER_type0(address.getTel() == null ? "" : address.getTel());
+                    zscrm_addr_ship_to.setTEL_NUMBER(tel_number_type1);
+
+                    com.nhry.webService.client.Address.functions.TEL_MOBILE_type1 tel_mobile_type1 = new com.nhry.webService.client.Address.functions.TEL_MOBILE_type1();
+                    tel_mobile_type1.setTEL_MOBILE_type0(address.getMp() == null ? "" : address.getMp());
+                    zscrm_addr_ship_to.setTEL_MOBILE(tel_mobile_type1);
+
+                    com.nhry.webService.client.Address.functions.STREET_type1 street_type1 = new com.nhry.webService.client.Address.functions.STREET_type1();
+                    street_type1.setSTREET_type0(address.getStreet() == null ? "" : address.getStreet());
+                    zscrm_addr_ship_to.setSTREET(street_type1);
+
+                    com.nhry.webService.client.Address.functions.STR_SUPPL2_type1 str_suppl2_type1 = new com.nhry.webService.client.Address.functions.STR_SUPPL2_type1();
+                    str_suppl2_type1.setSTR_SUPPL2_type0(address.getResidentialAreaName() == null ? "" : address.getResidentialAreaName());
+                    zscrm_addr_ship_to.setSTR_SUPPL2(str_suppl2_type1);
+
+                    com.nhry.webService.client.Address.functions.STR_SUPPL1_type1 str_suppl1_type1 = new com.nhry.webService.client.Address.functions.STR_SUPPL1_type1();
+                    str_suppl1_type1.setSTR_SUPPL1_type0(address.getAddressTxt() == null ? "" : address.getAddressTxt());
+                    zscrm_addr_ship_to.setSTR_SUPPL1(str_suppl1_type1);
+
+                    com.nhry.webService.client.Address.functions.REGION_type1 region_type1 = new com.nhry.webService.client.Address.functions.REGION_type1();
+                    region_type1.setREGION_type0(address.getProvince() == null ? "" : address.getProvince());
+                    zscrm_addr_ship_to.setREGION(region_type1);
+
+                    com.nhry.webService.client.Address.functions.NAME_CO_type1 name_co_type1 = new com.nhry.webService.client.Address.functions.NAME_CO_type1();
+                    name_co_type1.setNAME_CO_type0(address.getRecvName() == null ? "" : address.getRecvName());
+                    zscrm_addr_ship_to.setNAME_CO(name_co_type1);
+
+                    com.nhry.webService.client.Address.functions.POST_CODE1_type1 post_code1_type1 = new com.nhry.webService.client.Address.functions.POST_CODE1_type1();
+                    post_code1_type1.setPOST_CODE1_type0(address.getZip() == null ? "" : address.getZip());
+                    zscrm_addr_ship_to.setPOST_CODE1(post_code1_type1);
+
+                    MODE_type1 mode_type1 = new MODE_type1();
+                    String isdelete = address.getIsDelete();
+                    if (StringUtils.isNotEmpty(isdelete) && "Y".equals(isdelete)) {
+                        mode_type1.setMODE_type0("D");
+                    } else {
+                        mode_type1.setMODE_type0("");
+                    }
+                    zscrm_addr_ship_to.setMODE(mode_type1);
+
+                    t_addr_type1.addItem(zscrm_addr_ship_to);
+                    z_crm_addr_update.setT_ADDR(t_addr_type1);
+
+                    long beginDate = System.currentTimeMillis();
+                    Z_CRM_ADDR_UPDATEResponse response = stub.memberAddrUpdate(z_crm_addr_update);
+                    long endDate = System.currentTimeMillis();
+                    long l = endDate - beginDate;
+                    logger.info("调用会员地址接口用时："+ l/1000);
+                    ZSCRM_ADDR_UPDATE_RETURN message = response.getES_RETURN();
+                    String flag = message.getFLAG().getFLAG_type0();
+                    String msg = message.getMSG().getMSG_type0();
+                    if (MESSAGE_FLAG.equals(flag)) {
+                        result.setSuccess(true);
+                    } else {
+                        result.setSuccess(false);
+                    }
+                    result.setMessage(msg);
+                    logger.info(msg);
                 }
-                T_ADDR_type1 t_addr_type1 = new T_ADDR_type1();
-                ZSCRM_ADDR_SHIP_TO zscrm_addr_ship_to = new ZSCRM_ADDR_SHIP_TO();
-
-                ADDRESS_GUID_type3 address_guid_type3 = new ADDRESS_GUID_type3();
-                address_guid_type3.setADDRESS_GUID_type2(address.getAddressId());
-                zscrm_addr_ship_to.setADDRESS_GUID(address_guid_type3);
-
-                com.nhry.webService.client.Address.functions.CITY1_type1 city1_type1 = new com.nhry.webService.client.Address.functions.CITY1_type1();
-                city1_type1.setCITY1_type0(address.getCityName() == null ? "" : address.getCityName());
-                zscrm_addr_ship_to.setCITY1(city1_type1);
-
-                com.nhry.webService.client.Address.functions.CITY2_type1 city2_type1 = new com.nhry.webService.client.Address.functions.CITY2_type1();
-                city2_type1.setCITY2_type0(address.getCountyName() == null ? "" : address.getCountyName());
-                zscrm_addr_ship_to.setCITY2(city2_type1);
-
-                com.nhry.webService.client.Address.functions.COUNTRY_type1 country_type1 = new com.nhry.webService.client.Address.functions.COUNTRY_type1();
-                country_type1.setCOUNTRY_type0("CN");
-                zscrm_addr_ship_to.setCOUNTRY(country_type1);
-
-                com.nhry.webService.client.Address.functions.TEL_NUMBER_type1 tel_number_type1 = new com.nhry.webService.client.Address.functions.TEL_NUMBER_type1();
-                tel_number_type1.setTEL_NUMBER_type0(address.getTel() == null ? "" : address.getTel());
-                zscrm_addr_ship_to.setTEL_NUMBER(tel_number_type1);
-
-                com.nhry.webService.client.Address.functions.TEL_MOBILE_type1 tel_mobile_type1 = new com.nhry.webService.client.Address.functions.TEL_MOBILE_type1();
-                tel_mobile_type1.setTEL_MOBILE_type0(address.getMp() == null ? "" : address.getMp());
-                zscrm_addr_ship_to.setTEL_MOBILE(tel_mobile_type1);
-
-                com.nhry.webService.client.Address.functions.STREET_type1 street_type1 = new com.nhry.webService.client.Address.functions.STREET_type1();
-                street_type1.setSTREET_type0(address.getStreet() == null ? "" : address.getStreet());
-                zscrm_addr_ship_to.setSTREET(street_type1);
-
-                com.nhry.webService.client.Address.functions.STR_SUPPL2_type1 str_suppl2_type1 = new com.nhry.webService.client.Address.functions.STR_SUPPL2_type1();
-                str_suppl2_type1.setSTR_SUPPL2_type0(address.getResidentialAreaName() == null ? "" : address.getResidentialAreaName());
-                zscrm_addr_ship_to.setSTR_SUPPL2(str_suppl2_type1);
-
-                com.nhry.webService.client.Address.functions.STR_SUPPL1_type1 str_suppl1_type1 = new com.nhry.webService.client.Address.functions.STR_SUPPL1_type1();
-                str_suppl1_type1.setSTR_SUPPL1_type0(address.getAddressTxt() == null ? "" : address.getAddressTxt());
-                zscrm_addr_ship_to.setSTR_SUPPL1(str_suppl1_type1);
-
-                com.nhry.webService.client.Address.functions.REGION_type1 region_type1 = new com.nhry.webService.client.Address.functions.REGION_type1();
-                region_type1.setREGION_type0(address.getProvince() == null ? "" : address.getProvince());
-                zscrm_addr_ship_to.setREGION(region_type1);
-
-                com.nhry.webService.client.Address.functions.NAME_CO_type1 name_co_type1 = new com.nhry.webService.client.Address.functions.NAME_CO_type1();
-                name_co_type1.setNAME_CO_type0(address.getRecvName() == null ? "" : address.getRecvName());
-                zscrm_addr_ship_to.setNAME_CO(name_co_type1);
-
-                com.nhry.webService.client.Address.functions.POST_CODE1_type1 post_code1_type1 = new com.nhry.webService.client.Address.functions.POST_CODE1_type1();
-                post_code1_type1.setPOST_CODE1_type0(address.getZip() == null ? "" : address.getZip());
-                zscrm_addr_ship_to.setPOST_CODE1(post_code1_type1);
-
-                MODE_type1 mode_type1 = new MODE_type1();
-                String isdelete = address.getIsDelete();
-                if (StringUtils.isNotEmpty(isdelete) && "Y".equals(isdelete)) {
-                    mode_type1.setMODE_type0("D");
-                } else {
-                    mode_type1.setMODE_type0("");
-                }
-                zscrm_addr_ship_to.setMODE(mode_type1);
-
-                t_addr_type1.addItem(zscrm_addr_ship_to);
-                z_crm_addr_update.setT_ADDR(t_addr_type1);
             }
-
-            Z_CRM_ADDR_UPDATEResponse response = stub.memberAddrUpdate(z_crm_addr_update);
-            ZSCRM_ADDR_UPDATE_RETURN message = response.getES_RETURN();
-            String flag = message.getFLAG().getFLAG_type0();
-            String msg = message.getMSG().getMSG_type0();
-            if (MESSAGE_FLAG.equals(flag)) {
-                result.setSuccess(true);
-            } else {
-                result.setSuccess(false);
-            }
-            result.setMessage(msg);
-            logger.info(msg);
         } catch (Exception e) {
             e.printStackTrace();
             result.setSuccess(false);
