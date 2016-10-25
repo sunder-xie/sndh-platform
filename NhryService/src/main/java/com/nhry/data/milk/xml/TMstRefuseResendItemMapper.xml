@@ -56,7 +56,7 @@
       </if>
     </trim>
   </insert>
-  <select id="selectItemByRequireOrder" resultType="BaseResultMap" parameterMap="String">
+  <select id="selectItemByRequireOrder" resultMap="BaseResultMap" parameterType="String">
    SELECT
     RESEND_ORDER_NO,SUM(QTY) QTY
     from t_mst_refuse_resend_item
