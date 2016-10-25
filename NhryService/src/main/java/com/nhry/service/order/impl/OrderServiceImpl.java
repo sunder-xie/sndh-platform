@@ -496,7 +496,26 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 			order.setInitAmt(orderAmt);
 			//保存订单金额 和 状态
 			tPreOrderMapper.updateOrderCurAmtAndInitAmt(order);
-			order.setBranchNo(uptManHandModel.getBranchNo());
+
+			if(StringUtils.isNotBlank(order.getBranchNo())){
+				//订户状态更改
+				tVipCustInfoService.discontinue(order.getMilkmemberNo(), "10",new com.nhry.utils.date.Date(),new com.nhry.utils.date.Date());
+			}
+
+
+			//生成装箱工单
+			if("20".equals(order.getMilkboxStat())){
+				MilkboxCreateModel model = new MilkboxCreateModel();
+				model.setCode(order.getOrderNo());
+				milkBoxService.addNewMilkboxPlan(model);
+			}
+
+			//生成每日计划
+			List<TOrderDaliyPlanItem> list = createDaliyPlan(order,entries);
+
+			//如果有赠品，生成赠品的日计划
+			promotionService.createDaliyPlanByPromotion(order,entries,list);
+
 			if("01".equals(branch.getBranchGroup())){
 				order.setDealerNo(branch.getBranchNo());
 			}else{
