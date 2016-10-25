@@ -496,6 +496,12 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 			order.setInitAmt(orderAmt);
 			//保存订单金额 和 状态
 			tPreOrderMapper.updateOrderCurAmtAndInitAmt(order);
+			order.setBranchNo(uptManHandModel.getBranchNo());
+			if("01".equals(branch.getBranchGroup())){
+				order.setDealerNo(branch.getBranchNo());
+			}else{
+				order.setDealerNo(branch.getDealerNo());
+			}
 
 			order.setPreorderStat("10");
 			order.setIsValid("Y");
