@@ -285,6 +285,14 @@ public class milkTransResource extends BaseResource {
 		return convertToRespModel(MessageCode.NORMAL, null, deliverMilkService.createInsideSalOrderByStock(cModel));
 	}
 
+	@POST
+	@Path("/createInsideSalOrderByTmpStock")
+	@Produces(MediaType.APPLICATION_JSON)
+	@Consumes(MediaType.APPLICATION_JSON)
+	@ApiOperation(value = "/createInsideSalOrderByTmpStock", response = Response.class, notes = "根据拒收复送创建内部销售订单")
+	public Response createInsideSalOrderByTmpStock(@ApiParam(required=true,name="dispOrderNo",value="员工（默认站长），产品编码列表，销售组织") CreateInSalOrderModel cModel){
+		return convertToRespModel(MessageCode.NORMAL, null, deliverMilkService.createInsideSalOrderByTmpStock(cModel));
+	}
 
 	@POST
 	@Path("/getInsideSalOrder")

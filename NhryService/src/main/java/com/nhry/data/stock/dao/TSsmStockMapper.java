@@ -21,6 +21,8 @@ public interface TSsmStockMapper {
 
     List findStockinsidesal(StockModel model);
 
+    List findTmpStockinsidesal(StockModel model);
+
     PageInfo findStock(StockModel model);
 
     BigDecimal findStockTotal(StockModel model);

@@ -45,10 +45,19 @@ public class TSsmStockMapperImpl implements TSsmStockMapper {
         return sqlSessionTemplate.update("updateStockToZero",BranchNo);
 
     }
-
+    /**
+     * 获取不为零的库存列表
+     * */
     @Override
     public List<StockModel> findStockinsidesal(StockModel model) {
         return sqlSessionTemplate.selectList("findStockinsidesal",model);
+    }
+    /**
+     * 获取不为零的拒收复送列表
+     * */
+    @Override
+    public  List<StockModel> findTmpStockinsidesal(StockModel model){
+        return sqlSessionTemplate.selectList("findTmpStockinsidesal",model);
     }
 
     @Override
