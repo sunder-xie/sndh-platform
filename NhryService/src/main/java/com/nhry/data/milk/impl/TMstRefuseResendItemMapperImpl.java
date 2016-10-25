@@ -4,6 +4,10 @@ import com.nhry.common.datasource.DynamicSqlSessionTemplate;
 import com.nhry.data.milk.dao.TMstRefuseResendItemMapper;
 import com.nhry.data.milktrans.domain.TMstRefuseResendItem;
 
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 /**
  * Created by gongjk on 2016/10/19.
  */
@@ -17,5 +21,20 @@ public class TMstRefuseResendItemMapperImpl implements TMstRefuseResendItemMappe
     @Override
     public int addResendItem(TMstRefuseResendItem resendItem) {
         return sqlSessionTemplate.insert("addResendItem",resendItem);
+    }
+
+
+
+    @Override
+    public List<TMstRefuseResendItem> selectItemByRequireOrder(String orderNo) {
+        return sqlSessionTemplate.selectList("selectItemByRequireOrder",orderNo);
+    }
+
+    @Override
+    public int delResendItemByRequireOrderNoAndType(String orderNo,String type) {
+        Map<String,String> map = new HashMap<String,String>();
+        map.put("orderNo",orderNo);
+        map.put("type",type);
+        return sqlSessionTemplate.delete("delResendItemByRequireOrderNoAndType",map);
     }
 }

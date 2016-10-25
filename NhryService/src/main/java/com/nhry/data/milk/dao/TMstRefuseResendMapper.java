@@ -24,4 +24,5 @@ public interface TMstRefuseResendMapper {
 
     TMstRefuseResend selectRefuseResendByNo(String resendOrderNo);
     TMstRefuseResend findByBranchEmpSendDateAndMatnr(String branchNO, String empNo, Date dispDate,String matnr);
+
 }
