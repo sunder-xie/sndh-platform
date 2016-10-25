@@ -1857,9 +1857,8 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 						if(cAddress!=null){
 							if(!cAddress.getProvince().equals(record.getAddress().getProvince())
 									||!cAddress.getCity().equals(record.getAddress().getCity())
-									||!cAddress.getCounty().equals(record.getAddress().getCounty())
-									||!cAddress.getResidentialArea().equals(record.getAddress().getResidentialArea())
 									||!cAddress.getAddressTxt().trim().equals(record.getAddress().getAddressTxt().trim())
+									||!cAddress.getRecvName().trim().equals(record.getAddress().getRecvName().trim())
 								)
 							{
 								throw new ServiceException(MessageCode.LOGIC_ERROR,"该地址ID在订户系统已存在，但是对应的地址信息不同，请核对信息");
