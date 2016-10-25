@@ -24,7 +24,14 @@ public interface TSsmStockService {
      * @return
      */
     PageInfo findStock(StockModel mode);
+    /**
+     * 返回剩余库存信息
+     * */
     List<StockModel> findStockinsidesal(StockModel mode);
+    /**
+     * 返回剩余拒收复送信息
+     * */
+    List<StockModel> findTmpStockinsidesal(StockModel model);
     BigDecimal findStockTotal(StockModel mode);
     int genarateStock(StockModel mode);
 
