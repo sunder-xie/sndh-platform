@@ -466,7 +466,7 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 			uptManHandModel.setIsValid("Y");
 		}else{
 			uptManHandModel.setPreorderStat("20");
-			uptManHandModel.setIsValid("N");
+			uptManHandModel.setIsValid("Y");
 		}
 		tPreOrderMapper.orderConfirm(uptManHandModel);
 		// 更新订单  金额
@@ -516,6 +516,8 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 			//如果有赠品，生成赠品的日计划
 			promotionService.createDaliyPlanByPromotion(order,entries,list);
 
+			//创建订单发送EC，发送系统消息(以线程方式),只有奶站的发，摆台的确认时发，电商不发
+
 			if("01".equals(branch.getBranchGroup())){
 				order.setDealerNo(branch.getBranchNo());
 			}else{
@@ -529,6 +531,13 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 					super.run();
 					this.setName("updateOrderBranchNo");
 					messLogService.sendOrderBranch(order);
+					if("20".equals(order.getPaymentStat()) && !"20".equals(order.getMilkboxStat())){
+						TPreOrder sendOrder = new TPreOrder();
+						sendOrder.setOrderNo(order.getOrderNo());
+						sendOrder.setPreorderStat("200");
+						sendOrder.setEmpNo(order.getEmpNo());
+						messLogService.sendOrderStatus(sendOrder);
+					}
 				}
 			});
 		}
@@ -1806,6 +1815,11 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 		if(StringUtils.isBlank(order.getPreorderStat())){
 			order.setPreorderStat("10");//订单状态,初始确认
 		}
+		if("20".equals(order.getPreorderStat())){
+			order.setIsValid("N");
+		}else{
+			order.setIsValid("Y");
+		}
 		order.setSign("10");//在订状态
 		//根据传的奶站获取经销商和销售组织
 		// 如果不是奶站过来的  可以是无奶站
@@ -1819,10 +1833,12 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 			if(StringUtils.isBlank(order.getSalesOrg())){
 				throw new ServiceException(MessageCode.LOGIC_ERROR,"无奶站订单，销售组织编号不能为空!");
 			}
+
 			order.setSalesOrg(order.getSalesOrg());
 		}else{
 			if(StringUtils.isBlank(order.getBranchNo())) throw new ServiceException(MessageCode.LOGIC_ERROR,"该订单奶站编号不能为空!");
 			if(branch==null)throw new ServiceException(MessageCode.LOGIC_ERROR,"奶站号为"+order.getBranchNo()+" 的奶站在订户系统中不存在!");
+
 			order.setDealerNo(branch.getDealerNo());//进销商
 			order.setSalesOrg(branch.getSalesOrg());
 		}
