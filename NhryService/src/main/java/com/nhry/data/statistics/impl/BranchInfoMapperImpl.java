@@ -103,6 +103,10 @@ public class BranchInfoMapperImpl implements BranchInfoMapper{
     }
 
     @Override
+    public List<Map<String,String>> orderOnlineStatReport(ExtendBranchInfoModel model){
+        return sqlSessionTemplate.selectList("orderOnlineStatReport",model);
+    }
+    @Override
     public PageInfo Refuse2receiveResend(ExtendBranchInfoModel model) {
         return sqlSessionTemplate.selectListByPages("Refuse2receiveResend",model,Integer.valueOf(model.getPageNum()),Integer.valueOf(model.getPageSize()));
     }
