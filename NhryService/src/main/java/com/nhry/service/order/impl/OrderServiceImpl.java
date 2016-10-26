@@ -1864,18 +1864,32 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 								throw new ServiceException(MessageCode.LOGIC_ERROR,"该地址ID在订户系统已存在，但是对应的地址信息不同，请核对信息");
 
 							}
-							String custNo = cAddress.getVipCustNo();
+							String custNo = order.getMilkmemberNo();
 							if(StringUtils.isNotBlank(custNo)){
 								TVipCustInfo cst = tVipCustInfoService.findVipCustByNo(custNo);
-								if(!custNo.equals(order.getMilkmemberNo())){
-									throw new ServiceException(MessageCode.LOGIC_ERROR,"该地址ID在订户系统已分配给"+custNo+" "+cst!=null?cst.getVipName():""+"订户了，请核对信息");
+								if(cst!=null){
+									if(!custNo.equals(order.getMilkmemberNo())){
+										throw new ServiceException(MessageCode.LOGIC_ERROR,"该地址ID在订户系统已分配给"+custNo+" "+cst.getVipName()+"订户了，而您的订奶编号为"+order.getMilkmemberNo()+"请核对信息");
+									}
+									if(StringUtils.isBlank(cst.getBranchNo())){
+										throw new ServiceException(MessageCode.LOGIC_ERROR,"该地址ID在订户系统已分配给"+custNo+cst.getVipName()+"订户了，但是该订户没有分配奶站，请核对信息");
+									}
+									record.getAddress().setVipCustNo(custNo);
+									String addressAndMilkmember = tVipCustInfoService.addAddressNoBrnachForCust(record.getAddress(),order.getSalesOrg(),null);
+									order.setBranchNo(cst.getBranchNo());
+								}else{
+									throw new ServiceException(MessageCode.LOGIC_ERROR, "订单中的订户ID "+custNo+"在订户系统中不存在!");
 								}
-								if(StringUtils.isBlank(cst.getBranchNo())){
-									throw new ServiceException(MessageCode.LOGIC_ERROR,"该地址ID在订户系统已分配给"+custNo+" "+cst!=null?cst.getVipName():""+"订户了，但是该订户没有奶站，请核对信息");
-								}
-								order.setBranchNo(cst.getBranchNo());
+
 							}else{
-								throw new ServiceException(MessageCode.LOGIC_ERROR,"该地址ID在订户系统存在，但是订户地址详细信息对应的订户编号(vipCustNo)为空!，请核对信息");
+								//throw new ServiceException(MessageCode.LOGIC_ERROR,"该地址ID在订户系统存在，但是订户地址详细信息对应的订户编号(vipCustNo)为空!，请核对信息");
+								Map<String,String> map = new HashMap<String,String>();
+								map.put("activityNo",order.getSolicitNo());
+								map.put("vipType",order.getDeliveryType());
+								map.put("vipSrc",order.getPreorderSource());
+								String addressAndMilkmember = tVipCustInfoService.addAddressNoBrnachForCust(record.getAddress(),order.getSalesOrg(),map);
+								order.setMilkmemberNo(addressAndMilkmember.split(",")[0]);
+								order.setAdressNo(addressAndMilkmember.split(",")[1]);
 							}
 						}else{
 							Map<String,String> map = new HashMap<String,String>();
