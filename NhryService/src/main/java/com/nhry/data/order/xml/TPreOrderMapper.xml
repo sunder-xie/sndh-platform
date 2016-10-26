@@ -867,8 +867,7 @@
   </update>
   <update id="returnOrder" parameterType="com.nhry.model.order.UpdateManHandOrderModel" >
     update t_preorder
-    <set >
-
+    set
       <if test="retReason != null and retReason != ''">
         RET_REASON = #{retReason,jdbcType=VARCHAR},
       </if>
@@ -878,12 +877,11 @@
       <if test="isValid != null and isValid != ''">
         IS_VALID = #{isValid,jdbcType=VARCHAR},
       </if>
-      DEALER_NO = null,
-      BRANCH_NO = null,
+      DEALER_NO = '',
+      BRANCH_NO = '',
       PREORDER_STAT = '20',
       MEMO_TXT=  #{memoTxt,jdbcType=VARCHAR},
       RET_DATE = #{retDate,jdbcType=DATE}
-    </set>
     where ORDER_NO = #{orderNo,jdbcType=VARCHAR}
   </update>
   <select id="searchCustomerOrder" resultMap="BaseResultMap" parameterType="com.nhry.model.bill.CustBillQueryModel">
