@@ -315,6 +315,9 @@
       <if test="yFresh != null" >
         YFRESH,
       </if>
+      <if test="payDate != null">
+        PAY_DATE,
+      </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides="," >
       <if test="orderNo != null" >
@@ -421,6 +424,9 @@
       </if>
       <if test="yFresh != null" >
         #{yFresh,jdbcType=INTEGER},
+      </if>
+      <if test="payDate != null" >
+        #{payDate,jdbcType=DATE},
       </if>
     </trim>
   </insert>
