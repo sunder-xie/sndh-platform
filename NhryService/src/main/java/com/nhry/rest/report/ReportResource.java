@@ -252,10 +252,10 @@ public class ReportResource extends BaseResource{
             cell.setCellValue("应送总数：".concat(order.getTotalQty()==null?"":order.getTotalQty().toString().concat("--").concat(model.getProducts())));
 
             XSSFCellStyle styleBold = workbook.createCellStyle();
-            styleBold.setBorderBottom(XSSFCellStyle.BORDER_HAIR); //下边框
-            styleBold.setBorderLeft(XSSFCellStyle.BORDER_HAIR);//左边框
-            styleBold.setBorderTop(XSSFCellStyle.BORDER_HAIR);//上边框
-            styleBold.setBorderRight(XSSFCellStyle.BORDER_HAIR);//右边框
+            styleBold.setBorderBottom(XSSFCellStyle.BORDER_THIN); //下边框
+            styleBold.setBorderLeft(XSSFCellStyle.BORDER_THIN);//左边框
+            styleBold.setBorderTop(XSSFCellStyle.BORDER_THIN);//上边框
+            styleBold.setBorderRight(XSSFCellStyle.BORDER_THIN);//右边框
 
             int r = 8;
             if(details!=null){

@@ -255,6 +255,7 @@ public class DeliverMilkServiceImpl extends BaseService implements DeliverMilkSe
 				item.setMatnr(model.getMatnr());
 				item.setQty(new BigDecimal(model.getQty()));
 				item.setItemNo(SerialUtil.creatSeria());
+				item.setReason("80");//库存生成内部销售订单定义为100
 				tMstInsideSalOrderItemMapper.insertOrderItem(item);
 				//更新库存
 				tSsmStockService.updateStock(order.getBranchNo(),model.getMatnr(),new BigDecimal(model.getQty()),user.getSalesOrg());
@@ -272,7 +273,48 @@ public class DeliverMilkServiceImpl extends BaseService implements DeliverMilkSe
 
  		return 0;
 	}
+	/**
+	 * 拒收复送内部销售
+	 * */
+	@Override
+	public int createInsideSalOrderByTmpStock(CreateInSalOrderModel cModel) {
+		List<MatnrAndQtyModel> items = cModel.getMatnrs();
+		if(items!=null && items.size()>0){
+			Date date = new Date();
+			TSysUser user = userSessionService.getCurrentUser();
+			TMstInsideSalOrder order = new TMstInsideSalOrder();
+			String insOrderNo = PrimaryKeyUtils.generateUuidKey();
+			order.setSalEmpNo(cModel.getEmpNo());
+			order.setInsOrderNo(insOrderNo);
+			order.setOrderDate(date);
+			order.setBranchNo(user.getBranchNo());
+			for(int i=0 ;i <items.size();i++){
+				MatnrAndQtyModel model = items.get(i);
+				TMstInsideSalOrderItem item = new TMstInsideSalOrderItem();
+				item.setOrderDate(date);
+				item.setInsOrderNo(insOrderNo);
+				//item.setReason("");
+				item.setMatnr(model.getMatnr());
+				item.setQty(new BigDecimal(model.getQty()));
+				item.setItemNo(SerialUtil.creatSeria());
+				item.setReason("90");//拒收复送生成内部销售订单定义为110
+				tMstInsideSalOrderItemMapper.insertOrderItem(item);
+				//更新库存--拒收复送
+				tSsmStockService.updateTmpStock(order.getBranchNo(),model.getMatnr(),new BigDecimal(model.getQty()),user.getSalesOrg());
+			}
+			tMstInsideSalOrderMapper.insertInsideSalOrder(order);
 
+			//创建回瓶
+			StockModel smodel = new StockModel();
+			smodel.setBranchNo(user.getBranchNo());
+			smodel.setEmpNo(cModel.getEmpNo());
+			returnBoxService.craeteRetBotByStock(smodel);
+		}else{
+			throw new ServiceException(MessageCode.LOGIC_ERROR,"没有选择产品！！！！");
+		}
+
+		return 0;
+	}
 
 	/* (non-Javadoc) 
 	* @title: searchOrders

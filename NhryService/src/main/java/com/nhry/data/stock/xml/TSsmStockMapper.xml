@@ -156,4 +156,46 @@
       WHERE
        t.BRANCH_NO = #{branchNo,jdbcType=VARCHAR}  AND t.QTY is not null  AND t.QTY > 0
     </select>
+  <select id="findTmpStockinsidesal" resultMap="BaseResultMap" parameterType="com.nhry.model.stock.StockModel">
+      SELECT
+      t1.MATNR,
+      t2.SHORT_TXT AS MATNR_TXT,
+      t1.SPEC_UNIT,
+      t.SALES_ORG,
+      t.QTY,
+      t.TMP_QTY,
+      (
+      SELECT
+      I.ITEM_NAME
+      FROM
+      t_sys_code_item I
+      WHERE
+      i.TYPE_CODE =<include refid="mybaties.constant.packing _type"></include>
+      AND i.ITEM_CODE = t1.ZBOT_CODE
+      ) ZBOT_CODE_NAME,
+      (
+      SELECT
+      I.ITEM_NAME
+      FROM
+      t_sys_code_item I
+      WHERE
+      i.TYPE_CODE =<include refid="mybaties.constant.products_spec"></include>
+      AND i.ITEM_CODE = t1.SPEC
+      ) SPEC_NAME,
+      (
+      SELECT
+      I.ITEM_NAME
+      FROM
+      t_sys_code_item I
+      WHERE
+      i.TYPE_CODE =<include refid="mybaties.constant.products_second_category"></include>
+      AND i.ITEM_CODE = t1.SEC_CATE
+      ) SEC_CATE_NAME
+      FROM
+      t_ssm_stock t
+      left join t_md_mara t1 on t.SALES_ORG = t1.SALES_ORG  AND t.MATNR = t1.MATNR
+      left join t_md_mara_ex t2 on t2.MATNR = t1.MATNR AND t1.SALES_ORG=t2.SALES_ORG
+      WHERE
+      t.BRANCH_NO = #{branchNo,jdbcType=VARCHAR}  AND t.TMP_QTY is not null  AND t.TMP_QTY > 0
+  </select>
 </mapper>
