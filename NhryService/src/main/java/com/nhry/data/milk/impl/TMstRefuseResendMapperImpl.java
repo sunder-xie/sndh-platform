@@ -73,4 +73,13 @@ public class TMstRefuseResendMapperImpl implements TMstRefuseResendMapper {
         map.put("orderNo",orderNo);
         return sqlSessionTemplate.selectList("findNoUsedAndUsedRefuseResend",map);
     }
+
+    @Override
+    public TMstRefuseResend selectRefuseResendByDispEmpAndMatnr(String dispOrderNo,String empNo,String matnr) {
+        TMstRefuseResend resend = new TMstRefuseResend();
+        resend.setDispOrderNo(dispOrderNo);
+        resend.setEmpNo(empNo);
+        resend.setMatnr(matnr);
+        return sqlSessionTemplate.selectOne("selectRefuseResend",resend);
+    }
 }

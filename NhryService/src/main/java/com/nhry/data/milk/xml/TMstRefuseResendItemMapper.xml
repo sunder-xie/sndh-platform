@@ -13,12 +13,13 @@
    RESEND_ORDER_NO,ORDER_NO,TYPE,QTY,CREATE_AT,CREATE_BY
   </sql>
   <update id="uptResendItem" parameterType="com.nhry.data.milktrans.domain.TMstRefuseResendItem" >
-    UPDATE t_mst_refuse_resend_item
-    SET
-    <if test="qty!=null">
-      QTY = #{qty,jdbcType=DECIMAL}
-    </if>
-    WHERE 1=1
+    update t_mst_refuse_resend_item
+    <set >
+      <if test="qty!= null" >
+        QTY =  #{qty,jdbcType=DECIMAL},
+      </if>
+    </set>
+    where 1=1
     <if test="orderNo!=null and ''!=orderNo">
       and ORDER_NO = #{orderNo,jdbcType=VARCHAR}
     </if>

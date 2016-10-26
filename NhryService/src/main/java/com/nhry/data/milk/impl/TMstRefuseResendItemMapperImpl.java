@@ -57,7 +57,7 @@ public class TMstRefuseResendItemMapperImpl implements TMstRefuseResendItemMappe
 
     @Override
     public int uptResendItem(TMstRefuseResendItem oldResendItem) {
-        return sqlSessionTemplate.selectOne("uptResendItem",oldResendItem);
+        return sqlSessionTemplate.update("uptResendItem",oldResendItem);
     }
 
 

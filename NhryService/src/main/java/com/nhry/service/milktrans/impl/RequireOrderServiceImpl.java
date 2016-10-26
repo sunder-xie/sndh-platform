@@ -814,7 +814,7 @@ public class RequireOrderServiceImpl implements RequireOrderService {
         if(resendlist !=null &&  resendlist.size()>0){
             TSsmReqGoodsOrderItem item = tSsmReqGoodsOrderItemMapper.getReqGoodsItemsByMatnrAndOrderNo(umodel.getReqOrderNo(),umodel.getMatnr());
             TSysUser user = userSessionService.getCurrentUser();
-            String resendOrderNo = resendlist.get(0).getResendOrderNo();
+
             String reqOrderNo = item.getOrderNo();
             int  total = resendlist.stream().mapToInt(r->r.getUseQty().intValue()).sum();
             if(item.getQty() + item.getIncreQty() < total){
@@ -823,23 +823,24 @@ public class RequireOrderServiceImpl implements RequireOrderService {
             //要货减少量
             int uptReqQty = 0;
             for(TMstRefuseResend resend : resendlist){
+                String resendOrderNo = resend.getResendOrderNo();
+                //单条拒收复送应用增加量
+                BigDecimal addQty = BigDecimal.ZERO;
                 //生成使用拒收复送详情
                 TMstRefuseResend oldResend = resendMapper.selectRefuseResendByNo(resend.getResendOrderNo());
                 TMstRefuseResendItem oldResendItem = resendItemMapper.selectItemByReqorderAndNo(umodel.getReqOrderNo(),resend.getResendOrderNo());
                 if(oldResendItem != null){
-                        oldResendItem.setResendOrderNo(resendOrderNo);
-                        oldResendItem.setOrderNo(reqOrderNo);
-                        oldResendItem.setType("10");
                     //如果等于0 说明不再应用
                     if(resend.getUseQty().compareTo(BigDecimal.ZERO) == 0){
                         uptReqQty = uptReqQty +oldResendItem.getQty().intValue();
+                        addQty = addQty.subtract(oldResendItem.getQty());
                         resendItemMapper.delResendItemByReOrderNoAndResendOrderNo(umodel.getReqOrderNo(),oldResend.getResendOrderNo());
                     }else{
                         uptReqQty = uptReqQty +oldResendItem.getQty().subtract(resend.getUseQty()).intValue();
-                        //如果大于零  说明减少应用
+                        addQty =addQty.add(resend.getUseQty().subtract(oldResendItem.getQty()));
+                        //如果大于零  说明改变应用
                         oldResendItem.setQty(resend.getUseQty());
                         resendItemMapper.uptResendItem(oldResendItem);
-
                     }
                     //库存
                     stockService.updateTmpStock(oldResend.getBranchNo(),oldResend.getMatnr(),resend.getUseQty().subtract(oldResendItem.getQty()),user.getSalesOrg());
@@ -847,6 +848,7 @@ public class RequireOrderServiceImpl implements RequireOrderService {
                     if(resend.getUseQty().compareTo(BigDecimal.ZERO) == 0){
                         continue;
                     }else{
+                        addQty = addQty.add(resend.getUseQty());
                         uptReqQty = uptReqQty + resend.getUseQty().multiply(new BigDecimal(-1)).intValue();
                         TMstRefuseResendItem resendItem = new TMstRefuseResendItem();
                         resendItem.setResendOrderNo(resendOrderNo);
@@ -863,19 +865,10 @@ public class RequireOrderServiceImpl implements RequireOrderService {
                 if(resend.getUseQty().compareTo(BigDecimal.ZERO)==0 && oldResendItem==null){
                     continue;
                 }else{
-                    BigDecimal remainQty = BigDecimal.ZERO;
-                    BigDecimal confirmQty = BigDecimal.ZERO;
-                    if(oldResendItem!=null){
-                        remainQty  = oldResend.getRemainQty().add(oldResendItem.getQty().subtract(resend.getUseQty()));
-                        confirmQty = oldResend.getConfirmQty().subtract(oldResendItem.getQty());
-                    }else{
-                        remainQty = oldResend.getRemainQty().subtract(resend.getUseQty());
-                        confirmQty = oldResend.getConfirmQty().add(resend.getUseQty());
-                    }
                     //更新拒收复送 信息
-                    oldResend.setRemainQty(remainQty);
-                    oldResend.setConfirmQty(confirmQty);
-                    if(remainQty.compareTo(BigDecimal.ZERO) == 0 || remainQty.compareTo(BigDecimal.ZERO)==1){
+                    oldResend.setRemainQty(oldResend.getRemainQty().subtract(addQty));
+                    oldResend.setConfirmQty(oldResend.getConfirmQty().add(addQty));
+                    if(oldResend.getRemainQty().compareTo(BigDecimal.ZERO) != -1){
                         oldResend.setStatus("20");
                     }else{
                         oldResend.setStatus("30");

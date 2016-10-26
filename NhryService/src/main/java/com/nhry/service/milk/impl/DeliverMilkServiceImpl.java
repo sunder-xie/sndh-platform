@@ -156,20 +156,28 @@ public class DeliverMilkServiceImpl extends BaseService implements DeliverMilkSe
 						//如果原因是 60 （拒收复送）拒收部分保存至库存中
 						//T创建产品拒收复送记录，包括路单日期、奶站、送奶员、产品、拒收复送数量，（应用要货标识和部分应用要货标识、应用要货数量）
 						if("60".equals(entry.getReason()) && entry.getQty().subtract(entry.getConfirmQty()).compareTo(BigDecimal.ZERO)!=0){
-							TMstRefuseResend resend = new TMstRefuseResend();
-							resend.setResendOrderNo(PrimaryKeyUtils.generateUpperUuidKey());
-							resend.setBranchNo(user.getBranchNo());
-							resend.setEmpNo(order.getDispEmpNo());
-							resend.setQty(entry.getQty().subtract(entry.getConfirmQty()));
-							resend.setRemainQty(entry.getQty().subtract(entry.getConfirmQty()));
-							resend.setConfirmQty(BigDecimal.ZERO);
-							resend.setInsideQty(BigDecimal.ZERO);
-							resend.setMatnr(entry.getMatnr());
-							resend.setStatus("10");
-							resend.setSalesOrg(user.getSalesOrg());
-							resend.setDispDate(entry.getOrderDate());
-							resend.setDispOrderNo(entry.getOrderNo());
-							resendMapper.addTMstRefuseResend(resend);
+							TMstRefuseResend oldResend = resendMapper.selectRefuseResendByDispEmpAndMatnr(dispOrderNo,order.getDispEmpNo(),entry.getConfirmMatnr());
+							if(oldResend!=null){
+								oldResend.setQty(oldResend.getQty().add(entry.getQty().subtract(entry.getConfirmQty())));
+								oldResend.setRemainQty(oldResend.getRemainQty().add(entry.getQty().subtract(entry.getConfirmQty())));
+								resendMapper.uptRefuseResend(oldResend);
+							}else{
+								TMstRefuseResend resend = new TMstRefuseResend();
+								resend.setResendOrderNo(PrimaryKeyUtils.generateUpperUuidKey());
+								resend.setBranchNo(user.getBranchNo());
+								resend.setEmpNo(order.getDispEmpNo());
+								resend.setQty(entry.getQty().subtract(entry.getConfirmQty()));
+								resend.setRemainQty(entry.getQty().subtract(entry.getConfirmQty()));
+								resend.setConfirmQty(BigDecimal.ZERO);
+								resend.setInsideQty(BigDecimal.ZERO);
+								resend.setMatnr(entry.getMatnr());
+								resend.setStatus("10");
+								resend.setSalesOrg(user.getSalesOrg());
+								resend.setDispDate(entry.getOrderDate());
+								resend.setDispOrderNo(entry.getOrderNo());
+								resendMapper.addTMstRefuseResend(resend);
+							}
+
 							tSsmStockService.updateTmpStock(order.getBranchNo(), entry.getConfirmMatnr(), entry.getConfirmQty().subtract(entry.getQty()), user.getSalesOrg());
 						}
 					}
@@ -915,10 +923,12 @@ public class DeliverMilkServiceImpl extends BaseService implements DeliverMilkSe
 		}else{
 			tSsmStockService.updateStock(order.getBranchNo(), newItem.getConfirmMatnr(), newItem.getConfirmQty(), order.getSalesOrg());
 		}
+
 	//修改拒收复送
 		if("60".equals(orgItem.getReason())){
-				TMstRefuseResend oldResend = resendMapper.findByBranchEmpSendDateAndMatnr(order.getBranchNo(),dispOrder.getDispEmpNo(),orgItem.getOrderDate(),orgItem.getMatnr());
-				//如果 将原来的原因60(产生了拒收复送) 和 更改后的原因也是60，但是更改后变化的数量(减少的拒收复送量) 小于剩余的拒收复送量不能修改
+			TMstRefuseResend oldResend = resendMapper.selectRefuseResendByDispEmpAndMatnr(dispOrder.getOrderNo(),dispOrder.getDispEmpNo(),orgItem.getConfirmMatnr());
+			//TMstRefuseResend oldResend = resendMapper.findByBranchEmpSendDateAndMatnr(order.getBranchNo(),dispOrder.getDispEmpNo(),orgItem.getOrderDate(),orgItem.getMatnr());
+			//如果 将原来的原因60(产生了拒收复送) 和 更改后的原因也是60，但是更改后变化的数量(减少的拒收复送量) 小于剩余的拒收复送量不能修改
 			if(oldResend!=null){
 				if("60".equals(newItem.getReason())){
 					BigDecimal newResendQty = newItem.getQty().subtract(newItem.getConfirmQty());
@@ -932,42 +942,58 @@ public class DeliverMilkServiceImpl extends BaseService implements DeliverMilkSe
 					oldResend.setQty(oldResend.getQty().add(changeQty));
 					oldResend.setRemainQty(oldResend.getRemainQty().add(changeQty));
 					resendMapper.uptRefuseResend(oldResend);
+					tSsmStockService.updateTmpStock(order.getBranchNo(),orgItem.getConfirmMatnr(),oldResendQty.subtract(newResendQty),order.getSalesOrg());
 				}else{
-					if(oldResend.getConfirmQty()!=null && oldResend.getConfirmQty().compareTo(BigDecimal.ZERO)==1){
-						throw  new ServiceException(MessageCode.LOGIC_ERROR,"不能修改，该拒收复送产品，已经做为要货应用");
-					}
-					if(oldResend.getInsideQty()!=null && oldResend.getInsideQty().compareTo(BigDecimal.ZERO)==1){
-						throw  new ServiceException(MessageCode.LOGIC_ERROR,"不能修改，该拒收复送产品，已经做为内部销售订单应用");
+					//将这部分删除
+					BigDecimal changeQty = orgItem.getQty().subtract(orgItem.getConfirmQty());
+					//如果 result =-1 要减少的量 < 剩余量  result =0 要减少的量 = 剩余量  result =1 要减少的量 > 剩余量
+					int result = changeQty.subtract(oldResend.getRemainQty()).compareTo(BigDecimal.ZERO);
+					if(result==1){
+						throw  new ServiceException(MessageCode.LOGIC_ERROR,"不能修改，该记录剩余的数量为"+oldResend.getRemainQty().intValue()+",小于减少量"+changeQty.intValue());
+					}else if(result==0 && oldResend.getConfirmQty().compareTo(BigDecimal.ZERO)==0 && oldResend.getInsideQty().compareTo(BigDecimal.ZERO)==0){
+							//如果刚好相等  并且没有被应用过 删除
+							TMstRefuseResend resend = new TMstRefuseResend();
+							resend.setBranchNo(order.getBranchNo());
+							resend.setMatnr(orgItem.getMatnr());
+							resend.setEmpNo(dispOrder.getDispEmpNo());
+							resend.setDispDate(orgItem.getOrderDate());
+							resend.setDispOrderNo(orgItem.getOrderNo());
+							resendMapper.delRefuseResendByDispAndMatnr(resend);
+					}else{
+						//修改
+						oldResend.setQty(oldResend.getQty().subtract(changeQty));
+						oldResend.setRemainQty(oldResend.getRemainQty().subtract(changeQty));
+						resendMapper.uptRefuseResend(oldResend);
 					}
 					//将拒收复送的也改回
-					TMstRefuseResend resend = new TMstRefuseResend();
-					resend.setBranchNo(order.getBranchNo());
-					resend.setMatnr(orgItem.getMatnr());
-					resend.setEmpNo(dispOrder.getDispEmpNo());
-					resend.setDispDate(orgItem.getOrderDate());
-					resend.setDispOrderNo(orgItem.getOrderNo());
-					resendMapper.delRefuseResendByDispAndMatnr(resend);
 					tSsmStockService.updateTmpStock(order.getBranchNo(),orgItem.getConfirmMatnr(),orgItem.getQty().subtract(orgItem.getConfirmQty()),order.getSalesOrg());
 				}
 			}
 
 		}else {
 			if ("60".equals(newItem.getReason())) {
-				//产生拒收复送
-				TMstRefuseResend resend = new TMstRefuseResend();
-				resend.setResendOrderNo(PrimaryKeyUtils.generateUpperUuidKey());
-				resend.setBranchNo(user.getBranchNo());
-				resend.setEmpNo(dispOrder.getDispEmpNo());
-				resend.setQty(newItem.getQty().subtract(newItem.getConfirmQty()));
-				resend.setRemainQty(newItem.getQty().subtract(newItem.getConfirmQty()));
-				resend.setConfirmQty(BigDecimal.ZERO);
-				resend.setInsideQty(BigDecimal.ZERO);
-				resend.setMatnr(newItem.getMatnr());
-				resend.setStatus("10");
-				resend.setSalesOrg(user.getSalesOrg());
-				resend.setDispDate(newItem.getOrderDate());
-				resend.setDispOrderNo(newItem.getOrderNo());
-				resendMapper.addTMstRefuseResend(resend);
+				TMstRefuseResend oldResend = resendMapper.selectRefuseResendByDispEmpAndMatnr(dispOrder.getOrderNo(),dispOrder.getDispEmpNo(),newItem.getConfirmMatnr());
+				if(oldResend != null){
+					oldResend.setRemainQty(oldResend.getRemainQty().add(newItem.getQty().subtract(newItem.getConfirmQty())));
+					oldResend.setQty(oldResend.getQty().add(newItem.getQty().subtract(newItem.getConfirmQty())));
+					resendMapper.uptRefuseResend(oldResend);
+				}else{
+					//产生拒收复送
+					TMstRefuseResend resend = new TMstRefuseResend();
+					resend.setResendOrderNo(PrimaryKeyUtils.generateUpperUuidKey());
+					resend.setBranchNo(user.getBranchNo());
+					resend.setEmpNo(dispOrder.getDispEmpNo());
+					resend.setQty(newItem.getQty().subtract(newItem.getConfirmQty()));
+					resend.setRemainQty(newItem.getQty().subtract(newItem.getConfirmQty()));
+					resend.setConfirmQty(BigDecimal.ZERO);
+					resend.setInsideQty(BigDecimal.ZERO);
+					resend.setMatnr(newItem.getMatnr());
+					resend.setStatus("10");
+					resend.setSalesOrg(user.getSalesOrg());
+					resend.setDispDate(newItem.getOrderDate());
+					resend.setDispOrderNo(newItem.getOrderNo());
+					resendMapper.addTMstRefuseResend(resend);
+				}
 				tSsmStockService.updateTmpStock(order.getBranchNo(), orgItem.getConfirmMatnr(), newItem.getConfirmQty().subtract(newItem.getQty()), order.getSalesOrg());
 			}
 		}
