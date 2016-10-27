@@ -316,7 +316,7 @@ public class DeliverMilkServiceImpl extends BaseService implements DeliverMilkSe
 					TMstRefuseResendItem ritem = new TMstRefuseResendItem();
 					ritem.setResendOrderNo(refuseResend.getResendOrderNo());
 					ritem.setOrderNo(insOrderNo);//内部销售单号
-					ritem.setCreateBy(user.getEmpNo());
+					ritem.setCreateBy(user.getLoginName());
 					ritem.setCreateAt(date);
 					ritem.setQty(new BigDecimal(model.getQty()));
 					ritem.setType("20");//内部销售单类型为20

@@ -73,6 +73,18 @@ public class BranchServiceImpl extends BaseService implements BranchService {
 		}
 		return branchMapper.uptValidBranch(tMdBranch);
 	}
+	@Override
+	public int uptTargetBranch(TMdBranch tMdBranch){
+		if(StringUtils.isEmpty(tMdBranch.getBranchNo())){
+			throw new ServiceException(MessageCode.LOGIC_ERROR, "奶站编号不能为空!");
+		}
+		TMdBranch branch = this.branchMapper.selectBranchByNo(tMdBranch.getBranchNo());
+		if(branch == null){
+			throw new ServiceException(MessageCode.LOGIC_ERROR, "该奶站编号对应的奶站信息不存在!");
+		}
+		return branchMapper.uptTargetBranch(tMdBranch);
+	}
+
 
 	@Override
 	public List<TMdBranch> findBranchListByOrg() {
