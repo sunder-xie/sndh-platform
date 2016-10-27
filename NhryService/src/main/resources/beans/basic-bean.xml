@@ -89,7 +89,6 @@
 		<property name="smsSendService" ref="smsSendService"></property>
 		<property name="tDispOrderMapper" ref="tDispOrderMapper"></property>
 		<property name="addressMapper" ref="addressMapper"></property>
-		<property name="operationLogMapper" ref="operationLogMapper"/>
 	</bean>
 	<bean id="tPromotionMapper" class="com.nhry.data.order.impl.TPromotionMapperImpl">
 		<property name="sqlSessionTemplate" ref="dynamicSqlSessionTemplate"></property>

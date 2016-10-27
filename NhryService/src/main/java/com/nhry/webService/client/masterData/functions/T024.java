@@ -23,7 +23,7 @@ public class T024 implements org.apache.axis2.databinding.ADBBean {
     /**
      * field for MANDT
      */
-    protected com.nhry.webService.client.masterData.functions.MANDT_type9 localMANDT;
+    protected MANDT_type9 localMANDT;
 
     /*  This tracker boolean wil be used to detect whether the user called the set method
      *   for this attribute. It will be used to determine whether to include this field
@@ -34,7 +34,7 @@ public class T024 implements org.apache.axis2.databinding.ADBBean {
     /**
      * field for EKGRP
      */
-    protected com.nhry.webService.client.masterData.functions.EKGRP_type1 localEKGRP;
+    protected EKGRP_type1 localEKGRP;
 
     /*  This tracker boolean wil be used to detect whether the user called the set method
      *   for this attribute. It will be used to determine whether to include this field
@@ -45,7 +45,7 @@ public class T024 implements org.apache.axis2.databinding.ADBBean {
     /**
      * field for EKNAM
      */
-    protected com.nhry.webService.client.masterData.functions.EKNAM_type1 localEKNAM;
+    protected EKNAM_type1 localEKNAM;
 
     /*  This tracker boolean wil be used to detect whether the user called the set method
      *   for this attribute. It will be used to determine whether to include this field
@@ -56,7 +56,7 @@ public class T024 implements org.apache.axis2.databinding.ADBBean {
     /**
      * field for EKTEL
      */
-    protected com.nhry.webService.client.masterData.functions.EKTEL_type1 localEKTEL;
+    protected EKTEL_type1 localEKTEL;
 
     /*  This tracker boolean wil be used to detect whether the user called the set method
      *   for this attribute. It will be used to determine whether to include this field
@@ -67,7 +67,7 @@ public class T024 implements org.apache.axis2.databinding.ADBBean {
     /**
      * field for LDEST
      */
-    protected com.nhry.webService.client.masterData.functions.LDEST_type1 localLDEST;
+    protected LDEST_type1 localLDEST;
 
     /*  This tracker boolean wil be used to detect whether the user called the set method
      *   for this attribute. It will be used to determine whether to include this field
@@ -78,7 +78,7 @@ public class T024 implements org.apache.axis2.databinding.ADBBean {
     /**
      * field for TELFX
      */
-    protected com.nhry.webService.client.masterData.functions.TELFX_type1 localTELFX;
+    protected TELFX_type1 localTELFX;
 
     /*  This tracker boolean wil be used to detect whether the user called the set method
      *   for this attribute. It will be used to determine whether to include this field
@@ -89,7 +89,7 @@ public class T024 implements org.apache.axis2.databinding.ADBBean {
     /**
      * field for TEL_NUMBER
      */
-    protected com.nhry.webService.client.masterData.functions.TEL_NUMBER_type1 localTEL_NUMBER;
+    protected TEL_NUMBER_type1 localTEL_NUMBER;
 
     /*  This tracker boolean wil be used to detect whether the user called the set method
      *   for this attribute. It will be used to determine whether to include this field
@@ -100,7 +100,7 @@ public class T024 implements org.apache.axis2.databinding.ADBBean {
     /**
      * field for TEL_EXTENS
      */
-    protected com.nhry.webService.client.masterData.functions.TEL_EXTENS_type1 localTEL_EXTENS;
+    protected TEL_EXTENS_type1 localTEL_EXTENS;
 
     /*  This tracker boolean wil be used to detect whether the user called the set method
      *   for this attribute. It will be used to determine whether to include this field
@@ -111,7 +111,7 @@ public class T024 implements org.apache.axis2.databinding.ADBBean {
     /**
      * field for SMTP_ADDR
      */
-    protected com.nhry.webService.client.masterData.functions.SMTP_ADDR_type1 localSMTP_ADDR;
+    protected SMTP_ADDR_type1 localSMTP_ADDR;
 
     /*  This tracker boolean wil be used to detect whether the user called the set method
      *   for this attribute. It will be used to determine whether to include this field
@@ -127,7 +127,7 @@ public class T024 implements org.apache.axis2.databinding.ADBBean {
      * Auto generated getter method
      * @return com.nhry.webService.client.masterData.functions.MANDT_type9
      */
-    public com.nhry.webService.client.masterData.functions.MANDT_type9 getMANDT() {
+    public MANDT_type9 getMANDT() {
         return localMANDT;
     }
 
@@ -136,7 +136,7 @@ public class T024 implements org.apache.axis2.databinding.ADBBean {
      * @param param MANDT
      */
     public void setMANDT(
-        com.nhry.webService.client.masterData.functions.MANDT_type9 param) {
+        MANDT_type9 param) {
         localMANDTTracker = param != null;
 
         this.localMANDT = param;
@@ -150,7 +150,7 @@ public class T024 implements org.apache.axis2.databinding.ADBBean {
      * Auto generated getter method
      * @return com.nhry.webService.client.masterData.functions.EKGRP_type1
      */
-    public com.nhry.webService.client.masterData.functions.EKGRP_type1 getEKGRP() {
+    public EKGRP_type1 getEKGRP() {
         return localEKGRP;
     }
 
@@ -159,7 +159,7 @@ public class T024 implements org.apache.axis2.databinding.ADBBean {
      * @param param EKGRP
      */
     public void setEKGRP(
-        com.nhry.webService.client.masterData.functions.EKGRP_type1 param) {
+        EKGRP_type1 param) {
         localEKGRPTracker = param != null;
 
         this.localEKGRP = param;
@@ -173,7 +173,7 @@ public class T024 implements org.apache.axis2.databinding.ADBBean {
      * Auto generated getter method
      * @return com.nhry.webService.client.masterData.functions.EKNAM_type1
      */
-    public com.nhry.webService.client.masterData.functions.EKNAM_type1 getEKNAM() {
+    public EKNAM_type1 getEKNAM() {
         return localEKNAM;
     }
 
@@ -182,7 +182,7 @@ public class T024 implements org.apache.axis2.databinding.ADBBean {
      * @param param EKNAM
      */
     public void setEKNAM(
-        com.nhry.webService.client.masterData.functions.EKNAM_type1 param) {
+        EKNAM_type1 param) {
         localEKNAMTracker = param != null;
 
         this.localEKNAM = param;
@@ -196,7 +196,7 @@ public class T024 implements org.apache.axis2.databinding.ADBBean {
      * Auto generated getter method
      * @return com.nhry.webService.client.masterData.functions.EKTEL_type1
      */
-    public com.nhry.webService.client.masterData.functions.EKTEL_type1 getEKTEL() {
+    public EKTEL_type1 getEKTEL() {
         return localEKTEL;
     }
 
@@ -205,7 +205,7 @@ public class T024 implements org.apache.axis2.databinding.ADBBean {
      * @param param EKTEL
      */
     public void setEKTEL(
-        com.nhry.webService.client.masterData.functions.EKTEL_type1 param) {
+        EKTEL_type1 param) {
         localEKTELTracker = param != null;
 
         this.localEKTEL = param;
@@ -219,7 +219,7 @@ public class T024 implements org.apache.axis2.databinding.ADBBean {
      * Auto generated getter method
      * @return com.nhry.webService.client.masterData.functions.LDEST_type1
      */
-    public com.nhry.webService.client.masterData.functions.LDEST_type1 getLDEST() {
+    public LDEST_type1 getLDEST() {
         return localLDEST;
     }
 
@@ -228,7 +228,7 @@ public class T024 implements org.apache.axis2.databinding.ADBBean {
      * @param param LDEST
      */
     public void setLDEST(
-        com.nhry.webService.client.masterData.functions.LDEST_type1 param) {
+        LDEST_type1 param) {
         localLDESTTracker = param != null;
 
         this.localLDEST = param;
@@ -242,7 +242,7 @@ public class T024 implements org.apache.axis2.databinding.ADBBean {
      * Auto generated getter method
      * @return com.nhry.webService.client.masterData.functions.TELFX_type1
      */
-    public com.nhry.webService.client.masterData.functions.TELFX_type1 getTELFX() {
+    public TELFX_type1 getTELFX() {
         return localTELFX;
     }
 
@@ -251,7 +251,7 @@ public class T024 implements org.apache.axis2.databinding.ADBBean {
      * @param param TELFX
      */
     public void setTELFX(
-        com.nhry.webService.client.masterData.functions.TELFX_type1 param) {
+        TELFX_type1 param) {
         localTELFXTracker = param != null;
 
         this.localTELFX = param;
@@ -265,7 +265,7 @@ public class T024 implements org.apache.axis2.databinding.ADBBean {
      * Auto generated getter method
      * @return com.nhry.webService.client.masterData.functions.TEL_NUMBER_type1
      */
-    public com.nhry.webService.client.masterData.functions.TEL_NUMBER_type1 getTEL_NUMBER() {
+    public TEL_NUMBER_type1 getTEL_NUMBER() {
         return localTEL_NUMBER;
     }
 
@@ -274,7 +274,7 @@ public class T024 implements org.apache.axis2.databinding.ADBBean {
      * @param param TEL_NUMBER
      */
     public void setTEL_NUMBER(
-        com.nhry.webService.client.masterData.functions.TEL_NUMBER_type1 param) {
+        TEL_NUMBER_type1 param) {
         localTEL_NUMBERTracker = param != null;
 
         this.localTEL_NUMBER = param;
@@ -288,7 +288,7 @@ public class T024 implements org.apache.axis2.databinding.ADBBean {
      * Auto generated getter method
      * @return com.nhry.webService.client.masterData.functions.TEL_EXTENS_type1
      */
-    public com.nhry.webService.client.masterData.functions.TEL_EXTENS_type1 getTEL_EXTENS() {
+    public TEL_EXTENS_type1 getTEL_EXTENS() {
         return localTEL_EXTENS;
     }
 
@@ -297,7 +297,7 @@ public class T024 implements org.apache.axis2.databinding.ADBBean {
      * @param param TEL_EXTENS
      */
     public void setTEL_EXTENS(
-        com.nhry.webService.client.masterData.functions.TEL_EXTENS_type1 param) {
+        TEL_EXTENS_type1 param) {
         localTEL_EXTENSTracker = param != null;
 
         this.localTEL_EXTENS = param;
@@ -311,7 +311,7 @@ public class T024 implements org.apache.axis2.databinding.ADBBean {
      * Auto generated getter method
      * @return com.nhry.webService.client.masterData.functions.SMTP_ADDR_type1
      */
-    public com.nhry.webService.client.masterData.functions.SMTP_ADDR_type1 getSMTP_ADDR() {
+    public SMTP_ADDR_type1 getSMTP_ADDR() {
         return localSMTP_ADDR;
     }
 
@@ -320,7 +320,7 @@ public class T024 implements org.apache.axis2.databinding.ADBBean {
      * @param param SMTP_ADDR
      */
     public void setSMTP_ADDR(
-        com.nhry.webService.client.masterData.functions.SMTP_ADDR_type1 param) {
+        SMTP_ADDR_type1 param) {
         localSMTP_ADDRTracker = param != null;
 
         this.localSMTP_ADDR = param;
@@ -351,8 +351,8 @@ public class T024 implements org.apache.axis2.databinding.ADBBean {
         javax.xml.stream.XMLStreamWriter xmlWriter, boolean serializeType)
         throws javax.xml.stream.XMLStreamException,
             org.apache.axis2.databinding.ADBException {
-        java.lang.String prefix = null;
-        java.lang.String namespace = null;
+        String prefix = null;
+        String namespace = null;
 
         prefix = parentQName.getPrefix();
         namespace = parentQName.getNamespaceURI();
@@ -360,7 +360,7 @@ public class T024 implements org.apache.axis2.databinding.ADBBean {
             xmlWriter);
 
         if (serializeType) {
-            java.lang.String namespacePrefix = registerPrefix(xmlWriter,
+            String namespacePrefix = registerPrefix(xmlWriter,
                     "urn:sap-com:document:sap:rfc:functions");
 
             if ((namespacePrefix != null) &&
@@ -468,7 +468,7 @@ public class T024 implements org.apache.axis2.databinding.ADBBean {
         xmlWriter.writeEndElement();
     }
 
-    private static java.lang.String generatePrefix(java.lang.String namespace) {
+    private static String generatePrefix(String namespace) {
         if (namespace.equals("urn:sap-com:document:sap:rfc:functions")) {
             return "ns1";
         }
@@ -479,11 +479,11 @@ public class T024 implements org.apache.axis2.databinding.ADBBean {
     /**
      * Utility method to write an element start tag.
      */
-    private void writeStartElement(java.lang.String prefix,
-        java.lang.String namespace, java.lang.String localPart,
+    private void writeStartElement(String prefix,
+        String namespace, String localPart,
         javax.xml.stream.XMLStreamWriter xmlWriter)
         throws javax.xml.stream.XMLStreamException {
-        java.lang.String writerPrefix = xmlWriter.getPrefix(namespace);
+        String writerPrefix = xmlWriter.getPrefix(namespace);
 
         if (writerPrefix != null) {
             xmlWriter.writeStartElement(writerPrefix, localPart, namespace);
@@ -503,11 +503,11 @@ public class T024 implements org.apache.axis2.databinding.ADBBean {
     /**
      * Util method to write an attribute with the ns prefix
      */
-    private void writeAttribute(java.lang.String prefix,
-        java.lang.String namespace, java.lang.String attName,
-        java.lang.String attValue, javax.xml.stream.XMLStreamWriter xmlWriter)
+    private void writeAttribute(String prefix,
+        String namespace, String attName,
+        String attValue, javax.xml.stream.XMLStreamWriter xmlWriter)
         throws javax.xml.stream.XMLStreamException {
-        java.lang.String writerPrefix = xmlWriter.getPrefix(namespace);
+        String writerPrefix = xmlWriter.getPrefix(namespace);
 
         if (writerPrefix != null) {
             xmlWriter.writeAttribute(writerPrefix, namespace, attName, attValue);
@@ -521,8 +521,8 @@ public class T024 implements org.apache.axis2.databinding.ADBBean {
     /**
      * Util method to write an attribute without the ns prefix
      */
-    private void writeAttribute(java.lang.String namespace,
-        java.lang.String attName, java.lang.String attValue,
+    private void writeAttribute(String namespace,
+        String attName, String attValue,
         javax.xml.stream.XMLStreamWriter xmlWriter)
         throws javax.xml.stream.XMLStreamException {
         if (namespace.equals("")) {
@@ -536,18 +536,18 @@ public class T024 implements org.apache.axis2.databinding.ADBBean {
     /**
      * Util method to write an attribute without the ns prefix
      */
-    private void writeQNameAttribute(java.lang.String namespace,
-        java.lang.String attName, javax.xml.namespace.QName qname,
+    private void writeQNameAttribute(String namespace,
+        String attName, javax.xml.namespace.QName qname,
         javax.xml.stream.XMLStreamWriter xmlWriter)
         throws javax.xml.stream.XMLStreamException {
-        java.lang.String attributeNamespace = qname.getNamespaceURI();
-        java.lang.String attributePrefix = xmlWriter.getPrefix(attributeNamespace);
+        String attributeNamespace = qname.getNamespaceURI();
+        String attributePrefix = xmlWriter.getPrefix(attributeNamespace);
 
         if (attributePrefix == null) {
             attributePrefix = registerPrefix(xmlWriter, attributeNamespace);
         }
 
-        java.lang.String attributeValue;
+        String attributeValue;
 
         if (attributePrefix.trim().length() > 0) {
             attributeValue = attributePrefix + ":" + qname.getLocalPart();
@@ -570,10 +570,10 @@ public class T024 implements org.apache.axis2.databinding.ADBBean {
     private void writeQName(javax.xml.namespace.QName qname,
         javax.xml.stream.XMLStreamWriter xmlWriter)
         throws javax.xml.stream.XMLStreamException {
-        java.lang.String namespaceURI = qname.getNamespaceURI();
+        String namespaceURI = qname.getNamespaceURI();
 
         if (namespaceURI != null) {
-            java.lang.String prefix = xmlWriter.getPrefix(namespaceURI);
+            String prefix = xmlWriter.getPrefix(namespaceURI);
 
             if (prefix == null) {
                 prefix = generatePrefix(namespaceURI);
@@ -602,9 +602,9 @@ public class T024 implements org.apache.axis2.databinding.ADBBean {
         if (qnames != null) {
             // we have to store this data until last moment since it is not possible to write any
             // namespace data after writing the charactor data
-            java.lang.StringBuffer stringToWrite = new java.lang.StringBuffer();
-            java.lang.String namespaceURI = null;
-            java.lang.String prefix = null;
+            StringBuffer stringToWrite = new StringBuffer();
+            String namespaceURI = null;
+            String prefix = null;
 
             for (int i = 0; i < qnames.length; i++) {
                 if (i > 0) {
@@ -643,10 +643,10 @@ public class T024 implements org.apache.axis2.databinding.ADBBean {
     /**
      * Register a namespace prefix
      */
-    private java.lang.String registerPrefix(
-        javax.xml.stream.XMLStreamWriter xmlWriter, java.lang.String namespace)
+    private String registerPrefix(
+        javax.xml.stream.XMLStreamWriter xmlWriter, String namespace)
         throws javax.xml.stream.XMLStreamException {
-        java.lang.String prefix = xmlWriter.getPrefix(namespace);
+        String prefix = xmlWriter.getPrefix(namespace);
 
         if (prefix == null) {
             prefix = generatePrefix(namespace);
@@ -654,7 +654,7 @@ public class T024 implements org.apache.axis2.databinding.ADBBean {
             javax.xml.namespace.NamespaceContext nsContext = xmlWriter.getNamespaceContext();
 
             while (true) {
-                java.lang.String uri = nsContext.getNamespaceURI(prefix);
+                String uri = nsContext.getNamespaceURI(prefix);
 
                 if ((uri == null) || (uri.length() == 0)) {
                     break;
@@ -684,14 +684,14 @@ public class T024 implements org.apache.axis2.databinding.ADBBean {
          *                If this object is a complex type, the reader is positioned at the end element of its outer element
          */
         public static T024 parse(javax.xml.stream.XMLStreamReader reader)
-            throws java.lang.Exception {
+            throws Exception {
             T024 object = new T024();
 
             int event;
             javax.xml.namespace.QName currentQName = null;
-            java.lang.String nillableValue = null;
-            java.lang.String prefix = "";
-            java.lang.String namespaceuri = "";
+            String nillableValue = null;
+            String prefix = "";
+            String namespaceuri = "";
 
             try {
                 while (!reader.isStartElement() && !reader.isEndElement())
@@ -701,11 +701,11 @@ public class T024 implements org.apache.axis2.databinding.ADBBean {
 
                 if (reader.getAttributeValue(
                             "http://www.w3.org/2001/XMLSchema-instance", "type") != null) {
-                    java.lang.String fullTypeName = reader.getAttributeValue("http://www.w3.org/2001/XMLSchema-instance",
+                    String fullTypeName = reader.getAttributeValue("http://www.w3.org/2001/XMLSchema-instance",
                             "type");
 
                     if (fullTypeName != null) {
-                        java.lang.String nsPrefix = null;
+                        String nsPrefix = null;
 
                         if (fullTypeName.indexOf(":") > -1) {
                             nsPrefix = fullTypeName.substring(0,
@@ -714,15 +714,15 @@ public class T024 implements org.apache.axis2.databinding.ADBBean {
 
                         nsPrefix = (nsPrefix == null) ? "" : nsPrefix;
 
-                        java.lang.String type = fullTypeName.substring(fullTypeName.indexOf(
+                        String type = fullTypeName.substring(fullTypeName.indexOf(
                                     ":") + 1);
 
                         if (!"T024".equals(type)) {
                             //find namespace for the prefix
-                            java.lang.String nsUri = reader.getNamespaceContext()
+                            String nsUri = reader.getNamespaceContext()
                                                            .getNamespaceURI(nsPrefix);
 
-                            return (T024) com.nhry.webService.client.masterData.functions.ExtensionMapper.getTypeObject(nsUri,
+                            return (T024) ExtensionMapper.getTypeObject(nsUri,
                                 type, reader);
                         }
                     }
@@ -742,7 +742,7 @@ public class T024 implements org.apache.axis2.databinding.ADBBean {
                             reader.getName())) ||
                         new javax.xml.namespace.QName("", "MANDT").equals(
                             reader.getName())) {
-                    object.setMANDT(com.nhry.webService.client.masterData.functions.MANDT_type9.Factory.parse(
+                    object.setMANDT(MANDT_type9.Factory.parse(
                             reader));
 
                     reader.next();
@@ -759,7 +759,7 @@ public class T024 implements org.apache.axis2.databinding.ADBBean {
                             reader.getName())) ||
                         new javax.xml.namespace.QName("", "EKGRP").equals(
                             reader.getName())) {
-                    object.setEKGRP(com.nhry.webService.client.masterData.functions.EKGRP_type1.Factory.parse(
+                    object.setEKGRP(EKGRP_type1.Factory.parse(
                             reader));
 
                     reader.next();
@@ -776,7 +776,7 @@ public class T024 implements org.apache.axis2.databinding.ADBBean {
                             reader.getName())) ||
                         new javax.xml.namespace.QName("", "EKNAM").equals(
                             reader.getName())) {
-                    object.setEKNAM(com.nhry.webService.client.masterData.functions.EKNAM_type1.Factory.parse(
+                    object.setEKNAM(EKNAM_type1.Factory.parse(
                             reader));
 
                     reader.next();
@@ -793,7 +793,7 @@ public class T024 implements org.apache.axis2.databinding.ADBBean {
                             reader.getName())) ||
                         new javax.xml.namespace.QName("", "EKTEL").equals(
                             reader.getName())) {
-                    object.setEKTEL(com.nhry.webService.client.masterData.functions.EKTEL_type1.Factory.parse(
+                    object.setEKTEL(EKTEL_type1.Factory.parse(
                             reader));
 
                     reader.next();
@@ -810,7 +810,7 @@ public class T024 implements org.apache.axis2.databinding.ADBBean {
                             reader.getName())) ||
                         new javax.xml.namespace.QName("", "LDEST").equals(
                             reader.getName())) {
-                    object.setLDEST(com.nhry.webService.client.masterData.functions.LDEST_type1.Factory.parse(
+                    object.setLDEST(LDEST_type1.Factory.parse(
                             reader));
 
                     reader.next();
@@ -827,7 +827,7 @@ public class T024 implements org.apache.axis2.databinding.ADBBean {
                             reader.getName())) ||
                         new javax.xml.namespace.QName("", "TELFX").equals(
                             reader.getName())) {
-                    object.setTELFX(com.nhry.webService.client.masterData.functions.TELFX_type1.Factory.parse(
+                    object.setTELFX(TELFX_type1.Factory.parse(
                             reader));
 
                     reader.next();
@@ -844,7 +844,7 @@ public class T024 implements org.apache.axis2.databinding.ADBBean {
                             reader.getName())) ||
                         new javax.xml.namespace.QName("", "TEL_NUMBER").equals(
                             reader.getName())) {
-                    object.setTEL_NUMBER(com.nhry.webService.client.masterData.functions.TEL_NUMBER_type1.Factory.parse(
+                    object.setTEL_NUMBER(TEL_NUMBER_type1.Factory.parse(
                             reader));
 
                     reader.next();
@@ -861,7 +861,7 @@ public class T024 implements org.apache.axis2.databinding.ADBBean {
                             reader.getName())) ||
                         new javax.xml.namespace.QName("", "TEL_EXTENS").equals(
                             reader.getName())) {
-                    object.setTEL_EXTENS(com.nhry.webService.client.masterData.functions.TEL_EXTENS_type1.Factory.parse(
+                    object.setTEL_EXTENS(TEL_EXTENS_type1.Factory.parse(
                             reader));
 
                     reader.next();
@@ -878,7 +878,7 @@ public class T024 implements org.apache.axis2.databinding.ADBBean {
                             reader.getName())) ||
                         new javax.xml.namespace.QName("", "SMTP_ADDR").equals(
                             reader.getName())) {
-                    object.setSMTP_ADDR(com.nhry.webService.client.masterData.functions.SMTP_ADDR_type1.Factory.parse(
+                    object.setSMTP_ADDR(SMTP_ADDR_type1.Factory.parse(
                             reader));
 
                     reader.next();
@@ -896,7 +896,7 @@ public class T024 implements org.apache.axis2.databinding.ADBBean {
                         "Unexpected subelement " + reader.getName());
                 }
             } catch (javax.xml.stream.XMLStreamException e) {
-                throw new java.lang.Exception(e);
+                throw new Exception(e);
             }
 
             return object;

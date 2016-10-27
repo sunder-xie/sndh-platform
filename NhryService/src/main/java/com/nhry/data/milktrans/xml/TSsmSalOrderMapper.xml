@@ -26,12 +26,14 @@
         <result column="LAST_MODIFIED" property="lastModified" jdbcType="TIMESTAMP"/>
         <result column="LAST_MODIFIED_BY" property="lastModifiedBy" jdbcType="VARCHAR"/>
         <result column="LAST_MODIFIED_BY_TXT" property="lastModifiedByTxt" jdbcType="VARCHAR"/>
+        <result column="PREORDER_SOURCE" property="preorderSource" jdbcType="VARCHAR"/>
+        <result column="ONLINE_CODE" property="onlineCode" jdbcType="VARCHAR"/>
     </resultMap>
     <sql id="Base_Column_List">
         ORDER_NO,ORDER_DATE,BRANCH_NO,REQUIRED_DATE,VOUCHER_NO,STATUS,MEMO_TXT,
         SALES_ORG,DEALER_NO,BRANCH_GROUP,PROM_NO,
         CREATE_AT,CREATE_BY,CREATE_BY_TXT,
-        LAST_MODIFIED,LAST_MODIFIED_BY,LAST_MODIFIED_BY_TXT
+        LAST_MODIFIED,LAST_MODIFIED_BY,LAST_MODIFIED_BY_TXT,PREORDER_SOURCE,ONLINE_CODE
     </sql>
 
     <update id="uptVouCherNoByOrderNo" parameterType="java.util.Map">
@@ -97,6 +99,12 @@
             <if test="lastModifiedByTxt != null">
                 LAST_MODIFIED_BY_TXT,
             </if>
+            <if test="preorderSource != null">
+                PREORDER_SOURCE,
+            </if>
+            <if test="onlineCode != null">
+                ONLINE_CODE,
+            </if>
         </trim>
         <trim prefix="values (" suffix=")" suffixOverrides=",">
             <if test="orderNo != null">
@@ -153,6 +161,12 @@
             </if>
             <if test="lastModifiedByTxt != null">
                 #{lastModifiedByTxt,jdbcType=VARCHAR},
+            </if>
+            <if test="preorderSource != null">
+                #{preorderSource,jdbcType=VARCHAR},
+            </if>
+            <if test="onlineCode != null">
+                #{onlineCode,jdbcType=VARCHAR},
             </if>
         </trim>
     </insert>

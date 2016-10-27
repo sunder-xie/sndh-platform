@@ -23,7 +23,7 @@ public class ZTMM00037 implements org.apache.axis2.databinding.ADBBean {
     /**
      * field for MANDT
      */
-    protected com.nhry.webService.client.masterData.functions.MANDT_type3 localMANDT;
+    protected MANDT_type3 localMANDT;
 
     /*  This tracker boolean wil be used to detect whether the user called the set method
      *   for this attribute. It will be used to determine whether to include this field
@@ -34,7 +34,7 @@ public class ZTMM00037 implements org.apache.axis2.databinding.ADBBean {
     /**
      * field for MATNR
      */
-    protected com.nhry.webService.client.masterData.functions.MATNR_type9 localMATNR;
+    protected MATNR_type9 localMATNR;
 
     /*  This tracker boolean wil be used to detect whether the user called the set method
      *   for this attribute. It will be used to determine whether to include this field
@@ -45,7 +45,7 @@ public class ZTMM00037 implements org.apache.axis2.databinding.ADBBean {
     /**
      * field for PRDL1
      */
-    protected com.nhry.webService.client.masterData.functions.PRDL1_type1 localPRDL1;
+    protected PRDL1_type1 localPRDL1;
 
     /*  This tracker boolean wil be used to detect whether the user called the set method
      *   for this attribute. It will be used to determine whether to include this field
@@ -56,7 +56,7 @@ public class ZTMM00037 implements org.apache.axis2.databinding.ADBBean {
     /**
      * field for PRDL2
      */
-    protected com.nhry.webService.client.masterData.functions.PRDL2_type1 localPRDL2;
+    protected PRDL2_type1 localPRDL2;
 
     /*  This tracker boolean wil be used to detect whether the user called the set method
      *   for this attribute. It will be used to determine whether to include this field
@@ -67,7 +67,7 @@ public class ZTMM00037 implements org.apache.axis2.databinding.ADBBean {
     /**
      * field for BRAND
      */
-    protected com.nhry.webService.client.masterData.functions.BRAND_type1 localBRAND;
+    protected BRAND_type1 localBRAND;
 
     /*  This tracker boolean wil be used to detect whether the user called the set method
      *   for this attribute. It will be used to determine whether to include this field
@@ -78,7 +78,7 @@ public class ZTMM00037 implements org.apache.axis2.databinding.ADBBean {
     /**
      * field for BRANF
      */
-    protected com.nhry.webService.client.masterData.functions.BRANF_type1 localBRANF;
+    protected BRANF_type1 localBRANF;
 
     /*  This tracker boolean wil be used to detect whether the user called the set method
      *   for this attribute. It will be used to determine whether to include this field
@@ -89,7 +89,7 @@ public class ZTMM00037 implements org.apache.axis2.databinding.ADBBean {
     /**
      * field for FRMAT
      */
-    protected com.nhry.webService.client.masterData.functions.FRMAT_type1 localFRMAT;
+    protected FRMAT_type1 localFRMAT;
 
     /*  This tracker boolean wil be used to detect whether the user called the set method
      *   for this attribute. It will be used to determine whether to include this field
@@ -100,7 +100,7 @@ public class ZTMM00037 implements org.apache.axis2.databinding.ADBBean {
     /**
      * field for COUNF
      */
-    protected com.nhry.webService.client.masterData.functions.COUNF_type1 localCOUNF;
+    protected COUNF_type1 localCOUNF;
 
     /*  This tracker boolean wil be used to detect whether the user called the set method
      *   for this attribute. It will be used to determine whether to include this field
@@ -111,7 +111,7 @@ public class ZTMM00037 implements org.apache.axis2.databinding.ADBBean {
     /**
      * field for MEINS
      */
-    protected com.nhry.webService.client.masterData.functions.MEINS_type5 localMEINS;
+    protected MEINS_type5 localMEINS;
 
     /*  This tracker boolean wil be used to detect whether the user called the set method
      *   for this attribute. It will be used to determine whether to include this field
@@ -122,7 +122,7 @@ public class ZTMM00037 implements org.apache.axis2.databinding.ADBBean {
     /**
      * field for PACK1
      */
-    protected com.nhry.webService.client.masterData.functions.PACK1_type1 localPACK1;
+    protected PACK1_type1 localPACK1;
 
     /*  This tracker boolean wil be used to detect whether the user called the set method
      *   for this attribute. It will be used to determine whether to include this field
@@ -133,7 +133,7 @@ public class ZTMM00037 implements org.apache.axis2.databinding.ADBBean {
     /**
      * field for PACK2
      */
-    protected com.nhry.webService.client.masterData.functions.PACK2_type1 localPACK2;
+    protected PACK2_type1 localPACK2;
 
     /*  This tracker boolean wil be used to detect whether the user called the set method
      *   for this attribute. It will be used to determine whether to include this field
@@ -144,7 +144,7 @@ public class ZTMM00037 implements org.apache.axis2.databinding.ADBBean {
     /**
      * field for CLASF
      */
-    protected com.nhry.webService.client.masterData.functions.CLASF_type1 localCLASF;
+    protected CLASF_type1 localCLASF;
 
     /*  This tracker boolean wil be used to detect whether the user called the set method
      *   for this attribute. It will be used to determine whether to include this field
@@ -155,7 +155,7 @@ public class ZTMM00037 implements org.apache.axis2.databinding.ADBBean {
     /**
      * field for STUDF
      */
-    protected com.nhry.webService.client.masterData.functions.STUDF_type1 localSTUDF;
+    protected STUDF_type1 localSTUDF;
 
     /*  This tracker boolean wil be used to detect whether the user called the set method
      *   for this attribute. It will be used to determine whether to include this field
@@ -166,7 +166,7 @@ public class ZTMM00037 implements org.apache.axis2.databinding.ADBBean {
     /**
      * field for PRDLD
      */
-    protected com.nhry.webService.client.masterData.functions.PRDLD_type1 localPRDLD;
+    protected PRDLD_type1 localPRDLD;
 
     /*  This tracker boolean wil be used to detect whether the user called the set method
      *   for this attribute. It will be used to determine whether to include this field
@@ -177,7 +177,7 @@ public class ZTMM00037 implements org.apache.axis2.databinding.ADBBean {
     /**
      * field for PRDLT
      */
-    protected com.nhry.webService.client.masterData.functions.PRDLT_type1 localPRDLT;
+    protected PRDLT_type1 localPRDLT;
 
     /*  This tracker boolean wil be used to detect whether the user called the set method
      *   for this attribute. It will be used to determine whether to include this field
@@ -188,7 +188,7 @@ public class ZTMM00037 implements org.apache.axis2.databinding.ADBBean {
     /**
      * field for BRANT
      */
-    protected com.nhry.webService.client.masterData.functions.BRANT_type1 localBRANT;
+    protected BRANT_type1 localBRANT;
 
     /*  This tracker boolean wil be used to detect whether the user called the set method
      *   for this attribute. It will be used to determine whether to include this field
@@ -199,7 +199,7 @@ public class ZTMM00037 implements org.apache.axis2.databinding.ADBBean {
     /**
      * field for BRANS
      */
-    protected com.nhry.webService.client.masterData.functions.BRANS_type1 localBRANS;
+    protected BRANS_type1 localBRANS;
 
     /*  This tracker boolean wil be used to detect whether the user called the set method
      *   for this attribute. It will be used to determine whether to include this field
@@ -210,7 +210,7 @@ public class ZTMM00037 implements org.apache.axis2.databinding.ADBBean {
     /**
      * field for PACKD
      */
-    protected com.nhry.webService.client.masterData.functions.PACKD_type1 localPACKD;
+    protected PACKD_type1 localPACKD;
 
     /*  This tracker boolean wil be used to detect whether the user called the set method
      *   for this attribute. It will be used to determine whether to include this field
@@ -221,7 +221,7 @@ public class ZTMM00037 implements org.apache.axis2.databinding.ADBBean {
     /**
      * field for PACKT
      */
-    protected com.nhry.webService.client.masterData.functions.PACKT_type1 localPACKT;
+    protected PACKT_type1 localPACKT;
 
     /*  This tracker boolean wil be used to detect whether the user called the set method
      *   for this attribute. It will be used to determine whether to include this field
@@ -232,7 +232,7 @@ public class ZTMM00037 implements org.apache.axis2.databinding.ADBBean {
     /**
      * field for CLAST
      */
-    protected com.nhry.webService.client.masterData.functions.CLAST_type1 localCLAST;
+    protected CLAST_type1 localCLAST;
 
     /*  This tracker boolean wil be used to detect whether the user called the set method
      *   for this attribute. It will be used to determine whether to include this field
@@ -243,7 +243,7 @@ public class ZTMM00037 implements org.apache.axis2.databinding.ADBBean {
     /**
      * field for USADD
      */
-    protected com.nhry.webService.client.masterData.functions.USADD_type1 localUSADD;
+    protected USADD_type1 localUSADD;
 
     /*  This tracker boolean wil be used to detect whether the user called the set method
      *   for this attribute. It will be used to determine whether to include this field
@@ -254,7 +254,7 @@ public class ZTMM00037 implements org.apache.axis2.databinding.ADBBean {
     /**
      * field for FRMAD
      */
-    protected com.nhry.webService.client.masterData.functions.FRMAD_type1 localFRMAD;
+    protected FRMAD_type1 localFRMAD;
 
     /*  This tracker boolean wil be used to detect whether the user called the set method
      *   for this attribute. It will be used to determine whether to include this field
@@ -265,7 +265,7 @@ public class ZTMM00037 implements org.apache.axis2.databinding.ADBBean {
     /**
      * field for MSEHL
      */
-    protected com.nhry.webService.client.masterData.functions.MSEHL_type1 localMSEHL;
+    protected MSEHL_type1 localMSEHL;
 
     /*  This tracker boolean wil be used to detect whether the user called the set method
      *   for this attribute. It will be used to determine whether to include this field
@@ -281,7 +281,7 @@ public class ZTMM00037 implements org.apache.axis2.databinding.ADBBean {
      * Auto generated getter method
      * @return com.nhry.webService.client.masterData.functions.MANDT_type3
      */
-    public com.nhry.webService.client.masterData.functions.MANDT_type3 getMANDT() {
+    public MANDT_type3 getMANDT() {
         return localMANDT;
     }
 
@@ -290,7 +290,7 @@ public class ZTMM00037 implements org.apache.axis2.databinding.ADBBean {
      * @param param MANDT
      */
     public void setMANDT(
-        com.nhry.webService.client.masterData.functions.MANDT_type3 param) {
+        MANDT_type3 param) {
         localMANDTTracker = param != null;
 
         this.localMANDT = param;
@@ -304,7 +304,7 @@ public class ZTMM00037 implements org.apache.axis2.databinding.ADBBean {
      * Auto generated getter method
      * @return com.nhry.webService.client.masterData.functions.MATNR_type9
      */
-    public com.nhry.webService.client.masterData.functions.MATNR_type9 getMATNR() {
+    public MATNR_type9 getMATNR() {
         return localMATNR;
     }
 
@@ -313,7 +313,7 @@ public class ZTMM00037 implements org.apache.axis2.databinding.ADBBean {
      * @param param MATNR
      */
     public void setMATNR(
-        com.nhry.webService.client.masterData.functions.MATNR_type9 param) {
+        MATNR_type9 param) {
         localMATNRTracker = param != null;
 
         this.localMATNR = param;
@@ -327,7 +327,7 @@ public class ZTMM00037 implements org.apache.axis2.databinding.ADBBean {
      * Auto generated getter method
      * @return com.nhry.webService.client.masterData.functions.PRDL1_type1
      */
-    public com.nhry.webService.client.masterData.functions.PRDL1_type1 getPRDL1() {
+    public PRDL1_type1 getPRDL1() {
         return localPRDL1;
     }
 
@@ -336,7 +336,7 @@ public class ZTMM00037 implements org.apache.axis2.databinding.ADBBean {
      * @param param PRDL1
      */
     public void setPRDL1(
-        com.nhry.webService.client.masterData.functions.PRDL1_type1 param) {
+        PRDL1_type1 param) {
         localPRDL1Tracker = param != null;
 
         this.localPRDL1 = param;
@@ -350,7 +350,7 @@ public class ZTMM00037 implements org.apache.axis2.databinding.ADBBean {
      * Auto generated getter method
      * @return com.nhry.webService.client.masterData.functions.PRDL2_type1
      */
-    public com.nhry.webService.client.masterData.functions.PRDL2_type1 getPRDL2() {
+    public PRDL2_type1 getPRDL2() {
         return localPRDL2;
     }
 
@@ -359,7 +359,7 @@ public class ZTMM00037 implements org.apache.axis2.databinding.ADBBean {
      * @param param PRDL2
      */
     public void setPRDL2(
-        com.nhry.webService.client.masterData.functions.PRDL2_type1 param) {
+        PRDL2_type1 param) {
         localPRDL2Tracker = param != null;
 
         this.localPRDL2 = param;
@@ -373,7 +373,7 @@ public class ZTMM00037 implements org.apache.axis2.databinding.ADBBean {
      * Auto generated getter method
      * @return com.nhry.webService.client.masterData.functions.BRAND_type1
      */
-    public com.nhry.webService.client.masterData.functions.BRAND_type1 getBRAND() {
+    public BRAND_type1 getBRAND() {
         return localBRAND;
     }
 
@@ -382,7 +382,7 @@ public class ZTMM00037 implements org.apache.axis2.databinding.ADBBean {
      * @param param BRAND
      */
     public void setBRAND(
-        com.nhry.webService.client.masterData.functions.BRAND_type1 param) {
+        BRAND_type1 param) {
         localBRANDTracker = param != null;
 
         this.localBRAND = param;
@@ -396,7 +396,7 @@ public class ZTMM00037 implements org.apache.axis2.databinding.ADBBean {
      * Auto generated getter method
      * @return com.nhry.webService.client.masterData.functions.BRANF_type1
      */
-    public com.nhry.webService.client.masterData.functions.BRANF_type1 getBRANF() {
+    public BRANF_type1 getBRANF() {
         return localBRANF;
     }
 
@@ -405,7 +405,7 @@ public class ZTMM00037 implements org.apache.axis2.databinding.ADBBean {
      * @param param BRANF
      */
     public void setBRANF(
-        com.nhry.webService.client.masterData.functions.BRANF_type1 param) {
+        BRANF_type1 param) {
         localBRANFTracker = param != null;
 
         this.localBRANF = param;
@@ -419,7 +419,7 @@ public class ZTMM00037 implements org.apache.axis2.databinding.ADBBean {
      * Auto generated getter method
      * @return com.nhry.webService.client.masterData.functions.FRMAT_type1
      */
-    public com.nhry.webService.client.masterData.functions.FRMAT_type1 getFRMAT() {
+    public FRMAT_type1 getFRMAT() {
         return localFRMAT;
     }
 
@@ -428,7 +428,7 @@ public class ZTMM00037 implements org.apache.axis2.databinding.ADBBean {
      * @param param FRMAT
      */
     public void setFRMAT(
-        com.nhry.webService.client.masterData.functions.FRMAT_type1 param) {
+        FRMAT_type1 param) {
         localFRMATTracker = param != null;
 
         this.localFRMAT = param;
@@ -442,7 +442,7 @@ public class ZTMM00037 implements org.apache.axis2.databinding.ADBBean {
      * Auto generated getter method
      * @return com.nhry.webService.client.masterData.functions.COUNF_type1
      */
-    public com.nhry.webService.client.masterData.functions.COUNF_type1 getCOUNF() {
+    public COUNF_type1 getCOUNF() {
         return localCOUNF;
     }
 
@@ -451,7 +451,7 @@ public class ZTMM00037 implements org.apache.axis2.databinding.ADBBean {
      * @param param COUNF
      */
     public void setCOUNF(
-        com.nhry.webService.client.masterData.functions.COUNF_type1 param) {
+        COUNF_type1 param) {
         localCOUNFTracker = param != null;
 
         this.localCOUNF = param;
@@ -465,7 +465,7 @@ public class ZTMM00037 implements org.apache.axis2.databinding.ADBBean {
      * Auto generated getter method
      * @return com.nhry.webService.client.masterData.functions.MEINS_type5
      */
-    public com.nhry.webService.client.masterData.functions.MEINS_type5 getMEINS() {
+    public MEINS_type5 getMEINS() {
         return localMEINS;
     }
 
@@ -474,7 +474,7 @@ public class ZTMM00037 implements org.apache.axis2.databinding.ADBBean {
      * @param param MEINS
      */
     public void setMEINS(
-        com.nhry.webService.client.masterData.functions.MEINS_type5 param) {
+        MEINS_type5 param) {
         localMEINSTracker = param != null;
 
         this.localMEINS = param;
@@ -488,7 +488,7 @@ public class ZTMM00037 implements org.apache.axis2.databinding.ADBBean {
      * Auto generated getter method
      * @return com.nhry.webService.client.masterData.functions.PACK1_type1
      */
-    public com.nhry.webService.client.masterData.functions.PACK1_type1 getPACK1() {
+    public PACK1_type1 getPACK1() {
         return localPACK1;
     }
 
@@ -497,7 +497,7 @@ public class ZTMM00037 implements org.apache.axis2.databinding.ADBBean {
      * @param param PACK1
      */
     public void setPACK1(
-        com.nhry.webService.client.masterData.functions.PACK1_type1 param) {
+        PACK1_type1 param) {
         localPACK1Tracker = param != null;
 
         this.localPACK1 = param;
@@ -511,7 +511,7 @@ public class ZTMM00037 implements org.apache.axis2.databinding.ADBBean {
      * Auto generated getter method
      * @return com.nhry.webService.client.masterData.functions.PACK2_type1
      */
-    public com.nhry.webService.client.masterData.functions.PACK2_type1 getPACK2() {
+    public PACK2_type1 getPACK2() {
         return localPACK2;
     }
 
@@ -520,7 +520,7 @@ public class ZTMM00037 implements org.apache.axis2.databinding.ADBBean {
      * @param param PACK2
      */
     public void setPACK2(
-        com.nhry.webService.client.masterData.functions.PACK2_type1 param) {
+        PACK2_type1 param) {
         localPACK2Tracker = param != null;
 
         this.localPACK2 = param;
@@ -534,7 +534,7 @@ public class ZTMM00037 implements org.apache.axis2.databinding.ADBBean {
      * Auto generated getter method
      * @return com.nhry.webService.client.masterData.functions.CLASF_type1
      */
-    public com.nhry.webService.client.masterData.functions.CLASF_type1 getCLASF() {
+    public CLASF_type1 getCLASF() {
         return localCLASF;
     }
 
@@ -543,7 +543,7 @@ public class ZTMM00037 implements org.apache.axis2.databinding.ADBBean {
      * @param param CLASF
      */
     public void setCLASF(
-        com.nhry.webService.client.masterData.functions.CLASF_type1 param) {
+        CLASF_type1 param) {
         localCLASFTracker = param != null;
 
         this.localCLASF = param;
@@ -557,7 +557,7 @@ public class ZTMM00037 implements org.apache.axis2.databinding.ADBBean {
      * Auto generated getter method
      * @return com.nhry.webService.client.masterData.functions.STUDF_type1
      */
-    public com.nhry.webService.client.masterData.functions.STUDF_type1 getSTUDF() {
+    public STUDF_type1 getSTUDF() {
         return localSTUDF;
     }
 
@@ -566,7 +566,7 @@ public class ZTMM00037 implements org.apache.axis2.databinding.ADBBean {
      * @param param STUDF
      */
     public void setSTUDF(
-        com.nhry.webService.client.masterData.functions.STUDF_type1 param) {
+        STUDF_type1 param) {
         localSTUDFTracker = param != null;
 
         this.localSTUDF = param;
@@ -580,7 +580,7 @@ public class ZTMM00037 implements org.apache.axis2.databinding.ADBBean {
      * Auto generated getter method
      * @return com.nhry.webService.client.masterData.functions.PRDLD_type1
      */
-    public com.nhry.webService.client.masterData.functions.PRDLD_type1 getPRDLD() {
+    public PRDLD_type1 getPRDLD() {
         return localPRDLD;
     }
 
@@ -589,7 +589,7 @@ public class ZTMM00037 implements org.apache.axis2.databinding.ADBBean {
      * @param param PRDLD
      */
     public void setPRDLD(
-        com.nhry.webService.client.masterData.functions.PRDLD_type1 param) {
+        PRDLD_type1 param) {
         localPRDLDTracker = param != null;
 
         this.localPRDLD = param;
@@ -603,7 +603,7 @@ public class ZTMM00037 implements org.apache.axis2.databinding.ADBBean {
      * Auto generated getter method
      * @return com.nhry.webService.client.masterData.functions.PRDLT_type1
      */
-    public com.nhry.webService.client.masterData.functions.PRDLT_type1 getPRDLT() {
+    public PRDLT_type1 getPRDLT() {
         return localPRDLT;
     }
 
@@ -612,7 +612,7 @@ public class ZTMM00037 implements org.apache.axis2.databinding.ADBBean {
      * @param param PRDLT
      */
     public void setPRDLT(
-        com.nhry.webService.client.masterData.functions.PRDLT_type1 param) {
+        PRDLT_type1 param) {
         localPRDLTTracker = param != null;
 
         this.localPRDLT = param;
@@ -626,7 +626,7 @@ public class ZTMM00037 implements org.apache.axis2.databinding.ADBBean {
      * Auto generated getter method
      * @return com.nhry.webService.client.masterData.functions.BRANT_type1
      */
-    public com.nhry.webService.client.masterData.functions.BRANT_type1 getBRANT() {
+    public BRANT_type1 getBRANT() {
         return localBRANT;
     }
 
@@ -635,7 +635,7 @@ public class ZTMM00037 implements org.apache.axis2.databinding.ADBBean {
      * @param param BRANT
      */
     public void setBRANT(
-        com.nhry.webService.client.masterData.functions.BRANT_type1 param) {
+        BRANT_type1 param) {
         localBRANTTracker = param != null;
 
         this.localBRANT = param;
@@ -649,7 +649,7 @@ public class ZTMM00037 implements org.apache.axis2.databinding.ADBBean {
      * Auto generated getter method
      * @return com.nhry.webService.client.masterData.functions.BRANS_type1
      */
-    public com.nhry.webService.client.masterData.functions.BRANS_type1 getBRANS() {
+    public BRANS_type1 getBRANS() {
         return localBRANS;
     }
 
@@ -658,7 +658,7 @@ public class ZTMM00037 implements org.apache.axis2.databinding.ADBBean {
      * @param param BRANS
      */
     public void setBRANS(
-        com.nhry.webService.client.masterData.functions.BRANS_type1 param) {
+        BRANS_type1 param) {
         localBRANSTracker = param != null;
 
         this.localBRANS = param;
@@ -672,7 +672,7 @@ public class ZTMM00037 implements org.apache.axis2.databinding.ADBBean {
      * Auto generated getter method
      * @return com.nhry.webService.client.masterData.functions.PACKD_type1
      */
-    public com.nhry.webService.client.masterData.functions.PACKD_type1 getPACKD() {
+    public PACKD_type1 getPACKD() {
         return localPACKD;
     }
 
@@ -681,7 +681,7 @@ public class ZTMM00037 implements org.apache.axis2.databinding.ADBBean {
      * @param param PACKD
      */
     public void setPACKD(
-        com.nhry.webService.client.masterData.functions.PACKD_type1 param) {
+        PACKD_type1 param) {
         localPACKDTracker = param != null;
 
         this.localPACKD = param;
@@ -695,7 +695,7 @@ public class ZTMM00037 implements org.apache.axis2.databinding.ADBBean {
      * Auto generated getter method
      * @return com.nhry.webService.client.masterData.functions.PACKT_type1
      */
-    public com.nhry.webService.client.masterData.functions.PACKT_type1 getPACKT() {
+    public PACKT_type1 getPACKT() {
         return localPACKT;
     }
 
@@ -704,7 +704,7 @@ public class ZTMM00037 implements org.apache.axis2.databinding.ADBBean {
      * @param param PACKT
      */
     public void setPACKT(
-        com.nhry.webService.client.masterData.functions.PACKT_type1 param) {
+        PACKT_type1 param) {
         localPACKTTracker = param != null;
 
         this.localPACKT = param;
@@ -718,7 +718,7 @@ public class ZTMM00037 implements org.apache.axis2.databinding.ADBBean {
      * Auto generated getter method
      * @return com.nhry.webService.client.masterData.functions.CLAST_type1
      */
-    public com.nhry.webService.client.masterData.functions.CLAST_type1 getCLAST() {
+    public CLAST_type1 getCLAST() {
         return localCLAST;
     }
 
@@ -727,7 +727,7 @@ public class ZTMM00037 implements org.apache.axis2.databinding.ADBBean {
      * @param param CLAST
      */
     public void setCLAST(
-        com.nhry.webService.client.masterData.functions.CLAST_type1 param) {
+        CLAST_type1 param) {
         localCLASTTracker = param != null;
 
         this.localCLAST = param;
@@ -741,7 +741,7 @@ public class ZTMM00037 implements org.apache.axis2.databinding.ADBBean {
      * Auto generated getter method
      * @return com.nhry.webService.client.masterData.functions.USADD_type1
      */
-    public com.nhry.webService.client.masterData.functions.USADD_type1 getUSADD() {
+    public USADD_type1 getUSADD() {
         return localUSADD;
     }
 
@@ -750,7 +750,7 @@ public class ZTMM00037 implements org.apache.axis2.databinding.ADBBean {
      * @param param USADD
      */
     public void setUSADD(
-        com.nhry.webService.client.masterData.functions.USADD_type1 param) {
+        USADD_type1 param) {
         localUSADDTracker = param != null;
 
         this.localUSADD = param;
@@ -764,7 +764,7 @@ public class ZTMM00037 implements org.apache.axis2.databinding.ADBBean {
      * Auto generated getter method
      * @return com.nhry.webService.client.masterData.functions.FRMAD_type1
      */
-    public com.nhry.webService.client.masterData.functions.FRMAD_type1 getFRMAD() {
+    public FRMAD_type1 getFRMAD() {
         return localFRMAD;
     }
 
@@ -773,7 +773,7 @@ public class ZTMM00037 implements org.apache.axis2.databinding.ADBBean {
      * @param param FRMAD
      */
     public void setFRMAD(
-        com.nhry.webService.client.masterData.functions.FRMAD_type1 param) {
+        FRMAD_type1 param) {
         localFRMADTracker = param != null;
 
         this.localFRMAD = param;
@@ -787,7 +787,7 @@ public class ZTMM00037 implements org.apache.axis2.databinding.ADBBean {
      * Auto generated getter method
      * @return com.nhry.webService.client.masterData.functions.MSEHL_type1
      */
-    public com.nhry.webService.client.masterData.functions.MSEHL_type1 getMSEHL() {
+    public MSEHL_type1 getMSEHL() {
         return localMSEHL;
     }
 
@@ -796,7 +796,7 @@ public class ZTMM00037 implements org.apache.axis2.databinding.ADBBean {
      * @param param MSEHL
      */
     public void setMSEHL(
-        com.nhry.webService.client.masterData.functions.MSEHL_type1 param) {
+        MSEHL_type1 param) {
         localMSEHLTracker = param != null;
 
         this.localMSEHL = param;
@@ -827,8 +827,8 @@ public class ZTMM00037 implements org.apache.axis2.databinding.ADBBean {
         javax.xml.stream.XMLStreamWriter xmlWriter, boolean serializeType)
         throws javax.xml.stream.XMLStreamException,
             org.apache.axis2.databinding.ADBException {
-        java.lang.String prefix = null;
-        java.lang.String namespace = null;
+        String prefix = null;
+        String namespace = null;
 
         prefix = parentQName.getPrefix();
         namespace = parentQName.getNamespaceURI();
@@ -836,7 +836,7 @@ public class ZTMM00037 implements org.apache.axis2.databinding.ADBBean {
             xmlWriter);
 
         if (serializeType) {
-            java.lang.String namespacePrefix = registerPrefix(xmlWriter,
+            String namespacePrefix = registerPrefix(xmlWriter,
                     "urn:sap-com:document:sap:rfc:functions");
 
             if ((namespacePrefix != null) &&
@@ -1084,7 +1084,7 @@ public class ZTMM00037 implements org.apache.axis2.databinding.ADBBean {
         xmlWriter.writeEndElement();
     }
 
-    private static java.lang.String generatePrefix(java.lang.String namespace) {
+    private static String generatePrefix(String namespace) {
         if (namespace.equals("urn:sap-com:document:sap:rfc:functions")) {
             return "ns1";
         }
@@ -1095,11 +1095,11 @@ public class ZTMM00037 implements org.apache.axis2.databinding.ADBBean {
     /**
      * Utility method to write an element start tag.
      */
-    private void writeStartElement(java.lang.String prefix,
-        java.lang.String namespace, java.lang.String localPart,
+    private void writeStartElement(String prefix,
+        String namespace, String localPart,
         javax.xml.stream.XMLStreamWriter xmlWriter)
         throws javax.xml.stream.XMLStreamException {
-        java.lang.String writerPrefix = xmlWriter.getPrefix(namespace);
+        String writerPrefix = xmlWriter.getPrefix(namespace);
 
         if (writerPrefix != null) {
             xmlWriter.writeStartElement(writerPrefix, localPart, namespace);
@@ -1119,11 +1119,11 @@ public class ZTMM00037 implements org.apache.axis2.databinding.ADBBean {
     /**
      * Util method to write an attribute with the ns prefix
      */
-    private void writeAttribute(java.lang.String prefix,
-        java.lang.String namespace, java.lang.String attName,
-        java.lang.String attValue, javax.xml.stream.XMLStreamWriter xmlWriter)
+    private void writeAttribute(String prefix,
+        String namespace, String attName,
+        String attValue, javax.xml.stream.XMLStreamWriter xmlWriter)
         throws javax.xml.stream.XMLStreamException {
-        java.lang.String writerPrefix = xmlWriter.getPrefix(namespace);
+        String writerPrefix = xmlWriter.getPrefix(namespace);
 
         if (writerPrefix != null) {
             xmlWriter.writeAttribute(writerPrefix, namespace, attName, attValue);
@@ -1137,8 +1137,8 @@ public class ZTMM00037 implements org.apache.axis2.databinding.ADBBean {
     /**
      * Util method to write an attribute without the ns prefix
      */
-    private void writeAttribute(java.lang.String namespace,
-        java.lang.String attName, java.lang.String attValue,
+    private void writeAttribute(String namespace,
+        String attName, String attValue,
         javax.xml.stream.XMLStreamWriter xmlWriter)
         throws javax.xml.stream.XMLStreamException {
         if (namespace.equals("")) {
@@ -1152,18 +1152,18 @@ public class ZTMM00037 implements org.apache.axis2.databinding.ADBBean {
     /**
      * Util method to write an attribute without the ns prefix
      */
-    private void writeQNameAttribute(java.lang.String namespace,
-        java.lang.String attName, javax.xml.namespace.QName qname,
+    private void writeQNameAttribute(String namespace,
+        String attName, javax.xml.namespace.QName qname,
         javax.xml.stream.XMLStreamWriter xmlWriter)
         throws javax.xml.stream.XMLStreamException {
-        java.lang.String attributeNamespace = qname.getNamespaceURI();
-        java.lang.String attributePrefix = xmlWriter.getPrefix(attributeNamespace);
+        String attributeNamespace = qname.getNamespaceURI();
+        String attributePrefix = xmlWriter.getPrefix(attributeNamespace);
 
         if (attributePrefix == null) {
             attributePrefix = registerPrefix(xmlWriter, attributeNamespace);
         }
 
-        java.lang.String attributeValue;
+        String attributeValue;
 
         if (attributePrefix.trim().length() > 0) {
             attributeValue = attributePrefix + ":" + qname.getLocalPart();
@@ -1186,10 +1186,10 @@ public class ZTMM00037 implements org.apache.axis2.databinding.ADBBean {
     private void writeQName(javax.xml.namespace.QName qname,
         javax.xml.stream.XMLStreamWriter xmlWriter)
         throws javax.xml.stream.XMLStreamException {
-        java.lang.String namespaceURI = qname.getNamespaceURI();
+        String namespaceURI = qname.getNamespaceURI();
 
         if (namespaceURI != null) {
-            java.lang.String prefix = xmlWriter.getPrefix(namespaceURI);
+            String prefix = xmlWriter.getPrefix(namespaceURI);
 
             if (prefix == null) {
                 prefix = generatePrefix(namespaceURI);
@@ -1218,9 +1218,9 @@ public class ZTMM00037 implements org.apache.axis2.databinding.ADBBean {
         if (qnames != null) {
             // we have to store this data until last moment since it is not possible to write any
             // namespace data after writing the charactor data
-            java.lang.StringBuffer stringToWrite = new java.lang.StringBuffer();
-            java.lang.String namespaceURI = null;
-            java.lang.String prefix = null;
+            StringBuffer stringToWrite = new StringBuffer();
+            String namespaceURI = null;
+            String prefix = null;
 
             for (int i = 0; i < qnames.length; i++) {
                 if (i > 0) {
@@ -1259,10 +1259,10 @@ public class ZTMM00037 implements org.apache.axis2.databinding.ADBBean {
     /**
      * Register a namespace prefix
      */
-    private java.lang.String registerPrefix(
-        javax.xml.stream.XMLStreamWriter xmlWriter, java.lang.String namespace)
+    private String registerPrefix(
+        javax.xml.stream.XMLStreamWriter xmlWriter, String namespace)
         throws javax.xml.stream.XMLStreamException {
-        java.lang.String prefix = xmlWriter.getPrefix(namespace);
+        String prefix = xmlWriter.getPrefix(namespace);
 
         if (prefix == null) {
             prefix = generatePrefix(namespace);
@@ -1270,7 +1270,7 @@ public class ZTMM00037 implements org.apache.axis2.databinding.ADBBean {
             javax.xml.namespace.NamespaceContext nsContext = xmlWriter.getNamespaceContext();
 
             while (true) {
-                java.lang.String uri = nsContext.getNamespaceURI(prefix);
+                String uri = nsContext.getNamespaceURI(prefix);
 
                 if ((uri == null) || (uri.length() == 0)) {
                     break;
@@ -1300,14 +1300,14 @@ public class ZTMM00037 implements org.apache.axis2.databinding.ADBBean {
          *                If this object is a complex type, the reader is positioned at the end element of its outer element
          */
         public static ZTMM00037 parse(javax.xml.stream.XMLStreamReader reader)
-            throws java.lang.Exception {
+            throws Exception {
             ZTMM00037 object = new ZTMM00037();
 
             int event;
             javax.xml.namespace.QName currentQName = null;
-            java.lang.String nillableValue = null;
-            java.lang.String prefix = "";
-            java.lang.String namespaceuri = "";
+            String nillableValue = null;
+            String prefix = "";
+            String namespaceuri = "";
 
             try {
                 while (!reader.isStartElement() && !reader.isEndElement())
@@ -1317,11 +1317,11 @@ public class ZTMM00037 implements org.apache.axis2.databinding.ADBBean {
 
                 if (reader.getAttributeValue(
                             "http://www.w3.org/2001/XMLSchema-instance", "type") != null) {
-                    java.lang.String fullTypeName = reader.getAttributeValue("http://www.w3.org/2001/XMLSchema-instance",
+                    String fullTypeName = reader.getAttributeValue("http://www.w3.org/2001/XMLSchema-instance",
                             "type");
 
                     if (fullTypeName != null) {
-                        java.lang.String nsPrefix = null;
+                        String nsPrefix = null;
 
                         if (fullTypeName.indexOf(":") > -1) {
                             nsPrefix = fullTypeName.substring(0,
@@ -1330,15 +1330,15 @@ public class ZTMM00037 implements org.apache.axis2.databinding.ADBBean {
 
                         nsPrefix = (nsPrefix == null) ? "" : nsPrefix;
 
-                        java.lang.String type = fullTypeName.substring(fullTypeName.indexOf(
+                        String type = fullTypeName.substring(fullTypeName.indexOf(
                                     ":") + 1);
 
                         if (!"ZTMM00037".equals(type)) {
                             //find namespace for the prefix
-                            java.lang.String nsUri = reader.getNamespaceContext()
+                            String nsUri = reader.getNamespaceContext()
                                                            .getNamespaceURI(nsPrefix);
 
-                            return (ZTMM00037) com.nhry.webService.client.masterData.functions.ExtensionMapper.getTypeObject(nsUri,
+                            return (ZTMM00037) ExtensionMapper.getTypeObject(nsUri,
                                 type, reader);
                         }
                     }
@@ -1358,7 +1358,7 @@ public class ZTMM00037 implements org.apache.axis2.databinding.ADBBean {
                             reader.getName())) ||
                         new javax.xml.namespace.QName("", "MANDT").equals(
                             reader.getName())) {
-                    object.setMANDT(com.nhry.webService.client.masterData.functions.MANDT_type3.Factory.parse(
+                    object.setMANDT(MANDT_type3.Factory.parse(
                             reader));
 
                     reader.next();
@@ -1375,7 +1375,7 @@ public class ZTMM00037 implements org.apache.axis2.databinding.ADBBean {
                             reader.getName())) ||
                         new javax.xml.namespace.QName("", "MATNR").equals(
                             reader.getName())) {
-                    object.setMATNR(com.nhry.webService.client.masterData.functions.MATNR_type9.Factory.parse(
+                    object.setMATNR(MATNR_type9.Factory.parse(
                             reader));
 
                     reader.next();
@@ -1392,7 +1392,7 @@ public class ZTMM00037 implements org.apache.axis2.databinding.ADBBean {
                             reader.getName())) ||
                         new javax.xml.namespace.QName("", "PRDL1").equals(
                             reader.getName())) {
-                    object.setPRDL1(com.nhry.webService.client.masterData.functions.PRDL1_type1.Factory.parse(
+                    object.setPRDL1(PRDL1_type1.Factory.parse(
                             reader));
 
                     reader.next();
@@ -1409,7 +1409,7 @@ public class ZTMM00037 implements org.apache.axis2.databinding.ADBBean {
                             reader.getName())) ||
                         new javax.xml.namespace.QName("", "PRDL2").equals(
                             reader.getName())) {
-                    object.setPRDL2(com.nhry.webService.client.masterData.functions.PRDL2_type1.Factory.parse(
+                    object.setPRDL2(PRDL2_type1.Factory.parse(
                             reader));
 
                     reader.next();
@@ -1426,7 +1426,7 @@ public class ZTMM00037 implements org.apache.axis2.databinding.ADBBean {
                             reader.getName())) ||
                         new javax.xml.namespace.QName("", "BRAND").equals(
                             reader.getName())) {
-                    object.setBRAND(com.nhry.webService.client.masterData.functions.BRAND_type1.Factory.parse(
+                    object.setBRAND(BRAND_type1.Factory.parse(
                             reader));
 
                     reader.next();
@@ -1443,7 +1443,7 @@ public class ZTMM00037 implements org.apache.axis2.databinding.ADBBean {
                             reader.getName())) ||
                         new javax.xml.namespace.QName("", "BRANF").equals(
                             reader.getName())) {
-                    object.setBRANF(com.nhry.webService.client.masterData.functions.BRANF_type1.Factory.parse(
+                    object.setBRANF(BRANF_type1.Factory.parse(
                             reader));
 
                     reader.next();
@@ -1460,7 +1460,7 @@ public class ZTMM00037 implements org.apache.axis2.databinding.ADBBean {
                             reader.getName())) ||
                         new javax.xml.namespace.QName("", "FRMAT").equals(
                             reader.getName())) {
-                    object.setFRMAT(com.nhry.webService.client.masterData.functions.FRMAT_type1.Factory.parse(
+                    object.setFRMAT(FRMAT_type1.Factory.parse(
                             reader));
 
                     reader.next();
@@ -1477,7 +1477,7 @@ public class ZTMM00037 implements org.apache.axis2.databinding.ADBBean {
                             reader.getName())) ||
                         new javax.xml.namespace.QName("", "COUNF").equals(
                             reader.getName())) {
-                    object.setCOUNF(com.nhry.webService.client.masterData.functions.COUNF_type1.Factory.parse(
+                    object.setCOUNF(COUNF_type1.Factory.parse(
                             reader));
 
                     reader.next();
@@ -1494,7 +1494,7 @@ public class ZTMM00037 implements org.apache.axis2.databinding.ADBBean {
                             reader.getName())) ||
                         new javax.xml.namespace.QName("", "MEINS").equals(
                             reader.getName())) {
-                    object.setMEINS(com.nhry.webService.client.masterData.functions.MEINS_type5.Factory.parse(
+                    object.setMEINS(MEINS_type5.Factory.parse(
                             reader));
 
                     reader.next();
@@ -1511,7 +1511,7 @@ public class ZTMM00037 implements org.apache.axis2.databinding.ADBBean {
                             reader.getName())) ||
                         new javax.xml.namespace.QName("", "PACK1").equals(
                             reader.getName())) {
-                    object.setPACK1(com.nhry.webService.client.masterData.functions.PACK1_type1.Factory.parse(
+                    object.setPACK1(PACK1_type1.Factory.parse(
                             reader));
 
                     reader.next();
@@ -1528,7 +1528,7 @@ public class ZTMM00037 implements org.apache.axis2.databinding.ADBBean {
                             reader.getName())) ||
                         new javax.xml.namespace.QName("", "PACK2").equals(
                             reader.getName())) {
-                    object.setPACK2(com.nhry.webService.client.masterData.functions.PACK2_type1.Factory.parse(
+                    object.setPACK2(PACK2_type1.Factory.parse(
                             reader));
 
                     reader.next();
@@ -1545,7 +1545,7 @@ public class ZTMM00037 implements org.apache.axis2.databinding.ADBBean {
                             reader.getName())) ||
                         new javax.xml.namespace.QName("", "CLASF").equals(
                             reader.getName())) {
-                    object.setCLASF(com.nhry.webService.client.masterData.functions.CLASF_type1.Factory.parse(
+                    object.setCLASF(CLASF_type1.Factory.parse(
                             reader));
 
                     reader.next();
@@ -1562,7 +1562,7 @@ public class ZTMM00037 implements org.apache.axis2.databinding.ADBBean {
                             reader.getName())) ||
                         new javax.xml.namespace.QName("", "STUDF").equals(
                             reader.getName())) {
-                    object.setSTUDF(com.nhry.webService.client.masterData.functions.STUDF_type1.Factory.parse(
+                    object.setSTUDF(STUDF_type1.Factory.parse(
                             reader));
 
                     reader.next();
@@ -1579,7 +1579,7 @@ public class ZTMM00037 implements org.apache.axis2.databinding.ADBBean {
                             reader.getName())) ||
                         new javax.xml.namespace.QName("", "PRDLD").equals(
                             reader.getName())) {
-                    object.setPRDLD(com.nhry.webService.client.masterData.functions.PRDLD_type1.Factory.parse(
+                    object.setPRDLD(PRDLD_type1.Factory.parse(
                             reader));
 
                     reader.next();
@@ -1596,7 +1596,7 @@ public class ZTMM00037 implements org.apache.axis2.databinding.ADBBean {
                             reader.getName())) ||
                         new javax.xml.namespace.QName("", "PRDLT").equals(
                             reader.getName())) {
-                    object.setPRDLT(com.nhry.webService.client.masterData.functions.PRDLT_type1.Factory.parse(
+                    object.setPRDLT(PRDLT_type1.Factory.parse(
                             reader));
 
                     reader.next();
@@ -1613,7 +1613,7 @@ public class ZTMM00037 implements org.apache.axis2.databinding.ADBBean {
                             reader.getName())) ||
                         new javax.xml.namespace.QName("", "BRANT").equals(
                             reader.getName())) {
-                    object.setBRANT(com.nhry.webService.client.masterData.functions.BRANT_type1.Factory.parse(
+                    object.setBRANT(BRANT_type1.Factory.parse(
                             reader));
 
                     reader.next();
@@ -1630,7 +1630,7 @@ public class ZTMM00037 implements org.apache.axis2.databinding.ADBBean {
                             reader.getName())) ||
                         new javax.xml.namespace.QName("", "BRANS").equals(
                             reader.getName())) {
-                    object.setBRANS(com.nhry.webService.client.masterData.functions.BRANS_type1.Factory.parse(
+                    object.setBRANS(BRANS_type1.Factory.parse(
                             reader));
 
                     reader.next();
@@ -1647,7 +1647,7 @@ public class ZTMM00037 implements org.apache.axis2.databinding.ADBBean {
                             reader.getName())) ||
                         new javax.xml.namespace.QName("", "PACKD").equals(
                             reader.getName())) {
-                    object.setPACKD(com.nhry.webService.client.masterData.functions.PACKD_type1.Factory.parse(
+                    object.setPACKD(PACKD_type1.Factory.parse(
                             reader));
 
                     reader.next();
@@ -1664,7 +1664,7 @@ public class ZTMM00037 implements org.apache.axis2.databinding.ADBBean {
                             reader.getName())) ||
                         new javax.xml.namespace.QName("", "PACKT").equals(
                             reader.getName())) {
-                    object.setPACKT(com.nhry.webService.client.masterData.functions.PACKT_type1.Factory.parse(
+                    object.setPACKT(PACKT_type1.Factory.parse(
                             reader));
 
                     reader.next();
@@ -1681,7 +1681,7 @@ public class ZTMM00037 implements org.apache.axis2.databinding.ADBBean {
                             reader.getName())) ||
                         new javax.xml.namespace.QName("", "CLAST").equals(
                             reader.getName())) {
-                    object.setCLAST(com.nhry.webService.client.masterData.functions.CLAST_type1.Factory.parse(
+                    object.setCLAST(CLAST_type1.Factory.parse(
                             reader));
 
                     reader.next();
@@ -1698,7 +1698,7 @@ public class ZTMM00037 implements org.apache.axis2.databinding.ADBBean {
                             reader.getName())) ||
                         new javax.xml.namespace.QName("", "USADD").equals(
                             reader.getName())) {
-                    object.setUSADD(com.nhry.webService.client.masterData.functions.USADD_type1.Factory.parse(
+                    object.setUSADD(USADD_type1.Factory.parse(
                             reader));
 
                     reader.next();
@@ -1715,7 +1715,7 @@ public class ZTMM00037 implements org.apache.axis2.databinding.ADBBean {
                             reader.getName())) ||
                         new javax.xml.namespace.QName("", "FRMAD").equals(
                             reader.getName())) {
-                    object.setFRMAD(com.nhry.webService.client.masterData.functions.FRMAD_type1.Factory.parse(
+                    object.setFRMAD(FRMAD_type1.Factory.parse(
                             reader));
 
                     reader.next();
@@ -1732,7 +1732,7 @@ public class ZTMM00037 implements org.apache.axis2.databinding.ADBBean {
                             reader.getName())) ||
                         new javax.xml.namespace.QName("", "MSEHL").equals(
                             reader.getName())) {
-                    object.setMSEHL(com.nhry.webService.client.masterData.functions.MSEHL_type1.Factory.parse(
+                    object.setMSEHL(MSEHL_type1.Factory.parse(
                             reader));
 
                     reader.next();
@@ -1750,7 +1750,7 @@ public class ZTMM00037 implements org.apache.axis2.databinding.ADBBean {
                         "Unexpected subelement " + reader.getName());
                 }
             } catch (javax.xml.stream.XMLStreamException e) {
-                throw new java.lang.Exception(e);
+                throw new Exception(e);
             }
 
             return object;

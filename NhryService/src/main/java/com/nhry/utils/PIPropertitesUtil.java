@@ -42,6 +42,6 @@ public class PIPropertitesUtil {
     }
 
     public static void main(String[] args) {
-        System.out.println("ddddd" + getValue("PI.MasterData.PASSWORD"));
+        System.out.println("ddddd" + getValue("PI.CRM.EXEC"));
     }
 }

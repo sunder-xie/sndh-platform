@@ -243,7 +243,7 @@ public class ZSSD00069 implements org.apache.axis2.databinding.ADBBean {
     /**
      * field for WBSTK
      */
-    protected com.nhry.webService.client.businessData.functions.WBSTK_type1 localWBSTK;
+    protected WBSTK_type1 localWBSTK;
 
     /*  This tracker boolean wil be used to detect whether the user called the set method
      *   for this attribute. It will be used to determine whether to include this field
@@ -719,7 +719,7 @@ public class ZSSD00069 implements org.apache.axis2.databinding.ADBBean {
      * Auto generated getter method
      * @return com.nhry.webService.client.businessData.functions.WBSTK_type1
      */
-    public com.nhry.webService.client.businessData.functions.WBSTK_type1 getWBSTK() {
+    public WBSTK_type1 getWBSTK() {
         return localWBSTK;
     }
 
@@ -728,7 +728,7 @@ public class ZSSD00069 implements org.apache.axis2.databinding.ADBBean {
      * @param param WBSTK
      */
     public void setWBSTK(
-        com.nhry.webService.client.businessData.functions.WBSTK_type1 param) {
+        WBSTK_type1 param) {
         localWBSTKTracker = param != null;
 
         this.localWBSTK = param;
@@ -1610,7 +1610,7 @@ public class ZSSD00069 implements org.apache.axis2.databinding.ADBBean {
                             reader.getName())) ||
                         new javax.xml.namespace.QName("", "WBSTK").equals(
                             reader.getName())) {
-                    object.setWBSTK(com.nhry.webService.client.businessData.functions.WBSTK_type1.Factory.parse(
+                    object.setWBSTK(WBSTK_type1.Factory.parse(
                             reader));
 
                     reader.next();

@@ -100,7 +100,7 @@
           i.MATNR,ex.SHORT_TXT MATNR_TXT,i.QTY,i.TYPE,i.UNIT
         FROM
         t_ssm_sal_order_items i
-        LEFT JOIN  t_md_mara_ex ex ON  i.MATNR = ex.MATNR and ex.SALES_ORG #{salesOrg}
+        LEFT JOIN  t_md_mara_ex ex ON  i.MATNR = ex.MATNR and ex.SALES_ORG = #{salesOrg}
         where 1=1
         and ORDER_NO = #{orderNo}
         ORDER  BY  i.MATNR ASC

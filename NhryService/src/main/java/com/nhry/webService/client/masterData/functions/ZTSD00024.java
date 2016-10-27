@@ -23,7 +23,7 @@ public class ZTSD00024 implements org.apache.axis2.databinding.ADBBean {
     /**
      * field for MANDT
      */
-    protected com.nhry.webService.client.masterData.functions.MANDT_type13 localMANDT;
+    protected MANDT_type13 localMANDT;
 
     /*  This tracker boolean wil be used to detect whether the user called the set method
      *   for this attribute. It will be used to determine whether to include this field
@@ -34,7 +34,7 @@ public class ZTSD00024 implements org.apache.axis2.databinding.ADBBean {
     /**
      * field for BUKRS
      */
-    protected com.nhry.webService.client.masterData.functions.BUKRS_type7 localBUKRS;
+    protected BUKRS_type7 localBUKRS;
 
     /*  This tracker boolean wil be used to detect whether the user called the set method
      *   for this attribute. It will be used to determine whether to include this field
@@ -45,7 +45,7 @@ public class ZTSD00024 implements org.apache.axis2.databinding.ADBBean {
     /**
      * field for POSNR
      */
-    protected com.nhry.webService.client.masterData.functions.POSNR_type3 localPOSNR;
+    protected POSNR_type3 localPOSNR;
 
     /*  This tracker boolean wil be used to detect whether the user called the set method
      *   for this attribute. It will be used to determine whether to include this field
@@ -56,7 +56,7 @@ public class ZTSD00024 implements org.apache.axis2.databinding.ADBBean {
     /**
      * field for MATNR
      */
-    protected com.nhry.webService.client.masterData.functions.MATNR_type11 localMATNR;
+    protected MATNR_type11 localMATNR;
 
     /*  This tracker boolean wil be used to detect whether the user called the set method
      *   for this attribute. It will be used to determine whether to include this field
@@ -67,7 +67,7 @@ public class ZTSD00024 implements org.apache.axis2.databinding.ADBBean {
     /**
      * field for PRODH
      */
-    protected com.nhry.webService.client.masterData.functions.PRODH_type1 localPRODH;
+    protected PRODH_type1 localPRODH;
 
     /*  This tracker boolean wil be used to detect whether the user called the set method
      *   for this attribute. It will be used to determine whether to include this field
@@ -78,7 +78,7 @@ public class ZTSD00024 implements org.apache.axis2.databinding.ADBBean {
     /**
      * field for KUNNR1
      */
-    protected com.nhry.webService.client.masterData.functions.KUNNR1_type1 localKUNNR1;
+    protected KUNNR1_type1 localKUNNR1;
 
     /*  This tracker boolean wil be used to detect whether the user called the set method
      *   for this attribute. It will be used to determine whether to include this field
@@ -89,7 +89,7 @@ public class ZTSD00024 implements org.apache.axis2.databinding.ADBBean {
     /**
      * field for KUNNR2
      */
-    protected com.nhry.webService.client.masterData.functions.KUNNR2_type1 localKUNNR2;
+    protected KUNNR2_type1 localKUNNR2;
 
     /*  This tracker boolean wil be used to detect whether the user called the set method
      *   for this attribute. It will be used to determine whether to include this field
@@ -100,7 +100,7 @@ public class ZTSD00024 implements org.apache.axis2.databinding.ADBBean {
     /**
      * field for LGORT
      */
-    protected com.nhry.webService.client.masterData.functions.LGORT_type1 localLGORT;
+    protected LGORT_type1 localLGORT;
 
     /*  This tracker boolean wil be used to detect whether the user called the set method
      *   for this attribute. It will be used to determine whether to include this field
@@ -111,7 +111,7 @@ public class ZTSD00024 implements org.apache.axis2.databinding.ADBBean {
     /**
      * field for VKBUR
      */
-    protected com.nhry.webService.client.masterData.functions.VKBUR_type1 localVKBUR;
+    protected VKBUR_type1 localVKBUR;
 
     /*  This tracker boolean wil be used to detect whether the user called the set method
      *   for this attribute. It will be used to determine whether to include this field
@@ -127,7 +127,7 @@ public class ZTSD00024 implements org.apache.axis2.databinding.ADBBean {
      * Auto generated getter method
      * @return com.nhry.webService.client.masterData.functions.MANDT_type13
      */
-    public com.nhry.webService.client.masterData.functions.MANDT_type13 getMANDT() {
+    public MANDT_type13 getMANDT() {
         return localMANDT;
     }
 
@@ -136,7 +136,7 @@ public class ZTSD00024 implements org.apache.axis2.databinding.ADBBean {
      * @param param MANDT
      */
     public void setMANDT(
-        com.nhry.webService.client.masterData.functions.MANDT_type13 param) {
+        MANDT_type13 param) {
         localMANDTTracker = param != null;
 
         this.localMANDT = param;
@@ -150,7 +150,7 @@ public class ZTSD00024 implements org.apache.axis2.databinding.ADBBean {
      * Auto generated getter method
      * @return com.nhry.webService.client.masterData.functions.BUKRS_type7
      */
-    public com.nhry.webService.client.masterData.functions.BUKRS_type7 getBUKRS() {
+    public BUKRS_type7 getBUKRS() {
         return localBUKRS;
     }
 
@@ -159,7 +159,7 @@ public class ZTSD00024 implements org.apache.axis2.databinding.ADBBean {
      * @param param BUKRS
      */
     public void setBUKRS(
-        com.nhry.webService.client.masterData.functions.BUKRS_type7 param) {
+        BUKRS_type7 param) {
         localBUKRSTracker = param != null;
 
         this.localBUKRS = param;
@@ -173,7 +173,7 @@ public class ZTSD00024 implements org.apache.axis2.databinding.ADBBean {
      * Auto generated getter method
      * @return com.nhry.webService.client.masterData.functions.POSNR_type3
      */
-    public com.nhry.webService.client.masterData.functions.POSNR_type3 getPOSNR() {
+    public POSNR_type3 getPOSNR() {
         return localPOSNR;
     }
 
@@ -182,7 +182,7 @@ public class ZTSD00024 implements org.apache.axis2.databinding.ADBBean {
      * @param param POSNR
      */
     public void setPOSNR(
-        com.nhry.webService.client.masterData.functions.POSNR_type3 param) {
+        POSNR_type3 param) {
         localPOSNRTracker = param != null;
 
         this.localPOSNR = param;
@@ -196,7 +196,7 @@ public class ZTSD00024 implements org.apache.axis2.databinding.ADBBean {
      * Auto generated getter method
      * @return com.nhry.webService.client.masterData.functions.MATNR_type11
      */
-    public com.nhry.webService.client.masterData.functions.MATNR_type11 getMATNR() {
+    public MATNR_type11 getMATNR() {
         return localMATNR;
     }
 
@@ -205,7 +205,7 @@ public class ZTSD00024 implements org.apache.axis2.databinding.ADBBean {
      * @param param MATNR
      */
     public void setMATNR(
-        com.nhry.webService.client.masterData.functions.MATNR_type11 param) {
+        MATNR_type11 param) {
         localMATNRTracker = param != null;
 
         this.localMATNR = param;
@@ -219,7 +219,7 @@ public class ZTSD00024 implements org.apache.axis2.databinding.ADBBean {
      * Auto generated getter method
      * @return com.nhry.webService.client.masterData.functions.PRODH_type1
      */
-    public com.nhry.webService.client.masterData.functions.PRODH_type1 getPRODH() {
+    public PRODH_type1 getPRODH() {
         return localPRODH;
     }
 
@@ -228,7 +228,7 @@ public class ZTSD00024 implements org.apache.axis2.databinding.ADBBean {
      * @param param PRODH
      */
     public void setPRODH(
-        com.nhry.webService.client.masterData.functions.PRODH_type1 param) {
+        PRODH_type1 param) {
         localPRODHTracker = param != null;
 
         this.localPRODH = param;
@@ -242,7 +242,7 @@ public class ZTSD00024 implements org.apache.axis2.databinding.ADBBean {
      * Auto generated getter method
      * @return com.nhry.webService.client.masterData.functions.KUNNR1_type1
      */
-    public com.nhry.webService.client.masterData.functions.KUNNR1_type1 getKUNNR1() {
+    public KUNNR1_type1 getKUNNR1() {
         return localKUNNR1;
     }
 
@@ -251,7 +251,7 @@ public class ZTSD00024 implements org.apache.axis2.databinding.ADBBean {
      * @param param KUNNR1
      */
     public void setKUNNR1(
-        com.nhry.webService.client.masterData.functions.KUNNR1_type1 param) {
+        KUNNR1_type1 param) {
         localKUNNR1Tracker = param != null;
 
         this.localKUNNR1 = param;
@@ -265,7 +265,7 @@ public class ZTSD00024 implements org.apache.axis2.databinding.ADBBean {
      * Auto generated getter method
      * @return com.nhry.webService.client.masterData.functions.KUNNR2_type1
      */
-    public com.nhry.webService.client.masterData.functions.KUNNR2_type1 getKUNNR2() {
+    public KUNNR2_type1 getKUNNR2() {
         return localKUNNR2;
     }
 
@@ -274,7 +274,7 @@ public class ZTSD00024 implements org.apache.axis2.databinding.ADBBean {
      * @param param KUNNR2
      */
     public void setKUNNR2(
-        com.nhry.webService.client.masterData.functions.KUNNR2_type1 param) {
+        KUNNR2_type1 param) {
         localKUNNR2Tracker = param != null;
 
         this.localKUNNR2 = param;
@@ -288,7 +288,7 @@ public class ZTSD00024 implements org.apache.axis2.databinding.ADBBean {
      * Auto generated getter method
      * @return com.nhry.webService.client.masterData.functions.LGORT_type1
      */
-    public com.nhry.webService.client.masterData.functions.LGORT_type1 getLGORT() {
+    public LGORT_type1 getLGORT() {
         return localLGORT;
     }
 
@@ -297,7 +297,7 @@ public class ZTSD00024 implements org.apache.axis2.databinding.ADBBean {
      * @param param LGORT
      */
     public void setLGORT(
-        com.nhry.webService.client.masterData.functions.LGORT_type1 param) {
+        LGORT_type1 param) {
         localLGORTTracker = param != null;
 
         this.localLGORT = param;
@@ -311,7 +311,7 @@ public class ZTSD00024 implements org.apache.axis2.databinding.ADBBean {
      * Auto generated getter method
      * @return com.nhry.webService.client.masterData.functions.VKBUR_type1
      */
-    public com.nhry.webService.client.masterData.functions.VKBUR_type1 getVKBUR() {
+    public VKBUR_type1 getVKBUR() {
         return localVKBUR;
     }
 
@@ -320,7 +320,7 @@ public class ZTSD00024 implements org.apache.axis2.databinding.ADBBean {
      * @param param VKBUR
      */
     public void setVKBUR(
-        com.nhry.webService.client.masterData.functions.VKBUR_type1 param) {
+        VKBUR_type1 param) {
         localVKBURTracker = param != null;
 
         this.localVKBUR = param;
@@ -351,8 +351,8 @@ public class ZTSD00024 implements org.apache.axis2.databinding.ADBBean {
         javax.xml.stream.XMLStreamWriter xmlWriter, boolean serializeType)
         throws javax.xml.stream.XMLStreamException,
             org.apache.axis2.databinding.ADBException {
-        java.lang.String prefix = null;
-        java.lang.String namespace = null;
+        String prefix = null;
+        String namespace = null;
 
         prefix = parentQName.getPrefix();
         namespace = parentQName.getNamespaceURI();
@@ -360,7 +360,7 @@ public class ZTSD00024 implements org.apache.axis2.databinding.ADBBean {
             xmlWriter);
 
         if (serializeType) {
-            java.lang.String namespacePrefix = registerPrefix(xmlWriter,
+            String namespacePrefix = registerPrefix(xmlWriter,
                     "urn:sap-com:document:sap:rfc:functions");
 
             if ((namespacePrefix != null) &&
@@ -468,7 +468,7 @@ public class ZTSD00024 implements org.apache.axis2.databinding.ADBBean {
         xmlWriter.writeEndElement();
     }
 
-    private static java.lang.String generatePrefix(java.lang.String namespace) {
+    private static String generatePrefix(String namespace) {
         if (namespace.equals("urn:sap-com:document:sap:rfc:functions")) {
             return "ns1";
         }
@@ -479,11 +479,11 @@ public class ZTSD00024 implements org.apache.axis2.databinding.ADBBean {
     /**
      * Utility method to write an element start tag.
      */
-    private void writeStartElement(java.lang.String prefix,
-        java.lang.String namespace, java.lang.String localPart,
+    private void writeStartElement(String prefix,
+        String namespace, String localPart,
         javax.xml.stream.XMLStreamWriter xmlWriter)
         throws javax.xml.stream.XMLStreamException {
-        java.lang.String writerPrefix = xmlWriter.getPrefix(namespace);
+        String writerPrefix = xmlWriter.getPrefix(namespace);
 
         if (writerPrefix != null) {
             xmlWriter.writeStartElement(writerPrefix, localPart, namespace);
@@ -503,11 +503,11 @@ public class ZTSD00024 implements org.apache.axis2.databinding.ADBBean {
     /**
      * Util method to write an attribute with the ns prefix
      */
-    private void writeAttribute(java.lang.String prefix,
-        java.lang.String namespace, java.lang.String attName,
-        java.lang.String attValue, javax.xml.stream.XMLStreamWriter xmlWriter)
+    private void writeAttribute(String prefix,
+        String namespace, String attName,
+        String attValue, javax.xml.stream.XMLStreamWriter xmlWriter)
         throws javax.xml.stream.XMLStreamException {
-        java.lang.String writerPrefix = xmlWriter.getPrefix(namespace);
+        String writerPrefix = xmlWriter.getPrefix(namespace);
 
         if (writerPrefix != null) {
             xmlWriter.writeAttribute(writerPrefix, namespace, attName, attValue);
@@ -521,8 +521,8 @@ public class ZTSD00024 implements org.apache.axis2.databinding.ADBBean {
     /**
      * Util method to write an attribute without the ns prefix
      */
-    private void writeAttribute(java.lang.String namespace,
-        java.lang.String attName, java.lang.String attValue,
+    private void writeAttribute(String namespace,
+        String attName, String attValue,
         javax.xml.stream.XMLStreamWriter xmlWriter)
         throws javax.xml.stream.XMLStreamException {
         if (namespace.equals("")) {
@@ -536,18 +536,18 @@ public class ZTSD00024 implements org.apache.axis2.databinding.ADBBean {
     /**
      * Util method to write an attribute without the ns prefix
      */
-    private void writeQNameAttribute(java.lang.String namespace,
-        java.lang.String attName, javax.xml.namespace.QName qname,
+    private void writeQNameAttribute(String namespace,
+        String attName, javax.xml.namespace.QName qname,
         javax.xml.stream.XMLStreamWriter xmlWriter)
         throws javax.xml.stream.XMLStreamException {
-        java.lang.String attributeNamespace = qname.getNamespaceURI();
-        java.lang.String attributePrefix = xmlWriter.getPrefix(attributeNamespace);
+        String attributeNamespace = qname.getNamespaceURI();
+        String attributePrefix = xmlWriter.getPrefix(attributeNamespace);
 
         if (attributePrefix == null) {
             attributePrefix = registerPrefix(xmlWriter, attributeNamespace);
         }
 
-        java.lang.String attributeValue;
+        String attributeValue;
 
         if (attributePrefix.trim().length() > 0) {
             attributeValue = attributePrefix + ":" + qname.getLocalPart();
@@ -570,10 +570,10 @@ public class ZTSD00024 implements org.apache.axis2.databinding.ADBBean {
     private void writeQName(javax.xml.namespace.QName qname,
         javax.xml.stream.XMLStreamWriter xmlWriter)
         throws javax.xml.stream.XMLStreamException {
-        java.lang.String namespaceURI = qname.getNamespaceURI();
+        String namespaceURI = qname.getNamespaceURI();
 
         if (namespaceURI != null) {
-            java.lang.String prefix = xmlWriter.getPrefix(namespaceURI);
+            String prefix = xmlWriter.getPrefix(namespaceURI);
 
             if (prefix == null) {
                 prefix = generatePrefix(namespaceURI);
@@ -602,9 +602,9 @@ public class ZTSD00024 implements org.apache.axis2.databinding.ADBBean {
         if (qnames != null) {
             // we have to store this data until last moment since it is not possible to write any
             // namespace data after writing the charactor data
-            java.lang.StringBuffer stringToWrite = new java.lang.StringBuffer();
-            java.lang.String namespaceURI = null;
-            java.lang.String prefix = null;
+            StringBuffer stringToWrite = new StringBuffer();
+            String namespaceURI = null;
+            String prefix = null;
 
             for (int i = 0; i < qnames.length; i++) {
                 if (i > 0) {
@@ -643,10 +643,10 @@ public class ZTSD00024 implements org.apache.axis2.databinding.ADBBean {
     /**
      * Register a namespace prefix
      */
-    private java.lang.String registerPrefix(
-        javax.xml.stream.XMLStreamWriter xmlWriter, java.lang.String namespace)
+    private String registerPrefix(
+        javax.xml.stream.XMLStreamWriter xmlWriter, String namespace)
         throws javax.xml.stream.XMLStreamException {
-        java.lang.String prefix = xmlWriter.getPrefix(namespace);
+        String prefix = xmlWriter.getPrefix(namespace);
 
         if (prefix == null) {
             prefix = generatePrefix(namespace);
@@ -654,7 +654,7 @@ public class ZTSD00024 implements org.apache.axis2.databinding.ADBBean {
             javax.xml.namespace.NamespaceContext nsContext = xmlWriter.getNamespaceContext();
 
             while (true) {
-                java.lang.String uri = nsContext.getNamespaceURI(prefix);
+                String uri = nsContext.getNamespaceURI(prefix);
 
                 if ((uri == null) || (uri.length() == 0)) {
                     break;
@@ -684,14 +684,14 @@ public class ZTSD00024 implements org.apache.axis2.databinding.ADBBean {
          *                If this object is a complex type, the reader is positioned at the end element of its outer element
          */
         public static ZTSD00024 parse(javax.xml.stream.XMLStreamReader reader)
-            throws java.lang.Exception {
+            throws Exception {
             ZTSD00024 object = new ZTSD00024();
 
             int event;
             javax.xml.namespace.QName currentQName = null;
-            java.lang.String nillableValue = null;
-            java.lang.String prefix = "";
-            java.lang.String namespaceuri = "";
+            String nillableValue = null;
+            String prefix = "";
+            String namespaceuri = "";
 
             try {
                 while (!reader.isStartElement() && !reader.isEndElement())
@@ -701,11 +701,11 @@ public class ZTSD00024 implements org.apache.axis2.databinding.ADBBean {
 
                 if (reader.getAttributeValue(
                             "http://www.w3.org/2001/XMLSchema-instance", "type") != null) {
-                    java.lang.String fullTypeName = reader.getAttributeValue("http://www.w3.org/2001/XMLSchema-instance",
+                    String fullTypeName = reader.getAttributeValue("http://www.w3.org/2001/XMLSchema-instance",
                             "type");
 
                     if (fullTypeName != null) {
-                        java.lang.String nsPrefix = null;
+                        String nsPrefix = null;
 
                         if (fullTypeName.indexOf(":") > -1) {
                             nsPrefix = fullTypeName.substring(0,
@@ -714,15 +714,15 @@ public class ZTSD00024 implements org.apache.axis2.databinding.ADBBean {
 
                         nsPrefix = (nsPrefix == null) ? "" : nsPrefix;
 
-                        java.lang.String type = fullTypeName.substring(fullTypeName.indexOf(
+                        String type = fullTypeName.substring(fullTypeName.indexOf(
                                     ":") + 1);
 
                         if (!"ZTSD00024".equals(type)) {
                             //find namespace for the prefix
-                            java.lang.String nsUri = reader.getNamespaceContext()
+                            String nsUri = reader.getNamespaceContext()
                                                            .getNamespaceURI(nsPrefix);
 
-                            return (ZTSD00024) com.nhry.webService.client.masterData.functions.ExtensionMapper.getTypeObject(nsUri,
+                            return (ZTSD00024) ExtensionMapper.getTypeObject(nsUri,
                                 type, reader);
                         }
                     }
@@ -742,7 +742,7 @@ public class ZTSD00024 implements org.apache.axis2.databinding.ADBBean {
                             reader.getName())) ||
                         new javax.xml.namespace.QName("", "MANDT").equals(
                             reader.getName())) {
-                    object.setMANDT(com.nhry.webService.client.masterData.functions.MANDT_type13.Factory.parse(
+                    object.setMANDT(MANDT_type13.Factory.parse(
                             reader));
 
                     reader.next();
@@ -759,7 +759,7 @@ public class ZTSD00024 implements org.apache.axis2.databinding.ADBBean {
                             reader.getName())) ||
                         new javax.xml.namespace.QName("", "BUKRS").equals(
                             reader.getName())) {
-                    object.setBUKRS(com.nhry.webService.client.masterData.functions.BUKRS_type7.Factory.parse(
+                    object.setBUKRS(BUKRS_type7.Factory.parse(
                             reader));
 
                     reader.next();
@@ -776,7 +776,7 @@ public class ZTSD00024 implements org.apache.axis2.databinding.ADBBean {
                             reader.getName())) ||
                         new javax.xml.namespace.QName("", "POSNR").equals(
                             reader.getName())) {
-                    object.setPOSNR(com.nhry.webService.client.masterData.functions.POSNR_type3.Factory.parse(
+                    object.setPOSNR(POSNR_type3.Factory.parse(
                             reader));
 
                     reader.next();
@@ -793,7 +793,7 @@ public class ZTSD00024 implements org.apache.axis2.databinding.ADBBean {
                             reader.getName())) ||
                         new javax.xml.namespace.QName("", "MATNR").equals(
                             reader.getName())) {
-                    object.setMATNR(com.nhry.webService.client.masterData.functions.MATNR_type11.Factory.parse(
+                    object.setMATNR(MATNR_type11.Factory.parse(
                             reader));
 
                     reader.next();
@@ -810,7 +810,7 @@ public class ZTSD00024 implements org.apache.axis2.databinding.ADBBean {
                             reader.getName())) ||
                         new javax.xml.namespace.QName("", "PRODH").equals(
                             reader.getName())) {
-                    object.setPRODH(com.nhry.webService.client.masterData.functions.PRODH_type1.Factory.parse(
+                    object.setPRODH(PRODH_type1.Factory.parse(
                             reader));
 
                     reader.next();
@@ -827,7 +827,7 @@ public class ZTSD00024 implements org.apache.axis2.databinding.ADBBean {
                             reader.getName())) ||
                         new javax.xml.namespace.QName("", "KUNNR1").equals(
                             reader.getName())) {
-                    object.setKUNNR1(com.nhry.webService.client.masterData.functions.KUNNR1_type1.Factory.parse(
+                    object.setKUNNR1(KUNNR1_type1.Factory.parse(
                             reader));
 
                     reader.next();
@@ -844,7 +844,7 @@ public class ZTSD00024 implements org.apache.axis2.databinding.ADBBean {
                             reader.getName())) ||
                         new javax.xml.namespace.QName("", "KUNNR2").equals(
                             reader.getName())) {
-                    object.setKUNNR2(com.nhry.webService.client.masterData.functions.KUNNR2_type1.Factory.parse(
+                    object.setKUNNR2(KUNNR2_type1.Factory.parse(
                             reader));
 
                     reader.next();
@@ -861,7 +861,7 @@ public class ZTSD00024 implements org.apache.axis2.databinding.ADBBean {
                             reader.getName())) ||
                         new javax.xml.namespace.QName("", "LGORT").equals(
                             reader.getName())) {
-                    object.setLGORT(com.nhry.webService.client.masterData.functions.LGORT_type1.Factory.parse(
+                    object.setLGORT(LGORT_type1.Factory.parse(
                             reader));
 
                     reader.next();
@@ -878,7 +878,7 @@ public class ZTSD00024 implements org.apache.axis2.databinding.ADBBean {
                             reader.getName())) ||
                         new javax.xml.namespace.QName("", "VKBUR").equals(
                             reader.getName())) {
-                    object.setVKBUR(com.nhry.webService.client.masterData.functions.VKBUR_type1.Factory.parse(
+                    object.setVKBUR(VKBUR_type1.Factory.parse(
                             reader));
 
                     reader.next();
@@ -896,7 +896,7 @@ public class ZTSD00024 implements org.apache.axis2.databinding.ADBBean {
                         "Unexpected subelement " + reader.getName());
                 }
             } catch (javax.xml.stream.XMLStreamException e) {
-                throw new java.lang.Exception(e);
+                throw new Exception(e);
             }
 
             return object;
