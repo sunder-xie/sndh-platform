@@ -902,9 +902,9 @@ public class RequireOrderServiceImpl implements RequireOrderService {
     }
 
     @Override
-    public List<TMstRefuseResend> queryRefuseResendByMatnr(String matnr) {
+    public List<TMstRefuseResend> queryRefuseResendByMatnr(String matnr,String reqOrderNo) {
         TSysUser user = userSessionService.getCurrentUser();
-        return resendMapper.queryRefuseResendByMatnr(matnr, user.getBranchNo());
+        return resendMapper.queryRefuseResendByMatnr(matnr, user.getBranchNo(),reqOrderNo);
     }
 
     @Override
