@@ -84,7 +84,17 @@ public class TMdBranch implements Serializable{
 
     private String isValid;
 
+    public String getTargetPerson() {
+        return targetPerson;
+    }
+
+    public void setTargetPerson(String targetPerson) {
+        this.targetPerson = targetPerson;
+    }
+
     private Date onlineDate;
+
+    private String targetPerson;
 
     public String getProvinceName() {
         return provinceName;

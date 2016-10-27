@@ -19,6 +19,8 @@ public interface BranchService {
     int updateBranch(TMdBranch record);
 
     int uptValidBranch(TMdBranch record);
+
+    int uptTargetBranch(TMdBranch tMdBranch);
     
     public List<TMdBranch> findBranchListByOrg();
 
