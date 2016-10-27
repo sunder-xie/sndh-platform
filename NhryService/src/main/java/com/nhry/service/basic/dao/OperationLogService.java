@@ -8,4 +8,5 @@ import com.nhry.model.basic.CustOperationQueryModel;
  */
 public interface OperationLogService {
     PageInfo getCustOperationLog( CustOperationQueryModel cModel);
+    PageInfo getOrderOperationLog( CustOperationQueryModel cModel);
 }

@@ -26,4 +26,13 @@ public class OperationLogServiceImpl implements OperationLogService {
 
         return operationLogMapper.getCustOperationLog(cModel);
     }
+
+    @Override
+    public PageInfo getOrderOperationLog( CustOperationQueryModel cModel) {
+        if(StringUtils.isEmpty(cModel.getPageNum()) || StringUtils.isEmpty(cModel.getPageSize())){
+            throw new ServiceException(MessageCode.LOGIC_ERROR,"pageNum和pageSize不能为空！");
+        }
+
+        return operationLogMapper.getOrderOperationLog(cModel);
+    }
 }
