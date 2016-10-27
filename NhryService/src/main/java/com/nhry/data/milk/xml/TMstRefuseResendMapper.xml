@@ -274,6 +274,7 @@
             t.RESEND_ORDER_NO,
             t.EMP_NO,
             t2.EMP_NAME,
+            t.MATNR,
             t1.SHORT_TXT as MATNR_TXT,
             t.QTY,
             t.CONFIRM_QTY,
