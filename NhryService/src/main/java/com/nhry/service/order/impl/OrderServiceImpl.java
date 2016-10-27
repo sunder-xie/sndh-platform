@@ -2025,10 +2025,12 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 
 			}
 		}
-		
-		//会员号
-		TVipCustInfo vip = tVipCustInfoService.findVipCustByNoForUpt(order.getMilkmemberNo());
-		if(vip!=null)order.setMemberNo(vip.getVipCustNoSap());
+		if(StringUtils.isBlank(order.getMemberNo())){
+			//会员号
+			TVipCustInfo vip = tVipCustInfoService.findVipCustByNoForUpt(order.getMilkmemberNo());
+			if(vip!=null)order.setMemberNo(vip.getVipCustNoSap());
+		}
+
 
 		//生成每个订单行
 		int index = 0;
@@ -4049,6 +4051,7 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 	@Override
 	public int editOrderForShort(DaliyPlanEditModel record)
 	{
+		TSysUser user = userSessionService.getCurrentUser();
 		SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
 		TPreOrder orgOrder = tPreOrderMapper.selectByPrimaryKey(record.getOrderCode());
 		if("10".equals(orgOrder.getPaymentmethod())){
@@ -4067,6 +4070,11 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 		//后付款的,日订单不往后延
 		if("10".equals(orgOrder.getPaymentmethod()) ){
 			for(TOrderDaliyPlanItem plan : record.getEntries()){
+				String logName = "";
+				TMdMaraEx ex = maraExMapper.getProductTransRateByCode(plan.getMatnr(),user.getSalesOrg());
+				if(ex!=null){
+					plan.setMatnrTxt(ex.getShortTxt());
+				}
 //				plan.getMatnr();//校验商品
 				BigDecimal cj = new BigDecimal("0.00");//差价
 				TOrderDaliyPlanItem orgPlan = daliyPlanMap.get(plan.getItemNo()+"/"+plan.getPlanItemNo());
@@ -4076,7 +4084,10 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 				if("30".equals(orgPlan.getStatus())){//如果已停订，跳过
 					continue;
 				}
+
 				if("30".equals(plan.getStatus())){
+					OperationLogUtil.saveHistoryOperation(orgOrder.getOrderNo(),LogType.DAIL_ORDER,DailOrderLogEnum.STATUS,
+							orgPlan.getStatus(),plan.getStatus(),orgPlan.getMatnr(),orgPlan.getDispDate(),user,operationLogMapper);
 					orgPlan.setStatus(plan.getStatus());
 					cj = cj.subtract(orgPlan.getAmt());
 				}
@@ -4091,6 +4102,10 @@ public class OrderServiceImpl extends BaseService implements OrderService {
    					cj = orgPlan.getAmt().subtract(new BigDecimal(String.valueOf(price)).multiply(new BigDecimal(orgPlan.getQty().toString())));
    					orgPlan.setPrice(new BigDecimal(String.valueOf(price)));
    				}
+				if(!plan.getMatnr().equals(orgPlan.getMatnr()) ){
+					OperationLogUtil.saveHistoryOperation(orgOrder.getOrderNo(),LogType.DAIL_ORDER,DailOrderLogEnum.STATUS,
+							orgPlan.getStatus(),plan.getStatus(),orgPlan.getMatnr(),orgPlan.getDispDate(),user,operationLogMapper);
+				}
    				orgPlan.setMatnr(plan.getMatnr());
    				orgPlan.setQty(plan.getQty());
    				orgPlan.setUnit(plan.getUnit());
@@ -4121,6 +4136,10 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 		//先付款的	,日订单往后延
 		}else if("20".equals(orgOrder.getPaymentmethod()) ){
 			for(TOrderDaliyPlanItem plan : record.getEntries()){
+				TMdMaraEx ex = maraExMapper.getProductTransRateByCode(plan.getMatnr(),user.getSalesOrg());
+				if(ex!=null){
+					plan.setMatnrTxt(ex.getShortTxt());
+				}
 //				plan.getMatnr();//校验商品
 				TOrderDaliyPlanItem orgPlan = daliyPlanMap.get(plan.getItemNo()+"/"+plan.getPlanItemNo());
 				if(tDispOrderItemMapper.selectItemsByOrgOrderAndItemNo(orgPlan.getOrderNo(), orgPlan.getItemNo(), orgPlan.getDispDate()).size()>0){
@@ -4143,10 +4162,6 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 					if(price<=0)throw new ServiceException(MessageCode.LOGIC_ERROR,"替换的产品价格小于0，请维护价格组!");
 					if(StringUtils.isNotBlank(orgPlan.getPromotionFlag())&&orgPlan.getPrice().floatValue()!=price)throw new ServiceException(MessageCode.LOGIC_ERROR,"有促销的产品只能替换价格相同的产品!");
 					plan.setPrice(new BigDecimal(String.valueOf(price)));
-					TMdMaraEx ex = maraExMapper.getProductTransRateByCode(plan.getMatnr(),userSessionService.getCurrentUser().getSalesOrg());
-					if(ex!=null){
-						plan.setMatnrTxt(ex.getShortTxt());
-					}
 
 					changeProductPlans.put(orgPlan,plan);
 				}
@@ -4660,7 +4675,7 @@ public class OrderServiceImpl extends BaseService implements OrderService {
    
    //变更产品或数量
    private void changeProductOrQty(TPreOrder orgOrder, ArrayList<TPlanOrderItem> orgEntries,List<TOrderDaliyPlanItem> daliyPlans, Map<TOrderDaliyPlanItem,TOrderDaliyPlanItem> changeProducts,Map<TOrderDaliyPlanItem,TOrderDaliyPlanItem> changeQtys,Map<TOrderDaliyPlanItem,TOrderDaliyPlanItem> stopPlans){
-		
+	  TSysUser user = userSessionService.getCurrentUser();
 		SimpleDateFormat format = new SimpleDateFormat("yyyyMMdd");//该商品该日期原日计划送多少个
 		BigDecimal curAmt = orgOrder.getCurAmt();//当前订单的剩余金额
    	
@@ -4788,22 +4803,23 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 				}
 				//变更产品
 				if(changeProducts.containsKey(plan)){
+
+					if(plan.getQty().compareTo(changeProducts.get(plan).getQty())==0){
+						//只换产品
+						OperationLogUtil.saveHistoryOperation(orgOrder.getOrderNo(), LogType.DAIL_ORDER,DailOrderLogEnum.UPT_MATNR,
+								plan.getMatnr()+plan.getMatnrTxt(),changeProducts.get(plan).getMatnr()+changeProducts.get(plan).getMatnrTxt(),null
+								,plan.getDispDate(),user,operationLogMapper);
+					}else{
+						//换产品 同时换数量
+						OperationLogUtil.saveHistoryOperation(orgOrder.getOrderNo(), LogType.DAIL_ORDER,DailOrderLogEnum.UPT_MATNR_QTY,
+								plan.getMatnr()+plan.getMatnrTxt()+"—"+plan.getQty(),changeProducts.get(plan).getMatnr()+changeProducts.get(plan).getMatnrTxt()+"—"+changeProducts.get(plan).getQty(),null
+								,plan.getDispDate(),user,operationLogMapper);
+					}
 					plan.setMatnr(changeProducts.get(plan).getMatnr());
 					plan.setQty(changeProducts.get(plan).getQty());
 					plan.setUnit(changeProducts.get(plan).getUnit());
 					plan.setPrice(changeProducts.get(plan).getPrice());
 					plan.setAmt(changeProducts.get(plan).getPrice().multiply(new BigDecimal(changeProducts.get(plan).getQty().toString())));
-					if(plan.getQty().compareTo(changeProducts.get(plan).getQty())==0){
-						//只换产品
-						OperationLogUtil.saveHistoryOperation(orgOrder.getOrderNo(), LogType.DAIL_ORDER,DailOrderLogEnum.UPT_MATNR,
-								plan.getMatnr(),changeProducts.get(plan).getMatnr(),null
-								,plan.getDispDate(),userSessionService.getCurrentUser(),operationLogMapper);
-					}else{
-						OperationLogUtil.saveHistoryOperation(orgOrder.getOrderNo(), LogType.DAIL_ORDER,DailOrderLogEnum.UPT_MATNR_QTY,
-								plan.getMatnr()+"-"+plan.getQty(),changeProducts.get(plan).getMatnr()+"-"+changeProducts.get(plan).getQty(),null
-								,plan.getDispDate(),userSessionService.getCurrentUser(),operationLogMapper);
-					}
-
 				}
 				//变更数量
 				else if(changeQtys.containsKey(plan)){
