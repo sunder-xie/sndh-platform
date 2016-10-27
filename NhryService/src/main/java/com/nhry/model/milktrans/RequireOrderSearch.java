@@ -16,6 +16,7 @@ public class RequireOrderSearch  implements Serializable {
     private Date secondDay;
     private String promotion;
     private String reqOrderNo;
+    private String preorderSource;
 
     public String getReqOrderNo() {
         return reqOrderNo;
@@ -87,6 +88,14 @@ public class RequireOrderSearch  implements Serializable {
 
     public void setSalesOrg(String salesOrg) {
         this.salesOrg = salesOrg;
+    }
+
+    public String getPreorderSource() {
+        return preorderSource;
+    }
+
+    public void setPreorderSource(String preorderSource) {
+        this.preorderSource = preorderSource;
     }
 }
 

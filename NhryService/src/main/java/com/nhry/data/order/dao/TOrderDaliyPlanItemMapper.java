@@ -71,11 +71,17 @@ public interface TOrderDaliyPlanItemMapper {
 
     List<TOrderDaliyPlanItem> selectNoProDayPlanOfDealerBranch(RequireOrderSearch rModel);
 
+    List<TOrderDaliyPlanItem> selectProDayPlanOfDealerBranch40(RequireOrderSearch rModel);
+
+    List<TOrderDaliyPlanItem> selectNoProDayPlanOfDealerBranch40(RequireOrderSearch rModel);
+
     List<String> getDailOrderPromOfSelfBranch(RequireOrderSearch rModel);
 
     List<TOrderDaliyPlanItem> selectNoProDayPlanOfSelfBranch(RequireOrderSearch rModel);
 
     List<TOrderDaliyPlanItem> selectProDayPlanOfSelfBranch(RequireOrderSearch rModel);
+
+    List<TOrderDaliyPlanItem> selectNoProDayPlanOfSelfBranch40(RequireOrderSearch rModel);
 
     List<TOrderDaliyPlanItem> getProductItemsByOrderNo(String orderCode,String salesOrg);
 

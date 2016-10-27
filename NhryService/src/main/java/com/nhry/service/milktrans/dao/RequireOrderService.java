@@ -14,7 +14,7 @@ import java.util.List;
  */
 public interface RequireOrderService {
 
-   // RequireOrderModel creatRequireOrder();
+    // RequireOrderModel creatRequireOrder();
     RequireOrderModel searchRequireOrder(Date orderDate);
 
     int uptNewRequireOrderItem(UpdateNewRequiredModel uModel);
@@ -28,6 +28,10 @@ public interface RequireOrderService {
     TSsmSalOrder creatPromoSalOrderOfDealerBranch(Date today);
 
     TSsmSalOrder creatNoPromoSalOrderOfDealerBranch(Date requiredDate);
+
+    TSsmSalOrder creatPromoSalOrderOfDealerBranch40(Date today);
+
+    TSsmSalOrder creatNoPromoSalOrderOfDealerBranch40(Date requiredDate);
 
     TSsmSalOrder creatNoPromoSalOrderOfSelftBranch(Date requiredDate);
 

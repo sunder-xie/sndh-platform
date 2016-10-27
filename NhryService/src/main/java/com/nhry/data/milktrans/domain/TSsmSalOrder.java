@@ -26,6 +26,8 @@ public class TSsmSalOrder {
     private Date lastModified;
     private String lastModifiedBy;
     private String lastModifiedByTxt;
+    private String preorderSource;
+    private String onlineCode;
 
     public String getDealerName() {
         return dealerName;
@@ -185,5 +187,21 @@ public class TSsmSalOrder {
 
     public void setLastModifiedByTxt(String lastModifiedByTxt) {
         this.lastModifiedByTxt = lastModifiedByTxt;
+    }
+
+    public String getPreorderSource() {
+        return preorderSource;
+    }
+
+    public void setPreorderSource(String preorderSource) {
+        this.preorderSource = preorderSource;
+    }
+
+    public String getOnlineCode() {
+        return onlineCode;
+    }
+
+    public void setOnlineCode(String onlineCode) {
+        this.onlineCode = onlineCode;
     }
 }
