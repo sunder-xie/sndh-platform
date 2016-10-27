@@ -62,15 +62,11 @@
         <!-- <columnOverride column="LONG_VARCHAR_FIELD" jdbcType="VARCHAR" />-->
 
 
-        <table schema="${schema}" tableName="T_SSM_GI_ORDER"
-               domainObjectName="TSsmGiOrder" enableCountByExample="false"
+        <table schema="${schema}" tableName="t_ssm_sal_factory_price"
+               domainObjectName="TSsmSalFactoryPrice" enableCountByExample="false"
                enableDeleteByExample="false" enableSelectByExample="false"
                enableUpdateByExample="false">
         </table>
-        <table schema="${schema}" tableName="T_SSM_GI_ORDER_ITEM"
-               domainObjectName="TSsmGiOrderItem" enableCountByExample="false"
-               enableDeleteByExample="false" enableSelectByExample="false"
-               enableUpdateByExample="false">
-        </table>
+
     </context>
 </generatorConfiguration>

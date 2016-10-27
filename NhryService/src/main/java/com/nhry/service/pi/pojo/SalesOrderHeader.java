@@ -54,6 +54,18 @@ public class SalesOrderHeader {
      * 成本中心
      */
     String kostl;
+    /**
+     * 线上订单客户编码
+     */
+    String KUNWE2;
+
+    public String getKUNWE2() {
+        return KUNWE2;
+    }
+
+    public void setKUNWE2(String KUNWE2) {
+        this.KUNWE2 = KUNWE2;
+    }
 
     public String getKUNNR() {
         return KUNNR;

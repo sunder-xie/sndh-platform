@@ -551,14 +551,34 @@
   select i.MATNR,SUM(i.GIFT_QTY) QTY,PROMOTION_FLAG
     from t_mst_order_daliy_plan_item i
     LEFT JOIN t_preorder o on i.ORDER_NO = o.ORDER_NO
+    LEFT JOIN t_md_mara_ex e on i.MATNR = e.MATNR  and e.SALES_ORG = #{salesOrg,jdbcType=VARCHAR}
     where   1=1
+    and o.PREORDER_SOURCE != '40'
     AND i.GIFT_QTY is not null
     and i.GIFT_QTY >0
     and o.PREORDER_STAT !='20'
     and o.PREORDER_STAT !='40'
     and i.`STATUS` !='30'
     and o.BRANCH_NO = #{branchNo,jdbcType=VARCHAR}
-    and  ( i.DISP_DATE = #{secondDay,jdbcType=DATE}  or i.DISP_DATE = #{firstDay,jdbcType=DATE} )
+    and  ((e.PRE_DAYS= 2 and   i.DISP_DATE = #{secondDay,jdbcType=DATE} ) or (e.PRE_DAYS= 1 and   i.DISP_DATE = #{firstDay,jdbcType=DATE}))
+    GROUP BY i.PROMOTION_FLAG,i.MATNR
+    ORDER BY i.DISP_DATE desc
+  </select>
+
+  <select id="selectProDayPlanOfDealerBranch40" resultMap="BaseResultMap" parameterType="com.nhry.model.milktrans.RequireOrderSearch" >
+    select i.MATNR,SUM(i.GIFT_QTY) QTY,PROMOTION_FLAG
+    from t_mst_order_daliy_plan_item i
+    LEFT JOIN t_preorder o on i.ORDER_NO = o.ORDER_NO
+    LEFT JOIN t_md_mara_ex e on i.MATNR = e.MATNR  and e.SALES_ORG = #{salesOrg,jdbcType=VARCHAR}
+    where   1=1
+    and o.PREORDER_SOURCE = '40'
+    AND i.GIFT_QTY is not null
+    and i.GIFT_QTY >0
+    and o.PREORDER_STAT !='20'
+    and o.PREORDER_STAT !='40'
+    and i.`STATUS` !='30'
+    and o.BRANCH_NO = #{branchNo,jdbcType=VARCHAR}
+    and  ((e.PRE_DAYS= 2 and   i.DISP_DATE = #{secondDay,jdbcType=DATE} ) or (e.PRE_DAYS= 1 and   i.DISP_DATE = #{firstDay,jdbcType=DATE}))
     GROUP BY i.PROMOTION_FLAG,i.MATNR
     ORDER BY i.DISP_DATE desc
   </select>
@@ -575,24 +595,21 @@
 				  LEFT JOIN t_preorder o on 	i.ORDER_NO = o.ORDER_NO
 				  LEFT JOIN t_md_mara_ex e on i.MATNR = e.MATNR  and e.SALES_ORG = #{salesOrg,jdbcType=VARCHAR}
 				  where   1=1
+				  and o.PREORDER_SOURCE != '40'
 				  and o.PREORDER_STAT !='30'
 				  and o.PREORDER_STAT !='40'
 				  and i.`STATUS` !='30'
-				  AND i.GIFT_QTY is  null
+				  AND i.GIFT_QTY is null
 				  and  ((e.PRE_DAYS= 2 and   i.DISP_DATE = #{secondDay,jdbcType=DATE} ) or (e.PRE_DAYS= 1 and   i.DISP_DATE = #{firstDay,jdbcType=DATE}))
 				  and m.SALES_ORG=#{salesOrg,jdbcType=VARCHAR}
 				  and o.BRANCH_NO = #{branchNo,jdbcType=VARCHAR}
 				  GROUP BY i.MATNR
-
-
 		UNION ALL
-
 				  SELECT
 				  i.MATNR,SUM(i.INCRE_QTY) QTY
 				  FROM t_ssm_req_goods_order_item i
 				  LEFT JOIN t_ssm_req_goods_order o on i.ORDER_NO = o.ORDER_NO
 				  where 1=1
-
 				  and o.ORDER_DATE = #{orderDate,jdbcType=DATE}
 				  and o.BRANCH_NO =  #{branchNo,jdbcType=VARCHAR}
 				  GROUP BY i.MATNR
@@ -606,15 +623,30 @@
 					and o.ORDER_DATE = #{orderDate,jdbcType=DATE}
 					and o.BRANCH_NO =  #{branchNo,jdbcType=VARCHAR}
 					GROUP BY i.MATNR
-
 		)t
 		where 1=1
 		and t.MATNR IS NOT NULL
 		GROUP BY t.MATNR
-
 	)t1 WHERE t1.QTY >0
 
   </select>
+
+  <select id="selectNoProDayPlanOfDealerBranch40" resultMap="BaseResultMap" parameterType="com.nhry.model.milktrans.RequireOrderSearch" >
+    select i.MATNR,SUM(i.QTY) QTY
+    from t_mst_order_daliy_plan_item i
+    LEFT JOIN t_preorder o on 	i.ORDER_NO = o.ORDER_NO
+    LEFT JOIN t_md_mara_ex e on i.MATNR = e.MATNR  and e.SALES_ORG = #{salesOrg,jdbcType=VARCHAR}
+    where  1=1
+    and o.PREORDER_SOURCE = '40'
+    and o.PREORDER_STAT !='30'
+    and o.PREORDER_STAT !='40'
+    and i.`STATUS` !='30'
+    AND i.GIFT_QTY is null
+    and  ((e.PRE_DAYS= 2 and   i.DISP_DATE = #{secondDay,jdbcType=DATE} ) or (e.PRE_DAYS= 1 and   i.DISP_DATE = #{firstDay,jdbcType=DATE}))
+    and o.BRANCH_NO = #{branchNo,jdbcType=VARCHAR}
+    GROUP BY i.MATNR
+  </select>
+
 
   <select id="getDailOrderPromOfSelfBranch" resultType="String" parameterType="com.nhry.model.milktrans.RequireOrderSearch" >
     SELECT
@@ -629,42 +661,49 @@
     and o.SALES_ORG = #{salesOrg,jdbcType=VARCHAR}
     GROUP BY i.PROMOTION_FLAG
   </select>
+
   <select id="selectProDayPlanOfSelfBranch" resultMap="BaseResultMap" parameterType="com.nhry.model.milktrans.RequireOrderSearch" >
-         SELECT di.MATNR,SUM(di.CONFIRM_QTY) QTY,di.CONFIRM_MATNR,p.PROMOTION PROMOTION_FLAG
-            from  t_mst_disp_order_item di
-           LEFT JOIN  t_mst_disp_order ti ON di.ORDER_NO = ti.ORDER_NO
-            LEFT JOIN t_mst_plan_order_item  i on i.ORDER_NO = di.ORG_ORDER_NO and i.ITEM_NO = di.ORG_ITEM_NO and i.MATNR = di.MATNR
-            LEFT JOIN t_preorder o on 	di.ORG_ORDER_NO = o.ORDER_NO
-            LEFT JOIN t_mst_plan_order_item p on di.ORG_ITEM_NO = p.ITEM_NO
-            LEFT JOIN t_md_mara_ex e on di.MATNR = e.MATNR  and e.SALES_ORG = #{salesOrg,jdbcType=VARCHAR}
-            where   1=1
-            AND di.GIFT_FLAG is NOT null
-            AND ti.STATUS = '20'
-            and di.CONFIRM_QTY>0
-            and di.MATNR!=di.CONFIRM_MATNR
-            and di.REASON = '10'
-            and di.REPLACE_REASON = '10'
-             and  o.BRANCH_NO = #{branchNo,jdbcType=VARCHAR}
-            and e.SALES_ORG = #{salesOrg,jdbcType=VARCHAR}
-            and  ti.DISP_DATE = #{orderDate,jdbcType=DATE}
-            GROUP BY di.MATNR,di.CONFIRM_MATNR,p.PROMOTION
-        UNION ALL
-            SELECT  (select NULL from DUAL) MATNR,SUM(di.CONFIRM_QTY) QTY,di.MATNR   CONFIRM_MATNR,p.PROMOTION PROMOTION_FLAG
+         SELECT SUM(di.CONFIRM_QTY) QTY,di.CONFIRM_MATNR,p.PROMOTION PROMOTION_FLAG
             from  t_mst_disp_order_item di
             LEFT JOIN  t_mst_disp_order ti ON di.ORDER_NO = ti.ORDER_NO
-            LEFT JOIN t_mst_plan_order_item  i on i.ORDER_NO = di.ORG_ORDER_NO and i.ITEM_NO = di.ORG_ITEM_NO and i.MATNR = di.MATNR
+            -- LEFT JOIN t_mst_plan_order_item  i on i.ORDER_NO = di.ORG_ORDER_NO and i.ITEM_NO = di.ORG_ITEM_NO and i.MATNR = di.MATNR
             LEFT JOIN t_preorder o on 	di.ORG_ORDER_NO = o.ORDER_NO
-            LEFT JOIN t_md_mara_ex e on di.MATNR = e.MATNR  and e.SALES_ORG = #{salesOrg,jdbcType=VARCHAR}
             LEFT JOIN t_mst_plan_order_item p on di.ORG_ITEM_NO = p.ITEM_NO
+            LEFT JOIN t_md_mara_ex e on di.MATNR = e.MATNR  and e.SALES_ORG = #{salesOrg,jdbcType=VARCHAR}
             where   1=1
             AND di.GIFT_FLAG is NOT null
             AND ti.STATUS = '20'
-            and di.MATNR = di.CONFIRM_MATNR
             and di.CONFIRM_QTY>0
+            and di.REASON = '10'
+            and di.REPLACE_REASON = '10'
             and  o.BRANCH_NO = #{branchNo,jdbcType=VARCHAR}
+            <if test="preorderSource != null and preorderSource == '40'">
+              and o.PREORDER_SOURCE = '40'
+            </if>
+            <if test="preorderSource != null and preorderSource != '40'">
+              and o.PREORDER_SOURCE != '40'
+            </if>
             and e.SALES_ORG = #{salesOrg,jdbcType=VARCHAR}
             and  ti.DISP_DATE = #{orderDate,jdbcType=DATE}
-            GROUP BY di.MATNR,p.PROMOTION
+            GROUP BY di.CONFIRM_MATNR,p.PROMOTION
+  </select>
+  <select id="selectNoProDayPlanOfSelfBranch40" resultMap="BaseResultMap" parameterType="com.nhry.model.milktrans.RequireOrderSearch" >
+    SELECT SUM(di.CONFIRM_QTY) QTY,di.CONFIRM_MATNR
+    from  t_mst_disp_order_item di
+    LEFT JOIN  t_mst_disp_order ti ON di.ORDER_NO = ti.ORDER_NO
+    LEFT JOIN t_preorder o on 	di.ORG_ORDER_NO = o.ORDER_NO
+    LEFT JOIN t_md_mara_ex e on di.MATNR = e.MATNR  and e.SALES_ORG = #{salesOrg,jdbcType=VARCHAR}
+    where   1=1
+    AND di.GIFT_FLAG is null
+    AND ti.STATUS = '20'
+    and di.CONFIRM_QTY>0
+    and di.REASON = '10'
+    and di.REPLACE_REASON = '10'
+    and  o.BRANCH_NO = #{branchNo,jdbcType=VARCHAR}
+    and o.PREORDER_SOURCE = '40'
+    and e.SALES_ORG = #{salesOrg,jdbcType=VARCHAR}
+    and  ti.DISP_DATE = #{orderDate,jdbcType=DATE}
+    GROUP BY di.CONFIRM_MATNR
   </select>
   <select id="selectNoProDayPlanOfSelfBranch" resultMap="BaseResultMap" parameterType="com.nhry.model.milktrans.RequireOrderSearch" >
          SELECT  t.MATNR,SUM(t.QTY) QTY,  t.CONFIRM_MATNR
