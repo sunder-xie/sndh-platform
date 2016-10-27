@@ -40,7 +40,14 @@ public class OperationLogResource extends BaseResource {
         return convertToRespModel(MessageCode.NORMAL, null,operationLogService.getCustOperationLog(cModel));
     }
 
-
+    @POST
+    @Path("/getOrderOperationLog")
+    @Produces(MediaType.APPLICATION_JSON)
+    @Consumes(MediaType.APPLICATION_JSON)
+    @ApiOperation(value = "/getOrderOperationLog", response = List.class, notes = "订单日志列表")
+    public Response getOrderLogList(@ApiParam(required=true,name="branchModel",value="SearchModel") CustOperationQueryModel cModel){
+        return convertToRespModel(MessageCode.NORMAL, null,operationLogService.getOrderOperationLog(cModel));
+    }
 
 
 }

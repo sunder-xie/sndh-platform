@@ -116,4 +116,27 @@ WHERE
       and (i.VIP_NAME like '%${search}%' OR i.MP like '%${search}%' OR l.CREATE_BY like '%${search}%' OR l.CREATE_BY_TXT like '%${search}%')
     </if>
   </select>
+  <select id="getOrderOperationLog" resultType="hashmap" parameterType="com.nhry.model.basic.CustOperationQueryModel">
+    SELECT
+    l.LOG_NO,
+    l.LOG_MATNR,
+    l.LOG_NAME,
+    l.ORIGINAL_VALUE,
+    l.NEW_VALUE,
+    l.CREATE_AT,
+    l.CREATE_BY_TXT
+    FROM
+    t_md_operation_log l
+    WHERE
+    l.LOG_TYPE = '20'
+    <if test="dateStart!=null and ''!=dateStart">
+      and l.LOG_DATE &gt;= #{dateStart}
+    </if>
+    <if test="dateEnd!=null and ''!=dateEnd">
+      and  l.LOG_DATE &lt;= #{dateEnd}
+    </if>
+    <if test="search!=null and ''!=search">
+      and (l.LOG_NO like '%${search}%' OR l.LOG_MATNR like '%${search}%' OR l.CREATE_BY like '%${search}%' OR l.CREATE_BY_TXT like '%${search}%')
+    </if>
+  </select>
 </mapper>

@@ -11,4 +11,6 @@ public interface TMdOperationLogMapper {
   public  int save(TMdOperationLog log);
 
   PageInfo getCustOperationLog(CustOperationQueryModel cModel);
+
+  PageInfo getOrderOperationLog(CustOperationQueryModel cModel);
 }

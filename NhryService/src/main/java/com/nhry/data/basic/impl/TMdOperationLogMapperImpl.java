@@ -25,4 +25,9 @@ public class TMdOperationLogMapperImpl implements TMdOperationLogMapper {
     public PageInfo getCustOperationLog(CustOperationQueryModel cModel) {
         return sqlSessionTemplate.selectListByPages("getCustOperationLog", cModel, Integer.parseInt(cModel.getPageNum()), Integer.parseInt(cModel.getPageSize()));
     }
+
+    @Override
+    public PageInfo getOrderOperationLog(CustOperationQueryModel cModel) {
+        return sqlSessionTemplate.selectListByPages("getOrderOperationLog", cModel, Integer.parseInt(cModel.getPageNum()), Integer.parseInt(cModel.getPageSize()));
+    }
 }
