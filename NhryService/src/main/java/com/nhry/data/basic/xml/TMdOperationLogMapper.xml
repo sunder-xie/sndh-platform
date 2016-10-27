@@ -7,7 +7,7 @@
     <result column="ORIGINAL_VALUE" property="originalValue" jdbcType="VARCHAR" />
     <result column="NEW_VALUE" property="newValue" jdbcType="VARCHAR" />
     <result column="LOG_MATNR" property="logMatnr" jdbcType="VARCHAR" />
-    <result column="DISP_DATE" property="dispDate" jdbcType="DATE" />
+    <result column="LOG_DISP_DATE" property="logDispDate" jdbcType="DATE" />
     <result column="LOG_NAME" property="logName" jdbcType="VARCHAR" />
     <result column="LOG_DATE" property="logDate" jdbcType="DATE" />
     <result column="CREATE_AT" property="createAt" jdbcType="TIMESTAMP" />
@@ -15,7 +15,7 @@
     <result column="CREATE_BY_TXT" property="createByTxt" jdbcType="VARCHAR" />
   </resultMap>
   <sql id="Base_Column_List" >
-    LOG_NO, LOG_TYPE, ORIGINAL_VALUE, NEW_VALUE, LOG_MATNR, DISP_DATE, LOG_NAME, LOG_DATE, CREATE_AT,
+    LOG_NO, LOG_TYPE, ORIGINAL_VALUE, NEW_VALUE, LOG_MATNR, LOG_DISP_DATE, LOG_NAME, LOG_DATE, CREATE_AT,
     CREATE_AT, CREATE_BY, CREATE_BY_TXT
   </sql>
   <insert id="save" parameterType="com.nhry.data.basic.domain.TMdOperationLog" >
@@ -36,8 +36,8 @@
       <if test="logMatnr != null" >
         LOG_MATNR,
       </if>
-      <if test="dispDate != null" >
-        DISP_DATE,
+      <if test="logDispDate != null" >
+        LOG_DISP_DATE,
       </if>
       <if test="logName != null" >
         LOG_NAME,
@@ -71,8 +71,8 @@
       <if test="logMatnr != null" >
         #{logMatnr,jdbcType=VARCHAR},
       </if>
-      <if test="dispDate != null" >
-        #{dispDate,jdbcType=DATE},
+      <if test="logDispDate != null" >
+        #{logDispDate,jdbcType=DATE},
       </if>
       <if test="logName != null" >
         #{logName,jdbcType=VARCHAR},

@@ -12,7 +12,7 @@ public class TMdOperationLog implements Serializable{
     private String originalValue;       //原值
     private String  newValue;           //新值
     private String logMatnr;            //产品
-    private Date dispDate;              //配送日期
+    private Date logDispDate;              //日期
     private String logName;             //名称
     private Date  logDate;              //日志日期
     private Date createAt;              //创建时间
@@ -59,12 +59,12 @@ public class TMdOperationLog implements Serializable{
         this.logMatnr = logMatnr;
     }
 
-    public Date getDispDate() {
-        return dispDate;
+    public Date getLogDispDate() {
+        return logDispDate;
     }
 
-    public void setDispDate(Date dispDate) {
-        this.dispDate = dispDate;
+    public void setLogDispDate(Date logDispDate) {
+        this.logDispDate = logDispDate;
     }
 
     public String getLogName() {

@@ -7,6 +7,7 @@ import com.nhry.common.exception.ServiceException;
 import com.nhry.data.auth.domain.TSysUser;
 import com.nhry.data.basic.dao.TMdAddressMapper;
 import com.nhry.data.basic.dao.TMdBranchMapper;
+import com.nhry.data.basic.dao.TMdMaraExMapper;
 import com.nhry.data.basic.dao.TMdOperationLogMapper;
 import com.nhry.data.basic.domain.*;
 import com.nhry.data.bill.dao.CustomerBillMapper;
@@ -37,6 +38,7 @@ import com.nhry.service.pi.dao.SmsSendService;
 import com.nhry.service.pi.pojo.MemberActivities;
 import com.nhry.utils.CodeGeneratorUtil;
 import com.nhry.utils.EnvContant;
+import com.nhry.utils.OperationLogUtil;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.core.task.TaskExecutor;
 
@@ -65,6 +67,11 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 	private TDispOrderMapper tDispOrderMapper;
 	private TMdAddressMapper addressMapper;
 	private TMdOperationLogMapper operationLogMapper;
+	private TMdMaraExMapper maraExMapper;
+
+	public void setMaraExMapper(TMdMaraExMapper maraExMapper) {
+		this.maraExMapper = maraExMapper;
+	}
 
 	public void setOperationLogMapper(TMdOperationLogMapper operationLogMapper) {
 		this.operationLogMapper = operationLogMapper;
@@ -1914,7 +1921,16 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 			order.setSalesOrg(branch.getSalesOrg());
 		}
 		//order.setSalesOrg(userSessionService.getCurrentUser().getSalesOrg());//销售组织
-
+		if(StringUtils.isNotBlank(order.getPayDateStr())){
+			try
+			{
+				order.setPayDate(format.parse(order.getPayDateStr()));
+			}
+			catch (Exception e)
+			{
+				throw new ServiceException(MessageCode.LOGIC_ERROR,"日期格式有误!");
+			}
+		}
 
 		//征订日期
 		if(StringUtils.isNotBlank(order.getSolicitDateStr())){
@@ -4127,6 +4143,11 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 					if(price<=0)throw new ServiceException(MessageCode.LOGIC_ERROR,"替换的产品价格小于0，请维护价格组!");
 					if(StringUtils.isNotBlank(orgPlan.getPromotionFlag())&&orgPlan.getPrice().floatValue()!=price)throw new ServiceException(MessageCode.LOGIC_ERROR,"有促销的产品只能替换价格相同的产品!");
 					plan.setPrice(new BigDecimal(String.valueOf(price)));
+					TMdMaraEx ex = maraExMapper.getProductTransRateByCode(plan.getMatnr(),userSessionService.getCurrentUser().getSalesOrg());
+					if(ex!=null){
+						plan.setMatnrTxt(ex.getShortTxt());
+					}
+
 					changeProductPlans.put(orgPlan,plan);
 				}
 				//变更数量
@@ -4652,7 +4673,7 @@ public class OrderServiceImpl extends BaseService implements OrderService {
    		}
    	}
    	
-   	//针对于原订单行要减少或者增加多少件商品
+   	//针对于原订单行要减少或者增加多少件商品(该产品 也会改数量)
    	Map<String,BigDecimal> productMap = new HashMap<String,BigDecimal>();
    	for (TOrderDaliyPlanItem org : changeProducts.keySet()) {
    		TOrderDaliyPlanItem cur = changeProducts.get(org);
@@ -4672,7 +4693,7 @@ public class OrderServiceImpl extends BaseService implements OrderService {
    		}
    	}
    	
-   	//数量，当value为负说明该产品行日计划要增加延后value件商品，正说明要提前
+   	//数量，当value为负说明该产品行日计划要增加延后value件商品，正说明要提前（产品不变）
    	for (TOrderDaliyPlanItem org : changeQtys.keySet()) {
    		TOrderDaliyPlanItem cur = changeQtys.get(org);
    		int c = cur.getQty() - org.getQty();
@@ -4772,9 +4793,23 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 					plan.setUnit(changeProducts.get(plan).getUnit());
 					plan.setPrice(changeProducts.get(plan).getPrice());
 					plan.setAmt(changeProducts.get(plan).getPrice().multiply(new BigDecimal(changeProducts.get(plan).getQty().toString())));
+					if(plan.getQty().compareTo(changeProducts.get(plan).getQty())==0){
+						//只换产品
+						OperationLogUtil.saveHistoryOperation(orgOrder.getOrderNo(), LogType.DAIL_ORDER,DailOrderLogEnum.UPT_MATNR,
+								plan.getMatnr(),changeProducts.get(plan).getMatnr(),null
+								,plan.getDispDate(),userSessionService.getCurrentUser(),operationLogMapper);
+					}else{
+						OperationLogUtil.saveHistoryOperation(orgOrder.getOrderNo(), LogType.DAIL_ORDER,DailOrderLogEnum.UPT_MATNR_QTY,
+								plan.getMatnr()+"-"+plan.getQty(),changeProducts.get(plan).getMatnr()+"-"+changeProducts.get(plan).getQty(),null
+								,plan.getDispDate(),userSessionService.getCurrentUser(),operationLogMapper);
+					}
+
 				}
 				//变更数量
 				else if(changeQtys.containsKey(plan)){
+					//日订单更改数量日志
+				OperationLogUtil.saveHistoryOperation(orgOrder.getOrderNo(), LogType.DAIL_ORDER,DailOrderLogEnum.UPT_QTY,
+					plan.getQty().toString(),changeQtys.get(plan).getQty().toString(),plan.getMatnr()+plan.getMatnrTxt(),plan.getDispDate(),userSessionService.getCurrentUser(),operationLogMapper);
 					plan.setQty(changeQtys.get(plan).getQty());
 					plan.setAmt(changeQtys.get(plan).getPrice().multiply(new BigDecimal(changeQtys.get(plan).getQty().toString())));
 				}
