@@ -27,7 +27,7 @@ public interface BranchInfoService {
     List<Map<String,String>> branchDayRepo(BranchInfoModel model);
     Map<String,String> branchDayQty(BranchInfoModel model);
     List<Map<String,String>> exportOrderByModel(BranchInfoModel model);
-
+    List<Map<String,String>> orderOnlineStatReport(ExtendBranchInfoModel model);
     PageInfo Refuse2receiveResend(ExtendBranchInfoModel model);
 
     List<Map<String,String>> Refuse2receiveResendDetail(String  resendOrderNo);
