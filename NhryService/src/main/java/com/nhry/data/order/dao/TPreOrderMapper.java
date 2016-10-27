@@ -108,4 +108,8 @@ public interface TPreOrderMapper {
     int orderConfirm(UpdateManHandOrderModel uptManHandModel);
 
     List<TPreOrder> selectDispNoByGroupAndOrders(String branchNo,List<String> orderNos);
+
+    PageInfo searchPendingConfirmUnOnline(OrderSearchModel smodel);
+
+    PageInfo searchPendingConfirmOnline(OrderSearchModel smodel);
 }

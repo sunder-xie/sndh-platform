@@ -112,4 +112,8 @@ public interface OrderService {
 
 	void selectOrdersAndSendMessage();
 
+	PageInfo searchPendingConfirmUnOnline(OrderSearchModel smodel);
+	PageInfo searchPendingConfirmOnline(OrderSearchModel smodel);
+
+	int orderConfirmUnOnline(UpdateManHandOrderModel uptManHandModel);
 }
