@@ -88,11 +88,12 @@ public class milkTransResource extends BaseResource {
 
 
 	@POST
-	@Path("/queryRefuseResendByMatnr/{matnr}")
+	@Path("/queryRefuseResendByMatnr/{matnr}/{orderNo}")
 	@Produces(MediaType.APPLICATION_JSON)
-	@ApiOperation(value = "/queryRefuseResendByMatnr/{matnr}", response = RequireOrderModel.class, notes = "查询奶站下拒收复送产品信息")
-	public Response queryRefuseResendByMatnr(@ApiParam(required=true,name="matnr",value="产品编号") @PathParam("matnr") String matnr) {
-		return convertToRespModel(MessageCode.NORMAL, null, requireOrderService.queryRefuseResendByMatnr(matnr));
+	@ApiOperation(value = "/queryRefuseResendByMatnr/{matnr}/{reqOrderNo}", response = RequireOrderModel.class, notes = "查询奶站下拒收复送产品信息")
+	public Response queryRefuseResendByMatnr(@ApiParam(required=true,name="matnr",value="产品编号") @PathParam("matnr") String matnr,
+											 @ApiParam(required=true,name="reqOrderNo",value="产品编号")@PathParam("orderNo") String orderNo) {
+		return convertToRespModel(MessageCode.NORMAL, null, requireOrderService.queryRefuseResendByMatnr(matnr,orderNo));
 	}
 
 	@POST
@@ -285,6 +286,14 @@ public class milkTransResource extends BaseResource {
 		return convertToRespModel(MessageCode.NORMAL, null, deliverMilkService.createInsideSalOrderByStock(cModel));
 	}
 
+	@POST
+	@Path("/createInsideSalOrderByTmpStock")
+	@Produces(MediaType.APPLICATION_JSON)
+	@Consumes(MediaType.APPLICATION_JSON)
+	@ApiOperation(value = "/createInsideSalOrderByTmpStock", response = Response.class, notes = "根据拒收复送创建内部销售订单")
+	public Response createInsideSalOrderByTmpStock(@ApiParam(required=true,name="dispOrderNo",value="员工（默认站长），产品编码列表，销售组织") CreateInSalOrderModel cModel){
+		return convertToRespModel(MessageCode.NORMAL, null, deliverMilkService.createInsideSalOrderByTmpStock(cModel));
+	}
 
 	@POST
 	@Path("/getInsideSalOrder")

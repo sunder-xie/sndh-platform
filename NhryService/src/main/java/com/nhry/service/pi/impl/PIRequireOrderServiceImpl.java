@@ -25,6 +25,7 @@ import com.nhry.model.milktrans.SalOrderModel;
 import com.nhry.model.stock.StockModel;
 import com.nhry.service.pi.dao.PIRequireOrderService;
 import com.nhry.service.pi.pojo.SalesOrderHeader;
+import com.nhry.utils.EnvContant;
 import com.nhry.utils.PIPropertitesUtil;
 import com.nhry.webService.client.PISuccessMessage;
 import com.nhry.webService.client.PISuccessTMessage;
@@ -138,6 +139,10 @@ public class PIRequireOrderServiceImpl implements PIRequireOrderService {
         orderHeader.setKUNWE(kunwe);
         orderHeader.setVKORG(vkorg);
         orderHeader.setActivityId(activityId);
+        //TODO 待优化
+        if("40".equals(ssmSalOrder.getPreorderSource())) {
+            orderHeader.setKUNWE2(EnvContant.getSystemConst("online_code"));
+        }
         List<Map<String, String>> items = tSsmSalOrderItemMapper.findItemsForPI(ssmSalOrder.getOrderNo());
         TMdBranch branch = branchMapper.getBranchByNo(ssmSalOrder.getBranchNo());
         TMdBranchEx branchEx = branchExMapper.getBranchEx(ssmSalOrder.getBranchNo());

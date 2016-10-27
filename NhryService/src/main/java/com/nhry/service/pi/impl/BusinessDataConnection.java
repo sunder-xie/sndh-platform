@@ -1,7 +1,5 @@
 package com.nhry.service.pi.impl;
 
-import com.nhry.common.exception.MessageCode;
-import com.nhry.common.exception.ServiceException;
 import com.nhry.data.basic.domain.TMdBranchEx;
 import com.nhry.service.pi.pojo.SalesOrderHeader;
 import com.nhry.utils.EnvContant;
@@ -18,7 +16,6 @@ import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 
 import java.math.BigDecimal;
-import java.text.ParsePosition;
 import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.Date;
@@ -218,6 +215,13 @@ public class BusinessDataConnection {
             KUNNR_type1 kunnr_type1 = new KUNNR_type1();
             kunnr_type1.setKUNNR_type0(orderHeader.getKUNNR());
             zssd00010.setKUNNR(kunnr_type1);
+            //电商客户编号
+            if(StringUtils.isNotEmpty(orderHeader.getKUNWE2())){
+                KUNWE2_type1 kunwe2_type1 = new KUNWE2_type1();
+                kunwe2_type1.setKUNWE2_type0(orderHeader.getKUNWE2());
+                zssd00010.setKUNWE2(kunwe2_type1);
+            }
+
             KUNWE_type1 kunwe_type1 = new KUNWE_type1();
             kunwe_type1.setKUNWE_type0(orderHeader.getKUNWE());
             zssd00010.setKUNWE(kunwe_type1);

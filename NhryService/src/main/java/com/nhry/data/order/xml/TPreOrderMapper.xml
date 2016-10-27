@@ -315,6 +315,9 @@
       <if test="yFresh != null" >
         YFRESH,
       </if>
+      <if test="payDate != null">
+        PAY_DATE,
+      </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides="," >
       <if test="orderNo != null" >
@@ -421,6 +424,9 @@
       </if>
       <if test="yFresh != null" >
         #{yFresh,jdbcType=INTEGER},
+      </if>
+      <if test="payDate != null" >
+        #{payDate,jdbcType=DATE},
       </if>
     </trim>
   </insert>
@@ -697,6 +703,38 @@
 
     ORDER BY ORDER_NO
   </select>
+
+  <select id="manHandSearchUnOnile" resultMap="BaseResultMap" parameterType="com.nhry.model.order.ManHandOrderSearchModel">
+    select
+    o.ORDER_NO, o.PREORDER_STAT,o.RET_REASON,o.RET_DATE, c.VIP_NAME MILKMEMBER_NO, c.VIP_NAME MEMBER_NO,
+    c.MP CUSTOMER_TEL,b.BRANCH_NAME BRANCH_NO,o.SIGN
+    FROM t_preorder o
+    left join t_md_branch b on o.BRANCH_NO  = b.BRANCH_NO
+    left join t_vip_cust_info c on o.MILKMEMBER_NO = c.VIP_CUST_NO
+    WHERE  1=1
+    and (o.RET_DATE is not null or o.BRANCH_NO is null or o.BRANCH_NO = '')
+    and o.ORDER_DATE &lt; b.ONLINE_DATE
+    and o.PREORDER_STAT = "20"
+    <if test="orderNo !=null and orderNo!=''">
+      and  o.ORDER_NO = #{orderNo,jdbcType=VARCHAR}
+    </if>
+    <if test="orderDateStart != null and orderDateStart !=''">
+      AND o.RET_DATE &gt;= #{orderDateStart,jdbcType=DATE}
+    </if>
+    <if test="orderDateEnd != null and orderDateEnd !=''">
+      AND o.RET_DATE &lt;= #{orderDateEnd,jdbcType=DATE}
+    </if>
+    <if test="preorderStat != null and preorderStat !=''">
+      AND o.PREORDER_STAT = #{preorderStat,jdbcType=VARCHAR}
+    </if>
+    <if test="retReason != null and retReason !=''">
+      AND o.RET_REASON = #{retReason,jdbcType=VARCHAR}
+    </if>
+    <if test="salesOrg != null and salesOrg !=''">
+      AND o.SALES_ORG = #{salesOrg,jdbcType=VARCHAR}
+    </if>
+    ORDER BY o.ORDER_NO
+  </select>
   <update id="updateOrderStatus" parameterType="com.nhry.data.order.domain.TPreOrder" >
     update t_preorder
     <set >
@@ -812,6 +850,9 @@
   <update id="orderConfirm" parameterType="com.nhry.model.order.UpdateManHandOrderModel" >
     update t_preorder
     <set >
+      <if test="empNo != null and empNo != ''">
+        EMP_NO = #{empNo,jdbcType=VARCHAR},
+      </if>
       <if test="retReason != null and retReason != ''">
         RET_REASON = #{retReason,jdbcType=VARCHAR},
       </if>
@@ -826,8 +867,7 @@
   </update>
   <update id="returnOrder" parameterType="com.nhry.model.order.UpdateManHandOrderModel" >
     update t_preorder
-    <set >
-
+    set
       <if test="retReason != null and retReason != ''">
         RET_REASON = #{retReason,jdbcType=VARCHAR},
       </if>
@@ -837,12 +877,11 @@
       <if test="isValid != null and isValid != ''">
         IS_VALID = #{isValid,jdbcType=VARCHAR},
       </if>
-      DEALER_NO = null,
-      BRANCH_NO = null,
+      DEALER_NO = '',
+      BRANCH_NO = '',
       PREORDER_STAT = '20',
       MEMO_TXT=  #{memoTxt,jdbcType=VARCHAR},
       RET_DATE = #{retDate,jdbcType=DATE}
-    </set>
     where ORDER_NO = #{orderNo,jdbcType=VARCHAR}
   </update>
   <select id="searchCustomerOrder" resultMap="BaseResultMap" parameterType="com.nhry.model.bill.CustBillQueryModel">

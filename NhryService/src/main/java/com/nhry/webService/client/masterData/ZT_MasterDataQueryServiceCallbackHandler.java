@@ -50,7 +50,7 @@ public abstract class ZT_MasterDataQueryServiceCallbackHandler {
      * auto generated Axis2 Error handler
      * override this method for handling error response from customerQuery operation
      */
-    public void receiveErrorcustomerQuery(java.lang.Exception e) {
+    public void receiveErrorcustomerQuery(Exception e) {
     }
 
     /**
@@ -65,7 +65,7 @@ public abstract class ZT_MasterDataQueryServiceCallbackHandler {
      * auto generated Axis2 Error handler
      * override this method for handling error response from matWHWQuery operation
      */
-    public void receiveErrormatWHWQuery(java.lang.Exception e) {
+    public void receiveErrormatWHWQuery(Exception e) {
     }
 
     /**
@@ -80,7 +80,7 @@ public abstract class ZT_MasterDataQueryServiceCallbackHandler {
      * auto generated Axis2 Error handler
      * override this method for handling error response from codeQuery operation
      */
-    public void receiveErrorcodeQuery(java.lang.Exception e) {
+    public void receiveErrorcodeQuery(Exception e) {
     }
 
     /**
@@ -95,7 +95,7 @@ public abstract class ZT_MasterDataQueryServiceCallbackHandler {
      * auto generated Axis2 Error handler
      * override this method for handling error response from mATQUERY operation
      */
-    public void receiveErrormATQUERY(java.lang.Exception e) {
+    public void receiveErrormATQUERY(Exception e) {
     }
 
     /**
@@ -110,6 +110,6 @@ public abstract class ZT_MasterDataQueryServiceCallbackHandler {
      * auto generated Axis2 Error handler
      * override this method for handling error response from salesQuery operation
      */
-    public void receiveErrorsalesQuery(java.lang.Exception e) {
+    public void receiveErrorsalesQuery(Exception e) {
     }
 }

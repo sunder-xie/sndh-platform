@@ -63,6 +63,9 @@ public interface TDispOrderItemMapper {
     int selectDispOrderNumByPreOrderNo(String orderNo);
     //查询 该订单下生成的路单数
     int selectCountByOrgOrder(String orderNo);
+
+    //查询 该订单下生成的路单数
+    int selectCountByOrgOrderAndDate(String orderNo,Date date);
     //查询该行该日期是否有路单
     int selectCountByOrgOrderAndOrgItemNo(String orderNo,String itemNo,String dispDate);
 

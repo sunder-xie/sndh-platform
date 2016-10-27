@@ -50,6 +50,8 @@ public interface DeliverMilkService {
 	PageInfo getInsideSalOrderDetail(InSideSalOrderDetailSearchModel sModel);
 
 	int createInsideSalOrderByStock(CreateInSalOrderModel cModel);
+
+	int createInsideSalOrderByTmpStock(CreateInSalOrderModel cModel);
 	
 	int reEditRouteDetail(RouteDetailUpdateModel record);
 

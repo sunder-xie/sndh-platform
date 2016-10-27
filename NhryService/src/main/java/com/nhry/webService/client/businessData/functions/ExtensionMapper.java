@@ -508,6 +508,11 @@ public class ExtensionMapper {
         }
 
         if ("urn:sap-com:document:sap:rfc:functions".equals(namespaceURI) &&
+                "KUNWE2_type1".equals(typeName)) {
+            return KUNWE2_type1.Factory.parse(reader);
+        }
+
+        if ("urn:sap-com:document:sap:rfc:functions".equals(namespaceURI) &&
                 "VBELV_type1".equals(typeName)) {
             return VBELV_type1.Factory.parse(reader);
         }

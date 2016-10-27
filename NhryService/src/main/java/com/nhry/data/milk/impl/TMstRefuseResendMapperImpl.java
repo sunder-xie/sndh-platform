@@ -41,10 +41,11 @@ public class TMstRefuseResendMapperImpl implements TMstRefuseResendMapper {
     }
 
     @Override
-    public List<TMstRefuseResend> queryRefuseResendByMatnr(String matnr,String branchNo) {
+    public List<TMstRefuseResend> queryRefuseResendByMatnr(String matnr,String branchNo,String reqOrderNo) {
         Map<String,String> map = new HashMap<String,String>();
         map.put("matnr",matnr);
         map.put("branchNo",branchNo);
+        map.put("orderNo",reqOrderNo);
         return sqlSessionTemplate.selectList("queryRefuseResendByMatnr",map);
     }
 
@@ -61,6 +62,23 @@ public class TMstRefuseResendMapperImpl implements TMstRefuseResendMapper {
         resend.setBranchNo(branchNo);
         resend.setEmpNo(empNo);
         resend.setDispDate(dispDate);
+        resend.setMatnr(matnr);
+        return sqlSessionTemplate.selectOne("selectRefuseResend",resend);
+    }
+
+    @Override
+    public List<TMstRefuseResend> findNoUsedAndUsedRefuseResend(String branchNo,String orderNo) {
+        Map<String,String> map = new HashMap<String,String>();
+        map.put("branchNo",branchNo);
+        map.put("orderNo",orderNo);
+        return sqlSessionTemplate.selectList("findNoUsedAndUsedRefuseResend",map);
+    }
+
+    @Override
+    public TMstRefuseResend selectRefuseResendByDispEmpAndMatnr(String dispOrderNo,String empNo,String matnr) {
+        TMstRefuseResend resend = new TMstRefuseResend();
+        resend.setDispOrderNo(dispOrderNo);
+        resend.setEmpNo(empNo);
         resend.setMatnr(matnr);
         return sqlSessionTemplate.selectOne("selectRefuseResend",resend);
     }

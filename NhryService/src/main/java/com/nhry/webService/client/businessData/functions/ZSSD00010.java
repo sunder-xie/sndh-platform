@@ -43,6 +43,17 @@ public class ZSSD00010 implements org.apache.axis2.databinding.ADBBean {
     protected boolean localKUNWETracker = false;
 
     /**
+     * field for KUNWE2
+     */
+    protected KUNWE2_type1 localKUNWE2;
+
+    /*  This tracker boolean wil be used to detect whether the user called the set method
+     *   for this attribute. It will be used to determine whether to include this field
+     *   in the serialized XML
+     */
+    protected boolean localKUNWE2Tracker = false;
+
+    /**
      * field for VKORG
      */
     protected VKORG_type1 localVKORG;
@@ -207,6 +218,29 @@ public class ZSSD00010 implements org.apache.axis2.databinding.ADBBean {
         localKUNWETracker = param != null;
 
         this.localKUNWE = param;
+    }
+
+    public boolean isKUNWE2Specified() {
+        return localKUNWE2Tracker;
+    }
+
+    /**
+     * Auto generated getter method
+     * @return com.nhry.webService.client.businessData.functions.KUNWE2_type1
+     */
+    public KUNWE2_type1 getKUNWE2() {
+        return localKUNWE2;
+    }
+
+    /**
+     * Auto generated setter method
+     * @param param KUNWE2
+     */
+    public void setKUNWE2(
+        KUNWE2_type1 param) {
+        localKUNWE2Tracker = param != null;
+
+        this.localKUNWE2 = param;
     }
 
     public boolean isVKORGSpecified() {
@@ -528,6 +562,16 @@ public class ZSSD00010 implements org.apache.axis2.databinding.ADBBean {
             }
 
             localKUNWE.serialize(new javax.xml.namespace.QName("", "KUNWE"),
+                xmlWriter);
+        }
+
+        if (localKUNWE2Tracker) {
+            if (localKUNWE2 == null) {
+                throw new org.apache.axis2.databinding.ADBException(
+                    "KUNWE2 cannot be null!!");
+            }
+
+            localKUNWE2.serialize(new javax.xml.namespace.QName("", "KUNWE2"),
                 xmlWriter);
         }
 
@@ -936,6 +980,23 @@ public class ZSSD00010 implements org.apache.axis2.databinding.ADBBean {
                         new javax.xml.namespace.QName("", "KUNWE").equals(
                             reader.getName())) {
                     object.setKUNWE(KUNWE_type1.Factory.parse(
+                            reader));
+
+                    reader.next();
+                } // End of if for expected property start element
+
+                else {
+                }
+
+                while (!reader.isStartElement() && !reader.isEndElement())
+                    reader.next();
+
+                if ((reader.isStartElement() &&
+                        new javax.xml.namespace.QName("", "KUNWE2").equals(
+                            reader.getName())) ||
+                        new javax.xml.namespace.QName("", "KUNWE2").equals(
+                            reader.getName())) {
+                    object.setKUNWE2(KUNWE2_type1.Factory.parse(
                             reader));
 
                     reader.next();

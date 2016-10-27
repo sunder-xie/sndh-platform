@@ -92,6 +92,12 @@ public class TSsmStockServiceImpl implements TSsmStockService {
     public List<StockModel> findStockinsidesal(StockModel mode) {
         return ssmStockMapper.findStockinsidesal(mode);
     }
+
+    @Override
+    public List<StockModel> findTmpStockinsidesal(StockModel model){
+        return ssmStockMapper.findTmpStockinsidesal(model);
+    }
+
     @Override
     public int genarateStock(StockModel mode){
 

@@ -18,6 +18,7 @@ import com.nhry.model.milktrans.DispOrderReportEntityModel;
 import com.nhry.model.milktrans.DispOrderReportModel;
 import com.nhry.model.order.*;
 import com.nhry.model.statistics.BranchInfoModel;
+import com.nhry.model.statistics.ExtendBranchInfoModel;
 import com.nhry.model.sys.ResponseModel;
 import com.nhry.rest.BaseResource;
 import com.nhry.service.basic.dao.BranchEmpService;
@@ -252,10 +253,10 @@ public class ReportResource extends BaseResource{
             cell.setCellValue("应送总数：".concat(order.getTotalQty()==null?"":order.getTotalQty().toString().concat("--").concat(model.getProducts())));
 
             XSSFCellStyle styleBold = workbook.createCellStyle();
-            styleBold.setBorderBottom(XSSFCellStyle.BORDER_HAIR); //下边框
-            styleBold.setBorderLeft(XSSFCellStyle.BORDER_HAIR);//左边框
-            styleBold.setBorderTop(XSSFCellStyle.BORDER_HAIR);//上边框
-            styleBold.setBorderRight(XSSFCellStyle.BORDER_HAIR);//右边框
+            styleBold.setBorderBottom(XSSFCellStyle.BORDER_THIN); //下边框
+            styleBold.setBorderLeft(XSSFCellStyle.BORDER_THIN);//左边框
+            styleBold.setBorderTop(XSSFCellStyle.BORDER_THIN);//上边框
+            styleBold.setBorderRight(XSSFCellStyle.BORDER_THIN);//右边框
 
             int r = 8;
             if(details!=null){
@@ -1324,6 +1325,86 @@ public class ReportResource extends BaseResource{
                 sheet.setColumnWidth(i,(short)50*100);
             }
             outUrl = saveFile(url, workbook,"OrderDaliyPlan.xlsx");
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+        return convertToRespModel(MessageCode.NORMAL,null,outUrl);
+    }
+    @POST
+    @Path("/orderOnlineStatReport")
+    @Produces(MediaType.APPLICATION_JSON)
+    @Consumes(MediaType.APPLICATION_JSON)
+    @ApiOperation(value = "/orderOnlineStatReport",response = ResponseModel.class,notes = "导出对账报表")
+    public Response orderOnlineStatReport(@ApiParam(value = "对账报表",required = true,name = "model") ExtendBranchInfoModel model){
+        String outUrl = "";
+        String url = EnvContant.getSystemConst("filePath");
+        List<Map<String,String>>  lists = branchInfoService.orderOnlineStatReport(model);
+        try {
+            XSSFWorkbook workbook = new XSSFWorkbook();
+            XSSFSheet sheet = workbook.createSheet("对账报表");
+            int rowNum = 0;
+            XSSFRow row = sheet.createRow(rowNum++);
+            int rawNum = 0;
+            XSSFCell cell = row.createCell(rawNum++);
+            cell.setCellValue("经销商");
+            cell = row.createCell(rawNum++);
+            cell.setCellValue("奶站");
+            cell = row.createCell(rawNum++);
+            cell.setCellValue("订单编号");
+            cell = row.createCell(rawNum++);
+            cell.setCellValue("订单来源");
+            cell = row.createCell(rawNum++);
+            cell.setCellValue("订户");
+            cell = row.createCell(rawNum++);
+            cell.setCellValue("订户电话");
+            cell = row.createCell(rawNum++);
+            cell.setCellValue("原单价");
+            cell = row.createCell(rawNum++);
+            cell.setCellValue("订户价");
+            cell = row.createCell(rawNum++);
+            cell.setCellValue("付款时间");
+            if(lists!=null){
+                for(Map<String,String> map : lists){
+                    int raw = 0;
+                    row = sheet.createRow(rowNum++);
+                    cell = row.createCell(raw++);
+                    cell.setCellValue(map.get("DEALER_NAME"));
+                    cell = row.createCell(raw++);
+                    cell.setCellValue(map.get("BRANCH_NAME"));
+                    cell = row.createCell(raw++);
+                    cell.setCellValue(map.get("ORDER_NO"));
+                    cell = row.createCell(raw++);
+                    cell.setCellValue(map.get("PREORDER_SOURCE").concat(map.get("ONLINE_SOURCE_TYPE")==null?"":"-".concat(map.get("ONLINE_SOURCE_TYPE"))));
+                    cell = row.createCell(raw++);
+                    cell.setCellValue(map.get("VIP_NAME"));
+                    cell = row.createCell(raw++);
+                    cell.setCellValue(map.get("VIP_MP"));
+                    cell = row.createCell(raw++);
+                    cell.setCellValue(map.get("ONLINE_INIT_AMT")==null?"0":map.get("ONLINE_INIT_AMT"));
+                    cell = row.createCell(raw++);
+                    cell.setCellValue(map.get("CUR_AMT")==null?"0":String.valueOf(map.get("CUR_AMT")));
+                    cell = row.createCell(raw++);
+                    cell.setCellValue("");
+                }
+            }
+
+            String fname = CodeGeneratorUtil.getCode();
+            String rq = format1.format(new Date(new Date().getTime() - 24 * 60 * 60 * 1000));
+            String filePath = url +  File.separator + "report"+ File.separator + "export";
+            File delFiles = new File(filePath);
+            if(delFiles.isDirectory()){
+                for(File del : delFiles.listFiles()){
+                    if(del.getName().contains(rq)){
+                        del.delete();
+                    }
+                }
+            }
+            File export = new File(url +  File.separator + "report"+ File.separator + "export" + File.separator + fname + "ReqOrderTemplate.xlsx");
+            FileOutputStream stream = new FileOutputStream(export);
+            workbook.write(stream);
+            stream.flush();
+            stream.close();
+            outUrl = fname + "OrderOnlineStatTemplate.xlsx";
         }catch (Exception e){
             e.printStackTrace();
         }

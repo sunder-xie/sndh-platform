@@ -19,6 +19,7 @@ public class TSsmReqGoodsOrderItem {
     private int itemNo;
 
 
+
     public int getResendQty() {
         return resendQty;
     }

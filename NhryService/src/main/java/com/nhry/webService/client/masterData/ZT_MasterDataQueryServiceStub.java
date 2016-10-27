@@ -26,7 +26,7 @@ public class ZT_MasterDataQueryServiceStub extends org.apache.axis2.client.Stub
      */
     public ZT_MasterDataQueryServiceStub(
         org.apache.axis2.context.ConfigurationContext configurationContext,
-        java.lang.String targetEndpoint) throws org.apache.axis2.AxisFault {
+        String targetEndpoint) throws org.apache.axis2.AxisFault {
         this(configurationContext, targetEndpoint, false);
     }
 
@@ -35,7 +35,7 @@ public class ZT_MasterDataQueryServiceStub extends org.apache.axis2.client.Stub
      */
     public ZT_MasterDataQueryServiceStub(
         org.apache.axis2.context.ConfigurationContext configurationContext,
-        java.lang.String targetEndpoint, boolean useSeparateListener)
+        String targetEndpoint, boolean useSeparateListener)
         throws org.apache.axis2.AxisFault {
         //To populate AxisService
         populateAxisService();
@@ -71,12 +71,12 @@ public class ZT_MasterDataQueryServiceStub extends org.apache.axis2.client.Stub
     /**
      * Constructor taking the target endpoint
      */
-    public ZT_MasterDataQueryServiceStub(java.lang.String targetEndpoint)
+    public ZT_MasterDataQueryServiceStub(String targetEndpoint)
         throws org.apache.axis2.AxisFault {
         this(null, targetEndpoint);
     }
 
-    private static synchronized java.lang.String getUniqueSuffix() {
+    private static synchronized String getUniqueSuffix() {
         // reset the counter if it is greater than 99999
         if (counter > 99999) {
             counter = 0;
@@ -84,7 +84,7 @@ public class ZT_MasterDataQueryServiceStub extends org.apache.axis2.client.Stub
 
         counter = counter + 1;
 
-        return java.lang.Long.toString(java.lang.System.currentTimeMillis()) +
+        return Long.toString(System.currentTimeMillis()) +
         "_" + counter;
     }
 
@@ -147,7 +147,7 @@ public class ZT_MasterDataQueryServiceStub extends org.apache.axis2.client.Stub
     /**
      * Auto generated method signature
      *
-     * @see com.nhry.webService.client.masterData.ZT_MasterDataQueryService#customerQuery
+     * @see ZT_MasterDataQueryService#customerQuery
      * @param zSD_CUSTOMER_DATA_SYN_RFC10
      */
     public com.nhry.webService.client.masterData.functions.ZSD_CUSTOMER_DATA_SYN_RFCResponse customerQuery(
@@ -195,7 +195,7 @@ public class ZT_MasterDataQueryServiceStub extends org.apache.axis2.client.Stub
             org.apache.axis2.context.MessageContext _returnMessageContext = _operationClient.getMessageContext(org.apache.axis2.wsdl.WSDLConstants.MESSAGE_LABEL_IN_VALUE);
             org.apache.axiom.soap.SOAPEnvelope _returnEnv = _returnMessageContext.getEnvelope();
 
-            java.lang.Object object = fromOM(_returnEnv.getBody()
+            Object object = fromOM(_returnEnv.getBody()
                                                        .getFirstElement(),
                     com.nhry.webService.client.masterData.functions.ZSD_CUSTOMER_DATA_SYN_RFCResponse.class);
 
@@ -209,39 +209,39 @@ public class ZT_MasterDataQueryServiceStub extends org.apache.axis2.client.Stub
                                 faultElt.getQName(), "CustomerQuery"))) {
                     //make the fault by reflection
                     try {
-                        java.lang.String exceptionClassName = (java.lang.String) faultExceptionClassNameMap.get(new org.apache.axis2.client.FaultMapKey(
+                        String exceptionClassName = (String) faultExceptionClassNameMap.get(new org.apache.axis2.client.FaultMapKey(
                                     faultElt.getQName(), "CustomerQuery"));
-                        java.lang.Class exceptionClass = java.lang.Class.forName(exceptionClassName);
-                        java.lang.reflect.Constructor constructor = exceptionClass.getConstructor(java.lang.String.class);
-                        java.lang.Exception ex = (java.lang.Exception) constructor.newInstance(f.getMessage());
+                        Class exceptionClass = Class.forName(exceptionClassName);
+                        java.lang.reflect.Constructor constructor = exceptionClass.getConstructor(String.class);
+                        Exception ex = (Exception) constructor.newInstance(f.getMessage());
 
                         //message class
-                        java.lang.String messageClassName = (java.lang.String) faultMessageMap.get(new org.apache.axis2.client.FaultMapKey(
+                        String messageClassName = (String) faultMessageMap.get(new org.apache.axis2.client.FaultMapKey(
                                     faultElt.getQName(), "CustomerQuery"));
-                        java.lang.Class messageClass = java.lang.Class.forName(messageClassName);
-                        java.lang.Object messageObject = fromOM(faultElt,
+                        Class messageClass = Class.forName(messageClassName);
+                        Object messageObject = fromOM(faultElt,
                                 messageClass);
                         java.lang.reflect.Method m = exceptionClass.getMethod("setFaultMessage",
-                                new java.lang.Class[] { messageClass });
-                        m.invoke(ex, new java.lang.Object[] { messageObject });
+                                new Class[] { messageClass });
+                        m.invoke(ex, new Object[] { messageObject });
 
                         throw new java.rmi.RemoteException(ex.getMessage(), ex);
-                    } catch (java.lang.ClassCastException e) {
+                    } catch (ClassCastException e) {
                         // we cannot intantiate the class - throw the original Axis fault
                         throw f;
-                    } catch (java.lang.ClassNotFoundException e) {
+                    } catch (ClassNotFoundException e) {
                         // we cannot intantiate the class - throw the original Axis fault
                         throw f;
-                    } catch (java.lang.NoSuchMethodException e) {
+                    } catch (NoSuchMethodException e) {
                         // we cannot intantiate the class - throw the original Axis fault
                         throw f;
                     } catch (java.lang.reflect.InvocationTargetException e) {
                         // we cannot intantiate the class - throw the original Axis fault
                         throw f;
-                    } catch (java.lang.IllegalAccessException e) {
+                    } catch (IllegalAccessException e) {
                         // we cannot intantiate the class - throw the original Axis fault
                         throw f;
-                    } catch (java.lang.InstantiationException e) {
+                    } catch (InstantiationException e) {
                         // we cannot intantiate the class - throw the original Axis fault
                         throw f;
                     }
@@ -262,12 +262,12 @@ public class ZT_MasterDataQueryServiceStub extends org.apache.axis2.client.Stub
     /**
      * Auto generated method signature for Asynchronous Invocations
      *
-     * @see com.nhry.webService.client.masterData.ZT_MasterDataQueryService#startcustomerQuery
+     * @see ZT_MasterDataQueryService#startcustomerQuery
      * @param zSD_CUSTOMER_DATA_SYN_RFC10
      */
     public void startcustomerQuery(
         com.nhry.webService.client.masterData.functions.ZSD_CUSTOMER_DATA_SYN_RFC zSD_CUSTOMER_DATA_SYN_RFC10,
-        final com.nhry.webService.client.masterData.ZT_MasterDataQueryServiceCallbackHandler callback)
+        final ZT_MasterDataQueryServiceCallbackHandler callback)
         throws java.rmi.RemoteException {
         org.apache.axis2.client.OperationClient _operationClient = _serviceClient.createClient(_operations[0].getName());
         _operationClient.getOptions()
@@ -307,7 +307,7 @@ public class ZT_MasterDataQueryServiceStub extends org.apache.axis2.client.Stub
                     try {
                         org.apache.axiom.soap.SOAPEnvelope resultEnv = resultContext.getEnvelope();
 
-                        java.lang.Object object = fromOM(resultEnv.getBody()
+                        Object object = fromOM(resultEnv.getBody()
                                                                   .getFirstElement(),
                                 com.nhry.webService.client.masterData.functions.ZSD_CUSTOMER_DATA_SYN_RFCResponse.class);
                         callback.receiveResultcustomerQuery((com.nhry.webService.client.masterData.functions.ZSD_CUSTOMER_DATA_SYN_RFCResponse) object);
@@ -316,7 +316,7 @@ public class ZT_MasterDataQueryServiceStub extends org.apache.axis2.client.Stub
                     }
                 }
 
-                public void onError(java.lang.Exception error) {
+                public void onError(Exception error) {
                     if (error instanceof org.apache.axis2.AxisFault) {
                         org.apache.axis2.AxisFault f = (org.apache.axis2.AxisFault) error;
                         org.apache.axiom.om.OMElement faultElt = f.getDetail();
@@ -327,43 +327,43 @@ public class ZT_MasterDataQueryServiceStub extends org.apache.axis2.client.Stub
                                             faultElt.getQName(), "CustomerQuery"))) {
                                 //make the fault by reflection
                                 try {
-                                    java.lang.String exceptionClassName = (java.lang.String) faultExceptionClassNameMap.get(new org.apache.axis2.client.FaultMapKey(
+                                    String exceptionClassName = (String) faultExceptionClassNameMap.get(new org.apache.axis2.client.FaultMapKey(
                                                 faultElt.getQName(),
                                                 "CustomerQuery"));
-                                    java.lang.Class exceptionClass = java.lang.Class.forName(exceptionClassName);
-                                    java.lang.reflect.Constructor constructor = exceptionClass.getConstructor(java.lang.String.class);
-                                    java.lang.Exception ex = (java.lang.Exception) constructor.newInstance(f.getMessage());
+                                    Class exceptionClass = Class.forName(exceptionClassName);
+                                    java.lang.reflect.Constructor constructor = exceptionClass.getConstructor(String.class);
+                                    Exception ex = (Exception) constructor.newInstance(f.getMessage());
 
                                     //message class
-                                    java.lang.String messageClassName = (java.lang.String) faultMessageMap.get(new org.apache.axis2.client.FaultMapKey(
+                                    String messageClassName = (String) faultMessageMap.get(new org.apache.axis2.client.FaultMapKey(
                                                 faultElt.getQName(),
                                                 "CustomerQuery"));
-                                    java.lang.Class messageClass = java.lang.Class.forName(messageClassName);
-                                    java.lang.Object messageObject = fromOM(faultElt,
+                                    Class messageClass = Class.forName(messageClassName);
+                                    Object messageObject = fromOM(faultElt,
                                             messageClass);
                                     java.lang.reflect.Method m = exceptionClass.getMethod("setFaultMessage",
-                                            new java.lang.Class[] { messageClass });
+                                            new Class[] { messageClass });
                                     m.invoke(ex,
-                                        new java.lang.Object[] { messageObject });
+                                        new Object[] { messageObject });
 
                                     callback.receiveErrorcustomerQuery(new java.rmi.RemoteException(
                                             ex.getMessage(), ex));
-                                } catch (java.lang.ClassCastException e) {
+                                } catch (ClassCastException e) {
                                     // we cannot intantiate the class - throw the original Axis fault
                                     callback.receiveErrorcustomerQuery(f);
-                                } catch (java.lang.ClassNotFoundException e) {
+                                } catch (ClassNotFoundException e) {
                                     // we cannot intantiate the class - throw the original Axis fault
                                     callback.receiveErrorcustomerQuery(f);
-                                } catch (java.lang.NoSuchMethodException e) {
+                                } catch (NoSuchMethodException e) {
                                     // we cannot intantiate the class - throw the original Axis fault
                                     callback.receiveErrorcustomerQuery(f);
                                 } catch (java.lang.reflect.InvocationTargetException e) {
                                     // we cannot intantiate the class - throw the original Axis fault
                                     callback.receiveErrorcustomerQuery(f);
-                                } catch (java.lang.IllegalAccessException e) {
+                                } catch (IllegalAccessException e) {
                                     // we cannot intantiate the class - throw the original Axis fault
                                     callback.receiveErrorcustomerQuery(f);
-                                } catch (java.lang.InstantiationException e) {
+                                } catch (InstantiationException e) {
                                     // we cannot intantiate the class - throw the original Axis fault
                                     callback.receiveErrorcustomerQuery(f);
                                 } catch (org.apache.axis2.AxisFault e) {
@@ -412,7 +412,7 @@ public class ZT_MasterDataQueryServiceStub extends org.apache.axis2.client.Stub
     /**
      * Auto generated method signature
      *
-     * @see com.nhry.webService.client.masterData.ZT_MasterDataQueryService#matWHWQuery
+     * @see ZT_MasterDataQueryService#matWHWQuery
      * @param zMM_POS_24DATA12
      */
     public com.nhry.webService.client.masterData.functions.ZMM_POS_24DATAResponse matWHWQuery(
@@ -460,7 +460,7 @@ public class ZT_MasterDataQueryServiceStub extends org.apache.axis2.client.Stub
             org.apache.axis2.context.MessageContext _returnMessageContext = _operationClient.getMessageContext(org.apache.axis2.wsdl.WSDLConstants.MESSAGE_LABEL_IN_VALUE);
             org.apache.axiom.soap.SOAPEnvelope _returnEnv = _returnMessageContext.getEnvelope();
 
-            java.lang.Object object = fromOM(_returnEnv.getBody()
+            Object object = fromOM(_returnEnv.getBody()
                                                        .getFirstElement(),
                     com.nhry.webService.client.masterData.functions.ZMM_POS_24DATAResponse.class);
 
@@ -474,39 +474,39 @@ public class ZT_MasterDataQueryServiceStub extends org.apache.axis2.client.Stub
                                 faultElt.getQName(), "MatWHWQuery"))) {
                     //make the fault by reflection
                     try {
-                        java.lang.String exceptionClassName = (java.lang.String) faultExceptionClassNameMap.get(new org.apache.axis2.client.FaultMapKey(
+                        String exceptionClassName = (String) faultExceptionClassNameMap.get(new org.apache.axis2.client.FaultMapKey(
                                     faultElt.getQName(), "MatWHWQuery"));
-                        java.lang.Class exceptionClass = java.lang.Class.forName(exceptionClassName);
-                        java.lang.reflect.Constructor constructor = exceptionClass.getConstructor(java.lang.String.class);
-                        java.lang.Exception ex = (java.lang.Exception) constructor.newInstance(f.getMessage());
+                        Class exceptionClass = Class.forName(exceptionClassName);
+                        java.lang.reflect.Constructor constructor = exceptionClass.getConstructor(String.class);
+                        Exception ex = (Exception) constructor.newInstance(f.getMessage());
 
                         //message class
-                        java.lang.String messageClassName = (java.lang.String) faultMessageMap.get(new org.apache.axis2.client.FaultMapKey(
+                        String messageClassName = (String) faultMessageMap.get(new org.apache.axis2.client.FaultMapKey(
                                     faultElt.getQName(), "MatWHWQuery"));
-                        java.lang.Class messageClass = java.lang.Class.forName(messageClassName);
-                        java.lang.Object messageObject = fromOM(faultElt,
+                        Class messageClass = Class.forName(messageClassName);
+                        Object messageObject = fromOM(faultElt,
                                 messageClass);
                         java.lang.reflect.Method m = exceptionClass.getMethod("setFaultMessage",
-                                new java.lang.Class[] { messageClass });
-                        m.invoke(ex, new java.lang.Object[] { messageObject });
+                                new Class[] { messageClass });
+                        m.invoke(ex, new Object[] { messageObject });
 
                         throw new java.rmi.RemoteException(ex.getMessage(), ex);
-                    } catch (java.lang.ClassCastException e) {
+                    } catch (ClassCastException e) {
                         // we cannot intantiate the class - throw the original Axis fault
                         throw f;
-                    } catch (java.lang.ClassNotFoundException e) {
+                    } catch (ClassNotFoundException e) {
                         // we cannot intantiate the class - throw the original Axis fault
                         throw f;
-                    } catch (java.lang.NoSuchMethodException e) {
+                    } catch (NoSuchMethodException e) {
                         // we cannot intantiate the class - throw the original Axis fault
                         throw f;
                     } catch (java.lang.reflect.InvocationTargetException e) {
                         // we cannot intantiate the class - throw the original Axis fault
                         throw f;
-                    } catch (java.lang.IllegalAccessException e) {
+                    } catch (IllegalAccessException e) {
                         // we cannot intantiate the class - throw the original Axis fault
                         throw f;
-                    } catch (java.lang.InstantiationException e) {
+                    } catch (InstantiationException e) {
                         // we cannot intantiate the class - throw the original Axis fault
                         throw f;
                     }
@@ -527,12 +527,12 @@ public class ZT_MasterDataQueryServiceStub extends org.apache.axis2.client.Stub
     /**
      * Auto generated method signature for Asynchronous Invocations
      *
-     * @see com.nhry.webService.client.masterData.ZT_MasterDataQueryService#startmatWHWQuery
+     * @see ZT_MasterDataQueryService#startmatWHWQuery
      * @param zMM_POS_24DATA12
      */
     public void startmatWHWQuery(
         com.nhry.webService.client.masterData.functions.ZMM_POS_24DATA zMM_POS_24DATA12,
-        final com.nhry.webService.client.masterData.ZT_MasterDataQueryServiceCallbackHandler callback)
+        final ZT_MasterDataQueryServiceCallbackHandler callback)
         throws java.rmi.RemoteException {
         org.apache.axis2.client.OperationClient _operationClient = _serviceClient.createClient(_operations[1].getName());
         _operationClient.getOptions()
@@ -571,7 +571,7 @@ public class ZT_MasterDataQueryServiceStub extends org.apache.axis2.client.Stub
                     try {
                         org.apache.axiom.soap.SOAPEnvelope resultEnv = resultContext.getEnvelope();
 
-                        java.lang.Object object = fromOM(resultEnv.getBody()
+                        Object object = fromOM(resultEnv.getBody()
                                                                   .getFirstElement(),
                                 com.nhry.webService.client.masterData.functions.ZMM_POS_24DATAResponse.class);
                         callback.receiveResultmatWHWQuery((com.nhry.webService.client.masterData.functions.ZMM_POS_24DATAResponse) object);
@@ -580,7 +580,7 @@ public class ZT_MasterDataQueryServiceStub extends org.apache.axis2.client.Stub
                     }
                 }
 
-                public void onError(java.lang.Exception error) {
+                public void onError(Exception error) {
                     if (error instanceof org.apache.axis2.AxisFault) {
                         org.apache.axis2.AxisFault f = (org.apache.axis2.AxisFault) error;
                         org.apache.axiom.om.OMElement faultElt = f.getDetail();
@@ -591,43 +591,43 @@ public class ZT_MasterDataQueryServiceStub extends org.apache.axis2.client.Stub
                                             faultElt.getQName(), "MatWHWQuery"))) {
                                 //make the fault by reflection
                                 try {
-                                    java.lang.String exceptionClassName = (java.lang.String) faultExceptionClassNameMap.get(new org.apache.axis2.client.FaultMapKey(
+                                    String exceptionClassName = (String) faultExceptionClassNameMap.get(new org.apache.axis2.client.FaultMapKey(
                                                 faultElt.getQName(),
                                                 "MatWHWQuery"));
-                                    java.lang.Class exceptionClass = java.lang.Class.forName(exceptionClassName);
-                                    java.lang.reflect.Constructor constructor = exceptionClass.getConstructor(java.lang.String.class);
-                                    java.lang.Exception ex = (java.lang.Exception) constructor.newInstance(f.getMessage());
+                                    Class exceptionClass = Class.forName(exceptionClassName);
+                                    java.lang.reflect.Constructor constructor = exceptionClass.getConstructor(String.class);
+                                    Exception ex = (Exception) constructor.newInstance(f.getMessage());
 
                                     //message class
-                                    java.lang.String messageClassName = (java.lang.String) faultMessageMap.get(new org.apache.axis2.client.FaultMapKey(
+                                    String messageClassName = (String) faultMessageMap.get(new org.apache.axis2.client.FaultMapKey(
                                                 faultElt.getQName(),
                                                 "MatWHWQuery"));
-                                    java.lang.Class messageClass = java.lang.Class.forName(messageClassName);
-                                    java.lang.Object messageObject = fromOM(faultElt,
+                                    Class messageClass = Class.forName(messageClassName);
+                                    Object messageObject = fromOM(faultElt,
                                             messageClass);
                                     java.lang.reflect.Method m = exceptionClass.getMethod("setFaultMessage",
-                                            new java.lang.Class[] { messageClass });
+                                            new Class[] { messageClass });
                                     m.invoke(ex,
-                                        new java.lang.Object[] { messageObject });
+                                        new Object[] { messageObject });
 
                                     callback.receiveErrormatWHWQuery(new java.rmi.RemoteException(
                                             ex.getMessage(), ex));
-                                } catch (java.lang.ClassCastException e) {
+                                } catch (ClassCastException e) {
                                     // we cannot intantiate the class - throw the original Axis fault
                                     callback.receiveErrormatWHWQuery(f);
-                                } catch (java.lang.ClassNotFoundException e) {
+                                } catch (ClassNotFoundException e) {
                                     // we cannot intantiate the class - throw the original Axis fault
                                     callback.receiveErrormatWHWQuery(f);
-                                } catch (java.lang.NoSuchMethodException e) {
+                                } catch (NoSuchMethodException e) {
                                     // we cannot intantiate the class - throw the original Axis fault
                                     callback.receiveErrormatWHWQuery(f);
                                 } catch (java.lang.reflect.InvocationTargetException e) {
                                     // we cannot intantiate the class - throw the original Axis fault
                                     callback.receiveErrormatWHWQuery(f);
-                                } catch (java.lang.IllegalAccessException e) {
+                                } catch (IllegalAccessException e) {
                                     // we cannot intantiate the class - throw the original Axis fault
                                     callback.receiveErrormatWHWQuery(f);
-                                } catch (java.lang.InstantiationException e) {
+                                } catch (InstantiationException e) {
                                     // we cannot intantiate the class - throw the original Axis fault
                                     callback.receiveErrormatWHWQuery(f);
                                 } catch (org.apache.axis2.AxisFault e) {
@@ -676,7 +676,7 @@ public class ZT_MasterDataQueryServiceStub extends org.apache.axis2.client.Stub
     /**
      * Auto generated method signature
      *
-     * @see com.nhry.webService.client.masterData.ZT_MasterDataQueryService#codeQuery
+     * @see ZT_MasterDataQueryService#codeQuery
      * @param zSD_T005_DATA14
      */
     public com.nhry.webService.client.masterData.functions.ZSD_T005_DATAResponse codeQuery(
@@ -724,7 +724,7 @@ public class ZT_MasterDataQueryServiceStub extends org.apache.axis2.client.Stub
             org.apache.axis2.context.MessageContext _returnMessageContext = _operationClient.getMessageContext(org.apache.axis2.wsdl.WSDLConstants.MESSAGE_LABEL_IN_VALUE);
             org.apache.axiom.soap.SOAPEnvelope _returnEnv = _returnMessageContext.getEnvelope();
 
-            java.lang.Object object = fromOM(_returnEnv.getBody()
+            Object object = fromOM(_returnEnv.getBody()
                                                        .getFirstElement(),
                     com.nhry.webService.client.masterData.functions.ZSD_T005_DATAResponse.class);
 
@@ -738,39 +738,39 @@ public class ZT_MasterDataQueryServiceStub extends org.apache.axis2.client.Stub
                                 faultElt.getQName(), "CodeQuery"))) {
                     //make the fault by reflection
                     try {
-                        java.lang.String exceptionClassName = (java.lang.String) faultExceptionClassNameMap.get(new org.apache.axis2.client.FaultMapKey(
+                        String exceptionClassName = (String) faultExceptionClassNameMap.get(new org.apache.axis2.client.FaultMapKey(
                                     faultElt.getQName(), "CodeQuery"));
-                        java.lang.Class exceptionClass = java.lang.Class.forName(exceptionClassName);
-                        java.lang.reflect.Constructor constructor = exceptionClass.getConstructor(java.lang.String.class);
-                        java.lang.Exception ex = (java.lang.Exception) constructor.newInstance(f.getMessage());
+                        Class exceptionClass = Class.forName(exceptionClassName);
+                        java.lang.reflect.Constructor constructor = exceptionClass.getConstructor(String.class);
+                        Exception ex = (Exception) constructor.newInstance(f.getMessage());
 
                         //message class
-                        java.lang.String messageClassName = (java.lang.String) faultMessageMap.get(new org.apache.axis2.client.FaultMapKey(
+                        String messageClassName = (String) faultMessageMap.get(new org.apache.axis2.client.FaultMapKey(
                                     faultElt.getQName(), "CodeQuery"));
-                        java.lang.Class messageClass = java.lang.Class.forName(messageClassName);
-                        java.lang.Object messageObject = fromOM(faultElt,
+                        Class messageClass = Class.forName(messageClassName);
+                        Object messageObject = fromOM(faultElt,
                                 messageClass);
                         java.lang.reflect.Method m = exceptionClass.getMethod("setFaultMessage",
-                                new java.lang.Class[] { messageClass });
-                        m.invoke(ex, new java.lang.Object[] { messageObject });
+                                new Class[] { messageClass });
+                        m.invoke(ex, new Object[] { messageObject });
 
                         throw new java.rmi.RemoteException(ex.getMessage(), ex);
-                    } catch (java.lang.ClassCastException e) {
+                    } catch (ClassCastException e) {
                         // we cannot intantiate the class - throw the original Axis fault
                         throw f;
-                    } catch (java.lang.ClassNotFoundException e) {
+                    } catch (ClassNotFoundException e) {
                         // we cannot intantiate the class - throw the original Axis fault
                         throw f;
-                    } catch (java.lang.NoSuchMethodException e) {
+                    } catch (NoSuchMethodException e) {
                         // we cannot intantiate the class - throw the original Axis fault
                         throw f;
                     } catch (java.lang.reflect.InvocationTargetException e) {
                         // we cannot intantiate the class - throw the original Axis fault
                         throw f;
-                    } catch (java.lang.IllegalAccessException e) {
+                    } catch (IllegalAccessException e) {
                         // we cannot intantiate the class - throw the original Axis fault
                         throw f;
-                    } catch (java.lang.InstantiationException e) {
+                    } catch (InstantiationException e) {
                         // we cannot intantiate the class - throw the original Axis fault
                         throw f;
                     }
@@ -791,12 +791,12 @@ public class ZT_MasterDataQueryServiceStub extends org.apache.axis2.client.Stub
     /**
      * Auto generated method signature for Asynchronous Invocations
      *
-     * @see com.nhry.webService.client.masterData.ZT_MasterDataQueryService#startcodeQuery
+     * @see ZT_MasterDataQueryService#startcodeQuery
      * @param zSD_T005_DATA14
      */
     public void startcodeQuery(
         com.nhry.webService.client.masterData.functions.ZSD_T005_DATA zSD_T005_DATA14,
-        final com.nhry.webService.client.masterData.ZT_MasterDataQueryServiceCallbackHandler callback)
+        final ZT_MasterDataQueryServiceCallbackHandler callback)
         throws java.rmi.RemoteException {
         org.apache.axis2.client.OperationClient _operationClient = _serviceClient.createClient(_operations[2].getName());
         _operationClient.getOptions()
@@ -835,7 +835,7 @@ public class ZT_MasterDataQueryServiceStub extends org.apache.axis2.client.Stub
                     try {
                         org.apache.axiom.soap.SOAPEnvelope resultEnv = resultContext.getEnvelope();
 
-                        java.lang.Object object = fromOM(resultEnv.getBody()
+                        Object object = fromOM(resultEnv.getBody()
                                                                   .getFirstElement(),
                                 com.nhry.webService.client.masterData.functions.ZSD_T005_DATAResponse.class);
                         callback.receiveResultcodeQuery((com.nhry.webService.client.masterData.functions.ZSD_T005_DATAResponse) object);
@@ -844,7 +844,7 @@ public class ZT_MasterDataQueryServiceStub extends org.apache.axis2.client.Stub
                     }
                 }
 
-                public void onError(java.lang.Exception error) {
+                public void onError(Exception error) {
                     if (error instanceof org.apache.axis2.AxisFault) {
                         org.apache.axis2.AxisFault f = (org.apache.axis2.AxisFault) error;
                         org.apache.axiom.om.OMElement faultElt = f.getDetail();
@@ -855,41 +855,41 @@ public class ZT_MasterDataQueryServiceStub extends org.apache.axis2.client.Stub
                                             faultElt.getQName(), "CodeQuery"))) {
                                 //make the fault by reflection
                                 try {
-                                    java.lang.String exceptionClassName = (java.lang.String) faultExceptionClassNameMap.get(new org.apache.axis2.client.FaultMapKey(
+                                    String exceptionClassName = (String) faultExceptionClassNameMap.get(new org.apache.axis2.client.FaultMapKey(
                                                 faultElt.getQName(), "CodeQuery"));
-                                    java.lang.Class exceptionClass = java.lang.Class.forName(exceptionClassName);
-                                    java.lang.reflect.Constructor constructor = exceptionClass.getConstructor(java.lang.String.class);
-                                    java.lang.Exception ex = (java.lang.Exception) constructor.newInstance(f.getMessage());
+                                    Class exceptionClass = Class.forName(exceptionClassName);
+                                    java.lang.reflect.Constructor constructor = exceptionClass.getConstructor(String.class);
+                                    Exception ex = (Exception) constructor.newInstance(f.getMessage());
 
                                     //message class
-                                    java.lang.String messageClassName = (java.lang.String) faultMessageMap.get(new org.apache.axis2.client.FaultMapKey(
+                                    String messageClassName = (String) faultMessageMap.get(new org.apache.axis2.client.FaultMapKey(
                                                 faultElt.getQName(), "CodeQuery"));
-                                    java.lang.Class messageClass = java.lang.Class.forName(messageClassName);
-                                    java.lang.Object messageObject = fromOM(faultElt,
+                                    Class messageClass = Class.forName(messageClassName);
+                                    Object messageObject = fromOM(faultElt,
                                             messageClass);
                                     java.lang.reflect.Method m = exceptionClass.getMethod("setFaultMessage",
-                                            new java.lang.Class[] { messageClass });
+                                            new Class[] { messageClass });
                                     m.invoke(ex,
-                                        new java.lang.Object[] { messageObject });
+                                        new Object[] { messageObject });
 
                                     callback.receiveErrorcodeQuery(new java.rmi.RemoteException(
                                             ex.getMessage(), ex));
-                                } catch (java.lang.ClassCastException e) {
+                                } catch (ClassCastException e) {
                                     // we cannot intantiate the class - throw the original Axis fault
                                     callback.receiveErrorcodeQuery(f);
-                                } catch (java.lang.ClassNotFoundException e) {
+                                } catch (ClassNotFoundException e) {
                                     // we cannot intantiate the class - throw the original Axis fault
                                     callback.receiveErrorcodeQuery(f);
-                                } catch (java.lang.NoSuchMethodException e) {
+                                } catch (NoSuchMethodException e) {
                                     // we cannot intantiate the class - throw the original Axis fault
                                     callback.receiveErrorcodeQuery(f);
                                 } catch (java.lang.reflect.InvocationTargetException e) {
                                     // we cannot intantiate the class - throw the original Axis fault
                                     callback.receiveErrorcodeQuery(f);
-                                } catch (java.lang.IllegalAccessException e) {
+                                } catch (IllegalAccessException e) {
                                     // we cannot intantiate the class - throw the original Axis fault
                                     callback.receiveErrorcodeQuery(f);
-                                } catch (java.lang.InstantiationException e) {
+                                } catch (InstantiationException e) {
                                     // we cannot intantiate the class - throw the original Axis fault
                                     callback.receiveErrorcodeQuery(f);
                                 } catch (org.apache.axis2.AxisFault e) {
@@ -938,7 +938,7 @@ public class ZT_MasterDataQueryServiceStub extends org.apache.axis2.client.Stub
     /**
      * Auto generated method signature
      *
-     * @see com.nhry.webService.client.masterData.ZT_MasterDataQueryService#mATQUERY
+     * @see ZT_MasterDataQueryService#mATQUERY
      * @param zSD_MATERAIL_DATA_RFC16
      */
     public com.nhry.webService.client.masterData.functions.ZSD_MATERAIL_DATA_RFCResponse mATQUERY(
@@ -986,7 +986,7 @@ public class ZT_MasterDataQueryServiceStub extends org.apache.axis2.client.Stub
             org.apache.axis2.context.MessageContext _returnMessageContext = _operationClient.getMessageContext(org.apache.axis2.wsdl.WSDLConstants.MESSAGE_LABEL_IN_VALUE);
             org.apache.axiom.soap.SOAPEnvelope _returnEnv = _returnMessageContext.getEnvelope();
 
-            java.lang.Object object = fromOM(_returnEnv.getBody()
+            Object object = fromOM(_returnEnv.getBody()
                                                        .getFirstElement(),
                     com.nhry.webService.client.masterData.functions.ZSD_MATERAIL_DATA_RFCResponse.class);
 
@@ -1000,39 +1000,39 @@ public class ZT_MasterDataQueryServiceStub extends org.apache.axis2.client.Stub
                                 faultElt.getQName(), "MATQUERY"))) {
                     //make the fault by reflection
                     try {
-                        java.lang.String exceptionClassName = (java.lang.String) faultExceptionClassNameMap.get(new org.apache.axis2.client.FaultMapKey(
+                        String exceptionClassName = (String) faultExceptionClassNameMap.get(new org.apache.axis2.client.FaultMapKey(
                                     faultElt.getQName(), "MATQUERY"));
-                        java.lang.Class exceptionClass = java.lang.Class.forName(exceptionClassName);
-                        java.lang.reflect.Constructor constructor = exceptionClass.getConstructor(java.lang.String.class);
-                        java.lang.Exception ex = (java.lang.Exception) constructor.newInstance(f.getMessage());
+                        Class exceptionClass = Class.forName(exceptionClassName);
+                        java.lang.reflect.Constructor constructor = exceptionClass.getConstructor(String.class);
+                        Exception ex = (Exception) constructor.newInstance(f.getMessage());
 
                         //message class
-                        java.lang.String messageClassName = (java.lang.String) faultMessageMap.get(new org.apache.axis2.client.FaultMapKey(
+                        String messageClassName = (String) faultMessageMap.get(new org.apache.axis2.client.FaultMapKey(
                                     faultElt.getQName(), "MATQUERY"));
-                        java.lang.Class messageClass = java.lang.Class.forName(messageClassName);
-                        java.lang.Object messageObject = fromOM(faultElt,
+                        Class messageClass = Class.forName(messageClassName);
+                        Object messageObject = fromOM(faultElt,
                                 messageClass);
                         java.lang.reflect.Method m = exceptionClass.getMethod("setFaultMessage",
-                                new java.lang.Class[] { messageClass });
-                        m.invoke(ex, new java.lang.Object[] { messageObject });
+                                new Class[] { messageClass });
+                        m.invoke(ex, new Object[] { messageObject });
 
                         throw new java.rmi.RemoteException(ex.getMessage(), ex);
-                    } catch (java.lang.ClassCastException e) {
+                    } catch (ClassCastException e) {
                         // we cannot intantiate the class - throw the original Axis fault
                         throw f;
-                    } catch (java.lang.ClassNotFoundException e) {
+                    } catch (ClassNotFoundException e) {
                         // we cannot intantiate the class - throw the original Axis fault
                         throw f;
-                    } catch (java.lang.NoSuchMethodException e) {
+                    } catch (NoSuchMethodException e) {
                         // we cannot intantiate the class - throw the original Axis fault
                         throw f;
                     } catch (java.lang.reflect.InvocationTargetException e) {
                         // we cannot intantiate the class - throw the original Axis fault
                         throw f;
-                    } catch (java.lang.IllegalAccessException e) {
+                    } catch (IllegalAccessException e) {
                         // we cannot intantiate the class - throw the original Axis fault
                         throw f;
-                    } catch (java.lang.InstantiationException e) {
+                    } catch (InstantiationException e) {
                         // we cannot intantiate the class - throw the original Axis fault
                         throw f;
                     }
@@ -1053,12 +1053,12 @@ public class ZT_MasterDataQueryServiceStub extends org.apache.axis2.client.Stub
     /**
      * Auto generated method signature for Asynchronous Invocations
      *
-     * @see com.nhry.webService.client.masterData.ZT_MasterDataQueryService#startmATQUERY
+     * @see ZT_MasterDataQueryService#startmATQUERY
      * @param zSD_MATERAIL_DATA_RFC16
      */
     public void startmATQUERY(
         com.nhry.webService.client.masterData.functions.ZSD_MATERAIL_DATA_RFC zSD_MATERAIL_DATA_RFC16,
-        final com.nhry.webService.client.masterData.ZT_MasterDataQueryServiceCallbackHandler callback)
+        final ZT_MasterDataQueryServiceCallbackHandler callback)
         throws java.rmi.RemoteException {
         org.apache.axis2.client.OperationClient _operationClient = _serviceClient.createClient(_operations[3].getName());
         _operationClient.getOptions()
@@ -1098,7 +1098,7 @@ public class ZT_MasterDataQueryServiceStub extends org.apache.axis2.client.Stub
                     try {
                         org.apache.axiom.soap.SOAPEnvelope resultEnv = resultContext.getEnvelope();
 
-                        java.lang.Object object = fromOM(resultEnv.getBody()
+                        Object object = fromOM(resultEnv.getBody()
                                                                   .getFirstElement(),
                                 com.nhry.webService.client.masterData.functions.ZSD_MATERAIL_DATA_RFCResponse.class);
                         callback.receiveResultmATQUERY((com.nhry.webService.client.masterData.functions.ZSD_MATERAIL_DATA_RFCResponse) object);
@@ -1107,7 +1107,7 @@ public class ZT_MasterDataQueryServiceStub extends org.apache.axis2.client.Stub
                     }
                 }
 
-                public void onError(java.lang.Exception error) {
+                public void onError(Exception error) {
                     if (error instanceof org.apache.axis2.AxisFault) {
                         org.apache.axis2.AxisFault f = (org.apache.axis2.AxisFault) error;
                         org.apache.axiom.om.OMElement faultElt = f.getDetail();
@@ -1118,41 +1118,41 @@ public class ZT_MasterDataQueryServiceStub extends org.apache.axis2.client.Stub
                                             faultElt.getQName(), "MATQUERY"))) {
                                 //make the fault by reflection
                                 try {
-                                    java.lang.String exceptionClassName = (java.lang.String) faultExceptionClassNameMap.get(new org.apache.axis2.client.FaultMapKey(
+                                    String exceptionClassName = (String) faultExceptionClassNameMap.get(new org.apache.axis2.client.FaultMapKey(
                                                 faultElt.getQName(), "MATQUERY"));
-                                    java.lang.Class exceptionClass = java.lang.Class.forName(exceptionClassName);
-                                    java.lang.reflect.Constructor constructor = exceptionClass.getConstructor(java.lang.String.class);
-                                    java.lang.Exception ex = (java.lang.Exception) constructor.newInstance(f.getMessage());
+                                    Class exceptionClass = Class.forName(exceptionClassName);
+                                    java.lang.reflect.Constructor constructor = exceptionClass.getConstructor(String.class);
+                                    Exception ex = (Exception) constructor.newInstance(f.getMessage());
 
                                     //message class
-                                    java.lang.String messageClassName = (java.lang.String) faultMessageMap.get(new org.apache.axis2.client.FaultMapKey(
+                                    String messageClassName = (String) faultMessageMap.get(new org.apache.axis2.client.FaultMapKey(
                                                 faultElt.getQName(), "MATQUERY"));
-                                    java.lang.Class messageClass = java.lang.Class.forName(messageClassName);
-                                    java.lang.Object messageObject = fromOM(faultElt,
+                                    Class messageClass = Class.forName(messageClassName);
+                                    Object messageObject = fromOM(faultElt,
                                             messageClass);
                                     java.lang.reflect.Method m = exceptionClass.getMethod("setFaultMessage",
-                                            new java.lang.Class[] { messageClass });
+                                            new Class[] { messageClass });
                                     m.invoke(ex,
-                                        new java.lang.Object[] { messageObject });
+                                        new Object[] { messageObject });
 
                                     callback.receiveErrormATQUERY(new java.rmi.RemoteException(
                                             ex.getMessage(), ex));
-                                } catch (java.lang.ClassCastException e) {
+                                } catch (ClassCastException e) {
                                     // we cannot intantiate the class - throw the original Axis fault
                                     callback.receiveErrormATQUERY(f);
-                                } catch (java.lang.ClassNotFoundException e) {
+                                } catch (ClassNotFoundException e) {
                                     // we cannot intantiate the class - throw the original Axis fault
                                     callback.receiveErrormATQUERY(f);
-                                } catch (java.lang.NoSuchMethodException e) {
+                                } catch (NoSuchMethodException e) {
                                     // we cannot intantiate the class - throw the original Axis fault
                                     callback.receiveErrormATQUERY(f);
                                 } catch (java.lang.reflect.InvocationTargetException e) {
                                     // we cannot intantiate the class - throw the original Axis fault
                                     callback.receiveErrormATQUERY(f);
-                                } catch (java.lang.IllegalAccessException e) {
+                                } catch (IllegalAccessException e) {
                                     // we cannot intantiate the class - throw the original Axis fault
                                     callback.receiveErrormATQUERY(f);
-                                } catch (java.lang.InstantiationException e) {
+                                } catch (InstantiationException e) {
                                     // we cannot intantiate the class - throw the original Axis fault
                                     callback.receiveErrormATQUERY(f);
                                 } catch (org.apache.axis2.AxisFault e) {
@@ -1201,7 +1201,7 @@ public class ZT_MasterDataQueryServiceStub extends org.apache.axis2.client.Stub
     /**
      * Auto generated method signature
      *
-     * @see com.nhry.webService.client.masterData.ZT_MasterDataQueryService#salesQuery
+     * @see ZT_MasterDataQueryService#salesQuery
      * @param zSD_SALES_ORGANIZATION_RFC18
      */
     public com.nhry.webService.client.masterData.functions.ZSD_SALES_ORGANIZATION_RFCResponse salesQuery(
@@ -1249,7 +1249,7 @@ public class ZT_MasterDataQueryServiceStub extends org.apache.axis2.client.Stub
             org.apache.axis2.context.MessageContext _returnMessageContext = _operationClient.getMessageContext(org.apache.axis2.wsdl.WSDLConstants.MESSAGE_LABEL_IN_VALUE);
             org.apache.axiom.soap.SOAPEnvelope _returnEnv = _returnMessageContext.getEnvelope();
 
-            java.lang.Object object = fromOM(_returnEnv.getBody()
+            Object object = fromOM(_returnEnv.getBody()
                                                        .getFirstElement(),
                     com.nhry.webService.client.masterData.functions.ZSD_SALES_ORGANIZATION_RFCResponse.class);
 
@@ -1263,39 +1263,39 @@ public class ZT_MasterDataQueryServiceStub extends org.apache.axis2.client.Stub
                                 faultElt.getQName(), "SalesQuery"))) {
                     //make the fault by reflection
                     try {
-                        java.lang.String exceptionClassName = (java.lang.String) faultExceptionClassNameMap.get(new org.apache.axis2.client.FaultMapKey(
+                        String exceptionClassName = (String) faultExceptionClassNameMap.get(new org.apache.axis2.client.FaultMapKey(
                                     faultElt.getQName(), "SalesQuery"));
-                        java.lang.Class exceptionClass = java.lang.Class.forName(exceptionClassName);
-                        java.lang.reflect.Constructor constructor = exceptionClass.getConstructor(java.lang.String.class);
-                        java.lang.Exception ex = (java.lang.Exception) constructor.newInstance(f.getMessage());
+                        Class exceptionClass = Class.forName(exceptionClassName);
+                        java.lang.reflect.Constructor constructor = exceptionClass.getConstructor(String.class);
+                        Exception ex = (Exception) constructor.newInstance(f.getMessage());
 
                         //message class
-                        java.lang.String messageClassName = (java.lang.String) faultMessageMap.get(new org.apache.axis2.client.FaultMapKey(
+                        String messageClassName = (String) faultMessageMap.get(new org.apache.axis2.client.FaultMapKey(
                                     faultElt.getQName(), "SalesQuery"));
-                        java.lang.Class messageClass = java.lang.Class.forName(messageClassName);
-                        java.lang.Object messageObject = fromOM(faultElt,
+                        Class messageClass = Class.forName(messageClassName);
+                        Object messageObject = fromOM(faultElt,
                                 messageClass);
                         java.lang.reflect.Method m = exceptionClass.getMethod("setFaultMessage",
-                                new java.lang.Class[] { messageClass });
-                        m.invoke(ex, new java.lang.Object[] { messageObject });
+                                new Class[] { messageClass });
+                        m.invoke(ex, new Object[] { messageObject });
 
                         throw new java.rmi.RemoteException(ex.getMessage(), ex);
-                    } catch (java.lang.ClassCastException e) {
+                    } catch (ClassCastException e) {
                         // we cannot intantiate the class - throw the original Axis fault
                         throw f;
-                    } catch (java.lang.ClassNotFoundException e) {
+                    } catch (ClassNotFoundException e) {
                         // we cannot intantiate the class - throw the original Axis fault
                         throw f;
-                    } catch (java.lang.NoSuchMethodException e) {
+                    } catch (NoSuchMethodException e) {
                         // we cannot intantiate the class - throw the original Axis fault
                         throw f;
                     } catch (java.lang.reflect.InvocationTargetException e) {
                         // we cannot intantiate the class - throw the original Axis fault
                         throw f;
-                    } catch (java.lang.IllegalAccessException e) {
+                    } catch (IllegalAccessException e) {
                         // we cannot intantiate the class - throw the original Axis fault
                         throw f;
-                    } catch (java.lang.InstantiationException e) {
+                    } catch (InstantiationException e) {
                         // we cannot intantiate the class - throw the original Axis fault
                         throw f;
                     }
@@ -1316,12 +1316,12 @@ public class ZT_MasterDataQueryServiceStub extends org.apache.axis2.client.Stub
     /**
      * Auto generated method signature for Asynchronous Invocations
      *
-     * @see com.nhry.webService.client.masterData.ZT_MasterDataQueryService#startsalesQuery
+     * @see ZT_MasterDataQueryService#startsalesQuery
      * @param zSD_SALES_ORGANIZATION_RFC18
      */
     public void startsalesQuery(
         com.nhry.webService.client.masterData.functions.ZSD_SALES_ORGANIZATION_RFC zSD_SALES_ORGANIZATION_RFC18,
-        final com.nhry.webService.client.masterData.ZT_MasterDataQueryServiceCallbackHandler callback)
+        final ZT_MasterDataQueryServiceCallbackHandler callback)
         throws java.rmi.RemoteException {
         org.apache.axis2.client.OperationClient _operationClient = _serviceClient.createClient(_operations[4].getName());
         _operationClient.getOptions()
@@ -1361,7 +1361,7 @@ public class ZT_MasterDataQueryServiceStub extends org.apache.axis2.client.Stub
                     try {
                         org.apache.axiom.soap.SOAPEnvelope resultEnv = resultContext.getEnvelope();
 
-                        java.lang.Object object = fromOM(resultEnv.getBody()
+                        Object object = fromOM(resultEnv.getBody()
                                                                   .getFirstElement(),
                                 com.nhry.webService.client.masterData.functions.ZSD_SALES_ORGANIZATION_RFCResponse.class);
                         callback.receiveResultsalesQuery((com.nhry.webService.client.masterData.functions.ZSD_SALES_ORGANIZATION_RFCResponse) object);
@@ -1370,7 +1370,7 @@ public class ZT_MasterDataQueryServiceStub extends org.apache.axis2.client.Stub
                     }
                 }
 
-                public void onError(java.lang.Exception error) {
+                public void onError(Exception error) {
                     if (error instanceof org.apache.axis2.AxisFault) {
                         org.apache.axis2.AxisFault f = (org.apache.axis2.AxisFault) error;
                         org.apache.axiom.om.OMElement faultElt = f.getDetail();
@@ -1381,43 +1381,43 @@ public class ZT_MasterDataQueryServiceStub extends org.apache.axis2.client.Stub
                                             faultElt.getQName(), "SalesQuery"))) {
                                 //make the fault by reflection
                                 try {
-                                    java.lang.String exceptionClassName = (java.lang.String) faultExceptionClassNameMap.get(new org.apache.axis2.client.FaultMapKey(
+                                    String exceptionClassName = (String) faultExceptionClassNameMap.get(new org.apache.axis2.client.FaultMapKey(
                                                 faultElt.getQName(),
                                                 "SalesQuery"));
-                                    java.lang.Class exceptionClass = java.lang.Class.forName(exceptionClassName);
-                                    java.lang.reflect.Constructor constructor = exceptionClass.getConstructor(java.lang.String.class);
-                                    java.lang.Exception ex = (java.lang.Exception) constructor.newInstance(f.getMessage());
+                                    Class exceptionClass = Class.forName(exceptionClassName);
+                                    java.lang.reflect.Constructor constructor = exceptionClass.getConstructor(String.class);
+                                    Exception ex = (Exception) constructor.newInstance(f.getMessage());
 
                                     //message class
-                                    java.lang.String messageClassName = (java.lang.String) faultMessageMap.get(new org.apache.axis2.client.FaultMapKey(
+                                    String messageClassName = (String) faultMessageMap.get(new org.apache.axis2.client.FaultMapKey(
                                                 faultElt.getQName(),
                                                 "SalesQuery"));
-                                    java.lang.Class messageClass = java.lang.Class.forName(messageClassName);
-                                    java.lang.Object messageObject = fromOM(faultElt,
+                                    Class messageClass = Class.forName(messageClassName);
+                                    Object messageObject = fromOM(faultElt,
                                             messageClass);
                                     java.lang.reflect.Method m = exceptionClass.getMethod("setFaultMessage",
-                                            new java.lang.Class[] { messageClass });
+                                            new Class[] { messageClass });
                                     m.invoke(ex,
-                                        new java.lang.Object[] { messageObject });
+                                        new Object[] { messageObject });
 
                                     callback.receiveErrorsalesQuery(new java.rmi.RemoteException(
                                             ex.getMessage(), ex));
-                                } catch (java.lang.ClassCastException e) {
+                                } catch (ClassCastException e) {
                                     // we cannot intantiate the class - throw the original Axis fault
                                     callback.receiveErrorsalesQuery(f);
-                                } catch (java.lang.ClassNotFoundException e) {
+                                } catch (ClassNotFoundException e) {
                                     // we cannot intantiate the class - throw the original Axis fault
                                     callback.receiveErrorsalesQuery(f);
-                                } catch (java.lang.NoSuchMethodException e) {
+                                } catch (NoSuchMethodException e) {
                                     // we cannot intantiate the class - throw the original Axis fault
                                     callback.receiveErrorsalesQuery(f);
                                 } catch (java.lang.reflect.InvocationTargetException e) {
                                     // we cannot intantiate the class - throw the original Axis fault
                                     callback.receiveErrorsalesQuery(f);
-                                } catch (java.lang.IllegalAccessException e) {
+                                } catch (IllegalAccessException e) {
                                     // we cannot intantiate the class - throw the original Axis fault
                                     callback.receiveErrorsalesQuery(f);
-                                } catch (java.lang.InstantiationException e) {
+                                } catch (InstantiationException e) {
                                     // we cannot intantiate the class - throw the original Axis fault
                                     callback.receiveErrorsalesQuery(f);
                                 } catch (org.apache.axis2.AxisFault e) {
@@ -1692,8 +1692,8 @@ public class ZT_MasterDataQueryServiceStub extends org.apache.axis2.client.Stub
         return factory.getDefaultEnvelope();
     }
 
-    private java.lang.Object fromOM(org.apache.axiom.om.OMElement param,
-        java.lang.Class type) throws org.apache.axis2.AxisFault {
+    private Object fromOM(org.apache.axiom.om.OMElement param,
+        Class type) throws org.apache.axis2.AxisFault {
         try {
             if (com.nhry.webService.client.masterData.functions.ZMM_POS_24DATA.class.equals(
                         type)) {
@@ -1744,7 +1744,7 @@ public class ZT_MasterDataQueryServiceStub extends org.apache.axis2.client.Stub
                         type)) {
                 return com.nhry.webService.client.masterData.functions.ZSD_T005_DATAResponse.Factory.parse(param.getXMLStreamReaderWithoutCaching());
             }
-        } catch (java.lang.Exception e) {
+        } catch (Exception e) {
             throw org.apache.axis2.AxisFault.makeFault(e);
         }
 

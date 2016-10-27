@@ -461,12 +461,12 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 
 		TMdBranch branch = branchMapper.selectBranchByNo(order.getBranchNo());
 		//如果该奶站已上线
-		if("Y".equals(branch.getIsValid()) && new Date().after(branch.getOnlineDate())){
+		if("10".equals(branch.getIsValid()) && new Date().after(branch.getOnlineDate())){
 			uptManHandModel.setPreorderStat("10");
 			uptManHandModel.setIsValid("Y");
 		}else{
 			uptManHandModel.setPreorderStat("20");
-			uptManHandModel.setIsValid("N");
+			uptManHandModel.setIsValid("Y");
 		}
 		tPreOrderMapper.orderConfirm(uptManHandModel);
 		// 更新订单  金额
@@ -497,6 +497,32 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 			//保存订单金额 和 状态
 			tPreOrderMapper.updateOrderCurAmtAndInitAmt(order);
 
+			if(StringUtils.isNotBlank(order.getBranchNo())){
+				//订户状态更改
+				tVipCustInfoService.discontinue(order.getMilkmemberNo(), "10",new com.nhry.utils.date.Date(),new com.nhry.utils.date.Date());
+			}
+
+
+			//生成装箱工单
+			if("20".equals(order.getMilkboxStat())){
+				MilkboxCreateModel model = new MilkboxCreateModel();
+				model.setCode(order.getOrderNo());
+				milkBoxService.addNewMilkboxPlan(model);
+			}
+
+			//生成每日计划
+			List<TOrderDaliyPlanItem> list = createDaliyPlan(order,entries);
+
+			//如果有赠品，生成赠品的日计划
+			promotionService.createDaliyPlanByPromotion(order,entries,list);
+
+			//创建订单发送EC，发送系统消息(以线程方式),只有奶站的发，摆台的确认时发，电商不发
+
+			if("01".equals(branch.getBranchGroup())){
+				order.setDealerNo(branch.getBranchNo());
+			}else{
+				order.setDealerNo(branch.getDealerNo());
+			}
 			order.setPreorderStat("10");
 			order.setIsValid("Y");
 			taskExecutor.execute(new Thread(){
@@ -505,6 +531,13 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 					super.run();
 					this.setName("updateOrderBranchNo");
 					messLogService.sendOrderBranch(order);
+					if("20".equals(order.getPaymentStat()) && !"20".equals(order.getMilkboxStat())){
+						TPreOrder sendOrder = new TPreOrder();
+						sendOrder.setOrderNo(order.getOrderNo());
+						sendOrder.setPreorderStat("200");
+						sendOrder.setEmpNo(order.getEmpNo());
+						messLogService.sendOrderStatus(sendOrder);
+					}
 				}
 			});
 		}
@@ -1782,6 +1815,11 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 		if(StringUtils.isBlank(order.getPreorderStat())){
 			order.setPreorderStat("10");//订单状态,初始确认
 		}
+		if("20".equals(order.getPreorderStat())){
+			order.setIsValid("N");
+		}else{
+			order.setIsValid("Y");
+		}
 		order.setSign("10");//在订状态
 		//根据传的奶站获取经销商和销售组织
 		// 如果不是奶站过来的  可以是无奶站
@@ -1795,10 +1833,12 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 			if(StringUtils.isBlank(order.getSalesOrg())){
 				throw new ServiceException(MessageCode.LOGIC_ERROR,"无奶站订单，销售组织编号不能为空!");
 			}
+
 			order.setSalesOrg(order.getSalesOrg());
 		}else{
 			if(StringUtils.isBlank(order.getBranchNo())) throw new ServiceException(MessageCode.LOGIC_ERROR,"该订单奶站编号不能为空!");
 			if(branch==null)throw new ServiceException(MessageCode.LOGIC_ERROR,"奶站号为"+order.getBranchNo()+" 的奶站在订户系统中不存在!");
+
 			order.setDealerNo(branch.getDealerNo());//进销商
 			order.setSalesOrg(branch.getSalesOrg());
 		}
@@ -1831,28 +1871,41 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 					if(StringUtils.isNotBlank(addressId) ){
 						TMdAddress cAddress = addressMapper.findAddressById(addressId);
 						if(cAddress!=null){
-							if(cAddress.getProvince().equals(record.getAddress().getProvince())
-									||cAddress.getCity().equals(record.getAddress().getCity())
-									||cAddress.getCounty().equals(record.getAddress().getCounty())
-									||cAddress.getResidentialArea().equals(record.getAddress().getResidentialArea())
-									||cAddress.getAddressTxt().trim().equals(record.getAddress().getAddressTxt().trim())
+							if(!cAddress.getProvince().equals(record.getAddress().getProvince())
+									||!cAddress.getCity().equals(record.getAddress().getCity())
+									||!cAddress.getAddressTxt().trim().equals(record.getAddress().getAddressTxt().trim())
+									||!cAddress.getRecvName().trim().equals(record.getAddress().getRecvName().trim())
 								)
 							{
 								throw new ServiceException(MessageCode.LOGIC_ERROR,"该地址ID在订户系统已存在，但是对应的地址信息不同，请核对信息");
 
 							}
-							String custNo = cAddress.getVipCustNo();
+							String custNo = order.getMilkmemberNo();
 							if(StringUtils.isNotBlank(custNo)){
 								TVipCustInfo cst = tVipCustInfoService.findVipCustByNo(custNo);
-								if(!custNo.equals(order.getMilkmemberNo())){
-									throw new ServiceException(MessageCode.LOGIC_ERROR,"该地址ID在订户系统已分配给"+custNo+" "+cst!=null?cst.getVipName():""+"订户了，请核对信息");
+								if(cst!=null){
+									if(!custNo.equals(order.getMilkmemberNo())){
+										throw new ServiceException(MessageCode.LOGIC_ERROR,"该地址ID在订户系统已分配给"+custNo+" "+cst.getVipName()+"订户了，而您的订奶编号为"+order.getMilkmemberNo()+"请核对信息");
+									}
+									if(StringUtils.isBlank(cst.getBranchNo())){
+										throw new ServiceException(MessageCode.LOGIC_ERROR,"该地址ID在订户系统已分配给"+custNo+cst.getVipName()+"订户了，但是该订户没有分配奶站，请核对信息");
+									}
+									record.getAddress().setVipCustNo(custNo);
+									String addressAndMilkmember = tVipCustInfoService.addAddressNoBrnachForCust(record.getAddress(),order.getSalesOrg(),null);
+									order.setBranchNo(cst.getBranchNo());
+								}else{
+									throw new ServiceException(MessageCode.LOGIC_ERROR, "订单中的订户ID "+custNo+"在订户系统中不存在!");
 								}
-								if(StringUtils.isBlank(cst.getBranchNo())){
-									throw new ServiceException(MessageCode.LOGIC_ERROR,"该地址ID在订户系统已分配给"+custNo+" "+cst!=null?cst.getVipName():""+"订户了，但是该订户没有奶站，请核对信息");
-								}
-								order.setBranchNo(cst.getBranchNo());
+
 							}else{
-								throw new ServiceException(MessageCode.LOGIC_ERROR,"该地址ID在订户系统存在，但是订户地址详细信息对应的订户编号(vipCustNo)为空!，请核对信息");
+								//throw new ServiceException(MessageCode.LOGIC_ERROR,"该地址ID在订户系统存在，但是订户地址详细信息对应的订户编号(vipCustNo)为空!，请核对信息");
+								Map<String,String> map = new HashMap<String,String>();
+								map.put("activityNo",order.getSolicitNo());
+								map.put("vipType",order.getDeliveryType());
+								map.put("vipSrc",order.getPreorderSource());
+								String addressAndMilkmember = tVipCustInfoService.addAddressNoBrnachForCust(record.getAddress(),order.getSalesOrg(),map);
+								order.setMilkmemberNo(addressAndMilkmember.split(",")[0]);
+								order.setAdressNo(addressAndMilkmember.split(",")[1]);
 							}
 						}else{
 							Map<String,String> map = new HashMap<String,String>();

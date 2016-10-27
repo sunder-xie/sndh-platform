@@ -101,7 +101,7 @@ public class TVipCustInfoServiceImpl extends BaseService implements TVipCustInfo
 			addAddressForCust(address,null,null);
 		}
 		vipInfoDataService.executeVipInfoData(record,record.getVipMp());
-		OperationLogUtil.saveHistoryOperation(record.getVipCustNo(), LogType.VIP_CUST,null,null,"创建",null,null,sysuser,operationLogMapper);
+		OperationLogUtil.saveHistoryOperation(record.getVipCustNo(), LogType.VIP_CUST,VipCustEnum.CREATE_VIP,null,"创建",null,null,sysuser,operationLogMapper);
 		return record.getVipCustNo();
 	}
 	@Override
@@ -425,13 +425,11 @@ public class TVipCustInfoServiceImpl extends BaseService implements TVipCustInfo
 		TSysUser sysuser = this.userSessionService.getCurrentUser();
 		if(StringUtils.isEmpty(address.getVipCustNo())){
 			//来自电商，需要自动创建订户(没有奶站)
-			tag = true;
-			Map<String,String> attrs = new HashMap<String,String>();
-			attrs.put("salesOrg",salesOrg);
-			attrs.put("phone", address.getMp());
 
-			if(StringUtils.isBlank(address.getAddressId())){
 				TMdAddress custAddress = addressMapper.findAddressById(address.getAddressId());
+				if(custAddress!=null){
+					tag = true;
+				}
 				//创建新订户
 				TVipCustInfo cust = new TVipCustInfo();
 				cust.setVipCustNo(PrimaryKeyUtils.generateUpperUuidKey());
@@ -456,8 +454,6 @@ public class TVipCustInfoServiceImpl extends BaseService implements TVipCustInfo
 				this.tmdVipcust.addVipCust(cust);
 				address.setVipCustNo(cust.getVipCustNo());
 				address.setIsDafault("Y");
-			}
-
 				//创建会员
 				//vipInfoDataService.executeVipInfoData(cust,cust.getVipMp());
 		}else if(StringUtils.isEmpty(address.getVipCustNo())){
@@ -469,15 +465,17 @@ public class TVipCustInfoServiceImpl extends BaseService implements TVipCustInfo
 		if(cust == null){
 			throw new ServiceException(MessageCode.LOGIC_ERROR,"该订户地址详细信息中vipCustNo对应的订户信息不存在!");
 		}
-		if(StringUtils.isEmpty(address.getAddressId())) {
-			address.setAddressId(PrimaryKeyUtils.generateUpperUuidKey());
+		if(!tag){
+			if(StringUtils.isEmpty(address.getAddressId())) {
+				address.setAddressId(PrimaryKeyUtils.generateUpperUuidKey());
+			}
+			address.setIsDelete("N");
+			address.setCreateAt(new Date());
+			address.setCreateBy(sysuser.getLoginName());
+			address.setCreateByTxt(sysuser.getDisplayName());
+			this.addressMapper.addAddressForCust(address);
 		}
-		address.setIsDelete("N");
-		address.setCreateAt(new Date());
-		address.setCreateBy(sysuser.getLoginName());
-		address.setCreateByTxt(sysuser.getDisplayName());
-		this.addressMapper.addAddressForCust(address);
-		//vipInfoDataService.executeSendAddress(address,"");
+
 		return address.getVipCustNo()+","+address.getAddressId();
 	}
 
