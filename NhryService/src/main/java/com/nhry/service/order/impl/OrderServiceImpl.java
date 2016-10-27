@@ -315,6 +315,26 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 		return tPreOrderMapper.searchReturnOrders(manHandModel);
 	}
 
+	@Override
+	public PageInfo searchPendingConfirmUnOnline(OrderSearchModel smodel) {
+		if(StringUtils.isEmpty(smodel.getPageNum()) || StringUtils.isEmpty(smodel.getPageSize())){
+			throw new ServiceException(MessageCode.LOGIC_ERROR,"pageNum和pageSize不能为空！");
+		}
+		smodel.setSalesOrg(userSessionService.getCurrentUser().getSalesOrg());
+		return tPreOrderMapper.searchPendingConfirmUnOnline(smodel);
+	}
+
+	@Override
+	public PageInfo searchPendingConfirmOnline(OrderSearchModel smodel) {
+		if(StringUtils.isEmpty(smodel.getPageNum()) || StringUtils.isEmpty(smodel.getPageSize())){
+			throw new ServiceException(MessageCode.LOGIC_ERROR,"pageNum和pageSize不能为空！");
+		}
+		smodel.setBranchNo(userSessionService.getCurrentUser().getBranchNo());
+		smodel.setSalesOrg(userSessionService.getCurrentUser().getSalesOrg());
+		return tPreOrderMapper.searchPendingConfirmOnline(smodel);
+	}
+
+
 	/* (non-Javadoc)
 	* @title: 人工分单详情
 	* @description:
@@ -430,7 +450,7 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 			}
 		}
 		r.setBranchNo("");
-		r.setDealerNo(null);
+		r.setDealerNo("");
 		r.setIsValid("N");
 		r.setRetDate(new Date());
 		r.setRetReason(r.getRetReason().trim());
@@ -519,10 +539,11 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 			//创建订单发送EC，发送系统消息(以线程方式),只有奶站的发，摆台的确认时发，电商不发
 
 			if("01".equals(branch.getBranchGroup())){
-				order.setDealerNo(branch.getBranchNo());
+				order.setDealerNo(EnvContant.getSystemConst("online_code"));
 			}else{
 				order.setDealerNo(branch.getDealerNo());
 			}
+
 			order.setPreorderStat("10");
 			order.setIsValid("Y");
 			taskExecutor.execute(new Thread(){
@@ -531,7 +552,11 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 					super.run();
 					this.setName("updateOrderBranchNo");
 					messLogService.sendOrderBranch(order);
-					if("20".equals(order.getPaymentStat()) && !"20".equals(order.getMilkboxStat())){
+					if(!"10".equals(order.getPreorderSource()) && !"40".equals(order.getPreorderSource())){
+						this.setName("sendOrderToEc");
+						messLogService.sendOrderInfo(order, entries);
+					}
+					if(list!=null){
 						TPreOrder sendOrder = new TPreOrder();
 						sendOrder.setOrderNo(order.getOrderNo());
 						sendOrder.setPreorderStat("200");
@@ -545,7 +570,50 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 	}
 
 
-	
+	@Override
+	public int orderConfirmUnOnline(UpdateManHandOrderModel uptManHandModel) {
+		if( StringUtils.isBlank(uptManHandModel.getOrderNo())) {
+			throw new ServiceException(MessageCode.LOGIC_ERROR, "订单号不能为空！");
+		}
+
+		TPreOrder order = tPreOrderMapper.selectByPrimaryKey(uptManHandModel.getOrderNo());
+		TMdBranch branch = branchMapper.selectBranchByNo(order.getBranchNo());
+		uptManHandModel.setIsValid("Y");
+		tPreOrderMapper.orderConfirm(uptManHandModel);
+		if(!"30".equals(order.getPreorderSource())){
+			Map<String,String> map = new HashMap<String,String>();
+			map.put("orderNo",order.getOrderNo());
+			map.put("salesOrg",order.getSalesOrg());
+			List<TPlanOrderItem> entries = tPlanOrderItemMapper.selectEntriesByOrderNo(map);
+			if("01".equals(branch.getBranchGroup())){
+				order.setDealerNo(branch.getBranchNo());
+			}else{
+				order.setDealerNo(branch.getDealerNo());
+			}
+			order.setPreorderStat("10");
+			order.setIsValid("Y");
+			taskExecutor.execute(new Thread(){
+				@Override
+				public void run() {
+					super.run();
+					if(!"10".equals(order.getPreorderSource()) && !"40".equals(order.getPreorderSource())){
+						this.setName("sendOrderToEc");
+						messLogService.sendOrderInfo(order, entries);
+					}
+					TPreOrder sendOrder = new TPreOrder();
+					sendOrder.setOrderNo(order.getOrderNo());
+					sendOrder.setPreorderStat("200");
+					sendOrder.setEmpNo(order.getEmpNo());
+					messLogService.sendOrderStatus(sendOrder);
+				}
+			});
+		}
+		return 0;
+	}
+
+
+
+
 	/* (non-Javadoc) 
 	* @title: batchStopOrderForTime
 	* @description: 批量停订
@@ -2058,10 +2126,12 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 			@Override
 			public void run() {
 				super.run();
-				this.setName("sendOrderToEc");
-				messLogService.sendOrderInfo(order, entriesList);
-				
-				if("20".equals(order.getPaymentStat()) && !"20".equals(order.getMilkboxStat())){
+				if(!"10".equals(order.getPreorderSource()) && !"40".equals(order.getPreorderSource())){
+					this.setName("sendOrderToEc");
+					messLogService.sendOrderInfo(order, entriesList);
+				}
+
+				if(list!=null){
 					TPreOrder sendOrder = new TPreOrder();
 					sendOrder.setOrderNo(order.getOrderNo());
 					sendOrder.setPreorderStat("200");
@@ -6343,6 +6413,7 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 		
 		return;
 	}
+
 
 
 

@@ -152,7 +152,11 @@ public class DeliverMilkServiceImpl extends BaseService implements DeliverMilkSe
 					if( "30".equals(entry.getReason()) || "40".equals(entry.getReason()) || "50".equals(entry.getReason())) {
 						tSsmStockService.updateStock(order.getBranchNo(), entry.getConfirmMatnr(), entry.getQty(), user.getSalesOrg());
 					}else{
-						tSsmStockService.updateStock(order.getBranchNo(), entry.getConfirmMatnr(), entry.getConfirmQty(), user.getSalesOrg());
+						if("60".equals(entry.getReason())){
+							tSsmStockService.updateStock(order.getBranchNo(), entry.getConfirmMatnr(), entry.getQty().subtract(entry.getConfirmQty()), user.getSalesOrg());
+						}else{
+							tSsmStockService.updateStock(order.getBranchNo(), entry.getConfirmMatnr(), entry.getConfirmQty(), user.getSalesOrg());
+						}
 						//如果原因是 60 （拒收复送）拒收部分保存至库存中
 						//T创建产品拒收复送记录，包括路单日期、奶站、送奶员、产品、拒收复送数量，（应用要货标识和部分应用要货标识、应用要货数量）
 						if("60".equals(entry.getReason()) && entry.getQty().subtract(entry.getConfirmQty()).compareTo(BigDecimal.ZERO)!=0){
