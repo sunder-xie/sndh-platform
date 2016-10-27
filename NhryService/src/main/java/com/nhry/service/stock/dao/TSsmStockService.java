@@ -1,6 +1,7 @@
 package com.nhry.service.stock.dao;
 
 import com.github.pagehelper.PageInfo;
+import com.nhry.data.milktrans.domain.TMstRefuseResend;
 import com.nhry.data.stock.domain.TSsmStock;
 import com.nhry.data.stock.domain.TSsmStockKey;
 import com.nhry.model.stock.StockModel;
@@ -57,5 +58,11 @@ public interface TSsmStockService {
      * 根据奶站执行库存清零
      * */
     int updateStockToZero();
+
+    /**
+     * 查询拒收复送剩余数量-送奶员围度查询
+     * create at 2016-10-27
+     * */
+    List<TMstRefuseResend> selectRefuseForInside(String empNo);
 
 }

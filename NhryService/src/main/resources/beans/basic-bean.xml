@@ -89,6 +89,8 @@
 		<property name="smsSendService" ref="smsSendService"></property>
 		<property name="tDispOrderMapper" ref="tDispOrderMapper"></property>
 		<property name="addressMapper" ref="addressMapper"></property>
+		<property name="operationLogMapper" ref="operationLogMapper"></property>
+		<property name="maraExMapper" ref="maraExMapper"></property>
 	</bean>
 	<bean id="tPromotionMapper" class="com.nhry.data.order.impl.TPromotionMapperImpl">
 		<property name="sqlSessionTemplate" ref="dynamicSqlSessionTemplate"></property>
@@ -153,6 +155,8 @@
 		<property name="tSsmStockService" ref="ssmStockService"></property>
 		<property name="returnBoxService" ref="returnBoxService"></property>
 		<property name="resendMapper" ref="resendMapper"></property>
+		<property name="resendItemMapper" ref="resendItemMapper"></property>
+
 	</bean>
 	<!-- 送奶信息维护end -->
 	<bean id="custService" class="com.nhry.service.basic.impl.TVipCustInfoServiceImpl">

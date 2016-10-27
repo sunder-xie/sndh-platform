@@ -75,6 +75,11 @@ public class TMstRefuseResendMapperImpl implements TMstRefuseResendMapper {
     }
 
     @Override
+    public List<TMstRefuseResend> selectRefuseForInside(TMstRefuseResend resend){
+        return sqlSessionTemplate.selectList("selectRefuseForInside",resend);
+    }
+
+    @Override
     public TMstRefuseResend selectRefuseResendByDispEmpAndMatnr(String dispOrderNo,String empNo,String matnr) {
         TMstRefuseResend resend = new TMstRefuseResend();
         resend.setDispOrderNo(dispOrderNo);

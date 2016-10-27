@@ -122,6 +122,8 @@ public class TPreOrder {
     private String resumeFlag;
     
     private Date payDate;
+
+    private String payDateStr;
     
     private String isIntegration;
     
@@ -139,6 +141,14 @@ public class TPreOrder {
     String branchMp;
     String branchEmpName;
     String addressTxt;
+
+    public String getPayDateStr() {
+        return payDateStr;
+    }
+
+    public void setPayDateStr(String payDateStr) {
+        this.payDateStr = payDateStr;
+    }
 
     public String getDealerName() {
         return dealerName;
