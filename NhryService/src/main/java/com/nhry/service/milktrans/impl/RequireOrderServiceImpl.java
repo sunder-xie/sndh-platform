@@ -207,11 +207,11 @@ public class RequireOrderServiceImpl implements RequireOrderService {
         TSsmReqGoodsOrder order = this.tSsmReqGoodsOrderMapper.searchRequireOrder(rModel);
         if (order != null) {
 
-            List<TMstRefuseResend> resendList = resendMapper.findNoUsedRefuseResend(user.getBranchNo());
-            Map<String, Integer> matnrMap = new HashMap<String, Integer>();
-            if (resendList != null && resendList.size() > 0) {
-                resendList.stream().forEach(resend -> {
-                    matnrMap.put(resend.getMatnr(), resend.getQty().intValue());
+            List<TMstRefuseResend>  resendList = resendMapper.findNoUsedAndUsedRefuseResend(user.getBranchNo(),order.getOrderNo());
+            Set<String> matnrMap = new HashSet<String>();
+            if(resendList!=null && resendList.size()>0){
+                resendList.stream().forEach(resend->{
+                    matnrMap.add(resend.getMatnr());
                 });
             }
 
@@ -232,7 +232,7 @@ public class RequireOrderServiceImpl implements RequireOrderService {
                 map.put("salesOrg", salesOrg);
                 map.put("matnr", item.getMatnr());
                 TMdMara mara = tMdMaraMapper.selectProductByCode(map);
-                if (matnrMap.containsKey(item.getMatnr())) {
+                if(matnrMap.contains(item.getMatnr())){
                     entry.setHasTmp(true);
                 } else {
                     entry.setHasTmp(false);
@@ -580,6 +580,26 @@ public class RequireOrderServiceImpl implements RequireOrderService {
                 //如果已生成，并且已经发送过ERP
                 throw new ServiceException(MessageCode.LOGIC_ERROR, "当天要货计划已生成，并且已经发送过ERP，不能再次生成，请查阅!!!");
             } else {
+                //将 拒收复送  复原
+                List<TMstRefuseResendItem> entries = resendItemMapper.selectItemByRequireOrder(order.getOrderNo());
+                if(entries!=null && entries.size()>0){
+                    //key  拒收复送单号，value 数量
+                    Map<String, BigDecimal> matnrList = new HashMap<String,BigDecimal>();
+                    entries.stream().filter(e->(e.getQty().intValue()>0)).forEach(e->{
+                           matnrList.put(e.getResendOrderNo(),e.getQty());
+                    });
+                    //有拒收复送产品,更新拒收复送数量，删除子项
+                    if(matnrList.size()>0){
+                        for(String resendOrderNo : matnrList.keySet()){
+                            BigDecimal uptQty = matnrList.get(resendOrderNo);
+                            TMstRefuseResend resend = resendMapper.selectRefuseResendByNo(resendOrderNo);
+                            resend.setConfirmQty(resend.getConfirmQty().subtract(uptQty));
+                            resend.setRemainQty(resend.getRemainQty().add(uptQty));
+                           resendMapper.uptRefuseResend(resend);
+                        }
+                        resendItemMapper.delResendItemByRequireOrderNoAndType(order.getOrderNo(),"10");
+                    }
+                }
                 tSsmReqGoodsOrderItemMapper.delRequireOrderItemsByOrderNo(order.getOrderNo());
                 tSsmReqGoodsOrderMapper.deleRequireGoodsOrderbyNo(order.getOrderNo());
             }
@@ -786,69 +806,13 @@ public class RequireOrderServiceImpl implements RequireOrderService {
                         TSsmSalOrder prom = null;
                         TSsmSalOrder prom40 = null;
                         TSsmSalOrder noprom40 = null;
-                        prom = gettSsmSalOrder(search, user, items, entries, prom,"free", "30");
-//                        if (items != null && items.size() > 0) {
-//                            boolean hasCreateOrder = false;
-//                            for (int i = 1; i <= items.size(); i++) {
-//                                TOrderDaliyPlanItem item = items.get(i - 1);
-//                                //如果交货单 产品 包含 促销产品 则做促销销售订单
-//                                // 再判断 数量 如果促销数量 >=  交货单数量  则以交货单数量为准 并将交货单中产品去除
-//                                //如果 促销数量 < 交货单数量  则以促销数量为准，  并将交货单中产品减去促销数量
-//                                if (entries.containsKey(item.getConfirmMatnr())) {
-//                                    //此时说明有促销产品要生成销售定单  （再判断是否已生成 如果还没则 先生成 并将标记为置为已生成过，保证只生成一个)
-//                                    if (!hasCreateOrder) {
-//                                        prom = createSaleOrder(user, search.getOrderDate(), "branch", "free", 2);
-//                                        hasCreateOrder = true;
-//                                    }
-//                                    if (item.getQty() >= entries.get(item.getConfirmMatnr())) {
-//                                        item.setQty(entries.get(item.getConfirmMatnr()));
-//                                        entries.remove(item.getConfirmMatnr());
-//                                    } else {
-//                                        entries.replace(item.getConfirmMatnr(), entries.get(item.getConfirmMatnr()) - item.getQty());
-//                                    }
-//                                    createSaleOrderItem(item, i, prom.getOrderNo(), search.getOrderDate(), "branch");
-//                                } else {
-//                                    continue;
-//                                }
-//                            }
-////                              //生成 不参加促销
-////                               if(entries!=null && entries.size()>0){
-////                                   noprom = createSalOrderByGiOrderMap(entries,user,orderDate);
-////                               }
-//                        }
                         noprom40 = gettSsmSalOrder(search, user, itemNo40s, entries, noprom40,"", "40");
-//                        if (itemNo40s != null && itemNo40s.size() > 0) {
-//                            boolean hasCreateOrder = false;
-//                            for (int i = 1; i <= itemNo40s.size(); i++) {
-//                                TOrderDaliyPlanItem item = itemNo40s.get(i - 1);
-//                                //如果交货单 产品 包含 促销产品 则做促销销售订单
-//                                // 再判断 数量 如果促销数量 >=  交货单数量  则以交货单数量为准 并将交货单中产品去除
-//                                //如果 促销数量 < 交货单数量  则以促销数量为准，  并将交货单中产品减去促销数量
-//                                if (entries.containsKey(item.getConfirmMatnr())) {
-//                                    //此时说明有促销产品要生成销售定单  （再判断是否已生成 如果还没则 先生成 并将标记为置为已生成过，保证只生成一个)
-//                                    if (!hasCreateOrder) {
-//                                        prom = createSaleOrder(user, search.getOrderDate(), "branch", "", 2);
-//                                        hasCreateOrder = true;
-//                                    }
-//                                    if (item.getQty() >= entries.get(item.getConfirmMatnr())) {
-//                                        item.setQty(entries.get(item.getConfirmMatnr()));
-//                                        entries.remove(item.getConfirmMatnr());
-//                                    } else {
-//                                        entries.replace(item.getConfirmMatnr(), entries.get(item.getConfirmMatnr()) - item.getQty());
-//                                    }
-//                                    createSaleOrderItem(item, i, noprom40.getOrderNo(), search.getOrderDate(), "branch");
-//                                } else {
-//                                    continue;
-//                                }
-//                            }
-//                        }
                         prom40 = gettSsmSalOrder(search, user, item40s, entries, prom40,"free", "40");
-//                        else{
+                        prom = gettSsmSalOrder(search, user, items, entries, prom,"free", "30");
                         //生成 不参加促销
                         if (entries != null && entries.size() > 0) {
                             noprom = createSalOrderByGiOrderMap(entries, user, orderDate);
                         }
-//                        }
 
                         if (noprom != null) {
                             generateSalesOrderAnduptVouCher(noprom);
@@ -902,9 +866,9 @@ public class RequireOrderServiceImpl implements RequireOrderService {
     }
 
     @Override
-    public List<TMstRefuseResend> queryRefuseResendByMatnr(String matnr,String reqOrderNo) {
+    public List<TMstRefuseResend>  queryRefuseResendByMatnr(String matnr,String reqOrderNo) {
         TSysUser user = userSessionService.getCurrentUser();
-        return resendMapper.queryRefuseResendByMatnr(matnr, user.getBranchNo(),reqOrderNo);
+        return resendMapper.queryRefuseResendByMatnr(matnr,user.getBranchNo(),reqOrderNo);
     }
 
     @Override
@@ -913,46 +877,74 @@ public class RequireOrderServiceImpl implements RequireOrderService {
         if (resendlist != null && resendlist.size() > 0) {
             TSsmReqGoodsOrderItem item = tSsmReqGoodsOrderItemMapper.getReqGoodsItemsByMatnrAndOrderNo(umodel.getReqOrderNo(), umodel.getMatnr());
             TSysUser user = userSessionService.getCurrentUser();
-            String resendOrderNo = resendlist.get(0).getResendOrderNo();
+
             String reqOrderNo = item.getOrderNo();
             int total = resendlist.stream().mapToInt(r -> r.getUseQty().intValue()).sum();
             if (item.getQty() + item.getIncreQty() < total) {
                 throw new ServiceException(MessageCode.LOGIC_ERROR, "选择的拒收复送总数不应该大于要货数量");
             }
-            for (TMstRefuseResend resend : resendlist) {
+
+            //要货减少量
+            int uptReqQty = 0;
+            for(TMstRefuseResend resend : resendlist){
+                String resendOrderNo = resend.getResendOrderNo();
+                //单条拒收复送应用增加量
+                BigDecimal addQty = BigDecimal.ZERO;
                 //生成使用拒收复送详情
                 TMstRefuseResend oldResend = resendMapper.selectRefuseResendByNo(resend.getResendOrderNo());
-                TMstRefuseResendItem resendItem = new TMstRefuseResendItem();
-                resendItem.setResendOrderNo(resendOrderNo);
-                resendItem.setOrderNo(reqOrderNo);
-                resendItem.setType("10");
-                resendItem.setCreateAt(new Date());
-                resendItem.setCreateBy(user.getLoginName());
-                resendItem.setQty(resend.getUseQty());
-                resendItemMapper.addResendItem(resendItem);
-
-                //库存
-                stockService.updateTmpStock(oldResend.getBranchNo(), oldResend.getMatnr(), resend.getUseQty(), user.getSalesOrg());
-                //更新拒收复送 信息
-                BigDecimal remainQty = oldResend.getRemainQty().subtract(resend.getUseQty());
-                oldResend.setRemainQty(remainQty);
-                oldResend.setConfirmQty(oldResend.getConfirmQty().add(resend.getUseQty()));
-                if (remainQty.compareTo(BigDecimal.ZERO) == 0 || remainQty.compareTo(BigDecimal.ZERO) == 1) {
-                    oldResend.setStatus("20");
-                } else {
-                    oldResend.setStatus("30");
+                TMstRefuseResendItem oldResendItem = resendItemMapper.selectItemByReqorderAndNo(umodel.getReqOrderNo(),resend.getResendOrderNo());
+                if(oldResendItem != null){
+                    //如果等于0 说明不再应用
+                    if(resend.getUseQty().compareTo(BigDecimal.ZERO) == 0){
+                        uptReqQty = uptReqQty +oldResendItem.getQty().intValue();
+                        addQty = addQty.subtract(oldResendItem.getQty());
+                        resendItemMapper.delResendItemByReOrderNoAndResendOrderNo(umodel.getReqOrderNo(),oldResend.getResendOrderNo());
+                    }else{
+                        uptReqQty = uptReqQty +oldResendItem.getQty().subtract(resend.getUseQty()).intValue();
+                        addQty =addQty.add(resend.getUseQty().subtract(oldResendItem.getQty()));
+                        //如果大于零  说明改变应用
+                        oldResendItem.setQty(resend.getUseQty());
+                        resendItemMapper.uptResendItem(oldResendItem);
+                    }
+                    //库存
+                    stockService.updateTmpStock(oldResend.getBranchNo(),oldResend.getMatnr(),resend.getUseQty().subtract(oldResendItem.getQty()),user.getSalesOrg());
+                }else{
+                    if(resend.getUseQty().compareTo(BigDecimal.ZERO) == 0){
+                        continue;
+                    }else{
+                        addQty = addQty.add(resend.getUseQty());
+                        uptReqQty = uptReqQty + resend.getUseQty().multiply(new BigDecimal(-1)).intValue();
+                        TMstRefuseResendItem resendItem = new TMstRefuseResendItem();
+                        resendItem.setResendOrderNo(resendOrderNo);
+                        resendItem.setOrderNo(reqOrderNo);
+                        resendItem.setType("10");
+                        resendItem.setCreateAt(new Date());
+                        resendItem.setCreateBy(user.getLoginName());
+                        resendItem.setQty(resend.getUseQty());
+                        resendItemMapper.addResendItem(resendItem);
+                        //库存
+                        stockService.updateTmpStock(oldResend.getBranchNo(),oldResend.getMatnr(),resend.getUseQty(),user.getSalesOrg());
+                    }
                 }
-                resendMapper.uptRefuseResend(oldResend);
+                if(resend.getUseQty().compareTo(BigDecimal.ZERO)==0 && oldResendItem==null){
+                    continue;
+                }else{
+                    //更新拒收复送 信息
+                    oldResend.setRemainQty(oldResend.getRemainQty().subtract(addQty));
+                    oldResend.setConfirmQty(oldResend.getConfirmQty().add(addQty));
+                    if(oldResend.getRemainQty().compareTo(BigDecimal.ZERO) != -1){
+                        oldResend.setStatus("20");
+                    }else{
+                        oldResend.setStatus("30");
+                    }
+                    resendMapper.uptRefuseResend(oldResend);
+                }
             }
             //更新 要货计划行信息
             TSsmReqGoodsOrderItemUpt uptItem = new TSsmReqGoodsOrderItemUpt();
-            if (item.getQty() < total) {
-                uptItem.setQty(0);
-                uptItem.setIncreQty(0);
-            } else {
-                uptItem.setQty(item.getQty() - total);
-            }
-            uptItem.setResendQty(item.getResendQty() + total);
+
+            uptItem.setResendQty(item.getResendQty()-uptReqQty);
+            uptItem.setQty(item.getQty()+uptReqQty);
             uptItem.setOrderNo(item.getOrderNo());
             uptItem.setOldMatnr(item.getMatnr());
             tSsmReqGoodsOrderItemMapper.uptNewReqGoodsItem(uptItem);
