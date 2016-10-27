@@ -59,6 +59,17 @@ public class TPreOrderMapperImpl implements TPreOrderMapper
 	}
 
 	@Override
+	public PageInfo searchPendingConfirmUnOnline(OrderSearchModel smodel) {
+		return sqlSessionTemplate.selectListByPages("searchPendingConfirmUnOnline",smodel, Integer.parseInt(smodel.getPageNum()), Integer.parseInt(smodel.getPageSize()));
+	}
+
+	@Override
+	public PageInfo searchPendingConfirmOnline(OrderSearchModel smodel) {
+		return sqlSessionTemplate.selectListByPages("searchPendingConfirmOnline",smodel, Integer.parseInt(smodel.getPageNum()), Integer.parseInt(smodel.getPageSize()));
+	}
+
+
+	@Override
 	public TPreOrder manHandOrderDetail(String orderNo) {
 		return sqlSessionTemplate.selectOne("manHandOrderDetail", orderNo);
 	}
@@ -282,6 +293,7 @@ public class TPreOrderMapperImpl implements TPreOrderMapper
 		map.put("orderNos",orderNos);
 		return sqlSessionTemplate.selectList("selectDispNoByGroupAndOrders",map);
 	}
+
 
 	/* (non-Javadoc) 
 	* @title: replaceOrdersDispmember

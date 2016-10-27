@@ -477,6 +477,41 @@
         LEFT JOIN t_md_mara m ON m.MATNR = i.MATNR
         AND b.SALES_ORG = m.SALES_ORG
     </select>
+    <select id="orderOnlineStatReport" resultType="hashmap" parameterType="com.nhry.model.statistics.ExtendBranchInfoModel">
+      SELECT
+            t.SALES_ORG,
+            t3.DEALER_NAME,
+            t2.BRANCH_NAME,
+            t1.VIP_NAME,
+            t1.VIP_MP,
+            t.ORDER_NO,
+            case t.PREORDER_SOURCE
+            when 10 then '电商平台'
+            when 40 then '牛奶钱包'
+            else '' end as PREORDER_SOURCE,
+            t.ONLINE_SOURCE_TYPE,
+            t.ONLINE_INIT_AMT,
+            t.CUR_AMT,
+            t.ORDER_DATE,
+            t.END_DATE
+        FROM
+            t_preorder t
+        inner join t_vip_cust_info t1 on t1.VIP_CUST_NO = t.MILKMEMBER_NO
+        inner join t_md_branch t2 on t2.BRANCH_NO=t.BRANCH_NO
+        left join t_md_dealer t3 on t3.DEALER_NO=t.DEALER_NO
+        WHERE 1=1
+        <if test="branchNo != null">
+           AND  t.BRANCH_NO =  #{branchNo,jdbcType=VARCHAR}
+        </if>
+        <if test="dealerId != null and dealerId != '-1'">
+            AND t.DEALER_NO =  #{dealerId,jdbcType=VARCHAR}
+        </if>
+        <if test="salesOrg != null">
+            AND t.SALES_ORG =  #{salesOrg,jdbcType=VARCHAR}
+        </if>
+        AND (t.PREORDER_SOURCE = 10 OR t.PREORDER_SOURCE = 40 )
+        order by t.PREORDER_SOURCE,t.ONLINE_SOURCE_TYPE
+    </select>
     <select id="changeplanStatReport" resultType="hashmap" parameterType="com.nhry.model.statistics.ExtendBranchInfoModel">
             SELECT
                 br.BRANCH_NAME,

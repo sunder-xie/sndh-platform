@@ -265,6 +265,20 @@ public class BranchInfoServiceImpl implements BranchInfoService {
     public List<Map<String, String>> exportOrderByModel(BranchInfoModel model) {
         return branchInfoMapper.exportOrderByModel(model);
     }
+    @Override
+    public List<Map<String, String>> orderOnlineStatReport(ExtendBranchInfoModel model) {
+        TSysUser user = userSessionService.getCurrentUser();
+        if(StringUtils.isBlank(model.getBranchNo()) &&StringUtils.isNotBlank(user.getBranchNo())){
+            model.setBranchNo(user.getBranchNo());
+        }else if(StringUtils.isEmpty(model.getDealerId()) && StringUtils.isNotEmpty(user.getDealerId())){
+            model.setDealerId(user.getDealerId());
+        }
+        if(StringUtils.isBlank(model.getSalesOrg())){
+            model.setSalesOrg(user.getSalesOrg());
+        }
+
+        return branchInfoMapper.orderOnlineStatReport(model);
+    }
 
     @Override
     public PageInfo Refuse2receiveResend(ExtendBranchInfoModel model) {

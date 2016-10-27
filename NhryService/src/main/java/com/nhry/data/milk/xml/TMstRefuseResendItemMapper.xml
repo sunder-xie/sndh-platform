@@ -12,6 +12,21 @@
   <sql id="Base_Column_List" >
    RESEND_ORDER_NO,ORDER_NO,TYPE,QTY,CREATE_AT,CREATE_BY
   </sql>
+  <update id="uptResendItem" parameterType="com.nhry.data.milktrans.domain.TMstRefuseResendItem" >
+    update t_mst_refuse_resend_item
+    <set >
+      <if test="qty!= null" >
+        QTY =  #{qty,jdbcType=DECIMAL},
+      </if>
+    </set>
+    where 1=1
+    <if test="orderNo!=null and ''!=orderNo">
+      and ORDER_NO = #{orderNo,jdbcType=VARCHAR}
+    </if>
+    <if test="resendOrderNo!=null and ''!=resendOrderNo">
+      and RESEND_ORDER_NO = #{resendOrderNo,jdbcType=VARCHAR}
+    </if>
+  </update>
 
   <insert id="addResendItem" parameterType="com.nhry.data.milktrans.domain.TMstRefuseResendItem" >
     insert into t_mst_refuse_resend_item
@@ -65,10 +80,27 @@
     GROUP BY RESEND_ORDER_NO
   </select>
 
-  <select id="delResendItemByRequireOrderNoAndType" parameterType="java.util.HashMap">
+  <delete id="delResendItemByMap" parameterType="java.util.HashMap">
     DELETE
     FROM t_mst_refuse_resend_item
-    WHERE ORDER_NO = #{orderNo}
-    and TYPE = #{type}
+    WHERE 1=1
+    <if test="orderNo!=null and ''!=orderNo">
+      and ORDER_NO = #{orderNo}
+    </if>
+    <if test="resendOrderNo!=null and ''!=resendOrderNo">
+      and RESEND_ORDER_NO = #{resendOrderNo}
+    </if>
+    <if test="type!=null and ''!=type">
+      and TYPE = #{type}
+    </if>
+  </delete>
+  <select id="selectItemByReqorderAndNo" parameterType="java.util.HashMap" resultMap="BaseResultMap">
+      SELECT
+      <include refid="Base_Column_List"/>
+     FROM t_mst_refuse_resend_item
+        WHERE ORDER_NO = #{orderNo}
+        and TYPE = '10'
+        and RESEND_ORDER_NO =#{resendOrderNo}
   </select>
+
 </mapper>
