@@ -209,7 +209,7 @@ public class EcServiceImpl extends EcBaseService implements EcService{
 			orderStatusReJson.put("empName", order.getBranchEmpName());//送奶员姓名
 			if("200".equals(order.getPreorderStat())){
 				BranchEmpModel emp = branchEmpMapper.empDetailInfo(order.getEmpNo());
-				if(emp!=null){
+				if(emp.getEmp()!=null){
 					orderStatusReJson.put("empMobile", emp.getEmp().getMp());//送奶员手机
 					orderStatusReJson.put("empName", emp.getEmp().getEmpName());//送奶员姓名
 				}
