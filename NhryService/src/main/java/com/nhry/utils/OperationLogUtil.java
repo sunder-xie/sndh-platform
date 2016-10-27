@@ -22,7 +22,7 @@ public class OperationLogUtil  {
         operationLogModel.setCreateBy(user.getLoginName());
         operationLogModel.setCreateByTxt(user.getDisplayName());
         operationLogModel.setCreateAt(new Date());
-        operationLogModel.setDispDate(dispDate);
+        operationLogModel.setLogDispDate(dispDate);
         operationLogModel.setLogMatnr(matnr);
         operationLogMapper.save(operationLogModel);
     }
