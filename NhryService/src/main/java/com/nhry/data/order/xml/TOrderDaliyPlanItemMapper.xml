@@ -674,8 +674,8 @@
             AND di.GIFT_FLAG is NOT null
             AND ti.STATUS = '20'
             and di.CONFIRM_QTY>0
-            and di.REASON = '10'
-            and di.REPLACE_REASON = '10'
+--             and di.REASON = '10'
+--             and di.REPLACE_REASON = '10'
             and  o.BRANCH_NO = #{branchNo,jdbcType=VARCHAR}
             <if test="preorderSource != null and preorderSource == '40'">
               and o.PREORDER_SOURCE = '40'
@@ -697,8 +697,8 @@
     AND di.GIFT_FLAG is null
     AND ti.STATUS = '20'
     and di.CONFIRM_QTY>0
-    and di.REASON = '10'
-    and di.REPLACE_REASON = '10'
+--     and di.REASON = '10'
+--     and di.REPLACE_REASON = '10'
     and  o.BRANCH_NO = #{branchNo,jdbcType=VARCHAR}
     and o.PREORDER_SOURCE = '40'
     and e.SALES_ORG = #{salesOrg,jdbcType=VARCHAR}
