@@ -113,7 +113,8 @@ public class TPreOrder {
     private String salesOrg;
 
     private String dealerNo;
-    
+
+    private  String dealerName;
     private String deleteReason;
     
     private String payMan;
@@ -138,6 +139,14 @@ public class TPreOrder {
     String branchMp;
     String branchEmpName;
     String addressTxt;
+
+    public String getDealerName() {
+        return dealerName;
+    }
+
+    public void setDealerName(String dealerName) {
+        this.dealerName = dealerName;
+    }
 
     public String getIsValid() {
         return isValid;

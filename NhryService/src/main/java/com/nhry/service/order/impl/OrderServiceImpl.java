@@ -7,10 +7,8 @@ import com.nhry.common.exception.ServiceException;
 import com.nhry.data.auth.domain.TSysUser;
 import com.nhry.data.basic.dao.TMdAddressMapper;
 import com.nhry.data.basic.dao.TMdBranchMapper;
-import com.nhry.data.basic.domain.TMdAddress;
-import com.nhry.data.basic.domain.TMdBranch;
-import com.nhry.data.basic.domain.TVipAcct;
-import com.nhry.data.basic.domain.TVipCustInfo;
+import com.nhry.data.basic.dao.TMdOperationLogMapper;
+import com.nhry.data.basic.domain.*;
 import com.nhry.data.bill.dao.CustomerBillMapper;
 import com.nhry.data.bill.domain.TMstRecvBill;
 import com.nhry.data.milk.dao.TDispOrderItemMapper;
@@ -66,6 +64,11 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 	private SmsSendService smsSendService;
 	private TDispOrderMapper tDispOrderMapper;
 	private TMdAddressMapper addressMapper;
+	private TMdOperationLogMapper operationLogMapper;
+
+	public void setOperationLogMapper(TMdOperationLogMapper operationLogMapper) {
+		this.operationLogMapper = operationLogMapper;
+	}
 
 	public void setAddressMapper(TMdAddressMapper addressMapper) {
 		this.addressMapper = addressMapper;
