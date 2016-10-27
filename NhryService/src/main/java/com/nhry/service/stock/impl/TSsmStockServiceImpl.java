@@ -5,7 +5,9 @@ import com.nhry.common.auth.UserSessionService;
 import com.nhry.common.exception.MessageCode;
 import com.nhry.common.exception.ServiceException;
 import com.nhry.data.auth.domain.TSysUser;
+import com.nhry.data.milk.dao.TMstRefuseResendMapper;
 import com.nhry.data.milktrans.dao.TSsmReqGoodsOrderMapper;
+import com.nhry.data.milktrans.domain.TMstRefuseResend;
 import com.nhry.data.stock.dao.TSsmStockMapper;
 import com.nhry.data.stock.domain.TSsmStock;
 import com.nhry.data.stock.domain.TSsmStockKey;
@@ -33,6 +35,8 @@ public class TSsmStockServiceImpl implements TSsmStockService {
 
     private TSsmGiOrderItemService giOrderItemService;
 
+    private TMstRefuseResendMapper resendMapper;
+
     private static Logger logger = Logger.getLogger(TSsmStockServiceImpl.class);
 
     @Autowired
@@ -56,6 +60,10 @@ public class TSsmStockServiceImpl implements TSsmStockService {
 
     public void setGiOrderItemService(TSsmGiOrderItemService giOrderItemService) {
         this.giOrderItemService = giOrderItemService;
+    }
+
+    public void setResendMapper(TMstRefuseResendMapper resendMapper) {
+        this.resendMapper = resendMapper;
     }
 
     @Override
@@ -163,6 +171,24 @@ public class TSsmStockServiceImpl implements TSsmStockService {
             throw new ServiceException(MessageCode.LOGIC_ERROR,"登录人当前无奶站信息，请更换账户登录！");
         }
 
+    }
+
+    @Override
+    public List<TMstRefuseResend> selectRefuseForInside(String empNo){
+        TMstRefuseResend resend = new TMstRefuseResend();
+        resend.setEmpNo(empNo);
+        TSysUser user = userSessionService.getCurrentUser();
+         if(StringUtils.isNotEmpty(user.getBranchNo())){
+             resend.setBranchNo(user.getBranchNo());
+         }else{
+             throw new ServiceException(MessageCode.LOGIC_ERROR,"登录人当前无奶站信息，请更换账户登录！");
+         }
+        if(StringUtils.isNotEmpty(user.getSalesOrg())){
+             resend.setSalesOrg(user.getSalesOrg());
+         }else{
+             throw new ServiceException(MessageCode.LOGIC_ERROR,"登录人当前无销售组织，请更换账户登录！");
+         }
+        return resendMapper.selectRefuseForInside(resend);
     }
 
 

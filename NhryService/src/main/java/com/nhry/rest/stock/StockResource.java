@@ -91,16 +91,11 @@ public class StockResource extends BaseResource {
     }
 
     @POST
-    @Path("/findTmpStockinsidesal")
+    @Path("/findRefuseForInside/{empNo}")
     @Produces(MediaType.APPLICATION_JSON)
-    @Consumes(MediaType.APPLICATION_JSON)
-    @ApiOperation(value = "/findTmpStockinsidesal", response = ResponseModel.class, notes = "查询-库存中剩余的拒收复送")
-    public Response findTmpStockinsidesal(@ApiParam(name = "model",value = "model")StockModel model){
-        TSysUser user = userSessionService.getCurrentUser();
-        if(StringUtils.isEmpty(model.getBranchNo()) && StringUtils.isNotEmpty(user.getBranchNo())){
-            model.setBranchNo(user.getBranchNo());
-        }
-        return convertToRespModel(MessageCode.NORMAL,null,ssmStockService.findTmpStockinsidesal(model));
+    @ApiOperation(value = "/findRefuseForInside/{empNo}", response = String.class, notes = "根据送奶员给出拒收复送列表")
+    public Response findBranchByDno(@ApiParam(required=true,name="empNo",value="送奶员编号")@PathParam("empNo") String empNo){
+        return convertToRespModel(MessageCode.NORMAL, null,ssmStockService.selectRefuseForInside(empNo));
     }
 
     @POST
