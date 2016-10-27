@@ -5,6 +5,16 @@ package com.nhry.model.basic;
  */
 public class MatnrAndQtyModel {
     private String matnr;
+    private String resendOrderNo;
+
+    public String getResendOrderNo() {
+        return resendOrderNo;
+    }
+
+    public void setResendOrderNo(String resendOrderNo) {
+        this.resendOrderNo = resendOrderNo;
+    }
+
     private int qty;
 
     public String getMatnr() {
