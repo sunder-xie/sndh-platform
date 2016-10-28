@@ -164,7 +164,10 @@ public class CustomerBillServiceImpl implements CustomerBillService {
                 updateBill =  customerBillMapper.updateCustomerBillrPayment(customerBill);
 
                 //更新订单状态为已收款
-                updateOrderStatus = tPreOrderMapper.updateOrderPayMentStatus(orderNo);
+                order.setPayDate(new Date());
+                order.setPaymentStat("20");
+                updateOrderStatus = tPreOrderMapper.updateOrderStatus(order);
+
                 //预付款的,更新订单行起始日期
                 if("20".equals(order.getPaymentmethod()) && cModel.getEntries()!=null && cModel.getEntries().size() > 0){
                	 orderService.updateOrderAndEntriesDispStartDate(order.getOrderNo(),cModel.getEntries());

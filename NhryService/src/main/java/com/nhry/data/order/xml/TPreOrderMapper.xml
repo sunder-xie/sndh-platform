@@ -787,6 +787,9 @@
     	<if test="milkmemberNo != null" >
         MILKMEMBER_NO = #{milkmemberNo,jdbcType=VARCHAR},
       </if>
+      <if test="payDate != null" >
+        PAY_DATE = #{payDate,jdbcType=DATE},
+      </if>
       <if test="paymentStat != null" >
         PAYMENT_STAT = #{paymentStat,jdbcType=VARCHAR},
       </if>
