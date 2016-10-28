@@ -372,8 +372,8 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 		TMdBranch branch = branchMapper.selectBranchByNo(branchNo);
 		//如果更换奶站，可能会更换商品价格，并把用户挂到该奶站下
 		TPreOrder order = tPreOrderMapper.selectByPrimaryKey(orderNo);
-//		if(!uptManHandModel.getBranchNo().equals(order.getBranchNo())){
-		TVipCustInfo orderCust = tVipCustInfoService.findVipCustByNo(order.getMilkmemberNo());
+		if(order == null){throw new ServiceException(MessageCode.LOGIC_ERROR,"订单不存在");}
+	/*	TVipCustInfo orderCust = tVipCustInfoService.findVipCustByNo(order.getMilkmemberNo());
 		//地址一定是一个
 		TMdAddress orderAddress = addressMapper.findAddressById(order.getAdressNo());
 		Map<String,String> custMap = new HashMap<String,String>();
@@ -397,7 +397,7 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 			String salesOrg = tVipCustInfoService.uptCustBranchNo(order.getMilkmemberNo(),branchNo);
 			uptManHandModel.setSalesOrg(salesOrg);
 		}
-//		}
+//		}*/
 		/*//查看该奶站是否已经上线
 		if("10".equals(branch.getIsValid())  &&  new Date().after(branch.getOnlineDate())){
 			//该奶站已上线
@@ -405,6 +405,7 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 		}else{
 			uptManHandModel.setIsValid("N");
 		}*/
+		uptManHandModel.setDealerNo(branch.getDealerNo());
 		uptManHandModel.setIsValid("N");
 		tPreOrderMapper.uptManHandOrder(uptManHandModel);
 		
@@ -443,7 +444,7 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 			throw new ServiceException(MessageCode.LOGIC_ERROR, "信息不完整！");
 		}
 		TPreOrder  order = tPreOrderMapper.selectByPrimaryKey(r.getOrderNo());
-		if(StringUtils.isNotBlank(order.getRetReason())){
+		/*if(StringUtils.isNotBlank(order.getRetReason())){
 			if(order.getRetReason().equals(order.getMilkmemberNo())){
 				//如果 分配奶站当时 没有该电话的订户  将订户退回，将订单退回
 				//订户设为 无奶站订户
@@ -458,7 +459,7 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 				//将订单订户恢复到创建时状态
 				r.setMilkmemberNo(order.getRetReason());
 			}
-		}
+		}*/
 		r.setBranchNo("");
 		r.setDealerNo("");
 		r.setIsValid("N");
@@ -481,16 +482,49 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 			throw new ServiceException(MessageCode.LOGIC_ERROR, "信息不完整！");
 		}
 		TPreOrder order = tPreOrderMapper.selectByPrimaryKey(uptManHandModel.getOrderNo());
-		//如果(分单过来的) 该奶站原有这个电话  的订户，将创建订单时的订户删除
-		if(StringUtils.isNoneBlank(order.getRetReason()) && tVipCustInfoService.findVipCustByNo(order.getRetReason())!=null){
-			if(!order.getRetReason().equals(order.getMilkmemberNo())){
-				uptManHandModel.setRetReason(null);
-				tVipCustInfoService.deleteCustByCustNo(order.getRetReason());
+		//处理订户  和 地址信息
+		TVipCustInfo ordercust = tVipCustInfoService.findVipCustByNo(order.getMilkmemberNo());
+		TMdAddress orderAddress = addressMapper.findAddressById(order.getAdressNo());
+		if(StringUtils.isBlank(ordercust.getBranchNo())){
+			Map<String,String> custMap = new HashMap<String,String>();
+			custMap.put("branchNo",order.getBranchNo());
+			custMap.put("phone",ordercust.getMp());
+			TVipCustInfo branchCust = tVipCustInfoService.findStaCustByPhone(custMap);
+			if(branchCust==null){
+				ordercust.setBranchNo(order.getBranchNo());
+				tVipCustInfoService.updateVipCustByNo(ordercust);
+			}else{
+				if(!ordercust.getVipCustNo().equals(branchCust.getVipCustNo())){
+					order.setMilkmemberNo(branchCust.getVipCustNo());
+					uptManHandModel.setMilkmemberNo(branchCust.getVipCustNo());
+					List<TMdAddress> addlist= addressMapper.findCnAddressByCustNo(branchCust.getVipCustNo());
+					if(addlist!=null && addlist.size()>0){
+						boolean hasDefault = false;
+						for(TMdAddress address : addlist){
+							if("Y".equals(address.getIsDafault())){
+								hasDefault = true;
+								orderAddress.setIsDafault("N");
+								break;
+							}
+						}
+					}
+					orderAddress.setVipCustNo(branchCust.getVipCustNo());
+					addressMapper.uptCustAddress(orderAddress);
+					tVipCustInfoService.deleteCustByCustNo(ordercust.getVipCustNo());
+				}
+
 			}
+
 		}
+//		if(StringUtils.isNoneBlank(order.getRetReason()) && tVipCustInfoService.findVipCustByNo(order.getRetReason())!=null){
+//			if(!order.getRetReason().equals(order.getMilkmemberNo())){
+//				uptManHandModel.setRetReason(null);
+//				tVipCustInfoService.deleteCustByCustNo(order.getRetReason());
+//			}
+//		}
 
 		TMdBranch branch = branchMapper.selectBranchByNo(order.getBranchNo());
-		//如果该奶站已上线
+		//如果该奶站已上线()
 		if("10".equals(branch.getIsValid()) && new Date().after(branch.getOnlineDate())){
 			uptManHandModel.setPreorderStat("10");
 			uptManHandModel.setIsValid("Y");
@@ -1864,6 +1898,9 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 		//判断如果新增订单时订单编号不为空，则代表是订户数据导入
 		if(StringUtils.isBlank(order.getOrderNo())){
 			order.setOrderNo(CodeGeneratorUtil.getCode());
+		}
+		if(order.getInitAmt()!=null){
+			order.setOnlineInitAmt(order.getInitAmt());
 		}
 
 		//其他订单信息
@@ -4113,13 +4150,10 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 						float price = orgPlan.getPrice().floatValue();
 						if(price<=0)throw new ServiceException(MessageCode.LOGIC_ERROR,"替换的产品价格小于0，请维护价格组!");
 						cj = orgPlan.getAmt().subtract(new BigDecimal(String.valueOf(price)).multiply(new BigDecimal(plan.getQty().toString())));
-
-					}
-
-					if(!plan.getMatnr().equals(orgPlan.getMatnr()) ){
-						OperationLogUtil.saveHistoryOperation(orgOrder.getOrderNo(),LogType.DAIL_ORDER,DailOrderLogEnum.STATUS,
+						OperationLogUtil.saveHistoryOperation(orgOrder.getOrderNo(),LogType.DAIL_ORDER,DailOrderLogEnum.UPT_QTY,
 								orgPlan.getStatus(),plan.getStatus(),orgPlan.getMatnr(),orgPlan.getDispDate(),user,operationLogMapper);
 					}
+
 					orgPlan.setMatnr(plan.getMatnr());
 					orgPlan.setQty(plan.getQty());
 					orgPlan.setUnit(plan.getUnit());
