@@ -493,7 +493,8 @@
             t.ONLINE_INIT_AMT,
             t.CUR_AMT,
             t.ORDER_DATE,
-            t.END_DATE
+            t.END_DATE,
+            t.PAY_DATE
         FROM
             t_preorder t
         inner join t_vip_cust_info t1 on t1.VIP_CUST_NO = t.MILKMEMBER_NO
@@ -509,8 +510,14 @@
         <if test="salesOrg != null">
             AND t.SALES_ORG =  #{salesOrg,jdbcType=VARCHAR}
         </if>
+        <if test="dateStart!=null">
+            AND t.PAY_DATE &gt;= #{dateStart,jdbcType=DATE}
+        </if>
+        <if test="dateEnd!=null">
+            AND t.PAY_DATE &lt;= #{dateEnd,jdbcType=DATE}
+        </if>
         AND (t.PREORDER_SOURCE = 10 OR t.PREORDER_SOURCE = 40 )
-        order by t.PREORDER_SOURCE,t.ONLINE_SOURCE_TYPE
+        order by t.BRANCH_NO,t.PREORDER_SOURCE,t.ONLINE_SOURCE_TYPE
     </select>
     <select id="changeplanStatReport" resultType="hashmap" parameterType="com.nhry.model.statistics.ExtendBranchInfoModel">
             SELECT
