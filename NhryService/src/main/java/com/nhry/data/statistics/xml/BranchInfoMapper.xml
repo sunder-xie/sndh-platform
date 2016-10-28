@@ -493,7 +493,8 @@
             t.ONLINE_INIT_AMT,
             t.CUR_AMT,
             t.ORDER_DATE,
-            t.END_DATE
+            t.END_DATE,
+            t.PAY_DATE
         FROM
             t_preorder t
         inner join t_vip_cust_info t1 on t1.VIP_CUST_NO = t.MILKMEMBER_NO
@@ -509,8 +510,14 @@
         <if test="salesOrg != null">
             AND t.SALES_ORG =  #{salesOrg,jdbcType=VARCHAR}
         </if>
+        <if test="dateStart!=null">
+            AND t.PAY_DATE &gt;= #{dateStart,jdbcType=DATE}
+        </if>
+        <if test="dateEnd!=null">
+            AND t.PAY_DATE &lt;= #{dateEnd,jdbcType=DATE}
+        </if>
         AND (t.PREORDER_SOURCE = 10 OR t.PREORDER_SOURCE = 40 )
-        order by t.PREORDER_SOURCE,t.ONLINE_SOURCE_TYPE
+        order by t.BRANCH_NO,t.PREORDER_SOURCE,t.ONLINE_SOURCE_TYPE
     </select>
     <select id="changeplanStatReport" resultType="hashmap" parameterType="com.nhry.model.statistics.ExtendBranchInfoModel">
             SELECT
@@ -1238,23 +1245,66 @@
         tf.ORDER_DATE
     </select>
     <select id="exportOrderByModel" parameterType="com.nhry.model.statistics.BranchInfoModel" resultType="hashmap">
-        select
-        i.DISP_EMP_NO,i.CONFIRM_MATNR, sum(i.CONFIRM_QTY) as CONFIRM_QTY,
-        p.SHORT_TXT MATNR_TXT,e.EMP_NAME
-        from t_mst_disp_order_item i
-        left join t_mst_disp_order mdo on mdo.ORDER_NO = i.ORDER_NO
-        left join t_md_branch b on mdo.BRANCH_NO = b.BRANCH_NO
-        left join t_md_mara_ex p on p.MATNR = i.CONFIRM_MATNR and p.SALES_ORG = b.SALES_ORG
-        left join t_md_address a on a.ADDRESS_ID = i.ADDRESS_NO
-        left join t_md_residential_area r on r.ID = a.RESIDENTIAL_AREA
-        LEFT JOIN t_md_branch_emp e on e.EMP_NO = i.DISP_EMP_NO
-        where
+        SELECT
+        DISP_EMP_NO,
+        CONFIRM_MATNR,
+        GROUP_CONCAT(CONFIRM_QTY ORDER BY CONFIRM_QTY desc ) as CONFIRM_QTY,
+        CQTY,
+        MATNR_TXT,
+        EMP_NAME
+        FROM
+        (
+        SELECT
+        i.DISP_EMP_NO,
+        i.CONFIRM_MATNR,
+        ROUND(sum(i.CONFIRM_QTY)) AS CONFIRM_QTY,
+        sum(i.CONFIRM_QTY) as CQTY,
+        p.SHORT_TXT MATNR_TXT,
+        e.EMP_NAME
+        FROM
+        t_mst_disp_order_item i
+        LEFT JOIN t_mst_disp_order mdo ON mdo.ORDER_NO = i.ORDER_NO
+        LEFT JOIN t_md_branch b ON mdo.BRANCH_NO = b.BRANCH_NO
+        LEFT JOIN t_md_mara_ex p ON p.MATNR = i.CONFIRM_MATNR
+        AND p.SALES_ORG = b.SALES_ORG
+        LEFT JOIN t_md_address a ON a.ADDRESS_ID = i.ADDRESS_NO
+        LEFT JOIN t_md_residential_area r ON r.ID = a.RESIDENTIAL_AREA
+        LEFT JOIN t_md_branch_emp e ON e.EMP_NO = i.DISP_EMP_NO
+        WHERE
         mdo.DISP_DATE = #{theDate,jdbcType=VARCHAR}
-			and mdo.BRANCH_NO=#{branchNo,jdbcType=VARCHAR}
+        and mdo.BRANCH_NO=#{branchNo,jdbcType=VARCHAR}
         <if test="reachTimeType!=null and ''!=reachTimeType">
             AND  mdo.REACH_TIME_TYPE &lt;= #{reachTimeType,jdbcType=DATE}
         </if>
-			group by i.DISP_EMP_NO,i.CONFIRM_MATNR
+        group by i.DISP_EMP_NO,i.CONFIRM_MATNR
+
+        UNION
+        SELECT
+        t.EMP_NO AS DISP_EMP_NO,
+        t.MATNR,
+        CONCAT(
+        '(',
+        ROUND(sum(t.REMAIN_QTY)),
+        ')'
+        ) AS CONFIRM_QTY,
+        0 as CQTY,
+        t1.SHORT_TXT AS MATNR_TXT,
+        t2.EMP_NAME
+        FROM
+        t_mst_refuse_resend t
+        INNER JOIN t_md_mara_ex t1 ON t1.MATNR = t.MATNR
+        AND t1.SALES_ORG = t.SALES_ORG
+        INNER JOIN t_md_branch_emp t2 ON t2.EMP_NO = t.EMP_NO
+        WHERE
+        1 = 1
+        AND t.REMAIN_QTY > 0
+        GROUP BY
+        t.EMP_NO,
+        t.MATNR
+        ) fnt
+        GROUP BY
+        DISP_EMP_NO,
+        CONFIRM_MATNR
     </select>
 
     <select id="Refuse2receiveResend" resultType="hashmap" parameterType="com.nhry.model.statistics.ExtendBranchInfoModel">

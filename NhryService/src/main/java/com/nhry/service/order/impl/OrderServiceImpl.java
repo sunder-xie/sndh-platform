@@ -372,8 +372,8 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 		TMdBranch branch = branchMapper.selectBranchByNo(branchNo);
 		//如果更换奶站，可能会更换商品价格，并把用户挂到该奶站下
 		TPreOrder order = tPreOrderMapper.selectByPrimaryKey(orderNo);
-//		if(!uptManHandModel.getBranchNo().equals(order.getBranchNo())){
-		TVipCustInfo orderCust = tVipCustInfoService.findVipCustByNo(order.getMilkmemberNo());
+		if(order == null){throw new ServiceException(MessageCode.LOGIC_ERROR,"订单不存在");}
+	/*	TVipCustInfo orderCust = tVipCustInfoService.findVipCustByNo(order.getMilkmemberNo());
 		//地址一定是一个
 		TMdAddress orderAddress = addressMapper.findAddressById(order.getAdressNo());
 		Map<String,String> custMap = new HashMap<String,String>();
@@ -397,7 +397,7 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 			String salesOrg = tVipCustInfoService.uptCustBranchNo(order.getMilkmemberNo(),branchNo);
 			uptManHandModel.setSalesOrg(salesOrg);
 		}
-//		}
+//		}*/
 		/*//查看该奶站是否已经上线
 		if("10".equals(branch.getIsValid())  &&  new Date().after(branch.getOnlineDate())){
 			//该奶站已上线
@@ -405,6 +405,7 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 		}else{
 			uptManHandModel.setIsValid("N");
 		}*/
+		uptManHandModel.setDealerNo(branch.getDealerNo());
 		uptManHandModel.setIsValid("N");
 		tPreOrderMapper.uptManHandOrder(uptManHandModel);
 		
@@ -443,7 +444,7 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 			throw new ServiceException(MessageCode.LOGIC_ERROR, "信息不完整！");
 		}
 		TPreOrder  order = tPreOrderMapper.selectByPrimaryKey(r.getOrderNo());
-		if(StringUtils.isNotBlank(order.getRetReason())){
+		/*if(StringUtils.isNotBlank(order.getRetReason())){
 			if(order.getRetReason().equals(order.getMilkmemberNo())){
 				//如果 分配奶站当时 没有该电话的订户  将订户退回，将订单退回
 				//订户设为 无奶站订户
@@ -458,7 +459,7 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 				//将订单订户恢复到创建时状态
 				r.setMilkmemberNo(order.getRetReason());
 			}
-		}
+		}*/
 		r.setBranchNo("");
 		r.setDealerNo("");
 		r.setIsValid("N");
@@ -481,16 +482,49 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 			throw new ServiceException(MessageCode.LOGIC_ERROR, "信息不完整！");
 		}
 		TPreOrder order = tPreOrderMapper.selectByPrimaryKey(uptManHandModel.getOrderNo());
-		//如果(分单过来的) 该奶站原有这个电话  的订户，将创建订单时的订户删除
-		if(StringUtils.isNoneBlank(order.getRetReason()) && tVipCustInfoService.findVipCustByNo(order.getRetReason())!=null){
-			if(!order.getRetReason().equals(order.getMilkmemberNo())){
-				uptManHandModel.setRetReason(null);
-				tVipCustInfoService.deleteCustByCustNo(order.getRetReason());
+		//处理订户  和 地址信息
+		TVipCustInfo ordercust = tVipCustInfoService.findVipCustByNoForUpt(order.getMilkmemberNo());
+		TMdAddress orderAddress = addressMapper.findAddressById(order.getAdressNo());
+		if(StringUtils.isBlank(ordercust.getBranchNo())){
+			Map<String,String> custMap = new HashMap<String,String>();
+			custMap.put("branchNo",order.getBranchNo());
+			custMap.put("phone",ordercust.getMp());
+			TVipCustInfo branchCust = tVipCustInfoService.findStaCustByPhone(custMap);
+			if(branchCust==null){
+				ordercust.setBranchNo(order.getBranchNo());
+				tVipCustInfoService.updateVipCustByNo(ordercust);
+			}else{
+				if(!ordercust.getVipCustNo().equals(branchCust.getVipCustNo())){
+					order.setMilkmemberNo(branchCust.getVipCustNo());
+					uptManHandModel.setMilkmemberNo(branchCust.getVipCustNo());
+					List<TMdAddress> addlist= addressMapper.findCnAddressByCustNo(branchCust.getVipCustNo());
+					if(addlist!=null && addlist.size()>0){
+						boolean hasDefault = false;
+						for(TMdAddress address : addlist){
+							if("Y".equals(address.getIsDafault())){
+								hasDefault = true;
+								orderAddress.setIsDafault("N");
+								break;
+							}
+						}
+					}
+					orderAddress.setVipCustNo(branchCust.getVipCustNo());
+					addressMapper.uptCustAddress(orderAddress);
+					tVipCustInfoService.deleteCustByCustNo(ordercust.getVipCustNo());
+				}
+
 			}
+
 		}
+//		if(StringUtils.isNoneBlank(order.getRetReason()) && tVipCustInfoService.findVipCustByNo(order.getRetReason())!=null){
+//			if(!order.getRetReason().equals(order.getMilkmemberNo())){
+//				uptManHandModel.setRetReason(null);
+//				tVipCustInfoService.deleteCustByCustNo(order.getRetReason());
+//			}
+//		}
 
 		TMdBranch branch = branchMapper.selectBranchByNo(order.getBranchNo());
-		//如果该奶站已上线
+		//如果该奶站已上线()
 		if("10".equals(branch.getIsValid()) && new Date().after(branch.getOnlineDate())){
 			uptManHandModel.setPreorderStat("10");
 			uptManHandModel.setIsValid("Y");
@@ -983,13 +1017,24 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 			BigDecimal initAmt = order.getInitAmt();
 			if("20".equals(state)){//先付款
 				tOrderDaliyPlanItemMapper.updateDaliyPlansToBack(order);
-				
+				BigDecimal backAmt = BigDecimal.ZERO;
 				//此为多余的钱，如果是预付款，将存入订户账户
 				if(order.getInitAmt()!=null && "20".equals(order.getPaymentStat())){//已经收款的
-					TVipAcct ac = new TVipAcct();
-				   ac.setVipCustNo(order.getMilkmemberNo());
-				   ac.setAcctAmt(order.getCurAmt());
-					tVipCustInfoService.addVipAcct(ac);
+					if("10".equals(order.getPreorderSource()) || "40".equals(order.getPreorderSource())){
+						if(order.getOnlineInitAmt()!=null){
+							backAmt = backAmt.add(leftAmt.multiply(order.getOnlineInitAmt()).divide(order.getInitAmt(),2));
+							//电商 退订日志
+
+						}
+					}else{
+						backAmt = backAmt.add(order.getCurAmt());
+						TVipAcct ac = new TVipAcct();
+						ac.setVipCustNo(order.getMilkmemberNo());
+						ac.setAcctAmt(backAmt);
+						tVipCustInfoService.addVipAcct(ac);
+					}
+
+
 				}else if("10".equals(order.getPaymentStat())){
 					//此处看是否打印过收款单，里面有没有用帐户余额支付的金额，退回
 					TMstRecvBill bill = customerBillMapper.getRecBillByOrderNo(order.getOrderNo());
@@ -1865,6 +1910,9 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 		if(StringUtils.isBlank(order.getOrderNo())){
 			order.setOrderNo(CodeGeneratorUtil.getCode());
 		}
+		if(order.getInitAmt()!=null){
+			order.setOnlineInitAmt(order.getInitAmt());
+		}
 
 		//其他订单信息
 		order.setOrderDate(date);//订单创建日期
@@ -2025,10 +2073,12 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 
 			}
 		}
-		
-		//会员号
-		TVipCustInfo vip = tVipCustInfoService.findVipCustByNoForUpt(order.getMilkmemberNo());
-		if(vip!=null)order.setMemberNo(vip.getVipCustNoSap());
+		if(StringUtils.isBlank(order.getMemberNo())){
+			//会员号
+			TVipCustInfo vip = tVipCustInfoService.findVipCustByNoForUpt(order.getMilkmemberNo());
+			if(vip!=null)order.setMemberNo(vip.getVipCustNoSap());
+		}
+
 
 		//生成每个订单行
 		int index = 0;
@@ -4049,6 +4099,7 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 	@Override
 	public int editOrderForShort(DaliyPlanEditModel record)
 	{
+		TSysUser user = userSessionService.getCurrentUser();
 		SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
 		TPreOrder orgOrder = tPreOrderMapper.selectByPrimaryKey(record.getOrderCode());
 		if("10".equals(orgOrder.getPaymentmethod())){
@@ -4067,6 +4118,11 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 		//后付款的,日订单不往后延
 		if("10".equals(orgOrder.getPaymentmethod()) ){
 			for(TOrderDaliyPlanItem plan : record.getEntries()){
+				String logName = "";
+				TMdMaraEx ex = maraExMapper.getProductTransRateByCode(plan.getMatnr(),user.getSalesOrg());
+				if(ex!=null){
+					plan.setMatnrTxt(ex.getShortTxt());
+				}
 //				plan.getMatnr();//校验商品
 				BigDecimal cj = new BigDecimal("0.00");//差价
 				TOrderDaliyPlanItem orgPlan = daliyPlanMap.get(plan.getItemNo()+"/"+plan.getPlanItemNo());
@@ -4076,25 +4132,48 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 				if("30".equals(orgPlan.getStatus())){//如果已停订，跳过
 					continue;
 				}
+
 				if("30".equals(plan.getStatus())){
+					OperationLogUtil.saveHistoryOperation(orgOrder.getOrderNo(),LogType.DAIL_ORDER,DailOrderLogEnum.STATUS,
+							orgPlan.getStatus(),plan.getStatus(),orgPlan.getMatnr(),orgPlan.getDispDate(),user,operationLogMapper);
 					orgPlan.setStatus(plan.getStatus());
 					cj = cj.subtract(orgPlan.getAmt());
 				}
 				//送达时段
 				if(StringUtils.isNotBlank(plan.getReachTimeType())){
+					if(plan.getReachTimeType().equals(orgPlan.getReachTime())){
+						OperationLogUtil.saveHistoryOperation(orgOrder.getOrderNo(),LogType.DAIL_ORDER,DailOrderLogEnum.REACH_TIME_TYPE,
+								"10".equals(orgPlan.getReachTime())?"上午配送":"下午配送","10".equals(plan.getReachTime())?"上午配送":"下午配送",
+								orgPlan.getMatnr(),orgPlan.getDispDate(),user,operationLogMapper);
+					}
 					orgPlan.setReachTimeType(plan.getReachTimeType());
 				}
 				if(!"30".equals(plan.getStatus())){
-   				if(!orgPlan.getMatnr().equals(plan.getMatnr())){
-   					float price = priceService.getMaraPrice(orgOrder.getBranchNo(), plan.getMatnr(), orgOrder.getDeliveryType());
-   					if(price<=0)throw new ServiceException(MessageCode.LOGIC_ERROR,"替换的产品价格小于0，请维护价格组!");
-   					cj = orgPlan.getAmt().subtract(new BigDecimal(String.valueOf(price)).multiply(new BigDecimal(orgPlan.getQty().toString())));
-   					orgPlan.setPrice(new BigDecimal(String.valueOf(price)));
-   				}
-   				orgPlan.setMatnr(plan.getMatnr());
-   				orgPlan.setQty(plan.getQty());
-   				orgPlan.setUnit(plan.getUnit());
-   				orgPlan.setAmt(orgPlan.getPrice().multiply(new BigDecimal(orgPlan.getQty().toString())));
+					//更换产品和数量
+					if(!orgPlan.getMatnr().equals(plan.getMatnr()) && !orgPlan.getQty().equals(plan.getQty())){
+						float price = priceService.getMaraPrice(orgOrder.getBranchNo(), plan.getMatnr(), orgOrder.getDeliveryType());
+						if(price<=0)throw new ServiceException(MessageCode.LOGIC_ERROR,"替换的产品价格小于0，请维护价格组!");
+						cj = orgPlan.getAmt().subtract(new BigDecimal(String.valueOf(price)).multiply(new BigDecimal(plan.getQty().toString())));
+						orgPlan.setPrice(new BigDecimal(String.valueOf(price)));
+					}else if(!orgPlan.getMatnr().equals(plan.getMatnr())){
+						//只换产品
+						float price = priceService.getMaraPrice(orgOrder.getBranchNo(), plan.getMatnr(), orgOrder.getDeliveryType());
+						if(price<=0)throw new ServiceException(MessageCode.LOGIC_ERROR,"替换的产品价格小于0，请维护价格组!");
+						cj = orgPlan.getAmt().subtract(new BigDecimal(String.valueOf(price)).multiply(new BigDecimal(orgPlan.getQty().toString())));
+						orgPlan.setPrice(new BigDecimal(String.valueOf(price)));
+					}else if(!orgPlan.getQty().equals(plan.getQty())){
+						//只换数量
+						float price = orgPlan.getPrice().floatValue();
+						if(price<=0)throw new ServiceException(MessageCode.LOGIC_ERROR,"替换的产品价格小于0，请维护价格组!");
+						cj = orgPlan.getAmt().subtract(new BigDecimal(String.valueOf(price)).multiply(new BigDecimal(plan.getQty().toString())));
+						OperationLogUtil.saveHistoryOperation(orgOrder.getOrderNo(),LogType.DAIL_ORDER,DailOrderLogEnum.UPT_QTY,
+								orgPlan.getStatus(),plan.getStatus(),orgPlan.getMatnr(),orgPlan.getDispDate(),user,operationLogMapper);
+					}
+
+					orgPlan.setMatnr(plan.getMatnr());
+					orgPlan.setQty(plan.getQty());
+					orgPlan.setUnit(plan.getUnit());
+					orgPlan.setAmt(orgPlan.getPrice().multiply(new BigDecimal(orgPlan.getQty().toString())));
 				}
 				orgPlan.setLastModified(new Date());
 				orgPlan.setLastModifiedBy(userSessionService.getCurrentUser().getLoginName());
@@ -4102,8 +4181,8 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 //				tOrderDaliyPlanItemMapper.updateDaliyPlanItem(orgPlan);
 				
 				//重新计算日计划的剩余金额,更新订单金额
-				orgOrder.setInitAmt(orgOrder.getInitAmt().add(cj));
-				orgOrder.setCurAmt(orgOrder.getCurAmt().add(cj));
+				orgOrder.setInitAmt(orgOrder.getInitAmt().subtract(cj));
+				orgOrder.setCurAmt(orgOrder.getCurAmt().subtract(cj));
 //				tPreOrderMapper.updateOrderInitAmtAndCurAmt(orgOrder);
 				
 				calculateDaliyPlanRemainAmt(orgOrder,daliyPlans);
@@ -4121,6 +4200,10 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 		//先付款的	,日订单往后延
 		}else if("20".equals(orgOrder.getPaymentmethod()) ){
 			for(TOrderDaliyPlanItem plan : record.getEntries()){
+				TMdMaraEx ex = maraExMapper.getProductTransRateByCode(plan.getMatnr(),user.getSalesOrg());
+				if(ex!=null){
+					plan.setMatnrTxt(ex.getShortTxt());
+				}
 //				plan.getMatnr();//校验商品
 				TOrderDaliyPlanItem orgPlan = daliyPlanMap.get(plan.getItemNo()+"/"+plan.getPlanItemNo());
 				if(tDispOrderItemMapper.selectItemsByOrgOrderAndItemNo(orgPlan.getOrderNo(), orgPlan.getItemNo(), orgPlan.getDispDate()).size()>0){
@@ -4143,10 +4226,6 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 					if(price<=0)throw new ServiceException(MessageCode.LOGIC_ERROR,"替换的产品价格小于0，请维护价格组!");
 					if(StringUtils.isNotBlank(orgPlan.getPromotionFlag())&&orgPlan.getPrice().floatValue()!=price)throw new ServiceException(MessageCode.LOGIC_ERROR,"有促销的产品只能替换价格相同的产品!");
 					plan.setPrice(new BigDecimal(String.valueOf(price)));
-					TMdMaraEx ex = maraExMapper.getProductTransRateByCode(plan.getMatnr(),userSessionService.getCurrentUser().getSalesOrg());
-					if(ex!=null){
-						plan.setMatnrTxt(ex.getShortTxt());
-					}
 
 					changeProductPlans.put(orgPlan,plan);
 				}
@@ -4660,7 +4739,7 @@ public class OrderServiceImpl extends BaseService implements OrderService {
    
    //变更产品或数量
    private void changeProductOrQty(TPreOrder orgOrder, ArrayList<TPlanOrderItem> orgEntries,List<TOrderDaliyPlanItem> daliyPlans, Map<TOrderDaliyPlanItem,TOrderDaliyPlanItem> changeProducts,Map<TOrderDaliyPlanItem,TOrderDaliyPlanItem> changeQtys,Map<TOrderDaliyPlanItem,TOrderDaliyPlanItem> stopPlans){
-		
+	  TSysUser user = userSessionService.getCurrentUser();
 		SimpleDateFormat format = new SimpleDateFormat("yyyyMMdd");//该商品该日期原日计划送多少个
 		BigDecimal curAmt = orgOrder.getCurAmt();//当前订单的剩余金额
    	
@@ -4788,22 +4867,23 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 				}
 				//变更产品
 				if(changeProducts.containsKey(plan)){
+
+					if(plan.getQty().compareTo(changeProducts.get(plan).getQty())==0){
+						//只换产品
+						OperationLogUtil.saveHistoryOperation(orgOrder.getOrderNo(), LogType.DAIL_ORDER,DailOrderLogEnum.UPT_MATNR,
+								plan.getMatnr()+plan.getMatnrTxt(),changeProducts.get(plan).getMatnr()+changeProducts.get(plan).getMatnrTxt(),null
+								,plan.getDispDate(),user,operationLogMapper);
+					}else{
+						//换产品 同时换数量
+						OperationLogUtil.saveHistoryOperation(orgOrder.getOrderNo(), LogType.DAIL_ORDER,DailOrderLogEnum.UPT_MATNR_QTY,
+								plan.getMatnr()+plan.getMatnrTxt()+"—"+plan.getQty(),changeProducts.get(plan).getMatnr()+changeProducts.get(plan).getMatnrTxt()+"—"+changeProducts.get(plan).getQty(),null
+								,plan.getDispDate(),user,operationLogMapper);
+					}
 					plan.setMatnr(changeProducts.get(plan).getMatnr());
 					plan.setQty(changeProducts.get(plan).getQty());
 					plan.setUnit(changeProducts.get(plan).getUnit());
 					plan.setPrice(changeProducts.get(plan).getPrice());
 					plan.setAmt(changeProducts.get(plan).getPrice().multiply(new BigDecimal(changeProducts.get(plan).getQty().toString())));
-					if(plan.getQty().compareTo(changeProducts.get(plan).getQty())==0){
-						//只换产品
-						OperationLogUtil.saveHistoryOperation(orgOrder.getOrderNo(), LogType.DAIL_ORDER,DailOrderLogEnum.UPT_MATNR,
-								plan.getMatnr(),changeProducts.get(plan).getMatnr(),null
-								,plan.getDispDate(),userSessionService.getCurrentUser(),operationLogMapper);
-					}else{
-						OperationLogUtil.saveHistoryOperation(orgOrder.getOrderNo(), LogType.DAIL_ORDER,DailOrderLogEnum.UPT_MATNR_QTY,
-								plan.getMatnr()+"-"+plan.getQty(),changeProducts.get(plan).getMatnr()+"-"+changeProducts.get(plan).getQty(),null
-								,plan.getDispDate(),userSessionService.getCurrentUser(),operationLogMapper);
-					}
-
 				}
 				//变更数量
 				else if(changeQtys.containsKey(plan)){
@@ -5006,6 +5086,11 @@ public class OrderServiceImpl extends BaseService implements OrderService {
    	if(StringUtils.isBlank(order.getPaymentStat())){
    		throw new ServiceException(MessageCode.LOGIC_ERROR,"请选择付款方式!");
 	}
+   if("20".equals(order.getPaymentStat())){
+	   if(StringUtils.isBlank(order.getPayDateStr())){
+		   throw new ServiceException(MessageCode.LOGIC_ERROR,"已付款订单，支付时间payDateStr字段不能为空!");
+	   }
+   }
    	if(StringUtils.isBlank(order.getMilkboxStat())){
    		throw new ServiceException(MessageCode.LOGIC_ERROR,"请选择奶箱状态!");
 	}

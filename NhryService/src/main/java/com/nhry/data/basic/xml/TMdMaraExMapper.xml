@@ -177,7 +177,7 @@
 	<select id="getProductTransRateByCode" resultMap="BaseResultMap"
 		parameterType="com.nhry.data.basic.domain.TMdMaraEx">
 		select
-		e.MATNR, e.RATE,e.SALES_ORG,m.MATNR_TXT
+		e.MATNR, e.RATE,e.SALES_ORG,m.MATNR_TXT,e.SHORT_TXT
 		from t_md_mara_ex e LEFT JOIN t_md_mara m ON ( e.MATNR = m.MATNR AND
 		m.SALES_ORG = #{salesOrg,jdbcType=VARCHAR})
 		where e.MATNR = #{matnr,jdbcType=VARCHAR}

@@ -24,6 +24,7 @@
     <result column="MEMBER_NO" property="memberNo" jdbcType="VARCHAR" />
     <result column="PAYMENT_STAT" property="paymentStat" jdbcType="VARCHAR" />
     <result column="MILKBOX_STAT" property="milkboxStat" jdbcType="VARCHAR" />
+    <result column="ONLINE_INIT_AMT" property="onlineInitAmt" jdbcType="DECIMAL" />
     <result column="INIT_AMT" property="initAmt" jdbcType="DECIMAL" />
     <result column="CUR_AMT" property="curAmt" jdbcType="DECIMAL" />
     <result column="DISP_LINE_NO" property="dispLineNo" jdbcType="VARCHAR" />
@@ -247,6 +248,9 @@
       <if test="milkboxStat != null" >
         MILKBOX_STAT,
       </if>
+      <if test="onlineInitAmt != null" >
+        ONLINE_INIT_AMT,
+      </if>
       <if test="initAmt != null" >
         INIT_AMT,
       </if>
@@ -319,6 +323,9 @@
       <if test="payDate != null">
         PAY_DATE,
       </if>
+      <if test="isValid != null" >
+        IS_VALID,
+      </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides="," >
       <if test="orderNo != null" >
@@ -356,6 +363,9 @@
       </if>
       <if test="milkboxStat != null" >
         #{milkboxStat,jdbcType=VARCHAR},
+      </if>
+      <if test="onlineInitAmt != null" >
+        #{onlineInitAmt,jdbcType=DECIMAL},
       </if>
       <if test="initAmt != null" >
         #{initAmt,jdbcType=DECIMAL},
@@ -428,6 +438,9 @@
       </if>
       <if test="payDate != null" >
         #{payDate,jdbcType=DATE},
+      </if>
+      <if test="isValid != null" >
+        #{isValid,jdbcType=VARCHAR},
       </if>
     </trim>
   </insert>
@@ -774,6 +787,9 @@
     	<if test="milkmemberNo != null" >
         MILKMEMBER_NO = #{milkmemberNo,jdbcType=VARCHAR},
       </if>
+      <if test="payDate != null" >
+        PAY_DATE = #{payDate,jdbcType=DATE},
+      </if>
       <if test="paymentStat != null" >
         PAYMENT_STAT = #{paymentStat,jdbcType=VARCHAR},
       </if>
@@ -883,6 +899,9 @@
   <update id="orderConfirm" parameterType="com.nhry.model.order.UpdateManHandOrderModel" >
     update t_preorder
     <set >
+      <if test="milkmemberNo != null and milkmemberNo != ''">
+        MILKMEMBER_NO = #{milkmemberNo,jdbcType=VARCHAR},
+      </if>
       <if test="empNo != null and empNo != ''">
         EMP_NO = #{empNo,jdbcType=VARCHAR},
       </if>

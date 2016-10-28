@@ -213,24 +213,32 @@ public class BusinessDataConnection {
             rfc.setIT_ZSSD00011(it_zssd00011_type1);
             ZSSD00010 zssd00010 = new ZSSD00010();
             KUNNR_type1 kunnr_type1 = new KUNNR_type1();
-            kunnr_type1.setKUNNR_type0(orderHeader.getKUNNR());
-            zssd00010.setKUNNR(kunnr_type1);
+            KUNWE_type1 kunwe_type1 = new KUNWE_type1();
+            VTWEG_type1 vtweg_type1 = new VTWEG_type1();
+
             //电商客户编号
             if(StringUtils.isNotEmpty(orderHeader.getKUNWE2())){
+                kunnr_type1.setKUNNR_type0(orderHeader.getKUNWE2());
+                zssd00010.setKUNNR(kunnr_type1);
+                kunwe_type1.setKUNWE_type0(orderHeader.getKUNWE2());
+                zssd00010.setKUNWE(kunwe_type1);
                 KUNWE2_type1 kunwe2_type1 = new KUNWE2_type1();
-                kunwe2_type1.setKUNWE2_type0(orderHeader.getKUNWE2());
+                kunwe2_type1.setKUNWE2_type0(orderHeader.getKUNWE());
                 zssd00010.setKUNWE2(kunwe2_type1);
+                vtweg_type1.setVTWEG_type0(PIPropertitesUtil.getValue("PI.MasterData.mATQUERY.VKORG17"));
+                zssd00010.setVTWEG(vtweg_type1);
+            }else{
+                kunnr_type1.setKUNNR_type0(orderHeader.getKUNNR());
+                zssd00010.setKUNNR(kunnr_type1);
+                kunwe_type1.setKUNWE_type0(orderHeader.getKUNWE());
+                zssd00010.setKUNWE(kunwe_type1);
+                vtweg_type1.setVTWEG_type0(PIPropertitesUtil.getValue("PI.MasterData.mATQUERY.VKORG"));
+                zssd00010.setVTWEG(vtweg_type1);
             }
-
-            KUNWE_type1 kunwe_type1 = new KUNWE_type1();
-            kunwe_type1.setKUNWE_type0(orderHeader.getKUNWE());
-            zssd00010.setKUNWE(kunwe_type1);
             VKORG_type1 vkorg_type1 = new VKORG_type1();
             vkorg_type1.setVKORG_type0(orderHeader.getVKORG());
             zssd00010.setVKORG(vkorg_type1);
-            VTWEG_type1 vtweg_type1 = new VTWEG_type1();
-            vtweg_type1.setVTWEG_type0(PIPropertitesUtil.getValue("PI.MasterData.mATQUERY.VKORG"));
-            zssd00010.setVTWEG(vtweg_type1);
+
             SPART_type1 spart_type1 = new SPART_type1();
             spart_type1.setSPART_type0(PIPropertitesUtil.getValue("PI.SPART"));
             zssd00010.setSPART(spart_type1);
