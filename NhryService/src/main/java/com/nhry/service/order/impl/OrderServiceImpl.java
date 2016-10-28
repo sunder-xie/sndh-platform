@@ -4096,20 +4096,34 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 					orgPlan.setReachTimeType(plan.getReachTimeType());
 				}
 				if(!"30".equals(plan.getStatus())){
-   				if(!orgPlan.getMatnr().equals(plan.getMatnr())){
-   					float price = priceService.getMaraPrice(orgOrder.getBranchNo(), plan.getMatnr(), orgOrder.getDeliveryType());
-   					if(price<=0)throw new ServiceException(MessageCode.LOGIC_ERROR,"替换的产品价格小于0，请维护价格组!");
-   					cj = orgPlan.getAmt().subtract(new BigDecimal(String.valueOf(price)).multiply(new BigDecimal(orgPlan.getQty().toString())));
-   					orgPlan.setPrice(new BigDecimal(String.valueOf(price)));
-   				}
-				if(!plan.getMatnr().equals(orgPlan.getMatnr()) ){
-					OperationLogUtil.saveHistoryOperation(orgOrder.getOrderNo(),LogType.DAIL_ORDER,DailOrderLogEnum.STATUS,
-							orgPlan.getStatus(),plan.getStatus(),orgPlan.getMatnr(),orgPlan.getDispDate(),user,operationLogMapper);
-				}
-   				orgPlan.setMatnr(plan.getMatnr());
-   				orgPlan.setQty(plan.getQty());
-   				orgPlan.setUnit(plan.getUnit());
-   				orgPlan.setAmt(orgPlan.getPrice().multiply(new BigDecimal(orgPlan.getQty().toString())));
+					//更换产品和数量
+					if(!orgPlan.getMatnr().equals(plan.getMatnr()) && !orgPlan.getQty().equals(plan.getQty())){
+						float price = priceService.getMaraPrice(orgOrder.getBranchNo(), plan.getMatnr(), orgOrder.getDeliveryType());
+						if(price<=0)throw new ServiceException(MessageCode.LOGIC_ERROR,"替换的产品价格小于0，请维护价格组!");
+						cj = orgPlan.getAmt().subtract(new BigDecimal(String.valueOf(price)).multiply(new BigDecimal(plan.getQty().toString())));
+						orgPlan.setPrice(new BigDecimal(String.valueOf(price)));
+					}else if(!orgPlan.getMatnr().equals(plan.getMatnr())){
+						//只换产品
+						float price = priceService.getMaraPrice(orgOrder.getBranchNo(), plan.getMatnr(), orgOrder.getDeliveryType());
+						if(price<=0)throw new ServiceException(MessageCode.LOGIC_ERROR,"替换的产品价格小于0，请维护价格组!");
+						cj = orgPlan.getAmt().subtract(new BigDecimal(String.valueOf(price)).multiply(new BigDecimal(orgPlan.getQty().toString())));
+						orgPlan.setPrice(new BigDecimal(String.valueOf(price)));
+					}else if(!orgPlan.getQty().equals(plan.getQty())){
+						//只换数量
+						float price = orgPlan.getPrice().floatValue();
+						if(price<=0)throw new ServiceException(MessageCode.LOGIC_ERROR,"替换的产品价格小于0，请维护价格组!");
+						cj = orgPlan.getAmt().subtract(new BigDecimal(String.valueOf(price)).multiply(new BigDecimal(plan.getQty().toString())));
+
+					}
+
+					if(!plan.getMatnr().equals(orgPlan.getMatnr()) ){
+						OperationLogUtil.saveHistoryOperation(orgOrder.getOrderNo(),LogType.DAIL_ORDER,DailOrderLogEnum.STATUS,
+								orgPlan.getStatus(),plan.getStatus(),orgPlan.getMatnr(),orgPlan.getDispDate(),user,operationLogMapper);
+					}
+					orgPlan.setMatnr(plan.getMatnr());
+					orgPlan.setQty(plan.getQty());
+					orgPlan.setUnit(plan.getUnit());
+					orgPlan.setAmt(orgPlan.getPrice().multiply(new BigDecimal(orgPlan.getQty().toString())));
 				}
 				orgPlan.setLastModified(new Date());
 				orgPlan.setLastModifiedBy(userSessionService.getCurrentUser().getLoginName());
@@ -4117,8 +4131,8 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 //				tOrderDaliyPlanItemMapper.updateDaliyPlanItem(orgPlan);
 				
 				//重新计算日计划的剩余金额,更新订单金额
-				orgOrder.setInitAmt(orgOrder.getInitAmt().add(cj));
-				orgOrder.setCurAmt(orgOrder.getCurAmt().add(cj));
+				orgOrder.setInitAmt(orgOrder.getInitAmt().subtract(cj));
+				orgOrder.setCurAmt(orgOrder.getCurAmt().subtract(cj));
 //				tPreOrderMapper.updateOrderInitAmtAndCurAmt(orgOrder);
 				
 				calculateDaliyPlanRemainAmt(orgOrder,daliyPlans);
