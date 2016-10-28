@@ -4137,7 +4137,7 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 					OperationLogUtil.saveHistoryOperation(orgOrder.getOrderNo(),LogType.DAIL_ORDER,DailOrderLogEnum.STATUS,
 							orgPlan.getStatus(),plan.getStatus(),orgPlan.getMatnr(),orgPlan.getDispDate(),user,operationLogMapper);
 					orgPlan.setStatus(plan.getStatus());
-					cj = cj.subtract(orgPlan.getAmt());
+					cj = cj.add(orgPlan.getAmt());
 				}
 				//送达时段
 				if(StringUtils.isNotBlank(plan.getReachTimeType())){
