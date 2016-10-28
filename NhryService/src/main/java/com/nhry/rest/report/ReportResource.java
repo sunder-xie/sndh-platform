@@ -1384,7 +1384,7 @@ public class ReportResource extends BaseResource{
                     int raw = 0;
                     row = sheet.createRow(rowNum++);
                     cell = row.createCell(raw++);
-                    cell.setCellValue(map.get("DEALER_NAME"));
+                    cell.setCellValue(map.get("DEALER_NAME")==null?"自营奶站":map.get("DEALER_NAME"));
                     cell = row.createCell(raw++);
                     cell.setCellValue(map.get("BRANCH_NAME"));
                     cell = row.createCell(raw++);
@@ -1396,11 +1396,11 @@ public class ReportResource extends BaseResource{
                     cell = row.createCell(raw++);
                     cell.setCellValue(map.get("VIP_MP"));
                     cell = row.createCell(raw++);
-                    cell.setCellValue(map.get("ONLINE_INIT_AMT")==null?"0":map.get("ONLINE_INIT_AMT"));
+                    cell.setCellValue(map.get("ONLINE_INIT_AMT")==null?"0":String.valueOf(map.get("ONLINE_INIT_AMT")));
                     cell = row.createCell(raw++);
                     cell.setCellValue(map.get("CUR_AMT")==null?"0":String.valueOf(map.get("CUR_AMT")));
                     cell = row.createCell(raw++);
-                    cell.setCellValue("");
+                    cell.setCellValue(map.get("PAY_DATE")==null?"":String.valueOf(map.get("PAY_DATE")));
                 }
             }
 
