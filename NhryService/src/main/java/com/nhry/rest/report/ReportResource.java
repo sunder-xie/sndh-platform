@@ -1097,8 +1097,8 @@ public class ReportResource extends BaseResource{
             SimpleDateFormat dateFmt = new SimpleDateFormat("yyyy-MM-dd");
             cellDate.setCellValue("分奶表日期： "+ dateFmt.format(model.getTheDate()));
             
-            Map<String, String> projectMap = new HashMap<String, String>();
-            Map<String, String> empMap = new HashMap<String, String>();
+            Map<String, String> projectMap = new HashMap<String, String>();//产品行
+            Map<String, String> empMap = new HashMap<String, String>();//员工列
             for (Map<String, String> map : orders) {
                 projectMap.put(map.get("CONFIRM_MATNR"), map.get("MATNR_TXT"));
                 empMap.put(map.get("DISP_EMP_NO"), map.get("EMP_NAME"));
@@ -1117,6 +1117,7 @@ public class ReportResource extends BaseResource{
 
             rowNum = 3;
             for (Map.Entry<String, String> entry : empMap.entrySet()) {
+                int CELLQTY = 0;
                 int cNum = 0;
                 XSSFRow row = sheet.createRow(rowNum++);
                 XSSFCell cell = row.createCell(cNum++);
@@ -1133,25 +1134,40 @@ public class ReportResource extends BaseResource{
                         String empNoT = map.get("DISP_EMP_NO");
                         if(empNo.equals(empNoT) && matnr.equals(matnrT)){
                             if(map.get("CONFIRM_QTY")!=null) {
-                                cell1.setCellValue(new BigDecimal(String.valueOf(map.get("CONFIRM_QTY"))).intValue());
+                                cell1.setCellValue(map.get("CONFIRM_QTY"));
+                                int cqty =  new BigDecimal(String.valueOf( map.get("CQTY"))).intValue();
+                                CELLQTY = CELLQTY + cqty;
                             }
                         }
                     }
                 }
+                //行合计
                 XSSFCell cellSum = row.createCell(cNum);
                 cellSum.setCellStyle(ExcelUtil.setBorderStyle(workbook));
-                cellSum.setCellFormula(ExcelUtil.getFormula("SUM", rowNum, 2, rowNum, cNum));   
+                cellSum.setCellFormula(String.valueOf(CELLQTY));
             }
             int scNum = 0;
             XSSFRow row = sheet.createRow(rowNum);
             XSSFCell cellColTitle = row.createCell(scNum++);
             cellColTitle.setCellValue("合计");
             cellColTitle.setCellStyle(ExcelUtil.setBorderStyle(workbook));
-            for (Map.Entry<String, String> entry1 : projectMap.entrySet()) {
-            	XSSFCell cell = row.createCell(scNum++);
+            for (Map.Entry<String, String> entry1 : projectMap.entrySet()) {//产品循环-列合计
+                int ROWQTY = 0;
+                String matnr = entry1.getKey();
+                    for (Map<String, String> map : orders){
+                        String matnrT =map.get("CONFIRM_MATNR");
+                        if( matnr.equals(matnrT)){
+                            if(map.get("CQTY")!=null){
+                                int rqty =  new BigDecimal(String.valueOf( map.get("CQTY"))).intValue();
+                                ROWQTY =ROWQTY + rqty;
+                            }
+                        }
+                    }
+                XSSFCell cell = row.createCell(scNum++);
             	cell.setCellStyle(ExcelUtil.setBorderStyle(workbook));
-            	cell.setCellFormula(ExcelUtil.getFormula("SUM", 4, scNum, rowNum, scNum));
+            	cell.setCellFormula(String.valueOf(ROWQTY));
             }
+            //总合计
             XSSFCell cellTotolSum = row.createCell(scNum++);
             cellTotolSum.setCellStyle(ExcelUtil.setBorderStyle(workbook));
             cellTotolSum.setCellFormula(ExcelUtil.getFormula("SUM", 4, scNum, rowNum, scNum));
