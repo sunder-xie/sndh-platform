@@ -55,6 +55,8 @@ public class TPreOrder {
     private String milkboxStat;
 
     private BigDecimal initAmt;
+
+    private BigDecimal onlineInitAmt;
     
     private String initAmtStr;
 
@@ -141,6 +143,15 @@ public class TPreOrder {
     String branchMp;
     String branchEmpName;
     String addressTxt;
+
+
+    public BigDecimal getOnlineInitAmt() {
+        return onlineInitAmt;
+    }
+
+    public void setOnlineInitAmt(BigDecimal onlineInitAmt) {
+        this.onlineInitAmt = onlineInitAmt;
+    }
 
     public String getPayDateStr() {
         return payDateStr;
