@@ -5070,6 +5070,11 @@ public class OrderServiceImpl extends BaseService implements OrderService {
    	if(StringUtils.isBlank(order.getPaymentStat())){
    		throw new ServiceException(MessageCode.LOGIC_ERROR,"请选择付款方式!");
 	}
+   if("20".equals(order.getPaymentStat())){
+	   if(StringUtils.isBlank(order.getPayDateStr())){
+		   throw new ServiceException(MessageCode.LOGIC_ERROR,"已付款订单，支付时间payDateStr字段不能为空!");
+	   }
+   }
    	if(StringUtils.isBlank(order.getMilkboxStat())){
    		throw new ServiceException(MessageCode.LOGIC_ERROR,"请选择奶箱状态!");
 	}
