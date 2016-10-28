@@ -1415,7 +1415,7 @@ public class ReportResource extends BaseResource{
                     }
                 }
             }
-            File export = new File(url +  File.separator + "report"+ File.separator + "export" + File.separator + fname + "OrderOnlineStatTemplate.xlsx");
+            File export = new File(url +  File.separator + "report"+ File.separator + "export" + File.separator + fname + "OrderOnlineStat.xlsx");
             FileOutputStream stream = new FileOutputStream(export);
             workbook.write(stream);
             stream.flush();
