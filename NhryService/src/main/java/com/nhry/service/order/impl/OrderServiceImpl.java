@@ -483,7 +483,7 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 		}
 		TPreOrder order = tPreOrderMapper.selectByPrimaryKey(uptManHandModel.getOrderNo());
 		//处理订户  和 地址信息
-		TVipCustInfo ordercust = tVipCustInfoService.findVipCustByNo(order.getMilkmemberNo());
+		TVipCustInfo ordercust = tVipCustInfoService.findVipCustByNoForUpt(order.getMilkmemberNo());
 		TMdAddress orderAddress = addressMapper.findAddressById(order.getAdressNo());
 		if(StringUtils.isBlank(ordercust.getBranchNo())){
 			Map<String,String> custMap = new HashMap<String,String>();
@@ -1017,13 +1017,24 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 			BigDecimal initAmt = order.getInitAmt();
 			if("20".equals(state)){//先付款
 				tOrderDaliyPlanItemMapper.updateDaliyPlansToBack(order);
-				
+				BigDecimal backAmt = BigDecimal.ZERO;
 				//此为多余的钱，如果是预付款，将存入订户账户
 				if(order.getInitAmt()!=null && "20".equals(order.getPaymentStat())){//已经收款的
-					TVipAcct ac = new TVipAcct();
-				   ac.setVipCustNo(order.getMilkmemberNo());
-				   ac.setAcctAmt(order.getCurAmt());
-					tVipCustInfoService.addVipAcct(ac);
+					if("10".equals(order.getPreorderSource()) || "40".equals(order.getPreorderSource())){
+						if(order.getOnlineInitAmt()!=null){
+							backAmt = backAmt.add(leftAmt.multiply(order.getOnlineInitAmt()).divide(order.getInitAmt(),2));
+							//电商 退订日志
+
+						}
+					}else{
+						backAmt = backAmt.add(order.getCurAmt());
+						TVipAcct ac = new TVipAcct();
+						ac.setVipCustNo(order.getMilkmemberNo());
+						ac.setAcctAmt(backAmt);
+						tVipCustInfoService.addVipAcct(ac);
+					}
+
+
 				}else if("10".equals(order.getPaymentStat())){
 					//此处看是否打印过收款单，里面有没有用帐户余额支付的金额，退回
 					TMstRecvBill bill = customerBillMapper.getRecBillByOrderNo(order.getOrderNo());
@@ -4130,6 +4141,11 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 				}
 				//送达时段
 				if(StringUtils.isNotBlank(plan.getReachTimeType())){
+					if(plan.getReachTimeType().equals(orgPlan.getReachTime())){
+						OperationLogUtil.saveHistoryOperation(orgOrder.getOrderNo(),LogType.DAIL_ORDER,DailOrderLogEnum.REACH_TIME_TYPE,
+								"10".equals(orgPlan.getReachTime())?"上午配送":"下午配送","10".equals(plan.getReachTime())?"上午配送":"下午配送",
+								orgPlan.getMatnr(),orgPlan.getDispDate(),user,operationLogMapper);
+					}
 					orgPlan.setReachTimeType(plan.getReachTimeType());
 				}
 				if(!"30".equals(plan.getStatus())){
