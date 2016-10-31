@@ -1,7 +1,10 @@
 package com.nhry.servlet;
 
-import java.io.IOException;
-import java.io.PrintWriter;
+import java.io.*;
+import java.net.HttpURLConnection;
+import java.net.URL;
+import java.net.URLEncoder;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -73,12 +76,13 @@ public class IdmAuthServlet extends HttpServlet {
 				attrs.put("grant_type", EnvContant.getSystemConst("grant_type"));
 				attrs.put("redirect_uri", EnvContant.getSystemConst("redirect_uri"));
 				attrs.put("code", code);
-				String access_token = HttpUtils.request(EnvContant.getSystemConst("auth_token"), attrs);
+				String access_token = this.request(EnvContant.getSystemConst("auth_token"), attrs,"utf-8");
+				LOGGER.info("access_token" + access_token);
 				if(!StringUtils.isEmpty(access_token)){
 					attrs.clear();
 					String token = access_token.split("=")[1].split("&")[0];
 					attrs.put("access_token", token);
-					String userObject = HttpUtils.request(EnvContant.getSystemConst("auth_profile"), attrs);
+					String userObject = this.request(EnvContant.getSystemConst("auth_profile"), attrs,"utf-8");
 					JSONObject userJson = new JSONObject(userObject);
 					if(userJson.has("id") && !StringUtils.isEmpty(userJson.getString("id"))){
 						TSysUser user = new TSysUser();
@@ -194,4 +198,72 @@ public class IdmAuthServlet extends HttpServlet {
 			e.printStackTrace();
 		}
 	}
+
+	public String request(String uri, Map<String, Object> params,
+								 String encoding) throws IOException {
+		System.setProperty("javax.net.ssl.trustStore", "/opt/java/jdk1.8.0_72/jre/lib/security/cacerts");
+		System.setProperty("javax.net.ssl.trustStorePassword", "changeit");
+		long currentTime = System.currentTimeMillis();
+		URL postUrl = new URL(uri);
+		HttpURLConnection connection = (HttpURLConnection) postUrl
+				.openConnection();
+		connection.setDoOutput(true);
+		connection.setDoInput(true);
+
+		connection.setRequestMethod("POST");
+
+		connection.setUseCaches(false);
+
+		connection.setInstanceFollowRedirects(true);
+
+		connection.setRequestProperty("Content-Type",
+				"application/x-www-form-urlencoded");
+		connection.connect();
+		DataOutputStream out = new DataOutputStream(
+				connection.getOutputStream());
+		StringBuffer content = new StringBuffer();
+		Object[] arrays = params.entrySet().toArray();
+		for (int index = 0; index < arrays.length; index++) {
+			Map.Entry<String, Object> value = (Map.Entry<String, Object>) arrays[index];
+			Object target = value.getValue();
+			if (target instanceof Collection) {
+				Object array[] = ((Collection) target).toArray();
+				for (int i = 0; i < array.length; i++) {
+					content.append(value.getKey() + "="
+							+ URLEncoder.encode(array[i].toString(), encoding));
+					if (i <= array.length - 1) {
+						content.append("&");
+					}
+				}
+				continue;
+			} else {
+				content.append(value.getKey()
+						+ "="
+						+ URLEncoder.encode(
+						target == null ? "" : target.toString(),
+						encoding));
+			}
+
+			if (index <= arrays.length - 1) {
+				content.append("&");
+			}
+		}
+
+		out.writeBytes(content.toString());
+		out.flush();
+		out.close();
+		BufferedReader reader = new BufferedReader(new InputStreamReader(
+				connection.getInputStream()));
+
+		String line;
+		StringBuffer result = new StringBuffer();
+
+		while ((line = reader.readLine()) != null) {
+			result.append(line);
+		}
+		connection.disconnect();
+		return result.toString();
+	}
+
+
 }
