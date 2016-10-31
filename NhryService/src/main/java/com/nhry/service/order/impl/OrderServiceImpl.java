@@ -37,6 +37,7 @@ import com.nhry.service.pi.dao.PIVipInfoDataService;
 import com.nhry.service.pi.dao.SmsSendService;
 import com.nhry.service.pi.pojo.MemberActivities;
 import com.nhry.utils.CodeGeneratorUtil;
+import com.nhry.utils.ContentDiffrentUtil;
 import com.nhry.utils.EnvContant;
 import com.nhry.utils.OperationLogUtil;
 import org.apache.commons.lang3.StringUtils;
@@ -1931,6 +1932,11 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 		List<TPlanOrderItem> entriesList = new ArrayList<TPlanOrderItem>();
 		//信息交验
 		validateOrderInfo(record);
+		if("20".equals(order.getPaymentStat())){
+			if(StringUtils.isBlank(order.getPayDateStr())){
+				throw new ServiceException(MessageCode.LOGIC_ERROR,"已付款订单，支付时间payDateStr字段不能为空!");
+			}
+		}
 		//暂时生成订单号
 		Date date = new Date();
 		//判断如果新增订单时订单编号不为空，则代表是订户数据导入
@@ -3430,7 +3436,7 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 		ArrayList<TPlanOrderItem> removedEntries = new ArrayList<TPlanOrderItem>();
 		
 		boolean orderPromotionFlag = record.getEntries().stream().anyMatch((e)->StringUtils.isNotBlank(e.getPromotion()));
-		
+		TSysUser user = userSessionService.getCurrentUser();
 		String state = orgOrder.getPaymentmethod();
 		if("10".equals(state)){
 			//后付款
@@ -3444,6 +3450,7 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 					boolean modiFlag = false;
 					for(TPlanOrderItem curEntry : curEntries){
 						if(orgEntry.getItemNo().equals(curEntry.getItemNo())){
+							this.editOrderDispTypeForLongLog(orgEntry,curEntry,user);
 							delFlag = false;
 //							if(StringUtils.isNotBlank(curEntry.getDeletePlansFlag())||StringUtils.isNotBlank(curEntry.getIsDeletedFlag()))break;
 							if(!orgEntry.getMatnr().equals(curEntry.getMatnr())){//换商品
@@ -3456,6 +3463,7 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 								modiFlag = true;
 								orgEntry.setQty(curEntry.getQty());
 							}
+
 							if(!orgEntry.getRuleType().equals(curEntry.getRuleType())){//周期变更
 								modiFlag = true;
 								orgEntry.setRuleType(curEntry.getRuleType());
@@ -3476,6 +3484,7 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 								modiFlag = true;
 								orgEntry.setReachTimeType(curEntry.getReachTimeType());
 							}
+
 							//比较配送日期是否修改
 							String startstr = format.format(orgEntry.getStartDispDate());
 							String endstr = format.format(orgEntry.getEndDispDate());
@@ -3514,6 +3523,9 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 					if(delFlag){
 						if(tDispOrderItemMapper.selectCountByOrgOrderAndOrgItemNo(orgEntry.getOrderNo(),orgEntry.getItemNo(),null) > 0)throw new ServiceException(MessageCode.LOGIC_ERROR,orgEntry.getItemNo() + "[已经生成了路单，不可以删除此行!]");
 						//此行删除了，删除所有剩余的日单
+						OperationLogUtil.saveHistoryOperation(orgEntry.getOrderNo(),LogType.ORDER,OrderLogEnum.DEL_ITEM,null,null,
+								orgEntry.getMatnr()+" "+orgEntry.getShortTxt()+" "+orgEntry.getQty(),null,null,null,user,operationLogMapper);
+
 						orgEntry.setStatus("30");//30表示删除的行
 						tPlanOrderItemMapper.updateEntryByItemNo(orgEntry);
 						TOrderDaliyPlanItem newPlan = new TOrderDaliyPlanItem();
@@ -3538,6 +3550,10 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 								.forEach((e)->{
 									if(!e.getDispDate().before(curEntry.getStopStartDate()))throw new ServiceException(MessageCode.LOGIC_ERROR,"该日期内已经有完结的日计划，请修改时间!");
 								});
+
+								OperationLogUtil.saveHistoryOperation(orgEntry.getOrderNo(),LogType.ORDER,OrderLogEnum.STOP_ORDER,null,null,
+										null,format.format(curEntry.getStopStartDate())+"-"+format.format(curEntry.getStopEndDate()) +("Y".equals(curEntry.getIsStop())?"  停订":"  "),null,null,user,operationLogMapper);
+
 								dRecord.setItemNo(curEntry.getItemNo());
 								dRecord.setDispDateStr(format.format(curEntry.getStopStartDate()));
 								dRecord.setReachTime(format.format(curEntry.getStopEndDate()));
@@ -3557,13 +3573,16 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 				for(TPlanOrderItem entry : curEntries){
 					if("Y".equals(entry.getNewFlag())){
 //						if(entry.getStartDate()==null||entry.getStartDate().before(entry.getStartDispDate())||entry.getStartDate().after(entry.getEndDispDate()))throw new ServiceException(MessageCode.LOGIC_ERROR, "开始配送日期填写有误，请检查");
+						OperationLogUtil.saveHistoryOperation(record.getOrder().getOrderNo(),LogType.ORDER,OrderLogEnum.ADD_PRODUCT,null,null,
+								null,entry.getMatnr()+entry.getShortTxt()+"  "+format.format(entry.getStartDispDate())+"-"+format.format(entry.getEndDispDate()),null,null,user,operationLogMapper);
+
 						entry.setOrderNo(orgOrder.getOrderNo());
 						entry.setItemNo(orgOrder.getOrderNo() + String.valueOf(index));//行项目编号
 						entry.setRefItemNo(String.valueOf(index));//参考行项目编号
 						entry.setOrderDate(orgOrder.getOrderDate());//订单日期
 						entry.setCreateAt(new Date());//创建日期
-						entry.setCreateBy(userSessionService.getCurrentUser().getLoginName());//创建人
-						entry.setCreateByTxt(userSessionService.getCurrentUser().getDisplayName());//创建人姓名
+						entry.setCreateBy(user.getLoginName());//创建人
+						entry.setCreateByTxt(user.getDisplayName());//创建人姓名
 						calculateEntryAmount(entry);
 						Date tmp = entry.getEndDispDate();
 						createDaliyPlanForAfterPay(orgOrder,entry,entry.getStartDispDate(),entry.getEndDispDate());
@@ -3621,7 +3640,9 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 					boolean modiFlag = false;
 					for(TPlanOrderItem curEntry : curEntries){
 						if(orgEntry.getItemNo().equals(curEntry.getItemNo())){
+							this.editOrderDispTypeForLongLog(orgEntry,curEntry,user);
 							delFlag = false;
+
 							if(!orgEntry.getMatnr().equals(curEntry.getMatnr())){//换商品
 								modiFlag = true;
 								orgEntry.setMatnr(curEntry.getMatnr());
@@ -3683,6 +3704,8 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 					}
 					if(delFlag){
 						if(tDispOrderItemMapper.selectCountByOrgOrderAndOrgItemNo(orgEntry.getOrderNo(),orgEntry.getItemNo(),null) > 0)throw new ServiceException(MessageCode.LOGIC_ERROR,orgEntry.getItemNo() + "[已经生成了路单，不可以删除此行!]");
+						OperationLogUtil.saveHistoryOperation(orgEntry.getOrderNo(),LogType.ORDER,OrderLogEnum.DEL_ITEM,null,null,
+								orgEntry.getMatnr()+" "+orgEntry.getShortTxt()+" "+orgEntry.getQty(),null,null,null,user,operationLogMapper);
 						removedEntries.add(orgEntry);
 						//此行删除了，删除所有剩余的日单
 						orgEntry.setStatus("30");//30表示删除的行
@@ -3730,6 +3753,7 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 					boolean modiFlag = false;
 					for(TPlanOrderItem curEntry : curEntries){
 						if(orgEntry.getItemNo().equals(curEntry.getItemNo())){
+							this.editOrderDispTypeForLongLog(orgEntry,curEntry,user);
 							delFlag = false;
 							if(!orgEntry.getMatnr().equals(curEntry.getMatnr())){//换商品
 								modiFlag = true;
@@ -3741,6 +3765,7 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 								modiFlag = true;
 								orgEntry.setQty(curEntry.getQty());
 							}
+
 							if(!orgEntry.getRuleType().equals(curEntry.getRuleType())){//周期变更
 								modiFlag = true;
 								orgEntry.setRuleType(curEntry.getRuleType());
@@ -3799,6 +3824,9 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 					if(delFlag){
 						if(tDispOrderItemMapper.selectCountByOrgOrderAndOrgItemNo(orgEntry.getOrderNo(),orgEntry.getItemNo(),null) > 0)throw new ServiceException(MessageCode.LOGIC_ERROR,orgEntry.getItemNo() + "[已经生成了路单，不可以删除此行!]");
 						//此行删除了，删除所有剩余的日单
+						OperationLogUtil.saveHistoryOperation(orgEntry.getOrderNo(),LogType.ORDER,OrderLogEnum.DEL_ITEM,null,null,
+								orgEntry.getMatnr()+" "+orgEntry.getShortTxt()+" "+orgEntry.getQty(),null,null,null,user,operationLogMapper);
+
 						removedEntries.add(orgEntry);
 						orgEntry.setStatus("30");//30表示删除的行
 						tPlanOrderItemMapper.updateEntryByItemNo(orgEntry);
@@ -3818,6 +3846,9 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 				int index =  tPlanOrderItemMapper.selectEntriesQtyByOrderCode(record.getOrder().getOrderNo());
 				for(TPlanOrderItem entry : curEntries){
 					if("Y".equals(entry.getNewFlag())){
+
+						OperationLogUtil.saveHistoryOperation(record.getOrder().getOrderNo(),LogType.ORDER,OrderLogEnum.ADD_PRODUCT,null,null,
+								null,entry.getMatnr()+entry.getShortTxt()+"  "+format.format(entry.getStartDispDate())+"-"+format.format(entry.getEndDispDate()),null,null,user,operationLogMapper);
 						entry.setOrderNo(orgOrder.getOrderNo());
 						entry.setItemNo(orgOrder.getOrderNo() + String.valueOf(index));//行项目编号
 						entry.setRefItemNo(String.valueOf(index));//参考行项目编号
@@ -3913,6 +3944,7 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 						boolean modiFlag = false;
 						for(TPlanOrderItem curEntry : curEntries){
 							if(orgEntry.getItemNo().equals(curEntry.getItemNo())){
+								this.editOrderDispTypeForLongLog(orgEntry,curEntry,user);
 								delFlag = false;
 								if(!orgEntry.getMatnr().equals(curEntry.getMatnr())){//换商品
 									modiFlag = true;
@@ -3974,6 +4006,8 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 						}
 						if(delFlag){
 							if(tDispOrderItemMapper.selectCountByOrgOrderAndOrgItemNo(orgEntry.getOrderNo(),orgEntry.getItemNo(),null) > 0)throw new ServiceException(MessageCode.LOGIC_ERROR,orgEntry.getItemNo() + "[已经生成了路单，不可以删除此行!]");
+							OperationLogUtil.saveHistoryOperation(orgEntry.getOrderNo(),LogType.ORDER,OrderLogEnum.DEL_ITEM,null,null,
+									null,orgEntry.getMatnr()+" "+orgEntry.getShortTxt()+" "+orgEntry.getQty(),null,null,user,operationLogMapper);
 							//此行删除了，删除所有剩余的日单
 							removedEntries.add(orgEntry);
 							orgEntry.setStatus("30");//30表示删除的行
@@ -4007,6 +4041,8 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 							boolean modiFlag = false;
 							for(TPlanOrderItem curEntry : curEntries){
 								if(orgEntry.getItemNo().equals(curEntry.getItemNo())){
+									//修改 产品，数量，配送规律日志
+									this.editOrderDispTypeForLongLog(orgEntry,curEntry,user);
 									delFlag = false;
 									BigDecimal orgEntryAmt = calculateEntryAmount(orgEntry);
 									if(!orgEntry.getMatnr().equals(curEntry.getMatnr())){//换商品
@@ -4074,6 +4110,9 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 							}
 							if(delFlag){
 								if(tDispOrderItemMapper.selectCountByOrgOrderAndOrgItemNo(orgEntry.getOrderNo(),orgEntry.getItemNo(),null) > 0)throw new ServiceException(MessageCode.LOGIC_ERROR,orgEntry.getItemNo() + "[已经生成了路单，不可以删除此行!]");
+								//删除订单行项目日志
+								OperationLogUtil.saveHistoryOperation(orgEntry.getOrderNo(),LogType.ORDER,OrderLogEnum.DEL_ITEM,null,null,
+										null,orgEntry.getMatnr()+" "+orgEntry.getShortTxt()+" "+orgEntry.getQty(),null,null,user,operationLogMapper);
 								//此行删除了，删除所有剩余的日单
 								BigDecimal entryTotal = calculateEntryAmount(orgEntry);
 								orgOrder.setInitAmt(orgOrder.getInitAmt().subtract(entryTotal));
@@ -4096,6 +4135,9 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 						int index =  tPlanOrderItemMapper.selectEntriesQtyByOrderCode(record.getOrder().getOrderNo());
 						for(TPlanOrderItem entry : curEntries){
 							if("Y".equals(entry.getNewFlag())){
+								OperationLogUtil.saveHistoryOperation(entry.getOrderNo(),LogType.ORDER,OrderLogEnum.ADD_PRODUCT,null,null,
+										null,entry.getMatnr()+entry.getShortTxt()+"  "+format.format(entry.getStartDispDate())+"-"+format.format(entry.getEndDispDate()),null,null,user,operationLogMapper);
+
 								entry.setOrderNo(orgOrder.getOrderNo());
 								entry.setItemNo(orgOrder.getOrderNo() + String.valueOf(index));//行项目编号
 								entry.setRefItemNo(String.valueOf(index));//参考行项目编号
@@ -4127,7 +4169,52 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 		
 		return 1;
 	}
-	
+
+	private void editOrderDispTypeForLongLog(TPlanOrderItem orgEntry,TPlanOrderItem curEntry,TSysUser user) {
+		//换产品
+		if(!orgEntry.getMatnr().equals(curEntry.getMatnr())){
+			OperationLogUtil.saveHistoryOperation(orgEntry.getOrderNo(),LogType.ORDER,OrderLogEnum.CHANGE_PRODUCT,null,null,
+					orgEntry.getMatnr()+orgEntry.getShortTxt(),curEntry.getMatnr()+orgEntry.getShortTxt(),null,null,user,operationLogMapper);
+		}
+		//换数量
+		if(!orgEntry.getQty().equals(curEntry.getQty())){
+			OperationLogUtil.saveHistoryOperation(orgEntry.getOrderNo(),LogType.ORDER,OrderLogEnum.CHANGE_QTY,null,null,
+					orgEntry.getQty().toString(),curEntry.getQty().toString(),orgEntry.getMatnr()+orgEntry.getShortTxt(),null,user,operationLogMapper);
+		}
+		SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
+		String orgRuleType = orgEntry.getRuleType();
+		Integer orgGapDays = orgEntry.getGapDays();
+		String orgRuleTxt = orgEntry.getRuleTxt();
+		String orgDispRate = format.format(orgEntry.getStartDispDate())+"-"+format.format(orgEntry.getEndDispDate());
+		String orgReachTimeType = orgEntry.getReachTimeType();
+		String curRuleType = curEntry.getRuleType();
+		Integer curGapDays = curEntry.getGapDays();
+		String curRuleTxt = curEntry.getRuleTxt();
+		String curDispRate = format.format(curEntry.getStartDispDate())+"-"+format.format(curEntry.getEndDispDate());
+		String curReachTimeType = curEntry.getReachTimeType();
+		String orgString = "";
+		String curString = "";
+		if(ContentDiffrentUtil.isDiffrent(orgRuleType,curRuleType) || ContentDiffrentUtil.isDiffrent(curGapDays,orgGapDays)|| ContentDiffrentUtil.isDiffrent(orgRuleTxt,curRuleTxt)) {
+			orgString = orgString + ("10".equals(orgRuleType) ? "按周期送间隔" + orgGapDays + "天 " : "按星期送" + orgRuleTxt+" ");
+			curString = curString + ("10".equals(curRuleType) ? "按周期送间隔" + curGapDays + "天 " : "按星期送" + curRuleTxt+" ");
+		}
+		if(!orgReachTimeType.equals(curReachTimeType)){
+			orgString = orgString + ("10".equals(orgReachTimeType)?"上午配送 ":"下午配送 ");
+			curString = curString + ("10".equals(curReachTimeType)?"上午配送 ":"下午配送 ");
+		}
+		if(!orgDispRate.equals(curDispRate)){
+			orgString = orgString + orgDispRate+" ";
+			curString = curString + curDispRate+" ";
+		}
+		if(StringUtils.isNotBlank(orgString) && StringUtils.isNotBlank(curString)){
+			OperationLogUtil.saveHistoryOperation(orgEntry.getOrderNo(),LogType.ORDER,OrderLogEnum.CHANGE_RULE_TYPE,null,null,
+					orgString,curString,orgEntry.getMatnr()+orgEntry.getShortTxt(),null,user,operationLogMapper);
+		}
+
+
+
+	}
+
 	/* (non-Javadoc) 
 	* @title: editOrderForShort
 	* @description: 短期修改订单（改日计划）
@@ -4915,9 +5002,9 @@ public class OrderServiceImpl extends BaseService implements OrderService {
    			//停订的
 				if(stopPlans.containsKey(plan)){
 					OperationLogUtil.saveHistoryOperation(orgOrder.getOrderNo(),LogType.DAIL_ORDER,DailOrderLogEnum.STATUS,null,null,
-							plan.getStatus()=="10"?"在订":plan.getStatus()=="20"?"完结":"停订",
-							stopPlans.get(plan).getStatus()=="10"?"在订":stopPlans.get(plan).getStatus()=="20"?"完结":"停订",
-							plan.getMatnr(),plan.getDispDate(),user,operationLogMapper);
+							"10".equals(plan.getStatus())?"在订":"20".equals(plan.getStatus())?"完结":"停订",
+							"10".equals(stopPlans.get(plan))?"在订":"20".equals(stopPlans.get(plan))?"完结":"停订",
+							plan.getMatnr()+plan.getMatnrTxt(),plan.getDispDate(),user,operationLogMapper);
 					plan.setStatus("30");
 //					continue;
 				}
@@ -5142,11 +5229,6 @@ public class OrderServiceImpl extends BaseService implements OrderService {
    	if(StringUtils.isBlank(order.getPaymentStat())){
    		throw new ServiceException(MessageCode.LOGIC_ERROR,"请选择付款方式!");
 	}
-   if("20".equals(order.getPaymentStat())){
-	   if(StringUtils.isBlank(order.getPayDateStr())){
-		   throw new ServiceException(MessageCode.LOGIC_ERROR,"已付款订单，支付时间payDateStr字段不能为空!");
-	   }
-   }
    	if(StringUtils.isBlank(order.getMilkboxStat())){
    		throw new ServiceException(MessageCode.LOGIC_ERROR,"请选择奶箱状态!");
 	}
@@ -6112,7 +6194,7 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 	{
 		SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
 		TPreOrder orgOrder = tPreOrderMapper.selectByPrimaryKey(item.getOrderNo());
-		
+		TSysUser user = userSessionService.getCurrentUser();
 		if("10".equals(orgOrder.getPaymentmethod())){
 			if(customerBillMapper.getRecBillByOrderNo(orgOrder.getOrderNo())!=null)throw new ServiceException(MessageCode.LOGIC_ERROR,"已经有收款单了，请不要修改订单，或者去删除收款单!");
 		}
@@ -6128,7 +6210,10 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 		if("30".equals(orgOrder.getSign()) || !"10".equals(orgOrder.getPreorderStat()) )throw new ServiceException(MessageCode.LOGIC_ERROR,"该订单的日计划不能恢复!");
 		if(new Date().after(item.getDispDate()))throw new ServiceException(MessageCode.LOGIC_ERROR,"今日之前的日计划无法恢复!");
 		if("20".equals(orgOrder.getSign()))throw new ServiceException(MessageCode.LOGIC_ERROR,"已停订的订单不能单日恢复日计划!");
-		
+		TMdMaraEx ex = maraExMapper.getProductTransRateByCode(item.getMatnr(),user.getSalesOrg());
+		if(ex!=null){
+			item.setMatnrTxt(ex.getShortTxt());
+		}
 		//预付款恢复
 		if("20".equals(orgOrder.getPaymentmethod())){
 			ArrayList<TOrderDaliyPlanItem> daliyPlans = (ArrayList<TOrderDaliyPlanItem>) tOrderDaliyPlanItemMapper.selectDaliyPlansByOrderNo(item.getOrderNo());
@@ -6283,6 +6368,8 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 			orgOrder.setEndDate(endDate);
 			tPreOrderMapper.updateOrderEndDate(orgOrder);
 		}
+		OperationLogUtil.saveHistoryOperation(orgOrder.getOrderNo(),LogType.DAIL_ORDER,DailOrderLogEnum.STATUS,null,null,"停订","在订",
+				item.getMatnr()+item.getMatnrTxt(),item.getDispDate(),user,operationLogMapper);
 		
 		return 1;
 	}

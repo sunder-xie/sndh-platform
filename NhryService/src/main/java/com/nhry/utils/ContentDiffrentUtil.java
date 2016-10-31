@@ -14,6 +14,9 @@ public class ContentDiffrentUtil {
         if(obj1 == null && obj2==null){
             return false;
         }
+        if(obj1 instanceof Integer){
+            return !((Integer) obj1).equals(((Integer)obj2));
+        }
         if(obj1 instanceof String){
                 return !((String) obj1).trim().equals(((String)obj2).trim());
         }
