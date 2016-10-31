@@ -14,18 +14,27 @@ public class TMdOperationLog implements Serializable{
     private String logMatnr;            //产品
     private Date logDispDate;              //日期
     private String logName;             //名称
-    private String logEmpNo;            //送奶员
+    private String logEmp;            //送奶员
+    private String dispAddress;         //配送地址
     private Date  logDate;              //日志日期
     private Date createAt;              //创建时间
     private  String createBy;           //创建人编号
     private String createByTxt;         //创建人名称
 
-    public String getLogEmpNo() {
-        return logEmpNo;
+    public String getDispAddress() {
+        return dispAddress;
     }
 
-    public void setLogEmpNo(String logEmpNo) {
-        this.logEmpNo = logEmpNo;
+    public void setDispAddress(String dispAddress) {
+        this.dispAddress = dispAddress;
+    }
+
+    public String getLogEmp() {
+        return logEmp;
+    }
+
+    public void setLogEmp(String logEmp) {
+        this.logEmp = logEmp;
     }
 
     public String getLogNo() {
