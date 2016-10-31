@@ -815,12 +815,11 @@ public class RequireOrderServiceImpl implements RequireOrderService {
                         if (entries != null && entries.size() > 0) {
                             noprom = createSalOrderByGiOrderMap(entries, user, orderDate);
                         }
-
-                        if (noprom != null) {
-                            generateSalesOrderAnduptVouCher(noprom);
-                        }
                         if (noprom40!=null){
                             generateSalesOrderAnduptVouCher(noprom40);
+                        }
+                        if (noprom != null) {
+                            generateSalesOrderAnduptVouCher(noprom);
                         }
                         if (prom != null) {
                             generateSalesOrderAnduptVouCher(prom);
@@ -1066,17 +1065,17 @@ public class RequireOrderServiceImpl implements RequireOrderService {
             TSsmSalOrder promOrder = this.creatPromoSalOrderOfDealerBranch(orderDate);
             TSsmSalOrder promOrder40 = this.creatPromoSalOrderOfDealerBranch40(orderDate);
             TSsmSalOrder noPromOrder40 = this.creatNoPromoSalOrderOfDealerBranch40(orderDate);
-            if (noPromOrder != null) {
-                generateSalesOrderAnduptVouCher(noPromOrder);
-            }
-            if (promOrder != null) {
-                generateSalesOrderAnduptVouCher(promOrder);
-            }
             if(promOrder40 != null){
                 generateSalesOrderAnduptVouCher(promOrder40);
             }
             if(noPromOrder40 != null){
                 generateSalesOrderAnduptVouCher(noPromOrder40);
+            }
+            if (noPromOrder != null) {
+                generateSalesOrderAnduptVouCher(noPromOrder);
+            }
+            if (promOrder != null) {
+                generateSalesOrderAnduptVouCher(promOrder);
             }
         }
         return 0;
