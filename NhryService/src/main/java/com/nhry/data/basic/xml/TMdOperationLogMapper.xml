@@ -4,6 +4,8 @@
   <resultMap id="BaseResultMap" type="com.nhry.data.basic.domain.TMdOperationLog" >
     <result column="LOG_NO" property="logNo" jdbcType="VARCHAR" />
     <result column="LOG_TYPE" property="logType" jdbcType="VARCHAR" />
+    <result column="LOG_EMP" property="logEmp" jdbcType="VARCHAR" />
+    <result column="DISP_ADDRESS" property="dispAddress" jdbcType="VARCHAR" />
     <result column="ORIGINAL_VALUE" property="originalValue" jdbcType="VARCHAR" />
     <result column="NEW_VALUE" property="newValue" jdbcType="VARCHAR" />
     <result column="LOG_MATNR" property="logMatnr" jdbcType="VARCHAR" />
@@ -26,6 +28,12 @@
       </if>
       <if test="logType != null" >
         LOG_TYPE,
+      </if>
+      <if test="logEmp != null" >
+        LOG_EMP,
+      </if>
+      <if test="dispAddress!= null" >
+        DISP_ADDRESS,
       </if>
       <if test="originalValue != null" >
         ORIGINAL_VALUE,
@@ -61,6 +69,12 @@
       </if>
       <if test="logType != null" >
         #{logType,jdbcType=VARCHAR},
+      </if>
+      <if test="logEmp != null" >
+        #{logEmp,jdbcType=VARCHAR},
+      </if>
+      <if test="dispAddress!= null" >
+        #{dispAddress,jdbcType=VARCHAR},
       </if>
       <if test="originalValue != null" >
         #{originalValue,jdbcType=VARCHAR},

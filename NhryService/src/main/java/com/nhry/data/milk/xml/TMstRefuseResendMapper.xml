@@ -217,6 +217,7 @@
         LEFT JOIN t_md_branch_emp e ON r.EMP_NO = e.EMP_NO
         WHERE
             i.ORDER_NO = #{orderNo}
+            and r.MATNR = #{matnr}
 
         UNION
             SELECT

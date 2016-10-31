@@ -596,8 +596,10 @@ public class RequireOrderServiceImpl implements RequireOrderService {
                             resend.setConfirmQty(resend.getConfirmQty().subtract(uptQty));
                             resend.setRemainQty(resend.getRemainQty().add(uptQty));
                            resendMapper.uptRefuseResend(resend);
+                           stockService.updateTmpStock(order.getBranchNo(),resend.getMatnr(),uptQty.multiply(new BigDecimal(-1)),resend.getSalesOrg());
                         }
                         resendItemMapper.delResendItemByRequireOrderNoAndType(order.getOrderNo(),"10");
+
                     }
                 }
                 tSsmReqGoodsOrderItemMapper.delRequireOrderItemsByOrderNo(order.getOrderNo());

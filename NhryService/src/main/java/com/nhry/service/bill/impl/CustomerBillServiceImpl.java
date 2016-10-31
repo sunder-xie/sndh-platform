@@ -110,13 +110,13 @@ public class CustomerBillServiceImpl implements CustomerBillService {
 
             TPreOrder order = tPreOrderMapper.selectByPrimaryKey(orderNo);
             if(order == null){
-                errorContent = "该订单不存在！";
+                errorContent = orderNo+"该订单不存在！";
                 throw new ServiceException(MessageCode.LOGIC_ERROR,errorContent);
             }
 
             TMstRecvBill customerBill = customerBillMapper.getRecBillByOrderNo(orderNo);
             if(customerBill!= null && "20".equals(customerBill.getStatus())){
-                errorContent = "该订单已收款";
+                errorContent = orderNo+"该订单已收款";
                 throw new ServiceException(MessageCode.LOGIC_ERROR,errorContent);
             }
 
@@ -147,7 +147,7 @@ public class CustomerBillServiceImpl implements CustomerBillService {
                     customerBill.setAmt(new BigDecimal(cModel.getAmt()));
                 }else{
                     //如果收款金额 加上已收的余额 小于 订单金额
-                    throw new ServiceException(MessageCode.LOGIC_ERROR,"输入的金额和已支付的账户余额不足以支付此订单!");
+                    throw new ServiceException(MessageCode.LOGIC_ERROR,orderNo+"  输入的金额和已支付的账户余额不足以支付此订单!");
                 }
                 //备注
                 if(StringUtils.isNoneBlank(cModel.getRemark())){
