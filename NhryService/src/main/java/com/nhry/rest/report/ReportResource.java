@@ -279,7 +279,7 @@ public class ReportResource extends BaseResource{
 
                     cell = row.createCell(5);//余额
                     cell.setCellStyle(styleBold);
-                    cell.setCellValue(item.getRemainAmt()==null?"" : item.getRemainAmt().toBigInteger().toString());
+                    cell.setCellValue(item.getRemainAmt()==null?"" : item.getRemainAmt().toString());
                     cell = row.createCell(6);
                     cell.setCellValue(" ");
                     cell.setCellStyle(styleBold);
@@ -315,7 +315,7 @@ public class ReportResource extends BaseResource{
                         row = sheet.createRow(r1+1);
                         cell = row.createCell(1);
                         cell.setCellValue(deliverItem.getAddressTxt().concat(":").concat(deliverItem.getTotalQty()==null?"" : deliverItem.getTotalQty().toString()).concat("--").concat(deliverItem.getMatnrTxt()));//小区名称
-                        sheet.addMergedRegion(new CellRangeAddress(row.getRowNum(), row.getRowNum(), 1, 9));
+                        sheet.addMergedRegion(new CellRangeAddress(row.getRowNum(), row.getRowNum(), 1, 8));
                         r1++;
                     }
 
