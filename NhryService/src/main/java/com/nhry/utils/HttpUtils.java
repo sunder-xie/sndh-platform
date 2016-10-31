@@ -21,11 +21,12 @@ import java.util.Map.Entry;
 import java.io.InputStream;
 import java.io.ByteArrayOutputStream;
 
+import org.apache.log4j.Logger;
 import org.springframework.security.authentication.encoding.MessageDigestPasswordEncoder;
 import org.springframework.security.authentication.encoding.ShaPasswordEncoder;
 
 public class HttpUtils {
-
+	private static Logger LOGGER = Logger.getLogger(HttpUtils.class);
 	public static byte[] streamToByte(InputStream inputstream) throws Exception {
 		byte bys[] = new byte[1024];
 		int len = 0;
@@ -112,6 +113,7 @@ public class HttpUtils {
 		out.writeBytes(content.toString());
 		out.flush();
 		out.close();
+		LOGGER.warn("content"+content.toString());
 		BufferedReader reader = new BufferedReader(new InputStreamReader(
 				connection.getInputStream()));
 
