@@ -707,6 +707,13 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 		if("10".equals(order.getPaymentmethod())){
 			if(customerBillMapper.getRecBillByOrderNo(order.getOrderNo())!=null)throw new ServiceException(MessageCode.LOGIC_ERROR,"该后付款已经有收款单了，请不要修改订单，或者去删除收款单!");
 		}
+		if("20".equals(order.getPaymentmethod())){
+			TMstRecvBill bill = customerBillMapper.getRecBillByOrderNo(order.getOrderNo());
+			if(bill!=null && "10".equals(bill.getStatus())){
+				throw new ServiceException(MessageCode.LOGIC_ERROR,"预付款订单  "+order.getOrderNo()+"  已经有收款单但是还没完成收款，请不要修改订单，或者去删除收款单!");
+			}
+		}
+
 		if("10".equals(order.getPreorderSource())){
 			throw new ServiceException(MessageCode.LOGIC_ERROR,"暂无法进行此操作，请联系在线客服");
 		}
@@ -844,6 +851,12 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 		
 		if("10".equals(order.getPaymentmethod())){
 			if(customerBillMapper.getRecBillByOrderNo(order.getOrderNo())!=null)throw new ServiceException(MessageCode.LOGIC_ERROR,"该后付款已经有收款单了，请不要修改订单，或者去删除收款单!");
+		}
+		if("20".equals(order.getPaymentmethod())){
+			TMstRecvBill bill = customerBillMapper.getRecBillByOrderNo(order.getOrderNo());
+			if(bill!=null && "10".equals(bill.getStatus())){
+				throw new ServiceException(MessageCode.LOGIC_ERROR,"预付款订单  "+order.getOrderNo()+"  已经有收款单但是还没完成收款，请不要修改订单，或者去删除收款单!");
+			}
 		}
 		
 		if(order!= null){
@@ -1002,6 +1015,12 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 			
 			if("10".equals(order.getPaymentmethod())){
 				if(customerBillMapper.getRecBillByOrderNo(order.getOrderNo())!=null)throw new ServiceException(MessageCode.LOGIC_ERROR,"已经有收款单了，请不要操作，或者去删除收款单!");
+			}
+			if("20".equals(order.getPaymentmethod())){
+				TMstRecvBill bill = customerBillMapper.getRecBillByOrderNo(order.getOrderNo());
+				if(bill!=null && "10".equals(bill.getStatus())){
+					throw new ServiceException(MessageCode.LOGIC_ERROR,"预付款订单  "+order.getOrderNo()+"  已经有收款单但是还没完成收款，请不要修改订单，或者去删除收款单!");
+				}
 			}
 			
 			if("10".equals(order.getPreorderSource()))throw new ServiceException(MessageCode.LOGIC_ERROR,"暂无法进行此操作，请联系在线客服!");
@@ -1591,6 +1610,14 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 		if("10".equals(order.getPaymentmethod())){
 			if(customerBillMapper.getRecBillByOrderNo(order.getOrderNo())!=null)throw new ServiceException(MessageCode.LOGIC_ERROR,"该后付款订单已经有收款单了，请不要复订订单，或者去删除收款单!");
 		}
+
+		if("20".equals(order.getPaymentmethod())){
+			TMstRecvBill bill = customerBillMapper.getRecBillByOrderNo(order.getOrderNo());
+			if(bill!=null && "10".equals(bill.getStatus())){
+				throw new ServiceException(MessageCode.LOGIC_ERROR,"预付款订单  "+order.getOrderNo()+"  已经有收款单但是还没完成收款，请不要复订订单，或者去删除收款单!");
+			}
+		}
+
 		
 		BigDecimal orderAmt = order.getInitAmt();//订单金额
 		ArrayList<TPlanOrderItem> orgEntries = (ArrayList<TPlanOrderItem>) tPlanOrderItemMapper.selectByOrderCode(record.getOrderNo());
@@ -2799,6 +2826,12 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 			if("10".equals(orgOrder.getPaymentmethod())){
 				if(customerBillMapper.getRecBillByOrderNo(orgOrder.getOrderNo())!=null)throw new ServiceException(MessageCode.LOGIC_ERROR,"已经有收款单了，请不要修改订单，或者去删除收款单!");
 			}
+			if("20".equals(orgOrder.getPaymentmethod())){
+				TMstRecvBill bill = customerBillMapper.getRecBillByOrderNo(orgOrder.getOrderNo());
+				if(bill!=null && "10".equals(bill.getStatus())){
+					throw new ServiceException(MessageCode.LOGIC_ERROR,"预付款订单已经有收款单但是还没完成收款，请不要修改订单，或者去删除收款单!");
+				}
+			}
 			ArrayList<TPlanOrderItem> orgEntries = (ArrayList<TPlanOrderItem>) tPlanOrderItemMapper.selectByOrderCode(record.getOrder().getOrderNo());
 			ArrayList<TPlanOrderItem> curEntries = record.getEntries();
 			ArrayList<TPlanOrderItem> modifiedEntries = new ArrayList<TPlanOrderItem>();
@@ -3384,6 +3417,12 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 		orgOrder.setMemoTxt(record.getOrder().getMemoTxt());
 		if("10".equals(orgOrder.getPaymentmethod())){
 			if(customerBillMapper.getRecBillByOrderNo(orgOrder.getOrderNo())!=null)throw new ServiceException(MessageCode.LOGIC_ERROR,"已经有收款单了，请不要修改订单，或者去删除收款单!");
+		}
+		if("20".equals(orgOrder.getPaymentmethod())){
+			TMstRecvBill bill = customerBillMapper.getRecBillByOrderNo(orgOrder.getOrderNo());
+			if(bill!=null && "10".equals(bill.getStatus())){
+				throw new ServiceException(MessageCode.LOGIC_ERROR,"预付款订单  "+orgOrder.getOrderNo()+"  已经有收款单但是还没完成收款，请不要修改订单，或者去删除收款单!");
+			}
 		}
 		ArrayList<TPlanOrderItem> orgEntries = (ArrayList<TPlanOrderItem>) tPlanOrderItemMapper.selectByOrderCode(record.getOrder().getOrderNo());
 		ArrayList<TPlanOrderItem> curEntries = record.getEntries();
@@ -4103,7 +4142,13 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 		SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
 		TPreOrder orgOrder = tPreOrderMapper.selectByPrimaryKey(record.getOrderCode());
 		if("10".equals(orgOrder.getPaymentmethod())){
-			if(customerBillMapper.getRecBillByOrderNo(orgOrder.getOrderNo())!=null)throw new ServiceException(MessageCode.LOGIC_ERROR,"已经有收款单了，请不要修改订单，或者去删除收款单!");
+			if(customerBillMapper.getRecBillByOrderNo(orgOrder.getOrderNo())!=null)throw new ServiceException(MessageCode.LOGIC_ERROR,"后付款订单已经有收款单了，请不要修改订单，或者去删除收款单!");
+		}
+		if("20".equals(orgOrder.getPaymentmethod())){
+			TMstRecvBill bill = customerBillMapper.getRecBillByOrderNo(orgOrder.getOrderNo());
+			if(bill!=null && "10".equals(bill.getStatus())){
+				throw new ServiceException(MessageCode.LOGIC_ERROR,"预付款订单  "+orgOrder.getOrderNo()+"  已经有收款单但是还没完成收款，请不要修改订单，或者去删除收款单!");
+			}
 		}
 		ArrayList<TPlanOrderItem> orgEntries = (ArrayList<TPlanOrderItem>) tPlanOrderItemMapper.selectByOrderCode(record.getOrderCode());
 		ArrayList<TOrderDaliyPlanItem> daliyPlans = (ArrayList<TOrderDaliyPlanItem>) tOrderDaliyPlanItemMapper.selectDaliyPlansByOrderNo(record.getOrderCode());
@@ -4134,17 +4179,19 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 				}
 
 				if("30".equals(plan.getStatus())){
-					OperationLogUtil.saveHistoryOperation(orgOrder.getOrderNo(),LogType.DAIL_ORDER,DailOrderLogEnum.STATUS,
-							orgPlan.getStatus(),plan.getStatus(),orgPlan.getMatnr(),orgPlan.getDispDate(),user,operationLogMapper);
+					OperationLogUtil.saveHistoryOperation(orgOrder.getOrderNo(),LogType.DAIL_ORDER,DailOrderLogEnum.STATUS,null,null,
+							orgPlan.getStatus()=="10"?"在订":orgPlan.getStatus()=="20"?"完结":"停订",
+							plan.getStatus()=="10"?"在订":plan.getStatus()=="20"?"完结":"停订",
+							orgPlan.getMatnr(),orgPlan.getDispDate(),user,operationLogMapper);
 					orgPlan.setStatus(plan.getStatus());
 					cj = cj.add(orgPlan.getAmt());
 				}
 				//送达时段
 				if(StringUtils.isNotBlank(plan.getReachTimeType())){
-					if(plan.getReachTimeType().equals(orgPlan.getReachTime())){
-						OperationLogUtil.saveHistoryOperation(orgOrder.getOrderNo(),LogType.DAIL_ORDER,DailOrderLogEnum.REACH_TIME_TYPE,
-								"10".equals(orgPlan.getReachTime())?"上午配送":"下午配送","10".equals(plan.getReachTime())?"上午配送":"下午配送",
-								orgPlan.getMatnr(),orgPlan.getDispDate(),user,operationLogMapper);
+					if(!plan.getReachTimeType().equals(orgPlan.getReachTimeType())){
+						OperationLogUtil.saveHistoryOperation(orgOrder.getOrderNo(),LogType.DAIL_ORDER,DailOrderLogEnum.REACH_TIME_TYPE,null,null,
+								"10".equals(orgPlan.getReachTimeType())?"上午配送":"下午配送","10".equals(plan.getReachTimeType())?"上午配送":"下午配送",
+								orgPlan.getMatnr()+orgPlan.getMatnrTxt(),orgPlan.getDispDate(),user,operationLogMapper);
 					}
 					orgPlan.setReachTimeType(plan.getReachTimeType());
 				}
@@ -4166,7 +4213,7 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 						float price = orgPlan.getPrice().floatValue();
 						if(price<=0)throw new ServiceException(MessageCode.LOGIC_ERROR,"替换的产品价格小于0，请维护价格组!");
 						cj = orgPlan.getAmt().subtract(new BigDecimal(String.valueOf(price)).multiply(new BigDecimal(plan.getQty().toString())));
-						OperationLogUtil.saveHistoryOperation(orgOrder.getOrderNo(),LogType.DAIL_ORDER,DailOrderLogEnum.UPT_QTY,
+						OperationLogUtil.saveHistoryOperation(orgOrder.getOrderNo(),LogType.DAIL_ORDER,DailOrderLogEnum.UPT_QTY,null,null,
 								orgPlan.getStatus(),plan.getStatus(),orgPlan.getMatnr(),orgPlan.getDispDate(),user,operationLogMapper);
 					}
 
@@ -4218,6 +4265,11 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 				}
 				//送达时段
 				if(StringUtils.isNotBlank(plan.getReachTimeType())){
+					if(!plan.getReachTimeType().equals(orgPlan.getReachTimeType())){
+						OperationLogUtil.saveHistoryOperation(orgOrder.getOrderNo(),LogType.DAIL_ORDER,DailOrderLogEnum.REACH_TIME_TYPE,null,null,
+								"10".equals(orgPlan.getReachTimeType())?"上午配送":"下午配送","10".equals(plan.getReachTimeType())?"上午配送":"下午配送",
+								orgPlan.getMatnr()+orgPlan.getMatnrTxt(),orgPlan.getDispDate(),user,operationLogMapper);
+					}
 					orgPlan.setReachTimeType(plan.getReachTimeType());
 				}
 				//变更产品
@@ -4862,6 +4914,10 @@ public class OrderServiceImpl extends BaseService implements OrderService {
    			}
    			//停订的
 				if(stopPlans.containsKey(plan)){
+					OperationLogUtil.saveHistoryOperation(orgOrder.getOrderNo(),LogType.DAIL_ORDER,DailOrderLogEnum.STATUS,null,null,
+							plan.getStatus()=="10"?"在订":plan.getStatus()=="20"?"完结":"停订",
+							stopPlans.get(plan).getStatus()=="10"?"在订":stopPlans.get(plan).getStatus()=="20"?"完结":"停订",
+							plan.getMatnr(),plan.getDispDate(),user,operationLogMapper);
 					plan.setStatus("30");
 //					continue;
 				}
@@ -4870,12 +4926,12 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 
 					if(plan.getQty().compareTo(changeProducts.get(plan).getQty())==0){
 						//只换产品
-						OperationLogUtil.saveHistoryOperation(orgOrder.getOrderNo(), LogType.DAIL_ORDER,DailOrderLogEnum.UPT_MATNR,
+						OperationLogUtil.saveHistoryOperation(orgOrder.getOrderNo(), LogType.DAIL_ORDER,DailOrderLogEnum.UPT_MATNR,null,null,
 								plan.getMatnr()+plan.getMatnrTxt(),changeProducts.get(plan).getMatnr()+changeProducts.get(plan).getMatnrTxt(),null
 								,plan.getDispDate(),user,operationLogMapper);
 					}else{
 						//换产品 同时换数量
-						OperationLogUtil.saveHistoryOperation(orgOrder.getOrderNo(), LogType.DAIL_ORDER,DailOrderLogEnum.UPT_MATNR_QTY,
+						OperationLogUtil.saveHistoryOperation(orgOrder.getOrderNo(), LogType.DAIL_ORDER,DailOrderLogEnum.UPT_MATNR_QTY,null,null,
 								plan.getMatnr()+plan.getMatnrTxt()+"—"+plan.getQty(),changeProducts.get(plan).getMatnr()+changeProducts.get(plan).getMatnrTxt()+"—"+changeProducts.get(plan).getQty(),null
 								,plan.getDispDate(),user,operationLogMapper);
 					}
@@ -4888,7 +4944,7 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 				//变更数量
 				else if(changeQtys.containsKey(plan)){
 					//日订单更改数量日志
-				OperationLogUtil.saveHistoryOperation(orgOrder.getOrderNo(), LogType.DAIL_ORDER,DailOrderLogEnum.UPT_QTY,
+				OperationLogUtil.saveHistoryOperation(orgOrder.getOrderNo(), LogType.DAIL_ORDER,DailOrderLogEnum.UPT_QTY,null,null,
 					plan.getQty().toString(),changeQtys.get(plan).getQty().toString(),plan.getMatnr()+plan.getMatnrTxt(),plan.getDispDate(),userSessionService.getCurrentUser(),operationLogMapper);
 					plan.setQty(changeQtys.get(plan).getQty());
 					plan.setAmt(changeQtys.get(plan).getPrice().multiply(new BigDecimal(changeQtys.get(plan).getQty().toString())));
@@ -6059,6 +6115,12 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 		
 		if("10".equals(orgOrder.getPaymentmethod())){
 			if(customerBillMapper.getRecBillByOrderNo(orgOrder.getOrderNo())!=null)throw new ServiceException(MessageCode.LOGIC_ERROR,"已经有收款单了，请不要修改订单，或者去删除收款单!");
+		}
+		if("20".equals(orgOrder.getPaymentmethod())){
+			TMstRecvBill bill = customerBillMapper.getRecBillByOrderNo(orgOrder.getOrderNo());
+			if(bill!=null && "10".equals(bill.getStatus())){
+				throw new ServiceException(MessageCode.LOGIC_ERROR,"预付款订单  "+orgOrder.getOrderNo()+"  已经有收款单但是还没完成收款，请不要修改订单，或者去删除收款单!");
+			}
 		}
 		
 		//validate

@@ -10,13 +10,15 @@ import java.util.Date;
  * Created by gongjk on 2016/10/24.
  */
 public class OperationLogUtil  {
-    public static void saveHistoryOperation(String logNo, String type,String logName, String originalValue, String newValue,
+    public static void saveHistoryOperation(String logNo, String type,String logName,String logEmp,String dispAddress, String originalValue, String newValue,
                                             String matnr, Date dispDate, TSysUser user,TMdOperationLogMapper operationLogMapper){
         final TMdOperationLog operationLogModel = new TMdOperationLog();
         operationLogModel.setLogNo(logNo);
         operationLogModel.setLogType(type);
         operationLogModel.setLogDate(new Date());
         operationLogModel.setLogName(logName);
+        operationLogModel.setLogEmp(logEmp);
+        operationLogModel.setDispAddress(dispAddress);
         operationLogModel.setOriginalValue(originalValue);
         operationLogModel.setNewValue(newValue);
         operationLogModel.setCreateBy(user.getLoginName());
