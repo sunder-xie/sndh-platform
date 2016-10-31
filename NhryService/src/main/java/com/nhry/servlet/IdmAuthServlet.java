@@ -76,13 +76,13 @@ public class IdmAuthServlet extends HttpServlet {
 				attrs.put("grant_type", EnvContant.getSystemConst("grant_type"));
 				attrs.put("redirect_uri", EnvContant.getSystemConst("redirect_uri"));
 				attrs.put("code", code);
-				String access_token = this.request(EnvContant.getSystemConst("auth_token"), attrs,"utf-8");
+				String access_token = HttpUtils.request(EnvContant.getSystemConst("auth_token"), attrs,"utf-8");
 				LOGGER.info("access_token" + access_token);
 				if(!StringUtils.isEmpty(access_token)){
 					attrs.clear();
 					String token = access_token.split("=")[1].split("&")[0];
 					attrs.put("access_token", token);
-					String userObject = this.request(EnvContant.getSystemConst("auth_profile"), attrs,"utf-8");
+					String userObject = HttpUtils.request(EnvContant.getSystemConst("auth_profile"), attrs,"utf-8");
 					JSONObject userJson = new JSONObject(userObject);
 					if(userJson.has("id") && !StringUtils.isEmpty(userJson.getString("id"))){
 						TSysUser user = new TSysUser();
