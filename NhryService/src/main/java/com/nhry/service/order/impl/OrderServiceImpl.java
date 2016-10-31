@@ -1932,11 +1932,11 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 		List<TPlanOrderItem> entriesList = new ArrayList<TPlanOrderItem>();
 		//信息交验
 		validateOrderInfo(record);
-		if("20".equals(order.getPaymentStat())){
-			if(StringUtils.isBlank(order.getPayDateStr())){
-				throw new ServiceException(MessageCode.LOGIC_ERROR,"已付款订单，支付时间payDateStr字段不能为空!");
-			}
-		}
+//		if("20".equals(order.getPaymentStat())){
+//			if(StringUtils.isBlank(order.getPayDateStr())){
+//				throw new ServiceException(MessageCode.LOGIC_ERROR,"已付款订单，支付时间payDateStr字段不能为空!");
+//			}
+//		}
 		//暂时生成订单号
 		Date date = new Date();
 		//判断如果新增订单时订单编号不为空，则代表是订户数据导入
