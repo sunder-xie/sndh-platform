@@ -308,6 +308,8 @@ public class ReportResource extends BaseResource{
                     }*/
                     r++;
                 }
+                XSSFCellStyle styleBoldOne = workbook.createCellStyle();
+                styleBoldOne.setWrapText(true);
                 int r1 = details.size()+9;
                 row = sheet.createRow(r1);
                 cell = row.createCell(1);
@@ -316,7 +318,7 @@ public class ReportResource extends BaseResource{
                     for(TDispOrderItem deliverItem : modelDeliver){
                         row = sheet.createRow(r1+1);
                         cell = row.createCell(1);
-                        cell.setCellStyle(styleBold);
+                        cell.setCellStyle(styleBoldOne);
                         cell.setCellValue(deliverItem.getAddressTxt().concat(":").concat(deliverItem.getTotalQty()==null?"" : deliverItem.getTotalQty().toString()).concat("--").concat(deliverItem.getMatnrTxt()));//小区名称
                         sheet.addMergedRegion(new CellRangeAddress(row.getRowNum(), row.getRowNum(), 1, 8));
                         r1++;
