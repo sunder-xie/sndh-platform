@@ -91,6 +91,7 @@
 		<property name="addressMapper" ref="addressMapper"></property>
 		<property name="operationLogMapper" ref="operationLogMapper"></property>
 		<property name="maraExMapper" ref="maraExMapper"></property>
+		<property name="branchEmpMapper" ref="branchEmpMapper"></property>
 	</bean>
 	<bean id="tPromotionMapper" class="com.nhry.data.order.impl.TPromotionMapperImpl">
 		<property name="sqlSessionTemplate" ref="dynamicSqlSessionTemplate"></property>
