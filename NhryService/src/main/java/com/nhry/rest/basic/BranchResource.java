@@ -98,6 +98,14 @@ public class BranchResource extends BaseResource {
 		return convertToRespModel(MessageCode.NORMAL, null,branchService.uptValidBranch(tMdBranch));
 	}
 
+	@POST
+	@Path("/uptTargetBranch")
+	@Produces(MediaType.APPLICATION_JSON)
+	@Consumes(MediaType.APPLICATION_JSON)
+	@ApiOperation(value = "/uptTargetBranch", response = String.class, notes = "更新奶站内部销售订单售达方")
+	public Response uptTargetBranch(@ApiParam(required=true,name="branchModel",value="SearchModel") TMdBranch tMdBranch){
+		return convertToRespModel(MessageCode.NORMAL, null,branchService.uptTargetBranch(tMdBranch));
+	}
 	@GET
 	@Path("/getInfoByType")
 	@Produces(MediaType.APPLICATION_JSON)

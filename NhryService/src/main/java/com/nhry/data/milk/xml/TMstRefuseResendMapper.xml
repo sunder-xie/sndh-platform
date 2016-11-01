@@ -270,4 +270,32 @@
       and DISP_DATE = #{dispDate,jdbcType=DATE}
     </if>
   </select>
+    <select id="selectRefuseForInside" parameterType="com.nhry.data.milktrans.domain.TMstRefuseResend" resultMap="BaseResultMap">
+        SELECT
+            t.RESEND_ORDER_NO,
+            t.EMP_NO,
+            t2.EMP_NAME,
+            t.MATNR,
+            t1.SHORT_TXT as MATNR_TXT,
+            t.QTY,
+            t.CONFIRM_QTY,
+            t.INSIDE_QTY,
+            t.REMAIN_QTY,
+            t.DISP_DATE
+        FROM
+            t_mst_refuse_resend t
+        inner join t_md_mara_ex t1 on t1.MATNR = t.MATNR and t1.SALES_ORG=t.SALES_ORG
+        inner join t_md_branch_emp t2 on t2.EMP_NO = t.EMP_NO
+        WHERE
+            t.REMAIN_QTY > 0
+        <if test="branchNo!=null and ''!=branchNo">
+            and t.BRANCH_NO = #{branchNo,jdbcType=VARCHAR}
+        </if>
+        <if test="salesOrg!=null and ''!=salesOrg">
+            and t.SALES_ORG = #{salesOrg,jdbcType=VARCHAR}
+        </if>
+        <if test="empNo!=null and ''!=empNo">
+            and t.EMP_NO = #{empNo,jdbcType=VARCHAR}
+        </if>
+            </select>
 </mapper>

@@ -43,6 +43,8 @@
     <result column="LAST_MODIFIED_BY_TXT" property="lastModifiedByTxt" jdbcType="VARCHAR" />
     <result column="IS_VALID" property="isValid" jdbcType="VARCHAR" />
     <result column="ONLINE_DATE" property="onlineDate" jdbcType="DATE" />
+    <result column="TARGET_PRESON" property="targetPerson" jdbcType="VARCHAR" />
+
   </resultMap>
   <sql id="Base_Column_List" >
     BRANCH_NO, BRANCH_NAME, SALES_ORG, SALES_CHA, BRANCH_GROUP, BRANCH_LEVEL, CONTACT,EMP_NO,
@@ -51,7 +53,7 @@
   </sql>
   <select id="selectBranchByNo" resultMap="BaseResultMap" parameterType="java.lang.String" >
           select
-			b.BRANCH_NO, b.BRANCH_NAME, b.SALES_CHA, b.BRANCH_GROUP,b.BRANCH_LEVEL,  b.SALES_ORG,b.IS_VALID,b.ONLINE_DATE,
+			b.BRANCH_NO, b.BRANCH_NAME, b.SALES_CHA, b.BRANCH_GROUP,b.BRANCH_LEVEL,  b.SALES_ORG,b.IS_VALID,b.ONLINE_DATE,b.TARGET_PRESON,
 			(
 				SELECT i.ITEM_NAME
 					from t_sys_code_item i
@@ -102,6 +104,11 @@
            ONLINE_DATE = #{onlineDate,jdbcType=DATE}
     where BRANCH_NO = #{branchNo,jdbcType=VARCHAR}
   </update>
+  <update id="uptTargetBranch" parameterType="com.nhry.data.basic.domain.TMdBranch">
+    update t_md_branch
+    set   TARGET_PRESON = #{targetPerson,jdbcType=VARCHAR}
+    where BRANCH_NO = #{branchNo,jdbcType=VARCHAR}
+  </update>
   <update id="uptBranch" parameterType="com.nhry.data.basic.domain.TMdBranch" >
     update t_md_branch
     set BRANCH_NAME = #{branchName,jdbcType=VARCHAR},
@@ -128,7 +135,8 @@
       LAST_MODIFIED_BY_TXT = #{lastModifiedByTxt,jdbcType=VARCHAR},
       COMPANY_CODE = #{companyCode,jdbcType=VARCHAR},
       IS_VALID = #{isValid,jdbcType=VARCHAR},
-      ONLINE_DATE = #{onlineDate,jdbcType=DATE}
+      ONLINE_DATE = #{onlineDate,jdbcType=DATE},
+      TARGET_PRESON = #{targetPerson,jdbcType=VARCHAR}
     where BRANCH_NO = #{branchNo,jdbcType=VARCHAR}
   </update>
   <select id="findBranchListByOrg" resultMap="BaseResultMap" parameterType="String">

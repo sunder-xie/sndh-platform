@@ -6,17 +6,11 @@ import com.nhry.common.exception.ServiceException;
 import com.nhry.data.auth.dao.TSysUserRoleMapper;
 import com.nhry.data.auth.domain.TSysUser;
 import com.nhry.data.basic.domain.TMdMaraEx;
-import com.nhry.data.milk.dao.TDispOrderChangeMapper;
-import com.nhry.data.milk.dao.TDispOrderItemMapper;
-import com.nhry.data.milk.dao.TDispOrderMapper;
-import com.nhry.data.milk.dao.TMstRefuseResendMapper;
+import com.nhry.data.milk.dao.*;
 import com.nhry.data.milk.domain.*;
 import com.nhry.data.milktrans.dao.TMstInsideSalOrderItemMapper;
 import com.nhry.data.milktrans.dao.TMstInsideSalOrderMapper;
-import com.nhry.data.milktrans.domain.TMstInsideSalOrder;
-import com.nhry.data.milktrans.domain.TMstInsideSalOrderItem;
-import com.nhry.data.milktrans.domain.TMstRefuseResend;
-import com.nhry.data.milktrans.domain.TRecBotDetail;
+import com.nhry.data.milktrans.domain.*;
 import com.nhry.data.order.dao.TOrderDaliyPlanItemMapper;
 import com.nhry.data.order.dao.TPlanOrderItemMapper;
 import com.nhry.data.order.dao.TPreOrderMapper;
@@ -60,6 +54,11 @@ public class DeliverMilkServiceImpl extends BaseService implements DeliverMilkSe
 	private TSsmStockService tSsmStockService;
 	private TSysUserRoleMapper urMapper;
 	private TMstRefuseResendMapper resendMapper;
+	private TMstRefuseResendItemMapper resendItemMapper;
+
+	public void setResendItemMapper(TMstRefuseResendItemMapper resendItemMapper) {
+		this.resendItemMapper = resendItemMapper;
+	}
 
 	public void setResendMapper(TMstRefuseResendMapper resendMapper) {
 		this.resendMapper = resendMapper;
@@ -259,7 +258,7 @@ public class DeliverMilkServiceImpl extends BaseService implements DeliverMilkSe
 				item.setMatnr(model.getMatnr());
 				item.setQty(new BigDecimal(model.getQty()));
 				item.setItemNo(SerialUtil.creatSeria());
-				item.setReason("80");//库存生成内部销售订单定义为100
+				item.setReason("80");//库存生成内部销售订单定义为80
 				tMstInsideSalOrderItemMapper.insertOrderItem(item);
 				//更新库存
 				tSsmStockService.updateStock(order.getBranchNo(),model.getMatnr(),new BigDecimal(model.getQty()),user.getSalesOrg());
@@ -281,7 +280,7 @@ public class DeliverMilkServiceImpl extends BaseService implements DeliverMilkSe
 	 * 拒收复送内部销售
 	 * */
 	@Override
-	public int createInsideSalOrderByTmpStock(CreateInSalOrderModel cModel) {
+	public int createInsideSalOrderByTmpStock(CreateInsalOrderByRefuseModel cModel) {
 		List<MatnrAndQtyModel> items = cModel.getMatnrs();
 		if(items!=null && items.size()>0){
 			Date date = new Date();
@@ -301,10 +300,30 @@ public class DeliverMilkServiceImpl extends BaseService implements DeliverMilkSe
 				item.setMatnr(model.getMatnr());
 				item.setQty(new BigDecimal(model.getQty()));
 				item.setItemNo(SerialUtil.creatSeria());
-				item.setReason("90");//拒收复送生成内部销售订单定义为110
+				item.setReason("90");//拒收复送生成内部销售订单定义为90
 				tMstInsideSalOrderItemMapper.insertOrderItem(item);
 				//更新库存--拒收复送
 				tSsmStockService.updateTmpStock(order.getBranchNo(),model.getMatnr(),new BigDecimal(model.getQty()),user.getSalesOrg());
+				TMstRefuseResend refuseResend = resendMapper.selectRefuseResendByNo(model.getResendOrderNo());
+				if(refuseResend!=null){
+					//拒收复送剩余数量减去内部销售数量
+					refuseResend.setRemainQty(refuseResend.getRemainQty().subtract(new BigDecimal(model.getQty())));
+					//原内部销售数量加上新增数量
+					refuseResend.setInsideQty(refuseResend.getInsideQty().add(new BigDecimal(model.getQty())));
+					//拒收复送表更新
+					resendMapper.uptRefuseResend(refuseResend);
+
+					TMstRefuseResendItem ritem = new TMstRefuseResendItem();
+					ritem.setResendOrderNo(refuseResend.getResendOrderNo());
+					ritem.setOrderNo(insOrderNo);//内部销售单号
+					ritem.setCreateBy(user.getLoginName());
+					ritem.setCreateAt(date);
+					ritem.setQty(new BigDecimal(model.getQty()));
+					ritem.setType("20");//内部销售单类型为20
+					//拒收复送子表添加记录
+					resendItemMapper.addResendItem(ritem);
+				}
+
 			}
 			tMstInsideSalOrderMapper.insertInsideSalOrder(order);
 

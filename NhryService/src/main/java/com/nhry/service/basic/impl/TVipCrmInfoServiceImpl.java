@@ -54,10 +54,10 @@ public class TVipCrmInfoServiceImpl extends BaseService implements TVipCrmInfoSe
 	@Override
 	public int updateVipCrmByNo(TVipCrmInfo record) {
 		logger.info("更新会员"+record.getMp()+"会员号："+record.getVipCustNo());
-		TVipCustInfo vipCustInfo = new TVipCustInfo();
-		vipCustInfo.setVipCustNoSap(record.getVipCustNo());
-		vipCustInfo.setVipMp(record.getMp());
-		vipCustInfoMapper.updateVipMp(vipCustInfo);
+//		TVipCustInfo vipCustInfo = new TVipCustInfo();
+//		vipCustInfo.setVipCustNoSap(record.getVipCustNo());
+//		vipCustInfo.setVipMp(record.getMp());
+//		vipCustInfoMapper.updateVipMp(vipCustInfo);
 		return vipCrmMapper.updateVipCrmByNo(record);
 	}
 	
