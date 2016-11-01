@@ -836,7 +836,7 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 		}
 		//停订日志
 		OperationLogUtil.saveHistoryOperation(order.getOrderNo(),LogType.ORDER,OrderLogEnum.STOP_ORDER,null,null,null,
-				record.getOrderDateStart(),null,null,null,operationLogMapper);
+				record.getOrderDateStart(),null,null,userSessionService.getCurrentUser(),operationLogMapper);
 		
 		return 1;
 	}
@@ -999,7 +999,7 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 
 		//停订日志
 		OperationLogUtil.saveHistoryOperation(order.getOrderNo(),LogType.ORDER,OrderLogEnum.STOP_ORDER,null,null,null,
-				record.getOrderDateStart()+"-"+record.getOrderDateEnd(),null,null,null,operationLogMapper);
+				record.getOrderDateStart()+"-"+record.getOrderDateEnd(),null,null,userSessionService.getCurrentUser(),operationLogMapper);
 		return 1;
 	}
 	
@@ -1092,7 +1092,7 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 			if(!"10".equals(order.getPreorderSource()) &&!"40".equals(order.getPreorderSource())){
 				OperationLogUtil.saveHistoryOperation(order.getOrderNo(),LogType.ORDER,OrderLogEnum.BACK_ORDER,null,null,
 						("10".equals(order.getPreorderStat())?"在订":"30".equals(order.getPreorderStat())?"停订":"作废"),
-						"退订",null,null,null,operationLogMapper);
+						"退订",null,null,userSessionService.getCurrentUser(),operationLogMapper);
 			}
 
 			//更新订单状态为退订
@@ -1408,7 +1408,8 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 		}else{
 			throw new ServiceException(MessageCode.LOGIC_ERROR,orderNo+"原订单不存在");
 		}
-		
+		OperationLogUtil.saveHistoryOperation(order.getOrderNo(), LogType.ORDER, OrderLogEnum.CTN_ORDER,null,null,"续订单号"+orderNo,"新单号"+order.getOrderNo(),null,null,userSessionService.getCurrentUser(),operationLogMapper);
+
 		return 1;
 	}
 	
@@ -1483,7 +1484,6 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 	{
 		SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
 		TPreOrder order = tPreOrderMapper.selectByPrimaryKey(record.getOrderNo());
-		
 //		在批量续订时，预付款的订单自动续订[已不适用]// || ("batch".equals(record.getStatus()) && "20".equals(order.getPaymentmethod()))
 		if("true".equals(record.getContent())){
 			continueOrderAuto(order.getOrderNo(),record.getMemoTxt());
@@ -1656,7 +1656,8 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 		}else{
 			throw new ServiceException(MessageCode.LOGIC_ERROR,record.getOrderNo()+"原订单不存在");
 		}
-		
+		OperationLogUtil.saveHistoryOperation(order.getOrderNo(), LogType.ORDER, OrderLogEnum.CTN_ORDER,null,null,"续订单号"+record.getOrderNo(),"新单号"+order.getOrderNo(),null,null,userSessionService.getCurrentUser(),operationLogMapper);
+
 		return 1;
 	}
 	
@@ -1929,7 +1930,7 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 				messLogService.sendOrderStopRe(record);
 			}
 		});
-		
+		OperationLogUtil.saveHistoryOperation(order.getOrderNo(), LogType.ORDER, OrderLogEnum.RESUME_ORDER,null,null,"停订","在订",null,null,userSessionService.getCurrentUser(),operationLogMapper);
 		return 1;
 	}
 
@@ -3511,7 +3512,7 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 		convertEntryDate(record.getEntries());
 		SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
 		TPreOrder orgOrder = tPreOrderMapper.selectByPrimaryKey(record.getOrder().getOrderNo());
-		orgOrder.setMemoTxt(record.getOrder().getMemoTxt());
+
 		if("10".equals(orgOrder.getPaymentmethod())){
 			if(customerBillMapper.getRecBillByOrderNo(orgOrder.getOrderNo())!=null)throw new ServiceException(MessageCode.LOGIC_ERROR,"已经有收款单了，请不要修改订单，或者去删除收款单!");
 		}
@@ -3525,9 +3526,16 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 		ArrayList<TPlanOrderItem> curEntries = record.getEntries();
 		ArrayList<TPlanOrderItem> modifiedEntries = new ArrayList<TPlanOrderItem>();
 		ArrayList<TPlanOrderItem> removedEntries = new ArrayList<TPlanOrderItem>();
-		
-		boolean orderPromotionFlag = record.getEntries().stream().anyMatch((e)->StringUtils.isNotBlank(e.getPromotion()));
 		TSysUser user = userSessionService.getCurrentUser();
+
+		boolean orderPromotionFlag = record.getEntries().stream().anyMatch((e)->StringUtils.isNotBlank(e.getPromotion()));
+
+		if(ContentDiffrentUtil.isDiffrent(record.getOrder().getMemoTxt(),orgOrder.getMemoTxt())){
+			//备注日志
+			OperationLogUtil.saveHistoryOperation(orgOrder.getOrderNo(),LogType.ORDER, OrderLogEnum.MEMO_TXT,null,null,orgOrder.getMemoTxt(),
+					record.getOrder().getMemoTxt(),null,null,user,operationLogMapper);
+		}
+		orgOrder.setMemoTxt(record.getOrder().getMemoTxt());
 		String state = orgOrder.getPaymentmethod();
 		if("10".equals(state)){
 			//后付款
