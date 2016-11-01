@@ -425,4 +425,21 @@ public class OrderResource extends BaseResource {
 	public Response selectUnfinishOrderNum(@ApiParam(required=true,name="vipCustNo",value="订户号") @QueryParam("vipCustNo") String vipCustNo){
 		return convertToRespModel(MessageCode.NORMAL, null, orderService.selectUnfinishOrderNum(vipCustNo));
 	}
+	@POST
+	@Path("/advanceBackOrder")
+	@Produces(MediaType.APPLICATION_JSON)
+	@Consumes(MediaType.APPLICATION_JSON)
+	@ApiOperation(value = "/advanceBackOrder", response = Integer.class, notes = "提前退订订单")
+	public Response advanceBackOrder(@ApiParam(required=true,name="smodel",value="SearchModel") OrderSearchModel smodel){
+		return convertToRespModel(MessageCode.NORMAL,null,orderService.advanceBackOrder(smodel));
+	}
+
+	@POST
+	@Path("/updateBackState")
+	@Produces(MediaType.APPLICATION_JSON)
+	@Consumes(MediaType.APPLICATION_JSON)
+	@ApiOperation(value = "/advanceBackOrder", response = Integer.class, notes = "执行更新提前退订订单状态")
+	public Response updateBackState(){
+		return convertToRespModel(MessageCode.NORMAL,null,orderService.updateBackState());
+	}
 }

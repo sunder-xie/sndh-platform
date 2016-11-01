@@ -116,4 +116,7 @@ public interface OrderService {
 	PageInfo searchPendingConfirmOnline(OrderSearchModel smodel);
 
 	int orderConfirmUnOnline(UpdateManHandOrderModel uptManHandModel);
+	int advanceBackOrder(OrderSearchModel record);
+	int updateBackState();
+
 }
