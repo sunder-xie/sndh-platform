@@ -21,10 +21,8 @@ public class OperationLogUtil  {
         operationLogModel.setDispAddress(dispAddress);
         operationLogModel.setOriginalValue(originalValue);
         operationLogModel.setNewValue(newValue);
-        if(user!=null){
-            operationLogModel.setCreateBy(user.getLoginName());
-            operationLogModel.setCreateByTxt(user.getDisplayName());
-        }
+        operationLogModel.setCreateBy(user.getLoginName());
+        operationLogModel.setCreateByTxt(user.getDisplayName());
         operationLogModel.setCreateAt(new Date());
         operationLogModel.setLogDispDate(dispDate);
         operationLogModel.setLogMatnr(matnr);
