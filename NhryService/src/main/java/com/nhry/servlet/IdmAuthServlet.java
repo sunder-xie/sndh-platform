@@ -87,6 +87,7 @@ public class IdmAuthServlet extends HttpServlet {
 					if(userJson.has("id") && !StringUtils.isEmpty(userJson.getString("id"))){
 						TSysUser user = new TSysUser();
 						user.setLoginName(userJson.getString("id"));
+						LOGGER.info("user"+userJson.getString("id")+";token"+ token);
 						TSysUser loginuser = userService.login(user);
 						if(loginuser == null){
 							sendRedirectToLogout(response);
