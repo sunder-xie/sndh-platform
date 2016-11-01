@@ -257,6 +257,7 @@ public class ReportResource extends BaseResource{
             styleBold.setBorderLeft(XSSFCellStyle.BORDER_THIN);//左边框
             styleBold.setBorderTop(XSSFCellStyle.BORDER_THIN);//上边框
             styleBold.setBorderRight(XSSFCellStyle.BORDER_THIN);//右边框
+            styleBold.setWrapText(true);
 
             int r = 8;
             if(details!=null){
@@ -267,6 +268,7 @@ public class ReportResource extends BaseResource{
                     cell.setCellValue(item.getAddressTxt());//配送地址
                     cell = row.createCell(2);//今日配送
                     cell.setCellStyle(styleBold);
+
                     if (StringUtils.isNotEmpty(item.getMatnrTxt())){
                         cell.setCellValue(item.getMatnrTxt());
                     }
@@ -314,6 +316,7 @@ public class ReportResource extends BaseResource{
                     for(TDispOrderItem deliverItem : modelDeliver){
                         row = sheet.createRow(r1+1);
                         cell = row.createCell(1);
+                        cell.setCellStyle(styleBold);
                         cell.setCellValue(deliverItem.getAddressTxt().concat(":").concat(deliverItem.getTotalQty()==null?"" : deliverItem.getTotalQty().toString()).concat("--").concat(deliverItem.getMatnrTxt()));//小区名称
                         sheet.addMergedRegion(new CellRangeAddress(row.getRowNum(), row.getRowNum(), 1, 8));
                         r1++;
@@ -1144,14 +1147,16 @@ public class ReportResource extends BaseResource{
                 //行合计
                 XSSFCell cellSum = row.createCell(cNum);
                 cellSum.setCellStyle(ExcelUtil.setBorderStyle(workbook));
-                cellSum.setCellFormula(String.valueOf(CELLQTY));
+                cellSum.setCellValue(String.valueOf(CELLQTY));
             }
             int scNum = 0;
             XSSFRow row = sheet.createRow(rowNum);
             XSSFCell cellColTitle = row.createCell(scNum++);
             cellColTitle.setCellValue("合计");
             cellColTitle.setCellStyle(ExcelUtil.setBorderStyle(workbook));
-            for (Map.Entry<String, String> entry1 : projectMap.entrySet()) {//产品循环-列合计
+            int totalQty = 0;
+            //产品循环-列合计
+            for (Map.Entry<String, String> entry1 : projectMap.entrySet()) {
                 int ROWQTY = 0;
                 String matnr = entry1.getKey();
                     for (Map<String, String> map : orders){
@@ -1163,14 +1168,15 @@ public class ReportResource extends BaseResource{
                             }
                         }
                     }
+                totalQty = totalQty + ROWQTY;
                 XSSFCell cell = row.createCell(scNum++);
             	cell.setCellStyle(ExcelUtil.setBorderStyle(workbook));
-            	cell.setCellFormula(String.valueOf(ROWQTY));
+            	cell.setCellValue(String.valueOf(ROWQTY));
             }
             //总合计
             XSSFCell cellTotolSum = row.createCell(scNum++);
             cellTotolSum.setCellStyle(ExcelUtil.setBorderStyle(workbook));
-            cellTotolSum.setCellFormula(ExcelUtil.getFormula("SUM", 4, scNum, rowNum, scNum));
+            cellTotolSum.setCellValue(String.valueOf(totalQty));
 
             outUrl = saveFile(url, workbook,"Fnb.xlsx");
 //            outUrl = fname + "fnb.xlsx";
