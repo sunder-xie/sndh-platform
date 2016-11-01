@@ -10,6 +10,7 @@ import com.nhry.model.order.*;
 import com.nhry.service.order.pojo.OrderRemainData;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -66,6 +67,13 @@ public class TPreOrderMapperImpl implements TPreOrderMapper
 	@Override
 	public PageInfo searchPendingConfirmOnline(OrderSearchModel smodel) {
 		return sqlSessionTemplate.selectListByPages("searchPendingConfirmOnline",smodel, Integer.parseInt(smodel.getPageNum()), Integer.parseInt(smodel.getPageSize()));
+	}
+
+	@Override
+	public List<TPreOrder> selectOrdersByOrderNos(ArrayList<String> orders) {
+		Map<String,Object> map = new HashMap<String,Object>();
+		map.put("orders",orders);
+		return sqlSessionTemplate.selectList("selectOrdersByOrderNos",map);
 	}
 
 
