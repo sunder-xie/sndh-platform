@@ -8,6 +8,7 @@ import com.nhry.model.order.*;
 import com.nhry.service.order.pojo.OrderRemainData;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.List;
 
 public interface TPreOrderMapper {
@@ -112,4 +113,6 @@ public interface TPreOrderMapper {
     PageInfo searchPendingConfirmUnOnline(OrderSearchModel smodel);
 
     PageInfo searchPendingConfirmOnline(OrderSearchModel smodel);
+
+    List<TPreOrder> selectOrdersByOrderNos(ArrayList<String> orders);
 }
