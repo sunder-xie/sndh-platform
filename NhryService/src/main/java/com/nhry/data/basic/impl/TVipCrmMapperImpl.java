@@ -54,5 +54,10 @@ public class TVipCrmMapperImpl implements TVipCrmMapper {
 		// TODO Auto-generated method stub
 		return this.sqlSessionTemplate.selectOne("getCrmNoByPhone", attrs);
 	}
-	
+
+	@Override
+	public TVipCrmInfo getVipCrm(String vipCustNo) {
+		return this.sqlSessionTemplate.selectOne("getVipCrm",vipCustNo);
+	}
+
 }

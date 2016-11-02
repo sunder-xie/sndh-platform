@@ -767,4 +767,9 @@
 	        </if>
 	   </where>
 	</select>
+
+	<select id="getVipCrm" resultMap="BaseResultMap">
+		SELECT <include refid="Base_Column_List"/> FROM t_vip_crm_info WHERE VIP_CUST_NO =#{vipCustNo,jdbcType=VARCHAR}
+	</select>
+
 </mapper>

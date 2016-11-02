@@ -363,4 +363,9 @@ public class TPreOrderMapperImpl implements TPreOrderMapper
 		return sqlSessionTemplate.selectList("searchECOrdersForSendMessage", endDate);
 	}
 	//发送短信用end
+
+	@Override
+	public int selectOrdersNoBillCount(String BranchNo){
+		return sqlSessionTemplate.selectOne("selectOrdersNoBillCount", BranchNo);
+	}
 }

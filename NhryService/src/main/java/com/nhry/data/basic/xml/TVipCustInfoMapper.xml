@@ -829,7 +829,7 @@
 		i.STREET,
 		i.ROAD,
 		i.SUBDIST,
-		(select a.RESIDENTIAL_AREA_TXT from t_md_residential_area a where a.ID=i.SUBDIST) SUBDIST_NAME,
+		a.RESIDENTIAL_AREA_TXT SUBDIST_NAME,
 		i.ROOM,
 		i.MP,
 		i.VIP_MP,
@@ -875,8 +875,10 @@
 		b.BRANCH_NAME,i.BRANCH_NO,i.DEALER_NO,(CASE i.DEALER_NO
 			WHEN '-1' THEN '<include refid="mybaties.constant.ownBranch"></include>'
 			ELSE (SELECT d.dealer_name from t_md_dealer d where d.dealer_no=i.DEALER_NO) END) DEALER_NAME
-		from t_vip_cust_info i,T_MD_BRANCH b
-			where b.BRANCH_NO = i.BRANCH_NO 
+		from t_vip_cust_info i
+		LEFT JOIN T_MD_BRANCH b ON b.BRANCH_NO = i.BRANCH_NO
+		LEFT JOIN t_md_residential_area a ON a.ID=i.SUBDIST
+			where 1=1
 		     <if test="salesOrg != null and salesOrg !=''">
 		         AND i.SALES_ORG = #{salesOrg} 
 		     </if>
@@ -927,7 +929,7 @@
 		    </if>
 		    <if test="content != null and content != ''">
 		        and (i.VIP_NAME like '%${content}%' or i.ADDRESS_TXT like '%${content}%' or i.MP like '%${content}%' or 
-		        (select a.RESIDENTIAL_AREA_TXT from t_md_residential_area a where a.ID=IFNULL(i.SUBDIST,'-1')) like '%${content}%') 
+		        a.RESIDENTIAL_AREA_TXT like '%${content}%' or concat(a.RESIDENTIAL_AREA_TXT,i.ADDRESS_TXT) like '%${content}%')
 		    </if>
 		    <if test="phone != null and phone != ''">
 		       and i.MP = #{phone}

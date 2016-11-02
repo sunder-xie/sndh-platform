@@ -42,6 +42,15 @@ public class MilkboxResource extends BaseResource {
 	public Response findMilkboxes(@ApiParam(required=true,name="smodel",value="SearchModel") MilkboxSearchModel smodel){
 		return convertToRespModel(MessageCode.NORMAL, null, milkBoxService.searchMilkBox(smodel));
 	}
+
+	@POST
+	@Path("/selectMilkboxsCount")
+	@Produces(MediaType.APPLICATION_JSON)
+	@Consumes(MediaType.APPLICATION_JSON)
+	@ApiOperation(value = "/selectMilkboxsCount", response = Integer.class, notes = "查询未装箱数量")
+	public Response selectMilkboxsCount(){
+		return convertToRespModel(MessageCode.NORMAL, null, milkBoxService.selectMilkboxsCount());
+	}
 	
 	@GET
 	@Path("/{planNo}")
