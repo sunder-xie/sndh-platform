@@ -7,6 +7,7 @@ public class CustOperationQueryModel extends BaseQueryModel {
     private String search;
     private String dateStart;
     private String dateEnd;
+    private String dispDate;
 
     public String getSearch() {
         return search;
@@ -30,5 +31,13 @@ public class CustOperationQueryModel extends BaseQueryModel {
 
     public void setDateEnd(String dateEnd) {
         this.dateEnd = dateEnd;
+    }
+
+    public String getDispDate() {
+        return dispDate;
+    }
+
+    public void setDispDate(String dispDate) {
+        this.dispDate = dispDate;
     }
 }
