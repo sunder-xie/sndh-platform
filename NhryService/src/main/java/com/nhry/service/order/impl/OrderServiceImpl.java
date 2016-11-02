@@ -1230,7 +1230,7 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 				//更新订单状态为退订
 				order.setEndDate(new Date());
 				order.setPreorderStat("30");//失效的订单
-				order.setSign("40");//标示提前退订
+				order.setSign("30");//标示提前退订
 				tPreOrderMapper.updateOrderEndDate(order);
 				//订户状态更改???
 				List<TPreOrder> list = tPreOrderMapper.selectByMilkmemberNoRetOrder(order.getMilkmemberNo());
