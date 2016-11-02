@@ -70,6 +70,11 @@ public class TPreOrderMapperImpl implements TPreOrderMapper
 	}
 
 	@Override
+	public List<TPreOrder> selectBackOrderByBackDate(TPreOrder order) {
+		return sqlSessionTemplate.selectList("selectBackOrderByBackDate", order);
+	}
+
+	@Override
 	public List<TPreOrder> selectOrdersByOrderNos(ArrayList<String> orders) {
 		Map<String,Object> map = new HashMap<String,Object>();
 		map.put("orders",orders);
