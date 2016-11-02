@@ -44,10 +44,6 @@ public interface OrderService {
 
 	int backOrder(OrderSearchModel record);
 
-	int advanceBackOrder(OrderSearchModel record);
-
-	int updateBackState();
-
 	int batchContinueOrder(OrderSearchModel record);
 	
 	int continueOrderAuto(String orderNo,String memoTxt);

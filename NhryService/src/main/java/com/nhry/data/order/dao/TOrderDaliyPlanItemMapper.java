@@ -94,8 +94,4 @@ public interface TOrderDaliyPlanItemMapper {
     List<TOrderDaliyPlanItem> selectbyDispLineNoByOrderNos(String empNo, String format, String orderType, String branchNo, List<String> orderNos);
 
     TOrderDaliyPlanItem selectDaliyPlanByOrderAndDispDate(String orderNo, Date date);
-
-    int deleteDailyByStopDate(OrderSearchModel model);
-
-    BigDecimal getSumDailyBackAmtByBackDate(OrderSearchModel model);
 }

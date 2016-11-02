@@ -669,6 +669,7 @@
          SELECT SUM(di.CONFIRM_QTY) QTY,di.CONFIRM_MATNR,p.PROMOTION PROMOTION_FLAG
             from  t_mst_disp_order_item di
             LEFT JOIN  t_mst_disp_order ti ON di.ORDER_NO = ti.ORDER_NO
+            -- LEFT JOIN t_mst_plan_order_item  i on i.ORDER_NO = di.ORG_ORDER_NO and i.ITEM_NO = di.ORG_ITEM_NO and i.MATNR = di.MATNR
             LEFT JOIN t_preorder o on 	di.ORG_ORDER_NO = o.ORDER_NO
             LEFT JOIN t_mst_plan_order_item p on di.ORG_ITEM_NO = p.ITEM_NO
             LEFT JOIN t_md_mara_ex e on di.MATNR = e.MATNR  and e.SALES_ORG = #{salesOrg,jdbcType=VARCHAR}
@@ -676,6 +677,8 @@
             AND di.GIFT_FLAG is NOT null
             AND ti.STATUS = '20'
             and di.CONFIRM_QTY>0
+--             and di.REASON = '10'
+--             and di.REPLACE_REASON = '10'
             and  o.BRANCH_NO = #{branchNo,jdbcType=VARCHAR}
             <if test="preorderSource != null and preorderSource == '40'">
               and o.PREORDER_SOURCE = '40'
@@ -697,6 +700,8 @@
     AND di.GIFT_FLAG is null
     AND ti.STATUS = '20'
     and di.CONFIRM_QTY>0
+--     and di.REASON = '10'
+--     and di.REPLACE_REASON = '10'
     and  o.BRANCH_NO = #{branchNo,jdbcType=VARCHAR}
     and o.PREORDER_SOURCE = '40'
     and e.SALES_ORG = #{salesOrg,jdbcType=VARCHAR}
@@ -880,11 +885,5 @@
     and DISP_DATE = #{dispDate,jdbcType=DATE}
   </select>
 
-  <delete id="deleteDailyByStopDate" parameterType="com.nhry.model.order.OrderSearchModel">
-    DELETE FROM t_mst_order_daliy_plan_item where DISP_DATE  &gt;= #{backDate,jdbcType=DATE} and ORDER_NO = #{orderNo,jdbcType=VARCHAR}
-  </delete>
 
-  <select id="getSumDailyBackAmtByBackDate" resultType="BigDecimal" parameterType="com.nhry.model.order.OrderSearchModel">
-    SELECT sum(AMT) FROM t_mst_order_daliy_plan_item WHERE DISP_DATE &gt;= #{backDate,jdbcType=DATE} AND ORDER_NO = #{orderNo,jdbcType=VARCHAR} AND STATUS = '10'
-  </select>
 </mapper>

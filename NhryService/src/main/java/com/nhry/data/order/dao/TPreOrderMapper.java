@@ -112,6 +112,4 @@ public interface TPreOrderMapper {
     PageInfo searchPendingConfirmUnOnline(OrderSearchModel smodel);
 
     PageInfo searchPendingConfirmOnline(OrderSearchModel smodel);
-
-    List<TPreOrder> selectBackOrderByBackDate(TPreOrder order);
 }

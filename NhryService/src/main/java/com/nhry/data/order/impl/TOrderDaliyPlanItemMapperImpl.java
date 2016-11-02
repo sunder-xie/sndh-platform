@@ -221,16 +221,6 @@ public class TOrderDaliyPlanItemMapperImpl implements TOrderDaliyPlanItemMapper
 		return sqlSessionTemplate.selectOne("selectDaliyPlanByOrderAndDispDate",item);
 	}
 
-	@Override
-	public int deleteDailyByStopDate(OrderSearchModel model) {
-		return sqlSessionTemplate.delete("deleteDailyByStopDate",model);
-	}
-
-	@Override
-	public BigDecimal getSumDailyBackAmtByBackDate(OrderSearchModel model) {
-		return sqlSessionTemplate.selectOne("getSumDailyBackAmtByBackDate",model);
-	}
-
 
 	/**
 	 * 根据订单号和日期获取当前日期的日订单状态

@@ -6,7 +6,6 @@ import com.wordnik.swagger.annotations.ApiModelProperty;
 
 import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 @ApiModel(value = "OrderSearchModel", description = "订单信息列表查询对象")
@@ -45,8 +44,6 @@ public class OrderSearchModel extends BaseQueryModel implements Serializable {
 	private String empName;
 	private String dhFlag;
 	private String buyerName;
-	private Date backDate;
-
 	
 	public String getMemoTxt()
 	{
@@ -305,12 +302,5 @@ public class OrderSearchModel extends BaseQueryModel implements Serializable {
 	{
 		this.preorderStat = preorderStat;
 	}
-
-	public Date getBackDate() {
-		return backDate;
-	}
-
-	public void setBackDate(Date backDate) {
-		this.backDate = backDate;
-	}
+	
 }

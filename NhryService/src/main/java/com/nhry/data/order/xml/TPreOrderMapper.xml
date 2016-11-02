@@ -1416,8 +1416,4 @@
     and o.END_DATE = #{endDate,jdbcType=DATE}
   </select>
   <!-- 短信接口用end -->
-
-  <select id="selectBackOrderByBackDate" resultMap="BaseResultMap" parameterType="com.nhry.data.order.domain.TPreOrder">
-   SELECT <include refid="Base_Column_List" /> FROM `t_preorder` t where t.BACK_DATE &lt;= #{backDate,jdbcType=DATE} and t.SIGN = '10' and t.BRANCH_NO = #{branchNo,jdbcType=VARCHAR}
-  </select>
 </mapper>
