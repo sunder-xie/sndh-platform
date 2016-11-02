@@ -68,6 +68,11 @@ public class TPreOrderMapperImpl implements TPreOrderMapper
 		return sqlSessionTemplate.selectListByPages("searchPendingConfirmOnline",smodel, Integer.parseInt(smodel.getPageNum()), Integer.parseInt(smodel.getPageSize()));
 	}
 
+	@Override
+	public List<TPreOrder> selectBackOrderByBackDate(TPreOrder order) {
+		return sqlSessionTemplate.selectList("selectBackOrderByBackDate",order);
+	}
+
 
 	@Override
 	public TPreOrder manHandOrderDetail(String orderNo) {
