@@ -28,4 +28,6 @@ public interface TMilkboxPlanMapper {
     int updateMilkboxPlanPrinted(String code);
 
     List searchMilkBox(String empNo);
+
+    int selectMilkboxsCount(String BranchNo);
 }

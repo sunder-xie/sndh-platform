@@ -92,6 +92,10 @@
         </if>
         order by o.ORDER_NO desc
   </select>
+    <select id="selectMilkboxsCount" resultType="INTEGER">
+        select count(*) as amount from t_mst_milkbox_plan t
+        where  t.MILKBOX_STAT=20 and t.BRANCH_NO = #{branchNo,jdbcType=VARCHAR}
+     </select>
   <delete id="deleteMilkBoxByOrderNo" parameterType="java.lang.String" >
     delete from t_mst_milkbox_plan
     where ORDER_NO = #{orderNo,jdbcType=VARCHAR}
