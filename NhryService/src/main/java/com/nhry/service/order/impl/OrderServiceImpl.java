@@ -5,10 +5,7 @@ import com.github.pagehelper.PageInfo;
 import com.nhry.common.exception.MessageCode;
 import com.nhry.common.exception.ServiceException;
 import com.nhry.data.auth.domain.TSysUser;
-import com.nhry.data.basic.dao.TMdAddressMapper;
-import com.nhry.data.basic.dao.TMdBranchMapper;
-import com.nhry.data.basic.dao.TMdMaraExMapper;
-import com.nhry.data.basic.dao.TMdOperationLogMapper;
+import com.nhry.data.basic.dao.*;
 import com.nhry.data.basic.domain.*;
 import com.nhry.data.bill.dao.CustomerBillMapper;
 import com.nhry.data.bill.domain.TMstRecvBill;
@@ -69,6 +66,11 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 	private TMdAddressMapper addressMapper;
 	private TMdOperationLogMapper operationLogMapper;
 	private TMdMaraExMapper maraExMapper;
+	private TMdBranchEmpMapper branchEmpMapper;
+
+	public void setBranchEmpMapper(TMdBranchEmpMapper branchEmpMapper) {
+		this.branchEmpMapper = branchEmpMapper;
+	}
 
 	public void setMaraExMapper(TMdMaraExMapper maraExMapper) {
 		this.maraExMapper = maraExMapper;
@@ -658,8 +660,7 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 
 
 
-
-	/* (non-Javadoc) 
+	/* (non-Javadoc)
 	* @title: batchStopOrderForTime
 	* @description: 批量停订
 	* @param record
@@ -833,6 +834,9 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 		}else{
 			throw new ServiceException(MessageCode.LOGIC_ERROR,record.getOrderNo()+"当前订单不存在");
 		}
+		//停订日志
+		OperationLogUtil.saveHistoryOperation(order.getOrderNo(),LogType.ORDER,OrderLogEnum.STOP_ORDER,null,null,null,
+				record.getOrderDateStart(),null,null,null,operationLogMapper);
 		
 		return 1;
 	}
@@ -992,7 +996,10 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 		}else{
 			throw new ServiceException(MessageCode.LOGIC_ERROR,record.getOrderNo()+"当前订单不存在");
 		}
-		
+
+		//停订日志
+		OperationLogUtil.saveHistoryOperation(order.getOrderNo(),LogType.ORDER,OrderLogEnum.STOP_ORDER,null,null,null,
+				record.getOrderDateStart()+"-"+record.getOrderDateEnd(),null,null,null,operationLogMapper);
 		return 1;
 	}
 	
@@ -1044,7 +1051,8 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 						if(order.getOnlineInitAmt()!=null){
 							backAmt = backAmt.add(leftAmt.multiply(order.getOnlineInitAmt()).divide(order.getInitAmt(),2));
 							//电商 退订日志
-
+							OperationLogUtil.saveHistoryOperation(order.getOrderNo(),LogType.ORDER,OrderLogEnum.DH_BACK_ORDER,null,null,
+									null,backAmt.toString(),null,null,null,operationLogMapper);
 						}
 					}else{
 						backAmt = backAmt.add(order.getCurAmt());
@@ -1080,7 +1088,13 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 				order.setInitAmt(remain);
 				order.setCurAmt(new BigDecimal("0.00"));
 			}
-			
+			//退订日志
+			if(!"10".equals(order.getPreorderSource()) &&!"40".equals(order.getPreorderSource())){
+				OperationLogUtil.saveHistoryOperation(order.getOrderNo(),LogType.ORDER,OrderLogEnum.BACK_ORDER,null,null,
+						("10".equals(order.getPreorderStat())?"在订":"30".equals(order.getPreorderStat())?"停订":"作废"),
+						"退订",null,null,null,operationLogMapper);
+			}
+
 			//更新订单状态为退订
 			order.setEndDate(new Date());
 			order.setPreorderStat("30");//失效的订单
@@ -1148,7 +1162,7 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 		}else{
 			throw new ServiceException(MessageCode.LOGIC_ERROR,"当前订单不存在");
 		}
-		
+
 		return 1;
 	}
 
@@ -2010,11 +2024,6 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 		List<TPlanOrderItem> entriesList = new ArrayList<TPlanOrderItem>();
 		//信息交验
 		validateOrderInfo(record);
-//		if("20".equals(order.getPaymentStat())){
-//			if(StringUtils.isBlank(order.getPayDateStr())){
-//				throw new ServiceException(MessageCode.LOGIC_ERROR,"已付款订单，支付时间payDateStr字段不能为空!");
-//			}
-//		}
 		//暂时生成订单号
 		Date date = new Date();
 		//判断如果新增订单时订单编号不为空，则代表是订户数据导入
@@ -2044,6 +2053,9 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 //		order.setInitAmt(initAmt);//页面输入的初始订单金额
 		order.setPaymentmethod(order.getPaymentStat());//10 后款 20 先款( 30 殿付款)
 		if("Y".equals(order.getIsPaid())){
+			if(StringUtils.isBlank(order.getPayDateStr())){
+				throw new ServiceException(MessageCode.LOGIC_ERROR,"已付款订单，支付时间payDateStr字段不能为空!");
+			}
 			order.setPaymentStat("20");//付款状态,生成时已经付款
 		}else{
 			order.setPaymentStat("10");//付款状态,生成时未付款
@@ -2890,7 +2902,7 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 
 		return 1;
 	}
-	
+
 	/* (non-Javadoc) 
 	* @title: editOrderForLongForViewPlans
 	* @description: 长期修改订单(预览日计划)
@@ -3483,7 +3495,8 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 			throw new ServiceException(MessageCode.LOGIC_ERROR, backData);
 			
 	}
-	
+
+
 	/* (non-Javadoc) 
 	* @title: editOrderForLong
 	* @description: 长期修改订单
@@ -4345,8 +4358,7 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 
 				if("30".equals(plan.getStatus())){
 					OperationLogUtil.saveHistoryOperation(orgOrder.getOrderNo(),LogType.DAIL_ORDER,DailOrderLogEnum.STATUS,null,null,
-							orgPlan.getStatus()=="10"?"在订":orgPlan.getStatus()=="20"?"完结":"停订",
-							plan.getStatus()=="10"?"在订":plan.getStatus()=="20"?"完结":"停订",
+							"在订", "停订",
 							orgPlan.getMatnr(),orgPlan.getDispDate(),user,operationLogMapper);
 					orgPlan.setStatus(plan.getStatus());
 					cj = cj.add(orgPlan.getAmt());
@@ -6025,6 +6037,17 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 	@Override
 	public int replaceOrdersDispmember(OrderSearchModel record)
 	{
+		if(record.getOrders()!=null){
+			List<TPreOrder> orders = tPreOrderMapper.selectOrdersByOrderNos(record.getOrders());
+			if(orders!=null){
+				TSysUser user = userSessionService.getCurrentUser();
+				TMdBranchEmp emp = branchEmpMapper.selectBranchEmpByNo(record.getEmpNo());
+				orders.stream().forEach(order->{
+					OperationLogUtil.saveHistoryOperation(order.getOrderNo(),LogType.ORDER, OrderLogEnum.CHANGE_EMP,null,null,order.getEmpNo()+order.getEmpName(),emp.getEmpNo()+emp.getEmpName()
+					,null,null,user,operationLogMapper);
+				});
+			}
+		}
 		return tPreOrderMapper.replaceOrdersDispmember(record);
 	}
 	

@@ -9,6 +9,7 @@ import com.nhry.data.basic.domain.TVipCrmInfo;
 import com.nhry.data.basic.domain.TVipCustInfo;
 import com.nhry.service.BaseService;
 import com.nhry.service.basic.dao.TVipCrmInfoService;
+import com.nhry.utils.date.Date;
 import org.apache.log4j.Logger;
 
 import java.util.Map;
@@ -54,11 +55,18 @@ public class TVipCrmInfoServiceImpl extends BaseService implements TVipCrmInfoSe
 	@Override
 	public int updateVipCrmByNo(TVipCrmInfo record) {
 		logger.info("更新会员"+record.getMp()+"会员号："+record.getVipCustNo());
+		TVipCrmInfo crm = this.findVipCrmByNo(record.getVipCustNo());
+		if(crm != null) {
+			crm.setVipCustNoSap(record.getVipCustNoSap());
+			crm.setMp(record.getMp());
+			crm.setLastModified(new Date());
 //		TVipCustInfo vipCustInfo = new TVipCustInfo();
 //		vipCustInfo.setVipCustNoSap(record.getVipCustNo());
 //		vipCustInfo.setVipMp(record.getMp());
 //		vipCustInfoMapper.updateVipMp(vipCustInfo);
-		return vipCrmMapper.updateVipCrmByNo(record);
+			return vipCrmMapper.updateVipCrmByNo(crm);
+		}
+		return 1;
 	}
 	
 	@Override

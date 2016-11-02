@@ -1420,4 +1420,14 @@
   <select id="selectBackOrderByBackDate" resultMap="BaseResultMap" parameterType="com.nhry.data.order.domain.TPreOrder">
    SELECT <include refid="Base_Column_List" /> FROM `t_preorder` t where t.BACK_DATE &lt;= #{backDate,jdbcType=DATE} and t.SIGN = '10' and t.BRANCH_NO = #{branchNo,jdbcType=VARCHAR}
   </select>
+
+   <select id="selectOrdersByOrderNos" resultMap="BaseResultMap" parameterType="java.util.HashMap">
+       select
+       o.ORDER_NO,o.EMP_NO,e.EMP_NAME
+       FROM t_preorder o LEFT JOIN  t_md_branch_emp e on o.EMP_NO = e.EMP_NO
+       WHERE
+        LOCATE(o.ORDER_NO,<foreach item="order" collection="orders" separator="," open="'" close="'" index="">${orders}</foreach>)>0
+     </select>
+  
+
 </mapper>
