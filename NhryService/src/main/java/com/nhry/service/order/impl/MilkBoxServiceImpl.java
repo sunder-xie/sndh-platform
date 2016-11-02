@@ -9,6 +9,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import com.nhry.data.auth.domain.TSysUser;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.core.task.TaskExecutor;
 
@@ -304,5 +305,10 @@ public class MilkBoxServiceImpl extends BaseService implements MilkBoxService
 	public int deleteMilkBoxByOrderNo(String code)
 	{
 		return tMilkboxPlanMapper.deleteMilkBoxByOrderNo(code);
+	}
+
+	@Override
+	public int selectMilkboxsCount(){
+		return tMilkboxPlanMapper.selectMilkboxsCount(userSessionService.getCurrentUser().getBranchNo());
 	}
 }

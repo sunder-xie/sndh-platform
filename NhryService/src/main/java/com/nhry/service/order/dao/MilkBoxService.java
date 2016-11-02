@@ -23,4 +23,6 @@ public interface MilkBoxService {
 	int deleteMilkBoxByOrderNo(String code);
 
 	List findMilkBox(String empNo);
+
+	int selectMilkboxsCount();
 }
