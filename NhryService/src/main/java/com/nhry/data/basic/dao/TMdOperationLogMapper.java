@@ -13,4 +13,8 @@ public interface TMdOperationLogMapper {
   PageInfo getCustOperationLog(CustOperationQueryModel cModel);
 
   PageInfo getOrderOperationLog(CustOperationQueryModel cModel);
+
+  PageInfo getPlanOperationLog(CustOperationQueryModel cModel);
+
+  PageInfo getRouteOperationLog(CustOperationQueryModel cModel);
 }

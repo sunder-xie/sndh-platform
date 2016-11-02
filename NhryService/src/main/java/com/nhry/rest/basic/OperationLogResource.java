@@ -49,5 +49,21 @@ public class OperationLogResource extends BaseResource {
         return convertToRespModel(MessageCode.NORMAL, null,operationLogService.getOrderOperationLog(cModel));
     }
 
+    @POST
+    @Path("/getPlanOperationLog")
+    @Produces(MediaType.APPLICATION_JSON)
+    @Consumes(MediaType.APPLICATION_JSON)
+    @ApiOperation(value = "/getPlanOperationLog", response = List.class, notes = "订奶计划日志列表")
+    public Response getPlanLogList(@ApiParam(required=true,name="branchModel",value="SearchModel") CustOperationQueryModel cModel){
+        return convertToRespModel(MessageCode.NORMAL, null,operationLogService.getPlanOperationLog(cModel));
+    }
 
+    @POST
+    @Path("/getRouteOperationLog")
+    @Produces(MediaType.APPLICATION_JSON)
+    @Consumes(MediaType.APPLICATION_JSON)
+    @ApiOperation(value = "/getRouteOperationLog", response = List.class, notes = "路单日志列表")
+    public Response getRouteLogList(@ApiParam(required=true,name="branchModel",value="SearchModel") CustOperationQueryModel cModel){
+        return convertToRespModel(MessageCode.NORMAL, null,operationLogService.getRouteOperationLog(cModel));
+    }
 }

@@ -5,7 +5,10 @@ import com.nhry.common.exception.MessageCode;
 import com.nhry.common.exception.ServiceException;
 import com.nhry.data.auth.dao.TSysUserRoleMapper;
 import com.nhry.data.auth.domain.TSysUser;
-import com.nhry.data.basic.domain.TMdMaraEx;
+import com.nhry.data.basic.dao.TMdBranchEmpMapper;
+import com.nhry.data.basic.dao.TMdMaraMapper;
+import com.nhry.data.basic.dao.TMdOperationLogMapper;
+import com.nhry.data.basic.domain.*;
 import com.nhry.data.milk.dao.*;
 import com.nhry.data.milk.domain.*;
 import com.nhry.data.milktrans.dao.TMstInsideSalOrderItemMapper;
@@ -33,6 +36,7 @@ import com.nhry.service.stock.dao.TSsmStockService;
 import com.nhry.utils.DateUtil;
 import com.nhry.utils.PrimaryKeyUtils;
 import com.nhry.utils.SerialUtil;
+import com.nhry.utils.OperationLogUtil;
 import org.apache.commons.lang3.StringUtils;
 
 import java.math.BigDecimal;
@@ -55,6 +59,21 @@ public class DeliverMilkServiceImpl extends BaseService implements DeliverMilkSe
 	private TSysUserRoleMapper urMapper;
 	private TMstRefuseResendMapper resendMapper;
 	private TMstRefuseResendItemMapper resendItemMapper;
+	private TMdBranchEmpMapper branchEmpMapper;
+	private TMdOperationLogMapper operationLogMapper;
+	private TMdMaraMapper tMdMaraMapper;
+
+	public void settMdMaraMapper(TMdMaraMapper tMdMaraMapper) {
+		this.tMdMaraMapper = tMdMaraMapper;
+	}
+
+	public void setOperationLogMapper(TMdOperationLogMapper operationLogMapper) {
+		this.operationLogMapper = operationLogMapper;
+	}
+
+	public void setBranchEmpMapper(TMdBranchEmpMapper branchEmpMapper) {
+		this.branchEmpMapper = branchEmpMapper;
+	}
 
 	public void setResendItemMapper(TMstRefuseResendItemMapper resendItemMapper) {
 		this.resendItemMapper = resendItemMapper;
@@ -541,7 +560,15 @@ public class DeliverMilkServiceImpl extends BaseService implements DeliverMilkSe
 		key.setOrderNo(record.getRouteNo());
 		TDispOrder dispOrder = tDispOrderMapper.selectByPrimaryKey(key);
 		if(dispOrder==null)throw new ServiceException(MessageCode.LOGIC_ERROR,record.getRouteNo()+"[没有此路单号!]");
-		
+
+		if(!dispOrder.getDispEmpNo().equals(record.getDispEmpNo())) {
+			TMdBranchEmp emp = branchEmpMapper.selectBranchEmpByNo(record.getDispEmpNo());
+			String oldEmp = dispOrder.getDispEmpNo() + dispOrder.getDispEmpName();
+			String newEmp = record.getDispEmpNo() + emp.getEmpName();
+			OperationLogUtil.saveHistoryOperation(record.getRouteNo(), LogType.ROUTE_ORDER, RouteLogEnum.DISP_EMP,newEmp,null,
+					oldEmp,newEmp,null,dispOrder.getDispDate(),userSessionService.getCurrentUser(),operationLogMapper);
+		}
+
 		dispOrder.setDispEmpNo(record.getDispEmpNo());
 		tDispOrderMapper.updateDispOrderEmp(dispOrder);
 		tDispOrderItemMapper.updateDispOrderItemEmp(dispOrder);
@@ -621,7 +648,10 @@ public class DeliverMilkServiceImpl extends BaseService implements DeliverMilkSe
 			Date dispDate = dispOrder.getDispDate();
 			List<TDispOrderItem> entryList = tDispOrderItemMapper.selectNotDeliveryItemsByKeys(routeCode);
 			TOrderDaliyPlanItem record = new TOrderDaliyPlanItem();
-			
+
+			OperationLogUtil.saveHistoryOperation(dispOrder.getOrderNo(), LogType.ROUTE_ORDER, RouteLogEnum.CONFIRM_TOUTE,dispOrder.getDispEmpNo()+dispOrder.getDispEmpName(),null,
+					"未确认","确认",null,dispOrder.getDispDate(),userSessionService.getCurrentUser(),operationLogMapper);
+
 			for(TDispOrderItem e : entryList){
 				//变化的也更改日计划状态
 				if( (StringUtils.isNotBlank(e.getReason()) && e.getConfirmQty().intValue() < e.getQty().intValue()) || !e.getMatnr().equals(e.getConfirmMatnr())  ){
@@ -913,6 +943,7 @@ public class DeliverMilkServiceImpl extends BaseService implements DeliverMilkSe
 		itemKey.setItemNo(item.getItemNo());
 		List<TDispOrderItem> entryList = tDispOrderItemMapper.selectItemsByKeys(itemKey);
 		TDispOrderItem entry = null;
+		TSysUser sysuser = userSessionService.getCurrentUser();
 				
 		if(entryList.size() > 0){
 			entry = entryList.get(0);
@@ -928,6 +959,43 @@ public class DeliverMilkServiceImpl extends BaseService implements DeliverMilkSe
 			if(!DateUtil.sameDateOrYestaday(new Date(),entry.getOrderDate()))throw new ServiceException(MessageCode.LOGIC_ERROR,"非今日或昨天的路单已经不能重新修改！");
 			if(!"10".equals(item.getReason()) && Integer.parseInt(item.getConfirmQty()) > entry.getQty().intValue())throw new ServiceException(MessageCode.LOGIC_ERROR,"非换货时实际数量不能大于应送数量！");
 			if("10".equals(item.getReason()) && Integer.parseInt(item.getConfirmQty()) == 0)throw new ServiceException(MessageCode.LOGIC_ERROR,"换货时数量不能是0！");
+
+			Map<String, String> attrs = new HashMap<String, String>(2);
+			attrs.put("matnr", entry.getConfirmMatnr());
+			attrs.put("salesOrg", sysuser.getSalesOrg());
+			TMdMara oldMara = tMdMaraMapper.selectProductAndExByCode(attrs);
+			TDispOrder dispOrder = tDispOrderMapper.getDispOrderByNo(item.getOrderNo());
+			TMdBranchEmp dispEmp = branchEmpMapper.selectBranchEmpByNo(dispOrder.getDispEmpNo());
+			if (!item.getProductCode().equals(entry.getConfirmMatnr())) {
+				attrs.put("matnr", item.getProductCode());
+				TMdMara newMara = tMdMaraMapper.selectProductAndExByCode(attrs);
+				OperationLogUtil.saveHistoryOperation(entry.getItemNo(), LogType.ROUTE_ORDER, RouteLogEnum.DISP_MATNR,dispEmp.getEmpNo()+dispEmp.getEmpName(),entry.getAddressTxt(),
+						entry.getConfirmMatnr()+oldMara.getMatnrTxt(),item.getProductCode()+newMara.getMatnrTxt(),null,entry.getOrderDate(),sysuser,operationLogMapper);
+			}
+			if (!item.getConfirmQty().equals(entry.getConfirmQty().toBigInteger().toString())) {
+				OperationLogUtil.saveHistoryOperation(entry.getItemNo(), LogType.ROUTE_ORDER, RouteLogEnum.DISP_QTY,dispEmp.getEmpNo()+dispEmp.getEmpName(),entry.getAddressTxt(),
+						entry.getConfirmQty().toString(),item.getConfirmQty(),entry.getConfirmMatnr()+oldMara.getMatnrTxt(),entry.getOrderDate(),sysuser,operationLogMapper);
+			}
+			if (!item.getReason().equals(entry.getReason())) {
+				Map<String,String> reasonMap = new HashMap<String,String>();
+				reasonMap.put("10", "换货");
+				reasonMap.put("20", "缺货");
+				reasonMap.put("30", "质量问题");
+				reasonMap.put("40", "损毁");
+				reasonMap.put("50", "拒收");
+				reasonMap.put("60", "拒收复送");
+				OperationLogUtil.saveHistoryOperation(entry.getItemNo(), LogType.ROUTE_ORDER, RouteLogEnum.UNDELIVERED_REASON,dispEmp.getEmpNo()+dispEmp.getEmpName(),entry.getAddressTxt(),
+						reasonMap.get(entry.getReason()),reasonMap.get(item.getReason()),entry.getConfirmMatnr()+oldMara.getMatnrTxt(),entry.getOrderDate(),sysuser,operationLogMapper);
+			}
+			if ("10".equals(item.getReason()) && !item.getReplaceReason().equals(entry.getReplaceReason())) {
+				Map<String,String> reasonMap = new HashMap<String,String>();
+				reasonMap.put("10", "公司原因");
+				reasonMap.put("20", "质量问题");
+				reasonMap.put("30", "运输损坏");
+				OperationLogUtil.saveHistoryOperation(entry.getItemNo(), LogType.ROUTE_ORDER, RouteLogEnum.CHANGE_REASON,dispEmp.getEmpNo()+dispEmp.getEmpName(),entry.getAddressTxt(),
+						reasonMap.get(entry.getReplaceReason()),reasonMap.get(item.getReplaceReason()),entry.getConfirmMatnr()+oldMara.getMatnrTxt(),entry.getOrderDate(),sysuser,operationLogMapper);
+			}
+
 			tDispOrderItemMapper.updateDispOrderItem(item , entry , null);
 			
 			//修改原日计划和原订单金额
