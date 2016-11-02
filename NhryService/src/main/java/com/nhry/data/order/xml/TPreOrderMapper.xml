@@ -1428,6 +1428,29 @@
        WHERE
         LOCATE(o.ORDER_NO,<foreach item="order" collection="orders" separator="," open="'" close="'" index="">${orders}</foreach>)>0
      </select>
+
+  <select id="selectOrdersNoBillCount" resultType="INTEGER">
+    SELECT
+	count(*) AS amount
+      FROM
+          t_preorder o
+      WHERE
+          1 = 1
+      AND (
+          o.PREORDER_SOURCE = '20'
+          OR o.PREORDER_SOURCE = '30'
+          OR o.PREORDER_SOURCE = '50'
+      )
+      AND (
+          o.PREORDER_STAT = '10'
+          OR o.PREORDER_STAT = '30'
+      )
+      AND o.BRANCH_NO = #{branchNo,jdbcType=VARCHAR}
+      AND o.PAYMENTMETHOD = 20
+      AND o.PAYMENT_STAT = 10
+      ORDER BY
+	ORDER_NO DESC
+  </select>
   
 
 </mapper>
