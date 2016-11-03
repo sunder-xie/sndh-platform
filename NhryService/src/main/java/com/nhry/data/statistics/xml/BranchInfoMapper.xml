@@ -1284,7 +1284,7 @@
         t1.MATNR,
         CONCAT(
         '(',
-        ROUND(sum(t1.RESEND_QTY)),
+        ROUND(sum(t2.QTY)),
         ')'
         ) AS CONFIRM_QTY,
         0 AS CQTY,
