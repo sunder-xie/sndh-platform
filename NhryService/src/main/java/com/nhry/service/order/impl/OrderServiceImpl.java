@@ -1032,7 +1032,7 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 			}
 			
 			if("10".equals(order.getPreorderSource()))throw new ServiceException(MessageCode.LOGIC_ERROR,"暂无法进行此操作，请联系在线客服!");
-			if(tDispOrderItemMapper.selectCountOfTodayByOrgOrder(order.getOrderNo())>0)throw new ServiceException(MessageCode.LOGIC_ERROR,"此订单，有未确认的路单!请等路单确认后再操作!");
+			if(tDispOrderItemMapper.selectCountOfTodayByOrgOrder(order.getOrderNo(), null)>0)throw new ServiceException(MessageCode.LOGIC_ERROR,"此订单，有未确认的路单!请等路单确认后再操作!");
 			
 			order.setBackDate(afterDate(new Date(),0));
 			order.setBackReason(record.getReason());
@@ -1172,10 +1172,30 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 			throw new ServiceException(MessageCode.LOGIC_ERROR,"提前退订日期不能为空！");
 		}
 		TPreOrder order = tPreOrderMapper.selectByPrimaryKey(record.getOrderNo());
-
+		if("20".equals(order.getPreorderStat())){
+			throw new ServiceException(MessageCode.LOGIC_ERROR,"待确认的订单暂无法进行此操作，请联系在线客服");
+		}
 		if(order.getEndDate().before(record.getBackDate())){
 			throw new ServiceException(MessageCode.LOGIC_ERROR,"提前退订日期不能超出订单配送结束日期！");
 		}
+		if(order.getBackDate() != null && order.getBackDate().before(record.getBackDate())){
+			throw new ServiceException(MessageCode.LOGIC_ERROR,"提前退订日期不能超出已退订的日期！");
+		}
+
+		if("10".equals(order.getPaymentmethod())){
+			if(customerBillMapper.getRecBillByOrderNo(order.getOrderNo())!=null)throw new ServiceException(MessageCode.LOGIC_ERROR,"已经有收款单了，请不要操作，或者去删除收款单!");
+		}
+		if("20".equals(order.getPaymentmethod())){
+			TMstRecvBill bill = customerBillMapper.getRecBillByOrderNo(order.getOrderNo());
+			if(bill!=null && "10".equals(bill.getStatus())){
+				throw new ServiceException(MessageCode.LOGIC_ERROR,"预付款订单  "+order.getOrderNo()+"  已经有收款单但是还没完成收款，请不要修改订单，或者去删除收款单!");
+			}
+		}
+
+		if("10".equals(order.getPreorderSource()))throw new ServiceException(MessageCode.LOGIC_ERROR,"暂无法进行此操作，请联系在线客服!");
+		if(tDispOrderItemMapper.selectCountOfTodayByOrgOrder(order.getOrderNo(), record.getBackDate())>0)throw new ServiceException(MessageCode.LOGIC_ERROR,"此订单，有退订后未确认的路单!请删除路单后再操作!");
+
+
 		//第一步 计算退订的金额
 		BigDecimal backAmt = tOrderDaliyPlanItemMapper.getSumDailyBackAmtByBackDate(record);
 
@@ -1184,18 +1204,53 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 
 		order.setBackDate(record.getBackDate());
 		order.setBackReason(record.getReason());
-		order.setMemoTxt(record.getMemoTxt());
-
+		order.setEndDate(afterDate(record.getBackDate(),-1));
+		if(StringUtils.isNotEmpty(record.getMemoTxt())) {
+			order.setMemoTxt(record.getMemoTxt().concat("提前退订"));
+		}else{
+			order.setMemoTxt("提前退订");
+		}
+		BigDecimal initAmt = order.getInitAmt();
 		order.setInitAmt(order.getInitAmt().subtract(backAmt));
 		order.setCurAmt(order.getCurAmt().subtract(backAmt));
 
 		String state = order.getPaymentmethod();
 		if("20".equals(state)) {//先付款
 			//退余额
-			TVipAcct ac = new TVipAcct();
-			ac.setVipCustNo(order.getMilkmemberNo());
-			ac.setAcctAmt(backAmt);
-			tVipCustInfoService.addVipAcct(ac);
+//			TVipAcct ac = new TVipAcct();
+//			ac.setVipCustNo(order.getMilkmemberNo());
+//			ac.setAcctAmt(backAmt);
+//			tVipCustInfoService.addVipAcct(ac);
+			if(order.getInitAmt()!=null && "20".equals(order.getPaymentStat())){//已经收款的
+				BigDecimal dsBackAmt = BigDecimal.ZERO;
+				if("10".equals(order.getPreorderSource()) || "40".equals(order.getPreorderSource())){
+					if(order.getOnlineInitAmt()!=null){
+						dsBackAmt = dsBackAmt.add(backAmt.multiply(order.getOnlineInitAmt()).divide(initAmt,2));
+						//电商 退订日志
+						OperationLogUtil.saveHistoryOperation(order.getOrderNo(),LogType.ORDER,OrderLogEnum.DH_BACK_ORDER,null,null,
+								null,dsBackAmt.toString(),null,null,null,operationLogMapper);
+					}
+				}else{
+					TVipAcct ac = new TVipAcct();
+					ac.setVipCustNo(order.getMilkmemberNo());
+					ac.setAcctAmt(backAmt);
+					tVipCustInfoService.addVipAcct(ac);
+				}
+			}else if("10".equals(order.getPaymentStat())){
+				//此处看是否打印过收款单，里面有没有用帐户余额支付的金额，退回
+				TMstRecvBill bill = customerBillMapper.getRecBillByOrderNo(order.getOrderNo());
+				if(bill!= null && (bill.getAccAmt().compareTo(BigDecimal.ZERO)==1)){
+					TVipAcct ac = new TVipAcct();
+					ac.setVipCustNo(order.getMilkmemberNo());
+					ac.setAcctAmt(bill.getAccAmt());
+					tVipCustInfoService.addVipAcct(ac);
+				}
+			}
+		}
+		//退订日志
+		if(!"10".equals(order.getPreorderSource()) &&!"40".equals(order.getPreorderSource())){
+			OperationLogUtil.saveHistoryOperation(order.getOrderNo(),LogType.ORDER,OrderLogEnum.BACK_ORDER,null,null,
+					"提前退订",backAmt.toString(),null,null,userSessionService.getCurrentUser(),operationLogMapper);
 		}
 		tPreOrderMapper.updateOrderEndDate(order);
 		//发送EC,更新订单状态
