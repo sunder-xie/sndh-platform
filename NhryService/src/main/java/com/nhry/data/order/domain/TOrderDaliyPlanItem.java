@@ -57,12 +57,6 @@ public class TOrderDaliyPlanItem extends TOrderDaliyPlanItemKey {
 
     private String weekly;
 
-    private long longAmt;
-
-    public long getLongAmt() {
-        return getAmt().longValue();
-    }
-
     public String getConfirmMatnr() {
         return confirmMatnr;
     }
