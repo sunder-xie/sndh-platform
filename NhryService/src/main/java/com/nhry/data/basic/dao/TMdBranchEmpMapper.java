@@ -29,6 +29,8 @@ public interface TMdBranchEmpMapper {
     
     public PageInfo searchBranchEmp(EmpQueryModel smodel);
 
+    List<TMdBranchEmp> queryBranchEmp(EmpQueryModel smodel);
+
     TMdBranchEmp selectBranchEmpByEmpNo(String empNo);
 
     List<TMdBranchEmp> getAllEmpBySalesOrg(String salesOrg);

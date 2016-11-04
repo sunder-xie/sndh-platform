@@ -57,7 +57,7 @@ public interface TDispOrderItemMapper {
     
     int updateDispOrderItemEmp(TDispOrder order);
     
-    int selectCountOfTodayByOrgOrder(String orgOrderNo);
+    int selectCountOfTodayByOrgOrder(String orgOrderNo, Date dispDate);
 
     //查询 该订单下生成的路单数 非确认的
     int selectDispOrderNumByPreOrderNo(String orderNo);

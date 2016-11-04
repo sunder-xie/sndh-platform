@@ -19,6 +19,8 @@ public interface BranchEmpService {
     
     public PageInfo searchBranchEmp(EmpQueryModel smodel);
 
+    List<TMdBranchEmp> queryBranchEmp(EmpQueryModel smodel);
+
     BranchEmpModel empDetailInfo(String empNo);
 
     List<TMdBranch> getComPanyAllBranch();

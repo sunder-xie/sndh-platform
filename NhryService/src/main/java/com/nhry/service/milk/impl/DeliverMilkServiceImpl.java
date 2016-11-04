@@ -5,7 +5,10 @@ import com.nhry.common.exception.MessageCode;
 import com.nhry.common.exception.ServiceException;
 import com.nhry.data.auth.dao.TSysUserRoleMapper;
 import com.nhry.data.auth.domain.TSysUser;
-import com.nhry.data.basic.domain.TMdMaraEx;
+import com.nhry.data.basic.dao.TMdBranchEmpMapper;
+import com.nhry.data.basic.dao.TMdMaraMapper;
+import com.nhry.data.basic.dao.TMdOperationLogMapper;
+import com.nhry.data.basic.domain.*;
 import com.nhry.data.milk.dao.*;
 import com.nhry.data.milk.domain.*;
 import com.nhry.data.milktrans.dao.TMstInsideSalOrderItemMapper;
@@ -17,6 +20,7 @@ import com.nhry.data.order.dao.TPreOrderMapper;
 import com.nhry.data.order.domain.TOrderDaliyPlanItem;
 import com.nhry.data.order.domain.TPlanOrderItem;
 import com.nhry.data.order.domain.TPreOrder;
+import com.nhry.model.basic.EmpQueryModel;
 import com.nhry.model.basic.MatnrAndQtyModel;
 import com.nhry.model.milk.*;
 import com.nhry.model.milktrans.*;
@@ -24,6 +28,8 @@ import com.nhry.model.order.OrderDaliyPlanReportEntityModel;
 import com.nhry.model.order.OrderDaliyPlanReportModel;
 import com.nhry.model.stock.StockModel;
 import com.nhry.service.BaseService;
+import com.nhry.service.basic.dao.BranchEmpService;
+import com.nhry.service.basic.dao.BranchService;
 import com.nhry.service.basic.dao.ProductService;
 import com.nhry.service.milk.dao.DeliverMilkService;
 import com.nhry.service.milk.pojo.TDispOrderChangeItem;
@@ -33,6 +39,7 @@ import com.nhry.service.stock.dao.TSsmStockService;
 import com.nhry.utils.DateUtil;
 import com.nhry.utils.PrimaryKeyUtils;
 import com.nhry.utils.SerialUtil;
+import com.nhry.utils.OperationLogUtil;
 import org.apache.commons.lang3.StringUtils;
 
 import java.math.BigDecimal;
@@ -55,6 +62,23 @@ public class DeliverMilkServiceImpl extends BaseService implements DeliverMilkSe
 	private TSysUserRoleMapper urMapper;
 	private TMstRefuseResendMapper resendMapper;
 	private TMstRefuseResendItemMapper resendItemMapper;
+	private TMdBranchEmpMapper branchEmpMapper;
+	private TMdOperationLogMapper operationLogMapper;
+	private TMdMaraMapper tMdMaraMapper;
+	private BranchService branchService;
+	private BranchEmpService branchEmpService;
+
+	public void settMdMaraMapper(TMdMaraMapper tMdMaraMapper) {
+		this.tMdMaraMapper = tMdMaraMapper;
+	}
+
+	public void setOperationLogMapper(TMdOperationLogMapper operationLogMapper) {
+		this.operationLogMapper = operationLogMapper;
+	}
+
+	public void setBranchEmpMapper(TMdBranchEmpMapper branchEmpMapper) {
+		this.branchEmpMapper = branchEmpMapper;
+	}
 
 	public void setResendItemMapper(TMstRefuseResendItemMapper resendItemMapper) {
 		this.resendItemMapper = resendItemMapper;
@@ -128,6 +152,12 @@ public class DeliverMilkServiceImpl extends BaseService implements DeliverMilkSe
 		this.tPreOrderMapper = tPreOrderMapper;
 	}
 
+	public void setBranchService(BranchService branchService) {
+		this.branchService = branchService;
+	}
+	public void setBranchEmpService(BranchEmpService branchEmpService) {
+		this.branchEmpService = branchEmpService;
+	}
 	/**
 	 * 路单确认后  扣除库存
 	 * 产生拒收复送记录
@@ -188,6 +218,7 @@ public class DeliverMilkServiceImpl extends BaseService implements DeliverMilkSe
 						if(insOrderNo==null){
 							insOrderNo = SerialUtil.creatSeria();
 						}
+						//生成内部销售订单
 						TMstInsideSalOrderItem item = new TMstInsideSalOrderItem();
 						item.setInsOrderNo(insOrderNo);
 						item.setItemNo(entry.getItemNo());
@@ -201,12 +232,32 @@ public class DeliverMilkServiceImpl extends BaseService implements DeliverMilkSe
 					}
 				}
 				if(insOrderNo!=null){
-					sOrder = new TMstInsideSalOrder();
+					TMdBranch branch = branchService.selectBranchByNo(order.getBranchNo());
+					EmpQueryModel sModel =new  EmpQueryModel();
+					sModel.setBranchNo(order.getBranchNo());
+					sModel.setRoleId("10002");
+					List<TMdBranchEmp> tbList = branchEmpService.queryBranchEmp(sModel);
+					if(tbList.size()==0){
+						throw new ServiceException(MessageCode.LOGIC_ERROR,"此奶站没有奶站站长，请维护！！！！");
+					}else if(tbList.size()>1) {
+						throw new ServiceException(MessageCode.LOGIC_ERROR, "此奶站有多个奶站站长，请维护！！！！");
+					}
+					if(branch!=null){
+						//如果奶站维护了内部销售订单售达方为站长，则内部销售订单挂到站长头上，否则挂到送奶员头上
+						sOrder = new TMstInsideSalOrder();
+						if("20".equals(branch.getTargetPerson())){
+							for(TMdBranchEmp item:tbList ){
+								sOrder.setSalEmpNo(item.getEmpNo());
+							}
+						}else{
+							sOrder.setSalEmpNo(order.getDispEmpNo());
+						}
+					}
+
 					sOrder.setInsOrderNo(insOrderNo);
 					sOrder.setOrderDate(order.getOrderDate());
 					sOrder.setDispOrderNo(order.getOrderNo());
 					sOrder.setBranchNo(order.getBranchNo());
-					sOrder.setSalEmpNo(order.getDispEmpNo());
 					sOrder.setCreateAt(new Date());
 					sOrder.setCreateBy(user.getLoginName());
 					tMstInsideSalOrderMapper.insertInsideSalOrder(sOrder);
@@ -541,7 +592,15 @@ public class DeliverMilkServiceImpl extends BaseService implements DeliverMilkSe
 		key.setOrderNo(record.getRouteNo());
 		TDispOrder dispOrder = tDispOrderMapper.selectByPrimaryKey(key);
 		if(dispOrder==null)throw new ServiceException(MessageCode.LOGIC_ERROR,record.getRouteNo()+"[没有此路单号!]");
-		
+
+		if(!dispOrder.getDispEmpNo().equals(record.getDispEmpNo())) {
+			TMdBranchEmp emp = branchEmpMapper.selectBranchEmpByNo(record.getDispEmpNo());
+			String oldEmp = dispOrder.getDispEmpNo() + dispOrder.getDispEmpName();
+			String newEmp = record.getDispEmpNo() + emp.getEmpName();
+			OperationLogUtil.saveHistoryOperation(record.getRouteNo(), LogType.ROUTE_ORDER, RouteLogEnum.DISP_EMP,newEmp,null,
+					oldEmp,newEmp,null,dispOrder.getDispDate(),userSessionService.getCurrentUser(),operationLogMapper);
+		}
+
 		dispOrder.setDispEmpNo(record.getDispEmpNo());
 		tDispOrderMapper.updateDispOrderEmp(dispOrder);
 		tDispOrderItemMapper.updateDispOrderItemEmp(dispOrder);
@@ -621,7 +680,21 @@ public class DeliverMilkServiceImpl extends BaseService implements DeliverMilkSe
 			Date dispDate = dispOrder.getDispDate();
 			List<TDispOrderItem> entryList = tDispOrderItemMapper.selectNotDeliveryItemsByKeys(routeCode);
 			TOrderDaliyPlanItem record = new TOrderDaliyPlanItem();
-			
+
+			OperationLogUtil.saveHistoryOperation(dispOrder.getOrderNo(), LogType.ROUTE_ORDER, RouteLogEnum.CONFIRM_TOUTE,dispOrder.getDispEmpNo()+dispOrder.getDispEmpName(),null,
+					"未确认","确认",null,dispOrder.getDispDate(),userSessionService.getCurrentUser(),operationLogMapper);
+/*			List<String> reasons = new ArrayList<String>();
+			for(TDispOrderItem ereasons : entryList){
+				switch (ereasons.getReason()){
+					case "40":reasons.add(ereasons.getReason());
+						break;
+					case "50":reasons.add(ereasons.getReason());
+						break;
+				}
+			}
+			if(reasons.size()>0){
+				1
+			}*/
 			for(TDispOrderItem e : entryList){
 				//变化的也更改日计划状态
 				if( (StringUtils.isNotBlank(e.getReason()) && e.getConfirmQty().intValue() < e.getQty().intValue()) || !e.getMatnr().equals(e.getConfirmMatnr())  ){
@@ -913,6 +986,7 @@ public class DeliverMilkServiceImpl extends BaseService implements DeliverMilkSe
 		itemKey.setItemNo(item.getItemNo());
 		List<TDispOrderItem> entryList = tDispOrderItemMapper.selectItemsByKeys(itemKey);
 		TDispOrderItem entry = null;
+		TSysUser sysuser = userSessionService.getCurrentUser();
 				
 		if(entryList.size() > 0){
 			entry = entryList.get(0);
@@ -928,6 +1002,43 @@ public class DeliverMilkServiceImpl extends BaseService implements DeliverMilkSe
 			if(!DateUtil.sameDateOrYestaday(new Date(),entry.getOrderDate()))throw new ServiceException(MessageCode.LOGIC_ERROR,"非今日或昨天的路单已经不能重新修改！");
 			if(!"10".equals(item.getReason()) && Integer.parseInt(item.getConfirmQty()) > entry.getQty().intValue())throw new ServiceException(MessageCode.LOGIC_ERROR,"非换货时实际数量不能大于应送数量！");
 			if("10".equals(item.getReason()) && Integer.parseInt(item.getConfirmQty()) == 0)throw new ServiceException(MessageCode.LOGIC_ERROR,"换货时数量不能是0！");
+
+			Map<String, String> attrs = new HashMap<String, String>(2);
+			attrs.put("matnr", entry.getConfirmMatnr());
+			attrs.put("salesOrg", sysuser.getSalesOrg());
+			TMdMara oldMara = tMdMaraMapper.selectProductAndExByCode(attrs);
+			TDispOrder dispOrder = tDispOrderMapper.getDispOrderByNo(item.getOrderNo());
+			TMdBranchEmp dispEmp = branchEmpMapper.selectBranchEmpByNo(dispOrder.getDispEmpNo());
+			if (!item.getProductCode().equals(entry.getConfirmMatnr())) {
+				attrs.put("matnr", item.getProductCode());
+				TMdMara newMara = tMdMaraMapper.selectProductAndExByCode(attrs);
+				OperationLogUtil.saveHistoryOperation(entry.getItemNo(), LogType.ROUTE_ORDER, RouteLogEnum.DISP_MATNR,dispEmp.getEmpNo()+dispEmp.getEmpName(),entry.getAddressTxt(),
+						entry.getConfirmMatnr()+oldMara.getMatnrTxt(),item.getProductCode()+newMara.getMatnrTxt(),null,entry.getOrderDate(),sysuser,operationLogMapper);
+			}
+			if (!item.getConfirmQty().equals(entry.getConfirmQty().toBigInteger().toString())) {
+				OperationLogUtil.saveHistoryOperation(entry.getItemNo(), LogType.ROUTE_ORDER, RouteLogEnum.DISP_QTY,dispEmp.getEmpNo()+dispEmp.getEmpName(),entry.getAddressTxt(),
+						entry.getConfirmQty().toString(),item.getConfirmQty(),entry.getConfirmMatnr()+oldMara.getMatnrTxt(),entry.getOrderDate(),sysuser,operationLogMapper);
+			}
+			if (!item.getReason().equals(entry.getReason())) {
+				Map<String,String> reasonMap = new HashMap<String,String>();
+				reasonMap.put("10", "换货");
+				reasonMap.put("20", "缺货");
+				reasonMap.put("30", "质量问题");
+				reasonMap.put("40", "损毁");
+				reasonMap.put("50", "拒收");
+				reasonMap.put("60", "拒收复送");
+				OperationLogUtil.saveHistoryOperation(entry.getItemNo(), LogType.ROUTE_ORDER, RouteLogEnum.UNDELIVERED_REASON,dispEmp.getEmpNo()+dispEmp.getEmpName(),entry.getAddressTxt(),
+						reasonMap.get(entry.getReason()),reasonMap.get(item.getReason()),entry.getConfirmMatnr()+oldMara.getMatnrTxt(),entry.getOrderDate(),sysuser,operationLogMapper);
+			}
+			if ("10".equals(item.getReason()) && !item.getReplaceReason().equals(entry.getReplaceReason())) {
+				Map<String,String> reasonMap = new HashMap<String,String>();
+				reasonMap.put("10", "公司原因");
+				reasonMap.put("20", "质量问题");
+				reasonMap.put("30", "运输损坏");
+				OperationLogUtil.saveHistoryOperation(entry.getItemNo(), LogType.ROUTE_ORDER, RouteLogEnum.CHANGE_REASON,dispEmp.getEmpNo()+dispEmp.getEmpName(),entry.getAddressTxt(),
+						reasonMap.get(entry.getReplaceReason()),reasonMap.get(item.getReplaceReason()),entry.getConfirmMatnr()+oldMara.getMatnrTxt(),entry.getOrderDate(),sysuser,operationLogMapper);
+			}
+
 			tDispOrderItemMapper.updateDispOrderItem(item , entry , null);
 			
 			//修改原日计划和原订单金额
@@ -1077,7 +1188,18 @@ public class DeliverMilkServiceImpl extends BaseService implements DeliverMilkSe
 			}
 		}
 		sOrder = tMstInsideSalOrderMapper.getInSalOrderByDispOrderNo(newItem.getOrderNo());
+		//如果有拒收、损毁，新增
 		if("40".equals(newItem.getReason()) || "50".equals(newItem.getReason())){
+			TMdBranch branch = branchService.selectBranchByNo(order.getBranchNo());
+			EmpQueryModel sModel =new  EmpQueryModel();
+			sModel.setBranchNo(order.getBranchNo());
+			sModel.setRoleId("10002");
+			List<TMdBranchEmp> tbList = branchEmpService.queryBranchEmp(sModel);
+			if(tbList.size()==0){
+				throw new ServiceException(MessageCode.LOGIC_ERROR,"此奶站没有奶站站长，请维护！！！！");
+			}else if(tbList.size()>1) {
+				throw new ServiceException(MessageCode.LOGIC_ERROR, "此奶站有多个奶站站长，请维护！！！！");
+			}
 			if(sOrder == null){
 				String insOrderNo = PrimaryKeyUtils.generateUuidKey();
 				sOrder = new TMstInsideSalOrder();
@@ -1085,7 +1207,13 @@ public class DeliverMilkServiceImpl extends BaseService implements DeliverMilkSe
 				sOrder.setOrderDate(orgItem.getOrderDate());
 				sOrder.setDispOrderNo(orgItem.getOrderNo());
 				sOrder.setBranchNo(order.getBranchNo());
-				sOrder.setSalEmpNo(dispOrder.getDispEmpNo());
+				if("20".equals(branch.getTargetPerson())){
+					for(TMdBranchEmp item:tbList ){
+						sOrder.setSalEmpNo(item.getEmpNo());
+					}
+				}else{
+					sOrder.setSalEmpNo(dispOrder.getDispEmpNo());
+				}
 				sOrder.setCreateAt(newItem.getOrderDate());
 				sOrder.setCreateBy(user.getLoginName());
 				tMstInsideSalOrderMapper.insertInsideSalOrder(sOrder);

@@ -89,5 +89,10 @@ public class TMilkboxPlanMapperImpl implements TMilkboxPlanMapper
 		return sqlSessionTemplate.selectList("selectMilkboxPlantoOutput",empNo);
 	}
 
+	@Override
+	public int  selectMilkboxsCount(String BranchNo){
+		return sqlSessionTemplate.selectOne("selectMilkboxsCount",BranchNo);
+	}
+
 
 }

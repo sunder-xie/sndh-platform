@@ -83,4 +83,6 @@ public interface TVipCrmMapper {
      */
     public String getCrmNoByPhone(Map<String, String> attrs);
 
+    public TVipCrmInfo getVipCrm(String vipCustNo);
+
 }

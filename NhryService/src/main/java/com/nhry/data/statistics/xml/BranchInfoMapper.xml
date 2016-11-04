@@ -1280,27 +1280,32 @@
 
         UNION
         SELECT
-        t.EMP_NO AS DISP_EMP_NO,
-        t.MATNR,
+        t3.EMP_NO AS DISP_EMP_NO,
+        t1.MATNR,
         CONCAT(
         '(',
-        ROUND(sum(t.REMAIN_QTY)),
+        ROUND(sum(t2.QTY)),
         ')'
         ) AS CONFIRM_QTY,
-        0 as CQTY,
-        t1.SHORT_TXT AS MATNR_TXT,
-        t2.EMP_NAME
+        0 AS CQTY,
+        t4.SHORT_TXT AS MATNR_TXT,
+        t5.EMP_NAME
         FROM
-        t_mst_refuse_resend t
-        INNER JOIN t_md_mara_ex t1 ON t1.MATNR = t.MATNR
-        AND t1.SALES_ORG = t.SALES_ORG
-        INNER JOIN t_md_branch_emp t2 ON t2.EMP_NO = t.EMP_NO
+        t_ssm_req_goods_order t
+        INNER JOIN t_ssm_req_goods_order_item t1 ON t1.ORDER_NO = t.ORDER_NO
+        INNER JOIN t_mst_refuse_resend_item t2 ON t2.ORDER_NO = t.ORDER_NO
+        INNER JOIN t_mst_refuse_resend t3 ON t3.RESEND_ORDER_NO = t2.RESEND_ORDER_NO
+        INNER JOIN t_md_mara_ex t4 ON t4.MATNR = t1.MATNR
+        INNER JOIN t_md_branch_emp t5 ON t5.EMP_NO = t3.EMP_NO
         WHERE
         1 = 1
-        AND t.REMAIN_QTY > 0
+        AND t1.RESEND_QTY > 0
+        AND t.STATUS=30
+        AND t.BRANCH_NO=#{branchNo,jdbcType=VARCHAR}
+        AND t.ORDER_DATE=date_add(#{theDate,jdbcType=DATE}, INTERVAL - 1 DAY)
         GROUP BY
-        t.EMP_NO,
-        t.MATNR
+        t3.EMP_NO,
+        t1.MATNR
         ) fnt
         GROUP BY
         DISP_EMP_NO,

@@ -671,4 +671,9 @@ public class CustomerBillServiceImpl implements CustomerBillService {
     public void setUrMapper(TSysUserRoleMapper urMapper) {
         this.urMapper = urMapper;
     }
+
+    @Override
+    public int selectOrdersNoBillCount(){
+        return tPreOrderMapper.selectOrdersNoBillCount(userSessionService.getCurrentUser().getBranchNo());
+    }
 }

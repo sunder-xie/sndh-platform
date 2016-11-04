@@ -268,4 +268,12 @@ public class BillResource extends BaseResource {
         return convertToRespModel(MessageCode.NORMAL, null, customerBillService.queryCollectByOrderNo(orderCode));
     }
 
+    @POST
+    @Path("/selectOrdersNoBillCount")
+    @Produces(MediaType.APPLICATION_JSON)
+    @Consumes(MediaType.APPLICATION_JSON)
+    @ApiOperation(value = "/selectOrdersNoBillCount", response = Integer.class, notes = "查询预付款未收款数量")
+    public Response selectOrdersNoBillCount(){
+        return convertToRespModel(MessageCode.NORMAL, null, customerBillService.selectOrdersNoBillCount());
+    }
 }

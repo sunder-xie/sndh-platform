@@ -35,4 +35,22 @@ public class OperationLogServiceImpl implements OperationLogService {
 
         return operationLogMapper.getOrderOperationLog(cModel);
     }
+
+    @Override
+    public PageInfo getPlanOperationLog( CustOperationQueryModel cModel) {
+        if(StringUtils.isEmpty(cModel.getPageNum()) || StringUtils.isEmpty(cModel.getPageSize())){
+            throw new ServiceException(MessageCode.LOGIC_ERROR,"pageNum和pageSize不能为空！");
+        }
+
+        return operationLogMapper.getPlanOperationLog(cModel);
+    }
+
+    @Override
+    public PageInfo getRouteOperationLog( CustOperationQueryModel cModel) {
+        if(StringUtils.isEmpty(cModel.getPageNum()) || StringUtils.isEmpty(cModel.getPageSize())){
+            throw new ServiceException(MessageCode.LOGIC_ERROR,"pageNum和pageSize不能为空！");
+        }
+
+        return operationLogMapper.getRouteOperationLog(cModel);
+    }
 }

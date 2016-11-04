@@ -630,6 +630,9 @@
 		left join t_mst_disp_order o on i.ORDER_NO = o.ORDER_NO
 		where i.ORG_ORDER_NO = #{orderNo,jdbcType=VARCHAR}
 		and o.STATUS = '10'
+        <if test="dispDate!=null">
+          and i.ORDER_DATE = #{dispDate,jdbcType=DATE}
+        </if>
    </select>
    <!-- 检查该订单是否有项目生成了路单 -->
 	<select id="selectCountByOrgOrder" resultType="INTEGER" parameterType="com.nhry.data.milk.domain.TDispOrder">
