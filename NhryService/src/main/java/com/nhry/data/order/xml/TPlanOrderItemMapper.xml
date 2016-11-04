@@ -489,4 +489,10 @@
 				GROUP BY i.ITEM_NO
 
     </select>
+
+
+  <delete id="deleteByOrderNo" parameterType="java.lang.String" >
+    delete from t_mst_plan_order_item
+    where ORDER_NO = #{orderNo,jdbcType=VARCHAR}
+  </delete>
 </mapper>

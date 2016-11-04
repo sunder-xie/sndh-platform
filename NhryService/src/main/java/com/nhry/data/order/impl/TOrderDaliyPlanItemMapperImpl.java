@@ -231,6 +231,21 @@ public class TOrderDaliyPlanItemMapperImpl implements TOrderDaliyPlanItemMapper
 		return sqlSessionTemplate.selectOne("getSumDailyBackAmtByBackDate",model);
 	}
 
+	@Override
+	public Date selectEndDispDate(String itemNo) {
+		return sqlSessionTemplate.selectOne("selectEndDispDate",itemNo);
+	}
+
+	@Override
+	public TOrderDaliyPlanItem selectByDateAndItemNoAndNo(TOrderDaliyPlanItem plan) {
+		return sqlSessionTemplate.selectOne("selectByDateAndItemNoAndNo",plan);
+	}
+
+	@Override
+	public List<TOrderDaliyPlanItem> selectByBeforeDayAndNo(TOrderDaliyPlanItem oplan) {
+		return sqlSessionTemplate.selectList("selectByBeforeDayAndNo",oplan);
+	}
+
 
 	/**
 	 * 根据订单号和日期获取当前日期的日订单状态

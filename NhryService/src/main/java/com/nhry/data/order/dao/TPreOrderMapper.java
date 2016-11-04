@@ -118,4 +118,6 @@ public interface TPreOrderMapper {
 
     List<TPreOrder> selectOrdersByOrderNos(ArrayList<String> orders);
 
+    int updateBySelective(TPreOrder order);
+
 }

@@ -239,6 +239,11 @@ public class TDispOrderItemMapperImpl implements TDispOrderItemMapper
 	}
 
 	@Override
+	public List<TDispOrderItem> selectItemsByOrgOrderAndItemNoAndBeforeDate(TDispOrderItem dispItem) {
+		return sqlSessionTemplate.selectList("selectItemsByOrgOrderAndItemNoAndBeforeDate",dispItem);
+	}
+
+	@Override
 	public int deleteDispOrderItemByOrderNo(List<String> codeList) {
 		return sqlSessionTemplate.delete("deleteDispOrderItemByOrderNo",codeList);
 	}

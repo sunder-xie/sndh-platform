@@ -1,9 +1,9 @@
 package com.nhry.data.order.domain;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+
 import java.math.BigDecimal;
 import java.util.Date;
-
-import com.fasterxml.jackson.annotation.JsonFormat;
 
 public class TOrderDaliyPlanItem extends TOrderDaliyPlanItemKey {
     private Date dispDate;
@@ -56,6 +56,12 @@ public class TOrderDaliyPlanItem extends TOrderDaliyPlanItemKey {
     private String promotionFlag;
 
     private String weekly;
+
+    private long longAmt;
+
+    public long getLongAmt() {
+        return getAmt().longValue();
+    }
 
     public String getConfirmMatnr() {
         return confirmMatnr;

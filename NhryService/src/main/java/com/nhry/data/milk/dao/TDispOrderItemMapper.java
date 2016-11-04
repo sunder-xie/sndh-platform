@@ -70,5 +70,6 @@ public interface TDispOrderItemMapper {
     int selectCountByOrgOrderAndOrgItemNo(String orderNo,String itemNo,String dispDate);
 
     List<DispOrderReportEntityModel> reportDispOrderItemByParams(DispOrderReportModel model);
-    
+
+    List<TDispOrderItem> selectItemsByOrgOrderAndItemNoAndBeforeDate(TDispOrderItem dispItem);
 }

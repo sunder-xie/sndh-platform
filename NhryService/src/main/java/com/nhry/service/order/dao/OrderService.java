@@ -119,4 +119,5 @@ public interface OrderService {
 	int advanceBackOrder(OrderSearchModel record);
 	int updateBackState();
 
+	int uptOrderlong(OrderEditModel record);
 }

@@ -75,6 +75,11 @@ public class TPlanOrderItemMapperImpl implements TPlanOrderItemMapper
 		return sqlSessionTemplate.selectList("selectAfterPayActivitiesByOrderNo", planOrderMap);
 	}
 
+	@Override
+	public int deleteByOrderNo(String orderNo) {
+		return sqlSessionTemplate.delete("deleteByOrderNo",orderNo);
+	}
+
 
 	@Override
 	public TPlanOrderItem selectEntryByEntryNo(String code)
