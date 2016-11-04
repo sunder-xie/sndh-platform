@@ -887,4 +887,36 @@
   <select id="getSumDailyBackAmtByBackDate" resultType="BigDecimal" parameterType="com.nhry.model.order.OrderSearchModel">
     SELECT sum(AMT) FROM t_mst_order_daliy_plan_item WHERE DISP_DATE &gt;= #{backDate,jdbcType=DATE} AND ORDER_NO = #{orderNo,jdbcType=VARCHAR} AND STATUS = '10'
   </select>
+
+
+  <select id="selectEndDispDate" resultType="DATE" parameterType="java.lang.String">
+    SELECT
+    MAX(DISP_DATE)
+    FROM t_mst_order_daliy_plan_item i
+    WHERE i.ITEM_NO =#{itemNo,jdbcType=VARCHAR}
+    and i.`STATUS` != '30'
+  </select>
+
+  <select id="selectByDateAndItemNoAndNo" resultMap="BaseResultMap" parameterType="com.nhry.data.order.domain.TOrderDaliyPlanItem">
+    SELECT
+    <include refid="Base_Column_List"/>
+    FROM t_mst_order_daliy_plan_item i
+    WHERE i.ITEM_NO =#{itemNo,jdbcType=VARCHAR}
+    and ORDER_NO = #{orderNo,jdbcType=VARCHAR}
+    and DISP_DATE = #{dispDate,jdbcType=DATE}
+  </select>
+
+  <select id="selectByBeforeDayAndNo" resultMap="BaseResultMap" parameterType="com.nhry.data.order.domain.TOrderDaliyPlanItem">
+    SELECT
+      <include refid="Base_Column_List"/>
+    FROM t_mst_order_daliy_plan_item i
+    WHERE 1=1
+    and i.STATUS !='30'
+    <if test="orderNo!=null">
+     and ORDER_NO = #{orderNo,jdbcType=VARCHAR}
+    </if>
+    <if test="orderNo!=null">
+      and DISP_DATE &lt;#{dispDate,jdbcType=DATE}
+    </if>
+  </select>
 </mapper>

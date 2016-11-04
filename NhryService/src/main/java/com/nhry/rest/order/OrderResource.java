@@ -158,9 +158,19 @@ public class OrderResource extends BaseResource {
 	@Produces(MediaType.APPLICATION_JSON)
 	@ApiOperation(value = "/uptlong", response = Integer.class, notes = "更新订单信息(长期修改)")
 	public Response uptOrder(@ApiParam(required=true,name="record",value="系统参数json格式") OrderEditModel record){
-		return convertToRespModel(MessageCode.NORMAL, null,  orderService.editOrderForLong(record));
-	}	
-	
+		return convertToRespModel(MessageCode.NORMAL, null,  orderService.uptOrderlong(record));
+	}
+
+
+	@POST
+	@Path("/uptOrderlong")
+	@Consumes(MediaType.APPLICATION_JSON)
+	@Produces(MediaType.APPLICATION_JSON)
+	@ApiOperation(value = "/uptOrderlong", response = Integer.class, notes = "更新订单信息(长期修改)")
+	public Response uptOrderlong(@ApiParam(required=true,name="record",value="系统参数json格式") OrderEditModel record){
+		return convertToRespModel(MessageCode.NORMAL, null,  orderService.uptOrderlong(record));
+	}
+
 	@POST
 	@Path("/editOrderForLongForViewPlans")
 	@Consumes(MediaType.APPLICATION_JSON)

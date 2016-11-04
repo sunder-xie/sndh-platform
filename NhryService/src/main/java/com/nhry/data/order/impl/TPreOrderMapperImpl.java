@@ -81,6 +81,11 @@ public class TPreOrderMapperImpl implements TPreOrderMapper
 		return sqlSessionTemplate.selectList("selectOrdersByOrderNos",map);
 	}
 
+	@Override
+	public int updateBySelective(TPreOrder order) {
+		return sqlSessionTemplate.update("updateBySelective",order);
+	}
+
 
 	@Override
 	public TPreOrder manHandOrderDetail(String orderNo) {

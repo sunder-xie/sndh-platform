@@ -98,4 +98,10 @@ public interface TOrderDaliyPlanItemMapper {
     int deleteDailyByStopDate(OrderSearchModel model);
 
     BigDecimal getSumDailyBackAmtByBackDate(OrderSearchModel model);
+
+    Date selectEndDispDate(String itemNo);
+
+    TOrderDaliyPlanItem selectByDateAndItemNoAndNo(TOrderDaliyPlanItem plan);
+
+    List<TOrderDaliyPlanItem> selectByBeforeDayAndNo(TOrderDaliyPlanItem oplan);
 }

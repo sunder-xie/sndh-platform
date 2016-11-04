@@ -444,7 +444,7 @@
       </if>
     </trim>
   </insert>
-  <update id="updateByPrimaryKeySelective" parameterType="com.nhry.data.order.domain.TPreOrder" >
+  <update id="updateBySelective" parameterType="com.nhry.data.order.domain.TPreOrder" >
     update t_preorder
     <set >
       <if test="orderType != null" >
@@ -743,7 +743,9 @@
     <if test="orderDateEnd != null and orderDateEnd !=''">
       AND o.ORDER_DATE  &lt;=  #{orderDateEnd}
     </if>
-
+    <if test="salesOrg != null and salesOrg !=''">
+      AND o.SALES_ORG =  #{salesOrg}
+    </if>
     ORDER BY o.ORDER_NO desc
   </select>
 
