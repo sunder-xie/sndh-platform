@@ -46,6 +46,8 @@ public interface TOrderDaliyPlanItemMapper {
     List<TOrderDaliyPlanItem> selectDaliyPlansByEntryNo(String itemNo);
     
     int updateDaliyPlanItem(TOrderDaliyPlanItem record);
+
+
     
     TOrderDaliyPlanItem selectDaliyPlansByEntryNoAndNo(TOrderDaliyPlanItemKey record);
     
@@ -104,4 +106,6 @@ public interface TOrderDaliyPlanItemMapper {
     TOrderDaliyPlanItem selectByDateAndItemNoAndNo(TOrderDaliyPlanItem plan);
 
     List<TOrderDaliyPlanItem> selectByBeforeDayAndNo(TOrderDaliyPlanItem oplan);
+
+    int updateDaliyPlanItemByItemNo(TOrderDaliyPlanItem record);
 }
