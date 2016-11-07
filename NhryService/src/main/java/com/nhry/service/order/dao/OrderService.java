@@ -21,6 +21,8 @@ public interface OrderService {
 	List<TOrderDaliyPlanItem> searchDaliyPlansByStatus(String orderNo, String status1,String status2,String status3);
 	
 	PageInfo searchNeedResumeOrders(OrderSearchModel smodel);
+
+	PageInfo searchReNeedOrdersByMp(OrderSearchModel smodel);
 	
 	PageInfo searchOrders(OrderSearchModel smodel);
 	

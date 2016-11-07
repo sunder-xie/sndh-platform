@@ -36,6 +36,16 @@ public class OrderSearchModel extends BaseQueryModel implements Serializable {
 	private String memoTxt;
 	private Integer goDays;
 	private ArrayList<String> orders = new ArrayList<String>();
+	private List<String> mps;
+
+	public List<String> getMps() {
+		return mps;
+	}
+
+	public void setMps(List<String> mps) {
+		this.mps = mps;
+	}
+
 	//电商额外字段
 	private String shopId;
 	private String ecOrderNo;

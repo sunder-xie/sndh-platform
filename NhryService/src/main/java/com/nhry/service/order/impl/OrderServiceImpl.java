@@ -239,7 +239,36 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 		
 		return pageinfo;
 	}
-	
+	/**
+	 * @description: 根据电话查询5天内需要续订的订单列表 (0-7 天)
+	 * */
+	@Override
+	public PageInfo searchReNeedOrdersByMp(OrderSearchModel smodel)
+	{
+		if(StringUtils.isBlank(smodel.getOrderDateStart()) || StringUtils.isBlank(smodel.getOrderDateEnd())){
+			SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
+			Date today = new Date();
+			smodel.setOrderDateStart(format.format(afterDate(today,0)));
+			smodel.setOrderDateEnd(format.format(afterDate(today,7)));
+		}
+
+		//权限
+		if(StringUtils.isEmpty(smodel.getPageNum()) || StringUtils.isEmpty(smodel.getPageSize())){
+			throw new ServiceException(MessageCode.LOGIC_ERROR,"pageNum和pageSize不能为空！");
+		}
+		smodel.setBranchNo(userSessionService.getCurrentUser().getBranchNo());
+		smodel.setSalesOrg(userSessionService.getCurrentUser().getSalesOrg());
+		smodel.setDealerNo(userSessionService.getCurrentUser().getDealerId());
+
+		if(smodel.getMps()!=null && smodel.getMps().size()>1000){
+			throw new ServiceException(MessageCode.LOGIC_ERROR,"查询的电话号码不能大于1000条");
+		}
+		final long startTime = System.currentTimeMillis();
+		PageInfo pageinfo = tPreOrderMapper.searchReNeedOrdersByMp(smodel);
+		System.out.println("查询待续订列表 消耗时间："+(System.currentTimeMillis()-startTime)+"毫秒");
+
+		return pageinfo;
+	}
 	/* (non-Javadoc)
         * @title: selectOrderByCode
         * @description: 根据订单号查询订单
