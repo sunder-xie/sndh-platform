@@ -1200,6 +1200,13 @@ public class OrderServiceImpl extends BaseService implements OrderService {
      */
 	@Override
 	public int advanceBackOrder(OrderSearchModel record) {
+		Date backDate = null;
+		SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
+		try {
+			backDate = format.parse(format.format(record.getBackDate())) ;
+		} catch (ParseException e) {
+			e.printStackTrace();
+		}
 		if(record.getBackDate() == null){
 			throw new ServiceException(MessageCode.LOGIC_ERROR,"提前退订日期不能为空！");
 		}
@@ -1207,10 +1214,10 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 		if("20".equals(order.getPreorderStat())){
 			throw new ServiceException(MessageCode.LOGIC_ERROR,"待确认的订单暂无法进行此操作，请联系在线客服");
 		}
-		if(order.getEndDate().before(record.getBackDate())){
+		if(order.getEndDate().getTime() < backDate.getTime()){
 			throw new ServiceException(MessageCode.LOGIC_ERROR,"提前退订日期不能超出订单配送结束日期！");
 		}
-		if(order.getBackDate() != null && order.getBackDate().before(record.getBackDate())){
+		if(order.getBackDate() != null && order.getBackDate().getTime()<backDate.getTime()){
 			throw new ServiceException(MessageCode.LOGIC_ERROR,"提前退订日期不能超出已退订的日期！");
 		}
 
@@ -1225,7 +1232,7 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 		}
 
 		if("10".equals(order.getPreorderSource()))throw new ServiceException(MessageCode.LOGIC_ERROR,"暂无法进行此操作，请联系在线客服!");
-		if(tDispOrderItemMapper.selectCountOfTodayByOrgOrder(order.getOrderNo(), record.getBackDate())>0)throw new ServiceException(MessageCode.LOGIC_ERROR,"此订单，有退订后未确认的路单!请删除路单后再操作!");
+		if(tDispOrderItemMapper.selectCountOfTodayByOrgOrder(order.getOrderNo(), backDate)>0)throw new ServiceException(MessageCode.LOGIC_ERROR,"此订单，有退订后未确认的路单!请删除路单后再操作!");
 
 
 		//第一步 计算退订的金额
@@ -1234,9 +1241,9 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 		//第二步 删除日计划
 		tOrderDaliyPlanItemMapper.deleteDailyByStopDate(record);
 
-		order.setBackDate(record.getBackDate());
+		order.setBackDate(backDate);
 		order.setBackReason(record.getReason());
-		order.setEndDate(afterDate(record.getBackDate(),-1));
+		order.setEndDate(afterDate(backDate,-1));
 		if(StringUtils.isNotEmpty(record.getMemoTxt())) {
 			order.setMemoTxt(record.getMemoTxt().concat("提前退订"));
 		}else{
@@ -1285,6 +1292,15 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 					"提前退订",backAmt.toString(),null,null,userSessionService.getCurrentUser(),operationLogMapper);
 		}
 		tPreOrderMapper.updateOrderEndDate(order);
+
+		List<TPlanOrderItem> items = tPlanOrderItemMapper.selectPlanOrderItemByOrderNo(order.getOrderNo());
+		for(TPlanOrderItem item : items){
+			Date date = item.getEndDispDate();
+			if(date.getTime() > order.getEndDate().getTime()){
+				item.setEndDispDate(order.getEndDate());
+				tPlanOrderItemMapper.updateEntryByItemNo(item);
+			}
+		}
 		//发送EC,更新订单状态
 		TPreOrder sendOrder = new TPreOrder();
 		sendOrder.setOrderNo(order.getOrderNo());

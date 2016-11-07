@@ -490,9 +490,12 @@
 
     </select>
 
-
   <delete id="deleteByOrderNo" parameterType="java.lang.String" >
     delete from t_mst_plan_order_item
     where ORDER_NO = #{orderNo,jdbcType=VARCHAR}
   </delete>
+
+  <select id="selectPlanOrderItemByOrderNo" resultMap="BaseResultMap">
+    SELECT <include refid="Base_Column_List"/> FROM t_mst_plan_order_item WHERE ORDER_NO = #{orderNo}
+  </select>
 </mapper>

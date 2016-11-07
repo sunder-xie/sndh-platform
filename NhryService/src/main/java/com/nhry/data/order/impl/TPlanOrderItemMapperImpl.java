@@ -77,7 +77,12 @@ public class TPlanOrderItemMapperImpl implements TPlanOrderItemMapper
 
 	@Override
 	public int deleteByOrderNo(String orderNo) {
-		return sqlSessionTemplate.delete("deleteByOrderNo",orderNo);
+		return sqlSessionTemplate.delete("deleteByOrderNo", orderNo);
+	}
+
+	@Override
+	public List<TPlanOrderItem> selectPlanOrderItemByOrderNo(String orderNo) {
+		return sqlSessionTemplate.selectList("selectPlanOrderItemByOrderNo",orderNo);
 	}
 
 
