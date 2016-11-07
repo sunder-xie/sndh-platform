@@ -33,10 +33,7 @@ import com.nhry.service.order.pojo.OrderRemainData;
 import com.nhry.service.pi.dao.PIVipInfoDataService;
 import com.nhry.service.pi.dao.SmsSendService;
 import com.nhry.service.pi.pojo.MemberActivities;
-import com.nhry.utils.CodeGeneratorUtil;
-import com.nhry.utils.ContentDiffrentUtil;
-import com.nhry.utils.EnvContant;
-import com.nhry.utils.OperationLogUtil;
+import com.nhry.utils.*;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.core.task.TaskExecutor;
 
@@ -3753,46 +3750,81 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 										!ContentDiffrentUtil.isDiffrent(orgEntry.getRuleTxt(), curEntry.getRuleTxt())) {
 									continue;
 								} else {
-									BigDecimal orgEntryAmt = calculateEntryAmount(orgEntry);
+									//BigDecimal orgEntryAmt = calculateEntryAmount(orgEntry);
 									//产生路单的订单行 如果有变化  验证信息
 									if (StringUtils.isNotBlank(orgEntry.getPromotion()))
 										throw new ServiceException(MessageCode.LOGIC_ERROR, "促销商品行不能更改!");
-									confirmAllDispDateAfterDate(curEntry, orderNo);
+									List<TDispOrderItem> dispItems = confirmAllDispDateAfterDate(curEntry, orderNo);
+									//获取路单中最大日期的配送日期 为了删除这个日期之后的日订单
+									Date maxDispDate = orgEntry.getStartDispDate();
+									if(dispItems!=null && dispItems.size()>0){
+										for(TDispOrderItem item : dispItems){
+											if(item.getOrderDate().after(maxDispDate)){
+												maxDispDate = item.getOrderDate();
+											}
+										}
+									}
 									//可以修改行项目
 									if (!orgEntry.getMatnr().equals(curEntry.getMatnr())) {//换商品
+										modiFlag = true;
 										orgEntry.setMatnr(curEntry.getMatnr());
 										orgEntry.setSalesPrice(curEntry.getSalesPrice());
 										orgEntry.setUnit(curEntry.getUnit());
 									}
 									if (orgEntry.getQty() != curEntry.getQty()) {//改数量
+										modiFlag = true;
 										orgEntry.setQty(curEntry.getQty());
 									}
 									if (!orgEntry.getRuleType().equals(curEntry.getRuleType())) {//周期变更
+										modiFlag = true;
 										orgEntry.setRuleType(curEntry.getRuleType());
 										orgEntry.setGapDays(curEntry.getGapDays());
 										orgEntry.setRuleTxt(curEntry.getRuleTxt());
 									} else {
 										//相同时判断是周期送还是星期送
 										if ("10".equals(orgEntry.getRuleType()) && (!curEntry.getGapDays().equals(orgEntry.getGapDays()))) {
+											modiFlag = true;
 											orgEntry.setGapDays(curEntry.getGapDays());
 											orgEntry.setRuleTxt(curEntry.getRuleTxt());
 										} else if ("20".equals(orgEntry.getRuleType()) && !curEntry.getRuleTxt().equals(orgEntry.getRuleTxt())) {
+											modiFlag = true;
 											orgEntry.setRuleTxt(curEntry.getRuleTxt());
 										}
 									}
 									if (!orgEntry.getReachTimeType().equals(curEntry.getReachTimeType())) {//送奶时段变更
+										modiFlag = true;
 										orgEntry.setReachTimeType(curEntry.getReachTimeType());
 									}
 									//比较配送日期是否修改
 									String startstr = format.format(curEntry.getStartDispDate());
 									String endstr = format.format(curEntry.getEndDispDate());
 									if (!startstr.equals(format.format(orgEntry.getStartDispDate())) || !endstr.equals(format.format(orgEntry.getEndDispDate()))) {
+										modiFlag = true;
 										orgEntry.setStartDispDate(curEntry.getStartDispDate());
 										orgEntry.setEndDispDate(curEntry.getEndDispDate());
 									}
+
+									TOrderDaliyPlanItem newPlan = new TOrderDaliyPlanItem();
+									newPlan.setOrderNo(orgOrder.getOrderNo());
+									newPlan.setItemNo(orgEntry.getItemNo());
+									newPlan.setStatus("10");
+									if(!orgEntry.getStartDispDate().after(maxDispDate)){
+										newPlan.setDispDateStr(format.format(DateUtil.getTomorrow(maxDispDate)));
+									}else{
+										newPlan.setDispDateStr(startstr);
+									}
+									//将 先开始日期之后的日订单删除，比计算删除的钱数
+									List<TOrderDaliyPlanItem> delDays= tOrderDaliyPlanItemMapper.selectDaliyByAfterDayAndNo(newPlan);
+									BigDecimal delTotal =BigDecimal.ZERO;
+									if(delDays!=null && delDays.size()>0){
+										for(TOrderDaliyPlanItem day : delDays){
+											delTotal = delTotal.add(day.getAmt());
+										}
+										tOrderDaliyPlanItemMapper.deleteFromDateToDate(newPlan);
+									}
 									//保存修改后的该行 把以前行项目的钱删除，新的行项目的钱加上
-									orgOrder.setInitAmt(orgOrder.getInitAmt().subtract(orgEntryAmt));
-									orgOrder.setCurAmt(orgOrder.getCurAmt().subtract(orgEntryAmt));
+									orgOrder.setInitAmt(orgOrder.getInitAmt().subtract(delTotal));
+									orgOrder.setCurAmt(orgOrder.getCurAmt().subtract(delTotal));
 									BigDecimal entryTotal = calculateEntryAmount(orgEntry);
 									orgOrder.setInitAmt(orgOrder.getInitAmt().add(entryTotal));
 									orgOrder.setCurAmt(orgOrder.getCurAmt().add(entryTotal));
@@ -3846,6 +3878,22 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 		return 0;
 	}
 
+	public List<TOrderDaliyPlanItem> uptOrderlongForViewPlans(OrderEditModel record){
+		try{
+			this.uptOrderlong(record);
+		}catch(Exception e){
+			if(((ServiceException) e).getValue().equals("没做修改")){
+				OrderSearchModel mo = new OrderSearchModel();
+				mo.setOrderNo(record.getOrder().getOrderNo());
+				List<TOrderDaliyPlanItem> backData = tOrderDaliyPlanItemMapper.selectDaliyOrdersAll(mo);
+				throw new ServiceException(MessageCode.LOGIC_ERROR, backData);
+			}
+		}
+		OrderSearchModel mo = new OrderSearchModel();
+		mo.setOrderNo(record.getOrder().getOrderNo());
+		List<TOrderDaliyPlanItem> backData = tOrderDaliyPlanItemMapper.selectDaliyOrdersAll(mo);
+		throw new ServiceException(MessageCode.LOGIC_ERROR, backData);
+	}
 	private List<TOrderDaliyPlanItem> createDaliyPlanAfterPay(TPreOrder order, List<TPlanOrderItem> entries) {
 		//预付款的要付款+装箱才生成日计划
 		if("20".equals(order.getPaymentmethod()) && !"20".equals(order.getPaymentStat())){
@@ -3878,16 +3926,37 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 		int afterDays = 0;//经过的天数
 		//行号唯一，需要判断以前最大的行号
 		int daliyEntryNo = 0;//日计划行号
+		/*try{
+			daliyEntryNo = tOrderDaliyPlanItemMapper.selectMaxDaliyPlansNoByOrderNo(order.getOrderNo()) + 1;
+		}catch(Exception e){
+			//如果找不到最大值
+			System.out.println("=============查询日计划最大数发生错误!==========订单号："+order.getOrderNo());
+		}*/
 		List<TOrderDaliyPlanItem> allDay = tOrderDaliyPlanItemMapper.selectDaliyPlansByOrderNo(order.getOrderNo());
+		allDay.stream().sorted((p1, p2) ->
+				p1.getDispDate().compareTo(p2.getDispDate())).collect(Collectors.toList());
 		//Map<TPlanOrderItem,TOrderDaliyPlanItem> dayMap = new HashMap<TPlanOrderItem,TOrderDaliyPlanItem>();
 		Map<String,TOrderDaliyPlanItem> dayMap = new HashMap<String,TOrderDaliyPlanItem>();
 		if(allDay!=null && allDay.size()>0){
-			allDay.stream().forEach(day->{
+			for(TOrderDaliyPlanItem day : allDay){
 				String key = day.getItemNo()+format.format(day.getDispDate());
-				if(!dayMap.containsKey(key)){
-					dayMap.put(key,day);
+				if(day.getDispDate().before(firstDeliveryDate)){
+					curAmt = curAmt.subtract(day.getAmt());
+					TOrderDaliyPlanItem item = new TOrderDaliyPlanItem();
+					item.setItemNo(day.getItemNo());
+					item.setOrderNo(day.getOrderNo());
+					item.setRemainAmt(curAmt);
+					item.setPlanItemNo(String.valueOf(daliyEntryNo));
+					item.setDispDate(day.getDispDate());
+					tOrderDaliyPlanItemMapper.updateDaliyPlanItemByItemNo(item);
+					daliyEntryNo++;
+					daliyPlans.add(item);
+				}else{
+					if(!dayMap.containsKey(key)){
+						dayMap.put(key,day);
+					}
 				}
-			});
+			};
 		}
 		outer:for(int i = 0; i < maxEntryDay; i++){
 			for (TPlanOrderItem entry : entryMap.keySet()) {
@@ -3974,7 +4043,7 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 		return daliyPlans;
 	}
 
-	public void confirmAllDispDateAfterDate(TPlanOrderItem curEntry,String orderNo){
+	public List<TDispOrderItem> confirmAllDispDateAfterDate(TPlanOrderItem curEntry,String orderNo){
 		SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
 		TDispOrderItem dispItem = new TDispOrderItem();
 		dispItem.setOrgOrderNo(orderNo);
@@ -4006,6 +4075,7 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 				}
 			}
 		}
+		return dispItems;
 	}
 	public void uptBeforeOrderByAmt(OrderEditModel record,TPreOrder orgOrder){
 		String orderNo = record.getOrder().getOrderNo();

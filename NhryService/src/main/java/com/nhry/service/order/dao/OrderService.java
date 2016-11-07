@@ -120,4 +120,6 @@ public interface OrderService {
 	int updateBackState();
 
 	int uptOrderlong(OrderEditModel record);
+
+	List uptOrderlongForViewPlans(OrderEditModel record);
 }

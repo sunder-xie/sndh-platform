@@ -937,4 +937,19 @@
     and ITEM_NO = #{itemNo,jdbcType=VARCHAR}
     and DISP_DATE = #{dispDate,jdbcType=DATE}
   </update>
+
+
+  <select id="selectDaliyByAfterDayAndNo" resultMap="BaseResultMap" parameterType="com.nhry.data.order.domain.TOrderDaliyPlanItem" >
+    SELECT  * from t_mst_order_daliy_plan_item
+    where ORDER_NO = #{orderNo,jdbcType=VARCHAR}
+    <if test="itemNo != null" >
+      and ITEM_NO = #{itemNo,jdbcType=VARCHAR}
+    </if>
+    <if test="status != null" >
+      and STATUS = #{status,jdbcType=VARCHAR}
+    </if>
+    <if test="dispDateStr!=null">
+       and DISP_DATE &gt;= #{dispDateStr,jdbcType=DATE}
+    </if>
+  </select>
 </mapper>
