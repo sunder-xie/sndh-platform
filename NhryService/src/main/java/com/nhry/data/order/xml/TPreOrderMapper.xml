@@ -450,6 +450,9 @@
       <if test="orderType != null" >
         ORDER_TYPE = #{orderType,jdbcType=VARCHAR},
       </if>
+      <if test="endDate != null" >
+        END_DATE = #{endDate,jdbcType=DATE},
+      </if>
       <if test="orderDate != null" >
         ORDER_DATE = #{orderDate,jdbcType=DATE},
       </if>
@@ -893,7 +896,6 @@
         </if>
         IS_VALID = #{isValid,jdbcType=VARCHAR},
         BRANCH_NO = #{branchNo,jdbcType=VARCHAR},
-        MEMO_TXT = null,
         RET_DATE = null
     </set>
     where ORDER_NO = #{orderNo,jdbcType=VARCHAR}
