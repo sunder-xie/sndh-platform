@@ -5,9 +5,18 @@ package com.nhry.model.basic;
  */
 public class CustOperationQueryModel extends BaseQueryModel {
     private String search;
+    private String branchNo;
     private String dateStart;
     private String dateEnd;
     private String dispDate;
+
+    public String getBranchNo() {
+        return branchNo;
+    }
+
+    public void setBranchNo(String branchNo) {
+        this.branchNo = branchNo;
+    }
 
     public String getSearch() {
         return search;

@@ -22,6 +22,7 @@ public class OperationLogUtil  {
         operationLogModel.setOriginalValue(originalValue);
         operationLogModel.setNewValue(newValue);
         if(user!=null){
+            operationLogModel.setLogBranch(user.getBranchNo());
             operationLogModel.setCreateBy(user.getLoginName());
             operationLogModel.setCreateByTxt(user.getDisplayName());
         }
