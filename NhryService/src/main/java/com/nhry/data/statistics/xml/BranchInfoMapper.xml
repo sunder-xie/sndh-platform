@@ -565,7 +565,7 @@
             AND i.ORDER_DATE  &gt;=  #{dateStart,jdbcType=DATE}
         </if>
         <if test="dateEnd !=null">
-            AND i.ORDER_DATE  &gt;=  #{dateEnd,jdbcType=DATE}
+            AND i.ORDER_DATE  &lt;=  #{dateEnd,jdbcType=DATE}
         </if>
          order by i.ORDER_DATE desc
     </select>
@@ -612,7 +612,7 @@
             AND d.CREATE_AT  &gt;=  #{dateStart,jdbcType=DATE}
         </if>
         <if test="dateEnd !=null">
-            AND d.CREATE_AT  &gt;=  #{dateEnd,jdbcType=DATE}
+            AND d.CREATE_AT  &lt;=  #{dateEnd,jdbcType=DATE}
         </if>
         GROUP BY
         d.BRANCH_NO,
