@@ -247,6 +247,11 @@ public class TPreOrderMapperImpl implements TPreOrderMapper
 		return sqlSessionTemplate.selectListByPages("searchReNeedOrdersByMp",smodel, Integer.parseInt(smodel.getPageNum()), Integer.parseInt(smodel.getPageSize()));
 	}
 
+	@Override
+	public PageInfo searchOrderByMp(OrderSearchModel smodel){
+		return sqlSessionTemplate.selectListByPages("searchOrderByMp",smodel, Integer.parseInt(smodel.getPageNum()), Integer.parseInt(smodel.getPageSize()));
+	}
+
 	/* (non-Javadoc) 
 	* @title: selectIniOrders
 	* @description: 查找所有期初订单

@@ -687,6 +687,35 @@
 			     -->
      ORDER BY o.ORDER_NO desc
   </select>
+  <select id="searchOrderByMp" resultMap="BaseResultMap" parameterType="com.nhry.model.order.OrderSearchModel" >
+    select distinct
+    o.ORDER_NO, o.ORDER_TYPE, o.ORDER_DATE, o.END_DATE, o.PAYMENTMETHOD, o.PREORDER_SOURCE, o.ONLINEORDER_NO,
+    b.BRANCH_NAME BRANCH_NO, o.MILKMEMBER_NO, o.MEMBER_NO, o.PAYMENT_STAT, o.MILKBOX_STAT, o.INIT_AMT, o.CUR_AMT,
+    o.DISP_LINE_NO, o.EMP_NO,concat(r.RESIDENTIAL_AREA_TXT,a.ADDRESS_TXT) ADRESS_NO, o.CREATER_NO, o.CREATER_BY, o.PREORDER_STAT,o.PAY_METHOD,
+    v.MP CUSTOMER_TEL,v.VIP_NAME MILKMEMBER_NAME,o.RET_REASON,o.RET_DATE,o.BACK_REASON,o.BACK_DATE,o.SIGN,o.RESUME_FLAG
+    FROM t_preorder o
+    left join t_md_branch b on o.BRANCH_NO = b.BRANCH_NO
+    left join t_vip_cust_info v on v.VIP_CUST_NO = o.MILKMEMBER_NO
+    left join t_md_address a on a.ADDRESS_ID = o.ADRESS_NO
+    left join t_md_residential_area r on r.ID = a.RESIDENTIAL_AREA
+    WHERE
+          o.RET_DATE is null
+           AND v.MP in
+      <foreach collection="mps" item="item" index="index"
+               open="(" close=")" separator=",">
+        #{item}
+      </foreach>
+      <if test="branchNo != null and branchNo != ''">
+        AND o.BRANCH_NO = #{branchNo,jdbcType=VARCHAR}
+      </if>
+      <if test="salesOrg != null and salesOrg != ''">
+        AND o.SALES_ORG = #{salesOrg,jdbcType=VARCHAR}
+      </if>
+      <if test="dealerNo != null and dealerNo != ''">
+        AND o.DEALER_NO = #{dealerNo,jdbcType=VARCHAR}
+      </if>
+     ORDER BY o.ORDER_NO desc
+  </select>
 
   <select id="searchReturnOrders" resultMap="BaseResultMap" parameterType="com.nhry.model.order.ManHandOrderSearchModel">
     select

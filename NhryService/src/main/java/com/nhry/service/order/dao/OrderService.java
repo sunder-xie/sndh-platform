@@ -23,6 +23,8 @@ public interface OrderService {
 	PageInfo searchNeedResumeOrders(OrderSearchModel smodel);
 
 	PageInfo searchReNeedOrdersByMp(OrderSearchModel smodel);
+
+	PageInfo searchOrderByMp(OrderSearchModel smodel);
 	
 	PageInfo searchOrders(OrderSearchModel smodel);
 	

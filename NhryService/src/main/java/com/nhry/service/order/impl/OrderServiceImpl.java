@@ -2087,6 +2087,21 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 		smodel.setDealerNo(userSessionService.getCurrentUser().getDealerId());
 		return tPreOrderMapper.selectOrdersByPages(smodel);
 	}
+	/* (non-Javadoc)
+        * @title: 查询订单列表
+        * @description:根据订户电话查询订单列表
+        */
+	@Override
+	public PageInfo searchOrderByMp(OrderSearchModel smodel)
+	{
+		if(StringUtils.isEmpty(smodel.getPageNum()) || StringUtils.isEmpty(smodel.getPageSize())){
+			throw new ServiceException(MessageCode.LOGIC_ERROR,"pageNum和pageSize不能为空！");
+		}
+		smodel.setBranchNo(userSessionService.getCurrentUser().getBranchNo());
+		smodel.setSalesOrg(userSessionService.getCurrentUser().getSalesOrg());
+		smodel.setDealerNo(userSessionService.getCurrentUser().getDealerId());
+		return tPreOrderMapper.searchOrderByMp(smodel);
+	}
 
 	/* (non-Javadoc) 
 	* @title: searchDaliyOrders
