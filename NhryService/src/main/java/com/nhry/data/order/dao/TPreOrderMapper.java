@@ -87,6 +87,8 @@ public interface TPreOrderMapper {
     PageInfo selectNeedResumeOrders(OrderSearchModel smodel);
 
     PageInfo searchReNeedOrdersByMp(OrderSearchModel smodel);
+
+    PageInfo searchOrderByMp(OrderSearchModel smodel);
     
     List<TPreOrder> selectIniOrders(TPreOrder order);
 

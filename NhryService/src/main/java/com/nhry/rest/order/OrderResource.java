@@ -226,6 +226,15 @@ public class OrderResource extends BaseResource {
 	public Response findOrders(@ApiParam(required=true,name="smodel",value="SearchModel") OrderSearchModel smodel){
 		return convertToRespModel(MessageCode.NORMAL, null, orderService.searchOrders(smodel));
 	}
+
+	@POST
+	@Path("/searchOrderByMp")
+	@Produces(MediaType.APPLICATION_JSON)
+	@Consumes(MediaType.APPLICATION_JSON)
+	@ApiOperation(value = "/searchOrderByMp", response = PageInfo.class, notes = "根据电话号码查询订单信息列表")
+	public Response searchOrderByMp(@ApiParam(required=true,name="smodel",value="SearchModel") OrderSearchModel smodel){
+		return convertToRespModel(MessageCode.NORMAL, null, orderService.searchOrderByMp(smodel));
+	}
 	
 	@POST
 	@Path("/batchStopOrder")
