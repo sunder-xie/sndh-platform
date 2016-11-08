@@ -296,6 +296,7 @@
 	</bean>
 	<bean id="operationLogService" class="com.nhry.service.basic.impl.OperationLogServiceImpl">
 		<property name="operationLogMapper" ref="operationLogMapper"></property>
+		<property name="userSessionService" ref="userSessionService"></property>
 	</bean>
 	<!-- 日志end -->
 </beans>

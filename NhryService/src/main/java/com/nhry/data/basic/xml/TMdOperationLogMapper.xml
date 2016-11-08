@@ -128,7 +128,7 @@ LEFT JOIN t_vip_cust_info i ON l.LOG_NO = i.VIP_CUST_NO
 WHERE
 	l.LOG_TYPE = '10'
     <if test="branchNo!=null and ''!=branchNo">
-      l.LOG_BRANCH = #{branchNo,jdbcType=VARCHAR}
+      and l.LOG_BRANCH = #{branchNo,jdbcType=VARCHAR}
     </if>
     <if test="dateStart!=null and ''!=dateStart">
     and l.LOG_DATE &gt;= #{dateStart}
@@ -154,7 +154,7 @@ WHERE
     WHERE
     l.LOG_TYPE = '20'
     <if test="branchNo!=null and ''!=branchNo">
-      l.LOG_BRANCH  = #{branchNo,jdbcType=VARCHAR}
+      and l.LOG_BRANCH  = #{branchNo,jdbcType=VARCHAR}
     </if>
     <if test="dateStart!=null and ''!=dateStart">
       and l.LOG_DATE &gt;= #{dateStart}
@@ -181,7 +181,7 @@ WHERE
     WHERE
     l.LOG_TYPE = '30'
     <if test="branchNo!=null and ''!=branchNo">
-      l.LOG_BRANCH  = #{branchNo,jdbcType=VARCHAR}
+      and l.LOG_BRANCH  = #{branchNo,jdbcType=VARCHAR}
     </if>
     <if test="dateStart!=null and ''!=dateStart">
       and l.LOG_DATE &gt;= #{dateStart}
@@ -213,7 +213,7 @@ WHERE
     WHERE
     l.LOG_TYPE = '40'
     <if test="branchNo!=null and ''!=branchNo">
-      l.LOG_BRANCH = #{branchNo,jdbcType=VARCHAR}
+      and l.LOG_BRANCH = #{branchNo,jdbcType=VARCHAR}
     </if>
     <if test="dateStart!=null and ''!=dateStart">
       and l.LOG_DATE &gt;= #{dateStart}
