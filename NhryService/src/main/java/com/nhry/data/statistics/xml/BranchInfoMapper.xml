@@ -1249,7 +1249,12 @@
         DISP_EMP_NO,
         CONFIRM_MATNR,
         GROUP_CONCAT(CONFIRM_QTY ORDER BY CONFIRM_QTY desc ) as CONFIRM_QTY,
-        CQTY,
+        sum(CQTY) as CQTY,
+        sum(RESEND_QTY) as RESEND_QTY,
+        (sum(CQTY)-sum(RESEND_QTY)) as FINAL_QTY,
+        case sum(RESEND_QTY)
+        when 0 then (sum(CQTY)-sum(RESEND_QTY))
+        else CONCAT((sum(CQTY)-sum(RESEND_QTY)),',(',sum(RESEND_QTY),')') end as COUNT_QTY,
         MATNR_TXT,
         EMP_NAME
         FROM
@@ -1258,7 +1263,8 @@
         i.DISP_EMP_NO,
         i.CONFIRM_MATNR,
         ROUND(sum(i.CONFIRM_QTY)) AS CONFIRM_QTY,
-        sum(i.CONFIRM_QTY) as CQTY,
+        ROUND(sum(i.CONFIRM_QTY)) as CQTY,
+        '0' as RESEND_QTY,
         p.SHORT_TXT MATNR_TXT,
         e.EMP_NAME
         FROM
@@ -1270,8 +1276,8 @@
         LEFT JOIN t_md_address a ON a.ADDRESS_ID = i.ADDRESS_NO
         LEFT JOIN t_md_residential_area r ON r.ID = a.RESIDENTIAL_AREA
         LEFT JOIN t_md_branch_emp e ON e.EMP_NO = i.DISP_EMP_NO
-        WHERE
-        mdo.DISP_DATE = #{theDate,jdbcType=VARCHAR}
+        WHERE 1=1
+        and mdo.DISP_DATE = #{theDate,jdbcType=VARCHAR}
         and mdo.BRANCH_NO=#{branchNo,jdbcType=VARCHAR}
         <if test="reachTimeType!=null and ''!=reachTimeType">
             AND  mdo.REACH_TIME_TYPE &lt;= #{reachTimeType,jdbcType=DATE}
@@ -1288,6 +1294,7 @@
         ')'
         ) AS CONFIRM_QTY,
         0 AS CQTY,
+        ROUND(sum(t2.QTY)) as RESEND_QTY,
         t4.SHORT_TXT AS MATNR_TXT,
         t5.EMP_NAME
         FROM
