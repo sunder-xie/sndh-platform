@@ -1079,7 +1079,7 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 							backAmt = backAmt.add(leftAmt.multiply(order.getOnlineInitAmt()).divide(order.getInitAmt(),2));
 							//电商 退订日志
 							OperationLogUtil.saveHistoryOperation(order.getOrderNo(),LogType.ORDER,OrderLogEnum.DH_BACK_ORDER,null,null,
-									null,backAmt.toString(),null,null,null,operationLogMapper);
+									null,backAmt.toString(),null,null,userSessionService.getCurrentUser(),operationLogMapper);
 						}
 					}else{
 						backAmt = backAmt.add(order.getCurAmt());
@@ -4218,7 +4218,7 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 		tPlanOrderItemMapper.deleteByOrderNo(orderNo);
 		for(TPlanOrderItem entry: curEntrys){
 			if("Y".equals(entry.getIsStop())){
-				entry.setEndDispDate(entry.getStopStartDate());
+				entry.setEndDispDate(DateUtil.getYestoday(entry.getStopStartDate()));
 			}
 			entry.setItemNo(orderNo + String.valueOf(index));//行项目编号
 			entry.setRefItemNo(String.valueOf(index));//参考行项目编号
