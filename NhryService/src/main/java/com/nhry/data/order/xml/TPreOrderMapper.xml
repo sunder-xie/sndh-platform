@@ -610,6 +610,9 @@
     <if test="paymentStat != null and paymentStat !=''">
      		AND o.PAYMENTMETHOD = #{paymentStat,jdbcType=VARCHAR}
     </if>
+    <if test="preorderSource != null and preorderSource !=''">
+      AND o.PREORDER_SOURCE = #{preorderSource,jdbcType=VARCHAR}
+    </if>
     <if test="milkboxStat != null and milkboxStat !=''">
      		AND o.MILKBOX_STAT = #{milkboxStat,jdbcType=VARCHAR}
     </if>
@@ -800,6 +803,9 @@
     AND o.PREORDER_STAT = "20"
     and o.IS_VALID = 'N'
     and (b.IS_VALID !='10' OR SYSDATE() &lt;b.ONLINE_DATE)
+    <if test="preorderSource != null and preorderSource !=''">
+      AND o.PREORDER_SOURCE = #{preorderSource,jdbcType=VARCHAR}
+    </if>
     <if test="orderNo != null and orderNo !=''">
       AND o.ORDER_NO = #{orderNo,jdbcType=VARCHAR}
     </if>
@@ -831,6 +837,9 @@
     WHERE 1=1
     AND o.PREORDER_STAT = "20"
     and (b.IS_VALID ='10' and  SYSDATE() &gt;=b.ONLINE_DATE)
+    <if test="preorderSource != null and preorderSource !=''">
+      AND o.PREORDER_SOURCE = #{preorderSource,jdbcType=VARCHAR}
+    </if>
     <if test="orderNo != null and orderNo !=''">
       AND o.ORDER_NO = #{orderNo,jdbcType=VARCHAR}
     </if>
