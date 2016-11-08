@@ -161,7 +161,7 @@
         <if test="endDate!=null">
             and d.CREATE_AT &lt;= #{endDate,jdbcType=DATE}
         </if>
-        ORDER BY d.LAST_MODIFIED asc
+        ORDER BY d.CREATE_AT asc
     </select>
 
 
