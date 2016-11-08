@@ -1148,7 +1148,7 @@ public class ReportResource extends BaseResource{
                                     count = String.valueOf(CCQTY-RESEND_QTY).concat(",(").concat(String.valueOf(RESEND_QTY)).concat(")");
                                 }
                                 cell1.setCellValue(count);
-                                int cqty =  new BigDecimal(String.valueOf( map.get("CQTY"))).intValue();
+                                int cqty =  new BigDecimal(String.valueOf( map.get("FINAL_QTY"))).intValue();
                                 CELLQTY = CELLQTY + cqty;
                             }
                         }
@@ -1172,8 +1172,8 @@ public class ReportResource extends BaseResource{
                     for (Map<String, String> map : orders){
                         String matnrT =map.get("CONFIRM_MATNR");
                         if( matnr.equals(matnrT)){
-                            if(map.get("CQTY")!=null){
-                                int rqty =  new BigDecimal(String.valueOf( map.get("CQTY"))).intValue();
+                            if(map.get("FINAL_QTY")!=null){
+                                int rqty =  new BigDecimal(String.valueOf( map.get("FINAL_QTY"))).intValue();
                                 ROWQTY =ROWQTY + rqty;
                             }
                         }
