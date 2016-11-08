@@ -714,6 +714,7 @@
       <if test="dealerNo != null and dealerNo != ''">
         AND o.DEALER_NO = #{dealerNo,jdbcType=VARCHAR}
       </if>
+     AND o.PREORDER_STAT = "10"
      ORDER BY o.ORDER_NO desc
   </select>
 
