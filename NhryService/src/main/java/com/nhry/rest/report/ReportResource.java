@@ -1138,8 +1138,16 @@ public class ReportResource extends BaseResource{
                         String matnrT =map.get("CONFIRM_MATNR");
                         String empNoT = map.get("DISP_EMP_NO");
                         if(empNo.equals(empNoT) && matnr.equals(matnrT)){
-                            if(map.get("COUNT_QTY")!=null) {
-                                cell1.setCellValue(map.get("COUNT_QTY"));
+                            if(map.get("CQTY")!=null) {
+                                String count;
+                                int RESEND_QTY =  new BigDecimal(String.valueOf( map.get("RESEND_QTY"))).intValue();
+                                int CCQTY =  new BigDecimal(String.valueOf( map.get("CQTY"))).intValue();
+                                if(RESEND_QTY==0){
+                                    count = String.valueOf( map.get("CQTY"));
+                                }else{
+                                    count = String.valueOf(CCQTY-RESEND_QTY).concat(",(").concat(String.valueOf(RESEND_QTY)).concat(")");
+                                }
+                                cell1.setCellValue(count);
                                 int cqty =  new BigDecimal(String.valueOf( map.get("CQTY"))).intValue();
                                 CELLQTY = CELLQTY + cqty;
                             }

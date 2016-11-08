@@ -1253,7 +1253,7 @@
         sum(RESEND_QTY) as RESEND_QTY,
         (sum(CQTY)-sum(RESEND_QTY)) as FINAL_QTY,
         case sum(RESEND_QTY)
-        when 0 then (sum(CQTY)-sum(RESEND_QTY))
+        when 0 then CONCAT((sum(CQTY)-sum(RESEND_QTY)),' ')
         else CONCAT((sum(CQTY)-sum(RESEND_QTY)),',(',sum(RESEND_QTY),')') end as COUNT_QTY,
         MATNR_TXT,
         EMP_NAME
