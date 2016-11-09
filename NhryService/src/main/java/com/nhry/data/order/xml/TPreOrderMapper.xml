@@ -120,7 +120,7 @@
     	    and PREORDER_STAT != '40'
     	    and ORDER_NO != #{orderNo,jdbcType=VARCHAR}
   </select>
-  <select id="selectNumOfdeletedByMilkmemberNo" resultType="INTEGER">
+  <select id="selectNumOfdeletedByMilkmemberNo" resultType="INTEGER" parameterType="java.lang.String">
     select 
     count(*)
     FROM t_preorder
