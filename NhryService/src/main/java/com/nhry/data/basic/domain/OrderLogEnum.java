@@ -13,7 +13,8 @@ public class OrderLogEnum implements Serializable {
     public final static  String CHANGE_QTY = "变更数量";
     public final static  String CHANGE_RULE_TYPE = "变更周期";
    // public final static  String CHANGE_RULE = "变更配送规律";
-    public final static  String STOP_ORDER = "停订";
+   public final static  String LONG_STOP_ORDER = "长期停订";
+    public final static  String STOP_ORDER = "短期停订";
     public final static  String BACK_ORDER = "退订";
     public final static  String RESUME_ORDER = "复订";
     public final static  String DH_BACK_ORDER = "电商退订";
