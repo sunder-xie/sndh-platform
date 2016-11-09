@@ -174,9 +174,14 @@ public class CustomerBillServiceImpl implements CustomerBillService {
                 }
                 //预付款的，付款后生成日计划
                 if("20".equals(order.getPaymentmethod()) && !"20".equals(order.getMilkboxStat()) ){
-               	 OrderCreateModel omodel = orderService.selectOrderByCode(orderNo);
-               	 List<TOrderDaliyPlanItem> list = orderService.createDaliyPlan(omodel.getOrder(),omodel.getEntries());
-               	 promotionService.createDaliyPlanByPromotion(omodel.getOrder(),omodel.getEntries(),list);
+                    //收过款 产生过日订单后来冲销重新收款不再生成日订单
+                    List<TOrderDaliyPlanItem> oldlist = orderService.selectDaliyPlansByOrderNo(orderNo);
+                    if(oldlist==null || oldlist.size()<=0){
+                        OrderCreateModel omodel = orderService.selectOrderByCode(orderNo);
+                        List<TOrderDaliyPlanItem> list = orderService.createDaliyPlan(omodel.getOrder(),omodel.getEntries());
+                        promotionService.createDaliyPlanByPromotion(omodel.getOrder(),omodel.getEntries(),list);
+                    }
+
                 }
               /*  if("10".equals(order.getPaymentmethod()) && !"20".equals(order.getMilkboxStat())){
                     tPreOrderMapper.updateOrderToFinish(orderNo);

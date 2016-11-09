@@ -110,4 +110,6 @@ public interface TOrderDaliyPlanItemMapper {
     int updateDaliyPlanItemByItemNo(TOrderDaliyPlanItem record);
 
     List<TOrderDaliyPlanItem> selectDaliyByAfterDayAndNo(TOrderDaliyPlanItem newPlan);
+
+    int deleteFromDate(TOrderDaliyPlanItem item);
 }
