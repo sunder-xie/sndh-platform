@@ -852,6 +852,7 @@ public class DeliverMilkServiceImpl extends BaseService implements DeliverMilkSe
 			dispOrder.setAmt(totalAmt);
 			dispOrder.setTotalQty(totalQty);
 //			dispOrder.setDispLineNo(order.getDispLineNo());
+			dispOrder.setCreateAt(new Date());
 			dispOrder.setOrderDate(date);
 			dispOrder.setDispDate(date);
 			dispOrder.setStatus("10");//未确认

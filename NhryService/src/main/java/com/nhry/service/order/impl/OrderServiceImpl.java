@@ -1484,6 +1484,7 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 			}
 			
 			//保存订单，订单行
+			order.setPreorderSource("30");
 			order.setCurAmt(orderAmt);//订单价格
 			order.setInitAmt(orderAmt);
 			order.setEndDate(calculateFinalDate(entriesList));//订单截止日期
@@ -1722,6 +1723,7 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 			}
 			
 			//保存订单，订单行
+			order.setPreorderSource("30");
 			order.setCurAmt(orderAmt);//订单价格
 			order.setInitAmt(orderAmt);
 			order.setEndDate(calculateFinalDate(entriesList));//订单截止日期
