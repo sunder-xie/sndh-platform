@@ -734,7 +734,7 @@
 
   <select id="selectItemsByOrgOrderAndItemNoAndBeforeDate" resultMap="BaseResultMap" parameterType="com.nhry.data.milk.domain.TDispOrderItem">
     select
-    i.ORDER_NO, i.ORDER_DATE, i.ITEM_NO,i.ORG_ORDER_NO,i.ORG_ITEM_NO,o.STATUS STATUS
+    i.ORDER_NO, i.ORDER_DATE,i.MATNR, i.ITEM_NO,i.ORG_ORDER_NO,i.ORG_ITEM_NO,o.STATUS STATUS
     from t_mst_disp_order_item i
     LEFT JOIN t_mst_disp_order o on i.ORDER_NO = o.ORDER_NO
     where 1=1

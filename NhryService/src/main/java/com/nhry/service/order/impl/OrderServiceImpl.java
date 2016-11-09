@@ -4219,14 +4219,14 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 				StringBuffer mess = new StringBuffer("");
 				//将所有确认的路单日期取出
 				confirmlist.stream().forEach(e -> {
-					mess.append(format.format(e.getOrderDate()) + " ");
+					mess.append(e.getMatnr()+"产品"+format.format(e.getOrderDate()) + "\n");
 				});
 				throw new ServiceException(MessageCode.LOGIC_ERROR, mess + "的路单已经确认请重新选择开始日期");
 			}else{
 				if (unConist != null && unConist.size() > 0) {
 					StringBuffer mess = new StringBuffer("");
 					unConist.stream().forEach(e -> {
-						mess.append(format.format(e.getOrderDate()) + " ");
+						mess.append(e.getMatnr()+"产品"+format.format(e.getOrderDate()) + "\n");
 					});
 					throw new ServiceException(MessageCode.LOGIC_ERROR, mess + "的路单已经生成，请先删除路单，再修改日期");
 				}
@@ -4302,7 +4302,7 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 			return null;
 		}
 
-		List<TOrderDaliyPlanItem> daliyPlans = new ArrayList<TOrderDaliyPlanItem>();
+		//List<TOrderDaliyPlanItem> daliyPlans = new ArrayList<TOrderDaliyPlanItem>();
 		 Date firstDeliveryDate = null;
 		for(TPlanOrderItem entry: entries){
 			if(firstDeliveryDate==null){
@@ -4360,11 +4360,12 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 			//如果找不到最大值
 		}*/
 		int maxEntryDay = 3650;
-
+		Date lastDay = firstDeliveryDate;
 		outer:for(int i = 0; i < maxEntryDay; i++) {
 			int afterdays = 0;
 			do {
 				Date today = afterDate(firstDeliveryDate,afterdays);
+				lastDay = today;
 				for(TPlanOrderItem entry : entries){
 					if(curAmt.floatValue() < 0)break outer;
 					if(entry.getStartDispDate().after(today))continue;
@@ -4417,7 +4418,7 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 						if(curAmt.floatValue() < 0)break outer;
 						plan.setPlanItemNo(String.valueOf(daliyEntryNo));
 						tOrderDaliyPlanItemMapper.updateDaliyPlanItemByItemNo(plan);
-						daliyPlans.add(plan);
+						//daliyPlans.add(plan);
 						daliyEntryNo++;
 						continue ;
 					}
@@ -4443,7 +4444,7 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 					plan.setCreateBy(userSessionService.getCurrentUser().getLoginName());//创建人
 					plan.setCreateByTxt(userSessionService.getCurrentUser().getDisplayName());//创建人姓名
 					tOrderDaliyPlanItemMapper.insert(plan);
-					daliyPlans.add(plan);
+					//daliyPlans.add(plan);
 					daliyEntryNo++;
 
 				}
@@ -4451,7 +4452,69 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 			} while (curAmt.compareTo(BigDecimal.ZERO) != -1);
 
 		}
-		return daliyPlans;
+		//判断新生成的日订单中 最后一天是否所有满足的行项目全部都有
+		final Date finalDay = lastDay;
+		boolean allHave = true;
+		List<TPlanOrderItem> finEntry = entries.stream().filter(e->!finalDay.before(e.getEndDispDate())).collect(Collectors.toList());
+		for(TPlanOrderItem entry : finEntry){
+			if("10".equals(entry.getRuleType())){
+				int gapDays = entry.getGapDays() + 1;//间隔天数
+				if(daysOfTwo(entry.getStartDispDate(),lastDay)%gapDays != 0){
+					if(entry.getRuleTxt()!=null){
+						List<String> deliverDays = Arrays.asList(entry.getRuleTxt().split(","));
+						if(deliverDays.size() > 0){//判断周6，7是否配送
+							String weekday = getWeek(lastDay);
+							if(!deliverDays.contains(weekday)){
+								continue;
+							}
+						}
+					}else{
+						continue;
+					}
+				}
+			}else if("20".equals(entry.getRuleType())){
+				String weekday = getWeek(lastDay);
+				List<String> deliverDays = Arrays.asList(entry.getRuleTxt().split(","));
+				if(!deliverDays.contains(weekday)){
+					continue;//如果选择的星期几不送，则跳过今天生成日计划
+				}
+			}
+
+			//否则满足条件  这个行项目在这天是要生成的
+			TOrderDaliyPlanItem plan = new TOrderDaliyPlanItem();
+			plan.setItemNo(entry.getItemNo());
+			plan.setOrderNo(entry.getOrderNo());
+			plan.setDispDate(lastDay);
+			TOrderDaliyPlanItem dayItem = tOrderDaliyPlanItemMapper.selectByDateAndItemNoAndNo(plan);
+			if(dayItem==null){
+				allHave = false;
+				break;
+			}
+		}
+
+		if(!allHave){
+			//删除这天所有的日订单
+			TOrderDaliyPlanItem plan = new TOrderDaliyPlanItem();
+			plan.setOrderNo(orgOrder.getOrderNo());
+			plan.setDispDate(lastDay);
+			plan.setStatus("10");
+			List<TOrderDaliyPlanItem> delItems = tOrderDaliyPlanItemMapper.selectByDayAndNo(plan);
+			if(delItems!=null && delItems.size()>0){
+				BigDecimal delTotal = BigDecimal.ZERO;
+				for(TOrderDaliyPlanItem item : delItems){
+					delTotal = delTotal.add(item.getAmt());
+				}
+				tOrderDaliyPlanItemMapper.deleteOneDayItem(plan);
+				if("10".equals(orgOrder.getPaymentStat())){
+					orgOrder.setInitAmt(orgOrder.getInitAmt().subtract(delTotal));
+					orgOrder.setCurAmt(orgOrder.getCurAmt().subtract(delTotal));
+					tPreOrderMapper.updateBySelective(orgOrder);
+				}
+			}
+
+		}
+		List<TOrderDaliyPlanItem> curAllDayItems = tOrderDaliyPlanItemMapper.selectDaliyPlansByOrderNoAsc(orgOrder.getOrderNo());
+		return curAllDayItems;
 
 	}
 

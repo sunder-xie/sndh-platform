@@ -100,6 +100,16 @@ public class TOrderDaliyPlanItemMapperImpl implements TOrderDaliyPlanItemMapper
 	}
 
 	@Override
+	public int deleteOneDayItem(TOrderDaliyPlanItem plan) {
+		return sqlSessionTemplate.delete("deleteOneDayItem",plan);
+	}
+
+	@Override
+	public List<TOrderDaliyPlanItem> selectByDayAndNo(TOrderDaliyPlanItem plan) {
+		return sqlSessionTemplate.selectList("selectByDayAndNo", plan);
+	}
+
+	@Override
 	public List<TOrderDaliyPlanItem> selectDaliyPlansByEntryNo(String itemNo)
 	{
 		// TODO Auto-generated method stub
