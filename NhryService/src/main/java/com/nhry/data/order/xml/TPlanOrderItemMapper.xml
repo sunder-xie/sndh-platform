@@ -356,6 +356,9 @@
       <if test="qty != null" >
         QTY = #{qty,jdbcType=INTEGER},
       </if>
+      <if test="newRowFlag != null" >
+        NEW_ROW_FLAG = #{newRowFlag,jdbcType=VARCHAR},
+      </if>
       <if test="salesPrice != null" >
         SALES_PRICE = #{salesPrice,jdbcType=DECIMAL},
       </if>
