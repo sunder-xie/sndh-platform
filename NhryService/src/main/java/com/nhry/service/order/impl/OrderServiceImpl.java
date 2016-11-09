@@ -3738,7 +3738,7 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 									}
 									if(ContentDiffrentUtil.isDiffrent(orgEntry.getIsStop(),curEntry.getIsStop())){
 										if("Y".equals(curEntry.getIsStop()) && curEntry.getStopStartDate()!=null){
-											if(curEntry.getStopStartDate().before(orgEntry.getStartDispDate())||!curEntry.getStopEndDate().after(orgEntry.getEndDispDate()))throw new ServiceException(MessageCode.LOGIC_ERROR,"停订的日期不能在配送日期之外!");
+											if(curEntry.getStopStartDate().before(orgEntry.getStartDispDate())||curEntry.getStopStartDate().after(orgEntry.getEndDispDate()))throw new ServiceException(MessageCode.LOGIC_ERROR,"停订的日期不能在配送日期之外!");
 											daliyPlans.stream().filter((e)->"20".equals(e.getStatus())&&e.getItemNo().equals(orgEntry.getItemNo()))
 													.forEach((e)->{
 														if(!e.getDispDate().before(curEntry.getStopStartDate()))throw new ServiceException(MessageCode.LOGIC_ERROR,"该日期内已经有完结的日计划，请修改时间!");
@@ -3928,7 +3928,7 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 										orgOrder.setCurAmt(orgOrder.getCurAmt().add(entryTotal));
 									}
 									if("Y".equals(curEntry.getIsStop()) && curEntry.getStopStartDate()!=null){
-											if(curEntry.getStopStartDate().before(orgEntry.getStartDispDate())||!curEntry.getStopEndDate().after(orgEntry.getEndDispDate()))throw new ServiceException(MessageCode.LOGIC_ERROR,"停订的日期不能在配送日期之外!");
+											if(curEntry.getStopStartDate().before(orgEntry.getStartDispDate())||curEntry.getStopStartDate().after(orgEntry.getEndDispDate()))throw new ServiceException(MessageCode.LOGIC_ERROR,"停订的日期不能在配送日期之外!");
 											daliyPlans.stream().filter((e)->"20".equals(e.getStatus())&&e.getItemNo().equals(orgEntry.getItemNo()))
 											.forEach((e)->{
 													if(!e.getDispDate().before(curEntry.getStopStartDate()))throw new ServiceException(MessageCode.LOGIC_ERROR,"该日期内已经有完结的日计划,不能停订，请修改时间!");
