@@ -125,6 +125,7 @@
     count(*)
     FROM t_preorder
     WHERE MILKMEMBER_NO = #{milkmemberNo,jdbcType=VARCHAR}
+    and SIGN = '10'
     	    and PREORDER_STAT = '10'
   </select>
   <select id="selectByOrderCode" resultMap="BaseResultMap" parameterType="java.lang.String" >
