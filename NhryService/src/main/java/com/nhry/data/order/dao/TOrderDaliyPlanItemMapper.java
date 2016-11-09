@@ -112,4 +112,8 @@ public interface TOrderDaliyPlanItemMapper {
     List<TOrderDaliyPlanItem> selectDaliyByAfterDayAndNo(TOrderDaliyPlanItem newPlan);
 
     int deleteFromDate(TOrderDaliyPlanItem item);
+
+    int deleteOneDayItem(TOrderDaliyPlanItem plan);
+
+    List<TOrderDaliyPlanItem> selectByDayAndNo(TOrderDaliyPlanItem plan);
 }
