@@ -866,7 +866,7 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 			throw new ServiceException(MessageCode.LOGIC_ERROR,record.getOrderNo()+"当前订单不存在");
 		}
 		//停订日志
-		OperationLogUtil.saveHistoryOperation(order.getOrderNo(),LogType.ORDER,OrderLogEnum.STOP_ORDER,null,null,null,
+		OperationLogUtil.saveHistoryOperation(order.getOrderNo(),LogType.ORDER,OrderLogEnum.LONG_STOP_ORDER,null,null,null,
 				record.getOrderDateStart(),null,null,userSessionService.getCurrentUser(),operationLogMapper);
 		
 		return 1;
@@ -1030,7 +1030,7 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 
 		//停订日志
 		OperationLogUtil.saveHistoryOperation(order.getOrderNo(),LogType.ORDER,OrderLogEnum.STOP_ORDER,null,null,null,
-				record.getOrderDateStart()+"-"+record.getOrderDateEnd(),null,null,userSessionService.getCurrentUser(),operationLogMapper);
+				record.getOrderDateStart()+"至"+record.getOrderDateEnd(),null,null,userSessionService.getCurrentUser(),operationLogMapper);
 		return 1;
 	}
 	
@@ -1122,7 +1122,7 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 			//退订日志
 			if(!"10".equals(order.getPreorderSource()) &&!"40".equals(order.getPreorderSource())){
 				OperationLogUtil.saveHistoryOperation(order.getOrderNo(),LogType.ORDER,OrderLogEnum.BACK_ORDER,null,null,
-						("10".equals(order.getPreorderStat())?"在订":"30".equals(order.getPreorderStat())?"停订":"作废"),
+						("10".equals(order.getSign())?"在订":("20".equals(order.getSign())?"停订":"完结")),
 						"退订",null,null,userSessionService.getCurrentUser(),operationLogMapper);
 			}
 
@@ -3811,6 +3811,7 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 							} else {
 								TPlanOrderItem item = new TPlanOrderItem();
 								item.setItemNo(e.getItemNo());
+								item.setNewRowFlag("N");
 								item.setDispTotal(e.getQty());
 								item.setEndDispDate(e.getDispDate());
 								item.setStartDispDate(e.getDispDate());
@@ -6094,8 +6095,8 @@ public class OrderServiceImpl extends BaseService implements OrderService {
    			//停订的
 				if(stopPlans.containsKey(plan)){
 					OperationLogUtil.saveHistoryOperation(orgOrder.getOrderNo(),LogType.DAIL_ORDER,DailOrderLogEnum.STATUS,null,null,
-							"10".equals(plan.getStatus())?"在订":"20".equals(plan.getStatus())?"完结":"停订",
-							"10".equals(stopPlans.get(plan))?"在订":"20".equals(stopPlans.get(plan))?"完结":"停订",
+							"在订",
+							"停订",
 							plan.getMatnr()+plan.getMatnrTxt(),plan.getDispDate(),user,operationLogMapper);
 					plan.setStatus("30");
 //					continue;
@@ -7670,6 +7671,8 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 			List<TOrderDaliyPlanItem> result =  tOrderDaliyPlanItemMapper.searchDaliyPlansByStatus(order.getOrderNo(),"10",null,null);
 			if(result == null || result.size() ==0){
 				//订单成完结
+				OperationLogUtil.saveHistoryOperation(orderNo,LogType.ORDER,OrderLogEnum.STATUS,null,null,"10".equals(order.getSign())?"在订":"","完结",
+						null,null,userSessionService.getCurrentUser(),operationLogMapper);
 				tPreOrderMapper.updateOrderToFinish(order.getOrderNo());
 				if(tPreOrderMapper.selectNumOfdeletedByMilkmemberNo()<=0){
 					//订户状态更改
