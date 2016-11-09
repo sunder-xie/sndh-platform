@@ -16,7 +16,7 @@ public interface TPreOrderMapper {
 	 List<TPreOrder> searchAfPayOrdersForSendMessage(String endDate);
 	 List<TPreOrder> searchECOrdersForSendMessage(String endDate);
 	
-	 int selectNumOfdeletedByMilkmemberNo();
+	 int selectNumOfdeletedByMilkmemberNo(String milkmemberNo);
 	
 	 int updateOrderToFinish(String orderNo);
 	 

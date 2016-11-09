@@ -7739,7 +7739,7 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 				OperationLogUtil.saveHistoryOperation(orderNo,LogType.ORDER,OrderLogEnum.STATUS,null,null,"10".equals(order.getSign())?"在订":"","完结",
 						null,null,userSessionService.getCurrentUser(),operationLogMapper);
 				tPreOrderMapper.updateOrderToFinish(order.getOrderNo());
-				if(tPreOrderMapper.selectNumOfdeletedByMilkmemberNo()<=0){
+				if(tPreOrderMapper.selectNumOfdeletedByMilkmemberNo(order.getMilkmemberNo())<=0){
 					//订户状态更改
 					tVipCustInfoService.discontinue(order.getMilkmemberNo(), "20",null,null);
 				}

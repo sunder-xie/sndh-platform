@@ -356,9 +356,9 @@ public class TPreOrderMapperImpl implements TPreOrderMapper
 	* @see com.nhry.data.order.dao.TPreOrderMapper#selectNumOfdeletedByMilkmemberNo() 
 	*/
 	@Override
-	public int selectNumOfdeletedByMilkmemberNo()
+	public int selectNumOfdeletedByMilkmemberNo(String milkmemberNo)
 	{
-		return sqlSessionTemplate.selectOne("selectNumOfdeletedByMilkmemberNo");
+		return sqlSessionTemplate.selectOne("selectNumOfdeletedByMilkmemberNo",milkmemberNo);
 	}
 
 	//发送短信用start
