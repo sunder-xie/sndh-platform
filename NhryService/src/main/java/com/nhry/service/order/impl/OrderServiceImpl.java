@@ -3725,7 +3725,6 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 									if (!startstr.equals(format.format(orgEntry.getStartDispDate())) || !endstr.equals(format.format(orgEntry.getEndDispDate()))) {
 										orgEntry.setStartDispDate(curEntry.getStartDispDate());
 										orgEntry.setEndDispDate(curEntry.getEndDispDate());
-										orgEntry.setIsStop("N");
 										daliyPlans.stream().filter((e)->"20".equals(e.getStatus())&&e.getItemNo().equals(orgEntry.getItemNo()))
 												.forEach((e)->{
 													if(!e.getDispDate().before(curEntry.getStartDispDate()))throw new ServiceException(MessageCode.LOGIC_ERROR,"该日期内已经有完结的日计划，请修改时间!");

@@ -107,7 +107,7 @@
       where LOGIN_NAME = #{empNo,jdbcType=VARCHAR}
   </delete>
   <insert id="addBranchEmp" parameterType="com.nhry.data.basic.domain.TMdBranchEmp" >
-    insert into t_md_branch_emp (EMP_NO, HR_EMP_NO, BRANCH_NO, 
+    insert into t_md_branch_emp (EMP_NO, HR_EMP_NO, BRANCH_NO,
       EMP_NAME,GENDER,EMP_TYPE, TEL,
       MP, WEBCHAT, ID_NO,CREATE_AT, CREATE_BY, CREATE_BY_TXT,
       STATUS,LEAVE_DATE,JOIN_DATE,SALES_ORG)
@@ -297,7 +297,7 @@
     e.EMP_NO, e.HR_EMP_NO, e.BRANCH_NO, e.EMP_NAME,e.GENDER, e.EMP_TYPE, e.TEL,e.MP, e.WEBCHAT, e.ID_NO, e.CREATE_AT,e.SALES_ORG,
     e.CREATE_BY, e.CREATE_BY_TXT, e.LAST_MODIFIED, e.LAST_MODIFIED_BY, e.LAST_MODIFIED_BY_TXT,e.SALARY_MET,e.BASE_SALARY,e.JOIN_DATE,
     e.STATUS
-    from T_MD_BRANCH_EMP e
+    from t_md_branch_emp e
     LEFT JOIN t_sys_user_role u on e.HR_EMP_NO = u.LOGIN_NAME
     where 1=1
     and e.STATUS='1'
@@ -316,7 +316,7 @@
   <select id="getAllEmpBySalesOrg" parameterType="String" resultMap="BaseResultMap">
     select
     <include refid="Base_Column_List" />
-    from T_MD_BRANCH_EMP
+    from t_md_branch_emp
     where 1=1
     and STATUS='1'
     and SALES_ORG =  #{salesOrg,jdbcType=VARCHAR}
@@ -326,7 +326,7 @@
   <select id="getAllBranchEmpByNo" parameterType="com.nhry.model.basic.BranchEmpSearchModel" resultMap="BaseResultMap">
     select DISTINCT
     e.EMP_NO,e.EMP_NAME
-    from T_MD_BRANCH_EMP e
+    from t_md_branch_emp e
     LEFT JOIN t_sys_user_role u on e.HR_EMP_NO = u.LOGIN_NAME
     LEFT  JOIN  t_sys_role r on u.ID = r.ID
     where 1=1
@@ -344,7 +344,7 @@
     e.EMP_NO, e.HR_EMP_NO, e.BRANCH_NO, e.EMP_NAME,e.GENDER, e.EMP_TYPE, e.TEL,e.MP, e.WEBCHAT, e.ID_NO, e.CREATE_AT,e.SALES_ORG,
     e.CREATE_BY, e.CREATE_BY_TXT, e.LAST_MODIFIED, e.LAST_MODIFIED_BY, e.LAST_MODIFIED_BY_TXT,e.SALARY_MET,e.BASE_SALARY,e.JOIN_DATE,
     e.STATUS
-    from T_MD_BRANCH_EMP e
+    from t_md_branch_emp e
     LEFT JOIN t_sys_user_role u on e.HR_EMP_NO = u.LOGIN_NAME
     LEFT  JOIN  t_sys_role r on u.ID = r.ID
     where 1=1
@@ -362,7 +362,7 @@
     e.EMP_NO, e.HR_EMP_NO, e.BRANCH_NO, e.EMP_NAME,e.GENDER, e.EMP_TYPE, e.TEL,e.MP, e.WEBCHAT, e.ID_NO, e.CREATE_AT,e.SALES_ORG,
     e.CREATE_BY, e.CREATE_BY_TXT, e.LAST_MODIFIED, e.LAST_MODIFIED_BY, e.LAST_MODIFIED_BY_TXT,e.SALARY_MET,e.BASE_SALARY,e.JOIN_DATE,
     e.STATUS
-    from T_MD_BRANCH_EMP e
+    from t_md_branch_emp e
     LEFT JOIN t_sys_user_role u on e.HR_EMP_NO = u.LOGIN_NAME
     LEFT  JOIN  t_sys_role r on u.ID = r.ID
     where 1=1
