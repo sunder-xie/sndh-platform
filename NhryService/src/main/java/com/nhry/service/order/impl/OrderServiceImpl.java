@@ -3795,10 +3795,10 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 						this.createDaliyByAmt(orgOrder, curAllEntry);
 						List<TOrderDaliyPlanItem> list = tOrderDaliyPlanItemMapper.selectDaliyPlansByOrderNo(orderNo);
 						Map<String, TPlanOrderItem> planMap = new HashMap<String, TPlanOrderItem>();
+						Date lastDay = null;
 						list.stream().forEach(e -> {
 							if (planMap.containsKey(e.getItemNo())) {
 								TPlanOrderItem item = planMap.get(e.getItemNo());
-
 								item.setDispTotal(item.getDispTotal() + e.getQty());
 								if (item.getEndDispDate().before(e.getDispDate())) {
 									item.setEndDispDate(e.getDispDate());
@@ -3820,6 +3820,23 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 							TPlanOrderItem item = planMap.get(plan.getItemNo());
 							tPlanOrderItemMapper.updateEntryByItemNo(item);
 						});
+						if(planMap!=null){
+							for(String key : planMap.keySet()){
+								TPlanOrderItem item = planMap.get(key);
+								if(lastDay==null){
+									lastDay = item.getEndDispDate();
+								}else{
+									if(lastDay.before(item.getEndDispDate())){
+										lastDay =item.getEndDispDate();
+									}
+								}
+							}
+							if(ContentDiffrentUtil.isDiffrent(lastDay,orgOrder.getEndDate())){
+								orgOrder.setEndDate(lastDay);
+								tPreOrderMapper.updateBySelective(orgOrder);
+							}
+						}
+
 					} else {
 						throw new ServiceException(MessageCode.LOGIC_ERROR, "没做修改");
 					}
@@ -3997,6 +4014,7 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 					if (modiFlag) {
 						List<TPlanOrderItem> curAllEntry = tPlanOrderItemMapper.selectByOrderCode(orderNo);
 						List<TOrderDaliyPlanItem> list = this.createDaliyPlanAfterPay(orgOrder,curAllEntry);
+
 						tPreOrderMapper.updateBySelective(orgOrder);
 					}else{
 						throw  new ServiceException(MessageCode.LOGIC_ERROR,"没做修改");
@@ -4096,12 +4114,14 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 				}
 			};
 		}
+		Date lastDay = null;
 		outer:for(int i = 0; i < maxEntryDay; i++){
 			for (TPlanOrderItem entry : entryMap.keySet()) {
 				int days = entryMap.get(entry);
 				if(days - 1 >= 0){
 					//判断是按周期送还是按星期送
 					Date today = afterDate(firstDeliveryDate,afterDays);
+					lastDay = today;
 					if(entry.getStartDispDate().after(today))continue;
 					entryMap.replace(entry, days-1);//剩余天数减1天
 
@@ -4186,6 +4206,9 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 			}
 			afterDays++;
 		}
+		if(lastDay!=null && ContentDiffrentUtil.isDiffrent(lastDay,order.getEndDate())){
+			order.setEndDate(lastDay);
+		}
 
 		return daliyPlans;
 	}
@@ -4269,6 +4292,7 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 		List<TOrderDaliyPlanItem> list = createDaliyByAmt(orgOrder,record.getEntries());
 		//planMap存放 订单行的 总配送量，最后一天配送日期
 		Map<String,TPlanOrderItem> planMap = new HashMap<String,TPlanOrderItem>();
+		 Date lastDay = null;
 		list.stream().forEach(e->{
 			if(planMap.containsKey(e.getItemNo())){
 				TPlanOrderItem item = planMap.get(e.getItemNo());
@@ -4291,7 +4315,23 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 			TPlanOrderItem item = planMap.get(plan.getItemNo());
 			tPlanOrderItemMapper.updateEntryByItemNo(item);
 		});
+		if(planMap!=null){
+			for(String key : planMap.keySet()){
+				TPlanOrderItem item = planMap.get(key);
+				if(lastDay==null){
+					lastDay = item.getEndDispDate();
+				}else{
+					if(lastDay.before(item.getEndDispDate())){
+						lastDay =item.getEndDispDate();
+					}
+				}
 
+			}
+			if(ContentDiffrentUtil.isDiffrent(lastDay,orgOrder.getEndDate())){
+				orgOrder.setEndDate(lastDay);
+				tPreOrderMapper.updateBySelective(orgOrder);
+			}
+		}
 	}
 
 	private List<TOrderDaliyPlanItem> createDaliyByAmt(TPreOrder orgOrder, List<TPlanOrderItem> entries) {
@@ -4547,7 +4587,7 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 		orgOrder.setCurAmt(orderAmt);
 		orgOrder.setEndDate(calculateFinalDate(curEntrys));//订单截止日期
 		orgOrder.setInitAmt(orderAmt);
-		orgOrder.setResumeFlag("N");
+		//orgOrder.setResumeFlag("N");
 		//更新订单和 保存行项目
 		tPreOrderMapper.updateBySelective(orgOrder);
 		curEntrys.forEach(entry->{
