@@ -474,6 +474,10 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 			throw new ServiceException(MessageCode.LOGIC_ERROR, "信息不完整！");
 		}
 		TPreOrder  order = tPreOrderMapper.selectByPrimaryKey(r.getOrderNo());
+		TSysUser user = userSessionService.getCurrentUser();
+		//待确认订单退单日志
+		OperationLogUtil.saveHistoryOperation(order.getOrderNo(),LogType.ORDER, OrderLogEnum.RETURN_ORDER,null,null,order.getBranchName(),
+				null,null,null,user,operationLogMapper);
 		/*if(StringUtils.isNotBlank(order.getRetReason())){
 			if(order.getRetReason().equals(order.getMilkmemberNo())){
 				//如果 分配奶站当时 没有该电话的订户  将订户退回，将订单退回

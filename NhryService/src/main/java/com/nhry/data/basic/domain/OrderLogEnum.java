@@ -22,5 +22,6 @@ public class OrderLogEnum implements Serializable {
     public final static  String CHANGE_EMP = "送奶员替换";
     public final static  String CTN_ORDER = "续订";
     public final static  String STATUS = "状态";
+    public final static  String RETURN_ORDER = "退单";
 
 }
