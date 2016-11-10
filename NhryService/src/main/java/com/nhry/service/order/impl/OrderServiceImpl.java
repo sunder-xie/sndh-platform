@@ -4274,7 +4274,7 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 		tOrderDaliyPlanItemMapper.deletePlansByOrder(orderNo);
 		tPlanOrderItemMapper.deleteByOrderNo(orderNo);
 		for(TPlanOrderItem entry: curEntrys){
-			if("Y".equals(entry.getIsStop())){
+			if("Y".equals(entry.getIsStop()) && entry.getStopStartDate()!=null){
 				entry.setEndDispDate(DateUtil.getYestoday(entry.getStopStartDate()));
 			}
 			entry.setItemNo(orderNo + String.valueOf(index));//行项目编号

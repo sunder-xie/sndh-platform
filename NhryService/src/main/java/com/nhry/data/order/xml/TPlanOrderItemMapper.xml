@@ -250,6 +250,9 @@
       <if test="dispTotal != null" >
         DISP_TOTAL,
       </if>
+      <if test="isStop != null" >
+        IS_STOP,
+      </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides="," >
       <if test="itemNo != null" >
@@ -341,6 +344,9 @@
       </if>
       <if test="dispTotal != null" >
         #{dispTotal,jdbcType=INTEGER},
+      </if>
+      <if test="isStop != null" >
+        #{isStop,jdbcType=VARCHAR},
       </if>
     </trim>
   </insert>
