@@ -1406,14 +1406,14 @@ public class DeliverMilkServiceImpl extends BaseService implements DeliverMilkSe
 		StringBuffer  statusOrderNos = new StringBuffer("");
 		for(String orderNo : orderNos){
 			if(tDispOrderItemMapper.selectCountByOrgOrderAndDate(orderNo,date) > 0){
-				hadDispNos.append(" "+orderNo);
+				hadDispNos.append(orderNo+",");
 			}
 			List<TOrderDaliyPlanItem> items = tOrderDaliyPlanItemMapper.selectDaliyPlanByOrderAndDispDate(orderNo,date);
 			if(items == null){
-				errOrderNos.append(" "+orderNo);
+				errOrderNos.append(orderNo+", ");
 			}else{
 				if(items.stream().allMatch(e->"30".equals(e.getStatus()))){
-					statusOrderNos.append(" "+orderNo);
+					statusOrderNos.append(orderNo+", ");
 				}
 			}
 		}
@@ -1421,13 +1421,13 @@ public class DeliverMilkServiceImpl extends BaseService implements DeliverMilkSe
 				||StringUtils.isNotBlank(statusOrderNos.toString().trim())){
 			String wrongStr = "";
 			if(StringUtils.isNotBlank(hadDispNos.toString().trim())){
-				wrongStr = wrongStr +hadDispNos.toString()+"  这些订单在"+dateStr+"的日订单已经生成过路单<br/>";
+				wrongStr = wrongStr +hadDispNos.toString()+"  这些订单在"+dateStr+"这天的日订单已经生成过路单<br/>";
 			}
 			if(StringUtils.isNotBlank(errOrderNos.toString().trim())){
-				wrongStr = wrongStr +errOrderNos.toString()+"  这些订单在"+dateStr+"的日订单不存在<br/>";
+				wrongStr = wrongStr +errOrderNos.toString()+"  这些订单在"+dateStr+"这天的日订单不存在<br/>";
 			}
 			if(StringUtils.isNotBlank(statusOrderNos.toString().trim())){
-				wrongStr = wrongStr + statusOrderNos.toString()+"  这些订单在"+dateStr+"的日订单被全部停订，没有在订的这天的日订单了<br/>";
+				wrongStr = wrongStr + statusOrderNos.toString()+"  这些订单在"+dateStr+"这天的日订单被全部停订，没有在订的这天的日订单了<br/>";
 			}
 			throw new ServiceException(MessageCode.LOGIC_ERROR,wrongStr);
 		}
