@@ -3623,16 +3623,143 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 			
 	}
 
-	@Override
-	public int uptOrderlong(OrderEditModel record) {
+	public int uptOrderLongLog(OrderEditModel record,List<TPlanOrderItem> orgEntrys,ArrayList<TOrderDaliyPlanItem> daliyPlans){
+		List<TPlanOrderItem>  curEntrys = record.getEntries();
+		if(curEntrys==null||curEntrys.size()<=0) return 0;
+		SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
+		String orderNo = record.getOrder().getOrderNo();
+		TPreOrder orgOrder = tPreOrderMapper.selectByPrimaryKey(orderNo);
+		TMstRecvBill bill = customerBillMapper.getRecBillByOrderNo(orderNo);
+		if(bill!=null){
+			if("10".equals(orgOrder.getPaymentmethod())){
+				return 0;
+			}else{
+				if("10".equals(bill.getStatus())){
+					return 0;
+				}
+			}
+		}
 
+		TSysUser user = userSessionService.getCurrentUser();
+		//备注日志
+		if(ContentDiffrentUtil.isDiffrent(orgOrder.getMemoTxt(),record.getOrder().getMemoTxt())){
+			OperationLogUtil.saveHistoryOperation(orgOrder.getOrderNo(),LogType.ORDER, OrderLogEnum.MEMO_TXT,null,null,orgOrder.getMemoTxt(),
+					record.getOrder().getMemoTxt(),null,null,user,operationLogMapper);
+		}
+		if(daliyPlans==null || daliyPlans.size()<=0){
+			//没有日订单，直接修改行项目
+			this.noRouteOrderEditLog(orgOrder,orgEntrys,curEntrys,user);
+		}else{
+			int dispNums = tDispOrderItemMapper.selectCountByOrgOrder(orderNo);
+			if(dispNums<=0){
+				this.noRouteOrderEditLog(orgOrder,orgEntrys,curEntrys,user);
+			}else{
+
+			}
+
+		}
+		return 1;
+	}
+
+	private int noRouteOrderEditLog(TPreOrder orgOrder, List<TPlanOrderItem> orgEntrys, List<TPlanOrderItem> curEntrys,TSysUser user) {
+		//没有产生路单的日订单修改日志
+		SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
+		List<TPlanOrderItem> cloneCurEntrys = new ArrayList<TPlanOrderItem>();
+		cloneCurEntrys.addAll(curEntrys);
+		for(TPlanOrderItem orgEntry:orgEntrys){
+			boolean delFlag = true;
+			for(TPlanOrderItem curEntry:curEntrys){
+				if(orgEntry.getItemNo().equals(curEntry.getItemNo())){
+					cloneCurEntrys.remove(curEntry);
+					delFlag = false;
+					if (curEntry.getMatnr().equals(orgEntry.getMatnr()) && curEntry.getQty().equals(orgEntry.getQty()) &&
+							format.format(orgEntry.getStartDispDate()).equals(format.format(curEntry.getStartDispDate())) &&
+							format.format(orgEntry.getEndDispDate()).equals(format.format(curEntry.getEndDispDate())) &&
+							!ContentDiffrentUtil.isDiffrent(orgEntry.getReachTime(), curEntry.getReachTime()) &&
+							!ContentDiffrentUtil.isDiffrent(orgEntry.getGapDays(), curEntry.getGapDays()) &&
+							!ContentDiffrentUtil.isDiffrent(orgEntry.getRuleTxt(), curEntry.getRuleTxt())&&
+							curEntry.getStopStartDate()==null
+						)
+					{
+						continue;
+					} else {
+						if (StringUtils.isNotBlank(orgEntry.getPromotion())) throw new ServiceException(MessageCode.LOGIC_ERROR, "促销商品行不能更改!");
+						this.editOrderDispTypeForLongLog(orgEntry,curEntry,user);
+					}
+				}
+			}
+			if(delFlag){
+				//删除日志
+				OperationLogUtil.saveHistoryOperation(orgEntry.getOrderNo(),LogType.ORDER,OrderLogEnum.DEL_ITEM,null,null,
+						orgEntry.getMatnr()+","+orgEntry.getShortTxt()+","+orgEntry.getQty(),null,null,null,user,operationLogMapper);
+			}
+		}
+		if(cloneCurEntrys!=null && cloneCurEntrys.size()>0) {
+			//添加的行项目 日志
+			for (TPlanOrderItem entry : cloneCurEntrys) {
+					OperationLogUtil.saveHistoryOperation(orgOrder.getOrderNo(), LogType.ORDER, OrderLogEnum.ADD_PRODUCT, null, null,
+							null, entry.getMatnr()+","+ entry.getShortTxt()+","+ format.format(entry.getStartDispDate()) + "至" + format.format(entry.getEndDispDate()), null, null, user, operationLogMapper);
+			}
+		}
+		return 1;
+	}
+
+	private int haveRouteOrderEditLog(TPreOrder orgOrder, List<TPlanOrderItem> orgEntrys, List<TPlanOrderItem> curEntrys,TSysUser user) {
+		//产生路单的日订单修改日志
+		SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
+		List<TPlanOrderItem> cloneCurEntrys = new ArrayList<TPlanOrderItem>();
+		cloneCurEntrys.addAll(curEntrys);
+		for(TPlanOrderItem orgEntry:orgEntrys){
+			boolean delFlag = true;
+			for(TPlanOrderItem curEntry:curEntrys){
+				if(orgEntry.getItemNo().equals(curEntry.getItemNo())){
+					cloneCurEntrys.remove(curEntry);
+					delFlag = false;
+					if (curEntry.getMatnr().equals(orgEntry.getMatnr()) && curEntry.getQty().equals(orgEntry.getQty()) &&
+							format.format(orgEntry.getStartDispDate()).equals(format.format(curEntry.getStartDispDate())) &&
+							format.format(orgEntry.getEndDispDate()).equals(format.format(curEntry.getEndDispDate())) &&
+							!ContentDiffrentUtil.isDiffrent(orgEntry.getReachTime(), curEntry.getReachTime()) &&
+							!ContentDiffrentUtil.isDiffrent(orgEntry.getGapDays(), curEntry.getGapDays()) &&
+							!ContentDiffrentUtil.isDiffrent(orgEntry.getRuleTxt(), curEntry.getRuleTxt())&&
+							curEntry.getStopStartDate()==null
+							)
+					{
+						continue;
+					} else {
+						if (StringUtils.isNotBlank(orgEntry.getPromotion())) throw new ServiceException(MessageCode.LOGIC_ERROR, "促销商品行不能更改!");
+						confirmAllDispDateAfterDate(curEntry,orgEntry, orgOrder.getOrderNo());
+						this.editOrderDispTypeForLongLog(orgEntry,curEntry,user);
+					}
+				}
+			}
+			if(delFlag){
+				//删除日志
+				OperationLogUtil.saveHistoryOperation(orgEntry.getOrderNo(),LogType.ORDER,OrderLogEnum.DEL_ITEM,null,null,
+						orgEntry.getMatnr()+","+orgEntry.getShortTxt()+","+orgEntry.getQty(),null,null,null,user,operationLogMapper);
+			}
+		}
+		if(cloneCurEntrys!=null && cloneCurEntrys.size()>0) {
+			//添加的行项目 日志
+			for (TPlanOrderItem entry : cloneCurEntrys) {
+				confirmAllDispDateAfterDate(entry, null,orgOrder.getOrderNo());
+				OperationLogUtil.saveHistoryOperation(orgOrder.getOrderNo(), LogType.ORDER, OrderLogEnum.ADD_PRODUCT, null, null,
+						null, entry.getMatnr()+","+ entry.getShortTxt() + "," + format.format(entry.getStartDispDate()) + "至" + format.format(entry.getEndDispDate()), null, null, user, operationLogMapper);
+			}
+		}
+		return 1;
+	}
+
+	@Override
+	public int uptOrderlong(OrderEditModel record)
+	{
 		List<TPlanOrderItem>  curEntrys = record.getEntries();
 		if(curEntrys==null||curEntrys.size()<=0)throw new ServiceException(MessageCode.LOGIC_ERROR,"不能删除所有的行项目，请退订订单!");
 		SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
 		String orderNo = record.getOrder().getOrderNo();
 		TPreOrder orgOrder = tPreOrderMapper.selectByPrimaryKey(orderNo);
 		TMstRecvBill bill = customerBillMapper.getRecBillByOrderNo(orderNo);
-		if(bill!=null){
+		if(bill!=null)
+		{
 			if("10".equals(orgOrder.getPaymentmethod())){
 				throw new ServiceException(MessageCode.LOGIC_ERROR,"后付款订单"+orderNo+"  已经有收款单了，请不要修改订单，或者去删除收款单!");
 			}else{
@@ -3648,10 +3775,14 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 		ArrayList<TOrderDaliyPlanItem> daliyPlans = (ArrayList<TOrderDaliyPlanItem>) tOrderDaliyPlanItemMapper.selectDaliyPlansByOrderNo(orgOrder.getOrderNo());
 		//如果日订单还没产生，可以任意修改，相当于重做订单
 		if(daliyPlans==null || daliyPlans.size()<=0){
+			//日志
+			noRouteOrderEditLog(orgOrder,orgEntrys,curEntrys,user);
 			uptOrderNoDailyOrder(record,orgOrder);
 		}else{
 			int dispNums = tDispOrderItemMapper.selectCountByOrgOrder(orderNo);
 			if(dispNums<=0){
+				//日志
+				noRouteOrderEditLog(orgOrder,orgEntrys,curEntrys,user);
 				//没有产生路单
 				if("10".equals(orgOrder.getPaymentmethod())){
 					//如果是后付款  可以任意修改，相当于重做订单
@@ -3664,8 +3795,10 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 					uptBeforeOrderByAmt(record,orgOrder);
 				}
 			}else {
+				//有路单的订单编辑日志
+				haveRouteOrderEditLog(orgOrder,orgEntrys,curEntrys,user);
 				//预付款订单修改
-				if ("20".equals(orgOrder.getPaymentmethod())) {
+				if ("20".equals(orgOrder.getPaymentmethod())){
 					boolean modiFlag = false;
 					List<TPlanOrderItem> cloneCurEntrys = new ArrayList<TPlanOrderItem>();
 					cloneCurEntrys.addAll(curEntrys);
@@ -3691,8 +3824,6 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 										throw new ServiceException(MessageCode.LOGIC_ERROR, "促销商品行不能更改!");
 									modiFlag = true;
 									//产生路单的订单行 如果有变化  验证信息
-									if (StringUtils.isNotBlank(orgEntry.getPromotion()))
-										throw new ServiceException(MessageCode.LOGIC_ERROR, "促销商品行不能更改!");
 									confirmAllDispDateAfterDate(curEntry,orgEntry, orderNo);
 									//可以修改行项目
 									if (!orgEntry.getMatnr().equals(curEntry.getMatnr())) {//换商品
@@ -3973,9 +4104,6 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 												//重新计算订单金额
 												orgOrder.setInitAmt(orgOrder.getInitAmt().subtract(delTotal));
 												orgOrder.setCurAmt(orgOrder.getCurAmt().subtract(delTotal));
-												/*BigDecimal entryTotal = calculateEntryAmount(orgEntry);
-												orgOrder.setInitAmt(orgOrder.getInitAmt().add(entryTotal));
-												orgOrder.setCurAmt(orgOrder.getCurAmt().add(entryTotal));*/
 											}
 										}
 
@@ -4027,7 +4155,7 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 
 			}
 		}
-		return 0;
+		return 1;
 	}
 
 	public List<TOrderDaliyPlanItem> uptOrderlongForViewPlans(OrderEditModel record){
@@ -5369,29 +5497,20 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 	}
 
 	private void editOrderDispTypeForLongLog(TPlanOrderItem orgEntry,TPlanOrderItem curEntry,TSysUser user) {
-		//换产品
-		if(!orgEntry.getMatnr().equals(curEntry.getMatnr())){
-			OperationLogUtil.saveHistoryOperation(orgEntry.getOrderNo(),LogType.ORDER,OrderLogEnum.CHANGE_PRODUCT,null,null,
-					orgEntry.getMatnr()+orgEntry.getShortTxt(),curEntry.getMatnr()+orgEntry.getShortTxt(),null,null,user,operationLogMapper);
-		}
-		//换数量
-		if(!orgEntry.getQty().equals(curEntry.getQty())){
-			OperationLogUtil.saveHistoryOperation(orgEntry.getOrderNo(),LogType.ORDER,OrderLogEnum.CHANGE_QTY,null,null,
-					orgEntry.getQty().toString(),curEntry.getQty().toString(),orgEntry.getMatnr()+orgEntry.getShortTxt(),null,user,operationLogMapper);
-		}
 		SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
 		String orgRuleType = orgEntry.getRuleType();
 		Integer orgGapDays = orgEntry.getGapDays();
 		String orgRuleTxt = orgEntry.getRuleTxt();
-		String orgDispRate = format.format(orgEntry.getStartDispDate())+"-"+format.format(orgEntry.getEndDispDate());
+		String orgDispRate = format.format(orgEntry.getStartDispDate())+"至"+format.format(orgEntry.getEndDispDate());
 		String orgReachTimeType = orgEntry.getReachTimeType();
 		String curRuleType = curEntry.getRuleType();
 		Integer curGapDays = curEntry.getGapDays();
 		String curRuleTxt = curEntry.getRuleTxt();
-		String curDispRate = format.format(curEntry.getStartDispDate())+"-"+format.format(curEntry.getEndDispDate());
+		String curDispRate = format.format(curEntry.getStartDispDate())+"至"+format.format(curEntry.getEndDispDate());
 		String curReachTimeType = curEntry.getReachTimeType();
 		String orgString = "";
 		String curString = "";
+
 		if(ContentDiffrentUtil.isDiffrent(orgRuleType,curRuleType) || ContentDiffrentUtil.isDiffrent(curGapDays,orgGapDays)|| ContentDiffrentUtil.isDiffrent(orgRuleTxt,curRuleTxt)) {
 			orgString = orgString + ("10".equals(orgRuleType) ? "按周期送间隔" + orgGapDays + "天 " : "按星期送" + orgRuleTxt+" ");
 			curString = curString + ("10".equals(curRuleType) ? "按周期送间隔" + curGapDays + "天 " : "按星期送" + curRuleTxt+" ");
@@ -5404,11 +5523,64 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 			orgString = orgString + orgDispRate+" ";
 			curString = curString + curDispRate+" ";
 		}
-		if(StringUtils.isNotBlank(orgString) && StringUtils.isNotBlank(curString)){
+
+
+		//变更产品
+		if(!orgEntry.getMatnr().equals(curEntry.getMatnr())){
+			TMdMaraEx ex = maraExMapper.getProductTransRateByCode(curEntry.getMatnr(),user.getSalesOrg());
+			if(ex!=null){
+				curEntry.setMatnrTxt(ex.getShortTxt());
+			}
+			if(!orgEntry.getQty().equals(curEntry.getQty()) && (StringUtils.isNotBlank(orgString) && StringUtils.isNotBlank(curString))){
+				//变更产品 同时变更数量 和 配送日期
+				OperationLogUtil.saveHistoryOperation(orgEntry.getOrderNo(),LogType.ORDER,OrderLogEnum.CHANGE_PRODUCT_QTY_RULE,null,null,
+						orgEntry.getMatnr()+orgEntry.getShortTxt()+"，"+orgEntry.getQty()+"，"+orgString,curEntry.getMatnr()+curEntry.getShortTxt()+"，"+curEntry.getQty()+"，"+curString,
+						null,null,user,operationLogMapper);
+
+			}else if(!orgEntry.getQty().equals(curEntry.getQty()) && (StringUtils.isBlank(orgString) && StringUtils.isBlank(curString))){
+				//变更产品 同时变更数量
+				OperationLogUtil.saveHistoryOperation(orgEntry.getOrderNo(),LogType.ORDER,OrderLogEnum.CHANGE_PRODUCT_QTY,null,null,
+						orgEntry.getMatnr()+orgEntry.getShortTxt()+"，"+orgEntry.getQty(),curEntry.getMatnr()+curEntry.getShortTxt()+"，"+curEntry.getQty(),
+						null,null,user,operationLogMapper);
+
+			}else if(orgEntry.getQty().equals(curEntry.getQty()) && (StringUtils.isNotBlank(orgString) && StringUtils.isNotBlank(curString))){
+				//变更产品 同时变更配送日期
+				OperationLogUtil.saveHistoryOperation(orgEntry.getOrderNo(),LogType.ORDER,OrderLogEnum.CHANGE_PRODUCT_RULE,null,null,
+						orgEntry.getMatnr()+orgEntry.getShortTxt()+"，"+orgString,curEntry.getMatnr()+curEntry.getShortTxt()+"，"+curString,
+						null,null,user,operationLogMapper);
+			}else if(orgEntry.getQty().equals(curEntry.getQty())  && (StringUtils.isBlank(orgString) && StringUtils.isBlank(curString))){
+				//只变更产品
+				OperationLogUtil.saveHistoryOperation(orgEntry.getOrderNo(),LogType.ORDER,OrderLogEnum.CHANGE_PRODUCT,null,null,
+						orgEntry.getMatnr()+orgEntry.getShortTxt(),curEntry.getMatnr()+curEntry.getShortTxt(),null,null,user,operationLogMapper);
+			}
+		//变更数量
+		}else if(!orgEntry.getQty().equals(curEntry.getQty())){
+			//变更数量  同时变更配送日期
+			if(StringUtils.isNotBlank(orgString) && StringUtils.isNotBlank(curString)){
+				//只变更数量
+				OperationLogUtil.saveHistoryOperation(orgEntry.getOrderNo(),LogType.ORDER,OrderLogEnum.CHANGE_QTY_RULE,null,null,
+						orgEntry.getQty().toString()+"，"+orgString,curEntry.getQty().toString()+"，"+curString,orgEntry.getMatnr()+orgEntry.getShortTxt(),null,
+						user,operationLogMapper);
+			}else{
+				//只变更数量
+				OperationLogUtil.saveHistoryOperation(orgEntry.getOrderNo(),LogType.ORDER,OrderLogEnum.CHANGE_QTY,null,null,
+						orgEntry.getQty().toString(),curEntry.getQty().toString(),orgEntry.getMatnr()+orgEntry.getShortTxt(),null,
+						user,operationLogMapper);
+			}
+		//变更配送日期
+		}else if(StringUtils.isNotBlank(orgString) && StringUtils.isNotBlank(curString)){
+			//只变配送日期
 			OperationLogUtil.saveHistoryOperation(orgEntry.getOrderNo(),LogType.ORDER,OrderLogEnum.CHANGE_RULE_TYPE,null,null,
 					orgString,curString,orgEntry.getMatnr()+orgEntry.getShortTxt(),null,user,operationLogMapper);
 		}
 
+		//行项目停订日志
+		if(ContentDiffrentUtil.isDiffrent(orgEntry.getIsStop(),curEntry.getIsStop())){
+			if("Y".equals(curEntry.getIsStop()) && curEntry.getStopStartDate()!=null){
+				OperationLogUtil.saveHistoryOperation(orgEntry.getOrderNo(),LogType.ORDER,OrderLogEnum.ORDER_ITEM_STOP,null,null,
+						null,format.format(curEntry.getStopStartDate()),orgEntry.getMatnr()+orgEntry.getShortTxt(),null,user,operationLogMapper);
+			}
+		}
 
 
 	}

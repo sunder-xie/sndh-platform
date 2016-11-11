@@ -59,6 +59,14 @@ public class DateUtil {
         return secondDay;
     }
 
+    //获取date 日期的后 i 天
+    public static Date getDay(Date today,int i){
+        Calendar calendar = new GregorianCalendar();
+        calendar.setTime(today);
+        calendar.add(calendar.DATE,i);
+        Date secondDay = calendar.getTime();
+        return secondDay;
+    }
     public static  boolean sameDateOrYestaday(Date day1 , Date day2){
         SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
         if(format.format(day1).equals(format.format(day2))){
