@@ -139,19 +139,18 @@ public class PIRequireOrderServiceImpl implements PIRequireOrderService {
         orderHeader.setKUNWE(kunwe);
         orderHeader.setVKORG(vkorg);
         orderHeader.setActivityId(activityId);
-        //TODO 待优化
-        if("40".equals(ssmSalOrder.getPreorderSource())) {
-            orderHeader.setKUNWE2(EnvContant.getSystemConst("online_code"));
-        }
-        List<Map<String, String>> items = tSsmSalOrderItemMapper.findItemsForPI(ssmSalOrder.getOrderNo());
         TMdBranch branch = branchMapper.getBranchByNo(ssmSalOrder.getBranchNo());
+        List<Map<String, String>> items = tSsmSalOrderItemMapper.findItemsForPI(ssmSalOrder.getOrderNo());
         TMdBranchEx branchEx = branchExMapper.getBranchEx(ssmSalOrder.getBranchNo());
         String lgort = branch.getLgort();
-        boolean isZy = false;
+//        boolean isZy = false;
         if ("02".equals(branch.getBranchGroup())) {
             lgort = branchEx.getReslo();
         }else{
-            isZy = true;
+//            isZy = true;
+            if("40".equals(ssmSalOrder.getPreorderSource())) {
+                orderHeader.setKUNWE2(EnvContant.getSystemConst("online_code"));
+            }
         }
         orderHeader.setLgort(lgort);
         String werks = branchEx.getSupplPlnt();
