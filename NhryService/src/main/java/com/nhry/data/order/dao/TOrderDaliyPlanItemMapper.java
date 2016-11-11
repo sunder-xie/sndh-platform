@@ -95,7 +95,7 @@ public interface TOrderDaliyPlanItemMapper {
 
     List<TOrderDaliyPlanItem> selectbyDispLineNoByOrderNos(String empNo, String format, String orderType, String branchNo, List<String> orderNos);
 
-    TOrderDaliyPlanItem selectDaliyPlanByOrderAndDispDate(String orderNo, Date date);
+    List<TOrderDaliyPlanItem> selectDaliyPlanByOrderAndDispDate(String orderNo, Date date);
 
     int deleteDailyByStopDate(OrderSearchModel model);
 
@@ -116,4 +116,8 @@ public interface TOrderDaliyPlanItemMapper {
     int deleteOneDayItem(TOrderDaliyPlanItem plan);
 
     List<TOrderDaliyPlanItem> selectByDayAndNo(TOrderDaliyPlanItem plan);
+
+    List<TOrderDaliyPlanItem> selectByDayAndNoBetweenDays(OrderSearchModel omodel);
+
+    int updateDaliyPlansToStopByStatus(OrderSearchModel omodel);
 }

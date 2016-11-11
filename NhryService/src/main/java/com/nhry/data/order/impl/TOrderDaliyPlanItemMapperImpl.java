@@ -109,6 +109,17 @@ public class TOrderDaliyPlanItemMapperImpl implements TOrderDaliyPlanItemMapper
 		return sqlSessionTemplate.selectList("selectByDayAndNo", plan);
 	}
 
+	//查询日期区间内 所有的状态为10的日订单
+	@Override
+	public List<TOrderDaliyPlanItem> selectByDayAndNoBetweenDays(OrderSearchModel omodel) {
+		return sqlSessionTemplate.selectList("selectByDayAndNoBetweenDays", omodel);
+	}
+
+	@Override
+	public int updateDaliyPlansToStopByStatus(OrderSearchModel omodel) {
+		return sqlSessionTemplate.update("updateDaliyPlansToStopByStatus",omodel);
+	}
+
 	@Override
 	public List<TOrderDaliyPlanItem> selectDaliyPlansByEntryNo(String itemNo)
 	{
@@ -241,11 +252,11 @@ public class TOrderDaliyPlanItemMapperImpl implements TOrderDaliyPlanItemMapper
 	}
 
 	@Override
-	public TOrderDaliyPlanItem selectDaliyPlanByOrderAndDispDate(String orderNo, Date date) {
+	public List<TOrderDaliyPlanItem> selectDaliyPlanByOrderAndDispDate(String orderNo, Date date) {
 		TOrderDaliyPlanItem item = new TOrderDaliyPlanItem();
 		item.setOrderNo(orderNo);
 		item.setDispDate(date);
-		return sqlSessionTemplate.selectOne("selectDaliyPlanByOrderAndDispDate",item);
+		return sqlSessionTemplate.selectList("selectDaliyPlanByOrderAndDispDate",item);
 	}
 
 	@Override
