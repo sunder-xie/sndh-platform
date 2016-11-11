@@ -882,7 +882,7 @@
   </select>
   <select id="selectDaliyPlanByOrderAndDispDate" parameterType="com.nhry.data.order.domain.TOrderDaliyPlanItem"  resultMap="BaseResultMap">
     SELECT
-    ORDER_NO,DISP_DATE
+    ORDER_NO,DISP_DATE,STATUS
     FROM t_mst_order_daliy_plan_item
     WHERE ORDER_NO = #{orderNo,jdbcType=VARCHAR}
     and DISP_DATE = #{dispDate,jdbcType=DATE}
