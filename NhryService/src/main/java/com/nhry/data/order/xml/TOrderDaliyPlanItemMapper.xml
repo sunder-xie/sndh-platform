@@ -559,7 +559,7 @@
     LEFT JOIN t_preorder o on i.ORDER_NO = o.ORDER_NO
     LEFT JOIN t_md_mara_ex e on i.MATNR = e.MATNR  and e.SALES_ORG = #{salesOrg,jdbcType=VARCHAR}
     where   1=1
-    and o.PREORDER_SOURCE != '40'
+
     AND i.GIFT_QTY is not null
     and i.GIFT_QTY >0
     and o.PREORDER_STAT !='20'
@@ -601,7 +601,7 @@
 				  LEFT JOIN t_preorder o on 	i.ORDER_NO = o.ORDER_NO
 				  LEFT JOIN t_md_mara_ex e on i.MATNR = e.MATNR  and e.SALES_ORG = #{salesOrg,jdbcType=VARCHAR}
 				  where   1=1
-				  and o.PREORDER_SOURCE != '40'
+
 				  and o.PREORDER_STAT !='30'
 				  and o.PREORDER_STAT !='40'
 				  and i.`STATUS` !='30'
