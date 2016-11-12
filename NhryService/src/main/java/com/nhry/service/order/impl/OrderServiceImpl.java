@@ -4160,7 +4160,7 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 
 	public List<TOrderDaliyPlanItem> uptOrderlongForViewPlans(OrderEditModel record){
 		try{
-			this.uptOrderlong(record);
+			int i = this.uptOrderlong(record);
 		}catch(Exception e){
 			if(((ServiceException) e).getValue().equals("没做修改")){
 				OrderSearchModel mo = new OrderSearchModel();
@@ -4207,12 +4207,12 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 		int afterDays = 0;//经过的天数
 		//行号唯一，需要判断以前最大的行号
 		int daliyEntryNo = 0;//日计划行号
-		/*try{
+		try{
 			daliyEntryNo = tOrderDaliyPlanItemMapper.selectMaxDaliyPlansNoByOrderNo(order.getOrderNo()) + 1;
 		}catch(Exception e){
 			//如果找不到最大值
 			System.out.println("=============查询日计划最大数发生错误!==========订单号："+order.getOrderNo());
-		}*/
+		}
 		List<TOrderDaliyPlanItem> allDay = tOrderDaliyPlanItemMapper.selectDaliyPlansByOrderNo(order.getOrderNo());
 		allDay.stream().filter(e->!"30".equals(e.getStatus())).sorted((p1, p2) ->
 				p1.getDispDate().compareTo(p2.getDispDate())).collect(Collectors.toList());
@@ -4527,11 +4527,11 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 		//根据最大配送天数的行
 		//行号唯一，需要判断以前最大的行号
 		int daliyEntryNo = 0;//日计划行号
-		/*try{
+		try{
 			daliyEntryNo = tOrderDaliyPlanItemMapper.selectMaxDaliyPlansNoByOrderNo(orgOrder.getOrderNo()) + 1;
 		}catch(Exception e){
 			//如果找不到最大值
-		}*/
+		}
 		int maxEntryDay = 3650;
 		Date lastDay = firstDeliveryDate;
 		outer:for(int i = 0; i < maxEntryDay; i++) {
