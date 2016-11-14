@@ -422,7 +422,7 @@ public class TVipCustInfoServiceImpl extends BaseService implements TVipCustInfo
 				attrs.put("city", address.getCity());
 				attrs.put("county", address.getCounty());
 				attrs.put("residentialArea", address.getResidentialArea());
-				if(StringUtils.isNoneBlank(address.getAddressId())){
+				if(StringUtils.isNotBlank(address.getAddressId())){
 					TMdAddress oldAddress = addressMapper.findAddressById(address.getAddressId());
 					if(oldAddress==null){
 						attrs.put("addressTxt", address.getAddressTxt());
