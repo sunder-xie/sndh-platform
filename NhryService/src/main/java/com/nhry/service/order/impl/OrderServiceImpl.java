@@ -3913,7 +3913,7 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 							entry.setCreateAt(new Date());//创建日期
 							entry.setCreateBy(user.getLoginName());//创建人
 							entry.setCreateByTxt(user.getDisplayName());//创建人姓名
-							calculateEntryAmount(entry);
+							//calculateEntryAmount(entry);
 							tPlanOrderItemMapper.insert(entry);
 							//删除从这个行项目开始日期后的所有未完结日订单
 							TOrderDaliyPlanItem item = new TOrderDaliyPlanItem();
@@ -4219,24 +4219,13 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 				p1.getDispDate().compareTo(p2.getDispDate())).collect(Collectors.toList());
 		Map<String,TOrderDaliyPlanItem> dayMap = new HashMap<String,TOrderDaliyPlanItem>();
 		if(sortDays!=null && sortDays.size()>0){
-			boolean firstFlag = true;
 			for(TOrderDaliyPlanItem day : sortDays){
 				String key = day.getItemNo()+format.format(day.getDispDate());
 				if(day.getDispDate().before(firstDeliveryDate)){
 					//BigDecimal amt = BigDecimal.ZERO;
 					TOrderDaliyPlanItem item = new TOrderDaliyPlanItem();
-					if("10".equals(day.getStatus())){
-						if(firstFlag){
-							firstFlag = false;
-							item.setRemainAmt(curAmt);
-						}else{
-							curAmt = curAmt.subtract(day.getAmt());
-							item.setRemainAmt(curAmt);
-						}
-					}else if("20".equals(day.getStatus())){
-						initAmt = initAmt.subtract(day.getAmt());
-						item.setRemainAmt(initAmt);
-					}
+					initAmt = initAmt.subtract(day.getAmt());
+					item.setRemainAmt(initAmt);
 					item.setItemNo(day.getItemNo());
 					item.setOrderNo(day.getOrderNo());
 					item.setPlanItemNo(String.valueOf(daliyEntryNo));
@@ -4252,6 +4241,7 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 			};
 		}
 		Date lastDay = null;
+
 		outer:for(int i = 0; i < maxEntryDay; i++){
 			for (TPlanOrderItem entry : entryMap.keySet()) {
 				int days = entryMap.get(entry);
@@ -4294,16 +4284,17 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 					if(dayMap.containsKey(setKey)){
 						TOrderDaliyPlanItem item = dayMap.get(setKey);
 						if("10".equals(item.getStatus())){
+							initAmt = initAmt.subtract(item.getAmt());
 							curAmt = curAmt.subtract(item.getAmt());
-							plan.setRemainAmt(curAmt);
+							plan.setRemainAmt(initAmt);
 						}else if("20".equals(item.getStatus())){
 							initAmt = initAmt.subtract(item.getAmt());
-							plan.setRemainAmt(initAmt.subtract(item.getAmt()));
+							plan.setRemainAmt(initAmt);
 						}else{
 							continue;
 						}
 						//当订单余额小于0时停止
-						if(curAmt.floatValue() < 0)break outer;
+						if(initAmt.floatValue() < 0)break outer;
 						plan.setPlanItemNo(String.valueOf(daliyEntryNo));//预订单计划行项
 
 						tOrderDaliyPlanItemMapper.updateDaliyPlanItemByItemNo(plan);
@@ -4325,9 +4316,10 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 						BigDecimal qty = new BigDecimal(entry.getQty().toString());
 						plan.setAmt(entry.getSalesPrice().multiply(qty));//金额小计
 						curAmt = curAmt.subtract(plan.getAmt());
+						initAmt = initAmt.subtract(plan.getAmt());
 						//当订单余额小于0时停止
-						if(curAmt.floatValue() < 0)break outer;
-						plan.setRemainAmt(curAmt);//订单余额
+						if(initAmt.floatValue() < 0)break outer;
+						plan.setRemainAmt(initAmt);//订单余额
 						plan.setStatus("10");//状态
 						plan.setCreateAt(new Date());//创建时间
 						plan.setCreateBy(userSessionService.getCurrentUser().getLoginName());//创建人
@@ -4511,20 +4503,11 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 				p1.getDispDate().compareTo(p2.getDispDate())).collect(Collectors.toList());
 
 		Map<String,TOrderDaliyPlanItem> dayMap = new HashMap<String,TOrderDaliyPlanItem>();
-		boolean firstFlag = true;
+		//boolean firstFlag = true;
 		if(sortDays!=null && sortDays.size()>0){
 			for(TOrderDaliyPlanItem item : sortDays){
 				if(item.getDispDate().before(firstDeliveryDate)){
-					if("10".equals(item.getStatus())){
-						if(firstFlag){
-							firstFlag = false;
-							initAmt = initAmt.subtract(item.getAmt());
-						}else{
-							curAmt = curAmt.subtract(item.getAmt());
-						}
-					}else if("20".equals(item.getStatus())){
 						initAmt = initAmt.subtract(item.getAmt());
-					}
 				}else{
 					String key = item.getItemNo()+format.format(item.getDispDate());
 					if(!dayMap.containsKey(key)){
@@ -4593,14 +4576,15 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 						TOrderDaliyPlanItem item  = dayMap.get(mapKey);
 						if("10".equals(item.getStatus())){
 							curAmt = curAmt.subtract(item.getAmt());
-							plan.setRemainAmt(curAmt);
+							initAmt = initAmt.subtract(item.getAmt());
+							plan.setRemainAmt(initAmt);
 						}else if("20".equals(item.getStatus())){
 							initAmt = initAmt.subtract(item.getAmt());
 							plan.setRemainAmt(initAmt);
 						}else{
 							continue;
 						}
-						if(curAmt.floatValue() < 0)break outer;
+						if(initAmt.floatValue() < 0)break outer;
 						plan.setPlanItemNo(String.valueOf(daliyEntryNo));
 						tOrderDaliyPlanItemMapper.updateDaliyPlanItemByItemNo(plan);
 						//daliyPlans.add(plan);
@@ -4621,9 +4605,10 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 					BigDecimal qty = new BigDecimal(entry.getQty().toString());
 					plan.setAmt(entry.getSalesPrice().multiply(qty));//金额小计
 					curAmt = curAmt.subtract(plan.getAmt());
+					initAmt = initAmt.subtract(plan.getAmt());
 					//当订单余额小于0时停止
-					if(curAmt.floatValue() < 0)break outer;
-					plan.setRemainAmt(curAmt);//订单余额
+					if(initAmt.floatValue() < 0)break outer;
+					plan.setRemainAmt(initAmt);//订单余额
 					plan.setStatus("10");//状态
 					plan.setCreateAt(new Date());//创建时间
 					plan.setCreateBy(userSessionService.getCurrentUser().getLoginName());//创建人
