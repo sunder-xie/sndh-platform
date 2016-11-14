@@ -2,6 +2,7 @@ package com.nhry.service.pi.dao;
 
 import com.nhry.data.basic.domain.TMdAddress;
 import com.nhry.data.basic.domain.TVipCustInfo;
+import com.nhry.model.webService.CustomerComplainModel;
 import com.nhry.service.pi.pojo.MemberActivities;
 import com.nhry.webService.client.EvMemb;
 import com.nhry.webService.client.PISuccessTMessage;
@@ -76,5 +77,12 @@ public interface PIVipInfoDataService {
      * @return
      */
     void executeSendAddresses(List<TMdAddress> addresses,String sapGuid);
+
+    /**
+     * 送奶员投诉信息
+     * @param model
+     * @return
+     */
+    PISuccessTMessage queryCustomerComplain(CustomerComplainModel model);
 
 }

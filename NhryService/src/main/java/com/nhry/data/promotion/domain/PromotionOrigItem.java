@@ -14,6 +14,8 @@ public class PromotionOrigItem{
 
     private String unit;
 
+    private BigDecimal discountAmt;
+
     public String getGoodNo() {
         return goodNo;
     }
@@ -52,5 +54,13 @@ public class PromotionOrigItem{
 
     public void setItemNo(String itemNo) {
         this.itemNo = itemNo == null ? null : itemNo.trim();
+    }
+
+    public BigDecimal getDiscountAmt() {
+        return discountAmt;
+    }
+
+    public void setDiscountAmt(BigDecimal discountAmt) {
+        this.discountAmt = discountAmt;
     }
 }
