@@ -98,7 +98,7 @@
 		LEFT JOIN t_md_mara_ex ex on i.MATNR = ex.MATNR
     where 1 = 1
       and i.ORDER_NO =#{orderNo,jdbcType=VARCHAR}
-    order by i.DISP_DATE desc  , i.REMAIN_AMT asc
+     order by i.DISP_DATE,i.REMAIN_AMT desc
   </select>
    <select id="searchDaliyPlansByStatus" resultMap="BaseResultMap" parameterType="com.nhry.data.order.domain.TOrderDaliyPlanItem" >
     select 
