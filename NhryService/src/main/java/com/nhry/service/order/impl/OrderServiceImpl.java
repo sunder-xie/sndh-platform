@@ -4213,23 +4213,29 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 			//如果找不到最大值
 			System.out.println("=============查询日计划最大数发生错误!==========订单号："+order.getOrderNo());
 		}
+
 		List<TOrderDaliyPlanItem> allDay = tOrderDaliyPlanItemMapper.selectDaliyPlansByOrderNo(order.getOrderNo());
-		allDay.stream().filter(e->!"30".equals(e.getStatus())).sorted((p1, p2) ->
+		List<TOrderDaliyPlanItem> sortDays = allDay.stream().filter(e->!"30".equals(e.getStatus())).sorted((p1, p2) ->
 				p1.getDispDate().compareTo(p2.getDispDate())).collect(Collectors.toList());
 		Map<String,TOrderDaliyPlanItem> dayMap = new HashMap<String,TOrderDaliyPlanItem>();
-		if(allDay!=null && allDay.size()>0){
-			for(TOrderDaliyPlanItem day : allDay){
+		if(sortDays!=null && sortDays.size()>0){
+			boolean firstFlag = true;
+			for(TOrderDaliyPlanItem day : sortDays){
 				String key = day.getItemNo()+format.format(day.getDispDate());
 				if(day.getDispDate().before(firstDeliveryDate)){
 					//BigDecimal amt = BigDecimal.ZERO;
 					TOrderDaliyPlanItem item = new TOrderDaliyPlanItem();
 					if("10".equals(day.getStatus())){
-						curAmt = curAmt.subtract(day.getAmt());
-						item.setRemainAmt(curAmt);
-
+						if(firstFlag){
+							firstFlag = false;
+							item.setRemainAmt(curAmt);
+						}else{
+							curAmt = curAmt.subtract(day.getAmt());
+							item.setRemainAmt(curAmt);
+						}
 					}else if("20".equals(day.getStatus())){
 						initAmt = initAmt.subtract(day.getAmt());
-						item.setRemainAmt(order.getInitAmt().subtract(day.getAmt()));
+						item.setRemainAmt(initAmt);
 					}
 					item.setItemNo(day.getItemNo());
 					item.setOrderNo(day.getOrderNo());
@@ -4501,15 +4507,21 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 		//List<TOrderDaliyPlanItem> oldPlans = tOrderDaliyPlanItemMapper.selectByBeforeDayAndNo(oplan);
 
 		List<TOrderDaliyPlanItem> oldPlans = tOrderDaliyPlanItemMapper.selectDaliyPlansByOrderNo(orgOrder.getOrderNo());
-		oldPlans.stream().filter(e->!"30".equals(e.getStatus())).sorted((p1, p2) ->
+		List<TOrderDaliyPlanItem> sortDays = oldPlans.stream().filter(e->!"30".equals(e.getStatus())).sorted((p1, p2) ->
 				p1.getDispDate().compareTo(p2.getDispDate())).collect(Collectors.toList());
 
 		Map<String,TOrderDaliyPlanItem> dayMap = new HashMap<String,TOrderDaliyPlanItem>();
-		if(oldPlans!=null && oldPlans.size()>0){
-			for(TOrderDaliyPlanItem item : oldPlans){
+		boolean firstFlag = true;
+		if(sortDays!=null && sortDays.size()>0){
+			for(TOrderDaliyPlanItem item : sortDays){
 				if(item.getDispDate().before(firstDeliveryDate)){
 					if("10".equals(item.getStatus())){
-						curAmt = curAmt.subtract(item.getAmt());
+						if(firstFlag){
+							firstFlag = false;
+							initAmt = initAmt.subtract(item.getAmt());
+						}else{
+							curAmt = curAmt.subtract(item.getAmt());
+						}
 					}else if("20".equals(item.getStatus())){
 						initAmt = initAmt.subtract(item.getAmt());
 					}
