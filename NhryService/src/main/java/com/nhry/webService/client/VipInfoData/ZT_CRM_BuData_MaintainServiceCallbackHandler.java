@@ -54,6 +54,21 @@ public abstract class ZT_CRM_BuData_MaintainServiceCallbackHandler {
     }
 
     /**
+     * auto generated Axis2 call back method for customerComplain method
+     * override this method for handling normal response from customerComplain operation
+     */
+    public void receiveResultcustomerComplain(
+        com.nhry.webService.client.VipInfoData.functions.Z_CRM_SNG_TSResponse result) {
+    }
+
+    /**
+     * auto generated Axis2 Error handler
+     * override this method for handling error response from customerComplain operation
+     */
+    public void receiveErrorcustomerComplain(Exception e) {
+    }
+
+    /**
      * auto generated Axis2 call back method for subscriberMaintain method
      * override this method for handling normal response from subscriberMaintain operation
      */

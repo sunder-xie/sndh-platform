@@ -5,6 +5,7 @@
     <id column="PROM_NO" jdbcType="VARCHAR" property="promNo" />
     <result column="PROM_DES" jdbcType="VARCHAR" property="promDes" />
     <result column="PROM_TYPE" jdbcType="VARCHAR" property="promType" />
+    <result column="PROM_SUB_TYPE" jdbcType="VARCHAR" property="promSubType" />
     <result column="SALES_ORG" jdbcType="VARCHAR" property="salesOrg" />
     <result column="SALES_DIST" jdbcType="VARCHAR" property="salesDist" />
     <result column="CUSTOMER_TYPE" jdbcType="VARCHAR" property="customerType" />
@@ -23,7 +24,7 @@
     <result column="LAST_MODIFIED_BY_TXT" jdbcType="VARCHAR" property="lastModifiedByTxt" />
   </resultMap>
   <sql id="Base_Column_List">
-    PROM_NO, PROM_DES, PROM_TYPE, SALES_ORG, SALES_DIST, CUSTOMER_TYPE, PROM_STAT, PLAN_START_TIME, 
+    PROM_NO, PROM_DES, PROM_TYPE, PROM_SUB_TYPE, SALES_ORG, SALES_DIST, CUSTOMER_TYPE, PROM_STAT, PLAN_START_TIME,
     PLAN_STOP_TIME, BUY_START_TIME, BUY_STOP_TIME, BUY_AMT, GIFT_AMT, CREATE_AT, CREATE_BY, 
     CREATE_BY_TXT, LAST_MODIFIED, LAST_MODIFIED_BY, LAST_MODIFIED_BY_TXT
   </sql>
@@ -46,6 +47,9 @@
       </if>
       <if test="promType != null">
         PROM_TYPE = #{promType,jdbcType=VARCHAR},
+      </if>
+      <if test="promSubType != null">
+        PROM_SUB_TYPE = #{promSubType,jdbcType=VARCHAR},
       </if>
       <if test="salesOrg != null">
         SALES_ORG = #{salesOrg,jdbcType=VARCHAR},
@@ -102,6 +106,7 @@
     update t_promotion
     set PROM_DES = #{promDes,jdbcType=VARCHAR},
       PROM_TYPE = #{promType,jdbcType=VARCHAR},
+      PROM_SUB_TYPE = #{promSubType,jdbcType=VARCHAR},
       SALES_ORG = #{salesOrg,jdbcType=VARCHAR},
       SALES_DIST = #{salesDist,jdbcType=VARCHAR},
       CUSTOMER_TYPE = #{customerType,jdbcType=VARCHAR},
@@ -122,14 +127,14 @@
   </update>
 
   <insert id="insertPromotion" parameterType="com.nhry.data.promotion.domain.Promotion">
-    insert into t_promotion (PROM_NO, PROM_DES, PROM_TYPE, 
+    insert into t_promotion (PROM_NO, PROM_DES, PROM_TYPE, PROM_SUB_TYPE,
       SALES_ORG, SALES_DIST, CUSTOMER_TYPE, 
       PROM_STAT, PLAN_START_TIME, PLAN_STOP_TIME, 
       BUY_START_TIME, BUY_STOP_TIME, BUY_AMT, 
       GIFT_AMT, CREATE_AT, CREATE_BY, 
       CREATE_BY_TXT, LAST_MODIFIED, LAST_MODIFIED_BY, 
       LAST_MODIFIED_BY_TXT)
-    values (#{promNo,jdbcType=VARCHAR}, #{promDes,jdbcType=VARCHAR}, #{promType,jdbcType=VARCHAR}, 
+    values (#{promNo,jdbcType=VARCHAR}, #{promDes,jdbcType=VARCHAR}, #{promType,jdbcType=VARCHAR}, #{promSubType,jdbcType=VARCHAR},
       #{salesOrg,jdbcType=VARCHAR}, #{salesDist,jdbcType=VARCHAR}, #{customerType,jdbcType=VARCHAR}, 
       #{promStat,jdbcType=VARCHAR}, #{planStartTime,jdbcType=DATE}, #{planStopTime,jdbcType=DATE},
       #{buyStartTime,jdbcType=DATE}, #{buyStopTime,jdbcType=DATE}, #{buyAmt,jdbcType=DECIMAL},
@@ -148,6 +153,9 @@
       </if>
       <if test="promType != null">
         PROM_TYPE,
+      </if>
+      <if test="promSubType != null">
+        PROM_SUB_TYPE,
       </if>
       <if test="salesOrg != null">
         SALES_ORG,
@@ -207,6 +215,9 @@
       </if>
       <if test="promType != null">
         #{promType,jdbcType=VARCHAR},
+      </if>
+      <if test="promSubType != null">
+        #{promSubType,jdbcType=VARCHAR},
       </if>
       <if test="salesOrg != null">
         #{salesOrg,jdbcType=VARCHAR},
