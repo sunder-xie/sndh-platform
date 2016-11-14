@@ -6686,7 +6686,7 @@ public class OrderServiceImpl extends BaseService implements OrderService {
  				  
  				  if("10".equals(entry.getRuleType())){
  						int gapDays = entry.getGapDays() + 1;//间隔天数
- 						if((!stopEndDate.after(entry.getStartDispDate())?daysOfTwo(entry.getStartDispDate(),today):afterDays)%gapDays != 0){
+ 						if((!stopEndDate.after(entry.getStartDispDate())?afterDays:daysOfTwo(entry.getStartDispDate(),today))%gapDays != 0){
  							if(entry.getRuleTxt()!=null){
  								List<String> deliverDays = Arrays.asList(entry.getRuleTxt().split(","));
  								if(deliverDays.size() > 0){//判断周6，7是否配送
