@@ -33,19 +33,38 @@ public interface ZT_CRM_BuData_MaintainService {
     /**
      * Auto generated method signature
      *
-     * @param z_CRM_MEMB_ZTAB0000LQ_UPDATE2
+     * @param z_CRM_SNG_TS2
      */
-    public com.nhry.webService.client.VipInfoData.functions.Z_CRM_MEMB_ZTAB0000LQ_UPDATEResponse subscriberMaintain(
-            com.nhry.webService.client.VipInfoData.functions.Z_CRM_MEMB_ZTAB0000LQ_UPDATE z_CRM_MEMB_ZTAB0000LQ_UPDATE2)
+    public com.nhry.webService.client.VipInfoData.functions.Z_CRM_SNG_TSResponse customerComplain(
+            com.nhry.webService.client.VipInfoData.functions.Z_CRM_SNG_TS z_CRM_SNG_TS2)
         throws java.rmi.RemoteException;
 
     /**
      * Auto generated method signature for Asynchronous Invocations
      *
-     * @param z_CRM_MEMB_ZTAB0000LQ_UPDATE2
+     * @param z_CRM_SNG_TS2
+     */
+    public void startcustomerComplain(
+            com.nhry.webService.client.VipInfoData.functions.Z_CRM_SNG_TS z_CRM_SNG_TS2,
+            final ZT_CRM_BuData_MaintainServiceCallbackHandler callback)
+        throws java.rmi.RemoteException;
+
+    /**
+     * Auto generated method signature
+     *
+     * @param z_CRM_MEMB_ZTAB0000LQ_UPDATE4
+     */
+    public com.nhry.webService.client.VipInfoData.functions.Z_CRM_MEMB_ZTAB0000LQ_UPDATEResponse subscriberMaintain(
+            com.nhry.webService.client.VipInfoData.functions.Z_CRM_MEMB_ZTAB0000LQ_UPDATE z_CRM_MEMB_ZTAB0000LQ_UPDATE4)
+        throws java.rmi.RemoteException;
+
+    /**
+     * Auto generated method signature for Asynchronous Invocations
+     *
+     * @param z_CRM_MEMB_ZTAB0000LQ_UPDATE4
      */
     public void startsubscriberMaintain(
-            com.nhry.webService.client.VipInfoData.functions.Z_CRM_MEMB_ZTAB0000LQ_UPDATE z_CRM_MEMB_ZTAB0000LQ_UPDATE2,
+            com.nhry.webService.client.VipInfoData.functions.Z_CRM_MEMB_ZTAB0000LQ_UPDATE z_CRM_MEMB_ZTAB0000LQ_UPDATE4,
             final ZT_CRM_BuData_MaintainServiceCallbackHandler callback)
         throws java.rmi.RemoteException;
 

@@ -77,6 +77,7 @@
         <property name="vipCustInfoService" ref="custService"/>
         <property name="vipCrmAddressMapper" ref="vipcrmAddressMapper"/>
         <property name="taskExecutor" ref="taskExecutor"/>
+        <property name="branchEmpService" ref="branchEmpService"/>
     </bean>
     <jaxws:endpoint id="piOrderServiceImpl" implementor="#piOrderService"
                     address="/orderService"/>

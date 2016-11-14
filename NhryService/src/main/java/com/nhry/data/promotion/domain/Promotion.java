@@ -10,6 +10,8 @@ public class Promotion {
 
     private String promType;
 
+    private String promSubType;
+
     private String salesOrg;
 
     private String salesDist;
@@ -192,5 +194,13 @@ public class Promotion {
 
     public void setLastModifiedByTxt(String lastModifiedByTxt) {
         this.lastModifiedByTxt = lastModifiedByTxt == null ? null : lastModifiedByTxt.trim();
+    }
+
+    public String getPromSubType() {
+        return promSubType;
+    }
+
+    public void setPromSubType(String promSubType) {
+        this.promSubType = promSubType;
     }
 }

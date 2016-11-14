@@ -237,15 +237,16 @@ public class DeliverMilkServiceImpl extends BaseService implements DeliverMilkSe
 					sModel.setBranchNo(order.getBranchNo());
 					sModel.setRoleId("10002");
 					List<TMdBranchEmp> tbList = branchEmpService.queryBranchEmp(sModel);
-					if(tbList.size()==0){
-						throw new ServiceException(MessageCode.LOGIC_ERROR,"此奶站没有奶站站长，请维护！！！！");
-					}else if(tbList.size()>1) {
-						throw new ServiceException(MessageCode.LOGIC_ERROR, "此奶站有多个奶站站长，请维护！！！！");
-					}
+
 					if(branch!=null){
 						//如果奶站维护了内部销售订单售达方为站长，则内部销售订单挂到站长头上，否则挂到送奶员头上
 						sOrder = new TMstInsideSalOrder();
 						if("20".equals(branch.getTargetPerson())){
+							if(tbList.size()==0){
+								throw new ServiceException(MessageCode.LOGIC_ERROR,"此奶站没有奶站站长，请维护！！！！");
+							}else if(tbList.size()>1) {
+								throw new ServiceException(MessageCode.LOGIC_ERROR, "此奶站有多个奶站站长，请维护！！！！");
+							}
 							for(TMdBranchEmp item:tbList ){
 								sOrder.setSalEmpNo(item.getEmpNo());
 							}

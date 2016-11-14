@@ -7,9 +7,10 @@
     <result column="GOOD_NO" jdbcType="VARCHAR" property="goodNo" />
     <result column="ORIG_NUM" jdbcType="DECIMAL" property="origNum" />
     <result column="UNIT" jdbcType="VARCHAR" property="unit" />
+    <result column="DISCOUNT_AMT" jdbcType="DECIMAL" property="discountAmt" />
   </resultMap>
   <sql id="Base_Column_List">
-    PROM_NO, ITEM_NO, GOOD_NO, ORIG_NUM, UNIT
+    PROM_NO, ITEM_NO, GOOD_NO, ORIG_NUM, UNIT, DISCOUNT_AMT
   </sql>
   <select id="selectOrigItem" parameterType="com.nhry.data.promotion.domain.PromotionOrigItemKey" resultMap="BaseResultMap">
     select 
@@ -36,6 +37,9 @@
       <if test="unit != null">
         UNIT = #{unit,jdbcType=VARCHAR},
       </if>
+      <if test="discountAmt != null">
+        DISCOUNT_AMT = #{discountAmt,jdbcType=VARCHAR},
+      </if>
     </set>
     where PROM_NO = #{promNo,jdbcType=VARCHAR}
       and ITEM_NO = #{itemNo,jdbcType=VARCHAR}
@@ -44,6 +48,7 @@
     update t_promotion_orig_item
     set GOOD_NO = #{goodNo,jdbcType=VARCHAR},
       ORIG_NUM = #{origNum,jdbcType=DECIMAL},
+      DISCOUNT_AMT = #{discountAmt,jdbcType=VARCHAR},
       UNIT = #{unit,jdbcType=VARCHAR}
     where PROM_NO = #{promNo,jdbcType=VARCHAR}
       and ITEM_NO = #{itemNo,jdbcType=VARCHAR}
@@ -51,9 +56,9 @@
 
   <insert id="insertOrigItem" parameterType="com.nhry.data.promotion.domain.PromotionOrigItem">
     insert into t_promotion_orig_item (PROM_NO, ITEM_NO, GOOD_NO, 
-      ORIG_NUM, UNIT)
+      ORIG_NUM, UNIT, DISCOUNT_AMT)
     values (#{promNo,jdbcType=VARCHAR}, #{itemNo,jdbcType=VARCHAR}, #{goodNo,jdbcType=VARCHAR}, 
-      #{origNum,jdbcType=DECIMAL}, #{unit,jdbcType=VARCHAR})
+      #{origNum,jdbcType=DECIMAL}, #{unit,jdbcType=VARCHAR}, #{discountAmt,jdbcType=DECIMAL})
   </insert>
   <insert id="insertOrigItemSelective" parameterType="com.nhry.data.promotion.domain.PromotionOrigItem">
     insert into t_promotion_orig_item
@@ -73,6 +78,9 @@
       <if test="unit != null">
         UNIT,
       </if>
+      <if test="discountAmt != null">
+        DISCOUNT_AMT,
+      </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides=",">
       <if test="promNo != null">
@@ -89,6 +97,9 @@
       </if>
       <if test="unit != null">
         #{unit,jdbcType=VARCHAR},
+      </if>
+      <if test="discountAmt != null">
+        #{DISCOUNT_AMT,jdbcType=VARCHAR},
       </if>
     </trim>
   </insert>
