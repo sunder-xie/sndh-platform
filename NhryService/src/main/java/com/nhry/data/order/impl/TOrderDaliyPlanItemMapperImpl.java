@@ -126,14 +126,22 @@ public class TOrderDaliyPlanItemMapperImpl implements TOrderDaliyPlanItemMapper
 		// TODO Auto-generated method stub
 		return sqlSessionTemplate.selectList("selectDaliyPlansByEntryNo", itemNo);
 	}
-	
+
+	//不要改
 	@Override
 	public List<TOrderDaliyPlanItem> selectDaliyPlansByOrderNo(String orderNo)
 	{
 		// TODO Auto-generated method stub
 		return sqlSessionTemplate.selectList("selectDaliyPlansByOrderNo", orderNo);
 	}
-	
+
+	//不要改
+	@Override
+	public List<TOrderDaliyPlanItem> selectDaliyPlansByOrderNo2(String orderNo)
+	{
+		// TODO Auto-generated method stub
+		return sqlSessionTemplate.selectList("selectDaliyPlansByOrderNo2", orderNo);
+	}
 	@Override
 	public List<TOrderDaliyPlanItem> selectDaliyPlansByOrderNoAsc(String orderNo)
 	{

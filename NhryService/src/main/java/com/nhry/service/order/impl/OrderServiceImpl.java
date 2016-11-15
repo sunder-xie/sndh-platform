@@ -4216,7 +4216,7 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 			System.out.println("=============查询日计划最大数发生错误!==========订单号："+order.getOrderNo());
 		}
 
-		List<TOrderDaliyPlanItem> allDay = tOrderDaliyPlanItemMapper.selectDaliyPlansByOrderNo(order.getOrderNo());
+		List<TOrderDaliyPlanItem> allDay = tOrderDaliyPlanItemMapper.selectDaliyPlansByOrderNo2(order.getOrderNo());
 		/*List<TOrderDaliyPlanItem> sortDays = allDay.stream().filter(e->!"30".equals(e.getStatus())).sorted((p1, p2) ->
 				p1.getDispDate().compareTo(p2.getDispDate())).collect(Collectors.toList());*/
 		Map<String,TOrderDaliyPlanItem> dayMap = new HashMap<String,TOrderDaliyPlanItem>();
@@ -4509,7 +4509,7 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 		//final BigDecimal cloneInitAmt = orgOrder.getInitAmt();
 		Map<String,BigDecimal> initMap = new HashMap<String,BigDecimal>();
 		initMap.put("initAmt",initAmt);
-		List<TOrderDaliyPlanItem> oldPlans = tOrderDaliyPlanItemMapper.selectDaliyPlansByOrderNo(orgOrder.getOrderNo());
+		List<TOrderDaliyPlanItem> oldPlans = tOrderDaliyPlanItemMapper.selectDaliyPlansByOrderNo2(orgOrder.getOrderNo());
 		/*List<TOrderDaliyPlanItem> sortDays = oldPlans.stream().filter(e->!"30".equals(e.getStatus())).sorted((p1, p2) ->
 				p1.getDispDate().compareTo(p2.getDispDate())).collect(Collectors.toList());*/
 		//根据最大配送天数的行
