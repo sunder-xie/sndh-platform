@@ -321,7 +321,7 @@ public class OrderResource extends BaseResource {
 	@Path("/searchPendingConfirmUnOnline")
 	@Produces(MediaType.APPLICATION_JSON)
 	@Consumes(MediaType.APPLICATION_JSON)
-	@ApiOperation(value = "/searchPendingConfirmUnOnline", response = PageInfo.class, notes = "人工分单获取退单订单信息列表")
+	@ApiOperation(value = "/searchPendingConfirmUnOnline", response = PageInfo.class, notes = "未上线奶站  人工分单获取退单订单信息列表")
 	public Response searchPendingConfirmUnOnline(@ApiParam(required=true,name="manHandModel",value="ManHandOrderSearchModel") OrderSearchModel smodel){
 		return convertToRespModel(MessageCode.NORMAL, null, orderService.searchPendingConfirmUnOnline(smodel));
 	}
@@ -360,7 +360,7 @@ public class OrderResource extends BaseResource {
 	@Path("/orderConfirmUnOnline")
 	@Produces(MediaType.APPLICATION_JSON)
 	@Consumes(MediaType.APPLICATION_JSON)
-	@ApiOperation(value = "/orderConfirmUnOnline", response = PageInfo.class, notes = "待确认订单确认")
+	@ApiOperation(value = "/orderConfirmUnOnline", response = PageInfo.class, notes = "未上线奶站 待确认订单确认")
 	public Response orderConfirmUnOnline(@ApiParam(required=true,name="uptManHandModel",value="uptManHandModel") UpdateManHandOrderModel uptManHandModel){
 		return convertToRespModel(MessageCode.NORMAL, null, orderService.orderConfirmUnOnline(uptManHandModel));
 	}

@@ -15,10 +15,7 @@ import com.nhry.data.milk.domain.TDispOrderItem;
 import com.nhry.data.order.dao.TOrderDaliyPlanItemMapper;
 import com.nhry.data.order.dao.TPlanOrderItemMapper;
 import com.nhry.data.order.dao.TPreOrderMapper;
-import com.nhry.data.order.domain.TOrderDaliyPlanItem;
-import com.nhry.data.order.domain.TPlanOrderItem;
-import com.nhry.data.order.domain.TPreOrder;
-import com.nhry.data.order.domain.TPromotion;
+import com.nhry.data.order.domain.*;
 import com.nhry.data.stock.dao.TSsmGiOrderItemMapper;
 import com.nhry.model.milk.RouteDetailUpdateModel;
 import com.nhry.model.order.*;
@@ -563,8 +560,7 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 			uptManHandModel.setPreorderStat("10");
 			uptManHandModel.setIsValid("Y");
 		}else{
-			uptManHandModel.setPreorderStat("20");
-			uptManHandModel.setIsValid("Y");
+			throw new ServiceException(MessageCode.LOGIC_ERROR,"奶站未上线，不能确认订单,请联系部门内勤进行维护");
 		}
 		tPreOrderMapper.orderConfirm(uptManHandModel);
 		// 更新订单  金额
