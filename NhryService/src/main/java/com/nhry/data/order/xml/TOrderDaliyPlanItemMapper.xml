@@ -98,7 +98,7 @@
 		LEFT JOIN t_md_mara_ex ex on i.MATNR = ex.MATNR
     where 1 = 1
       and i.ORDER_NO =#{orderNo,jdbcType=VARCHAR}
-     order by i.DISP_DATE,i.REMAIN_AMT desc
+     order by i.DISP_DATE desc  , i.REMAIN_AMT asc
   </select>
    <select id="searchDaliyPlansByStatus" resultMap="BaseResultMap" parameterType="com.nhry.data.order.domain.TOrderDaliyPlanItem" >
     select 
@@ -1029,4 +1029,17 @@
       and DISP_DATE &lt;= #{endDate,jdbcType=DATE}
     </if>
   </update>
+
+
+  <select id="selectDaliyPlansByOrderNo2" resultMap="BaseResultMap" parameterType="java.lang.String" >
+    select
+    i.ORDER_NO, i.ORDER_DATE, i.PLAN_ITEM_NO, i.ITEM_NO, i.DISP_DATE, i.REACH_TIME, i.REACH_TIME_TYPE,
+    i.MATNR, ex.SHORT_TXT MATNR_TXT,i.UNIT, i.QTY, i.PRICE, i.AMT, i.REMAIN_AMT, i.STATUS, i.CREATE_AT, i.CREATE_BY, i.CREATE_BY_TXT,
+    i.LAST_MODIFIED, i.LAST_MODIFIED_BY, i.LAST_MODIFIED_BY_TXT,i.GIFT_QTY,i.PROMOTION_FLAG
+    from t_mst_order_daliy_plan_item i
+    LEFT JOIN t_md_mara_ex ex on i.MATNR = ex.MATNR
+    where 1 = 1
+    and i.ORDER_NO =#{orderNo,jdbcType=VARCHAR}
+    order by i.DISP_DATE,i.REMAIN_AMT desc
+  </select>
 </mapper>

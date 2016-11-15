@@ -52,6 +52,7 @@ public interface TOrderDaliyPlanItemMapper {
     TOrderDaliyPlanItem selectDaliyPlansByEntryNoAndNo(TOrderDaliyPlanItemKey record);
     
     List<TOrderDaliyPlanItem> selectDaliyPlansByOrderNo(String orderNo);
+    List<TOrderDaliyPlanItem> selectDaliyPlansByOrderNo2(String orderNo);
     
     List<TOrderDaliyPlanItem> selectDaliyPlansByOrderNoAsc(String orderNo);
     
