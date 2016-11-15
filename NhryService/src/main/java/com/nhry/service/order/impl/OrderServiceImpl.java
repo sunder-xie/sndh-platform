@@ -4330,7 +4330,7 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 			afterDays++;
 		}
 
-		List<TOrderDaliyPlanItem> allDayItems = tOrderDaliyPlanItemMapper.selectDaliyPlansByOrderNo(order.getOrderNo());
+		List<TOrderDaliyPlanItem> allDayItems = tOrderDaliyPlanItemMapper.selectDaliyPlansByOrderNo2(order.getOrderNo());
 		if(allDayItems!=null && allDayItems.size()>0){
 			allDayItems.stream().filter(e->!"30".equals(e.getStatus())).forEach(item->{
 				initMap.replace("initAmt",initMap.get("initAmt").subtract(item.getAmt()));
@@ -4660,7 +4660,7 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 			} while (curAmt.compareTo(BigDecimal.ZERO) != -1);
 
 		}
-		List<TOrderDaliyPlanItem> allDayItems = tOrderDaliyPlanItemMapper.selectDaliyPlansByOrderNo(orgOrder.getOrderNo());
+		List<TOrderDaliyPlanItem> allDayItems = tOrderDaliyPlanItemMapper.selectDaliyPlansByOrderNo2(orgOrder.getOrderNo());
 		if(allDayItems!=null && allDayItems.size()>0){
 			allDayItems.stream().filter(e->!"30".equals(e.getStatus())).forEach(item->{
 				initMap.replace("initAmt",initMap.get("initAmt").subtract(item.getAmt()));
