@@ -828,6 +828,7 @@ public class PIVipInfoDataServiceImpl implements PIVipInfoDataService {
                     CustomerComplain complain = new CustomerComplain();
                     complain.setSALESORG(zscrm_sng_ts.getSALES_ORG().getSALES_ORG_type2());
                     complain.setNZBH(zscrm_sng_ts.getNZBH().getNZBH_type2());
+                    complain.setBranchName(emp!=null?emp.getBranchName():"");
                     complain.setSNGBH(emp!=null?emp.getEmpName():empNo);
                     complain.setCATEGORY1(zscrm_sng_ts.getCATEGORY1().getCATEGORY1_type0());
                     complain.setCATEGORY2(zscrm_sng_ts.getCATEGORY2().getCATEGORY2_type0());
