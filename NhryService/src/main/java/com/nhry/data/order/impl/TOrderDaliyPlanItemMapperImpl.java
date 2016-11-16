@@ -121,6 +121,11 @@ public class TOrderDaliyPlanItemMapperImpl implements TOrderDaliyPlanItemMapper
 	}
 
 	@Override
+	public int updateDaliyReachTimeTypeItemNo(TOrderDaliyPlanItem item) {
+		return sqlSessionTemplate.update("updateDaliyReachTimeTypeItemNo",item);
+	}
+
+	@Override
 	public List<TOrderDaliyPlanItem> selectDaliyPlansByEntryNo(String itemNo)
 	{
 		// TODO Auto-generated method stub
