@@ -72,6 +72,8 @@ public interface OrderService {
 
 	int orderConfirm(UpdateManHandOrderModel uptManHandModel);
 
+	int batchorderConfirm(UpdateManHandOrderModel uptManHandModel);
+
 	int canOrderUnsubscribe(String orderNo);
 
 	List<TOrderDaliyPlanItem> selectDaliyPlansByOrderNo(String orderCode);
@@ -120,6 +122,7 @@ public interface OrderService {
 	PageInfo searchPendingConfirmOnline(OrderSearchModel smodel);
 
 	int orderConfirmUnOnline(UpdateManHandOrderModel uptManHandModel);
+	int batchOrderConfirmUnOnline(UpdateManHandOrderModel uptManHandModel);
 	int advanceBackOrder(OrderSearchModel record);
 	int updateBackState();
 
