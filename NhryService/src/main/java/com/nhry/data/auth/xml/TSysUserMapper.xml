@@ -790,7 +790,7 @@
         u.LOGIN_NAME = r.LOGIN_NAME
 
         <if test="dealerNo != null and dealerNo != ''">
-            AND u.DEALER_NO = b.DEALER_NO
+            AND u.DEALER_ID = b.DEALER_NO
             AND b.DEALER_NO = #{dealerNo}
         </if>
         <if test="branchNo != null and branchNo != ''">
