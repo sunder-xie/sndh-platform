@@ -937,10 +937,46 @@
       <if test="planItemNo != null" >
         PLAN_ITEM_NO = #{planItemNo,jdbcType=DECIMAL},
       </if>
+      <if test="reachTimeType != null" >
+        REACH_TIME_TYPE = #{reachTimeType,jdbcType=VARCHAR},
+      </if>
     </set>
-    where ORDER_NO = #{orderNo,jdbcType=VARCHAR}
-    and ITEM_NO = #{itemNo,jdbcType=VARCHAR}
-    and DISP_DATE = #{dispDate,jdbcType=DATE}
+    where 1=1
+    <if test="orderNo!=null">
+      and ORDER_NO = #{orderNo,jdbcType=VARCHAR}
+    </if>
+    <if test="itemNo!=null">
+      and ITEM_NO = #{itemNo,jdbcType=VARCHAR}
+    </if>
+    <if test="dispDate!=null">
+      and DISP_DATE = #{dispDate,jdbcType=DATE}
+    </if>
+
+
+
+  </update>
+
+
+
+
+  <update id="updateDaliyReachTimeTypeItemNo" parameterType="com.nhry.data.order.domain.TOrderDaliyPlanItem" >
+    update t_mst_order_daliy_plan_item
+    <set >
+      <if test="reachTimeType != null" >
+        REACH_TIME_TYPE = #{reachTimeType,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where 1=1
+    <if test="orderNo!=null">
+      and ORDER_NO = #{orderNo,jdbcType=VARCHAR}
+    </if>
+    <if test="itemNo!=null">
+      and ITEM_NO = #{itemNo,jdbcType=VARCHAR}
+    </if>
+    <if test="dispDate!=null">
+      and DISP_DATE &gt;= #{dispDate,jdbcType=DATE}
+    </if>
+
   </update>
 
 

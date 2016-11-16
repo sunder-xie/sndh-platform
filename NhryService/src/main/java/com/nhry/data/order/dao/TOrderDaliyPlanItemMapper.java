@@ -121,4 +121,6 @@ public interface TOrderDaliyPlanItemMapper {
     List<TOrderDaliyPlanItem> selectByDayAndNoBetweenDays(OrderSearchModel omodel);
 
     int updateDaliyPlansToStopByStatus(OrderSearchModel omodel);
+
+    int updateDaliyReachTimeTypeItemNo(TOrderDaliyPlanItem item);
 }
