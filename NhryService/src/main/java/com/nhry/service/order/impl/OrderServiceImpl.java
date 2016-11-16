@@ -643,6 +643,34 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 		return  1;
 	}
 
+	@Override
+	public int batchorderConfirm(UpdateManHandOrderModel uptManHandModel){
+		if(StringUtils.isNoneBlank(uptManHandModel.getOrderNo())){
+			List<String> orderList = Arrays.asList(uptManHandModel.getOrderNo().split(","));
+			orderList.stream().forEach((e)->{
+				uptManHandModel.setOrderNo(e);
+				orderConfirm(uptManHandModel);
+			});
+		}else{
+			throw new ServiceException(MessageCode.LOGIC_ERROR,"参数订单编号为空");
+		}
+		return 1;
+	}
+
+	@Override
+	public int batchOrderConfirmUnOnline(UpdateManHandOrderModel uptManHandModel){
+		if(StringUtils.isNoneBlank(uptManHandModel.getOrderNo())){
+			List<String> orderList = Arrays.asList(uptManHandModel.getOrderNo().split(","));
+			orderList.stream().forEach((e)->{
+				uptManHandModel.setOrderNo(e);
+				orderConfirmUnOnline(uptManHandModel);
+			});
+		}else{
+			throw new ServiceException(MessageCode.LOGIC_ERROR,"参数订单编号为空");
+		}
+		return 1;
+	}
+
 
 	@Override
 	public int orderConfirmUnOnline(UpdateManHandOrderModel uptManHandModel) {

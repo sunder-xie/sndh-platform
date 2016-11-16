@@ -302,4 +302,10 @@ public class BranchInfoServiceImpl implements BranchInfoService {
    public List<Map<String,String>> Refuse2receiveResendDetail(String  resendOrderNo){
         return branchInfoMapper.Refuse2receiveResendDetail(resendOrderNo);
     }
+
+    @Override
+    public List<Map<String,String>> PendingUnConfirmOnline(){
+        TSysUser user = userSessionService.getCurrentUser();
+        return branchInfoMapper.PendingUnConfirmOnline(user.getSalesOrg());
+    }
 }
