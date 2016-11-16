@@ -838,6 +838,7 @@
     left join t_md_residential_area r on r.ID = a.RESIDENTIAL_AREA
     WHERE 1=1
     AND o.PREORDER_STAT = "20"
+    and o.IS_VALID='N'
     and (b.IS_VALID ='10' and  SYSDATE() &gt;=b.ONLINE_DATE)
     <if test="preorderSource != null and preorderSource !=''">
       AND o.PREORDER_SOURCE = #{preorderSource,jdbcType=VARCHAR}
