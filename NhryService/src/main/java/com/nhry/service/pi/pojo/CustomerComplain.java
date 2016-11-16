@@ -12,6 +12,7 @@ public class CustomerComplain {
     protected String sngbh;
     protected String description;
     protected String createdate;
+    private String branchName;
 
     /**
      * Gets the value of the salesorg property.
@@ -229,4 +230,11 @@ public class CustomerComplain {
         this.createdate = value;
     }
 
+    public String getBranchName() {
+        return branchName;
+    }
+
+    public void setBranchName(String branchName) {
+        this.branchName = branchName;
+    }
 }
