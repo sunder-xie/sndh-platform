@@ -9,6 +9,8 @@ import com.nhry.data.basic.dao.*;
 import com.nhry.data.basic.domain.*;
 import com.nhry.data.bill.dao.CustomerBillMapper;
 import com.nhry.data.bill.domain.TMstRecvBill;
+import com.nhry.data.config.dao.NHSysCodeItemMapper;
+import com.nhry.data.config.domain.NHSysCodeItem;
 import com.nhry.data.milk.dao.TDispOrderItemMapper;
 import com.nhry.data.milk.dao.TDispOrderMapper;
 import com.nhry.data.milk.domain.TDispOrderItem;
@@ -62,6 +64,11 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 	private TMdOperationLogMapper operationLogMapper;
 	private TMdMaraExMapper maraExMapper;
 	private TMdBranchEmpMapper branchEmpMapper;
+	private NHSysCodeItemMapper codeItemMapper;
+
+	public void setCodeItemMapper(NHSysCodeItemMapper codeItemMapper) {
+		this.codeItemMapper = codeItemMapper;
+	}
 
 	public void setBranchEmpMapper(TMdBranchEmpMapper branchEmpMapper) {
 		this.branchEmpMapper = branchEmpMapper;
@@ -3785,7 +3792,8 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 		if(bill!=null)
 		{
 			if("10".equals(orgOrder.getPaymentmethod())){
-				throw new ServiceException(MessageCode.LOGIC_ERROR,"后付款订单"+orderNo+"  已经有收款单了，请不要修改订单，或者去删除收款单!");
+				if("10".equals(bill.getStatus()))throw new ServiceException(MessageCode.LOGIC_ERROR,"后付款订单"+orderNo+"  已经有收款单了，请不要修改订单，或者去删除收款单!");
+				if("20".equals(bill.getStatus()))throw new ServiceException(MessageCode.LOGIC_ERROR,"后付款订单"+orderNo+"  已经收过款了，请不要修改订单!");
 			}else{
 				if("10".equals(bill.getStatus())){
 					throw new ServiceException(MessageCode.LOGIC_ERROR,"预付款订单  "+orderNo+"  已经有收款单但是还没完成收款，请不要修改订单，或者去删除收款单!");
@@ -3895,7 +3903,7 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 										//删除不需要的日单
 										TOrderDaliyPlanItem newPlan = new TOrderDaliyPlanItem();
 										newPlan.setOrderNo(orgOrder.getOrderNo());
-										newPlan.setItemNo(orgEntry.getItemNo());
+										//newPlan.setItemNo(orgEntry.getItemNo());
 										newPlan.setStatus("10");
 										newPlan.setDispDateStr(startstr);
 										tOrderDaliyPlanItemMapper.deleteFromDateToDate(newPlan);
@@ -4208,14 +4216,14 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 		try{
 			int i = this.uptOrderlong(record);
 		}catch(Exception e){
-			if(((ServiceException) e).getValue().equals("没做修改")){
+			/*if(((ServiceException) e).getValue().equals("没做修改")){
 				OrderSearchModel mo = new OrderSearchModel();
 				mo.setOrderNo(record.getOrder().getOrderNo());
 				List<TOrderDaliyPlanItem> backData = tOrderDaliyPlanItemMapper.selectDaliyOrdersAll(mo);
 				throw new ServiceException(MessageCode.LOGIC_ERROR, backData);
-			}else{
-				throw new ServiceException(MessageCode.LOGIC_ERROR, "修改失败");
-			}
+			}else{*/
+				throw new ServiceException(MessageCode.SERVER_ERROR,((ServiceException) e).getValue());
+			//}
 		}
 		OrderSearchModel mo = new OrderSearchModel();
 		mo.setOrderNo(record.getOrder().getOrderNo());
@@ -4717,7 +4725,7 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 
 				}
 				afterdays++;
-			} while (curAmt.compareTo(BigDecimal.ZERO) != -1);
+			} while (initAmt.floatValue()>0);
 
 		}
 		List<TOrderDaliyPlanItem> allDayItems = tOrderDaliyPlanItemMapper.selectDaliyPlansByOrderNo2(orgOrder.getOrderNo());
@@ -4791,7 +4799,7 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 			}
 		}
 
-		if(!allHave){
+		/*if(!allHave){
 			//删除这天所有的日订单
 			TOrderDaliyPlanItem plan = new TOrderDaliyPlanItem();
 			plan.setOrderNo(orgOrder.getOrderNo());
@@ -4811,7 +4819,7 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 				}
 			}
 
-		}
+		}*/
 		List<TOrderDaliyPlanItem> curAllDayItems = tOrderDaliyPlanItemMapper.selectDaliyPlansByOrderNoAsc(orgOrder.getOrderNo());
 		return curAllDayItems;
 
@@ -6746,7 +6754,45 @@ public class OrderServiceImpl extends BaseService implements OrderService {
    	if(StringUtils.isBlank(order.getAdressNo())){
    		if(record.getAddress() == null){
    			throw new ServiceException(MessageCode.LOGIC_ERROR,"请选择或输入地址!");
-   		}
+   		}else{
+			if(!"20".equals(order.getPreorderSource())&& !"30".equals(order.getPreorderSource())){
+				if(StringUtils.isNotBlank(record.getAddress().getProvince())){
+					NHSysCodeItem item = new NHSysCodeItem();
+					item.setTypeCode(SysContant.getSystemConst("Province_City_County"));
+					item.setItemCode(record.getAddress().getProvince());
+					NHSysCodeItem result = codeItemMapper.findCodeItenByCode(item);
+					if(result==null){
+						throw new ServiceException(MessageCode.LOGIC_ERROR,"该地址的省在订户系统中不存在，请维护!");
+					}
+				}else{
+					throw new ServiceException(MessageCode.LOGIC_ERROR,"该地址的省份Province不存在，请维护!");
+				}
+				if(StringUtils.isNotBlank(record.getAddress().getCity())){
+					NHSysCodeItem item = new NHSysCodeItem();
+					item.setTypeCode(SysContant.getSystemConst("Province_City_County"));
+					item.setItemCode(record.getAddress().getCity());
+					NHSysCodeItem result = codeItemMapper.findCodeItenByCode(item);
+					if(result==null){
+						throw new ServiceException(MessageCode.LOGIC_ERROR,"该地址的市City在订户系统中不存在，请维护!");
+					}
+				}else{
+					throw new ServiceException(MessageCode.LOGIC_ERROR,"该地址的市区City字段不存在，请维护!");
+				}
+
+				if(StringUtils.isNotBlank(record.getAddress().getCounty())){
+					NHSysCodeItem item = new NHSysCodeItem();
+					item.setTypeCode(SysContant.getSystemConst("Province_City_County"));
+					item.setItemCode(record.getAddress().getCounty());
+					NHSysCodeItem result = codeItemMapper.findCodeItenByCode(item);
+					if(result==null){
+						throw new ServiceException(MessageCode.LOGIC_ERROR,"该地址的区县County在订户系统中不存在，请维护!");
+					}
+				}else{
+					throw new ServiceException(MessageCode.LOGIC_ERROR,"该地址的区县County字段不存在，请维护!");
+				}
+			}
+
+		}
 		}
    	for(TPlanOrderItem e:record.getEntries()){
    		if(StringUtils.isBlank(e.getRuleType())){
