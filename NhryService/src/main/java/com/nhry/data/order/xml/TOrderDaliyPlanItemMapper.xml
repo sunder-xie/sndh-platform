@@ -427,6 +427,9 @@
       <if test="lastModifiedByTxt != null" >
         LAST_MODIFIED_BY_TXT = #{lastModifiedByTxt,jdbcType=VARCHAR},
       </if>
+      <if test="planItemNo != null" >
+        PLAN_ITEM_NO = #{planItemNo,jdbcType=VARCHAR},
+      </if>
     </set>
     where ORDER_NO = #{orderNo,jdbcType=VARCHAR}
       and DISP_DATE = #{dispDate,jdbcType=DATE}
@@ -1087,5 +1090,26 @@
     WHERE i.ORDER_NO = #{orderNo,jdbcType=VARCHAR}
     AND i.`STATUS` = '20'
   </select>
+
+
+  <select id="selectInitAmtDaysByNo" resultType="DECIMAL" parameterType="java.lang.String">
+    SELECT
+     SUM(i.AMT)
+    FROM
+    t_mst_order_daliy_plan_item i
+    WHERE i.ORDER_NO = #{orderNo,jdbcType=VARCHAR}
+    AND i.`STATUS` != '30'
+  </select>
+
+
+  <select id="selectCurAmtDaysByNo" resultType="DECIMAL" parameterType="java.lang.String">
+    SELECT
+    SUM(i.AMT)
+    FROM
+    t_mst_order_daliy_plan_item i
+    WHERE i.ORDER_NO = #{orderNo,jdbcType=VARCHAR}
+    AND i.`STATUS` = '10'
+  </select>
+
 
 </mapper>

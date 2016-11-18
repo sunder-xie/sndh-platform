@@ -403,5 +403,15 @@ public class TOrderDaliyPlanItemMapperImpl implements TOrderDaliyPlanItemMapper
 	{
 		return sqlSessionTemplate.selectOne("selectStatusDailyPlansCounts",orderNo);
 	}
-	
+
+	@Override
+	public BigDecimal selectInitAmtDaysByNo(String orderNo) {
+		return sqlSessionTemplate.selectOne("selectInitAmtDaysByNo",orderNo);
+	}
+
+	@Override
+	public BigDecimal selectCurAmtDaysByNo(String orderNo) {
+		return sqlSessionTemplate.selectOne("selectCurAmtDaysByNo",orderNo);
+	}
+
 }

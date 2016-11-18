@@ -125,4 +125,8 @@ public interface TOrderDaliyPlanItemMapper {
     int updateDaliyReachTimeTypeItemNo(TOrderDaliyPlanItem item);
 
     int selectStatusDailyPlansCounts(String orderNo);
+
+    BigDecimal selectInitAmtDaysByNo(String orderNo);
+
+    BigDecimal selectCurAmtDaysByNo(String orderNo);
 }
