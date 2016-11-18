@@ -31,6 +31,7 @@ public interface BranchInfoMapper {
     List<Map<String,String>> exportOrderByModel(BranchInfoModel model);
     List<Map<String,String>> orderOnlineStatReport(ExtendBranchInfoModel model);
     PageInfo Refuse2receiveResend(ExtendBranchInfoModel model);
+    List<Map<String,String>> PendingUnConfirmOnline(String salesOrg);
 
     List<Map<String,String>> Refuse2receiveResendDetail(String  resendOrderNo);
 }

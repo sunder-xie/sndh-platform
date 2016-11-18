@@ -275,5 +275,9 @@ public class TDispOrderItemMapperImpl implements TDispOrderItemMapper
 		order.setBranchName(dispDate);
 		return sqlSessionTemplate.selectOne("selectCountByOrgOrderAndOrgItemNo", order);
 	}
+	@Override
+	public int  selectCountsByOrderNo(String orderNo){
+		return sqlSessionTemplate.selectOne("selectCountsByOrderNo", orderNo);
+	}
 	
 }

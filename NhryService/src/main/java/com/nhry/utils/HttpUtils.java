@@ -113,7 +113,6 @@ public class HttpUtils {
 		out.writeBytes(content.toString());
 		out.flush();
 		out.close();
-		LOGGER.warn("content"+content.toString());
 		BufferedReader reader = new BufferedReader(new InputStreamReader(
 				connection.getInputStream()));
 

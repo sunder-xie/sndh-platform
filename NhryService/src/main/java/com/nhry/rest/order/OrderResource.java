@@ -365,6 +365,24 @@ public class OrderResource extends BaseResource {
 		return convertToRespModel(MessageCode.NORMAL, null, orderService.orderConfirmUnOnline(uptManHandModel));
 	}
 
+	@POST
+	@Path("/batchOrderConfirmUnOnline")
+	@Produces(MediaType.APPLICATION_JSON)
+	@Consumes(MediaType.APPLICATION_JSON)
+	@ApiOperation(value = "/batchOrderConfirmUnOnline", response = PageInfo.class, notes = "待确认订单批量确认-奶站未上线部门确认")
+	public Response batchOrderConfirmUnOnline(@ApiParam(required=true,name="uptManHandModel",value="uptManHandModel") UpdateManHandOrderModel uptManHandModel){
+		return convertToRespModel(MessageCode.NORMAL, null, orderService.batchOrderConfirmUnOnline(uptManHandModel));
+	}
+
+	@POST
+	@Path("/batchOrderConfirm")
+	@Produces(MediaType.APPLICATION_JSON)
+	@Consumes(MediaType.APPLICATION_JSON)
+	@ApiOperation(value = "/batchOrderConfirm", response = PageInfo.class, notes = "待确认订单批量确认-奶站确认")
+	public Response batchOrderConfirm(@ApiParam(required=true,name="uptManHandModel",value="uptManHandModel") UpdateManHandOrderModel uptManHandModel){
+		return convertToRespModel(MessageCode.NORMAL, null, orderService.batchorderConfirm(uptManHandModel));
+	}
+
 
 
 	@POST
@@ -480,5 +498,14 @@ public class OrderResource extends BaseResource {
 	@ApiOperation(value = "/advanceBackOrder", response = Integer.class, notes = "执行更新提前退订订单状态")
 	public Response updateBackState(){
 		return convertToRespModel(MessageCode.NORMAL,null,orderService.updateBackState());
+	}
+
+	@POST
+	@Path("/backUnBranchOrder")
+	@Produces(MediaType.APPLICATION_JSON)
+	@Consumes(MediaType.APPLICATION_JSON)
+	@ApiOperation(value = "/backUnBranchOrder", response = Integer.class, notes = "执行退回订单操作")
+	public Response backUnBranchOrder(@ApiParam(required=true,name="orderNo",value="订单编号") UpdateManHandOrderModel  smodel){
+		return convertToRespModel(MessageCode.NORMAL, null, orderService.backUnBranchOrder(smodel));
 	}
 }

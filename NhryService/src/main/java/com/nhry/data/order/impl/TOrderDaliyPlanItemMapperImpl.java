@@ -395,5 +395,13 @@ public class TOrderDaliyPlanItemMapperImpl implements TOrderDaliyPlanItemMapper
 	{
 		return sqlSessionTemplate.delete("deletePlansByAmt",orderNo);
 	}
+	/**
+	 * 查询订单下完结的日订单数量
+	 * */
+	@Override
+	public int selectStatusDailyPlansCounts(String orderNo)
+	{
+		return sqlSessionTemplate.selectOne("selectStatusDailyPlansCounts",orderNo);
+	}
 	
 }

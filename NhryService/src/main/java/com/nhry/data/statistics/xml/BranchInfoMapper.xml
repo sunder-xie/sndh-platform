@@ -1377,4 +1377,59 @@
         where 1=1
        and ri.RESEND_ORDER_NO = #{resendOrderNo}
     </select>
+
+    <select id="PendingUnConfirmOnline" resultType="hashmap" parameterType="String">
+        SELECT DISTINCT
+            o.ONLINEORDER_NO,
+            o.ORDER_NO,
+            v.VIP_NAME,
+            v.VIP_MP,
+            r.RESIDENTIAL_AREA_TXT,
+            a.ADDRESS_TXT,
+            p.ITEM_NO,
+            GROUP_CONCAT(p.MATNR) AS MATNR,
+            GROUP_CONCAT(ex.SHORT_TXT) AS SHORT_TXT,
+            SUM(p.DISP_TOTAL) AS DISP_TOTAL,
+            o.ONLINE_INIT_AMT,
+            b.BRANCH_NAME,
+            o.MEMO_TXT,
+            CASE o.PREORDER_SOURCE
+            WHEN 10 THEN
+                item.ITEM_NAME
+            WHEN 20 THEN
+                '征订'
+            WHEN 30 THEN
+                '奶站'
+            WHEN 40 THEN
+                '牛奶钱包'
+            WHEN 50 THEN
+                '送奶工app'
+            WHEN 60 THEN
+                '电话'
+            ELSE
+                ''
+            END AS PREORDER_SOURCE
+        FROM
+            t_preorder o
+        INNER JOIN t_mst_plan_order_item p ON p.ORDER_NO = o.ORDER_NO
+        LEFT JOIN t_md_mara_ex ex ON ex.MATNR = p.MATNR
+        LEFT JOIN t_md_branch b ON o.BRANCH_NO = b.BRANCH_NO
+        LEFT JOIN t_md_dealer d ON b.DEALER_NO = d.DEALER_NO
+        LEFT JOIN t_vip_cust_info v ON v.VIP_CUST_NO = o.MILKMEMBER_NO
+        LEFT JOIN t_md_address a ON a.ADDRESS_ID = o.ADRESS_NO
+        LEFT JOIN t_md_residential_area r ON r.ID = a.RESIDENTIAL_AREA
+        LEFT JOIN t_sys_code_item item ON item.TYPE_CODE = <include refid="mybaties.constant.vip_src" />
+        AND item.ITEM_CODE = o.ONLINEORDER_NO
+        WHERE
+            1 = 1
+        AND o.PREORDER_STAT = "20"
+        AND o.IS_VALID = 'N'
+        and o.SALES_ORG = #{salesOrg,jdbcType=VARCHAR}
+        AND b.BRANCH_NO > 0
+        GROUP BY
+            o.ORDER_NO
+        ORDER BY
+            b.BRANCH_NO,
+            o.ORDER_NO DESC
+    </select>
 </mapper>

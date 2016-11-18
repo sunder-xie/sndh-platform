@@ -117,5 +117,10 @@ public class BranchInfoMapperImpl implements BranchInfoMapper{
 
     }
 
+    @Override
+    public  List<Map<String,String>> PendingUnConfirmOnline(String salesOrg){
+        return sqlSessionTemplate.selectList("PendingUnConfirmOnline",salesOrg);
+    }
+
 
 }
