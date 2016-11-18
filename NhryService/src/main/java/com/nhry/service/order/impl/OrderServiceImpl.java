@@ -4233,6 +4233,13 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 		OrderSearchModel mo = new OrderSearchModel();
 		mo.setOrderNo(record.getOrder().getOrderNo());
 		List<TOrderDaliyPlanItem> backData = tOrderDaliyPlanItemMapper.selectDaliyOrdersAll(mo);
+		if(backData!=null){
+			TPreOrder order= tPreOrderMapper.selectByPrimaryKey(record.getOrder().getOrderNo());
+			if("10".equals(record.getOrder().getPaymentmethod()))
+			backData.stream().filter(e -> !"30".equals(e.getStatus())).forEach(day -> {
+					day.setRemainAmt(day.getRemainAmt().subtract(order.getInitAmt()));
+			});
+		}
 		throw new ServiceException(MessageCode.LOGIC_ERROR, backData);
 	}
 	private List<TOrderDaliyPlanItem> createDaliyPlanAfterPay(TPreOrder order, List<TPlanOrderItem> entries) {

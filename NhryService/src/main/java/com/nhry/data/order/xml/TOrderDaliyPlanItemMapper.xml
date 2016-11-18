@@ -189,9 +189,9 @@
       <if test="itemNo != null" >
 	      and ITEM_NO = #{itemNo,jdbcType=VARCHAR}
       </if>
-      <if test="status != null" >
-	      and STATUS != '20'
-      </if>
+
+	  and STATUS != '20'
+
       and DISP_DATE &gt;= #{dispDateStr,jdbcType=DATE}
   </delete>
   <delete id="deletePlansForLongEdit" parameterType="com.nhry.data.order.domain.TOrderDaliyPlanItem" >
