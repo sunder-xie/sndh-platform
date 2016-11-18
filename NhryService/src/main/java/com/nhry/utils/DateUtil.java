@@ -1,5 +1,6 @@
 package com.nhry.utils;
 
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
@@ -19,6 +20,21 @@ public class DateUtil {
           System.out.println(getYmd(new Date()));
     }
 
+    public static boolean dateAfter(Date d1,Date d2){
+        if(d1!=null && d2!=null){
+            SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
+            Date date1 = null;
+            Date date2 = null;
+            try {
+                date1  = format.parse(format.format(d1));
+                date2 = format.parse(format.format(d2));
+            } catch (ParseException e) {
+                e.printStackTrace();
+            }
+            return date1.after(date2);
+        }
+        return d1.after(d2);
+    }
     //获取date 日期的明天
     public static Date getYmd(Date today) {
         Calendar calendar = new GregorianCalendar();
