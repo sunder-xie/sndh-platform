@@ -32,7 +32,7 @@ public class EcBaseService {
     	try {
     		Map<String, Object> params = new HashMap<String,Object>(2);
 			params.put("data", reqbody);
-        	String msg = HttpUtils.request(url, params);;
+        	String msg = HttpUtils.request(url, params);
         	//成功调用
     		JSONObject json = new JSONObject(msg);
     		if(json.has("success") && json.getBoolean("success")){
