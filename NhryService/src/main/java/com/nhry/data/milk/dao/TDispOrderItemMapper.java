@@ -72,4 +72,6 @@ public interface TDispOrderItemMapper {
     List<DispOrderReportEntityModel> reportDispOrderItemByParams(DispOrderReportModel model);
 
     List<TDispOrderItem> selectItemsByOrgOrderAndItemNoAndBeforeDate(TDispOrderItem dispItem);
+    //该订单下是否有未确认生成的路单产生
+    int selectCountsByOrderNo(String orderNo);
 }

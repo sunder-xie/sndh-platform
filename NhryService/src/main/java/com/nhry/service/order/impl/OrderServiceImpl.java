@@ -8348,7 +8348,68 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 		return;
 	}
 
+	/**
+	 * 退回非奶站的订单到人工分单列表
+	 * 1、判断该订单是否是奶站订单，如果不是，可以进行下一步确认
+	 * 2、判断该订单是否有完结的日计划，如果没有，可以进行下一步确认
+	 * 3、判断该订单是否有未确认的路单，如果有给出提醒，无确认过的路单需要删除路单，在进行退回操作
+	 * 4、退回流程开始
+	 * --1）删除该订单日计划
+	 * --2）删除该订单收款单（如果有则进行删除）
+	 * --3）删除该订单装箱单，（如果有则进行删除）
+	 * --4）更新订单状态为人工人分单状态，同时删除该订单的奶站和送奶员信息
+	 * end
+	 * */
+	@Override
+	public int backUnBranchOrder(UpdateManHandOrderModel smodel){
 
-
-
+		TPreOrder order = tPreOrderMapper.selectByPrimaryKey(smodel.getOrderNo());
+		//1、判断该订单是否是奶站订单，如果不是，可以进行下一步确认
+		if(order!=null){
+			if(order.getPreorderSource().equals("30")){
+				throw new ServiceException(MessageCode.LOGIC_ERROR,"该订单下为奶站订单，不能进行退回操作！");
+			}else{
+				int dairyPlansCounts = tOrderDaliyPlanItemMapper.selectStatusDailyPlansCounts(smodel.getOrderNo());
+				int dispOrderCoounts = tDispOrderItemMapper.selectCountsByOrderNo(smodel.getOrderNo());
+				//2、判断该订单是否有完结的日计划，如果没有，可以进行下一步确认
+				if(dairyPlansCounts>0){
+					throw new ServiceException(MessageCode.LOGIC_ERROR,"该订单下有完结的日单，无法进行退回操作！");
+				}
+				//3、判断该订单是否有未确认的路单，如果有给出提醒，无确认过的路单需要删除路单，在进行退回操作
+				else if(dispOrderCoounts>0){
+					throw new ServiceException(MessageCode.LOGIC_ERROR,"该订单下未确认的路单，请删除对应的路单，在执行退回操作！");
+				}
+				//4、退回流程开始
+				else{
+					//--1）删除该订单日计划
+					tOrderDaliyPlanItemMapper.deletePlansByOrder(smodel.getOrderNo());
+					//--2）删除该订单收款单（如果有则进行删除）
+					TMstRecvBill customerBill = customerBillMapper.getRecBillByOrderNo(smodel.getOrderNo());
+					if(customerBill!=null){
+						customerBillMapper.delReceipt(customerBill.getReceiptNo());
+					}
+					//--3）删除该订单装箱单，（如果有则进行删除）
+					milkBoxService.deleteMilkBoxByOrderNo(smodel.getOrderNo());
+					//--4）更新订单状态为人工人分单状态，同时删除该订单的奶站和送奶员信息
+					TSysUser user = userSessionService.getCurrentUser();
+					//确认订单退回日志
+					OperationLogUtil.saveHistoryOperation(order.getOrderNo(),LogType.ORDER, OrderLogEnum.RETURN_BACK_ORDER,null,null,order.getBranchName(),
+							null,null,null,user,operationLogMapper);
+					order.setBranchNo("");
+					order.setDealerNo("");
+					order.setIsValid("N");
+					order.setEmpNo("");
+					order.setPreorderStat("20");
+					order.setMilkboxStat("20");
+					order.setRetDate(new Date());
+					order.setRetReason(smodel.getRetReason().trim());
+					order.setMemoTxt(smodel.getMemoTxt());
+					tPreOrderMapper.updateBackOrder(order);
+				}
+			}
+		}else{
+			throw new ServiceException(MessageCode.LOGIC_ERROR,"该订单不存在，请核实");
+		}
+		return 1;
+	}
 }

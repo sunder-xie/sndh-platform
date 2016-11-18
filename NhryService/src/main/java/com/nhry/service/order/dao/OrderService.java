@@ -129,4 +129,5 @@ public interface OrderService {
 	int uptOrderlong(OrderEditModel record);
 
 	List uptOrderlongForViewPlans(OrderEditModel record);
+	int backUnBranchOrder(UpdateManHandOrderModel smodel);
 }
