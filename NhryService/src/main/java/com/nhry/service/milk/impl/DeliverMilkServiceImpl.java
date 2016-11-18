@@ -670,6 +670,8 @@ public class DeliverMilkServiceImpl extends BaseService implements DeliverMilkSe
 	@Override
 	public int updateDaliyPlanByRouteOrder(String routeCode)
 	{
+
+		System.out.println(routeCode+"路单确认开始");
 		final long startTime = System.currentTimeMillis();
 		
 		TDispOrderKey key = new TDispOrderKey();
