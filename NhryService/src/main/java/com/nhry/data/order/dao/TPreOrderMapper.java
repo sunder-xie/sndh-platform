@@ -124,5 +124,6 @@ public interface TPreOrderMapper {
 
     int updateBySelective(TPreOrder order);
     int selectOrdersNoBillCount(String BranchNo);
+    int updateBackOrder(TPreOrder order);
 
 }

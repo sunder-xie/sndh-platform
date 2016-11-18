@@ -1530,6 +1530,20 @@
       ORDER BY
 	ORDER_NO DESC
   </select>
-  
+  <select id="updateBackOrder"  parameterType="com.nhry.data.order.domain.TPreOrder">
+    UPDATE t_preorder
+    <set>
+      PREORDER_STAT = #{preorderStat,jdbcType=VARCHAR},
+      BRANCH_NO = #{branchNo,jdbcType=VARCHAR},
+      DEALER_NO=#{dealerNo,jdbcType=VARCHAR},
+      MILKBOX_STAT = #{milkboxStat,jdbcType=VARCHAR},
+      EMP_NO = #{empNo,jdbcType=VARCHAR},
+      IS_VALID = #{isValid,jdbcType=VARCHAR},
+      RET_REASON = #{retReason,jdbcType=VARCHAR},
+      RET_DATE = #{retDate,jdbcType=DATE},
+      MEMO_TXT = #{memoTxt,jdbcType=VARCHAR}
+    </set>
+    where ORDER_NO = #{orderNo,jdbcType=VARCHAR}
+  </select>
 
 </mapper>

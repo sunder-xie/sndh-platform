@@ -123,4 +123,6 @@ public interface TOrderDaliyPlanItemMapper {
     int updateDaliyPlansToStopByStatus(OrderSearchModel omodel);
 
     int updateDaliyReachTimeTypeItemNo(TOrderDaliyPlanItem item);
+
+    int selectStatusDailyPlansCounts(String orderNo);
 }

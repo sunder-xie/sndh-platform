@@ -499,4 +499,13 @@ public class OrderResource extends BaseResource {
 	public Response updateBackState(){
 		return convertToRespModel(MessageCode.NORMAL,null,orderService.updateBackState());
 	}
+
+	@POST
+	@Path("/backUnBranchOrder")
+	@Produces(MediaType.APPLICATION_JSON)
+	@Consumes(MediaType.APPLICATION_JSON)
+	@ApiOperation(value = "/backUnBranchOrder", response = Integer.class, notes = "执行退回订单操作")
+	public Response backUnBranchOrder(@ApiParam(required=true,name="orderNo",value="订单编号") UpdateManHandOrderModel  smodel){
+		return convertToRespModel(MessageCode.NORMAL, null, orderService.backUnBranchOrder(smodel));
+	}
 }

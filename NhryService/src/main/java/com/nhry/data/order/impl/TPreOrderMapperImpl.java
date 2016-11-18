@@ -383,4 +383,7 @@ public class TPreOrderMapperImpl implements TPreOrderMapper
 	public int selectOrdersNoBillCount(String BranchNo){
 		return sqlSessionTemplate.selectOne("selectOrdersNoBillCount", BranchNo);
 	}
+
+	@Override
+	public int updateBackOrder(TPreOrder record){return sqlSessionTemplate.update("updateBackOrder", record);}
 }
