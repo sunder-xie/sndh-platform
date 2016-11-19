@@ -797,9 +797,9 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 //			if("20".equals(status)){
 //				throw new ServiceException(MessageCode.LOGIC_ERROR,record.getOrderNo()+"订单日订单已经确认，不能修改订单!");
 //			}
-			if(tOrderDaliyPlanItemMapper.searchDaliyOrdersByOrderNoAndFinalStop(record).size()>0){
+		/*	if(tOrderDaliyPlanItemMapper.searchDaliyOrdersByOrderNoAndFinalStop(record).size()>0){
 				throw new ServiceException(MessageCode.LOGIC_ERROR,record.getOrderNo()+"长期停订前订单日订单已经停订，请往后修改日期或修改日计划!");
-			}
+			}*/
 			//停订逻辑
 			try
 			{
@@ -826,7 +826,7 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 //					ac.setVipCustNo(order.getMilkmemberNo());
 //					tVipCustInfoService.addVipAcct(ac);
 //				}
-				
+
 				tOrderDaliyPlanItemMapper.updateDaliyPlansToStop(order);
 
 			}else{//后付款
@@ -843,7 +843,7 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 						usedAmt = usedAmt.add(plan.getAmt());
 					}
 				}
-				
+
 				order.setInitAmt(initAmt);
 				order.setCurAmt(initAmt.subtract(usedAmt));
 
@@ -854,28 +854,28 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 //						break;
 //					}
 //				}
-				
+
 				Collections.reverse(daliyPlans);
 				for(TOrderDaliyPlanItem plan : daliyPlans){
-		   		if("30".equals(plan.getStatus())){
-		   			plan.setRemainAmt(initAmt);
-		   			tOrderDaliyPlanItemMapper.updateDaliyPlanItem(plan);
-		   			continue;
-		   		}
-		   		plan.setRemainAmt(initAmt.subtract(plan.getAmt()));
-		   		initAmt = initAmt.subtract(plan.getAmt());
-		   		tOrderDaliyPlanItemMapper.updateDaliyPlanItem(plan);
-		   	}
-				
+					if("30".equals(plan.getStatus())){
+						plan.setRemainAmt(initAmt);
+						tOrderDaliyPlanItemMapper.updateDaliyPlanItem(plan);
+						continue;
+					}
+					plan.setRemainAmt(initAmt.subtract(plan.getAmt()));
+					initAmt = initAmt.subtract(plan.getAmt());
+					tOrderDaliyPlanItemMapper.updateDaliyPlanItem(plan);
+				}
+
 				tPreOrderMapper.updateOrderEndDate(order);
-				
+
 			}
 			//更新订单标示为停订,综合可能有很多订单
 			if(order.getStopDateEnd()==null){
-   			order.setSign("20");//停订中
+				order.setSign("20");//停订中
 			}
 			tPreOrderMapper.updateOrderStatus(order);
-			
+
 			//发送EC
 			taskExecutor.execute(new Thread(){
 				@Override
@@ -886,20 +886,20 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 					messLogService.sendOrderStopRe(record);
 				}
 			});
-			
+
 			//订户状态更改???
 			List<TPreOrder> list = tPreOrderMapper.selectByMilkmemberNo(order.getMilkmemberNo());
 			if(list==null||list.size()<=0){
 				tVipCustInfoService.discontinue(order.getMilkmemberNo(), "30",null,null);
 			}
-			
+
 		}else{
 			throw new ServiceException(MessageCode.LOGIC_ERROR,record.getOrderNo()+"当前订单不存在");
 		}
 		//停订日志
 		OperationLogUtil.saveHistoryOperation(order.getOrderNo(),LogType.ORDER,OrderLogEnum.LONG_STOP_ORDER,null,null,null,
 				record.getOrderDateStart(),null,null,userSessionService.getCurrentUser(),operationLogMapper);
-		
+
 		return 1;
 	}
 	
@@ -939,9 +939,9 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 //			if("20".equals(status)){
 //				throw new ServiceException(MessageCode.LOGIC_ERROR,record.getOrderNo()+"订单日订单已经确认，不能修改订单!");
 //			}
-			if(tOrderDaliyPlanItemMapper.searchDaliyOrdersByOrderNoAndFinalStop(record).size()>0){
+			/*if(tOrderDaliyPlanItemMapper.searchDaliyOrdersByOrderNoAndFinalStop(record).size()>0){
 				throw new ServiceException(MessageCode.LOGIC_ERROR,record.getOrderNo()+"停订区间内 有日订单已经停订，请往后修改日期或修改日计划!");
-			}
+			}*/
 			//停订逻辑
 			try
 			{
@@ -2062,6 +2062,154 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 		//订户状态更改
 		tVipCustInfoService.discontinue(order.getMilkmemberNo(), "10",null,null);
 		
+		//发送EC
+		taskExecutor.execute(new Thread(){
+			@Override
+			public void run() {
+				super.run();
+				this.setName("resumeOrder");
+				record.setOrderDateStart(startDateStr);
+				record.setContent("N");
+				messLogService.sendOrderStopRe(record);
+			}
+		});
+		OperationLogUtil.saveHistoryOperation(order.getOrderNo(), LogType.ORDER, OrderLogEnum.RESUME_ORDER,null,null,"停订","在订",null,null,userSessionService.getCurrentUser(),operationLogMapper);
+		return 1;
+	}
+
+	@Override
+	public int continueOrdeAfterStop2(OrderSearchModel record)
+	{
+		SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
+		TPreOrder order = tPreOrderMapper.selectByPrimaryKey(record.getOrderNo());
+		if("20".equals(order.getPreorderStat())){
+			throw new ServiceException(MessageCode.LOGIC_ERROR,"暂无法进行此操作，请联系在线客服");
+		}
+		if("10".equals(order.getSign())){
+			throw new ServiceException(MessageCode.LOGIC_ERROR,record.getOrderNo()+"在订的订单，不能修改复订!");
+		}
+
+		if("10".equals(order.getPaymentmethod())){
+			if(customerBillMapper.getRecBillByOrderNo(order.getOrderNo())!=null)throw new ServiceException(MessageCode.LOGIC_ERROR,"该后付款订单已经有收款单了，请不要复订订单，或者去删除收款单!");
+		}
+
+		if("20".equals(order.getPaymentmethod())){
+			TMstRecvBill bill = customerBillMapper.getRecBillByOrderNo(order.getOrderNo());
+			if(bill!=null && "10".equals(bill.getStatus())){
+				throw new ServiceException(MessageCode.LOGIC_ERROR,"预付款订单  "+order.getOrderNo()+"  已经有收款单但是还没完成收款，请不要复订订单，或者去删除收款单!");
+			}
+		}
+
+
+		BigDecimal orderAmt = order.getInitAmt();//订单金额
+		ArrayList<TPlanOrderItem> orgEntries = (ArrayList<TPlanOrderItem>) tPlanOrderItemMapper.selectByOrderCode(record.getOrderNo());
+		String startDateStr = record.getOrderDateStart();//续订开始日期
+		Date startDate = null;
+		try
+		{
+			startDate = format.parse(startDateStr);
+			order.setStopDateEnd(startDate);
+		}
+		catch (ParseException e)
+		{
+			throw new ServiceException(MessageCode.LOGIC_ERROR,"日期格式有误!");
+		}
+		Date today = new Date();
+		//如果预付款
+		if("20".equals(order.getPaymentmethod())){
+			ArrayList<TOrderDaliyPlanItem> daliyPlans = (ArrayList<TOrderDaliyPlanItem>) tOrderDaliyPlanItemMapper.selectDaliyPlansByOrderNoAsc(record.getOrderNo());
+			//删除从复订时间开始的日计划
+			TOrderDaliyPlanItem deleteKey= new TOrderDaliyPlanItem();
+
+			if(!startDate.after(order.getStopDateStart())){
+				deleteKey.setDispDateStr(format.format(order.getStopDateStart()));
+			}else{
+				deleteKey.setDispDateStr(startDateStr);
+			}
+			deleteKey.setOrderNo(order.getOrderNo());
+
+			tOrderDaliyPlanItemMapper.deleteFromDateToDate(deleteKey);
+			Map<String,Integer> qtyMap = new HashMap<String,Integer>();
+			for(TOrderDaliyPlanItem p: daliyPlans){
+				if(p.getGiftQty()!=null)continue;
+				String itemNo = p.getItemNo();
+				if(!"30".equals(p.getStatus()) && p.getDispDate().before(startDate) && p.getGiftQty()==null){
+					BigDecimal planAmt = p.getPrice().multiply(new BigDecimal(p.getQty().toString()));
+					orderAmt = orderAmt.subtract(planAmt);
+				}
+				if(!p.getDispDate().before(order.getStopDateStart()) && "30".equals(p.getStatus())){
+					if(qtyMap.containsKey(itemNo)){
+						qtyMap.replace(itemNo, 1 + qtyMap.get(itemNo));
+					}else{
+						qtyMap.put(itemNo, 1);
+					}
+				}
+			}
+
+			List<TOrderDaliyPlanItem> list = createDaliyPlanForResumeOrder(order , orgEntries , orderAmt , startDate , qtyMap);
+			//回改订单行项目,更新最后配送日期
+			for( TPlanOrderItem entry :orgEntries){
+				for(TOrderDaliyPlanItem p:list){
+					if(entry.getItemNo().equals(p.getItemNo())){
+						entry.setEndDispDate(p.getDispDate());
+						promotionService.calculateEntryPromotionForStop(entry);
+						//保存修改后的该行
+						tPlanOrderItemMapper.updateEntryByItemNo(entry);
+						break;
+					}
+				}
+			}
+			//如果有赠品，生成赠品的日计划
+			promotionService.createDaliyPlanByPromotion(order,orgEntries,list);
+			//更新订单
+			order.setEndDate(calculateFinalDate(orgEntries));//订单截止日期修改
+		}else{
+
+			TOrderDaliyPlanItem uptKey= new TOrderDaliyPlanItem();
+			uptKey.setOrderNo(order.getOrderNo());
+			if(!startDate.after(order.getStopDateStart())) {
+				uptKey.setDispDateStr(format.format(order.getStopDateStart()));
+			}else{
+				uptKey.setDispDateStr(startDateStr);
+			}
+			tOrderDaliyPlanItemMapper.updateFromDateToDate(uptKey);
+
+			ArrayList<TOrderDaliyPlanItem> daliyPlans = (ArrayList<TOrderDaliyPlanItem>) tOrderDaliyPlanItemMapper.selectDaliyPlansByOrderNo(order.getOrderNo());
+			//更新订单金额等
+			BigDecimal initAmt = new BigDecimal("0.00");
+			BigDecimal usedAmt = new BigDecimal("0.00");
+			for(TOrderDaliyPlanItem plan : daliyPlans){
+				if("30".equals(plan.getStatus()))continue;
+				initAmt = initAmt.add(plan.getAmt());
+				if("20".equals(plan.getStatus())){
+					usedAmt.add(plan.getAmt());
+				}
+			}
+			order.setInitAmt(initAmt);
+			order.setCurAmt(initAmt.subtract(usedAmt));
+//				订单截止日期修改
+			for(TOrderDaliyPlanItem plan : daliyPlans){
+				if(!"30".equals(plan.getStatus())){
+					order.setEndDate(plan.getDispDate());
+					break;
+				}
+			}
+			Collections.reverse(daliyPlans);
+			for(TOrderDaliyPlanItem plan : daliyPlans){
+				if("30".equals(plan.getStatus())){
+					plan.setRemainAmt(initAmt);
+					tOrderDaliyPlanItemMapper.updateDaliyPlanItem(plan);
+					continue;
+				}
+				plan.setRemainAmt(initAmt.subtract(plan.getAmt()));
+				initAmt = initAmt.subtract(plan.getAmt());
+				tOrderDaliyPlanItemMapper.updateDaliyPlanItem(plan);
+			}
+		}
+		order.setSign("10");//标示在订
+		tPreOrderMapper.updateOrderEndDate(order);
+		//订户状态更改
+		tVipCustInfoService.discontinue(order.getMilkmemberNo(), "10",null,null);
 		//发送EC
 		taskExecutor.execute(new Thread(){
 			@Override
@@ -3804,7 +3952,7 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 		TSysUser user = userSessionService.getCurrentUser();
 		List<TPlanOrderItem> orgEntrys = tPlanOrderItemMapper.selectByOrderCode(orderNo);
 		//日志提前处理
-
+		//获取出现在所有的日订单，用来在做修改配送日期时 是否含有完结的日订单
 		ArrayList<TOrderDaliyPlanItem> daliyPlans = (ArrayList<TOrderDaliyPlanItem>) tOrderDaliyPlanItemMapper.selectDaliyPlansByOrderNo(orgOrder.getOrderNo());
 		//如果日订单还没产生，可以任意修改，相当于重做订单
 		if(daliyPlans==null || daliyPlans.size()<=0){
@@ -3812,9 +3960,10 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 			noRouteOrderEditLog(orgOrder,orgEntrys,curEntrys,user);
 			uptOrderNoDailyOrder(record,orgOrder);
 		}else{
+			//查看该订单是否有生成路单
 			int dispNums = tDispOrderItemMapper.selectCountByOrgOrder(orderNo);
 			if(dispNums<=0){
-				//日志
+				//没有产生路单的订单编辑日志
 				noRouteOrderEditLog(orgOrder,orgEntrys,curEntrys,user);
 				//没有产生路单
 				if("10".equals(orgOrder.getPaymentmethod())){
@@ -4336,7 +4485,7 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 					entryMap.replace(entry, days-1);//剩余天数减1天
 					if("10".equals(entry.getRuleType())){
 						int gapDays = entry.getGapDays() + 1;//间隔天数
-						if(dayOfTwoDay(entry.getStartDispDate(),today)%gapDays != 0){
+						if(daysOfTwo(entry.getStartDispDate(),today)%gapDays != 0){
 							if(entry.getRuleTxt()!=null){
 								List<String> deliverDays = Arrays.asList(entry.getRuleTxt().split(","));
 								if(deliverDays.size() > 0){//判断周6，7是否配送
