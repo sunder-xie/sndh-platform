@@ -1235,6 +1235,7 @@ public class OrderServiceImpl extends BaseService implements OrderService {
      */
 	@Override
 	public int advanceBackOrder(OrderSearchModel record) {
+		System.out.println(record.getOrderNo()+"订单提前退订开始");
 		Date backDate = null;
 		SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
 		try {
@@ -1302,7 +1303,7 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 						dsBackAmt = dsBackAmt.add(backAmt.multiply(order.getOnlineInitAmt()).divide(initAmt,2));
 						//电商 退订日志
 						OperationLogUtil.saveHistoryOperation(order.getOrderNo(),LogType.ORDER,OrderLogEnum.DH_BACK_ORDER,null,null,
-								null,dsBackAmt.toString(),null,null,null,operationLogMapper);
+								null,dsBackAmt.toString(),null,null,userSessionService.getCurrentUser(),operationLogMapper);
 					}
 				}else{
 					TVipAcct ac = new TVipAcct();
@@ -4331,7 +4332,7 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 				if(days - 1 >= 0){
 					//判断是按周期送还是按星期送
 					Date today = afterDate(firstDeliveryDate,afterDays);
-					if(DateUtil.dateAfter(entry.getStartDispDate(),today))continue;
+					if(entry.getStartDispDate().after(today))continue;
 					entryMap.replace(entry, days-1);//剩余天数减1天
 					if("10".equals(entry.getRuleType())){
 						int gapDays = entry.getGapDays() + 1;//间隔天数
@@ -6700,6 +6701,11 @@ public static int dayOfTwoDay(Date day1,Date day2) {
    	
    	//保存所有新的日计划
    	int index = 0;
+ /*  try{
+	   index = tOrderDaliyPlanItemMapper.selectMaxDaliyPlansNoByOrderNo(orgOrder.getOrderNo()) + 1;
+   }catch(Exception e){
+	   //如果找不到最大值
+   }*/
    	List<TOrderDaliyPlanItem> dateList = new ArrayList<TOrderDaliyPlanItem>(); 
    	for(TOrderDaliyPlanItem plan:newPlans){
    		
