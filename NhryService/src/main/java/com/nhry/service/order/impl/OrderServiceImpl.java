@@ -4108,7 +4108,7 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 							entry.setCreateAt(new Date());//创建日期
 							entry.setCreateBy(user.getLoginName());//创建人
 							entry.setCreateByTxt(user.getDisplayName());//创建人姓名
-							//calculateEntryAmount(entry);
+							calculateEntryAmount(entry);
 							tPlanOrderItemMapper.insert(entry);
 							//删除从这个行项目开始日期后的所有未完结日订单
 							TOrderDaliyPlanItem item = new TOrderDaliyPlanItem();
@@ -4481,7 +4481,7 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 				if(days - 1 >= 0){
 					//判断是按周期送还是按星期送
 					Date today = afterDate(firstDeliveryDate,afterDays);
-					if(entry.getStartDispDate().after(today))continue;
+					if(DateUtil.dateAfter(entry.getStartDispDate(),today))continue;
 					entryMap.replace(entry, days-1);//剩余天数减1天
 					if("10".equals(entry.getRuleType())){
 						int gapDays = entry.getGapDays() + 1;//间隔天数
