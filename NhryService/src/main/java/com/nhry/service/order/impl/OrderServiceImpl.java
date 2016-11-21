@@ -4830,7 +4830,7 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 			for(TPlanOrderItem  entry :entries){
 				Date today = afterDate(firstDeliveryDate,afterdays);
 				if(initAmt.floatValue() < 0)break;
-				if(entry.getStartDispDate().after(today))continue;
+				if(DateUtil.dateAfter(entry.getStartDispDate(),today))continue;
 				if("Y".equals(entry.getIsStop()) && entry.getEndDispDate().before(today)){
 					break;
 				}
