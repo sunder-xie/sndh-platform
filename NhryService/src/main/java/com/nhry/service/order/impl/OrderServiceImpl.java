@@ -4282,32 +4282,17 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 										orgEntry.setStartDispDate(curEntry.getStartDispDate());
 										orgEntry.setEndDispDate(curEntry.getEndDispDate());
 										orgEntry.setIsStop("N");
-										TOrderDaliyPlanItem newPlan = new TOrderDaliyPlanItem();
-										newPlan.setOrderNo(orgOrder.getOrderNo());
-										newPlan.setItemNo(orgEntry.getItemNo());
-										newPlan.setStatus("10");
-										if(!orgEntry.getStartDispDate().after(maxDispDate)){
-											newPlan.setDispDateStr(format.format(DateUtil.getTomorrow(maxDispDate)));
-										}else{
-											newPlan.setDispDateStr(startstr);
-										}
 
-										//将 先开始日期之后的日订单删除，比计算删除的钱数
-										List<TOrderDaliyPlanItem> delDays= tOrderDaliyPlanItemMapper.selectDaliyByAfterDayAndNo(newPlan);
-										BigDecimal delTotal =BigDecimal.ZERO;
-										if(delDays!=null && delDays.size()>0){
-											/*for(TOrderDaliyPlanItem day : delDays){
-												delTotal = delTotal.add(day.getAmt());
-											}*/
-											tOrderDaliyPlanItemMapper.deleteFromDateToDate(newPlan);
-										}
-										//保存修改后的该行 把以前行项目的钱删除，新的行项目的钱加上
-										/*orgOrder.setInitAmt(orgOrder.getInitAmt().subtract(delTotal));
-										orgOrder.setCurAmt(orgOrder.getCurAmt().subtract(delTotal));
-										BigDecimal entryTotal = calculateEntryAmount(orgEntry);
-										orgOrder.setInitAmt(orgOrder.getInitAmt().add(entryTotal));
-										orgOrder.setCurAmt(orgOrder.getCurAmt().add(entryTotal));*/
 									}
+									TOrderDaliyPlanItem plan = new TOrderDaliyPlanItem();
+									plan.setOrderNo(orgOrder.getOrderNo());
+									plan.setItemNo(orgEntry.getItemNo());
+									plan.setStatus("10");
+									plan.setDispDateStr(startstr);
+									//将 先开始日期之后的日订单删除
+									tOrderDaliyPlanItemMapper.deleteFromDateToDate(plan);
+
+
 									if("Y".equals(curEntry.getIsStop()) && curEntry.getStopStartDate()!=null){
 											if(curEntry.getStopStartDate().before(orgEntry.getStartDispDate())||curEntry.getStopStartDate().after(orgEntry.getEndDispDate()))throw new ServiceException(MessageCode.LOGIC_ERROR,"停订的日期不能在配送日期之外!");
 											daliyPlans.stream().filter((e)->"20".equals(e.getStatus())&&e.getItemNo().equals(orgEntry.getItemNo()))
@@ -4324,19 +4309,9 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 											newPlan.setItemNo(orgEntry.getItemNo());
 											newPlan.setStatus("10");
 											newPlan.setDispDateStr(format.format(curEntry.getStopStartDate()));
-											//将 先开始日期之后的日订单删除，比计算删除的钱数
-											List<TOrderDaliyPlanItem> delDays= tOrderDaliyPlanItemMapper.selectDaliyByAfterDayAndNo(newPlan);
-											BigDecimal delTotal =BigDecimal.ZERO;
-											if(delDays!=null && delDays.size()>0){
-												/*for(TOrderDaliyPlanItem day : delDays){
-													delTotal = delTotal.add(day.getAmt());
-												}*/
-												orgEntry.setDispTotal(orgEntry.getDispTotal() - delDays.size());
-												tOrderDaliyPlanItemMapper.deleteFromDateToDate(newPlan);
-												/*//重新计算订单金额
-												orgOrder.setInitAmt(orgOrder.getInitAmt().subtract(delTotal));
-												orgOrder.setCurAmt(orgOrder.getCurAmt().subtract(delTotal));*/
-											}
+											//将 先开始日期之后的日订单删除
+											tOrderDaliyPlanItemMapper.deleteFromDateToDate(newPlan);
+
 										}
 
 										tPlanOrderItemMapper.updateEntryByItemNo(orgEntry);
@@ -4363,9 +4338,6 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 							entry.setCreateAt(new Date());//创建日期
 							entry.setCreateBy(user.getLoginName());//创建人
 							entry.setCreateByTxt(user.getDisplayName());//创建人姓名
-						/*	BigDecimal entryTotal = calculateEntryAmount(entry);
-							orgOrder.setInitAmt(orgOrder.getInitAmt().add(entryTotal));
-							orgOrder.setCurAmt(orgOrder.getCurAmt().add(entryTotal));*/
 							promotionService.calculateEntryPromotion(entry);
 							tPlanOrderItemMapper.insert(entry);
 							curAllEntry.add(entry);
@@ -4379,7 +4351,25 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 					if (modiFlag) {
 						//List<TPlanOrderItem> curAllEntry = tPlanOrderItemMapper.selectByOrderCode(orderNo);
 						List<TOrderDaliyPlanItem> list = this.createDaliyPlanAfterPay(orgOrder,curAllEntry,daliyEntryNo);
-
+						//更新订单行总配送数量
+						Map<String, TPlanOrderItem> planMap = new HashMap<String, TPlanOrderItem>();
+						Date lastDay = null;
+						list.stream().forEach(e -> {
+							if (planMap.containsKey(e.getItemNo())) {
+								TPlanOrderItem item = planMap.get(e.getItemNo());
+								item.setDispTotal(item.getDispTotal() + e.getQty());
+							} else {
+								TPlanOrderItem item = new TPlanOrderItem();
+								item.setItemNo(e.getItemNo());
+								item.setNewRowFlag("N");
+								item.setDispTotal(e.getQty());
+								planMap.put(e.getItemNo(), item);
+							}
+						});
+						curEntrys.stream().forEach(plan -> {
+							TPlanOrderItem item = planMap.get(plan.getItemNo());
+							tPlanOrderItemMapper.updateEntryByItemNo(item);
+						});
 						tPreOrderMapper.updateBySelective(orgOrder);
 					}else{
 						throw  new ServiceException(MessageCode.LOGIC_ERROR,"没做修改");
@@ -4477,16 +4467,6 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 						if(!dayMap.containsKey(key)){
 							dayMap.put(key,day);
 						}
-					/*	TPlanOrderItem planItem = entriesMap.get(day.getItemNo());
-						if(DateUtil.dateAfter(planItem.getStartDispDate(),day.getDispDate())){
-							if(!dayMap.containsKey(key)){
-								dayMap.put(key,day);
-							}
-						}else{
-							if(!dayMap.containsKey(key)){
-								dayMap.put(key,day);
-							}
-						}*/
 					}
 			};
 		}
