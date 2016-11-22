@@ -3934,7 +3934,36 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 	/**
 	 * 订单编辑方法
 	 * @param record
-	 * （1）
+	 * （1）没有日订单的订单编辑（预付款没付款，后付款没有装箱） 直接删除订单行项目，依照前台传来的行项目为准重生，
+	 * 如果行项目有停订 则更新订单行截止日期，订单更新金额和截止日期
+	 * （2）有日订单但是没有路单的订单编辑（区分预付款和后付款）
+	 *    1）如果是后付款，首先删除所有的行项目，日订单。会直接根据前台来的行项目为准，重新生成日订单，和订单行，更新订单
+	 *    2）如果是预付款，首先删除所有的行项目，日订单。会根据前台传来的行项目为准，重新生成订单行并按照金额重新生成日订单，
+	 *       根据生成后的日订单统计，更新行项目的配送数量和截止日期，并更新订单截止日期
+	 * （3）产生路单的订单编辑
+	 * 	  1）如果是后付款，获取修改前所有的行项目，循环和前台传来的新的行项目比较
+	 * 	     ①如果没有任何变化，抛出异常，没有变化。
+	 * 	     ②如果行项目有更新，有参与促销的订单行不参与修改
+	 * 	         修改订单行：会根据变化的开始和截止日期 去查看路单，如果该日期范围内有路单产生或者有路单确认
+	 * 	         			则抛出异常
+	 *				如果修改数量、产品，配送日期、配送类型 将最新行项目的开始日期之后的日订单全部删除
+	 *		 		如果配送期间有完结订单抛出异常）
+	 *			 	如果该行项目被停订，则将订单行截止日期更新为停订开始日期，并将停订开始日期及后的日订单全部删除
+	*			 	并更新行项目
+	 *		③如果有新添加的行项目，添加行项目
+	 *		④如果有删除的行项目 ，抛出异常，产生路单的订单不允许删除行项目
+	 *	    此时，如果订单有被修改，则根据订单和最新的行项目 生成日订单。更新日订单行的行号(plan_item_no),剩余金额（remain_amt）
+	 *	    生成日订单不根据金钱生
+	 *	    ⑤生成或更新日订单时
+	 *	        .首先根据最新的行项目找出最早的配送日期（firstDeliveryDay），和最晚的配送日期(lastDeliveryDay),
+	 *	        算出循环总天数（lastDeliveryDay-firstDeliveryDay+1），
+	 *	          并记录每个行项目的配送天数差（截止日期-开始日期+1）
+	 *	        .查询出还没被删除的日订单（排序和查看日计划一直，disp_date asc,remain_amt desc）
+	 *	        .循环天数  和 行项目，如果（disp_date,item_no ）对应的日订单存在 则说明该日订单没被删除，则更新plan_item_no
+	 *	          如果不存在生成（此时不关心remain_amt）
+ *	           .最后取出所有日订单（排序和查看日计划一致），并更新remain_amt 字段
+ *	       ⑥ 更新订单行的配送总量，更新订单的截止日期
+	 *
 	 * @return
      */
 	@Override
@@ -4182,8 +4211,16 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 								}
 							});
 							curEntrys.stream().forEach(plan -> {
-								TPlanOrderItem item = planMap.get(plan.getItemNo());
-								tPlanOrderItemMapper.updateEntryByItemNo(item);
+								if(planMap.containsKey(plan.getItemNo())){
+									TPlanOrderItem item = planMap.get(plan.getItemNo());
+									tPlanOrderItemMapper.updateEntryByItemNo(item);
+								}else{
+									TPlanOrderItem item = new TPlanOrderItem();
+									item.setItemNo(plan.getItemNo());
+									item.setDispTotal(0);
+									tPlanOrderItemMapper.updateEntryByItemNo(item);
+								}
+
 							});
 							if(planMap!=null){
 								for(String key : planMap.keySet()){
@@ -4209,9 +4246,10 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 				} else {
 					//后付款的
 					boolean modiFlag = false;
+					//用来判断新增的行项目
 					List<TPlanOrderItem> cloneCurEntrys = new ArrayList<TPlanOrderItem>();
 					cloneCurEntrys.addAll(curEntrys);
-					//产生路单
+					//orgEntrys 原来的所有行项目  curEntrys :现在的行项目
 					for (TPlanOrderItem orgEntry : orgEntrys) {
 						boolean delFlag = true;
 						for (TPlanOrderItem curEntry : curEntrys) {
@@ -4367,8 +4405,16 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 							}
 						});
 						curEntrys.stream().forEach(plan -> {
-							TPlanOrderItem item = planMap.get(plan.getItemNo());
-							tPlanOrderItemMapper.updateEntryByItemNo(item);
+							if(planMap.containsKey(plan.getItemNo())){
+								TPlanOrderItem item = planMap.get(plan.getItemNo());
+								tPlanOrderItemMapper.updateEntryByItemNo(item);
+							}else{
+								TPlanOrderItem newPlan = new TPlanOrderItem();
+								newPlan.setDispTotal(0);
+								newPlan.setItemNo(plan.getItemNo());
+								tPlanOrderItemMapper.updateEntryByItemNo(newPlan);
+							}
+
 						});
 						tPreOrderMapper.updateBySelective(orgOrder);
 					}else{
