@@ -156,7 +156,7 @@
       and PLAN_ITEM_NO = #{planItemNo,jdbcType=VARCHAR}
   </select>
   <select id="selectMaxDaliyPlansNoByOrderNo" resultType="java.lang.Integer" parameterType="java.lang.String" >
-    select max(cast(PLAN_ITEM_NO as decimal(10,0)))
+    select IFNULL(max(cast(PLAN_ITEM_NO as decimal(10,0))),0)
     from t_mst_order_daliy_plan_item 
     where ORDER_NO = #{orderNo,jdbcType=VARCHAR}
   </select>
@@ -955,7 +955,9 @@
     <if test="dispDate!=null">
       and DISP_DATE = #{dispDate,jdbcType=DATE}
     </if>
-
+    <if test="status!=null">
+      and STATUS = #{status,jdbcType=VARCHAR}
+    </if>
 
 
   </update>
