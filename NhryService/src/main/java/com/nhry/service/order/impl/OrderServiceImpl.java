@@ -4054,9 +4054,11 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 									if (!orgEntry.getReachTimeType().equals(curEntry.getReachTimeType())) {//送奶时段变更
 										orgEntry.setReachTimeType(curEntry.getReachTimeType());
 									}
+
 									//比较配送日期是否修改
 									String startstr = format.format(curEntry.getStartDispDate());
 									String endstr = format.format(curEntry.getEndDispDate());
+
 									if (!startstr.equals(format.format(orgEntry.getStartDispDate())) || !endstr.equals(format.format(orgEntry.getEndDispDate()))) {
 										orgEntry.setStartDispDate(curEntry.getStartDispDate());
 										orgEntry.setEndDispDate(curEntry.getEndDispDate());
@@ -4065,13 +4067,22 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 													if(!e.getDispDate().before(curEntry.getStartDispDate()))throw new ServiceException(MessageCode.LOGIC_ERROR,"该日期内已经有完结的日计划，请修改时间!");
 										});
 										onlyReachType =false;
-										//删除不需要的日单
-										TOrderDaliyPlanItem newPlan = new TOrderDaliyPlanItem();
+
+									/*	TOrderDaliyPlanItem newPlan = new TOrderDaliyPlanItem();
 										newPlan.setOrderNo(orgOrder.getOrderNo());
 										//newPlan.setStatus("10");
 										newPlan.setDispDateStr(startstr);
-										tOrderDaliyPlanItemMapper.deleteFromDateToDate(newPlan);
+										tOrderDaliyPlanItemMapper.deleteFromDateToDate(newPlan);*/
 									}
+									//删除不需要的日单
+									TOrderDaliyPlanItem newplan = new TOrderDaliyPlanItem();
+									newplan.setOrderNo(orgOrder.getOrderNo());
+									//newPlan.setStatus("10");
+									newplan.setDispDateStr(startstr);
+									tOrderDaliyPlanItemMapper.deleteFromDateToDate(newplan);
+
+
+
 									if(ContentDiffrentUtil.isDiffrent(orgEntry.getIsStop(),curEntry.getIsStop())){
 										if("Y".equals(curEntry.getIsStop()) && curEntry.getStopStartDate()!=null){
 											if(curEntry.getStopStartDate().before(orgEntry.getStartDispDate())||curEntry.getStopStartDate().after(orgEntry.getEndDispDate()))throw new ServiceException(MessageCode.LOGIC_ERROR,"停订的日期不能在配送日期之外!");
