@@ -4536,8 +4536,8 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 							plan.setPlanItemNo(String.valueOf(daliyEntryNo));
 							tOrderDaliyPlanItemMapper.updateDaliyPlanItemStatus(plan);
 						}else{
-							daliyEntryNo++;
-							continue;
+							plan.setPlanItemNo(String.valueOf(daliyEntryNo));
+							tOrderDaliyPlanItemMapper.updateDaliyPlanItemStatus(plan);
 						}
 						daliyEntryNo++;
 						continue ;
