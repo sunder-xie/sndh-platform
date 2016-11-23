@@ -4108,7 +4108,7 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 									if(flag){
 										TOrderDaliyPlanItem newplan = new TOrderDaliyPlanItem();
 										newplan.setOrderNo(orgOrder.getOrderNo());
-										newplan.setItemNo(orgEntry.getItemNo());
+										//newplan.setItemNo(orgEntry.getItemNo());
 										newplan.setStatus("10");
 										newplan.setDispDateStr(startstr);
 										tOrderDaliyPlanItemMapper.deleteFromDateByStatus(newplan);
@@ -4831,6 +4831,9 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 								dayMap.put(key,item);
 							}
 						}else{
+							if(!"30".equals(item.getStatus())){
+								initAmt = initAmt.subtract(item.getAmt());
+							}
 							if(!dayMap.containsKey(key)){
 								dayMap.put(key,item);
 							}
@@ -4889,13 +4892,13 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 					TOrderDaliyPlanItem item  = dayMap.get(mapKey);
 					if("10".equals(item.getStatus())){
 						//curAmt = curAmt.subtract(item.getAmt());
-						initAmt = initAmt.subtract(item.getAmt());
-						plan.setRemainAmt(initAmt);
+						//initAmt = initAmt.subtract(item.getAmt());
+						//plan.setRemainAmt(initAmt);
 						plan.setStatus("10");
 					}else if("20".equals(item.getStatus())){
 						plan.setStatus("20");
-						initAmt = initAmt.subtract(item.getAmt());
-						plan.setRemainAmt(initAmt);
+						//initAmt = initAmt.subtract(item.getAmt());
+						//plan.setRemainAmt(initAmt);
 					}else{
 						plan.setPlanItemNo(String.valueOf(daliyEntryNo));
 						plan.setStatus("30");
@@ -4923,7 +4926,7 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 				//日计划行金额和
 				BigDecimal qty = new BigDecimal(entry.getQty().toString());
 				plan.setAmt(entry.getSalesPrice().multiply(qty));//金额小计
-				curAmt = curAmt.subtract(plan.getAmt());
+				//curAmt = curAmt.subtract(plan.getAmt());
 				initAmt = initAmt.subtract(plan.getAmt());
 				//当订单余额小于0时停止
 				if(initAmt.floatValue() < 0)break ;
@@ -4994,11 +4997,11 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 						TOrderDaliyPlanItem item  = dayMap.get(mapKey);
 						if("10".equals(item.getStatus())){
 							//curAmt = curAmt.subtract(item.getAmt());
-							initAmt = initAmt.subtract(item.getAmt());
+							//initAmt = initAmt.subtract(item.getAmt());
 							plan.setReachTimeType(entry.getReachTimeType());
-							plan.setRemainAmt(initAmt);
+							//plan.setRemainAmt(initAmt);
 						}else if("20".equals(item.getStatus())){
-							initAmt = initAmt.subtract(item.getAmt());
+							//initAmt = initAmt.subtract(item.getAmt());
 							plan.setRemainAmt(initAmt);
 						}else{
 							plan.setPlanItemNo(String.valueOf(daliyEntryNo));
