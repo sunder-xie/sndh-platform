@@ -877,7 +877,7 @@
 
   </select>
 
-  <select id="getOrderOrderDailyFinishAmtByOrderNo" parameterType="bigdecimal" resultType="String">
+  <select id="getOrderOrderDailyFinishAmtByOrderNo" parameterType="java.lang.String" resultType="DECIMAL">
     SELECT
       IFNULL(SUM(cast(AMT as decimal(10,2))),0)
       FROM t_mst_order_daliy_plan_item
