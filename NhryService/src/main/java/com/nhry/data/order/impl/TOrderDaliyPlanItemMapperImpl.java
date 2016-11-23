@@ -414,4 +414,9 @@ public class TOrderDaliyPlanItemMapperImpl implements TOrderDaliyPlanItemMapper
 		return sqlSessionTemplate.selectOne("selectCurAmtDaysByNo",orderNo);
 	}
 
+	@Override
+	public int deleteFromDateByStatus(TOrderDaliyPlanItem newplan) {
+		return sqlSessionTemplate.delete("deleteFromDateByStatus",newplan);
+	}
+
 }

@@ -4051,20 +4051,24 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 									if (StringUtils.isNotBlank(orgEntry.getPromotion()))
 										throw new ServiceException(MessageCode.LOGIC_ERROR, "促销商品行不能更改!");
 									modiFlag = true;
+									boolean flag = false;
 									//产生路单的订单行 如果有变化  验证信息
 									confirmAllDispDateAfterDate(curEntry,orgEntry, orderNo);
 									//可以修改行项目
 									if (!orgEntry.getMatnr().equals(curEntry.getMatnr())) {//换商品
+										flag = true;
 										onlyReachType =false;
 										orgEntry.setMatnr(curEntry.getMatnr());
 										orgEntry.setSalesPrice(curEntry.getSalesPrice());
 										orgEntry.setUnit(curEntry.getUnit());
 									}
 									if (orgEntry.getQty() != curEntry.getQty()) {//改数量
+										flag = true;
 										onlyReachType =false;
 										orgEntry.setQty(curEntry.getQty());
 									}
 									if (!orgEntry.getRuleType().equals(curEntry.getRuleType())) {//周期变更
+										flag = true;
 										onlyReachType =false;
 										orgEntry.setRuleType(curEntry.getRuleType());
 										orgEntry.setGapDays(curEntry.getGapDays());
@@ -4073,10 +4077,12 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 										//相同时判断是周期送还是星期送
 										if ("10".equals(orgEntry.getRuleType()) && (!curEntry.getGapDays().equals(orgEntry.getGapDays()))) {
 											onlyReachType =false;
+											flag = true;
 											orgEntry.setGapDays(curEntry.getGapDays());
 											orgEntry.setRuleTxt(curEntry.getRuleTxt());
 										} else if ("20".equals(orgEntry.getRuleType()) && !curEntry.getRuleTxt().equals(orgEntry.getRuleTxt())) {
 											onlyReachType =false;
+											flag = true;
 											orgEntry.setRuleTxt(curEntry.getRuleTxt());
 										}
 									}
@@ -4096,22 +4102,18 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 													if(!e.getDispDate().before(curEntry.getStartDispDate()))throw new ServiceException(MessageCode.LOGIC_ERROR,"该日期内已经有完结的日计划，请修改时间!");
 										});
 										onlyReachType =false;
+										flag = true;
 
-									/*	TOrderDaliyPlanItem newPlan = new TOrderDaliyPlanItem();
-										newPlan.setOrderNo(orgOrder.getOrderNo());
-										//newPlan.setStatus("10");
-										newPlan.setDispDateStr(startstr);
-										tOrderDaliyPlanItemMapper.deleteFromDateToDate(newPlan);*/
+									}
+									if(flag){
+										TOrderDaliyPlanItem newplan = new TOrderDaliyPlanItem();
+										newplan.setOrderNo(orgOrder.getOrderNo());
+										newplan.setItemNo(orgEntry.getItemNo());
+										newplan.setStatus("10");
+										newplan.setDispDateStr(startstr);
+										tOrderDaliyPlanItemMapper.deleteFromDateByStatus(newplan);
 									}
 									//删除不需要的日单
-									TOrderDaliyPlanItem newplan = new TOrderDaliyPlanItem();
-									newplan.setOrderNo(orgOrder.getOrderNo());
-									//newPlan.setStatus("10");
-									newplan.setDispDateStr(startstr);
-									tOrderDaliyPlanItemMapper.deleteFromDateToDate(newplan);
-
-
-
 									if(ContentDiffrentUtil.isDiffrent(orgEntry.getIsStop(),curEntry.getIsStop())){
 										if("Y".equals(curEntry.getIsStop()) && curEntry.getStopStartDate()!=null){
 											if(curEntry.getStopStartDate().before(orgEntry.getStartDispDate())||curEntry.getStopStartDate().after(orgEntry.getEndDispDate()))throw new ServiceException(MessageCode.LOGIC_ERROR,"停订的日期不能在配送日期之外!");
@@ -4126,9 +4128,9 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 											TOrderDaliyPlanItem newPlan = new TOrderDaliyPlanItem();
 											newPlan.setOrderNo(orgOrder.getOrderNo());
 											newPlan.setItemNo(orgEntry.getItemNo());
-											//newPlan.setStatus("10");
+											newPlan.setStatus("10");
 											newPlan.setDispDateStr(format.format(curEntry.getStopStartDate()));
-											tOrderDaliyPlanItemMapper.deleteFromDateToDate(newPlan);
+											tOrderDaliyPlanItemMapper.deleteFromDateByStatus(newPlan);
 										}
 									}
 									orgEntry.setNewRowFlag("N");
@@ -4168,7 +4170,7 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 							item.setOrderNo(orderNo);
 							item.setStatus("10");
 							item.setDispDateStr(format.format(entry.getStartDispDate()));
-							tOrderDaliyPlanItemMapper.deleteFromDate(item);
+							tOrderDaliyPlanItemMapper.deleteFromDateByStatus(item);
 							curAllEntry.add(entry);
 							index++;
 						}
@@ -4281,18 +4283,22 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 											}
 										}
 									}
+									boolean deleteFlag = false;
 									//可以修改行项目
 									if (!orgEntry.getMatnr().equals(curEntry.getMatnr())) {//换商品
+										deleteFlag = true;
 										modiFlag = true;
 										orgEntry.setMatnr(curEntry.getMatnr());
 										orgEntry.setSalesPrice(curEntry.getSalesPrice());
 										orgEntry.setUnit(curEntry.getUnit());
 									}
 									if (orgEntry.getQty() != curEntry.getQty()) {//改数量
+										deleteFlag = true;
 										modiFlag = true;
 										orgEntry.setQty(curEntry.getQty());
 									}
 									if (!orgEntry.getRuleType().equals(curEntry.getRuleType())) {//周期变更
+										deleteFlag = true;
 										modiFlag = true;
 										orgEntry.setRuleType(curEntry.getRuleType());
 										orgEntry.setGapDays(curEntry.getGapDays());
@@ -4301,15 +4307,18 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 										//相同时判断是周期送还是星期送
 										if ("10".equals(orgEntry.getRuleType()) && (!curEntry.getGapDays().equals(orgEntry.getGapDays()))) {
 											modiFlag = true;
+											deleteFlag = true;
 											orgEntry.setGapDays(curEntry.getGapDays());
 											orgEntry.setRuleTxt(curEntry.getRuleTxt());
 										} else if ("20".equals(orgEntry.getRuleType()) && !curEntry.getRuleTxt().equals(orgEntry.getRuleTxt())) {
 											modiFlag = true;
+											deleteFlag = true;
 											orgEntry.setRuleTxt(curEntry.getRuleTxt());
 										}
 									}
 									if (!orgEntry.getReachTimeType().equals(curEntry.getReachTimeType())) {//送奶时段变更
 										modiFlag = true;
+
 										orgEntry.setReachTimeType(curEntry.getReachTimeType());
 									}
 									//比较配送日期是否修改
@@ -4317,18 +4326,22 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 									String endstr = format.format(curEntry.getEndDispDate());
 									if (!startstr.equals(format.format(orgEntry.getStartDispDate())) || !endstr.equals(format.format(orgEntry.getEndDispDate()))) {
 										modiFlag = true;
+										deleteFlag = true;
 										orgEntry.setStartDispDate(curEntry.getStartDispDate());
 										orgEntry.setEndDispDate(curEntry.getEndDispDate());
 										orgEntry.setIsStop("N");
 
 									}
-									TOrderDaliyPlanItem plan = new TOrderDaliyPlanItem();
-									plan.setOrderNo(orgOrder.getOrderNo());
-									plan.setItemNo(orgEntry.getItemNo());
-									plan.setStatus("10");
-									plan.setDispDateStr(startstr);
-									//将 先开始日期之后的日订单删除
-									tOrderDaliyPlanItemMapper.deleteFromDateToDate(plan);
+									if(deleteFlag){
+										TOrderDaliyPlanItem plan = new TOrderDaliyPlanItem();
+										plan.setOrderNo(orgOrder.getOrderNo());
+										plan.setItemNo(orgEntry.getItemNo());
+										plan.setStatus("10");
+										plan.setDispDateStr(startstr);
+										//将 先开始日期之后的日订单删除
+										tOrderDaliyPlanItemMapper.deleteFromDateByStatus(plan);
+									}
+
 
 
 									if("Y".equals(curEntry.getIsStop()) && curEntry.getStopStartDate()!=null){
@@ -4348,7 +4361,7 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 											newPlan.setStatus("10");
 											newPlan.setDispDateStr(format.format(curEntry.getStopStartDate()));
 											//将 先开始日期之后的日订单删除
-											tOrderDaliyPlanItemMapper.deleteFromDateToDate(newPlan);
+											tOrderDaliyPlanItemMapper.deleteFromDateByStatus(newPlan);
 
 										}
 
@@ -4745,7 +4758,7 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 				}
 
 			}
-			if(ContentDiffrentUtil.isDiffrent(lastDay,orgOrder.getEndDate())){
+ 			if(ContentDiffrentUtil.isDiffrent(lastDay,orgOrder.getEndDate())){
 				orgOrder.setEndDate(lastDay);
 				tPreOrderMapper.updateBySelective(orgOrder);
 			}
