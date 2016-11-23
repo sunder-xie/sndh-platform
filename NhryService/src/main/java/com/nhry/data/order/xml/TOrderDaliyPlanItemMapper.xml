@@ -195,6 +195,20 @@
     </if>
     and DISP_DATE &gt;= #{dispDateStr,jdbcType=DATE}
   </delete>
+
+  <delete id="deleteFromDateByStatus" parameterType="com.nhry.data.order.domain.TOrderDaliyPlanItem" >
+    delete from t_mst_order_daliy_plan_item
+    where ORDER_NO = #{orderNo,jdbcType=VARCHAR}
+    <if test="itemNo != null" >
+      and ITEM_NO = #{itemNo,jdbcType=VARCHAR}
+    </if>
+    <if test="status != null" >
+      and STATUS = #{status,jdbcType=VARCHAR}
+    </if>
+    and DISP_DATE &gt;= #{dispDateStr,jdbcType=DATE}
+  </delete>
+
+
   <delete id="deletePlansForLongEdit" parameterType="com.nhry.data.order.domain.TOrderDaliyPlanItem" >
     delete from t_mst_order_daliy_plan_item
     where ORDER_NO = #{orderNo,jdbcType=VARCHAR}
@@ -1082,7 +1096,7 @@
     LEFT JOIN t_md_mara_ex ex on i.MATNR = ex.MATNR
     where 1 = 1
     and i.ORDER_NO =#{orderNo,jdbcType=VARCHAR}
-    order by i.DISP_DATE,i.REMAIN_AMT desc
+    order by i.DISP_DATE asc,i.REMAIN_AMT desc
   </select>
 
   <select id="selectStatusDailyPlansCounts" resultType="INTEGER" parameterType="java.lang.String">

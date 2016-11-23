@@ -129,4 +129,7 @@ public interface TOrderDaliyPlanItemMapper {
     BigDecimal selectInitAmtDaysByNo(String orderNo);
 
     BigDecimal selectCurAmtDaysByNo(String orderNo);
+
+    int deleteFromDateByStatus(TOrderDaliyPlanItem newplan);
+
 }
