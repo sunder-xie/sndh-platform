@@ -5034,12 +5034,13 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 
 	if(haveRoute){
 		List<TOrderDaliyPlanItem> allDayItems = tOrderDaliyPlanItemMapper.selectDaliyPlansByOrderNo2(orgOrder.getOrderNo());
-		BigDecimal cloneCurAmt = BigDecimal.ZERO;
+		//完结总金额
+		BigDecimal cloneUseAmt = BigDecimal.ZERO;
 		if(allDayItems!=null && allDayItems.size()>0){
 			for(TOrderDaliyPlanItem item : allDayItems){
 				if("30".equals(item.getStatus()))continue;
-				if("10".equals(item.getStatus())){
-					cloneCurAmt = cloneCurAmt.add(item.getAmt());
+				if("20".equals(item.getStatus())){
+					cloneUseAmt = cloneUseAmt.add(item.getAmt());
 				}
 				initMap.replace("initAmt",initMap.get("initAmt").subtract(item.getAmt()));
 				if(item.getRemainAmt().compareTo(initMap.get("initAmt"))!=0){
@@ -5053,7 +5054,7 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 				}
 			}
 		}
-		orgOrder.setCurAmt(cloneCurAmt);
+		orgOrder.setCurAmt(orgOrder.getInitAmt().subtract(cloneUseAmt));
 	}
 		//}
 
@@ -6695,11 +6696,11 @@ public static int dayOfTwoDay(Date day1,Date day2) {
 		SimpleDateFormat format = new SimpleDateFormat("yyyyMMdd");//该商品该日期原日计划送多少个
 		//BigDecimal curAmt = orgOrder.getCurAmt();//当前订单的剩余金额
 	   //获取当前日计划状态为在订的 总金额 = 订单总金额-完结的总金额
-   BigDecimal curAmt =  orgOrder.getInitAmt().subtract(tOrderDaliyPlanItemMapper.getOrderOrderDailyFinishAmtByOrderNo(orgOrder.getOrderNo()));
-  if(orgOrder.getCurAmt().compareTo(curAmt)!=0){
-	  orgOrder.setCurAmt(curAmt);
-	  tPreOrderMapper.updateBySelective(orgOrder);
-  }
+	   BigDecimal curAmt =  orgOrder.getInitAmt().subtract(tOrderDaliyPlanItemMapper.getOrderOrderDailyFinishAmtByOrderNo(orgOrder.getOrderNo()));
+	  if(orgOrder.getCurAmt().compareTo(curAmt)!=0){
+		  orgOrder.setCurAmt(curAmt);
+		  tPreOrderMapper.updateBySelective(orgOrder);
+	  }
 	   Map<String,Integer> needNewDaliyPlans = new HashMap<String,Integer>();//所有需要新增或减少的日计划行
 
    	Map<String,TPlanOrderItem> relatedEntryMap = new HashMap<String,TPlanOrderItem>();//key为订单行itemNo,value为entry
