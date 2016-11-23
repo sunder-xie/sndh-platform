@@ -1394,7 +1394,8 @@ public class DeliverMilkServiceImpl extends BaseService implements DeliverMilkSe
 	@Override
 	public int createTemRouteOrders(TemporaryDispOrderModel tModel) {
 		SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
-		if (userSessionService.getCurrentUser().getBranchNo() == null)
+		TSysUser user = userSessionService.getCurrentUser();
+		if (user.getBranchNo() == null)
 			throw new ServiceException(MessageCode.LOGIC_ERROR, "登陆人没有奶站，非奶站人员无法创建路单!");
 		String dateStr = tModel.getDateStr();
 		Date date = null;
@@ -1402,6 +1403,10 @@ public class DeliverMilkServiceImpl extends BaseService implements DeliverMilkSe
 			date = format.parse(dateStr);
 		} catch (ParseException e) {
 			throw new ServiceException(MessageCode.LOGIC_ERROR, "日期格式有误!");
+		}
+		List<TDispOrder> dispOrders = tDispOrderMapper.selectDispOrderByBranchNoAndDay(user.getBranchNo(),date);
+		if(dispOrders == null || dispOrders.size()==0){
+			throw  new ServiceException(MessageCode.LOGIC_ERROR,format.format(date)+"的路单还未生成，您可以直接生成路单");
 		}
 		List<String> orderNos = tModel.getOrders();
 		StringBuffer  hadDispNos = new StringBuffer("");
