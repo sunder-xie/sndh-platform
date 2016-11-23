@@ -4028,7 +4028,7 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 					//用来判断行项目是否是新加行项目
 					List<TPlanOrderItem> cloneCurEntrys = new ArrayList<TPlanOrderItem>();
 					cloneCurEntrys.addAll(curEntrys);
-					//产生路单
+					//orgEntrys 原来的行项目
 					for (TPlanOrderItem orgEntry : orgEntrys) {
 						boolean delFlag = true;
 						for (TPlanOrderItem curEntry : curEntrys) {
@@ -4185,7 +4185,7 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 								tOrderDaliyPlanItemMapper.updateDaliyReachTimeTypeItemNo(item);
 							}
 						}else{
-							//行号唯一，需要判断以前最大的行号 如果没有日订单则返回 -1
+							//行号唯一，需要判断以前最大的行号 如果没有日订单则返回 0
 
 							List<TOrderDaliyPlanItem> list = this.createDaliyByAmt(orgOrder, curAllEntry,daliyEntryNo,true);
 							Map<String, TPlanOrderItem> planMap = new HashMap<String, TPlanOrderItem>();
@@ -4803,13 +4803,17 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 					String key = item.getItemNo()+format.format(item.getDispDate());
 					//先将 更新后的行项目最开始的配送日期（firstDeliveryDate） 之前的 未删除的日订单(oldPlans)的钱减掉
 					if(item.getDispDate().before(firstDeliveryDate)){
-						initAmt = initAmt.subtract(item.getAmt());
-						daliyEntryNo++;
+						if(!"30".equals(item.getStatus())){
+							initAmt = initAmt.subtract(item.getAmt());
+						}
+						//daliyEntryNo++;
 					}else{
 						TPlanOrderItem planItem = entriesMap.get(item.getItemNo());
 						if(planItem.getStartDispDate().after(item.getDispDate())){
-							initAmt = initAmt.subtract(item.getAmt());
-							daliyEntryNo++;
+							if(!"30".equals(item.getStatus())){
+								initAmt = initAmt.subtract(item.getAmt());
+							}
+							//daliyEntryNo++;
 							if(!dayMap.containsKey(key)){
 								dayMap.put(key,item);
 							}
@@ -4828,6 +4832,7 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 		//outer:for(int i = 0; i < maxEntryDay; i++) {
 
 		int afterdays = 0;
+		//如果只有一个行项目并且参与了停订
 		if(entries.size()==1 && "Y".equals(entries.get(0).getIsStop())){
 		for(int i = 0; i < maxEntryDay; i++){
 			for(TPlanOrderItem  entry :entries){
@@ -4928,10 +4933,10 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 				for(TPlanOrderItem entry : entries){
 					if(initAmt.floatValue() < 0)break;
 					if(DateUtil.dateAfter(entry.getStartDispDate(),today))continue;
-					//新增的行项目 最多生到截止日期 不参与顺延
-					if("Y".equals(entry.getNewRowFlag())){
+					//新增的行项目 最多生到截止日期
+					/*if("Y".equals(entry.getNewRowFlag())){
 						if(entry.getEndDispDate().before(today)) continue;
-					}
+					}*/
 					//停订的行项目 最多生到停订开始日期 不参与顺延
 					if("Y".equals(entry.getIsStop()) && entry.getEndDispDate().before(today)){
 						continue;
@@ -4977,16 +4982,19 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 						if("10".equals(item.getStatus())){
 							//curAmt = curAmt.subtract(item.getAmt());
 							initAmt = initAmt.subtract(item.getAmt());
+							plan.setReachTimeType(entry.getReachTimeType());
 							plan.setRemainAmt(initAmt);
 						}else if("20".equals(item.getStatus())){
 							initAmt = initAmt.subtract(item.getAmt());
 							plan.setRemainAmt(initAmt);
 						}else{
+							plan.setPlanItemNo(String.valueOf(daliyEntryNo));
+							tOrderDaliyPlanItemMapper.updateDaliyPlanItemByItemNo(plan);
+							daliyEntryNo++;
 							continue;
 						}
 						if(initAmt.floatValue() < 0)break;
 						plan.setPlanItemNo(String.valueOf(daliyEntryNo));
-						plan.setReachTimeType(entry.getReachTimeType());
 						tOrderDaliyPlanItemMapper.updateDaliyPlanItemByItemNo(plan);
 						//daliyPlans.add(plan);
 
@@ -5006,7 +5014,7 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 					//日计划行金额和
 					BigDecimal qty = new BigDecimal(entry.getQty().toString());
 					plan.setAmt(entry.getSalesPrice().multiply(qty));//金额小计
-					curAmt = curAmt.subtract(plan.getAmt());
+					//curAmt = curAmt.subtract(plan.getAmt());
 					initAmt = initAmt.subtract(plan.getAmt());
 					//当订单余额小于0时停止
 					if(initAmt.floatValue() < 0)break ;
@@ -5030,6 +5038,9 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 		if(allDayItems!=null && allDayItems.size()>0){
 			for(TOrderDaliyPlanItem item : allDayItems){
 				if("30".equals(item.getStatus()))continue;
+				if("10".equals(item.getStatus())){
+					cloneCurAmt = cloneCurAmt.add(item.getAmt());
+				}
 				initMap.replace("initAmt",initMap.get("initAmt").subtract(item.getAmt()));
 				if(item.getRemainAmt().compareTo(initMap.get("initAmt"))!=0){
 					TOrderDaliyPlanItem plan = new TOrderDaliyPlanItem();
@@ -5042,12 +5053,13 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 				}
 			}
 		}
+		orgOrder.setCurAmt(cloneCurAmt);
 	}
 		//}
 
 
 		//判断新生成的日订单中 最后一天是否所有满足的行项目全部都有
-		final Date finalDay = lastDay;
+		/*final Date finalDay = lastDay;
 		boolean allHave = true;
 		List<TPlanOrderItem> finEntry = entries.stream().filter(e->!finalDay.before(e.getEndDispDate())).collect(Collectors.toList());
 		for(TPlanOrderItem entry : finEntry){
@@ -5074,7 +5086,7 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 				allHave = false;
 				break;
 			}
-		}
+		}*/
 
 		/*if(!allHave){
 			//删除这天所有的日订单
@@ -6000,6 +6012,9 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 
 	}
 
+
+
+
 	/* (non-Javadoc) 
 	* @title: editOrderForShort
 	* @description: 短期修改订单（改日计划）
@@ -6097,10 +6112,12 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 				orgPlan.setLastModifiedBy(userSessionService.getCurrentUser().getLoginName());
 				orgPlan.setLastModifiedByTxt(userSessionService.getCurrentUser().getDisplayName());
 //				tOrderDaliyPlanItemMapper.updateDaliyPlanItem(orgPlan);
-				
+				BigDecimal newInitAmt = tOrderDaliyPlanItemMapper.selectInitAmtDaysByNo(orgOrder.getOrderNo());
+				BigDecimal newCurAmt = tOrderDaliyPlanItemMapper.selectCurAmtDaysByNo(orgOrder.getOrderNo());
+
 				//重新计算日计划的剩余金额,更新订单金额
-				orgOrder.setInitAmt(orgOrder.getInitAmt().subtract(cj));
-				orgOrder.setCurAmt(orgOrder.getCurAmt().subtract(cj));
+				orgOrder.setInitAmt(newInitAmt.subtract(cj));
+				orgOrder.setCurAmt(newCurAmt.subtract(cj));
 //				tPreOrderMapper.updateOrderInitAmtAndCurAmt(orgOrder);
 				
 				calculateDaliyPlanRemainAmt(orgOrder,daliyPlans);
@@ -6676,8 +6693,9 @@ public static int dayOfTwoDay(Date day1,Date day2) {
    private void changeProductOrQty(TPreOrder orgOrder, ArrayList<TPlanOrderItem> orgEntries,List<TOrderDaliyPlanItem> daliyPlans, Map<TOrderDaliyPlanItem,TOrderDaliyPlanItem> changeProducts,Map<TOrderDaliyPlanItem,TOrderDaliyPlanItem> changeQtys,Map<TOrderDaliyPlanItem,TOrderDaliyPlanItem> stopPlans){
 	  TSysUser user = userSessionService.getCurrentUser();
 		SimpleDateFormat format = new SimpleDateFormat("yyyyMMdd");//该商品该日期原日计划送多少个
-		BigDecimal curAmt = orgOrder.getCurAmt();//当前订单的剩余金额
-   	
+		//BigDecimal curAmt = orgOrder.getCurAmt();//当前订单的剩余金额
+	   //获取当前日计划状态为在订的 总金额 = 订单总金额-完结的总金额
+   BigDecimal curAmt =  orgOrder.getInitAmt().subtract(tOrderDaliyPlanItemMapper.getOrderOrderDailyFinishAmtByOrderNo(orgOrder.getOrderNo()));
    	Map<String,Integer> needNewDaliyPlans = new HashMap<String,Integer>();//所有需要新增或减少的日计划行
 
    	Map<String,TPlanOrderItem> relatedEntryMap = new HashMap<String,TPlanOrderItem>();//key为订单行itemNo,value为entry
@@ -6728,7 +6746,7 @@ public static int dayOfTwoDay(Date day1,Date day2) {
    		}
    	}
    	
-   	
+   	//newPlans 需要向后追加的日订单
    	List<TOrderDaliyPlanItem> newPlans = new ArrayList<TOrderDaliyPlanItem>();
    	for(TOrderDaliyPlanItem plan : daliyPlans){
    		if(plan.getGiftQty()!=null)continue;
@@ -6752,7 +6770,8 @@ public static int dayOfTwoDay(Date day1,Date day2) {
       					needNewDaliyPlans.replace(plan.getItemNo(), 0);
       				}
       				else if(plan.getQty() > 0 && (plan.getQty() + needNewDaliyPlans.get(plan.getItemNo()) < 0)){
-      					plan.setQty(plan.getQty());
+      					//TODO 是否应该set为0
+						plan.setQty(plan.getQty());
       					needNewDaliyPlans.replace(plan.getItemNo(), needNewDaliyPlans.get(plan.getItemNo()) + plan.getQty() );
       				}
       				else{
@@ -6764,15 +6783,21 @@ public static int dayOfTwoDay(Date day1,Date day2) {
    				if(stopPlans.size()>0)continue;
    				while(needNewDaliyPlans.get(plan.getItemNo()) > 0){
    					TOrderDaliyPlanItem np = new TOrderDaliyPlanItem();
+					//订单行需要追加的数量
    					int needQty = needNewDaliyPlans.get(plan.getItemNo());
+					//订单行每天配送的数量
    					int entryQty = relatedEntryMap.get(plan.getItemNo()).getQty();
+					//如果订单行每天配送的数量>需要追加的数量说明  还只够生一天
    					if(entryQty>=needQty){
    						np.setQty(needQty);
    						needNewDaliyPlans.replace(plan.getItemNo(), 0);
    					}else{
+						//如果订单行每天配送的数量 <需要追加的数量说明
+						// 这天能生并且 将需要追加数量更新
    						np.setQty(entryQty);
    						needNewDaliyPlans.replace(plan.getItemNo(), needQty-entryQty);
    					}
+					//np 克隆该日订单
    					convertDaliyPlanByEntry(plan, np,relatedEntryMap.get(plan.getItemNo()));
    					newPlans.add(np);
    				}
@@ -6786,7 +6811,7 @@ public static int dayOfTwoDay(Date day1,Date day2) {
    	}
    	
    	//删除数量为0的日计划,并重新生成新加的日计划
-   	Map<String,Date> dateMap = new HashMap<String,Date>();//每个订单行的最后配送时间
+   	Map<String,Date> dateMap = new HashMap<String,Date>();//存放每个订单行的最后配送时间（截止日期）
    	for(TOrderDaliyPlanItem plan : daliyPlans){
    		if(plan.getQty() > 0 || "20".equals(plan.getStatus())){
    			if(dateMap.containsKey(plan.getItemNo())){
@@ -6806,7 +6831,6 @@ public static int dayOfTwoDay(Date day1,Date day2) {
 				}
 				//变更产品
 				if(changeProducts.containsKey(plan)){
-
 					if(plan.getQty().compareTo(changeProducts.get(plan).getQty())==0){
 						//只换产品
 						OperationLogUtil.saveHistoryOperation(orgOrder.getOrderNo(), LogType.DAIL_ORDER,DailOrderLogEnum.UPT_MATNR,null,null,
@@ -6835,6 +6859,7 @@ public static int dayOfTwoDay(Date day1,Date day2) {
 				newPlans.add(0,plan);
    		}
    	}
+	   //TODO 重新查取最新的plan_item_no
    	TOrderDaliyPlanItem record = new TOrderDaliyPlanItem();
    	record.setOrderNo(newPlans.get(0).getOrderNo());
    	record.setDispDateStr(format.format(newPlans.get(0).getDispDate()));//从什么时候删除日单
