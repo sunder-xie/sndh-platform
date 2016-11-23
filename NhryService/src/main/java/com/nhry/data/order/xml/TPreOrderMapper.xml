@@ -120,11 +120,12 @@
     	    and PREORDER_STAT != '40'
     	    and ORDER_NO != #{orderNo,jdbcType=VARCHAR}
   </select>
-  <select id="selectNumOfdeletedByMilkmemberNo" resultType="INTEGER">
+  <select id="selectNumOfdeletedByMilkmemberNo" resultType="INTEGER" parameterType="java.lang.String">
     select 
     count(*)
     FROM t_preorder
     WHERE MILKMEMBER_NO = #{milkmemberNo,jdbcType=VARCHAR}
+    and SIGN = '10'
     	    and PREORDER_STAT = '10'
   </select>
   <select id="selectByOrderCode" resultMap="BaseResultMap" parameterType="java.lang.String" >
@@ -444,11 +445,14 @@
       </if>
     </trim>
   </insert>
-  <update id="updateByPrimaryKeySelective" parameterType="com.nhry.data.order.domain.TPreOrder" >
+  <update id="updateBySelective" parameterType="com.nhry.data.order.domain.TPreOrder" >
     update t_preorder
     <set >
       <if test="orderType != null" >
         ORDER_TYPE = #{orderType,jdbcType=VARCHAR},
+      </if>
+      <if test="endDate != null" >
+        END_DATE = #{endDate,jdbcType=DATE},
       </if>
       <if test="orderDate != null" >
         ORDER_DATE = #{orderDate,jdbcType=DATE},
@@ -607,6 +611,9 @@
     <if test="paymentStat != null and paymentStat !=''">
      		AND o.PAYMENTMETHOD = #{paymentStat,jdbcType=VARCHAR}
     </if>
+    <if test="preorderSource != null and preorderSource !=''">
+      AND o.PREORDER_SOURCE = #{preorderSource,jdbcType=VARCHAR}
+    </if>
     <if test="milkboxStat != null and milkboxStat !=''">
      		AND o.MILKBOX_STAT = #{milkboxStat,jdbcType=VARCHAR}
     </if>
@@ -684,6 +691,36 @@
 			     -->
      ORDER BY o.ORDER_NO desc
   </select>
+  <select id="searchOrderByMp" resultMap="BaseResultMap" parameterType="com.nhry.model.order.OrderSearchModel" >
+    select distinct
+    o.ORDER_NO, o.ORDER_TYPE, o.ORDER_DATE, o.END_DATE, o.PAYMENTMETHOD, o.PREORDER_SOURCE, o.ONLINEORDER_NO,
+    b.BRANCH_NAME BRANCH_NO, o.MILKMEMBER_NO, o.MEMBER_NO, o.PAYMENT_STAT, o.MILKBOX_STAT, o.INIT_AMT, o.CUR_AMT,
+    o.DISP_LINE_NO, o.EMP_NO,concat(r.RESIDENTIAL_AREA_TXT,a.ADDRESS_TXT) ADRESS_NO, o.CREATER_NO, o.CREATER_BY, o.PREORDER_STAT,o.PAY_METHOD,
+    v.MP CUSTOMER_TEL,v.VIP_NAME MILKMEMBER_NAME,o.RET_REASON,o.RET_DATE,o.BACK_REASON,o.BACK_DATE,o.SIGN,o.RESUME_FLAG
+    FROM t_preorder o
+    left join t_md_branch b on o.BRANCH_NO = b.BRANCH_NO
+    left join t_vip_cust_info v on v.VIP_CUST_NO = o.MILKMEMBER_NO
+    left join t_md_address a on a.ADDRESS_ID = o.ADRESS_NO
+    left join t_md_residential_area r on r.ID = a.RESIDENTIAL_AREA
+    WHERE
+          o.RET_DATE is null
+           AND v.MP in
+      <foreach collection="mps" item="item" index="index"
+               open="(" close=")" separator=",">
+        #{item}
+      </foreach>
+      <if test="branchNo != null and branchNo != ''">
+        AND o.BRANCH_NO = #{branchNo,jdbcType=VARCHAR}
+      </if>
+      <if test="salesOrg != null and salesOrg != ''">
+        AND o.SALES_ORG = #{salesOrg,jdbcType=VARCHAR}
+      </if>
+      <if test="dealerNo != null and dealerNo != ''">
+        AND o.DEALER_NO = #{dealerNo,jdbcType=VARCHAR}
+      </if>
+     AND o.PREORDER_STAT = "10"
+     ORDER BY o.ORDER_NO desc
+  </select>
 
   <select id="searchReturnOrders" resultMap="BaseResultMap" parameterType="com.nhry.model.order.ManHandOrderSearchModel">
     select
@@ -717,7 +754,40 @@
 
     ORDER BY ORDER_NO
   </select>
-
+  <select id="searchReNeedOrdersByMp" resultMap="BaseResultMap" parameterType="com.nhry.model.order.OrderSearchModel" >
+    select
+    o.ORDER_NO, o.ORDER_TYPE, o.ORDER_DATE, o.PAYMENTMETHOD, o.PREORDER_SOURCE, o.ONLINEORDER_NO, o.END_DATE,
+    b.BRANCH_NAME BRANCH_NO, o.MILKMEMBER_NO, o.MEMBER_NO, o.PAYMENT_STAT, o.MILKBOX_STAT, o.INIT_AMT, o.CUR_AMT,
+    o.DISP_LINE_NO, o.EMP_NO,concat(r.RESIDENTIAL_AREA_TXT,a.ADDRESS_TXT) ADRESS_NO, o.CREATER_NO, o.CREATER_BY, o.PREORDER_STAT,o.PAY_METHOD,
+    v.MP CUSTOMER_TEL,v.VIP_NAME MILKMEMBER_NAME,o.RET_REASON,o.RET_DATE,o.BACK_REASON,o.BACK_DATE,o.SIGN
+    FROM t_preorder o
+    left join t_md_branch b on o.BRANCH_NO = b.BRANCH_NO
+    left join t_vip_cust_info v on v.VIP_CUST_NO = o.MILKMEMBER_NO
+    left join t_md_address a on a.ADDRESS_ID = o.ADRESS_NO
+    left join t_md_residential_area r on r.ID = a.RESIDENTIAL_AREA
+    WHERE PREORDER_STAT = "10" and RESUME_FLAG = "N" and SIGN = '10'
+    <if test="branchNo != null and branchNo != ''">
+      AND o.BRANCH_NO = #{branchNo,jdbcType=VARCHAR}
+    </if>
+    <if test="salesOrg != null and salesOrg != ''">
+      AND o.SALES_ORG = #{salesOrg,jdbcType=VARCHAR}
+    </if>
+    <if test="dealerNo != null and dealerNo != ''">
+      AND o.DEALER_NO = #{dealerNo,jdbcType=VARCHAR}
+    </if>
+    <if test="orderDateStart != null and orderDateStart != ''">
+      and o.END_DATE &gt;= #{orderDateStart,jdbcType=DATE}
+    </if>
+    <if test="orderDateEnd != null and orderDateEnd != ''">
+      and o.END_DATE &lt;= #{orderDateEnd,jdbcType=DATE}
+    </if>
+    AND v.MP  in
+    <foreach collection="mps" item="item" index="index"
+             open="(" close=")" separator=",">
+      #{item}
+    </foreach>
+    order by o.END_DATE asc
+  </select>
   <select id="searchPendingConfirmUnOnline" resultMap="BaseResultMap" parameterType="com.nhry.model.order.OrderSearchModel">
     select distinct
     o.ORDER_NO, o.ORDER_TYPE, o.ORDER_DATE, o.PAYMENTMETHOD, o.PREORDER_SOURCE, o.ONLINEORDER_NO,
@@ -734,6 +804,10 @@
     AND o.PREORDER_STAT = "20"
     and o.IS_VALID = 'N'
     and (b.IS_VALID !='10' OR SYSDATE() &lt;b.ONLINE_DATE)
+    and o.BRANCH_NO>0
+    <if test="preorderSource != null and preorderSource !=''">
+      AND o.PREORDER_SOURCE = #{preorderSource,jdbcType=VARCHAR}
+    </if>
     <if test="orderNo != null and orderNo !=''">
       AND o.ORDER_NO = #{orderNo,jdbcType=VARCHAR}
     </if>
@@ -743,7 +817,9 @@
     <if test="orderDateEnd != null and orderDateEnd !=''">
       AND o.ORDER_DATE  &lt;=  #{orderDateEnd}
     </if>
-
+    <if test="salesOrg != null and salesOrg !=''">
+      AND o.SALES_ORG =  #{salesOrg}
+    </if>
     ORDER BY o.ORDER_NO desc
   </select>
 
@@ -762,7 +838,11 @@
     left join t_md_residential_area r on r.ID = a.RESIDENTIAL_AREA
     WHERE 1=1
     AND o.PREORDER_STAT = "20"
+    and o.IS_VALID='N'
     and (b.IS_VALID ='10' and  SYSDATE() &gt;=b.ONLINE_DATE)
+    <if test="preorderSource != null and preorderSource !=''">
+      AND o.PREORDER_SOURCE = #{preorderSource,jdbcType=VARCHAR}
+    </if>
     <if test="orderNo != null and orderNo !=''">
       AND o.ORDER_NO = #{orderNo,jdbcType=VARCHAR}
     </if>
@@ -891,7 +971,6 @@
         </if>
         IS_VALID = #{isValid,jdbcType=VARCHAR},
         BRANCH_NO = #{branchNo,jdbcType=VARCHAR},
-        MEMO_TXT = null,
         RET_DATE = null
     </set>
     where ORDER_NO = #{orderNo,jdbcType=VARCHAR}
@@ -1451,6 +1530,20 @@
       ORDER BY
 	ORDER_NO DESC
   </select>
-  
+  <select id="updateBackOrder"  parameterType="com.nhry.data.order.domain.TPreOrder">
+    UPDATE t_preorder
+    <set>
+      PREORDER_STAT = #{preorderStat,jdbcType=VARCHAR},
+      BRANCH_NO = #{branchNo,jdbcType=VARCHAR},
+      DEALER_NO=#{dealerNo,jdbcType=VARCHAR},
+      MILKBOX_STAT = #{milkboxStat,jdbcType=VARCHAR},
+      EMP_NO = #{empNo,jdbcType=VARCHAR},
+      IS_VALID = #{isValid,jdbcType=VARCHAR},
+      RET_REASON = #{retReason,jdbcType=VARCHAR},
+      RET_DATE = #{retDate,jdbcType=DATE},
+      MEMO_TXT = #{memoTxt,jdbcType=VARCHAR}
+    </set>
+    where ORDER_NO = #{orderNo,jdbcType=VARCHAR}
+  </select>
 
 </mapper>

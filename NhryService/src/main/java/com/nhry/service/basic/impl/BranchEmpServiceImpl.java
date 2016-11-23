@@ -224,6 +224,21 @@ public class BranchEmpServiceImpl extends BaseService implements BranchEmpServic
 		return branchEmpMapper.searchBranchEmp(smodel);
 	}
 
+	@Override
+	public List<TMdBranchEmp> queryBranchEmp(EmpQueryModel smodel){
+		TSysUser user = userSessionService.getCurrentUser();
+		if(smodel.getBranchNo() == null){
+			smodel.setBranchNo(user.getBranchNo());
+		}
+		if(smodel.getSalesOrg() == null){
+			smodel.setSalesOrg(user.getSalesOrg());
+		}
+		if(smodel.getDealerNo() == null){
+			smodel.setDealerNo(user.getDealerId());
+		}
+		return branchEmpMapper.queryBranchEmp(smodel);
+	}
+
 	public void setMessageService(TSysMessageService messageService) {
 		this.messageService = messageService;
 	}

@@ -98,6 +98,16 @@ public class OrderResource extends BaseResource {
 		return convertToRespModel(MessageCode.NORMAL, null, orderService.searchNeedResumeOrders(smodel));
 	}
 
+	@POST
+	@Path("/searchReNeedOrdersByMp")
+	@Produces(MediaType.APPLICATION_JSON)
+	@Consumes(MediaType.APPLICATION_JSON)
+	@ApiOperation(value = "/searchReNeedOrdersByMp", response = PageInfo.class, notes = "通过电话号码查询需要续订的订单信息列表")
+	public Response searchReNeedOrdersByMp(@ApiParam(required=true,name="smodel",value="SearchModel") OrderSearchModel smodel){
+		return convertToRespModel(MessageCode.NORMAL, null, orderService.searchReNeedOrdersByMp(smodel));
+	}
+
+
 	@GET
 	@Path("/queryCollectByOrderNo")
 	@Produces(MediaType.APPLICATION_JSON)
@@ -149,7 +159,7 @@ public class OrderResource extends BaseResource {
 	@Produces(MediaType.APPLICATION_JSON)
 	@ApiOperation(value = "/resumeFromStop", response = Integer.class, notes = "将停订的订单复订")
 	public Response resumeFromStop(@ApiParam(required=true,name="record",value="系统参数json格式") OrderSearchModel record){
-		return convertToRespModel(MessageCode.NORMAL, null, orderService.continueOrdeAfterStop(record));
+		return convertToRespModel(MessageCode.NORMAL, null, orderService.continueOrdeAfterStop2(record));
 	}
 	
 	@POST
@@ -158,9 +168,29 @@ public class OrderResource extends BaseResource {
 	@Produces(MediaType.APPLICATION_JSON)
 	@ApiOperation(value = "/uptlong", response = Integer.class, notes = "更新订单信息(长期修改)")
 	public Response uptOrder(@ApiParam(required=true,name="record",value="系统参数json格式") OrderEditModel record){
-		return convertToRespModel(MessageCode.NORMAL, null,  orderService.editOrderForLong(record));
-	}	
-	
+		return convertToRespModel(MessageCode.NORMAL, null,  orderService.uptOrderlong(record));
+	}
+
+
+	@POST
+	@Path("/uptOrderlong")
+	@Consumes(MediaType.APPLICATION_JSON)
+	@Produces(MediaType.APPLICATION_JSON)
+	@ApiOperation(value = "/uptOrderlong", response = Integer.class, notes = "更新订单信息(长期修改)")
+	public Response uptOrderlong(@ApiParam(required=true,name="record",value="系统参数json格式") OrderEditModel record){
+		return convertToRespModel(MessageCode.NORMAL, null,  orderService.uptOrderlong(record));
+	}
+
+
+	@POST
+	@Path("/uptOrderlongForViewPlans")
+	@Consumes(MediaType.APPLICATION_JSON)
+	@Produces(MediaType.APPLICATION_JSON)
+	@ApiOperation(value = "/uptOrderlongForViewPlans", response = List.class, notes = "更新订单信息(长期修改),看日计划")
+	public Response uptOrderlongForViewPlans(@ApiParam(required=true,name="record",value="系统参数json格式") OrderEditModel record){
+		return convertToRespModel(MessageCode.NORMAL, null,  orderService.uptOrderlongForViewPlans(record));
+	}
+
 	@POST
 	@Path("/editOrderForLongForViewPlans")
 	@Consumes(MediaType.APPLICATION_JSON)
@@ -195,6 +225,15 @@ public class OrderResource extends BaseResource {
 	@ApiOperation(value = "/search", response = PageInfo.class, notes = "查询订单信息列表")
 	public Response findOrders(@ApiParam(required=true,name="smodel",value="SearchModel") OrderSearchModel smodel){
 		return convertToRespModel(MessageCode.NORMAL, null, orderService.searchOrders(smodel));
+	}
+
+	@POST
+	@Path("/searchOrderByMp")
+	@Produces(MediaType.APPLICATION_JSON)
+	@Consumes(MediaType.APPLICATION_JSON)
+	@ApiOperation(value = "/searchOrderByMp", response = PageInfo.class, notes = "根据电话号码查询订单信息列表")
+	public Response searchOrderByMp(@ApiParam(required=true,name="smodel",value="SearchModel") OrderSearchModel smodel){
+		return convertToRespModel(MessageCode.NORMAL, null, orderService.searchOrderByMp(smodel));
 	}
 	
 	@POST
@@ -282,7 +321,7 @@ public class OrderResource extends BaseResource {
 	@Path("/searchPendingConfirmUnOnline")
 	@Produces(MediaType.APPLICATION_JSON)
 	@Consumes(MediaType.APPLICATION_JSON)
-	@ApiOperation(value = "/searchPendingConfirmUnOnline", response = PageInfo.class, notes = "人工分单获取退单订单信息列表")
+	@ApiOperation(value = "/searchPendingConfirmUnOnline", response = PageInfo.class, notes = "未上线奶站  人工分单获取退单订单信息列表")
 	public Response searchPendingConfirmUnOnline(@ApiParam(required=true,name="manHandModel",value="ManHandOrderSearchModel") OrderSearchModel smodel){
 		return convertToRespModel(MessageCode.NORMAL, null, orderService.searchPendingConfirmUnOnline(smodel));
 	}
@@ -321,9 +360,27 @@ public class OrderResource extends BaseResource {
 	@Path("/orderConfirmUnOnline")
 	@Produces(MediaType.APPLICATION_JSON)
 	@Consumes(MediaType.APPLICATION_JSON)
-	@ApiOperation(value = "/orderConfirmUnOnline", response = PageInfo.class, notes = "待确认订单确认")
+	@ApiOperation(value = "/orderConfirmUnOnline", response = PageInfo.class, notes = "未上线奶站 待确认订单确认")
 	public Response orderConfirmUnOnline(@ApiParam(required=true,name="uptManHandModel",value="uptManHandModel") UpdateManHandOrderModel uptManHandModel){
 		return convertToRespModel(MessageCode.NORMAL, null, orderService.orderConfirmUnOnline(uptManHandModel));
+	}
+
+	@POST
+	@Path("/batchOrderConfirmUnOnline")
+	@Produces(MediaType.APPLICATION_JSON)
+	@Consumes(MediaType.APPLICATION_JSON)
+	@ApiOperation(value = "/batchOrderConfirmUnOnline", response = PageInfo.class, notes = "待确认订单批量确认-奶站未上线部门确认")
+	public Response batchOrderConfirmUnOnline(@ApiParam(required=true,name="uptManHandModel",value="uptManHandModel") UpdateManHandOrderModel uptManHandModel){
+		return convertToRespModel(MessageCode.NORMAL, null, orderService.batchOrderConfirmUnOnline(uptManHandModel));
+	}
+
+	@POST
+	@Path("/batchOrderConfirm")
+	@Produces(MediaType.APPLICATION_JSON)
+	@Consumes(MediaType.APPLICATION_JSON)
+	@ApiOperation(value = "/batchOrderConfirm", response = PageInfo.class, notes = "待确认订单批量确认-奶站确认")
+	public Response batchOrderConfirm(@ApiParam(required=true,name="uptManHandModel",value="uptManHandModel") UpdateManHandOrderModel uptManHandModel){
+		return convertToRespModel(MessageCode.NORMAL, null, orderService.batchorderConfirm(uptManHandModel));
 	}
 
 
@@ -441,5 +498,14 @@ public class OrderResource extends BaseResource {
 	@ApiOperation(value = "/advanceBackOrder", response = Integer.class, notes = "执行更新提前退订订单状态")
 	public Response updateBackState(){
 		return convertToRespModel(MessageCode.NORMAL,null,orderService.updateBackState());
+	}
+
+	@POST
+	@Path("/backUnBranchOrder")
+	@Produces(MediaType.APPLICATION_JSON)
+	@Consumes(MediaType.APPLICATION_JSON)
+	@ApiOperation(value = "/backUnBranchOrder", response = Integer.class, notes = "执行退回订单操作")
+	public Response backUnBranchOrder(@ApiParam(required=true,name="orderNo",value="订单编号") UpdateManHandOrderModel  smodel){
+		return convertToRespModel(MessageCode.NORMAL, null, orderService.backUnBranchOrder(smodel));
 	}
 }

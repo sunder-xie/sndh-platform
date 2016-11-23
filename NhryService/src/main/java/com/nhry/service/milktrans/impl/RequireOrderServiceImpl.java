@@ -1063,14 +1063,14 @@ public class RequireOrderServiceImpl implements RequireOrderService {
         } else {
             TSsmSalOrder noPromOrder = this.creatNoPromoSalOrderOfDealerBranch(orderDate);
             TSsmSalOrder promOrder = this.creatPromoSalOrderOfDealerBranch(orderDate);
-            TSsmSalOrder promOrder40 = this.creatPromoSalOrderOfDealerBranch40(orderDate);
-            TSsmSalOrder noPromOrder40 = this.creatNoPromoSalOrderOfDealerBranch40(orderDate);
-            if(promOrder40 != null){
-                generateSalesOrderAnduptVouCher(promOrder40);
-            }
-            if(noPromOrder40 != null){
-                generateSalesOrderAnduptVouCher(noPromOrder40);
-            }
+//            TSsmSalOrder promOrder40 = this.creatPromoSalOrderOfDealerBranch40(orderDate);
+//            TSsmSalOrder noPromOrder40 = this.creatNoPromoSalOrderOfDealerBranch40(orderDate);
+//            if(promOrder40 != null){
+//                generateSalesOrderAnduptVouCher(promOrder40);
+//            }
+//            if(noPromOrder40 != null){
+//                generateSalesOrderAnduptVouCher(noPromOrder40);
+//            }
             if (noPromOrder != null) {
                 generateSalesOrderAnduptVouCher(noPromOrder);
             }

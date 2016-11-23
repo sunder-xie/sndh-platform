@@ -250,6 +250,9 @@
       <if test="dispTotal != null" >
         DISP_TOTAL,
       </if>
+      <if test="isStop != null" >
+        IS_STOP,
+      </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides="," >
       <if test="itemNo != null" >
@@ -342,6 +345,9 @@
       <if test="dispTotal != null" >
         #{dispTotal,jdbcType=INTEGER},
       </if>
+      <if test="isStop != null" >
+        #{isStop,jdbcType=VARCHAR},
+      </if>
     </trim>
   </insert>
   <update id="updateEntryByOrderCode" parameterType="com.nhry.data.order.domain.TPlanOrderItem" >
@@ -355,6 +361,9 @@
       </if>
       <if test="qty != null" >
         QTY = #{qty,jdbcType=INTEGER},
+      </if>
+      <if test="newRowFlag != null" >
+        NEW_ROW_FLAG = #{newRowFlag,jdbcType=VARCHAR},
       </if>
       <if test="salesPrice != null" >
         SALES_PRICE = #{salesPrice,jdbcType=DECIMAL},
@@ -489,4 +498,13 @@
 				GROUP BY i.ITEM_NO
 
     </select>
+
+  <delete id="deleteByOrderNo" parameterType="java.lang.String" >
+    delete from t_mst_plan_order_item
+    where ORDER_NO = #{orderNo,jdbcType=VARCHAR}
+  </delete>
+
+  <select id="selectPlanOrderItemByOrderNo" resultMap="BaseResultMap">
+    SELECT <include refid="Base_Column_List"/> FROM t_mst_plan_order_item WHERE ORDER_NO = #{orderNo}
+  </select>
 </mapper>

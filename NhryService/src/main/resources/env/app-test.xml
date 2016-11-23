@@ -13,7 +13,7 @@
 	<config key="client_id" value="Auth_dhxt"></config>
 	<!-- <config key="client_id" value="Auth_dhxt1"></config> -->
 	<!-- 回调地址-->
-	<config key="redirect_uri" value="http://54.223.36.200:8080/idm/auth"></config>
+	<config key="redirect_uri" value="http://54.223.124.94:8082/master/idm/auth"></config>
 	<!-- 
 	<config key="redirect_uri" value="http://54.222.170.10:8070/idm/auth"></config>
 	 -->
@@ -24,7 +24,7 @@
 	<!-- app token 校验接口 -->
 	<config key="app_token_validate"  value="http://myditest.newhopedairy.cn:8080/siam/rest/validate"></config>
 	<!-- 前端页面home -->
-	<config key="front_home_page" value="http://test.nhry-dev.com/release/#/newhope/home"></config>
+	<config key="front_home_page" value="http://54.223.147.25/release/#/newhope/home"></config>
 	<!-- 
 	 <config key="front_home_page" value="http://localhost/local/#/newhope/home"></config>
 	  -->
@@ -66,6 +66,6 @@
 	<config key="SMS.Password" value="ry85953221.com"/>
 	<config key="filePath" value="/opt/s3/"/>
 	<!-- 没有配置组织时，提示页面地址 -->
-	<config key="info_page_uri" value="http://test.nhry-dev.com/release/#/error/NoSalesOrg"></config>
+	<config key="info_page_uri" value="http://54.223.147.25/release/#/error/NoSalesOrg"></config>
 	<config key="online_code" value="0300015781"/>
 </configs>

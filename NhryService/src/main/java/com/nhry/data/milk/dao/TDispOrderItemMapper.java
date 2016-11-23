@@ -57,7 +57,7 @@ public interface TDispOrderItemMapper {
     
     int updateDispOrderItemEmp(TDispOrder order);
     
-    int selectCountOfTodayByOrgOrder(String orgOrderNo);
+    int selectCountOfTodayByOrgOrder(String orgOrderNo, Date dispDate);
 
     //查询 该订单下生成的路单数 非确认的
     int selectDispOrderNumByPreOrderNo(String orderNo);
@@ -70,5 +70,8 @@ public interface TDispOrderItemMapper {
     int selectCountByOrgOrderAndOrgItemNo(String orderNo,String itemNo,String dispDate);
 
     List<DispOrderReportEntityModel> reportDispOrderItemByParams(DispOrderReportModel model);
-    
+
+    List<TDispOrderItem> selectItemsByOrgOrderAndItemNoAndBeforeDate(TDispOrderItem dispItem);
+    //该订单下是否有未确认生成的路单产生
+    int selectCountsByOrderNo(String orderNo);
 }

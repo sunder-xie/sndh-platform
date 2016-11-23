@@ -81,21 +81,72 @@ public class TOrderDaliyPlanItemMapperImpl implements TOrderDaliyPlanItemMapper
 		// TODO Auto-generated method stub
 		return sqlSessionTemplate.update("updateDaliyPlanItem", record);
 	}
-	
+
+	@Override
+	public int updateDaliyPlanItemByItemNo(TOrderDaliyPlanItem record)
+	{
+		// TODO Auto-generated method stub
+		return sqlSessionTemplate.update("updateDaliyPlanItemByItemNo", record);
+	}
+
+	@Override
+	public List<TOrderDaliyPlanItem> selectDaliyByAfterDayAndNo(TOrderDaliyPlanItem newPlan) {
+		return sqlSessionTemplate.selectList("selectDaliyByAfterDayAndNo",newPlan);
+	}
+
+	@Override
+	public int deleteFromDate(TOrderDaliyPlanItem item) {
+		return sqlSessionTemplate.delete("deleteFromDate",item);
+	}
+
+	@Override
+	public int deleteOneDayItem(TOrderDaliyPlanItem plan) {
+		return sqlSessionTemplate.delete("deleteOneDayItem",plan);
+	}
+
+	@Override
+	public List<TOrderDaliyPlanItem> selectByDayAndNo(TOrderDaliyPlanItem plan) {
+		return sqlSessionTemplate.selectList("selectByDayAndNo", plan);
+	}
+
+	//查询日期区间内 所有的状态为10的日订单
+	@Override
+	public List<TOrderDaliyPlanItem> selectByDayAndNoBetweenDays(OrderSearchModel omodel) {
+		return sqlSessionTemplate.selectList("selectByDayAndNoBetweenDays", omodel);
+	}
+
+	@Override
+	public int updateDaliyPlansToStopByStatus(OrderSearchModel omodel) {
+		return sqlSessionTemplate.update("updateDaliyPlansToStopByStatus",omodel);
+	}
+
+	@Override
+	public int updateDaliyReachTimeTypeItemNo(TOrderDaliyPlanItem item) {
+		return sqlSessionTemplate.update("updateDaliyReachTimeTypeItemNo",item);
+	}
+
 	@Override
 	public List<TOrderDaliyPlanItem> selectDaliyPlansByEntryNo(String itemNo)
 	{
 		// TODO Auto-generated method stub
 		return sqlSessionTemplate.selectList("selectDaliyPlansByEntryNo", itemNo);
 	}
-	
+
+	//不要改
 	@Override
 	public List<TOrderDaliyPlanItem> selectDaliyPlansByOrderNo(String orderNo)
 	{
 		// TODO Auto-generated method stub
 		return sqlSessionTemplate.selectList("selectDaliyPlansByOrderNo", orderNo);
 	}
-	
+
+	//不要改
+	@Override
+	public List<TOrderDaliyPlanItem> selectDaliyPlansByOrderNo2(String orderNo)
+	{
+		// TODO Auto-generated method stub
+		return sqlSessionTemplate.selectList("selectDaliyPlansByOrderNo2", orderNo);
+	}
 	@Override
 	public List<TOrderDaliyPlanItem> selectDaliyPlansByOrderNoAsc(String orderNo)
 	{
@@ -214,11 +265,11 @@ public class TOrderDaliyPlanItemMapperImpl implements TOrderDaliyPlanItemMapper
 	}
 
 	@Override
-	public TOrderDaliyPlanItem selectDaliyPlanByOrderAndDispDate(String orderNo, Date date) {
+	public List<TOrderDaliyPlanItem> selectDaliyPlanByOrderAndDispDate(String orderNo, Date date) {
 		TOrderDaliyPlanItem item = new TOrderDaliyPlanItem();
 		item.setOrderNo(orderNo);
 		item.setDispDate(date);
-		return sqlSessionTemplate.selectOne("selectDaliyPlanByOrderAndDispDate",item);
+		return sqlSessionTemplate.selectList("selectDaliyPlanByOrderAndDispDate",item);
 	}
 
 	@Override
@@ -229,6 +280,21 @@ public class TOrderDaliyPlanItemMapperImpl implements TOrderDaliyPlanItemMapper
 	@Override
 	public BigDecimal getSumDailyBackAmtByBackDate(OrderSearchModel model) {
 		return sqlSessionTemplate.selectOne("getSumDailyBackAmtByBackDate",model);
+	}
+
+	@Override
+	public Date selectEndDispDate(String itemNo) {
+		return sqlSessionTemplate.selectOne("selectEndDispDate",itemNo);
+	}
+
+	@Override
+	public TOrderDaliyPlanItem selectByDateAndItemNoAndNo(TOrderDaliyPlanItem plan) {
+		return sqlSessionTemplate.selectOne("selectByDateAndItemNoAndNo",plan);
+	}
+
+	@Override
+	public List<TOrderDaliyPlanItem> selectByBeforeDayAndNo(TOrderDaliyPlanItem oplan) {
+		return sqlSessionTemplate.selectList("selectByBeforeDayAndNo",oplan);
 	}
 
 
@@ -329,5 +395,28 @@ public class TOrderDaliyPlanItemMapperImpl implements TOrderDaliyPlanItemMapper
 	{
 		return sqlSessionTemplate.delete("deletePlansByAmt",orderNo);
 	}
-	
+	/**
+	 * 查询订单下完结的日订单数量
+	 * */
+	@Override
+	public int selectStatusDailyPlansCounts(String orderNo)
+	{
+		return sqlSessionTemplate.selectOne("selectStatusDailyPlansCounts",orderNo);
+	}
+
+	@Override
+	public BigDecimal selectInitAmtDaysByNo(String orderNo) {
+		return sqlSessionTemplate.selectOne("selectInitAmtDaysByNo",orderNo);
+	}
+
+	@Override
+	public BigDecimal selectCurAmtDaysByNo(String orderNo) {
+		return sqlSessionTemplate.selectOne("selectCurAmtDaysByNo",orderNo);
+	}
+
+	@Override
+	public int deleteFromDateByStatus(TOrderDaliyPlanItem newplan) {
+		return sqlSessionTemplate.delete("deleteFromDateByStatus",newplan);
+	}
+
 }

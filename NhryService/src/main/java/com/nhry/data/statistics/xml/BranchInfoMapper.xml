@@ -565,7 +565,7 @@
             AND i.ORDER_DATE  &gt;=  #{dateStart,jdbcType=DATE}
         </if>
         <if test="dateEnd !=null">
-            AND i.ORDER_DATE  &gt;=  #{dateEnd,jdbcType=DATE}
+            AND i.ORDER_DATE  &lt;=  #{dateEnd,jdbcType=DATE}
         </if>
          order by i.ORDER_DATE desc
     </select>
@@ -612,7 +612,7 @@
             AND d.CREATE_AT  &gt;=  #{dateStart,jdbcType=DATE}
         </if>
         <if test="dateEnd !=null">
-            AND d.CREATE_AT  &gt;=  #{dateEnd,jdbcType=DATE}
+            AND d.CREATE_AT  &lt;=  #{dateEnd,jdbcType=DATE}
         </if>
         GROUP BY
         d.BRANCH_NO,
@@ -1249,7 +1249,12 @@
         DISP_EMP_NO,
         CONFIRM_MATNR,
         GROUP_CONCAT(CONFIRM_QTY ORDER BY CONFIRM_QTY desc ) as CONFIRM_QTY,
-        CQTY,
+        sum(CQTY) as CQTY,
+        sum(RESEND_QTY) as RESEND_QTY,
+        (sum(CQTY)-sum(RESEND_QTY)) as FINAL_QTY,
+        case sum(RESEND_QTY)
+        when 0 then CONCAT((sum(CQTY)-sum(RESEND_QTY)),' ')
+        else CONCAT((sum(CQTY)-sum(RESEND_QTY)),',(',sum(RESEND_QTY),')') end as COUNT_QTY,
         MATNR_TXT,
         EMP_NAME
         FROM
@@ -1258,7 +1263,8 @@
         i.DISP_EMP_NO,
         i.CONFIRM_MATNR,
         ROUND(sum(i.CONFIRM_QTY)) AS CONFIRM_QTY,
-        sum(i.CONFIRM_QTY) as CQTY,
+        ROUND(sum(i.CONFIRM_QTY)) as CQTY,
+        '0' as RESEND_QTY,
         p.SHORT_TXT MATNR_TXT,
         e.EMP_NAME
         FROM
@@ -1270,8 +1276,8 @@
         LEFT JOIN t_md_address a ON a.ADDRESS_ID = i.ADDRESS_NO
         LEFT JOIN t_md_residential_area r ON r.ID = a.RESIDENTIAL_AREA
         LEFT JOIN t_md_branch_emp e ON e.EMP_NO = i.DISP_EMP_NO
-        WHERE
-        mdo.DISP_DATE = #{theDate,jdbcType=VARCHAR}
+        WHERE 1=1
+        and mdo.DISP_DATE = #{theDate,jdbcType=VARCHAR}
         and mdo.BRANCH_NO=#{branchNo,jdbcType=VARCHAR}
         <if test="reachTimeType!=null and ''!=reachTimeType">
             AND  mdo.REACH_TIME_TYPE &lt;= #{reachTimeType,jdbcType=DATE}
@@ -1284,10 +1290,11 @@
         t1.MATNR,
         CONCAT(
         '(',
-        ROUND(sum(t1.RESEND_QTY)),
+        ROUND(sum(t2.QTY)),
         ')'
         ) AS CONFIRM_QTY,
         0 AS CQTY,
+        ROUND(sum(t2.QTY)) as RESEND_QTY,
         t4.SHORT_TXT AS MATNR_TXT,
         t5.EMP_NAME
         FROM
@@ -1369,5 +1376,60 @@
         LEFT JOIN t_md_mara_ex ex ON rr.MATNR = ex.MATNR and ex.SALES_ORG = rr.SALES_ORG
         where 1=1
        and ri.RESEND_ORDER_NO = #{resendOrderNo}
+    </select>
+
+    <select id="PendingUnConfirmOnline" resultType="hashmap" parameterType="String">
+        SELECT DISTINCT
+            o.ONLINEORDER_NO,
+            o.ORDER_NO,
+            v.VIP_NAME,
+            v.VIP_MP,
+            r.RESIDENTIAL_AREA_TXT,
+            a.ADDRESS_TXT,
+            p.ITEM_NO,
+            GROUP_CONCAT(p.MATNR) AS MATNR,
+            GROUP_CONCAT(ex.SHORT_TXT) AS SHORT_TXT,
+            SUM(p.DISP_TOTAL) AS DISP_TOTAL,
+            o.ONLINE_INIT_AMT,
+            b.BRANCH_NAME,
+            o.MEMO_TXT,
+            CASE o.PREORDER_SOURCE
+            WHEN 10 THEN
+                item.ITEM_NAME
+            WHEN 20 THEN
+                '征订'
+            WHEN 30 THEN
+                '奶站'
+            WHEN 40 THEN
+                '牛奶钱包'
+            WHEN 50 THEN
+                '送奶工app'
+            WHEN 60 THEN
+                '电话'
+            ELSE
+                ''
+            END AS PREORDER_SOURCE
+        FROM
+            t_preorder o
+        INNER JOIN t_mst_plan_order_item p ON p.ORDER_NO = o.ORDER_NO
+        LEFT JOIN t_md_mara_ex ex ON ex.MATNR = p.MATNR
+        LEFT JOIN t_md_branch b ON o.BRANCH_NO = b.BRANCH_NO
+        LEFT JOIN t_md_dealer d ON b.DEALER_NO = d.DEALER_NO
+        LEFT JOIN t_vip_cust_info v ON v.VIP_CUST_NO = o.MILKMEMBER_NO
+        LEFT JOIN t_md_address a ON a.ADDRESS_ID = o.ADRESS_NO
+        LEFT JOIN t_md_residential_area r ON r.ID = a.RESIDENTIAL_AREA
+        LEFT JOIN t_sys_code_item item ON item.TYPE_CODE = <include refid="mybaties.constant.vip_src" />
+        AND item.ITEM_CODE = o.ONLINEORDER_NO
+        WHERE
+            1 = 1
+        AND o.PREORDER_STAT = "20"
+        AND o.IS_VALID = 'N'
+        and o.SALES_ORG = #{salesOrg,jdbcType=VARCHAR}
+        AND b.BRANCH_NO > 0
+        GROUP BY
+            o.ORDER_NO
+        ORDER BY
+            b.BRANCH_NO,
+            o.ORDER_NO DESC
     </select>
 </mapper>

@@ -38,4 +38,8 @@ public interface TPlanOrderItemMapper {
 
     List<MemberActivities> selectAfterPayActivitiesByOrderNo(Map<String, String> planOrderMap);
 
+    int deleteByOrderNo(String orderNo);
+
+    List<TPlanOrderItem> selectPlanOrderItemByOrderNo(String orderNo);
+
 }

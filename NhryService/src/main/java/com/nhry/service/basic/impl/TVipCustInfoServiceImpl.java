@@ -221,7 +221,7 @@ public class TVipCustInfoServiceImpl extends BaseService implements TVipCustInfo
 			map.put("city",newAddress.getCity());
 			map.put("county",newAddress.getCounty());
 			map.put("residentialArea",newAddress.getResidentialArea());
-			String newAddressTxt = addressMapper.findAddressTxtByMap(map);
+			String newAddressTxt = addressMapper.findAddressTxtByMap(map)+newAddress.getAddressTxt()+"  "+newAddress.getMp();
 
 			//添加地址
 			OperationLogUtil.saveHistoryOperation(newAddress.getVipCustNo(),LogType.VIP_CUST,VipCustEnum.ADD_ADDRESS,null,null,null,newAddressTxt,null,null,user,operationLogMapper);
@@ -232,11 +232,43 @@ public class TVipCustInfoServiceImpl extends BaseService implements TVipCustInfo
 			map.put("city",oldAddress.getCity());
 			map.put("county",oldAddress.getCounty());
 			map.put("residentialArea",oldAddress.getResidentialArea());
-			String oldaddressTxt = addressMapper.findAddressTxtByMap(map);
+			String oldaddressTxt = addressMapper.findAddressTxtByMap(map)+oldAddress.getAddressTxt()+"  "+oldAddress.getMp();
 
 			//删除地址
 			OperationLogUtil.saveHistoryOperation(newAddress.getVipCustNo(),LogType.VIP_CUST,VipCustEnum.DEL_ADDRESS,null,null,oldaddressTxt,null,null,null,user,operationLogMapper);
 		}
+		if(oldAddress!=null && newAddress!=null){
+			if(ContentDiffrentUtil.difIgnoreNull(oldAddress.getMp(),newAddress.getMp())||
+			ContentDiffrentUtil.difIgnoreNull(oldAddress.getAddressTxt(),newAddress.getAddressTxt())||
+			ContentDiffrentUtil.difIgnoreNull(oldAddress.getResidentialArea(),newAddress.getResidentialArea())||
+			ContentDiffrentUtil.difIgnoreNull(oldAddress.getProvince(),newAddress.getProvince()) ||
+			ContentDiffrentUtil.difIgnoreNull(oldAddress.getCity(),newAddress.getCity()) ||
+			ContentDiffrentUtil.difIgnoreNull(oldAddress.getCounty(),newAddress.getCounty())){
+				Map<String,String> map = new HashMap<String,String>();
+				map.put("province",oldAddress.getProvince());
+				map.put("city",oldAddress.getCity());
+				map.put("county",oldAddress.getCounty());
+				map.put("residentialArea",oldAddress.getResidentialArea());
+				String oldaddressTxt = addressMapper.findAddressTxtByMap(map)+oldAddress.getAddressTxt()+"  "+oldAddress.getMp();
+				String newaddressTxt = "";
+				map.clear();
+				if(StringUtils.isBlank(newAddress.getProvince())){
+					map.put("province",oldAddress.getProvince());
+					map.put("city",oldAddress.getCity());
+					map.put("county",oldAddress.getCounty());
+					map.put("residentialArea",newAddress.getResidentialArea());
+					newaddressTxt = addressMapper.findAddressTxtByMap(map)+newAddress.getAddressTxt()+"  "+newAddress.getMp();
+				}else{
+					map.put("province",newAddress.getProvince());
+					map.put("city",newAddress.getCity());
+					map.put("county",newAddress.getCounty());
+					map.put("residentialArea",newAddress.getResidentialArea());
+					newaddressTxt = addressMapper.findAddressTxtByMap(map)+newAddress.getAddressTxt()+"  "+newAddress.getMp();
+				}
+				OperationLogUtil.saveHistoryOperation(newAddress.getVipCustNo(), LogType.VIP_CUST,VipCustEnum.UPT_ADDRESS,null,null,oldaddressTxt,newaddressTxt,null,null,user,operationLogMapper);
+			}
+		}
+
 	}
 	public void uptCustLog(TVipCustInfo record,TSysUser user){
 		SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
@@ -390,8 +422,16 @@ public class TVipCustInfoServiceImpl extends BaseService implements TVipCustInfo
 				attrs.put("city", address.getCity());
 				attrs.put("county", address.getCounty());
 				attrs.put("residentialArea", address.getResidentialArea());
-				attrs.put("addressTxt", address.getAddressTxt());
+				if(StringUtils.isNotBlank(address.getAddressId())){
+					TMdAddress oldAddress = addressMapper.findAddressById(address.getAddressId());
+					if(oldAddress==null){
+						attrs.put("addressTxt", address.getAddressTxt());
+					}
+				}else{
+					attrs.put("addressTxt", address.getAddressTxt());
+				}
 				attrs.put("custNo", address.getVipCustNo());
+
 				List<TMdAddress> addresses = this.addressMapper.findAddressByMixedTerms(attrs);
 				if(addresses != null && addresses.size() > 0){
 					return custNo+","+addresses.get(0).getAddressId();

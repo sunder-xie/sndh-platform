@@ -20,6 +20,7 @@ import com.nhry.data.order.dao.TPreOrderMapper;
 import com.nhry.data.order.domain.TOrderDaliyPlanItem;
 import com.nhry.data.order.domain.TPlanOrderItem;
 import com.nhry.data.order.domain.TPreOrder;
+import com.nhry.model.basic.EmpQueryModel;
 import com.nhry.model.basic.MatnrAndQtyModel;
 import com.nhry.model.milk.*;
 import com.nhry.model.milktrans.*;
@@ -27,6 +28,8 @@ import com.nhry.model.order.OrderDaliyPlanReportEntityModel;
 import com.nhry.model.order.OrderDaliyPlanReportModel;
 import com.nhry.model.stock.StockModel;
 import com.nhry.service.BaseService;
+import com.nhry.service.basic.dao.BranchEmpService;
+import com.nhry.service.basic.dao.BranchService;
 import com.nhry.service.basic.dao.ProductService;
 import com.nhry.service.milk.dao.DeliverMilkService;
 import com.nhry.service.milk.pojo.TDispOrderChangeItem;
@@ -62,6 +65,8 @@ public class DeliverMilkServiceImpl extends BaseService implements DeliverMilkSe
 	private TMdBranchEmpMapper branchEmpMapper;
 	private TMdOperationLogMapper operationLogMapper;
 	private TMdMaraMapper tMdMaraMapper;
+	private BranchService branchService;
+	private BranchEmpService branchEmpService;
 
 	public void settMdMaraMapper(TMdMaraMapper tMdMaraMapper) {
 		this.tMdMaraMapper = tMdMaraMapper;
@@ -147,6 +152,12 @@ public class DeliverMilkServiceImpl extends BaseService implements DeliverMilkSe
 		this.tPreOrderMapper = tPreOrderMapper;
 	}
 
+	public void setBranchService(BranchService branchService) {
+		this.branchService = branchService;
+	}
+	public void setBranchEmpService(BranchEmpService branchEmpService) {
+		this.branchEmpService = branchEmpService;
+	}
 	/**
 	 * 路单确认后  扣除库存
 	 * 产生拒收复送记录
@@ -207,6 +218,7 @@ public class DeliverMilkServiceImpl extends BaseService implements DeliverMilkSe
 						if(insOrderNo==null){
 							insOrderNo = SerialUtil.creatSeria();
 						}
+						//生成内部销售订单
 						TMstInsideSalOrderItem item = new TMstInsideSalOrderItem();
 						item.setInsOrderNo(insOrderNo);
 						item.setItemNo(entry.getItemNo());
@@ -220,12 +232,33 @@ public class DeliverMilkServiceImpl extends BaseService implements DeliverMilkSe
 					}
 				}
 				if(insOrderNo!=null){
-					sOrder = new TMstInsideSalOrder();
+					TMdBranch branch = branchService.selectBranchByNo(order.getBranchNo());
+					EmpQueryModel sModel =new  EmpQueryModel();
+					sModel.setBranchNo(order.getBranchNo());
+					sModel.setRoleId("10002");
+					List<TMdBranchEmp> tbList = branchEmpService.queryBranchEmp(sModel);
+
+					if(branch!=null){
+						//如果奶站维护了内部销售订单售达方为站长，则内部销售订单挂到站长头上，否则挂到送奶员头上
+						sOrder = new TMstInsideSalOrder();
+						if("20".equals(branch.getTargetPerson())){
+							if(tbList.size()==0){
+								throw new ServiceException(MessageCode.LOGIC_ERROR,"此奶站没有奶站站长，请维护！！！！");
+							}else if(tbList.size()>1) {
+								throw new ServiceException(MessageCode.LOGIC_ERROR, "此奶站有多个奶站站长，请维护！！！！");
+							}
+							for(TMdBranchEmp item:tbList ){
+								sOrder.setSalEmpNo(item.getEmpNo());
+							}
+						}else{
+							sOrder.setSalEmpNo(order.getDispEmpNo());
+						}
+					}
+
 					sOrder.setInsOrderNo(insOrderNo);
 					sOrder.setOrderDate(order.getOrderDate());
 					sOrder.setDispOrderNo(order.getOrderNo());
 					sOrder.setBranchNo(order.getBranchNo());
-					sOrder.setSalEmpNo(order.getDispEmpNo());
 					sOrder.setCreateAt(new Date());
 					sOrder.setCreateBy(user.getLoginName());
 					tMstInsideSalOrderMapper.insertInsideSalOrder(sOrder);
@@ -637,6 +670,8 @@ public class DeliverMilkServiceImpl extends BaseService implements DeliverMilkSe
 	@Override
 	public int updateDaliyPlanByRouteOrder(String routeCode)
 	{
+
+		System.out.println(routeCode+"路单确认开始");
 		final long startTime = System.currentTimeMillis();
 		
 		TDispOrderKey key = new TDispOrderKey();
@@ -651,7 +686,18 @@ public class DeliverMilkServiceImpl extends BaseService implements DeliverMilkSe
 
 			OperationLogUtil.saveHistoryOperation(dispOrder.getOrderNo(), LogType.ROUTE_ORDER, RouteLogEnum.CONFIRM_TOUTE,dispOrder.getDispEmpNo()+dispOrder.getDispEmpName(),null,
 					"未确认","确认",null,dispOrder.getDispDate(),userSessionService.getCurrentUser(),operationLogMapper);
-
+/*			List<String> reasons = new ArrayList<String>();
+			for(TDispOrderItem ereasons : entryList){
+				switch (ereasons.getReason()){
+					case "40":reasons.add(ereasons.getReason());
+						break;
+					case "50":reasons.add(ereasons.getReason());
+						break;
+				}
+			}
+			if(reasons.size()>0){
+				1
+			}*/
 			for(TDispOrderItem e : entryList){
 				//变化的也更改日计划状态
 				if( (StringUtils.isNotBlank(e.getReason()) && e.getConfirmQty().intValue() < e.getQty().intValue()) || !e.getMatnr().equals(e.getConfirmMatnr())  ){
@@ -809,6 +855,7 @@ public class DeliverMilkServiceImpl extends BaseService implements DeliverMilkSe
 			dispOrder.setAmt(totalAmt);
 			dispOrder.setTotalQty(totalQty);
 //			dispOrder.setDispLineNo(order.getDispLineNo());
+			dispOrder.setCreateAt(new Date());
 			dispOrder.setOrderDate(date);
 			dispOrder.setDispDate(date);
 			dispOrder.setStatus("10");//未确认
@@ -1145,7 +1192,18 @@ public class DeliverMilkServiceImpl extends BaseService implements DeliverMilkSe
 			}
 		}
 		sOrder = tMstInsideSalOrderMapper.getInSalOrderByDispOrderNo(newItem.getOrderNo());
+		//如果有拒收、损毁，新增
 		if("40".equals(newItem.getReason()) || "50".equals(newItem.getReason())){
+			TMdBranch branch = branchService.selectBranchByNo(order.getBranchNo());
+			EmpQueryModel sModel =new  EmpQueryModel();
+			sModel.setBranchNo(order.getBranchNo());
+			sModel.setRoleId("10002");
+			List<TMdBranchEmp> tbList = branchEmpService.queryBranchEmp(sModel);
+			if(tbList.size()==0){
+				throw new ServiceException(MessageCode.LOGIC_ERROR,"此奶站没有奶站站长，请维护！！！！");
+			}else if(tbList.size()>1) {
+				throw new ServiceException(MessageCode.LOGIC_ERROR, "此奶站有多个奶站站长，请维护！！！！");
+			}
 			if(sOrder == null){
 				String insOrderNo = PrimaryKeyUtils.generateUuidKey();
 				sOrder = new TMstInsideSalOrder();
@@ -1153,7 +1211,13 @@ public class DeliverMilkServiceImpl extends BaseService implements DeliverMilkSe
 				sOrder.setOrderDate(orgItem.getOrderDate());
 				sOrder.setDispOrderNo(orgItem.getOrderNo());
 				sOrder.setBranchNo(order.getBranchNo());
-				sOrder.setSalEmpNo(dispOrder.getDispEmpNo());
+				if("20".equals(branch.getTargetPerson())){
+					for(TMdBranchEmp item:tbList ){
+						sOrder.setSalEmpNo(item.getEmpNo());
+					}
+				}else{
+					sOrder.setSalEmpNo(dispOrder.getDispEmpNo());
+				}
 				sOrder.setCreateAt(newItem.getOrderDate());
 				sOrder.setCreateBy(user.getLoginName());
 				tMstInsideSalOrderMapper.insertInsideSalOrder(sOrder);
@@ -1330,7 +1394,8 @@ public class DeliverMilkServiceImpl extends BaseService implements DeliverMilkSe
 	@Override
 	public int createTemRouteOrders(TemporaryDispOrderModel tModel) {
 		SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
-		if (userSessionService.getCurrentUser().getBranchNo() == null)
+		TSysUser user = userSessionService.getCurrentUser();
+		if (user.getBranchNo() == null)
 			throw new ServiceException(MessageCode.LOGIC_ERROR, "登陆人没有奶站，非奶站人员无法创建路单!");
 		String dateStr = tModel.getDateStr();
 		Date date = null;
@@ -1339,24 +1404,43 @@ public class DeliverMilkServiceImpl extends BaseService implements DeliverMilkSe
 		} catch (ParseException e) {
 			throw new ServiceException(MessageCode.LOGIC_ERROR, "日期格式有误!");
 		}
+		List<TDispOrder> dispOrders = tDispOrderMapper.selectDispOrderByBranchNoAndDay(user.getBranchNo(),date);
+		if(dispOrders == null || dispOrders.size()==0){
+			throw  new ServiceException(MessageCode.LOGIC_ERROR,format.format(date)+"的路单还未生成，您可以直接生成路单");
+		}
 		List<String> orderNos = tModel.getOrders();
 		StringBuffer  hadDispNos = new StringBuffer("");
 		StringBuffer  errOrderNos = new StringBuffer("");
+		StringBuffer  statusOrderNos = new StringBuffer("");
 		for(String orderNo : orderNos){
 			if(tDispOrderItemMapper.selectCountByOrgOrderAndDate(orderNo,date) > 0){
-				hadDispNos.append(" "+orderNo);
+				hadDispNos.append(orderNo+",");
 			}
+			List<TOrderDaliyPlanItem> items = tOrderDaliyPlanItemMapper.selectDaliyPlanByOrderAndDispDate(orderNo,date);
+			if(items == null){
+				errOrderNos.append(orderNo+", ");
+			}else{
+				if(items.stream().allMatch(e->"30".equals(e.getStatus()))){
+					statusOrderNos.append(orderNo+", ");
+				}
+			}
+		}
+		if(StringUtils.isNotBlank(hadDispNos.toString().trim()) || StringUtils.isNotBlank(errOrderNos.toString().trim())
+				||StringUtils.isNotBlank(statusOrderNos.toString().trim())){
+			String wrongStr = "";
+			if(StringUtils.isNotBlank(hadDispNos.toString().trim())){
+				wrongStr = wrongStr +hadDispNos.toString()+"  这些订单在"+dateStr+"这天的日订单已经生成过路单<br/>";
+			}
+			if(StringUtils.isNotBlank(errOrderNos.toString().trim())){
+				wrongStr = wrongStr +errOrderNos.toString()+"  这些订单在"+dateStr+"这天的日订单不存在<br/>";
+			}
+			if(StringUtils.isNotBlank(statusOrderNos.toString().trim())){
+				wrongStr = wrongStr + statusOrderNos.toString()+"  这些订单在"+dateStr+"这天的日订单被全部停订，没有在订的这天的日订单了<br/>";
+			}
+			throw new ServiceException(MessageCode.LOGIC_ERROR,wrongStr);
+		}
 
-			if(tOrderDaliyPlanItemMapper.selectDaliyPlanByOrderAndDispDate(orderNo,date) == null){
-				errOrderNos.append(" "+orderNo);
-			}
-		}
-		if(StringUtils.isNotBlank(hadDispNos.toString().trim())){
-			throw new ServiceException(MessageCode.LOGIC_ERROR,hadDispNos.toString()+dateStr+"的日订单已经生成过路单");
-		}
-		if(StringUtils.isNotBlank(errOrderNos.toString().trim())){
-			throw new ServiceException(MessageCode.LOGIC_ERROR,errOrderNos.toString()+"  "+dateStr+"的日订单不存在");
-		}
+
 
 
 			List<TPreOrder> empNos = tPreOrderMapper.selectDispNoByGroupAndOrders(userSessionService.getCurrentUser().getBranchNo(), orderNos);

@@ -24,8 +24,11 @@ public class OrderSearchModel extends BaseQueryModel implements Serializable {
 	private String paymentStat;
 	private String milkboxStat;
 	private String preorderStat;
+	private String preorderSource;
 	private String orderDateStart;
 	private String orderDateEnd;
+	private Date startDate;
+	private Date endDate;
 	private String companyName;
 	private String reason;
 	private String status;
@@ -36,6 +39,16 @@ public class OrderSearchModel extends BaseQueryModel implements Serializable {
 	private String memoTxt;
 	private Integer goDays;
 	private ArrayList<String> orders = new ArrayList<String>();
+	private List<String> mps;
+
+	public List<String> getMps() {
+		return mps;
+	}
+
+	public void setMps(List<String> mps) {
+		this.mps = mps;
+	}
+
 	//电商额外字段
 	private String shopId;
 	private String ecOrderNo;
@@ -47,7 +60,30 @@ public class OrderSearchModel extends BaseQueryModel implements Serializable {
 	private String buyerName;
 	private Date backDate;
 
-	
+	public Date getStartDate() {
+		return startDate;
+	}
+
+	public void setStartDate(Date startDate) {
+		this.startDate = startDate;
+	}
+
+	public Date getEndDate() {
+		return endDate;
+	}
+
+	public void setEndDate(Date endDate) {
+		this.endDate = endDate;
+	}
+
+	public String getPreorderSource() {
+		return preorderSource;
+	}
+
+	public void setPreorderSource(String preorderSource) {
+		this.preorderSource = preorderSource;
+	}
+
 	public String getMemoTxt()
 	{
 		return memoTxt;

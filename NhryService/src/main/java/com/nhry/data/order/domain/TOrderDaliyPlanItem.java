@@ -1,9 +1,9 @@
 package com.nhry.data.order.domain;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+
 import java.math.BigDecimal;
 import java.util.Date;
-
-import com.fasterxml.jackson.annotation.JsonFormat;
 
 public class TOrderDaliyPlanItem extends TOrderDaliyPlanItemKey {
     private Date dispDate;

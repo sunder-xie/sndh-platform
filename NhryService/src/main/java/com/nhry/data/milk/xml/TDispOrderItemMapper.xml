@@ -261,7 +261,7 @@
   	 select 
     i.ORDER_NO, i.ORDER_DATE, i.ITEM_NO,i.CONFIRM_MATNR, i.MATNR, i.CONFIRM_QTY, i.QTY, i.UNIT, i.PRICE, i.AMT, i.CONFIRM_AMT, 
     i.STATUS, i.PICKUP_ORDER_NO, i.PICKUP_ORDER_ITEM_NO, i.REASON, i.REDISP_DATE, i.WHOLESALE_PRICE,
-    i.WHOLESALE_PRICE_1, i.ADDRESS_NO,i.ORG_ITEM_NO,i.ORG_ORDER_NO,i.REACH_TIME_TYPE,p.SHORT_TXT MATNR_TXT, concat(r.RESIDENTIAL_AREA_TXT,a.ADDRESS_TXT) ADDRESS_TXT
+    i.WHOLESALE_PRICE_1, i.ADDRESS_NO,i.ORG_ITEM_NO,i.ORG_ORDER_NO,i.REACH_TIME_TYPE,p.SHORT_TXT MATNR_TXT, concat( IFNULL(r.RESIDENTIAL_AREA_TXT,''),a.ADDRESS_TXT) ADDRESS_TXT
     from t_mst_disp_order_item i 
     left join t_preorder o on o.ORDER_NO = i.ORG_ORDER_NO
     left join t_md_mara_ex p on p.MATNR = i.MATNR and p.SALES_ORG = o.SALES_ORG
@@ -318,7 +318,7 @@
           GROUP_CONCAT(i.REACH_TIME_TYPE) as REACH_TIME_TYPE,
           GROUP_CONCAT(round(i.qty),'-',p.SHORT_TXT) as MATNR_TXT,
           concat(
-              r.RESIDENTIAL_AREA_TXT,
+               IFNULL(r.RESIDENTIAL_AREA_TXT,''),
               a.ADDRESS_TXT
           ) ADDRESS_TXT,
           i.REPLACE_REASON,
@@ -344,7 +344,7 @@
   	 select 
     i.ORDER_NO, i.ORDER_DATE, i.ITEM_NO,i.CONFIRM_MATNR, i.MATNR, i.CONFIRM_QTY, i.QTY, i.UNIT, i.PRICE, i.AMT,i.REMAIN_AMT, i.CONFIRM_AMT,
     i.STATUS, i.PICKUP_ORDER_NO, i.PICKUP_ORDER_ITEM_NO, i.REASON, i.REDISP_DATE, i.WHOLESALE_PRICE,
-    i.WHOLESALE_PRICE_1, i.ADDRESS_NO,i.ORG_ITEM_NO,i.ORG_ORDER_NO,i.REACH_TIME_TYPE,p.SHORT_TXT MATNR_TXT,concat(r.RESIDENTIAL_AREA_TXT,a.ADDRESS_TXT) ADDRESS_TXT,
+    i.WHOLESALE_PRICE_1, i.ADDRESS_NO,i.ORG_ITEM_NO,i.ORG_ORDER_NO,i.REACH_TIME_TYPE,p.SHORT_TXT MATNR_TXT,concat(IFNULL(r.RESIDENTIAL_AREA_TXT,''),a.ADDRESS_TXT) ADDRESS_TXT,
     i.REPLACE_REASON,i.GIFT_FLAG,
     a.RECV_NAME CUST_NAME,a.MP CUST_TEL
     from t_mst_disp_order_item i 
@@ -630,6 +630,9 @@
 		left join t_mst_disp_order o on i.ORDER_NO = o.ORDER_NO
 		where i.ORG_ORDER_NO = #{orderNo,jdbcType=VARCHAR}
 		and o.STATUS = '10'
+        <if test="dispDate!=null">
+          and i.ORDER_DATE = #{dispDate,jdbcType=DATE}
+        </if>
    </select>
    <!-- 检查该订单是否有项目生成了路单 -->
 	<select id="selectCountByOrgOrder" resultType="INTEGER" parameterType="com.nhry.data.milk.domain.TDispOrder">
@@ -728,4 +731,32 @@
     ORDER BY o.DISP_DATE,ar.RESIDENTIAL_AREA_TXT,a.ADDRESS_TXT
   </select>
 
+
+  <select id="selectItemsByOrgOrderAndItemNoAndBeforeDate" resultMap="BaseResultMap" parameterType="com.nhry.data.milk.domain.TDispOrderItem">
+    select
+    i.ORDER_NO, i.ORDER_DATE,i.MATNR, i.ITEM_NO,i.ORG_ORDER_NO,i.ORG_ITEM_NO,o.STATUS STATUS
+    from t_mst_disp_order_item i
+    LEFT JOIN t_mst_disp_order o on i.ORDER_NO = o.ORDER_NO
+    where 1=1
+    <if test="orgOrderNo!=null">
+      and i.ORG_ORDER_NO = #{orgOrderNo,jdbcType=VARCHAR}
+    </if>
+    <if test="orgItemNo!=null">
+      and i.ORG_ITEM_NO = #{orgItemNo,jdbcType=VARCHAR}
+    </if>
+    <if test="orderDate!=null">
+     and i.ORDER_DATE &gt;=#{orderDate,jdbcType=DATE}
+    </if>
+    ORDER BY i.ORDER_DATE ASC
+  </select>
+  <select id="selectCountsByOrderNo" resultType="INTEGER" parameterType="java.lang.String">
+    SELECT
+        COUNT(DISTINCT t.ORDER_NO)
+    FROM
+        t_mst_disp_order t
+    INNER JOIN t_mst_disp_order_item t1 ON t1.ORDER_NO = t.ORDER_NO
+    AND t1.ORG_ORDER_NO = #{orgOrderNo,jdbcType=VARCHAR}
+    WHERE
+        t.`STATUS` = '10'
+  </select>
 </mapper>

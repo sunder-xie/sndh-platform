@@ -16,7 +16,7 @@ public interface TPreOrderMapper {
 	 List<TPreOrder> searchAfPayOrdersForSendMessage(String endDate);
 	 List<TPreOrder> searchECOrdersForSendMessage(String endDate);
 	
-	 int selectNumOfdeletedByMilkmemberNo();
+	 int selectNumOfdeletedByMilkmemberNo(String milkmemberNo);
 	
 	 int updateOrderToFinish(String orderNo);
 	 
@@ -85,6 +85,10 @@ public interface TPreOrderMapper {
     int searchReturnOrdersNum(OrderSearchModel smodel);
     
     PageInfo selectNeedResumeOrders(OrderSearchModel smodel);
+
+    PageInfo searchReNeedOrdersByMp(OrderSearchModel smodel);
+
+    PageInfo searchOrderByMp(OrderSearchModel smodel);
     
     List<TPreOrder> selectIniOrders(TPreOrder order);
 
@@ -118,6 +122,8 @@ public interface TPreOrderMapper {
 
     List<TPreOrder> selectOrdersByOrderNos(ArrayList<String> orders);
 
+    int updateBySelective(TPreOrder order);
     int selectOrdersNoBillCount(String BranchNo);
+    int updateBackOrder(TPreOrder order);
 
 }

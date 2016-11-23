@@ -1,6 +1,8 @@
 package com.nhry.rest.pi;
 
+import com.nhry.common.auth.UserSessionService;
 import com.nhry.common.exception.MessageCode;
+import com.nhry.data.auth.domain.TSysUser;
 import com.nhry.data.basic.domain.TMdAddress;
 import com.nhry.data.basic.domain.TMdBranch;
 import com.nhry.data.basic.domain.TMdResidentialArea;
@@ -8,6 +10,7 @@ import com.nhry.data.basic.domain.TVipCustInfo;
 import com.nhry.data.config.domain.NHSysCodeItem;
 import com.nhry.data.config.impl.NHSysCodeItemMapperImpl;
 import com.nhry.model.sys.ResponseModel;
+import com.nhry.model.webService.CustomerComplainModel;
 import com.nhry.rest.BaseResource;
 import com.nhry.service.basic.dao.BranchService;
 import com.nhry.service.basic.dao.ResidentialAreaService;
@@ -74,6 +77,9 @@ public class PIResouce extends BaseResource{
 
     @Autowired
     public SmsSendService smsSendService;
+
+    @Autowired
+    public UserSessionService userSessionService;
 
     @GET
     @Path("/getProducts")
@@ -212,4 +218,18 @@ public class PIResouce extends BaseResource{
         return convertToRespModel(MessageCode.NORMAL, piProductService.matWHWHandler(), null);
     }
 
+    @POST
+    @Path("/queryCustomerComplain")
+    @Produces(MediaType.APPLICATION_JSON)
+    @Consumes(MediaType.APPLICATION_JSON)
+    @ApiOperation(value = "/queryCustomerComplain", response = ResponseModel.class, notes = "查询送奶工投诉信息")
+    public Response queryCustomerComplain(@ApiParam(name = "model",value = "查询送奶工投诉信息的参数",required = false)CustomerComplainModel model){
+        TSysUser user = userSessionService.getCurrentUser();
+        model.setSalesOrg(user.getSalesOrg());
+        if(StringUtils.isEmpty(model.getBranchNo())) {
+            model.setBranchNo(user.getBranchNo());
+        }
+        PISuccessTMessage message = piVipInfoDataService.queryCustomerComplain(model);
+        return convertToRespModel(MessageCode.NORMAL,message.getMessage(), message.getData());
+    }
 }

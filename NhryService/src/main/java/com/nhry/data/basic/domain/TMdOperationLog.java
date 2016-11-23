@@ -8,6 +8,7 @@ import java.util.Date;
  */
 public class TMdOperationLog implements Serializable{
     private String logNo;               //编号
+    private String logBranch;            //奶站
     private String logType;             //类型
     private String originalValue;       //原值
     private String  newValue;           //新值
@@ -20,6 +21,14 @@ public class TMdOperationLog implements Serializable{
     private Date createAt;              //创建时间
     private  String createBy;           //创建人编号
     private String createByTxt;         //创建人名称
+
+    public String getLogBranch() {
+        return logBranch;
+    }
+
+    public void setLogBranch(String logBranch) {
+        this.logBranch = logBranch;
+    }
 
     public String getDispAddress() {
         return dispAddress;

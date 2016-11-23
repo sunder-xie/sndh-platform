@@ -241,6 +241,10 @@ public class ReportResource extends BaseResource{
             XSSFCell cell = row.getCell(1);
             TDispOrder order = model.getOrder();
 
+            XSSFCellStyle styleBoldwrap = workbook.createCellStyle();
+            styleBoldwrap.setWrapText(true);
+
+
             cell.setCellValue("配送人员：" + order.getDispEmpName().concat("-").concat(order.getBranchName()));
             row = sheet.getRow(3);
             cell = row.getCell(1);
@@ -250,6 +254,7 @@ public class ReportResource extends BaseResource{
             cell.setCellValue("送奶时间：".concat("10".equals(order.getReachTimeType())?"上午配送":"下午配送"));
             row = sheet.getRow(5);
             cell = row.getCell(1);
+            cell.setCellStyle(styleBoldwrap);
             cell.setCellValue("应送总数：".concat(order.getTotalQty()==null?"":order.getTotalQty().toString().concat("--").concat(model.getProducts())));
 
             XSSFCellStyle styleBold = workbook.createCellStyle();
@@ -308,8 +313,6 @@ public class ReportResource extends BaseResource{
                     }*/
                     r++;
                 }
-                XSSFCellStyle styleBoldOne = workbook.createCellStyle();
-                styleBoldOne.setWrapText(true);
                 int r1 = details.size()+9;
                 row = sheet.createRow(r1);
                 cell = row.createCell(1);
@@ -318,8 +321,8 @@ public class ReportResource extends BaseResource{
                     for(TDispOrderItem deliverItem : modelDeliver){
                         row = sheet.createRow(r1+1);
                         cell = row.createCell(1);
-                        cell.setCellStyle(styleBoldOne);
-                        cell.setCellValue(deliverItem.getAddressTxt().concat(":").concat(deliverItem.getTotalQty()==null?"" : deliverItem.getTotalQty().toString()).concat("--").concat(deliverItem.getMatnrTxt()));//小区名称
+                        cell.setCellStyle(styleBoldwrap);
+                        cell.setCellValue((deliverItem.getAddressTxt()==null?"--":deliverItem.getAddressTxt()).concat(":").concat(deliverItem.getTotalQty()==null?"" : deliverItem.getTotalQty().toString()).concat("--").concat(deliverItem.getMatnrTxt()));//小区名称
                         sheet.addMergedRegion(new CellRangeAddress(row.getRowNum(), row.getRowNum(), 1, 8));
                         r1++;
                     }
@@ -1138,9 +1141,17 @@ public class ReportResource extends BaseResource{
                         String matnrT =map.get("CONFIRM_MATNR");
                         String empNoT = map.get("DISP_EMP_NO");
                         if(empNo.equals(empNoT) && matnr.equals(matnrT)){
-                            if(map.get("CONFIRM_QTY")!=null) {
-                                cell1.setCellValue(map.get("CONFIRM_QTY"));
-                                int cqty =  new BigDecimal(String.valueOf( map.get("CQTY"))).intValue();
+                            if(map.get("CQTY")!=null) {
+                                String count;
+                                int RESEND_QTY =  new BigDecimal(String.valueOf( map.get("RESEND_QTY"))).intValue();
+                                int CCQTY =  new BigDecimal(String.valueOf( map.get("CQTY"))).intValue();
+                                if(RESEND_QTY==0){
+                                    count = String.valueOf( map.get("CQTY"));
+                                }else{
+                                    count = String.valueOf(CCQTY-RESEND_QTY).concat(",(").concat(String.valueOf(RESEND_QTY)).concat(")");
+                                }
+                                cell1.setCellValue(count);
+                                int cqty =  new BigDecimal(String.valueOf( map.get("FINAL_QTY"))).intValue();
                                 CELLQTY = CELLQTY + cqty;
                             }
                         }
@@ -1164,8 +1175,8 @@ public class ReportResource extends BaseResource{
                     for (Map<String, String> map : orders){
                         String matnrT =map.get("CONFIRM_MATNR");
                         if( matnr.equals(matnrT)){
-                            if(map.get("CQTY")!=null){
-                                int rqty =  new BigDecimal(String.valueOf( map.get("CQTY"))).intValue();
+                            if(map.get("FINAL_QTY")!=null){
+                                int rqty =  new BigDecimal(String.valueOf( map.get("FINAL_QTY"))).intValue();
                                 ROWQTY =ROWQTY + rqty;
                             }
                         }
@@ -1430,6 +1441,95 @@ public class ReportResource extends BaseResource{
             stream.close();
             outUrl = fname + "OrderOnlineStat.xlsx";
         }catch (Exception e){
+            e.printStackTrace();
+        }
+        return convertToRespModel(MessageCode.NORMAL,null,outUrl);
+    }
+    @POST
+    @Path("/pendingUnConfirmOnlineReport")
+    @Produces(MediaType.APPLICATION_JSON)
+    @Consumes(MediaType.APPLICATION_JSON)
+    @ApiOperation(value = "/pendingUnConfirmOnlineReport",response = ResponseModel.class,notes = "导出待确认订单")
+    public Response pendingUnConfirmOnlineReport(){
+        String outUrl = "";
+        String url = EnvContant.getSystemConst("filePath");
+        List<Map<String, String>> unConfirmOrders = branchInfoService.PendingUnConfirmOnline();
+        try {
+            File file = new File(url +  File.separator + "report"+ File.separator + "template" + File.separator + "UnConfirmOrdersTemplate.xlsx");    //审批单
+            FileInputStream input = new FileInputStream(file);
+            XSSFWorkbook workbook = new XSSFWorkbook(new BufferedInputStream(input));
+            XSSFSheet sheet = workbook.getSheetAt(0);
+            int rowNum = 1;
+            XSSFCellStyle styleBold = workbook.createCellStyle();
+            styleBold.setBorderBottom(XSSFCellStyle.BORDER_THIN); //下边框
+            styleBold.setBorderLeft(XSSFCellStyle.BORDER_THIN);//左边框
+            styleBold.setBorderTop(XSSFCellStyle.BORDER_THIN);//上边框
+            styleBold.setBorderRight(XSSFCellStyle.BORDER_THIN);//右边框
+            styleBold.setWrapText(true);
+            if(unConfirmOrders!=null){
+                for(Map<String,String> map : unConfirmOrders){
+                    int raw = 0;
+                    XSSFRow row = sheet.createRow(rowNum);
+                    XSSFCell cell = row.createCell(raw++);
+                    cell.setCellStyle(styleBold);
+                    cell.setCellValue(format.format(new Date()));
+                    cell = row.createCell(raw++);
+                    cell.setCellStyle(styleBold);
+                    cell.setCellValue(map.get("ONLINEORDER_NO"));
+                    cell = row.createCell(raw++);
+                    cell.setCellStyle(styleBold);
+                    cell.setCellValue(map.get("ORDER_NO"));
+                    cell = row.createCell(raw++);
+                    cell.setCellStyle(styleBold);
+                    cell.setCellValue(map.get("VIP_NAME"));
+                    cell = row.createCell(raw++);
+                    cell.setCellStyle(styleBold);
+                    cell.setCellValue(map.get("VIP_MP"));
+                    cell = row.createCell(raw++);
+                    cell.setCellStyle(styleBold);
+                    cell.setCellValue(map.get("RESIDENTIAL_AREA_TXT")==null?"":map.get("RESIDENTIAL_AREA_TXT").concat(map.get("ADDRESS_TXT")));
+                    cell = row.createCell(raw++);
+                    cell.setCellStyle(styleBold);
+                    cell.setCellValue(map.get("MATNR"));
+                    cell = row.createCell(raw++);
+                    cell.setCellStyle(styleBold);
+                    cell.setCellValue(map.get("SHORT_TXT"));
+                    cell = row.createCell(raw++);
+                    cell.setCellStyle(styleBold);
+                    cell.setCellValue(map.get("DISP_TOTAL")==null?"0":String.valueOf(map.get("DISP_TOTAL")));
+                    cell = row.createCell(raw++);
+                    cell.setCellStyle(styleBold);
+                    cell.setCellValue(map.get("ONLINE_INIT_AMT")==null?"0":String.valueOf(map.get("ONLINE_INIT_AMT")));
+                    cell = row.createCell(raw++);
+                    cell.setCellStyle(styleBold);
+                    cell.setCellValue(map.get("BRANCH_NAME"));
+                    cell = row.createCell(raw++);
+                    cell.setCellStyle(styleBold);
+                    cell.setCellValue(map.get("PREORDER_SOURCE"));
+                    cell = row.createCell(raw++);
+                    cell.setCellStyle(styleBold);
+                    cell.setCellValue(map.get("MEMO_TXT"));
+                    rowNum++;
+                }
+            }
+            String fname = CodeGeneratorUtil.getCode();
+            String rq = format1.format(new Date(new Date().getTime() - 24 * 60 * 60 * 1000));
+            String filePath = url +  File.separator + "report"+ File.separator + "export";
+            File delFiles = new File(filePath);
+            if(delFiles.isDirectory()){
+                for(File del : delFiles.listFiles()){
+                    if(del.getName().contains(rq)){
+                        del.delete();
+                    }
+                }
+            }
+            File export = new File(url +  File.separator + "report"+ File.separator + "export" + File.separator + fname + "UnConfirmOrders.xlsx");
+            FileOutputStream stream = new FileOutputStream(export);
+            workbook.write(stream);
+            stream.flush();
+            stream.close();
+            outUrl = fname + "UnConfirmOrders.xlsx";
+        }catch(Exception e){
             e.printStackTrace();
         }
         return convertToRespModel(MessageCode.NORMAL,null,outUrl);

@@ -10,6 +10,8 @@ public class TPromotion {
 
     private String promType;
 
+    private String promSubType;
+
     private String salesOrg;
 
     private String salesDist;
@@ -53,6 +55,8 @@ public class TPromotion {
     private String giftUnit;
     
     private BigDecimal giftQty;
+
+    private BigDecimal discountAmt;
 
     public String getGiftUnit()
 	{
@@ -264,5 +268,21 @@ public class TPromotion {
 
     public void setLastModifiedByTxt(String lastModifiedByTxt) {
         this.lastModifiedByTxt = lastModifiedByTxt == null ? null : lastModifiedByTxt.trim();
+    }
+
+    public String getPromSubType() {
+        return promSubType;
+    }
+
+    public void setPromSubType(String promSubType) {
+        this.promSubType = promSubType;
+    }
+
+    public BigDecimal getDiscountAmt() {
+        return discountAmt;
+    }
+
+    public void setDiscountAmt(BigDecimal discountAmt) {
+        this.discountAmt = discountAmt;
     }
 }

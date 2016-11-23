@@ -46,10 +46,13 @@ public interface TOrderDaliyPlanItemMapper {
     List<TOrderDaliyPlanItem> selectDaliyPlansByEntryNo(String itemNo);
     
     int updateDaliyPlanItem(TOrderDaliyPlanItem record);
+
+
     
     TOrderDaliyPlanItem selectDaliyPlansByEntryNoAndNo(TOrderDaliyPlanItemKey record);
     
     List<TOrderDaliyPlanItem> selectDaliyPlansByOrderNo(String orderNo);
+    List<TOrderDaliyPlanItem> selectDaliyPlansByOrderNo2(String orderNo);
     
     List<TOrderDaliyPlanItem> selectDaliyPlansByOrderNoAsc(String orderNo);
     
@@ -93,9 +96,40 @@ public interface TOrderDaliyPlanItemMapper {
 
     List<TOrderDaliyPlanItem> selectbyDispLineNoByOrderNos(String empNo, String format, String orderType, String branchNo, List<String> orderNos);
 
-    TOrderDaliyPlanItem selectDaliyPlanByOrderAndDispDate(String orderNo, Date date);
+    List<TOrderDaliyPlanItem> selectDaliyPlanByOrderAndDispDate(String orderNo, Date date);
 
     int deleteDailyByStopDate(OrderSearchModel model);
 
     BigDecimal getSumDailyBackAmtByBackDate(OrderSearchModel model);
+
+    Date selectEndDispDate(String itemNo);
+
+    TOrderDaliyPlanItem selectByDateAndItemNoAndNo(TOrderDaliyPlanItem plan);
+
+    List<TOrderDaliyPlanItem> selectByBeforeDayAndNo(TOrderDaliyPlanItem oplan);
+
+    int updateDaliyPlanItemByItemNo(TOrderDaliyPlanItem record);
+
+    List<TOrderDaliyPlanItem> selectDaliyByAfterDayAndNo(TOrderDaliyPlanItem newPlan);
+
+    int deleteFromDate(TOrderDaliyPlanItem item);
+
+    int deleteOneDayItem(TOrderDaliyPlanItem plan);
+
+    List<TOrderDaliyPlanItem> selectByDayAndNo(TOrderDaliyPlanItem plan);
+
+    List<TOrderDaliyPlanItem> selectByDayAndNoBetweenDays(OrderSearchModel omodel);
+
+    int updateDaliyPlansToStopByStatus(OrderSearchModel omodel);
+
+    int updateDaliyReachTimeTypeItemNo(TOrderDaliyPlanItem item);
+
+    int selectStatusDailyPlansCounts(String orderNo);
+
+    BigDecimal selectInitAmtDaysByNo(String orderNo);
+
+    BigDecimal selectCurAmtDaysByNo(String orderNo);
+
+    int deleteFromDateByStatus(TOrderDaliyPlanItem newplan);
+
 }

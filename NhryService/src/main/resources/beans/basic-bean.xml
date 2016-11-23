@@ -92,6 +92,7 @@
 		<property name="operationLogMapper" ref="operationLogMapper"></property>
 		<property name="maraExMapper" ref="maraExMapper"></property>
 		<property name="branchEmpMapper" ref="branchEmpMapper"></property>
+		<property name="codeItemMapper" ref="codeItemMapper"></property>
 	</bean>
 	<bean id="tPromotionMapper" class="com.nhry.data.order.impl.TPromotionMapperImpl">
 		<property name="sqlSessionTemplate" ref="dynamicSqlSessionTemplate"></property>
@@ -160,6 +161,8 @@
 		<property name="branchEmpMapper" ref="branchEmpMapper"></property>
 		<property name="operationLogMapper" ref="operationLogMapper"></property>
 		<property name="tMdMaraMapper" ref="maraMapper"></property>
+		<property name="branchService" ref="branchService"></property>
+		<property name="branchEmpService" ref="branchEmpService"></property>
 	</bean>
 	<!-- 送奶信息维护end -->
 	<bean id="custService" class="com.nhry.service.basic.impl.TVipCustInfoServiceImpl">
@@ -294,6 +297,7 @@
 	</bean>
 	<bean id="operationLogService" class="com.nhry.service.basic.impl.OperationLogServiceImpl">
 		<property name="operationLogMapper" ref="operationLogMapper"></property>
+		<property name="userSessionService" ref="userSessionService"></property>
 	</bean>
 	<!-- 日志end -->
 </beans>

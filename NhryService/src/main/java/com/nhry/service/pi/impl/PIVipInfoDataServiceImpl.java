@@ -1,15 +1,15 @@
 package com.nhry.service.pi.impl;
 
+import com.google.common.collect.Lists;
 import com.nhry.common.exception.ServiceException;
 import com.nhry.data.basic.dao.TVipCrmAddressMapper;
 import com.nhry.data.basic.domain.*;
 import com.nhry.data.config.domain.NHSysCodeItem;
-import com.nhry.service.basic.dao.BranchService;
-import com.nhry.service.basic.dao.ResidentialAreaService;
-import com.nhry.service.basic.dao.TVipCrmInfoService;
-import com.nhry.service.basic.dao.TVipCustInfoService;
+import com.nhry.model.webService.CustomerComplainModel;
+import com.nhry.service.basic.dao.*;
 import com.nhry.service.config.dao.DictionaryService;
 import com.nhry.service.pi.dao.PIVipInfoDataService;
+import com.nhry.service.pi.pojo.CustomerComplain;
 import com.nhry.service.pi.pojo.MemberActivities;
 import com.nhry.utils.EnvContant;
 import com.nhry.utils.PIPropertitesUtil;
@@ -20,6 +20,7 @@ import com.nhry.webService.client.Address.functions.*;
 import com.nhry.webService.client.EvMemb;
 import com.nhry.webService.client.MemberActivities.MemberActCreateServiceStub;
 import com.nhry.webService.client.MemberActivities.functions.*;
+import com.nhry.webService.client.MemberActivities.functions.SALES_ORG_type1;
 import com.nhry.webService.client.PISuccessTMessage;
 import com.nhry.webService.client.VipDetailData.PTDetailQuery_OutServiceStub;
 import com.nhry.webService.client.VipInfoData.ZT_CRM_BuData_MaintainServiceStub;
@@ -65,6 +66,11 @@ public class PIVipInfoDataServiceImpl implements PIVipInfoDataService {
     private TVipCustInfoService vipCustInfoService;
     private TVipCrmAddressMapper vipCrmAddressMapper;
     private TaskExecutor taskExecutor;
+    private BranchEmpService branchEmpService;
+
+    public void setBranchEmpService(BranchEmpService branchEmpService) {
+        this.branchEmpService = branchEmpService;
+    }
 
     public void setDictionaryService(DictionaryService dictionaryService) {
         this.dictionaryService = dictionaryService;
@@ -774,6 +780,74 @@ public class PIVipInfoDataServiceImpl implements PIVipInfoDataService {
                 }
             });
         }
+    }
+
+    @Override
+    public PISuccessTMessage queryCustomerComplain(CustomerComplainModel model) {
+        PISuccessTMessage message = new PISuccessTMessage();
+        try {
+            ZT_CRM_BuData_MaintainServiceStub stub = connMaintainService();
+            Z_CRM_SNG_TS z_crm_sng_ts = new Z_CRM_SNG_TS();
+            ZSCRM_SNG_TS_QUERY zscrm_sng_ts_query = new ZSCRM_SNG_TS_QUERY();
+            if(StringUtils.isNotEmpty(model.getSalesOrg())){
+                com.nhry.webService.client.VipInfoData.functions.SALES_ORG_type1 sales_org_type1 = new com.nhry.webService.client.VipInfoData.functions.SALES_ORG_type1();
+                sales_org_type1.setSALES_ORG_type0(model.getSalesOrg());
+                zscrm_sng_ts_query.setSALES_ORG(sales_org_type1);
+            }
+            if(StringUtils.isNotEmpty(model.getBranchNo())) {
+                NZBH_type1 nzbh_type1 = new NZBH_type1();
+                nzbh_type1.setNZBH_type0(model.getBranchNo());
+                zscrm_sng_ts_query.setNZBH(nzbh_type1);
+            }
+            if(StringUtils.isNotEmpty(model.getEmpNo())) {
+                SNGBH_type1 sngbh_type1 = new SNGBH_type1();
+                sngbh_type1.setSNGBH_type0(model.getEmpNo());
+                zscrm_sng_ts_query.setSNGBH(sngbh_type1);
+            }
+            if(model.getStartDate()!=null) {
+                Date startDate = new Date();
+                startDate.setObject(model.getStartDate());
+                zscrm_sng_ts_query.setDATE_START(startDate);
+            }
+            if(model.getEndDate()!=null) {
+                Date endDate = new Date();
+                endDate.setObject(model.getEndDate());
+                zscrm_sng_ts_query.setDATE_END(endDate);
+            }
+
+            z_crm_sng_ts.setIS_QUERY(zscrm_sng_ts_query);
+            Z_CRM_SNG_TSResponse response = stub.customerComplain(z_crm_sng_ts);
+            ET_DATA_type0 et_data_type0 =  response.getET_DATA();
+
+            ZSCRM_SNG_TS[] zscrm_sng_tses =  et_data_type0.getItem();
+            List<CustomerComplain> customerComplains = Lists.newArrayList();
+            if(zscrm_sng_tses!=null && zscrm_sng_tses.length > 0){
+                for(ZSCRM_SNG_TS zscrm_sng_ts : zscrm_sng_tses){
+                    String empNo = zscrm_sng_ts.getSNGBH().getSNGBH_type2();
+                    TMdBranchEmp emp = branchEmpService.selectBranchEmpByNo(empNo);
+                    CustomerComplain complain = new CustomerComplain();
+                    complain.setSALESORG(zscrm_sng_ts.getSALES_ORG().getSALES_ORG_type2());
+                    complain.setNZBH(zscrm_sng_ts.getNZBH().getNZBH_type2());
+                    complain.setBranchName(emp!=null?emp.getBranchName():"");
+                    complain.setSNGBH(emp!=null?emp.getEmpName():empNo);
+                    complain.setCATEGORY1(zscrm_sng_ts.getCATEGORY1().getCATEGORY1_type0());
+                    complain.setCATEGORY2(zscrm_sng_ts.getCATEGORY2().getCATEGORY2_type0());
+                    complain.setCATEGORY3(zscrm_sng_ts.getCATEGORY3().getCATEGORY3_type0());
+                    complain.setZZOBJECTID(zscrm_sng_ts.getZZOBJECT_ID().getZZOBJECT_ID_type0());
+                    complain.setDESCRIPTION(zscrm_sng_ts.getDESCRIPTION().getDESCRIPTION_type0());
+                    complain.setCREATEDATE(zscrm_sng_ts.getCREATE_DATE().getObject().toString());
+                    customerComplains.add(complain);
+                }
+            }
+            message.setSuccess(true);
+            message.setData(customerComplains);
+        } catch (Exception e) {
+            e.printStackTrace();
+            logger.error(e.getMessage());
+            message.setSuccess(false);
+            message.setMessage("获取投诉信息失败！");
+        }
+        return message;
     }
 
     /**

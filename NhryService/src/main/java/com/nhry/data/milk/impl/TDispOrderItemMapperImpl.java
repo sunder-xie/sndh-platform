@@ -221,10 +221,11 @@ public class TDispOrderItemMapperImpl implements TDispOrderItemMapper
 	* @see com.nhry.data.milk.dao.TDispOrderItemMapper#selectCountOfTodayByOrgOrder(com.nhry.data.milk.domain.TDispOrder) 
 	*/
 	@Override
-	public int selectCountOfTodayByOrgOrder(String orgOrderNo)
+	public int selectCountOfTodayByOrgOrder(String orgOrderNo, Date dispDate)
 	{
 		TDispOrder order = new TDispOrder();
 		order.setOrderNo(orgOrderNo);
+		order.setDispDate(dispDate);
 		return sqlSessionTemplate.selectOne("selectCountOfTodayByOrgOrder", order);
 	}
 
@@ -236,6 +237,11 @@ public class TDispOrderItemMapperImpl implements TDispOrderItemMapper
 	@Override
 	public List<DispOrderReportEntityModel> reportDispOrderItemByParams(DispOrderReportModel model) {
 		return sqlSessionTemplate.selectList("reportDispOrderItemByParams",model);
+	}
+
+	@Override
+	public List<TDispOrderItem> selectItemsByOrgOrderAndItemNoAndBeforeDate(TDispOrderItem dispItem) {
+		return sqlSessionTemplate.selectList("selectItemsByOrgOrderAndItemNoAndBeforeDate",dispItem);
 	}
 
 	@Override
@@ -268,6 +274,10 @@ public class TDispOrderItemMapperImpl implements TDispOrderItemMapper
 		order.setDispLineNo(itemNo);
 		order.setBranchName(dispDate);
 		return sqlSessionTemplate.selectOne("selectCountByOrgOrderAndOrgItemNo", order);
+	}
+	@Override
+	public int  selectCountsByOrderNo(String orderNo){
+		return sqlSessionTemplate.selectOne("selectCountsByOrderNo", orderNo);
 	}
 	
 }

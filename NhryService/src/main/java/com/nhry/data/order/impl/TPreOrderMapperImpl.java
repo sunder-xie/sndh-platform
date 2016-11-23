@@ -81,6 +81,11 @@ public class TPreOrderMapperImpl implements TPreOrderMapper
 		return sqlSessionTemplate.selectList("selectOrdersByOrderNos",map);
 	}
 
+	@Override
+	public int updateBySelective(TPreOrder order) {
+		return sqlSessionTemplate.update("updateBySelective",order);
+	}
+
 
 	@Override
 	public TPreOrder manHandOrderDetail(String orderNo) {
@@ -237,6 +242,16 @@ public class TPreOrderMapperImpl implements TPreOrderMapper
 		return sqlSessionTemplate.selectListByPages("selectNeedResumeOrders",smodel, Integer.parseInt(smodel.getPageNum()), Integer.parseInt(smodel.getPageSize()));
 	}
 
+	@Override
+	public PageInfo searchReNeedOrdersByMp(OrderSearchModel smodel){
+		return sqlSessionTemplate.selectListByPages("searchReNeedOrdersByMp",smodel, Integer.parseInt(smodel.getPageNum()), Integer.parseInt(smodel.getPageSize()));
+	}
+
+	@Override
+	public PageInfo searchOrderByMp(OrderSearchModel smodel){
+		return sqlSessionTemplate.selectListByPages("searchOrderByMp",smodel, Integer.parseInt(smodel.getPageNum()), Integer.parseInt(smodel.getPageSize()));
+	}
+
 	/* (non-Javadoc) 
 	* @title: selectIniOrders
 	* @description: 查找所有期初订单
@@ -341,9 +356,9 @@ public class TPreOrderMapperImpl implements TPreOrderMapper
 	* @see com.nhry.data.order.dao.TPreOrderMapper#selectNumOfdeletedByMilkmemberNo() 
 	*/
 	@Override
-	public int selectNumOfdeletedByMilkmemberNo()
+	public int selectNumOfdeletedByMilkmemberNo(String milkmemberNo)
 	{
-		return sqlSessionTemplate.selectOne("selectNumOfdeletedByMilkmemberNo");
+		return sqlSessionTemplate.selectOne("selectNumOfdeletedByMilkmemberNo",milkmemberNo);
 	}
 
 	//发送短信用start
@@ -368,4 +383,7 @@ public class TPreOrderMapperImpl implements TPreOrderMapper
 	public int selectOrdersNoBillCount(String BranchNo){
 		return sqlSessionTemplate.selectOne("selectOrdersNoBillCount", BranchNo);
 	}
+
+	@Override
+	public int updateBackOrder(TPreOrder record){return sqlSessionTemplate.update("updateBackOrder", record);}
 }

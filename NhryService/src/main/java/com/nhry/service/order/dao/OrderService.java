@@ -21,6 +21,10 @@ public interface OrderService {
 	List<TOrderDaliyPlanItem> searchDaliyPlansByStatus(String orderNo, String status1,String status2,String status3);
 	
 	PageInfo searchNeedResumeOrders(OrderSearchModel smodel);
+
+	PageInfo searchReNeedOrdersByMp(OrderSearchModel smodel);
+
+	PageInfo searchOrderByMp(OrderSearchModel smodel);
 	
 	PageInfo searchOrders(OrderSearchModel smodel);
 	
@@ -67,6 +71,8 @@ public interface OrderService {
 	int returnOrder(UpdateManHandOrderModel uptManHandModel);
 
 	int orderConfirm(UpdateManHandOrderModel uptManHandModel);
+
+	int batchorderConfirm(UpdateManHandOrderModel uptManHandModel);
 
 	int canOrderUnsubscribe(String orderNo);
 
@@ -116,7 +122,14 @@ public interface OrderService {
 	PageInfo searchPendingConfirmOnline(OrderSearchModel smodel);
 
 	int orderConfirmUnOnline(UpdateManHandOrderModel uptManHandModel);
+	int batchOrderConfirmUnOnline(UpdateManHandOrderModel uptManHandModel);
 	int advanceBackOrder(OrderSearchModel record);
 	int updateBackState();
 
+	int uptOrderlong(OrderEditModel record);
+
+	List uptOrderlongForViewPlans(OrderEditModel record);
+	int backUnBranchOrder(UpdateManHandOrderModel smodel);
+
+	int continueOrdeAfterStop2(OrderSearchModel record);
 }
