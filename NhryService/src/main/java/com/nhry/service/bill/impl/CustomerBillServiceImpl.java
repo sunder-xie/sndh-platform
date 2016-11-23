@@ -6,7 +6,9 @@ import com.nhry.common.exception.MessageCode;
 import com.nhry.common.exception.ServiceException;
 import com.nhry.data.auth.dao.TSysUserRoleMapper;
 import com.nhry.data.auth.domain.TSysUser;
-import com.nhry.data.basic.domain.TVipAcct;
+import com.nhry.data.basic.dao.TMdOperationLogMapper;
+import com.nhry.data.basic.domain.*;
+import com.nhry.data.basic.impl.TMdOperationLogMapperImpl;
 import com.nhry.data.bill.dao.CustomerBillMapper;
 import com.nhry.data.bill.domain.TMstRecvBill;
 import com.nhry.data.bill.domain.TMstRecvOffset;
@@ -28,6 +30,7 @@ import com.nhry.service.order.dao.OrderService;
 import com.nhry.service.order.dao.PromotionService;
 import com.nhry.service.pi.dao.PIVipInfoDataService;
 import com.nhry.service.pi.pojo.MemberActivities;
+import com.nhry.utils.OperationLogUtil;
 import com.nhry.utils.PrimaryKeyUtils;
 import com.nhry.utils.YearLastMonthUtil;
 import org.apache.commons.lang3.StringUtils;
@@ -41,6 +44,7 @@ import java.util.*;
  */
 public class CustomerBillServiceImpl implements CustomerBillService {
 
+    private TMdOperationLogMapper operationLogMapper;
     private CustomerBillMapper customerBillMapper;
     private TPreOrderMapper tPreOrderMapper;
     private TPlanOrderItemMapper tPlanOrderItemMapper;
@@ -55,7 +59,9 @@ public class CustomerBillServiceImpl implements CustomerBillService {
     private TDispOrderItemMapper tDispOrderItemMapper;
     private TOrderDaliyPlanItemMapper tOrderDaliyPlanItemMapper;
 
-
+    public void setOperationLogMapper(TMdOperationLogMapper operationLogMapper) {
+        this.operationLogMapper = operationLogMapper;
+    }
     public void settOrderDaliyPlanItemMapper(TOrderDaliyPlanItemMapper tOrderDaliyPlanItemMapper) {
         this.tOrderDaliyPlanItemMapper = tOrderDaliyPlanItemMapper;
     }
@@ -161,95 +167,103 @@ public class CustomerBillServiceImpl implements CustomerBillService {
                 customerBill.setLastModifiedBy(user.getLoginName());
                 customerBill.setLastModifiedByTxt(user.getDisplayName());
                 customerBill.setStatus("20");
-                updateBill =  customerBillMapper.updateCustomerBillrPayment(customerBill);
 
                 //更新订单状态为已收款
                 order.setPayDate(new Date());
                 order.setPaymentStat("20");
-                updateOrderStatus = tPreOrderMapper.updateOrderStatus(order);
+        updateOrderStatus = tPreOrderMapper.updateOrderStatus(order);
 
-                //预付款的,更新订单行起始日期
-                if("20".equals(order.getPaymentmethod()) && cModel.getEntries()!=null && cModel.getEntries().size() > 0){
-               	 orderService.updateOrderAndEntriesDispStartDate(order.getOrderNo(),cModel.getEntries());
-                }
-                //预付款的，付款后生成日计划
-                if("20".equals(order.getPaymentmethod()) && !"20".equals(order.getMilkboxStat()) ){
-               	 OrderCreateModel omodel = orderService.selectOrderByCode(orderNo);
-               	 List<TOrderDaliyPlanItem> list = orderService.createDaliyPlan(omodel.getOrder(),omodel.getEntries());
-               	 promotionService.createDaliyPlanByPromotion(omodel.getOrder(),omodel.getEntries(),list);
-                }
+        //预付款的,更新订单行起始日期
+        if("20".equals(order.getPaymentmethod()) && cModel.getEntries()!=null && cModel.getEntries().size() > 0){
+            orderService.updateOrderAndEntriesDispStartDate(order.getOrderNo(),cModel.getEntries());
+        }
+        //预付款的，付款后生成日计划
+        if("20".equals(order.getPaymentmethod()) && !"20".equals(order.getMilkboxStat()) ){
+            OrderCreateModel omodel = orderService.selectOrderByCode(orderNo);
+            List<TOrderDaliyPlanItem> list = orderService.createDaliyPlan(omodel.getOrder(),omodel.getEntries());
+            promotionService.createDaliyPlanByPromotion(omodel.getOrder(),omodel.getEntries(),list);
+        }
               /*  if("10".equals(order.getPaymentmethod()) && !"20".equals(order.getMilkboxStat())){
                     tPreOrderMapper.updateOrderToFinish(orderNo);
                 }
 */
-                //会员积分
-                if("Y".equals(order.getIsIntegration())){
-                    taskExecutor.execute(new Thread(){
-                        @Override
-                        public void run() {
-                            super.run();
-                            this.setName("updateVip");
-                            Map<String,String> planOrderMap = new HashMap<String,String>();
-                            planOrderMap.put("salesOrg",user.getSalesOrg());
-                            planOrderMap.put("orderNo",orderNo);
-                            List<MemberActivities> items;
-                            if("20".equals(order.getPaymentmethod())){
-                                items   = tPlanOrderItemMapper.selectBeforePayActivitiesByOrderNo(planOrderMap);
-                            }else{
-                                items  = tPlanOrderItemMapper.selectAfterPayActivitiesByOrderNo(planOrderMap);
+        //会员积分
+        if("Y".equals(order.getIsIntegration())){
+            taskExecutor.execute(new Thread(){
+                @Override
+                public void run() {
+                    super.run();
+                    this.setName("updateVip");
+                    Map<String,String> planOrderMap = new HashMap<String,String>();
+                    planOrderMap.put("salesOrg",user.getSalesOrg());
+                    planOrderMap.put("orderNo",orderNo);
+                    List<MemberActivities> items;
+                    if("20".equals(order.getPaymentmethod())){
+                        items   = tPlanOrderItemMapper.selectBeforePayActivitiesByOrderNo(planOrderMap);
+                    }else{
+                        items  = tPlanOrderItemMapper.selectAfterPayActivitiesByOrderNo(planOrderMap);
+                    }
+                    if(items.size()>0){
+                        BigDecimal totalprice = new BigDecimal(0);
+                        for (MemberActivities item : items){
+                            item.setProcess("X");
+                            Calendar calendar = new GregorianCalendar();
+                            calendar.setTime(date);
+                            Date firstDay = calendar.getTime();
+                            item.setActivitydate(firstDay);
+                            if(StringUtils.isNotBlank(item.getCardid())){
+                                item.setCardid("");
                             }
-                            if(items.size()>0){
-                                BigDecimal totalprice = new BigDecimal(0);
-                                for (MemberActivities item : items){
-                                    item.setProcess("X");
-                                    Calendar calendar = new GregorianCalendar();
-                                    calendar.setTime(date);
-                                    Date firstDay = calendar.getTime();
-                                    item.setActivitydate(firstDay);
-                                    if(StringUtils.isNotBlank(item.getCardid())){
-                                        item.setCardid("");
-                                    }
-                                    piVipInfoDataService.createMemberActivities(item);
-
-                                }
-                            }
+                            piVipInfoDataService.createMemberActivities(item);
 
                         }
-                    });
+                    }
+
+                }
+            });
+        }
+
+        //计算订单结算价
+        if("10".equals(order.getPaymentmethod())){
+            BigDecimal factAmt = tPreOrderMapper.calculateOrderFactoryAmt(orderNo);
+            int  updateFactAmt = tPreOrderMapper.updateOrderFacAmt(factAmt  == null ? new BigDecimal(0) : factAmt,orderNo);
+        }else{
+            //List<>
+        }
+
+
+        //发送EC,更新订单状态
+        TPreOrder sendOrder = new TPreOrder();
+        sendOrder.setOrderNo(order.getOrderNo());
+        sendOrder.setPreorderStat("101");
+        sendOrder.setPaymentmethod(cModel.getPaymentType());
+        taskExecutor.execute(new Thread(){
+            @Override
+            public void run() {
+                super.run();
+                this.setName("updateOrderStatus");
+                messLogService.sendOrderStatus(sendOrder);
+
+                if("20".equals(order.getPaymentmethod()) && !"20".equals(order.getMilkboxStat())){
+                    sendOrder.setEmpNo(order.getEmpNo());
+                    sendOrder.setPreorderStat("200");
+                    messLogService.sendOrderStatus(sendOrder);
                 }
 
-                //计算订单结算价
-                if("10".equals(order.getPaymentmethod())){
-                    BigDecimal factAmt = tPreOrderMapper.calculateOrderFactoryAmt(orderNo);
-                    int  updateFactAmt = tPreOrderMapper.updateOrderFacAmt(factAmt  == null ? new BigDecimal(0) : factAmt,orderNo);
-                }else{
-                    //List<>
-                }
+            }
+        });
 
-
-               //发送EC,更新订单状态
-       			TPreOrder sendOrder = new TPreOrder();
-       			sendOrder.setOrderNo(order.getOrderNo());
-       			sendOrder.setPreorderStat("101");
-       			sendOrder.setPaymentmethod(cModel.getPaymentType());
-       			taskExecutor.execute(new Thread(){
-       				@Override
-       				public void run() {
-       					super.run();
-       					this.setName("updateOrderStatus");
-       					messLogService.sendOrderStatus(sendOrder);
-
-       					if("20".equals(order.getPaymentmethod()) && !"20".equals(order.getMilkboxStat())){
-       						sendOrder.setEmpNo(order.getEmpNo());
-       						sendOrder.setPreorderStat("200");
-       						messLogService.sendOrderStatus(sendOrder);
-       					}
-
-       				}
-       			 });
-                
-                return updateBill+updateOrderStatus;
+        //将订单收款日志写入 t_md_operation_log 表。     by  liuyin   编号   类型   名称  送奶员  配送地址 原值  新值 产品 日期
+        //   start
+           OperationLogUtil.saveHistoryOperation(order.getOrderNo(), LogType.ORDER, "收款",customerBill.getRecvEmpName(),null,
+                   ""+order.getInitAmt(),""+customerBill.getSuppAmt(),null,date,userSessionService.getCurrentUser(),operationLogMapper);
+        //   end
+        return updateBill+updateOrderStatus;
     }
+
+
+
+
 
     @Override
     public CustomerBillOrder getCustomerOrderDetailByCode(String orderNo) {
@@ -494,6 +508,11 @@ public class CustomerBillServiceImpl implements CustomerBillService {
             order.setOrderNo(bill.getOrderNo());
             order.setPaymentStat("10");
             tPreOrderMapper.updateOrderStatus(order);
+            //将订单冲销日志写入 t_md_operation_log 表。     by  liuyin   编号   类型   名称  送奶员  配送地址 原值  新值 产品 日期
+            //   start
+            OperationLogUtil.saveHistoryOperation(preOrder.getOrderNo(), LogType.ORDER, "冲销",preOrder.getEmpName(),null,
+                    ""+preOrder.getInitAmt(),""+preOrder.getCurAmt(),null,new Date(),userSessionService.getCurrentUser(),operationLogMapper);
+            //   end
         }
 
         return 1;

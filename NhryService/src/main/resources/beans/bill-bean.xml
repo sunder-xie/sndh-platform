@@ -32,8 +32,13 @@
 		<property name="piVipInfoDataService" ref="piVipInfoDataService"></property>
 		<property name="tDispOrderItemMapper" ref="tDispOrderItemMapper"></property>
 		<property name="tOrderDaliyPlanItemMapper" ref="tOrderDaliyPlanItemMapper"></property>
-	</bean>
 
+		<property name="operationLogMapper" ref="operationLogMapper"></property>
+	</bean>
+	<!-- 日志-->
+	<bean id="operationLogMapper" class="com.nhry.data.basic.impl.TMdOperationLogMapperImpl">
+		<property name="sqlSessionTemplate" ref="dynamicSqlSessionTemplate"></property>
+	</bean>
 	<!--奶站结算-->
 	<bean id="branchBillMapper" class="com.nhry.data.bill.impl.BranchBillMapperImpl">
 		<property name="sqlSessionTemplate"  ref="dynamicSqlSessionTemplate"></property>
