@@ -563,6 +563,12 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 
 		TMdBranch branch = branchMapper.selectBranchByNo(order.getBranchNo());
 		//如果该奶站已上线()
+		if(StringUtils.isBlank(branch.getIsValid())){
+			throw new ServiceException(MessageCode.LOGIC_ERROR,"奶站是否上线字段未维护");
+		}
+		if("10".equals(branch.getIsValid()) && branch.getOnlineDate() ==null){
+			throw new ServiceException(MessageCode.LOGIC_ERROR,"奶站上线时间未维护");
+		}
 		if("10".equals(branch.getIsValid()) && new Date().after(branch.getOnlineDate())){
 			uptManHandModel.setPreorderStat("10");
 			uptManHandModel.setIsValid("Y");
