@@ -6696,7 +6696,11 @@ public static int dayOfTwoDay(Date day1,Date day2) {
 		//BigDecimal curAmt = orgOrder.getCurAmt();//当前订单的剩余金额
 	   //获取当前日计划状态为在订的 总金额 = 订单总金额-完结的总金额
    BigDecimal curAmt =  orgOrder.getInitAmt().subtract(tOrderDaliyPlanItemMapper.getOrderOrderDailyFinishAmtByOrderNo(orgOrder.getOrderNo()));
-   	Map<String,Integer> needNewDaliyPlans = new HashMap<String,Integer>();//所有需要新增或减少的日计划行
+  if(orgOrder.getCurAmt().compareTo(curAmt)!=0){
+	  orgOrder.setCurAmt(curAmt);
+	  tPreOrderMapper.updateBySelective(orgOrder);
+  }
+	   Map<String,Integer> needNewDaliyPlans = new HashMap<String,Integer>();//所有需要新增或减少的日计划行
 
    	Map<String,TPlanOrderItem> relatedEntryMap = new HashMap<String,TPlanOrderItem>();//key为订单行itemNo,value为entry
    	for(TPlanOrderItem entry : orgEntries){
