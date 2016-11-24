@@ -178,9 +178,10 @@
 		parameterType="com.nhry.data.basic.domain.TMdMaraEx">
 		select
 		e.MATNR, e.RATE,e.SALES_ORG,m.MATNR_TXT,e.SHORT_TXT
-		from t_md_mara_ex e LEFT JOIN t_md_mara m ON ( e.MATNR = m.MATNR AND
-		m.SALES_ORG = #{salesOrg,jdbcType=VARCHAR})
-		where e.MATNR = #{matnr,jdbcType=VARCHAR}
+		from t_md_mara_ex e LEFT JOIN t_md_mara m ON (e.MATNR = m.MATNR AND
+		e.SALES_ORG = m.SALES_ORG)
+		where e.MATNR =  #{matnr,jdbcType=VARCHAR}
+		and	 m.SALES_ORG =  #{salesOrg,jdbcType=VARCHAR}
 	</select>
 
 	<select id="getProductsBySalesOrg" resultMap="BaseResultMap"
