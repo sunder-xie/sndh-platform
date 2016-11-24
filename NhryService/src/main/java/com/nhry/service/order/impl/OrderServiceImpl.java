@@ -569,7 +569,7 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 		if("10".equals(branch.getIsValid()) && branch.getOnlineDate() ==null){
 			throw new ServiceException(MessageCode.LOGIC_ERROR,"奶站上线时间未维护");
 		}
-		if("10".equals(branch.getIsValid()) && new Date().after(branch.getOnlineDate())){
+		if("10".equals(branch.getIsValid()) &&  DateUtil.dateAfter(new Date(),branch.getOnlineDate())){
 			uptManHandModel.setPreorderStat("10");
 			uptManHandModel.setIsValid("Y");
 		}else{
@@ -8110,7 +8110,7 @@ public static int dayOfTwoDay(Date day1,Date day2) {
 		//validate
 		if(tDispOrderMapper.selectTodayDispOrderByBranchNo(orgOrder.getBranchNo(),item.getDispDate()).size()>0)throw new ServiceException(MessageCode.LOGIC_ERROR,"该订单的日计划不能恢复!此日已经生成路单!");
 		if("30".equals(orgOrder.getSign()) || !"10".equals(orgOrder.getPreorderStat()) )throw new ServiceException(MessageCode.LOGIC_ERROR,"该订单的日计划不能恢复!");
-		if(new Date().after(item.getDispDate()))throw new ServiceException(MessageCode.LOGIC_ERROR,"今日之前的日计划无法恢复!");
+		if(DateUtil.dateAfter(new Date(),item.getDispDate()))throw new ServiceException(MessageCode.LOGIC_ERROR,"今日之前的日计划无法恢复!");
 		if("20".equals(orgOrder.getSign()))throw new ServiceException(MessageCode.LOGIC_ERROR,"已停订的订单不能单日恢复日计划!");
 		TMdMaraEx ex = maraExMapper.getProductTransRateByCode(item.getMatnr(),user.getSalesOrg());
 		if(ex!=null){
