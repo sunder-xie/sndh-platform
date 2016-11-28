@@ -132,4 +132,6 @@ public interface OrderService {
 	int backUnBranchOrder(UpdateManHandOrderModel smodel);
 
 	int continueOrdeAfterStop2(OrderSearchModel record);
+
+	int uptDispDateProm(TOrderDaliyPlanItem plan);
 }

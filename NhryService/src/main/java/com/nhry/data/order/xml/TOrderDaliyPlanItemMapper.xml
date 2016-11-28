@@ -206,6 +206,7 @@
       and STATUS = #{status,jdbcType=VARCHAR}
     </if>
     and DISP_DATE &gt;= #{dispDateStr,jdbcType=DATE}
+    and PROMOTION_FLAG is null
   </delete>
 
 
@@ -927,9 +928,16 @@
       SELECT
        *
       FROM t_mst_order_daliy_plan_item
-      WHERE ITEM_NO =#{itemNo,jdbcType=VARCHAR}
-      and ORDER_NO =#{orderNo,jdbcType=VARCHAR}
-      and DISP_DATE =#{dispDate,jdbcType=DATE}
+      WHERE 1=1
+      <if test="itemNo!=null">
+        and ITEM_NO =#{itemNo,jdbcType=VARCHAR}
+      </if>
+      <if test="orderNo!=null">
+        and ORDER_NO =#{orderNo,jdbcType=VARCHAR}
+      </if>
+      <if test="planItemNo!=null">
+        and PLAN_ITEM_NO =#{planItemNo,jdbcType=VARCHAR}
+      </if>
   </select>
 
   <select id="selectByBeforeDayAndNo" resultMap="BaseResultMap" parameterType="com.nhry.data.order.domain.TOrderDaliyPlanItem">
@@ -960,6 +968,7 @@
       </if>
     </set>
     where 1=1
+    and PROMOTION_FLAG is NULL
     <if test="orderNo!=null">
       and ORDER_NO = #{orderNo,jdbcType=VARCHAR}
     </if>
@@ -1096,6 +1105,7 @@
     LEFT JOIN t_md_mara_ex ex on i.MATNR = ex.MATNR
     where 1 = 1
     and i.ORDER_NO =#{orderNo,jdbcType=VARCHAR}
+    and PROMOTION_FLAG is NULL
     order by i.DISP_DATE asc,i.REMAIN_AMT desc
   </select>
 
