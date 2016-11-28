@@ -776,6 +776,12 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 		if("20".equals(order.getPreorderStat())){
 			throw new ServiceException(MessageCode.LOGIC_ERROR,"暂无法进行此操作，请联系在线客服");
 		}
+		if("30".equals(order.getSign())){
+			throw new ServiceException(MessageCode.LOGIC_ERROR,order.getOrderNo()+"该订单已退订不能做停订");
+		}
+		if("40".equals(order.getSign())){
+			throw new ServiceException(MessageCode.LOGIC_ERROR,order.getOrderNo()+"该订单已完结不能做停订");
+		}
 		if("10".equals(order.getPaymentmethod())){
 			if(customerBillMapper.getRecBillByOrderNo(order.getOrderNo())!=null)throw new ServiceException(MessageCode.LOGIC_ERROR,"该后付款已经有收款单了，请不要修改订单，或者去删除收款单!");
 		}
@@ -932,6 +938,12 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 			if(bill!=null && "10".equals(bill.getStatus())){
 				throw new ServiceException(MessageCode.LOGIC_ERROR,"预付款订单  "+order.getOrderNo()+"  已经有收款单但是还没完成收款，请不要修改订单，或者去删除收款单!");
 			}
+		}
+		if("30".equals(order.getSign())){
+			throw new ServiceException(MessageCode.LOGIC_ERROR,order.getOrderNo()+"该订单已退订不能做停订");
+		}
+		if("40".equals(order.getSign())){
+			throw new ServiceException(MessageCode.LOGIC_ERROR,order.getOrderNo()+"该订单已完结不能做停订");
 		}
 		
 		if(order!= null){
@@ -2230,6 +2242,22 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 			}
 		});
 		OperationLogUtil.saveHistoryOperation(order.getOrderNo(), LogType.ORDER, OrderLogEnum.RESUME_ORDER,null,null,"停订","在订",null,null,userSessionService.getCurrentUser(),operationLogMapper);
+		return 1;
+	}
+
+	/**
+	 * 订奶计划中 赠品修改配送日期
+	 * @param plan
+	 * @return
+     */
+	@Override
+	public int uptDispDateProm(TOrderDaliyPlanItem plan) {
+		TOrderDaliyPlanItem oldDay = tOrderDaliyPlanItemMapper.selectByDateAndItemNoAndNo(plan);
+		if(StringUtils.isBlank(oldDay.getPromotionFlag())){
+			throw new ServiceException(MessageCode.LOGIC_ERROR,"该日计划不是促销产品");
+		}
+		oldDay.setDispDate(plan.getDispDate());
+		tOrderDaliyPlanItemMapper.updateDaliyPlanItem(oldDay);
 		return 1;
 	}
 
@@ -4112,6 +4140,7 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 
 									}
 									if(flag){
+										//删除 订单状态不为20（完结）的日订单-赠品不删
 										TOrderDaliyPlanItem newplan = new TOrderDaliyPlanItem();
 										newplan.setOrderNo(orgOrder.getOrderNo());
 										//newplan.setItemNo(orgEntry.getItemNo());
@@ -4622,9 +4651,9 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 		initMap.replace("initAmt",newInitAmt);
 		/*	Map<String,Integer> dayEntrMap = new HashMap<String,Integer>();
 		//dayEntrMap.put("planItemNo",0);*/
-		allDayItems.stream().filter(e->!"30".equals(e.getStatus())).count();
+		//allDayItems.stream().filter(e->!"30".equals(e.getStatus())).count();
 		if(allDayItems!=null && allDayItems.size()>0){
-			allDayItems.stream().filter(e->!"30".equals(e.getStatus())).forEach(item->{
+			allDayItems.stream().filter(e->StringUtils.isBlank(e.getPromotionFlag())).filter(e->!"30".equals(e.getStatus())).forEach(item->{
 				initMap.replace("initAmt",initMap.get("initAmt").subtract(item.getAmt()));
 					TOrderDaliyPlanItem plan = new TOrderDaliyPlanItem();
 					plan.setDispDate(item.getDispDate());//配送日期
@@ -5065,7 +5094,7 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 					cloneUseAmt = cloneUseAmt.add(item.getAmt());
 				}
 				initMap.replace("initAmt",initMap.get("initAmt").subtract(item.getAmt()));
-				if(item.getRemainAmt().compareTo(initMap.get("initAmt"))!=0){
+				if(StringUtils.isBlank(item.getPromotionFlag()) && item.getRemainAmt().compareTo(initMap.get("initAmt"))!=0){
 					TOrderDaliyPlanItem plan = new TOrderDaliyPlanItem();
 					plan.setDispDate(item.getDispDate());//配送日期
 					plan.setOrderNo(item.getOrderNo());//订单编号

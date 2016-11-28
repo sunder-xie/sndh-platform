@@ -109,7 +109,7 @@ public class DeliverMilkResource extends BaseResource {
 	@GET
 	@Path("/changeDaliyPlans/{orderCode}")
 	@Produces(MediaType.APPLICATION_JSON)
-	@ApiOperation(value = "/changeDaliyPlans/{orderCode}", response = RouteOrderModel.class, notes = "根据路单更新日计划")
+	@ApiOperation(value = "/changeDaliyPlans/{orderCode}", response = RouteOrderModel.class, notes = "根据路单更新日计划  路单确认")
 	public Response changeDaliyPlans(@ApiParam(required=true,name="orderCode",value="路单编号") @PathParam("orderCode") String orderCode){
 		return convertToRespModel(MessageCode.NORMAL, null, deliverMilkService.updateDaliyPlanByRouteOrder(orderCode));
 	}
@@ -135,7 +135,7 @@ public class DeliverMilkResource extends BaseResource {
 	@Path("/uptRouteOrderDetailList")
 	@Produces(MediaType.APPLICATION_JSON)
 	@Consumes(MediaType.APPLICATION_JSON)
-	@ApiOperation(value = "/uptRouteOrderDetailList", response = Integer.class, notes = "更新路单列表")
+	@ApiOperation(value = "/uptRouteOrderDetailList", response = Integer.class, notes = "更新路单列表 路单保存")
 	public Response uptRouteOrderDetailList(@ApiParam(required=true,name="smodel",value="SearchModel") RouteDetailUpdateListModel smodel){
 		return convertToRespModel(MessageCode.NORMAL, null, deliverMilkService.updateRouteOrderAllItems(smodel));
 	}
