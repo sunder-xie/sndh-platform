@@ -939,6 +939,9 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 				throw new ServiceException(MessageCode.LOGIC_ERROR,"预付款订单  "+order.getOrderNo()+"  已经有收款单但是还没完成收款，请不要修改订单，或者去删除收款单!");
 			}
 		}
+		if("20".equals(order.getSign())){
+			throw new ServiceException(MessageCode.LOGIC_ERROR,order.getOrderNo()+"该订单已停订不能做停订");
+		}
 		if("30".equals(order.getSign())){
 			throw new ServiceException(MessageCode.LOGIC_ERROR,order.getOrderNo()+"该订单已退订不能做停订");
 		}
