@@ -1290,11 +1290,11 @@
         t1.MATNR,
         CONCAT(
         '(',
-        ROUND(sum(t2.QTY)),
+        ROUND(sum(DISTINCT t2.QTY)),
         ')'
         ) AS CONFIRM_QTY,
         0 AS CQTY,
-        ROUND(sum(t2.QTY)) as RESEND_QTY,
+        ROUND(sum(DISTINCT t2.QTY)) as RESEND_QTY,
         t4.SHORT_TXT AS MATNR_TXT,
         t5.EMP_NAME
         FROM
