@@ -7,8 +7,8 @@ import com.nhry.common.exception.ServiceException;
 import com.nhry.data.auth.dao.TSysUserRoleMapper;
 import com.nhry.data.auth.domain.TSysUser;
 import com.nhry.data.basic.dao.TMdOperationLogMapper;
-import com.nhry.data.basic.domain.*;
-import com.nhry.data.basic.impl.TMdOperationLogMapperImpl;
+import com.nhry.data.basic.domain.LogType;
+import com.nhry.data.basic.domain.TVipAcct;
 import com.nhry.data.bill.dao.CustomerBillMapper;
 import com.nhry.data.bill.domain.TMstRecvBill;
 import com.nhry.data.bill.domain.TMstRecvOffset;
@@ -167,8 +167,9 @@ public class CustomerBillServiceImpl implements CustomerBillService {
                 customerBill.setLastModifiedBy(user.getLoginName());
                 customerBill.setLastModifiedByTxt(user.getDisplayName());
                 customerBill.setStatus("20");
+                updateBill =  customerBillMapper.updateCustomerBillrPayment(customerBill);
 
-                //更新订单状态为已收款
+        //更新订单状态为已收款
                 order.setPayDate(new Date());
                 order.setPaymentStat("20");
                 updateOrderStatus = tPreOrderMapper.updateOrderStatus(order);
