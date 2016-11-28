@@ -1312,7 +1312,7 @@
         AND t.ORDER_DATE=date_add(#{theDate,jdbcType=DATE}, INTERVAL - 1 DAY)
         GROUP BY
         t3.EMP_NO,
-        t1.MATNR
+        t3.MATNR
         ) fnt
         GROUP BY
         DISP_EMP_NO,
