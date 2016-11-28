@@ -1276,6 +1276,9 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 		if(order.getBackDate() != null && order.getBackDate().getTime()<backDate.getTime()){
 			throw new ServiceException(MessageCode.LOGIC_ERROR,"提前退订日期不能超出已退订的日期！");
 		}
+		if("20".equals(order.getSign())){
+			throw new ServiceException(MessageCode.LOGIC_ERROR,"长停订单不能提前退订！");
+		}
 
 		if("10".equals(order.getPaymentmethod())){
 			if(customerBillMapper.getRecBillByOrderNo(order.getOrderNo())!=null)throw new ServiceException(MessageCode.LOGIC_ERROR,"已经有收款单了，请不要操作，或者去删除收款单!");
@@ -1292,9 +1295,10 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 
 
 		//第一步 计算退订的金额
+
 		BigDecimal backAmt = tOrderDaliyPlanItemMapper.getSumDailyBackAmtByBackDate(record);
 
-		//第二步 删除日计划
+				//第二步 删除日计划
 		tOrderDaliyPlanItemMapper.deleteDailyByStopDate(record);
 
 		order.setBackDate(backDate);
