@@ -2,11 +2,10 @@ package com.nhry.service.order.impl;
 
 import java.math.BigDecimal;
 import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
+import com.nhry.model.order.PromotionOrderModel;
+import com.nhry.model.order.PromotionPlanDetail;
 import org.apache.commons.lang3.StringUtils;
 
 import com.github.pagehelper.PageInfo;
@@ -24,6 +23,7 @@ import com.nhry.service.order.dao.PromotionService;
 
 public class PromotionServiceImpl extends BaseService implements PromotionService
 {
+	private final SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
 	private TPromotionMapper tPromotionMapper;
 	private TOrderDaliyPlanItemMapper tOrderDaliyPlanItemMapper;
 	
@@ -61,7 +61,7 @@ public class PromotionServiceImpl extends BaseService implements PromotionServic
 	@Override
 	public List<TPromotion> getPromotionByMatnr(String code)
 	{
-  		SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
+
 		TPromotion record = new TPromotion();
 		record.setOrgMatnr(code);
 		record.setBranchNo(userSessionService.getCurrentUser().getBranchNo());
@@ -219,6 +219,65 @@ public class PromotionServiceImpl extends BaseService implements PromotionServic
 		
 		
 	}
-	
-	
+
+	@Override
+	public List<TPromotion> selectAllPromotionByOrder(PromotionOrderModel model) {
+		List<TPromotion> promotions = new ArrayList<TPromotion>();
+		List<PromotionPlanDetail> details = model.getDetails();
+		TPromotion param = new TPromotion();
+		param.setBranchNo(userSessionService.getCurrentUser().getBranchNo());
+		param.setSalesOrg(userSessionService.getCurrentUser().getSalesOrg());
+		param.setBuyAmt(model.getInitAmt());
+		param.setCreateBy(format.format(model.getOrderDate()));
+		param.setBuyStartTime(model.getStartDate());
+		param.setBuyStopTime(model.getEndDate());
+		//年卡促销
+		List<TPromotion> yearProms = this.selectPromotionByYear(param);
+		if(yearProms!=null) {
+			promotions.addAll(yearProms);
+		}
+		//整单促销
+		List<TPromotion> orderProms = this.selectPromotionByOrder(param);
+		if(orderProms!=null) {
+			promotions.addAll(orderProms);
+		}
+		//单品促销
+		for(PromotionPlanDetail detail : details) {
+			param.setOrgMatnr(detail.getMatnr());
+			param.setBuyAmt(detail.getAmt());
+			List<TPromotion> matnrProms = this.selectPromotionByOneMatnr(param);
+			if (matnrProms != null) {
+				promotions.addAll(matnrProms);
+			}
+		}
+		return promotions;
+	}
+
+	@Override
+	public List<TPromotion> selectPromotionByOneMatnr(TPromotion promotion) {
+		BigDecimal buyAmt = promotion.getBuyAmt();
+		List<TPromotion> promotions = tPromotionMapper.selectPromationByOneMatnr(promotion);
+		for(TPromotion p1 : promotions){
+			p1.setDiscountAmt(buyAmt.divide(p1.getLowAmt(),BigDecimal.ROUND_UP).multiply(p1.getDiscountAmt()));
+		}
+		return promotions;
+	}
+
+	@Override
+	public List<TPromotion> selectPromotionByOrder(TPromotion promotion) {
+		BigDecimal buyAmt = promotion.getBuyAmt();
+		List<TPromotion> promotions = tPromotionMapper.selectPromationByOrder(promotion);
+		for(TPromotion p1 : promotions){
+			p1.setDiscountAmt(buyAmt.divide(p1.getLowAmt(),BigDecimal.ROUND_UP).multiply(p1.getDiscountAmt()));
+		}
+		return promotions;
+	}
+
+	@Override
+	public List<TPromotion> selectPromotionByYear(TPromotion promotion) {
+		List<TPromotion> promotions = tPromotionMapper.selectPromotionByYear(promotion);
+		return promotions;
+	}
+
+
 }

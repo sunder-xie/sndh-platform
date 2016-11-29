@@ -12,4 +12,10 @@ public interface TPromotionMapper {
     TPromotion selectPromotionByPromNo(TPromotion record);
     
     PageInfo selectPromotionsrsByPage(OrderSearchModel smodel);
+
+    List<TPromotion> selectPromationByOneMatnr(TPromotion record);
+
+    List<TPromotion> selectPromationByOrder(TPromotion record);
+
+    List<TPromotion> selectPromotionByYear(TPromotion record);
 }

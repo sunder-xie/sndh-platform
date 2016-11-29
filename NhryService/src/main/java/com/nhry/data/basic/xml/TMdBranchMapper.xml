@@ -71,7 +71,7 @@
            b.PROVINCE,  b.CITY, b.COUNTY,
 		  (SELECT i.ITEM_NAME from t_sys_code_item i WHERE i.TYPE_CODE=<include refid="mybaties.constant.branch_province"/> and i.ITEM_CODE = b.PROVINCE ) PROVINCE_NAME,
           (SELECT i.ITEM_NAME from t_sys_code_item i WHERE i.TYPE_CODE=<include refid="mybaties.constant.factory"/> and i.ITEM_CODE = b.WERKS) WERKS,
-         (SELECT i.ITEM_NAME from t_sys_code_item i WHERE i.TYPE_CODE=<include refid="mybaties.constant.storage_location"/>  and i.ITEM_CODE = b.LGORT) LGORT,
+         (SELECT i.ITEM_NAME from t_sys_code_item i WHERE i.TYPE_CODE=<include refid="mybaties.constant.storage_location"/>  and i.ATTR1 = b.LGORT and i.PARENT = b.WERKS) LGORT,
           b.CREATE_AT, b.CREATE_BY, b.CREATE_BY_TXT,b.LAST_MODIFIED, b.LAST_MODIFIED_BY, b.LAST_MODIFIED_BY_TXT
           from t_md_branch b LEFT JOIN  t_md_dealer d on b.DEALER_NO = d.DEALER_NO
          where BRANCH_NO = #{branchNo,jdbcType=VARCHAR}
