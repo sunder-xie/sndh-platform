@@ -1,5 +1,7 @@
 package com.nhry.data.order.domain;
 
+import org.springframework.format.annotation.DateTimeFormat;
+
 import java.math.BigDecimal;
 import java.util.Date;
 
@@ -57,6 +59,10 @@ public class TPromotion {
     private BigDecimal giftQty;
 
     private BigDecimal discountAmt;
+
+    private BigDecimal lowAmt;
+
+    private String itemNo;
 
     public String getGiftUnit()
 	{
@@ -284,5 +290,21 @@ public class TPromotion {
 
     public void setDiscountAmt(BigDecimal discountAmt) {
         this.discountAmt = discountAmt;
+    }
+
+    public BigDecimal getLowAmt() {
+        return lowAmt;
+    }
+
+    public void setLowAmt(BigDecimal lowAmt) {
+        this.lowAmt = lowAmt;
+    }
+
+    public String getItemNo() {
+        return itemNo;
+    }
+
+    public void setItemNo(String itemNo) {
+        this.itemNo = itemNo;
     }
 }

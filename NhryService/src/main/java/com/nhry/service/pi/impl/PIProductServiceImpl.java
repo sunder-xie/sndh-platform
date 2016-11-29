@@ -611,24 +611,24 @@ public class PIProductServiceImpl implements PIProductService {
             String des = zssd00024.getLGOBE().getLGOBE_type2();
             if (StringUtils.isNotEmpty(lgort)) {
                 NHSysCodeItem param = new NHSysCodeItem();
-                param.setItemCode(lgort);
+                param.setItemCode(werks.concat(lgort));
                 param.setTypeCode("1011");
                 NHSysCodeItem codeItem = codeItemMapper.findCodeItenByCode(param);
                 if (codeItem == null) {
                     codeItem = new NHSysCodeItem();
-                    codeItem.setItemCode(lgort);
+                    codeItem.setItemCode(werks.concat(lgort));
                     codeItem.setTypeCode("1011");
-                    codeItem.setItemName(name);
+                    codeItem.setItemName(des);
                     codeItem.setParent(werks);
-                    codeItem.setAttr1(des);
+                    codeItem.setAttr1(lgort);
                     codeItem.setCreateAt(new Date());
                     codeItem.setCreateByTxt("ECC");
                     codeItem.setCreateBy("ECC");
                     codeItemMapper.addCodeItem(codeItem);
                 } else {
-                    codeItem.setItemName(name);
+                    codeItem.setItemName(des);
                     codeItem.setParent(werks);
-                    codeItem.setAttr1(des);
+                    codeItem.setAttr1(lgort);
                     codeItem.setLastModified(new Date());
                     codeItem.setLastModifiedBy("ECC");
                     codeItem.setLastModifiedByTxt("ECC");
