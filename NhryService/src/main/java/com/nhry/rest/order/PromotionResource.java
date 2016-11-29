@@ -61,5 +61,12 @@ public class PromotionResource extends BaseResource {
 	public Response searchPromotionsByPage(@ApiParam(required=true,name="smodel",value="SearchModel") OrderSearchModel smodel){
 		return convertToRespModel(MessageCode.NORMAL, null, promotionService.selectPromotionsrsByPage(smodel));
 	}
-	
+	@POST
+	@Path("/searchPromotionsByOrder")
+	@Produces(MediaType.APPLICATION_JSON)
+	@Consumes(MediaType.APPLICATION_JSON)
+	@ApiOperation(value = "/searchPromotionsByOrder", response = Integer.class, notes = "查询订单的全部促销规则")
+	public Response searchPromotionsByOrder(@ApiParam(required=true,name="smodel",value="SearchModel") PromotionOrderModel smodel){
+		return convertToRespModel(MessageCode.NORMAL, null, promotionService.selectAllPromotionByOrder(smodel));
+	}
 }
