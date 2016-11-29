@@ -1124,14 +1124,17 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 			order.setMemoTxt(record.getMemoTxt());
 			
 			String state = order.getPaymentmethod();
-			
-			BigDecimal leftAmt = order.getCurAmt();
+
+			// BigDecimal leftAmt = order.getCurAmt();
 			BigDecimal initAmt = order.getInitAmt();
+			BigDecimal useAmt = tOrderDaliyPlanItemMapper.getOrderOrderDailyFinishAmtByOrderNo(order.getOrderNo());
+			BigDecimal leftAmt = initAmt.subtract(useAmt);
 			if("20".equals(state)){//先付款
 				tOrderDaliyPlanItemMapper.updateDaliyPlansToBack(order);
 				BigDecimal backAmt = BigDecimal.ZERO;
 				//此为多余的钱，如果是预付款，将存入订户账户
 				if(order.getInitAmt()!=null && "20".equals(order.getPaymentStat())){//已经收款的
+
 					if("10".equals(order.getPreorderSource()) || "40".equals(order.getPreorderSource())){
 						if(order.getOnlineInitAmt()!=null){
 							backAmt = backAmt.add(leftAmt.multiply(order.getOnlineInitAmt()).divide(order.getInitAmt(),2));
@@ -1140,7 +1143,7 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 									null,backAmt.toString(),null,null,userSessionService.getCurrentUser(),operationLogMapper);
 						}
 					}else{
-						backAmt = backAmt.add(order.getCurAmt());
+						backAmt = backAmt.add(leftAmt);
 						TVipAcct ac = new TVipAcct();
 						ac.setVipCustNo(order.getMilkmemberNo());
 						ac.setAcctAmt(backAmt);
@@ -2256,9 +2259,13 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 	@Override
 	public int uptDispDateProm(TOrderDaliyPlanItem plan) {
 		TOrderDaliyPlanItem oldDay = tOrderDaliyPlanItemMapper.selectByDateAndItemNoAndNo(plan);
-		if(StringUtils.isBlank(oldDay.getPromotionFlag())){
-			throw new ServiceException(MessageCode.LOGIC_ERROR,"该日计划不是促销产品");
+		if(StringUtils.isBlank(oldDay.getPromotionFlag())) {
+			throw new ServiceException(MessageCode.LOGIC_ERROR, "该日计划不是促销产品");
 		}
+		TPromotion prom = promotionService.selectPromotionByPromNo(oldDay.getPromotionFlag());
+		if(prom == null) throw new ServiceException(MessageCode.LOGIC_ERROR,oldDay.getPromotionFlag()+" 该促销号不存在，请维护！");
+		if(DateUtil.dateAfter(plan.getDispDate(),prom.getPlanStopTime())) throw new ServiceException(MessageCode.LOGIC_ERROR,"赠品的配送日期超出促销的截止配送日期");
+		if(DateUtil.dateAfter(prom.getPlanStartTime(),plan.getDispDate())) throw new ServiceException(MessageCode.LOGIC_ERROR,"赠品的配送日期超出促销的开始配送日期");
 		oldDay.setDispDate(plan.getDispDate());
 		tOrderDaliyPlanItemMapper.updateDaliyPlanItem(oldDay);
 		return 1;
