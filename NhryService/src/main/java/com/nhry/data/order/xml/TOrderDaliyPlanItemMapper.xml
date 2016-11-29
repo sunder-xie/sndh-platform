@@ -206,7 +206,7 @@
       and STATUS = #{status,jdbcType=VARCHAR}
     </if>
     and DISP_DATE &gt;= #{dispDateStr,jdbcType=DATE}
-    and PROMOTION_FLAG is null
+    and (PROMOTION_FLAG is NULL OR PROMOTION_FLAG = '')
   </delete>
 
 
@@ -1105,7 +1105,7 @@
     LEFT JOIN t_md_mara_ex ex on i.MATNR = ex.MATNR
     where 1 = 1
     and i.ORDER_NO =#{orderNo,jdbcType=VARCHAR}
-    and PROMOTION_FLAG is NULL
+    and (PROMOTION_FLAG is NULL OR PROMOTION_FLAG = '')
     order by i.DISP_DATE asc,i.REMAIN_AMT desc
   </select>
 
