@@ -968,7 +968,6 @@
       </if>
     </set>
     where 1=1
-    and PROMOTION_FLAG is NULL
     <if test="orderNo!=null">
       and ORDER_NO = #{orderNo,jdbcType=VARCHAR}
     </if>
