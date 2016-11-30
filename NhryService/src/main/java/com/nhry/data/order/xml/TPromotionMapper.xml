@@ -88,7 +88,7 @@
 	        p.PROM_NO, p.PROM_DES, p.PROM_TYPE,
             p.SALES_ORG, p.SALES_DIST, p.CUSTOMER_TYPE,
             p.PROM_STAT, p.PLAN_START_TIME, p.PLAN_STOP_TIME,
-            p.BUY_START_TIME, p.BUY_STOP_TIME,oi.DISCOUNT_AMT,ci.LOW,oi.ITEM_NO
+            p.BUY_START_TIME, p.BUY_STOP_TIME,oi.DISCOUNT_AMT,ci.LOW LOW_AMT,oi.ITEM_NO
 		from t_promotion p
 		left join t_promotion_orig_item oi on p.PROM_NO = oi.PROM_NO
 		left join t_promotion_con_item ci on ci.PROM_NO = oi.PROM_NO and ci.ITEM_NO = oi.ITEM_NO
@@ -108,7 +108,7 @@
         p.PROM_NO, p.PROM_DES, p.PROM_TYPE,
         p.SALES_ORG, p.SALES_DIST, p.CUSTOMER_TYPE,
         p.PROM_STAT, p.PLAN_START_TIME, p.PLAN_STOP_TIME,
-        p.BUY_START_TIME, p.BUY_STOP_TIME,oi.DISCOUNT_AMT,ci.LOW,oi.ITEM_NO
+        p.BUY_START_TIME, p.BUY_STOP_TIME,oi.DISCOUNT_AMT,ci.LOW LOW_AMT,oi.ITEM_NO
         from t_promotion p
         left join t_promotion_orig_item oi on p.PROM_NO = oi.PROM_NO
         left join t_promotion_con_item ci on ci.PROM_NO = oi.PROM_NO and ci.ITEM_NO = oi.ITEM_NO
