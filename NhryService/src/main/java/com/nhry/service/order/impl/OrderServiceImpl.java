@@ -4660,7 +4660,7 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 		//dayEntrMap.put("planItemNo",0);*/
 		//allDayItems.stream().filter(e->!"30".equals(e.getStatus())).count();
 		if(allDayItems!=null && allDayItems.size()>0){
-			allDayItems.stream().filter(e->StringUtils.isBlank(e.getPromotionFlag())).filter(e->!"30".equals(e.getStatus())).forEach(item->{
+			allDayItems.stream().filter(e->!"30".equals(e.getStatus())).forEach(item->{
 				initMap.replace("initAmt",initMap.get("initAmt").subtract(item.getAmt()));
 					TOrderDaliyPlanItem plan = new TOrderDaliyPlanItem();
 					plan.setDispDate(item.getDispDate());//配送日期
@@ -5101,7 +5101,7 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 					cloneUseAmt = cloneUseAmt.add(item.getAmt());
 				}
 				initMap.replace("initAmt",initMap.get("initAmt").subtract(item.getAmt()));
-				if(StringUtils.isBlank(item.getPromotionFlag()) && item.getRemainAmt().compareTo(initMap.get("initAmt"))!=0){
+				if(item.getRemainAmt().compareTo(initMap.get("initAmt"))!=0){
 					TOrderDaliyPlanItem plan = new TOrderDaliyPlanItem();
 					plan.setDispDate(item.getDispDate());//配送日期
 					plan.setOrderNo(item.getOrderNo());//订单编号
