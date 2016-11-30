@@ -4670,7 +4670,9 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 					plan.setDispDateStr(format.format(item.getDispDate()));
 					//plan.setPlanItemNo(String.valueOf(dayEntrMap.get("planItemNo")));
 					plan.setRemainAmt(initMap.get("initAmt"));
+
 					tOrderDaliyPlanItemMapper.updateDaliyPlanItemByItemNo(plan);
+					System.out.println("更新金额"+plan.getRemainAmt());
 					//dayEntrMap.replace("planItemNo",dayEntrMap.get("planItemNo").intValue()+1);
 			});
 		}
