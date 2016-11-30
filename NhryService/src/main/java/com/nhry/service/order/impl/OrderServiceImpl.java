@@ -4500,9 +4500,12 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 		mo.setOrderNo(record.getOrder().getOrderNo());
 		List<TOrderDaliyPlanItem> backData = tOrderDaliyPlanItemMapper.selectDaliyOrdersAll(mo);
 		if(backData!=null){
+			System.out.println("更新成功，获取日订单,长度为:"+backData.size());
 			TPreOrder order= tPreOrderMapper.selectByPrimaryKey(record.getOrder().getOrderNo());
 			if("10".equals(record.getOrder().getPaymentmethod()))
 			backData.stream().filter(e -> !"30".equals(e.getStatus())).forEach(day -> {
+				System.out.println(day.getRemainAmt()==null?"取不到日订单的剩余金额":day.getRemainAmt());
+				System.out.println(order.getInitAmt()==null?"取不到订单的总金额":order.getInitAmt());
 					day.setRemainAmt(day.getRemainAmt().subtract(order.getInitAmt()));
 			});
 		}
