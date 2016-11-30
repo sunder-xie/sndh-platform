@@ -4659,8 +4659,9 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 		/*	Map<String,Integer> dayEntrMap = new HashMap<String,Integer>();
 		//dayEntrMap.put("planItemNo",0);*/
 		//allDayItems.stream().filter(e->!"30".equals(e.getStatus())).count();
+		System.out.println("开始执行更新日订单剩余金额，取出所有的日订单数量为"+allDayItems.size());
 		if(allDayItems!=null && allDayItems.size()>0){
-			allDayItems.stream().filter(e->!"30".equals(e.getStatus())).forEach(item->{
+			allDayItems.stream().filter(e->StringUtils.isBlank(e.getPromotionFlag())).filter(e->!"30".equals(e.getStatus())).forEach(item->{
 				initMap.replace("initAmt",initMap.get("initAmt").subtract(item.getAmt()));
 					TOrderDaliyPlanItem plan = new TOrderDaliyPlanItem();
 					plan.setDispDate(item.getDispDate());//配送日期
@@ -4673,7 +4674,7 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 					//dayEntrMap.replace("planItemNo",dayEntrMap.get("planItemNo").intValue()+1);
 			});
 		}
-
+		System.out.println("更新日订单剩余金额执行完毕");
 		if(lastDay!=null && ContentDiffrentUtil.isDiffrent(lastDay,order.getEndDate())){
 			order.setEndDate(lastDay);
 		}
@@ -5101,7 +5102,7 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 					cloneUseAmt = cloneUseAmt.add(item.getAmt());
 				}
 				initMap.replace("initAmt",initMap.get("initAmt").subtract(item.getAmt()));
-				if(item.getRemainAmt().compareTo(initMap.get("initAmt"))!=0){
+				if(StringUtils.isBlank(item.getPromotionFlag()) && item.getRemainAmt().compareTo(initMap.get("initAmt"))!=0){
 					TOrderDaliyPlanItem plan = new TOrderDaliyPlanItem();
 					plan.setDispDate(item.getDispDate());//配送日期
 					plan.setOrderNo(item.getOrderNo());//订单编号
