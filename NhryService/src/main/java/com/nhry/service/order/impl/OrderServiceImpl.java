@@ -7874,7 +7874,7 @@ public static int dayOfTwoDay(Date day1,Date day2) {
 	@Override
 	public int replaceOrdersDispmember(OrderSearchModel record)
 	{
-		if(record.getOrders()!=null){
+/*		if(record.getOrders()!=null){
 			List<TPreOrder> orders = tPreOrderMapper.selectOrdersByOrderNos(record.getOrders());
 			if(orders!=null){
 				TSysUser user = userSessionService.getCurrentUser();
@@ -7884,7 +7884,7 @@ public static int dayOfTwoDay(Date day1,Date day2) {
 					,null,null,user,operationLogMapper);
 				});
 			}
-		}
+		}*/
 		return tPreOrderMapper.replaceOrdersDispmember(record);
 	}
 	
