@@ -143,7 +143,33 @@ public class TPreOrder {
     String branchMp;
     String branchEmpName;
     String addressTxt;
+    private String promotion;
+    private String promItemNo;
+    private BigDecimal discountAmt;
 
+    public String getPromItemNo() {
+        return promItemNo;
+    }
+
+    public void setPromItemNo(String promItemNo) {
+        this.promItemNo = promItemNo;
+    }
+
+    public String getPromotion() {
+        return promotion;
+    }
+
+    public void setPromotion(String promotion) {
+        this.promotion = promotion;
+    }
+
+    public BigDecimal getDiscountAmt() {
+        return discountAmt;
+    }
+
+    public void setDiscountAmt(BigDecimal discountAmt) {
+        this.discountAmt = discountAmt;
+    }
 
     public BigDecimal getOnlineInitAmt() {
         return onlineInitAmt;

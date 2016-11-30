@@ -1,14 +1,17 @@
 package com.nhry.service.order.dao;
 
-import java.util.List;
-
 import com.github.pagehelper.PageInfo;
 import com.nhry.data.order.domain.TOrderDaliyPlanItem;
 import com.nhry.data.order.domain.TPlanOrderItem;
 import com.nhry.data.order.domain.TPreOrder;
 import com.nhry.data.order.domain.TPromotion;
+import com.nhry.model.order.OrderCreateModel;
 import com.nhry.model.order.OrderSearchModel;
 import com.nhry.model.order.PromotionOrderModel;
+import com.nhry.model.order.TPromotionModel;
+
+import java.math.BigDecimal;
+import java.util.List;
 
 public interface PromotionService {
 	
@@ -32,4 +35,9 @@ public interface PromotionService {
 
 	List<TPromotion> selectPromotionByYear(TPromotion promotion);
 
+	void calculateOrderEntryPromotion(TPlanOrderItem entry, BigDecimal entryAmount,TPreOrder order);
+
+	void calculateOrderPromotion(TPreOrder order);
+
+	List<TPromotionModel> selectProCreatOrder(OrderCreateModel record);
 }

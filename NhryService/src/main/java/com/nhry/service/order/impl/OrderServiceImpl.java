@@ -2604,8 +2604,10 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 			{
 				throw new ServiceException(MessageCode.LOGIC_ERROR,"日期格式有误");
 			}
+			BigDecimal entryAmount = BigDecimal.ZERO;
 			if(StringUtils.isNotBlank(order.getBranchNo())){
-				orderAmt = orderAmt.add(calculateEntryAmount(entry));
+				entryAmount = entryAmount.add(calculateEntryAmount(entry));
+				orderAmt = orderAmt.add(entryAmount);
 			}else{
 			//TODO 无奶站订单如果订单金额没传 是否设为0  因为这个金额会在分奶站后重新算
 				orderAmt =  orderAmt.add(order.getInitAmt() == null ? BigDecimal.ZERO : order.getInitAmt());
@@ -2614,8 +2616,11 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 			
 			//促销判断
 			if(StringUtils.isNotBlank(entry.getPromotion())&&"10".equals(order.getPaymentmethod()))throw new ServiceException(MessageCode.LOGIC_ERROR,"后付款的订单不能参加促销!");
-			promotionService.calculateEntryPromotion(entry);
-			
+			//promotionService.calculateEntryPromotion(entry);
+			if(StringUtils.isNotBlank(order.getBranchNo())){
+				promotionService.calculateOrderEntryPromotion(entry,entryAmount,order);
+			}
+
 			entriesList.add(entry);
 
 			index++;
@@ -2640,6 +2645,7 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 		order.setInitAmt(orderAmt);
 		order.setResumeFlag("N");
 		
+		promotionService.calculateOrderPromotion(order);
 		//保存订单和行项目
 		tPreOrderMapper.insert(record.getOrder());
 		entriesList.forEach(entry->{
@@ -4663,11 +4669,12 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 		order.setInitAmt(newInitAmt);
 		order.setCurAmt(newCurAmt);
 		initMap.replace("initAmt",newInitAmt);
+		System.out.println("开始执行 更新日订单剩余金额，取出的日订单数量为");
 		/*	Map<String,Integer> dayEntrMap = new HashMap<String,Integer>();
 		//dayEntrMap.put("planItemNo",0);*/
 		//allDayItems.stream().filter(e->!"30".equals(e.getStatus())).count();
 		if(allDayItems!=null && allDayItems.size()>0){
-			allDayItems.stream().filter(e->StringUtils.isBlank(e.getPromotionFlag())).filter(e->!"30".equals(e.getStatus())).forEach(item->{
+			allDayItems.stream().filter(e->!"30".equals(e.getStatus())).forEach(item->{
 				initMap.replace("initAmt",initMap.get("initAmt").subtract(item.getAmt()));
 					TOrderDaliyPlanItem plan = new TOrderDaliyPlanItem();
 					plan.setDispDate(item.getDispDate());//配送日期
@@ -5108,7 +5115,7 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 					cloneUseAmt = cloneUseAmt.add(item.getAmt());
 				}
 				initMap.replace("initAmt",initMap.get("initAmt").subtract(item.getAmt()));
-				if(StringUtils.isBlank(item.getPromotionFlag()) && item.getRemainAmt().compareTo(initMap.get("initAmt"))!=0){
+				if(item.getRemainAmt().compareTo(initMap.get("initAmt"))!=0){
 					TOrderDaliyPlanItem plan = new TOrderDaliyPlanItem();
 					plan.setDispDate(item.getDispDate());//配送日期
 					plan.setOrderNo(item.getOrderNo());//订单编号
@@ -6706,7 +6713,7 @@ public static int dayOfTwoDay(Date day1,Date day2) {
    }
    
    //计算订单行的总价格
-   private BigDecimal calculateEntryAmount(TPlanOrderItem entry){
+   public BigDecimal calculateEntryAmount(TPlanOrderItem entry){
    	
    	int totalqty = 0;
    	int afterDays = 0;//经过的天数
@@ -7134,6 +7141,23 @@ public static int dayOfTwoDay(Date day1,Date day2) {
    				throw new ServiceException(MessageCode.LOGIC_ERROR,"请选择送奶员!");
    		}
 	}
+   if(StringUtils.isNotBlank(order.getPromotion())){
+		record.getEntries().stream().forEach(e->{
+			if(StringUtils.isNotBlank(e.getPromotion()) && StringUtils.isNotBlank(e.getPromItemNo())){
+				throw new ServiceException(MessageCode.LOGIC_ERROR,"一个订单只能参加一个促销");
+			}
+		});
+   }else{
+	   int num = 0;
+	   for(TPlanOrderItem item :record.getEntries()){
+		   if(StringUtils.isNotBlank(item.getPromotion())){
+			   num = num+1;
+		   }
+	   }
+	   if(num>1){
+		   throw new ServiceException(MessageCode.LOGIC_ERROR,"一个订单只能参加一个促销");
+	   }
+   }
    	if(record.getEntries()==null || record.getEntries().size() == 0){
    		throw new ServiceException(MessageCode.LOGIC_ERROR,"请选择商品行!");
 	}
@@ -7471,7 +7495,7 @@ public static int dayOfTwoDay(Date day1,Date day2) {
  	}
  	
  	//当订单是预付款时，订单行有配送总数和起始日期，需要计算结束日期
- 	private void resolveEntryEndDispDate(TPlanOrderItem entry){
+ 	public void resolveEntryEndDispDate(TPlanOrderItem entry){
  		int total = entry.getDispTotal();
  		if(total<=0 || total%entry.getQty()!=0)throw new ServiceException(MessageCode.LOGIC_ERROR,"行总共配送无法平均分配到每一天!请修改总数或每日配送数");
  		
@@ -7881,7 +7905,7 @@ public static int dayOfTwoDay(Date day1,Date day2) {
 	@Override
 	public int replaceOrdersDispmember(OrderSearchModel record)
 	{
-		if(record.getOrders()!=null){
+		/*if(record.getOrders()!=null){
 			List<TPreOrder> orders = tPreOrderMapper.selectOrdersByOrderNos(record.getOrders());
 			if(orders!=null){
 				TSysUser user = userSessionService.getCurrentUser();
@@ -7891,7 +7915,7 @@ public static int dayOfTwoDay(Date day1,Date day2) {
 					,null,null,user,operationLogMapper);
 				});
 			}
-		}
+		}*/
 		return tPreOrderMapper.replaceOrdersDispmember(record);
 	}
 	
