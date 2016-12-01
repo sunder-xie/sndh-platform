@@ -327,6 +327,15 @@
       <if test="isValid != null" >
         IS_VALID,
       </if>
+      <if test="promotion != null" >
+        PROMOTION,
+      </if>
+      <if test="promItemNo != null" >
+        PROM_ITEM_NO,
+      </if>
+      <if test="discountAmt != null" >
+        DISCOUNT_AMT,
+      </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides="," >
       <if test="orderNo != null" >
@@ -442,6 +451,15 @@
       </if>
       <if test="isValid != null" >
         #{isValid,jdbcType=VARCHAR},
+      </if>
+      <if test="promotion != null" >
+        #{promotion,jdbcType=VARCHAR},
+      </if>
+      <if test="promItemNo != null" >
+        #{promItemNo,jdbcType=VARCHAR},
+      </if>
+      <if test="discountAmt != null" >
+        #{discountAmt,jdbcType=DECIMAL},
       </if>
     </trim>
   </insert>

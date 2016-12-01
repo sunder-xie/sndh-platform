@@ -211,6 +211,9 @@
       <if test="promotion != null" >
         PROMOTION,
       </if>
+      <if test="promItemNo != null" >
+        PROM_ITEM_NO,
+      </if>
       <if test="promDays != null" >
         PROM_DAYS,
       </if>
@@ -305,6 +308,9 @@
       </if>
       <if test="promotion != null" >
         #{promotion,jdbcType=VARCHAR},
+      </if>
+      <if test="promItemNo != null" >
+        #{promItemNo,jdbcType=VARCHAR},
       </if>
       <if test="promDays != null" >
         #{promDays,jdbcType=INTEGER},
