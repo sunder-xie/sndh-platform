@@ -80,8 +80,17 @@
         SELECT
             i.*, ex.WERKS WERKS,
             ex.RESLO RESLO,
-            m.BASE_UNIT BASE_UNIT,
-            i.QTY SUM_QTY
+            i.QTY SUM_QTY,
+            IFNULL((
+                SELECT DISTINCT
+                    unit
+                FROM
+                    t_ssm_gi_order_item it
+                INNER JOIN t_ssm_gi_order d ON it.ORDER_NO = d.ORDER_NO
+                WHERE
+                    d.BRANCH_NO = o.BRANCH_NO
+                AND it.MATNR = i.MATNR
+            ),m.BASE_UNIT) BASE_UNIT
         FROM
             t_ssm_sal_order_items i
         JOIN t_ssm_sal_order o ON i.ORDER_DATE = o.ORDER_DATE
