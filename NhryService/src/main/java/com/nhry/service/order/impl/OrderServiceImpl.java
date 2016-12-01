@@ -1124,14 +1124,17 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 			order.setMemoTxt(record.getMemoTxt());
 			
 			String state = order.getPaymentmethod();
-			
-			BigDecimal leftAmt = order.getCurAmt();
+
+			// BigDecimal leftAmt = order.getCurAmt();
 			BigDecimal initAmt = order.getInitAmt();
+			BigDecimal useAmt = tOrderDaliyPlanItemMapper.getOrderOrderDailyFinishAmtByOrderNo(order.getOrderNo());
+			BigDecimal leftAmt = initAmt.subtract(useAmt);
 			if("20".equals(state)){//先付款
 				tOrderDaliyPlanItemMapper.updateDaliyPlansToBack(order);
 				BigDecimal backAmt = BigDecimal.ZERO;
 				//此为多余的钱，如果是预付款，将存入订户账户
 				if(order.getInitAmt()!=null && "20".equals(order.getPaymentStat())){//已经收款的
+
 					if("10".equals(order.getPreorderSource()) || "40".equals(order.getPreorderSource())){
 						if(order.getOnlineInitAmt()!=null){
 							backAmt = backAmt.add(leftAmt.multiply(order.getOnlineInitAmt()).divide(order.getInitAmt(),2));
@@ -1140,7 +1143,7 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 									null,backAmt.toString(),null,null,userSessionService.getCurrentUser(),operationLogMapper);
 						}
 					}else{
-						backAmt = backAmt.add(order.getCurAmt());
+						backAmt = backAmt.add(leftAmt);
 						TVipAcct ac = new TVipAcct();
 						ac.setVipCustNo(order.getMilkmemberNo());
 						ac.setAcctAmt(backAmt);
@@ -2260,9 +2263,13 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 	@Override
 	public int uptDispDateProm(TOrderDaliyPlanItem plan) {
 		TOrderDaliyPlanItem oldDay = tOrderDaliyPlanItemMapper.selectByDateAndItemNoAndNo(plan);
-		if(StringUtils.isBlank(oldDay.getPromotionFlag())){
-			throw new ServiceException(MessageCode.LOGIC_ERROR,"该日计划不是促销产品");
+		if(StringUtils.isBlank(oldDay.getPromotionFlag())) {
+			throw new ServiceException(MessageCode.LOGIC_ERROR, "该日计划不是促销产品");
 		}
+		TPromotion prom = promotionService.selectPromotionByPromNo(oldDay.getPromotionFlag());
+		if(prom == null) throw new ServiceException(MessageCode.LOGIC_ERROR,oldDay.getPromotionFlag()+" 该促销号不存在，请维护！");
+		if(DateUtil.dateAfter(plan.getDispDate(),prom.getPlanStopTime())) throw new ServiceException(MessageCode.LOGIC_ERROR,"赠品的配送日期超出促销的截止配送日期");
+		if(DateUtil.dateAfter(prom.getPlanStartTime(),plan.getDispDate())) throw new ServiceException(MessageCode.LOGIC_ERROR,"赠品的配送日期超出促销的开始配送日期");
 		oldDay.setDispDate(plan.getDispDate());
 		tOrderDaliyPlanItemMapper.updateDaliyPlanItem(oldDay);
 		return 1;
@@ -2597,8 +2604,10 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 			{
 				throw new ServiceException(MessageCode.LOGIC_ERROR,"日期格式有误");
 			}
+			BigDecimal entryAmount = BigDecimal.ZERO;
 			if(StringUtils.isNotBlank(order.getBranchNo())){
-				orderAmt = orderAmt.add(calculateEntryAmount(entry));
+				entryAmount = entryAmount.add(calculateEntryAmount(entry));
+				orderAmt = orderAmt.add(entryAmount);
 			}else{
 			//TODO 无奶站订单如果订单金额没传 是否设为0  因为这个金额会在分奶站后重新算
 				orderAmt =  orderAmt.add(order.getInitAmt() == null ? BigDecimal.ZERO : order.getInitAmt());
@@ -2607,8 +2616,11 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 			
 			//促销判断
 			if(StringUtils.isNotBlank(entry.getPromotion())&&"10".equals(order.getPaymentmethod()))throw new ServiceException(MessageCode.LOGIC_ERROR,"后付款的订单不能参加促销!");
-			promotionService.calculateEntryPromotion(entry);
-			
+			//promotionService.calculateEntryPromotion(entry);
+			if(StringUtils.isNotBlank(order.getBranchNo())){
+				promotionService.calculateOrderEntryPromotion(entry,entryAmount,order);
+			}
+
 			entriesList.add(entry);
 
 			index++;
@@ -2633,6 +2645,7 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 		order.setInitAmt(orderAmt);
 		order.setResumeFlag("N");
 		
+		promotionService.calculateOrderPromotion(order);
 		//保存订单和行项目
 		tPreOrderMapper.insert(record.getOrder());
 		entriesList.forEach(entry->{
@@ -4659,6 +4672,7 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 		order.setInitAmt(newInitAmt);
 		order.setCurAmt(newCurAmt);
 		initMap.replace("initAmt",newInitAmt);
+		System.out.println("开始执行 更新日订单剩余金额，取出的日订单数量为");
 		/*	Map<String,Integer> dayEntrMap = new HashMap<String,Integer>();
 		//dayEntrMap.put("planItemNo",0);*/
 		//allDayItems.stream().filter(e->!"30".equals(e.getStatus())).count();
@@ -6705,7 +6719,7 @@ public static int dayOfTwoDay(Date day1,Date day2) {
    }
    
    //计算订单行的总价格
-   private BigDecimal calculateEntryAmount(TPlanOrderItem entry){
+   public BigDecimal calculateEntryAmount(TPlanOrderItem entry){
    	
    	int totalqty = 0;
    	int afterDays = 0;//经过的天数
@@ -7133,6 +7147,23 @@ public static int dayOfTwoDay(Date day1,Date day2) {
    				throw new ServiceException(MessageCode.LOGIC_ERROR,"请选择送奶员!");
    		}
 	}
+   if(StringUtils.isNotBlank(order.getPromotion())){
+		record.getEntries().stream().forEach(e->{
+			if(StringUtils.isNotBlank(e.getPromotion()) && StringUtils.isNotBlank(e.getPromItemNo())){
+				throw new ServiceException(MessageCode.LOGIC_ERROR,"一个订单只能参加一个促销");
+			}
+		});
+   }else{
+	   int num = 0;
+	   for(TPlanOrderItem item :record.getEntries()){
+		   if(StringUtils.isNotBlank(item.getPromotion())){
+			   num = num+1;
+		   }
+	   }
+	   if(num>1){
+		   throw new ServiceException(MessageCode.LOGIC_ERROR,"一个订单只能参加一个促销");
+	   }
+   }
    	if(record.getEntries()==null || record.getEntries().size() == 0){
    		throw new ServiceException(MessageCode.LOGIC_ERROR,"请选择商品行!");
 	}
@@ -7470,7 +7501,7 @@ public static int dayOfTwoDay(Date day1,Date day2) {
  	}
  	
  	//当订单是预付款时，订单行有配送总数和起始日期，需要计算结束日期
- 	private void resolveEntryEndDispDate(TPlanOrderItem entry){
+ 	public void resolveEntryEndDispDate(TPlanOrderItem entry){
  		int total = entry.getDispTotal();
  		if(total<=0 || total%entry.getQty()!=0)throw new ServiceException(MessageCode.LOGIC_ERROR,"行总共配送无法平均分配到每一天!请修改总数或每日配送数");
  		
@@ -7880,17 +7911,19 @@ public static int dayOfTwoDay(Date day1,Date day2) {
 	@Override
 	public int replaceOrdersDispmember(OrderSearchModel record)
 	{
-/*		if(record.getOrders()!=null){
-			List<TPreOrder> orders = tPreOrderMapper.selectOrdersByOrderNos(record.getOrders());
-			if(orders!=null){
-				TSysUser user = userSessionService.getCurrentUser();
-				TMdBranchEmp emp = branchEmpMapper.selectBranchEmpByNo(record.getEmpNo());
-				orders.stream().forEach(order->{
-					OperationLogUtil.saveHistoryOperation(order.getOrderNo(),LogType.ORDER, OrderLogEnum.CHANGE_EMP,null,null,order.getEmpNo()+order.getEmpName(),emp.getEmpNo()+emp.getEmpName()
-					,null,null,user,operationLogMapper);
-				});
+		/*
+			if(record.getOrders()!=null){
+				List<TPreOrder> orders = tPreOrderMapper.selectOrdersByOrderNos(record.getOrders());
+				if(orders!=null){
+					TSysUser user = userSessionService.getCurrentUser();
+					TMdBranchEmp emp = branchEmpMapper.selectBranchEmpByNo(record.getEmpNo());
+					orders.stream().forEach(order->{
+						OperationLogUtil.saveHistoryOperation(order.getOrderNo(),LogType.ORDER, OrderLogEnum.CHANGE_EMP,null,null,order.getEmpNo()+order.getEmpName(),emp.getEmpNo()+emp.getEmpName()
+						,null,null,user,operationLogMapper);
+					});
+				}
 			}
-		}*/
+		*/
 		return tPreOrderMapper.replaceOrdersDispmember(record);
 	}
 	

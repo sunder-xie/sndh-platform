@@ -1,21 +1,13 @@
 package com.nhry.data.order.impl;
 
-import java.util.List;
-import java.util.Map;
-
 import com.github.pagehelper.PageInfo;
 import com.nhry.common.datasource.DynamicSqlSessionTemplate;
-import com.nhry.data.order.dao.TMilkboxPlanMapper;
-import com.nhry.data.order.dao.TPreOrderMapper;
 import com.nhry.data.order.dao.TPromotionMapper;
-import com.nhry.data.order.domain.TMilkboxPlan;
-import com.nhry.data.order.domain.TPreOrder;
 import com.nhry.data.order.domain.TPromotion;
-import com.nhry.model.order.ManHandOrderSearchModel;
-import com.nhry.model.order.MilkboxSearchModel;
 import com.nhry.model.order.OrderSearchModel;
-import com.nhry.model.order.ReturnOrderModel;
-import com.nhry.model.order.UpdateManHandOrderModel;
+import com.nhry.model.order.TPromotionModel;
+
+import java.util.List;
 
 public class TPromotionMapperImpl implements TPromotionMapper
 {
@@ -54,6 +46,21 @@ public class TPromotionMapperImpl implements TPromotionMapper
 	@Override
 	public List<TPromotion> selectPromotionByYear(TPromotion record) {
 		return sqlSessionTemplate.selectList("selectPromotionByYear",record);
+	}
+
+	@Override
+	public TPromotion selectPromotionByPromNoAndItemNo(TPromotion record) {
+		return sqlSessionTemplate.selectOne("selectPromotionByPromNoAndItemNo",record);
+	}
+
+	@Override
+	public List<TPromotionModel> selectPromotionByEntryAndAmt(TPromotion pro) {
+		return sqlSessionTemplate.selectList("selectPromotionByEntryAndAmt",pro);
+	}
+
+	@Override
+	public List<TPromotionModel> selectPromotionsByOrder(TPromotion pro) {
+		return sqlSessionTemplate.selectList("selectPromotionsByOrder",pro);
 	}
 
 

@@ -55,6 +55,8 @@ public class TPlanOrderItem {
 
     private String promotion;
 
+    private String promItemNo;
+
     private Integer promDays;
 
     private String status;
@@ -96,8 +98,26 @@ public class TPlanOrderItem {
     private String isStop;
     
     private String toStop;
-    
-	public String getToStop()
+
+    private  int rowNum;
+
+    public int getRowNum() {
+        return rowNum;
+    }
+
+    public void setRowNum(int rowNum) {
+        this.rowNum = rowNum;
+    }
+
+    public String getPromItemNo() {
+        return promItemNo;
+    }
+
+    public void setPromItemNo(String promItemNo) {
+        this.promItemNo = promItemNo;
+    }
+
+    public String getToStop()
 	{
 		return toStop;
 	}

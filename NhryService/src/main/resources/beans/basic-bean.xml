@@ -101,6 +101,7 @@
 		<property name="tPromotionMapper" ref="tPromotionMapper"></property>
 		<property name="tOrderDaliyPlanItemMapper" ref="tOrderDaliyPlanItemMapper"></property>
 		<property name="userSessionService" ref="userSessionService"></property>
+		<property name="orderService" ref="orderService"></property>
 	</bean>
 	<!-- 订单end -->
 	<!-- 拒收复送-->
