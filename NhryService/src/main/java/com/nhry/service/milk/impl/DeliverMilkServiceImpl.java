@@ -679,7 +679,9 @@ public class DeliverMilkServiceImpl extends BaseService implements DeliverMilkSe
 		TDispOrder dispOrder = tDispOrderMapper.selectByPrimaryKey(key);
 		
 		if(dispOrder!=null){
-			
+			if("20".equals(dispOrder.getStatus())){
+				throw  new ServiceException(MessageCode.LOGIC_ERROR,"该路单已经被确认过了");
+			}
 			Date dispDate = dispOrder.getDispDate();
 			List<TDispOrderItem> entryList = tDispOrderItemMapper.selectNotDeliveryItemsByKeys(routeCode);
 			TOrderDaliyPlanItem record = new TOrderDaliyPlanItem();
@@ -1081,7 +1083,7 @@ public class DeliverMilkServiceImpl extends BaseService implements DeliverMilkSe
 	}
 
 	/**
-	 * 更新路单后  修改 内部销售订单 和 库存  和 回瓶
+	 * 更新路单后  修改 内部销售订单 和 库存  和 回瓶  和拒收复送
 	 * @param newItem
 	 * @param orgItem
      * @return
@@ -1185,6 +1187,7 @@ public class DeliverMilkServiceImpl extends BaseService implements DeliverMilkSe
 			map.put("insOrderNo",sOrder.getInsOrderNo());
 			map.put("matnr",orgItem.getMatnr());
 			map.put("reason",orgItem.getReason());
+			map.put("itemNo",orgItem.getItemNo());
 			tMstInsideSalOrderItemMapper.deleteInSalOrderItemByMap(map);
 			List<TMstInsideSalOrderItem> entries = tMstInsideSalOrderItemMapper.getItemsByNo(sOrder.getInsOrderNo());
 			if(entries == null || entries.size()==0){

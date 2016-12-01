@@ -596,6 +596,7 @@
         where 1=1
         and o.ORDER_NO = #{dispOrderNo}
         and ex.RET_BOT_FLAG = "Y"
+        and o.STATUS="10"
         and ex.SALES_ORG = b.SALES_ORG
     )t
     GROUP BY t.SPEC
