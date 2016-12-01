@@ -20,6 +20,21 @@ public class DateUtil {
           System.out.println(getYmd(new Date()));
     }
 
+    public static boolean dateBefore(Date d1,Date d2){
+        if(d1!=null && d2!=null){
+            SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
+            Date date1 = null;
+            Date date2 = null;
+            try {
+                date1  = format.parse(format.format(d1));
+                date2 = format.parse(format.format(d2));
+            } catch (ParseException e) {
+                e.printStackTrace();
+            }
+            return date1.before(date2);
+        }
+        return d1.before(d2);
+    }
     public static boolean dateAfter(Date d1,Date d2){
         if(d1!=null && d2!=null){
             SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
