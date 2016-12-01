@@ -106,7 +106,7 @@ public class PromotionServiceImpl extends BaseService implements PromotionServic
 			throw new ServiceException(MessageCode.LOGIC_ERROR,entry.getMatnr()+"产品的促销,只能在"+promotion.getBuyStartTime().toString()+"到"+promotion.getBuyStopTime()+"之间订购!");
 		}
 		//处理,满赠,满n个a产品赠m个b产品
-		if("Z008".equals(promotion.getPromType())){
+		if("Z008".equals(promotion.getPromSubType())){
 			if(StringUtils.isNotBlank(entry.getGiftMatnr()))return;
 			int giftQty = entry.getBuyQty()/promotion.getOrgQty().intValue()*promotion.getGiftQty().intValue();
 			if(giftQty<=0)throw new ServiceException(MessageCode.LOGIC_ERROR,entry.getMatnr()+"产品没有达到满赠要求，请修改正品数量或不参加促销!");
@@ -116,13 +116,12 @@ public class PromotionServiceImpl extends BaseService implements PromotionServic
 		}
 
 		//处理，满减金额...
-		if("Z015".equals(promotion.getPromType())){
+		if("Z015".equals(promotion.getPromSubType())){
 			if(entryAmount.compareTo(promotion.getLowAmt())==-1) throw new ServiceException(MessageCode.LOGIC_ERROR,"订单行总金额不足以参加促销的最低金额");
 			//TODO 是否考虑阶梯
-			BigDecimal disAmt = BigDecimal.ZERO;
+			/*BigDecimal disAmt = BigDecimal.ZERO;
 			disAmt = disAmt.add(promotion.getDiscountAmt());
-
-			order.setDiscountAmt(order.getDiscountAmt().add(disAmt));
+			order.setDiscountAmt(order.getDiscountAmt().add(disAmt));*/
 		}
 	}
 
@@ -141,7 +140,7 @@ public class PromotionServiceImpl extends BaseService implements PromotionServic
 			throw new ServiceException(MessageCode.LOGIC_ERROR,"该促销,只能在"+format.format(promotion.getBuyStartTime())+"到"+format.format(promotion.getBuyStopTime())+"之间订购!");
 		}
 		if(promotion.getLowAmt().compareTo(order.getInitAmt())==1) throw new ServiceException(MessageCode.LOGIC_ERROR,"该订单总金额不足以参加满减促销，该促销最少金额为"+promotion.getLowAmt()+",而该订单总金额只有"+order.getInitAmt());
-		order.setDiscountAmt(promotion.getDiscountAmt());
+		//order.setDiscountAmt(promotion.getDiscountAmt());
 	}
 	@Override
 	public List<TPromotionModel> selectProCreatOrder(OrderCreateModel record) {

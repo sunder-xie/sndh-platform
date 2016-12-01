@@ -328,10 +328,11 @@
         p.BUY_START_TIME, p.BUY_STOP_TIME, p.BUY_AMT,
         p.GIFT_AMT, p.CREATE_AT, p.CREATE_BY,
         p.CREATE_BY_TXT, p.LAST_MODIFIED, p.LAST_MODIFIED_BY,
-        p.LAST_MODIFIED_BY_TXT
+        p.LAST_MODIFIED_BY_TXT,ci.LOW LOW_AMT,oi.DISCOUNT_AMT,oi.ITEM_NO
         from t_promotion p
         left join t_promotion_orig_item oi on p.PROM_NO = oi.PROM_NO
         left join t_promotion_gift_item gi on p.PROM_NO = gi.PROM_NO
+        left join t_promotion_con_item ci on p.PROM_NO = ci.PROM_NO and  ci.ITEM_NO = oi.ITEM_NO
         <!-- left join t_prom_scope_item si on p.PROM_NO = si.PROM_NO -->
         where 1 = 1
         and p.PROM_NO = #{promNo,jdbcType=VARCHAR}
