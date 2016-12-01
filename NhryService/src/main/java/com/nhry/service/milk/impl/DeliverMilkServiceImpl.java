@@ -36,10 +36,7 @@ import com.nhry.service.milk.pojo.TDispOrderChangeItem;
 import com.nhry.service.milktrans.dao.ReturnBoxService;
 import com.nhry.service.order.dao.OrderService;
 import com.nhry.service.stock.dao.TSsmStockService;
-import com.nhry.utils.DateUtil;
-import com.nhry.utils.PrimaryKeyUtils;
-import com.nhry.utils.SerialUtil;
-import com.nhry.utils.OperationLogUtil;
+import com.nhry.utils.*;
 import org.apache.commons.lang3.StringUtils;
 
 import java.math.BigDecimal;
@@ -1025,7 +1022,7 @@ public class DeliverMilkServiceImpl extends BaseService implements DeliverMilkSe
 				OperationLogUtil.saveHistoryOperation(entry.getItemNo(), LogType.ROUTE_ORDER, RouteLogEnum.DISP_QTY,dispEmp.getEmpNo()+dispEmp.getEmpName(),entry.getAddressTxt(),
 						entry.getConfirmQty().toString(),item.getConfirmQty(),entry.getConfirmMatnr()+oldMara.getMatnrTxt(),entry.getOrderDate(),sysuser,operationLogMapper);
 			}
-			if (!item.getReason().equals(entry.getReason())) {
+			if (ContentDiffrentUtil.isDiffrent(item.getReason(),entry.getReason())) {
 				Map<String,String> reasonMap = new HashMap<String,String>();
 				reasonMap.put("10", "换货");
 				reasonMap.put("20", "缺货");
