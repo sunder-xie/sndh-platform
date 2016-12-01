@@ -98,9 +98,7 @@ public class ReturnBoxServiceImpl implements ReturnBoxService {
     public int createDayRetBox(String dispOrderNo) {
         TSysUser user = userSessionService.getCurrentUser();
         TDispOrder dispOrder = tDispOrderMapper.getDispOrderByNo(dispOrderNo);
-        if("20".equals(dispOrder.getStatus())){
-           return 1;
-        }
+
         List<TRecBotDetail> tRecBot = tRecBotDetailMapper.selectRetByDispOrderNo(dispOrderNo);
         if (tRecBot == null || tRecBot.size() == 0 ) {
             //生成回瓶详情列表
