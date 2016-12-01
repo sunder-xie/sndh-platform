@@ -7,7 +7,7 @@ import java.math.BigDecimal;
  */
 public class TPromotionModel {
     private int rowNumber;              //订单行号
-    private String promoNo;             //促销号
+    private String promNo;             //促销号
     private String promItemNo;          //促销行号
     private String promSubType;         //促销类型
     private BigDecimal discountAmt;        //满减金额
@@ -21,12 +21,12 @@ public class TPromotionModel {
         this.rowNumber = rowNumber;
     }
 
-    public String getPromoNo() {
-        return promoNo;
+    public String getPromNo() {
+        return promNo;
     }
 
-    public void setPromoNo(String promoNo) {
-        this.promoNo = promoNo;
+    public void setPromNo(String promNo) {
+        this.promNo = promNo;
     }
 
     public String getPromItemNo() {
