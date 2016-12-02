@@ -4514,12 +4514,12 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 		mo.setOrderNo(record.getOrder().getOrderNo());
 		List<TOrderDaliyPlanItem> backData = tOrderDaliyPlanItemMapper.selectDaliyOrdersAll(mo);
 		if(backData!=null){
-			System.out.println("更新成功，获取日订单,长度为:"+backData.size());
+			//System.out.println("更新成功，获取日订单,长度为:"+backData.size());
 			TPreOrder order= tPreOrderMapper.selectByPrimaryKey(record.getOrder().getOrderNo());
 			if("10".equals(record.getOrder().getPaymentmethod()))
 			backData.stream().filter(e -> !"30".equals(e.getStatus())).forEach(day -> {
-				System.out.println(day.getRemainAmt()==null?"取不到日订单的剩余金额":day.getRemainAmt());
-				System.out.println(order.getInitAmt()==null?"取不到订单的总金额":order.getInitAmt());
+				//System.out.println(day.getRemainAmt()==null?"取不到日订单的剩余金额":day.getRemainAmt());
+				//System.out.println(order.getInitAmt()==null?"取不到订单的总金额":order.getInitAmt());
 					day.setRemainAmt(day.getRemainAmt().subtract(order.getInitAmt()));
 			});
 		}
@@ -4673,11 +4673,11 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 		order.setInitAmt(newInitAmt);
 		order.setCurAmt(newCurAmt);
 		initMap.replace("initAmt",newInitAmt);
-		System.out.println("开始执行 更新日订单剩余金额，取出的日订单数量为");
+		//System.out.println("开始执行 更新日订单剩余金额，取出的日订单数量为");
 		/*	Map<String,Integer> dayEntrMap = new HashMap<String,Integer>();
 		//dayEntrMap.put("planItemNo",0);*/
 		//allDayItems.stream().filter(e->!"30".equals(e.getStatus())).count();
-		System.out.println(order.getOrderNo()+"开始执行更新日订单剩余金额，取出所有的日订单数量为"+allDayItems.size());
+		//System.out.println(order.getOrderNo()+"开始执行更新日订单剩余金额，取出所有的日订单数量为"+allDayItems.size());
 		if(allDayItems!=null && allDayItems.size()>0){
 			allDayItems.stream().filter(e->!"30".equals(e.getStatus())).forEach(item->{
 				initMap.replace("initAmt",initMap.get("initAmt").subtract(item.getAmt()));
@@ -4690,11 +4690,11 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 					plan.setRemainAmt(initMap.get("initAmt"));
 
 					tOrderDaliyPlanItemMapper.updateDaliyPlanItemByItemNo(plan);
-					System.out.println("更新金额"+plan.getRemainAmt());
+					//System.out.println("更新金额"+plan.getRemainAmt());
 					//dayEntrMap.replace("planItemNo",dayEntrMap.get("planItemNo").intValue()+1);
 			});
 		}
-		System.out.println("更新日订单剩余金额执行完毕");
+		//System.out.println("更新日订单剩余金额执行完毕");
 		if(lastDay!=null && ContentDiffrentUtil.isDiffrent(lastDay,order.getEndDate())){
 			order.setEndDate(lastDay);
 		}

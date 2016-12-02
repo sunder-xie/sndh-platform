@@ -124,7 +124,7 @@ public class TSsmStockServiceImpl implements TSsmStockService {
             }else{
                 ssmStock1.setQty(new BigDecimal("0").subtract(qty));
             }
-            logger.info("奶站："+branchNo+"产品："+matnr+"核减库存数量："+ssmStock1.getQty()+"-"+qty);
+           // logger.info("奶站："+branchNo+"产品："+matnr+"核减库存数量："+ssmStock1.getQty()+"-"+qty);
             return ssmStockMapper.updateStock(ssmStock1);
         }else{
             ssmStock1 = new TSsmStock();
@@ -132,7 +132,7 @@ public class TSsmStockServiceImpl implements TSsmStockService {
             ssmStock1.setMatnr(matnr);
             ssmStock1.setSalesOrg(salesOrg);
             ssmStock1.setQty(new BigDecimal("0").subtract(qty));
-            logger.info("奶站："+branchNo+"--产品："+matnr+"--核减库存数量："+ssmStock1.getQty()+"-"+qty);
+            //logger.info("奶站："+branchNo+"--产品："+matnr+"--核减库存数量："+ssmStock1.getQty()+"-"+qty);
             return ssmStockMapper.insertStock(ssmStock1);
         }
     }
@@ -149,7 +149,7 @@ public class TSsmStockServiceImpl implements TSsmStockService {
             }else{
                 ssmStock1.setTmpQty(new BigDecimal("0").subtract(tmpQty));
             }
-            logger.info("奶站："+branchNo+"产品："+matnr+"拒收复送核减库存数量："+ssmStock1.getTmpQty()+"-"+tmpQty);
+           // logger.info("奶站："+branchNo+"产品："+matnr+"拒收复送核减库存数量："+ssmStock1.getTmpQty()+"-"+tmpQty);
             return ssmStockMapper.updateStock(ssmStock1);
         }else{
             ssmStock1 = new TSsmStock();
@@ -157,7 +157,7 @@ public class TSsmStockServiceImpl implements TSsmStockService {
             ssmStock1.setMatnr(matnr);
             ssmStock1.setSalesOrg(salesOrg);
             ssmStock1.setTmpQty(new BigDecimal("0").subtract(tmpQty));
-            logger.info("奶站："+branchNo+"产品："+matnr+"拒收复送核减库存数量："+ssmStock1.getTmpQty()+"-"+tmpQty);
+            //logger.info("奶站："+branchNo+"产品："+matnr+"拒收复送核减库存数量："+ssmStock1.getTmpQty()+"-"+tmpQty);
             return ssmStockMapper.insertStock(ssmStock1);
         }
     }
