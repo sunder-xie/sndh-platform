@@ -95,8 +95,10 @@
     i.MATNR, ex.SHORT_TXT MATNR_TXT,i.UNIT, i.QTY, i.PRICE, i.AMT, i.REMAIN_AMT, i.STATUS, i.CREATE_AT, i.CREATE_BY, i.CREATE_BY_TXT,
     i.LAST_MODIFIED, i.LAST_MODIFIED_BY, i.LAST_MODIFIED_BY_TXT,i.GIFT_QTY,i.PROMOTION_FLAG
     from t_mst_order_daliy_plan_item i
-		LEFT JOIN t_md_mara_ex ex on i.MATNR = ex.MATNR
+    left JOIN  t_preorder o on i.ORDER_NO = o.ORDER_NO
+    LEFT JOIN t_md_mara_ex ex on i.MATNR = ex.MATNR
     where 1 = 1
+      and o.SALES_ORG = ex.SALES_ORG
       and i.ORDER_NO =#{orderNo,jdbcType=VARCHAR}
      order by i.DISP_DATE desc  , i.REMAIN_AMT asc
   </select>
@@ -1101,8 +1103,10 @@
     i.MATNR, ex.SHORT_TXT MATNR_TXT,i.UNIT, i.QTY, i.PRICE, i.AMT, i.REMAIN_AMT, i.STATUS, i.CREATE_AT, i.CREATE_BY, i.CREATE_BY_TXT,
     i.LAST_MODIFIED, i.LAST_MODIFIED_BY, i.LAST_MODIFIED_BY_TXT,i.GIFT_QTY,i.PROMOTION_FLAG
     from t_mst_order_daliy_plan_item i
+    LEFT JOIN t_preorder o on i.ORDER_NO = o.ORDER_NO
     LEFT JOIN t_md_mara_ex ex on i.MATNR = ex.MATNR
     where 1 = 1
+    and o.SALES_ORG = ex.SALES_ORG
     and i.ORDER_NO =#{orderNo,jdbcType=VARCHAR}
     and (PROMOTION_FLAG is NULL OR PROMOTION_FLAG = '')
     order by i.DISP_DATE asc,i.REMAIN_AMT desc
