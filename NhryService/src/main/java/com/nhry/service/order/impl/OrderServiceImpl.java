@@ -1638,7 +1638,7 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 			goDays = record.getGoDays();
 		}
 		
-		record.setOrderDateEnd(format.format(afterDate(startDate,goDays)));
+		record.setOrderDateEnd(format.format(afterDate(startDate,goDays-1)));
 		record.setContent(null);
 
 		return record;
