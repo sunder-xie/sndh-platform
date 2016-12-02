@@ -22,12 +22,14 @@ public class DateUtil {
 
     public static boolean dateBefore(Date d1,Date d2){
         if(d1!=null && d2!=null){
+            System.out.println("年月日格式前"+d1+"----"+d2);
             SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
             Date date1 = null;
             Date date2 = null;
             try {
                 date1  = format.parse(format.format(d1));
                 date2 = format.parse(format.format(d2));
+                System.out.println("年月日格式后"+date1+"----"+date2);
             } catch (ParseException e) {
                 e.printStackTrace();
             }
@@ -50,7 +52,7 @@ public class DateUtil {
         }
         return d1.after(d2);
     }
-    //获取date 日期的明天
+    //获取date 日期的年月日
     public static Date getYmd(Date today) {
         Calendar calendar = new GregorianCalendar();
         calendar.set(Calendar.YEAR,today.getYear());
