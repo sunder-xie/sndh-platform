@@ -39,12 +39,14 @@ public class DateUtil {
     }
     public static boolean dateAfter(Date d1,Date d2){
         if(d1!=null && d2!=null){
+            System.out.println("年月日格式前"+d1+"----"+d2);
             SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
             Date date1 = null;
             Date date2 = null;
             try {
                 date1  = format.parse(format.format(d1));
                 date2 = format.parse(format.format(d2));
+                System.out.println("年月日格式后"+date1+"----"+date2);
             } catch (ParseException e) {
                 e.printStackTrace();
             }
