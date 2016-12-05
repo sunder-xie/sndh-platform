@@ -2257,21 +2257,30 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 
 	/**
 	 * 订奶计划中 赠品修改配送日期
-	 * @param plan
+	 * @param record
 	 * @return
      */
 	@Override
-	public int uptDispDateProm(TOrderDaliyPlanItem plan) {
-		TOrderDaliyPlanItem oldDay = tOrderDaliyPlanItemMapper.selectByDateAndItemNoAndNo(plan);
-		if(StringUtils.isBlank(oldDay.getPromotionFlag())) {
-			throw new ServiceException(MessageCode.LOGIC_ERROR, "该日计划不是促销产品");
+	public int uptDispDateProm(DaliyPlanEditModel record) {
+		List<TOrderDaliyPlanItem> entries = record.getEntries();
+		if(entries==null || entries.size()==0){throw  new ServiceException(MessageCode.LOGIC_ERROR,"没有日计划行");}
+		try{
+			for(TOrderDaliyPlanItem plan : entries){
+				TOrderDaliyPlanItem oldDay = tOrderDaliyPlanItemMapper.selectByDateAndItemNoAndNo(plan);
+				if(StringUtils.isBlank(oldDay.getPromotionFlag())) {
+					throw new ServiceException(MessageCode.LOGIC_ERROR, "该日计划不是促销产品");
+				}
+				TPromotion prom = promotionService.selectPromotionByPromNo(oldDay.getPromotionFlag());
+				if(prom == null) throw new ServiceException(MessageCode.LOGIC_ERROR,oldDay.getPromotionFlag()+" 该促销号不存在，请维护！");
+				if(DateUtil.dateAfter(plan.getDispDate(),prom.getPlanStopTime())) throw new ServiceException(MessageCode.LOGIC_ERROR,"赠品的配送日期超出促销的截止配送日期");
+				if(DateUtil.dateAfter(prom.getPlanStartTime(),plan.getDispDate())) throw new ServiceException(MessageCode.LOGIC_ERROR,"赠品的配送日期超出促销的开始配送日期");
+				oldDay.setDispDate(plan.getDispDate());
+				tOrderDaliyPlanItemMapper.updateDaliyPlanItem(oldDay);
+			}
+		}catch (Exception e){
+			e.printStackTrace();
+			throw new ServiceException(MessageCode.SERVER_ERROR,e.toString());
 		}
-		TPromotion prom = promotionService.selectPromotionByPromNo(oldDay.getPromotionFlag());
-		if(prom == null) throw new ServiceException(MessageCode.LOGIC_ERROR,oldDay.getPromotionFlag()+" 该促销号不存在，请维护！");
-		if(DateUtil.dateAfter(plan.getDispDate(),prom.getPlanStopTime())) throw new ServiceException(MessageCode.LOGIC_ERROR,"赠品的配送日期超出促销的截止配送日期");
-		if(DateUtil.dateAfter(prom.getPlanStartTime(),plan.getDispDate())) throw new ServiceException(MessageCode.LOGIC_ERROR,"赠品的配送日期超出促销的开始配送日期");
-		oldDay.setDispDate(plan.getDispDate());
-		tOrderDaliyPlanItemMapper.updateDaliyPlanItem(oldDay);
 		return 1;
 	}
 
