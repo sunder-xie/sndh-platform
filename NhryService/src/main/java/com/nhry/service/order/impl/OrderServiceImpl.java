@@ -1164,16 +1164,16 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 				
 				//用掉的钱
 				BigDecimal remain = order.getInitAmt().subtract(order.getCurAmt());
-				order.setInitAmt(remain);
+				order.setInitAmt(useAmt);
 				order.setCurAmt(new BigDecimal("0.00"));
 				
 			}else{//后付款
 				tOrderDaliyPlanItemMapper.updateDaliyPlansToBack(order);
 
 				//用掉的钱
-				BigDecimal remain = order.getInitAmt().subtract(order.getCurAmt());
+				//BigDecimal remain = order.getInitAmt().subtract(order.getCurAmt());
 				//BigDecimal remain = tOrderDaliyPlanItemMapper.getOrderOrderDailyFinishAmtByOrderNo(order.getOrderNo());
-				order.setInitAmt(remain);
+				order.setInitAmt(useAmt);
 				order.setCurAmt(new BigDecimal("0.00"));
 			}
 			//退订日志
