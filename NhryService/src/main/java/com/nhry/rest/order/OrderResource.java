@@ -222,7 +222,7 @@ public class OrderResource extends BaseResource {
 	@Path("/uptDispDateProm")
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
-	@ApiOperation(value = "/recoverDaliyPlan", response = Integer.class, notes = "赠品修改配送日期")
+	@ApiOperation(value = "/uptDispDateProm", response = Integer.class, notes = "赠品修改配送日期")
 	public Response uptDispDateProm(@ApiParam(required=true,name="record",value="系统参数json格式") TOrderDaliyPlanItem plan){
 		return convertToRespModel(MessageCode.NORMAL, null,  orderService.uptDispDateProm(plan));
 	}
