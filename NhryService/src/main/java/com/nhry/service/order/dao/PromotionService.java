@@ -40,4 +40,5 @@ public interface PromotionService {
 	void calculateOrderPromotion(TPreOrder order);
 
 	List<TPromotionModel> selectProCreatOrder(OrderCreateModel record);
+	public TPromotion selectPromotionByPromNoAndItemNo(String entry,String itemNo);
 }
