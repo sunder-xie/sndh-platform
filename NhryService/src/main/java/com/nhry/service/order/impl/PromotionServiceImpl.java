@@ -263,6 +263,7 @@ public class PromotionServiceImpl extends BaseService implements PromotionServic
 		}
  	}
 
+	@Override
 	public TPromotion selectPromotionByPromNoAndItemNo(String promotion, String promItemNo) {
 		TPromotion record = new TPromotion();
 		record.setPromNo(promotion);
