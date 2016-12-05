@@ -322,7 +322,7 @@
     <select id="selectPromotionByPromNoAndItemNo" resultMap="BaseResultMap"
             parameterType="com.nhry.data.order.domain.TPromotion">
         select oi.GOOD_NO ORG_MATNR, oi.ORIG_NUM ORG_QTY, gi.GIFT_NO GIFT_MATNR,gi.GIFT_NUM GIFT_QTY,gi.GIFT_UNIT,
-        p.PROM_NO, p.PROM_DES, p.PROM_TYPE,
+        p.PROM_NO, p.PROM_DES, p.PROM_TYPE,p.PROM_SUB_TYPE,
         p.SALES_ORG, p.SALES_DIST, p.CUSTOMER_TYPE,
         p.PROM_STAT, p.PLAN_START_TIME, p.PLAN_STOP_TIME,
         p.BUY_START_TIME, p.BUY_STOP_TIME, p.BUY_AMT,
