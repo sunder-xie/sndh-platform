@@ -2617,7 +2617,7 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 			//促销判断
 			if(StringUtils.isNotBlank(entry.getPromotion())&&"10".equals(order.getPaymentmethod()))throw new ServiceException(MessageCode.LOGIC_ERROR,"后付款的订单不能参加促销!");
 			//promotionService.calculateEntryPromotion(entry);
-			if(StringUtils.isNotBlank(order.getBranchNo())){
+			if(StringUtils.isNotBlank(order.getBranchNo()) && "20".equals(order.getPaymentmethod())){
 				promotionService.calculateOrderEntryPromotion(entry,entryAmount,order);
 			}
 
