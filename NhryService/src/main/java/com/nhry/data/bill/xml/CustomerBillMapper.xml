@@ -113,6 +113,9 @@
             <if test="custAccAmt != null">
                 CUST_ACC_AMT,
             </if>
+            <if test="discountAmt != null">
+                DISCOUNT_AMT,
+            </if>
             <if test="recvEmp != null">
                 RECV_EMP,
             </if>
@@ -168,6 +171,9 @@
             </if>
             <if test="custAccAmt != null">
                 #{custAccAmt,jdbcType=DECIMAL},
+            </if>
+            <if test="discountAmt != null">
+                #{discountAmt,jdbcType=DECIMAL},
             </if>
             <if test="recvEmp != null">
                 #{recvEmp,jdbcType=VARCHAR},

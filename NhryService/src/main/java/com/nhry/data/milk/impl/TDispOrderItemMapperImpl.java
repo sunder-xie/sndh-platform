@@ -279,5 +279,10 @@ public class TDispOrderItemMapperImpl implements TDispOrderItemMapper
 	public int  selectCountsByOrderNo(String orderNo){
 		return sqlSessionTemplate.selectOne("selectCountsByOrderNo", orderNo);
 	}
-	
+
+	@Override
+	public List<TDispOrderItem> selectItemsByOrgOrderByProm(String orderNo) {
+		return sqlSessionTemplate.selectList("selectItemsByOrgOrderByProm",orderNo);
+	}
+
 }

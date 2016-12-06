@@ -134,4 +134,6 @@ public interface OrderService {
 	int continueOrdeAfterStop2(OrderSearchModel record);
 
 	int uptDispDateProm(DaliyPlanEditModel record);
+
+	int daliyBackAmt(DaliyPlanEditModel record);
 }

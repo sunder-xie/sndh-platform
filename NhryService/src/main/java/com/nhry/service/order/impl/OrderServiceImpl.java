@@ -1105,6 +1105,27 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 		}
 
 		if(order!= null){
+			//判断赠品是否已经配送 或者产生路单
+			List<TDispOrderItem> dispItems = tDispOrderItemMapper.selectItemsByOrgOrderByProm(order.getOrderNo());
+			if(dispItems!=null && dispItems.size()>0){
+				StringBuffer noConfirm = new StringBuffer();
+				StringBuffer confirm = new StringBuffer();
+				dispItems.stream().forEach(item->{
+					if("10".equals(item.getStatus())){
+						noConfirm.append(item.getMatnr()+"产品"+format.format(item.getOrderDate()));
+					}
+					if("20".equals(item.getStatus())){
+						noConfirm.append(item.getMatnr()+"产品"+format.format(item.getOrderDate()));
+					}
+				});
+
+				if(StringUtils.isNotBlank(confirm.toString().trim())){
+					throw new ServiceException(MessageCode.LOGIC_ERROR,confirm+"已经确认了路单，不能退订");
+				}
+				if(StringUtils.isNotBlank(noConfirm.toString().trim())){
+					throw new ServiceException(MessageCode.LOGIC_ERROR,noConfirm+"  已经产生了路单，请先删除路单再退订");
+				}
+			}
 			
 			if("10".equals(order.getPaymentmethod())){
 				if(customerBillMapper.getRecBillByOrderNo(order.getOrderNo())!=null)throw new ServiceException(MessageCode.LOGIC_ERROR,"已经有收款单了，请不要操作，或者去删除收款单!");
@@ -1114,9 +1135,9 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 				if(bill!=null && "10".equals(bill.getStatus())){
 					throw new ServiceException(MessageCode.LOGIC_ERROR,"预付款订单  "+order.getOrderNo()+"  已经有收款单但是还没完成收款，请不要修改订单，或者去删除收款单!");
 				}
-			}
-			
-			if("10".equals(order.getPreorderSource()))throw new ServiceException(MessageCode.LOGIC_ERROR,"暂无法进行此操作，请联系在线客服!");
+				}
+
+				if("10".equals(order.getPreorderSource()))throw new ServiceException(MessageCode.LOGIC_ERROR,"暂无法进行此操作，请联系在线客服!");
 			if(tDispOrderItemMapper.selectCountOfTodayByOrgOrder(order.getOrderNo(), null)>0)throw new ServiceException(MessageCode.LOGIC_ERROR,"此订单，有未确认的路单!请等路单确认后再操作!");
 			
 			order.setBackDate(afterDate(new Date(),0));
@@ -1133,8 +1154,8 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 				tOrderDaliyPlanItemMapper.updateDaliyPlansToBack(order);
 				BigDecimal backAmt = BigDecimal.ZERO;
 				//此为多余的钱，如果是预付款，将存入订户账户
-				if(order.getInitAmt()!=null && "20".equals(order.getPaymentStat())){//已经收款的
-
+				//已经收款的
+				if(order.getInitAmt()!=null && "20".equals(order.getPaymentStat())){
 					if("10".equals(order.getPreorderSource()) || "40".equals(order.getPreorderSource())){
 						if(order.getOnlineInitAmt()!=null){
 							backAmt = backAmt.add(leftAmt.multiply(order.getOnlineInitAmt()).divide(order.getInitAmt(),2));
@@ -1142,6 +1163,9 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 							OperationLogUtil.saveHistoryOperation(order.getOrderNo(),LogType.ORDER,OrderLogEnum.DH_BACK_ORDER,null,null,
 									null,backAmt.toString(),null,null,userSessionService.getCurrentUser(),operationLogMapper);
 						}
+					}else if("70".equals(order.getPreorderSource())){
+						OperationLogUtil.saveHistoryOperation(order.getOrderNo(),LogType.ORDER,OrderLogEnum.JG_BACK_ORDER,null,null,
+								null,backAmt.toString(),null,null,userSessionService.getCurrentUser(),operationLogMapper);
 					}else{
 						backAmt = backAmt.add(leftAmt);
 						TVipAcct ac = new TVipAcct();
@@ -2269,7 +2293,7 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 			for(TOrderDaliyPlanItem plan : entries){
 				TOrderDaliyPlanItem oldDay = tOrderDaliyPlanItemMapper.selectByDateAndItemNoAndNo(plan);
 				TPlanOrderItem item = tPlanOrderItemMapper.selectEntryByEntryNo(oldDay.getItemNo());
-				if(StringUtils.isBlank(oldDay.getPromotionFlag())) {
+				if(StringUtils.isBlank(oldDay.getPromotionFlag()) && oldDay.getGiftQty()==null) {
 					throw new ServiceException(MessageCode.LOGIC_ERROR, "该日计划不是满赠产品");
 				}
 				TPromotion prom = promotionService.selectPromotionByPromNoAndItemNo(oldDay.getPromotionFlag(),item.getPromItemNo());
@@ -2290,6 +2314,47 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 			e.printStackTrace();
 			throw new ServiceException(MessageCode.SERVER_ERROR,e.toString());
 		}
+		return 1;
+	}
+
+	/**
+	 * 日订单 退款
+	 * @param record
+	 * @return
+     */
+	@Override
+	public int daliyBackAmt(DaliyPlanEditModel record){
+		SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
+
+		List<TOrderDaliyPlanItem> entries = record.getEntries();
+		if(entries==null || entries.size()==0){throw  new ServiceException(MessageCode.LOGIC_ERROR,"没有日计划行");}
+		TPreOrder orgOrder = tPreOrderMapper.selectByPrimaryKey(record.getOrderCode());
+		if(orgOrder==null) throw new ServiceException(MessageCode.LOGIC_ERROR,"该订单号不存在");
+
+		if("10".equals(orgOrder.getPaymentmethod())){
+			if(customerBillMapper.getRecBillByOrderNo(orgOrder.getOrderNo())!=null)throw new ServiceException(MessageCode.LOGIC_ERROR,"后付款订单已经有收款单了，请不要修改订单，或者去删除收款单!");
+		}
+		if("20".equals(orgOrder.getPaymentmethod())){
+			TMstRecvBill bill = customerBillMapper.getRecBillByOrderNo(orgOrder.getOrderNo());
+			if(bill!=null && "10".equals(bill.getStatus())){
+				throw new ServiceException(MessageCode.LOGIC_ERROR,"预付款订单  "+orgOrder.getOrderNo()+"  已经有收款单但是还没完成收款，请不要修改订单，或者去删除收款单!");
+			}
+		}
+
+		BigDecimal totalAmt = BigDecimal.ZERO;
+		for(TOrderDaliyPlanItem entry : entries){
+			TOrderDaliyPlanItem oldDay = tOrderDaliyPlanItemMapper.selectByDateAndItemNoAndNo(entry);
+			if(!"10".equals(oldDay.getStatus())){ throw  new ServiceException(MessageCode.LOGIC_ERROR,format.format(entry.getDispDate())+"的日订单不是在订状态，不能退款");}
+			if(StringUtils.isNotBlank(oldDay.getPromotionFlag()) && oldDay.getGiftQty()!=null){ throw  new ServiceException(MessageCode.LOGIC_ERROR,format.format(entry.getDispDate())+"的日订单为赠品，不能退款");}
+			//计算退款金额
+			totalAmt = totalAmt.add(oldDay.getAmt());
+			//将日订单设为停订
+			oldDay.setStatus("30");
+			tOrderDaliyPlanItemMapper.updateDaliyPlanItem(oldDay);
+		}
+		orgOrder.setInitAmt(orgOrder.getInitAmt().subtract(totalAmt));
+		orgOrder.setCurAmt(orgOrder.getCurAmt().subtract(totalAmt));
+		tPreOrderMapper.updateBySelective(orgOrder);
 		return 1;
 	}
 
@@ -6493,6 +6558,7 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 			//如果收款单已存在  获取当时录入的订户余额(因为当时已经将余额扣除了)
 			model.setCustAccAmt(customerBill.getCustAccAmt());
 			model.setSuppAmt(customerBill.getSuppAmt());
+			model.setDiscountAmt(customerBill.getDiscountAmt());
 		}else{
 			BigDecimal acLeftAmt = new BigDecimal("0.00");
 			TVipAcct eac = tVipCustInfoService.findVipAcctByCustNo(order.getMilkmemberNo());
@@ -6505,11 +6571,14 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 				tVipCustInfoService.addVipAcct(ac);
 			}
 			model.setCustAccAmt(acLeftAmt);
-			if(acLeftAmt.compareTo(order.getInitAmt()) == 1){
+			model.setDiscountAmt(order.getDiscountAmt());
+			BigDecimal remainAmt = order.getInitAmt().subtract(order.getDiscountAmt());
+			if(acLeftAmt.compareTo(remainAmt) == 1){
 				model.setSuppAmt(BigDecimal.ZERO);
 			}else{
-				model.setSuppAmt(order.getInitAmt().subtract(acLeftAmt));
+				model.setSuppAmt(remainAmt.subtract(acLeftAmt));
 			}
+
 		}
 
 		BigDecimal totalPrices = new BigDecimal(0);

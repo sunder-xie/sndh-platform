@@ -34,6 +34,16 @@ public class TMstRecvBill implements Serializable {
     private Date lastModified;
     private String lastModifiedBy;
     private String lastModifiedByTxt;
+    private BigDecimal discountAmt;
+
+    public BigDecimal getDiscountAmt() {
+        return discountAmt;
+    }
+
+    public void setDiscountAmt(BigDecimal discountAmt) {
+        this.discountAmt = discountAmt;
+    }
+
     public BigDecimal getSuppAmt() {
         return suppAmt;
     }

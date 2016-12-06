@@ -26,7 +26,7 @@ public interface TDispOrderItemMapper {
     List selectRouteDetailsAllforDeliver(String routeCode);
 	
     int deleteByPrimaryKey(TDispOrderItemKey key);
-    
+    //判断当天日订单是否已经产生路单
     List<TDispOrderItem> selectItemsByOrgOrderAndItemNo(String orderNo, String itemNo, Date date);
     
     int insert(TDispOrderItem record);
@@ -74,4 +74,8 @@ public interface TDispOrderItemMapper {
     List<TDispOrderItem> selectItemsByOrgOrderAndItemNoAndBeforeDate(TDispOrderItem dispItem);
     //该订单下是否有未确认生成的路单产生
     int selectCountsByOrderNo(String orderNo);
+
+    //判断订单中的赠品是否已经产生路单
+    List<TDispOrderItem> selectItemsByOrgOrderByProm(String orderNo);
+
 }
