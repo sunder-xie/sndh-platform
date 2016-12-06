@@ -13,7 +13,7 @@ public interface TSsmSalOrderItemMapper {
     int addSalOrderItem(TSsmSalOrderItems salOrderItems);
     List<TSsmSalOrderItems> selectItemsBySalOrderNo(Map map);
     List<Map<String,String>> findItemsForPI(String orderNo);
-
+    List<Map<String,String>> findDealerItemsForPI(String orderNo);
     int delSalOrderItemsByOrderNo(String orderNo);
     int uptYfrechAndYGrowthByOrderNoAndItemNo(OrderPointModel model);
 

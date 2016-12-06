@@ -33,6 +33,7 @@ import com.nhry.webService.client.businessData.model.Delivery;
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -140,13 +141,16 @@ public class PIRequireOrderServiceImpl implements PIRequireOrderService {
         orderHeader.setVKORG(vkorg);
         orderHeader.setActivityId(activityId);
         TMdBranch branch = branchMapper.getBranchByNo(ssmSalOrder.getBranchNo());
-        List<Map<String, String>> items = tSsmSalOrderItemMapper.findItemsForPI(ssmSalOrder.getOrderNo());
+
+        List<Map<String, String>> items = new ArrayList<Map<String, String>>();
         TMdBranchEx branchEx = branchExMapper.getBranchEx(ssmSalOrder.getBranchNo());
         String lgort = branch.getLgort();
 //        boolean isZy = false;
         if ("02".equals(branch.getBranchGroup())) {
+             items = tSsmSalOrderItemMapper.findDealerItemsForPI(ssmSalOrder.getOrderNo());
             lgort = branchEx.getReslo();
         }else{
+            items = tSsmSalOrderItemMapper.findItemsForPI(ssmSalOrder.getOrderNo());
 //            isZy = true;
             if("40".equals(ssmSalOrder.getPreorderSource())) {
                 orderHeader.setKUNWE2(EnvContant.getSystemConst("online_code"));
