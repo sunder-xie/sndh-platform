@@ -2278,7 +2278,12 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 				if(prom == null) throw new ServiceException(MessageCode.LOGIC_ERROR,oldDay.getPromotionFlag()+" 该促销号不存在，请维护！");
 				if(DateUtil.dateAfter(plan.getDispDate(),prom.getPlanStopTime())) throw new ServiceException(MessageCode.LOGIC_ERROR,"赠品的配送日期超出促销的截止配送日期");
 				if(DateUtil.dateAfter(prom.getPlanStartTime(),plan.getDispDate())) throw new ServiceException(MessageCode.LOGIC_ERROR,"赠品的配送日期超出促销的开始配送日期");
+				//判断这天有没有产生路单
+				if(tDispOrderItemMapper.selectItemsByOrgOrderAndItemNo(plan.getOrderNo(), plan.getItemNo(), plan.getDispDate()).size()>0){
+					throw new ServiceException(MessageCode.LOGIC_ERROR,"该日计划已经生成路单，不可以修改!");
+				}
 				oldDay.setDispDate(plan.getDispDate());
+				oldDay.setReachTimeType(plan.getReachTimeType());
 				tOrderDaliyPlanItemMapper.updateDaliyPlanItem(oldDay);
 			}
 		}catch (Exception e){
