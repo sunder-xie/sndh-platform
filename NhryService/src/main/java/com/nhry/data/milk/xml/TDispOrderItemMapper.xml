@@ -759,4 +759,17 @@
     WHERE
         t.`STATUS` = '10'
   </select>
+
+
+  <select id="selectItemsByOrgOrderByProm" resultMap="BaseResultMap" parameterType="java.lang.String">
+   select
+		i.ORDER_DATE,i.GIFT_FLAG,d.`STATUS`,e.SHORT_TXT MATNR
+    from t_mst_disp_order_item i
+		LEFT JOIN t_preorder o on i.ORG_ORDER_NO = o.ORDER_NO
+        LEFT  JOIN  t_mst_disp_order d on i.ORDER_NO = d.ORDER_NO
+		LEFT JOIN t_md_mara_ex e on i.MATNR = e.MATNR and o.SALES_ORG = e.SALES_ORG
+    WHERE 1=1
+    and i.ORG_ORDER_NO = #{orderNo,jdbcType=VARCHAR}
+    and (i.GIFT_FLAG IS not null OR i.GIFT_FLAG!='')
+  </select>
 </mapper>

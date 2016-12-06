@@ -18,8 +18,17 @@ public class CollectOrderModel {
     private TMdBranch branch;
     private BigDecimal custAccAmt;//订户余额
     private BigDecimal suppAmt;   //应收金额
+    private BigDecimal discountAmt; //优惠金额
     public BigDecimal getCustAccAmt() {
         return custAccAmt;
+    }
+
+    public BigDecimal getDiscountAmt() {
+        return discountAmt;
+    }
+
+    public void setDiscountAmt(BigDecimal discountAmt) {
+        this.discountAmt = discountAmt;
     }
 
     public BigDecimal getSuppAmt() {

@@ -125,6 +125,9 @@ public class CustomerBillServiceImpl implements CustomerBillService {
                 errorContent = orderNo+"该订单已收款";
                 throw new ServiceException(MessageCode.LOGIC_ERROR,errorContent);
             }
+            if(customerBill==null){
+                throw new ServiceException(MessageCode.LOGIC_ERROR,"还没有产生收款单，不能直接收款");
+            }
 
             TSysUser user = userSessionService.getCurrentUser();
             Date date = new Date();
@@ -133,8 +136,8 @@ public class CustomerBillServiceImpl implements CustomerBillService {
             //录入收款信息
                 BigDecimal accAmt = customerBill.getAccAmt();    //已收的订户余额
                 BigDecimal amt = new BigDecimal(cModel.getAmt());//收款金额
-                int com = accAmt.add(amt).compareTo(order.getInitAmt()); // 收款金额 加上已收的余额 与 订单金额比较
-                //如果收款金额 加上已收的余额 大于订单金额 (将多余的钱退回余额)
+                int com = accAmt.add(amt).compareTo(order.getInitAmt().subtract(order.getDiscountAmt())); // 收款金额 加上已收的余额 与 订单金额(减去优惠金额)比较
+                //如果收款金额 加上已收的余额 大于订单金额（减去优惠金额） (将多余的钱退回余额)
                 if(com== 1){
                     //记录收款金额
                     customerBill.setAmt(new BigDecimal(cModel.getAmt()));
@@ -318,6 +321,7 @@ public class CustomerBillServiceImpl implements CustomerBillService {
         customerBill.setOrderNo(orderNo);
        // customerBill.setAmt(order.getInitAmt());
         customerBill.setStatus("10");
+        customerBill.setDiscountAmt(order.getDiscountAmt());
         customerBill.setReceiptNo(PrimaryKeyUtils.generateUuidKey());
         customerBill.setVipCustNo(order.getMilkmemberNo());
         customerBill.setCreateAt(new Date());
@@ -333,15 +337,18 @@ public class CustomerBillServiceImpl implements CustomerBillService {
         //余额大于0  扣除余额
         ac.setVipCustNo(order.getMilkmemberNo());
         customerBill.setCustAccAmt(acLeftAmt);
+        //订单 应该收取金额 = 订单总金额 - 订单折扣
+        BigDecimal remainAmt = order.getInitAmt().subtract(order.getDiscountAmt());
+        customerBill.setDiscountAmt(order.getDiscountAmt());
         //如果余额大于订单金额  则
-        if(acLeftAmt.compareTo(order.getInitAmt()) == 1){
+        if(acLeftAmt.compareTo(remainAmt) == 1){
             customerBill.setAccAmt(order.getInitAmt());
             customerBill.setSuppAmt(BigDecimal.ZERO);
             ac.setAcctAmt(order.getInitAmt().multiply(new BigDecimal(-1)));
         }else{
             ac.setAcctAmt(acLeftAmt.multiply(new BigDecimal(-1)));
             customerBill.setAccAmt(acLeftAmt);
-            customerBill.setSuppAmt(order.getInitAmt().subtract(acLeftAmt));
+            customerBill.setSuppAmt(remainAmt.subtract(acLeftAmt));
         }
           tVipCustInfoService.addVipAcct(ac);
           customerBillMapper.insertCustomerPayment(customerBill);

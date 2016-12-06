@@ -226,6 +226,15 @@ public class OrderResource extends BaseResource {
 	public Response uptDispDateProm(@ApiParam(required=true,name="record",value="系统参数json格式")  DaliyPlanEditModel record){
 		return convertToRespModel(MessageCode.NORMAL, null,  orderService.uptDispDateProm(record));
 	}
+
+	@POST
+	@Path("/daliyBackAmt")
+	@Consumes(MediaType.APPLICATION_JSON)
+	@Produces(MediaType.APPLICATION_JSON)
+	@ApiOperation(value = "/daliyBackAmt", response = Integer.class, notes = "日订单退款")
+	public Response daliyBackAmt(@ApiParam(required=true,name="record",value="系统参数json格式")  DaliyPlanEditModel record){
+		return convertToRespModel(MessageCode.NORMAL, null,  orderService.daliyBackAmt(record));
+	}
 	
 	@POST
 	@Path("/search")

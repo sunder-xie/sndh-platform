@@ -339,6 +339,7 @@ public class PromotionServiceImpl extends BaseService implements PromotionServic
 				if(plan.getItemNo().equals(itemNo)){
 					TPlanOrderItem orgEntry = entryMap.get(plan.getItemNo());
 					
+					if(orgEntry.getGiftQty()==null) break;
 					int totalGift = orgEntry.getGiftQty();
 					if(totalGift<=0)break;
 					
