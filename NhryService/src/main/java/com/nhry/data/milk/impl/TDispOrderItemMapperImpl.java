@@ -13,7 +13,6 @@ import com.nhry.model.milktrans.DispOrderReportEntityModel;
 import com.nhry.model.milktrans.DispOrderReportModel;
 import com.nhry.model.milktrans.UnDeliverProductSearch;
 import com.nhry.service.milk.pojo.TDispOrderChangeItem;
-
 import org.apache.commons.lang3.StringUtils;
 
 import java.math.BigDecimal;
@@ -139,7 +138,7 @@ public class TDispOrderItemMapperImpl implements TDispOrderItemMapper
 		}else{
 			key.setConfirmAmt(entry.getQty().multiply(orgPrice));
 		}
-		if(StringUtils.isBlank(record.getReplaceReason()))key.setReason("");
+		if(StringUtils.isBlank(record.getReason()))key.setReason("");
 		//回瓶规格
 //		if(!record.getMatnr().equals(record.getProductCode())){
 //			if(productMap.containsKey(record.getProductCode())){
