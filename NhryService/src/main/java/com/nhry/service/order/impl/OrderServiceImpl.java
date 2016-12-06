@@ -2270,9 +2270,9 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 				TOrderDaliyPlanItem oldDay = tOrderDaliyPlanItemMapper.selectByDateAndItemNoAndNo(plan);
 				TPlanOrderItem item = tPlanOrderItemMapper.selectEntryByEntryNo(oldDay.getItemNo());
 				if(StringUtils.isBlank(oldDay.getPromotionFlag())) {
-					throw new ServiceException(MessageCode.LOGIC_ERROR, "该日计划不是促销产品");
+					throw new ServiceException(MessageCode.LOGIC_ERROR, "该日计划不是满赠产品");
 				}
-				TPromotion prom = promotionService.selectPromotionByPromNoAndItemNo(oldDay.getPromotionFlag(),item.getItemNo());
+				TPromotion prom = promotionService.selectPromotionByPromNoAndItemNo(oldDay.getPromotionFlag(),item.getPromItemNo());
 				if(StringUtils.isBlank(plan.getDispDateStr())) throw new ServiceException(MessageCode.LOGIC_ERROR,"配送日期不能为空");
 				plan.setDispDate(format.parse(plan.getDispDateStr()));
 				if(prom == null) throw new ServiceException(MessageCode.LOGIC_ERROR,oldDay.getPromotionFlag()+" 该促销号不存在，请维护！");

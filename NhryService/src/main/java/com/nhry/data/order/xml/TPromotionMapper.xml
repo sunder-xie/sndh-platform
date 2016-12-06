@@ -331,8 +331,8 @@
         p.LAST_MODIFIED_BY_TXT,ci.LOW LOW_AMT,oi.DISCOUNT_AMT,oi.ITEM_NO
         from t_promotion p
         left join t_promotion_orig_item oi on p.PROM_NO = oi.PROM_NO
-        left join t_promotion_gift_item gi on p.PROM_NO = gi.PROM_NO
-        left join t_promotion_con_item ci on p.PROM_NO = ci.PROM_NO and  ci.ITEM_NO = oi.ITEM_NO
+        LEFT JOIN t_promotion_gift_item gi ON p.PROM_NO = gi.PROM_NO AND oi.ITEM_NO = gi.ITEM_NO
+        LEFT JOIN t_promotion_con_item ci ON p.PROM_NO = ci.PROM_NO  AND ci.ITEM_NO = oi.ITEM_NO
         <!-- left join t_prom_scope_item si on p.PROM_NO = si.PROM_NO -->
         where 1 = 1
         and p.PROM_NO = #{promNo,jdbcType=VARCHAR}

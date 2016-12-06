@@ -20,6 +20,7 @@
     <result column="START_DISP_DATE" property="startDispDate" jdbcType="DATE" />
     <result column="END_DISP_DATE" property="endDispDate" jdbcType="DATE" />
     <result column="PROMOTION" property="promotion" jdbcType="VARCHAR" />
+    <result column="PROM_ITEM_NO" property="promItemNo" jdbcType="VARCHAR" />
     <result column="PROM_DAYS" property="promDays" jdbcType="INTEGER" />
     <result column="STATUS" property="status" jdbcType="VARCHAR" />
     <result column="BUY_QTY" property="buyQty" jdbcType="INTEGER" />
@@ -83,7 +84,7 @@
   <sql id="Base_Column_List" >
     ITEM_NO, ORDER_NO, ORDER_DATE, REF_ITEM_NO, NEW_ROW_FLAG, MATNR, UNIT, QTY, SALES_PRICE, 
     RULE_TYPE, DISP_DAYS, GAP_DAYS, RULE_TXT, REACH_TIME_TYPE, START_DISP_DATE, END_DISP_DATE, 
-    PROMOTION, PROM_DAYS, STATUS, BUY_QTY, GIFT_QTY, CREATE_AT, CREATE_BY, CREATE_BY_TXT, 
+    PROMOTION,PROM_ITEM_NO, PROM_DAYS, STATUS, BUY_QTY, GIFT_QTY, CREATE_AT, CREATE_BY, CREATE_BY_TXT,
     LAST_MODIFIED, LAST_MODIFIED_BY, LAST_MODIFIED_BY_TXT
   </sql>
   <select id="selectEntriesQtyByOrderCode" resultType="INTEGER" parameterType="java.lang.String" >
