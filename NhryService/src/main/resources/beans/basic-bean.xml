@@ -175,6 +175,8 @@
 		<property name="vipInfoDataService" ref="piVipInfoDataService"/>
 		<property name="taskExecutor" ref="taskExecutor"/>
 		<property name="operationLogMapper" ref="operationLogMapper"/>
+		<property name="orderOrgService" ref="orderOrgService"/>
+
 	</bean>
 	<bean id="addressMapper" class="com.nhry.data.basic.impl.TMdAddressMapperImpl">
 		<property name="sqlSessionTemplate" ref="dynamicSqlSessionTemplate"></property>
