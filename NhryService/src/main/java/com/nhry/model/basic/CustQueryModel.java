@@ -14,6 +14,7 @@ public class CustQueryModel extends BaseQueryModel {
 	private String startDate;
 	private String endDate;
 	private String content;
+	private String orgId;
 	public String getSalesOrg() {
 		return salesOrg;
 	}
@@ -68,4 +69,6 @@ public class CustQueryModel extends BaseQueryModel {
 	public void setDealerNo(String dealerNo) {
 		this.dealerNo = dealerNo;
 	}
+	public String getOrgId() {return orgId;}
+	public void setOrgId(String orgId) {this.orgId = orgId;}
 }
