@@ -208,7 +208,7 @@
       and STATUS = #{status,jdbcType=VARCHAR}
     </if>
     and DISP_DATE &gt;= #{dispDateStr,jdbcType=DATE}
-    and (PROMOTION_FLAG is NULL OR PROMOTION_FLAG = '')
+    and (GIFT_QTY is NULL OR GIFT_QTY = '')
   </delete>
 
 
@@ -1108,7 +1108,7 @@
     where 1 = 1
     and o.SALES_ORG = ex.SALES_ORG
     and i.ORDER_NO =#{orderNo,jdbcType=VARCHAR}
-    and (PROMOTION_FLAG is NULL OR PROMOTION_FLAG = '')
+    and (GIFT_QTY is NULL OR GIFT_QTY = '')
     order by i.DISP_DATE asc,i.REMAIN_AMT desc
   </select>
 

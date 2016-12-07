@@ -889,6 +889,9 @@
       <if test="payDate != null" >
         PAY_DATE = #{payDate,jdbcType=DATE},
       </if>
+      <if test="payMethod != null" >
+        PAY_METHOD = #{payMethod,jdbcType=VARCHAR},
+      </if>
       <if test="paymentStat != null" >
         PAYMENT_STAT = #{paymentStat,jdbcType=VARCHAR},
       </if>

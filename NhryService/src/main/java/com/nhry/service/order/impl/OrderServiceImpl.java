@@ -2346,6 +2346,11 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 			TOrderDaliyPlanItem oldDay = tOrderDaliyPlanItemMapper.selectByDateAndItemNoAndNo(entry);
 			if(!"10".equals(oldDay.getStatus())){ throw  new ServiceException(MessageCode.LOGIC_ERROR,format.format(entry.getDispDate())+"的日订单不是在订状态，不能退款");}
 			if(StringUtils.isNotBlank(oldDay.getPromotionFlag()) && oldDay.getGiftQty()!=null){ throw  new ServiceException(MessageCode.LOGIC_ERROR,format.format(entry.getDispDate())+"的日订单为赠品，不能退款");}
+			//判断这天有没有产生路单
+			if(tDispOrderItemMapper.selectItemsByOrgOrderAndItemNo(oldDay.getOrderNo(), oldDay.getItemNo(), oldDay.getDispDate()).size()>0){
+				throw new ServiceException(MessageCode.LOGIC_ERROR,"该日计划已经生成路单，不可以退款!");
+			}
+
 			//计算退款金额
 			totalAmt = totalAmt.add(oldDay.getAmt());
 			//将日订单设为停订
@@ -2354,6 +2359,9 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 		}
 		orgOrder.setInitAmt(orgOrder.getInitAmt().subtract(totalAmt));
 		orgOrder.setCurAmt(orgOrder.getCurAmt().subtract(totalAmt));
+		//更新剩余金额
+		List<TOrderDaliyPlanItem> daliys = tOrderDaliyPlanItemMapper.selectDaliyPlansByOrderNo(orgOrder.getOrderNo());
+		calculateDaliyPlanRemainAmt(orgOrder,daliys);
 		tPreOrderMapper.updateBySelective(orgOrder);
 		return 1;
 	}
@@ -7213,6 +7221,8 @@ public static int dayOfTwoDay(Date day1,Date day2) {
    			tOrderDaliyPlanItemMapper.updateDaliyPlanItem(plan);
    			continue;
    		}
+		//TODO  赠品  跳过
+		if(plan.getGiftQty()!=null && plan.getPrice()==null){ continue;}
    		plan.setRemainAmt(initAmt.subtract(plan.getAmt()));
    		initAmt = initAmt.subtract(plan.getAmt());
    		tOrderDaliyPlanItemMapper.updateDaliyPlanItem(plan);
