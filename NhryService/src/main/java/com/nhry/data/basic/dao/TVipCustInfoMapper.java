@@ -81,6 +81,13 @@ public interface TVipCustInfoMapper {
      * @return
      */
     public PageInfo findcustMixedTerms(CustQueryModel cust);
+
+    /**
+     * 机构订户根据混合条件查询订户列表信息
+     * @param cust
+     * @return
+     */
+    public PageInfo findCustByOrgId(CustQueryModel cust);
     
     /**
      * 根据电话号码获取在同一奶站下订户的个数

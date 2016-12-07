@@ -378,6 +378,23 @@ public class TVipCustInfoServiceImpl extends BaseService implements TVipCustInfo
 	}
 
 	@Override
+	public PageInfo findCustByOrgId(CustQueryModel cust) {
+		cust.setSalesOrg(userSessionService.getCurrentUser().getSalesOrg());
+		if(StringUtils.isEmpty(cust.getOrgId())){
+			throw new ServiceException(MessageCode.LOGIC_ERROR, "机构ID不能为空");
+		}
+		if(StringUtils.isEmpty(cust.getStationType()) && !StringUtils.isEmpty(this.userSessionService.getCurrentUser().getDealerId())){
+			//经销商内勤，只能看自己本经销商底下所有的奶站的订户
+			cust.setStationType("02");
+			cust.setDealerNo(this.userSessionService.getCurrentUser().getDealerId());
+		}
+		if(StringUtils.isEmpty(cust.getStation()) && !StringUtils.isEmpty(this.userSessionService.getCurrentUser().getBranchNo())){
+			cust.setStation(this.userSessionService.getCurrentUser().getBranchNo());
+		}
+		return this.tmdVipcust.findCustByOrgId(cust);
+	}
+
+	@Override
 	public String addAddressForCust(TMdAddress address,String branchNo,Map<String,String> maps) {
 		validateAddressData(address);
 		boolean tag = false;
