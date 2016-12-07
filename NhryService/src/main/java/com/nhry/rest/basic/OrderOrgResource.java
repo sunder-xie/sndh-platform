@@ -4,6 +4,7 @@ import com.github.pagehelper.PageInfo;
 import com.nhry.common.exception.MessageCode;
 import com.nhry.data.basic.domain.TMdBranch;
 import com.nhry.data.orderorg.domain.TMdOrderOrg;
+import com.nhry.data.orderorg.domain.TMdOrgCustKey;
 import com.nhry.model.basic.OrderOrgModel;
 import com.nhry.model.sys.ResponseModel;
 import com.nhry.rest.BaseResource;
@@ -69,4 +70,21 @@ public class OrderOrgResource extends BaseResource {
         return convertToRespModel(MessageCode.NORMAL, null,orderOrgService.insertOrderOrg(sModel));
     }
 
+    @POST
+    @Path("/addOrgCust")
+    @Produces(MediaType.APPLICATION_JSON)
+    @Consumes(MediaType.APPLICATION_JSON)
+    @ApiOperation(value = "/addOrgCust", response = ResponseModel.class, notes = "添加机构订户关系")
+    public Response addOrgCust(@ApiParam(required=true,name="orderOrg",value="机构订户关联关系")TMdOrgCustKey sModel) {
+        return convertToRespModel(MessageCode.NORMAL, null,orderOrgService.insertOrgCust(sModel));
+    }
+
+    @POST
+    @Path("/deleteOrgCust")
+    @Produces(MediaType.APPLICATION_JSON)
+    @Consumes(MediaType.APPLICATION_JSON)
+    @ApiOperation(value = "/deleteOrgCust", response = ResponseModel.class, notes = "删除机构订户关联关系")
+    public Response deleteOrgCust(@ApiParam(required=true,name="delorderOrg",value="机构订户关联关系")TMdOrgCustKey sModel) {
+        return convertToRespModel(MessageCode.NORMAL, null,orderOrgService.deleteByPrimaryKey(sModel));
+    }
 }
