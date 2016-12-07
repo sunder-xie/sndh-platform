@@ -172,9 +172,9 @@ public class CustomerBillServiceImpl implements CustomerBillService {
                 customerBill.setStatus("20");
                 updateBill =  customerBillMapper.updateCustomerBillrPayment(customerBill);
 
-        //更新订单状态为已收款
+                 //更新订单状态为已收款
                 //将收款方式记录在订单中
-                order.setPaymentmethod(customerBill.getPaymentType());
+                order.setPayMethod(customerBill.getPaymentType());
                 order.setPayDate(new Date());
                 order.setPaymentStat("20");
                 updateOrderStatus = tPreOrderMapper.updateOrderStatus(order);
