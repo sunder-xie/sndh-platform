@@ -105,6 +105,8 @@ public class TVipCustInfo implements Serializable{
     private String dealerNo;
     
     private String dealerName;
+
+    private String orgId;
     
     private List<TMdAddress> addresses = new ArrayList<TMdAddress>();
 
@@ -523,4 +525,8 @@ public class TVipCustInfo implements Serializable{
     public void setVipMp(String vipMp) {
         this.vipMp = vipMp;
     }
+
+    public String getOrgId() { return orgId;}
+
+    public void setOrgId(String orgId) {this.orgId = orgId; }
 }
