@@ -305,8 +305,12 @@
 	<bean id="orderOrgMapper" class="com.nhry.data.orderorg.impl.TmdOrderOrgMapperImpl">
 		<property name="sqlSessionTemplate" ref="dynamicSqlSessionTemplate"></property>
 	</bean>
+	<bean id="orgCustMapper" class="com.nhry.data.orderorg.impl.TMdOrgCustMapperImpl">
+		<property name="sqlSessionTemplate" ref="dynamicSqlSessionTemplate"></property>
+	</bean>
 	<bean id="orderOrgService" class="com.nhry.service.basic.impl.OrderOrgServiceImpl">
 		<property name="orderOrgMapper" ref="orderOrgMapper"></property>
+		<property name="orgCustMapper" ref="orgCustMapper"></property>
 		<property name="userSessionService" ref="userSessionService"></property>
 	</bean>
 </beans>

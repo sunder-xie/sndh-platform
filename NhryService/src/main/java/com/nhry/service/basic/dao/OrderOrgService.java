@@ -2,7 +2,11 @@ package com.nhry.service.basic.dao;
 
 import com.github.pagehelper.PageInfo;
 import com.nhry.data.orderorg.domain.TMdOrderOrg;
+import com.nhry.data.orderorg.domain.TMdOrgCust;
+import com.nhry.data.orderorg.domain.TMdOrgCustKey;
 import com.nhry.model.basic.OrderOrgModel;
+
+import java.util.List;
 
 /**
  * Created by huaguan on 2016/12/1.
@@ -57,4 +61,25 @@ public interface OrderOrgService {
      * @return
      */
     PageInfo findTMdOrderOrgList(OrderOrgModel record);
+
+    /**
+     * 根据订户编号删除关联机构
+     * @param key
+     * @return
+     */
+    int deleteByPrimaryKey(TMdOrgCustKey key);
+
+    /**
+     * 新增机构-订户关联关系
+     * @param record
+     * @return
+     */
+    int insertOrgCust(TMdOrgCustKey record);
+
+    /**
+     * 根据机构ID查询改机构下关联的订户ID
+     * @param orgId
+     * @return
+     */
+    List<TMdOrgCust> findTMdOrgCustList(String orgId);
 }
