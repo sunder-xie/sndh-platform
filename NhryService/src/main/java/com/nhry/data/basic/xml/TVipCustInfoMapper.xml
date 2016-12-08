@@ -54,7 +54,7 @@
 		<result column="VIP_TYPE_NAME" property="vipTypeName" jdbcType="VARCHAR" />
 		<result column="VIP_MP" property="vipMp" jdbcType="VARCHAR"/>
 		<result column="ORG_ID" property="orgId" jdbcType="VARCHAR"/>
-		<result column="ORG_NAME" property="orgId" jdbcType="VARCHAR"/>
+		<result column="ORG_NAME" property="orgName" jdbcType="VARCHAR"/>
 	</resultMap>
 	<sql id="Base_Column_List">
 		VIP_CUST_NO, VIP_CUST_NO_SAP, SALES_ORG, VIP_NAME,
