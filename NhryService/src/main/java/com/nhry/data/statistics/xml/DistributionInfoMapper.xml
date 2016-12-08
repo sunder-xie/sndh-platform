@@ -23,6 +23,7 @@
         i.MATNR matnr,
         ex.SHORT_TXT shortTxt,
         i.QTY-i.CONFIRM_QTY qty,
+        i.QTY sqty,
         i.ORDER_NO,
         concat(area.RESIDENTIAL_AREA_TXT,ma.ADDRESS_TXT) ADDRESS_TXT
         FROM
