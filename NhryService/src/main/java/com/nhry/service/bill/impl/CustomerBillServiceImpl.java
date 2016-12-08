@@ -30,6 +30,7 @@ import com.nhry.service.external.dao.EcService;
 import com.nhry.service.order.dao.OrderService;
 import com.nhry.service.order.dao.PromotionService;
 import com.nhry.service.pi.dao.PIVipInfoDataService;
+import com.nhry.service.pi.dao.PIVipPointCreateBatService;
 import com.nhry.service.pi.pojo.MemberActivities;
 import com.nhry.utils.OperationLogUtil;
 import com.nhry.utils.PrimaryKeyUtils;
@@ -61,6 +62,11 @@ public class CustomerBillServiceImpl implements CustomerBillService {
     private PIVipInfoDataService piVipInfoDataService;
     private TDispOrderItemMapper tDispOrderItemMapper;
     private TOrderDaliyPlanItemMapper tOrderDaliyPlanItemMapper;
+    private PIVipPointCreateBatService piVipPointCreateBatService;
+
+    public void setPiVipPointCreateBatService(PIVipPointCreateBatService piVipPointCreateBatService) {
+        this.piVipPointCreateBatService = piVipPointCreateBatService;
+    }
 
     public void setOperationLogMapper(TMdOperationLogMapper operationLogMapper) {
         this.operationLogMapper = operationLogMapper;
@@ -229,9 +235,9 @@ public class CustomerBillServiceImpl implements CustomerBillService {
                             if(StringUtils.isNotBlank(item.getCardid())){
                                 item.setCardid("");
                             }
-                            piVipInfoDataService.createMemberActivities(item);
-
+//                            piVipInfoDataService.createMemberActivities(item);
                         }
+                        piVipPointCreateBatService.createMemberActivitiesBat(items);
                     }
 
                 }
@@ -526,11 +532,17 @@ public class CustomerBillServiceImpl implements CustomerBillService {
                         item.setPointtype("YGROWTH");
                         item.setPoints(gRate);
                         //第1遍传成长
-                        piVipInfoDataService.createMemberActivities(item);
+//                        piVipInfoDataService.createMemberActivities(item);
+                        List<MemberActivities> gList = new ArrayList<MemberActivities>();
+                        gList.add(item);
+                        piVipPointCreateBatService.createMemberActivitiesBat(gList);
                         //第2遍传先锋
                         item.setPointtype("YFRESH");
                         item.setPoints(fRate);
-                        piVipInfoDataService.createMemberActivities(item);
+                        List<MemberActivities> fList = new ArrayList<MemberActivities>();
+                        fList.add(item);
+//                        piVipInfoDataService.createMemberActivities(item);
+                        piVipPointCreateBatService.createMemberActivitiesBat(fList);
                     }
                 });
             }

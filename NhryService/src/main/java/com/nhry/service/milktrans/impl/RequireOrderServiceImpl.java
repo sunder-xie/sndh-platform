@@ -808,9 +808,9 @@ public class RequireOrderServiceImpl implements RequireOrderService {
                         TSsmSalOrder prom = null;
                         TSsmSalOrder prom40 = null;
                         TSsmSalOrder noprom40 = null;
-                        noprom40 = gettSsmSalOrder(search, user, itemNo40s, entries, noprom40,"", "40");
-                        prom40 = gettSsmSalOrder(search, user, item40s, entries, prom40,"free", "40");
-                        prom = gettSsmSalOrder(search, user, items, entries, prom,"free", "30");
+                        noprom40 = createSsmSalOrderAndItmes(search, user, itemNo40s, entries, noprom40,"", "40");
+                        prom40 = createSsmSalOrderAndItmes(search, user, item40s, entries, prom40,"free", "40");
+                        prom = createSsmSalOrderAndItmes(search, user, items, entries, prom,"free", "30");
                         //生成 不参加促销
                         if (entries != null && entries.size() > 0) {
                             noprom = createSalOrderByGiOrderMap(entries, user, orderDate);
@@ -837,7 +837,7 @@ public class RequireOrderServiceImpl implements RequireOrderService {
         //如果销售订单已存在，判断是否存在发送成功的 如果有 重新发送，如果没有 则提示已经创建所有的销售订单，请直接查询
     }
 
-    private TSsmSalOrder gettSsmSalOrder(SalOrderDaySearch search, TSysUser user, List<TOrderDaliyPlanItem> item40s, Map<String, Integer> entries, TSsmSalOrder prom40, String free, String preorderSource) {
+    private TSsmSalOrder createSsmSalOrderAndItmes(SalOrderDaySearch search, TSysUser user, List<TOrderDaliyPlanItem> item40s, Map<String, Integer> entries, TSsmSalOrder prom40, String free, String preorderSource) {
         if (item40s != null && item40s.size() > 0) {
             boolean hasCreateOrder = false;
             for (int i = 1; i <= item40s.size(); i++) {

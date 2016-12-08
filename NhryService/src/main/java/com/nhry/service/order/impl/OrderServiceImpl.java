@@ -30,6 +30,7 @@ import com.nhry.service.order.dao.OrderService;
 import com.nhry.service.order.dao.PromotionService;
 import com.nhry.service.order.pojo.OrderRemainData;
 import com.nhry.service.pi.dao.PIVipInfoDataService;
+import com.nhry.service.pi.dao.PIVipPointCreateBatService;
 import com.nhry.service.pi.dao.SmsSendService;
 import com.nhry.service.pi.pojo.MemberActivities;
 import com.nhry.utils.*;
@@ -57,6 +58,7 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 	private EcService messLogService;
 	private CustomerBillMapper customerBillMapper;
 	private PIVipInfoDataService piVipInfoDataService;
+	private PIVipPointCreateBatService piVipPointCreateBatService;
 	private TSsmGiOrderItemMapper tSsmGiOrderItemMapper;
 	private SmsSendService smsSendService;
 	private TDispOrderMapper tDispOrderMapper;
@@ -65,6 +67,10 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 	private TMdMaraExMapper maraExMapper;
 	private TMdBranchEmpMapper branchEmpMapper;
 	private NHSysCodeItemMapper codeItemMapper;
+
+	public void setPiVipPointCreateBatService(PIVipPointCreateBatService piVipPointCreateBatService) {
+		this.piVipPointCreateBatService = piVipPointCreateBatService;
+	}
 
 	public void setCodeItemMapper(NHSysCodeItemMapper codeItemMapper) {
 		this.codeItemMapper = codeItemMapper;
@@ -1252,7 +1258,7 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 					@Override
 					public void run() {
 						super.run();
-						this.setName("minusVipPoint");
+						this.setName("minusVipPoint"+new Date());
 //						BigDecimal gRate = leftAmt.divide(initAmt,2).multiply(new BigDecimal(order.getyGrowth()==null?0:order.getyGrowth()));//成长
 						BigDecimal fRate = leftAmt.divide(initAmt,2).multiply(new BigDecimal(order.getyFresh()==null?0:order.getyFresh()));//鲜峰
 						MemberActivities item = new MemberActivities();
@@ -1272,7 +1278,10 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 						item.setPoints(fRate);
 						item.setAmount(leftAmt);
 						item.setProcess("X");
-						piVipInfoDataService.createMemberActivities(item);
+//						piVipInfoDataService.createMemberActivities(item);
+						List<MemberActivities> list1 = new ArrayList<MemberActivities>();
+						list1.add(item);
+						piVipPointCreateBatService.createMemberActivitiesBat(list1);
 					}
 				});
 			}
