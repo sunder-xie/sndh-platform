@@ -14,6 +14,7 @@ import com.nhry.data.bill.domain.TMstRecvBill;
 import com.nhry.data.bill.domain.TMstRecvOffset;
 import com.nhry.data.bill.domain.TMstRefund;
 import com.nhry.data.milk.dao.TDispOrderItemMapper;
+import com.nhry.data.milk.domain.TDispOrderItem;
 import com.nhry.data.order.dao.TOrderDaliyPlanItemMapper;
 import com.nhry.data.order.dao.TPlanOrderItemMapper;
 import com.nhry.data.order.dao.TPreOrderMapper;
@@ -37,7 +38,9 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.core.task.TaskExecutor;
 
 import java.math.BigDecimal;
+import java.text.SimpleDateFormat;
 import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * Created by gongjk on 2016/6/23.
@@ -440,17 +443,51 @@ public class CustomerBillServiceImpl implements CustomerBillService {
     @Override
     public int customerOffset(String receiptNo) {
         TMstRecvBill  bill = customerBillMapper.getRecBillByReceoptNo(receiptNo);
+        SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
         if("10".equals(bill.getStatus())){
             throw  new ServiceException(MessageCode.LOGIC_ERROR,"该订单还未收款！！！");
         }else if("Y".equals(bill.getHadOffset())){
             throw  new ServiceException(MessageCode.LOGIC_ERROR,"该订单已经冲销过了！！！");
         } else{
+
            /* int orderNum = tDispOrderItemMapper.selectDispOrderNumByPreOrderNo(bill.getOrderNo());
             if(orderNum > 0 ){
                 throw  new ServiceException(MessageCode.LOGIC_ERROR,"该订单已生成了路单，不能冲销！！！");
             }*/
 
             TPreOrder preOrder = tPreOrderMapper.selectByPrimaryKey(bill.getOrderNo());
+            if("20".equals(preOrder.getPaymentmethod())){
+                //查看是否有路单产生
+                TDispOrderItem dispItem = new TDispOrderItem();
+                dispItem.setOrgOrderNo(preOrder.getOrderNo());
+                dispItem.setOrderDate(preOrder.getOrderDate());
+                List<TDispOrderItem> dispItems = tDispOrderItemMapper.selectItemsByOrgOrderAndItemNoAndBeforeDate(dispItem);
+                //有路单 抛出错误信息
+                if(dispItems!=null && dispItems.size()>0){
+                    //confirmlist 过滤只保留已确认的路单
+                    List<TDispOrderItem> confirmlist = dispItems.stream().filter(e -> ("20".equals(e.getStatus()))).collect(Collectors.toList());
+                    //unConist 过滤只保留还未确认的路单
+                    List<TDispOrderItem> unConist = dispItems.stream().filter(e -> ("10".equals(e.getStatus()))).collect(Collectors.toList());
+                    if (confirmlist != null && confirmlist.size() > 0) {
+                        //confirmlist 不为空说明有已确认的路单
+                        StringBuffer mess = new StringBuffer("");
+                        //将所有确认的路单日期取出
+                        confirmlist.stream().forEach(e -> {
+                            mess.append(e.getMatnr()+"产品"+format.format(e.getOrderDate()) + "\n");
+                        });
+                        throw new ServiceException(MessageCode.LOGIC_ERROR, mess + "的路单已经确认，不能冲销");
+                    }else{
+                        if (unConist != null && unConist.size() > 0) {
+                            StringBuffer mess = new StringBuffer("");
+                            unConist.stream().forEach(e -> {
+                                mess.append(e.getMatnr()+"产品"+format.format(e.getOrderDate()) + "\n");
+                            });
+                            throw new ServiceException(MessageCode.LOGIC_ERROR, mess + "的路单已经生成，请删除后再做冲销");
+                        }
+                    }
+                }
+
+            }
             //扣除余额
             if(preOrder.getInitAmt().compareTo(bill.getAmt())!=0){
                 //返回积分
