@@ -889,7 +889,7 @@
 			LEFT JOIN t_md_order_org og on oc.ORG_ID = og.ID
 			WHERE oc.CUST_ID = i.VIP_CUST_NO
 		)
-		ORG_NAME
+		ORG_NAME,
 		(CASE i.DEALER_NO
 			WHEN '-1' THEN '<include refid="mybaties.constant.ownBranch"></include>'
 			ELSE (SELECT d.dealer_name from t_md_dealer d where d.dealer_no=i.DEALER_NO) END) DEALER_NAME
