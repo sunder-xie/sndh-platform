@@ -79,7 +79,9 @@ public interface OrderService {
 	List<TOrderDaliyPlanItem> selectDaliyPlansByOrderNo(String orderCode);
 	
 	void resumeDaliyPlanForRouteOrder(BigDecimal confirmQty,TDispOrderItem entry,TPlanOrderItem orgEntry,Date dispDate);
-	
+
+	void resumeDaliyPlanForRouteOrder2(BigDecimal confirmQty, TDispOrderItem e, TPlanOrderItem entry, Date dispDate);
+
 	List<TOrderDaliyPlanItem> createDaliyPlan(TPreOrder order ,List<TPlanOrderItem> entries);
 	
 	OrderRemainData searchOrderRemainData(String phone);
@@ -136,4 +138,5 @@ public interface OrderService {
 	int uptDispDateProm(DaliyPlanEditModel record);
 
 	int daliyBackAmt(DaliyPlanEditModel record);
+
 }

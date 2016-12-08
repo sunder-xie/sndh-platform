@@ -2,6 +2,7 @@ package com.nhry.data.order.impl;
 
 import com.github.pagehelper.PageInfo;
 import com.nhry.common.datasource.DynamicSqlSessionTemplate;
+import com.nhry.data.milk.domain.TDispOrderItem;
 import com.nhry.data.order.dao.TOrderDaliyPlanItemMapper;
 import com.nhry.data.order.domain.TOrderDaliyPlanItem;
 import com.nhry.data.order.domain.TOrderDaliyPlanItemKey;
@@ -339,6 +340,17 @@ public class TOrderDaliyPlanItemMapperImpl implements TOrderDaliyPlanItemMapper
 	}
 
 	@Override
+	public List<TOrderDaliyPlanItem> selectbyDispLineNo2(String empNo , String date ,String reachTimeType,String branch)
+	{
+		TOrderDaliyPlanItemKey key = new TOrderDaliyPlanItemKey();
+		key.setPlanItemNo(date);
+		key.setItemNo(empNo);
+		key.setOrderNo(reachTimeType);
+		key.setTmpBranch(branch);
+		return sqlSessionTemplate.selectList("selectDaliyPlansByDispNo2", key);
+	}
+
+	@Override
 	public int updateByPrimaryKeySelective(TOrderDaliyPlanItem record)
 	{
 		// TODO Auto-generated method stub
@@ -417,6 +429,26 @@ public class TOrderDaliyPlanItemMapperImpl implements TOrderDaliyPlanItemMapper
 	@Override
 	public int deleteFromDateByStatus(TOrderDaliyPlanItem newplan) {
 		return sqlSessionTemplate.delete("deleteFromDateByStatus",newplan);
+	}
+
+	@Override
+	public TOrderDaliyPlanItem selectDaliyByDispItem(TDispOrderItem entry){
+		TOrderDaliyPlanItem item = new TOrderDaliyPlanItem();
+		item.setItemNo(entry.getOrgItemNo());
+		item.setDispDate(entry.getOrderDate());
+		if("Y".equals(entry.getGiftFlag())){
+			item.setPromotionFlag("Y");
+		}
+		return sqlSessionTemplate.selectOne("selectDaliyByDispItem",entry);
+	}
+
+	@Override
+	public int updateDaliyRemainAmtAfterRouteConfirmBeforDay(Date dispDate, BigDecimal cj, String orderNo) {
+		TOrderDaliyPlanItem item = new TOrderDaliyPlanItem();
+		item.setDispDate(dispDate);
+		item.setAmt(cj);
+		item.setOrderNo(orderNo);
+		return sqlSessionTemplate.update("updateDaliyRemainAmtAfterRouteConfirmBeforDay",item);
 	}
 
 }

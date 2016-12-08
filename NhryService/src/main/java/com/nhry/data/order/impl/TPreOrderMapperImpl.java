@@ -6,15 +6,14 @@ import com.nhry.data.order.dao.TPreOrderMapper;
 import com.nhry.data.order.domain.TPreOrder;
 import com.nhry.model.bill.CustBatchBillQueryModel;
 import com.nhry.model.bill.CustBillQueryModel;
-import com.nhry.model.order.*;
+import com.nhry.model.order.ManHandOrderSearchModel;
+import com.nhry.model.order.OrderPointModel;
+import com.nhry.model.order.OrderSearchModel;
+import com.nhry.model.order.UpdateManHandOrderModel;
 import com.nhry.service.order.pojo.OrderRemainData;
 
 import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
+import java.util.*;
 public class TPreOrderMapperImpl implements TPreOrderMapper
 {
 	private DynamicSqlSessionTemplate sqlSessionTemplate;
@@ -143,7 +142,15 @@ public class TPreOrderMapperImpl implements TPreOrderMapper
 	{
 		return sqlSessionTemplate.selectList("selectDispNoByGroup",branchNo);
 	}
-	
+
+	@Override
+	public List<TPreOrder> selectDispNoByGroup2(String branchNo,Date dispDate)
+	{
+		Map<String,Object> groupMap = new HashMap<String,Object>();
+		groupMap.put("branchNo",branchNo);
+		groupMap.put("dispDate",dispDate);
+		return sqlSessionTemplate.selectList("selectDispNoByGroup2",groupMap);
+	}
 	@Override
 	public int deleteByPrimaryKey(String orderNo)
 	{

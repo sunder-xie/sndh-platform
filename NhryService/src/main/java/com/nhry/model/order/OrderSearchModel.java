@@ -38,11 +38,20 @@ public class OrderSearchModel extends BaseQueryModel implements Serializable {
 	private String dealerNo;
 	private String memoTxt;
 	private Integer goDays;
+	private String onlineSourceType;
 	private ArrayList<String> orders = new ArrayList<String>();
 	private List<String> mps;
 
 	public List<String> getMps() {
 		return mps;
+	}
+
+	public String getOnlineSourceType() {
+		return onlineSourceType;
+	}
+
+	public void setOnlineSourceType(String onlineSourceType) {
+		this.onlineSourceType = onlineSourceType;
 	}
 
 	public void setMps(List<String> mps) {
