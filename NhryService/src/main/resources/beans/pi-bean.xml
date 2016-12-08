@@ -111,4 +111,6 @@
     </bean>
     <jaxws:endpoint implementor="#piPromotionDataService" id="piPromotionDataServiceImpl" address="/promotionDataService"/>
     <bean class="com.nhry.service.pi.impl.SmsSendServiceImpl" id="smsSendService"/>
+    <bean class="com.nhry.service.pi.impl.PIVipPointCreateBatServiceImpl" id="piVipPointCreateBatService">
+    </bean>
 </beans>

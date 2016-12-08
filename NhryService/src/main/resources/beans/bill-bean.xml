@@ -32,7 +32,7 @@
 		<property name="piVipInfoDataService" ref="piVipInfoDataService"></property>
 		<property name="tDispOrderItemMapper" ref="tDispOrderItemMapper"></property>
 		<property name="tOrderDaliyPlanItemMapper" ref="tOrderDaliyPlanItemMapper"></property>
-
+		<property name="piVipPointCreateBatService" ref="piVipPointCreateBatService"/>
 		<property name="operationLogMapper" ref="operationLogMapper"></property>
 	</bean>
 	<!-- 日志-->
