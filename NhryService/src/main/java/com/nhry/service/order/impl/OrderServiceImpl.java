@@ -2497,7 +2497,12 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 			order.setOrderType("20");//订单类型 页面都是线下
 		}
 		if(StringUtils.isBlank(order.getPreorderSource())){
-			order.setPreorderSource("30");//订单来源  页面中来源都是30（奶站） 10电商20征订40牛奶钱包50送奶工APP
+			order.setPreorderSource("30");//订单来源  页面中来源都是30（奶站） 10电商20征订40牛奶钱包50送奶工APP 60 电话 70 机构
+		}
+		if("70".equals(order.getPreorderSource())){
+			if(StringUtils.isBlank(order.getOnlineSourceType())){
+				throw new ServiceException(MessageCode.LOGIC_ERROR,"机构订单，机构编码不能为空");
+			}
 		}
 		if(StringUtils.isBlank(order.getIsIntegration())){
 			order.setIsIntegration("Y");//默认是积分订单
@@ -6454,7 +6459,163 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 			
 		return 1;
 	}
-	
+
+	@Override
+	public void resumeDaliyPlanForRouteOrder2(BigDecimal confirmQty, TDispOrderItem entry, TPlanOrderItem orgEntry, Date dispDate){
+		if("Y".equals(entry.getGiftFlag())){
+			//赠品的，只更新原日计划
+			TOrderDaliyPlanItem promDaliy = tOrderDaliyPlanItemMapper.selectDaliyByDispItem(entry);
+			promDaliy.setMatnr(entry.getConfirmMatnr());
+			promDaliy.setQty(entry.getConfirmQty().intValue());
+			promDaliy.setStatus("20");
+			tOrderDaliyPlanItemMapper.updateDaliyPlanItem(promDaliy);
+			return;
+		}
+
+		TPreOrder orgOrder = tPreOrderMapper.selectByPrimaryKey(orgEntry.getOrderNo());
+
+		if("10".equals(entry.getReason())){
+			//换货的，只更新原日计划
+			TOrderDaliyPlanItem daliy = tOrderDaliyPlanItemMapper.selectDaliyByDispItem(entry);
+			daliy.setMatnr(entry.getConfirmMatnr());
+			daliy.setQty(entry.getConfirmQty().intValue());
+			daliy.setStatus("20");
+			tOrderDaliyPlanItemMapper.updateDaliyPlanItem(daliy);
+			if("10".equals(orgOrder.getPaymentmethod())){
+				orgOrder.setCurAmt(orgOrder.getCurAmt().subtract(entry.getAmt()));
+				tPreOrderMapper.updateOrderCurAmt(orgOrder);
+			}
+
+			return;
+		}
+//		record 路单详细条回执信息
+//		entry 原路单行详细
+//		orgEntry 原订单行
+		SimpleDateFormat format = new SimpleDateFormat("yyyyMMdd");
+
+		//后付款的不需要往后延期,重新计算订单价格
+		if("10".equals(orgOrder.getPaymentmethod())){
+			//更新后付款订单的订单金额和剩余金额
+			BigDecimal cj = entry.getAmt().subtract(entry.getConfirmAmt());
+			orgOrder.setInitAmt(orgOrder.getInitAmt().subtract(cj));
+			if(entry.getConfirmAmt().floatValue() == 0){
+				orgOrder.setCurAmt(orgOrder.getCurAmt().subtract(entry.getAmt()));
+			}else{
+				orgOrder.setCurAmt(orgOrder.getCurAmt().subtract(cj).subtract(entry.getConfirmAmt()));
+			}
+			tPreOrderMapper.updateOrderCurAmtAndInitAmt(orgOrder);
+
+			//更新这天之前的日订单 每天的剩余金额 更新为 remainAmt = remainAmt - cj
+			tOrderDaliyPlanItemMapper.updateDaliyRemainAmtAfterRouteConfirmBeforDay(dispDate,cj,orgOrder.getOrderNo());
+			//更新这天的日订单的剩余金额和状态，（不更新赠品的剩余金额）
+			TOrderDaliyPlanItem daliy = tOrderDaliyPlanItemMapper.selectDaliyByDispItem(entry);
+			daliy.setMatnr(entry.getConfirmMatnr());
+			daliy.setQty(entry.getConfirmQty().intValue());
+			daliy.setStatus("20");
+			daliy.setAmt(entry.getConfirmAmt());
+			if(entry.getConfirmAmt().compareTo(BigDecimal.ZERO)==0){
+				daliy.setRemainAmt(daliy.getRemainAmt());
+			}else{
+				daliy.setRemainAmt(daliy.getRemainAmt().subtract(cj));
+			}
+			tOrderDaliyPlanItemMapper.updateDaliyPlanItem(daliy);
+			return;
+		}
+		//预付款的订单
+		ArrayList<TOrderDaliyPlanItem> daliyPlans = (ArrayList<TOrderDaliyPlanItem>) tOrderDaliyPlanItemMapper.selectDaliyPlansByOrderNoAsc(orgEntry.getOrderNo());
+		int daliyEntryNo = tOrderDaliyPlanItemMapper.selectMaxDaliyPlansNoByOrderNo(orgEntry.getOrderNo()) + 1;
+
+		int lackQty = entry.getQty().intValue() - confirmQty.intValue();
+
+		//生成该新的一条每日计划
+		TOrderDaliyPlanItem plan = new TOrderDaliyPlanItem();
+		plan.setOrderNo(orgEntry.getOrderNo());//订单编号
+		plan.setOrderDate(orgEntry.getOrderDate());//订单日期
+		plan.setPlanItemNo(String.valueOf(daliyEntryNo));//预订单计划行项
+		plan.setItemNo(orgEntry.getItemNo());//预订单日计划行
+//		plan.setDispDate(today);//配送日期
+		plan.setReachTimeType(orgEntry.getReachTimeType());//送达时段类型
+		plan.setMatnr(entry.getMatnr());//产品编号
+//		plan.setUnit(orgEntry.getUnit());//配送单位
+		plan.setQty(lackQty);//产品数量
+		plan.setPrice(entry.getPrice());//产品价格
+		//日计划行金额和
+		BigDecimal qty = new BigDecimal(String.valueOf(lackQty));
+		plan.setAmt(plan.getPrice().multiply(qty));//金额小计
+//		plan.setRemainAmt();//订单余额
+		plan.setStatus("10");//状态
+		plan.setCreateAt(new Date());//创建时间
+		plan.setCreateBy(userSessionService.getCurrentUser().getLoginName());//创建人
+		plan.setCreateByTxt(userSessionService.getCurrentUser().getDisplayName());//创建人姓名
+
+		//判断是按周期送还是按星期送
+		Date lastDate = dispDate;
+		for(TOrderDaliyPlanItem item :daliyPlans){
+			if(item.getItemNo().equals(orgEntry.getItemNo())){
+				lastDate = lastDate.after(item.getDispDate())?lastDate : item.getDispDate();
+				//同时更新今天的日计划
+				if(format.format(item.getDispDate()).equals(format.format(dispDate)) && item.getGiftQty()==null){
+					item.setQty(confirmQty.intValue());
+					item.setAmt(item.getPrice().multiply(confirmQty) );
+				}
+			}
+		}
+
+		//判断哪天送
+		if("10".equals(orgEntry.getRuleType())){
+			int gapDays = orgEntry.getGapDays() + 1;//间隔天数
+			for(int i=1;i<3650;i++){
+				Date today = afterDate(lastDate,i);
+				if(i%gapDays !=0){
+					if(orgEntry.getRuleTxt()!=null){
+						List<String> deliverDays = Arrays.asList(orgEntry.getRuleTxt().split(","));
+						if(!deliverDays.contains(getWeek(today))){
+							continue;
+						}
+					}
+				}
+				plan.setDispDate(today);
+				break;
+			}
+		}
+		else if("20".equals(orgEntry.getRuleType())){
+			List<String> deliverDays = Arrays.asList(orgEntry.getRuleTxt().split(","));
+			for(int i=1;i<3650;i++){
+				Date today = afterDate(lastDate,i);
+				String weekday = getWeek(today);
+				if(deliverDays.contains(weekday)){
+					plan.setDispDate(today);
+					break;
+				}
+			}
+		}
+
+		tOrderDaliyPlanItemMapper.insert(plan);
+		daliyPlans.add(plan);
+
+		//日期排序完
+		daliyPlans.sort(new Comparator<TOrderDaliyPlanItem>(){
+			@Override
+			public int compare(TOrderDaliyPlanItem o1, TOrderDaliyPlanItem o2)
+			{
+				if(o1.getDispDate().before(o2.getDispDate()))
+				{
+					return -1;
+				}else{
+					return  1;
+				}
+			}
+		});
+
+		//订单截止日期修改
+		orgOrder.setEndDate(daliyPlans.get(daliyPlans.size()-1).getDispDate());
+		tPreOrderMapper.updateOrderEndDate(orgOrder);
+
+		calculateDaliyPlanRemainAmtAfterUptRoute(daliyPlans,orgOrder,dispDate,orgEntry);
+
+	}
+
+
 	/* (non-Javadoc) 
 	* @title: resumeDaliyPlanForRouteOrder
 	* @description: 路单回执后，会关联修改日计划

@@ -1,6 +1,7 @@
 package com.nhry.data.order.dao;
 
 import com.github.pagehelper.PageInfo;
+import com.nhry.data.milk.domain.TDispOrderItem;
 import com.nhry.data.order.domain.TOrderDaliyPlanItem;
 import com.nhry.data.order.domain.TOrderDaliyPlanItemKey;
 import com.nhry.data.order.domain.TPreOrder;
@@ -36,6 +37,7 @@ public interface TOrderDaliyPlanItemMapper {
     BigDecimal selectDaliyPlansRemainAmt(TOrderDaliyPlanItemKey record);
 
     List<TOrderDaliyPlanItem> selectbyDispLineNo(String empNo , String date,String reachTimeType,String branch);
+    List<TOrderDaliyPlanItem> selectbyDispLineNo2(String empNo , String date,String reachTimeType,String branch);
 
     int updateByPrimaryKeySelective(TOrderDaliyPlanItem record);
 
@@ -132,4 +134,7 @@ public interface TOrderDaliyPlanItemMapper {
 
     int deleteFromDateByStatus(TOrderDaliyPlanItem newplan);
 
+    TOrderDaliyPlanItem selectDaliyByDispItem(TDispOrderItem entry);
+
+    int  updateDaliyRemainAmtAfterRouteConfirmBeforDay(Date dispDate, BigDecimal cj, String orderNo);
 }

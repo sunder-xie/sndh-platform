@@ -186,6 +186,23 @@
      </if>
   </select>
 
+  <select id="selectDaliyPlansByDispNo2" resultMap="BaseResultMap" parameterType="com.nhry.data.order.domain.TOrderDaliyPlanItemKey" >
+    select
+    d.ORDER_NO, d.ORDER_DATE, d.PLAN_ITEM_NO, d.ITEM_NO, d.DISP_DATE, d.REACH_TIME, d.REACH_TIME_TYPE,
+    d.MATNR, d.UNIT, d.QTY, d.PRICE, d.AMT, d.REMAIN_AMT, d.STATUS, d.CREATE_AT, d.CREATE_BY, o.ADRESS_NO CREATE_BY_TXT,
+    d.LAST_MODIFIED, d.LAST_MODIFIED_BY,o.emp_no LAST_MODIFIED_BY_TXT,d.GIFT_QTY
+    from t_mst_order_daliy_plan_item d
+    left join t_preorder o on o.order_no = d.order_no
+    where d.disp_date = #{planItemNo,jdbcType=DATE}
+    and o.emp_no = #{itemNo,jdbcType=VARCHAR}
+    and o.branch_no = #{tmpBranch,jdbcType=VARCHAR}
+    and d.reach_time_type = #{orderNo,jdbcType=VARCHAR}
+    and d.status ='10'
+    <if test="orderNos!=null">
+      and LOCATE(o.ORDER_NO,<foreach item="order" collection="orderNos" separator="," open="'" close="'" index="">${orderNos}</foreach>)>0
+    </if>
+  </select>
+
   <delete id="deleteFromDateToDate" parameterType="com.nhry.data.order.domain.TOrderDaliyPlanItem" >
     delete from t_mst_order_daliy_plan_item
     where ORDER_NO = #{orderNo,jdbcType=VARCHAR}
@@ -1141,5 +1158,37 @@
     AND i.`STATUS` = '10'
   </select>
 
+  <select id="selectDaliyByDispItem" resultMap="BaseResultMap" parameterType="com.nhry.data.order.domain.TOrderDaliyPlanItem" >
+    select
+    <include refid="Base_Column_List" />
+    from t_mst_order_daliy_plan_item
+    where 1 = 1
+   <if test="orderNo!=null">
+     and ORDER_NO = #{orderNo,jdbcType=VARCHAR}
+   </if>
+    <if test="itemNo!=null">
+      and ITEM_NO = #{itemNo,jdbcType=VARCHAR}
+    </if>
+    <if test="dispDate!=null">
+      and DISP_DATE = #{dispDate,jdbcType=DATE}
+    </if>
+    <choose>
+        <when test="promotionFlag!=null">
+          and (GIFT_QTY is not null  OR GIFT_QTY!='')
+        </when>
+        <otherwise>
+          and (GIFT_QTY is  null  OR GIFT_QTY='')
+        </otherwise>
+    </choose>
+    order by DISP_DATE asc  , REMAIN_AMT desc
+  </select>
 
+
+  <update id="updateDaliyRemainAmtAfterRouteConfirmBeforDay" parameterType="com.nhry.data.order.domain.TOrderDaliyPlanItem" >
+    update t_mst_order_daliy_plan_item
+    SET  REMAIN_AMT = REMAINT_AMT - #{amt,jdbcType=DECIMAL}
+    where ORDER_NO = #{orderNo,jdbcType=VARCHAR}
+    and DISP_DATE &lt; #{dispDate,jdbcType=DATE}
+    and (GIFT_QTY IS  NOT NULL OR GIFT_QTY!='')
+  </update>
 </mapper>
