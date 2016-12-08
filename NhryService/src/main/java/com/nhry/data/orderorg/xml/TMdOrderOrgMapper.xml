@@ -37,6 +37,13 @@
     AND (i.ORG_NAME like '%${queryTxt}%' or i.ORG_CODE like '%${queryTxt}%' and i.TEL like '%${queryTxt}%' and i.MP like '%${queryTxt}%')
     </if>
   </select>
+  <select id="findOrderOrgListForSelect" resultMap="BaseResultMap" parameterType="java.lang.String">
+    SELECT
+    i.ID,i.ORG_NAME,i.ORG_CODE
+    FROM
+    t_md_order_org i
+    WHERE i.SALES_ORG =#{salesOrg,jdbcType=VARCHAR}
+  </select>
   <delete id="deleteOrderOrgByPrimaryKey" parameterType="com.nhry.model.basic.OrderOrgModel" >
     delete from t_md_order_org
     where ID = #{id,jdbcType=VARCHAR}
