@@ -20,4 +20,6 @@ public interface TMdOrderOrgMapper {
     int updateOrderOrgByPrimaryKey(TMdOrderOrg record);
 
     PageInfo findTMdOrderOrgList(OrderOrgModel smodel);
+
+    List<TMdOrderOrg> findOrderOrgListForSelect(String salesOrg);
 }

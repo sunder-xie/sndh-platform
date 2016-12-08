@@ -63,6 +63,11 @@ public interface OrderOrgService {
     PageInfo findTMdOrderOrgList(OrderOrgModel record);
 
     /**
+     * 根据当前销售组织查询机构名称、机构代码
+     * @return
+     */
+    List<TMdOrderOrg> findOrderOrgListForSelect();
+    /**
      * 根据订户编号删除关联机构
      * @param key
      * @return
@@ -82,4 +87,5 @@ public interface OrderOrgService {
      * @return
      */
     List<TMdOrgCust> findTMdOrgCustList(String orgId);
+
 }

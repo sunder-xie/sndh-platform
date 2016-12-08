@@ -52,4 +52,14 @@ public class TmdOrderOrgMapperImpl implements TMdOrderOrgMapper {
     public PageInfo findTMdOrderOrgList(OrderOrgModel smodel) {
         return sqlSessionTemplate.selectListByPages("findTMdOrderOrgList",smodel,Integer.parseInt(smodel.getPageNum()), Integer.parseInt(smodel.getPageSize()));
     }
+
+    /**
+     * 通过组织机构查询机构名称、机构代码
+     * @param salesOrg
+     * @return
+     */
+    @Override
+    public List<TMdOrderOrg> findOrderOrgListForSelect(String salesOrg) {
+        return sqlSessionTemplate.selectList("findOrderOrgListForSelect",salesOrg);
+    }
 }
