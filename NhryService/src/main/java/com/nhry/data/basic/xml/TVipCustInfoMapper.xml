@@ -53,6 +53,8 @@
 		<result column="VIP_SRC_NAME" property="vipSrcName" jdbcType="VARCHAR" />
 		<result column="VIP_TYPE_NAME" property="vipTypeName" jdbcType="VARCHAR" />
 		<result column="VIP_MP" property="vipMp" jdbcType="VARCHAR"/>
+		<result column="ORG_ID" property="orgId" jdbcType="VARCHAR"/>
+		<result column="ORG_NAME" property="orgId" jdbcType="VARCHAR"/>
 	</resultMap>
 	<sql id="Base_Column_List">
 		VIP_CUST_NO, VIP_CUST_NO_SAP, SALES_ORG, VIP_NAME,
@@ -872,12 +874,16 @@
 		i.LAST_MODIFIED_BY_TXT,
 		i.MEMO_TXT,
 		i.DISP_MEMO_TXT,
-		b.BRANCH_NAME,i.BRANCH_NO,i.DEALER_NO,(CASE i.DEALER_NO
+		b.BRANCH_NAME,i.BRANCH_NO,i.DEALER_NO,
+		oc.ORG_ID,og.ORG_NAME,
+		(CASE i.DEALER_NO
 			WHEN '-1' THEN '<include refid="mybaties.constant.ownBranch"></include>'
 			ELSE (SELECT d.dealer_name from t_md_dealer d where d.dealer_no=i.DEALER_NO) END) DEALER_NAME
 		from t_vip_cust_info i
 		LEFT JOIN T_MD_BRANCH b ON b.BRANCH_NO = i.BRANCH_NO
 		LEFT JOIN t_md_residential_area a ON a.ID=i.SUBDIST
+		LEFT JOIN t_md_org_cust oc on i.VIP_CUST_NO = oc.CUST_ID
+		LEFT JOIN t_md_order_org og on oc.ORG_ID = og.ID
 			where 1=1
 		     <if test="salesOrg != null and salesOrg !=''">
 		         AND i.SALES_ORG = #{salesOrg} 

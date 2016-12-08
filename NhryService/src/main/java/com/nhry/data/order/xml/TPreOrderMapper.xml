@@ -1049,6 +1049,7 @@
              WHERE  1=1
             and (o.PREORDER_SOURCE='20' OR o.PREORDER_SOURCE ='30' OR  o.PREORDER_SOURCE ='50')
             and (o.PREORDER_STAT = '10' OR o.PREORDER_STAT = '30')
+            and o.INIT_AMT > 0
             <if test="branchNo !=null and branchNo!=''">
               and  o.BRANCH_NO = #{branchNo,jdbcType=VARCHAR}
             </if>

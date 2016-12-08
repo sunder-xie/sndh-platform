@@ -790,6 +790,9 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 			if(bill!=null && "10".equals(bill.getStatus())){
 				throw new ServiceException(MessageCode.LOGIC_ERROR,"预付款订单  "+order.getOrderNo()+"  已经有收款单但是还没完成收款，请不要修改订单，或者去删除收款单!");
 			}
+			if(!"20".equals(order.getPaymentStat())){
+				throw new ServiceException(MessageCode.LOGIC_ERROR,"预付款订单"+order.getOrderNo()+" 还没有收款，不能做长停");
+			}
 		}
 
 		if("10".equals(order.getPreorderSource())){
@@ -937,6 +940,9 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 			TMstRecvBill bill = customerBillMapper.getRecBillByOrderNo(order.getOrderNo());
 			if(bill!=null && "10".equals(bill.getStatus())){
 				throw new ServiceException(MessageCode.LOGIC_ERROR,"预付款订单  "+order.getOrderNo()+"  已经有收款单但是还没完成收款，请不要修改订单，或者去删除收款单!");
+			}
+			if(!"20".equals(order.getPaymentStat())){
+				throw new ServiceException(MessageCode.LOGIC_ERROR,"预付款订单"+order.getOrderNo()+" 还没有收款，不能做停订");
 			}
 		}
 		if("20".equals(order.getSign())){
@@ -1112,10 +1118,10 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 				StringBuffer confirm = new StringBuffer();
 				dispItems.stream().forEach(item->{
 					if("10".equals(item.getStatus())){
-						noConfirm.append(item.getMatnr()+"产品"+format.format(item.getOrderDate()));
+						noConfirm.append(item.getMatnr()+"赠品"+format.format(item.getOrderDate()));
 					}
 					if("20".equals(item.getStatus())){
-						noConfirm.append(item.getMatnr()+"产品"+format.format(item.getOrderDate()));
+						confirm.append(item.getMatnr()+"赠品"+format.format(item.getOrderDate()));
 					}
 				});
 
@@ -4131,6 +4137,13 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 				}
 			}
 		}
+		TPromotion promModel = null;
+		boolean orderPromFlag = false;
+		if(StringUtils.isNotBlank(orgOrder.getPromotion()) && StringUtils.isNotBlank(orgOrder.getPromItemNo())){
+			//订单 整单参加促销  整单满减
+			orderPromFlag = true;
+			promModel = promotionService.selectPromotionByPromNoAndItemNo(orgOrder.getPromotion(),orgOrder.getPromItemNo());
+		}
 		TSysUser user = userSessionService.getCurrentUser();
 		List<TPlanOrderItem> orgEntrys = tPlanOrderItemMapper.selectByOrderCode(orderNo);
 		//日志提前处理
@@ -4193,14 +4206,47 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 									curAllEntry.add(orgEntry);
 									continue;
 								} else {
-									if (StringUtils.isNotBlank(orgEntry.getPromotion()))
-										throw new ServiceException(MessageCode.LOGIC_ERROR, "促销商品行不能更改!");
+								/*	if (StringUtils.isNotBlank(orgEntry.getPromotion()))
+										throw new ServiceException(MessageCode.LOGIC_ERROR, "促销商品行不能更改!");*/
+									//修改前的  行项目是否参加促销标记位 默认没有参加促销
+									boolean itemPromFlag = false;
+									if(StringUtils.isNotBlank(orgEntry.getPromotion()) && StringUtils.isNotBlank(orgEntry.getPromItemNo())){
+										//修改前的  行项目参加了促销，促销标记为改为true
+										itemPromFlag = true;
+										if(itemPromFlag || promModel!=null) throw new ServiceException(MessageCode.LOGIC_ERROR,"一个订单只能参加一个促销");
+										promModel = promotionService.selectPromotionByPromNoAndItemNo(orgEntry.getPromotion(),orgEntry.getItemNo());
+									}
+
 									modiFlag = true;
 									boolean flag = false;
 									//产生路单的订单行 如果有变化  验证信息
 									confirmAllDispDateAfterDate(curEntry,orgEntry, orderNo);
 									//可以修改行项目
 									if (!orgEntry.getMatnr().equals(curEntry.getMatnr())) {//换商品
+										// 如果订单有参加促销
+										if(promModel!=null){
+											/*
+												如果是该订单行参加了促销
+												1.单品满赠  促销订单不能修改产品
+												2.单品满减 促销订单不能修改产品
+											* */
+											if(itemPromFlag){
+												//单品满赠
+												if("Z008".equals(promModel.getPromSubType())){
+													throw new ServiceException(MessageCode.LOGIC_ERROR,"该产品行参加了单品满赠促销，不能修改产品");
+												} else	if("Z015".equals(promModel.getPromSubType())){
+													//单品满减
+													throw new ServiceException(MessageCode.LOGIC_ERROR,"该产品行参加了单品满减促销，不能修改产品");
+												}else{
+													throw new ServiceException(MessageCode.LOGIC_ERROR,"产品行参加了促销，不能更换产品");
+												}
+											}else if (orderPromFlag){
+												//整单满减  促销订单可以修改同价产品
+												if(orgEntry.getSalesPrice().compareTo(curEntry.getSalesPrice())!=0){
+													throw new ServiceException(MessageCode.LOGIC_ERROR,"该订单参加了整单满减促销，只能更换同价产品");
+												}
+											}
+										}
 										flag = true;
 										onlyReachType =false;
 										orgEntry.setMatnr(curEntry.getMatnr());
@@ -4208,12 +4254,37 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 										orgEntry.setUnit(curEntry.getUnit());
 									}
 									if (orgEntry.getQty() != curEntry.getQty()) {//改数量
+										if(promModel!=null){
+											;if(itemPromFlag){
+												/*
+													如果是该订单行参加了促销
+													1.单品满赠  促销订单不能修改配送数量
+													2.单品满减 促销订单不能修改配送数量
+												* */
+												if("Z008".equals(promModel.getPromSubType())){
+													throw new ServiceException(MessageCode.LOGIC_ERROR,"该产品行参加了单品满赠促销，不能修改数量");
+												} else	if("Z015".equals(promModel.getPromSubType())){
+													//单品满减
+													throw new ServiceException(MessageCode.LOGIC_ERROR,"该产品行参加了单品满减促销，不能修改数量");
+												}else{
+													throw new ServiceException(MessageCode.LOGIC_ERROR,"产品行参加了促销，不能修改数量");
+												}
+											}else if(orderPromFlag){
+												//整单满减  促销订单不可以修改配送数量
+													throw new ServiceException(MessageCode.LOGIC_ERROR,"该订单参加了整单满减促销，不能修改数量");
+
+											}
+										}
 										flag = true;
 										onlyReachType =false;
 										orgEntry.setQty(curEntry.getQty());
 									}
+
+
+									boolean sendRuleFlag = false;
 									if (!orgEntry.getRuleType().equals(curEntry.getRuleType())) {//周期变更
 										flag = true;
+										sendRuleFlag = true;
 										onlyReachType =false;
 										orgEntry.setRuleType(curEntry.getRuleType());
 										orgEntry.setGapDays(curEntry.getGapDays());
@@ -4222,11 +4293,13 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 										//相同时判断是周期送还是星期送
 										if ("10".equals(orgEntry.getRuleType()) && (!curEntry.getGapDays().equals(orgEntry.getGapDays()))) {
 											onlyReachType =false;
+											sendRuleFlag = true;
 											flag = true;
 											orgEntry.setGapDays(curEntry.getGapDays());
 											orgEntry.setRuleTxt(curEntry.getRuleTxt());
 										} else if ("20".equals(orgEntry.getRuleType()) && !curEntry.getRuleTxt().equals(orgEntry.getRuleTxt())) {
 											onlyReachType =false;
+											sendRuleFlag = true;
 											flag = true;
 											orgEntry.setRuleTxt(curEntry.getRuleTxt());
 										}
@@ -4240,6 +4313,7 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 									String endstr = format.format(curEntry.getEndDispDate());
 
 									if (!startstr.equals(format.format(orgEntry.getStartDispDate())) || !endstr.equals(format.format(orgEntry.getEndDispDate()))) {
+										sendRuleFlag = true;
 										orgEntry.setStartDispDate(curEntry.getStartDispDate());
 										orgEntry.setEndDispDate(curEntry.getEndDispDate());
 										daliyPlans.stream().filter((e)->"20".equals(e.getStatus())&&e.getItemNo().equals(orgEntry.getItemNo()))
@@ -4250,6 +4324,34 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 										flag = true;
 
 									}
+										/*
+										* 	如果修改了配送规律  修改了日期范围或周期变更
+										*    TODO 参加促销的订单可以修改配送规律(目前不能变更)
+										* */
+									if(sendRuleFlag){
+										if(promModel!=null){
+											//如果参加的是整单促销
+											if(orderPromFlag){
+												//整单满减
+												if("Z016".equals(promModel.getPromSubType())){
+													throw new ServiceException(MessageCode.LOGIC_ERROR,"该订单参加了整单满减促销，不能修改数量");
+												}
+											}
+
+											if(itemPromFlag){
+												//整单满减
+												if("Z008".equals(promModel.getPromSubType())){
+													throw new ServiceException(MessageCode.LOGIC_ERROR,"该订单参加了单品满增促销，不能修改配送日期");
+												}
+												//整单满减
+												if("Z015".equals(promModel.getPromSubType())){
+													throw new ServiceException(MessageCode.LOGIC_ERROR,"该订单参加了单品满减促销，不能修改配送日期");
+												}
+											}
+										}
+									}
+
+
 									if(flag){
 										//删除 订单状态不为20（完结）的日订单-赠品不删
 										TOrderDaliyPlanItem newplan = new TOrderDaliyPlanItem();
