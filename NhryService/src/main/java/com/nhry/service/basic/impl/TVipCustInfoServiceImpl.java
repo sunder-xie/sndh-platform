@@ -6,9 +6,11 @@ import com.nhry.common.exception.ServiceException;
 import com.nhry.data.auth.domain.TSysUser;
 import com.nhry.data.basic.dao.*;
 import com.nhry.data.basic.domain.*;
+import com.nhry.data.orderorg.domain.TMdOrgCustKey;
 import com.nhry.model.basic.CustQueryModel;
 import com.nhry.model.basic.CustStat;
 import com.nhry.service.BaseService;
+import com.nhry.service.basic.dao.OrderOrgService;
 import com.nhry.service.basic.dao.TVipCustInfoService;
 import com.nhry.service.basic.pojo.Addresses;
 import com.nhry.service.pi.dao.PIVipInfoDataService;
@@ -33,6 +35,7 @@ public class TVipCustInfoServiceImpl extends BaseService implements TVipCustInfo
 	private TMdBranchMapper branchMapper;
 	private PIVipInfoDataService vipInfoDataService;
 	private TMdOperationLogMapper operationLogMapper;
+	private OrderOrgService orderOrgService;
 	private static Logger logger = Logger.getLogger(TVipCustInfoServiceImpl.class);
 	public void setTmdVipcust(TVipCustInfoMapper tmdVipcust) {
 		this.tmdVipcust = tmdVipcust;
@@ -48,6 +51,7 @@ public class TVipCustInfoServiceImpl extends BaseService implements TVipCustInfo
 		this.taskExecutor = taskExecutor;
 	}
 
+	public void setOrderOrgService(OrderOrgService orderOrgService) {this.orderOrgService = orderOrgService;}
 	@Override
 	public String addVipCust(TVipCustInfo record) {
 		// TODO Auto-generated method stub
@@ -77,11 +81,19 @@ public class TVipCustInfoServiceImpl extends BaseService implements TVipCustInfo
 				throw new ServiceException(MessageCode.LOGIC_ERROR, "该订户"+vipCustInfo.getVipCustNo()+"对应的订户信息已存在！");
 			}
 		}
+
 		record.setCreateAt(new Date());
 		record.setCreateBy(sysuser.getLoginName());
 		record.setCreateByTxt(sysuser.getDisplayName());
 
 		this.tmdVipcust.addVipCust(record);
+		//如果机构ID传入时不为空，创建该机构与订户的关联关系
+		if(StringUtils.isNotEmpty(record.getOrgId())){
+			TMdOrgCustKey orgCust = new TMdOrgCustKey();
+			orgCust.setCustId(record.getVipCustNo());
+			orgCust.setOrgId(record.getOrgId());
+			orderOrgService.insertOrgCust(orgCust);
+		}
 		if(!StringUtils.isBlank(record.getAddressTxt()) && !StringUtils.isBlank(record.getProvince()) && !StringUtils.isBlank(record.getCity())){
 			TMdAddress address = new TMdAddress();
 			address.setAddressTxt(record.getAddressTxt());
@@ -363,6 +375,23 @@ public class TVipCustInfoServiceImpl extends BaseService implements TVipCustInfo
 		   cust.setStation(this.userSessionService.getCurrentUser().getBranchNo());
 	   }
 	  return this.tmdVipcust.findcustMixedTerms(cust);
+	}
+
+	@Override
+	public PageInfo findCustByOrgId(CustQueryModel cust) {
+		cust.setSalesOrg(userSessionService.getCurrentUser().getSalesOrg());
+		if(StringUtils.isEmpty(cust.getOrgId())){
+			throw new ServiceException(MessageCode.LOGIC_ERROR, "机构ID不能为空");
+		}
+		if(StringUtils.isEmpty(cust.getStationType()) && !StringUtils.isEmpty(this.userSessionService.getCurrentUser().getDealerId())){
+			//经销商内勤，只能看自己本经销商底下所有的奶站的订户
+			cust.setStationType("02");
+			cust.setDealerNo(this.userSessionService.getCurrentUser().getDealerId());
+		}
+		if(StringUtils.isEmpty(cust.getStation()) && !StringUtils.isEmpty(this.userSessionService.getCurrentUser().getBranchNo())){
+			cust.setStation(this.userSessionService.getCurrentUser().getBranchNo());
+		}
+		return this.tmdVipcust.findCustByOrgId(cust);
 	}
 
 	@Override

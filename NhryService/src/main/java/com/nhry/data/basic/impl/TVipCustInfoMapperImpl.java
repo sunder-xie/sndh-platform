@@ -84,6 +84,11 @@ public class TVipCustInfoMapperImpl implements TVipCustInfoMapper {
 	}
 
 	@Override
+	public PageInfo findCustByOrgId(CustQueryModel cust) {
+		return sqlSessionTemplate.selectListByPages("findCustByOrgId",cust, Integer.parseInt(cust.getPageNum()), Integer.parseInt(cust.getPageSize()));
+	}
+
+	@Override
 	public int getCustCountByPhone(Map<String, String> attrs) {
 		// TODO Auto-generated method stub
 		return this.sqlSessionTemplate.selectOne("getCustCountByPhone", attrs);

@@ -22,8 +22,10 @@
         END reason,
         i.MATNR matnr,
         ex.SHORT_TXT shortTxt,
-        i.CONFIRM_QTY qty,
-        i.ORDER_NO
+        i.QTY-i.CONFIRM_QTY qty,
+        i.QTY sqty,
+        i.ORDER_NO,
+        concat(area.RESIDENTIAL_AREA_TXT,ma.ADDRESS_TXT) ADDRESS_TXT
         FROM
         t_mst_disp_order_item i
         JOIN t_mst_disp_order o ON i.ORDER_NO = o.ORDER_NO
@@ -50,10 +52,12 @@
             AND b.SALES_ORG = #{salesOrg,jdbcType=VARCHAR}
         </if>
         LEFT JOIN t_preorder p ON p.ORDER_NO = i.ORG_ORDER_NO
+        LEFT JOIN t_md_address ma on ma.ADDRESS_ID = p.ADRESS_NO
+        LEFT JOIN t_md_residential_area area on area.ID = ma.RESIDENTIAL_AREA
         LEFT JOIN t_vip_cust_info f ON f.VIP_CUST_NO = p.MILKMEMBER_NO
         LEFT JOIN t_md_branch_emp e ON e.EMP_NO = o.DISP_EMP_NO
         LEFT JOIN t_md_mara_ex ex on ex.matnr = i.matnr AND ex.SALES_ORG = b.SALES_ORG
         ORDER BY
-        o.ORDER_DATE
+        o.ORDER_DATE desc
     </select>
 </mapper>

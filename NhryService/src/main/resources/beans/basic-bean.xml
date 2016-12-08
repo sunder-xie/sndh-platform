@@ -175,6 +175,8 @@
 		<property name="vipInfoDataService" ref="piVipInfoDataService"/>
 		<property name="taskExecutor" ref="taskExecutor"/>
 		<property name="operationLogMapper" ref="operationLogMapper"/>
+		<property name="orderOrgService" ref="orderOrgService"/>
+
 	</bean>
 	<bean id="addressMapper" class="com.nhry.data.basic.impl.TMdAddressMapperImpl">
 		<property name="sqlSessionTemplate" ref="dynamicSqlSessionTemplate"></property>
@@ -301,4 +303,16 @@
 		<property name="userSessionService" ref="userSessionService"></property>
 	</bean>
 	<!-- 日志end -->
+	<!--机构 -->
+	<bean id="orderOrgMapper" class="com.nhry.data.orderorg.impl.TmdOrderOrgMapperImpl">
+		<property name="sqlSessionTemplate" ref="dynamicSqlSessionTemplate"></property>
+	</bean>
+	<bean id="orgCustMapper" class="com.nhry.data.orderorg.impl.TMdOrgCustMapperImpl">
+		<property name="sqlSessionTemplate" ref="dynamicSqlSessionTemplate"></property>
+	</bean>
+	<bean id="orderOrgService" class="com.nhry.service.basic.impl.OrderOrgServiceImpl">
+		<property name="orderOrgMapper" ref="orderOrgMapper"></property>
+		<property name="orgCustMapper" ref="orgCustMapper"></property>
+		<property name="userSessionService" ref="userSessionService"></property>
+	</bean>
 </beans>

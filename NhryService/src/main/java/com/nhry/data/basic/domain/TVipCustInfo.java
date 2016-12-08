@@ -108,7 +108,7 @@ public class TVipCustInfo implements Serializable{
 
     private String orgId;
     private String orgName;
-    
+
     private List<TMdAddress> addresses = new ArrayList<TMdAddress>();
 
     public String vipMp;
@@ -543,4 +543,6 @@ public class TVipCustInfo implements Serializable{
     public void setVipMp(String vipMp) {
         this.vipMp = vipMp;
     }
+
+
 }

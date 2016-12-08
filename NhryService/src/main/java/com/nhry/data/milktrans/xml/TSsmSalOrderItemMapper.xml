@@ -103,7 +103,24 @@
         JOIN t_md_mara_ex ex ON m.MATNR = ex.MATNR
         AND m.SALES_ORG = ex.SALES_ORG
     </select>
-
+    <select id="findDealerItemsForPI" resultType="hashmap" parameterType="string">
+        SELECT
+        i.*, ex.WERKS WERKS,
+        ex.RESLO RESLO,
+        i.QTY SUM_QTY,
+        m.BASE_UNIT
+        FROM
+        t_ssm_sal_order_items i
+        JOIN t_ssm_sal_order o ON i.ORDER_DATE = o.ORDER_DATE
+        AND i.ORDER_NO = #{orderNo}
+        AND i.QTY > 0
+        AND i.ORDER_NO = o.ORDER_NO
+        JOIN t_md_branch b ON b.BRANCH_NO = o.BRANCH_NO
+        JOIN t_md_mara m ON m.MATNR = i.MATNR
+        AND m.SALES_ORG = b.SALES_ORG
+        JOIN t_md_mara_ex ex ON m.MATNR = ex.MATNR
+        AND m.SALES_ORG = ex.SALES_ORG
+    </select>
     <select id="selectItemsBySalOrderNo" resultMap="BaseResultMap" parameterType="java.util.Map">
         SELECT
           i.MATNR,ex.SHORT_TXT MATNR_TXT,i.QTY,i.TYPE,i.UNIT

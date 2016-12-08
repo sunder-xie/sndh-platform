@@ -75,7 +75,7 @@ public class VipCustResource extends BaseResource {
 	public Response addVipCust(@ApiParam(required=true,name="cust",value="订户信息对象")TVipCustInfo cust) {
 		return convertToRespModel(MessageCode.NORMAL, null,custService.addVipCust(cust));
 	}
-	
+
 //	@POST
 //	@Path("/find/{phone}")
 //	@Produces(MediaType.APPLICATION_JSON)
@@ -130,7 +130,16 @@ public class VipCustResource extends BaseResource {
 	public Response findcustMixedTerms(@ApiParam(required=true,name="cust",value="订户查询对象") CustQueryModel cust) {
 	  return convertToRespModel(MessageCode.NORMAL, null,custService.findcustMixedTerms(cust));
 	}
-	
+
+	@POST
+	@Path("/find/orgCust")
+	@Produces(MediaType.APPLICATION_JSON)
+	@Consumes(MediaType.APPLICATION_JSON)
+	@ApiOperation(value = "/find/orgCust", response = PageInfo.class, notes = "机构订户-根据奶站编号、征订时间等内容查询订户信息")
+	public Response findCustByOrgId(@ApiParam(required=true,name="cust",value="订户查询对象") CustQueryModel cust) {
+		return convertToRespModel(MessageCode.NORMAL, null,custService.findCustByOrgId(cust));
+	}
+
 	@POST
 	@Path("/find/address/{id}")
 	@Produces(MediaType.APPLICATION_JSON)
