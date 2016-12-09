@@ -34,7 +34,7 @@
     t_md_order_org i
     WHERE i.SALES_ORG =#{salesOrg,jdbcType=VARCHAR}
     <if test="queryTxt != null and queryTxt !=''">
-    AND (i.ORG_NAME like '%${queryTxt}%' or i.ORG_CODE like '%${queryTxt}%' and i.TEL like '%${queryTxt}%' and i.MP like '%${queryTxt}%')
+    AND (i.ORG_NAME like '%${queryTxt}%' or i.ORG_CODE like '%${queryTxt}%' or i.TEL like '%${queryTxt}%' or i.MP like '%${queryTxt}%')
     </if>
   </select>
   <select id="findOrderOrgListForSelect" resultMap="BaseResultMap" parameterType="java.lang.String">
