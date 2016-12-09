@@ -182,7 +182,7 @@
 	 and d.status != "30" 
 	 and d.status != "20"
 	 <if test="orderNos!=null">
-       and LOCATE(o.ORDER_NO,<foreach item="order" collection="orderNos" separator="," open="'" close="'" index="">${orderNos}</foreach>)>0
+       and LOCATE(o.ORDER_NO,<foreach item="order" collection="orderNos" separator="," open="'" close="'" index="">${order}</foreach>)>0
      </if>
   </select>
 
@@ -199,7 +199,7 @@
     and d.reach_time_type = #{orderNo,jdbcType=VARCHAR}
     and d.status ='10'
     <if test="orderNos!=null">
-      and LOCATE(o.ORDER_NO,<foreach item="order" collection="orderNos" separator="," open="'" close="'" index="">${orderNos}</foreach>)>0
+      and LOCATE(o.ORDER_NO,<foreach item="order" collection="orderNos" separator="," open="'" close="'" index="">${order}</foreach>)>0
     </if>
   </select>
 
@@ -1215,7 +1215,7 @@
     where 1=1
     and DISP_DATE = #{dispDate,jdbcType=DATE}
     <if test="itemNos!=null">
-      and LOCATE(ITEM_NO,<foreach item="item" collection="itemNos" separator="," open="'" close="'" index="">${itemNos}</foreach>)>0
+      and LOCATE(ITEM_NO,<foreach item="item" collection="itemNos" separator="," open="'" close="'" index="">${item}</foreach>)>0
     </if>
   </update>
 </mapper>

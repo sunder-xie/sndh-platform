@@ -192,7 +192,7 @@
     and i.DISP_DATE= #{dispDate,jdbcType=DATE}
     and i.`STATUS`='10'
     and (o.PREORDER_STAT != '40' and o.PREORDER_STAT != '20')
-    and LOCATE(o.ORDER_NO,<foreach item="order" collection="orderNos" separator="," open="'" close="'" index="">${orderNos}</foreach>)>0
+    and LOCATE(o.ORDER_NO,<foreach item="order" collection="orderNos" separator="," open="'" close="'" index="">${order}</foreach>)>0
     GROUP BY o.EMP_NO,i.REACH_TIME_TYPE
   </select>
 
@@ -204,7 +204,7 @@
     and o.PREORDER_STAT != '20'
     and o.EMP_NO is not null
     and o.BRANCH_NO = #{branchNo,jdbcType=VARCHAR}
-    and LOCATE(o.ORDER_NO,<foreach item="order" collection="orderNos" separator="," open="'" close="'" index="">${orderNos}</foreach>)>0
+    and LOCATE(o.ORDER_NO,<foreach item="order" collection="orderNos" separator="," open="'" close="'" index="">${order}</foreach>)>0
     UNION
     select distinct o.EMP_NO, o.BRANCH_NO,'20' ORDER_TYPE
     from t_mst_plan_order_item e
@@ -213,7 +213,7 @@
     and o.PREORDER_STAT != '20'
     and o.EMP_NO is not null
     and o.BRANCH_NO = #{branchNo,jdbcType=VARCHAR}
-    and LOCATE(o.ORDER_NO,<foreach item="order" collection="orderNos" separator="," open="'" close="'" index="">${orderNos}</foreach>)>0
+    and LOCATE(o.ORDER_NO,<foreach item="order" collection="orderNos" separator="," open="'" close="'" index="">${order}</foreach>)>0
   </select>
   <delete id="deleteByPrimaryKey" parameterType="java.lang.String" >
     delete from t_preorder
@@ -1572,7 +1572,7 @@
        o.ORDER_NO,o.EMP_NO,e.EMP_NAME
        FROM t_preorder o LEFT JOIN  t_md_branch_emp e on o.EMP_NO = e.EMP_NO
        WHERE
-        LOCATE(o.ORDER_NO,<foreach item="order" collection="orders" separator="," open="'" close="'" index="">${orders}</foreach>)>0
+        LOCATE(o.ORDER_NO,<foreach item="order" collection="orders" separator="," open="'" close="'" index="">${order}</foreach>)>0
      </select>
 
   <select id="selectOrdersNoBillCount" resultType="INTEGER">
