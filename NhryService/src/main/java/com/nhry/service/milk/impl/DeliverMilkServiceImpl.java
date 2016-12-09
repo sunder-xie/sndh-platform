@@ -687,18 +687,8 @@ public class DeliverMilkServiceImpl extends BaseService implements DeliverMilkSe
 
 			OperationLogUtil.saveHistoryOperation(dispOrder.getOrderNo(), LogType.ROUTE_ORDER, RouteLogEnum.CONFIRM_TOUTE,dispOrder.getDispEmpNo()+dispOrder.getDispEmpName(),null,
 					"未确认","确认",null,dispOrder.getDispDate(),userSessionService.getCurrentUser(),operationLogMapper);
-/*			List<String> reasons = new ArrayList<String>();
-			for(TDispOrderItem ereasons : entryList){
-				switch (ereasons.getReason()){
-					case "40":reasons.add(ereasons.getReason());
-						break;
-					case "50":reasons.add(ereasons.getReason());
-						break;
-				}
-			}
-			if(reasons.size()>0){
-				1
-			}*/
+			List<String> noChangeNos = new ArrayList<String>();
+			Map<String,Object> uptMap = new HashMap<String,Object>();
 			for(TDispOrderItem e : entryList){
 				//变化的也更改日计划状态
 				if( (StringUtils.isNotBlank(e.getReason()) && e.getConfirmQty().intValue() < e.getQty().intValue()) || !e.getMatnr().equals(e.getConfirmMatnr())  ){
@@ -713,22 +703,42 @@ public class DeliverMilkServiceImpl extends BaseService implements DeliverMilkSe
 				}else{
 					//没有变化的路单更新日计划状态
 					//更新原订单剩余金额
-					TPlanOrderItem entry = tPlanOrderItemMapper.selectEntryByEntryNo(e.getOrgItemNo());
-
+					//TPlanOrderItem entry = tPlanOrderItemMapper.selectEntryByEntryNo(e.getOrgItemNo());
 					if(e.getGiftFlag()==null){
-						TPreOrder order = tPreOrderMapper.selectByPrimaryKey(entry.getOrderNo());
 						//TPreOrder order = tPreOrderMapper.selectByPrimaryKey(e.getOrgOrderNo());
+					/*	TPreOrder order = tPreOrderMapper.selectByPrimaryKey(e.getOrgOrderNo());
 						order.setCurAmt(order.getCurAmt().subtract(e.getConfirmAmt()));
-						tPreOrderMapper.updateOrderCurAmt(order);
+						tPreOrderMapper.updateOrderCurAmt(order);*/
+						if(uptMap.size()>0){
+							uptMap.replace("orderNo",e.getOrgOrderNo());
+							uptMap.replace("amt",e.getConfirmAmt());
+						}else{
+							uptMap.put("orderNo",e.getOrgOrderNo());
+							uptMap.put("amt",e.getConfirmAmt());
+						}
+						tPreOrderMapper.updateOrderCurAmtByOrderAndAmt(uptMap);
 					}
-					//更新日计划为确认
+					if(!noChangeNos.contains(e.getOrgItemNo())){
+						noChangeNos.add(e.getOrgItemNo());
+					}
+
+					/*//更新日计划为确认
 					record.setOrderNo(e.getOrgOrderNo());
 					record.setDispDate(dispDate);
 					record.setItemNo(e.getOrgItemNo());
 					record.setStatus("20");
-					tOrderDaliyPlanItemMapper.updateDaliyPlanItemStatus(record);
+					tOrderDaliyPlanItemMapper.updateDaliyPlanItemStatus(record);*/
 				}
 			}
+			if(noChangeNos.size()>0){
+				HashMap<String,Object> map = new HashMap<String,Object>();
+				map.put("dispDate",dispDate);
+				map.put("status","20");
+				map.put("itemNos",noChangeNos);
+				tOrderDaliyPlanItemMapper.updateDaliyPlanItemStatusBatch(map);
+			}
+
+
 			//路单更新为已经确认
 			// tDispOrderMapper.updateDispOrderStatus(routeCode,"20");
 			
@@ -1446,7 +1456,9 @@ public class DeliverMilkServiceImpl extends BaseService implements DeliverMilkSe
 
 
 
-			List<TPreOrder> empNos = tPreOrderMapper.selectDispNoByGroupAndOrders(userSessionService.getCurrentUser().getBranchNo(), orderNos);
+			//List<TPreOrder> empNos = tPreOrderMapper.selectDispNoByGroupAndOrders(userSessionService.getCurrentUser().getBranchNo(), orderNos);
+		List<TPreOrder> empNos = tPreOrderMapper.selectDispNoByGroupAndOrders2(user.getBranchNo(),date, orderNos);
+
 			TDispOrder dispOrder = null;
 			List<TDispOrderItem> dispEntries = null;
 			Map<String, String> productMap = productService.getMataBotTypes();
@@ -1457,7 +1469,7 @@ public class DeliverMilkServiceImpl extends BaseService implements DeliverMilkSe
 				int totalQty = 0;
 				BigDecimal totalAmt = new BigDecimal("0.00");
 				//生成一条路线，一个配送时段的路单
-				List<TOrderDaliyPlanItem> daliyPlans = tOrderDaliyPlanItemMapper.selectbyDispLineNoByOrderNos(order.getEmpNo(), format.format(date), order.getOrderType(), userSessionService.getCurrentUser().getBranchNo(), orderNos);
+				List<TOrderDaliyPlanItem> daliyPlans = tOrderDaliyPlanItemMapper.selectbyDispLineNoByOrderNos(order.getEmpNo(), format.format(date), order.getOrderType(), user.getBranchNo(), orderNos);
 				if (daliyPlans == null || daliyPlans.size() <= 0) continue;
 				dispOrder.setOrderNo(PrimaryKeyUtils.generateUuidKey());
 				//对每日计划的统计
@@ -1516,7 +1528,6 @@ public class DeliverMilkServiceImpl extends BaseService implements DeliverMilkSe
 				tDispOrderMapper.insert(dispOrder);
 				if (dispEntries.size() == 0) continue;
 				tDispOrderItemMapper.batchinsert(dispEntries);
-
 			}
 
 			return 1;

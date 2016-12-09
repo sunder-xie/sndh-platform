@@ -329,6 +329,15 @@ public class TPreOrderMapperImpl implements TPreOrderMapper
 		return sqlSessionTemplate.selectList("selectDispNoByGroupAndOrders",map);
 	}
 
+	@Override
+	public List<TPreOrder> selectDispNoByGroupAndOrders2(String branchNo,Date dispDate,List<String> orderNos) {
+		Map<String,Object> map = new HashMap<String,Object>();
+		map.put("branchNo",branchNo);
+		map.put("dispDate",dispDate);
+		map.put("orderNos",orderNos);
+		return sqlSessionTemplate.selectList("selectDispNoByGroupAndOrders2",map);
+	}
+
 
 	/* (non-Javadoc) 
 	* @title: replaceOrdersDispmember
@@ -389,6 +398,12 @@ public class TPreOrderMapperImpl implements TPreOrderMapper
 	@Override
 	public int selectOrdersNoBillCount(String BranchNo){
 		return sqlSessionTemplate.selectOne("selectOrdersNoBillCount", BranchNo);
+	}
+
+	@Override
+	public int updateOrderCurAmtByOrderAndAmt(Map<String, Object> uptMap)
+	{
+		return sqlSessionTemplate.update("updateOrderCurAmtByOrderAndAmt", uptMap);
 	}
 
 	@Override

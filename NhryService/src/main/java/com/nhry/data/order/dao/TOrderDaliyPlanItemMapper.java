@@ -12,6 +12,7 @@ import com.nhry.model.order.OrderSearchModel;
 
 import java.math.BigDecimal;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 
 public interface TOrderDaliyPlanItemMapper {
@@ -137,4 +138,8 @@ public interface TOrderDaliyPlanItemMapper {
     TOrderDaliyPlanItem selectDaliyByDispItem(TDispOrderItem entry);
 
     int  updateDaliyRemainAmtAfterRouteConfirmBeforDay(Date dispDate, BigDecimal cj, String orderNo);
+
+    List<TOrderDaliyPlanItem> selectPromDaliyBetweenDaysAndNo(String orderNo,Date startDate, Date endDate);
+
+    int  updateDaliyPlanItemStatusBatch(HashMap<String, Object> map);
 }
