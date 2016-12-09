@@ -1112,27 +1112,7 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 
 		if(order!= null){
 			//判断赠品是否已经配送 或者产生路单
-			List<TDispOrderItem> dispItems = tDispOrderItemMapper.selectItemsByOrgOrderByProm(order.getOrderNo());
-			if(dispItems!=null && dispItems.size()>0){
-				StringBuffer noConfirm = new StringBuffer();
-				StringBuffer confirm = new StringBuffer();
-				dispItems.stream().forEach(item->{
-					if("10".equals(item.getStatus())){
-						noConfirm.append(item.getMatnr()+"赠品"+format.format(item.getOrderDate()));
-					}
-					if("20".equals(item.getStatus())){
-						confirm.append(item.getMatnr()+"赠品"+format.format(item.getOrderDate()));
-					}
-				});
-
-				if(StringUtils.isNotBlank(confirm.toString().trim())){
-					throw new ServiceException(MessageCode.LOGIC_ERROR,confirm+"已经确认了路单，不能退订");
-				}
-				if(StringUtils.isNotBlank(noConfirm.toString().trim())){
-					throw new ServiceException(MessageCode.LOGIC_ERROR,noConfirm+"  已经产生了路单，请先删除路单再退订");
-				}
-			}
-			
+			backOrderOfProm(order,null);
 			if("10".equals(order.getPaymentmethod())){
 				if(customerBillMapper.getRecBillByOrderNo(order.getOrderNo())!=null)throw new ServiceException(MessageCode.LOGIC_ERROR,"已经有收款单了，请不要操作，或者去删除收款单!");
 			}
@@ -1141,9 +1121,9 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 				if(bill!=null && "10".equals(bill.getStatus())){
 					throw new ServiceException(MessageCode.LOGIC_ERROR,"预付款订单  "+order.getOrderNo()+"  已经有收款单但是还没完成收款，请不要修改订单，或者去删除收款单!");
 				}
-				}
+			}
 
-				if("10".equals(order.getPreorderSource()))throw new ServiceException(MessageCode.LOGIC_ERROR,"暂无法进行此操作，请联系在线客服!");
+			//if("10".equals(order.getPreorderSource()))throw new ServiceException(MessageCode.LOGIC_ERROR,"暂无法进行此操作，请联系在线客服!");
 			if(tDispOrderItemMapper.selectCountOfTodayByOrgOrder(order.getOrderNo(), null)>0)throw new ServiceException(MessageCode.LOGIC_ERROR,"此订单，有未确认的路单!请等路单确认后再操作!");
 			
 			order.setBackDate(afterDate(new Date(),0));
@@ -1285,12 +1265,50 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 	}
 
 	/**
+	 *   如果date为空说明是 订单退订 只需要判断目前赠品是否已产生路单或者已确认 如果有抛出异常
+	 *   如果 date不为空说明为订单提前退订，不仅要判断目前赠品是否已产生路单或者已确认
+	 *      还要判断从今天开始到退订当天之间是否有赠品，如果有提示（将赠品更改配送日期到退订日期之后再做退订）
+	 * @param order 订单
+	 * @param date  提前退订日期
+     */
+	public void backOrderOfProm(TPreOrder order,Date date){
+		SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
+		//首先查看目前路单中是否已经有赠品配送
+		List<TDispOrderItem> dispItems = tDispOrderItemMapper.selectItemsByOrgOrderByProm(order.getOrderNo());
+		if(dispItems!=null && dispItems.size()>0){
+			StringBuffer noConfirm = new StringBuffer();
+			StringBuffer confirm = new StringBuffer();
+			dispItems.stream().forEach(item->{
+				if("10".equals(item.getStatus())){
+					noConfirm.append(item.getMatnr()+"赠品"+format.format(item.getOrderDate()));
+				}
+				if("20".equals(item.getStatus())){
+					confirm.append(item.getMatnr()+"赠品"+format.format(item.getOrderDate()));
+				}
+			});
+			if(StringUtils.isNotBlank(confirm.toString().trim())){
+				throw new ServiceException(MessageCode.LOGIC_ERROR,confirm+"已经确认了路单，不能退订");
+			}
+			if(StringUtils.isNotBlank(noConfirm.toString().trim())){
+				throw new ServiceException(MessageCode.LOGIC_ERROR,noConfirm+"  已经产生了路单，请先删除路单再退订");
+			}
+		}
+
+		if(date!=null){
+			//如果date 不为空表示为提前退订  需要查看从今天开始 到date期间是否有赠品
+			List<TOrderDaliyPlanItem> daliys = tOrderDaliyPlanItemMapper.selectPromDaliyBetweenDaysAndNo(order.getOrderNo(),new Date(),date);
+			if(daliys!=null && daliys.size()>0){
+				throw new ServiceException(MessageCode.LOGIC_ERROR,"从今天到退订那天之间有赠品，您可以将赠品更改配送日期到退订日期之后再做退订！！");
+			}
+		}
+	}
+	/**
 	 * 订单提前退订
 	 * @param record
 	 * @return
      */
 	@Override
-	public int advanceBackOrder(OrderSearchModel record) {
+	public int advanceBackOrder(OrderSearchModel record){
 		System.out.println(record.getOrderNo()+"订单提前退订开始");
 		Date backDate = null;
 		SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
@@ -1328,7 +1346,8 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 
 		if("10".equals(order.getPreorderSource()))throw new ServiceException(MessageCode.LOGIC_ERROR,"暂无法进行此操作，请联系在线客服!");
 		if(tDispOrderItemMapper.selectCountOfTodayByOrgOrder(order.getOrderNo(), backDate)>0)throw new ServiceException(MessageCode.LOGIC_ERROR,"此订单，有退订后未确认的路单!请删除路单后再操作!");
-
+		//判断赠品是否产生路单  或者 从今天开始到退订日期之间是否有赠品日订单
+		backOrderOfProm(order,backDate);
 
 		//第一步 计算退订的金额
 
@@ -1365,6 +1384,9 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 						OperationLogUtil.saveHistoryOperation(order.getOrderNo(),LogType.ORDER,OrderLogEnum.DH_BACK_ORDER,null,null,
 								null,dsBackAmt.toString(),null,null,userSessionService.getCurrentUser(),operationLogMapper);
 					}
+				}else if("70".equals(order.getPreorderSource())){
+					OperationLogUtil.saveHistoryOperation(order.getOrderNo(),LogType.ORDER,OrderLogEnum.JG_BACK_ORDER,null,null,
+							null,null,null,null,userSessionService.getCurrentUser(),operationLogMapper);
 				}else{
 					TVipAcct ac = new TVipAcct();
 					ac.setVipCustNo(order.getMilkmemberNo());

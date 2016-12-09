@@ -68,6 +68,13 @@ public class TOrderDaliyPlanItemMapperImpl implements TOrderDaliyPlanItemMapper
 		// TODO Auto-generated method stub
 		return sqlSessionTemplate.update("updateDaliyPlanItemStatus", record);
 	}
+
+	@Override
+	public int updateDaliyPlanItemStatusBatch(HashMap map)
+	{
+		// TODO Auto-generated method stub
+		return sqlSessionTemplate.update("updateDaliyPlanItemStatusBatch", map);
+	}
 	
 	@Override
 	public int updateDaliyPlanItemRemainAmt(TOrderDaliyPlanItem record)
@@ -451,4 +458,12 @@ public class TOrderDaliyPlanItemMapperImpl implements TOrderDaliyPlanItemMapper
 		return sqlSessionTemplate.update("updateDaliyRemainAmtAfterRouteConfirmBeforDay",item);
 	}
 
+	@Override
+	public List<TOrderDaliyPlanItem> selectPromDaliyBetweenDaysAndNo(String orderNo,Date startDate, Date endDate) {
+		TOrderDaliyPlanItem item = new TOrderDaliyPlanItem();
+		item.setOrderDate(startDate);
+		item.setOrderNo(orderNo);
+		item.setDispDate(endDate);
+		return sqlSessionTemplate.selectList("selectPromDaliyBetweenDaysAndNo",item);
+	}
 }

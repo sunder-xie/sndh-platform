@@ -14,6 +14,7 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 public interface TPreOrderMapper {
 	 List<TPreOrder> searchPrePayOrdersForSendMessage(String endDate);
@@ -119,6 +120,8 @@ public interface TPreOrderMapper {
 
     List<TPreOrder> selectDispNoByGroupAndOrders(String branchNo,List<String> orderNos);
 
+    List<TPreOrder> selectDispNoByGroupAndOrders2(String branchNo,Date dispDate,List<String> orderNos);
+
     PageInfo searchPendingConfirmUnOnline(OrderSearchModel smodel);
 
     PageInfo searchPendingConfirmOnline(OrderSearchModel smodel);
@@ -131,4 +134,6 @@ public interface TPreOrderMapper {
     int selectOrdersNoBillCount(String BranchNo);
     int updateBackOrder(TPreOrder order);
 
+
+    int updateOrderCurAmtByOrderAndAmt(Map<String, Object> uptMap);
 }
