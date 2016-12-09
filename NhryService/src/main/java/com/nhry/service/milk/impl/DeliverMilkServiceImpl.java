@@ -708,37 +708,37 @@ public class DeliverMilkServiceImpl extends BaseService implements DeliverMilkSe
 					//TPlanOrderItem entry = tPlanOrderItemMapper.selectEntryByEntryNo(e.getOrgItemNo());
 					if(e.getGiftFlag()==null){
 						//TPreOrder order = tPreOrderMapper.selectByPrimaryKey(e.getOrgOrderNo());
-					/*	TPreOrder order = tPreOrderMapper.selectByPrimaryKey(e.getOrgOrderNo());
+						TPreOrder order = tPreOrderMapper.selectByPrimaryKey(e.getOrgOrderNo());
 						order.setCurAmt(order.getCurAmt().subtract(e.getConfirmAmt()));
-						tPreOrderMapper.updateOrderCurAmt(order);*/
-						if(uptMap.size()>0){
+						tPreOrderMapper.updateOrderCurAmt(order);
+						/*if(uptMap.size()>0){
 							uptMap.replace("orderNo",e.getOrgOrderNo());
 							uptMap.replace("amt",e.getConfirmAmt());
 						}else{
 							uptMap.put("orderNo",e.getOrgOrderNo());
 							uptMap.put("amt",e.getConfirmAmt());
 						}
-						tPreOrderMapper.updateOrderCurAmtByOrderAndAmt(uptMap);
+						tPreOrderMapper.updateOrderCurAmtByOrderAndAmt(uptMap);*/
 					}
-					if(!noChangeNos.contains(e.getOrgItemNo())){
+				/*	if(!noChangeNos.contains(e.getOrgItemNo())){
 						noChangeNos.add(e.getOrgItemNo());
 					}
-
-					/*//更新日计划为确认
+*/
+					//更新日计划为确认
 					record.setOrderNo(e.getOrgOrderNo());
 					record.setDispDate(dispDate);
 					record.setItemNo(e.getOrgItemNo());
 					record.setStatus("20");
-					tOrderDaliyPlanItemMapper.updateDaliyPlanItemStatus(record);*/
+					tOrderDaliyPlanItemMapper.updateDaliyPlanItemStatus(record);
 				}
 			}
-			if(noChangeNos.size()>0){
+		/*	if(noChangeNos.size()>0){
 				HashMap<String,Object> map = new HashMap<String,Object>();
 				map.put("dispDate",dispDate);
 				map.put("status","20");
 				map.put("itemNos",noChangeNos);
 				tOrderDaliyPlanItemMapper.updateDaliyPlanItemStatusBatch(map);
-			}
+			}*/
 
 			System.out.println("一共耗时"+( System.currentTimeMillis()-sTime));
 			//路单更新为已经确认
