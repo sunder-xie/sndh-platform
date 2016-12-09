@@ -689,6 +689,8 @@ public class DeliverMilkServiceImpl extends BaseService implements DeliverMilkSe
 					"未确认","确认",null,dispOrder.getDispDate(),userSessionService.getCurrentUser(),operationLogMapper);
 			List<String> noChangeNos = new ArrayList<String>();
 			Map<String,Object> uptMap = new HashMap<String,Object>();
+			System.out.println(routeCode+"开始----------------");
+			final long sTime = System.currentTimeMillis();
 			for(TDispOrderItem e : entryList){
 				//变化的也更改日计划状态
 				if( (StringUtils.isNotBlank(e.getReason()) && e.getConfirmQty().intValue() < e.getQty().intValue()) || !e.getMatnr().equals(e.getConfirmMatnr())  ){
@@ -738,7 +740,7 @@ public class DeliverMilkServiceImpl extends BaseService implements DeliverMilkSe
 				tOrderDaliyPlanItemMapper.updateDaliyPlanItemStatusBatch(map);
 			}
 
-
+			System.out.println("一共耗时"+( System.currentTimeMillis()-sTime));
 			//路单更新为已经确认
 			// tDispOrderMapper.updateDispOrderStatus(routeCode,"20");
 			
