@@ -182,6 +182,20 @@
     GROUP BY o.EMP_NO,i.REACH_TIME_TYPE
   </select>
 
+  <select id="selectDispNoByGroupAndOrders2" resultMap="BaseResultMap" parameterType="java.util.HashMap">
+    SELECT DISTINCT
+    o.EMP_NO,o.BRANCH_NO,i.REACH_TIME_TYPE ORDER_TYPE
+    FROM
+    t_mst_order_daliy_plan_item i
+    LEFT JOIN t_preorder o  on i.ORDER_NO = o.ORDER_NO
+    WHERE o.BRANCH_NO =  #{branchNo,jdbcType=VARCHAR}
+    and i.DISP_DATE= #{dispDate,jdbcType=DATE}
+    and i.`STATUS`='10'
+    and (o.PREORDER_STAT != '40' and o.PREORDER_STAT != '20')
+    and LOCATE(o.ORDER_NO,<foreach item="order" collection="orderNos" separator="," open="'" close="'" index="">${orderNos}</foreach>)>0
+    GROUP BY o.EMP_NO,i.REACH_TIME_TYPE
+  </select>
+
   <select id="selectDispNoByGroupAndOrders" resultMap="BaseResultMap" parameterType="java.util.HashMap">
     select distinct o.EMP_NO, o.BRANCH_NO,'10' ORDER_TYPE
     from t_mst_plan_order_item e
@@ -1077,7 +1091,7 @@
             LEFT JOIN t_md_branch_emp e on o.EMP_NO = e.EMP_NO
             left join t_md_residential_area r on r.ID = a.RESIDENTIAL_AREA
              WHERE  1=1
-            and (o.PREORDER_SOURCE='20' OR o.PREORDER_SOURCE ='30' OR  o.PREORDER_SOURCE ='50')
+            and (o.PREORDER_SOURCE='20' OR o.PREORDER_SOURCE ='30' OR  o.PREORDER_SOURCE ='50'OR  o.PREORDER_SOURCE ='70' )
             and (o.PREORDER_STAT = '10' OR o.PREORDER_STAT = '30')
             and o.INIT_AMT > 0
             <if test="branchNo !=null and branchNo!=''">
@@ -1599,4 +1613,12 @@
     where ORDER_NO = #{orderNo,jdbcType=VARCHAR}
   </select>
 
+
+
+
+  <update id="updateOrderCurAmtByOrderAndAmt" parameterType="java.util.HashMap" >
+    update t_preorder
+    set CUR_AMT = CUR_AMT - #{amt,jdbcType=DECIMAL}
+    where ORDER_NO = #{orderNo,jdbcType=VARCHAR}
+  </update>
 </mapper>
