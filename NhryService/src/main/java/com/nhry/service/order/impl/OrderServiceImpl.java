@@ -1445,6 +1445,36 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 				messLogService.sendOrderStatus(sendOrder);
 			}
 		});
+
+		//积分扣减
+		if("20".equals(order.getPaymentmethod())&&"20".equals(order.getPaymentStat())&&"Y".equals(order.getIsIntegration())){
+			taskExecutor.execute(new Thread(){
+				@Override
+				public void run() {
+					super.run();
+					this.setName("minusVipPoint"+new Date());
+//						BigDecimal gRate = leftAmt.divide(initAmt,2).multiply(new BigDecimal(order.getyGrowth()==null?0:order.getyGrowth()));//成长
+					BigDecimal fRate = backAmt.divide(initAmt,2).multiply(new BigDecimal(order.getyFresh()==null?0:order.getyFresh()));//鲜峰
+					MemberActivities item = new MemberActivities();
+					Date date = new Date();
+					item.setActivitydate(date);
+					item.setSalesorg(order.getSalesOrg());
+					item.setCategory("YRETURN");
+					item.setProcesstype("YSUB_RETURN");
+					item.setOrderid(order.getOrderNo());
+					item.setMembershipguid(order.getMemberNo());
+					//第2遍传先锋
+					item.setPointtype("YFRESH");
+					item.setPoints(fRate);
+					item.setAmount(backAmt);
+					item.setProcess("X");
+					List<MemberActivities> list1 = new ArrayList<MemberActivities>();
+					list1.add(item);
+					piVipPointCreateBatService.createMemberActivitiesBat(list1);
+				}
+			});
+		}
+
 		return 0;
 	}
 
