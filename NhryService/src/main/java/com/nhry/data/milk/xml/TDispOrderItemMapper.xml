@@ -323,11 +323,12 @@
           ) ADDRESS_TXT,
           i.REPLACE_REASON,
           i.GIFT_FLAG,
-          a.RECV_NAME CUST_NAME,
-          a.MP CUST_TEL
+          info.VIP_NAME CUST_NAME,
+          info.MP CUST_TEL
       FROM
           t_mst_disp_order_item i
       LEFT JOIN t_preorder o ON o.ORDER_NO = i.ORG_ORDER_NO
+      LEFT JOIN t_vip_cust_info info on info.VIP_CUST_NO = o.MILKMEMBER_NO
       LEFT JOIN t_md_mara_ex p ON p.MATNR = i.MATNR
       AND p.SALES_ORG = o.SALES_ORG
       LEFT JOIN t_md_address a ON a.ADDRESS_ID = i.ADDRESS_NO
