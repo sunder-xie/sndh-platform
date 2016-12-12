@@ -149,6 +149,10 @@ public class PromotionServiceImpl extends BaseService implements PromotionServic
 		if("10".equals(order.getPaymentStat())){
 			return null;
 		}
+		//机构订单
+		if("70".equals(order.getPreorderSource())){
+			return null;
+		}
 		TSysUser user = userSessionService.getCurrentUser();
 		if(StringUtils.isBlank(order.getBranchNo())){
 			order.setBranchNo(user.getBranchNo());

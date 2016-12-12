@@ -146,6 +146,15 @@ public class TPreOrder {
     private String promotion;
     private String promItemNo;
     private BigDecimal discountAmt;
+    private String promType;
+
+    public String getPromType() {
+        return promType;
+    }
+
+    public void setPromType(String promType) {
+        this.promType = promType;
+    }
 
     public String getPromItemNo() {
         return promItemNo;

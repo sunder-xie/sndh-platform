@@ -84,7 +84,10 @@ public class TPlanOrderItemMapperImpl implements TPlanOrderItemMapper
 	public List<TPlanOrderItem> selectPlanOrderItemByOrderNo(String orderNo) {
 		return sqlSessionTemplate.selectList("selectPlanOrderItemByOrderNo",orderNo);
 	}
-
+	@Override
+	public List<TPlanOrderItem> selectDetailByOrderCode(String orderNo) {
+		return sqlSessionTemplate.selectList("selectDetailByOrderCode",orderNo);
+	}
 
 	@Override
 	public TPlanOrderItem selectEntryByEntryNo(String code)

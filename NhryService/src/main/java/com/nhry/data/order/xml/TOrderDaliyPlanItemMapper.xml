@@ -1198,8 +1198,8 @@
     from t_mst_order_daliy_plan_item
     where 1 = 1
       and ORDER_NO = #{orderNo,jdbcType=VARCHAR}
-      and DISP_DATE &gt;#{orderDate,jdbcType=DATE}
-      and DISP_DATE &lt; #{dispDate,jdbcType=DATE}
+      and DISP_DATE &gt;=#{orderDate,jdbcType=DATE}
+      and DISP_DATE &lt;= #{dispDate,jdbcType=DATE}
       and (GIFT_QTY IS NOT NULL OR GIFT_QTY!='')
     order by DISP_DATE asc  , REMAIN_AMT desc
   </select>

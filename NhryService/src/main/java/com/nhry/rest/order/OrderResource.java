@@ -285,7 +285,7 @@ public class OrderResource extends BaseResource {
 	@Path("/stopOrder")
 	@Produces(MediaType.APPLICATION_JSON)
 	@Consumes(MediaType.APPLICATION_JSON)
-	@ApiOperation(value = "/stopOrder", response = Integer.class, notes = "订单停订(直接停订，没有结束日期)")
+	@ApiOperation(value = "/stopOrder", response = Integer.class, notes = "订单停订(直接停订，没有结束日期，长停)")
 	public Response stopOrder(@ApiParam(required=true,name="smodel",value="SearchModel") OrderSearchModel smodel){
 		return convertToRespModel(MessageCode.NORMAL, null, orderService.stopOrderForTime(smodel));
 	}
@@ -294,7 +294,7 @@ public class OrderResource extends BaseResource {
 	@Path("/stopOrderInTime")
 	@Produces(MediaType.APPLICATION_JSON)
 	@Consumes(MediaType.APPLICATION_JSON)
-	@ApiOperation(value = "/stopOrderInTime", response = Integer.class, notes = "订单停订(区间暂停，有开始和结束日期)")
+	@ApiOperation(value = "/stopOrderInTime", response = Integer.class, notes = "订单停订(区间暂停，有开始和结束日期，短停)")
 	public Response stopOrderInTime(@ApiParam(required=true,name="smodel",value="SearchModel") OrderSearchModel smodel){
 		return convertToRespModel(MessageCode.NORMAL, null, orderService.stopOrderInTime(smodel));
 	}

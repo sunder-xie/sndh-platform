@@ -348,24 +348,27 @@
         '购买',
         ROUND(oi.ORIG_NUM),
         '个',
-        a.MATNR_TXT,
+        a1.MATNR_TXT,
         '赠送',
         ROUND(gi.GIFT_NUM),
-        '个产品'
+        '个',
+        a2.MATNR_TXT,
+        '产品'
         ) ITEM_DESCRIBE
         from t_promotion p
         left join t_promotion_orig_item oi on p.PROM_NO = oi.PROM_NO
         left join t_promotion_con_item ci on p.PROM_NO = ci.PROM_NO and  ci.ITEM_NO = oi.ITEM_NO
         left join t_promotion_gift_item gi on p.PROM_NO = gi.PROM_NO
         left join t_prom_scope_item si on p.PROM_NO = si.PROM_NO
-        LEFT JOIN t_md_mara a on oi.GOOD_NO = a.MATNR
+        LEFT JOIN t_md_mara a1 on oi.GOOD_NO = a1.MATNR
+        LEFT JOIN t_md_mara a2 on gi.GOOD_NO = a2.MATNR
         where 1 = 1
         and si.BRANCH_NO = #{branchNo,jdbcType=VARCHAR}
         and oi.GOOD_NO = #{orgMatnr,jdbcType=VARCHAR}
         and p.SALES_ORG =  #{salesOrg,jdbcType=VARCHAR}
         and p.PLAN_START_TIME &lt;=#{planStartTime,jdbcType=DATE}
         and p.PLAN_STOP_TIME &gt;=#{planStopTime,jdbcType=DATE}
-        and p.BUY_START_TIME &lt;=#{buyStartTime,jdbcType=DATE}
+       a nd p.BUY_START_TIME &lt;=#{buyStartTime,jdbcType=DATE}
         and p.BUY_STOP_TIME &gt;=#{buyStopTime,jdbcType=DATE}
         and p.SALES_ORG = a.SALES_ORG
         and p.PROM_SUB_TYPE ='Z008'
