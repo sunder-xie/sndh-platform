@@ -1180,7 +1180,7 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 								null,backAmt.toString(),null,null,userSessionService.getCurrentUser(),operationLogMapper);
 					}else{
 						//如果是满减促销，退款等于  订单收款金额-用去的金额（结果相当于没有参加促销）
-						if(StringUtils.isNotBlank(order.getPromItemNo())&&StringUtils.isNotBlank(order.getPromItemNo())){
+						if(order.getDiscountAmt()!=null){
 							if(order.getDiscountAmt()!=null && !"".equals(order.getDiscountAmt())){
 								backAmt = backAmt.add(leftAmt).subtract(order.getDiscountAmt());
 							}
