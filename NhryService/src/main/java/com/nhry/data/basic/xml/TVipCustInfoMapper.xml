@@ -879,7 +879,7 @@
 			SELECT
 				t.ORG_CODE
 			FROM t_md_org_cust oc
-			LEFT  t_md_order_org t on oc.ORG_ID = t.ID
+			LEFT  JOIN t_md_order_org t on oc.ORG_ID = t.ID
 			WHERE oc.CUST_ID = i.VIP_CUST_NO
 		)
 		ORG_ID,
