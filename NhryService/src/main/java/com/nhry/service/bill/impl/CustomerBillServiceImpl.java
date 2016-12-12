@@ -235,9 +235,9 @@ public class CustomerBillServiceImpl implements CustomerBillService {
                             if(StringUtils.isNotBlank(item.getCardid())){
                                 item.setCardid("");
                             }
-//                            piVipInfoDataService.createMemberActivities(item);
+                            piVipInfoDataService.createMemberActivities(item);
                         }
-                        piVipPointCreateBatService.createMemberActivitiesBat(items);
+//                        piVipPointCreateBatService.createMemberActivitiesBat(items);
                     }
 
                 }
@@ -532,17 +532,17 @@ public class CustomerBillServiceImpl implements CustomerBillService {
                         item.setPointtype("YGROWTH");
                         item.setPoints(gRate);
                         //第1遍传成长
-//                        piVipInfoDataService.createMemberActivities(item);
+                        piVipInfoDataService.createMemberActivities(item);
                         List<MemberActivities> gList = new ArrayList<MemberActivities>();
                         gList.add(item);
-                        piVipPointCreateBatService.createMemberActivitiesBat(gList);
+//                        piVipPointCreateBatService.createMemberActivitiesBat(gList);
                         //第2遍传先锋
                         item.setPointtype("YFRESH");
                         item.setPoints(fRate);
                         List<MemberActivities> fList = new ArrayList<MemberActivities>();
                         fList.add(item);
-//                        piVipInfoDataService.createMemberActivities(item);
-                        piVipPointCreateBatService.createMemberActivitiesBat(fList);
+                        piVipInfoDataService.createMemberActivities(item);
+//                        piVipPointCreateBatService.createMemberActivitiesBat(fList);
                     }
                 });
             }
