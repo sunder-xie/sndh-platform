@@ -121,4 +121,9 @@ public class TVipCustInfoMapperImpl implements TVipCustInfoMapper {
 	public int updateVipMp(TVipCustInfo vipCustInfo) {
 		return this.sqlSessionTemplate.update("updateVipMp",vipCustInfo);
 	}
+
+	@Override
+	public PageInfo findCustByOrg(CustQueryModel cust) {
+		return sqlSessionTemplate.selectListByPages("findCustByOrg",cust, Integer.parseInt(cust.getPageNum()), Integer.parseInt(cust.getPageSize()));
+	}
 }
