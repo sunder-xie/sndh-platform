@@ -27,9 +27,19 @@
     from t_md_order_org
     where ID = #{id,jdbcType=VARCHAR}
   </select>
-  <select id="findTMdOrderOrgList" resultMap="BaseResultMap" parameterType="java.lang.String">
+  <select id="findTMdOrderOrgList" resultMap="BaseResultMap" parameterType="com.nhry.model.basic.OrderOrgModel">
     SELECT
     <include refid="Base_Column_List" />
+    FROM
+    t_md_order_org i
+    WHERE i.SALES_ORG =#{salesOrg,jdbcType=VARCHAR}
+    <if test="queryTxt != null and queryTxt !=''">
+    AND (i.ORG_NAME like '%${queryTxt}%' or i.ORG_CODE like '%${queryTxt}%' or i.TEL like '%${queryTxt}%' or i.MP like '%${queryTxt}%')
+    </if>
+  </select>
+  <select id="findOrderOrgListForSelect" resultMap="BaseResultMap" parameterType="java.lang.String">
+    SELECT
+    i.ID,i.ORG_NAME,i.ORG_CODE
     FROM
     t_md_order_org i
     WHERE i.SALES_ORG =#{salesOrg,jdbcType=VARCHAR}

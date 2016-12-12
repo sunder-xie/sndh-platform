@@ -97,7 +97,8 @@
 		<property name="maraExMapper" ref="maraExMapper"></property>
 		<property name="branchEmpMapper" ref="branchEmpMapper"></property>
 		<property name="codeItemMapper" ref="codeItemMapper"></property>
-		<property name="tOrderDaliyPlanItemBackMapper" ref="tOrderDaliyPlanItemBackMapper"></property>
+		<property name="tOrderDaliyPlanItemBackMapper" ref="tOrderDaliyPlanItemBackMapper"/>
+		<property name="piVipPointCreateBatService" ref="piVipPointCreateBatService"/>
 	</bean>
 	<bean id="tPromotionMapper" class="com.nhry.data.order.impl.TPromotionMapperImpl">
 		<property name="sqlSessionTemplate" ref="dynamicSqlSessionTemplate"></property>

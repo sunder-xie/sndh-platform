@@ -100,7 +100,16 @@ public class OrderOrgServiceImpl implements OrderOrgService {
         return orderOrgMapper.findTMdOrderOrgList(record);
     }
 
-    //机构订户关系表开始-----
+    /**
+     * 根据销售组织查询机构名称
+     * @return
+     */
+    @Override
+    public List<TMdOrderOrg> findOrderOrgListForSelect() {
+        TSysUser user = userSessionService.getCurrentUser();
+        return orderOrgMapper.findOrderOrgListForSelect(user.getSalesOrg());
+    }
+//机构订户关系表开始-----
 
     /**
      * 清除机构订户关联关系

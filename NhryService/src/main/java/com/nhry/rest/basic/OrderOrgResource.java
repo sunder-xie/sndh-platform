@@ -87,4 +87,12 @@ public class OrderOrgResource extends BaseResource {
     public Response deleteOrgCust(@ApiParam(required=true,name="delorderOrg",value="机构订户关联关系")TMdOrgCustKey sModel) {
         return convertToRespModel(MessageCode.NORMAL, null,orderOrgService.deleteByPrimaryKey(sModel));
     }
+
+    @GET
+    @Path("/getOrderOrgName")
+    @Produces(MediaType.APPLICATION_JSON)
+    @ApiOperation(value = "/getOrderOrgName", response = String.class, notes = "查询该销售组织下机构名称")
+    public Response getOrderOrgName(){
+        return convertToRespModel(MessageCode.NORMAL, null,orderOrgService.findOrderOrgListForSelect());
+    }
 }

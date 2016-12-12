@@ -22,6 +22,8 @@ public class OrderOrgModel extends BaseQueryModel implements Serializable {
 
     private String orgCode;
 
+    private String queryTxt;
+
     public String getId() {
         return id;
     }
@@ -88,4 +90,8 @@ public class OrderOrgModel extends BaseQueryModel implements Serializable {
     public void setOrgCode(String orgCode) {
         this.orgCode = orgCode;
     }
+
+    public String getQueryTxt() {return queryTxt; }
+
+    public void setQueryTxt(String queryTxt) {this.queryTxt = queryTxt;}
 }
