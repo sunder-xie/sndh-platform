@@ -90,7 +90,8 @@ public class TPlanOrderItem {
     private Integer yFresh;
     
     private boolean isModified;
-    
+
+    private String promotionDetail;
 //    private String isDeletedFlag;
     
 //    private String deletePlansFlag;
@@ -100,6 +101,14 @@ public class TPlanOrderItem {
     private String toStop;
 
     private  int rowNum;
+
+    public String getPromotionDetail() {
+        return promotionDetail;
+    }
+
+    public void setPromotionDetail(String promotionDetail) {
+        this.promotionDetail = promotionDetail;
+    }
 
     public int getRowNum() {
         return rowNum;

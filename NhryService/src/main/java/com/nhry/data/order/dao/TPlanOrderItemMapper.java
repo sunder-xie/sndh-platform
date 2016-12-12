@@ -42,4 +42,5 @@ public interface TPlanOrderItemMapper {
 
     List<TPlanOrderItem> selectPlanOrderItemByOrderNo(String orderNo);
 
+    List<TPlanOrderItem> selectDetailByOrderCode(String orderCode);
 }

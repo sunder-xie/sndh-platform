@@ -4,6 +4,7 @@
   <resultMap id="BaseResultMap" type="com.nhry.data.order.domain.TPlanOrderItem" >
     <id column="ITEM_NO" property="itemNo" jdbcType="VARCHAR" />
     <result column="ORDER_NO" property="orderNo" jdbcType="VARCHAR" />
+    <result column="PROMOTION_DETAIL" property="promotionDetail" jdbcType="VARCHAR" />
     <result column="ORDER_DATE" property="orderDate" jdbcType="DATE" />
     <result column="REF_ITEM_NO" property="refItemNo" jdbcType="VARCHAR" />
     <result column="NEW_ROW_FLAG" property="newRowFlag" jdbcType="CHAR" />
@@ -97,7 +98,7 @@
     select 
     e.ITEM_NO, e.ORDER_NO, e.ORDER_DATE, e.REF_ITEM_NO, e.NEW_ROW_FLAG, e.MATNR, e.UNIT, e.QTY, e.SALES_PRICE,
     e.RULE_TYPE, e.DISP_DAYS, e.GAP_DAYS, e.RULE_TXT, e.REACH_TIME_TYPE, e.START_DISP_DATE, e.END_DISP_DATE,
-    e.PROMOTION, e.PROM_DAYS, e.STATUS, e.BUY_QTY, e.GIFT_QTY, e.CREATE_AT, e.CREATE_BY, e.CREATE_BY_TXT,
+    e.PROMOTION, e.PROM_ITEM_NO,e.PROM_DAYS, e.STATUS, e.BUY_QTY, e.GIFT_QTY, e.CREATE_AT, e.CREATE_BY, e.CREATE_BY_TXT,
     e.LAST_MODIFIED, e.LAST_MODIFIED_BY, e.LAST_MODIFIED_BY_TXT,e.GIFT_MATNR,e.GIFT_UNIT,e.DISP_TOTAL,e.IS_STOP,
     p.MATNR_TXT MATNR_TXT,ex.SHORT_TXT SHORT_TXT
     from t_mst_plan_order_item e
@@ -401,6 +402,9 @@
       <if test="promotion != null" >
         PROMOTION = #{promotion,jdbcType=VARCHAR},
       </if>
+      <if test="promItemNo!= null" >
+        PROM_ITEM_NO = #{promItemNo,jdbcType=VARCHAR},
+      </if>
       <if test="promDays != null" >
         PROM_DAYS = #{promDays,jdbcType=INTEGER},
       </if>
@@ -513,5 +517,93 @@
 
   <select id="selectPlanOrderItemByOrderNo" resultMap="BaseResultMap">
     SELECT <include refid="Base_Column_List"/> FROM t_mst_plan_order_item WHERE ORDER_NO = #{orderNo}
+  </select>
+
+
+  <select id="selectDetailByOrderCode" resultMap="BaseResultMap" parameterType="java.lang.String" >
+   SELECT
+      pr.PROM_SUB_TYPE,
+      e.PROMOTION,
+      e.PROM_ITEM_NO,
+      (
+              CASE
+              WHEN pr.PROM_SUB_TYPE = 'Z008' THEN
+               CONCAT(
+                  '购买',
+                  ROUND(oi.ORIG_NUM),
+                  '个',
+                  IFNULL(ex.SHORT_TXT,oi.GOOD_NO),
+                  '赠送',
+                  ROUND(gi.GIFT_NUM),
+                  '个',
+                  IFNULL(ex2.SHORT_TXT,gi.GIFT_NO),
+                  '产品'
+                  )
+              ELSE
+                   CONCAT(
+              ex.SHORT_TXT,
+              '产品满',
+              ci.LOW,
+              '元钱减',
+              oi.DISCOUNT_AMT,
+              '元钱'
+              )
+              END
+          ) PROMOTION_DETAIL,
+          e.ITEM_NO,
+          e.ORDER_NO,
+          e.ORDER_DATE,
+          e.REF_ITEM_NO,
+          e.NEW_ROW_FLAG,
+          e.MATNR,
+          e.UNIT,
+          e.QTY,
+          e.SALES_PRICE,
+          e.RULE_TYPE,
+          e.DISP_DAYS,
+          e.GAP_DAYS,
+          e.RULE_TXT,
+          e.REACH_TIME_TYPE,
+          e.START_DISP_DATE,
+          e.END_DISP_DATE,
+
+          e.PROM_DAYS,
+          e. STATUS,
+          e.BUY_QTY,
+          e.GIFT_QTY,
+          e.CREATE_AT,
+          e.CREATE_BY,
+          e.CREATE_BY_TXT,
+          e.LAST_MODIFIED,
+          e.LAST_MODIFIED_BY,
+          e.LAST_MODIFIED_BY_TXT,
+          e.GIFT_MATNR,
+          e.GIFT_UNIT,
+          e.DISP_TOTAL,
+          e.IS_STOP,
+          p.MATNR_TXT MATNR_TXT,
+          ex.SHORT_TXT SHORT_TXT
+      FROM
+          t_mst_plan_order_item e
+      LEFT JOIN t_promotion pr ON e.PROMOTION = pr.PROM_NO
+      left join t_promotion_orig_item oi on pr.PROM_NO = oi.PROM_NO and oi.ITEM_NO = e.PROM_ITEM_NO
+      left join t_promotion_con_item ci on pr.PROM_NO = ci.PROM_NO and  ci.ITEM_NO = e.PROM_ITEM_NO
+      left join t_promotion_gift_item gi on pr.PROM_NO = gi.PROM_NO and gi.ITEM_NO = e.PROM_ITEM_NO
+      LEFT JOIN t_preorder o ON o.ORDER_NO = e.ORDER_NO
+      LEFT JOIN t_md_mara_ex ex2 on gi.GIFT_NO = ex2.MATNR and ex2.SALES_ORG = o.SALES_ORG
+      LEFT JOIN t_md_mara_ex ex ON (
+          ex.MATNR = e.MATNR
+          AND o.SALES_ORG = ex.SALES_ORG
+      )
+      LEFT JOIN t_md_mara p ON (
+          e.MATNR = p.MATNR
+          AND o.SALES_ORG = p.SALES_ORG
+      )
+      WHERE
+          e.ORDER_NO = #{orderCode,jdbcType=VARCHAR}
+      AND (
+          e. STATUS != "30"
+          OR e. STATUS IS NULL
+      )
   </select>
 </mapper>

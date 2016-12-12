@@ -14,6 +14,7 @@ import com.nhry.data.config.domain.NHSysCodeItem;
 import com.nhry.data.milk.dao.TDispOrderItemMapper;
 import com.nhry.data.milk.dao.TDispOrderMapper;
 import com.nhry.data.milk.domain.TDispOrderItem;
+import com.nhry.data.order.dao.TOrderDaliyPlanItemBackMapper;
 import com.nhry.data.order.dao.TOrderDaliyPlanItemMapper;
 import com.nhry.data.order.dao.TPlanOrderItemMapper;
 import com.nhry.data.order.dao.TPreOrderMapper;
@@ -65,6 +66,11 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 	private TMdMaraExMapper maraExMapper;
 	private TMdBranchEmpMapper branchEmpMapper;
 	private NHSysCodeItemMapper codeItemMapper;
+	private TOrderDaliyPlanItemBackMapper tOrderDaliyPlanItemBackMapper;
+
+	public void settOrderDaliyPlanItemBackMapper(TOrderDaliyPlanItemBackMapper tOrderDaliyPlanItemBackMapper) {
+		this.tOrderDaliyPlanItemBackMapper = tOrderDaliyPlanItemBackMapper;
+	}
 
 	public void setCodeItemMapper(NHSysCodeItemMapper codeItemMapper) {
 		this.codeItemMapper = codeItemMapper;
@@ -286,8 +292,18 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 		OrderCreateModel orderModel = new OrderCreateModel();
 		TPreOrder order = tPreOrderMapper.selectByPrimaryKey(orderCode);
 		if(order==null)throw new ServiceException(MessageCode.LOGIC_ERROR,"订单不存在！");
-		
-		ArrayList<TPlanOrderItem> entries = (ArrayList<TPlanOrderItem>) tPlanOrderItemMapper.selectByOrderCode(orderCode);
+		if(StringUtils.isNotBlank(order.getPromotion()) && StringUtils.isNotBlank(order.getPromItemNo())){
+			TPromotion promotion = promotionService.selectPromotionByPromNoAndItemNo(order.getPromotion(),order.getPromItemNo());
+			if(promotion!=null){
+				if("Z016".equals(promotion.getPromSubType())){
+					order.setPromType("整单满减");
+				}else if("Z017".equals(promotion.getPromSubType())){
+					order.setPromotion("年卡");
+				}
+
+			}
+		}
+		ArrayList<TPlanOrderItem> entries = (ArrayList<TPlanOrderItem>) tPlanOrderItemMapper.selectDetailByOrderCode(orderCode);
 		orderModel.setEntries(entries);
 		orderModel.setOrder(order);
 //		//帐户
@@ -591,11 +607,15 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 					throw new ServiceException(MessageCode.LOGIC_ERROR, "重新计算产品价格失败，"+entry.getMatnr()+" 产品价格小于0,建议退回");
 				}
 				entry.setSalesPrice(new BigDecimal(String.valueOf(price)));
+				BigDecimal entryAmount = BigDecimal.ZERO;
 				orderAmt = orderAmt.add(calculateEntryAmount(entry));
+				entryAmount = entryAmount.add(orderAmt);
 				//促销判断
 				if (StringUtils.isNotBlank(entry.getPromotion()) && "10".equals(order.getPaymentmethod()))
 					throw new ServiceException(MessageCode.LOGIC_ERROR, "后付款的订单不能参加促销!");
-				promotionService.calculateEntryPromotion(entry);
+				if(StringUtils.isNotBlank(order.getBranchNo()) && "20".equals(order.getPaymentmethod())){
+					promotionService.calculateOrderEntryPromotion(entry,entryAmount,order);
+				}
 				tPlanOrderItemMapper.updateEntryByItemNo(entry);
 			}
 			//订单价格
@@ -1153,12 +1173,26 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 						OperationLogUtil.saveHistoryOperation(order.getOrderNo(),LogType.ORDER,OrderLogEnum.JG_BACK_ORDER,null,null,
 								null,backAmt.toString(),null,null,userSessionService.getCurrentUser(),operationLogMapper);
 					}else{
-						backAmt = backAmt.add(leftAmt);
-						TVipAcct ac = new TVipAcct();
-						ac.setVipCustNo(order.getMilkmemberNo());
-						ac.setAcctAmt(backAmt);
-						tVipCustInfoService.addVipAcct(ac);
+						//如果是满减促销，退款等于  订单收款金额-用去的金额（结果相当于没有参加促销）
+						if(StringUtils.isNotBlank(order.getPromItemNo())&&StringUtils.isNotBlank(order.getPromItemNo())){
+							if(order.getDiscountAmt()!=null && !"".equals(order.getDiscountAmt())){
+								backAmt = backAmt.add(leftAmt).subtract(order.getDiscountAmt());
+							}
+						}else{
+							backAmt = backAmt.add(leftAmt);
+						}
+
+						//退款金额大于0
+						if(backAmt.compareTo(BigDecimal.ZERO)==1){
+							TVipAcct ac = new TVipAcct();
+							ac.setVipCustNo(order.getMilkmemberNo());
+							ac.setAcctAmt(backAmt);
+							tVipCustInfoService.addVipAcct(ac);
+						}else if(backAmt.compareTo(BigDecimal.ZERO)==-1){
+							throw new ServiceException(MessageCode.LOGIC_ERROR,"该订单需退金额为"+backAmt+",小于零有问题，请查看");
+						}
 					}
+
 
 
 				}else if("10".equals(order.getPaymentStat())){
@@ -1269,7 +1303,7 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 	 *   如果 date不为空说明为订单提前退订，不仅要判断目前赠品是否已产生路单或者已确认
 	 *      还要判断从今天开始到退订当天之间是否有赠品，如果有提示（将赠品更改配送日期到退订日期之后再做退订）
 	 * @param order 订单
-	 * @param date  提前退订日期
+	 * @param date  提前退订日期 或者 日订单行停订前一天日期
      */
 	public void backOrderOfProm(TPreOrder order,Date date){
 		SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
@@ -1295,10 +1329,10 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 		}
 
 		if(date!=null){
-			//如果date 不为空表示为提前退订  需要查看从今天开始 到date期间是否有赠品
+			//如果date 不为空表示为提前退订或者行项目 停订  需要查看从今天开始 到date期间是否有赠品
 			List<TOrderDaliyPlanItem> daliys = tOrderDaliyPlanItemMapper.selectPromDaliyBetweenDaysAndNo(order.getOrderNo(),new Date(),date);
 			if(daliys!=null && daliys.size()>0){
-				throw new ServiceException(MessageCode.LOGIC_ERROR,"从今天到退订那天之间有赠品，您可以将赠品更改配送日期到退订日期之后再做退订！！");
+				throw new ServiceException(MessageCode.LOGIC_ERROR,"从今天到"+format.format(date)+"那天之间有赠品，不能进行此操作");
 			}
 		}
 	}
@@ -2353,7 +2387,7 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 	@Override
 	public int daliyBackAmt(DaliyPlanEditModel record){
 		SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
-
+		TSysUser user = userSessionService.getCurrentUser();
 		List<TOrderDaliyPlanItem> entries = record.getEntries();
 		if(entries==null || entries.size()==0){throw  new ServiceException(MessageCode.LOGIC_ERROR,"没有日计划行");}
 		TPreOrder orgOrder = tPreOrderMapper.selectByPrimaryKey(record.getOrderCode());
@@ -2378,6 +2412,20 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 			if(tDispOrderItemMapper.selectItemsByOrgOrderAndItemNo(oldDay.getOrderNo(), oldDay.getItemNo(), oldDay.getDispDate()).size()>0){
 				throw new ServiceException(MessageCode.LOGIC_ERROR,"该日计划已经生成路单，不可以退款!");
 			}
+			//记录到单日订单退款表中
+			TOrderDaliyPlanItemBack back = new TOrderDaliyPlanItemBack();
+			back.setOrderNo(orgOrder.getOrderNo());
+			back.setBranchNo(orgOrder.getBranchNo());
+			back.setDispDate(oldDay.getDispDate());
+			back.setUnit(oldDay.getUnit());
+			back.setSalesPrice(oldDay.getPrice());
+			back.setMatnr(oldDay.getMatnr());
+			back.setAmt(oldDay.getAmt());
+			back.setQty(oldDay.getQty());
+			back.setCreateAt(new Date());
+			back.setCreateBy(user.getLoginName());
+			back.setCreateByTxt(user.getDisplayName());
+			tOrderDaliyPlanItemBackMapper.insertNewItem(back);
 
 			//计算退款金额
 			totalAmt = totalAmt.add(oldDay.getAmt());
@@ -4388,7 +4436,7 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 										newplan.setDispDateStr(startstr);
 										tOrderDaliyPlanItemMapper.deleteFromDateByStatus(newplan);
 									}
-									//删除不需要的日单
+									//订单行做停订 删除不需要的日单
 									if(ContentDiffrentUtil.isDiffrent(orgEntry.getIsStop(),curEntry.getIsStop())){
 										if("Y".equals(curEntry.getIsStop()) && curEntry.getStopStartDate()!=null){
 											//订单行的开始停订日期在 配送日期之前 抛出异常
@@ -4397,6 +4445,25 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 													.forEach((e)->{
 														if(!e.getDispDate().before(curEntry.getStopStartDate()))throw new ServiceException(MessageCode.LOGIC_ERROR,"该日期内已经有完结的日计划，请修改时间!");
 											});
+
+											if(itemPromFlag){
+												//行项目参加满赠  判断赠品是否已经配送或者 在停订日期之前有赠品日订单
+												// 如果没有可以停订，但是该产品行不再参加满赠
+												if("Z008".equals(promModel.getPromSubType())){
+													if(StringUtils.isNotBlank(orgEntry.getPromotion()) && StringUtils.isNotBlank(orgEntry.getPromItemNo())){
+														//赠品是否在停订之前已经配送 或者有赠品日订单
+														backOrderOfProm(orgOrder,DateUtil.getYestoday(curEntry.getStopStartDate()));
+														//将行项目的促销去除
+														orgEntry.setPromotion("");
+														orgEntry.setPromItemNo("");
+													}
+												}else if("Z015".equals(promModel.getPromSubType())){
+													//如果参加的是行项目满减，类似订单满减，将该行项目停订  还是按照订单总额顺延
+												}
+
+											}
+
+
 											orgEntry.setStopStartDate(curEntry.getStopStartDate());
 											orgEntry.setIsStop(curEntry.getIsStop());
 											orgEntry.setEndDispDate(DateUtil.getYestoday(curEntry.getStopStartDate()));
@@ -4981,6 +5048,11 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 		tPlanOrderItemMapper.deleteByOrderNo(orderNo);
 		for(TPlanOrderItem entry: curEntrys){
 			if("Y".equals(entry.getIsStop()) && entry.getStopStartDate()!=null){
+				//判断是否是满赠，如果是满赠 将赠品信息删除
+				if(StringUtils.isNotBlank(entry.getPromItemNo()) && StringUtils.isNotBlank(entry.getPromotion())){
+					entry.setPromotion("");
+					entry.setPromItemNo("");
+				}
 				entry.setEndDispDate(DateUtil.getYestoday(entry.getStopStartDate()));
 			}
 			entry.setItemNo(orderNo + String.valueOf(index));//行项目编号
