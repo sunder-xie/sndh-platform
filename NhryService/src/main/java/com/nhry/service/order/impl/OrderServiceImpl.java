@@ -1292,10 +1292,10 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 						item.setPoints(fRate);
 						item.setAmount(leftAmt);
 						item.setProcess("X");
-						piVipInfoDataService.createMemberActivities(item);
+//						piVipInfoDataService.createMemberActivities(item);
 						List<MemberActivities> list1 = new ArrayList<MemberActivities>();
 						list1.add(item);
-//						piVipPointCreateBatService.createMemberActivitiesBat(list1);
+						piVipPointCreateBatService.createMemberActivitiesBat(list1);
 					}
 				});
 			}
@@ -1504,7 +1504,7 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 					item.setProcess("X");
 					List<MemberActivities> list1 = new ArrayList<MemberActivities>();
 					list1.add(item);
-//					piVipPointCreateBatService.createMemberActivitiesBat(list1);
+					piVipPointCreateBatService.createMemberActivitiesBat(list1);
 				}
 			});
 		}
