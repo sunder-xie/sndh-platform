@@ -205,4 +205,5 @@ public interface TVipCustInfoService {
      */
     TMdAddress findAddressByCustNoISDefault(String id);
 
+    PageInfo findCustByOrg(CustQueryModel cust);
 }

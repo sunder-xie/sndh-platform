@@ -805,4 +805,14 @@ public class TVipCustInfoServiceImpl extends BaseService implements TVipCustInfo
 		// TODO Auto-generated method stub
 		return this.addressMapper.findAddressByCustNoISDefault(id);
 	}
+
+	@Override
+	public PageInfo findCustByOrg(CustQueryModel cust) {
+		TSysUser user = userSessionService.getCurrentUser();
+		//判断如果不是部门内勤
+		if(StringUtils.isNotBlank(user.getSalesOrg())){
+			cust.setSalesOrg(user.getSalesOrg());
+		}
+		return this.tmdVipcust.findCustByOrg(cust);
+	}
 }

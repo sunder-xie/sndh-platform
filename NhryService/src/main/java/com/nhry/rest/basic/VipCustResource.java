@@ -132,6 +132,15 @@ public class VipCustResource extends BaseResource {
 	}
 
 	@POST
+	@Path("/find/custByOrg")
+	@Produces(MediaType.APPLICATION_JSON)
+	@Consumes(MediaType.APPLICATION_JSON)
+	@ApiOperation(value = "/find/custByOrg", response = PageInfo.class, notes = "根据奶站编号、征订时间等内容查询订户信息")
+	public Response findCustByOrg(@ApiParam(required=true,name="cust",value="订户查询对象") CustQueryModel cust) {
+		return convertToRespModel(MessageCode.NORMAL, null,custService.findCustByOrg(cust));
+	}
+
+	@POST
 	@Path("/find/orgCust")
 	@Produces(MediaType.APPLICATION_JSON)
 	@Consumes(MediaType.APPLICATION_JSON)
