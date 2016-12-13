@@ -135,6 +135,8 @@ public interface TOrderDaliyPlanItemMapper {
 
     int deleteFromDateByStatus(TOrderDaliyPlanItem newplan);
 
+    int deleteFromDateByStatusAndProm(TOrderDaliyPlanItem newplan);
+
     TOrderDaliyPlanItem selectDaliyByDispItem(TDispOrderItem entry);
 
     int  updateDaliyRemainAmtAfterRouteConfirmBeforDay(Date dispDate, BigDecimal cj, String orderNo);
