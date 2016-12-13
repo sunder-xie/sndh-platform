@@ -368,7 +368,7 @@
         and p.SALES_ORG =  #{salesOrg,jdbcType=VARCHAR}
         and p.PLAN_START_TIME &lt;=#{planStartTime,jdbcType=DATE}
         and p.PLAN_STOP_TIME &gt;=#{planStopTime,jdbcType=DATE}
-       a nd p.BUY_START_TIME &lt;=#{buyStartTime,jdbcType=DATE}
+        and p.BUY_START_TIME &lt;=#{buyStartTime,jdbcType=DATE}
         and p.BUY_STOP_TIME &gt;=#{buyStopTime,jdbcType=DATE}
         and p.PROM_SUB_TYPE ='Z008'
     UNION ALL
