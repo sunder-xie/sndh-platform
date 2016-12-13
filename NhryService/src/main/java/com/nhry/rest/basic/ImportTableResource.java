@@ -280,6 +280,11 @@ public class ImportTableResource extends BaseResource {
                 String vipCustNo = ExcelUtil.getCellValue(cell, row);
                 String vipCust = branchNo.substring(branchNo.length()-6).concat(vipCustNo);
                 order.setMilkmemberNo(vipCust);
+                //根据订户编号，查询订户会员编号，如果有，则赋值给订单对应的会员字段
+                TVipCustInfo vci = tVipCustInfoService.findVipCustByNoForUpt(vipCust);
+                if(vci!=null){
+                    order.setMemberNo(vci.getVipCustNoSap());
+                }
                 //通过订户查询到地址信息，并写入到订单里
                 TMdAddress tMdAddress = tVipCustInfoService.findAddressByCustNoISDefault(vipCust);
                 if (tMdAddress == null) {

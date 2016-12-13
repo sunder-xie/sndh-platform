@@ -27,6 +27,11 @@
     from t_md_order_org
     where ID = #{id,jdbcType=VARCHAR}
   </select>
+  <select id="selectOrgByCustId" resultMap="BaseResultMap" parameterType="java.lang.String" >
+    SELECT t.ORG_NAME,t.ORG_CODE FROM t_md_order_org t
+    join t_md_org_cust t1 on t1.ORG_ID = t.ID
+    where  t1.CUST_ID= #{custId,jdbcType=VARCHAR}
+  </select>
   <select id="findTMdOrderOrgList" resultMap="BaseResultMap" parameterType="com.nhry.model.basic.OrderOrgModel">
     SELECT
     <include refid="Base_Column_List" />
