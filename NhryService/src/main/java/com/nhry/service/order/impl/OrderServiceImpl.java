@@ -4183,7 +4183,6 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 					{
 						continue;
 					} else {
-						//if (StringUtils.isNotBlank(orgEntry.getPromotion())) throw new ServiceException(MessageCode.LOGIC_ERROR, "促销商品行不能更改!");
 						this.editOrderDispTypeForLongLog(orgEntry,curEntry,user);
 					}
 				}
@@ -4226,7 +4225,6 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 					{
 						continue;
 					} else {
-						if (StringUtils.isNotBlank(orgEntry.getPromotion())) throw new ServiceException(MessageCode.LOGIC_ERROR, "促销商品行不能更改!");
 						confirmAllDispDateAfterDate(curEntry,orgEntry, orgOrder.getOrderNo());
 						this.editOrderDispTypeForLongLog(orgEntry,curEntry,user);
 					}
@@ -4380,10 +4378,10 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 									boolean itemPromFlag = false;
 									if(StringUtils.isNotBlank(orgEntry.getPromotion()) && StringUtils.isNotBlank(orgEntry.getPromItemNo())){
 										//修改前的  行项目参加了促销，促销标记为改为true
+										if(itemPromFlag || promModel!=null) throw new ServiceException(MessageCode.LOGIC_ERROR,"一个订单只能参加一个促销");
 										itemPromFlag = true;
 										planItemPromFlag = true;
-										if(itemPromFlag || promModel!=null) throw new ServiceException(MessageCode.LOGIC_ERROR,"一个订单只能参加一个促销");
-										promModel = promotionService.selectPromotionByPromNoAndItemNo(orgEntry.getPromotion(),orgEntry.getItemNo());
+										promModel = promotionService.selectPromotionByPromNoAndItemNo(orgEntry.getPromotion(),orgEntry.getPromItemNo());
 									}
 
 									modiFlag = true;
@@ -4725,8 +4723,8 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 								} else {
 									//BigDecimal orgEntryAmt = calculateEntryAmount(orgEntry);
 									//产生路单的订单行 如果有变化  验证信息
-									if (StringUtils.isNotBlank(orgEntry.getPromotion()))
-										throw new ServiceException(MessageCode.LOGIC_ERROR, "促销商品行不能更改!");
+								/*	if (StringUtils.isNotBlank(orgEntry.getPromotion()))
+										throw new ServiceException(MessageCode.LOGIC_ERROR, "促销商品行不能更改!");*/
 									List<TDispOrderItem> dispItems = confirmAllDispDateAfterDate(curEntry,orgEntry,orderNo);
 									//获取路单中最大日期的配送日期 为了删除这个日期之后的日订单
 									Date maxDispDate = orgEntry.getStartDispDate();
