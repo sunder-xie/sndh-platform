@@ -19,7 +19,15 @@ public class TOrderDaliyPlanItemBack implements Serializable{
     private Date createAt;                  //创建日期
     private String createBy;                //创建人编号
     private String createByTxt;             //创建人名称
+    private String orderType;                  //订单类型
 
+    public String getOrderType() {
+        return orderType;
+    }
+
+    public void setOrderType(String orderType) {
+        this.orderType = orderType;
+    }
 
     private String matnrTxt;
 

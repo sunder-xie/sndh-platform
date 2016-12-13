@@ -307,6 +307,15 @@ public class OrderResource extends BaseResource {
 	public Response backOrder(@ApiParam(required=true,name="smodel",value="SearchModel") OrderSearchModel smodel){
 		return convertToRespModel(MessageCode.NORMAL, null, orderService.backOrder(smodel));
 	}
+
+	@POST
+	@Path("/yearCardBackOrder")
+	@Produces(MediaType.APPLICATION_JSON)
+	@Consumes(MediaType.APPLICATION_JSON)
+	@ApiOperation(value = "/yearCardBackOrder", response = Integer.class, notes = "订单退订，reason退订原因")
+	public Response yearCardBackOrder(@ApiParam(required=true,name="smodel",value="SearchModel") YearCardBackModel smodel){
+		return convertToRespModel(MessageCode.NORMAL, null, orderService.yearCardBackOrder(smodel));
+	}
 	
 	@POST
 	@Path("/continueOrder")
