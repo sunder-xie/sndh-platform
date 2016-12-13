@@ -4304,7 +4304,7 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 		}
 		TPromotion promModel = null;
 		boolean orderPromFlag = false;
-		boolean planItemPromFlag = false;
+
 		if(StringUtils.isNotBlank(orgOrder.getPromotion()) && StringUtils.isNotBlank(orgOrder.getPromItemNo())){
 			//订单 整单参加促销  整单满减
 			orderPromFlag = true;
@@ -4338,7 +4338,7 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 
 				}else if("20".equals(orgOrder.getPaymentmethod())){
 					//如果是预付款  以订单金额为基础修改
-					uptBeforeOrderByAmt(record,orgOrder);
+					uptBeforeOrderByAmt(orgEntrys,record,orgOrder);
 				}
 			}else {
 				//有路单的订单编辑日志
@@ -4349,6 +4349,8 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 				if ("20".equals(orgOrder.getPaymentmethod())){
 					boolean modiFlag = false;
 					boolean onlyReachType = true;
+					//原行项目是否参加了促销标识
+					boolean planItemPromFlag = orgEntrys.stream().anyMatch(item->(StringUtils.isNotBlank(item.getPromotion())&&StringUtils.isNotBlank(item.getPromItemNo())));
 					//用来判断行项目是否是新加行项目
 					List<TPlanOrderItem> cloneCurEntrys = new ArrayList<TPlanOrderItem>();
 					cloneCurEntrys.addAll(curEntrys);
@@ -4380,7 +4382,6 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 										//修改前的  行项目参加了促销，促销标记为改为true
 										if(itemPromFlag || promModel!=null) throw new ServiceException(MessageCode.LOGIC_ERROR,"一个订单只能参加一个促销");
 										itemPromFlag = true;
-										planItemPromFlag = true;
 										promModel = promotionService.selectPromotionByPromNoAndItemNo(orgEntry.getPromotion(),orgEntry.getPromItemNo());
 									}
 
@@ -4407,6 +4408,8 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 												}else{
 													throw new ServiceException(MessageCode.LOGIC_ERROR,"产品行参加了促销，不能更换产品");
 												}
+											}else if(planItemPromFlag){
+												throw new ServiceException(MessageCode.LOGIC_ERROR,"该订单有参加参加了促销，不能修改产品");
 											}else if (orderPromFlag){
 												if("Z016".equals(promModel.getPromSubType())){
 													//整单满减  促销订单可以修改同价产品
@@ -4430,7 +4433,7 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 										if(promModel!=null){
 											;if(itemPromFlag){
 												/*
-													如果是该订单行参加了促销
+													如果是该订单有行项目参加了促销
 													1.单品满赠  促销订单不能修改配送数量
 													2.单品满减 促销订单不能修改配送数量
 												* */
@@ -4442,10 +4445,11 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 												}else{
 													throw new ServiceException(MessageCode.LOGIC_ERROR,"产品行参加了促销，不能修改数量");
 												}
+											}else if(planItemPromFlag){
+												throw new ServiceException(MessageCode.LOGIC_ERROR,"该订单有行项目参加参加了促销，不能修改数量");
 											}else if(orderPromFlag){
 												//整单满减  促销订单不可以修改配送数量
 													throw new ServiceException(MessageCode.LOGIC_ERROR,"该订单参加了整单满减促销，不能修改数量");
-
 											}
 										}
 										flag = true;
@@ -4544,7 +4548,7 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 														if(!e.getDispDate().before(curEntry.getStopStartDate()))throw new ServiceException(MessageCode.LOGIC_ERROR,"该日期内已经有完结的日计划，请修改时间!");
 											});
 
-											if(itemPromFlag){
+											if(planItemPromFlag){
 												//行项目参加满赠  判断赠品是否已经配送或者 在停订日期之前有赠品日订单
 												// 如果没有可以停订，但是该产品行不再参加满赠
 												if("Z008".equals(promModel.getPromSubType())){
@@ -5146,11 +5150,48 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 		return dispItems;
 	}
 	//预付款没产生路单  以订单金额为基础修改
-	public void uptBeforeOrderByAmt(OrderEditModel record,TPreOrder orgOrder){
+	public void uptBeforeOrderByAmt(List<TPlanOrderItem> orgEntrys,OrderEditModel record,TPreOrder orgOrder){
 		String orderNo = record.getOrder().getOrderNo();
 		//TPreOrder cloneOrder = orgOrder;
-
+		SimpleDateFormat format = new SimpleDateFormat();
 		List<TPlanOrderItem>  curEntrys = record.getEntries();
+		//判断是否有行项目参加促销
+		boolean itemPromFlag = curEntrys.stream().anyMatch(item->(StringUtils.isNotBlank(item.getPromotion())&&StringUtils.isNotBlank(item.getPromItemNo())));
+		//如果有行项目参加促销，
+		if(itemPromFlag) {
+			curEntrys.stream().forEach(e -> {
+				if ("Y".equals(e.getNewFlag())) {
+					throw new ServiceException(MessageCode.LOGIC_ERROR, "行项目有参加促销的订单不能添加产品");
+				}
+
+			});
+			for (TPlanOrderItem orgEntry : orgEntrys) {
+				for (TPlanOrderItem curEntry : curEntrys) {
+					if (curEntry.getItemNo().equals(orgEntry.getItemNo())) {
+						if (curEntry.getMatnr().equals(orgEntry.getMatnr()) && curEntry.getQty().equals(orgEntry.getQty()) &&
+								format.format(orgEntry.getStartDispDate()).equals(format.format(curEntry.getStartDispDate())) &&
+								format.format(orgEntry.getEndDispDate()).equals(format.format(curEntry.getEndDispDate())) &&
+								!ContentDiffrentUtil.isDiffrent(orgEntry.getReachTime(), curEntry.getReachTime()) &&
+								!ContentDiffrentUtil.isDiffrent(orgEntry.getReachTimeType(), curEntry.getReachTimeType()) &&
+								!ContentDiffrentUtil.isDiffrent(orgEntry.getGapDays(), curEntry.getGapDays()) &&
+								!ContentDiffrentUtil.isDiffrent(orgEntry.getRuleTxt(), curEntry.getRuleTxt()) &&
+								curEntry.getStopStartDate() == null
+								) {
+							continue;
+						} else {
+							//不能修改行项目
+							if (!orgEntry.getMatnr().equals(curEntry.getMatnr())) {//换商品
+								throw new ServiceException(MessageCode.LOGIC_ERROR, "该订单有产品行参加了促销，不能修改产品");
+							}
+							if (orgEntry.getQty() != curEntry.getQty()) {//改数量
+								throw new ServiceException(MessageCode.LOGIC_ERROR, "该订单有产品行参加了促销，不能修改数量");
+							}
+						}
+
+					}
+				}
+			}
+		}
 		//首先删除原本日计划
 		int index = 0;
 		tOrderDaliyPlanItemMapper.deletePlansByOrder(orderNo);
@@ -5599,6 +5640,7 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 	public void uptOrderNoDailyOrder(OrderEditModel record,TPreOrder orgOrder){
 		String orderNo = record.getOrder().getOrderNo();
 		List<TPlanOrderItem>  curEntrys = record.getEntries();
+
 		//删除原来的行项目
 		tPlanOrderItemMapper.deleteByOrderNo(orderNo);
 		//生成每个订单行
@@ -5615,6 +5657,7 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 						}
 					}
 			}
+
 			entry.setItemNo(orderNo + String.valueOf(index));//行项目编号
 			entry.setRefItemNo(String.valueOf(index));//参考行项目编号
 			orderAmt = orderAmt.add(calculateEntryAmount(entry));
