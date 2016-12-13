@@ -449,6 +449,11 @@ public class TOrderDaliyPlanItemMapperImpl implements TOrderDaliyPlanItemMapper
 	}
 
 	@Override
+	public int deleteFromDateByStatusAndProm(TOrderDaliyPlanItem newplan) {
+		return sqlSessionTemplate.delete("deleteFromDateByStatusAndProm",newplan);
+	}
+
+	@Override
 	public TOrderDaliyPlanItem selectDaliyByDispItem(TDispOrderItem entry){
 		TOrderDaliyPlanItem item = new TOrderDaliyPlanItem();
 		item.setItemNo(entry.getOrgItemNo());

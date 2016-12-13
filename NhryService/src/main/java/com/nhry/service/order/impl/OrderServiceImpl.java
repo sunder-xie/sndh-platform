@@ -4174,7 +4174,7 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 					{
 						continue;
 					} else {
-						if (StringUtils.isNotBlank(orgEntry.getPromotion())) throw new ServiceException(MessageCode.LOGIC_ERROR, "促销商品行不能更改!");
+						//if (StringUtils.isNotBlank(orgEntry.getPromotion())) throw new ServiceException(MessageCode.LOGIC_ERROR, "促销商品行不能更改!");
 						this.editOrderDispTypeForLongLog(orgEntry,curEntry,user);
 					}
 				}
@@ -4297,6 +4297,7 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 		}
 		TPromotion promModel = null;
 		boolean orderPromFlag = false;
+		boolean planItemPromFlag = false;
 		if(StringUtils.isNotBlank(orgOrder.getPromotion()) && StringUtils.isNotBlank(orgOrder.getPromItemNo())){
 			//订单 整单参加促销  整单满减
 			orderPromFlag = true;
@@ -4371,6 +4372,7 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 									if(StringUtils.isNotBlank(orgEntry.getPromotion()) && StringUtils.isNotBlank(orgEntry.getPromItemNo())){
 										//修改前的  行项目参加了促销，促销标记为改为true
 										itemPromFlag = true;
+										planItemPromFlag = true;
 										if(itemPromFlag || promModel!=null) throw new ServiceException(MessageCode.LOGIC_ERROR,"一个订单只能参加一个促销");
 										promModel = promotionService.selectPromotionByPromNoAndItemNo(orgEntry.getPromotion(),orgEntry.getItemNo());
 									}
@@ -4556,13 +4558,13 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 											orgEntry.setStopStartDate(curEntry.getStopStartDate());
 											orgEntry.setIsStop(curEntry.getIsStop());
 											orgEntry.setEndDispDate(DateUtil.getYestoday(curEntry.getStopStartDate()));
-											//删除大于等于停订日期不需要的日单
+											//删除大于等于停订日期不需要的日单 包括赠品
 											TOrderDaliyPlanItem newPlan = new TOrderDaliyPlanItem();
 											newPlan.setOrderNo(orgOrder.getOrderNo());
 											newPlan.setItemNo(orgEntry.getItemNo());
 											newPlan.setStatus("10");
 											newPlan.setDispDateStr(format.format(curEntry.getStopStartDate()));
-											tOrderDaliyPlanItemMapper.deleteFromDateByStatus(newPlan);
+											tOrderDaliyPlanItemMapper.deleteFromDateByStatusAndProm(newPlan);
 										}
 									}
 									orgEntry.setNewRowFlag("N");
@@ -4582,6 +4584,17 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 					}
 					//有添加的行项目
 					if (cloneCurEntrys != null && cloneCurEntrys.size() > 0) {
+						//行项目参加了促销（单品满赠，单品满减，不能添加新产品）
+						if(planItemPromFlag){
+							if(promModel!=null){
+								if("Z008".equals(promModel.getPromSubType())){
+									throw new ServiceException(MessageCode.LOGIC_ERROR,"该订单参加了单品满赠促销不能添加新的行项目");
+								}
+								if("Z015".equals(promModel.getPromSubType())){
+									throw new ServiceException(MessageCode.LOGIC_ERROR,"该订单参加了单品满减促销不能添加新的行项目");
+								}
+							}
+						}
 						onlyReachType =false;
 						int index = tPlanOrderItemMapper.selectEntriesQtyByOrderCode(record.getOrder().getOrderNo());
 						for (TPlanOrderItem entry : cloneCurEntrys) {
@@ -5587,6 +5600,13 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 		for(TPlanOrderItem entry: curEntrys){
 			if("Y".equals(entry.getIsStop()) && entry.getStopStartDate()!=null){
 				entry.setEndDispDate(entry.getStopStartDate());
+				if (StringUtils.isNotBlank(entry.getPromotion())&&StringUtils.isNotBlank(entry.getPromItemNo())){
+					TPromotion prom = promotionService.selectPromotionByPromNoAndItemNo(entry.getPromotion(),entry.getPromItemNo());
+						if("Z008".equals(prom.getPromSubType())){
+							entry.setPromItemNo("");
+							entry.setPromotion("");
+						}
+					}
 			}
 			entry.setItemNo(orderNo + String.valueOf(index));//行项目编号
 			entry.setRefItemNo(String.valueOf(index));//参考行项目编号
