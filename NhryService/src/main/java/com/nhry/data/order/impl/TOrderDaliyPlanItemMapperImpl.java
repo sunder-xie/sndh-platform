@@ -204,6 +204,11 @@ public class TOrderDaliyPlanItemMapperImpl implements TOrderDaliyPlanItemMapper
 	}
 
 	@Override
+	public List<Map<String, Object>> selectProDayPlanOfSelfOrg(RequireOrderSearch rModel) {
+		return sqlSessionTemplate.selectList("selectProDayPlanOfSelfOrg",rModel);
+	}
+
+	@Override
 	public List<TOrderDaliyPlanItem> selectNoProDayPlanOfDealerBranch(RequireOrderSearch rModel) {
 		return sqlSessionTemplate.selectList("selectNoProDayPlanOfDealerBranch", rModel);
 	}
@@ -211,6 +216,11 @@ public class TOrderDaliyPlanItemMapperImpl implements TOrderDaliyPlanItemMapper
 	@Override
 	public List<TOrderDaliyPlanItem> selectProDayPlanOfDealerBranch40(RequireOrderSearch rModel) {
 		return sqlSessionTemplate.selectList("selectProDayPlanOfDealerBranch40",rModel);
+	}
+
+	@Override
+	public List<Map<String, Object>> selectNoProDayPlanOfDealerBranch70(RequireOrderSearch rModel) {
+		return sqlSessionTemplate.selectList("selectNoProDayPlanOfDealerBranch70",rModel);
 	}
 
 	@Override

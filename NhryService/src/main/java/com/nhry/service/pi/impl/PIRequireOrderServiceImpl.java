@@ -144,17 +144,19 @@ public class PIRequireOrderServiceImpl implements PIRequireOrderService {
 
         List<Map<String, String>> items = new ArrayList<Map<String, String>>();
         TMdBranchEx branchEx = branchExMapper.getBranchEx(ssmSalOrder.getBranchNo());
+        //机构订奶 和 牛奶钱包 的售达方编码 传送ERP
+        orderHeader.setKUNWE2(ssmSalOrder.getOnlineCode());
         String lgort = branch.getLgort();
-//        boolean isZy = false;
         if ("02".equals(branch.getBranchGroup())) {
              items = tSsmSalOrderItemMapper.findDealerItemsForPI(ssmSalOrder.getOrderNo());
             lgort = branchEx.getReslo();
         }else{
             items = tSsmSalOrderItemMapper.findItemsForPI(ssmSalOrder.getOrderNo());
-//            isZy = true;
-            if("40".equals(ssmSalOrder.getPreorderSource())) {
-                orderHeader.setKUNWE2(EnvContant.getSystemConst("online_code"));
-            }
+        }
+        orderHeader.setVTWEG(PIPropertitesUtil.getValue("PI.MasterData.mATQUERY.VKORG13"));
+        if("40".equals(ssmSalOrder.getPreorderSource())) {
+            orderHeader.setKUNWE2(EnvContant.getSystemConst("online_code"));
+            orderHeader.setVTWEG(PIPropertitesUtil.getValue("PI.MasterData.mATQUERY.VKORG17"));
         }
         orderHeader.setLgort(lgort);
         String werks = branchEx.getSupplPlnt();
@@ -169,11 +171,6 @@ public class PIRequireOrderServiceImpl implements PIRequireOrderService {
                 auartType = PIPropertitesUtil.getValue("PI.AUART.ZOR");
             }
         } else {
-//            NHSysCodeItem key = new NHSysCodeItem();
-//            key.setTypeCode("1016");
-//            key.setItemCode(vkorg);
-//            NHSysCodeItem codeItem = sysCodeItemMapper.findCodeItenByCode(key);
-//            if (codeItem != null) {
             if(StringUtils.isNotEmpty(branchEx.getKostl())){
                 orderHeader.setAugru(PIPropertitesUtil.getValue("PI.AUGRU"));
                 orderHeader.setKostl(branchEx.getKostl());

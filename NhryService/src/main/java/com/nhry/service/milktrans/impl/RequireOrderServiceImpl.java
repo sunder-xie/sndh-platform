@@ -414,6 +414,61 @@ public class RequireOrderServiceImpl implements RequireOrderService {
         return null;
     }
 
+    /**
+     * 根据日订单 生成经销商奶站的  orderDate 日期的  不参加促销的销售订单
+     * 此时还没有发送
+     *
+     * @param orderDate
+     * @return
+     */
+    @Override
+    public List<TSsmSalOrder> creatNoPromoSalOrderOfDealerBranch70(Date orderDate) {
+        List<TSsmSalOrder> salOrderList = new ArrayList<TSsmSalOrder>();
+        TSysUser user = userSessionService.getCurrentUser();
+        RequireOrderSearch rModel = new RequireOrderSearch();
+        rModel.setFirstDay(DateUtil.getTomorrow(orderDate));
+        rModel.setSecondDay(DateUtil.getDayAfterTomorrow(orderDate));
+        rModel.setBranchNo(user.getBranchNo());
+        rModel.setSalesOrg(user.getSalesOrg());
+        rModel.setOrderDate(orderDate);
+        List<Map<String,Object>> orgList = tOrderDaliyPlanItemMapper.selectNoProDayPlanOfDealerBranch70(rModel);
+        Map<String,List<TOrderDaliyPlanItem>> orderMap = new HashMap<String,List<TOrderDaliyPlanItem>>();
+        for(Map<String,Object> map : orgList){
+            String orgCode = map.get("orgCode").toString();
+            String matnr = map.get("matnr").toString();
+            BigDecimal qty = (BigDecimal)map.get("qty");
+            if(orderMap.containsKey(orgCode)) {
+                List<TOrderDaliyPlanItem> itemList = orderMap.get(orgCode);
+                TOrderDaliyPlanItem item = new TOrderDaliyPlanItem();
+                item.setQty(qty.intValue());
+                item.setMatnr(matnr);
+                itemList.add(item);
+            }else{
+                List<TOrderDaliyPlanItem> itemList = new ArrayList<TOrderDaliyPlanItem>();
+                TOrderDaliyPlanItem item = new TOrderDaliyPlanItem();
+                item.setQty(qty.intValue());
+                item.setMatnr(matnr);
+                itemList.add(item);
+                orderMap.put(orgCode,itemList);
+            }
+        }
+
+        if (orderMap != null && orderMap.size() > 0) {
+            for(Map.Entry<String,List<TOrderDaliyPlanItem>> entry : orderMap.entrySet() ){
+                String orgCode = entry.getKey();
+                List<TOrderDaliyPlanItem> itemList = entry.getValue();
+                TSsmSalOrder order = createSaleOrder(user, orderDate, "dealer", "", 1, "70",orgCode);
+                for (int i = 0; i < itemList.size(); i++) {
+                    TOrderDaliyPlanItem item = itemList.get(i);
+                    //生成 促销订单行项目
+                    createSaleOrderItem(item, i + 1, order.getOrderNo(), orderDate, "dealer");
+                }
+                salOrderList.add(order);
+            }
+        }
+        return salOrderList;
+    }
+
     @Override
     public TSsmSalOrder creatPromoSalOrderOfDealerBranch40(Date orderDate) {
         TSysUser user = userSessionService.getCurrentUser();
@@ -804,17 +859,58 @@ public class RequireOrderServiceImpl implements RequireOrderService {
                                 entries.put(planItem.getConfirmMatnr(), planItem.getQty());
                             }
                         }
+                        //机构订奶
+                        List<Map<String,Object>> orgList = tOrderDaliyPlanItemMapper.selectProDayPlanOfSelfOrg(rsModel);
+                        Map<String,List<TOrderDaliyPlanItem>> orderMap = new HashMap<String,List<TOrderDaliyPlanItem>>();
+                        for(Map<String,Object> map : orgList){
+                            String orgCode = map.get("orgCode").toString();
+                            String matnr = map.get("matnr").toString();
+                            BigDecimal qty = (BigDecimal)map.get("qty");
+                            if(orderMap.containsKey(orgCode)) {
+                                List<TOrderDaliyPlanItem> itemList = orderMap.get(orgCode);
+                                TOrderDaliyPlanItem item = new TOrderDaliyPlanItem();
+                                item.setQty(qty.intValue());
+                                item.setMatnr(matnr);
+                                itemList.add(item);
+                            }else{
+                                List<TOrderDaliyPlanItem> itemList = new ArrayList<TOrderDaliyPlanItem>();
+                                TOrderDaliyPlanItem item = new TOrderDaliyPlanItem();
+                                item.setQty(qty.intValue());
+                                item.setMatnr(matnr);
+                                itemList.add(item);
+                                orderMap.put(orgCode,itemList);
+                            }
+                        }
+                        List<TSsmSalOrder> salOrderList = new ArrayList<TSsmSalOrder>();
+                        if(orderMap.size()>0){
+                            for(Map.Entry<String,List<TOrderDaliyPlanItem>> entry : orderMap.entrySet()){
+                               String orgCode =  entry.getKey();
+                                List<TOrderDaliyPlanItem> itemOrgs = entry.getValue();
+                                TSsmSalOrder salOrder = null;
+                                createSsmSalOrderAndItmes(search.getOrderDate(),user,itemOrgs,entries,salOrder,"","70",orgCode);
+                                if(salOrder!=null){
+                                    salOrderList.add(salOrder);
+                                }
+                            }
+                        }
                         TSsmSalOrder noprom = null;
                         TSsmSalOrder prom = null;
                         TSsmSalOrder prom40 = null;
                         TSsmSalOrder noprom40 = null;
-                        noprom40 = createSsmSalOrderAndItmes(search, user, itemNo40s, entries, noprom40,"", "40");
-                        prom40 = createSsmSalOrderAndItmes(search, user, item40s, entries, prom40,"free", "40");
-                        prom = createSsmSalOrderAndItmes(search, user, items, entries, prom,"free", "30");
+                        noprom40 = createSsmSalOrderAndItmes(search.getOrderDate(), user, itemNo40s, entries, noprom40,"", "40", "");
+                        prom40 = createSsmSalOrderAndItmes(search.getOrderDate(), user, item40s, entries, prom40,"free", "40", "");
+                        prom = createSsmSalOrderAndItmes(search.getOrderDate(), user, items, entries, prom,"free", "30", "");
                         //生成 不参加促销
                         if (entries != null && entries.size() > 0) {
                             noprom = createSalOrderByGiOrderMap(entries, user, orderDate);
                         }
+
+                        if(salOrderList.size()>0){
+                            for (TSsmSalOrder salOrder : salOrderList){
+                                generateSalesOrderAnduptVouCher(salOrder);
+                            }
+                        }
+
                         if (noprom40!=null){
                             generateSalesOrderAnduptVouCher(noprom40);
                         }
@@ -837,7 +933,7 @@ public class RequireOrderServiceImpl implements RequireOrderService {
         //如果销售订单已存在，判断是否存在发送成功的 如果有 重新发送，如果没有 则提示已经创建所有的销售订单，请直接查询
     }
 
-    private TSsmSalOrder createSsmSalOrderAndItmes(SalOrderDaySearch search, TSysUser user, List<TOrderDaliyPlanItem> item40s, Map<String, Integer> entries, TSsmSalOrder prom40, String free, String preorderSource) {
+    private TSsmSalOrder createSsmSalOrderAndItmes(Date orderDate, TSysUser user, List<TOrderDaliyPlanItem> item40s, Map<String, Integer> entries, TSsmSalOrder prom40, String free, String preorderSource, String onlineCode) {
         if (item40s != null && item40s.size() > 0) {
             boolean hasCreateOrder = false;
             for (int i = 1; i <= item40s.size(); i++) {
@@ -848,7 +944,7 @@ public class RequireOrderServiceImpl implements RequireOrderService {
                 if (entries.containsKey(item.getConfirmMatnr())) {
                     //此时说明有促销产品要生成销售定单  （再判断是否已生成 如果还没则 先生成 并将标记为置为已生成过，保证只生成一个)
                     if (!hasCreateOrder) {
-                        prom40 = createSaleOrder(user, search.getOrderDate(), "branch", free , 2, preorderSource, "");
+                        prom40 = createSaleOrder(user, orderDate, "branch", free , 2, preorderSource, onlineCode);
                         hasCreateOrder = true;
                     }
                     if (item.getQty() >= entries.get(item.getConfirmMatnr())) {
@@ -857,7 +953,7 @@ public class RequireOrderServiceImpl implements RequireOrderService {
                     } else {
                         entries.replace(item.getConfirmMatnr(), entries.get(item.getConfirmMatnr()) - item.getQty());
                     }
-                    createSaleOrderItem(item, i, prom40.getOrderNo(), search.getOrderDate(), "branch");
+                    createSaleOrderItem(item, i, prom40.getOrderNo(), orderDate, "branch");
                 } else {
                     continue;
                 }
@@ -1063,6 +1159,13 @@ public class RequireOrderServiceImpl implements RequireOrderService {
         } else {
             TSsmSalOrder noPromOrder = this.creatNoPromoSalOrderOfDealerBranch(orderDate);
             TSsmSalOrder promOrder = this.creatPromoSalOrderOfDealerBranch(orderDate);
+
+            List<TSsmSalOrder> salOrderList = creatNoPromoSalOrderOfDealerBranch70(orderDate);
+            if(salOrderList.size()>0){
+                for(TSsmSalOrder order : salOrderList) {
+                    generateSalesOrderAnduptVouCher(order);
+                }
+            }
 //            TSsmSalOrder promOrder40 = this.creatPromoSalOrderOfDealerBranch40(orderDate);
 //            TSsmSalOrder noPromOrder40 = this.creatNoPromoSalOrderOfDealerBranch40(orderDate);
 //            if(promOrder40 != null){

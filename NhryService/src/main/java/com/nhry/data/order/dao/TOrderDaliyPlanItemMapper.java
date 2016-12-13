@@ -14,6 +14,7 @@ import java.math.BigDecimal;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public interface TOrderDaliyPlanItemMapper {
 	
@@ -75,9 +76,13 @@ public interface TOrderDaliyPlanItemMapper {
 
     List<TOrderDaliyPlanItem> selectProDayPlanOfDealerBranch(RequireOrderSearch rModel);
 
+    List<Map<String,Object>> selectProDayPlanOfSelfOrg(RequireOrderSearch rModel);
+
     List<TOrderDaliyPlanItem> selectNoProDayPlanOfDealerBranch(RequireOrderSearch rModel);
 
     List<TOrderDaliyPlanItem> selectProDayPlanOfDealerBranch40(RequireOrderSearch rModel);
+
+    List<Map<String,Object>> selectNoProDayPlanOfDealerBranch70(RequireOrderSearch rModel);
 
     List<TOrderDaliyPlanItem> selectNoProDayPlanOfDealerBranch40(RequireOrderSearch rModel);
 
