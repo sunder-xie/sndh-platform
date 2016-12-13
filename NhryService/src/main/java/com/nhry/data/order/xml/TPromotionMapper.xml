@@ -348,11 +348,11 @@
         '购买',
         ROUND(oi.ORIG_NUM),
         '个',
-        a1.MATNR_TXT,
+        a1.SHORT_TXT,
         '赠送',
         ROUND(gi.GIFT_NUM),
         '个',
-        a2.MATNR_TXT,
+        a2.SHORT_TXT,
         '产品'
         ) ITEM_DESCRIBE
         from t_promotion p
@@ -360,8 +360,8 @@
         left join t_promotion_con_item ci on p.PROM_NO = ci.PROM_NO and  ci.ITEM_NO = oi.ITEM_NO
         left join t_promotion_gift_item gi on p.PROM_NO = gi.PROM_NO
         left join t_prom_scope_item si on p.PROM_NO = si.PROM_NO
-        LEFT JOIN t_md_mara a1 on oi.GOOD_NO = a1.MATNR
-        LEFT JOIN t_md_mara a2 on gi.GOOD_NO = a2.MATNR
+        LEFT JOIN t_md_mara_ex a1 ON oi.GOOD_NO = a1.MATNR AND p.SALES_ORG = a1.SALES_ORG
+        LEFT JOIN t_md_mara_ex a2 ON gi.GIFT_NO = a2.MATNR AND p.SALES_ORG = a2.SALES_ORG
         where 1 = 1
         and si.BRANCH_NO = #{branchNo,jdbcType=VARCHAR}
         and oi.GOOD_NO = #{orgMatnr,jdbcType=VARCHAR}
@@ -370,13 +370,12 @@
         and p.PLAN_STOP_TIME &gt;=#{planStopTime,jdbcType=DATE}
        a nd p.BUY_START_TIME &lt;=#{buyStartTime,jdbcType=DATE}
         and p.BUY_STOP_TIME &gt;=#{buyStopTime,jdbcType=DATE}
-        and p.SALES_ORG = a.SALES_ORG
         and p.PROM_SUB_TYPE ='Z008'
     UNION ALL
         select
         p.PROM_NO,oi.ITEM_NO PROM_ITEM_NO,p.PROM_SUB_TYPE,oi.DISCOUNT_AMT,
         CONCAT(
-        a.MATNR_TXT,
+        a.SHORT_TXT,
         '满',
         ci.LOW,
         '元钱减',
@@ -388,9 +387,9 @@
         left join t_promotion_con_item ci on p.PROM_NO = ci.PROM_NO  and ci.ITEM_NO = oi.ITEM_NO
         left join t_promotion_gift_item gi on p.PROM_NO = gi.PROM_NO
         left join t_prom_scope_item si on p.PROM_NO = si.PROM_NO
-        LEFT JOIN t_md_mara a on oi.GOOD_NO = a.MATNR
+        LEFT JOIN t_md_mara_ex a on oi.GOOD_NO = a.MATNR  and p.SALES_ORG = a.SALES_ORG
         where 1 = 1
-            and si.BRANCH_NO = #{branchNo,jdbcType=VARCHAR}
+        and si.BRANCH_NO = #{branchNo,jdbcType=VARCHAR}
         and oi.GOOD_NO = #{orgMatnr,jdbcType=VARCHAR}
         and p.SALES_ORG =  #{salesOrg,jdbcType=VARCHAR}
         and p.PLAN_START_TIME &lt;=#{planStartTime,jdbcType=DATE}
@@ -398,7 +397,6 @@
         and p.BUY_START_TIME &lt;=#{buyStartTime,jdbcType=DATE}
         and p.BUY_STOP_TIME &gt;=#{buyStopTime,jdbcType=DATE}
         and ci.LOW &lt;=#{lowAmt,jdbcType=DECIMAL}
-        and p.SALES_ORG = a.SALES_ORG
         and p.PROM_SUB_TYPE ='Z015'
     </select>
     <select id="selectPromotionsByOrder" resultMap="PromResultMap" parameterType="com.nhry.data.order.domain.TPromotion">

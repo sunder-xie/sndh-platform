@@ -139,4 +139,5 @@ public interface OrderService {
 
 	int daliyBackAmt(DaliyPlanEditModel record);
 
+	int yearCardBackOrder(YearCardBackModel smodel);
 }

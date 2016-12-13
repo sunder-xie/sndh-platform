@@ -1119,6 +1119,30 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 				record.getOrderDateStart()+"至"+record.getOrderDateEnd(),null,null,userSessionService.getCurrentUser(),operationLogMapper);
 		return 1;
 	}
+
+	/**
+	 * 年卡退订 退款金额 前台输入
+	 * 将退款金额退回到订户余额
+	 * @param smodel
+	 * @return
+     */
+
+	@Override
+	public int yearCardBackOrder(YearCardBackModel smodel) {
+		if(StringUtils.isBlank(smodel.getOrderNo()) || smodel.getBackAmt()==null){
+			throw new ServiceException(MessageCode.LOGIC_ERROR,"年卡退订，订单号或者退款金额不能为空");
+		}
+		TPreOrder order = tPreOrderMapper.selectByPrimaryKey(smodel.getOrderNo());
+		if("20".equals(order.getPreorderStat())){
+			throw new ServiceException(MessageCode.LOGIC_ERROR,"暂无法进行此操作，请联系在线客服");
+		}
+		if(order!= null){
+
+		}else{
+			throw new ServiceException(MessageCode.LOGIC_ERROR,"当前订单不存在");
+		}
+		return 0;
+	}
 	
 	/* (non-Javadoc) 
 	* @title: stopOrderForTime
@@ -2431,7 +2455,9 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 		if(entries==null || entries.size()==0){throw  new ServiceException(MessageCode.LOGIC_ERROR,"没有日计划行");}
 		TPreOrder orgOrder = tPreOrderMapper.selectByPrimaryKey(record.getOrderCode());
 		if(orgOrder==null) throw new ServiceException(MessageCode.LOGIC_ERROR,"该订单号不存在");
-
+		if(orgOrder.getDiscountAmt()!=null){
+			throw new ServiceException(MessageCode.LOGIC_ERROR,"该订单为满减订单，不能进行日订单退款!");
+		}
 		if("10".equals(orgOrder.getPaymentmethod())){
 			if(customerBillMapper.getRecBillByOrderNo(orgOrder.getOrderNo())!=null)throw new ServiceException(MessageCode.LOGIC_ERROR,"后付款订单已经有收款单了，请不要修改订单，或者去删除收款单!");
 		}
@@ -2441,7 +2467,16 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 				throw new ServiceException(MessageCode.LOGIC_ERROR,"预付款订单  "+orgOrder.getOrderNo()+"  已经有收款单但是还没完成收款，请不要修改订单，或者去删除收款单!");
 			}
 		}
-
+		//判断是否是年卡订单
+		boolean yearCard = false;
+		if(StringUtils.isNotBlank(orgOrder.getPromotion()) && StringUtils.isNotBlank(orgOrder.getPromotion())){
+			TPromotion prom = promotionService.selectPromotionByPromNoAndItemNo(orgOrder.getPromotion(),orgOrder.getPromItemNo());
+			if(prom!=null){
+				if("Z017".equals(prom.getPromSubType())){
+					yearCard = true;
+				}
+			}
+		}
 		BigDecimal totalAmt = BigDecimal.ZERO;
 		for(TOrderDaliyPlanItem entry : entries){
 			TOrderDaliyPlanItem oldDay = tOrderDaliyPlanItemMapper.selectByDateAndItemNoAndNo(entry);
@@ -2451,6 +2486,7 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 			if(tDispOrderItemMapper.selectItemsByOrgOrderAndItemNo(oldDay.getOrderNo(), oldDay.getItemNo(), oldDay.getDispDate()).size()>0){
 				throw new ServiceException(MessageCode.LOGIC_ERROR,"该日计划已经生成路单，不可以退款!");
 			}
+
 			//记录到单日订单退款表中
 			TOrderDaliyPlanItemBack back = new TOrderDaliyPlanItemBack();
 			back.setOrderNo(orgOrder.getOrderNo());
@@ -2464,22 +2500,30 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 			back.setCreateAt(new Date());
 			back.setCreateBy(user.getLoginName());
 			back.setCreateByTxt(user.getDisplayName());
+			if(yearCard){
+				back.setOrderType("20");
+			}else{
+				back.setOrderType("10");
+			}
 			tOrderDaliyPlanItemBackMapper.insertNewItem(back);
-
 			//计算退款金额
 			totalAmt = totalAmt.add(oldDay.getAmt());
 			//将日订单设为停订
 			oldDay.setStatus("30");
 			tOrderDaliyPlanItemMapper.updateDaliyPlanItem(oldDay);
 		}
-		orgOrder.setInitAmt(orgOrder.getInitAmt().subtract(totalAmt));
-		orgOrder.setCurAmt(orgOrder.getCurAmt().subtract(totalAmt));
-		//更新剩余金额
-		List<TOrderDaliyPlanItem> daliys = tOrderDaliyPlanItemMapper.selectDaliyPlansByOrderNo(orgOrder.getOrderNo());
-		calculateDaliyPlanRemainAmt(orgOrder,daliys);
+		//年卡日计划退款不改变订单金额，日计划每天所剩金额也不重新计算。普通订单更新
+		if(!yearCard) {
+			orgOrder.setInitAmt(orgOrder.getInitAmt().subtract(totalAmt));
+			orgOrder.setCurAmt(orgOrder.getCurAmt().subtract(totalAmt));
+			List<TOrderDaliyPlanItem> daliys = tOrderDaliyPlanItemMapper.selectDaliyPlansByOrderNo(orgOrder.getOrderNo());
+			calculateDaliyPlanRemainAmt(orgOrder, daliys);
+		}
 		tPreOrderMapper.updateBySelective(orgOrder);
 		return 1;
 	}
+
+
 
 	/**
 	 * 判断当前订单能否退订
@@ -4355,10 +4399,16 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 													throw new ServiceException(MessageCode.LOGIC_ERROR,"产品行参加了促销，不能更换产品");
 												}
 											}else if (orderPromFlag){
-												//整单满减  促销订单可以修改同价产品
-												if(orgEntry.getSalesPrice().compareTo(curEntry.getSalesPrice())!=0){
-													throw new ServiceException(MessageCode.LOGIC_ERROR,"该订单参加了整单满减促销，只能更换同价产品");
+												if("Z016".equals(promModel.getPromSubType())){
+													//整单满减  促销订单可以修改同价产品
+													if(orgEntry.getSalesPrice().compareTo(curEntry.getSalesPrice())!=0){
+														throw new ServiceException(MessageCode.LOGIC_ERROR,"该订单参加了整单满减促销，只能更换同价产品");
+													}
 												}
+												if("Z017".equals(promModel.getPromSubType())){
+													throw new ServiceException(MessageCode.LOGIC_ERROR,"年卡订单不能更换产品，更换产品需要先退订，然后重新做年卡订单！！");
+												}
+
 											}
 										}
 										flag = true;
@@ -4448,7 +4498,7 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 											if(orderPromFlag){
 												//整单满减
 												if("Z016".equals(promModel.getPromSubType())){
-													throw new ServiceException(MessageCode.LOGIC_ERROR,"该订单参加了整单满减促销，不能修改数量");
+													throw new ServiceException(MessageCode.LOGIC_ERROR,"该订单参加了整单满减促销，不能修改配送日期");
 												}
 											}
 
