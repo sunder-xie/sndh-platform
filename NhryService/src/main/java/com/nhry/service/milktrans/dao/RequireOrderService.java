@@ -29,6 +29,8 @@ public interface RequireOrderService {
 
     TSsmSalOrder creatNoPromoSalOrderOfDealerBranch(Date requiredDate);
 
+    List<TSsmSalOrder> creatNoPromoSalOrderOfDealerBranch70(Date requiredDate);
+
     TSsmSalOrder creatPromoSalOrderOfDealerBranch40(Date today);
 
     TSsmSalOrder creatNoPromoSalOrderOfDealerBranch40(Date requiredDate);

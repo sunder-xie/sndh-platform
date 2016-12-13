@@ -58,6 +58,18 @@ public class SalesOrderHeader {
      * 线上订单客户编码
      */
     String KUNWE2;
+    /**
+     * 销售渠道
+     */
+    String VTWEG;
+
+    public String getVTWEG() {
+        return VTWEG;
+    }
+
+    public void setVTWEG(String VTWEG) {
+        this.VTWEG = VTWEG;
+    }
 
     public String getKUNWE2() {
         return KUNWE2;

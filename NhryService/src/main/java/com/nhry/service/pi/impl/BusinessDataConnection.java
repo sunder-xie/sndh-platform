@@ -225,16 +225,19 @@ public class BusinessDataConnection {
                 KUNWE2_type1 kunwe2_type1 = new KUNWE2_type1();
                 kunwe2_type1.setKUNWE2_type0(orderHeader.getKUNWE());
                 zssd00010.setKUNWE2(kunwe2_type1);
-                vtweg_type1.setVTWEG_type0(PIPropertitesUtil.getValue("PI.MasterData.mATQUERY.VKORG17"));
-                zssd00010.setVTWEG(vtweg_type1);
+//                vtweg_type1.setVTWEG_type0(PIPropertitesUtil.getValue("PI.MasterData.mATQUERY.VKORG17"));
+//                zssd00010.setVTWEG(vtweg_type1);
             }else{
                 kunnr_type1.setKUNNR_type0(orderHeader.getKUNNR());
                 zssd00010.setKUNNR(kunnr_type1);
                 kunwe_type1.setKUNWE_type0(orderHeader.getKUNWE());
                 zssd00010.setKUNWE(kunwe_type1);
-                vtweg_type1.setVTWEG_type0(PIPropertitesUtil.getValue("PI.MasterData.mATQUERY.VKORG"));
-                zssd00010.setVTWEG(vtweg_type1);
+//                vtweg_type1.setVTWEG_type0(PIPropertitesUtil.getValue("PI.MasterData.mATQUERY.VKORG"));
+//                zssd00010.setVTWEG(vtweg_type1);
             }
+            vtweg_type1.setVTWEG_type0(orderHeader.getVTWEG());
+            zssd00010.setVTWEG(vtweg_type1);
+
             VKORG_type1 vkorg_type1 = new VKORG_type1();
             vkorg_type1.setVKORG_type0(orderHeader.getVKORG());
             zssd00010.setVKORG(vkorg_type1);

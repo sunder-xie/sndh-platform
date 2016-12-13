@@ -644,7 +644,7 @@
 				  LEFT JOIN t_preorder o on 	i.ORDER_NO = o.ORDER_NO
 				  LEFT JOIN t_md_mara_ex e on i.MATNR = e.MATNR  and e.SALES_ORG = #{salesOrg,jdbcType=VARCHAR}
 				  where   1=1
-
+                  and o.PREORDER_SOURCE != '70'
 				  and o.PREORDER_STAT !='30'
 				  and o.PREORDER_STAT !='40'
 				  and i.`STATUS` !='30'
@@ -696,6 +696,29 @@
     GROUP BY i.MATNR
   </select>
 
+  <select id="selectNoProDayPlanOfDealerBranch70" resultMap="hashmap" parameterType="com.nhry.model.milktrans.RequireOrderSearch">
+    SELECT
+          i.MATNR matnr,SUM(i.QTY) qty,o.ONLINE_SOURCE_TYPE orgCode
+      FROM
+          t_mst_order_daliy_plan_item i
+      LEFT JOIN t_preorder o ON i.ORDER_NO = o.ORDER_NO
+      LEFT JOIN t_md_mara_ex e ON i.MATNR = e.MATNR
+      AND e.SALES_ORG = #{salesOrg,jdbcType=VARCHAR}
+      WHERE
+          1 = 1
+      AND o.PREORDER_SOURCE = '70'
+      AND o.PREORDER_STAT != '30'
+      AND o.PREORDER_STAT != '40'
+      AND i.`STATUS` != '30'
+      AND (
+          (
+              e.PRE_DAYS = 2
+              AND i.DISP_DATE = #{secondDay,jdbcType=DATE} ) or (e.PRE_DAYS= 1 and   i.DISP_DATE = #{firstDay,jdbcType=DATE}))
+              AND o.BRANCH_NO = #{branchNo,jdbcType=VARCHAR}
+              GROUP BY
+                  o.ONLINE_SOURCE_TYPE,
+                  i.MATNR
+  </select>
 
   <select id="getDailOrderPromOfSelfBranch" resultType="String" parameterType="com.nhry.model.milktrans.RequireOrderSearch" >
     SELECT
@@ -710,7 +733,29 @@
     and o.SALES_ORG = #{salesOrg,jdbcType=VARCHAR}
     GROUP BY i.PROMOTION_FLAG
   </select>
-
+  <select id="selectProDayPlanOfSelfOrg" resultType="hashmap" parameterType="com.nhry.model.milktrans.RequireOrderSearch">
+    SELECT
+          SUM(di.CONFIRM_QTY) qty,
+          di.CONFIRM_MATNR matnr,
+          o.ONLINE_SOURCE_TYPE orgCode
+      FROM
+          t_mst_disp_order_item di
+      LEFT JOIN t_mst_disp_order ti ON di.ORDER_NO = ti.ORDER_NO
+      LEFT JOIN t_preorder o ON di.ORG_ORDER_NO = o.ORDER_NO
+      LEFT JOIN t_md_mara_ex e ON di.MATNR = e.MATNR
+      AND e.SALES_ORG =  #{salesOrg,jdbcType=VARCHAR}
+      WHERE
+          1 = 1
+      AND ti. STATUS = '20'
+      AND di.CONFIRM_QTY > 0
+      AND o.BRANCH_NO = #{branchNo,jdbcType=VARCHAR}
+      AND o.PREORDER_SOURCE = '70'
+      AND e.SALES_ORG =  #{salesOrg,jdbcType=VARCHAR}
+      AND ti.DISP_DATE = #{orderDate,jdbcType=DATE}
+      GROUP BY
+          o.ONLINE_SOURCE_TYPE,
+          di.CONFIRM_MATNR
+  </select>
   <select id="selectProDayPlanOfSelfBranch" resultMap="BaseResultMap" parameterType="com.nhry.model.milktrans.RequireOrderSearch" >
          SELECT SUM(di.CONFIRM_QTY) QTY,di.CONFIRM_MATNR,p.PROMOTION PROMOTION_FLAG
             from  t_mst_disp_order_item di
@@ -727,7 +772,7 @@
               and o.PREORDER_SOURCE = '40'
             </if>
             <if test="preorderSource != null and preorderSource != '40'">
-              and o.PREORDER_SOURCE != '40'
+              and o.PREORDER_SOURCE != '40' and o.PREORDER_SOURCE != '70'
             </if>
             and e.SALES_ORG = #{salesOrg,jdbcType=VARCHAR}
             and  ti.DISP_DATE = #{orderDate,jdbcType=DATE}
