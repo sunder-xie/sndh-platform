@@ -129,6 +129,13 @@ public class OrderOrgServiceImpl implements OrderOrgService {
     @Override
     public int insertOrgCust(TMdOrgCustKey orgCust) {
         TSysUser user = userSessionService.getCurrentUser();
+        //判断如果该订户下存在某机构下，则不允许条件到其他机构上
+        if(orgCust!=null){
+            TMdOrderOrg orderOrg = orderOrgMapper.selectOrgByCustId(orgCust.getOrgId());
+            if(orderOrg!=null){
+                throw new ServiceException(MessageCode.LOGIC_ERROR,"该订户已经在机构："+orderOrg.getOrgName()+"下，不能进行关联");
+            }
+        }
         TMdOrgCust record = new TMdOrgCust();
         if(orgCust!=null){
             record.setOrgId(orgCust.getOrgId());

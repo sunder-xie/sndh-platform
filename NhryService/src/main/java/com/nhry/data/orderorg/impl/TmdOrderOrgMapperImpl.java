@@ -62,4 +62,14 @@ public class TmdOrderOrgMapperImpl implements TMdOrderOrgMapper {
     public List<TMdOrderOrg> findOrderOrgListForSelect(String salesOrg) {
         return sqlSessionTemplate.selectList("findOrderOrgListForSelect",salesOrg);
     }
+
+    /**
+     * 通过订户编码查询机构名称
+     * 暂时未考虑一个订户会对应多个机构的数据，原因为目前一个订户只能在一个机构下面，因此订户与机构的关系为1对1
+     * @param custId
+     * @return
+     */
+    public TMdOrderOrg selectOrgByCustId(String custId){
+        return sqlSessionTemplate.selectOne("selectOrgByCustId",custId);
+    }
 }
