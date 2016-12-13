@@ -2406,6 +2406,9 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 
 	/**
 	 * 订奶计划中 赠品修改配送日期
+	 * 配送日期  不能在所有正品配送日期之前
+	 * 不能超出 促销产品配送日期范围
+	 * 修改的配送日期当天 不能产生路单
 	 * @param record
 	 * @return
      */
@@ -2415,6 +2418,7 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 		List<TOrderDaliyPlanItem> entries = record.getEntries();
 		if(entries==null || entries.size()==0){throw  new ServiceException(MessageCode.LOGIC_ERROR,"没有日计划行");}
 		try{
+			Date firstDate = tOrderDaliyPlanItemMapper.selectFirstDispDate(record.getOrderCode());
 			for(TOrderDaliyPlanItem plan : entries){
 				TOrderDaliyPlanItem oldDay = tOrderDaliyPlanItemMapper.selectByDateAndItemNoAndNo(plan);
 				TPlanOrderItem item = tPlanOrderItemMapper.selectEntryByEntryNo(oldDay.getItemNo());
@@ -2427,9 +2431,14 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 				if(prom == null) throw new ServiceException(MessageCode.LOGIC_ERROR,oldDay.getPromotionFlag()+" 该促销号不存在，请维护！");
 				if(DateUtil.dateAfter(plan.getDispDate(),prom.getPlanStopTime())) throw new ServiceException(MessageCode.LOGIC_ERROR,"赠品的配送日期超出促销的截止配送日期");
 				if(DateUtil.dateAfter(prom.getPlanStartTime(),plan.getDispDate())) throw new ServiceException(MessageCode.LOGIC_ERROR,"赠品的配送日期超出促销的开始配送日期");
+				if(DateUtil.dateAfter(firstDate,plan.getDispDate())) throw new ServiceException(MessageCode.LOGIC_ERROR,"订单没配送正品之前不能配送赠品");
 				//判断这天有没有产生路单
+				if(tDispOrderItemMapper.selectItemsByOrgOrderAndItemNo(plan.getOrderNo(), plan.getItemNo(), oldDay.getDispDate()).size()>0){
+					throw new ServiceException(MessageCode.LOGIC_ERROR,format.format(oldDay.getDispDate())+"的日计划已经生成路单，不可以修改!");
+				}
+				//判断修改后那天有没有产生路单
 				if(tDispOrderItemMapper.selectItemsByOrgOrderAndItemNo(plan.getOrderNo(), plan.getItemNo(), plan.getDispDate()).size()>0){
-					throw new ServiceException(MessageCode.LOGIC_ERROR,"该日计划已经生成路单，不可以修改!");
+					throw new ServiceException(MessageCode.LOGIC_ERROR,format.format(plan.getDispDate())+"的日计划已经生成路单，不可以修改到这一天!");
 				}
 				oldDay.setDispDate(plan.getDispDate());
 				oldDay.setReachTimeType(plan.getReachTimeType());
