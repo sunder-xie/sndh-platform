@@ -696,7 +696,7 @@
     GROUP BY i.MATNR
   </select>
 
-  <select id="selectNoProDayPlanOfDealerBranch70" resultMap="hashmap" parameterType="com.nhry.model.milktrans.RequireOrderSearch">
+  <select id="selectNoProDayPlanOfDealerBranch70" resultType="java.util.HashMap" parameterType="com.nhry.model.milktrans.RequireOrderSearch">
     SELECT
           i.MATNR matnr,SUM(i.QTY) qty,o.ONLINE_SOURCE_TYPE orgCode
       FROM
@@ -733,7 +733,7 @@
     and o.SALES_ORG = #{salesOrg,jdbcType=VARCHAR}
     GROUP BY i.PROMOTION_FLAG
   </select>
-  <select id="selectProDayPlanOfSelfOrg" resultType="hashmap" parameterType="com.nhry.model.milktrans.RequireOrderSearch">
+  <select id="selectProDayPlanOfSelfOrg" resultType="java.util.HashMap" parameterType="com.nhry.model.milktrans.RequireOrderSearch">
     SELECT
           SUM(di.CONFIRM_QTY) qty,
           di.CONFIRM_MATNR matnr,
