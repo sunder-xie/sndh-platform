@@ -144,4 +144,6 @@ public interface TOrderDaliyPlanItemMapper {
     List<TOrderDaliyPlanItem> selectPromDaliyBetweenDaysAndNo(String orderNo,Date startDate, Date endDate);
 
     int  updateDaliyPlanItemStatusBatch(HashMap<String, Object> map);
+
+    Date selectFirstDispDate(String orderNo);
 }

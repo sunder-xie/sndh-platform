@@ -947,6 +947,13 @@
     SELECT IFNULL(sum(AMT),0) FROM t_mst_order_daliy_plan_item WHERE DISP_DATE &gt;= #{backDate,jdbcType=DATE} AND ORDER_NO = #{orderNo,jdbcType=VARCHAR} AND STATUS = '10'
   </select>
 
+  <select id="selectFirstDispDateByOrder" resultType="DATE" parameterType="java.lang.String">
+    SELECT
+    MIN(DISP_DATE)
+    FROM t_mst_order_daliy_plan_item i
+    WHERE  i.ORDER_NO = #{orderNo,jdbcType=VARCHAR}
+    and i.`STATUS` != '30'
+  </select>
 
   <select id="selectEndDispDate" resultType="DATE" parameterType="java.lang.String">
     SELECT

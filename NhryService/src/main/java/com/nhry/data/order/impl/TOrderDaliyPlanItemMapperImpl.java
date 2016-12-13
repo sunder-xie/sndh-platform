@@ -296,6 +296,11 @@ public class TOrderDaliyPlanItemMapperImpl implements TOrderDaliyPlanItemMapper
 	}
 
 	@Override
+	public Date selectFirstDispDate(String orderNo) {
+		return sqlSessionTemplate.selectOne("selectFirstDispDate",orderNo);
+	}
+
+	@Override
 	public TOrderDaliyPlanItem selectByDateAndItemNoAndNo(TOrderDaliyPlanItem plan) {
 		return sqlSessionTemplate.selectOne("selectByDateAndItemNoAndNo",plan);
 	}
