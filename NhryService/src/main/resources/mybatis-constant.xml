@@ -11,17 +11,17 @@
 	<!-- 采购组织 -->
 	<sql id="purchase_org">'1004'</sql>
 	<!-- 工厂 -->
-	<sql id="factory">1005</sql>
+	<sql id="factory">'1005'</sql>
 	<!-- 订户来源 -->
-	<sql id="vip_src">1006</sql>
+	<sql id="vip_src">'1006'</sql>
 	<!-- 订户类型 -->
-	<sql id="vip_type">1007</sql>
+	<sql id="vip_type">'1007'</sql>
 	<!-- 价格组类型 -->
-	<sql id="price_type">1008</sql>
+	<sql id="price_type">'1008'</sql>
 	<!-- 奶瓶规格 -->
-	<sql id="bot_type">1009</sql>
+	<sql id="bot_type">'1009'</sql>
 	<!-- 收款方式 -->
-	<sql id="payment_type">1010</sql>
+	<sql id="payment_type">'1010'</sql>
 	<!-- 库存地点-->
 	<sql id="storage_location">1011</sql>
 	<!-- 系统资源类型 -->
