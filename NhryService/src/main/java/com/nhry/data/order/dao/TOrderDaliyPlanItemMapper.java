@@ -151,7 +151,7 @@ public interface TOrderDaliyPlanItemMapper {
 
     int  updateDaliyPlanItemStatusBatch(HashMap<String, Object> map);
 
-    Date selectFirstDispDate(String orderNo);
+    Date selectFirstDispDateByOrder(String orderNo);
 
     TMstYearCardCompOrder selectYearCardBackOrder(String orderNo,Date backDate);
 }

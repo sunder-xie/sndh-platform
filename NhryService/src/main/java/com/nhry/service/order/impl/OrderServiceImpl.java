@@ -2457,7 +2457,7 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 		List<TOrderDaliyPlanItem> entries = record.getEntries();
 		if(entries==null || entries.size()==0){throw  new ServiceException(MessageCode.LOGIC_ERROR,"没有日计划行");}
 		try{
-			Date firstDate = tOrderDaliyPlanItemMapper.selectFirstDispDate(record.getOrderCode());
+			Date firstDate = tOrderDaliyPlanItemMapper.selectFirstDispDateByOrder(record.getOrderCode());
 			for(TOrderDaliyPlanItem plan : entries){
 				TOrderDaliyPlanItem oldDay = tOrderDaliyPlanItemMapper.selectByDateAndItemNoAndNo(plan);
 				TPlanOrderItem item = tPlanOrderItemMapper.selectEntryByEntryNo(oldDay.getItemNo());
