@@ -334,7 +334,7 @@ public class PIVipInfoDataServiceImpl implements PIVipInfoDataService {
                         vipCustInfo.setVipMp(vipTel);
                         vipCustInfoService.updateSapNo(vipCustInfo);
                     } else {
-                        logger.info("会员账号创建失败！返回状态是：" + flag );
+                        logger.info("会员账号创建失败！返回状态是：" + flag + ";消息：" + msg +";手机号："+vipCustInfo.getMp());
                         result.setSuccess(false);
                     }
                     logger.info(msg);
