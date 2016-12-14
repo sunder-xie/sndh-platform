@@ -277,6 +277,17 @@ public class PromotionServiceImpl extends BaseService implements PromotionServic
 		return tPromotionMapper.selectPromotionByPromNoAndItemNo(record);
 	}
 
+	@Override
+	public List<TPromotionModel> selYearCardPromBySalesOrg() {
+		TSysUser user = userSessionService.getCurrentUser();
+		if(user ==null) throw new ServiceException(MessageCode.LOGIC_ERROR,"获取不到当前登录人");
+		if(StringUtils.isBlank(user.getSalesOrg())) throw new ServiceException(MessageCode.LOGIC_ERROR,"当前登录人不存在销售组织");
+
+		TPromotion param = new TPromotion();
+		param.setSalesOrg(user.getSalesOrg());
+		return tPromotionMapper.selYearCardPromBySalesOrg(param);
+	}
+
 	//行项目促销判断
 	@Override
  	public void calculateEntryPromotionForStop(TPlanOrderItem entry){

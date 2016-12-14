@@ -63,7 +63,13 @@
 	<bean id="tOrderDaliyPlanItemBackMapper" class="com.nhry.data.order.impl.TOrderDaliyPlanItemBackMapperImpl">
 		<property name="sqlSessionTemplate" ref="dynamicSqlSessionTemplate"></property>
 	</bean>
+
 	<!--日订单退款表结束-->
+	<!--年卡补偿单据-->
+	<bean id="tYearCardCompOrderMapper" class="com.nhry.data.order.impl.TYearCardCompOrderMapperImpl">
+		<property name="sqlSessionTemplate" ref="dynamicSqlSessionTemplate"></property>
+	</bean>
+	<!--年卡补偿单据结束-->
 	<!-- 订单信息 -->
 	<bean id="tPreOrderMapper" class="com.nhry.data.order.impl.TPreOrderMapperImpl">
 		<property name="sqlSessionTemplate" ref="dynamicSqlSessionTemplate"></property>
@@ -98,6 +104,7 @@
 		<property name="branchEmpMapper" ref="branchEmpMapper"></property>
 		<property name="codeItemMapper" ref="codeItemMapper"></property>
 		<property name="tOrderDaliyPlanItemBackMapper" ref="tOrderDaliyPlanItemBackMapper"/>
+		<property name="tYearCardCompOrderMapper" ref="tYearCardCompOrderMapper"/>
 		<property name="piVipPointCreateBatService" ref="piVipPointCreateBatService"/>
 	</bean>
 	<bean id="tPromotionMapper" class="com.nhry.data.order.impl.TPromotionMapperImpl">

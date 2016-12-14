@@ -1,0 +1,146 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.nhry.data.order.dao.TYearCardCompOrderMapper" >
+  <resultMap id="BaseResultMap" type="com.nhry.data.order.domain.TMstYearCardCompOrder" >
+    <result column="ORDER_NO" property="orderNo" jdbcType="VARCHAR" />
+    <result column="VIP_CUST_NO" property="vipCustNo" jdbcType="VARCHAR" />
+    <result column="CUST_ADDRESS" property="custAddress" jdbcType="VARCHAR" />
+    <result column="CUST_MP" property="custMp" jdbcType="VARCHAR" />
+    <result column="MATNR_TXT" property="matnrTxt" jdbcType="VARCHAR" />
+    <result column="DISP_DATE" property="dispDate" jdbcType="DATE" />
+    <result column="DALIY_QTY" property="daliyQty" jdbcType="DECIMAL" />
+    <result column="PRE_TOTAL" property="preTotal" jdbcType="INTEGER" />
+    <result column="REAL_TOTAL" property="realTotal" jdbcType="INTEGER" />
+    <result column="INIT_AMT" property="initAmt" jdbcType="DECIMAL" />
+    <result column="PRE_DISCOUNT" property="preDiscount" jdbcType="DECIMAL" />
+    <result column="REAL_DISCOUNT" property="realDiscount" jdbcType="DECIMAL" />
+    <result column="SH_REFUND" property="shRefund" jdbcType="DECIMAL" />
+    <result column="REAL_REFUND" property="realRefund" jdbcType="DECIMAL" />
+    <result column="DIFFERENCE" property="difference" jdbcType="DECIMAL" />
+    <result column="CREATE_AT" property="createAt" jdbcType="TIMESTAMP" />
+    <result column="CREATE_BY" property="createBy" jdbcType="VARCHAR" />
+    <result column="CREATE_BY_TXT" property="createByTxt" jdbcType="VARCHAR" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    ORDER_NO, VIP_CUST_NO, CUST_ADDRESS,CUST_MP
+    MATNR_TXT, DISP_DATE, DALIY_QTY, PRE_TOTAL, REAL_TOTAL, INIT_AMT,PRE_DISCOUNT,
+    REAL_DISCOUNT,SH_REFUND,REAL_REFUND,DIFFERENCE,CREATE_AT, CREATE_BY, CREATE_BY_TXT
+  </sql>
+
+  <insert id="insertNewItem" parameterType="com.nhry.data.order.domain.TMstYearCardCompOrder" >
+    insert into t_mst_year_card_com_order
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="orderNo != null" >
+        ORDER_NO,
+      </if>
+      <if test="vipCustNo != null" >
+        VIP_CUST_NO,
+      </if>
+      <if test="custAddress != null" >
+        CUST_ADDRESS,
+      </if>
+      <if test="custMp != null" >
+        CUST_MP,
+      </if>
+      <if test="matnrTxt != null" >
+        MATNR_TXT,
+      </if>
+      <if test="dispDate != null" >
+        DISP_DATE,
+      </if>
+      <if test="daliyQty != null" >
+        DALIY_QTY,
+      </if>
+      <if test="preTotal != null" >
+        PRE_TOTAL,
+      </if>
+      <if test="realTotal != null" >
+        REAL_TOTAL,
+      </if>
+      <if test="initAmt != null" >
+        INIT_AMT,
+      </if>
+      <if test="preDiscount != null" >
+        PRE_DISCOUNT,
+      </if>
+      <if test="realDiscount != null" >
+        REAL_DISCOUNT,
+      </if>
+      <if test="shRefund != null" >
+        SH_REFUND,
+      </if>
+      <if test="realRefund != null" >
+        REAL_REFUND,
+      </if>
+      <if test="difference != null" >
+        DIFFERENCE,
+      </if>
+      <if test="createAt != null" >
+        CREATE_AT,
+      </if>
+      <if test="createBy != null" >
+        CREATE_BY,
+      </if>
+      <if test="createByTxt != null" >
+        CREATE_BY_TXT,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="orderNo != null" >
+        #{orderNo,jdbcType=VARCHAR},
+      </if>
+      <if test="vipCustNo != null" >
+        #{vipCustNo,jdbcType=VARCHAR},
+      </if>
+      <if test="custAddress != null" >
+        #{custAddress,jdbcType=VARCHAR},
+      </if>
+      <if test="custMp != null" >
+        #{custMp,jdbcType=VARCHAR},
+      </if>
+      <if test="matnrTxt != null" >
+        #{matnrTxt,jdbcType=VARCHAR},
+      </if>
+      <if test="dispDate != null" >
+        #{dispDate,jdbcType=DATE},
+      </if>
+      <if test="daliyQty != null" >
+        #{daliyQty,jdbcType=DECIMAL},
+      </if>
+      <if test="preTotal != null" >
+        #{preTotal,jdbcType=DECIMAL},
+      </if>
+      <if test="realTotal != null" >
+        #{realTotal,jdbcType=DECIMAL},
+      </if>
+      <if test="initAmt != null" >
+        #{initAmt,jdbcType=DECIMAL},
+      </if>
+      <if test="preDiscount != null" >
+        #{preDiscount,jdbcType=DECIMAL},
+      </if>
+      <if test="realDiscount != null" >
+        #{realDiscount,jdbcType=DECIMAL},
+      </if>
+      <if test="shRefund != null" >
+        #{shRefund,jdbcType=DECIMAL},
+      </if>
+      <if test="realRefund != null" >
+        #{realRefund,jdbcType=DECIMAL},
+      </if>
+      <if test="difference != null" >
+        #{difference,jdbcType=DECIMAL},
+      </if>
+      <if test="createAt != null" >
+        #{createAt,jdbcType=TIMESTAMP},
+      </if>
+      <if test="createBy != null" >
+        #{createBy,jdbcType=VARCHAR},
+      </if>
+      <if test="createByTxt != null" >
+        #{createByTxt,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+
+</mapper>

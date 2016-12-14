@@ -25,4 +25,7 @@ public interface TPromotionMapper {
     List<TPromotionModel> selectPromotionByEntryAndAmt(TPromotion pro);
     //获取符合订单的促销，整单满减，年卡
     List<TPromotionModel> selectPromotionsByOrder(TPromotion pro);
+
+    //获取销售组织下  年卡，半年卡，季卡信息
+    List<TPromotionModel> selYearCardPromBySalesOrg(TPromotion prom);
 }

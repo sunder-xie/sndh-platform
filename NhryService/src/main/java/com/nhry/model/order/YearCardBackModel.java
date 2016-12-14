@@ -2,13 +2,41 @@ package com.nhry.model.order;
 
 
 import java.math.BigDecimal;
+import java.util.Date;
 
 /**
  * Created by gongjk on 2016/12/13.
  */
 public class YearCardBackModel {
-    private BigDecimal backAmt;
-    private String orderNo;
+    private Date backDate;
+    private BigDecimal shRefund;         //应该退款
+    private BigDecimal backAmt;         //实际退款
+    private String orderNo;             //订单号
+    private BigDecimal realDiscount;  //实际折扣
+
+    public BigDecimal getShRefund() {
+        return shRefund;
+    }
+
+    public void setShRefund(BigDecimal shRefund) {
+        this.shRefund = shRefund;
+    }
+
+    public Date getBackDate() {
+        return backDate;
+    }
+
+    public void setBackDate(Date backDate) {
+        this.backDate = backDate;
+    }
+
+    public BigDecimal getRealDiscount() {
+        return realDiscount;
+    }
+
+    public void setRealDiscount(BigDecimal realDiscount) {
+        this.realDiscount = realDiscount;
+    }
 
     public BigDecimal getBackAmt() {
         return backAmt;

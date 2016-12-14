@@ -14,6 +14,7 @@ import com.nhry.data.config.domain.NHSysCodeItem;
 import com.nhry.data.milk.dao.TDispOrderItemMapper;
 import com.nhry.data.milk.dao.TDispOrderMapper;
 import com.nhry.data.milk.domain.TDispOrderItem;
+import com.nhry.data.order.dao.TYearCardCompOrderMapper;
 import com.nhry.data.order.dao.TOrderDaliyPlanItemBackMapper;
 import com.nhry.data.order.dao.TOrderDaliyPlanItemMapper;
 import com.nhry.data.order.dao.TPlanOrderItemMapper;
@@ -69,6 +70,11 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 	private TMdBranchEmpMapper branchEmpMapper;
 	private NHSysCodeItemMapper codeItemMapper;
 	private TOrderDaliyPlanItemBackMapper tOrderDaliyPlanItemBackMapper;
+   private TYearCardCompOrderMapper tYearCardCompOrderMapper;
+
+	public void settYearCardCompOrderMapper(TYearCardCompOrderMapper tYearCardCompOrderMapper) {
+		this.tYearCardCompOrderMapper = tYearCardCompOrderMapper;
+	}
 
 	public void settOrderDaliyPlanItemBackMapper(TOrderDaliyPlanItemBackMapper tOrderDaliyPlanItemBackMapper) {
 		this.tOrderDaliyPlanItemBackMapper = tOrderDaliyPlanItemBackMapper;
@@ -1129,15 +1135,38 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 
 	@Override
 	public int yearCardBackOrder(YearCardBackModel smodel) {
-		if(StringUtils.isBlank(smodel.getOrderNo()) || smodel.getBackAmt()==null){
-			throw new ServiceException(MessageCode.LOGIC_ERROR,"年卡退订，订单号或者退款金额不能为空");
+		if(StringUtils.isBlank(smodel.getOrderNo()) || smodel.getBackAmt()==null || smodel.getRealDiscount()==null){
+			throw new ServiceException(MessageCode.LOGIC_ERROR,"年卡退订，订单号、实际退款金额、实际折扣不能为空");
 		}
 		TPreOrder order = tPreOrderMapper.selectByPrimaryKey(smodel.getOrderNo());
 		if("20".equals(order.getPreorderStat())){
 			throw new ServiceException(MessageCode.LOGIC_ERROR,"暂无法进行此操作，请联系在线客服");
 		}
+		TSysUser user = userSessionService.getCurrentUser();
 		if(order!= null){
-
+			if(StringUtils.isNotBlank(order.getPromotion())&&StringUtils.isNotBlank(order.getPromItemNo())){
+				TPromotion prom = promotionService.selectPromotionByPromNoAndItemNo(order.getPromotion(),order.getPromItemNo());
+				if(prom!=null){
+					//年卡订单
+					if("Z017".equals(prom.getPromSubType())){
+						TMstYearCardCompOrder yOrder = tOrderDaliyPlanItemMapper.selectYearCardBackOrder(order.getOrderNo(),smodel.getBackDate());
+						if(yOrder!=null){
+							yOrder.setCreateAt(new Date());
+							yOrder.setCreateBy(user.getLoginName());
+							yOrder.setCreateByTxt(user.getDisplayName());
+							yOrder.setShRefund(smodel.getShRefund());
+							yOrder.setRealRefund(smodel.getBackAmt());
+							yOrder.setRealDiscount(smodel.getRealDiscount());
+							yOrder.setBackDate(smodel.getBackDate());
+							tYearCardCompOrderMapper.addYearCardCompOrder(yOrder);
+						}
+					}else{
+						throw new ServiceException(MessageCode.LOGIC_ERROR,"改折扣不属于年卡");
+					}
+				}else{
+					throw new ServiceException(MessageCode.LOGIC_ERROR,"不存在该年卡信息");
+				}
+			}
 		}else{
 			throw new ServiceException(MessageCode.LOGIC_ERROR,"当前订单不存在");
 		}
@@ -1203,6 +1232,16 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 						OperationLogUtil.saveHistoryOperation(order.getOrderNo(),LogType.ORDER,OrderLogEnum.JG_BACK_ORDER,null,null,
 								null,backAmt.toString(),null,null,userSessionService.getCurrentUser(),operationLogMapper);
 					}else{
+						// 如果有促销
+						if(StringUtils.isNotBlank(order.getPromotion())&&StringUtils.isNotBlank(order.getPromItemNo())){
+							TPromotion prom = promotionService.selectPromotionByPromNoAndItemNo(order.getPromotion(),order.getPromItemNo());
+							if(prom!=null){
+								//年卡订单
+								if("Z017".equals(prom.getPromSubType())){
+
+								}
+							}
+						}
 						//如果是满减促销，退款等于  订单收款金额-用去的金额（结果相当于没有参加促销）
 						if(order.getDiscountAmt()!=null){
 							if(order.getDiscountAmt()!=null && !"".equals(order.getDiscountAmt())){
@@ -4551,6 +4590,9 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 											if(planItemPromFlag){
 												//行项目参加满赠  判断赠品是否已经配送或者 在停订日期之前有赠品日订单
 												// 如果没有可以停订，但是该产品行不再参加满赠
+												if(promModel==null){
+													throw new ServiceException(MessageCode.LOGIC_ERROR,"该订单有行项目参加了促销，其他行项目不能停订");
+												}
 												if("Z008".equals(promModel.getPromSubType())){
 													if(StringUtils.isNotBlank(orgEntry.getPromotion()) && StringUtils.isNotBlank(orgEntry.getPromItemNo())){
 														//赠品是否在停订之前已经配送 或者有赠品日订单

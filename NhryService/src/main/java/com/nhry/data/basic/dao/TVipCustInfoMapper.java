@@ -125,4 +125,6 @@ public interface TVipCustInfoMapper {
     public int updateVipMp(TVipCustInfo vipCustInfo);
 
     PageInfo findCustByOrg(CustQueryModel cust);
+
+    PageInfo findCustWithoutOrg(CustQueryModel cust);
 }

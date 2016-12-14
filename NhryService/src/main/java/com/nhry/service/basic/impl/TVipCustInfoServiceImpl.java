@@ -815,4 +815,18 @@ public class TVipCustInfoServiceImpl extends BaseService implements TVipCustInfo
 		}
 		return this.tmdVipcust.findCustByOrg(cust);
 	}
+	@Override
+	public PageInfo findCustWithoutOrg(CustQueryModel cust) {
+		TSysUser user = userSessionService.getCurrentUser();
+		cust.setSalesOrg(user.getSalesOrg());
+		if(StringUtils.isEmpty(cust.getStationType()) && !StringUtils.isEmpty(user.getDealerId())){
+			//经销商内勤，只能看自己本经销商底下所有的奶站的订户
+			cust.setStationType("02");
+			cust.setDealerNo(user.getDealerId());
+		}
+		if(StringUtils.isEmpty(cust.getStation()) && !StringUtils.isEmpty(user.getBranchNo())){
+			cust.setStation(user.getBranchNo());
+		}
+		return this.tmdVipcust.findCustWithoutOrg(cust);
+	}
 }
