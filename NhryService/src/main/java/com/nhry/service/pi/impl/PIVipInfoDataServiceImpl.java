@@ -315,6 +315,7 @@ public class PIVipInfoDataServiceImpl implements PIVipInfoDataService {
                     String flag = message.getFLAG().getFLAG_type0().toString();
                     String msg = message.getMSG().getMSG_type0().toString();
                     result.setMessage(msg);
+                    vipno = response.getEV_MEMB_GUID().getEV_MEMB_GUID_type0().toString();
                     if (MESSAGE_FLAG.equals(flag)) {
                         result.setSuccess(true);
                         EvMemb evMemb = new EvMemb();
@@ -334,7 +335,7 @@ public class PIVipInfoDataServiceImpl implements PIVipInfoDataService {
                         vipCustInfo.setVipMp(vipTel);
                         vipCustInfoService.updateSapNo(vipCustInfo);
                     } else {
-                        logger.info("会员账号创建失败！返回状态是：" + flag + ";消息：" + msg +";手机号："+vipCustInfo.getMp());
+                        logger.info("会员账号创建失败！返回状态是：" + flag + ";消息：" + msg +";手机号："+vipCustInfo.getMp()+";GUID"+vipno);
                         result.setSuccess(false);
                     }
                     logger.info(msg);
