@@ -41,4 +41,6 @@ public interface PromotionService {
 
 	List<TPromotionModel> selectProCreatOrder(OrderCreateModel record);
 	public TPromotion selectPromotionByPromNoAndItemNo(String entry,String itemNo);
+
+	List<TPromotionModel> selYearCardPromBySalesOrg();
 }

@@ -4,6 +4,7 @@ import com.github.pagehelper.PageInfo;
 import com.nhry.common.datasource.DynamicSqlSessionTemplate;
 import com.nhry.data.milk.domain.TDispOrderItem;
 import com.nhry.data.order.dao.TOrderDaliyPlanItemMapper;
+import com.nhry.data.order.domain.TMstYearCardCompOrder;
 import com.nhry.data.order.domain.TOrderDaliyPlanItem;
 import com.nhry.data.order.domain.TOrderDaliyPlanItemKey;
 import com.nhry.data.order.domain.TPreOrder;
@@ -308,6 +309,14 @@ public class TOrderDaliyPlanItemMapperImpl implements TOrderDaliyPlanItemMapper
 	@Override
 	public Date selectFirstDispDate(String orderNo) {
 		return sqlSessionTemplate.selectOne("selectFirstDispDate",orderNo);
+	}
+
+	@Override
+	public TMstYearCardCompOrder selectYearCardBackOrder(String orderNo,Date backDate) {
+		TOrderDaliyPlanItem item = new TOrderDaliyPlanItem();
+		item.setOrderNo(orderNo);
+		item.setDispDate(backDate);
+		return sqlSessionTemplate.selectOne("selectYearCardBackOrder",item);
 	}
 
 	@Override

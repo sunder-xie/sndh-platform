@@ -52,9 +52,18 @@ public class PromotionResource extends BaseResource {
 	@Path("/selectProCreatOrder")
 	@Produces(MediaType.APPLICATION_JSON)
 	@Consumes(MediaType.APPLICATION_JSON)
-	@ApiOperation(value = "/selectProCreatOrder", response = TPromotion.class, notes = "创建订单前，获取符合的促销")
+	@ApiOperation(value = "/selectProCreatOrder", response = TPromotion.class, notes = "创建非年卡订单前，获取符合的促销")
 	public Response selectProCreatOrder(@ApiParam(required=true,name="smodel",value="OrderCreateModel") OrderCreateModel record ){
 		return convertToRespModel(MessageCode.NORMAL, null, promotionService.selectProCreatOrder(record));
+	}
+
+	@POST
+	@Path("/selYearCardPromCreatOrder")
+	@Produces(MediaType.APPLICATION_JSON)
+	@Consumes(MediaType.APPLICATION_JSON)
+	@ApiOperation(value = "/selYearCardPromCreatOrder", response = TPromotion.class, notes = "获取当前登录人所在的销售组织下的所有年卡信息")
+	public Response selYearCardPromCreatOrder(){
+		return convertToRespModel(MessageCode.NORMAL, null, promotionService.selYearCardPromBySalesOrg());
 	}
 	
 	@POST

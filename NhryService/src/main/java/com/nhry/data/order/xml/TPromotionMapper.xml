@@ -30,6 +30,7 @@
         <result column="DISCOUNT_AMT" jdbcType="DECIMAL" property="discountAmt"/>
         <result column="LOW_AMT" jdbcType="DECIMAL" property="lowAmt"/>
         <result column="ITEM_NO" jdbcType="VARCHAR" property="itemNo"/>
+        <result column="YEAR_TYPE" jdbcType="VARCHAR" property="yearType"/>
     </resultMap>
 
 
@@ -427,5 +428,17 @@
         and p.SALES_ORG = #{salesOrg,jdbcType=VARCHAR}
         and si.BRANCH_NO = #{branchNo,jdbcType=VARCHAR}
     </select>
-
+    <select id="selYearCardPromBySalesOrg" resultMap="BaseResultMap" parameterType="com.nhry.data.order.domain.TPromotion">
+         select
+        p.PROM_SUB_TYPE,oi.GOOD_NO YEAR_TYPE,oi.ITEM_NO,oi.DISCOUNT_AMT,oi.ORIG_NUM ORG_QTY,
+        p.PROM_NO, p.PROM_DES, p.PROM_TYPE,
+        p.SALES_ORG, p.SALES_DIST, p.CUSTOMER_TYPE,
+        p.PROM_STAT, p.PLAN_START_TIME, p.PLAN_STOP_TIME,
+        p.BUY_START_TIME, p.BUY_STOP_TIME
+        from t_promotion p
+        left join t_promotion_orig_item oi on p.PROM_NO = oi.PROM_NO
+        where 1 = 1
+        and p.PROM_SUB_TYPE = 'Z017'
+        and p.SALES_ORG = #{salesOrg,jdbcType=VARCHAR}
+    </select>
 </mapper>

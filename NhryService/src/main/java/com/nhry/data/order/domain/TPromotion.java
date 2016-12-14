@@ -1,7 +1,5 @@
 package com.nhry.data.order.domain;
 
-import org.springframework.format.annotation.DateTimeFormat;
-
 import java.math.BigDecimal;
 import java.util.Date;
 
@@ -63,6 +61,16 @@ public class TPromotion {
     private BigDecimal lowAmt;
 
     private String itemNo;
+
+    private String yearType;
+
+    public String getYearType() {
+        return yearType;
+    }
+
+    public void setYearType(String yearType) {
+        this.yearType = yearType;
+    }
 
     public String getGiftUnit()
 	{

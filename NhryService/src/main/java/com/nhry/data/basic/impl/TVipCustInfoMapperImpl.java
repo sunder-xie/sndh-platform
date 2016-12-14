@@ -126,4 +126,8 @@ public class TVipCustInfoMapperImpl implements TVipCustInfoMapper {
 	public PageInfo findCustByOrg(CustQueryModel cust) {
 		return sqlSessionTemplate.selectListByPages("findCustByOrg",cust, Integer.parseInt(cust.getPageNum()), Integer.parseInt(cust.getPageSize()));
 	}
+	@Override
+	public PageInfo findCustWithoutOrg(CustQueryModel cust) {
+		return sqlSessionTemplate.selectListByPages("findCustWithoutOrg",cust, Integer.parseInt(cust.getPageNum()), Integer.parseInt(cust.getPageSize()));
+	}
 }

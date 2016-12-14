@@ -1283,4 +1283,39 @@
       and LOCATE(ITEM_NO,<foreach item="item" collection="itemNos" separator="," open="'" close="'" index="">${item}</foreach>)>0
     </if>
   </update>
+
+
+
+  <select id="selectYearCardBackOrder" resultType="hashmap" parameterType="com.nhry.data.order.domain.TOrderDaliyPlanItem">
+    SELECT
+    o.ORDER_NO,
+    o.DISCOUNT_AMT PRE_DISCOUNT,
+    o.INIT_AMT,
+    c.VIP_CUST_NO,
+    c.VIP_NAME,
+    c.MP CUST_MP,
+    CONCAT(r.ADDRESS_TXT,a.ADDRESS_TXT) CUST_ADDRESS,
+    (
+        SELECT
+        IFNULL(SUM(QTY),0)
+        FROM
+        t_mst_order_daliy_plan_item
+        WHERE
+        ORDER_NO = #{orderNo,jdbcType=VARCHAR}
+        and DISP_DATE &lt;=#{dispDate,jdbcType=DATE}
+        and i.STATUS!='30'
+    ) REAL_TOTAL,
+    group_concat(DISTINCT e.SHORT_TXT) MATNR_TXT,
+    sum(i.QTY) PRE_TOTAL
+    FROM
+    t_mst_order_daliy_plan_item i
+    LEFT JOIN t_preorder o ON i.ORDER_NO = o.ORDER_NO
+    LEFT JOIN t_vip_cust_info c ON o.MILKMEMBER_NO = c.VIP_CUST_NO
+    LEFT JOIN t_md_address a on o.ADRESS_NO = a.ADDRESS_ID
+    LEFT JOIN t_md_residential_area r on a.RESIDENTIAL_AREA = r.ID
+    LEFT JOIN t_md_mara_ex e ON i.MATNR = e.MATNR AND e.SALES_ORG = o.SALES_ORG
+    WHERE 1=1
+    and i.ORDER_NO =  #{orderNo,jdbcType=VARCHAR}
+    and i.STATUS!='30'
+  </select>
 </mapper>
