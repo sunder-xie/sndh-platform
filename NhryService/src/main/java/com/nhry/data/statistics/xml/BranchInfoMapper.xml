@@ -1287,7 +1287,7 @@
         UNION
         SELECT
         t3.EMP_NO AS DISP_EMP_NO,
-        t1.MATNR,
+        t3.MATNR,
         CONCAT(
         '(',
         ROUND(sum(DISTINCT t2.QTY)),
