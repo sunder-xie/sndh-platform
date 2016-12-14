@@ -246,7 +246,11 @@ public class ImportTableResource extends BaseResource {
                     break;
                 }
                 XSSFCell cell = row.getCell(j++);
-                order.setOrderNo(cell.toString());
+                if(cell!=null && StringUtils.isNotEmpty(cell.toString())){
+                    order.setOrderNo(cell.toString());
+                }else{
+                    throw new ServiceException("第" + (row.getRowNum() + 1) + "行,订单编号为空，请检查！");
+                }
                 cell = row.getCell(j++);
                 String branchNo = cell.toString();
                 order.setBranchNo(cell.toString());
@@ -325,76 +329,80 @@ public class ImportTableResource extends BaseResource {
                     XSSFRow row1 = sheet1.getRow(s);
                     XSSFCell cell1 = row1.getCell(t++);
                     //判断订单号码是否一致，如果一致放到一个事物里
-                    if (cell1.toString().equals(order.getOrderNo())) {
-                        entrie.setOrderNo(cell1.toString());
-                        cell1 = row1.getCell(t++);
-                        entrie.setMatnr("0000000000".concat(ExcelUtil.getCellValue(cell1, row1)));//补齐产品编码
-                        cell1 = row1.getCell(t++);
-                        ExcelUtil.isNullCell(cell1, row, t);
-                        entrie.setRuleType(ExcelUtil.getCellValue(cell1, row));
-                        cell1 = row1.getCell(t++);
-                        entrie.setQty(Integer.valueOf(cell1.toString()));
-                        //算出配送天数
-                        // entrie.setDispDays();
-                        cell1 = row1.getCell(t++);
-                        if (cell1 != null && StringUtils.isNotBlank(cell1.toString())) {
-                            if(entrie.getRuleType().equals("10")){
-                                entrie.setGapDays(Integer.valueOf(ExcelUtil.getCellValue(cell1, row1)));
-                            }else{
-                                throw new ServiceException("第" + (row1.getRowNum() + 1) + "行,第" + (cell1.getColumnIndex() + 1) + "列,配送规律为星期配送，间隔天数不需要填写！");
+                    if (cell1 != null && StringUtils.isNotEmpty(cell1.toString())) {
+                        if (cell1.toString().equals(order.getOrderNo())) {
+                            entrie.setOrderNo(cell1.toString());
+                            cell1 = row1.getCell(t++);
+                            entrie.setMatnr("0000000000".concat(ExcelUtil.getCellValue(cell1, row1)));//补齐产品编码
+                            cell1 = row1.getCell(t++);
+                            ExcelUtil.isNullCell(cell1, row, t);
+                            entrie.setRuleType(ExcelUtil.getCellValue(cell1, row));
+                            cell1 = row1.getCell(t++);
+                            entrie.setQty(Integer.valueOf(cell1.toString()));
+                            //算出配送天数
+                            // entrie.setDispDays();
+                            cell1 = row1.getCell(t++);
+                            if (cell1 != null && StringUtils.isNotBlank(cell1.toString())) {
+                                if (entrie.getRuleType().equals("10")) {
+                                    entrie.setGapDays(Integer.valueOf(ExcelUtil.getCellValue(cell1, row1)));
+                                } else {
+                                    throw new ServiceException("第" + (row1.getRowNum() + 1) + "行,第" + (cell1.getColumnIndex() + 1) + "列,配送规律为星期配送，间隔天数不需要填写！");
+                                }
+                            } else {
+                                if (entrie.getRuleType().equals("10")) {
+                                    throw new ServiceException("第" + (row1.getRowNum() + 1) + "行,配送规律为周期配送，间隔天数不能为空！");
+                                }
                             }
-                        }else{
-                            if(entrie.getRuleType().equals("10")){
-                                throw new ServiceException("第" + (row1.getRowNum() + 1) + "行,配送规律为周期配送，间隔天数不能为空！");
-                            }
-                        }
 
-                        cell1 = row1.getCell(t++);
-                        if (cell1 != null && StringUtils.isNotEmpty(cell1.toString())) {
-                            if(entrie.getRuleType().equals("20")){
-                                entrie.setRuleTxt(cell1.toString());
-                            }else{
-                                throw new ServiceException("第" + (row1.getRowNum() + 1) + "行,第" + (cell1.getColumnIndex() + 1) + "列,配送规律为星期配送，配送规则不需要填写！");
+                            cell1 = row1.getCell(t++);
+                            if (cell1 != null && StringUtils.isNotEmpty(cell1.toString())) {
+                                if (entrie.getRuleType().equals("20")) {
+                                    entrie.setRuleTxt(cell1.toString());
+                                } else {
+                                    throw new ServiceException("第" + (row1.getRowNum() + 1) + "行,第" + (cell1.getColumnIndex() + 1) + "列,配送规律为星期配送，配送规则不需要填写！");
+                                }
+                            } else {
+                                if (entrie.getRuleType().equals("20")) {
+                                    throw new ServiceException("第" + (row1.getRowNum() + 1) + "行,配送规律为星期配送，配送规则不能为空！");
+                                }
                             }
+                            cell1 = row1.getCell(t++);
+                            ExcelUtil.isNullCell(cell1, row, t);
+                            entrie.setReachTimeType(ExcelUtil.getCellValue(cell1, row1));
+                            cell1 = row1.getCell(t++);
+                            try {
+                                format.parse(cell1.toString());
+                                entrie.setStartDispDate(format.parse(cell1.toString()));
+                            } catch (Exception e) {
+                                throw new ServiceException("行项目：第" + (row1.getRowNum() + 1) + "行，第" + cell1.getColumnIndex() + "列,日期格式有误");
+                            }
+                            entrie.setStartDispDateStr(cell1.toString());
+                            cell1 = row1.getCell(t++);
+                            try {
+                                format.parse(cell1.toString());
+                                entrie.setEndDispDate(format.parse(cell1.toString()));
+                            } catch (Exception e) {
+                                throw new ServiceException("行项目：第" + (row1.getRowNum() + 1) + "行，第" + cell1.getColumnIndex() + "列,日期格式有误");
+                            }
+                            entrie.setEndDispDateStr(cell1.toString());
+                            if (entrie.getEndDispDate().before(entrie.getStartDispDate())) {
+                                throw new ServiceException("行项目：第" + (row1.getRowNum() + 1) + "行,结束时间大于开始时间，请校验");
+                            }
+                            cell1 = row1.getCell(t++);
+                            if ("20".equals(order.getPaymentmethod()) && (cell1 == null || StringUtils.isEmpty(cell1.toString()))) {
+                                throw new ServiceException("行项目：第" + (row1.getRowNum() + 1) + "行，第" + cell1.getColumnIndex() + "列，预付款项目必须填写配送数量！请重新校验同类问题！");
+                            }
+                            if (cell1 != null && StringUtils.isNotBlank(cell1.toString())) {
+                                entrie.setDispTotal(Integer.valueOf(cell1.getStringCellValue()));
+                            }
+                            float price = priceService.getMaraPriceForCreateOrder(order.getBranchNo(), entrie.getMatnr(), order.getDeliveryType(), salesOrg);
+                            if (price <= 0)
+                                throw new ServiceException("产品价格小于0,请检查传入的商品号，奶站和配送方式!信息：" + "奶站：" + order.getBranchNo() + "商品号：" + entrie.getMatnr() + "配送方式：" + order.getDeliveryType() + "销售组织：" + salesOrg);
+                            entrie.setSalesPrice(new BigDecimal(String.valueOf(price)));
+                            entries.add(entrie);
                         }else{
-                            if(entrie.getRuleType().equals("20")){
-                                throw new ServiceException("第" + (row1.getRowNum() + 1) + "行,配送规律为星期配送，配送规则不能为空！");
-                            }
+                            throw new ServiceException("第" + row1.getRowNum() + "行,订单行项目编号为空，请检查！");
                         }
-                        cell1 = row1.getCell(t++);
-                        ExcelUtil.isNullCell(cell1, row, t);
-                        entrie.setReachTimeType(ExcelUtil.getCellValue(cell1, row1));
-                        cell1 = row1.getCell(t++);
-                        try {
-                            format.parse(cell1.toString());
-                            entrie.setStartDispDate(format.parse(cell1.toString()));
-                        } catch (Exception e) {
-                            throw new ServiceException("行项目：第" + (row1.getRowNum() + 1) + "行，第" + cell1.getColumnIndex() + "列,日期格式有误");
-                        }
-                        entrie.setStartDispDateStr(cell1.toString());
-                        cell1 = row1.getCell(t++);
-                        try {
-                            format.parse(cell1.toString());
-                            entrie.setEndDispDate(format.parse(cell1.toString()));
-                        } catch (Exception e) {
-                            throw new ServiceException("行项目：第" + (row1.getRowNum() + 1) + "行，第" + cell1.getColumnIndex() + "列,日期格式有误");
-                        }
-                        entrie.setEndDispDateStr(cell1.toString());
-                        if(entrie.getEndDispDate().before(entrie.getStartDispDate())){
-                            throw new ServiceException("行项目：第" + (row1.getRowNum() + 1) + "行,结束时间大于开始时间，请校验");
-                        }
-                        cell1 = row1.getCell(t++);
-                        if ("20".equals(order.getPaymentmethod()) && (cell1 == null || StringUtils.isEmpty(cell1.toString()))) {
-                            throw new ServiceException("行项目：第" + (row1.getRowNum() + 1) + "行，第" + cell1.getColumnIndex() + "列，预付款项目必须填写配送数量！请重新校验同类问题！");
-                        }
-                        if (cell1 != null && StringUtils.isNotBlank(cell1.toString())) {
-                            entrie.setDispTotal(Integer.valueOf(cell1.getStringCellValue()));
-                        }
-                        float price = priceService.getMaraPriceForCreateOrder(order.getBranchNo(), entrie.getMatnr(), order.getDeliveryType(), salesOrg);
-                        if (price <= 0)
-                            throw new ServiceException("产品价格小于0,请检查传入的商品号，奶站和配送方式!信息：" + "奶站：" + order.getBranchNo() + "商品号：" + entrie.getMatnr() + "配送方式：" + order.getDeliveryType() + "销售组织：" + salesOrg);
-                        entrie.setSalesPrice(new BigDecimal(String.valueOf(price)));
-                        entries.add(entrie);
                     }
                 }
                 OrderModel.setEntries(entries);
