@@ -108,9 +108,14 @@ public class ExcelUtil {
 
     public static String getCellValue(XSSFCell cell,XSSFRow row){
         String cellValue = "";
+        DecimalFormat df = new DecimalFormat("0");
+
         switch (cell.getCellType()) {
             case XSSFCell.CELL_TYPE_STRING:
                 cellValue = cell.toString();
+                break;
+            case XSSFCell.CELL_TYPE_NUMERIC:
+                cellValue = df.format(cell.getNumericCellValue());
                 break;
             default:
                 throw new RuntimeException("请使用正规模板！数据格式非文本类型，错误位置是第"+(row.getRowNum()+1)+"行,"+"第"+ (cell.getColumnIndex()+1) +"列。请校验同样问题！");
