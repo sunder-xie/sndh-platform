@@ -1,5 +1,5 @@
 /**
- * KUNWE2_type1.java
+ * YK01_type1.java
  *
  * This file was auto-generated from WSDL
  * by the Apache Axis2 version: 1.7.3  Built on : May 30, 2016 (04:09:26 BST)
@@ -8,35 +8,39 @@ package com.nhry.webService.client.businessData.functions;
 
 
 /**
- *  KUNWE2_type1 bean class
+ *  YK01_type1 bean class
  */
 @SuppressWarnings({"unchecked",
     "unused"
 })
-public class KUNWE2_type1 implements org.apache.axis2.databinding.ADBBean {
+public class YK01_type1 implements org.apache.axis2.databinding.ADBBean {
     public static final javax.xml.namespace.QName MY_QNAME = new javax.xml.namespace.QName("urn:sap-com:document:sap:rfc:functions",
-            "KUNWE2_type1", "ns1");
+            "YK01_type1", "ns1");
 
     /**
-     * field for KUNWE2_type0
+     * field for YK01_type0
      */
-    protected String localKUNWE2_type0;
+    protected java.math.BigDecimal localYK01_type0;
 
     /**
      * Auto generated getter method
-     * @return java.lang.String
+     * @return java.math.BigDecimal
      */
-    public String getKUNWE2_type0() {
-        return localKUNWE2_type0;
+    public java.math.BigDecimal getYK01_type0() {
+        return localYK01_type0;
     }
 
     /**
      * Auto generated setter method
-     * @param param KUNWE2_type0
+     * @param param YK01_type0
      */
-    public void setKUNWE2_type0(String param) {
-        if ((String.valueOf(param).length() <= 10)) {
-            this.localKUNWE2_type0 = param;
+    public void setYK01_type0(java.math.BigDecimal param) {
+        String totalDigitsDecimal = org.apache.axis2.databinding.utils.ConverterUtil.convertToStandardDecimalNotation(
+                "11").toPlainString();
+
+        if (org.apache.axis2.databinding.utils.ConverterUtil.compare(param,
+                    totalDigitsDecimal) < 0) {
+            this.localYK01_type0 = param;
         } else {
             throw new RuntimeException(
                 "Input values do not follow defined XSD restrictions");
@@ -44,7 +48,7 @@ public class KUNWE2_type1 implements org.apache.axis2.databinding.ADBBean {
     }
 
     public String toString() {
-        return localKUNWE2_type0.toString();
+        return localYK01_type0.toString();
     }
 
     /**
@@ -87,19 +91,20 @@ public class KUNWE2_type1 implements org.apache.axis2.databinding.ADBBean {
                     (namespacePrefix.trim().length() > 0)) {
                 writeAttribute("xsi",
                     "http://www.w3.org/2001/XMLSchema-instance", "type",
-                    namespacePrefix + ":KUNWE2_type1", xmlWriter);
+                    namespacePrefix + ":YK01_type1", xmlWriter);
             } else {
                 writeAttribute("xsi",
                     "http://www.w3.org/2001/XMLSchema-instance", "type",
-                    "KUNWE2_type1", xmlWriter);
+                    "YK01_type1", xmlWriter);
             }
         }
 
-        if (localKUNWE2_type0 == null) {
+        if (localYK01_type0 == null) {
             throw new org.apache.axis2.databinding.ADBException(
-                "KUNWE2_type0 cannot be null !!");
+                "YK01_type0 cannot be null !!");
         } else {
-            xmlWriter.writeCharacters(localKUNWE2_type0);
+            xmlWriter.writeCharacters(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(
+                    localYK01_type0));
         }
 
         xmlWriter.writeEndElement();
@@ -313,17 +318,17 @@ public class KUNWE2_type1 implements org.apache.axis2.databinding.ADBBean {
     public static class Factory {
         private static org.apache.commons.logging.Log log = org.apache.commons.logging.LogFactory.getLog(Factory.class);
 
-        public static KUNWE2_type1 fromString(String value,
+        public static YK01_type1 fromString(String value,
             String namespaceURI) {
-            KUNWE2_type1 returnValue = new KUNWE2_type1();
+            YK01_type1 returnValue = new YK01_type1();
 
-            returnValue.setKUNWE2_type0(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(
+            returnValue.setYK01_type0(org.apache.axis2.databinding.utils.ConverterUtil.convertToDecimal(
                     value));
 
             return returnValue;
         }
 
-        public static KUNWE2_type1 fromString(
+        public static YK01_type1 fromString(
             javax.xml.stream.XMLStreamReader xmlStreamReader,
             String content) {
             if (content.indexOf(":") > -1) {
@@ -345,9 +350,9 @@ public class KUNWE2_type1 implements org.apache.axis2.databinding.ADBBean {
          * Postcondition: If this object is an element, the reader is positioned at its end element
          *                If this object is a complex type, the reader is positioned at the end element of its outer element
          */
-        public static KUNWE2_type1 parse(
-            javax.xml.stream.XMLStreamReader reader) throws Exception {
-            KUNWE2_type1 object = new KUNWE2_type1();
+        public static YK01_type1 parse(javax.xml.stream.XMLStreamReader reader)
+            throws Exception {
+            YK01_type1 object = new YK01_type1();
 
             int event;
             javax.xml.namespace.QName currentQName = null;
@@ -374,13 +379,13 @@ public class KUNWE2_type1 implements org.apache.axis2.databinding.ADBBean {
                             if ("true".equals(nillableValue) ||
                                     "1".equals(nillableValue)) {
                                 throw new org.apache.axis2.databinding.ADBException(
-                                    "The element: " + "KUNWE2_type0" +
+                                    "The element: " + "YK01_type0" +
                                     "  cannot be null");
                             }
 
                             String content = reader.getElementText();
 
-                            object.setKUNWE2_type0(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(
+                            object.setYK01_type0(org.apache.axis2.databinding.utils.ConverterUtil.convertToDecimal(
                                     content));
                         } // End of if for expected property start element
 

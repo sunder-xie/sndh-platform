@@ -153,7 +153,7 @@ public class PIRequireOrderServiceImpl implements PIRequireOrderService {
         }else{
             items = tSsmSalOrderItemMapper.findItemsForPI(ssmSalOrder.getOrderNo());
         }
-        orderHeader.setVTWEG(PIPropertitesUtil.getValue("PI.MasterData.mATQUERY.VKORG"));
+        orderHeader.setVTWEG(PIPropertitesUtil.getValue("PI.MasterData.mATQUERY.VKORG13"));
         if("40".equals(ssmSalOrder.getPreorderSource())) {
             orderHeader.setKUNWE2(EnvContant.getSystemConst("online_code"));
             orderHeader.setVTWEG(PIPropertitesUtil.getValue("PI.MasterData.mATQUERY.VKORG17"));

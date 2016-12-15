@@ -383,6 +383,11 @@ public class ExtensionMapper {
         }
 
         if ("urn:sap-com:document:sap:rfc:functions".equals(namespaceURI) &&
+                "YK01_type1".equals(typeName)) {
+            return com.nhry.webService.client.businessData.functions.YK01_type1.Factory.parse(reader);
+        }
+
+        if ("urn:sap-com:document:sap:rfc:functions".equals(namespaceURI) &&
                 "WERKS_type5".equals(typeName)) {
             return WERKS_type5.Factory.parse(reader);
         }
@@ -605,6 +610,11 @@ public class ExtensionMapper {
         if ("urn:sap-com:document:sap:rfc:functions".equals(namespaceURI) &&
                 "ZZ001_type1".equals(typeName)) {
             return ZZ001_type1.Factory.parse(reader);
+        }
+
+        if ("urn:sap-com:document:sap:rfc:functions".equals(namespaceURI) &&
+                "IHREZ_type1".equals(typeName)) {
+            return com.nhry.webService.client.businessData.functions.IHREZ_type1.Factory.parse(reader);
         }
 
         if ("urn:sap-com:document:sap:rfc:functions".equals(namespaceURI) &&
