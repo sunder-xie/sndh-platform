@@ -5519,7 +5519,7 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 					//判断today是否符合配送规律  如果不符合continue
 					if("10".equals(entry.getRuleType())){
 						int gapDays = entry.getGapDays() + 1;//间隔天数
-						if(daysOfTwo(entry.getStartDispDate(),today)%gapDays != 0){
+						if(dayOfTwoDay(entry.getStartDispDate(),today)%gapDays != 0){
 							/*if(entry.getRuleTxt()!=null){
 								List<String> deliverDays = Arrays.asList(entry.getRuleTxt().split(","));
 								if(deliverDays.size() > 0){//判断周6，7是否配送
