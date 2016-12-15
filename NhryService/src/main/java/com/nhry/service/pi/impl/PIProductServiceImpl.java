@@ -31,7 +31,7 @@ import java.util.Date;
 public class PIProductServiceImpl implements PIProductService {
     private static Logger logger = Logger.getLogger(PIProductServiceImpl.class);
     public static String URL = EnvContant.getSystemConst("PI.MasterData.URL");
-    public static String VKORG = PIPropertitesUtil.getValue("PI.MasterData.mATQUERY.VKORG");
+    public static String VKORG = PIPropertitesUtil.getValue("PI.MasterData.mATQUERY.VKORG13");
     public static String OPTION = PIPropertitesUtil.getValue("PI.MasterData.mATQUERY.OPTION.EQ");
     public static String SIGN = PIPropertitesUtil.getValue("PI.MasterData.mATQUERY.SIGN");
     public static String LOW = PIPropertitesUtil.getValue("PI.MasterData.mATQUERY.LOW");

@@ -43,17 +43,6 @@ public class ZSSD00010 implements org.apache.axis2.databinding.ADBBean {
     protected boolean localKUNWETracker = false;
 
     /**
-     * field for KUNWE2
-     */
-    protected KUNWE2_type1 localKUNWE2;
-
-    /*  This tracker boolean wil be used to detect whether the user called the set method
-     *   for this attribute. It will be used to determine whether to include this field
-     *   in the serialized XML
-     */
-    protected boolean localKUNWE2Tracker = false;
-
-    /**
      * field for VKORG
      */
     protected VKORG_type1 localVKORG;
@@ -174,6 +163,28 @@ public class ZSSD00010 implements org.apache.axis2.databinding.ADBBean {
      */
     protected boolean localCMPGN_EXTIDTracker = false;
 
+    /**
+     * field for KUNWE2
+     */
+    protected KUNWE2_type1 localKUNWE2;
+
+    /*  This tracker boolean wil be used to detect whether the user called the set method
+     *   for this attribute. It will be used to determine whether to include this field
+     *   in the serialized XML
+     */
+    protected boolean localKUNWE2Tracker = false;
+
+    /**
+     * field for IHREZ
+     */
+    protected com.nhry.webService.client.businessData.functions.IHREZ_type1 localIHREZ;
+
+    /*  This tracker boolean wil be used to detect whether the user called the set method
+     *   for this attribute. It will be used to determine whether to include this field
+     *   in the serialized XML
+     */
+    protected boolean localIHREZTracker = false;
+
     public boolean isKUNNRSpecified() {
         return localKUNNRTracker;
     }
@@ -218,29 +229,6 @@ public class ZSSD00010 implements org.apache.axis2.databinding.ADBBean {
         localKUNWETracker = param != null;
 
         this.localKUNWE = param;
-    }
-
-    public boolean isKUNWE2Specified() {
-        return localKUNWE2Tracker;
-    }
-
-    /**
-     * Auto generated getter method
-     * @return com.nhry.webService.client.businessData.functions.KUNWE2_type1
-     */
-    public KUNWE2_type1 getKUNWE2() {
-        return localKUNWE2;
-    }
-
-    /**
-     * Auto generated setter method
-     * @param param KUNWE2
-     */
-    public void setKUNWE2(
-        KUNWE2_type1 param) {
-        localKUNWE2Tracker = param != null;
-
-        this.localKUNWE2 = param;
     }
 
     public boolean isVKORGSpecified() {
@@ -496,6 +484,52 @@ public class ZSSD00010 implements org.apache.axis2.databinding.ADBBean {
         this.localCMPGN_EXTID = param;
     }
 
+    public boolean isKUNWE2Specified() {
+        return localKUNWE2Tracker;
+    }
+
+    /**
+     * Auto generated getter method
+     * @return com.nhry.webService.client.businessData.functions.KUNWE2_type1
+     */
+    public KUNWE2_type1 getKUNWE2() {
+        return localKUNWE2;
+    }
+
+    /**
+     * Auto generated setter method
+     * @param param KUNWE2
+     */
+    public void setKUNWE2(
+        KUNWE2_type1 param) {
+        localKUNWE2Tracker = param != null;
+
+        this.localKUNWE2 = param;
+    }
+
+    public boolean isIHREZSpecified() {
+        return localIHREZTracker;
+    }
+
+    /**
+     * Auto generated getter method
+     * @return com.nhry.webService.client.businessData.functions.IHREZ_type1
+     */
+    public com.nhry.webService.client.businessData.functions.IHREZ_type1 getIHREZ() {
+        return localIHREZ;
+    }
+
+    /**
+     * Auto generated setter method
+     * @param param IHREZ
+     */
+    public void setIHREZ(
+        com.nhry.webService.client.businessData.functions.IHREZ_type1 param) {
+        localIHREZTracker = param != null;
+
+        this.localIHREZ = param;
+    }
+
     /**
      *
      * @param parentQName
@@ -562,16 +596,6 @@ public class ZSSD00010 implements org.apache.axis2.databinding.ADBBean {
             }
 
             localKUNWE.serialize(new javax.xml.namespace.QName("", "KUNWE"),
-                xmlWriter);
-        }
-
-        if (localKUNWE2Tracker) {
-            if (localKUNWE2 == null) {
-                throw new org.apache.axis2.databinding.ADBException(
-                    "KUNWE2 cannot be null!!");
-            }
-
-            localKUNWE2.serialize(new javax.xml.namespace.QName("", "KUNWE2"),
                 xmlWriter);
         }
 
@@ -683,6 +707,26 @@ public class ZSSD00010 implements org.apache.axis2.databinding.ADBBean {
 
             localCMPGN_EXTID.serialize(new javax.xml.namespace.QName("",
                     "CMPGN_EXTID"), xmlWriter);
+        }
+
+        if (localKUNWE2Tracker) {
+            if (localKUNWE2 == null) {
+                throw new org.apache.axis2.databinding.ADBException(
+                    "KUNWE2 cannot be null!!");
+            }
+
+            localKUNWE2.serialize(new javax.xml.namespace.QName("", "KUNWE2"),
+                xmlWriter);
+        }
+
+        if (localIHREZTracker) {
+            if (localIHREZ == null) {
+                throw new org.apache.axis2.databinding.ADBException(
+                    "IHREZ cannot be null!!");
+            }
+
+            localIHREZ.serialize(new javax.xml.namespace.QName("", "IHREZ"),
+                xmlWriter);
         }
 
         xmlWriter.writeEndElement();
@@ -992,23 +1036,6 @@ public class ZSSD00010 implements org.apache.axis2.databinding.ADBBean {
                     reader.next();
 
                 if ((reader.isStartElement() &&
-                        new javax.xml.namespace.QName("", "KUNWE2").equals(
-                            reader.getName())) ||
-                        new javax.xml.namespace.QName("", "KUNWE2").equals(
-                            reader.getName())) {
-                    object.setKUNWE2(KUNWE2_type1.Factory.parse(
-                            reader));
-
-                    reader.next();
-                } // End of if for expected property start element
-
-                else {
-                }
-
-                while (!reader.isStartElement() && !reader.isEndElement())
-                    reader.next();
-
-                if ((reader.isStartElement() &&
                         new javax.xml.namespace.QName("", "VKORG").equals(
                             reader.getName())) ||
                         new javax.xml.namespace.QName("", "VKORG").equals(
@@ -1184,6 +1211,40 @@ public class ZSSD00010 implements org.apache.axis2.databinding.ADBBean {
                         new javax.xml.namespace.QName("", "CMPGN_EXTID").equals(
                             reader.getName())) {
                     object.setCMPGN_EXTID(CMPGN_EXTID_type1.Factory.parse(
+                            reader));
+
+                    reader.next();
+                } // End of if for expected property start element
+
+                else {
+                }
+
+                while (!reader.isStartElement() && !reader.isEndElement())
+                    reader.next();
+
+                if ((reader.isStartElement() &&
+                        new javax.xml.namespace.QName("", "KUNWE2").equals(
+                            reader.getName())) ||
+                        new javax.xml.namespace.QName("", "KUNWE2").equals(
+                            reader.getName())) {
+                    object.setKUNWE2(KUNWE2_type1.Factory.parse(
+                            reader));
+
+                    reader.next();
+                } // End of if for expected property start element
+
+                else {
+                }
+
+                while (!reader.isStartElement() && !reader.isEndElement())
+                    reader.next();
+
+                if ((reader.isStartElement() &&
+                        new javax.xml.namespace.QName("", "IHREZ").equals(
+                            reader.getName())) ||
+                        new javax.xml.namespace.QName("", "IHREZ").equals(
+                            reader.getName())) {
+                    object.setIHREZ(com.nhry.webService.client.businessData.functions.IHREZ_type1.Factory.parse(
                             reader));
 
                     reader.next();

@@ -152,6 +152,17 @@ public class ZSSD00011 implements org.apache.axis2.databinding.ADBBean {
      */
     protected boolean localWBS_ELEMTracker = false;
 
+    /**
+     * field for YK01
+     */
+    protected com.nhry.webService.client.businessData.functions.YK01_type1 localYK01;
+
+    /*  This tracker boolean wil be used to detect whether the user called the set method
+     *   for this attribute. It will be used to determine whether to include this field
+     *   in the serialized XML
+     */
+    protected boolean localYK01Tracker = false;
+
     public boolean isMATNRSpecified() {
         return localMATNRTracker;
     }
@@ -428,6 +439,29 @@ public class ZSSD00011 implements org.apache.axis2.databinding.ADBBean {
         this.localWBS_ELEM = param;
     }
 
+    public boolean isYK01Specified() {
+        return localYK01Tracker;
+    }
+
+    /**
+     * Auto generated getter method
+     * @return com.nhry.webService.client.businessData.functions.YK01_type1
+     */
+    public com.nhry.webService.client.businessData.functions.YK01_type1 getYK01() {
+        return localYK01;
+    }
+
+    /**
+     * Auto generated setter method
+     * @param param YK01
+     */
+    public void setYK01(
+        com.nhry.webService.client.businessData.functions.YK01_type1 param) {
+        localYK01Tracker = param != null;
+
+        this.localYK01 = param;
+    }
+
     /**
      *
      * @param parentQName
@@ -594,6 +628,16 @@ public class ZSSD00011 implements org.apache.axis2.databinding.ADBBean {
             }
 
             localWBS_ELEM.serialize(new javax.xml.namespace.QName("", "WBS_ELEM"),
+                xmlWriter);
+        }
+
+        if (localYK01Tracker) {
+            if (localYK01 == null) {
+                throw new org.apache.axis2.databinding.ADBException(
+                    "YK01 cannot be null!!");
+            }
+
+            localYK01.serialize(new javax.xml.namespace.QName("", "YK01"),
                 xmlWriter);
         }
 
@@ -1062,6 +1106,23 @@ public class ZSSD00011 implements org.apache.axis2.databinding.ADBBean {
                         new javax.xml.namespace.QName("", "WBS_ELEM").equals(
                             reader.getName())) {
                     object.setWBS_ELEM(WBS_ELEM_type1.Factory.parse(
+                            reader));
+
+                    reader.next();
+                } // End of if for expected property start element
+
+                else {
+                }
+
+                while (!reader.isStartElement() && !reader.isEndElement())
+                    reader.next();
+
+                if ((reader.isStartElement() &&
+                        new javax.xml.namespace.QName("", "YK01").equals(
+                            reader.getName())) ||
+                        new javax.xml.namespace.QName("", "YK01").equals(
+                            reader.getName())) {
+                    object.setYK01(com.nhry.webService.client.businessData.functions.YK01_type1.Factory.parse(
                             reader));
 
                     reader.next();
