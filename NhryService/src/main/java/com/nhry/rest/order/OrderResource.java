@@ -16,7 +16,6 @@ import com.sun.jersey.spi.resource.Singleton;
 import com.wordnik.swagger.annotations.Api;
 import com.wordnik.swagger.annotations.ApiOperation;
 import com.wordnik.swagger.annotations.ApiParam;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
@@ -25,8 +24,8 @@ import org.springframework.stereotype.Controller;
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
-
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 @Path("/order")
@@ -314,6 +313,7 @@ public class OrderResource extends BaseResource {
 	@Consumes(MediaType.APPLICATION_JSON)
 	@ApiOperation(value = "/yearCardBackOrder", response = Integer.class, notes = "年卡订单退订，reason退订原因")
 	public Response yearCardBackOrder(@ApiParam(required=true,name="smodel",value="SearchModel") YearCardBackModel smodel){
+		smodel.setBackDate(new Date());
 		return convertToRespModel(MessageCode.NORMAL, null, orderService.yearCardBackOrder(smodel));
 	}
 	

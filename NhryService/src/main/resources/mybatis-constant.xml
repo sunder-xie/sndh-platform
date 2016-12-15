@@ -23,7 +23,7 @@
 	<!-- 收款方式 -->
 	<sql id="payment_type">'1010'</sql>
 	<!-- 库存地点-->
-	<sql id="storage_location">1011</sql>
+	<sql id="storage_location">'1011'</sql>
 	<!-- 系统资源类型 -->
 	<sql id="sys_res_type">1012</sql>
 	<!-- 系统资源类型 页面资源-->
@@ -35,21 +35,21 @@
 	<!-- 价格组类型  公司价 -->
 	<sql id="price_type_comp">10</sql>
 	<!-- 产品大类 -->
-	<sql id="products_first_category">2000</sql>
+	<sql id="products_first_category">'2000'</sql>
 	<!-- 产品中类 -->
-	<sql id="products_second_category">2001</sql>
+	<sql id="products_second_category">'2001'</sql>
 	<!-- 产品品牌/副品牌 -->
-	<sql id="products_third_category">2002</sql>
+	<sql id="products_third_category">'2002'</sql>
 	<!-- 产品规格 -->
-	<sql id="products_spec">2003</sql>
+	<sql id="products_spec">'2003'</sql>
 	<!-- 包装类型 -->
-	<sql id="packing _type">2004</sql>
+	<sql id="packing _type">'2004'</sql>
 	<!-- 重点产品分类 -->
-	<sql id="major_products_category">2005</sql>
+	<sql id="major_products_category">'2005'</sql>
 	<!-- 省份对应关系(奶站省份) -->
-	<sql id="branch_province">2006</sql>
+	<sql id="branch_province">'2006'</sql>
 	<!-- 角色ID  送奶员 -->
-	<sql id="milkman">10001</sql>
+	<sql id="milkman">'10001'</sql>
 	<!-- 角色ID  送奶员 -->
 	<sql id="ownBranch">自营奶站</sql>
 </mapper>  

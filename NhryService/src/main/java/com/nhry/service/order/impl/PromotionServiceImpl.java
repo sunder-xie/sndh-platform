@@ -136,11 +136,13 @@ public class PromotionServiceImpl extends BaseService implements PromotionServic
 		if(StringUtils.isBlank(order.getPromItemNo()))return;
 		TPromotion promotion = selectPromotionByPromNoAndItemNo(order.getPromotion(),order.getPromItemNo());
 		if(promotion==null)throw new ServiceException(MessageCode.LOGIC_ERROR,"没有此促销!");
-		if(promotion.getBuyStopTime().before(order.getEndDate())){
-			throw new ServiceException(MessageCode.LOGIC_ERROR,"该促销,只能在"+format.format(promotion.getBuyStartTime())+"到"+format.format(promotion.getBuyStopTime())+"之间订购!");
+		//满减
+		if("Z016".equals(promotion.getPromSubType())){
+			if(promotion.getBuyStopTime().before(order.getEndDate())){
+				throw new ServiceException(MessageCode.LOGIC_ERROR,"该促销,只能在"+format.format(promotion.getBuyStartTime())+"到"+format.format(promotion.getBuyStopTime())+"之间订购!");
+			}
+			if(promotion.getLowAmt().compareTo(order.getInitAmt())==1) throw new ServiceException(MessageCode.LOGIC_ERROR,"该订单总金额不足以参加满减促销，该促销最少金额为"+promotion.getLowAmt()+",而该订单总金额只有"+order.getInitAmt());
 		}
-		if(promotion.getLowAmt().compareTo(order.getInitAmt())==1) throw new ServiceException(MessageCode.LOGIC_ERROR,"该订单总金额不足以参加满减促销，该促销最少金额为"+promotion.getLowAmt()+",而该订单总金额只有"+order.getInitAmt());
-		//order.setDiscountAmt(promotion.getDiscountAmt());
 	}
 	@Override
 	public List<TPromotionModel> selectProCreatOrder(OrderCreateModel record) {
