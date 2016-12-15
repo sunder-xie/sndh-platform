@@ -44,10 +44,10 @@
 	<config key="PI.VipPointData.URL" value="http://piprd.newhopedairy.com:50200/XISOAPAdapter/MessageServlet?senderParty=&amp;senderService=BC_Common_CRM&amp;receiverParty=&amp;receiverService=&amp;interface=PointQuery_Out&amp;interfaceNamespace=urn%3Anewhopedairy.cn%3ACRM%3ACommonData"/>
 	<!--#积分明细-->
 	<config key="PI.VipDetialData.URL" value="http://piprd.newhopedairy.com:50200/XISOAPAdapter/MessageServlet?senderParty=&amp;senderService=BC_Common_CRM&amp;receiverParty=&amp;receiverService=&amp;interface=PTDetailQuery_Out&amp;interfaceNamespace=urn%3Anewhopedairy.cn%3ACRM%3ACommonData" />
-
-	<config key="PI.VipInfoDataBat.URL" value="http://sappiprd.newhopedairy.com:50200/XISOAPAdapter/MessageServlet?senderParty=&amp;senderService=BC_Common_CRM&amp;receiverParty=&amp;receiverService=&amp;interface=MemberActCreateBat&amp;interfaceNamespace=urn%3Anewhopedairy.cn%3ACRM%3ACommonData"/>
 	<!--#会员活动创建-->
 	<config key="PI.MemberActCreate.URL" value="http://piprd.newhopedairy.com:50200/XISOAPAdapter/MessageServlet?senderParty=&amp;senderService=BC_Common_CRM&amp;receiverParty=&amp;receiverService=&amp;interface=MemberActCreate&amp;interfaceNamespace=urn%3Anewhopedairy.cn%3ACRM%3ACommonData" />
+	<!--#会员活动批量创建-->
+	<config key="PI.VipInfoDataBat.URL"  value="http://piprd.newhopedairy.com:50200/XISOAPAdapter/MessageServlet?senderParty=&amp;senderService=BC_Common_CRM&amp;receiverParty=&amp;receiverService=&amp;interface=MemberActCreateBat&amp;interfaceNamespace=urn%3Anewhopedairy.cn%3ACRM%3ACommonData"/>
 	<!--#会员地址更新-->
 	<config key="PI.MemberAddrUpdate.URL" value="http://piprd.newhopedairy.com:50200/XISOAPAdapter/MessageServlet?senderParty=&amp;senderService=BC_Common_CRM&amp;receiverParty=&amp;receiverService=&amp;interface=MemberAddrUpdate&amp;interfaceNamespace=urn%3Anewhopedairy.cn%3ACRM%3ACommonData" />
 	<config key="PI.MasterData.USERNAME" value="ZT_CONN"/>
