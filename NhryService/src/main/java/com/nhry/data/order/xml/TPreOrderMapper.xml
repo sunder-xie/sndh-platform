@@ -6,6 +6,7 @@
     <result column="ORDER_TYPE" property="orderType" jdbcType="VARCHAR" />
     <result column="PROMOTION" property="promotion" jdbcType="VARCHAR" />
     <result column="PROM_ITEM_NO" property="promItemNo" jdbcType="VARCHAR" />
+    <result column="PROM_SUB_TYPE" property="promSubType" jdbcType="VARCHAR" />
     <result column="ORDER_DATE" property="orderDate" jdbcType="DATE" />
     <result column="END_DATE" property="endDate" jdbcType="DATE" />
     <result column="RET_DATE" property="retDate" jdbcType="DATE" />
@@ -638,14 +639,19 @@
       ELSE
       o.ONLINE_SOURCE_TYPE
       END
-      ) ONLINE_SOURCE_TYPE
+      ) ONLINE_SOURCE_TYPE,
+    p.PROM_SUB_TYPE
     FROM t_preorder o
+    LEFT JOIN t_promotion p on o.PROMOTION = p.PROM_NO
     left join t_md_branch b on o.BRANCH_NO = b.BRANCH_NO 
     left join t_vip_cust_info v on v.VIP_CUST_NO = o.MILKMEMBER_NO
     left join t_md_address a on a.ADDRESS_ID = o.ADRESS_NO
     left join t_md_residential_area r on r.ID = a.RESIDENTIAL_AREA
-    WHERE 
+    WHERE
     		o.RET_DATE is null
+    <if test="promSubType != null and promSubType !=''">
+      AND p.PROM_SUB_TYPE = #{promSubType,jdbcType=VARCHAR}
+    </if>
     <if test="orderNo != null and orderNo !=''">
      		AND o.ORDER_NO = #{orderNo,jdbcType=VARCHAR}
     </if>
