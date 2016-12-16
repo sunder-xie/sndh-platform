@@ -10,6 +10,7 @@
         <result column="STATUS" property="status" jdbcType="VARCHAR" />
         <result column="REMARK" property="remark" jdbcType="VARCHAR" />
         <result column="AMT" property="amt" jdbcType="DECIMAL" />
+        <result column="DISCOUNT_AMT" property="discountAmt" jdbcType="DECIMAL" />
         <result column="SUPP_AMT" property="suppAmt" jdbcType="DECIMAL" />
         <result column="ACC_AMT" property="accAmt" jdbcType="DECIMAL" />
         <result column="CUST_ACC_AMT" property="custAccAmt" jdbcType="DECIMAL" />
@@ -75,7 +76,8 @@
         select
            b.RECV_EMP,e.EMP_NAME RECV_EMP_NAME,b.RECEIPT_NO,b.RECEIPT_DATE,b.ORDER_NO,b.PAYMENT_TYPE,b.STATUS,b.AMT,
            b.VIP_CUST_NO,cust.VIP_NAME VIP_CUST_NAME,b.START_TIME,b.END_TIME,b.REMARK,b.PAYMENT_YEAR_MONTH,b.CREATE_AT,
-           b.CREATE_BY,b.CREATE_BY_TXT,b.LAST_MODIFIED,b.LAST_MODIFIED_BY,b.LAST_MODIFIED_BY_TXT,b.CUST_ACC_AMT,b.ACC_AMT,b.SUPP_AMT
+           b.CREATE_BY,b.CREATE_BY_TXT,b.LAST_MODIFIED,b.LAST_MODIFIED_BY,b.LAST_MODIFIED_BY_TXT,b.CUST_ACC_AMT,b.ACC_AMT,b.SUPP_AMT,
+           b.DISCOUNT_AMT
         FROM t_mst_recv_bill b
               LEFT JOIN t_vip_cust_info cust on b.VIP_CUST_NO = cust.VIP_CUST_NO
               LEFT JOIN t_md_branch_emp e on b.RECV_EMP = e.EMP_NO
