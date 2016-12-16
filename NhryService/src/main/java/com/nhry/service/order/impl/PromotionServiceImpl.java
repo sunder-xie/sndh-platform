@@ -295,9 +295,10 @@ public class PromotionServiceImpl extends BaseService implements PromotionServic
  	public void calculateEntryPromotionForStop(TPlanOrderItem entry){
 
 		if(StringUtils.isBlank(entry.getPromotion()))return;
- 		TPromotion promotion = selectPromotionByPromNo(entry.getPromotion());
+ 		//TPromotion promotion = selectPromotionByPromNo(entry.getPromotion());
+		TPromotion promotion = selectPromotionByPromNoAndItemNo(entry.getPromotion(),entry.getPromItemNo());
 // 		if(promotion==null)throw new ServiceException(MessageCode.LOGIC_ERROR,"没有此促销!");
- 		if(promotion==null || promotion.getBuyStartTime().after(entry.getStartDispDate()) || promotion.getBuyStopTime().before(entry.getEndDispDate())){
+ 		if(promotion==null || DateUtil.dateAfter(promotion.getPlanStartTime(),entry.getStartDispDate()) || DateUtil.dateBefore(promotion.getPlanStopTime(),entry.getEndDispDate())){
  			entry.setPromotion("");
  			entry.setGiftQty(0);//赠送赠品的数量
  			entry.setGiftMatnr("");
@@ -339,10 +340,15 @@ public class PromotionServiceImpl extends BaseService implements PromotionServic
 //			  calculateEntryPromotionForStop(e);
 //			  entryMap.put(e.getItemNo(), e);
 //		});
-		
+		HashMap<String,Date> promDateMap = new HashMap<String,Date>();
 		//需要生成促销日计划的订单行项目
 		entriesList.stream().filter((entry)->StringUtils.isNotBlank(entry.getPromotion()))
 								  .forEach((e)->{
+		  	TPromotion prom = selectPromotionByPromNoAndItemNo(e.getPromotion(),e.getPromItemNo());
+			  if(prom!=null){
+				  promDateMap.put("startDate",prom.getPlanStartTime());
+				  promDateMap.put("endDate",prom.getPlanStopTime());
+			  }
 									  entryMap.put(e.getItemNo(), e);
 //									  calculateEntryPromotion(e);
 		});
@@ -359,7 +365,14 @@ public class PromotionServiceImpl extends BaseService implements PromotionServic
 					if(orgEntry.getGiftQty()==null) break;
 					int totalGift = orgEntry.getGiftQty();
 					if(totalGift<=0)break;
-					
+					if(promDateMap!=null && promDateMap.size()>0){
+						if(DateUtil.dateAfter(plan.getDispDate(),promDateMap.get("endDate"))){
+							throw new ServiceException(MessageCode.LOGIC_ERROR,"赠品配送日期超过促销的截止日期");
+						}
+						if(DateUtil.dateBefore(plan.getDispDate(),promDateMap.get("startDate"))){
+							throw new ServiceException(MessageCode.LOGIC_ERROR,"赠品配送日期在促销的开始日期之前");
+						}
+					}
 					//复制日计划
 					TOrderDaliyPlanItem giftPlan = new TOrderDaliyPlanItem();
 					giftPlan.setOrderNo(plan.getOrderNo());//订单编号
