@@ -39,8 +39,17 @@ public class OrderSearchModel extends BaseQueryModel implements Serializable {
 	private String memoTxt;
 	private Integer goDays;
 	private String onlineSourceType;
+	private String promSubType;
 	private ArrayList<String> orders = new ArrayList<String>();
 	private List<String> mps;
+
+	public String getPromSubType() {
+		return promSubType;
+	}
+
+	public void setPromSubType(String promSubType) {
+		this.promSubType = promSubType;
+	}
 
 	public List<String> getMps() {
 		return mps;
