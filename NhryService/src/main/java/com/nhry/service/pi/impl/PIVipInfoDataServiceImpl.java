@@ -316,7 +316,7 @@ public class PIVipInfoDataServiceImpl implements PIVipInfoDataService {
                     String msg = message.getMSG().getMSG_type0().toString();
                     result.setMessage(msg);
                     vipno = response.getEV_MEMB_GUID().getEV_MEMB_GUID_type0().toString();
-                    if (MESSAGE_FLAG.equals(flag)) {
+                    if (MESSAGE_FLAG.equals(flag) || StringUtils.isNotEmpty(vipno)) {
                         result.setSuccess(true);
                         EvMemb evMemb = new EvMemb();
                         vipno = response.getEV_MEMB_GUID().getEV_MEMB_GUID_type0().toString();
