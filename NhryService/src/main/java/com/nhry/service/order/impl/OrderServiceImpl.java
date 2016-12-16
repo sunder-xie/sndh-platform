@@ -1183,15 +1183,17 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 	@Override
 	public int backOrder(OrderSearchModel record)
 	{
+		System.out.println(record.getOrderNo()+"  订单开始退订");
 		SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
+		if(StringUtils.isBlank(record.getOrderNo())) throw new ServiceException(MessageCode.LOGIC_ERROR,"订单退订，订单号不能为空！！");
 		TPreOrder order = tPreOrderMapper.selectByPrimaryKey(record.getOrderNo());
-		if("20".equals(order.getPreorderStat())){
-			throw new ServiceException(MessageCode.LOGIC_ERROR,"暂无法进行此操作，请联系在线客服");
-		}
-
 		if(order!= null){
+			if(StringUtils.isNotBlank(order.getPreorderStat()) && "20".equals(order.getPreorderStat())){
+				throw new ServiceException(MessageCode.LOGIC_ERROR,"暂无法进行此操作，请联系在线客服");
+			}
 			//判断赠品是否已经配送 或者产生路单
 			backOrderOfProm(order,null);
+			System.out.println(record.getOrderNo()+" 赠品配送判断结束");
 			if("10".equals(order.getPaymentmethod())){
 				if(customerBillMapper.getRecBillByOrderNo(order.getOrderNo())!=null)throw new ServiceException(MessageCode.LOGIC_ERROR,"已经有收款单了，请不要操作，或者去删除收款单!");
 			}
@@ -1201,7 +1203,7 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 					throw new ServiceException(MessageCode.LOGIC_ERROR,"预付款订单  "+order.getOrderNo()+"  已经有收款单但是还没完成收款，请不要修改订单，或者去删除收款单!");
 				}
 			}
-
+			System.out.println(record.getOrderNo()+"退订， 收款单判断结束没问题");
 			//if("10".equals(order.getPreorderSource()))throw new ServiceException(MessageCode.LOGIC_ERROR,"暂无法进行此操作，请联系在线客服!");
 			if(tDispOrderItemMapper.selectCountOfTodayByOrgOrder(order.getOrderNo(), null)>0)throw new ServiceException(MessageCode.LOGIC_ERROR,"此订单，有未确认的路单!请等路单确认后再操作!");
 			
@@ -1212,11 +1214,15 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 			String state = order.getPaymentmethod();
 
 			// BigDecimal leftAmt = order.getCurAmt();
+			if(order.getInitAmt()==null) throw new ServiceException(MessageCode.LOGIC_ERROR,"订单总金额为空，请维护数据");
 			BigDecimal initAmt = order.getInitAmt();
 			BigDecimal useAmt = tOrderDaliyPlanItemMapper.getOrderOrderDailyFinishAmtByOrderNo(order.getOrderNo());
 			BigDecimal leftAmt = initAmt.subtract(useAmt);
+			System.out.println(record.getOrderNo()+"leftAmt ="+leftAmt);
 			if("20".equals(state)){//先付款
+
 				tOrderDaliyPlanItemMapper.updateDaliyPlansToBack(order);
+				System.out.println(record.getOrderNo()+"退订，日订单更新状态完成");
 				BigDecimal backAmt = BigDecimal.ZERO;
 				//此为多余的钱，如果是预付款，将存入订户账户
 				//已经收款的
@@ -1243,14 +1249,12 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 							}
 						}
 						//如果是满减促销，退款等于  订单收款金额-用去的金额（结果相当于没有参加促销）
-						if(order.getDiscountAmt()!=null){
-							if(order.getDiscountAmt()!=null && !"".equals(order.getDiscountAmt())){
+						if(order.getDiscountAmt()!=null && !"".equals(order.getDiscountAmt())  && order.getDiscountAmt().compareTo(BigDecimal.ZERO)==1){
 								backAmt = backAmt.add(leftAmt).subtract(order.getDiscountAmt());
-							}
 						}else{
 							backAmt = backAmt.add(leftAmt);
 						}
-
+						System.out.println(record.getOrderNo()+"退订，退款金额为"+backAmt);
 						//退款金额大于0
 						if(backAmt.compareTo(BigDecimal.ZERO)==1){
 							TVipAcct ac = new TVipAcct();
@@ -1261,8 +1265,6 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 							throw new ServiceException(MessageCode.LOGIC_ERROR,"该订单需退金额为"+backAmt+",小于零有问题，请查看");
 						}
 					}
-
-
 
 				}else if("10".equals(order.getPaymentStat())){
 					//此处看是否打印过收款单，里面有没有用帐户余额支付的金额，退回
@@ -1276,7 +1278,7 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 				}
 				
 				//用掉的钱
-				BigDecimal remain = order.getInitAmt().subtract(order.getCurAmt());
+				//BigDecimal remain = order.getInitAmt().subtract(order.getCurAmt());
 				order.setInitAmt(useAmt);
 				order.setCurAmt(new BigDecimal("0.00"));
 				
@@ -1301,16 +1303,18 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 			order.setPreorderStat("30");//失效的订单
 			order.setSign("30");//标示退订
 			tPreOrderMapper.updateOrderEndDate(order);
-			
+			System.out.println("订单退订，更新订单状态成功--------------");
+
 			//订户状态更改???
 			List<TPreOrder> list = tPreOrderMapper.selectByMilkmemberNoRetOrder(order.getMilkmemberNo());
 			if(list==null||list.size()<=0){
 				tVipCustInfoService.discontinue(order.getMilkmemberNo(), "40",null,null);
 			}
-			
+
 			//删除装箱单
 			milkBoxService.deleteMilkBoxByOrderNo(order.getOrderNo());
-			
+			System.out.println("订单退订，删除装箱表成功，下面开始发送EC");
+
 			//发送EC,更新订单状态
 			TPreOrder sendOrder = new TPreOrder();
 			sendOrder.setOrderNo(order.getOrderNo());

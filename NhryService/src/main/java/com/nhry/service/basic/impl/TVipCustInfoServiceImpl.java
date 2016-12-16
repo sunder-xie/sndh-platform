@@ -583,7 +583,9 @@ public class TVipCustInfoServiceImpl extends BaseService implements TVipCustInfo
 		if(StringUtils.isEmpty(record.getVipCustNo()) || (record.getAcctAmt() == null)){
 			throw new ServiceException(MessageCode.LOGIC_ERROR, "订户编号(vipCustNo)、个帐余额(acctAmt)不能为空!");
 		}
+		System.out.println("订单退订时获取订户余额信息，参数为"+record.getVipCustNo());
 		TVipCustInfo cust = this.tmdVipcust.findVipCustOnlyByNo(record.getVipCustNo());
+		System.out.println("订单退订时获取订户余额信息成功,订户号为"+cust.getVipCustNo());
 		if(cust == null){
 			throw new ServiceException(MessageCode.LOGIC_ERROR, "该订户编号对应的订户信息不存在!");
 		}
