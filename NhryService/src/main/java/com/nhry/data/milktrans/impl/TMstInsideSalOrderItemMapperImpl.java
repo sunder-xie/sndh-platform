@@ -30,6 +30,12 @@ public class TMstInsideSalOrderItemMapperImpl implements TMstInsideSalOrderItemM
     }
 
     @Override
+    public int batchAddNewInsideOrderItems(List<TMstInsideSalOrderItem> items)
+    {
+        // TODO Auto-generated method stub
+        return sqlSessionTemplate.insert("batchAddNewInsideOrderItems", items);
+    }
+    @Override
     public PageInfo getInsideSalOrderDetail(InSideSalOrderDetailSearchModel smodel) {
         return sqlSessionTemplate.selectListByPages("getInsideSalOrderDetail",smodel, Integer.parseInt(smodel.getPageNum()), Integer.parseInt(smodel.getPageSize()));
     }

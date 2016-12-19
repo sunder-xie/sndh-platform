@@ -20,4 +20,8 @@ public interface TMstInsideSalOrderItemMapper {
     int deleteInSalOrderItemByMap(Map<String, String> map);
 
     List<TMstInsideSalOrderItem> getItemsByNo(String insOrderNo);
+
+
+    public int batchAddNewInsideOrderItems(List<TMstInsideSalOrderItem> items);
+
 }
