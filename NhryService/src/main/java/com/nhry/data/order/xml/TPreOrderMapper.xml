@@ -652,9 +652,9 @@
     <if test="promSubType != null and promSubType !=''">
       AND p.PROM_SUB_TYPE = #{promSubType,jdbcType=VARCHAR}
     </if>
-    <if test="promSubType == null or promSubType ==''">
+   <!-- <if test="promSubType == null or promSubType ==''">
       AND (p.PROM_SUB_TYPE IS null OR p.PROM_SUB_TYPE='')
-    </if>
+    </if>-->
     <if test="orderNo != null and orderNo !=''">
      		AND o.ORDER_NO = #{orderNo,jdbcType=VARCHAR}
     </if>
