@@ -1055,16 +1055,26 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 				}
 				
 			}else{
+				//判断该订单是否是整单促销（整单满减或者年卡）
 				boolean orderPromFlag = (StringUtils.isNotBlank(order.getPromotion()) && StringUtils.isNotBlank(order.getPromItemNo()))?true:false;
+				//判断该订单是否是行项目促销（单品满减或者单品满赠）
 				boolean itemPromFlag =false;
 				TPromotion prom = null;
 				if(orderPromFlag){
 					prom = promotionService.selectPromotionByPromNoAndItemNo(order.getPromotion(),order.getPromItemNo());
+					if(prom==null){
+							throw new ServiceException(MessageCode.LOGIC_ERROR,"该订单上记录的促销编号"+order.getPromotion()+"和行号"+order.getPromItemNo()+"，在订户系统中没有找到对应促销信息");
+					}
 				}else{
+					// itemProms 保存有参加促销的行项目
 					List<TPlanOrderItem> itemProms  = orgEntries.stream().filter(item->(StringUtils.isNotBlank(item.getPromotion()) && StringUtils.isNotBlank(item.getPromItemNo()))).collect(Collectors.toList());
 					if(itemProms!=null && itemProms.size()>0){
+						if(itemProms.size()>1)throw new ServiceException(MessageCode.LOGIC_ERROR,"一张订单不能有两个行项目同时参加促销");
 						itemPromFlag = true;
 						prom = promotionService.selectPromotionByPromNoAndItemNo(itemProms.get(0).getPromotion(),itemProms.get(0).getPromItemNo());
+						if(prom==null){
+							throw new ServiceException(MessageCode.LOGIC_ERROR,"该订单行上记录的促销编号"+order.getPromotion()+"和行号"+order.getPromItemNo()+"，在订户系统中没有找到对应促销信息");
+						}
 					}
 				}
 				ArrayList<TOrderDaliyPlanItem> daliyPlans = (ArrayList<TOrderDaliyPlanItem>) tOrderDaliyPlanItemMapper.selectDaliyPlansByOrderNoAsc(record.getOrderNo());
