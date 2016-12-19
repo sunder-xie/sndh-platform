@@ -1603,8 +1603,9 @@
           OR o.PREORDER_STAT = '30'
       )
       AND o.BRANCH_NO = #{branchNo,jdbcType=VARCHAR}
-      AND o.PAYMENTMETHOD = 20
-      AND o.PAYMENT_STAT = 10
+      AND o.PAYMENTMETHOD = '20'
+      AND o.PAYMENT_STAT = '10'
+      AND (o.SIGN = '10' or o.SIGN='20')
       ORDER BY
 	ORDER_NO DESC
   </select>
