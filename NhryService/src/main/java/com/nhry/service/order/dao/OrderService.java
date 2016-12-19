@@ -109,6 +109,10 @@ public interface OrderService {
    void returnOrderRemainAmtToAcct(String orderNo,Date dispDate);
    
    void setOrderToFinish(String orderNo,Date dispDate);
+
+	void returnOrderRemainAmtToAcct2(TPreOrder order,Date dispDate);
+
+	void setOrderToFinish2(TPreOrder order,Date dispDate);
    
    void reEditDaliyPlansByRouteDetail(RouteDetailUpdateModel newItem , TDispOrderItem orgItem , Date dispDate);
 

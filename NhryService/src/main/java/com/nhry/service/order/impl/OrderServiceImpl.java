@@ -9255,7 +9255,22 @@ public static int dayOfTwoDay(Date day1,Date day2) {
 	    TVipAcct ac = new TVipAcct();
 	    ac.setVipCustNo(order.getMilkmemberNo());
 	    ac.setAcctAmt(order.getCurAmt());
-	    System.out.println(orderNo+" 退回账户 "+order.getCurAmt());
+	    System.out.println(order.getOrderNo()+" 退回账户 "+order.getCurAmt());
+		tVipCustInfoService.addVipAcct(ac);
+	}
+
+	@Override
+	public void returnOrderRemainAmtToAcct2(TPreOrder order,Date dispDate)
+	{
+		//完结日期不是配送那天，非预付款单，剩余金额不大于0, return
+		if(order==null)return;
+		if(!order.getEndDate().equals(dispDate) || !"20".equals(order.getPaymentmethod()) || order.getCurAmt().floatValue() <= 0)return;
+
+		//退回剩余金额
+		TVipAcct ac = new TVipAcct();
+		ac.setVipCustNo(order.getMilkmemberNo());
+		ac.setAcctAmt(order.getCurAmt());
+		System.out.println(order.getOrderNo()+" 退回账户 "+order.getCurAmt());
 		tVipCustInfoService.addVipAcct(ac);
 	}
 	
@@ -9430,10 +9445,40 @@ public static int dayOfTwoDay(Date day1,Date day2) {
 			List<TOrderDaliyPlanItem> result =  tOrderDaliyPlanItemMapper.searchDaliyPlansByStatus(order.getOrderNo(),"10",null,null);
 			if(result == null || result.size() ==0){
 				//订单成完结
-				OperationLogUtil.saveHistoryOperation(orderNo,LogType.ORDER,OrderLogEnum.STATUS,null,null,"10".equals(order.getSign())?"在订":"","完结",
+				OperationLogUtil.saveHistoryOperation(order.getOrderNo(),LogType.ORDER,OrderLogEnum.STATUS,null,null,"10".equals(order.getSign())?"在订":"","完结",
 						null,null,userSessionService.getCurrentUser(),operationLogMapper);
 				tPreOrderMapper.updateOrderToFinish(order.getOrderNo());
 				if(tPreOrderMapper.selectNumOfdeletedByMilkmemberNo(order.getMilkmemberNo())<=0){
+					//订户状态更改
+					tVipCustInfoService.discontinue(order.getMilkmemberNo(), "20",null,null);
+				}
+			}
+		}
+
+	}
+
+	public void setOrderToFinish2(TPreOrder order, Date dispDate)
+	{
+		if(order==null)return;
+		//如果订单时在订状态 ，并且没有在订的日订单
+		if(!"10".equals(order.getSign())) {
+			return;
+		}else{
+			List<TOrderDaliyPlanItem> result =  tOrderDaliyPlanItemMapper.searchDaliyPlansByStatus(order.getOrderNo(),"10",null,null);
+			if(result == null || result.size() ==0){
+				//订单成完结
+				OperationLogUtil.saveHistoryOperation(order.getOrderNo(),LogType.ORDER,OrderLogEnum.STATUS,null,null,"10".equals(order.getSign())?"在订":"","完结",
+						null,null,userSessionService.getCurrentUser(),operationLogMapper);
+				tPreOrderMapper.updateOrderToFinish(order.getOrderNo());
+				if("20".equals(order.getPaymentmethod()) && order.getCurAmt().floatValue()> 0){
+					//退回剩余金额
+					TVipAcct ac = new TVipAcct();
+					ac.setVipCustNo(order.getMilkmemberNo());
+					ac.setAcctAmt(order.getCurAmt());
+					System.out.println(order.getOrderNo()+" 退回账户 "+order.getCurAmt());
+					tVipCustInfoService.addVipAcct(ac);
+				}
+				if(tPreOrderMapper.selectNumOfdeletedByMilkmemberNo(order.getMilkmemberNo())==0){
 					//订户状态更改
 					tVipCustInfoService.discontinue(order.getMilkmemberNo(), "20",null,null);
 				}
