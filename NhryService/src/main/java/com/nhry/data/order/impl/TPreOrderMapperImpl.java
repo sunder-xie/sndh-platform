@@ -407,11 +407,7 @@ public class TPreOrderMapperImpl implements TPreOrderMapper
 	}
 
 
-	@Override
-	public int batchupdateOrderCurAmtByOrderAndAmt(List<TPreOrder> uptOrderCurAmts)
-	{
-		return sqlSessionTemplate.update("batchupdateOrderCurAmtByOrderAndAmt", uptOrderCurAmts);
-	}
+
 	@Override
 	public int updateBackOrder(TPreOrder record){return sqlSessionTemplate.update("updateBackOrder", record);}
 }
