@@ -4672,7 +4672,7 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 														//如果参加的是行项目满减，类似订单满减，将该行项目停订  还是按照订单总额顺延
 													}
 												}else{
-														throw new ServiceException(MessageCode.LOGIC_ERROR,"该订单有行项目参加了促销，其他行项目不能停订");
+														throw new ServiceException(MessageCode.LOGIC_ERROR,"该订单有产品行项目参加了促销，非促销行项目不能停订");
 												}
 
 

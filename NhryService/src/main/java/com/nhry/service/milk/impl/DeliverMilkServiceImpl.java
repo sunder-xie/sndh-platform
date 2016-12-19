@@ -687,8 +687,8 @@ public class DeliverMilkServiceImpl extends BaseService implements DeliverMilkSe
 
 			OperationLogUtil.saveHistoryOperation(dispOrder.getOrderNo(), LogType.ROUTE_ORDER, RouteLogEnum.CONFIRM_TOUTE,dispOrder.getDispEmpNo()+dispOrder.getDispEmpName(),null,
 					"未确认","确认",null,dispOrder.getDispDate(),userSessionService.getCurrentUser(),operationLogMapper);
-			/*List<String> noChangeNos = new ArrayList<String>();
-			Map<String,Object> uptMap = new HashMap<String,Object>();*/
+			List<String> noChangeNos = new ArrayList<String>();
+			Map<String,Object> uptMap = new HashMap<String,Object>();
 			System.out.println(routeCode+"开始----------------");
 			final long sTime = System.currentTimeMillis();
 			for(TDispOrderItem e : entryList){
@@ -711,36 +711,35 @@ public class DeliverMilkServiceImpl extends BaseService implements DeliverMilkSe
 						//TPreOrder order = tPreOrderMapper.selectByPrimaryKey(e.getOrgOrderNo());
 						order.setCurAmt(order.getCurAmt().subtract(e.getConfirmAmt()));
 						tPreOrderMapper.updateOrderCurAmt(order);
-						/*if(uptMap.size()>0){
+						if(uptMap.size()>0){
 							uptMap.replace("orderNo",e.getOrgOrderNo());
 							uptMap.replace("amt",e.getConfirmAmt());
 						}else{
 							uptMap.put("orderNo",e.getOrgOrderNo());
 							uptMap.put("amt",e.getConfirmAmt());
 						}
-						tPreOrderMapper.updateOrderCurAmtByOrderAndAmt(uptMap);*/
+						tPreOrderMapper.updateOrderCurAmtByOrderAndAmt(uptMap);
 					}
-				/*	if(!noChangeNos.contains(e.getOrgItemNo())){
+					if(!noChangeNos.contains(e.getOrgItemNo())){
 						noChangeNos.add(e.getOrgItemNo());
 					}
-*/
-					//更新日计划为确认
+					/*//更新日计划为确认
 					record.setOrderNo(e.getOrgOrderNo());
 					record.setDispDate(dispDate);
 					record.setItemNo(e.getOrgItemNo());
 					record.setStatus("20");
-					tOrderDaliyPlanItemMapper.updateDaliyPlanItemStatus(record);
+					tOrderDaliyPlanItemMapper.updateDaliyPlanItemStatus(record);*/
 				}
 			}
-		/*	if(noChangeNos.size()>0){
+			if(noChangeNos.size()>0){
 				HashMap<String,Object> map = new HashMap<String,Object>();
 				map.put("dispDate",dispDate);
 				map.put("status","20");
 				map.put("itemNos",noChangeNos);
 				tOrderDaliyPlanItemMapper.updateDaliyPlanItemStatusBatch(map);
-			}*/
+			}
 
-			System.out.println("一共耗时"+( System.currentTimeMillis()-sTime));
+			//System.out.println("一共耗时"+( System.currentTimeMillis()-sTime));
 			//路单更新为已经确认
 			// tDispOrderMapper.updateDispOrderStatus(routeCode,"20");
 			
@@ -808,9 +807,12 @@ public class DeliverMilkServiceImpl extends BaseService implements DeliverMilkSe
 
 		TDispOrder dispOrder = null;
 		List<TDispOrderItem> dispEntries = null;
-		Map<String,String> productMap = productService.getMataBotTypes();
-		for(TPreOrder order : empNos){
 
+		Map<String,String> productMap = productService.getMataBotTypes();
+		int i= 0;
+		for(TPreOrder order : empNos){
+			final long oneRouteStart = System.currentTimeMillis();
+			System.out.println("生成一条路单开始----");
 			if(StringUtils.isBlank(order.getEmpNo()))continue;
 
 			dispOrder = new TDispOrder();
@@ -818,7 +820,9 @@ public class DeliverMilkServiceImpl extends BaseService implements DeliverMilkSe
 			int totalQty = 0;
 			BigDecimal totalAmt = new BigDecimal("0.00");
 			//生成一条路线，一个配送时段的路单
-			List<TOrderDaliyPlanItem> daliyPlans = tOrderDaliyPlanItemMapper.selectbyDispLineNo(order.getEmpNo(),format.format(date),order.getOrderType(),userSessionService.getCurrentUser().getBranchNo());
+			//List<TOrderDaliyPlanItem> daliyPlans = tOrderDaliyPlanItemMapper.selectbyDispLineNo(order.getEmpNo(),format.format(date),order.getOrderType(),user.getBranchNo());
+			List<TOrderDaliyPlanItem> daliyPlans = tOrderDaliyPlanItemMapper.selectbyDispLineNo2(order.getEmpNo(),format.format(date),order.getOrderType(),user.getBranchNo());
+
 			if(daliyPlans == null || daliyPlans.size() <= 0)continue;
 				
 			dispOrder.setOrderNo(PrimaryKeyUtils.generateUuidKey());
@@ -826,10 +830,10 @@ public class DeliverMilkServiceImpl extends BaseService implements DeliverMilkSe
 			int index = 0;
 			String empNo = order.getEmpNo();
 			for(TOrderDaliyPlanItem plan : daliyPlans){
+				i = i+1;
 				TDispOrderItem item = new TDispOrderItem();
 				totalQty += plan.getQty();
 				totalAmt = totalAmt.add(plan.getAmt()==null?new BigDecimal("0.00"):plan.getAmt());
-				
 				//如果该行是赠品行，标记
 				if(plan.getGiftQty()!=null)item.setGiftFlag("Y");
 				//路单详细,一个日计划对应一行
@@ -863,7 +867,6 @@ public class DeliverMilkServiceImpl extends BaseService implements DeliverMilkSe
 				dispEntries.add(item);
 				index++;
 			}
-			
 			//生成路单号
 			dispOrder.setType("10");
 			dispOrder.setAmt(totalAmt);
@@ -881,10 +884,11 @@ public class DeliverMilkServiceImpl extends BaseService implements DeliverMilkSe
 			tDispOrderMapper.insert(dispOrder);
 			if(dispEntries.size() == 0)continue;
 			tDispOrderItemMapper.batchinsert(dispEntries);
-			
 			createRouteChanges(dispOrder.getOrderNo(),date,empNo,dispOrder.getReachTimeType());
+			System.out.println("生成一条路单一共用时"+(System.currentTimeMillis()-oneRouteStart)+"毫秒");
 		}
-		System.out.println("生成路单一共用时"+(System.currentTimeMillis()-startTime)+"毫秒");
+		System.out.println("该奶站生成今天的所有的路单行数为"+i);
+		System.out.println("生成所有路单一共用时"+(System.currentTimeMillis()-startTime)+"毫秒");
 		return 1;
 	}
 

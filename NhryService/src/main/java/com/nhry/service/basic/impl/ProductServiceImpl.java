@@ -319,6 +319,7 @@ public class ProductServiceImpl extends BaseService implements ProductService {
 	@Override
 	public Map<String, String> getMataBotTypes() {
 		// TODO Auto-generated method stub
+		final long getProductStart = System.currentTimeMillis();
 		Map<String, String> attrs = new HashMap<String, String>();
 		List<BotType> list = this.tMdMaraExMapper
 				.getMataBotTypes(this.userSessionService.getCurrentUser()
@@ -328,6 +329,7 @@ public class ProductServiceImpl extends BaseService implements ProductService {
 				attrs.put(bt.getMatnr(), bt.getBotType());
 			}
 		}
+		System.out.println("获取产品规格用时"+(System.currentTimeMillis()-getProductStart)+"毫秒");
 		return attrs;
 	}
 
