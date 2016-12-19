@@ -2523,7 +2523,6 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 		SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
 		List<TOrderDaliyPlanItem> entries = record.getEntries();
 		if(entries==null || entries.size()==0){throw  new ServiceException(MessageCode.LOGIC_ERROR,"没有日计划行");}
-		try{
 			Date firstDate = tOrderDaliyPlanItemMapper.selectFirstDispDateByOrder(record.getOrderCode());
 			for(TOrderDaliyPlanItem plan : entries){
 				TOrderDaliyPlanItem oldDay = tOrderDaliyPlanItemMapper.selectByDateAndItemNoAndNo(plan);
@@ -2533,7 +2532,12 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 				}
 				TPromotion prom = promotionService.selectPromotionByPromNoAndItemNo(oldDay.getPromotionFlag(),item.getPromItemNo());
 				if(StringUtils.isBlank(plan.getDispDateStr())) throw new ServiceException(MessageCode.LOGIC_ERROR,"配送日期不能为空");
-				plan.setDispDate(format.parse(plan.getDispDateStr()));
+				try {
+					plan.setDispDate(format.parse(plan.getDispDateStr()));
+				} catch (ParseException e) {
+					e.printStackTrace();
+					throw new ServiceException(MessageCode.LOGIC_ERROR, "配送日期格式错误");
+				}
 				if(prom == null) throw new ServiceException(MessageCode.LOGIC_ERROR,oldDay.getPromotionFlag()+" 该促销号不存在，请维护！");
 				if(DateUtil.dateAfter(plan.getDispDate(),prom.getPlanStopTime())) throw new ServiceException(MessageCode.LOGIC_ERROR,"赠品的配送日期超出促销的截止配送日期");
 				if(DateUtil.dateAfter(prom.getPlanStartTime(),plan.getDispDate())) throw new ServiceException(MessageCode.LOGIC_ERROR,"赠品的配送日期超出促销的开始配送日期");
@@ -2550,10 +2554,6 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 				oldDay.setReachTimeType(plan.getReachTimeType());
 				tOrderDaliyPlanItemMapper.updateDaliyPlanItem(oldDay);
 			}
-		}catch (Exception e){
-			e.printStackTrace();
-			throw new ServiceException(MessageCode.SERVER_ERROR,e.toString());
-		}
 		return 1;
 	}
 
