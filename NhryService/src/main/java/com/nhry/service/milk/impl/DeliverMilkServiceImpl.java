@@ -962,19 +962,11 @@ public class DeliverMilkServiceImpl extends BaseService implements DeliverMilkSe
 			entryList.stream()
 					.filter((e)->!list.contains(e.getOrgOrderNo()))
 					.forEach((e)->{
-						list.add(e.getOrgOrderNo());
-						orderService.returnOrderRemainAmtToAcct(e.getOrgOrderNo(),dispDate);
-					});
-
-			//做完结订单
-			List<String> oList = new ArrayList<String>();
-			entryList.stream()
-					.filter((e)->!oList.contains(e.getOrgOrderNo()))
-					.forEach((e)->{
-						oList.add(e.getOrgOrderNo());
-						orderService.setOrderToFinish(e.getOrgOrderNo(),dispDate);
-					});
-
+					TPreOrder order = tPreOrderMapper.selectByPrimaryKey(e.getOrgOrderNo());
+					list.add(e.getOrgOrderNo());
+					//做完结订单,并将订单余额退回订户个账
+					orderService.setOrderToFinish2(order,dispDate);
+			});
 		}else{
 			throw new ServiceException(MessageCode.LOGIC_ERROR,"没有此路单号!");
 		}
