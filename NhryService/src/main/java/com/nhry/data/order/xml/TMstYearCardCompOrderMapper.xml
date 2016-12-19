@@ -7,7 +7,7 @@
     <result column="CUST_ADDRESS" property="custAddress" jdbcType="VARCHAR" />
     <result column="CUST_MP" property="custMp" jdbcType="VARCHAR" />
     <result column="MATNR_TXT" property="matnrTxt" jdbcType="VARCHAR" />
-    <result column="DISP_DATE" property="dispDate" jdbcType="DATE" />
+    <result column="BACK_DATE" property="backDate" jdbcType="DATE" />
     <result column="DALIY_QTY" property="daliyQty" jdbcType="DECIMAL" />
     <result column="PRE_TOTAL" property="preTotal" jdbcType="INTEGER" />
     <result column="REAL_TOTAL" property="realTotal" jdbcType="INTEGER" />
@@ -27,8 +27,8 @@
     REAL_DISCOUNT,SH_REFUND,REAL_REFUND,DIFFERENCE,CREATE_AT, CREATE_BY, CREATE_BY_TXT
   </sql>
 
-  <insert id="insertNewItem" parameterType="com.nhry.data.order.domain.TMstYearCardCompOrder" >
-    insert into t_mst_year_card_com_order
+  <insert id="addYearCardCompOrder" parameterType="com.nhry.data.order.domain.TMstYearCardCompOrder" >
+    insert into t_mst_year_card_comp_order
     <trim prefix="(" suffix=")" suffixOverrides="," >
       <if test="orderNo != null" >
         ORDER_NO,
@@ -45,8 +45,8 @@
       <if test="matnrTxt != null" >
         MATNR_TXT,
       </if>
-      <if test="dispDate != null" >
-        DISP_DATE,
+      <if test="backDate != null" >
+        BACK_DATE,
       </if>
       <if test="daliyQty != null" >
         DALIY_QTY,
@@ -101,8 +101,8 @@
       <if test="matnrTxt != null" >
         #{matnrTxt,jdbcType=VARCHAR},
       </if>
-      <if test="dispDate != null" >
-        #{dispDate,jdbcType=DATE},
+      <if test="backDate != null" >
+        #{backDate,jdbcType=DATE},
       </if>
       <if test="daliyQty != null" >
         #{daliyQty,jdbcType=DECIMAL},

@@ -27,7 +27,27 @@
     <result column="GIFT_QTY" property="giftQty" jdbcType="INTEGER" />
     <result column="PROMOTION_FLAG" property="promotionFlag" jdbcType="VARCHAR" />
     <result column="WEEKLY" property="weekly" jdbcType="VARCHAR" />
-
+  </resultMap>
+  <resultMap id="YearCardMap" type="com.nhry.data.order.domain.TMstYearCardCompOrder" >
+    <result column="ORDER_NO" property="orderNo" jdbcType="VARCHAR" />
+    <result column="VIP_CUST_NO" property="vipCustNo" jdbcType="VARCHAR" />
+    <result column="VIP_NAME" property="vipName" jdbcType="VARCHAR" />
+    <result column="CUST_ADDRESS" property="custAddress" jdbcType="VARCHAR" />
+    <result column="CUST_MP" property="custMp" jdbcType="VARCHAR" />
+    <result column="MATNR_TXT" property="matnrTxt" jdbcType="VARCHAR" />
+    <result column="DISP_DATE" property="dispDate" jdbcType="DATE" />
+    <result column="DALIY_QTY" property="daliyQty" jdbcType="DECIMAL" />
+    <result column="PRE_TOTAL" property="preTotal" jdbcType="INTEGER" />
+    <result column="REAL_TOTAL" property="realTotal" jdbcType="INTEGER" />
+    <result column="INIT_AMT" property="initAmt" jdbcType="DECIMAL" />
+    <result column="PRE_DISCOUNT" property="preDiscount" jdbcType="DECIMAL" />
+    <result column="REAL_DISCOUNT" property="realDiscount" jdbcType="DECIMAL" />
+    <result column="SH_REFUND" property="shRefund" jdbcType="DECIMAL" />
+    <result column="REAL_REFUND" property="realRefund" jdbcType="DECIMAL" />
+    <result column="DIFFERENCE" property="difference" jdbcType="DECIMAL" />
+    <result column="CREATE_AT" property="createAt" jdbcType="TIMESTAMP" />
+    <result column="CREATE_BY" property="createBy" jdbcType="VARCHAR" />
+    <result column="CREATE_BY_TXT" property="createByTxt" jdbcType="VARCHAR" />
   </resultMap>
   <sql id="Base_Column_List" >
     ORDER_NO, ORDER_DATE, PLAN_ITEM_NO, ITEM_NO, DISP_DATE, REACH_TIME, REACH_TIME_TYPE, 
@@ -1286,7 +1306,7 @@
 
 
 
-  <select id="selectYearCardBackOrder" resultType="hashmap" parameterType="com.nhry.data.order.domain.TOrderDaliyPlanItem">
+  <select id="selectYearCardBackOrder" resultMap="YearCardMap" parameterType="com.nhry.data.order.domain.TOrderDaliyPlanItem">
     SELECT
     o.ORDER_NO,
     o.DISCOUNT_AMT PRE_DISCOUNT,
@@ -1294,6 +1314,7 @@
     c.VIP_CUST_NO,
     c.VIP_NAME,
     c.MP CUST_MP,
+    count(i.QTY)/count(i.DISP_DATE) DALIY_QTY,
     CONCAT(r.ADDRESS_TXT,a.ADDRESS_TXT) CUST_ADDRESS,
     (
         SELECT

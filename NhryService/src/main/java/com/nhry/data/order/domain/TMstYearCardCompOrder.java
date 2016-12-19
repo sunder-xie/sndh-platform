@@ -9,7 +9,7 @@ import java.util.Date;
 public class TMstYearCardCompOrder {
     private String orderNo;         // 订单号
     private String matnrTxt;        // 产品名称
-    private String initAmt;        // 订单总金额（initAmt）
+    private BigDecimal initAmt;        // 订单总金额（initAmt）
     private BigDecimal daliyQty;    // 均日数量
     private int preTotal;           // 预定数量
     private int realTotal;          // 已消费数量
@@ -35,11 +35,11 @@ public class TMstYearCardCompOrder {
         this.backDate = backDate;
     }
 
-    public String getInitAmt() {
+    public BigDecimal getInitAmt() {
         return initAmt;
     }
 
-    public void setInitAmt(String initAmt) {
+    public void setInitAmt(BigDecimal initAmt) {
         this.initAmt = initAmt;
     }
 

@@ -8,11 +8,20 @@ import java.util.Date;
  * Created by gongjk on 2016/12/13.
  */
 public class YearCardBackModel {
+    private String backReason;
     private Date backDate;
     private BigDecimal shRefund;         //应该退款
     private BigDecimal backAmt;         //实际退款
     private String orderNo;             //订单号
     private BigDecimal realDiscount;  //实际折扣
+
+    public String getBackReason() {
+        return backReason;
+    }
+
+    public void setBackReason(String backReason) {
+        this.backReason = backReason;
+    }
 
     public BigDecimal getShRefund() {
         return shRefund;
