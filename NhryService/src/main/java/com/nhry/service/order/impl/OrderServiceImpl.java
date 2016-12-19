@@ -1198,8 +1198,8 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 
 	@Override
 	public int yearCardBackOrder(YearCardBackModel smodel) {
-		if(StringUtils.isBlank(smodel.getOrderNo()) || smodel.getBackAmt()==null || smodel.getRealDiscount()==null){
-			throw new ServiceException(MessageCode.LOGIC_ERROR,"年卡退订，订单号、实际退款金额、实际折扣不能为空");
+		if(StringUtils.isBlank(smodel.getOrderNo()) || smodel.getBackAmt()==null||smodel.getShRefund()==null || smodel.getRealDiscount()==null){
+			throw new ServiceException(MessageCode.LOGIC_ERROR,"年卡退订，订单号、应退金额、实际退款金额、实际折扣不能为空");
 		}
 		TPreOrder order = tPreOrderMapper.selectByPrimaryKey(smodel.getOrderNo());
 		if("20".equals(order.getPreorderStat())){
@@ -1221,10 +1221,17 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 							yOrder.setRealRefund(smodel.getBackAmt());
 							yOrder.setRealDiscount(smodel.getRealDiscount());
 							yOrder.setBackDate(smodel.getBackDate());
+							yOrder.setDifference(yOrder.getShRefund().subtract(yOrder.getRealRefund()));
 							tYearCardCompOrderMapper.addYearCardCompOrder(yOrder);
 						}
+
+						order.setPreorderStat("30");//失效的订单
+						order.setSign("30");//标示退订
+						order.setBackReason(smodel.getBackReason());
+						tPreOrderMapper.updateOrderEndDate(order);
+
 					}else{
-						throw new ServiceException(MessageCode.LOGIC_ERROR,"改折扣不属于年卡");
+						throw new ServiceException(MessageCode.LOGIC_ERROR,"该折扣不属于年卡");
 					}
 				}else{
 					throw new ServiceException(MessageCode.LOGIC_ERROR,"不存在该年卡信息");
@@ -1460,10 +1467,10 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 				}
 			});
 			if(StringUtils.isNotBlank(confirm.toString().trim())){
-				throw new ServiceException(MessageCode.LOGIC_ERROR,confirm+"已经确认了路单，不能退订");
+				throw new ServiceException(MessageCode.LOGIC_ERROR,confirm+"已经发放，不能退订");
 			}
 			if(StringUtils.isNotBlank(noConfirm.toString().trim())){
-				throw new ServiceException(MessageCode.LOGIC_ERROR,noConfirm+"  已经产生了路单，请先删除路单再退订");
+				throw new ServiceException(MessageCode.LOGIC_ERROR, noConfirm +"  已经产生了路单，请先删除路单再退订");
 			}
 		}
 

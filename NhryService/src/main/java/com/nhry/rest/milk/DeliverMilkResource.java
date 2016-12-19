@@ -111,7 +111,7 @@ public class DeliverMilkResource extends BaseResource {
 	@Produces(MediaType.APPLICATION_JSON)
 	@ApiOperation(value = "/changeDaliyPlans/{orderCode}", response = RouteOrderModel.class, notes = "根据路单更新日计划  路单确认")
 	public Response changeDaliyPlans(@ApiParam(required=true,name="orderCode",value="路单编号") @PathParam("orderCode") String orderCode){
-		return convertToRespModel(MessageCode.NORMAL, null, deliverMilkService.updateDaliyPlanByRouteOrder2(orderCode));
+		return convertToRespModel(MessageCode.NORMAL, null, deliverMilkService.updateDaliyPlanByRouteOrder(orderCode));
 	}
 	
 	@GET
