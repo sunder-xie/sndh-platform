@@ -62,4 +62,6 @@ public interface DeliverMilkService {
 	List<OrderDaliyPlanReportEntityModel> reportOrderDaliyPlanByParams(OrderDaliyPlanReportModel model);
 
 	int createTemRouteOrders(TemporaryDispOrderModel tModel);
+
+	int updateDaliyPlanByRouteOrder2(String orderCode);
 }

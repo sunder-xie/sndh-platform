@@ -82,6 +82,17 @@
         </trim>
     </insert>
 
+    <insert id="batchAddNewInsideOrderItems" parameterType="java.util.List" >
+        insert into t_mst_inside_sal_order_item
+        (INS_ORDER_NO,ORDER_DATE, ITEM_NO, ORG_ORDER_NO, MATNR,QTY,  PRICE,REASON) values
+        <foreach collection="list" item="item" index="index"
+                 separator=",">
+            ( #{item.insOrderNo}, #{item.orderDate}, #{item.itemNo},
+            #{item.orgOrderNo}, #{item.matnr},
+            #{item.qty},#{item.price}, #{item.reason}
+           )
+        </foreach>
+    </insert>
 
     <select id="getInsideSalOrderDetail" resultMap="BaseResultMap" parameterType="com.nhry.model.milktrans.InSideSalOrderDetailSearchModel">
       SELECT
