@@ -400,8 +400,6 @@ public class ImportTableResource extends BaseResource {
                                 throw new ServiceException("产品价格小于0,请检查传入的商品号，奶站和配送方式!信息：" + "奶站：" + order.getBranchNo() + "商品号：" + entrie.getMatnr() + "配送方式：" + order.getDeliveryType() + "销售组织：" + salesOrg);
                             entrie.setSalesPrice(new BigDecimal(String.valueOf(price)));
                             entries.add(entrie);
-                        }else{
-                            throw new ServiceException("第" + row1.getRowNum() + "行,订单行项目编号为空，请检查！");
                         }
                     }
                 }
