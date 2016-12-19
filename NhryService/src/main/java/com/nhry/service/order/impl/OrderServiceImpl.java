@@ -5265,7 +5265,7 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 	//预付款没产生路单  以订单金额为基础修改 如果有行项目参加促销：不能添加产品，不能修改非
 	public void uptBeforeOrderByAmt(List<TPlanOrderItem> orgEntrys,OrderEditModel record,TPreOrder orgOrder){
 		String orderNo = record.getOrder().getOrderNo();
-		SimpleDateFormat format = new SimpleDateFormat();
+		SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
 		List<TPlanOrderItem>  curEntrys = record.getEntries();
 		//判断是否有行项目参加促销
 		boolean PlanitemPromFlag = curEntrys.stream().anyMatch(item->(StringUtils.isNotBlank(item.getPromotion())&&StringUtils.isNotBlank(item.getPromItemNo())));
