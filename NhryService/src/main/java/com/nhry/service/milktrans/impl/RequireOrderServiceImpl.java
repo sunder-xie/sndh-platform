@@ -442,12 +442,14 @@ public class RequireOrderServiceImpl implements RequireOrderService {
                 TOrderDaliyPlanItem item = new TOrderDaliyPlanItem();
                 item.setQty(qty.intValue());
                 item.setMatnr(matnr);
+                item.setConfirmMatnr(matnr);
                 itemList.add(item);
             }else{
                 List<TOrderDaliyPlanItem> itemList = new ArrayList<TOrderDaliyPlanItem>();
                 TOrderDaliyPlanItem item = new TOrderDaliyPlanItem();
                 item.setQty(qty.intValue());
                 item.setMatnr(matnr);
+                item.setConfirmMatnr(matnr);
                 itemList.add(item);
                 orderMap.put(orgCode,itemList);
             }
@@ -870,6 +872,7 @@ public class RequireOrderServiceImpl implements RequireOrderService {
                                 List<TOrderDaliyPlanItem> itemList = orderMap.get(orgCode);
                                 TOrderDaliyPlanItem item = new TOrderDaliyPlanItem();
                                 item.setQty(qty.intValue());
+                                item.setConfirmMatnr(matnr);
                                 item.setMatnr(matnr);
                                 itemList.add(item);
                             }else{
@@ -877,6 +880,7 @@ public class RequireOrderServiceImpl implements RequireOrderService {
                                 TOrderDaliyPlanItem item = new TOrderDaliyPlanItem();
                                 item.setQty(qty.intValue());
                                 item.setMatnr(matnr);
+                                item.setConfirmMatnr(matnr);
                                 itemList.add(item);
                                 orderMap.put(orgCode,itemList);
                             }
@@ -887,7 +891,7 @@ public class RequireOrderServiceImpl implements RequireOrderService {
                                String orgCode =  entry.getKey();
                                 List<TOrderDaliyPlanItem> itemOrgs = entry.getValue();
                                 TSsmSalOrder salOrder = null;
-                                createSsmSalOrderAndItmes(search.getOrderDate(),user,itemOrgs,entries,salOrder,"","70",orgCode);
+                                salOrder = createSsmSalOrderAndItmes(search.getOrderDate(),user,itemOrgs,entries,salOrder,"","70",orgCode);
                                 if(salOrder!=null){
                                     salOrderList.add(salOrder);
                                 }

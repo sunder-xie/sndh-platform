@@ -3,6 +3,7 @@ package com.nhry.data.milktrans.impl;
 import com.nhry.common.datasource.DynamicSqlSessionTemplate;
 import com.nhry.data.milktrans.dao.TSsmSalOrderItemMapper;
 import com.nhry.data.milktrans.domain.TSsmSalOrderItems;
+import com.nhry.model.milktrans.RequireOrderSearch;
 import com.nhry.model.order.OrderPointModel;
 
 import java.util.Map;
@@ -53,5 +54,10 @@ public class TSsmSalOrderItemMapperImpl implements TSsmSalOrderItemMapper {
     @Override
     public OrderPointModel getSumYfrechAndYGrowByOrderNo(String orderNo) {
         return sqlSessionTemplate.selectOne("getSumYfrechAndYGrowByOrderNo",orderNo);
+    }
+
+    @Override
+    public List<Map<String, Object>> selectPromDaliyDiscountAmtOfDearler(RequireOrderSearch rModel) {
+        return sqlSessionTemplate.selectList("selectPromDaliyDiscountAmtOfDearler",rModel);
     }
 }

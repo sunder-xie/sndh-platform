@@ -139,5 +139,40 @@
         where 1=1
         and ORDER_NO = #{orderNo,jdbcType=VARCHAR}
     </delete>
-
+    <select id="selectPromDaliyDiscountAmtOfDearler" resultType="java.util.HashMap" parameterType="com.nhry.model.milktrans.RequireOrderSearch">
+        SELECT
+        matnr,
+        sum(DISCOUNT_AMT)
+        FROM
+        (
+        SELECT
+        i.ORDER_NO,
+        i.MATNR matnr,
+        r.PRICE1 * (1 - o.DISCOUNT_AMT) * i.QTY AS DISCOUNT_AMT
+        FROM
+        t_mst_order_daliy_plan_item i
+        JOIN t_preorder o ON i.ORDER_NO = o.ORDER_NO
+        AND o.BRANCH_NO = ${branchNo}
+        JOIN t_promotion p ON o.PROMOTION = p.PROM_NO
+        AND p.PROM_SUB_TYPE = 'Z017'
+        JOIN t_md_mara_ex e ON i.MATNR = e.MATNR
+        AND e.SALES_ORG = ${salesOrg}
+        AND (
+        (
+        e.PRE_DAYS = 2
+        AND i.DISP_DATE = #{secondDay,jdbcType=DATE}
+        )
+        OR (
+        e.PRE_DAYS = 1
+        AND i.DISP_DATE = #{firstDay,jdbcType=DATE}
+        )
+        )
+        LEFT JOIN t_mara_price_rel r ON i.MATNR = r.MATNR
+        AND r.SALES_ORG = ${salesOrg}
+        JOIN t_md_price pr ON pr.ID = r.ID
+        AND pr.PRICE_TYPE = '10'
+        ) a
+        GROUP BY
+        matnr;
+    </select>
 </mapper>
