@@ -139,6 +139,7 @@ WHERE
     <if test="search!=null and ''!=search">
       and (i.VIP_NAME like '%${search}%' OR i.MP like '%${search}%' OR l.CREATE_BY like '%${search}%' OR l.CREATE_BY_TXT like '%${search}%')
     </if>
+    ORDER BY CREATE_AT desc
   </select>
   <select id="getOrderOperationLog" resultType="hashmap" parameterType="com.nhry.model.basic.CustOperationQueryModel">
     SELECT
@@ -165,6 +166,7 @@ WHERE
     <if test="search!=null and ''!=search">
       and (l.LOG_NO like '%${search}%' OR l.LOG_MATNR like '%${search}%' OR l.CREATE_BY like '%${search}%' OR l.CREATE_BY_TXT like '%${search}%')
     </if>
+    ORDER BY CREATE_AT desc
   </select>
   <select id="getPlanOperationLog" resultType="hashmap" parameterType="com.nhry.model.basic.CustOperationQueryModel">
     SELECT
@@ -187,7 +189,7 @@ WHERE
       and l.LOG_DATE &gt;= #{dateStart}
     </if>
     <if test="dateEnd!=null and ''!=dateEnd">
-      and  l.LOG_DATE &lt;= #{dateEnd}
+      and  l.LOG_DATE &lt;= #{dateEnd,jdbcType=DATE}
     </if>
     <if test="dispDate!=null and ''!=dispDate">
       and  l.LOG_DISP_DATE = #{dispDate,jdbcType=DATE}
@@ -195,6 +197,7 @@ WHERE
     <if test="search!=null and ''!=search">
       and (l.LOG_NO like '%${search}%' OR l.LOG_MATNR like '%${search}%' OR l.CREATE_BY like '%${search}%' OR l.CREATE_BY_TXT like '%${search}%')
     </if>
+    ORDER BY CREATE_AT desc
   </select>
   <select id="getRouteOperationLog" resultType="hashmap" parameterType="com.nhry.model.basic.CustOperationQueryModel">
     SELECT
@@ -227,5 +230,6 @@ WHERE
     <if test="search!=null and ''!=search">
       and (l.LOG_NO like '%${search}%' OR l.LOG_MATNR like '%${search}%' OR l.LOG_EMP like '%${search}%' OR l.CREATE_BY like '%${search}%' OR l.CREATE_BY_TXT like '%${search}%')
     </if>
+    ORDER BY CREATE_AT desc
   </select>
 </mapper>

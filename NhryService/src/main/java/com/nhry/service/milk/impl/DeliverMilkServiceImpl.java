@@ -1624,7 +1624,7 @@ public class DeliverMilkServiceImpl extends BaseService implements DeliverMilkSe
 		tDispOrderMapper.deleteDispOrderByOrderNo(newList);
 		try {
 			OperationLogUtil.saveHistoryOperation("", LogType.ROUTE_ORDER, RouteLogEnum.DELETE_TOUTE,"",null,
-                    "","删除路单",null,new SimpleDateFormat().parse(date),userSessionService.getCurrentUser(),operationLogMapper);
+                    "","删除",null,new SimpleDateFormat("yyyy-MM-dd").parse(date),userSessionService.getCurrentUser(),operationLogMapper);
 		} catch (ParseException e) {
 			e.printStackTrace();
 		}
