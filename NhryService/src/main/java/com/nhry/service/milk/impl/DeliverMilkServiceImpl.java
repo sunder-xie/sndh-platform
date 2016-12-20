@@ -1119,6 +1119,10 @@ public class DeliverMilkServiceImpl extends BaseService implements DeliverMilkSe
 			//createRouteChanges(dispOrder.getOrderNo(),date,empNo,dispOrder.getReachTimeType());
 			System.out.println("生成一条路单一共用时"+(System.currentTimeMillis()-oneRouteStart)+"毫秒");
 		}
+
+		OperationLogUtil.saveHistoryOperation(dispOrder.getOrderNo(), LogType.ROUTE_ORDER, RouteLogEnum.CREATE_TOUTE,dispOrder.getDispEmpNo()+dispOrder.getDispEmpName(),null,
+				"","生成",null,dispOrder.getDispDate(),userSessionService.getCurrentUser(),operationLogMapper);
+
 		System.out.println("该奶站生成今天的所有的路单行数为"+i);
 		System.out.println("生成所有路单一共用时"+(System.currentTimeMillis()-startTime)+"毫秒");
 		return 1;
@@ -1618,6 +1622,13 @@ public class DeliverMilkServiceImpl extends BaseService implements DeliverMilkSe
 		//tDispOrderChangeMapper.deleteDispOrderChangeByOrderNo(newList);
 		tDispOrderItemMapper.deleteDispOrderItemByOrderNo(newList);
 		tDispOrderMapper.deleteDispOrderByOrderNo(newList);
+		try {
+			OperationLogUtil.saveHistoryOperation("", LogType.ROUTE_ORDER, RouteLogEnum.CREATE_TOUTE,"",null,
+                    "","删除路单",null,new SimpleDateFormat().parse(date),userSessionService.getCurrentUser(),operationLogMapper);
+		} catch (ParseException e) {
+			e.printStackTrace();
+		}
+
 		return 1;
 	}
 
