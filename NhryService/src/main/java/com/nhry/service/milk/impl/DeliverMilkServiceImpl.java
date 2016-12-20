@@ -838,6 +838,7 @@ public class DeliverMilkServiceImpl extends BaseService implements DeliverMilkSe
 
 		TDispOrderKey key = new TDispOrderKey();
 		key.setOrderNo(routeCode);
+		//获取路单
 		TDispOrder dispOrder = tDispOrderMapper.selectByPrimaryKey(key);
 
 		if(dispOrder!=null){
@@ -1029,7 +1030,7 @@ public class DeliverMilkServiceImpl extends BaseService implements DeliverMilkSe
 		{
 			throw new ServiceException(MessageCode.LOGIC_ERROR,"日期格式有误!");
 		}
-		if(tDispOrderMapper.selectTodayDispOrderByBranchNo(user.getBranchNo(),date).size()>0)throw new ServiceException(MessageCode.LOGIC_ERROR,"本日该奶站已经创建过路单!");
+		if(tDispOrderMapper.selectTodayDispOrderByBranchNo(user.getBranchNo(),date).size()>0)throw new ServiceException(MessageCode.LOGIC_ERROR,format.format(date)+"该奶站已经创建过路单!");
 		final long startTime = System.currentTimeMillis();
 		//List<TPreOrder> empNos = tPreOrderMapper.selectDispNoByGroup(user.getBranchNo());
 		List<TPreOrder> empNos = tPreOrderMapper.selectDispNoByGroup2(user.getBranchNo(),date);
@@ -1114,7 +1115,8 @@ public class DeliverMilkServiceImpl extends BaseService implements DeliverMilkSe
 			tDispOrderMapper.insert(dispOrder);
 			if(dispEntries.size() == 0)continue;
 			tDispOrderItemMapper.batchinsert(dispEntries);
-			createRouteChanges(dispOrder.getOrderNo(),date,empNo,dispOrder.getReachTimeType());
+			//创建变化路单
+			//createRouteChanges(dispOrder.getOrderNo(),date,empNo,dispOrder.getReachTimeType());
 			System.out.println("生成一条路单一共用时"+(System.currentTimeMillis()-oneRouteStart)+"毫秒");
 		}
 		System.out.println("该奶站生成今天的所有的路单行数为"+i);
@@ -1530,7 +1532,7 @@ public class DeliverMilkServiceImpl extends BaseService implements DeliverMilkSe
 		return date;
 	}
 	
-	//一张路单，确认后，生成变化路单
+	//一张路单，生成后，生成变化路单
 	private int createRouteChanges(String orderNo,Date dispDate,String dispEmp,String reachTimeType)
 	{
 		SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
@@ -1613,7 +1615,7 @@ public class DeliverMilkServiceImpl extends BaseService implements DeliverMilkSe
 		list.stream().forEach((e)->{
 			newList.add(e.getOrderNo());
 		});
-		tDispOrderChangeMapper.deleteDispOrderChangeByOrderNo(newList);
+		//tDispOrderChangeMapper.deleteDispOrderChangeByOrderNo(newList);
 		tDispOrderItemMapper.deleteDispOrderItemByOrderNo(newList);
 		tDispOrderMapper.deleteDispOrderByOrderNo(newList);
 		return 1;
