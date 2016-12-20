@@ -14,11 +14,7 @@ import com.nhry.data.config.domain.NHSysCodeItem;
 import com.nhry.data.milk.dao.TDispOrderItemMapper;
 import com.nhry.data.milk.dao.TDispOrderMapper;
 import com.nhry.data.milk.domain.TDispOrderItem;
-import com.nhry.data.order.dao.TYearCardCompOrderMapper;
-import com.nhry.data.order.dao.TOrderDaliyPlanItemBackMapper;
-import com.nhry.data.order.dao.TOrderDaliyPlanItemMapper;
-import com.nhry.data.order.dao.TPlanOrderItemMapper;
-import com.nhry.data.order.dao.TPreOrderMapper;
+import com.nhry.data.order.dao.*;
 import com.nhry.data.order.domain.*;
 import com.nhry.data.stock.dao.TSsmGiOrderItemMapper;
 import com.nhry.model.milk.RouteDetailUpdateModel;
@@ -1024,23 +1020,26 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 			Date startDate = order.getStopDateEnd();//续订开始日期
 			//后付款的
 			if(!"20".equals(order.getPaymentmethod())){
-				//把后期路单置回原样,重新计算金额
+				//把后期日订单置回原样,重新计算金额
 				TOrderDaliyPlanItem uptKey= new TOrderDaliyPlanItem(); 
 				uptKey.setOrderNo(order.getOrderNo());
 				uptKey.setDispDateStr(startDateStr);
 				tOrderDaliyPlanItemMapper.updateFromDateToDate(uptKey);
 				
 				ArrayList<TOrderDaliyPlanItem> daliyPlans = (ArrayList<TOrderDaliyPlanItem>) tOrderDaliyPlanItemMapper.selectDaliyPlansByOrderNoAsc(record.getOrderNo());
-
+				BigDecimal curInitAmt =BigDecimal.ZERO;
+				BigDecimal curCurAmt =BigDecimal.ZERO;
 				for(TOrderDaliyPlanItem p :daliyPlans){
-					if("30".equals(p.getStatus()) && !p.getDispDate().before(order.getStopDateStart())){
-						BigDecimal planAmt = p.getPrice().multiply(new BigDecimal(p.getQty().toString()));
-						orderAmt = orderAmt.subtract(planAmt);
+					if("10".equals(p.getStatus())){
+						curCurAmt = curCurAmt.add(p.getAmt());
+					}
+					if(!"30".equals(p.getStatus())){
+						curInitAmt = curInitAmt.add(p.getAmt());
 					}
 				}
-				
-				order.setCurAmt(orderAmt.subtract(order.getInitAmt().subtract(order.getCurAmt())));
-				order.setInitAmt(orderAmt);
+				orderAmt = curInitAmt;
+				order.setCurAmt(curCurAmt);
+				order.setInitAmt(curInitAmt);
 				
 				for(TOrderDaliyPlanItem p :daliyPlans){
 					if(!"30".equals(p.getStatus())){
@@ -1195,7 +1194,6 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 	 * @param smodel
 	 * @return
      */
-
 	@Override
 	public int yearCardBackOrder(YearCardBackModel smodel) {
 		if(StringUtils.isBlank(smodel.getOrderNo()) || smodel.getBackAmt()==null||smodel.getShRefund()==null || smodel.getRealDiscount()==null){
@@ -1209,11 +1207,27 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 		if(order!= null){
 			if(StringUtils.isNotBlank(order.getPromotion())&&StringUtils.isNotBlank(order.getPromItemNo())){
 				TPromotion prom = promotionService.selectPromotionByPromNoAndItemNo(order.getPromotion(),order.getPromItemNo());
+
 				if(prom!=null){
 					//年卡订单
 					if("Z017".equals(prom.getPromSubType())){
+
 						TMstYearCardCompOrder yOrder = tOrderDaliyPlanItemMapper.selectYearCardBackOrder(order.getOrderNo(),smodel.getBackDate());
 						if(yOrder!=null){
+							if(yOrder.getInitAmt()!=null){
+								if(yOrder.getInitAmt().compareTo(smodel.getShRefund())==-1){
+									throw new ServiceException(MessageCode.LOGIC_ERROR,"应退金额不能大于订单的总金额");
+								}
+							}else{
+								throw new ServiceException(MessageCode.LOGIC_ERROR,"获取不到该订单的总金额");
+							}
+							order.setMemoTxt(smodel.getMemoTxt());
+							order.setBackDate(smodel.getBackDate());
+							order.setBackReason(smodel.getBackReason());
+							//将日订单状态更新为停订
+							tOrderDaliyPlanItemMapper.updateDaliyPlansToBack(order);
+
+							//创建年卡折扣补偿单据
 							yOrder.setCreateAt(new Date());
 							yOrder.setCreateBy(user.getLoginName());
 							yOrder.setCreateByTxt(user.getDisplayName());
@@ -1223,13 +1237,68 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 							yOrder.setBackDate(smodel.getBackDate());
 							yOrder.setDifference(yOrder.getShRefund().subtract(yOrder.getRealRefund()));
 							tYearCardCompOrderMapper.addYearCardCompOrder(yOrder);
+
+							//订单置为退订
+							order.setPreorderStat("30");//失效的订单
+							order.setSign("30");//标示退订
+							tPreOrderMapper.updateOrderEndDate(order);
+
+							TVipAcct ac = new TVipAcct();
+							ac.setVipCustNo(order.getMilkmemberNo());
+							ac.setAcctAmt(smodel.getBackAmt());
+							tVipCustInfoService.addVipAcct(ac);
+
+							//年卡退订日志
+							OperationLogUtil.saveHistoryOperation(order.getOrderNo(),LogType.ORDER,OrderLogEnum.YEAR_CARD_BACK_ORDER,null,null,
+							null,smodel.getBackAmt().toString(),null,null,user,operationLogMapper);
+
+							//发送EC,更新订单状态
+							TPreOrder sendOrder = new TPreOrder();
+							sendOrder.setOrderNo(order.getOrderNo());
+							sendOrder.setPreorderStat("300");
+							taskExecutor.execute(new Thread(){
+								@Override
+								public void run() {
+									super.run();
+									this.setName("updateOrderStatus");
+									if("20".equals(order.getPaymentmethod()) && "20".equals(order.getPaymentStat())){
+										sendOrder.setCurAmt(smodel.getBackAmt());
+									}else{
+										sendOrder.setCurAmt(new BigDecimal("0.00"));
+									}
+									messLogService.sendOrderStatus(sendOrder);
+								}
+							});
+
+							//积分扣减
+							if("20".equals(order.getPaymentmethod())&&"20".equals(order.getPaymentStat())&&"Y".equals(order.getIsIntegration())){
+								taskExecutor.execute(new Thread(){
+									@Override
+									public void run() {
+										super.run();
+										this.setName("minusVipPoint"+new Date());
+										BigDecimal fRate = smodel.getBackAmt().divide(yOrder.getInitAmt(),2).multiply(new BigDecimal(order.getyFresh()==null?0:order.getyFresh()));//鲜峰
+										MemberActivities item = new MemberActivities();
+										Date date = new Date();
+										item.setActivitydate(date);
+										item.setSalesorg(order.getSalesOrg());
+										item.setCategory("YRETURN");
+										item.setProcesstype("YSUB_RETURN");
+										item.setOrderid(order.getOrderNo());
+										item.setMembershipguid(order.getMemberNo());
+										//第2遍传先锋
+										item.setPointtype("YFRESH");
+										item.setPoints(fRate);
+										item.setAmount(smodel.getBackAmt());
+										item.setProcess("X");
+										List<MemberActivities> list1 = new ArrayList<MemberActivities>();
+										list1.add(item);
+										piVipPointCreateBatService.createMemberActivitiesBat(list1);
+									}
+								});
+							}
+
 						}
-
-						order.setPreorderStat("30");//失效的订单
-						order.setSign("30");//标示退订
-						order.setBackReason(smodel.getBackReason());
-						tPreOrderMapper.updateOrderEndDate(order);
-
 					}else{
 						throw new ServiceException(MessageCode.LOGIC_ERROR,"该折扣不属于年卡");
 					}
@@ -1242,7 +1311,178 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 		}
 		return 0;
 	}
-	
+
+
+	/**
+	 * 订单提前退订
+	 * @param record
+	 * @return
+	 */
+	@Override
+	public int advanceYearCardBackOrder(YearCardBackModel record){
+		System.out.println(record.getOrderNo()+"订单提前退订开始");
+		if(StringUtils.isBlank(record.getOrderNo()) || record.getBackAmt()==null||record.getShRefund()==null || record.getRealDiscount()==null){
+			throw new ServiceException(MessageCode.LOGIC_ERROR,"年卡提前退订，订单号、应退金额、实际退款金额、实际折扣不能为空");
+		}
+		Date backDate = null;
+		SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
+		try {
+			backDate = format.parse(format.format(record.getBackDate())) ;
+		} catch (ParseException e) {
+			e.printStackTrace();
+		}
+		if(record.getBackDate() == null){
+			throw new ServiceException(MessageCode.LOGIC_ERROR,"提前退订日期不能为空！");
+		}
+		TPreOrder order = tPreOrderMapper.selectByPrimaryKey(record.getOrderNo());
+		if(order.getInitAmt()!=null && order.getInitAmt().compareTo(record.getBackAmt())==-1){
+			throw new ServiceException(MessageCode.LOGIC_ERROR,"实退金额不能大于订单总金额，请查看！！！");
+		}
+		if("20".equals(order.getPreorderStat())){
+			throw new ServiceException(MessageCode.LOGIC_ERROR,"待确认的订单暂无法进行此操作，请联系在线客服");
+		}
+		if(order.getEndDate().getTime() < backDate.getTime()){
+			throw new ServiceException(MessageCode.LOGIC_ERROR,"提前退订日期不能超出订单配送结束日期！");
+		}
+		if(order.getBackDate() != null && order.getBackDate().getTime()<backDate.getTime()){
+			throw new ServiceException(MessageCode.LOGIC_ERROR,"提前退订日期不能超出已退订的日期！");
+		}
+		if("20".equals(order.getSign())){
+			throw new ServiceException(MessageCode.LOGIC_ERROR,"长停订单不能提前退订！");
+		}
+
+		if("10".equals(order.getPaymentmethod())){
+			if(customerBillMapper.getRecBillByOrderNo(order.getOrderNo())!=null)throw new ServiceException(MessageCode.LOGIC_ERROR,"已经有收款单了，请不要操作，或者去删除收款单!");
+		}
+		if("20".equals(order.getPaymentmethod())){
+			TMstRecvBill bill = customerBillMapper.getRecBillByOrderNo(order.getOrderNo());
+			if(bill!=null && "10".equals(bill.getStatus())){
+				throw new ServiceException(MessageCode.LOGIC_ERROR,"预付款订单  "+order.getOrderNo()+"  已经有收款单但是还没完成收款，请不要修改订单，或者去删除收款单!");
+			}
+		}
+
+		if("10".equals(order.getPreorderSource()))throw new ServiceException(MessageCode.LOGIC_ERROR,"暂无法进行此操作，请联系在线客服!");
+		if(tDispOrderItemMapper.selectCountOfTodayByOrgOrder(order.getOrderNo(), backDate)>0)throw new ServiceException(MessageCode.LOGIC_ERROR,"此订单，有退订后未确认的路单!请删除路单后再操作!");
+		//判断赠品是否产生路单  或者 从今天开始到退订日期之间是否有赠品日订单
+		backOrderOfProm(order,backDate);
+		TSysUser user = userSessionService.getCurrentUser();
+		BigDecimal initAmt = order.getInitAmt();
+
+		//第一步 删除日计划
+		OrderSearchModel smodel = new OrderSearchModel();
+		smodel.setBackDate(backDate);
+		smodel.setOrderNo(order.getOrderNo());
+		tOrderDaliyPlanItemMapper.deleteDailyByStopDate(smodel);
+		//第二步  创建年卡折扣补偿单据
+		TMstYearCardCompOrder yOrder = tOrderDaliyPlanItemMapper.selectYearCardBackOrder(order.getOrderNo(),smodel.getBackDate());
+		if(yOrder!=null){
+			yOrder.setCreateAt(new Date());
+			yOrder.setCreateBy(user.getLoginName());
+			yOrder.setCreateByTxt(user.getDisplayName());
+			yOrder.setShRefund(record.getShRefund());
+			yOrder.setRealRefund(record.getBackAmt());
+			yOrder.setRealDiscount(record.getRealDiscount());
+			yOrder.setBackDate(record.getBackDate());
+			yOrder.setDifference(yOrder.getShRefund().subtract(yOrder.getRealRefund()));
+			tYearCardCompOrderMapper.addYearCardCompOrder(yOrder);
+		}else{
+			throw new ServiceException(MessageCode.LOGIC_ERROR,"年卡提前退订时，创建年卡补偿单据时获取信息失败，请查看！！！");
+		}
+		// 第三步  订单退订日期、和退订原因录入，更新订单的截止日期
+		order.setBackDate(backDate);
+		order.setBackReason(record.getBackReason());
+		order.setEndDate(afterDate(backDate,-1));
+
+		if(StringUtils.isNotEmpty(record.getMemoTxt())) {
+			order.setMemoTxt(record.getMemoTxt().concat("提前退订"));
+		}else{
+			order.setMemoTxt("提前退订");
+		}
+
+		tPreOrderMapper.updateOrderEndDate(order);
+		//第四步    金额退回订户个人账户
+		String state = order.getPaymentmethod();
+		if("20".equals(state)) {//先付款
+			if(order.getInitAmt()!=null && "20".equals(order.getPaymentStat())){//已经收款的
+					TVipAcct ac = new TVipAcct();
+					ac.setVipCustNo(order.getMilkmemberNo());
+					ac.setAcctAmt(record.getBackAmt());
+					tVipCustInfoService.addVipAcct(ac);
+			}else if("10".equals(order.getPaymentStat())){
+				//此处看是否打印过收款单，里面有没有用帐户余额支付的金额，退回
+				TMstRecvBill bill = customerBillMapper.getRecBillByOrderNo(order.getOrderNo());
+				if(bill!= null && (bill.getAccAmt().compareTo(BigDecimal.ZERO)==1)){
+					TVipAcct ac = new TVipAcct();
+					ac.setVipCustNo(order.getMilkmemberNo());
+					ac.setAcctAmt(bill.getAccAmt());
+					tVipCustInfoService.addVipAcct(ac);
+				}
+			}
+		}
+		//第五步      添加年卡提前退订日志
+		OperationLogUtil.saveHistoryOperation(order.getOrderNo(),LogType.ORDER,OrderLogEnum.YEAR_CARD_BACK_ORDER_ADVANCE,null,null,
+		"提前退订",record.getBackAmt().toString(),null,null,user,operationLogMapper);
+
+
+		//第六步   更新订单行截止日期
+		List<TPlanOrderItem> items = tPlanOrderItemMapper.selectPlanOrderItemByOrderNo(order.getOrderNo());
+		for(TPlanOrderItem item : items){
+			Date date = item.getEndDispDate();
+			if(date.getTime() > order.getEndDate().getTime()){
+				item.setEndDispDate(order.getEndDate());
+				tPlanOrderItemMapper.updateEntryByItemNo(item);
+			}
+		}
+		//第七步  发送EC,更新订单状态
+		TPreOrder sendOrder = new TPreOrder();
+		sendOrder.setOrderNo(order.getOrderNo());
+		sendOrder.setPreorderStat("300");
+		taskExecutor.execute(new Thread(){
+			@Override
+			public void run() {
+				super.run();
+				this.setName("updateOrderStatus");
+				if("20".equals(state) && "20".equals(order.getPaymentStat())){
+					sendOrder.setCurAmt(order.getCurAmt());
+				}else{
+					sendOrder.setCurAmt(new BigDecimal("0.00"));
+				}
+				messLogService.sendOrderStatus(sendOrder);
+			}
+		});
+
+		//第八步  积分扣减
+		if("20".equals(order.getPaymentmethod())&&"20".equals(order.getPaymentStat())&&"Y".equals(order.getIsIntegration())){
+			taskExecutor.execute(new Thread(){
+				@Override
+				public void run() {
+					super.run();
+					this.setName("minusVipPoint"+new Date());
+//						BigDecimal gRate = leftAmt.divide(initAmt,2).multiply(new BigDecimal(order.getyGrowth()==null?0:order.getyGrowth()));//成长
+					BigDecimal fRate = record.getBackAmt().divide(initAmt,2).multiply(new BigDecimal(order.getyFresh()==null?0:order.getyFresh()));//鲜峰
+					MemberActivities item = new MemberActivities();
+					Date date = new Date();
+					item.setActivitydate(date);
+					item.setSalesorg(order.getSalesOrg());
+					item.setCategory("YRETURN");
+					item.setProcesstype("YSUB_RETURN");
+					item.setOrderid(order.getOrderNo());
+					item.setMembershipguid(order.getMemberNo());
+					//第2遍传先锋
+					item.setPointtype("YFRESH");
+					item.setPoints(fRate);
+					item.setAmount(record.getBackAmt());
+					item.setProcess("X");
+					List<MemberActivities> list1 = new ArrayList<MemberActivities>();
+					list1.add(item);
+					piVipPointCreateBatService.createMemberActivitiesBat(list1);
+				}
+			});
+		}
+		return 0;
+	}
+
+
 	/* (non-Javadoc) 
 	* @title: stopOrderForTime
 	* @description: 订单退订
@@ -1288,15 +1528,14 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 			BigDecimal initAmt = order.getInitAmt();
 			BigDecimal useAmt = tOrderDaliyPlanItemMapper.getOrderOrderDailyFinishAmtByOrderNo(order.getOrderNo());
 			BigDecimal leftAmt = initAmt.subtract(useAmt);
-			System.out.println(record.getOrderNo()+"leftAmt ="+leftAmt);
 			if("20".equals(state)){//先付款
 
 				tOrderDaliyPlanItemMapper.updateDaliyPlansToBack(order);
 				System.out.println(record.getOrderNo()+"退订，日订单更新状态完成");
 				BigDecimal backAmt = BigDecimal.ZERO;
 				//此为多余的钱，如果是预付款，将存入订户账户
-				//已经收款的
 				if(order.getInitAmt()!=null && "20".equals(order.getPaymentStat())){
+					//订单来源为 电商或者牛奶钱包
 					if("10".equals(order.getPreorderSource()) || "40".equals(order.getPreorderSource())){
 						if(order.getOnlineInitAmt()!=null){
 							backAmt = backAmt.add(leftAmt.multiply(order.getOnlineInitAmt()).divide(order.getInitAmt(),2));
@@ -1314,7 +1553,7 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 							if(prom!=null){
 								//年卡订单
 								if("Z017".equals(prom.getPromSubType())){
-
+									throw new ServiceException(MessageCode.LOGIC_ERROR,"年卡退订不从这里退订，请查看维护");
 								}
 							}
 						}
@@ -2782,9 +3021,9 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 		if(StringUtils.isBlank(order.getIsIntegration())){
 			order.setIsIntegration("Y");//默认是积分订单
 		}
-//		order.setMilkmemberNo(milkmemberNo);//喝奶人编号
-//		order.setEmpNo(empNo);//送奶员编号
-//		order.setInitAmt(initAmt);//页面输入的初始订单金额
+		//		order.setMilkmemberNo(milkmemberNo);//喝奶人编号
+		//		order.setEmpNo(empNo);//送奶员编号
+		//		order.setInitAmt(initAmt);//页面输入的初始订单金额
 		order.setPaymentmethod(order.getPaymentStat());//10 后款 20 先款( 30 殿付款)
 		if("Y".equals(order.getIsPaid())){
 			if(StringUtils.isBlank(order.getPayDateStr())){
@@ -3070,6 +3309,35 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 					sendOrder.setEmpNo(order.getEmpNo());
 					messLogService.sendOrderStatus(sendOrder);
 				}
+
+				//积分
+				if("Y".equals(order.getIsIntegration()) && "20".equals(order.getPaymentStat()) && ("30".equals(order.getPreorderSource())||"70".equals(order.getPreorderSource()))){
+					this.setName("updateVip");
+					Map<String,String> planOrderMap = new HashMap<String,String>();
+					planOrderMap.put("salesOrg",order.getSalesOrg());
+					planOrderMap.put("orderNo",order.getOrderNo());
+					List<MemberActivities> items;
+					if("20".equals(order.getPaymentmethod())){
+						items   = tPlanOrderItemMapper.selectBeforePayActivitiesByOrderNo(planOrderMap);
+					}else{
+						items  = tPlanOrderItemMapper.selectAfterPayActivitiesByOrderNo(planOrderMap);
+					}
+					if(items.size()>0){
+						BigDecimal totalprice = new BigDecimal(0);
+						for (MemberActivities item : items){
+							item.setProcess("X");
+							Calendar calendar = new GregorianCalendar();
+							calendar.setTime(date);
+							Date firstDay = calendar.getTime();
+							item.setActivitydate(firstDay);
+							if(StringUtils.isNotBlank(item.getCardid())){
+								item.setCardid("");
+							}
+						}
+						piVipPointCreateBatService.createMemberActivitiesBat(items);
+					}
+				}
+
 			}
 		});
 		
@@ -8037,7 +8305,7 @@ public static int dayOfTwoDay(Date day1,Date day2) {
 	}
    	if(StringUtils.isBlank(order.getEmpNo())){
    		//if(!"10".equals(order.getPreorderSource())&&!"20".equals(order.getPreorderSource())&&!"40".equals(order.getPreorderSource())){
-		if("30".equals(order.getPreorderSource())){
+		if("30".equals(order.getPreorderSource()) || StringUtils.isBlank(order.getPreorderSource())){
    				throw new ServiceException(MessageCode.LOGIC_ERROR,"请选择送奶员!");
    		}
 	}

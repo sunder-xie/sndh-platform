@@ -21,6 +21,7 @@ import com.nhry.data.order.dao.TPreOrderMapper;
 import com.nhry.data.order.domain.TOrderDaliyPlanItem;
 import com.nhry.data.order.domain.TPlanOrderItem;
 import com.nhry.data.order.domain.TPreOrder;
+import com.nhry.data.order.domain.TPromotion;
 import com.nhry.model.bill.*;
 import com.nhry.model.order.OrderCreateModel;
 import com.nhry.model.order.OrderSearchModel;
@@ -142,10 +143,30 @@ public class CustomerBillServiceImpl implements CustomerBillService {
             Date date = new Date();
 
 
-            //录入收款信息
+                //录入收款信息
                 BigDecimal accAmt = customerBill.getAccAmt();    //已收的订户余额
                 BigDecimal amt = new BigDecimal(cModel.getAmt());//收款金额
-                int com = accAmt.add(amt).compareTo(order.getInitAmt().subtract(order.getDiscountAmt())); // 收款金额 加上已收的余额 与 订单金额(减去优惠金额)比较
+                //判断是否是年卡订单
+                boolean yearCardOrder=false;
+
+                if(StringUtils.isNotBlank(order.getPromotion()) && StringUtils.isNotBlank(order.getPromItemNo())){
+                    TPromotion prom = promotionService.selectPromotionByPromNoAndItemNo(order.getPromotion(),order.getPromItemNo());
+                        if(prom!=null){
+                            if("Z017".equals(prom.getPromSubType())) yearCardOrder = true;
+                        }
+                }
+                 int com;
+                if (order.getDiscountAmt() != null) {
+                    if(yearCardOrder){
+                        throw new ServiceException("该订单为年卡订单，不需要收款");
+                    }else{
+                        //整单满减
+                         com = accAmt.add(amt).compareTo(order.getInitAmt().subtract(order.getDiscountAmt()));
+                    }
+                }else{
+                     com = accAmt.add(amt).compareTo(order.getInitAmt());
+                }
+               //收的余额 与 订单金额(减去优惠金额)比较
                 //如果收款金额 加上已收的余额 大于订单金额（减去优惠金额） (将多余的钱退回余额)
                 if(com== 1){
                     //记录收款金额

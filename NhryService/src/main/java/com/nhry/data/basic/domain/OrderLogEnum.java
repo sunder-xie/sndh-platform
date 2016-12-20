@@ -24,6 +24,8 @@ public class OrderLogEnum implements Serializable {
     public final static  String RESUME_ORDER = "复订";
     public final static  String DH_BACK_ORDER = "电商退订";
     public final static  String JG_BACK_ORDER = "机构订奶退订";
+    public final static  String YEAR_CARD_BACK_ORDER = "年卡退订";
+    public final static  String YEAR_CARD_BACK_ORDER_ADVANCE = "年卡提前退订";
     public final static  String DEL_ITEM = "删除";
     public final static  String CHANGE_EMP = "送奶员替换";
     public final static  String CTN_ORDER = "续订";

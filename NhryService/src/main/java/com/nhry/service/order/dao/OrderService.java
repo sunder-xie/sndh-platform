@@ -144,4 +144,6 @@ public interface OrderService {
 	int daliyBackAmt(DaliyPlanEditModel record);
 
 	int yearCardBackOrder(YearCardBackModel smodel);
+
+	int advanceYearCardBackOrder(YearCardBackModel smodel);
 }

@@ -1101,10 +1101,12 @@
             left join t_md_address a on a.ADDRESS_ID = o.ADRESS_NO
             LEFT JOIN t_md_branch_emp e on o.EMP_NO = e.EMP_NO
             left join t_md_residential_area r on r.ID = a.RESIDENTIAL_AREA
+            left JOIN t_promotion p on o.PROMOTION = p.PROM_NO
              WHERE  1=1
             and (o.PREORDER_SOURCE='20' OR o.PREORDER_SOURCE ='30' OR  o.PREORDER_SOURCE ='50'OR  o.PREORDER_SOURCE ='70' )
             and (o.PREORDER_STAT = '10' OR o.PREORDER_STAT = '30')
             and o.INIT_AMT > 0
+            and ( p.PROM_SUB_TYPE!='Z017' OR p.PROM_NO='' OR p.PROM_NO is null)
             <if test="branchNo !=null and branchNo!=''">
               and  o.BRANCH_NO = #{branchNo,jdbcType=VARCHAR}
             </if>
