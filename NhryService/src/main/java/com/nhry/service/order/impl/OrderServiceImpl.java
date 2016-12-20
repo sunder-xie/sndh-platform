@@ -1237,10 +1237,14 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 							yOrder.setBackDate(smodel.getBackDate());
 							yOrder.setDifference(yOrder.getShRefund().subtract(yOrder.getRealRefund()));
 							tYearCardCompOrderMapper.addYearCardCompOrder(yOrder);
+							//订单置为退订 更新订单总共金额和余额
+							BigDecimal initAmt = order.getInitAmt();
+							BigDecimal useAmt = tOrderDaliyPlanItemMapper.getOrderOrderDailyFinishAmtByOrderNo(order.getOrderNo());
 
-							//订单置为退订
 							order.setPreorderStat("30");//失效的订单
 							order.setSign("30");//标示退订
+							order.setInitAmt(useAmt);
+							order.setCurAmt(BigDecimal.ZERO);
 							tPreOrderMapper.updateOrderEndDate(order);
 
 							TVipAcct ac = new TVipAcct();
@@ -1367,13 +1371,14 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 		backOrderOfProm(order,backDate);
 		TSysUser user = userSessionService.getCurrentUser();
 		BigDecimal initAmt = order.getInitAmt();
-
-		//第一步 删除日计划
 		OrderSearchModel smodel = new OrderSearchModel();
 		smodel.setBackDate(backDate);
 		smodel.setOrderNo(order.getOrderNo());
+		//第一步 计算退款金额（用于更新订单总金额和余额）
+		BigDecimal backAmt = tOrderDaliyPlanItemMapper.getSumDailyBackAmtByBackDate(smodel);
+		//第二步 删除日计划
 		tOrderDaliyPlanItemMapper.deleteDailyByStopDate(smodel);
-		//第二步  创建年卡折扣补偿单据
+		//第三步  创建年卡折扣补偿单据
 		TMstYearCardCompOrder yOrder = tOrderDaliyPlanItemMapper.selectYearCardBackOrder(order.getOrderNo(),smodel.getBackDate());
 		if(yOrder!=null){
 			yOrder.setCreateAt(new Date());
@@ -1388,28 +1393,27 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 		}else{
 			throw new ServiceException(MessageCode.LOGIC_ERROR,"年卡提前退订时，创建年卡补偿单据时获取信息失败，请查看！！！");
 		}
-		// 第三步  订单退订日期、和退订原因录入，更新订单的截止日期
+		// 第四步  订单退订日期、和退订原因录入，更新订单的截止日期，总金额和 剩余金额
 		order.setBackDate(backDate);
 		order.setBackReason(record.getBackReason());
 		order.setEndDate(afterDate(backDate,-1));
-
+		order.setInitAmt(order.getInitAmt().subtract(backAmt));
+		order.setCurAmt(order.getCurAmt().subtract(backAmt));
 		if(StringUtils.isNotEmpty(record.getMemoTxt())) {
 			order.setMemoTxt(record.getMemoTxt().concat("提前退订"));
 		}else{
 			order.setMemoTxt("提前退订");
 		}
-
 		tPreOrderMapper.updateOrderEndDate(order);
-		//第四步    金额退回订户个人账户
+		//第五步    金额退回订户个人账户
 		String state = order.getPaymentmethod();
-		if("20".equals(state)) {//先付款
+		if("20".equals(state)){//先付款
 			if(order.getInitAmt()!=null && "20".equals(order.getPaymentStat())){//已经收款的
 					TVipAcct ac = new TVipAcct();
 					ac.setVipCustNo(order.getMilkmemberNo());
 					ac.setAcctAmt(record.getBackAmt());
 					tVipCustInfoService.addVipAcct(ac);
 			}else if("10".equals(order.getPaymentStat())){
-				//此处看是否打印过收款单，里面有没有用帐户余额支付的金额，退回
 				TMstRecvBill bill = customerBillMapper.getRecBillByOrderNo(order.getOrderNo());
 				if(bill!= null && (bill.getAccAmt().compareTo(BigDecimal.ZERO)==1)){
 					TVipAcct ac = new TVipAcct();
@@ -1419,12 +1423,12 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 				}
 			}
 		}
-		//第五步      添加年卡提前退订日志
+		//第六步      添加年卡提前退订日志
 		OperationLogUtil.saveHistoryOperation(order.getOrderNo(),LogType.ORDER,OrderLogEnum.YEAR_CARD_BACK_ORDER_ADVANCE,null,null,
 		"提前退订",record.getBackAmt().toString(),null,null,user,operationLogMapper);
 
 
-		//第六步   更新订单行截止日期
+		//第七步   更新订单行截止日期
 		List<TPlanOrderItem> items = tPlanOrderItemMapper.selectPlanOrderItemByOrderNo(order.getOrderNo());
 		for(TPlanOrderItem item : items){
 			Date date = item.getEndDispDate();
@@ -1433,7 +1437,7 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 				tPlanOrderItemMapper.updateEntryByItemNo(item);
 			}
 		}
-		//第七步  发送EC,更新订单状态
+		//第八步  发送EC,更新订单状态
 		TPreOrder sendOrder = new TPreOrder();
 		sendOrder.setOrderNo(order.getOrderNo());
 		sendOrder.setPreorderStat("300");
@@ -1451,14 +1455,13 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 			}
 		});
 
-		//第八步  积分扣减
+		//第九步  积分扣减
 		if("20".equals(order.getPaymentmethod())&&"20".equals(order.getPaymentStat())&&"Y".equals(order.getIsIntegration())){
 			taskExecutor.execute(new Thread(){
 				@Override
 				public void run() {
 					super.run();
 					this.setName("minusVipPoint"+new Date());
-//						BigDecimal gRate = leftAmt.divide(initAmt,2).multiply(new BigDecimal(order.getyGrowth()==null?0:order.getyGrowth()));//成长
 					BigDecimal fRate = record.getBackAmt().divide(initAmt,2).multiply(new BigDecimal(order.getyFresh()==null?0:order.getyFresh()));//鲜峰
 					MemberActivities item = new MemberActivities();
 					Date date = new Date();
@@ -1468,7 +1471,6 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 					item.setProcesstype("YSUB_RETURN");
 					item.setOrderid(order.getOrderNo());
 					item.setMembershipguid(order.getMemberNo());
-					//第2遍传先锋
 					item.setPointtype("YFRESH");
 					item.setPoints(fRate);
 					item.setAmount(record.getBackAmt());
