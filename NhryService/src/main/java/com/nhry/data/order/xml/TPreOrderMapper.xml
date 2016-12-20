@@ -648,7 +648,7 @@
     left join t_md_address a on a.ADDRESS_ID = o.ADRESS_NO
     left join t_md_residential_area r on r.ID = a.RESIDENTIAL_AREA
     WHERE
-    		o.RET_DATE is null
+    o.RET_DATE is null
     <if test="promSubType != null and promSubType !=''">
       AND p.PROM_SUB_TYPE = #{promSubType,jdbcType=VARCHAR}
     </if>
