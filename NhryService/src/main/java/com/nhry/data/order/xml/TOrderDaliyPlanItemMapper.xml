@@ -235,6 +235,19 @@
     and DISP_DATE &gt;= #{dispDateStr,jdbcType=DATE}
   </delete>
 
+
+  <delete id="deleteFromDateToDateExceptProm" parameterType="com.nhry.data.order.domain.TOrderDaliyPlanItem" >
+    delete from t_mst_order_daliy_plan_item
+    where ORDER_NO = #{orderNo,jdbcType=VARCHAR}
+    <if test="itemNo != null" >
+      and ITEM_NO = #{itemNo,jdbcType=VARCHAR}
+    </if>
+    <if test="status != null" >
+      and STATUS != '20'
+    </if>
+    and (GIFT_QTY IS NULL OR GIFT_QTY = '')
+    and DISP_DATE &gt;= #{dispDateStr,jdbcType=DATE}
+  </delete>
   <delete id="deleteFromDateByStatus" parameterType="com.nhry.data.order.domain.TOrderDaliyPlanItem" >
     delete from t_mst_order_daliy_plan_item
     where ORDER_NO = #{orderNo,jdbcType=VARCHAR}
@@ -1285,10 +1298,17 @@
     <include refid="Base_Column_List" />
     from t_mst_order_daliy_plan_item
     where 1 = 1
+    <if test="orderNo!=null">
       and ORDER_NO = #{orderNo,jdbcType=VARCHAR}
+     </if>
+    <if test="itemNo!=null">
+      and ITEM_NO = #{itemNo,jdbcType=VARCHAR}
+    </if>
+    <if test="orderDate!=null">
       and DISP_DATE &gt;=#{orderDate,jdbcType=DATE}
       and DISP_DATE &lt;= #{dispDate,jdbcType=DATE}
-      and (GIFT_QTY IS NOT NULL OR GIFT_QTY!='')
+    </if>
+    and (GIFT_QTY IS NOT NULL OR GIFT_QTY!='')
     order by DISP_DATE asc  , REMAIN_AMT desc
   </select>
 
@@ -1318,7 +1338,7 @@
     c.VIP_NAME,
     c.MP CUST_MP,
     count(i.QTY)/count(i.DISP_DATE) DALIY_QTY,
-    CONCAT(r.ADDRESS_TXT,a.ADDRESS_TXT) CUST_ADDRESS,
+    concat(IFNULL(r.RESIDENTIAL_AREA_TXT,''),IFNULL(a.ADDRESS_TXT,'')) CUST_ADDRESS,
     (
         SELECT
         IFNULL(SUM(QTY),0)

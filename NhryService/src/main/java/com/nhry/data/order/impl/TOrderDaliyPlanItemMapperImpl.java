@@ -50,6 +50,13 @@ public class TOrderDaliyPlanItemMapperImpl implements TOrderDaliyPlanItemMapper
 	}
 
 	@Override
+	public int deleteFromDateToDateExceptProm(TOrderDaliyPlanItem record)
+	{
+		// TODO Auto-generated method stub
+		return sqlSessionTemplate.delete("deleteFromDateToDateExceptProm", record);
+	}
+
+	@Override
 	public int selectMaxDaliyPlansNoByOrderNo(String orderNo)
 	{
 		// TODO Auto-generated method stub
@@ -496,10 +503,19 @@ public class TOrderDaliyPlanItemMapperImpl implements TOrderDaliyPlanItemMapper
 		return sqlSessionTemplate.update("updateDaliyRemainAmtAfterRouteConfirmBeforDay",item);
 	}
 
+	/**
+	 *
+	 * @param orderNo  订单号
+	 * @param itemNo   产品行号
+	 * @param startDate  开始日期
+	 * @param endDate   截止日期
+     * @return
+     */
 	@Override
-	public List<TOrderDaliyPlanItem> selectPromDaliyBetweenDaysAndNo(String orderNo,Date startDate, Date endDate) {
+	public List<TOrderDaliyPlanItem> selectPromDaliyBetweenDaysAndNo(String orderNo,String itemNo,Date startDate, Date endDate) {
 		TOrderDaliyPlanItem item = new TOrderDaliyPlanItem();
 		item.setOrderDate(startDate);
+		item.setItemNo(itemNo);
 		item.setOrderNo(orderNo);
 		item.setDispDate(endDate);
 		return sqlSessionTemplate.selectList("selectPromDaliyBetweenDaysAndNo",item);
