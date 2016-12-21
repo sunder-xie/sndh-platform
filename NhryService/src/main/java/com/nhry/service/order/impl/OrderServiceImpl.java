@@ -1339,6 +1339,7 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 			throw new ServiceException(MessageCode.LOGIC_ERROR,"提前退订日期不能为空！");
 		}
 		TPreOrder order = tPreOrderMapper.selectByPrimaryKey(record.getOrderNo());
+
 		if(order.getInitAmt()!=null && order.getInitAmt().compareTo(record.getBackAmt())==-1){
 			throw new ServiceException(MessageCode.LOGIC_ERROR,"实退金额不能大于订单总金额，请查看！！！");
 		}
@@ -1347,6 +1348,9 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 		}
 		if(order.getEndDate().getTime() < backDate.getTime()){
 			throw new ServiceException(MessageCode.LOGIC_ERROR,"提前退订日期不能超出订单配送结束日期！");
+		}
+		if(order.getBackDate() != null && "30".equals(order.getSign())){
+			throw new ServiceException(MessageCode.LOGIC_ERROR,"已经退订的订单，不能提前退订");
 		}
 		if(order.getBackDate() != null && order.getBackDate().getTime()<backDate.getTime()){
 			throw new ServiceException(MessageCode.LOGIC_ERROR,"提前退订日期不能超出已退订的日期！");
@@ -1423,6 +1427,8 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 				}
 			}
 		}
+		//更新日订单剩余金额
+		tOrderDaliyPlanItemMapper.updateDaliyRemainAmtAfterAdvanceBack(order.getOrderNo(),backAmt);
 		//第六步      添加年卡提前退订日志
 		OperationLogUtil.saveHistoryOperation(order.getOrderNo(),LogType.ORDER,OrderLogEnum.YEAR_CARD_BACK_ORDER_ADVANCE,null,null,
 		"提前退订",record.getBackAmt().toString(),null,null,user,operationLogMapper);
@@ -7310,18 +7316,29 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 
 			//更新这天之前的日订单 每天的剩余金额 更新为 remainAmt = remainAmt - cj
 			tOrderDaliyPlanItemMapper.updateDaliyRemainAmtAfterRouteConfirmBeforDay(dispDate,cj,orgOrder.getOrderNo());
-			//更新这天的日订单的剩余金额和状态，（不更新赠品的剩余金额）
-			TOrderDaliyPlanItem daliy = tOrderDaliyPlanItemMapper.selectDaliyByDispItem(entry);
-			daliy.setMatnr(entry.getConfirmMatnr());
-			daliy.setQty(entry.getConfirmQty().intValue());
-			daliy.setStatus("20");
-			daliy.setAmt(entry.getConfirmAmt());
-			if(entry.getConfirmAmt().compareTo(BigDecimal.ZERO)==0){
-				daliy.setRemainAmt(daliy.getRemainAmt());
-			}else{
-				daliy.setRemainAmt(daliy.getRemainAmt().subtract(cj));
+			//更新这天的日订单（发生变化的不更新）的剩余金额和状态，（不更新赠品的剩余金额）
+
+			OrderSearchModel sModel = new OrderSearchModel();
+			sModel.setStartDate(entry.getOrderDate());
+			sModel.setEndDate(entry.getOrderDate());
+			sModel.setOrderNo(entry.getOrgOrderNo());
+			sModel.setStatus("10");
+			List<TOrderDaliyPlanItem> daliy = tOrderDaliyPlanItemMapper.selectByDayAndNoBetweenDays(sModel);
+			if(daliy!=null){
+				if(daliy.size()>1){
+					for(TOrderDaliyPlanItem day : daliy){
+						if(day.getDispDate().equals(dispDate) && entry.getOrgItemNo().equals(day.getItemNo()) && day.getGiftQty()==null ){
+							continue;
+						}else{
+							day.setQty(entry.getConfirmQty().intValue());
+							day.setStatus("20");
+							day.setAmt(entry.getConfirmAmt());
+							day.setRemainAmt(day.getRemainAmt().subtract(cj));
+							tOrderDaliyPlanItemMapper.updateDaliyPlanItem(day);
+						}
+					}
+				}
 			}
-			tOrderDaliyPlanItemMapper.updateDaliyPlanItem(daliy);
 			return;
 		}
 		//预付款的订单
