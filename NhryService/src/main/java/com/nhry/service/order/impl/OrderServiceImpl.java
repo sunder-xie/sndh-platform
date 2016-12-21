@@ -7314,29 +7314,23 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 			}
 			tPreOrderMapper.updateOrderCurAmtAndInitAmt(orgOrder);
 
-			//更新这天之前的日订单 每天的剩余金额 更新为 remainAmt = remainAmt - cj
-			tOrderDaliyPlanItemMapper.updateDaliyRemainAmtAfterRouteConfirmBeforDay(dispDate,cj,orgOrder.getOrderNo());
-			//更新这天的日订单（发生变化的不更新）的剩余金额和状态，（不更新赠品的剩余金额）
-
-			OrderSearchModel sModel = new OrderSearchModel();
-			sModel.setStartDate(entry.getOrderDate());
-			sModel.setEndDate(entry.getOrderDate());
-			sModel.setOrderNo(entry.getOrgOrderNo());
-			sModel.setStatus("10");
-			List<TOrderDaliyPlanItem> daliy = tOrderDaliyPlanItemMapper.selectByDayAndNoBetweenDays(sModel);
-			if(daliy!=null){
-				if(daliy.size()>1){
-					for(TOrderDaliyPlanItem day : daliy){
-						if(day.getDispDate().equals(dispDate) && entry.getOrgItemNo().equals(day.getItemNo()) && day.getGiftQty()==null ){
-							continue;
-						}else{
-							day.setQty(entry.getConfirmQty().intValue());
-							day.setStatus("20");
-							day.setAmt(entry.getConfirmAmt());
-							day.setRemainAmt(day.getRemainAmt().subtract(cj));
-							tOrderDaliyPlanItemMapper.updateDaliyPlanItem(day);
-						}
+			BigDecimal initAmt = orgOrder.getInitAmt();
+			ArrayList<TOrderDaliyPlanItem> daliyPlans = (ArrayList<TOrderDaliyPlanItem>) tOrderDaliyPlanItemMapper.selectDaliyPlansByOrderNoAsc(orgEntry.getOrderNo());
+			for(TOrderDaliyPlanItem p : daliyPlans){
+				if(!"30".equals(p.getStatus())){
+					if(p.getDispDate().equals(dispDate) && entry.getOrgItemNo().equals(p.getItemNo()) && p.getGiftQty()==null ){
+						p.setMatnr(entry.getConfirmMatnr());
+						p.setQty(entry.getConfirmQty().intValue());
+						p.setAmt(entry.getConfirmAmt());
+						p.setStatus("20");
+						initAmt = initAmt.subtract(p.getAmt());
+					}else{
+						initAmt = initAmt.subtract(p.getAmt());
 					}
+				}
+				if(p.getRemainAmt().compareTo(initAmt)!=0){
+					p.setRemainAmt(initAmt);
+					tOrderDaliyPlanItemMapper.updateDaliyPlanItem(p);
 				}
 			}
 			return;
