@@ -142,5 +142,41 @@
       </if>
     </trim>
   </insert>
-
+  <!--年卡补偿单据 -->
+  <select id="selectYearCardCompensateList" resultMap="BaseResultMap" parameterType="com.nhry.model.statistics.ExtendBranchInfoModel">
+    SELECT
+      t.ORDER_NO,
+      t.VIP_NAME,
+      t.CUST_ADDRESS,
+      t.CUST_MP,
+      t.MATNR_TXT,
+      t.DALIY_QTY,
+      t.PRE_TOTAL,
+      t.REAL_TOTAL,
+      t.INIT_AMT,
+      t.PRE_DISCOUNT,
+      t.SH_REFUND,
+      t.REAL_DISCOUNT,
+      t.REAL_REFUND,
+      t.DIFFERENCE,
+      t1.BRANCH_NO,
+      t1.SALES_ORG
+    FROM
+      t_mst_year_card_comp_order t
+    LEFT JOIN t_preorder t1 on t1.ORDER_NO = t.ORDER_NO
+    where t1.SALES_ORG = #{salesOrg,jdbcType=VARCHAR}
+    <if test="branchNo!=null and ''!=branchNo">
+      and t1.BRANCH_NO =#{branchNo,jdbcType=VARCHAR}
+    </if>
+    <if test="dealerId!=null and ''!=dealerId">
+      and t1.DEALER_NO =#{dealerId,jdbcType=VARCHAR}
+    </if>
+    <if test="dateStart!=null and ''!=dateStart">
+      and t.BACK_DATE &gt;= #{dateStart,jdbcType=DATE}
+    </if>
+    <if test="dateEnd!=null and ''!=dateEnd">
+      and t.BACK_DATE &lt;= #{dateEnd,jdbcType=DATE}
+    </if>
+    ORDER BY t.BACK_DATE DESC
+  </select>
 </mapper>
