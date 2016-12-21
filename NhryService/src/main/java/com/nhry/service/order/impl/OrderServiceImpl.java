@@ -5965,7 +5965,7 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 						if(entry.getEndDispDate().before(today)) continue;
 					}*/
 					//停订的行项目 最多生到停订开始日期 不参与顺延
-					if("Y".equals(entry.getIsStop()) && entry.getEndDispDate().before(today)){
+					if("Y".equals(entry.getIsStop()) && DateUtil.dateBefore(entry.getEndDispDate(),today)){
 						continue;
 					}
 					//只有一个行项目，并且被停订 生到截止日期就停止
@@ -6204,7 +6204,7 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 		BigDecimal orderAmt = new BigDecimal("0.00");//订单总价
 		for(TPlanOrderItem entry: curEntrys){
 			if("Y".equals(entry.getIsStop()) && entry.getStopStartDate()!=null){
-				entry.setEndDispDate(entry.getStopStartDate());
+				entry.setEndDispDate(DateUtil.getYestoday(entry.getStopStartDate()));
 				if (StringUtils.isNotBlank(entry.getPromotion())&&StringUtils.isNotBlank(entry.getPromItemNo())){
 					TPromotion prom = promotionService.selectPromotionByPromNoAndItemNo(entry.getPromotion(),entry.getPromItemNo());
 						if("Z008".equals(prom.getPromSubType())){
