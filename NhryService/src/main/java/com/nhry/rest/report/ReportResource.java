@@ -10,6 +10,7 @@ import com.nhry.data.milk.domain.TDispOrder;
 import com.nhry.data.milk.domain.TDispOrderChange;
 import com.nhry.data.milk.domain.TDispOrderItem;
 import com.nhry.data.order.domain.TMilkboxPlan;
+import com.nhry.data.order.domain.TMstYearCardCompOrder;
 import com.nhry.data.order.domain.TPreOrder;
 import com.nhry.model.bill.CollectOrderBillModel;
 import com.nhry.model.bill.CustBillQueryModel;
@@ -1529,6 +1530,150 @@ public class ReportResource extends BaseResource{
             stream.flush();
             stream.close();
             outUrl = fname + "UnConfirmOrders.xlsx";
+        }catch(Exception e){
+            e.printStackTrace();
+        }
+        return convertToRespModel(MessageCode.NORMAL,null,outUrl);
+    }
+    @POST
+    @Path("/yearCardCompensateList")
+    @Produces(MediaType.APPLICATION_JSON)
+    @Consumes(MediaType.APPLICATION_JSON)
+    @ApiOperation(value = "/yearCardCompensateList",response = ResponseModel.class,notes = "年卡补偿单据")
+    public Response yearCardCompensateList(@ApiParam(value = "区间日期",required = true,name = "model") ExtendBranchInfoModel model){
+        String outUrl = "";
+        String url = EnvContant.getSystemConst("filePath");
+        List<TMstYearCardCompOrder>  lists = orderService.selectYearCardCompensateList(model);
+        try {
+            File file = new File(url +  File.separator + "report"+ File.separator + "template" + File.separator + "YearCardCompensateTemplate.xlsx");    //审批单
+            FileInputStream input = new FileInputStream(file);
+            XSSFWorkbook workbook = new XSSFWorkbook(new BufferedInputStream(input));
+            XSSFSheet sheet = workbook.getSheetAt(0);
+            int rowNum = 2;
+            XSSFCellStyle styleBold = workbook.createCellStyle();
+            styleBold.setBorderBottom(XSSFCellStyle.BORDER_THIN); //下边框
+            styleBold.setBorderLeft(XSSFCellStyle.BORDER_THIN);//左边框
+            styleBold.setBorderTop(XSSFCellStyle.BORDER_THIN);//上边框
+            styleBold.setBorderRight(XSSFCellStyle.BORDER_THIN);//右边框
+            styleBold.setWrapText(true);
+
+            XSSFRow row = sheet.createRow(rowNum++);
+            int rawNum = 0;
+            XSSFCell cell = row.createCell(rawNum++);
+            cell.setCellStyle(styleBold);
+            cell.setCellValue("序号");
+            cell = row.createCell(rawNum++);
+            cell.setCellStyle(styleBold);
+            cell.setCellValue("订单编号");
+            cell = row.createCell(rawNum++);
+            cell.setCellStyle(styleBold);
+            cell.setCellValue("客户姓名");
+            cell = row.createCell(rawNum++);
+            cell.setCellStyle(styleBold);
+            cell.setCellValue("地址");
+            cell = row.createCell(rawNum++);
+            cell.setCellStyle(styleBold);
+            cell.setCellValue("电话");
+            cell = row.createCell(rawNum++);
+            cell.setCellStyle(styleBold);
+            cell.setCellValue("产品名称");
+            cell = row.createCell(rawNum++);
+            cell.setCellStyle(styleBold);
+            cell.setCellValue("日均数量");
+            cell = row.createCell(rawNum++);
+            cell.setCellStyle(styleBold);
+            cell.setCellValue("预定总数");
+            cell = row.createCell(rawNum++);
+            cell.setCellStyle(styleBold);
+            cell.setCellValue("已消费总数");
+            cell = row.createCell(rawNum++);
+            cell.setCellStyle(styleBold);
+            cell.setCellValue("原单价");
+            cell = row.createCell(rawNum++);
+            cell.setCellStyle(styleBold);
+            cell.setCellValue("原折扣");
+            cell = row.createCell(rawNum++);
+            cell.setCellStyle(styleBold);
+            cell.setCellValue("应退款");
+            cell = row.createCell(rawNum++);
+            cell.setCellStyle(styleBold);
+            cell.setCellValue("实际折扣");
+            cell = row.createCell(rawNum++);
+            cell.setCellStyle(styleBold);
+            cell.setCellValue("实退款");
+            cell = row.createCell(rawNum++);
+            cell.setCellStyle(styleBold);
+            cell.setCellValue("差额");
+            if(lists!=null){
+                for(TMstYearCardCompOrder ycc : lists){
+                    int raw = 0;
+                    row = sheet.createRow(rowNum);
+                    cell = row.createCell(raw++);
+                    cell.setCellStyle(styleBold);
+                    cell.setCellValue(rowNum-2);
+                    cell = row.createCell(raw++);
+                    cell.setCellStyle(styleBold);
+                    cell.setCellValue(ycc.getOrderNo());
+                    cell = row.createCell(raw++);
+                    cell.setCellStyle(styleBold);
+                    cell.setCellValue(ycc.getVipName());
+                    cell = row.createCell(raw++);
+                    cell.setCellStyle(styleBold);
+                    cell.setCellValue(ycc.getCustAddress());
+                    cell = row.createCell(raw++);
+                    cell.setCellStyle(styleBold);
+                    cell.setCellValue(ycc.getCustMp());
+                    cell = row.createCell(raw++);
+                    cell.setCellStyle(styleBold);
+                    cell.setCellValue(ycc.getMatnrTxt());
+                    cell = row.createCell(raw++);
+                    cell.setCellStyle(styleBold);
+                    cell.setCellType(Cell.CELL_TYPE_STRING);
+                    cell.setCellValue(ycc.getDaliyQty()==null?0:(ycc.getDaliyQty()).intValue());
+                    cell = row.createCell(raw++);
+                    cell.setCellStyle(styleBold);
+                    cell.setCellValue(String.valueOf(ycc.getPreTotal()));
+                    cell = row.createCell(raw++);
+                    cell.setCellStyle(styleBold);
+                    cell.setCellValue(String.valueOf(ycc.getRealTotal()));
+                    cell = row.createCell(raw++);
+                    cell.setCellStyle(styleBold);
+                    cell.setCellValue(ycc.getInitAmt()==null?"0":String.valueOf(ycc.getInitAmt()));
+                    cell = row.createCell(raw++);
+                    cell.setCellStyle(styleBold);
+                    cell.setCellValue(ycc.getPreDiscount()==null?"0":String.valueOf(ycc.getPreDiscount()));
+                    cell = row.createCell(raw++);
+                    cell.setCellStyle(styleBold);
+                    cell.setCellValue(ycc.getShRefund()==null?"0":String.valueOf(ycc.getShRefund()));
+                    cell = row.createCell(raw++);
+                    cell.setCellStyle(styleBold);
+                    cell.setCellValue(ycc.getRealDiscount()==null?"0":String.valueOf(ycc.getRealDiscount()));
+                    cell = row.createCell(raw++);
+                    cell.setCellStyle(styleBold);
+                    cell.setCellValue(ycc.getRealRefund()==null?"0":String.valueOf(ycc.getRealRefund()));
+                    cell = row.createCell(raw++);
+                    cell.setCellStyle(styleBold);
+                    cell.setCellValue(ycc.getDifference()==null?"0":String.valueOf(ycc.getDifference()));
+                    rowNum++;
+                }
+            }
+            String fname = CodeGeneratorUtil.getCode();
+            String rq = format1.format(new Date(new Date().getTime() - 24 * 60 * 60 * 1000));
+            String filePath = url +  File.separator + "report"+ File.separator + "export";
+            File delFiles = new File(filePath);
+            if(delFiles.isDirectory()){
+                for(File del : delFiles.listFiles()){
+                    if(del.getName().contains(rq)){
+                        del.delete();
+                    }
+                }
+            }
+            File export = new File(url +  File.separator + "report"+ File.separator + "export" + File.separator + fname + "YearCards.xlsx");
+            FileOutputStream stream = new FileOutputStream(export);
+            workbook.write(stream);
+            stream.flush();
+            stream.close();
+            outUrl = fname + "YearCards.xlsx";
         }catch(Exception e){
             e.printStackTrace();
         }
