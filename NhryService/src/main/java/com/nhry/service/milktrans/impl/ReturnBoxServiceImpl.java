@@ -96,6 +96,7 @@ public class ReturnBoxServiceImpl implements ReturnBoxService {
      */
     @Override
     public int createDayRetBox(String dispOrderNo) {
+        final long startTime = System.currentTimeMillis();
         TSysUser user = userSessionService.getCurrentUser();
         TDispOrder dispOrder = tDispOrderMapper.getDispOrderByNo(dispOrderNo);
 
@@ -116,6 +117,7 @@ public class ReturnBoxServiceImpl implements ReturnBoxService {
                 }
             }
         }
+        System.out.println("根据路单生成回瓶共耗时："+(System.currentTimeMillis()-startTime)+"毫秒");
          return 1;
     }
 

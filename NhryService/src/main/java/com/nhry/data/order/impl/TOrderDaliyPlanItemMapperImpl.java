@@ -320,6 +320,14 @@ public class TOrderDaliyPlanItemMapperImpl implements TOrderDaliyPlanItemMapper
 	}
 
 	@Override
+	public int updateDaliyRemainAmtAfterAdvanceBack(String orderNo, BigDecimal backAmt) {
+		TOrderDaliyPlanItem item = new TOrderDaliyPlanItem();
+		item.setOrderNo(orderNo);
+		item.setAmt(backAmt);
+		return sqlSessionTemplate.update("updateDaliyRemainAmtAfterAdvanceBack",item);
+	}
+
+	@Override
 	public TOrderDaliyPlanItem selectByDateAndItemNoAndNo(TOrderDaliyPlanItem plan) {
 		return sqlSessionTemplate.selectOne("selectByDateAndItemNoAndNo",plan);
 	}
@@ -472,6 +480,7 @@ public class TOrderDaliyPlanItemMapperImpl implements TOrderDaliyPlanItemMapper
 		TOrderDaliyPlanItem item = new TOrderDaliyPlanItem();
 		item.setItemNo(entry.getOrgItemNo());
 		item.setDispDate(entry.getOrderDate());
+		item.setReachTimeType(entry.getReachTimeType());
 		if("Y".equals(entry.getGiftFlag())){
 			item.setPromotionFlag("Y");
 		}

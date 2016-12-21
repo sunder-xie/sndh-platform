@@ -154,4 +154,6 @@ public interface TOrderDaliyPlanItemMapper {
     Date selectFirstDispDateByOrder(String orderNo);
 
     TMstYearCardCompOrder selectYearCardBackOrder(String orderNo,Date backDate);
+
+    int updateDaliyRemainAmtAfterAdvanceBack(String orderNo, BigDecimal backAmt);
 }

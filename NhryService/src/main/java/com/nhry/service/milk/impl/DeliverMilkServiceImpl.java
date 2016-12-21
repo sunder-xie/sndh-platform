@@ -232,6 +232,7 @@ public class DeliverMilkServiceImpl extends BaseService implements DeliverMilkSe
      */
 	@Override
 	public int createInsideSalOrder(String dispOrderNo) {
+			final long startTime = System.currentTimeMillis();
 			TSysUser user = userSessionService.getCurrentUser();
 			TMstInsideSalOrder sOrder = tMstInsideSalOrderMapper.getInSalOrderByDispOrderNo(dispOrderNo);
 			TDispOrder order = tDispOrderMapper.getDispOrderByNo(dispOrderNo);
@@ -331,7 +332,7 @@ public class DeliverMilkServiceImpl extends BaseService implements DeliverMilkSe
 				}
 
 			}
-
+			System.out.println("根据路单生成拒收复送和内部销售订单共耗时："+(System.currentTimeMillis()-startTime)+"毫秒");
 			return 1;
 
 
@@ -792,6 +793,7 @@ public class DeliverMilkServiceImpl extends BaseService implements DeliverMilkSe
 					tOrderDaliyPlanItemMapper.updateDaliyPlanItemStatus(record);
 				}
 			}
+			System.out.println("根据路单修改日计划 消耗时间："+(System.currentTimeMillis()-startTime)+"毫秒");
 			//创建回瓶管理，调用
 			returnBoxService.createDayRetBox(routeCode);
 			//生成内部销售订单（扣库存）调用
@@ -818,7 +820,7 @@ public class DeliverMilkServiceImpl extends BaseService implements DeliverMilkSe
 			throw new ServiceException(MessageCode.LOGIC_ERROR,"没有此路单号!");
 		}
 		
-		System.out.println("根据路单修改日计划 消耗时间："+(System.currentTimeMillis()-startTime)+"毫秒");
+		System.out.println("路单确认总耗时："+(System.currentTimeMillis()-startTime)+"毫秒");
 		
 		return 1;
 	}

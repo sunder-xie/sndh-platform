@@ -1257,6 +1257,9 @@
     <if test="dispDate!=null">
       and DISP_DATE = #{dispDate,jdbcType=DATE}
     </if>
+    <if test="reachTimeType!=null">
+      and REACH_TIME_TYPE = #{reachTimeType,jdbcType=VARCHAR}
+    </if>
     <choose>
         <when test="promotionFlag!=null">
           and (GIFT_QTY is not null  OR GIFT_QTY!='')
@@ -1271,10 +1274,10 @@
 
   <update id="updateDaliyRemainAmtAfterRouteConfirmBeforDay" parameterType="com.nhry.data.order.domain.TOrderDaliyPlanItem" >
     update t_mst_order_daliy_plan_item
-    SET  REMAIN_AMT = REMAINT_AMT - #{amt,jdbcType=DECIMAL}
+    SET  REMAIN_AMT = REMAIN_AMT - #{amt,jdbcType=DECIMAL}
     where ORDER_NO = #{orderNo,jdbcType=VARCHAR}
     and DISP_DATE &lt; #{dispDate,jdbcType=DATE}
-    and (GIFT_QTY IS  NOT NULL OR GIFT_QTY!='')
+    and (GIFT_QTY IS   NULL OR GIFT_QTY='')
   </update>
 
   <select id="selectPromDaliyBetweenDaysAndNo" resultMap="BaseResultMap" parameterType="com.nhry.data.order.domain.TOrderDaliyPlanItem" >
@@ -1339,4 +1342,11 @@
     and i.ORDER_NO =  #{orderNo,jdbcType=VARCHAR}
     and i.STATUS!='30'
   </select>
+
+  <update id="updateDaliyRemainAmtAfterAdvanceBack" parameterType="com.nhry.data.order.domain.TOrderDaliyPlanItem">
+      update t_mst_order_daliy_plan_item
+      set REMAIN_AMT = REMAIN_AMT - #{amt,jdbcType=DECIMAL}
+      WHERE  ORDER_NO = #{orderNo,jdbcType=VARCHAR}
+      and (GIFT_QTY IS  NULL OR GIFT_QTY='')
+  </update>
 </mapper>
