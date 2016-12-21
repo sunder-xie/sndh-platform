@@ -30,6 +30,8 @@ public interface TOrderDaliyPlanItemMapper {
 	 PageInfo selectDaliyOrdersByPages(OrderSearchModel smodel);
 	
 	 int deleteFromDateToDate(TOrderDaliyPlanItem record);
+
+    int deleteFromDateToDateExceptProm(TOrderDaliyPlanItem record);
 	 
 	 int deletePlansByAmt(String orderNo);
 
@@ -147,7 +149,7 @@ public interface TOrderDaliyPlanItemMapper {
 
     int  updateDaliyRemainAmtAfterRouteConfirmBeforDay(Date dispDate, BigDecimal cj, String orderNo);
 
-    List<TOrderDaliyPlanItem> selectPromDaliyBetweenDaysAndNo(String orderNo,Date startDate, Date endDate);
+    List<TOrderDaliyPlanItem> selectPromDaliyBetweenDaysAndNo(String orderNo,String itemNo,Date startDate, Date endDate);
 
     int  updateDaliyPlanItemStatusBatch(HashMap<String, Object> map);
 
