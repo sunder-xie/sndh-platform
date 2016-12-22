@@ -1,5 +1,6 @@
 package com.nhry.data.milktrans.domain;
 
+import java.math.BigDecimal;
 import java.util.Date;
 
 /**
@@ -17,7 +18,7 @@ public class TSsmSalOrderItems {
     private String refMatnr;
     private String refMatnrTxt;
     private String promNo;
-
+    private BigDecimal discountAmt;
     public String getRefMatnrTxt() {
         return refMatnrTxt;
     }
@@ -104,5 +105,13 @@ public class TSsmSalOrderItems {
 
     public void setType(String type) {
         this.type = type;
+    }
+
+    public BigDecimal getDiscountAmt() {
+        return discountAmt;
+    }
+
+    public void setDiscountAmt(BigDecimal discountAmt) {
+        this.discountAmt = discountAmt;
     }
 }
