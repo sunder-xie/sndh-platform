@@ -57,7 +57,17 @@ public class TSsmSalOrderItemMapperImpl implements TSsmSalOrderItemMapper {
     }
 
     @Override
-    public List<Map<String, Object>> selectPromDaliyDiscountAmtOfDearler(RequireOrderSearch rModel) {
+    public List<Map<String, String>> selectPromDaliyDiscountAmtOfDearler(RequireOrderSearch rModel) {
         return sqlSessionTemplate.selectList("selectPromDaliyDiscountAmtOfDearler",rModel);
+    }
+
+    @Override
+    public List<Map<String, String>> selectPromDaliyDiscountAmtOfBranch(RequireOrderSearch rModel) {
+        return sqlSessionTemplate.selectList("selectPromDaliyDiscountAmtOfBranch",rModel);
+    }
+
+    @Override
+    public int updateDiscountAmt(TSsmSalOrderItems item) {
+        return sqlSessionTemplate.update("updateDiscountAmt",item);
     }
 }

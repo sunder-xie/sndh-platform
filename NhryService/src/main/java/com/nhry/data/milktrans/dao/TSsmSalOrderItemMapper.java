@@ -25,5 +25,19 @@ public interface TSsmSalOrderItemMapper {
      * @param rModel
      * @return
      */
-    List<Map<String,Object>> selectPromDaliyDiscountAmtOfDearler(RequireOrderSearch rModel);
+    List<Map<String,String>> selectPromDaliyDiscountAmtOfDearler(RequireOrderSearch rModel);
+
+    /**
+     * 自营奶站年卡折扣金额
+     * @param rModel
+     * @return
+     */
+    List<Map<String,String>> selectPromDaliyDiscountAmtOfBranch(RequireOrderSearch rModel);
+
+    /**
+     * 销售订单行项目更新折扣率
+     * @param item
+     * @return
+     */
+    int updateDiscountAmt(TSsmSalOrderItems item);
 }
