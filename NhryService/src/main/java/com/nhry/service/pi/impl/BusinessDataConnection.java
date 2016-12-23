@@ -174,9 +174,12 @@ public class BusinessDataConnection {
                 ZSSD00011 zssd00011 = new ZSSD00011();
                 //年卡折扣率
                 if(map.containsKey("DISCOUNT_AMT")) {
-                    YK01_type1 yk01_type1 = new YK01_type1();
-                    yk01_type1.setYK01_type0(new BigDecimal(map.get("DISCOUNT_AMT")));
-                    zssd00011.setYK01(yk01_type1);
+                    BigDecimal amt = new BigDecimal(String.valueOf(map.get("DISCOUNT_AMT")));
+                    if(amt.compareTo(new BigDecimal("0"))>0) {
+                        YK01_type1 yk01_type1 = new YK01_type1();
+                        yk01_type1.setYK01_type0(amt);
+                        zssd00011.setYK01(yk01_type1);
+                    }
                 }
                 MATNR_type1 matnr_type1 = new MATNR_type1();
                 matnr_type1.setMATNR_type0(map.get("MATNR"));
