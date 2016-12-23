@@ -573,6 +573,9 @@
       <if test="solicitBy != null" >
         SOLICIT_BY = #{solicitBy,jdbcType=VARCHAR},
       </if>
+      <if test="discountAmt != null" >
+        DISCOUNT_AMT = #{discountAmt,jdbcType=DECIMAL},
+      </if>
     </set>
     where ORDER_NO = #{orderNo,jdbcType=VARCHAR}
   </update>
