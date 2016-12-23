@@ -5112,7 +5112,7 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 							//判断日期是否超过促销范围
 							if((orderPromFlag || planItemPromFlag)&&promModel!=null){
 								if(orderPromFlag){
-									if("Z015".equals(promModel.getPromSubType())){
+									if("Z016".equals(promModel.getPromSubType())){
 										if(promModel.getBuyStopTime()==null) throw new ServiceException(MessageCode.LOGIC_ERROR,"获取整单促销的截止配送日期失败！！");
 										if(DateUtil.dateAfter(orgOrder.getEndDate(),promModel.getBuyStopTime())){
 											throw new ServiceException(MessageCode.LOGIC_ERROR,"该订单参加了整单促销，修改后订单的截止日期"+format.format(orgOrder.getEndDate())+"超过促销的截止配送日期"+format.format(promModel.getBuyStopTime())+"！！");
@@ -5829,7 +5829,7 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 
 		if((orderPromFlag || planItemPromFlag)&&promModel!=null){
 			if(orderPromFlag){
-				if("Z015".equals(promModel.getPromSubType())){
+				if("Z016".equals(promModel.getPromSubType())){
 					if(promModel.getBuyStopTime()==null) throw new ServiceException(MessageCode.LOGIC_ERROR,"获取整单促销的截止配送日期失败！！");
 					if(DateUtil.dateAfter(orgOrder.getEndDate(),promModel.getBuyStopTime())){
 						throw new ServiceException(MessageCode.LOGIC_ERROR,"该订单参加了整单促销，修改后订单的截止日期"+format.format(orgOrder.getEndDate())+"超过促销的截止配送日期"+format.format(promModel.getBuyStopTime())+"！！");
@@ -6164,19 +6164,20 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 
 
 		//判断新生成的日订单中 最后一天是否所有满足的行项目全部都有
-		/*final Date finalDay = lastDay;
+	if(haveRoute){
+		final Date finalDay = lastDay;
 		boolean allHave = true;
-		List<TPlanOrderItem> finEntry = entries.stream().filter(e->!finalDay.before(e.getEndDispDate())).collect(Collectors.toList());
-		for(TPlanOrderItem entry : finEntry){
-			if("10".equals(entry.getRuleType())){
+		List<TPlanOrderItem> finEntry = entries.stream().filter(e -> !finalDay.before(e.getEndDispDate())).collect(Collectors.toList());
+		for (TPlanOrderItem entry : finEntry) {
+			if ("10".equals(entry.getRuleType())) {
 				int gapDays = entry.getGapDays() + 1;//间隔天数
-				if(daysOfTwo(entry.getStartDispDate(),lastDay)%gapDays != 0){
-						continue;
+				if (daysOfTwo(entry.getStartDispDate(), lastDay) % gapDays != 0) {
+					continue;
 				}
-			}else if("20".equals(entry.getRuleType())){
+			} else if ("20".equals(entry.getRuleType())) {
 				String weekday = getWeek(lastDay);
 				List<String> deliverDays = Arrays.asList(entry.getRuleTxt().split(","));
-				if(!deliverDays.contains(weekday)){
+				if (!deliverDays.contains(weekday)) {
 					continue;//如果选择的星期几不送，则跳过今天生成日计划
 				}
 			}
@@ -6187,33 +6188,34 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 			plan.setOrderNo(entry.getOrderNo());
 			plan.setDispDate(lastDay);
 			TOrderDaliyPlanItem dayItem = tOrderDaliyPlanItemMapper.selectByDateAndItemNoAndNo(plan);
-			if(dayItem==null){
+			if (dayItem == null) {
 				allHave = false;
 				break;
 			}
-		}*/
+		}
 
-		/*if(!allHave){
+		if (!allHave) {
 			//删除这天所有的日订单
 			TOrderDaliyPlanItem plan = new TOrderDaliyPlanItem();
 			plan.setOrderNo(orgOrder.getOrderNo());
 			plan.setDispDate(lastDay);
 			plan.setStatus("10");
 			List<TOrderDaliyPlanItem> delItems = tOrderDaliyPlanItemMapper.selectByDayAndNo(plan);
-			if(delItems!=null && delItems.size()>0){
+			if (delItems != null && delItems.size() > 0) {
 				BigDecimal delTotal = BigDecimal.ZERO;
-				for(TOrderDaliyPlanItem item : delItems){
+				for (TOrderDaliyPlanItem item : delItems) {
 					delTotal = delTotal.add(item.getAmt());
 				}
 				tOrderDaliyPlanItemMapper.deleteOneDayItem(plan);
-				if("10".equals(orgOrder.getPaymentStat())){
+				if ("10".equals(orgOrder.getPaymentStat())) {
 					orgOrder.setInitAmt(orgOrder.getInitAmt().subtract(delTotal));
 					orgOrder.setCurAmt(orgOrder.getCurAmt().subtract(delTotal));
 					tPreOrderMapper.updateBySelective(orgOrder);
 				}
 			}
 
-		}*/
+		}
+	}
 		List<TOrderDaliyPlanItem> curAllDayItems = tOrderDaliyPlanItemMapper.selectDaliyPlansByOrderNoAsc(orgOrder.getOrderNo());
 		return curAllDayItems;
 
