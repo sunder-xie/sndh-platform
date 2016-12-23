@@ -158,4 +158,8 @@ public interface TOrderDaliyPlanItemMapper {
     TMstYearCardCompOrder selectYearCardBackOrder(String orderNo,Date backDate);
 
     int updateDaliyRemainAmtAfterAdvanceBack(String orderNo, BigDecimal backAmt);
+
+    int deletePlansWithoutPromDayByOrder(String orderNo);
+
+    int deletePromDayDayByOrder(String orderNo);
 }

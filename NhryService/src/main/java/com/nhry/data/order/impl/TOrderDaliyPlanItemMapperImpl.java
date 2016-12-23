@@ -270,6 +270,16 @@ public class TOrderDaliyPlanItemMapperImpl implements TOrderDaliyPlanItemMapper
 	}
 
 	@Override
+	public int deletePlansWithoutPromDayByOrder(String orderNo) {
+		return sqlSessionTemplate.delete("deletePlansWithoutPromDayByOrder",orderNo);
+	}
+
+	@Override
+	public int deletePromDayDayByOrder(String orderNo) {
+		return sqlSessionTemplate.delete("deletePromDayDayByOrder",orderNo);
+	}
+
+	@Override
 	public List<OrderDaliyPlanReportEntityModel> reportOrderDaliyPlanByParams(OrderDaliyPlanReportModel model) {
 		return sqlSessionTemplate.selectList("reportOrderDaliyPlanByParams",model);
 	}

@@ -954,6 +954,19 @@
     where ORDER_NO = #{orderNo,jdbcType=VARCHAR}
   </delete>
 
+  <delete id="deletePlansWithoutPromDayByOrder" parameterType="java.lang.String" >
+    delete from t_mst_order_daliy_plan_item
+    where ORDER_NO = #{orderNo,jdbcType=VARCHAR}
+    and (GIFT_QTY is  NULL  or GIFT_QTY='')
+  </delete>
+
+  <delete id="deletePromDayDayByOrder" parameterType="java.lang.String" >
+    delete from t_mst_order_daliy_plan_item
+    where ORDER_NO = #{orderNo,jdbcType=VARCHAR}
+    and (GIFT_QTY is  NOT NULL  or GIFT_QTY!='')
+  </delete>
+
+
   <select id="reportOrderDaliyPlanByParams" resultType="com.nhry.model.order.OrderDaliyPlanReportEntityModel" parameterType="com.nhry.model.order.OrderDaliyPlanReportModel">
     SELECT
     t2.MP mp,

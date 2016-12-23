@@ -346,8 +346,8 @@ public class PromotionServiceImpl extends BaseService implements PromotionServic
 								  .forEach((e)->{
 		  	TPromotion prom = selectPromotionByPromNoAndItemNo(e.getPromotion(),e.getPromItemNo());
 			  if(prom!=null){
-				  promDateMap.put("startDate",prom.getPlanStartTime());
-				  promDateMap.put("endDate",prom.getPlanStopTime());
+				  promDateMap.put("startDate",prom.getBuyStartTime());
+				  promDateMap.put("endDate",prom.getBuyStopTime());
 			  }
 									  entryMap.put(e.getItemNo(), e);
 //									  calculateEntryPromotion(e);
