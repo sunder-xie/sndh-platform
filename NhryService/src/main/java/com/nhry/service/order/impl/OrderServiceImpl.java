@@ -1137,7 +1137,7 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 							}
 							tPlanOrderItemMapper.updateEntryByItemNo(entry);
 						}
-						promotionService.calculateEntryPromotionForStop(entry);
+						//promotionService.calculateEntryPromotionForStop(entry);
 
 					}
 				}
