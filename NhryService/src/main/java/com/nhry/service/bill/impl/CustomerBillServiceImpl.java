@@ -6,8 +6,10 @@ import com.nhry.common.exception.MessageCode;
 import com.nhry.common.exception.ServiceException;
 import com.nhry.data.auth.dao.TSysUserRoleMapper;
 import com.nhry.data.auth.domain.TSysUser;
+import com.nhry.data.basic.dao.TMdBranchMapper;
 import com.nhry.data.basic.dao.TMdOperationLogMapper;
 import com.nhry.data.basic.domain.LogType;
+import com.nhry.data.basic.domain.TMdBranch;
 import com.nhry.data.basic.domain.TVipAcct;
 import com.nhry.data.bill.dao.CustomerBillMapper;
 import com.nhry.data.bill.domain.TMstRecvBill;
@@ -64,6 +66,11 @@ public class CustomerBillServiceImpl implements CustomerBillService {
     private TDispOrderItemMapper tDispOrderItemMapper;
     private TOrderDaliyPlanItemMapper tOrderDaliyPlanItemMapper;
     private PIVipPointCreateBatService piVipPointCreateBatService;
+    private TMdBranchMapper branchMapper;
+
+    public void setBranchMapper(TMdBranchMapper branchMapper) {
+        this.branchMapper = branchMapper;
+    }
 
     public void setPiVipPointCreateBatService(PIVipPointCreateBatService piVipPointCreateBatService) {
         this.piVipPointCreateBatService = piVipPointCreateBatService;
@@ -338,15 +345,16 @@ public class CustomerBillServiceImpl implements CustomerBillService {
     @Override
     public TMstRecvBill createRecBillByOrderNo(String orderNo) {
         String errorContent ="";
+        TMstRecvBill customerBill = customerBillMapper.getRecBillByOrderNo(orderNo);
+        if(customerBill != null ){
+            return customerBill;
+        }
         TPreOrder order = tPreOrderMapper.selectByPrimaryKey(orderNo);
         if(order == null){
             errorContent = "该订单不存在！";
             throw new ServiceException(MessageCode.LOGIC_ERROR,errorContent);
         }
-        TMstRecvBill customerBill = customerBillMapper.getRecBillByOrderNo(orderNo);
-        if(customerBill != null ){
-            return customerBill;
-        }
+
         TSysUser user = userSessionService.getCurrentUser();
         customerBill  = new TMstRecvBill();
         customerBill.setRecvEmp(order.getEmpNo());
@@ -645,7 +653,7 @@ public class CustomerBillServiceImpl implements CustomerBillService {
         TSysUser user = userSessionService.getCurrentUser();
         cModel.setBranchNo(user.getBranchNo());
         List<CollectOrderBillModel> result = new ArrayList<CollectOrderBillModel>();
-
+        final  long startTime = System.currentTimeMillis();
         if(StringUtils.isNotBlank(cModel.getPaymentmethod()) ){
             if( "20".equals(cModel.getPaymentmethod())){
                 List<String> advancePayOrders = tPreOrderMapper.selectAdvanceOrderNos(cModel);
@@ -674,25 +682,45 @@ public class CustomerBillServiceImpl implements CustomerBillService {
             }
         }else{
             List<String> advancePayOrders = tPreOrderMapper.selectAdvanceOrderNos(cModel);
+//            System.out.println("预付款单号共有"+(advancePayOrders==null?0:advancePayOrders.size())+"获取预付款所有订单号耗时："+(System.currentTimeMillis()-startTime)+"毫秒");
             //预付款的
+
             if(advancePayOrders!=null && advancePayOrders.size()>0){
+//                System.out.println("开始创建预付款订单收款单====");
+//                final long startTime2 = System.currentTimeMillis();
                 for(String orderNo : advancePayOrders){
                     //创建收款单  如果有会直接返回
                     createRecBillByOrderNo(orderNo);
                 }
-                    List<CollectOrderBillModel> before = customerBillMapper.selectNoItemsCollectByOrders("20", advancePayOrders);
-                    if (before != null && before.size() > 0) {
+//                System.out.println("创建预付款订单收款单共耗时："+(System.currentTimeMillis()-startTime2)+"毫秒");
+
+
+//                System.out.println("开始查询预付款收款单信息====");
+//                final long startTime3 = System.currentTimeMillis();
+                List<CollectOrderBillModel> before = customerBillMapper.selectNoItemsCollectByOrders("20", advancePayOrders);
+//                System.out.println("查询预付款收款单信息共耗时："+(System.currentTimeMillis()-startTime3)+"毫秒");
+                if (before != null && before.size() > 0) {
                         result.addAll(before);
                     }
             }
+//            System.out.print("开始创建后付款订单收款单====");
+//            final long startTime4 = System.currentTimeMillis();
             //后付款的 一定有日订单
             List<String> afterPayOrders = tPreOrderMapper.selectAfterOrderNos(cModel);
+//            System.out.println("后付款单号共有"+afterPayOrders==null?0:afterPayOrders.size()+"获取预付款所有订单号耗时："+(System.currentTimeMillis()-startTime4)+"毫秒");
             if(afterPayOrders!=null && afterPayOrders.size()>0) {
+
+//                System.out.println("开始创建后付款订单收款单====");
+//                final long startTime5 = System.currentTimeMillis();
                 for(String orderNo : afterPayOrders){
                     //创建收款单  如果有会直接返回
                     createRecBillByOrderNo(orderNo);
                 }
+
+//                System.out.println("开始查询后付款收款单信息====");
+                final long startTime6= System.currentTimeMillis();
                 List<CollectOrderBillModel> after = customerBillMapper.selectHasItemsCollectByOrders("10", afterPayOrders);
+//                System.out.println("查询后付款收款单信息共耗时："+(System.currentTimeMillis()-startTime6)+"毫秒");
                 if (after != null && after.size() > 0) {
                     result.addAll(after);
                 }
@@ -700,10 +728,108 @@ public class CustomerBillServiceImpl implements CustomerBillService {
 
         }
 
-
+        System.out.println("------总共耗时："+(System.currentTimeMillis()-startTime)+"毫秒");
 
         return result;
     }
+
+
+    public BatChCollectForExpModel BatchPrintForExp2(CustBillQueryModel cModel) {
+        TSysUser user = userSessionService.getCurrentUser();
+        cModel.setBranchNo(user.getBranchNo());
+        cModel.setSalesOrg(user.getSalesOrg());
+        BatChCollectForExpModel  expModel = new BatChCollectForExpModel();
+        TMdBranch bmodel = branchMapper.selectBranchInfoByBranchNo(user.getBranchNo());
+        if(bmodel!=null){
+            expModel.setBranchAddress(bmodel.getAddress());
+            expModel.setBranchName(bmodel.getBranchName());
+            expModel.setBranchTel(bmodel.getTel());
+            expModel.setSalesOrgName(bmodel.getSalesOrgName());
+        }
+        List<CollectOrderBillModel> result = new ArrayList<CollectOrderBillModel>();
+        final  long startTime = System.currentTimeMillis();
+        if(StringUtils.isNotBlank(cModel.getPaymentmethod()) ){
+            if( "20".equals(cModel.getPaymentmethod())){
+                List<String> advancePayOrders = tPreOrderMapper.selectAdvanceOrderNos(cModel);
+                if(advancePayOrders!=null && advancePayOrders.size()>0){
+                    for(String orderNo : advancePayOrders){
+                        //创建收款单  如果有会直接返回
+                        createRecBillByOrderNo(orderNo);
+                    }
+                    cModel.setPaymentmethod("20");
+                    List<CollectOrderBillModel> hasItem = customerBillMapper.selectNoItemsCollectByOrders2(cModel);
+                    if (hasItem != null && hasItem.size() > 0){
+                        result.addAll(hasItem);
+                    }
+                }
+            }else{
+                List<String> afterPayOrders = tPreOrderMapper.selectAfterOrderNos(cModel);
+                if(afterPayOrders!=null && afterPayOrders.size()>0) {
+                    for(String orderNo : afterPayOrders){
+                        //创建收款单  如果有会直接返回
+                        createRecBillByOrderNo(orderNo);
+                    }
+                    cModel.setPaymentmethod("10");
+                    List<CollectOrderBillModel> after = customerBillMapper.selectHasItemsCollectByOrders2(cModel);
+                    if (after != null && after.size() > 0) {
+                        result.addAll(after);
+                    }
+                }
+            }
+        }else{
+            List<String> advancePayOrders = tPreOrderMapper.selectAdvanceOrderNos(cModel);
+            System.out.println("预付款单号共有"+(advancePayOrders==null?0:advancePayOrders.size())+"获取预付款所有订单号耗时："+(System.currentTimeMillis()-startTime)+"毫秒");
+            //预付款的
+
+            if(advancePayOrders!=null && advancePayOrders.size()>0){
+                System.out.println("开始创建预付款订单收款单====");
+                final long startTime2 = System.currentTimeMillis();
+                for(String orderNo : advancePayOrders){
+                    //创建收款单  如果有会直接返回
+                    createRecBillByOrderNo(orderNo);
+                }
+                System.out.println("创建预付款订单收款单共耗时："+(System.currentTimeMillis()-startTime2)+"毫秒");
+
+
+                System.out.println("开始查询预付款收款单信息====");
+                final long startTime3 = System.currentTimeMillis();
+                List<CollectOrderBillModel> before = customerBillMapper.selectNoItemsCollectByOrders2(cModel);
+                System.out.println("查询预付款收款单信息共耗时："+(System.currentTimeMillis()-startTime3)+"毫秒");
+                if (before != null && before.size() > 0) {
+                    result.addAll(before);
+                }
+            }
+            System.out.print("开始创建后付款订单收款单====");
+            final long startTime4 = System.currentTimeMillis();
+            //后付款的 一定有日订单
+            List<String> afterPayOrders = tPreOrderMapper.selectAfterOrderNos(cModel);
+            System.out.println("后付款单号共有"+afterPayOrders==null?0:afterPayOrders.size()+"获取预付款所有订单号耗时："+(System.currentTimeMillis()-startTime4)+"毫秒");
+            if(afterPayOrders!=null && afterPayOrders.size()>0) {
+
+                System.out.println("开始创建后付款订单收款单====");
+                final long startTime5 = System.currentTimeMillis();
+                for(String orderNo : afterPayOrders){
+                    //创建收款单  如果有会直接返回
+                    createRecBillByOrderNo(orderNo);
+                }
+                System.out.println("创建后付款订单收款单共耗时："+(System.currentTimeMillis()-startTime5)+"毫秒");
+
+                System.out.println("开始查询后付款收款单信息====");
+                final long startTime6= System.currentTimeMillis();
+                List<CollectOrderBillModel> after = customerBillMapper.selectHasItemsCollectByOrders2(cModel);
+                System.out.println("查询后付款收款单信息共耗时："+(System.currentTimeMillis()-startTime6)+"毫秒");
+                if (after != null && after.size() > 0) {
+                    result.addAll(after);
+                }
+            }
+
+        }
+
+        expModel.setBillModels(result);
+
+        return expModel;
+    }
+
 
     @Override
     public int delReceipt(String receiptNo) {

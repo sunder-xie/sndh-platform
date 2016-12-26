@@ -466,6 +466,80 @@
     </select>
 
 
+    <select id="selectNoItemsCollectByOrders2" resultMap="CollectResultMap" parameterType="com.nhry.model.bill.CustBatchBillQueryModel">
+        SELECT
+        o.ORDER_NO,
+        o.BRANCH_NO,
+        o.EMP_NO,
+        e.TEL EMP_TEL,
+        e.EMP_NAME,
+        c.VIP_NAME,
+        c.MP CUST_TEL,
+        o.INIT_AMT,
+        bill.SUPP_AMT  ORDER_AMT,
+        bill.CUST_ACC_AMT,
+        MIN(i.START_DISP_DATE)  START_DATE,
+        o.END_DATE,
+        concat(
+        (SELECT it.ITEM_NAME FROM T_SYS_CODE_ITEM it WHERE it.TYPE_CODE =<include refid="mybaties.constant.COUNTRY_CITY_CONSTANT"/>
+        AND it.ITEM_CODE = a.PROVINCE),
+        (SELECT it.ITEM_NAME FROM T_SYS_CODE_ITEM it WHERE it.TYPE_CODE =<include refid="mybaties.constant.COUNTRY_CITY_CONSTANT"/>
+        AND it.ITEM_CODE = a.CITY),
+        (SELECT it.ITEM_NAME FROM T_SYS_CODE_ITEM it WHERE it.TYPE_CODE =<include refid="mybaties.constant.COUNTRY_CITY_CONSTANT"/>
+        AND it.ITEM_CODE = a.COUNTY),
+        IFNULL( (SELECT ra.ADDRESS_TXT from t_md_residential_area ra WHERE ra.ID =  a.RESIDENTIAL_AREA),''),
+        IFNULL((SELECT ra.RESIDENTIAL_AREA_TXT from t_md_residential_area ra  WHERE  ra.ID = a.RESIDENTIAL_AREA),''),
+        IFNULL(a.ADDRESS_TXT,'')
+        )CUST_ADDRESS,
+        concat(
+        IFNULL( (SELECT ra.ADDRESS_TXT from t_md_residential_area ra WHERE ra.ID =  a.RESIDENTIAL_AREA),''),
+        IFNULL((SELECT ra.RESIDENTIAL_AREA_TXT from t_md_residential_area ra  WHERE  ra.ID = a.RESIDENTIAL_AREA),''),
+        IFNULL(a.ADDRESS_TXT,'')
+        )CUST_ADDRESS_SHORT
+        ,i.MATNR,ex.SHORT_TXT MATNR_TXT,i.UNIT,i.DISP_TOTAL QTY,i.SALES_PRICE BASE_PRICE,(i.DISP_TOTAL * i.SALES_PRICE) TOTAL_PRICE
+        from t_preorder o
+        LEFT JOIN t_mst_recv_bill bill on o.ORDER_NO = bill.ORDER_NO and bill.HAD_OFFSET = 'N'
+        LEFT JOIN  t_md_address a on o.ADRESS_NO = a.ADDRESS_ID
+        left join t_md_residential_area r on r.ID = a.RESIDENTIAL_AREA
+        LEFT JOIN t_md_branch_emp e on o.EMP_NO = e.EMP_NO
+        LEFT JOIN t_vip_cust_info  c on c.VIP_CUST_NO = o.MILKMEMBER_NO
+        LEFT JOIN t_vip_acct acct on o.MILKMEMBER_NO =acct.VIP_CUST_NO
+        LEFT JOIN t_mst_plan_order_item i on o.ORDER_NO = i.ORDER_NO
+        LEFT JOIN  t_md_mara_ex ex on i.MATNR = ex.MATNR  and ex.SALES_ORG=#{salesOrg,jdbcType=VARCHAR}
+        WHERE 1=1
+        and (o.PREORDER_SOURCE='20' OR o.PREORDER_SOURCE ='30' OR  o.PREORDER_SOURCE ='50'OR  o.PREORDER_SOURCE ='70' )
+        and (o.PREORDER_STAT = '10' OR o.PREORDER_STAT = '30')
+        and o.INIT_AMT > 0
+        and  o.PAYMENTMETHOD ='20'
+        <if test="empNo !=null and empNo!=''">
+            and  o.EMP_NO = #{empNo,jdbcType=VARCHAR}
+        </if>
+        <if test="branchNo !=null and branchNo!=''">
+            and  o.BRANCH_NO = #{branchNo,jdbcType=VARCHAR}
+        </if>
+        <if test="status !=null and status!=''">
+            and  o.PAYMENT_STAT = #{status,jdbcType=VARCHAR}
+        </if>
+        <if test="orderStartDate !=null and ''!=orderStartDate">
+            and o.END_DATE &gt;= #{orderStartDate,jdbcType=DATE}
+        </if>
+        <if test="orderEndDate !=null and ''!=orderEndDate">
+            and   o.END_DATE &lt;= #{orderEndDate,jdbcType=DATE}
+        </if>
+        <if test="search !=null and '' !=search" >
+            and  ( o.ORDER_NO like '%${search}%'
+            or  e.EMP_NAME like'%${search}%'
+            or c.VIP_NAME like '%${search}%'
+            or c.MP like '%${search}%'
+            or r.RESIDENTIAL_AREA_TXT like '%${search}%'
+            or a.ADDRESS_TXT like '%${search}%'
+            or CONCAT(r.RESIDENTIAL_AREA_TXT,a.ADDRESS_TXT) like  '%${search}%'
+            )
+        </if>
+        GROUP BY o.ORDER_NO,i.MATNR
+        ORDER BY c.SUBDIST,c.ADDRESS_TXT,CUST_ADDRESS_SHORT
+    </select>
+
     <select id="selectHasItemsCollectByOrders" resultMap="CollectResultMap" parameterType="com.nhry.model.bill.CollectOrderSearchModel">
         SELECT
         o.ORDER_NO,o.BRANCH_NO,b.BRANCH_NAME,o.EMP_NO,e.MP EMP_TEL,e.EMP_NAME,c.VIP_NAME,
@@ -512,6 +586,78 @@
         and b.SALES_ORG = o.SALES_ORG
         and i.STATUS !='30'
         and LOCATE(o.ORDER_NO,<foreach item="order" collection="orders" separator="," open="'" close="'" index="">${order}</foreach>)>0
+        GROUP BY o.ORDER_NO,i.MATNR
+        ORDER BY c.SUBDIST,c.ADDRESS_TXT,CUST_ADDRESS_SHORT
+    </select>
+
+
+    <select id="selectHasItemsCollectByOrders2" resultMap="CollectResultMap" parameterType="com.nhry.model.bill.CustBatchBillQueryModel">
+        SELECT
+        o.ORDER_NO,
+        o.BRANCH_NO,
+        o.EMP_NO,
+        e.MP EMP_TEL,
+        e.EMP_NAME,
+        c.VIP_NAME,
+        c.MP CUST_TEL,
+        o.INIT_AMT,
+        bill.SUPP_AMT  ORDER_AMT,
+        bill.CUST_ACC_AMT,
+        o.END_DATE,MIN(i.DISP_DATE) START_DATE,
+        concat(
+        (SELECT it.ITEM_NAME FROM T_SYS_CODE_ITEM it WHERE it.TYPE_CODE =<include refid="mybaties.constant.COUNTRY_CITY_CONSTANT"/>
+        AND it.ITEM_CODE = a.PROVINCE),
+        (SELECT it.ITEM_NAME FROM T_SYS_CODE_ITEM it WHERE it.TYPE_CODE =<include refid="mybaties.constant.COUNTRY_CITY_CONSTANT"/>
+        AND it.ITEM_CODE = a.CITY),
+        (SELECT it.ITEM_NAME FROM T_SYS_CODE_ITEM it WHERE it.TYPE_CODE =<include refid="mybaties.constant.COUNTRY_CITY_CONSTANT"/>
+        AND it.ITEM_CODE = a.COUNTY),
+        IFNULL( (SELECT ra.ADDRESS_TXT from t_md_residential_area ra WHERE ra.ID =  a.RESIDENTIAL_AREA),''),
+        IFNULL((SELECT ra.RESIDENTIAL_AREA_TXT from t_md_residential_area ra  WHERE  ra.ID = a.RESIDENTIAL_AREA),''),
+        IFNULL(a.ADDRESS_TXT,'')
+        )CUST_ADDRESS,
+        concat(
+        IFNULL( (SELECT ra.ADDRESS_TXT from t_md_residential_area ra WHERE ra.ID =  a.RESIDENTIAL_AREA),''),
+        IFNULL((SELECT ra.RESIDENTIAL_AREA_TXT from t_md_residential_area ra  WHERE  ra.ID = a.RESIDENTIAL_AREA),''),
+        IFNULL(a.ADDRESS_TXT,'')
+        )CUST_ADDRESS_SHORT
+        ,i.ORDER_NO,i.MATNR,ex.SHORT_TXT MATNR_TXT,i.UNIT,SUM(i.QTY) QTY,i.PRICE BASE_PRICE,sum(i.AMT) TOTAL_PRICE
+        from t_preorder o
+        LEFT JOIN t_mst_recv_bill bill on o.ORDER_NO = bill.ORDER_NO and bill.HAD_OFFSET = 'N'
+        LEFT JOIN  t_md_address a on o.ADRESS_NO = a.ADDRESS_ID
+        left join t_md_residential_area r on r.ID = a.RESIDENTIAL_AREA
+        LEFT JOIN t_md_branch_emp e on o.EMP_NO = e.EMP_NO
+        LEFT JOIN t_vip_cust_info  c on c.VIP_CUST_NO = o.MILKMEMBER_NO
+        LEFT JOIN t_vip_acct acct on o.MILKMEMBER_NO =acct.VIP_CUST_NO
+        LEFT JOIN t_mst_order_daliy_plan_item i on i.ORDER_NO = o.ORDER_NO AND (i.STATUS ='10' OR i.`STATUS` ='20')
+        LEFT JOIN  t_md_mara_ex ex on i.MATNR = ex.MATNR  and  ex.SALES_ORG = #{salesOrg,jdbcType=VARCHAR}
+        WHERE 1=1
+        and o.INIT_AMT > 0
+        and  o.PAYMENTMETHOD ='10'
+        <if test="empNo !=null and empNo!=''">
+            and  o.EMP_NO = #{empNo,jdbcType=VARCHAR}
+        </if>
+        <if test="branchNo !=null and branchNo!=''">
+            and  o.BRANCH_NO = #{branchNo,jdbcType=VARCHAR}
+        </if>
+        <if test="status !=null and status!=''">
+            and  o.PAYMENT_STAT = #{status,jdbcType=VARCHAR}
+        </if>
+        <if test="orderStartDate !=null and ''!=orderStartDate">
+            and o.END_DATE &gt;= #{orderStartDate,jdbcType=DATE}
+        </if>
+        <if test="orderEndDate !=null and ''!=orderEndDate">
+            and   o.END_DATE &lt;= #{orderEndDate,jdbcType=DATE}
+        </if>
+        <if test="search !=null and '' !=search" >
+            and  ( o.ORDER_NO like '%${search}%'
+            or  e.EMP_NAME like'%${search}%'
+            or c.VIP_NAME like '%${search}%'
+            or c.MP like '%${search}%'
+            or r.RESIDENTIAL_AREA_TXT like '%${search}%'
+            or a.ADDRESS_TXT like '%${search}%'
+            or CONCAT(r.RESIDENTIAL_AREA_TXT,a.ADDRESS_TXT) like  '%${search}%'
+            )
+        </if>
         GROUP BY o.ORDER_NO,i.MATNR
         ORDER BY c.SUBDIST,c.ADDRESS_TXT,CUST_ADDRESS_SHORT
     </select>

@@ -997,7 +997,7 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 //			if("20".equals(status)){
 //				throw new ServiceException(MessageCode.LOGIC_ERROR,record.getOrderNo()+"订单日订单已经确认，不能修改订单!");
 //			}
-			/*if(tOrderDaliyPlanItemMapper.searchDaliyOrdersByOrderNoAndFinalStop(record).size()>0){
+			/*if(tOrderDaliyPlanItemMapper.searchDaliyOrdersByOrdCustomerBillMappererNoAndFinalStop(record).size()>0){
 				throw new ServiceException(MessageCode.LOGIC_ERROR,record.getOrderNo()+"停订区间内 有日订单已经停订，请往后修改日期或修改日计划!");
 			}*/
 			//停订逻辑

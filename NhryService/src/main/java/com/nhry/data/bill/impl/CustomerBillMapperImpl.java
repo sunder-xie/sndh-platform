@@ -7,6 +7,7 @@ import com.nhry.data.bill.domain.TMstRecvOffset;
 import com.nhry.data.bill.domain.TMstRefund;
 import com.nhry.model.bill.CollectOrderBillModel;
 import com.nhry.model.bill.CollectOrderSearchModel;
+import com.nhry.model.bill.CustBillQueryModel;
 
 import java.util.List;
 
@@ -76,11 +77,23 @@ public class CustomerBillMapperImpl implements CustomerBillMapper {
     }
 
     @Override
+    public List<CollectOrderBillModel> selectHasItemsCollectByOrders2(CustBillQueryModel cModel) {
+
+        return sqlSessionTemplate.selectList("selectHasItemsCollectByOrders2",cModel);
+    }
+
+    @Override
     public List<CollectOrderBillModel> selectNoItemsCollectByOrders(String paymentmethod, List<String> advancePayOrders) {
         CollectOrderSearchModel model = new CollectOrderSearchModel();
         model.setOrders(advancePayOrders);
         model.setPaymentmehod(paymentmethod);
         return sqlSessionTemplate.selectList("selectNoItemsCollectByOrders",model);
+    }
+
+    @Override
+    public List<CollectOrderBillModel> selectNoItemsCollectByOrders2(CustBillQueryModel cModel) {
+
+        return sqlSessionTemplate.selectList("selectNoItemsCollectByOrders2",cModel);
     }
 
     @Override

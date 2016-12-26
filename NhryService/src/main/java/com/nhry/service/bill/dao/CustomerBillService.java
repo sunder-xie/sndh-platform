@@ -41,4 +41,6 @@ public interface CustomerBillService {
    int delReceipt(String receiptNo);
 
    int selectOrdersNoBillCount();
+
+   BatChCollectForExpModel BatchPrintForExp2(CustBillQueryModel cModel);
 }

@@ -7,11 +7,11 @@ import com.nhry.data.basic.domain.TMdAddress;
 import com.nhry.data.basic.domain.TMdBranch;
 import com.nhry.data.bill.domain.TMstRecvBill;
 import com.nhry.data.milk.domain.TDispOrder;
-import com.nhry.data.milk.domain.TDispOrderChange;
 import com.nhry.data.milk.domain.TDispOrderItem;
 import com.nhry.data.order.domain.TMilkboxPlan;
 import com.nhry.data.order.domain.TMstYearCardCompOrder;
 import com.nhry.data.order.domain.TPreOrder;
+import com.nhry.model.bill.BatChCollectForExpModel;
 import com.nhry.model.bill.CollectOrderBillModel;
 import com.nhry.model.bill.CustBillQueryModel;
 import com.nhry.model.milk.RouteOrderModel;
@@ -34,24 +34,18 @@ import com.nhry.utils.CodeGeneratorUtil;
 import com.nhry.utils.EnvContant;
 import com.nhry.utils.ExcelUtil;
 import com.sun.jersey.spi.resource.Singleton;
-import com.sun.tools.doclint.Env;
 import com.wordnik.swagger.annotations.Api;
 import com.wordnik.swagger.annotations.ApiOperation;
 import com.wordnik.swagger.annotations.ApiParam;
-import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 import org.apache.poi.ss.usermodel.Cell;
-import org.apache.poi.ss.usermodel.PageOrder;
-import org.apache.poi.ss.usermodel.PrintOrientation;
-import org.apache.poi.ss.usermodel.PrintSetup;
 import org.apache.poi.ss.util.CellRangeAddress;
 import org.apache.poi.xssf.usermodel.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Controller;
 
-import javax.activation.MimetypesFileTypeMap;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.ws.rs.*;
@@ -761,7 +755,8 @@ public class ReportResource extends BaseResource{
     @Produces(MediaType.APPLICATION_JSON)
     @ApiOperation(value = "/reportCollectByEmp", response = OrderCreateModel.class, notes = "根据订单编号导出收款信息")
     public Response reportCollectByEmp(@ApiParam(required = true, name = "model", value = "送奶员编号")CustBillQueryModel model, @Context HttpServletRequest request, @Context HttpServletResponse response) {
-        List<CollectOrderBillModel> orderBillModel1 = customerBillService.BatchPrintForExp(model);
+        BatChCollectForExpModel result = customerBillService.BatchPrintForExp2(model);
+        List<CollectOrderBillModel> orderBillModel1 =result.getBillModels();
         String url = EnvContant.getSystemConst("filePath");
 //        logger.info("realPath："+url);
         String outUrl = "";
@@ -789,11 +784,11 @@ public class ReportResource extends BaseResource{
                 }
                 if(lt6.size()>0){
                     XSSFSheet sheet = workbook.getSheetAt(0);
-                    executeSheet(lt6, workbook, sheet);
+                    executeSheet(lt6, workbook, sheet,result.getBranchName(),result.getBranchTel(),result.getBranchAddress(),result.getSalesOrgName());
                 }
                 if(gt6.size()>0){
                     XSSFSheet sheet = workbook.createSheet("特殊结款单");
-                    executeSheet(gt6, workbook, sheet);
+                    executeSheet(gt6, workbook, sheet,result.getBranchName(),result.getBranchTel(),result.getBranchAddress(),result.getSalesOrgName());
                 }
             }
 //            ps.setOrientation(PrintOrientation.PORTRAIT);
@@ -831,7 +826,7 @@ public class ReportResource extends BaseResource{
         return convertToRespModel(MessageCode.NORMAL,null,outUrl);
     }
 
-    private void executeSheet(List<CollectOrderBillModel> orderBillModel1, XSSFWorkbook workbook, XSSFSheet sheet) {
+    private void executeSheet(List<CollectOrderBillModel> orderBillModel1, XSSFWorkbook workbook, XSSFSheet sheet,String branchName,String branchTel,String branchAddress,String salesOrgName) {
         int rowNum = 0;
         for(CollectOrderBillModel orderBillModel : orderBillModel1) {
 //                XSSFRow rownull = sheet.createRow(rowNum++);
@@ -839,7 +834,7 @@ public class ReportResource extends BaseResource{
             List<ProductItem> productItems = orderBillModel.getEntries();
             XSSFRow row = sheet.createRow(rowNum++);
             XSSFCell cell = row.createCell(1);
-            cell.setCellValue(orderBillModel.getSalesOrgName());
+            cell.setCellValue(salesOrgName);
             XSSFCellStyle cellStyle = workbook.createCellStyle();
             XSSFFont font = workbook.createFont();
             font.setFontName("微软雅黑");
@@ -866,7 +861,7 @@ public class ReportResource extends BaseResource{
             XSSFRow row2 = sheet.createRow(rowNum++);
             XSSFRow row3 = sheet.createRow(rowNum++);
 
-            ExcelUtil.createCell(row2,1,"配送奶站："+orderBillModel.getBranchName(),ExcelUtil.setFontStype(workbook));
+            ExcelUtil.createCell(row2,1,"配送奶站："+branchName,ExcelUtil.setFontStype(workbook));
             sheet.addMergedRegion(new CellRangeAddress(row2.getRowNum(), row2.getRowNum() + 1, 1, 4));
 
             ExcelUtil.createCell(row2,5,"订奶起止日期："+ format.format(orderBillModel.getStartDate()) +"--"+ format.format(orderBillModel.getEndDate()) +"",ExcelUtil.setFontStype(workbook));
@@ -935,10 +930,10 @@ public class ReportResource extends BaseResource{
             ExcelUtil.createCell(row15,10,orderBillModel.getOrderAmt()!=null?orderBillModel.getOrderAmt().toString():"0",ExcelUtil.setFontStype(workbook));
 
             XSSFRow row16 = sheet.createRow(rowNum++);
-            ExcelUtil.createCell(row16,1,"奶站地址："+orderBillModel.getBranchAddress(),ExcelUtil.setFontStype(workbook));
+            ExcelUtil.createCell(row16,1,"奶站地址："+branchAddress,ExcelUtil.setFontStype(workbook));
             sheet.addMergedRegion(new CellRangeAddress(row16.getRowNum(), row16.getRowNum(), 1, 6));
 
-            ExcelUtil.createCell(row16,7,"奶站电话："+orderBillModel.getBranchTel(),ExcelUtil.setFontStype(workbook));
+            ExcelUtil.createCell(row16,7,"奶站电话："+branchTel,ExcelUtil.setFontStype(workbook));
             sheet.addMergedRegion(new CellRangeAddress(row16.getRowNum(), row16.getRowNum(), 7, 10));
 
             ExcelUtil.createCell(row16,11,"公司电话：4008850555",ExcelUtil.setFontStype(workbook));
@@ -982,7 +977,8 @@ public class ReportResource extends BaseResource{
     @Produces(MediaType.APPLICATION_JSON)
     @ApiOperation(value = "/reportBatchCollectByEmp", response = OrderCreateModel.class, notes = "根据订单编号批量导出收款信息")
     public Response reportBatchCollectByEmp(@ApiParam(required = true, name = "model", value = "送奶员编号")CustBillQueryModel model, @Context HttpServletRequest request, @Context HttpServletResponse response) {
-        List<CollectOrderBillModel> orderBillModel1 = customerBillService.BatchPrintForExp(model);
+        BatChCollectForExpModel result = customerBillService.BatchPrintForExp2(model);
+        List<CollectOrderBillModel> orderBillModel1 =result.getBillModels();
         BranchEmpModel empModel = branchEmpService.empDetailInfo(model.getEmpNo());
         String url = EnvContant.getSystemConst("filePath");
         String outUrl = "";
@@ -995,7 +991,7 @@ public class ReportResource extends BaseResource{
             XSSFRow row = sheet.getRow(1);
             XSSFCell cell = row.getCell(1);
 //            cell.setCellStyle(ExcelUtil.setBorderStyle(workbook));
-            cell.setCellValue("配送奶站："+empModel.getEmp().getBranchName());
+            cell.setCellValue("配送奶站："+result.getBranchName());
 
             cell = row.getCell(5);
 //            cell.setCellStyle(ExcelUtil.setBorderStyle(workbook));

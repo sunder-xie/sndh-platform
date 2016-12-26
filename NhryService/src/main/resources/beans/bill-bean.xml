@@ -34,6 +34,7 @@
 		<property name="tOrderDaliyPlanItemMapper" ref="tOrderDaliyPlanItemMapper"></property>
 		<property name="piVipPointCreateBatService" ref="piVipPointCreateBatService"/>
 		<property name="operationLogMapper" ref="operationLogMapper"></property>
+		<property name="branchMapper" ref="branchMapper"></property>
 	</bean>
 	<!-- 日志-->
 	<bean id="operationLogMapper" class="com.nhry.data.basic.impl.TMdOperationLogMapperImpl">

@@ -46,6 +46,7 @@
     <result column="TARGET_PRESON" property="targetPerson" jdbcType="VARCHAR" />
 
   </resultMap>
+
   <sql id="Base_Column_List" >
     BRANCH_NO, BRANCH_NAME, SALES_ORG, SALES_CHA, BRANCH_GROUP, BRANCH_LEVEL, CONTACT,EMP_NO,
     TEL, MP, DEALER_NO, ADDRESS, PROVINCE, CITY, COUNTY, WERKS, LGORT, CREATE_AT, CREATE_BY, 
@@ -245,5 +246,41 @@
   </select>
   <select id="getBranchByNo" resultMap="BaseResultMap" parameterType="java.lang.String">
     select <include refid="Base_Column_List"/> from t_md_branch where BRANCH_NO = #{branchNo,jdbcType=VARCHAR}
+  </select>
+
+
+  <select id="selectBranchInfoByBranchNo" resultMap="BaseResultMap" parameterType="java.lang.String">
+       SELECT
+        b.BRANCH_NAME,
+        b.TEL,
+        concat(
+            (
+                SELECT
+                    i.ITEM_NAME
+                FROM
+                    t_sys_code_item i
+                WHERE
+                    i.TYPE_CODE = '2006'
+                AND i.ITEM_CODE = b.PROVINCE
+            ),
+            b.CITY,
+            IFNULL(b.COUNTY, ''),
+            IFNULL(b.ADDRESS, '')
+        ) ADDRESS,
+        (
+		SELECT
+			item.ITEM_NAME
+		FROM
+			t_sys_code_item item
+		WHERE
+			item.TYPE_CODE = '1002'
+		AND item.ITEM_CODE = b.SALES_ORG
+	) SALES_ORG_NAME
+    FROM
+        t_md_branch b
+    WHERE
+        1 = 1
+        AND BRANCH_NO = #{branchNo}
+
   </select>
 </mapper>
