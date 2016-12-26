@@ -501,7 +501,7 @@ public class TOrderDaliyPlanItemMapperImpl implements TOrderDaliyPlanItemMapper
 		if("Y".equals(entry.getGiftFlag())){
 			item.setPromotionFlag("Y");
 		}
-		return sqlSessionTemplate.selectOne("selectDaliyByDispItem",entry);
+		return sqlSessionTemplate.selectOne("selectDaliyByDispItem",item);
 	}
 
 	@Override
