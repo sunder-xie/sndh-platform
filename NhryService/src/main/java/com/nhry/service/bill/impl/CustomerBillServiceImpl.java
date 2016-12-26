@@ -778,46 +778,46 @@ public class CustomerBillServiceImpl implements CustomerBillService {
             }
         }else{
             List<String> advancePayOrders = tPreOrderMapper.selectAdvanceOrderNos(cModel);
-            System.out.println("预付款单号共有"+(advancePayOrders==null?0:advancePayOrders.size())+"获取预付款所有订单号耗时："+(System.currentTimeMillis()-startTime)+"毫秒");
+//            System.out.println("预付款单号共有"+(advancePayOrders==null?0:advancePayOrders.size())+"获取预付款所有订单号耗时："+(System.currentTimeMillis()-startTime)+"毫秒");
             //预付款的
 
             if(advancePayOrders!=null && advancePayOrders.size()>0){
-                System.out.println("开始创建预付款订单收款单====");
-                final long startTime2 = System.currentTimeMillis();
+//                System.out.println("开始创建预付款订单收款单====");
+//                final long startTime2 = System.currentTimeMillis();
                 for(String orderNo : advancePayOrders){
                     //创建收款单  如果有会直接返回
                     createRecBillByOrderNo(orderNo);
                 }
-                System.out.println("创建预付款订单收款单共耗时："+(System.currentTimeMillis()-startTime2)+"毫秒");
+//                System.out.println("创建预付款订单收款单共耗时："+(System.currentTimeMillis()-startTime2)+"毫秒");
 
 
-                System.out.println("开始查询预付款收款单信息====");
-                final long startTime3 = System.currentTimeMillis();
+//                System.out.println("开始查询预付款收款单信息====");
+//                final long startTime3 = System.currentTimeMillis();
                 List<CollectOrderBillModel> before = customerBillMapper.selectNoItemsCollectByOrders2(cModel);
-                System.out.println("查询预付款收款单信息共耗时："+(System.currentTimeMillis()-startTime3)+"毫秒");
+//                System.out.println("查询预付款收款单信息共耗时："+(System.currentTimeMillis()-startTime3)+"毫秒");
                 if (before != null && before.size() > 0) {
                     result.addAll(before);
                 }
             }
-            System.out.print("开始创建后付款订单收款单====");
-            final long startTime4 = System.currentTimeMillis();
+//            System.out.print("开始创建后付款订单收款单====");
+//            final long startTime4 = System.currentTimeMillis();
             //后付款的 一定有日订单
             List<String> afterPayOrders = tPreOrderMapper.selectAfterOrderNos(cModel);
-            System.out.println("后付款单号共有"+afterPayOrders==null?0:afterPayOrders.size()+"获取预付款所有订单号耗时："+(System.currentTimeMillis()-startTime4)+"毫秒");
+//            System.out.println("后付款单号共有"+afterPayOrders==null?0:afterPayOrders.size()+"获取预付款所有订单号耗时："+(System.currentTimeMillis()-startTime4)+"毫秒");
             if(afterPayOrders!=null && afterPayOrders.size()>0) {
 
-                System.out.println("开始创建后付款订单收款单====");
-                final long startTime5 = System.currentTimeMillis();
+//                System.out.println("开始创建后付款订单收款单====");
+//                final long startTime5 = System.currentTimeMillis();
                 for(String orderNo : afterPayOrders){
                     //创建收款单  如果有会直接返回
                     createRecBillByOrderNo(orderNo);
                 }
-                System.out.println("创建后付款订单收款单共耗时："+(System.currentTimeMillis()-startTime5)+"毫秒");
+//                System.out.println("创建后付款订单收款单共耗时："+(System.currentTimeMillis()-startTime5)+"毫秒");
 
-                System.out.println("开始查询后付款收款单信息====");
-                final long startTime6= System.currentTimeMillis();
+//                System.out.println("开始查询后付款收款单信息====");
+//                final long startTime6= System.currentTimeMillis();
                 List<CollectOrderBillModel> after = customerBillMapper.selectHasItemsCollectByOrders2(cModel);
-                System.out.println("查询后付款收款单信息共耗时："+(System.currentTimeMillis()-startTime6)+"毫秒");
+//                System.out.println("查询后付款收款单信息共耗时："+(System.currentTimeMillis()-startTime6)+"毫秒");
                 if (after != null && after.size() > 0) {
                     result.addAll(after);
                 }
@@ -826,7 +826,7 @@ public class CustomerBillServiceImpl implements CustomerBillService {
         }
 
         expModel.setBillModels(result);
-
+        System.out.println("批量获取收款单信息共耗时："+(System.currentTimeMillis()-startTime)+"毫秒");
         return expModel;
     }
 
