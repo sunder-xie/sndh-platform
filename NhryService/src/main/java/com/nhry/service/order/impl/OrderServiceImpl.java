@@ -1197,6 +1197,9 @@ public class OrderServiceImpl extends BaseService implements OrderService {
      */
 	@Override
 	public int yearCardBackOrder(YearCardBackModel smodel) {
+		if(smodel.getBackDate()==null){
+			smodel.setBackDate(afterDate(new Date(),0));
+		}
 		if(StringUtils.isBlank(smodel.getOrderNo()) || smodel.getBackAmt()==null||smodel.getShRefund()==null || smodel.getRealDiscount()==null){
 			throw new ServiceException(MessageCode.LOGIC_ERROR,"年卡退订，订单号、应退金额、实际退款金额、实际折扣不能为空");
 		}
@@ -2175,6 +2178,9 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 		if("Y".equals(order.getResumeFlag())){
 			throw new ServiceException(MessageCode.LOGIC_ERROR, order.getOrderNo()+" [订单已经被续订过!]");
 		}
+		if("NO".equals(order.getResumeFlag())){
+			throw new ServiceException(MessageCode.LOGIC_ERROR, order.getOrderNo()+" [订单已经已经被确认不参与续订!]");
+		}
 		tPreOrderMapper.updateOrderResumed(order.getOrderNo());//该订单已经被续订
 		
 		ArrayList<TPlanOrderItem> entries = (ArrayList<TPlanOrderItem>) tPlanOrderItemMapper.selectByOrderCode(record.getOrderNo());
@@ -3037,7 +3043,7 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 		//		order.setMilkmemberNo(milkmemberNo);//喝奶人编号
 		//		order.setEmpNo(empNo);//送奶员编号
 		//		order.setInitAmt(initAmt);//页面输入的初始订单金额
-		order.setPaymentmethod(order.getPaymentStat());//10 后款 20 先款( 30 殿付款)
+		order.setPaymentmethod(order.getPaymentStat());//10 后款 20 先款
 		if("Y".equals(order.getIsPaid())){
 			if(StringUtils.isBlank(order.getPayDateStr())){
 				throw new ServiceException(MessageCode.LOGIC_ERROR,"已付款订单，支付时间payDateStr字段不能为空!");
@@ -3074,7 +3080,7 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 			if(StringUtils.isBlank(order.getBranchNo())) throw new ServiceException(MessageCode.LOGIC_ERROR,"该订单奶站编号不能为空!");
 			if(branch==null)throw new ServiceException(MessageCode.LOGIC_ERROR,"奶站号为"+order.getBranchNo()+" 的奶站在订户系统中不存在!");
 
-			order.setDealerNo(branch.getDealerNo());//进销商
+			order.setDealerNo(branch.getDealerNo());//经销商
 			order.setSalesOrg(branch.getSalesOrg());
 		}
 		//order.setSalesOrg(userSessionService.getCurrentUser().getSalesOrg());//销售组织
@@ -3299,7 +3305,7 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 			milkBoxService.addNewMilkboxPlan(model);
 		}
 		
-		//生成每日计划
+		//生成每日计划 正品
 		List<TOrderDaliyPlanItem> list = createDaliyPlan(order,record.getEntries());
 		
 		//如果有赠品，生成赠品的日计划
@@ -3314,7 +3320,6 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 					this.setName("sendOrderToEc");
 					messLogService.sendOrderInfo(order, entriesList);
 				}
-
 				if(list!=null){
 					TPreOrder sendOrder = new TPreOrder();
 					sendOrder.setOrderNo(order.getOrderNo());
@@ -6165,7 +6170,7 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 
 
 		//判断新生成的日订单中 最后一天是否所有满足的行项目全部都有
-	if(haveRoute){
+	/*if(haveRoute){
 		final Date finalDay = lastDay;
 		boolean allHave = true;
 		List<TPlanOrderItem> finEntry = entries.stream().filter(e -> !finalDay.before(e.getEndDispDate())).collect(Collectors.toList());
@@ -6216,7 +6221,7 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 			}
 
 		}
-	}
+	}*/
 		List<TOrderDaliyPlanItem> curAllDayItems = tOrderDaliyPlanItemMapper.selectDaliyPlansByOrderNoAsc(orgOrder.getOrderNo());
 		return curAllDayItems;
 
@@ -8511,8 +8516,9 @@ public static int dayOfTwoDay(Date day1,Date day2) {
 						throw new ServiceException(MessageCode.LOGIC_ERROR,"该地址的省在订户系统中不存在，请维护!");
 					}
 				}else{
-					throw new ServiceException(MessageCode.LOGIC_ERROR,"该地址的省份Province不存在，请维护!");
+					throw new ServiceException(MessageCode.LOGIC_ERROR,"该地址的省份Province不能为空，请维护!");
 				}
+
 				if(StringUtils.isNotBlank(record.getAddress().getCity())){
 					NHSysCodeItem item = new NHSysCodeItem();
 					item.setTypeCode(SysContant.getSystemConst("Province_City_County"));
@@ -10113,5 +10119,20 @@ public static int dayOfTwoDay(Date day1,Date day2) {
 			model.setBranchNo(user.getBranchNo());
 		}
 		return tYearCardCompOrderMapper.selectYearCardCompensateList(model);
+	}
+
+	@Override
+	public int orderNoResume(OrderSearchModel smodel) {
+		String orderNo = smodel.getOrderNo();
+		TPreOrder order = tPreOrderMapper.selectByPrimaryKey(orderNo);
+		if(order!=null){
+			if("Y".equals(order.getResumeFlag()))throw new ServiceException(MessageCode.LOGIC_ERROR,orderNo+"订单已经被续订过了");
+			if("NO".equals(order.getResumeFlag()))throw new ServiceException(MessageCode.LOGIC_ERROR,orderNo+"订单已经被确认不进行续订操作了！！");
+			order.setResumeFlag("NO");
+			tPreOrderMapper.uptOrderNoResume(orderNo);
+		}else{
+			throw new ServiceException(MessageCode.LOGIC_ERROR,"该订单不存在，请核查！！！");
+		}
+		return 0;
 	}
 }

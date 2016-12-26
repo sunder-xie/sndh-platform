@@ -1638,4 +1638,11 @@
     set CUR_AMT = CUR_AMT - #{amt,jdbcType=DECIMAL}
     where ORDER_NO = #{orderNo,jdbcType=VARCHAR}
   </update>
+
+
+  <update id="uptOrderNoResume" parameterType="java.lang.String" >
+    update t_preorder
+    set RESUME_FLAG = 'NO'
+    where ORDER_NO = #{orderNo,jdbcType=VARCHAR}
+  </update>
 </mapper>
