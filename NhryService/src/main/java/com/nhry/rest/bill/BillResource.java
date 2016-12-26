@@ -63,7 +63,7 @@ public class BillResource extends BaseResource {
     @Consumes(MediaType.APPLICATION_JSON)
     @ApiOperation(value = "/cust/BatchPrintForExp", response = PageInfo.class, notes = "获取条件下的订单编号（批量导出收款单用）")
     public Response BatchPrintForExp(@ApiParam(required = true, name = "cModel", value = "cModel") CustBillQueryModel cModel) {
-        return convertToRespModel(MessageCode.NORMAL, null, customerBillService.BatchPrintForExp(cModel));
+        return convertToRespModel(MessageCode.NORMAL, null, customerBillService.BatchPrintForExp2(cModel));
     }
 
     @GET

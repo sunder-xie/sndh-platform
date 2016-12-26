@@ -38,4 +38,6 @@ public interface TMdBranchMapper {
     List<TMdBranch> findBranchByDno(Map<String,String> attrs);
 
     TMdBranch getBranchByNo(String branchNo);
+
+    TMdBranch selectBranchInfoByBranchNo(String branchNo);
 }

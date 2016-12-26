@@ -4,6 +4,7 @@ import com.nhry.data.bill.domain.TMstRecvBill;
 import com.nhry.data.bill.domain.TMstRecvOffset;
 import com.nhry.data.bill.domain.TMstRefund;
 import com.nhry.model.bill.CollectOrderBillModel;
+import com.nhry.model.bill.CustBillQueryModel;
 
 import java.util.List;
 
@@ -31,8 +32,12 @@ public interface CustomerBillMapper {
     int  addRefund(TMstRefund refund);
 
     List<CollectOrderBillModel> selectHasItemsCollectByOrders(String paymentmethod, List<String> advancePayOrders);
+    List<CollectOrderBillModel> selectHasItemsCollectByOrders2(CustBillQueryModel cModel);
 
     List<CollectOrderBillModel> selectNoItemsCollectByOrders(String paymentmethod, List<String> advancePayOrders);
+    List<CollectOrderBillModel> selectNoItemsCollectByOrders2(CustBillQueryModel cModel);
 
     int delReceipt(String receiptNo);
+
+
 }
