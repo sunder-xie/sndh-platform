@@ -1197,6 +1197,9 @@ public class OrderServiceImpl extends BaseService implements OrderService {
      */
 	@Override
 	public int yearCardBackOrder(YearCardBackModel smodel) {
+		if(smodel.getBackDate()==null){
+			smodel.setBackDate(afterDate(new Date(),0));
+		}
 		if(StringUtils.isBlank(smodel.getOrderNo()) || smodel.getBackAmt()==null||smodel.getShRefund()==null || smodel.getRealDiscount()==null){
 			throw new ServiceException(MessageCode.LOGIC_ERROR,"年卡退订，订单号、应退金额、实际退款金额、实际折扣不能为空");
 		}
@@ -2174,6 +2177,9 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 		
 		if("Y".equals(order.getResumeFlag())){
 			throw new ServiceException(MessageCode.LOGIC_ERROR, order.getOrderNo()+" [订单已经被续订过!]");
+		}
+		if("NO".equals(order.getResumeFlag())){
+			throw new ServiceException(MessageCode.LOGIC_ERROR, order.getOrderNo()+" [订单已经已经被确认不参与续订!]");
 		}
 		tPreOrderMapper.updateOrderResumed(order.getOrderNo());//该订单已经被续订
 		
@@ -10113,5 +10119,20 @@ public static int dayOfTwoDay(Date day1,Date day2) {
 			model.setBranchNo(user.getBranchNo());
 		}
 		return tYearCardCompOrderMapper.selectYearCardCompensateList(model);
+	}
+
+	@Override
+	public int orderNoResume(OrderSearchModel smodel) {
+		String orderNo = smodel.getOrderNo();
+		TPreOrder order = tPreOrderMapper.selectByPrimaryKey(orderNo);
+		if(order!=null){
+			if("Y".equals(order.getResumeFlag()))throw new ServiceException(MessageCode.LOGIC_ERROR,orderNo+"订单已经被续订过了");
+			if("NO".equals(order.getResumeFlag()))throw new ServiceException(MessageCode.LOGIC_ERROR,orderNo+"订单已经被确认不进行续订操作了！！");
+			order.setResumeFlag("NO");
+			tPreOrderMapper.uptOrderNoResume(orderNo);
+		}else{
+			throw new ServiceException(MessageCode.LOGIC_ERROR,"该订单不存在，请核查！！！");
+		}
+		return 0;
 	}
 }

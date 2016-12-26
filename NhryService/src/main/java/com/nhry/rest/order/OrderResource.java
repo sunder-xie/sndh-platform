@@ -25,7 +25,6 @@ import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 @Path("/order")
@@ -313,9 +312,7 @@ public class OrderResource extends BaseResource {
 	@Consumes(MediaType.APPLICATION_JSON)
 	@ApiOperation(value = "/yearCardBackOrder", response = Integer.class, notes = "年卡订单退订，reason退订原因")
 	public Response yearCardBackOrder(@ApiParam(required=true,name="smodel",value="SearchModel") YearCardBackModel smodel){
-		if(smodel.getBackDate()==null){
-			smodel.setBackDate(new Date());
-		}
+
 		return convertToRespModel(MessageCode.NORMAL, null, orderService.yearCardBackOrder(smodel));
 	}
 
@@ -335,6 +332,16 @@ public class OrderResource extends BaseResource {
 	@ApiOperation(value = "/continueOrder", response = Integer.class, notes = "订单续订")
 	public Response continueOrder(@ApiParam(required=true,name="smodel",value="SearchModel") OrderSearchModel smodel){
 		return convertToRespModel(MessageCode.NORMAL, null, orderService.continueOrder(smodel));
+	}
+
+
+	@POST
+	@Path("/orderNoResume")
+	@Produces(MediaType.APPLICATION_JSON)
+	@Consumes(MediaType.APPLICATION_JSON)
+	@ApiOperation(value = "/orderNoResume", response = Integer.class, notes = "订单不参与续订")
+	public Response orderNoResume(@ApiParam(required=true,name="smodel",value="SearchModel") OrderSearchModel smodel){
+		return convertToRespModel(MessageCode.NORMAL, null, orderService.orderNoResume(smodel));
 	}
 	
 	@POST

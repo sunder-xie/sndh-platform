@@ -150,4 +150,6 @@ public interface OrderService {
 	int advanceYearCardBackOrder(YearCardBackModel smodel);
 
 	List<TMstYearCardCompOrder> selectYearCardCompensateList(ExtendBranchInfoModel model);
+
+	int orderNoResume(OrderSearchModel smodel);
 }
