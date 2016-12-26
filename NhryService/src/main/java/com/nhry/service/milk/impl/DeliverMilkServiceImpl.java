@@ -866,6 +866,8 @@ public class DeliverMilkServiceImpl extends BaseService implements DeliverMilkSe
 			List<TDispOrderItem> refuseOrderItems = new ArrayList<TDispOrderItem>();
 			//记录库存数量
 			Map<String,Integer>  stockMap = new HashMap<String,Integer>();
+			//拒收复送库存数量
+			Map<String,Integer>  stockTmpMap = new HashMap<String,Integer>();
 			Map<String,Object> uptMap = new HashMap<String,Object>();
 			//用户记录  更新订单剩余金额
 			List<TPreOrder> uptOrderCurAmt = new ArrayList<TPreOrder>();
@@ -888,7 +890,7 @@ public class DeliverMilkServiceImpl extends BaseService implements DeliverMilkSe
 						}else{
 							stockMap.replace(e.getConfirmMatnr(),stockMap.get(e.getConfirmMatnr())+e.getQty().intValue());
 						}
-					}else if("30".equals(e.getReason())){
+					}else if("30".equals(e.getReason()) || "10".equals(e.getReason())){
 						//保存库存MAP
 						if(!stockMap.containsKey(e.getConfirmMatnr())){
 							stockMap.put(e.getConfirmMatnr(),e.getQty().intValue());
@@ -904,6 +906,12 @@ public class DeliverMilkServiceImpl extends BaseService implements DeliverMilkSe
 							stockMap.replace(e.getConfirmMatnr(),stockMap.get(e.getConfirmMatnr())+e.getQty().subtract(e.getConfirmQty()).intValue());
 						}
 
+						//保存拒收复送库存MAP
+						if(!stockTmpMap.containsKey(e.getConfirmMatnr())){
+							stockTmpMap.put(e.getConfirmMatnr(),e.getConfirmQty().subtract(e.getQty()).intValue());
+						}else{
+							stockTmpMap.replace(e.getConfirmMatnr(),stockTmpMap.get(e.getConfirmMatnr())+e.getConfirmQty().subtract(e.getQty()).intValue());
+						}
 					}
 
 				}else{
@@ -951,6 +959,11 @@ public class DeliverMilkServiceImpl extends BaseService implements DeliverMilkSe
 			if(stockMap.size()>0){
 				for(String matnr : stockMap.keySet()){
 					tSsmStockService.updateStock(dispOrder.getBranchNo(), matnr, new BigDecimal(stockMap.get(matnr)), user.getSalesOrg());
+				}
+			}
+			if(stockTmpMap.size()>0){
+				for(String matnr : stockTmpMap.keySet()){
+					tSsmStockService.updateTmpStock(dispOrder.getBranchNo(), matnr, new BigDecimal(stockTmpMap.get(matnr)), user.getSalesOrg());
 				}
 			}
 			//生成内部销售订单
