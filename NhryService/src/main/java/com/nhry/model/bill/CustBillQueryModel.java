@@ -9,7 +9,7 @@ import java.util.Date;
  * Created by gongjk on 2016/6/23.
  */
 public class CustBillQueryModel extends BaseQueryModel implements Serializable {
-
+    private String orderNo;
     private  String status;
     private Date orderStartDate;
     private Date orderEndDate;
@@ -20,6 +20,14 @@ public class CustBillQueryModel extends BaseQueryModel implements Serializable {
     private String salesOrg;
     private String empNo;
     private String paymentmethod;
+
+    public String getOrderNo() {
+        return orderNo;
+    }
+
+    public void setOrderNo(String orderNo) {
+        this.orderNo = orderNo;
+    }
 
     public String getPaymentmethod() {
         return paymentmethod;
