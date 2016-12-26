@@ -511,6 +511,9 @@
         and (o.PREORDER_STAT = '10' OR o.PREORDER_STAT = '30')
         and o.INIT_AMT > 0
         and  o.PAYMENTMETHOD ='20'
+        <if test="orderNo !=null and orderNo!=''">
+            and  o.ORDER_NO = #{orderNo,jdbcType=VARCHAR}
+        </if>
         <if test="empNo !=null and empNo!=''">
             and  o.EMP_NO = #{empNo,jdbcType=VARCHAR}
         </if>
@@ -632,7 +635,11 @@
         LEFT JOIN  t_md_mara_ex ex on i.MATNR = ex.MATNR  and  ex.SALES_ORG = #{salesOrg,jdbcType=VARCHAR}
         WHERE 1=1
         and o.INIT_AMT > 0
+
         and  o.PAYMENTMETHOD ='10'
+        <if test="orderNo !=null and orderNo!=''">
+            and  o.ORDER_NO = #{orderNo,jdbcType=VARCHAR}
+        </if>
         <if test="empNo !=null and empNo!=''">
             and  o.EMP_NO = #{empNo,jdbcType=VARCHAR}
         </if>

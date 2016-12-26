@@ -748,6 +748,21 @@ public class CustomerBillServiceImpl implements CustomerBillService {
         }
         List<CollectOrderBillModel> result = new ArrayList<CollectOrderBillModel>();
         final  long startTime = System.currentTimeMillis();
+        if(StringUtils.isNotBlank(cModel.getOrderNo())){
+            createRecBillByOrderNo(cModel.getOrderNo());
+            if("20".equals(cModel.getPaymentmethod())){
+                List<CollectOrderBillModel> hasItem = customerBillMapper.selectNoItemsCollectByOrders2(cModel);
+                result.addAll(hasItem);
+            }else{
+                List<CollectOrderBillModel> after = customerBillMapper.selectHasItemsCollectByOrders2(cModel);
+                result.addAll(after);
+            }
+            expModel.setBillModels(result);
+            System.out.println("单独导出一个收款单信息共耗时："+(System.currentTimeMillis()-startTime)+"毫秒");
+            return expModel;
+        }
+
+
         if(StringUtils.isNotBlank(cModel.getPaymentmethod()) ){
             if( "20".equals(cModel.getPaymentmethod())){
                 List<String> advancePayOrders = tPreOrderMapper.selectAdvanceOrderNos(cModel);

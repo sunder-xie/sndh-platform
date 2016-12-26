@@ -977,7 +977,10 @@ public class ReportResource extends BaseResource{
     @Produces(MediaType.APPLICATION_JSON)
     @ApiOperation(value = "/reportBatchCollectByEmp", response = OrderCreateModel.class, notes = "根据订单编号批量导出收款信息")
     public Response reportBatchCollectByEmp(@ApiParam(required = true, name = "model", value = "送奶员编号")CustBillQueryModel model, @Context HttpServletRequest request, @Context HttpServletResponse response) {
-        List<CollectOrderBillModel> orderBillModel1  = customerBillService.BatchPrintForExp(model);
+//        List<CollectOrderBillModel> orderBillModel1  = customerBillService.BatchPrintForExp(model);
+        BatChCollectForExpModel result  = customerBillService.BatchPrintForExp2(model);
+        List<CollectOrderBillModel> orderBillModel1 = result.getBillModels();
+
         BranchEmpModel empModel = branchEmpService.empDetailInfo(model.getEmpNo());
         String url = EnvContant.getSystemConst("filePath");
         String outUrl = "";
