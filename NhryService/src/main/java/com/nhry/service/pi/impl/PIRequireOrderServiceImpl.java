@@ -15,6 +15,7 @@ import com.nhry.data.milktrans.dao.TSsmSalOrderItemMapper;
 import com.nhry.data.milktrans.dao.TSsmSalOrderMapper;
 import com.nhry.data.milktrans.domain.TSsmReqGoodsOrder;
 import com.nhry.data.milktrans.domain.TSsmSalOrder;
+import com.nhry.data.milktrans.domain.TSsmSalOrderItems;
 import com.nhry.data.stock.dao.TSsmGiOrderItemMapper;
 import com.nhry.data.stock.dao.TSsmGiOrderMapper;
 import com.nhry.data.stock.dao.TSsmSalFactoryPriceMapper;
@@ -25,6 +26,7 @@ import com.nhry.model.milktrans.SalOrderModel;
 import com.nhry.model.stock.StockModel;
 import com.nhry.service.pi.dao.PIRequireOrderService;
 import com.nhry.service.pi.pojo.SalesOrderHeader;
+import com.nhry.utils.DateUtil;
 import com.nhry.utils.EnvContant;
 import com.nhry.utils.PIPropertitesUtil;
 import com.nhry.webService.client.PISuccessMessage;
@@ -33,10 +35,10 @@ import com.nhry.webService.client.businessData.model.Delivery;
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
+import java.math.BigDecimal;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.*;
 
 /**
  * 要货单
@@ -45,6 +47,8 @@ import java.util.Map;
 public class PIRequireOrderServiceImpl implements PIRequireOrderService {
 
     private static final Logger logger = Logger.getLogger(PIRequireOrderServiceImpl.class);
+
+    private static final SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
 
     private TMdBranchExMapper branchExMapper;
 
@@ -150,8 +154,39 @@ public class PIRequireOrderServiceImpl implements PIRequireOrderService {
         if ("02".equals(branch.getBranchGroup())) {
              items = tSsmSalOrderItemMapper.findDealerItemsForPI(ssmSalOrder.getOrderNo());
             lgort = branchEx.getReslo();
+            if("70".equals(ssmSalOrder.getPreorderSource())){
+                RequireOrderSearch model = new RequireOrderSearch();
+                model.setFirstDay(DateUtil.getTomorrow(ssmSalOrder.getOrderDate()));
+                model.setSecondDay(DateUtil.getDayAfterTomorrow(ssmSalOrder.getOrderDate()));
+                model.setBranchNo(ssmSalOrder.getBranchNo());
+                model.setSalesOrg(ssmSalOrder.getSalesOrg());
+                List<Map<String,String>> disCountAmtList = tSsmSalOrderItemMapper.selectPromDaliyDiscountAmtOfDearler(model);
+                Map<String,String> disCountAmtMap = new HashMap<String,String>();
+                disCountAmtList.forEach(item -> {disCountAmtMap.put(item.get("MATNR"),item.get("DISCOUNT_AMT"));});
+                items.forEach(item -> {
+                    String matnr = item.get("MATNR");
+                    if(disCountAmtMap.containsKey(matnr)){
+                        item.put("DISCOUNT_AMT",disCountAmtMap.get(matnr).toString());
+                        updateDiscountAmt(disCountAmtMap, item, matnr);
+                    }});
+            }
         }else{
             items = tSsmSalOrderItemMapper.findItemsForPI(ssmSalOrder.getOrderNo());
+            if("70".equals(ssmSalOrder.getPreorderSource())){
+                RequireOrderSearch model = new RequireOrderSearch();
+                model.setOrderDate(ssmSalOrder.getOrderDate());
+                model.setBranchNo(ssmSalOrder.getBranchNo());
+                model.setSalesOrg(ssmSalOrder.getSalesOrg());
+                List<Map<String,String>> disCountAmtList = tSsmSalOrderItemMapper.selectPromDaliyDiscountAmtOfBranch(model);
+                Map<String,String> disCountAmtMap = new HashMap<String,String>();
+                disCountAmtList.forEach(item -> disCountAmtMap.put(item.get("MATNR"),item.get("DISCOUNT_AMT")));
+                items.forEach(item -> {
+                    String matnr = item.get("MATNR");
+                    if(disCountAmtMap.containsKey(matnr)){
+                        item.put("DISCOUNT_AMT",disCountAmtMap.get(matnr).toString());
+                        updateDiscountAmt(disCountAmtMap, item, matnr);
+                    }});
+            }
         }
 
         orderHeader.setVTWEG(PIPropertitesUtil.getValue("PI.MasterData.mATQUERY.VKORG13"));
@@ -200,6 +235,19 @@ public class PIRequireOrderServiceImpl implements PIRequireOrderService {
 //            }
 //        }
         return message;
+    }
+
+    private void updateDiscountAmt(Map<String, String> disCountAmtMap, Map<String, String> item, String matnr) {
+        TSsmSalOrderItems ssmSalOrderItems = new TSsmSalOrderItems();
+        try {
+            ssmSalOrderItems.setOrderDate(format.parse(item.get("ORDER_DATE").toString()));
+        } catch (ParseException e) {
+
+        }
+        ssmSalOrderItems.setItemNo(Integer.parseInt(item.get("ITEM_NO").toString()));
+        ssmSalOrderItems.setOrderNo(item.get("ORDER_NO"));
+        ssmSalOrderItems.setDiscountAmt(new BigDecimal(disCountAmtMap.get(matnr).toString()));
+        tSsmSalOrderItemMapper.updateDiscountAmt(ssmSalOrderItems);
     }
 
     @Override

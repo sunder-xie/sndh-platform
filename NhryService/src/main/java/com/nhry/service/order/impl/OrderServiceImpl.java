@@ -19,6 +19,7 @@ import com.nhry.data.order.domain.*;
 import com.nhry.data.stock.dao.TSsmGiOrderItemMapper;
 import com.nhry.model.milk.RouteDetailUpdateModel;
 import com.nhry.model.order.*;
+import com.nhry.model.statistics.ExtendBranchInfoModel;
 import com.nhry.service.BaseService;
 import com.nhry.service.basic.dao.PriceService;
 import com.nhry.service.basic.dao.TVipCustInfoService;
@@ -10095,5 +10096,22 @@ public static int dayOfTwoDay(Date day1,Date day2) {
 			throw new ServiceException(MessageCode.LOGIC_ERROR,"该订单不存在，请核实");
 		}
 		return 1;
+	}
+	/**
+	 * 年卡补偿单据-查询条件：退订日期区间、奶站、经销商、销售组织
+	 * @param model
+	 * @return
+	 */
+	@Override
+	public List<TMstYearCardCompOrder> selectYearCardCompensateList(ExtendBranchInfoModel model) {
+		TSysUser user = userSessionService.getCurrentUser();
+		model.setSalesOrg(user.getSalesOrg());
+		if(org.apache.commons.lang.StringUtils.isNotEmpty(user.getDealerId())){
+			model.setDealerId(user.getDealerId());
+		}
+		if(org.apache.commons.lang.StringUtils.isNotEmpty(user.getBranchNo())){
+			model.setBranchNo(user.getBranchNo());
+		}
+		return tYearCardCompOrderMapper.selectYearCardCompensateList(model);
 	}
 }

@@ -141,8 +141,8 @@
     </delete>
     <select id="selectPromDaliyDiscountAmtOfDearler" resultType="java.util.HashMap" parameterType="com.nhry.model.milktrans.RequireOrderSearch">
         SELECT
-        matnr,
-        sum(DISCOUNT_AMT)
+        matnr MATNR,
+        sum(DISCOUNT_AMT) DISCOUNT_AMT
         FROM
         (
         SELECT
@@ -175,4 +175,31 @@
         GROUP BY
         matnr;
     </select>
+    <select id="selectPromDaliyDiscountAmtOfBranch" resultType="java.util.HashMap" parameterType="com.nhry.model.milktrans.RequireOrderSearch">
+        SELECT a.MATNR,sum(a.DISCOUNT_AMT) AS DISCOUNT_AMT from (
+                SELECT o.ORDER_NO,
+                di.CONFIRM_MATNR MATNR,
+                r.PRICE1 * (1 - o.DISCOUNT_AMT) * di.CONFIRM_QTY AS DISCOUNT_AMT
+            FROM t_mst_disp_order_item di
+            LEFT JOIN  t_mst_disp_order ti ON di.ORDER_NO = ti.ORDER_NO
+            LEFT JOIN t_preorder o on 	di.ORG_ORDER_NO = o.ORDER_NO
+            LEFT JOIN t_md_mara_ex e on di.MATNR = e.MATNR  and e.SALES_ORG = ${salesOrg}
+                LEFT JOIN t_mara_price_rel r ON di.MATNR = r.MATNR AND r.SALES_ORG = ${salesOrg}
+            JOIN t_md_price pr ON pr.ID = r.ID AND pr.PRICE_TYPE = '10'
+            where   1=1
+            AND ti.STATUS = '20'
+            and di.CONFIRM_QTY > 0
+            and  o.BRANCH_NO = ${branchNo}
+            and o.PREORDER_SOURCE = '70'
+            and  ti.DISP_DATE =  #{orderDate,jdbcType=DATE}) a GROUP BY a.MATNR
+    </select>
+
+    <update id="updateDiscountAmt" parameterType="com.nhry.data.milktrans.domain.TSsmSalOrderItems">
+        UPDATE t_ssm_sal_order_items
+            SET DISCOUNT_AMT = #{discountAmt,jdbcType=DECIMAL}
+            WHERE
+                ORDER_NO = #{orderNo,jdbcType=VARCHAR}
+            AND ITEM_NO = #{itemNo,jdbcType=VARCHAR}
+            AND ORDER_DATE = #{orderDate,jdbcType=DATE}
+    </update>
 </mapper>

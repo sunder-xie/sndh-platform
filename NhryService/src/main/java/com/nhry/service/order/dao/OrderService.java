@@ -2,11 +2,13 @@ package com.nhry.service.order.dao;
 
 import com.github.pagehelper.PageInfo;
 import com.nhry.data.milk.domain.TDispOrderItem;
+import com.nhry.data.order.domain.TMstYearCardCompOrder;
 import com.nhry.data.order.domain.TOrderDaliyPlanItem;
 import com.nhry.data.order.domain.TPlanOrderItem;
 import com.nhry.data.order.domain.TPreOrder;
 import com.nhry.model.milk.RouteDetailUpdateModel;
 import com.nhry.model.order.*;
+import com.nhry.model.statistics.ExtendBranchInfoModel;
 import com.nhry.service.order.pojo.OrderRemainData;
 
 import java.math.BigDecimal;
@@ -146,4 +148,6 @@ public interface OrderService {
 	int yearCardBackOrder(YearCardBackModel smodel);
 
 	int advanceYearCardBackOrder(YearCardBackModel smodel);
+
+	List<TMstYearCardCompOrder> selectYearCardCompensateList(ExtendBranchInfoModel model);
 }
