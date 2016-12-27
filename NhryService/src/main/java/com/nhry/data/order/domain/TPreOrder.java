@@ -10,77 +10,77 @@ import java.util.Date;
 @Document(indexName = SysContant.INDEX_NAME, type = "t_preorder")
 public class TPreOrder {
 	@Id
-    private String orderNo;
+    private String orderNo;                 //订单编号
 
-    private String orderType;
+    private String orderType;               //订单类型
 
     private String hadBranchFlag;
 
-    private Date orderDate;
+    private Date orderDate;             //订单创建日期
 
-    private Date endDate;
+    private Date endDate;               //订单截止日期
 
-    private String paymentmethod;
+    private String paymentmethod;       //订单付款方式  10.后付款 20.预付款
 
-    private String preorderSource;
+    private String preorderSource;      //订单来源   10 电商、20 摆台（征订）、30 奶站、40 牛奶钱包、 50 手机app 60 电话 、70 机构订奶
 
-    private String onlineSourceType;
+    private String onlineSourceType;    //订单来源的二级 比如10 电商下面有 淘宝、京东,如果是机构订奶 存的是机构编码
 
-    private String onlineorderNo;
+    private String onlineorderNo;       //电商那边的订单号
 
-    private String branchNo;
+    private String branchNo;            //奶站编号
 
-    private String branchTel;
+    private String branchTel;           //奶站电话
     
-    private String branchName;
+    private String branchName;          //奶站名称
 
-	 private String customerTel;
+	 private String customerTel;          //订户电话
 
-    private String milkmemberNo;
+    private String milkmemberNo;           //会员编号
     
-    private String milkmemberName;
+    private String milkmemberName;         //订户编号
 
-    private BigDecimal acctAmt;
+    private BigDecimal acctAmt;            //订户余额
 
     private BigDecimal factAmt;
 
     private String memberNo;
 
-    private String retReason;
+    private String retReason;           //退回原因
 
-    private Date retDate;
+    private Date retDate;               //退回日期
 
-    private String paymentStat;
+    private String paymentStat;         //支付状态 10 未支付、20 已支付（电商、牛奶钱包、机构、年卡 创建时均是已支付状态）
 
-    private String milkboxStat;
+    private String milkboxStat;        //奶箱状态 10 已安装 、20 未安装、30 不需要安装
 
-    private BigDecimal initAmt;
+    private BigDecimal initAmt;        // 订单总金额（不包括折扣 ）= 每天的日订单（不包括停订的）金额之和
 
-    private BigDecimal onlineInitAmt;
+    private BigDecimal onlineInitAmt;  //电商订单总金额
     
     private String initAmtStr;
 
-    private BigDecimal curAmt;
+    private BigDecimal curAmt;          //剩余金额 （订单总金额 -  完结金额）
 
     private String dispLineNo;
 
-    private String empNo;
+    private String empNo;               //送奶员编号
 
-    private String empName;
+    private String empName;             //送奶员名称
 
-    private String empTel;
+    private String empTel;              //送奶员电话
 
-    private String adressNo;
+    private String adressNo;            //订单地址编号
 
-    private String createrNo;
+    private String createrNo;           //创建人编号
 
-    private String createrBy;
+    private String createrBy;           //创建人名称
 
-    private String preorderStat;
+    private String preorderStat;        //订单状态 已生效10、未生效20、无效30,作废40,
 
-    private String memoTxt;
+    private String memoTxt;             //备注
 
-    private String payMethod;
+    private String payMethod;           //支付方式
 
     private String solicitNo;
 
