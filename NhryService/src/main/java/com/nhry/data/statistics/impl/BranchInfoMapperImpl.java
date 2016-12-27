@@ -122,5 +122,13 @@ public class BranchInfoMapperImpl implements BranchInfoMapper{
         return sqlSessionTemplate.selectList("PendingUnConfirmOnline",salesOrg);
     }
 
-
+    /**
+     * 台帐-每日配送统计
+     * @param model
+     * @return
+     */
+    @Override
+    public List<Map<String, String>> exportDispInlOrderByModel(ExtendBranchInfoModel model) {
+        return sqlSessionTemplate.selectList("exportDispInlOrderByModel",model);
+    }
 }

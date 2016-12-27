@@ -37,5 +37,22 @@ public interface TDispOrderMapper {
     //查询日期下奶站下的路单数
     List<TDispOrder> selectDispOrderByBranchNoAndDay(String branchNo,Date date);
 
+    /**
+     * 查询奶站下本日进货汇总金额
+     * @param branchNo
+     * @param date
+     * @return
+     */
+    List<TDispOrder> getBranchEmpAmt(String branchNo,Date date);
+
+    /**
+     * 本日进货-送奶员金额
+     * @param branchNo
+     * @param date
+     * @param empNo
+     * @return
+     */
+    TDispOrder getBranchEmpAmtByEmpNo(String branchNo,Date date,String empNo);
+
 
 }

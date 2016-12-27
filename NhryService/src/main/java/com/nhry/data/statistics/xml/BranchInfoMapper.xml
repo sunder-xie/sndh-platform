@@ -1318,7 +1318,64 @@
         DISP_EMP_NO,
         CONFIRM_MATNR
     </select>
-
+    <!--台帐统计-->
+    <select id="exportDispInlOrderByModel" parameterType="com.nhry.model.statistics.ExtendBranchInfoModel" resultType="hashmap">
+        SELECT
+            DISP_DATE,
+            DISP_EMP_NO,
+            CONFIRM_MATNR,
+            ROUND(sum(CONFIRM_QTY)) AS CONFIRM_QTY,
+            MATNR_TXT
+        FROM
+            (
+                SELECT
+                    mdo.DISP_DATE,
+                    i.DISP_EMP_NO,
+                    i.CONFIRM_MATNR,
+                    ROUND(sum(i.CONFIRM_QTY)) AS CONFIRM_QTY,
+                    p.SHORT_TXT MATNR_TXT
+                FROM
+                    t_mst_disp_order_item i
+                LEFT JOIN t_mst_disp_order mdo ON mdo.ORDER_NO = i.ORDER_NO
+                AND mdo.`STATUS` = '20'
+                LEFT JOIN t_md_branch b ON mdo.BRANCH_NO = b.BRANCH_NO
+                LEFT JOIN t_md_mara_ex p ON p.MATNR = i.CONFIRM_MATNR
+                AND p.SALES_ORG = b.SALES_ORG
+                WHERE
+                    1 = 1
+                AND mdo.DISP_DATE like '%${monthDate}%'
+                AND i.DISP_EMP_NO = #{empNo,jdbcType=VARCHAR}
+                AND mdo.BRANCH_NO = #{branchNo,jdbcType=VARCHAR}
+                GROUP BY
+                    mdo.DISP_DATE,
+                    i.DISP_EMP_NO,
+                    i.CONFIRM_MATNR
+                UNION
+                    SELECT
+                        t1.ORDER_DATE DISP_DATE,
+                        t1.SAL_EMP_NO DISP_EMP_NO,
+                        t.MATNR CONFIRM_MATNR,
+                        ROUND(sum(t.QTY)) AS CONFIRM_QTY,
+                        p.SHORT_TXT MATNR_TXT
+                    FROM
+                        t_mst_inside_sal_order_item t
+                    JOIN t_mst_inside_sal_order t1 ON t1.INS_ORDER_NO = t.INS_ORDER_NO
+                    LEFT JOIN t_md_mara_ex p ON p.MATNR = t.MATNR
+                    WHERE
+                        t1.ORDER_DATE like '%${monthDate}%'
+                    AND t1.SAL_EMP_NO =#{empNo,jdbcType=VARCHAR}
+                    AND t1.BRANCH_NO = #{branchNo,jdbcType=VARCHAR}
+                    GROUP BY
+                        t1.ORDER_DATE,
+                        t1.SAL_EMP_NO,
+                        t.MATNR
+            ) fnt
+        GROUP BY
+            DISP_DATE,
+            DISP_EMP_NO,
+            CONFIRM_MATNR
+        ORDER BY DISP_DATE ASC
+    </select>
     <select id="Refuse2receiveResend" resultType="hashmap" parameterType="com.nhry.model.statistics.ExtendBranchInfoModel">
         SELECT
             rr.RESEND_ORDER_NO,

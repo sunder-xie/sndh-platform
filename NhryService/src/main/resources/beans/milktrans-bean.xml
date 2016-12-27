@@ -69,4 +69,18 @@
 		<property name="planOrderItemMapper" ref="tPlanOrderItemMapper"/>
 		<property name="preOrderMapper" ref="tPreOrderMapper"/>
 	</bean>
+	<!-- 出奶管理-->
+	<bean id="tSsmMilkmanAmtInitMapper" class="com.nhry.data.milktrans.impl.TSsmMilkmanAmtInitMapperImpl">
+		<property name="sqlSessionTemplate"  ref="dynamicSqlSessionTemplate"></property>
+	</bean>
+	<bean id="tssmMilkmanAmtsMapper" class="com.nhry.data.milktrans.impl.TssmMilkmanAmtsMapperImpl">
+		<property name="sqlSessionTemplate"  ref="dynamicSqlSessionTemplate"></property>
+	</bean>
+	<bean id="outMilkService" class="com.nhry.service.milktrans.impl.OutMilkServiceImpl">
+		<property name="tSsmMilkmanAmtInitMapper"  ref="tSsmMilkmanAmtInitMapper"></property>
+		<property name="tssmMilkmanAmtsMapper"  ref="tssmMilkmanAmtsMapper"></property>
+		<property name="customerBillMapper"  ref="customerBillMapper"></property>
+		<property name="userSessionService" ref="userSessionService"></property>
+		<property name="tDispOrderMapper" ref="tDispOrderMapper"></property>
+	</bean>
 </beans>
