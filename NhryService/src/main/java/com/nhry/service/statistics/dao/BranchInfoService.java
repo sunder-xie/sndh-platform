@@ -31,4 +31,5 @@ public interface BranchInfoService {
     PageInfo Refuse2receiveResend(ExtendBranchInfoModel model);
     List<Map<String,String>> Refuse2receiveResendDetail(String  resendOrderNo);
     List<Map<String,String>> PendingUnConfirmOnline();
+    List<Map<String,String>> exportDispInlOrderByModel(ExtendBranchInfoModel model);
 }

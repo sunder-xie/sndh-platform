@@ -1,11 +1,14 @@
 package com.nhry.rest.statistics;
 
 import com.nhry.common.exception.MessageCode;
+import com.nhry.data.milktrans.domain.TSsmMilkmanAmtInit;
 import com.nhry.model.statistics.BranchInfoModel;
 import com.nhry.model.statistics.DistInfoModel;
 import com.nhry.model.statistics.ExtendBranchInfoModel;
+import com.nhry.model.statistics.OutMilkModel;
 import com.nhry.model.sys.ResponseModel;
 import com.nhry.rest.BaseResource;
+import com.nhry.service.milktrans.dao.OutMilkService;
 import com.nhry.service.statistics.dao.BranchInfoService;
 import com.nhry.service.statistics.dao.DistributionInfoService;
 import com.sun.jersey.spi.resource.Singleton;
@@ -33,6 +36,8 @@ public class StatisticsResource extends BaseResource {
     private BranchInfoService branchInfoService;
     @Autowired
     private DistributionInfoService distributionInfoService;
+    @Autowired
+    private OutMilkService outMilkService;
     @POST
     @Path("/branchDayInfo")
     @Produces(MediaType.APPLICATION_JSON)
@@ -147,5 +152,30 @@ public class StatisticsResource extends BaseResource {
     @ApiOperation(value = "/Refuse2receiveResendDetail/{resendOrderNo}", response = ResponseModel.class, notes = "拒收复送详情")
     public Response Refuse2receiveResendDetail(@ApiParam(name = "resendOrderNo",value = "单号") @PathParam("resendOrderNo") String resendOrderNo){
         return convertToRespModel(MessageCode.NORMAL, null, branchInfoService.Refuse2receiveResendDetail(resendOrderNo));
+    }
+
+    @POST
+    @Path("/createOutMilk")
+    @Produces(MediaType.APPLICATION_JSON)
+    @Consumes(MediaType.APPLICATION_JSON)
+    @ApiOperation(value = "/createOutMilk", response = Integer.class, notes = "生成出奶表结余金额")
+    public Response createOutMilk(@ApiParam(required=true,name="record",value="OutMilkModel") OutMilkModel record){
+        return convertToRespModel(MessageCode.NORMAL, null, outMilkService.insertAmtInit(record));
+    }
+    @POST
+    @Path("/createAmtsdayByday")
+    @Produces(MediaType.APPLICATION_JSON)
+    @Consumes(MediaType.APPLICATION_JSON)
+    @ApiOperation(value = "/createAmtsdayByday", response = Integer.class, notes = "按日期生成出年表")
+    public Response createAmtsdayByday(){
+        return convertToRespModel(MessageCode.NORMAL, null, outMilkService.createAmtsdayByday());
+    }
+    @POST
+    @Path("/createAmtsByBranch")
+    @Produces(MediaType.APPLICATION_JSON)
+    @Consumes(MediaType.APPLICATION_JSON)
+    @ApiOperation(value = "/createAmtsByBranch", response = Integer.class, notes = "根据日期生成该奶站下送奶员以后日期的出奶表统计")
+    public Response createAmtsByBranch(@ApiParam(required=true,name="record",value="OutMilkModel") OutMilkModel record){
+        return convertToRespModel(MessageCode.NORMAL, null, outMilkService.createAmtsByBranch(record));
     }
 }

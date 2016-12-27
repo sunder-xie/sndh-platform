@@ -8,6 +8,7 @@ import com.nhry.data.basic.domain.TMdBranch;
 import com.nhry.data.bill.domain.TMstRecvBill;
 import com.nhry.data.milk.domain.TDispOrder;
 import com.nhry.data.milk.domain.TDispOrderItem;
+import com.nhry.data.milktrans.domain.TssmMilkmanAmts;
 import com.nhry.data.order.domain.TMilkboxPlan;
 import com.nhry.data.order.domain.TMstYearCardCompOrder;
 import com.nhry.data.order.domain.TPreOrder;
@@ -27,6 +28,7 @@ import com.nhry.service.basic.dao.BranchService;
 import com.nhry.service.basic.pojo.BranchEmpModel;
 import com.nhry.service.bill.dao.CustomerBillService;
 import com.nhry.service.milk.dao.DeliverMilkService;
+import com.nhry.service.milktrans.dao.OutMilkService;
 import com.nhry.service.order.dao.MilkBoxService;
 import com.nhry.service.order.dao.OrderService;
 import com.nhry.service.statistics.dao.BranchInfoService;
@@ -85,6 +87,8 @@ public class ReportResource extends BaseResource{
     private BranchInfoService branchInfoService;
     @Autowired
     private CustomerBillService customerBillService;
+    @Autowired
+    private OutMilkService outMilkService;
     @GET
     @Path("/reportCollect")
     @Produces(MediaType.APPLICATION_JSON)
@@ -1079,6 +1083,195 @@ public class ReportResource extends BaseResource{
 
         }
     }
+    @POST
+    @Path("/exportDispInlOrderByModel")
+    @Produces(MediaType.APPLICATION_JSON)
+    @Consumes(MediaType.APPLICATION_JSON)
+    @ApiOperation(value = "/exportDispInlOrderByModel}", response = ResponseModel.class, notes = "导出出奶表-台帐")
+    public Response exportDispInlOrderByModel(@ApiParam(name = "model",value = "出奶表-台帐") ExtendBranchInfoModel model){
+        TSysUser user = userSessionService.getCurrentUser();
+        String url = EnvContant.getSystemConst("filePath");
+        String outUrl = "";
+        try{
+            model.setBranchNo(user.getBranchNo());
+
+            File file = new File(url +  File.separator + "report"+ File.separator + "template" + File.separator + "EmpAccountTemplate.xlsx");
+            FileInputStream input = new FileInputStream(file);
+            XSSFWorkbook workbook = new XSSFWorkbook(new BufferedInputStream(input));
+            XSSFSheet sheet = workbook.getSheetAt(0);
+            XSSFCellStyle cellStyle = workbook.createCellStyle();
+            XSSFFont font = workbook.createFont();
+            font.setFontName("微软雅黑");
+            font.setFontHeightInPoints((short) 10);
+            cellStyle.setFont(font);
+            cellStyle.setAlignment(XSSFCellStyle.ALIGN_CENTER);//水平居中
+            cellStyle.setVerticalAlignment(XSSFCellStyle.VERTICAL_CENTER);//垂直居中
+            //需要加粗的样式
+            XSSFCellStyle cellStyleBold = workbook.createCellStyle();
+            XSSFFont fontBold = workbook.createFont();
+            fontBold.setFontName("微软雅黑");
+            fontBold.setFontHeightInPoints((short) 10);
+            fontBold.setBold(true);
+            cellStyleBold.setFont(fontBold);
+            cellStyleBold.setAlignment(XSSFCellStyle.ALIGN_CENTER);//水平居中
+            cellStyleBold.setVerticalAlignment(XSSFCellStyle.VERTICAL_CENTER);//垂直居中
+
+            int rowNum = 0;
+            //内部销售订单+确认的路单配送数量月份集合，按照日期、送奶员分组统计
+            List<Map<String, String>> dispInls = branchInfoService.exportDispInlOrderByModel(model);
+            //查询出奶表统计金额
+            List<TssmMilkmanAmts> tmas = outMilkService.selectAmtsByPrimaryKey(model);
+
+            Map<String, String> projectMap = new TreeMap<String, String>();//产品行
+            Map<String, String> dateMap = new TreeMap<String, String>();//员工列
+            for (Map<String, String> map : dispInls) {
+                projectMap.put(map.get("CONFIRM_MATNR"), map.get("MATNR_TXT"));
+                dateMap.put(map.get("DISP_DATE"), map.get("DISP_DATE"));
+            }
+            projectMap.put("A-REAMT","上日结存");
+            projectMap.put("B-DAYAMT","本日进货");
+            projectMap.put("C-DAYBILLAMT","本日交款");
+            projectMap.put("D-TOTALAMT","结存金额");
+            int columnNum = 1;
+            XSSFRow row1 = sheet.getRow(3);
+            for (Map.Entry<String, String> entry : projectMap.entrySet()) {
+                XSSFCell cell = row1.createCell(columnNum++);
+                cell.setCellValue(entry.getValue());
+                cell.setCellStyle(ExcelUtil.setBorderStyle(workbook));
+            }
+            //表头
+            XSSFRow row0 = sheet.createRow(0);
+            XSSFCell cellhead = row0.createCell(0);
+            cellhead.setCellValue(user.getOrgName()+"出奶表");
+            cellhead.setCellStyle(cellStyle);
+            int headNum = 0;
+            if(columnNum!=0){
+                headNum = columnNum-1;
+            }
+            sheet.addMergedRegion(new CellRangeAddress(0, 0, 0, headNum));
+            //日期
+            XSSFRow rowsec = sheet.createRow(1);
+            XSSFCell cellsec = rowsec.createCell(0);
+            cellsec.setCellValue(model.getMonthDate());
+            cellsec.setCellStyle(cellStyleBold);
+            sheet.addMergedRegion(new CellRangeAddress(1, 1, 0, headNum));
+            //奶站送奶员信息
+            XSSFRow rowthe = sheet.createRow(2);
+            XSSFCell cellthe = rowthe.createCell(0);
+            cellthe.setCellValue("奶站："+user.getBranchName());
+            cellthe.setCellStyle(cellStyleBold);
+            sheet.addMergedRegion(new CellRangeAddress(2, 2, 0, 3));
+            if(headNum>4){
+                cellthe = rowthe.createCell(headNum-3);
+                cellthe.setCellValue(user.getDisplayName());
+                cellthe.setCellStyle(cellStyleBold);
+                cellthe = rowthe.createCell(headNum-2);
+                cellthe.setCellValue("单位：袋、瓶、杯、元");
+                cellthe.setCellStyle(cellStyle);
+                sheet.addMergedRegion(new CellRangeAddress(2, 2, headNum-2, headNum));
+            }
+
+            rowNum = 4;
+            for (Map.Entry<String, String> entry : dateMap.entrySet()) {
+                int cNum = 0;
+                XSSFRow row = sheet.createRow(rowNum++);
+                XSSFCell cell = row.createCell(cNum++);
+                String dispdate = format.format(entry.getKey());
+                cell.setCellValue(format.format(entry.getKey()));
+                cell.setCellStyle(ExcelUtil.setBorderStyle(workbook));
+                for (Map.Entry<String, String> entry1 : projectMap.entrySet()) {
+                    XSSFCell cell1 = row.createCell(cNum++);
+                    cell1.setCellStyle(ExcelUtil.setBorderStyle(workbook));
+                    String matnr = entry1.getKey();
+                    for (Map<String, String> map : dispInls) {
+                        String matnrT = map.get("CONFIRM_MATNR");
+                        String disoDateT = format.format(map.get("DISP_DATE"));
+                        if (dispdate.equals(disoDateT) && matnr.equals(matnrT)) {
+                            if (map.get("CONFIRM_QTY") != null) {
+                                int CCQTY = new BigDecimal(String.valueOf(map.get("CONFIRM_QTY"))).intValue();
+                                cell1.setCellValue(CCQTY);
+                                cell1.setCellStyle(cellStyle);
+                            }
+                        }
+                    }
+                    for(TssmMilkmanAmts details:tmas){
+                        cell1.setCellStyle(ExcelUtil.setBorderStyle(workbook));
+                        String disoDateT = format.format(details.getOrderDate());
+                        if(dispdate.equals(disoDateT) && entry1.getValue().equals("上日结存")){
+                            cell1.setCellValue(details.getReAmt()==null?"":String.valueOf(details.getReAmt()));
+                            cell1.setCellStyle(cellStyle);
+                        }
+                        if(dispdate.equals(disoDateT) && entry1.getValue().equals("本日进货")){
+                            cell1.setCellValue(details.getDayAmt()==null?"":String.valueOf(details.getDayAmt()));
+                            cell1.setCellStyle(cellStyle);
+                        }
+                        if(dispdate.equals(disoDateT) && entry1.getValue().equals("本日交款")){
+                            cell1.setCellValue(details.getDayBillAmt()==null?"":String.valueOf(details.getDayBillAmt()));
+                            cell1.setCellStyle(cellStyle);
+                        }
+                        if(dispdate.equals(disoDateT) && entry1.getValue().equals("结存金额")){
+                            cell1.setCellValue(details.getTotalAmt()==null?"":String.valueOf(details.getTotalAmt()));
+                        }
+                    }
+                }
+            }
+            int scNum = 0;
+            XSSFRow row = sheet.createRow(rowNum);
+            XSSFCell cellColTitle = row.createCell(scNum++);
+            cellColTitle.setCellValue("本月合计");
+            cellColTitle.setCellStyle(cellStyleBold);
+            cellColTitle.setCellStyle(ExcelUtil.setBorderStyle(workbook));
+
+            //产品循环-列合计
+            for (Map.Entry<String, String> entry1 : projectMap.entrySet()) {
+                double ROWQTY = 0;
+                String matnr = entry1.getKey();
+                for (Map<String, String> map : dispInls){
+                    String matnrT =map.get("CONFIRM_MATNR");
+                    if( matnr.equals(matnrT)){
+                        if(map.get("CONFIRM_QTY")!=null){
+                            int rqty =  new BigDecimal(String.valueOf( map.get("CONFIRM_QTY"))).intValue();
+                            ROWQTY =ROWQTY + rqty;
+                        }
+                    }
+                }
+                for(TssmMilkmanAmts details:tmas){
+                    for (Map.Entry<String, String> entry : dateMap.entrySet()){
+                        String dispdate = format.format(entry.getKey());
+                        String tmasDate = format.format(details.getOrderDate());
+                        if(entry1.getValue().equals("上日结存") && dispdate.equals(tmasDate)){
+                            double rqty =  new BigDecimal(String.valueOf(details.getReAmt())).doubleValue();
+                            ROWQTY =ROWQTY + rqty;
+                        }
+                        if(entry1.getValue().equals("本日进货")&& dispdate.equals(tmasDate)){
+                            double rqty =  new BigDecimal(String.valueOf(details.getDayAmt())).doubleValue();
+                            ROWQTY =ROWQTY + rqty;
+                        }
+                        if(entry1.getValue().equals("本日交款")&& dispdate.equals(tmasDate)){
+                            double rqty =  new BigDecimal(String.valueOf(details.getDayBillAmt())).doubleValue();
+                            ROWQTY =ROWQTY + rqty;
+                        }
+                        if(entry1.getValue().equals("结存金额")&& dispdate.equals(tmasDate)){
+                            double rqty =  new BigDecimal(String.valueOf(details.getTotalAmt())).doubleValue();
+                            ROWQTY =ROWQTY + rqty;
+                        }
+                    }
+
+                }
+
+                XSSFCell cell = row.createCell(scNum++);
+                cell.setCellStyle(ExcelUtil.setBorderStyle(workbook));
+                cell.setCellValue(String.valueOf(ROWQTY));
+
+            }
+
+            outUrl = saveFile(url, workbook,"Emp.xlsx");
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+        return convertToRespModel(MessageCode.NORMAL,null,outUrl);
+    }
+
     @POST
     @Path("/exportOrderByModel")
     @Produces(MediaType.APPLICATION_JSON)

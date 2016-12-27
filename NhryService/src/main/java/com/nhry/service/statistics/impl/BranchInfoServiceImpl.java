@@ -8,6 +8,7 @@ import com.nhry.data.auth.domain.TSysUser;
 import com.nhry.data.statistics.dao.BranchInfoMapper;
 import com.nhry.model.statistics.BranchInfoModel;
 import com.nhry.model.statistics.ExtendBranchInfoModel;
+import com.nhry.service.milktrans.dao.OutMilkService;
 import com.nhry.service.statistics.dao.BranchInfoService;
 import org.apache.commons.lang.StringUtils;
 
@@ -22,12 +23,17 @@ public class BranchInfoServiceImpl implements BranchInfoService {
     private static SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
     private BranchInfoMapper branchInfoMapper;
     private UserSessionService userSessionService;
+    private OutMilkService outMilkService;
     public void setBranchInfoMapper(BranchInfoMapper branchInfoMapper) {
         this.branchInfoMapper = branchInfoMapper;
     }
 
     public void setUserSessionService(UserSessionService userSessionService) {
         this.userSessionService = userSessionService;
+    }
+
+    public void setOutMilkService(OutMilkService outMilkService) {
+        this.outMilkService = outMilkService;
     }
 
     @Override
@@ -307,5 +313,10 @@ public class BranchInfoServiceImpl implements BranchInfoService {
     public List<Map<String,String>> PendingUnConfirmOnline(){
         TSysUser user = userSessionService.getCurrentUser();
         return branchInfoMapper.PendingUnConfirmOnline(user.getSalesOrg());
+    }
+
+    @Override
+    public List<Map<String, String>> exportDispInlOrderByModel(ExtendBranchInfoModel model) {
+        return branchInfoMapper.exportDispInlOrderByModel(model);
     }
 }

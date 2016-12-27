@@ -131,4 +131,33 @@ public class TDispOrderMapperImpl implements TDispOrderMapper
 		return sqlSessionTemplate.delete("deleteDispOrderByOrderNo",codeList);
 	}
 
+	/**
+	 * 查询奶站下本日进货汇总金额
+	 * @param branchNo
+	 * @param date
+     * @return
+     */
+	@Override
+	public List<TDispOrder> getBranchEmpAmt(String branchNo, Date date) {
+		TDispOrder key = new TDispOrder();
+		key.setBranchNo(branchNo);
+		key.setDispDate(date);
+		return sqlSessionTemplate.selectList("getBranchEmpAmt",key);
+	}
+
+	/**
+	 * 查询奶站送奶员下本日进货汇总金额
+	 * @param branchNo
+	 * @param date
+	 * @param empNo
+     * @return
+     */
+	@Override
+	public TDispOrder getBranchEmpAmtByEmpNo(String branchNo, Date date, String empNo) {
+		TDispOrder key = new TDispOrder();
+		key.setBranchNo(branchNo);
+		key.setDispDate(date);
+		key.setDispEmpNo(empNo);
+		return sqlSessionTemplate.selectOne("getBranchEmpAmtByEmpNo",key);
+	}
 }

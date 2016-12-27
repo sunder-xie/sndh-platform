@@ -9,6 +9,7 @@ import com.nhry.model.bill.CollectOrderBillModel;
 import com.nhry.model.bill.CollectOrderSearchModel;
 import com.nhry.model.bill.CustBillQueryModel;
 
+import java.util.Date;
 import java.util.List;
 
 
@@ -100,5 +101,33 @@ public class CustomerBillMapperImpl implements CustomerBillMapper {
     public int delReceipt(String receiptNo) {
         return sqlSessionTemplate.delete("delReceipt",receiptNo);
     }
+    /**
+     * 本日交款-奶站、日期，统计送奶员本日交款总额
+     * @param branchNo
+     * @param date
+     * @return
+     */
+    @Override
+    public List<TMstRecvBill> getBranchEmpPayment(String branchNo, Date date) {
+        TMstRecvBill key = new TMstRecvBill();
+        key.setBranchNo(branchNo);
+        key.setReceiptDate(date);
+        return sqlSessionTemplate.selectList("getBranchEmpPayment",key);
+    }
 
+    /**
+     * 本日交款-送奶员纬度查询
+     * @param branchNo
+     * @param date
+     * @param empNo
+     * @return
+     */
+    @Override
+    public TMstRecvBill getBranchEmpPaymentByEmpNo(String branchNo, Date date, String empNo) {
+        TMstRecvBill key = new TMstRecvBill();
+        key.setBranchNo(branchNo);
+        key.setReceiptDate(date);
+        key.setEmpNo(empNo);
+        return sqlSessionTemplate.selectOne("getBranchEmpPaymentByEmpNo",key);
+    }
 }
