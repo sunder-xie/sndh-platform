@@ -8412,7 +8412,7 @@ public static int dayOfTwoDay(Date day1,Date day2) {
 		if((orderPromFlag || itemPromFlag) && promModel!=null){
 			if(orderPromFlag){
 				if(DateUtil.dateAfter(plan.getDispDate(), promModel.getBuyStopTime())){
-					if("Z015".equals(promModel.getPromSubType())){
+					if("Z016".equals(promModel.getPromSubType())){
 						throw new ServiceException(MessageCode.LOGIC_ERROR,"该订单参加了整单满减促销，修改后有日订单的配送日期超过了促销的截止日期"+format.format(promModel.getBuyStopTime()));
 					}
 				}
@@ -11322,10 +11322,10 @@ public static int dayOfTwoDay(Date day1,Date day2) {
 								}
 								if(DateUtil.dateAfter(curEntry.getEndDispDate(),prom.getBuyStopTime())){
 									if("Z008".equals(prom.getPromSubType())){
-										throw new ServiceException(MessageCode.LOGIC_ERROR,"该订单的"+orgEntry.getMatnr()+"产品参加了整单满赠促销活动,该产品截止日期"+format.format(curEntry.getEndDispDate())+"不能在单品满赠促销的截止配送日期"+format.format(prom.getBuyStopTime())+"之后");
+										throw new ServiceException(MessageCode.LOGIC_ERROR,"该订单的"+orgEntry.getMatnr()+"产品参加了单品满赠促销活动,该产品截止日期"+format.format(curEntry.getEndDispDate())+"不能在单品满赠促销的截止配送日期"+format.format(prom.getBuyStopTime())+"之后");
 									}
 									if("Z015".equals(prom.getPromSubType())){
-										throw new ServiceException(MessageCode.LOGIC_ERROR,"该订单的"+orgEntry.getMatnr()+"产品参加了整单满减促销活动,该产品截止日期"+format.format(curEntry.getEndDispDate())+"不能在单品满减促销的截止配送日期"+format.format(prom.getBuyStopTime())+"之后");
+										throw new ServiceException(MessageCode.LOGIC_ERROR,"该订单的"+orgEntry.getMatnr()+"产品参加了单品满减促销活动,该产品截止日期"+format.format(curEntry.getEndDispDate())+"不能在单品满减促销的截止配送日期"+format.format(prom.getBuyStopTime())+"之后");
 									}
 									if("Z016".equals(prom.getPromSubType())){
 										throw new ServiceException(MessageCode.LOGIC_ERROR,"行项目的截止日期"+format.format(curEntry.getEndDispDate())+"不能比整单满减促销的截止配送日期"+format.format(prom.getBuyStopTime())+"之后");
