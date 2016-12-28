@@ -354,7 +354,7 @@ public class CustomerBillServiceImpl implements CustomerBillService {
             errorContent = "该订单不存在！";
             throw new ServiceException(MessageCode.LOGIC_ERROR,errorContent);
         }
-
+        if(order.getDiscountAmt()==null) order.setDiscountAmt(BigDecimal.ZERO);
         TSysUser user = userSessionService.getCurrentUser();
         customerBill  = new TMstRecvBill();
         customerBill.setHadOffsetNo(orderNo);
@@ -384,7 +384,7 @@ public class CustomerBillServiceImpl implements CustomerBillService {
         customerBill.setDiscountAmt(order.getDiscountAmt());
         //如果余额大于订单金额  则
         if(acLeftAmt.compareTo(remainAmt) == 1){
-            customerBill.setAccAmt(order.getInitAmt());
+            customerBill.setAccAmt(remainAmt);
             customerBill.setSuppAmt(BigDecimal.ZERO);
             ac.setAcctAmt(order.getInitAmt().multiply(new BigDecimal(-1)));
         }else{
