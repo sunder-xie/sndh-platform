@@ -4736,6 +4736,8 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 			//订单 整单参加促销  整单满减
 			orderPromFlag = true;
 			promModel = promotionService.selectPromotionByPromNoAndItemNo(orgOrder.getPromotion(),orgOrder.getPromItemNo());
+			if(promModel==null) throw new ServiceException(MessageCode.LOGIC_ERROR,"该订单参与了整单促销，但是获取促销信息失败，促销号为"+orgOrder.getPromotion()+"，促销行号为:"+orgOrder.getPromItemNo()+"，请查看");
+			if("Z017".equals(promModel.getPromSubType())) throw new ServiceException(MessageCode.LOGIC_ERROR,"年卡订单不能进行订单编辑！！！");
 		}
 		TSysUser user = userSessionService.getCurrentUser();
 		List<TPlanOrderItem> orgEntrys = tPlanOrderItemMapper.selectByOrderCode(orderNo);
@@ -10232,6 +10234,8 @@ public static int dayOfTwoDay(Date day1,Date day2) {
 			//订单 整单参加促销  整单满减
 			orderPromFlag = true;
 			promModel = promotionService.selectPromotionByPromNoAndItemNo(orgOrder.getPromotion(),orgOrder.getPromItemNo());
+			if(promModel==null) throw new ServiceException(MessageCode.LOGIC_ERROR,"该订单参与了整单促销，但是获取促销信息失败，促销号为"+orgOrder.getPromotion()+"，促销行号为:"+orgOrder.getPromItemNo()+"，请查看");
+			if("Z017".equals(promModel.getPromSubType())) throw new ServiceException(MessageCode.LOGIC_ERROR,"年卡订单不能进行订单编辑！！！");
 		}
 		TSysUser user = userSessionService.getCurrentUser();
 		List<TPlanOrderItem> orgEntrys = tPlanOrderItemMapper.selectByOrderCode(orderNo);
