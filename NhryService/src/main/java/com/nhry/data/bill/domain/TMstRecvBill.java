@@ -9,6 +9,7 @@ import java.util.Date;
  */
 public class TMstRecvBill implements Serializable {
     private String hadOffset;
+    private String hadOffsetNo;
     private String receiptNo;
     private Date receiptDate;
     private String orderNo;
@@ -38,6 +39,14 @@ public class TMstRecvBill implements Serializable {
     private String empNo;
     private String branchNo;
     private BigDecimal offsetAmt;
+
+    public String getHadOffsetNo() {
+        return hadOffsetNo;
+    }
+
+    public void setHadOffsetNo(String hadOffsetNo) {
+        this.hadOffsetNo = hadOffsetNo;
+    }
 
     public BigDecimal getDiscountAmt() {
         return discountAmt;

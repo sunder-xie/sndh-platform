@@ -30,8 +30,25 @@ public class CollectOrderBillModel {
     private Date startDate;          //订奶起始日期
     private Date endDate;             //订奶结束日期
     private String salesOrgName;      //销售组织名称
+    private BigDecimal discountAmt;    //折扣价
+    private String promDescribe;    //促销描述
     private List<ProductItem> entries; // 产品
 
+    public String getPromDescribe() {
+        return promDescribe;
+    }
+
+    public void setPromDescribe(String promDescribe) {
+        this.promDescribe = promDescribe;
+    }
+
+    public BigDecimal getDiscountAmt() {
+        return discountAmt;
+    }
+
+    public void setDiscountAmt(BigDecimal discountAmt) {
+        this.discountAmt = discountAmt;
+    }
 
     public BigDecimal getCustAccAmt() {
         return custAccAmt;

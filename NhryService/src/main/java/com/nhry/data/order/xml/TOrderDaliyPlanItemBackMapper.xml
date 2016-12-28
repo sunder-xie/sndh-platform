@@ -3,6 +3,7 @@
 <mapper namespace="com.nhry.data.order.dao.TOrderDaliyPlanItemBackMapper" >
   <resultMap id="BaseResultMap" type="com.nhry.data.order.domain.TOrderDaliyPlanItemBack" >
     <result column="ORDER_NO" property="orderNo" jdbcType="VARCHAR" />
+    <result column="ORDER_TYPE" property="orderType" jdbcType="VARCHAR" />
     <result column="DISP_DATE" property="dispDate" jdbcType="DATE" />
     <result column="BRANCH_NO" property="branchNo" jdbcType="VARCHAR" />
     <result column="MATNR" property="matnr" jdbcType="VARCHAR" />
@@ -25,6 +26,9 @@
     <trim prefix="(" suffix=")" suffixOverrides="," >
       <if test="orderNo != null" >
         ORDER_NO,
+      </if>
+      <if test="orderType != null" >
+        ORDER_TYPE,
       </if>
       <if test="branchNo != null" >
         BRANCH_NO,
@@ -61,7 +65,9 @@
       <if test="orderNo != null" >
         #{orderNo,jdbcType=VARCHAR},
       </if>
-
+      <if test="orderType != null" >
+        #{orderType,jdbcType=VARCHAR},
+      </if>
       <if test="branchNo != null" >
         #{branchNo,jdbcType=VARCHAR},
       </if>

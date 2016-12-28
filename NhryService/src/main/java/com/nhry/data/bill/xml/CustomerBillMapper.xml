@@ -49,6 +49,7 @@
         <result column="EMP_NO" property="empNo" jdbcType="VARCHAR" />
         <result column="EMP_NAME" property="empName" jdbcType="VARCHAR" />
         <result column="EMP_TEL" property="empTel" jdbcType="VARCHAR" />
+        <result column="PROM_DESCRIBE" property="promDescribe" jdbcType="VARCHAR" />
         <result column="ORDER_AMT" property="orderAmt" jdbcType="DECIMAL" />
         <result column="ACC_AMT" property="accAmt" jdbcType="DECIMAL" />
         <result column="CUST_ACC_AMT" property="custAccAmt" jdbcType="DECIMAL" />
@@ -98,6 +99,9 @@
             </if>
             <if test="hadOffset != null">
                 HAD_OFFSET,
+            </if>
+            <if test="hadOffsetNo != null">
+                HAD_OFFSET_NO,
             </if>
             <if test="receiptDate != null">
                 RECEIPT_DATE,
@@ -157,6 +161,9 @@
             </if>
             <if test="hadOffset != null">
                #{hadOffset,jdbcType=VARCHAR},
+            </if>
+            <if test="hadOffsetNo != null">
+                HAD_OFFSET_NO = #{hadOffsetNo,jdbcType=VARCHAR},
             </if>
             <if test="receiptDate != null">
                 #{receiptDate,jdbcType=DATE},
@@ -235,6 +242,9 @@
             </if>
             <if test="hadOffset != null">
                 HAD_OFFSET =  #{hadOffset,jdbcType=VARCHAR},
+            </if>
+            <if test="hadOffsetNo != null">
+                HAD_OFFSET_NO = #{hadOffsetNo,jdbcType=VARCHAR},
             </if>
             <if test="vipCustNo != null">
                VIP_CUST_NO =  #{vipCustNo,jdbcType=VARCHAR},
@@ -474,6 +484,12 @@
     <select id="selectNoItemsCollectByOrders2" resultMap="CollectResultMap" parameterType="com.nhry.model.bill.CustBatchBillQueryModel">
         SELECT
         o.ORDER_NO,
+        (
+            CASE
+            WHEN o.DISCOUNT_AMT > 0 THEN CONCAT('折扣',o.DISCOUNT_AMT,'元')
+            ELSE ''
+            END
+        ) PROM_DESCRIBE,
         o.BRANCH_NO,
         o.EMP_NO,
         e.TEL EMP_TEL,
