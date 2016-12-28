@@ -357,6 +357,7 @@ public class CustomerBillServiceImpl implements CustomerBillService {
 
         TSysUser user = userSessionService.getCurrentUser();
         customerBill  = new TMstRecvBill();
+        customerBill.setHadOffsetNo(orderNo);
         customerBill.setRecvEmp(order.getEmpNo());
         customerBill.setOrderNo(orderNo);
        // customerBill.setAmt(order.getInitAmt());
@@ -579,6 +580,7 @@ public class CustomerBillServiceImpl implements CustomerBillService {
             TMstRecvBill newBill = new TMstRecvBill();
             newBill.setReceiptNo(bill.getReceiptNo());
             newBill.setHadOffset("Y");
+            newBill.setHadOffsetNo(bill.getReceiptNo());
             customerBillMapper.updateCustomerBillrPayment(newBill);
 
             // 如果该订单为预付款订单，且没有产生路单，则删除 所有日订单

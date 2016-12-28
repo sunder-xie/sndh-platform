@@ -1382,10 +1382,7 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 		OrderSearchModel smodel = new OrderSearchModel();
 		smodel.setBackDate(backDate);
 		smodel.setOrderNo(order.getOrderNo());
-		//第一步 计算退款金额（用于更新订单总金额和余额）
-		BigDecimal backAmt = tOrderDaliyPlanItemMapper.getSumDailyBackAmtByBackDate(smodel);
-		//第二步 删除日计划
-		tOrderDaliyPlanItemMapper.deleteDailyByStopDate(smodel);
+
 		//第三步  创建年卡折扣补偿单据
 		TMstYearCardCompOrder yOrder = tOrderDaliyPlanItemMapper.selectYearCardBackOrder(order.getOrderNo(),smodel.getBackDate());
 		if(yOrder!=null){
@@ -1401,6 +1398,12 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 		}else{
 			throw new ServiceException(MessageCode.LOGIC_ERROR,"年卡提前退订时，创建年卡补偿单据时获取信息失败，请查看！！！");
 		}
+
+		//第一步 计算退款金额（用于更新订单总金额和余额）
+		BigDecimal backAmt = tOrderDaliyPlanItemMapper.getSumDailyBackAmtByBackDate(smodel);
+		//第二步 删除日计划
+		tOrderDaliyPlanItemMapper.deleteDailyByStopDate(smodel);
+
 		// 第四步  订单退订日期、和退订原因录入，更新订单的截止日期，总金额和 剩余金额
 		order.setBackDate(backDate);
 		order.setBackReason(record.getBackReason());
@@ -2860,8 +2863,29 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 		if(entries==null || entries.size()==0){throw  new ServiceException(MessageCode.LOGIC_ERROR,"没有日计划行");}
 		TPreOrder orgOrder = tPreOrderMapper.selectByPrimaryKey(record.getOrderCode());
 		if(orgOrder==null) throw new ServiceException(MessageCode.LOGIC_ERROR,"该订单号不存在");
-		if(orgOrder.getDiscountAmt()!=null){
-			throw new ServiceException(MessageCode.LOGIC_ERROR,"该订单为满减订单，不能进行日订单退款!");
+		//判断是否是年卡订单
+		boolean yearCard = false;
+		boolean orderPromFlag =(StringUtils.isNotBlank(orgOrder.getPromotion()) && StringUtils.isNotBlank(orgOrder.getPromItemNo()))?true:false;
+		TPromotion prom = null;
+		if(orderPromFlag){
+			prom = promotionService.selectPromotionByPromNoAndItemNo(orgOrder.getPromotion(),orgOrder.getPromItemNo());
+			if(prom==null) throw new ServiceException(MessageCode.LOGIC_ERROR,"该订单参与了整单促销，但获取促销信息失败，促销号为"+orgOrder.getPromotion()+"： 促销行号为："+orgOrder.getPromItemNo());
+			if(StringUtils.isBlank(prom.getPromSubType())) throw new ServiceException(MessageCode.LOGIC_ERROR,"该促销的促销类型字段promSubType为空，请维护");
+			if("Z016".equals(prom.getPromSubType()))
+				throw new ServiceException(MessageCode.LOGIC_ERROR,"该订单参加了整单满减促销，不能做日订单退款操作！！");
+			if("Z017".equals(prom.getPromSubType())){
+				yearCard = true;
+			}
+		}else{
+			List<TPlanOrderItem> planItems = tPlanOrderItemMapper.selectByOrderCode(orgOrder.getOrderNo());
+			boolean planItemPromFlag = planItems.stream().anyMatch(item->(StringUtils.isNotBlank(item.getPromotion())&&StringUtils.isNotBlank(item.getPromItemNo())));
+			if(planItemPromFlag){
+				prom = promotionService.selectPromotionByPromNoAndItemNo(orgOrder.getPromotion(),orgOrder.getPromItemNo());
+				if(prom==null) throw new ServiceException(MessageCode.LOGIC_ERROR,"该订单参与了整单促销，但获取促销信息失败，促销号为"+orgOrder.getPromotion()+"： 促销行号为："+orgOrder.getPromItemNo());
+				if(StringUtils.isBlank(prom.getPromSubType())) throw new ServiceException(MessageCode.LOGIC_ERROR,"该促销的促销类型字段promSubType为空，请维护");
+				if("Z008".equals(prom.getPromSubType())) throw new ServiceException(MessageCode.LOGIC_ERROR,"该订单参加了单品满赠促销，不能做日订单退款操作！！");
+				if("Z015".equals(prom.getPromSubType())) throw new ServiceException(MessageCode.LOGIC_ERROR,"该订单参加了单品满减促销，不能做日订单退款操作！！");
+			}
 		}
 		if("10".equals(orgOrder.getPaymentmethod())){
 			if(customerBillMapper.getRecBillByOrderNo(orgOrder.getOrderNo())!=null)throw new ServiceException(MessageCode.LOGIC_ERROR,"后付款订单已经有收款单了，请不要修改订单，或者去删除收款单!");
@@ -2870,16 +2894,6 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 			TMstRecvBill bill = customerBillMapper.getRecBillByOrderNo(orgOrder.getOrderNo());
 			if(bill!=null && "10".equals(bill.getStatus())){
 				throw new ServiceException(MessageCode.LOGIC_ERROR,"预付款订单  "+orgOrder.getOrderNo()+"  已经有收款单但是还没完成收款，请不要修改订单，或者去删除收款单!");
-			}
-		}
-		//判断是否是年卡订单
-		boolean yearCard = false;
-		if(StringUtils.isNotBlank(orgOrder.getPromotion()) && StringUtils.isNotBlank(orgOrder.getPromotion())){
-			TPromotion prom = promotionService.selectPromotionByPromNoAndItemNo(orgOrder.getPromotion(),orgOrder.getPromItemNo());
-			if(prom!=null){
-				if("Z017".equals(prom.getPromSubType())){
-					yearCard = true;
-				}
 			}
 		}
 		BigDecimal totalAmt = BigDecimal.ZERO;
