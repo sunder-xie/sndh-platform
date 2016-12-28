@@ -1718,10 +1718,10 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 				}
 			});
 			if(StringUtils.isNotBlank(confirm.toString().trim())){
-				throw new ServiceException(MessageCode.LOGIC_ERROR,confirm+"已经发放，不能进行此操作");
+				throw new ServiceException(MessageCode.LOGIC_ERROR,confirm+"已经发放，不能进行停订或退订");
 			}
 			if(StringUtils.isNotBlank(noConfirm.toString().trim())){
-				throw new ServiceException(MessageCode.LOGIC_ERROR, noConfirm +"  已经产生了路单，请先删除路单再进行此操作");
+				throw new ServiceException(MessageCode.LOGIC_ERROR, noConfirm +"  已经产生了路单，请先删除路单再进行停订或退订");
 			}
 		}
 
@@ -1729,7 +1729,7 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 			//如果date 不为空表示为提前退订或者行项目 停订  需要查看从今天开始 到date期间是否有赠品
 			List<TOrderDaliyPlanItem> daliys = tOrderDaliyPlanItemMapper.selectPromDaliyBetweenDaysAndNo(order.getOrderNo(),null,new Date(),date);
 			if(daliys!=null && daliys.size()>0){
-				throw new ServiceException(MessageCode.LOGIC_ERROR,"从今天到"+format.format(date)+"那天之间有赠品，不能进行此操作");
+				throw new ServiceException(MessageCode.LOGIC_ERROR,"从今天到"+format.format(date)+"那天之间有赠品，不能进行停订或退订");
 			}
 		}
 	}
@@ -5003,7 +5003,7 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 														throw new ServiceException(MessageCode.LOGIC_ERROR,"该订单有产品行参加了单品满减促销，行项目不能停订");
 													}
 												}else{
-														throw new ServiceException(MessageCode.LOGIC_ERROR,"该订单有产品行项目参加了促销，非促销行项目不能停订");
+														throw new ServiceException(MessageCode.LOGIC_ERROR,"该订单有产品行项目参加了单品促销，非促销行项目不能停订");
 												}
 
 
@@ -5863,11 +5863,23 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 
 							if(ContentDiffrentUtil.isDiffrent(orgEntry.getIsStop(),curEntry.getIsStop())){
 								if("Y".equals(curEntry.getIsStop()) && curEntry.getStopStartDate()!=null) {
-									if("Z008".equals(promModel.getPromSubType())){
-										throw new ServiceException(MessageCode.LOGIC_ERROR, orderNo+"该订单已收款，参加了单品满赠促销，不能停订产品!");
-									}
-									if("Z015".equals(promModel.getPromSubType())){
-										throw new ServiceException(MessageCode.LOGIC_ERROR, orderNo+"该订单已收款，参加了单品满减促销，不能停订产品!");
+									if(planItemPromFlag){
+										if(itemFlag){
+											if("Z008".equals(promModel.getPromSubType())){
+												if(StringUtils.isNotBlank(orgEntry.getPromotion()) && StringUtils.isNotBlank(orgEntry.getPromItemNo())){
+													//赠品是否在停订之前已经配送 或者有赠品日订单
+													backOrderOfProm(orgOrder,DateUtil.getYestoday(curEntry.getStopStartDate()));
+													//将行项目的促销去除
+													orgEntry.setPromotion("");
+													orgEntry.setPromItemNo("");
+												}
+											}
+											if("Z015".equals(promModel.getPromSubType())){
+												throw new ServiceException(MessageCode.LOGIC_ERROR, orderNo+"该订单已收款，参加了单品满减促销，不能停订产品!");
+											}
+										}else{
+											throw new ServiceException(MessageCode.LOGIC_ERROR,"该订单有产品行项目参加了促销，非促销行项目不能停订");
+										}
 									}
 								}
 							}
@@ -6292,10 +6304,10 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 							if(StringUtils.isNotBlank(orgEntry.getPromotion()) && StringUtils.isNotBlank(orgEntry.getPromItemNo())){
 								if(DateUtil.dateAfter(prom.getBuyStartTime(),curEntry.getStartDispDate())){
 									if("Z008".equals(prom.getPromSubType())){
-										throw new ServiceException(MessageCode.LOGIC_ERROR,orgEntry.getMatnr()+"产品有促销活动,开始日期"+format.format(curEntry.getStartDispDate())+"不能在单品满赠促销的开始配送日期"+format.format(prom.getBuyStartTime())+"之前");
+										throw new ServiceException(MessageCode.LOGIC_ERROR,orgEntry.getMatnr()+"产品参加了单品满赠促销,开始日期"+format.format(curEntry.getStartDispDate())+"不能在单品满赠促销的开始配送日期"+format.format(prom.getBuyStartTime())+"之前");
 									}
 									if("Z015".equals(prom.getPromSubType())){
-										throw new ServiceException(MessageCode.LOGIC_ERROR,orgEntry.getMatnr()+"产品有促销活动,开始日期"+format.format(curEntry.getStartDispDate())+"不能在单品满减促销的开始配送日期"+format.format(prom.getBuyStartTime())+"之前");
+										throw new ServiceException(MessageCode.LOGIC_ERROR,orgEntry.getMatnr()+"产品参加了单品满减促销,开始日期"+format.format(curEntry.getStartDispDate())+"不能在单品满减促销的开始配送日期"+format.format(prom.getBuyStartTime())+"之前");
 									}
 									if("Z016".equals(prom.getPromSubType())){
 										throw new ServiceException(MessageCode.LOGIC_ERROR,"行项目的开始日期"+format.format(curEntry.getStartDispDate())+"不能比整单满减促销的开始配送日期"+format.format(prom.getBuyStartTime())+"之前");
@@ -6303,10 +6315,10 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 								}
 								if(DateUtil.dateAfter(curEntry.getEndDispDate(),prom.getBuyStopTime())){
 									if("Z008".equals(prom.getPromSubType())){
-										throw new ServiceException(MessageCode.LOGIC_ERROR,"该订单的"+orgEntry.getMatnr()+"产品参加了整单满赠促销活动,该产品截止日期"+format.format(curEntry.getEndDispDate())+"不能在单品满赠促销的截止配送日期"+format.format(prom.getBuyStopTime())+"之后");
+										throw new ServiceException(MessageCode.LOGIC_ERROR,"该订单的"+orgEntry.getMatnr()+"产品参加了单品满赠促销活动,该产品截止日期"+format.format(curEntry.getEndDispDate())+"不能在单品满赠促销的截止配送日期"+format.format(prom.getBuyStopTime())+"之后");
 									}
 									if("Z015".equals(prom.getPromSubType())){
-										throw new ServiceException(MessageCode.LOGIC_ERROR,"该订单的"+orgEntry.getMatnr()+"产品参加了整单满减促销活动,该产品截止日期"+format.format(curEntry.getEndDispDate())+"不能在单品满减促销的截止配送日期"+format.format(prom.getBuyStopTime())+"之后");
+										throw new ServiceException(MessageCode.LOGIC_ERROR,"该订单的"+orgEntry.getMatnr()+"产品参加了单品满减促销活动,该产品截止日期"+format.format(curEntry.getEndDispDate())+"不能在单品满减促销的截止配送日期"+format.format(prom.getBuyStopTime())+"之后");
 									}
 									if("Z016".equals(prom.getPromSubType())){
 										throw new ServiceException(MessageCode.LOGIC_ERROR,"行项目的截止日期"+format.format(curEntry.getEndDispDate())+"不能比整单满减促销的截止配送日期"+format.format(prom.getBuyStopTime())+"之后");
@@ -6321,7 +6333,7 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 
 								if(ContentDiffrentUtil.isDiffrent(orgEntry.getIsStop(),curEntry.getIsStop())){
 									if("Y".equals(curEntry.getIsStop()) && curEntry.getStopStartDate()!=null) {
-											throw new ServiceException(MessageCode.LOGIC_ERROR, "没有收款的参加单品促销的订单，不能停订促销产品!");
+											throw new ServiceException(MessageCode.LOGIC_ERROR, "该订单没有收款参加了单品促销的，不能停订促销产品!");
 									}
 								}
 							}
@@ -6361,7 +6373,7 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 		if(itemPromFlag){
 			if("Z015".equals(prom.getPromSubType())){
 				boolean flag = 	curEntrys.stream().anyMatch(entry->StringUtils.isNotBlank(entry.getPromotion()) && StringUtils.isNotBlank(entry.getPromItemNo()));
-				//整单促销行项目被删除
+				//参加促销行项目被删除
 				if(!flag){
 					orgOrder.setDiscountAmt(BigDecimal.ZERO);
 				}
@@ -11288,7 +11300,7 @@ public static int dayOfTwoDay(Date day1,Date day2) {
 		if(StringUtils.isNotBlank(orgOrder.getPromotion()) && StringUtils.isNotBlank(orgOrder.getPromItemNo())){
 			orderPromFlag = true;
 			prom = promotionService.selectPromotionByPromNoAndItemNo(orgOrder.getPromotion(),orgOrder.getPromItemNo());
-			if(prom==null)throw new ServiceException(MessageCode.LOGIC_ERROR,"该订单参与了促销，但是没有获取到促销信息，请查看！！！");
+			if(prom==null)throw new ServiceException(MessageCode.LOGIC_ERROR,"该订单参与了整单促销,促销号:"+orgOrder.getPromotion()+"促销行号为："+orgOrder.getPromItemNo()+"，但是没有获取到促销信息，请查看！！！");
 
 		}
 		boolean itemPromFlag = false;
@@ -11299,7 +11311,7 @@ public static int dayOfTwoDay(Date day1,Date day2) {
 					List<TPlanOrderItem> entry = orgEntrys.stream().filter(e->(StringUtils.isNotBlank(e.getPromotion()) && StringUtils.isNotBlank(e.getPromItemNo()))).collect(Collectors.toList());
 					if(entry.size()>1) throw new ServiceException(MessageCode.LOGIC_ERROR,"该订单多个行项目都参加了促销，请查看！！！");
 					prom = promotionService.selectPromotionByPromNoAndItemNo(entry.get(0).getPromotion(),entry.get(0).getPromItemNo());
-					if(prom==null)throw new ServiceException(MessageCode.LOGIC_ERROR,"该订单参与了促销，但是没有获取到促销信息，请查看！！！");
+					if(prom==null)throw new ServiceException(MessageCode.LOGIC_ERROR,"该订单参与了促销，但是没有获取到促销信息，促销号:"+entry.get(0).getPromotion()+"促销行号为："+entry.get(0).getPromItemNo()+"请查看！！！");
 				}
 			}
 			if(itemPromFlag || orderPromFlag){
@@ -11311,10 +11323,10 @@ public static int dayOfTwoDay(Date day1,Date day2) {
 							if(StringUtils.isNotBlank(orgEntry.getPromotion()) && StringUtils.isNotBlank(orgEntry.getPromItemNo())){
 								if(DateUtil.dateAfter(prom.getBuyStartTime(),curEntry.getStartDispDate())){
 									if("Z008".equals(prom.getPromSubType())){
-										throw new ServiceException(MessageCode.LOGIC_ERROR,orgEntry.getMatnr()+"产品有促销活动,开始日期"+format.format(curEntry.getStartDispDate())+"不能在单品满赠促销的开始配送日期"+format.format(prom.getBuyStartTime())+"之前");
+										throw new ServiceException(MessageCode.LOGIC_ERROR,orgEntry.getMatnr()+"产品参加了单品满赠促销活动,开始日期"+format.format(curEntry.getStartDispDate())+"不能在单品满赠促销的开始配送日期"+format.format(prom.getBuyStartTime())+"之前");
 									}
 									if("Z015".equals(prom.getPromSubType())){
-										throw new ServiceException(MessageCode.LOGIC_ERROR,orgEntry.getMatnr()+"产品有促销活动,开始日期"+format.format(curEntry.getStartDispDate())+"不能在单品满减促销的开始配送日期"+format.format(prom.getBuyStartTime())+"之前");
+										throw new ServiceException(MessageCode.LOGIC_ERROR,orgEntry.getMatnr()+"产品参加了单品满减促销活动,开始日期"+format.format(curEntry.getStartDispDate())+"不能在单品满减促销的开始配送日期"+format.format(prom.getBuyStartTime())+"之前");
 									}
 									if("Z016".equals(prom.getPromSubType())){
 										throw new ServiceException(MessageCode.LOGIC_ERROR,"行项目的开始日期"+format.format(curEntry.getStartDispDate())+"不能比整单满减促销的开始配送日期"+format.format(prom.getBuyStartTime())+"之前");
