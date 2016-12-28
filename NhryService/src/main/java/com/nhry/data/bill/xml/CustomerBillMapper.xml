@@ -29,6 +29,11 @@
         <result column="LAST_MODIFIED_BY_TXT" property="lastModifiedByTxt" jdbcType="VARCHAR" />
     </resultMap>
 
+    <resultMap id="BillResultMap" type="com.nhry.data.bill.domain.TMstRecvBill" extends="BaseResultMap">
+        <result column="EMP_NO" property="empNo" jdbcType="VARCHAR" />
+        <result column="BRANCH_NO" property="branchNo" jdbcType="VARCHAR" />
+        <result column="OFFSET_AMT" property="offsetAmt" jdbcType="DECIMAL" />
+    </resultMap>
 
     <resultMap id="CollectResultMap" type="com.nhry.model.bill.CollectOrderBillModel" >
         <id column="ORDER_NO" property="orderNo" jdbcType="VARCHAR" />
@@ -789,5 +794,45 @@
     <delete id="delReceipt" parameterType="string">
         DELETE  FROM  t_mst_recv_bill WHERE  RECEIPT_NO = #{receiptNo}
     </delete>
-
+    <select id="getBranchEmpPayment" resultMap="BillResultMap" parameterType="com.nhry.data.bill.domain.TMstRecvBill" >
+        SELECT
+        o.BRANCH_NO,
+        o.EMP_NO ,
+        sum(b.AMT)  AMT,
+        b.RECEIPT_DATE,
+        b.HAD_OFFSET,
+        sum(f.AMT) OFFSET_AMT
+        FROM t_preorder  o
+        LEFT JOIN t_mst_recv_bill  b on o.ORDER_NO = b.ORDER_NO
+        LEFT JOIN t_mst_recv_offset f on b.RECEIPT_NO = f.RECEIPT_NO
+        WHERE b.`STATUS`='20'
+        and o.BRANCH_NO= #{branchNo,jdbcType=VARCHAR}
+        <if test="receiptDate != null" >
+            and b.RECEIPT_DATE = #{receiptDate,jdbcType=DATE}
+        </if>
+        GROUP BY b.RECEIPT_DATE,o.EMP_NO
+        ORDER BY o.ORDER_NO,o.EMP_NO
+    </select>
+    <select id="getBranchEmpPaymentByEmpNo" resultMap="BillResultMap" parameterType="com.nhry.data.bill.domain.TMstRecvBill" >
+        SELECT
+        o.BRANCH_NO,
+        o.EMP_NO ,
+        sum(b.AMT)  AMT,
+        b.RECEIPT_DATE,
+        b.HAD_OFFSET,
+        sum(f.AMT) OFFSET_AMT
+        FROM t_preorder  o
+        LEFT JOIN t_mst_recv_bill  b on o.ORDER_NO = b.ORDER_NO
+        LEFT JOIN t_mst_recv_offset f on b.RECEIPT_NO = f.RECEIPT_NO
+        WHERE b.`STATUS`='20'
+        and o.BRANCH_NO= #{branchNo,jdbcType=VARCHAR}
+        <if test="empNo != null" >
+            and o.EMP_NO = #{empNo,jdbcType=VARCHAR}
+        </if>
+        <if test="receiptDate != null" >
+            and b.RECEIPT_DATE = #{receiptDate,jdbcType=DATE}
+        </if>
+        GROUP BY b.RECEIPT_DATE,o.EMP_NO
+        ORDER BY o.ORDER_NO,o.EMP_NO
+    </select>
 </mapper>

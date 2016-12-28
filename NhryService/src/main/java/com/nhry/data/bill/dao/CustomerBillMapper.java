@@ -6,6 +6,7 @@ import com.nhry.data.bill.domain.TMstRefund;
 import com.nhry.model.bill.CollectOrderBillModel;
 import com.nhry.model.bill.CustBillQueryModel;
 
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -38,6 +39,23 @@ public interface CustomerBillMapper {
     List<CollectOrderBillModel> selectNoItemsCollectByOrders2(CustBillQueryModel cModel);
 
     int delReceipt(String receiptNo);
+
+    /**
+     * 本日交款-奶站、日期，统计送奶员本日交款总额
+     * @param branchNo
+     * @param date
+     * @return
+     */
+    List<TMstRecvBill> getBranchEmpPayment(String branchNo,Date date);
+
+    /**
+     * 本日交款-送奶员纬度查询
+     * @param branchNo
+     * @param date
+     * @param empNo
+     * @return
+     */
+    TMstRecvBill getBranchEmpPaymentByEmpNo(String branchNo,Date date,String empNo);
 
 
 }

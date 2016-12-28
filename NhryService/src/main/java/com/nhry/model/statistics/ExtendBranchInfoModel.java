@@ -10,6 +10,7 @@ public class ExtendBranchInfoModel extends BranchInfoModel {
     String empNo;
     Date dateStart;
     Date dateEnd;
+    String monthDate;
 
 
     public String getEmpNo() {
@@ -34,5 +35,13 @@ public class ExtendBranchInfoModel extends BranchInfoModel {
 
     public void setDateEnd(Date orderDateEnd) {
         this.dateEnd = orderDateEnd;
+    }
+
+    public String getMonthDate() {
+        return monthDate;
+    }
+
+    public void setMonthDate(String monthDate) {
+        this.monthDate = monthDate;
     }
 }

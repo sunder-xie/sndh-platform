@@ -27,5 +27,6 @@
     <bean class="com.nhry.service.statistics.impl.BranchInfoServiceImpl" id="branchInfoService">
         <property name="branchInfoMapper" ref="branchInfoMapper"/>
         <property name="userSessionService" ref="userSessionService"/>
+        <property name="outMilkService" ref="outMilkService"/>
     </bean>
 </beans>

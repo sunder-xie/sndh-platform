@@ -36,6 +36,9 @@ public class TMstRecvBill implements Serializable {
     private String lastModifiedBy;
     private String lastModifiedByTxt;
     private BigDecimal discountAmt;
+    private String empNo;
+    private String branchNo;
+    private BigDecimal offsetAmt;
 
     public String getHadOffsetNo() {
         return hadOffsetNo;
@@ -259,5 +262,29 @@ public class TMstRecvBill implements Serializable {
 
     public void setLastModifiedByTxt(String lastModifiedByTxt) {
         this.lastModifiedByTxt = lastModifiedByTxt;
+    }
+
+    public String getEmpNo() {
+        return empNo;
+    }
+
+    public void setEmpNo(String empNo) {
+        this.empNo = empNo;
+    }
+
+    public String getBranchNo() {
+        return branchNo;
+    }
+
+    public void setBranchNo(String branchNo) {
+        this.branchNo = branchNo;
+    }
+
+    public BigDecimal getOffsetAmt() {
+        return offsetAmt;
+    }
+
+    public void setOffsetAmt(BigDecimal offsetAmt) {
+        this.offsetAmt = offsetAmt;
     }
 }
