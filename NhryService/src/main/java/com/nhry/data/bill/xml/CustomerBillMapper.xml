@@ -163,7 +163,7 @@
                #{hadOffset,jdbcType=VARCHAR},
             </if>
             <if test="hadOffsetNo != null">
-                HAD_OFFSET_NO = #{hadOffsetNo,jdbcType=VARCHAR},
+               #{hadOffsetNo,jdbcType=VARCHAR},
             </if>
             <if test="receiptDate != null">
                 #{receiptDate,jdbcType=DATE},

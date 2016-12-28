@@ -367,6 +367,7 @@ public class CustomerBillServiceImpl implements CustomerBillService {
         customerBill.setVipCustNo(order.getMilkmemberNo());
         customerBill.setCreateAt(new Date());
         customerBill.setCreateBy(user.getLoginName());
+        customerBill.setHadOffset("N");
         customerBill.setCreateByTxt(user.getDisplayName());
         customerBill.setEndTime(order.getEndDate());
         TVipAcct ac = new TVipAcct();
