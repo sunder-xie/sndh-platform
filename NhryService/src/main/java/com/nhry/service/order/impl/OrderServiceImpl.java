@@ -3081,6 +3081,7 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 			order.setIsPaid("Y");
 			order.setPaymentmethod("20");
 			order.setPayDate(new Date());
+			order.setPayDateStr(format.format(new Date()));
 			/*
 			if(!"Y".equals(order.getIsPaid())){
 				throw new ServiceException(MessageCode.LOGIC_ERROR,"机构订单，未收款不能创建");
