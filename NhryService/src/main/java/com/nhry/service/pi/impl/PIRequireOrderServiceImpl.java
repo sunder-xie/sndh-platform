@@ -152,43 +152,13 @@ public class PIRequireOrderServiceImpl implements PIRequireOrderService {
         orderHeader.setKUNWE2(ssmSalOrder.getOnlineCode());
         String lgort = branch.getLgort();
         if ("02".equals(branch.getBranchGroup())) {
-             items = tSsmSalOrderItemMapper.findDealerItemsForPI(ssmSalOrder.getOrderNo());
+            items = tSsmSalOrderItemMapper.findDealerItemsForPI(ssmSalOrder.getOrderNo());
             lgort = branchEx.getReslo();
-//            if("70".equals(ssmSalOrder.getPreorderSource())){
-//                RequireOrderSearch model = new RequireOrderSearch();
-//                model.setFirstDay(DateUtil.getTomorrow(ssmSalOrder.getOrderDate()));
-//                model.setSecondDay(DateUtil.getDayAfterTomorrow(ssmSalOrder.getOrderDate()));
-//                model.setBranchNo(ssmSalOrder.getBranchNo());
-//                model.setSalesOrg(ssmSalOrder.getSalesOrg());
-//                List<Map<String,String>> disCountAmtList = tSsmSalOrderItemMapper.selectPromDaliyDiscountAmtOfDearler(model);
-//                Map<String,String> disCountAmtMap = new HashMap<String,String>();
-//                disCountAmtList.forEach(item -> {disCountAmtMap.put(item.get("MATNR"),String.valueOf(item.get("DISCOUNT_AMT")));});
-//                items.forEach(item -> {
-//                    String matnr = item.get("MATNR");
-//                    if(disCountAmtMap.containsKey(matnr)){
-//                        item.put("DISCOUNT_AMT",String.valueOf(disCountAmtMap.get(matnr)));
-//                        updateDiscountAmt(disCountAmtMap, item, matnr);
-//                    }});
-//            }
         }else{
             items = tSsmSalOrderItemMapper.findItemsForPI(ssmSalOrder.getOrderNo());
-//            if("70".equals(ssmSalOrder.getPreorderSource())){
-//                RequireOrderSearch model = new RequireOrderSearch();
-//                model.setOrderDate(ssmSalOrder.getOrderDate());
-//                model.setBranchNo(ssmSalOrder.getBranchNo());
-//                model.setSalesOrg(ssmSalOrder.getSalesOrg());
-//                List<Map<String,String>> disCountAmtList = tSsmSalOrderItemMapper.selectPromDaliyDiscountAmtOfBranch(model);
-//                Map<String,String> disCountAmtMap = new HashMap<String,String>();
-//                disCountAmtList.forEach(item -> disCountAmtMap.put(item.get("MATNR"),String.valueOf(item.get("DISCOUNT_AMT"))));
-//                items.forEach(item -> {
-//                    String matnr = item.get("MATNR");
-//                    if(disCountAmtMap.containsKey(matnr)){
-//                        item.put("DISCOUNT_AMT",disCountAmtMap.get(matnr));
-//                        updateDiscountAmt(disCountAmtMap, item, matnr);
-//                    }});
-//            }
         }
-
+        //年卡返利处理
+        updateSalOrderItemDiscountAmt(ssmSalOrder, items, branch.getBranchGroup());
         orderHeader.setVTWEG(PIPropertitesUtil.getValue("PI.MasterData.mATQUERY.VKORG13"));
         if("40".equals(ssmSalOrder.getPreorderSource())) {
             orderHeader.setKUNWE2(EnvContant.getSystemConst("online_code"));
@@ -235,6 +205,40 @@ public class PIRequireOrderServiceImpl implements PIRequireOrderService {
 //            }
 //        }
         return message;
+    }
+
+    /**
+     * 查询年卡返利金额，发送ERP，更新销售订单明细年卡折扣金额，
+     * @param ssmSalOrder
+     * @param items
+     * @param branchGroup
+     */
+    private void updateSalOrderItemDiscountAmt(TSsmSalOrder ssmSalOrder, List<Map<String, String>> items, String branchGroup) {
+        RequireOrderSearch model = new RequireOrderSearch();
+        model.setFirstDay(DateUtil.getTomorrow(ssmSalOrder.getOrderDate()));
+        model.setSecondDay(DateUtil.getDayAfterTomorrow(ssmSalOrder.getOrderDate()));
+        model.setBranchNo(ssmSalOrder.getBranchNo());
+        model.setSalesOrg(ssmSalOrder.getSalesOrg());
+        model.setOrderDate(ssmSalOrder.getOrderDate());
+        List<Map<String,String>> disCountAmtList;
+        if("02".equals(branchGroup)){
+            disCountAmtList = tSsmSalOrderItemMapper.selectPromDaliyDiscountAmtOfDearler(model);
+        }else{
+            disCountAmtList = tSsmSalOrderItemMapper.selectPromDaliyDiscountAmtOfBranch(model);
+        }
+        if(disCountAmtList != null && disCountAmtList.size()>0) {
+            Map<String, String> disCountAmtMap = new HashMap<String, String>();
+            disCountAmtList.forEach(item -> {
+                disCountAmtMap.put(item.get("MATNR"), String.valueOf(item.get("DISCOUNT_AMT")));
+            });
+            items.forEach(item -> {
+                String matnr = item.get("MATNR");
+                if (disCountAmtMap.containsKey(matnr)) {
+                    item.put("DISCOUNT_AMT", String.valueOf(disCountAmtMap.get(matnr)));
+                    updateDiscountAmt(disCountAmtMap, item, matnr);
+                }
+            });
+        }
     }
 
     private void updateDiscountAmt(Map<String, String> disCountAmtMap, Map<String, String> item, String matnr) {

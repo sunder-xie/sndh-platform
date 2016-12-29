@@ -473,7 +473,7 @@
   </update>
   <update id="uptYfrechAndYGrowthByOrderNoAndItemNo" parameterType="com.nhry.model.order.OrderPointModel">
     UPDATE  t_mst_plan_order_item
-    SET   YFRESH = #{yfresh,jdbcType=DECIMAL},YGROWTH = #{ygrowth,jdbcType=DECIMAL}
+    SET   YFRESH = YFRESH + #{yfresh,jdbcType=DECIMAL},YGROWTH = YGROWTH + #{ygrowth,jdbcType=DECIMAL}
     where ITEM_NO = #{itemNo,jdbcType=INTEGER}
   </update>
 
