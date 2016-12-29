@@ -148,7 +148,7 @@
         SELECT
         i.ORDER_NO,
         i.MATNR matnr,
-        r.PRICE1 * (1 - o.DISCOUNT_AMT) * i.QTY AS DISCOUNT_AMT
+        r.PRICE1 * (1 - IFNULL(o.DISCOUNT_AMT,0)) * i.QTY AS DISCOUNT_AMT
         FROM
         t_mst_order_daliy_plan_item i
         JOIN t_preorder o ON i.ORDER_NO = o.ORDER_NO
@@ -176,10 +176,11 @@
         matnr;
     </select>
     <select id="selectPromDaliyDiscountAmtOfBranch" resultType="java.util.HashMap" parameterType="com.nhry.model.milktrans.RequireOrderSearch">
-        SELECT a.MATNR,sum(a.DISCOUNT_AMT) AS DISCOUNT_AMT from (
+        SELECT a.MATNR,sum(a.DISCOUNT_AMT)  DISCOUNT_AMT from
+         (
                 SELECT o.ORDER_NO,
                 di.CONFIRM_MATNR MATNR,
-                r.PRICE1 * (1 - o.DISCOUNT_AMT) * di.CONFIRM_QTY AS DISCOUNT_AMT
+                r.PRICE1 * (1 - IFNULL(o.DISCOUNT_AMT,0)) * di.CONFIRM_QTY AS DISCOUNT_AMT
             FROM t_mst_disp_order_item di
             LEFT JOIN  t_mst_disp_order ti ON di.ORDER_NO = ti.ORDER_NO
             LEFT JOIN t_preorder o on 	di.ORG_ORDER_NO = o.ORDER_NO
