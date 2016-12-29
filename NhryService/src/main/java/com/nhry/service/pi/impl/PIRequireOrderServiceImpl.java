@@ -162,11 +162,11 @@ public class PIRequireOrderServiceImpl implements PIRequireOrderService {
                 model.setSalesOrg(ssmSalOrder.getSalesOrg());
                 List<Map<String,String>> disCountAmtList = tSsmSalOrderItemMapper.selectPromDaliyDiscountAmtOfDearler(model);
                 Map<String,String> disCountAmtMap = new HashMap<String,String>();
-                disCountAmtList.forEach(item -> {disCountAmtMap.put(item.get("MATNR"),item.get("DISCOUNT_AMT"));});
+                disCountAmtList.forEach(item -> {disCountAmtMap.put(item.get("MATNR"),String.valueOf(item.get("DISCOUNT_AMT")));});
                 items.forEach(item -> {
                     String matnr = item.get("MATNR");
                     if(disCountAmtMap.containsKey(matnr)){
-                        item.put("DISCOUNT_AMT",disCountAmtMap.get(matnr).toString());
+                        item.put("DISCOUNT_AMT",String.valueOf(disCountAmtMap.get(matnr)));
                         updateDiscountAmt(disCountAmtMap, item, matnr);
                     }});
             }
@@ -179,11 +179,11 @@ public class PIRequireOrderServiceImpl implements PIRequireOrderService {
                 model.setSalesOrg(ssmSalOrder.getSalesOrg());
                 List<Map<String,String>> disCountAmtList = tSsmSalOrderItemMapper.selectPromDaliyDiscountAmtOfBranch(model);
                 Map<String,String> disCountAmtMap = new HashMap<String,String>();
-                disCountAmtList.forEach(item -> disCountAmtMap.put(item.get("MATNR"),item.get("DISCOUNT_AMT")));
+                disCountAmtList.forEach(item -> disCountAmtMap.put(item.get("MATNR"),String.valueOf(item.get("DISCOUNT_AMT"))));
                 items.forEach(item -> {
                     String matnr = item.get("MATNR");
                     if(disCountAmtMap.containsKey(matnr)){
-                        item.put("DISCOUNT_AMT",disCountAmtMap.get(matnr).toString());
+                        item.put("DISCOUNT_AMT",disCountAmtMap.get(matnr));
                         updateDiscountAmt(disCountAmtMap, item, matnr);
                     }});
             }
@@ -240,13 +240,13 @@ public class PIRequireOrderServiceImpl implements PIRequireOrderService {
     private void updateDiscountAmt(Map<String, String> disCountAmtMap, Map<String, String> item, String matnr) {
         TSsmSalOrderItems ssmSalOrderItems = new TSsmSalOrderItems();
         try {
-            ssmSalOrderItems.setOrderDate(format.parse(item.get("ORDER_DATE").toString()));
+            ssmSalOrderItems.setOrderDate(format.parse(format.format(item.get("ORDER_DATE"))));
         } catch (ParseException e) {
 
         }
-        ssmSalOrderItems.setItemNo(Integer.parseInt(item.get("ITEM_NO").toString()));
+        ssmSalOrderItems.setItemNo(Integer.parseInt(String.valueOf(item.get("ITEM_NO"))));
         ssmSalOrderItems.setOrderNo(item.get("ORDER_NO"));
-        ssmSalOrderItems.setDiscountAmt(new BigDecimal(disCountAmtMap.get(matnr).toString()));
+        ssmSalOrderItems.setDiscountAmt(new BigDecimal(String.valueOf(disCountAmtMap.get(matnr))));
         tSsmSalOrderItemMapper.updateDiscountAmt(ssmSalOrderItems);
     }
 

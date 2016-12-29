@@ -3071,13 +3071,20 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 		if(StringUtils.isBlank(order.getPreorderSource())){
 			order.setPreorderSource("30");//订单来源  页面中来源都是30（奶站） 10电商20征订40牛奶钱包50送奶工APP 60 电话 70 机构
 		}
+		order.setPaymentmethod(order.getPaymentStat());//10 后款 20 先款
+
 		if("70".equals(order.getPreorderSource())){
 			if(StringUtils.isBlank(order.getOnlineSourceType())){
 				throw new ServiceException(MessageCode.LOGIC_ERROR,"机构订单，机构编码不能为空");
 			}
+			//机构订单创建默认已收款 预付款
+			order.setIsPaid("Y");
+			order.setPaymentmethod("20");
+			order.setPayDate(new Date());
+			/*
 			if(!"Y".equals(order.getIsPaid())){
 				throw new ServiceException(MessageCode.LOGIC_ERROR,"机构订单，未收款不能创建");
-			}
+			}*/
 		}
 		if(StringUtils.isBlank(order.getIsIntegration())){
 			order.setIsIntegration("Y");//默认是积分订单
@@ -3085,7 +3092,7 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 		//		order.setMilkmemberNo(milkmemberNo);//喝奶人编号
 		//		order.setEmpNo(empNo);//送奶员编号
 		//		order.setInitAmt(initAmt);//页面输入的初始订单金额
-		order.setPaymentmethod(order.getPaymentStat());//10 后款 20 先款
+
 		if("Y".equals(order.getIsPaid())){
 			if(StringUtils.isBlank(order.getPayDateStr())){
 				throw new ServiceException(MessageCode.LOGIC_ERROR,"已付款订单，支付时间payDateStr字段不能为空!");
