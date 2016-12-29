@@ -154,39 +154,39 @@ public class PIRequireOrderServiceImpl implements PIRequireOrderService {
         if ("02".equals(branch.getBranchGroup())) {
              items = tSsmSalOrderItemMapper.findDealerItemsForPI(ssmSalOrder.getOrderNo());
             lgort = branchEx.getReslo();
-            if("70".equals(ssmSalOrder.getPreorderSource())){
-                RequireOrderSearch model = new RequireOrderSearch();
-                model.setFirstDay(DateUtil.getTomorrow(ssmSalOrder.getOrderDate()));
-                model.setSecondDay(DateUtil.getDayAfterTomorrow(ssmSalOrder.getOrderDate()));
-                model.setBranchNo(ssmSalOrder.getBranchNo());
-                model.setSalesOrg(ssmSalOrder.getSalesOrg());
-                List<Map<String,String>> disCountAmtList = tSsmSalOrderItemMapper.selectPromDaliyDiscountAmtOfDearler(model);
-                Map<String,String> disCountAmtMap = new HashMap<String,String>();
-                disCountAmtList.forEach(item -> {disCountAmtMap.put(item.get("MATNR"),String.valueOf(item.get("DISCOUNT_AMT")));});
-                items.forEach(item -> {
-                    String matnr = item.get("MATNR");
-                    if(disCountAmtMap.containsKey(matnr)){
-                        item.put("DISCOUNT_AMT",String.valueOf(disCountAmtMap.get(matnr)));
-                        updateDiscountAmt(disCountAmtMap, item, matnr);
-                    }});
-            }
+//            if("70".equals(ssmSalOrder.getPreorderSource())){
+//                RequireOrderSearch model = new RequireOrderSearch();
+//                model.setFirstDay(DateUtil.getTomorrow(ssmSalOrder.getOrderDate()));
+//                model.setSecondDay(DateUtil.getDayAfterTomorrow(ssmSalOrder.getOrderDate()));
+//                model.setBranchNo(ssmSalOrder.getBranchNo());
+//                model.setSalesOrg(ssmSalOrder.getSalesOrg());
+//                List<Map<String,String>> disCountAmtList = tSsmSalOrderItemMapper.selectPromDaliyDiscountAmtOfDearler(model);
+//                Map<String,String> disCountAmtMap = new HashMap<String,String>();
+//                disCountAmtList.forEach(item -> {disCountAmtMap.put(item.get("MATNR"),String.valueOf(item.get("DISCOUNT_AMT")));});
+//                items.forEach(item -> {
+//                    String matnr = item.get("MATNR");
+//                    if(disCountAmtMap.containsKey(matnr)){
+//                        item.put("DISCOUNT_AMT",String.valueOf(disCountAmtMap.get(matnr)));
+//                        updateDiscountAmt(disCountAmtMap, item, matnr);
+//                    }});
+//            }
         }else{
             items = tSsmSalOrderItemMapper.findItemsForPI(ssmSalOrder.getOrderNo());
-            if("70".equals(ssmSalOrder.getPreorderSource())){
-                RequireOrderSearch model = new RequireOrderSearch();
-                model.setOrderDate(ssmSalOrder.getOrderDate());
-                model.setBranchNo(ssmSalOrder.getBranchNo());
-                model.setSalesOrg(ssmSalOrder.getSalesOrg());
-                List<Map<String,String>> disCountAmtList = tSsmSalOrderItemMapper.selectPromDaliyDiscountAmtOfBranch(model);
-                Map<String,String> disCountAmtMap = new HashMap<String,String>();
-                disCountAmtList.forEach(item -> disCountAmtMap.put(item.get("MATNR"),String.valueOf(item.get("DISCOUNT_AMT"))));
-                items.forEach(item -> {
-                    String matnr = item.get("MATNR");
-                    if(disCountAmtMap.containsKey(matnr)){
-                        item.put("DISCOUNT_AMT",disCountAmtMap.get(matnr));
-                        updateDiscountAmt(disCountAmtMap, item, matnr);
-                    }});
-            }
+//            if("70".equals(ssmSalOrder.getPreorderSource())){
+//                RequireOrderSearch model = new RequireOrderSearch();
+//                model.setOrderDate(ssmSalOrder.getOrderDate());
+//                model.setBranchNo(ssmSalOrder.getBranchNo());
+//                model.setSalesOrg(ssmSalOrder.getSalesOrg());
+//                List<Map<String,String>> disCountAmtList = tSsmSalOrderItemMapper.selectPromDaliyDiscountAmtOfBranch(model);
+//                Map<String,String> disCountAmtMap = new HashMap<String,String>();
+//                disCountAmtList.forEach(item -> disCountAmtMap.put(item.get("MATNR"),String.valueOf(item.get("DISCOUNT_AMT"))));
+//                items.forEach(item -> {
+//                    String matnr = item.get("MATNR");
+//                    if(disCountAmtMap.containsKey(matnr)){
+//                        item.put("DISCOUNT_AMT",disCountAmtMap.get(matnr));
+//                        updateDiscountAmt(disCountAmtMap, item, matnr);
+//                    }});
+//            }
         }
 
         orderHeader.setVTWEG(PIPropertitesUtil.getValue("PI.MasterData.mATQUERY.VKORG13"));
@@ -240,7 +240,7 @@ public class PIRequireOrderServiceImpl implements PIRequireOrderService {
     private void updateDiscountAmt(Map<String, String> disCountAmtMap, Map<String, String> item, String matnr) {
         TSsmSalOrderItems ssmSalOrderItems = new TSsmSalOrderItems();
         try {
-            ssmSalOrderItems.setOrderDate(format.parse(format.format(item.get("ORDER_DATE"))));
+            ssmSalOrderItems.setOrderDate(format.parse(String.valueOf(item.get("ORDER_DATE"))));
         } catch (ParseException e) {
 
         }
@@ -415,11 +415,11 @@ public class PIRequireOrderServiceImpl implements PIRequireOrderService {
                             if(price == null) {
                                 price = new TSsmSalFactoryPrice();
                                 price.setCreateAt(new Date());
-                                price.setCreateBy(user.getLoginName());
+//                                price.setCreateBy(user.getLoginName());
                                 price.setBranchNo(order.getBranchNo());
                                 price.setMatnr(d.getMATNR());
                                 price.setOrderDate(d.getLFDAT());
-                                price.setSalesOrg(user.getSalesOrg());
+                                price.setSalesOrg(order.getSalesOrg());
                                 price.setFactoryPrice(d.getCmpre());
                                 ssmSalFactoryPriceMapper.insertFactoryPrice(price);
                             }
