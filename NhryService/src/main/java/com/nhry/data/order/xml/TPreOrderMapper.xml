@@ -1030,7 +1030,7 @@
     <if test="orderDateEnd != null and orderDateEnd != ''">
      		and END_DATE &lt;= #{orderDateEnd,jdbcType=DATE}
     </if>
-    		AND (RESUME_FLAG is null or RESUME_FLAG != "Y")
+    		AND (RESUME_FLAG is null or RESUME_FLAG = "N")
     		AND PREORDER_STAT = '10'
   </select>
   <update id="uptManHandOrder" parameterType="com.nhry.model.order.UpdateManHandOrderModel" >
