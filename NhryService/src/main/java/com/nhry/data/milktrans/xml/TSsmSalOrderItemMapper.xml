@@ -191,7 +191,7 @@
                 JOIN t_mst_disp_order ds ON it.ORDER_NO = ds.ORDER_NO
                 AND ds.`STATUS` = '20'
                 AND it.CONFIRM_QTY > 0
-                AND ds.DISP_DATE = ${orderDate}
+                AND ds.DISP_DATE = ${orderDate,jdbcType=DATE}
                 AND ds.BRANCH_NO = ${branchNo}
                 JOIN t_preorder o ON o.ORDER_NO = it.ORG_ORDER_NO
                 JOIN t_promotion p ON p.PROM_NO = o.PROMOTION
