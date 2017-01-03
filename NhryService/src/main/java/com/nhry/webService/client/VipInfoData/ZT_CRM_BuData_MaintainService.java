@@ -52,19 +52,38 @@ public interface ZT_CRM_BuData_MaintainService {
     /**
      * Auto generated method signature
      *
-     * @param z_CRM_MEMB_ZTAB0000LQ_UPDATE4
+     * @param z_CRM_CREATE_REBATE_BY_TRADE4
      */
-    public com.nhry.webService.client.VipInfoData.functions.Z_CRM_MEMB_ZTAB0000LQ_UPDATEResponse subscriberMaintain(
-            com.nhry.webService.client.VipInfoData.functions.Z_CRM_MEMB_ZTAB0000LQ_UPDATE z_CRM_MEMB_ZTAB0000LQ_UPDATE4)
+    public com.nhry.webService.client.VipInfoData.functions.Z_CRM_CREATE_REBATE_BY_TRADEResponse createRebateByTrade(
+            com.nhry.webService.client.VipInfoData.functions.Z_CRM_CREATE_REBATE_BY_TRADE z_CRM_CREATE_REBATE_BY_TRADE4)
         throws java.rmi.RemoteException;
 
     /**
      * Auto generated method signature for Asynchronous Invocations
      *
-     * @param z_CRM_MEMB_ZTAB0000LQ_UPDATE4
+     * @param z_CRM_CREATE_REBATE_BY_TRADE4
+     */
+    public void startcreateRebateByTrade(
+            com.nhry.webService.client.VipInfoData.functions.Z_CRM_CREATE_REBATE_BY_TRADE z_CRM_CREATE_REBATE_BY_TRADE4,
+            final ZT_CRM_BuData_MaintainServiceCallbackHandler callback)
+        throws java.rmi.RemoteException;
+
+    /**
+     * Auto generated method signature
+     *
+     * @param z_CRM_MEMB_ZTAB0000LQ_UPDATE6
+     */
+    public com.nhry.webService.client.VipInfoData.functions.Z_CRM_MEMB_ZTAB0000LQ_UPDATEResponse subscriberMaintain(
+            com.nhry.webService.client.VipInfoData.functions.Z_CRM_MEMB_ZTAB0000LQ_UPDATE z_CRM_MEMB_ZTAB0000LQ_UPDATE6)
+        throws java.rmi.RemoteException;
+
+    /**
+     * Auto generated method signature for Asynchronous Invocations
+     *
+     * @param z_CRM_MEMB_ZTAB0000LQ_UPDATE6
      */
     public void startsubscriberMaintain(
-            com.nhry.webService.client.VipInfoData.functions.Z_CRM_MEMB_ZTAB0000LQ_UPDATE z_CRM_MEMB_ZTAB0000LQ_UPDATE4,
+            com.nhry.webService.client.VipInfoData.functions.Z_CRM_MEMB_ZTAB0000LQ_UPDATE z_CRM_MEMB_ZTAB0000LQ_UPDATE6,
             final ZT_CRM_BuData_MaintainServiceCallbackHandler callback)
         throws java.rmi.RemoteException;
 

@@ -23,7 +23,7 @@ public class ZSCRM_SNG_TS implements org.apache.axis2.databinding.ADBBean {
     /**
      * field for SALES_ORG
      */
-    protected com.nhry.webService.client.VipInfoData.functions.SALES_ORG_type3 localSALES_ORG;
+    protected SALES_ORG_type3 localSALES_ORG;
 
     /*  This tracker boolean wil be used to detect whether the user called the set method
      *   for this attribute. It will be used to determine whether to include this field
@@ -34,7 +34,7 @@ public class ZSCRM_SNG_TS implements org.apache.axis2.databinding.ADBBean {
     /**
      * field for ZZOBJECT_ID
      */
-    protected com.nhry.webService.client.VipInfoData.functions.ZZOBJECT_ID_type1 localZZOBJECT_ID;
+    protected ZZOBJECT_ID_type1 localZZOBJECT_ID;
 
     /*  This tracker boolean wil be used to detect whether the user called the set method
      *   for this attribute. It will be used to determine whether to include this field
@@ -45,7 +45,7 @@ public class ZSCRM_SNG_TS implements org.apache.axis2.databinding.ADBBean {
     /**
      * field for CATEGORY1
      */
-    protected com.nhry.webService.client.VipInfoData.functions.CATEGORY1_type1 localCATEGORY1;
+    protected CATEGORY1_type1 localCATEGORY1;
 
     /*  This tracker boolean wil be used to detect whether the user called the set method
      *   for this attribute. It will be used to determine whether to include this field
@@ -56,7 +56,7 @@ public class ZSCRM_SNG_TS implements org.apache.axis2.databinding.ADBBean {
     /**
      * field for CATEGORY2
      */
-    protected com.nhry.webService.client.VipInfoData.functions.CATEGORY2_type1 localCATEGORY2;
+    protected CATEGORY2_type1 localCATEGORY2;
 
     /*  This tracker boolean wil be used to detect whether the user called the set method
      *   for this attribute. It will be used to determine whether to include this field
@@ -67,7 +67,7 @@ public class ZSCRM_SNG_TS implements org.apache.axis2.databinding.ADBBean {
     /**
      * field for CATEGORY3
      */
-    protected com.nhry.webService.client.VipInfoData.functions.CATEGORY3_type1 localCATEGORY3;
+    protected CATEGORY3_type1 localCATEGORY3;
 
     /*  This tracker boolean wil be used to detect whether the user called the set method
      *   for this attribute. It will be used to determine whether to include this field
@@ -100,7 +100,7 @@ public class ZSCRM_SNG_TS implements org.apache.axis2.databinding.ADBBean {
     /**
      * field for DESCRIPTION
      */
-    protected com.nhry.webService.client.VipInfoData.functions.DESCRIPTION_type1 localDESCRIPTION;
+    protected DESCRIPTION_type1 localDESCRIPTION;
 
     /*  This tracker boolean wil be used to detect whether the user called the set method
      *   for this attribute. It will be used to determine whether to include this field
@@ -127,7 +127,7 @@ public class ZSCRM_SNG_TS implements org.apache.axis2.databinding.ADBBean {
      * Auto generated getter method
      * @return com.nhry.webService.client.VipInfoData.functions.SALES_ORG_type3
      */
-    public com.nhry.webService.client.VipInfoData.functions.SALES_ORG_type3 getSALES_ORG() {
+    public SALES_ORG_type3 getSALES_ORG() {
         return localSALES_ORG;
     }
 
@@ -136,7 +136,7 @@ public class ZSCRM_SNG_TS implements org.apache.axis2.databinding.ADBBean {
      * @param param SALES_ORG
      */
     public void setSALES_ORG(
-        com.nhry.webService.client.VipInfoData.functions.SALES_ORG_type3 param) {
+        SALES_ORG_type3 param) {
         localSALES_ORGTracker = param != null;
 
         this.localSALES_ORG = param;
@@ -150,7 +150,7 @@ public class ZSCRM_SNG_TS implements org.apache.axis2.databinding.ADBBean {
      * Auto generated getter method
      * @return com.nhry.webService.client.VipInfoData.functions.ZZOBJECT_ID_type1
      */
-    public com.nhry.webService.client.VipInfoData.functions.ZZOBJECT_ID_type1 getZZOBJECT_ID() {
+    public ZZOBJECT_ID_type1 getZZOBJECT_ID() {
         return localZZOBJECT_ID;
     }
 
@@ -159,7 +159,7 @@ public class ZSCRM_SNG_TS implements org.apache.axis2.databinding.ADBBean {
      * @param param ZZOBJECT_ID
      */
     public void setZZOBJECT_ID(
-        com.nhry.webService.client.VipInfoData.functions.ZZOBJECT_ID_type1 param) {
+        ZZOBJECT_ID_type1 param) {
         localZZOBJECT_IDTracker = param != null;
 
         this.localZZOBJECT_ID = param;
@@ -173,7 +173,7 @@ public class ZSCRM_SNG_TS implements org.apache.axis2.databinding.ADBBean {
      * Auto generated getter method
      * @return com.nhry.webService.client.VipInfoData.functions.CATEGORY1_type1
      */
-    public com.nhry.webService.client.VipInfoData.functions.CATEGORY1_type1 getCATEGORY1() {
+    public CATEGORY1_type1 getCATEGORY1() {
         return localCATEGORY1;
     }
 
@@ -182,7 +182,7 @@ public class ZSCRM_SNG_TS implements org.apache.axis2.databinding.ADBBean {
      * @param param CATEGORY1
      */
     public void setCATEGORY1(
-        com.nhry.webService.client.VipInfoData.functions.CATEGORY1_type1 param) {
+        CATEGORY1_type1 param) {
         localCATEGORY1Tracker = param != null;
 
         this.localCATEGORY1 = param;
@@ -196,7 +196,7 @@ public class ZSCRM_SNG_TS implements org.apache.axis2.databinding.ADBBean {
      * Auto generated getter method
      * @return com.nhry.webService.client.VipInfoData.functions.CATEGORY2_type1
      */
-    public com.nhry.webService.client.VipInfoData.functions.CATEGORY2_type1 getCATEGORY2() {
+    public CATEGORY2_type1 getCATEGORY2() {
         return localCATEGORY2;
     }
 
@@ -205,7 +205,7 @@ public class ZSCRM_SNG_TS implements org.apache.axis2.databinding.ADBBean {
      * @param param CATEGORY2
      */
     public void setCATEGORY2(
-        com.nhry.webService.client.VipInfoData.functions.CATEGORY2_type1 param) {
+        CATEGORY2_type1 param) {
         localCATEGORY2Tracker = param != null;
 
         this.localCATEGORY2 = param;
@@ -219,7 +219,7 @@ public class ZSCRM_SNG_TS implements org.apache.axis2.databinding.ADBBean {
      * Auto generated getter method
      * @return com.nhry.webService.client.VipInfoData.functions.CATEGORY3_type1
      */
-    public com.nhry.webService.client.VipInfoData.functions.CATEGORY3_type1 getCATEGORY3() {
+    public CATEGORY3_type1 getCATEGORY3() {
         return localCATEGORY3;
     }
 
@@ -228,7 +228,7 @@ public class ZSCRM_SNG_TS implements org.apache.axis2.databinding.ADBBean {
      * @param param CATEGORY3
      */
     public void setCATEGORY3(
-        com.nhry.webService.client.VipInfoData.functions.CATEGORY3_type1 param) {
+        CATEGORY3_type1 param) {
         localCATEGORY3Tracker = param != null;
 
         this.localCATEGORY3 = param;
@@ -288,7 +288,7 @@ public class ZSCRM_SNG_TS implements org.apache.axis2.databinding.ADBBean {
      * Auto generated getter method
      * @return com.nhry.webService.client.VipInfoData.functions.DESCRIPTION_type1
      */
-    public com.nhry.webService.client.VipInfoData.functions.DESCRIPTION_type1 getDESCRIPTION() {
+    public DESCRIPTION_type1 getDESCRIPTION() {
         return localDESCRIPTION;
     }
 
@@ -297,7 +297,7 @@ public class ZSCRM_SNG_TS implements org.apache.axis2.databinding.ADBBean {
      * @param param DESCRIPTION
      */
     public void setDESCRIPTION(
-        com.nhry.webService.client.VipInfoData.functions.DESCRIPTION_type1 param) {
+        DESCRIPTION_type1 param) {
         localDESCRIPTIONTracker = param != null;
 
         this.localDESCRIPTION = param;
@@ -742,7 +742,7 @@ public class ZSCRM_SNG_TS implements org.apache.axis2.databinding.ADBBean {
                             reader.getName())) ||
                         new javax.xml.namespace.QName("", "SALES_ORG").equals(
                             reader.getName())) {
-                    object.setSALES_ORG(com.nhry.webService.client.VipInfoData.functions.SALES_ORG_type3.Factory.parse(
+                    object.setSALES_ORG(SALES_ORG_type3.Factory.parse(
                             reader));
 
                     reader.next();
@@ -759,7 +759,7 @@ public class ZSCRM_SNG_TS implements org.apache.axis2.databinding.ADBBean {
                             reader.getName())) ||
                         new javax.xml.namespace.QName("", "ZZOBJECT_ID").equals(
                             reader.getName())) {
-                    object.setZZOBJECT_ID(com.nhry.webService.client.VipInfoData.functions.ZZOBJECT_ID_type1.Factory.parse(
+                    object.setZZOBJECT_ID(ZZOBJECT_ID_type1.Factory.parse(
                             reader));
 
                     reader.next();
@@ -776,7 +776,7 @@ public class ZSCRM_SNG_TS implements org.apache.axis2.databinding.ADBBean {
                             reader.getName())) ||
                         new javax.xml.namespace.QName("", "CATEGORY1").equals(
                             reader.getName())) {
-                    object.setCATEGORY1(com.nhry.webService.client.VipInfoData.functions.CATEGORY1_type1.Factory.parse(
+                    object.setCATEGORY1(CATEGORY1_type1.Factory.parse(
                             reader));
 
                     reader.next();
@@ -793,7 +793,7 @@ public class ZSCRM_SNG_TS implements org.apache.axis2.databinding.ADBBean {
                             reader.getName())) ||
                         new javax.xml.namespace.QName("", "CATEGORY2").equals(
                             reader.getName())) {
-                    object.setCATEGORY2(com.nhry.webService.client.VipInfoData.functions.CATEGORY2_type1.Factory.parse(
+                    object.setCATEGORY2(CATEGORY2_type1.Factory.parse(
                             reader));
 
                     reader.next();
@@ -810,7 +810,7 @@ public class ZSCRM_SNG_TS implements org.apache.axis2.databinding.ADBBean {
                             reader.getName())) ||
                         new javax.xml.namespace.QName("", "CATEGORY3").equals(
                             reader.getName())) {
-                    object.setCATEGORY3(com.nhry.webService.client.VipInfoData.functions.CATEGORY3_type1.Factory.parse(
+                    object.setCATEGORY3(CATEGORY3_type1.Factory.parse(
                             reader));
 
                     reader.next();
@@ -861,7 +861,7 @@ public class ZSCRM_SNG_TS implements org.apache.axis2.databinding.ADBBean {
                             reader.getName())) ||
                         new javax.xml.namespace.QName("", "DESCRIPTION").equals(
                             reader.getName())) {
-                    object.setDESCRIPTION(com.nhry.webService.client.VipInfoData.functions.DESCRIPTION_type1.Factory.parse(
+                    object.setDESCRIPTION(DESCRIPTION_type1.Factory.parse(
                             reader));
 
                     reader.next();

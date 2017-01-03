@@ -1,5 +1,5 @@
 /**
- * Z_CRM_SNG_TS.java
+ * IT_REBATE_TAB_type0.java
  *
  * This file was auto-generated from WSDL
  * by the Apache Axis2 version: 1.7.3  Built on : May 30, 2016 (04:09:26 BST)
@@ -8,47 +8,80 @@ package com.nhry.webService.client.VipInfoData.functions;
 
 
 /**
- *  Z_CRM_SNG_TS bean class
+ *  IT_REBATE_TAB_type0 bean class
  */
 @SuppressWarnings({"unchecked",
     "unused"
 })
-public class Z_CRM_SNG_TS implements org.apache.axis2.databinding.ADBBean {
-    public static final javax.xml.namespace.QName MY_QNAME = new javax.xml.namespace.QName("urn:sap-com:document:sap:rfc:functions",
-            "Z_CRM_SNG_TS", "ns1");
+public class IT_REBATE_TAB_type0 implements org.apache.axis2.databinding.ADBBean {
+    /* This type was generated from the piece of schema that had
+       name = IT_REBATE_TAB_type0
+       Namespace URI = urn:sap-com:document:sap:rfc:functions
+       Namespace Prefix = ns1
+     */
 
     /**
-     * field for IS_QUERY
+     * field for Item
+     * This was an Array!
      */
-    protected ZSCRM_SNG_TS_QUERY localIS_QUERY;
+    protected com.nhry.webService.client.VipInfoData.functions.ZSCRM_ZTAB0000JQ[] localItem;
 
     /*  This tracker boolean wil be used to detect whether the user called the set method
      *   for this attribute. It will be used to determine whether to include this field
      *   in the serialized XML
      */
-    protected boolean localIS_QUERYTracker = false;
+    protected boolean localItemTracker = false;
 
-    public boolean isIS_QUERYSpecified() {
-        return localIS_QUERYTracker;
+    public boolean isItemSpecified() {
+        return localItemTracker;
     }
 
     /**
      * Auto generated getter method
-     * @return com.nhry.webService.client.VipInfoData.functions.ZSCRM_SNG_TS_QUERY
+     * @return com.nhry.webService.client.VipInfoData.functions.ZSCRM_ZTAB0000JQ[]
      */
-    public ZSCRM_SNG_TS_QUERY getIS_QUERY() {
-        return localIS_QUERY;
+    public com.nhry.webService.client.VipInfoData.functions.ZSCRM_ZTAB0000JQ[] getItem() {
+        return localItem;
+    }
+
+    /**
+     * validate the array for Item
+     */
+    protected void validateItem(
+        com.nhry.webService.client.VipInfoData.functions.ZSCRM_ZTAB0000JQ[] param) {
     }
 
     /**
      * Auto generated setter method
-     * @param param IS_QUERY
+     * @param param Item
      */
-    public void setIS_QUERY(
-        ZSCRM_SNG_TS_QUERY param) {
-        localIS_QUERYTracker = param != null;
+    public void setItem(
+        com.nhry.webService.client.VipInfoData.functions.ZSCRM_ZTAB0000JQ[] param) {
+        validateItem(param);
 
-        this.localIS_QUERY = param;
+        localItemTracker = param != null;
+
+        this.localItem = param;
+    }
+
+    /**
+     * Auto generated add method for the array for convenience
+     * @param param com.nhry.webService.client.VipInfoData.functions.ZSCRM_ZTAB0000JQ
+     */
+    public void addItem(
+        com.nhry.webService.client.VipInfoData.functions.ZSCRM_ZTAB0000JQ param) {
+        if (localItem == null) {
+            localItem = new com.nhry.webService.client.VipInfoData.functions.ZSCRM_ZTAB0000JQ[] {
+                    
+                };
+        }
+
+        //update the setting tracker
+        localItemTracker = true;
+
+        java.util.List list = org.apache.axis2.databinding.utils.ConverterUtil.toList(localItem);
+        list.add(param);
+        this.localItem = (com.nhry.webService.client.VipInfoData.functions.ZSCRM_ZTAB0000JQ[]) list.toArray(new com.nhry.webService.client.VipInfoData.functions.ZSCRM_ZTAB0000JQ[list.size()]);
     }
 
     /**
@@ -62,7 +95,7 @@ public class Z_CRM_SNG_TS implements org.apache.axis2.databinding.ADBBean {
         final org.apache.axiom.om.OMFactory factory)
         throws org.apache.axis2.databinding.ADBException {
         return factory.createOMElement(new org.apache.axis2.databinding.ADBDataSource(
-                this, MY_QNAME));
+                this, parentQName));
     }
 
     public void serialize(final javax.xml.namespace.QName parentQName,
@@ -92,22 +125,28 @@ public class Z_CRM_SNG_TS implements org.apache.axis2.databinding.ADBBean {
                     (namespacePrefix.trim().length() > 0)) {
                 writeAttribute("xsi",
                     "http://www.w3.org/2001/XMLSchema-instance", "type",
-                    namespacePrefix + ":Z_CRM_SNG_TS", xmlWriter);
+                    namespacePrefix + ":IT_REBATE_TAB_type0", xmlWriter);
             } else {
                 writeAttribute("xsi",
                     "http://www.w3.org/2001/XMLSchema-instance", "type",
-                    "Z_CRM_SNG_TS", xmlWriter);
+                    "IT_REBATE_TAB_type0", xmlWriter);
             }
         }
 
-        if (localIS_QUERYTracker) {
-            if (localIS_QUERY == null) {
+        if (localItemTracker) {
+            if (localItem != null) {
+                for (int i = 0; i < localItem.length; i++) {
+                    if (localItem[i] != null) {
+                        localItem[i].serialize(new javax.xml.namespace.QName(
+                                "", "item"), xmlWriter);
+                    } else {
+                        // we don't have to do any thing since minOccures is zero
+                    }
+                }
+            } else {
                 throw new org.apache.axis2.databinding.ADBException(
-                    "IS_QUERY cannot be null!!");
+                    "item cannot be null!!");
             }
-
-            localIS_QUERY.serialize(new javax.xml.namespace.QName("", "IS_QUERY"),
-                xmlWriter);
         }
 
         xmlWriter.writeEndElement();
@@ -328,9 +367,9 @@ public class Z_CRM_SNG_TS implements org.apache.axis2.databinding.ADBBean {
          * Postcondition: If this object is an element, the reader is positioned at its end element
          *                If this object is a complex type, the reader is positioned at the end element of its outer element
          */
-        public static Z_CRM_SNG_TS parse(
+        public static IT_REBATE_TAB_type0 parse(
             javax.xml.stream.XMLStreamReader reader) throws Exception {
-            Z_CRM_SNG_TS object = new Z_CRM_SNG_TS();
+            IT_REBATE_TAB_type0 object = new IT_REBATE_TAB_type0();
 
             int event;
             javax.xml.namespace.QName currentQName = null;
@@ -362,12 +401,12 @@ public class Z_CRM_SNG_TS implements org.apache.axis2.databinding.ADBBean {
                         String type = fullTypeName.substring(fullTypeName.indexOf(
                                     ":") + 1);
 
-                        if (!"Z_CRM_SNG_TS".equals(type)) {
+                        if (!"IT_REBATE_TAB_type0".equals(type)) {
                             //find namespace for the prefix
                             String nsUri = reader.getNamespaceContext()
                                                            .getNamespaceURI(nsPrefix);
 
-                            return (Z_CRM_SNG_TS) ExtensionMapper.getTypeObject(nsUri,
+                            return (IT_REBATE_TAB_type0) ExtensionMapper.getTypeObject(nsUri,
                                 type, reader);
                         }
                     }
@@ -379,28 +418,67 @@ public class Z_CRM_SNG_TS implements org.apache.axis2.databinding.ADBBean {
 
                 reader.next();
 
-                while (!reader.isEndElement()) {
-                    if (reader.isStartElement()) {
-                        if ((reader.isStartElement() &&
-                                new javax.xml.namespace.QName("", "IS_QUERY").equals(
-                                    reader.getName())) ||
-                                new javax.xml.namespace.QName("", "IS_QUERY").equals(
-                                    reader.getName())) {
-                            object.setIS_QUERY(ZSCRM_SNG_TS_QUERY.Factory.parse(
-                                    reader));
+                java.util.ArrayList list1 = new java.util.ArrayList();
 
+                while (!reader.isStartElement() && !reader.isEndElement())
+                    reader.next();
+
+                if ((reader.isStartElement() &&
+                        new javax.xml.namespace.QName("", "item").equals(
+                            reader.getName())) ||
+                        new javax.xml.namespace.QName("", "item").equals(
+                            reader.getName())) {
+                    // Process the array and step past its final element's end.
+                    list1.add(com.nhry.webService.client.VipInfoData.functions.ZSCRM_ZTAB0000JQ.Factory.parse(
+                            reader));
+
+                    //loop until we find a start element that is not part of this array
+                    boolean loopDone1 = false;
+
+                    while (!loopDone1) {
+                        // We should be at the end element, but make sure
+                        while (!reader.isEndElement())
                             reader.next();
-                        } // End of if for expected property start element
 
-                        else {
-                            // 3 - A start element we are not expecting indicates an invalid parameter was passed
-                            throw new org.apache.axis2.databinding.ADBException(
-                                "Unexpected subelement " + reader.getName());
-                        }
-                    } else {
+                        // Step out of this element
                         reader.next();
+
+                        // Step to next element event.
+                        while (!reader.isStartElement() &&
+                                !reader.isEndElement())
+                            reader.next();
+
+                        if (reader.isEndElement()) {
+                            //two continuous end elements means we are exiting the xml structure
+                            loopDone1 = true;
+                        } else {
+                            if (new javax.xml.namespace.QName("", "item").equals(
+                                        reader.getName())) {
+                                list1.add(com.nhry.webService.client.VipInfoData.functions.ZSCRM_ZTAB0000JQ.Factory.parse(
+                                        reader));
+                            } else {
+                                loopDone1 = true;
+                            }
+                        }
                     }
-                } // end of while loop
+
+                    // call the converter utility  to convert and set the array
+                    object.setItem((com.nhry.webService.client.VipInfoData.functions.ZSCRM_ZTAB0000JQ[]) org.apache.axis2.databinding.utils.ConverterUtil.convertToArray(
+                            com.nhry.webService.client.VipInfoData.functions.ZSCRM_ZTAB0000JQ.class,
+                            list1));
+                } // End of if for expected property start element
+
+                else {
+                }
+
+                while (!reader.isStartElement() && !reader.isEndElement())
+                    reader.next();
+
+                if (reader.isStartElement()) {
+                    // 2 - A start element we are not expecting indicates a trailing invalid property
+                    throw new org.apache.axis2.databinding.ADBException(
+                        "Unexpected subelement " + reader.getName());
+                }
             } catch (javax.xml.stream.XMLStreamException e) {
                 throw new Exception(e);
             }

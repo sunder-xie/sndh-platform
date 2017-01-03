@@ -1,5 +1,8 @@
 package com.nhry.service.pi.impl;
 
+import com.nhry.data.config.domain.NHSysCodeItem;
+import com.nhry.data.order.domain.TPreOrder;
+import com.nhry.service.config.dao.DictionaryService;
 import com.nhry.service.pi.dao.PIVipPointCreateBatService;
 import com.nhry.service.pi.pojo.MemberActivities;
 import com.nhry.utils.EnvContant;
@@ -11,21 +14,31 @@ import org.apache.axis2.AxisFault;
 import org.apache.axis2.client.Options;
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
+import org.springframework.core.task.TaskExecutor;
 
 import java.math.BigDecimal;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * Created by cbz on 11/30/2016.
  */
 public class PIVipPointCreateBatServiceImpl implements PIVipPointCreateBatService {
-
     private static Logger logger = Logger.getLogger(PIVipPointCreateBatServiceImpl.class);
     private static final String URL_BAT = EnvContant.getSystemConst("PI.VipInfoDataBat.URL");
     private static final SimpleDateFormat formatter = new SimpleDateFormat("yyyyMMddhhmmss");
+    private static final SimpleDateFormat format1 = new SimpleDateFormat("yyyy-MM-dd");
+    private TaskExecutor taskExecutor;
+    private DictionaryService dictionaryService;
+
+    public void setDictionaryService(DictionaryService dictionaryService) {
+        this.dictionaryService = dictionaryService;
+    }
+    public void setTaskExecutor(TaskExecutor taskExecutor) {
+        this.taskExecutor = taskExecutor;
+    }
+
     @Override
     public PISuccessTMessage createMemberActivitiesBat(List<MemberActivities> memberActivities) {
         PISuccessTMessage message = new PISuccessTMessage<>();
@@ -165,6 +178,45 @@ public class PIVipPointCreateBatServiceImpl implements PIVipPointCreateBatServic
             logger.error(e.getMessage());
         }
         return message;
+    }
+
+    @Override
+    public void backPoint(TPreOrder order, BigDecimal initAmt, BigDecimal backAmt) {
+        NHSysCodeItem codeItem = new NHSysCodeItem();
+        codeItem.setTypeCode("2007");
+        codeItem.setItemCode("1");
+        codeItem = dictionaryService.findCodeItenByCode(codeItem);
+        Date bakDate = new Date();
+        try {
+           bakDate = format1.parse(codeItem.getItemName());
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        if(order.getPayDate().after(bakDate)){
+            taskExecutor.execute(new Thread() {
+                @Override
+                public void run() {
+                    super.run();
+                    this.setName("minusVipPoint" + new Date());
+                    BigDecimal fRate = backAmt.divide(initAmt, 2).multiply(new BigDecimal(order.getyFresh() == null ? 0 : order.getyFresh()));//鲜峰
+                    MemberActivities item = new MemberActivities();
+                    Date date = new Date();
+                    item.setActivitydate(date);
+                    item.setSalesorg(order.getSalesOrg());
+                    item.setCategory("YRETURN");
+                    item.setProcesstype("YSUB_RETURN");
+                    item.setOrderid(order.getOrderNo());
+                    item.setMembershipguid(order.getMemberNo());
+                    item.setPointtype("YFRESH");
+                    item.setPoints(fRate);
+                    item.setAmount(backAmt);
+                    item.setProcess("X");
+                    List<MemberActivities> list1 = new ArrayList<MemberActivities>();
+                    list1.add(item);
+                    createMemberActivitiesBat(list1);
+                }
+            });
+        }
     }
 
     private MemberActCreateBatServiceStub conMemberActCreateBat() throws AxisFault {

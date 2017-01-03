@@ -1,5 +1,5 @@
 /**
- * Z_CRM_SNG_TS.java
+ * Z_CRM_CREATE_REBATE_BY_TRADEResponse.java
  *
  * This file was auto-generated from WSDL
  * by the Apache Axis2 version: 1.7.3  Built on : May 30, 2016 (04:09:26 BST)
@@ -8,47 +8,81 @@ package com.nhry.webService.client.VipInfoData.functions;
 
 
 /**
- *  Z_CRM_SNG_TS bean class
+ *  Z_CRM_CREATE_REBATE_BY_TRADEResponse bean class
  */
 @SuppressWarnings({"unchecked",
     "unused"
 })
-public class Z_CRM_SNG_TS implements org.apache.axis2.databinding.ADBBean {
+public class Z_CRM_CREATE_REBATE_BY_TRADEResponse implements org.apache.axis2.databinding.ADBBean {
     public static final javax.xml.namespace.QName MY_QNAME = new javax.xml.namespace.QName("urn:sap-com:document:sap:rfc:functions",
-            "Z_CRM_SNG_TS", "ns1");
+            "Z_CRM_CREATE_REBATE_BY_TRADE.Response", "ns1");
 
     /**
-     * field for IS_QUERY
+     * field for EV_MESSAGE
      */
-    protected ZSCRM_SNG_TS_QUERY localIS_QUERY;
+    protected EV_MESSAGE_type1 localEV_MESSAGE;
 
     /*  This tracker boolean wil be used to detect whether the user called the set method
      *   for this attribute. It will be used to determine whether to include this field
      *   in the serialized XML
      */
-    protected boolean localIS_QUERYTracker = false;
+    protected boolean localEV_MESSAGETracker = false;
 
-    public boolean isIS_QUERYSpecified() {
-        return localIS_QUERYTracker;
+    /**
+     * field for EV_OBJECT_ID
+     */
+    protected EV_OBJECT_ID_type1 localEV_OBJECT_ID;
+
+    /*  This tracker boolean wil be used to detect whether the user called the set method
+     *   for this attribute. It will be used to determine whether to include this field
+     *   in the serialized XML
+     */
+    protected boolean localEV_OBJECT_IDTracker = false;
+
+    public boolean isEV_MESSAGESpecified() {
+        return localEV_MESSAGETracker;
     }
 
     /**
      * Auto generated getter method
-     * @return com.nhry.webService.client.VipInfoData.functions.ZSCRM_SNG_TS_QUERY
+     * @return com.nhry.webService.client.VipInfoData.functions.EV_MESSAGE_type1
      */
-    public ZSCRM_SNG_TS_QUERY getIS_QUERY() {
-        return localIS_QUERY;
+    public EV_MESSAGE_type1 getEV_MESSAGE() {
+        return localEV_MESSAGE;
     }
 
     /**
      * Auto generated setter method
-     * @param param IS_QUERY
+     * @param param EV_MESSAGE
      */
-    public void setIS_QUERY(
-        ZSCRM_SNG_TS_QUERY param) {
-        localIS_QUERYTracker = param != null;
+    public void setEV_MESSAGE(
+        EV_MESSAGE_type1 param) {
+        localEV_MESSAGETracker = param != null;
 
-        this.localIS_QUERY = param;
+        this.localEV_MESSAGE = param;
+    }
+
+    public boolean isEV_OBJECT_IDSpecified() {
+        return localEV_OBJECT_IDTracker;
+    }
+
+    /**
+     * Auto generated getter method
+     * @return com.nhry.webService.client.VipInfoData.functions.EV_OBJECT_ID_type1
+     */
+    public EV_OBJECT_ID_type1 getEV_OBJECT_ID() {
+        return localEV_OBJECT_ID;
+    }
+
+    /**
+     * Auto generated setter method
+     * @param param EV_OBJECT_ID
+     */
+    public void setEV_OBJECT_ID(
+        EV_OBJECT_ID_type1 param) {
+        localEV_OBJECT_IDTracker = param != null;
+
+        this.localEV_OBJECT_ID = param;
     }
 
     /**
@@ -92,22 +126,33 @@ public class Z_CRM_SNG_TS implements org.apache.axis2.databinding.ADBBean {
                     (namespacePrefix.trim().length() > 0)) {
                 writeAttribute("xsi",
                     "http://www.w3.org/2001/XMLSchema-instance", "type",
-                    namespacePrefix + ":Z_CRM_SNG_TS", xmlWriter);
+                    namespacePrefix + ":Z_CRM_CREATE_REBATE_BY_TRADE.Response",
+                    xmlWriter);
             } else {
                 writeAttribute("xsi",
                     "http://www.w3.org/2001/XMLSchema-instance", "type",
-                    "Z_CRM_SNG_TS", xmlWriter);
+                    "Z_CRM_CREATE_REBATE_BY_TRADE.Response", xmlWriter);
             }
         }
 
-        if (localIS_QUERYTracker) {
-            if (localIS_QUERY == null) {
+        if (localEV_MESSAGETracker) {
+            if (localEV_MESSAGE == null) {
                 throw new org.apache.axis2.databinding.ADBException(
-                    "IS_QUERY cannot be null!!");
+                    "EV_MESSAGE cannot be null!!");
             }
 
-            localIS_QUERY.serialize(new javax.xml.namespace.QName("", "IS_QUERY"),
-                xmlWriter);
+            localEV_MESSAGE.serialize(new javax.xml.namespace.QName("",
+                    "EV_MESSAGE"), xmlWriter);
+        }
+
+        if (localEV_OBJECT_IDTracker) {
+            if (localEV_OBJECT_ID == null) {
+                throw new org.apache.axis2.databinding.ADBException(
+                    "EV_OBJECT_ID cannot be null!!");
+            }
+
+            localEV_OBJECT_ID.serialize(new javax.xml.namespace.QName("",
+                    "EV_OBJECT_ID"), xmlWriter);
         }
 
         xmlWriter.writeEndElement();
@@ -328,9 +373,9 @@ public class Z_CRM_SNG_TS implements org.apache.axis2.databinding.ADBBean {
          * Postcondition: If this object is an element, the reader is positioned at its end element
          *                If this object is a complex type, the reader is positioned at the end element of its outer element
          */
-        public static Z_CRM_SNG_TS parse(
+        public static Z_CRM_CREATE_REBATE_BY_TRADEResponse parse(
             javax.xml.stream.XMLStreamReader reader) throws Exception {
-            Z_CRM_SNG_TS object = new Z_CRM_SNG_TS();
+            Z_CRM_CREATE_REBATE_BY_TRADEResponse object = new Z_CRM_CREATE_REBATE_BY_TRADEResponse();
 
             int event;
             javax.xml.namespace.QName currentQName = null;
@@ -362,12 +407,13 @@ public class Z_CRM_SNG_TS implements org.apache.axis2.databinding.ADBBean {
                         String type = fullTypeName.substring(fullTypeName.indexOf(
                                     ":") + 1);
 
-                        if (!"Z_CRM_SNG_TS".equals(type)) {
+                        if (!"Z_CRM_CREATE_REBATE_BY_TRADE.Response".equals(
+                                    type)) {
                             //find namespace for the prefix
                             String nsUri = reader.getNamespaceContext()
                                                            .getNamespaceURI(nsPrefix);
 
-                            return (Z_CRM_SNG_TS) ExtensionMapper.getTypeObject(nsUri,
+                            return (Z_CRM_CREATE_REBATE_BY_TRADEResponse) ExtensionMapper.getTypeObject(nsUri,
                                 type, reader);
                         }
                     }
@@ -382,11 +428,23 @@ public class Z_CRM_SNG_TS implements org.apache.axis2.databinding.ADBBean {
                 while (!reader.isEndElement()) {
                     if (reader.isStartElement()) {
                         if ((reader.isStartElement() &&
-                                new javax.xml.namespace.QName("", "IS_QUERY").equals(
+                                new javax.xml.namespace.QName("", "EV_MESSAGE").equals(
                                     reader.getName())) ||
-                                new javax.xml.namespace.QName("", "IS_QUERY").equals(
+                                new javax.xml.namespace.QName("", "EV_MESSAGE").equals(
                                     reader.getName())) {
-                            object.setIS_QUERY(ZSCRM_SNG_TS_QUERY.Factory.parse(
+                            object.setEV_MESSAGE(EV_MESSAGE_type1.Factory.parse(
+                                    reader));
+
+                            reader.next();
+                        } // End of if for expected property start element
+
+                        else
+                         if ((reader.isStartElement() &&
+                                new javax.xml.namespace.QName("", "EV_OBJECT_ID").equals(
+                                    reader.getName())) ||
+                                new javax.xml.namespace.QName("", "EV_OBJECT_ID").equals(
+                                    reader.getName())) {
+                            object.setEV_OBJECT_ID(EV_OBJECT_ID_type1.Factory.parse(
                                     reader));
 
                             reader.next();

@@ -1,5 +1,5 @@
 /**
- * Z_CRM_SNG_TS.java
+ * IV_EXTERNAL_ID_type1.java
  *
  * This file was auto-generated from WSDL
  * by the Apache Axis2 version: 1.7.3  Built on : May 30, 2016 (04:09:26 BST)
@@ -8,47 +8,43 @@ package com.nhry.webService.client.VipInfoData.functions;
 
 
 /**
- *  Z_CRM_SNG_TS bean class
+ *  IV_EXTERNAL_ID_type1 bean class
  */
 @SuppressWarnings({"unchecked",
     "unused"
 })
-public class Z_CRM_SNG_TS implements org.apache.axis2.databinding.ADBBean {
+public class IV_EXTERNAL_ID_type1 implements org.apache.axis2.databinding.ADBBean {
     public static final javax.xml.namespace.QName MY_QNAME = new javax.xml.namespace.QName("urn:sap-com:document:sap:rfc:functions",
-            "Z_CRM_SNG_TS", "ns1");
+            "IV_EXTERNAL_ID_type1", "ns1");
 
     /**
-     * field for IS_QUERY
+     * field for IV_EXTERNAL_ID_type0
      */
-    protected ZSCRM_SNG_TS_QUERY localIS_QUERY;
-
-    /*  This tracker boolean wil be used to detect whether the user called the set method
-     *   for this attribute. It will be used to determine whether to include this field
-     *   in the serialized XML
-     */
-    protected boolean localIS_QUERYTracker = false;
-
-    public boolean isIS_QUERYSpecified() {
-        return localIS_QUERYTracker;
-    }
+    protected String localIV_EXTERNAL_ID_type0;
 
     /**
      * Auto generated getter method
-     * @return com.nhry.webService.client.VipInfoData.functions.ZSCRM_SNG_TS_QUERY
+     * @return java.lang.String
      */
-    public ZSCRM_SNG_TS_QUERY getIS_QUERY() {
-        return localIS_QUERY;
+    public String getIV_EXTERNAL_ID_type0() {
+        return localIV_EXTERNAL_ID_type0;
     }
 
     /**
      * Auto generated setter method
-     * @param param IS_QUERY
+     * @param param IV_EXTERNAL_ID_type0
      */
-    public void setIS_QUERY(
-        ZSCRM_SNG_TS_QUERY param) {
-        localIS_QUERYTracker = param != null;
+    public void setIV_EXTERNAL_ID_type0(String param) {
+        if ((String.valueOf(param).length() <= 24)) {
+            this.localIV_EXTERNAL_ID_type0 = param;
+        } else {
+            throw new RuntimeException(
+                "Input values do not follow defined XSD restrictions");
+        }
+    }
 
-        this.localIS_QUERY = param;
+    public String toString() {
+        return localIV_EXTERNAL_ID_type0.toString();
     }
 
     /**
@@ -76,14 +72,13 @@ public class Z_CRM_SNG_TS implements org.apache.axis2.databinding.ADBBean {
         javax.xml.stream.XMLStreamWriter xmlWriter, boolean serializeType)
         throws javax.xml.stream.XMLStreamException,
             org.apache.axis2.databinding.ADBException {
-        String prefix = null;
-        String namespace = null;
+        //We can safely assume an element has only one type associated with it
+        String namespace = parentQName.getNamespaceURI();
+        String _localName = parentQName.getLocalPart();
 
-        prefix = parentQName.getPrefix();
-        namespace = parentQName.getNamespaceURI();
-        writeStartElement(prefix, namespace, parentQName.getLocalPart(),
-            xmlWriter);
+        writeStartElement(null, namespace, _localName, xmlWriter);
 
+        // add the type details if this is used in a simple type
         if (serializeType) {
             String namespacePrefix = registerPrefix(xmlWriter,
                     "urn:sap-com:document:sap:rfc:functions");
@@ -92,22 +87,19 @@ public class Z_CRM_SNG_TS implements org.apache.axis2.databinding.ADBBean {
                     (namespacePrefix.trim().length() > 0)) {
                 writeAttribute("xsi",
                     "http://www.w3.org/2001/XMLSchema-instance", "type",
-                    namespacePrefix + ":Z_CRM_SNG_TS", xmlWriter);
+                    namespacePrefix + ":IV_EXTERNAL_ID_type1", xmlWriter);
             } else {
                 writeAttribute("xsi",
                     "http://www.w3.org/2001/XMLSchema-instance", "type",
-                    "Z_CRM_SNG_TS", xmlWriter);
+                    "IV_EXTERNAL_ID_type1", xmlWriter);
             }
         }
 
-        if (localIS_QUERYTracker) {
-            if (localIS_QUERY == null) {
-                throw new org.apache.axis2.databinding.ADBException(
-                    "IS_QUERY cannot be null!!");
-            }
-
-            localIS_QUERY.serialize(new javax.xml.namespace.QName("", "IS_QUERY"),
-                xmlWriter);
+        if (localIV_EXTERNAL_ID_type0 == null) {
+            throw new org.apache.axis2.databinding.ADBException(
+                "IV_EXTERNAL_ID_type0 cannot be null !!");
+        } else {
+            xmlWriter.writeCharacters(localIV_EXTERNAL_ID_type0);
         }
 
         xmlWriter.writeEndElement();
@@ -321,6 +313,32 @@ public class Z_CRM_SNG_TS implements org.apache.axis2.databinding.ADBBean {
     public static class Factory {
         private static org.apache.commons.logging.Log log = org.apache.commons.logging.LogFactory.getLog(Factory.class);
 
+        public static IV_EXTERNAL_ID_type1 fromString(String value,
+            String namespaceURI) {
+            IV_EXTERNAL_ID_type1 returnValue = new IV_EXTERNAL_ID_type1();
+
+            returnValue.setIV_EXTERNAL_ID_type0(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(
+                    value));
+
+            return returnValue;
+        }
+
+        public static IV_EXTERNAL_ID_type1 fromString(
+            javax.xml.stream.XMLStreamReader xmlStreamReader,
+            String content) {
+            if (content.indexOf(":") > -1) {
+                String prefix = content.substring(0,
+                        content.indexOf(":"));
+                String namespaceUri = xmlStreamReader.getNamespaceContext()
+                                                               .getNamespaceURI(prefix);
+
+                return Factory.fromString(content,
+                    namespaceUri);
+            } else {
+                return Factory.fromString(content, "");
+            }
+        }
+
         /**
          * static method to create the object
          * Precondition:  If this object is an element, the current or next start element starts this object and any intervening reader events are ignorable
@@ -328,9 +346,9 @@ public class Z_CRM_SNG_TS implements org.apache.axis2.databinding.ADBBean {
          * Postcondition: If this object is an element, the reader is positioned at its end element
          *                If this object is a complex type, the reader is positioned at the end element of its outer element
          */
-        public static Z_CRM_SNG_TS parse(
+        public static IV_EXTERNAL_ID_type1 parse(
             javax.xml.stream.XMLStreamReader reader) throws Exception {
-            Z_CRM_SNG_TS object = new Z_CRM_SNG_TS();
+            IV_EXTERNAL_ID_type1 object = new IV_EXTERNAL_ID_type1();
 
             int event;
             javax.xml.namespace.QName currentQName = null;
@@ -344,52 +362,27 @@ public class Z_CRM_SNG_TS implements org.apache.axis2.databinding.ADBBean {
 
                 currentQName = reader.getName();
 
-                if (reader.getAttributeValue(
-                            "http://www.w3.org/2001/XMLSchema-instance", "type") != null) {
-                    String fullTypeName = reader.getAttributeValue("http://www.w3.org/2001/XMLSchema-instance",
-                            "type");
-
-                    if (fullTypeName != null) {
-                        String nsPrefix = null;
-
-                        if (fullTypeName.indexOf(":") > -1) {
-                            nsPrefix = fullTypeName.substring(0,
-                                    fullTypeName.indexOf(":"));
-                        }
-
-                        nsPrefix = (nsPrefix == null) ? "" : nsPrefix;
-
-                        String type = fullTypeName.substring(fullTypeName.indexOf(
-                                    ":") + 1);
-
-                        if (!"Z_CRM_SNG_TS".equals(type)) {
-                            //find namespace for the prefix
-                            String nsUri = reader.getNamespaceContext()
-                                                           .getNamespaceURI(nsPrefix);
-
-                            return (Z_CRM_SNG_TS) ExtensionMapper.getTypeObject(nsUri,
-                                type, reader);
-                        }
-                    }
-                }
-
                 // Note all attributes that were handled. Used to differ normal attributes
                 // from anyAttributes.
                 java.util.Vector handledAttributes = new java.util.Vector();
 
-                reader.next();
-
                 while (!reader.isEndElement()) {
-                    if (reader.isStartElement()) {
-                        if ((reader.isStartElement() &&
-                                new javax.xml.namespace.QName("", "IS_QUERY").equals(
-                                    reader.getName())) ||
-                                new javax.xml.namespace.QName("", "IS_QUERY").equals(
-                                    reader.getName())) {
-                            object.setIS_QUERY(ZSCRM_SNG_TS_QUERY.Factory.parse(
-                                    reader));
+                    if (reader.isStartElement() || reader.hasText()) {
+                        if (reader.isStartElement() || reader.hasText()) {
+                            nillableValue = reader.getAttributeValue("http://www.w3.org/2001/XMLSchema-instance",
+                                    "nil");
 
-                            reader.next();
+                            if ("true".equals(nillableValue) ||
+                                    "1".equals(nillableValue)) {
+                                throw new org.apache.axis2.databinding.ADBException(
+                                    "The element: " + "IV_EXTERNAL_ID_type0" +
+                                    "  cannot be null");
+                            }
+
+                            String content = reader.getElementText();
+
+                            object.setIV_EXTERNAL_ID_type0(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(
+                                    content));
                         } // End of if for expected property start element
 
                         else {

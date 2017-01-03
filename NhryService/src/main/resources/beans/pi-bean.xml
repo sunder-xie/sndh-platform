@@ -112,5 +112,14 @@
     <jaxws:endpoint implementor="#piPromotionDataService" id="piPromotionDataServiceImpl" address="/promotionDataService"/>
     <bean class="com.nhry.service.pi.impl.SmsSendServiceImpl" id="smsSendService"/>
     <bean class="com.nhry.service.pi.impl.PIVipPointCreateBatServiceImpl" id="piVipPointCreateBatService">
+        <property name="dictionaryService" ref="dicService"/>
+        <property name="taskExecutor" ref="taskExecutor"/>
+    </bean>
+    <bean class="com.nhry.service.milktrans.impl.RedateByTradeServiceImpl" id="redateByTradeService">
+        <property name="tSsmRedateByTradeMapper" ref="tSsmRedateByTradeMapper"/>
+    </bean>
+    <bean class="com.nhry.service.pi.impl.PIRedateByTradeServiceImpl" id="piRedateByTradeService">
+        <property name="redateByTradeService" ref="redateByTradeService"/>
+        <property name="dictionaryService" ref="dicService"/>
     </bean>
 </beans>
