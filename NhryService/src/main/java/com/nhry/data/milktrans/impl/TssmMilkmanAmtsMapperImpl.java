@@ -81,4 +81,14 @@ public class TssmMilkmanAmtsMapperImpl implements TssmMilkmanAmtsMapper{
     public List<TssmMilkmanAmts> selectAmtsByPrimaryKey(ExtendBranchInfoModel record) {
         return sqlSessionTemplate.selectList("selectAmtsByPrimaryKey",record);
     }
+
+    /**
+     * 修改初始金额同时更新初始第一天数据
+     * @param record
+     * @return
+     */
+    @Override
+    public int updateAmtsByPrimaryKeySelective(TssmMilkmanAmts record) {
+        return sqlSessionTemplate.update("updateAmtsByPrimaryKeySelective",record);
+    }
 }

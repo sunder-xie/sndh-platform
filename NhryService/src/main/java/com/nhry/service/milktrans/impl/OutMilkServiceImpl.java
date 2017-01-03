@@ -318,8 +318,16 @@ public class OutMilkServiceImpl implements OutMilkService {
         TssmMilkmanAmts minTMA = tssmMilkmanAmtsMapper.selectAmtsMinDay(record);
 
         if(maxTMA.getOrderDate().compareTo(minTMA.getOrderDate())==0){
-
+            //更新初始化金额及初始化日期
             tSsmMilkmanAmtInitMapper.updateAmtInitByPrimaryKeySelective(record);
+            TssmMilkmanAmts tma =new  TssmMilkmanAmts();
+            tma.setReAmt(record.getReAmt());
+            tma.setBranchNo(record.getBranchNo());
+            tma.setEmpNo(record.getEmpNo());
+            if(record.getOrderDate()!=null){
+                tma.setOrderDate(record.getOrderDate());
+            }
+            tssmMilkmanAmtsMapper.updateAmtsByPrimaryKeySelective(tma);
         }else{
             throw new ServiceException(MessageCode.LOGIC_ERROR, "送奶员："+record.getEmpNo()+"已经有台帐统计信息，不能进行修改");
         }
