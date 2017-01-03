@@ -133,10 +133,12 @@
       <if test="lastModifiedBy != null" >
         LAST_MODIFIED_BY = #{lastModifiedBy,jdbcType=VARCHAR},
       </if>
+      <if test="orderDate != null" >
+        order_date = #{orderDate,jdbcType=VARCHAR},
+      </if>
     </set>
     where branch_no = #{branchNo,jdbcType=VARCHAR}
       and emp_no = #{empNo,jdbcType=VARCHAR}
-      and order_date = #{orderDate,jdbcType=DATE}
   </update>
   <update id="updateAmtsByPrimaryKey" parameterType="com.nhry.data.milktrans.domain.TssmMilkmanAmts" >
     update t_ssm_milkman_amts
