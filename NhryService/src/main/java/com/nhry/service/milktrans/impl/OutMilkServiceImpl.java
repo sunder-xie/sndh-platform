@@ -296,4 +296,33 @@ public class OutMilkServiceImpl implements OutMilkService {
         return tssmMilkmanAmtsMapper.selectAmtsByPrimaryKey(record);
     }
 
+    @Override
+    public List<TSsmMilkmanAmtInit> selectAmtInitList() {
+        OutMilkModel record = new OutMilkModel();
+        TSysUser user = userSessionService.getCurrentUser();
+        record.setBranchNo(user.getBranchNo());
+        return tSsmMilkmanAmtInitMapper.selectAmtInitList(record);
+    }
+
+    /**
+     * 更新出奶表初始化金额
+     * 判断如果该送奶员初始化的金额已经应用，则不允许进行修改
+     * @param record
+     * @return
+     */
+    @Override
+    public int updateAmtInitByPrimaryKeySelective(OutMilkModel record) {
+        TSysUser user = userSessionService.getCurrentUser();
+        record.setBranchNo(user.getBranchNo());
+        TssmMilkmanAmts maxTMA = tssmMilkmanAmtsMapper.selectAmtsMaxDay(record);
+        TssmMilkmanAmts minTMA = tssmMilkmanAmtsMapper.selectAmtsMinDay(record);
+
+        if(maxTMA.getOrderDate().compareTo(minTMA.getOrderDate())==0){
+
+            tSsmMilkmanAmtInitMapper.updateAmtInitByPrimaryKeySelective(record);
+        }else{
+            throw new ServiceException(MessageCode.LOGIC_ERROR, "送奶员："+record.getEmpNo()+"已经有台帐统计信息，不能进行修改");
+        }
+        return 0;
+    }
 }

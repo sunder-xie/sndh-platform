@@ -14,4 +14,6 @@ public interface TSsmMilkmanAmtInitMapper {
     int insertAmtInit(TSsmMilkmanAmtInit record);
     List<TSsmMilkmanAmtInit> selectAllAmtInit();
     List<TSsmMilkmanAmtInit> selectAmtInitByBranchNo(OutMilkModel record);
+    List<TSsmMilkmanAmtInit> selectAmtInitList(OutMilkModel record);
+    int updateAmtInitByPrimaryKeySelective(OutMilkModel record);
 }

@@ -72,6 +72,7 @@
 	<!-- 出奶管理-->
 	<bean id="tSsmMilkmanAmtInitMapper" class="com.nhry.data.milktrans.impl.TSsmMilkmanAmtInitMapperImpl">
 		<property name="sqlSessionTemplate"  ref="dynamicSqlSessionTemplate"></property>
+		<property name="userSessionService" ref="userSessionService"></property>
 	</bean>
 	<bean id="tssmMilkmanAmtsMapper" class="com.nhry.data.milktrans.impl.TssmMilkmanAmtsMapperImpl">
 		<property name="sqlSessionTemplate"  ref="dynamicSqlSessionTemplate"></property>

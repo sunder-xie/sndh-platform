@@ -178,4 +178,21 @@ public class StatisticsResource extends BaseResource {
     public Response createAmtsByBranch(@ApiParam(required=true,name="record",value="OutMilkModel") OutMilkModel record){
         return convertToRespModel(MessageCode.NORMAL, null, outMilkService.createAmtsByBranch(record));
     }
+
+    @POST
+    @Path("/selectAmtInitList")
+    @Produces(MediaType.APPLICATION_JSON)
+    @Consumes(MediaType.APPLICATION_JSON)
+    @ApiOperation(value = "/selectAmtInitList", response = ResponseModel.class, notes = "查询奶站下送奶员初始化送奶表信息")
+    public Response selectAmtInitList(){
+        return convertToRespModel(MessageCode.NORMAL, null, outMilkService.selectAmtInitList());
+    }
+    @POST
+    @Path("/updateAmtInitByPrimaryKeySelective")
+    @Produces(MediaType.APPLICATION_JSON)
+    @Consumes(MediaType.APPLICATION_JSON)
+    @ApiOperation(value = "/updateAmtInitByPrimaryKeySelective", response = Integer.class, notes = "修改出奶表初始化金额")
+    public Response updateAmtInitByPrimaryKeySelective(@ApiParam(required=true,name="record",value="OutMilkModel") OutMilkModel record){
+        return convertToRespModel(MessageCode.NORMAL, null, outMilkService.updateAmtInitByPrimaryKeySelective(record));
+    }
 }

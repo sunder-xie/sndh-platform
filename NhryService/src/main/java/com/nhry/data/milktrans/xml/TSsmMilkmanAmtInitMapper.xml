@@ -23,6 +23,7 @@
     where branch_no = #{branchNo,jdbcType=VARCHAR}
       and emp_no = #{empNo,jdbcType=VARCHAR}
   </select>
+
   <delete id="deleteAmtInitByPrimaryKey" parameterType="com.nhry.data.milktrans.domain.TSsmMilkmanAmtInitKey" >
     delete from t_ssm_milkman_amt_init
     where branch_no = #{branchNo,jdbcType=VARCHAR}
@@ -152,5 +153,17 @@
     <if test="branchNo != null" >
       AND branch_no = #{branchNo,jdbcType=VARCHAR}
     </if>
+  </select>
+  <select id="selectAmtInitList" resultMap="BaseResultMap" parameterType="com.nhry.model.statistics.OutMilkModel" >
+    SELECT
+        t2.BRANCH_NAME branch_no,
+        t1.EMP_NAME emp_no,
+        t.re_amt
+    FROM
+        t_ssm_milkman_amt_init t
+    LEFT JOIN t_md_branch_emp t1 ON t1.EMP_NO = t.emp_no
+    LEFT JOIN t_md_branch t2 ON t2.BRANCH_NO = t.branch_no
+    WHERE
+	  t.branch_no = #{branchNo,jdbcType=VARCHAR}
   </select>
 </mapper>
