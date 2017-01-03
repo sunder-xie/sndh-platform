@@ -545,37 +545,38 @@ public class CustomerBillServiceImpl implements CustomerBillService {
             }
             //判断是否需要 返还积分
             if("Y".equals(preOrder.getIsIntegration())){
-                taskExecutor.execute(new Thread(){
-                    @Override
-                    public void run() {
-                        super.run();
-                        this.setName("minusVipPoint");
-                        BigDecimal gRate = BigDecimal.ONE.multiply(new BigDecimal(preOrder.getyGrowth()==null?0:preOrder.getyGrowth()));//成长
-                        BigDecimal fRate = BigDecimal.ONE.multiply(new BigDecimal(preOrder.getyFresh()==null?0:preOrder.getyFresh()));//鲜峰
-                        MemberActivities item = new MemberActivities();
-                        Date date = new Date();
-                        item.setActivitydate(date);
-                        item.setSalesorg(preOrder.getSalesOrg());
-                        item.setCategory("YRETURN");
-                        item.setProcesstype("YSUB_RETURN");
-                        item.setOrderid(preOrder.getOrderNo());
-                        item.setMembershipguid(preOrder.getMemberNo());
-                        item.setPointtype("YGROWTH");
-                        item.setPoints(gRate);
-                        //第1遍传成长
-//                        piVipInfoDataService.createMemberActivities(item);
-                        List<MemberActivities> gList = new ArrayList<MemberActivities>();
-                        gList.add(item);
-                        piVipPointCreateBatService.createMemberActivitiesBat(gList);
-                        //第2遍传先锋
-                        item.setPointtype("YFRESH");
-                        item.setPoints(fRate);
-                        List<MemberActivities> fList = new ArrayList<MemberActivities>();
-                        fList.add(item);
-//                        piVipInfoDataService.createMemberActivities(item);
-                        piVipPointCreateBatService.createMemberActivitiesBat(fList);
-                    }
-                });
+                piVipPointCreateBatService.backPoint(preOrder,preOrder.getInitAmt(), preOrder.getInitAmt());
+//                taskExecutor.execute(new Thread(){
+//                    @Override
+//                    public void run() {
+//                        super.run();
+//                        this.setName("minusVipPoint");
+//                        BigDecimal gRate = BigDecimal.ONE.multiply(new BigDecimal(preOrder.getyGrowth()==null?0:preOrder.getyGrowth()));//成长
+//                        BigDecimal fRate = BigDecimal.ONE.multiply(new BigDecimal(preOrder.getyFresh()==null?0:preOrder.getyFresh()));//鲜峰
+//                        MemberActivities item = new MemberActivities();
+//                        Date date = new Date();
+//                        item.setActivitydate(date);
+//                        item.setSalesorg(preOrder.getSalesOrg());
+//                        item.setCategory("YRETURN");
+//                        item.setProcesstype("YSUB_RETURN");
+//                        item.setOrderid(preOrder.getOrderNo());
+//                        item.setMembershipguid(preOrder.getMemberNo());
+//                        item.setPointtype("YGROWTH");
+//                        item.setPoints(gRate);
+//                        //第1遍传成长
+////                        piVipInfoDataService.createMemberActivities(item);
+//                        List<MemberActivities> gList = new ArrayList<MemberActivities>();
+//                        gList.add(item);
+//                        piVipPointCreateBatService.createMemberActivitiesBat(gList);
+//                        //第2遍传先锋
+//                        item.setPointtype("YFRESH");
+//                        item.setPoints(fRate);
+//                        List<MemberActivities> fList = new ArrayList<MemberActivities>();
+//                        fList.add(item);
+////                        piVipInfoDataService.createMemberActivities(item);
+//                        piVipPointCreateBatService.createMemberActivitiesBat(fList);
+//                    }
+//                });
             }
             //将 收款单置为 已冲销
             TMstRecvBill newBill = new TMstRecvBill();

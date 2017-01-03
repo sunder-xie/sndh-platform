@@ -23,6 +23,7 @@ import com.nhry.model.statistics.ExtendBranchInfoModel;
 import com.nhry.service.BaseService;
 import com.nhry.service.basic.dao.PriceService;
 import com.nhry.service.basic.dao.TVipCustInfoService;
+import com.nhry.service.config.dao.DictionaryService;
 import com.nhry.service.external.dao.EcService;
 import com.nhry.service.order.dao.MilkBoxService;
 import com.nhry.service.order.dao.OrderService;
@@ -56,7 +57,6 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 	private TaskExecutor taskExecutor;
 	private EcService messLogService;
 	private CustomerBillMapper customerBillMapper;
-	private PIVipInfoDataService piVipInfoDataService;
 	private PIVipPointCreateBatService piVipPointCreateBatService;
 	private TSsmGiOrderItemMapper tSsmGiOrderItemMapper;
 	private SmsSendService smsSendService;
@@ -67,7 +67,7 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 	private TMdBranchEmpMapper branchEmpMapper;
 	private NHSysCodeItemMapper codeItemMapper;
 	private TOrderDaliyPlanItemBackMapper tOrderDaliyPlanItemBackMapper;
-   private TYearCardCompOrderMapper tYearCardCompOrderMapper;
+    private TYearCardCompOrderMapper tYearCardCompOrderMapper;
 
 	public void settYearCardCompOrderMapper(TYearCardCompOrderMapper tYearCardCompOrderMapper) {
 		this.tYearCardCompOrderMapper = tYearCardCompOrderMapper;
@@ -118,10 +118,6 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 		this.smsSendService = smsSendService;
 	}
 
-	public void setPiVipInfoDataService(PIVipInfoDataService piVipInfoDataService) {
-      this.piVipInfoDataService = piVipInfoDataService;
-   }
-	
 	public void setCustomerBillMapper(CustomerBillMapper customerBillMapper) {
 		this.customerBillMapper = customerBillMapper;
 	}
@@ -1280,30 +1276,7 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 
 							//积分扣减
 							if("20".equals(order.getPaymentmethod())&&"20".equals(order.getPaymentStat())&&"Y".equals(order.getIsIntegration())){
-								taskExecutor.execute(new Thread(){
-									@Override
-									public void run() {
-										super.run();
-										this.setName("minusVipPoint"+new Date());
-										BigDecimal fRate = smodel.getBackAmt().divide(yOrder.getInitAmt(),2).multiply(new BigDecimal(order.getyFresh()==null?0:order.getyFresh()));//鲜峰
-										MemberActivities item = new MemberActivities();
-										Date date = new Date();
-										item.setActivitydate(date);
-										item.setSalesorg(order.getSalesOrg());
-										item.setCategory("YRETURN");
-										item.setProcesstype("YSUB_RETURN");
-										item.setOrderid(order.getOrderNo());
-										item.setMembershipguid(order.getMemberNo());
-										//第2遍传先锋
-										item.setPointtype("YFRESH");
-										item.setPoints(fRate);
-										item.setAmount(smodel.getBackAmt());
-										item.setProcess("X");
-										List<MemberActivities> list1 = new ArrayList<MemberActivities>();
-										list1.add(item);
-										piVipPointCreateBatService.createMemberActivitiesBat(list1);
-									}
-								});
+								piVipPointCreateBatService.backPoint(order, initAmt, smodel.getBackAmt());
 							}
 
 						}
@@ -1470,29 +1443,7 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 
 		//第九步  积分扣减
 		if("20".equals(order.getPaymentmethod())&&"20".equals(order.getPaymentStat())&&"Y".equals(order.getIsIntegration())){
-			taskExecutor.execute(new Thread(){
-				@Override
-				public void run() {
-					super.run();
-					this.setName("minusVipPoint"+new Date());
-					BigDecimal fRate = record.getBackAmt().divide(initAmt,2).multiply(new BigDecimal(order.getyFresh()==null?0:order.getyFresh()));//鲜峰
-					MemberActivities item = new MemberActivities();
-					Date date = new Date();
-					item.setActivitydate(date);
-					item.setSalesorg(order.getSalesOrg());
-					item.setCategory("YRETURN");
-					item.setProcesstype("YSUB_RETURN");
-					item.setOrderid(order.getOrderNo());
-					item.setMembershipguid(order.getMemberNo());
-					item.setPointtype("YFRESH");
-					item.setPoints(fRate);
-					item.setAmount(record.getBackAmt());
-					item.setProcess("X");
-					List<MemberActivities> list1 = new ArrayList<MemberActivities>();
-					list1.add(item);
-					piVipPointCreateBatService.createMemberActivitiesBat(list1);
-				}
-			});
+			piVipPointCreateBatService.backPoint(order, initAmt, record.getBackAmt());
 		}
 		return 0;
 	}
@@ -1659,44 +1610,42 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 			
 			//积分扣减
 			if("20".equals(order.getPaymentmethod())&&"20".equals(order.getPaymentStat())&&"Y".equals(order.getIsIntegration())){
-				taskExecutor.execute(new Thread(){
-					@Override
-					public void run() {
-						super.run();
-						this.setName("minusVipPoint"+new Date());
-//						BigDecimal gRate = leftAmt.divide(initAmt,2).multiply(new BigDecimal(order.getyGrowth()==null?0:order.getyGrowth()));//成长
-						BigDecimal fRate = leftAmt.divide(initAmt,2).multiply(new BigDecimal(order.getyFresh()==null?0:order.getyFresh()));//鲜峰
-						MemberActivities item = new MemberActivities();
-						Date date = new Date();
-						item.setActivitydate(date);
-						item.setSalesorg(order.getSalesOrg());
-						item.setCategory("YRETURN");
-						item.setProcesstype("YSUB_RETURN");
-						item.setOrderid(order.getOrderNo());
-						item.setMembershipguid(order.getMemberNo());
-//						item.setPointtype("YGROWTH");
-//						item.setPoints(gRate);
-//						//第1遍传成长
-//						piVipInfoDataService.createMemberActivities(item);
-						//第2遍传先锋
-						item.setPointtype("YFRESH");
-						item.setPoints(fRate);
-						item.setAmount(leftAmt);
-						item.setProcess("X");
-//						piVipInfoDataService.createMemberActivities(item);
-						List<MemberActivities> list1 = new ArrayList<MemberActivities>();
-						list1.add(item);
-						piVipPointCreateBatService.createMemberActivitiesBat(list1);
-					}
-				});
+				 piVipPointCreateBatService.backPoint(order, initAmt, leftAmt);
 			}
-			
+
 		}else{
 			throw new ServiceException(MessageCode.LOGIC_ERROR,"当前订单不存在");
 		}
 
 		return 1;
 	}
+
+//	private void backPoint(final TPreOrder order, final BigDecimal initAmt, final BigDecimal leftAmt) {
+//		taskExecutor.execute(new Thread(){
+//            @Override
+//            public void run() {
+//                super.run();
+//                this.setName("minusVipPoint"+new Date());
+//                BigDecimal fRate = leftAmt.divide(initAmt,2).multiply(new BigDecimal(order.getyFresh()==null?0:order.getyFresh()));//鲜峰
+//                MemberActivities item = new MemberActivities();
+//                Date date = new Date();
+//                item.setActivitydate(date);
+//                item.setSalesorg(order.getSalesOrg());
+//                item.setCategory("YRETURN");
+//                item.setProcesstype("YSUB_RETURN");
+//                item.setOrderid(order.getOrderNo());
+//                item.setMembershipguid(order.getMemberNo());
+//                //第2遍传先锋
+//                item.setPointtype("YFRESH");
+//                item.setPoints(fRate);
+//                item.setAmount(leftAmt);
+//                item.setProcess("X");
+//                List<MemberActivities> list1 = new ArrayList<MemberActivities>();
+//                list1.add(item);
+//                piVipPointCreateBatService.createMemberActivitiesBat(list1);
+//            }
+//        });
+//	}
 
 	/**
 	 *   如果date为空说明是 订单退订 只需要判断目前赠品是否已产生路单或者已确认 如果有抛出异常
@@ -1898,31 +1847,7 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 		final BigDecimal backAmt2= backAmt;
 		//积分扣减
 		if("20".equals(order.getPaymentmethod())&&"20".equals(order.getPaymentStat())&&"Y".equals(order.getIsIntegration())){
-			taskExecutor.execute(new Thread(){
-				@Override
-				public void run() {
-					super.run();
-					this.setName("minusVipPoint"+new Date());
-//						BigDecimal gRate = leftAmt.divide(initAmt,2).multiply(new BigDecimal(order.getyGrowth()==null?0:order.getyGrowth()));//成长
-					BigDecimal fRate = backAmt2.divide(initAmt,2).multiply(new BigDecimal(order.getyFresh()==null?0:order.getyFresh()));//鲜峰
-					MemberActivities item = new MemberActivities();
-					Date date = new Date();
-					item.setActivitydate(date);
-					item.setSalesorg(order.getSalesOrg());
-					item.setCategory("YRETURN");
-					item.setProcesstype("YSUB_RETURN");
-					item.setOrderid(order.getOrderNo());
-					item.setMembershipguid(order.getMemberNo());
-					//第2遍传先锋
-					item.setPointtype("YFRESH");
-					item.setPoints(fRate);
-					item.setAmount(backAmt2);
-					item.setProcess("X");
-					List<MemberActivities> list1 = new ArrayList<MemberActivities>();
-					list1.add(item);
-					piVipPointCreateBatService.createMemberActivitiesBat(list1);
-				}
-			});
+			piVipPointCreateBatService.backPoint(order, initAmt, backAmt);
 		}
 
 		return 0;

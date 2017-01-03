@@ -84,4 +84,7 @@
 		<property name="userSessionService" ref="userSessionService"></property>
 		<property name="tDispOrderMapper" ref="tDispOrderMapper"></property>
 	</bean>
+	<bean class="com.nhry.data.milktrans.impl.TSsmRedateByTradeMapperImpl" id="tSsmRedateByTradeMapper">
+		<property name="sqlSessionFactory" ref="dynamicSqlSessionTemplate"/>
+	</bean>
 </beans>

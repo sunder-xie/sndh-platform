@@ -1,8 +1,10 @@
 package com.nhry.service.pi.dao;
 
+import com.nhry.data.order.domain.TPreOrder;
 import com.nhry.service.pi.pojo.MemberActivities;
 import com.nhry.webService.client.PISuccessTMessage;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 /**
@@ -15,5 +17,7 @@ public interface PIVipPointCreateBatService {
      * @return
      */
     PISuccessTMessage createMemberActivitiesBat(List<MemberActivities> memberActivities);
+
+    void backPoint(TPreOrder order, BigDecimal initAmt,BigDecimal backAmt);
 
 }

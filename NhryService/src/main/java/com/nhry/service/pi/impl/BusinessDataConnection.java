@@ -184,23 +184,33 @@ public class BusinessDataConnection {
                 MATNR_type1 matnr_type1 = new MATNR_type1();
                 matnr_type1.setMATNR_type0(map.get("MATNR"));
                 zssd00011.setMATNR(matnr_type1);
-                KWMENG_type1 kwmeng_type1 = new KWMENG_type1();
-                BigDecimal kw = new BigDecimal(String.valueOf(map.get("SUM_QTY")));
-                kwmeng_type1.setKWMENG_type0(kw);
-                zssd00011.setKWMENG(kwmeng_type1);
-                VRKME_type1 vrkme_type1 = new VRKME_type1();
-                vrkme_type1.setVRKME_type0(map.get("BASE_UNIT"));
-                zssd00011.setVRKME(vrkme_type1);
-                WERKS_type1 werks_type1 = new WERKS_type1();
-                werks_type1.setWERKS_type0(orderHeader.getWerks());
-                zssd00011.setWERKS(werks_type1);
-                LGORT_type1 lgort_type1 = new LGORT_type1();
-                lgort_type1.setLGORT_type0(orderHeader.getLgort());
+                if(map.containsKey("SUM_QTY")) {
+                    KWMENG_type1 kwmeng_type1 = new KWMENG_type1();
+                    BigDecimal kw = new BigDecimal(String.valueOf(map.get("SUM_QTY")));
+                    kwmeng_type1.setKWMENG_type0(kw);
+                    zssd00011.setKWMENG(kwmeng_type1);
+                }
+                if(map.containsKey("BASE_UNIT")) {
+                    VRKME_type1 vrkme_type1 = new VRKME_type1();
+                    vrkme_type1.setVRKME_type0(map.get("BASE_UNIT"));
+                    zssd00011.setVRKME(vrkme_type1);
+                }
+                if(StringUtils.isNotEmpty(orderHeader.getWerks())) {
+                    WERKS_type1 werks_type1 = new WERKS_type1();
+                    werks_type1.setWERKS_type0(orderHeader.getWerks());
+                    zssd00011.setWERKS(werks_type1);
+                }
+                if(StringUtils.isNotEmpty(orderHeader.getLgort())) {
+                    LGORT_type1 lgort_type1 = new LGORT_type1();
+                    lgort_type1.setLGORT_type0(orderHeader.getLgort());
 //                lgort_type1.setLGORT_type0("4005");
-                zssd00011.setLGORT(lgort_type1);
-                POSEX_type1 posex_type1 = new POSEX_type1();
-                posex_type1.setPOSEX_type0(String.valueOf(map.get("ITEM_NO")));
-                zssd00011.setPOSEX(posex_type1);
+                    zssd00011.setLGORT(lgort_type1);
+                }
+                if(map.containsKey("ITEM_NO")) {
+                    POSEX_type1 posex_type1 = new POSEX_type1();
+                    posex_type1.setPOSEX_type0(String.valueOf(map.get("ITEM_NO")));
+                    zssd00011.setPOSEX(posex_type1);
+                }
                 if (StringUtils.isNotEmpty(map.get("REF_MATNR"))) {
                     PR_REF_MAT_type1 pr_ref_mat_type1 = new PR_REF_MAT_type1();
                     pr_ref_mat_type1.setPR_REF_MAT_type0(map.get("REF_MATNR") == null ? "" : map.get("REF_MATNR"));
@@ -216,6 +226,17 @@ public class BusinessDataConnection {
                     zssd00011.setWBS_ELEM(wbs_elem_type1);
                 }
 
+                if(map.containsKey("KBETR")){
+                    KBETR_type1 kbetr_type1 = new KBETR_type1();
+                    kbetr_type1.setKBETR_type0(new BigDecimal(String.valueOf(map.get("KBETR"))));
+                    zssd00011.setKBETR(kbetr_type1);
+                }
+
+                if(map.containsKey("AUGRU")){
+                    AUGRU_type3 augru_type3 = new AUGRU_type3();
+                    augru_type3.setAUGRU_type2(map.get("AUGRU"));
+                    zssd00011.setAUGRU(augru_type3);
+                }
                 it_zssd00011_type1.addItem(zssd00011);
             }
 
@@ -240,8 +261,10 @@ public class BusinessDataConnection {
             }else{
                 kunnr_type1.setKUNNR_type0(orderHeader.getKUNNR());
                 zssd00010.setKUNNR(kunnr_type1);
-                kunwe_type1.setKUNWE_type0(orderHeader.getKUNWE());
-                zssd00010.setKUNWE(kunwe_type1);
+                if(StringUtils.isNotEmpty("orderHeader.getKUNWE()")) {
+                    kunwe_type1.setKUNWE_type0(orderHeader.getKUNWE());
+                    zssd00010.setKUNWE(kunwe_type1);
+                }
 //                vtweg_type1.setVTWEG_type0(PIPropertitesUtil.getValue("PI.MasterData.mATQUERY.VKORG"));
 //                zssd00010.setVTWEG(vtweg_type1);
             }
@@ -258,14 +281,18 @@ public class BusinessDataConnection {
             AUART_type1 auart_type1 = new AUART_type1();
             auart_type1.setAUART_type0(orderHeader.getAuartType());
             zssd00010.setAUART(auart_type1);
-            String dateString = formatter.format(orderHeader.getLFDAT());
-            com.nhry.webService.client.businessData.functions.Date date = new com.nhry.webService.client.businessData.functions.Date();
-            date.setObject(formatter.parse(dateString));
-            zssd00010.setLFDAT(date);
-            zssd00010.setAUDAT(date);
-            BSTKD_type1 bstkd_type1 = new BSTKD_type1();
-            bstkd_type1.setBSTKD_type0(orderHeader.getBSTKD());
-            zssd00010.setBSTKD(bstkd_type1);
+            if(orderHeader.getLFDAT()!=null) {
+                String dateString = formatter.format(orderHeader.getLFDAT());
+                com.nhry.webService.client.businessData.functions.Date date = new com.nhry.webService.client.businessData.functions.Date();
+                date.setObject(formatter.parse(dateString));
+                zssd00010.setLFDAT(date);
+                zssd00010.setAUDAT(date);
+            }
+            if(StringUtils.isNotEmpty(orderHeader.getBSTKD())) {
+                BSTKD_type1 bstkd_type1 = new BSTKD_type1();
+                bstkd_type1.setBSTKD_type0(orderHeader.getBSTKD());
+                zssd00010.setBSTKD(bstkd_type1);
+            }
             if (StringUtils.isNotEmpty(orderHeader.getActivityId())) {
                 CMPGN_EXTID_type1 cmpgn_extid_type1 = new CMPGN_EXTID_type1();
                 cmpgn_extid_type1.setCMPGN_EXTID_type0(orderHeader.getActivityId());

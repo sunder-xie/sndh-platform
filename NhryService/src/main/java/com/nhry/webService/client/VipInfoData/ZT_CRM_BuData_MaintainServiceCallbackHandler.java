@@ -69,6 +69,21 @@ public abstract class ZT_CRM_BuData_MaintainServiceCallbackHandler {
     }
 
     /**
+     * auto generated Axis2 call back method for createRebateByTrade method
+     * override this method for handling normal response from createRebateByTrade operation
+     */
+    public void receiveResultcreateRebateByTrade(
+        com.nhry.webService.client.VipInfoData.functions.Z_CRM_CREATE_REBATE_BY_TRADEResponse result) {
+    }
+
+    /**
+     * auto generated Axis2 Error handler
+     * override this method for handling error response from createRebateByTrade operation
+     */
+    public void receiveErrorcreateRebateByTrade(Exception e) {
+    }
+
+    /**
      * auto generated Axis2 call back method for subscriberMaintain method
      * override this method for handling normal response from subscriberMaintain operation
      */

@@ -1,5 +1,5 @@
 /**
- * Z_CRM_SNG_TS.java
+ * Z_CRM_CREATE_REBATE_BY_TRADE.java
  *
  * This file was auto-generated from WSDL
  * by the Apache Axis2 version: 1.7.3  Built on : May 30, 2016 (04:09:26 BST)
@@ -8,47 +8,101 @@ package com.nhry.webService.client.VipInfoData.functions;
 
 
 /**
- *  Z_CRM_SNG_TS bean class
+ *  Z_CRM_CREATE_REBATE_BY_TRADE bean class
  */
 @SuppressWarnings({"unchecked",
     "unused"
 })
-public class Z_CRM_SNG_TS implements org.apache.axis2.databinding.ADBBean {
+public class Z_CRM_CREATE_REBATE_BY_TRADE implements org.apache.axis2.databinding.ADBBean {
     public static final javax.xml.namespace.QName MY_QNAME = new javax.xml.namespace.QName("urn:sap-com:document:sap:rfc:functions",
-            "Z_CRM_SNG_TS", "ns1");
+            "Z_CRM_CREATE_REBATE_BY_TRADE", "ns1");
 
     /**
-     * field for IS_QUERY
+     * field for IT_REBATE_TAB
      */
-    protected ZSCRM_SNG_TS_QUERY localIS_QUERY;
+    protected IT_REBATE_TAB_type0 localIT_REBATE_TAB;
 
-    /*  This tracker boolean wil be used to detect whether the user called the set method
-     *   for this attribute. It will be used to determine whether to include this field
-     *   in the serialized XML
+    /**
+     * field for IV_DESCRIPTION
      */
-    protected boolean localIS_QUERYTracker = false;
+    protected IV_DESCRIPTION_type1 localIV_DESCRIPTION;
 
-    public boolean isIS_QUERYSpecified() {
-        return localIS_QUERYTracker;
-    }
+    /**
+     * field for IV_EXTERNAL_ID
+     */
+    protected IV_EXTERNAL_ID_type1 localIV_EXTERNAL_ID;
+
+    /**
+     * field for IV_PROM_ID
+     */
+    protected IV_PROM_ID_type1 localIV_PROM_ID;
 
     /**
      * Auto generated getter method
-     * @return com.nhry.webService.client.VipInfoData.functions.ZSCRM_SNG_TS_QUERY
+     * @return com.nhry.webService.client.VipInfoData.functions.IT_REBATE_TAB_type0
      */
-    public ZSCRM_SNG_TS_QUERY getIS_QUERY() {
-        return localIS_QUERY;
+    public IT_REBATE_TAB_type0 getIT_REBATE_TAB() {
+        return localIT_REBATE_TAB;
     }
 
     /**
      * Auto generated setter method
-     * @param param IS_QUERY
+     * @param param IT_REBATE_TAB
      */
-    public void setIS_QUERY(
-        ZSCRM_SNG_TS_QUERY param) {
-        localIS_QUERYTracker = param != null;
+    public void setIT_REBATE_TAB(
+        IT_REBATE_TAB_type0 param) {
+        this.localIT_REBATE_TAB = param;
+    }
 
-        this.localIS_QUERY = param;
+    /**
+     * Auto generated getter method
+     * @return com.nhry.webService.client.VipInfoData.functions.IV_DESCRIPTION_type1
+     */
+    public IV_DESCRIPTION_type1 getIV_DESCRIPTION() {
+        return localIV_DESCRIPTION;
+    }
+
+    /**
+     * Auto generated setter method
+     * @param param IV_DESCRIPTION
+     */
+    public void setIV_DESCRIPTION(
+        IV_DESCRIPTION_type1 param) {
+        this.localIV_DESCRIPTION = param;
+    }
+
+    /**
+     * Auto generated getter method
+     * @return com.nhry.webService.client.VipInfoData.functions.IV_EXTERNAL_ID_type1
+     */
+    public IV_EXTERNAL_ID_type1 getIV_EXTERNAL_ID() {
+        return localIV_EXTERNAL_ID;
+    }
+
+    /**
+     * Auto generated setter method
+     * @param param IV_EXTERNAL_ID
+     */
+    public void setIV_EXTERNAL_ID(
+        IV_EXTERNAL_ID_type1 param) {
+        this.localIV_EXTERNAL_ID = param;
+    }
+
+    /**
+     * Auto generated getter method
+     * @return com.nhry.webService.client.VipInfoData.functions.IV_PROM_ID_type1
+     */
+    public IV_PROM_ID_type1 getIV_PROM_ID() {
+        return localIV_PROM_ID;
+    }
+
+    /**
+     * Auto generated setter method
+     * @param param IV_PROM_ID
+     */
+    public void setIV_PROM_ID(
+        IV_PROM_ID_type1 param) {
+        this.localIV_PROM_ID = param;
     }
 
     /**
@@ -92,23 +146,45 @@ public class Z_CRM_SNG_TS implements org.apache.axis2.databinding.ADBBean {
                     (namespacePrefix.trim().length() > 0)) {
                 writeAttribute("xsi",
                     "http://www.w3.org/2001/XMLSchema-instance", "type",
-                    namespacePrefix + ":Z_CRM_SNG_TS", xmlWriter);
+                    namespacePrefix + ":Z_CRM_CREATE_REBATE_BY_TRADE", xmlWriter);
             } else {
                 writeAttribute("xsi",
                     "http://www.w3.org/2001/XMLSchema-instance", "type",
-                    "Z_CRM_SNG_TS", xmlWriter);
+                    "Z_CRM_CREATE_REBATE_BY_TRADE", xmlWriter);
             }
         }
 
-        if (localIS_QUERYTracker) {
-            if (localIS_QUERY == null) {
-                throw new org.apache.axis2.databinding.ADBException(
-                    "IS_QUERY cannot be null!!");
-            }
-
-            localIS_QUERY.serialize(new javax.xml.namespace.QName("", "IS_QUERY"),
-                xmlWriter);
+        if (localIT_REBATE_TAB == null) {
+            throw new org.apache.axis2.databinding.ADBException(
+                "IT_REBATE_TAB cannot be null!!");
         }
+
+        localIT_REBATE_TAB.serialize(new javax.xml.namespace.QName("",
+                "IT_REBATE_TAB"), xmlWriter);
+
+        if (localIV_DESCRIPTION == null) {
+            throw new org.apache.axis2.databinding.ADBException(
+                "IV_DESCRIPTION cannot be null!!");
+        }
+
+        localIV_DESCRIPTION.serialize(new javax.xml.namespace.QName("",
+                "IV_DESCRIPTION"), xmlWriter);
+
+        if (localIV_EXTERNAL_ID == null) {
+            throw new org.apache.axis2.databinding.ADBException(
+                "IV_EXTERNAL_ID cannot be null!!");
+        }
+
+        localIV_EXTERNAL_ID.serialize(new javax.xml.namespace.QName("",
+                "IV_EXTERNAL_ID"), xmlWriter);
+
+        if (localIV_PROM_ID == null) {
+            throw new org.apache.axis2.databinding.ADBException(
+                "IV_PROM_ID cannot be null!!");
+        }
+
+        localIV_PROM_ID.serialize(new javax.xml.namespace.QName("", "IV_PROM_ID"),
+            xmlWriter);
 
         xmlWriter.writeEndElement();
     }
@@ -328,9 +404,9 @@ public class Z_CRM_SNG_TS implements org.apache.axis2.databinding.ADBBean {
          * Postcondition: If this object is an element, the reader is positioned at its end element
          *                If this object is a complex type, the reader is positioned at the end element of its outer element
          */
-        public static Z_CRM_SNG_TS parse(
+        public static Z_CRM_CREATE_REBATE_BY_TRADE parse(
             javax.xml.stream.XMLStreamReader reader) throws Exception {
-            Z_CRM_SNG_TS object = new Z_CRM_SNG_TS();
+            Z_CRM_CREATE_REBATE_BY_TRADE object = new Z_CRM_CREATE_REBATE_BY_TRADE();
 
             int event;
             javax.xml.namespace.QName currentQName = null;
@@ -362,12 +438,12 @@ public class Z_CRM_SNG_TS implements org.apache.axis2.databinding.ADBBean {
                         String type = fullTypeName.substring(fullTypeName.indexOf(
                                     ":") + 1);
 
-                        if (!"Z_CRM_SNG_TS".equals(type)) {
+                        if (!"Z_CRM_CREATE_REBATE_BY_TRADE".equals(type)) {
                             //find namespace for the prefix
                             String nsUri = reader.getNamespaceContext()
                                                            .getNamespaceURI(nsPrefix);
 
-                            return (Z_CRM_SNG_TS) ExtensionMapper.getTypeObject(nsUri,
+                            return (Z_CRM_CREATE_REBATE_BY_TRADE) ExtensionMapper.getTypeObject(nsUri,
                                 type, reader);
                         }
                     }
@@ -382,11 +458,47 @@ public class Z_CRM_SNG_TS implements org.apache.axis2.databinding.ADBBean {
                 while (!reader.isEndElement()) {
                     if (reader.isStartElement()) {
                         if ((reader.isStartElement() &&
-                                new javax.xml.namespace.QName("", "IS_QUERY").equals(
+                                new javax.xml.namespace.QName("",
+                                    "IT_REBATE_TAB").equals(reader.getName())) ||
+                                new javax.xml.namespace.QName("",
+                                    "IT_REBATE_TAB").equals(reader.getName())) {
+                            object.setIT_REBATE_TAB(IT_REBATE_TAB_type0.Factory.parse(
+                                    reader));
+
+                            reader.next();
+                        } // End of if for expected property start element
+
+                        else
+                         if ((reader.isStartElement() &&
+                                new javax.xml.namespace.QName("",
+                                    "IV_DESCRIPTION").equals(reader.getName())) ||
+                                new javax.xml.namespace.QName("",
+                                    "IV_DESCRIPTION").equals(reader.getName())) {
+                            object.setIV_DESCRIPTION(IV_DESCRIPTION_type1.Factory.parse(
+                                    reader));
+
+                            reader.next();
+                        } // End of if for expected property start element
+
+                        else
+                         if ((reader.isStartElement() &&
+                                new javax.xml.namespace.QName("",
+                                    "IV_EXTERNAL_ID").equals(reader.getName())) ||
+                                new javax.xml.namespace.QName("",
+                                    "IV_EXTERNAL_ID").equals(reader.getName())) {
+                            object.setIV_EXTERNAL_ID(IV_EXTERNAL_ID_type1.Factory.parse(
+                                    reader));
+
+                            reader.next();
+                        } // End of if for expected property start element
+
+                        else
+                         if ((reader.isStartElement() &&
+                                new javax.xml.namespace.QName("", "IV_PROM_ID").equals(
                                     reader.getName())) ||
-                                new javax.xml.namespace.QName("", "IS_QUERY").equals(
+                                new javax.xml.namespace.QName("", "IV_PROM_ID").equals(
                                     reader.getName())) {
-                            object.setIS_QUERY(ZSCRM_SNG_TS_QUERY.Factory.parse(
+                            object.setIV_PROM_ID(IV_PROM_ID_type1.Factory.parse(
                                     reader));
 
                             reader.next();

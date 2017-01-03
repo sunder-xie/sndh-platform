@@ -181,7 +181,7 @@ public class SalesOrderHeader {
         sb.append("&kunwe="+ getKUNWE());
         sb.append("&vkorg="+ getVKORG());
         sb.append("&bstkd="+ getBSTKD());
-        sb.append("&lfdat="+ getLFDAT().toString());
+        sb.append("&lfdat="+ getLFDAT()==null?"":getLFDAT().toString());
         sb.append("&lgort="+ getLgort());
         sb.append("&werks="+getWerks());
         sb.append("&auartType="+getAuartType());

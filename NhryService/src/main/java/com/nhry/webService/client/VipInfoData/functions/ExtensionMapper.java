@@ -18,8 +18,8 @@ public class ExtensionMapper {
         String namespaceURI, String typeName,
         javax.xml.stream.XMLStreamReader reader) throws Exception {
         if ("urn:sap-com:document:sap:rfc:functions".equals(namespaceURI) &&
-                "DESCRIPTION_type1".equals(typeName)) {
-            return com.nhry.webService.client.VipInfoData.functions.DESCRIPTION_type1.Factory.parse(reader);
+                "EV_OBJECT_ID_type1".equals(typeName)) {
+            return EV_OBJECT_ID_type1.Factory.parse(reader);
         }
 
         if ("urn:sap-com:document:sap:rfc:functions".equals(namespaceURI) &&
@@ -53,6 +53,11 @@ public class ExtensionMapper {
         }
 
         if ("urn:sap-com:document:sap:rfc:functions".equals(namespaceURI) &&
+                "ZZFLD0000A7_type1".equals(typeName)) {
+            return com.nhry.webService.client.VipInfoData.functions.ZZFLD0000A7_type1.Factory.parse(reader);
+        }
+
+        if ("urn:sap-com:document:sap:rfc:functions".equals(namespaceURI) &&
                 "EV_MEMB_ID_type1".equals(typeName)) {
             return EV_MEMB_ID_type1.Factory.parse(reader);
         }
@@ -64,7 +69,7 @@ public class ExtensionMapper {
 
         if ("urn:sap-com:document:sap:rfc:functions".equals(namespaceURI) &&
                 "SALES_ORG_type1".equals(typeName)) {
-            return com.nhry.webService.client.VipInfoData.functions.SALES_ORG_type1.Factory.parse(reader);
+            return SALES_ORG_type1.Factory.parse(reader);
         }
 
         if ("urn:sap-com:document:sap:rfc:functions".equals(namespaceURI) &&
@@ -88,8 +93,13 @@ public class ExtensionMapper {
         }
 
         if ("urn:sap-com:document:sap:rfc:functions".equals(namespaceURI) &&
+                "IV_PROM_ID_type1".equals(typeName)) {
+            return com.nhry.webService.client.VipInfoData.functions.IV_PROM_ID_type1.Factory.parse(reader);
+        }
+
+        if ("urn:sap-com:document:sap:rfc:functions".equals(namespaceURI) &&
                 "SALES_ORG_type3".equals(typeName)) {
-            return com.nhry.webService.client.VipInfoData.functions.SALES_ORG_type3.Factory.parse(reader);
+            return SALES_ORG_type3.Factory.parse(reader);
         }
 
         if ("urn:sap-com:document:sap:rfc:functions".equals(namespaceURI) &&
@@ -100,6 +110,11 @@ public class ExtensionMapper {
         if ("urn:sap-com:document:sap:rfc:functions".equals(namespaceURI) &&
                 "T_ZTAB0000LQ_type3".equals(typeName)) {
             return T_ZTAB0000LQ_type3.Factory.parse(reader);
+        }
+
+        if ("urn:sap-com:document:sap:rfc:functions".equals(namespaceURI) &&
+                "EV_OBJECT_ID_type1".equals(typeName)) {
+            return EV_OBJECT_ID_type1.Factory.parse(reader);
         }
 
         if ("urn:sap-com:document:sap:rfc:functions".equals(namespaceURI) &&
@@ -159,7 +174,7 @@ public class ExtensionMapper {
 
         if ("urn:sap-com:document:sap:rfc:functions".equals(namespaceURI) &&
                 "DESCRIPTION_type1".equals(typeName)) {
-            return com.nhry.webService.client.VipInfoData.functions.DESCRIPTION_type1.Factory.parse(reader);
+            return DESCRIPTION_type1.Factory.parse(reader);
         }
 
         if ("urn:sap-com:document:sap:rfc:functions".equals(namespaceURI) &&
@@ -175,6 +190,11 @@ public class ExtensionMapper {
         if ("urn:sap-com:document:sap:rfc:functions".equals(namespaceURI) &&
                 "NZBH_type1".equals(typeName)) {
             return NZBH_type1.Factory.parse(reader);
+        }
+
+        if ("urn:sap-com:document:sap:rfc:functions".equals(namespaceURI) &&
+                "IV_DESCRIPTION_type1".equals(typeName)) {
+            return com.nhry.webService.client.VipInfoData.functions.IV_DESCRIPTION_type1.Factory.parse(reader);
         }
 
         if ("urn:sap-com:document:sap:rfc:functions".equals(namespaceURI) &&
@@ -224,7 +244,7 @@ public class ExtensionMapper {
 
         if ("urn:sap-com:document:sap:rfc:functions".equals(namespaceURI) &&
                 "ZZOBJECT_ID_type1".equals(typeName)) {
-            return com.nhry.webService.client.VipInfoData.functions.ZZOBJECT_ID_type1.Factory.parse(reader);
+            return ZZOBJECT_ID_type1.Factory.parse(reader);
         }
 
         if ("urn:sap-com:document:sap:rfc:functions".equals(namespaceURI) &&
@@ -253,8 +273,23 @@ public class ExtensionMapper {
         }
 
         if ("urn:sap-com:document:sap:rfc:functions".equals(namespaceURI) &&
+                "IV_EXTERNAL_ID_type1".equals(typeName)) {
+            return com.nhry.webService.client.VipInfoData.functions.IV_EXTERNAL_ID_type1.Factory.parse(reader);
+        }
+
+        if ("urn:sap-com:document:sap:rfc:functions".equals(namespaceURI) &&
                 "JD_ACCOUNT_type1".equals(typeName)) {
             return JD_ACCOUNT_type1.Factory.parse(reader);
+        }
+
+        if ("urn:sap-com:document:sap:rfc:functions".equals(namespaceURI) &&
+                "ZSCRM_ZTAB0000JQ".equals(typeName)) {
+            return com.nhry.webService.client.VipInfoData.functions.ZSCRM_ZTAB0000JQ.Factory.parse(reader);
+        }
+
+        if ("urn:sap-com:document:sap:rfc:functions".equals(namespaceURI) &&
+                "IT_REBATE_TAB_type0".equals(typeName)) {
+            return com.nhry.webService.client.VipInfoData.functions.IT_REBATE_TAB_type0.Factory.parse(reader);
         }
 
         if ("urn:sap-com:document:sap:rfc:functions".equals(namespaceURI) &&
@@ -294,7 +329,7 @@ public class ExtensionMapper {
 
         if ("urn:sap-com:document:sap:rfc:functions".equals(namespaceURI) &&
                 "ZSCRM_SNG_TS_QUERY".equals(typeName)) {
-            return com.nhry.webService.client.VipInfoData.functions.ZSCRM_SNG_TS_QUERY.Factory.parse(reader);
+            return ZSCRM_SNG_TS_QUERY.Factory.parse(reader);
         }
 
         if ("urn:sap-com:document:sap:rfc:functions".equals(namespaceURI) &&
@@ -308,8 +343,18 @@ public class ExtensionMapper {
         }
 
         if ("urn:sap-com:document:sap:rfc:functions".equals(namespaceURI) &&
+                "EV_MESSAGE_type1".equals(typeName)) {
+            return EV_MESSAGE_type1.Factory.parse(reader);
+        }
+
+        if ("urn:sap-com:document:sap:rfc:functions".equals(namespaceURI) &&
                 "ZZFLD0000B8_type1".equals(typeName)) {
             return ZZFLD0000B8_type1.Factory.parse(reader);
+        }
+
+        if ("urn:sap-com:document:sap:rfc:functions".equals(namespaceURI) &&
+                "ZZFLD0000DE_type1".equals(typeName)) {
+            return com.nhry.webService.client.VipInfoData.functions.ZZFLD0000DE_type1.Factory.parse(reader);
         }
 
         if ("urn:sap-com:document:sap:rfc:functions".equals(namespaceURI) &&
