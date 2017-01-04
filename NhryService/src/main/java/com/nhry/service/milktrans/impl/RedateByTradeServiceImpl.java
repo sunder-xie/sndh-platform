@@ -86,6 +86,7 @@ public class RedateByTradeServiceImpl implements RedateByTradeService {
                             throw new ServiceException(MessageCode.LOGIC_ERROR, "未定位到订单行项目物料！");
                         }
                         insert(order.getOrderNo(), order.getBranchNo(), order.getSalesOrg(), order.getPromotion(), matnr, order.getDiscountAmt());
+                        logger.info("返利数据创建成功！"+order.getOrderNo());
                     }
                 }
             }

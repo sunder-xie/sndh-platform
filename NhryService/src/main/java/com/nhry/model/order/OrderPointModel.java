@@ -1,13 +1,15 @@
 package com.nhry.model.order;
 
+import java.math.BigDecimal;
+
 /**
  * Created by cbz on 8/17/2016.
  */
 public class OrderPointModel {
     String orderNo;
     String itemNo;
-    String yfresh;
-    String ygrowth;
+    BigDecimal yfresh;
+    BigDecimal ygrowth;
 
     public String getOrderNo() {
         return orderNo;
@@ -25,19 +27,19 @@ public class OrderPointModel {
         this.itemNo = itemNo;
     }
 
-    public String getYfresh() {
+    public BigDecimal getYfresh() {
         return yfresh;
     }
 
-    public void setYfresh(String yfresh) {
+    public void setYfresh(BigDecimal yfresh) {
         this.yfresh = yfresh;
     }
 
-    public String getYgrowth() {
+    public BigDecimal getYgrowth() {
         return ygrowth;
     }
 
-    public void setYgrowth(String ygrowth) {
+    public void setYgrowth(BigDecimal ygrowth) {
         this.ygrowth = ygrowth;
     }
 }
