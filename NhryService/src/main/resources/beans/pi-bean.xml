@@ -121,5 +121,6 @@
     <bean class="com.nhry.service.pi.impl.PIRedateByTradeServiceImpl" id="piRedateByTradeService">
         <property name="redateByTradeService" ref="redateByTradeService"/>
         <property name="dictionaryService" ref="dicService"/>
+        <property name="branchMapper" ref="branchMapper"/>
     </bean>
 </beans>

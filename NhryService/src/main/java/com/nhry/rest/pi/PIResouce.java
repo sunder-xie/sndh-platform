@@ -17,10 +17,7 @@ import com.nhry.service.basic.dao.ResidentialAreaService;
 import com.nhry.service.basic.dao.TVipCrmInfoService;
 import com.nhry.service.basic.dao.TVipCustInfoService;
 import com.nhry.service.config.dao.DictionaryService;
-import com.nhry.service.pi.dao.PIProductService;
-import com.nhry.service.pi.dao.PIRequireOrderService;
-import com.nhry.service.pi.dao.PIVipInfoDataService;
-import com.nhry.service.pi.dao.SmsSendService;
+import com.nhry.service.pi.dao.*;
 import com.nhry.service.pi.pojo.MemberActivities;
 import com.nhry.webService.client.PISuccessTMessage;
 import com.sun.jersey.spi.resource.Singleton;
@@ -80,6 +77,9 @@ public class PIResouce extends BaseResource{
 
     @Autowired
     public UserSessionService userSessionService;
+
+    @Autowired
+    public PIRedateByTradeService redateByTradeService;
 
     @GET
     @Path("/getProducts")
@@ -231,5 +231,14 @@ public class PIResouce extends BaseResource{
         }
         PISuccessTMessage message = piVipInfoDataService.queryCustomerComplain(model);
         return convertToRespModel(MessageCode.NORMAL,message.getMessage(), message.getData());
+    }
+
+    @GET
+    @Path("/execRedate")
+    @Produces(MediaType.APPLICATION_JSON)
+    @Consumes(MediaType.APPLICATION_JSON)
+    @ApiOperation(value = "/execRedate", response = ResponseModel.class, notes = "测试发送返利")
+    public Response execRedate() throws RemoteException {
+        return convertToRespModel(MessageCode.NORMAL, redateByTradeService.sendRedateByTradeToCRM(), null);
     }
 }

@@ -771,6 +771,17 @@ public class RequireOrderServiceImpl implements RequireOrderService {
         return entry;
     }
 
+    /**
+     * 自营奶站生成销售订单和发送销售订单到ERP
+     * 销售订单生成规则：
+     * 1：奶站促销的订单
+     * 2：牛奶钱包的促销的订单
+     * 3 牛奶钱包非促销订单
+     * 4 机构订奶的销售订单
+     * 5 正常订单 （交货单减去其他销售订单）
+     * @param search
+     * @return
+     */
     @Override
     public List<TSsmSalOrder> creaSalOrderOfSelftBranchByDate2(SalOrderDaySearch search) {
         TSysUser user = userSessionService.getCurrentUser();
@@ -1139,6 +1150,14 @@ public class RequireOrderServiceImpl implements RequireOrderService {
 
     }
 
+    /**
+     * 生成经销商的销售订单并发送到ERP
+     * 1：标准销售订单
+     * 2：促销销售订单
+     * 3：机构销售订单
+     * @param orderDate
+     * @return
+     */
     @Override
     public int creaSalOrderOfDealerBranchByDate(Date orderDate) {
         TSysUser user = userSessionService.getCurrentUser();
@@ -1170,14 +1189,6 @@ public class RequireOrderServiceImpl implements RequireOrderService {
                     generateSalesOrderAnduptVouCher(order);
                 }
             }
-//            TSsmSalOrder promOrder40 = this.creatPromoSalOrderOfDealerBranch40(orderDate);
-//            TSsmSalOrder noPromOrder40 = this.creatNoPromoSalOrderOfDealerBranch40(orderDate);
-//            if(promOrder40 != null){
-//                generateSalesOrderAnduptVouCher(promOrder40);
-//            }
-//            if(noPromOrder40 != null){
-//                generateSalesOrderAnduptVouCher(noPromOrder40);
-//            }
             if (noPromOrder != null) {
                 generateSalesOrderAnduptVouCher(noPromOrder);
             }
