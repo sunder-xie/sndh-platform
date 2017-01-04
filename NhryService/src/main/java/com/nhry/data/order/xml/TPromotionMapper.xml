@@ -64,7 +64,9 @@
         left join t_md_mara pro2 on pro2.matnr = gi.GIFT_NO
         where 1 = 1
         and p.SALES_ORG = #{salesOrg,jdbcType=VARCHAR}
-        and si.BRANCH_NO = #{branchNo,jdbcType=VARCHAR}
+        <if test="branchNo != null and branchNo != ''">
+            AND si.BRANCH_NO = #{branchNo,jdbcType=VARCHAR}
+        </if>
         <if test="orderDateStart != null and orderDateStart !=''">
             AND p.PLAN_START_TIME &gt;= #{orderDateStart}
         </if>
