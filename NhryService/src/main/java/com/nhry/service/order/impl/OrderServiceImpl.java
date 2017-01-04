@@ -972,13 +972,13 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 		}
 		if("20".equals(order.getSign())){
 			throw new ServiceException(MessageCode.LOGIC_ERROR,order.getOrderNo()+"该订单已停订不能做停订");
-		}
-		if("30".equals(order.getSign())){
-			throw new ServiceException(MessageCode.LOGIC_ERROR,order.getOrderNo()+"该订单已退订不能做停订");
-		}
-		if("40".equals(order.getSign())){
-			throw new ServiceException(MessageCode.LOGIC_ERROR,order.getOrderNo()+"该订单已完结不能做停订");
-		}
+	}
+	if("30".equals(order.getSign())){
+		throw new ServiceException(MessageCode.LOGIC_ERROR,order.getOrderNo()+"该订单已退订不能做停订");
+	}
+	if("40".equals(order.getSign())){
+		throw new ServiceException(MessageCode.LOGIC_ERROR,order.getOrderNo()+"该订单已完结不能做停订");
+	}
 		
 		if(order!= null){
 //			String status = null;
@@ -1922,8 +1922,14 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 		if("Y".equals(order.getResumeFlag())){
 			throw new ServiceException(MessageCode.LOGIC_ERROR, orderNo+" [订单已经被续订过!]");
 		}
+		if("NO".equals(order.getResumeFlag())){
+			throw new ServiceException(MessageCode.LOGIC_ERROR, orderNo+" [订单已被设为不参与续订");
+		}
+		if("30".equals(order.getPreorderStat())){
+			throw new ServiceException(MessageCode.LOGIC_ERROR,orderNo+"无效订单不能被续订");
+		}
 		tPreOrderMapper.updateOrderResumed(orderNo);//该订单已经被续订
-		
+
 		ArrayList<TPlanOrderItem> entries = (ArrayList<TPlanOrderItem>) tPlanOrderItemMapper.selectByOrderCode(orderNo);
 //		Date orgFirstDate = null; 
 //		Map<String,Integer> entryDateMap = new HashMap<String,Integer>();
@@ -1959,7 +1965,7 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 			Date date = new Date();
 			order.setOrderNo(CodeGeneratorUtil.getCode());
 			order.setOrderDate(date);
-         order.setPaymentStat("10");//默认未付款
+       		order.setPaymentStat("10");//默认未付款
 			//生成每个订单行
 			List<TPlanOrderItem> entriesList = new ArrayList<TPlanOrderItem>();
 			int index = 0;
@@ -2012,9 +2018,16 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 			}
 			
 			//保存订单，订单行
+			order.setOrderType("20");
+			order.setOnlineorderNo("");
+			order.setOnlineInitAmt(null);
+			order.setStopDateEnd(null);
+			order.setStopDateStart(null);
+			order.setBackDate(null);
 			order.setPreorderSource("30");
 			order.setCurAmt(orderAmt);//订单价格
 			order.setInitAmt(orderAmt);
+			order.setPreorderStat("10");
 			order.setEndDate(calculateFinalDate(entriesList));//订单截止日期
 			//将订单状态置为 在订状态（10）
 			order.setSign("10");
