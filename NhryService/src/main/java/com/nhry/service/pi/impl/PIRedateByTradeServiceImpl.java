@@ -1,7 +1,10 @@
 package com.nhry.service.pi.impl;
 
+import com.nhry.data.basic.dao.TMdBranchMapper;
+import com.nhry.data.basic.domain.TMdBranch;
 import com.nhry.data.config.domain.NHSysCodeItem;
 import com.nhry.data.milktrans.domain.TSsmRedateByTrade;
+import com.nhry.service.basic.dao.BranchService;
 import com.nhry.service.config.dao.DictionaryService;
 import com.nhry.service.milktrans.dao.RedateByTradeService;
 import com.nhry.service.pi.dao.PIRedateByTradeService;
@@ -21,10 +24,8 @@ import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 
 import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.text.SimpleDateFormat;
+import java.util.*;
 
 /**
  * Created by cbz on 12/26/2016.
@@ -32,8 +33,15 @@ import java.util.Map;
 public class PIRedateByTradeServiceImpl implements PIRedateByTradeService{
     private static String URL = EnvContant.getSystemConst("PI.VipInfoData.URL");
     private static Logger logger = Logger.getLogger(PIRedateByTradeServiceImpl.class);
+    private static String TYPE_CODE = "1017";
+    private static String ITEM_CODE = "1";
     private RedateByTradeService redateByTradeService;
     private DictionaryService dictionaryService;
+    private TMdBranchMapper branchMapper;
+
+    public void setBranchMapper(TMdBranchMapper branchMapper) {
+        this.branchMapper = branchMapper;
+    }
 
     public void setRedateByTradeService(RedateByTradeService redateByTradeService) {
         this.redateByTradeService = redateByTradeService;
@@ -43,21 +51,42 @@ public class PIRedateByTradeServiceImpl implements PIRedateByTradeService{
         this.dictionaryService = dictionaryService;
     }
 
+    /**
+     * 销售订单编号 35位
+     *
+     * @return
+     */
+    private String generateSal35Id(int i,String branchNo) {
+        TMdBranch branch = branchMapper.getBranchByNo(branchNo);
+        StringBuilder uuid = new StringBuilder();
+        uuid.append("DH001");
+        uuid.append("A");
+        uuid.append(branch.getCompanyCode());
+        uuid.append(branchNo.substring(1));
+        uuid.append(new SimpleDateFormat("yyyyMMddHHmmss").format(new java.util.Date()));
+        uuid.append(new Random().nextInt(80) + 10 + i);
+        System.out.println("------------------------" + uuid.toString());
+        return uuid.toString();
+    }
+
     @Override
     public String sendRedateByTradeToCRM() {
         NHSysCodeItem codeItem = new NHSysCodeItem();
-        codeItem.setTypeCode("1017");
-        codeItem.setItemCode("1");
+        codeItem.setTypeCode(TYPE_CODE);
+        codeItem.setItemCode(ITEM_CODE);
         codeItem = dictionaryService.findCodeItenByCode(codeItem);
         String dxpz = codeItem.getItemName();
         String flc = codeItem.getAttr2();
         List<TSsmRedateByTrade> tradeList = redateByTradeService.findNoSendRedateByTrade();
         for(TSsmRedateByTrade trade : tradeList){
             PISuccessMessage message = new PISuccessMessage();
+            String dhNo = "";
             //贷项凭证
             if(dxpz.contains(trade.getSalesOrg())){
                 List<Map<String, String>> items = new ArrayList<Map<String, String>>();
                 SalesOrderHeader orderHeader = new SalesOrderHeader();
+                dhNo = generateSal35Id(2,trade.getBranchNo());
+                orderHeader.setBSTKD(dhNo);
                 orderHeader.setKUNNR(trade.getBranchNo());
                 orderHeader.setActivityId(trade.getPromNo());
                 orderHeader.setVKORG(trade.getSalesOrg());
@@ -67,8 +96,9 @@ public class PIRedateByTradeServiceImpl implements PIRedateByTradeService{
                 Map<String, String> item = new HashMap<String,String>();
                 item.put("MATNR",trade.getMatnr());
                 item.put("KBETR",trade.getRedate().toString());
-                item.put("AUGRU","贷项凭证");
-                 message = BusinessDataConnection.SalesOrderCreate(items,orderHeader);
+                item.put("AUGRU","001");
+                items.add(item);
+                message = BusinessDataConnection.SalesOrderCreate(items,orderHeader);
             }
             //返利池
             if(flc.contains(trade.getSalesOrg())){
@@ -81,7 +111,8 @@ public class PIRedateByTradeServiceImpl implements PIRedateByTradeService{
             }
             if(message.isSuccess()){
                 TSsmRedateByTrade t = new TSsmRedateByTrade();
-                t.setDhNo(message.getMessage());
+                t.setOrderNo(trade.getOrderNo());
+                t.setDhNo(dhNo);
                 t.setCrmNo(message.getData().toString());
                 t.setLastModified(new Date());
                 redateByTradeService.update(t);

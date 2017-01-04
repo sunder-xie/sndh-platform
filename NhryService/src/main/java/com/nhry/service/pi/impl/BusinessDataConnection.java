@@ -261,7 +261,7 @@ public class BusinessDataConnection {
             }else{
                 kunnr_type1.setKUNNR_type0(orderHeader.getKUNNR());
                 zssd00010.setKUNNR(kunnr_type1);
-                if(StringUtils.isNotEmpty("orderHeader.getKUNWE()")) {
+                if(StringUtils.isNotEmpty(orderHeader.getKUNWE())) {
                     kunwe_type1.setKUNWE_type0(orderHeader.getKUNWE());
                     zssd00010.setKUNWE(kunwe_type1);
                 }

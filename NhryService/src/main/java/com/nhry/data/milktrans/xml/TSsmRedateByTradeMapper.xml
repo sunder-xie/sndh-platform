@@ -28,7 +28,7 @@
         )
     </insert>
     <update id="updateRedateByTrade" parameterType="com.nhry.data.milktrans.domain.TSsmRedateByTrade">
-        UPDATE t_ssm_redate_by_trade SET CRM_NO = #{crmNo,jdbcType=VARCHAR},LAST_MODIFIED=#{lastModified,jdbcType=TIMESTAMP} WHERE DH_NO = #{dhNo,jdbcType=VARCHAR}
+        UPDATE t_ssm_redate_by_trade SET CRM_NO = #{crmNo,jdbcType=VARCHAR},LAST_MODIFIED=#{lastModified,jdbcType=TIMESTAMP},DH_NO=#{dhNo,jdbcType=VARCHAR} WHERE ORDER_NO = #{orderNo,jdbcType=VARCHAR}
     </update>
     <select id="findNoSendRedateByTrade" resultMap="BaseResultMap">
         SELECT ORDER_NO,BRANCH_NO,SALES_ORG,PROM_NO,MATNR,REDATE FROM t_ssm_redate_by_trade where CRM_NO is null or CRM_NO = '' LIMIT 5
