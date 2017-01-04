@@ -9,6 +9,7 @@ import com.nhry.data.basic.domain.TMdResidentialArea;
 import com.nhry.data.basic.domain.TVipCustInfo;
 import com.nhry.data.config.domain.NHSysCodeItem;
 import com.nhry.data.config.impl.NHSysCodeItemMapperImpl;
+import com.nhry.model.order.OrderCreateModel;
 import com.nhry.model.sys.ResponseModel;
 import com.nhry.model.webService.CustomerComplainModel;
 import com.nhry.rest.BaseResource;
@@ -17,6 +18,8 @@ import com.nhry.service.basic.dao.ResidentialAreaService;
 import com.nhry.service.basic.dao.TVipCrmInfoService;
 import com.nhry.service.basic.dao.TVipCustInfoService;
 import com.nhry.service.config.dao.DictionaryService;
+import com.nhry.service.milktrans.dao.RedateByTradeService;
+import com.nhry.service.order.dao.OrderService;
 import com.nhry.service.pi.dao.*;
 import com.nhry.service.pi.pojo.MemberActivities;
 import com.nhry.webService.client.PISuccessTMessage;
@@ -54,33 +57,28 @@ public class PIResouce extends BaseResource{
     public PIProductService piProductService;
     @Autowired
     public PIRequireOrderService requireOrderService;
-
     @Autowired
     public BranchService branchService;
     @Autowired
     public TVipCrmInfoService tVipCrmInfoService;
-
     @Autowired
     public TVipCustInfoService tVipCustInfoService;
-
     @Autowired
     public PIVipInfoDataService piVipInfoDataService;
-
     @Autowired
     public DictionaryService dictionaryService;
-
     @Autowired
     public ResidentialAreaService residentialAreaService;
-
     @Autowired
     public SmsSendService smsSendService;
-
     @Autowired
     public UserSessionService userSessionService;
-
     @Autowired
     public PIRedateByTradeService redateByTradeService;
-
+    @Autowired
+    public RedateByTradeService redateByService;
+    @Autowired
+    public OrderService orderService;
     @GET
     @Path("/getProducts")
     @Produces(MediaType.APPLICATION_JSON)
@@ -241,4 +239,17 @@ public class PIResouce extends BaseResource{
     public Response execRedate() throws RemoteException {
         return convertToRespModel(MessageCode.NORMAL, redateByTradeService.sendRedateByTradeToCRM(), null);
     }
+
+    @GET
+    @Path("/saveRedate/{orderNo}")
+    @Produces(MediaType.APPLICATION_JSON)
+    @Consumes(MediaType.APPLICATION_JSON)
+    @ApiOperation(value = "/saveRedate/{orderNo}", response = ResponseModel.class, notes = "保存返利数据")
+    public Response saveRedate(@PathParam("orderNo") String orderNo) throws RemoteException {
+        OrderCreateModel orderCreateModel = orderService.selectOrderByCode(orderNo);
+        redateByService.saveRedate(orderCreateModel.getOrder());
+        return convertToRespModel(MessageCode.NORMAL, null, null);
+    }
 }
+
+

@@ -96,7 +96,8 @@ public class PIRedateByTradeServiceImpl implements PIRedateByTradeService{
                 Map<String, String> item = new HashMap<String,String>();
                 item.put("MATNR",trade.getMatnr());
                 item.put("KBETR",trade.getRedate().toString());
-                item.put("AUGRU","001");
+                item.put("AUGRU","Z05");
+                item.put("PROM_NO",trade.getPromNo());
                 items.add(item);
                 message = BusinessDataConnection.SalesOrderCreate(items,orderHeader);
             }

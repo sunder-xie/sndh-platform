@@ -11,7 +11,7 @@
     </resultMap>
     <insert id="insertRedateByTrade">
         INSERT INTO t_ssm_redate_by_trade (
-            ORDER_NO,BRANCH_NO,SALES_ORG,PROM_NO,ORDER_DATE,MATNR,REDATE,CRM_NO,DH_NO,CREATE_DATE,LAST_MODIFIED
+            ORDER_NO,BRANCH_NO,SALES_ORG,PROM_NO,ORDER_DATE,MATNR,REDATE,CRM_NO,DH_NO,CREATE_AT,LAST_MODIFIED
         )
         VALUES (
         #{orderNo,jdbcType=VARCHAR},
