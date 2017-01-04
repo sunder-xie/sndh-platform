@@ -316,16 +316,45 @@ public class OutMilkServiceImpl implements OutMilkService {
         record.setBranchNo(user.getBranchNo());
         TssmMilkmanAmts maxTMA = tssmMilkmanAmtsMapper.selectAmtsMaxDay(record);
         TssmMilkmanAmts minTMA = tssmMilkmanAmtsMapper.selectAmtsMinDay(record);
-
+        //判断最小日期要等于最大日期才能进行更新操作，即只初始化了第一天的数据
         if(maxTMA.getOrderDate().compareTo(minTMA.getOrderDate())==0){
             //更新初始化金额及初始化日期
             tSsmMilkmanAmtInitMapper.updateAmtInitByPrimaryKeySelective(record);
+            TssmMilkmanAmts oneDayTMA = tssmMilkmanAmtsMapper.selectAmtsOneDay(record);
             TssmMilkmanAmts tma =new  TssmMilkmanAmts();
             tma.setReAmt(record.getReAmt());
+            tma.setLastModified(new Date());
+            tma.setLastModifiedBy(user.getDisplayName());
             tma.setBranchNo(record.getBranchNo());
             tma.setEmpNo(record.getEmpNo());
+            //日期不等于空的情况下要重新计算该日期的出货、进货及总金额
             if(record.getOrderDate()!=null){
                 tma.setOrderDate(record.getOrderDate());
+                //本日交款-奶站、日期，统计送奶员本日交款总额
+                TMstRecvBill trb = customerBillMapper.getBranchEmpPaymentByEmpNo(record.getBranchNo(),record.getOrderDate(),record.getEmpNo());
+                //查询奶站下本日进货汇总金额
+                TDispOrder tdo = tDispOrderMapper.getBranchEmpAmtByEmpNo(record.getBranchNo(),record.getOrderDate(),record.getEmpNo());
+                if(tdo!=null){
+                    tma.setDayAmt(tdo.getAmt());
+                }else{
+                    tma.setDayAmt(new BigDecimal(0));
+                }
+                //如果有冲销，收款金额需要减去冲销
+                if(trb!=null){
+                    if(trb.getOffsetAmt()!=null){
+                        tma.setDayBillAmt(trb.getAmt().subtract(trb.getOffsetAmt()));
+                    }else{
+                        tma.setDayBillAmt(trb.getAmt());
+                    }
+                    //本日交款调整为负值
+                    tma.setDayBillAmt(tma.getDayAmt().multiply(new BigDecimal(-1)));
+                }else{
+                    tma.setDayBillAmt(new BigDecimal(0));
+                }
+                //本日结存金额为上日结存+本日进货+本日交款之和
+                tma.setTotalAmt(tma.getReAmt().add(tma.getDayAmt()).add(tma.getDayBillAmt()));
+            }else{
+                tma.setTotalAmt(tma.getReAmt().add(oneDayTMA.getDayAmt()).add(oneDayTMA.getDayBillAmt()));
             }
             tssmMilkmanAmtsMapper.updateAmtsByPrimaryKeySelective(tma);
         }else{

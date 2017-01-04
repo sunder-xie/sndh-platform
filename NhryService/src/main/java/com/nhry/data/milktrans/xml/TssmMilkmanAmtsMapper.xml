@@ -201,4 +201,14 @@
     and emp_no = #{empNo,jdbcType=VARCHAR}
     and order_date &gt;= #{orderDate,jdbcType=DATE}
   </delete>
+  <select id="selectAmtsOneDay" resultMap="BaseResultMap" parameterType="com.nhry.model.statistics.OutMilkModel" >
+    select
+    <include refid="Base_Column_List" />
+    from t_ssm_milkman_amts
+    where  branch_no = #{branchNo,jdbcType=VARCHAR}
+    AND emp_no = #{empNo,jdbcType=VARCHAR}
+    <if test="orderDate != null" >
+      and order_date = #{orderDate,jdbcType=DATE}
+    </if>
+  </select>
 </mapper>

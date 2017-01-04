@@ -91,4 +91,14 @@ public class TssmMilkmanAmtsMapperImpl implements TssmMilkmanAmtsMapper{
     public int updateAmtsByPrimaryKeySelective(TssmMilkmanAmts record) {
         return sqlSessionTemplate.update("updateAmtsByPrimaryKeySelective",record);
     }
+
+    /**
+     * 查询初始第一天金额
+     * @param record
+     * @return
+     */
+    @Override
+    public TssmMilkmanAmts selectAmtsOneDay(OutMilkModel record) {
+        return sqlSessionTemplate.selectOne("selectAmtsOneDay",record);
+    }
 }

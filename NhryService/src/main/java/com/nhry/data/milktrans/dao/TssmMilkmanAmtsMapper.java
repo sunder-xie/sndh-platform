@@ -15,4 +15,5 @@ public interface TssmMilkmanAmtsMapper {
     List<TssmMilkmanAmts> selectAmtsByPrimaryKey(ExtendBranchInfoModel record);
     int deleteAmtsKeyDay(String branchNo,String empNo,Date date);
     int updateAmtsByPrimaryKeySelective(TssmMilkmanAmts record);
+    TssmMilkmanAmts selectAmtsOneDay(OutMilkModel record);
 }
