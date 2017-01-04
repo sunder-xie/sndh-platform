@@ -3,6 +3,7 @@
 <mapper namespace="com.nhry.data.order.dao.TPreOrderMapper" >
   <resultMap id="BaseResultMap" type="com.nhry.data.order.domain.TPreOrder" >
     <id column="ORDER_NO" property="orderNo" jdbcType="VARCHAR" />
+    <result column="RESUME_ORDER_NO" property="resumeOrderNo" jdbcType="VARCHAR" />
     <result column="ORDER_TYPE" property="orderType" jdbcType="VARCHAR" />
     <result column="PROMOTION" property="promotion" jdbcType="VARCHAR" />
     <result column="PROM_ITEM_NO" property="promItemNo" jdbcType="VARCHAR" />
@@ -248,6 +249,9 @@
       <if test="orderNo != null" >
         ORDER_NO,
       </if>
+      <if test="resumeOrderNo != null" >
+        RESUME_ORDER_NO,
+      </if>
       <if test="orderType != null" >
         ORDER_TYPE,
       </if>
@@ -372,6 +376,9 @@
     <trim prefix="values (" suffix=")" suffixOverrides="," >
       <if test="orderNo != null" >
         #{orderNo,jdbcType=VARCHAR},
+      </if>
+      <if test="resumeOrderNo != null" >
+        #{resumeOrderNo,jdbcType=VARCHAR},
       </if>
       <if test="orderType != null" >
         #{orderType,jdbcType=VARCHAR},
