@@ -148,6 +148,15 @@ public class TPreOrder {
     private BigDecimal discountAmt;
     private String promType;
     private String promSubType;
+    private String resumeOrderNo;
+
+    public String getResumeOrderNo() {
+        return resumeOrderNo;
+    }
+
+    public void setResumeOrderNo(String resumeOrderNo) {
+        this.resumeOrderNo = resumeOrderNo;
+    }
 
     public String getPromSubType() {
         return promSubType;

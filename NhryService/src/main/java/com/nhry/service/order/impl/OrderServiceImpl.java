@@ -1969,6 +1969,7 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 			Date sdate = afterDate(order.getEndDate(),1);
 			//新的订单号
 			Date date = new Date();
+			order.setResumeOrderNo(orderNo);
 			order.setOrderNo(CodeGeneratorUtil.getCode());
 			order.setOrderDate(date);
        		order.setPaymentStat("10");//默认未付款
@@ -2207,6 +2208,7 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 //			int goDays = record.getGoDays();
 			//新的订单号
 			Date date = new Date();
+			order.setResumeOrderNo(record.getOrderNo());
 			order.setOrderNo(CodeGeneratorUtil.getCode());
 			//
 			order.setOrderDate(date);
