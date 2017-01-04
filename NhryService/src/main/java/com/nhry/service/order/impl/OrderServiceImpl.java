@@ -25,6 +25,7 @@ import com.nhry.service.basic.dao.PriceService;
 import com.nhry.service.basic.dao.TVipCustInfoService;
 import com.nhry.service.config.dao.DictionaryService;
 import com.nhry.service.external.dao.EcService;
+import com.nhry.service.milktrans.dao.RedateByTradeService;
 import com.nhry.service.order.dao.MilkBoxService;
 import com.nhry.service.order.dao.OrderService;
 import com.nhry.service.order.dao.PromotionService;
@@ -68,6 +69,11 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 	private NHSysCodeItemMapper codeItemMapper;
 	private TOrderDaliyPlanItemBackMapper tOrderDaliyPlanItemBackMapper;
     private TYearCardCompOrderMapper tYearCardCompOrderMapper;
+	private RedateByTradeService redateByTradeService;
+
+	public void setRedateByTradeService(RedateByTradeService redateByTradeService) {
+		this.redateByTradeService = redateByTradeService;
+	}
 
 	public void settYearCardCompOrderMapper(TYearCardCompOrderMapper tYearCardCompOrderMapper) {
 		this.tYearCardCompOrderMapper = tYearCardCompOrderMapper;
@@ -9940,6 +9946,8 @@ public static int dayOfTwoDay(Date day1,Date day2) {
 					//订户状态更改
 					tVipCustInfoService.discontinue(order.getMilkmemberNo(), "20",null,null);
 				}
+				//记录返利信息
+				redateByTradeService.saveRedate(order);
 			}
 		}
 

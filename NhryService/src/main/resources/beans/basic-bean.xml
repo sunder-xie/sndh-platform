@@ -105,6 +105,7 @@
 		<property name="tOrderDaliyPlanItemBackMapper" ref="tOrderDaliyPlanItemBackMapper"/>
 		<property name="tYearCardCompOrderMapper" ref="tYearCardCompOrderMapper"/>
 		<property name="piVipPointCreateBatService" ref="piVipPointCreateBatService"/>
+		<property name="redateByTradeService" ref="redateByTradeService"/>
 	</bean>
 	<bean id="tPromotionMapper" class="com.nhry.data.order.impl.TPromotionMapperImpl">
 		<property name="sqlSessionTemplate" ref="dynamicSqlSessionTemplate"></property>

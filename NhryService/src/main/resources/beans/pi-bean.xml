@@ -117,6 +117,10 @@
     </bean>
     <bean class="com.nhry.service.milktrans.impl.RedateByTradeServiceImpl" id="redateByTradeService">
         <property name="tSsmRedateByTradeMapper" ref="tSsmRedateByTradeMapper"/>
+        <property name="taskExecutor" ref="taskExecutor"/>
+        <property name="dictionaryService" ref="dicService"/>
+        <property name="promotionMapper" ref="promotionMapper"/>
+        <property name="tPlanOrderItemMapper" ref="tPlanOrderItemMapper"/>
     </bean>
     <bean class="com.nhry.service.pi.impl.PIRedateByTradeServiceImpl" id="piRedateByTradeService">
         <property name="redateByTradeService" ref="redateByTradeService"/>
