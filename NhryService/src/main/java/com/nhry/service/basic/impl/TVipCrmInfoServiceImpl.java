@@ -65,12 +65,13 @@ public class TVipCrmInfoServiceImpl extends BaseService implements TVipCrmInfoSe
 			crm.setLastModified(new Date());
 			crm.setLastModifiedBy("CRM");
 			crm.setLastModifiedByTxt("CRM");
+			vipCrmMapper.updateVipCrmByNo(crm);
 		}
 //		TVipCustInfo vipCustInfo = new TVipCustInfo();
 //		vipCustInfo.setVipCustNoSap(record.getVipCustNo());
 //		vipCustInfo.setVipMp(record.getMp());
 //		vipCustInfoMapper.updateVipMp(vipCustInfo);
-		return vipCrmMapper.updateVipCrmByNo(crm);
+		return 1;
 	}
 	
 	@Override

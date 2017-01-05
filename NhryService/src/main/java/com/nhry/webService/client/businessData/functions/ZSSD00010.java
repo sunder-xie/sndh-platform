@@ -177,7 +177,7 @@ public class ZSSD00010 implements org.apache.axis2.databinding.ADBBean {
     /**
      * field for IHREZ
      */
-    protected com.nhry.webService.client.businessData.functions.IHREZ_type1 localIHREZ;
+    protected IHREZ_type1 localIHREZ;
 
     /*  This tracker boolean wil be used to detect whether the user called the set method
      *   for this attribute. It will be used to determine whether to include this field
@@ -515,7 +515,7 @@ public class ZSSD00010 implements org.apache.axis2.databinding.ADBBean {
      * Auto generated getter method
      * @return com.nhry.webService.client.businessData.functions.IHREZ_type1
      */
-    public com.nhry.webService.client.businessData.functions.IHREZ_type1 getIHREZ() {
+    public IHREZ_type1 getIHREZ() {
         return localIHREZ;
     }
 
@@ -524,7 +524,7 @@ public class ZSSD00010 implements org.apache.axis2.databinding.ADBBean {
      * @param param IHREZ
      */
     public void setIHREZ(
-        com.nhry.webService.client.businessData.functions.IHREZ_type1 param) {
+        IHREZ_type1 param) {
         localIHREZTracker = param != null;
 
         this.localIHREZ = param;
@@ -1244,7 +1244,7 @@ public class ZSSD00010 implements org.apache.axis2.databinding.ADBBean {
                             reader.getName())) ||
                         new javax.xml.namespace.QName("", "IHREZ").equals(
                             reader.getName())) {
-                    object.setIHREZ(com.nhry.webService.client.businessData.functions.IHREZ_type1.Factory.parse(
+                    object.setIHREZ(IHREZ_type1.Factory.parse(
                             reader));
 
                     reader.next();

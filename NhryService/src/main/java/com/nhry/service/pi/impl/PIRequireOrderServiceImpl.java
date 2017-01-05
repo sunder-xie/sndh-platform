@@ -228,13 +228,17 @@ public class PIRequireOrderServiceImpl implements PIRequireOrderService {
         }
         if(disCountAmtList != null && disCountAmtList.size()>0) {
             Map<String, String> disCountAmtMap = new HashMap<String, String>();
+            Map<String, String> disCountPriceMap = new HashMap<String, String>();
+
             disCountAmtList.forEach(item -> {
                 disCountAmtMap.put(item.get("MATNR"), String.valueOf(item.get("DISCOUNT_AMT")));
+                disCountPriceMap.put(item.get("MATNR"),item.get("PRICE1"));
             });
             items.forEach(item -> {
                 String matnr = item.get("MATNR");
                 if (disCountAmtMap.containsKey(matnr)) {
                     item.put("DISCOUNT_AMT", String.valueOf(disCountAmtMap.get(matnr)));
+                    item.put("KBETR",disCountPriceMap.get(matnr));
                     updateDiscountAmt(disCountAmtMap, item, matnr);
                 }
             });

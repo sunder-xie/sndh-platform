@@ -1,7 +1,10 @@
 package com.nhry.data.milktrans.dao;
 
+import com.github.pagehelper.PageInfo;
 import com.nhry.data.milktrans.domain.TSsmReqGoodsOrder;
 import com.nhry.model.milktrans.RequireOrderSearch;
+import com.nhry.model.milktrans.RequireOrderSearchPage;
+
 import java.util.List;
 
 /**
@@ -22,4 +25,6 @@ public interface TSsmReqGoodsOrderMapper {
     int deleRequireGoodsOrderbyNo(String orderNo);
 
     List<TSsmReqGoodsOrder> searchRequireOrderByRequireDate(RequireOrderSearch rModel);
+
+    PageInfo searchRequireOrderByDealer(RequireOrderSearchPage rModel);
 }

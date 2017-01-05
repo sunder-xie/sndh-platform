@@ -95,6 +95,7 @@ public class PIRedateByTradeServiceImpl implements PIRedateByTradeService{
                 orderHeader.setLFDAT(new Date());
                 Map<String, String> item = new HashMap<String,String>();
                 item.put("MATNR",trade.getMatnr());
+                item.put("SUM_QTY","1");
                 item.put("KBETR",trade.getRedate().toString());
                 item.put("AUGRU","Z05");
                 item.put("PROM_NO",trade.getPromNo());
