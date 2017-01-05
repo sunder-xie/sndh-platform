@@ -18,6 +18,7 @@ public class TOrderDaliyPlanItem extends TOrderDaliyPlanItemKey {
 
     private String confirmMatnr;
     private String matnrTxt;
+    private String shortTxt;
 
     private String unit;
 
@@ -56,6 +57,14 @@ public class TOrderDaliyPlanItem extends TOrderDaliyPlanItemKey {
     private String promotionFlag;
 
     private String weekly;
+
+    public String getShortTxt() {
+        return shortTxt;
+    }
+
+    public void setShortTxt(String shortTxt) {
+        this.shortTxt = shortTxt;
+    }
 
     public String getConfirmMatnr() {
         return confirmMatnr;
