@@ -54,7 +54,6 @@ public class TMdMara implements Serializable{
     
     private TMdMaraEx maraEx;
 
-    private String shortTxt;
 
     private List<TBranchNotsellList> notsellList = new ArrayList<TBranchNotsellList>();
 
@@ -66,13 +65,7 @@ public class TMdMara implements Serializable{
         this.matnr = matnr == null ? null : matnr.trim();
     }
 
-    public String getShortTxt() {
-        return shortTxt;
-    }
 
-    public void setShortTxt(String shortTxt) {
-        this.shortTxt = shortTxt;
-    }
 
     public String getMatnrTxt() {
         return matnrTxt;

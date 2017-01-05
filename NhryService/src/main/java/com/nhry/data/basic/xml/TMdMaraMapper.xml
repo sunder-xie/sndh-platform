@@ -5,7 +5,6 @@
 	<resultMap id="BaseResultMap" type="com.nhry.data.basic.domain.TMdMara">
 		<id column="MATNR" property="matnr" jdbcType="VARCHAR" />
 		<result column="MATNR_TXT" property="matnrTxt" jdbcType="VARCHAR" />
-		<result column="SHORT_TXT" property="shortTxt" jdbcType="VARCHAR" />
 		<result column="BASE_UNIT" property="baseUnit" jdbcType="VARCHAR" />
 		<result column="STATUS" property="status" jdbcType="VARCHAR" />
 		<result column="MARA_LAST_MODIFIED" property="lastModified" jdbcType="TIMESTAMP" />
@@ -428,7 +427,8 @@
 	<select id="getDealerMaras" resultMap="BaseResultMap" parameterType="com.nhry.model.basic.ProductQueryModel">
 	    SELECT
 			p.MATNR,
-			p.MATNR_TXT SHORT_TXT,
+			exm.SHORT_TXT MATNR_TXT,
+			exm.SHORT_TXT,
 			p.BASE_UNIT,
 			p. STATUS,
 			p.LAST_MODIFIED MARA_LAST_MODIFIED,
@@ -473,6 +473,7 @@
 	    SELECT
 			p.MATNR,
 			exm.SHORT_TXT MATNR_TXT,
+			exm.SHORT_TXT,
 			p.BASE_UNIT,
 			p. STATUS,
 			p.LAST_MODIFIED MARA_LAST_MODIFIED,
@@ -517,7 +518,7 @@
 	<select id="getProductByCodeOrNameAndSalesOrg" resultMap="BaseResultMap" parameterType="java.util.HashMap">
 		SELECT
 		p.MATNR,
-		ex.SHORT_TXT MATNR_TXT,
+		p.MATNR_TXT,
 		p.BASE_UNIT,
 		p. STATUS,
 		p.LAST_MODIFIED MARA_LAST_MODIFIED,
@@ -541,7 +542,6 @@
 		p.DEALER_NO
 		FROM
 		t_md_mara p
-		LEFT JOIN  t_md_mara_ex ex on p.MATNR = ex.MATNR and ex.SALES_ORG=#{salesOrg}
 		where p. STATUS='Y'
 				and p.SALES_ORG=#{salesOrg}
 				AND ( p.MATNR LIKE '%${matnr}%' OR p.MATNR_TXT like  '%${matnrTxt}%' )
