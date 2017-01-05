@@ -22,6 +22,8 @@ public class TSsmMilkmanAmtInit extends TSsmMilkmanAmtInitKey {
 
     private String empName;
 
+    private Date orderDate;
+
     public BigDecimal getReAmt() {
         return reAmt;
     }
@@ -92,5 +94,13 @@ public class TSsmMilkmanAmtInit extends TSsmMilkmanAmtInitKey {
 
     public void setBranchName(String branchName) {
         this.branchName = branchName;
+    }
+
+    public Date getOrderDate() {
+        return orderDate;
+    }
+
+    public void setOrderDate(Date orderDate) {
+        this.orderDate = orderDate;
     }
 }
