@@ -5,6 +5,7 @@ import com.nhry.common.exception.MessageCode;
 import com.nhry.data.auth.domain.TSysUser;
 import com.nhry.data.basic.domain.TMdAddress;
 import com.nhry.data.basic.domain.TMdBranch;
+import com.nhry.data.basic.domain.TMdBranchEmp;
 import com.nhry.data.bill.domain.TMstRecvBill;
 import com.nhry.data.milk.domain.TDispOrder;
 import com.nhry.data.milk.domain.TDispOrderItem;
@@ -1090,6 +1091,7 @@ public class ReportResource extends BaseResource{
     @ApiOperation(value = "/exportDispInlOrderByModel}", response = ResponseModel.class, notes = "导出出奶表-台帐")
     public Response exportDispInlOrderByModel(@ApiParam(name = "model",value = "出奶表-台帐") ExtendBranchInfoModel model){
         TSysUser user = userSessionService.getCurrentUser();
+        TMdBranchEmp emp = branchEmpService.selectBranchEmpByNo(model.getEmpNo());
         String url = EnvContant.getSystemConst("filePath");
         String outUrl = "";
         try{
@@ -1163,7 +1165,7 @@ public class ReportResource extends BaseResource{
             sheet.addMergedRegion(new CellRangeAddress(2, 2, 0, 3));
             if(headNum>4){
                 cellthe = rowthe.createCell(headNum-3);
-                cellthe.setCellValue(user.getDisplayName());
+                cellthe.setCellValue(emp.getEmpName());
                 cellthe.setCellStyle(cellStyleBold);
                 cellthe = rowthe.createCell(headNum-2);
                 cellthe.setCellValue("单位：袋、瓶、杯、元");
@@ -1221,10 +1223,12 @@ public class ReportResource extends BaseResource{
             cellColTitle.setCellValue("本月合计");
             cellColTitle.setCellStyle(cellStyleBold);
             cellColTitle.setCellStyle(ExcelUtil.setBorderStyle(workbook));
-
+            int totalQty = 0;
             //产品循环-列合计
             for (Map.Entry<String, String> entry1 : projectMap.entrySet()) {
-                double ROWQTY = 0;
+                int ROWQTY = 0;
+                double tamsQty = 0;
+
                 String matnr = entry1.getKey();
                 for (Map<String, String> map : dispInls){
                     String matnrT =map.get("CONFIRM_MATNR");
@@ -1232,28 +1236,25 @@ public class ReportResource extends BaseResource{
                         if(map.get("CONFIRM_QTY")!=null){
                             int rqty =  new BigDecimal(String.valueOf( map.get("CONFIRM_QTY"))).intValue();
                             ROWQTY =ROWQTY + rqty;
+                            totalQty = totalQty + rqty;
                         }
                     }
                 }
+                if(entry1.getValue().equals("上日结存")){
+                    ROWQTY = totalQty;
+                }
+
                 for(TssmMilkmanAmts details:tmas){
                     for (Map.Entry<String, String> entry : dateMap.entrySet()){
                         String dispdate = format.format(entry.getKey());
                         String tmasDate = format.format(details.getOrderDate());
-                        if(entry1.getValue().equals("上日结存") && dispdate.equals(tmasDate)){
-                            double rqty =  new BigDecimal(String.valueOf(details.getReAmt())).doubleValue();
-                            ROWQTY =ROWQTY + rqty;
-                        }
                         if(entry1.getValue().equals("本日进货")&& dispdate.equals(tmasDate)){
                             double rqty =  new BigDecimal(String.valueOf(details.getDayAmt())).doubleValue();
-                            ROWQTY =ROWQTY + rqty;
+                            tamsQty =tamsQty + rqty;
                         }
                         if(entry1.getValue().equals("本日交款")&& dispdate.equals(tmasDate)){
                             double rqty =  new BigDecimal(String.valueOf(details.getDayBillAmt())).doubleValue();
-                            ROWQTY =ROWQTY + rqty;
-                        }
-                        if(entry1.getValue().equals("结存金额")&& dispdate.equals(tmasDate)){
-                            double rqty =  new BigDecimal(String.valueOf(details.getTotalAmt())).doubleValue();
-                            ROWQTY =ROWQTY + rqty;
+                            tamsQty =tamsQty + rqty;
                         }
                     }
 
@@ -1261,8 +1262,15 @@ public class ReportResource extends BaseResource{
 
                 XSSFCell cell = row.createCell(scNum++);
                 cell.setCellStyle(ExcelUtil.setBorderStyle(workbook));
-                cell.setCellValue(String.valueOf(ROWQTY));
-
+                if(entry1.getValue().equals("本日进货")){
+                    cell.setCellValue(String.valueOf(tamsQty));
+                }else if(entry1.getValue().equals("本日交款")){
+                    cell.setCellValue(String.valueOf(tamsQty));
+                }else if(entry1.getValue().equals("结存金额")){
+                    cell.setCellValue("");
+                }else{
+                    cell.setCellValue(String.valueOf(ROWQTY));
+                }
             }
 
             outUrl = saveFile(url, workbook,"Emp.xlsx");
