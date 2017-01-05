@@ -155,7 +155,7 @@ public class ZSSD00011 implements org.apache.axis2.databinding.ADBBean {
     /**
      * field for YK01
      */
-    protected com.nhry.webService.client.businessData.functions.YK01_type1 localYK01;
+    protected YK01_type1 localYK01;
 
     /*  This tracker boolean wil be used to detect whether the user called the set method
      *   for this attribute. It will be used to determine whether to include this field
@@ -447,7 +447,7 @@ public class ZSSD00011 implements org.apache.axis2.databinding.ADBBean {
      * Auto generated getter method
      * @return com.nhry.webService.client.businessData.functions.YK01_type1
      */
-    public com.nhry.webService.client.businessData.functions.YK01_type1 getYK01() {
+    public YK01_type1 getYK01() {
         return localYK01;
     }
 
@@ -456,7 +456,7 @@ public class ZSSD00011 implements org.apache.axis2.databinding.ADBBean {
      * @param param YK01
      */
     public void setYK01(
-        com.nhry.webService.client.businessData.functions.YK01_type1 param) {
+        YK01_type1 param) {
         localYK01Tracker = param != null;
 
         this.localYK01 = param;
@@ -1122,7 +1122,7 @@ public class ZSSD00011 implements org.apache.axis2.databinding.ADBBean {
                             reader.getName())) ||
                         new javax.xml.namespace.QName("", "YK01").equals(
                             reader.getName())) {
-                    object.setYK01(com.nhry.webService.client.businessData.functions.YK01_type1.Factory.parse(
+                    object.setYK01(YK01_type1.Factory.parse(
                             reader));
 
                     reader.next();

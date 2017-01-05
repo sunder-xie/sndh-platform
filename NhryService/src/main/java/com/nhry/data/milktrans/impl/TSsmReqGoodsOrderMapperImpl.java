@@ -1,9 +1,12 @@
 package com.nhry.data.milktrans.impl;
 
+import com.github.pagehelper.PageInfo;
 import com.nhry.common.datasource.DynamicSqlSessionTemplate;
 import com.nhry.data.milktrans.dao.TSsmReqGoodsOrderMapper;
 import com.nhry.data.milktrans.domain.TSsmReqGoodsOrder;
 import com.nhry.model.milktrans.RequireOrderSearch;
+import com.nhry.model.milktrans.RequireOrderSearchPage;
+
 import java.util.List;
 
 /**
@@ -50,5 +53,10 @@ public class TSsmReqGoodsOrderMapperImpl implements TSsmReqGoodsOrderMapper {
     @Override
     public List<TSsmReqGoodsOrder> searchRequireOrderByRequireDate(RequireOrderSearch rModel) {
         return sqlSessionTemplate.selectList("searchRequireOrderByRequireDate",rModel);
+    }
+
+    @Override
+    public PageInfo searchRequireOrderByDealer(RequireOrderSearchPage rModel) {
+        return sqlSessionTemplate.selectListByPages("searchRequireOrderByDealer",rModel,Integer.valueOf(rModel.getPageNum()),Integer.valueOf(rModel.getPageSize()));
     }
 }

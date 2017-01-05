@@ -41,6 +41,9 @@ public class BusinessDataConnection {
 
     public static PISuccessMessage RequisitionCreate(TMdBranchEx branchEx, Date reqDate, List<Map<String, String>> items, String lgort) {
         logger.info("获取要货单开始" + branchEx.getBranchNo() + "&" + formatter.format(reqDate));
+        items.forEach(e->{
+            logger.info(e.toString());
+        });
         PISuccessMessage successMessage = new PISuccessMessage();
         try {
             ZSD_REQUISITION_CREATE_RFC rfc = new ZSD_REQUISITION_CREATE_RFC();
@@ -161,6 +164,9 @@ public class BusinessDataConnection {
     public static PISuccessMessage SalesOrderCreate(List<Map<String, String>> items, SalesOrderHeader orderHeader) {
         long begin = System.currentTimeMillis();
         logger.info("获取销售订单开始！" + orderHeader.toString());
+        items.forEach(e->{
+            logger.info(e.toString());
+        });
         PISuccessMessage successMessage = new PISuccessMessage();
         try {
             if(items.size() == 0){

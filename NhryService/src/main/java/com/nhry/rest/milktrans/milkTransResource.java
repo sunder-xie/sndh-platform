@@ -315,6 +315,21 @@ public class milkTransResource extends BaseResource {
 		return convertToRespModel(MessageCode.NORMAL, null, deliverMilkService.getInsideSalOrderDetail(sModel));
 	}
 
+	@POST
+	@Path("/search/dealer")
+	@Produces(MediaType.APPLICATION_JSON)
+	@Consumes(MediaType.APPLICATION_JSON)
+	@ApiOperation(value = "/search/dealer", response = Response.class, notes = "经销商内勤查询要货单信息")
+	public Response searchRequireOrderByDealer(@ApiParam(required=true,name="sModel",value="订单号必须，分页查询") RequireOrderSearchPage sModel){
+		return convertToRespModel(MessageCode.NORMAL, null, requireOrderService.searchRequireOrderByDealer(sModel));
+	}
 
+	@GET
+	@Path("/queryRequireOrder/{orderNo}")
+	@Produces(MediaType.APPLICATION_JSON)
+	@ApiOperation(value = "/queryRequireOrder/{orderNo}", response = RequireOrderModel.class, notes = "查询指定的要货计划")
+	public Response searchRequireOrderByOrderNo(@ApiParam(required=true,name="orderNo",value="要货计划编号")@PathParam("orderNo")String orderNo) {
+		return convertToRespModel(MessageCode.NORMAL, null, requireOrderService.getRequireOrderByOrderNo(orderNo));
+	}
 
 }

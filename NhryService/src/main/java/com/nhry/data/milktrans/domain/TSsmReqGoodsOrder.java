@@ -20,6 +20,15 @@ public class TSsmReqGoodsOrder implements Serializable{
     private Date lastModified;
     private String lastModifiedBy;
     private String lastModifiedByTxt;
+    private String branchName;
+
+    public String getBranchName() {
+        return branchName;
+    }
+
+    public void setBranchName(String branchName) {
+        this.branchName = branchName;
+    }
 
     public String getOrderNo() {
         return orderNo;

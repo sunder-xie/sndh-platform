@@ -1,5 +1,7 @@
 package com.nhry.service.milktrans.impl;
 
+import com.github.pagehelper.Page;
+import com.github.pagehelper.PageInfo;
 import com.nhry.common.auth.UserSessionService;
 import com.nhry.common.exception.MessageCode;
 import com.nhry.common.exception.ServiceException;
@@ -1067,6 +1069,62 @@ public class RequireOrderServiceImpl implements RequireOrderService {
 
     }
 
+    @Override
+    public PageInfo searchRequireOrderByDealer(RequireOrderSearchPage rModel) {
+        TSysUser user =userSessionService.getCurrentUser();
+        rModel.setDealerId(user.getDealerId());
+        return tSsmReqGoodsOrderMapper.searchRequireOrderByDealer(rModel);
+    }
+
+    @Override
+    public RequireOrderModel getRequireOrderByOrderNo(String orderNo) {
+        TSsmReqGoodsOrder order = tSsmReqGoodsOrderMapper.getRequireOrderByNo(orderNo);
+        TSysUser user =userSessionService.getCurrentUser();
+        String salesOrg = user.getSalesOrg();
+        RequireOrderModel orderModel = new RequireOrderModel();
+        if (order != null) {
+            List<TMstRefuseResend>  resendList = resendMapper.findNoUsedAndUsedRefuseResend(order.getBranchNo(),order.getOrderNo());
+            Set<String> matnrMap = new HashSet<String>();
+            if(resendList!=null && resendList.size()>0){
+                resendList.stream().forEach(resend->{
+                    matnrMap.add(resend.getMatnr());
+                });
+            }
+            orderModel.setStatus(order.getStatus());
+            orderModel.setRequiredDate(order.getOrderDate());
+            orderModel.setBranchNo(order.getBranchNo());
+            orderModel.setOrderNo(order.getOrderNo());
+            orderModel.setOrderDate(order.getOrderDate());
+            if (StringUtils.isNotBlank(order.getVoucherNo())) {
+                orderModel.setVoucherNo(order.getVoucherNo());
+            }
+            List<TSsmReqGoodsOrderItem> items = this.tSsmReqGoodsOrderItemMapper.getReqGoodsItemsByOrderNo(order.getOrderNo());
+            List<OrderRequireItem> entries = new ArrayList<OrderRequireItem>();
+            for (TSsmReqGoodsOrderItem item : items) {
+                OrderRequireItem entry = new OrderRequireItem();
+                Map<String, String> map = new HashMap<String, String>();
+                map.put("salesOrg", salesOrg);
+                map.put("matnr", item.getMatnr());
+                TMdMara mara = tMdMaraMapper.selectProductByCode(map);
+                if(matnrMap.contains(item.getMatnr())){
+                    entry.setHasTmp(true);
+                } else {
+                    entry.setHasTmp(false);
+                }
+                entry.setResendQty(item.getResendQty());
+                entry.setMatnr(item.getMatnr());
+                entry.setMatnrTxt(mara.getMatnrTxt());
+                entry.setQty(item.getQty());
+                entry.setFlag(item.getFlag());
+                entry.setIncreQty(item.getIncreQty());
+                entries.add(entry);
+            }
+            orderModel.setEntries(entries);
+        } else {
+            throw new ServiceException(MessageCode.LOGIC_ERROR, "当天的要货计划还未生成");
+        }
+        return orderModel;
+    }
 
     /**
      * 根据 交货单 产品数量 生成  不参加促销的销售订单

@@ -1,9 +1,7 @@
 package com.nhry.service.milktrans.dao;
 
-import com.nhry.data.milktrans.domain.TMstRefuseResend;
-import com.nhry.data.milktrans.domain.TSsmReqGoodsOrderItem;
-import com.nhry.data.milktrans.domain.TSsmSalOrder;
-import com.nhry.data.milktrans.domain.TSsmSalOrderItems;
+import com.github.pagehelper.PageInfo;
+import com.nhry.data.milktrans.domain.*;
 import com.nhry.model.milktrans.*;
 
 import java.util.Date;
@@ -61,4 +59,8 @@ public interface RequireOrderService {
     List<TMstRefuseResend> queryRefuseResendByMatnr(String matnr,String reqOrderNo);
 
     int uptRequireOrderByResendItem(UptReqOrderByResendItemMode umodel);
+
+    PageInfo searchRequireOrderByDealer(RequireOrderSearchPage rModel);
+
+    RequireOrderModel getRequireOrderByOrderNo(String orderNo);
 }
