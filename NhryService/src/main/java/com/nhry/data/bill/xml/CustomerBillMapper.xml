@@ -435,7 +435,7 @@
         c.MP CUST_TEL,b.TEL BRANCH_TEL,o.INIT_AMT,
         bill.SUPP_AMT  ORDER_AMT,
         bill.CUST_ACC_AMT,
-        MIN(i.START_DISP_DATE)  START_DATE,o.END_DATE,
+        (SELECT MIN(START_DISP_DATE) FROM t_mst_plan_order_item WHERE ORDER_NO=o.ORDER_NO) START_DATE,o.END_DATE,
         (SELECT item.ITEM_NAME  from t_sys_code_item item WHERE item.TYPE_CODE = <include refid="mybaties.constant.SALES_ORG_CONSTANT"/> and item.ITEM_CODE= o.SALES_ORG) SALES_ORG_NAME,
 
         concat(
@@ -499,7 +499,7 @@
         o.INIT_AMT,
         bill.SUPP_AMT  ORDER_AMT,
         bill.CUST_ACC_AMT,
-        MIN(i.START_DISP_DATE)  START_DATE,
+        (SELECT MIN(START_DISP_DATE) FROM t_mst_plan_order_item WHERE ORDER_NO=o.ORDER_NO)  START_DATE,
         o.END_DATE,
         concat(
         (SELECT it.ITEM_NAME FROM T_SYS_CODE_ITEM it WHERE it.TYPE_CODE =<include refid="mybaties.constant.COUNTRY_CITY_CONSTANT"/>
@@ -519,6 +519,7 @@
         )CUST_ADDRESS_SHORT
         ,i.MATNR,ex.SHORT_TXT MATNR_TXT,i.UNIT,i.DISP_TOTAL QTY,i.SALES_PRICE BASE_PRICE,(i.DISP_TOTAL * i.SALES_PRICE) TOTAL_PRICE
         from t_preorder o
+        left JOIN t_promotion p on o.PROMOTION = p.PROM_NO
         LEFT JOIN t_mst_recv_bill bill on o.ORDER_NO = bill.ORDER_NO and bill.HAD_OFFSET = 'N'
         LEFT JOIN  t_md_address a on o.ADRESS_NO = a.ADDRESS_ID
         left join t_md_residential_area r on r.ID = a.RESIDENTIAL_AREA
@@ -530,6 +531,7 @@
         WHERE 1=1
         and (o.PREORDER_SOURCE='20' OR o.PREORDER_SOURCE ='30' OR  o.PREORDER_SOURCE ='50'OR  o.PREORDER_SOURCE ='70' )
         and (o.PREORDER_STAT = '10' OR o.PREORDER_STAT = '30')
+        and ( p.PROM_SUB_TYPE!='Z017' OR p.PROM_NO='' OR p.PROM_NO is null)
         and o.INIT_AMT > 0
         and  o.PAYMENTMETHOD ='20'
         <if test="orderNo !=null and orderNo!=''">
@@ -570,7 +572,8 @@
         c.MP CUST_TEL,b.TEL BRANCH_TEL,o.INIT_AMT,
         bill.SUPP_AMT  ORDER_AMT,
         bill.CUST_ACC_AMT,
-        o.END_DATE,MIN(i.DISP_DATE) START_DATE,
+        o.END_DATE,
+        (SELECT MIN(DISP_DATE) FROM t_mst_order_daliy_plan_item WHERE ORDER_NO=o.ORDER_NO) START_DATE,
         (SELECT item.ITEM_NAME  from t_sys_code_item item WHERE item.TYPE_CODE = <include refid="mybaties.constant.SALES_ORG_CONSTANT"/>  and item.ITEM_CODE= o.SALES_ORG) SALES_ORG_NAME,
 
         concat(
@@ -598,6 +601,7 @@
         )CUST_ADDRESS_SHORT
         ,i.ORDER_NO,i.MATNR,ex.SHORT_TXT MATNR_TXT,i.UNIT,SUM(i.QTY) QTY,i.PRICE BASE_PRICE,sum(i.AMT) TOTAL_PRICE
         from t_preorder o
+
         LEFT JOIN t_mst_recv_bill bill on o.ORDER_NO = bill.ORDER_NO and bill.HAD_OFFSET = 'N'
         LEFT JOIN  t_md_address a on o.ADRESS_NO = a.ADDRESS_ID
         LEFT JOIN t_md_branch b on o.BRANCH_NO = b.BRANCH_NO
@@ -607,6 +611,7 @@
         LEFT JOIN t_mst_order_daliy_plan_item i on i.ORDER_NO = o.ORDER_NO
         LEFT JOIN  t_md_mara_ex ex on i.MATNR = ex.MATNR  and b.SALES_ORG = ex.SALES_ORG
         WHERE 1=1
+        and o.MILKBOX_STAT !="20"
         and b.SALES_ORG = o.SALES_ORG
         and i.STATUS !='30'
         and LOCATE(o.ORDER_NO,<foreach item="order" collection="orders" separator="," open="'" close="'" index="">${order}</foreach>)>0
@@ -627,7 +632,8 @@
         o.INIT_AMT,
         bill.SUPP_AMT  ORDER_AMT,
         bill.CUST_ACC_AMT,
-        o.END_DATE,MIN(i.DISP_DATE) START_DATE,
+        o.END_DATE,
+        (SELECT MIN(DISP_DATE) FROM t_mst_order_daliy_plan_item WHERE ORDER_NO=o.ORDER_NO) START_DATE,
         concat(
         (SELECT it.ITEM_NAME FROM T_SYS_CODE_ITEM it WHERE it.TYPE_CODE =<include refid="mybaties.constant.COUNTRY_CITY_CONSTANT"/>
         AND it.ITEM_CODE = a.PROVINCE),
@@ -655,6 +661,9 @@
         LEFT JOIN t_mst_order_daliy_plan_item i on i.ORDER_NO = o.ORDER_NO AND (i.STATUS ='10' OR i.`STATUS` ='20')
         LEFT JOIN  t_md_mara_ex ex on i.MATNR = ex.MATNR  and  ex.SALES_ORG = #{salesOrg,jdbcType=VARCHAR}
         WHERE 1=1
+        and o.INIT_AMT > 0
+        and (o.PREORDER_SOURCE='20' OR o.PREORDER_SOURCE ='30' OR  o.PREORDER_SOURCE ='50'OR  o.PREORDER_SOURCE ='70' )
+        and (o.PREORDER_STAT = '10' OR o.PREORDER_STAT = '30')
         and o.INIT_AMT > 0
 
         and  o.PAYMENTMETHOD ='10'
