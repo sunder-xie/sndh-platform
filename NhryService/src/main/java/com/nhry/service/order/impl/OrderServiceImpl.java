@@ -959,6 +959,10 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 	@Override
 	public int stopOrderInTime(OrderSearchModel record)
 	{
+		System.out.println(record.getOrderNo()+"开始区间短期停订");
+		final long startTime = System.currentTimeMillis();
+
+
 		SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
 		TPreOrder order = tPreOrderMapper.selectByPrimaryKey(record.getOrderNo());
 		
@@ -983,7 +987,10 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 	if("40".equals(order.getSign())){
 		throw new ServiceException(MessageCode.LOGIC_ERROR,order.getOrderNo()+"该订单已完结不能做停订");
 	}
-		
+
+		final long startTime2 = System.currentTimeMillis();
+		System.out.println("判断共花费时间"+(startTime2-startTime));
+
 		if(order!= null){
 //			String status = null;
 //			try
@@ -1014,11 +1021,22 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 			}
 			tOrderDaliyPlanItemMapper.updateDaliyPlansToStop(order);
 
+
+
+			final long startTime3 = System.currentTimeMillis();
+			System.out.println("更新停订开始日期之后的日订单状态共花费时间"+(startTime3-startTime2)+"下面开始复订");
+
+
+
 			//以下为复订的逻辑
 			BigDecimal orderAmt = order.getInitAmt();//订单金额
 			ArrayList<TPlanOrderItem> orgEntries = (ArrayList<TPlanOrderItem>) tPlanOrderItemMapper.selectByOrderCode(record.getOrderNo());
 			String startDateStr = record.getOrderDateEnd();
 			Date startDate = order.getStopDateEnd();//续订开始日期
+
+			final long startTime4 = System.currentTimeMillis();
+			System.out.println("获取订单的订单行项目花费时间："+(startTime4-startTime3));
+
 			//后付款的
 			if(!"20".equals(order.getPaymentmethod())){
 				//把后期日订单置回原样,重新计算金额
@@ -1026,7 +1044,11 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 				uptKey.setOrderNo(order.getOrderNo());
 				uptKey.setDispDateStr(startDateStr);
 				tOrderDaliyPlanItemMapper.updateFromDateToDate(uptKey);
-				
+
+				final long startTime5 = System.currentTimeMillis();
+				System.out.println("后付款，将从复订日期开始的日订单状态更新为在订目花费时间："+(startTime5-startTime4)+"下面获取所有日订单更新剩余金额");
+
+
 				ArrayList<TOrderDaliyPlanItem> daliyPlans = (ArrayList<TOrderDaliyPlanItem>) tOrderDaliyPlanItemMapper.selectDaliyPlansByOrderNoAsc(record.getOrderNo());
 				BigDecimal curInitAmt =BigDecimal.ZERO;
 				BigDecimal curCurAmt =BigDecimal.ZERO;
@@ -1053,8 +1075,9 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 						tOrderDaliyPlanItemMapper.updateDaliyPlanItem(p);
 					}
 				}
-				
+				System.out.println("后付款，所有的日订单剩余金额更新花费时间："+(System.currentTimeMillis()-startTime5)+"下面获取所有日订单更新剩余金额");
 			}else{
+
 				//判断该订单是否是整单促销（整单满减或者年卡）
 				boolean orderPromFlag = (StringUtils.isNotBlank(order.getPromotion()) && StringUtils.isNotBlank(order.getPromItemNo()))?true:false;
 				//判断该订单是否是行项目促销（单品满减或者单品满赠）
@@ -1077,6 +1100,10 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 						}
 					}
 				}
+
+				final long startTime5 = System.currentTimeMillis();
+				System.out.println("预付款，判断促销信息花费时间："+(startTime5-startTime4));
+
 				ArrayList<TOrderDaliyPlanItem> daliyPlans = (ArrayList<TOrderDaliyPlanItem>) tOrderDaliyPlanItemMapper.selectDaliyPlansByOrderNoAsc(record.getOrderNo());
 					
 					//删除从复订时间开始的日计划
@@ -1084,7 +1111,11 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 	   			deleteKey.setOrderNo(order.getOrderNo());
 	   			deleteKey.setDispDateStr(startDateStr);
 	   			tOrderDaliyPlanItemMapper.deleteFromDateToDate(deleteKey);
-	   			
+
+
+				final long startTime6 = System.currentTimeMillis();
+				System.out.println("预付款，获取所有的日订单，并删除从复订时间开始的日订单花费时间："+(startTime6-startTime5)+"下面重新生复订之后的日订单");
+
 	   			Map<String,Integer> qtyMap = new HashMap<String,Integer>();
 					for(TOrderDaliyPlanItem p: daliyPlans){
 						if(p.getGiftQty()!=null)continue;
@@ -1142,6 +1173,7 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 
 					}
 				}
+				System.out.println("预付款，重生复订之后的日订单花费时间："+(System.currentTimeMillis()-startTime6));
 
 			/*
 				//回改订单行项目,更新最后配送日期
@@ -1167,7 +1199,7 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 
 			//更新截止日期
 			tPreOrderMapper.updateOrderEndDate(order);
-			
+			System.out.println("共花费时间"+(System.currentTimeMillis()-startTime)+"下面开始复订");
 			//发送EC
 			taskExecutor.execute(new Thread(){
 				@Override
