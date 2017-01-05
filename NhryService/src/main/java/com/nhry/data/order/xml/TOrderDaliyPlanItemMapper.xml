@@ -12,6 +12,7 @@
     <result column="MATNR" property="matnr" jdbcType="VARCHAR" />
     <result column="CONFIRM_MATNR" property="confirmMatnr" jdbcType="VARCHAR" />
     <result column="MATNR_TXT" property="matnrTxt" jdbcType="VARCHAR" />
+    <result column="SHORT_TXT" property="shortTxt" jdbcType="VARCHAR" />
     <result column="UNIT" property="unit" jdbcType="VARCHAR" />
     <result column="QTY" property="qty" jdbcType="INTEGER" />
     <result column="PRICE" property="price" jdbcType="DECIMAL" />
@@ -73,9 +74,9 @@
 			'星期六'
 		END	) WEEKLY, d.REACH_TIME, d.REACH_TIME_TYPE,
     d.MATNR, UNIT, d.QTY, d.PRICE, d.AMT, d.REMAIN_AMT, d.STATUS, d.CREATE_AT, d.CREATE_BY, d.CREATE_BY_TXT, 
-    d.LAST_MODIFIED, d.LAST_MODIFIED_BY, d.LAST_MODIFIED_BY_TXT, p.MATNR_TXT MATNR_TXT
-    from t_mst_order_daliy_plan_item d , t_md_mara p ,t_preorder o
-    where d.MATNR = p.MATNR and o.ORDER_NO = d.ORDER_NO and o.SALES_ORG = p.SALES_ORG
+    d.LAST_MODIFIED, d.LAST_MODIFIED_BY, d.LAST_MODIFIED_BY_TXT, ex.SHORT_TXT MATNR_TXT
+    from t_mst_order_daliy_plan_item d , t_md_mara p ,t_preorder o,t_md_mara_ex ex
+    where d.MATNR = p.MATNR and o.ORDER_NO = d.ORDER_NO and o.SALES_ORG = p.SALES_ORG and ex.MATNR=d.MATNR and o.SALES_ORG =ex.SALES_ORG
     and d.ORDER_NO = #{orderNo,jdbcType=VARCHAR}
     order by d.DISP_DATE,d.REMAIN_AMT desc
   </select>
