@@ -236,8 +236,6 @@ public class OutMilkServiceImpl implements OutMilkService {
                     if(minDayInit.getOrderDate().before(record.getOrderDate())){
                         //删除这个送奶员传入日期的统计数据
                         tssmMilkmanAmtsMapper.deleteAmtsKeyDay(model.getBranchNo(),model.getEmpNo(),record.getOrderDate());
-                    }else{
-                        throw new ServiceException(MessageCode.LOGIC_ERROR, "当前选择的日期小于初始化设定的时间，不能进行重新生成操作");
                     }
                     BigDecimal totamAmts =selectAmtsByDay.getTotalAmt();
                     //根据传入日期重新生成
@@ -277,8 +275,6 @@ public class OutMilkServiceImpl implements OutMilkService {
                         tssmMilkmanAmtsMapper.insertAmts(tma);
                         dd.add(Calendar.DATE, 1);
                     }
-                }else{
-                    throw new ServiceException(MessageCode.LOGIC_ERROR, "当前日期前一日有送奶员无统计信息，请重新选择日期！");
                 }
             }
         }else{
