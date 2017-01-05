@@ -18,6 +18,10 @@ public class TSsmMilkmanAmtInit extends TSsmMilkmanAmtInitKey {
 
     private String lastModifiedByTxt;
 
+    private String branchName;
+
+    private String empName;
+
     public BigDecimal getReAmt() {
         return reAmt;
     }
@@ -72,5 +76,21 @@ public class TSsmMilkmanAmtInit extends TSsmMilkmanAmtInitKey {
 
     public void setLastModifiedByTxt(String lastModifiedByTxt) {
         this.lastModifiedByTxt = lastModifiedByTxt == null ? null : lastModifiedByTxt.trim();
+    }
+
+    public String getEmpName() {
+        return empName;
+    }
+
+    public void setEmpName(String empName) {
+        this.empName = empName;
+    }
+
+    public String getBranchName() {
+        return branchName;
+    }
+
+    public void setBranchName(String branchName) {
+        this.branchName = branchName;
     }
 }

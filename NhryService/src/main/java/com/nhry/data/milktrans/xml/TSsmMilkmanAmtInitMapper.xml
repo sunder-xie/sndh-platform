@@ -7,6 +7,8 @@
     <result column="re_amt" property="reAmt" jdbcType="DECIMAL" />
     <result column="CREATE_AT" property="createAt" jdbcType="TIMESTAMP" />
     <result column="CREATE_BY" property="createBy" jdbcType="VARCHAR" />
+    <result column="BRANCH_NAME" property="branchName" jdbcType="VARCHAR" />
+    <result column="EMP_NAME" property="empName" jdbcType="VARCHAR" />
     <result column="CREATE_BY_TXT" property="createByTxt" jdbcType="VARCHAR" />
     <result column="LAST_MODIFIED" property="lastModified" jdbcType="TIMESTAMP" />
     <result column="LAST_MODIFIED_BY" property="lastModifiedBy" jdbcType="VARCHAR" />
@@ -156,8 +158,11 @@
   </select>
   <select id="selectAmtInitList" resultMap="BaseResultMap" parameterType="com.nhry.model.statistics.OutMilkModel" >
     SELECT
-        t2.BRANCH_NAME branch_no,
-        t1.EMP_NAME emp_no,
+        t.branch_no,
+        t.emp_no,
+        t.CREATE_AT,
+        t2.BRANCH_NAME,
+        t1.EMP_NAME,
         t.re_amt
     FROM
         t_ssm_milkman_amt_init t
