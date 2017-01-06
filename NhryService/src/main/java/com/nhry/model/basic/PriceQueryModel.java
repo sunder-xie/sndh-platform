@@ -1,16 +1,23 @@
 package com.nhry.model.basic;
 
-import com.wordnik.swagger.annotations.ApiModel;
-import com.wordnik.swagger.annotations.ApiModelProperty;
-
 import java.io.Serializable;
 
 public class PriceQueryModel extends BaseQueryModel implements Serializable {
+	private String dealerNo;
 	private String salesOrg;
 	private String priceGroup;;
 	private String status;
 	private String startDate;
 	private String endDate;
+
+	public String getDealerNo() {
+		return dealerNo;
+	}
+
+	public void setDealerNo(String dealerNo) {
+		this.dealerNo = dealerNo;
+	}
+
 	public String getPriceGroup() {
 		return priceGroup;
 	}

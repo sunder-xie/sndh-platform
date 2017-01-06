@@ -1,28 +1,10 @@
 package com.nhry.rest.basic;
 
-import java.util.List;
-
-import javax.ws.rs.Consumes;
-import javax.ws.rs.GET;
-import javax.ws.rs.POST;
-import javax.ws.rs.Path;
-import javax.ws.rs.PathParam;
-import javax.ws.rs.Produces;
-import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.Response;
-
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Scope;
-import org.springframework.stereotype.Component;
-import org.springframework.stereotype.Controller;
-
 import com.github.pagehelper.PageInfo;
 import com.nhry.common.exception.MessageCode;
-import com.nhry.data.basic.domain.TMaraPriceRel;
 import com.nhry.data.basic.domain.TMdDealer;
 import com.nhry.data.basic.domain.TMdPrice;
 import com.nhry.data.basic.domain.TMdPriceBranch;
-import com.nhry.data.config.domain.NHSysParameter;
 import com.nhry.model.basic.PriceQueryModel;
 import com.nhry.model.sys.ResponseModel;
 import com.nhry.rest.BaseResource;
@@ -31,6 +13,14 @@ import com.sun.jersey.spi.resource.Singleton;
 import com.wordnik.swagger.annotations.Api;
 import com.wordnik.swagger.annotations.ApiOperation;
 import com.wordnik.swagger.annotations.ApiParam;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Scope;
+import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Controller;
+
+import javax.ws.rs.*;
+import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
 
 @Path("/price")
 @Component
@@ -136,6 +126,7 @@ public class PriceResource extends BaseResource {
 	public Response getPricesGroupByBn(@ApiParam(required=true,name="branchNo",value="奶站编号")@PathParam("branchNo")String branchNo){
 		return convertToRespModel(MessageCode.NORMAL, null, priceService.getPricesGroupByBn(branchNo));
 	}
+
 	
 	@POST
 	@Path("/scope/lists/{branchNo}")

@@ -1,13 +1,13 @@
 package com.nhry.service.basic.dao;
 
-import java.util.List;
-
 import com.github.pagehelper.PageInfo;
 import com.nhry.data.basic.domain.TMaraPriceRel;
 import com.nhry.data.basic.domain.TMdDealer;
 import com.nhry.data.basic.domain.TMdPrice;
 import com.nhry.data.basic.domain.TMdPriceBranch;
 import com.nhry.model.basic.PriceQueryModel;
+
+import java.util.List;
 
 public interface PriceService {
 	/**
@@ -54,7 +54,7 @@ public interface PriceService {
 	
 	/**
 	 * 更新价格组关联的商品信息
-	 * @param record
+	 * @param id records
 	 * @return
 	 */
 	int mergeMaraPriceRel(String id,List<TMaraPriceRel> records);
@@ -82,7 +82,7 @@ public interface PriceService {
     
     /**
      * 根据奶站编号和价格组id删除奶站与价格组关系
-     * @param record
+     * @param branchNo id
      * @return
      */
     int delPriceBranch(String branchNo,String id);
@@ -106,7 +106,7 @@ public interface PriceService {
     public float getMaraPriceForCreateOrder(String branchNo, String matnr, String deliveryType,String salesOrg);
     /**
      * 根据当前销售组织获取该公司下面的经销商列表
-     * @param salesOrg
+     * @param
      * @return
      */
     public List<TMdDealer> getDealers();
@@ -138,4 +138,5 @@ public interface PriceService {
      * @return
      */
     public PageInfo findMaraPricesById(String id,int pageNum,int pageSize);
+
 }
