@@ -162,4 +162,6 @@ public interface TOrderDaliyPlanItemMapper {
     int deletePlansWithoutPromDayByOrder(String orderNo);
 
     int deletePromDayDayByOrder(String orderNo);
+
+    List<TOrderDaliyPlanItem> selectPromDaysByNo(String orderCode);
 }

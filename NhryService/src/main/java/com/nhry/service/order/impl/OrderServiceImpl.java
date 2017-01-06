@@ -23,14 +23,12 @@ import com.nhry.model.statistics.ExtendBranchInfoModel;
 import com.nhry.service.BaseService;
 import com.nhry.service.basic.dao.PriceService;
 import com.nhry.service.basic.dao.TVipCustInfoService;
-import com.nhry.service.config.dao.DictionaryService;
 import com.nhry.service.external.dao.EcService;
 import com.nhry.service.milktrans.dao.RedateByTradeService;
 import com.nhry.service.order.dao.MilkBoxService;
 import com.nhry.service.order.dao.OrderService;
 import com.nhry.service.order.dao.PromotionService;
 import com.nhry.service.order.pojo.OrderRemainData;
-import com.nhry.service.pi.dao.PIVipInfoDataService;
 import com.nhry.service.pi.dao.PIVipPointCreateBatService;
 import com.nhry.service.pi.dao.SmsSendService;
 import com.nhry.service.pi.pojo.MemberActivities;
@@ -2791,6 +2789,7 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 		List<TOrderDaliyPlanItem> entries = record.getEntries();
 		if(entries==null || entries.size()==0){throw  new ServiceException(MessageCode.LOGIC_ERROR,"没有日计划行");}
 			Date firstDate = tOrderDaliyPlanItemMapper.selectFirstDispDateByOrder(record.getOrderCode());
+
 			for(TOrderDaliyPlanItem plan : entries){
 				TOrderDaliyPlanItem oldDay = tOrderDaliyPlanItemMapper.selectByDateAndItemNoAndNo(plan);
 				TPlanOrderItem item = tPlanOrderItemMapper.selectEntryByEntryNo(oldDay.getItemNo());
@@ -2818,13 +2817,14 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 				if(tDispOrderItemMapper.selectItemsByOrgOrderAndItemNo(plan.getOrderNo(), plan.getItemNo(), plan.getDispDate()).size()>0){
 					throw new ServiceException(MessageCode.LOGIC_ERROR,format.format(plan.getDispDate())+"的日计划已经生成路单，不可以修改到这一天!");
 				}
-				//判断这天是否已经有赠品配送
-				List<TOrderDaliyPlanItem> itemPromDays = tOrderDaliyPlanItemMapper.selectPromDaliyBetweenDaysAndNo(plan.getOrderNo(),plan.getItemNo(),plan.getDispDate(),plan.getDispDate());
-				if(itemPromDays!=null && itemPromDays.size()>0) throw new ServiceException(MessageCode.LOGIC_ERROR,"不能同一天赠送两份赠品！！！");
+
 				oldDay.setDispDate(plan.getDispDate());
 				oldDay.setReachTimeType(plan.getReachTimeType());
 				tOrderDaliyPlanItemMapper.updateDaliyPlanItem(oldDay);
 			}
+			//判断是否出现一天两份以上赠品
+			List<TOrderDaliyPlanItem> itemPromDays = tOrderDaliyPlanItemMapper.selectPromDaysByNo(record.getOrderCode());
+			if(itemPromDays!=null && itemPromDays.size()>0) throw new ServiceException(MessageCode.LOGIC_ERROR, "不能同一天赠送两份及两份以上赠品！！！");
 		return 1;
 	}
 

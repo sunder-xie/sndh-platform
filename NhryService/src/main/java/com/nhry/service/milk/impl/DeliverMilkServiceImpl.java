@@ -170,6 +170,9 @@ public class DeliverMilkServiceImpl extends BaseService implements DeliverMilkSe
 			List<TMstInsideSalOrderItem> batchItems = new ArrayList<TMstInsideSalOrderItem>();
 			for(TDispOrderItem entry : entries){
 				if(entry.getReason()!=null && ("40".equals(entry.getReason()) || "50".equals(entry.getReason()) )){
+					/*if(entry.getConfirmQty().compareTo(entry.getQty())!=-1){
+						throw new ServiceException(MessageCode.LOGIC_ERROR,"产生拒收或损毁的路单，数量不能小于等于送达数量");
+					}*/
 					if(insOrderNo==null){
 						insOrderNo = SerialUtil.creatSeria();
 					}
@@ -851,7 +854,7 @@ public class DeliverMilkServiceImpl extends BaseService implements DeliverMilkSe
 			Date dispDate = dispOrder.getDispDate();
 			//获取所有的路单行
 			List<TDispOrderItem> entryList = tDispOrderItemMapper.selectNotDeliveryItemsByKeys(routeCode);
-			TOrderDaliyPlanItem record = new TOrderDaliyPlanItem();
+
 			TSysUser user = userSessionService.getCurrentUser();
 			OperationLogUtil.saveHistoryOperation(dispOrder.getOrderNo(), LogType.ROUTE_ORDER, RouteLogEnum.CONFIRM_TOUTE,dispOrder.getDispEmpNo()+dispOrder.getDispEmpName(),null,
 					"未确认","确认",null,dispOrder.getDispDate(),user,operationLogMapper);
@@ -872,8 +875,15 @@ public class DeliverMilkServiceImpl extends BaseService implements DeliverMilkSe
 			//用户记录  更新订单剩余金额
 			List<TPreOrder> uptOrderCurAmt = new ArrayList<TPreOrder>();
 			for(TDispOrderItem e : entryList){
+				if(("40".equals(e.getReason()) || "50".equals(e.getReason())) && e.getConfirmQty().compareTo(e.getQty())!=-1){
+					throw new ServiceException(MessageCode.LOGIC_ERROR,"地址为： "+e.getAddressTxt()+"   的这条路单原因为拒收或者损毁时，送达数量必须小于数量！！！");
+				}
+				if(("60".equals(e.getReason())) && e.getConfirmQty().compareTo(e.getQty())!=-1){
+					throw new ServiceException(MessageCode.LOGIC_ERROR,"地址为： "+e.getAddressTxt()+"   的这条路单原因为拒收复送时，送达数量必须小于数量！！！");
+				}
 				//变化的也更改日计划状态
-				if( (StringUtils.isNotBlank(e.getReason()) && e.getConfirmQty().intValue() < e.getQty().intValue()) || !e.getMatnr().equals(e.getConfirmMatnr())  ){
+				if( (StringUtils.isNotBlank(e.getReason())  && e.getConfirmQty().intValue() < e.getQty().intValue()) || !e.getMatnr().equals(e.getConfirmMatnr()) ){
+
 					TPlanOrderItem entry = tPlanOrderItemMapper.selectEntryByEntryNo(e.getOrgItemNo());
 					//更新原订单剩余金额
 					if(e.getConfirmAmt()!=null){
@@ -946,12 +956,21 @@ public class DeliverMilkServiceImpl extends BaseService implements DeliverMilkSe
 		/*	if(uptOrderCurAmt.size()>0){
 				tPreOrderMapper.batchupdateOrderCurAmtByOrderAndAmt(uptOrderCurAmt);
 			}*/
+
 			if(noChangeNos.size()>0){
-				HashMap<String,Object> map = new HashMap<String,Object>();
+				TOrderDaliyPlanItem record = new TOrderDaliyPlanItem();
+				for(String itemNo:noChangeNos){
+					//更新日计划为确认
+					record.setItemNo(itemNo);
+					record.setDispDate(dispDate);
+					record.setStatus("20");
+					tOrderDaliyPlanItemMapper.updateDaliyPlanItemStatus(record);
+				}
+			/*	HashMap<String,Object> map = new HashMap<String,Object>();
 				map.put("dispDate",dispDate);
 				map.put("status","20");
 				map.put("itemNos",noChangeNos);
-				tOrderDaliyPlanItemMapper.updateDaliyPlanItemStatusBatch(map);
+				tOrderDaliyPlanItemMapper.updateDaliyPlanItemStatusBatch(map);*/
 			}
 			//创建回瓶管理，调用
 			returnBoxService.createDayRetBox(routeCode);
