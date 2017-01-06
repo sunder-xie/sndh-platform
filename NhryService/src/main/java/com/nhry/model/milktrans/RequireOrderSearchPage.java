@@ -11,7 +11,16 @@ public class RequireOrderSearchPage implements Serializable {
     private Date requiredDate;
     private String pageNum = "1";
     private String pageSize = "10";
+    private String branchNo;
     private String status = "10";
+
+    public String getBranchNo() {
+        return branchNo;
+    }
+
+    public void setBranchNo(String branchNo) {
+        this.branchNo = branchNo;
+    }
 
     public String getDealerId() {
         return dealerId;
