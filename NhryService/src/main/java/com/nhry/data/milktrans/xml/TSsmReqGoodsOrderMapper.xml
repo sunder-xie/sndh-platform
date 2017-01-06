@@ -93,12 +93,15 @@
         AND   BRANCH_NO =#{branchNo,jdbcType=VARCHAR}
     </select>
 
-    <select id="searchRequireOrderByDealer" resultMap="BaseResultMap" parameterType="com.nhry.model.milktrans.RequireOrderSearch">
+    <select id="searchRequireOrderByDealer" resultMap="BaseResultMap" parameterType="com.nhry.model.milktrans.RequireOrderSearchPage">
         select
         o.ORDER_NO,o.ORDER_DATE,o.BRANCH_NO,o.REQUIRED_DATE,o.VOUCHER_NO,o.STATUS,o.MEMO_TXT,b.BRANCH_NAME
         FROM t_ssm_req_goods_order o
         JOIN t_md_branch b ON o.BRANCH_NO = b.BRANCH_NO
         AND b.DEALER_NO = #{dealerId,jdbcType=VARCHAR}
         AND o.ORDER_DATE = #{requiredDate,jdbcType=DATE}
+        <if test="status != null and status != ''">
+          AND o.STATUS = #{status,jdbcType=VARCHAR}
+        </if>
     </select>
 </mapper>
