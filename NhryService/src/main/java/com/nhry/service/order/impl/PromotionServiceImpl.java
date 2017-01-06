@@ -209,6 +209,7 @@ public class PromotionServiceImpl extends BaseService implements PromotionServic
 			pro.setPlanStartTime(new Date());
 			pro.setPlanStopTime(new Date());
 			pro.setBuyStartTime(entry.getStartDispDate());
+			pro.setOrgQty(new BigDecimal(entry.getDispTotal()));
 			pro.setBuyStopTime(entry.getEndDispDate());
 			pro.setLowAmt(entry.getEntryTotal());
 			pro.setOrgMatnr(entry.getMatnr());
