@@ -12,6 +12,7 @@ public class RequireOrderSearchPage implements Serializable {
     private String pageNum = "1";
     private String pageSize = "10";
     private String branchNo;
+    private String status = "10";
 
     public String getBranchNo() {
         return branchNo;
@@ -51,6 +52,14 @@ public class RequireOrderSearchPage implements Serializable {
 
     public void setPageSize(String pageSize) {
         this.pageSize = pageSize;
+    }
+
+    public String getStatus() {
+        return status;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
     }
 }
 
