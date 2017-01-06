@@ -280,6 +280,11 @@ public class TOrderDaliyPlanItemMapperImpl implements TOrderDaliyPlanItemMapper
 	}
 
 	@Override
+	public List<TOrderDaliyPlanItem> selectPromDaysByNo(String orderCode) {
+		return sqlSessionTemplate.selectList("selectPromDaysByNo",orderCode);
+	}
+
+	@Override
 	public List<OrderDaliyPlanReportEntityModel> reportOrderDaliyPlanByParams(OrderDaliyPlanReportModel model) {
 		return sqlSessionTemplate.selectList("reportOrderDaliyPlanByParams",model);
 	}
