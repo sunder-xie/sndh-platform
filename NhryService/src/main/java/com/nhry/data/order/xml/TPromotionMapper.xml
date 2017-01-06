@@ -373,6 +373,7 @@
         and p.PLAN_STOP_TIME &gt;=#{planStopTime,jdbcType=DATE}
         and p.BUY_START_TIME &lt;=#{buyStartTime,jdbcType=DATE}
         and p.BUY_STOP_TIME &gt;=#{buyStopTime,jdbcType=DATE}
+        and  oi.ORIG_NUM &gt;= #{origNum,jdbcType=DECIMAL}
         and p.PROM_SUB_TYPE ='Z008'
     UNION ALL
         select
