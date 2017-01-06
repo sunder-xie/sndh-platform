@@ -329,7 +329,7 @@ public class milkTransResource extends BaseResource {
 	@Produces(MediaType.APPLICATION_JSON)
 	@Consumes(MediaType.APPLICATION_JSON)
 	@ApiOperation(value = "/searchSalOrder/dealer", response = Response.class, notes = "经销商内勤查询销售订单信息")
-	public Response searchSalOrderByDealer(@ApiParam(required=true,name="sModel",value="订单号必须，分页查询") RequireOrderSearchPage sModel){
+	public Response searchSalOrderByDealer(@ApiParam(required=true,name="sModel",value="分页查询") RequireOrderSearchPage sModel){
 		return convertToRespModel(MessageCode.NORMAL, null, requireOrderService.searchSalOrderByDealer(sModel));
 	}
 

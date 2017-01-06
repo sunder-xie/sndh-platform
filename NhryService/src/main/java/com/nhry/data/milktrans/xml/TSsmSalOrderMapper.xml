@@ -217,7 +217,7 @@
             FROM t_ssm_sal_order o
             JOIN t_md_branch b ON o.BRANCH_NO = b.BRANCH_NO
             AND b.DEALER_NO = #{dealerId,jdbcType=VARCHAR}
-            <if test="branchNo!=null">
+            <if test="requiredDate!=null">
               AND o.REQUIRED_DATE = #{requiredDate,jdbcType=DATE}
             </if>
             <if test="branchNo!=null">
