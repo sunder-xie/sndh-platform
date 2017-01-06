@@ -208,4 +208,21 @@
     <update id="updateWBSTK" parameterType="string">
         UPDATE t_ssm_sal_order SET IS_WBSTK = "Y" WHERE ORDER_NO = #{orderNo,jdbcType=VARCHAR}
     </update>
+
+
+
+    <select id="searchSalOrderByDealer" resultMap="BaseResultMap" parameterType="com.nhry.model.milktrans.RequireOrderSearch">
+            select
+            o.ORDER_NO,o.ORDER_DATE,o.BRANCH_NO,o.REQUIRED_DATE,o.VOUCHER_NO,o.`STATUS`,o.MEMO_TXT,b.BRANCH_NAME
+            FROM t_ssm_sal_order o
+            JOIN t_md_branch b ON o.BRANCH_NO = b.BRANCH_NO
+            AND b.DEALER_NO = #{dealerId,jdbcType=VARCHAR}
+            <if test="branchNo!=null">
+              AND o.REQUIRED_DATE = #{requiredDate,jdbcType=DATE}
+            </if>
+            <if test="branchNo!=null">
+                AND o.BRANCH_NO = #{branchNo,jdbcType=VARCHAR}
+            </if>
+            ORDER BY o.BRANCH_NO
+    </select>
 </mapper>

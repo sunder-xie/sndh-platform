@@ -1,6 +1,5 @@
 package com.nhry.service.milktrans.impl;
 
-import com.github.pagehelper.Page;
 import com.github.pagehelper.PageInfo;
 import com.nhry.common.auth.UserSessionService;
 import com.nhry.common.exception.MessageCode;
@@ -1075,7 +1074,12 @@ public class RequireOrderServiceImpl implements RequireOrderService {
         rModel.setDealerId(user.getDealerId());
         return tSsmReqGoodsOrderMapper.searchRequireOrderByDealer(rModel);
     }
-
+    @Override
+    public PageInfo searchSalOrderByDealer(RequireOrderSearchPage rModel) {
+        TSysUser user =userSessionService.getCurrentUser();
+        rModel.setDealerId(user.getDealerId());
+        return tSsmSalOrderMapper.searchSalOrderByDealer(rModel);
+    }
     @Override
     public RequireOrderModel getRequireOrderByOrderNo(String orderNo) {
         TSsmReqGoodsOrder order = tSsmReqGoodsOrderMapper.getRequireOrderByNo(orderNo);

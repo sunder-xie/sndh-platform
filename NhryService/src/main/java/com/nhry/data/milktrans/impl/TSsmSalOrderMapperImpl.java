@@ -1,8 +1,10 @@
 package com.nhry.data.milktrans.impl;
 
+import com.github.pagehelper.PageInfo;
 import com.nhry.common.datasource.DynamicSqlSessionTemplate;
 import com.nhry.data.milktrans.dao.TSsmSalOrderMapper;
 import com.nhry.data.milktrans.domain.TSsmSalOrder;
+import com.nhry.model.milktrans.RequireOrderSearchPage;
 import com.nhry.model.milktrans.SalOrderModel;
 
 import java.util.List;
@@ -56,5 +58,10 @@ public class TSsmSalOrderMapperImpl implements TSsmSalOrderMapper {
     @Override
     public int updateWBSTK(String orderNo) {
         return sqlSessionTemplate.update("updateWBSTK",orderNo);
+    }
+
+    @Override
+    public PageInfo searchSalOrderByDealer(RequireOrderSearchPage rModel) {
+        return sqlSessionTemplate.selectListByPages("searchSalOrderByDealer",rModel,Integer.valueOf(rModel.getPageNum()),Integer.valueOf(rModel.getPageSize()));
     }
 }
