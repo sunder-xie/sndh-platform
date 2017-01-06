@@ -624,6 +624,8 @@ public class RequireOrderServiceImpl implements RequireOrderService {
         //如果是华西或者天音 则requiredDate日期为今天  否则requiredDate为明天
         if ("4181".equals(user.getSalesOrg()) || "4390".equals(user.getSalesOrg())) {
             requireDate = orderDate;
+        }else if("4511".equals(user.getSalesOrg())){
+            requireDate = DateUtil.getDayAfterTomorrow(orderDate);
         } else {
             requireDate = DateUtil.getTomorrow(orderDate);
         }
@@ -1306,7 +1308,9 @@ public class RequireOrderServiceImpl implements RequireOrderService {
         TMdBranch branch = branchMapper.selectBranchByNo(user.getBranchNo());
         if ("4181".equals(user.getSalesOrg()) || "4390".equals(user.getSalesOrg())) {
             order.setRequiredDate(requiredDate);
-        } else {
+        }if("4511".equals(user.getSalesOrg())){
+            order.setRequiredDate(DateUtil.getDayAfterTomorrow(requiredDate));
+        }else {
             if ("01".equals(branch.getBranchGroup())) {
                 order.setRequiredDate(requiredDate);
             } else {
