@@ -99,6 +99,6 @@
         FROM t_ssm_req_goods_order o
         JOIN t_md_branch b ON o.BRANCH_NO = b.BRANCH_NO
         AND b.DEALER_NO = #{dealerId,jdbcType=VARCHAR}
-        AND o.REQUIRED_DATE = #{requiredDate,jdbcType=DATE}
+        AND o.ORDER_DATE = #{requiredDate,jdbcType=DATE}
     </select>
 </mapper>
