@@ -216,6 +216,7 @@
             o.ORDER_NO,o.ORDER_DATE,o.BRANCH_NO,o.REQUIRED_DATE,o.VOUCHER_NO,o.`STATUS`,o.MEMO_TXT,b.BRANCH_NAME
             FROM t_ssm_sal_order o
             JOIN t_md_branch b ON o.BRANCH_NO = b.BRANCH_NO
+            WHERE 1=1
             AND b.DEALER_NO = #{dealerId,jdbcType=VARCHAR}
             <if test="orderDate!=null">
               AND o.ORDER_DATE = #{orderDate,jdbcType=DATE}
