@@ -110,6 +110,9 @@
       <if test="salesOrg != null" >
         SALES_ORG,
       </if>
+      <if test="dealerNo != null" >
+            DEALER_NO,
+      </if>
       <if test="priceGroup != null" >
         PRICE_GROUP,
       </if>
@@ -153,6 +156,9 @@
       </if>
       <if test="salesOrg != null" >
         #{salesOrg,jdbcType=VARCHAR},
+      </if>
+      <if test="dealerNo != null" >
+          #{dealerNo,jdbcType=VARCHAR},
       </if>
       <if test="priceGroup != null" >
         #{priceGroup,jdbcType=VARCHAR},
@@ -275,18 +281,21 @@
 	t_md_price p
      <where>
          <if test="salesOrg != null and salesOrg != ''">
-	      		SALES_ORG = #{salesOrg}
+	      		p.SALES_ORG = #{salesOrg}
 	      </if>
 	      <if test="priceGroup != null and priceGroup !=''">
-	     		AND PRICE_GROUP like '%${priceGroup}%'
+	     		AND p.PRICE_GROUP like '%${priceGroup}%'
 	      </if>
 	      <if test="startDate != null and startDate != ''">
-	         AND START_DATE &gt;= #{startDate}
+	         AND p.START_DATE &gt;= #{startDate}
 	      </if>
 	      <if test="endDate != null and endDate != ''">
-	         AND END_DATE &lt;= #{endDate}
+	         AND p.END_DATE &lt;= #{endDate}
 	      </if>
-	      AND STATUS = 'Y'
+		 <if test="dealerNo!=null and dealerNo!=''">
+			 AND p.DEALER_NO = #{dealerNo}
+		 </if>
+	      AND p.STATUS = 'Y'
      </where>
       order by CREATE_AT DESC,LAST_MODIFIED desc,PRICE_TYPE,PRICE_GROUP
   </select>
@@ -406,5 +415,9 @@
      AND m.SCOPE=#{scope}
      </if>
       AND m.SALES_ORG=#{salesOrg}
+	  <if test="dealerNo!=null and ''!=dealerNo">
+		  m.DEALER_NO = #{dealerNo}
+	  </if>
   </select>
+
 </mapper>

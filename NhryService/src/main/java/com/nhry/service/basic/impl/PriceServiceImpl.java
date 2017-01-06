@@ -1,27 +1,11 @@
 package com.nhry.service.basic.impl;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
-import org.apache.commons.lang3.StringUtils;
-import org.springframework.core.task.TaskExecutor;
-
 import com.github.pagehelper.PageInfo;
 import com.nhry.common.exception.MessageCode;
 import com.nhry.common.exception.ServiceException;
 import com.nhry.data.auth.domain.TSysUser;
-import com.nhry.data.basic.dao.TMaraPriceRelMapper;
-import com.nhry.data.basic.dao.TMdBranchMapper;
-import com.nhry.data.basic.dao.TMdDealerMapper;
-import com.nhry.data.basic.dao.TMdPriceBranchMapper;
-import com.nhry.data.basic.dao.TMdPriceMapper;
-import com.nhry.data.basic.domain.TMaraPriceRel;
-import com.nhry.data.basic.domain.TMdBranch;
-import com.nhry.data.basic.domain.TMdDealer;
-import com.nhry.data.basic.domain.TMdPrice;
-import com.nhry.data.basic.domain.TMdPriceBranch;
+import com.nhry.data.basic.dao.*;
+import com.nhry.data.basic.domain.*;
 import com.nhry.model.basic.PriceQueryModel;
 import com.nhry.service.BaseService;
 import com.nhry.service.basic.dao.PriceService;
@@ -30,6 +14,13 @@ import com.nhry.service.basic.pojo.PriceGroup;
 import com.nhry.utils.PrimaryKeyUtils;
 import com.nhry.utils.SysContant;
 import com.nhry.utils.date.Date;
+import org.apache.commons.lang3.StringUtils;
+import org.springframework.core.task.TaskExecutor;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 public class PriceServiceImpl extends BaseService implements PriceService {
 	private TMdPriceMapper tMdPriceMapper;
@@ -61,6 +52,7 @@ public class PriceServiceImpl extends BaseService implements PriceService {
 				&& !"-1".equals(record.getScope()))){
 			Map<String,String> attrs=new HashMap<String,String>(2);
 			attrs.put("salesOrg", user.getSalesOrg());
+			attrs.put("dealerNo", user.getDealerId());
 			attrs.put("priceType", record.getPriceType());
 			attrs.put("scope", record.getScope());
 			int count = this.tMdPriceMapper.getCompPriceGroupCount(attrs);
@@ -74,6 +66,7 @@ public class PriceServiceImpl extends BaseService implements PriceService {
 		record.setCreateAt(new Date());
 		record.setStatus("Y");
 		record.setSalesOrg(user.getSalesOrg());
+		record.setDealerNo(user.getDealerId());
 		tMdPriceMapper.addNewPriceGroup(record);
 		//维护产品与价格组关系
 		mergeMaraPriceRel(record.getId(),record.getMprices());
@@ -143,6 +136,7 @@ public class PriceServiceImpl extends BaseService implements PriceService {
 		if (StringUtils.isEmpty(smodel.getPageNum()) || StringUtils.isEmpty(smodel.getPageSize())) {
 			throw new ServiceException(MessageCode.LOGIC_ERROR,"pageNum和pageSize不能为空！");
 		}
+		smodel.setDealerNo(this.userSessionService.getCurrentUser().getDealerId());
 		smodel.setSalesOrg(this.userSessionService.getCurrentUser().getSalesOrg());
 		return tMdPriceMapper.searchPriceGroups(smodel);
 	}

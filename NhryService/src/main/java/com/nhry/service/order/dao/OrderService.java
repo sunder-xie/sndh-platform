@@ -17,19 +17,38 @@ import java.util.List;
 
 public interface OrderService {
 	List editOrderForLongForViewPlans(OrderEditModel record);
-	
+
+	/**
+	 * 查询该用户上一张订单的送奶员和订单号
+	 * @param vipNo 订户编号
+	 * @return
+     */
 	TPreOrder selectLatestOrder(String vipNo);
 	
 	List<TOrderDaliyPlanItem> searchDaliyPlansByStatus(String orderNo, String status1,String status2,String status3);
-	
+
+	/**
+	 * 查询需要续订的订单信息列表
+	 * @param smodel
+	 * @return  待续订的订单信息分页列表
+     */
 	PageInfo searchNeedResumeOrders(OrderSearchModel smodel);
 
+	/**
+	 * 通过电话号码查询需要续订的订单信息列表
+	 * @param smodel
+	 * @return
+     */
 	PageInfo searchReNeedOrdersByMp(OrderSearchModel smodel);
 
 	PageInfo searchOrderByMp(OrderSearchModel smodel);
 	
 	PageInfo searchOrders(OrderSearchModel smodel);
-	
+
+	/**
+	 * 订奶计划列表
+	 * @return  日订单分页列表
+	 */
 	PageInfo searchDaliyOrders(OrderSearchModel smodel);
 	
 	OrderSearchModel calculateContinueOrder(OrderSearchModel record);
@@ -39,7 +58,11 @@ public interface OrderService {
 	String createOrders(List<OrderCreateModel> record);
 
 	int editOrderForLong(OrderEditModel record);
-
+	/**
+	 * 订奶计划修改  停订、修改产品、数量、配送时间
+	 * @param record
+	 * @return
+	 */
 	int editOrderForShort(DaliyPlanEditModel record);
 
 	int batchStopOrderForTime(OrderSearchModel record);
@@ -62,6 +85,11 @@ public interface OrderService {
 
 	int modifyOrderStatus(TPreOrder record);
 
+	/**
+	 * 根据订单编号 获取订单信息  订单查看
+	 * @param orderCode
+	 * @return
+     */
 	OrderCreateModel selectOrderByCode(String orderCode);
 
 	PageInfo searchReturnOrders(ManHandOrderSearchModel manHandModel);
@@ -88,6 +116,11 @@ public interface OrderService {
 	
 	OrderRemainData searchOrderRemainData(String phone);
 
+	/**
+	 * 根据订单编号查询收款信息
+	 * @param orderCode
+	 * @return  收款表信息
+     */
 	CollectOrderModel queryCollectByOrderNo(String orderCode);
 
 	TPlanOrderItem calculateAmtAndEndDateForFront(TPlanOrderItem item);
@@ -95,17 +128,35 @@ public interface OrderService {
 	TPlanOrderItem calculateTotalQtyForFront(TPlanOrderItem item);
 	
 	int updateOrderAndEntriesDispStartDate(String orderNo,List<TPlanOrderItem> entries);
-	
+
+	/**
+	 * 该组织下待确认的订单 数量
+	 * @return
+     */
    int selectRequiredOrderNum();
-   
+
+	/**
+	 * 该组织下还有7天就到期没续订的订单
+	 * @return
+     */
    int selectStopOrderNum();
-   
+
+	/**
+	 * 为导入的订单生成日计划
+	 * @param str
+	 * @return
+     */
    int createDaliyPlansForIniOrders(String str);
    
    int replaceOrdersDispmember(OrderSearchModel record);
    
    List<TOrderDaliyPlanItem> viewDaliyPlans(OrderCreateModel record);
-   
+
+	/**
+	 * 订奶计划修改  日订单恢复
+	 * @param item
+	 * @return
+	 */
    int recoverStopDaliyDaliyPlan(TOrderDaliyPlanItem item); 
    
    void returnOrderRemainAmtToAcct(String orderNo,Date dispDate);
@@ -120,6 +171,10 @@ public interface OrderService {
 
 	int selectUnfinishOrderNum(String vipCustNo);
 
+	/**
+	 * 该组织下人工分单 数量
+	 * @return
+	 */
 	int searchReturnOrdersNum();
 
 	BigDecimal calPreOrderTotalFactoryPrice(String orderNo);
@@ -136,7 +191,17 @@ public interface OrderService {
 
 	int uptOrderlong(OrderEditModel record);
 
+	/**
+	 * 订单编辑中 预览订单日计划
+	 * @param record
+	 * @return
+     */
 	List uptOrderlongForViewPlans(OrderEditModel record);
+	/**
+	 * 订单编辑中 预览订单日计划  优化
+	 * @param record
+	 * @return
+	 */
 	List uptOrderlongForViewPlans2(OrderEditModel record);
 	int backUnBranchOrder(UpdateManHandOrderModel smodel);
 

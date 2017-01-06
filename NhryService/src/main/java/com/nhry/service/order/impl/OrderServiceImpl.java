@@ -10050,14 +10050,18 @@ public static int dayOfTwoDay(Date day1,Date day2) {
 				OperationLogUtil.saveHistoryOperation(order.getOrderNo(),LogType.ORDER,OrderLogEnum.STATUS,null,null,"10".equals(order.getSign())?"在订":"","完结",
 						null,null,userSessionService.getCurrentUser(),operationLogMapper);
 				tPreOrderMapper.updateOrderToFinish(order.getOrderNo());
-				if("20".equals(order.getPaymentmethod()) && order.getCurAmt().floatValue()> 0){
-					//退回剩余金额
-					TVipAcct ac = new TVipAcct();
-					ac.setVipCustNo(order.getMilkmemberNo());
-					ac.setAcctAmt(order.getCurAmt());
-					System.out.println(order.getOrderNo()+" 退回账户 "+order.getCurAmt());
-					tVipCustInfoService.addVipAcct(ac);
+				//机构订单的剩余金额不退回个账
+				if(!"70".equals(order.getPreorderSource())){
+					if("20".equals(order.getPaymentmethod()) && order.getCurAmt().floatValue()> 0){
+						//退回剩余金额
+						TVipAcct ac = new TVipAcct();
+						ac.setVipCustNo(order.getMilkmemberNo());
+						ac.setAcctAmt(order.getCurAmt());
+						System.out.println(order.getOrderNo()+" 退回账户 "+order.getCurAmt());
+						tVipCustInfoService.addVipAcct(ac);
+					}
 				}
+
 				if(tPreOrderMapper.selectNumOfdeletedByMilkmemberNo(order.getMilkmemberNo())==0){
 					//订户状态更改
 					tVipCustInfoService.discontinue(order.getMilkmemberNo(), "20",null,null);

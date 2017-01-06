@@ -5,16 +5,12 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-import com.nhry.utils.DateAdapter;
-
-import javax.xml.bind.annotation.XmlAccessType;
-import javax.xml.bind.annotation.XmlAccessorType;
-import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
-
 public class TMdPrice implements Serializable{
     private String id;
 
     private String salesOrg;
+
+    private  String dealerNo;
 
     private String priceGroup;
 
@@ -45,6 +41,15 @@ public class TMdPrice implements Serializable{
     private String mcount;
     
     private List<TMaraPriceRel> mprices = new ArrayList<TMaraPriceRel>();
+
+
+    public String getDealerNo() {
+        return dealerNo;
+    }
+
+    public void setDealerNo(String dealerNo) {
+        this.dealerNo = dealerNo;
+    }
 
     public String getId() {
         return id;
