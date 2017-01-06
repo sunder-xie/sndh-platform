@@ -7487,7 +7487,6 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 
 		//后付款的不需要往后延期,重新计算订单价格
 		if("10".equals(orgOrder.getPaymentmethod())){
-
 			//更新后付款订单的订单金额和剩余金额
 			BigDecimal cj = entry.getAmt().subtract(entry.getConfirmAmt());
 			orgOrder.setInitAmt(orgOrder.getInitAmt().subtract(cj));
@@ -7513,7 +7512,6 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 					}
 				}
 				p.setRemainAmt(initAmt);
-
 				tOrderDaliyPlanItemMapper.updateDaliyPlanItem(p);
 			}
 			return;
@@ -7563,12 +7561,14 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 			int gapDays = orgEntry.getGapDays() + 1;//间隔天数
 			for(int i=1;i<3650;i++){
 				Date today = afterDate(lastDate,i);
-				if(i%gapDays !=0){
+				if(dayOfTwoDay(lastDate,today)%gapDays != 0){
 					if(orgEntry.getRuleTxt()!=null){
 						List<String> deliverDays = Arrays.asList(orgEntry.getRuleTxt().split(","));
 						if(!deliverDays.contains(getWeek(today))){
 							continue;
 						}
+					}else{
+						continue;
 					}
 				}
 				plan.setDispDate(today);
@@ -7586,7 +7586,6 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 				}
 			}
 		}
-
 		tOrderDaliyPlanItemMapper.insert(plan);
 		daliyPlans.add(plan);
 
@@ -8360,14 +8359,7 @@ public static int dayOfTwoDay(Date day1,Date day2) {
 					for(int i=1;i<3650;i++){
 						Date today = afterDate(lastDate,i);
 						if(dayOfTwoDay(dateMap.get(plan.getItemNo()),today)%gapDays !=0){
-//							if(entry.getRuleTxt()!=null){
-//								List<String> deliverDays = Arrays.asList(entry.getRuleTxt().split(","));
-//								if(!deliverDays.contains(getWeek(today))){
-//									continue;
-//								}
-//							}else{
 								continue;
-//							}
 						}
 						dateMap.replace(plan.getItemNo(), today); 
 						plan.setDispDate(today);
