@@ -9,10 +9,19 @@ import java.util.Date;
 public class RequireOrderSearchPage implements Serializable {
     private String dealerId;
     private Date requiredDate;
+    private Date orderDate;
     private String pageNum = "1";
     private String pageSize = "10";
     private String branchNo;
     private String status = "10";
+
+    public Date getOrderDate() {
+        return orderDate;
+    }
+
+    public void setOrderDate(Date orderDate) {
+        this.orderDate = orderDate;
+    }
 
     public String getBranchNo() {
         return branchNo;
