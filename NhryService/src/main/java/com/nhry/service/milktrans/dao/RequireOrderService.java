@@ -63,4 +63,6 @@ public interface RequireOrderService {
     PageInfo searchRequireOrderByDealer(RequireOrderSearchPage rModel);
 
     RequireOrderModel getRequireOrderByOrderNo(String orderNo);
+
+    PageInfo searchSalOrderByDealer(RequireOrderSearchPage sModel);
 }
