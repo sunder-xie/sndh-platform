@@ -347,10 +347,8 @@ public class milkTransResource extends BaseResource {
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
 	@ApiOperation(value = "/batch/send", response = RequireOrderModel.class, notes = "经销商内勤发送销售订单到ERP")
-	public Response batchSendSalOrder(@ApiParam(required = false,name = "orderNos",value = "订单号") String orderNo) throws InterruptedException {
-		String [] orderArr = orderNo.split(",");
-//		Thread.sleep(50000);
-		return convertToRespModel(MessageCode.NORMAL, null,requireOrderService.batchSendSalOrder(orderArr));
+	public Response batchSendSalOrder(@ApiParam(required = false,name = "orderNos",value = "订单号")ReqOrderNosSearch orderNos) {
+		return convertToRespModel(MessageCode.NORMAL, null,requireOrderService.batchSendSalOrder(orderNos.getOrderNos()));
 	}
 
 }

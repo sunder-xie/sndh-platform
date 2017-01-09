@@ -43,6 +43,7 @@
 		<property name="resendMapper"  ref="resendMapper"></property>
 		<property name="resendItemMapper"  ref="resendItemMapper"></property>
 		<property name="stockService"  ref="ssmStockService"></property>
+		<property name="dictionaryService" ref="dicService"/>
 	</bean>
 
 	<!--回瓶管理-->

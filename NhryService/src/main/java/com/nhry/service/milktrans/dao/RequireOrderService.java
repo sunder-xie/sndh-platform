@@ -66,5 +66,5 @@ public interface RequireOrderService {
 
     PageInfo searchSalOrderByDealer(RequireOrderSearchPage sModel);
 
-    String batchSendSalOrder(String [] orderNos);
+    String batchSendSalOrder(List orderNos);
 }

@@ -9,6 +9,7 @@ import com.nhry.data.basic.dao.TMdBranchMapper;
 import com.nhry.data.basic.dao.TMdMaraMapper;
 import com.nhry.data.basic.domain.TMdBranch;
 import com.nhry.data.basic.domain.TMdMara;
+import com.nhry.data.config.domain.NHSysCodeItem;
 import com.nhry.data.milk.dao.TDispOrderMapper;
 import com.nhry.data.milk.dao.TMstRefuseResendItemMapper;
 import com.nhry.data.milk.dao.TMstRefuseResendMapper;
@@ -24,12 +25,14 @@ import com.nhry.data.stock.dao.TSsmGiOrderItemMapper;
 import com.nhry.data.stock.dao.TSsmGiOrderMapper;
 import com.nhry.data.stock.domain.TSsmGiOrder;
 import com.nhry.model.milktrans.*;
+import com.nhry.service.config.dao.DictionaryService;
 import com.nhry.service.milktrans.dao.RequireOrderService;
 import com.nhry.service.pi.dao.PIRequireOrderService;
 import com.nhry.service.stock.dao.TSsmStockService;
 import com.nhry.utils.DateUtil;
 import com.nhry.webService.client.PISuccessMessage;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.log4j.Logger;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -41,6 +44,7 @@ import java.util.*;
  * Created by gongjk on 2016/6/24.
  */
 public class RequireOrderServiceImpl implements RequireOrderService {
+    private static Logger logger = Logger.getLogger(RequireOrderServiceImpl.class);
     private TSsmReqGoodsOrderItemMapper tSsmReqGoodsOrderItemMapper;
     private TSsmReqGoodsOrderMapper tSsmReqGoodsOrderMapper;
     private TOrderDaliyPlanItemMapper tOrderDaliyPlanItemMapper;
@@ -56,7 +60,11 @@ public class RequireOrderServiceImpl implements RequireOrderService {
     private TMstRefuseResendMapper resendMapper;
     private TMstRefuseResendItemMapper resendItemMapper;
     private TSsmStockService stockService;
+    private DictionaryService dictionaryService;
 
+    public void setDictionaryService(DictionaryService dictionaryService) {
+        this.dictionaryService = dictionaryService;
+    }
     public void setStockService(TSsmStockService stockService) {
         this.stockService = stockService;
     }
@@ -1138,18 +1146,32 @@ public class RequireOrderServiceImpl implements RequireOrderService {
     }
 
     @Override
-    public String batchSendSalOrder(String[] orderNos) {
+    public String batchSendSalOrder(List orderNos) {
         StringBuilder builder = new StringBuilder();
-        if(orderNos.length>0) {
+        if(orderNos.size()>0) {
             TSysUser user = userSessionService.getCurrentUser();
-            for (int i = 0; i < orderNos.length; i++) {
-                String orderNo = orderNos[i];
-                try {
-                    sendSalOrderErp(orderNo, user);
-                }catch (Exception e){
-                    e.getMessage();
-                    builder.append(orderNo+"--"+e.getMessage());
+            NHSysCodeItem codeItem = new NHSysCodeItem();
+            codeItem.setTypeCode("2008");
+            codeItem.setItemCode("1");
+            codeItem = dictionaryService.findCodeItenByCode(codeItem);
+            String dealerSend = codeItem.getItemName();
+            //判读是否是经销商统一报货，同时判读是否是大商
+//            if(dealerSend.contains(user.getSalesOrg())&&!user.getDealerId().equals(user.getBranchNo())){
+            if(dealerSend.contains(user.getSalesOrg())){
+                for (int i = 0; i < orderNos.size(); i++) {
+                    String orderNo = orderNos.get(i).toString();
+                    try {
+                        sendSalOrderErp(orderNo, user);
+                    } catch (Exception e) {
+                        e.getMessage();
+                        builder.append(orderNo + "--" + e.getMessage());
+                    }
                 }
+            }else{
+                throw new ServiceException(MessageCode.LOGIC_ERROR,"该销售组织没有开通经销商统一报货权限！");
+            }
+            if(builder.length()>0){
+                logger.error(builder.toString());
             }
         }
         return builder.toString();
@@ -1293,6 +1315,16 @@ public class RequireOrderServiceImpl implements RequireOrderService {
     @Override
     public int creaSalOrderOfDealerBranchByDate(Date orderDate) {
         TSysUser user = userSessionService.getCurrentUser();
+
+        NHSysCodeItem codeItem = new NHSysCodeItem();
+        codeItem.setTypeCode("2008");
+        codeItem.setItemCode("1");
+        codeItem = dictionaryService.findCodeItenByCode(codeItem);
+        String dealerSend = codeItem.getItemName();
+        //判断是否有经销商统一报货
+        if(dealerSend.contains(user.getSalesOrg())&&!user.getDealerId().equals(user.getBranchNo())){
+            throw new ServiceException(MessageCode.LOGIC_ERROR,"该公司必须由经销商统一报货！");
+        }
         SalOrderModel sMode = new SalOrderModel();
         sMode.setOrderDate(orderDate);
         sMode.setBranchNo(user.getBranchNo());
