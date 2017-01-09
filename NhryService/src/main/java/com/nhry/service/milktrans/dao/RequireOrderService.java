@@ -23,15 +23,15 @@ public interface RequireOrderService {
 
     int uptRequireOrder(UpdateRequiredModel uModel);
 
-    TSsmSalOrder creatPromoSalOrderOfDealerBranch(Date today);
+    TSsmSalOrder creatPromoSalOrderOfDealerBranch(Date today, String branchNo, String salesOrg);
 
-    TSsmSalOrder creatNoPromoSalOrderOfDealerBranch(Date requiredDate);
+    TSsmSalOrder creatNoPromoSalOrderOfDealerBranch(Date requiredDate, String branchNo, String salesOrg);
 
-    List<TSsmSalOrder> creatNoPromoSalOrderOfDealerBranch70(Date requiredDate);
+    List<TSsmSalOrder> creatNoPromoSalOrderOfDealerBranch70(Date requiredDate, String branchNo, String salesOrg);
 
-    TSsmSalOrder creatPromoSalOrderOfDealerBranch40(Date today);
+    TSsmSalOrder creatPromoSalOrderOfDealerBranch40(Date today, String branchNo, String salesOrg);
 
-    TSsmSalOrder creatNoPromoSalOrderOfDealerBranch40(Date requiredDate);
+    TSsmSalOrder creatNoPromoSalOrderOfDealerBranch40(Date requiredDate, String branchNo, String salesOrg);
 
     TSsmSalOrder creatNoPromoSalOrderOfSelftBranch(Date requiredDate);
 
@@ -65,4 +65,6 @@ public interface RequireOrderService {
     RequireOrderModel getRequireOrderByOrderNo(String orderNo);
 
     PageInfo searchSalOrderByDealer(RequireOrderSearchPage sModel);
+
+    String batchSendSalOrder(String [] orderNos);
 }
