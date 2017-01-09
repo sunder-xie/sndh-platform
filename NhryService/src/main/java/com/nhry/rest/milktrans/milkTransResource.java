@@ -2,6 +2,7 @@ package com.nhry.rest.milktrans;
 
 import com.github.pagehelper.PageInfo;
 import com.nhry.common.exception.MessageCode;
+import com.nhry.data.auth.domain.TSysUser;
 import com.nhry.data.milktrans.domain.TSsmReqGoodsOrderItem;
 import com.nhry.model.milktrans.*;
 import com.nhry.rest.BaseResource;
@@ -42,7 +43,7 @@ public class milkTransResource extends BaseResource {
 	@Consumes(MediaType.APPLICATION_JSON)
 	@ApiOperation(value = "/creatPromoSalOrderOfDealerBranch", response = Response.class, notes = "根据日订单生成经销商奶站的参加促销的销售订单")
 	public Response creatSalOrderOfDealerBranch(@ApiParam(required=true,name="rSearch",value="日期") ReqGoodsOrderSearch  rSearch){
-		return convertToRespModel(MessageCode.NORMAL, null,  requireOrderService.creatPromoSalOrderOfDealerBranch(rSearch.getRequiredDate()));
+		return convertToRespModel(MessageCode.NORMAL, null,  requireOrderService.creatPromoSalOrderOfDealerBranch(rSearch.getRequiredDate(),"" ,"" ));
 	}
 
 
@@ -52,7 +53,8 @@ public class milkTransResource extends BaseResource {
 	@Consumes(MediaType.APPLICATION_JSON)
 	@ApiOperation(value = "/creatNoPromoSalOrderOfDealerBranch", response = Response.class, notes = "根据日订单，要货计划生成经销商奶站的销售订单")
 	public Response creatNoPromoSalOrderOfDealerBranch(@ApiParam(required=true,name="rSearch",value="日期") ReqGoodsOrderSearch  rSearch){
-		return convertToRespModel(MessageCode.NORMAL, null, requireOrderService.creatNoPromoSalOrderOfDealerBranch(rSearch.getRequiredDate()));
+		TSysUser user = new TSysUser();
+		return convertToRespModel(MessageCode.NORMAL, null, requireOrderService.creatNoPromoSalOrderOfDealerBranch(rSearch.getRequiredDate(), user.getBranchNo(),user.getSalesOrg() ));
 	}
 
 
@@ -339,6 +341,14 @@ public class milkTransResource extends BaseResource {
 	@ApiOperation(value = "/queryRequireOrder/{orderNo}", response = RequireOrderModel.class, notes = "查询指定的要货计划")
 	public Response searchRequireOrderByOrderNo(@ApiParam(required=true,name="orderNo",value="要货计划编号")@PathParam("orderNo")String orderNo) {
 		return convertToRespModel(MessageCode.NORMAL, null, requireOrderService.getRequireOrderByOrderNo(orderNo));
+	}
+	@POST
+	@Path("/batch/send")
+	@Consumes(MediaType.APPLICATION_JSON)
+	@Produces(MediaType.APPLICATION_JSON)
+	@ApiOperation(value = "/batch/send", response = RequireOrderModel.class, notes = "经销商内勤发送销售订单到ERP")
+	public Response batchSendSalOrder(@ApiParam(required = false,name = "orderNos",value = "订单号")ReqOrderNosSearch orderNos) {
+		return convertToRespModel(MessageCode.NORMAL, null,requireOrderService.batchSendSalOrder(orderNos.getOrderNos()));
 	}
 
 }
