@@ -23,6 +23,7 @@ public interface BranchInfoMapper {
     List<Map<String,String>> findOrderRatioOutput(BranchInfoModel model);
     PageInfo findChangeplanStatReport(ExtendBranchInfoModel model);
     PageInfo returnBoxStatReport(ExtendBranchInfoModel model);
+    List<Map<String,String>> returnBoxStatList(ExtendBranchInfoModel model);
     PageInfo mstDispNumStat(ExtendBranchInfoModel model);
     PageInfo branchMstDispNumStat(ExtendBranchInfoModel model);
     PageInfo dayMstDispNumStat(ExtendBranchInfoModel model);

@@ -17,8 +17,7 @@ import com.nhry.model.bill.BatChCollectForExpModel;
 import com.nhry.model.bill.CollectOrderBillModel;
 import com.nhry.model.bill.CustBillQueryModel;
 import com.nhry.model.milk.RouteOrderModel;
-import com.nhry.model.milktrans.DispOrderReportEntityModel;
-import com.nhry.model.milktrans.DispOrderReportModel;
+import com.nhry.model.milktrans.*;
 import com.nhry.model.order.*;
 import com.nhry.model.statistics.BranchInfoModel;
 import com.nhry.model.statistics.ExtendBranchInfoModel;
@@ -30,6 +29,7 @@ import com.nhry.service.basic.pojo.BranchEmpModel;
 import com.nhry.service.bill.dao.CustomerBillService;
 import com.nhry.service.milk.dao.DeliverMilkService;
 import com.nhry.service.milktrans.dao.OutMilkService;
+import com.nhry.service.milktrans.dao.RequireOrderService;
 import com.nhry.service.order.dao.MilkBoxService;
 import com.nhry.service.order.dao.OrderService;
 import com.nhry.service.statistics.dao.BranchInfoService;
@@ -90,6 +90,8 @@ public class ReportResource extends BaseResource{
     private CustomerBillService customerBillService;
     @Autowired
     private OutMilkService outMilkService;
+    @Autowired
+    private RequireOrderService requireOrderService;
     @GET
     @Path("/reportCollect")
     @Produces(MediaType.APPLICATION_JSON)
@@ -1873,6 +1875,162 @@ public class ReportResource extends BaseResource{
             stream.flush();
             stream.close();
             outUrl = fname + "YearCards.xlsx";
+        }catch(Exception e){
+            e.printStackTrace();
+        }
+        return convertToRespModel(MessageCode.NORMAL,null,outUrl);
+    }
+    @POST
+    @Path("/exportQueryRequireOrder")
+    @Produces(MediaType.APPLICATION_JSON)
+    @Consumes(MediaType.APPLICATION_JSON)
+    @ApiOperation(value = "/exportQueryRequireOrder", response = RequireOrderModel.class, notes = "导出查询奶站下某一天的要货计划")
+    public Response exportQueryRequireOrder(@ApiParam(required=true,name="eSearch",value="要货计划日期") ReqGoodsOrderSearch eSearch) {
+        String outUrl = "";
+        String url = EnvContant.getSystemConst("filePath");
+        RequireOrderModel orderModel = requireOrderService.searchRequireOrder(eSearch.getRequiredDate());
+        TSysUser user = userSessionService.getCurrentUser();
+        try{
+            File file = new File(url +  File.separator + "report"+ File.separator + "template" + File.separator + "RequireOrderTemplate.xlsx");
+            FileInputStream input = new FileInputStream(file);
+            XSSFWorkbook workbook = new XSSFWorkbook(new BufferedInputStream(input));
+            XSSFSheet sheet = workbook.getSheetAt(0);
+
+            XSSFCellStyle styleBold = workbook.createCellStyle();
+            styleBold.setBorderBottom(XSSFCellStyle.BORDER_THIN); //下边框
+            styleBold.setBorderLeft(XSSFCellStyle.BORDER_THIN);//左边框
+            styleBold.setBorderTop(XSSFCellStyle.BORDER_THIN);//上边框
+            styleBold.setBorderRight(XSSFCellStyle.BORDER_THIN);//右边框
+            styleBold.setWrapText(true);
+
+            XSSFRow row = sheet.getRow(0);
+            XSSFCell cell = row.getCell(1);
+            cell.setCellValue(orderModel.getOrderNo());
+            row = sheet.getRow(1);
+            cell = row.getCell(1);
+            cell.setCellValue(orderModel.getVoucherNo());
+
+            int rowNum = 4;
+            int totalQty=0;
+            if(orderModel.getEntries()!=null){
+                for(OrderRequireItem orItems:orderModel.getEntries()){
+                    int raw = 0;
+                    XSSFRow rowList = sheet.createRow(rowNum);
+                    XSSFCell cellList = rowList.createCell(raw++);
+                    cellList.setCellValue(orItems.getMatnr()!=null?orItems.getMatnr().substring(10):"");
+                    cellList.setCellStyle(styleBold);
+                    cellList = rowList.createCell(raw++);
+                    cellList.setCellValue(orItems.getMatnrTxt());
+                    cellList.setCellStyle(styleBold);
+                    cellList = rowList.createCell(raw++);
+                    cellList.setCellValue(orItems.getQty());
+                    cellList.setCellStyle(styleBold);
+                    cellList = rowList.createCell(raw++);
+                    cellList.setCellValue(orItems.getIncreQty());
+                    cellList.setCellStyle(styleBold);
+                    cellList = rowList.createCell(raw++);
+                    cellList.setCellValue(orItems.getIncreQty()+orItems.getQty());
+                    cellList.setCellStyle(styleBold);
+                    cellList = rowList.createCell(raw++);
+                    cellList.setCellValue(orItems.getResendQty());
+                    cellList.setCellStyle(styleBold);
+                    rowNum++;
+                    totalQty = totalQty + orItems.getIncreQty() + orItems.getQty();
+
+                }
+            }
+            row = sheet.getRow(2);
+            cell = row.getCell(1);
+            cell.setCellValue(totalQty);
+            row = sheet.getRow(2);
+            cell = row.getCell(4);
+            cell.setCellValue(user.getBranchName());
+            String fname = CodeGeneratorUtil.getCode();
+            String rq = format1.format(new Date(new Date().getTime() - 24 * 60 * 60 * 1000));
+            String filePath = url +  File.separator + "report"+ File.separator + "export";
+            File delFiles = new File(filePath);
+            if(delFiles.isDirectory()){
+                for(File del : delFiles.listFiles()){
+                    if(del.getName().contains(rq)){
+                        del.delete();
+                    }
+                }
+            }
+            File export = new File(url +  File.separator + "report"+ File.separator + "export" + File.separator + fname + "RequireOrder.xlsx");
+            FileOutputStream stream = new FileOutputStream(export);
+            workbook.write(stream);
+            stream.flush();
+            stream.close();
+            outUrl = fname + "RequireOrder.xlsx";
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+        return convertToRespModel(MessageCode.NORMAL,null,outUrl);
+    }
+    @POST
+    @Path("/exportReturnBox")
+    @Produces(MediaType.APPLICATION_JSON)
+    @Consumes(MediaType.APPLICATION_JSON)
+    @ApiOperation(value = "/exportReturnBox", response = ResponseModel.class, notes = "回瓶汇总导出")
+    public Response exportReturnBox(@ApiParam(name = "model",value = "回瓶汇总") ExtendBranchInfoModel model){
+        String outUrl = "";
+        String url = EnvContant.getSystemConst("filePath");
+        List<Map<String, String>> boxList = branchInfoService.returnBoxStatList(model);
+        try {
+            File file = new File(url +  File.separator + "report"+ File.separator + "template" + File.separator + "ReturnBoxTemplate.xlsx");    //审批单
+            FileInputStream input = new FileInputStream(file);
+            XSSFWorkbook workbook = new XSSFWorkbook(new BufferedInputStream(input));
+            XSSFSheet sheet = workbook.getSheetAt(0);
+            int rowNum = 2;
+            XSSFCellStyle styleBold = workbook.createCellStyle();
+            styleBold.setBorderBottom(XSSFCellStyle.BORDER_THIN); //下边框
+            styleBold.setBorderLeft(XSSFCellStyle.BORDER_THIN);//左边框
+            styleBold.setBorderTop(XSSFCellStyle.BORDER_THIN);//上边框
+            styleBold.setBorderRight(XSSFCellStyle.BORDER_THIN);//右边框
+            styleBold.setWrapText(true);
+            if(boxList!=null){
+                for(Map<String,String> map : boxList){
+                    int raw = 0;
+                    XSSFRow row = sheet.createRow(rowNum);
+                    XSSFCell cell = row.createCell(raw++);
+                    cell.setCellStyle(styleBold);
+                    cell.setCellValue(map.get("BRANCH_NAME"));
+                    cell = row.createCell(raw++);
+                    cell.setCellStyle(styleBold);
+                    cell.setCellValue(map.get("EMP_NAME"));
+                    cell = row.createCell(raw++);
+                    cell.setCellStyle(styleBold);
+                    cell.setCellValue(map.get("SPEC_NAME"));
+                    cell = row.createCell(raw++);
+                    cell.setCellStyle(styleBold);
+                    cell.setCellValue(map.get("RECEIVE_NUM")==null?"0":String.valueOf(map.get("RECEIVE_NUM")));
+                    cell = row.createCell(raw++);
+                    cell.setCellStyle(styleBold);
+                    cell.setCellValue(map.get("REAL_NUM")==null?"0":String.valueOf(map.get("REAL_NUM")));
+                    cell = row.createCell(raw++);
+                    cell.setCellStyle(styleBold);
+                    cell.setCellValue(map.get("dif")==null?"0":String.valueOf(map.get("dif")));
+
+                    rowNum++;
+                }
+            }
+            String fname = CodeGeneratorUtil.getCode();
+            String rq = format1.format(new Date(new Date().getTime() - 24 * 60 * 60 * 1000));
+            String filePath = url +  File.separator + "report"+ File.separator + "export";
+            File delFiles = new File(filePath);
+            if(delFiles.isDirectory()){
+                for(File del : delFiles.listFiles()){
+                    if(del.getName().contains(rq)){
+                        del.delete();
+                    }
+                }
+            }
+            File export = new File(url +  File.separator + "report"+ File.separator + "export" + File.separator + fname + "rbox.xlsx");
+            FileOutputStream stream = new FileOutputStream(export);
+            workbook.write(stream);
+            stream.flush();
+            stream.close();
+            outUrl = fname + "rbox.xlsx";
         }catch(Exception e){
             e.printStackTrace();
         }
