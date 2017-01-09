@@ -76,6 +76,12 @@ public class BranchInfoMapperImpl implements BranchInfoMapper{
     public PageInfo returnBoxStatReport(ExtendBranchInfoModel model){
         return sqlSessionTemplate.selectListByPages("returnBoxStatReport",model,Integer.valueOf(model.getPageNum()),Integer.valueOf(model.getPageSize()));
     }
+
+    @Override
+    public List<Map<String, String>> returnBoxStatList(ExtendBranchInfoModel model) {
+        return sqlSessionTemplate.selectList("returnBoxStatReport",model);
+    }
+
     @Override
     public PageInfo mstDispNumStat(ExtendBranchInfoModel model){
         return sqlSessionTemplate.selectListByPages("mstDispNumStat",model,Integer.valueOf(model.getPageNum()),Integer.valueOf(model.getPageSize()));
