@@ -155,6 +155,12 @@ public class EmpBillServiceImpl implements EmpBillService {
         return product.getRate();
     }
 
+    /**
+     * 修改配送费率
+     * @param sModel
+     *
+     * @return
+     */
     @Override
     public int uptEmpDispRate(SaleOrgDispRateModel sModel) {
        try{
@@ -209,7 +215,8 @@ public class EmpBillServiceImpl implements EmpBillService {
                        tMdDispRateItemMapper.addDispRateItem(item);
                    }
                }
-           }else{
+           }
+           else{
                List<DispProductEntry> entries = sModel.getDispProductEntries();
                if(entries!=null && entries.size()>0){
                    for (DispProductEntry entry :entries ){
@@ -405,6 +412,14 @@ public class EmpBillServiceImpl implements EmpBillService {
 
     /**
      * 结算送奶员本月工资,基本工资 + 产品配送费 + 赠品配送费+ 内部销售订单配送费
+     * @param emp 员工信息、search 日期范围，setYearMonth 日期范围对应的年月 、user 操作人信息，flag==true?计算配送费:不计算配送费
+     *   1、获取该员工的工资单  如果有则删除重生
+     *   2、按数量结算或者按产品结算
+     *        ⑴计算产品配送费（如果按数量结算：统计路单中正品配送数量*记录的销售组织下阶梯配送费率 ，如果按产品结算：计算产品扩展表中记录的产品配送费率*数量  之和）
+     *        ⑵计算产品内部销售订单费（如果按数量结算：内部销售订单数量*记录的销售组织下阶梯配送费率，如果按产品结算：计算产品扩展表中记录的产品配送费率*数量  之和）
+     *        ⑶计算产品赠品配送费(如果按数量结算：统计路单中赠品配送数量*记录的销售组织下阶梯配送费率，如果按产品结算：计算产品扩展表中记录的产品配送费率*数量  之和）
+     *  *注：如果是按数量结算查配送费率，将三种产品配送数量相加  匹配  记录的销售组织下阶梯配送费率 ，找到符合的范围，查出配送费率
+     *   3、最后将计算出来的工资记录到员工工资表中
      * @return
      */
     public int setEmpSalary(TMdBranchEmp emp,EmpDispDetialInfoSearch search,String setYearMonth,TSysUser user,boolean flag){
@@ -412,6 +427,7 @@ public class EmpBillServiceImpl implements EmpBillService {
         Map<String,String> map =new HashMap<String,String>();
         map.put("empNo",empNo);
         map.put("setYearMonth",setYearMonth);
+
         TMdEmpSal empSal = tMdEmpSalMapper.getEmpSalByEmpNoAndDate(map);
         if(empSal!=null){
             tMdEmpSalMapper.delEmpSalByEmpNoAndDate(map);
@@ -422,7 +438,9 @@ public class EmpBillServiceImpl implements EmpBillService {
             empSal.setEmpSalLsh(PrimaryKeyUtils.generateUuidKey());
             empSal.setEmpNo(empNo);
             //三种配送费
+            //如果 计算配送费
             if(flag){
+                //如果配送费按产品结算
                 if("20".equals(emp.getSalaryMet())){
                     //产品数量
                     int dispAllNum =0;
@@ -444,7 +462,9 @@ public class EmpBillServiceImpl implements EmpBillService {
                     dispAllNum = dispAllNum +( proFree !=null || proFree.size()>0 ? proFree.size() : 0);
                     empSal.setSendDispSal(dispFreeFee);
                     empSal.setDispNum(dispAllNum);
-                }else{
+                }
+                else{
+                    //配送费按数量结算
                     int dispNum = empBillMapper.empDispFeeNum(search);
                     int inDispNum = empBillMapper.empInDispFeeNum(search);
                     int sendDispNum = empBillMapper.empFreeDispFeeNum(search);
