@@ -1187,7 +1187,7 @@ public class RequireOrderServiceImpl implements RequireOrderService {
             //是否存在销售订单
             SalOrderModel sMode = new SalOrderModel();
             sMode.setOrderDate(orderDate);
-            sMode.setBranchNo(user.getBranchNo());
+            sMode.setBranchNo(branchNo);
             List<TSsmSalOrder> results = tSsmSalOrderMapper.selectSalOrderByDateAndNo(sMode);
             if (results != null && results.size() > 0) {
                 for (TSsmSalOrder item : results) {
@@ -1407,7 +1407,7 @@ public class RequireOrderServiceImpl implements RequireOrderService {
      */
     private TSsmSalOrder createSaleOrder(TSysUser user, Date requiredDate, String type, String promotion, int i, String preorderSource, String onlineCode, String branchNo, String salesOrg) {
         TSsmSalOrder order = new TSsmSalOrder();
-        String orderNo = this.generateSal35Id(i);
+        String orderNo = this.generateSal35Id(i, branchNo);
         order.setOrderNo(orderNo);
         order.setSalesOrg(salesOrg);
         TMdBranch branch = branchMapper.selectBranchByNo(branchNo);
@@ -1498,14 +1498,14 @@ public class RequireOrderServiceImpl implements RequireOrderService {
      *
      * @return
      */
-    private String generateSal35Id(int i) {
-        TMdBranch branch = branchMapper.getBranchByNo(userSessionService.getCurrentUser().getBranchNo());
+    private String generateSal35Id(int i, String branchNo) {
+        TMdBranch branch = branchMapper.getBranchByNo(branchNo);
         StringBuilder uuid = new StringBuilder();
         uuid.append("DH001");
         uuid.append("A");
         uuid.append(branch.getCompanyCode());
-        String branchNo = branch.getBranchNo();
-        uuid.append(branchNo.substring(1));
+        String branchNo1 = branch.getBranchNo();
+        uuid.append(branchNo1.substring(1));
         uuid.append(new SimpleDateFormat("yyyyMMddHHmmss").format(new Date()));
         uuid.append(new Random().nextInt(80) + 10 + i);
         System.out.println("------------------------" + uuid.toString());
