@@ -167,12 +167,8 @@ public class DeliverMilkServiceImpl extends BaseService implements DeliverMilkSe
 				tMstInsideSalOrderItemMapper.delInSalOrderItemByOrderNo(sOrder.getInsOrderNo());
 			}
 			String insOrderNo = null;
-			List<TMstInsideSalOrderItem> batchItems = new ArrayList<TMstInsideSalOrderItem>();
 			for(TDispOrderItem entry : entries){
 				if(entry.getReason()!=null && ("40".equals(entry.getReason()) || "50".equals(entry.getReason()) )){
-					/*if(entry.getConfirmQty().compareTo(entry.getQty())!=-1){
-						throw new ServiceException(MessageCode.LOGIC_ERROR,"产生拒收或损毁的路单，数量不能小于等于送达数量");
-					}*/
 					if(insOrderNo==null){
 						insOrderNo = SerialUtil.creatSeria();
 					}
@@ -186,11 +182,8 @@ public class DeliverMilkServiceImpl extends BaseService implements DeliverMilkSe
 					item.setPrice(entry.getPrice());
 					item.setQty(entry.getQty().subtract(entry.getConfirmQty()));
 					item.setReason(entry.getReason());
-					batchItems.add(item);
+					tMstInsideSalOrderItemMapper.insertOrderItem(item);
 				}
-			}
-			if(batchItems.size()>0){
-				tMstInsideSalOrderItemMapper.batchAddNewInsideOrderItems(batchItems);
 			}
 			if(insOrderNo!=null){
 				TMdBranch branch = branchService.selectBranchByNo(dispOrder.getBranchNo());

@@ -56,7 +56,7 @@
         CONCAT(r.RESIDENTIAL_AREA_TXT,a.ADDRESS_TXT) ADDRESS,
         emp.EMP_NO EMP_NO, emp.EMP_NAME EMP_NAME,o.PAYMENT_STAT PAYMENT_STAT,bill.RECEIPT_DATE,o.FACT_AMT,o.INIT_AMT REAL_COLLECTION
         FROM t_mst_recv_bill bill
-        LEFT JOIN t_preorder o ON bill.ORDER_NO = o.ORDER_NO
+        LEFT JOIN t_preorder o ON bill.ORDER_NO = o.ORDER_NO and bill.HAD_OFFSET="N"
         LEFT JOIN t_md_branch_emp emp on  o.EMP_NO = emp.EMP_NO
         LEFT JOIN t_md_address a on o.ADRESS_NO = a.ADDRESS_ID
         LEFT JOIN t_md_residential_area r on a.RESIDENTIAL_AREA = r.ID

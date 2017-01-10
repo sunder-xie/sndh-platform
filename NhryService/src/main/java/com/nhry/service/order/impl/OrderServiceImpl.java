@@ -2172,17 +2172,23 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 	{
 		SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
 		TPreOrder order = tPreOrderMapper.selectByPrimaryKey(record.getOrderNo());
+
+		if("30".equals(order.getPreorderStat())){
+			throw new ServiceException(MessageCode.LOGIC_ERROR,record.getOrderNo()+"[无效订单不能被续订]");
+		}
+
+		if("Y".equals(order.getResumeFlag())){
+			throw new ServiceException(MessageCode.LOGIC_ERROR, order.getOrderNo()+" [订单已经被续订过!]");
+		}
+
+		if("NO".equals(order.getResumeFlag())){
+			throw new ServiceException(MessageCode.LOGIC_ERROR, order.getOrderNo()+" [订单已经已经被确认不参与续订!]");
+		}
+
 //		在批量续订时，预付款的订单自动续订[已不适用]// || ("batch".equals(record.getStatus()) && "20".equals(order.getPaymentmethod()))
 		if("true".equals(record.getContent())){
 			continueOrderAuto(order.getOrderNo(),record.getMemoTxt());
 			return 1;
-		}
-		
-		if("Y".equals(order.getResumeFlag())){
-			throw new ServiceException(MessageCode.LOGIC_ERROR, order.getOrderNo()+" [订单已经被续订过!]");
-		}
-		if("NO".equals(order.getResumeFlag())){
-			throw new ServiceException(MessageCode.LOGIC_ERROR, order.getOrderNo()+" [订单已经已经被确认不参与续订!]");
 		}
 		tPreOrderMapper.updateOrderResumed(order.getOrderNo());//该订单已经被续订
 		
