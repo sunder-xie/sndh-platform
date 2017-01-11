@@ -33,8 +33,6 @@ import com.nhry.utils.DateUtil;
 import com.nhry.webService.client.PISuccessMessage;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;
-import org.springframework.transaction.annotation.Propagation;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
 import java.text.SimpleDateFormat;
@@ -510,7 +508,7 @@ public class RequireOrderServiceImpl implements RequireOrderService {
         }
         List<Map<String,String>> items = tSsmSalOrderItemMapper.selectPromDaliyDiscountAmtOfDearler(rModel);
         if (items != null && items.size() > 0) {
-            TSsmSalOrder order = createSaleOrder(user, requireDate, "dealer", "free", 2, "YE",dealerSend,branchNo , salesOrg);
+            TSsmSalOrder order = createSaleOrder(user, requireDate, "dealer", "", 2, "YE",dealerSend,branchNo , salesOrg);
             int i = 1;
             for (Map<String,String> map : items) {
                 String matnr = map.get("MATNR").toString();
@@ -1299,7 +1297,6 @@ public class RequireOrderServiceImpl implements RequireOrderService {
         }
         return builder.toString();
     }
-    @Transactional(propagation = Propagation.REQUIRES_NEW,noRollbackForClassName = "ServiceException")
     private void sendSalOrderErp(String orderNo, TSysUser user) {
         TSsmReqGoodsOrder order = tSsmReqGoodsOrderMapper.getRequireOrderByNo(orderNo);
         if(!"30".equals(order.getStatus())){
