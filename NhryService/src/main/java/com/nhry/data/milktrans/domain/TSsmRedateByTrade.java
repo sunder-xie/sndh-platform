@@ -19,6 +19,9 @@ public class TSsmRedateByTrade implements Serializable{
     String dhNo;
     Date createDate;
     Date lastModified;
+    String werks;
+    String lgort;
+    String dealerNo;
 
     public String getOrderNo() {
         return orderNo;
@@ -106,5 +109,29 @@ public class TSsmRedateByTrade implements Serializable{
 
     public void setLastModified(Date lastModified) {
         this.lastModified = lastModified;
+    }
+
+    public String getWerks() {
+        return werks;
+    }
+
+    public void setWerks(String werks) {
+        this.werks = werks;
+    }
+
+    public String getLgort() {
+        return lgort;
+    }
+
+    public void setLgort(String lgort) {
+        this.lgort = lgort;
+    }
+
+    public String getDealerNo() {
+        return dealerNo;
+    }
+
+    public void setDealerNo(String dealerNo) {
+        this.dealerNo = dealerNo;
     }
 }

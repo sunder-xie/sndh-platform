@@ -485,6 +485,97 @@ public class RequireOrderServiceImpl implements RequireOrderService {
         return salOrderList;
     }
 
+    /**
+     * 经销商奶站年卡订单生成
+     * @param requireDate
+     * @param branchNo
+     * @param salesOrg
+     * @return
+     */
+    @Override
+    public TSsmSalOrder createPromDaliyDiscountAmtOfDearler(Date requireDate, String branchNo, String salesOrg) {
+        TSysUser user = userSessionService.getCurrentUser();
+        RequireOrderSearch rModel = new RequireOrderSearch();
+        rModel.setFirstDay(DateUtil.getTomorrow(requireDate));
+        rModel.setSecondDay(DateUtil.getDayAfterTomorrow(requireDate));
+        rModel.setBranchNo(branchNo);
+        rModel.setSalesOrg(salesOrg);
+        NHSysCodeItem codeItem = new NHSysCodeItem();
+        codeItem.setTypeCode("2009");
+        codeItem.setItemCode(salesOrg);
+        codeItem = dictionaryService.findCodeItenByCode(codeItem);
+        String dealerSend = codeItem.getItemName();
+        if(org.apache.commons.lang.StringUtils.isEmpty(dealerSend)){
+            throw new ServiceException(MessageCode.LOGIC_ERROR,"请联系管理员设置年卡的销售客户编码！");
+        }
+        List<Map<String,String>> items = tSsmSalOrderItemMapper.selectPromDaliyDiscountAmtOfDearler(rModel);
+        if (items != null && items.size() > 0) {
+            TSsmSalOrder order = createSaleOrder(user, requireDate, "dealer", "free", 2, "YE",dealerSend,branchNo , salesOrg);
+            int i = 1;
+            for (Map<String,String> map : items) {
+                String matnr = map.get("MATNR").toString();
+                BigDecimal qty = new BigDecimal(String.valueOf(map.get("QTY")));
+                BigDecimal price = new BigDecimal(String.valueOf(map.get("PRICE1")));
+                BigDecimal discountAmt = new BigDecimal(String.valueOf(map.get("DISCOUNT_AMT")));
+                TOrderDaliyPlanItem item = new TOrderDaliyPlanItem();
+                item.setQty(qty.intValue());
+                item.setMatnr(matnr);
+                item.setConfirmMatnr(matnr);
+                item.setPrice(price);
+                item.setAmt(discountAmt);
+                createSaleOrderItem(item, i++, order.getOrderNo(), requireDate, "dealer");
+            }
+            return order;
+        }
+        return null;
+    }
+
+    /**
+     * 自营奶站年卡销售订单生成
+     * @param requireDate
+     * @param branchNo
+     * @param salesOrg
+     * @return
+     */
+    @Override
+    public TSsmSalOrder createPromDaliyDiscountAmtOfBranch(Date requireDate, String branchNo, String salesOrg) {
+        TSysUser user = userSessionService.getCurrentUser();
+        RequireOrderSearch rModel = new RequireOrderSearch();
+        rModel.setOrderDate(requireDate);
+        rModel.setBranchNo(user.getBranchNo());
+        rModel.setSalesOrg(user.getSalesOrg());
+        NHSysCodeItem codeItem = new NHSysCodeItem();
+        codeItem.setTypeCode("2009");
+        codeItem.setItemCode(salesOrg);
+        codeItem = dictionaryService.findCodeItenByCode(codeItem);
+        String dealerSend = codeItem.getItemName();
+        if(org.apache.commons.lang.StringUtils.isEmpty(dealerSend)){
+            throw new ServiceException(MessageCode.LOGIC_ERROR,"请联系管理员设置年卡的销售客户编码！");
+        }
+        List<Map<String,String>> items = tSsmSalOrderItemMapper.selectPromDaliyDiscountAmtOfBranch(rModel);
+        if (items != null && items.size() > 0) {
+            //生成 促销订单
+            TSsmSalOrder order = createSaleOrder(user, requireDate, "branch", "", 1, "YE",dealerSend,user.getBranchNo() ,user.getSalesOrg() );
+            int i = 1;
+            for (Map<String,String> map : items) {
+                String matnr = map.get("MATNR").toString();
+                BigDecimal qty = new BigDecimal(String.valueOf(map.get("QTY")));
+                BigDecimal price = new BigDecimal(String.valueOf(map.get("PRICE1")));
+                BigDecimal discountAmt = new BigDecimal(String.valueOf(map.get("DISCOUNT_AMT")));
+                TOrderDaliyPlanItem item = new TOrderDaliyPlanItem();
+                item.setQty(qty.intValue());
+                item.setMatnr(matnr);
+                item.setConfirmMatnr(matnr);
+                item.setPrice(price);
+                item.setAmt(discountAmt);
+                createSaleOrderItem(item, i++, order.getOrderNo(), requireDate, "branch");
+            }
+            return order;
+        } else {
+            return null;
+        }
+    }
+
     @Override
     public TSsmSalOrder creatPromoSalOrderOfDealerBranch40(Date orderDate, String branchNo, String salesOrg) {
         TSysUser user = userSessionService.getCurrentUser();
@@ -871,6 +962,23 @@ public class RequireOrderServiceImpl implements RequireOrderService {
                         rsModel.setOrderDate(orderDate);
                         rsModel.setPreorderSource("30");
                         //获取确认后的路单中的参加促销的产品
+                        List<TOrderDaliyPlanItem> yearItems = new ArrayList<TOrderDaliyPlanItem>();
+                        List<Map<String,String>> itemMap = tSsmSalOrderItemMapper.selectPromDaliyDiscountAmtOfBranch(rModel);
+                        if (itemMap != null && itemMap.size() > 0) {
+                            for (Map<String, String> map : itemMap) {
+                                String matnr = map.get("MATNR").toString();
+                                BigDecimal qty = new BigDecimal(String.valueOf(map.get("QTY")));
+                                BigDecimal price = new BigDecimal(String.valueOf(map.get("PRICE1")));
+                                BigDecimal discountAmt = new BigDecimal(String.valueOf(map.get("DISCOUNT_AMT")));
+                                TOrderDaliyPlanItem item = new TOrderDaliyPlanItem();
+                                item.setQty(qty.intValue());
+                                item.setMatnr(matnr);
+                                item.setConfirmMatnr(matnr);
+                                item.setPrice(price);
+                                item.setAmt(discountAmt);
+                                yearItems.add(item);
+                            }
+                        }
                         //奶站促销
                         List<TOrderDaliyPlanItem> items = tOrderDaliyPlanItemMapper.selectProDayPlanOfSelfBranch(rsModel);
                         rsModel.setPreorderSource("40");
@@ -928,6 +1036,19 @@ public class RequireOrderServiceImpl implements RequireOrderService {
                         TSsmSalOrder prom = null;
                         TSsmSalOrder prom40 = null;
                         TSsmSalOrder noprom40 = null;
+                        TSsmSalOrder yearOrder = null;
+
+                        if(yearItems.size()>0) {
+                            NHSysCodeItem codeItem = new NHSysCodeItem();
+                            codeItem.setTypeCode("2009");
+                            codeItem.setItemCode(user.getSalesOrg());
+                            codeItem = dictionaryService.findCodeItenByCode(codeItem);
+                            String onlineCode = codeItem.getItemName();
+                            if (org.apache.commons.lang.StringUtils.isEmpty(onlineCode)) {
+                                throw new ServiceException(MessageCode.LOGIC_ERROR, "请联系管理员设置年卡的销售客户编码！");
+                            }
+                            yearOrder = createSsmSalOrderAndItmes(search.getOrderDate(), user, yearItems, entries, yearOrder, "", "YE", onlineCode);
+                        }
                         noprom40 = createSsmSalOrderAndItmes(search.getOrderDate(), user, itemNo40s, entries, noprom40,"", "40", "");
                         prom40 = createSsmSalOrderAndItmes(search.getOrderDate(), user, item40s, entries, prom40,"free", "40", "");
                         prom = createSsmSalOrderAndItmes(search.getOrderDate(), user, items, entries, prom,"free", "30", "");
@@ -940,6 +1061,10 @@ public class RequireOrderServiceImpl implements RequireOrderService {
                             for (TSsmSalOrder salOrder : salOrderList){
                                 generateSalesOrderAnduptVouCher(salOrder);
                             }
+                        }
+
+                        if(yearOrder!=null){
+                            generateSalesOrderAnduptVouCher(yearOrder);
                         }
 
                         if (noprom40!=null){
@@ -961,9 +1086,7 @@ public class RequireOrderServiceImpl implements RequireOrderService {
                 }
             }
         }
-        //如果销售订单已存在，判断是否存在发送成功的 如果有 重新发送，如果没有 则提示已经创建所有的销售订单，请直接查询
     }
-
     private TSsmSalOrder createSsmSalOrderAndItmes(Date orderDate, TSysUser user, List<TOrderDaliyPlanItem> item40s, Map<String, Integer> entries, TSsmSalOrder prom40, String free, String preorderSource, String onlineCode) {
         if (item40s != null && item40s.size() > 0) {
             boolean hasCreateOrder = false;
@@ -1176,7 +1299,7 @@ public class RequireOrderServiceImpl implements RequireOrderService {
         }
         return builder.toString();
     }
-    @Transactional(propagation = Propagation.REQUIRES_NEW)
+    @Transactional(propagation = Propagation.REQUIRES_NEW,noRollbackForClassName = "ServiceException")
     private void sendSalOrderErp(String orderNo, TSysUser user) {
         TSsmReqGoodsOrder order = tSsmReqGoodsOrderMapper.getRequireOrderByNo(orderNo);
         if(!"30".equals(order.getStatus())){
@@ -1344,7 +1467,11 @@ public class RequireOrderServiceImpl implements RequireOrderService {
             }
             return 1;
         } else {
-            TSsmSalOrder noPromOrder = this.creatNoPromoSalOrderOfDealerBranch(orderDate,user.getBranchNo() ,user.getSalesOrg() );
+            //年卡销售订单
+            TSsmSalOrder yearOrder = this.createPromDaliyDiscountAmtOfDearler(orderDate,user.getBranchNo(),user.getSalesOrg());
+            //奶站销售订单
+             TSsmSalOrder noPromOrder = this.creatNoPromoSalOrderOfDealerBranch(orderDate,user.getBranchNo() ,user.getSalesOrg() );
+            //赠品销售订单
             TSsmSalOrder promOrder = this.creatPromoSalOrderOfDealerBranch(orderDate,user.getBranchNo() ,user.getSalesOrg() );
             //经销商机构订奶
             List<TSsmSalOrder> salOrderList = creatNoPromoSalOrderOfDealerBranch70(orderDate,user.getBranchNo() ,user.getSalesOrg() );
@@ -1352,6 +1479,9 @@ public class RequireOrderServiceImpl implements RequireOrderService {
                 for(TSsmSalOrder order : salOrderList) {
                     generateSalesOrderAnduptVouCher(order);
                 }
+            }
+            if(yearOrder != null){
+                generateSalesOrderAnduptVouCher(yearOrder);
             }
             if (noPromOrder != null) {
                 generateSalesOrderAnduptVouCher(noPromOrder);
@@ -1377,6 +1507,9 @@ public class RequireOrderServiceImpl implements RequireOrderService {
         salOrderItems.setOrderNo(orderNo);
         salOrderItems.setOrderDate(orderDate);
         salOrderItems.setQty(item.getQty());
+        //年卡折扣率
+        salOrderItems.setDiscountAmt(item.getAmt());
+        salOrderItems.setPrice(item.getPrice());
         if (StringUtils.isNotBlank(item.getPromotionFlag())) {
             salOrderItems.setPromNo(item.getPromotionFlag());
         }

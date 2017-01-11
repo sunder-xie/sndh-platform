@@ -2,6 +2,7 @@ package com.nhry.service.pi.impl;
 
 import com.nhry.data.basic.dao.TMdBranchMapper;
 import com.nhry.data.basic.domain.TMdBranch;
+import com.nhry.data.basic.domain.TMdBranchEx;
 import com.nhry.data.config.domain.NHSysCodeItem;
 import com.nhry.data.milktrans.domain.TSsmRedateByTrade;
 import com.nhry.service.config.dao.DictionaryService;
@@ -87,12 +88,15 @@ public class PIRedateByTradeServiceImpl implements PIRedateByTradeService{
                 SalesOrderHeader orderHeader = new SalesOrderHeader();
                 dhNo = generateSal35Id(2,trade.getBranchNo());
                 orderHeader.setBSTKD(dhNo);
-                orderHeader.setKUNNR(trade.getBranchNo());
+                orderHeader.setKUNNR(trade.getDealerNo());
+                orderHeader.setKUNWE(trade.getBranchNo());
                 orderHeader.setActivityId(trade.getPromNo());
                 orderHeader.setVKORG(trade.getSalesOrg());
                 orderHeader.setAuartType(PIPropertitesUtil.getValue("PI.AUART.ZCR"));
                 orderHeader.setVTWEG(PIPropertitesUtil.getValue("PI.MasterData.mATQUERY.VKORG13"));
                 orderHeader.setLFDAT(new java.util.Date());
+                orderHeader.setWerks(trade.getWerks());
+                orderHeader.setLgort(trade.getLgort());
                 Map<String, String> item = new HashMap<String,String>();
                 item.put("MATNR",trade.getMatnr());
                 item.put("SUM_QTY","1");

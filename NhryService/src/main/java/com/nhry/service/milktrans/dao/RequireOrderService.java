@@ -29,6 +29,10 @@ public interface RequireOrderService {
 
     List<TSsmSalOrder> creatNoPromoSalOrderOfDealerBranch70(Date requiredDate, String branchNo, String salesOrg);
 
+    TSsmSalOrder createPromDaliyDiscountAmtOfDearler(Date requireDate, String branchNo,String salesOrg);
+
+    TSsmSalOrder createPromDaliyDiscountAmtOfBranch(Date requireDate, String branchNo,String salesOrg);
+
     TSsmSalOrder creatPromoSalOrderOfDealerBranch40(Date today, String branchNo, String salesOrg);
 
     TSsmSalOrder creatNoPromoSalOrderOfDealerBranch40(Date requiredDate, String branchNo, String salesOrg);

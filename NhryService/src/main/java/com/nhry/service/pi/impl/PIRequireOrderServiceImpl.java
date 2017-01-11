@@ -148,7 +148,7 @@ public class PIRequireOrderServiceImpl implements PIRequireOrderService {
 
         List<Map<String, String>> items = new ArrayList<Map<String, String>>();
         TMdBranchEx branchEx = branchExMapper.getBranchEx(ssmSalOrder.getBranchNo());
-        //机构订奶 和 牛奶钱包 的售达方编码 传送ERP
+        //年卡 机构订奶 和 牛奶钱包 的售达方编码 传送ERP
         orderHeader.setKUNWE2(ssmSalOrder.getOnlineCode());
         String lgort = branch.getLgort();
         if ("02".equals(branch.getBranchGroup())) {
@@ -158,7 +158,7 @@ public class PIRequireOrderServiceImpl implements PIRequireOrderService {
             items = tSsmSalOrderItemMapper.findItemsForPI(ssmSalOrder.getOrderNo());
         }
         //年卡返利处理
-        updateSalOrderItemDiscountAmt(ssmSalOrder, items, branch.getBranchGroup());
+//        updateSalOrderItemDiscountAmt(ssmSalOrder, items, branch.getBranchGroup());
         orderHeader.setVTWEG(PIPropertitesUtil.getValue("PI.MasterData.mATQUERY.VKORG13"));
         if("40".equals(ssmSalOrder.getPreorderSource())) {
             orderHeader.setKUNWE2(EnvContant.getSystemConst("online_code"));

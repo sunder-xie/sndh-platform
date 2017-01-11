@@ -121,6 +121,7 @@
         <property name="dictionaryService" ref="dicService"/>
         <property name="promotionMapper" ref="promotionMapper"/>
         <property name="tPlanOrderItemMapper" ref="tPlanOrderItemMapper"/>
+        <property name="branchExMapper" ref="branchExMapper"/>
     </bean>
     <bean class="com.nhry.service.pi.impl.PIRedateByTradeServiceImpl" id="piRedateByTradeService">
         <property name="redateByTradeService" ref="redateByTradeService"/>
