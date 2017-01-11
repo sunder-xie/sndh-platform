@@ -19,6 +19,7 @@ public class TSsmSalOrderItems {
     private String refMatnrTxt;
     private String promNo;
     private BigDecimal discountAmt;
+    private BigDecimal price;
     public String getRefMatnrTxt() {
         return refMatnrTxt;
     }
@@ -113,5 +114,13 @@ public class TSsmSalOrderItems {
 
     public void setDiscountAmt(BigDecimal discountAmt) {
         this.discountAmt = discountAmt;
+    }
+
+    public BigDecimal getPrice() {
+        return price;
+    }
+
+    public void setPrice(BigDecimal price) {
+        this.price = price;
     }
 }

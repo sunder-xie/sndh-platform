@@ -19,9 +19,10 @@ public interface RedateByTradeService {
      * @param promNo
      * @param matnr
      * @param redate
+     * @param dealerNo
      * @return
      */
-    void insert(String orderNo,String branchNo,String salesOrg,String promNo,String matnr,BigDecimal redate);
+    void insert(String orderNo, String branchNo, String salesOrg, String promNo, String matnr, BigDecimal redate, String dealerNo);
 
     /**
      * 查询未发送的数据，一次10条

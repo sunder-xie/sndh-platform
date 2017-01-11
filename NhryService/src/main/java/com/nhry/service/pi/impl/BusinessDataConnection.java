@@ -232,9 +232,9 @@ public class BusinessDataConnection {
                     zssd00011.setWBS_ELEM(wbs_elem_type1);
                 }
 
-                if(map.containsKey("KBETR")){
+                if(map.containsKey("PRICE") && map.get("PRICE") != null){
                     KBETR_type1 kbetr_type1 = new KBETR_type1();
-                    kbetr_type1.setKBETR_type0(new BigDecimal(String.valueOf(map.get("KBETR"))));
+                    kbetr_type1.setKBETR_type0(new BigDecimal(String.valueOf(map.get("PRICE"))));
                     zssd00011.setKBETR(kbetr_type1);
                 }
 
