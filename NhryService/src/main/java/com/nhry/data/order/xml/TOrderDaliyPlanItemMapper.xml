@@ -693,21 +693,6 @@
 		SELECT  t.MATNR,SUM(t.QTY) QTY
 		FROM
 		(
-			  /** select i.MATNR,SUM(i.QTY) QTY
-				  from t_mst_order_daliy_plan_item i
-				  LEFT JOIN t_md_mara m on i.MATNR =  m.MATNR
-				  LEFT JOIN t_preorder o on 	i.ORDER_NO = o.ORDER_NO
-				  LEFT JOIN t_md_mara_ex e on i.MATNR = e.MATNR  and e.SALES_ORG = #{salesOrg,jdbcType=VARCHAR}
-				  where   1=1
-                  and o.PREORDER_SOURCE != '70'
-				  and o.PREORDER_STAT !='30'
-				  and o.PREORDER_STAT !='40'
-				  and i.`STATUS` !='30'
-				  AND i.GIFT_QTY is null
-				  and  ((e.PRE_DAYS= 2 and   i.DISP_DATE = #{secondDay,jdbcType=DATE} ) or (e.PRE_DAYS= 1 and   i.DISP_DATE = #{firstDay,jdbcType=DATE}))
-				  and m.SALES_ORG=#{salesOrg,jdbcType=VARCHAR}
-				  and o.BRANCH_NO = #{branchNo,jdbcType=VARCHAR}
-				  GROUP BY i.MATNR **/
                   SELECT
                       a.MATNR MATNR, sum(a.QTY) QTY
                   FROM
