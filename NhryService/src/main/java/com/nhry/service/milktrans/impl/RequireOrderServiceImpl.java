@@ -1436,15 +1436,15 @@ public class RequireOrderServiceImpl implements RequireOrderService {
     public int creaSalOrderOfDealerBranchByDate(Date orderDate) {
         TSysUser user = userSessionService.getCurrentUser();
 
-        NHSysCodeItem codeItem = new NHSysCodeItem();
-        codeItem.setTypeCode("2008");
-        codeItem.setItemCode("1");
-        codeItem = dictionaryService.findCodeItenByCode(codeItem);
-        String dealerSend = codeItem.getItemName();
-        //判断是否有经销商统一报货
-        if(dealerSend.contains(user.getSalesOrg())&&!user.getDealerId().equals(user.getBranchNo())){
-            throw new ServiceException(MessageCode.LOGIC_ERROR,"该公司必须由经销商统一报货！");
-        }
+//        NHSysCodeItem codeItem = new NHSysCodeItem();
+//        codeItem.setTypeCode("2008");
+//        codeItem.setItemCode("1");
+//        codeItem = dictionaryService.findCodeItenByCode(codeItem);
+//        String dealerSend = codeItem.getItemName();
+//        //判断是否有经销商统一报货
+//        if(dealerSend.contains(user.getSalesOrg())&&!user.getDealerId().equals(user.getBranchNo())){
+//            throw new ServiceException(MessageCode.LOGIC_ERROR,"该公司必须由经销商统一报货！");
+//        }
         SalOrderModel sMode = new SalOrderModel();
         sMode.setOrderDate(orderDate);
         sMode.setBranchNo(user.getBranchNo());
