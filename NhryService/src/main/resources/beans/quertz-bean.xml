@@ -34,7 +34,9 @@
 	<bean id="scheduledJobDetail4"
 		  class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean" >
 		<property name="targetObject">
-			<ref  bean="ecBaseService"/>
+			<bean class="com.nhry.service.external.EcBaseService">
+				<property name="messLogMapper" ref="messLogMapper"></property>
+			</bean>
 		</property>
 		<property name="targetMethod">
 			<value>resendMessage2Ec</value>
@@ -82,7 +84,43 @@
 			<value>matWHWHandler</value>
 		</property>
 	</bean>
+
+	<bean id="scheduledJobDetail10"
+		  class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean" >
+		<property name="targetObject">
+			<ref bean="piRedateByTradeService"/>
+		</property>
+		<property name="targetMethod">
+			<value>sendRedateByTradeToCRM</value>
+		</property>
+	</bean>
+
+	<bean id="scheduledJobDetail11"
+		  class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean" >
+		<property name="targetObject">
+			<ref bean="outMilkService"/>
+		</property>
+		<property name="targetMethod">
+			<value>createAmtsdayByday</value>
+		</property>
+	</bean>
 	 <!-- 调度的配置开始 -->
+	<bean id="crontestJobTrigger11" class="org.springframework.scheduling.quartz.CronTriggerFactoryBean">
+		<property name="jobDetail">
+			<ref bean="scheduledJobDetail11" />
+		</property>
+		<property name="cronExpression">
+			<value>0 0 2 * * ?</value>
+		</property>
+	</bean>
+	<bean id="crontestJobTrigger10" class="org.springframework.scheduling.quartz.CronTriggerFactoryBean">
+		<property name="jobDetail">
+			<ref bean="scheduledJobDetail10" />
+		</property>
+		<property name="cronExpression">
+			<value>0 40 * * * ?</value>
+		</property>
+	</bean>
 	<bean id="crontestJobTrigger9" class="org.springframework.scheduling.quartz.CronTriggerFactoryBean">
 		<property name="jobDetail">
 			<ref bean="scheduledJobDetail9" />
@@ -170,6 +208,8 @@
 				<ref bean="crontestJobTrigger7"/>
 				<ref bean="crontestJobTrigger8"/>
 				<ref bean="crontestJobTrigger9"/>
+				<ref bean="crontestJobTrigger10"/>
+				<ref bean="crontestJobTrigger11"/>
             </list>
         </property>
         <property name="stringRedisTemplate" ref="stringRedisTemplate"></property>
