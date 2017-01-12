@@ -498,16 +498,9 @@ public class RequireOrderServiceImpl implements RequireOrderService {
         rModel.setSecondDay(DateUtil.getDayAfterTomorrow(requireDate));
         rModel.setBranchNo(branchNo);
         rModel.setSalesOrg(salesOrg);
-        NHSysCodeItem codeItem = new NHSysCodeItem();
-        codeItem.setTypeCode("2009");
-        codeItem.setItemCode(salesOrg);
-        codeItem = dictionaryService.findCodeItenByCode(codeItem);
-        String dealerSend = codeItem.getItemName();
-        if(org.apache.commons.lang.StringUtils.isEmpty(dealerSend)){
-            throw new ServiceException(MessageCode.LOGIC_ERROR,"请联系管理员设置年卡的销售客户编码！");
-        }
         List<Map<String,String>> items = tSsmSalOrderItemMapper.selectPromDaliyDiscountAmtOfDearler(rModel);
         if (items != null && items.size() > 0) {
+            String dealerSend = getYearCode(salesOrg);
             TSsmSalOrder order = createSaleOrder(user, requireDate, "dealer", "", 2, "YE",dealerSend,branchNo , salesOrg);
             int i = 1;
             for (Map<String,String> map : items) {
@@ -529,6 +522,25 @@ public class RequireOrderServiceImpl implements RequireOrderService {
     }
 
     /**
+     * 获取年卡的销售代码
+     * @param salesOrg
+     * @return
+     */
+    private String getYearCode(String salesOrg) {
+        NHSysCodeItem codeItem = new NHSysCodeItem();
+        codeItem.setTypeCode("2009");
+        codeItem.setItemCode(salesOrg);
+        codeItem = dictionaryService.findCodeItenByCode(codeItem);
+        String dealerSend = "";
+        if(codeItem != null && org.apache.commons.lang.StringUtils.isNotEmpty(codeItem.getItemName())){
+            dealerSend= codeItem.getItemName();
+        }else{
+            throw new ServiceException(MessageCode.LOGIC_ERROR,"请联系管理员设置年卡的销售客户编码！");
+        }
+        return dealerSend;
+    }
+
+    /**
      * 自营奶站年卡销售订单生成
      * @param requireDate
      * @param branchNo
@@ -542,16 +554,10 @@ public class RequireOrderServiceImpl implements RequireOrderService {
         rModel.setOrderDate(requireDate);
         rModel.setBranchNo(user.getBranchNo());
         rModel.setSalesOrg(user.getSalesOrg());
-        NHSysCodeItem codeItem = new NHSysCodeItem();
-        codeItem.setTypeCode("2009");
-        codeItem.setItemCode(salesOrg);
-        codeItem = dictionaryService.findCodeItenByCode(codeItem);
-        String dealerSend = codeItem.getItemName();
-        if(org.apache.commons.lang.StringUtils.isEmpty(dealerSend)){
-            throw new ServiceException(MessageCode.LOGIC_ERROR,"请联系管理员设置年卡的销售客户编码！");
-        }
+
         List<Map<String,String>> items = tSsmSalOrderItemMapper.selectPromDaliyDiscountAmtOfBranch(rModel);
         if (items != null && items.size() > 0) {
+            String dealerSend = getYearCode(salesOrg);
             //生成 促销订单
             TSsmSalOrder order = createSaleOrder(user, requireDate, "branch", "", 1, "YE",dealerSend,user.getBranchNo() ,user.getSalesOrg() );
             int i = 1;
@@ -1037,14 +1043,7 @@ public class RequireOrderServiceImpl implements RequireOrderService {
                         TSsmSalOrder yearOrder = null;
 
                         if(yearItems.size()>0) {
-                            NHSysCodeItem codeItem = new NHSysCodeItem();
-                            codeItem.setTypeCode("2009");
-                            codeItem.setItemCode(user.getSalesOrg());
-                            codeItem = dictionaryService.findCodeItenByCode(codeItem);
-                            String onlineCode = codeItem.getItemName();
-                            if (org.apache.commons.lang.StringUtils.isEmpty(onlineCode)) {
-                                throw new ServiceException(MessageCode.LOGIC_ERROR, "请联系管理员设置年卡的销售客户编码！");
-                            }
+                            String onlineCode = getYearCode(user.getSalesOrg());
                             yearOrder = createSsmSalOrderAndItmes(search.getOrderDate(), user, yearItems, entries, yearOrder, "", "YE", onlineCode);
                         }
                         noprom40 = createSsmSalOrderAndItmes(search.getOrderDate(), user, itemNo40s, entries, noprom40,"", "40", "");
@@ -1275,6 +1274,9 @@ public class RequireOrderServiceImpl implements RequireOrderService {
             codeItem.setTypeCode("2008");
             codeItem.setItemCode("1");
             codeItem = dictionaryService.findCodeItenByCode(codeItem);
+            if(codeItem == null){
+                throw new ServiceException(MessageCode.LOGIC_ERROR,"该销售组织没有开通经销商统一报货权限！");
+            }
             String dealerSend = codeItem.getItemName();
             //判读是否是经销商统一报货，同时判读是否是大商
 //            if(dealerSend.contains(user.getSalesOrg())&&!user.getDealerId().equals(user.getBranchNo())){
@@ -1440,9 +1442,8 @@ public class RequireOrderServiceImpl implements RequireOrderService {
 //        codeItem.setTypeCode("2008");
 //        codeItem.setItemCode("1");
 //        codeItem = dictionaryService.findCodeItenByCode(codeItem);
-//        String dealerSend = codeItem.getItemName();
 //        //判断是否有经销商统一报货
-//        if(dealerSend.contains(user.getSalesOrg())&&!user.getDealerId().equals(user.getBranchNo())){
+//        if(codeItem != null &&codeItem.getItemName().contains(user.getSalesOrg())&&!user.getDealerId().equals(user.getBranchNo())){
 //            throw new ServiceException(MessageCode.LOGIC_ERROR,"该公司必须由经销商统一报货！");
 //        }
         SalOrderModel sMode = new SalOrderModel();
