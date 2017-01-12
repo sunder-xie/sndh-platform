@@ -168,6 +168,10 @@
         FROM
         t_mst_order_daliy_plan_item i
         JOIN t_preorder o ON i.ORDER_NO = o.ORDER_NO
+        AND o.PREORDER_SOURCE != '70'
+        AND o.PREORDER_STAT != '30'
+        AND o.PREORDER_STAT != '40'
+        AND i.`STATUS` != '30'
         AND o.BRANCH_NO = ${branchNo}
         JOIN t_promotion p ON o.PROMOTION = p.PROM_NO
         AND p.PROM_SUB_TYPE = 'Z017'
