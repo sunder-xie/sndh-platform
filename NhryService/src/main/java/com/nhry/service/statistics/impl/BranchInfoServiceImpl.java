@@ -192,6 +192,21 @@ public class BranchInfoServiceImpl implements BranchInfoService {
         }
         return branchInfoMapper.returnBoxStatReport(model);
     }
+
+    @Override
+    public List<Map<String, String>> returnBoxStatList(ExtendBranchInfoModel model) {
+        TSysUser user = userSessionService.getCurrentUser();
+        if(StringUtils.isEmpty(model.getBranchNo()) && StringUtils.isNotEmpty(user.getBranchNo())){
+            model.setBranchNo(user.getBranchNo());
+        }else if(StringUtils.isEmpty(model.getDealerId()) && StringUtils.isNotEmpty(user.getDealerId())){
+            model.setDealerId(user.getDealerId());
+        }
+        if(StringUtils.isNotEmpty(user.getSalesOrg())){
+            model.setSalesOrg(user.getSalesOrg());
+        }
+        return branchInfoMapper.returnBoxStatList(model);
+    }
+
     @Override
     public PageInfo mstDispNumStat(ExtendBranchInfoModel model){
         if(StringUtils.isEmpty(model.getPageNum()) || StringUtils.isEmpty(model.getPageSize())){

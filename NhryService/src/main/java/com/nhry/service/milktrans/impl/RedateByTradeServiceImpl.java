@@ -2,6 +2,8 @@ package com.nhry.service.milktrans.impl;
 
 import com.nhry.common.exception.MessageCode;
 import com.nhry.common.exception.ServiceException;
+import com.nhry.data.basic.dao.TMdBranchExMapper;
+import com.nhry.data.basic.domain.TMdBranchEx;
 import com.nhry.data.config.domain.NHSysCodeItem;
 import com.nhry.data.milktrans.dao.TSsmRedateByTradeMapper;
 import com.nhry.data.milktrans.domain.TSsmRedateByTrade;
@@ -12,7 +14,6 @@ import com.nhry.data.promotion.dao.PromotionMapper;
 import com.nhry.data.promotion.domain.Promotion;
 import com.nhry.service.config.dao.DictionaryService;
 import com.nhry.service.milktrans.dao.RedateByTradeService;
-import com.nhry.service.promotion.dao.PromotionDataService;
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 import org.springframework.core.task.TaskExecutor;
@@ -34,9 +35,11 @@ public class RedateByTradeServiceImpl implements RedateByTradeService {
     private PromotionMapper promotionMapper;
     private DictionaryService dictionaryService;
     private TaskExecutor taskExecutor;
+    private TMdBranchExMapper branchExMapper;
 
     @Override
-    public void insert(String orderNo, String branchNo, String salesOrg, String promNo, String matnr, BigDecimal redate) {
+    public void insert(String orderNo, String branchNo, String salesOrg, String promNo, String matnr, BigDecimal redate, String dealerNo) {
+        TMdBranchEx branchEx = branchExMapper.getBranchEx(branchNo);
         TSsmRedateByTrade ssmRedateByTrade = new TSsmRedateByTrade();
         ssmRedateByTrade.setOrderNo(orderNo);
         ssmRedateByTrade.setBranchNo(branchNo);
@@ -49,6 +52,9 @@ public class RedateByTradeServiceImpl implements RedateByTradeService {
         ssmRedateByTrade.setRedate(redate);
         ssmRedateByTrade.setOrderDate(new Date());
         ssmRedateByTrade.setDhNo(orderNo);
+        ssmRedateByTrade.setWerks(branchEx.getSupplPlnt());
+        ssmRedateByTrade.setLgort(branchEx.getReslo());
+        ssmRedateByTrade.setDealerNo(StringUtils.isEmpty(dealerNo) ? branchNo:dealerNo);
         tSsmRedateByTradeMapper.insertRedateByTrade(ssmRedateByTrade);
     }
 
@@ -85,7 +91,7 @@ public class RedateByTradeServiceImpl implements RedateByTradeService {
                         if (StringUtils.isEmpty(matnr)) {
                             throw new ServiceException(MessageCode.LOGIC_ERROR, "未定位到订单行项目物料！");
                         }
-                        insert(order.getOrderNo(), order.getBranchNo(), order.getSalesOrg(), order.getPromotion(), matnr, order.getDiscountAmt());
+                        insert(order.getOrderNo(), order.getBranchNo(), order.getSalesOrg(), order.getPromotion(), matnr, order.getDiscountAmt(), order.getDealerNo());
                         logger.info("返利数据创建成功！"+order.getOrderNo());
                     }
                 }
@@ -111,5 +117,9 @@ public class RedateByTradeServiceImpl implements RedateByTradeService {
 
     public void setTaskExecutor(TaskExecutor taskExecutor) {
         this.taskExecutor = taskExecutor;
+    }
+
+    public void setBranchExMapper(TMdBranchExMapper branchExMapper) {
+        this.branchExMapper = branchExMapper;
     }
 }
