@@ -1544,7 +1544,7 @@ public class RequireOrderServiceImpl implements RequireOrderService {
         TMdBranch branch = branchMapper.selectBranchByNo(branchNo);
         if ("4181".equals(salesOrg) || "4390".equals(salesOrg)) {
             order.setRequiredDate(requiredDate);
-        }if("4511".equals(salesOrg)){
+        }else if("4511".equals(salesOrg)){
             order.setRequiredDate(DateUtil.getDayAfterTomorrow(requiredDate));
         }else {
             if ("01".equals(branch.getBranchGroup())) {
