@@ -4719,6 +4719,9 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 		SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
 		String orderNo = record.getOrder().getOrderNo();
 		TPreOrder orgOrder = tPreOrderMapper.selectByPrimaryKey(orderNo);
+		if(!("10".equals(orgOrder.getSign()) && orgOrder.getPreorderStat() != "30" )){
+			throw new ServiceException(MessageCode.LOGIC_ERROR,"该订单不是在订状态，不能修改订单，请查看");
+		}
 		TMstRecvBill bill = customerBillMapper.getRecBillByOrderNo(orderNo);
 		if(bill!=null)
 		{
@@ -10417,9 +10420,10 @@ public static int dayOfTwoDay(Date day1,Date day2) {
 		}
 		if (modiFlag) {
 			List<TOrderDaliyPlanItem> list = this.createDaliyPlanAfterPayForView(orgOrder,curAllEntry,result);
-			return list;
+			return daliyPlansSort(list,orgOrder);
 		}else{
-			return daliyPlans;
+
+			return daliyPlansSort(daliyPlans,orgOrder);
 		}
 	}
 
@@ -10467,7 +10471,6 @@ public static int dayOfTwoDay(Date day1,Date day2) {
 							newCurAmt = newCurAmt.add(day.getAmt());
 						}
 					}
-
 					daliyPlans.add(day);
 					continue;
 				}else{
@@ -10522,6 +10525,7 @@ public static int dayOfTwoDay(Date day1,Date day2) {
 							newInitAmt = newInitAmt.add(plan.getAmt());
 							newCurAmt = newCurAmt.add(plan.getAmt());
 							daliyPlans.add(plan);
+							continue ;
 						}else{
 							plan.setMatnr(item.getMatnr());
 							plan.setMatnrTxt(item.getMatnrTxt());
@@ -10530,14 +10534,16 @@ public static int dayOfTwoDay(Date day1,Date day2) {
 							plan.setReachTimeType(item.getReachTimeType());//送达时段类型
 							plan.setAmt(item.getAmt());
 							newInitAmt = newInitAmt.add(plan.getAmt());
+							daliyPlans.add(plan);
+							continue ;
 						}
-						daliyPlans.add(plan);
-						continue ;
+
 					}else{
 						//生成该订单行的每日计划
 						plan.setOrderDate(entry.getOrderDate());//订单日期
 						plan.setReachTimeType(entry.getReachTimeType());//送达时段类型
 						plan.setMatnr(entry.getMatnr());//产品编号
+						plan.setMatnrTxt(entry.getMatnrTxt());
 						plan.setUnit(entry.getUnit());//配送单位
 						plan.setQty(entry.getQty());//产品数量
 						plan.setPrice(entry.getSalesPrice());//产品价格
@@ -10548,6 +10554,7 @@ public static int dayOfTwoDay(Date day1,Date day2) {
 						plan.setStatus("10");//状态
 						newInitAmt = newInitAmt.add(plan.getAmt());
 						newCurAmt = newCurAmt.add(plan.getAmt());
+						plan.setRemainAmt(newCurAmt);
 						plan.setCreateAt(new Date());//创建时间
 						plan.setCreateBy(userSessionService.getCurrentUser().getLoginName());//创建人
 						plan.setCreateByTxt(userSessionService.getCurrentUser().getDisplayName());//创建人姓名
@@ -11217,20 +11224,23 @@ public static int dayOfTwoDay(Date day1,Date day2) {
 					TOrderDaliyPlanItem item  = dayMap.get(mapKey);
 					plan.setMatnr(item.getMatnr());
 					plan.setMatnrTxt(item.getMatnrTxt());
+					plan.setQty(item.getQty());
+					plan.setAmt(item.getAmt());
+					plan.setPrice(item.getPrice());
 					plan.setRemainAmt(item.getRemainAmt());
+					plan.setReachTimeType(item.getReachTimeType());
+					plan.setPlanItemNo(String.valueOf(daliyEntryNo));
 					if("10".equals(item.getStatus())){
 						plan.setStatus("10");
 					}else if("20".equals(item.getStatus())){
 						plan.setStatus("20");
 					}else{
-						plan.setPlanItemNo(String.valueOf(daliyEntryNo));
 						plan.setStatus("30");
 						daliyEntryNo++;
+						result.add(plan);
 						continue;
 					}
 					if(initAmt.floatValue() < 0)break;
-					plan.setPlanItemNo(String.valueOf(daliyEntryNo));
-					plan.setReachTimeType(entry.getReachTimeType());
 					daliyEntryNo++;
 					result.add(plan);
 					continue ;
