@@ -365,7 +365,7 @@ public class PIVipInfoDataServiceImpl implements PIVipInfoDataService {
             taskExecutor.execute(new Thread() {
                 public void run() {
                     try {
-                        Thread.sleep(2000);
+//                        Thread.sleep(1000);
                         this.setName(vipCustInfo.getVipCustNo());
                         generateVipInfoData(vipCustInfo, vipTel);
                     } catch (Exception e) {
