@@ -1445,7 +1445,7 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 		tOrderDaliyPlanItemMapper.updateDaliyRemainAmtAfterAdvanceBack(order.getOrderNo(),backAmt);
 		//第六步      添加年卡提前退订日志
 		OperationLogUtil.saveHistoryOperation(order.getOrderNo(),LogType.ORDER,OrderLogEnum.YEAR_CARD_BACK_ORDER_ADVANCE,null,null,
-		"提前退订",record.getBackAmt().toString(),null,null,user,operationLogMapper);
+		"提前退订,退订日期："+ format.format(backDate),record.getBackAmt().toString(),null,null,user,operationLogMapper);
 
 
 		//第七步   更新订单行截止日期
@@ -1848,7 +1848,7 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 		//退订日志
 		if(!"10".equals(order.getPreorderSource()) &&!"40".equals(order.getPreorderSource())){
 			OperationLogUtil.saveHistoryOperation(order.getOrderNo(),LogType.ORDER,OrderLogEnum.BACK_ORDER,null,null,
-					"提前退订",backAmt.toString(),null,null,userSessionService.getCurrentUser(),operationLogMapper);
+					"提前退订,退订日期："+ format.format(backDate),backAmt.toString(),null,null,userSessionService.getCurrentUser(),operationLogMapper);
 		}
 		tPreOrderMapper.updateOrderEndDate(order);
 
