@@ -2430,106 +2430,17 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 			throw new ServiceException(MessageCode.LOGIC_ERROR,"日期格式有误!");
 		}
 		Date today = new Date();
-		if(!startDate.after(order.getStopDateStart())){
-			//不修改，把路单置回原样
-			TOrderDaliyPlanItem uptKey= new TOrderDaliyPlanItem(); 
-			uptKey.setOrderNo(order.getOrderNo());
-			uptKey.setDispDateStr(format.format(order.getStopDateStart()));
-			tOrderDaliyPlanItemMapper.updateFromDateToDate(uptKey);
-			
-			order.setSign("10");//标示在订
-			tPreOrderMapper.updateOrderEndDate(order);
-			
-			//订户状态更改
-			tVipCustInfoService.discontinue(order.getMilkmemberNo(), "10",null,null);
-			
-			//后付款重新计算
-			if("10".equals(order.getPaymentmethod())){
-				ArrayList<TOrderDaliyPlanItem> daliyPlans = (ArrayList<TOrderDaliyPlanItem>) tOrderDaliyPlanItemMapper.selectDaliyPlansByOrderNo(order.getOrderNo());
+		//如果复订日期不在长期停订日期之后，则说明全部复订，只要将所有从停订日期之后的日订单更新为在订状态即可，后付款重新计算下金额
 
-				//更新订单金额等
-				BigDecimal initAmt = new BigDecimal("0.00");
-				BigDecimal usedAmt = new BigDecimal("0.00");
-				for(TOrderDaliyPlanItem plan : daliyPlans){
-					if("30".equals(plan.getStatus()))continue;
-					initAmt = initAmt.add(plan.getAmt());
-					if("20".equals(plan.getStatus())){
-						usedAmt.add(plan.getAmt());
-					}
-				}
-				
-				order.setInitAmt(initAmt);
-				order.setCurAmt(initAmt.subtract(usedAmt));
+		//如果复订日期在当时长期停订日期之后，说明没有全部复订，这时候要重新算日经单的剩余金额
 
-//				订单截止日期修改
-				for(TOrderDaliyPlanItem plan : daliyPlans){
-					if(!"30".equals(plan.getStatus())){
-						order.setEndDate(plan.getDispDate());
-						break;
-					}
-				}
-				
-				Collections.reverse(daliyPlans);
-				for(TOrderDaliyPlanItem plan : daliyPlans){
-		   		if("30".equals(plan.getStatus())){
-		   			plan.setRemainAmt(initAmt);
-		   			tOrderDaliyPlanItemMapper.updateDaliyPlanItem(plan);
-		   			continue;
-		   		}
-		   		plan.setRemainAmt(initAmt.subtract(plan.getAmt()));
-		   		initAmt = initAmt.subtract(plan.getAmt());
-		   		tOrderDaliyPlanItemMapper.updateDaliyPlanItem(plan);
-		   	}
-				
-				tPreOrderMapper.updateOrderEndDate(order);
-			}
-			
-			//发送EC
-			taskExecutor.execute(new Thread(){
-				@Override
-				public void run() {
-					super.run();
-					this.setName("resumeOrder");
-					record.setOrderDateStart(startDateStr);
-					record.setContent("N");
-					messLogService.sendOrderStopRe(record);
-				}
-			});
-			
-			return 1;
-		}
-		//后付款的
+		//后付款的 不需要顺延，直接更新，并计算剩余金额
 		if(!"20".equals(order.getPaymentmethod())){
-			//把后期路单置回原样,重新计算金额
+			//把复订日期之后的日订单变为在订,重新计算金额
 			TOrderDaliyPlanItem uptKey= new TOrderDaliyPlanItem(); 
 			uptKey.setOrderNo(order.getOrderNo());
 			uptKey.setDispDateStr(startDateStr);
 			tOrderDaliyPlanItemMapper.updateFromDateToDate(uptKey);
-
-//			ArrayList<TOrderDaliyPlanItem> daliyPlans = (ArrayList<TOrderDaliyPlanItem>) tOrderDaliyPlanItemMapper.selectDaliyPlansByOrderNoAsc(record.getOrderNo());
-//
-//			for(TOrderDaliyPlanItem p :daliyPlans){
-//				if("30".equals(p.getStatus()) && !p.getDispDate().before(order.getStopDateStart())){
-//					BigDecimal planAmt = p.getPrice().multiply(new BigDecimal(p.getQty().toString()));
-//					orderAmt = orderAmt.subtract(planAmt);
-//				}
-//			}
-//			
-//			order.setCurAmt(orderAmt.subtract(order.getInitAmt().subtract(order.getCurAmt())));
-//			order.setInitAmt(orderAmt);
-//			
-//			for(TOrderDaliyPlanItem p :daliyPlans){
-//				if(!"30".equals(p.getStatus())){
-//					BigDecimal planAmt = p.getPrice().multiply(new BigDecimal(p.getQty().toString()));
-//					orderAmt = orderAmt.subtract(planAmt);
-//					p.setRemainAmt(orderAmt);
-//					tOrderDaliyPlanItemMapper.updateDaliyPlanItem(p);
-//				}else{
-//					p.setRemainAmt(orderAmt);
-//					tOrderDaliyPlanItemMapper.updateDaliyPlanItem(p);
-//				}
-//			}
-			
 			ArrayList<TOrderDaliyPlanItem> daliyPlans = (ArrayList<TOrderDaliyPlanItem>) tOrderDaliyPlanItemMapper.selectDaliyPlansByOrderNo(order.getOrderNo());
 
 			//更新订单金额等
@@ -2542,7 +2453,6 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 					usedAmt.add(plan.getAmt());
 				}
 			}
-			
 			order.setInitAmt(initAmt);
 			order.setCurAmt(initAmt.subtract(usedAmt));
 
@@ -2569,14 +2479,19 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 			tPreOrderMapper.updateOrderEndDate(order);
 			
 		}else{
+			/**
+			 * 预付款订单，不从长停日期开始复订，则说明会造成顺延
+			 *  删除从复订开始所有的日计划，重新生成
+			 */
+
 				ArrayList<TOrderDaliyPlanItem> daliyPlans = (ArrayList<TOrderDaliyPlanItem>) tOrderDaliyPlanItemMapper.selectDaliyPlansByOrderNoAsc(record.getOrderNo());
 				
-				//删除从复订时间开始的日计划
+			//删除从复订时间开始的日计划
    			TOrderDaliyPlanItem deleteKey= new TOrderDaliyPlanItem(); 
    			deleteKey.setOrderNo(order.getOrderNo());
    			deleteKey.setDispDateStr(startDateStr);
    			tOrderDaliyPlanItemMapper.deleteFromDateToDate(deleteKey);
-   			
+   			//qtyMap key itemNo，value 记录产品数量
    			Map<String,Integer> qtyMap = new HashMap<String,Integer>();
 				for(TOrderDaliyPlanItem p: daliyPlans){
 					if(p.getGiftQty()!=null)continue;
@@ -2593,7 +2508,7 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 						}
 					}
 				}
-				
+				//按照行项目产品数量生成新的日订单
    			List<TOrderDaliyPlanItem> list = createDaliyPlanForResumeOrder(order , orgEntries , orderAmt , startDate , qtyMap);
    			
    			//回改订单行项目,更新最后配送日期
@@ -2617,7 +2532,7 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 		}
 
 		order.setSign("10");//标示在订
-		tPreOrderMapper.updateOrderEndDate(order);
+		tPreOrderMapper.updateOrderEndDate(order);//订单更新为在订
 		
 		//订户状态更改
 		tVipCustInfoService.discontinue(order.getMilkmemberNo(), "10",null,null);
