@@ -2484,7 +2484,7 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 			 *  删除从复订开始所有的日计划，重新生成
 			 */
 
-				ArrayList<TOrderDaliyPlanItem> daliyPlans = (ArrayList<TOrderDaliyPlanItem>) tOrderDaliyPlanItemMapper.selectDaliyPlansByOrderNoAsc(record.getOrderNo());
+			ArrayList<TOrderDaliyPlanItem> daliyPlans = (ArrayList<TOrderDaliyPlanItem>) tOrderDaliyPlanItemMapper.selectDaliyPlansByOrderNoAsc(record.getOrderNo());
 				
 			//删除从复订时间开始的日计划
    			TOrderDaliyPlanItem deleteKey= new TOrderDaliyPlanItem(); 
@@ -2492,7 +2492,7 @@ public class OrderServiceImpl extends BaseService implements OrderService {
    			deleteKey.setDispDateStr(startDateStr);
    			tOrderDaliyPlanItemMapper.deleteFromDateToDate(deleteKey);
    			//qtyMap key itemNo，value 记录产品数量
-   			Map<String,Integer> qtyMap = new HashMap<String,Integer>();
+   			/*Map<String,Integer> qtyMap = new HashMap<String,Integer>();
 				for(TOrderDaliyPlanItem p: daliyPlans){
 					if(p.getGiftQty()!=null)continue;
 					String itemNo = p.getItemNo();
@@ -2507,26 +2507,46 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 							qtyMap.put(itemNo, 1);
 						}
 					}
-				}
+				}*/
 				//按照行项目产品数量生成新的日订单
-   			List<TOrderDaliyPlanItem> list = createDaliyPlanForResumeOrder(order , orgEntries , orderAmt , startDate , qtyMap);
-   			
-   			//回改订单行项目,更新最后配送日期
-   			for( TPlanOrderItem entry :orgEntries){
-   				for(TOrderDaliyPlanItem p:list){
-   					if(entry.getItemNo().equals(p.getItemNo())){
-   						entry.setEndDispDate(p.getDispDate());
-   						//promotionService.calculateEntryPromotionForStop(entry);
-   						//保存修改后的该行
-   						tPlanOrderItemMapper.updateEntryByItemNo(entry);
-   						break;
-   					}
-   				}
-   			}
-   			
+			int daliyEntryNo = tOrderDaliyPlanItemMapper.selectMaxDaliyPlansNoByOrderNo(order.getOrderNo()) + 1;
+   			//List<TOrderDaliyPlanItem> list = createDaliyPlanForResumeOrder(order , orgEntries , orderAmt , startDate , qtyMap);
+			List<TOrderDaliyPlanItem> list = this.createDaliyByAmt(order,orgEntries,daliyEntryNo,true);
+
+			Map<String, TPlanOrderItem> planMap = new HashMap<String, TPlanOrderItem>();
+			Date lastDay = null;
+			list.stream().forEach(e -> {
+				if (planMap.containsKey(e.getItemNo())) {
+					TPlanOrderItem item = planMap.get(e.getItemNo());
+					item.setDispTotal(item.getDispTotal() + e.getQty());
+					if (item.getEndDispDate().before(e.getDispDate())) {
+						item.setEndDispDate(e.getDispDate());
+					}
+				} else {
+					TPlanOrderItem item = new TPlanOrderItem();
+					item.setItemNo(e.getItemNo());
+					item.setNewRowFlag("N");
+					item.setDispTotal(e.getQty());
+					item.setEndDispDate(e.getDispDate());
+					//item.setStartDispDate(e.getDispDate());
+					planMap.put(e.getItemNo(), item);
+				}
+			});
+			orgEntries.stream().forEach(plan -> {
+				if(planMap.containsKey(plan.getItemNo())){
+					TPlanOrderItem item = planMap.get(plan.getItemNo());
+					tPlanOrderItemMapper.updateEntryByItemNo(item);
+					plan.setEndDispDate(item.getEndDispDate());
+				}else{
+					TPlanOrderItem item = new TPlanOrderItem();
+					item.setItemNo(plan.getItemNo());
+					item.setDispTotal(0);
+					tPlanOrderItemMapper.updateEntryByItemNo(item);
+				}
+
+			});
    			//如果有赠品，生成赠品的日计划
    			promotionService.createDaliyPlanByPromotion(order,orgEntries,list);
-   			
    			//更新订单
    			order.setEndDate(calculateFinalDate(orgEntries));//订单截止日期修改
 		}
