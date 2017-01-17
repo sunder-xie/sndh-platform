@@ -808,7 +808,7 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 			throw new ServiceException(MessageCode.LOGIC_ERROR,"暂无法进行此操作，请联系在线客服");
 		}
 		if("20".equals(order.getSign())){
-			throw new ServiceException(MessageCode.LOGIC_ERROR,"该订单已被停订，不能再次停订");
+			throw new ServiceException(MessageCode.LOGIC_ERROR,record.getOrderNo()+"该订单已被停订，不能再次停订");
 		}
 		if("30".equals(order.getSign())){
 			throw new ServiceException(MessageCode.LOGIC_ERROR,order.getOrderNo()+"该订单已退订不能做停订");
@@ -817,7 +817,12 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 			throw new ServiceException(MessageCode.LOGIC_ERROR,order.getOrderNo()+"该订单已完结不能做停订");
 		}
 		if("10".equals(order.getPaymentmethod())){
-			if(customerBillMapper.getRecBillByOrderNo(order.getOrderNo())!=null)throw new ServiceException(MessageCode.LOGIC_ERROR,"该后付款已经有收款单了，请不要修改订单，或者去删除收款单!");
+			TMstRecvBill bill = customerBillMapper.getRecBillByOrderNo(order.getOrderNo());
+
+			if(bill!=null){
+				if("10".equals(bill.getStatus()))throw new ServiceException(MessageCode.LOGIC_ERROR,record.getOrderNo()+"该后付款已经有收款单了，请不要修改订单，或者去删除收款单!");
+				if("20".equals(bill.getStatus()))throw new ServiceException(MessageCode.LOGIC_ERROR,record.getOrderNo()+"该后付款已经收过款了，不能修改订单，或者去冲销该收款单!");
+			}
 		}
 		if("20".equals(order.getPaymentmethod())){
 			TMstRecvBill bill = customerBillMapper.getRecBillByOrderNo(order.getOrderNo());
@@ -830,7 +835,7 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 		}
 
 		if("10".equals(order.getPreorderSource())){
-			throw new ServiceException(MessageCode.LOGIC_ERROR,"暂无法进行此操作，请联系在线客服");
+			throw new ServiceException(MessageCode.LOGIC_ERROR,order.getOrderNo()+"暂无法进行此操作，请联系在线客服");
 		}
 		if(order!= null){
 			if("20".equals(order.getSign())){
@@ -2397,7 +2402,10 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 		}
 		
 		if("10".equals(order.getPaymentmethod())){
-			if(customerBillMapper.getRecBillByOrderNo(order.getOrderNo())!=null)throw new ServiceException(MessageCode.LOGIC_ERROR,"该后付款订单已经有收款单了，请不要复订订单，或者去删除收款单!");
+			TMstRecvBill bill = customerBillMapper.getRecBillByOrderNo(order.getOrderNo());
+			if(bill!=null && "10".equals(bill.getStatus()))throw new ServiceException(MessageCode.LOGIC_ERROR,record.getOrderNo()+"该后付款订单已经有收款单了，请不要复订订单，或者去删除收款单!");
+			if(bill!=null && "20".equals(bill.getStatus()))throw new ServiceException(MessageCode.LOGIC_ERROR,record.getOrderNo()+"该后付款订单已经收过款了，不要复订订单，或者冲销收款单!");
+
 		}
 
 		if("20".equals(order.getPaymentmethod())){
@@ -2642,7 +2650,10 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 		}
 
 		if("10".equals(order.getPaymentmethod())){
-			if(customerBillMapper.getRecBillByOrderNo(order.getOrderNo())!=null)throw new ServiceException(MessageCode.LOGIC_ERROR,"该后付款订单已经有收款单了，请不要复订订单，或者去删除收款单!");
+			TMstRecvBill bill =customerBillMapper.getRecBillByOrderNo(order.getOrderNo());
+			if(bill!=null && "10".equals(bill.getStatus()))throw new ServiceException(MessageCode.LOGIC_ERROR,"该后付款订单已经有收款单了，请不要复订订单，或者去删除收款单!");
+			if(bill!=null && "20".equals(bill.getStatus()))throw new ServiceException(MessageCode.LOGIC_ERROR,"该后付款订单已经收过款了，请不要复订订单，或者去冲销收款单!");
+
 		}
 
 		if("20".equals(order.getPaymentmethod())){
@@ -8283,7 +8294,7 @@ public static int dayOfTwoDay(Date day1,Date day2) {
    	for(TOrderDaliyPlanItem plan : daliyPlans){
    		if(plan.getQty() > 0 || "20".equals(plan.getStatus())){
    			if(dateMap.containsKey(plan.getItemNo())){
-   				Date lastDate = dateMap.get(plan.getItemNo()).before(plan.getDispDate())?plan.getDispDate():dateMap.get(plan.getItemNo());
+   				Date lastDate = DateUtil.dateBefore(dateMap.get(plan.getItemNo()),plan.getDispDate())?plan.getDispDate():dateMap.get(plan.getItemNo());
    				dateMap.replace(plan.getItemNo(), lastDate);
    			}else{
    				dateMap.put(plan.getItemNo(), plan.getDispDate());
@@ -8346,23 +8357,12 @@ public static int dayOfTwoDay(Date day1,Date day2) {
    		//停订的和确认的，直接保存
    		plan.setPlanItemNo(String.valueOf(index));
    		if(stopPlans.containsKey(plan)||"20".equals(plan.getStatus())||"30".equals(plan.getStatus())){
-//   			tOrderDaliyPlanItemMapper.insert(plan);
    			index++;
    			continue;
    		}
-   		
    		//赠品不动
    		if(plan.getGiftQty()!=null)continue;
-   		
-//   		//其他的重新计算剩余金额等信息
-//   		plan.setAmt(plan.getPrice().multiply(new BigDecimal(plan.getQty().toString())));//重新计算小记金额
-//   		curAmt = curAmt.subtract(plan.getAmt());//计算日计划的剩余金额
-//   		plan.setRemainAmt(curAmt);
-//   		
-//   		if(plan.getRemainAmt().floatValue() < 0)break;
-   		
    		if(plan.getDispDate()==null){
-   			
    			TPlanOrderItem entry = relatedEntryMap.get(plan.getItemNo());
    			Date lastDate = dateMap.get(plan.getItemNo());
    			//判断是按周期送还是按星期送
@@ -8391,9 +8391,7 @@ public static int dayOfTwoDay(Date day1,Date day2) {
 					}
 				}
    		}
-//   		tOrderDaliyPlanItemMapper.insert(plan);
    		dateList.add(0,plan);
-   		
    		index++;
    	}
    	
@@ -8454,7 +8452,7 @@ public static int dayOfTwoDay(Date day1,Date day2) {
    	//订单截止日期修改
    	orgOrder.setEndDate(newPlans.get(newPlans.size()-1).getDispDate());
 		tPreOrderMapper.updateOrderEndDate(orgOrder);
-   /*
+
    	for(TOrderDaliyPlanItem plan:newPlans){
    		if(plan.getGiftQty()==null)continue;
    		for(TOrderDaliyPlanItem datePlan:dateList){
@@ -8468,8 +8466,8 @@ public static int dayOfTwoDay(Date day1,Date day2) {
    			tOrderDaliyPlanItemMapper.insert(plan);
    			break;
    		}
-   	}*/
-   	
+   	}
+
    }
    
    //复制日计划

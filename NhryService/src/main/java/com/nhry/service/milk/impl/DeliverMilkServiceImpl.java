@@ -843,14 +843,17 @@ public class DeliverMilkServiceImpl extends BaseService implements DeliverMilkSe
 			if("20".equals(dispOrder.getStatus())){
 				throw  new ServiceException(MessageCode.LOGIC_ERROR,"路单不能多次确认");
 			}
+			//将路单状态更新为已确认
 			tDispOrderMapper.updateDispOrderStatus(routeCode,"20");
 			Date dispDate = dispOrder.getDispDate();
+
 			//获取所有的路单行
 			List<TDispOrderItem> entryList = tDispOrderItemMapper.selectNotDeliveryItemsByKeys(routeCode);
-
+			//记录日志
 			TSysUser user = userSessionService.getCurrentUser();
 			OperationLogUtil.saveHistoryOperation(dispOrder.getOrderNo(), LogType.ROUTE_ORDER, RouteLogEnum.CONFIRM_TOUTE,dispOrder.getDispEmpNo()+dispOrder.getDispEmpName(),null,
 					"未确认","确认",null,dispOrder.getDispDate(),user,operationLogMapper);
+
 			//记录没有发生变化的订单行项目号
 			List<String> noChangeNos = new ArrayList<String>();
 
@@ -862,12 +865,14 @@ public class DeliverMilkServiceImpl extends BaseService implements DeliverMilkSe
 			List<TDispOrderItem> refuseOrderItems = new ArrayList<TDispOrderItem>();
 			//记录库存数量
 			Map<String,Integer>  stockMap = new HashMap<String,Integer>();
-			//拒收复送库存数量
+			//记录  拒收复送库存数量
 			Map<String,Integer>  stockTmpMap = new HashMap<String,Integer>();
 			Map<String,Object> uptMap = new HashMap<String,Object>();
 			//用户记录  更新订单剩余金额
 			List<TPreOrder> uptOrderCurAmt = new ArrayList<TPreOrder>();
+			//循环遍历路单行
 			for(TDispOrderItem e : entryList){
+				//如果是损毁或者拒收（40/50），拒收复送60，则 实送数量一定要小于 应送数量
 				if(("40".equals(e.getReason()) || "50".equals(e.getReason())) && e.getConfirmQty().compareTo(e.getQty())!=-1){
 					throw new ServiceException(MessageCode.LOGIC_ERROR,"地址为： "+e.getAddressTxt()+"   的这条路单原因为拒收或者损毁时，送达数量必须小于数量！！！");
 				}
@@ -1035,12 +1040,17 @@ public class DeliverMilkServiceImpl extends BaseService implements DeliverMilkSe
 		return 1;
 	}
 
-	/* (non-Javadoc) 
-	* @title: createDayRouteOder
-	* @description: 生成每日路单
-	* @return 
-	* @see com.nhry.service.milk.dao.DeliverMilkService#createDayRouteOder() 
-	*/
+	/**
+	 * @title createDayRouteOder
+	 * @description: 生成每日路单
+	 * 		统计该奶站下日期下的所有的日订单，合并成多条路单，每个日订单生成一条路单行
+	 * 		首先统计有多少条路单行、按送奶员及上下午为分组统计
+	 * 		然后循环 查询出所有符合X送奶员 上午或下午的日订单 作为这个路单的路单行
+	 * 	    最后insert
+	 * @param dateStr
+	 *  @see com.nhry.service.milk.dao.DeliverMilkService
+     * @return
+     */
 	@Override
 	public int createDayRouteOder(String dateStr)
 	{
@@ -1060,6 +1070,7 @@ public class DeliverMilkServiceImpl extends BaseService implements DeliverMilkSe
 		if(tDispOrderMapper.selectTodayDispOrderByBranchNo(user.getBranchNo(),date).size()>0)throw new ServiceException(MessageCode.LOGIC_ERROR,format.format(date)+"该奶站已经创建过路单!");
 		final long startTime = System.currentTimeMillis();
 		//List<TPreOrder> empNos = tPreOrderMapper.selectDispNoByGroup(user.getBranchNo());
+		//统计路单条数  统计送奶员及上下午
 		List<TPreOrder> empNos = tPreOrderMapper.selectDispNoByGroup2(user.getBranchNo(),date);
 		System.out.println("查询empGroup用时"+(System.currentTimeMillis()-startTime)+"毫秒");
 
@@ -1677,6 +1688,9 @@ public class DeliverMilkServiceImpl extends BaseService implements DeliverMilkSe
 
 	/**
 	 * 生成临时路单
+	 * 临时路单：是在该日期下的路单已经生成的情况下，又有新的订单生成造成这些订单该日期下的日订单没有统计到路单中
+	 * 此时不想删除路单重新生成，此时可以将在这些订单的范围内统计生成临时路单，逻辑和生成路单一致，只是范围
+	 * 不是该奶站下所有的日订单 只限制为输入的订单
 	 * @param tModel
 	 * @return
      */
@@ -1697,6 +1711,7 @@ public class DeliverMilkServiceImpl extends BaseService implements DeliverMilkSe
 		if(dispOrders == null || dispOrders.size()==0){
 			throw  new ServiceException(MessageCode.LOGIC_ERROR,format.format(date)+"的路单还未生成，您可以直接生成路单");
 		}
+		// 判断这些订单是否已经有订单生成了路单
 		List<String> orderNos = tModel.getOrders();
 		StringBuffer  hadDispNos = new StringBuffer("");
 		StringBuffer  errOrderNos = new StringBuffer("");
@@ -1724,7 +1739,7 @@ public class DeliverMilkServiceImpl extends BaseService implements DeliverMilkSe
 				wrongStr = wrongStr +errOrderNos.toString()+"  这些订单在"+dateStr+"这天的日订单不存在<br/>";
 			}
 			if(StringUtils.isNotBlank(statusOrderNos.toString().trim())){
-				wrongStr = wrongStr + statusOrderNos.toString()+"  这些订单在"+dateStr+"这天的日订单被全部停订，没有在订的这天的日订单了<br/>";
+				wrongStr = wrongStr + statusOrderNos.toString()+"  这些订单在"+dateStr+"这天，没有在订的日订单了<br/>";
 			}
 			throw new ServiceException(MessageCode.LOGIC_ERROR,wrongStr);
 		}

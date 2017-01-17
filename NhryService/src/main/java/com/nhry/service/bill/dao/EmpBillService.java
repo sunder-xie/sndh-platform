@@ -17,6 +17,11 @@ public interface EmpBillService {
 
     public BigDecimal CalculateEmpTransRateByNum(String empNo,int dispNum);
 
+    /**
+     * 修改配送费率
+     * @param sModel
+     * @return
+     */
     int uptEmpDispRate(SaleOrgDispRateModel sModel);
 
    public SaleOrgDispRateModel getSalesOrgDispRate();
