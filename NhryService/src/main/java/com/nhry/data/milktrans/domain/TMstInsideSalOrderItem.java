@@ -8,16 +8,16 @@ import java.util.Date;
  * Created by gongjk on 2016/6/30.
  */
 public class TMstInsideSalOrderItem implements Serializable {
-    private String insOrderNo;
-    private Date orderDate;
-    private String itemNo;
-    private String orgOrderNo;
-    private String matnr;
-    private String matnrTxt;
-    private BigDecimal qty;
-    private String reason;
-    private BigDecimal price;
-    private String spec;
+    private String insOrderNo;          //内部销售订单号
+    private Date orderDate;             //日期
+    private String itemNo;              //行号
+    private String orgOrderNo;          //订单号
+    private String matnr;               //产品
+    private String matnrTxt;            //产品名
+    private BigDecimal qty;             //数量
+    private String reason;              //产生原因 （路单原因）40，50
+    private BigDecimal price;           //价格
+    private String spec;                //规格
     private String secCate;
     private String zbotCode;
 

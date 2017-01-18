@@ -5,17 +5,18 @@ import java.util.Date;
 
 /**
  * Created by gongjk on 2016/6/27.
+ * 回瓶表
  */
 public class TRecBotDetail implements Serializable {
     private String detLsh;      //明细流水号
     private String spec;        //规格 名称
     private String dispOrderNo; //配送单号
-    private String branchNo;
-    private String empNo;
-    private Date recDate;
+    private String branchNo;   //奶站号
+    private String empNo;       //送奶员号
+    private Date recDate;       //回瓶日期
     private int receiveNum;     //应收数量
     private int realNum;        //实收数量
-    private String status;
+    private String status;      //状态
     private Date createAt;
     private String createBy;
     private String createByTxt;

@@ -5,6 +5,7 @@ import java.util.Date;
 
 /**
  * Created by gongjk on 2016/12/14.
+ * 年卡补偿单据
  */
 public class TMstYearCardCompOrder {
     private String orderNo;         // 订单号
@@ -21,11 +22,11 @@ public class TMstYearCardCompOrder {
     private Date createAt;
     private String createBy;
     private String createByTxt;
-    private Date backDate;
-    private String vipCustNo;
-    private String vipName;
-    private String custMp;
-    private String custAddress;
+    private Date backDate;          //年卡退订日期
+    private String vipCustNo;       //订户编号
+    private String vipName;         //订户名称
+    private String custMp;          //订户电话
+    private String custAddress;     //订户地址
 
     public Date getBackDate() {
         return backDate;

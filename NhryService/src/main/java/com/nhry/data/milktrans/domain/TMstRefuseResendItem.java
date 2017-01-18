@@ -5,14 +5,15 @@ import java.util.Date;
 
 /**
  * Created by gongjk on 2016/10/19.
+ * 拒收复送记录 Item
  */
 public class TMstRefuseResendItem {
-    private String resendOrderNo;
-    private String orderNo;
-    private String type;
-    private BigDecimal qty;
-    private String createBy;
-    private Date createAt;
+    private String resendOrderNo;    //拒收复送号
+    private String orderNo;          //单号  如果类型是要货计划 则保存要货计划号，如果是应用内部销售订单，则保存内部销售订单号
+    private String type;             //类型  10 要货单，20 内部销售订单
+    private BigDecimal qty;          //应用数量
+    private String createBy;         //操作人
+    private Date createAt;            //操作时间
 
     public String getResendOrderNo() {
         return resendOrderNo;

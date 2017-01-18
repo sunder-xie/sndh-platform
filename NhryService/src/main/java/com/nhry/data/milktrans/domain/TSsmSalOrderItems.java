@@ -5,21 +5,22 @@ import java.util.Date;
 
 /**
  * Created by gongjk on 2016/7/16.
+ * 销售订单行项目
  */
 public class TSsmSalOrderItems {
-    private String orderNo;
-    private int itemNo;
-    private Date orderDate;
-    private String matnr;
-    private String matnrTxt;
-    private String unit;
-    private int qty;
-    private String type;
+    private String orderNo;         //销售订单号
+    private int itemNo;             //行号 10、20、30
+    private Date orderDate;         //日期
+    private String matnr;           //产品编号
+    private String matnrTxt;        //产品全称
+    private String unit;            //规格
+    private int qty;                //数量
+    private String type;            //类型  '10'：经销商奶站根据要货计划生成的销售单，'20': 自营奶站根据路单和内部销售单生成的销售单
     private String refMatnr;
     private String refMatnrTxt;
-    private String promNo;
-    private BigDecimal discountAmt;
-    private BigDecimal price;
+    private String promNo;           //促销号
+    private BigDecimal discountAmt; //折扣
+    private BigDecimal price;       //价格
     public String getRefMatnrTxt() {
         return refMatnrTxt;
     }

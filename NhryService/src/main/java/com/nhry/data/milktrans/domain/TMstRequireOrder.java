@@ -5,21 +5,21 @@ import java.util.Date;
 
 public class TMstRequireOrder implements Serializable {
 
-    private String branchNo;
+    private String branchNo;            //奶站号
 
-    private Date requireDate;
+    private Date requireDate;           //要货时间
 
-    private String matnr;
+    private String matnr;               //产品编号
 
-    private String matnrTxt;
+    private String matnrTxt;            //产品全称
 
-    private Integer qty;
+    private Integer qty;                //数量
 
-    private Integer increQty;
+    private Integer increQty;           //增量
 
-    private String status;
+    private String status;              //状态  10 创建还未发送，30 发送成功
 
-    private Date createAt;
+    private Date createAt;              //创建时间
 
     private String createBy;
 
