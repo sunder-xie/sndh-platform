@@ -4,31 +4,31 @@ import java.math.BigDecimal;
 import java.util.Date;
 
 public class TPromotion {
-    private String promNo;
+    private String promNo;    //促销号
 
     private String promDes;
 
     private String promType;
 
-    private String promSubType;
+    private String promSubType; //类型 Z008 单品满赠，Z015单品满减，Z016 整单满减 Z017年卡
 
-    private String salesOrg;
+    private String salesOrg;      //销售组织
 
     private String salesDist;
     
-    private String branchNo;
+    private String branchNo;       //奶站编号
 
     private String customerType;
 
     private String promStat;
 
-    private Date planStartTime;
+    private Date planStartTime;  // 下单开始日期
 
-    private Date planStopTime;
+    private Date planStopTime;  // 下单截止日期
 
-    private Date buyStartTime;
+    private Date buyStartTime;  // 配送开始日期
 
-    private Date buyStopTime;
+    private Date buyStopTime;  // 配送截止日期
 
     private BigDecimal buyAmt;
 
@@ -46,21 +46,21 @@ public class TPromotion {
 
     private String lastModifiedByTxt;
     
-    private String orgMatnr;
+    private String orgMatnr;        //参加促销产品编号
     
-    private BigDecimal orgQty;
+    private BigDecimal orgQty;      //参加促销最少数量
     
-    private String giftMatnr;
-    
-    private String giftUnit;
-    
-    private BigDecimal giftQty;
+    private String giftMatnr;       //赠品编号
 
-    private BigDecimal discountAmt;
+    private String giftUnit;        //赠品规格
+    
+    private BigDecimal giftQty;     //赠品数量
 
-    private BigDecimal lowAmt;
+    private BigDecimal discountAmt;   //优惠金额
 
-    private String itemNo;
+    private BigDecimal lowAmt;        //最低消费金额
+
+    private String itemNo;            //促销行号
 
     private String yearType;
 

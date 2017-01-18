@@ -14,7 +14,7 @@ public class TPreOrder {
 
     private String orderType;               //订单类型
 
-    private String hadBranchFlag;
+    private String hadBranchFlag;           //不用了这个字段
 
     private Date orderDate;             //订单创建日期
 
@@ -44,7 +44,7 @@ public class TPreOrder {
 
     private BigDecimal factAmt;
 
-    private String memberNo;
+    private String memberNo;            //会员编号
 
     private String retReason;           //退回原因
 
@@ -82,73 +82,73 @@ public class TPreOrder {
 
     private String payMethod;           //支付方式
 
-    private String solicitNo;
+    private String solicitNo;           //征订编号
 
-    private Date solicitDate;
+    private Date solicitDate;           //征订日期
     
     private String solicitDateStr;
 
-    private String solicitorNo;
+    private String solicitorNo;         //征订员编号
 
     private String solicitBy;
     
-    private Date stopDateStart;
+    private Date stopDateStart;         //停订的开始日期
 
-	 private Date stopDateEnd;
+	 private Date stopDateEnd;          //停订的截止日期
 	 
-	 private String stopDateStartStr;
+	 private String stopDateStartStr;   //停订的开始日期 字符串 "2017-01-01"
 
-	 private String stopDateEndStr;
+	 private String stopDateEndStr;     //停订的截止日期 字符串 "2017-01-01"
     
-    private String stopReason;
+    private String stopReason;          //停订原因
     
-    private String deliveryType;
+    private String deliveryType;        //配送方式 自取或者配送
     
-    private String backReason;
+    private String backReason;           //退订原因 编码
 
-    private Date backDate;
+    private Date backDate;                //退订日期
     
-    private String sign;
-    
-    private String salesOrgName;
+    private String sign;                   //订单标识 //在订10、停订20、退订30  完结40
 
-    private String salesOrg;
+    private String salesOrgName;           //销售组织名称
 
-    private String dealerNo;
+    private String salesOrg;                //销售组织编号
 
-    private  String dealerName;
-    private String deleteReason;
-    
-    private String payMan;
-    
-    private String resumeFlag;
-    
-    private Date payDate;
+    private String dealerNo;                //经销商编号
 
-    private String payDateStr;
+    private  String dealerName;             //经销商名称
+    private String deleteReason;            //删除原因
     
-    private String isIntegration;
+    private String payMan;                  //支付人
     
-    private Integer yGrowth;
+    private String resumeFlag;              //续订标识  Y 已被续订，N 未被续订，NO 不参与续订
+    
+    private Date payDate;                   //订单支付日期
+
+    private String payDateStr;              //订单支付日期 字符串
+    
+    private String isIntegration;           //是否积分
+    
+    private Integer yGrowth;                //高峰值
     
     private Integer yFresh;
 
-    private String receiptNo;
+    private String receiptNo;               //收款单号
     
-    private String isPaid;
+    private String isPaid;                  //是否支付 Y 支付
     
-    private String validDate;
-    private String isValid;
-    String branchEmpNo;
-    String branchMp;
-    String branchEmpName;
-    String addressTxt;
-    private String promotion;
-    private String promItemNo;
-    private BigDecimal discountAmt;
+    private String validDate;               // 有效日期
+    private String isValid;                 //是否生效
+    String branchEmpNo;                     //员工编号
+    String branchMp;                        //奶站电话
+    String branchEmpName;                   //员工名称
+    String addressTxt;                      //地址
+    private String promotion;               //促销号
+    private String promItemNo;              //促销行号
+    private BigDecimal discountAmt;         //折扣
     private String promType;
-    private String promSubType;
-    private String resumeOrderNo;
+    private String promSubType;             //促销类型  Z008 单品满赠，Z015单品满减，Z016 整单满减，Z017 年卡
+    private String resumeOrderNo;           //被续订订单号
 
     public String getResumeOrderNo() {
         return resumeOrderNo;

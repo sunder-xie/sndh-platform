@@ -5,45 +5,45 @@ import java.util.Date;
 
 
 public class TPlanOrderItem {
-    private String itemNo;
+    private String itemNo;                  //行号 由订单号orderNo + refItemNo(0,1,2,3,4...)组成
 
-    private String orderNo;
+    private String orderNo;                 //订单号
 
-    private Date orderDate;
+    private Date orderDate;                 //订单创建日期
 
-    private String refItemNo;
+    private String refItemNo;               //行数 0,1,2,3...
 
-    private String newRowFlag;
+    private String newRowFlag;              //新加行标识
     
     private String newFlag;
 
-    private String matnr;
+    private String matnr;                   //产品编码
 
-    private String matnrTxt;
+    private String matnrTxt;                //产品名称
     
-    private String shortTxt;
+    private String shortTxt;                 //产品简称
     
-    private String unit;
+    private String unit;                    //产品规格
 
-    private Integer qty;
+    private Integer qty;                    //数量
 
-    private BigDecimal salesPrice;
+    private BigDecimal salesPrice;          //销售价格
 
-    private String ruleType;
+    private String ruleType;                //配送规律，10 按周期配送 ，20按星期配送
 
-    private Integer dispDays;
+    private Integer dispDays;               //配送总天数
 
-    private Integer gapDays;
+    private Integer gapDays;                //如果是按周期配送，记录间隔天数
 
-    private String ruleTxt;
+    private String ruleTxt;                 //如果是按星期配送 记录星期数，比如 周一、周三送 记录1,3
 
     private String reachTime;
     
-    private String reachTimeType;
+    private String reachTimeType;           //上下午，10 上午，20 下午
 
-    private Date startDispDate;
+    private Date startDispDate;             //产品开始配送日期
     
-    private Date stopStartDate;
+    private Date stopStartDate;             //产品截止配送日期
     
     private Date stopEndDate;
 
@@ -53,15 +53,15 @@ public class TPlanOrderItem {
 
     private String endDispDateStr;
 
-    private String promotion;
+    private String promotion;               //促销编号 记录的是单品促销 促销编号
 
-    private String promItemNo;
+    private String promItemNo;              //促销编号行号 记录的是单品促销 促销编号行号
 
     private Integer promDays;
 
-    private String status;
+    private String status;                  //状态
 
-    private Integer buyQty;
+    private Integer buyQty;                  //购买正品数量
 
     private Integer giftQty;
 
@@ -81,7 +81,7 @@ public class TPlanOrderItem {
     
     private String giftUnit;
     
-    private Integer dispTotal;
+    private Integer dispTotal;              //配送总数
     
     private BigDecimal entryTotal;
     
@@ -91,12 +91,12 @@ public class TPlanOrderItem {
     
     private boolean isModified;
 
-    private String promotionDetail;
+    private String promotionDetail;         //促销描述
 //    private String isDeletedFlag;
     
 //    private String deletePlansFlag;
     
-    private String isStop;
+    private String isStop;              //行项目停订标识，Y 不参与续订
     
     private String toStop;
 

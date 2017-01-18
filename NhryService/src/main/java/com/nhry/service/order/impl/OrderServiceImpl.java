@@ -8187,6 +8187,7 @@ public static int dayOfTwoDay(Date day1,Date day2) {
       					//TODO 是否应该set为0
 						plan.setQty(plan.getQty());
       					needNewDaliyPlans.replace(plan.getItemNo(), needNewDaliyPlans.get(plan.getItemNo()) + plan.getQty() );
+						plan.setQty(0);
       				}
       				else{
       					continue;

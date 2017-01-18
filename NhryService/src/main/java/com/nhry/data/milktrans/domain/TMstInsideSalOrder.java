@@ -7,13 +7,13 @@ import java.util.Date;
  * Created by gongjk on 2016/6/30.
  */
 public class TMstInsideSalOrder implements Serializable {
-    private String insOrderNo;
-    private Date orderDate;
-    private String dispOrderNo;
-    private String salEmpNo;
-    private String empName;
-    private String branchNo;
-    private String branchName;
+    private String insOrderNo;          //内部销售订单号
+    private Date orderDate;             //日期
+    private String dispOrderNo;         //路单号
+    private String salEmpNo;            //送奶员编号
+    private String empName;             //送奶员名称
+    private String branchNo;            //奶站编号
+    private String branchName;           //奶站名
     private Date createAt;
     private String createBy;
 

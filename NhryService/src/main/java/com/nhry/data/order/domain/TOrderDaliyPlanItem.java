@@ -6,31 +6,31 @@ import java.math.BigDecimal;
 import java.util.Date;
 
 public class TOrderDaliyPlanItem extends TOrderDaliyPlanItemKey {
-    private Date dispDate;
+    private Date dispDate;                  //配送日期
     
-    private String dispDateStr;
+    private String dispDateStr;             //配送日期 字符串类型
 
 	 private String reachTime;
 
-    private String reachTimeType;
+    private String reachTimeType;           //上下午，10 上午，20下午
 
-    private String matnr;
+    private String matnr;                   //产品编码
 
-    private String confirmMatnr;
-    private String matnrTxt;
-    private String shortTxt;
+    private String confirmMatnr;            //确认产品编码
+    private String matnrTxt;                //产品名称
+    private String shortTxt;                //产品名称 简称
 
-    private String unit;
+    private String unit;                    //规格
 
-    private Integer qty;
+    private Integer qty;                    //数量
 
-    private BigDecimal price;
+    private BigDecimal price;               //价格
 
-    private BigDecimal amt;
+    private BigDecimal amt;                 //价值  数量*价格
 
-    private BigDecimal remainAmt;
+    private BigDecimal remainAmt;           //剩余金额
 
-    private String status;
+    private String status;                  //状态  10 在订，20 完结，30 停订
 
     private Date createAt;
 
@@ -42,13 +42,6 @@ public class TOrderDaliyPlanItem extends TOrderDaliyPlanItemKey {
 
     private String lastModifiedBy;
 
-    public String getWeekly() {
-        return weekly;
-    }
-
-    public void setWeekly(String weekly) {
-        this.weekly = weekly;
-    }
 
     private String lastModifiedByTxt;
     
@@ -58,6 +51,14 @@ public class TOrderDaliyPlanItem extends TOrderDaliyPlanItemKey {
 
     private String weekly;
 
+
+    public String getWeekly() {
+        return weekly;
+    }
+
+    public void setWeekly(String weekly) {
+        this.weekly = weekly;
+    }
     public String getShortTxt() {
         return shortTxt;
     }

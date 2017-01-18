@@ -10,19 +10,19 @@ import java.util.Date;
  */
 public class TMstRefuseResend implements Serializable {
     private String resendOrderNo;       //主键
-    private String salesOrg;            //
-    private String branchNo;
+    private String salesOrg;            //销售组织
+    private String branchNo;            //奶站号
     private String empNo;       //送奶员编号
     private String empName;     //送奶员名称
-    private String matnr;
-    private String matnrTxt;
-    private String status;
-    private BigDecimal qty;
-    private BigDecimal confirmQty;
-    private BigDecimal remainQty;
-    private BigDecimal insideQty;
-    private Date  dispDate;
-    private String dispOrderNo;
+    private String matnr;          //产品
+    private String matnrTxt;        //产品名
+    private String status;          //状态
+    private BigDecimal qty;         //产生拒收复送数量
+    private BigDecimal confirmQty;  //应用到要货计划数量
+    private BigDecimal remainQty;   //剩余数量
+    private BigDecimal insideQty;  //内部销售订单数量
+    private Date  dispDate;         //路单产生的配送日期
+    private String dispOrderNo;     //路单号
     private BigDecimal useQty;
 
     public BigDecimal getInsideQty() {

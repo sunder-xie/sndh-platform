@@ -4,29 +4,30 @@ import java.util.Date;
 
 /**
  * Created by gongjk on 2016/7/16.
+ * 销售订单
  */
 public class TSsmSalOrder {
-    private String orderNo;
-    private Date   orderDate;
-    private String branchNo;
-    private String branchName;
-    private String dealerName;
-    private Date   requiredDate;
-    private String voucherNo;
-    private String status;
+    private String orderNo;              //销售订单号
+    private Date   orderDate;            //日期
+    private String branchNo;            // 奶站号
+    private String branchName;          //奶站名
+    private String dealerName;          //经销商名
+    private Date   requiredDate;        //要货日期
+    private String voucherNo;           //凭证号
+    private String status;              //状态
     private String memoTxt;
-    private String salesOrg;
-    private String dealerNo;
-    private String branchGroup;
-    private String promNo;
-    private String freeFlag;
+    private String salesOrg;            //销售组织
+    private String dealerNo;            //经销商号
+    private String branchGroup;         //奶站性质  01-自营 02-外包
+    private String promNo;              //促销号
+    private String freeFlag;            //免费标识
     private Date createAt;
     private  String createBy;
     private String createByTxt;
     private Date lastModified;
     private String lastModifiedBy;
     private String lastModifiedByTxt;
-    private String preorderSource;
+    private String preorderSource;      //订单来源
     private String onlineCode;
 
     public String getDealerName() {
