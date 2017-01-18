@@ -4,6 +4,7 @@ import java.io.Serializable;
 
 /**
  * Created by gongjk on 2016/10/31.
+ * 路单 日志
  */
 public class RouteLogEnum implements Serializable {
     public final  static String  DELETE_TOUTE= "路单删除";

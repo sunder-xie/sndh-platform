@@ -6,38 +6,39 @@ import java.util.Date;
 
 /**
  * Created by gongjk on 2016/6/23.
+ * 收款单
  */
 public class TMstRecvBill implements Serializable {
-    private String hadOffset;
-    private String hadOffsetNo;
-    private String receiptNo;
-    private Date receiptDate;
-    private String orderNo;
-    private String paymentType;
-    private String status;
-    private BigDecimal amt;    //记录实际收款金额
-    private BigDecimal suppAmt; //记录应收钱数
-    private String vipCustNo;
-    private String vipCustName;
-    private String remark;
+    private String hadOffset;       //是否被冲销  N 未被冲销，Y 被冲销
+    private String hadOffsetNo;     //如果未被冲销
+    private String receiptNo;        //收款单号
+    private Date receiptDate;       // 收款日期
+    private String orderNo;         //订单号
+    private String paymentType;      //支付类型
+    private String status;          //收款状态 10 未收款，20 已收款
+    private BigDecimal amt;          //记录实际收款金额
+    private BigDecimal suppAmt;     //应收钱数
+    private String vipCustNo;       //订户号
+    private String vipCustName;     //订户名
+    private String remark;          //备注
     private Date startTime;
     private Date endTime;
-    private String paymentYearMonth;
-    private BigDecimal totalPrice;
+    private String paymentYearMonth; //支付年月
+    private BigDecimal totalPrice;  //
     private BigDecimal custAccAmt; //当时订户余额
-    private int totalNum;
-    private String recvEmp;
-    private String recvEmpName;
-    private BigDecimal accAmt;
+    private int totalNum;           //总数量
+    private String recvEmp;          //收款人编号
+    private String recvEmpName;      //收款人名称
+    private BigDecimal accAmt;       //收取订户余额
     private Date createAt;
     private  String createBy;
     private String createByTxt;
     private Date lastModified;
     private String lastModifiedBy;
     private String lastModifiedByTxt;
-    private BigDecimal discountAmt;
-    private String empNo;
-    private String branchNo;
+    private BigDecimal discountAmt;     //折扣
+    private String empNo;               //员工号
+    private String branchNo;            //奶站号
     private BigDecimal offsetAmt;
 
     public String getHadOffsetNo() {

@@ -5,14 +5,15 @@ import java.util.Date;
 
 /**
  * Created by gongjk on 2016/7/4.
+ * 配送费率表
  */
 public class TMdDispRateItem {
     private String  itemNo;
     private int itemValue; //存放区间范围
     private int itemIndex; //存放1、2、3、4、5序号
-    private String salesOrg;
+    private String salesOrg; //销售组织
 
-    private BigDecimal rate;
+    private BigDecimal rate;     //配送率
 
     private String createBy;
     private String createByTxt;

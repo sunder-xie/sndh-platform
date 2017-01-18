@@ -7,11 +7,11 @@ import java.util.Date;
  * Created by gongjk on 2016/7/4.
  */
 public class TMdDispRate {
-    private String salesOrg;
-    private String salesOrgName;
+    private String salesOrg;    //销售组织
+    private String salesOrgName;//销售组织名
     private String salaryMet; // 结算方式
-    private String createBy;
-    private String createByTxt;
+    private String createBy;    //创建人编号
+    private String createByTxt;//创建人名称
     private Date lastModified;
     private String lastModifiedBy;
     private String lastModifiedByTxt;

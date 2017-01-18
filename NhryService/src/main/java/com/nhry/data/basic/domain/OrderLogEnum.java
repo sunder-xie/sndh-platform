@@ -4,6 +4,7 @@ import java.io.Serializable;
 
 /**
  * Created by gongjk on 2016/10/24.
+ * 订单日志
  */
 public class OrderLogEnum implements Serializable {
     //public final static  String CREATE_ORDER = "创建订单";

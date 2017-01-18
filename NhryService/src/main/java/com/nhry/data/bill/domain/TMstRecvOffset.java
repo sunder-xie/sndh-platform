@@ -5,19 +5,20 @@ import java.util.Date;
 
 /**
  * Created by gongjk on 2016/8/24.
+ * 冲销单
  */
 public class TMstRecvOffset {
-    private String offsetNo;
-    private Date offsetDate;
-    private String receiptNo;
-    private String orderNo;
-    private BigDecimal amt;
-    private BigDecimal accAmt;
-    private Date createAt;
-    private String createBy;
-    private String createByTxt;
-    private String vipCustNo;
-    private String remark;
+    private String offsetNo;        //冲销单号
+    private Date offsetDate;        //冲销日期
+    private String receiptNo;       //收款单号
+    private String orderNo;         //订单号
+    private BigDecimal amt;         // 收款金额
+    private BigDecimal accAmt;      //收取的订户余额
+    private Date createAt;          //操作时间
+    private String createBy;         //操作人
+    private String createByTxt;      //操作人名称
+    private String vipCustNo;       //订户号
+    private String remark;          //备注
 
 
     public String getRemark() {

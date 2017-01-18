@@ -6,6 +6,7 @@ import java.util.Date;
 
 /**
  * Created by gongjk on 2016/7/12.
+ * 员工工资表
  */
 public class TMdEmpSal implements Serializable {
     private String empSalLsh;   //员工工资单流水号
