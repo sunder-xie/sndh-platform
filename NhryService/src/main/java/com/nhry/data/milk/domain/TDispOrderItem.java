@@ -4,31 +4,31 @@ import java.math.BigDecimal;
 import java.util.Date;
 
 public class TDispOrderItem extends TDispOrderItemKey {
-    private String matnr;
+    private String matnr;					//配送产品
     
-    private String confirmMatnr;
+    private String confirmMatnr;			//实际配送产品
 
-    private BigDecimal confirmQty;
+    private BigDecimal confirmQty;			//实际配送数量
 
-    private BigDecimal qty;
+    private BigDecimal qty;					//配送数量
 
-    private String unit;
+    private String unit;					//规格
 
-    private BigDecimal price;
+    private BigDecimal price;				//价格
 
-    private BigDecimal amt;
+    private BigDecimal amt;					//价值
 
-	private BigDecimal remainAmt;
+	private BigDecimal remainAmt;			//记录日订单 剩余金额
 
-    private BigDecimal confirmAmt;
+    private BigDecimal confirmAmt;			//实际配送总价值  实际配送数量 * 实际配送产品价格
 
-    private String status;
+    private String status;					//状态
 
     private String pickupOrderNo;
 
     private String pickupOrderItemNo;
 
-    private String reason;
+    private String reason;				//原因  10 换货，20 缺货，30 质量问题，40 损毁，50 拒收，60 拒收复送
 
     private Date redispDate;
 
@@ -36,31 +36,31 @@ public class TDispOrderItem extends TDispOrderItemKey {
 
     private BigDecimal wholesalePrice1;
 
-    private String addressNo;
+    private String addressNo;			//地址编号
+
+    private String orgItemNo;			// 订单行项目号
     
-    private String orgItemNo;
+    private String orgOrderNo;			// 订单号
     
-    private String orgOrderNo;
-    
-    private String reachTimeType;
+    private String reachTimeType;       //上下午
     
     private String dispEmpNo;
     
-    private String addressTxt;
+    private String addressTxt;			//地址
     
-    private String matnrTxt;
+    private String matnrTxt;			//产品名称
     
-    private String custName;
+    private String custName;			//订户名
     
-    private String custTel;
+    private String custTel;				//订户电话
     
-    private Integer retQtyB;
+    private Integer retQtyB;			//应回瓶  大口瓶数量
     
-    private Integer retQtyS;
+    private Integer retQtyS;     		//应回瓶  小口瓶数量
     
-    private Integer retQtyM;
+    private Integer retQtyM;			//应回瓶  中口瓶数量
     
-    private String replaceReason;
+    private String replaceReason;		//原因为换货  的二级原因 10 公司原因，20质量原因，30运输损坏
 
 	public String getMemoTxt() {
 		return memoTxt;

@@ -5,35 +5,35 @@ import java.util.Date;
 
 
 public class TDispOrder extends TDispOrderKey {
-    private Date dispDate;
+    private Date dispDate;              //配送日期
 
-    private String branchNo;
+    private String branchNo;            //奶站编号
     
-    private String branchName;
+    private String branchName;          //奶站名
 
     private String dispLineNo;
 
-    private String mstCustNo;
+    private String mstCustNo;           //顾客no
 
     private String type;
 
-    private BigDecimal amt;
+    private BigDecimal amt;             //总价值
 
-    private BigDecimal confirmAmt;
+    private BigDecimal confirmAmt;      //配送总价值
 
-    private String reachTimeType;
+    private String reachTimeType;       //10 上午 20 下午
 
     private String paymentType;
 
-    private String status;
+    private String status;              //状态 10 为确认，20已确认
 
     private String memoTxt;
 
-    private Integer dispOrder;
+    private Integer dispOrder;          //
 
-    private String dispEmpNo;
+    private String dispEmpNo;           //送奶员编号
     
-    private String dispEmpName;
+    private String dispEmpName;         //送奶员名称
 
     private String hzOrderNo;
 
