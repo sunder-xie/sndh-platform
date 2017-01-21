@@ -10241,7 +10241,7 @@ public static int dayOfTwoDay(Date day1,Date day2) {
 							!ContentDiffrentUtil.isDiffrent(orgEntry.getReachTime(), curEntry.getReachTime()) &&
 							!ContentDiffrentUtil.isDiffrent(orgEntry.getReachTimeType(), curEntry.getReachTimeType()) &&
 							!ContentDiffrentUtil.isDiffrent(orgEntry.getGapDays(), curEntry.getGapDays()) &&
-							!ContentDiffrentUtil.isDiffrent(orgEntry.getRuleTxt(), curEntry.getRuleTxt())&&
+							!ContentDiffrentUtil.isDiffrentForRuleTxt(orgEntry.getRuleTxt(), curEntry.getRuleTxt())&&
 							curEntry.getStopStartDate()==null) {
 						curAllEntry.add(orgEntry);
 						continue;
@@ -10364,6 +10364,7 @@ public static int dayOfTwoDay(Date day1,Date day2) {
 	private List<TOrderDaliyPlanItem> createDaliyPlanAfterPayForView(TPreOrder order, List<TPlanOrderItem> entries,List<TOrderDaliyPlanItem> allDay) {
 
 		List<TOrderDaliyPlanItem> daliyPlans = new ArrayList<TOrderDaliyPlanItem>();
+		daliyPlans.addAll(allDay);
 		BigDecimal initAmt = order.getInitAmt();
 		Map<String,BigDecimal> initMap = new HashMap<String,BigDecimal>();
 		initMap.put("initAmt",initAmt);
@@ -10373,6 +10374,7 @@ public static int dayOfTwoDay(Date day1,Date day2) {
 		SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
 		//计算每个行项目总共需要循环多少天
 		Map<TPlanOrderItem,Integer> entryMap = new HashMap<TPlanOrderItem,Integer>();
+		Map<String,TPlanOrderItem> planItemMap = new HashMap<String,TPlanOrderItem>();
 		int maxEntryDay = 3650;
 		Date firstDeliveryDate = null;
 		Date lastDeliveryDate = null;
@@ -10389,6 +10391,7 @@ public static int dayOfTwoDay(Date day1,Date day2) {
 			}
 			int entryDays = (dayOfTwoDay(entry.getStartDispDate(),entry.getEndDispDate())) + 1;
 			entryMap.put(entry,entryDays);
+			planItemMap.put(entry.getItemNo(),entry);
 		}
 
 		int totalDays = (dayOfTwoDay(firstDeliveryDate,lastDeliveryDate)) + 1;
@@ -10445,7 +10448,7 @@ public static int dayOfTwoDay(Date day1,Date day2) {
 					plan.setDispDateStr(format.format(today));
 					String setKey = plan.getItemNo()+plan.getDispDateStr();
 					if(dayMap.containsKey(setKey)){
-						TOrderDaliyPlanItem item = dayMap.get(setKey);
+						/*TOrderDaliyPlanItem item = dayMap.get(setKey);
 						plan.setStatus(item.getStatus());
 						plan.setRemainAmt(item.getRemainAmt());
 						if("10".equals(item.getStatus())){
@@ -10470,9 +10473,10 @@ public static int dayOfTwoDay(Date day1,Date day2) {
 							newInitAmt = newInitAmt.add(plan.getAmt());
 							daliyPlans.add(plan);
 							continue ;
-						}
-
-					}else{
+						}*/
+						continue;
+					}
+					else{
 						//生成该订单行的每日计划
 						plan.setOrderDate(entry.getOrderDate());//订单日期
 						plan.setReachTimeType(entry.getReachTimeType());//送达时段类型
@@ -10577,7 +10581,7 @@ public static int dayOfTwoDay(Date day1,Date day2) {
 								!ContentDiffrentUtil.isDiffrent(orgEntry.getReachTime(), curEntry.getReachTime()) &&
 								!ContentDiffrentUtil.isDiffrent(orgEntry.getReachTimeType(), curEntry.getReachTimeType()) &&
 								!ContentDiffrentUtil.isDiffrent(orgEntry.getGapDays(), curEntry.getGapDays()) &&
-								!ContentDiffrentUtil.isDiffrent(orgEntry.getRuleTxt(), curEntry.getRuleTxt())&&
+								!ContentDiffrentUtil.isDiffrentForRuleTxt(orgEntry.getRuleTxt(), curEntry.getRuleTxt())&&
 								curEntry.getStopStartDate()==null
 								)
 						{
