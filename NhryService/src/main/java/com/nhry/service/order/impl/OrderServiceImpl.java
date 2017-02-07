@@ -1112,7 +1112,7 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 				deleteKey.setDispDateStr(startDateStr);
 				tOrderDaliyPlanItemMapper.deleteFromDateToDate(deleteKey);
 
-				int daliyEntryNo = tOrderDaliyPlanItemMapper.selectMaxDaliyPlansNoByOrderNo(order.getOrderNo()) + 1;
+				//int daliyEntryNo = tOrderDaliyPlanItemMapper.selectMaxDaliyPlansNoByOrderNo(order.getOrderNo()) + 1;
 				final long startTime6 = System.currentTimeMillis();
 				System.out.println("预付款，获取所有的日订单，并删除从复订时间开始的日订单花费时间："+(startTime6-startTime5)+"下面重新生复订之后的日订单");
 
@@ -1132,8 +1132,8 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 							}
 						}
 					}
-				List<TOrderDaliyPlanItem> list = createDaliyByAmt(order , orgEntries,daliyEntryNo,true);
-	   			//List<TOrderDaliyPlanItem> list = createDaliyPlanForResumeOrder(order , orgEntries , orderAmt , startDate , qtyMap);
+			//	List<TOrderDaliyPlanItem> list = createDaliyByAmt(order , orgEntries,daliyEntryNo,true);
+	   			List<TOrderDaliyPlanItem> list = createDaliyPlanForResumeOrder(order , orgEntries , orderAmt , startDate , qtyMap);
 				Map<String,Date> endDateMap = new HashMap<String,Date>();
 				if(list!=null && list.size()>0){
 					list.stream().forEach(e->{
