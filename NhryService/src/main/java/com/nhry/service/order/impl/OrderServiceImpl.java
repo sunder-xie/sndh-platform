@@ -1105,14 +1105,14 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 				System.out.println("预付款，判断促销信息花费时间："+(startTime5-startTime4));
 
 				ArrayList<TOrderDaliyPlanItem> daliyPlans = (ArrayList<TOrderDaliyPlanItem>) tOrderDaliyPlanItemMapper.selectDaliyPlansByOrderNoAsc(record.getOrderNo());
-					
-					//删除从复订时间开始的日计划
-	   			TOrderDaliyPlanItem deleteKey= new TOrderDaliyPlanItem(); 
-	   			deleteKey.setOrderNo(order.getOrderNo());
-	   			deleteKey.setDispDateStr(startDateStr);
-	   			tOrderDaliyPlanItemMapper.deleteFromDateToDate(deleteKey);
 
+				//删除从复订时间开始的日计划
+				TOrderDaliyPlanItem deleteKey= new TOrderDaliyPlanItem();
+				deleteKey.setOrderNo(order.getOrderNo());
+				deleteKey.setDispDateStr(startDateStr);
+				tOrderDaliyPlanItemMapper.deleteFromDateToDate(deleteKey);
 
+				int daliyEntryNo = tOrderDaliyPlanItemMapper.selectMaxDaliyPlansNoByOrderNo(order.getOrderNo()) + 1;
 				final long startTime6 = System.currentTimeMillis();
 				System.out.println("预付款，获取所有的日订单，并删除从复订时间开始的日订单花费时间："+(startTime6-startTime5)+"下面重新生复订之后的日订单");
 
@@ -1132,8 +1132,8 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 							}
 						}
 					}
-					
-	   			List<TOrderDaliyPlanItem> list = createDaliyPlanForResumeOrder(order , orgEntries , orderAmt , startDate , qtyMap);
+				List<TOrderDaliyPlanItem> list = createDaliyByAmt(order , orgEntries,daliyEntryNo,true);
+	   			//List<TOrderDaliyPlanItem> list = createDaliyPlanForResumeOrder(order , orgEntries , orderAmt , startDate , qtyMap);
 				Map<String,Date> endDateMap = new HashMap<String,Date>();
 				if(list!=null && list.size()>0){
 					list.stream().forEach(e->{
@@ -8593,7 +8593,7 @@ public static int dayOfTwoDay(Date day1,Date day2) {
 
  		List<TOrderDaliyPlanItem> list = new ArrayList<TOrderDaliyPlanItem>();
  		BigDecimal curAmt = amt;
-
+		System.out.println("----------------------curAmt--------------------==="+curAmt);
  		//计算每个行项目总共需要送多少天
  		Map<String,TPlanOrderItem> entryMap = new HashMap<String,TPlanOrderItem>();
  		int maxEntryDay = 3650;
