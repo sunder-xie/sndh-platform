@@ -514,6 +514,7 @@ public class RequireOrderServiceImpl implements RequireOrderService {
                 item.setConfirmMatnr(matnr);
                 item.setPrice(price);
                 item.setAmt(discountAmt);
+                item.setPromotionFlag(map.get("PROMOTION_FLAG").toString());
                 createSaleOrderItem(item, i++, order.getOrderNo(), requireDate, "dealer");
             }
             return order;
@@ -572,6 +573,7 @@ public class RequireOrderServiceImpl implements RequireOrderService {
                 item.setConfirmMatnr(matnr);
                 item.setPrice(price);
                 item.setAmt(discountAmt);
+                item.setPromotionFlag(map.get("PROMOTION_FLAG").toString());
                 createSaleOrderItem(item, i++, order.getOrderNo(), requireDate, "branch");
             }
             return order;
