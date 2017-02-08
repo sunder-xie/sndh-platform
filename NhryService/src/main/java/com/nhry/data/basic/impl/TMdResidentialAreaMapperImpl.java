@@ -87,7 +87,7 @@ public class TMdResidentialAreaMapperImpl implements TMdResidentialAreaMapper {
         Map<String,String> map = new HashMap<String,String>();
         map.put("salesOrg",salesOrg);
         map.put("residentialAreaTxt",residentialAreaTxt);
-        return sqlSessionTemplate.selectOne("getAreaByAreaName",map);
+        return sqlSessionTemplate.selectList("getAreaByAreaName",map);
     }
 
     @Override

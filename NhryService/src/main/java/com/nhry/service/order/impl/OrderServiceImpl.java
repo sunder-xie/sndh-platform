@@ -2511,7 +2511,7 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 				//按照行项目产品数量生成新的日订单
 			int daliyEntryNo = tOrderDaliyPlanItemMapper.selectMaxDaliyPlansNoByOrderNo(order.getOrderNo()) + 1;
    			//List<TOrderDaliyPlanItem> list = createDaliyPlanForResumeOrder(order , orgEntries , orderAmt , startDate , qtyMap);
-			List<TOrderDaliyPlanItem> list = this.createDaliyByAmt(order,orgEntries,daliyEntryNo,true);
+			List<TOrderDaliyPlanItem> list = this.createDaliyByAmt(order,orgEntries,daliyEntryNo,true, true);
 
 			Map<String, TPlanOrderItem> planMap = new HashMap<String, TPlanOrderItem>();
 			Date lastDay = null;
@@ -5042,7 +5042,7 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 						}else{
 							//行号唯一，需要判断以前最大的行号 如果没有日订单则返回 0
 
-							List<TOrderDaliyPlanItem> list = this.createDaliyByAmt(orgOrder, curAllEntry,daliyEntryNo,true);
+							List<TOrderDaliyPlanItem> list = this.createDaliyByAmt(orgOrder, curAllEntry,daliyEntryNo,true, false);
 							Map<String, TPlanOrderItem> planMap = new HashMap<String, TPlanOrderItem>();
 							Date lastDay = null;
 							list.stream().forEach(e -> {
@@ -5657,7 +5657,7 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 		int daliyEntryNo = tOrderDaliyPlanItemMapper.selectMaxDaliyPlansNoByOrderNo(orgOrder.getOrderNo()) + 1;
 
 		//生成每日计划
-		List<TOrderDaliyPlanItem> list = createDaliyByAmt(orgOrder,curEntrys,daliyEntryNo,false);
+		List<TOrderDaliyPlanItem> list = createDaliyByAmt(orgOrder,curEntrys,daliyEntryNo,false, false);
 		//planMap存放 订单行的 总配送量，最后一天配送日期
 		Map<String,TPlanOrderItem> planMap = new HashMap<String,TPlanOrderItem>();
 		 Date lastDay = null;
@@ -5862,7 +5862,7 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 	 *  daliyEntryNo  目前日订单中最大的行号加1  如果所有的日订单都被删除，则为0
 	 */
 
-	private List<TOrderDaliyPlanItem> createDaliyByAmt(TPreOrder orgOrder, List<TPlanOrderItem> entries,int daliyEntryNo,boolean haveRoute) {
+	private List<TOrderDaliyPlanItem> createDaliyByAmt(TPreOrder orgOrder, List<TPlanOrderItem> entries, int daliyEntryNo, boolean haveRoute, boolean isRecovery) {
 		//预付款的要付款+装箱才生成日计划
 		if("20".equals(orgOrder.getPaymentmethod()) && !"20".equals(orgOrder.getPaymentStat())){
 			return null;
@@ -5886,6 +5886,9 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 					firstDeliveryDate = entry.getStartDispDate();
 				}
 			}
+		}
+		if(isRecovery){
+			firstDeliveryDate = orgOrder.getStopDateEnd();
 		}
 		SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
 		//按一次 订单行项目每天的钱数从小到大排序
