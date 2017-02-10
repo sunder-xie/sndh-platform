@@ -1411,6 +1411,9 @@
         <if test="dateEnd!=null and ''!=dateEnd">
             and rr.DISP_DATE &lt;= #{dateEnd}
         </if>
+        <if test="salesOrg!=null and ''!=salesOrg">
+            and rr.SALES_ORG = #{salesOrg}
+        </if>
     </select>
 
     <select id="Refuse2receiveResendDetail" resultType="hashmap" parameterType="String">
