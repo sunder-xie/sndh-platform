@@ -412,11 +412,24 @@ public class RequireOrderServiceImpl implements RequireOrderService {
         rModel.setSalesOrg(salesOrg);
         rModel.setOrderDate(orderDate);
         List<TOrderDaliyPlanItem> items = tOrderDaliyPlanItemMapper.selectNoProDayPlanOfDealerBranch(rModel);
+
+        Map<String,Integer> resends = this.findReqGoodResendByOrderNo(orderDate,branchNo);
+
         if (items != null && items.size() > 0) {
             //生成 促销订单
             TSsmSalOrder order = createSaleOrder(user, orderDate, "dealer", "", 1, "30","",branchNo , salesOrg);
             for (int i = 0; i < items.size(); i++) {
                 TOrderDaliyPlanItem item = items.get(i);
+                //去除拒收复送的数量
+                if(resends.containsKey(item.getMatnr()) || resends.containsKey(item.getConfirmMatnr())) {
+                    int rQty = 0;
+                    rQty = resends.get(item.getMatnr());
+                    if(rQty == 0 ){
+                        rQty = resends.get(item.getConfirmMatnr());
+                    }
+                    int qty = item.getQty();
+                    item.setQty(qty-rQty);
+                }
                 //生成 促销订单行项目
                 createSaleOrderItem(item, i + 1, order.getOrderNo(), orderDate, "dealer");
             }
@@ -868,6 +881,24 @@ public class RequireOrderServiceImpl implements RequireOrderService {
             }
         }
         return result;
+    }
+
+    @Override
+    public Map<String,Integer> findReqGoodResendByOrderNo(Date orderDate,String branchNo){
+        RequireOrderSearch search = new RequireOrderSearch();
+        search.setOrderDate(orderDate);
+        search.setBranchNo(branchNo);
+        TSsmReqGoodsOrder order = tSsmReqGoodsOrderMapper.searchRequireOrder(search);
+        Map<String, Integer> results = new HashMap<String, Integer>();
+        if(order != null) {
+            List<TSsmReqGoodsOrderItem> items = this.tSsmReqGoodsOrderItemMapper.getReqGoodsItemsByOrderNo(order.getOrderNo());
+            items.stream().forEach(e -> {
+                if (e.getResendQty() > 0) {
+                    results.put(e.getMatnr(), e.getResendQty());
+                }
+            });
+        }
+        return results;
     }
 
     @Override
