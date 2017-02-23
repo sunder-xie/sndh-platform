@@ -3,6 +3,7 @@ package com.nhry.rest.milktrans;
 import com.github.pagehelper.PageInfo;
 import com.nhry.common.exception.MessageCode;
 import com.nhry.data.auth.domain.TSysUser;
+import com.nhry.data.milktrans.domain.TSsmReqGoodsOrder;
 import com.nhry.data.milktrans.domain.TSsmReqGoodsOrderItem;
 import com.nhry.model.milktrans.*;
 import com.nhry.rest.BaseResource;
@@ -351,4 +352,12 @@ public class milkTransResource extends BaseResource {
 		return convertToRespModel(MessageCode.NORMAL, null,requireOrderService.batchSendSalOrder(orderNos.getOrderNos()));
 	}
 
+	@POST
+	@Path("/queryRefuseResendByOrderNo")
+	@Produces(MediaType.APPLICATION_JSON)
+	@Consumes(MediaType.APPLICATION_JSON)
+	@ApiOperation(value = "/queryRefuseResendByOrderNo", response = Response.class, notes = "查询要货单的拒收复送产品信息")
+	public Response queryRefuseResendByMatnr(@ApiParam(required=true,name="params",value="订单orderDate 和 orderNo")TSsmReqGoodsOrder params) {
+		return convertToRespModel(MessageCode.NORMAL, null, requireOrderService.findReqGoodResendByOrderNo(params.getOrderDate(),params.getBranchNo()));
+	}
 }

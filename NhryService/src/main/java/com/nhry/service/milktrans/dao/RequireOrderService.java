@@ -6,6 +6,7 @@ import com.nhry.model.milktrans.*;
 
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created by gongjk on 2016/6/24.
@@ -71,4 +72,6 @@ public interface RequireOrderService {
     PageInfo searchSalOrderByDealer(RequireOrderSearchPage sModel);
 
     String batchSendSalOrder(List orderNos);
+
+    Map<String,Integer> findReqGoodResendByOrderNo(Date orderDate, String branchNo);
 }
