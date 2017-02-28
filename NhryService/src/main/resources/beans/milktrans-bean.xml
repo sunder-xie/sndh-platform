@@ -44,6 +44,7 @@
 		<property name="resendItemMapper"  ref="resendItemMapper"></property>
 		<property name="stockService"  ref="ssmStockService"></property>
 		<property name="dictionaryService" ref="dicService"/>
+		<property name="stringRedisTemplate" ref="stringRedisTemplate"/>
 	</bean>
 
 	<!--回瓶管理-->
