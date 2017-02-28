@@ -33,6 +33,7 @@ import com.nhry.utils.DateUtil;
 import com.nhry.webService.client.PISuccessMessage;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;
+import org.springframework.data.redis.core.StringRedisTemplate;
 
 import java.math.BigDecimal;
 import java.text.SimpleDateFormat;
@@ -59,6 +60,11 @@ public class RequireOrderServiceImpl implements RequireOrderService {
     private TMstRefuseResendItemMapper resendItemMapper;
     private TSsmStockService stockService;
     private DictionaryService dictionaryService;
+    private StringRedisTemplate stringRedisTemplate;
+
+    public void setStringRedisTemplate(StringRedisTemplate stringRedisTemplate) {
+        this.stringRedisTemplate = stringRedisTemplate;
+    }
 
     public void setDictionaryService(DictionaryService dictionaryService) {
         this.dictionaryService = dictionaryService;
@@ -871,13 +877,22 @@ public class RequireOrderServiceImpl implements RequireOrderService {
                     throw new ServiceException(MessageCode.LOGIC_ERROR, message.getMessage());
                 }
             } else {
-                //经销商奶站 生成销售订单 并发送
-                this.creaSalOrderOfDealerBranchByDate(orderDate);
-                order.setLastModified(new Date());
-                order.setLastModifiedBy(user.getLoginName());
-                order.setLastModifiedByTxt(user.getDisplayName());
-                order.setStatus("30");
-                tSsmReqGoodsOrderMapper.uptRequireGoodsModifyInfo(order);
+                SimpleDateFormat format = new SimpleDateFormat("yyyyMMdd");
+                String redisKey = branchNo+format.format(orderDate);
+                Object isSal = stringRedisTemplate.opsForHash().get("SALORDER",redisKey);
+                if(isSal != null && "ON".equals(isSal)){
+                    throw new ServiceException(MessageCode.LOGIC_ERROR,"销售订单已经发送，请耐心等待！");
+                }else {
+                    stringRedisTemplate.opsForHash().put("SALORDER", redisKey, "ON");
+                    //经销商奶站 生成销售订单 并发送
+                    this.creaSalOrderOfDealerBranchByDate(orderDate);
+                    order.setLastModified(new Date());
+                    order.setLastModifiedBy(user.getLoginName());
+                    order.setLastModifiedByTxt(user.getDisplayName());
+                    order.setStatus("30");
+                    tSsmReqGoodsOrderMapper.uptRequireGoodsModifyInfo(order);
+                    stringRedisTemplate.opsForHash().put("SALORDER", redisKey,"OFF");
+                }
             }
         }
         return result;
@@ -1710,6 +1725,8 @@ public class RequireOrderServiceImpl implements RequireOrderService {
         if (message.isSuccess()) {
             this.uptVouCherNoByOrderNo(order.getOrderNo(), message.getData());
         } else {
+            SimpleDateFormat format = new SimpleDateFormat("yyyyMMdd");
+            stringRedisTemplate.opsForHash().put("SALORDER", order.getBranchNo()+format.format(order.getOrderDate()),"OFF");
             throw new ServiceException(MessageCode.LOGIC_ERROR, message.getMessage());
         }
     }
