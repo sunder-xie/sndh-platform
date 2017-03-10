@@ -2013,6 +2013,13 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 			for(TPlanOrderItem entry: entries){
 				if("Y".equals(entry.getIsStop()))continue;//续订标示
 				entry.setOrderNo(order.getOrderNo());
+				//取得该订单行项目里的产品价格组里价格
+				if(priceService.getMaraPrice(order.getBranchNo(),entry.getMatnr(),order.getDeliveryType())>0){
+					BigDecimal price = new BigDecimal(Float.toString(priceService.getMaraPrice(order.getBranchNo(),entry.getMatnr(),order.getDeliveryType())));
+					entry.setSalesPrice(price);
+				}else{
+					throw new ServiceException(MessageCode.LOGIC_ERROR, order.getOrderNo()+" [该订单商品"+entry.getShortTxt()+"价格存在问题，请维护后在进行续订!]");
+				}
 				//设置配送开始时间
 				int days = daysOfTwo(entry.getStartDispDate(),entry.getEndDispDate());
 				
@@ -2259,7 +2266,13 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 			for(TPlanOrderItem entry: entries){
 				if("Y".equals(entry.getIsStop()))continue;//续订标示 如果订单行被停订，不参与续订
 				entry.setOrderNo(order.getOrderNo());
-				
+				//取得该订单行项目里的产品价格组里价格
+				if(priceService.getMaraPrice(order.getBranchNo(),entry.getMatnr(),order.getDeliveryType())>0){
+					BigDecimal price = new BigDecimal(Float.toString(priceService.getMaraPrice(order.getBranchNo(),entry.getMatnr(),order.getDeliveryType())));
+					entry.setSalesPrice(price);
+				}else{
+					throw new ServiceException(MessageCode.LOGIC_ERROR, order.getOrderNo()+" [该订单商品"+entry.getShortTxt()+"价格存在问题，请维护后在进行续订!]");
+				}
 				//设置配送开始时间
 				if(StringUtils.isBlank(record.getOrderDateStart())){
 					
