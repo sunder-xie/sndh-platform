@@ -907,8 +907,8 @@
 		                <when test="stationType=='02'">
 		                	   <!-- 经销商奶站 -->
 					           <choose>
-					               <when test="(dealerNo != null and dealerNo != '') and (station != null and station != '') ">
-					               		and b.BRANCH_GROUP=#{stationType} and i.DEALER_NO = #{dealerNo} and i.BRANCH_NO = #{station} 
+					               <when test="(station != null and station != '') ">
+					               		and b.BRANCH_GROUP=#{stationType} and i.DEALER_NO = #{station}
 					               </when>
 					               <when test="(dealerNo != null and dealerNo != '') and (station == null or station == '') ">
 										and b.BRANCH_GROUP=#{stationType} and i.DEALER_NO = #{dealerNo}
@@ -1115,8 +1115,8 @@
 		                <when test="stationType=='02'">
 		                	   <!-- 经销商奶站 -->
 					           <choose>
-					               <when test="(dealerNo != null and dealerNo != '') and (station != null and station != '') ">
-					               		and b.BRANCH_GROUP=#{stationType} and i.DEALER_NO = #{dealerNo} and i.BRANCH_NO = #{station} 
+					               <when test="(station != null and station != '') ">
+					               		and b.BRANCH_GROUP=#{stationType} and i.DEALER_NO = #{station}
 					               </when>
 					               <when test="(dealerNo != null and dealerNo != '') and (station == null or station == '') ">
 										and b.BRANCH_GROUP=#{stationType} and i.DEALER_NO = #{dealerNo}
