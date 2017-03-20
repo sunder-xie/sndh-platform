@@ -68,6 +68,8 @@ public interface TPreOrderMapper {
 
     PageInfo searchCustomerOrder(CustBillQueryModel cModel);
 
+    PageInfo searchCustomerOrderForRecBill(CustBillQueryModel cModel);
+
     int updateOrderPayMentStatus(String orderNo);
     
     OrderRemainData searchOrderRemainData(String memberNo);
