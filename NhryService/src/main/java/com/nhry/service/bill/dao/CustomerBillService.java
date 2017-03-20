@@ -14,6 +14,8 @@ import java.util.List;
 public interface CustomerBillService {
    public PageInfo searchCustomerOrder(CustBillQueryModel cModel);
 
+   public PageInfo searchCustomerOrderForRecBill(CustBillQueryModel cModel);
+
    public TMstRecvBill getRecBillByOrderNo(String orderNo);
 
    public int  customerPayment(CustomerPayMentModel cModel);
@@ -29,6 +31,8 @@ public interface CustomerBillService {
    CollectOrderBillModel queryCollectByOrderNo(String orderCode);
 
    BatChCollectResultModel custBatchCollectBySelect(OrderSearchModel oModel);
+
+   int delRecBills(OrderSearchModel oModel);
 
    int customerOffset(String receiptNo);
 

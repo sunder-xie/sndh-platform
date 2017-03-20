@@ -39,6 +39,10 @@ import com.nhry.utils.OperationLogUtil;
 import com.nhry.utils.PrimaryKeyUtils;
 import com.nhry.utils.YearLastMonthUtil;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.builder.ToStringBuilder;
+import org.apache.commons.lang3.builder.ToStringStyle;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.core.task.TaskExecutor;
 
 import java.math.BigDecimal;
@@ -50,6 +54,9 @@ import java.util.stream.Collectors;
  * Created by gongjk on 2016/6/23.
  */
 public class CustomerBillServiceImpl implements CustomerBillService {
+
+
+    private Logger logger = LoggerFactory.getLogger(this.getClass());
 
     private TMdOperationLogMapper operationLogMapper;
     private CustomerBillMapper customerBillMapper;
@@ -116,6 +123,24 @@ public class CustomerBillServiceImpl implements CustomerBillService {
         System.out.println("查询订单收款列表  消耗时间："+(System.currentTimeMillis()-startTime)+"毫秒");
         return tPreOrderMapper.searchCustomerOrder(cModel);
     }
+
+    @Override
+    public PageInfo searchCustomerOrderForRecBill(CustBillQueryModel cModel) {
+        final long startTime = System.currentTimeMillis();
+        TSysUser user = userSessionService.getCurrentUser();
+        List<String> rids = urMapper.getUserRidsByLoginName(user.getLoginName());
+        cModel.setSalesOrg(user.getSalesOrg());
+        cModel.setBranchNo(user.getBranchNo());
+        cModel.setDealerNo(user.getDealerId());
+
+        if(StringUtils.isEmpty(cModel.getPageNum()) || StringUtils.isEmpty(cModel.getPageSize())){
+            throw new ServiceException(MessageCode.LOGIC_ERROR,"pageNum和pageSize不能为空！");
+        }
+        System.out.println("查询订单收款列表  消耗时间："+(System.currentTimeMillis()-startTime)+"毫秒");
+        return tPreOrderMapper.searchCustomerOrderForRecBill(cModel);
+    }
+
+
 
     @Override
     public TMstRecvBill getRecBillByOrderNo(String orderNo) {
@@ -444,6 +469,52 @@ public class CustomerBillServiceImpl implements CustomerBillService {
 
         return resultModel;
     }
+
+
+    /**
+     * 批量删除收款单
+     * @param oModel
+     * @return
+     */
+    @Override
+    public int delRecBills(OrderSearchModel oModel) {
+        logger.info("批量删除收款单,orders{}", oModel.getOrders());
+        if(oModel.getOrders() == null || !(oModel.getOrders().size()>0)){
+            throw new ServiceException(MessageCode.LOGIC_ERROR,"没有选择的订单");
+        }
+        List<TPreOrder> ordersList = tPreOrderMapper.selectCustBatchCollect(oModel);
+        if(ordersList != null && ordersList.size() > 0){
+
+            for(TPreOrder order : ordersList){
+                logger.info("批量删除收款单,处理订单{}", ToStringBuilder.reflectionToString(order, ToStringStyle.MULTI_LINE_STYLE));
+
+                //获取收款单
+                TMstRecvBill  bill = this.getRecBillByOrderNo(order.getOrderNo());
+                logger.info("收款单{}", ToStringBuilder.reflectionToString(bill, ToStringStyle.MULTI_LINE_STYLE));
+
+                if(null == bill){
+                    continue;
+                }
+
+                //10:后付款,20:先付款
+                //不是后付款的跳过
+                if(!"10".equals(order.getPaymentmethod())){
+                    continue;
+                }
+
+                //10:未收款,20:已收款
+                //不是未收款的跳过
+                if(!"10".equals(order.getPaymentStat())){
+                    continue;
+                }
+
+                //删除收款单
+                customerBillMapper.delReceipt(bill.getReceiptNo());
+            }
+        }
+        return 1;
+    }
+
     @Override
     public BatChCollectResultModel custBatchCollectBySelect(OrderSearchModel oModel) {
         if(oModel.getOrders() == null || !(oModel.getOrders().size()>0)){

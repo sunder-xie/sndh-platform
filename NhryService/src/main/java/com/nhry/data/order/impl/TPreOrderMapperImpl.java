@@ -114,6 +114,14 @@ public class TPreOrderMapperImpl implements TPreOrderMapper
 	}
 
 	@Override
+	public PageInfo searchCustomerOrderForRecBill(CustBillQueryModel cModel) {
+		return sqlSessionTemplate.selectListByPages("searchCustomerOrderForRecBill",cModel, Integer.parseInt(cModel.getPageNum()), Integer.parseInt(cModel.getPageSize()));
+
+	}
+
+
+
+	@Override
 	public int updateOrderPayMentStatus(String orderNo) {
 		return sqlSessionTemplate.update("updateOrderPayMentStatus", orderNo);
 

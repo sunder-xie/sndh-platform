@@ -46,6 +46,15 @@ public class BillResource extends BaseResource {
         return convertToRespModel(MessageCode.NORMAL, null, customerBillService.searchCustomerOrder(cModel));
     }
 
+    @POST
+    @Path("/cust/searchForRecBill")
+    @Produces(MediaType.APPLICATION_JSON)
+    @Consumes(MediaType.APPLICATION_JSON)
+    @ApiOperation(value = "/cust/searchForRecBill", response = PageInfo.class, notes = "查询订户订单列表(存在收款单的)")
+    public Response searchForRecBill(@ApiParam(required = true, name = "cModel", value = "cModel") CustBillQueryModel cModel) {
+        return convertToRespModel(MessageCode.NORMAL, null, customerBillService.searchCustomerOrderForRecBill(cModel));
+    }
+
 
     @POST
     @Path("/cust/searchForExp")
@@ -133,6 +142,15 @@ public class BillResource extends BaseResource {
     @ApiOperation(value = "/cust/custBatchCollect", response = BatChCollectResultModel.class, notes = "选择收款人批量收款")
     public Response custBatchCollect(@ApiParam(required = true, name = "cModel", value = "收款信息") CustBatchBillQueryModel cModel) {
         return convertToRespModel(MessageCode.NORMAL, null, customerBillService.custBatchCollect(cModel));
+    }
+
+    @POST
+    @Path("/cust/delRecBills")
+    @Produces(MediaType.APPLICATION_JSON)
+    @Consumes(MediaType.APPLICATION_JSON)
+    @ApiOperation(value = "/cust/delRecBills", response = BatChCollectResultModel.class, notes = "选择订单批量删除收款单")
+    public Response delRecBills(@ApiParam(required = true, name = "orders", value = "订单号list") OrderSearchModel oModel) {
+        return convertToRespModel(MessageCode.NORMAL, null, customerBillService.delRecBills(oModel));
     }
 
     @POST
