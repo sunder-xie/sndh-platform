@@ -1,9 +1,27 @@
 package com.nhry.rest.basic;
 
+import java.util.List;
+
+import javax.ws.rs.Consumes;
+import javax.ws.rs.GET;
+import javax.ws.rs.POST;
+import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
+import javax.ws.rs.Produces;
+import javax.ws.rs.QueryParam;
+import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Scope;
+import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Controller;
+
 import com.github.pagehelper.PageInfo;
 import com.nhry.common.exception.MessageCode;
 import com.nhry.data.basic.domain.TMdMara;
 import com.nhry.model.basic.ProductQueryModel;
+import com.nhry.model.basic.UpdateMaraModel;
 import com.nhry.model.sys.ResponseModel;
 import com.nhry.rest.BaseResource;
 import com.nhry.service.basic.dao.ProductService;
@@ -11,14 +29,6 @@ import com.sun.jersey.spi.resource.Singleton;
 import com.wordnik.swagger.annotations.Api;
 import com.wordnik.swagger.annotations.ApiOperation;
 import com.wordnik.swagger.annotations.ApiParam;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Scope;
-import org.springframework.stereotype.Component;
-import org.springframework.stereotype.Controller;
-
-import javax.ws.rs.*;
-import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.Response;
 
 @Path("/product")
 @Component
@@ -105,4 +115,18 @@ public class ProductResource extends BaseResource {
 	public Response getBranchSaleMaras(){
 		return convertToRespModel(MessageCode.NORMAL, null, productService.getBranchSaleMaras());
 	}
+	
+
+	
+	 @POST
+    @Path("/updateSort")
+    @Produces(MediaType.APPLICATION_JSON)
+    @Consumes(MediaType.APPLICATION_JSON)
+    @ApiOperation(value = "/updateSort", notes = "产品排序 和 隐藏  hide{Y:隐藏,N:显示}", response = ResponseModel.class)
+    public Response savePlans(@ApiParam(name = "updateMaraModels", value = "updateMaraModels", required = true) List<UpdateMaraModel> updateMaraModels) {
+			return convertToRespModel(MessageCode.NORMAL, null,  productService.updateSort(updateMaraModels));
+    }
+	 
+	
+	
 }

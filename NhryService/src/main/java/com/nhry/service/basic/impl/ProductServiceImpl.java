@@ -1,5 +1,13 @@
 package com.nhry.service.basic.impl;
 
+import java.math.BigDecimal;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import org.apache.commons.lang3.StringUtils;
+import org.springframework.core.task.TaskExecutor;
+
 import com.github.pagehelper.PageInfo;
 import com.nhry.common.exception.MessageCode;
 import com.nhry.common.exception.ServiceException;
@@ -14,6 +22,7 @@ import com.nhry.data.basic.domain.TMdMara;
 import com.nhry.data.basic.domain.TMdMaraEx;
 import com.nhry.model.basic.BranchSalesOrgModel;
 import com.nhry.model.basic.ProductQueryModel;
+import com.nhry.model.basic.UpdateMaraModel;
 import com.nhry.service.BaseService;
 import com.nhry.service.basic.dao.BranchService;
 import com.nhry.service.basic.dao.ProductService;
@@ -23,14 +32,6 @@ import com.nhry.service.stock.dao.TSsmStockService;
 import com.nhry.utils.PrimaryKeyUtils;
 import com.nhry.utils.SysContant;
 import com.nhry.utils.date.Date;
-
-import org.apache.commons.lang3.StringUtils;
-import org.springframework.core.task.TaskExecutor;
-
-import java.math.BigDecimal;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
 public class ProductServiceImpl extends BaseService implements ProductService {
 	private TMdMaraMapper tMdMaraMapper;
@@ -339,6 +340,21 @@ public class ProductServiceImpl extends BaseService implements ProductService {
 		pm.setSalesOrg(user.getSalesOrg());
 		return tMdMaraMapper.listsBySalesOrg(pm);
 	}
+	
+	
+	
+	public int updateSort( List<UpdateMaraModel> updateMaraModels) {
+		 if(updateMaraModels.size()>0){
+			 for (UpdateMaraModel updateMaraModel : updateMaraModels) {
+				 tMdMaraMapper.updateSort(updateMaraModel);
+			}
+			return 1;
+		 }
+		 return 0;
+	
+	};
+	
+	
 
 	public void setMessService(TSysMessageService messService) {
 		this.messService = messService;
@@ -355,4 +371,6 @@ public class ProductServiceImpl extends BaseService implements ProductService {
 	public void setBranchMapper(TMdBranchMapper branchMapper) {
 		this.branchMapper = branchMapper;
 	}
+	
+	
 }

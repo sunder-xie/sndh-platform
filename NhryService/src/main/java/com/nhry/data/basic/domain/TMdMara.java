@@ -53,9 +53,27 @@ public class TMdMara implements Serializable{
     private String dealerNo;
     
     private TMdMaraEx maraEx;
+    
+    private String sort;
+    private String hide;
 
+    public String getSort() {
+		return sort;
+	}
 
-    private List<TBranchNotsellList> notsellList = new ArrayList<TBranchNotsellList>();
+	public void setSort(String sort) {
+		this.sort = sort;
+	}
+
+	public String getHide() {
+		return hide;
+	}
+
+	public void setHide(String hide) {
+		this.hide = hide;
+	}
+
+	private List<TBranchNotsellList> notsellList = new ArrayList<TBranchNotsellList>();
 
     public String getMatnr() {
         return matnr;

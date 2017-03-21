@@ -1,12 +1,14 @@
 package com.nhry.data.basic.impl;
 
+import java.util.List;
+import java.util.Map;
+
 import com.github.pagehelper.PageInfo;
 import com.nhry.common.datasource.DynamicSqlSessionTemplate;
 import com.nhry.data.basic.dao.TMdMaraMapper;
 import com.nhry.data.basic.domain.TMdMara;
 import com.nhry.model.basic.ProductQueryModel;
-import java.util.List;
-import java.util.Map;
+import com.nhry.model.basic.UpdateMaraModel;
 
 public class TMdMaraMapperImpl implements TMdMaraMapper {
 
@@ -105,4 +107,9 @@ public class TMdMaraMapperImpl implements TMdMaraMapper {
 		// TODO Auto-generated method stub
 		return this.sqlSessionTemplate.selectList("findMarasBySalesCodeAndOrg", attrs);
 	}
+    
+    @Override
+    public int updateSort(UpdateMaraModel UpdateMaraModel) {
+    	 return this.sqlSessionTemplate.update("updateSort",UpdateMaraModel);
+    }
 }
