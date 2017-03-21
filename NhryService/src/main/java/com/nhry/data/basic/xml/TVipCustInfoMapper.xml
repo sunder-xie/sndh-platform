@@ -913,6 +913,9 @@
 					               <when test="(dealerNo != null and dealerNo != '') and (station == null or station == '') ">
 										and b.BRANCH_GROUP=#{stationType} and i.DEALER_NO = #{dealerNo}
 					               </when>
+								   <when test="(dealerNo == null or dealerNo == '') and (station != null and station != '') ">
+									   and b.BRANCH_GROUP=#{stationType} and i.DEALER_NO = #{station}
+								   </when>
 					               <otherwise>
 					               		and b.BRANCH_GROUP=#{stationType} 
 					               </otherwise>
@@ -1121,6 +1124,9 @@
 					               <when test="(dealerNo != null and dealerNo != '') and (station == null or station == '') ">
 										and b.BRANCH_GROUP=#{stationType} and i.DEALER_NO = #{dealerNo}
 					               </when>
+								   <when test="(dealerNo == null or dealerNo == '') and (station != null and station != '') ">
+									   and b.BRANCH_GROUP=#{stationType} and i.DEALER_NO = #{station}
+								   </when>
 					               <otherwise>
 					               		and b.BRANCH_GROUP=#{stationType} 
 					               </otherwise>
