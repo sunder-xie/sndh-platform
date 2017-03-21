@@ -1,13 +1,13 @@
 package com.nhry.service.basic.dao;
 
+import java.util.List;
+import java.util.Map;
+
 import com.github.pagehelper.PageInfo;
 import com.nhry.data.basic.domain.TMdMara;
 import com.nhry.data.basic.domain.TMdMaraEx;
 import com.nhry.model.basic.ProductQueryModel;
-import com.nhry.service.basic.pojo.BotType;
-import com.nhry.service.basic.pojo.ProductInfoExModel;
-
-import  java.util.*;
+import com.nhry.model.basic.UpdateMaraModel;
 public interface ProductService {
 	/**
 	 * 根据产品编号获取产品信息
@@ -96,4 +96,12 @@ public interface ProductService {
      * @return
      */
     public List<TMdMara> getBranchSaleMaras();
+    
+    
+    /**
+     * 创建订单
+     * @param tMdMaras
+     * @return
+     */
+    public int updateSort(List<UpdateMaraModel> UpdateMaraModel);
 }

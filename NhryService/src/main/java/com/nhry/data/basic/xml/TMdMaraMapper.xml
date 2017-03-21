@@ -26,6 +26,7 @@
 		<result column="SPEC_NAME" property="specName" jdbcType="VARCHAR" />
 		<result column="ZBOT_CODE_NAME" property="zbotCodeName" jdbcType="VARCHAR" />
 		<result column="BRAND_NAME" property="brandName" jdbcType="VARCHAR" />
+		<result column="SORT" property="sort" jdbcType="VARCHAR" />
 		<association property="maraEx" resultMap="BaseAndExResultMap"></association>
 	</resultMap>
 	<resultMap id="BaseAndExResultMap" type="com.nhry.data.basic.domain.TMdMaraEx" >
@@ -430,6 +431,7 @@
 			exm.SHORT_TXT MATNR_TXT,
 			exm.SHORT_TXT,
 			p.BASE_UNIT,
+			p.SORT,
 			p. STATUS,
 			p.LAST_MODIFIED MARA_LAST_MODIFIED,
 			p.CREATE_AT MARA_CREATE_AT,
@@ -468,6 +470,9 @@
 		    AND (p.MATNR like '%${matnrTxt}%' or
 				p.MATNR_TXT like '%${matnrTxt}%') 
 		</if>
+		
+		order by p.SORT desc
+		
 	</select>
 	<select id="getCompMaras" resultMap="BaseResultMap" parameterType="com.nhry.model.basic.ProductQueryModel">
 	    SELECT
@@ -476,6 +481,7 @@
 			exm.SHORT_TXT,
 			p.BASE_UNIT,
 			p. STATUS,
+			p.SORT,
 			p.LAST_MODIFIED MARA_LAST_MODIFIED,
 			p.CREATE_AT MARA_CREATE_AT,
 			p.FIRST_CAT,
@@ -514,6 +520,9 @@
 		    AND (p.MATNR like '%${matnrTxt}%' or
 				p.MATNR_TXT like '%${matnrTxt}%') 
 		</if>
+		
+		order by p.SORT desc
+		
 	</select>
 	<select id="getProductByCodeOrNameAndSalesOrg" resultMap="BaseResultMap" parameterType="java.util.HashMap">
 		SELECT
@@ -584,4 +593,13 @@
 		AND p.SALES_ORG = #{salesOrg}
 		AND p.STATUS='Y'
 	</select>
+	
+	
+	
+	<update id="updateSort" parameterType="com.nhry.model.basic.UpdateMaraModel" >
+		UPDATE t_md_mara set SORT=#{sort} ,HIDE=#{hide}    WHERE MATNR=#{matnr} and SALES_ORG=#{salesOrg}
+	</update>
+	
+	
+	
 </mapper>

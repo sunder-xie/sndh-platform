@@ -1,12 +1,12 @@
 package com.nhry.data.basic.dao;
 
+import java.util.List;
+import java.util.Map;
+
 import com.github.pagehelper.PageInfo;
 import com.nhry.data.basic.domain.TMdMara;
 import com.nhry.model.basic.ProductQueryModel;
-import com.nhry.service.basic.pojo.ProductInfoExModel;
-
-import java.util.List;
-import java.util.Map;
+import com.nhry.model.basic.UpdateMaraModel;
 
 public interface TMdMaraMapper {
 	
@@ -102,4 +102,12 @@ public interface TMdMaraMapper {
      * @return
      */
     public List<TMdMara> getCompMarasList(ProductQueryModel pm);
+    
+    
+    /**
+    * 排序修改
+    * @param attrs
+    * @return
+    */
+    int  updateSort(UpdateMaraModel updateMaraModel);
 }
