@@ -21,6 +21,7 @@ import com.github.pagehelper.PageInfo;
 import com.nhry.common.exception.MessageCode;
 import com.nhry.data.basic.domain.TMdMara;
 import com.nhry.model.basic.ProductQueryModel;
+import com.nhry.model.basic.UpdateMaraListModel;
 import com.nhry.model.basic.UpdateMaraModel;
 import com.nhry.model.sys.ResponseModel;
 import com.nhry.rest.BaseResource;
@@ -118,13 +119,13 @@ public class ProductResource extends BaseResource {
 	
 
 	
-	 @POST
+	@POST
     @Path("/updateSort")
     @Produces(MediaType.APPLICATION_JSON)
-    @Consumes(MediaType.APPLICATION_JSON)
     @ApiOperation(value = "/updateSort", notes = "产品排序 和 隐藏  hide{Y:隐藏,N:显示}", response = ResponseModel.class)
-    public Response savePlans(@ApiParam(name = "updateMaraModels", value = "updateMaraModels", required = true) List<UpdateMaraModel> updateMaraModels) {
-			return convertToRespModel(MessageCode.NORMAL, null,  productService.updateSort(updateMaraModels));
+    public Response savePlans(@ApiParam(name = "UpdateMaraListModel", value = "UpdateMaraListModel", required = true) UpdateMaraListModel UpdateMaraListModel) {
+		 List<UpdateMaraModel> list = UpdateMaraListModel.getList();
+		 return convertToRespModel(MessageCode.NORMAL, null,  productService.updateSort(list));
     }
 	 
 	

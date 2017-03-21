@@ -27,6 +27,7 @@
 		<result column="ZBOT_CODE_NAME" property="zbotCodeName" jdbcType="VARCHAR" />
 		<result column="BRAND_NAME" property="brandName" jdbcType="VARCHAR" />
 		<result column="SORT" property="sort" jdbcType="VARCHAR" />
+		<result column="HIDE" property="hide" jdbcType="VARCHAR" />
 		<association property="maraEx" resultMap="BaseAndExResultMap"></association>
 	</resultMap>
 	<resultMap id="BaseAndExResultMap" type="com.nhry.data.basic.domain.TMdMaraEx" >
@@ -432,6 +433,7 @@
 			exm.SHORT_TXT,
 			p.BASE_UNIT,
 			p.SORT,
+			p.HIDE,
 			p. STATUS,
 			p.LAST_MODIFIED MARA_LAST_MODIFIED,
 			p.CREATE_AT MARA_CREATE_AT,
@@ -482,6 +484,7 @@
 			p.BASE_UNIT,
 			p. STATUS,
 			p.SORT,
+			p.HIDE,
 			p.LAST_MODIFIED MARA_LAST_MODIFIED,
 			p.CREATE_AT MARA_CREATE_AT,
 			p.FIRST_CAT,

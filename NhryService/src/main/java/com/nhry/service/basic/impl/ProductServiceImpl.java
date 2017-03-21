@@ -262,7 +262,7 @@ public class ProductServiceImpl extends BaseService implements ProductService {
 				// 自营奶站
 				return this.tMdMaraMapper.getCompMaras(pm);
 			} else if (SysContant.getSystemConst("dealer_Branch").equals(
-					branch.getBranchGroup())) {
+					branch.getBranchGroup())) {	
 				// 经销商奶站
 				pm.setDealerNo(branch.getDealerNo());
 				return this.tMdMaraMapper.getDealerMaras(pm);
