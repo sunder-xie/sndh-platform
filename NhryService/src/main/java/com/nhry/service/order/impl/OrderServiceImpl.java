@@ -5135,7 +5135,9 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 								}
 							}
 						}
-					} else {
+					}else if(record.getOrder().getMemoTxt()!=null){
+						tPreOrderMapper.updateBySelective(record.getOrder());
+					}else{
 						throw new ServiceException(MessageCode.LOGIC_ERROR, "没做修改");
 					}
 
@@ -5324,6 +5326,8 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 
 						});
 						tPreOrderMapper.updateBySelective(orgOrder);
+					}else if(record.getOrder().getMemoTxt()!=null){
+						tPreOrderMapper.updateBySelective(record.getOrder());
 					}else{
 						throw  new ServiceException(MessageCode.LOGIC_ERROR,"没做修改");
 					}
