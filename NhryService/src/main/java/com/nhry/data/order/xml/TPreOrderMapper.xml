@@ -718,6 +718,12 @@
     <if test="orderDateEnd != null and orderDateEnd !=''">
      		AND o.ORDER_DATE  &lt;=  #{orderDateEnd}
     </if>
+    <if test="endDateStart != null and endDateStart !=''">
+      AND o.END_DATE  &gt;=  #{endDateStart}
+    </if>
+    <if test="endDateEnd != null and endDateEnd !=''">
+      AND o.END_DATE  &lt;=  #{endDateEnd}
+    </if>
     <if test="reason == null or reason ==''">
      		AND o.PREORDER_STAT != "30"
     </if>

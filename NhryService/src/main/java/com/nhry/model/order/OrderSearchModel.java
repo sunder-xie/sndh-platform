@@ -27,6 +27,8 @@ public class OrderSearchModel extends BaseQueryModel implements Serializable {
 	private String preorderSource;
 	private String orderDateStart;
 	private String orderDateEnd;
+	private String endDateStart;
+	private String endDateEnd;
 	private Date startDate;
 	private Date endDate;
 	private String companyName;
@@ -366,5 +368,21 @@ public class OrderSearchModel extends BaseQueryModel implements Serializable {
 
 	public void setBackDate(Date backDate) {
 		this.backDate = backDate;
+	}
+
+	public String getEndDateStart() {
+		return endDateStart;
+	}
+
+	public void setEndDateStart(String endDateStart) {
+		this.endDateStart = endDateStart;
+	}
+
+	public String getEndDateEnd() {
+		return endDateEnd;
+	}
+
+	public void setEndDateEnd(String endDateEnd) {
+		this.endDateEnd = endDateEnd;
 	}
 }
