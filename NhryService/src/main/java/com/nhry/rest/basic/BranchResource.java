@@ -6,6 +6,7 @@ import com.nhry.data.basic.domain.TMdBranch;
 import com.nhry.data.basic.domain.TMdBranchEx;
 import com.nhry.model.basic.BranchExkostlModel;
 import com.nhry.model.basic.BranchQueryModel;
+import com.nhry.model.basic.BranchSendModel;
 import com.nhry.model.webService.CustInfoModel;
 import com.nhry.model.webService.DealerBranchModel;
 import com.nhry.rest.BaseResource;
@@ -157,4 +158,30 @@ public class BranchResource extends BaseResource {
 	public Response getCustBranchInfo(@ApiParam(required = true,name = "branchNo",value = "branchNo") @PathParam("branchNo") String branchNo){
 		return convertToRespModel(MessageCode.NORMAL, null,branchService.getBranchEx(branchNo));
 	}
+
+	@GET
+	@Path("/isSendMode/{branchNo}")
+	@Produces(MediaType.APPLICATION_JSON)
+	@ApiOperation(value = "/isSendMode/{branchNo}", response = TMdBranch.class, notes = "查看是否是送奶工方式报货")
+	public Response isSendMode(@ApiParam(required=true,name="branchNo",value="网点客户编号")  @PathParam("branchNo") String branchNo){
+		return convertToRespModel(MessageCode.NORMAL, null,branchService.isSendMode(branchNo));
+	}
+
+	@GET
+	@Path("/searchSendMode")
+	@Produces(MediaType.APPLICATION_JSON)
+	@ApiOperation(value = "/searchSendMode", response = TMdBranch.class, notes = "查看公司下采用送奶工报货的奶站信息")
+	public Response searchSendMode(){
+		return convertToRespModel(MessageCode.NORMAL, null,branchService.findBranchSendMode());
+	}
+
+	@POST
+	@Path("/addSendMode")
+	@Produces(MediaType.APPLICATION_JSON)
+	@Consumes(MediaType.APPLICATION_JSON)
+	@ApiOperation(value = "/addSendMode", response = String.class, notes = "设置送奶工报货奶站")
+	public Response addSendMode(@ApiParam(required=true,name="Model",value="model") BranchSendModel model){
+		return convertToRespModel(MessageCode.NORMAL, null,branchService.insertSendModes(model.getBranchNos()));
+	}
+
 }

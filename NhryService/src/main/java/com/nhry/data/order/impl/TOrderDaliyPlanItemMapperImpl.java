@@ -285,6 +285,11 @@ public class TOrderDaliyPlanItemMapperImpl implements TOrderDaliyPlanItemMapper
 	}
 
 	@Override
+	public List<Map<String, Object>> selectNoProDayPlanOfDealerBranchAndEmpNo(RequireOrderSearch rModel) {
+		return sqlSessionTemplate.selectList("selectNoProDayPlanOfDealerBranchAndEmpNo",rModel);
+	}
+
+	@Override
 	public List<OrderDaliyPlanReportEntityModel> reportOrderDaliyPlanByParams(OrderDaliyPlanReportModel model) {
 		return sqlSessionTemplate.selectList("reportOrderDaliyPlanByParams",model);
 	}

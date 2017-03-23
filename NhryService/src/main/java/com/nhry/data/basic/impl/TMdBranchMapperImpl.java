@@ -4,6 +4,7 @@ import com.github.pagehelper.PageInfo;
 import com.nhry.common.datasource.DynamicSqlSessionTemplate;
 import com.nhry.data.basic.dao.TMdBranchMapper;
 import com.nhry.data.basic.domain.TMdBranch;
+import com.nhry.data.basic.domain.TMdBranchSendMode;
 import com.nhry.model.basic.BranchQueryModel;
 import com.nhry.model.basic.BranchSalesOrgModel;
 
@@ -90,4 +91,23 @@ public class TMdBranchMapperImpl implements TMdBranchMapper {
 		return this.sqlSessionTemplate.selectOne("selectBranchInfoByBranchNo",branchNo);
 	}
 
+	@Override
+	public TMdBranchSendMode getSendMode(String branchNo) {
+		return sqlSessionTemplate.selectOne("getSendMode",branchNo);
+	}
+
+	@Override
+	public List<TMdBranchSendMode> selectBranchSendMode(String salesOrg) {
+		return sqlSessionTemplate.selectList("selectBranchSendMode",salesOrg);
+	}
+
+	@Override
+	public int insertSendMode(TMdBranchSendMode sendMode) {
+		return sqlSessionTemplate.insert("insertSendMode",sendMode);
+	}
+
+	@Override
+	public int delSendMode(String salesOrg) {
+		return sqlSessionTemplate.delete("delSendMode",salesOrg);
+	}
 }

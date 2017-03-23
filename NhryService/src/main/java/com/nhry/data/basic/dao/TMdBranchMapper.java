@@ -2,6 +2,7 @@ package com.nhry.data.basic.dao;
 
 import com.github.pagehelper.PageInfo;
 import com.nhry.data.basic.domain.TMdBranch;
+import com.nhry.data.basic.domain.TMdBranchSendMode;
 import com.nhry.model.basic.BranchQueryModel;
 import com.nhry.model.basic.BranchSalesOrgModel;
 
@@ -40,4 +41,12 @@ public interface TMdBranchMapper {
     TMdBranch getBranchByNo(String branchNo);
 
     TMdBranch selectBranchInfoByBranchNo(String branchNo);
+
+    TMdBranchSendMode getSendMode(String branchNo);
+
+    List<TMdBranchSendMode> selectBranchSendMode(String salesOrg);
+
+    int insertSendMode(TMdBranchSendMode sendMode);
+
+    int delSendMode(String salesOrg);
 }

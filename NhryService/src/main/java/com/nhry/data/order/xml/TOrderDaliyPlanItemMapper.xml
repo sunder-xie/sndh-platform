@@ -1418,5 +1418,37 @@
     GROUP BY DISP_DATE
     HAVING count(DISP_DATE)>1
   </select>
-
+  <select id="selectNoProDayPlanOfDealerBranchAndEmpNo" resultType="java.util.HashMap" parameterType="com.nhry.model.milktrans.RequireOrderSearch">
+    SELECT
+        o.EMP_NO empNo,i.MATNR matnr,sum(i.QTY) qty
+    FROM
+        t_mst_order_daliy_plan_item i
+    JOIN t_preorder o ON i.ORDER_NO = o.ORDER_NO AND o.BRANCH_NO =  #{branchNo,jdbcType=VARCHAR}
+    LEFT JOIN t_md_mara_ex e ON i.MATNR = e.MATNR
+    AND e.SALES_ORG = #{salesOrg,jdbcType=VARCHAR}
+    LEFT JOIN t_promotion p ON o.PROMOTION = p.PROM_NO
+    WHERE 1 = 1
+    AND o.PREORDER_SOURCE != '70'
+    AND o.PREORDER_STAT != '30'
+    AND o.PREORDER_STAT != '40'
+    AND i.`STATUS` != '30'
+    AND i.GIFT_QTY IS NULL
+    AND (
+        (
+            e.PRE_DAYS = 2
+            AND i.DISP_DATE = #{secondDay,jdbcType=DATE}
+        )
+        OR (
+            e.PRE_DAYS = 1
+            AND i.DISP_DATE = #{firstDay,jdbcType=DATE}
+        )
+    )
+    AND (
+        p.PROM_SUB_TYPE IS NULL
+        OR p.PROM_SUB_TYPE != 'Z017'
+    )
+    GROUP BY
+        o.EMP_NO,
+        i.MATNR
+  </select>
 </mapper>

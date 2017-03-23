@@ -5,9 +5,12 @@ import com.nhry.common.auth.UserSessionService;
 import com.nhry.common.exception.MessageCode;
 import com.nhry.common.exception.ServiceException;
 import com.nhry.data.auth.domain.TSysUser;
+import com.nhry.data.basic.dao.TMdBranchEmpMapper;
 import com.nhry.data.basic.dao.TMdBranchMapper;
 import com.nhry.data.basic.dao.TMdMaraMapper;
 import com.nhry.data.basic.domain.TMdBranch;
+import com.nhry.data.basic.domain.TMdBranchEmp;
+import com.nhry.data.basic.domain.TMdBranchSendMode;
 import com.nhry.data.basic.domain.TMdMara;
 import com.nhry.data.config.domain.NHSysCodeItem;
 import com.nhry.data.milk.dao.TDispOrderMapper;
@@ -61,6 +64,7 @@ public class RequireOrderServiceImpl implements RequireOrderService {
     private TSsmStockService stockService;
     private DictionaryService dictionaryService;
     private StringRedisTemplate stringRedisTemplate;
+    private TMdBranchEmpMapper branchEmpMapper;
 
     public void setStringRedisTemplate(StringRedisTemplate stringRedisTemplate) {
         this.stringRedisTemplate = stringRedisTemplate;
@@ -129,7 +133,10 @@ public class RequireOrderServiceImpl implements RequireOrderService {
         this.tMdMaraMapper = tMdMaraMapper;
     }
 
-  /*  @Override
+    public void setBranchEmpMapper(TMdBranchEmpMapper branchEmpMapper) {
+        this.branchEmpMapper = branchEmpMapper;
+    }
+/*  @Override
     public RequireOrderModel creatRequireOrder() {
         RequireOrderSearch rModel = new RequireOrderSearch();
         Date today = new Date();
@@ -917,6 +924,71 @@ public class RequireOrderServiceImpl implements RequireOrderService {
     }
 
     @Override
+    public List<TSsmSalOrder> creatNoPromoSalOrderOfDealerBranchAndEmpNo(Date orderDate, String branchNo, String salesOrg) {
+        List<TSsmSalOrder> salOrderList = new ArrayList<TSsmSalOrder>();
+        TSysUser user = userSessionService.getCurrentUser();
+        RequireOrderSearch rModel = new RequireOrderSearch();
+        rModel.setFirstDay(DateUtil.getTomorrow(orderDate));
+        rModel.setSecondDay(DateUtil.getDayAfterTomorrow(orderDate));
+        rModel.setBranchNo(branchNo);
+        rModel.setSalesOrg(salesOrg);
+        rModel.setOrderDate(orderDate);
+        List<Map<String,Object>> orgList = tOrderDaliyPlanItemMapper.selectNoProDayPlanOfDealerBranchAndEmpNo(rModel);
+        Map<String,List<TOrderDaliyPlanItem>> orderMap = new HashMap<String,List<TOrderDaliyPlanItem>>();
+        StringBuilder stringBuilder = new StringBuilder();
+        Map<String,String> sapcodeMap = new HashMap<String,String>();
+        for(Map<String,Object> map : orgList){
+            String empNo =  map.get("empNo").toString();
+            TMdBranchEmp branchEmp = branchEmpMapper.selectActiveBranchEmpByNo(empNo);
+            String sapcode = branchEmp.getSapcode();
+            if(StringUtils.isEmpty(sapcode)){
+                stringBuilder.append(branchEmp.getEmpName());
+                stringBuilder.append(",");
+            }
+            sapcodeMap.put(empNo,sapcode);
+        }
+        if(stringBuilder.toString().length()>0){
+            stringBuilder.append("没有设置客户号，请为送奶员设置客户号！");
+            throw new ServiceException(MessageCode.LOGIC_ERROR,stringBuilder.toString());
+        }
+        for(Map<String,Object> map : orgList){
+            String empNo = map.get("empNo").toString();
+            String matnr = map.get("matnr").toString();
+            BigDecimal qty = (BigDecimal)map.get("qty");
+            if(orderMap.containsKey(empNo)) {
+                List<TOrderDaliyPlanItem> itemList = orderMap.get(empNo);
+                TOrderDaliyPlanItem item = new TOrderDaliyPlanItem();
+                item.setQty(qty.intValue());
+                item.setMatnr(matnr);
+                item.setConfirmMatnr(matnr);
+                itemList.add(item);
+            }else{
+                List<TOrderDaliyPlanItem> itemList = new ArrayList<TOrderDaliyPlanItem>();
+                TOrderDaliyPlanItem item = new TOrderDaliyPlanItem();
+                item.setQty(qty.intValue());
+                item.setMatnr(matnr);
+                item.setConfirmMatnr(matnr);
+                itemList.add(item);
+                orderMap.put(empNo,itemList);
+            }
+        }
+
+        if (orderMap != null && orderMap.size() > 0) {
+            for(Map.Entry<String,List<TOrderDaliyPlanItem>> entry : orderMap.entrySet() ){
+                String orgCode = entry.getKey();
+                List<TOrderDaliyPlanItem> itemList = entry.getValue();
+                TSsmSalOrder order = createSaleOrder(user,orderDate,"dealer","",1,"EM",sapcodeMap.get(orgCode),branchNo,salesOrg );
+                for (int i = 0; i < itemList.size(); i++) {
+                    TOrderDaliyPlanItem item = itemList.get(i);
+                    createSaleOrderItem(item, i + 1, order.getOrderNo(), orderDate, "dealer");
+                }
+                salOrderList.add(order);
+            }
+        }
+        return salOrderList;
+    }
+
+    @Override
     public TSsmSalOrder creatNoPromoSalOrderAndSendOfSelftBranch(Date requiredDate) {
         TSsmSalOrder entry = this.creatNoPromoSalOrderOfSelftBranch(requiredDate);
         generateSalesOrderAnduptVouCher(entry);
@@ -1485,7 +1557,6 @@ public class RequireOrderServiceImpl implements RequireOrderService {
     @Override
     public int creaSalOrderOfDealerBranchByDate(Date orderDate) {
         TSysUser user = userSessionService.getCurrentUser();
-
         NHSysCodeItem codeItem = new NHSysCodeItem();
         codeItem.setTypeCode("2008");
         codeItem.setItemCode("1");
@@ -1494,6 +1565,8 @@ public class RequireOrderServiceImpl implements RequireOrderService {
         if(codeItem != null
                 && codeItem.getItemName().contains(user.getSalesOrg())
                 && !user.getDealerId().equals(user.getBranchNo())){
+            SimpleDateFormat format = new SimpleDateFormat("yyyyMMdd");
+            stringRedisTemplate.opsForHash().put("SALORDER", user.getBranchNo()+format.format(orderDate),"OFF");
             throw new ServiceException(MessageCode.LOGIC_ERROR,"该公司必须由经销商统一报货！");
         }
         SalOrderModel sMode = new SalOrderModel();
@@ -1515,28 +1588,53 @@ public class RequireOrderServiceImpl implements RequireOrderService {
             }
             return 1;
         } else {
+            List<TSsmSalOrder> ssmSalOrders = new ArrayList<TSsmSalOrder>();
             //年卡销售订单
             TSsmSalOrder yearOrder = this.createPromDaliyDiscountAmtOfDearler(orderDate,user.getBranchNo(),user.getSalesOrg());
-            //奶站销售订单
-             TSsmSalOrder noPromOrder = this.creatNoPromoSalOrderOfDealerBranch(orderDate,user.getBranchNo() ,user.getSalesOrg() );
-            //赠品销售订单
-            TSsmSalOrder promOrder = this.creatPromoSalOrderOfDealerBranch(orderDate,user.getBranchNo() ,user.getSalesOrg() );
-            //经销商机构订奶
-            List<TSsmSalOrder> salOrderList = creatNoPromoSalOrderOfDealerBranch70(orderDate,user.getBranchNo() ,user.getSalesOrg() );
-            if(salOrderList.size()>0){
-                for(TSsmSalOrder order : salOrderList) {
-                    generateSalesOrderAnduptVouCher(order);
+            if(yearOrder != null){
+                ssmSalOrders.add(yearOrder);
+            }
+            TMdBranchSendMode flag = branchMapper.getSendMode(user.getBranchNo());
+            if(flag!=null){
+                //送奶工报货
+                List<TSsmSalOrder> ssmSalOrders1 = this.creatNoPromoSalOrderOfDealerBranchAndEmpNo(orderDate,user.getBranchNo() ,user.getSalesOrg());
+                if(ssmSalOrders1.size() > 0){
+                    ssmSalOrders.addAll(ssmSalOrders1);
+                }
+            }else {
+                //奶站销售订单
+                TSsmSalOrder noPromOrder = this.creatNoPromoSalOrderOfDealerBranch(orderDate,user.getBranchNo() ,user.getSalesOrg() );
+                if(noPromOrder != null){
+                    ssmSalOrders.add(noPromOrder);
                 }
             }
-            if(yearOrder != null){
-                generateSalesOrderAnduptVouCher(yearOrder);
+            //赠品销售订单
+            TSsmSalOrder promOrder = this.creatPromoSalOrderOfDealerBranch(orderDate,user.getBranchNo() ,user.getSalesOrg() );
+            if(promOrder != null){
+                ssmSalOrders.add(promOrder);
             }
-            if (noPromOrder != null) {
-                generateSalesOrderAnduptVouCher(noPromOrder);
+            //经销商机构订奶
+            List<TSsmSalOrder> salOrderList = this.creatNoPromoSalOrderOfDealerBranch70(orderDate,user.getBranchNo() ,user.getSalesOrg() );
+            if(salOrderList.size()>0){
+                salOrderList.addAll(salOrderList);
             }
-            if (promOrder != null) {
-                generateSalesOrderAnduptVouCher(promOrder);
-            }
+            ssmSalOrders.forEach(e->{
+                generateSalesOrderAnduptVouCher(e);
+            });
+//            if(salOrderList.size()>0){
+//                for(TSsmSalOrder order : salOrderList) {
+//                    generateSalesOrderAnduptVouCher(order);
+//                }
+//            }
+//            if(yearOrder != null){
+//                generateSalesOrderAnduptVouCher(yearOrder);
+//            }
+//            if (noPromOrder != null) {
+//                generateSalesOrderAnduptVouCher(noPromOrder);
+//            }
+//            if (promOrder != null) {
+//                generateSalesOrderAnduptVouCher(promOrder);
+//            }
         }
         return 0;
     }
@@ -1715,11 +1813,17 @@ public class RequireOrderServiceImpl implements RequireOrderService {
     }
 
     public void generateSalesOrderAnduptVouCher(TSsmSalOrder order) {
-        TMdBranch branch = branchMapper.selectBranchByNo(order.getBranchNo());
+//        TMdBranch branch = branchMapper.selectBranchByNo(order.getBranchNo());
         PISuccessMessage message = null;
-        if ("01".equals(branch.getBranchGroup())) {
-            message = piRequireOrderService.generateSalesOrder(order, order.getDealerNo(), order.getBranchNo(), order.getSalesOrg(), "");
-        } else {
+//        if ("01".equals(branch.getBranchGroup())) {
+//            message = piRequireOrderService.generateSalesOrder(order, order.getDealerNo(), order.getBranchNo(), order.getSalesOrg(), "");
+//        } else {
+//            message = piRequireOrderService.generateSalesOrder(order, order.getDealerNo(), order.getBranchNo(), order.getSalesOrg(), "");
+//        }
+        //送奶工报货
+        if("EM".equals(order.getPreorderSource())){
+            message = piRequireOrderService.generateSalesOrderOfEmp(order,order.getOnlineCode(),order.getOnlineCode(),order.getSalesOrg());
+        }else{
             message = piRequireOrderService.generateSalesOrder(order, order.getDealerNo(), order.getBranchNo(), order.getSalesOrg(), "");
         }
         if (message.isSuccess()) {

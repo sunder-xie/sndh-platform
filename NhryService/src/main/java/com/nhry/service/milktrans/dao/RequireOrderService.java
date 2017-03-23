@@ -74,4 +74,13 @@ public interface RequireOrderService {
     String batchSendSalOrder(List orderNos);
 
     Map<String,Integer> findReqGoodResendByOrderNo(Date orderDate, String branchNo);
+
+    /**
+     * 按送奶工维度统计日销售数量，生成送奶工销售订单使用
+     * @param requiredDate
+     * @param branchNo
+     * @param salesOrg
+     * @return
+     */
+    List<TSsmSalOrder> creatNoPromoSalOrderOfDealerBranchAndEmpNo(Date requiredDate, String branchNo, String salesOrg);
 }

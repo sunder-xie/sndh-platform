@@ -30,6 +30,7 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 
 import java.io.IOException;
+import java.text.SimpleDateFormat;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -273,6 +274,8 @@ public class UserSessionService {
 		//解密之后再放入缓存
 		//缓存用户对象,如果对于的key用户已经存在，则更新，否则新加
 		objectRedisTemplate.opsForHash().put(SysContant.getSystemConst("app_user_key"), user.getLoginName(), user);
+		SimpleDateFormat format = new SimpleDateFormat("yyyyMMdd");
+		objectRedisTemplate.opsForHash().put("SALORDER",user.getBranchNo()+ format.format(new Date()),"OFF");
 	}
 	
 	/**
