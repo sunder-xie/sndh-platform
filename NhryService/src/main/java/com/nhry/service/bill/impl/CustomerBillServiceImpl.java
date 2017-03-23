@@ -473,10 +473,9 @@ public class CustomerBillServiceImpl implements CustomerBillService {
 
     @Override
     public int setBranchRemark(String branchRemark) {
-        if(StringUtils.isBlank(branchRemark)){
-            throw new ServiceException(MessageCode.LOGIC_ERROR,"奶站备注必填");
-        }
-        if(branchRemark.length() > 200){
+
+        //备注可以设置为空,不限制非空
+        if(StringUtils.isNotBlank(branchRemark) && branchRemark.length() > 200){
             throw new ServiceException(MessageCode.LOGIC_ERROR,"奶站备注字符过长,请控制在200个字符以内");
         }
         logger.info("设置奶站备注,当前登录用户user:{}", ToStringBuilder.reflectionToString(userSessionService.getCurrentUser(), ToStringStyle.MULTI_LINE_STYLE));
@@ -488,7 +487,7 @@ public class CustomerBillServiceImpl implements CustomerBillService {
         branch.setRemark(branchRemark);
         branch.setBranchNo(branchNo);
         int c = branchMapper.setBranchRemark(branch);
-        logger.info("影响行数", c);
+        logger.info("影响行数{}", c);
         return 1;
     }
 
