@@ -99,12 +99,15 @@
 		LEFT JOIN t_md_mara_ex pex ON (p.MATNR = pex.MATNR and p.SALES_ORG=pex.SALES_ORG)
 		WHERE p.SALES_ORG=#{salesOrg} and p.MATNR = #{matnr}
 	</select>
+	
+	
 	<select id="searchProducts" resultMap="BaseResultMap" parameterType="com.nhry.model.basic.ProductQueryModel">
 		SELECT
 		p.MATNR,
 		p.MATNR_TXT,
 		p.BASE_UNIT,
 		p. STATUS,
+		p.SORT,
 		p.LAST_MODIFIED MARA_LAST_MODIFIED,
 		p.CREATE_AT MARA_CREATE_AT,
 		p.FIRST_CAT,
@@ -159,9 +162,16 @@
 			<if test="dealerNo != null and dealerNo != ''">
 			   AND p.DEALER_NO=#{dealerNo}
 			</if>
+			
+			<if test="hide != null and hide != ''">
+			   AND p.HIDE=#{hide}
+			</if>
+			
+			
 		</where>
-		ORDER BY p.MATNR
+		ORDER BY p.SORT desc
 	</select>
+	
 	<select id="selectProductAndExListByCode" resultMap="BaseResultMap" parameterType="java.util.HashMap">
 		SELECT
 		p.MATNR,
@@ -426,14 +436,15 @@
 	<select id="isProduct" parameterType="java.lang.String" resultType="java.lang.Integer">
 		SELECT count(1) FROM t_md_mara WHERE MATNR = #{id}
 	</select>
+	
 	<select id="getDealerMaras" resultMap="BaseResultMap" parameterType="com.nhry.model.basic.ProductQueryModel">
 	    SELECT
 			p.MATNR,
 			exm.SHORT_TXT MATNR_TXT,
 			exm.SHORT_TXT,
 			p.BASE_UNIT,
-			p.SORT,
-			p.HIDE,
+			ifnull(ms.SORT,0) SORT,
+			ifnull(ms.HIDE,'N') HIDE,
 			p. STATUS,
 			p.LAST_MODIFIED MARA_LAST_MODIFIED,
 			p.CREATE_AT MARA_CREATE_AT,
@@ -457,6 +468,7 @@
 		FROM
 			t_md_mara p
 			LEFT JOIN t_md_mara_ex exm on exm.MATNR = p.MATNR and p.SALES_ORG = exm.SALES_ORG
+			LEFT JOIN t_md_mara_sort ms  on  ms.MATNR = p.MATNR and p.SALES_ORG =ms.SALES_ORG
 		where p.MATNR NOT IN (
 			SELECT
 				nl.matnr
@@ -472,10 +484,23 @@
 		    AND (p.MATNR like '%${matnrTxt}%' or
 				p.MATNR_TXT like '%${matnrTxt}%') 
 		</if>
+			
+		<if test="hide != null and hide != ''">
+		   AND p.HIDE=#{hide}
+		</if>
 		
-		order by p.SORT desc
+		
+		<if test=" seting !=null and seting == 'N'.toString() ">
+			order by SORT desc
+		</if>
+		
+		<if test=" seting !=null and seting == 'Y'.toString() ">
+			order by p.SORT desc
+		</if>
+		
 		
 	</select>
+	
 	<select id="getCompMaras" resultMap="BaseResultMap" parameterType="com.nhry.model.basic.ProductQueryModel">
 	    SELECT
 			p.MATNR,
@@ -483,8 +508,8 @@
 			exm.SHORT_TXT,
 			p.BASE_UNIT,
 			p. STATUS,
-			p.SORT,
-			p.HIDE,
+			ifnull(ms.SORT,0) SORT,
+			ifnull(ms.HIDE,'N') HIDE,
 			p.LAST_MODIFIED MARA_LAST_MODIFIED,
 			p.CREATE_AT MARA_CREATE_AT,
 			p.FIRST_CAT,
@@ -506,7 +531,8 @@
 			p.DEALER_NO 
 		FROM
 			t_md_mara p 
-			LEFT JOIN t_md_mara_ex exm on exm.MATNR = p.MATNR and p.SALES_ORG =#{salesOrg}
+			LEFT JOIN t_md_mara_ex exm on exm.MATNR = p.MATNR and p.SALES_ORG =#{salesOrg} 
+			LEFT JOIN t_md_mara_sort ms  on  ms.MATNR = p.MATNR and p.SALES_ORG =ms.SALES_ORG
 			WHERE p.MATNR not in (
 			SELECT
 				nl.matnr
@@ -524,7 +550,15 @@
 				p.MATNR_TXT like '%${matnrTxt}%') 
 		</if>
 		
-		order by p.SORT desc
+		
+		<if test=" seting !=null and seting == 'N'.toString() ">
+			order by SORT desc
+		</if>
+		
+		<if test=" seting !=null and seting == 'Y'.toString() ">
+			order by p.SORT desc
+		</if>
+		
 		
 	</select>
 	<select id="getProductByCodeOrNameAndSalesOrg" resultMap="BaseResultMap" parameterType="java.util.HashMap">

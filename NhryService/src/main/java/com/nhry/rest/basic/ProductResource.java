@@ -1,7 +1,5 @@
 package com.nhry.rest.basic;
 
-import java.util.List;
-
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
@@ -22,7 +20,6 @@ import com.nhry.common.exception.MessageCode;
 import com.nhry.data.basic.domain.TMdMara;
 import com.nhry.model.basic.ProductQueryModel;
 import com.nhry.model.basic.UpdateMaraListModel;
-import com.nhry.model.basic.UpdateMaraModel;
 import com.nhry.model.sys.ResponseModel;
 import com.nhry.rest.BaseResource;
 import com.nhry.service.basic.dao.ProductService;
@@ -67,6 +64,8 @@ public class ProductResource extends BaseResource {
 		return convertToRespModel(MessageCode.NORMAL, null, productService.searchProducts(smodel));
 	}
 	
+	
+	
 	@POST
 	@Path("/change/status/{status}/{productCode}")
 	@Produces(MediaType.APPLICATION_JSON)
@@ -100,6 +99,7 @@ public class ProductResource extends BaseResource {
 	public Response getBranchSaleMaras(@ApiParam(required=true,name="pm",value="产品查询对象(branchNo(必填)、matnrTxt)")ProductQueryModel pm){
 		return convertToRespModel(MessageCode.NORMAL, null, productService.getBranchSaleMaras(pm));
 	}
+	
 
 	@GET
 	@Path("/getProductByCodeOrName")
@@ -109,6 +109,9 @@ public class ProductResource extends BaseResource {
 		return convertToRespModel(MessageCode.NORMAL, null, productService.getProductByCodeOrName(product));
 	}
 	
+	
+	
+
 	@POST
 	@Path("/branch/sell/lists")
 	@Produces(MediaType.APPLICATION_JSON)
@@ -117,6 +120,8 @@ public class ProductResource extends BaseResource {
 		return convertToRespModel(MessageCode.NORMAL, null, productService.getBranchSaleMaras());
 	}
 	
+	
+	
 
 	
 	@POST
@@ -124,8 +129,7 @@ public class ProductResource extends BaseResource {
     @Produces(MediaType.APPLICATION_JSON)
     @ApiOperation(value = "/updateSort", notes = "产品排序 和 隐藏  hide{Y:隐藏,N:显示}", response = ResponseModel.class)
     public Response savePlans(@ApiParam(name = "UpdateMaraListModel", value = "UpdateMaraListModel", required = true) UpdateMaraListModel UpdateMaraListModel) {
-		 List<UpdateMaraModel> list = UpdateMaraListModel.getList();
-		 return convertToRespModel(MessageCode.NORMAL, null,  productService.updateSort(list));
+		 return convertToRespModel(MessageCode.NORMAL, null,  productService.updateSort(UpdateMaraListModel));
     }
 	 
 	

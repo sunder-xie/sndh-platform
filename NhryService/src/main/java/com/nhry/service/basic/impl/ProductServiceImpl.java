@@ -1,6 +1,7 @@
 package com.nhry.service.basic.impl;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -16,12 +17,15 @@ import com.nhry.data.basic.dao.TBranchNotsellListMapper;
 import com.nhry.data.basic.dao.TMdBranchMapper;
 import com.nhry.data.basic.dao.TMdMaraExMapper;
 import com.nhry.data.basic.dao.TMdMaraMapper;
+import com.nhry.data.basic.dao.TMdMaraSortMapper;
 import com.nhry.data.basic.domain.TBranchNotsellList;
 import com.nhry.data.basic.domain.TMdBranch;
 import com.nhry.data.basic.domain.TMdMara;
 import com.nhry.data.basic.domain.TMdMaraEx;
+import com.nhry.data.basic.domain.TMdMaraSort;
 import com.nhry.model.basic.BranchSalesOrgModel;
 import com.nhry.model.basic.ProductQueryModel;
+import com.nhry.model.basic.UpdateMaraListModel;
 import com.nhry.model.basic.UpdateMaraModel;
 import com.nhry.service.BaseService;
 import com.nhry.service.basic.dao.BranchService;
@@ -42,6 +46,12 @@ public class ProductServiceImpl extends BaseService implements ProductService {
 	private TSysMessageService messService;
 	private TaskExecutor taskExecutor;
 	private TSsmStockService stockService;
+	
+	private TMdMaraSortMapper maraSortMapper;
+	
+	public void setMaraSortMapper(TMdMaraSortMapper maraSortMapper) {
+		this.maraSortMapper = maraSortMapper;
+	}
 
 	public void settMdMaraMapper(TMdMaraMapper tMdMaraMapper) {
 		this.tMdMaraMapper = tMdMaraMapper;
@@ -118,9 +128,19 @@ public class ProductServiceImpl extends BaseService implements ProductService {
 		if (StringUtils.isEmpty(smodel.getPageNum()) || StringUtils.isEmpty(smodel.getPageSize())) {
 			throw new ServiceException(MessageCode.LOGIC_ERROR,"pageNum和pageSize不能为空！");
 		}
-		smodel.setSalesOrg(this.userSessionService.getCurrentUser().getSalesOrg());
-		// smodel.setDealerNo(this.userSessionService.getCurrentUser().getDealerId());
-		return tMdMaraMapper.searchProducts(smodel);
+		TSysUser currentUser = this.userSessionService.getCurrentUser();
+		/**
+		 * 2017年3月22日13:45:40 
+		 * 根据 BranchNo 判断是否奶站
+		 */
+		if(StringUtils.isNoneBlank(currentUser.getBranchNo())){
+			smodel.setBranchNo(currentUser.getBranchNo());
+			smodel.setSeting("N");
+			return getBranchSaleMaras(smodel);
+		}else{
+			smodel.setSalesOrg(currentUser.getSalesOrg());
+			return tMdMaraMapper.searchProducts(smodel);
+		}
 	}
 
 	@Override
@@ -260,10 +280,12 @@ public class ProductServiceImpl extends BaseService implements ProductService {
 			if (SysContant.getSystemConst("own_Branch").equals(
 					branch.getBranchGroup())) {
 				// 自营奶站
+				pm.setSeting("N");
 				return this.tMdMaraMapper.getCompMaras(pm);
 			} else if (SysContant.getSystemConst("dealer_Branch").equals(
 					branch.getBranchGroup())) {	
 				// 经销商奶站
+				pm.setSeting("N");
 				pm.setDealerNo(branch.getDealerNo());
 				return this.tMdMaraMapper.getDealerMaras(pm);
 			}
@@ -342,17 +364,64 @@ public class ProductServiceImpl extends BaseService implements ProductService {
 	}
 	
 	
-	
-	public int updateSort( List<UpdateMaraModel> updateMaraModels) {
+	@Override
+	public int updateSort( UpdateMaraListModel UpdateMaraListModel ) {
+		List<UpdateMaraModel> updateMaraModels = UpdateMaraListModel.getList();
 		 if(updateMaraModels.size()>0){
-			 for (UpdateMaraModel updateMaraModel : updateMaraModels) {
-				 tMdMaraMapper.updateSort(updateMaraModel);
-			}
+			 TSysUser sysuser = this.userSessionService.getCurrentUser();
+			 String branchNo = sysuser.getBranchNo();
+			 //判断该用户是否是奶站
+			 if(StringUtils.isNotBlank(branchNo)){
+				 //获取该奶站的排序映射
+				 List<TMdMaraSort> maraSortList = maraSortMapper.findListByBranchNo(sysuser.getBranchNo());
+				 if(maraSortList !=null && maraSortList.size()>0 ){
+					  //逻辑循环判断是否存在  如果存在进行修改 不存在进行添加
+					 List<UpdateMaraModel> hasList= new ArrayList<UpdateMaraModel>();//该奶站有的排序映射
+					 for (int i = 0; i < maraSortList.size(); i++) {
+						 TMdMaraSort tMdMaraSort = maraSortList.get(i);
+						 for (UpdateMaraModel updateMaraModel : updateMaraModels) {
+							 if(tMdMaraSort.getMatnr().equals(updateMaraModel.getMatnr())){
+								 hasList.add(updateMaraModel);
+							 }
+						}
+					}
+					 
+					//修改
+					 if(hasList.size()>0){
+						 updateMaraModels.removeAll(hasList);
+						 for (UpdateMaraModel updateMaraModel : hasList) {
+							 updateMaraModel.setBranchNo(branchNo);
+							 maraSortMapper.updatebyMatnr(updateMaraModel);
+						 }
+					 }
+					
+					//添加奶站排序
+					 for (UpdateMaraModel updateMaraModel : updateMaraModels) {
+						 updateMaraModel.setBranchNo(branchNo);
+						 maraSortMapper.insert(updateMaraModel);
+					 }
+					 
+					 
+				 }else{
+					 //添加奶站排序
+					 for (UpdateMaraModel updateMaraModel : updateMaraModels) {
+						 updateMaraModel.setBranchNo(branchNo);
+						 maraSortMapper.insert(updateMaraModel);
+					 }
+				 }
+				 return 1;
+			 }else{
+				 //公司排序设置
+				 for (UpdateMaraModel updateMaraModel : updateMaraModels) {
+					 tMdMaraMapper.updateSort(updateMaraModel);
+				 }
+			 }
 			return 1;
 		 }
 		 return 0;
+	}
 	
-	};
+	
 	
 	
 

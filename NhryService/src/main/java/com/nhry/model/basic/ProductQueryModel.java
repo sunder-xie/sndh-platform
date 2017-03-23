@@ -10,7 +10,16 @@ public class ProductQueryModel extends BaseQueryModel implements Serializable {
 	private String salesOrg;
 	private String dealerNo;
 	private String branchNo;
+	private String hide;
+	private String seting="Y";//Y:公司级别排序 默认为公司排序,N:奶站级别排序
 	
+	
+	public String getHide() {
+		return hide;
+	}
+	public void setHide(String hide) {
+		this.hide = hide;
+	}
 	public String getFirstCatory() {
 		return firstCatory;
 	}
@@ -53,4 +62,13 @@ public class ProductQueryModel extends BaseQueryModel implements Serializable {
 	public void setBranchNo(String branchNo) {
 		this.branchNo = branchNo;
 	}
+	public String getSeting() {
+		return seting;
+	}
+	public void setSeting(String seting) {
+		this.seting = seting;
+	}
+	
+	
+	
 }
