@@ -32,6 +32,16 @@ public interface PIRequireOrderService {
     PISuccessMessage generateSalesOrder(TSsmSalOrder ssmSalOrder, String kunnr, String kunwe, String vkorg, String activityId) ;
 
     /**
+     * 销售订单创建(送奶工)
+     * @param ssmSalOrder
+     * @param kunnr 客户编号
+     * @param kunwe 送达方
+     * @param vkorg 销售组织
+     * @return
+     */
+    PISuccessMessage generateSalesOrderOfEmp(TSsmSalOrder ssmSalOrder, String kunnr, String kunwe, String vkorg) ;
+
+    /**
      * 交货单
       * @param orderNo 销售凭证
      * @param isDeli 是否是调货单

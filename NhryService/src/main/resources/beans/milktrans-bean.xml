@@ -45,6 +45,7 @@
 		<property name="stockService"  ref="ssmStockService"></property>
 		<property name="dictionaryService" ref="dicService"/>
 		<property name="stringRedisTemplate" ref="stringRedisTemplate"/>
+		<property name="branchEmpMapper" ref="branchEmpMapper"/>
 	</bean>
 
 	<!--回瓶管理-->
