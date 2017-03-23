@@ -242,8 +242,8 @@ public class ReportResource extends BaseResource{
             XSSFRow row = sheet.getRow(2);
             XSSFCell cell = row.getCell(1);
             TDispOrder order = model.getOrder();
-
             XSSFCellStyle styleBoldwrap = workbook.createCellStyle();
+            styleBoldwrap.setBorderLeft(XSSFCellStyle.BORDER_THIN);//左边框
             styleBoldwrap.setWrapText(true);
 
 
@@ -257,7 +257,11 @@ public class ReportResource extends BaseResource{
             row = sheet.getRow(5);
             cell = row.getCell(1);
             cell.setCellStyle(styleBoldwrap);
-            cell.setCellValue("应送总数：".concat(order.getTotalQty()==null?"":order.getTotalQty().toString().concat("--").concat(model.getProducts())));
+            String total = "应送总数：".concat(order.getTotalQty()==null?"":order.getTotalQty().toString().concat("--").concat(model.getProducts()));
+            cell.setCellValue(total);
+            if(total.length()>90){
+                row.setHeight((short)600);
+            }
 
             XSSFCellStyle styleBold = workbook.createCellStyle();
             styleBold.setBorderBottom(XSSFCellStyle.BORDER_THIN); //下边框
@@ -315,6 +319,9 @@ public class ReportResource extends BaseResource{
                     }*/
                     r++;
                 }
+                XSSFCellStyle styleBoldDown = workbook.createCellStyle();
+                styleBoldDown.setWrapText(true);
+
                 int r1 = details.size()+9;
                 row = sheet.createRow(r1);
                 cell = row.createCell(1);
@@ -323,13 +330,18 @@ public class ReportResource extends BaseResource{
                     for(TDispOrderItem deliverItem : modelDeliver){
                         row = sheet.createRow(r1+1);
                         cell = row.createCell(1);
-                        cell.setCellStyle(styleBoldwrap);
-                        cell.setCellValue((deliverItem.getAddressTxt()==null?"--":deliverItem.getAddressTxt()).concat(":").concat(deliverItem.getTotalQty()==null?"" : deliverItem.getTotalQty().toString()).concat("--").concat(deliverItem.getMatnrTxt()));//小区名称
+                        String addressTotal = (deliverItem.getAddressTxt()==null?"--":deliverItem.getAddressTxt()).concat(":").concat(deliverItem.getTotalQty()==null?"" : deliverItem.getTotalQty().toString()).concat("--").concat(deliverItem.getMatnrTxt());
+                        cell.setCellValue(addressTotal);//小区名称
                         sheet.addMergedRegion(new CellRangeAddress(row.getRowNum(), row.getRowNum(), 1, 8));
+                        if(addressTotal.length()>90){
+                            row.setHeight((short)600);
+                        }
+                        cell.setCellStyle(styleBoldDown);
                         r1++;
                     }
 
                 }
+
                 sheet.setForceFormulaRecalculation(true);
             }
             String fname = CodeGeneratorUtil.getCode();
