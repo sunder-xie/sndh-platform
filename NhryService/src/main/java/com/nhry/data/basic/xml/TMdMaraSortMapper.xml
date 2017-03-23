@@ -25,7 +25,8 @@
     
     
     <select id="findListByBranchNo"  resultMap="BaseResultMap" parameterType="java.lang.String" >
-    	 select MATNR,SALES_ORG,BRANCH_NO,SORT from  t_md_mara_sort where  BRANCH_NO= #{branchNo} 
+    	 select MATNR,SALES_ORG,BRANCH_NO,SORT,HIDE from  t_md_mara_sort where  BRANCH_NO= #{branchNo} 
+    	 order by SORT desc
     </select>
     
     

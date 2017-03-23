@@ -6,6 +6,7 @@ import com.nhry.model.auth.UserQueryModel;
 import com.nhry.model.auth.UserQueryModel2;
 import com.nhry.model.auth.UserQueryModel3;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -64,4 +65,11 @@ public interface TSysUserMapper {
 	 * @return
      */
 	PageInfo<TSysUser> findNotRoleUserPage(UserQueryModel3 model);
+	
+	/**
+	 * 通过多个获取
+	 * @param loginName
+	 * @return
+	 */
+	public List<TSysUser> findUserByLoginNameList(ArrayList<String> loginName);
 }

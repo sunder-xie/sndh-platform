@@ -1,5 +1,9 @@
 package com.nhry.data.auth.impl;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+
 import com.github.pagehelper.PageInfo;
 import com.nhry.common.datasource.DynamicSqlSessionTemplate;
 import com.nhry.data.auth.dao.TSysUserMapper;
@@ -8,15 +12,17 @@ import com.nhry.model.auth.UserQueryModel;
 import com.nhry.model.auth.UserQueryModel2;
 import com.nhry.model.auth.UserQueryModel3;
 
-import java.util.List;
-import java.util.Map;
-
 public class TSysUserMapperImpl implements TSysUserMapper {
 	private DynamicSqlSessionTemplate sqlSessionTemplate;
 	@Override
 	public PageInfo findUser(UserQueryModel um) {
 		// TODO Auto-generated method stub
 		return sqlSessionTemplate.selectListByPages("findUser", um, Integer.parseInt(um.getPageNum()),Integer.parseInt(um.getPageSize()));
+	}
+	
+	@Override
+	public List<TSysUser> findUserByLoginNameList(ArrayList<String> list) {
+		return sqlSessionTemplate.selectList("findUserByLoginNameList",list );
 	}
 
 	@Override

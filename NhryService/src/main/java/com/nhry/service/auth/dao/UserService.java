@@ -6,7 +6,9 @@ import com.nhry.model.auth.UserQueryModel;
 import com.nhry.model.auth.UserQueryModel2;
 import com.nhry.model.auth.UserQueryModel3;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 public interface UserService {
 	public PageInfo findUser(UserQueryModel um);
@@ -40,6 +42,8 @@ public interface UserService {
 	public TSysUser getCurrentLoginUser();
 	
 	public TSysUser findUserByLoginName(String loginName);
+	
+	public List<TSysUser> findUserByLoginNameList(ArrayList<String> loginName);
 	
 	public int updateUser(TSysUser record);
 	

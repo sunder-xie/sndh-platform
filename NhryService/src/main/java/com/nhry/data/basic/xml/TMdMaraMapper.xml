@@ -468,7 +468,7 @@
 		FROM
 			t_md_mara p
 			LEFT JOIN t_md_mara_ex exm on exm.MATNR = p.MATNR and p.SALES_ORG = exm.SALES_ORG
-			LEFT JOIN t_md_mara_sort ms  on  ms.MATNR = p.MATNR and p.SALES_ORG =ms.SALES_ORG
+			LEFT JOIN t_md_mara_sort ms  on ms.MATNR = p.MATNR and ms.BRANCH_NO=#{branchNo}
 		where p.MATNR NOT IN (
 			SELECT
 				nl.matnr
@@ -480,13 +480,14 @@
 		)
 		AND p.SALES_ORG = #{salesOrg}
 		AND P.STATUS='Y' 
+		
 		<if test="matnrTxt != null and matnrTxt != ''">
 		    AND (p.MATNR like '%${matnrTxt}%' or
 				p.MATNR_TXT like '%${matnrTxt}%') 
 		</if>
 			
 		<if test="hide != null and hide != ''">
-		   AND p.HIDE=#{hide}
+		   AND ms.HIDE=#{hide}
 		</if>
 		
 		
@@ -532,7 +533,7 @@
 		FROM
 			t_md_mara p 
 			LEFT JOIN t_md_mara_ex exm on exm.MATNR = p.MATNR and p.SALES_ORG =#{salesOrg} 
-			LEFT JOIN t_md_mara_sort ms  on  ms.MATNR = p.MATNR and p.SALES_ORG =ms.SALES_ORG
+			LEFT JOIN t_md_mara_sort ms  on ms.MATNR = p.MATNR and ms.BRANCH_NO=#{branchNo}
 			WHERE p.MATNR not in (
 			SELECT
 				nl.matnr
@@ -550,6 +551,10 @@
 				p.MATNR_TXT like '%${matnrTxt}%') 
 		</if>
 		
+		
+		<if test="hide != null and hide != ''">
+		   AND ms.HIDE=#{hide}
+		</if>
 		
 		<if test=" seting !=null and seting == 'N'.toString() ">
 			order by SORT desc
