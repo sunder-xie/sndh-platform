@@ -1,6 +1,7 @@
 package com.nhry.service.bill.dao;
 
 import com.github.pagehelper.PageInfo;
+import com.nhry.data.basic.domain.TMdBranch;
 import com.nhry.data.bill.domain.TMstRecvBill;
 import com.nhry.model.bill.*;
 import com.nhry.model.order.OrderSearchModel;
@@ -47,4 +48,8 @@ public interface CustomerBillService {
    int selectOrdersNoBillCount();
 
    BatChCollectForExpModel BatchPrintForExp2(CustBillQueryModel cModel);
+
+   int setBranchRemark(String branchRemark);
+
+   TMdBranch getCurrentBranch();
 }

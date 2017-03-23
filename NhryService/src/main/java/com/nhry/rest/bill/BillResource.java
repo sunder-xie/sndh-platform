@@ -153,6 +153,22 @@ public class BillResource extends BaseResource {
         return convertToRespModel(MessageCode.NORMAL, null, customerBillService.delRecBills(oModel));
     }
 
+    @GET
+    @Path("/cust/getCurrentBranch")
+    @Produces(MediaType.APPLICATION_JSON)
+    @ApiOperation(value = "/cust/getCurrentBranch", response = Response.class, notes = "获取当前用户所属奶站")
+    public Response getCurrentBranch() {
+        return convertToRespModel(MessageCode.NORMAL, null, customerBillService.getCurrentBranch());
+    }
+
+    @GET
+    @Path("/cust/setBranchRemark")
+    @Produces(MediaType.APPLICATION_JSON)
+    @ApiOperation(value = "/cust/setBranchRemark", response = Response.class, notes = "设置奶站备注")
+    public Response setBranchRemark(@ApiParam(required = true, name = "branchRemark", value = "奶站备注") @QueryParam("branchRemark")String branchRemark) {
+        return convertToRespModel(MessageCode.NORMAL, null, customerBillService.setBranchRemark(branchRemark));
+    }
+
     @POST
     @Path("/cust/custBatchCollectBySelect")
     @Produces(MediaType.APPLICATION_JSON)

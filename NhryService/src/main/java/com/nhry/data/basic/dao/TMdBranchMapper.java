@@ -10,6 +10,8 @@ import java.util.List;
 import java.util.Map;
 
 public interface TMdBranchMapper {
+    int setBranchRemark(TMdBranch tMdBranch);
+
     int deleteBranchByNo(String branchNo);
 
     int addBranch(TMdBranch record);
