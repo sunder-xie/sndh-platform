@@ -344,8 +344,10 @@ public class ReportResource extends BaseResource{
 
                 sheet.setForceFormulaRecalculation(true);
             }
-            String fname = CodeGeneratorUtil.getCode();
-            String rq = format1.format(new Date(new Date().getTime() - 24 * 60 * 60 * 1000));
+            //String fname = CodeGeneratorUtil.getCode();
+            String fname = (format.format(order.getDispDate())).concat(order.getDispEmpName()).concat("路单.xlsx");
+            String rq = format.format(new Date(order.getDispDate().getTime() - 24 * 60 * 60 * 1000));
+            System.out.print(rq);
             String filePath = url +  File.separator + "report"+ File.separator + "export";
             File delFiles = new File(filePath);
             if(delFiles.isDirectory()){
@@ -355,13 +357,13 @@ public class ReportResource extends BaseResource{
                     }
                 }
             }
-            File export = new File(url +  File.separator + "report"+ File.separator + "export" + File.separator + fname + "DeliverMilk.xlsx");
+            File export = new File(url +  File.separator + "report"+ File.separator + "export" + File.separator + fname);
             FileOutputStream stream = new FileOutputStream(export);
             workbook.write(stream);
             stream.flush();
             stream.close();
 
-            outUrl = fname + "DeliverMilk.xlsx";
+            outUrl = fname;
         }catch (Exception e){
             e.printStackTrace();
         }
