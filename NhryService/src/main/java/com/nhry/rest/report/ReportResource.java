@@ -6,6 +6,7 @@ import com.nhry.data.auth.domain.TSysUser;
 import com.nhry.data.basic.domain.TMdAddress;
 import com.nhry.data.basic.domain.TMdBranch;
 import com.nhry.data.basic.domain.TMdBranchEmp;
+import com.nhry.data.basic.domain.TMdMaraSort;
 import com.nhry.data.bill.domain.TMstRecvBill;
 import com.nhry.data.milk.domain.TDispOrder;
 import com.nhry.data.milk.domain.TDispOrderItem;
@@ -23,8 +24,10 @@ import com.nhry.model.statistics.BranchInfoModel;
 import com.nhry.model.statistics.ExtendBranchInfoModel;
 import com.nhry.model.sys.ResponseModel;
 import com.nhry.rest.BaseResource;
+import com.nhry.service.auth.dao.UserService;
 import com.nhry.service.basic.dao.BranchEmpService;
 import com.nhry.service.basic.dao.BranchService;
+import com.nhry.service.basic.dao.ProductService;
 import com.nhry.service.basic.pojo.BranchEmpModel;
 import com.nhry.service.bill.dao.CustomerBillService;
 import com.nhry.service.milk.dao.DeliverMilkService;
@@ -92,6 +95,15 @@ public class ReportResource extends BaseResource{
     private OutMilkService outMilkService;
     @Autowired
     private RequireOrderService requireOrderService;
+    
+    @Autowired
+    private ProductService productService;
+    
+    @Autowired
+    private UserService userService;
+    
+    
+    
     @GET
     @Path("/reportCollect")
     @Produces(MediaType.APPLICATION_JSON)
@@ -1318,6 +1330,11 @@ public class ReportResource extends BaseResource{
                 model.setBranchNo(user.getBranchNo());
             }
             List<Map<String, String>> orders = branchInfoService.exportOrderByModel(model);
+            
+            List<TMdMaraSort> maraSorts = productService.findMaraSortByBranchNo(model.getBranchNo());
+            
+            
+            
             File file = new File(url +  File.separator + "report"+ File.separator + "template" + File.separator + "FnbTemplate.xlsx");    //审批单
             FileInputStream input = new FileInputStream(file);
             XSSFWorkbook workbook = new XSSFWorkbook(new BufferedInputStream(input));
@@ -1331,10 +1348,52 @@ public class ReportResource extends BaseResource{
             
             Map<String, String> projectMap = new HashMap<String, String>();//产品行
             Map<String, String> empMap = new HashMap<String, String>();//员工列
+//            ArrayList<String> emps=new ArrayList<String>();//送奶员编号
+            Set<String> emps= new HashSet<String>();
             for (Map<String, String> map : orders) {
                 projectMap.put(map.get("CONFIRM_MATNR"), map.get("MATNR_TXT"));
                 empMap.put(map.get("DISP_EMP_NO"), map.get("EMP_NAME"));
+                emps.add(map.get("DISP_EMP_NO"));
             }
+            
+            //分奶排序:判断是否存在排序
+            if(maraSorts !=null &&  maraSorts.size() >0){
+            	//LinkedHashMap有序map进行排序
+            	Map<String, String> projectMapSort = new LinkedHashMap<String, String>();//产品行
+            	for (TMdMaraSort maraSort : maraSorts) {
+            		//获取排序
+            		String value = projectMap.get(maraSort.getMatnr());
+            		//判断是否
+            		if(StringUtils.isNotBlank(value)){
+            			if("N".equals(maraSort.getHide())){
+            				projectMapSort.put(maraSort.getMatnr(), value);
+            			}
+            			projectMap.remove(maraSort.getMatnr());
+            		}
+				}
+            	projectMapSort.putAll(projectMap);
+            	projectMap=projectMapSort;
+            }
+            
+            //员工入职时间排序
+            List<TSysUser>  userList=userService.findUserByLoginNameList( new ArrayList<>(emps));
+            if(userList !=null &&  userList.size() >0){
+            	//LinkedHashMap有序map进行排序
+            	Map<String, String> empMapSort = new LinkedHashMap<String, String>();//产品行
+            	for (TSysUser user : userList) {
+            		//获取排序
+            		String value = empMap.get(user.getLoginName());
+            		//判断是否
+            		if(StringUtils.isNotBlank(value)){
+            			empMapSort.put(user.getLoginName(), value);
+            			empMap.remove(user.getLoginName());
+            		}
+				}
+            	empMapSort.putAll(empMap);
+            	empMap=empMapSort;
+            }
+            
+            
             int columnNum = 1;
             XSSFRow row1 = sheet.getRow(2);
 
@@ -1343,6 +1402,8 @@ public class ReportResource extends BaseResource{
                 cell.setCellValue(entry.getValue());
                 cell.setCellStyle(ExcelUtil.setBorderStyle(workbook));
             }
+            
+            
             XSSFCell cellSumTitle = row1.createCell(columnNum);
             cellSumTitle.setCellValue("合计");
             cellSumTitle.setCellStyle(ExcelUtil.setBorderStyle(workbook));
@@ -1356,13 +1417,19 @@ public class ReportResource extends BaseResource{
                 String empNo = entry.getKey();
                 cell.setCellValue(entry.getValue());
                 cell.setCellStyle(ExcelUtil.setBorderStyle(workbook));
+                //Excel 产品名称循环
                 for (Map.Entry<String, String> entry1 : projectMap.entrySet()) {
                     XSSFCell cell1 = row.createCell(cNum++);
                     cell1.setCellStyle(ExcelUtil.setBorderStyle(workbook));
+                    //设置默认值
+                    cell1.setCellValue(0);
                     String matnr = entry1.getKey();
 //                    cell1.setCellValue(matnr);
+                    //循环订单
                     for (Map<String, String> map : orders) {
+                    	//当前产品产品编号
                         String matnrT =map.get("CONFIRM_MATNR");
+                        //前产品送奶员
                         String empNoT = map.get("DISP_EMP_NO");
                         if(empNo.equals(empNoT) && matnr.equals(matnrT)){
                             if(map.get("CQTY")!=null) {
@@ -1380,6 +1447,7 @@ public class ReportResource extends BaseResource{
                             }
                         }
                     }
+                    
                 }
                 //行合计
                 XSSFCell cellSum = row.createCell(cNum);

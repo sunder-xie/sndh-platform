@@ -280,12 +280,10 @@ public class ProductServiceImpl extends BaseService implements ProductService {
 			if (SysContant.getSystemConst("own_Branch").equals(
 					branch.getBranchGroup())) {
 				// 自营奶站
-				pm.setSeting("N");
 				return this.tMdMaraMapper.getCompMaras(pm);
 			} else if (SysContant.getSystemConst("dealer_Branch").equals(
 					branch.getBranchGroup())) {	
 				// 经销商奶站
-				pm.setSeting("N");
 				pm.setDealerNo(branch.getDealerNo());
 				return this.tMdMaraMapper.getDealerMaras(pm);
 			}
@@ -421,7 +419,10 @@ public class ProductServiceImpl extends BaseService implements ProductService {
 		 return 0;
 	}
 	
-	
+	@Override
+	public List<TMdMaraSort>  findMaraSortByBranchNo(String branchNo){
+		return maraSortMapper.findListByBranchNo(branchNo);
+	}
 	
 	
 

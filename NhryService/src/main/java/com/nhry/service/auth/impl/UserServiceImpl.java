@@ -1,5 +1,11 @@
 package com.nhry.service.auth.impl;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import org.apache.commons.lang3.StringUtils;
+import org.springframework.data.redis.core.RedisTemplate;
+
 import com.github.pagehelper.PageInfo;
 import com.nhry.common.exception.MessageCode;
 import com.nhry.common.exception.ServiceException;
@@ -9,7 +15,6 @@ import com.nhry.data.auth.domain.TSysAccesskey;
 import com.nhry.data.auth.domain.TSysUser;
 import com.nhry.data.basic.dao.TMdBranchEmpMapper;
 import com.nhry.data.basic.domain.TMdBranchEmp;
-import com.nhry.data.basic.domain.TSysMessage;
 import com.nhry.data.config.dao.NHSysCodeItemMapper;
 import com.nhry.data.config.domain.NHSysCodeItem;
 import com.nhry.model.auth.UserQueryModel;
@@ -25,11 +30,6 @@ import com.nhry.utils.Base64Util;
 import com.nhry.utils.SysContant;
 import com.nhry.utils.date.Date;
 
-import org.apache.commons.lang3.StringUtils;
-import org.springframework.data.redis.core.RedisTemplate;
-
-import java.util.List;
-
 public class UserServiceImpl extends BaseService implements UserService {
 	private TSysUserMapper userMapper;
 	private TSysRoleMapper roleMapper;
@@ -41,6 +41,11 @@ public class UserServiceImpl extends BaseService implements UserService {
 	private TMdBranchEmpMapper branchEmpMapper;
 	private TSysMessageService messageService;
     
+	
+	@Override
+	public List<TSysUser> findUserByLoginNameList(ArrayList<String> loginName) {
+		return userMapper.findUserByLoginNameList(loginName);
+	}
 	
 	@Override
 	public PageInfo findUser(UserQueryModel um){

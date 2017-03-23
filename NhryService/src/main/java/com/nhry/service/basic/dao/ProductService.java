@@ -6,6 +6,7 @@ import java.util.Map;
 import com.github.pagehelper.PageInfo;
 import com.nhry.data.basic.domain.TMdMara;
 import com.nhry.data.basic.domain.TMdMaraEx;
+import com.nhry.data.basic.domain.TMdMaraSort;
 import com.nhry.model.basic.ProductQueryModel;
 import com.nhry.model.basic.UpdateMaraListModel;
 import com.nhry.model.basic.UpdateMaraModel;
@@ -105,4 +106,10 @@ public interface ProductService {
      * @return
      */
     public int updateSort(UpdateMaraListModel updateMaraListModel);
+    /**
+     * 通过奶点获取排序
+     * @param branchNo
+     * @return
+     */
+	List<TMdMaraSort> findMaraSortByBranchNo(String branchNo);
 }
