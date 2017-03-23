@@ -789,13 +789,19 @@ public class ReportResource extends BaseResource{
                         lt6.add(orderBillModel);
                     }
                 }
+                String branchRemark = "";
+                TMdBranch branch = customerBillService.getCurrentBranch();
+                if(null != branch && StringUtils.isNotBlank(branch.getRemark())){
+                    branchRemark = branch.getRemark();
+                }
+
                 if(lt6.size()>0){
                     XSSFSheet sheet = workbook.getSheetAt(0);
-                    executeSheet(lt6, workbook, sheet,result.getBranchName(),result.getBranchTel(),result.getBranchAddress(),result.getSalesOrgName());
+                    executeSheet(lt6, workbook, sheet,result.getBranchName(),result.getBranchTel(),result.getBranchAddress(),result.getSalesOrgName(), branchRemark);
                 }
                 if(gt6.size()>0){
                     XSSFSheet sheet = workbook.createSheet("特殊结款单");
-                    executeSheet(gt6, workbook, sheet,result.getBranchName(),result.getBranchTel(),result.getBranchAddress(),result.getSalesOrgName());
+                    executeSheet(gt6, workbook, sheet,result.getBranchName(),result.getBranchTel(),result.getBranchAddress(),result.getSalesOrgName(), branchRemark);
                 }
             }
 //            ps.setOrientation(PrintOrientation.PORTRAIT);
@@ -833,7 +839,7 @@ public class ReportResource extends BaseResource{
         return convertToRespModel(MessageCode.NORMAL,null,outUrl);
     }
 
-    private void executeSheet(List<CollectOrderBillModel> orderBillModel1, XSSFWorkbook workbook, XSSFSheet sheet,String branchName,String branchTel,String branchAddress,String salesOrgName) {
+    private void executeSheet(List<CollectOrderBillModel> orderBillModel1, XSSFWorkbook workbook, XSSFSheet sheet,String branchName,String branchTel,String branchAddress,String salesOrgName, String branchRemark) {
         int rowNum = 0;
         for(CollectOrderBillModel orderBillModel : orderBillModel1) {
 //                XSSFRow rownull = sheet.createRow(rowNum++);
@@ -871,7 +877,9 @@ public class ReportResource extends BaseResource{
             ExcelUtil.createCell(row2,1,"配送奶站："+branchName,ExcelUtil.setFontStype(workbook));
             sheet.addMergedRegion(new CellRangeAddress(row2.getRowNum(), row2.getRowNum() + 1, 1, 4));
 
-            ExcelUtil.createCell(row2,5,"订奶起止日期："+ format.format(orderBillModel.getStartDate()) +"--"+ format.format(orderBillModel.getEndDate()) +"",ExcelUtil.setFontStype(workbook));
+            ExcelUtil.createCell(row2,5,"订奶起止日期："+
+                    (null != orderBillModel.getStartDate()?format.format(orderBillModel.getStartDate()):"") +"--"+
+                    (null != orderBillModel.getEndDate()?format.format(orderBillModel.getEndDate()):"" )+"",ExcelUtil.setFontStype(workbook));
             sheet.addMergedRegion(new CellRangeAddress(row2.getRowNum(), row2.getRowNum() + 1, 5, 9));
 
             ExcelUtil.createCell(row2,10,"送奶员："+orderBillModel.getEmpName(),ExcelUtil.getCellStyle4(workbook));
@@ -947,7 +955,7 @@ public class ReportResource extends BaseResource{
             sheet.addMergedRegion(new CellRangeAddress(row16.getRowNum(), row16.getRowNum(), 11, 13));
 
             XSSFRow row17 = sheet.createRow(rowNum++);
-            ExcelUtil.createCell(row17,1,"备注：",ExcelUtil.getCellStyle2(workbook));
+            ExcelUtil.createCell(row17,1,"备注："+branchRemark,ExcelUtil.getCellStyle2(workbook));
             sheet.addMergedRegion(new CellRangeAddress(row17.getRowNum(), row17.getRowNum() + 1, 1, 13));
             rowNum++;
             XSSFRow row19 = sheet.createRow(rowNum++);

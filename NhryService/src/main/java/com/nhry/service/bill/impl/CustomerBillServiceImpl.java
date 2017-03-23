@@ -41,6 +41,7 @@ import com.nhry.utils.YearLastMonthUtil;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
+import org.apache.cxf.common.i18n.Exception;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.core.task.TaskExecutor;
@@ -470,6 +471,36 @@ public class CustomerBillServiceImpl implements CustomerBillService {
         return resultModel;
     }
 
+    @Override
+    public int setBranchRemark(String branchRemark) {
+        if(StringUtils.isBlank(branchRemark)){
+            throw new ServiceException(MessageCode.LOGIC_ERROR,"奶站备注必填");
+        }
+        if(branchRemark.length() > 200){
+            throw new ServiceException(MessageCode.LOGIC_ERROR,"奶站备注字符过长,请控制在200个字符以内");
+        }
+        logger.info("设置奶站备注,当前登录用户user:{}", ToStringBuilder.reflectionToString(userSessionService.getCurrentUser(), ToStringStyle.MULTI_LINE_STYLE));
+        String branchNo = userSessionService.getCurrentUser().getBranchNo();
+        if(StringUtils.isBlank(branchNo)){
+            throw new ServiceException(MessageCode.LOGIC_ERROR,"当前用户未归属任何奶站");
+        }
+        TMdBranch branch = new TMdBranch();
+        branch.setRemark(branchRemark);
+        branch.setBranchNo(branchNo);
+        int c = branchMapper.setBranchRemark(branch);
+        logger.info("影响行数", c);
+        return 1;
+    }
+
+    @Override
+    public TMdBranch getCurrentBranch() {
+        try {
+            return branchMapper.getBranchByNo(this.userSessionService.getCurrentUser().getBranchNo());
+        }catch(java.lang.Exception e){
+            logger.error(e.getMessage(), e);
+        }
+      ;return new TMdBranch();
+    }
 
     /**
      * 批量删除收款单
