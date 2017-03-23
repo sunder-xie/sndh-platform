@@ -7,6 +7,7 @@ import com.github.pagehelper.PageInfo;
 import com.nhry.data.basic.domain.TMdMara;
 import com.nhry.data.basic.domain.TMdMaraEx;
 import com.nhry.model.basic.ProductQueryModel;
+import com.nhry.model.basic.UpdateMaraListModel;
 import com.nhry.model.basic.UpdateMaraModel;
 public interface ProductService {
 	/**
@@ -103,5 +104,5 @@ public interface ProductService {
      * @param tMdMaras
      * @return
      */
-    public int updateSort(List<UpdateMaraModel> UpdateMaraModel);
+    public int updateSort(UpdateMaraListModel updateMaraListModel);
 }

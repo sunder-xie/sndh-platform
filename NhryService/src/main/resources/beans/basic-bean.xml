@@ -30,6 +30,13 @@
 	<bean id="notsellListMapper" class="com.nhry.data.basic.impl.TBranchNotsellListMapperImpl">
 		<property name="sqlSessionTemplate" ref="dynamicSqlSessionTemplate"></property>
 	</bean>
+	
+	
+	<bean id="maraSortMapper" class="com.nhry.data.basic.impl.TMdMaraSortMapperImpl">
+		<property name="sqlSessionTemplate" ref="dynamicSqlSessionTemplate"></property>
+	</bean>
+	
+	
 	<bean id="productService" class="com.nhry.service.basic.impl.ProductServiceImpl">
 		<property name="tMdMaraMapper" ref="maraMapper"></property>
 		<property name="tMdMaraExMapper" ref="maraExMapper"></property>
@@ -40,6 +47,7 @@
 		<property name="stockService" ref="ssmStockService"></property>
 		<property name="taskExecutor" ref="taskExecutor"></property>
 		<property name="userSessionService" ref="userSessionService"></property>
+		<property name="maraSortMapper" ref="maraSortMapper"></property>
 	</bean>
 
 	<!-- 价格组信息 -->

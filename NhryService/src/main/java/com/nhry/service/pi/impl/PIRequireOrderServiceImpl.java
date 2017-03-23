@@ -198,12 +198,40 @@ public class PIRequireOrderServiceImpl implements PIRequireOrderService {
         orderHeader.setBSTKD(ssmSalOrder.getOrderNo());
         orderHeader.setLFDAT(ssmSalOrder.getRequiredDate());
         PISuccessMessage message = BusinessDataConnection.SalesOrderCreate(items, orderHeader);
-//        if(message.isSuccess()) {
-//            String orderNo = message.getData();
-//            if (isZy) {
-//                savePriceAndGiOrder(orderNo, ssmSalOrder.getBranchNo(),false,true);
-//            }
-//        }
+        return message;
+    }
+
+    @Override
+    public PISuccessMessage generateSalesOrderOfEmp(TSsmSalOrder ssmSalOrder, String kunnr, String kunwe, String vkorg) {
+        SalesOrderHeader orderHeader = new SalesOrderHeader();
+        orderHeader.setKUNNR(kunnr);
+        orderHeader.setKUNWE(kunwe);
+        orderHeader.setVKORG(vkorg);
+        TMdBranch branch = branchMapper.getBranchByNo(ssmSalOrder.getBranchNo());
+        List<Map<String, String>> items = new ArrayList<Map<String, String>>();
+        TMdBranchEx branchEx = branchExMapper.getBranchEx(ssmSalOrder.getBranchNo());
+        String lgort = branch.getLgort();
+        if ("02".equals(branch.getBranchGroup())) {
+            items = tSsmSalOrderItemMapper.findDealerItemsForPI(ssmSalOrder.getOrderNo());
+            lgort = branchEx.getReslo();
+        }else{
+            items = tSsmSalOrderItemMapper.findItemsForPI(ssmSalOrder.getOrderNo());
+        }
+        orderHeader.setVTWEG(PIPropertitesUtil.getValue("PI.MasterData.mATQUERY.VKORG13"));
+        orderHeader.setLgort(lgort);
+        String werks = branchEx.getSupplPlnt();
+        orderHeader.setWerks(werks);
+        String auartType = PIPropertitesUtil.getValue("PI.AUART.ZOR");
+        String saleOrgTX = PIPropertitesUtil.getValue("PI.SALEORG_TX");
+        if (saleOrgTX.equals(ssmSalOrder.getSalesOrg())) {
+            auartType = PIPropertitesUtil.getValue("PI.AUART.ZOR1");
+        } else {
+            auartType = PIPropertitesUtil.getValue("PI.AUART.ZOR");
+        }
+        orderHeader.setAuartType(auartType);
+        orderHeader.setBSTKD(ssmSalOrder.getOrderNo());
+        orderHeader.setLFDAT(ssmSalOrder.getRequiredDate());
+        PISuccessMessage message = BusinessDataConnection.SalesOrderCreate(items, orderHeader);
         return message;
     }
 

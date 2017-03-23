@@ -3,6 +3,7 @@ package com.nhry.service.basic.dao;
 import com.github.pagehelper.PageInfo;
 import com.nhry.data.basic.domain.TMdBranch;
 import com.nhry.data.basic.domain.TMdBranchEx;
+import com.nhry.data.basic.domain.TMdBranchSendMode;
 import com.nhry.model.basic.BranchExkostlModel;
 import com.nhry.model.basic.BranchOrDealerList;
 import com.nhry.model.basic.BranchQueryModel;
@@ -51,4 +52,11 @@ public interface BranchService {
     int updateBranchKostl(BranchExkostlModel record);
 
     TMdBranchEx getBranchEx(String branchNo);
+
+    boolean isSendMode(String branchNo);
+
+    List<TMdBranchSendMode> findBranchSendMode();
+
+    int insertSendModes(List<String> sendModes);
+
 }

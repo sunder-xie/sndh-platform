@@ -11,6 +11,7 @@ import com.nhry.data.basic.dao.TMdBranchMapper;
 import com.nhry.data.basic.dao.TMdDealerMapper;
 import com.nhry.data.basic.domain.TMdBranch;
 import com.nhry.data.basic.domain.TMdBranchEx;
+import com.nhry.data.basic.domain.TMdBranchSendMode;
 import com.nhry.data.basic.domain.TMdDealer;
 import com.nhry.model.basic.BranchExkostlModel;
 import com.nhry.model.basic.BranchOrDealerList;
@@ -189,6 +190,31 @@ public class BranchServiceImpl extends BaseService implements BranchService {
 	@Override
 	public TMdBranchEx getBranchEx(String branchNo) {
 		return branchExMapper.getBranchEx(branchNo);
+	}
+
+	@Override
+	public boolean isSendMode(String branchNo) {
+		return branchMapper.getSendMode(branchNo)!=null?true:false;
+	}
+
+	@Override
+	public List<TMdBranchSendMode> findBranchSendMode() {
+		TSysUser user = userSessionService.getCurrentUser();
+		return branchMapper.selectBranchSendMode(user.getSalesOrg());
+	}
+
+	@Override
+	public int insertSendModes(List<String> sendModes) {
+		TSysUser user = userSessionService.getCurrentUser();
+		branchMapper.delSendMode(user.getSalesOrg());
+		sendModes.forEach( e -> {
+			TMdBranchSendMode sendMode = new TMdBranchSendMode();
+			sendMode.setBranchNo(e);
+			sendMode.setSalesOrg(user.getSalesOrg());
+			sendMode.setFlag("1");
+			branchMapper.insertSendMode(sendMode);
+		});
+		return 0;
 	}
 
 	@Override

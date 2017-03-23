@@ -283,4 +283,25 @@
         AND BRANCH_NO = #{branchNo}
 
   </select>
+    <resultMap id="SendModeResultMap" type="com.nhry.data.basic.domain.TMdBranchSendMode" >
+        <id column="BRANCH_NO" property="branchNo" jdbcType="VARCHAR" />
+        <result column="BRANCH_NAME" property="branchName" jdbcType="VARCHAR" />
+        <result column="FLAG" property="flag" jdbcType="VARCHAR"/>
+    </resultMap>
+    <select id="getSendMode" resultType="com.nhry.data.basic.domain.TMdBranchSendMode">
+        select BRANCH_NO,FLAG,SALES_ORG from t_md_branch_send_mode where branch_no = #{branchNo}
+    </select>
+    <select id="selectBranchSendMode" resultMap="SendModeResultMap">
+        select b.BRANCH_NO,b.BRANCH_NAME,	CASE
+        WHEN m.FLAG IS NULL THEN '0'
+        ELSE '1'
+        END FLAG from t_md_branch b left join t_md_branch_send_mode m ON b.branch_no = m.branch_no WHERE b.is_valid = '20' AND b.SALES_ORG = #{salesOrg}
+    </select>
+    <insert id="insertSendMode" parameterType="com.nhry.data.basic.domain.TMdBranchSendMode">
+        insert into t_md_branch_send_mode (BRANCH_NO, FLAG,SALES_ORG)
+        values (#{branchNo,jdbcType=VARCHAR},#{flag,jdbcType=VARCHAR},#{salesOrg,jdbcType=VARCHAR})
+    </insert>
+    <delete id="delSendMode" parameterType="com.nhry.data.basic.domain.TMdBranchSendMode">
+        DELETE FROM t_md_branch_send_mode WHERE sales_org = #{salesOrg,jdbcType=VARCHAR}
+    </delete>
 </mapper>

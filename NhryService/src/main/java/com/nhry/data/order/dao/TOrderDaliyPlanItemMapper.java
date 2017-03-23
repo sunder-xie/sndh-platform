@@ -164,4 +164,11 @@ public interface TOrderDaliyPlanItemMapper {
     int deletePromDayDayByOrder(String orderNo);
 
     List<TOrderDaliyPlanItem> selectPromDaysByNo(String orderCode);
+
+    /**
+     * 按送奶工维度统计奶站的日计划，生成经销商奶站送奶工销售订单
+     * @param rModel
+     * @return
+     */
+    List<Map<String,Object>> selectNoProDayPlanOfDealerBranchAndEmpNo(RequireOrderSearch rModel);
 }

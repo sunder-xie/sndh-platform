@@ -53,6 +53,8 @@ public class TMdBranchEmp implements Serializable,Cloneable {
     
     private Date leaveDate;
 
+    private String sapcode;
+
     public String getSalesOrg() {
         return salesOrg;
     }
@@ -259,4 +261,12 @@ public class TMdBranchEmp implements Serializable,Cloneable {
 		// TODO Auto-generated method stub
 		return super.clone();
 	}
+
+    public String getSapcode() {
+        return sapcode;
+    }
+
+    public void setSapcode(String sapcode) {
+        this.sapcode = sapcode == null ? null : sapcode.trim();
+    }
 }

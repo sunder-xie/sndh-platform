@@ -27,6 +27,7 @@
     <result column="JOIN_DATE" property="joinDate" jdbcType="DATE" />
     <result column="SALES_ORG" jdbcType="VARCHAR" property="salesOrg" />
     <result column="LEAVE_DATE" property="leaveDate" jdbcType="DATE" />
+    <result column="SAPCODE" property="sapcode" jdbcType="VARCHAR" />
   </resultMap>
 
   <resultMap id="RouteResultMap" type="com.nhry.data.basic.domain.TMdResidentialArea">
@@ -47,7 +48,7 @@
   <sql id="Base_Column_List" >
     EMP_NO, HR_EMP_NO, BRANCH_NO, EMP_NAME,GENDER, EMP_TYPE, TEL, MP, WEBCHAT, ID_NO, CREATE_AT,SALES_ORG,
     CREATE_BY, CREATE_BY_TXT, LAST_MODIFIED, LAST_MODIFIED_BY, LAST_MODIFIED_BY_TXT, SALARY_MET,BASE_SALARY,JOIN_DATE,
-    STATUS
+    STATUS, SAPCODE
   </sql>
 
   <!--员工路线表字段-->
@@ -71,7 +72,7 @@
 		AND urole.LOGIN_NAME = emp.HR_EMP_NO
 		ORDER BY
 			role.ROLE_NAME
-	) ROLE_NAME,emp.SALES_ORG
+	) ROLE_NAME,emp.SALES_ORG,emp.SAPCODE
     from t_md_branch_emp emp
     <!-- 
     left join t_sys_user_role urole on emp.HR_EMP_NO = urole.LOGIN_NAME
@@ -110,12 +111,12 @@
     insert into t_md_branch_emp (EMP_NO, HR_EMP_NO, BRANCH_NO,
       EMP_NAME,GENDER,EMP_TYPE, TEL,
       MP, WEBCHAT, ID_NO,CREATE_AT, CREATE_BY, CREATE_BY_TXT,
-      STATUS,LEAVE_DATE,JOIN_DATE,SALES_ORG)
+      STATUS,LEAVE_DATE,JOIN_DATE,SALES_ORG,SAPCODE)
     values (#{empNo,jdbcType=VARCHAR}, #{hrEmpNo,jdbcType=VARCHAR}, #{branchNo,jdbcType=VARCHAR}, 
       #{empName,jdbcType=VARCHAR}, #{gender,jdbcType=VARCHAR}, #{empType,jdbcType=VARCHAR}, #{tel,jdbcType=VARCHAR},
       #{mp,jdbcType=VARCHAR}, #{webchat,jdbcType=VARCHAR}, #{idNo,jdbcType=VARCHAR},
       #{createAt,jdbcType=TIMESTAMP}, #{createBy,jdbcType=VARCHAR}, #{createByTxt,jdbcType=VARCHAR},
-      #{status,jdbcType=CHAR},#{leaveDate,jdbcType=DATE},#{joinDate,jdbcType=DATE},#{salesOrg,jdbcType=VARCHAR})
+      #{status,jdbcType=CHAR},#{leaveDate,jdbcType=DATE},#{joinDate,jdbcType=DATE},#{salesOrg,jdbcType=VARCHAR},#{sapcode,jdbcType=VARCHAR})
   </insert>
 
   <insert id="addEmpRole" parameterType="com.nhry.data.basic.domain.TMdBranchEmp" >
@@ -181,6 +182,9 @@
       <if test="leaveDate != null">
          LEAVE_DATE = #{leaveDate,jdbcType=DATE}
       </if>
+      <if test="sapcode != null">
+        SAPCODE = #{sapcode,jdbcType=VARCHAR}
+      </if>
     </set>
     where EMP_NO = #{empNo,jdbcType=VARCHAR}
   </update>
@@ -244,6 +248,9 @@
       </if>
       <if test="leaveDate != null">
          LEAVE_DATE = #{leaveDate,jdbcType=DATE}
+      </if>
+      <if test="sapcode != null">
+        SAPCODE = #{sapcode,jdbcType=VARCHAR}
       </if>
     </set>
     where Status='1' and BRANCH_NO = #{branchNo,jdbcType=VARCHAR} and HR_EMP_NO = #{empNo,jdbcType=VARCHAR}

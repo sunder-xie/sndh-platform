@@ -12,19 +12,27 @@ public class UpdateMaraModel implements Serializable {
 	private static final long serialVersionUID = 1L;
 	
 	private String salesOrg;
-	private String sort;
+	private Integer sort;
 	private String hide;
 	private String matnr;
+	private String branchNo;
+	
+	public String getBranchNo() {
+		return branchNo;
+	}
+	public void setBranchNo(String branchNo) {
+		this.branchNo = branchNo;
+	}
 	public String getSalesOrg() {
 		return salesOrg;
 	}
 	public void setSalesOrg(String salesOrg) {
 		this.salesOrg = salesOrg;
 	}
-	public String getSort() {
+	public Integer getSort() {
 		return sort;
 	}
-	public void setSort(String sort) {
+	public void setSort(Integer sort) {
 		this.sort = sort;
 	}
 	public String getHide() {
