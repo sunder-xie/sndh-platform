@@ -15,7 +15,7 @@ public class TMdMaraSort implements Serializable{
 	 */
 	private static final long serialVersionUID = -4032936928160903379L;
 	private String matnr;
-    private String sort;
+    private Integer sort;
     private String salesOrg;
     private String branchNo;
     private String hide;
@@ -44,12 +44,12 @@ public class TMdMaraSort implements Serializable{
 	public void setMatnr(String matnr) {
 		this.matnr = matnr;
 	}
-	public String getSort() {
+	public Integer getSort() {
 		return sort;
 	}
-	public void setSort(String sort) {
+	public void setSort(Integer sort) {
 		this.sort = sort;
 	}
-
+	
   
 }

@@ -5,7 +5,7 @@
 		<id column="MATNR" property="matnr" jdbcType="VARCHAR" />
 		<id column="SALES_ORG" property="salesOrg" jdbcType="VARCHAR" />
 		<id column="BRANCH_NO" property="branchNo" jdbcType="VARCHAR" />
-		<id column="SORT" property="sort" jdbcType="BIGINT" />
+		<id column="SORT" property="sort"  />
 		<id column="HIDE" property="hide" jdbcType="VARCHAR" />
 	</resultMap>
 	
