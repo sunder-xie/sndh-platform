@@ -54,16 +54,20 @@ public class TMdMara implements Serializable{
     
     private TMdMaraEx maraEx;
     
-    private String sort;
+    private Integer sort;
     private String hide;
 
-    public String getSort() {
+    
+    
+    public Integer getSort() {
 		return sort;
 	}
 
-	public void setSort(String sort) {
+
+	public void setSort(Integer sort) {
 		this.sort = sort;
 	}
+
 
 	public String getHide() {
 		return hide;
