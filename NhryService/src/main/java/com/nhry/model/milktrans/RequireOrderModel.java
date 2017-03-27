@@ -17,6 +17,8 @@ public class RequireOrderModel implements Serializable {
     private String status;
     private Date orderDate;
     private String voucherNo;
+    private Date createAt;
+    private Date lastModified;
     List<OrderRequireItem> entries;
 
     public String getVoucherNo() {
@@ -73,5 +75,21 @@ public class RequireOrderModel implements Serializable {
 
     public void setStatus(String status) {
         this.status = status;
+    }
+
+    public Date getCreateAt() {
+        return createAt;
+    }
+
+    public void setCreateAt(Date createAt) {
+        this.createAt = createAt;
+    }
+
+    public Date getLastModified() {
+        return lastModified;
+    }
+
+    public void setLastModified(Date lastModified) {
+        this.lastModified = lastModified;
     }
 }

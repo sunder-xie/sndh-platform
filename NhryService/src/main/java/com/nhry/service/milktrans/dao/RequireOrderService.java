@@ -83,4 +83,7 @@ public interface RequireOrderService {
      * @return
      */
     List<TSsmSalOrder> creatNoPromoSalOrderOfDealerBranchAndEmpNo(Date requiredDate, String branchNo, String salesOrg);
+
+
+    boolean isEmpSendMode();
 }
