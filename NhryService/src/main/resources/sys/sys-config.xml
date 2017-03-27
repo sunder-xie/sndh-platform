@@ -48,4 +48,6 @@
   <config key="COMPANT_DISP_FEE" value="4150,4110"></config>
   <!-- 定时任务是否本地执行 true:本地自动执行；false:本地不自动执行-->
   <config key="timer_execute_in_local" value="false"></config>
+  <!-- 送奶工报货编号 -->
+  <config key="emp_send_mode" value="2010"></config>
 </configs>

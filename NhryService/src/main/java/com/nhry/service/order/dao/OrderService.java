@@ -27,6 +27,15 @@ public interface OrderService {
 	
 	List<TOrderDaliyPlanItem> searchDaliyPlansByStatus(String orderNo, String status1,String status2,String status3);
 
+
+	/**
+	 * 导出需要续订的订单信息列表  LIUYIN
+	 * @param smodel
+	 * @return   1/2
+	 */
+	String  exportNeedResumeOrders(OrderSearchModel smodel);
+
+
 	/**
 	 * 查询需要续订的订单信息列表
 	 * @param smodel

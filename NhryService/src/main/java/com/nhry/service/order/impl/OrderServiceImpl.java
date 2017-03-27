@@ -2,6 +2,7 @@ package com.nhry.service.order.impl;
 
 
 import com.github.pagehelper.PageInfo;
+import com.nhry.data.order.domain.TPreOrder;
 import com.nhry.common.exception.MessageCode;
 import com.nhry.common.exception.ServiceException;
 import com.nhry.data.auth.domain.TSysUser;
@@ -34,8 +35,15 @@ import com.nhry.service.pi.dao.SmsSendService;
 import com.nhry.service.pi.pojo.MemberActivities;
 import com.nhry.utils.*;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.poi.ss.util.CellRangeAddress;
+import org.apache.poi.xssf.usermodel.*;
 import org.springframework.core.task.TaskExecutor;
 
+import javax.servlet.http.HttpServletRequest;
+import java.io.BufferedInputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.math.BigDecimal;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -227,12 +235,123 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 		return tPreOrderMapper.selectStopOrderNum(smodel);
 	}
 
-	/* (non-Javadoc) 
+
+	/* (non-Javadoc)
+        * @title: exportNeedResumeOrders   liuyin
+        * @description: 导出5天内需要续订的订单列表 (0-7 天)
+        * @param smodel
+        * @return
+        * @see com.nhry.service.order.dao.OrderService#searchNeedResumeOrders(com.nhry.model.order.OrderSearchModel)
+        */
+	@Override
+	public String exportNeedResumeOrders(OrderSearchModel smodel)
+	{
+		smodel.setPageNum("1");
+		smodel.setPageSize("10000");
+		PageInfo pageinfo =searchNeedResumeOrders(smodel);
+        String outUrl = "";
+          //dev
+       //   String url =   "D:/DINGHU/FS/";
+		//prd
+ 		String url = EnvContant.getSystemConst("filePath");
+		try {
+			File file = new File(url + File.separator + "report" + File.separator + "template" + File.separator + "exportNeedResumeOrders.xlsx");    //审批单
+			FileInputStream input = new FileInputStream(file);
+			XSSFWorkbook workbook = new XSSFWorkbook(new BufferedInputStream(input));
+			XSSFSheet sheet = workbook.getSheetAt(0);
+			XSSFRow row = sheet.getRow(2);
+			XSSFCell cell = row.getCell(1);
+			XSSFCellStyle styleBoldwrap = workbook.createCellStyle();
+			styleBoldwrap.setWrapText(true);
+			XSSFCellStyle styleBold = workbook.createCellStyle();
+			styleBold.setBorderBottom(XSSFCellStyle.BORDER_THIN); //下边框
+			styleBold.setBorderLeft(XSSFCellStyle.BORDER_THIN);//左边框
+			styleBold.setBorderTop(XSSFCellStyle.BORDER_THIN);//上边框
+			styleBold.setBorderRight(XSSFCellStyle.BORDER_THIN);//右边框
+			styleBold.setWrapText(true);
+          SimpleDateFormat format1 = new SimpleDateFormat("yyMMdd");
+			int r =1;
+			if (pageinfo != null) {
+               List<TPreOrder> lt = pageinfo.getList();
+                 for (TPreOrder order : lt) {
+                    row = sheet.createRow(r);
+					cell = row.createCell(0);
+					cell.setCellStyle(styleBold);
+					cell.setCellValue(order.getOrderNo());//订单号
+					cell = row.createCell(1);
+					cell.setCellStyle(styleBold);
+
+					SimpleDateFormat Fmt=new SimpleDateFormat("yyyy-MM-dd");
+                    cell.setCellValue(Fmt.format(order.getEndDate()) );//截止日期
+                    cell = row.createCell(2);
+					cell.setCellStyle(styleBold);
+					cell.setCellValue(order.getMilkmemberName());//订户姓名
+					cell = row.createCell(3);
+					cell.setCellStyle(styleBold);
+					cell.setCellValue(order.getCustomerTel());//订户电话
+                    cell = row.createCell(4);
+					cell.setCellStyle(styleBold);
+					cell.setCellValue(order.getAdressNo());;//订户地址
+					cell = row.createCell(5);
+					if((order.getSign()).equals("10"))
+					{cell.setCellValue("在订");//订单标识  10在订20停订30退定
+						  }
+					else if((order.getSign()).equals("20"))
+					{cell.setCellValue("停订");//订单标识  10在订20停订30退定
+						  }
+					else if((order.getSign()).equals("30"))
+					{cell.setCellValue("退定");//订单标识  10在订20停订30退定
+						  }
+                    cell.setCellStyle(styleBold);
+					cell = row.createCell(6);
+                    if((order.getPaymentmethod()).equals("10"))
+					{cell.setCellValue("后款");//付款方式 10后  20先款
+					}
+					else if((order.getPaymentmethod()).equals("20"))
+					{cell.setCellValue("先款");//付款方式 10后  20先款
+					}
+					cell.setCellStyle(styleBold);
+					cell = row.createCell(7);
+					cell.setCellStyle(styleBold);
+					cell.setCellValue(""+order.getCurAmt());//订单总额
+              sheet.setForceFormulaRecalculation(true);
+					 sheet.autoSizeColumn((short)r-1); //调整第N列宽度
+					 r++;
+                    }
+                String fname = CodeGeneratorUtil.getCode();
+				String rq = format1.format(new Date(new Date().getTime() - 24 * 60 * 60 * 1000));
+				String filePath = url +  File.separator + "report"+ File.separator + "export";
+				File delFiles = new File(filePath);
+				if(delFiles.isDirectory()){
+					for(File del : delFiles.listFiles()){
+						if(del.getName().contains(rq)){
+							del.delete();
+						}
+					}
+				}
+                File export = new File(url +  File.separator + "report"+ File.separator + "export" + File.separator + fname + "exportNeedResumeOrders.xlsx");
+                FileOutputStream stream = new FileOutputStream(export);
+				workbook.write(stream);
+				stream.flush();
+				stream.close();
+                outUrl = fname + "exportNeedResumeOrders.xlsx";
+			 }
+		}
+			catch (Exception e){
+			e.printStackTrace();
+		}
+ return   outUrl ;
+   }
+
+
+
+
+	/* (non-Javadoc)
 	* @title: searchNeedResumeOrders
 	* @description: 5天内需要续订的订单列表 (0-7 天)
 	* @param smodel
 	* @return 
-	* @see com.nhry.service.order.dao.OrderService#searchNeedResumeOrders(com.nhry.model.order.OrderSearchModel) 
+	* @see com.nhry.service.order.dao.OrderService#searchNeedResumeOrders(com.nhry.model.order.OrderSearchModel)
 	*/
 	@Override
 	public PageInfo searchNeedResumeOrders(OrderSearchModel smodel)
@@ -3043,7 +3162,12 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 		}
 		order.setMilkboxStat(StringUtils.isBlank(order.getMilkboxStat()) == true ? "20": order.getMilkboxStat());//奶箱状态
 		if(StringUtils.isBlank(order.getPreorderStat())){
-			order.setPreorderStat("10");//订单状态,初始确认
+			if(StringUtils.isBlank(order.getEmpNo())){
+				order.setPreorderStat("20");
+			}
+			else{
+				order.setPreorderStat("10");//订单状态,初始确认
+			}
 		}
 		if("20".equals(order.getPreorderStat())){
 			order.setIsValid("N");
@@ -8500,8 +8624,11 @@ public static int dayOfTwoDay(Date day1,Date day2) {
 	}
    	if(StringUtils.isBlank(order.getEmpNo())){
    		//if(!"10".equals(order.getPreorderSource())&&!"20".equals(order.getPreorderSource())&&!"40".equals(order.getPreorderSource())){
+		//部门内在创建机构订单和年卡订单时不需要选送奶员
 		if("30".equals(order.getPreorderSource()) || StringUtils.isBlank(order.getPreorderSource())){
-   				throw new ServiceException(MessageCode.LOGIC_ERROR,"请选择送奶员!");
+			if(StringUtils.isNotBlank(userSessionService.getCurrentUser().getBranchNo())){
+				throw new ServiceException(MessageCode.LOGIC_ERROR,"请选择送奶员!");
+			}
    		}
 	}
    if(StringUtils.isNotBlank(order.getPromotion())){

@@ -128,7 +128,7 @@ public class ProductResource extends BaseResource {
     @Path("/updateSort")
     @Produces(MediaType.APPLICATION_JSON)
     @ApiOperation(value = "/updateSort", notes = "产品排序 和 隐藏  hide{Y:隐藏,N:显示}", response = ResponseModel.class)
-    public Response savePlans(@ApiParam(name = "UpdateMaraListModel", value = "UpdateMaraListModel", required = true) UpdateMaraListModel UpdateMaraListModel) {
+    public Response updateSort(@ApiParam(name = "UpdateMaraListModel", value = "UpdateMaraListModel", required = true) UpdateMaraListModel UpdateMaraListModel) {
 		 return convertToRespModel(MessageCode.NORMAL, null,  productService.updateSort(UpdateMaraListModel));
     }
 	 
