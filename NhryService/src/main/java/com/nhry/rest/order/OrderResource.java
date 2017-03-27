@@ -96,6 +96,16 @@ public class OrderResource extends BaseResource {
 		return convertToRespModel(MessageCode.NORMAL, null, orderService.searchNeedResumeOrders(smodel));
 	}
 
+//导出需要续订的订单信息列表  liuyin
+	@POST
+	@Path("/exportNeedResumeOrders")
+	@Produces(MediaType.APPLICATION_JSON)
+	@Consumes(MediaType.APPLICATION_JSON)
+	@ApiOperation(value = "/exportNeedResumeOrders", response = PageInfo.class, notes = "导出需要续订的订单信息列表")
+	public Response exportNeedResumeOrders(@ApiParam(required=true,name="smodel",value="SearchModel") OrderSearchModel smodel){
+	     return convertToRespModel(MessageCode.NORMAL, null,orderService.exportNeedResumeOrders(smodel) );
+	}
+
 	@POST
 	@Path("/searchReNeedOrdersByMp")
 	@Produces(MediaType.APPLICATION_JSON)
