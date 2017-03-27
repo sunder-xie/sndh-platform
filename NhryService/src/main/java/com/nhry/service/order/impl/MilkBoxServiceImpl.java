@@ -10,6 +10,7 @@ import java.util.List;
 import java.util.Map;
 
 import com.nhry.data.auth.domain.TSysUser;
+import com.nhry.data.basic.domain.TMdBranchEmp;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.core.task.TaskExecutor;
 
@@ -133,7 +134,9 @@ public class MilkBoxServiceImpl extends BaseService implements MilkBoxService
 			record.setCreateBy(userSessionService.getCurrentUser().getLoginName());
 			record.setCreateByTxt(userSessionService.getCurrentUser().getDisplayName());
 			record.setEmpNo(order.getEmpNo());
-			record.setEmpName(branchEmpMapper.selectBranchEmpByNo(order.getEmpNo()).getEmpName());
+
+			TMdBranchEmp branch = branchEmpMapper.selectBranchEmpByNo(order.getEmpNo());
+			record.setEmpName(null!=branch?branch.getEmpName():"");
 			record.setMemberNo(order.getMilkmemberNo());
 			//保存订户的具体信息
 //			record.setMemberNo(memberNo);

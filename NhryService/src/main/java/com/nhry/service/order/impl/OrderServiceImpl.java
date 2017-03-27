@@ -3043,7 +3043,12 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 		}
 		order.setMilkboxStat(StringUtils.isBlank(order.getMilkboxStat()) == true ? "20": order.getMilkboxStat());//奶箱状态
 		if(StringUtils.isBlank(order.getPreorderStat())){
-			order.setPreorderStat("10");//订单状态,初始确认
+			if(StringUtils.isBlank(order.getEmpNo())){
+				order.setPreorderStat("20");
+			}
+			else{
+				order.setPreorderStat("10");//订单状态,初始确认
+			}
 		}
 		if("20".equals(order.getPreorderStat())){
 			order.setIsValid("N");
@@ -8498,8 +8503,11 @@ public static int dayOfTwoDay(Date day1,Date day2) {
 	}
    	if(StringUtils.isBlank(order.getEmpNo())){
    		//if(!"10".equals(order.getPreorderSource())&&!"20".equals(order.getPreorderSource())&&!"40".equals(order.getPreorderSource())){
+		//部门内在创建机构订单和年卡订单时不需要选送奶员
 		if("30".equals(order.getPreorderSource()) || StringUtils.isBlank(order.getPreorderSource())){
-   				throw new ServiceException(MessageCode.LOGIC_ERROR,"请选择送奶员!");
+			if(StringUtils.isNotBlank(userSessionService.getCurrentUser().getBranchNo())){
+				throw new ServiceException(MessageCode.LOGIC_ERROR,"请选择送奶员!");
+			}
    		}
 	}
    if(StringUtils.isNotBlank(order.getPromotion())){
