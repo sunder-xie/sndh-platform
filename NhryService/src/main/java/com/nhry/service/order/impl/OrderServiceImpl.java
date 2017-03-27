@@ -4732,6 +4732,8 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 				}else if("20".equals(orgOrder.getPaymentmethod())){
 					//如果是预付款  以订单金额为基础修改
 					uptBeforeOrderByAmt(orgEntrys,record,orgOrder);
+				}else if(record.getOrder().getMemoTxt()!=null){
+					tPreOrderMapper.updateBySelective(record.getOrder());
 				}
 			}else {
 				//有路单的订单编辑日志
