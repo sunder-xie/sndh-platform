@@ -33,6 +33,7 @@ import com.nhry.service.milktrans.dao.RequireOrderService;
 import com.nhry.service.pi.dao.PIRequireOrderService;
 import com.nhry.service.stock.dao.TSsmStockService;
 import com.nhry.utils.DateUtil;
+import com.nhry.utils.SysContant;
 import com.nhry.webService.client.PISuccessMessage;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;
@@ -47,6 +48,7 @@ import java.util.*;
  */
 public class RequireOrderServiceImpl implements RequireOrderService {
     private static Logger logger = Logger.getLogger(RequireOrderServiceImpl.class);
+    private static SimpleDateFormat format = new SimpleDateFormat("yyyyMMdd");
     private TSsmReqGoodsOrderItemMapper tSsmReqGoodsOrderItemMapper;
     private TSsmReqGoodsOrderMapper tSsmReqGoodsOrderMapper;
     private TOrderDaliyPlanItemMapper tOrderDaliyPlanItemMapper;
@@ -136,78 +138,6 @@ public class RequireOrderServiceImpl implements RequireOrderService {
     public void setBranchEmpMapper(TMdBranchEmpMapper branchEmpMapper) {
         this.branchEmpMapper = branchEmpMapper;
     }
-/*  @Override
-    public RequireOrderModel creatRequireOrder() {
-        RequireOrderSearch rModel = new RequireOrderSearch();
-        Date today = new Date();
-        Date requireDate = null;
-        TSysUser user = userSessionService.getCurrentUser();
-        //如果是华西或者天音 则requiredDate日期为今天  否则requiredDate为明天
-        if ("4181".equals(user.getSalesOrg()) || "4390".equals(user.getSalesOrg())) {
-            requireDate = today;
-        } else {
-            requireDate = DateUtil.getTomorrow(today);
-        }
-        rModel.setBranchNo(user.getBranchNo());
-        rModel.setOrderDate(today);
-        rModel.setRequiredDate(requireDate);
-        rModel.setSalesOrg(user.getSalesOrg());
-        TSsmReqGoodsOrder order = null;
-        //首先查看今天的要货计划是否已存在
-        order = this.tSsmReqGoodsOrderMapper.searchRequireOrder(rModel);
-        if (order != null) {
-            if ("30".equals(order.getStatus())) {
-                //如果已生成，并且已经发送过ERP
-                throw new ServiceException(MessageCode.LOGIC_ERROR, "当天要货计划已生成，并且已经发送过ERP，不能再次生成，请查阅!!!");
-            } else {
-                tSsmReqGoodsOrderItemMapper.delRequireOrderItemsByOrderNo(order.getOrderNo());
-                tSsmReqGoodsOrderMapper.deleRequireGoodsOrderbyNo(order.getOrderNo());
-            }
-
-
-        }
-        //查看明天和后天的订单
-        rModel.setFirstDay(DateUtil.getTomorrow(today));
-        rModel.setSecondDay(DateUtil.getDayAfterTomorrow(today));
-        List<TOrderDaliyPlanItem> items = tOrderDaliyPlanItemMapper.selectDaliyPlansByBranchAndDay(rModel);
-        //将i天后的日订单中符合的产品加入到 生成的要货计划
-        if (items != null && items.size() > 0) {
-            order = new TSsmReqGoodsOrder();
-            String orderNo = this.generateSal30Id();
-            order.setRequiredDate(requireDate);
-            order.setStatus("10");
-            order.setOrderNo(orderNo);
-            order.setOrderDate(today);
-            order.setBranchNo(user.getBranchNo());
-            order.setCreateAt(today);
-            order.setCreateBy(user.getLoginName());
-            order.setCreateByTxt(user.getDisplayName());
-            order.setLastModified(today);
-            order.setLastModifiedByTxt(user.getDisplayName());
-            order.setLastModifiedBy(user.getLoginName());
-            tSsmReqGoodsOrderMapper.insertRequireOrder(order);
-            for (int j = 0; j < items.size(); j++) {
-                TOrderDaliyPlanItem entry = items.get(j);
-                TSsmReqGoodsOrderItem item = new TSsmReqGoodsOrderItem();
-                item.setFlag("1");
-                item.setUnit(entry.getUnit());
-                item.setOrderDate(today);
-                item.setItemNo((j + 1) * 10);
-                item.setOrderNo(order.getOrderNo());
-                item.setMatnr(entry.getMatnr());
-                item.setMatnrTxt(entry.getMatnrTxt());
-                item.setQty(entry.getQty());
-                item.setIncreQty(0);
-                this.tSsmReqGoodsOrderItemMapper.insertRequireOrderItem(item);
-            }
-        } else {
-            throw new ServiceException(MessageCode.LOGIC_ERROR, "今天该奶站没有可以生成要货计划的行项目");
-        }
-        //查询出今天的要货计划
-        return this.searchRequireOrder(today);
-
-    }*/
-
     /**
      * 根据 日期 获取当前登录人所在奶站的 要货计划
      *
@@ -236,13 +166,13 @@ public class RequireOrderServiceImpl implements RequireOrderService {
                     matnrMap.add(resend.getMatnr());
                 });
             }
-
-
             orderModel.setStatus(order.getStatus());
             orderModel.setRequiredDate(order.getOrderDate());
             orderModel.setBranchNo(order.getBranchNo());
             orderModel.setOrderNo(order.getOrderNo());
             orderModel.setOrderDate(order.getOrderDate());
+            orderModel.setCreateAt(order.getCreateAt());
+            orderModel.setLastModified(order.getLastModified());
             if (StringUtils.isNotBlank(order.getVoucherNo())) {
                 orderModel.setVoucherNo(order.getVoucherNo());
             }
@@ -379,12 +309,12 @@ public class RequireOrderServiceImpl implements RequireOrderService {
     }
 
     /**
-     * 根据日订单  生成经销商奶站的  orderDate 日期的  参加促销的销售订单
+     * 根据日订单 生成经销商奶站的参加促销的销售订单
      * 此时还没有发送
-     *
      * @param orderDate
      * @param branchNo
-     *@param salesOrg @return
+     * @param salesOrg
+     * @return
      */
     @Override
     public TSsmSalOrder creatPromoSalOrderOfDealerBranch(Date orderDate, String branchNo, String salesOrg) {
@@ -408,12 +338,12 @@ public class RequireOrderServiceImpl implements RequireOrderService {
     }
 
     /**
-     * 根据日订单 生成经销商奶站的  orderDate 日期的  不参加促销的销售订单
+     * 根据日订单 生成经销商奶站的  orderDate 日期的  不参加促销的奶站销售订单
      * 此时还没有发送
-     *
      * @param orderDate
      * @param branchNo
-     *@param salesOrg @return
+     * @param salesOrg
+     * @return
      */
     @Override
     public TSsmSalOrder creatNoPromoSalOrderOfDealerBranch(Date orderDate, String branchNo, String salesOrg) {
@@ -452,12 +382,12 @@ public class RequireOrderServiceImpl implements RequireOrderService {
     }
 
     /**
-     * 根据日订单 生成经销商奶站的  orderDate 日期的  不参加促销的销售订单
+     * 根据日订单 生成经销商奶站的机构销售订单
      * 此时还没有发送
-     *
      * @param orderDate
      * @param branchNo
-     *@param salesOrg @return
+     * @param salesOrg
+     * @return
      */
     @Override
     public List<TSsmSalOrder> creatNoPromoSalOrderOfDealerBranch70(Date orderDate, String branchNo, String salesOrg) {
@@ -820,9 +750,9 @@ public class RequireOrderServiceImpl implements RequireOrderService {
             order.setCreateAt(orderDate);
             order.setCreateBy(user.getLoginName());
             order.setCreateByTxt(user.getDisplayName());
-            order.setLastModified(orderDate);
-            order.setLastModifiedByTxt(user.getDisplayName());
-            order.setLastModifiedBy(user.getLoginName());
+//            order.setLastModified(orderDate);
+//            order.setLastModifiedByTxt(user.getDisplayName());
+//            order.setLastModifiedBy(user.getLoginName());
             tSsmReqGoodsOrderMapper.insertRequireOrder(order);
             for (int j = 0; j < items.size(); j++) {
 
@@ -884,7 +814,7 @@ public class RequireOrderServiceImpl implements RequireOrderService {
                     throw new ServiceException(MessageCode.LOGIC_ERROR, message.getMessage());
                 }
             } else {
-                SimpleDateFormat format = new SimpleDateFormat("yyyyMMdd");
+//                SimpleDateFormat format = new SimpleDateFormat("yyyyMMdd");
                 String redisKey = branchNo+format.format(orderDate);
                 Object isSal = stringRedisTemplate.opsForHash().get("SALORDER",redisKey);
                 if(isSal != null && "ON".equals(isSal)){
@@ -923,6 +853,13 @@ public class RequireOrderServiceImpl implements RequireOrderService {
         return results;
     }
 
+    /**
+     * 生成经销商奶站送奶工的销售订单
+     * @param orderDate
+     * @param branchNo
+     * @param salesOrg
+     * @return
+     */
     @Override
     public List<TSsmSalOrder> creatNoPromoSalOrderOfDealerBranchAndEmpNo(Date orderDate, String branchNo, String salesOrg) {
         List<TSsmSalOrder> salOrderList = new ArrayList<TSsmSalOrder>();
@@ -936,19 +873,21 @@ public class RequireOrderServiceImpl implements RequireOrderService {
         List<Map<String,Object>> orgList = tOrderDaliyPlanItemMapper.selectNoProDayPlanOfDealerBranchAndEmpNo(rModel);
         Map<String,List<TOrderDaliyPlanItem>> orderMap = new HashMap<String,List<TOrderDaliyPlanItem>>();
         StringBuilder stringBuilder = new StringBuilder();
+        HashSet empSet = new HashSet();
         Map<String,String> sapcodeMap = new HashMap<String,String>();
         for(Map<String,Object> map : orgList){
             String empNo =  map.get("empNo").toString();
             TMdBranchEmp branchEmp = branchEmpMapper.selectActiveBranchEmpByNo(empNo);
             String sapcode = branchEmp.getSapcode();
             if(StringUtils.isEmpty(sapcode)){
-                stringBuilder.append(branchEmp.getEmpName());
-                stringBuilder.append(",");
+               if(!empSet.contains(branchEmp.getEmpName()))
+                   empSet.add(branchEmp.getEmpName());
             }
             sapcodeMap.put(empNo,sapcode);
         }
-        if(stringBuilder.toString().length()>0){
-            stringBuilder.append("没有设置客户号，请为送奶员设置客户号！");
+        if(empSet.size()>0){
+            stringBuilder.append(empSet.toString() + "没有设置SAP客户编码，请为送奶员设置SAP客户编码！");
+            stringRedisTemplate.opsForHash().put("SALORDER", user.getBranchNo()+format.format(orderDate),"OFF");
             throw new ServiceException(MessageCode.LOGIC_ERROR,stringBuilder.toString());
         }
         for(Map<String,Object> map : orgList){
@@ -986,6 +925,20 @@ public class RequireOrderServiceImpl implements RequireOrderService {
             }
         }
         return salOrderList;
+    }
+
+    @Override
+    public boolean isEmpSendMode() {
+        TSysUser user = userSessionService.getCurrentUser();
+        NHSysCodeItem codeItem = new NHSysCodeItem();
+        codeItem.setTypeCode(SysContant.getSystemConst("emp_send_mode"));
+        codeItem.setItemCode(user.getSalesOrg());
+        codeItem = dictionaryService.findCodeItenByCode(codeItem);
+        if(codeItem != null){
+            return true;
+        }else {
+            return false;
+        }
     }
 
     @Override
@@ -1556,6 +1509,7 @@ public class RequireOrderServiceImpl implements RequireOrderService {
      */
     @Override
     public int creaSalOrderOfDealerBranchByDate(Date orderDate) {
+//        SimpleDateFormat format = new SimpleDateFormat("yyyyMMdd");
         TSysUser user = userSessionService.getCurrentUser();
         NHSysCodeItem codeItem = new NHSysCodeItem();
         codeItem.setTypeCode("2008");
@@ -1565,7 +1519,6 @@ public class RequireOrderServiceImpl implements RequireOrderService {
         if(codeItem != null
                 && codeItem.getItemName().contains(user.getSalesOrg())
                 && !user.getDealerId().equals(user.getBranchNo())){
-            SimpleDateFormat format = new SimpleDateFormat("yyyyMMdd");
             stringRedisTemplate.opsForHash().put("SALORDER", user.getBranchNo()+format.format(orderDate),"OFF");
             throw new ServiceException(MessageCode.LOGIC_ERROR,"该公司必须由经销商统一报货！");
         }
@@ -1584,6 +1537,7 @@ public class RequireOrderServiceImpl implements RequireOrderService {
                 }
             }
             if (flag) {
+                stringRedisTemplate.opsForHash().put("SALORDER", user.getBranchNo()+format.format(orderDate),"OFF");
                 throw new ServiceException(MessageCode.LOGIC_ERROR, "该奶站今天已经创建所有销售订单,请直接查询");
             }
             return 1;
@@ -1594,8 +1548,8 @@ public class RequireOrderServiceImpl implements RequireOrderService {
             if(yearOrder != null){
                 ssmSalOrders.add(yearOrder);
             }
-            TMdBranchSendMode flag = branchMapper.getSendMode(user.getBranchNo());
-            if(flag!=null){
+            boolean flag = isEmpSendMode();
+            if(flag){
                 //送奶工报货
                 List<TSsmSalOrder> ssmSalOrders1 = this.creatNoPromoSalOrderOfDealerBranchAndEmpNo(orderDate,user.getBranchNo() ,user.getSalesOrg());
                 if(ssmSalOrders1.size() > 0){
@@ -1822,14 +1776,14 @@ public class RequireOrderServiceImpl implements RequireOrderService {
 //        }
         //送奶工报货
         if("EM".equals(order.getPreorderSource())){
-            message = piRequireOrderService.generateSalesOrderOfEmp(order,order.getOnlineCode(),order.getOnlineCode(),order.getSalesOrg());
+            message = piRequireOrderService.generateSalesOrderOfEmp(order,order.getBranchNo(),order.getOnlineCode(),order.getSalesOrg());
         }else{
             message = piRequireOrderService.generateSalesOrder(order, order.getDealerNo(), order.getBranchNo(), order.getSalesOrg(), "");
         }
         if (message.isSuccess()) {
             this.uptVouCherNoByOrderNo(order.getOrderNo(), message.getData());
         } else {
-            SimpleDateFormat format = new SimpleDateFormat("yyyyMMdd");
+//            SimpleDateFormat format = new SimpleDateFormat("yyyyMMdd");
             stringRedisTemplate.opsForHash().put("SALORDER", order.getBranchNo()+format.format(order.getOrderDate()),"OFF");
             throw new ServiceException(MessageCode.LOGIC_ERROR, message.getMessage());
         }
