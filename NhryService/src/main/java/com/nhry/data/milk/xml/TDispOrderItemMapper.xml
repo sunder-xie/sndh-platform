@@ -288,7 +288,9 @@
   <select id="selectRouteDetailsAllforDeliver" resultMap="BaseResultMap" parameterType="java.lang.String">
       SELECT
           i.ORDER_NO,
-          o.MEMO_TXT,
+          CASE WHEN o.MEMO_TXT<>'' then o.MEMO_TXT
+          ELSE info.MEMO_TXT END
+          as MEMO_TXT,
           i.ORDER_DATE,
           i.ITEM_NO,
           i.CONFIRM_MATNR,
