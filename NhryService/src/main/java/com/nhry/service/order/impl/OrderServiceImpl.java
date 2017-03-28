@@ -667,6 +667,7 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 		//处理订户  和 地址信息
 		TVipCustInfo ordercust = tVipCustInfoService.findVipCustByNoForUpt(order.getMilkmemberNo());
 		TMdAddress orderAddress = addressMapper.findAddressById(order.getAdressNo());
+		System.out.print("PromSubType="+order.getPromSubType());
 		if(StringUtils.isBlank(ordercust.getBranchNo())){
 			Map<String,String> custMap = new HashMap<String,String>();
 			custMap.put("branchNo",order.getBranchNo());
@@ -798,6 +799,82 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 						sendOrder.setEmpNo(order.getEmpNo());
 						messLogService.sendOrderStatus(sendOrder);
 					}
+				}
+			});
+		}
+		//年卡订单确认
+
+		else if("Z017".equals(order.getPromSubType())){
+			System.out.print("年卡订单确认");
+			if(StringUtils.isNotBlank(order.getBranchNo())){
+				//订户状态更改
+				tVipCustInfoService.discontinue(order.getMilkmemberNo(), "10",new com.nhry.utils.date.Date(),new com.nhry.utils.date.Date());
+			}
+
+
+			//生成装箱工单
+			if("20".equals(order.getMilkboxStat())){
+				MilkboxCreateModel model = new MilkboxCreateModel();
+				model.setCode(order.getOrderNo());
+				milkBoxService.addNewMilkboxPlan(model);
+			}
+
+			Map<String,String> map = new HashMap<String,String>();
+			map.put("orderNo",order.getOrderNo());
+			map.put("salesOrg",order.getSalesOrg());
+			List<TPlanOrderItem> entriesList = tPlanOrderItemMapper.selectEntriesByOrderNo(map);
+
+			//生成每日计划 正品
+			List<TOrderDaliyPlanItem> list = createDaliyPlan(order,entriesList);
+
+			//如果有赠品，生成赠品的日计划
+			promotionService.createDaliyPlanByPromotion(order,entriesList,list);
+
+			//创建订单发送EC，发送系统消息(以线程方式),只有奶站的发，摆台的确认时发，电商不发
+			taskExecutor.execute(new Thread(){
+				@Override
+				public void run() {
+					super.run();
+					if(!"10".equals(order.getPreorderSource()) && !"40".equals(order.getPreorderSource())){
+						this.setName("sendOrderToEc");
+						messLogService.sendOrderInfo(order, entriesList);
+					}
+					if(list!=null){
+						TPreOrder sendOrder = new TPreOrder();
+						sendOrder.setOrderNo(order.getOrderNo());
+						sendOrder.setPreorderStat("200");
+						sendOrder.setEmpNo(order.getEmpNo());
+						messLogService.sendOrderStatus(sendOrder);
+					}
+
+					//积分
+					if("Y".equals(order.getIsIntegration()) && "20".equals(order.getPaymentStat()) && ("30".equals(order.getPreorderSource())||"70".equals(order.getPreorderSource()))){
+						this.setName("updateVip");
+						Map<String,String> planOrderMap = new HashMap<String,String>();
+						planOrderMap.put("salesOrg",order.getSalesOrg());
+						planOrderMap.put("orderNo",order.getOrderNo());
+						List<MemberActivities> items;
+						if("20".equals(order.getPaymentmethod())){
+							items   = tPlanOrderItemMapper.selectBeforePayActivitiesByOrderNo(planOrderMap);
+						}else{
+							items  = tPlanOrderItemMapper.selectAfterPayActivitiesByOrderNo(planOrderMap);
+						}
+						if(items.size()>0){
+							BigDecimal totalprice = new BigDecimal(0);
+							for (MemberActivities item : items){
+								item.setProcess("X");
+								Calendar calendar = new GregorianCalendar();
+								calendar.setTime(new Date());
+								Date firstDay = calendar.getTime();
+								item.setActivitydate(firstDay);
+								if(StringUtils.isNotBlank(item.getCardid())){
+									item.setCardid("");
+								}
+							}
+							piVipPointCreateBatService.createMemberActivitiesBat(items);
+						}
+					}
+
 				}
 			});
 		}
