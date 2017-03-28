@@ -184,6 +184,12 @@ public class TVipCustInfoServiceImpl extends BaseService implements TVipCustInfo
 		if(record.getAddresses() != null && record.getAddresses().size() > 0){
 			Addresses ad = new Addresses();
 			ad.setAddresses(record.getAddresses());
+			List<TMdAddress> addressesList = ad.getAddresses();
+			if(addressesList.size()>0){
+				addressesList.forEach(e -> {
+					e.setRecvName(record.getVipName());
+				});
+			}
 			this.batchUptCustAddress(ad);
 			for(TMdAddress address : record.getAddresses()){
 				if("Y".equals(address.getIsDafault())){
