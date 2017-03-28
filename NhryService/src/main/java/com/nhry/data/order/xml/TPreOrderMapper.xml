@@ -143,7 +143,7 @@
     o.RET_DATE,o.RET_REASON,o.ONLINE_INIT_AMT,IFNULL(o.DISCOUNT_AMT,0) DISCOUNT_AMT,
     (SELECT i.ITEM_NAME from t_sys_code_item i WHERE i.TYPE_CODE= <include refid="mybaties.constant.SALES_ORG_CONSTANT"/> and i.ITEM_CODE = o.SALES_ORG ) SALES_ORG_NAME,
     o.DEALER_NO,o.RESUME_FLAG,e.MP EMP_TEL,o.BACK_REASON,o.BACK_DATE,o.IS_INTEGRATION,o.YGROWTH,o.YFRESH,
-    e3.EMP_NAME PAY_MAN,o.PAY_DATE,p.PAYMENT_TYPE PAY_METHOD,o.PROMOTION,o.PROM_ITEM_NO
+    e3.EMP_NAME PAY_MAN,o.PAY_DATE,p.PAYMENT_TYPE PAY_METHOD,o.PROMOTION,o.PROM_ITEM_NO, promt.PROM_SUB_TYPE
     FROM t_preorder o 
     left join t_md_branch b on o.BRANCH_NO = b.BRANCH_NO
     left join t_vip_cust_info v on v.VIP_CUST_NO = o.MILKMEMBER_NO
@@ -151,6 +151,7 @@
     left join t_md_branch_emp e on e.EMP_NO = o.EMP_NO
     left join t_mst_recv_bill p on p.ORDER_NO = o.ORDER_NO  and p.HAD_OFFSET = 'N'
     left join t_md_branch_emp e3 on e3.EMP_NO = p.RECV_EMP
+    left join t_promotion promt on o.PROMOTION = promt.PROM_NO
     WHERE 1=1
     and o.ORDER_NO = #{orderNo,jdbcType=VARCHAR}
   </select>
