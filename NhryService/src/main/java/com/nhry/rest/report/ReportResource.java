@@ -1302,10 +1302,11 @@ public class ReportResource extends BaseResource{
     public Response exportOrderByModel(@ApiParam(name = "model",value = "路单") BranchInfoModel model){
         String url = EnvContant.getSystemConst("filePath");
         String outUrl = "";
+        TSysUser currentUser=null;
         try {
             if(StringUtils.isEmpty(model.getBranchNo())){
-                TSysUser user = userSessionService.getCurrentUser();
-                model.setBranchNo(user.getBranchNo());
+            	currentUser = userSessionService.getCurrentUser();
+                model.setBranchNo(currentUser.getBranchNo());
             }
             List<Map<String, String>> orders = branchInfoService.exportOrderByModel(model);
             
@@ -1460,14 +1461,36 @@ public class ReportResource extends BaseResource{
             XSSFCell cellTotolSum = row.createCell(scNum++);
             cellTotolSum.setCellStyle(ExcelUtil.setBorderStyle(workbook));
             cellTotolSum.setCellValue(String.valueOf(totalQty));
-
-            outUrl = saveFile(url, workbook,"Fnb.xlsx");
+            
+            outUrl = saveFileOrderBy(url, workbook,currentUser.getBranchName()+format.format(new Date())+"分奶表"+".xlsx");
 //            outUrl = fname + "fnb.xlsx";
         }catch (Exception e){
             e.printStackTrace();
         }
         return convertToRespModel(MessageCode.NORMAL,null,outUrl);
     }
+    
+    
+    private String saveFileOrderBy(String url, XSSFWorkbook workbook,String fileName) throws IOException {
+        String rq =fileName.split("\\.")[0];
+        String filePath = url + File.separator + "report" + File.separator + "export";
+        File delFiles = new File(filePath);
+        if (delFiles.isDirectory()) {
+            for (File del : delFiles.listFiles()) {
+                if (del.getName().contains(rq)) {
+                    del.delete();
+                }
+            }
+        }
+        File export = new File(url +  File.separator + "report"+ File.separator + "export" + File.separator + fileName);
+        FileOutputStream stream = new FileOutputStream(export);
+        workbook.write(stream);
+        stream.flush();
+        stream.close();
+        return fileName;
+    }
+    
+    
 
     private String saveFile(String url, XSSFWorkbook workbook,String fileName) throws IOException {
         String fname = CodeGeneratorUtil.getCode() + fileName;
