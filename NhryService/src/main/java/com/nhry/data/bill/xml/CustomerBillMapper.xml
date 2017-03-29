@@ -517,7 +517,7 @@
         IFNULL((SELECT ra.RESIDENTIAL_AREA_TXT from t_md_residential_area ra  WHERE  ra.ID = a.RESIDENTIAL_AREA),''),
         IFNULL(a.ADDRESS_TXT,'')
         )CUST_ADDRESS_SHORT
-        ,i.MATNR,ex.SHORT_TXT MATNR_TXT,i.UNIT,i.DISP_TOTAL QTY,i.SALES_PRICE BASE_PRICE,(i.DISP_TOTAL * i.SALES_PRICE) TOTAL_PRICE
+        ,i.MATNR,ex.SHORT_TXT MATNR_TXT,i.UNIT,sum(i.DISP_TOTAL) QTY,i.SALES_PRICE BASE_PRICE,(sum(i.DISP_TOTAL) * i.SALES_PRICE) TOTAL_PRICE
         from t_preorder o
         left JOIN t_promotion p on o.PROMOTION = p.PROM_NO
         LEFT JOIN t_mst_recv_bill bill on o.ORDER_NO = bill.ORDER_NO and bill.HAD_OFFSET = 'N'
@@ -562,7 +562,7 @@
             or CONCAT(r.RESIDENTIAL_AREA_TXT,a.ADDRESS_TXT) like  '%${search}%'
             )
         </if>
-        GROUP BY o.ORDER_NO,i.MATNR,i.ITEM_NO
+        GROUP BY o.ORDER_NO,i.MATNR
         ORDER BY c.SUBDIST,c.ADDRESS_TXT,CUST_ADDRESS_SHORT
     </select>
 
