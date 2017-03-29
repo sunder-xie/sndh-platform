@@ -64,6 +64,16 @@ public class ProductResource extends BaseResource {
 		return convertToRespModel(MessageCode.NORMAL, null, productService.searchProducts(smodel));
 	}
 	
+	@POST
+	@Path("/searchSting")
+	@Produces(MediaType.APPLICATION_JSON)
+	@Consumes(MediaType.APPLICATION_JSON)
+	@ApiOperation(value = "/searchSting", response = PageInfo.class, notes = "查询商品信息列表")
+	public Response searchSting(@ApiParam(required=true,name="smodel",value="SearchModel") ProductQueryModel smodel){
+		return convertToRespModel(MessageCode.NORMAL, null, productService.searchSting(smodel));
+	}
+	
+	
 	
 	
 	@POST

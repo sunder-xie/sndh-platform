@@ -54,6 +54,14 @@ public interface ProductService {
      * @return
      */
     public PageInfo searchProducts(ProductQueryModel smodel);
+    
+    
+    /**
+     * 根据分类、产品状态、(产品名称、产品简称、产品编号)查询产品列表信息(分奶设置)
+     * @param smodel
+     * @return
+     */
+    public PageInfo searchSting(ProductQueryModel smodel);
      
     /**
      * 根据产品编号查询产品及其扩展信息
