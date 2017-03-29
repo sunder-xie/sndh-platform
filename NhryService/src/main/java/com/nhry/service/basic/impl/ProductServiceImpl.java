@@ -142,6 +142,29 @@ public class ProductServiceImpl extends BaseService implements ProductService {
 			return tMdMaraMapper.searchProducts(smodel);
 		}
 	}
+	
+	
+	@Override
+	public PageInfo searchSting(ProductQueryModel smodel) {
+		// TODO Auto-generated method stub
+		if (StringUtils.isEmpty(smodel.getPageNum()) || StringUtils.isEmpty(smodel.getPageSize())) {
+			throw new ServiceException(MessageCode.LOGIC_ERROR,"pageNum和pageSize不能为空！");
+		}
+		TSysUser currentUser = this.userSessionService.getCurrentUser();
+		/**
+		 * 2017年3月22日13:45:40 
+		 * 根据 BranchNo 判断是否奶站
+		 */
+		if(StringUtils.isNoneBlank(currentUser.getBranchNo())){
+			smodel.setBranchNo(currentUser.getBranchNo());
+			smodel.setSeting("N");
+			return getBranchSaleMaras(smodel);
+		}else{
+			smodel.setStatus("Y");
+			smodel.setSalesOrg(currentUser.getSalesOrg());
+			return tMdMaraMapper.searchProducts(smodel);
+		}
+	}
 
 	@Override
 	public TMdMara selectProductAndExByCode(String matnr) {
