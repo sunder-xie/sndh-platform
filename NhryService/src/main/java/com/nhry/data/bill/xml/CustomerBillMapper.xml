@@ -562,7 +562,7 @@
             or CONCAT(r.RESIDENTIAL_AREA_TXT,a.ADDRESS_TXT) like  '%${search}%'
             )
         </if>
-        GROUP BY o.ORDER_NO,i.MATNR
+        GROUP BY o.ORDER_NO,i.MATNR,i.ITEM_NO
         ORDER BY c.SUBDIST,c.ADDRESS_TXT,CUST_ADDRESS_SHORT
     </select>
 
