@@ -1483,8 +1483,8 @@ public class ReportResource extends BaseResource{
             XSSFCell cellTotolSum = row.createCell(scNum++);
             cellTotolSum.setCellStyle(ExcelUtil.setBorderStyle(workbook));
             cellTotolSum.setCellValue(String.valueOf(totalQty));
-            
-            outUrl = saveFileOrderBy(url, workbook,currentUser.getBranchName()+format.format(new Date())+"分奶表"+".xlsx");
+
+            outUrl = saveFileOrderBy(url, workbook,format.format(model.getTheDate())+"分奶表"+".xlsx");
 //            outUrl = fname + "fnb.xlsx";
         }catch (Exception e){
             e.printStackTrace();
