@@ -1366,9 +1366,11 @@ public class ReportResource extends BaseResource{
             		String value = projectMap.get(maraSort.getMatnr());
             		//判断是否
             		if(StringUtils.isNotBlank(value)){
+            			//如果现将排序
             			if("N".equals(maraSort.getHide())){
             				projectMapSort.put(maraSort.getMatnr(), value);
             			}
+            			//移除
             			projectMap.remove(maraSort.getMatnr());
             		}
 				}

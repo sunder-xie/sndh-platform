@@ -483,8 +483,10 @@
 		
 		<if test="matnrTxt != null and matnrTxt != ''">
 		    AND (p.MATNR like '%${matnrTxt}%' or
-				p.MATNR_TXT like '%${matnrTxt}%') 
+				p.MATNR_TXT like '%${matnrTxt}%' or exm.SHORT_TXT  like '%${matnrTxt}%' ) 
 		</if>
+		
+		
 			
 		<if test="hide != null and hide != ''">
 		   AND ifnull(ms.HIDE,'N')=#{hide}
@@ -548,7 +550,7 @@
 		AND p.STATUS='Y' 
 		<if test="matnrTxt != null and matnrTxt != ''">
 		    AND (p.MATNR like '%${matnrTxt}%' or
-				p.MATNR_TXT like '%${matnrTxt}%') 
+				p.MATNR_TXT like '%${matnrTxt}%' or exm.SHORT_TXT  like '%${matnrTxt}%' ) 
 		</if>
 		
 		
