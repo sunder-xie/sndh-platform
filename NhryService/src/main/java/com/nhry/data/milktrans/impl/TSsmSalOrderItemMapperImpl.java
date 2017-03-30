@@ -70,4 +70,13 @@ public class TSsmSalOrderItemMapperImpl implements TSsmSalOrderItemMapper {
     public int updateDiscountAmt(TSsmSalOrderItems item) {
         return sqlSessionTemplate.update("updateDiscountAmt",item);
     }
+
+    @Override
+    public TSsmSalOrderItems getSalOrderItemByKey(TSsmSalOrderItems items) {
+        return sqlSessionTemplate.selectOne("getSalOrderItemByKey",items);
+    }
+    @Override
+    public int updateSalOrderItem(TSsmSalOrderItems items) {
+        return sqlSessionTemplate.update("updateSalOrderItem",items);
+    }
 }

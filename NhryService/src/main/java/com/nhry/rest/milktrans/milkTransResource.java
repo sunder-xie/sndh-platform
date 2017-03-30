@@ -360,4 +360,23 @@ public class milkTransResource extends BaseResource {
 	public Response queryRefuseResendByMatnr(@ApiParam(required=true,name="params",value="订单orderDate 和 orderNo")TSsmReqGoodsOrder params) {
 		return convertToRespModel(MessageCode.NORMAL, null, requireOrderService.findReqGoodResendByOrderNo(params.getOrderDate(),params.getBranchNo()));
 	}
+
+	@POST
+	@Path("/batchSendSalOrderByDate")
+	@Produces(MediaType.APPLICATION_JSON)
+	@Consumes(MediaType.APPLICATION_JSON)
+	@ApiOperation(value = "/batchSendSalOrderByDate", response = Response.class, notes = "自营奶站 发送送奶工相关的销售订单")
+	public Response batchSendSalOrderByDate(@ApiParam(required=true,name="search",value="日期") SalOrderDaySearch search){
+		return convertToRespModel(MessageCode.NORMAL, null, requireOrderService.batchSendSalOrderByDate(search));
+	}
+
+
+	@POST
+	@Path("/updateSalOrderItems")
+	@Produces(MediaType.APPLICATION_JSON)
+	@Consumes(MediaType.APPLICATION_JSON)
+	@ApiOperation(value = "/updateSalOrderItems", response = Response.class, notes = "更新销售订单明细产品数量")
+	public Response updateSalOrderItems(@ApiParam(required=true,name="eSearch",value="销售订单明细列表") SaleOrderModel sModel){
+		return convertToRespModel(MessageCode.NORMAL, null, requireOrderService.updateSalOrderItems(sModel.getEntries()));
+	}
 }
