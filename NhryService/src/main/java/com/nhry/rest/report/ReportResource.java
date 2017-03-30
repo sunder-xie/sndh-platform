@@ -6,6 +6,7 @@ import com.nhry.data.auth.domain.TSysUser;
 import com.nhry.data.basic.domain.TMdAddress;
 import com.nhry.data.basic.domain.TMdBranch;
 import com.nhry.data.basic.domain.TMdBranchEmp;
+import com.nhry.data.basic.domain.TMdMara;
 import com.nhry.data.basic.domain.TMdMaraSort;
 import com.nhry.data.bill.domain.TMstRecvBill;
 import com.nhry.data.milk.domain.TDispOrder;
@@ -14,6 +15,7 @@ import com.nhry.data.milktrans.domain.TssmMilkmanAmts;
 import com.nhry.data.order.domain.TMilkboxPlan;
 import com.nhry.data.order.domain.TMstYearCardCompOrder;
 import com.nhry.data.order.domain.TPreOrder;
+import com.nhry.model.basic.ProductQueryModel;
 import com.nhry.model.bill.BatChCollectForExpModel;
 import com.nhry.model.bill.CollectOrderBillModel;
 import com.nhry.model.bill.CustBillQueryModel;
@@ -1332,9 +1334,10 @@ public class ReportResource extends BaseResource{
             }
             List<Map<String, String>> orders = branchInfoService.exportOrderByModel(model);
             
-            List<TMdMaraSort> maraSorts = productService.findMaraSortByBranchNo(model.getBranchNo());
-            
-            
+            //获取奶站可销售的产品
+            ProductQueryModel pm = new ProductQueryModel();
+            pm.setSeting("N");
+            List<TMdMara> branchSaleMaraList = productService.getBranchSaleMaraList(pm);
             
             File file = new File(url +  File.separator + "report"+ File.separator + "template" + File.separator + "FnbTemplate.xlsx");    //审批单
             FileInputStream input = new FileInputStream(file);
@@ -1358,25 +1361,28 @@ public class ReportResource extends BaseResource{
             }
             
             //分奶排序:判断是否存在排序
-            if(maraSorts !=null &&  maraSorts.size() >0){
+            if(branchSaleMaraList !=null &&  branchSaleMaraList.size() >0){
             	//LinkedHashMap有序map进行排序
             	Map<String, String> projectMapSort = new LinkedHashMap<String, String>();//产品行
-            	for (TMdMaraSort maraSort : maraSorts) {
+            	for (TMdMara tMdMara : branchSaleMaraList) {
             		//获取排序
-            		String value = projectMap.get(maraSort.getMatnr());
-            		//判断是否
+            		String value = projectMap.get(tMdMara.getMatnr());
+            		//判断是否存在
             		if(StringUtils.isNotBlank(value)){
             			//如果现将排序
-            			if("N".equals(maraSort.getHide())){
-            				projectMapSort.put(maraSort.getMatnr(), value);
+            			if("N".equals(tMdMara.getHide())){
+            				projectMapSort.put(tMdMara.getMatnr(), value);
             			}
-            			//移除
-            			projectMap.remove(maraSort.getMatnr());
+            		}else{
+            			if("N".equals(tMdMara.getHide())){
+            				projectMapSort.put(tMdMara.getMatnr(), value);
+            				projectMapSort.put(tMdMara.getMatnr(),tMdMara.getMatnrTxt());
+            			}
             		}
 				}
-            	projectMapSort.putAll(projectMap);
             	projectMap=projectMapSort;
             }
+            
             
             //员工入职时间排序
             List<TSysUser>  userList=userService.findUserByLoginNameList( new ArrayList<>(emps));
@@ -1410,6 +1416,10 @@ public class ReportResource extends BaseResource{
             XSSFCell cellSumTitle = row1.createCell(columnNum);
             cellSumTitle.setCellValue("合计");
             cellSumTitle.setCellStyle(ExcelUtil.setBorderStyle(workbook));
+            
+            XSSFCell signatory = row1.createCell(columnNum+1);
+            signatory.setCellValue("签收人");
+            signatory.setCellStyle(ExcelUtil.setBorderStyle(workbook));
 
             rowNum = 3;
             for (Map.Entry<String, String> entry : empMap.entrySet()) {
@@ -1456,6 +1466,11 @@ public class ReportResource extends BaseResource{
                 XSSFCell cellSum = row.createCell(cNum);
                 cellSum.setCellStyle(ExcelUtil.setBorderStyle(workbook));
                 cellSum.setCellValue(String.valueOf(CELLQTY));
+                
+                //签收人
+                XSSFCell signator = row.createCell(cNum+1);
+                signator.setCellStyle(ExcelUtil.setBorderStyle(workbook));
+                
             }
             int scNum = 0;
             XSSFRow row = sheet.createRow(rowNum);
@@ -1485,6 +1500,9 @@ public class ReportResource extends BaseResource{
             XSSFCell cellTotolSum = row.createCell(scNum++);
             cellTotolSum.setCellStyle(ExcelUtil.setBorderStyle(workbook));
             cellTotolSum.setCellValue(String.valueOf(totalQty));
+            //签收人
+            XSSFCell signator = row.createCell(scNum);
+            signator.setCellStyle(ExcelUtil.setBorderStyle(workbook));
 
             outUrl = saveFileOrderBy(url, workbook,format.format(model.getTheDate())+"分奶表"+".xlsx");
 //            outUrl = fname + "fnb.xlsx";

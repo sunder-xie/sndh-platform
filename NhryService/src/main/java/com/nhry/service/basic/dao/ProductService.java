@@ -120,4 +120,10 @@ public interface ProductService {
      * @return
      */
 	List<TMdMaraSort> findMaraSortByBranchNo(String branchNo);
+	/**
+	 * 隐藏和显示
+	 * @param pm
+	 * @return
+	 */
+	List<TMdMara> getBranchSaleMaraList(ProductQueryModel pm);
 }

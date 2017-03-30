@@ -332,6 +332,25 @@ public class ProductServiceImpl extends BaseService implements ProductService {
 			return this.tMdMaraMapper.getDealerMarasList(pm);
 		}
 	}
+	
+	
+	@Override
+	public List<TMdMara> getBranchSaleMaraList(ProductQueryModel pm ) {
+		// TODO Auto-generated method stub
+		TSysUser sysuser = this.userSessionService.getCurrentUser();
+		if(StringUtils.isEmpty(sysuser.getBranchNo())){
+			return null;
+		}
+		pm.setSalesOrg(sysuser.getSalesOrg());
+		pm.setDealerNo(sysuser.getDealerId());
+		pm.setBranchNo(sysuser.getBranchNo());
+		if(StringUtils.isEmpty(sysuser.getDealerId())){
+			//自营
+			return this.tMdMaraMapper.getCompMarasList(pm);
+		}else{
+			return this.tMdMaraMapper.getDealerMarasList(pm);
+		}
+	}
 
 	@Override
 	public List<TMdMara> getProductByCodeOrName(String product) {
