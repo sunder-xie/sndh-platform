@@ -1451,4 +1451,78 @@
         o.EMP_NO,
         i.MATNR
   </select>
+  <select id="selectNoProDayPlanOfSelfBranchAndEmpNo" resultType="java.util.HashMap" parameterType="com.nhry.model.milktrans.RequireOrderSearch" >
+    SELECT t.EMP_NO empNo,t.MATNR matnr,t.CONFIRM_MATNR confirmMatnr,sum(t.QTY) qty FROM
+	(
+		SELECT
+			(SELECT NULL FROM DUAL) MATNR,
+			i.QTY,
+			i.MATNR CONFIRM_MATNR,
+			o.SAL_EMP_NO EMP_NO
+		FROM
+			t_mst_inside_sal_order_item i
+		LEFT JOIN t_mst_inside_sal_order o ON i.INS_ORDER_NO = o.INS_ORDER_NO
+		LEFT JOIN t_mst_disp_order disp ON o.DISP_ORDER_NO = disp.ORDER_NO
+		WHERE
+			1 = 1
+		AND i.QTY > 0
+		AND o.BRANCH_NO = #{branchNo,jdbcType=VARCHAR}
+		AND disp.DISP_DATE = #{orderDate,jdbcType=DATE}
+		GROUP BY
+			o.SAL_EMP_NO,
+			i.MATNR
+		UNION ALL
+			SELECT
+				(SELECT NULL FROM DUAL) MATNR,
+				SUM(di.CONFIRM_QTY) QTY,
+				di.CONFIRM_MATNR,
+				o.EMP_NO EMP_NO
+			FROM
+				t_mst_disp_order_item di
+			LEFT JOIN t_preorder o ON di.ORG_ORDER_NO = o.ORDER_NO
+			LEFT JOIN t_mst_disp_order disp ON di.ORDER_NO = disp.ORDER_NO
+			WHERE
+				1 = 1
+			AND disp.`STATUS` = '20'
+			AND di.CONFIRM_QTY > 0
+			AND di.MATNR = di.CONFIRM_MATNR
+			AND di.GIFT_FLAG IS NULL
+			AND disp.DISP_DATE = #{orderDate,jdbcType=DATE} -- and o.SALES_ORG=#{salesOrg,jdbcType=VARCHAR}
+			AND o.BRANCH_NO = #{branchNo,jdbcType=VARCHAR}
+			AND o.PREORDER_SOURCE != '70'
+			AND o.PREORDER_SOURCE != '40'
+			AND (o.PROMOTION is NULL or o.PROMOTION = '')
+			GROUP BY
+				o.EMP_NO,
+				di.CONFIRM_MATNR
+			UNION ALL
+				SELECT
+					di.MATNR MATNR,
+					SUM(di.CONFIRM_QTY) QTY,
+					di.CONFIRM_MATNR,
+					o.EMP_NO EMP_NO
+				FROM
+					t_mst_disp_order_item di
+				LEFT JOIN t_preorder o ON di.ORG_ORDER_NO = o.ORDER_NO
+				LEFT JOIN t_mst_disp_order disp ON di.ORDER_NO = disp.ORDER_NO
+				WHERE
+					1 = 1
+				AND disp.`STATUS` = '20'
+				AND di.MATNR != di.CONFIRM_MATNR
+				AND di.REASON = '10'
+				AND di.REPLACE_REASON = '10'
+				AND di.CONFIRM_QTY > 0
+				AND di.GIFT_FLAG IS NULL
+				AND disp.DISP_DATE = #{orderDate,jdbcType=DATE} -- and o.SALES_ORG=#{salesOrg,jdbcType=VARCHAR}
+				AND o.BRANCH_NO = #{branchNo,jdbcType=VARCHAR}
+				AND o.PREORDER_SOURCE != '70'
+			    AND o.PREORDER_SOURCE != '40'
+			    AND (o.PROMOTION is NULL or o.PROMOTION = '')
+				GROUP BY
+					o.EMP_NO,
+					di.MATNR,
+					di.CONFIRM_MATNR
+	) t WHERE t.QTY > 0 AND t.CONFIRM_MATNR IS NOT NULL
+      GROUP BY t.EMP_NO,t.MATNR,t.CONFIRM_MATNR
+  </select>
 </mapper>

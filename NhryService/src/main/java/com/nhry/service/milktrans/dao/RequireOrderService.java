@@ -52,7 +52,6 @@ public interface RequireOrderService {
 
     RequireOrderModel creatRequireOrderByDate(ReqGoodsOrderSearch eSearch);
 
-
     String sendRequireOrderToERPByDate(ReqGoodsOrderSearch eSearch);
 
     TSsmSalOrder creatNoPromoSalOrderAndSendOfSelftBranch(Date orderDate);
@@ -76,7 +75,7 @@ public interface RequireOrderService {
     Map<String,Integer> findReqGoodResendByOrderNo(Date orderDate, String branchNo);
 
     /**
-     * 按送奶工维度统计日销售数量，生成送奶工销售订单使用
+     * 按送奶工维度统计日销售数量，生成送奶工销售订单使用（经销商奶站）
      * @param requiredDate
      * @param branchNo
      * @param salesOrg
@@ -86,4 +85,66 @@ public interface RequireOrderService {
 
 
     boolean isEmpSendMode();
+
+    /**
+     * 生成自营奶站送奶工销售订单
+     * @param search
+     * @return
+     */
+    List<TSsmSalOrder> creaSalOrderOfSelftBranchAndEmpNoByDate(SalOrderDaySearch search);
+
+    /**
+     * 按送奶工维度统计日销售数量，生成送奶工销售订单使用(自营奶站)
+     * @param requiredDate
+     * @param branchNo
+     * @param salesOrg
+     * @return
+     */
+    List<TSsmSalOrder> creatNoPromoSalOrderOfBranchAndEmpNo(Date requiredDate, String branchNo, String salesOrg);
+
+    /**
+     * 生成电商的促销销售订单（自营奶站）
+     * @param today
+     * @param branchNo
+     * @param salesOrg
+     * @return
+     */
+    TSsmSalOrder creatPromoSalOrderOfBranch40(Date today, String branchNo, String salesOrg);
+
+    /**
+     * 生成电商的销售订单（自营奶站）
+     * @param today
+     * @param branchNo
+     * @param salesOrg
+     * @return
+     */
+    TSsmSalOrder creatNoPromoSalOrderOfBranch40(Date today, String branchNo, String salesOrg);
+
+    /**
+     * 生成机构订奶销售订单（自营奶站）
+     * @param requiredDate
+     * @param branchNo
+     * @param salesOrg
+     * @return
+     */
+    List<TSsmSalOrder> creatNoPromoSalOrderOfBranchOrg(Date requiredDate, String branchNo, String salesOrg);
+
+    /**
+     * 生成年卡订奶销售订单（自营奶站）
+     * @param requiredDate
+     * @param branchNo
+     * @param salesOrg
+     * @return
+     */
+    TSsmSalOrder creatPromDaliyDiscountAmtOfBranch(Date requiredDate, String branchNo, String salesOrg);
+
+    /**
+     * 发送销售订单
+     * @param search
+     * @return
+     */
+    List<TSsmSalOrder> batchSendSalOrderByDate(SalOrderDaySearch search);
+
+    List<TSsmSalOrderItems> updateSalOrderItems(List<TSsmSalOrderItems> itemss);
+
 }

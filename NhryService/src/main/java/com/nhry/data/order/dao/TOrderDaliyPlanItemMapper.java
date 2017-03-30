@@ -171,4 +171,6 @@ public interface TOrderDaliyPlanItemMapper {
      * @return
      */
     List<Map<String,Object>> selectNoProDayPlanOfDealerBranchAndEmpNo(RequireOrderSearch rModel);
+
+    List<Map<String,Object>> selectNoProDayPlanOfSelfBranchAndEmpNo(RequireOrderSearch rModel);
 }

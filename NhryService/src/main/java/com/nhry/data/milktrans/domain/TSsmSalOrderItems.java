@@ -21,6 +21,7 @@ public class TSsmSalOrderItems {
     private String promNo;           //促销号
     private BigDecimal discountAmt; //折扣
     private BigDecimal price;       //价格
+    private int iniQty;             //初始值
     public String getRefMatnrTxt() {
         return refMatnrTxt;
     }
@@ -123,5 +124,13 @@ public class TSsmSalOrderItems {
 
     public void setPrice(BigDecimal price) {
         this.price = price;
+    }
+
+    public int getIniQty() {
+        return iniQty;
+    }
+
+    public void setIniQty(int iniQty) {
+        this.iniQty = iniQty;
     }
 }

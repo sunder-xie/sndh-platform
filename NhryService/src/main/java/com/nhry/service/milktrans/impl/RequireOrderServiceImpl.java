@@ -511,7 +511,6 @@ public class RequireOrderServiceImpl implements RequireOrderService {
         rModel.setOrderDate(requireDate);
         rModel.setBranchNo(user.getBranchNo());
         rModel.setSalesOrg(user.getSalesOrg());
-
         List<Map<String,String>> items = tSsmSalOrderItemMapper.selectPromDaliyDiscountAmtOfBranch(rModel);
         if (items != null && items.size() > 0) {
             String dealerSend = getYearCode(salesOrg);
@@ -570,11 +569,9 @@ public class RequireOrderServiceImpl implements RequireOrderService {
         rModel.setOrderDate(orderDate);
         List<TOrderDaliyPlanItem> items = tOrderDaliyPlanItemMapper.selectNoProDayPlanOfDealerBranch40(rModel);
         if (items != null && items.size() > 0) {
-            //生成 促销订单
             TSsmSalOrder order = createSaleOrder(user, orderDate, "dealer", "", 1, "40", "",branchNo ,salesOrg );
             for (int i = 0; i < items.size(); i++) {
                 TOrderDaliyPlanItem item = items.get(i);
-                //生成 促销订单行项目
                 createSaleOrderItem(item, i + 1, order.getOrderNo(), orderDate, "dealer");
             }
             return order;
@@ -877,7 +874,7 @@ public class RequireOrderServiceImpl implements RequireOrderService {
         Map<String,String> sapcodeMap = new HashMap<String,String>();
         for(Map<String,Object> map : orgList){
             String empNo =  map.get("empNo").toString();
-            TMdBranchEmp branchEmp = branchEmpMapper.selectActiveBranchEmpByNo(empNo);
+            TMdBranchEmp branchEmp = branchEmpMapper.selectBranchEmpByNo(empNo);
             String sapcode = branchEmp.getSapcode();
             if(StringUtils.isEmpty(sapcode)){
                if(!empSet.contains(branchEmp.getEmpName()))
@@ -968,6 +965,10 @@ public class RequireOrderServiceImpl implements RequireOrderService {
      */
     @Override
     public List<TSsmSalOrder> creaSalOrderOfSelftBranchByDate2(SalOrderDaySearch search) {
+        boolean flag1 = isEmpSendMode();
+        if(flag1){
+           return creaSalOrderOfSelftBranchAndEmpNoByDate(search);
+        }
         TSysUser user = userSessionService.getCurrentUser();
         TMdBranch branch = branchMapper.selectBranchByNo(user.getBranchNo());
         Date orderDate = search.getOrderDate();
@@ -993,8 +994,6 @@ public class RequireOrderServiceImpl implements RequireOrderService {
                         ) {
                     throw new ServiceException(MessageCode.LOGIC_ERROR, "含有未确认的交货单，请确认!");
                 }
-
-
                 SalOrderModel sMode = new SalOrderModel();
                 sMode.setOrderDate(orderDate);
                 sMode.setBranchNo(branch.getBranchNo());
@@ -1607,6 +1606,7 @@ public class RequireOrderServiceImpl implements RequireOrderService {
         salOrderItems.setOrderNo(orderNo);
         salOrderItems.setOrderDate(orderDate);
         salOrderItems.setQty(item.getQty());
+        salOrderItems.setIniQty(item.getQty());
         //年卡折扣率
         salOrderItems.setDiscountAmt(item.getAmt());
         salOrderItems.setPrice(item.getPrice());
@@ -1788,5 +1788,303 @@ public class RequireOrderServiceImpl implements RequireOrderService {
             throw new ServiceException(MessageCode.LOGIC_ERROR, message.getMessage());
         }
     }
+    @Override
+    public List<TSsmSalOrder> creaSalOrderOfSelftBranchAndEmpNoByDate(SalOrderDaySearch search){
+        TSysUser user = userSessionService.getCurrentUser();
+        TMdBranch branch = branchMapper.selectBranchByNo(user.getBranchNo());
+        Date orderDate = search.getOrderDate();
+        SalOrderModel sMode = new SalOrderModel();
+        sMode.setOrderDate(orderDate);
+        sMode.setBranchNo(branch.getBranchNo());
+        //查看今天销售订单,存在直接返回销售订单
+        List<TSsmSalOrder> result = tSsmSalOrderMapper.selectSalOrderByDateAndNo(sMode);
+        if (result != null && result.size() > 0) {
+            return this.getSaleOrderByQueryDate(sMode);
+        }
+        RequireOrderSearch rModel = new RequireOrderSearch();
+        rModel.setBranchNo(user.getBranchNo());
+        rModel.setOrderDate(DateUtil.getYestoday(orderDate));
+        rModel.setSalesOrg(user.getSalesOrg());
+        TSsmReqGoodsOrder reqGoodsOrder = this.tSsmReqGoodsOrderMapper.searchRequireOrder(rModel);
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+        if (reqGoodsOrder == null || StringUtils.isBlank(reqGoodsOrder.getVoucherNo())) {
+            throw new ServiceException(MessageCode.LOGIC_ERROR, "今天还没要货");
+        } else {
+            //判断要货计划对应的 交货单 是否生成 若没生成 提示还没生成
+            List<TSsmGiOrder> giOrders = tSsmGiOrderMapper.findGiOrderByReqOrderNo(reqGoodsOrder.getVoucherNo());
+            if (giOrders == null || giOrders.size() <= 0) {
+                throw new ServiceException(MessageCode.LOGIC_ERROR, "该奶站" + sdf.format(search.getOrderDate()) + "的交货单还没有生成，请先获取交货单");
+            } else {
+                //判断所有的交货计划是否都已确认过
+                if (giOrders.stream().anyMatch(
+                    (e) -> (!"30".equals(e.getStatus()))
+                )) {
+                    throw new ServiceException(MessageCode.LOGIC_ERROR, "含有未确认的交货单，请确认!");
+                }
+                //判断今天的路单是否已经生成
+                List<TDispOrder> dispOrders = tDispOrderMapper.selectDispOrderByBranchNoAndDay(user.getBranchNo(), search.getOrderDate());
+                if (dispOrders == null || dispOrders.size() == 0) {
+                    throw new ServiceException(MessageCode.LOGIC_ERROR, "该奶站" + sdf.format(search.getOrderDate()) + "的路单还没生成，请先生成路单并全部确认后再生成");
+                } else {
+                    //判断今天的路单是否已经全部确认
+                    List<TDispOrder> confirmDispOrders = tDispOrderMapper.selectConfirmDispOrderByBranchNoAndDay(user.getBranchNo(), search.getOrderDate());
+                    if (confirmDispOrders != null) {
+                        if (confirmDispOrders.size() < dispOrders.size()) {
+                            throw new ServiceException(MessageCode.LOGIC_ERROR, "该奶站" + sdf.format(search.getOrderDate()) + "的路单还有" + (dispOrders.size() - confirmDispOrders.size()) + "个路单没确认，请全部确认后再生成");
+                        }
+                    } else {
+                        throw new ServiceException(MessageCode.LOGIC_ERROR, "该奶站" + sdf.format(search.getOrderDate()) + "的路单所有的路单都没确认，请全部确认后再生成");
+                    }
+                }
+                if ("01".equals(branch.getBranchGroup())) {
+                    RequireOrderSearch rsModel = new RequireOrderSearch();
+                    rsModel.setBranchNo(user.getBranchNo());
+                    rsModel.setSalesOrg(user.getSalesOrg());
+                    rsModel.setOrderDate(orderDate);
+                    rsModel.setPreorderSource("30");
+                    //送奶工销售订单
+                    creatNoPromoSalOrderOfBranchAndEmpNo(orderDate,user.getBranchNo(),user.getSalesOrg());
+                    //奶站促销订单
+                    creatPromoSalOrderOfSelftBranch(rsModel.getOrderDate());
+                    //电商销售订单
+                    creatNoPromoSalOrderOfBranch40(orderDate,user.getBranchNo(),user.getSalesOrg());
+                    //电商促销订单
+                    creatPromoSalOrderOfBranch40(orderDate,user.getBranchNo(),user.getSalesOrg());
+                    //机构的销售订单
+                    creatNoPromoSalOrderOfBranchOrg(orderDate,user.getBranchNo(),user.getSalesOrg());
+                    //年卡的销售订单
+                    creatPromDaliyDiscountAmtOfBranch(orderDate,user.getBranchNo(),user.getSalesOrg());
+                    return this.getSaleOrderByQueryDate(sMode);
+                } else {
+                    throw new ServiceException(MessageCode.LOGIC_ERROR, "该奶站不是自营奶站");
+                }
+            }
+        }
+    }
+    @Override
+    public List<TSsmSalOrder> creatNoPromoSalOrderOfBranchAndEmpNo(Date orderDate, String branchNo, String salesOrg){
+        List<TSsmSalOrder> salOrderList = new ArrayList<TSsmSalOrder>();
+        TSysUser user = userSessionService.getCurrentUser();
+        RequireOrderSearch rModel = new RequireOrderSearch();
+        rModel.setBranchNo(branchNo);
+        rModel.setSalesOrg(salesOrg);
+        rModel.setOrderDate(DateUtil.getYestoday(orderDate));
+        List<Map<String,Object>> orgList = tOrderDaliyPlanItemMapper.selectNoProDayPlanOfSelfBranchAndEmpNo(rModel);
+        Map<String,List<TOrderDaliyPlanItem>> orderMap = new HashMap<String,List<TOrderDaliyPlanItem>>();
+        StringBuilder stringBuilder = new StringBuilder();
+        HashSet empSet = new HashSet();
+        Map<String,String> sapcodeMap = new HashMap<String,String>();
+        for(Map<String,Object> map : orgList){
+            String empNo =  map.get("empNo").toString();
+            TMdBranchEmp branchEmp = branchEmpMapper.selectActiveBranchEmpByNo(empNo);
+            String sapcode = branchEmp.getSapcode();
+            if(StringUtils.isEmpty(sapcode)){
+                if(!empSet.contains(branchEmp.getEmpName()))
+                    empSet.add(branchEmp.getEmpName());
+            }
+            sapcodeMap.put(empNo,sapcode);
+        }
+        if(empSet.size()>0){
+            stringBuilder.append(empSet.toString() + "没有设置SAP客户编码，请为送奶员设置SAP客户编码！");
+            throw new ServiceException(MessageCode.LOGIC_ERROR,stringBuilder.toString());
+        }
+        for(Map<String,Object> map : orgList){
+            String empNo = map.get("empNo").toString();
+            String matnr = map.get("matnr").toString();
+            String confirmMatnr = map.get("confirmMatnr").toString();
+            BigDecimal qty = (BigDecimal)map.get("qty");
+            if(orderMap.containsKey(empNo)) {
+                List<TOrderDaliyPlanItem> itemList = orderMap.get(empNo);
+                TOrderDaliyPlanItem item = new TOrderDaliyPlanItem();
+                item.setQty(qty.intValue());
+                item.setMatnr(matnr);
+                item.setConfirmMatnr(confirmMatnr);
+                itemList.add(item);
+            }else{
+                List<TOrderDaliyPlanItem> itemList = new ArrayList<TOrderDaliyPlanItem>();
+                TOrderDaliyPlanItem item = new TOrderDaliyPlanItem();
+                item.setQty(qty.intValue());
+                item.setMatnr(matnr);
+                item.setConfirmMatnr(confirmMatnr);
+                itemList.add(item);
+                orderMap.put(empNo,itemList);
+            }
+        }
 
+        if (orderMap != null && orderMap.size() > 0) {
+            for(Map.Entry<String,List<TOrderDaliyPlanItem>> entry : orderMap.entrySet() ){
+                String orgCode = entry.getKey();
+                List<TOrderDaliyPlanItem> itemList = entry.getValue();
+                TSsmSalOrder order = createSaleOrder(user,orderDate,"branch","",2,"EM",sapcodeMap.get(orgCode),branchNo,salesOrg );
+                for (int i = 0; i < itemList.size(); i++) {
+                    TOrderDaliyPlanItem item = itemList.get(i);
+                    createSaleOrderItem(item, i + 1, order.getOrderNo(), orderDate, "branch");
+                }
+                salOrderList.add(order);
+            }
+        }
+        return salOrderList;
+    }
+    @Override
+    public TSsmSalOrder creatPromoSalOrderOfBranch40(Date orderDate, String branchNo, String salesOrg){
+        TSysUser user = userSessionService.getCurrentUser();
+        RequireOrderSearch rModel = new RequireOrderSearch();
+        rModel.setPreorderSource("40");
+        rModel.setBranchNo(branchNo);
+        rModel.setSalesOrg(salesOrg);
+        rModel.setOrderDate(DateUtil.getYestoday(orderDate));
+        List<TOrderDaliyPlanItem> items = tOrderDaliyPlanItemMapper.selectProDayPlanOfSelfBranch(rModel);
+        if (items != null && items.size() > 0) {
+            TSsmSalOrder order = createSaleOrder(user, orderDate, "branch", "free", 2, "40","",branchNo , salesOrg);
+            for (int i = 1; i <= items.size(); i++) {
+                TOrderDaliyPlanItem item = items.get(i - 1);
+                createSaleOrderItem(item, i, order.getOrderNo(), orderDate, "branch");
+            }
+            return order;
+        }
+        return null;
+    }
+    @Override
+    public TSsmSalOrder creatNoPromoSalOrderOfBranch40(Date orderDate, String branchNo, String salesOrg){
+        TSysUser user = userSessionService.getCurrentUser();
+        RequireOrderSearch rModel = new RequireOrderSearch();
+        rModel.setPreorderSource("40");
+        rModel.setBranchNo(branchNo);
+        rModel.setSalesOrg(salesOrg);
+        rModel.setOrderDate(DateUtil.getYestoday(orderDate));
+        List<TOrderDaliyPlanItem> items = tOrderDaliyPlanItemMapper.selectNoProDayPlanOfSelfBranch(rModel);
+        if (items != null && items.size() > 0) {
+            TSsmSalOrder order = createSaleOrder(user, orderDate, "branch", "", 2, "40","",branchNo , salesOrg);
+            for (int i = 1; i <= items.size(); i++) {
+                TOrderDaliyPlanItem item = items.get(i - 1);
+                createSaleOrderItem(item, i, order.getOrderNo(), orderDate, "branch");
+            }
+            return order;
+        }
+        return null;
+    }
+    @Override
+    public List<TSsmSalOrder> creatNoPromoSalOrderOfBranchOrg(Date requiredDate, String branchNo, String salesOrg){
+        TSysUser user = userSessionService.getCurrentUser();
+        RequireOrderSearch rModel = new RequireOrderSearch();
+        rModel.setBranchNo(branchNo);
+        rModel.setSalesOrg(salesOrg);
+        rModel.setOrderDate(DateUtil.getYestoday(requiredDate));
+        List<Map<String,Object>> orgList = tOrderDaliyPlanItemMapper.selectProDayPlanOfSelfOrg(rModel);
+        Map<String,List<TOrderDaliyPlanItem>> orderMap = new HashMap<String,List<TOrderDaliyPlanItem>>();
+        for(Map<String,Object> map : orgList){
+            String orgCode = map.get("orgCode").toString();
+            String matnr = map.get("matnr").toString();
+            BigDecimal qty = (BigDecimal)map.get("qty");
+            if(orderMap.containsKey(orgCode)) {
+                List<TOrderDaliyPlanItem> itemList = orderMap.get(orgCode);
+                TOrderDaliyPlanItem item = new TOrderDaliyPlanItem();
+                item.setQty(qty.intValue());
+                item.setConfirmMatnr(matnr);
+                item.setMatnr(matnr);
+                itemList.add(item);
+            }else{
+                List<TOrderDaliyPlanItem> itemList = new ArrayList<TOrderDaliyPlanItem>();
+                TOrderDaliyPlanItem item = new TOrderDaliyPlanItem();
+                item.setQty(qty.intValue());
+                item.setMatnr(matnr);
+                item.setConfirmMatnr(matnr);
+                itemList.add(item);
+                orderMap.put(orgCode,itemList);
+            }
+        }
+        List<TSsmSalOrder> salOrderList = new ArrayList<TSsmSalOrder>();
+        if (orderMap != null && orderMap.size() > 0) {
+            for(Map.Entry<String,List<TOrderDaliyPlanItem>> entry : orderMap.entrySet() ){
+                String orgCode = entry.getKey();
+                List<TOrderDaliyPlanItem> itemList = entry.getValue();
+                TSsmSalOrder order = createSaleOrder(user,requiredDate,"branch","",2,"70",orgCode,branchNo,salesOrg );
+                for (int i = 0; i < itemList.size(); i++) {
+                    TOrderDaliyPlanItem item = itemList.get(i);
+                    createSaleOrderItem(item, i + 1, order.getOrderNo(), requiredDate, "branch");
+                }
+                salOrderList.add(order);
+            }
+        }
+        return salOrderList;
+    }
+
+    @Override
+    public TSsmSalOrder creatPromDaliyDiscountAmtOfBranch(Date requiredDate, String branchNo, String salesOrg){
+        TSysUser user = userSessionService.getCurrentUser();
+        RequireOrderSearch rModel = new RequireOrderSearch();
+        rModel.setBranchNo(branchNo);
+        rModel.setSalesOrg(salesOrg);
+        rModel.setOrderDate(DateUtil.getYestoday(requiredDate));
+        List<Map<String,String>> itemMap = tSsmSalOrderItemMapper.selectPromDaliyDiscountAmtOfBranch(rModel);
+        List<TOrderDaliyPlanItem> items = new ArrayList<TOrderDaliyPlanItem>();
+        if (itemMap != null && itemMap.size() > 0) {
+            for (Map<String, String> map : itemMap) {
+                String matnr = map.get("MATNR").toString();
+                BigDecimal qty = new BigDecimal(String.valueOf(map.get("QTY")));
+                BigDecimal price = new BigDecimal(String.valueOf(map.get("PRICE1")));
+                BigDecimal discountAmt = new BigDecimal(String.valueOf(map.get("DISCOUNT_AMT")));
+                TOrderDaliyPlanItem item = new TOrderDaliyPlanItem();
+                item.setQty(qty.intValue());
+                item.setMatnr(matnr);
+                item.setConfirmMatnr(matnr);
+                item.setPrice(price);
+                item.setAmt(discountAmt);
+                items.add(item);
+            }
+        }
+        if (items != null && items.size() > 0) {
+            String onlineCode = getYearCode(user.getSalesOrg());
+            TSsmSalOrder order = createSaleOrder(user, requiredDate, "branch", "", 2, "YE", onlineCode,branchNo , salesOrg);
+            for (int i = 1; i <= items.size(); i++) {
+                TOrderDaliyPlanItem item = items.get(i - 1);
+                createSaleOrderItem(item, i, order.getOrderNo(), requiredDate, "branch");
+            }
+            return order;
+        }
+        return null;
+    }
+
+    /**
+     * 发送自营奶站送奶工销售订单
+     * @param search
+     * @return
+     */
+    public List<TSsmSalOrder> batchSendSalOrderByDate(SalOrderDaySearch search){
+        TSysUser user = userSessionService.getCurrentUser();
+        SalOrderModel sMode = new SalOrderModel();
+        sMode.setOrderDate(search.getOrderDate());
+        sMode.setBranchNo(user.getBranchNo());
+        //查看今天销售订单
+        List<TSsmSalOrder> result = tSsmSalOrderMapper.selectSalOrderByDateAndNo(sMode);
+        if (result != null && result.size() > 0) {
+            Boolean flag = true;
+            for (TSsmSalOrder entry : result) {
+                if (StringUtils.isNotBlank(entry.getVoucherNo())) {
+                    continue;
+                } else {
+                    flag = false;
+                    generateSalesOrderAnduptVouCher(entry);
+                }
+            }
+            if (flag) {
+                throw new ServiceException(MessageCode.LOGIC_ERROR, "该奶站今天已经发送所有销售订单,请直接查询");
+            }
+            return this.getSaleOrderByQueryDate(sMode);
+        }
+        return null;
+    }
+
+    @Override
+    public List<TSsmSalOrderItems> updateSalOrderItems(List<TSsmSalOrderItems> itemss) {
+        String orderNo = "";
+        if(itemss != null && itemss.size()>0) {
+            for (TSsmSalOrderItems e : itemss) {
+                orderNo = e.getOrderNo();
+                tSsmSalOrderItemMapper.updateSalOrderItem(e);
+            }
+            return getSaleOrderDetailByOrderNo(orderNo);
+        }
+        return null;
+    }
 }

@@ -40,4 +40,14 @@ public interface TSsmSalOrderItemMapper {
      * @return
      */
     int updateDiscountAmt(TSsmSalOrderItems item);
+
+    TSsmSalOrderItems getSalOrderItemByKey(TSsmSalOrderItems items);
+
+    /**
+     * 更新数量
+     * @param items
+     * @return
+     */
+    int updateSalOrderItem(TSsmSalOrderItems items);
+
 }

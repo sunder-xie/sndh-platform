@@ -10,9 +10,10 @@
         <result column="UNIT" property="unit" jdbcType="VARCHAR" />
         <result column="QTY" property="qty" jdbcType="INTEGER" />
         <result column="TYPE" property="type" jdbcType="VARCHAR" />
+        <result column="INI_QTY" property="iniQty" jdbcType="INTEGER" />
     </resultMap>
     <sql id="Base_Column_List" >
-        ORDER_NO,ORDER_DATE,ITEM_NO,MATNR,UNIT,QTY,TYPE
+        ORDER_NO,ORDER_DATE,ITEM_NO,MATNR,UNIT,QTY,TYPE,INI_QTY
     </sql>
 
     <insert id="addSalOrderItem"  parameterType="com.nhry.data.milktrans.domain.TSsmSalOrderItems" >
@@ -48,6 +49,9 @@
             <if test="discountAmt != null" >
                 DISCOUNT_AMT,
             </if>
+            <if test="iniQty != null" >
+                INI_QTY,
+            </if>
             <if test="price!=null">
                 PRICE
             </if>
@@ -82,6 +86,9 @@
             </if>
             <if test="discountAmt != null" >
                 #{discountAmt,jdbcType=VARCHAR},
+            </if>
+            <if test="iniQty != null" >
+                #{iniQty,jdbcType=INTEGER},
             </if>
             <if test="price!=null">
                 #{price,jdbcType=VARCHAR},
@@ -135,7 +142,7 @@
     </select>
     <select id="selectItemsBySalOrderNo" resultMap="BaseResultMap" parameterType="java.util.Map">
         SELECT
-          i.MATNR,ex.SHORT_TXT MATNR_TXT,i.QTY,i.TYPE,i.UNIT
+          i.MATNR,ex.SHORT_TXT MATNR_TXT,i.QTY,i.TYPE,i.UNIT,i.ORDER_NO,i.ORDER_DATE,i.ITEM_NO,i.INI_QTY
         FROM
         t_ssm_sal_order_items i
         LEFT JOIN  t_md_mara_ex ex ON  i.MATNR = ex.MATNR and ex.SALES_ORG = #{salesOrg}
@@ -238,5 +245,22 @@
                 ORDER_NO = #{orderNo,jdbcType=VARCHAR}
             AND ITEM_NO = #{itemNo,jdbcType=VARCHAR}
             AND ORDER_DATE = #{orderDate,jdbcType=DATE}
+    </update>
+
+    <select id="getSalOrderItemByKey" parameterType="com.nhry.data.milktrans.domain.TSsmSalOrderItems">
+        SELECT <include refid="Base_Column_List"/> FROM t_ssm_sal_order_items
+        WHERE
+                ORDER_NO = #{orderNo,jdbcType=VARCHAR}
+            AND ITEM_NO = #{itemNo,jdbcType=VARCHAR}
+            AND ORDER_DATE = #{orderDate,jdbcType=DATE}
+    </select>
+
+    <update id="updateSalOrderItem" parameterType="com.nhry.data.milktrans.domain.TSsmSalOrderItems">
+        UPDATE t_ssm_sal_order_items
+        SET QTY = #{qty,jdbcType=DECIMAL}
+        WHERE
+        ORDER_NO = #{orderNo,jdbcType=VARCHAR}
+        AND ITEM_NO = #{itemNo,jdbcType=VARCHAR}
+        AND ORDER_DATE = #{orderDate,jdbcType=DATE}
     </update>
 </mapper>
