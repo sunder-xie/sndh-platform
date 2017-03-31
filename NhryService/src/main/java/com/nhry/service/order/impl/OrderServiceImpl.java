@@ -7719,7 +7719,11 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 		BigDecimal qty = new BigDecimal(String.valueOf(lackQty));
 		plan.setAmt(plan.getPrice().multiply(qty));//金额小计
 //		plan.setRemainAmt();//订单余额
-		plan.setStatus("10");//状态
+		if("20".equals(orgOrder.getSign())){
+			plan.setStatus("30");//状态
+		}else{
+			plan.setStatus("10");//状态
+		}
 		plan.setCreateAt(new Date());//创建时间
 		plan.setCreateBy(userSessionService.getCurrentUser().getLoginName());//创建人
 		plan.setCreateByTxt(userSessionService.getCurrentUser().getDisplayName());//创建人姓名
@@ -8394,6 +8398,7 @@ public static int dayOfTwoDay(Date day1,Date day2) {
 				np.setQty(needQty);
 				needNewDaliyPlans.replace(plan.getItemNo(), 0);
 				convertDaliyPlan(plan, np);
+				np.setStatus("30");
 				newPlans.add(np);
    			break;
    		}
@@ -8513,14 +8518,6 @@ public static int dayOfTwoDay(Date day1,Date day2) {
    	List<TOrderDaliyPlanItem> dateList = new ArrayList<TOrderDaliyPlanItem>(); 
    	for(TOrderDaliyPlanItem plan:newPlans){
    		
-   		//停订的和确认的，直接保存
-   		plan.setPlanItemNo(String.valueOf(index));
-   		if(stopPlans.containsKey(plan)||"20".equals(plan.getStatus())||"30".equals(plan.getStatus())){
-   			index++;
-   			continue;
-   		}
-   		//赠品不动
-   		if(plan.getGiftQty()!=null)continue;
    		if(plan.getDispDate()==null){
    			TPlanOrderItem entry = relatedEntryMap.get(plan.getItemNo());
    			Date lastDate = dateMap.get(plan.getItemNo());
@@ -8550,6 +8547,14 @@ public static int dayOfTwoDay(Date day1,Date day2) {
 					}
 				}
    		}
+   		//停订的和确认的，直接保存
+   		plan.setPlanItemNo(String.valueOf(index));
+   		if(stopPlans.containsKey(plan)||"20".equals(plan.getStatus())||"30".equals(plan.getStatus())){
+   			index++;
+   			continue;
+   		}
+   		//赠品不动
+   		if(plan.getGiftQty()!=null)continue;
    		dateList.add(0,plan);
    		index++;
    	}
