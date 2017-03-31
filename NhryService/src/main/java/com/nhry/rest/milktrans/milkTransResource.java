@@ -379,4 +379,12 @@ public class milkTransResource extends BaseResource {
 	public Response updateSalOrderItems(@ApiParam(required=true,name="eSearch",value="销售订单明细列表") SaleOrderModel sModel){
 		return convertToRespModel(MessageCode.NORMAL, null, requireOrderService.updateSalOrderItems(sModel.getEntries()));
 	}
+
+	@POST
+	@Path("/isEmpSendMode")
+	@Produces(MediaType.APPLICATION_JSON)
+	@ApiOperation(value = "/isEmpSendMode", response = Response.class, notes = "判断是否是送奶工报货")
+	public Response updateSalOrderItems(){
+		return convertToRespModel(MessageCode.NORMAL, null, requireOrderService.isEmpSendMode());
+	}
 }

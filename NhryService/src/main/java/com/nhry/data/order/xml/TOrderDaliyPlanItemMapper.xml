@@ -1487,7 +1487,7 @@
 			AND di.CONFIRM_QTY > 0
 			AND di.MATNR = di.CONFIRM_MATNR
 			AND di.GIFT_FLAG IS NULL
-			AND disp.DISP_DATE = #{orderDate,jdbcType=DATE} -- and o.SALES_ORG=#{salesOrg,jdbcType=VARCHAR}
+			AND disp.DISP_DATE = #{orderDate,jdbcType=DATE}
 			AND o.BRANCH_NO = #{branchNo,jdbcType=VARCHAR}
 			AND o.PREORDER_SOURCE != '70'
 			AND o.PREORDER_SOURCE != '40'
@@ -1513,7 +1513,7 @@
 				AND di.REPLACE_REASON = '10'
 				AND di.CONFIRM_QTY > 0
 				AND di.GIFT_FLAG IS NULL
-				AND disp.DISP_DATE = #{orderDate,jdbcType=DATE} -- and o.SALES_ORG=#{salesOrg,jdbcType=VARCHAR}
+				AND disp.DISP_DATE = #{orderDate,jdbcType=DATE}
 				AND o.BRANCH_NO = #{branchNo,jdbcType=VARCHAR}
 				AND o.PREORDER_SOURCE != '70'
 			    AND o.PREORDER_SOURCE != '40'
