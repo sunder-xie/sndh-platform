@@ -1890,7 +1890,7 @@ public class RequireOrderServiceImpl implements RequireOrderService {
         }
         for(Map<String,Object> map : orgList){
             String empNo = map.get("empNo").toString();
-            String matnr = map.get("matnr").toString();
+            String matnr = map.get("matnr") == null? "" : map.get("matnr").toString();
             String confirmMatnr = map.get("confirmMatnr").toString();
             BigDecimal qty = (BigDecimal)map.get("qty");
             if(orderMap.containsKey(empNo)) {
@@ -1915,7 +1915,7 @@ public class RequireOrderServiceImpl implements RequireOrderService {
             for(Map.Entry<String,List<TOrderDaliyPlanItem>> entry : orderMap.entrySet() ){
                 String orgCode = entry.getKey();
                 List<TOrderDaliyPlanItem> itemList = entry.getValue();
-                TSsmSalOrder order = createSaleOrder(user,orderDate,"branch","",2,"EM",sapcodeMap.get(orgCode),branchNo,salesOrg );
+                TSsmSalOrder order = createSaleOrder(user,orderDate,"branch","", 2 ,"EM",sapcodeMap.get(orgCode),branchNo,salesOrg );
                 for (int i = 0; i < itemList.size(); i++) {
                     TOrderDaliyPlanItem item = itemList.get(i);
                     createSaleOrderItem(item, i + 1, order.getOrderNo(), orderDate, "branch");
