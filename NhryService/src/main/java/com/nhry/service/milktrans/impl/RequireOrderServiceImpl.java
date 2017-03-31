@@ -1868,7 +1868,7 @@ public class RequireOrderServiceImpl implements RequireOrderService {
         RequireOrderSearch rModel = new RequireOrderSearch();
         rModel.setBranchNo(branchNo);
         rModel.setSalesOrg(salesOrg);
-        rModel.setOrderDate(DateUtil.getYestoday(orderDate));
+        rModel.setOrderDate(orderDate);
         List<Map<String,Object>> orgList = tOrderDaliyPlanItemMapper.selectNoProDayPlanOfSelfBranchAndEmpNo(rModel);
         Map<String,List<TOrderDaliyPlanItem>> orderMap = new HashMap<String,List<TOrderDaliyPlanItem>>();
         StringBuilder stringBuilder = new StringBuilder();
@@ -1932,7 +1932,7 @@ public class RequireOrderServiceImpl implements RequireOrderService {
         rModel.setPreorderSource("40");
         rModel.setBranchNo(branchNo);
         rModel.setSalesOrg(salesOrg);
-        rModel.setOrderDate(DateUtil.getYestoday(orderDate));
+        rModel.setOrderDate(orderDate);
         List<TOrderDaliyPlanItem> items = tOrderDaliyPlanItemMapper.selectProDayPlanOfSelfBranch(rModel);
         if (items != null && items.size() > 0) {
             TSsmSalOrder order = createSaleOrder(user, orderDate, "branch", "free", 2, "40","",branchNo , salesOrg);
@@ -1951,7 +1951,7 @@ public class RequireOrderServiceImpl implements RequireOrderService {
         rModel.setPreorderSource("40");
         rModel.setBranchNo(branchNo);
         rModel.setSalesOrg(salesOrg);
-        rModel.setOrderDate(DateUtil.getYestoday(orderDate));
+        rModel.setOrderDate(orderDate);
         List<TOrderDaliyPlanItem> items = tOrderDaliyPlanItemMapper.selectNoProDayPlanOfSelfBranch(rModel);
         if (items != null && items.size() > 0) {
             TSsmSalOrder order = createSaleOrder(user, orderDate, "branch", "", 2, "40","",branchNo , salesOrg);
@@ -1969,7 +1969,7 @@ public class RequireOrderServiceImpl implements RequireOrderService {
         RequireOrderSearch rModel = new RequireOrderSearch();
         rModel.setBranchNo(branchNo);
         rModel.setSalesOrg(salesOrg);
-        rModel.setOrderDate(DateUtil.getYestoday(requiredDate));
+        rModel.setOrderDate(requiredDate);
         List<Map<String,Object>> orgList = tOrderDaliyPlanItemMapper.selectProDayPlanOfSelfOrg(rModel);
         Map<String,List<TOrderDaliyPlanItem>> orderMap = new HashMap<String,List<TOrderDaliyPlanItem>>();
         for(Map<String,Object> map : orgList){
@@ -2015,7 +2015,7 @@ public class RequireOrderServiceImpl implements RequireOrderService {
         RequireOrderSearch rModel = new RequireOrderSearch();
         rModel.setBranchNo(branchNo);
         rModel.setSalesOrg(salesOrg);
-        rModel.setOrderDate(DateUtil.getYestoday(requiredDate));
+        rModel.setOrderDate(requiredDate);
         List<Map<String,String>> itemMap = tSsmSalOrderItemMapper.selectPromDaliyDiscountAmtOfBranch(rModel);
         List<TOrderDaliyPlanItem> items = new ArrayList<TOrderDaliyPlanItem>();
         if (itemMap != null && itemMap.size() > 0) {
