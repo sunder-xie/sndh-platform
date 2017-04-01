@@ -2071,8 +2071,9 @@ public class RequireOrderServiceImpl implements RequireOrderService {
                 throw new ServiceException(MessageCode.LOGIC_ERROR, "该奶站今天已经发送所有销售订单,请直接查询");
             }
             return this.getSaleOrderByQueryDate(sMode);
+        }else{
+            throw new ServiceException(MessageCode.LOGIC_ERROR, "请先生成该日的销售订单再发送");
         }
-        return null;
     }
 
     @Override
