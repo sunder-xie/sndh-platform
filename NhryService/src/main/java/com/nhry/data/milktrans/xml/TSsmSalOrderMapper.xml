@@ -7,12 +7,10 @@
         <result column="ORDER_DATE" property="orderDate" jdbcType="DATE"/>
         <result column="BRANCH_NO" property="branchNo" jdbcType="VARCHAR"/>
         <result column="BRANCH_NAME" property="branchName" jdbcType="VARCHAR"/>
-
         <result column="REQUIRED_DATE" property="requiredDate" jdbcType="DATE"/>
         <result column="VOUCHER_NO" property="voucherNo" jdbcType="VARCHAR"/>
         <result column="STATUS" property="status" jdbcType="VARCHAR"/>
         <result column="MEMO_TXT" property="memoTxt" jdbcType="VARCHAR"/>
-
         <result column="SALES_ORG" property="salesOrg" jdbcType="VARCHAR"/>
         <result column="DEALER_NO" property="dealerNo" jdbcType="VARCHAR"/>
         <result column="DEALER_NAME" property="dealerName" jdbcType="VARCHAR"/>
@@ -182,7 +180,7 @@
     <select id="selectSalOrderByDateAndBranchNo" resultMap="BaseResultMap"  parameterType="com.nhry.model.milktrans.SalOrderModel">
         SELECT
         o.ORDER_NO,o.ORDER_DATE,o.BRANCH_NO,o.REQUIRED_DATE,o.VOUCHER_NO,o.STATUS,o.MEMO_TXT,
-        o.PROM_NO,b.BRANCH_NAME,b.DEALER_NO,d.DEALER_NAME,e.EMP_NAME ONLINE_CODE
+        o.PROM_NO,b.BRANCH_NAME,b.DEALER_NO,d.DEALER_NAME,e.EMP_NAME ONLINE_CODE,o.PREORDER_SOURCE,o.FREE_FLAG
         FROM
            t_ssm_sal_order o
         LEFT  JOIN  t_md_branch b on o.BRANCH_NO = b.BRANCH_NO
