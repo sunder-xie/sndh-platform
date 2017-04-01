@@ -18,6 +18,7 @@ public class OrderSearchModel extends BaseQueryModel implements Serializable {
 	private String product;
 	private String content;//订户电话或者姓名
 	private String goAmt;//订单续订的续费
+	private String paymentmethod;//付款方式
 	private String address;
 	private String milkmemberNo;
 	private String orderDate;
@@ -48,6 +49,18 @@ public class OrderSearchModel extends BaseQueryModel implements Serializable {
 	public String getPromSubType() {
 		return promSubType;
 	}
+
+	public String getPaymentmethod() {
+		return paymentmethod;
+	}
+
+
+
+	public void setPaymentmethod(String paymentmethod) {
+		this.paymentmethod = paymentmethod;
+	}
+
+
 
 	public void setPromSubType(String promSubType) {
 		this.promSubType = promSubType;
