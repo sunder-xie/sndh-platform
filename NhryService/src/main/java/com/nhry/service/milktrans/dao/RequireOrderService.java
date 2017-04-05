@@ -1,6 +1,7 @@
 package com.nhry.service.milktrans.dao;
 
 import com.github.pagehelper.PageInfo;
+import com.nhry.data.basic.domain.TMdBranch;
 import com.nhry.data.milktrans.domain.*;
 import com.nhry.model.milktrans.*;
 
@@ -146,5 +147,11 @@ public interface RequireOrderService {
     List<TSsmSalOrder> batchSendSalOrderByDate(SalOrderDaySearch search);
 
     List<TSsmSalOrderItems> updateSalOrderItems(List<TSsmSalOrderItems> itemss);
+
+    Date getSalOrderDate(Date orderDate, TMdBranch branch);
+
+    Date getRequireDate(Date orderDate);
+
+
 
 }

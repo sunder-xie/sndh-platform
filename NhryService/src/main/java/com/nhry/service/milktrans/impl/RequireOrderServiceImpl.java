@@ -10,7 +10,6 @@ import com.nhry.data.basic.dao.TMdBranchMapper;
 import com.nhry.data.basic.dao.TMdMaraMapper;
 import com.nhry.data.basic.domain.TMdBranch;
 import com.nhry.data.basic.domain.TMdBranchEmp;
-import com.nhry.data.basic.domain.TMdBranchSendMode;
 import com.nhry.data.basic.domain.TMdMara;
 import com.nhry.data.config.domain.NHSysCodeItem;
 import com.nhry.data.milk.dao.TDispOrderMapper;
@@ -684,13 +683,7 @@ public class RequireOrderServiceImpl implements RequireOrderService {
         Date requireDate = null;
         TSysUser user = userSessionService.getCurrentUser();
         //如果是华西或者天音 则requiredDate日期为今天  否则requiredDate为明天
-        if ("4181".equals(user.getSalesOrg()) || "4390".equals(user.getSalesOrg())) {
-            requireDate = orderDate;
-        }else if("4511".equals(user.getSalesOrg())){
-            requireDate = DateUtil.getDayAfterTomorrow(orderDate);
-        } else {
-            requireDate = DateUtil.getTomorrow(orderDate);
-        }
+        requireDate = getRequireDate(orderDate);
         rModel.setBranchNo(user.getBranchNo());
         rModel.setOrderDate(orderDate);
         rModel.setRequiredDate(requireDate);
@@ -774,6 +767,49 @@ public class RequireOrderServiceImpl implements RequireOrderService {
         }
         //查询出今天的要货计划
         return this.searchRequireOrder(orderDate);
+    }
+    @Override
+    public Date getSalOrderDate(Date orderDate, TMdBranch branch){
+        TSysUser user = userSessionService.getCurrentUser();
+        NHSysCodeItem codeItem = new NHSysCodeItem();
+        codeItem.setTypeCode(SysContant.getSystemConst("branch_require_date"));
+        codeItem.setItemCode(user.getSalesOrg());
+        codeItem = dictionaryService.findCodeItenByCode(codeItem);
+        if(codeItem == null){
+            if("01".equals(branch.getBranchGroup())){
+                return orderDate;
+            }else{
+                return DateUtil.getDay(orderDate,1);
+            }
+        }else{
+            if("01".equals(branch.getBranchGroup())){
+                return DateUtil.getDay(orderDate,Integer.valueOf(codeItem.getAttr2()));
+            }else{
+                return DateUtil.getDay(orderDate,Integer.valueOf(codeItem.getAttr3()));
+            }
+        }
+    }
+    @Override
+    public Date getRequireDate(Date orderDate) {
+        TSysUser user = userSessionService.getCurrentUser();
+        NHSysCodeItem codeItem = new NHSysCodeItem();
+        codeItem.setTypeCode(SysContant.getSystemConst("branch_require_date"));
+        codeItem.setItemCode(user.getSalesOrg());
+        codeItem = dictionaryService.findCodeItenByCode(codeItem);
+        if(codeItem == null){
+           return DateUtil.getDay(orderDate,1);
+        }else{
+            String attr = codeItem.getAttr1();
+            int num = Integer.valueOf(attr);
+            return DateUtil.getDay(orderDate,num);
+        }
+//        if ("4181".equals(user.getSalesOrg()) || "4390".equals(user.getSalesOrg())) {
+//            requireDate = orderDate;
+//        }else if("4511".equals(user.getSalesOrg()) || "4151".equals(user.getSalesOrg())){
+//            requireDate = DateUtil.getDayAfterTomorrow(orderDate);
+//        } else {
+//            requireDate = DateUtil.getTomorrow(orderDate);
+//        }
     }
 
     @Override
@@ -1644,17 +1680,18 @@ public class RequireOrderServiceImpl implements RequireOrderService {
         order.setOrderNo(orderNo);
         order.setSalesOrg(salesOrg);
         TMdBranch branch = branchMapper.selectBranchByNo(branchNo);
-        if ("4181".equals(salesOrg) || "4390".equals(salesOrg)) {
-            order.setRequiredDate(requiredDate);
-        }else if("4511".equals(salesOrg)){
-            order.setRequiredDate(DateUtil.getDayAfterTomorrow(requiredDate));
-        }else {
-            if ("01".equals(branch.getBranchGroup())) {
-                order.setRequiredDate(requiredDate);
-            } else {
-                order.setRequiredDate(DateUtil.getTomorrow(requiredDate));
-            }
-        }
+        order.setRequiredDate(getSalOrderDate(requiredDate, branch));
+//        if ("4181".equals(salesOrg) || "4390".equals(salesOrg)) {
+//            order.setRequiredDate(requiredDate);
+//        }else if("4511".equals(salesOrg) || "4151".equals(salesOrg)){
+//            order.setRequiredDate(DateUtil.getDayAfterTomorrow(requiredDate));
+//        }else {
+//            if ("01".equals(branch.getBranchGroup())) {
+//                order.setRequiredDate(requiredDate);
+//            } else {
+//                order.setRequiredDate(DateUtil.getTomorrow(requiredDate));
+//            }
+//        }
 
         order.setBranchNo(branchNo);
         if ("dealer".equals(type)) {
@@ -1776,7 +1813,7 @@ public class RequireOrderServiceImpl implements RequireOrderService {
 //        }
         //送奶工报货
         if("EM".equals(order.getPreorderSource())){
-            message = piRequireOrderService.generateSalesOrderOfEmp(order,order.getBranchNo(),order.getOnlineCode(),order.getSalesOrg());
+            message = piRequireOrderService.generateSalesOrderOfEmp(order,order.getOnlineCode(),order.getOnlineCode(),order.getSalesOrg());
         }else{
             message = piRequireOrderService.generateSalesOrder(order, order.getDealerNo(), order.getBranchNo(), order.getSalesOrg(), "");
         }
