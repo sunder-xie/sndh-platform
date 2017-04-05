@@ -50,4 +50,6 @@
   <config key="timer_execute_in_local" value="false"></config>
   <!-- 送奶工报货编号 -->
   <config key="emp_send_mode" value="2010"></config>
+ <!-- 奶站配送日期设置 -->
+ <config key="branch_require_date" value="2011"></config>
 </configs>
