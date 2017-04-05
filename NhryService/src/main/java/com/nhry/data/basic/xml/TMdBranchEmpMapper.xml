@@ -263,7 +263,7 @@
     where LOGIN_NAME = #{empNo,jdbcType=VARCHAR}
   </update>
   <select id="searchBranchEmp" resultMap="BaseResultMap" parameterType="com.nhry.model.basic.EmpQueryModel">
-      select emp.EMP_NO, emp.HR_EMP_NO, branch.BRANCH_NAME  BRANCH_NO, role.ROLE_NAME roleId,emp.EMP_NAME,emp.GENDER,
+    select emp.EMP_NO, emp.HR_EMP_NO, branch.BRANCH_NAME  BRANCH_NO, role.ROLE_NAME roleId,emp.EMP_NAME,emp.GENDER,
     emp.EMP_TYPE, emp.TEL, emp.MP, emp.WEBCHAT, emp.ID_NO,emp.STATUS
     from t_md_branch_emp emp
     LEFT JOIN  T_MD_BRANCH branch on emp.BRANCH_NO = branch.BRANCH_NO
@@ -271,20 +271,24 @@
     LEFT JOIN t_sys_role role  on  erole.ID = role.ID
     where  1=1
     AND emp.SALES_ORG = #{salesOrg,jdbcType=VARCHAR}
-     <if test="branchNo != null and branchNo !=''">
-     		AND emp.BRANCH_NO = #{branchNo,jdbcType=VARCHAR}
-     </if>
+    <if test="branchNo != null and branchNo !=''">
+      AND emp.BRANCH_NO = #{branchNo,jdbcType=VARCHAR}
+    </if>
     <if test="dealerNo != null and dealerNo !=''">
       AND branch.DEALER_NO = #{dealerNo,jdbcType=VARCHAR}
     </if>
     <if test="salesOrg != null and salesOrg !=''">
       AND branch.SALES_ORG = #{salesOrg,jdbcType=VARCHAR}
     </if>
-     <if test="status != null and status != ''">
-     	AND  emp.STATUS = #{status,jdbcType=VARCHAR}
-     </if>
+    <if test="status != null and status != ''">
+      AND  emp.STATUS = #{status,jdbcType=VARCHAR}
+    </if>
     <if test="roleId != null and roleId != ''">
       AND role.ID = #{roleId,jdbcType=VARCHAR}
+    </if>
+    <if test="search !=null and '' !=search" >
+      and  ( emp.EMP_NAME like '%${search}%'
+      or  emp.HR_EMP_NO like'%${search}%')
     </if>
     ORDER BY emp.STATUS desc
   </select>
