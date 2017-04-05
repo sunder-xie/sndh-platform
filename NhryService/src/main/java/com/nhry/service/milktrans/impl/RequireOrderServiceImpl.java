@@ -1989,7 +1989,7 @@ public class RequireOrderServiceImpl implements RequireOrderService {
         rModel.setBranchNo(branchNo);
         rModel.setSalesOrg(salesOrg);
         rModel.setOrderDate(orderDate);
-        List<TOrderDaliyPlanItem> items = tOrderDaliyPlanItemMapper.selectNoProDayPlanOfSelfBranch(rModel);
+        List<TOrderDaliyPlanItem> items = tOrderDaliyPlanItemMapper.selectNoProDayPlanOfSelfBranch40(rModel);
         if (items != null && items.size() > 0) {
             TSsmSalOrder order = createSaleOrder(user, orderDate, "branch", "", 2, "40","",branchNo , salesOrg);
             for (int i = 1; i <= items.size(); i++) {
