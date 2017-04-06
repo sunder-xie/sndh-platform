@@ -3,11 +3,7 @@ package com.nhry.rest.report;
 import com.nhry.common.auth.UserSessionService;
 import com.nhry.common.exception.MessageCode;
 import com.nhry.data.auth.domain.TSysUser;
-import com.nhry.data.basic.domain.TMdAddress;
-import com.nhry.data.basic.domain.TMdBranch;
-import com.nhry.data.basic.domain.TMdBranchEmp;
-import com.nhry.data.basic.domain.TMdMara;
-import com.nhry.data.basic.domain.TMdMaraSort;
+import com.nhry.data.basic.domain.*;
 import com.nhry.data.bill.domain.TMstRecvBill;
 import com.nhry.data.milk.domain.TDispOrder;
 import com.nhry.data.milk.domain.TDispOrderItem;
@@ -30,6 +26,8 @@ import com.nhry.service.auth.dao.UserService;
 import com.nhry.service.basic.dao.BranchEmpService;
 import com.nhry.service.basic.dao.BranchService;
 import com.nhry.service.basic.dao.ProductService;
+import com.nhry.service.basic.dao.ResidentialAreaService;
+import com.nhry.service.basic.pojo.AreaSearchModel;
 import com.nhry.service.basic.pojo.BranchEmpModel;
 import com.nhry.service.bill.dao.CustomerBillService;
 import com.nhry.service.milk.dao.DeliverMilkService;
@@ -103,6 +101,9 @@ public class ReportResource extends BaseResource{
     
     @Autowired
     private UserService userService;
+
+    @Autowired
+    private ResidentialAreaService sesidentialAreaService;
     
     
     
@@ -2164,6 +2165,90 @@ public class ReportResource extends BaseResource{
             stream.flush();
             stream.close();
             outUrl = fname + "rbox.xlsx";
+        }catch(Exception e){
+            e.printStackTrace();
+        }
+        return convertToRespModel(MessageCode.NORMAL,null,outUrl);
+    }
+
+    /**
+     * 配送区域下载
+     * @param model
+     * @return
+     */
+    @POST
+    @Path("/exportArea")
+    @Produces(MediaType.APPLICATION_JSON)
+    @Consumes(MediaType.APPLICATION_JSON)
+    @ApiOperation(value = "/exportArea", response = ResponseModel.class, notes = "配送区域下载")
+    public Response exportReturnBox(@ApiParam(name = "model",value = "配送区域") AreaSearchModel model){
+        String outUrl = "";
+        String url = EnvContant.getSystemConst("filePath");
+
+        List<TMdResidentialArea> areaList = sesidentialAreaService.searchAreaSaleOrgBranchNo(model);
+        try {
+            File file = new File(url +  File.separator + "report"+ File.separator + "template" + File.separator + "AreaDownTemplate.xlsx");    //审批单
+            FileInputStream input = new FileInputStream(file);
+            XSSFWorkbook workbook = new XSSFWorkbook(new BufferedInputStream(input));
+            XSSFSheet sheet = workbook.getSheetAt(0);
+            XSSFCellStyle styleBold = workbook.createCellStyle();
+            styleBold.setBorderBottom(XSSFCellStyle.BORDER_THIN); //下边框
+            styleBold.setBorderLeft(XSSFCellStyle.BORDER_THIN);//左边框
+            styleBold.setBorderTop(XSSFCellStyle.BORDER_THIN);//上边框
+            styleBold.setBorderRight(XSSFCellStyle.BORDER_THIN);//右边框
+            styleBold.setWrapText(true);
+            int rowNum = 1;
+            if(areaList!=null){
+                for(TMdResidentialArea area : areaList){
+                    int raw = 0;
+                    XSSFRow row = sheet.createRow(rowNum);
+                    XSSFCell cell = row.createCell(raw++);
+                    cell.setCellStyle(styleBold);
+                    cell.setCellValue(area.getId());
+                    cell = row.createCell(raw++);
+                    cell.setCellStyle(styleBold);
+                    cell.setCellValue(area.getResidentialAreaTxt());
+                    cell = row.createCell(raw++);
+                    cell.setCellStyle(styleBold);
+                    cell.setCellValue(area.getAddressTxt());
+                    cell = row.createCell(raw++);
+                    cell.setCellStyle(styleBold);
+                    cell.setCellValue(area.getBranchNo());
+                    cell = row.createCell(raw++);
+                    cell.setCellStyle(styleBold);
+                    cell.setCellValue(area.getBranchName());
+                    cell = row.createCell(raw++);
+                    cell.setCellStyle(styleBold);
+                    cell.setCellValue(area.getProvinceName());
+                    cell = row.createCell(raw++);
+                    cell.setCellStyle(styleBold);
+                    cell.setCellValue(area.getCityName());
+                    cell = row.createCell(raw++);
+                    cell.setCellStyle(styleBold);
+                    cell.setCellValue(area.getCountyName());
+
+                    rowNum++;
+
+                }
+                String fname = CodeGeneratorUtil.getCode();
+                String rq = format1.format(new Date(new Date().getTime() - 24 * 60 * 60 * 1000));
+                String filePath = url +  File.separator + "report"+ File.separator + "export";
+                File delFiles = new File(filePath);
+                if(delFiles.isDirectory()){
+                    for(File del : delFiles.listFiles()){
+                        if(del.getName().contains(rq)){
+                            del.delete();
+                        }
+                    }
+                }
+                File export = new File(url +  File.separator + "report"+ File.separator + "export" + File.separator + fname + "area.xlsx");
+                FileOutputStream stream = new FileOutputStream(export);
+                workbook.write(stream);
+                stream.flush();
+                stream.close();
+                outUrl = fname + "area.xlsx";
+            }
+
         }catch(Exception e){
             e.printStackTrace();
         }

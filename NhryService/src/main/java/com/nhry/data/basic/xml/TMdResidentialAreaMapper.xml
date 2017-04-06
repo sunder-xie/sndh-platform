@@ -357,4 +357,21 @@
   and  RESIDENTIAL_AREA_TXT = #{residentialAreaTxt}
   and SALES_ORG = #{salesOrg}
 </select>
+  <select id="searchAreaSaleOrgBranchNo" resultMap="BaseResultMap" parameterType="com.nhry.service.basic.pojo.AreaSearchModel">
+      SELECT DISTINCT
+    a.ID,a.RESIDENTIAL_AREA_TXT,a.SALES_ORG,a.ADDRESS_TXT,b.BRANCH_NO,b1.BRANCH_NAME,a.PROVINCE,a.CITY,a.COUNTY,
+    (SELECT i.ITEM_NAME from t_sys_code_item i WHERE i.TYPE_CODE= '1001' and i.ITEM_CODE = a.PROVINCE ) PROVINCE_NAME,
+    (SELECT i.ITEM_NAME from t_sys_code_item i WHERE i.TYPE_CODE= '1001'and i.ITEM_CODE = a.CITY ) CITY_NAME,
+    (SELECT i.ITEM_NAME from t_sys_code_item i WHERE i.TYPE_CODE= '1001' and i.ITEM_CODE = a.COUNTY ) COUNTY_NAME
+
+    from t_md_residential_area a
+		LEFT JOIN t_md_branch_scope b on b.RESIDENTIAL_AREA_ID = a.ID
+		LEFT JOIN t_md_branch b1 on b1.BRANCH_NO = b.BRANCH_NO
+
+    where a.SALES_ORG = #{salesOrg,jdbcType=VARCHAR}
+    <if test="branchNo != null and branchNo !=''">
+      AND b.BRANCH_NO = #{branchNo,jdbcType=VARCHAR}
+    </if>
+    ORDER BY b.BRANCH_NO,a.RESIDENTIAL_AREA_TXT
+  </select>
 </mapper>
