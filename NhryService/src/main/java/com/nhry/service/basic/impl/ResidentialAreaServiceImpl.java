@@ -131,6 +131,17 @@ public class ResidentialAreaServiceImpl implements ResidentialAreaService {
         }
         return tMdResidentialAreaMapper.searchAreaBySalesOrg(aModel);
     }
+    //获取销售组织/奶站配送区域，下载使用
+    @Override
+    public List<TMdResidentialArea> searchAreaSaleOrgBranchNo(AreaSearchModel aModel){
+        TSysUser user = userSessionService.getCurrentUser();
+        aModel.setSalesOrg(user.getSalesOrg());
+        if(user.getBranchNo()!=null){
+            aModel.setBranchNo(user.getBranchNo());
+        }
+
+        return tMdResidentialAreaMapper.searchAreaSaleOrgBranchNo(aModel);
+    }
 
     @Override
     public List<TMdResidentialArea> searchSalesOrgArea(AreaSearchModel aModel) {

@@ -117,4 +117,9 @@ public class TMdResidentialAreaMapperImpl implements TMdResidentialAreaMapper {
     public void setSqlSessionTemplate(DynamicSqlSessionTemplate sqlSessionTemplate) {
         this.sqlSessionTemplate = sqlSessionTemplate;
     }
+    //获取销售组织或奶站配送区域，返回以供下载
+    @Override
+    public List<TMdResidentialArea> searchAreaSaleOrgBranchNo(AreaSearchModel aModel) {
+        return sqlSessionTemplate.selectList("searchAreaSaleOrgBranchNo",aModel);
+    }
 }
