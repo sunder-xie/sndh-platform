@@ -1,0 +1,224 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.nhry.data.stud.dao.TMdMaraStudExMapper" >
+  <resultMap id="BaseResultMap" type="com.nhry.data.stud.domain.TMdMaraStudEx" >
+    <id column="MATNR" property="matnr" jdbcType="VARCHAR" />
+    <id column="SALES_ORG" property="salesOrg" jdbcType="VARCHAR" />
+    <result column="SALES_FLAG" property="salesFlag" jdbcType="VARCHAR" />
+    <result column="SHORT_TXT" property="shortTxt" jdbcType="VARCHAR" />
+    <result column="PRE_DAYS" property="preDays" jdbcType="INTEGER" />
+    <result column="BOT_TYPE" property="botType" jdbcType="VARCHAR" />
+    <result column="RET_BOT_FLAG" property="retBotFlag" jdbcType="CHAR" />
+    <result column="CREATE_AT" property="createAt" jdbcType="TIMESTAMP" />
+    <result column="CREATE_BY" property="createBy" jdbcType="VARCHAR" />
+    <result column="CREATE_BY_TXT" property="createByTxt" jdbcType="VARCHAR" />
+    <result column="LAST_MODIFIED" property="lastModified" jdbcType="TIMESTAMP" />
+    <result column="LAST_MODIFIED_BY" property="lastModifiedBy" jdbcType="VARCHAR" />
+    <result column="LAST_MODIFIED_BY_TXT" property="lastModifiedByTxt" jdbcType="VARCHAR" />
+    <result column="WERKS" property="werks" jdbcType="VARCHAR" />
+    <result column="RESLO" property="reslo" jdbcType="VARCHAR" />
+    <result column="RATE" property="rate" jdbcType="DECIMAL" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    MATNR, SALES_ORG, SALES_FLAG, SHORT_TXT, PRE_DAYS, BOT_TYPE, RET_BOT_FLAG, CREATE_AT, 
+    CREATE_BY, CREATE_BY_TXT, LAST_MODIFIED, LAST_MODIFIED_BY, LAST_MODIFIED_BY_TXT, 
+    WERKS, RESLO, RATE
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="com.nhry.data.stud.domain.TMdMaraStudExKey" >
+    select 
+    <include refid="Base_Column_List" />
+    from t_md_mara_stud_ex
+    where MATNR = #{matnr,jdbcType=VARCHAR}
+      and SALES_ORG = #{salesOrg,jdbcType=VARCHAR}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="com.nhry.data.stud.domain.TMdMaraStudExKey" >
+    delete from t_md_mara_stud_ex
+    where MATNR = #{matnr,jdbcType=VARCHAR}
+      and SALES_ORG = #{salesOrg,jdbcType=VARCHAR}
+  </delete>
+  <insert id="insert" parameterType="com.nhry.data.stud.domain.TMdMaraStudEx" >
+    insert into t_md_mara_stud_ex (MATNR, SALES_ORG, SALES_FLAG, 
+      SHORT_TXT, PRE_DAYS, BOT_TYPE, 
+      RET_BOT_FLAG, CREATE_AT, CREATE_BY, 
+      CREATE_BY_TXT, LAST_MODIFIED, LAST_MODIFIED_BY, 
+      LAST_MODIFIED_BY_TXT, WERKS, RESLO, 
+      RATE)
+    values (#{matnr,jdbcType=VARCHAR}, #{salesOrg,jdbcType=VARCHAR}, #{salesFlag,jdbcType=VARCHAR}, 
+      #{shortTxt,jdbcType=VARCHAR}, #{preDays,jdbcType=INTEGER}, #{botType,jdbcType=VARCHAR}, 
+      #{retBotFlag,jdbcType=CHAR}, #{createAt,jdbcType=TIMESTAMP}, #{createBy,jdbcType=VARCHAR}, 
+      #{createByTxt,jdbcType=VARCHAR}, #{lastModified,jdbcType=TIMESTAMP}, #{lastModifiedBy,jdbcType=VARCHAR}, 
+      #{lastModifiedByTxt,jdbcType=VARCHAR}, #{werks,jdbcType=VARCHAR}, #{reslo,jdbcType=VARCHAR}, 
+      #{rate,jdbcType=DECIMAL})
+  </insert>
+  <insert id="insertSelective" parameterType="com.nhry.data.stud.domain.TMdMaraStudEx" >
+    insert into t_md_mara_stud_ex
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="matnr != null" >
+        MATNR,
+      </if>
+      <if test="salesOrg != null" >
+        SALES_ORG,
+      </if>
+      <if test="salesFlag != null" >
+        SALES_FLAG,
+      </if>
+      <if test="shortTxt != null" >
+        SHORT_TXT,
+      </if>
+      <if test="preDays != null" >
+        PRE_DAYS,
+      </if>
+      <if test="botType != null" >
+        BOT_TYPE,
+      </if>
+      <if test="retBotFlag != null" >
+        RET_BOT_FLAG,
+      </if>
+      <if test="createAt != null" >
+        CREATE_AT,
+      </if>
+      <if test="createBy != null" >
+        CREATE_BY,
+      </if>
+      <if test="createByTxt != null" >
+        CREATE_BY_TXT,
+      </if>
+      <if test="lastModified != null" >
+        LAST_MODIFIED,
+      </if>
+      <if test="lastModifiedBy != null" >
+        LAST_MODIFIED_BY,
+      </if>
+      <if test="lastModifiedByTxt != null" >
+        LAST_MODIFIED_BY_TXT,
+      </if>
+      <if test="werks != null" >
+        WERKS,
+      </if>
+      <if test="reslo != null" >
+        RESLO,
+      </if>
+      <if test="rate != null" >
+        RATE,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="matnr != null" >
+        #{matnr,jdbcType=VARCHAR},
+      </if>
+      <if test="salesOrg != null" >
+        #{salesOrg,jdbcType=VARCHAR},
+      </if>
+      <if test="salesFlag != null" >
+        #{salesFlag,jdbcType=VARCHAR},
+      </if>
+      <if test="shortTxt != null" >
+        #{shortTxt,jdbcType=VARCHAR},
+      </if>
+      <if test="preDays != null" >
+        #{preDays,jdbcType=INTEGER},
+      </if>
+      <if test="botType != null" >
+        #{botType,jdbcType=VARCHAR},
+      </if>
+      <if test="retBotFlag != null" >
+        #{retBotFlag,jdbcType=CHAR},
+      </if>
+      <if test="createAt != null" >
+        #{createAt,jdbcType=TIMESTAMP},
+      </if>
+      <if test="createBy != null" >
+        #{createBy,jdbcType=VARCHAR},
+      </if>
+      <if test="createByTxt != null" >
+        #{createByTxt,jdbcType=VARCHAR},
+      </if>
+      <if test="lastModified != null" >
+        #{lastModified,jdbcType=TIMESTAMP},
+      </if>
+      <if test="lastModifiedBy != null" >
+        #{lastModifiedBy,jdbcType=VARCHAR},
+      </if>
+      <if test="lastModifiedByTxt != null" >
+        #{lastModifiedByTxt,jdbcType=VARCHAR},
+      </if>
+      <if test="werks != null" >
+        #{werks,jdbcType=VARCHAR},
+      </if>
+      <if test="reslo != null" >
+        #{reslo,jdbcType=VARCHAR},
+      </if>
+      <if test="rate != null" >
+        #{rate,jdbcType=DECIMAL},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.nhry.data.stud.domain.TMdMaraStudEx" >
+    update t_md_mara_stud_ex
+    <set >
+      <if test="salesFlag != null" >
+        SALES_FLAG = #{salesFlag,jdbcType=VARCHAR},
+      </if>
+      <if test="shortTxt != null" >
+        SHORT_TXT = #{shortTxt,jdbcType=VARCHAR},
+      </if>
+      <if test="preDays != null" >
+        PRE_DAYS = #{preDays,jdbcType=INTEGER},
+      </if>
+      <if test="botType != null" >
+        BOT_TYPE = #{botType,jdbcType=VARCHAR},
+      </if>
+      <if test="retBotFlag != null" >
+        RET_BOT_FLAG = #{retBotFlag,jdbcType=CHAR},
+      </if>
+      <if test="createAt != null" >
+        CREATE_AT = #{createAt,jdbcType=TIMESTAMP},
+      </if>
+      <if test="createBy != null" >
+        CREATE_BY = #{createBy,jdbcType=VARCHAR},
+      </if>
+      <if test="createByTxt != null" >
+        CREATE_BY_TXT = #{createByTxt,jdbcType=VARCHAR},
+      </if>
+      <if test="lastModified != null" >
+        LAST_MODIFIED = #{lastModified,jdbcType=TIMESTAMP},
+      </if>
+      <if test="lastModifiedBy != null" >
+        LAST_MODIFIED_BY = #{lastModifiedBy,jdbcType=VARCHAR},
+      </if>
+      <if test="lastModifiedByTxt != null" >
+        LAST_MODIFIED_BY_TXT = #{lastModifiedByTxt,jdbcType=VARCHAR},
+      </if>
+      <if test="werks != null" >
+        WERKS = #{werks,jdbcType=VARCHAR},
+      </if>
+      <if test="reslo != null" >
+        RESLO = #{reslo,jdbcType=VARCHAR},
+      </if>
+      <if test="rate != null" >
+        RATE = #{rate,jdbcType=DECIMAL},
+      </if>
+    </set>
+    where MATNR = #{matnr,jdbcType=VARCHAR}
+      and SALES_ORG = #{salesOrg,jdbcType=VARCHAR}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.nhry.data.stud.domain.TMdMaraStudEx" >
+    update t_md_mara_stud_ex
+    set SALES_FLAG = #{salesFlag,jdbcType=VARCHAR},
+      SHORT_TXT = #{shortTxt,jdbcType=VARCHAR},
+      PRE_DAYS = #{preDays,jdbcType=INTEGER},
+      BOT_TYPE = #{botType,jdbcType=VARCHAR},
+      RET_BOT_FLAG = #{retBotFlag,jdbcType=CHAR},
+      CREATE_AT = #{createAt,jdbcType=TIMESTAMP},
+      CREATE_BY = #{createBy,jdbcType=VARCHAR},
+      CREATE_BY_TXT = #{createByTxt,jdbcType=VARCHAR},
+      LAST_MODIFIED = #{lastModified,jdbcType=TIMESTAMP},
+      LAST_MODIFIED_BY = #{lastModifiedBy,jdbcType=VARCHAR},
+      LAST_MODIFIED_BY_TXT = #{lastModifiedByTxt,jdbcType=VARCHAR},
+      WERKS = #{werks,jdbcType=VARCHAR},
+      RESLO = #{reslo,jdbcType=VARCHAR},
+      RATE = #{rate,jdbcType=DECIMAL}
+    where MATNR = #{matnr,jdbcType=VARCHAR}
+      and SALES_ORG = #{salesOrg,jdbcType=VARCHAR}
+  </update>
+</mapper>
