@@ -1,0 +1,145 @@
+package com.nhry.data.stud.domain;
+
+import java.util.Date;
+
+public class TMdSchool {
+    private String schoolCode;
+
+    private String schoolName;
+
+    private String erpCode;
+
+    private String tel;
+
+    private String mobilePhone;
+
+    private String contact;
+
+    private String address;
+
+    private Date createAt;
+
+    private String createBy;
+
+    private String createByTxt;
+
+    private Date lastModified;
+
+    private String lastModifiedBy;
+
+    private String lastModifiedByTxt;
+
+    private String visiable;
+
+    public String getSchoolCode() {
+        return schoolCode;
+    }
+
+    public void setSchoolCode(String schoolCode) {
+        this.schoolCode = schoolCode == null ? null : schoolCode.trim();
+    }
+
+    public String getSchoolName() {
+        return schoolName;
+    }
+
+    public void setSchoolName(String schoolName) {
+        this.schoolName = schoolName == null ? null : schoolName.trim();
+    }
+
+    public String getErpCode() {
+        return erpCode;
+    }
+
+    public void setErpCode(String erpCode) {
+        this.erpCode = erpCode == null ? null : erpCode.trim();
+    }
+
+    public String getTel() {
+        return tel;
+    }
+
+    public void setTel(String tel) {
+        this.tel = tel == null ? null : tel.trim();
+    }
+
+    public String getMobilePhone() {
+        return mobilePhone;
+    }
+
+    public void setMobilePhone(String mobilePhone) {
+        this.mobilePhone = mobilePhone == null ? null : mobilePhone.trim();
+    }
+
+    public String getContact() {
+        return contact;
+    }
+
+    public void setContact(String contact) {
+        this.contact = contact == null ? null : contact.trim();
+    }
+
+    public String getAddress() {
+        return address;
+    }
+
+    public void setAddress(String address) {
+        this.address = address == null ? null : address.trim();
+    }
+
+    public Date getCreateAt() {
+        return createAt;
+    }
+
+    public void setCreateAt(Date createAt) {
+        this.createAt = createAt;
+    }
+
+    public String getCreateBy() {
+        return createBy;
+    }
+
+    public void setCreateBy(String createBy) {
+        this.createBy = createBy == null ? null : createBy.trim();
+    }
+
+    public String getCreateByTxt() {
+        return createByTxt;
+    }
+
+    public void setCreateByTxt(String createByTxt) {
+        this.createByTxt = createByTxt == null ? null : createByTxt.trim();
+    }
+
+    public Date getLastModified() {
+        return lastModified;
+    }
+
+    public void setLastModified(Date lastModified) {
+        this.lastModified = lastModified;
+    }
+
+    public String getLastModifiedBy() {
+        return lastModifiedBy;
+    }
+
+    public void setLastModifiedBy(String lastModifiedBy) {
+        this.lastModifiedBy = lastModifiedBy == null ? null : lastModifiedBy.trim();
+    }
+
+    public String getLastModifiedByTxt() {
+        return lastModifiedByTxt;
+    }
+
+    public void setLastModifiedByTxt(String lastModifiedByTxt) {
+        this.lastModifiedByTxt = lastModifiedByTxt == null ? null : lastModifiedByTxt.trim();
+    }
+
+    public String getVisiable() {
+        return visiable;
+    }
+
+    public void setVisiable(String visiable) {
+        this.visiable = visiable == null ? null : visiable.trim();
+    }
+}
