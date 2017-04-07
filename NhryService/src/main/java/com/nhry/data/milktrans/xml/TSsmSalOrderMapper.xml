@@ -185,7 +185,7 @@
            t_ssm_sal_order o
         LEFT  JOIN  t_md_branch b on o.BRANCH_NO = b.BRANCH_NO
         LEFT  JOIN  t_md_dealer d on b.DEALER_NO = d.DEALER_NO
-        LEFT JOIN t_md_branch_emp e on e.SAPCODE = o.ONLINE_CODE
+        LEFT JOIN t_md_branch_emp e on e.SAPCODE != '' and e.SAPCODE is not null and e.SAPCODE = o.ONLINE_CODE
         WHERE 1=1
         and ORDER_DATE = #{orderDate,jdbcType=DATE}
         <if test="branchNo!=null and ''!=branchNo">

@@ -6,6 +6,7 @@ import com.nhry.data.milktrans.domain.TSsmSalOrderItems;
 import com.nhry.model.milktrans.RequireOrderSearch;
 import com.nhry.model.order.OrderPointModel;
 
+import java.math.BigDecimal;
 import java.util.Map;
 
 import java.util.List;
@@ -78,5 +79,10 @@ public class TSsmSalOrderItemMapperImpl implements TSsmSalOrderItemMapper {
     @Override
     public int updateSalOrderItem(TSsmSalOrderItems items) {
         return sqlSessionTemplate.update("updateSalOrderItem",items);
+    }
+
+    @Override
+    public BigDecimal sumSalOrderByDate(RequireOrderSearch rModel) {
+        return sqlSessionTemplate.selectOne("sumSalOrderByDate",rModel);
     }
 }

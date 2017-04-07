@@ -188,4 +188,13 @@
         and o.REQ_ORDER_NO =  #{reqOrderNo,jdbcType=VARCHAR}
         GROUP BY i.MATNR
     </select>
+
+    <select id="sumGiOrderItemByReqOrderNo" resultType="BigDecimal">
+        SELECT
+            SUM(i.CONFIRM_QTY)
+        FROM
+            t_ssm_gi_order o
+        JOIN t_ssm_gi_order_item i ON o.ORDER_NO = i.ORDER_NO
+        AND o.REQ_ORDER_NO = #{reqOrderNo,jdbcType=VARCHAR}
+    </select>
 </mapper>

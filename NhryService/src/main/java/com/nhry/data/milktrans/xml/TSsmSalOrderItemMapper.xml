@@ -263,4 +263,14 @@
         AND ITEM_NO = #{itemNo,jdbcType=VARCHAR}
         AND ORDER_DATE = #{orderDate,jdbcType=DATE}
     </update>
+
+    <select id="sumSalOrderByDate" resultType="BigDecimal" parameterType="com.nhry.model.milktrans.RequireOrderSearch">
+        SELECT
+            SUM(i.QTY)
+        FROM
+            t_ssm_sal_order o
+        JOIN t_ssm_sal_order_items i ON o.ORDER_NO = i.ORDER_NO
+        AND o.BRANCH_NO = #{branchNo,jdbcType=VARCHAR}
+        AND o.REQUIRED_DATE = #{requiredDate,jdbcType=DATE};
+    </select>
 </mapper>

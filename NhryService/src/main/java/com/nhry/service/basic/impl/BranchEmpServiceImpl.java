@@ -182,6 +182,12 @@ public class BranchEmpServiceImpl extends BaseService implements BranchEmpServic
 		if(emp == null){
 			throw new ServiceException(MessageCode.LOGIC_ERROR, "该员工编号对应的员工信息不存在!");
 		}
+		if(StringUtils.isNotEmpty(record.getSapcode())){
+			int i = branchEmpMapper.isEmp(record);
+			if(i > 0){
+				throw new ServiceException(MessageCode.LOGIC_ERROR, "该SAP客户编码已经存在!");
+			}
+		}
 		record.setLastModified(new Date());
 		record.setLastModifiedBy(userSessionService.getCurrentUser().getLoginName());
 		record.setLastModifiedByTxt(userSessionService.getCurrentUser().getDisplayName());

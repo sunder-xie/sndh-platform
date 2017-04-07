@@ -383,4 +383,13 @@
     and e.LEAVE_DATE &lt;= #{endDate,jdbcType=DATE}
     GROUP BY e.HR_EMP_NO
   </select>
+  <select id="isEmp" resultType="int" parameterType="com.nhry.data.basic.domain.TMdBranchEmp">
+    SELECT
+        count(1)
+    FROM
+        t_md_branch_emp t
+    WHERE
+        t.EMP_NO != #{empNo,jdbcType=VARCHAR}
+    AND t.SAPCODE = #{sapcode,jdbcType=VARCHAR}
+  </select>
 </mapper>

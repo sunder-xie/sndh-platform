@@ -4,6 +4,7 @@ import com.nhry.data.milktrans.domain.TSsmSalOrderItems;
 import com.nhry.model.milktrans.RequireOrderSearch;
 import com.nhry.model.order.OrderPointModel;
 
+import java.math.BigDecimal;
 import java.util.Map;
 import java.util.List;
 
@@ -49,5 +50,12 @@ public interface TSsmSalOrderItemMapper {
      * @return
      */
     int updateSalOrderItem(TSsmSalOrderItems items);
+
+    /**
+     * 统计销售订单的数量
+     * @param rModel
+     * @return
+     */
+    BigDecimal sumSalOrderByDate(RequireOrderSearch rModel);
 
 }

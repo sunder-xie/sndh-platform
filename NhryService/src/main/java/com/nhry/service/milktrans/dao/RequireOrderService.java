@@ -5,6 +5,7 @@ import com.nhry.data.basic.domain.TMdBranch;
 import com.nhry.data.milktrans.domain.*;
 import com.nhry.model.milktrans.*;
 
+import java.math.BigDecimal;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -152,6 +153,8 @@ public interface RequireOrderService {
 
     Date getRequireDate(Date orderDate);
 
+    BigDecimal sumGiOrderItemByReqOrderNo(Date orderDate);
 
+    BigDecimal sumSalOrderByDate(Date reqOrderDate);
 
 }
