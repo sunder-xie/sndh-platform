@@ -10,6 +10,7 @@ import com.nhry.data.basic.dao.TMdBranchEmpMapper;
 import com.nhry.data.basic.dao.TMdBranchMapper;
 import com.nhry.data.basic.domain.TMdBranch;
 import com.nhry.data.basic.domain.TMdBranchEmp;
+import com.nhry.data.milktrans.domain.TSsmSalOrder;
 import com.nhry.model.basic.BranchEmpSearchModel;
 import com.nhry.model.basic.BranchSalesOrgModel;
 import com.nhry.model.basic.EmpQueryModel;
@@ -186,6 +187,16 @@ public class BranchEmpServiceImpl extends BaseService implements BranchEmpServic
 			int i = branchEmpMapper.isEmp(record);
 			if(i > 0){
 				throw new ServiceException(MessageCode.LOGIC_ERROR, "该SAP客户编码已经存在!");
+			}
+			if(StringUtils.isNotEmpty(emp.getSapcode())){
+				//更新销售订单送奶工对应的sapCode
+				List<TSsmSalOrder> ssmSalOrders = branchEmpMapper.selectSalOrderByOnlineCode(emp.getSapcode());
+				if(ssmSalOrders.size() > 0 ){
+					ssmSalOrders.forEach( e -> {
+						e.setOnlineCode(record.getSapcode());
+						branchEmpMapper.updateSapCode(e);
+					});
+				}
 			}
 		}
 		record.setLastModified(new Date());

@@ -5,6 +5,7 @@ import com.nhry.common.datasource.DynamicSqlSessionTemplate;
 import com.nhry.data.basic.dao.TMdBranchEmpMapper;
 import com.nhry.data.basic.domain.TMdBranchEmp;
 import com.nhry.data.basic.domain.TMdResidentialArea;
+import com.nhry.data.milktrans.domain.TSsmSalOrder;
 import com.nhry.model.basic.BranchEmpSearchModel;
 import com.nhry.model.basic.EmpQueryModel;
 import com.nhry.model.bill.EmpSalQueryModel;
@@ -113,5 +114,13 @@ public class TMdBranchEmpMapperImpl implements TMdBranchEmpMapper {
 		return this.sqlSessionTemplate.selectOne("selectActiveBranchEmpByNo",empNo);
 	}
 
+	@Override
+	public List<TSsmSalOrder> selectSalOrderByOnlineCode(String sapCode) {
+		return sqlSessionTemplate.selectList("selectSalOrderByOnlineCode",sapCode);
+	}
 
+	@Override
+	public int updateSapCode(TSsmSalOrder ssmSalOrder) {
+		return sqlSessionTemplate.update("updateSapCode",ssmSalOrder);
+	}
 }
