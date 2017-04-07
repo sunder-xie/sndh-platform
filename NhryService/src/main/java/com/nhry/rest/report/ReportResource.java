@@ -2181,7 +2181,7 @@ public class ReportResource extends BaseResource{
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes(MediaType.APPLICATION_JSON)
     @ApiOperation(value = "/exportArea", response = ResponseModel.class, notes = "配送区域下载")
-    public Response exportReturnBox(@ApiParam(name = "model",value = "配送区域") AreaSearchModel model){
+    public Response exportArea(@ApiParam(name = "model",value = "配送区域") AreaSearchModel model){
         String outUrl = "";
         String url = EnvContant.getSystemConst("filePath");
 
@@ -2254,4 +2254,21 @@ public class ReportResource extends BaseResource{
         }
         return convertToRespModel(MessageCode.NORMAL,null,outUrl);
     }
+
+    /**
+     * 模版下载
+     * @param fileName
+     * @return
+     */
+    @GET
+    @Path("/exportTemplate/{fileName}")
+    @Produces(MediaType.APPLICATION_JSON)
+    @ApiOperation(value = "/exportTemplate/{fileName}", response = OrderCreateModel.class, notes = "下载模版文件")
+    public Response exportTemplate(@ApiParam(required = true,value = "fileName",defaultValue = "fileName")@PathParam("fileName") String fileName){
+        String url = EnvContant.getSystemConst("filePath");
+        String urlPath = url +  File.separator + "report"+ File.separator + "template" + File.separator + fileName + ".xlsx";
+        logger.info("##########"+urlPath);
+        return convertToFile(urlPath);
+    }
+
 }
