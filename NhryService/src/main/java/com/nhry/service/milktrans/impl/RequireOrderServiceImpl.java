@@ -1804,7 +1804,7 @@ public class RequireOrderServiceImpl implements RequireOrderService {
     }
 
     public void generateSalesOrderAnduptVouCher(TSsmSalOrder order) {
-//        TMdBranch branch = branchMapper.selectBranchByNo(order.getBranchNo());
+        TMdBranch branch = branchMapper.selectBranchByNo(order.getBranchNo());
         PISuccessMessage message = null;
 //        if ("01".equals(branch.getBranchGroup())) {
 //            message = piRequireOrderService.generateSalesOrder(order, order.getDealerNo(), order.getBranchNo(), order.getSalesOrg(), "");
@@ -1813,9 +1813,14 @@ public class RequireOrderServiceImpl implements RequireOrderService {
 //        }
         //送奶工报货
         if("EM".equals(order.getPreorderSource())){
-            message = piRequireOrderService.generateSalesOrderOfEmp(order,order.getOnlineCode(),order.getOnlineCode(),order.getSalesOrg());
+            if ("01".equals(branch.getBranchGroup())) {
+                message = piRequireOrderService.generateSalesOrderOfEmp(order, order.getOnlineCode(), order.getOnlineCode(), order.getSalesOrg());
+            }else {
+                message = piRequireOrderService.generateSalesOrderOfEmp(order, order.getBranchNo(), order.getOnlineCode(), order.getSalesOrg());
+            }
         }else{
             message = piRequireOrderService.generateSalesOrder(order, order.getDealerNo(), order.getBranchNo(), order.getSalesOrg(), "");
+
         }
         if (message.isSuccess()) {
             this.uptVouCherNoByOrderNo(order.getOrderNo(), message.getData());
@@ -1836,7 +1841,8 @@ public class RequireOrderServiceImpl implements RequireOrderService {
         //查看今天销售订单,存在直接返回销售订单
         List<TSsmSalOrder> result = tSsmSalOrderMapper.selectSalOrderByDateAndNo(sMode);
         if (result != null && result.size() > 0) {
-            return this.getSaleOrderByQueryDate(sMode);
+            throw new ServiceException(MessageCode.LOGIC_ERROR, "该奶站今天已经创建所有销售订单,请直接查询");
+//            return this.getSaleOrderByQueryDate(sMode);
         }
         RequireOrderSearch rModel = new RequireOrderSearch();
         rModel.setBranchNo(user.getBranchNo());
@@ -2125,4 +2131,29 @@ public class RequireOrderServiceImpl implements RequireOrderService {
         }
         return null;
     }
+
+    @Override
+    public BigDecimal sumGiOrderItemByReqOrderNo(Date orderDate){
+        TSysUser user = userSessionService.getCurrentUser();
+        RequireOrderSearch rModel = new RequireOrderSearch();
+        rModel.setBranchNo(user.getBranchNo());
+        rModel.setOrderDate(DateUtil.getYestoday(orderDate));
+        rModel.setSalesOrg(user.getSalesOrg());
+        TSsmReqGoodsOrder reqGoodsOrder = this.tSsmReqGoodsOrderMapper.searchRequireOrder(rModel);
+        if(reqGoodsOrder != null && StringUtils.isNotEmpty(reqGoodsOrder.getVoucherNo())){
+            return tSsmGiOrderItemMapper.sumGiOrderItemByReqOrderNo(reqGoodsOrder.getVoucherNo());
+        }
+        return null;
+    }
+
+    @Override
+    public BigDecimal sumSalOrderByDate(Date reqOrderDate) {
+        TSysUser user = userSessionService.getCurrentUser();
+        RequireOrderSearch rModel = new RequireOrderSearch();
+        rModel.setBranchNo(user.getBranchNo());
+        rModel.setRequiredDate(reqOrderDate);
+        return tSsmSalOrderItemMapper.sumSalOrderByDate(rModel);
+    }
+
+
 }

@@ -70,4 +70,9 @@ public class TSsmGiOrderItemMapperImpl implements TSsmGiOrderItemMapper{
     public List<TOrderDaliyPlanItem> selectNoProDayPlanOfSelfBranch(RequireOrderSearch rModel) {
         return sqlSessionTemplate.selectList("selectNoProDayPlanOfSelfBranch2",rModel);
     }
+
+    @Override
+    public BigDecimal sumGiOrderItemByReqOrderNo(String reqOrderNo) {
+        return sqlSessionTemplate.selectOne("sumGiOrderItemByReqOrderNo",reqOrderNo);
+    }
 }

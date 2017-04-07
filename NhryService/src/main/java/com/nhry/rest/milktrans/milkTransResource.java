@@ -397,4 +397,21 @@ public class milkTransResource extends BaseResource {
 		return convertToRespModel(MessageCode.NORMAL, null, requireOrderService.getRequireDate(sModel.getOrderDate()));
 	}
 
+	@POST
+	@Path("/sumGiOrder")
+	@Produces(MediaType.APPLICATION_JSON)
+	@Consumes(MediaType.APPLICATION_JSON)
+	@ApiOperation(value = "/sumGiOrder", response = Response.class, notes = "统计奶站交货单数量")
+	public Response sumGiOrder(@ApiParam(required=true,name="search",value="日期") SalOrderDaySearch search){
+		return convertToRespModel(MessageCode.NORMAL, null, requireOrderService.sumGiOrderItemByReqOrderNo(search.getOrderDate()));
+	}
+
+	@POST
+	@Path("/sumSalOrder")
+	@Produces(MediaType.APPLICATION_JSON)
+	@Consumes(MediaType.APPLICATION_JSON)
+	@ApiOperation(value = "/sumSalOrder", response = Response.class, notes = "统计奶站销售订单数量")
+	public Response sumSalOrder(@ApiParam(required=true,name="search",value="日期") SalOrderDaySearch search){
+		return convertToRespModel(MessageCode.NORMAL, null, requireOrderService.sumSalOrderByDate(search.getOrderDate()));
+	}
 }

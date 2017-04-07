@@ -27,4 +27,6 @@ public interface TSsmGiOrderItemMapper {
 
     List<TOrderDaliyPlanItem>  selectNoProDayPlanOfSelfBranch(RequireOrderSearch rModel);
 
+    BigDecimal sumGiOrderItemByReqOrderNo(String reqOrderNo);
+
 }

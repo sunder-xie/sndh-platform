@@ -50,5 +50,7 @@ public interface TMdBranchEmpMapper {
      */
     List<TMdBranchEmp> getAllRationalMilkManByBranchNo(EmpSalQueryModel smodel);
     
-    public int uptBranchEmpByBraNo(TMdBranchEmp record);
+    int uptBranchEmpByBraNo(TMdBranchEmp record);
+
+    int isEmp(TMdBranchEmp record);
 }

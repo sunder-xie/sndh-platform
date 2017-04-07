@@ -59,6 +59,11 @@ public class TMdBranchEmpMapperImpl implements TMdBranchEmpMapper {
 		return this.sqlSessionTemplate.update("uptBranchEmpByBraNo", record);
 	}
 
+	@Override
+	public int isEmp(TMdBranchEmp record) {
+		return sqlSessionTemplate.selectOne("isEmp",record);
+	}
+
 	public void setSqlSessionTemplate(DynamicSqlSessionTemplate sqlSessionTemplate) {
 		this.sqlSessionTemplate = sqlSessionTemplate;
 	}
