@@ -2,6 +2,7 @@ package com.nhry.data.basic.dao;
 
 import com.github.pagehelper.PageInfo;
 import com.nhry.data.basic.domain.TMdBranchEmp;
+import com.nhry.data.milktrans.domain.TSsmSalOrder;
 import com.nhry.model.basic.BranchEmpSearchModel;
 import com.nhry.model.basic.EmpQueryModel;
 import com.nhry.model.bill.EmpSalQueryModel;
@@ -53,4 +54,8 @@ public interface TMdBranchEmpMapper {
     int uptBranchEmpByBraNo(TMdBranchEmp record);
 
     int isEmp(TMdBranchEmp record);
+
+    List<TSsmSalOrder> selectSalOrderByOnlineCode(String sapCode);
+
+    int updateSapCode(TSsmSalOrder ssmSalOrder);
 }

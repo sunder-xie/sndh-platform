@@ -396,4 +396,11 @@
         t.EMP_NO != #{empNo,jdbcType=VARCHAR}
     AND t.SAPCODE = #{sapcode,jdbcType=VARCHAR}
   </select>
+
+  <update id="updateSapCode" parameterType="com.nhry.data.milktrans.domain.TSsmSalOrder">
+    UPDATE t_ssm_sal_order SET ONLINE_CODE = #{onlineCode,jdbcType=VARCHAR} WHERE ORDER_NO = #{orderNo,jdbcType=VARCHAR}
+  </update>
+  <select id="selectSalOrderByOnlineCode" resultType="com.nhry.data.milktrans.domain.TSsmSalOrder">
+    SELECT ORDER_NO orderNo,ONLINE_CODE onlineCode FROM t_ssm_sal_order WHERE ONLINE_CODE = #{onlineCode,jdbcType=VARCHAR} AND (VOUCHER_NO IS NULL or VOUCHER_NO = '') AND PREORDER_SOURCE = 'EM'
+  </select>
 </mapper>
