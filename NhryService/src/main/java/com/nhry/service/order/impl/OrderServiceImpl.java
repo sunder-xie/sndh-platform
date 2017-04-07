@@ -2133,7 +2133,8 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 					record.setOrderNo(e);
 					continueOrder(record);
 				}else{
-					continueOrderAuto(e,record.getMemoTxt());
+					record.setOrderNo(e);
+					continueOrderAuto(record);
 				}
 			});
 		}
@@ -2149,10 +2150,19 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 	* @see com.nhry.service.order.dao.OrderService#continueOrder(com.nhry.model.order.OrderSearchModel) 
 	*/
 	@Override
-	public int continueOrderAuto(String orderNo,String memoTxt)
+	public int continueOrderAuto(OrderSearchModel record)
 	{
+		String orderNo = record.getOrderNo();
+		String memoTxt = record.getMemoTxt();
 		SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
 		TPreOrder order = tPreOrderMapper.selectByPrimaryKey(orderNo);
+		
+		//付款方式确认
+		if("true".equals(record.getPaymentmethod())){
+			if("20".equals(order.getPaymentmethod())){
+				order.setPaymentmethod("10");
+			}
+		}
 		
 		if("Y".equals(order.getResumeFlag())){
 			throw new ServiceException(MessageCode.LOGIC_ERROR, orderNo+" [订单已经被续订过!]");
@@ -2378,6 +2388,11 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 	{
 		SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
 		TPreOrder order = tPreOrderMapper.selectByPrimaryKey(record.getOrderNo());
+		if("true".equals(record.getPaymentmethod())){
+			if("20".equals(order.getPaymentmethod())){
+				order.setPaymentmethod("10");
+			}
+		}
 		//判断订单是否能被续订
 		if("30".equals(order.getPreorderStat())){
 			throw new ServiceException(MessageCode.LOGIC_ERROR,record.getOrderNo()+"[无效订单不能被续订]");
@@ -2393,7 +2408,7 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 
 //		在批量续订时，预付款的订单自动续订[已不适用]// || ("batch".equals(record.getStatus()) && "20".equals(order.getPaymentmethod()))
 		if("true".equals(record.getContent())){
-			continueOrderAuto(order.getOrderNo(),record.getMemoTxt());
+			continueOrderAuto(record);
 			return 1;
 		}
 		// 更新订单状态为已续订
@@ -8398,7 +8413,12 @@ public static int dayOfTwoDay(Date day1,Date day2) {
 				np.setQty(needQty);
 				needNewDaliyPlans.replace(plan.getItemNo(), 0);
 				convertDaliyPlan(plan, np);
-				np.setStatus("30");
+				//判断该订单是否长停
+				if("20".equals(orgOrder.getSign())){
+					np.setStatus("30");
+				}else{
+					np.setStatus("10");
+				}
 				newPlans.add(np);
    			break;
    		}

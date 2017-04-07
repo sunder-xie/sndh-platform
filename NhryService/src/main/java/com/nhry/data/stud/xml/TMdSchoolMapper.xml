@@ -1,0 +1,200 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.nhry.data.stud.dao.TMdSchoolMapper" >
+  <resultMap id="BaseResultMap" type="com.nhry.data.stud.domain.TMdSchool" >
+    <id column="SCHOOL_CODE" property="schoolCode" jdbcType="VARCHAR" />
+    <result column="SCHOOL_NAME" property="schoolName" jdbcType="VARCHAR" />
+    <result column="ERP_CODE" property="erpCode" jdbcType="VARCHAR" />
+    <result column="TEL" property="tel" jdbcType="VARCHAR" />
+    <result column="MOBILE_PHONE" property="mobilePhone" jdbcType="VARCHAR" />
+    <result column="CONTACT" property="contact" jdbcType="VARCHAR" />
+    <result column="ADDRESS" property="address" jdbcType="VARCHAR" />
+    <result column="CREATE_AT" property="createAt" jdbcType="TIMESTAMP" />
+    <result column="CREATE_BY" property="createBy" jdbcType="VARCHAR" />
+    <result column="CREATE_BY_TXT" property="createByTxt" jdbcType="VARCHAR" />
+    <result column="LAST_MODIFIED" property="lastModified" jdbcType="TIMESTAMP" />
+    <result column="LAST_MODIFIED_BY" property="lastModifiedBy" jdbcType="VARCHAR" />
+    <result column="LAST_MODIFIED_BY_TXT" property="lastModifiedByTxt" jdbcType="VARCHAR" />
+    <result column="VISIABLE" property="visiable" jdbcType="VARCHAR" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    SCHOOL_CODE, SCHOOL_NAME, ERP_CODE, TEL, MOBILE_PHONE, CONTACT, ADDRESS, CREATE_AT, 
+    CREATE_BY, CREATE_BY_TXT, LAST_MODIFIED, LAST_MODIFIED_BY, LAST_MODIFIED_BY_TXT, 
+    VISIABLE
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.String" >
+    select 
+    <include refid="Base_Column_List" />
+    from t_md_school
+    where SCHOOL_CODE = #{schoolCode,jdbcType=VARCHAR}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String" >
+    delete from t_md_school
+    where SCHOOL_CODE = #{schoolCode,jdbcType=VARCHAR}
+  </delete>
+  <insert id="insert" parameterType="com.nhry.data.stud.domain.TMdSchool" >
+    insert into t_md_school (SCHOOL_CODE, SCHOOL_NAME, ERP_CODE, 
+      TEL, MOBILE_PHONE, CONTACT, 
+      ADDRESS, CREATE_AT, CREATE_BY, 
+      CREATE_BY_TXT, LAST_MODIFIED, LAST_MODIFIED_BY, 
+      LAST_MODIFIED_BY_TXT, VISIABLE)
+    values (#{schoolCode,jdbcType=VARCHAR}, #{schoolName,jdbcType=VARCHAR}, #{erpCode,jdbcType=VARCHAR}, 
+      #{tel,jdbcType=VARCHAR}, #{mobilePhone,jdbcType=VARCHAR}, #{contact,jdbcType=VARCHAR}, 
+      #{address,jdbcType=VARCHAR}, #{createAt,jdbcType=TIMESTAMP}, #{createBy,jdbcType=VARCHAR}, 
+      #{createByTxt,jdbcType=VARCHAR}, #{lastModified,jdbcType=TIMESTAMP}, #{lastModifiedBy,jdbcType=VARCHAR}, 
+      #{lastModifiedByTxt,jdbcType=VARCHAR}, #{visiable,jdbcType=VARCHAR})
+  </insert>
+  <insert id="insertSelective" parameterType="com.nhry.data.stud.domain.TMdSchool" >
+    insert into t_md_school
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="schoolCode != null" >
+        SCHOOL_CODE,
+      </if>
+      <if test="schoolName != null" >
+        SCHOOL_NAME,
+      </if>
+      <if test="erpCode != null" >
+        ERP_CODE,
+      </if>
+      <if test="tel != null" >
+        TEL,
+      </if>
+      <if test="mobilePhone != null" >
+        MOBILE_PHONE,
+      </if>
+      <if test="contact != null" >
+        CONTACT,
+      </if>
+      <if test="address != null" >
+        ADDRESS,
+      </if>
+      <if test="createAt != null" >
+        CREATE_AT,
+      </if>
+      <if test="createBy != null" >
+        CREATE_BY,
+      </if>
+      <if test="createByTxt != null" >
+        CREATE_BY_TXT,
+      </if>
+      <if test="lastModified != null" >
+        LAST_MODIFIED,
+      </if>
+      <if test="lastModifiedBy != null" >
+        LAST_MODIFIED_BY,
+      </if>
+      <if test="lastModifiedByTxt != null" >
+        LAST_MODIFIED_BY_TXT,
+      </if>
+      <if test="visiable != null" >
+        VISIABLE,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="schoolCode != null" >
+        #{schoolCode,jdbcType=VARCHAR},
+      </if>
+      <if test="schoolName != null" >
+        #{schoolName,jdbcType=VARCHAR},
+      </if>
+      <if test="erpCode != null" >
+        #{erpCode,jdbcType=VARCHAR},
+      </if>
+      <if test="tel != null" >
+        #{tel,jdbcType=VARCHAR},
+      </if>
+      <if test="mobilePhone != null" >
+        #{mobilePhone,jdbcType=VARCHAR},
+      </if>
+      <if test="contact != null" >
+        #{contact,jdbcType=VARCHAR},
+      </if>
+      <if test="address != null" >
+        #{address,jdbcType=VARCHAR},
+      </if>
+      <if test="createAt != null" >
+        #{createAt,jdbcType=TIMESTAMP},
+      </if>
+      <if test="createBy != null" >
+        #{createBy,jdbcType=VARCHAR},
+      </if>
+      <if test="createByTxt != null" >
+        #{createByTxt,jdbcType=VARCHAR},
+      </if>
+      <if test="lastModified != null" >
+        #{lastModified,jdbcType=TIMESTAMP},
+      </if>
+      <if test="lastModifiedBy != null" >
+        #{lastModifiedBy,jdbcType=VARCHAR},
+      </if>
+      <if test="lastModifiedByTxt != null" >
+        #{lastModifiedByTxt,jdbcType=VARCHAR},
+      </if>
+      <if test="visiable != null" >
+        #{visiable,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.nhry.data.stud.domain.TMdSchool" >
+    update t_md_school
+    <set >
+      <if test="schoolName != null" >
+        SCHOOL_NAME = #{schoolName,jdbcType=VARCHAR},
+      </if>
+      <if test="erpCode != null" >
+        ERP_CODE = #{erpCode,jdbcType=VARCHAR},
+      </if>
+      <if test="tel != null" >
+        TEL = #{tel,jdbcType=VARCHAR},
+      </if>
+      <if test="mobilePhone != null" >
+        MOBILE_PHONE = #{mobilePhone,jdbcType=VARCHAR},
+      </if>
+      <if test="contact != null" >
+        CONTACT = #{contact,jdbcType=VARCHAR},
+      </if>
+      <if test="address != null" >
+        ADDRESS = #{address,jdbcType=VARCHAR},
+      </if>
+      <if test="createAt != null" >
+        CREATE_AT = #{createAt,jdbcType=TIMESTAMP},
+      </if>
+      <if test="createBy != null" >
+        CREATE_BY = #{createBy,jdbcType=VARCHAR},
+      </if>
+      <if test="createByTxt != null" >
+        CREATE_BY_TXT = #{createByTxt,jdbcType=VARCHAR},
+      </if>
+      <if test="lastModified != null" >
+        LAST_MODIFIED = #{lastModified,jdbcType=TIMESTAMP},
+      </if>
+      <if test="lastModifiedBy != null" >
+        LAST_MODIFIED_BY = #{lastModifiedBy,jdbcType=VARCHAR},
+      </if>
+      <if test="lastModifiedByTxt != null" >
+        LAST_MODIFIED_BY_TXT = #{lastModifiedByTxt,jdbcType=VARCHAR},
+      </if>
+      <if test="visiable != null" >
+        VISIABLE = #{visiable,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where SCHOOL_CODE = #{schoolCode,jdbcType=VARCHAR}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.nhry.data.stud.domain.TMdSchool" >
+    update t_md_school
+    set SCHOOL_NAME = #{schoolName,jdbcType=VARCHAR},
+      ERP_CODE = #{erpCode,jdbcType=VARCHAR},
+      TEL = #{tel,jdbcType=VARCHAR},
+      MOBILE_PHONE = #{mobilePhone,jdbcType=VARCHAR},
+      CONTACT = #{contact,jdbcType=VARCHAR},
+      ADDRESS = #{address,jdbcType=VARCHAR},
+      CREATE_AT = #{createAt,jdbcType=TIMESTAMP},
+      CREATE_BY = #{createBy,jdbcType=VARCHAR},
+      CREATE_BY_TXT = #{createByTxt,jdbcType=VARCHAR},
+      LAST_MODIFIED = #{lastModified,jdbcType=TIMESTAMP},
+      LAST_MODIFIED_BY = #{lastModifiedBy,jdbcType=VARCHAR},
+      LAST_MODIFIED_BY_TXT = #{lastModifiedByTxt,jdbcType=VARCHAR},
+      VISIABLE = #{visiable,jdbcType=VARCHAR}
+    where SCHOOL_CODE = #{schoolCode,jdbcType=VARCHAR}
+  </update>
+</mapper>

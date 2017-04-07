@@ -37,4 +37,6 @@ public interface ResidentialAreaService {
     List<TMdResidentialArea>  searchAreaBySalesOrg( AreaSearchModel aModel);
 
     List<TMdResidentialArea>  searchSalesOrgArea(AreaSearchModel aModel);
+
+    List<TMdResidentialArea> searchAreaSaleOrgBranchNo (AreaSearchModel aModel);
 }
