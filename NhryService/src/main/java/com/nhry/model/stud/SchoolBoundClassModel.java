@@ -11,12 +11,16 @@ import com.nhry.data.stud.domain.TMdClass;
 */
 public class SchoolBoundClassModel implements Serializable {
 	
-	/**
-	 * 
-	 */
 	private static final long serialVersionUID = 1L;
+	/**
+	 * 学校
+	 */
 	private String schoolCode;
+	/**
+	 * 班级
+	 */
 	private List<TMdClass> classList;
+	
 	public String getSchoolCode() {
 		return schoolCode;
 	}
