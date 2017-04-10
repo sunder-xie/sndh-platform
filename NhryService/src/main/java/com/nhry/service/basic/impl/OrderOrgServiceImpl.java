@@ -158,4 +158,13 @@ public class OrderOrgServiceImpl implements OrderOrgService {
     public List<TMdOrgCust> findTMdOrgCustList(String orgId) {
         return orgCustMapper.findTMdOrgCustList(orgId);
     }
+
+    @Override
+    public TMdOrderOrg findTMdOrderOrgByOrgCode(String orgCode) {
+        OrderOrgModel record = new OrderOrgModel();
+        TSysUser user = userSessionService.getCurrentUser();
+        record.setOrgCode(orgCode);
+        record.setSalesOrg(user.getSalesOrg());
+        return orderOrgMapper.findTMdOrderOrgByOrgCode(record);
+    }
 }

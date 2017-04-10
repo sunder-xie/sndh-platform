@@ -21,6 +21,8 @@ public interface TMdOrderOrgMapper {
 
     PageInfo findTMdOrderOrgList(OrderOrgModel smodel);
 
+    TMdOrderOrg findTMdOrderOrgByOrgCode(OrderOrgModel smodel);
+
     List<TMdOrderOrg> findOrderOrgListForSelect(String salesOrg);
 
     TMdOrderOrg selectOrgByCustId(String custId);

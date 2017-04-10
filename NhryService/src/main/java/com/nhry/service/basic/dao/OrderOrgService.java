@@ -88,4 +88,10 @@ public interface OrderOrgService {
      */
     List<TMdOrgCust> findTMdOrgCustList(String orgId);
 
+    /**
+     * 根据机构CODE，销售组织查询机构信息
+     * @param orgCode
+     * @return
+     */
+    TMdOrderOrg findTMdOrderOrgByOrgCode(String orgCode);
 }
