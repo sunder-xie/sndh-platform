@@ -2266,7 +2266,9 @@ public class ReportResource extends BaseResource{
     @ApiOperation(value = "/exportTemplate/{fileName}", response = OrderCreateModel.class, notes = "下载模版文件")
     public Response exportTemplate(@ApiParam(required = true,value = "fileName",defaultValue = "fileName")@PathParam("fileName") String fileName){
         String url = EnvContant.getSystemConst("filePath");
-        String urlPath = url +  File.separator + "report"+ File.separator + "template" + File.separator + fileName + ".xlsx";
+//        String url = request.getServletContext().getRealPath("/");
+        String urlPath = url +  File.separator + "report"+ File.separator + "template" + File.separator + fileName+".xlsx";
+//        String urlPath = url + fileName;
         logger.info("##########"+urlPath);
         return convertToFile(urlPath);
     }

@@ -53,6 +53,11 @@ public class TmdOrderOrgMapperImpl implements TMdOrderOrgMapper {
         return sqlSessionTemplate.selectListByPages("findTMdOrderOrgList",smodel,Integer.parseInt(smodel.getPageNum()), Integer.parseInt(smodel.getPageSize()));
     }
 
+    @Override
+    public TMdOrderOrg findTMdOrderOrgByOrgCode(OrderOrgModel smodel) {
+        return sqlSessionTemplate.selectOne("findTMdOrderOrgByOrgCode", smodel);
+    }
+
     /**
      * 通过组织机构查询机构名称、机构代码
      * @param salesOrg
