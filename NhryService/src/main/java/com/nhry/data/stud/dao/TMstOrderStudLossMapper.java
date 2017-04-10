@@ -5,8 +5,6 @@ import com.nhry.data.stud.domain.TMstOrderStudLoss;
 public interface TMstOrderStudLossMapper {
     int deleteByPrimaryKey(String mid);
 
-    int insert(TMstOrderStudLoss record);
-
     int insertSelective(TMstOrderStudLoss record);
 
     TMstOrderStudLoss selectByPrimaryKey(String mid);

@@ -32,7 +32,19 @@ public class TMdSchool {
     private String visiable;
     
     private Boolean chekbox;//true为 禁用勾选，false：为禁用不勾选
+    
+    private String salesOrg;//销售组织
+    
+    
 
+    public void setSalesOrg(String salesOrg) {
+		this.salesOrg = salesOrg;
+	}
+
+	public String getSalesOrg() {
+		return salesOrg;
+	}
+	
 	public Boolean getChekbox() {
 		return chekbox;
 	}

@@ -5,8 +5,6 @@ import com.nhry.data.stud.domain.TMdSchoolClass;
 public interface TMdSchoolClassMapper {
     int deleteByPrimaryKey(String mid);
 
-    int insert(TMdSchoolClass record);
-
     int insertSelective(TMdSchoolClass record);
 
     TMdSchoolClass selectByPrimaryKey(String mid);

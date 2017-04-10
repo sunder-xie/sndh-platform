@@ -24,6 +24,18 @@ public class TMstOrderStud {
     private String lastModifiedByTxt;
 
     private String remark;
+    
+    private String salesOrg;//销售组织
+    
+    
+
+    public void setSalesOrg(String salesOrg) {
+		this.salesOrg = salesOrg;
+	}
+
+	public String getSalesOrg() {
+		return salesOrg;
+	}
 
     public String getOrderId() {
         return orderId;

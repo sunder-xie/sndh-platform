@@ -17,8 +17,6 @@ public interface TMdSchoolMapper {
 	
     int deleteByPrimaryKey(String schoolCode);
 
-    int insert(TMdSchool record);
-
     int insertSelective(TMdSchool record);
 
     TMdSchool selectByPrimaryKey(String schoolCode);

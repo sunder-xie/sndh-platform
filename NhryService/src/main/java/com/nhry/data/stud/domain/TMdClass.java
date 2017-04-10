@@ -22,8 +22,20 @@ public class TMdClass {
     private String lastModifiedByTxt;
 
     private String visiable;
+    
+    private String salesOrg;//销售组织
+    
+    
 
-    public String getClassCode() {
+    public String getSalesOrg() {
+		return salesOrg;
+	}
+
+	public void setSalesOrg(String salesOrg) {
+		this.salesOrg = salesOrg;
+	}
+
+	public String getClassCode() {
         return classCode;
     }
 

@@ -49,12 +49,6 @@ public class TMdSchoolMapperImpl implements TMdSchoolMapper {
 	}
 
 	@Override
-	public int insert(TMdSchool record) {
-		// TODO Auto-generated method stub
-		return 0;
-	}
-
-	@Override
 	public int insertSelective(TMdSchool record) {
 		// TODO Auto-generated method stub
 		return 0;

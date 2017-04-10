@@ -5,8 +5,6 @@ import com.nhry.data.stud.domain.TMdSchoolMaraRule;
 public interface TMdSchoolMaraRuleMapper {
     int deleteByPrimaryKey(String mid);
 
-    int insert(TMdSchoolMaraRule record);
-
     int insertSelective(TMdSchoolMaraRule record);
 
     TMdSchoolMaraRule selectByPrimaryKey(String mid);
