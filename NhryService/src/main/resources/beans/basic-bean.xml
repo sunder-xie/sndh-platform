@@ -337,19 +337,4 @@
 		<property name="userSessionService" ref="userSessionService"></property>
 	</bean>
 	
-	<!--学校 -->
-	<bean id="tMdSchoolMapper" class="com.nhry.data.stud.impl.TMdSchoolMapperImpl">
-		<property name="sqlSessionTemplate" ref="dynamicSqlSessionTemplate"></property>
-	</bean>
-	
-	<bean id="schoolService" class="com.nhry.service.stud.impl.SchoolServiceImpl">
-		<property name="tMdSchoolMapper" ref="tMdSchoolMapper"></property>
-	</bean>
-	
-	
-	
-	
-	
-	
-	
 </beans>

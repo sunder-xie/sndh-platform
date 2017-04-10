@@ -2,6 +2,8 @@ package com.nhry.data.stud.impl;
 
 import java.util.List;
 
+import org.springframework.beans.factory.annotation.Autowired;
+
 import com.github.pagehelper.PageInfo;
 import com.nhry.common.datasource.DynamicSqlSessionTemplate;
 import com.nhry.data.stud.dao.TMdSchoolMapper;
@@ -14,6 +16,7 @@ import com.nhry.model.stud.SchoolQueryModel;
 */
 public class TMdSchoolMapperImpl implements TMdSchoolMapper {
 	
+	@Autowired
 	private DynamicSqlSessionTemplate sqlSessionTemplate;
 
     public void setSqlSessionTemplate(DynamicSqlSessionTemplate sqlSessionTemplate) {
