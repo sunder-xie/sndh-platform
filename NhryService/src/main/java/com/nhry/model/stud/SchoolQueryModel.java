@@ -13,8 +13,14 @@ public class SchoolQueryModel extends BaseQueryModel implements Serializable {
 	private String schoolCode;
 	private String keyWord;
 	private String visiable;
+	private String salesOrg;
 	
-	
+	public String getSalesOrg() {
+		return salesOrg;
+	}
+	public void setSalesOrg(String salesOrg) {
+		this.salesOrg = salesOrg;
+	}
 	public String getSchoolCode() {
 		return schoolCode;
 	}
