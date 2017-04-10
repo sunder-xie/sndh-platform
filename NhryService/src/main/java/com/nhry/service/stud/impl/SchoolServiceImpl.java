@@ -4,7 +4,7 @@ import java.util.List;
 
 import javax.annotation.Resource;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import com.github.pagehelper.PageInfo;
 import com.nhry.data.stud.dao.TMdSchoolMapper;
@@ -19,9 +19,13 @@ import com.nhry.service.stud.dao.SchoolService;
 
 public class SchoolServiceImpl implements SchoolService {
 	
-	@Autowired
+	@Resource
 	TMdSchoolMapper tMdSchoolMapper;
 
+	public void settMdSchoolMapper(TMdSchoolMapper tMdSchoolMapper) {
+		this.tMdSchoolMapper = tMdSchoolMapper;
+	}
+	
 	@Override
 	public PageInfo<TMdSchool> serchSchoolList(SchoolQueryModel model) {
 		return tMdSchoolMapper.serchSchoolList(model);
