@@ -6,6 +6,8 @@ public class TMdSchoolRule {
     private String mid;
 
     private String schoolCode;
+    
+    private String schoolName;
 
     private String isBatchPrint;
 
@@ -39,9 +41,26 @@ public class TMdSchoolRule {
     
     private String salesOrg;//销售组织
     
+    private Boolean checkbox;//false 可用，true 不可用
     
+    
+    public String getSchoolName() {
+		return schoolName;
+	}
 
-    public void setSalesOrg(String salesOrg) {
+	public void setSchoolName(String schoolName) {
+		this.schoolName = schoolName;
+	}
+
+	public Boolean getCheckbox() {
+		return checkbox;
+	}
+
+	public void setCheckbox(Boolean checkbox) {
+		this.checkbox = checkbox;
+	}
+
+	public void setSalesOrg(String salesOrg) {
 		this.salesOrg = salesOrg;
 	}
 

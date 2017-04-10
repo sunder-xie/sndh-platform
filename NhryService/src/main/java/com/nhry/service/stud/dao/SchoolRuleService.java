@@ -1,11 +1,7 @@
 package com.nhry.service.stud.dao;
 
-import java.util.List;
-
 import com.github.pagehelper.PageInfo;
-import com.nhry.data.stud.domain.TMdSchool;
 import com.nhry.data.stud.domain.TMdSchoolRule;
-import com.nhry.model.stud.SchoolQueryModel;
 import com.nhry.model.stud.SchoolRuleQueryModel;
 
 public interface SchoolRuleService {
