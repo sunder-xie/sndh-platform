@@ -1,15 +1,18 @@
 package com.nhry.data.stud.dao;
 
+import java.util.List;
+
+import com.nhry.data.stud.domain.TMdSchool;
 import com.nhry.data.stud.domain.TMdSchoolClass;
+import com.nhry.model.stud.SchoolClassModel;
 
 public interface TMdSchoolClassMapper {
-    int deleteByPrimaryKey(String mid);
 
-    int insertSelective(TMdSchoolClass record);
+    int insertSchoolClass(TMdSchoolClass record);
+    
+    int delSchoolClassBySalesOrg(SchoolClassModel schoolClassModel);
 
-    TMdSchoolClass selectByPrimaryKey(String mid);
-
-    int updateByPrimaryKeySelective(TMdSchoolClass record);
-
-    int updateByPrimaryKey(TMdSchoolClass record);
+    List<TMdSchool> findAllClassBySchool(SchoolClassModel schoolClassModel);
+    
+    List<TMdSchool> findNoneClassBySchool(SchoolClassModel schoolClassModel);
 }
