@@ -12,7 +12,7 @@ public interface SchoolService {
 	 * @param model
 	 * @return
 	 */
-	PageInfo<TMdSchool>  serchSchoolList(SchoolQueryModel model);
+	PageInfo<TMdSchool>  findSchoolPage(SchoolQueryModel model);
 	
 	/**
 	 * 查询所有学校

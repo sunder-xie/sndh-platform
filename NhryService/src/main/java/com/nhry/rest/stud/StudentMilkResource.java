@@ -21,13 +21,16 @@ import com.nhry.common.exception.MessageCode;
 import com.nhry.data.basic.domain.TMdMara;
 import com.nhry.data.stud.domain.TMdClass;
 import com.nhry.data.stud.domain.TMdSchool;
+import com.nhry.data.stud.domain.TMdSchoolRule;
 import com.nhry.model.basic.ProductQueryModel;
 import com.nhry.model.stud.ClassQueryModel;
 import com.nhry.model.stud.SchoolBoundClassModel;
 import com.nhry.model.stud.SchoolQueryModel;
+import com.nhry.model.stud.SchoolRuleQueryModel;
 import com.nhry.model.sys.ResponseModel;
 import com.nhry.rest.BaseResource;
 import com.nhry.service.stud.dao.ClassService;
+import com.nhry.service.stud.dao.SchoolRuleService;
 import com.nhry.service.stud.dao.SchoolService;
 import com.sun.jersey.spi.resource.Singleton;
 import com.wordnik.swagger.annotations.Api;
@@ -46,10 +49,13 @@ import com.wordnik.swagger.annotations.ApiParam;
 public class StudentMilkResource  extends BaseResource {
 	@Autowired
 	SchoolService schoolService;
-	
-	
 	@Autowired
 	private ClassService classService;
+	
+	@Autowired
+	private SchoolRuleService schoolRuleService;
+	
+	
 	
 	@POST
 	@Path("/school/findSchoolPage")
@@ -57,7 +63,7 @@ public class StudentMilkResource  extends BaseResource {
 	@Consumes(MediaType.APPLICATION_JSON)
 	@ApiOperation(value = "/school/findSchoolPage", response = PageInfo.class, notes = "获取学校信息列表")
 	public Response findSchoolPage(@ApiParam(required=true,name="smodel",value="SearchModel") SchoolQueryModel smodel){
-		return convertToRespModel(MessageCode.NORMAL, null, schoolService.serchSchoolList(smodel));
+		return convertToRespModel(MessageCode.NORMAL, null, schoolService.findSchoolPage(smodel));
 	}
 	
 	@POST
@@ -126,7 +132,35 @@ public class StudentMilkResource  extends BaseResource {
 	
 	
 	
+	@POST
+	@Path("/schoolRule/findSchoolPage")
+	@Produces(MediaType.APPLICATION_JSON)
+	@Consumes(MediaType.APPLICATION_JSON)
+	@ApiOperation(value = "/schoolRule/findSchoolPage", response = PageInfo.class, notes = "通过销售组织获取学校订奶政策")
+	public Response findSchoolRulePage(@ApiParam(required=true,name="smodel",value="SearchModel") SchoolRuleQueryModel smodel){
+		return convertToRespModel(MessageCode.NORMAL, null, schoolRuleService.findSchoolRulePage(smodel));
+	}
 	
+	
+	
+	@POST
+	@Path("/schoolRule/uptSchoolRule")
+	@Produces(MediaType.APPLICATION_JSON)
+	@Consumes(MediaType.APPLICATION_JSON)
+	@ApiOperation(value = "/schoolRule/uptSchoolRule", response = PageInfo.class, notes = "修改订奶政策")
+	public Response uptSchoolRule(@ApiParam(required=true,name="tMdSchoolRule",value="tMdSchoolRule") TMdSchoolRule tMdSchoolRule){
+		return convertToRespModel(MessageCode.NORMAL, null, schoolRuleService.uptSchoolRule(tMdSchoolRule));
+	}
+	
+	
+	
+	
+	
+	
+	
+	/*serchSchoolRuleList
+	
+	uptSchoolRule*/
 	
 /*	
 	@POST

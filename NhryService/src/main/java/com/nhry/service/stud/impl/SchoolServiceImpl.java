@@ -23,7 +23,7 @@ public class SchoolServiceImpl implements SchoolService {
 	TMdSchoolMapper tMdSchoolMapper;
 
 	@Override
-	public PageInfo<TMdSchool> serchSchoolList(SchoolQueryModel model) {
+	public PageInfo<TMdSchool> findSchoolPage(SchoolQueryModel model) {
 		return tMdSchoolMapper.serchSchoolList(model);
 	}
 
