@@ -30,8 +30,18 @@ public class TMdSchool {
     private String lastModifiedByTxt;
 
     private String visiable;
+    
+    private Boolean chekbox;//true为 禁用勾选，false：为禁用不勾选
 
-    public String getSchoolCode() {
+	public Boolean getChekbox() {
+		return chekbox;
+	}
+
+	public void setChekbox(Boolean chekbox) {
+		this.chekbox = chekbox;
+	}
+
+	public String getSchoolCode() {
         return schoolCode;
     }
 

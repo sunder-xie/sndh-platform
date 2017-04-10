@@ -16,18 +16,54 @@
     <result column="LAST_MODIFIED_BY" property="lastModifiedBy" jdbcType="VARCHAR" />
     <result column="LAST_MODIFIED_BY_TXT" property="lastModifiedByTxt" jdbcType="VARCHAR" />
     <result column="VISIABLE" property="visiable" jdbcType="VARCHAR" />
+    <result column="chekbox" property="chekbox" jdbcType="VARCHAR" />
   </resultMap>
   <sql id="Base_Column_List" >
     SCHOOL_CODE, SCHOOL_NAME, ERP_CODE, TEL, MOBILE_PHONE, CONTACT, ADDRESS, CREATE_AT, 
     CREATE_BY, CREATE_BY_TXT, LAST_MODIFIED, LAST_MODIFIED_BY, LAST_MODIFIED_BY_TXT, 
-    VISIABLE
+    VISIABLE,if(VISIABLE='10',false,true) chekbox
   </sql>
+  
+  
+  
+  
+  <select id="serchSchoolList" resultMap="BaseResultMap" parameterType="com.nhry.model.stud.SchoolQueryModel" >
+    select 
+    <include refid="Base_Column_List" />
+    from t_md_school
+    where 1=1 
+    <if test="keyWord != null and keyWord != '' " >
+        and (SCHOOL_CODE like '%${keyWord}%' or SCHOOL_NAME  like '%${keyWord}%')
+    </if>
+     <if test="visiable != null and visiable !='' " >
+        and VISIABLE=#{visiable}
+     </if>
+     
+     order by SCHOOL_CODE
+  </select>
+  
+  
+  
   <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.String" >
     select 
     <include refid="Base_Column_List" />
     from t_md_school
     where SCHOOL_CODE = #{schoolCode,jdbcType=VARCHAR}
   </select>
+  
+  
+  
+  <update id="updateByTMdSchool" parameterType="com.nhry.data.stud.domain.TMdSchool" >
+    update t_md_school
+    <set >
+      <if test="visiable != null" >
+        VISIABLE = #{visiable,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where SCHOOL_CODE = #{schoolCode,jdbcType=VARCHAR}
+  </update>
+  
+  
   <delete id="deleteByPrimaryKey" parameterType="java.lang.String" >
     delete from t_md_school
     where SCHOOL_CODE = #{schoolCode,jdbcType=VARCHAR}
@@ -135,7 +171,8 @@
       </if>
     </trim>
   </insert>
-  <update id="updateByPrimaryKeySelective" parameterType="com.nhry.data.stud.domain.TMdSchool" >
+  
+  <!-- <update id="updateByTMdSchool" parameterType="com.nhry.data.stud.domain.TMdSchool" >
     update t_md_school
     <set >
       <if test="schoolName != null" >
@@ -179,7 +216,9 @@
       </if>
     </set>
     where SCHOOL_CODE = #{schoolCode,jdbcType=VARCHAR}
-  </update>
+  </update> -->
+  
+  
   <update id="updateByPrimaryKey" parameterType="com.nhry.data.stud.domain.TMdSchool" >
     update t_md_school
     set SCHOOL_NAME = #{schoolName,jdbcType=VARCHAR},
