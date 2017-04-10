@@ -1,21 +1,25 @@
-package com.nhry.data.stud.dao;
+package com.nhry.service.stud.dao;
+
+import java.util.List;
 
 import com.github.pagehelper.PageInfo;
+import com.nhry.data.stud.domain.TMdSchool;
 import com.nhry.data.stud.domain.TMdSchoolRule;
 import com.nhry.model.stud.SchoolQueryModel;
 import com.nhry.model.stud.SchoolRuleQueryModel;
 
-public interface TMdSchoolRuleMapper {
+public interface SchoolRuleService {
 	/**
 	 * 获取该销售组织的订奶信息
 	 * @param model
 	 * @return
 	 */
-	PageInfo<TMdSchoolRule> serchSchoolRuleList(SchoolRuleQueryModel model);
+	PageInfo<TMdSchoolRule> findSchoolRulePage(SchoolRuleQueryModel model);
    
 	
 	/**
 	 * 更新学校政策
 	 */
 	int uptSchoolRule(TMdSchoolRule tMdSchoolRule);
+	
 }

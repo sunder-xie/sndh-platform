@@ -15,10 +15,11 @@
     <result column="LAST_MODIFIED" property="lastModified" jdbcType="TIMESTAMP" />
     <result column="LAST_MODIFIED_BY" property="lastModifiedBy" jdbcType="VARCHAR" />
     <result column="LAST_MODIFIED_BY_TXT" property="lastModifiedByTxt" jdbcType="VARCHAR" />
+    <result column="SALES_ORG" property="salesOrg" jdbcType="VARCHAR" />
   </resultMap>
   <sql id="Base_Column_List" >
     MID, SCHOOL_CODE, MATNR, MATNR_QTY, FIXED_QTY, FIXED_SCALE, FIXED_MAX_QTY, CREATE_AT, 
-    CREATE_BY, CREATE_BY_TXT, LAST_MODIFIED, LAST_MODIFIED_BY, LAST_MODIFIED_BY_TXT
+    CREATE_BY, CREATE_BY_TXT, LAST_MODIFIED, LAST_MODIFIED_BY, LAST_MODIFIED_BY_TXT, SALES_ORG
   </sql>
   <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.String" >
     select 
@@ -30,18 +31,6 @@
     delete from t_md_school_mara_rule
     where MID = #{mid,jdbcType=VARCHAR}
   </delete>
-  <insert id="insert" parameterType="com.nhry.data.stud.domain.TMdSchoolMaraRule" >
-    insert into t_md_school_mara_rule (MID, SCHOOL_CODE, MATNR, 
-      MATNR_QTY, FIXED_QTY, FIXED_SCALE, 
-      FIXED_MAX_QTY, CREATE_AT, CREATE_BY, 
-      CREATE_BY_TXT, LAST_MODIFIED, LAST_MODIFIED_BY, 
-      LAST_MODIFIED_BY_TXT)
-    values (#{mid,jdbcType=VARCHAR}, #{schoolCode,jdbcType=VARCHAR}, #{matnr,jdbcType=VARCHAR}, 
-      #{matnrQty,jdbcType=INTEGER}, #{fixedQty,jdbcType=INTEGER}, #{fixedScale,jdbcType=INTEGER}, 
-      #{fixedMaxQty,jdbcType=INTEGER}, #{createAt,jdbcType=TIMESTAMP}, #{createBy,jdbcType=VARCHAR}, 
-      #{createByTxt,jdbcType=VARCHAR}, #{lastModified,jdbcType=TIMESTAMP}, #{lastModifiedBy,jdbcType=VARCHAR}, 
-      #{lastModifiedByTxt,jdbcType=VARCHAR})
-  </insert>
   <insert id="insertSelective" parameterType="com.nhry.data.stud.domain.TMdSchoolMaraRule" >
     insert into t_md_school_mara_rule
     <trim prefix="(" suffix=")" suffixOverrides="," >
@@ -84,6 +73,9 @@
       <if test="lastModifiedByTxt != null" >
         LAST_MODIFIED_BY_TXT,
       </if>
+      <if test="salesOrg != null" >
+        SALES_ORG,
+      </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides="," >
       <if test="mid != null" >
@@ -124,6 +116,9 @@
       </if>
       <if test="lastModifiedByTxt != null" >
         #{lastModifiedByTxt,jdbcType=VARCHAR},
+      </if>
+      <if test="salesOrg != null" >
+        #{salesOrg,jdbcType=VARCHAR},
       </if>
     </trim>
   </insert>

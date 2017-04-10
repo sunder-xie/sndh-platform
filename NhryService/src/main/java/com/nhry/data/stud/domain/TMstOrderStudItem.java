@@ -30,6 +30,18 @@ public class TMstOrderStudItem {
     private String lastModifiedBy;
 
     private String lastModifiedByTxt;
+    
+    private String salesOrg;//销售组织
+    
+    
+
+    public void setSalesOrg(String salesOrg) {
+		this.salesOrg = salesOrg;
+	}
+
+	public String getSalesOrg() {
+		return salesOrg;
+	}
 
     public String getMid() {
         return mid;

@@ -13,10 +13,11 @@
     <result column="LAST_MODIFIED_BY" property="lastModifiedBy" jdbcType="VARCHAR" />
     <result column="LAST_MODIFIED_BY_TXT" property="lastModifiedByTxt" jdbcType="VARCHAR" />
     <result column="REMARK" property="remark" jdbcType="VARCHAR" />
+    <result column="SALES_ORG" property="salesOrg" jdbcType="VARCHAR" />
   </resultMap>
   <sql id="Base_Column_List" >
     ORDER_ID, ORDER_DATE, SCHOOL_CODE, ORDER_STATUS, CREATE_AT, CREATE_BY, CREATE_BY_TXT, 
-    LAST_MODIFIED, LAST_MODIFIED_BY, LAST_MODIFIED_BY_TXT, REMARK
+    LAST_MODIFIED, LAST_MODIFIED_BY, LAST_MODIFIED_BY_TXT, REMARK, SALES_ORG
   </sql>
   <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.String" >
     select 
@@ -28,16 +29,6 @@
     delete from t_mst_order_stud
     where ORDER_ID = #{orderId,jdbcType=VARCHAR}
   </delete>
-  <insert id="insert" parameterType="com.nhry.data.stud.domain.TMstOrderStud" >
-    insert into t_mst_order_stud (ORDER_ID, ORDER_DATE, SCHOOL_CODE, 
-      ORDER_STATUS, CREATE_AT, CREATE_BY, 
-      CREATE_BY_TXT, LAST_MODIFIED, LAST_MODIFIED_BY, 
-      LAST_MODIFIED_BY_TXT, REMARK)
-    values (#{orderId,jdbcType=VARCHAR}, #{orderDate,jdbcType=DATE}, #{schoolCode,jdbcType=VARCHAR}, 
-      #{orderStatus,jdbcType=VARCHAR}, #{createAt,jdbcType=TIMESTAMP}, #{createBy,jdbcType=VARCHAR}, 
-      #{createByTxt,jdbcType=VARCHAR}, #{lastModified,jdbcType=TIMESTAMP}, #{lastModifiedBy,jdbcType=VARCHAR}, 
-      #{lastModifiedByTxt,jdbcType=VARCHAR}, #{remark,jdbcType=VARCHAR})
-  </insert>
   <insert id="insertSelective" parameterType="com.nhry.data.stud.domain.TMstOrderStud" >
     insert into t_mst_order_stud
     <trim prefix="(" suffix=")" suffixOverrides="," >
@@ -74,6 +65,9 @@
       <if test="remark != null" >
         REMARK,
       </if>
+      <if test="salesOrg != null" >
+        SALES_ORG,
+      </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides="," >
       <if test="orderId != null" >
@@ -108,6 +102,9 @@
       </if>
       <if test="remark != null" >
         #{remark,jdbcType=VARCHAR},
+      </if>
+      <if test="salesOrg != null" >
+        #{salesOrg,jdbcType=VARCHAR},
       </if>
     </trim>
   </insert>

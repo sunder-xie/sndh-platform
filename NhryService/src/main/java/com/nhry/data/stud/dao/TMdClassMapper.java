@@ -1,17 +1,22 @@
 package com.nhry.data.stud.dao;
 
+import java.util.List;
+
+import com.github.pagehelper.PageInfo;
 import com.nhry.data.stud.domain.TMdClass;
+import com.nhry.model.stud.ClassQueryModel;
 
 public interface TMdClassMapper {
-    int deleteByPrimaryKey(String classCode);
+	
+	int deleteByClassCode(String classCode);
 
-    int insert(TMdClass record);
+    int insertClass(TMdClass mdClass);
 
-    int insertSelective(TMdClass record);
+    TMdClass selectByClassCode(String classCode);
 
-    TMdClass selectByPrimaryKey(String classCode);
-
-    int updateByPrimaryKeySelective(TMdClass record);
-
-    int updateByPrimaryKey(TMdClass record);
+    int updateTMdClass(TMdClass mdClass);
+    
+    List<TMdClass> findClassListBySalesOrg(String salesOrg);
+    
+    PageInfo<TMdClass> findClassPage(ClassQueryModel queryModel);
 }

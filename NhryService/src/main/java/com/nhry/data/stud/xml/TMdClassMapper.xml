@@ -12,32 +12,45 @@
     <result column="LAST_MODIFIED_BY" property="lastModifiedBy" jdbcType="VARCHAR" />
     <result column="LAST_MODIFIED_BY_TXT" property="lastModifiedByTxt" jdbcType="VARCHAR" />
     <result column="VISIABLE" property="visiable" jdbcType="VARCHAR" />
+    <result column="SALES_ORG" property="salesOrg" jdbcType="VARCHAR" />
   </resultMap>
   <sql id="Base_Column_List" >
     CLASS_CODE, CLASS_NAME, SORT, CREATE_AT, CREATE_BY, CREATE_BY_TXT, LAST_MODIFIED, 
-    LAST_MODIFIED_BY, LAST_MODIFIED_BY_TXT, VISIABLE
+    LAST_MODIFIED_BY, LAST_MODIFIED_BY_TXT, VISIABLE, SALES_ORG
   </sql>
-  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.String" >
+  <select id="selectByClassCode" resultMap="BaseResultMap" parameterType="java.lang.String" >
     select 
     <include refid="Base_Column_List" />
     from t_md_class
     where CLASS_CODE = #{classCode,jdbcType=VARCHAR}
   </select>
-  <delete id="deleteByPrimaryKey" parameterType="java.lang.String" >
+  
+  <!-- findClassListBySalesOrg -->
+  <select id="findClassListBySalesOrg" parameterType="java.lang.String" resultMap="BaseResultMap">
+  	select 
+    <include refid="Base_Column_List" />
+    from t_md_class
+    where SALES_ORG=#{salesOrg}
+  </select>
+  
+  <!-- findClassPage -->
+  <select id="findClassPage" parameterType="com.nhry.model.stud.ClassQueryModel" resultMap="BaseResultMap">
+  	select 
+    <include refid="Base_Column_List" />
+    from t_md_class
+    <where>
+    	1=1
+    	<if test="salesOrg != null and salesOrg != ''">
+    		and SALES_ORG=#{salesOrg}
+    	</if>
+    </where>
+  </select>
+  
+  <delete id="deleteByClassCode" parameterType="java.lang.String" >
     delete from t_md_class
     where CLASS_CODE = #{classCode,jdbcType=VARCHAR}
   </delete>
-  <insert id="insert" parameterType="com.nhry.data.stud.domain.TMdClass" >
-    insert into t_md_class (CLASS_CODE, CLASS_NAME, SORT, 
-      CREATE_AT, CREATE_BY, CREATE_BY_TXT, 
-      LAST_MODIFIED, LAST_MODIFIED_BY, LAST_MODIFIED_BY_TXT, 
-      VISIABLE)
-    values (#{classCode,jdbcType=VARCHAR}, #{className,jdbcType=VARCHAR}, #{sort,jdbcType=INTEGER}, 
-      #{createAt,jdbcType=TIMESTAMP}, #{createBy,jdbcType=VARCHAR}, #{createByTxt,jdbcType=VARCHAR}, 
-      #{lastModified,jdbcType=TIMESTAMP}, #{lastModifiedBy,jdbcType=VARCHAR}, #{lastModifiedByTxt,jdbcType=VARCHAR}, 
-      #{visiable,jdbcType=VARCHAR})
-  </insert>
-  <insert id="insertSelective" parameterType="com.nhry.data.stud.domain.TMdClass" >
+  <insert id="insertClass" parameterType="com.nhry.data.stud.domain.TMdClass" >
     insert into t_md_class
     <trim prefix="(" suffix=")" suffixOverrides="," >
       <if test="classCode != null" >
@@ -69,6 +82,9 @@
       </if>
       <if test="visiable != null" >
         VISIABLE,
+      </if>
+      <if test="salesOrg != null" >
+        SALES_ORG,
       </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides="," >
@@ -102,9 +118,12 @@
       <if test="visiable != null" >
         #{visiable,jdbcType=VARCHAR},
       </if>
+      <if test="salesOrg != null" >
+        #{salesOrg,jdbcType=VARCHAR},
+      </if>
     </trim>
   </insert>
-  <update id="updateByPrimaryKeySelective" parameterType="com.nhry.data.stud.domain.TMdClass" >
+  <update id="updateTMdClass" parameterType="com.nhry.data.stud.domain.TMdClass" >
     update t_md_class
     <set >
       <if test="className != null" >
@@ -135,19 +154,6 @@
         VISIABLE = #{visiable,jdbcType=VARCHAR},
       </if>
     </set>
-    where CLASS_CODE = #{classCode,jdbcType=VARCHAR}
-  </update>
-  <update id="updateByPrimaryKey" parameterType="com.nhry.data.stud.domain.TMdClass" >
-    update t_md_class
-    set CLASS_NAME = #{className,jdbcType=VARCHAR},
-      SORT = #{sort,jdbcType=INTEGER},
-      CREATE_AT = #{createAt,jdbcType=TIMESTAMP},
-      CREATE_BY = #{createBy,jdbcType=VARCHAR},
-      CREATE_BY_TXT = #{createByTxt,jdbcType=VARCHAR},
-      LAST_MODIFIED = #{lastModified,jdbcType=TIMESTAMP},
-      LAST_MODIFIED_BY = #{lastModifiedBy,jdbcType=VARCHAR},
-      LAST_MODIFIED_BY_TXT = #{lastModifiedByTxt,jdbcType=VARCHAR},
-      VISIABLE = #{visiable,jdbcType=VARCHAR}
     where CLASS_CODE = #{classCode,jdbcType=VARCHAR}
   </update>
 </mapper>

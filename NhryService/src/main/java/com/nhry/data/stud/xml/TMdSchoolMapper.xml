@@ -17,11 +17,12 @@
     <result column="LAST_MODIFIED_BY_TXT" property="lastModifiedByTxt" jdbcType="VARCHAR" />
     <result column="VISIABLE" property="visiable" jdbcType="VARCHAR" />
     <result column="chekbox" property="chekbox" jdbcType="VARCHAR" />
+    <result column="SALES_ORG" property="salesOrg" jdbcType="VARCHAR" />
   </resultMap>
   <sql id="Base_Column_List" >
     SCHOOL_CODE, SCHOOL_NAME, ERP_CODE, TEL, MOBILE_PHONE, CONTACT, ADDRESS, CREATE_AT, 
     CREATE_BY, CREATE_BY_TXT, LAST_MODIFIED, LAST_MODIFIED_BY, LAST_MODIFIED_BY_TXT, 
-    VISIABLE,if(VISIABLE='10',false,true) chekbox
+    VISIABLE,if(VISIABLE='10',false,true) chekbox, SALES_ORG
   </sql>
   
   
@@ -68,18 +69,6 @@
     delete from t_md_school
     where SCHOOL_CODE = #{schoolCode,jdbcType=VARCHAR}
   </delete>
-  <insert id="insert" parameterType="com.nhry.data.stud.domain.TMdSchool" >
-    insert into t_md_school (SCHOOL_CODE, SCHOOL_NAME, ERP_CODE, 
-      TEL, MOBILE_PHONE, CONTACT, 
-      ADDRESS, CREATE_AT, CREATE_BY, 
-      CREATE_BY_TXT, LAST_MODIFIED, LAST_MODIFIED_BY, 
-      LAST_MODIFIED_BY_TXT, VISIABLE)
-    values (#{schoolCode,jdbcType=VARCHAR}, #{schoolName,jdbcType=VARCHAR}, #{erpCode,jdbcType=VARCHAR}, 
-      #{tel,jdbcType=VARCHAR}, #{mobilePhone,jdbcType=VARCHAR}, #{contact,jdbcType=VARCHAR}, 
-      #{address,jdbcType=VARCHAR}, #{createAt,jdbcType=TIMESTAMP}, #{createBy,jdbcType=VARCHAR}, 
-      #{createByTxt,jdbcType=VARCHAR}, #{lastModified,jdbcType=TIMESTAMP}, #{lastModifiedBy,jdbcType=VARCHAR}, 
-      #{lastModifiedByTxt,jdbcType=VARCHAR}, #{visiable,jdbcType=VARCHAR})
-  </insert>
   <insert id="insertSelective" parameterType="com.nhry.data.stud.domain.TMdSchool" >
     insert into t_md_school
     <trim prefix="(" suffix=")" suffixOverrides="," >
@@ -125,6 +114,9 @@
       <if test="visiable != null" >
         VISIABLE,
       </if>
+      <if test="salesOrg != null" >
+        SALES_ORG,
+      </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides="," >
       <if test="schoolCode != null" >
@@ -168,6 +160,9 @@
       </if>
       <if test="visiable != null" >
         #{visiable,jdbcType=VARCHAR},
+      </if>
+      <if test="salesOrg != null" >
+        #{salesOrg,jdbcType=VARCHAR},
       </if>
     </trim>
   </insert>
