@@ -50,11 +50,11 @@
   
   
   
-  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.String" >
+  <select id="selectOne" resultMap="BaseResultMap" parameterType="com.nhry.model.stud.SchoolQueryModel" >
     select 
     <include refid="Base_Column_List" />
     from t_md_school
-    where SCHOOL_CODE = #{schoolCode,jdbcType=VARCHAR}
+    where SCHOOL_CODE = #{schoolCode,jdbcType=VARCHAR} and SALES_ORG = #{salesOrg,jdbcType=VARCHAR}
   </select>
   
   

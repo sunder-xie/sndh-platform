@@ -19,4 +19,6 @@ public interface TMdClassMapper {
     List<TMdClass> findClassListBySalesOrg(String salesOrg);
     
     PageInfo<TMdClass> findClassPage(ClassQueryModel queryModel);
+
+	int deleteBySalesOrg(String salesOrg);
 }

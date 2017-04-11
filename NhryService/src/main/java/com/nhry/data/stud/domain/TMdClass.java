@@ -3,6 +3,10 @@ package com.nhry.data.stud.domain;
 import java.util.Date;
 
 public class TMdClass {
+	
+	private Boolean checkbox=false;
+	
+	
     private String classCode;
 
     private String className;
@@ -27,7 +31,15 @@ public class TMdClass {
     
     
 
-    public String getSalesOrg() {
+    public Boolean getCheckbox() {
+		return checkbox;
+	}
+
+	public void setCheckbox(Boolean checkbox) {
+		this.checkbox = checkbox;
+	}
+
+	public String getSalesOrg() {
 		return salesOrg;
 	}
 

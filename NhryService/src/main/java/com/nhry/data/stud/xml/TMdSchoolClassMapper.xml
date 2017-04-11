@@ -19,9 +19,9 @@
     LAST_MODIFIED_BY, LAST_MODIFIED_BY_TXT, SALES_ORG
   </sql>
   
-  <select id="findNoneClassBySchool" resultType="com.nhry.data.stud.domain.TMdSchool" parameterType="com.nhry.model.stud.SchoolClassModel">
+  <select id="findNoneClassBySchool" resultType="com.nhry.data.stud.domain.TMdClass" parameterType="com.nhry.model.stud.SchoolClassModel">
     SELECT 
-    CLASS_CODE schoolCode, CLASS_NAME schoolName
+    CLASS_CODE classCode, CLASS_NAME className
     FROM t_md_class
 	WHERE SALES_ORG=#{salesOrg}
 	AND VISIABLE='10'
@@ -30,9 +30,9 @@
 		select CLASS_CODE from t_md_school_class where SCHOOL_CODE=#{schoolCode} and SALES_ORG=#{salesOrg}
 	)
   </select>
-  <select id="findAllClassBySchool" resultType="com.nhry.data.stud.domain.TMdSchool" parameterType="com.nhry.model.stud.SchoolClassModel" >
+  <select id="findAllClassBySchool" resultType="com.nhry.data.stud.domain.TMdClass" parameterType="com.nhry.model.stud.SchoolClassModel" >
     SELECT
-    b.CLASS_CODE schoolCode, b.CLASS_NAME schoolName
+    b.CLASS_CODE classCode, b.CLASS_NAME className
 	FROM t_md_school_class a
 	LEFT JOIN t_md_class b ON a.CLASS_CODE=b.CLASS_CODE
 	where a.SCHOOL_CODE = #{schoolCode}
