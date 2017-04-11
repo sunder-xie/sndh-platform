@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import com.nhry.common.datasource.DynamicSqlSessionTemplate;
 import com.nhry.data.stud.dao.TMdSchoolClassMapper;
+import com.nhry.data.stud.domain.TMdClass;
 import com.nhry.data.stud.domain.TMdSchool;
 import com.nhry.data.stud.domain.TMdSchoolClass;
 import com.nhry.model.stud.SchoolClassModel;
@@ -26,12 +27,12 @@ public class TMdSchoolClassMapperImpl implements TMdSchoolClassMapper {
 	}
 
 	@Override
-	public List<TMdSchool> findAllClassBySchool(SchoolClassModel schoolClassModel) {
+	public List<TMdClass> findAllClassBySchool(SchoolClassModel schoolClassModel) {
 		return sqlSessionTemplate.selectList("findAllClassBySchool", schoolClassModel);
 	}
 
 	@Override
-	public List<TMdSchool> findNoneClassBySchool(SchoolClassModel schoolClassModel) {
+	public List<TMdClass> findNoneClassBySchool(SchoolClassModel schoolClassModel) {
 		return sqlSessionTemplate.selectList("findNoneClassBySchool", schoolClassModel);
 	}
 

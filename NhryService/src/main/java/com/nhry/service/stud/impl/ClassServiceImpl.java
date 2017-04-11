@@ -11,8 +11,10 @@ import com.github.pagehelper.PageInfo;
 import com.nhry.common.auth.UserSessionService;
 import com.nhry.common.exception.MessageCode;
 import com.nhry.common.exception.ServiceException;
+import com.nhry.data.auth.domain.TSysUser;
 import com.nhry.data.stud.dao.TMdClassMapper;
 import com.nhry.data.stud.domain.TMdClass;
+import com.nhry.model.stud.ClassListModel;
 import com.nhry.model.stud.ClassQueryModel;
 import com.nhry.service.stud.dao.ClassService;
 
@@ -82,6 +84,46 @@ public class ClassServiceImpl implements ClassService {
 			throw new ServiceException(MessageCode.LOGIC_ERROR, "班级代码系统已存在，请重新输入");
 		}
 	}
+	
+	
+	
+	@Override
+	public int addClassList(ClassListModel smodel) {
+		TSysUser currentUser = userSessionService.getCurrentUser();
+		if(StringUtils.isBlank(currentUser.getSalesOrg())){
+			throw new ServiceException(MessageCode.LOGIC_ERROR, "当前用户未归属销售组织");
+		}
+		classMapper.deleteBySalesOrg(currentUser.getSalesOrg());
+		List<TMdClass> classList = smodel.getClassList();
+		for (TMdClass mdClass : classList) {
+			if(null == mdClass || StringUtils.isBlank(mdClass.getClassCode())){
+				throw new ServiceException(MessageCode.LOGIC_ERROR, "班级代码必填");
+			}
+			if(StringUtils.isBlank(mdClass.getClassName())){
+				throw new ServiceException(MessageCode.LOGIC_ERROR, "班级名称必填");
+			}
+			if(StringUtils.isBlank(this.userSessionService.getCurrentUser().getSalesOrg())){
+				throw new ServiceException(MessageCode.LOGIC_ERROR, "当前用户未归属销售组织");
+			}
+			Date date = new Date();
+			mdClass.setCreateAt(date);
+			mdClass.setCreateBy(this.userSessionService.getCurrentUser().getLoginName());
+			mdClass.setCreateByTxt(this.userSessionService.getCurrentUser().getDisplayName());
+			mdClass.setLastModified(date);
+			mdClass.setLastModifiedBy(this.userSessionService.getCurrentUser().getLoginName());
+			mdClass.setLastModifiedByTxt(this.userSessionService.getCurrentUser().getDisplayName());
+			mdClass.setSalesOrg(this.userSessionService.getCurrentUser().getSalesOrg());
+			mdClass.setSort(0);
+			mdClass.setVisiable("10");
+			try {
+				classMapper.insertClass(mdClass);
+			} catch (Exception e) {
+				throw new ServiceException(MessageCode.LOGIC_ERROR, "班级代码系统已存在，请重新输入");
+			}
+		}
+		return 1;
+	}
+
 
 	@Override
 	public int updClass(TMdClass mdClass) {

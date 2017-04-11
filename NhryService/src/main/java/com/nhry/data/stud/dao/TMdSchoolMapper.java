@@ -14,12 +14,7 @@ public interface TMdSchoolMapper {
 	int updateByTMdSchool(TMdSchool tMdSchool);
 	
 	List<TMdSchool>  findSchoolList(SchoolQueryModel model);
-	
-    int deleteByPrimaryKey(String schoolCode);
 
-    int insertSelective(TMdSchool record);
+	TMdSchool selectByPrimaryKey(SchoolQueryModel model);
 
-    TMdSchool selectByPrimaryKey(String schoolCode);
-
-    int updateByPrimaryKey(TMdSchool record);
 }
