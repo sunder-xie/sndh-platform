@@ -87,10 +87,9 @@ public class StudentMilkResource  extends BaseResource {
 		return convertToRespModel(MessageCode.NORMAL, null, classService.findClassByClassCode(classCode));
 	}
 	
-	@POST
+	@GET
 	@Path("/class/findClassListBySalesOrg")
 	@Produces(MediaType.APPLICATION_JSON)
-	@Consumes(MediaType.APPLICATION_JSON)
 	@ApiOperation(value = "/studentClass/findClassListBySalesOrg", response = ResponseModel.class, notes = "查询班级列表")
 	public Response findClassListBySalesOrg(@ApiParam(required=false,name="salesOrg") @QueryParam("salesOrg")String salesOrg){
 		return convertToRespModel(MessageCode.NORMAL, null,  classService.findClassListBySalesOrg(salesOrg));
