@@ -19,17 +19,24 @@
     ORDER_ID, ORDER_DATE, SCHOOL_CODE, ORDER_STATUS, CREATE_AT, CREATE_BY, CREATE_BY_TXT, 
     LAST_MODIFIED, LAST_MODIFIED_BY, LAST_MODIFIED_BY_TXT, REMARK, SALES_ORG
   </sql>
-  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.String" >
+  
+  
+  <select id="selectByOrderId" resultMap="BaseResultMap" parameterType="java.lang.String" >
     select 
     <include refid="Base_Column_List" />
     from t_mst_order_stud
     where ORDER_ID = #{orderId,jdbcType=VARCHAR}
   </select>
-  <delete id="deleteByPrimaryKey" parameterType="java.lang.String" >
-    delete from t_mst_order_stud
-    where ORDER_ID = #{orderId,jdbcType=VARCHAR}
-  </delete>
-  <insert id="insertSelective" parameterType="com.nhry.data.stud.domain.TMstOrderStud" >
+  
+  <select id="findOrderPage" resultMap="BaseResultMap" parameterType="com.nhry.model.stud.OrderStudQueryModel">
+  	select 
+    <include refid="Base_Column_List" />
+    from t_mst_order_stud
+    order by ORDER_DATE DESC
+  </select>
+  
+  
+  <insert id="insertOrder" parameterType="com.nhry.data.stud.domain.TMstOrderStud" >
     insert into t_mst_order_stud
     <trim prefix="(" suffix=")" suffixOverrides="," >
       <if test="orderId != null" >
@@ -108,7 +115,9 @@
       </if>
     </trim>
   </insert>
-  <update id="updateByPrimaryKeySelective" parameterType="com.nhry.data.stud.domain.TMstOrderStud" >
+  
+  
+  <update id="updateByOrder" parameterType="com.nhry.data.stud.domain.TMstOrderStud" >
     update t_mst_order_stud
     <set >
       <if test="orderDate != null" >
@@ -119,15 +128,6 @@
       </if>
       <if test="orderStatus != null" >
         ORDER_STATUS = #{orderStatus,jdbcType=VARCHAR},
-      </if>
-      <if test="createAt != null" >
-        CREATE_AT = #{createAt,jdbcType=TIMESTAMP},
-      </if>
-      <if test="createBy != null" >
-        CREATE_BY = #{createBy,jdbcType=VARCHAR},
-      </if>
-      <if test="createByTxt != null" >
-        CREATE_BY_TXT = #{createByTxt,jdbcType=VARCHAR},
       </if>
       <if test="lastModified != null" >
         LAST_MODIFIED = #{lastModified,jdbcType=TIMESTAMP},
@@ -142,20 +142,6 @@
         REMARK = #{remark,jdbcType=VARCHAR},
       </if>
     </set>
-    where ORDER_ID = #{orderId,jdbcType=VARCHAR}
-  </update>
-  <update id="updateByPrimaryKey" parameterType="com.nhry.data.stud.domain.TMstOrderStud" >
-    update t_mst_order_stud
-    set ORDER_DATE = #{orderDate,jdbcType=DATE},
-      SCHOOL_CODE = #{schoolCode,jdbcType=VARCHAR},
-      ORDER_STATUS = #{orderStatus,jdbcType=VARCHAR},
-      CREATE_AT = #{createAt,jdbcType=TIMESTAMP},
-      CREATE_BY = #{createBy,jdbcType=VARCHAR},
-      CREATE_BY_TXT = #{createByTxt,jdbcType=VARCHAR},
-      LAST_MODIFIED = #{lastModified,jdbcType=TIMESTAMP},
-      LAST_MODIFIED_BY = #{lastModifiedBy,jdbcType=VARCHAR},
-      LAST_MODIFIED_BY_TXT = #{lastModifiedByTxt,jdbcType=VARCHAR},
-      REMARK = #{remark,jdbcType=VARCHAR}
     where ORDER_ID = #{orderId,jdbcType=VARCHAR}
   </update>
 </mapper>

@@ -1,12 +1,12 @@
-package com.nhry.data.stud.dao;
+package com.nhry.service.stud.dao;
 
 import com.github.pagehelper.PageInfo;
 import com.nhry.data.stud.domain.TMstOrderStud;
 import com.nhry.model.stud.OrderStudQueryModel;
 
-public interface TMstOrderStudMapper {
+public interface OrderStudService {
 
-    int insertOrder(TMstOrderStud mstOrderStud);
+    int createOrder(TMstOrderStud mstOrderStud);
 
     TMstOrderStud selectByOrderId(String orderId);
 

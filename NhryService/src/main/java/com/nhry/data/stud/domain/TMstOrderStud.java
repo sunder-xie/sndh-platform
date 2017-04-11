@@ -2,6 +2,11 @@ package com.nhry.data.stud.domain;
 
 import java.util.Date;
 
+
+/**
+ * @author zhaoxijun
+ * @date 2017年4月11日
+ */
 public class TMstOrderStud {
     private String orderId;
 
