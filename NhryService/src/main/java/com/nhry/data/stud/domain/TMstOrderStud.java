@@ -1,6 +1,7 @@
 package com.nhry.data.stud.domain;
 
 import java.util.Date;
+import java.util.List;
 
 
 /**
@@ -32,9 +33,58 @@ public class TMstOrderStud {
     
     private String salesOrg;//销售组织
     
+    private String orderDateStr;//
+    
+    private List<TMstOrderStudItem> list10;//学生奶
+    
+    private List<TMstOrderStudItem> list20;//老师奶
+    
+    private List<TMstOrderStudLoss> list30;//损耗
+    
+    private String matnr;//
     
 
-    public void setSalesOrg(String salesOrg) {
+    public String getMatnr() {
+		return matnr;
+	}
+
+	public void setMatnr(String matnr) {
+		this.matnr = matnr;
+	}
+
+	public List<TMstOrderStudItem> getList10() {
+		return list10;
+	}
+
+	public void setList10(List<TMstOrderStudItem> list10) {
+		this.list10 = list10;
+	}
+
+	public List<TMstOrderStudItem> getList20() {
+		return list20;
+	}
+
+	public void setList20(List<TMstOrderStudItem> list20) {
+		this.list20 = list20;
+	}
+
+	public List<TMstOrderStudLoss> getList30() {
+		return list30;
+	}
+
+	public void setList30(List<TMstOrderStudLoss> list30) {
+		this.list30 = list30;
+	}
+
+	public String getOrderDateStr() {
+		return orderDateStr;
+	}
+
+	public void setOrderDateStr(String orderDateStr) {
+		this.orderDateStr = orderDateStr;
+	}
+
+	public void setSalesOrg(String salesOrg) {
 		this.salesOrg = salesOrg;
 	}
 

@@ -1,6 +1,7 @@
 package com.nhry.rest.stud;
 
 import java.util.List;
+import java.util.Map;
 
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
@@ -19,6 +20,7 @@ import com.github.pagehelper.PageInfo;
 import com.nhry.common.exception.MessageCode;
 import com.nhry.data.stud.domain.TMstOrderStud;
 import com.nhry.model.stud.OrderStudQueryModel;
+import com.nhry.model.stud.SchoolQueryModel;
 import com.nhry.rest.BaseResource;
 import com.nhry.service.stud.dao.ClassService;
 import com.nhry.service.stud.dao.MaraStudService;
@@ -60,6 +62,16 @@ public class StudentMilkOrderResource  extends BaseResource {
 	@Autowired
 	private MaraStudService maraStudService;
 	
+	@POST
+	@Path("/findAllSchool")
+	@Produces(MediaType.APPLICATION_JSON)
+	@Consumes(MediaType.APPLICATION_JSON)
+	@ApiOperation(value = "/findAllSchool", response = List.class, notes = "获取全部学校信息列表")
+	public Response findAllSchool(@ApiParam(required=true,name="smodel",value="SearchModel") SchoolQueryModel smodel){
+		smodel.setVisiable("10");
+		return convertToRespModel(MessageCode.NORMAL, null, schoolService.findSchoolPage(smodel));
+	}
+	
 	@GET
 	@Path("/findByOrderId")
 	@Produces(MediaType.APPLICATION_JSON)
@@ -82,7 +94,7 @@ public class StudentMilkOrderResource  extends BaseResource {
 	@Produces(MediaType.APPLICATION_JSON)
 	@Consumes(MediaType.APPLICATION_JSON)
 	@ApiOperation(value = "/createOrder", response = int.class, notes = "创建订单")
-	public Response createOrder(@ApiParam(required=true,name="mstOrderStud")TMstOrderStud mstOrderStud){
+	public Response createOrder(@ApiParam(required=true,name="mstOrderStud")TMstOrderStud mstOrderStud) throws Exception{
 		return convertToRespModel(MessageCode.NORMAL, null,  orderStudService.createOrder(mstOrderStud));
 	}
 	
@@ -102,6 +114,15 @@ public class StudentMilkOrderResource  extends BaseResource {
 	@ApiOperation(value = "/findMaraStudAllList", response = List.class, notes = "查询奶品列表")
 	public Response findMaraStudAllList(){
 		return convertToRespModel(MessageCode.NORMAL, null,  maraStudService.findAllListBySalesOrg());
+	}
+	
+	@POST
+	@Path("/findOrderInfoBySchoolCodeAndDate")
+	@Produces(MediaType.APPLICATION_JSON)
+	@Consumes(MediaType.APPLICATION_JSON)
+	@ApiOperation(value = "/findOrderInfoBySchoolCodeAndDate", response = Map.class, notes = "根据学校，时间查询订单详情列表")
+	public Response findOrderInfoBySchoolCodeAndDate(@ApiParam(required=true,name="mstOrderStud")TMstOrderStud mstOrderStud){
+		return convertToRespModel(MessageCode.NORMAL, null,  orderStudService.findOrderInfoBySchoolCodeAndDate(mstOrderStud));
 	}
 	
 }

@@ -25,9 +25,39 @@ public class TMstOrderStudLoss {
     
     private String salesOrg;//销售组织
     
+    private String matnrTxt;//
+    
+    private String zbotCode;//
+    
+    private String zbotCodeName;//
+    
     
 
-    public void setSalesOrg(String salesOrg) {
+    public String getMatnrTxt() {
+		return matnrTxt;
+	}
+
+	public void setMatnrTxt(String matnrTxt) {
+		this.matnrTxt = matnrTxt;
+	}
+
+	public String getZbotCode() {
+		return zbotCode;
+	}
+
+	public void setZbotCode(String zbotCode) {
+		this.zbotCode = zbotCode;
+	}
+
+	public String getZbotCodeName() {
+		return zbotCodeName;
+	}
+
+	public void setZbotCodeName(String zbotCodeName) {
+		this.zbotCodeName = zbotCodeName;
+	}
+
+	public void setSalesOrg(String salesOrg) {
 		this.salesOrg = salesOrg;
 	}
 

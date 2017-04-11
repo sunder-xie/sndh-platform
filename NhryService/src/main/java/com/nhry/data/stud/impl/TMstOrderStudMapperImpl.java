@@ -33,4 +33,9 @@ public class TMstOrderStudMapperImpl implements TMstOrderStudMapper {
 		return sqlSessionTemplate.selectListByPages("findOrderPage", queryModel, Integer.parseInt(queryModel.getPageNum()), Integer.parseInt(queryModel.getPageSize()));
 	}
 
+	@Override
+	public TMstOrderStud selectOrderBySchoolCodeAndDateWithOrderStatus10(TMstOrderStud mstOrderStud) {
+		return sqlSessionTemplate.selectOne("selectOrderBySchoolCodeAndDateWithOrderStatus10", mstOrderStud);
+	}
+
 }

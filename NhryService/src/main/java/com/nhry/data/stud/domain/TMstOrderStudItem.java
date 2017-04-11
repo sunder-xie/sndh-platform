@@ -14,8 +14,12 @@ public class TMstOrderStudItem {
     private String orderType;
 
     private String classCode;
+    
+    private String className;//
 
-    private String matnr;
+	private String matnr;
+	
+	private String matnrTxt;//
 
     private Integer qty;
 
@@ -33,8 +37,44 @@ public class TMstOrderStudItem {
     
     private String salesOrg;//销售组织
     
+    private String zbotCode;//
+    
+    private String zbotCodeName;//
+    
     
 
+    public String getZbotCode() {
+		return zbotCode;
+	}
+
+	public void setZbotCode(String zbotCode) {
+		this.zbotCode = zbotCode;
+	}
+
+	public String getZbotCodeName() {
+		return zbotCodeName;
+	}
+
+	public void setZbotCodeName(String zbotCodeName) {
+		this.zbotCodeName = zbotCodeName;
+	}
+
+	public String getMatnrTxt() {
+		return matnrTxt;
+	}
+
+	public void setMatnrTxt(String matnrTxt) {
+		this.matnrTxt = matnrTxt;
+	}
+
+	public String getClassName() {
+		return className;
+	}
+
+	public void setClassName(String className) {
+		this.className = className;
+	}
+	
     public void setSalesOrg(String salesOrg) {
 		this.salesOrg = salesOrg;
 	}

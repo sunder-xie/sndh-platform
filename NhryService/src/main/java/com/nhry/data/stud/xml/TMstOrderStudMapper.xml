@@ -16,8 +16,7 @@
     <result column="SALES_ORG" property="salesOrg" jdbcType="VARCHAR" />
   </resultMap>
   <sql id="Base_Column_List" >
-    ORDER_ID, ORDER_DATE, SCHOOL_CODE, ORDER_STATUS, CREATE_AT, CREATE_BY, CREATE_BY_TXT, 
-    LAST_MODIFIED, LAST_MODIFIED_BY, LAST_MODIFIED_BY_TXT, REMARK, SALES_ORG
+    ORDER_ID, ORDER_DATE, SCHOOL_CODE, ORDER_STATUS, REMARK, SALES_ORG
   </sql>
   
   
@@ -28,10 +27,21 @@
     where ORDER_ID = #{orderId,jdbcType=VARCHAR}
   </select>
   
+  <select id="selectOrderBySchoolCodeAndDateWithOrderStatus10" resultMap="BaseResultMap" parameterType="com.nhry.data.stud.domain.TMstOrderStud">
+  	select 
+    <include refid="Base_Column_List" />
+    from t_mst_order_stud
+    where SCHOOL_CODE=#{schoolCode}
+    and ORDER_DATE=#{orderDateStr}
+    and ORDER_STATUS='10'
+    and SALES_ORG=#{salesOrg}
+  </select>
+  
   <select id="findOrderPage" resultMap="BaseResultMap" parameterType="com.nhry.model.stud.OrderStudQueryModel">
   	select 
     <include refid="Base_Column_List" />
     from t_mst_order_stud
+    where ORDER_STATUS='10'
     order by ORDER_DATE DESC
   </select>
   

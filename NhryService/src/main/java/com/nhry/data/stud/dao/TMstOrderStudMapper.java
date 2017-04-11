@@ -13,4 +13,6 @@ public interface TMstOrderStudMapper {
     int updateByOrder(TMstOrderStud mstOrderStud);
     
     PageInfo<TMstOrderStud> findOrderPage(OrderStudQueryModel queryModel);
+
+	TMstOrderStud selectOrderBySchoolCodeAndDateWithOrderStatus10(TMstOrderStud mstOrderStud);
 }

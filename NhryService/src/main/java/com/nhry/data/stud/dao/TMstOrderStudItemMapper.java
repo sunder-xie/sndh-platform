@@ -1,15 +1,17 @@
 package com.nhry.data.stud.dao;
 
+import java.util.List;
+import java.util.Map;
+
 import com.nhry.data.stud.domain.TMstOrderStudItem;
 
 public interface TMstOrderStudItemMapper {
-    int deleteByPrimaryKey(String mid);
+	
+    int insertOrderItem(TMstOrderStudItem orderStudItem);
 
-    int insertSelective(TMstOrderStudItem record);
+    TMstOrderStudItem selectByMid(String mid);
 
-    TMstOrderStudItem selectByPrimaryKey(String mid);
-
-    int updateByPrimaryKeySelective(TMstOrderStudItem record);
-
-    int updateByPrimaryKey(TMstOrderStudItem record);
+    List<TMstOrderStudItem> findOrderItemByOrderId(String orderId);
+    
+    List<TMstOrderStudItem> findOrderItemByMap(Map<String, Object> parameterMap);
 }
