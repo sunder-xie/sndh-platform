@@ -20,12 +20,40 @@
     <result column="LAST_MODIFIED_BY" property="lastModifiedBy" jdbcType="VARCHAR" />
     <result column="LAST_MODIFIED_BY_TXT" property="lastModifiedByTxt" jdbcType="VARCHAR" />
     <result column="SALES_ORG" property="salesOrg" jdbcType="VARCHAR" />
+    <result column="checkbox" property="checkbox"  />
+    <result column="SCHOOL_NAME" property="schoolName"  />
+    
+    
   </resultMap>
   <sql id="Base_Column_List" >
-    MID, SCHOOL_CODE, IS_BATCH_PRINT, VISIABLE, WEEK1_MATNR, WEEK2_MATNR, WEEK3_MATNR, 
-    WEEK4_MATNR, WEEK5_MATNR, WEEK6_MATNR, WEEK7_MATNR, CREATE_AT, CREATE_BY, CREATE_BY_TXT, 
-    LAST_MODIFIED, LAST_MODIFIED_BY, LAST_MODIFIED_BY_TXT, SALES_ORG
+    ru.MID, sc.SCHOOL_CODE,sc.SCHOOL_NAME, ru.IS_BATCH_PRINT, ru.VISIABLE, ru.WEEK1_MATNR, ru.WEEK2_MATNR, ru.WEEK3_MATNR, 
+    ru.WEEK4_MATNR, ru.WEEK5_MATNR, ru.WEEK6_MATNR, ru.WEEK7_MATNR, ru.CREATE_AT, ru.CREATE_BY, ru.CREATE_BY_TXT, 
+    ru.LAST_MODIFIED, ru.LAST_MODIFIED_BY, ru.LAST_MODIFIED_BY_TXT, ru.SALES_ORG,if(ru.VISIABLE='10',false,true) checkbox
   </sql>
+  
+  
+   <select id="serchSchoolRuleList" resultMap="BaseResultMap" parameterType="com.nhry.model.stud.SchoolRuleQueryModel" >
+    select 
+    <include refid="Base_Column_List" />
+    FROM   t_md_school  sc LEFT JOIN  t_md_school_rule  ru on sc.SCHOOL_CODE=ru.SCHOOL_CODE and sc.SALES_ORG=ru.SALES_ORG
+    where 1=1 and sc.VISIABLE='10'
+    
+    <if test="keyWord != null and keyWord != '' " >
+        and (sc.SCHOOL_CODE like '%${keyWord}%' or sc.SCHOOL_NAME  like '%${keyWord}%')
+    </if>
+    
+     <if test="visiable != null and visiable !='' " >
+        and ifnull(ru.VISIABLE,'10')=#{visiable}
+     </if>
+     
+     <if test="salesOrg != null and salesOrg !='' " >
+        and sc.SALES_ORG=#{salesOrg}
+     </if>
+     order by sc.SCHOOL_CODE
+  </select>
+  
+  
+  
   <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.String" >
     select 
     <include refid="Base_Column_List" />

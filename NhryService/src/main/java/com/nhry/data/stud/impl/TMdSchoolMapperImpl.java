@@ -19,9 +19,6 @@ public class TMdSchoolMapperImpl implements TMdSchoolMapper {
 	@Autowired
 	private DynamicSqlSessionTemplate sqlSessionTemplate;
 
-    public void setSqlSessionTemplate(DynamicSqlSessionTemplate sqlSessionTemplate) {
-        this.sqlSessionTemplate = sqlSessionTemplate;
-    }
     
 	@Override
 	public PageInfo<TMdSchool> serchSchoolList(SchoolQueryModel model) {
@@ -42,34 +39,15 @@ public class TMdSchoolMapperImpl implements TMdSchoolMapper {
 		return sqlSessionTemplate.selectList("serchSchoolList", model);
 	}
 
+	@Override
+	public TMdSchool selectByPrimaryKey(SchoolQueryModel model) {
+		return sqlSessionTemplate.selectOne("selectOne", model);
+	}
+
 
 	
 	
-	@Override
-	public int deleteByPrimaryKey(String schoolCode) {
-		// TODO Auto-generated method stub
-		return 0;
-	}
-
-	@Override
-	public int insertSelective(TMdSchool record) {
-		// TODO Auto-generated method stub
-		return 0;
-	}
-
-	@Override
-	public TMdSchool selectByPrimaryKey(String schoolCode) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-
-	@Override
-	public int updateByPrimaryKey(TMdSchool record) {
-		// TODO Auto-generated method stub
-		return 0;
-	}
-
+	
 
 
 

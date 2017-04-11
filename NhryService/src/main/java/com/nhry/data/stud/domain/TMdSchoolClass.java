@@ -27,7 +27,16 @@ public class TMdSchoolClass {
     
     
 
-    public void setSalesOrg(String salesOrg) {
+    public TMdSchoolClass(String schoolCode) {
+		super();
+		this.schoolCode = schoolCode;
+	}
+
+	public TMdSchoolClass() {
+		super();
+	}
+
+	public void setSalesOrg(String salesOrg) {
 		this.salesOrg = salesOrg;
 	}
 

@@ -32,10 +32,20 @@ public class TMdMaraStud extends TMdMaraStudKey {
     private String botSpec;
 
     private String zbotCode;
+    
+    private String zbotCodeName;
 
     private String dealerNo;
 
-    public String getMatnrTxt() {
+    public String getZbotCodeName() {
+		return zbotCodeName;
+	}
+
+	public void setZbotCodeName(String zbotCodeName) {
+		this.zbotCodeName = zbotCodeName;
+	}
+
+	public String getMatnrTxt() {
         return matnrTxt;
     }
 

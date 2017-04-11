@@ -5,6 +5,7 @@ import java.util.List;
 
 import com.github.pagehelper.PageInfo;
 import com.nhry.data.stud.domain.TMdClass;
+import com.nhry.model.stud.ClassListModel;
 import com.nhry.model.stud.ClassQueryModel;
 
 /**
@@ -40,6 +41,12 @@ public interface ClassService {
 	 * @return
 	 */
 	int addClass(TMdClass mdClass);
+	
+	/**
+	 * 添加班级
+	 * @return
+	 */
+	int addClassList(ClassListModel smodel);
 	
 	/**更新班级
 	 * @param mdClass

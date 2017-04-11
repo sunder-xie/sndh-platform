@@ -50,6 +50,13 @@
     delete from t_md_class
     where CLASS_CODE = #{classCode,jdbcType=VARCHAR}
   </delete>
+  
+   <delete id="deleteBySalesOrg" parameterType="java.lang.String" >
+    delete from t_md_class
+    where SALES_ORG = #{salesOrg,jdbcType=VARCHAR}
+  </delete>
+  
+  
   <insert id="insertClass" parameterType="com.nhry.data.stud.domain.TMdClass" >
     insert into t_md_class
     <trim prefix="(" suffix=")" suffixOverrides="," >

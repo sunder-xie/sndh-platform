@@ -15,12 +15,20 @@
 		default-lazy-init="true">
 		
 	<bean id="classMapper" class="com.nhry.data.stud.impl.TMdClassMapperImpl" />
+	<bean id="schoolClassMapper" class="com.nhry.data.stud.impl.TMdSchoolClassMapperImpl"/>
 	<bean id="tMdSchoolMapper" class="com.nhry.data.stud.impl.TMdSchoolMapperImpl" />
 	<bean id="tMdSchoolRuleMapper" class="com.nhry.data.stud.impl.TMdSchoolRuleMapperImpl" />
+	<bean id="orderStudMapper" class="com.nhry.data.stud.impl.TMstOrderStudMapperImpl" />
+	<bean id="maraStudExMapper" class="com.nhry.data.stud.impl.TMdMaraStudExMapperImpl"/>
+	<bean id="orderStudItemMapper" class="com.nhry.data.stud.impl.TMstOrderStudItemMapperImpl"/>
+	<bean id="orderStudLossMapper" class="com.nhry.data.stud.impl.TMstOrderStudLossMapperImpl"/>
 	
 	<bean id="classService" class="com.nhry.service.stud.impl.ClassServiceImpl" />
 	<bean id="schoolService" class="com.nhry.service.stud.impl.SchoolServiceImpl" />
-	
+	<bean id="schoolClassService"  class="com.nhry.service.stud.impl.SchoolClassServiceImpl"/>
+	<bean id="schoolRuleService"  class="com.nhry.service.stud.impl.SchoolRuleServiceImpl"/>
+	<bean id="orderStudService"  class="com.nhry.service.stud.impl.OrderStudServiceImpl"/>
+	<bean id="maraStudService" class="com.nhry.service.stud.impl.MaraStudServiceImpl"/>
 	
 	
 </beans>

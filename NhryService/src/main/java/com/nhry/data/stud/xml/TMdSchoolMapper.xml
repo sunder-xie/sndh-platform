@@ -36,8 +36,13 @@
     <if test="keyWord != null and keyWord != '' " >
         and (SCHOOL_CODE like '%${keyWord}%' or SCHOOL_NAME  like '%${keyWord}%')
     </if>
+    
      <if test="visiable != null and visiable !='' " >
         and VISIABLE=#{visiable}
+     </if>
+     
+     <if test="salesOrg != null and salesOrg !='' " >
+        and SALES_ORG=#{salesOrg}
      </if>
      
      order by SCHOOL_CODE
@@ -45,11 +50,11 @@
   
   
   
-  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.String" >
+  <select id="selectOne" resultMap="BaseResultMap" parameterType="com.nhry.model.stud.SchoolQueryModel" >
     select 
     <include refid="Base_Column_List" />
     from t_md_school
-    where SCHOOL_CODE = #{schoolCode,jdbcType=VARCHAR}
+    where SCHOOL_CODE = #{schoolCode,jdbcType=VARCHAR} and SALES_ORG = #{salesOrg,jdbcType=VARCHAR}
   </select>
   
   
@@ -61,7 +66,7 @@
         VISIABLE = #{visiable,jdbcType=VARCHAR},
       </if>
     </set>
-    where SCHOOL_CODE = #{schoolCode,jdbcType=VARCHAR}
+    where SCHOOL_CODE = #{schoolCode,jdbcType=VARCHAR} and  SALES_ORG=#{salesOrg}
   </update>
   
   

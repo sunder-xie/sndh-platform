@@ -18,18 +18,17 @@ import org.springframework.stereotype.Controller;
 
 import com.github.pagehelper.PageInfo;
 import com.nhry.common.exception.MessageCode;
-import com.nhry.data.basic.domain.TMdMara;
 import com.nhry.data.stud.domain.TMdClass;
 import com.nhry.data.stud.domain.TMdSchool;
 import com.nhry.data.stud.domain.TMdSchoolRule;
-import com.nhry.model.basic.ProductQueryModel;
 import com.nhry.model.stud.ClassQueryModel;
-import com.nhry.model.stud.SchoolBoundClassModel;
+import com.nhry.model.stud.SchoolClassModel;
 import com.nhry.model.stud.SchoolQueryModel;
 import com.nhry.model.stud.SchoolRuleQueryModel;
 import com.nhry.model.sys.ResponseModel;
 import com.nhry.rest.BaseResource;
 import com.nhry.service.stud.dao.ClassService;
+import com.nhry.service.stud.dao.SchoolClassService;
 import com.nhry.service.stud.dao.SchoolRuleService;
 import com.nhry.service.stud.dao.SchoolService;
 import com.sun.jersey.spi.resource.Singleton;
@@ -48,7 +47,11 @@ import com.wordnik.swagger.annotations.ApiParam;
 @Api(value = "/studentMilk",description = "学生奶")
 public class StudentMilkResource  extends BaseResource {
 	@Autowired
-	SchoolService schoolService;
+	private SchoolService schoolService;
+	
+	@Autowired
+	private SchoolClassService schoolClassService;
+	
 	@Autowired
 	private ClassService classService;
 	
@@ -56,7 +59,7 @@ public class StudentMilkResource  extends BaseResource {
 	private SchoolRuleService schoolRuleService;
 	
 	
-	
+	/*********************************学校基础信息********************************/
 	@POST
 	@Path("/school/findSchoolPage")
 	@Produces(MediaType.APPLICATION_JSON)
@@ -75,27 +78,25 @@ public class StudentMilkResource  extends BaseResource {
 		return convertToRespModel(MessageCode.NORMAL, null,  schoolService.updateSchool(tMdSchool));
 	}
 	
-	
-	
+	/*********************************班级基础信息********************************/
 	@GET
-	@Path("/studentClass/findClassByClassCode")
+	@Path("/class/findClassByClassCode")
 	@Produces(MediaType.APPLICATION_JSON)
 	@ApiOperation(value = "/studentClass/findClassByClassCode", response = TMdClass.class, notes = "查询班级信息")
 	public Response findClassByClassCode(@ApiParam(required=true,name="classCode") @QueryParam("classCode") String classCode){
 		return convertToRespModel(MessageCode.NORMAL, null, classService.findClassByClassCode(classCode));
 	}
 	
-	@POST
-	@Path("/studentClass/findClassListBySalesOrg")
+	@GET
+	@Path("/class/findClassListBySalesOrg")
 	@Produces(MediaType.APPLICATION_JSON)
-	@Consumes(MediaType.APPLICATION_JSON)
 	@ApiOperation(value = "/studentClass/findClassListBySalesOrg", response = ResponseModel.class, notes = "查询班级列表")
 	public Response findClassListBySalesOrg(@ApiParam(required=false,name="salesOrg") @QueryParam("salesOrg")String salesOrg){
 		return convertToRespModel(MessageCode.NORMAL, null,  classService.findClassListBySalesOrg(salesOrg));
 	}
 	
 	@POST
-	@Path("/studentClass/findClassPage")
+	@Path("/class/findClassPage")
 	@Produces(MediaType.APPLICATION_JSON)
 	@Consumes(MediaType.APPLICATION_JSON)
 	@ApiOperation(value = "/studentClass/findClassPage", response = PageInfo.class, notes = "分页查询班级信息")
@@ -104,25 +105,25 @@ public class StudentMilkResource  extends BaseResource {
 	}
 	
 	@POST
-	@Path("/studentClass/addClass")
+	@Path("/class/addClass")
 	@Produces(MediaType.APPLICATION_JSON)
 	@Consumes(MediaType.APPLICATION_JSON)
-	@ApiOperation(value = "/studentClass/addClass", response = PageInfo.class, notes = "新增班级")
+	@ApiOperation(value = "/studentClass/addClass", response = ResponseModel.class, notes = "新增班级")
 	public Response addClass(@ApiParam(required=true, name="mdClass") TMdClass mdClass){
 		return convertToRespModel(MessageCode.NORMAL, null, classService.addClass(mdClass));
 	}
 	
 	@POST
-	@Path("/studentClass/updClass")
+	@Path("/class/updClass")
 	@Produces(MediaType.APPLICATION_JSON)
 	@Consumes(MediaType.APPLICATION_JSON)
-	@ApiOperation(value = "/studentClass/updClass", response = PageInfo.class, notes = "更新班级")
+	@ApiOperation(value = "/studentClass/updClass", response = ResponseModel.class, notes = "更新班级")
 	public Response updClass(@ApiParam(required=true, name="mdClass") TMdClass mdClass){
 		return convertToRespModel(MessageCode.NORMAL, null, classService.updClass(mdClass));
 	}
 	
 	@POST
-	@Path("/studentClass/delClass/{classCode}")
+	@Path("/class/delClass/{classCode}")
 	@Produces(MediaType.APPLICATION_JSON)
 	@Consumes(MediaType.APPLICATION_JSON)
 	@ApiOperation(value = "/studentClass/delClass/{classCode}", response = PageInfo.class, notes = "更新班级")
@@ -130,8 +131,44 @@ public class StudentMilkResource  extends BaseResource {
 		return convertToRespModel(MessageCode.NORMAL, null, classService.delClass(classCode));
 	}
 	
+	/*********************************学校班级基础信息********************************/
+	@POST
+	@Path("/schoolClass/addSchoolClass")
+	@Produces(MediaType.APPLICATION_JSON)
+	@Consumes(MediaType.APPLICATION_JSON)
+	@ApiOperation(value = "/schoolClass/addSchoolClass", response = int.class, notes = "新增学校班级关联信息")
+	public Response addSchoolClass(@ApiParam(required=true, name="schoolClassModel") SchoolClassModel schoolClassModel){
+		return convertToRespModel(MessageCode.NORMAL, null, schoolClassService.addSchoolClass(schoolClassModel));
+	}
 	
+	@POST
+	@Path("/schoolClass/delSchoolClassBySalesOrg")
+	@Produces(MediaType.APPLICATION_JSON)
+	@Consumes(MediaType.APPLICATION_JSON)
+	@ApiOperation(value = "/schoolClass/delSchoolClassBySalesOrg", response = int.class, notes = "删除学校班级关联信息")
+	public Response delSchoolClassBySalesOrg(@ApiParam(required=true, name="schoolClassModel") SchoolClassModel schoolClassModel){
+		return convertToRespModel(MessageCode.NORMAL, null, schoolClassService.delSchoolClassBySalesOrg(schoolClassModel));
+	}
 	
+	@POST
+	@Path("/schoolClass/findAllClassBySchool")
+	@Produces(MediaType.APPLICATION_JSON)
+	@Consumes(MediaType.APPLICATION_JSON)
+	@ApiOperation(value = "/schoolClass/findAllClassBySchool", response = List.class, notes = "查询学校关联的班级列表")
+	public Response findAllClassBySchool(@ApiParam(required=true, name="schoolClassModel") SchoolClassModel schoolClassModel){
+		return convertToRespModel(MessageCode.NORMAL, null, schoolClassService.findAllClassBySchool(schoolClassModel));
+	}
+	
+	@POST
+	@Path("/schoolClass/findNoneClassBySchool")
+	@Produces(MediaType.APPLICATION_JSON)
+	@Consumes(MediaType.APPLICATION_JSON)
+	@ApiOperation(value = "/schoolClass/findNoneClassBySchool", response = List.class, notes = "查询学校还未关联的班级列表")
+	public Response findNoneClassBySchool(@ApiParam(required=true, name="schoolClassModel") SchoolClassModel schoolClassModel){
+		return convertToRespModel(MessageCode.NORMAL, null, schoolClassService.findNoneClassBySchool(schoolClassModel));
+	}
+	
+	/*********************************学校订奶政策设置基础信息********************************/
 	@POST
 	@Path("/schoolRule/findSchoolPage")
 	@Produces(MediaType.APPLICATION_JSON)

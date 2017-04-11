@@ -19,6 +19,12 @@ public class TMdClassMapperImpl implements TMdClassMapper {
 	public int deleteByClassCode(String classCode) {
 		return sqlSessionTemplate.delete("deleteByClassCode", classCode);
 	}
+	
+	
+	@Override
+	public int deleteBySalesOrg(String salesOrg) {
+		return sqlSessionTemplate.delete("deleteBySalesOrg", salesOrg);
+	}
 
 	@Override
 	public int insertClass(TMdClass mdClass) {
