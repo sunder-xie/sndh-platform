@@ -7,7 +7,7 @@ import com.nhry.data.stud.domain.TMstOrderStudItem;
 
 public interface TMstOrderStudItemMapper {
 	
-    int insertOrderItem(TMstOrderStudItem orderStudItem);
+    int insertSdutOrderItem(TMstOrderStudItem orderStudItem);
 
     TMstOrderStudItem selectByMid(String mid);
 

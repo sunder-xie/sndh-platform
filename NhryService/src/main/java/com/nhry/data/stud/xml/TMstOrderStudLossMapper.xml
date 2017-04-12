@@ -17,13 +17,15 @@
     <result column="ZBOT_CODE_NAME" property="zbotCodeName" jdbcType="VARCHAR" />
   </resultMap>
   
-  <select id="findLossByOrderId" resultMap="BaseResultMap" parameterType="java.lang.String" >
+  <select id="findLossByOrderId" resultMap="BaseResultMap" parameterType="java.util.Map" >
     select 
     a.MID, a.ORDER_ID, a.MATNR, a.QTY, a.SALES_ORG, b.ZBOT_CODE,
     (SELECT i.ITEM_NAME FROM t_sys_code_item I WHERE i.TYPE_CODE=<include refid="mybaties.constant.packing _type"></include> AND i.ITEM_CODE=b.ZBOT_CODE) ZBOT_CODE_NAME
     from t_mst_order_stud_loss a
-    left join t_md_mara_ex b on a.MATNR=b.MATNR
+    left join t_md_mara_stud b on a.MATNR=b.MATNR
     where a.ORDER_ID=#{orderId}
+    and b.STATUS='Y'
+    and b.SALES_ORG=#{salesOrg}
   </select>
   
   

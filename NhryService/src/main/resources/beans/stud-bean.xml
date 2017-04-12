@@ -19,7 +19,7 @@
 	<bean id="tMdSchoolMapper" class="com.nhry.data.stud.impl.TMdSchoolMapperImpl" />
 	<bean id="tMdSchoolRuleMapper" class="com.nhry.data.stud.impl.TMdSchoolRuleMapperImpl" />
 	<bean id="orderStudMapper" class="com.nhry.data.stud.impl.TMstOrderStudMapperImpl" />
-	<bean id="maraStudExMapper" class="com.nhry.data.stud.impl.TMdMaraStudExMapperImpl"/>
+	<bean id="maraStudMapper" class="com.nhry.data.stud.impl.TMdMaraStudMapperImpl"/>
 	<bean id="orderStudItemMapper" class="com.nhry.data.stud.impl.TMstOrderStudItemMapperImpl"/>
 	<bean id="orderStudLossMapper" class="com.nhry.data.stud.impl.TMstOrderStudLossMapperImpl"/>
 	

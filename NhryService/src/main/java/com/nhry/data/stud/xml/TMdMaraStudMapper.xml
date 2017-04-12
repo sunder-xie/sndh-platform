@@ -35,4 +35,18 @@
     where p.STATUS='Y'
     and p.SALES_ORG = #{salesOrg}
   </select>
+  
+  <!-- findAllListBySalesOrgNotIn -->
+  <select id="findAllListBySalesOrgNotIn" resultMap="BaseResultMap" parameterType="java.util.Map" >
+    select 
+    p.MATNR, p.SALES_ORG, p.MATNR_TXT, p.ZBOT_CODE,
+    (SELECT i.ITEM_NAME FROM t_sys_code_item I WHERE i.TYPE_CODE=<include refid="mybaties.constant.packing _type"></include> AND i.ITEM_CODE=p.ZBOT_CODE) ZBOT_CODE_NAME
+    from t_md_mara_stud p
+    where p.STATUS='Y'
+    and p.SALES_ORG = #{salesOrg}
+    and p.MATNR NOT IN
+    <foreach collection="notInList" item="matnr" index="index" open="(" close=")" separator=",">
+   		#{matnr}
+   	</foreach>
+  </select>
 </mapper>

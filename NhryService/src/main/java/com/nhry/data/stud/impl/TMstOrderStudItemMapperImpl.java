@@ -19,8 +19,8 @@ public class TMstOrderStudItemMapperImpl implements TMstOrderStudItemMapper {
 	private DynamicSqlSessionTemplate sqlSessionTemplate;
 	
 	@Override
-	public int insertOrderItem(TMstOrderStudItem orderStudItem) {
-		return sqlSessionTemplate.insert("insertOrderItem", orderStudItem);
+	public int insertSdutOrderItem(TMstOrderStudItem orderStudItem) {
+		return sqlSessionTemplate.insert("insertSdutOrderItem", orderStudItem);
 	}
 
 	@Override

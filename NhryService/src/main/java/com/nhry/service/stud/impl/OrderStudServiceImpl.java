@@ -79,7 +79,10 @@ public class OrderStudServiceImpl implements OrderStudService {
 		if(StringUtils.isBlank(mstOrderStud.getSchoolCode())){
 			throw new ServiceException(MessageCode.LOGIC_ERROR, "学校必选");
 		}
-		Date orderDate = new SimpleDateFormat("yyMMddHHmmssSSS").parse(mstOrderStud.getOrderDateStr());
+		if(CollectionUtils.isNotEmpty(mstOrderStud.getList10()) && StringUtils.isBlank(mstOrderStud.getMatnr())){
+			throw new ServiceException(MessageCode.LOGIC_ERROR, "学校奶未选择牛奶品种");
+		}
+		Date orderDate = new SimpleDateFormat("yyyy-MM-dd").parse(mstOrderStud.getOrderDateStr());
 		Date date = new Date();
 		TSysUser user = this.userSessionService.getCurrentUser();
 		if(StringUtils.isNoneBlank(mstOrderStud.getOrderId())){
@@ -96,6 +99,7 @@ public class OrderStudServiceImpl implements OrderStudService {
 		
 		//创建主订单
 		mstOrderStud.setOrderId(orderId);
+		mstOrderStud.setOrderDate(orderDate);
 		mstOrderStud.setCreateAt(date);
 		mstOrderStud.setCreateBy(user.getLoginName());
 		mstOrderStud.setCreateByTxt(user.getDisplayName());
@@ -115,6 +119,7 @@ public class OrderStudServiceImpl implements OrderStudService {
 	    		if(item.getQty() == null || item.getQty() < 0){
 	    			item.setQty(0);
 	    		}
+	    		item.setSchoolCode(mstOrderStud.getSchoolCode());
 	    		item.setOrderId(orderId);
 	    		item.setMid(UUID.randomUUID().toString().replace("-", ""));
 	    		item.setMatnr(mstOrderStud.getMatnr());
@@ -127,7 +132,7 @@ public class OrderStudServiceImpl implements OrderStudService {
 	    		item.setLastModifiedBy(user.getLoginName());
 	    		item.setLastModifiedByTxt(user.getDisplayName());
 	    		item.setSalesOrg(user.getSalesOrg());
-	    		orderStudItemMapper.insertOrderItem(item);
+	    		orderStudItemMapper.insertSdutOrderItem(item);
 	    	}
 	    }
 	    
@@ -140,6 +145,7 @@ public class OrderStudServiceImpl implements OrderStudService {
 	    		if(item.getQty() == null || item.getQty() < 0){
 	    			item.setQty(0);
 	    		}
+	    		item.setSchoolCode(mstOrderStud.getSchoolCode());
 	    		item.setOrderId(orderId);
 	    		item.setMid(UUID.randomUUID().toString().replace("-", ""));
 	    		item.setOrderDate(orderDate);
@@ -151,7 +157,7 @@ public class OrderStudServiceImpl implements OrderStudService {
 	    		item.setLastModifiedBy(user.getLoginName());
 	    		item.setLastModifiedByTxt(user.getDisplayName());
 	    		item.setSalesOrg(user.getSalesOrg());
-	    		orderStudItemMapper.insertOrderItem(item);
+	    		orderStudItemMapper.insertSdutOrderItem(item);
 	    	}
 	    }
 	    
@@ -218,7 +224,8 @@ public class OrderStudServiceImpl implements OrderStudService {
 		if(StringUtils.isBlank(this.userSessionService.getCurrentUser().getSalesOrg())){
 			throw new ServiceException(MessageCode.LOGIC_ERROR, "当前用户未归属销售组织");
 		}
-		mstOrderStud.setSalesOrg(this.userSessionService.getCurrentUser().getSalesOrg());
+		TSysUser user = this.userSessionService.getCurrentUser();
+		mstOrderStud.setSalesOrg(user.getSalesOrg());
 		Map<String, Object> resultMap = new HashMap<>();
 		TMstOrderStud orderStud = this.mstOrderStudMapper.selectOrderBySchoolCodeAndDateWithOrderStatus10(mstOrderStud);
 		
@@ -228,7 +235,7 @@ public class OrderStudServiceImpl implements OrderStudService {
 			
 			//学生奶
 			List<TMstOrderStudItem> list10 = new ArrayList<TMstOrderStudItem>();
-			List<TMdClass> classList = classMapper.findClassListBySalesOrg(this.userSessionService.getCurrentUser().getSalesOrg());
+			List<TMdClass> classList = classMapper.findClassListBySalesOrg10(user.getSalesOrg());
 			if(CollectionUtils.isNotEmpty(classList)){
 				TMstOrderStudItem item10 = null;
 				for(TMdClass mdClass : classList){
@@ -243,7 +250,7 @@ public class OrderStudServiceImpl implements OrderStudService {
 			
 			//老师奶
 			List<TMstOrderStudItem> list20 = new ArrayList<TMstOrderStudItem>();
-			List<TMdMaraStud> maraList = maraStudMapper.findAllListBySalesOrg(this.userSessionService.getCurrentUser().getSalesOrg());
+			List<TMdMaraStud> maraList = maraStudMapper.findAllListBySalesOrg(user.getSalesOrg());
 			if(CollectionUtils.isNotEmpty(maraList)){
 				TMstOrderStudItem item20 = null;
 				for(TMdMaraStud mara : maraList){
@@ -282,10 +289,32 @@ public class OrderStudServiceImpl implements OrderStudService {
 			Map<String, Object> selectMap = new HashMap<>();
 			selectMap.put("orderId", orderStud.getOrderId());
 			selectMap.put("orderType", "10");
+			selectMap.put("salesOrg", user.getSalesOrg());
 			List<TMstOrderStudItem> list10 = orderStudItemMapper.findOrderItemByMap(selectMap);
 			if(CollectionUtils.isEmpty(list10)){
 				list10 = new ArrayList<TMstOrderStudItem>();
-				List<TMdClass> classList = classMapper.findClassListBySalesOrg(this.userSessionService.getCurrentUser().getSalesOrg());
+				List<TMdClass> classList = classMapper.findClassListBySalesOrg10(user.getSalesOrg());
+				if(CollectionUtils.isNotEmpty(classList)){
+					TMstOrderStudItem item10 = null;
+					for(TMdClass mdClass : classList){
+						item10 = new TMstOrderStudItem();
+						item10.setClassCode(mdClass.getClassCode());
+						item10.setClassName(mdClass.getClassName());
+						item10.setQty(0);
+						list10.add(item10);
+					}
+				}
+			}
+			else{
+				orderStud.setMatnr(list10.get(0).getMatnr());
+				List<String> notInList = new ArrayList<String>();
+				for(TMstOrderStudItem item : list10){
+					notInList.add(item.getClassCode());
+				}
+				Map<String, Object> selectClassMap = new HashMap<>();
+				selectClassMap.put("salesOrg", user.getSalesOrg());
+				selectClassMap.put("notInList", notInList);
+				List<TMdClass> classList = classMapper.findClassListBySalesOrgNotIn(selectClassMap);
 				if(CollectionUtils.isNotEmpty(classList)){
 					TMstOrderStudItem item10 = null;
 					for(TMdClass mdClass : classList){
@@ -304,7 +333,29 @@ public class OrderStudServiceImpl implements OrderStudService {
 			List<TMstOrderStudItem> list20 = orderStudItemMapper.findOrderItemByMap(selectMap);
 			if(CollectionUtils.isEmpty(list20)){
 				list20 = new ArrayList<TMstOrderStudItem>();
-				List<TMdMaraStud> maraList = maraStudMapper.findAllListBySalesOrg(this.userSessionService.getCurrentUser().getSalesOrg());
+				List<TMdMaraStud> maraList = maraStudMapper.findAllListBySalesOrg(user.getSalesOrg());
+				if(CollectionUtils.isNotEmpty(maraList)){
+					TMstOrderStudItem item20 = null;
+					for(TMdMaraStud mara : maraList){
+						item20 = new TMstOrderStudItem();
+						item20.setQty(0);
+						item20.setMatnr(mara.getMatnr());
+						item20.setMatnrTxt(mara.getMatnrTxt());
+						item20.setZbotCode(mara.getZbotCode());
+						item20.setZbotCodeName(mara.getZbotCodeName());
+						list20.add(item20);
+					}
+				}
+			}
+			else{
+				List<String> notInList = new ArrayList<String>();
+				for(TMstOrderStudItem item : list20){
+					notInList.add(item.getMatnr());
+				}
+				Map<String, Object> selectMaraMap = new HashMap<>();
+				selectMaraMap.put("salesOrg", user.getSalesOrg());
+				selectMaraMap.put("notInList", notInList);
+				List<TMdMaraStud> maraList = maraStudMapper.findAllListBySalesOrgNotIn(selectMaraMap);
 				if(CollectionUtils.isNotEmpty(maraList)){
 					TMstOrderStudItem item20 = null;
 					for(TMdMaraStud mara : maraList){
@@ -321,10 +372,32 @@ public class OrderStudServiceImpl implements OrderStudService {
 			resultMap.put("list20", list20);
 			
 			//损耗
-			List<TMstOrderStudLoss> list30 = orderStudLossMapper.findLossByOrderId(orderStud.getOrderId());
+			List<TMstOrderStudLoss> list30 = orderStudLossMapper.findLossByOrderId(selectMap);
 			if(CollectionUtils.isEmpty(list30)){
 				list30 = new ArrayList<TMstOrderStudLoss>();
-				List<TMdMaraStud> maraList = maraStudMapper.findAllListBySalesOrg(this.userSessionService.getCurrentUser().getSalesOrg());
+				List<TMdMaraStud> maraList = maraStudMapper.findAllListBySalesOrg(user.getSalesOrg());
+				if(CollectionUtils.isNotEmpty(maraList)){
+					TMstOrderStudLoss item30 = null;
+					for(TMdMaraStud mara : maraList){
+						item30 = new TMstOrderStudLoss();
+						item30.setQty(0);
+						item30.setMatnr(mara.getMatnr());
+						item30.setMatnrTxt(mara.getMatnrTxt());
+						item30.setZbotCode(mara.getZbotCode());
+						item30.setZbotCodeName(mara.getZbotCodeName());
+						list30.add(item30);
+					}
+				}
+			}
+			else{
+				List<String> notInList = new ArrayList<String>();
+				for(TMstOrderStudLoss item : list30){
+					notInList.add(item.getMatnr());
+				}
+				Map<String, Object> selectMaraMap = new HashMap<>();
+				selectMaraMap.put("salesOrg", user.getSalesOrg());
+				selectMaraMap.put("notInList", notInList);
+				List<TMdMaraStud> maraList = maraStudMapper.findAllListBySalesOrgNotIn(selectMaraMap);
 				if(CollectionUtils.isNotEmpty(maraList)){
 					TMstOrderStudLoss item30 = null;
 					for(TMdMaraStud mara : maraList){

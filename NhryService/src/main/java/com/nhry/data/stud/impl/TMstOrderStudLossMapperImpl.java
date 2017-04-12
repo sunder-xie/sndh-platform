@@ -1,6 +1,7 @@
 package com.nhry.data.stud.impl;
 
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -23,8 +24,8 @@ public class TMstOrderStudLossMapperImpl implements TMstOrderStudLossMapper {
 	}
 
 	@Override
-	public List<TMstOrderStudLoss> findLossByOrderId(String orderId) {
-		return sqlSessionTemplate.selectList("findLossByOrderId", orderId);
+	public List<TMstOrderStudLoss> findLossByOrderId(Map<String, Object> selectMap) {
+		return sqlSessionTemplate.selectList("findLossByOrderId", selectMap);
 	}
 
 }
