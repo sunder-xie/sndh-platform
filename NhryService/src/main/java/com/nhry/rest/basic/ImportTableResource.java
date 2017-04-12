@@ -185,6 +185,11 @@ public class ImportTableResource extends BaseResource {
                 //订户状态
                 vipcust.setStatus(ExcelUtil.getCellValue(cell, row));
                 cell = row.getCell(j++);
+                //备注
+                if(cell != null && StringUtils.isNotEmpty(cell.toString())){
+                    vipcust.setMemoTxt(ExcelUtil.getCellValue(cell, row));
+                }
+                cell = row.getCell(j++);
                 //销售组织
                 vipcust.setSalesOrg(ExcelUtil.getCellValue(cell, row));
                 cell = row.getCell(j++);
@@ -541,9 +546,7 @@ public class ImportTableResource extends BaseResource {
                 int j = 0;
                 XSSFRow row = sheet.getRow(i);
                 XSSFCell cell = row.getCell(j++);
-                //订户号
-                String vipCustNo = ExcelUtil.getCellValue(cell, row);
-                cell = row.getCell(j++);
+
                 //订户姓名
                 vipcust.setVipName(ExcelUtil.getCellValue(cell, row));
                 cell = row.getCell(j++);
@@ -562,6 +565,7 @@ public class ImportTableResource extends BaseResource {
                 vipcust.setCounty(area.getCounty());
                 cell = row.getCell(j++);
                 //订户手机号
+                String vipCustNo = ExcelUtil.getCellValue(cell, row);
                 vipcust.setMp(ExcelUtil.getCellValue(cell, row));
 
                 cell = row.getCell(j++);
@@ -599,7 +603,11 @@ public class ImportTableResource extends BaseResource {
                 if(cell !=null && StringUtils.isNotEmpty(cell.toString())){
                     String orgCode = ExcelUtil.getCellValue(cell, row);
                     TMdOrderOrg orderOrg = orderOrgService.findTMdOrderOrgByOrgCode(orgCode);
-                    vipcust.setOrgId(orderOrg.getId());
+                    if(orderOrg!=null){
+                        vipcust.setOrgId(orderOrg.getId());
+                    }else{
+                        return convertToRespModel(MessageCode.LOGIC_ERROR, "第" + (row.getRowNum() + 1) + "行，第" + (cell.getColumnIndex() + 1) + "列：机构编号不存在，请检查", "");
+                    }
                 }else{
                     return convertToRespModel(MessageCode.LOGIC_ERROR, "第" + (row.getRowNum() + 1) + "行，第" + (cell.getColumnIndex() + 1) + "列：机构编号不能为空，并重新校验同类问题", "");
                 }
