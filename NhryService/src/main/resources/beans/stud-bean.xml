@@ -29,6 +29,7 @@
 	<bean id="schoolRuleService"  class="com.nhry.service.stud.impl.SchoolRuleServiceImpl"/>
 	<bean id="orderStudService"  class="com.nhry.service.stud.impl.OrderStudServiceImpl"/>
 	<bean id="maraStudService" class="com.nhry.service.stud.impl.MaraStudServiceImpl"/>
+	<bean id="SchoolMaraRuleService" class="com.nhry.service.stud.impl.SchoolMaraRuleServiceImpl"/>
 	
 	
 </beans>
