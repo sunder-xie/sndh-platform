@@ -141,20 +141,22 @@ public class ImportTableResource extends BaseResource {
             XSSFWorkbook workbook = new XSSFWorkbook(new BufferedInputStream(fileInputStream));
             XSSFSheet sheet = workbook.getSheetAt(0);
             int rowNum = sheet.getLastRowNum();
-            for (int i = 2; i <= rowNum; i++) {
+            for (int i = 1; i <= rowNum; i++) {
                 TVipCustInfo vipcust = new TVipCustInfo();
-                int j = 1;
+                int j = 0;
                 XSSFRow row = sheet.getRow(i);
                 XSSFCell cell = row.getCell(j++);
+                //订户编号
                 String vipCustNo = ExcelUtil.getCellValue(cell, row);
 
-                //start 导入小区信息
-//                vipcust.setVipCustNo(cell.toString());//主键编号
                 cell = row.getCell(j++);
+                //订户姓名
                 vipcust.setVipName(ExcelUtil.getCellValue(cell, row));
                 cell = row.getCell(j++);
+                //订户地址
                 vipcust.setAddressTxt(ExcelUtil.getCellValue(cell, row));
                 cell = row.getCell(j++);
+                //小区编号
                 vipcust.setSubdist(ExcelUtil.getCellValue(cell, row));
                 //需要通过小区编号查询出小区信息并写入到订户地址中
                 TMdResidentialArea area = residentialAreaService.selectById(vipcust.getSubdist());
@@ -165,28 +167,33 @@ public class ImportTableResource extends BaseResource {
                 vipcust.setCity(area.getCity());
                 vipcust.setCounty(area.getCounty());
                 cell = row.getCell(j++);
+                //手机号
                 vipcust.setMp(ExcelUtil.getCellValue(cell, row));
+
                 cell = row.getCell(j++);
-                if (cell != null && StringUtils.isNotEmpty(cell.toString())) {
-                    vipcust.setZip(ExcelUtil.getCellValue(cell, row));
-                }
-                cell = row.getCell(j++);
+                //性别
                 if (cell != null && StringUtils.isNotEmpty(cell.toString())) {
                     vipcust.setSex(ExcelUtil.getCellValue(cell, row));
                 }
                 cell = row.getCell(j++);
+                //订户来源
                 vipcust.setVipSrc(ExcelUtil.getCellValue(cell, row));
                 cell = row.getCell(j++);
+                //订户类型
                 vipcust.setVipType(ExcelUtil.getCellValue(cell, row));
                 cell = row.getCell(j++);
+                //订户状态
                 vipcust.setStatus(ExcelUtil.getCellValue(cell, row));
                 cell = row.getCell(j++);
+                //销售组织
                 vipcust.setSalesOrg(ExcelUtil.getCellValue(cell, row));
                 cell = row.getCell(j++);
+                //经销商编号
                 if (cell != null && StringUtils.isNotEmpty(cell.toString())) {
                     vipcust.setDealerNo(ExcelUtil.getCellValue(cell, row));
                 }
                 cell = row.getCell(j++);
+                //奶站编号
                 String branchNo = ExcelUtil.getCellValue(cell, row);
                 vipcust.setBranchNo(branchNo);
                 vipcust.setVipCustNo(branchNo.substring(branchNo.length()-6).concat(vipCustNo));
@@ -573,7 +580,9 @@ public class ImportTableResource extends BaseResource {
                 vipcust.setStatus(ExcelUtil.getCellValue(cell, row));
                 cell = row.getCell(j++);
                 //备注
-                vipcust.setMemoTxt(ExcelUtil.getCellValue(cell, row));
+                if(cell != null && StringUtils.isNotEmpty(cell.toString())){
+                    vipcust.setMemoTxt(ExcelUtil.getCellValue(cell, row));
+                }
                 cell = row.getCell(j++);
                 //销售组织
                 vipcust.setSalesOrg(ExcelUtil.getCellValue(cell, row));
@@ -828,7 +837,7 @@ public class ImportTableResource extends BaseResource {
                 if (org.apache.commons.lang3.StringUtils.isBlank(order.getMilkboxStat())) {
                     throw new ServiceException(MessageCode.LOGIC_ERROR, "订单编号" + order.getOrderNo() + "请选择奶箱状态!");
                 }
-                
+
                 if (orderModel.getEntries() == null || orderModel.getEntries().size() == 0) {
                     throw new ServiceException(MessageCode.LOGIC_ERROR, "订单编号" + order.getOrderNo() + "请选择商品行!");
                 }
