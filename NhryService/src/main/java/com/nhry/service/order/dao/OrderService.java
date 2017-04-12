@@ -227,4 +227,6 @@ public interface OrderService {
 	List<TMstYearCardCompOrder> selectYearCardCompensateList(ExtendBranchInfoModel model);
 
 	int orderNoResume(OrderSearchModel smodel);
+
+	TPreOrder selectByPrimaryKey(String orderNo);
 }
