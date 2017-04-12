@@ -33,7 +33,7 @@ public class TMdSchoolClassMapperImpl implements TMdSchoolClassMapper {
 
 	@Override
 	public List<TMdClass> findNoneClassBySchool(SchoolClassModel schoolClassModel) {
-		return sqlSessionTemplate.selectList("findNoneClassBySchool", schoolClassModel);
+		return sqlSessionTemplate.selectList("findAllClassBySchool", schoolClassModel);
 	}
 
 

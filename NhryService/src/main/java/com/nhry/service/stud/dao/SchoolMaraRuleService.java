@@ -1,11 +1,15 @@
-package com.nhry.data.stud.dao;
+package com.nhry.service.stud.dao;
 
 import java.util.List;
 
 import com.nhry.data.stud.domain.TMdSchoolMaraRule;
 import com.nhry.model.stud.SchoolMaraRuleModel;
 
-public interface TMdSchoolMaraRuleMapper {
+/**
+*
+*@author dai
+*/
+public interface SchoolMaraRuleService {
 	/**
 	 * 获取学校政策
 	 * @param mdel
@@ -17,13 +21,12 @@ public interface TMdSchoolMaraRuleMapper {
 	  * @param mdel
 	  * @return
 	  */
-	 int intsertinfo(TMdSchoolMaraRule tMdSchoolMaraRule);
+	 int intsertinfo(SchoolMaraRuleModel mdel);
 	 /**
 	  * 删除政策
 	  * @param mdel
 	  * @return
 	  */
 	 int deleteByModel(SchoolMaraRuleModel mdel);
-	
-	 
+
 }
