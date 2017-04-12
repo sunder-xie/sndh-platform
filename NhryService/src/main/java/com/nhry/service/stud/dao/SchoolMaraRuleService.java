@@ -3,6 +3,7 @@ package com.nhry.service.stud.dao;
 import java.util.List;
 
 import com.nhry.data.stud.domain.TMdSchoolMaraRule;
+import com.nhry.data.stud.domain.TMdSchoolMaraRuleBase;
 import com.nhry.model.stud.SchoolMaraRuleModel;
 
 /**
@@ -11,7 +12,7 @@ import com.nhry.model.stud.SchoolMaraRuleModel;
 */
 public interface SchoolMaraRuleService {
 	/**
-	 * 获取学校政策
+	 * 获取学校损耗政策
 	 * @param mdel
 	 * @return
 	 */
@@ -28,5 +29,11 @@ public interface SchoolMaraRuleService {
 	  * @return
 	  */
 	 int deleteByModel(SchoolMaraRuleModel mdel);
+	 /**
+	 * 获取学校损耗政策基数
+	 * @param mdel
+	 * @return
+	 */
+	 TMdSchoolMaraRuleBase findMaraRuleBaseByModel(SchoolMaraRuleModel mdel);
 
 }
