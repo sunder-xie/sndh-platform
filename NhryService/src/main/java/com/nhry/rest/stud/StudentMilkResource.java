@@ -151,7 +151,7 @@ public class StudentMilkResource  extends BaseResource {
 	public Response uptSchoolRule(@ApiParam(required=true,name="tMdSchoolRule",value="tMdSchoolRule") TMdSchoolRule tMdSchoolRule){
 		return convertToRespModel(MessageCode.NORMAL, null, schoolRuleService.uptSchoolRule(tMdSchoolRule));
 	}
-	
+
 	/*********************************学校订奶政策损耗基础信息********************************/
 	
 	@POST
@@ -163,6 +163,17 @@ public class StudentMilkResource  extends BaseResource {
 		return convertToRespModel(MessageCode.NORMAL, null, schoolMaraRuleService.findSchoolMaraRule(smodel));
 	}
 	
+
+	@POST
+	@Path("/schoolMaraRule/findMaraRuleBaseByModel")
+	@Produces(MediaType.APPLICATION_JSON)
+	@Consumes(MediaType.APPLICATION_JSON)
+	@ApiOperation(value = "/schoolMaraRule/findMaraRuleBaseByModel", response = PageInfo.class, notes = "通过学校和销售组织获取当前学校的损耗政策基数")
+	public Response findMaraRuleBaseByModel(@ApiParam(required=true,name="smodel",value="SearchModel") SchoolMaraRuleModel smodel){
+		return convertToRespModel(MessageCode.NORMAL, null, schoolMaraRuleService.findMaraRuleBaseByModel(smodel));
+	}
+	
+	
 	@POST
 	@Path("/schoolMaraRule/save")
 	@Produces(MediaType.APPLICATION_JSON)
@@ -171,6 +182,9 @@ public class StudentMilkResource  extends BaseResource {
 	public Response saveSchoolRule(@ApiParam(required=true,name="smodel",value="smodel") SchoolMaraRuleModel smodel){
 		return convertToRespModel(MessageCode.NORMAL, null, schoolMaraRuleService.intsertinfo(smodel));
 	}
+	
+	
+	
 	
 
 }

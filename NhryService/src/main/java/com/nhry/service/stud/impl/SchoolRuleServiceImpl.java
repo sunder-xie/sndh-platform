@@ -1,10 +1,15 @@
 package com.nhry.service.stud.impl;
 
+import java.util.Date;
+import java.util.UUID;
+
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.github.pagehelper.PageInfo;
 import com.nhry.common.auth.UserSessionService;
+import com.nhry.common.exception.MessageCode;
+import com.nhry.common.exception.ServiceException;
 import com.nhry.data.auth.domain.TSysUser;
 import com.nhry.data.stud.dao.TMdSchoolRuleMapper;
 import com.nhry.data.stud.domain.TMdSchoolRule;
@@ -27,9 +32,9 @@ public class SchoolRuleServiceImpl  implements SchoolRuleService {
 	
 	@Override
 	public PageInfo<TMdSchoolRule> findSchoolRulePage(SchoolRuleQueryModel model) {
-		TSysUser sysuser = userSessionService.getCurrentUser();
-		if(StringUtils.isEmpty(sysuser.getSalesOrg())){
-			return null;
+		TSysUser sysuser = this.userSessionService.getCurrentUser();
+		if( StringUtils.isBlank(sysuser.getSalesOrg())){
+			throw new ServiceException(MessageCode.LOGIC_ERROR, "学校未关联销售组织:"+model.getSchoolCode());
 		}
 		model.setSalesOrg(sysuser.getSalesOrg());
 		return tMdSchoolRuleMapper.serchSchoolRuleList(model);
@@ -38,11 +43,31 @@ public class SchoolRuleServiceImpl  implements SchoolRuleService {
 
 	@Override
 	public int uptSchoolRule(TMdSchoolRule tMdSchoolRule) {
-		TSysUser sysuser = this.userSessionService.getCurrentUser();
-		if(StringUtils.isEmpty(sysuser.getSalesOrg())){
-			return 0;
+		TSysUser currentUser = this.userSessionService.getCurrentUser();
+		if( StringUtils.isBlank(currentUser.getSalesOrg())){
+			throw new ServiceException(MessageCode.LOGIC_ERROR, "学校未关联销售组织:"+tMdSchoolRule.getSchoolCode());
 		}
-		return tMdSchoolRuleMapper.uptSchoolRule(tMdSchoolRule);
+		
+		if(StringUtils.isNotBlank(tMdSchoolRule.getMid())){
+			Date date = new Date();
+			tMdSchoolRule.setLastModified(date);
+			tMdSchoolRule.setLastModifiedBy(currentUser.getLoginName());
+			tMdSchoolRule.setLastModifiedByTxt(currentUser.getDisplayName());
+			return tMdSchoolRuleMapper.uptSchoolRule(tMdSchoolRule);
+		}else{
+			Date date = new Date();
+			tMdSchoolRule.setMid(UUID.randomUUID().toString().replace("-", ""));
+			tMdSchoolRule.setCreateAt(date);
+			tMdSchoolRule.setCreateBy(currentUser.getLoginName());
+			tMdSchoolRule.setCreateByTxt(currentUser.getDisplayName());
+			tMdSchoolRule.setLastModified(date);
+			tMdSchoolRule.setLastModifiedBy(currentUser.getLoginName());
+			tMdSchoolRule.setLastModifiedByTxt(currentUser.getDisplayName());
+			tMdSchoolRule.setSalesOrg(currentUser.getSalesOrg());
+			return tMdSchoolRuleMapper.saveone(tMdSchoolRule);
+		}
+		
+		
 	}
 
 

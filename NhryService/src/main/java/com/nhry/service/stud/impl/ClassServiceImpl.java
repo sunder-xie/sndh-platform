@@ -1,5 +1,6 @@
 package com.nhry.service.stud.impl;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -93,8 +94,34 @@ public class ClassServiceImpl implements ClassService {
 		if(StringUtils.isBlank(currentUser.getSalesOrg())){
 			throw new ServiceException(MessageCode.LOGIC_ERROR, "当前用户未归属销售组织");
 		}
-		classMapper.deleteBySalesOrg(currentUser.getSalesOrg());
+		List<TMdClass> sysClassList = classMapper.findClassListBySalesOrg(currentUser.getSalesOrg());
 		List<TMdClass> classList = smodel.getClassList();
+		ArrayList<TMdClass> delteCalss = new ArrayList<TMdClass>();
+		ArrayList<TMdClass> updateClass = new ArrayList<TMdClass>();
+		for (int i = 0; i < sysClassList.size(); i++) {
+			TMdClass tMdClass = sysClassList.get(i);
+			Boolean falg=false;
+			for (TMdClass clas : classList) {
+				if(clas.getClassCode().equals(tMdClass.getClassCode())){
+					updateClass.add(clas);
+					falg=true;
+				}
+			}
+			if(!falg){
+				delteCalss.add(tMdClass);
+			}
+		}
+		classList.removeAll(updateClass);
+		for (TMdClass mdClass : delteCalss) {
+			classMapper.deleteByClass(mdClass);
+		}
+		for (TMdClass mdClass : updateClass) {
+			Date date = new Date();
+			mdClass.setLastModified(date);
+			mdClass.setLastModifiedBy(this.userSessionService.getCurrentUser().getLoginName());
+			mdClass.setLastModifiedByTxt(this.userSessionService.getCurrentUser().getDisplayName());
+			classMapper.updateTMdClass(mdClass);
+		}
 		for (TMdClass mdClass : classList) {
 			if(null == mdClass || StringUtils.isBlank(mdClass.getClassCode())){
 				throw new ServiceException(MessageCode.LOGIC_ERROR, "班级代码必填");
@@ -115,6 +142,7 @@ public class ClassServiceImpl implements ClassService {
 			mdClass.setSalesOrg(this.userSessionService.getCurrentUser().getSalesOrg());
 			mdClass.setSort(0);
 			mdClass.setVisiable("10");
+			
 			try {
 				classMapper.insertClass(mdClass);
 			} catch (Exception e) {

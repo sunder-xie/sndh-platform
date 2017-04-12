@@ -10,7 +10,9 @@ import com.nhry.model.stud.ClassQueryModel;
 public interface TMdClassMapper {
 	
 	int deleteByClassCode(String classCode);
-
+	
+	int deleteByClass(TMdClass mdClass);
+	
     int insertClass(TMdClass mdClass);
 
     TMdClass selectByClassCode(String classCode);
@@ -23,7 +25,8 @@ public interface TMdClassMapper {
     
     PageInfo<TMdClass> findClassPage(ClassQueryModel queryModel);
 
-	int deleteBySalesOrg(String salesOrg);
 
 	List<TMdClass> findClassListBySalesOrgNotIn(Map<String, Object> selectClassMap);
+
+	
 }

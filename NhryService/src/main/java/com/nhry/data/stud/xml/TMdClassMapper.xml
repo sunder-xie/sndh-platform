@@ -73,6 +73,13 @@
     where CLASS_CODE = #{classCode,jdbcType=VARCHAR}
   </delete>
   
+   <delete id="deleteByClass" parameterType="java.lang.String" >
+    delete from t_md_class
+    	where CLASS_CODE = #{classCode,jdbcType=VARCHAR} and  SALES_ORG = #{salesOrg,jdbcType=VARCHAR}
+  </delete>
+  
+  
+  
    <delete id="deleteBySalesOrg" parameterType="java.lang.String" >
     delete from t_md_class
     where SALES_ORG = #{salesOrg,jdbcType=VARCHAR}

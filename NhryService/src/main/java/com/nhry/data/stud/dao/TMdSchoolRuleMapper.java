@@ -18,4 +18,11 @@ public interface TMdSchoolRuleMapper {
 	 * 更新学校政策
 	 */
 	int uptSchoolRule(TMdSchoolRule tMdSchoolRule);
+	
+	/**
+	 * 添加学校政策
+	 * @param tMdSchoolRule
+	 * @return
+	 */
+	int saveone(TMdSchoolRule tMdSchoolRule);
 }
