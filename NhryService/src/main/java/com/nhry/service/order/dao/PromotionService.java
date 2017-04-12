@@ -43,4 +43,6 @@ public interface PromotionService {
 	public TPromotion selectPromotionByPromNoAndItemNo(String entry,String itemNo);
 
 	List<TPromotionModel> selYearCardPromBySalesOrg();
+
+	List<TPromotion> selYearCardPromByPromNo(String salesNo,String promNo);
 }

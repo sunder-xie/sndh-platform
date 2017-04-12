@@ -472,5 +472,11 @@ public class PromotionServiceImpl extends BaseService implements PromotionServic
 		return promotions;
 	}
 
-
+	@Override
+	public List<TPromotion> selYearCardPromByPromNo(String salesNo,String promNo) {
+		TPromotion promotion = new TPromotion();
+		promotion.setSalesOrg(salesNo);
+		promotion.setPromNo(promNo);
+		return tPromotionMapper.selYearCardPromByPromNo(promotion);
+	}
 }
