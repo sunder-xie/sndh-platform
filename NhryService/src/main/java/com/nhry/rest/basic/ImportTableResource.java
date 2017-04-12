@@ -146,10 +146,7 @@ public class ImportTableResource extends BaseResource {
                 int j = 0;
                 XSSFRow row = sheet.getRow(i);
                 XSSFCell cell = row.getCell(j++);
-                //订户编号
-                String vipCustNo = ExcelUtil.getCellValue(cell, row);
 
-                cell = row.getCell(j++);
                 //订户姓名
                 vipcust.setVipName(ExcelUtil.getCellValue(cell, row));
                 cell = row.getCell(j++);
@@ -168,6 +165,8 @@ public class ImportTableResource extends BaseResource {
                 vipcust.setCounty(area.getCounty());
                 cell = row.getCell(j++);
                 //手机号
+                //订户编号
+                String vipCustNo = ExcelUtil.getCellValue(cell, row);
                 vipcust.setMp(ExcelUtil.getCellValue(cell, row));
 
                 cell = row.getCell(j++);
@@ -671,6 +670,10 @@ public class ImportTableResource extends BaseResource {
                 //订单编号-1
                 if(cell!=null && StringUtils.isNotEmpty(cell.toString())){
                     order.setOrderNo(cell.toString());
+                    TPreOrder tellOrder = orderService.selectByPrimaryKey(order.getOrderNo());
+                    if(tellOrder!=null){
+                        throw new ServiceException("第" + (row.getRowNum() + 1) + "行,订单编号"+order.getOrderNo()+"在系统中已存在，请检查！");
+                    }
                 }else{
                     throw new ServiceException("第" + (row.getRowNum() + 1) + "行,订单编号为空，请检查！");
                 }

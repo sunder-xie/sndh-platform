@@ -11815,4 +11815,13 @@ public static int dayOfTwoDay(Date day1,Date day2) {
 		return daliyPlans;
 	}
 
+	/**
+	 * 根据订户编号查询订户信息
+	 * @param orderNo
+	 * @return
+     */
+	@Override
+	public TPreOrder selectByPrimaryKey(String orderNo) {
+		return tPreOrderMapper.selectByPrimaryKey(orderNo);
+	}
 }
