@@ -6,8 +6,14 @@ public class TMdSchoolMaraRule {
     private String mid;
 
     private String schoolCode;
+    
 
     private String matnr;
+    
+    private String matnrText;
+    
+    private String specUnit;
+  
 
     private Integer matnrQty;
 
@@ -32,8 +38,24 @@ public class TMdSchoolMaraRule {
     private String salesOrg;//销售组织
     
     
+    public String getSpecUnit() {
+		return specUnit;
+	}
 
-    public void setSalesOrg(String salesOrg) {
+	public void setSpecUnit(String specUnit) {
+		this.specUnit = specUnit;
+	}
+
+
+	public String getMatnrText() {
+		return matnrText;
+	}
+
+	public void setMatnrText(String matnrText) {
+		this.matnrText = matnrText;
+	}
+
+	public void setSalesOrg(String salesOrg) {
 		this.salesOrg = salesOrg;
 	}
 
