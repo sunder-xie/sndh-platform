@@ -28,4 +28,7 @@ public interface TPromotionMapper {
 
     //获取销售组织下  年卡，半年卡，季卡信息
     List<TPromotionModel> selYearCardPromBySalesOrg(TPromotion prom);
+
+    //根据促销编号获取销售组织下年卡信息
+    List<TPromotion> selYearCardPromByPromNo(TPromotion prom);
 }

@@ -68,5 +68,8 @@ public class TPromotionMapperImpl implements TPromotionMapper
 		return sqlSessionTemplate.selectList("selYearCardPromBySalesOrg",prom);
 	}
 
-
+	@Override
+	public List<TPromotion> selYearCardPromByPromNo(TPromotion prom) {
+		return sqlSessionTemplate.selectList("selYearCardPromByPromNo",prom);
+	}
 }
