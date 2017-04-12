@@ -19,9 +19,11 @@
 	<bean id="tMdSchoolMapper" class="com.nhry.data.stud.impl.TMdSchoolMapperImpl" />
 	<bean id="tMdSchoolRuleMapper" class="com.nhry.data.stud.impl.TMdSchoolRuleMapperImpl" />
 	<bean id="orderStudMapper" class="com.nhry.data.stud.impl.TMstOrderStudMapperImpl" />
-	<bean id="maraStudExMapper" class="com.nhry.data.stud.impl.TMdMaraStudExMapperImpl"/>
+	<bean id="maraStudMapper" class="com.nhry.data.stud.impl.TMdMaraStudMapperImpl"/>
 	<bean id="orderStudItemMapper" class="com.nhry.data.stud.impl.TMstOrderStudItemMapperImpl"/>
 	<bean id="orderStudLossMapper" class="com.nhry.data.stud.impl.TMstOrderStudLossMapperImpl"/>
+	<bean id="tMdSchoolMaraRuleMapper" class="com.nhry.data.stud.impl.TMdSchoolMaraRuleMapperImpl"/>
+	<bean id="tMdSchoolMaraRuleBaseMapper" class="com.nhry.data.stud.impl.TMdSchoolMaraRuleBaseMapperImpl"/>
 	
 	<bean id="classService" class="com.nhry.service.stud.impl.ClassServiceImpl" />
 	<bean id="schoolService" class="com.nhry.service.stud.impl.SchoolServiceImpl" />
@@ -29,6 +31,7 @@
 	<bean id="schoolRuleService"  class="com.nhry.service.stud.impl.SchoolRuleServiceImpl"/>
 	<bean id="orderStudService"  class="com.nhry.service.stud.impl.OrderStudServiceImpl"/>
 	<bean id="maraStudService" class="com.nhry.service.stud.impl.MaraStudServiceImpl"/>
+	<bean id="SchoolMaraRuleService" class="com.nhry.service.stud.impl.SchoolMaraRuleServiceImpl"/>
 	
 	
 </beans>

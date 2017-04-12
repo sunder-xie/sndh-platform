@@ -28,7 +28,7 @@
   <sql id="Base_Column_List" >
     ru.MID, sc.SCHOOL_CODE,sc.SCHOOL_NAME, ru.IS_BATCH_PRINT, ru.VISIABLE, ru.WEEK1_MATNR, ru.WEEK2_MATNR, ru.WEEK3_MATNR, 
     ru.WEEK4_MATNR, ru.WEEK5_MATNR, ru.WEEK6_MATNR, ru.WEEK7_MATNR, ru.CREATE_AT, ru.CREATE_BY, ru.CREATE_BY_TXT, 
-    ru.LAST_MODIFIED, ru.LAST_MODIFIED_BY, ru.LAST_MODIFIED_BY_TXT, ru.SALES_ORG,if(ru.VISIABLE='10',false,true) checkbox
+    ru.LAST_MODIFIED, ru.LAST_MODIFIED_BY, ru.LAST_MODIFIED_BY_TXT, ru.SALES_ORG,if(ifnull(ru.VISIABLE,10)='10',false,true) checkbox
   </sql>
   
   
@@ -54,17 +54,7 @@
   
   
   
-  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.String" >
-    select 
-    <include refid="Base_Column_List" />
-    from t_md_school_rule
-    where MID = #{mid,jdbcType=VARCHAR}
-  </select>
-  <delete id="deleteByPrimaryKey" parameterType="java.lang.String" >
-    delete from t_md_school_rule
-    where MID = #{mid,jdbcType=VARCHAR}
-  </delete>
-  <insert id="insertSelective" parameterType="com.nhry.data.stud.domain.TMdSchoolRule" >
+  <insert id="saveone" parameterType="com.nhry.data.stud.domain.TMdSchoolRule" >
     insert into t_md_school_rule
     <trim prefix="(" suffix=")" suffixOverrides="," >
       <if test="mid != null" >
@@ -179,7 +169,9 @@
       </if>
     </trim>
   </insert>
-  <update id="updateByPrimaryKeySelective" parameterType="com.nhry.data.stud.domain.TMdSchoolRule" >
+  
+  
+  <update id="updateReule" parameterType="com.nhry.data.stud.domain.TMdSchoolRule" >
     update t_md_school_rule
     <set >
       <if test="schoolCode != null" >

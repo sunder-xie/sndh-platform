@@ -2,20 +2,12 @@ package com.nhry.data.stud.domain;
 
 import java.util.Date;
 
-public class TMdSchoolMaraRule {
+public class TMdSchoolMaraRuleBase {
     private String mid;
 
     private String schoolCode;
     
-
-    private String matnr;
-    
-    private String matnrText;
-    
     private String specUnit;
-  
-
-    private Integer matnrQty;
 
     private Integer fixedQty;
 
@@ -46,15 +38,6 @@ public class TMdSchoolMaraRule {
 		this.specUnit = specUnit;
 	}
 
-
-	public String getMatnrText() {
-		return matnrText;
-	}
-
-	public void setMatnrText(String matnrText) {
-		this.matnrText = matnrText;
-	}
-
 	public void setSalesOrg(String salesOrg) {
 		this.salesOrg = salesOrg;
 	}
@@ -79,22 +62,7 @@ public class TMdSchoolMaraRule {
         this.schoolCode = schoolCode == null ? null : schoolCode.trim();
     }
 
-    public String getMatnr() {
-        return matnr;
-    }
-
-    public void setMatnr(String matnr) {
-        this.matnr = matnr == null ? null : matnr.trim();
-    }
-
-    public Integer getMatnrQty() {
-        return matnrQty;
-    }
-
-    public void setMatnrQty(Integer matnrQty) {
-        this.matnrQty = matnrQty;
-    }
-
+    
     public Integer getFixedQty() {
         return fixedQty;
     }

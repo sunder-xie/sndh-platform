@@ -40,6 +40,8 @@
     left join t_md_mara_stud mara on oi.MATNR=mara.MATNR
     where oi.ORDER_ID=#{orderId}
     and oi.ORDER_TYPE=#{orderType}
+    and mara.STATUS='Y'
+    and mara.SALES_ORG=#{salesOrg}
   </select>
   
   <select id="findOrderItemByOrderId" resultMap="BaseResultMap" parameterType="java.lang.String">
@@ -49,7 +51,7 @@
   </select>
   
   
-  <insert id="insertOrderItem" parameterType="com.nhry.data.stud.domain.TMstOrderStudItem" >
+  <insert id="insertSdutOrderItem" parameterType="com.nhry.data.stud.domain.TMstOrderStudItem" >
     insert into t_mst_order_stud_item
     <trim prefix="(" suffix=")" suffixOverrides="," >
       <if test="mid != null" >

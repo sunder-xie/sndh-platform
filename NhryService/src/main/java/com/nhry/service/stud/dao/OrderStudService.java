@@ -4,8 +4,13 @@ import java.util.Map;
 
 import com.github.pagehelper.PageInfo;
 import com.nhry.data.stud.domain.TMstOrderStud;
+import com.nhry.model.stud.OrderBatchBuildModel;
 import com.nhry.model.stud.OrderStudQueryModel;
 
+/**
+ * @author zhaoxijun
+ * @date 2017年4月12日
+ */
 public interface OrderStudService {
 
     int createOrder(TMstOrderStud mstOrderStud) throws Exception;
@@ -17,4 +22,8 @@ public interface OrderStudService {
     PageInfo<TMstOrderStud> findOrderPage(OrderStudQueryModel queryModel);
 
 	Map<String, Object> findOrderInfoBySchoolCodeAndDate(TMstOrderStud mstOrderStud);
+
+	Map<String, Object> buildBatchInfo(OrderBatchBuildModel orderBatchBuildModel)  throws Exception;
+
+	int createOrderWithBatch(TMstOrderStud mstOrderStud);
 }

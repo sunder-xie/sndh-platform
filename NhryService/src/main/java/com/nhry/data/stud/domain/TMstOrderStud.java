@@ -14,6 +14,8 @@ public class TMstOrderStud {
     private Date orderDate;
 
     private String schoolCode;
+    
+    private String schoolName;//
 
     private String orderStatus;
 
@@ -41,10 +43,48 @@ public class TMstOrderStud {
     
     private List<TMstOrderStudLoss> list30;//损耗
     
+    private String list10Sum;
+    
+    private String list20Sum;
+    
+    private String list30Sum;
+    
     private String matnr;//
     
 
-    public String getMatnr() {
+    public String getSchoolName() {
+		return schoolName;
+	}
+
+	public void setSchoolName(String schoolName) {
+		this.schoolName = schoolName;
+	}
+
+	public String getList10Sum() {
+		return list10Sum;
+	}
+
+	public void setList10Sum(String list10Sum) {
+		this.list10Sum = list10Sum;
+	}
+
+	public String getList20Sum() {
+		return list20Sum;
+	}
+
+	public void setList20Sum(String list20Sum) {
+		this.list20Sum = list20Sum;
+	}
+
+	public String getList30Sum() {
+		return list30Sum;
+	}
+
+	public void setList30Sum(String list30Sum) {
+		this.list30Sum = list30Sum;
+	}
+
+	public String getMatnr() {
 		return matnr;
 	}
 

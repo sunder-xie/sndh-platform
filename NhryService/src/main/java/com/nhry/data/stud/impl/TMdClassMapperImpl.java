@@ -1,6 +1,7 @@
 package com.nhry.data.stud.impl;
 
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -20,11 +21,6 @@ public class TMdClassMapperImpl implements TMdClassMapper {
 		return sqlSessionTemplate.delete("deleteByClassCode", classCode);
 	}
 	
-	
-	@Override
-	public int deleteBySalesOrg(String salesOrg) {
-		return sqlSessionTemplate.delete("deleteBySalesOrg", salesOrg);
-	}
 
 	@Override
 	public int insertClass(TMdClass mdClass) {
@@ -45,10 +41,31 @@ public class TMdClassMapperImpl implements TMdClassMapper {
 	public List<TMdClass> findClassListBySalesOrg(String salesOrg) {
 		return sqlSessionTemplate.selectList("findClassListBySalesOrg", salesOrg);
 	}
+	
+	@Override
+	public List<TMdClass> findClassListBySalesOrg10(String salesOrg) {
+		return sqlSessionTemplate.selectList("findClassListBySalesOrg10", salesOrg);
+	}
 
 	@Override
 	public PageInfo<TMdClass> findClassPage(ClassQueryModel model) {
 		return sqlSessionTemplate.selectListByPages("findClassPage", Integer.parseInt(model.getPageNum()), Integer.parseInt(model.getPageSize()));
 	}
+
+
+	@Override
+	public List<TMdClass> findClassListBySalesOrgNotIn(Map<String, Object> selectClassMap) {
+		return sqlSessionTemplate.selectList("findClassListBySalesOrgNotIn", selectClassMap);
+	}
+
+
+	@Override
+	public int deleteByClass(TMdClass mdClass) {
+		// TODO Auto-generated method stub
+		return sqlSessionTemplate.delete("deleteByClass",mdClass);
+	}
+
+
+	
 
 }

@@ -33,6 +33,28 @@
     where SALES_ORG=#{salesOrg}
   </select>
   
+  <!-- findClassListBySalesOrg10 -->
+  <select id="findClassListBySalesOrg10" parameterType="java.lang.String" resultMap="BaseResultMap">
+  	select 
+    CLASS_CODE, CLASS_NAME, VISIABLE, SALES_ORG
+    from t_md_class
+    where SALES_ORG=#{salesOrg}
+    and VISIABLE='10'
+  </select>
+  
+  <!-- findClassListBySalesOrgNotIn -->
+  <select id="findClassListBySalesOrgNotIn" parameterType="java.lang.String" resultMap="BaseResultMap">
+  	select 
+    CLASS_CODE, CLASS_NAME, VISIABLE, SALES_ORG
+    from t_md_class
+    where SALES_ORG=#{salesOrg}
+    and VISIABLE='10'
+    and CLASS_CODE NOT IN 
+   	<foreach collection="notInList" item="classCode" index="index" open="(" close=")" separator=",">
+   		#{classCode}
+   	</foreach>
+  </select>
+  
   <!-- findClassPage -->
   <select id="findClassPage" parameterType="com.nhry.model.stud.ClassQueryModel" resultMap="BaseResultMap">
   	select 
@@ -50,6 +72,13 @@
     delete from t_md_class
     where CLASS_CODE = #{classCode,jdbcType=VARCHAR}
   </delete>
+  
+   <delete id="deleteByClass" parameterType="java.lang.String" >
+    delete from t_md_class
+    	where CLASS_CODE = #{classCode,jdbcType=VARCHAR} and  SALES_ORG = #{salesOrg,jdbcType=VARCHAR}
+  </delete>
+  
+  
   
    <delete id="deleteBySalesOrg" parameterType="java.lang.String" >
     delete from t_md_class

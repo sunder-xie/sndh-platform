@@ -6,7 +6,6 @@ import com.github.pagehelper.PageInfo;
 import com.nhry.common.datasource.DynamicSqlSessionTemplate;
 import com.nhry.data.stud.dao.TMdSchoolRuleMapper;
 import com.nhry.data.stud.domain.TMdSchoolRule;
-import com.nhry.model.stud.SchoolQueryModel;
 import com.nhry.model.stud.SchoolRuleQueryModel;
 
 /**
@@ -24,8 +23,12 @@ public class TMdSchoolRuleMapperImpl implements TMdSchoolRuleMapper {
 
 	@Override
 	public int uptSchoolRule(TMdSchoolRule tMdSchoolRule) {
-		// TODO Auto-generated method stub
-		return sqlSessionTemplate.update("uptSchoolRule", tMdSchoolRule);
+		return sqlSessionTemplate.update("updateReule", tMdSchoolRule);
+	}
+	
+	@Override
+	public int saveone(TMdSchoolRule tMdSchoolRule) {
+		return sqlSessionTemplate.insert("saveone", tMdSchoolRule);
 	}
 
 }

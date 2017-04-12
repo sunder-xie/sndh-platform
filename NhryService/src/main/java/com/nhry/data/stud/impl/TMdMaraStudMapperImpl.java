@@ -1,6 +1,7 @@
 package com.nhry.data.stud.impl;
 
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -12,7 +13,7 @@ import com.nhry.data.stud.domain.TMdMaraStud;
  * @author zhaoxijun
  * @date 2017年4月11日
  */
-public class TMdMaraStudExMapperImpl implements TMdMaraStudMapper {
+public class TMdMaraStudMapperImpl implements TMdMaraStudMapper {
 
 	@Autowired
 	private DynamicSqlSessionTemplate sqlSessionTemplate;
@@ -20,6 +21,11 @@ public class TMdMaraStudExMapperImpl implements TMdMaraStudMapper {
 	@Override
 	public List<TMdMaraStud> findAllListBySalesOrg(String salesOrg) {
 		return sqlSessionTemplate.selectList("findAllListBySalesOrg", salesOrg);
+	}
+
+	@Override
+	public List<TMdMaraStud> findAllListBySalesOrgNotIn(Map<String, Object> selectMaraMap) {
+		return sqlSessionTemplate.selectList("findAllListBySalesOrgNotIn", selectMaraMap);
 	}
 
 
