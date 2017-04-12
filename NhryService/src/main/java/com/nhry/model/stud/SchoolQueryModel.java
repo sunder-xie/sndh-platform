@@ -15,6 +15,14 @@ public class SchoolQueryModel extends BaseQueryModel implements Serializable {
 	private String visiable;
 	private String salesOrg;
 	
+	public SchoolQueryModel(String schoolCode, String keyWord, String visiable,
+			String salesOrg) {
+		super();
+		this.schoolCode = schoolCode;
+		this.keyWord = keyWord;
+		this.visiable = visiable;
+		this.salesOrg = salesOrg;
+	}
 	public SchoolQueryModel() {
 		super();
 	}

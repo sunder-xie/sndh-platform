@@ -19,6 +19,7 @@ import org.springframework.stereotype.Controller;
 import com.github.pagehelper.PageInfo;
 import com.nhry.common.exception.MessageCode;
 import com.nhry.data.stud.domain.TMstOrderStud;
+import com.nhry.model.stud.OrderBatchBuildModel;
 import com.nhry.model.stud.OrderStudQueryModel;
 import com.nhry.model.stud.SchoolQueryModel;
 import com.nhry.rest.BaseResource;
@@ -123,6 +124,24 @@ public class StudentMilkOrderResource  extends BaseResource {
 	@ApiOperation(value = "/findOrderInfoBySchoolCodeAndDate", response = Map.class, notes = "根据学校，时间查询订单详情列表")
 	public Response findOrderInfoBySchoolCodeAndDate(@ApiParam(required=true,name="mstOrderStud")TMstOrderStud mstOrderStud){
 		return convertToRespModel(MessageCode.NORMAL, null,  orderStudService.findOrderInfoBySchoolCodeAndDate(mstOrderStud));
+	}
+	
+	@POST
+	@Path("/buildBatchInfo")
+	@Produces(MediaType.APPLICATION_JSON)
+	@Consumes(MediaType.APPLICATION_JSON)
+	@ApiOperation(value = "/buildBatchInfo", response = Map.class, notes = "批量生成订单数据准备")
+	public Response buildBatchInfo(@ApiParam(required=true,name="orderBatchBuildModel")OrderBatchBuildModel orderBatchBuildModel)  throws Exception{
+		return convertToRespModel(MessageCode.NORMAL, null,  orderStudService.buildBatchInfo(orderBatchBuildModel));
+	}
+	
+	@POST
+	@Path("/createOrderWithBatch")
+	@Produces(MediaType.APPLICATION_JSON)
+	@Consumes(MediaType.APPLICATION_JSON)
+	@ApiOperation(value = "/createOrderWithBatch", response = int.class, notes = "批量生成订单")
+	public Response createOrderWithBatch(@ApiParam(required=true,name="mstOrderStud")TMstOrderStud mstOrderStud) throws Exception{
+		return convertToRespModel(MessageCode.NORMAL, null,  orderStudService.createOrderWithBatch(mstOrderStud));
 	}
 	
 }

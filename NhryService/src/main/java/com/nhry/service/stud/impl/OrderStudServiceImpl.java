@@ -3,6 +3,7 @@ package com.nhry.service.stud.impl;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -22,15 +23,19 @@ import com.nhry.data.auth.domain.TSysUser;
 import com.nhry.data.stud.dao.TMdClassMapper;
 import com.nhry.data.stud.dao.TMdMaraStudMapper;
 import com.nhry.data.stud.dao.TMdSchoolClassMapper;
+import com.nhry.data.stud.dao.TMdSchoolMapper;
 import com.nhry.data.stud.dao.TMstOrderStudItemMapper;
 import com.nhry.data.stud.dao.TMstOrderStudLossMapper;
 import com.nhry.data.stud.dao.TMstOrderStudMapper;
 import com.nhry.data.stud.domain.TMdClass;
 import com.nhry.data.stud.domain.TMdMaraStud;
+import com.nhry.data.stud.domain.TMdSchool;
 import com.nhry.data.stud.domain.TMstOrderStud;
 import com.nhry.data.stud.domain.TMstOrderStudItem;
 import com.nhry.data.stud.domain.TMstOrderStudLoss;
+import com.nhry.model.stud.OrderBatchBuildModel;
 import com.nhry.model.stud.OrderStudQueryModel;
+import com.nhry.model.stud.SchoolQueryModel;
 import com.nhry.service.stud.dao.OrderStudService;
 
 
@@ -61,6 +66,9 @@ public class OrderStudServiceImpl implements OrderStudService {
 	@Autowired
 	private TMstOrderStudLossMapper orderStudLossMapper;
 	
+	@Autowired
+	private TMdSchoolMapper schoolMapper;
+	
     public static String getCode(){
 		DateFormat format = new SimpleDateFormat("yyMMddHHmmssSSS");
         int num = new Random().nextInt(89999)+10000;
@@ -80,7 +88,16 @@ public class OrderStudServiceImpl implements OrderStudService {
 			throw new ServiceException(MessageCode.LOGIC_ERROR, "学校必选");
 		}
 		if(CollectionUtils.isNotEmpty(mstOrderStud.getList10()) && StringUtils.isBlank(mstOrderStud.getMatnr())){
-			throw new ServiceException(MessageCode.LOGIC_ERROR, "学校奶未选择牛奶品种");
+			boolean flag = true;
+			for(TMstOrderStudItem item : mstOrderStud.getList10()){
+				if(null != item.getQty() && item.getQty() > 0){
+					flag = false;
+					break;
+				}
+			}
+			if(!flag){
+				throw new ServiceException(MessageCode.LOGIC_ERROR, "学校奶未选择牛奶品种");
+			}
 		}
 		Date orderDate = new SimpleDateFormat("yyyy-MM-dd").parse(mstOrderStud.getOrderDateStr());
 		Date date = new Date();
@@ -414,6 +431,88 @@ public class OrderStudServiceImpl implements OrderStudService {
 			resultMap.put("list30", list30);
 		}
 		return resultMap;
+	}
+
+	@Override
+	public Map<String, Object> buildBatchInfo(OrderBatchBuildModel orderBatchBuildModel) throws Exception {
+		TSysUser user = this.userSessionService.getCurrentUser();
+		if(null == orderBatchBuildModel || StringUtils.isBlank(orderBatchBuildModel.getOrderStartDateStr())){
+			throw new ServiceException(MessageCode.LOGIC_ERROR, "取数日期必传");
+		}
+		if(StringUtils.isBlank(orderBatchBuildModel.getOrderEndDateStr())){
+			throw new ServiceException(MessageCode.LOGIC_ERROR, "目标日期必传");
+		}
+		if(StringUtils.isBlank(orderBatchBuildModel.getWeek())){
+			throw new ServiceException(MessageCode.LOGIC_ERROR, "指定套餐必传");
+		}
+		if(orderBatchBuildModel.getOrderStartDateStr().compareTo(orderBatchBuildModel.getOrderEndDateStr()) > 0){
+			throw new ServiceException(MessageCode.LOGIC_ERROR, "取数日期不能大于目标日期");
+		}
+		if(StringUtils.isBlank(user.getSalesOrg())){
+			throw new ServiceException(MessageCode.LOGIC_ERROR, "当前用户未归属销售组织");
+		}
+		
+		Map<String, Object> resultMap = new HashMap<String, Object>();
+		List<TMdSchool> baseSchoolList = this.schoolMapper.findSchoolList(new SchoolQueryModel(null, null, "10", user.getSalesOrg()));
+		if(CollectionUtils.isEmpty(baseSchoolList)){
+			throw new ServiceException(MessageCode.LOGIC_ERROR, "未查询到学校");
+		}
+		
+		List<TMdSchool> schoolList = new ArrayList<TMdSchool>();
+		if(StringUtils.isNotBlank(orderBatchBuildModel.getUncloudSchoolCodes())){
+			orderBatchBuildModel.setUncloudSchoolCodes(orderBatchBuildModel.getUncloudSchoolCodes().replace("，", "").replace(" ", "").trim());
+			String[] schoolCodes = orderBatchBuildModel.getUncloudSchoolCodes().split(",");
+			for(TMdSchool school : baseSchoolList){
+				for(String schoolCode : schoolCodes){
+					if(schoolCode.equals(school.getSchoolCode())){
+						break;
+					}
+				}
+				schoolList.add(school);
+			}
+		}
+		else{
+			schoolList = baseSchoolList;
+		}
+		
+		if(CollectionUtils.isEmpty(schoolList)){
+			throw new ServiceException(MessageCode.LOGIC_ERROR, "过滤后没有学校");
+		}
+		
+		/**
+		 * 生产准备数据
+		 */
+		List<String> orderDateList = new ArrayList<String>();
+		DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+		String orderStartDateStr = orderBatchBuildModel.getOrderStartDateStr();
+		String orderEndDateStr = orderBatchBuildModel.getOrderEndDateStr();
+		Date orderStartDate = dateFormat.parse(orderStartDateStr);
+		Date orderEndDate = dateFormat.parse(orderEndDateStr);
+		String week = orderBatchBuildModel.getWeek();
+		Calendar c = Calendar.getInstance();
+		c.setTime(orderStartDate);
+		int iweek = Integer.parseInt(week);
+		while(c.getTime().getTime() <= orderEndDate.getTime()){
+			if(iweek == c.get(Calendar.DAY_OF_WEEK)){
+				orderDateList.add(dateFormat.format(c.getTime()));
+			}
+			c.add(Calendar.DAY_OF_YEAR, 1);
+		}
+		if(CollectionUtils.isEmpty(orderDateList)){
+			throw new ServiceException(MessageCode.LOGIC_ERROR, "指定日期期间不存在该套餐");
+		}
+		
+		
+		
+		resultMap.put("orderDateList", orderDateList);
+		resultMap.put("schoolList", schoolList);
+		return resultMap;
+	}
+
+	@Override
+	public int createOrderWithBatch(TMstOrderStud mstOrderStud) {
+		// TODO Auto-generated method stub
+		return 0;
 	}
 
 }

@@ -37,12 +37,19 @@
     and SALES_ORG=#{salesOrg}
   </select>
   
-  <select id="findOrderPage" resultMap="BaseResultMap" parameterType="com.nhry.model.stud.OrderStudQueryModel">
-  	select 
-    <include refid="Base_Column_List" />
-    from t_mst_order_stud
-    where ORDER_STATUS='10'
-    order by ORDER_DATE DESC
+  <select id="findOrderPage" resultType="com.nhry.data.stud.domain.TMstOrderStud" parameterType="com.nhry.model.stud.OrderStudQueryModel">
+  	SELECT 
+	b.school_code schoolCode,b.school_name schoolName,a.order_date orderDateStr,
+	IFNULL((SELECT SUM(c.qty) FROM t_mst_order_stud_item c WHERE c.order_id=a.order_id AND c.order_type='10'), 0) list10Sum,
+	IFNULL((SELECT SUM(c.qty) FROM t_mst_order_stud_item c WHERE c.order_id=a.order_id AND c.order_type='20'), 0) list20Sum,
+	IFNULL((SELECT SUM(c.qty) FROM t_mst_order_stud_loss c WHERE c.order_id=a.order_id), 0) list30Sum
+	FROM t_mst_order_stud a
+	LEFT JOIN t_md_school b ON a.school_code=b.school_code
+	WHERE a.order_status='10'
+	<if test="keyWord != null and keyWord != ''">
+		and (b.school_code like '%${keyWord}%' or b.school_name like '%${keyWord}%')
+	</if>
+	ORDER BY a.order_date DESC
   </select>
   
   
