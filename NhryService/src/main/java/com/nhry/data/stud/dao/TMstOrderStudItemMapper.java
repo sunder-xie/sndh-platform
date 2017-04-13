@@ -14,4 +14,8 @@ public interface TMstOrderStudItemMapper {
     List<TMstOrderStudItem> findOrderItemByOrderId(String orderId);
     
     List<TMstOrderStudItem> findOrderItemByMap(Map<String, Object> parameterMap);
+    
+    List<TMstOrderStudItem> findOrderItemByMapWithBatch(Map<String, Object> parameterMap);
+
+	int deleteOrderAndItem(Map<String, Object> delMap);
 }

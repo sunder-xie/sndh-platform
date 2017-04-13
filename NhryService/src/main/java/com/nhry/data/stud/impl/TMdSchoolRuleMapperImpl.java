@@ -1,5 +1,7 @@
 package com.nhry.data.stud.impl;
 
+import java.util.Map;
+
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.github.pagehelper.PageInfo;
@@ -29,6 +31,11 @@ public class TMdSchoolRuleMapperImpl implements TMdSchoolRuleMapper {
 	@Override
 	public int saveone(TMdSchoolRule tMdSchoolRule) {
 		return sqlSessionTemplate.insert("saveone", tMdSchoolRule);
+	}
+
+	@Override
+	public TMdSchoolRule findSchoolRuleByMap(Map<String, Object> selectMap) {
+		return sqlSessionTemplate.selectOne("findSchoolRuleByMap", selectMap);
 	}
 
 }

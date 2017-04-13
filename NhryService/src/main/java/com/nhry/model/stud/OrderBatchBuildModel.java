@@ -5,21 +5,30 @@ package com.nhry.model.stud;
  * @date 2017年4月12日
  */
 public class OrderBatchBuildModel {
-	private String orderStartDateStr;
-	private String orderEndDateStr;
+	private String orderGetDateStr;
 	private String uncloudSchoolCodes;
 	private String week;
-	public String getOrderStartDateStr() {
-		return orderStartDateStr;
+	
+	private String orderDateStr;
+	private String schoolCode;
+	
+	public String getOrderGetDateStr() {
+		return orderGetDateStr;
 	}
-	public void setOrderStartDateStr(String orderStartDateStr) {
-		this.orderStartDateStr = orderStartDateStr;
+	public void setOrderGetDateStr(String orderGetDateStr) {
+		this.orderGetDateStr = orderGetDateStr;
 	}
-	public String getOrderEndDateStr() {
-		return orderEndDateStr;
+	public String getOrderDateStr() {
+		return orderDateStr;
 	}
-	public void setOrderEndDateStr(String orderEndDateStr) {
-		this.orderEndDateStr = orderEndDateStr;
+	public void setOrderDateStr(String orderDateStr) {
+		this.orderDateStr = orderDateStr;
+	}
+	public String getSchoolCode() {
+		return schoolCode;
+	}
+	public void setSchoolCode(String schoolCode) {
+		this.schoolCode = schoolCode;
 	}
 	public String getUncloudSchoolCodes() {
 		return uncloudSchoolCodes;

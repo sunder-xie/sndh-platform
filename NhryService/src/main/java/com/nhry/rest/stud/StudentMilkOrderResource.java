@@ -140,8 +140,8 @@ public class StudentMilkOrderResource  extends BaseResource {
 	@Produces(MediaType.APPLICATION_JSON)
 	@Consumes(MediaType.APPLICATION_JSON)
 	@ApiOperation(value = "/createOrderWithBatch", response = int.class, notes = "批量生成订单")
-	public Response createOrderWithBatch(@ApiParam(required=true,name="mstOrderStud")TMstOrderStud mstOrderStud) throws Exception{
-		return convertToRespModel(MessageCode.NORMAL, null,  orderStudService.createOrderWithBatch(mstOrderStud));
+	public Response createOrderWithBatch(@ApiParam(required=true,name="orderBatchBuildModel")OrderBatchBuildModel orderBatchBuildModel) throws Exception{
+		return convertToRespModel(MessageCode.NORMAL, null,  orderStudService.createOrderWithBatch(orderBatchBuildModel));
 	}
 	
 }
