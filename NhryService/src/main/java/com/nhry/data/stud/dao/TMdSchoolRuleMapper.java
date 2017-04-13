@@ -1,8 +1,9 @@
 package com.nhry.data.stud.dao;
 
+import java.util.Map;
+
 import com.github.pagehelper.PageInfo;
 import com.nhry.data.stud.domain.TMdSchoolRule;
-import com.nhry.model.stud.SchoolQueryModel;
 import com.nhry.model.stud.SchoolRuleQueryModel;
 
 public interface TMdSchoolRuleMapper {
@@ -25,4 +26,7 @@ public interface TMdSchoolRuleMapper {
 	 * @return
 	 */
 	int saveone(TMdSchoolRule tMdSchoolRule);
+
+
+	TMdSchoolRule findSchoolRuleByMap(Map<String, Object> selectMap);
 }

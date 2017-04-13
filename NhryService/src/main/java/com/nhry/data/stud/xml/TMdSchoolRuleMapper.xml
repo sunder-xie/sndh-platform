@@ -31,6 +31,16 @@
     ru.LAST_MODIFIED, ru.LAST_MODIFIED_BY, ru.LAST_MODIFIED_BY_TXT, ru.SALES_ORG,if(ifnull(ru.VISIABLE,10)='10',false,true) checkbox
   </sql>
   
+  <select id="findSchoolRuleByMap" parameterType="java.util.Map" resultMap="BaseResultMap">
+  	select 
+  	ru.MID, ru.SCHOOL_CODE, ru.WEEK1_MATNR, ru.WEEK2_MATNR, ru.WEEK3_MATNR, 
+    ru.WEEK4_MATNR, ru.WEEK5_MATNR, ru.WEEK6_MATNR, ru.WEEK7_MATNR
+    from t_md_school_rule ru
+    where ru.VISIABLE='10'
+    and ru.SALES_ORG=#{salesOrg}
+    and ru.SCHOOL_CODE=#{schoolCode}
+    limit 1
+  </select>
   
    <select id="serchSchoolRuleList" resultMap="BaseResultMap" parameterType="com.nhry.model.stud.SchoolRuleQueryModel" >
     select 

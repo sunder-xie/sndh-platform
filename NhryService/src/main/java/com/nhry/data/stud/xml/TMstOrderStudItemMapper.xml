@@ -44,11 +44,30 @@
     and mara.SALES_ORG=#{salesOrg}
   </select>
   
+  <select id="findOrderItemByMapWithBatch" resultMap="BaseResultMap" parameterType="java.util.Map">
+  	select 
+    oi.MID, oi.ORDER_DATE, oi.ORDER_ID, oi.SCHOOL_CODE, oi.ORDER_TYPE, oi.CLASS_CODE, oi.MATNR, oi.QTY, oi.SALES_ORG
+    from t_mst_order_stud_item OI
+    left join t_mst_order_stud b on oi.order_id=b.order_id
+    where oi.ORDER_DATE=#{getOrderDateStr}
+    and oi.SCHOOL_CODE=#{schoolCode}
+    and oi.SALES_ORG=#{salesOrg}
+    and b.order_status='10'
+  </select>
+  
   <select id="findOrderItemByOrderId" resultMap="BaseResultMap" parameterType="java.lang.String">
   	select 
     MID, ORDER_DATE, ORDER_ID, SCHOOL_CODE, ORDER_TYPE, CLASS_CODE, MATNR, QTY, SALES_ORG
     from t_mst_order_stud_item
   </select>
+  
+  <update id="deleteOrderAndItem" parameterType="java.util.Map">
+  	update t_mst_order_stud
+  	set ORDER_STATUS='20'
+  	where ORDER_DATE=#{orderDateStr}
+  	and SCHOOL_CODE=#{schoolCode}
+  	and SALES_ORG=#{salesOrg}
+  </update>
   
   
   <insert id="insertSdutOrderItem" parameterType="com.nhry.data.stud.domain.TMstOrderStudItem" >
