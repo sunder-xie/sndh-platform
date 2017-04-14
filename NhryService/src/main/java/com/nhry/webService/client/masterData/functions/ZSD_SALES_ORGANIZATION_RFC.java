@@ -20,7 +20,7 @@ public class ZSD_SALES_ORGANIZATION_RFC implements org.apache.axis2.databinding.
     /**
      * field for IT_BUKRS
      */
-    protected IT_BUKRS_type2 localIT_BUKRS;
+    protected com.nhry.webService.client.masterData.functions.IT_BUKRS_type2 localIT_BUKRS;
 
     /*  This tracker boolean wil be used to detect whether the user called the set method
      *   for this attribute. It will be used to determine whether to include this field
@@ -31,7 +31,7 @@ public class ZSD_SALES_ORGANIZATION_RFC implements org.apache.axis2.databinding.
     /**
      * field for ET_BUKRS
      */
-    protected ET_BUKRS_type3 localET_BUKRS;
+    protected com.nhry.webService.client.masterData.functions.ET_BUKRS_type3 localET_BUKRS;
 
     /*  This tracker boolean wil be used to detect whether the user called the set method
      *   for this attribute. It will be used to determine whether to include this field
@@ -42,7 +42,7 @@ public class ZSD_SALES_ORGANIZATION_RFC implements org.apache.axis2.databinding.
     /**
      * field for ET_LGORT
      */
-    protected ET_LGORT_type3 localET_LGORT;
+    protected com.nhry.webService.client.masterData.functions.ET_LGORT_type3 localET_LGORT;
 
     /*  This tracker boolean wil be used to detect whether the user called the set method
      *   for this attribute. It will be used to determine whether to include this field
@@ -53,7 +53,7 @@ public class ZSD_SALES_ORGANIZATION_RFC implements org.apache.axis2.databinding.
     /**
      * field for ET_T006A
      */
-    protected ET_T006A_type1 localET_T006A;
+    protected com.nhry.webService.client.masterData.functions.ET_T006A_type1 localET_T006A;
 
     /*  This tracker boolean wil be used to detect whether the user called the set method
      *   for this attribute. It will be used to determine whether to include this field
@@ -64,7 +64,7 @@ public class ZSD_SALES_ORGANIZATION_RFC implements org.apache.axis2.databinding.
     /**
      * field for ET_VKORG
      */
-    protected ET_VKORG_type3 localET_VKORG;
+    protected com.nhry.webService.client.masterData.functions.ET_VKORG_type3 localET_VKORG;
 
     /*  This tracker boolean wil be used to detect whether the user called the set method
      *   for this attribute. It will be used to determine whether to include this field
@@ -75,7 +75,7 @@ public class ZSD_SALES_ORGANIZATION_RFC implements org.apache.axis2.databinding.
     /**
      * field for ET_WERKS
      */
-    protected ET_WERKS_type1 localET_WERKS;
+    protected com.nhry.webService.client.masterData.functions.ET_WERKS_type1 localET_WERKS;
 
     /*  This tracker boolean wil be used to detect whether the user called the set method
      *   for this attribute. It will be used to determine whether to include this field
@@ -91,7 +91,7 @@ public class ZSD_SALES_ORGANIZATION_RFC implements org.apache.axis2.databinding.
      * Auto generated getter method
      * @return com.nhry.webService.client.masterData.functions.IT_BUKRS_type2
      */
-    public IT_BUKRS_type2 getIT_BUKRS() {
+    public com.nhry.webService.client.masterData.functions.IT_BUKRS_type2 getIT_BUKRS() {
         return localIT_BUKRS;
     }
 
@@ -100,7 +100,7 @@ public class ZSD_SALES_ORGANIZATION_RFC implements org.apache.axis2.databinding.
      * @param param IT_BUKRS
      */
     public void setIT_BUKRS(
-        IT_BUKRS_type2 param) {
+        com.nhry.webService.client.masterData.functions.IT_BUKRS_type2 param) {
         localIT_BUKRSTracker = param != null;
 
         this.localIT_BUKRS = param;
@@ -114,7 +114,7 @@ public class ZSD_SALES_ORGANIZATION_RFC implements org.apache.axis2.databinding.
      * Auto generated getter method
      * @return com.nhry.webService.client.masterData.functions.ET_BUKRS_type3
      */
-    public ET_BUKRS_type3 getET_BUKRS() {
+    public com.nhry.webService.client.masterData.functions.ET_BUKRS_type3 getET_BUKRS() {
         return localET_BUKRS;
     }
 
@@ -123,7 +123,7 @@ public class ZSD_SALES_ORGANIZATION_RFC implements org.apache.axis2.databinding.
      * @param param ET_BUKRS
      */
     public void setET_BUKRS(
-        ET_BUKRS_type3 param) {
+        com.nhry.webService.client.masterData.functions.ET_BUKRS_type3 param) {
         localET_BUKRSTracker = param != null;
 
         this.localET_BUKRS = param;
@@ -137,7 +137,7 @@ public class ZSD_SALES_ORGANIZATION_RFC implements org.apache.axis2.databinding.
      * Auto generated getter method
      * @return com.nhry.webService.client.masterData.functions.ET_LGORT_type3
      */
-    public ET_LGORT_type3 getET_LGORT() {
+    public com.nhry.webService.client.masterData.functions.ET_LGORT_type3 getET_LGORT() {
         return localET_LGORT;
     }
 
@@ -146,7 +146,7 @@ public class ZSD_SALES_ORGANIZATION_RFC implements org.apache.axis2.databinding.
      * @param param ET_LGORT
      */
     public void setET_LGORT(
-        ET_LGORT_type3 param) {
+        com.nhry.webService.client.masterData.functions.ET_LGORT_type3 param) {
         localET_LGORTTracker = param != null;
 
         this.localET_LGORT = param;
@@ -160,7 +160,7 @@ public class ZSD_SALES_ORGANIZATION_RFC implements org.apache.axis2.databinding.
      * Auto generated getter method
      * @return com.nhry.webService.client.masterData.functions.ET_T006A_type1
      */
-    public ET_T006A_type1 getET_T006A() {
+    public com.nhry.webService.client.masterData.functions.ET_T006A_type1 getET_T006A() {
         return localET_T006A;
     }
 
@@ -169,7 +169,7 @@ public class ZSD_SALES_ORGANIZATION_RFC implements org.apache.axis2.databinding.
      * @param param ET_T006A
      */
     public void setET_T006A(
-        ET_T006A_type1 param) {
+        com.nhry.webService.client.masterData.functions.ET_T006A_type1 param) {
         localET_T006ATracker = param != null;
 
         this.localET_T006A = param;
@@ -183,7 +183,7 @@ public class ZSD_SALES_ORGANIZATION_RFC implements org.apache.axis2.databinding.
      * Auto generated getter method
      * @return com.nhry.webService.client.masterData.functions.ET_VKORG_type3
      */
-    public ET_VKORG_type3 getET_VKORG() {
+    public com.nhry.webService.client.masterData.functions.ET_VKORG_type3 getET_VKORG() {
         return localET_VKORG;
     }
 
@@ -192,7 +192,7 @@ public class ZSD_SALES_ORGANIZATION_RFC implements org.apache.axis2.databinding.
      * @param param ET_VKORG
      */
     public void setET_VKORG(
-        ET_VKORG_type3 param) {
+        com.nhry.webService.client.masterData.functions.ET_VKORG_type3 param) {
         localET_VKORGTracker = param != null;
 
         this.localET_VKORG = param;
@@ -206,7 +206,7 @@ public class ZSD_SALES_ORGANIZATION_RFC implements org.apache.axis2.databinding.
      * Auto generated getter method
      * @return com.nhry.webService.client.masterData.functions.ET_WERKS_type1
      */
-    public ET_WERKS_type1 getET_WERKS() {
+    public com.nhry.webService.client.masterData.functions.ET_WERKS_type1 getET_WERKS() {
         return localET_WERKS;
     }
 
@@ -215,7 +215,7 @@ public class ZSD_SALES_ORGANIZATION_RFC implements org.apache.axis2.databinding.
      * @param param ET_WERKS
      */
     public void setET_WERKS(
-        ET_WERKS_type1 param) {
+        com.nhry.webService.client.masterData.functions.ET_WERKS_type1 param) {
         localET_WERKSTracker = param != null;
 
         this.localET_WERKS = param;
@@ -246,8 +246,8 @@ public class ZSD_SALES_ORGANIZATION_RFC implements org.apache.axis2.databinding.
         javax.xml.stream.XMLStreamWriter xmlWriter, boolean serializeType)
         throws javax.xml.stream.XMLStreamException,
             org.apache.axis2.databinding.ADBException {
-        String prefix = null;
-        String namespace = null;
+        java.lang.String prefix = null;
+        java.lang.String namespace = null;
 
         prefix = parentQName.getPrefix();
         namespace = parentQName.getNamespaceURI();
@@ -255,7 +255,7 @@ public class ZSD_SALES_ORGANIZATION_RFC implements org.apache.axis2.databinding.
             xmlWriter);
 
         if (serializeType) {
-            String namespacePrefix = registerPrefix(xmlWriter,
+            java.lang.String namespacePrefix = registerPrefix(xmlWriter,
                     "urn:sap-com:document:sap:rfc:functions");
 
             if ((namespacePrefix != null) &&
@@ -333,7 +333,7 @@ public class ZSD_SALES_ORGANIZATION_RFC implements org.apache.axis2.databinding.
         xmlWriter.writeEndElement();
     }
 
-    private static String generatePrefix(String namespace) {
+    private static java.lang.String generatePrefix(java.lang.String namespace) {
         if (namespace.equals("urn:sap-com:document:sap:rfc:functions")) {
             return "ns1";
         }
@@ -344,11 +344,11 @@ public class ZSD_SALES_ORGANIZATION_RFC implements org.apache.axis2.databinding.
     /**
      * Utility method to write an element start tag.
      */
-    private void writeStartElement(String prefix,
-        String namespace, String localPart,
+    private void writeStartElement(java.lang.String prefix,
+        java.lang.String namespace, java.lang.String localPart,
         javax.xml.stream.XMLStreamWriter xmlWriter)
         throws javax.xml.stream.XMLStreamException {
-        String writerPrefix = xmlWriter.getPrefix(namespace);
+        java.lang.String writerPrefix = xmlWriter.getPrefix(namespace);
 
         if (writerPrefix != null) {
             xmlWriter.writeStartElement(writerPrefix, localPart, namespace);
@@ -368,11 +368,11 @@ public class ZSD_SALES_ORGANIZATION_RFC implements org.apache.axis2.databinding.
     /**
      * Util method to write an attribute with the ns prefix
      */
-    private void writeAttribute(String prefix,
-        String namespace, String attName,
-        String attValue, javax.xml.stream.XMLStreamWriter xmlWriter)
+    private void writeAttribute(java.lang.String prefix,
+        java.lang.String namespace, java.lang.String attName,
+        java.lang.String attValue, javax.xml.stream.XMLStreamWriter xmlWriter)
         throws javax.xml.stream.XMLStreamException {
-        String writerPrefix = xmlWriter.getPrefix(namespace);
+        java.lang.String writerPrefix = xmlWriter.getPrefix(namespace);
 
         if (writerPrefix != null) {
             xmlWriter.writeAttribute(writerPrefix, namespace, attName, attValue);
@@ -386,8 +386,8 @@ public class ZSD_SALES_ORGANIZATION_RFC implements org.apache.axis2.databinding.
     /**
      * Util method to write an attribute without the ns prefix
      */
-    private void writeAttribute(String namespace,
-        String attName, String attValue,
+    private void writeAttribute(java.lang.String namespace,
+        java.lang.String attName, java.lang.String attValue,
         javax.xml.stream.XMLStreamWriter xmlWriter)
         throws javax.xml.stream.XMLStreamException {
         if (namespace.equals("")) {
@@ -401,18 +401,18 @@ public class ZSD_SALES_ORGANIZATION_RFC implements org.apache.axis2.databinding.
     /**
      * Util method to write an attribute without the ns prefix
      */
-    private void writeQNameAttribute(String namespace,
-        String attName, javax.xml.namespace.QName qname,
+    private void writeQNameAttribute(java.lang.String namespace,
+        java.lang.String attName, javax.xml.namespace.QName qname,
         javax.xml.stream.XMLStreamWriter xmlWriter)
         throws javax.xml.stream.XMLStreamException {
-        String attributeNamespace = qname.getNamespaceURI();
-        String attributePrefix = xmlWriter.getPrefix(attributeNamespace);
+        java.lang.String attributeNamespace = qname.getNamespaceURI();
+        java.lang.String attributePrefix = xmlWriter.getPrefix(attributeNamespace);
 
         if (attributePrefix == null) {
             attributePrefix = registerPrefix(xmlWriter, attributeNamespace);
         }
 
-        String attributeValue;
+        java.lang.String attributeValue;
 
         if (attributePrefix.trim().length() > 0) {
             attributeValue = attributePrefix + ":" + qname.getLocalPart();
@@ -435,10 +435,10 @@ public class ZSD_SALES_ORGANIZATION_RFC implements org.apache.axis2.databinding.
     private void writeQName(javax.xml.namespace.QName qname,
         javax.xml.stream.XMLStreamWriter xmlWriter)
         throws javax.xml.stream.XMLStreamException {
-        String namespaceURI = qname.getNamespaceURI();
+        java.lang.String namespaceURI = qname.getNamespaceURI();
 
         if (namespaceURI != null) {
-            String prefix = xmlWriter.getPrefix(namespaceURI);
+            java.lang.String prefix = xmlWriter.getPrefix(namespaceURI);
 
             if (prefix == null) {
                 prefix = generatePrefix(namespaceURI);
@@ -467,9 +467,9 @@ public class ZSD_SALES_ORGANIZATION_RFC implements org.apache.axis2.databinding.
         if (qnames != null) {
             // we have to store this data until last moment since it is not possible to write any
             // namespace data after writing the charactor data
-            StringBuffer stringToWrite = new StringBuffer();
-            String namespaceURI = null;
-            String prefix = null;
+            java.lang.StringBuffer stringToWrite = new java.lang.StringBuffer();
+            java.lang.String namespaceURI = null;
+            java.lang.String prefix = null;
 
             for (int i = 0; i < qnames.length; i++) {
                 if (i > 0) {
@@ -508,10 +508,10 @@ public class ZSD_SALES_ORGANIZATION_RFC implements org.apache.axis2.databinding.
     /**
      * Register a namespace prefix
      */
-    private String registerPrefix(
-        javax.xml.stream.XMLStreamWriter xmlWriter, String namespace)
+    private java.lang.String registerPrefix(
+        javax.xml.stream.XMLStreamWriter xmlWriter, java.lang.String namespace)
         throws javax.xml.stream.XMLStreamException {
-        String prefix = xmlWriter.getPrefix(namespace);
+        java.lang.String prefix = xmlWriter.getPrefix(namespace);
 
         if (prefix == null) {
             prefix = generatePrefix(namespace);
@@ -519,7 +519,7 @@ public class ZSD_SALES_ORGANIZATION_RFC implements org.apache.axis2.databinding.
             javax.xml.namespace.NamespaceContext nsContext = xmlWriter.getNamespaceContext();
 
             while (true) {
-                String uri = nsContext.getNamespaceURI(prefix);
+                java.lang.String uri = nsContext.getNamespaceURI(prefix);
 
                 if ((uri == null) || (uri.length() == 0)) {
                     break;
@@ -549,14 +549,14 @@ public class ZSD_SALES_ORGANIZATION_RFC implements org.apache.axis2.databinding.
          *                If this object is a complex type, the reader is positioned at the end element of its outer element
          */
         public static ZSD_SALES_ORGANIZATION_RFC parse(
-            javax.xml.stream.XMLStreamReader reader) throws Exception {
+            javax.xml.stream.XMLStreamReader reader) throws java.lang.Exception {
             ZSD_SALES_ORGANIZATION_RFC object = new ZSD_SALES_ORGANIZATION_RFC();
 
             int event;
             javax.xml.namespace.QName currentQName = null;
-            String nillableValue = null;
-            String prefix = "";
-            String namespaceuri = "";
+            java.lang.String nillableValue = null;
+            java.lang.String prefix = "";
+            java.lang.String namespaceuri = "";
 
             try {
                 while (!reader.isStartElement() && !reader.isEndElement())
@@ -566,11 +566,11 @@ public class ZSD_SALES_ORGANIZATION_RFC implements org.apache.axis2.databinding.
 
                 if (reader.getAttributeValue(
                             "http://www.w3.org/2001/XMLSchema-instance", "type") != null) {
-                    String fullTypeName = reader.getAttributeValue("http://www.w3.org/2001/XMLSchema-instance",
+                    java.lang.String fullTypeName = reader.getAttributeValue("http://www.w3.org/2001/XMLSchema-instance",
                             "type");
 
                     if (fullTypeName != null) {
-                        String nsPrefix = null;
+                        java.lang.String nsPrefix = null;
 
                         if (fullTypeName.indexOf(":") > -1) {
                             nsPrefix = fullTypeName.substring(0,
@@ -579,15 +579,15 @@ public class ZSD_SALES_ORGANIZATION_RFC implements org.apache.axis2.databinding.
 
                         nsPrefix = (nsPrefix == null) ? "" : nsPrefix;
 
-                        String type = fullTypeName.substring(fullTypeName.indexOf(
+                        java.lang.String type = fullTypeName.substring(fullTypeName.indexOf(
                                     ":") + 1);
 
                         if (!"ZSD_SALES_ORGANIZATION_RFC".equals(type)) {
                             //find namespace for the prefix
-                            String nsUri = reader.getNamespaceContext()
+                            java.lang.String nsUri = reader.getNamespaceContext()
                                                            .getNamespaceURI(nsPrefix);
 
-                            return (ZSD_SALES_ORGANIZATION_RFC) ExtensionMapper.getTypeObject(nsUri,
+                            return (ZSD_SALES_ORGANIZATION_RFC) com.nhry.webService.client.masterData.functions.ExtensionMapper.getTypeObject(nsUri,
                                 type, reader);
                         }
                     }
@@ -606,7 +606,7 @@ public class ZSD_SALES_ORGANIZATION_RFC implements org.apache.axis2.databinding.
                                     reader.getName())) ||
                                 new javax.xml.namespace.QName("", "IT_BUKRS").equals(
                                     reader.getName())) {
-                            object.setIT_BUKRS(IT_BUKRS_type2.Factory.parse(
+                            object.setIT_BUKRS(com.nhry.webService.client.masterData.functions.IT_BUKRS_type2.Factory.parse(
                                     reader));
 
                             reader.next();
@@ -618,7 +618,7 @@ public class ZSD_SALES_ORGANIZATION_RFC implements org.apache.axis2.databinding.
                                     reader.getName())) ||
                                 new javax.xml.namespace.QName("", "ET_BUKRS").equals(
                                     reader.getName())) {
-                            object.setET_BUKRS(ET_BUKRS_type3.Factory.parse(
+                            object.setET_BUKRS(com.nhry.webService.client.masterData.functions.ET_BUKRS_type3.Factory.parse(
                                     reader));
 
                             reader.next();
@@ -630,7 +630,7 @@ public class ZSD_SALES_ORGANIZATION_RFC implements org.apache.axis2.databinding.
                                     reader.getName())) ||
                                 new javax.xml.namespace.QName("", "ET_LGORT").equals(
                                     reader.getName())) {
-                            object.setET_LGORT(ET_LGORT_type3.Factory.parse(
+                            object.setET_LGORT(com.nhry.webService.client.masterData.functions.ET_LGORT_type3.Factory.parse(
                                     reader));
 
                             reader.next();
@@ -642,7 +642,7 @@ public class ZSD_SALES_ORGANIZATION_RFC implements org.apache.axis2.databinding.
                                     reader.getName())) ||
                                 new javax.xml.namespace.QName("", "ET_T006A").equals(
                                     reader.getName())) {
-                            object.setET_T006A(ET_T006A_type1.Factory.parse(
+                            object.setET_T006A(com.nhry.webService.client.masterData.functions.ET_T006A_type1.Factory.parse(
                                     reader));
 
                             reader.next();
@@ -654,7 +654,7 @@ public class ZSD_SALES_ORGANIZATION_RFC implements org.apache.axis2.databinding.
                                     reader.getName())) ||
                                 new javax.xml.namespace.QName("", "ET_VKORG").equals(
                                     reader.getName())) {
-                            object.setET_VKORG(ET_VKORG_type3.Factory.parse(
+                            object.setET_VKORG(com.nhry.webService.client.masterData.functions.ET_VKORG_type3.Factory.parse(
                                     reader));
 
                             reader.next();
@@ -666,7 +666,7 @@ public class ZSD_SALES_ORGANIZATION_RFC implements org.apache.axis2.databinding.
                                     reader.getName())) ||
                                 new javax.xml.namespace.QName("", "ET_WERKS").equals(
                                     reader.getName())) {
-                            object.setET_WERKS(ET_WERKS_type1.Factory.parse(
+                            object.setET_WERKS(com.nhry.webService.client.masterData.functions.ET_WERKS_type1.Factory.parse(
                                     reader));
 
                             reader.next();
@@ -682,7 +682,7 @@ public class ZSD_SALES_ORGANIZATION_RFC implements org.apache.axis2.databinding.
                     }
                 } // end of while loop
             } catch (javax.xml.stream.XMLStreamException e) {
-                throw new Exception(e);
+                throw new java.lang.Exception(e);
             }
 
             return object;
