@@ -15,6 +15,14 @@ public class SchoolClassModel implements Serializable {
 	private String schoolCode;
 	private List<TMdClass> tMdClass=new ArrayList<TMdClass>();
 	
+	public SchoolClassModel() {
+		super();
+	}
+	public SchoolClassModel(String salesOrg, String schoolCode) {
+		super();
+		this.salesOrg = salesOrg;
+		this.schoolCode = schoolCode;
+	}
 	public List<TMdClass> gettMdClass() {
 		return tMdClass;
 	}

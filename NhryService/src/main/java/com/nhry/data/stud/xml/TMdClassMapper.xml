@@ -45,11 +45,13 @@
   <!-- findClassListBySalesOrgNotIn -->
   <select id="findClassListBySalesOrgNotIn" parameterType="java.lang.String" resultMap="BaseResultMap">
   	select 
-    CLASS_CODE, CLASS_NAME, VISIABLE, SALES_ORG
-    from t_md_class
-    where SALES_ORG=#{salesOrg}
-    and VISIABLE='10'
-    and CLASS_CODE NOT IN 
+    a.CLASS_CODE, a.CLASS_NAME, a.VISIABLE, a.SALES_ORG
+    from t_md_class a
+    left join t_md_school_class b on a.CLASS_CODE=b.CLASS_CODE
+    where a.SALES_ORG=#{salesOrg}
+    and b.SCHOOL_CODE=#{schoolCode}
+    and a.VISIABLE='10'
+    and a.CLASS_CODE NOT IN 
    	<foreach collection="notInList" item="classCode" index="index" open="(" close=")" separator=",">
    		#{classCode}
    	</foreach>

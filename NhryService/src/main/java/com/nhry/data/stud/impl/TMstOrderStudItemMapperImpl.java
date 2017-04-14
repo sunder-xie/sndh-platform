@@ -48,4 +48,9 @@ public class TMstOrderStudItemMapperImpl implements TMstOrderStudItemMapper {
 		return sqlSessionTemplate.update("deleteOrderAndItem", delMap);
 	}
 
+	@Override
+	public int deleteOrderWithBatch(Map<String, Object> delMap) {
+		return sqlSessionTemplate.update("deleteOrderWithBatch", delMap);
+	}
+
 }

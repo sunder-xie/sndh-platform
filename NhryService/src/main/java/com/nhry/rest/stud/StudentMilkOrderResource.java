@@ -144,4 +144,13 @@ public class StudentMilkOrderResource  extends BaseResource {
 		return convertToRespModel(MessageCode.NORMAL, null,  orderStudService.createOrderWithBatch(orderBatchBuildModel));
 	}
 	
+	@POST
+	@Path("/deleteOrderWithBatch")
+	@Produces(MediaType.APPLICATION_JSON)
+	@Consumes(MediaType.APPLICATION_JSON)
+	@ApiOperation(value = "/deleteOrderWithBatch", response = int.class, notes = "批量删除指定日期的订单")
+	public Response deleteOrderWithBatch(@ApiParam(required=true,name="orderBatchBuildModel")OrderBatchBuildModel orderBatchBuildModel) throws Exception{
+		return convertToRespModel(MessageCode.NORMAL, null,  orderStudService.updateOrderWithBatch(orderBatchBuildModel));
+	}
+	
 }

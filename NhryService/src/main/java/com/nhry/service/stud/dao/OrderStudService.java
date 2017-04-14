@@ -26,4 +26,6 @@ public interface OrderStudService {
 	Map<String, Object> buildBatchInfo(OrderBatchBuildModel orderBatchBuildModel)  throws Exception;
 
 	int createOrderWithBatch(OrderBatchBuildModel orderBatchBuildModel)  throws Exception;
+
+	int updateOrderWithBatch(OrderBatchBuildModel orderBatchBuildModel);
 }

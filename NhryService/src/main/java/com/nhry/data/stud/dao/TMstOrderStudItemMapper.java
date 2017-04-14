@@ -18,4 +18,6 @@ public interface TMstOrderStudItemMapper {
     List<TMstOrderStudItem> findOrderItemByMapWithBatch(Map<String, Object> parameterMap);
 
 	int deleteOrderAndItem(Map<String, Object> delMap);
+
+	int deleteOrderWithBatch(Map<String, Object> delMap);
 }
