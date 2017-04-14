@@ -565,10 +565,10 @@ public class PIProductServiceImpl implements PIProductService {
     private void saveVkorg(ZSD_SALES_ORGANIZATION_RFCResponse response) {
         ZSSD00025[] zssd00025s = response.getET_VKORG().getItem();
         for (ZSSD00025 zssd00025 : zssd00025s) {
-            String vkorg = zssd00025.getVKORG().getVKORG_type10();
+            String vkorg = zssd00025.getVKORG().getVKORG_type14();
             String vkorgTxt = zssd00025.getVKORGTEXT().getVKORGTEXT_type0();
             String bukrs = zssd00025.getBUKRS().getBUKRS_type10();
-            String vtweg = zssd00025.getVTWEG().getVTWEG_type10();
+            String vtweg = zssd00025.getVTWEG().getVTWEG_type14();
             String sparttext = zssd00025.getSPARTTEXT().getSPARTTEXT_type0();
             if (StringUtils.isNotEmpty(vkorg) && VKORG.equals(vtweg)) {
                 NHSysCodeItem param = new NHSysCodeItem();
@@ -606,7 +606,7 @@ public class PIProductServiceImpl implements PIProductService {
         ZSSD00024[] zssd00024s = response.getET_LGORT().getItem();
         for (ZSSD00024 zssd00024 : zssd00024s) {
             String lgort = zssd00024.getLGORT().getLGORT_type4();
-            String name = zssd00024.getNAME1().getNAME1_type2();
+            String name = zssd00024.getNAME1().getNAME1_type4();
             String werks = zssd00024.getWERKS().getWERKS_type8();
             String des = zssd00024.getLGOBE().getLGOBE_type2();
             if (StringUtils.isNotEmpty(lgort)) {
@@ -960,7 +960,7 @@ public class PIProductServiceImpl implements PIProductService {
                 ET_KUNNR et = new ET_KUNNR();
                 if (zssd00002.getBUKRS() != null && !"4020".equals(zssd00002.getBUKRS().getBUKRS_type0())) {
                     et.setBUKRS(zssd00002.getBUKRS() == null ? null : zssd00002.getBUKRS().getBUKRS_type0());
-                    et.setKUNNR(zssd00002.getKUNNR() == null ? null : zssd00002.getKUNNR().getKUNNR_type0());
+                    et.setKUNNR(zssd00002.getKUNNR() == null ? null : zssd00002.getKUNNR().getKUNNR_type2());
                     et.setNAME1(zssd00002.getNAME1() == null ? null : zssd00002.getNAME1().getNAME1_type0());
                     et.setNAME2(zssd00002.getNAME2() == null ? null : zssd00002.getNAME2().getNAME2_type0());
                     et.setNAME3(zssd00002.getNAME3() == null ? null : zssd00002.getNAME3().getNAME3_type0());
@@ -969,7 +969,7 @@ public class PIProductServiceImpl implements PIProductService {
                     et.setREGIO(zssd00002.getREGIO() == null ? null : zssd00002.getREGIO().getREGIO_type0());
                     et.setSTRAS(zssd00002.getSTRAS() == null ? null : zssd00002.getSTRAS().getSTRAS_type0());
                     et.setTELF1(zssd00002.getTELF1() == null ? null : zssd00002.getTELF1().getTELF1_type0());
-                    map.put(zssd00002.getKUNNR().getKUNNR_type0(), et);
+                    map.put(zssd00002.getKUNNR().getKUNNR_type2(), et);
                 }
             }
         }
@@ -988,14 +988,14 @@ public class PIProductServiceImpl implements PIProductService {
         List<ET_PARTNER> records = new ArrayList<ET_PARTNER>();
         if (zssd00030s.length > 0) {
             for (ZSSD00030 zssd00030 : zssd00030s) {
-                String vtweg = zssd00030.getVTWEG() == null ? null : zssd00030.getVTWEG().getVTWEG_type4();
+                String vtweg = zssd00030.getVTWEG() == null ? null : zssd00030.getVTWEG().getVTWEG_type6();
                 //                if(vtweg!=null && VKORG.equals(vtweg)) {
                 ET_PARTNER et = new ET_PARTNER();
-                et.setKUNNR(zssd00030.getKUNNR() == null ? null : zssd00030.getKUNNR().getKUNNR_type2());
+                et.setKUNNR(zssd00030.getKUNNR() == null ? null : zssd00030.getKUNNR().getKUNNR_type4());
                 et.setKUNWE(zssd00030.getKUNWE() == null ? null : zssd00030.getKUNWE().getKUNWE_type0());
-                et.setSPART(zssd00030.getSPART() == null ? null : zssd00030.getSPART().getSPART_type2());
-                et.setVKORG(zssd00030.getVKORG() == null ? null : zssd00030.getVKORG().getVKORG_type4());
-                et.setVTWEG(zssd00030.getVTWEG() == null ? null : zssd00030.getVTWEG().getVTWEG_type4());
+                et.setSPART(zssd00030.getSPART() == null ? null : zssd00030.getSPART().getSPART_type4());
+                et.setVKORG(zssd00030.getVKORG() == null ? null : zssd00030.getVKORG().getVKORG_type6());
+                et.setVTWEG(zssd00030.getVTWEG() == null ? null : zssd00030.getVTWEG().getVTWEG_type6());
                 records.add(et);
             }
             //            }
@@ -1017,13 +1017,13 @@ public class PIProductServiceImpl implements PIProductService {
         List<ET_VKORG> wb = new ArrayList<>();
         if (zssd00003s.length > 0) {
             for (ZSSD00003 zssd00003 : zssd00003s) {
-                if (zssd00003.getVTWEG() != null && VKORG.equals(zssd00003.getVTWEG().getVTWEG_type6())) {
+                if (zssd00003.getVTWEG() != null && VKORG.equals(zssd00003.getVTWEG().getVTWEG_type10())) {
                     ET_VKORG et = new ET_VKORG();
                     String kvgr2 = zssd00003.getKVGR2() == null ? null : zssd00003.getKVGR2().getKVGR2_type0();
-                    et.setKUNNR(zssd00003.getKUNNR() == null ? null : zssd00003.getKUNNR().getKUNNR_type4());
-                    et.setVTWEG(zssd00003.getVTWEG() == null ? null : zssd00003.getVTWEG().getVTWEG_type6());
-                    et.setVKORG(zssd00003.getVKORG() == null ? null : zssd00003.getVKORG().getVKORG_type6());
-                    et.setSPART(zssd00003.getSPART() == null ? null : zssd00003.getSPART().getSPART_type4());
+                    et.setKUNNR(zssd00003.getKUNNR() == null ? null : zssd00003.getKUNNR().getKUNNR_type8());
+                    et.setVTWEG(zssd00003.getVTWEG() == null ? null : zssd00003.getVTWEG().getVTWEG_type10());
+                    et.setVKORG(zssd00003.getVKORG() == null ? null : zssd00003.getVKORG().getVKORG_type10());
+                    et.setSPART(zssd00003.getSPART() == null ? null : zssd00003.getSPART().getSPART_type8());
                     et.setKDGRP(zssd00003.getKDGRP() == null ? null : zssd00003.getKDGRP().getKDGRP_type0());
                     et.setKUNWE(zssd00003.getKUNWE() == null ? null : zssd00003.getKUNWE().getKUNWE_type2());
                     et.setKVGR1(zssd00003.getKVGR1() == null ? null : zssd00003.getKVGR1().getKVGR1_type0());
