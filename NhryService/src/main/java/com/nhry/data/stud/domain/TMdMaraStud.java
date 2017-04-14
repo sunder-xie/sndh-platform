@@ -4,6 +4,8 @@ import java.util.Date;
 
 public class TMdMaraStud extends TMdMaraStudKey {
     private String matnrTxt;
+    
+    private String shortTxt;
 
     private String baseUnit;
 
@@ -16,6 +18,8 @@ public class TMdMaraStud extends TMdMaraStudKey {
     private String firstCat;
 
     private String secCate;
+    
+    private String secCateName;
 
     private String brand;
 
@@ -26,6 +30,8 @@ public class TMdMaraStud extends TMdMaraStudKey {
     private String importantPrdFlag;
 
     private String spec;
+    
+    private String specName;
 
     private String specUnit;
 
@@ -36,8 +42,33 @@ public class TMdMaraStud extends TMdMaraStudKey {
     private String zbotCodeName;
 
     private String dealerNo;
+    
+    
+    public String getSpecName() {
+		return specName;
+	}
 
-    public String getZbotCodeName() {
+	public void setSpecName(String specName) {
+		this.specName = specName;
+	}
+
+	public String getSecCateName() {
+		return secCateName;
+	}
+
+	public void setSecCateName(String secCateName) {
+		this.secCateName = secCateName;
+	}
+
+	public String getShortTxt() {
+		return shortTxt;
+	}
+
+	public void setShortTxt(String shortTxt) {
+		this.shortTxt = shortTxt;
+	}
+
+	public String getZbotCodeName() {
 		return zbotCodeName;
 	}
 

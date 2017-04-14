@@ -11,6 +11,16 @@ public class OrderStudQueryModel extends BaseQueryModel implements Serializable 
 	private static final long serialVersionUID = 1L;
 	
 	private String keyWord;
+	
+	private String salesOrg;
+		
+	public String getSalesOrg() {
+		return salesOrg;
+	}
+
+	public void setSalesOrg(String salesOrg) {
+		this.salesOrg = salesOrg;
+	}
 
 	public String getKeyWord() {
 		return keyWord;
