@@ -10,7 +10,7 @@ public class TMdSchoolMaraRule {
 
     private String matnr;
     
-    private String matnrText;
+    private String matnrTxt;
     
     private String specUnit;
   
@@ -47,12 +47,12 @@ public class TMdSchoolMaraRule {
 	}
 
 
-	public String getMatnrText() {
-		return matnrText;
+	public String getMatnrTxt() {
+		return matnrTxt;
 	}
 
-	public void setMatnrText(String matnrText) {
-		this.matnrText = matnrText;
+	public void setMatnrTxt(String matnrTxt) {
+		this.matnrTxt = matnrTxt;
 	}
 
 	public void setSalesOrg(String salesOrg) {

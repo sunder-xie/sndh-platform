@@ -4,7 +4,7 @@
   <resultMap id="BaseResultMap" type="com.nhry.data.stud.domain.TMdSchoolMaraRule" >
     <id column="MID" property="mid" jdbcType="VARCHAR" />
     <result column="SCHOOL_CODE" property="schoolCode" jdbcType="VARCHAR" />
-     <result column="MATNR_TXT" property="matnrText" jdbcType="VARCHAR" />
+     <result column="MATNR_TXT" property="matnrTxt" jdbcType="VARCHAR" />
     <result column="MATNR" property="matnr" jdbcType="VARCHAR" />
     <result column="MATNR_QTY" property="matnrQty" jdbcType="INTEGER" />
     <result column="FIXED_QTY" property="fixedQty" jdbcType="INTEGER" />
