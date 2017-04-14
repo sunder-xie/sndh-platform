@@ -23,7 +23,7 @@ public class MARM implements org.apache.axis2.databinding.ADBBean {
     /**
      * field for MANDT
      */
-    protected MANDT_type1 localMANDT;
+    protected com.nhry.webService.client.masterData.functions.MANDT_type1 localMANDT;
 
     /*  This tracker boolean wil be used to detect whether the user called the set method
      *   for this attribute. It will be used to determine whether to include this field
@@ -34,7 +34,7 @@ public class MARM implements org.apache.axis2.databinding.ADBBean {
     /**
      * field for MATNR
      */
-    protected MATNR_type5 localMATNR;
+    protected com.nhry.webService.client.masterData.functions.MATNR_type5 localMATNR;
 
     /*  This tracker boolean wil be used to detect whether the user called the set method
      *   for this attribute. It will be used to determine whether to include this field
@@ -45,7 +45,7 @@ public class MARM implements org.apache.axis2.databinding.ADBBean {
     /**
      * field for MEINH
      */
-    protected MEINH_type1 localMEINH;
+    protected com.nhry.webService.client.masterData.functions.MEINH_type1 localMEINH;
 
     /*  This tracker boolean wil be used to detect whether the user called the set method
      *   for this attribute. It will be used to determine whether to include this field
@@ -56,7 +56,7 @@ public class MARM implements org.apache.axis2.databinding.ADBBean {
     /**
      * field for UMREZ
      */
-    protected UMREZ_type1 localUMREZ;
+    protected com.nhry.webService.client.masterData.functions.UMREZ_type1 localUMREZ;
 
     /*  This tracker boolean wil be used to detect whether the user called the set method
      *   for this attribute. It will be used to determine whether to include this field
@@ -67,7 +67,7 @@ public class MARM implements org.apache.axis2.databinding.ADBBean {
     /**
      * field for UMREN
      */
-    protected UMREN_type1 localUMREN;
+    protected com.nhry.webService.client.masterData.functions.UMREN_type1 localUMREN;
 
     /*  This tracker boolean wil be used to detect whether the user called the set method
      *   for this attribute. It will be used to determine whether to include this field
@@ -78,7 +78,7 @@ public class MARM implements org.apache.axis2.databinding.ADBBean {
     /**
      * field for EANNR
      */
-    protected EANNR_type1 localEANNR;
+    protected com.nhry.webService.client.masterData.functions.EANNR_type1 localEANNR;
 
     /*  This tracker boolean wil be used to detect whether the user called the set method
      *   for this attribute. It will be used to determine whether to include this field
@@ -89,7 +89,7 @@ public class MARM implements org.apache.axis2.databinding.ADBBean {
     /**
      * field for EAN11
      */
-    protected EAN11_type1 localEAN11;
+    protected com.nhry.webService.client.masterData.functions.EAN11_type1 localEAN11;
 
     /*  This tracker boolean wil be used to detect whether the user called the set method
      *   for this attribute. It will be used to determine whether to include this field
@@ -100,7 +100,7 @@ public class MARM implements org.apache.axis2.databinding.ADBBean {
     /**
      * field for NUMTP
      */
-    protected NUMTP_type1 localNUMTP;
+    protected com.nhry.webService.client.masterData.functions.NUMTP_type1 localNUMTP;
 
     /*  This tracker boolean wil be used to detect whether the user called the set method
      *   for this attribute. It will be used to determine whether to include this field
@@ -111,7 +111,7 @@ public class MARM implements org.apache.axis2.databinding.ADBBean {
     /**
      * field for LAENG
      */
-    protected LAENG_type1 localLAENG;
+    protected com.nhry.webService.client.masterData.functions.LAENG_type1 localLAENG;
 
     /*  This tracker boolean wil be used to detect whether the user called the set method
      *   for this attribute. It will be used to determine whether to include this field
@@ -122,7 +122,7 @@ public class MARM implements org.apache.axis2.databinding.ADBBean {
     /**
      * field for BREIT
      */
-    protected BREIT_type1 localBREIT;
+    protected com.nhry.webService.client.masterData.functions.BREIT_type1 localBREIT;
 
     /*  This tracker boolean wil be used to detect whether the user called the set method
      *   for this attribute. It will be used to determine whether to include this field
@@ -133,7 +133,7 @@ public class MARM implements org.apache.axis2.databinding.ADBBean {
     /**
      * field for HOEHE
      */
-    protected HOEHE_type1 localHOEHE;
+    protected com.nhry.webService.client.masterData.functions.HOEHE_type1 localHOEHE;
 
     /*  This tracker boolean wil be used to detect whether the user called the set method
      *   for this attribute. It will be used to determine whether to include this field
@@ -144,7 +144,7 @@ public class MARM implements org.apache.axis2.databinding.ADBBean {
     /**
      * field for MEABM
      */
-    protected MEABM_type1 localMEABM;
+    protected com.nhry.webService.client.masterData.functions.MEABM_type1 localMEABM;
 
     /*  This tracker boolean wil be used to detect whether the user called the set method
      *   for this attribute. It will be used to determine whether to include this field
@@ -155,7 +155,7 @@ public class MARM implements org.apache.axis2.databinding.ADBBean {
     /**
      * field for VOLUM
      */
-    protected VOLUM_type1 localVOLUM;
+    protected com.nhry.webService.client.masterData.functions.VOLUM_type1 localVOLUM;
 
     /*  This tracker boolean wil be used to detect whether the user called the set method
      *   for this attribute. It will be used to determine whether to include this field
@@ -166,7 +166,7 @@ public class MARM implements org.apache.axis2.databinding.ADBBean {
     /**
      * field for VOLEH
      */
-    protected VOLEH_type1 localVOLEH;
+    protected com.nhry.webService.client.masterData.functions.VOLEH_type1 localVOLEH;
 
     /*  This tracker boolean wil be used to detect whether the user called the set method
      *   for this attribute. It will be used to determine whether to include this field
@@ -177,7 +177,7 @@ public class MARM implements org.apache.axis2.databinding.ADBBean {
     /**
      * field for BRGEW
      */
-    protected BRGEW_type1 localBRGEW;
+    protected com.nhry.webService.client.masterData.functions.BRGEW_type1 localBRGEW;
 
     /*  This tracker boolean wil be used to detect whether the user called the set method
      *   for this attribute. It will be used to determine whether to include this field
@@ -188,7 +188,7 @@ public class MARM implements org.apache.axis2.databinding.ADBBean {
     /**
      * field for GEWEI
      */
-    protected GEWEI_type1 localGEWEI;
+    protected com.nhry.webService.client.masterData.functions.GEWEI_type1 localGEWEI;
 
     /*  This tracker boolean wil be used to detect whether the user called the set method
      *   for this attribute. It will be used to determine whether to include this field
@@ -199,7 +199,7 @@ public class MARM implements org.apache.axis2.databinding.ADBBean {
     /**
      * field for MESUB
      */
-    protected MESUB_type1 localMESUB;
+    protected com.nhry.webService.client.masterData.functions.MESUB_type1 localMESUB;
 
     /*  This tracker boolean wil be used to detect whether the user called the set method
      *   for this attribute. It will be used to determine whether to include this field
@@ -210,7 +210,7 @@ public class MARM implements org.apache.axis2.databinding.ADBBean {
     /**
      * field for ATINN
      */
-    protected ATINN_type1 localATINN;
+    protected com.nhry.webService.client.masterData.functions.ATINN_type1 localATINN;
 
     /*  This tracker boolean wil be used to detect whether the user called the set method
      *   for this attribute. It will be used to determine whether to include this field
@@ -221,7 +221,7 @@ public class MARM implements org.apache.axis2.databinding.ADBBean {
     /**
      * field for MESRT
      */
-    protected MESRT_type1 localMESRT;
+    protected com.nhry.webService.client.masterData.functions.MESRT_type1 localMESRT;
 
     /*  This tracker boolean wil be used to detect whether the user called the set method
      *   for this attribute. It will be used to determine whether to include this field
@@ -232,7 +232,7 @@ public class MARM implements org.apache.axis2.databinding.ADBBean {
     /**
      * field for XFHDW
      */
-    protected XFHDW_type1 localXFHDW;
+    protected com.nhry.webService.client.masterData.functions.XFHDW_type1 localXFHDW;
 
     /*  This tracker boolean wil be used to detect whether the user called the set method
      *   for this attribute. It will be used to determine whether to include this field
@@ -243,7 +243,7 @@ public class MARM implements org.apache.axis2.databinding.ADBBean {
     /**
      * field for XBEWW
      */
-    protected XBEWW_type1 localXBEWW;
+    protected com.nhry.webService.client.masterData.functions.XBEWW_type1 localXBEWW;
 
     /*  This tracker boolean wil be used to detect whether the user called the set method
      *   for this attribute. It will be used to determine whether to include this field
@@ -254,7 +254,7 @@ public class MARM implements org.apache.axis2.databinding.ADBBean {
     /**
      * field for KZWSO
      */
-    protected KZWSO_type1 localKZWSO;
+    protected com.nhry.webService.client.masterData.functions.KZWSO_type1 localKZWSO;
 
     /*  This tracker boolean wil be used to detect whether the user called the set method
      *   for this attribute. It will be used to determine whether to include this field
@@ -265,7 +265,7 @@ public class MARM implements org.apache.axis2.databinding.ADBBean {
     /**
      * field for MSEHI
      */
-    protected MSEHI_type1 localMSEHI;
+    protected com.nhry.webService.client.masterData.functions.MSEHI_type1 localMSEHI;
 
     /*  This tracker boolean wil be used to detect whether the user called the set method
      *   for this attribute. It will be used to determine whether to include this field
@@ -276,7 +276,7 @@ public class MARM implements org.apache.axis2.databinding.ADBBean {
     /**
      * field for BFLME_MARM
      */
-    protected BFLME_MARM_type1 localBFLME_MARM;
+    protected com.nhry.webService.client.masterData.functions.BFLME_MARM_type1 localBFLME_MARM;
 
     /*  This tracker boolean wil be used to detect whether the user called the set method
      *   for this attribute. It will be used to determine whether to include this field
@@ -287,7 +287,7 @@ public class MARM implements org.apache.axis2.databinding.ADBBean {
     /**
      * field for GTIN_VARIANT
      */
-    protected GTIN_VARIANT_type1 localGTIN_VARIANT;
+    protected com.nhry.webService.client.masterData.functions.GTIN_VARIANT_type1 localGTIN_VARIANT;
 
     /*  This tracker boolean wil be used to detect whether the user called the set method
      *   for this attribute. It will be used to determine whether to include this field
@@ -298,7 +298,7 @@ public class MARM implements org.apache.axis2.databinding.ADBBean {
     /**
      * field for NEST_FTR
      */
-    protected NEST_FTR_type1 localNEST_FTR;
+    protected com.nhry.webService.client.masterData.functions.NEST_FTR_type1 localNEST_FTR;
 
     /*  This tracker boolean wil be used to detect whether the user called the set method
      *   for this attribute. It will be used to determine whether to include this field
@@ -320,7 +320,7 @@ public class MARM implements org.apache.axis2.databinding.ADBBean {
     /**
      * field for CAPAUSE
      */
-    protected CAPAUSE_type1 localCAPAUSE;
+    protected com.nhry.webService.client.masterData.functions.CAPAUSE_type1 localCAPAUSE;
 
     /*  This tracker boolean wil be used to detect whether the user called the set method
      *   for this attribute. It will be used to determine whether to include this field
@@ -331,7 +331,7 @@ public class MARM implements org.apache.axis2.databinding.ADBBean {
     /**
      * field for TY2TQ
      */
-    protected TY2TQ_type1 localTY2TQ;
+    protected com.nhry.webService.client.masterData.functions.TY2TQ_type1 localTY2TQ;
 
     /*  This tracker boolean wil be used to detect whether the user called the set method
      *   for this attribute. It will be used to determine whether to include this field
@@ -347,7 +347,7 @@ public class MARM implements org.apache.axis2.databinding.ADBBean {
      * Auto generated getter method
      * @return com.nhry.webService.client.masterData.functions.MANDT_type1
      */
-    public MANDT_type1 getMANDT() {
+    public com.nhry.webService.client.masterData.functions.MANDT_type1 getMANDT() {
         return localMANDT;
     }
 
@@ -356,7 +356,7 @@ public class MARM implements org.apache.axis2.databinding.ADBBean {
      * @param param MANDT
      */
     public void setMANDT(
-        MANDT_type1 param) {
+        com.nhry.webService.client.masterData.functions.MANDT_type1 param) {
         localMANDTTracker = param != null;
 
         this.localMANDT = param;
@@ -370,7 +370,7 @@ public class MARM implements org.apache.axis2.databinding.ADBBean {
      * Auto generated getter method
      * @return com.nhry.webService.client.masterData.functions.MATNR_type5
      */
-    public MATNR_type5 getMATNR() {
+    public com.nhry.webService.client.masterData.functions.MATNR_type5 getMATNR() {
         return localMATNR;
     }
 
@@ -379,7 +379,7 @@ public class MARM implements org.apache.axis2.databinding.ADBBean {
      * @param param MATNR
      */
     public void setMATNR(
-        MATNR_type5 param) {
+        com.nhry.webService.client.masterData.functions.MATNR_type5 param) {
         localMATNRTracker = param != null;
 
         this.localMATNR = param;
@@ -393,7 +393,7 @@ public class MARM implements org.apache.axis2.databinding.ADBBean {
      * Auto generated getter method
      * @return com.nhry.webService.client.masterData.functions.MEINH_type1
      */
-    public MEINH_type1 getMEINH() {
+    public com.nhry.webService.client.masterData.functions.MEINH_type1 getMEINH() {
         return localMEINH;
     }
 
@@ -402,7 +402,7 @@ public class MARM implements org.apache.axis2.databinding.ADBBean {
      * @param param MEINH
      */
     public void setMEINH(
-        MEINH_type1 param) {
+        com.nhry.webService.client.masterData.functions.MEINH_type1 param) {
         localMEINHTracker = param != null;
 
         this.localMEINH = param;
@@ -416,7 +416,7 @@ public class MARM implements org.apache.axis2.databinding.ADBBean {
      * Auto generated getter method
      * @return com.nhry.webService.client.masterData.functions.UMREZ_type1
      */
-    public UMREZ_type1 getUMREZ() {
+    public com.nhry.webService.client.masterData.functions.UMREZ_type1 getUMREZ() {
         return localUMREZ;
     }
 
@@ -425,7 +425,7 @@ public class MARM implements org.apache.axis2.databinding.ADBBean {
      * @param param UMREZ
      */
     public void setUMREZ(
-        UMREZ_type1 param) {
+        com.nhry.webService.client.masterData.functions.UMREZ_type1 param) {
         localUMREZTracker = param != null;
 
         this.localUMREZ = param;
@@ -439,7 +439,7 @@ public class MARM implements org.apache.axis2.databinding.ADBBean {
      * Auto generated getter method
      * @return com.nhry.webService.client.masterData.functions.UMREN_type1
      */
-    public UMREN_type1 getUMREN() {
+    public com.nhry.webService.client.masterData.functions.UMREN_type1 getUMREN() {
         return localUMREN;
     }
 
@@ -448,7 +448,7 @@ public class MARM implements org.apache.axis2.databinding.ADBBean {
      * @param param UMREN
      */
     public void setUMREN(
-        UMREN_type1 param) {
+        com.nhry.webService.client.masterData.functions.UMREN_type1 param) {
         localUMRENTracker = param != null;
 
         this.localUMREN = param;
@@ -462,7 +462,7 @@ public class MARM implements org.apache.axis2.databinding.ADBBean {
      * Auto generated getter method
      * @return com.nhry.webService.client.masterData.functions.EANNR_type1
      */
-    public EANNR_type1 getEANNR() {
+    public com.nhry.webService.client.masterData.functions.EANNR_type1 getEANNR() {
         return localEANNR;
     }
 
@@ -471,7 +471,7 @@ public class MARM implements org.apache.axis2.databinding.ADBBean {
      * @param param EANNR
      */
     public void setEANNR(
-        EANNR_type1 param) {
+        com.nhry.webService.client.masterData.functions.EANNR_type1 param) {
         localEANNRTracker = param != null;
 
         this.localEANNR = param;
@@ -485,7 +485,7 @@ public class MARM implements org.apache.axis2.databinding.ADBBean {
      * Auto generated getter method
      * @return com.nhry.webService.client.masterData.functions.EAN11_type1
      */
-    public EAN11_type1 getEAN11() {
+    public com.nhry.webService.client.masterData.functions.EAN11_type1 getEAN11() {
         return localEAN11;
     }
 
@@ -494,7 +494,7 @@ public class MARM implements org.apache.axis2.databinding.ADBBean {
      * @param param EAN11
      */
     public void setEAN11(
-        EAN11_type1 param) {
+        com.nhry.webService.client.masterData.functions.EAN11_type1 param) {
         localEAN11Tracker = param != null;
 
         this.localEAN11 = param;
@@ -508,7 +508,7 @@ public class MARM implements org.apache.axis2.databinding.ADBBean {
      * Auto generated getter method
      * @return com.nhry.webService.client.masterData.functions.NUMTP_type1
      */
-    public NUMTP_type1 getNUMTP() {
+    public com.nhry.webService.client.masterData.functions.NUMTP_type1 getNUMTP() {
         return localNUMTP;
     }
 
@@ -517,7 +517,7 @@ public class MARM implements org.apache.axis2.databinding.ADBBean {
      * @param param NUMTP
      */
     public void setNUMTP(
-        NUMTP_type1 param) {
+        com.nhry.webService.client.masterData.functions.NUMTP_type1 param) {
         localNUMTPTracker = param != null;
 
         this.localNUMTP = param;
@@ -531,7 +531,7 @@ public class MARM implements org.apache.axis2.databinding.ADBBean {
      * Auto generated getter method
      * @return com.nhry.webService.client.masterData.functions.LAENG_type1
      */
-    public LAENG_type1 getLAENG() {
+    public com.nhry.webService.client.masterData.functions.LAENG_type1 getLAENG() {
         return localLAENG;
     }
 
@@ -540,7 +540,7 @@ public class MARM implements org.apache.axis2.databinding.ADBBean {
      * @param param LAENG
      */
     public void setLAENG(
-        LAENG_type1 param) {
+        com.nhry.webService.client.masterData.functions.LAENG_type1 param) {
         localLAENGTracker = param != null;
 
         this.localLAENG = param;
@@ -554,7 +554,7 @@ public class MARM implements org.apache.axis2.databinding.ADBBean {
      * Auto generated getter method
      * @return com.nhry.webService.client.masterData.functions.BREIT_type1
      */
-    public BREIT_type1 getBREIT() {
+    public com.nhry.webService.client.masterData.functions.BREIT_type1 getBREIT() {
         return localBREIT;
     }
 
@@ -563,7 +563,7 @@ public class MARM implements org.apache.axis2.databinding.ADBBean {
      * @param param BREIT
      */
     public void setBREIT(
-        BREIT_type1 param) {
+        com.nhry.webService.client.masterData.functions.BREIT_type1 param) {
         localBREITTracker = param != null;
 
         this.localBREIT = param;
@@ -577,7 +577,7 @@ public class MARM implements org.apache.axis2.databinding.ADBBean {
      * Auto generated getter method
      * @return com.nhry.webService.client.masterData.functions.HOEHE_type1
      */
-    public HOEHE_type1 getHOEHE() {
+    public com.nhry.webService.client.masterData.functions.HOEHE_type1 getHOEHE() {
         return localHOEHE;
     }
 
@@ -586,7 +586,7 @@ public class MARM implements org.apache.axis2.databinding.ADBBean {
      * @param param HOEHE
      */
     public void setHOEHE(
-        HOEHE_type1 param) {
+        com.nhry.webService.client.masterData.functions.HOEHE_type1 param) {
         localHOEHETracker = param != null;
 
         this.localHOEHE = param;
@@ -600,7 +600,7 @@ public class MARM implements org.apache.axis2.databinding.ADBBean {
      * Auto generated getter method
      * @return com.nhry.webService.client.masterData.functions.MEABM_type1
      */
-    public MEABM_type1 getMEABM() {
+    public com.nhry.webService.client.masterData.functions.MEABM_type1 getMEABM() {
         return localMEABM;
     }
 
@@ -609,7 +609,7 @@ public class MARM implements org.apache.axis2.databinding.ADBBean {
      * @param param MEABM
      */
     public void setMEABM(
-        MEABM_type1 param) {
+        com.nhry.webService.client.masterData.functions.MEABM_type1 param) {
         localMEABMTracker = param != null;
 
         this.localMEABM = param;
@@ -623,7 +623,7 @@ public class MARM implements org.apache.axis2.databinding.ADBBean {
      * Auto generated getter method
      * @return com.nhry.webService.client.masterData.functions.VOLUM_type1
      */
-    public VOLUM_type1 getVOLUM() {
+    public com.nhry.webService.client.masterData.functions.VOLUM_type1 getVOLUM() {
         return localVOLUM;
     }
 
@@ -632,7 +632,7 @@ public class MARM implements org.apache.axis2.databinding.ADBBean {
      * @param param VOLUM
      */
     public void setVOLUM(
-        VOLUM_type1 param) {
+        com.nhry.webService.client.masterData.functions.VOLUM_type1 param) {
         localVOLUMTracker = param != null;
 
         this.localVOLUM = param;
@@ -646,7 +646,7 @@ public class MARM implements org.apache.axis2.databinding.ADBBean {
      * Auto generated getter method
      * @return com.nhry.webService.client.masterData.functions.VOLEH_type1
      */
-    public VOLEH_type1 getVOLEH() {
+    public com.nhry.webService.client.masterData.functions.VOLEH_type1 getVOLEH() {
         return localVOLEH;
     }
 
@@ -655,7 +655,7 @@ public class MARM implements org.apache.axis2.databinding.ADBBean {
      * @param param VOLEH
      */
     public void setVOLEH(
-        VOLEH_type1 param) {
+        com.nhry.webService.client.masterData.functions.VOLEH_type1 param) {
         localVOLEHTracker = param != null;
 
         this.localVOLEH = param;
@@ -669,7 +669,7 @@ public class MARM implements org.apache.axis2.databinding.ADBBean {
      * Auto generated getter method
      * @return com.nhry.webService.client.masterData.functions.BRGEW_type1
      */
-    public BRGEW_type1 getBRGEW() {
+    public com.nhry.webService.client.masterData.functions.BRGEW_type1 getBRGEW() {
         return localBRGEW;
     }
 
@@ -678,7 +678,7 @@ public class MARM implements org.apache.axis2.databinding.ADBBean {
      * @param param BRGEW
      */
     public void setBRGEW(
-        BRGEW_type1 param) {
+        com.nhry.webService.client.masterData.functions.BRGEW_type1 param) {
         localBRGEWTracker = param != null;
 
         this.localBRGEW = param;
@@ -692,7 +692,7 @@ public class MARM implements org.apache.axis2.databinding.ADBBean {
      * Auto generated getter method
      * @return com.nhry.webService.client.masterData.functions.GEWEI_type1
      */
-    public GEWEI_type1 getGEWEI() {
+    public com.nhry.webService.client.masterData.functions.GEWEI_type1 getGEWEI() {
         return localGEWEI;
     }
 
@@ -701,7 +701,7 @@ public class MARM implements org.apache.axis2.databinding.ADBBean {
      * @param param GEWEI
      */
     public void setGEWEI(
-        GEWEI_type1 param) {
+        com.nhry.webService.client.masterData.functions.GEWEI_type1 param) {
         localGEWEITracker = param != null;
 
         this.localGEWEI = param;
@@ -715,7 +715,7 @@ public class MARM implements org.apache.axis2.databinding.ADBBean {
      * Auto generated getter method
      * @return com.nhry.webService.client.masterData.functions.MESUB_type1
      */
-    public MESUB_type1 getMESUB() {
+    public com.nhry.webService.client.masterData.functions.MESUB_type1 getMESUB() {
         return localMESUB;
     }
 
@@ -724,7 +724,7 @@ public class MARM implements org.apache.axis2.databinding.ADBBean {
      * @param param MESUB
      */
     public void setMESUB(
-        MESUB_type1 param) {
+        com.nhry.webService.client.masterData.functions.MESUB_type1 param) {
         localMESUBTracker = param != null;
 
         this.localMESUB = param;
@@ -738,7 +738,7 @@ public class MARM implements org.apache.axis2.databinding.ADBBean {
      * Auto generated getter method
      * @return com.nhry.webService.client.masterData.functions.ATINN_type1
      */
-    public ATINN_type1 getATINN() {
+    public com.nhry.webService.client.masterData.functions.ATINN_type1 getATINN() {
         return localATINN;
     }
 
@@ -747,7 +747,7 @@ public class MARM implements org.apache.axis2.databinding.ADBBean {
      * @param param ATINN
      */
     public void setATINN(
-        ATINN_type1 param) {
+        com.nhry.webService.client.masterData.functions.ATINN_type1 param) {
         localATINNTracker = param != null;
 
         this.localATINN = param;
@@ -761,7 +761,7 @@ public class MARM implements org.apache.axis2.databinding.ADBBean {
      * Auto generated getter method
      * @return com.nhry.webService.client.masterData.functions.MESRT_type1
      */
-    public MESRT_type1 getMESRT() {
+    public com.nhry.webService.client.masterData.functions.MESRT_type1 getMESRT() {
         return localMESRT;
     }
 
@@ -770,7 +770,7 @@ public class MARM implements org.apache.axis2.databinding.ADBBean {
      * @param param MESRT
      */
     public void setMESRT(
-        MESRT_type1 param) {
+        com.nhry.webService.client.masterData.functions.MESRT_type1 param) {
         localMESRTTracker = param != null;
 
         this.localMESRT = param;
@@ -784,7 +784,7 @@ public class MARM implements org.apache.axis2.databinding.ADBBean {
      * Auto generated getter method
      * @return com.nhry.webService.client.masterData.functions.XFHDW_type1
      */
-    public XFHDW_type1 getXFHDW() {
+    public com.nhry.webService.client.masterData.functions.XFHDW_type1 getXFHDW() {
         return localXFHDW;
     }
 
@@ -793,7 +793,7 @@ public class MARM implements org.apache.axis2.databinding.ADBBean {
      * @param param XFHDW
      */
     public void setXFHDW(
-        XFHDW_type1 param) {
+        com.nhry.webService.client.masterData.functions.XFHDW_type1 param) {
         localXFHDWTracker = param != null;
 
         this.localXFHDW = param;
@@ -807,7 +807,7 @@ public class MARM implements org.apache.axis2.databinding.ADBBean {
      * Auto generated getter method
      * @return com.nhry.webService.client.masterData.functions.XBEWW_type1
      */
-    public XBEWW_type1 getXBEWW() {
+    public com.nhry.webService.client.masterData.functions.XBEWW_type1 getXBEWW() {
         return localXBEWW;
     }
 
@@ -816,7 +816,7 @@ public class MARM implements org.apache.axis2.databinding.ADBBean {
      * @param param XBEWW
      */
     public void setXBEWW(
-        XBEWW_type1 param) {
+        com.nhry.webService.client.masterData.functions.XBEWW_type1 param) {
         localXBEWWTracker = param != null;
 
         this.localXBEWW = param;
@@ -830,7 +830,7 @@ public class MARM implements org.apache.axis2.databinding.ADBBean {
      * Auto generated getter method
      * @return com.nhry.webService.client.masterData.functions.KZWSO_type1
      */
-    public KZWSO_type1 getKZWSO() {
+    public com.nhry.webService.client.masterData.functions.KZWSO_type1 getKZWSO() {
         return localKZWSO;
     }
 
@@ -839,7 +839,7 @@ public class MARM implements org.apache.axis2.databinding.ADBBean {
      * @param param KZWSO
      */
     public void setKZWSO(
-        KZWSO_type1 param) {
+        com.nhry.webService.client.masterData.functions.KZWSO_type1 param) {
         localKZWSOTracker = param != null;
 
         this.localKZWSO = param;
@@ -853,7 +853,7 @@ public class MARM implements org.apache.axis2.databinding.ADBBean {
      * Auto generated getter method
      * @return com.nhry.webService.client.masterData.functions.MSEHI_type1
      */
-    public MSEHI_type1 getMSEHI() {
+    public com.nhry.webService.client.masterData.functions.MSEHI_type1 getMSEHI() {
         return localMSEHI;
     }
 
@@ -862,7 +862,7 @@ public class MARM implements org.apache.axis2.databinding.ADBBean {
      * @param param MSEHI
      */
     public void setMSEHI(
-        MSEHI_type1 param) {
+        com.nhry.webService.client.masterData.functions.MSEHI_type1 param) {
         localMSEHITracker = param != null;
 
         this.localMSEHI = param;
@@ -876,7 +876,7 @@ public class MARM implements org.apache.axis2.databinding.ADBBean {
      * Auto generated getter method
      * @return com.nhry.webService.client.masterData.functions.BFLME_MARM_type1
      */
-    public BFLME_MARM_type1 getBFLME_MARM() {
+    public com.nhry.webService.client.masterData.functions.BFLME_MARM_type1 getBFLME_MARM() {
         return localBFLME_MARM;
     }
 
@@ -885,7 +885,7 @@ public class MARM implements org.apache.axis2.databinding.ADBBean {
      * @param param BFLME_MARM
      */
     public void setBFLME_MARM(
-        BFLME_MARM_type1 param) {
+        com.nhry.webService.client.masterData.functions.BFLME_MARM_type1 param) {
         localBFLME_MARMTracker = param != null;
 
         this.localBFLME_MARM = param;
@@ -899,7 +899,7 @@ public class MARM implements org.apache.axis2.databinding.ADBBean {
      * Auto generated getter method
      * @return com.nhry.webService.client.masterData.functions.GTIN_VARIANT_type1
      */
-    public GTIN_VARIANT_type1 getGTIN_VARIANT() {
+    public com.nhry.webService.client.masterData.functions.GTIN_VARIANT_type1 getGTIN_VARIANT() {
         return localGTIN_VARIANT;
     }
 
@@ -908,7 +908,7 @@ public class MARM implements org.apache.axis2.databinding.ADBBean {
      * @param param GTIN_VARIANT
      */
     public void setGTIN_VARIANT(
-        GTIN_VARIANT_type1 param) {
+        com.nhry.webService.client.masterData.functions.GTIN_VARIANT_type1 param) {
         localGTIN_VARIANTTracker = param != null;
 
         this.localGTIN_VARIANT = param;
@@ -922,7 +922,7 @@ public class MARM implements org.apache.axis2.databinding.ADBBean {
      * Auto generated getter method
      * @return com.nhry.webService.client.masterData.functions.NEST_FTR_type1
      */
-    public NEST_FTR_type1 getNEST_FTR() {
+    public com.nhry.webService.client.masterData.functions.NEST_FTR_type1 getNEST_FTR() {
         return localNEST_FTR;
     }
 
@@ -931,7 +931,7 @@ public class MARM implements org.apache.axis2.databinding.ADBBean {
      * @param param NEST_FTR
      */
     public void setNEST_FTR(
-        NEST_FTR_type1 param) {
+        com.nhry.webService.client.masterData.functions.NEST_FTR_type1 param) {
         localNEST_FTRTracker = param != null;
 
         this.localNEST_FTR = param;
@@ -968,7 +968,7 @@ public class MARM implements org.apache.axis2.databinding.ADBBean {
      * Auto generated getter method
      * @return com.nhry.webService.client.masterData.functions.CAPAUSE_type1
      */
-    public CAPAUSE_type1 getCAPAUSE() {
+    public com.nhry.webService.client.masterData.functions.CAPAUSE_type1 getCAPAUSE() {
         return localCAPAUSE;
     }
 
@@ -977,7 +977,7 @@ public class MARM implements org.apache.axis2.databinding.ADBBean {
      * @param param CAPAUSE
      */
     public void setCAPAUSE(
-        CAPAUSE_type1 param) {
+        com.nhry.webService.client.masterData.functions.CAPAUSE_type1 param) {
         localCAPAUSETracker = param != null;
 
         this.localCAPAUSE = param;
@@ -991,7 +991,7 @@ public class MARM implements org.apache.axis2.databinding.ADBBean {
      * Auto generated getter method
      * @return com.nhry.webService.client.masterData.functions.TY2TQ_type1
      */
-    public TY2TQ_type1 getTY2TQ() {
+    public com.nhry.webService.client.masterData.functions.TY2TQ_type1 getTY2TQ() {
         return localTY2TQ;
     }
 
@@ -1000,7 +1000,7 @@ public class MARM implements org.apache.axis2.databinding.ADBBean {
      * @param param TY2TQ
      */
     public void setTY2TQ(
-        TY2TQ_type1 param) {
+        com.nhry.webService.client.masterData.functions.TY2TQ_type1 param) {
         localTY2TQTracker = param != null;
 
         this.localTY2TQ = param;
@@ -1031,8 +1031,8 @@ public class MARM implements org.apache.axis2.databinding.ADBBean {
         javax.xml.stream.XMLStreamWriter xmlWriter, boolean serializeType)
         throws javax.xml.stream.XMLStreamException,
             org.apache.axis2.databinding.ADBException {
-        String prefix = null;
-        String namespace = null;
+        java.lang.String prefix = null;
+        java.lang.String namespace = null;
 
         prefix = parentQName.getPrefix();
         namespace = parentQName.getNamespaceURI();
@@ -1040,7 +1040,7 @@ public class MARM implements org.apache.axis2.databinding.ADBBean {
             xmlWriter);
 
         if (serializeType) {
-            String namespacePrefix = registerPrefix(xmlWriter,
+            java.lang.String namespacePrefix = registerPrefix(xmlWriter,
                     "urn:sap-com:document:sap:rfc:functions");
 
             if ((namespacePrefix != null) &&
@@ -1354,7 +1354,7 @@ public class MARM implements org.apache.axis2.databinding.ADBBean {
         xmlWriter.writeEndElement();
     }
 
-    private static String generatePrefix(String namespace) {
+    private static java.lang.String generatePrefix(java.lang.String namespace) {
         if (namespace.equals("urn:sap-com:document:sap:rfc:functions")) {
             return "ns1";
         }
@@ -1365,11 +1365,11 @@ public class MARM implements org.apache.axis2.databinding.ADBBean {
     /**
      * Utility method to write an element start tag.
      */
-    private void writeStartElement(String prefix,
-        String namespace, String localPart,
+    private void writeStartElement(java.lang.String prefix,
+        java.lang.String namespace, java.lang.String localPart,
         javax.xml.stream.XMLStreamWriter xmlWriter)
         throws javax.xml.stream.XMLStreamException {
-        String writerPrefix = xmlWriter.getPrefix(namespace);
+        java.lang.String writerPrefix = xmlWriter.getPrefix(namespace);
 
         if (writerPrefix != null) {
             xmlWriter.writeStartElement(writerPrefix, localPart, namespace);
@@ -1389,11 +1389,11 @@ public class MARM implements org.apache.axis2.databinding.ADBBean {
     /**
      * Util method to write an attribute with the ns prefix
      */
-    private void writeAttribute(String prefix,
-        String namespace, String attName,
-        String attValue, javax.xml.stream.XMLStreamWriter xmlWriter)
+    private void writeAttribute(java.lang.String prefix,
+        java.lang.String namespace, java.lang.String attName,
+        java.lang.String attValue, javax.xml.stream.XMLStreamWriter xmlWriter)
         throws javax.xml.stream.XMLStreamException {
-        String writerPrefix = xmlWriter.getPrefix(namespace);
+        java.lang.String writerPrefix = xmlWriter.getPrefix(namespace);
 
         if (writerPrefix != null) {
             xmlWriter.writeAttribute(writerPrefix, namespace, attName, attValue);
@@ -1407,8 +1407,8 @@ public class MARM implements org.apache.axis2.databinding.ADBBean {
     /**
      * Util method to write an attribute without the ns prefix
      */
-    private void writeAttribute(String namespace,
-        String attName, String attValue,
+    private void writeAttribute(java.lang.String namespace,
+        java.lang.String attName, java.lang.String attValue,
         javax.xml.stream.XMLStreamWriter xmlWriter)
         throws javax.xml.stream.XMLStreamException {
         if (namespace.equals("")) {
@@ -1422,18 +1422,18 @@ public class MARM implements org.apache.axis2.databinding.ADBBean {
     /**
      * Util method to write an attribute without the ns prefix
      */
-    private void writeQNameAttribute(String namespace,
-        String attName, javax.xml.namespace.QName qname,
+    private void writeQNameAttribute(java.lang.String namespace,
+        java.lang.String attName, javax.xml.namespace.QName qname,
         javax.xml.stream.XMLStreamWriter xmlWriter)
         throws javax.xml.stream.XMLStreamException {
-        String attributeNamespace = qname.getNamespaceURI();
-        String attributePrefix = xmlWriter.getPrefix(attributeNamespace);
+        java.lang.String attributeNamespace = qname.getNamespaceURI();
+        java.lang.String attributePrefix = xmlWriter.getPrefix(attributeNamespace);
 
         if (attributePrefix == null) {
             attributePrefix = registerPrefix(xmlWriter, attributeNamespace);
         }
 
-        String attributeValue;
+        java.lang.String attributeValue;
 
         if (attributePrefix.trim().length() > 0) {
             attributeValue = attributePrefix + ":" + qname.getLocalPart();
@@ -1456,10 +1456,10 @@ public class MARM implements org.apache.axis2.databinding.ADBBean {
     private void writeQName(javax.xml.namespace.QName qname,
         javax.xml.stream.XMLStreamWriter xmlWriter)
         throws javax.xml.stream.XMLStreamException {
-        String namespaceURI = qname.getNamespaceURI();
+        java.lang.String namespaceURI = qname.getNamespaceURI();
 
         if (namespaceURI != null) {
-            String prefix = xmlWriter.getPrefix(namespaceURI);
+            java.lang.String prefix = xmlWriter.getPrefix(namespaceURI);
 
             if (prefix == null) {
                 prefix = generatePrefix(namespaceURI);
@@ -1488,9 +1488,9 @@ public class MARM implements org.apache.axis2.databinding.ADBBean {
         if (qnames != null) {
             // we have to store this data until last moment since it is not possible to write any
             // namespace data after writing the charactor data
-            StringBuffer stringToWrite = new StringBuffer();
-            String namespaceURI = null;
-            String prefix = null;
+            java.lang.StringBuffer stringToWrite = new java.lang.StringBuffer();
+            java.lang.String namespaceURI = null;
+            java.lang.String prefix = null;
 
             for (int i = 0; i < qnames.length; i++) {
                 if (i > 0) {
@@ -1529,10 +1529,10 @@ public class MARM implements org.apache.axis2.databinding.ADBBean {
     /**
      * Register a namespace prefix
      */
-    private String registerPrefix(
-        javax.xml.stream.XMLStreamWriter xmlWriter, String namespace)
+    private java.lang.String registerPrefix(
+        javax.xml.stream.XMLStreamWriter xmlWriter, java.lang.String namespace)
         throws javax.xml.stream.XMLStreamException {
-        String prefix = xmlWriter.getPrefix(namespace);
+        java.lang.String prefix = xmlWriter.getPrefix(namespace);
 
         if (prefix == null) {
             prefix = generatePrefix(namespace);
@@ -1540,7 +1540,7 @@ public class MARM implements org.apache.axis2.databinding.ADBBean {
             javax.xml.namespace.NamespaceContext nsContext = xmlWriter.getNamespaceContext();
 
             while (true) {
-                String uri = nsContext.getNamespaceURI(prefix);
+                java.lang.String uri = nsContext.getNamespaceURI(prefix);
 
                 if ((uri == null) || (uri.length() == 0)) {
                     break;
@@ -1570,14 +1570,14 @@ public class MARM implements org.apache.axis2.databinding.ADBBean {
          *                If this object is a complex type, the reader is positioned at the end element of its outer element
          */
         public static MARM parse(javax.xml.stream.XMLStreamReader reader)
-            throws Exception {
+            throws java.lang.Exception {
             MARM object = new MARM();
 
             int event;
             javax.xml.namespace.QName currentQName = null;
-            String nillableValue = null;
-            String prefix = "";
-            String namespaceuri = "";
+            java.lang.String nillableValue = null;
+            java.lang.String prefix = "";
+            java.lang.String namespaceuri = "";
 
             try {
                 while (!reader.isStartElement() && !reader.isEndElement())
@@ -1587,11 +1587,11 @@ public class MARM implements org.apache.axis2.databinding.ADBBean {
 
                 if (reader.getAttributeValue(
                             "http://www.w3.org/2001/XMLSchema-instance", "type") != null) {
-                    String fullTypeName = reader.getAttributeValue("http://www.w3.org/2001/XMLSchema-instance",
+                    java.lang.String fullTypeName = reader.getAttributeValue("http://www.w3.org/2001/XMLSchema-instance",
                             "type");
 
                     if (fullTypeName != null) {
-                        String nsPrefix = null;
+                        java.lang.String nsPrefix = null;
 
                         if (fullTypeName.indexOf(":") > -1) {
                             nsPrefix = fullTypeName.substring(0,
@@ -1600,15 +1600,15 @@ public class MARM implements org.apache.axis2.databinding.ADBBean {
 
                         nsPrefix = (nsPrefix == null) ? "" : nsPrefix;
 
-                        String type = fullTypeName.substring(fullTypeName.indexOf(
+                        java.lang.String type = fullTypeName.substring(fullTypeName.indexOf(
                                     ":") + 1);
 
                         if (!"MARM".equals(type)) {
                             //find namespace for the prefix
-                            String nsUri = reader.getNamespaceContext()
+                            java.lang.String nsUri = reader.getNamespaceContext()
                                                            .getNamespaceURI(nsPrefix);
 
-                            return (MARM) ExtensionMapper.getTypeObject(nsUri,
+                            return (MARM) com.nhry.webService.client.masterData.functions.ExtensionMapper.getTypeObject(nsUri,
                                 type, reader);
                         }
                     }
@@ -1628,7 +1628,7 @@ public class MARM implements org.apache.axis2.databinding.ADBBean {
                             reader.getName())) ||
                         new javax.xml.namespace.QName("", "MANDT").equals(
                             reader.getName())) {
-                    object.setMANDT(MANDT_type1.Factory.parse(
+                    object.setMANDT(com.nhry.webService.client.masterData.functions.MANDT_type1.Factory.parse(
                             reader));
 
                     reader.next();
@@ -1645,7 +1645,7 @@ public class MARM implements org.apache.axis2.databinding.ADBBean {
                             reader.getName())) ||
                         new javax.xml.namespace.QName("", "MATNR").equals(
                             reader.getName())) {
-                    object.setMATNR(MATNR_type5.Factory.parse(
+                    object.setMATNR(com.nhry.webService.client.masterData.functions.MATNR_type5.Factory.parse(
                             reader));
 
                     reader.next();
@@ -1662,7 +1662,7 @@ public class MARM implements org.apache.axis2.databinding.ADBBean {
                             reader.getName())) ||
                         new javax.xml.namespace.QName("", "MEINH").equals(
                             reader.getName())) {
-                    object.setMEINH(MEINH_type1.Factory.parse(
+                    object.setMEINH(com.nhry.webService.client.masterData.functions.MEINH_type1.Factory.parse(
                             reader));
 
                     reader.next();
@@ -1679,7 +1679,7 @@ public class MARM implements org.apache.axis2.databinding.ADBBean {
                             reader.getName())) ||
                         new javax.xml.namespace.QName("", "UMREZ").equals(
                             reader.getName())) {
-                    object.setUMREZ(UMREZ_type1.Factory.parse(
+                    object.setUMREZ(com.nhry.webService.client.masterData.functions.UMREZ_type1.Factory.parse(
                             reader));
 
                     reader.next();
@@ -1696,7 +1696,7 @@ public class MARM implements org.apache.axis2.databinding.ADBBean {
                             reader.getName())) ||
                         new javax.xml.namespace.QName("", "UMREN").equals(
                             reader.getName())) {
-                    object.setUMREN(UMREN_type1.Factory.parse(
+                    object.setUMREN(com.nhry.webService.client.masterData.functions.UMREN_type1.Factory.parse(
                             reader));
 
                     reader.next();
@@ -1713,7 +1713,7 @@ public class MARM implements org.apache.axis2.databinding.ADBBean {
                             reader.getName())) ||
                         new javax.xml.namespace.QName("", "EANNR").equals(
                             reader.getName())) {
-                    object.setEANNR(EANNR_type1.Factory.parse(
+                    object.setEANNR(com.nhry.webService.client.masterData.functions.EANNR_type1.Factory.parse(
                             reader));
 
                     reader.next();
@@ -1730,7 +1730,7 @@ public class MARM implements org.apache.axis2.databinding.ADBBean {
                             reader.getName())) ||
                         new javax.xml.namespace.QName("", "EAN11").equals(
                             reader.getName())) {
-                    object.setEAN11(EAN11_type1.Factory.parse(
+                    object.setEAN11(com.nhry.webService.client.masterData.functions.EAN11_type1.Factory.parse(
                             reader));
 
                     reader.next();
@@ -1747,7 +1747,7 @@ public class MARM implements org.apache.axis2.databinding.ADBBean {
                             reader.getName())) ||
                         new javax.xml.namespace.QName("", "NUMTP").equals(
                             reader.getName())) {
-                    object.setNUMTP(NUMTP_type1.Factory.parse(
+                    object.setNUMTP(com.nhry.webService.client.masterData.functions.NUMTP_type1.Factory.parse(
                             reader));
 
                     reader.next();
@@ -1764,7 +1764,7 @@ public class MARM implements org.apache.axis2.databinding.ADBBean {
                             reader.getName())) ||
                         new javax.xml.namespace.QName("", "LAENG").equals(
                             reader.getName())) {
-                    object.setLAENG(LAENG_type1.Factory.parse(
+                    object.setLAENG(com.nhry.webService.client.masterData.functions.LAENG_type1.Factory.parse(
                             reader));
 
                     reader.next();
@@ -1781,7 +1781,7 @@ public class MARM implements org.apache.axis2.databinding.ADBBean {
                             reader.getName())) ||
                         new javax.xml.namespace.QName("", "BREIT").equals(
                             reader.getName())) {
-                    object.setBREIT(BREIT_type1.Factory.parse(
+                    object.setBREIT(com.nhry.webService.client.masterData.functions.BREIT_type1.Factory.parse(
                             reader));
 
                     reader.next();
@@ -1798,7 +1798,7 @@ public class MARM implements org.apache.axis2.databinding.ADBBean {
                             reader.getName())) ||
                         new javax.xml.namespace.QName("", "HOEHE").equals(
                             reader.getName())) {
-                    object.setHOEHE(HOEHE_type1.Factory.parse(
+                    object.setHOEHE(com.nhry.webService.client.masterData.functions.HOEHE_type1.Factory.parse(
                             reader));
 
                     reader.next();
@@ -1815,7 +1815,7 @@ public class MARM implements org.apache.axis2.databinding.ADBBean {
                             reader.getName())) ||
                         new javax.xml.namespace.QName("", "MEABM").equals(
                             reader.getName())) {
-                    object.setMEABM(MEABM_type1.Factory.parse(
+                    object.setMEABM(com.nhry.webService.client.masterData.functions.MEABM_type1.Factory.parse(
                             reader));
 
                     reader.next();
@@ -1832,7 +1832,7 @@ public class MARM implements org.apache.axis2.databinding.ADBBean {
                             reader.getName())) ||
                         new javax.xml.namespace.QName("", "VOLUM").equals(
                             reader.getName())) {
-                    object.setVOLUM(VOLUM_type1.Factory.parse(
+                    object.setVOLUM(com.nhry.webService.client.masterData.functions.VOLUM_type1.Factory.parse(
                             reader));
 
                     reader.next();
@@ -1849,7 +1849,7 @@ public class MARM implements org.apache.axis2.databinding.ADBBean {
                             reader.getName())) ||
                         new javax.xml.namespace.QName("", "VOLEH").equals(
                             reader.getName())) {
-                    object.setVOLEH(VOLEH_type1.Factory.parse(
+                    object.setVOLEH(com.nhry.webService.client.masterData.functions.VOLEH_type1.Factory.parse(
                             reader));
 
                     reader.next();
@@ -1866,7 +1866,7 @@ public class MARM implements org.apache.axis2.databinding.ADBBean {
                             reader.getName())) ||
                         new javax.xml.namespace.QName("", "BRGEW").equals(
                             reader.getName())) {
-                    object.setBRGEW(BRGEW_type1.Factory.parse(
+                    object.setBRGEW(com.nhry.webService.client.masterData.functions.BRGEW_type1.Factory.parse(
                             reader));
 
                     reader.next();
@@ -1883,7 +1883,7 @@ public class MARM implements org.apache.axis2.databinding.ADBBean {
                             reader.getName())) ||
                         new javax.xml.namespace.QName("", "GEWEI").equals(
                             reader.getName())) {
-                    object.setGEWEI(GEWEI_type1.Factory.parse(
+                    object.setGEWEI(com.nhry.webService.client.masterData.functions.GEWEI_type1.Factory.parse(
                             reader));
 
                     reader.next();
@@ -1900,7 +1900,7 @@ public class MARM implements org.apache.axis2.databinding.ADBBean {
                             reader.getName())) ||
                         new javax.xml.namespace.QName("", "MESUB").equals(
                             reader.getName())) {
-                    object.setMESUB(MESUB_type1.Factory.parse(
+                    object.setMESUB(com.nhry.webService.client.masterData.functions.MESUB_type1.Factory.parse(
                             reader));
 
                     reader.next();
@@ -1917,7 +1917,7 @@ public class MARM implements org.apache.axis2.databinding.ADBBean {
                             reader.getName())) ||
                         new javax.xml.namespace.QName("", "ATINN").equals(
                             reader.getName())) {
-                    object.setATINN(ATINN_type1.Factory.parse(
+                    object.setATINN(com.nhry.webService.client.masterData.functions.ATINN_type1.Factory.parse(
                             reader));
 
                     reader.next();
@@ -1934,7 +1934,7 @@ public class MARM implements org.apache.axis2.databinding.ADBBean {
                             reader.getName())) ||
                         new javax.xml.namespace.QName("", "MESRT").equals(
                             reader.getName())) {
-                    object.setMESRT(MESRT_type1.Factory.parse(
+                    object.setMESRT(com.nhry.webService.client.masterData.functions.MESRT_type1.Factory.parse(
                             reader));
 
                     reader.next();
@@ -1951,7 +1951,7 @@ public class MARM implements org.apache.axis2.databinding.ADBBean {
                             reader.getName())) ||
                         new javax.xml.namespace.QName("", "XFHDW").equals(
                             reader.getName())) {
-                    object.setXFHDW(XFHDW_type1.Factory.parse(
+                    object.setXFHDW(com.nhry.webService.client.masterData.functions.XFHDW_type1.Factory.parse(
                             reader));
 
                     reader.next();
@@ -1968,7 +1968,7 @@ public class MARM implements org.apache.axis2.databinding.ADBBean {
                             reader.getName())) ||
                         new javax.xml.namespace.QName("", "XBEWW").equals(
                             reader.getName())) {
-                    object.setXBEWW(XBEWW_type1.Factory.parse(
+                    object.setXBEWW(com.nhry.webService.client.masterData.functions.XBEWW_type1.Factory.parse(
                             reader));
 
                     reader.next();
@@ -1985,7 +1985,7 @@ public class MARM implements org.apache.axis2.databinding.ADBBean {
                             reader.getName())) ||
                         new javax.xml.namespace.QName("", "KZWSO").equals(
                             reader.getName())) {
-                    object.setKZWSO(KZWSO_type1.Factory.parse(
+                    object.setKZWSO(com.nhry.webService.client.masterData.functions.KZWSO_type1.Factory.parse(
                             reader));
 
                     reader.next();
@@ -2002,7 +2002,7 @@ public class MARM implements org.apache.axis2.databinding.ADBBean {
                             reader.getName())) ||
                         new javax.xml.namespace.QName("", "MSEHI").equals(
                             reader.getName())) {
-                    object.setMSEHI(MSEHI_type1.Factory.parse(
+                    object.setMSEHI(com.nhry.webService.client.masterData.functions.MSEHI_type1.Factory.parse(
                             reader));
 
                     reader.next();
@@ -2019,7 +2019,7 @@ public class MARM implements org.apache.axis2.databinding.ADBBean {
                             reader.getName())) ||
                         new javax.xml.namespace.QName("", "BFLME_MARM").equals(
                             reader.getName())) {
-                    object.setBFLME_MARM(BFLME_MARM_type1.Factory.parse(
+                    object.setBFLME_MARM(com.nhry.webService.client.masterData.functions.BFLME_MARM_type1.Factory.parse(
                             reader));
 
                     reader.next();
@@ -2036,7 +2036,7 @@ public class MARM implements org.apache.axis2.databinding.ADBBean {
                             reader.getName())) ||
                         new javax.xml.namespace.QName("", "GTIN_VARIANT").equals(
                             reader.getName())) {
-                    object.setGTIN_VARIANT(GTIN_VARIANT_type1.Factory.parse(
+                    object.setGTIN_VARIANT(com.nhry.webService.client.masterData.functions.GTIN_VARIANT_type1.Factory.parse(
                             reader));
 
                     reader.next();
@@ -2053,7 +2053,7 @@ public class MARM implements org.apache.axis2.databinding.ADBBean {
                             reader.getName())) ||
                         new javax.xml.namespace.QName("", "NEST_FTR").equals(
                             reader.getName())) {
-                    object.setNEST_FTR(NEST_FTR_type1.Factory.parse(
+                    object.setNEST_FTR(com.nhry.webService.client.masterData.functions.NEST_FTR_type1.Factory.parse(
                             reader));
 
                     reader.next();
@@ -2079,7 +2079,7 @@ public class MARM implements org.apache.axis2.databinding.ADBBean {
                             "The element: " + "MAX_STACK" + "  cannot be null");
                     }
 
-                    String content = reader.getElementText();
+                    java.lang.String content = reader.getElementText();
 
                     object.setMAX_STACK(org.apache.axis2.databinding.utils.ConverterUtil.convertToUnsignedByte(
                             content));
@@ -2098,7 +2098,7 @@ public class MARM implements org.apache.axis2.databinding.ADBBean {
                             reader.getName())) ||
                         new javax.xml.namespace.QName("", "CAPAUSE").equals(
                             reader.getName())) {
-                    object.setCAPAUSE(CAPAUSE_type1.Factory.parse(
+                    object.setCAPAUSE(com.nhry.webService.client.masterData.functions.CAPAUSE_type1.Factory.parse(
                             reader));
 
                     reader.next();
@@ -2115,7 +2115,7 @@ public class MARM implements org.apache.axis2.databinding.ADBBean {
                             reader.getName())) ||
                         new javax.xml.namespace.QName("", "TY2TQ").equals(
                             reader.getName())) {
-                    object.setTY2TQ(TY2TQ_type1.Factory.parse(
+                    object.setTY2TQ(com.nhry.webService.client.masterData.functions.TY2TQ_type1.Factory.parse(
                             reader));
 
                     reader.next();
@@ -2133,7 +2133,7 @@ public class MARM implements org.apache.axis2.databinding.ADBBean {
                         "Unexpected subelement " + reader.getName());
                 }
             } catch (javax.xml.stream.XMLStreamException e) {
-                throw new Exception(e);
+                throw new java.lang.Exception(e);
             }
 
             return object;
