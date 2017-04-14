@@ -24,6 +24,20 @@ public class SchoolMaraRuleModel  implements Serializable {
 	private List<TMdSchoolMaraRule> schoolMaraList;
 	
 	
+	public SchoolMaraRuleModel() {
+		super();
+	}
+
+	public SchoolMaraRuleModel(String salesOrg, String schoolCode,
+			TMdSchoolMaraRuleBase ruleBase,
+			List<TMdSchoolMaraRule> schoolMaraList) {
+		super();
+		this.salesOrg = salesOrg;
+		this.schoolCode = schoolCode;
+		this.ruleBase = ruleBase;
+		this.schoolMaraList = schoolMaraList;
+	}
+
 	public TMdSchoolMaraRuleBase getRuleBase() {
 		return ruleBase;
 	}

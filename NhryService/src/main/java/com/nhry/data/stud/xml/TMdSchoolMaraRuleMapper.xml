@@ -33,6 +33,15 @@
     where  ru.SCHOOL_CODE= #{schoolCode,jdbcType=VARCHAR} and ru.SALES_ORG= #{salesOrg,jdbcType=VARCHAR}
   </select>
   
+  <select id="findSchoolMaraRuleForMatnr" resultMap="BaseResultMap" parameterType="java.util.Map" >
+    select 
+    <include refid="Base_Column_List" />
+    from t_md_school_mara_rule ru left join t_md_mara sc  on ru.MATNR=sc.MATNR and ru.SALES_ORG=sc.SALES_ORG
+    where  ru.SCHOOL_CODE= #{schoolCode,jdbcType=VARCHAR} 
+    and ru.SALES_ORG= #{salesOrg,jdbcType=VARCHAR}
+    and ru.MATNR=#{matnr}
+  </select>
+  
   
   <delete id="deleteByModel" parameterType="com.nhry.model.stud.SchoolMaraRuleModel" >
     delete from t_md_school_mara_rule 

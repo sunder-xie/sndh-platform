@@ -21,6 +21,7 @@ import com.nhry.common.exception.MessageCode;
 import com.nhry.data.stud.domain.TMdMaraStud;
 import com.nhry.data.stud.domain.TMstOrderStud;
 import com.nhry.model.stud.OrderBatchBuildModel;
+import com.nhry.model.stud.OrderStudLossModel;
 import com.nhry.model.stud.OrderStudQueryModel;
 import com.nhry.model.stud.SchoolQueryModel;
 import com.nhry.rest.BaseResource;
@@ -172,6 +173,15 @@ public class StudentMilkOrderResource  extends BaseResource {
 	@ApiOperation(value = "/deleteOrderWithBatch", response = int.class, notes = "批量删除指定日期的订单")
 	public Response deleteOrderWithBatch(@ApiParam(required=true,name="orderBatchBuildModel")OrderBatchBuildModel orderBatchBuildModel) throws Exception{
 		return convertToRespModel(MessageCode.NORMAL, null,  orderStudService.updateOrderWithBatch(orderBatchBuildModel));
+	}
+	
+	@POST
+	@Path("/calcLoss")
+	@Produces(MediaType.APPLICATION_JSON)
+	@Consumes(MediaType.APPLICATION_JSON)
+	@ApiOperation(value = "/calcLoss", response = int.class, notes = "订奶计算损耗")
+	public Response calcLoss(@ApiParam(required=true,name="orderStudLossModel")OrderStudLossModel orderStudLossModel) throws Exception{
+		return convertToRespModel(MessageCode.NORMAL, null,  orderStudService.calcLoss(orderStudLossModel));
 	}
 	
 }

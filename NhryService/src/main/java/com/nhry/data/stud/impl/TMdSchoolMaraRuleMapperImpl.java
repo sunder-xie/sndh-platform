@@ -1,5 +1,6 @@
 package com.nhry.data.stud.impl;
 
+import java.util.HashMap;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -35,6 +36,11 @@ public class TMdSchoolMaraRuleMapperImpl  implements TMdSchoolMaraRuleMapper{
 	public int deleteByModel(SchoolMaraRuleModel mdel) {
 		// TODO Auto-generated method stub
 		return sqlSessionTemplate.delete("deleteByModel",mdel);
+	}
+
+	@Override
+	public TMdSchoolMaraRule findSchoolMaraRuleForMatnr(HashMap<String, Object> selectMap) {
+		return sqlSessionTemplate.selectOne("findSchoolMaraRuleForMatnr", selectMap);
 	}
 	
 }

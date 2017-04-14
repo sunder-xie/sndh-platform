@@ -1,5 +1,6 @@
 package com.nhry.data.stud.dao;
 
+import java.util.HashMap;
 import java.util.List;
 
 import com.nhry.data.stud.domain.TMdSchoolMaraRule;
@@ -24,6 +25,13 @@ public interface TMdSchoolMaraRuleMapper {
 	  * @return
 	  */
 	 int deleteByModel(SchoolMaraRuleModel mdel);
+	 
+	 
+	 /**
+	 * @param selectMap
+	 * @return
+	 */
+	TMdSchoolMaraRule findSchoolMaraRuleForMatnr(HashMap<String, Object> selectMap);
 	
 	 
 }
