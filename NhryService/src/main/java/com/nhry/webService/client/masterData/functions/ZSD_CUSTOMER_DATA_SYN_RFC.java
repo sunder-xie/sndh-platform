@@ -18,9 +18,20 @@ public class ZSD_CUSTOMER_DATA_SYN_RFC implements org.apache.axis2.databinding.A
             "ZSD_CUSTOMER_DATA_SYN_RFC", "ns1");
 
     /**
+     * field for ET_KNVP
+     */
+    protected com.nhry.webService.client.masterData.functions.ET_KNVP_type0 localET_KNVP;
+
+    /*  This tracker boolean wil be used to detect whether the user called the set method
+     *   for this attribute. It will be used to determine whether to include this field
+     *   in the serialized XML
+     */
+    protected boolean localET_KNVPTracker = false;
+
+    /**
      * field for ET_KUNNR
      */
-    protected ET_KUNNR_type0 localET_KUNNR;
+    protected com.nhry.webService.client.masterData.functions.ET_KUNNR_type0 localET_KUNNR;
 
     /*  This tracker boolean wil be used to detect whether the user called the set method
      *   for this attribute. It will be used to determine whether to include this field
@@ -31,7 +42,7 @@ public class ZSD_CUSTOMER_DATA_SYN_RFC implements org.apache.axis2.databinding.A
     /**
      * field for ET_PARTNER
      */
-    protected ET_PARTNER_type0 localET_PARTNER;
+    protected com.nhry.webService.client.masterData.functions.ET_PARTNER_type0 localET_PARTNER;
 
     /*  This tracker boolean wil be used to detect whether the user called the set method
      *   for this attribute. It will be used to determine whether to include this field
@@ -40,9 +51,20 @@ public class ZSD_CUSTOMER_DATA_SYN_RFC implements org.apache.axis2.databinding.A
     protected boolean localET_PARTNERTracker = false;
 
     /**
+     * field for ET_PERNR
+     */
+    protected com.nhry.webService.client.masterData.functions.ET_PERNR_type0 localET_PERNR;
+
+    /*  This tracker boolean wil be used to detect whether the user called the set method
+     *   for this attribute. It will be used to determine whether to include this field
+     *   in the serialized XML
+     */
+    protected boolean localET_PERNRTracker = false;
+
+    /**
      * field for ET_VKORG
      */
-    protected ET_VKORG_type0 localET_VKORG;
+    protected com.nhry.webService.client.masterData.functions.ET_VKORG_type0 localET_VKORG;
 
     /*  This tracker boolean wil be used to detect whether the user called the set method
      *   for this attribute. It will be used to determine whether to include this field
@@ -53,7 +75,7 @@ public class ZSD_CUSTOMER_DATA_SYN_RFC implements org.apache.axis2.databinding.A
     /**
      * field for IT_BUKRS
      */
-    protected IT_BUKRS_type0 localIT_BUKRS;
+    protected com.nhry.webService.client.masterData.functions.IT_BUKRS_type0 localIT_BUKRS;
 
     /*  This tracker boolean wil be used to detect whether the user called the set method
      *   for this attribute. It will be used to determine whether to include this field
@@ -64,7 +86,7 @@ public class ZSD_CUSTOMER_DATA_SYN_RFC implements org.apache.axis2.databinding.A
     /**
      * field for IT_KUNNR
      */
-    protected IT_KUNNR_type0 localIT_KUNNR;
+    protected com.nhry.webService.client.masterData.functions.IT_KUNNR_type0 localIT_KUNNR;
 
     /*  This tracker boolean wil be used to detect whether the user called the set method
      *   for this attribute. It will be used to determine whether to include this field
@@ -75,13 +97,36 @@ public class ZSD_CUSTOMER_DATA_SYN_RFC implements org.apache.axis2.databinding.A
     /**
      * field for IT_VTWEG
      */
-    protected IT_VTWEG_type1 localIT_VTWEG;
+    protected com.nhry.webService.client.masterData.functions.IT_VTWEG_type1 localIT_VTWEG;
 
     /*  This tracker boolean wil be used to detect whether the user called the set method
      *   for this attribute. It will be used to determine whether to include this field
      *   in the serialized XML
      */
     protected boolean localIT_VTWEGTracker = false;
+
+    public boolean isET_KNVPSpecified() {
+        return localET_KNVPTracker;
+    }
+
+    /**
+     * Auto generated getter method
+     * @return com.nhry.webService.client.masterData.functions.ET_KNVP_type0
+     */
+    public com.nhry.webService.client.masterData.functions.ET_KNVP_type0 getET_KNVP() {
+        return localET_KNVP;
+    }
+
+    /**
+     * Auto generated setter method
+     * @param param ET_KNVP
+     */
+    public void setET_KNVP(
+        com.nhry.webService.client.masterData.functions.ET_KNVP_type0 param) {
+        localET_KNVPTracker = param != null;
+
+        this.localET_KNVP = param;
+    }
 
     public boolean isET_KUNNRSpecified() {
         return localET_KUNNRTracker;
@@ -91,7 +136,7 @@ public class ZSD_CUSTOMER_DATA_SYN_RFC implements org.apache.axis2.databinding.A
      * Auto generated getter method
      * @return com.nhry.webService.client.masterData.functions.ET_KUNNR_type0
      */
-    public ET_KUNNR_type0 getET_KUNNR() {
+    public com.nhry.webService.client.masterData.functions.ET_KUNNR_type0 getET_KUNNR() {
         return localET_KUNNR;
     }
 
@@ -100,7 +145,7 @@ public class ZSD_CUSTOMER_DATA_SYN_RFC implements org.apache.axis2.databinding.A
      * @param param ET_KUNNR
      */
     public void setET_KUNNR(
-        ET_KUNNR_type0 param) {
+        com.nhry.webService.client.masterData.functions.ET_KUNNR_type0 param) {
         localET_KUNNRTracker = param != null;
 
         this.localET_KUNNR = param;
@@ -114,7 +159,7 @@ public class ZSD_CUSTOMER_DATA_SYN_RFC implements org.apache.axis2.databinding.A
      * Auto generated getter method
      * @return com.nhry.webService.client.masterData.functions.ET_PARTNER_type0
      */
-    public ET_PARTNER_type0 getET_PARTNER() {
+    public com.nhry.webService.client.masterData.functions.ET_PARTNER_type0 getET_PARTNER() {
         return localET_PARTNER;
     }
 
@@ -123,10 +168,33 @@ public class ZSD_CUSTOMER_DATA_SYN_RFC implements org.apache.axis2.databinding.A
      * @param param ET_PARTNER
      */
     public void setET_PARTNER(
-        ET_PARTNER_type0 param) {
+        com.nhry.webService.client.masterData.functions.ET_PARTNER_type0 param) {
         localET_PARTNERTracker = param != null;
 
         this.localET_PARTNER = param;
+    }
+
+    public boolean isET_PERNRSpecified() {
+        return localET_PERNRTracker;
+    }
+
+    /**
+     * Auto generated getter method
+     * @return com.nhry.webService.client.masterData.functions.ET_PERNR_type0
+     */
+    public com.nhry.webService.client.masterData.functions.ET_PERNR_type0 getET_PERNR() {
+        return localET_PERNR;
+    }
+
+    /**
+     * Auto generated setter method
+     * @param param ET_PERNR
+     */
+    public void setET_PERNR(
+        com.nhry.webService.client.masterData.functions.ET_PERNR_type0 param) {
+        localET_PERNRTracker = param != null;
+
+        this.localET_PERNR = param;
     }
 
     public boolean isET_VKORGSpecified() {
@@ -137,7 +205,7 @@ public class ZSD_CUSTOMER_DATA_SYN_RFC implements org.apache.axis2.databinding.A
      * Auto generated getter method
      * @return com.nhry.webService.client.masterData.functions.ET_VKORG_type0
      */
-    public ET_VKORG_type0 getET_VKORG() {
+    public com.nhry.webService.client.masterData.functions.ET_VKORG_type0 getET_VKORG() {
         return localET_VKORG;
     }
 
@@ -146,7 +214,7 @@ public class ZSD_CUSTOMER_DATA_SYN_RFC implements org.apache.axis2.databinding.A
      * @param param ET_VKORG
      */
     public void setET_VKORG(
-        ET_VKORG_type0 param) {
+        com.nhry.webService.client.masterData.functions.ET_VKORG_type0 param) {
         localET_VKORGTracker = param != null;
 
         this.localET_VKORG = param;
@@ -160,7 +228,7 @@ public class ZSD_CUSTOMER_DATA_SYN_RFC implements org.apache.axis2.databinding.A
      * Auto generated getter method
      * @return com.nhry.webService.client.masterData.functions.IT_BUKRS_type0
      */
-    public IT_BUKRS_type0 getIT_BUKRS() {
+    public com.nhry.webService.client.masterData.functions.IT_BUKRS_type0 getIT_BUKRS() {
         return localIT_BUKRS;
     }
 
@@ -169,7 +237,7 @@ public class ZSD_CUSTOMER_DATA_SYN_RFC implements org.apache.axis2.databinding.A
      * @param param IT_BUKRS
      */
     public void setIT_BUKRS(
-        IT_BUKRS_type0 param) {
+        com.nhry.webService.client.masterData.functions.IT_BUKRS_type0 param) {
         localIT_BUKRSTracker = param != null;
 
         this.localIT_BUKRS = param;
@@ -183,7 +251,7 @@ public class ZSD_CUSTOMER_DATA_SYN_RFC implements org.apache.axis2.databinding.A
      * Auto generated getter method
      * @return com.nhry.webService.client.masterData.functions.IT_KUNNR_type0
      */
-    public IT_KUNNR_type0 getIT_KUNNR() {
+    public com.nhry.webService.client.masterData.functions.IT_KUNNR_type0 getIT_KUNNR() {
         return localIT_KUNNR;
     }
 
@@ -192,7 +260,7 @@ public class ZSD_CUSTOMER_DATA_SYN_RFC implements org.apache.axis2.databinding.A
      * @param param IT_KUNNR
      */
     public void setIT_KUNNR(
-        IT_KUNNR_type0 param) {
+        com.nhry.webService.client.masterData.functions.IT_KUNNR_type0 param) {
         localIT_KUNNRTracker = param != null;
 
         this.localIT_KUNNR = param;
@@ -206,7 +274,7 @@ public class ZSD_CUSTOMER_DATA_SYN_RFC implements org.apache.axis2.databinding.A
      * Auto generated getter method
      * @return com.nhry.webService.client.masterData.functions.IT_VTWEG_type1
      */
-    public IT_VTWEG_type1 getIT_VTWEG() {
+    public com.nhry.webService.client.masterData.functions.IT_VTWEG_type1 getIT_VTWEG() {
         return localIT_VTWEG;
     }
 
@@ -215,7 +283,7 @@ public class ZSD_CUSTOMER_DATA_SYN_RFC implements org.apache.axis2.databinding.A
      * @param param IT_VTWEG
      */
     public void setIT_VTWEG(
-        IT_VTWEG_type1 param) {
+        com.nhry.webService.client.masterData.functions.IT_VTWEG_type1 param) {
         localIT_VTWEGTracker = param != null;
 
         this.localIT_VTWEG = param;
@@ -246,8 +314,8 @@ public class ZSD_CUSTOMER_DATA_SYN_RFC implements org.apache.axis2.databinding.A
         javax.xml.stream.XMLStreamWriter xmlWriter, boolean serializeType)
         throws javax.xml.stream.XMLStreamException,
             org.apache.axis2.databinding.ADBException {
-        String prefix = null;
-        String namespace = null;
+        java.lang.String prefix = null;
+        java.lang.String namespace = null;
 
         prefix = parentQName.getPrefix();
         namespace = parentQName.getNamespaceURI();
@@ -255,7 +323,7 @@ public class ZSD_CUSTOMER_DATA_SYN_RFC implements org.apache.axis2.databinding.A
             xmlWriter);
 
         if (serializeType) {
-            String namespacePrefix = registerPrefix(xmlWriter,
+            java.lang.String namespacePrefix = registerPrefix(xmlWriter,
                     "urn:sap-com:document:sap:rfc:functions");
 
             if ((namespacePrefix != null) &&
@@ -268,6 +336,16 @@ public class ZSD_CUSTOMER_DATA_SYN_RFC implements org.apache.axis2.databinding.A
                     "http://www.w3.org/2001/XMLSchema-instance", "type",
                     "ZSD_CUSTOMER_DATA_SYN_RFC", xmlWriter);
             }
+        }
+
+        if (localET_KNVPTracker) {
+            if (localET_KNVP == null) {
+                throw new org.apache.axis2.databinding.ADBException(
+                    "ET_KNVP cannot be null!!");
+            }
+
+            localET_KNVP.serialize(new javax.xml.namespace.QName("", "ET_KNVP"),
+                xmlWriter);
         }
 
         if (localET_KUNNRTracker) {
@@ -288,6 +366,16 @@ public class ZSD_CUSTOMER_DATA_SYN_RFC implements org.apache.axis2.databinding.A
 
             localET_PARTNER.serialize(new javax.xml.namespace.QName("",
                     "ET_PARTNER"), xmlWriter);
+        }
+
+        if (localET_PERNRTracker) {
+            if (localET_PERNR == null) {
+                throw new org.apache.axis2.databinding.ADBException(
+                    "ET_PERNR cannot be null!!");
+            }
+
+            localET_PERNR.serialize(new javax.xml.namespace.QName("", "ET_PERNR"),
+                xmlWriter);
         }
 
         if (localET_VKORGTracker) {
@@ -333,7 +421,7 @@ public class ZSD_CUSTOMER_DATA_SYN_RFC implements org.apache.axis2.databinding.A
         xmlWriter.writeEndElement();
     }
 
-    private static String generatePrefix(String namespace) {
+    private static java.lang.String generatePrefix(java.lang.String namespace) {
         if (namespace.equals("urn:sap-com:document:sap:rfc:functions")) {
             return "ns1";
         }
@@ -344,11 +432,11 @@ public class ZSD_CUSTOMER_DATA_SYN_RFC implements org.apache.axis2.databinding.A
     /**
      * Utility method to write an element start tag.
      */
-    private void writeStartElement(String prefix,
-        String namespace, String localPart,
+    private void writeStartElement(java.lang.String prefix,
+        java.lang.String namespace, java.lang.String localPart,
         javax.xml.stream.XMLStreamWriter xmlWriter)
         throws javax.xml.stream.XMLStreamException {
-        String writerPrefix = xmlWriter.getPrefix(namespace);
+        java.lang.String writerPrefix = xmlWriter.getPrefix(namespace);
 
         if (writerPrefix != null) {
             xmlWriter.writeStartElement(writerPrefix, localPart, namespace);
@@ -368,11 +456,11 @@ public class ZSD_CUSTOMER_DATA_SYN_RFC implements org.apache.axis2.databinding.A
     /**
      * Util method to write an attribute with the ns prefix
      */
-    private void writeAttribute(String prefix,
-        String namespace, String attName,
-        String attValue, javax.xml.stream.XMLStreamWriter xmlWriter)
+    private void writeAttribute(java.lang.String prefix,
+        java.lang.String namespace, java.lang.String attName,
+        java.lang.String attValue, javax.xml.stream.XMLStreamWriter xmlWriter)
         throws javax.xml.stream.XMLStreamException {
-        String writerPrefix = xmlWriter.getPrefix(namespace);
+        java.lang.String writerPrefix = xmlWriter.getPrefix(namespace);
 
         if (writerPrefix != null) {
             xmlWriter.writeAttribute(writerPrefix, namespace, attName, attValue);
@@ -386,8 +474,8 @@ public class ZSD_CUSTOMER_DATA_SYN_RFC implements org.apache.axis2.databinding.A
     /**
      * Util method to write an attribute without the ns prefix
      */
-    private void writeAttribute(String namespace,
-        String attName, String attValue,
+    private void writeAttribute(java.lang.String namespace,
+        java.lang.String attName, java.lang.String attValue,
         javax.xml.stream.XMLStreamWriter xmlWriter)
         throws javax.xml.stream.XMLStreamException {
         if (namespace.equals("")) {
@@ -401,18 +489,18 @@ public class ZSD_CUSTOMER_DATA_SYN_RFC implements org.apache.axis2.databinding.A
     /**
      * Util method to write an attribute without the ns prefix
      */
-    private void writeQNameAttribute(String namespace,
-        String attName, javax.xml.namespace.QName qname,
+    private void writeQNameAttribute(java.lang.String namespace,
+        java.lang.String attName, javax.xml.namespace.QName qname,
         javax.xml.stream.XMLStreamWriter xmlWriter)
         throws javax.xml.stream.XMLStreamException {
-        String attributeNamespace = qname.getNamespaceURI();
-        String attributePrefix = xmlWriter.getPrefix(attributeNamespace);
+        java.lang.String attributeNamespace = qname.getNamespaceURI();
+        java.lang.String attributePrefix = xmlWriter.getPrefix(attributeNamespace);
 
         if (attributePrefix == null) {
             attributePrefix = registerPrefix(xmlWriter, attributeNamespace);
         }
 
-        String attributeValue;
+        java.lang.String attributeValue;
 
         if (attributePrefix.trim().length() > 0) {
             attributeValue = attributePrefix + ":" + qname.getLocalPart();
@@ -435,10 +523,10 @@ public class ZSD_CUSTOMER_DATA_SYN_RFC implements org.apache.axis2.databinding.A
     private void writeQName(javax.xml.namespace.QName qname,
         javax.xml.stream.XMLStreamWriter xmlWriter)
         throws javax.xml.stream.XMLStreamException {
-        String namespaceURI = qname.getNamespaceURI();
+        java.lang.String namespaceURI = qname.getNamespaceURI();
 
         if (namespaceURI != null) {
-            String prefix = xmlWriter.getPrefix(namespaceURI);
+            java.lang.String prefix = xmlWriter.getPrefix(namespaceURI);
 
             if (prefix == null) {
                 prefix = generatePrefix(namespaceURI);
@@ -467,9 +555,9 @@ public class ZSD_CUSTOMER_DATA_SYN_RFC implements org.apache.axis2.databinding.A
         if (qnames != null) {
             // we have to store this data until last moment since it is not possible to write any
             // namespace data after writing the charactor data
-            StringBuffer stringToWrite = new StringBuffer();
-            String namespaceURI = null;
-            String prefix = null;
+            java.lang.StringBuffer stringToWrite = new java.lang.StringBuffer();
+            java.lang.String namespaceURI = null;
+            java.lang.String prefix = null;
 
             for (int i = 0; i < qnames.length; i++) {
                 if (i > 0) {
@@ -508,10 +596,10 @@ public class ZSD_CUSTOMER_DATA_SYN_RFC implements org.apache.axis2.databinding.A
     /**
      * Register a namespace prefix
      */
-    private String registerPrefix(
-        javax.xml.stream.XMLStreamWriter xmlWriter, String namespace)
+    private java.lang.String registerPrefix(
+        javax.xml.stream.XMLStreamWriter xmlWriter, java.lang.String namespace)
         throws javax.xml.stream.XMLStreamException {
-        String prefix = xmlWriter.getPrefix(namespace);
+        java.lang.String prefix = xmlWriter.getPrefix(namespace);
 
         if (prefix == null) {
             prefix = generatePrefix(namespace);
@@ -519,7 +607,7 @@ public class ZSD_CUSTOMER_DATA_SYN_RFC implements org.apache.axis2.databinding.A
             javax.xml.namespace.NamespaceContext nsContext = xmlWriter.getNamespaceContext();
 
             while (true) {
-                String uri = nsContext.getNamespaceURI(prefix);
+                java.lang.String uri = nsContext.getNamespaceURI(prefix);
 
                 if ((uri == null) || (uri.length() == 0)) {
                     break;
@@ -549,14 +637,14 @@ public class ZSD_CUSTOMER_DATA_SYN_RFC implements org.apache.axis2.databinding.A
          *                If this object is a complex type, the reader is positioned at the end element of its outer element
          */
         public static ZSD_CUSTOMER_DATA_SYN_RFC parse(
-            javax.xml.stream.XMLStreamReader reader) throws Exception {
+            javax.xml.stream.XMLStreamReader reader) throws java.lang.Exception {
             ZSD_CUSTOMER_DATA_SYN_RFC object = new ZSD_CUSTOMER_DATA_SYN_RFC();
 
             int event;
             javax.xml.namespace.QName currentQName = null;
-            String nillableValue = null;
-            String prefix = "";
-            String namespaceuri = "";
+            java.lang.String nillableValue = null;
+            java.lang.String prefix = "";
+            java.lang.String namespaceuri = "";
 
             try {
                 while (!reader.isStartElement() && !reader.isEndElement())
@@ -566,11 +654,11 @@ public class ZSD_CUSTOMER_DATA_SYN_RFC implements org.apache.axis2.databinding.A
 
                 if (reader.getAttributeValue(
                             "http://www.w3.org/2001/XMLSchema-instance", "type") != null) {
-                    String fullTypeName = reader.getAttributeValue("http://www.w3.org/2001/XMLSchema-instance",
+                    java.lang.String fullTypeName = reader.getAttributeValue("http://www.w3.org/2001/XMLSchema-instance",
                             "type");
 
                     if (fullTypeName != null) {
-                        String nsPrefix = null;
+                        java.lang.String nsPrefix = null;
 
                         if (fullTypeName.indexOf(":") > -1) {
                             nsPrefix = fullTypeName.substring(0,
@@ -579,15 +667,15 @@ public class ZSD_CUSTOMER_DATA_SYN_RFC implements org.apache.axis2.databinding.A
 
                         nsPrefix = (nsPrefix == null) ? "" : nsPrefix;
 
-                        String type = fullTypeName.substring(fullTypeName.indexOf(
+                        java.lang.String type = fullTypeName.substring(fullTypeName.indexOf(
                                     ":") + 1);
 
                         if (!"ZSD_CUSTOMER_DATA_SYN_RFC".equals(type)) {
                             //find namespace for the prefix
-                            String nsUri = reader.getNamespaceContext()
+                            java.lang.String nsUri = reader.getNamespaceContext()
                                                            .getNamespaceURI(nsPrefix);
 
-                            return (ZSD_CUSTOMER_DATA_SYN_RFC) ExtensionMapper.getTypeObject(nsUri,
+                            return (ZSD_CUSTOMER_DATA_SYN_RFC) com.nhry.webService.client.masterData.functions.ExtensionMapper.getTypeObject(nsUri,
                                 type, reader);
                         }
                     }
@@ -602,11 +690,23 @@ public class ZSD_CUSTOMER_DATA_SYN_RFC implements org.apache.axis2.databinding.A
                 while (!reader.isEndElement()) {
                     if (reader.isStartElement()) {
                         if ((reader.isStartElement() &&
+                                new javax.xml.namespace.QName("", "ET_KNVP").equals(
+                                    reader.getName())) ||
+                                new javax.xml.namespace.QName("", "ET_KNVP").equals(
+                                    reader.getName())) {
+                            object.setET_KNVP(com.nhry.webService.client.masterData.functions.ET_KNVP_type0.Factory.parse(
+                                    reader));
+
+                            reader.next();
+                        } // End of if for expected property start element
+
+                        else
+                         if ((reader.isStartElement() &&
                                 new javax.xml.namespace.QName("", "ET_KUNNR").equals(
                                     reader.getName())) ||
                                 new javax.xml.namespace.QName("", "ET_KUNNR").equals(
                                     reader.getName())) {
-                            object.setET_KUNNR(ET_KUNNR_type0.Factory.parse(
+                            object.setET_KUNNR(com.nhry.webService.client.masterData.functions.ET_KUNNR_type0.Factory.parse(
                                     reader));
 
                             reader.next();
@@ -618,7 +718,19 @@ public class ZSD_CUSTOMER_DATA_SYN_RFC implements org.apache.axis2.databinding.A
                                     reader.getName())) ||
                                 new javax.xml.namespace.QName("", "ET_PARTNER").equals(
                                     reader.getName())) {
-                            object.setET_PARTNER(ET_PARTNER_type0.Factory.parse(
+                            object.setET_PARTNER(com.nhry.webService.client.masterData.functions.ET_PARTNER_type0.Factory.parse(
+                                    reader));
+
+                            reader.next();
+                        } // End of if for expected property start element
+
+                        else
+                         if ((reader.isStartElement() &&
+                                new javax.xml.namespace.QName("", "ET_PERNR").equals(
+                                    reader.getName())) ||
+                                new javax.xml.namespace.QName("", "ET_PERNR").equals(
+                                    reader.getName())) {
+                            object.setET_PERNR(com.nhry.webService.client.masterData.functions.ET_PERNR_type0.Factory.parse(
                                     reader));
 
                             reader.next();
@@ -630,7 +742,7 @@ public class ZSD_CUSTOMER_DATA_SYN_RFC implements org.apache.axis2.databinding.A
                                     reader.getName())) ||
                                 new javax.xml.namespace.QName("", "ET_VKORG").equals(
                                     reader.getName())) {
-                            object.setET_VKORG(ET_VKORG_type0.Factory.parse(
+                            object.setET_VKORG(com.nhry.webService.client.masterData.functions.ET_VKORG_type0.Factory.parse(
                                     reader));
 
                             reader.next();
@@ -642,7 +754,7 @@ public class ZSD_CUSTOMER_DATA_SYN_RFC implements org.apache.axis2.databinding.A
                                     reader.getName())) ||
                                 new javax.xml.namespace.QName("", "IT_BUKRS").equals(
                                     reader.getName())) {
-                            object.setIT_BUKRS(IT_BUKRS_type0.Factory.parse(
+                            object.setIT_BUKRS(com.nhry.webService.client.masterData.functions.IT_BUKRS_type0.Factory.parse(
                                     reader));
 
                             reader.next();
@@ -654,7 +766,7 @@ public class ZSD_CUSTOMER_DATA_SYN_RFC implements org.apache.axis2.databinding.A
                                     reader.getName())) ||
                                 new javax.xml.namespace.QName("", "IT_KUNNR").equals(
                                     reader.getName())) {
-                            object.setIT_KUNNR(IT_KUNNR_type0.Factory.parse(
+                            object.setIT_KUNNR(com.nhry.webService.client.masterData.functions.IT_KUNNR_type0.Factory.parse(
                                     reader));
 
                             reader.next();
@@ -666,7 +778,7 @@ public class ZSD_CUSTOMER_DATA_SYN_RFC implements org.apache.axis2.databinding.A
                                     reader.getName())) ||
                                 new javax.xml.namespace.QName("", "IT_VTWEG").equals(
                                     reader.getName())) {
-                            object.setIT_VTWEG(IT_VTWEG_type1.Factory.parse(
+                            object.setIT_VTWEG(com.nhry.webService.client.masterData.functions.IT_VTWEG_type1.Factory.parse(
                                     reader));
 
                             reader.next();
@@ -682,7 +794,7 @@ public class ZSD_CUSTOMER_DATA_SYN_RFC implements org.apache.axis2.databinding.A
                     }
                 } // end of while loop
             } catch (javax.xml.stream.XMLStreamException e) {
-                throw new Exception(e);
+                throw new java.lang.Exception(e);
             }
 
             return object;

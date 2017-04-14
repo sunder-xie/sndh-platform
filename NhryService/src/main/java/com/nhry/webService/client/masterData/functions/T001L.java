@@ -23,7 +23,7 @@ public class T001L implements org.apache.axis2.databinding.ADBBean {
     /**
      * field for MANDT
      */
-    protected MANDT_type15 localMANDT;
+    protected com.nhry.webService.client.masterData.functions.MANDT_type17 localMANDT;
 
     /*  This tracker boolean wil be used to detect whether the user called the set method
      *   for this attribute. It will be used to determine whether to include this field
@@ -34,7 +34,7 @@ public class T001L implements org.apache.axis2.databinding.ADBBean {
     /**
      * field for WERKS
      */
-    protected WERKS_type7 localWERKS;
+    protected com.nhry.webService.client.masterData.functions.WERKS_type7 localWERKS;
 
     /*  This tracker boolean wil be used to detect whether the user called the set method
      *   for this attribute. It will be used to determine whether to include this field
@@ -45,7 +45,7 @@ public class T001L implements org.apache.axis2.databinding.ADBBean {
     /**
      * field for LGORT
      */
-    protected LGORT_type3 localLGORT;
+    protected com.nhry.webService.client.masterData.functions.LGORT_type3 localLGORT;
 
     /*  This tracker boolean wil be used to detect whether the user called the set method
      *   for this attribute. It will be used to determine whether to include this field
@@ -56,7 +56,7 @@ public class T001L implements org.apache.axis2.databinding.ADBBean {
     /**
      * field for LGOBE
      */
-    protected LGOBE_type1 localLGOBE;
+    protected com.nhry.webService.client.masterData.functions.LGOBE_type1 localLGOBE;
 
     /*  This tracker boolean wil be used to detect whether the user called the set method
      *   for this attribute. It will be used to determine whether to include this field
@@ -67,7 +67,7 @@ public class T001L implements org.apache.axis2.databinding.ADBBean {
     /**
      * field for SPART
      */
-    protected SPART_type7 localSPART;
+    protected com.nhry.webService.client.masterData.functions.SPART_type11 localSPART;
 
     /*  This tracker boolean wil be used to detect whether the user called the set method
      *   for this attribute. It will be used to determine whether to include this field
@@ -78,7 +78,7 @@ public class T001L implements org.apache.axis2.databinding.ADBBean {
     /**
      * field for XLONG
      */
-    protected XLONG_type1 localXLONG;
+    protected com.nhry.webService.client.masterData.functions.XLONG_type1 localXLONG;
 
     /*  This tracker boolean wil be used to detect whether the user called the set method
      *   for this attribute. It will be used to determine whether to include this field
@@ -89,7 +89,7 @@ public class T001L implements org.apache.axis2.databinding.ADBBean {
     /**
      * field for XBUFX
      */
-    protected XBUFX_type1 localXBUFX;
+    protected com.nhry.webService.client.masterData.functions.XBUFX_type1 localXBUFX;
 
     /*  This tracker boolean wil be used to detect whether the user called the set method
      *   for this attribute. It will be used to determine whether to include this field
@@ -100,7 +100,7 @@ public class T001L implements org.apache.axis2.databinding.ADBBean {
     /**
      * field for DISKZ
      */
-    protected DISKZ_type1 localDISKZ;
+    protected com.nhry.webService.client.masterData.functions.DISKZ_type1 localDISKZ;
 
     /*  This tracker boolean wil be used to detect whether the user called the set method
      *   for this attribute. It will be used to determine whether to include this field
@@ -111,7 +111,7 @@ public class T001L implements org.apache.axis2.databinding.ADBBean {
     /**
      * field for XBLGO
      */
-    protected XBLGO_type1 localXBLGO;
+    protected com.nhry.webService.client.masterData.functions.XBLGO_type1 localXBLGO;
 
     /*  This tracker boolean wil be used to detect whether the user called the set method
      *   for this attribute. It will be used to determine whether to include this field
@@ -122,7 +122,7 @@ public class T001L implements org.apache.axis2.databinding.ADBBean {
     /**
      * field for XRESS
      */
-    protected XRESS_type1 localXRESS;
+    protected com.nhry.webService.client.masterData.functions.XRESS_type1 localXRESS;
 
     /*  This tracker boolean wil be used to detect whether the user called the set method
      *   for this attribute. It will be used to determine whether to include this field
@@ -133,7 +133,7 @@ public class T001L implements org.apache.axis2.databinding.ADBBean {
     /**
      * field for XHUPF
      */
-    protected XHUPF_type1 localXHUPF;
+    protected com.nhry.webService.client.masterData.functions.XHUPF_type1 localXHUPF;
 
     /*  This tracker boolean wil be used to detect whether the user called the set method
      *   for this attribute. It will be used to determine whether to include this field
@@ -144,7 +144,7 @@ public class T001L implements org.apache.axis2.databinding.ADBBean {
     /**
      * field for PARLG
      */
-    protected PARLG_type1 localPARLG;
+    protected com.nhry.webService.client.masterData.functions.PARLG_type1 localPARLG;
 
     /*  This tracker boolean wil be used to detect whether the user called the set method
      *   for this attribute. It will be used to determine whether to include this field
@@ -155,7 +155,7 @@ public class T001L implements org.apache.axis2.databinding.ADBBean {
     /**
      * field for VKORG
      */
-    protected VKORG_type9 localVKORG;
+    protected com.nhry.webService.client.masterData.functions.VKORG_type13 localVKORG;
 
     /*  This tracker boolean wil be used to detect whether the user called the set method
      *   for this attribute. It will be used to determine whether to include this field
@@ -166,7 +166,7 @@ public class T001L implements org.apache.axis2.databinding.ADBBean {
     /**
      * field for VTWEG
      */
-    protected VTWEG_type9 localVTWEG;
+    protected com.nhry.webService.client.masterData.functions.VTWEG_type13 localVTWEG;
 
     /*  This tracker boolean wil be used to detect whether the user called the set method
      *   for this attribute. It will be used to determine whether to include this field
@@ -177,7 +177,7 @@ public class T001L implements org.apache.axis2.databinding.ADBBean {
     /**
      * field for VSTEL
      */
-    protected VSTEL_type1 localVSTEL;
+    protected com.nhry.webService.client.masterData.functions.VSTEL_type1 localVSTEL;
 
     /*  This tracker boolean wil be used to detect whether the user called the set method
      *   for this attribute. It will be used to determine whether to include this field
@@ -188,7 +188,7 @@ public class T001L implements org.apache.axis2.databinding.ADBBean {
     /**
      * field for LIFNR
      */
-    protected LIFNR_type1 localLIFNR;
+    protected com.nhry.webService.client.masterData.functions.LIFNR_type3 localLIFNR;
 
     /*  This tracker boolean wil be used to detect whether the user called the set method
      *   for this attribute. It will be used to determine whether to include this field
@@ -199,7 +199,7 @@ public class T001L implements org.apache.axis2.databinding.ADBBean {
     /**
      * field for KUNNR
      */
-    protected KUNNR_type7 localKUNNR;
+    protected com.nhry.webService.client.masterData.functions.KUNNR_type11 localKUNNR;
 
     /*  This tracker boolean wil be used to detect whether the user called the set method
      *   for this attribute. It will be used to determine whether to include this field
@@ -210,7 +210,7 @@ public class T001L implements org.apache.axis2.databinding.ADBBean {
     /**
      * field for MESBS
      */
-    protected MESBS_type1 localMESBS;
+    protected com.nhry.webService.client.masterData.functions.MESBS_type1 localMESBS;
 
     /*  This tracker boolean wil be used to detect whether the user called the set method
      *   for this attribute. It will be used to determine whether to include this field
@@ -221,7 +221,7 @@ public class T001L implements org.apache.axis2.databinding.ADBBean {
     /**
      * field for MESST
      */
-    protected MESST_type1 localMESST;
+    protected com.nhry.webService.client.masterData.functions.MESST_type1 localMESST;
 
     /*  This tracker boolean wil be used to detect whether the user called the set method
      *   for this attribute. It will be used to determine whether to include this field
@@ -232,7 +232,7 @@ public class T001L implements org.apache.axis2.databinding.ADBBean {
     /**
      * field for OIH_LICNO
      */
-    protected OIH_LICNO_type1 localOIH_LICNO;
+    protected com.nhry.webService.client.masterData.functions.OIH_LICNO_type1 localOIH_LICNO;
 
     /*  This tracker boolean wil be used to detect whether the user called the set method
      *   for this attribute. It will be used to determine whether to include this field
@@ -243,7 +243,7 @@ public class T001L implements org.apache.axis2.databinding.ADBBean {
     /**
      * field for OIG_ITRFL
      */
-    protected OIG_ITRFL_type1 localOIG_ITRFL;
+    protected com.nhry.webService.client.masterData.functions.OIG_ITRFL_type1 localOIG_ITRFL;
 
     /*  This tracker boolean wil be used to detect whether the user called the set method
      *   for this attribute. It will be used to determine whether to include this field
@@ -254,7 +254,7 @@ public class T001L implements org.apache.axis2.databinding.ADBBean {
     /**
      * field for OIB_TNKASSIGN
      */
-    protected OIB_TNKASSIGN_type1 localOIB_TNKASSIGN;
+    protected com.nhry.webService.client.masterData.functions.OIB_TNKASSIGN_type1 localOIB_TNKASSIGN;
 
     /*  This tracker boolean wil be used to detect whether the user called the set method
      *   for this attribute. It will be used to determine whether to include this field
@@ -268,9 +268,9 @@ public class T001L implements org.apache.axis2.databinding.ADBBean {
 
     /**
      * Auto generated getter method
-     * @return com.nhry.webService.client.masterData.functions.MANDT_type15
+     * @return com.nhry.webService.client.masterData.functions.MANDT_type17
      */
-    public MANDT_type15 getMANDT() {
+    public com.nhry.webService.client.masterData.functions.MANDT_type17 getMANDT() {
         return localMANDT;
     }
 
@@ -279,7 +279,7 @@ public class T001L implements org.apache.axis2.databinding.ADBBean {
      * @param param MANDT
      */
     public void setMANDT(
-        MANDT_type15 param) {
+        com.nhry.webService.client.masterData.functions.MANDT_type17 param) {
         localMANDTTracker = param != null;
 
         this.localMANDT = param;
@@ -293,7 +293,7 @@ public class T001L implements org.apache.axis2.databinding.ADBBean {
      * Auto generated getter method
      * @return com.nhry.webService.client.masterData.functions.WERKS_type7
      */
-    public WERKS_type7 getWERKS() {
+    public com.nhry.webService.client.masterData.functions.WERKS_type7 getWERKS() {
         return localWERKS;
     }
 
@@ -302,7 +302,7 @@ public class T001L implements org.apache.axis2.databinding.ADBBean {
      * @param param WERKS
      */
     public void setWERKS(
-        WERKS_type7 param) {
+        com.nhry.webService.client.masterData.functions.WERKS_type7 param) {
         localWERKSTracker = param != null;
 
         this.localWERKS = param;
@@ -316,7 +316,7 @@ public class T001L implements org.apache.axis2.databinding.ADBBean {
      * Auto generated getter method
      * @return com.nhry.webService.client.masterData.functions.LGORT_type3
      */
-    public LGORT_type3 getLGORT() {
+    public com.nhry.webService.client.masterData.functions.LGORT_type3 getLGORT() {
         return localLGORT;
     }
 
@@ -325,7 +325,7 @@ public class T001L implements org.apache.axis2.databinding.ADBBean {
      * @param param LGORT
      */
     public void setLGORT(
-        LGORT_type3 param) {
+        com.nhry.webService.client.masterData.functions.LGORT_type3 param) {
         localLGORTTracker = param != null;
 
         this.localLGORT = param;
@@ -339,7 +339,7 @@ public class T001L implements org.apache.axis2.databinding.ADBBean {
      * Auto generated getter method
      * @return com.nhry.webService.client.masterData.functions.LGOBE_type1
      */
-    public LGOBE_type1 getLGOBE() {
+    public com.nhry.webService.client.masterData.functions.LGOBE_type1 getLGOBE() {
         return localLGOBE;
     }
 
@@ -348,7 +348,7 @@ public class T001L implements org.apache.axis2.databinding.ADBBean {
      * @param param LGOBE
      */
     public void setLGOBE(
-        LGOBE_type1 param) {
+        com.nhry.webService.client.masterData.functions.LGOBE_type1 param) {
         localLGOBETracker = param != null;
 
         this.localLGOBE = param;
@@ -360,9 +360,9 @@ public class T001L implements org.apache.axis2.databinding.ADBBean {
 
     /**
      * Auto generated getter method
-     * @return com.nhry.webService.client.masterData.functions.SPART_type7
+     * @return com.nhry.webService.client.masterData.functions.SPART_type11
      */
-    public SPART_type7 getSPART() {
+    public com.nhry.webService.client.masterData.functions.SPART_type11 getSPART() {
         return localSPART;
     }
 
@@ -371,7 +371,7 @@ public class T001L implements org.apache.axis2.databinding.ADBBean {
      * @param param SPART
      */
     public void setSPART(
-        SPART_type7 param) {
+        com.nhry.webService.client.masterData.functions.SPART_type11 param) {
         localSPARTTracker = param != null;
 
         this.localSPART = param;
@@ -385,7 +385,7 @@ public class T001L implements org.apache.axis2.databinding.ADBBean {
      * Auto generated getter method
      * @return com.nhry.webService.client.masterData.functions.XLONG_type1
      */
-    public XLONG_type1 getXLONG() {
+    public com.nhry.webService.client.masterData.functions.XLONG_type1 getXLONG() {
         return localXLONG;
     }
 
@@ -394,7 +394,7 @@ public class T001L implements org.apache.axis2.databinding.ADBBean {
      * @param param XLONG
      */
     public void setXLONG(
-        XLONG_type1 param) {
+        com.nhry.webService.client.masterData.functions.XLONG_type1 param) {
         localXLONGTracker = param != null;
 
         this.localXLONG = param;
@@ -408,7 +408,7 @@ public class T001L implements org.apache.axis2.databinding.ADBBean {
      * Auto generated getter method
      * @return com.nhry.webService.client.masterData.functions.XBUFX_type1
      */
-    public XBUFX_type1 getXBUFX() {
+    public com.nhry.webService.client.masterData.functions.XBUFX_type1 getXBUFX() {
         return localXBUFX;
     }
 
@@ -417,7 +417,7 @@ public class T001L implements org.apache.axis2.databinding.ADBBean {
      * @param param XBUFX
      */
     public void setXBUFX(
-        XBUFX_type1 param) {
+        com.nhry.webService.client.masterData.functions.XBUFX_type1 param) {
         localXBUFXTracker = param != null;
 
         this.localXBUFX = param;
@@ -431,7 +431,7 @@ public class T001L implements org.apache.axis2.databinding.ADBBean {
      * Auto generated getter method
      * @return com.nhry.webService.client.masterData.functions.DISKZ_type1
      */
-    public DISKZ_type1 getDISKZ() {
+    public com.nhry.webService.client.masterData.functions.DISKZ_type1 getDISKZ() {
         return localDISKZ;
     }
 
@@ -440,7 +440,7 @@ public class T001L implements org.apache.axis2.databinding.ADBBean {
      * @param param DISKZ
      */
     public void setDISKZ(
-        DISKZ_type1 param) {
+        com.nhry.webService.client.masterData.functions.DISKZ_type1 param) {
         localDISKZTracker = param != null;
 
         this.localDISKZ = param;
@@ -454,7 +454,7 @@ public class T001L implements org.apache.axis2.databinding.ADBBean {
      * Auto generated getter method
      * @return com.nhry.webService.client.masterData.functions.XBLGO_type1
      */
-    public XBLGO_type1 getXBLGO() {
+    public com.nhry.webService.client.masterData.functions.XBLGO_type1 getXBLGO() {
         return localXBLGO;
     }
 
@@ -463,7 +463,7 @@ public class T001L implements org.apache.axis2.databinding.ADBBean {
      * @param param XBLGO
      */
     public void setXBLGO(
-        XBLGO_type1 param) {
+        com.nhry.webService.client.masterData.functions.XBLGO_type1 param) {
         localXBLGOTracker = param != null;
 
         this.localXBLGO = param;
@@ -477,7 +477,7 @@ public class T001L implements org.apache.axis2.databinding.ADBBean {
      * Auto generated getter method
      * @return com.nhry.webService.client.masterData.functions.XRESS_type1
      */
-    public XRESS_type1 getXRESS() {
+    public com.nhry.webService.client.masterData.functions.XRESS_type1 getXRESS() {
         return localXRESS;
     }
 
@@ -486,7 +486,7 @@ public class T001L implements org.apache.axis2.databinding.ADBBean {
      * @param param XRESS
      */
     public void setXRESS(
-        XRESS_type1 param) {
+        com.nhry.webService.client.masterData.functions.XRESS_type1 param) {
         localXRESSTracker = param != null;
 
         this.localXRESS = param;
@@ -500,7 +500,7 @@ public class T001L implements org.apache.axis2.databinding.ADBBean {
      * Auto generated getter method
      * @return com.nhry.webService.client.masterData.functions.XHUPF_type1
      */
-    public XHUPF_type1 getXHUPF() {
+    public com.nhry.webService.client.masterData.functions.XHUPF_type1 getXHUPF() {
         return localXHUPF;
     }
 
@@ -509,7 +509,7 @@ public class T001L implements org.apache.axis2.databinding.ADBBean {
      * @param param XHUPF
      */
     public void setXHUPF(
-        XHUPF_type1 param) {
+        com.nhry.webService.client.masterData.functions.XHUPF_type1 param) {
         localXHUPFTracker = param != null;
 
         this.localXHUPF = param;
@@ -523,7 +523,7 @@ public class T001L implements org.apache.axis2.databinding.ADBBean {
      * Auto generated getter method
      * @return com.nhry.webService.client.masterData.functions.PARLG_type1
      */
-    public PARLG_type1 getPARLG() {
+    public com.nhry.webService.client.masterData.functions.PARLG_type1 getPARLG() {
         return localPARLG;
     }
 
@@ -532,7 +532,7 @@ public class T001L implements org.apache.axis2.databinding.ADBBean {
      * @param param PARLG
      */
     public void setPARLG(
-        PARLG_type1 param) {
+        com.nhry.webService.client.masterData.functions.PARLG_type1 param) {
         localPARLGTracker = param != null;
 
         this.localPARLG = param;
@@ -544,9 +544,9 @@ public class T001L implements org.apache.axis2.databinding.ADBBean {
 
     /**
      * Auto generated getter method
-     * @return com.nhry.webService.client.masterData.functions.VKORG_type9
+     * @return com.nhry.webService.client.masterData.functions.VKORG_type13
      */
-    public VKORG_type9 getVKORG() {
+    public com.nhry.webService.client.masterData.functions.VKORG_type13 getVKORG() {
         return localVKORG;
     }
 
@@ -555,7 +555,7 @@ public class T001L implements org.apache.axis2.databinding.ADBBean {
      * @param param VKORG
      */
     public void setVKORG(
-        VKORG_type9 param) {
+        com.nhry.webService.client.masterData.functions.VKORG_type13 param) {
         localVKORGTracker = param != null;
 
         this.localVKORG = param;
@@ -567,9 +567,9 @@ public class T001L implements org.apache.axis2.databinding.ADBBean {
 
     /**
      * Auto generated getter method
-     * @return com.nhry.webService.client.masterData.functions.VTWEG_type9
+     * @return com.nhry.webService.client.masterData.functions.VTWEG_type13
      */
-    public VTWEG_type9 getVTWEG() {
+    public com.nhry.webService.client.masterData.functions.VTWEG_type13 getVTWEG() {
         return localVTWEG;
     }
 
@@ -578,7 +578,7 @@ public class T001L implements org.apache.axis2.databinding.ADBBean {
      * @param param VTWEG
      */
     public void setVTWEG(
-        VTWEG_type9 param) {
+        com.nhry.webService.client.masterData.functions.VTWEG_type13 param) {
         localVTWEGTracker = param != null;
 
         this.localVTWEG = param;
@@ -592,7 +592,7 @@ public class T001L implements org.apache.axis2.databinding.ADBBean {
      * Auto generated getter method
      * @return com.nhry.webService.client.masterData.functions.VSTEL_type1
      */
-    public VSTEL_type1 getVSTEL() {
+    public com.nhry.webService.client.masterData.functions.VSTEL_type1 getVSTEL() {
         return localVSTEL;
     }
 
@@ -601,7 +601,7 @@ public class T001L implements org.apache.axis2.databinding.ADBBean {
      * @param param VSTEL
      */
     public void setVSTEL(
-        VSTEL_type1 param) {
+        com.nhry.webService.client.masterData.functions.VSTEL_type1 param) {
         localVSTELTracker = param != null;
 
         this.localVSTEL = param;
@@ -613,9 +613,9 @@ public class T001L implements org.apache.axis2.databinding.ADBBean {
 
     /**
      * Auto generated getter method
-     * @return com.nhry.webService.client.masterData.functions.LIFNR_type1
+     * @return com.nhry.webService.client.masterData.functions.LIFNR_type3
      */
-    public LIFNR_type1 getLIFNR() {
+    public com.nhry.webService.client.masterData.functions.LIFNR_type3 getLIFNR() {
         return localLIFNR;
     }
 
@@ -624,7 +624,7 @@ public class T001L implements org.apache.axis2.databinding.ADBBean {
      * @param param LIFNR
      */
     public void setLIFNR(
-        LIFNR_type1 param) {
+        com.nhry.webService.client.masterData.functions.LIFNR_type3 param) {
         localLIFNRTracker = param != null;
 
         this.localLIFNR = param;
@@ -636,9 +636,9 @@ public class T001L implements org.apache.axis2.databinding.ADBBean {
 
     /**
      * Auto generated getter method
-     * @return com.nhry.webService.client.masterData.functions.KUNNR_type7
+     * @return com.nhry.webService.client.masterData.functions.KUNNR_type11
      */
-    public KUNNR_type7 getKUNNR() {
+    public com.nhry.webService.client.masterData.functions.KUNNR_type11 getKUNNR() {
         return localKUNNR;
     }
 
@@ -647,7 +647,7 @@ public class T001L implements org.apache.axis2.databinding.ADBBean {
      * @param param KUNNR
      */
     public void setKUNNR(
-        KUNNR_type7 param) {
+        com.nhry.webService.client.masterData.functions.KUNNR_type11 param) {
         localKUNNRTracker = param != null;
 
         this.localKUNNR = param;
@@ -661,7 +661,7 @@ public class T001L implements org.apache.axis2.databinding.ADBBean {
      * Auto generated getter method
      * @return com.nhry.webService.client.masterData.functions.MESBS_type1
      */
-    public MESBS_type1 getMESBS() {
+    public com.nhry.webService.client.masterData.functions.MESBS_type1 getMESBS() {
         return localMESBS;
     }
 
@@ -670,7 +670,7 @@ public class T001L implements org.apache.axis2.databinding.ADBBean {
      * @param param MESBS
      */
     public void setMESBS(
-        MESBS_type1 param) {
+        com.nhry.webService.client.masterData.functions.MESBS_type1 param) {
         localMESBSTracker = param != null;
 
         this.localMESBS = param;
@@ -684,7 +684,7 @@ public class T001L implements org.apache.axis2.databinding.ADBBean {
      * Auto generated getter method
      * @return com.nhry.webService.client.masterData.functions.MESST_type1
      */
-    public MESST_type1 getMESST() {
+    public com.nhry.webService.client.masterData.functions.MESST_type1 getMESST() {
         return localMESST;
     }
 
@@ -693,7 +693,7 @@ public class T001L implements org.apache.axis2.databinding.ADBBean {
      * @param param MESST
      */
     public void setMESST(
-        MESST_type1 param) {
+        com.nhry.webService.client.masterData.functions.MESST_type1 param) {
         localMESSTTracker = param != null;
 
         this.localMESST = param;
@@ -707,7 +707,7 @@ public class T001L implements org.apache.axis2.databinding.ADBBean {
      * Auto generated getter method
      * @return com.nhry.webService.client.masterData.functions.OIH_LICNO_type1
      */
-    public OIH_LICNO_type1 getOIH_LICNO() {
+    public com.nhry.webService.client.masterData.functions.OIH_LICNO_type1 getOIH_LICNO() {
         return localOIH_LICNO;
     }
 
@@ -716,7 +716,7 @@ public class T001L implements org.apache.axis2.databinding.ADBBean {
      * @param param OIH_LICNO
      */
     public void setOIH_LICNO(
-        OIH_LICNO_type1 param) {
+        com.nhry.webService.client.masterData.functions.OIH_LICNO_type1 param) {
         localOIH_LICNOTracker = param != null;
 
         this.localOIH_LICNO = param;
@@ -730,7 +730,7 @@ public class T001L implements org.apache.axis2.databinding.ADBBean {
      * Auto generated getter method
      * @return com.nhry.webService.client.masterData.functions.OIG_ITRFL_type1
      */
-    public OIG_ITRFL_type1 getOIG_ITRFL() {
+    public com.nhry.webService.client.masterData.functions.OIG_ITRFL_type1 getOIG_ITRFL() {
         return localOIG_ITRFL;
     }
 
@@ -739,7 +739,7 @@ public class T001L implements org.apache.axis2.databinding.ADBBean {
      * @param param OIG_ITRFL
      */
     public void setOIG_ITRFL(
-        OIG_ITRFL_type1 param) {
+        com.nhry.webService.client.masterData.functions.OIG_ITRFL_type1 param) {
         localOIG_ITRFLTracker = param != null;
 
         this.localOIG_ITRFL = param;
@@ -753,7 +753,7 @@ public class T001L implements org.apache.axis2.databinding.ADBBean {
      * Auto generated getter method
      * @return com.nhry.webService.client.masterData.functions.OIB_TNKASSIGN_type1
      */
-    public OIB_TNKASSIGN_type1 getOIB_TNKASSIGN() {
+    public com.nhry.webService.client.masterData.functions.OIB_TNKASSIGN_type1 getOIB_TNKASSIGN() {
         return localOIB_TNKASSIGN;
     }
 
@@ -762,7 +762,7 @@ public class T001L implements org.apache.axis2.databinding.ADBBean {
      * @param param OIB_TNKASSIGN
      */
     public void setOIB_TNKASSIGN(
-        OIB_TNKASSIGN_type1 param) {
+        com.nhry.webService.client.masterData.functions.OIB_TNKASSIGN_type1 param) {
         localOIB_TNKASSIGNTracker = param != null;
 
         this.localOIB_TNKASSIGN = param;
@@ -793,8 +793,8 @@ public class T001L implements org.apache.axis2.databinding.ADBBean {
         javax.xml.stream.XMLStreamWriter xmlWriter, boolean serializeType)
         throws javax.xml.stream.XMLStreamException,
             org.apache.axis2.databinding.ADBException {
-        String prefix = null;
-        String namespace = null;
+        java.lang.String prefix = null;
+        java.lang.String namespace = null;
 
         prefix = parentQName.getPrefix();
         namespace = parentQName.getNamespaceURI();
@@ -802,7 +802,7 @@ public class T001L implements org.apache.axis2.databinding.ADBBean {
             xmlWriter);
 
         if (serializeType) {
-            String namespacePrefix = registerPrefix(xmlWriter,
+            java.lang.String namespacePrefix = registerPrefix(xmlWriter,
                     "urn:sap-com:document:sap:rfc:functions");
 
             if ((namespacePrefix != null) &&
@@ -1040,7 +1040,7 @@ public class T001L implements org.apache.axis2.databinding.ADBBean {
         xmlWriter.writeEndElement();
     }
 
-    private static String generatePrefix(String namespace) {
+    private static java.lang.String generatePrefix(java.lang.String namespace) {
         if (namespace.equals("urn:sap-com:document:sap:rfc:functions")) {
             return "ns1";
         }
@@ -1051,11 +1051,11 @@ public class T001L implements org.apache.axis2.databinding.ADBBean {
     /**
      * Utility method to write an element start tag.
      */
-    private void writeStartElement(String prefix,
-        String namespace, String localPart,
+    private void writeStartElement(java.lang.String prefix,
+        java.lang.String namespace, java.lang.String localPart,
         javax.xml.stream.XMLStreamWriter xmlWriter)
         throws javax.xml.stream.XMLStreamException {
-        String writerPrefix = xmlWriter.getPrefix(namespace);
+        java.lang.String writerPrefix = xmlWriter.getPrefix(namespace);
 
         if (writerPrefix != null) {
             xmlWriter.writeStartElement(writerPrefix, localPart, namespace);
@@ -1075,11 +1075,11 @@ public class T001L implements org.apache.axis2.databinding.ADBBean {
     /**
      * Util method to write an attribute with the ns prefix
      */
-    private void writeAttribute(String prefix,
-        String namespace, String attName,
-        String attValue, javax.xml.stream.XMLStreamWriter xmlWriter)
+    private void writeAttribute(java.lang.String prefix,
+        java.lang.String namespace, java.lang.String attName,
+        java.lang.String attValue, javax.xml.stream.XMLStreamWriter xmlWriter)
         throws javax.xml.stream.XMLStreamException {
-        String writerPrefix = xmlWriter.getPrefix(namespace);
+        java.lang.String writerPrefix = xmlWriter.getPrefix(namespace);
 
         if (writerPrefix != null) {
             xmlWriter.writeAttribute(writerPrefix, namespace, attName, attValue);
@@ -1093,8 +1093,8 @@ public class T001L implements org.apache.axis2.databinding.ADBBean {
     /**
      * Util method to write an attribute without the ns prefix
      */
-    private void writeAttribute(String namespace,
-        String attName, String attValue,
+    private void writeAttribute(java.lang.String namespace,
+        java.lang.String attName, java.lang.String attValue,
         javax.xml.stream.XMLStreamWriter xmlWriter)
         throws javax.xml.stream.XMLStreamException {
         if (namespace.equals("")) {
@@ -1108,18 +1108,18 @@ public class T001L implements org.apache.axis2.databinding.ADBBean {
     /**
      * Util method to write an attribute without the ns prefix
      */
-    private void writeQNameAttribute(String namespace,
-        String attName, javax.xml.namespace.QName qname,
+    private void writeQNameAttribute(java.lang.String namespace,
+        java.lang.String attName, javax.xml.namespace.QName qname,
         javax.xml.stream.XMLStreamWriter xmlWriter)
         throws javax.xml.stream.XMLStreamException {
-        String attributeNamespace = qname.getNamespaceURI();
-        String attributePrefix = xmlWriter.getPrefix(attributeNamespace);
+        java.lang.String attributeNamespace = qname.getNamespaceURI();
+        java.lang.String attributePrefix = xmlWriter.getPrefix(attributeNamespace);
 
         if (attributePrefix == null) {
             attributePrefix = registerPrefix(xmlWriter, attributeNamespace);
         }
 
-        String attributeValue;
+        java.lang.String attributeValue;
 
         if (attributePrefix.trim().length() > 0) {
             attributeValue = attributePrefix + ":" + qname.getLocalPart();
@@ -1142,10 +1142,10 @@ public class T001L implements org.apache.axis2.databinding.ADBBean {
     private void writeQName(javax.xml.namespace.QName qname,
         javax.xml.stream.XMLStreamWriter xmlWriter)
         throws javax.xml.stream.XMLStreamException {
-        String namespaceURI = qname.getNamespaceURI();
+        java.lang.String namespaceURI = qname.getNamespaceURI();
 
         if (namespaceURI != null) {
-            String prefix = xmlWriter.getPrefix(namespaceURI);
+            java.lang.String prefix = xmlWriter.getPrefix(namespaceURI);
 
             if (prefix == null) {
                 prefix = generatePrefix(namespaceURI);
@@ -1174,9 +1174,9 @@ public class T001L implements org.apache.axis2.databinding.ADBBean {
         if (qnames != null) {
             // we have to store this data until last moment since it is not possible to write any
             // namespace data after writing the charactor data
-            StringBuffer stringToWrite = new StringBuffer();
-            String namespaceURI = null;
-            String prefix = null;
+            java.lang.StringBuffer stringToWrite = new java.lang.StringBuffer();
+            java.lang.String namespaceURI = null;
+            java.lang.String prefix = null;
 
             for (int i = 0; i < qnames.length; i++) {
                 if (i > 0) {
@@ -1215,10 +1215,10 @@ public class T001L implements org.apache.axis2.databinding.ADBBean {
     /**
      * Register a namespace prefix
      */
-    private String registerPrefix(
-        javax.xml.stream.XMLStreamWriter xmlWriter, String namespace)
+    private java.lang.String registerPrefix(
+        javax.xml.stream.XMLStreamWriter xmlWriter, java.lang.String namespace)
         throws javax.xml.stream.XMLStreamException {
-        String prefix = xmlWriter.getPrefix(namespace);
+        java.lang.String prefix = xmlWriter.getPrefix(namespace);
 
         if (prefix == null) {
             prefix = generatePrefix(namespace);
@@ -1226,7 +1226,7 @@ public class T001L implements org.apache.axis2.databinding.ADBBean {
             javax.xml.namespace.NamespaceContext nsContext = xmlWriter.getNamespaceContext();
 
             while (true) {
-                String uri = nsContext.getNamespaceURI(prefix);
+                java.lang.String uri = nsContext.getNamespaceURI(prefix);
 
                 if ((uri == null) || (uri.length() == 0)) {
                     break;
@@ -1256,14 +1256,14 @@ public class T001L implements org.apache.axis2.databinding.ADBBean {
          *                If this object is a complex type, the reader is positioned at the end element of its outer element
          */
         public static T001L parse(javax.xml.stream.XMLStreamReader reader)
-            throws Exception {
+            throws java.lang.Exception {
             T001L object = new T001L();
 
             int event;
             javax.xml.namespace.QName currentQName = null;
-            String nillableValue = null;
-            String prefix = "";
-            String namespaceuri = "";
+            java.lang.String nillableValue = null;
+            java.lang.String prefix = "";
+            java.lang.String namespaceuri = "";
 
             try {
                 while (!reader.isStartElement() && !reader.isEndElement())
@@ -1273,11 +1273,11 @@ public class T001L implements org.apache.axis2.databinding.ADBBean {
 
                 if (reader.getAttributeValue(
                             "http://www.w3.org/2001/XMLSchema-instance", "type") != null) {
-                    String fullTypeName = reader.getAttributeValue("http://www.w3.org/2001/XMLSchema-instance",
+                    java.lang.String fullTypeName = reader.getAttributeValue("http://www.w3.org/2001/XMLSchema-instance",
                             "type");
 
                     if (fullTypeName != null) {
-                        String nsPrefix = null;
+                        java.lang.String nsPrefix = null;
 
                         if (fullTypeName.indexOf(":") > -1) {
                             nsPrefix = fullTypeName.substring(0,
@@ -1286,15 +1286,15 @@ public class T001L implements org.apache.axis2.databinding.ADBBean {
 
                         nsPrefix = (nsPrefix == null) ? "" : nsPrefix;
 
-                        String type = fullTypeName.substring(fullTypeName.indexOf(
+                        java.lang.String type = fullTypeName.substring(fullTypeName.indexOf(
                                     ":") + 1);
 
                         if (!"T001L".equals(type)) {
                             //find namespace for the prefix
-                            String nsUri = reader.getNamespaceContext()
+                            java.lang.String nsUri = reader.getNamespaceContext()
                                                            .getNamespaceURI(nsPrefix);
 
-                            return (T001L) ExtensionMapper.getTypeObject(nsUri,
+                            return (T001L) com.nhry.webService.client.masterData.functions.ExtensionMapper.getTypeObject(nsUri,
                                 type, reader);
                         }
                     }
@@ -1314,7 +1314,7 @@ public class T001L implements org.apache.axis2.databinding.ADBBean {
                             reader.getName())) ||
                         new javax.xml.namespace.QName("", "MANDT").equals(
                             reader.getName())) {
-                    object.setMANDT(MANDT_type15.Factory.parse(
+                    object.setMANDT(com.nhry.webService.client.masterData.functions.MANDT_type17.Factory.parse(
                             reader));
 
                     reader.next();
@@ -1331,7 +1331,7 @@ public class T001L implements org.apache.axis2.databinding.ADBBean {
                             reader.getName())) ||
                         new javax.xml.namespace.QName("", "WERKS").equals(
                             reader.getName())) {
-                    object.setWERKS(WERKS_type7.Factory.parse(
+                    object.setWERKS(com.nhry.webService.client.masterData.functions.WERKS_type7.Factory.parse(
                             reader));
 
                     reader.next();
@@ -1348,7 +1348,7 @@ public class T001L implements org.apache.axis2.databinding.ADBBean {
                             reader.getName())) ||
                         new javax.xml.namespace.QName("", "LGORT").equals(
                             reader.getName())) {
-                    object.setLGORT(LGORT_type3.Factory.parse(
+                    object.setLGORT(com.nhry.webService.client.masterData.functions.LGORT_type3.Factory.parse(
                             reader));
 
                     reader.next();
@@ -1365,7 +1365,7 @@ public class T001L implements org.apache.axis2.databinding.ADBBean {
                             reader.getName())) ||
                         new javax.xml.namespace.QName("", "LGOBE").equals(
                             reader.getName())) {
-                    object.setLGOBE(LGOBE_type1.Factory.parse(
+                    object.setLGOBE(com.nhry.webService.client.masterData.functions.LGOBE_type1.Factory.parse(
                             reader));
 
                     reader.next();
@@ -1382,7 +1382,7 @@ public class T001L implements org.apache.axis2.databinding.ADBBean {
                             reader.getName())) ||
                         new javax.xml.namespace.QName("", "SPART").equals(
                             reader.getName())) {
-                    object.setSPART(SPART_type7.Factory.parse(
+                    object.setSPART(com.nhry.webService.client.masterData.functions.SPART_type11.Factory.parse(
                             reader));
 
                     reader.next();
@@ -1399,7 +1399,7 @@ public class T001L implements org.apache.axis2.databinding.ADBBean {
                             reader.getName())) ||
                         new javax.xml.namespace.QName("", "XLONG").equals(
                             reader.getName())) {
-                    object.setXLONG(XLONG_type1.Factory.parse(
+                    object.setXLONG(com.nhry.webService.client.masterData.functions.XLONG_type1.Factory.parse(
                             reader));
 
                     reader.next();
@@ -1416,7 +1416,7 @@ public class T001L implements org.apache.axis2.databinding.ADBBean {
                             reader.getName())) ||
                         new javax.xml.namespace.QName("", "XBUFX").equals(
                             reader.getName())) {
-                    object.setXBUFX(XBUFX_type1.Factory.parse(
+                    object.setXBUFX(com.nhry.webService.client.masterData.functions.XBUFX_type1.Factory.parse(
                             reader));
 
                     reader.next();
@@ -1433,7 +1433,7 @@ public class T001L implements org.apache.axis2.databinding.ADBBean {
                             reader.getName())) ||
                         new javax.xml.namespace.QName("", "DISKZ").equals(
                             reader.getName())) {
-                    object.setDISKZ(DISKZ_type1.Factory.parse(
+                    object.setDISKZ(com.nhry.webService.client.masterData.functions.DISKZ_type1.Factory.parse(
                             reader));
 
                     reader.next();
@@ -1450,7 +1450,7 @@ public class T001L implements org.apache.axis2.databinding.ADBBean {
                             reader.getName())) ||
                         new javax.xml.namespace.QName("", "XBLGO").equals(
                             reader.getName())) {
-                    object.setXBLGO(XBLGO_type1.Factory.parse(
+                    object.setXBLGO(com.nhry.webService.client.masterData.functions.XBLGO_type1.Factory.parse(
                             reader));
 
                     reader.next();
@@ -1467,7 +1467,7 @@ public class T001L implements org.apache.axis2.databinding.ADBBean {
                             reader.getName())) ||
                         new javax.xml.namespace.QName("", "XRESS").equals(
                             reader.getName())) {
-                    object.setXRESS(XRESS_type1.Factory.parse(
+                    object.setXRESS(com.nhry.webService.client.masterData.functions.XRESS_type1.Factory.parse(
                             reader));
 
                     reader.next();
@@ -1484,7 +1484,7 @@ public class T001L implements org.apache.axis2.databinding.ADBBean {
                             reader.getName())) ||
                         new javax.xml.namespace.QName("", "XHUPF").equals(
                             reader.getName())) {
-                    object.setXHUPF(XHUPF_type1.Factory.parse(
+                    object.setXHUPF(com.nhry.webService.client.masterData.functions.XHUPF_type1.Factory.parse(
                             reader));
 
                     reader.next();
@@ -1501,7 +1501,7 @@ public class T001L implements org.apache.axis2.databinding.ADBBean {
                             reader.getName())) ||
                         new javax.xml.namespace.QName("", "PARLG").equals(
                             reader.getName())) {
-                    object.setPARLG(PARLG_type1.Factory.parse(
+                    object.setPARLG(com.nhry.webService.client.masterData.functions.PARLG_type1.Factory.parse(
                             reader));
 
                     reader.next();
@@ -1518,7 +1518,7 @@ public class T001L implements org.apache.axis2.databinding.ADBBean {
                             reader.getName())) ||
                         new javax.xml.namespace.QName("", "VKORG").equals(
                             reader.getName())) {
-                    object.setVKORG(VKORG_type9.Factory.parse(
+                    object.setVKORG(com.nhry.webService.client.masterData.functions.VKORG_type13.Factory.parse(
                             reader));
 
                     reader.next();
@@ -1535,7 +1535,7 @@ public class T001L implements org.apache.axis2.databinding.ADBBean {
                             reader.getName())) ||
                         new javax.xml.namespace.QName("", "VTWEG").equals(
                             reader.getName())) {
-                    object.setVTWEG(VTWEG_type9.Factory.parse(
+                    object.setVTWEG(com.nhry.webService.client.masterData.functions.VTWEG_type13.Factory.parse(
                             reader));
 
                     reader.next();
@@ -1552,7 +1552,7 @@ public class T001L implements org.apache.axis2.databinding.ADBBean {
                             reader.getName())) ||
                         new javax.xml.namespace.QName("", "VSTEL").equals(
                             reader.getName())) {
-                    object.setVSTEL(VSTEL_type1.Factory.parse(
+                    object.setVSTEL(com.nhry.webService.client.masterData.functions.VSTEL_type1.Factory.parse(
                             reader));
 
                     reader.next();
@@ -1569,7 +1569,7 @@ public class T001L implements org.apache.axis2.databinding.ADBBean {
                             reader.getName())) ||
                         new javax.xml.namespace.QName("", "LIFNR").equals(
                             reader.getName())) {
-                    object.setLIFNR(LIFNR_type1.Factory.parse(
+                    object.setLIFNR(com.nhry.webService.client.masterData.functions.LIFNR_type3.Factory.parse(
                             reader));
 
                     reader.next();
@@ -1586,7 +1586,7 @@ public class T001L implements org.apache.axis2.databinding.ADBBean {
                             reader.getName())) ||
                         new javax.xml.namespace.QName("", "KUNNR").equals(
                             reader.getName())) {
-                    object.setKUNNR(KUNNR_type7.Factory.parse(
+                    object.setKUNNR(com.nhry.webService.client.masterData.functions.KUNNR_type11.Factory.parse(
                             reader));
 
                     reader.next();
@@ -1603,7 +1603,7 @@ public class T001L implements org.apache.axis2.databinding.ADBBean {
                             reader.getName())) ||
                         new javax.xml.namespace.QName("", "MESBS").equals(
                             reader.getName())) {
-                    object.setMESBS(MESBS_type1.Factory.parse(
+                    object.setMESBS(com.nhry.webService.client.masterData.functions.MESBS_type1.Factory.parse(
                             reader));
 
                     reader.next();
@@ -1620,7 +1620,7 @@ public class T001L implements org.apache.axis2.databinding.ADBBean {
                             reader.getName())) ||
                         new javax.xml.namespace.QName("", "MESST").equals(
                             reader.getName())) {
-                    object.setMESST(MESST_type1.Factory.parse(
+                    object.setMESST(com.nhry.webService.client.masterData.functions.MESST_type1.Factory.parse(
                             reader));
 
                     reader.next();
@@ -1637,7 +1637,7 @@ public class T001L implements org.apache.axis2.databinding.ADBBean {
                             reader.getName())) ||
                         new javax.xml.namespace.QName("", "OIH_LICNO").equals(
                             reader.getName())) {
-                    object.setOIH_LICNO(OIH_LICNO_type1.Factory.parse(
+                    object.setOIH_LICNO(com.nhry.webService.client.masterData.functions.OIH_LICNO_type1.Factory.parse(
                             reader));
 
                     reader.next();
@@ -1654,7 +1654,7 @@ public class T001L implements org.apache.axis2.databinding.ADBBean {
                             reader.getName())) ||
                         new javax.xml.namespace.QName("", "OIG_ITRFL").equals(
                             reader.getName())) {
-                    object.setOIG_ITRFL(OIG_ITRFL_type1.Factory.parse(
+                    object.setOIG_ITRFL(com.nhry.webService.client.masterData.functions.OIG_ITRFL_type1.Factory.parse(
                             reader));
 
                     reader.next();
@@ -1671,7 +1671,7 @@ public class T001L implements org.apache.axis2.databinding.ADBBean {
                             reader.getName())) ||
                         new javax.xml.namespace.QName("", "OIB_TNKASSIGN").equals(
                             reader.getName())) {
-                    object.setOIB_TNKASSIGN(OIB_TNKASSIGN_type1.Factory.parse(
+                    object.setOIB_TNKASSIGN(com.nhry.webService.client.masterData.functions.OIB_TNKASSIGN_type1.Factory.parse(
                             reader));
 
                     reader.next();
@@ -1689,7 +1689,7 @@ public class T001L implements org.apache.axis2.databinding.ADBBean {
                         "Unexpected subelement " + reader.getName());
                 }
             } catch (javax.xml.stream.XMLStreamException e) {
-                throw new Exception(e);
+                throw new java.lang.Exception(e);
             }
 
             return object;
