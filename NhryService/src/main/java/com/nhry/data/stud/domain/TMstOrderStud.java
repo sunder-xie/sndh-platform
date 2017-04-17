@@ -35,7 +35,9 @@ public class TMstOrderStud {
     
     private String salesOrg;//销售组织
     
-    private String orderDateStr;//
+    private String orderDateStr;//订单日期（目标日期）
+    
+    private String takeOrderDateStr;//取数的订单日期
     
     private List<TMstOrderStudItem> list10;//学生奶
     
@@ -52,7 +54,15 @@ public class TMstOrderStud {
     private String matnr;//
     
 
-    public String getSchoolName() {
+    public String getTakeOrderDateStr() {
+		return takeOrderDateStr;
+	}
+
+	public void setTakeOrderDateStr(String takeOrderDateStr) {
+		this.takeOrderDateStr = takeOrderDateStr;
+	}
+
+	public String getSchoolName() {
 		return schoolName;
 	}
 

@@ -4,7 +4,7 @@
   <resultMap id="BaseResultMap" type="com.nhry.data.stud.domain.TMdSchoolMaraRule" >
     <id column="MID" property="mid" jdbcType="VARCHAR" />
     <result column="SCHOOL_CODE" property="schoolCode" jdbcType="VARCHAR" />
-     <result column="MATNR_TXT" property="matnrText" jdbcType="VARCHAR" />
+     <result column="MATNR_TXT" property="matnrTxt" jdbcType="VARCHAR" />
     <result column="MATNR" property="matnr" jdbcType="VARCHAR" />
     <result column="MATNR_QTY" property="matnrQty" jdbcType="INTEGER" />
     <result column="FIXED_QTY" property="fixedQty" jdbcType="INTEGER" />
@@ -31,6 +31,15 @@
     <include refid="Base_Column_List" />
     from t_md_school_mara_rule ru left join t_md_mara sc  on ru.MATNR=sc.MATNR and ru.SALES_ORG=sc.SALES_ORG
     where  ru.SCHOOL_CODE= #{schoolCode,jdbcType=VARCHAR} and ru.SALES_ORG= #{salesOrg,jdbcType=VARCHAR}
+  </select>
+  
+  <select id="findSchoolMaraRuleForMatnr" resultMap="BaseResultMap" parameterType="java.util.Map" >
+    select 
+    <include refid="Base_Column_List" />
+    from t_md_school_mara_rule ru left join t_md_mara sc  on ru.MATNR=sc.MATNR and ru.SALES_ORG=sc.SALES_ORG
+    where  ru.SCHOOL_CODE= #{schoolCode,jdbcType=VARCHAR} 
+    and ru.SALES_ORG= #{salesOrg,jdbcType=VARCHAR}
+    and ru.MATNR=#{matnr}
   </select>
   
   

@@ -18,8 +18,10 @@ import org.springframework.stereotype.Controller;
 
 import com.github.pagehelper.PageInfo;
 import com.nhry.common.exception.MessageCode;
+import com.nhry.data.stud.domain.TMdMaraStud;
 import com.nhry.data.stud.domain.TMstOrderStud;
 import com.nhry.model.stud.OrderBatchBuildModel;
+import com.nhry.model.stud.OrderStudLossModel;
 import com.nhry.model.stud.OrderStudQueryModel;
 import com.nhry.model.stud.SchoolQueryModel;
 import com.nhry.rest.BaseResource;
@@ -117,6 +119,23 @@ public class StudentMilkOrderResource  extends BaseResource {
 		return convertToRespModel(MessageCode.NORMAL, null,  maraStudService.findAllListBySalesOrg());
 	}
 	
+	
+	@POST
+	@Path("/findMaraStudAllPage")
+	@Produces(MediaType.APPLICATION_JSON)
+	@ApiOperation(value = "/findMaraStudAllPage", notes = "查询奶品列表分页")
+	public Response findMaraStudAllPage(@ApiParam(required=true,name="queryModel")OrderStudQueryModel queryModel){
+		return convertToRespModel(MessageCode.NORMAL, null,  maraStudService.findMaraStudAllPage(queryModel));
+	}
+	
+	@POST
+	@Path("/saveMaraStud")
+	@Produces(MediaType.APPLICATION_JSON)
+	@ApiOperation(value = "/saveMaraStud", response = Integer.class, notes = "保存奶产品")
+	public Response saveMaraStud(@ApiParam(required=true,name="tMdMaraStud")TMdMaraStud tMdMaraStud){
+		return convertToRespModel(MessageCode.NORMAL, null,  maraStudService.updateMaraStud(tMdMaraStud));
+	}
+	
 	@POST
 	@Path("/findOrderInfoBySchoolCodeAndDate")
 	@Produces(MediaType.APPLICATION_JSON)
@@ -125,6 +144,9 @@ public class StudentMilkOrderResource  extends BaseResource {
 	public Response findOrderInfoBySchoolCodeAndDate(@ApiParam(required=true,name="mstOrderStud")TMstOrderStud mstOrderStud){
 		return convertToRespModel(MessageCode.NORMAL, null,  orderStudService.findOrderInfoBySchoolCodeAndDate(mstOrderStud));
 	}
+	
+	
+	
 	
 	@POST
 	@Path("/buildBatchInfo")
@@ -142,6 +164,24 @@ public class StudentMilkOrderResource  extends BaseResource {
 	@ApiOperation(value = "/createOrderWithBatch", response = int.class, notes = "批量生成订单")
 	public Response createOrderWithBatch(@ApiParam(required=true,name="orderBatchBuildModel")OrderBatchBuildModel orderBatchBuildModel) throws Exception{
 		return convertToRespModel(MessageCode.NORMAL, null,  orderStudService.createOrderWithBatch(orderBatchBuildModel));
+	}
+	
+	@POST
+	@Path("/deleteOrderWithBatch")
+	@Produces(MediaType.APPLICATION_JSON)
+	@Consumes(MediaType.APPLICATION_JSON)
+	@ApiOperation(value = "/deleteOrderWithBatch", response = int.class, notes = "批量删除指定日期的订单")
+	public Response deleteOrderWithBatch(@ApiParam(required=true,name="orderBatchBuildModel")OrderBatchBuildModel orderBatchBuildModel) throws Exception{
+		return convertToRespModel(MessageCode.NORMAL, null,  orderStudService.updateOrderWithBatch(orderBatchBuildModel));
+	}
+	
+	@POST
+	@Path("/calcLoss")
+	@Produces(MediaType.APPLICATION_JSON)
+	@Consumes(MediaType.APPLICATION_JSON)
+	@ApiOperation(value = "/calcLoss", response = int.class, notes = "订奶计算损耗")
+	public Response calcLoss(@ApiParam(required=true,name="orderStudLossModel")OrderStudLossModel orderStudLossModel) throws Exception{
+		return convertToRespModel(MessageCode.NORMAL, null,  orderStudService.calcLoss(orderStudLossModel));
 	}
 	
 }

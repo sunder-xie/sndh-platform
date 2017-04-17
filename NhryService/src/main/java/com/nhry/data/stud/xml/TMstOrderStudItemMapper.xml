@@ -67,7 +67,18 @@
   	where ORDER_DATE=#{orderDateStr}
   	and SCHOOL_CODE=#{schoolCode}
   	and SALES_ORG=#{salesOrg}
+  	and ORDER_STATUS='10'
   </update>
+  
+  <update id="deleteOrderWithBatch" parameterType="java.util.Map">
+  	update t_mst_order_stud
+  	set ORDER_STATUS='20'
+  	where ORDER_DATE=#{orderDateStr}
+  	and SALES_ORG=#{salesOrg}
+  	and ORDER_STATUS='10'
+  </update>
+  
+  
   
   
   <insert id="insertSdutOrderItem" parameterType="com.nhry.data.stud.domain.TMstOrderStudItem" >

@@ -47,7 +47,6 @@ public class SchoolRuleServiceImpl  implements SchoolRuleService {
 		if( StringUtils.isBlank(currentUser.getSalesOrg())){
 			throw new ServiceException(MessageCode.LOGIC_ERROR, "学校未关联销售组织:"+tMdSchoolRule.getSchoolCode());
 		}
-		
 		if(StringUtils.isNotBlank(tMdSchoolRule.getMid())){
 			Date date = new Date();
 			tMdSchoolRule.setLastModified(date);
@@ -66,8 +65,6 @@ public class SchoolRuleServiceImpl  implements SchoolRuleService {
 			tMdSchoolRule.setSalesOrg(currentUser.getSalesOrg());
 			return tMdSchoolRuleMapper.saveone(tMdSchoolRule);
 		}
-		
-		
 	}
 
 

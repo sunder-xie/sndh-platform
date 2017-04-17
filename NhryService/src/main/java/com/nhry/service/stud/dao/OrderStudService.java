@@ -5,6 +5,7 @@ import java.util.Map;
 import com.github.pagehelper.PageInfo;
 import com.nhry.data.stud.domain.TMstOrderStud;
 import com.nhry.model.stud.OrderBatchBuildModel;
+import com.nhry.model.stud.OrderStudLossModel;
 import com.nhry.model.stud.OrderStudQueryModel;
 
 /**
@@ -26,4 +27,8 @@ public interface OrderStudService {
 	Map<String, Object> buildBatchInfo(OrderBatchBuildModel orderBatchBuildModel)  throws Exception;
 
 	int createOrderWithBatch(OrderBatchBuildModel orderBatchBuildModel)  throws Exception;
+
+	int updateOrderWithBatch(OrderBatchBuildModel orderBatchBuildModel);
+
+	int calcLoss(OrderStudLossModel orderStudLossModel);
 }

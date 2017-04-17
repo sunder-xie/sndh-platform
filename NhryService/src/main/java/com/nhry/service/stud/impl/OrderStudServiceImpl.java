@@ -1,5 +1,6 @@
 package com.nhry.service.stud.impl;
 
+import java.math.BigDecimal;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -27,6 +28,8 @@ import com.nhry.data.stud.dao.TMdClassMapper;
 import com.nhry.data.stud.dao.TMdMaraStudMapper;
 import com.nhry.data.stud.dao.TMdSchoolClassMapper;
 import com.nhry.data.stud.dao.TMdSchoolMapper;
+import com.nhry.data.stud.dao.TMdSchoolMaraRuleBaseMapper;
+import com.nhry.data.stud.dao.TMdSchoolMaraRuleMapper;
 import com.nhry.data.stud.dao.TMdSchoolRuleMapper;
 import com.nhry.data.stud.dao.TMstOrderStudItemMapper;
 import com.nhry.data.stud.dao.TMstOrderStudLossMapper;
@@ -34,12 +37,17 @@ import com.nhry.data.stud.dao.TMstOrderStudMapper;
 import com.nhry.data.stud.domain.TMdClass;
 import com.nhry.data.stud.domain.TMdMaraStud;
 import com.nhry.data.stud.domain.TMdSchool;
+import com.nhry.data.stud.domain.TMdSchoolMaraRule;
+import com.nhry.data.stud.domain.TMdSchoolMaraRuleBase;
 import com.nhry.data.stud.domain.TMdSchoolRule;
 import com.nhry.data.stud.domain.TMstOrderStud;
 import com.nhry.data.stud.domain.TMstOrderStudItem;
 import com.nhry.data.stud.domain.TMstOrderStudLoss;
 import com.nhry.model.stud.OrderBatchBuildModel;
+import com.nhry.model.stud.OrderStudLossModel;
 import com.nhry.model.stud.OrderStudQueryModel;
+import com.nhry.model.stud.SchoolClassModel;
+import com.nhry.model.stud.SchoolMaraRuleModel;
 import com.nhry.model.stud.SchoolQueryModel;
 import com.nhry.service.stud.dao.OrderStudService;
 
@@ -49,6 +57,12 @@ import com.nhry.service.stud.dao.OrderStudService;
  * @date 2017年4月11日
  */
 public class OrderStudServiceImpl implements OrderStudService {
+	
+	@Autowired
+	private TMdSchoolMaraRuleMapper tMdSchoolMaraRuleMapper;
+	
+	@Autowired
+	private TMdSchoolMaraRuleBaseMapper tMdSchoolMaraRuleBaseMapper;
 
 	@Autowired
 	private TMstOrderStudMapper mstOrderStudMapper;
@@ -90,7 +104,7 @@ public class OrderStudServiceImpl implements OrderStudService {
 			throw new ServiceException(MessageCode.LOGIC_ERROR, "参数必传");
 		}
 		if(StringUtils.isBlank(mstOrderStud.getOrderDateStr())){
-			throw new ServiceException(MessageCode.LOGIC_ERROR, "订单日期必选");
+			throw new ServiceException(MessageCode.LOGIC_ERROR, "目标日期必选");
 		}
 		if(StringUtils.isBlank(mstOrderStud.getSchoolCode())){
 			throw new ServiceException(MessageCode.LOGIC_ERROR, "学校必选");
@@ -243,10 +257,10 @@ public class OrderStudServiceImpl implements OrderStudService {
 	@Override
 	public Map<String, Object> findOrderInfoBySchoolCodeAndDate(TMstOrderStud mstOrderStud) {
 		if(null == mstOrderStud || StringUtils.isBlank(mstOrderStud.getSchoolCode())){
-			throw new ServiceException(MessageCode.LOGIC_ERROR, "学校代码必传，请选择学校");
+			throw new ServiceException(MessageCode.LOGIC_ERROR, "学校代码必传，请选择学校站点");
 		}
 		if(StringUtils.isBlank(mstOrderStud.getOrderDateStr())){
-			throw new ServiceException(MessageCode.LOGIC_ERROR, "订单日期必传，请选择订单日期");
+			throw new ServiceException(MessageCode.LOGIC_ERROR, "取数的订单日期必传，请选择取数的订单日期");
 		}
 		if(StringUtils.isBlank(this.userSessionService.getCurrentUser().getSalesOrg())){
 			throw new ServiceException(MessageCode.LOGIC_ERROR, "当前用户未归属销售组织");
@@ -262,7 +276,7 @@ public class OrderStudServiceImpl implements OrderStudService {
 			
 			//学生奶
 			List<TMstOrderStudItem> list10 = new ArrayList<TMstOrderStudItem>();
-			List<TMdClass> classList = classMapper.findClassListBySalesOrg10(user.getSalesOrg());
+			List<TMdClass> classList = schoolClassMapper.findAllClassBySchool(new SchoolClassModel(user.getSalesOrg(), mstOrderStud.getSchoolCode()));
 			if(CollectionUtils.isNotEmpty(classList)){
 				TMstOrderStudItem item10 = null;
 				for(TMdClass mdClass : classList){
@@ -319,8 +333,9 @@ public class OrderStudServiceImpl implements OrderStudService {
 			selectMap.put("salesOrg", user.getSalesOrg());
 			List<TMstOrderStudItem> list10 = orderStudItemMapper.findOrderItemByMap(selectMap);
 			if(CollectionUtils.isEmpty(list10)){
+				
 				list10 = new ArrayList<TMstOrderStudItem>();
-				List<TMdClass> classList = classMapper.findClassListBySalesOrg10(user.getSalesOrg());
+				List<TMdClass> classList = schoolClassMapper.findAllClassBySchool(new SchoolClassModel(user.getSalesOrg(), mstOrderStud.getSchoolCode()));
 				if(CollectionUtils.isNotEmpty(classList)){
 					TMstOrderStudItem item10 = null;
 					for(TMdClass mdClass : classList){
@@ -341,6 +356,7 @@ public class OrderStudServiceImpl implements OrderStudService {
 				Map<String, Object> selectClassMap = new HashMap<>();
 				selectClassMap.put("salesOrg", user.getSalesOrg());
 				selectClassMap.put("notInList", notInList);
+				selectClassMap.put("schoolCode", mstOrderStud.getSchoolCode());
 				List<TMdClass> classList = classMapper.findClassListBySalesOrgNotIn(selectClassMap);
 				if(CollectionUtils.isNotEmpty(classList)){
 					TMstOrderStudItem item10 = null;
@@ -531,6 +547,9 @@ public class OrderStudServiceImpl implements OrderStudService {
 		if(StringUtils.isBlank(orderBatchBuildModel.getOrderDateStr())){
 			throw new ServiceException(MessageCode.LOGIC_ERROR, "目标日期必传");
 		}
+		if(orderBatchBuildModel.getOrderGetDateStr().equals(orderBatchBuildModel.getOrderDateStr())){
+			throw new ServiceException(MessageCode.LOGIC_ERROR, "取数日期和目标日期不能是同一天");
+		}
 		if(StringUtils.isBlank(orderBatchBuildModel.getWeek())){
 			throw new ServiceException(MessageCode.LOGIC_ERROR, "指定套餐必传");
 		}
@@ -595,13 +614,100 @@ public class OrderStudServiceImpl implements OrderStudService {
 	
 	private Logger logger = LoggerFactory.getLogger(getClass());
 	
-	private void deleteOrderAndItem(String orderDateStr, String schoolCode, String salesOrg){
+	private int deleteOrderAndItem(String orderDateStr, String schoolCode, String salesOrg){
 		Map<String, Object> delMap = new HashMap<String, Object>();
 		delMap.put("orderDateStr", orderDateStr);
 		delMap.put("schoolCode", schoolCode);
 		delMap.put("salesOrg", salesOrg);
 		int c = orderStudItemMapper.deleteOrderAndItem(delMap);
-		logger.info("删除影响行数{}", c);
+		logger.info("更新影响行数{}", c);
+		return c;
+	}
+
+	@Override
+	public int updateOrderWithBatch(OrderBatchBuildModel orderBatchBuildModel) {
+		TSysUser user = this.userSessionService.getCurrentUser();
+		if(StringUtils.isBlank(user.getSalesOrg())){
+			throw new ServiceException(MessageCode.LOGIC_ERROR, "当前用户未归属销售组织");
+		}
+		if(null == orderBatchBuildModel || StringUtils.isBlank(orderBatchBuildModel.getOrderDateStr())){
+			throw new ServiceException(MessageCode.LOGIC_ERROR, "请选择需要删除订单数据的目标日期");
+		}
+		Map<String, Object> delMap = new HashMap<String, Object>();
+		delMap.put("orderDateStr", orderBatchBuildModel.getOrderDateStr());
+		delMap.put("salesOrg", user.getSalesOrg());
+		int c = orderStudItemMapper.deleteOrderWithBatch(delMap);
+		logger.info("更新影响行数{}", c);
+		return c;
+	}
+
+	/*
+	 * 计算损耗
+	 * (non-Javadoc)
+	 * @see com.nhry.service.stud.dao.OrderStudService#calcLoss(com.nhry.model.stud.OrderStudLossModel)
+	 */
+	@Override
+	public int calcLoss(OrderStudLossModel orderStudLossModel) {
+		TSysUser user = this.userSessionService.getCurrentUser();
+		if(null == orderStudLossModel|| StringUtils.isBlank(orderStudLossModel.getSchoolCode())){
+			throw new ServiceException(MessageCode.LOGIC_ERROR, "学校代码必传，请选择学校");
+		}
+		if(StringUtils.isBlank(user.getSalesOrg())){
+			throw new ServiceException(MessageCode.LOGIC_ERROR, "当前用户未归属销售组织");
+		}
+		if(StringUtils.isBlank(orderStudLossModel.getMatnr())){
+			throw new ServiceException(MessageCode.LOGIC_ERROR, "奶品代码必传，请选择学生奶品");
+		}
+		if(null == orderStudLossModel.getMatnrCount() || orderStudLossModel.getMatnrCount() <= 0){
+			throw new ServiceException(MessageCode.LOGIC_ERROR, "学生喝奶总数为0,不能计算");
+		}
+		HashMap<String, Object> selectMap = new HashMap<String, Object>();
+		selectMap.put("salesOrg", user.getSalesOrg());
+		selectMap.put("matnr", orderStudLossModel.getMatnr());
+		selectMap.put("schoolCode", orderStudLossModel.getSchoolCode());
+		TMdSchoolMaraRule maraRule = tMdSchoolMaraRuleMapper.findSchoolMaraRuleForMatnr(selectMap);
+		TMdSchoolMaraRuleBase ruleBase = tMdSchoolMaraRuleBaseMapper.findMaraRuleBaseByModel(new SchoolMaraRuleModel(user.getSalesOrg(), orderStudLossModel.getSchoolCode(), null, null));
+		
+		if(null == maraRule && null == ruleBase){
+			throw new ServiceException(MessageCode.LOGIC_ERROR, "当前学校未设置损耗政策");
+		}
+		
+		BigDecimal result = new BigDecimal("0");
+		if(null != ruleBase){
+			if(null != ruleBase.getFixedQty() && ruleBase.getFixedQty() > 0){
+				
+				/**
+				 * 数量计算
+				 */
+				result = result.add(new BigDecimal(ruleBase.getFixedQty()));
+			}
+			else if(null != ruleBase.getFixedScale() && ruleBase.getFixedScale() > 0){
+				
+				/**
+				 * 比例计算
+				 */
+				if(ruleBase.getFixedMaxQty() == null || ruleBase.getFixedMaxQty() <= 0){
+					throw new ServiceException(MessageCode.LOGIC_ERROR, "比例计算中，上限数量未设置(不能<=0)");
+				}
+				result = new BigDecimal(orderStudLossModel.getMatnrCount()).multiply(
+							new BigDecimal(ruleBase.getFixedScale()).divide(new BigDecimal("100"))
+						);
+				if(result.compareTo(new BigDecimal(ruleBase.getFixedMaxQty())) > 0){
+					result = new BigDecimal(ruleBase.getFixedMaxQty());
+				}
+				
+			}
+		}
+		if(null != maraRule){
+			/**
+			 * 每个奶品的数量设置，取数，计算
+			 */
+			if(null != maraRule.getMatnrQty() && maraRule.getMatnrQty() > 0){
+				result = result.add(new BigDecimal(maraRule.getMatnrQty()));
+			}
+			
+		}
+		return result.intValue();
 	}
 
 }
