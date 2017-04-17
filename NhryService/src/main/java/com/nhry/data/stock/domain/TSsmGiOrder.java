@@ -19,6 +19,25 @@ public class TSsmGiOrder {
 
     private String reqOrderNo;
 
+    private String qtY;//报货总数
+    private String  confirm_QTY;//sap实际发货总数
+
+    public String getQtY() {
+        return qtY;
+    }
+
+    public void setQtY(String qtY) {
+        this.qtY = qtY;
+    }
+
+    public String getConfirm_QTY() {
+        return confirm_QTY;
+    }
+
+    public void setConfirm_QTY(String confirm_QTY) {
+        this.confirm_QTY = confirm_QTY;
+    }
+
     public String getOrderNo() {
         return orderNo;
     }
