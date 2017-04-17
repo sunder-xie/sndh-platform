@@ -53,8 +53,62 @@ public class TMstOrderStud {
     
     private String matnr;//
     
+    private String matnrTxt;//
+    
+    private String totalSum;//总数(老师奶+学生奶+补损)
+    
+    private String zbotCode;
+    
+    private String zbotCodeName;
+    
+    private String orderType;//10学生，20老师
+    
+    
+    
+    
+    
 
-    public String getTakeOrderDateStr() {
+    public String getOrderType() {
+		return orderType;
+	}
+
+	public void setOrderType(String orderType) {
+		this.orderType = orderType;
+	}
+
+	public String getMatnrTxt() {
+		return matnrTxt;
+	}
+
+	public void setMatnrTxt(String matnrTxt) {
+		this.matnrTxt = matnrTxt;
+	}
+
+	public String getTotalSum() {
+		return totalSum;
+	}
+
+	public void setTotalSum(String totalSum) {
+		this.totalSum = totalSum;
+	}
+
+	public String getZbotCode() {
+		return zbotCode;
+	}
+
+	public void setZbotCode(String zbotCode) {
+		this.zbotCode = zbotCode;
+	}
+
+	public String getZbotCodeName() {
+		return zbotCodeName;
+	}
+
+	public void setZbotCodeName(String zbotCodeName) {
+		this.zbotCodeName = zbotCodeName;
+	}
+
+	public String getTakeOrderDateStr() {
 		return takeOrderDateStr;
 	}
 

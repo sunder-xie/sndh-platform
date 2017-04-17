@@ -4,6 +4,7 @@ import java.util.Map;
 
 import com.github.pagehelper.PageInfo;
 import com.nhry.data.stud.domain.TMstOrderStud;
+import com.nhry.model.stud.ExportStudOrderMilkModel;
 import com.nhry.model.stud.OrderBatchBuildModel;
 import com.nhry.model.stud.OrderStudLossModel;
 import com.nhry.model.stud.OrderStudQueryModel;
@@ -31,4 +32,6 @@ public interface OrderStudService {
 	int updateOrderWithBatch(OrderBatchBuildModel orderBatchBuildModel);
 
 	int calcLoss(OrderStudLossModel orderStudLossModel);
+	
+	String exportStudOrderMilk(ExportStudOrderMilkModel model) throws Exception;
 }

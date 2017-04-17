@@ -1,5 +1,7 @@
 package com.nhry.data.stud.impl;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.github.pagehelper.PageInfo;
@@ -36,6 +38,16 @@ public class TMstOrderStudMapperImpl implements TMstOrderStudMapper {
 	@Override
 	public TMstOrderStud selectOrderBySchoolCodeAndDateWithOrderStatus10(TMstOrderStud mstOrderStud) {
 		return sqlSessionTemplate.selectOne("selectOrderBySchoolCodeAndDateWithOrderStatus10", mstOrderStud);
+	}
+
+	@Override
+	public List<TMstOrderStud> findMatnrWithOrder(TMstOrderStud selectObj) {
+		return sqlSessionTemplate.selectList("findMatnrWithOrder", selectObj);
+	}
+
+	@Override
+	public List<TMstOrderStud> findSchoolWithOrder(TMstOrderStud selectObj) {
+		return sqlSessionTemplate.selectList("findSchoolWithOrder", selectObj);
 	}
 
 }
