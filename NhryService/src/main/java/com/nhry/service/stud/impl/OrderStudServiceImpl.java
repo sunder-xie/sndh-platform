@@ -577,7 +577,7 @@ public class OrderStudServiceImpl implements OrderStudService {
 		/**
 		 * 生成
 		 */
-		this.deleteOrderAndItem(orderBatchBuildModel.getOrderDateStr(), orderBatchBuildModel.getOrderDateStr(), user.getSalesOrg());
+		this.deleteOrderAndItem(orderBatchBuildModel.getOrderDateStr(), orderBatchBuildModel.getSchoolCode(), user.getSalesOrg());
 		String orderId = getCode();
 		TMstOrderStud mstOrderStud = new TMstOrderStud();
 		Date orderDate = new SimpleDateFormat("yyyy-MM-dd").parse(orderBatchBuildModel.getOrderDateStr());
