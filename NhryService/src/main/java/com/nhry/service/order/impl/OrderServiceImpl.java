@@ -3202,9 +3202,12 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 		validateOrderInfo(record);
 		//暂时生成订单号
 		Date date = new Date();
+
 		//判断如果新增订单时订单编号不为空，则代表是订户数据导入
+
 		if(StringUtils.isBlank(order.getOrderNo())){
 			order.setOrderNo(CodeGeneratorUtil.getCode());
+			order.setPaymentmethod(order.getPaymentStat());//10 后款 20 先款
 		}
 		if(order.getInitAmt()!=null){
 			order.setOnlineInitAmt(order.getInitAmt());
@@ -3221,7 +3224,7 @@ public class OrderServiceImpl extends BaseService implements OrderService {
 		if(StringUtils.isBlank(order.getPreorderSource())){
 			order.setPreorderSource("30");//订单来源  页面中来源都是30（奶站） 10电商20征订40牛奶钱包50送奶工APP 60 电话 70 机构
 		}
-		order.setPaymentmethod(order.getPaymentStat());//10 后款 20 先款
+
 
 		if("70".equals(order.getPreorderSource())){
 			if(StringUtils.isBlank(order.getOnlineSourceType())){
