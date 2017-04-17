@@ -20,6 +20,7 @@ import com.github.pagehelper.PageInfo;
 import com.nhry.common.exception.MessageCode;
 import com.nhry.data.stud.domain.TMdMaraStud;
 import com.nhry.data.stud.domain.TMstOrderStud;
+import com.nhry.model.stud.ExportStudOrderMilkModel;
 import com.nhry.model.stud.OrderBatchBuildModel;
 import com.nhry.model.stud.OrderStudLossModel;
 import com.nhry.model.stud.OrderStudQueryModel;
@@ -182,6 +183,15 @@ public class StudentMilkOrderResource  extends BaseResource {
 	@ApiOperation(value = "/calcLoss", response = int.class, notes = "订奶计算损耗")
 	public Response calcLoss(@ApiParam(required=true,name="orderStudLossModel")OrderStudLossModel orderStudLossModel) throws Exception{
 		return convertToRespModel(MessageCode.NORMAL, null,  orderStudService.calcLoss(orderStudLossModel));
+	}
+	
+	@POST
+	@Path("/exportStudOrderMilk")
+	@Produces(MediaType.APPLICATION_JSON)
+	@Consumes(MediaType.APPLICATION_JSON)
+	@ApiOperation(value = "/exportStudOrderMilk", response = int.class, notes = "导出EXCEl")
+	public Response calcLoss(@ApiParam(required=true,name="model")ExportStudOrderMilkModel model) throws Exception{
+		return convertToRespModel(MessageCode.NORMAL, null,  orderStudService.exportStudOrderMilk(model));
 	}
 	
 }

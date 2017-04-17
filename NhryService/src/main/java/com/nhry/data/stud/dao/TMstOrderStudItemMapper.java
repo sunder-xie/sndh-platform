@@ -3,6 +3,7 @@ package com.nhry.data.stud.dao;
 import java.util.List;
 import java.util.Map;
 
+import com.nhry.data.stud.domain.TMstOrderStud;
 import com.nhry.data.stud.domain.TMstOrderStudItem;
 
 public interface TMstOrderStudItemMapper {
@@ -20,4 +21,9 @@ public interface TMstOrderStudItemMapper {
 	int deleteOrderAndItem(Map<String, Object> delMap);
 
 	int deleteOrderWithBatch(Map<String, Object> delMap);
+
+	String findSumBySelective(TMstOrderStud obj);
+
+	String findLossSumBySelective(TMstOrderStud obj);
+	
 }

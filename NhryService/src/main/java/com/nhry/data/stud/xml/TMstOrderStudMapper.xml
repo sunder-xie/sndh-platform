@@ -19,6 +19,71 @@
     ORDER_ID, ORDER_DATE, SCHOOL_CODE, ORDER_STATUS, REMARK, SALES_ORG
   </sql>
   
+  <select id="findSumBySelective" resultType="java.lang.String" parameterType="com.nhry.data.stud.domain.TMstOrderStud">
+  		select IFNULL(sum(a.QTY), 0) s
+  		from t_mst_order_stud_item a
+  		left join t_mst_order_stud b on a.order_id=b.order_id
+  		where a.ORDER_DATE=#{orderDateStr}
+  		and b.order_status='10'
+  		and a.SALES_ORG=#{salesOrg}
+  		and a.MATNR=#{matnr}
+  		and a.ORDER_TYPE=#{orderType}
+  		<if test="null != schoolCode and '' != schoolCode">
+  			and a.SCHOOL_CODE=#{schoolCode}
+  		</if>
+  </select>
+  
+  <select id="findLossSumBySelective" resultType="java.lang.String" parameterType="com.nhry.data.stud.domain.TMstOrderStud">
+  		select IFNULL(sum(a.QTY), 0) s
+  		from t_mst_order_stud_loss a
+  		left join t_mst_order_stud b on a.order_id=b.order_id
+  		where b.ORDER_DATE=#{orderDateStr}
+  		and b.order_status='10'
+  		and a.SALES_ORG=#{salesOrg}
+  		and a.MATNR=#{matnr}
+  		<if test="null != schoolCode and '' != schoolCode">
+  			and b.SCHOOL_CODE=#{schoolCode}
+  		</if>
+  </select>
+  
+  
+  <select id="findMatnrWithOrder" resultType="com.nhry.data.stud.domain.TMstOrderStud" parameterType="com.nhry.data.stud.domain.TMstOrderStud">
+	  SELECT DISTINCT
+	  a.MATNR matnr, a.MATNR_TXT matnrTxt, a.ZBOT_CODE zbotCode,
+	  (SELECT i.ITEM_NAME FROM t_sys_code_item I WHERE i.TYPE_CODE=<include refid="mybaties.constant.packing _type"></include> AND i.ITEM_CODE=a.ZBOT_CODE) zbotCodeName
+	  FROM t_md_mara_stud a
+	  where a.status='Y'
+	  AND a.sales_org=#{salesOrg}
+	  AND MATNR IN 
+	  (
+	  	select DISTINCT b.MATNR from
+	  	t_mst_order_stud_item b
+	  	left join t_mst_order_stud c on b.order_id=c.order_id
+	  	where c.sales_org=#{salesOrg}
+	  	and c.order_status='10'
+	  	and c.order_date=#{orderDateStr}
+	  )
+  </select>
+  
+  
+  <select id="findSchoolWithOrder" resultType="com.nhry.data.stud.domain.TMstOrderStud" parameterType="com.nhry.data.stud.domain.TMstOrderStud">
+	  SELECT DISTINCT
+	  a.SCHOOL_CODE schoolCode, a.SCHOOL_NAME schoolName, b.MATNR matnr,d.MATNR_TXT matnrTxt, d.ZBOT_CODE zbotCode,
+	  (SELECT i.ITEM_NAME FROM t_sys_code_item I WHERE i.TYPE_CODE=<include refid="mybaties.constant.packing _type"></include> AND i.ITEM_CODE=d.ZBOT_CODE) zbotCodeName
+	  from t_md_school a
+	  left join t_mst_order_stud_item b on a.school_code=b.school_code
+	  left join t_mst_order_stud c on b.order_id=c.order_id
+	  left join t_md_mara_stud d on b.matnr=d.matnr
+	  where a.VISIABLE='10'
+	  and c.ORDER_DATE=#{orderDateStr}
+	  and a.SALES_ORG=#{salesOrg}
+	  and c.order_status='10'
+	  and c.SALES_ORG=#{salesOrg}
+	  and d.STATUS='Y'
+	  and d.SALES_ORG=#{salesOrg}
+	  order by a.school_code
+  </select>
+  
   
   <select id="selectByOrderId" resultMap="BaseResultMap" parameterType="java.lang.String" >
     select 

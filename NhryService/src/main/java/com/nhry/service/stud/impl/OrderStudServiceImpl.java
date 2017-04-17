@@ -1,5 +1,8 @@
 package com.nhry.service.stud.impl;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.math.BigDecimal;
 import java.text.DateFormat;
 import java.text.ParseException;
@@ -15,6 +18,11 @@ import java.util.UUID;
 
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.ss.usermodel.Row;
+import org.apache.poi.ss.usermodel.Sheet;
+import org.apache.poi.ss.usermodel.Workbook;
+import org.apache.poi.ss.usermodel.WorkbookFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -43,6 +51,7 @@ import com.nhry.data.stud.domain.TMdSchoolRule;
 import com.nhry.data.stud.domain.TMstOrderStud;
 import com.nhry.data.stud.domain.TMstOrderStudItem;
 import com.nhry.data.stud.domain.TMstOrderStudLoss;
+import com.nhry.model.stud.ExportStudOrderMilkModel;
 import com.nhry.model.stud.OrderBatchBuildModel;
 import com.nhry.model.stud.OrderStudLossModel;
 import com.nhry.model.stud.OrderStudQueryModel;
@@ -50,6 +59,7 @@ import com.nhry.model.stud.SchoolClassModel;
 import com.nhry.model.stud.SchoolMaraRuleModel;
 import com.nhry.model.stud.SchoolQueryModel;
 import com.nhry.service.stud.dao.OrderStudService;
+import com.nhry.utils.EnvContant;
 
 
 /**
@@ -656,7 +666,7 @@ public class OrderStudServiceImpl implements OrderStudService {
 			throw new ServiceException(MessageCode.LOGIC_ERROR, "当前用户未归属销售组织");
 		}
 		if(StringUtils.isBlank(orderStudLossModel.getMatnr())){
-			throw new ServiceException(MessageCode.LOGIC_ERROR, "奶品代码必传，请选择学生奶品");
+			throw new ServiceException(MessageCode.LOGIC_ERROR, "奶品代码必传");
 		}
 		if(null == orderStudLossModel.getMatnrCount() || orderStudLossModel.getMatnrCount() <= 0){
 			throw new ServiceException(MessageCode.LOGIC_ERROR, "学生喝奶总数为0,不能计算");
@@ -708,6 +718,147 @@ public class OrderStudServiceImpl implements OrderStudService {
 			
 		}
 		return result.intValue();
+	}
+
+	@Override
+	public String exportStudOrderMilk(ExportStudOrderMilkModel model)  throws Exception{
+		TSysUser user = this.userSessionService.getCurrentUser();
+		if(StringUtils.isBlank(model.getOrderDateStr())){
+			throw new ServiceException(MessageCode.LOGIC_ERROR, "订单日期必传");
+		}
+		if(StringUtils.isBlank(user.getSalesOrg())){
+			throw new ServiceException(MessageCode.LOGIC_ERROR, "当前用户未归属销售组织");
+		}
+		TMstOrderStud selectObj = new TMstOrderStud();
+		selectObj.setSalesOrg(user.getSalesOrg());
+		selectObj.setOrderDateStr(model.getOrderDateStr());
+		
+		/**
+		 * 需包装的学生奶汇总数
+		 */
+		List<TMstOrderStud> milkList = mstOrderStudMapper.findMatnrWithOrder(selectObj);
+		if(CollectionUtils.isNotEmpty(milkList)){
+			TMstOrderStud obj = new TMstOrderStud();
+			obj.setSalesOrg(user.getSalesOrg());
+			obj.setOrderDateStr(model.getOrderDateStr());
+			for(TMstOrderStud item : milkList){
+				obj.setMatnr(item.getMatnr());
+				obj.setOrderType("10");
+				String list10Sum = orderStudItemMapper.findSumBySelective(obj);//学生奶数量
+				obj.setOrderType("20");
+				String list20Sum = orderStudItemMapper.findSumBySelective(obj);//老师奶数量
+				obj.setOrderType("");
+				String list30Sum = orderStudItemMapper.findLossSumBySelective(obj);//老师奶数量
+				String totalSum = String.valueOf(Integer.parseInt(list10Sum)+Integer.parseInt(list20Sum)+Integer.parseInt(list30Sum));
+				item.setList10Sum(list10Sum);
+				item.setList20Sum(list20Sum);
+				item.setList30Sum(list30Sum);
+				item.setTotalSum(totalSum);
+			}
+		}
+		
+		/**
+		 * 需包装的学生奶明细数
+		 */
+		List<TMstOrderStud> itemList = mstOrderStudMapper.findSchoolWithOrder(selectObj);
+		if(CollectionUtils.isNotEmpty(itemList)){
+			TMstOrderStud obj = new TMstOrderStud();
+			obj.setSalesOrg(user.getSalesOrg());
+			obj.setOrderDateStr(model.getOrderDateStr());
+			for(TMstOrderStud item : itemList){
+				obj.setSchoolCode(item.getSchoolCode());
+				obj.setMatnr(item.getMatnr());
+				obj.setOrderType("10");
+				String list10Sum = orderStudItemMapper.findSumBySelective(obj);//学生奶数量
+				obj.setOrderType("20");
+				String list20Sum = orderStudItemMapper.findSumBySelective(obj);//老师奶数量
+				obj.setOrderType("");
+				String list30Sum = orderStudItemMapper.findLossSumBySelective(obj);//老师奶数量
+				String totalSum = String.valueOf(Integer.parseInt(list10Sum)+Integer.parseInt(list20Sum)+Integer.parseInt(list30Sum));
+				item.setList10Sum(list10Sum);
+				item.setList20Sum(list20Sum);
+				item.setList30Sum(list30Sum);
+				item.setTotalSum(totalSum);
+			}
+		}
+		
+		return buildExportFile(model.getOrderDateStr(), null == milkList?new ArrayList<TMstOrderStud>():milkList, null == itemList?new ArrayList<TMstOrderStud>():itemList);
+	}
+	
+	private String buildExportFile(String orderDateStr, List<TMstOrderStud> milkList, List<TMstOrderStud> itemList) throws Exception{
+		orderDateStr = new SimpleDateFormat("yyyy年MM月dd日").format(new SimpleDateFormat("yyyy-MM-dd").parse(orderDateStr));
+		
+		String nfile = getCode().concat("StudOrderMilkTemplate.xls");
+		String url = EnvContant.getSystemConst("filePath");
+		File file = new File(url +  File.separator + "report"+ File.separator + "template" + File.separator + "StudOrderMilkTemplate.xls");  
+        FileInputStream input = new FileInputStream(file);
+        Workbook workbook = WorkbookFactory.create(input);
+       
+        //sheet0
+        Sheet sheet = workbook.getSheetAt(0);
+        Row row = sheet.getRow(0);
+        Cell cell = row.getCell(0);
+        cell.setCellValue(orderDateStr.concat("需包装的学生奶汇总数"));
+        int r = 2;
+        for(TMstOrderStud item : milkList) {
+        	if("0".equals(item.getList10Sum()) && "0".equals(item.getList20Sum())
+        			&& "0".equals(item.getList30Sum()) && "0".equals(item.getTotalSum())){
+        		continue;
+        	}
+            row = sheet.createRow(r);
+            cell = row.createCell(0);
+            cell.setCellValue(item.getMatnrTxt());//品种
+            cell = row.createCell(1);
+            cell.setCellValue(item.getZbotCodeName());//单位
+            cell = row.createCell(2);
+            cell.setCellValue(item.getList10Sum());//班级奶
+            cell = row.createCell(3);
+            cell.setCellValue(item.getList20Sum());//老师奶
+            cell = row.createCell(4);
+            cell.setCellValue(item.getList30Sum());//补损奶
+            cell = row.createCell(5);
+            cell.setCellValue(item.getTotalSum());//合计
+            r++;
+        }
+        
+        //sheet1
+        sheet = workbook.getSheetAt(1);
+        row = sheet.getRow(0);
+        cell = row.getCell(0);
+        cell.setCellValue(orderDateStr.concat("需包装的学生奶明细数"));
+        r = 2;
+        for(TMstOrderStud item : itemList) {
+        	if("0".equals(item.getList10Sum()) && "0".equals(item.getList20Sum())
+        			&& "0".equals(item.getList30Sum()) && "0".equals(item.getTotalSum())){
+        		continue;
+        	}
+            row = sheet.createRow(r);
+            cell = row.createCell(0);
+            cell.setCellValue(item.getSchoolCode());//编号
+            cell = row.createCell(1);
+            cell.setCellValue(item.getSchoolName());//学校
+            cell = row.createCell(2);
+            cell.setCellValue(item.getMatnrTxt());//品种
+            cell = row.createCell(3);
+            cell.setCellValue(item.getZbotCodeName());//单位
+            cell = row.createCell(4);
+            cell.setCellValue(item.getList10Sum());//班级奶
+            cell = row.createCell(5);
+            cell.setCellValue(item.getList20Sum());//老师奶
+            cell = row.createCell(6);
+            cell.setCellValue(item.getList30Sum());//补损奶
+            cell = row.createCell(7);
+            cell.setCellValue(item.getTotalSum());//合计
+            r++;
+        }
+        
+        
+        File export = new File(url +  File.separator + "report"+ File.separator + "export" + File.separator + nfile);
+        FileOutputStream stream = new FileOutputStream(export);
+        workbook.write(stream);
+        stream.flush();
+        stream.close();
+        return nfile;
 	}
 
 }
