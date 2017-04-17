@@ -300,7 +300,7 @@ public class ImportTableResource extends BaseResource {
                 order.setAdressNo(tMdAddress.getAddressId());
                 cell = row.getCell(j++);
                 ExcelUtil.isNullCell(cell, row, j);
-                //付款状态
+                //付款方式
                 order.setPaymentStat(ExcelUtil.getCellValue(cell, row));
                 //无需装箱
                 order.setMilkboxStat("30");
@@ -440,7 +440,7 @@ public class ImportTableResource extends BaseResource {
             orderService.createOrders(OrderModels);
             for (int om = 0; om < OrderModels.size(); om++) {
                 OrderCreateModel ocm = OrderModels.get(om);
-                if ("20".equals(ocm.getOrder().getPaymentmethod())) {
+                if ("20".equals(ocm.getOrder().getPaymentmethod())&& "20".equals(ocm.getOrder().getPaymentStat())) {
                     customerBillService.createRecBillByOrderNo(ocm.getOrder().getOrderNo());
                     CustomerPayMentModel cModel = new CustomerPayMentModel();
                     cModel.setOrderNo(ocm.getOrder().getOrderNo());

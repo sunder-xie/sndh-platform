@@ -5,6 +5,7 @@ import com.nhry.common.exception.MessageCode;
 import com.nhry.data.auth.domain.TSysUser;
 import com.nhry.data.basic.domain.*;
 import com.nhry.data.bill.domain.TMstRecvBill;
+import com.nhry.data.config.domain.NHSysCodeItem;
 import com.nhry.data.milk.domain.TDispOrder;
 import com.nhry.data.milk.domain.TDispOrderItem;
 import com.nhry.data.milktrans.domain.TssmMilkmanAmts;
@@ -30,6 +31,7 @@ import com.nhry.service.basic.dao.ResidentialAreaService;
 import com.nhry.service.basic.pojo.AreaSearchModel;
 import com.nhry.service.basic.pojo.BranchEmpModel;
 import com.nhry.service.bill.dao.CustomerBillService;
+import com.nhry.service.config.dao.DictionaryService;
 import com.nhry.service.milk.dao.DeliverMilkService;
 import com.nhry.service.milktrans.dao.OutMilkService;
 import com.nhry.service.milktrans.dao.RequireOrderService;
@@ -95,15 +97,14 @@ public class ReportResource extends BaseResource{
     private OutMilkService outMilkService;
     @Autowired
     private RequireOrderService requireOrderService;
-    
     @Autowired
     private ProductService productService;
-    
     @Autowired
     private UserService userService;
-
     @Autowired
     private ResidentialAreaService sesidentialAreaService;
+    @Autowired
+    private DictionaryService dicService;
     
     
     
@@ -2272,5 +2273,89 @@ public class ReportResource extends BaseResource{
         logger.info("##########"+urlPath);
         return convertToFile(urlPath);
     }
+    @GET
+    @Path("/exportAreasCode/{itemCode}")
+    @Produces(MediaType.APPLICATION_JSON)
+    @Consumes(MediaType.APPLICATION_JSON)
+    @ApiOperation(value = "/exportAreasCode/{itemCode}", response = ResponseModel.class, notes = "配送区域下载")
+    public Response exportAreasCode(@ApiParam(required = true,value = "itemCode",defaultValue = "itemCode")@PathParam("itemCode")  String itemCode){
+        String outUrl = "";
+        String url = EnvContant.getSystemConst("filePath");
+        List<NHSysCodeItem> areasItems = dicService.getTreeCodeItemsByTypeCode("1001");
 
+        try {
+            File file = new File(url +  File.separator + "report"+ File.separator + "template" + File.separator + "AreasCodeTemplate.xlsx");
+            FileInputStream input = new FileInputStream(file);
+            XSSFWorkbook workbook = new XSSFWorkbook(new BufferedInputStream(input));
+            XSSFSheet sheet = workbook.getSheetAt(0);
+            XSSFCellStyle styleBold = workbook.createCellStyle();
+            styleBold.setBorderBottom(XSSFCellStyle.BORDER_THIN); //下边框
+
+            styleBold.setWrapText(true);
+            int rowNum = 1;
+
+            if(areasItems!=null){
+                for(NHSysCodeItem items : areasItems){
+                    if(items.getItemCode().equals(itemCode)){
+                        XSSFRow row = sheet.createRow(rowNum);
+                        XSSFCell cell = row.createCell(0);
+                        cell.setCellStyle(styleBold);
+                        cell.setCellValue(items.getItemName());
+                        cell = row.createCell(3);
+                        cell.setCellStyle(styleBold);
+                        cell.setCellValue(items.getItemCode());
+                        if(items.getChildrens()!=null){
+                            int rowNum2 = rowNum+1;
+                            for(NHSysCodeItem childres2:items.getChildrens()){
+                                XSSFRow chrrow = sheet.createRow(rowNum2);
+                                XSSFCell chrcell = chrrow.createCell(1);
+                                chrcell.setCellStyle(styleBold);
+                                chrcell.setCellValue(childres2.getItemName());
+                                chrcell = chrrow.createCell(3);
+                                chrcell.setCellStyle(styleBold);
+                                chrcell.setCellValue(childres2.getItemCode());
+                                if(childres2.getChildrens()!=null){
+                                    int rowNum3 = rowNum2+1;
+                                    for(NHSysCodeItem childres3:childres2.getChildrens()){
+                                        XSSFRow chrrow3 = sheet.createRow(rowNum3);
+                                        XSSFCell chrcell3 = chrrow3.createCell(2);
+                                        chrcell3.setCellStyle(styleBold);
+                                        chrcell3.setCellValue(childres3.getItemName());
+                                        chrcell3 = chrrow3.createCell(3);
+                                        chrcell3.setCellStyle(styleBold);
+                                        chrcell3.setCellValue(childres3.getItemCode());
+                                        rowNum3++;
+                                    }
+                                    rowNum2 = rowNum3++;
+
+                                }
+                            }
+                        }
+                        rowNum++;
+                    }
+                }
+                String fname = CodeGeneratorUtil.getCode();
+                String rq = format1.format(new Date(new Date().getTime() - 24 * 60 * 60 * 1000));
+                String filePath = url +  File.separator + "report"+ File.separator + "export";
+                File delFiles = new File(filePath);
+                if(delFiles.isDirectory()){
+                    for(File del : delFiles.listFiles()){
+                        if(del.getName().contains(rq)){
+                            del.delete();
+                        }
+                    }
+                }
+                File export = new File(url +  File.separator + "report"+ File.separator + "export" + File.separator + fname + "area.xlsx");
+                FileOutputStream stream = new FileOutputStream(export);
+                workbook.write(stream);
+                stream.flush();
+                stream.close();
+                outUrl = fname + "area.xlsx";
+            }
+        }catch (Exception e ){
+            e.printStackTrace();
+        }
+
+        return convertToRespModel(MessageCode.NORMAL,null,outUrl);
+    }
 }
