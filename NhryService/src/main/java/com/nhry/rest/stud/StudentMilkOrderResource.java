@@ -190,7 +190,7 @@ public class StudentMilkOrderResource  extends BaseResource {
 	@Produces(MediaType.APPLICATION_JSON)
 	@Consumes(MediaType.APPLICATION_JSON)
 	@ApiOperation(value = "/exportStudOrderMilk", response = int.class, notes = "导出EXCEl")
-	public Response calcLoss(@ApiParam(required=true,name="model")ExportStudOrderMilkModel model) throws Exception{
+	public Response exportStudOrderMilk(@ApiParam(required=true,name="model")ExportStudOrderMilkModel model) throws Exception{
 		return convertToRespModel(MessageCode.NORMAL, null,  orderStudService.exportStudOrderMilk(model));
 	}
 	

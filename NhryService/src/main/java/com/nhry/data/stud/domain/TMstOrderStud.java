@@ -63,12 +63,45 @@ public class TMstOrderStud {
     
     private String orderType;//10学生，20老师
     
+    private String classCode;
+    
+    private String className;
+    
+    private String qty;
+    
+    
+    
+    
     
     
     
     
 
-    public String getOrderType() {
+    public String getQty() {
+		return qty;
+	}
+
+	public void setQty(String qty) {
+		this.qty = qty;
+	}
+
+	public String getClassCode() {
+		return classCode;
+	}
+
+	public void setClassCode(String classCode) {
+		this.classCode = classCode;
+	}
+
+	public String getClassName() {
+		return className;
+	}
+
+	public void setClassName(String className) {
+		this.className = className;
+	}
+
+	public String getOrderType() {
 		return orderType;
 	}
 

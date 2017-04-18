@@ -30,6 +30,20 @@
     where MID = #{mid,jdbcType=VARCHAR}
   </select>
   
+  <select id="findClassOrderItemByOrderStud" parameterType="com.nhry.data.stud.domain.TMstOrderStud" resultType="com.nhry.data.stud.domain.TMstOrderStud">
+  	select 
+  	a.class_code classCode, a.class_name className, b.QTY qty
+  	from t_md_class a
+  	left join t_mst_order_stud_item b on a.CLASS_CODE=b.CLASS_CODE
+  	left join t_mst_order_stud c on b.order_id=b.order_id
+  	where c.SCHOOL_CODE=#{schoolCode}
+  	and c.ORDER_DATE=#{orderDateStr}
+  	and c.SALES_ORG=#{salesOrg}
+  	and c.order_status='10'
+  	and b.MATNR=#{matnr}
+  	
+  </select>
+  
   <select id="findOrderItemByMap" resultMap="BaseResultMap" parameterType="java.util.Map">
   	select 
     oi.MID, oi.ORDER_DATE, oi.ORDER_ID, oi.SCHOOL_CODE, oi.ORDER_TYPE, oi.CLASS_CODE, oi.MATNR, oi.QTY, oi.SALES_ORG,

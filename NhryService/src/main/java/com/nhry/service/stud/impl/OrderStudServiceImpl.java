@@ -18,7 +18,9 @@ import java.util.UUID;
 
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.poi.hssf.util.HSSFColor;
 import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.ss.usermodel.CellStyle;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
@@ -766,6 +768,8 @@ public class OrderStudServiceImpl implements OrderStudService {
 			obj.setSalesOrg(user.getSalesOrg());
 			obj.setOrderDateStr(model.getOrderDateStr());
 			for(TMstOrderStud item : itemList){
+				item.setSalesOrg(user.getSalesOrg());
+				item.setOrderDateStr(model.getOrderDateStr());
 				obj.setSchoolCode(item.getSchoolCode());
 				obj.setMatnr(item.getMatnr());
 				obj.setOrderType("10");
@@ -786,7 +790,8 @@ public class OrderStudServiceImpl implements OrderStudService {
 	}
 	
 	private String buildExportFile(String orderDateStr, List<TMstOrderStud> milkList, List<TMstOrderStud> itemList) throws Exception{
-		orderDateStr = new SimpleDateFormat("yyyy年MM月dd日").format(new SimpleDateFormat("yyyy-MM-dd").parse(orderDateStr));
+		String orderDateStr2 = new SimpleDateFormat("yyyy年MM月dd日").format(new SimpleDateFormat("yyyy-MM-dd").parse(orderDateStr));
+		String orderDateStr3 = new SimpleDateFormat("yyyy/MM/dd").format(new SimpleDateFormat("yyyy-MM-dd").parse(orderDateStr));
 		
 		String nfile = getCode().concat("StudOrderMilkTemplate.xls");
 		String url = EnvContant.getSystemConst("filePath");
@@ -798,7 +803,7 @@ public class OrderStudServiceImpl implements OrderStudService {
         Sheet sheet = workbook.getSheetAt(0);
         Row row = sheet.getRow(0);
         Cell cell = row.getCell(0);
-        cell.setCellValue(orderDateStr.concat("需包装的学生奶汇总数"));
+        cell.setCellValue(orderDateStr2.concat("需包装的学生奶汇总数"));
         int r = 2;
         for(TMstOrderStud item : milkList) {
         	if("0".equals(item.getList10Sum()) && "0".equals(item.getList20Sum())
@@ -825,7 +830,7 @@ public class OrderStudServiceImpl implements OrderStudService {
         sheet = workbook.getSheetAt(1);
         row = sheet.getRow(0);
         cell = row.getCell(0);
-        cell.setCellValue(orderDateStr.concat("需包装的学生奶明细数"));
+        cell.setCellValue(orderDateStr2.concat("需包装的学生奶明细数"));
         r = 2;
         for(TMstOrderStud item : itemList) {
         	if("0".equals(item.getList10Sum()) && "0".equals(item.getList20Sum())
@@ -852,6 +857,104 @@ public class OrderStudServiceImpl implements OrderStudService {
             r++;
         }
         
+        //sheet2
+        List<TMstOrderStud> classItemList = null;
+        sheet = workbook.getSheetAt(2);
+        row = null;
+        cell = null;
+        r = -1; 
+        CellStyle styleBold = workbook.createCellStyle();
+        styleBold.setBottomBorderColor(HSSFColor.BLUE.index);
+        for(TMstOrderStud item : itemList) {
+        	if("0".equals(item.getList10Sum()) && "0".equals(item.getList20Sum())
+        			&& "0".equals(item.getList30Sum()) && "0".equals(item.getTotalSum())){
+        		continue;
+        	}
+        	
+        	//学校班级标签
+        	if(!"0".equals(item.getList10Sum())){
+        		classItemList = orderStudItemMapper.findClassOrderItemByOrderStud(item);
+        		if(CollectionUtils.isNotEmpty(classItemList)){
+        			for(TMstOrderStud classItem : classItemList) {
+        				if("0".equals(classItem.getQty())){
+        					continue;
+        				}
+        				r += 1;
+                		row = sheet.createRow(r);
+                        cell = row.createCell(0);
+                        cell.setCellValue(orderDateStr3);//时间
+                        r += 1;
+                        row = sheet.createRow(r);
+                        cell = row.createCell(0);
+                        cell.setCellValue(item.getMatnrTxt());//奶品
+                        r += 1;
+                        row = sheet.createRow(r);
+                        cell = row.createCell(0);
+                        cell.setCellValue(item.getSchoolName());//学校
+                        r += 1;
+                        row = sheet.createRow(r);
+                        cell = row.createCell(0);
+                        cell.setCellValue(classItem.getClassName());//老师奶/班级/补损奶
+                        r += 1;
+                        row = sheet.createRow(r);
+                        cell = row.createCell(0);
+                        cell.setCellValue("数量  "+classItem.getQty()+"  "+item.getZbotCodeName());//数量
+//                        cell.setCellStyle(styleBold);
+        			}
+        		}
+        	}
+        	
+        	//学校老师标签
+        	if(!"0".equals(item.getList20Sum())){
+        		r += 1;
+        		row = sheet.createRow(r);
+                cell = row.createCell(0);
+                cell.setCellValue(orderDateStr3);//时间
+                r += 1;
+                row = sheet.createRow(r);
+                cell = row.createCell(0);
+                cell.setCellValue(item.getMatnrTxt());//奶品
+                r += 1;
+                row = sheet.createRow(r);
+                cell = row.createCell(0);
+                cell.setCellValue(item.getSchoolName());//学校
+                r += 1;
+                row = sheet.createRow(r);
+                cell = row.createCell(0);
+                cell.setCellValue("老师奶");//老师奶/班级/补损奶
+                r += 1;
+                row = sheet.createRow(r);
+                cell = row.createCell(0);
+                cell.setCellValue("数量  "+item.getList20Sum()+"  "+item.getZbotCodeName());//数量
+//                cell.setCellStyle(styleBold);
+        	}
+        	
+        	
+        	//学校补损标签
+        	if(!"0".equals(item.getList30Sum())){
+        		r += 1;
+        		row = sheet.createRow(r);
+                cell = row.createCell(0);
+                cell.setCellValue(orderDateStr3);//时间
+                r += 1;
+                row = sheet.createRow(r);
+                cell = row.createCell(0);
+                cell.setCellValue(item.getMatnrTxt());//奶品
+                r += 1;
+                row = sheet.createRow(r);
+                cell = row.createCell(0);
+                cell.setCellValue(item.getSchoolName());//学校
+                r += 1;
+                row = sheet.createRow(r);
+                cell = row.createCell(0);
+                cell.setCellValue("补损奶");//老师奶/班级/补损奶
+                r += 1;
+                row = sheet.createRow(r);
+                cell = row.createCell(0);
+                cell.setCellValue("数量  "+item.getList20Sum()+"  "+item.getZbotCodeName());//数量
+//                cell.setCellStyle(styleBold);
+        	}
+        }
         
         File export = new File(url +  File.separator + "report"+ File.separator + "export" + File.separator + nfile);
         FileOutputStream stream = new FileOutputStream(export);

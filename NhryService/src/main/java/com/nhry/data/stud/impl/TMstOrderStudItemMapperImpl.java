@@ -64,4 +64,9 @@ public class TMstOrderStudItemMapperImpl implements TMstOrderStudItemMapper {
 		return sqlSessionTemplate.selectOne("findLossSumBySelective", obj);
 	}
 
+	@Override
+	public List<TMstOrderStud> findClassOrderItemByOrderStud(TMstOrderStud item) {
+		return sqlSessionTemplate.selectList("findClassOrderItemByOrderStud", item);
+	}
+
 }

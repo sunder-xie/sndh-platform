@@ -25,5 +25,7 @@ public interface TMstOrderStudItemMapper {
 	String findSumBySelective(TMstOrderStud obj);
 
 	String findLossSumBySelective(TMstOrderStud obj);
+
+	List<TMstOrderStud> findClassOrderItemByOrderStud(TMstOrderStud item);
 	
 }
