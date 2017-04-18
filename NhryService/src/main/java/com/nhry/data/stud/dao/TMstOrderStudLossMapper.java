@@ -9,5 +9,11 @@ public interface TMstOrderStudLossMapper {
 
     int insertOrderStudLoss(TMstOrderStudLoss orderStudLoss);
     
+    int insertOrderStudLossUnpack(TMstOrderStudLoss orderStudLoss);
+    
     List<TMstOrderStudLoss> findLossByOrderId(Map<String, Object> selectMap);
+
+	int deleteByOrderIdUnpack(String orderId);
+
+	List<TMstOrderStudLoss> findLossByOrderIdUnpack(Map<String, Object> selectMap);
 }

@@ -13,12 +13,15 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Random;
 import java.util.UUID;
 
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.poi.hssf.util.HSSFColor;
 import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.ss.usermodel.CellStyle;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
@@ -134,7 +137,7 @@ public class OrderStudServiceImpl implements OrderStudService {
 		Date orderDate = new SimpleDateFormat("yyyy-MM-dd").parse(mstOrderStud.getOrderDateStr());
 		Date date = new Date();
 		TSysUser user = this.userSessionService.getCurrentUser();
-		if(StringUtils.isNoneBlank(mstOrderStud.getOrderId())){
+		if(StringUtils.isNotBlank(mstOrderStud.getOrderId())){
 			TMstOrderStud updOrder = new TMstOrderStud();
 			updOrder.setOrderStatus("20");
 			updOrder.setOrderId(mstOrderStud.getOrderId());
@@ -544,6 +547,16 @@ public class OrderStudServiceImpl implements OrderStudService {
 		}
 		return null;
 	}
+	
+	private void buildLoss(HashMap<String, Integer> map, String matnr, int addVal){
+		Integer val = map.get(matnr);
+		if(null == val){
+			map.put(matnr, addVal);
+		}
+		else{
+			map.put(matnr, val+addVal);
+		}
+	}
 
 	@Override
 	public int createOrderWithBatch(OrderBatchBuildModel orderBatchBuildModel) throws Exception {
@@ -587,6 +600,14 @@ public class OrderStudServiceImpl implements OrderStudService {
 		/**
 		 * 生成
 		 */
+		TMstOrderStud order = new TMstOrderStud();
+		order.setSchoolCode(orderBatchBuildModel.getSchoolCode());
+		order.setOrderDateStr(orderBatchBuildModel.getOrderGetDateStr());
+		order.setSalesOrg(user.getSalesOrg());
+        order = mstOrderStudMapper.selectOrderBySchoolCodeAndDateWithOrderStatus10(order);
+        if(null == order){
+        	throw new ServiceException(MessageCode.LOGIC_ERROR, "取数日期订单不存在");
+        }
 		this.deleteOrderAndItem(orderBatchBuildModel.getOrderDateStr(), orderBatchBuildModel.getSchoolCode(), user.getSalesOrg());
 		String orderId = getCode();
 		TMstOrderStud mstOrderStud = new TMstOrderStud();
@@ -604,10 +625,13 @@ public class OrderStudServiceImpl implements OrderStudService {
 		mstOrderStud.setSalesOrg(user.getSalesOrg());
 		mstOrderStud.setOrderStatus("10");
 		mstOrderStudMapper.insertOrder(mstOrderStud);
+		
+		HashMap<String, Integer> map = new HashMap<String, Integer>();
 		for(TMstOrderStudItem item : orderItemList){
 			if("10".equals(item.getOrderType())){
-				item.setMatnr(matnr);
+				item.setMatnr(matnr);//学生奶替换新的套餐，老师奶取原来的数据
 			}
+			this.buildLoss(map, item.getMatnr(), item.getQty());
     		item.setOrderId(orderId);
     		item.setMid(UUID.randomUUID().toString().replace("-", ""));
     		item.setOrderDate(orderDate);
@@ -618,6 +642,46 @@ public class OrderStudServiceImpl implements OrderStudService {
     		item.setLastModifiedBy(user.getLoginName());
     		item.setLastModifiedByTxt(user.getDisplayName());
     		orderStudItemMapper.insertSdutOrderItem(item);
+		}
+		
+		if(map.size() > 0){
+			TMstOrderStudLoss item = null;
+			OrderStudLossModel lossModel = new OrderStudLossModel();
+			lossModel.setSchoolCode(orderBatchBuildModel.getSchoolCode());
+			for(Entry<String, Integer> entry : map.entrySet()){
+				if(StringUtils.isBlank(entry.getKey())){
+	    			continue;
+	    		}
+	    		if(entry.getValue() == null || entry.getValue() < 0){
+	    			continue;
+	    		}
+	    		lossModel.setMatnr(entry.getKey());
+	    		lossModel.setMatnrCount(entry.getValue());
+	    		int qty = 0;
+	    		try {
+	    			qty = this.calcLoss(lossModel);
+				} catch (Exception e) {
+					logger.error(e.getMessage(), e);
+					continue;
+				}
+	    		if(qty <= 0){
+	    			continue;
+	    		}
+	    		
+	    		item = new TMstOrderStudLoss();
+	    		item.setMatnr(entry.getKey());
+	    		item.setQty(qty);
+	    		item.setOrderId(orderId);
+	    		item.setMid(UUID.randomUUID().toString().replace("-", ""));
+	    		item.setCreateAt(date);
+	    		item.setCreateBy(user.getLoginName());
+	    		item.setCreateByTxt(user.getDisplayName());
+	    		item.setLastModified(date);
+	    		item.setLastModifiedBy(user.getLoginName());
+	    		item.setLastModifiedByTxt(user.getDisplayName());
+	    		item.setSalesOrg(user.getSalesOrg());
+	    		orderStudLossMapper.insertOrderStudLoss(item);
+			}
 		}
 		return 1;
 	}
@@ -766,6 +830,8 @@ public class OrderStudServiceImpl implements OrderStudService {
 			obj.setSalesOrg(user.getSalesOrg());
 			obj.setOrderDateStr(model.getOrderDateStr());
 			for(TMstOrderStud item : itemList){
+				item.setSalesOrg(user.getSalesOrg());
+				item.setOrderDateStr(model.getOrderDateStr());
 				obj.setSchoolCode(item.getSchoolCode());
 				obj.setMatnr(item.getMatnr());
 				obj.setOrderType("10");
@@ -786,7 +852,8 @@ public class OrderStudServiceImpl implements OrderStudService {
 	}
 	
 	private String buildExportFile(String orderDateStr, List<TMstOrderStud> milkList, List<TMstOrderStud> itemList) throws Exception{
-		orderDateStr = new SimpleDateFormat("yyyy年MM月dd日").format(new SimpleDateFormat("yyyy-MM-dd").parse(orderDateStr));
+		String orderDateStr2 = new SimpleDateFormat("yyyy年MM月dd日").format(new SimpleDateFormat("yyyy-MM-dd").parse(orderDateStr));
+		String orderDateStr3 = new SimpleDateFormat("yyyy/MM/dd").format(new SimpleDateFormat("yyyy-MM-dd").parse(orderDateStr));
 		
 		String nfile = getCode().concat("StudOrderMilkTemplate.xls");
 		String url = EnvContant.getSystemConst("filePath");
@@ -798,7 +865,7 @@ public class OrderStudServiceImpl implements OrderStudService {
         Sheet sheet = workbook.getSheetAt(0);
         Row row = sheet.getRow(0);
         Cell cell = row.getCell(0);
-        cell.setCellValue(orderDateStr.concat("需包装的学生奶汇总数"));
+        cell.setCellValue(orderDateStr2.concat("需包装的学生奶汇总数"));
         int r = 2;
         for(TMstOrderStud item : milkList) {
         	if("0".equals(item.getList10Sum()) && "0".equals(item.getList20Sum())
@@ -825,7 +892,7 @@ public class OrderStudServiceImpl implements OrderStudService {
         sheet = workbook.getSheetAt(1);
         row = sheet.getRow(0);
         cell = row.getCell(0);
-        cell.setCellValue(orderDateStr.concat("需包装的学生奶明细数"));
+        cell.setCellValue(orderDateStr2.concat("需包装的学生奶明细数"));
         r = 2;
         for(TMstOrderStud item : itemList) {
         	if("0".equals(item.getList10Sum()) && "0".equals(item.getList20Sum())
@@ -852,6 +919,104 @@ public class OrderStudServiceImpl implements OrderStudService {
             r++;
         }
         
+        //sheet2
+        List<TMstOrderStud> classItemList = null;
+        sheet = workbook.getSheetAt(2);
+        row = null;
+        cell = null;
+        r = -1; 
+        CellStyle styleBold = workbook.createCellStyle();
+        styleBold.setBottomBorderColor(HSSFColor.BLUE.index);
+        for(TMstOrderStud item : itemList) {
+        	if("0".equals(item.getList10Sum()) && "0".equals(item.getList20Sum())
+        			&& "0".equals(item.getList30Sum()) && "0".equals(item.getTotalSum())){
+        		continue;
+        	}
+        	
+        	//学校班级标签
+        	if(!"0".equals(item.getList10Sum())){
+        		classItemList = orderStudItemMapper.findClassOrderItemByOrderStud(item);
+        		if(CollectionUtils.isNotEmpty(classItemList)){
+        			for(TMstOrderStud classItem : classItemList) {
+        				if("0".equals(classItem.getQty())){
+        					continue;
+        				}
+        				r += 1;
+                		row = sheet.createRow(r);
+                        cell = row.createCell(0);
+                        cell.setCellValue(orderDateStr3);//时间
+                        r += 1;
+                        row = sheet.createRow(r);
+                        cell = row.createCell(0);
+                        cell.setCellValue(item.getMatnrTxt());//奶品
+                        r += 1;
+                        row = sheet.createRow(r);
+                        cell = row.createCell(0);
+                        cell.setCellValue(item.getSchoolName());//学校
+                        r += 1;
+                        row = sheet.createRow(r);
+                        cell = row.createCell(0);
+                        cell.setCellValue(classItem.getClassName());//老师奶/班级/补损奶
+                        r += 1;
+                        row = sheet.createRow(r);
+                        cell = row.createCell(0);
+                        cell.setCellValue("数量  "+classItem.getQty()+"  "+item.getZbotCodeName());//数量
+//                        cell.setCellStyle(styleBold);
+        			}
+        		}
+        	}
+        	
+        	//学校老师标签
+        	if(!"0".equals(item.getList20Sum())){
+        		r += 1;
+        		row = sheet.createRow(r);
+                cell = row.createCell(0);
+                cell.setCellValue(orderDateStr3);//时间
+                r += 1;
+                row = sheet.createRow(r);
+                cell = row.createCell(0);
+                cell.setCellValue(item.getMatnrTxt());//奶品
+                r += 1;
+                row = sheet.createRow(r);
+                cell = row.createCell(0);
+                cell.setCellValue(item.getSchoolName());//学校
+                r += 1;
+                row = sheet.createRow(r);
+                cell = row.createCell(0);
+                cell.setCellValue("老师奶");//老师奶/班级/补损奶
+                r += 1;
+                row = sheet.createRow(r);
+                cell = row.createCell(0);
+                cell.setCellValue("数量  "+item.getList20Sum()+"  "+item.getZbotCodeName());//数量
+//                cell.setCellStyle(styleBold);
+        	}
+        	
+        	
+        	//学校补损标签
+        	if(!"0".equals(item.getList30Sum())){
+        		r += 1;
+        		row = sheet.createRow(r);
+                cell = row.createCell(0);
+                cell.setCellValue(orderDateStr3);//时间
+                r += 1;
+                row = sheet.createRow(r);
+                cell = row.createCell(0);
+                cell.setCellValue(item.getMatnrTxt());//奶品
+                r += 1;
+                row = sheet.createRow(r);
+                cell = row.createCell(0);
+                cell.setCellValue(item.getSchoolName());//学校
+                r += 1;
+                row = sheet.createRow(r);
+                cell = row.createCell(0);
+                cell.setCellValue("补损奶");//老师奶/班级/补损奶
+                r += 1;
+                row = sheet.createRow(r);
+                cell = row.createCell(0);
+                cell.setCellValue("数量  "+item.getList20Sum()+"  "+item.getZbotCodeName());//数量
+//                cell.setCellStyle(styleBold);
+        	}
+        }
         
         File export = new File(url +  File.separator + "report"+ File.separator + "export" + File.separator + nfile);
         FileOutputStream stream = new FileOutputStream(export);
@@ -859,6 +1024,251 @@ public class OrderStudServiceImpl implements OrderStudService {
         stream.flush();
         stream.close();
         return nfile;
+	}
+
+	@Override
+	public int createOrderUnpack(TMstOrderStud mstOrderStud) throws Exception {
+
+		
+		if(null == mstOrderStud){
+			throw new ServiceException(MessageCode.LOGIC_ERROR, "参数必传");
+		}
+		if(StringUtils.isBlank(mstOrderStud.getOrderDateStr())){
+			throw new ServiceException(MessageCode.LOGIC_ERROR, "目标日期必选");
+		}
+		if(StringUtils.isBlank(mstOrderStud.getSchoolCode())){
+			throw new ServiceException(MessageCode.LOGIC_ERROR, "学校必选");
+		}
+		Date orderDate = new SimpleDateFormat("yyyy-MM-dd").parse(mstOrderStud.getOrderDateStr());
+		Date date = new Date();
+		TSysUser user = this.userSessionService.getCurrentUser();
+		
+		TMstOrderStud order = new TMstOrderStud();
+		order.setSchoolCode(mstOrderStud.getSchoolCode());
+		order.setOrderDateStr(mstOrderStud.getOrderDateStr());
+		order.setSalesOrg(user.getSalesOrg());
+		order = mstOrderStudMapper.selectOrderBySchoolCodeAndDateWithOrderStatus10(order);
+		String orderId = null == order?getCode():order.getOrderId();
+		if(null == order){
+			
+			//创建主订单
+			mstOrderStud.setOrderId(orderId);
+			mstOrderStud.setOrderDate(orderDate);
+			mstOrderStud.setCreateAt(date);
+			mstOrderStud.setCreateBy(user.getLoginName());
+			mstOrderStud.setCreateByTxt(user.getDisplayName());
+			mstOrderStud.setLastModified(date);
+			mstOrderStud.setLastModifiedBy(user.getLoginName());
+			mstOrderStud.setLastModifiedByTxt(user.getDisplayName());
+			mstOrderStud.setSalesOrg(user.getSalesOrg());
+			mstOrderStud.setOrderStatus("10");
+			mstOrderStudMapper.insertOrder(mstOrderStud);
+		}
+		else{
+			//物理删除
+			orderStudItemMapper.deleteByOrderIdUnpack(orderId);
+			orderStudLossMapper.deleteByOrderIdUnpack(orderId);
+		}
+		
+	    List<TMstOrderStudItem> list20 = mstOrderStud.getList20();//订奶列表
+	    if(CollectionUtils.isNotEmpty(list20)){
+	    	for(TMstOrderStudItem item : list20){
+	    		if(StringUtils.isBlank(item.getMatnr())){
+	    			continue;
+	    		}
+	    		if(item.getQty() == null || item.getQty() < 0){
+	    			item.setQty(0);
+	    		}
+	    		item.setSchoolCode(mstOrderStud.getSchoolCode());
+	    		item.setOrderId(orderId);
+	    		item.setMid(UUID.randomUUID().toString().replace("-", ""));
+	    		item.setOrderDate(orderDate);
+	    		item.setOrderType("20");
+	    		item.setCreateAt(date);
+	    		item.setCreateBy(user.getLoginName());
+	    		item.setCreateByTxt(user.getDisplayName());
+	    		item.setLastModified(date);
+	    		item.setLastModifiedBy(user.getLoginName());
+	    		item.setLastModifiedByTxt(user.getDisplayName());
+	    		item.setSalesOrg(user.getSalesOrg());
+	    		orderStudItemMapper.insertSdutOrderItemUnpack(item);
+	    	}
+	    }
+	    
+	    List<TMstOrderStudLoss> list30 = mstOrderStud.getList30();//损耗
+	    if(CollectionUtils.isNotEmpty(list30)){
+	    	for(TMstOrderStudLoss item : list30){
+	    		if(StringUtils.isBlank(item.getMatnr())){
+	    			continue;
+	    		}
+	    		if(item.getQty() == null || item.getQty() < 0){
+	    			item.setQty(0);
+	    		}
+	    		item.setOrderId(orderId);
+	    		item.setMid(UUID.randomUUID().toString().replace("-", ""));
+	    		item.setCreateAt(date);
+	    		item.setCreateBy(user.getLoginName());
+	    		item.setCreateByTxt(user.getDisplayName());
+	    		item.setLastModified(date);
+	    		item.setLastModifiedBy(user.getLoginName());
+	    		item.setLastModifiedByTxt(user.getDisplayName());
+	    		item.setSalesOrg(user.getSalesOrg());
+	    		orderStudLossMapper.insertOrderStudLossUnpack(item);
+	    	}
+	    }
+		return 1;
+	
+	}
+
+	@Override
+	public Map<String, Object> findOrderInfoBySchoolCodeAndDateUnpack(TMstOrderStud mstOrderStud) {
+
+		if(null == mstOrderStud || StringUtils.isBlank(mstOrderStud.getSchoolCode())){
+			throw new ServiceException(MessageCode.LOGIC_ERROR, "学校代码必传，请选择学校站点");
+		}
+		if(StringUtils.isBlank(mstOrderStud.getOrderDateStr())){
+			throw new ServiceException(MessageCode.LOGIC_ERROR, "取数的订单日期必传，请选择取数的订单日期");
+		}
+		if(StringUtils.isBlank(this.userSessionService.getCurrentUser().getSalesOrg())){
+			throw new ServiceException(MessageCode.LOGIC_ERROR, "当前用户未归属销售组织");
+		}
+		TSysUser user = this.userSessionService.getCurrentUser();
+		mstOrderStud.setSalesOrg(user.getSalesOrg());
+		Map<String, Object> resultMap = new HashMap<>();
+		TMstOrderStud orderStud = this.mstOrderStudMapper.selectOrderBySchoolCodeAndDateWithOrderStatus10(mstOrderStud);
+		
+		if(null == orderStud){
+			//学校不存在该日期的订单，则初始化数据
+			resultMap.put("orderStud", null);
+			
+			//奶品
+			List<TMstOrderStudItem> list20 = new ArrayList<TMstOrderStudItem>();
+			List<TMdMaraStud> maraList = maraStudMapper.findAllListBySalesOrg(user.getSalesOrg());
+			if(CollectionUtils.isNotEmpty(maraList)){
+				TMstOrderStudItem item20 = null;
+				for(TMdMaraStud mara : maraList){
+					item20 = new TMstOrderStudItem();
+					item20.setQty(0);
+					item20.setMatnr(mara.getMatnr());
+					item20.setMatnrTxt(mara.getMatnrTxt());
+					item20.setZbotCode(mara.getZbotCode());
+					item20.setZbotCodeName(mara.getZbotCodeName());
+					list20.add(item20);
+				}
+			}
+			resultMap.put("list20", list20);
+			
+			//损耗
+			List<TMstOrderStudLoss> list30 = new ArrayList<TMstOrderStudLoss>();
+			if(CollectionUtils.isNotEmpty(maraList)){
+				TMstOrderStudLoss item30 = null;
+				for(TMdMaraStud mara : maraList){
+					item30 = new TMstOrderStudLoss();
+					item30.setQty(0);
+					item30.setMatnr(mara.getMatnr());
+					item30.setMatnrTxt(mara.getMatnrTxt());
+					item30.setZbotCode(mara.getZbotCode());
+					item30.setZbotCodeName(mara.getZbotCodeName());
+					list30.add(item30);
+				}
+			}
+			resultMap.put("list30", list30);
+		}
+		else{
+			//存在订单，返回信息
+			resultMap.put("orderStud", orderStud);
+			
+			//奶品
+			Map<String, Object> selectMap = new HashMap<>();
+			selectMap.put("orderId", orderStud.getOrderId());
+			selectMap.put("orderType", "10");
+			selectMap.put("salesOrg", user.getSalesOrg());
+			selectMap.put("orderType", "20");
+			List<TMstOrderStudItem> list20 = orderStudItemMapper.findOrderItemByMapUnpack(selectMap);
+			if(CollectionUtils.isEmpty(list20)){
+				list20 = new ArrayList<TMstOrderStudItem>();
+				List<TMdMaraStud> maraList = maraStudMapper.findAllListBySalesOrg(user.getSalesOrg());
+				if(CollectionUtils.isNotEmpty(maraList)){
+					TMstOrderStudItem item20 = null;
+					for(TMdMaraStud mara : maraList){
+						item20 = new TMstOrderStudItem();
+						item20.setQty(0);
+						item20.setMatnr(mara.getMatnr());
+						item20.setMatnrTxt(mara.getMatnrTxt());
+						item20.setZbotCode(mara.getZbotCode());
+						item20.setZbotCodeName(mara.getZbotCodeName());
+						list20.add(item20);
+					}
+				}
+			}
+			else{
+				List<String> notInList = new ArrayList<String>();
+				for(TMstOrderStudItem item : list20){
+					notInList.add(item.getMatnr());
+				}
+				Map<String, Object> selectMaraMap = new HashMap<>();
+				selectMaraMap.put("salesOrg", user.getSalesOrg());
+				selectMaraMap.put("notInList", notInList);
+				List<TMdMaraStud> maraList = maraStudMapper.findAllListBySalesOrgNotIn(selectMaraMap);
+				if(CollectionUtils.isNotEmpty(maraList)){
+					TMstOrderStudItem item20 = null;
+					for(TMdMaraStud mara : maraList){
+						item20 = new TMstOrderStudItem();
+						item20.setQty(0);
+						item20.setMatnr(mara.getMatnr());
+						item20.setMatnrTxt(mara.getMatnrTxt());
+						item20.setZbotCode(mara.getZbotCode());
+						item20.setZbotCodeName(mara.getZbotCodeName());
+						list20.add(item20);
+					}
+				}
+			}
+			resultMap.put("list20", list20);
+			
+			//损耗
+			List<TMstOrderStudLoss> list30 = orderStudLossMapper.findLossByOrderIdUnpack(selectMap);
+			if(CollectionUtils.isEmpty(list30)){
+				list30 = new ArrayList<TMstOrderStudLoss>();
+				List<TMdMaraStud> maraList = maraStudMapper.findAllListBySalesOrg(user.getSalesOrg());
+				if(CollectionUtils.isNotEmpty(maraList)){
+					TMstOrderStudLoss item30 = null;
+					for(TMdMaraStud mara : maraList){
+						item30 = new TMstOrderStudLoss();
+						item30.setQty(0);
+						item30.setMatnr(mara.getMatnr());
+						item30.setMatnrTxt(mara.getMatnrTxt());
+						item30.setZbotCode(mara.getZbotCode());
+						item30.setZbotCodeName(mara.getZbotCodeName());
+						list30.add(item30);
+					}
+				}
+			}
+			else{
+				List<String> notInList = new ArrayList<String>();
+				for(TMstOrderStudLoss item : list30){
+					notInList.add(item.getMatnr());
+				}
+				Map<String, Object> selectMaraMap = new HashMap<>();
+				selectMaraMap.put("salesOrg", user.getSalesOrg());
+				selectMaraMap.put("notInList", notInList);
+				List<TMdMaraStud> maraList = maraStudMapper.findAllListBySalesOrgNotIn(selectMaraMap);
+				if(CollectionUtils.isNotEmpty(maraList)){
+					TMstOrderStudLoss item30 = null;
+					for(TMdMaraStud mara : maraList){
+						item30 = new TMstOrderStudLoss();
+						item30.setQty(0);
+						item30.setMatnr(mara.getMatnr());
+						item30.setMatnrTxt(mara.getMatnrTxt());
+						item30.setZbotCode(mara.getZbotCode());
+						item30.setZbotCodeName(mara.getZbotCodeName());
+						list30.add(item30);
+					}
+				}
+			}
+			resultMap.put("list30", list30);
+		}
+		return resultMap;
+	
 	}
 
 }
