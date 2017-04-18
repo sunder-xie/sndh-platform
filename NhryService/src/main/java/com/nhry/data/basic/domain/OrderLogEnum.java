@@ -33,5 +33,6 @@ public class OrderLogEnum implements Serializable {
     public final static  String STATUS = "状态";
     public final static  String RETURN_ORDER = "退单";
     public final static  String RETURN_BACK_ORDER = "确认订单退回";
+    public final static String REPLACE_BRANCH = "更换奶站";
 
 }

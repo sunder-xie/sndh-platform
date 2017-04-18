@@ -298,4 +298,21 @@
             and t.EMP_NO = #{empNo,jdbcType=VARCHAR}
         </if>
             </select>
+    <select id="selectUseQtyByEmpNoAndMatnr" parameterType="String" resultType="com.nhry.data.milktrans.domain.TMstRefuseResend">
+        SELECT
+            r.MATNR matnr,
+            r.EMP_NO empNo,
+            sum(i.QTY) useQty
+        FROM
+            t_mst_refuse_resend_item i
+        LEFT JOIN t_mst_refuse_resend r ON i.RESEND_ORDER_NO = r.RESEND_ORDER_NO
+        LEFT JOIN t_md_mara_ex ex ON r.MATNR = ex.MATNR
+        AND r.SALES_ORG = ex.SALES_ORG
+        LEFT JOIN t_md_branch_emp e ON r.EMP_NO = e.EMP_NO
+        WHERE
+            i.ORDER_NO = #{reqOrderNo,jdbcType=VARCHAR}
+        GROUP BY
+            r.emp_no,
+            r.MATNR
+    </select>
 </mapper>

@@ -563,4 +563,13 @@ public class OrderResource extends BaseResource {
 	public Response backUnBranchOrder(@ApiParam(required=true,name="orderNo",value="订单编号") UpdateManHandOrderModel  smodel){
 		return convertToRespModel(MessageCode.NORMAL, null, orderService.backUnBranchOrder(smodel));
 	}
+
+	@POST
+	@Path("/replaceOrderBranch")
+	@Produces(MediaType.APPLICATION_JSON)
+	@Consumes(MediaType.APPLICATION_JSON)
+	@ApiOperation(value = "/replaceOrderBranch", response = Integer.class, notes = "电商订单更换奶站")
+	public Response replaceOrderBranch(@ApiParam(required=true,name="order",value="参数信息") OrderNoAndDispDateModel  smodel){
+		return convertToRespModel(MessageCode.NORMAL, null, orderService.replaceOrderBranch(smodel));
+	}
 }

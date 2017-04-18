@@ -101,6 +101,18 @@ public class TPlanOrderItem {
     private String toStop;
 
     private  int rowNum;
+    /**
+     * 电商订单推送时使用
+     */
+    private BigDecimal onlineInitAmt;
+    /**
+     * 电商订单推送时使用
+     */
+    private BigDecimal itemamount;
+    /**
+     * 电商行项目订单产生的余额金额
+     */
+    private BigDecimal balanceAmt;
 
     public String getPromotionDetail() {
         return promotionDetail;
@@ -503,5 +515,29 @@ public class TPlanOrderItem {
 
     public void setLastModifiedByTxt(String lastModifiedByTxt) {
         this.lastModifiedByTxt = lastModifiedByTxt == null ? null : lastModifiedByTxt.trim();
+    }
+
+    public BigDecimal getOnlineInitAmt() {
+        return onlineInitAmt;
+    }
+
+    public void setOnlineInitAmt(BigDecimal onlineInitAmt) {
+        this.onlineInitAmt = onlineInitAmt;
+    }
+
+    public BigDecimal getBalanceAmt() {
+        return balanceAmt;
+    }
+
+    public void setBalanceAmt(BigDecimal balanceAmt) {
+        this.balanceAmt = balanceAmt;
+    }
+
+    public BigDecimal getItemamount() {
+        return itemamount;
+    }
+
+    public void setItemamount(BigDecimal itemamount) {
+        this.itemamount = itemamount;
     }
 }

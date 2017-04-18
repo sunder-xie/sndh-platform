@@ -487,4 +487,36 @@ public class EcServiceImpl extends EcBaseService implements EcService{
 			e.printStackTrace();
 		}
 	}
+
+
+	@Override
+	public void sendReplaceBranch(String orderNo, String branchNo, String type, int qty, BigDecimal amt, String remark) {
+		try{
+			JSONArray arr = new JSONArray();
+			JSONObject json = new JSONObject();
+			json.put("businessno", "BUSSSENDORDERREBRANCH");
+			JSONObject body = new JSONObject();
+			JSONObject ssbi = new JSONObject();
+			ssbi.put("serviceName", "SVCSENDORDERREBRANCH");
+			JSONArray data = new JSONArray();
+
+			JSONObject resultJson = new JSONObject();
+			resultJson.put("customerId", "DH");
+			resultJson.put("dhOrderNo", orderNo);
+			resultJson.put("branchNo", branchNo);
+			resultJson.put("type",type);
+			resultJson.put("qty",qty);
+			resultJson.put("fee",amt);
+			resultJson.put("remark",remark);
+			data.put(resultJson);
+			ssbi.put("data", data);
+			body.put("SVCSENDORDERREBRANCH", ssbi);
+			json.put("body", body);
+			arr.put(json);
+			pushMessage2Ec(EnvContant.getSystemConst("ec_base_url")+EnvContant.getSystemConst("ec_upt_branch"), arr.toString(), true);
+		} catch (JSONException e){
+			e.printStackTrace();
+		}
+
+	}
 }

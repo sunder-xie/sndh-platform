@@ -295,6 +295,11 @@ public class TOrderDaliyPlanItemMapperImpl implements TOrderDaliyPlanItemMapper
 	}
 
 	@Override
+	public BigDecimal sumFinishAmtByPlanOrderNo(String planItemNo) {
+		return sqlSessionTemplate.selectOne("sumFinishAmtByPlanOrderNo",planItemNo);
+	}
+
+	@Override
 	public List<OrderDaliyPlanReportEntityModel> reportOrderDaliyPlanByParams(OrderDaliyPlanReportModel model) {
 		return sqlSessionTemplate.selectList("reportOrderDaliyPlanByParams",model);
 	}

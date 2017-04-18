@@ -1525,4 +1525,13 @@
 	) t WHERE t.QTY > 0 AND t.CONFIRM_MATNR IS NOT NULL
       GROUP BY t.EMP_NO,t.MATNR,t.CONFIRM_MATNR
   </select>
+
+  <select id="sumFinishAmtByPlanOrderNo" parameterType="java.lang.String" resultType="DECIMAL">
+    SELECT
+    IFNULL(SUM(cast(AMT as decimal(10,2))),0)
+    FROM t_mst_order_daliy_plan_item
+    WHERE PLAN_ITEM_NO = #{planItemNo,jdbcType=VARCHAR}
+    and (STATUS ='20' or STATUS = '10')
+  </select>
+
 </mapper>

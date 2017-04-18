@@ -229,4 +229,6 @@ public interface OrderService {
 	int orderNoResume(OrderSearchModel smodel);
 
 	TPreOrder selectByPrimaryKey(String orderNo);
+
+	int replaceOrderBranch(OrderNoAndDispDateModel smodel);
 }

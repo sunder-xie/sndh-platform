@@ -173,4 +173,11 @@ public interface TOrderDaliyPlanItemMapper {
     List<Map<String,Object>> selectNoProDayPlanOfDealerBranchAndEmpNo(RequireOrderSearch rModel);
 
     List<Map<String,Object>> selectNoProDayPlanOfSelfBranchAndEmpNo(RequireOrderSearch rModel);
+
+    /**
+     * 行项目完成的金额
+     * @param planItemNo
+     * @return
+     */
+    BigDecimal sumFinishAmtByPlanOrderNo(String planItemNo);
 }
