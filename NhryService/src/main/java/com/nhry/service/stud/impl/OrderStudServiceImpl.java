@@ -13,6 +13,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Random;
 import java.util.UUID;
 
@@ -546,6 +547,16 @@ public class OrderStudServiceImpl implements OrderStudService {
 		}
 		return null;
 	}
+	
+	private void buildLoss(HashMap<String, Integer> map, String matnr, int addVal){
+		Integer val = map.get(matnr);
+		if(null == val){
+			map.put(matnr, addVal);
+		}
+		else{
+			map.put(matnr, val+addVal);
+		}
+	}
 
 	@Override
 	public int createOrderWithBatch(OrderBatchBuildModel orderBatchBuildModel) throws Exception {
@@ -589,6 +600,14 @@ public class OrderStudServiceImpl implements OrderStudService {
 		/**
 		 * 生成
 		 */
+		TMstOrderStud order = new TMstOrderStud();
+		order.setSchoolCode(orderBatchBuildModel.getSchoolCode());
+		order.setOrderDateStr(orderBatchBuildModel.getOrderGetDateStr());
+		order.setSalesOrg(user.getSalesOrg());
+        order = mstOrderStudMapper.selectOrderBySchoolCodeAndDateWithOrderStatus10(order);
+        if(null == order){
+        	throw new ServiceException(MessageCode.LOGIC_ERROR, "取数日期订单不存在");
+        }
 		this.deleteOrderAndItem(orderBatchBuildModel.getOrderDateStr(), orderBatchBuildModel.getSchoolCode(), user.getSalesOrg());
 		String orderId = getCode();
 		TMstOrderStud mstOrderStud = new TMstOrderStud();
@@ -606,10 +625,13 @@ public class OrderStudServiceImpl implements OrderStudService {
 		mstOrderStud.setSalesOrg(user.getSalesOrg());
 		mstOrderStud.setOrderStatus("10");
 		mstOrderStudMapper.insertOrder(mstOrderStud);
+		
+		HashMap<String, Integer> map = new HashMap<String, Integer>();
 		for(TMstOrderStudItem item : orderItemList){
 			if("10".equals(item.getOrderType())){
-				item.setMatnr(matnr);
+				item.setMatnr(matnr);//学生奶替换新的套餐，老师奶取原来的数据
 			}
+			this.buildLoss(map, item.getMatnr(), item.getQty());
     		item.setOrderId(orderId);
     		item.setMid(UUID.randomUUID().toString().replace("-", ""));
     		item.setOrderDate(orderDate);
@@ -620,6 +642,46 @@ public class OrderStudServiceImpl implements OrderStudService {
     		item.setLastModifiedBy(user.getLoginName());
     		item.setLastModifiedByTxt(user.getDisplayName());
     		orderStudItemMapper.insertSdutOrderItem(item);
+		}
+		
+		if(map.size() > 0){
+			TMstOrderStudLoss item = null;
+			OrderStudLossModel lossModel = new OrderStudLossModel();
+			lossModel.setSchoolCode(orderBatchBuildModel.getSchoolCode());
+			for(Entry<String, Integer> entry : map.entrySet()){
+				if(StringUtils.isBlank(entry.getKey())){
+	    			continue;
+	    		}
+	    		if(entry.getValue() == null || entry.getValue() < 0){
+	    			continue;
+	    		}
+	    		lossModel.setMatnr(entry.getKey());
+	    		lossModel.setMatnrCount(entry.getValue());
+	    		int qty = 0;
+	    		try {
+	    			qty = this.calcLoss(lossModel);
+				} catch (Exception e) {
+					logger.error(e.getMessage(), e);
+					continue;
+				}
+	    		if(qty <= 0){
+	    			continue;
+	    		}
+	    		
+	    		item = new TMstOrderStudLoss();
+	    		item.setMatnr(entry.getKey());
+	    		item.setQty(qty);
+	    		item.setOrderId(orderId);
+	    		item.setMid(UUID.randomUUID().toString().replace("-", ""));
+	    		item.setCreateAt(date);
+	    		item.setCreateBy(user.getLoginName());
+	    		item.setCreateByTxt(user.getDisplayName());
+	    		item.setLastModified(date);
+	    		item.setLastModifiedBy(user.getLoginName());
+	    		item.setLastModifiedByTxt(user.getDisplayName());
+	    		item.setSalesOrg(user.getSalesOrg());
+	    		orderStudLossMapper.insertOrderStudLoss(item);
+			}
 		}
 		return 1;
 	}
