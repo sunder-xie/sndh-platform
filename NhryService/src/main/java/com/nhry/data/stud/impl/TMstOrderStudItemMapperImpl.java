@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import com.nhry.common.datasource.DynamicSqlSessionTemplate;
 import com.nhry.data.stud.dao.TMstOrderStudItemMapper;
+import com.nhry.data.stud.domain.TMstOrderStud;
 import com.nhry.data.stud.domain.TMstOrderStudItem;
 
 /**
@@ -51,6 +52,16 @@ public class TMstOrderStudItemMapperImpl implements TMstOrderStudItemMapper {
 	@Override
 	public int deleteOrderWithBatch(Map<String, Object> delMap) {
 		return sqlSessionTemplate.update("deleteOrderWithBatch", delMap);
+	}
+
+	@Override
+	public String findSumBySelective(TMstOrderStud obj) {
+		return sqlSessionTemplate.selectOne("findSumBySelective", obj);
+	}
+
+	@Override
+	public String findLossSumBySelective(TMstOrderStud obj) {
+		return sqlSessionTemplate.selectOne("findLossSumBySelective", obj);
 	}
 
 }
