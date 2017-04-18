@@ -87,4 +87,9 @@ public class TMstRefuseResendMapperImpl implements TMstRefuseResendMapper {
         resend.setMatnr(matnr);
         return sqlSessionTemplate.selectOne("selectRefuseResend",resend);
     }
+
+    @Override
+    public List<TMstRefuseResend> selectUseQtyByEmpNoAndMatnr(String reqOrderNo) {
+        return sqlSessionTemplate.selectList("selectUseQtyByEmpNoAndMatnr",reqOrderNo);
+    }
 }

@@ -886,6 +886,15 @@ public class RequireOrderServiceImpl implements RequireOrderService {
         return results;
     }
 
+    @Override
+    public List<TMstRefuseResend> findReqGoodResendByEmpNo(Date orderDate, String branchNo) {
+        RequireOrderSearch search = new RequireOrderSearch();
+        search.setOrderDate(orderDate);
+        search.setBranchNo(branchNo);
+        TSsmReqGoodsOrder order = tSsmReqGoodsOrderMapper.searchRequireOrder(search);
+        return resendMapper.selectUseQtyByEmpNoAndMatnr(order.getOrderNo());
+    }
+
     /**
      * 生成经销商奶站送奶工的销售订单
      * @param orderDate
@@ -923,10 +932,17 @@ public class RequireOrderServiceImpl implements RequireOrderService {
             stringRedisTemplate.opsForHash().put("SALORDER", user.getBranchNo()+format.format(orderDate),"OFF");
             throw new ServiceException(MessageCode.LOGIC_ERROR,stringBuilder.toString());
         }
+        List<TMstRefuseResend> refuseQtys = this.findReqGoodResendByEmpNo(orderDate,branchNo);
         for(Map<String,Object> map : orgList){
             String empNo = map.get("empNo").toString();
             String matnr = map.get("matnr").toString();
             BigDecimal qty = (BigDecimal)map.get("qty");
+            //减去拒收复送量
+            for(TMstRefuseResend refuseResend : refuseQtys){
+                if(refuseResend.getMatnr().equals(matnr) && refuseResend.getEmpNo().equals(empNo)){
+                    qty = qty.subtract(refuseResend.getUseQty());
+                }
+            }
             if(orderMap.containsKey(empNo)) {
                 List<TOrderDaliyPlanItem> itemList = orderMap.get(empNo);
                 TOrderDaliyPlanItem item = new TOrderDaliyPlanItem();

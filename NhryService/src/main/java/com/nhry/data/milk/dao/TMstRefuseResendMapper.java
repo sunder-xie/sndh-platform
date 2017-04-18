@@ -31,4 +31,6 @@ public interface TMstRefuseResendMapper {
 
     TMstRefuseResend selectRefuseResendByDispEmpAndMatnr(String dispOrderNo,String empNo,String confirmMatnr);
 
+    List<TMstRefuseResend> selectUseQtyByEmpNoAndMatnr(String reqOrderNo);
+
 }

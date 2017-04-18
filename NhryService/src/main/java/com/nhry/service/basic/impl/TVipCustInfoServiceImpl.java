@@ -85,8 +85,8 @@ public class TVipCustInfoServiceImpl extends BaseService implements TVipCustInfo
 		record.setCreateAt(new Date());
 		record.setCreateBy(sysuser.getLoginName());
 		record.setCreateByTxt(sysuser.getDisplayName());
-
-		this.tmdVipcust.addVipCust(record);
+		int i = 0;
+		i = this.tmdVipcust.addVipCust(record);
 		//如果机构ID传入时不为空，创建该机构与订户的关联关系
 		if(StringUtils.isNotEmpty(record.getOrgId())){
 			TMdOrgCustKey orgCust = new TMdOrgCustKey();
@@ -112,7 +112,8 @@ public class TVipCustInfoServiceImpl extends BaseService implements TVipCustInfo
 			address.setCreateByTxt(sysuser.getDisplayName());
 			addAddressForCust(address,null,null);
 		}
-		vipInfoDataService.executeVipInfoData(record,record.getVipMp());
+		if(i != 0)
+			vipInfoDataService.executeVipInfoData(record,record.getVipMp());
 		//OperationLogUtil.saveHistoryOperation(record.getVipCustNo(), LogType.VIP_CUST,VipCustEnum.CREATE_VIP,null,"创建",null,null,sysuser,operationLogMapper);
 		return record.getVipCustNo();
 	}
