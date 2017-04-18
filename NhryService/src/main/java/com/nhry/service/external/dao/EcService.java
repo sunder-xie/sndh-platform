@@ -1,5 +1,6 @@
 package com.nhry.service.external.dao;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 import com.nhry.data.basic.domain.TMdBranch;
@@ -67,5 +68,16 @@ public interface EcService {
 	 * @param branchScope
 	 */
 	public void senduptBranchScope2Ec(TMdBranchScopeKey branchScope,String actionFlag);
+
+	/**
+	 * 推送订单更换奶站给电商
+	 * @param orderNo
+	 * @param branchNo
+	 * @param type
+	 * @param qty
+	 * @param amt
+     * @param remark
+     */
+	public void sendReplaceBranch(String orderNo, String branchNo, String type, int qty, BigDecimal amt,String remark);
 	
 }

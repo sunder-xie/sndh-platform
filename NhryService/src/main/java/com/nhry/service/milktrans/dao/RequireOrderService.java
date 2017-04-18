@@ -76,6 +76,7 @@ public interface RequireOrderService {
 
     Map<String,Integer> findReqGoodResendByOrderNo(Date orderDate, String branchNo);
 
+    List<TMstRefuseResend> findReqGoodResendByEmpNo(Date orderDate, String branchNo);
     /**
      * 按送奶工维度统计日销售数量，生成送奶工销售订单使用（经销商奶站）
      * @param requiredDate

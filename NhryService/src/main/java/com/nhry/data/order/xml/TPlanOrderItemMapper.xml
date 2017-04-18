@@ -39,6 +39,8 @@
     <result column="YFRESH" property="yFresh" jdbcType="INTEGER" />
     <result column="IS_STOP" property="isStop" jdbcType="VARCHAR" />
     <result column="SHORT_TXT" property="shortTxt" jdbcType="VARCHAR" />
+    <result column="ONLINE_INIT_AMT" property="onlineInitAmt" jdbcType="DECIMAL" />
+    <result column="BALANCE_AMT" property="balanceAmt" jdbcType="DECIMAL" />
   </resultMap>
 
   <resultMap id="EmpDispDetailResultMap" type="com.nhry.model.bill.EmpDispDetailModel" >
@@ -100,7 +102,7 @@
     e.RULE_TYPE, e.DISP_DAYS, e.GAP_DAYS, e.RULE_TXT, e.REACH_TIME_TYPE, e.START_DISP_DATE, e.END_DISP_DATE,
     e.PROMOTION, e.PROM_ITEM_NO,e.PROM_DAYS, e.STATUS, e.BUY_QTY, e.GIFT_QTY, e.CREATE_AT, e.CREATE_BY, e.CREATE_BY_TXT,
     e.LAST_MODIFIED, e.LAST_MODIFIED_BY, e.LAST_MODIFIED_BY_TXT,e.GIFT_MATNR,e.GIFT_UNIT,e.DISP_TOTAL,e.IS_STOP,
-    ex.SHORT_TXT MATNR_TXT,ex.SHORT_TXT SHORT_TXT
+    ex.SHORT_TXT MATNR_TXT,ex.SHORT_TXT SHORT_TXT,e.ONLINE_INIT_AMT,e.BALANCE_AMT
     from t_mst_plan_order_item e
     left join t_preorder o on o.ORDER_NO = e.ORDER_NO 
     left join t_md_mara_ex ex on (ex.MATNR = e.MATNR and o.SALES_ORG = ex.SALES_ORG)
@@ -115,7 +117,7 @@
    (SELECT i.ITEM_NAME from t_sys_code_item i WHERE i.TYPE_CODE=<include refid="mybaties.constant.bot_type"/> and i.ITEM_CODE = ex.BOT_TYPE ) UNIT,
      e.QTY, e.SALES_PRICE,e.RULE_TYPE, e.DISP_DAYS, e.GAP_DAYS, e.RULE_TXT, e.REACH_TIME_TYPE, e.START_DISP_DATE, e.END_DISP_DATE,
     e.PROMOTION, e.PROM_DAYS, e.STATUS, e.BUY_QTY, e.GIFT_QTY, e.CREATE_AT, e.CREATE_BY, e.CREATE_BY_TXT,
-    e.LAST_MODIFIED, e.LAST_MODIFIED_BY, e.LAST_MODIFIED_BY_TXT,e.DISP_TOTAL
+    e.LAST_MODIFIED, e.LAST_MODIFIED_BY, e.LAST_MODIFIED_BY_TXT,e.DISP_TOTAL,e.ONLINE_INIT_AMT,e.BALANCE_AMT
 
     from t_mst_plan_order_item e LEFT JOIN t_md_mara p on (e.MATNR = p.MATNR and p.SALES_ORG=#{salesOrg} )
     LEFT  JOIN  t_md_mara_ex ex on e.MATNR = ex.MATNR
@@ -258,6 +260,12 @@
       <if test="isStop != null" >
         IS_STOP,
       </if>
+      <if test="onlineInitAmt != null" >
+        ONLINE_INIT_AMT,
+      </if>
+      <if test="balanceAmt != null" >
+        BALANCE_AMT,
+      </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides="," >
       <if test="itemNo != null" >
@@ -356,6 +364,12 @@
       <if test="isStop != null" >
         #{isStop,jdbcType=VARCHAR},
       </if>
+      <if test="onlineInitAmt" >
+        #{onlineInitAmt,jdbcType=DECIMAL},
+      </if>
+      <if test="balanceAmt != null" >
+        #{balanceAmt,jdbcType=DECIMAL}
+      </if>
     </trim>
   </insert>
   <update id="updateEntryByOrderCode" parameterType="com.nhry.data.order.domain.TPlanOrderItem" >
@@ -437,6 +451,12 @@
       </if>
        <if test="isStop != null" >
         IS_STOP = #{isStop,jdbcType=VARCHAR},
+      </if>
+      <if test="balanceAmt != null">
+        BALANCE_AMT = #{balanceAmt,jdbcType=VARCHAR},
+      </if>
+      <if test="onlineInitAmt != null">
+        ONLINE_INIT_AMT = #{onlineInitAmt,jdbcType=VARCHAR},
       </if>
     </set>
     where ITEM_NO = #{itemNo,jdbcType=VARCHAR}
@@ -582,7 +602,9 @@
           e.DISP_TOTAL,
           e.IS_STOP,
           p.MATNR_TXT MATNR_TXT,
-          ex.SHORT_TXT SHORT_TXT
+          ex.SHORT_TXT SHORT_TXT,
+          e.ONLINE_INIT_AMT,
+          e.BALANCE_AMT
       FROM
           t_mst_plan_order_item e
       LEFT JOIN t_promotion pr ON e.PROMOTION = pr.PROM_NO

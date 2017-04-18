@@ -13,11 +13,21 @@
     <result column="QTY" property="qtY" jdbcType="VARCHAR" />
     <result column="CONFIRM_QTY" property="confirm_QTY" jdbcType="VARCHAR" />
   </resultMap>
+
+
+
   <!--  liuyin  ADD  ,QTY,CONFIRM_QTY   start-->
-  <sql id="Base_Column_List" >
+  <sql id="Base_Column_List1" >
     ORDER_NO, ORDER_DATE, BRANCH_NO, MEMO_TXT, SYNC_AT, STATUS,REQ_ORDER_NO,QTY,CONFIRM_QTY
   </sql>
   <!--  liuyin  update END-->
+
+
+  <sql id="Base_Column_List" >
+    ORDER_NO, ORDER_DATE, BRANCH_NO, MEMO_TXT, SYNC_AT, STATUS,REQ_ORDER_NO
+  </sql>
+
+
   <select id="selectGiOrderByNo" resultMap="BaseResultMap" parameterType="java.lang.String" >
     select 
     <include refid="Base_Column_List" />
@@ -125,7 +135,7 @@
     <!--SELECT <include refid="Base_Column_List"/> FROM t_ssm_gi_order WHERE  BRANCH_NO = #{branchNo,jdbcType=VARCHAR} and ORDER_DATE = #{orderDate,jdbcType=DATE}-->
   <!--</select>-->
   <select id="findGiOrder" parameterType="com.nhry.model.stock.GiOrderModel" resultMap="BaseResultMap">
-    SELECT <include refid="Base_Column_List"/> FROM
+    SELECT <include refid="Base_Column_List1"/> FROM
     (
     SELECT  ts.ORDER_NO, ts.ORDER_DATE, ts.BRANCH_NO,    ts.MEMO_TXT  , ts.SYNC_AT, ts.STATUS,ts.REQ_ORDER_NO,
      sum(binary i.qty)  as QTY, sum(binary i.CONFIRM_QTY) as  CONFIRM_QTY   FROM t_ssm_gi_order
