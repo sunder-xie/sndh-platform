@@ -103,6 +103,15 @@ public class StudentMilkOrderResource  extends BaseResource {
 	}
 	
 	@POST
+	@Path("/createOrderUnpack")
+	@Produces(MediaType.APPLICATION_JSON)
+	@Consumes(MediaType.APPLICATION_JSON)
+	@ApiOperation(value = "/createOrderUnpack", response = int.class, notes = "创建订单")
+	public Response createOrderUnpack(@ApiParam(required=true,name="mstOrderStud")TMstOrderStud mstOrderStud) throws Exception{
+		return convertToRespModel(MessageCode.NORMAL, null,  orderStudService.createOrderUnpack(mstOrderStud));
+	}
+	
+	@POST
 	@Path("/updateOrder")
 	@Produces(MediaType.APPLICATION_JSON)
 	@Consumes(MediaType.APPLICATION_JSON)
@@ -146,8 +155,14 @@ public class StudentMilkOrderResource  extends BaseResource {
 		return convertToRespModel(MessageCode.NORMAL, null,  orderStudService.findOrderInfoBySchoolCodeAndDate(mstOrderStud));
 	}
 	
-	
-	
+	@POST
+	@Path("/findOrderInfoBySchoolCodeAndDateUnpack")
+	@Produces(MediaType.APPLICATION_JSON)
+	@Consumes(MediaType.APPLICATION_JSON)
+	@ApiOperation(value = "/findOrderInfoBySchoolCodeAndDateUnpack", response = Map.class, notes = "根据学校，时间查询订单详情列表")
+	public Response findOrderInfoBySchoolCodeAndDateUnpack(@ApiParam(required=true,name="mstOrderStud")TMstOrderStud mstOrderStud){
+		return convertToRespModel(MessageCode.NORMAL, null,  orderStudService.findOrderInfoBySchoolCodeAndDateUnpack(mstOrderStud));
+	}
 	
 	@POST
 	@Path("/buildBatchInfo")

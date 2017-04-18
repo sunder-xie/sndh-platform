@@ -34,4 +34,8 @@ public interface OrderStudService {
 	int calcLoss(OrderStudLossModel orderStudLossModel);
 	
 	String exportStudOrderMilk(ExportStudOrderMilkModel model) throws Exception;
+
+	int createOrderUnpack(TMstOrderStud mstOrderStud) throws Exception;
+	
+	Map<String, Object> findOrderInfoBySchoolCodeAndDateUnpack(TMstOrderStud mstOrderStud);
 }

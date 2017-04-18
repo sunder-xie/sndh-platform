@@ -38,6 +38,12 @@ public class TMstOrderStudItemMapperImpl implements TMstOrderStudItemMapper {
 	public List<TMstOrderStudItem> findOrderItemByMap(Map<String, Object> parameterMap) {
 		return sqlSessionTemplate.selectList("findOrderItemByMap", parameterMap);
 	}
+	
+	@Override
+	public List<TMstOrderStudItem> findOrderItemByMapUnpack(Map<String, Object> parameterMap) {
+		return sqlSessionTemplate.selectList("findOrderItemByMapUnpack", parameterMap);
+	}
+	
 
 	@Override
 	public List<TMstOrderStudItem> findOrderItemByMapWithBatch(Map<String, Object> parameterMap) {
@@ -67,6 +73,16 @@ public class TMstOrderStudItemMapperImpl implements TMstOrderStudItemMapper {
 	@Override
 	public List<TMstOrderStud> findClassOrderItemByOrderStud(TMstOrderStud item) {
 		return sqlSessionTemplate.selectList("findClassOrderItemByOrderStud", item);
+	}
+
+	@Override
+	public int insertSdutOrderItemUnpack(TMstOrderStudItem item) {
+		return sqlSessionTemplate.insert("insertSdutOrderItemUnpack", item);
+	}
+
+	@Override
+	public int deleteByOrderIdUnpack(String orderId) {
+		return sqlSessionTemplate.delete("deleteByOrderIdUnpack", orderId);
 	}
 
 }
