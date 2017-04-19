@@ -30,8 +30,12 @@ public interface TMstOrderStudItemMapper {
 
 	int insertSdutOrderItemUnpack(TMstOrderStudItem item);
 
-	int deleteByOrderIdUnpack(String orderId);
+	int deleteOrderItemByOrderIdUnpack(String orderId);
 
 	List<TMstOrderStudItem> findOrderItemByMapUnpack(Map<String, Object> selectMap);
+
+	String findSumBySelectiveUnpack(TMstOrderStud obj);
+
+	String findLossSumBySelectiveUnpack(TMstOrderStud obj);
 	
 }

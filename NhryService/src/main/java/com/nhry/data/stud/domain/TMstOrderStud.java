@@ -51,6 +51,10 @@ public class TMstOrderStud {
     
     private String list30Sum;
     
+    private String list5020Sum;//不分包奶总数
+    
+    private String list5030Sum;//不分包奶损耗总数
+    
     private String matnr;//
     
     private String matnrTxt;//
@@ -77,7 +81,23 @@ public class TMstOrderStud {
     
     
 
-    public String getQty() {
+    public String getList5020Sum() {
+		return list5020Sum;
+	}
+
+	public void setList5020Sum(String list5020Sum) {
+		this.list5020Sum = list5020Sum;
+	}
+
+	public String getList5030Sum() {
+		return list5030Sum;
+	}
+
+	public void setList5030Sum(String list5030Sum) {
+		this.list5030Sum = list5030Sum;
+	}
+
+	public String getQty() {
 		return qty;
 	}
 
@@ -118,7 +138,7 @@ public class TMstOrderStud {
 	}
 
 	public String getTotalSum() {
-		return totalSum;
+		return null==totalSum?"0":totalSum;
 	}
 
 	public void setTotalSum(String totalSum) {
@@ -158,7 +178,7 @@ public class TMstOrderStud {
 	}
 
 	public String getList10Sum() {
-		return list10Sum;
+		return null==list10Sum?"0":list10Sum;
 	}
 
 	public void setList10Sum(String list10Sum) {
@@ -166,7 +186,7 @@ public class TMstOrderStud {
 	}
 
 	public String getList20Sum() {
-		return list20Sum;
+		return null==list20Sum?"0":list20Sum;
 	}
 
 	public void setList20Sum(String list20Sum) {
@@ -174,7 +194,7 @@ public class TMstOrderStud {
 	}
 
 	public String getList30Sum() {
-		return list30Sum;
+		return null==list30Sum?"0":list30Sum;
 	}
 
 	public void setList30Sum(String list30Sum) {
