@@ -10499,10 +10499,11 @@ public class OrderServiceImpl extends BaseService implements OrderService {
             newOrder.setBranchNo(smodel.getBranchNo());
             newOrder.setEmpNo(null);
             newOrder.setBackDate(null);
-            newOrder.setMilkboxStat("20");
+            newOrder.setMilkboxStat("30");
             newOrder.setIsValid(null);
             newOrder.setInitAmt(initAmt);
             newOrder.setCurAmt(initAmt);
+            newOrder.setIsPaid("Y");
             order.setInitAmt(oldInitAmt);
             order.setCurAmt(oldUseAmt);
             tPreOrderMapper.updateOrderCurAmtAndInitAmt(order);
