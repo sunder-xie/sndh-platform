@@ -55,7 +55,7 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 public class OrderServiceImpl extends BaseService implements OrderService {
-
+    private final SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
     private TPreOrderMapper tPreOrderMapper;
     private TOrderDaliyPlanItemMapper tOrderDaliyPlanItemMapper;
     private TPlanOrderItemMapper tPlanOrderItemMapper;
@@ -10462,21 +10462,29 @@ public class OrderServiceImpl extends BaseService implements OrderService {
             oldUseAmt = tOrderDaliyPlanItemMapper.getOrderOrderDailyFinishAmtByOrderNo(smodel.getOrderNo());
             for(TPlanOrderItem item : items){
                 BigDecimal useAmt = tOrderDaliyPlanItemMapper.sumFinishAmtByPlanOrderNo(item.getItemNo());//用的钱
-                int nums = useAmt.divideToIntegralValue(item.getSalesPrice()).intValue(); //用的天数
+                int nums = useAmt.divide(item.getSalesPrice()).intValue(); //用的天数
                 TPlanOrderItem newItem = new TPlanOrderItem();
                 BeanUtils.copyProperties(newItem,item);
                 if(useAmt.compareTo(BigDecimal.ZERO) != 0){
                     newItem.setDispTotal(item.getDispTotal() - nums);
+                    newItem.setItemamount(item.getOnlineInitAmt().subtract(useAmt));
                     newItem.setOnlineInitAmt(item.getOnlineInitAmt().subtract(useAmt));
                     newItem.setBalanceAmt(null);
+                }else{
+                    newItem.setItemamount(item.getOnlineInitAmt());
                 }
+                newItem.setStartDispDateStr(format.format(smodel.getDisDate()));
+//                newItem.setEndDispDateStr(format.format(item.getEndDispDate()));
                 initAmt = initAmt.add(newItem.getOnlineInitAmt());
                 newItem.setOrderNo(null);
                 newItem.setItemNo(null);
                 planList.add(newItem);
                 item.setOnlineInitAmt(useAmt);
                 item.setDispTotal(nums);
-                tPlanOrderItemMapper.updateByPrimaryKey(item);
+                item.setLastModified(new Date());
+                item.setLastModifiedBy(userSessionService.getCurrentUser().getLoginName());
+                item.setLastModifiedByTxt(userSessionService.getCurrentUser().getDisplayName());
+                tPlanOrderItemMapper.updateEntryByItemNo(item);
                 oldInitAmt = oldInitAmt.add(useAmt);
                 newQty += newItem.getDispTotal();
             }
@@ -10504,7 +10512,7 @@ public class OrderServiceImpl extends BaseService implements OrderService {
         //订单完结
         setOrderToFinish2(order,smodel.getDisDate());
         //创建订单
-        createOrder(orderCreateModel);
+        String orderNo = createOrder(orderCreateModel);
 
         OperationLogUtil.saveHistoryOperation(order.getOrderNo(), LogType.ORDER, OrderLogEnum.REPLACE_BRANCH, null, null,
                 order.getBranchNo(), smodel.getBranchNo(), null, null, userSessionService.getCurrentUser(), operationLogMapper);
@@ -10515,7 +10523,7 @@ public class OrderServiceImpl extends BaseService implements OrderService {
             public void run() {
                 super.run();
                 this.setName("sendReplaceBranch");
-                messLogService.sendReplaceBranch(order.getOrderNo(),smodel.getBranchNo(),"2",newOrder.getyFresh(),newOrder.getInitAmt(),"");
+                messLogService.sendReplaceBranch(order.getOnlineorderNo(),smodel.getBranchNo(),"2",newOrder.getyFresh(),newOrder.getInitAmt(),"");
             }
         });
         return 0;

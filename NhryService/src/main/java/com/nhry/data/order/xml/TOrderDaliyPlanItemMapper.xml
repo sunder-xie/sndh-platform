@@ -1530,7 +1530,7 @@
     SELECT
     IFNULL(SUM(cast(AMT as decimal(10,2))),0)
     FROM t_mst_order_daliy_plan_item
-    WHERE PLAN_ITEM_NO = #{planItemNo,jdbcType=VARCHAR}
+    WHERE ITEM_NO = #{planItemNo,jdbcType=VARCHAR}
     and (STATUS ='20' or STATUS = '10')
   </select>
 
