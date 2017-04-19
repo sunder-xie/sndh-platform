@@ -149,9 +149,9 @@ public class PIVipInfoDataServiceImpl implements PIVipInfoDataService {
                             address = address1;
                         }
                     }
-                    TVipCrmAddress vipCrmAddress = new TVipCrmAddress();
+//                    TVipCrmAddress vipCrmAddress = new TVipCrmAddress();
                     if (address != null) {
-                        BeanUtils.copyProperties(vipCrmAddress, address);
+//                        BeanUtils.copyProperties(vipCrmAddress, address);
                         vipCrmInfo.setAddressId(address.getAddressId());
                     }
                     ZT_CRM_BuData_MaintainServiceStub client = connMaintainService();
@@ -327,10 +327,11 @@ public class PIVipInfoDataServiceImpl implements PIVipInfoDataService {
                         vipCrmInfo.setVipCustNo(vipno);
                         vipCrmInfo.setVipCustNoSap(evMembId);
                         vipCrmInfoService.addVipCrm(vipCrmInfo);
-                        vipCrmAddress.setSapGuid(vipno);
-                        vipCrmAddress.setIsDefault("Y");
-                        vipCrmAddress.setIsDelete("N");
-                        vipCrmAddressMapper.addVipCrmAddress(vipCrmAddress);
+
+//                        vipCrmAddress.setSapGuid(vipno);
+//                        vipCrmAddress.setIsDefault("Y");
+//                        vipCrmAddress.setIsDelete("N");
+//                        vipCrmAddressMapper.addVipCrmAddress(vipCrmAddress);
                         vipCustInfo.setVipCustNoSap(vipno);
                         vipCustInfo.setVipMp(vipTel);
                         vipCustInfoService.updateSapNo(vipCustInfo);
@@ -348,7 +349,9 @@ public class PIVipInfoDataServiceImpl implements PIVipInfoDataService {
             if (result.isSuccess()) {
                 try {
                     //发送地址
-                    sendAddress(addresses, vipno);
+                    if(addresses.size()>0) {
+                        sendAddress(addresses, vipno);
+                    }
 //                executeUptVipCust(vipCustInfo);
                 } catch (Exception e) {
                     e.printStackTrace();
@@ -365,7 +368,7 @@ public class PIVipInfoDataServiceImpl implements PIVipInfoDataService {
             taskExecutor.execute(new Thread() {
                 public void run() {
                     try {
-//                        Thread.sleep(1000);
+                        Thread.sleep(1000);
                         this.setName(vipCustInfo.getVipCustNo());
                         generateVipInfoData(vipCustInfo, vipTel);
                     } catch (Exception e) {
