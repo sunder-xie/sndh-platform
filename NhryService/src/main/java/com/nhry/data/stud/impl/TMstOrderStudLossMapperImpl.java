@@ -27,5 +27,20 @@ public class TMstOrderStudLossMapperImpl implements TMstOrderStudLossMapper {
 	public List<TMstOrderStudLoss> findLossByOrderId(Map<String, Object> selectMap) {
 		return sqlSessionTemplate.selectList("findLossByOrderId", selectMap);
 	}
+	
+	@Override
+	public List<TMstOrderStudLoss> findLossByOrderIdUnpack(Map<String, Object> selectMap) {
+		return sqlSessionTemplate.selectList("findLossByOrderIdUnpack", selectMap);
+	}
+
+	@Override
+	public int insertOrderStudLossUnpack(TMstOrderStudLoss orderStudLoss) {
+		return sqlSessionTemplate.insert("insertOrderStudLossUnpack", orderStudLoss);
+	}
+
+	@Override
+	public int deleteByOrderIdUnpack(String orderId) {
+		return sqlSessionTemplate.delete("deleteByOrderIdUnpack", orderId);
+	}
 
 }

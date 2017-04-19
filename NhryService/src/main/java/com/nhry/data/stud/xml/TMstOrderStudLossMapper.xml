@@ -28,6 +28,17 @@
     and b.SALES_ORG=#{salesOrg}
   </select>
   
+  <select id="findLossByOrderIdUnpack" resultMap="BaseResultMap" parameterType="java.util.Map" >
+    select 
+    a.MID, a.ORDER_ID, a.MATNR, a.QTY, a.SALES_ORG, b.ZBOT_CODE,
+    (SELECT i.ITEM_NAME FROM t_sys_code_item I WHERE i.TYPE_CODE=<include refid="mybaties.constant.packing _type"></include> AND i.ITEM_CODE=b.ZBOT_CODE) ZBOT_CODE_NAME
+    from t_mst_order_stud_loss_unpack a
+    left join t_md_mara_stud b on a.MATNR=b.MATNR
+    where a.ORDER_ID=#{orderId}
+    and b.STATUS='Y'
+    and b.SALES_ORG=#{salesOrg}
+  </select>
+  
   
   <insert id="insertOrderStudLoss" parameterType="com.nhry.data.stud.domain.TMstOrderStudLoss" >
     insert into t_mst_order_stud_loss
@@ -102,4 +113,82 @@
       </if>
     </trim>
   </insert>
+  
+  <insert id="insertOrderStudLossUnpack" parameterType="com.nhry.data.stud.domain.TMstOrderStudLoss" >
+    insert into t_mst_order_stud_loss_unpack
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="mid != null" >
+        MID,
+      </if>
+      <if test="orderId != null" >
+        ORDER_ID,
+      </if>
+      <if test="matnr != null" >
+        MATNR,
+      </if>
+      <if test="qty != null" >
+        QTY,
+      </if>
+      <if test="createAt != null" >
+        CREATE_AT,
+      </if>
+      <if test="createBy != null" >
+        CREATE_BY,
+      </if>
+      <if test="createByTxt != null" >
+        CREATE_BY_TXT,
+      </if>
+      <if test="lastModified != null" >
+        LAST_MODIFIED,
+      </if>
+      <if test="lastModifiedBy != null" >
+        LAST_MODIFIED_BY,
+      </if>
+      <if test="lastModifiedByTxt != null" >
+        LAST_MODIFIED_BY_TXT,
+      </if>
+      <if test="salesOrg != null" >
+        SALES_ORG,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="mid != null" >
+        #{mid,jdbcType=VARCHAR},
+      </if>
+      <if test="orderId != null" >
+        #{orderId,jdbcType=VARCHAR},
+      </if>
+      <if test="matnr != null" >
+        #{matnr,jdbcType=VARCHAR},
+      </if>
+      <if test="qty != null" >
+        #{qty,jdbcType=INTEGER},
+      </if>
+      <if test="createAt != null" >
+        #{createAt,jdbcType=TIMESTAMP},
+      </if>
+      <if test="createBy != null" >
+        #{createBy,jdbcType=VARCHAR},
+      </if>
+      <if test="createByTxt != null" >
+        #{createByTxt,jdbcType=VARCHAR},
+      </if>
+      <if test="lastModified != null" >
+        #{lastModified,jdbcType=TIMESTAMP},
+      </if>
+      <if test="lastModifiedBy != null" >
+        #{lastModifiedBy,jdbcType=VARCHAR},
+      </if>
+      <if test="lastModifiedByTxt != null" >
+        #{lastModifiedByTxt,jdbcType=VARCHAR},
+      </if>
+      <if test="salesOrg != null" >
+        #{salesOrg,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <delete id="deleteByOrderIdUnpack" parameterType="java.lang.String">
+  	delete from t_mst_order_stud_loss
+  	where order_id=#{orderId}
+  </delete>
 </mapper>

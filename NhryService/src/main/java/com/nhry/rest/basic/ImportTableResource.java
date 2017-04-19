@@ -302,8 +302,11 @@ public class ImportTableResource extends BaseResource {
                 ExcelUtil.isNullCell(cell, row, j);
                 //付款方式
                 order.setPaymentStat(ExcelUtil.getCellValue(cell, row));
-                //无需装箱
-                order.setMilkboxStat("30");
+                cell = row.getCell(j++);
+                ExcelUtil.isNullCell(cell, row, j);
+                //装箱状态
+                order.setMilkboxStat(ExcelUtil.getCellValue(cell, row));
+
                 cell = row.getCell(j++);
                 //送奶员
                 order.setEmpNo(ExcelUtil.getCellValue(cell, row));
@@ -412,6 +415,9 @@ public class ImportTableResource extends BaseResource {
                 if (org.apache.commons.lang3.StringUtils.isBlank(order.getPaymentStat())) {
                     throw new ServiceException(MessageCode.LOGIC_ERROR, "订单编号" + order.getOrderNo() + "请选择付款方式!");
                 }
+                if (org.apache.commons.lang3.StringUtils.isBlank(order.getMilkboxStat())) {
+                    throw new ServiceException(MessageCode.LOGIC_ERROR, "订单编号" + order.getOrderNo() + "请选择装箱状态!");
+                }
                 if (org.apache.commons.lang3.StringUtils.isBlank(order.getEmpNo())) {
                     if (!"10".equals(order.getPreorderSource()) && !"20".equals(order.getPreorderSource())) {
                         throw new ServiceException(MessageCode.LOGIC_ERROR, "订单编号" + order.getOrderNo() + "请选择送奶员!");
@@ -440,7 +446,9 @@ public class ImportTableResource extends BaseResource {
             orderService.createOrders(OrderModels);
             for (int om = 0; om < OrderModels.size(); om++) {
                 OrderCreateModel ocm = OrderModels.get(om);
-                if ("20".equals(ocm.getOrder().getPaymentmethod())&& "20".equals(ocm.getOrder().getPaymentStat())) {
+                if ("20".equals(ocm.getOrder().getPaymentmethod())
+                        && "20".equals(ocm.getOrder().getPaymentStat())
+                        &&!"10".equals(ocm.getOrder().getMilkboxStat())) {
                     customerBillService.createRecBillByOrderNo(ocm.getOrder().getOrderNo());
                     CustomerPayMentModel cModel = new CustomerPayMentModel();
                     cModel.setOrderNo(ocm.getOrder().getOrderNo());
@@ -706,14 +714,16 @@ public class ImportTableResource extends BaseResource {
                 cell = row.getCell(j++);
                 ExcelUtil.isNullCell(cell, row, j);
                 order.setPaymentmethod(ExcelUtil.getCellValue(cell, row));
+                //装箱状态
+                cell = row.getCell(j++);
+                ExcelUtil.isNullCell(cell, row, j);
+                order.setMilkboxStat(ExcelUtil.getCellValue(cell, row));
                 //机构编号
                 cell = row.getCell(j++);
                 ExcelUtil.isNullCell(cell, row, j);
                 order.setOnlineSourceType(ExcelUtil.getCellValue(cell, row));
                 //付款状态为已付款
                 order.setPaymentStat("20");
-                //已装箱
-                order.setMilkboxStat("10");
                 //暂停订单
                 order.setPreorderStat("20");
                 cell = row.getCell(j++);
@@ -923,7 +933,10 @@ public class ImportTableResource extends BaseResource {
                 //配送方式-3
                 ExcelUtil.isNullCell(cell, row, j);
                 order.setDeliveryType(ExcelUtil.getCellValue(cell, row));
-
+                cell = row.getCell(j++);
+                //装箱状态-4
+                ExcelUtil.isNullCell(cell, row, j);
+                order.setMilkboxStat(ExcelUtil.getCellValue(cell, row));
                 cell = row.getCell(j++);
                 ExcelUtil.isNullCell(cell, row, j);
                 //订户编码规则是
@@ -993,8 +1006,6 @@ public class ImportTableResource extends BaseResource {
                 order.setPaymentStat("20");
                 order.setIsPaid("Y");
                 order.setPayDateStr(format.format(new Date()).toString());
-                //已装箱
-                order.setMilkboxStat("30");
                 //暂停订单
                 order.setPreorderStat("20");
                 cell = row.getCell(j++);
@@ -1124,6 +1135,9 @@ public class ImportTableResource extends BaseResource {
                 TPreOrder order = orderModel.getOrder();
                 if (orderModel.getEntries() == null || orderModel.getEntries().size() == 0) {
                     throw new ServiceException(MessageCode.LOGIC_ERROR, "订单编号" + order.getOrderNo() + "请选择商品行!");
+                }
+                if (org.apache.commons.lang3.StringUtils.isBlank(order.getMilkboxStat())) {
+                    throw new ServiceException(MessageCode.LOGIC_ERROR, "订单编号" + order.getOrderNo() + "请选择奶箱状态!");
                 }
                 if (org.apache.commons.lang3.StringUtils.isBlank(order.getMilkmemberNo())) {
                     if (!"10".equals(order.getPreorderSource()) && !"20".equals(order.getPreorderSource())) {//电商不交验订户
