@@ -10441,6 +10441,9 @@ public class OrderServiceImpl extends BaseService implements OrderService {
     @Override
     public int replaceOrderBranch(OrderNoAndDispDateModel smodel) {
         TPreOrder order = tPreOrderMapper.selectByPrimaryKey(smodel.getOrderNo());
+        if(!"10".equals(order.getPreorderSource()) || !"40".equals(order.getPreorderSource()) ){
+            throw new ServiceException(MessageCode.LOGIC_ERROR,"只有电商订单才允许替换奶站！");
+        }
         List<TPlanOrderItem> items = tPlanOrderItemMapper.selectByOrderCode(smodel.getOrderNo());
         OrderCreateModel orderCreateModel = new OrderCreateModel();
         ArrayList<TPlanOrderItem> planList = new ArrayList<TPlanOrderItem>();
