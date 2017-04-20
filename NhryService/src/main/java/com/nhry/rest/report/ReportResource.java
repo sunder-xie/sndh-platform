@@ -361,7 +361,7 @@ public class ReportResource extends BaseResource{
                 sheet.setForceFormulaRecalculation(true);
             }
             //String fname = CodeGeneratorUtil.getCode();
-            String fname = (format.format(order.getDispDate())).concat(order.getDispEmpName()).concat("路单.xlsx");
+            String fname = (format.format(order.getDispDate())).concat(order.getDispEmpNo()).concat(".xlsx");
             String rq = format.format(new Date(order.getDispDate().getTime() - 24 * 60 * 60 * 1000));
             System.out.print(rq);
             String filePath = url +  File.separator + "report"+ File.separator + "export";

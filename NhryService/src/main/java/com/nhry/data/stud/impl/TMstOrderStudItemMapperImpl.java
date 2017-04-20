@@ -81,8 +81,18 @@ public class TMstOrderStudItemMapperImpl implements TMstOrderStudItemMapper {
 	}
 
 	@Override
-	public int deleteByOrderIdUnpack(String orderId) {
-		return sqlSessionTemplate.delete("deleteByOrderIdUnpack", orderId);
+	public int deleteOrderItemByOrderIdUnpack(String orderId) {
+		return sqlSessionTemplate.delete("deleteOrderItemByOrderIdUnpack", orderId);
+	}
+
+	@Override
+	public String findSumBySelectiveUnpack(TMstOrderStud obj) {
+		return sqlSessionTemplate.selectOne("findSumBySelectiveUnpack", obj);
+	}
+
+	@Override
+	public String findLossSumBySelectiveUnpack(TMstOrderStud obj) {
+		return sqlSessionTemplate.selectOne("findLossSumBySelectiveUnpack", obj);
 	}
 
 }

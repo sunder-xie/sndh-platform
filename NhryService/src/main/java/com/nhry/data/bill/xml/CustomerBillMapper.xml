@@ -492,7 +492,7 @@
         ) PROM_DESCRIBE,
         o.BRANCH_NO,
         o.EMP_NO,
-        e.TEL EMP_TEL,
+        e.MP EMP_TEL,
         e.EMP_NAME,
         c.VIP_NAME,
         c.MP CUST_TEL,

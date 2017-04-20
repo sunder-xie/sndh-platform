@@ -23,12 +23,67 @@
     <result column="ZBOT_CODE_NAME" property="zbotCodeName" jdbcType="VARCHAR" />
   </resultMap>
   
+  <select id="findLossSumBySelective" resultType="java.lang.String" parameterType="com.nhry.data.stud.domain.TMstOrderStud">
+  		select IFNULL(sum(a.QTY), 0) s
+  		from t_mst_order_stud_loss a
+  		left join t_mst_order_stud b on a.order_id=b.order_id
+  		where b.ORDER_DATE=#{orderDateStr}
+  		and b.order_status='10'
+  		and a.SALES_ORG=#{salesOrg}
+  		and a.MATNR=#{matnr}
+  		<if test="null != schoolCode and '' != schoolCode">
+  			and b.SCHOOL_CODE=#{schoolCode}
+  		</if>
+  </select>
+  
+  <select id="findLossSumBySelectiveUnpack" resultType="java.lang.String" parameterType="com.nhry.data.stud.domain.TMstOrderStud">
+  		select IFNULL(sum(a.QTY), 0) s
+  		from t_mst_order_stud_loss_unpack a
+  		left join t_mst_order_stud b on a.order_id=b.order_id
+  		where b.ORDER_DATE=#{orderDateStr}
+  		and b.order_status='10'
+  		and a.SALES_ORG=#{salesOrg}
+  		and a.MATNR=#{matnr}
+  		<if test="null != schoolCode and '' != schoolCode">
+  			and b.SCHOOL_CODE=#{schoolCode}
+  		</if>
+  </select>
+  
   <select id="selectByMid" resultMap="BaseResultMap" parameterType="java.lang.String" >
     select 
     MID, ORDER_DATE, ORDER_ID, SCHOOL_CODE, ORDER_TYPE, CLASS_CODE, MATNR, QTY, SALES_ORG
     from t_mst_order_stud_item
     where MID = #{mid,jdbcType=VARCHAR}
   </select>
+  
+  <select id="findSumBySelectiveUnpack" resultType="java.lang.String" parameterType="com.nhry.data.stud.domain.TMstOrderStud">
+  		select IFNULL(sum(a.QTY), 0) s
+  		from t_mst_order_stud_item_unpack a
+  		left join t_mst_order_stud b on a.order_id=b.order_id
+  		where a.ORDER_DATE=#{orderDateStr}
+  		and b.order_status='10'
+  		and a.SALES_ORG=#{salesOrg}
+  		and a.MATNR=#{matnr}
+  		and a.ORDER_TYPE=#{orderType}
+  		<if test="null != schoolCode and '' != schoolCode">
+  			and a.SCHOOL_CODE=#{schoolCode}
+  		</if>
+  </select>
+  
+  <select id="findSumBySelective" resultType="java.lang.String" parameterType="com.nhry.data.stud.domain.TMstOrderStud">
+  		select IFNULL(sum(a.QTY), 0) s
+  		from t_mst_order_stud_item a
+  		left join t_mst_order_stud b on a.order_id=b.order_id
+  		where a.ORDER_DATE=#{orderDateStr}
+  		and b.order_status='10'
+  		and a.SALES_ORG=#{salesOrg}
+  		and a.MATNR=#{matnr}
+  		and a.ORDER_TYPE=#{orderType}
+  		<if test="null != schoolCode and '' != schoolCode">
+  			and a.SCHOOL_CODE=#{schoolCode}
+  		</if>
+  </select>
+  
   
   <select id="findClassOrderItemByOrderStud" parameterType="com.nhry.data.stud.domain.TMstOrderStud" resultType="com.nhry.data.stud.domain.TMstOrderStud">
   	select 
@@ -304,7 +359,7 @@
       </if>
     </trim>
   </insert>
-  <delete id="deleteByOrderIdUnpack" parameterType="java.lang.String">
+  <delete id="deleteOrderItemByOrderIdUnpack" parameterType="java.lang.String">
   	delete from t_mst_order_stud_item_unpack
   	where order_id=#{orderId}
   </delete>
