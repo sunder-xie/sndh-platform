@@ -518,6 +518,33 @@ public class OrderStudServiceImpl implements OrderStudService {
 		resultMap.put("schoolList", schoolList);
 		return resultMap;
 	}
+	private String findMatnr(TMdSchoolRule schoolRule, int week) throws ParseException{
+		if(1 == week){//星期天
+			return schoolRule.getWeek7Matnr();
+		}
+		else if(2 == week){//星期一
+			return schoolRule.getWeek1Matnr();
+		}
+		else if(3 == week){//W2
+			return schoolRule.getWeek2Matnr();
+		}
+		else if(4 == week){//W3
+			return schoolRule.getWeek3Matnr();
+		}
+		else if(5 == week){//W4
+			return schoolRule.getWeek4Matnr();
+		}
+		else if(6 == week){//W5
+			return schoolRule.getWeek5Matnr();
+		}
+		else if(7 == week){//W6
+			return schoolRule.getWeek6Matnr();
+		}
+		return null;
+	}
+	
+	@SuppressWarnings("unused")
+	@Deprecated
 	private String findMatnr(TMdSchoolRule schoolRule, String orderDateStr) throws ParseException{
 		Calendar c = Calendar.getInstance();
 		DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
@@ -588,7 +615,8 @@ public class OrderStudServiceImpl implements OrderStudService {
 		if(null == schoolRule){
 			throw new ServiceException(MessageCode.LOGIC_ERROR, "未查询到学生奶品政策");
 		}
-		String matnr = findMatnr(schoolRule, orderBatchBuildModel.getOrderDateStr());
+//		String matnr = findMatnr(schoolRule, orderBatchBuildModel.getOrderDateStr());
+		String matnr = findMatnr(schoolRule, Integer.parseInt(orderBatchBuildModel.getWeek()));
 		if(StringUtils.isBlank(matnr)){
 			throw new ServiceException(MessageCode.LOGIC_ERROR, "当前学校未设置该套餐的奶品政策");
 		}
