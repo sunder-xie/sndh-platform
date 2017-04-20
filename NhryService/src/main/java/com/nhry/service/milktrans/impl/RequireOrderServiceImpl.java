@@ -1935,7 +1935,7 @@ public class RequireOrderServiceImpl implements RequireOrderService {
         Map<String,String> sapcodeMap = new HashMap<String,String>();
         for(Map<String,Object> map : orgList){
             String empNo =  map.get("empNo").toString();
-            TMdBranchEmp branchEmp = branchEmpMapper.selectActiveBranchEmpByNo(empNo);
+            TMdBranchEmp branchEmp = branchEmpMapper.selectBranchEmpByEmpNo(empNo);
             String sapcode = branchEmp.getSapcode();
             if(StringUtils.isEmpty(sapcode)){
                 if(!empSet.contains(branchEmp.getEmpName()))
