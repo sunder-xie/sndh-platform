@@ -21,4 +21,6 @@ public interface TMstOrderStudMapper {
 	List<TMstOrderStud> findMatnrWithOrder(TMstOrderStud selectObj);
 
 	List<TMstOrderStud> findSchoolWithOrder(TMstOrderStud selectObj);
+
+	List<TMstOrderStud> findMatnrWithOrderUnpack(TMstOrderStud selectObj);
 }

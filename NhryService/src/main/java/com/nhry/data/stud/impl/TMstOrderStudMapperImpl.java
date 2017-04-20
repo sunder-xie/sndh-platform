@@ -50,4 +50,9 @@ public class TMstOrderStudMapperImpl implements TMstOrderStudMapper {
 		return sqlSessionTemplate.selectList("findSchoolWithOrder", selectObj);
 	}
 
+	@Override
+	public List<TMstOrderStud> findMatnrWithOrderUnpack(TMstOrderStud selectObj) {
+		return sqlSessionTemplate.selectList("findMatnrWithOrderUnpack", selectObj);
+	}
+
 }
