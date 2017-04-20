@@ -242,7 +242,7 @@
 		FROM
 		t_vip_cust_info i 
 		WHERE i.SALES_ORG =#{salesOrg,jdbcType=VARCHAR}
-		AND (i.VIP_CUST_NO_SAP is null or i.VIP_CUST_NO_SAP = '') AND i.BRANCH_NO is not null
+		AND (i.VIP_CUST_NO_SAP is null or i.VIP_CUST_NO_SAP = '')
 	</select>
 	<select id="findVipCustOnlyByNo" resultMap="BaseResultMap" parameterType="java.lang.String">
 		SELECT
