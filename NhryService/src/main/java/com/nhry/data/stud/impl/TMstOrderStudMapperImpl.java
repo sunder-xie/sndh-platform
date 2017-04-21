@@ -1,5 +1,6 @@
 package com.nhry.data.stud.impl;
 
+import java.util.HashMap;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -53,6 +54,14 @@ public class TMstOrderStudMapperImpl implements TMstOrderStudMapper {
 	@Override
 	public List<TMstOrderStud> findMatnrWithOrderUnpack(TMstOrderStud selectObj) {
 		return sqlSessionTemplate.selectList("findMatnrWithOrderUnpack", selectObj);
+	}
+
+	@Override
+	public List<TMstOrderStud> findOrderStudByDateAndSalesOrg(String orderDateStr, String salesOrg) {
+		HashMap<String, String> selectMap = new HashMap<String, String>();
+		selectMap.put("orderDateStr", orderDateStr);
+		selectMap.put("salesOrg", salesOrg);
+		return sqlSessionTemplate.selectList("findOrderStudByDateAndSalesOrg", selectMap);
 	}
 
 }

@@ -76,15 +76,39 @@ public class TMstOrderStud implements Serializable, Cloneable{
     
     private String qty;
     
+    private String erpOrderId;
     
+    private String erpOrderStatus;
     
-    
-    
-    
+    private String erpOrderMsg;
     
     
 
-    public String getList5020Sum() {
+    public String getErpOrderId() {
+		return erpOrderId;
+	}
+
+	public void setErpOrderId(String erpOrderId) {
+		this.erpOrderId = erpOrderId;
+	}
+
+	public String getErpOrderStatus() {
+		return erpOrderStatus;
+	}
+
+	public void setErpOrderStatus(String erpOrderStatus) {
+		this.erpOrderStatus = erpOrderStatus;
+	}
+
+	public String getErpOrderMsg() {
+		return erpOrderMsg;
+	}
+
+	public void setErpOrderMsg(String erpOrderMsg) {
+		this.erpOrderMsg = erpOrderMsg;
+	}
+
+	public String getList5020Sum() {
 		return list5020Sum;
 	}
 
