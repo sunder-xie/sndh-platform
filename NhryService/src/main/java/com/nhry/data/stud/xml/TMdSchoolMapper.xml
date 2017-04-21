@@ -57,7 +57,7 @@
     select 
     <include refid="Base_Column_List" />
     from t_md_school
-    where ERP_CODE = #{erpCode,jdbcType=VARCHAR} and SALES_ORG = #{salesOrg,jdbcType=VARCHAR}
+    where SCHOOL_CODE = #{schoolCode,jdbcType=VARCHAR} and SALES_ORG = #{salesOrg,jdbcType=VARCHAR}
   </select>
   
   <select id="selectByEmpCode" resultMap="BaseResultMap" parameterType="java.util.Map" >

@@ -17,6 +17,7 @@ import java.util.Map.Entry;
 import java.util.Random;
 import java.util.UUID;
 
+import org.apache.commons.beanutils.BeanUtils;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.poi.hssf.util.HSSFColor;
@@ -495,12 +496,12 @@ public class OrderStudServiceImpl implements OrderStudService {
 		}
 		
 		List<TMdSchool> schoolList = new ArrayList<TMdSchool>();
-		if(StringUtils.isNotBlank(orderBatchBuildModel.getUncloudSchoolCodes())){
-			orderBatchBuildModel.setUncloudSchoolCodes(orderBatchBuildModel.getUncloudSchoolCodes().replace("，", "").replace(" ", "").trim());
-			String[] schoolCodes = orderBatchBuildModel.getUncloudSchoolCodes().split(",");
+		if(StringUtils.isNotBlank(orderBatchBuildModel.getUncloudSchoolCodeTxts())){
+			orderBatchBuildModel.setUncloudSchoolCodeTxts(orderBatchBuildModel.getUncloudSchoolCodeTxts().replace("，", "").replace(" ", "").trim());
+			String[] schoolCodes = orderBatchBuildModel.getUncloudSchoolCodeTxts().split(",");
 			f1:for(TMdSchool school : baseSchoolList){
-				for(String schoolCode : schoolCodes){
-					if(schoolCode.equals(school.getSchoolCode())){
+				for(String schoolCodeTxt : schoolCodes){
+					if(schoolCodeTxt.equals(school.getSchoolCodeTxt())){
 						continue f1;
 					}
 				}
@@ -689,7 +690,7 @@ public class OrderStudServiceImpl implements OrderStudService {
 	    		try {
 	    			qty = this.calcLoss(lossModel);
 				} catch (Exception e) {
-					logger.error(e.getMessage(), e);
+					logger.error(e.getMessage());
 					continue;
 				}
 	    		if(qty <= 0){
@@ -896,6 +897,7 @@ public class OrderStudServiceImpl implements OrderStudService {
 			}
 			
 			if(CollectionUtils.isNotEmpty(milkList)){
+				TMstOrderStud tmp = null;
 				for(TMstOrderStud item : milkList){
 					boolean flag = false;
 					for(TMstOrderStud item2 : milkUnpackList){
@@ -905,27 +907,32 @@ public class OrderStudServiceImpl implements OrderStudService {
 						}
 					}
 					if(!flag){
-						item.setList20Sum(
+						tmp = new TMstOrderStud();
+						BeanUtils.copyProperties(tmp, item);
+						tmp.setList20Sum(
 							String.valueOf(Integer.parseInt(item.getList20Sum())+Integer.parseInt(item.getList10Sum()))		
 						);
-						item.setTotalSum(
+						tmp.setTotalSum(
 							String.valueOf(Integer.parseInt(item.getList20Sum())+Integer.parseInt(item.getList30Sum()))		
 						);
-						sumMilkList.add(item);
+						sumMilkList.add(tmp);
 					}
 				}
 			}
 		}
 		else{
 			if(CollectionUtils.isNotEmpty(milkList)){
+				TMstOrderStud tmp = null;
 				for(TMstOrderStud item : milkList){
-					item.setList20Sum(
+					tmp = new TMstOrderStud();
+					BeanUtils.copyProperties(tmp, item);
+					tmp.setList20Sum(
 						String.valueOf(Integer.parseInt(item.getList20Sum())+Integer.parseInt(item.getList10Sum()))		
 					);
-					item.setTotalSum(
+					tmp.setTotalSum(
 						String.valueOf(Integer.parseInt(item.getList20Sum())+Integer.parseInt(item.getList30Sum()))		
 					);
-					sumMilkList.add(item);
+					sumMilkList.add(tmp);
 				}
 			}
 		}

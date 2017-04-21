@@ -1,5 +1,6 @@
 package com.nhry.data.stud.domain;
 
+import java.io.Serializable;
 import java.util.Date;
 import java.util.List;
 
@@ -8,8 +9,10 @@ import java.util.List;
  * @author zhaoxijun
  * @date 2017年4月11日
  */
-public class TMstOrderStud {
-    private String orderId;
+public class TMstOrderStud implements Serializable, Cloneable{
+	private static final long serialVersionUID = 1L;
+
+	private String orderId;
 
     private Date orderDate;
 
@@ -336,4 +339,10 @@ public class TMstOrderStud {
     public void setRemark(String remark) {
         this.remark = remark == null ? null : remark.trim();
     }
+
+	@Override
+	protected Object clone() throws CloneNotSupportedException {
+		return super.clone();
+	}
+    
 }
