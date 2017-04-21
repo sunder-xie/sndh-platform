@@ -14,7 +14,16 @@ public class SchoolQueryModel extends BaseQueryModel implements Serializable {
 	private String keyWord;
 	private String visiable;
 	private String salesOrg;
+	private String erpCode;
 	
+	
+	
+	public String getErpCode() {
+		return erpCode;
+	}
+	public void setErpCode(String erpCode) {
+		this.erpCode = erpCode;
+	}
 	public SchoolQueryModel(String schoolCode, String keyWord, String visiable,
 			String salesOrg) {
 		super();

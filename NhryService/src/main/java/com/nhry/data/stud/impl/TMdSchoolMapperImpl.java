@@ -1,6 +1,7 @@
 package com.nhry.data.stud.impl;
 
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -28,10 +29,20 @@ public class TMdSchoolMapperImpl implements TMdSchoolMapper {
 	
 
 	@Override
+	public int updateStatusByTMdSchool(TMdSchool tMdSchool) {
+		// TODO Auto-generated method stub
+		return sqlSessionTemplate.update("updateStatusByTMdSchool", tMdSchool);
+	}
+	
+	@Override
 	public int updateByTMdSchool(TMdSchool tMdSchool) {
 		// TODO Auto-generated method stub
 		return sqlSessionTemplate.update("updateByTMdSchool", tMdSchool);
 	}
+	
+	
+	
+	
 	
 	@Override
 	public List<TMdSchool> findSchoolList(SchoolQueryModel model) {
@@ -42,6 +53,19 @@ public class TMdSchoolMapperImpl implements TMdSchoolMapper {
 	@Override
 	public TMdSchool selectByPrimaryKey(SchoolQueryModel model) {
 		return sqlSessionTemplate.selectOne("selectOne", model);
+	}
+
+
+	@Override
+	public TMdSchool selectByEmpCode(Map<String, String> map) {
+		// TODO Auto-generated method stub
+		return sqlSessionTemplate.selectOne("selectByEmpCode", map);
+	}
+
+
+	@Override
+	public int saveSchool(TMdSchool tMdSchool) {
+		return sqlSessionTemplate.insert("saveSchool", tMdSchool);
 	}
 
 
