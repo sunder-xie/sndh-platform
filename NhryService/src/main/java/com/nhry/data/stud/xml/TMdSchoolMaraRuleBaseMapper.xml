@@ -27,9 +27,9 @@
     where  ru.SCHOOL_CODE= #{schoolCode,jdbcType=VARCHAR} and ru.SALES_ORG= #{salesOrg,jdbcType=VARCHAR}
   </select>
   
-  <delete id="deleteByMid" parameterType="java.lang.String" >
+  <delete id="deleteBySalesOrg" parameterType="java.lang.String" >
     delete from t_md_school_mara_rule_base 
-    	where MID=#{mid}
+    	where SALES_ORG=#{salesOrg}
   </delete>
   
   

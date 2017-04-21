@@ -1,6 +1,7 @@
 package com.nhry.data.stud.dao;
 
 import java.util.List;
+import java.util.Map;
 
 import com.github.pagehelper.PageInfo;
 import com.nhry.data.stud.domain.TMdSchool;
@@ -16,5 +17,11 @@ public interface TMdSchoolMapper {
 	List<TMdSchool>  findSchoolList(SchoolQueryModel model);
 
 	TMdSchool selectByPrimaryKey(SchoolQueryModel model);
+	
+	TMdSchool selectByEmpCode(Map<String,String>  map);
+	
+	int saveSchool(TMdSchool tMdSchool);
+
+	int updateStatusByTMdSchool(TMdSchool tMdSchool);
 
 }
