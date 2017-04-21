@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import com.github.pagehelper.PageInfo;
 import com.nhry.common.datasource.DynamicSqlSessionTemplate;
+import com.nhry.data.basic.domain.TMdMara;
 import com.nhry.data.stud.dao.TMdMaraStudMapper;
 import com.nhry.data.stud.domain.TMdMaraStud;
 import com.nhry.model.stud.OrderStudQueryModel;
@@ -39,6 +40,21 @@ public class TMdMaraStudMapperImpl implements TMdMaraStudMapper {
 	@Override
 	public int updateInfo(TMdMaraStud tMdMaraStud) {
 		return sqlSessionTemplate.update("updateInfo", tMdMaraStud);
+	}
+
+	@Override
+	public int updateProduct(TMdMaraStud tMdMaraStud) {
+		return sqlSessionTemplate.update("updateTMdMaraStud", tMdMaraStud);
+	}
+
+	@Override
+	public TMdMaraStud selectProductByCode(Map<String, String> attrs) {
+		// TODO Auto-generated method stub
+		return sqlSessionTemplate.selectOne("selectProductByMap", attrs);
+	}
+
+	public int addProduct(TMdMaraStud tMdMara) {
+		return sqlSessionTemplate.insert("saveProduct", tMdMara);
 	}
 	
 	

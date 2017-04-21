@@ -113,8 +113,18 @@ public class ET_KUNNR {
     protected String regio;
     protected String name3;
     protected String namev;
+    protected String sort2;
+    
 
-    /**
+    public String getSort2() {
+		return sort2;
+	}
+
+	public void setSort2(String sort2) {
+		this.sort2 = sort2;
+	}
+
+	/**
      * Gets the value of the kunnr property.
      * 
      * @return

@@ -94,10 +94,15 @@ public class ClassServiceImpl implements ClassService {
 		if(StringUtils.isBlank(currentUser.getSalesOrg())){
 			throw new ServiceException(MessageCode.LOGIC_ERROR, "当前用户未归属销售组织");
 		}
+		//获取当前销售组织的基础班级信息
 		List<TMdClass> sysClassList = classMapper.findClassListBySalesOrg(currentUser.getSalesOrg());
+		//获取传过来的数据
 		List<TMdClass> classList = smodel.getClassList();
+		//需要删除的班级信息
 		ArrayList<TMdClass> delteCalss = new ArrayList<TMdClass>();
+		//需要添加的班级信息
 		ArrayList<TMdClass> updateClass = new ArrayList<TMdClass>();
+		//进行筛选
 		for (int i = 0; i < sysClassList.size(); i++) {
 			TMdClass tMdClass = sysClassList.get(i);
 			Boolean falg=false;
@@ -111,10 +116,14 @@ public class ClassServiceImpl implements ClassService {
 				delteCalss.add(tMdClass);
 			}
 		}
+		
+		//移除修改班级信息剩下需要添加的班级信息
 		classList.removeAll(updateClass);
+		//删除班级信息
 		for (TMdClass mdClass : delteCalss) {
 			classMapper.deleteByClass(mdClass);
 		}
+		//更新班级信息
 		for (TMdClass mdClass : updateClass) {
 			Date date = new Date();
 			mdClass.setLastModified(date);
@@ -122,6 +131,8 @@ public class ClassServiceImpl implements ClassService {
 			mdClass.setLastModifiedByTxt(this.userSessionService.getCurrentUser().getDisplayName());
 			classMapper.updateTMdClass(mdClass);
 		}
+		
+		//添加班级信息
 		for (TMdClass mdClass : classList) {
 			if(null == mdClass || StringUtils.isBlank(mdClass.getClassCode())){
 				throw new ServiceException(MessageCode.LOGIC_ERROR, "班级代码必填");
@@ -142,7 +153,6 @@ public class ClassServiceImpl implements ClassService {
 			mdClass.setSalesOrg(this.userSessionService.getCurrentUser().getSalesOrg());
 			mdClass.setSort(0);
 			mdClass.setVisiable("10");
-			
 			try {
 				classMapper.insertClass(mdClass);
 			} catch (Exception e) {

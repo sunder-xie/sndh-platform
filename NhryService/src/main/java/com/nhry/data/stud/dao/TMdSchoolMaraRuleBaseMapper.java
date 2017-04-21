@@ -22,7 +22,7 @@ public interface TMdSchoolMaraRuleBaseMapper {
 	  * @param tMdSchoolMaraRuleBase
 	  * @return
 	  */
-	 int deleteByMid(String mid);
+	 int deleteBySalesOrg(String salesOrg);
 
 
 	

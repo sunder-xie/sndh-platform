@@ -6,6 +6,10 @@ import com.nhry.data.basic.dao.*;
 import com.nhry.data.basic.domain.*;
 import com.nhry.data.config.dao.NHSysCodeItemMapper;
 import com.nhry.data.config.domain.NHSysCodeItem;
+import com.nhry.data.stud.dao.TMdSchoolMapper;
+import com.nhry.data.stud.domain.TMdMaraStud;
+import com.nhry.data.stud.domain.TMdSchool;
+import com.nhry.data.stud.impl.TMdMaraStudMapperImpl;
 import com.nhry.service.basic.dao.TSysMessageService;
 import com.nhry.service.external.dao.EcService;
 import com.nhry.service.pi.dao.PIProductService;
@@ -18,6 +22,7 @@ import com.nhry.webService.client.masterData.model.*;
 import org.apache.axis2.client.Options;
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.task.TaskExecutor;
 
 import java.rmi.RemoteException;
@@ -32,6 +37,7 @@ public class PIProductServiceImpl implements PIProductService {
     private static Logger logger = Logger.getLogger(PIProductServiceImpl.class);
     public static String URL = EnvContant.getSystemConst("PI.MasterData.URL");
     public static String VKORG = PIPropertitesUtil.getValue("PI.MasterData.mATQUERY.VKORG13");
+    public static String VKORG18 = PIPropertitesUtil.getValue("PI.MasterData.mATQUERY.VKORG18");
     public static String OPTION = PIPropertitesUtil.getValue("PI.MasterData.mATQUERY.OPTION.EQ");
     public static String SIGN = PIPropertitesUtil.getValue("PI.MasterData.mATQUERY.SIGN");
     public static String LOW = PIPropertitesUtil.getValue("PI.MasterData.mATQUERY.LOW");
@@ -50,7 +56,17 @@ public class PIProductServiceImpl implements PIProductService {
     private TSysMessageService messageService;
     private TaskExecutor taskExecutor;
     private EcService ecService;
-
+    
+    
+    @Autowired
+    private TMdMaraStudMapperImpl tMdMaraStudMapper; 
+    
+    @Autowired
+    private TMdSchoolMapper schoolMapper;
+    
+    @Autowired
+    private NHSysCodeItemMapper nHSysCodeItemMapper;
+    
     public void setMessageService(TSysMessageService messageService) {
         this.messageService = messageService;
     }
@@ -107,10 +123,112 @@ public class PIProductServiceImpl implements PIProductService {
     @Override
     public int matHandler() {
         logger.info("物料接口调用开始");
+        try{
+        	//18渠道获取
+        	matHandler18();
+        	//13渠道接口
+        	matHandler13();
+        } catch (Exception e) {
+            e.printStackTrace();
+            logger.error("物料接口调用报错！" + e.getMessage());
+            return 0;
+        }
+        logger.info("物料接口调用结束");
+        return 1;
+    }
+    
+    
+    private  int matHandler13() throws RemoteException{
+         ZSD_MATERAIL_DATA_RFCResponse response = getMaterailData(VKORG);
+         MARM[] marms = response.getET_MARM().getItem();
+         List<ET_MATNR> etMatnrs = getET_MATNR(response,VKORG);
+         Map<String, String> etMap = getET_MAKTX(response);
+         Map<String, String> matnrUnit = new HashMap<String, String>();
+         Map<String, ZTMM00037> ztmm00037Map = getET_ZTMM00037(response);
+         for (ET_MATNR etMatnr : etMatnrs) {
+             matnrUnit.put(etMatnr.getMATNR(), etMatnr.getMEINS());
+             Map<String, String> mara = new HashMap<String, String>();
+             mara.put("salesOrg", etMatnr.getVKORG());
+             mara.put("matnr", etMatnr.getMATNR());
+             TMdMara tMdMara = maraMapper.selectProductByCode(mara);
+             
+             ZTMM00037 ztmm00037 = ztmm00037Map.get(etMatnr.getMATNR());
+             if (tMdMara != null) {
+                 tMdMara.setBaseUnit(etMatnr.getMEINS());
+                 tMdMara.setWeight(etMatnr.getNTGEW() == null ? null : etMatnr.getNTGEW().floatValue());
+                 tMdMara.setWeightUnit(etMatnr.getGEWEI());
+                 tMdMara.setMatnrTxt(etMap.get(etMatnr.getMATNR()));
+                 tMdMara.setLastModified(new java.util.Date());
+                 if (ztmm00037 != null) {
+                     tMdMara.setFirstCat(ztmm00037.getPRDL1().getPRDL1_type0());
+                     tMdMara.setSecCate(ztmm00037.getPRDL2().getPRDL2_type0());
+                     tMdMara.setSpec(ztmm00037.getFRMAT().getFRMAT_type0());
+                     tMdMara.setSpecUnit(ztmm00037.getMEINS().getMEINS_type4());
+                     tMdMara.setZbotCode(ztmm00037.getPACK1().getPACK1_type0());
+                     tMdMara.setImportantPrdFlag(ztmm00037.getCLASF().getCLASF_type0());
+                     tMdMara.setBrand(ztmm00037.getBRANF().getBRANF_type0());
+                 }
+                 maraMapper.updateProduct(tMdMara);
+             } else {
+                 tMdMara = new TMdMara();
+                 tMdMara.setMatnr(etMatnr.getMATNR());
+                 tMdMara.setSalesOrg(etMatnr.getVKORG());
+                 tMdMara.setBaseUnit(etMatnr.getMEINS());
+                 tMdMara.setWeight(etMatnr.getNTGEW() == null ? null : etMatnr.getNTGEW().floatValue());
+                 tMdMara.setWeightUnit(etMatnr.getGEWEI());
+                 tMdMara.setMatnrTxt(etMap.get(etMatnr.getMATNR()));
+                 tMdMara.setCreateAt(new Date());
+                 if (ztmm00037 != null) {
+                     tMdMara.setFirstCat(ztmm00037.getPRDL1().getPRDL1_type0());
+                     tMdMara.setSecCate(ztmm00037.getPRDL2().getPRDL2_type0());
+                     tMdMara.setSpec(ztmm00037.getFRMAT().getFRMAT_type0());
+                     tMdMara.setSpecUnit(ztmm00037.getMEINS().getMEINS_type4());
+                     tMdMara.setZbotCode(ztmm00037.getPACK1().getPACK1_type0());
+                     tMdMara.setImportantPrdFlag(ztmm00037.getCLASF().getCLASF_type0());
+                     tMdMara.setBrand(ztmm00037.getBRANF().getBRANF_type0());
+                 }
+                 tMdMara.setStatus("N");//不生效
+                 maraMapper.addProduct(tMdMara);
+                 messageService.sendMessagesForCreateProducts(tMdMara);
+             }
+         }
+         saveMatMarm(marms, matnrUnit);
+         Map<String, String> prdl1Map = new HashMap<String, String>();
+         Map<String, String> prdl2Map = new HashMap<String, String>();
+         Map<String, String> branfMap = new HashMap<String, String>();
+         Map<String, String> frmatMap = new HashMap<String, String>();
+         Map<String, String> pack1Map = new HashMap<String, String>();
+         Map<String, String> clasfMap = new HashMap<String, String>();
+         for (Map.Entry<String, ZTMM00037> entry : ztmm00037Map.entrySet()) {
+             ZTMM00037 ztmm00037 = entry.getValue();
+             if (StringUtils.isNotEmpty(ztmm00037.getPRDL1().getPRDL1_type0()))
+                 prdl1Map.put(ztmm00037.getPRDL1().getPRDL1_type0(), ztmm00037.getPRDLD().getPRDLD_type0());
+             if (StringUtils.isNotEmpty(ztmm00037.getPRDL2().getPRDL2_type0()))
+                 prdl2Map.put(ztmm00037.getPRDL2().getPRDL2_type0(), ztmm00037.getPRDLT().getPRDLT_type0());
+             if (StringUtils.isNotEmpty(ztmm00037.getBRANF().getBRANF_type0()))
+                 branfMap.put(ztmm00037.getBRANF().getBRANF_type0(), ztmm00037.getBRANS().getBRANS_type0());
+             if (StringUtils.isNotEmpty(ztmm00037.getFRMAT().getFRMAT_type0()))
+                 frmatMap.put(ztmm00037.getFRMAT().getFRMAT_type0(), ztmm00037.getFRMAD().getFRMAD_type0());
+             if (StringUtils.isNotEmpty(ztmm00037.getPACK1().getPACK1_type0()))
+                 pack1Map.put(ztmm00037.getPACK1().getPACK1_type0(), ztmm00037.getPACKD().getPACKD_type0());
+             if (StringUtils.isNotEmpty(ztmm00037.getCLASF().getCLASF_type0()))
+                 clasfMap.put(ztmm00037.getCLASF().getCLASF_type0(), ztmm00037.getCLAST().getCLAST_type0());
+         }
+         saveDL(prdl1Map, "2000"); //大类
+         saveDL(prdl2Map, "2001"); //中类
+         saveDL(branfMap, "2002"); //产品品牌
+         saveDL(frmatMap, "2003"); //规格
+         saveDL(pack1Map, "2004");//包装类型
+         saveDL(clasfMap, "2005");//重点产品分类
+         return 1;
+    }
+  
+    private  int matHandler18() {
+        logger.info("物料接口调用开始");
         try {
-            ZSD_MATERAIL_DATA_RFCResponse response = getMaterailData();
+            ZSD_MATERAIL_DATA_RFCResponse response = getMaterailData(VKORG18);
             MARM[] marms = response.getET_MARM().getItem();
-            List<ET_MATNR> etMatnrs = getET_MATNR(response);
+            List<ET_MATNR> etMatnrs = getET_MATNR(response,VKORG18);
             Map<String, String> etMap = getET_MAKTX(response);
             Map<String, String> matnrUnit = new HashMap<String, String>();
             Map<String, ZTMM00037> ztmm00037Map = getET_ZTMM00037(response);
@@ -119,7 +237,7 @@ public class PIProductServiceImpl implements PIProductService {
                 Map<String, String> mara = new HashMap<String, String>();
                 mara.put("salesOrg", etMatnr.getVKORG());
                 mara.put("matnr", etMatnr.getMATNR());
-                TMdMara tMdMara = maraMapper.selectProductByCode(mara);
+                TMdMaraStud tMdMara = tMdMaraStudMapper.selectProductByCode(mara);
                 ZTMM00037 ztmm00037 = ztmm00037Map.get(etMatnr.getMATNR());
                 if (tMdMara != null) {
                     tMdMara.setBaseUnit(etMatnr.getMEINS());
@@ -136,9 +254,9 @@ public class PIProductServiceImpl implements PIProductService {
                         tMdMara.setImportantPrdFlag(ztmm00037.getCLASF().getCLASF_type0());
                         tMdMara.setBrand(ztmm00037.getBRANF().getBRANF_type0());
                     }
-                    maraMapper.updateProduct(tMdMara);
+                    tMdMaraStudMapper.updateProduct(tMdMara);
                 } else {
-                    tMdMara = new TMdMara();
+                    tMdMara = new TMdMaraStud();
                     tMdMara.setMatnr(etMatnr.getMATNR());
                     tMdMara.setSalesOrg(etMatnr.getVKORG());
                     tMdMara.setBaseUnit(etMatnr.getMEINS());
@@ -156,7 +274,7 @@ public class PIProductServiceImpl implements PIProductService {
                         tMdMara.setBrand(ztmm00037.getBRANF().getBRANF_type0());
                     }
                     tMdMara.setStatus("N");//不生效
-                    maraMapper.addProduct(tMdMara);
+                    tMdMaraStudMapper.addProduct(tMdMara);
                     messageService.sendMessagesForCreateProducts(tMdMara);
                 }
             }
@@ -196,7 +314,8 @@ public class PIProductServiceImpl implements PIProductService {
         logger.info("物料接口调用结束");
         return 1;
     }
-
+    
+    
     /**
      * 保存到物料相关的字典表
      *
@@ -272,70 +391,29 @@ public class PIProductServiceImpl implements PIProductService {
      */
     @Override
     public int customerDataHandle() {
-        logger.info("客户数据调用开始");
+    	customerDataHandle18();
+    	//customerDataHandle13();
+    	return 1;
+    }
+    
+    
+    private int customerDataHandle18(){
+    	logger.info("客户数据调用开始");
         try {
-            ZSD_CUSTOMER_DATA_SYN_RFCResponse response = getCustomerData();
-            Map<String, ET_KUNNR> et_kunnrs = getET_KUNNR(response);
-            Map<String, List<ET_VKORG>> et_vkorgs = getET_VKORG(response);
-            List<ET_PARTNER> et_partner = getET_PARTNER(response);
-            Map<String, List<ET_PARTNER>> partners = new HashMap<String, List<ET_PARTNER>>();
-            List<ET_VKORG> zys = et_vkorgs.get("01");
-//            Map<String, String> gcs = getET_DATA(); //客户对应的库存地点
-            Map<String,ZTSD00024> gcss = getET_DATAs();
-            Map<String, ET_LGORT> ccds = getET_LGORT(); //库存地点对应的工厂
+            ZSD_CUSTOMER_DATA_SYN_RFCResponse response = getCustomerData(VKORG18);
+            Map<String, ET_KUNNR> kunnr_Map = getET_KUNNR(response);
+            Map<String, ET_KNVP> et_KNVP = getET_KNVP(response);
+            List<ET_VKORG> et_VKORG18 = getET_VKORG18(response);
             int zycount = 0;
-            for (ET_VKORG et_vkorg : zys) {
-                String kunnr = et_vkorg.getKUNNR();
-                ZTSD00024 ztsd00024 = gcss.get(kunnr);
-                if (ztsd00024 != null) {
-                    String lgort  = ztsd00024.getLGORT().getLGORT_type0();
-                    String werks = ztsd00024.getBUKRS().getBUKRS_type6();
-                    if (StringUtils.isNotEmpty(werks)) {
-                        zycount++;
-                        saveBranch(et_kunnrs, BRANDCHTYPE_ZY, et_vkorg.getVKORG(), et_vkorg.getKUNNR(), lgort, werks, "");
-                    }
-                }
-            }
+            for (ET_VKORG et_VKORG : et_VKORG18) {
+            	String kunnr = et_VKORG.getKUNNR();
+            	ET_KUNNR et_kunnr = kunnr_Map.get(kunnr);
+            	if(et_kunnr !=null &&StringUtils.isNotBlank(et_kunnr.getNAME1())){
+                	saveSchool(et_kunnr, et_KNVP,et_VKORG.getVKORG());
+            	}
+            	zycount++;
+			}
             logger.info("自营奶站" + zycount + "条");
-            List<ET_VKORG> wbs = et_vkorgs.get("02");
-            Map<String, ET_VKORG> jxs = new HashMap<String, ET_VKORG>();
-            for (ET_VKORG et_vkorg : wbs) {
-                String kunner = et_vkorg.getKUNNR();
-                for (ET_PARTNER et_partner1 : et_partner) {
-                    //是售达方都作为经销商处理
-                    if (kunner.equals(et_partner1.getKUNNR())) {
-                        jxs.put(kunner, et_vkorg);
-                    }
-                }
-            }
-            /**
-             * 保存经销商信息
-             */
-            for (Map.Entry<String, ET_VKORG> entry : jxs.entrySet()) {
-                saveDealer(et_kunnrs, entry.getKey(), entry.getValue().getVKORG());
-            }
-            for (Map.Entry<String, ET_VKORG> entry : jxs.entrySet()) {
-                String kunnr = entry.getKey();
-                List<ET_PARTNER> l = new ArrayList<>();
-                for (ET_PARTNER p : et_partner) {
-                    //送达方都作为经销商奶站
-                    if (kunnr.equals(p.getKUNNR())) {
-                        l.add(p);
-                    }
-                }
-                if (l.size() > 0)
-                    partners.put(kunnr, l);
-            }
-            int zxscount = 0;
-            for (Map.Entry<String, List<ET_PARTNER>> entry : partners.entrySet()) {
-                String key = entry.getKey();
-                List<ET_PARTNER> lists = entry.getValue();
-                for (ET_PARTNER partner : lists) {
-                    saveBranch(et_kunnrs, BRANDCHTYPE_WB, partner.getVKORG(), partner.getKUNWE(), "", "", key);
-                    zxscount++;
-                }
-            }
-            logger.info("经销商奶站" + zxscount + "条");
             return 1;
         } catch (Exception e) {
             logger.error(e.getMessage());
@@ -343,6 +421,130 @@ public class PIProductServiceImpl implements PIProductService {
         }
         logger.info("客户数据调用结束");
         return 1;
+   }
+
+    private int saveSchool(ET_KUNNR et_kunnr, Map<String, ET_KNVP> et_KNVPMap,String salesOrg) {
+    	//客户编码
+    	String kunnr= et_kunnr.getKUNNR();
+    	//附加信息
+    	ET_KNVP kuvp = et_KNVPMap.get(kunnr);
+    	Map<String, String> map = new HashMap<String,String>();
+    	map.put("erpCode", kunnr);
+    	map.put("salesOrg", salesOrg);
+    	TMdSchool tmdschool = schoolMapper.selectByEmpCode(map);
+    	if(tmdschool !=null){
+    		if(kuvp !=null){
+    			if("CR".equals(kuvp.getParvw())){
+    				tmdschool.setDispatching(kuvp.getLifnr());
+    			}
+    			if("Z9".equals(kuvp.getParvw())){
+    				tmdschool.setUnload(kuvp.getKunn2());
+    			}
+    		}
+    		tmdschool.setErpCode(kunnr);
+    		tmdschool.setSchoolCodeTxt(et_kunnr.getSort2());
+    		tmdschool.setSchoolName(et_kunnr.getNAME1());
+    		tmdschool.setTel(et_kunnr.getTELF1());
+    		tmdschool.setAddress(et_kunnr.getSTRAS());
+    		schoolMapper.updateByTMdSchool(tmdschool);
+    		return 1;
+    	}else{
+    		tmdschool = new TMdSchool();
+    		//获取销售组织
+    		if(kuvp !=null){
+    			if("CR".equals(kuvp.getParvw())){
+    				tmdschool.setDispatching(kuvp.getLifnr());
+    			}
+    			if("Z9".equals(kuvp.getParvw())){
+    				tmdschool.setUnload(kuvp.getKunn2());
+    			}
+    		}
+    		tmdschool.setSchoolCode(UUID.randomUUID().toString().replace("-", ""));
+    		tmdschool.setErpCode(kunnr);
+    		tmdschool.setSchoolCodeTxt(et_kunnr.getSort2());
+    		tmdschool.setSchoolName(et_kunnr.getNAME1());
+    		tmdschool.setTel(et_kunnr.getTELF1());
+    		tmdschool.setVisiable("10");
+    		tmdschool.setSalesOrg(salesOrg);
+    		tmdschool.setAddress(et_kunnr.getSTRAS());
+    		schoolMapper.saveSchool(tmdschool);
+    		return 1;
+    	}
+    }
+    
+    
+    private int customerDataHandle13(){
+    	  logger.info("客户数据调用开始");
+          try {
+              ZSD_CUSTOMER_DATA_SYN_RFCResponse response = getCustomerData(VKORG);
+              Map<String, ET_KUNNR> et_kunnrs = getET_KUNNR(response);
+              Map<String, List<ET_VKORG>> et_vkorgs = getET_VKORG(response);
+              List<ET_PARTNER> et_partner = getET_PARTNER(response);
+              Map<String, List<ET_PARTNER>> partners = new HashMap<String, List<ET_PARTNER>>();
+              List<ET_VKORG> zys = et_vkorgs.get("01");
+//              Map<String, String> gcs = getET_DATA(); //客户对应的库存地点
+              Map<String,ZTSD00024> gcss = getET_DATAs();
+              Map<String, ET_LGORT> ccds = getET_LGORT(); //库存地点对应的工厂
+              int zycount = 0;
+              for (ET_VKORG et_vkorg : zys) {
+                  String kunnr = et_vkorg.getKUNNR();
+                  ZTSD00024 ztsd00024 = gcss.get(kunnr);
+                  if (ztsd00024 != null) {
+                      String lgort  = ztsd00024.getLGORT().getLGORT_type0();
+                      String werks = ztsd00024.getBUKRS().getBUKRS_type6();
+                      if (StringUtils.isNotEmpty(werks)) {
+                          zycount++;
+                          saveBranch(et_kunnrs, BRANDCHTYPE_ZY, et_vkorg.getVKORG(), et_vkorg.getKUNNR(), lgort, werks, "");
+                      }
+                  }
+              }
+              logger.info("自营奶站" + zycount + "条");
+              List<ET_VKORG> wbs = et_vkorgs.get("02");
+              Map<String, ET_VKORG> jxs = new HashMap<String, ET_VKORG>();
+              for (ET_VKORG et_vkorg : wbs) {
+                  String kunner = et_vkorg.getKUNNR();
+                  for (ET_PARTNER et_partner1 : et_partner) {
+                      //是售达方都作为经销商处理
+                      if (kunner.equals(et_partner1.getKUNNR())) {
+                          jxs.put(kunner, et_vkorg);
+                      }
+                  }
+              }
+              /**
+               * 保存经销商信息
+               */
+              for (Map.Entry<String, ET_VKORG> entry : jxs.entrySet()) {
+                  saveDealer(et_kunnrs, entry.getKey(), entry.getValue().getVKORG());
+              }
+              for (Map.Entry<String, ET_VKORG> entry : jxs.entrySet()) {
+                  String kunnr = entry.getKey();
+                  List<ET_PARTNER> l = new ArrayList<>();
+                  for (ET_PARTNER p : et_partner) {
+                      //送达方都作为经销商奶站
+                      if (kunnr.equals(p.getKUNNR())) {
+                          l.add(p);
+                      }
+                  }
+                  if (l.size() > 0)
+                      partners.put(kunnr, l);
+              }
+              int zxscount = 0;
+              for (Map.Entry<String, List<ET_PARTNER>> entry : partners.entrySet()) {
+                  String key = entry.getKey();
+                  List<ET_PARTNER> lists = entry.getValue();
+                  for (ET_PARTNER partner : lists) {
+                      saveBranch(et_kunnrs, BRANDCHTYPE_WB, partner.getVKORG(), partner.getKUNWE(), "", "", key);
+                      zxscount++;
+                  }
+              }
+              logger.info("经销商奶站" + zxscount + "条");
+              return 1;
+          } catch (Exception e) {
+              logger.error(e.getMessage());
+              e.printStackTrace();
+          }
+          logger.info("客户数据调用结束");
+          return 1;
     }
 
     /**
@@ -495,6 +697,10 @@ public class PIProductServiceImpl implements PIProductService {
             }
         }
     }
+    
+    
+    
+   
 
     /**
      * 工厂
@@ -798,7 +1004,7 @@ public class PIProductServiceImpl implements PIProductService {
      * @return
      * @throws RemoteException
      */
-    private ZSD_CUSTOMER_DATA_SYN_RFCResponse getCustomerData() throws RemoteException {
+    private ZSD_CUSTOMER_DATA_SYN_RFCResponse getCustomerData(String vkorg) throws RemoteException {
         ZT_MasterDataQueryServiceStub client = getZt_masterDataQueryServiceStub();
         ZSD_CUSTOMER_DATA_SYN_RFC zsdCustomerDataSynRfc = new ZSD_CUSTOMER_DATA_SYN_RFC();
         ZSD_CUSTOMER_DATA_SYN_RFCResponse response = new ZSD_CUSTOMER_DATA_SYN_RFCResponse();
@@ -811,13 +1017,14 @@ public class PIProductServiceImpl implements PIProductService {
         option_type5.setOPTION_type4("EQ");
         zssd00071.setOPTION(option_type5);
         LOW_type5 low_type5 = new LOW_type5();
-        low_type5.setLOW_type4(VKORG);
+        low_type5.setLOW_type4(vkorg);
         zssd00071.setLOW(low_type5);
         it_vtweg_type1.addItem(zssd00071);
         zsdCustomerDataSynRfc.setIT_VTWEG(it_vtweg_type1);
         response = client.customerQuery(zsdCustomerDataSynRfc);
         return response;
     }
+    
 
     /**
      * 材料数据
@@ -825,7 +1032,7 @@ public class PIProductServiceImpl implements PIProductService {
      * @return
      * @throws RemoteException
      */
-    private ZSD_MATERAIL_DATA_RFCResponse getMaterailData() throws RemoteException {
+    private ZSD_MATERAIL_DATA_RFCResponse getMaterailData(String vkorg) throws RemoteException {
         ZT_MasterDataQueryServiceStub client = getZt_masterDataQueryServiceStub();
         IT_MTART_type0 itMtartType0 = new IT_MTART_type0();
         ZSSD00006 zssd00006 = new ZSSD00006();
@@ -848,7 +1055,7 @@ public class PIProductServiceImpl implements PIProductService {
         option_type5.setOPTION_type4(OPTION);
         zssd00071.setOPTION(option_type5);
         LOW_type5 low_type5 = new LOW_type5();
-        low_type5.setLOW_type4(VKORG);
+        low_type5.setLOW_type4(vkorg);
         zssd00071.setLOW(low_type5);
         it_vtweg_type0.addItem(zssd00071);
 
@@ -953,7 +1160,6 @@ public class PIProductServiceImpl implements PIProductService {
     private Map<String, ET_KUNNR> getET_KUNNR(ZSD_CUSTOMER_DATA_SYN_RFCResponse response) {
         ET_KUNNR_type1 et_kunnr_type1 = response.getET_KUNNR();
         ZSSD00002[] zssd00002s = et_kunnr_type1.getItem();
-        List<ET_KUNNR> records = new ArrayList<ET_KUNNR>();
         Map<String, ET_KUNNR> map = new HashMap<String, ET_KUNNR>();
         if (zssd00002s.length > 0) {
             for (ZSSD00002 zssd00002 : zssd00002s) {
@@ -969,13 +1175,44 @@ public class PIProductServiceImpl implements PIProductService {
                     et.setREGIO(zssd00002.getREGIO() == null ? null : zssd00002.getREGIO().getREGIO_type0());
                     et.setSTRAS(zssd00002.getSTRAS() == null ? null : zssd00002.getSTRAS().getSTRAS_type0());
                     et.setTELF1(zssd00002.getTELF1() == null ? null : zssd00002.getTELF1().getTELF1_type0());
+                    et.setSort2(zssd00002.getSORT2() == null ? null : zssd00002.getSORT2().getSORT2_type0());
                     map.put(zssd00002.getKUNNR().getKUNNR_type2(), et);
                 }
             }
         }
         return map;
     }
+    
 
+    
+    private Map<String, ET_KNVP> getET_KNVP(ZSD_CUSTOMER_DATA_SYN_RFCResponse response) {
+        ET_KNVP_type1 et_KNVP = response.getET_KNVP();
+        KNVP[] itemList = et_KNVP.getItem();
+        Map<String, ET_KNVP> map = new HashMap<String, ET_KNVP>();
+        if (itemList.length > 0) {
+            for ( KNVP  knvp : itemList) {
+            	  ET_KNVP et = new ET_KNVP();
+                  if (knvp !=  null) {
+                	  et.setDefpa(knvp.getDEFPA() ==null ? null:knvp.getDEFPA().getDEFPA_type0());
+                	  et.setKnref(knvp.getKNREF() ==null ? null:knvp.getKNREF().getKNREF_type0());
+                	  et.setKunn2(knvp.getKUNN2() ==null ? null:knvp.getKUNN2().getKUNN2_type0());
+                	  et.setKunnr(knvp.getKUNNR() ==null ? null:knvp.getKUNNR().getKUNNR_type0());
+                	  et.setLifnr(knvp.getLIFNR() ==null ? null:knvp.getLIFNR().getLIFNR_type0());
+                	  et.setMandt(knvp.getMANDT() ==null ? null:knvp.getMANDT().getMANDT_type4());
+                	  et.setParnr(knvp.getPARNR() ==null ? null:knvp.getPARNR().getPARNR_type0());
+                	  et.setParvw(knvp.getPARVW() ==null ? null:knvp.getPARVW().getPARVW_type0());
+                	  et.setParza(knvp.getPARZA() ==null ? null:knvp.getPARZA().getPARZA_type0());
+                	  et.setPernr(knvp.getPERNR() ==null ? null:knvp.getPERNR().getPERNR_type0());
+                	  et.setSpart(knvp.getSPART() ==null ? null:knvp.getSPART().getSPART_type2());
+                	  et.setVokrg(knvp.getKNREF() ==null ? null:knvp.getKNREF().getKNREF_type0());
+                      map.put(knvp.getKUNNR().getKUNNR_type0(), et);
+                  }
+            	
+            }
+        }
+        return map;
+    }
+    
     /**
      * 售达方渠道对应的送达方
      *
@@ -1040,6 +1277,35 @@ public class PIProductServiceImpl implements PIProductService {
         }
         return map;
     }
+    
+    
+    /**
+     * 客户渠道主数据
+     *
+     * @param response
+     * @return
+     */
+    private List<ET_VKORG> getET_VKORG18(ZSD_CUSTOMER_DATA_SYN_RFCResponse response) {
+        ZSSD00003[] zssd00003s = response.getET_VKORG().getItem();
+        List<ET_VKORG> zy = new ArrayList<>();
+        if (zssd00003s.length > 0) {
+            for (ZSSD00003 zssd00003 : zssd00003s) {
+                if (zssd00003.getVTWEG() != null) {
+                    ET_VKORG et = new ET_VKORG();
+                    et.setKUNNR(zssd00003.getKUNNR() == null ? null : zssd00003.getKUNNR().getKUNNR_type8());
+                    et.setVTWEG(zssd00003.getVTWEG() == null ? null : zssd00003.getVTWEG().getVTWEG_type10());
+                    et.setVKORG(zssd00003.getVKORG() == null ? null : zssd00003.getVKORG().getVKORG_type10());
+                    et.setSPART(zssd00003.getSPART() == null ? null : zssd00003.getSPART().getSPART_type8());
+                    et.setKDGRP(zssd00003.getKDGRP() == null ? null : zssd00003.getKDGRP().getKDGRP_type0());
+                    et.setKUNWE(zssd00003.getKUNWE() == null ? null : zssd00003.getKUNWE().getKUNWE_type2());
+                    et.setKVGR1(zssd00003.getKVGR1() == null ? null : zssd00003.getKVGR1().getKVGR1_type0());
+                    et.setKVGR2(zssd00003.getKVGR2() == null ? null : zssd00003.getKVGR2().getKVGR2_type0());
+                    zy.add(et);
+                }
+            }
+        }
+        return zy;
+    }
 
     private ZT_MasterDataQueryServiceStub getZt_masterDataQueryServiceStub() throws org.apache.axis2.AxisFault {
         ZT_MasterDataQueryServiceStub client = new ZT_MasterDataQueryServiceStub(URL);
@@ -1060,7 +1326,7 @@ public class PIProductServiceImpl implements PIProductService {
      * @param response
      * @return
      */
-    private List<ET_MATNR> getET_MATNR(ZSD_MATERAIL_DATA_RFCResponse response) {
+    private List<ET_MATNR> getET_MATNR(ZSD_MATERAIL_DATA_RFCResponse response,String vkorg) {
 
         ET_MATNR_type1 et_matnr = response.getET_MATNR();
         ZSSD00005[] zssd00005s = et_matnr.getItem();
@@ -1068,7 +1334,7 @@ public class PIProductServiceImpl implements PIProductService {
         if (zssd00005s.length > 0) {
             for (ZSSD00005 zssd00005 : zssd00005s) {
                 VTWEG_type3 vtweg_type3 = zssd00005.getVTWEG();
-                if (vtweg_type3 != null && VKORG.equals(vtweg_type3.getVTWEG_type2()) && zssd00005.getMATNR() != null && zssd00005.getMTPOS_MARA() != null && ZORM.equals(zssd00005.getMTPOS_MARA().getMTPOS_MARA_type0())) {
+                if (vtweg_type3 != null && vkorg.equals(vtweg_type3.getVTWEG_type2()) && zssd00005.getMATNR() != null && zssd00005.getMTPOS_MARA() != null && ZORM.equals(zssd00005.getMTPOS_MARA().getMTPOS_MARA_type0())) {
                     ET_MATNR etMatnr = new ET_MATNR();
                     etMatnr.setMATNR(zssd00005.getMATNR().getMATNR_type6());//    "matnr",
                     etMatnr.setBOMX(zssd00005.getBOMX() == null ? null : zssd00005.getBOMX().getBOMX_type0());   //    "bomx",

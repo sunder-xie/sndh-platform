@@ -13,6 +13,7 @@ import com.nhry.data.basic.domain.TMdMara;
 import com.nhry.data.basic.domain.TSysMessage;
 import com.nhry.data.order.dao.TPreOrderMapper;
 import com.nhry.data.order.domain.TPreOrder;
+import com.nhry.data.stud.domain.TMdMaraStud;
 import com.nhry.model.basic.MessageModel;
 import com.nhry.model.basic.OrderModel;
 import com.nhry.service.BaseService;
@@ -219,6 +220,27 @@ public class TSysMessageServiceImpl extends BaseService implements TSysMessageSe
 		}
 		return true;
 	}
+	
+	@Override
+	@Transactional(propagation=Propagation.REQUIRES_NEW)
+	public boolean sendMessagesForCreateProducts(TMdMaraStud mara) {
+		// TODO Auto-generated method stub
+		Map<String,String> attrs = new HashMap<String,String>();
+		attrs.put("salesOrg", mara.getSalesOrg());
+		//部门内勤
+		attrs.put("rid", "'"+SysContant.getSystemConst("department_back_office")+"'");
+		List<TSysUser> users = userMapper.getloginNamesByOrgsandRid2(attrs);
+		if(users == null || users.size() == 0){
+			LOGGER.warn("该销售组织下："+mara.getSalesOrg()+"目前没有部门内勤！");
+			return false;
+		}else{
+			this.sendMessage(users, "学生奶新品添加消息！商品编号："+mara.getMatnr(), "新品添加消息！商品编号："+mara.getMatnr()+" 商品名称："+mara.getMatnrTxt(), "30","10",SysContant.getSysUser());
+		}
+		return true;
+	}
+	
+	
+	
 
 	@Override
 	@Transactional(propagation=Propagation.REQUIRES_NEW)

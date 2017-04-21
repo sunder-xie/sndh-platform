@@ -6,6 +6,7 @@ import com.nhry.data.basic.domain.TMdBranch;
 import com.nhry.data.basic.domain.TMdBranchEmp;
 import com.nhry.data.basic.domain.TMdMara;
 import com.nhry.data.basic.domain.TSysMessage;
+import com.nhry.data.stud.domain.TMdMaraStud;
 import com.nhry.model.basic.MessageModel;
 import com.nhry.model.basic.OrderModel;
 
@@ -95,4 +96,11 @@ public interface TSysMessageService {
      * @return
      */
     public int sendMessageForEmpUpt(TMdBranchEmp emp,String tag,TSysUser user);
+
+    /**
+     * 新产品添加时给部门内勤发送系统消息
+     * @param mara
+     * @return
+     */
+    public boolean sendMessagesForCreateProducts(TMdMaraStud mara);
 }

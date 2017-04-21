@@ -54,7 +54,7 @@ public class SchoolServiceImpl implements SchoolService {
 		if(StringUtils.isEmpty(sysuser.getSalesOrg())){
 			return 0;
 		}
-		return tMdSchoolMapper.updateByTMdSchool(tMdSchool);
+		return tMdSchoolMapper.updateStatusByTMdSchool(tMdSchool);
 	}
 
 }
