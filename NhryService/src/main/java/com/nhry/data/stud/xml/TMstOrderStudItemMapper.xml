@@ -140,8 +140,12 @@
   
   <select id="findOrderItemByOrderId" resultMap="BaseResultMap" parameterType="java.lang.String">
   	select 
-    MID, ORDER_DATE, ORDER_ID, SCHOOL_CODE, ORDER_TYPE, CLASS_CODE, MATNR, QTY, SALES_ORG
-    from t_mst_order_stud_item
+    oi.MID, oi.ORDER_DATE, oi.ORDER_ID, oi.SCHOOL_CODE, oi.ORDER_TYPE, 
+    oi.CLASS_CODE, oi.MATNR, oi.QTY, oi.SALES_ORG,mara.ZBOT_CODE,
+    (SELECT i.ITEM_NAME FROM t_sys_code_item I WHERE i.TYPE_CODE=<include refid="mybaties.constant.packing _type"></include> AND i.ITEM_CODE=mara.ZBOT_CODE) ZBOT_CODE_NAME
+    from t_mst_order_stud_item oi
+    left join t_md_mara_stud mara on oi.MATNR=mara.MATNR
+    where oi.ORDER_ID=#{orderId}
   </select>
   
   <update id="deleteOrderAndItem" parameterType="java.util.Map">
