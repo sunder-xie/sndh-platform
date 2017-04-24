@@ -3,6 +3,7 @@ package com.nhry.service.pi.dao;
 import com.nhry.data.basic.domain.TMdBranch;
 import com.nhry.data.milktrans.domain.TSsmReqGoodsOrder;
 import com.nhry.data.milktrans.domain.TSsmSalOrder;
+import com.nhry.data.stud.domain.TMstOrderStud;
 import com.nhry.model.stock.StockModel;
 import com.nhry.webService.client.PISuccessMessage;
 
@@ -72,5 +73,7 @@ public interface PIRequireOrderService {
      * @return
      */
     String execDeliveryByOrderNo(String orderNo);
+
+	PISuccessMessage generateSalesOrder18(TMstOrderStud order);
 
 }

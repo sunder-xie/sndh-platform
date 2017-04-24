@@ -30,8 +30,8 @@ public class TMstOrderStudItemMapperImpl implements TMstOrderStudItemMapper {
 	}
 
 	@Override
-	public List<TMstOrderStudItem> findOrderItemByOrderId(String orderId) {
-		return sqlSessionTemplate.selectList("findOrderItemByOrderId", orderId);
+	public List<TMstOrderStudItem> findOrderItemByOrderId(Map<String, Object> parameterMap) {
+		return sqlSessionTemplate.selectList("findOrderItemByOrderId", parameterMap);
 	}
 
 	@Override
