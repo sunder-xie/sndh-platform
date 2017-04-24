@@ -1433,4 +1433,35 @@ public class OrderStudServiceImpl implements OrderStudService {
 	
 	}
 
+	@Override
+	public String findDefaultMaraForSchool(TMstOrderStud mstOrderStud) {
+		String matnr = null;
+		TSysUser user = this.userSessionService.getCurrentUser();
+		if(StringUtils.isBlank(user.getSalesOrg())){
+			throw new ServiceException(MessageCode.LOGIC_ERROR, "当前用户未归属销售组织");
+		}
+		if(null == mstOrderStud || StringUtils.isBlank(mstOrderStud.getSchoolCode())){
+			throw new ServiceException(MessageCode.LOGIC_ERROR, "学校代码必传");
+		}
+		TMdSchool school = schoolMapper.selectByPrimaryKey(new SchoolQueryModel(mstOrderStud.getSchoolCode(), user.getSalesOrg()));
+		if(null == school){
+			throw new ServiceException(MessageCode.LOGIC_ERROR, mstOrderStud.getSchoolCode()+"学校不存在");
+		}
+		Map<String, Object> selectMap = new HashMap<String, Object>();
+		selectMap.put("salesOrg", user.getSalesOrg());
+		selectMap.put("schoolCode", mstOrderStud.getSchoolCode());
+		TMdSchoolRule schoolRule = schoolRuleMapper.findSchoolRuleByMap(selectMap);
+		if(null == schoolRule){
+			throw new ServiceException(MessageCode.LOGIC_ERROR, "未查询到学生奶品政策");
+		}
+		
+		try {
+			
+			matnr = findMatnr(schoolRule, Calendar.getInstance().get(Calendar.DAY_OF_WEEK));
+		} catch (Exception e) {
+			logger.error(e.getMessage(), e);
+		}
+		return matnr;
+	}
+
 }
