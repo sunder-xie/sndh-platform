@@ -26,6 +26,7 @@ import com.nhry.data.order.domain.TOrderDaliyPlanItem;
 import com.nhry.data.stock.dao.TSsmGiOrderItemMapper;
 import com.nhry.data.stock.dao.TSsmGiOrderMapper;
 import com.nhry.data.stock.domain.TSsmGiOrder;
+import com.nhry.data.stud.domain.TMstOrderStud;
 import com.nhry.model.milktrans.*;
 import com.nhry.service.config.dao.DictionaryService;
 import com.nhry.service.milktrans.dao.RequireOrderService;
@@ -1846,6 +1847,14 @@ public class RequireOrderServiceImpl implements RequireOrderService {
             throw new ServiceException(MessageCode.LOGIC_ERROR, message.getMessage());
         }
     }
+    
+  
+    
+    
+    
+    
+    
+    
     @Override
     public List<TSsmSalOrder> creaSalOrderOfSelftBranchAndEmpNoByDate(SalOrderDaySearch search){
         TSysUser user = userSessionService.getCurrentUser();

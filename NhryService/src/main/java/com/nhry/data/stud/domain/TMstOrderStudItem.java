@@ -42,8 +42,20 @@ public class TMstOrderStudItem {
     private String zbotCodeName;//
     
     
+    
+    private String  baseUnit;//
+    
+  
 
-    public String getZbotCode() {
+	public String getBaseUnit() {
+		return baseUnit;
+	}
+
+	public void setBaseUnit(String baseUnit) {
+		this.baseUnit = baseUnit;
+	}
+
+	public String getZbotCode() {
 		return zbotCode;
 	}
 
