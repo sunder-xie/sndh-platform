@@ -1,6 +1,7 @@
 package com.nhry.service.stud.impl;
 
 import java.util.Date;
+import java.util.List;
 import java.util.UUID;
 
 import org.apache.commons.lang3.StringUtils;
@@ -12,9 +13,9 @@ import com.nhry.common.exception.MessageCode;
 import com.nhry.common.exception.ServiceException;
 import com.nhry.data.auth.domain.TSysUser;
 import com.nhry.data.stud.dao.TMdSchoolRuleMapper;
+import com.nhry.data.stud.domain.TMdSchool;
 import com.nhry.data.stud.domain.TMdSchoolRule;
 import com.nhry.model.stud.SchoolRuleQueryModel;
-import com.nhry.service.BaseService;
 import com.nhry.service.stud.dao.SchoolRuleService;
 
 /**
@@ -65,6 +66,16 @@ public class SchoolRuleServiceImpl  implements SchoolRuleService {
 			tMdSchoolRule.setSalesOrg(currentUser.getSalesOrg());
 			return tMdSchoolRuleMapper.saveone(tMdSchoolRule);
 		}
+	}
+
+
+	@Override
+	public List<TMdSchool> findAllSchoolWithOutSet() {
+		TSysUser currentUser = this.userSessionService.getCurrentUser();
+		if( StringUtils.isBlank(currentUser.getSalesOrg())){
+			throw new ServiceException(MessageCode.LOGIC_ERROR, "当前用户未关联销售组织");
+		}
+		return tMdSchoolRuleMapper.findAllSchoolWithOutSet(currentUser.getSalesOrg());
 	}
 
 

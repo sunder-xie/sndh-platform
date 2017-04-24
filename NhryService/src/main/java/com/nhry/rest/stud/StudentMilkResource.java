@@ -6,7 +6,6 @@ import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
-import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
@@ -18,18 +17,15 @@ import org.springframework.stereotype.Controller;
 
 import com.github.pagehelper.PageInfo;
 import com.nhry.common.exception.MessageCode;
-import com.nhry.data.stud.domain.TMdClass;
 import com.nhry.data.stud.domain.TMdSchool;
 import com.nhry.data.stud.domain.TMdSchoolMaraRule;
 import com.nhry.data.stud.domain.TMdSchoolMaraRuleBase;
 import com.nhry.data.stud.domain.TMdSchoolRule;
 import com.nhry.model.stud.ClassListModel;
-import com.nhry.model.stud.ClassQueryModel;
 import com.nhry.model.stud.SchoolMaraRuleModel;
 import com.nhry.model.stud.SchoolClassModel;
 import com.nhry.model.stud.SchoolQueryModel;
 import com.nhry.model.stud.SchoolRuleQueryModel;
-import com.nhry.model.sys.ResponseModel;
 import com.nhry.rest.BaseResource;
 import com.nhry.service.stud.dao.ClassService;
 import com.nhry.service.stud.dao.SchoolClassService;
@@ -152,6 +148,14 @@ public class StudentMilkResource  extends BaseResource {
 	@ApiOperation(value = "/schoolRule/uptSchoolRule", response = Integer.class, notes = "修改订奶政策")
 	public Response uptSchoolRule(@ApiParam(required=true,name="tMdSchoolRule",value="tMdSchoolRule") TMdSchoolRule tMdSchoolRule){
 		return convertToRespModel(MessageCode.NORMAL, null, schoolRuleService.uptSchoolRule(tMdSchoolRule));
+	}
+	
+	@POST
+	@Path("/schoolRule/findAllSchoolWithOutSet")
+	@Produces(MediaType.APPLICATION_JSON)
+	@ApiOperation(value = "/schoolRule/findAllSchoolWithOutSet", response = List.class, notes = "查询出还未设置奶品政策的学校列表")
+	public Response findAllSchoolWithOutSet(){
+		return convertToRespModel(MessageCode.NORMAL, null, schoolRuleService.findAllSchoolWithOutSet());
 	}
 
 	/*********************************学校订奶政策损耗基础信息********************************/
