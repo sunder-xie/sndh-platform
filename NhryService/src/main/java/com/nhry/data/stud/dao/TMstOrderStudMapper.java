@@ -23,4 +23,6 @@ public interface TMstOrderStudMapper {
 	List<TMstOrderStud> findSchoolWithOrder(TMstOrderStud selectObj);
 
 	List<TMstOrderStud> findMatnrWithOrderUnpack(TMstOrderStud selectObj);
+	
+	List<TMstOrderStud> findOrderStudByDateAndSalesOrg(String orderDateStr, String salesOrg);
 }

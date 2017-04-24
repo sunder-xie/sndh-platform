@@ -3,8 +3,11 @@ package com.nhry.data.stud.domain;
 import java.util.Date;
 
 public class TMdSchool {
+	
     private String schoolCode;
-
+    
+    private String schoolCodeTxt;
+    
     private String schoolName;
 
     private String erpCode;
@@ -36,8 +39,36 @@ public class TMdSchool {
     private String salesOrg;//销售组织
     
     
+    private String dispatching; //供应商
+    
+    private String unload;//卸货点
+    
 
-    public void setSalesOrg(String salesOrg) {
+    public String getSchoolCodeTxt() {
+		return schoolCodeTxt;
+	}
+
+	public void setSchoolCodeTxt(String schoolCodeTxt) {
+		this.schoolCodeTxt = schoolCodeTxt;
+	}
+
+	public String getDispatching() {
+		return dispatching;
+	}
+
+	public void setDispatching(String dispatching) {
+		this.dispatching = dispatching;
+	}
+
+	public String getUnload() {
+		return unload;
+	}
+
+	public void setUnload(String unload) {
+		this.unload = unload;
+	}
+
+	public void setSalesOrg(String salesOrg) {
 		this.salesOrg = salesOrg;
 	}
 

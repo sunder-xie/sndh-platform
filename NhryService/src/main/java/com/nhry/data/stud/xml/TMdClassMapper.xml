@@ -82,7 +82,7 @@
   
   
   
-   <delete id="deleteBySalesOrg" parameterType="java.lang.String" >
+   <delete id="deleteClassBySalesOrg" parameterType="java.lang.String" >
     delete from t_md_class
     where SALES_ORG = #{salesOrg,jdbcType=VARCHAR}
   </delete>

@@ -28,8 +28,8 @@ public class TMdSchoolMaraRuleBaseMapperImpl  implements TMdSchoolMaraRuleBaseMa
 	
 	
 	@Override
-	public int deleteByMid(String mid) {
-		return sqlSessionTemplate.insert("deleteByMid",mid);
+	public int deleteBySalesOrg(String salesOrg) {
+		return sqlSessionTemplate.insert("deleteBySalesOrg",salesOrg);
 	}
 	/*
 	@Override

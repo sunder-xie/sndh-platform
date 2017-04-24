@@ -6,7 +6,7 @@ package com.nhry.model.stud;
  */
 public class OrderBatchBuildModel {
 	private String orderGetDateStr;
-	private String uncloudSchoolCodes;
+	private String uncloudSchoolCodeTxts;
 	private String week;
 	
 	private String orderDateStr;
@@ -30,11 +30,12 @@ public class OrderBatchBuildModel {
 	public void setSchoolCode(String schoolCode) {
 		this.schoolCode = schoolCode;
 	}
-	public String getUncloudSchoolCodes() {
-		return uncloudSchoolCodes;
+	
+	public String getUncloudSchoolCodeTxts() {
+		return uncloudSchoolCodeTxts;
 	}
-	public void setUncloudSchoolCodes(String uncloudSchoolCodes) {
-		this.uncloudSchoolCodes = uncloudSchoolCodes;
+	public void setUncloudSchoolCodeTxts(String uncloudSchoolCodeTxts) {
+		this.uncloudSchoolCodeTxts = uncloudSchoolCodeTxts;
 	}
 	public String getWeek() {
 		return week;

@@ -19,6 +19,16 @@
     ORDER_ID, ORDER_DATE, SCHOOL_CODE, ORDER_STATUS, REMARK, SALES_ORG
   </sql>
   
+  <select id="findOrderStudByDateAndSalesOrg" parameterType="java.util.Map" resultType="com.nhry.data.stud.domain.TMstOrderStud">
+  	select
+  	ORDER_DATE orderDateStr, ORDER_ID orderId, SCHOOL_CODE schoolCode, ORDER_STATUS orderStatus, SALES_ORG salesOrg, REMARK remark, 
+  	ERP_ORDER_ID erpOrderId, ERP_ORDER_STATUS erpOrderStatus, ERP_ORDER_MSG erpOrderMsg
+  	from t_mst_order_stud
+  	where SALES_ORG=#{salesOrg}
+  	and ORDER_DATE=#{orderDateStr}
+  	and ORDER_STATUS='10'
+  </select>
+  
   <select id="findMatnrWithOrderUnpack" resultType="com.nhry.data.stud.domain.TMstOrderStud" parameterType="com.nhry.data.stud.domain.TMstOrderStud">
   	  SELECT DISTINCT
 	  a.MATNR matnr, a.MATNR_TXT matnrTxt, a.ZBOT_CODE zbotCode,
@@ -93,7 +103,8 @@
   </select>
   
   <select id="findOrderPage" resultType="com.nhry.data.stud.domain.TMstOrderStud" parameterType="com.nhry.model.stud.OrderStudQueryModel">
-  	SELECT 
+  	SELECT
+  	a.order_id orderId, 
 	b.school_code schoolCode,b.school_name schoolName,a.order_date orderDateStr,
 	IFNULL((SELECT SUM(c.qty) FROM t_mst_order_stud_item c WHERE c.order_id=a.order_id AND c.order_type='10'), 0) list10Sum,
 	IFNULL((SELECT SUM(c.qty) FROM t_mst_order_stud_item c WHERE c.order_id=a.order_id AND c.order_type='20'), 0) list20Sum,

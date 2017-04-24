@@ -20,6 +20,8 @@ import com.github.pagehelper.PageInfo;
 import com.nhry.common.exception.MessageCode;
 import com.nhry.data.stud.domain.TMdClass;
 import com.nhry.data.stud.domain.TMdSchool;
+import com.nhry.data.stud.domain.TMdSchoolMaraRule;
+import com.nhry.data.stud.domain.TMdSchoolMaraRuleBase;
 import com.nhry.data.stud.domain.TMdSchoolRule;
 import com.nhry.model.stud.ClassListModel;
 import com.nhry.model.stud.ClassQueryModel;
@@ -81,7 +83,7 @@ public class StudentMilkResource  extends BaseResource {
 	@Path("/school/upt")
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
-	@ApiOperation(value = "/school/upt", response = ResponseModel.class, notes = "更新商品信息")
+	@ApiOperation(value = "/school/upt", response = Integer.class, notes = "更新商品信息")
 	public Response uptProduct(@ApiParam(required=true,name="record",value="系统参数json格式")TMdSchool tMdSchool){
 		return convertToRespModel(MessageCode.NORMAL, null,  schoolService.updateSchool(tMdSchool));
 	}
@@ -90,7 +92,7 @@ public class StudentMilkResource  extends BaseResource {
 	@GET
 	@Path("/class/findClassListBySalesOrg")
 	@Produces(MediaType.APPLICATION_JSON)
-	@ApiOperation(value = "/studentClass/findClassListBySalesOrg", response = ResponseModel.class, notes = "查询班级列表")
+	@ApiOperation(value = "/studentClass/findClassListBySalesOrg", response = List.class, notes = "查询班级列表")
 	public Response findClassListBySalesOrg(@ApiParam(required=false,name="salesOrg") @QueryParam("salesOrg")String salesOrg){
 		return convertToRespModel(MessageCode.NORMAL, null,  classService.findClassListBySalesOrg(salesOrg));
 	}
@@ -99,7 +101,7 @@ public class StudentMilkResource  extends BaseResource {
 	@Path("/class/addClassList")
 	@Produces(MediaType.APPLICATION_JSON)
 	@Consumes(MediaType.APPLICATION_JSON)
-	@ApiOperation(value = "/studentClass/addClassList", response = ResponseModel.class, notes = "新增班级")
+	@ApiOperation(value = "/studentClass/addClassList", response =Integer.class, notes = "新增班级")
 	public Response addClassList(@ApiParam(required=true, name="mdClass") ClassListModel smodel){
 		return convertToRespModel(MessageCode.NORMAL, null, classService.addClassList(smodel));
 	}
@@ -147,7 +149,7 @@ public class StudentMilkResource  extends BaseResource {
 	@Path("/schoolRule/uptSchoolRule")
 	@Produces(MediaType.APPLICATION_JSON)
 	@Consumes(MediaType.APPLICATION_JSON)
-	@ApiOperation(value = "/schoolRule/uptSchoolRule", response = PageInfo.class, notes = "修改订奶政策")
+	@ApiOperation(value = "/schoolRule/uptSchoolRule", response = Integer.class, notes = "修改订奶政策")
 	public Response uptSchoolRule(@ApiParam(required=true,name="tMdSchoolRule",value="tMdSchoolRule") TMdSchoolRule tMdSchoolRule){
 		return convertToRespModel(MessageCode.NORMAL, null, schoolRuleService.uptSchoolRule(tMdSchoolRule));
 	}
@@ -158,7 +160,7 @@ public class StudentMilkResource  extends BaseResource {
 	@Path("/schoolMaraRule/findMaraRuleList")
 	@Produces(MediaType.APPLICATION_JSON)
 	@Consumes(MediaType.APPLICATION_JSON)
-	@ApiOperation(value = "/schoolMaraRule/findMaraRuleList", response = PageInfo.class, notes = "通过学校和销售组织获取当前学校的所有的损耗政策")
+	@ApiOperation(value = "/schoolMaraRule/findMaraRuleList", response = TMdSchoolMaraRule.class, notes = "通过学校和销售组织获取当前学校的所有的损耗政策")
 	public Response findMaraRuleList(@ApiParam(required=true,name="smodel",value="SearchModel") SchoolMaraRuleModel smodel){
 		return convertToRespModel(MessageCode.NORMAL, null, schoolMaraRuleService.findSchoolMaraRule(smodel));
 	}
@@ -168,7 +170,7 @@ public class StudentMilkResource  extends BaseResource {
 	@Path("/schoolMaraRule/findMaraRuleBaseByModel")
 	@Produces(MediaType.APPLICATION_JSON)
 	@Consumes(MediaType.APPLICATION_JSON)
-	@ApiOperation(value = "/schoolMaraRule/findMaraRuleBaseByModel", response = PageInfo.class, notes = "通过学校和销售组织获取当前学校的损耗政策基数")
+	@ApiOperation(value = "/schoolMaraRule/findMaraRuleBaseByModel", response = TMdSchoolMaraRuleBase.class, notes = "通过学校和销售组织获取当前学校的损耗政策基数")
 	public Response findMaraRuleBaseByModel(@ApiParam(required=true,name="smodel",value="SearchModel") SchoolMaraRuleModel smodel){
 		return convertToRespModel(MessageCode.NORMAL, null, schoolMaraRuleService.findMaraRuleBaseByModel(smodel));
 	}
@@ -178,13 +180,10 @@ public class StudentMilkResource  extends BaseResource {
 	@Path("/schoolMaraRule/save")
 	@Produces(MediaType.APPLICATION_JSON)
 	@Consumes(MediaType.APPLICATION_JSON)
-	@ApiOperation(value = "/schoolMaraRule/save", response = PageInfo.class, notes = "保存学校的订奶损耗政策")
+	@ApiOperation(value = "/schoolMaraRule/save", response = Integer.class, notes = "保存学校的订奶损耗政策")
 	public Response saveSchoolRule(@ApiParam(required=true,name="smodel",value="smodel") SchoolMaraRuleModel smodel){
 		return convertToRespModel(MessageCode.NORMAL, null, schoolMaraRuleService.intsertinfo(smodel));
 	}
-	
-	
-	
 	
 
 }

@@ -17,6 +17,7 @@ import java.util.Map.Entry;
 import java.util.Random;
 import java.util.UUID;
 
+import org.apache.commons.beanutils.BeanUtils;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.poi.hssf.util.HSSFColor;
@@ -495,12 +496,12 @@ public class OrderStudServiceImpl implements OrderStudService {
 		}
 		
 		List<TMdSchool> schoolList = new ArrayList<TMdSchool>();
-		if(StringUtils.isNotBlank(orderBatchBuildModel.getUncloudSchoolCodes())){
-			orderBatchBuildModel.setUncloudSchoolCodes(orderBatchBuildModel.getUncloudSchoolCodes().replace("，", "").replace(" ", "").trim());
-			String[] schoolCodes = orderBatchBuildModel.getUncloudSchoolCodes().split(",");
+		if(StringUtils.isNotBlank(orderBatchBuildModel.getUncloudSchoolCodeTxts())){
+			orderBatchBuildModel.setUncloudSchoolCodeTxts(orderBatchBuildModel.getUncloudSchoolCodeTxts().replace("，", "").replace(" ", "").trim());
+			String[] schoolCodes = orderBatchBuildModel.getUncloudSchoolCodeTxts().split(",");
 			f1:for(TMdSchool school : baseSchoolList){
-				for(String schoolCode : schoolCodes){
-					if(schoolCode.equals(school.getSchoolCode())){
+				for(String schoolCodeTxt : schoolCodes){
+					if(schoolCodeTxt.equals(school.getSchoolCodeTxt())){
 						continue f1;
 					}
 				}
@@ -518,6 +519,33 @@ public class OrderStudServiceImpl implements OrderStudService {
 		resultMap.put("schoolList", schoolList);
 		return resultMap;
 	}
+	private String findMatnr(TMdSchoolRule schoolRule, int week) throws ParseException{
+		if(1 == week){//星期天
+			return schoolRule.getWeek7Matnr();
+		}
+		else if(2 == week){//星期一
+			return schoolRule.getWeek1Matnr();
+		}
+		else if(3 == week){//W2
+			return schoolRule.getWeek2Matnr();
+		}
+		else if(4 == week){//W3
+			return schoolRule.getWeek3Matnr();
+		}
+		else if(5 == week){//W4
+			return schoolRule.getWeek4Matnr();
+		}
+		else if(6 == week){//W5
+			return schoolRule.getWeek5Matnr();
+		}
+		else if(7 == week){//W6
+			return schoolRule.getWeek6Matnr();
+		}
+		return null;
+	}
+	
+	@SuppressWarnings("unused")
+	@Deprecated
 	private String findMatnr(TMdSchoolRule schoolRule, String orderDateStr) throws ParseException{
 		Calendar c = Calendar.getInstance();
 		DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
@@ -588,7 +616,8 @@ public class OrderStudServiceImpl implements OrderStudService {
 		if(null == schoolRule){
 			throw new ServiceException(MessageCode.LOGIC_ERROR, "未查询到学生奶品政策");
 		}
-		String matnr = findMatnr(schoolRule, orderBatchBuildModel.getOrderDateStr());
+//		String matnr = findMatnr(schoolRule, orderBatchBuildModel.getOrderDateStr());
+		String matnr = findMatnr(schoolRule, Integer.parseInt(orderBatchBuildModel.getWeek()));
 		if(StringUtils.isBlank(matnr)){
 			throw new ServiceException(MessageCode.LOGIC_ERROR, "当前学校未设置该套餐的奶品政策");
 		}
@@ -661,7 +690,7 @@ public class OrderStudServiceImpl implements OrderStudService {
 	    		try {
 	    			qty = this.calcLoss(lossModel);
 				} catch (Exception e) {
-					logger.error(e.getMessage(), e);
+					logger.error(e.getMessage());
 					continue;
 				}
 	    		if(qty <= 0){
@@ -868,6 +897,7 @@ public class OrderStudServiceImpl implements OrderStudService {
 			}
 			
 			if(CollectionUtils.isNotEmpty(milkList)){
+				TMstOrderStud tmp = null;
 				for(TMstOrderStud item : milkList){
 					boolean flag = false;
 					for(TMstOrderStud item2 : milkUnpackList){
@@ -877,27 +907,32 @@ public class OrderStudServiceImpl implements OrderStudService {
 						}
 					}
 					if(!flag){
-						item.setList20Sum(
+						tmp = new TMstOrderStud();
+						BeanUtils.copyProperties(tmp, item);
+						tmp.setList20Sum(
 							String.valueOf(Integer.parseInt(item.getList20Sum())+Integer.parseInt(item.getList10Sum()))		
 						);
-						item.setTotalSum(
+						tmp.setTotalSum(
 							String.valueOf(Integer.parseInt(item.getList20Sum())+Integer.parseInt(item.getList30Sum()))		
 						);
-						sumMilkList.add(item);
+						sumMilkList.add(tmp);
 					}
 				}
 			}
 		}
 		else{
 			if(CollectionUtils.isNotEmpty(milkList)){
+				TMstOrderStud tmp = null;
 				for(TMstOrderStud item : milkList){
-					item.setList20Sum(
+					tmp = new TMstOrderStud();
+					BeanUtils.copyProperties(tmp, item);
+					tmp.setList20Sum(
 						String.valueOf(Integer.parseInt(item.getList20Sum())+Integer.parseInt(item.getList10Sum()))		
 					);
-					item.setTotalSum(
+					tmp.setTotalSum(
 						String.valueOf(Integer.parseInt(item.getList20Sum())+Integer.parseInt(item.getList30Sum()))		
 					);
-					sumMilkList.add(item);
+					sumMilkList.add(tmp);
 				}
 			}
 		}

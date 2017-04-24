@@ -65,9 +65,9 @@ public class SchoolMaraRuleServiceImpl implements SchoolMaraRuleService {
 		}
 		
 	    if(ruleBase !=null){
-	    	if(StringUtils.isNoneBlank(ruleBase.getMid())){
-	    		tMdSchoolMaraRuleBaseMapper.deleteByMid(ruleBase.getMid());
-	    	}
+	    	//删除当前损耗基数
+	    	tMdSchoolMaraRuleBaseMapper.deleteBySalesOrg(ruleBase.getMid());
+	    	//添加损耗基数
 	    	Date date = new Date();
 	    	ruleBase.setMid(UUID.randomUUID().toString().replace("-", ""));
 	    	ruleBase.setCreateAt(date);
@@ -84,7 +84,9 @@ public class SchoolMaraRuleServiceImpl implements SchoolMaraRuleService {
 		List<TMdSchoolMaraRule> tMdSchoolMaraRuleList = mdel.getSchoolMaraList();
 		int result=0;
 		mdel.setSalesOrg(userSessionService.getCurrentUser().getSalesOrg());
+		//删除当前奶品损耗基数
 		tMdSchoolMaraRuleMapper.deleteByModel(mdel);
+		//保存当前奶品损耗基数
 		for (TMdSchoolMaraRule tMdSchoolMaraRule : tMdSchoolMaraRuleList) {
 			Date date = new Date();
 			tMdSchoolMaraRule.setMid(UUID.randomUUID().toString().replace("-", ""));
