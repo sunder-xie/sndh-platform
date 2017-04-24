@@ -39,12 +39,23 @@ public class TMdSchool {
     private String salesOrg;//销售组织
     
     
+    private String werks; //公司
+    
+    
     private String dispatching; //供应商
     
     private String unload;//卸货点
     
 
-    public String getSchoolCodeTxt() {
+    public String getWerks() {
+		return werks;
+	}
+
+	public void setWerks(String werks) {
+		this.werks = werks;
+	}
+
+	public String getSchoolCodeTxt() {
 		return schoolCodeTxt;
 	}
 
