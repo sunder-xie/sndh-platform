@@ -22,9 +22,18 @@
     <result column="SALES_ORG" property="salesOrg" jdbcType="VARCHAR" />
     <result column="checkbox" property="checkbox"  />
     <result column="SCHOOL_NAME" property="schoolName"  />
-    
-    
   </resultMap>
+  
+  
+  <select id="findAllSchoolWithOutSet" parameterType="java.lang.String" resultType="com.nhry.data.stud.domain.TMdSchool">
+  	SELECT a.SCHOOL_CODE schoolCode, a.SCHOOL_NAME schoolName, a.SALES_ORG salesOrg
+	FROM t_md_school a
+	LEFT JOIN t_md_school_rule b ON a.SCHOOL_CODE=b.SCHOOL_CODE AND a.SALES_ORG=b.SALES_ORG
+	WHERE a.VISIABLE='10'
+	AND a.SALES_ORG=#{salesOrg}
+	AND b.MID IS NULL
+  </select>
+  
   <sql id="Base_Column_List" >
     ru.MID, sc.SCHOOL_CODE,sc.SCHOOL_NAME, ru.IS_BATCH_PRINT, ru.VISIABLE, ru.WEEK1_MATNR, ru.WEEK2_MATNR, ru.WEEK3_MATNR, 
     ru.WEEK4_MATNR, ru.WEEK5_MATNR, ru.WEEK6_MATNR, ru.WEEK7_MATNR, ru.CREATE_AT, ru.CREATE_BY, ru.CREATE_BY_TXT, 
@@ -44,10 +53,14 @@
   
    <select id="serchSchoolRuleList" resultMap="BaseResultMap" parameterType="com.nhry.model.stud.SchoolRuleQueryModel" >
     select 
-    <include refid="Base_Column_List" />
-    FROM   t_md_school  sc LEFT JOIN  t_md_school_rule  ru on sc.SCHOOL_CODE=ru.SCHOOL_CODE and sc.SALES_ORG=ru.SALES_ORG
-    where 1=1 and sc.VISIABLE='10'
-    
+    ru.MID, sc.SCHOOL_CODE,sc.SCHOOL_NAME, ru.IS_BATCH_PRINT, ru.VISIABLE, ru.WEEK1_MATNR, ru.WEEK2_MATNR, ru.WEEK3_MATNR, 
+    ru.WEEK4_MATNR, ru.WEEK5_MATNR, ru.WEEK6_MATNR, ru.WEEK7_MATNR, 
+    ru.SALES_ORG,if(ifnull(ru.VISIABLE,10)='10',false,true) checkbox
+    FROM   t_md_school_rule  ru
+    LEFT JOIN t_md_school  sc  on sc.SCHOOL_CODE=ru.SCHOOL_CODE  and sc.SALES_ORG=ru.SALES_ORG
+    where 1=1 
+    and sc.VISIABLE='10'
+    and sc.SALES_ORG=#{salesOrg}
     <if test="keyWord != null and keyWord != '' " >
         and (sc.SCHOOL_CODE like '%${keyWord}%' or sc.SCHOOL_NAME  like '%${keyWord}%')
     </if>
@@ -55,11 +68,7 @@
      <if test="visiable != null and visiable !='' " >
         and ifnull(ru.VISIABLE,'10')=#{visiable}
      </if>
-     
-     <if test="salesOrg != null and salesOrg !='' " >
-        and sc.SALES_ORG=#{salesOrg}
-     </if>
-     order by sc.SCHOOL_CODE
+     order by ru.LAST_MODIFIED DESC
   </select>
   
   

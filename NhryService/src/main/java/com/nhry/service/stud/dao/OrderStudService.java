@@ -38,4 +38,10 @@ public interface OrderStudService {
 	int createOrderUnpack(TMstOrderStud mstOrderStud) throws Exception;
 	
 	Map<String, Object> findOrderInfoBySchoolCodeAndDateUnpack(TMstOrderStud mstOrderStud);
+
+	String findDefaultMaraForSchool(TMstOrderStud mstOrderStud);
+
+	String generateSalesOrder18();
+	
+	
 }

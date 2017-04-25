@@ -69,6 +69,12 @@ public class TMdSchoolMapperImpl implements TMdSchoolMapper {
 	}
 
 
+	@Override
+	public List<TMdSchool> findSchoolListForBuildBatchOrder(String salesOrg) {
+		return sqlSessionTemplate.selectList("findSchoolListForBuildBatchOrder", salesOrg);
+	}
+
+
 	
 	
 	

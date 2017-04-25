@@ -396,36 +396,11 @@ public class PIProductServiceImpl implements PIProductService {
     	return 1;
     }
     
-    
-    private int customerDataHandle18(){
-    	logger.info("客户数据调用开始");
-        try {
-            ZSD_CUSTOMER_DATA_SYN_RFCResponse response = getCustomerData(VKORG18);
-            Map<String, ET_KUNNR> kunnr_Map = getET_KUNNR(response);
-            Map<String, ET_KNVP> et_KNVP = getET_KNVP(response);
-            List<ET_VKORG> et_VKORG18 = getET_VKORG18(response);
-            int zycount = 0;
-            for (ET_VKORG et_VKORG : et_VKORG18) {
-            	String kunnr = et_VKORG.getKUNNR();
-            	ET_KUNNR et_kunnr = kunnr_Map.get(kunnr);
-            	if(et_kunnr !=null &&StringUtils.isNotBlank(et_kunnr.getNAME1())){
-                	saveSchool(et_kunnr, et_KNVP,et_VKORG.getVKORG());
-            	}
-            	zycount++;
-			}
-            logger.info("自营奶站" + zycount + "条");
-            return 1;
-        } catch (Exception e) {
-            logger.error(e.getMessage());
-            e.printStackTrace();
-        }
-        logger.info("客户数据调用结束");
-        return 1;
-   }
+   
 
-    private int saveSchool(ET_KUNNR et_kunnr, Map<String, ET_KNVP> et_KNVPMap,String salesOrg) {
+    private int saveSchool(ET_KUNNR et_kunnr, Map<String, ET_KNVP> et_KNVPMap,String salesOrg,String lgort) {
     	//客户编码
-    	String kunnr= et_kunnr.getKUNNR();
+     	String kunnr= et_kunnr.getKUNNR();
     	//附加信息
     	ET_KNVP kuvp = et_KNVPMap.get(kunnr);
     	Map<String, String> map = new HashMap<String,String>();
@@ -445,7 +420,9 @@ public class PIProductServiceImpl implements PIProductService {
     		tmdschool.setSchoolCodeTxt(et_kunnr.getSort2());
     		tmdschool.setSchoolName(et_kunnr.getNAME1());
     		tmdschool.setTel(et_kunnr.getTELF1());
+    		tmdschool.setWerks(et_kunnr.getBUKRS());
     		tmdschool.setAddress(et_kunnr.getSTRAS());
+    		tmdschool.setLgort(lgort);
     		schoolMapper.updateByTMdSchool(tmdschool);
     		return 1;
     	}else{
@@ -467,12 +444,51 @@ public class PIProductServiceImpl implements PIProductService {
     		tmdschool.setVisiable("10");
     		tmdschool.setSalesOrg(salesOrg);
     		tmdschool.setAddress(et_kunnr.getSTRAS());
+    		tmdschool.setWerks(et_kunnr.getBUKRS());
+    		tmdschool.setLgort(lgort);
     		schoolMapper.saveSchool(tmdschool);
     		return 1;
     	}
     }
     
     
+    
+    private int customerDataHandle18(){
+    	logger.info("客户数据调用开始");
+        try {
+            ZSD_CUSTOMER_DATA_SYN_RFCResponse response = getCustomerData(VKORG18);
+            Map<String, ET_KUNNR> kunnr_Map = getET_KUNNR(response);
+            Map<String, ET_KNVP> et_KNVP = getET_KNVP(response);
+            List<ET_VKORG> et_VKORG18 = getET_VKORG18(response);
+            Map<String,ZTSD00024> gcss = getET_DATAs();
+            int zycount = 0;
+            for (ET_VKORG et_VKORG : et_VKORG18) {
+            	if("4511".equals(et_VKORG.getVKORG())){
+            		System.err.println("========");
+            	};
+            	
+            	String kunnr = et_VKORG.getKUNNR();
+            	ZTSD00024 ztsd00024 = gcss.get(kunnr);
+            	String lgort ="";
+            	
+            	if (ztsd00024 != null) {
+                   lgort  = ztsd00024.getLGORT().getLGORT_type0();
+            	}
+            	ET_KUNNR et_kunnr = kunnr_Map.get(kunnr);
+            	if(et_kunnr !=null &&StringUtils.isNotBlank(et_kunnr.getNAME1())){
+                	saveSchool(et_kunnr, et_KNVP,et_VKORG.getVKORG(),lgort);
+            	}
+            	zycount++;
+			}
+            logger.info("自营奶站" + zycount + "条");
+            return 1;
+        } catch (Exception e) {
+            logger.error(e.getMessage());
+            e.printStackTrace();
+        }
+        logger.info("客户数据调用结束");
+        return 1;
+   }
     private int customerDataHandle13(){
     	  logger.info("客户数据调用开始");
           try {

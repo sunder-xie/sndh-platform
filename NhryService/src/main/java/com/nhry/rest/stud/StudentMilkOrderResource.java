@@ -26,6 +26,7 @@ import com.nhry.model.stud.OrderStudLossModel;
 import com.nhry.model.stud.OrderStudQueryModel;
 import com.nhry.model.stud.SchoolQueryModel;
 import com.nhry.rest.BaseResource;
+import com.nhry.service.pi.dao.PIRequireOrderService;
 import com.nhry.service.stud.dao.ClassService;
 import com.nhry.service.stud.dao.MaraStudService;
 import com.nhry.service.stud.dao.OrderStudService;
@@ -208,5 +209,16 @@ public class StudentMilkOrderResource  extends BaseResource {
 	public Response exportStudOrderMilk(@ApiParam(required=true,name="model")ExportStudOrderMilkModel model) throws Exception{
 		return convertToRespModel(MessageCode.NORMAL, null,  orderStudService.exportStudOrderMilk(model));
 	}
+	
+
+	@GET
+	@Path("/generateSalesOrder18")
+	@Produces(MediaType.APPLICATION_JSON)
+	@Consumes(MediaType.APPLICATION_JSON)
+	@ApiOperation(value = "/generateSalesOrder18", response = int.class, notes = "生成ERP销售订单")
+	public Response generateSalesOrder18() throws Exception{
+		return convertToRespModel(MessageCode.NORMAL, null,  orderStudService.generateSalesOrder18());
+	}
+	
 	
 }

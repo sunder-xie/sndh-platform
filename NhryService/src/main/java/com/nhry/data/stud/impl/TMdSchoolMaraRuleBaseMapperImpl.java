@@ -1,5 +1,8 @@
 package com.nhry.data.stud.impl;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.nhry.common.datasource.DynamicSqlSessionTemplate;
@@ -31,27 +34,5 @@ public class TMdSchoolMaraRuleBaseMapperImpl  implements TMdSchoolMaraRuleBaseMa
 	public int deleteBySalesOrg(String salesOrg) {
 		return sqlSessionTemplate.insert("deleteBySalesOrg",salesOrg);
 	}
-	/*
-	@Override
-	public int uptInfo(TMdSchoolMaraRuleBase tMdSchoolMaraRuleBase) {
-		// TODO Auto-generated method stub
-		return 0;
-	}
-	public List<TMdSchoolMaraRule> findSchoolMaraRule(SchoolMaraRuleModel mdel) {
-		// TODO Auto-generated method stub
-		return sqlSessionTemplate.selectList("findSchoolMaraRule",mdel);
-	}
 
-	@Override
-	public int intsertinfo(TMdSchoolMaraRule tMdSchoolMaraRule) {
-		// TODO Auto-generated method stub
-		return sqlSessionTemplate.insert("intsertinfo",tMdSchoolMaraRule);
-	}
-	
-	@Override
-	public int deleteByModel(SchoolMaraRuleModel mdel) {
-		// TODO Auto-generated method stub
-		return sqlSessionTemplate.delete("deleteByModel",mdel);
-	}*/
-	
 }

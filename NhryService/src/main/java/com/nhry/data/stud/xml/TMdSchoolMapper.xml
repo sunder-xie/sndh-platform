@@ -21,15 +21,28 @@
     <result column="SALES_ORG" property="salesOrg" jdbcType="VARCHAR" />
     <result column="DISPATCHING" property="dispatching" jdbcType="VARCHAR" />
     <result column="UNLOAD" property="unload" jdbcType="VARCHAR" />
+    <result column="WERKS" property="werks" jdbcType="VARCHAR" />
+    <result column="LGORT" property="lgort" jdbcType="VARCHAR" />
+    
   </resultMap>
   <sql id="Base_Column_List" >
     SCHOOL_CODE,SCHOOL_CODE_TXT ,SCHOOL_NAME, ERP_CODE, TEL, MOBILE_PHONE, CONTACT, ADDRESS, CREATE_AT, 
     CREATE_BY, CREATE_BY_TXT, LAST_MODIFIED, LAST_MODIFIED_BY, LAST_MODIFIED_BY_TXT, 
-    VISIABLE,if(VISIABLE='10',false,true) chekbox, SALES_ORG
+    VISIABLE,if(VISIABLE='10',false,true) chekbox, SALES_ORG,WERKS,LGORT
   </sql>
   
   
-  
+  <select id="findSchoolListForBuildBatchOrder" resultType="com.nhry.data.stud.domain.TMdSchool" parameterType="java.lang.String">
+  	SELECT a.SCHOOL_CODE schoolCode, a.SCHOOL_NAME schoolName, a.SALES_ORG salesOrg
+  	,ERP_CODE erpCode
+	FROM t_md_school a
+	LEFT JOIN t_md_school_rule b ON a.SCHOOL_CODE=b.SCHOOL_CODE AND a.SALES_ORG=b.SALES_ORG
+	WHERE a.VISIABLE='10'
+	AND b.VISIABLE='10'
+	AND a.SALES_ORG=#{salesOrg}
+	AND b.MID IS NOT NULL
+	AND b.MID != ''
+  </select>
   
   <select id="serchSchoolList" resultMap="BaseResultMap" parameterType="com.nhry.model.stud.SchoolQueryModel" >
     select 
@@ -37,7 +50,7 @@
     from t_md_school
     where 1=1 
     <if test="keyWord != null and keyWord != '' " >
-        and (SCHOOL_CODE like '%${keyWord}%' or SCHOOL_NAME  like '%${keyWord}%')
+        and (SCHOOL_CODE_TXT like '%${keyWord}%' or SCHOOL_NAME  like '%${keyWord}%')
     </if>
     
      <if test="visiable != null and visiable !='' " >
@@ -140,6 +153,15 @@
       <if test="salesOrg != null" >
         SALES_ORG,
       </if>
+      
+      <if test="werks != null" >
+        WERKS,
+      </if>
+      
+       <if test="lgort != null" >
+        LGORT,
+      </if>
+      
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides="," >
    	  <if test="schoolCode != null" >
@@ -191,6 +213,15 @@
       <if test="salesOrg != null" >
         #{salesOrg,jdbcType=VARCHAR},
       </if>
+      
+       <if test="werks != null" >
+     	  #{werks,jdbcType=VARCHAR},
+      </if>
+      
+       <if test="lgort != null" >
+         #{lgort,jdbcType=VARCHAR},
+      </if>
+      
     </trim>
   </insert>
   
@@ -236,8 +267,14 @@
       <if test="visiable != null" >
         VISIABLE = #{visiable,jdbcType=VARCHAR},
       </if>
+      <if test="werks != null" >
+        WERKS = #{werks,jdbcType=VARCHAR},
+      </if>
+      <if test="lgort != null" >
+        LGORT = #{lgort,jdbcType=VARCHAR},
+      </if>
     </set>
-    where SCHOOL_CODE = #{SCHOOL_CODE,jdbcType=VARCHAR}
+    where SCHOOL_CODE = #{schoolCode,jdbcType=VARCHAR}
   </update>
   
   

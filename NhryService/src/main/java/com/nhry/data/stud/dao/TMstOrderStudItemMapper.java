@@ -12,7 +12,7 @@ public interface TMstOrderStudItemMapper {
 
     TMstOrderStudItem selectByMid(String mid);
 
-    List<TMstOrderStudItem> findOrderItemByOrderId(String orderId);
+    List<TMstOrderStudItem> findOrderItemByOrderId(Map<String, Object> parameterMap);
     
     List<TMstOrderStudItem> findOrderItemByMap(Map<String, Object> parameterMap);
     

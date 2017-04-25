@@ -1,8 +1,10 @@
 package com.nhry.data.stud.dao;
 
+import java.util.List;
 import java.util.Map;
 
 import com.github.pagehelper.PageInfo;
+import com.nhry.data.stud.domain.TMdSchool;
 import com.nhry.data.stud.domain.TMdSchoolRule;
 import com.nhry.model.stud.SchoolRuleQueryModel;
 
@@ -29,4 +31,12 @@ public interface TMdSchoolRuleMapper {
 
 
 	TMdSchoolRule findSchoolRuleByMap(Map<String, Object> selectMap);
+
+
+	/**
+	 * 查询出还未设置奶品政策的学校列表
+	 * @param salesOrg
+	 * @return
+	 */
+	List<TMdSchool> findAllSchoolWithOutSet(String salesOrg);
 }

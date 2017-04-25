@@ -5,8 +5,6 @@ import java.util.Date;
 public class TMdSchoolMaraRuleBase {
     private String mid;
 
-    private String schoolCode;
-    
     private String specUnit;
 
     private Integer fixedQty;
@@ -54,15 +52,6 @@ public class TMdSchoolMaraRuleBase {
         this.mid = mid == null ? null : mid.trim();
     }
 
-    public String getSchoolCode() {
-        return schoolCode;
-    }
-
-    public void setSchoolCode(String schoolCode) {
-        this.schoolCode = schoolCode == null ? null : schoolCode.trim();
-    }
-
-    
     public Integer getFixedQty() {
         return fixedQty;
     }

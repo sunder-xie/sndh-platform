@@ -62,8 +62,10 @@ import com.nhry.model.stud.OrderStudQueryModel;
 import com.nhry.model.stud.SchoolClassModel;
 import com.nhry.model.stud.SchoolMaraRuleModel;
 import com.nhry.model.stud.SchoolQueryModel;
+import com.nhry.service.pi.dao.PIRequireOrderService;
 import com.nhry.service.stud.dao.OrderStudService;
 import com.nhry.utils.EnvContant;
+import com.nhry.webService.client.PISuccessMessage;
 
 
 /**
@@ -104,6 +106,9 @@ public class OrderStudServiceImpl implements OrderStudService {
 	
 	@Autowired
 	private TMdSchoolRuleMapper schoolRuleMapper;
+	
+	@Autowired
+	PIRequireOrderService pIRequireOrderService;
 	
     public static String getCode(){
 		DateFormat format = new SimpleDateFormat("yyMMddHHmmssSSS");
@@ -490,9 +495,9 @@ public class OrderStudServiceImpl implements OrderStudService {
 		}
 		
 		Map<String, Object> resultMap = new HashMap<String, Object>();
-		List<TMdSchool> baseSchoolList = this.schoolMapper.findSchoolList(new SchoolQueryModel(null, null, "10", user.getSalesOrg()));
+		List<TMdSchool> baseSchoolList = this.schoolMapper.findSchoolListForBuildBatchOrder(user.getSalesOrg());
 		if(CollectionUtils.isEmpty(baseSchoolList)){
-			throw new ServiceException(MessageCode.LOGIC_ERROR, "未查询到学校");
+			throw new ServiceException(MessageCode.LOGIC_ERROR, "未查询到学校,或者已有学校中未设置学校奶品政策");
 		}
 		
 		List<TMdSchool> schoolList = new ArrayList<TMdSchool>();
@@ -1431,6 +1436,61 @@ public class OrderStudServiceImpl implements OrderStudService {
 		}
 		return resultMap;
 	
+	}
+
+	@Override
+	public String findDefaultMaraForSchool(TMstOrderStud mstOrderStud) {
+		String matnr = null;
+		TSysUser user = this.userSessionService.getCurrentUser();
+		if(StringUtils.isBlank(user.getSalesOrg())){
+			throw new ServiceException(MessageCode.LOGIC_ERROR, "当前用户未归属销售组织");
+		}
+		if(null == mstOrderStud || StringUtils.isBlank(mstOrderStud.getSchoolCode())){
+			throw new ServiceException(MessageCode.LOGIC_ERROR, "学校代码必传");
+		}
+		TMdSchool school = schoolMapper.selectByPrimaryKey(new SchoolQueryModel(mstOrderStud.getSchoolCode(), user.getSalesOrg()));
+		if(null == school){
+			throw new ServiceException(MessageCode.LOGIC_ERROR, mstOrderStud.getSchoolCode()+"学校不存在");
+		}
+		Map<String, Object> selectMap = new HashMap<String, Object>();
+		selectMap.put("salesOrg", user.getSalesOrg());
+		selectMap.put("schoolCode", mstOrderStud.getSchoolCode());
+		TMdSchoolRule schoolRule = schoolRuleMapper.findSchoolRuleByMap(selectMap);
+		if(null == schoolRule){
+			throw new ServiceException(MessageCode.LOGIC_ERROR, "未查询到学生奶品政策");
+		}
+		
+		try {
+			
+			matnr = findMatnr(schoolRule, Calendar.getInstance().get(Calendar.DAY_OF_WEEK));
+		} catch (Exception e) {
+			logger.error(e.getMessage(), e);
+		}
+		return matnr;
+	}
+	
+	
+	@Override
+	public String generateSalesOrder18() {
+		TSysUser currentUser = userSessionService.getCurrentUser();
+		String msg="";
+		SimpleDateFormat format = new  SimpleDateFormat("yyyy-MM-dd");
+		//获取当天所有的报货信息
+		List<TMstOrderStud> list = mstOrderStudMapper.findOrderStudByDateAndSalesOrg(format.format(new Date()),currentUser.getSalesOrg());
+		if(list !=null &&  list.size() > 0 ){
+			for (TMstOrderStud order : list) {
+				PISuccessMessage sucMsg = pIRequireOrderService.generateSalesOrder18(order);
+				if (sucMsg.isSuccess()) {
+					order.setErpOrderId(sucMsg.getData());
+		            this.updateByOrder(order);
+		        } else {
+		        	throw new ServiceException(MessageCode.LOGIC_ERROR, sucMsg.getMessage());
+		        }
+			}
+		}else{
+			throw new ServiceException(MessageCode.LOGIC_ERROR,"对不起,当日可发送erp的销售订单为0！");
+		}
+		return msg;
 	}
 
 }

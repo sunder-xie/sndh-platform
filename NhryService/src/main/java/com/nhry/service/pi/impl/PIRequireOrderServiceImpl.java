@@ -1,5 +1,6 @@
 package com.nhry.service.pi.impl;
 
+import com.mysql.fabric.xmlrpc.base.Data;
 import com.nhry.common.auth.UserSessionService;
 import com.nhry.common.exception.MessageCode;
 import com.nhry.common.exception.ServiceException;
@@ -20,10 +21,16 @@ import com.nhry.data.stock.dao.TSsmGiOrderItemMapper;
 import com.nhry.data.stock.dao.TSsmGiOrderMapper;
 import com.nhry.data.stock.dao.TSsmSalFactoryPriceMapper;
 import com.nhry.data.stock.domain.*;
+import com.nhry.data.stud.dao.TMdSchoolMapper;
+import com.nhry.data.stud.dao.TMstOrderStudItemMapper;
+import com.nhry.data.stud.domain.TMdSchool;
+import com.nhry.data.stud.domain.TMstOrderStud;
+import com.nhry.data.stud.domain.TMstOrderStudItem;
 import com.nhry.model.milktrans.ReqGoodsOrderItemSearch;
 import com.nhry.model.milktrans.RequireOrderSearch;
 import com.nhry.model.milktrans.SalOrderModel;
 import com.nhry.model.stock.StockModel;
+import com.nhry.model.stud.SchoolQueryModel;
 import com.nhry.service.pi.dao.PIRequireOrderService;
 import com.nhry.service.pi.pojo.SalesOrderHeader;
 import com.nhry.utils.DateUtil;
@@ -32,8 +39,11 @@ import com.nhry.utils.PIPropertitesUtil;
 import com.nhry.webService.client.PISuccessMessage;
 import com.nhry.webService.client.PISuccessTMessage;
 import com.nhry.webService.client.businessData.model.Delivery;
+
+import org.apache.commons.collections.map.HashedMap;
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import java.math.BigDecimal;
 import java.text.ParseException;
@@ -145,8 +155,8 @@ public class PIRequireOrderServiceImpl implements PIRequireOrderService {
         orderHeader.setVKORG(vkorg);
         orderHeader.setActivityId(activityId);
         TMdBranch branch = branchMapper.getBranchByNo(ssmSalOrder.getBranchNo());
-
-        List<Map<String, String>> items = new ArrayList<Map<String, String>>();
+        
+        List<Map<String, String>> items =tSsmSalOrderItemMapper.findItemsForPI(ssmSalOrder.getOrderNo());
         TMdBranchEx branchEx = branchExMapper.getBranchEx(ssmSalOrder.getBranchNo());
         //年卡 机构订奶 和 牛奶钱包 的售达方编码 传送ERP
         orderHeader.setKUNWE2(ssmSalOrder.getOnlineCode());
@@ -200,6 +210,86 @@ public class PIRequireOrderServiceImpl implements PIRequireOrderService {
         PISuccessMessage message = BusinessDataConnection.SalesOrderCreate(items, orderHeader);
         return message;
     }
+    
+    
+    @Autowired
+    TMdSchoolMapper schoolMapper;
+    
+    @Autowired
+    TMstOrderStudItemMapper orderMapper;
+    
+   /***
+    * ITEM_NO:10为学生 20为老师
+    * 
+    */
+    @Override
+    public PISuccessMessage generateSalesOrder18(TMstOrderStud order) {
+    	TMdSchool school = schoolMapper.selectByPrimaryKey(new SchoolQueryModel(order.getSchoolCode(), order.getSalesOrg()));
+        SalesOrderHeader orderHeader = new SalesOrderHeader();
+        orderHeader.setKUNNR(school.getErpCode());//网点编号
+        orderHeader.setKUNWE(school.getErpCode());//所属经销商编号
+        orderHeader.setVKORG(order.getSalesOrg());
+        orderHeader.setActivityId("");
+       
+        //获取订单的明细
+        Map<String, Object> hashMap = new HashMap<String,Object>();
+        hashMap.put("salesOrg", order.getSalesOrg());
+        hashMap.put("orderId", order.getOrderId());
+        hashMap.put("tpye", order.getOrderId());
+        List<TMstOrderStudItem> itemList = orderMapper.findOrderItemByOrderId(hashMap);
+        //老师奶
+        List<Map<String, String>> items = new ArrayList<Map<String, String>>();
+        Map<String, String> mapStu = new HashMap<String,String>();
+        for (TMstOrderStudItem item : itemList) {
+        	if("20".equals(item.getOrderType())){
+        		if(item.getQty() >0){
+        			Map<String, String> map = new HashMap<String,String>();
+        			map.put("RESLO", school.getAddress());//发货点
+        			map.put("WERKS", school.getWerks());//收货工厂
+        			map.put("SUM_QTY", item.getQty()+"");//数量
+        			map.put("BASE_UNIT", item.getBaseUnit());//单位
+        			map.put("ITEM_NO","20" );//行项目编号
+        			map.put("REF_MATNR", null);//参考物料
+        			map.put("MATNR",item.getMatnr());//产品号
+        			map.put("PROM_NO",null);//促销号
+        			map.put("PRICE","0");//产品价格
+        		}
+        	}else{
+        		String qty = mapStu.get("SUM_QTY");
+        		if(StringUtils.isNotBlank(qty)){
+        			int qtySum = item.getQty()+Integer.valueOf(qty);
+        			mapStu.put("SUM_QTY", qtySum+"");//数量
+        		}else{
+        			mapStu.put("SUM_QTY", item.getQty()+"");//数量
+        		}
+        		mapStu.put("RESLO", school.getAddress());//发货点
+        		mapStu.put("WERKS", school.getWerks());//收货工厂
+        		mapStu.put("BASE_UNIT", item.getBaseUnit());//单位
+        		mapStu.put("ITEM_NO", "10");//行项目编号
+        		mapStu.put("REF_MATNR", null);//参考物料
+        		mapStu.put("MATNR",item.getMatnr());//产品号
+        		mapStu.put("PROM_NO","");//促销号
+    			mapStu.put("PRICE","0");//产品价格
+        	}
+		}
+        items.add(mapStu);
+        orderHeader.setVTWEG(PIPropertitesUtil.getValue("PI.MasterData.mATQUERY.VKORG18"));
+        orderHeader.setLgort(school.getLgort());//库存地点TODO
+        orderHeader.setWerks(school.getWerks());
+        String auartType = PIPropertitesUtil.getValue("PI.AUART.ZOR");
+        String saleOrgTX = PIPropertitesUtil.getValue("PI.SALEORG_TX");
+        if (saleOrgTX.equals(order.getSalesOrg())) {
+            auartType = PIPropertitesUtil.getValue("PI.AUART.ZOR1");
+        } else {
+            auartType = PIPropertitesUtil.getValue("PI.AUART.ZOR");
+        }
+        orderHeader.setAuartType(auartType);
+        orderHeader.setBSTKD(order.getOrderId());
+        orderHeader.setLFDAT(new Date());
+        PISuccessMessage message = BusinessDataConnection.SalesOrderCreate(items, orderHeader);
+        return message;
+    }
+    
 
     @Override
     public PISuccessMessage generateSalesOrderOfEmp(TSsmSalOrder ssmSalOrder, String kunnr, String kunwe, String vkorg) {

@@ -13,7 +13,6 @@ import com.nhry.common.exception.ServiceException;
 import com.nhry.data.auth.domain.TSysUser;
 import com.nhry.data.stud.dao.TMdSchoolMaraRuleBaseMapper;
 import com.nhry.data.stud.dao.TMdSchoolMaraRuleMapper;
-import com.nhry.data.stud.dao.TMdSchoolRuleMapper;
 import com.nhry.data.stud.domain.TMdSchoolMaraRule;
 import com.nhry.data.stud.domain.TMdSchoolMaraRuleBase;
 import com.nhry.model.stud.SchoolMaraRuleModel;
@@ -44,8 +43,8 @@ public class SchoolMaraRuleServiceImpl implements SchoolMaraRuleService {
 			throw new ServiceException(MessageCode.LOGIC_ERROR, "学校代码必传");
 		}
 		
-		if(StringUtils.isNotBlank(mdel.getSalesOrg()) &&  StringUtils.isBlank(currentUser.getSalesOrg())){
-			throw new ServiceException(MessageCode.LOGIC_ERROR, "学校未关联销售组织:"+mdel.getSchoolCode());
+		if(StringUtils.isBlank(currentUser.getSalesOrg())){
+			throw new ServiceException(MessageCode.LOGIC_ERROR, "当前用户未关联销售组织");
 		}
 		
 		mdel.setSalesOrg(currentUser.getSalesOrg());
@@ -56,17 +55,22 @@ public class SchoolMaraRuleServiceImpl implements SchoolMaraRuleService {
 	public int intsertinfo(SchoolMaraRuleModel mdel) {
 		TSysUser currentUser = userSessionService.getCurrentUser();
 		TMdSchoolMaraRuleBase ruleBase = mdel.getRuleBase();
+		List<TMdSchoolMaraRule> tMdSchoolMaraRuleList = mdel.getSchoolMaraList();
 		if(null == mdel || null == mdel.getSchoolCode()){
 			throw new ServiceException(MessageCode.LOGIC_ERROR, "学校代码必传");
 		}
 		
-		if(StringUtils.isNotBlank(mdel.getSalesOrg()) &&  StringUtils.isBlank(currentUser.getSalesOrg())){
-			throw new ServiceException(MessageCode.LOGIC_ERROR, "学校未关联销售组织:"+mdel.getSchoolCode());
+		if(StringUtils.isBlank(currentUser.getSalesOrg())){
+			throw new ServiceException(MessageCode.LOGIC_ERROR, "当前用户未关联销售组织");
 		}
+		if(null == ruleBase && null == tMdSchoolMaraRuleList){
+			throw new ServiceException(MessageCode.LOGIC_ERROR, "全局损耗基数和学校损耗基数不能全为空");
+		}
+		mdel.setSalesOrg(currentUser.getSalesOrg());
 		
 	    if(ruleBase !=null){
 	    	//删除当前损耗基数
-	    	tMdSchoolMaraRuleBaseMapper.deleteBySalesOrg(ruleBase.getMid());
+	    	tMdSchoolMaraRuleBaseMapper.deleteBySalesOrg(currentUser.getSalesOrg());
 	    	//添加损耗基数
 	    	Date date = new Date();
 	    	ruleBase.setMid(UUID.randomUUID().toString().replace("-", ""));
@@ -77,13 +81,11 @@ public class SchoolMaraRuleServiceImpl implements SchoolMaraRuleService {
 	    	ruleBase.setLastModifiedBy(currentUser.getLoginName());
 	    	ruleBase.setLastModifiedByTxt(currentUser.getDisplayName());
 	    	ruleBase.setSalesOrg(currentUser.getSalesOrg());
-	    	ruleBase.setSchoolCode(mdel.getSchoolCode());
 	    	tMdSchoolMaraRuleBaseMapper.intsertinfo(ruleBase);
 	    }
 		
-		List<TMdSchoolMaraRule> tMdSchoolMaraRuleList = mdel.getSchoolMaraList();
 		int result=0;
-		mdel.setSalesOrg(userSessionService.getCurrentUser().getSalesOrg());
+		
 		//删除当前奶品损耗基数
 		tMdSchoolMaraRuleMapper.deleteByModel(mdel);
 		//保存当前奶品损耗基数
@@ -103,10 +105,10 @@ public class SchoolMaraRuleServiceImpl implements SchoolMaraRuleService {
 		return result;
 	}
 
-	@Override
-	public int deleteByModel(SchoolMaraRuleModel mdel) {
-		return tMdSchoolMaraRuleMapper.deleteByModel(mdel);
-	}
+//	@Override
+//	public int deleteByModel(SchoolMaraRuleModel mdel) {
+//		return tMdSchoolMaraRuleMapper.deleteByModel(mdel);
+//	}
 	
 	@Override
 	public TMdSchoolMaraRuleBase findMaraRuleBaseByModel(SchoolMaraRuleModel mdel) {
@@ -115,8 +117,8 @@ public class SchoolMaraRuleServiceImpl implements SchoolMaraRuleService {
 			throw new ServiceException(MessageCode.LOGIC_ERROR, "学校代码必传");
 		}
 		
-		if(StringUtils.isNotBlank(mdel.getSalesOrg()) &&  StringUtils.isBlank(currentUser.getSalesOrg())){
-			throw new ServiceException(MessageCode.LOGIC_ERROR, "学校未关联销售组织:"+mdel.getSchoolCode());
+		if(StringUtils.isBlank(currentUser.getSalesOrg())){
+			throw new ServiceException(MessageCode.LOGIC_ERROR, "当前用户未关联销售组织");
 		}
 		mdel.setSalesOrg(currentUser.getSalesOrg());
 		return tMdSchoolMaraRuleBaseMapper.findMaraRuleBaseByModel(mdel);

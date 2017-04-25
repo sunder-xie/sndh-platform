@@ -1,5 +1,6 @@
 package com.nhry.data.stud.impl;
 
+import java.util.List;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -7,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import com.github.pagehelper.PageInfo;
 import com.nhry.common.datasource.DynamicSqlSessionTemplate;
 import com.nhry.data.stud.dao.TMdSchoolRuleMapper;
+import com.nhry.data.stud.domain.TMdSchool;
 import com.nhry.data.stud.domain.TMdSchoolRule;
 import com.nhry.model.stud.SchoolRuleQueryModel;
 
@@ -36,6 +38,11 @@ public class TMdSchoolRuleMapperImpl implements TMdSchoolRuleMapper {
 	@Override
 	public TMdSchoolRule findSchoolRuleByMap(Map<String, Object> selectMap) {
 		return sqlSessionTemplate.selectOne("findSchoolRuleByMap", selectMap);
+	}
+
+	@Override
+	public List<TMdSchool> findAllSchoolWithOutSet(String salesOrg) {
+		return sqlSessionTemplate.selectList("findAllSchoolWithOutSet", salesOrg);
 	}
 
 }
