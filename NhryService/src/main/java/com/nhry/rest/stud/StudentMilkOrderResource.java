@@ -15,7 +15,6 @@ import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
-import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
@@ -217,6 +216,14 @@ public class StudentMilkOrderResource  extends BaseResource {
 		return convertToRespModel(MessageCode.NORMAL, null,  orderStudService.exportStudOrderMilk(model));
 	}
 	
+	@POST
+	@Path("/findDefaultMaraForSchool")
+	@Produces(MediaType.APPLICATION_JSON)
+	@Consumes(MediaType.APPLICATION_JSON)
+	@ApiOperation(value = "/findDefaultMaraForSchool", response = Response.class, notes = "查询指定学校当前日期的奶品政策")
+	public Response findDefaultMaraForSchool(@ApiParam(required=true,name="mstOrderStud")TMstOrderStud mstOrderStud){
+		return convertToRespModel(MessageCode.NORMAL, null,  orderStudService.findDefaultMaraForSchool(mstOrderStud));
+	}
 	
 	@Autowired
 	PIRequireOrderService pIRequireOrderService;
