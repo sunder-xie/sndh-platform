@@ -53,6 +53,8 @@
 	<config key="PI.VipInfoDataBat.URL" value="http://pidev.newhope.com:50000/XISOAPAdapter/MessageServlet?senderParty=&amp;senderService=BC_Common_CRM&amp;receiverParty=&amp;receiverService=&amp;interface=MemberActCreateBat&amp;interfaceNamespace=urn%3Anewhopedairy.cn%3ACRM%3ACommonData" />
 	<!--#贷项凭证-->
 	<config key="PI.DISCOUNT.URL" value="http://pidev.newhope.com:50000/XISOAPAdapter/MessageServlet?senderParty=&amp;senderService=OA_Q&amp;receiverParty=&amp;receiverService=&amp;interface=OA_BusinessData_Out&amp;interfaceNamespace=urn%3Anewhopedairy.cn%3AOA%3ABusinessData" />
+	<!--供货商-->
+	<config key="PI_SUPPLIER.URL" value="http://pidev.newhope.com:50000/XISOAPAdapter/MessageServlet?senderParty=&amp;senderService=OA_Q&amp;receiverParty=&amp;receiverService=&amp;interface=OA_MasterData_Out&amp;interfaceNamespace=urn%3Anewhopedairy.cn%3AOA%3ABusinessData"/>
 
 	<config key="PI.MasterData.USERNAME" value="ZT_CONN"/>
 	<config key="PI.MasterData.PASSWORD" value="CANDYTOZT"/>
@@ -67,5 +69,6 @@
 	<config key="filePath" value="/opt/s3/"/>
 	<!-- 没有配置组织时，提示页面地址 -->
 	<config key="info_page_uri" value="http://54.223.147.25/#/error/NoSalesOrg"></config>
+	<!-- 牛奶钱包销售订单客户号 -->
 	<config key="online_code" value="0300015781"/>
 </configs>

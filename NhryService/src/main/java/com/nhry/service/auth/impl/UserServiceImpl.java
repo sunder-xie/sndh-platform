@@ -1,5 +1,6 @@
 package com.nhry.service.auth.impl;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -244,7 +245,10 @@ public class UserServiceImpl extends BaseService implements UserService {
 	@Override
 	public TSysUser getCurrentLoginUser() {
 		// TODO Auto-generated method stub
-		return this.userSessionService.getCurrentUser();
+		TSysUser user = this.userSessionService.getCurrentUser();
+		SimpleDateFormat format = new SimpleDateFormat("yyyyMMdd");
+		objectRedisTemplate.opsForHash().put("SALORDER",user.getBranchNo()+ format.format(new Date()),"OFF");
+		return user;
 	}
 
 	public void setObjectRedisTemplate(RedisTemplate objectRedisTemplate) {
