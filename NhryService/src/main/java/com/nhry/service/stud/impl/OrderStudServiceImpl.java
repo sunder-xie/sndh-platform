@@ -1469,8 +1469,18 @@ public class OrderStudServiceImpl implements OrderStudService {
 		return matnr;
 	}
 	
-	
 	@Override
+	public  List<TMstOrderStud>  findOrderStudByDateAndSalesOrg(){
+		TSysUser currentUser = userSessionService.getCurrentUser();
+		SimpleDateFormat format = new  SimpleDateFormat("yyyy-MM-dd");
+		return mstOrderStudMapper.findOrderStudByDateAndSalesOrg(format.format(new Date()),currentUser.getSalesOrg());
+	} 
+	
+	
+	
+	
+	
+/*	@Override
 	public String generateSalesOrder18() {
 		TSysUser currentUser = userSessionService.getCurrentUser();
 		String msg="";
@@ -1491,6 +1501,6 @@ public class OrderStudServiceImpl implements OrderStudService {
 			throw new ServiceException(MessageCode.LOGIC_ERROR,"对不起,当日可发送erp的销售订单为0！");
 		}
 		return msg;
-	}
+	}*/
 
 }
