@@ -30,7 +30,17 @@
   </sql>
   
   
-  
+  <select id="findSchoolListForBuildBatchOrder" resultType="com.nhry.data.stud.domain.TMdSchool" parameterType="java.lang.String">
+  	SELECT a.SCHOOL_CODE schoolCode, a.SCHOOL_NAME schoolName, a.SALES_ORG salesOrg
+  	,ERP_CODE erpCode
+	FROM t_md_school a
+	LEFT JOIN t_md_school_rule b ON a.SCHOOL_CODE=b.SCHOOL_CODE AND a.SALES_ORG=b.SALES_ORG
+	WHERE a.VISIABLE='10'
+	AND b..VISIABLE='10'
+	AND a.SALES_ORG=#{salesOrg}
+	AND b.MID IS NOT NULL
+	AND b.MID != ''
+  </select>
   
   <select id="serchSchoolList" resultMap="BaseResultMap" parameterType="com.nhry.model.stud.SchoolQueryModel" >
     select 

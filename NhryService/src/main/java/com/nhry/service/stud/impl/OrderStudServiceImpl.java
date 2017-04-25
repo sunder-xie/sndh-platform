@@ -490,9 +490,9 @@ public class OrderStudServiceImpl implements OrderStudService {
 		}
 		
 		Map<String, Object> resultMap = new HashMap<String, Object>();
-		List<TMdSchool> baseSchoolList = this.schoolMapper.findSchoolList(new SchoolQueryModel(null, null, "10", user.getSalesOrg()));
+		List<TMdSchool> baseSchoolList = this.schoolMapper.findSchoolListForBuildBatchOrder(user.getSalesOrg());
 		if(CollectionUtils.isEmpty(baseSchoolList)){
-			throw new ServiceException(MessageCode.LOGIC_ERROR, "未查询到学校");
+			throw new ServiceException(MessageCode.LOGIC_ERROR, "未查询到学校,或者已有学校中未设置学校奶品政策");
 		}
 		
 		List<TMdSchool> schoolList = new ArrayList<TMdSchool>();

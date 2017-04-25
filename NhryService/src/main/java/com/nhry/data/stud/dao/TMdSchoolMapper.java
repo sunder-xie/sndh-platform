@@ -24,4 +24,6 @@ public interface TMdSchoolMapper {
 
 	int updateStatusByTMdSchool(TMdSchool tMdSchool);
 
+	List<TMdSchool> findSchoolListForBuildBatchOrder(String salesOrg);
+
 }
