@@ -22,7 +22,6 @@ import org.springframework.stereotype.Controller;
 
 import com.github.pagehelper.PageInfo;
 import com.nhry.common.exception.MessageCode;
-import com.nhry.common.exception.ServiceException;
 import com.nhry.data.stud.domain.TMdMaraStud;
 import com.nhry.data.stud.domain.TMstOrderStud;
 import com.nhry.model.stud.ExportStudOrderMilkModel;
@@ -295,9 +294,13 @@ public class StudentMilkOrderResource  extends BaseResource {
 			}
 		}
 		
-		for(String key : taskMap.keySet()){
-			taskExecutor.submit(taskMap.get(key));
+		if(taskMap != null && !taskMap.isEmpty()){
+			for(String key : taskMap.keySet()){
+				taskExecutor.submit(taskMap.get(key));
+			}
+			
 		}
+		
 		
 		while (true) {
 			int i=0;
