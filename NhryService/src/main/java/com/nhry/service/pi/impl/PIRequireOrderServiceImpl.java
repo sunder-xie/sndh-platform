@@ -218,7 +218,10 @@ public class PIRequireOrderServiceImpl implements PIRequireOrderService {
     @Autowired
     TMstOrderStudItemMapper orderMapper;
     
-    
+   /***
+    * ITEM_NO:10为学生 20为老师
+    * 
+    */
     @Override
     public PISuccessMessage generateSalesOrder18(TMstOrderStud order) {
     	TMdSchool school = schoolMapper.selectByPrimaryKey(new SchoolQueryModel(order.getSchoolCode(), order.getSalesOrg()));
@@ -229,7 +232,6 @@ public class PIRequireOrderServiceImpl implements PIRequireOrderService {
         orderHeader.setActivityId("");
        
         //获取订单的明细
-        
         Map<String, Object> hashMap = new HashMap<String,Object>();
         hashMap.put("salesOrg", order.getSalesOrg());
         hashMap.put("orderId", order.getOrderId());
@@ -246,13 +248,12 @@ public class PIRequireOrderServiceImpl implements PIRequireOrderService {
         			map.put("WERKS", school.getWerks());//收货工厂
         			map.put("SUM_QTY", item.getQty()+"");//数量
         			map.put("BASE_UNIT", item.getBaseUnit());//单位
-        			map.put("ITEM_NO", null);//行项目编号
+        			map.put("ITEM_NO","20" );//行项目编号
         			map.put("REF_MATNR", null);//参考物料
         			map.put("MATNR",item.getMatnr());//产品号
         			map.put("PROM_NO",null);//促销号
-        			map.put("PRICE","0.1");//产品价格
+        			map.put("PRICE","0");//产品价格
         		}
-        	
         	}else{
         		String qty = mapStu.get("SUM_QTY");
         		if(StringUtils.isNotBlank(qty)){
@@ -268,12 +269,12 @@ public class PIRequireOrderServiceImpl implements PIRequireOrderService {
         		mapStu.put("REF_MATNR", null);//参考物料
         		mapStu.put("MATNR",item.getMatnr());//产品号
         		mapStu.put("PROM_NO","");//促销号
-    			mapStu.put("PRICE","0.1");//产品价格
+    			mapStu.put("PRICE","0");//产品价格
         	}
 		}
         items.add(mapStu);
         orderHeader.setVTWEG(PIPropertitesUtil.getValue("PI.MasterData.mATQUERY.VKORG18"));
-        orderHeader.setLgort("");//库存地点TODO
+        orderHeader.setLgort(school.getLgort());//库存地点TODO
         orderHeader.setWerks(school.getWerks());
         String auartType = PIPropertitesUtil.getValue("PI.AUART.ZOR");
         String saleOrgTX = PIPropertitesUtil.getValue("PI.SALEORG_TX");

@@ -46,8 +46,20 @@ public class TMdSchool {
     
     private String unload;//卸货点
     
+    private String lgort;//库存地点
+    
+    
+    
 
-    public String getWerks() {
+    public String getLgort() {
+		return lgort;
+	}
+
+	public void setLgort(String lgort) {
+		this.lgort = lgort;
+	}
+
+	public String getWerks() {
 		return werks;
 	}
 

@@ -62,8 +62,10 @@ import com.nhry.model.stud.OrderStudQueryModel;
 import com.nhry.model.stud.SchoolClassModel;
 import com.nhry.model.stud.SchoolMaraRuleModel;
 import com.nhry.model.stud.SchoolQueryModel;
+import com.nhry.service.pi.dao.PIRequireOrderService;
 import com.nhry.service.stud.dao.OrderStudService;
 import com.nhry.utils.EnvContant;
+import com.nhry.webService.client.PISuccessMessage;
 
 
 /**
@@ -104,6 +106,9 @@ public class OrderStudServiceImpl implements OrderStudService {
 	
 	@Autowired
 	private TMdSchoolRuleMapper schoolRuleMapper;
+	
+	@Autowired
+	PIRequireOrderService pIRequireOrderService;
 	
     public static String getCode(){
 		DateFormat format = new SimpleDateFormat("yyMMddHHmmssSSS");
@@ -1462,6 +1467,30 @@ public class OrderStudServiceImpl implements OrderStudService {
 			logger.error(e.getMessage(), e);
 		}
 		return matnr;
+	}
+	
+	
+	@Override
+	public String generateSalesOrder18() {
+		TSysUser currentUser = userSessionService.getCurrentUser();
+		String msg="";
+		SimpleDateFormat format = new  SimpleDateFormat("yyyy-MM-dd");
+		//获取当天所有的报货信息
+		List<TMstOrderStud> list = mstOrderStudMapper.findOrderStudByDateAndSalesOrg(format.format(new Date()),currentUser.getSalesOrg());
+		if(list !=null &&  list.size() > 0 ){
+			for (TMstOrderStud order : list) {
+				PISuccessMessage sucMsg = pIRequireOrderService.generateSalesOrder18(order);
+				if (sucMsg.isSuccess()) {
+					order.setErpOrderId(sucMsg.getData());
+		            this.updateByOrder(order);
+		        } else {
+		        	throw new ServiceException(MessageCode.LOGIC_ERROR, sucMsg.getMessage());
+		        }
+			}
+		}else{
+			throw new ServiceException(MessageCode.LOGIC_ERROR,"对不起,当日可发送erp的销售订单为0！");
+		}
+		return msg;
 	}
 
 }

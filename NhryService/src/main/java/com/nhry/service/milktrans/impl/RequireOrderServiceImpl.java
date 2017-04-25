@@ -1842,7 +1842,7 @@ public class RequireOrderServiceImpl implements RequireOrderService {
         if (message.isSuccess()) {
             this.uptVouCherNoByOrderNo(order.getOrderNo(), message.getData());
         } else {
-//            SimpleDateFormat format = new SimpleDateFormat("yyyyMMdd");
+        	//SimpleDateFormat format = new SimpleDateFormat("yyyyMMdd");
             stringRedisTemplate.opsForHash().put("SALORDER", order.getBranchNo()+format.format(order.getOrderDate()),"OFF");
             throw new ServiceException(MessageCode.LOGIC_ERROR, message.getMessage());
         }
