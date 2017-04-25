@@ -398,9 +398,9 @@ public class PIProductServiceImpl implements PIProductService {
     
    
 
-    private int saveSchool(ET_KUNNR et_kunnr, Map<String, ET_KNVP> et_KNVPMap,String salesOrg) {
+    private int saveSchool(ET_KUNNR et_kunnr, Map<String, ET_KNVP> et_KNVPMap,String salesOrg,String lgort) {
     	//客户编码
-    	String kunnr= et_kunnr.getKUNNR();
+     	String kunnr= et_kunnr.getKUNNR();
     	//附加信息
     	ET_KNVP kuvp = et_KNVPMap.get(kunnr);
     	Map<String, String> map = new HashMap<String,String>();
@@ -422,6 +422,7 @@ public class PIProductServiceImpl implements PIProductService {
     		tmdschool.setTel(et_kunnr.getTELF1());
     		tmdschool.setWerks(et_kunnr.getBUKRS());
     		tmdschool.setAddress(et_kunnr.getSTRAS());
+    		tmdschool.setLgort(lgort);
     		schoolMapper.updateByTMdSchool(tmdschool);
     		return 1;
     	}else{
@@ -444,6 +445,7 @@ public class PIProductServiceImpl implements PIProductService {
     		tmdschool.setSalesOrg(salesOrg);
     		tmdschool.setAddress(et_kunnr.getSTRAS());
     		tmdschool.setWerks(et_kunnr.getBUKRS());
+    		tmdschool.setLgort(lgort);
     		schoolMapper.saveSchool(tmdschool);
     		return 1;
     	}
@@ -461,10 +463,20 @@ public class PIProductServiceImpl implements PIProductService {
             Map<String,ZTSD00024> gcss = getET_DATAs();
             int zycount = 0;
             for (ET_VKORG et_VKORG : et_VKORG18) {
+            	if("4511".equals(et_VKORG.getVKORG())){
+            		System.err.println("========");
+            	};
+            	
             	String kunnr = et_VKORG.getKUNNR();
+            	ZTSD00024 ztsd00024 = gcss.get(kunnr);
+            	String lgort ="";
+            	
+            	if (ztsd00024 != null) {
+                   lgort  = ztsd00024.getLGORT().getLGORT_type0();
+            	}
             	ET_KUNNR et_kunnr = kunnr_Map.get(kunnr);
             	if(et_kunnr !=null &&StringUtils.isNotBlank(et_kunnr.getNAME1())){
-                	saveSchool(et_kunnr, et_KNVP,et_VKORG.getVKORG());
+                	saveSchool(et_kunnr, et_KNVP,et_VKORG.getVKORG(),lgort);
             	}
             	zycount++;
 			}

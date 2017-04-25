@@ -26,6 +26,7 @@ import com.nhry.model.stud.OrderStudLossModel;
 import com.nhry.model.stud.OrderStudQueryModel;
 import com.nhry.model.stud.SchoolQueryModel;
 import com.nhry.rest.BaseResource;
+import com.nhry.service.pi.dao.PIRequireOrderService;
 import com.nhry.service.stud.dao.ClassService;
 import com.nhry.service.stud.dao.MaraStudService;
 import com.nhry.service.stud.dao.OrderStudService;
@@ -97,7 +98,7 @@ public class StudentMilkOrderResource  extends BaseResource {
 	@Path("/createOrder")
 	@Produces(MediaType.APPLICATION_JSON)
 	@Consumes(MediaType.APPLICATION_JSON)
-	@ApiOperation(value = "/createOrder", response = int.class, notes = "创建订单(分包)")
+	@ApiOperation(value = "/createOrder", response = int.class, notes = "创建订单")
 	public Response createOrder(@ApiParam(required=true,name="mstOrderStud")TMstOrderStud mstOrderStud) throws Exception{
 		return convertToRespModel(MessageCode.NORMAL, null,  orderStudService.createOrder(mstOrderStud));
 	}
@@ -106,7 +107,7 @@ public class StudentMilkOrderResource  extends BaseResource {
 	@Path("/createOrderUnpack")
 	@Produces(MediaType.APPLICATION_JSON)
 	@Consumes(MediaType.APPLICATION_JSON)
-	@ApiOperation(value = "/createOrderUnpack", response = int.class, notes = "创建订单(不分包)")
+	@ApiOperation(value = "/createOrderUnpack", response = int.class, notes = "创建订单")
 	public Response createOrderUnpack(@ApiParam(required=true,name="mstOrderStud")TMstOrderStud mstOrderStud) throws Exception{
 		return convertToRespModel(MessageCode.NORMAL, null,  orderStudService.createOrderUnpack(mstOrderStud));
 	}
@@ -150,7 +151,7 @@ public class StudentMilkOrderResource  extends BaseResource {
 	@Path("/findOrderInfoBySchoolCodeAndDate")
 	@Produces(MediaType.APPLICATION_JSON)
 	@Consumes(MediaType.APPLICATION_JSON)
-	@ApiOperation(value = "/findOrderInfoBySchoolCodeAndDate", response = Map.class, notes = "根据学校，时间查询订单详情列表(分包)")
+	@ApiOperation(value = "/findOrderInfoBySchoolCodeAndDate", response = Map.class, notes = "根据学校，时间查询订单详情列表")
 	public Response findOrderInfoBySchoolCodeAndDate(@ApiParam(required=true,name="mstOrderStud")TMstOrderStud mstOrderStud){
 		return convertToRespModel(MessageCode.NORMAL, null,  orderStudService.findOrderInfoBySchoolCodeAndDate(mstOrderStud));
 	}
@@ -159,7 +160,7 @@ public class StudentMilkOrderResource  extends BaseResource {
 	@Path("/findOrderInfoBySchoolCodeAndDateUnpack")
 	@Produces(MediaType.APPLICATION_JSON)
 	@Consumes(MediaType.APPLICATION_JSON)
-	@ApiOperation(value = "/findOrderInfoBySchoolCodeAndDateUnpack", response = Map.class, notes = "根据学校，时间查询订单详情列表(不分包)")
+	@ApiOperation(value = "/findOrderInfoBySchoolCodeAndDateUnpack", response = Map.class, notes = "根据学校，时间查询订单详情列表")
 	public Response findOrderInfoBySchoolCodeAndDateUnpack(@ApiParam(required=true,name="mstOrderStud")TMstOrderStud mstOrderStud){
 		return convertToRespModel(MessageCode.NORMAL, null,  orderStudService.findOrderInfoBySchoolCodeAndDateUnpack(mstOrderStud));
 	}
@@ -209,13 +210,15 @@ public class StudentMilkOrderResource  extends BaseResource {
 		return convertToRespModel(MessageCode.NORMAL, null,  orderStudService.exportStudOrderMilk(model));
 	}
 	
-	@POST
-	@Path("/findDefaultMaraForSchool")
+
+	@GET
+	@Path("/generateSalesOrder18")
 	@Produces(MediaType.APPLICATION_JSON)
 	@Consumes(MediaType.APPLICATION_JSON)
-	@ApiOperation(value = "/findDefaultMaraForSchool", response = Response.class, notes = "查询指定学校当前日期的奶品政策")
-	public Response findDefaultMaraForSchool(@ApiParam(required=true,name="mstOrderStud")TMstOrderStud mstOrderStud){
-		return convertToRespModel(MessageCode.NORMAL, null,  orderStudService.findDefaultMaraForSchool(mstOrderStud));
+	@ApiOperation(value = "/generateSalesOrder18", response = int.class, notes = "生成ERP销售订单")
+	public Response generateSalesOrder18() throws Exception{
+		return convertToRespModel(MessageCode.NORMAL, null,  orderStudService.generateSalesOrder18());
 	}
+	
 	
 }

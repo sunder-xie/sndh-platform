@@ -40,4 +40,8 @@ public interface OrderStudService {
 	Map<String, Object> findOrderInfoBySchoolCodeAndDateUnpack(TMstOrderStud mstOrderStud);
 
 	String findDefaultMaraForSchool(TMstOrderStud mstOrderStud);
+
+	String generateSalesOrder18();
+	
+	
 }
