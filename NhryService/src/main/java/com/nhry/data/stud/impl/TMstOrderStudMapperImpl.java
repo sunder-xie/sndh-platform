@@ -63,5 +63,7 @@ public class TMstOrderStudMapperImpl implements TMstOrderStudMapper {
 		selectMap.put("salesOrg", salesOrg);
 		return sqlSessionTemplate.selectList("findOrderStudByDateAndSalesOrg", selectMap);
 	}
+	
+	
 
 }

@@ -1302,7 +1302,7 @@
         INNER JOIN t_ssm_req_goods_order_item t1 ON t1.ORDER_NO = t.ORDER_NO
         INNER JOIN t_mst_refuse_resend_item t2 ON t2.ORDER_NO = t.ORDER_NO
         INNER JOIN t_mst_refuse_resend t3 ON t3.RESEND_ORDER_NO = t2.RESEND_ORDER_NO
-        INNER JOIN t_md_mara_ex t4 ON t4.MATNR = t1.MATNR
+        INNER JOIN t_md_mara_ex t4 ON t4.MATNR = t3.MATNR AND t4.SALES_ORG = t3.SALES_ORG 
         INNER JOIN t_md_branch_emp t5 ON t5.EMP_NO = t3.EMP_NO
         WHERE
         1 = 1

@@ -146,8 +146,22 @@
     (SELECT i.ITEM_NAME FROM t_sys_code_item I WHERE i.TYPE_CODE=<include refid="mybaties.constant.packing _type"></include> AND i.ITEM_CODE=mara.ZBOT_CODE) ZBOT_CODE_NAME
     from t_mst_order_stud_item oi
     left join t_md_mara_stud mara on oi.MATNR=mara.MATNR
-    where oi.ORDER_ID=#{orderId} and mara.SALES_ORG = #{salesOrg}
+    where oi.ORDER_ID=#{orderId} and mara.SALES_ORG = #{salesOrg} 
   </select>
+  
+  
+  <select id="findOrderItemByOrderIdUnpack" resultMap="BaseResultMap" parameterType="java.util.Map">
+  	select 
+    oi.MID, oi.ORDER_DATE, oi.ORDER_ID, oi.SCHOOL_CODE, oi.ORDER_TYPE, oi.CLASS_CODE, oi.MATNR, oi.QTY, oi.SALES_ORG,
+	class.CLASS_NAME, mara.MATNR_TXT, mara.ZBOT_CODE,
+    (SELECT i.ITEM_NAME FROM t_sys_code_item I WHERE i.TYPE_CODE=<include refid="mybaties.constant.packing _type"></include> AND i.ITEM_CODE=mara.ZBOT_CODE) ZBOT_CODE_NAME
+    from t_mst_order_stud_item_unpack OI
+    left join t_md_class CLASS on oi.CLASS_CODE=class.CLASS_CODE
+    left join t_md_mara_stud mara on oi.MATNR=mara.MATNR
+   	where oi.ORDER_ID=#{orderId} and mara.SALES_ORG = #{salesOrg} 
+  </select>
+  
+  
   
   <update id="deleteOrderAndItem" parameterType="java.util.Map">
   	update t_mst_order_stud

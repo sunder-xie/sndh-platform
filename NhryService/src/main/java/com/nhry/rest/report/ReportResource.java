@@ -1,9 +1,58 @@
 package com.nhry.rest.report;
 
+import java.io.BufferedInputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.math.BigDecimal;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.TreeMap;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import javax.ws.rs.Consumes;
+import javax.ws.rs.GET;
+import javax.ws.rs.POST;
+import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
+import javax.ws.rs.Produces;
+import javax.ws.rs.QueryParam;
+import javax.ws.rs.core.Context;
+import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
+
+import org.apache.commons.lang.StringUtils;
+import org.apache.log4j.Logger;
+import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.ss.util.CellRangeAddress;
+import org.apache.poi.xssf.usermodel.XSSFCell;
+import org.apache.poi.xssf.usermodel.XSSFCellStyle;
+import org.apache.poi.xssf.usermodel.XSSFFont;
+import org.apache.poi.xssf.usermodel.XSSFPrintSetup;
+import org.apache.poi.xssf.usermodel.XSSFRow;
+import org.apache.poi.xssf.usermodel.XSSFSheet;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Scope;
+import org.springframework.stereotype.Controller;
+
 import com.nhry.common.auth.UserSessionService;
 import com.nhry.common.exception.MessageCode;
 import com.nhry.data.auth.domain.TSysUser;
-import com.nhry.data.basic.domain.*;
+import com.nhry.data.basic.domain.TMdAddress;
+import com.nhry.data.basic.domain.TMdBranch;
+import com.nhry.data.basic.domain.TMdBranchEmp;
+import com.nhry.data.basic.domain.TMdMara;
+import com.nhry.data.basic.domain.TMdResidentialArea;
 import com.nhry.data.bill.domain.TMstRecvBill;
 import com.nhry.data.config.domain.NHSysCodeItem;
 import com.nhry.data.milk.domain.TDispOrder;
@@ -17,8 +66,16 @@ import com.nhry.model.bill.BatChCollectForExpModel;
 import com.nhry.model.bill.CollectOrderBillModel;
 import com.nhry.model.bill.CustBillQueryModel;
 import com.nhry.model.milk.RouteOrderModel;
-import com.nhry.model.milktrans.*;
-import com.nhry.model.order.*;
+import com.nhry.model.milktrans.DispOrderReportEntityModel;
+import com.nhry.model.milktrans.DispOrderReportModel;
+import com.nhry.model.milktrans.OrderRequireItem;
+import com.nhry.model.milktrans.ReqGoodsOrderSearch;
+import com.nhry.model.milktrans.RequireOrderModel;
+import com.nhry.model.order.CollectOrderModel;
+import com.nhry.model.order.OrderCreateModel;
+import com.nhry.model.order.OrderDaliyPlanReportEntityModel;
+import com.nhry.model.order.OrderDaliyPlanReportModel;
+import com.nhry.model.order.ProductItem;
 import com.nhry.model.statistics.BranchInfoModel;
 import com.nhry.model.statistics.ExtendBranchInfoModel;
 import com.nhry.model.sys.ResponseModel;
@@ -45,25 +102,6 @@ import com.sun.jersey.spi.resource.Singleton;
 import com.wordnik.swagger.annotations.Api;
 import com.wordnik.swagger.annotations.ApiOperation;
 import com.wordnik.swagger.annotations.ApiParam;
-import org.apache.commons.lang.StringUtils;
-import org.apache.log4j.Logger;
-import org.apache.poi.ss.usermodel.Cell;
-import org.apache.poi.ss.util.CellRangeAddress;
-import org.apache.poi.xssf.usermodel.*;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Scope;
-import org.springframework.stereotype.Controller;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import javax.ws.rs.*;
-import javax.ws.rs.core.Context;
-import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.Response;
-import java.io.*;
-import java.math.BigDecimal;
-import java.text.SimpleDateFormat;
-import java.util.*;
 
 /**
  * Created by cbz on 7/27/2016.
@@ -1335,7 +1373,6 @@ public class ReportResource extends BaseResource{
                 model.setBranchNo(currentUser.getBranchNo());
             }
             List<Map<String, String>> orders = branchInfoService.exportOrderByModel(model);
-            
             //获取奶站可销售的产品
             ProductQueryModel pm = new ProductQueryModel();
             pm.setSeting("N");
@@ -1367,7 +1404,7 @@ public class ReportResource extends BaseResource{
             	//LinkedHashMap有序map进行排序
             	Map<String, String> projectMapSort = new LinkedHashMap<String, String>();//产品行
             	for (TMdMara tMdMara : branchSaleMaraList) {
-            		//获取排序
+            		//获取排序000000000050000006;000000000050000006
             		String value = projectMap.get(tMdMara.getMatnr());
             		//判断是否存在
             		if(StringUtils.isNotBlank(value)){
@@ -1437,7 +1474,7 @@ public class ReportResource extends BaseResource{
                     XSSFCell cell1 = row.createCell(cNum++);
                     cell1.setCellStyle(ExcelUtil.setBorderStyle(workbook));
                     //设置默认值
-                    cell1.setCellValue(0);
+                    //cell1.setCellValue(0);
                     String matnr = entry1.getKey();
 //                    cell1.setCellValue(matnr);
                     //循环订单
