@@ -298,25 +298,25 @@ public class StudentMilkOrderResource  extends BaseResource {
 			for(String key : taskMap.keySet()){
 				taskExecutor.submit(taskMap.get(key));
 			}
-			
 		}
 		
-		
-		while (true) {
-			int i=0;
-			for(String key : taskMap.keySet()){
-				FutureTask<PISuccessMessage> futureTask = taskMap.get(key);
-				if(futureTask.isDone()){
-					i++;
+		if(taskMap != null && !taskMap.isEmpty()){
+			while (true) {
+				int i=0;
+				for(String key : taskMap.keySet()){
+					FutureTask<PISuccessMessage> futureTask = taskMap.get(key);
+					if(futureTask.isDone()){
+						i++;
+					}
 				}
+				if(i== taskMap.size()){
+					break;
+				}
+				Thread.sleep(2000);
 			}
-			if(i== taskMap.size()){
-				break;
+			if(sb.length()==0){
+				sb.append("发送成功");
 			}
-			Thread.sleep(2000);
-		}
-		if(sb.length()==0){
-			sb.append("发送成功");
 		}
 		return convertToRespModel(MessageCode.NORMAL, null,sb);
 	}
