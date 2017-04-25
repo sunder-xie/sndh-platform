@@ -15,7 +15,6 @@ import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
-import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
@@ -23,7 +22,6 @@ import org.springframework.stereotype.Controller;
 
 import com.github.pagehelper.PageInfo;
 import com.nhry.common.exception.MessageCode;
-import com.nhry.common.exception.ServiceException;
 import com.nhry.data.stud.domain.TMdMaraStud;
 import com.nhry.data.stud.domain.TMstOrderStud;
 import com.nhry.model.stud.ExportStudOrderMilkModel;
@@ -217,6 +215,14 @@ public class StudentMilkOrderResource  extends BaseResource {
 		return convertToRespModel(MessageCode.NORMAL, null,  orderStudService.exportStudOrderMilk(model));
 	}
 	
+	@POST
+	@Path("/findDefaultMaraForSchool")
+	@Produces(MediaType.APPLICATION_JSON)
+	@Consumes(MediaType.APPLICATION_JSON)
+	@ApiOperation(value = "/findDefaultMaraForSchool", response = Response.class, notes = "查询指定学校当前日期的奶品政策")
+	public Response findDefaultMaraForSchool(@ApiParam(required=true,name="mstOrderStud")TMstOrderStud mstOrderStud){
+		return convertToRespModel(MessageCode.NORMAL, null,  orderStudService.findDefaultMaraForSchool(mstOrderStud));
+	}
 	
 	@Autowired
 	PIRequireOrderService pIRequireOrderService;
@@ -288,9 +294,13 @@ public class StudentMilkOrderResource  extends BaseResource {
 			}
 		}
 		
-		for(String key : taskMap.keySet()){
-			taskExecutor.submit(taskMap.get(key));
+		if(taskMap != null && !taskMap.isEmpty()){
+			for(String key : taskMap.keySet()){
+				taskExecutor.submit(taskMap.get(key));
+			}
+			
 		}
+		
 		
 		while (true) {
 			int i=0;

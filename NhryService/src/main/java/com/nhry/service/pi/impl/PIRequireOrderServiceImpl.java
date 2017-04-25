@@ -1,6 +1,18 @@
 package com.nhry.service.pi.impl;
 
-import com.mysql.fabric.xmlrpc.base.Data;
+import java.math.BigDecimal;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import org.apache.commons.lang.StringUtils;
+import org.apache.log4j.Logger;
+import org.springframework.beans.factory.annotation.Autowired;
+
 import com.nhry.common.auth.UserSessionService;
 import com.nhry.common.exception.MessageCode;
 import com.nhry.common.exception.ServiceException;
@@ -20,7 +32,11 @@ import com.nhry.data.milktrans.domain.TSsmSalOrderItems;
 import com.nhry.data.stock.dao.TSsmGiOrderItemMapper;
 import com.nhry.data.stock.dao.TSsmGiOrderMapper;
 import com.nhry.data.stock.dao.TSsmSalFactoryPriceMapper;
-import com.nhry.data.stock.domain.*;
+import com.nhry.data.stock.domain.TSsmGiOrder;
+import com.nhry.data.stock.domain.TSsmGiOrderItem;
+import com.nhry.data.stock.domain.TSsmGiOrderItemKey;
+import com.nhry.data.stock.domain.TSsmSalFactoryPrice;
+import com.nhry.data.stock.domain.TSsmSalFactoryPriceKey;
 import com.nhry.data.stud.dao.TMdSchoolMapper;
 import com.nhry.data.stud.dao.TMstOrderStudItemMapper;
 import com.nhry.data.stud.domain.TMdSchool;
@@ -39,16 +55,6 @@ import com.nhry.utils.PIPropertitesUtil;
 import com.nhry.webService.client.PISuccessMessage;
 import com.nhry.webService.client.PISuccessTMessage;
 import com.nhry.webService.client.businessData.model.Delivery;
-
-import org.apache.commons.collections.map.HashedMap;
-import org.apache.commons.lang.StringUtils;
-import org.apache.log4j.Logger;
-import org.springframework.beans.factory.annotation.Autowired;
-
-import java.math.BigDecimal;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.*;
 
 /**
  * 要货单
@@ -291,7 +297,7 @@ public class PIRequireOrderServiceImpl implements PIRequireOrderService {
         }
         orderHeader.setAuartType(auartType);
         orderHeader.setBSTKD(order.getOrderId());
-        orderHeader.setLFDAT(new Date());
+       
         PISuccessMessage message = BusinessDataConnection.SalesOrderCreate(items, orderHeader);
         return message;
     }
