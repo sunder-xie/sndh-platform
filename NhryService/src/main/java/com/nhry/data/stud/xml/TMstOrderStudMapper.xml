@@ -29,6 +29,7 @@
   	and ORDER_STATUS='10'
   </select>
   
+  
   <select id="findMatnrWithOrderUnpack" resultType="com.nhry.data.stud.domain.TMstOrderStud" parameterType="com.nhry.data.stud.domain.TMstOrderStud">
   	  SELECT DISTINCT
 	  a.MATNR matnr, a.MATNR_TXT matnrTxt, a.ZBOT_CODE zbotCode,
@@ -204,7 +205,7 @@
   
   
   <update id="updateByOrder" parameterType="com.nhry.data.stud.domain.TMstOrderStud" >
-    update t_mst_order_stud
+    update 
     <set >
       <if test="orderDate != null" >
         ORDER_DATE = #{orderDate,jdbcType=DATE},

@@ -1,7 +1,10 @@
 package com.nhry.rest.stud;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.Callable;
+import java.util.concurrent.FutureTask;
 
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
@@ -12,12 +15,15 @@ import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
+import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
+import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 import org.springframework.stereotype.Controller;
 
 import com.github.pagehelper.PageInfo;
 import com.nhry.common.exception.MessageCode;
+import com.nhry.common.exception.ServiceException;
 import com.nhry.data.stud.domain.TMdMaraStud;
 import com.nhry.data.stud.domain.TMstOrderStud;
 import com.nhry.model.stud.ExportStudOrderMilkModel;
@@ -33,6 +39,7 @@ import com.nhry.service.stud.dao.OrderStudService;
 import com.nhry.service.stud.dao.SchoolClassService;
 import com.nhry.service.stud.dao.SchoolRuleService;
 import com.nhry.service.stud.dao.SchoolService;
+import com.nhry.webService.client.PISuccessMessage;
 import com.sun.jersey.spi.resource.Singleton;
 import com.wordnik.swagger.annotations.Api;
 import com.wordnik.swagger.annotations.ApiOperation;
@@ -210,6 +217,46 @@ public class StudentMilkOrderResource  extends BaseResource {
 		return convertToRespModel(MessageCode.NORMAL, null,  orderStudService.exportStudOrderMilk(model));
 	}
 	
+	
+	@Autowired
+	PIRequireOrderService pIRequireOrderService;
+	
+	
+
+	/*@GET
+	@Path("/generateSalesOrder18")
+	@Produces(MediaType.APPLICATION_JSON)
+	@Consumes(MediaType.APPLICATION_JSON)
+	@ApiOperation(value = "/generateSalesOrder18", response = int.class, notes = "生成ERP销售订单")
+	public Response generateSalesOrder18() throws Exception{
+		StringBuffer  sb=new StringBuffer();
+		//获取当天所有的报货信息
+		List<TMstOrderStud> list = orderStudService.findOrderStudByDateAndSalesOrg();
+		
+		
+		
+		if(list !=null &&  list.size() > 0 ){
+			for (TMstOrderStud order : list) {
+				new Thread(new Runnable() {
+					public void run() {
+						PISuccessMessage sucMsg = pIRequireOrderService.generateSalesOrder18(order);
+						if (sucMsg.isSuccess()) {
+							order.setErpOrderId(sucMsg.getData());
+							order.setErpOrderStatus("10");
+							order.setErpOrderMsg(sucMsg.getMessage());
+							orderStudService.updateByOrder(order);
+				        } else {
+				        	sb.append(sucMsg.getMessage());
+				        }
+					}
+				}).start();
+			}
+		}
+		return convertToRespModel(MessageCode.NORMAL, null,sb);
+	}*/
+	
+	@Autowired
+	ThreadPoolTaskExecutor taskExecutor;
 
 	@GET
 	@Path("/generateSalesOrder18")
@@ -217,8 +264,56 @@ public class StudentMilkOrderResource  extends BaseResource {
 	@Consumes(MediaType.APPLICATION_JSON)
 	@ApiOperation(value = "/generateSalesOrder18", response = int.class, notes = "生成ERP销售订单")
 	public Response generateSalesOrder18() throws Exception{
-		return convertToRespModel(MessageCode.NORMAL, null,  orderStudService.generateSalesOrder18());
+		StringBuffer  sb=new StringBuffer();
+		//获取当天所有的报货信息
+		List<TMstOrderStud> list = orderStudService.findOrderStudByDateAndSalesOrg();
+		//
+		Map<String, FutureTask<PISuccessMessage>> taskMap = new HashMap<String, FutureTask<PISuccessMessage>>();
+		if(list !=null &&  list.size() > 0 ){
+			for (TMstOrderStud order : list) {
+				taskMap.put(order.getOrderId(), new FutureTask<PISuccessMessage>(new Callable<PISuccessMessage>(){
+					@Override
+					public PISuccessMessage call() throws Exception {
+						PISuccessMessage sucMsg = pIRequireOrderService.generateSalesOrder18(order);
+						if (sucMsg.isSuccess()) {
+							order.setErpOrderId(sucMsg.getData());
+							order.setErpOrderStatus("10");
+							order.setErpOrderMsg(sucMsg.getMessage());
+							orderStudService.updateByOrder(order);
+				        } else {
+				        	sb.append(sucMsg.getMessage());
+				        }
+						return sucMsg;
+					}}));
+			}
+		}
+		
+		for(String key : taskMap.keySet()){
+			taskExecutor.submit(taskMap.get(key));
+		}
+		
+		while (true) {
+			int i=0;
+			for(String key : taskMap.keySet()){
+				FutureTask<PISuccessMessage> futureTask = taskMap.get(key);
+				if(futureTask.isDone()){
+					i++;
+				}
+			}
+			if(i== taskMap.size()){
+				break;
+			}
+			Thread.sleep(2000);
+		}
+		if(sb.length()==0){
+			sb.append("发送成功");
+		}
+		return convertToRespModel(MessageCode.NORMAL, null,sb);
 	}
+	
+	
+	
+	
 	
 	
 }

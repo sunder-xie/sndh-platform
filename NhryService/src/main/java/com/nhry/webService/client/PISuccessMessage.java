@@ -8,9 +8,31 @@ public class PISuccessMessage {
     private String data;
     private String message;
 
-    public boolean isSuccess() {
+    
+    
+    public PISuccessMessage() {
+		super();
+		// TODO Auto-generated constructor stub
+	}
+    
+    
+
+
+	public PISuccessMessage(boolean success, String data, String message) {
+		super();
+		this.success = success;
+		this.data = data;
+		this.message = message;
+	}
+
+
+
+
+	public boolean isSuccess() {
         return success;
     }
+    
+    
 
     public void setSuccess(boolean success) {
         this.success = success;

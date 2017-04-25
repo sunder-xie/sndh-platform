@@ -1,5 +1,6 @@
 package com.nhry.service.stud.dao;
 
+import java.util.List;
 import java.util.Map;
 
 import com.github.pagehelper.PageInfo;
@@ -40,8 +41,10 @@ public interface OrderStudService {
 	Map<String, Object> findOrderInfoBySchoolCodeAndDateUnpack(TMstOrderStud mstOrderStud);
 
 	String findDefaultMaraForSchool(TMstOrderStud mstOrderStud);
+/*
+	String generateSalesOrder18();*/
 
-	String generateSalesOrder18();
+	List<TMstOrderStud> findOrderStudByDateAndSalesOrg();
 	
 	
 }
