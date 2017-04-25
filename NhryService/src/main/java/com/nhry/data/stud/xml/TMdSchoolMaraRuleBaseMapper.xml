@@ -3,7 +3,6 @@
 <mapper namespace="com.nhry.data.stud.dao.TMdSchoolMaraRuleBaseMapper" >
   <resultMap id="BaseResultMap" type="com.nhry.data.stud.domain.TMdSchoolMaraRuleBase" >
     <id column="MID" property="mid" jdbcType="VARCHAR" />
-    <result column="SCHOOL_CODE" property="schoolCode" jdbcType="VARCHAR" />
     <result column="FIXED_QTY" property="fixedQty" jdbcType="INTEGER" />
     <result column="FIXED_SCALE" property="fixedScale" jdbcType="INTEGER" />
     <result column="FIXED_MAX_QTY" property="fixedMaxQty" jdbcType="INTEGER" />
@@ -16,15 +15,14 @@
     <result column="SALES_ORG" property="salesOrg" jdbcType="VARCHAR" />
   </resultMap>
   <sql id="Base_Column_List" >
-    ru.MID, ru.SCHOOL_CODE,ru.FIXED_QTY,ru.FIXED_SCALE, ru.FIXED_MAX_QTY, ru.CREATE_AT, 
-    ru.CREATE_BY, ru.CREATE_BY_TXT, ru.LAST_MODIFIED, ru.LAST_MODIFIED_BY, ru.LAST_MODIFIED_BY_TXT, ru.SALES_ORG
+    ru.MID,ru.FIXED_QTY,ru.FIXED_SCALE, ru.FIXED_MAX_QTY, ru.SALES_ORG
   </sql>
   
   <select id="findMaraRuleBaseByModel" resultMap="BaseResultMap" parameterType="java.lang.String" >
     select 
     <include refid="Base_Column_List" />
     from t_md_school_mara_rule_base ru 
-    where  ru.SCHOOL_CODE= #{schoolCode,jdbcType=VARCHAR} and ru.SALES_ORG= #{salesOrg,jdbcType=VARCHAR}
+    where ru.SALES_ORG= #{salesOrg,jdbcType=VARCHAR}
   </select>
   
   <delete id="deleteBySalesOrg" parameterType="java.lang.String" >
@@ -38,9 +36,6 @@
     <trim prefix="(" suffix=")" suffixOverrides="," >
       <if test="mid != null" >
         MID,
-      </if>
-      <if test="schoolCode != null" >
-        SCHOOL_CODE,
       </if>
       <if test="fixedQty != null" >
         FIXED_QTY,
@@ -76,9 +71,6 @@
     <trim prefix="values (" suffix=")" suffixOverrides="," >
       <if test="mid != null" >
         #{mid,jdbcType=VARCHAR},
-      </if>
-      <if test="schoolCode != null" >
-        #{schoolCode,jdbcType=VARCHAR},
       </if>
       <if test="fixedQty != null" >
         #{fixedQty,jdbcType=INTEGER},

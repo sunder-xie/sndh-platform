@@ -28,7 +28,7 @@ public interface SchoolMaraRuleService {
 	  * @param mdel
 	  * @return
 	  */
-	 int deleteByModel(SchoolMaraRuleModel mdel);
+//	 int deleteByModel(SchoolMaraRuleModel mdel);
 	 /**
 	 * 获取学校损耗政策基数
 	 * @param mdel

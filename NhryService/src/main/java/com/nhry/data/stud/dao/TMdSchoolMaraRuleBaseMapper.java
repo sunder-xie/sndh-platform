@@ -24,10 +24,6 @@ public interface TMdSchoolMaraRuleBaseMapper {
 	  */
 	 int deleteBySalesOrg(String salesOrg);
 
-
-	
-	
-	
 	
 	
 }
