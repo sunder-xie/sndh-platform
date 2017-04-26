@@ -4,6 +4,7 @@
   <resultMap id="BaseResultMap" type="com.nhry.data.stud.domain.TMdSchoolRule" >
     <id column="MID" property="mid" jdbcType="VARCHAR" />
     <result column="SCHOOL_CODE" property="schoolCode" jdbcType="VARCHAR" />
+    <result column="SCHOOL_CODE_TXT" property="schoolCodeTxt" jdbcType="VARCHAR" />
     <result column="IS_BATCH_PRINT" property="isBatchPrint" jdbcType="VARCHAR" />
     <result column="VISIABLE" property="visiable" jdbcType="VARCHAR" />
     <result column="WEEK1_MATNR" property="week1Matnr" jdbcType="VARCHAR" />
@@ -53,7 +54,7 @@
   
    <select id="serchSchoolRuleList" resultMap="BaseResultMap" parameterType="com.nhry.model.stud.SchoolRuleQueryModel" >
     select 
-    ru.MID, sc.SCHOOL_CODE,sc.SCHOOL_NAME, ru.IS_BATCH_PRINT, ru.VISIABLE, ru.WEEK1_MATNR, ru.WEEK2_MATNR, ru.WEEK3_MATNR, 
+    ru.MID, sc.SCHOOL_CODE, sc.SCHOOL_CODE_TXT,sc.SCHOOL_NAME, ru.IS_BATCH_PRINT, ru.VISIABLE, ru.WEEK1_MATNR, ru.WEEK2_MATNR, ru.WEEK3_MATNR, 
     ru.WEEK4_MATNR, ru.WEEK5_MATNR, ru.WEEK6_MATNR, ru.WEEK7_MATNR, 
     ru.SALES_ORG,if(ifnull(ru.VISIABLE,10)='10',false,true) checkbox
     FROM   t_md_school_rule  ru

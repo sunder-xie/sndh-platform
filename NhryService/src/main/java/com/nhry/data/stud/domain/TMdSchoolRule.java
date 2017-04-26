@@ -43,8 +43,18 @@ public class TMdSchoolRule {
     
     private Boolean checkbox;//false 可用，true 不可用
     
+    private String schoolCodeTxt;
     
-    public String getSchoolName() {
+    
+    public String getSchoolCodeTxt() {
+		return schoolCodeTxt;
+	}
+
+	public void setSchoolCodeTxt(String schoolCodeTxt) {
+		this.schoolCodeTxt = schoolCodeTxt;
+	}
+
+	public String getSchoolName() {
 		return schoolName;
 	}
 
