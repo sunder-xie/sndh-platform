@@ -19,8 +19,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 import org.springframework.stereotype.Controller;
+import org.springframework.transaction.interceptor.TransactionAspectSupport;
 
 import com.github.pagehelper.PageInfo;
+import com.nhry.common.auth.UserSessionService;
 import com.nhry.common.exception.MessageCode;
 import com.nhry.data.stud.domain.TMdMaraStud;
 import com.nhry.data.stud.domain.TMstOrderStud;
@@ -71,6 +73,10 @@ public class StudentMilkOrderResource  extends BaseResource {
 	
 	@Autowired
 	private MaraStudService maraStudService;
+	
+	
+	@Autowired
+	private UserSessionService userSessionService;
 	
 	@POST
 	@Path("/findAllSchool")
@@ -273,7 +279,6 @@ public class StudentMilkOrderResource  extends BaseResource {
 		StringBuffer  sb=new StringBuffer();
 		//获取当天所有的报货信息
 		List<TMstOrderStud> list = orderStudService.findOrderStudByDateAndSalesOrg();
-		//
 		Map<String, FutureTask<PISuccessMessage>> taskMap = new HashMap<String, FutureTask<PISuccessMessage>>();
 		if(list !=null &&  list.size() > 0 ){
 			for (TMstOrderStud order : list) {
@@ -284,10 +289,14 @@ public class StudentMilkOrderResource  extends BaseResource {
 						if (sucMsg.isSuccess()) {
 							order.setErpOrderId(sucMsg.getData());
 							order.setErpOrderStatus("10");
-							order.setErpOrderMsg(sucMsg.getMessage());
+							order.setErpOrderMsg("发送成功");
 							orderStudService.updateByOrder(order);
 				        } else {
-				        	sb.append(sucMsg.getMessage());
+				        	order.setErpOrderId(sucMsg.getData());
+							order.setErpOrderStatus("20");
+							order.setErpOrderMsg(sucMsg.getMessage());
+							orderStudService.updateByOrder(order);
+							sb.append(order.getOrderId()).append(":{").append(sucMsg.getMessage()).append("},");
 				        }
 						return sucMsg;
 					}}));

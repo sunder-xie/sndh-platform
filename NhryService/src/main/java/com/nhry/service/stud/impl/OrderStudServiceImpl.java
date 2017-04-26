@@ -257,8 +257,8 @@ public class OrderStudServiceImpl implements OrderStudService {
 		}
 		Date date = new Date();
 		mstOrderStud.setLastModified(date);
-		mstOrderStud.setLastModifiedBy(this.userSessionService.getCurrentUser().getLoginName());
-		mstOrderStud.setLastModifiedByTxt(this.userSessionService.getCurrentUser().getDisplayName());
+	/*	mstOrderStud.setLastModifiedBy(userSessionService.getCurrentUser().getLoginName());
+		mstOrderStud.setLastModifiedByTxt(userSessionService.getCurrentUser().getDisplayName());*/
 		return mstOrderStudMapper.updateByOrder(mstOrderStud);
 	}
 
@@ -1475,7 +1475,6 @@ public class OrderStudServiceImpl implements OrderStudService {
 		SimpleDateFormat format = new  SimpleDateFormat("yyyy-MM-dd");
 		return mstOrderStudMapper.findOrderStudByDateAndSalesOrg(format.format(new Date()),currentUser.getSalesOrg());
 	} 
-	
 	
 	
 	

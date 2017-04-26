@@ -228,6 +228,17 @@
       <if test="remark != null" >
         REMARK = #{remark,jdbcType=VARCHAR},
       </if>
+      
+     <if test="erpOrderId != null" >
+        ERP_ORDER_ID = #{erpOrderId,jdbcType=VARCHAR},
+      </if>
+        <if test="erpOrderStatus != null" >
+        ERP_ORDER_STATUS = #{erpOrderStatus,jdbcType=VARCHAR},
+      </if>
+        <if test="erpOrderMsg != null" >
+        ERP_ORDER_MSG = #{erpOrderMsg,jdbcType=VARCHAR},
+      </if>
+      
     </set>
     where ORDER_ID = #{orderId,jdbcType=VARCHAR}
   </update>
