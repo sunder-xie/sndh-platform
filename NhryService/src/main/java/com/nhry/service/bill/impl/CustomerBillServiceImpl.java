@@ -39,9 +39,6 @@ import com.nhry.utils.OperationLogUtil;
 import com.nhry.utils.PrimaryKeyUtils;
 import com.nhry.utils.YearLastMonthUtil;
 import org.apache.commons.lang3.StringUtils;
-import org.apache.commons.lang3.builder.ToStringBuilder;
-import org.apache.commons.lang3.builder.ToStringStyle;
-import org.apache.cxf.common.i18n.Exception;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.core.task.TaskExecutor;
@@ -478,7 +475,6 @@ public class CustomerBillServiceImpl implements CustomerBillService {
         if(StringUtils.isNotBlank(branchRemark) && branchRemark.length() > 200){
             throw new ServiceException(MessageCode.LOGIC_ERROR,"奶站备注字符过长,请控制在200个字符以内");
         }
-        logger.info("设置奶站备注,当前登录用户user:{}", ToStringBuilder.reflectionToString(userSessionService.getCurrentUser(), ToStringStyle.MULTI_LINE_STYLE));
         String branchNo = userSessionService.getCurrentUser().getBranchNo();
         if(StringUtils.isBlank(branchNo)){
             throw new ServiceException(MessageCode.LOGIC_ERROR,"当前用户未归属任何奶站");
@@ -487,7 +483,6 @@ public class CustomerBillServiceImpl implements CustomerBillService {
         branch.setRemark(branchRemark);
         branch.setBranchNo(branchNo);
         int c = branchMapper.setBranchRemark(branch);
-        logger.info("影响行数{}", c);
         return 1;
     }
 
@@ -508,7 +503,6 @@ public class CustomerBillServiceImpl implements CustomerBillService {
      */
     @Override
     public int delRecBills(OrderSearchModel oModel) {
-        logger.info("批量删除收款单,orders{}", oModel.getOrders());
         if(oModel.getOrders() == null || !(oModel.getOrders().size()>0)){
             throw new ServiceException(MessageCode.LOGIC_ERROR,"没有选择的订单");
         }
@@ -516,11 +510,9 @@ public class CustomerBillServiceImpl implements CustomerBillService {
         if(ordersList != null && ordersList.size() > 0){
 
             for(TPreOrder order : ordersList){
-                logger.info("批量删除收款单,处理订单{}", ToStringBuilder.reflectionToString(order, ToStringStyle.MULTI_LINE_STYLE));
 
                 //获取收款单
                 TMstRecvBill  bill = this.getRecBillByOrderNo(order.getOrderNo());
-                logger.info("收款单{}", ToStringBuilder.reflectionToString(bill, ToStringStyle.MULTI_LINE_STYLE));
 
                 if(null == bill){
                     continue;
