@@ -125,7 +125,7 @@ public class PIProductServiceImpl implements PIProductService {
         logger.info("物料接口调用开始");
         try{
         	//18渠道获取
-        	//matHandler18();
+        	matHandler18();
         	//13渠道接口
         	matHandler13();
         } catch (Exception e) {
@@ -391,14 +391,14 @@ public class PIProductServiceImpl implements PIProductService {
      */
     @Override
     public int customerDataHandle() {
-    	//customerDataHandle18();
-    	customerDataHandle13();
+    	customerDataHandle18();
+    	//customerDataHandle13();
     	return 1;
     }
     
    
 
-    private int saveSchool(ET_KUNNR et_kunnr, Map<String, ET_KNVP> et_KNVPMap,String salesOrg) {
+    private int saveSchool(ET_KUNNR et_kunnr, Map<String, ET_KNVP> et_KNVPMap,String salesOrg,String lgort) {
     	//客户编码
      	String kunnr= et_kunnr.getKUNNR();
     	//附加信息
@@ -422,10 +422,7 @@ public class PIProductServiceImpl implements PIProductService {
     		tmdschool.setTel(et_kunnr.getTELF1());
     		tmdschool.setWerks(et_kunnr.getBUKRS());
     		tmdschool.setAddress(et_kunnr.getSTRAS());
-    		NHSysCodeItem key = new NHSysCodeItem();
-            key.setItemCode(et_kunnr.getBUKRS());
-            key.setTypeCode("1014");
-            NHSysCodeItem codeItem = codeItemMapper.findCodeItenByCode(key);
+    		tmdschool.setLgort(lgort);	
             //tmdschool.setRes(codeItem.getAttr4());
     		schoolMapper.updateByTMdSchool(tmdschool);
     		return 1;
@@ -449,7 +446,7 @@ public class PIProductServiceImpl implements PIProductService {
     		tmdschool.setSalesOrg(salesOrg);
     		tmdschool.setAddress(et_kunnr.getSTRAS());
     		tmdschool.setWerks(et_kunnr.getBUKRS());
-    		//tmdschool.setLgort(lgort);
+    		tmdschool.setLgort(lgort);
     		schoolMapper.saveSchool(tmdschool);
     		return 1;
     	}
@@ -479,7 +476,7 @@ public class PIProductServiceImpl implements PIProductService {
             	}
             	ET_KUNNR et_kunnr = kunnr_Map.get(kunnr);
             	if(et_kunnr !=null &&StringUtils.isNotBlank(et_kunnr.getNAME1())){
-                	saveSchool(et_kunnr, et_KNVP,et_VKORG.getVKORG());
+                	saveSchool(et_kunnr, et_KNVP,et_VKORG.getVKORG(),lgort);
             	}
             	zycount++;
 			}

@@ -10,6 +10,7 @@ import com.nhry.data.basic.dao.TMdBranchMapper;
 import com.nhry.data.basic.domain.TMdBranch;
 import com.nhry.data.basic.domain.TMdBranchEx;
 import com.nhry.data.config.dao.NHSysCodeItemMapper;
+import com.nhry.data.config.domain.NHSysCodeItem;
 import com.nhry.data.milktrans.dao.TSsmReqGoodsOrderItemMapper;
 import com.nhry.data.milktrans.dao.TSsmReqGoodsOrderMapper;
 import com.nhry.data.milktrans.dao.TSsmSalOrderItemMapper;
@@ -81,6 +82,7 @@ public class PIRequireOrderServiceImpl implements PIRequireOrderService {
     private UserSessionService userSessionService;
 
     private TSsmSalFactoryPriceMapper ssmSalFactoryPriceMapper;
+    
 
     public void setSsmSalFactoryPriceMapper(TSsmSalFactoryPriceMapper ssmSalFactoryPriceMapper) {
         this.ssmSalFactoryPriceMapper = ssmSalFactoryPriceMapper;
@@ -280,7 +282,12 @@ public class PIRequireOrderServiceImpl implements PIRequireOrderService {
 		}
         items.add(mapStu);
         orderHeader.setVTWEG(PIPropertitesUtil.getValue("PI.MasterData.mATQUERY.VKORG18"));
-        orderHeader.setLgort("3001");//库存地点TODO
+        
+        NHSysCodeItem key = new NHSysCodeItem();
+        key.setItemCode(school.getWerks());
+        key.setTypeCode("1014");
+        NHSysCodeItem codeItem = sysCodeItemMapper.findCodeItenByCode(key);
+        orderHeader.setLgort(codeItem.getAttr4());//库存地点TODO
         orderHeader.setWerks(school.getWerks());
         String auartType = PIPropertitesUtil.getValue("PI.AUART.ZOR");
         String saleOrgTX = PIPropertitesUtil.getValue("PI.SALEORG_TX");
@@ -291,8 +298,7 @@ public class PIRequireOrderServiceImpl implements PIRequireOrderService {
         }
         orderHeader.setAuartType(auartType);
         orderHeader.setBSTKD(order.getOrderId());
-        
-        orderHeader.setLFDAT(DateUtil.getYestoday(new Date()));
+        orderHeader.setLFDAT(DateUtil.getTomorrow(new Date()));
         PISuccessMessage message = BusinessDataConnection.SalesOrderCreate(items, orderHeader);
         return message;
     }
