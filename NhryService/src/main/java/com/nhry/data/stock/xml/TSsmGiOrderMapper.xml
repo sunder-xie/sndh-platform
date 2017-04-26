@@ -141,6 +141,7 @@
      sum(binary i.qty)  as QTY, sum(binary i.CONFIRM_QTY) as  CONFIRM_QTY   FROM t_ssm_gi_order
     ts  left join  t_ssm_gi_order_item i on i.ORDER_NO =ts.ORDER_NO
     WHERE    ts.BRANCH_NO = #{branchNo,jdbcType=VARCHAR} and ts.ORDER_DATE = #{orderDate,jdbcType=DATE}
+     group by  ts.ORDER_NO
     ) vt
   </select>
   <!--  liuyin  update end-->
