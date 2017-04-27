@@ -49,7 +49,15 @@
 		<property name="userSessionService" ref="userSessionService"></property>
 		<property name="maraSortMapper" ref="maraSortMapper"></property>
 	</bean>
-
+	<!--机构价格组信息-->
+	<bean id="tMdOrgPriceMapper" class="com.nhry.data.basic.impl.TMdOrgPriceMapperImpl">
+		<property name="sqlSessionTemplate" ref="dynamicSqlSessionTemplate"></property>
+	</bean>
+	<bean id="tMdOrgPriceService" class="com.nhry.service.basic.impl.TMdOrgPriceServiceImpl">
+		<property name="tMdOrgPriceMapper" ref="tMdOrgPriceMapper"></property>
+		<property name="tMdMaraExMapper" ref="maraMapper"></property>
+		<property name="userSessionService" ref="userSessionService"></property>
+	</bean>
 	<!-- 价格组信息 -->
 	<bean id="priceMapper" class="com.nhry.data.basic.impl.TMdPriceMapperImpl">
 		<property name="sqlSessionTemplate" ref="dynamicSqlSessionTemplate"></property>
@@ -110,6 +118,7 @@
 		<property name="maraExMapper" ref="maraExMapper"></property>
 		<property name="branchEmpMapper" ref="branchEmpMapper"></property>
 		<property name="codeItemMapper" ref="codeItemMapper"></property>
+		<property name="tMdOrgPriceService" ref="tMdOrgPriceService"></property>
 		<property name="tOrderDaliyPlanItemBackMapper" ref="tOrderDaliyPlanItemBackMapper"/>
 		<property name="tYearCardCompOrderMapper" ref="tYearCardCompOrderMapper"/>
 		<property name="piVipPointCreateBatService" ref="piVipPointCreateBatService"/>
