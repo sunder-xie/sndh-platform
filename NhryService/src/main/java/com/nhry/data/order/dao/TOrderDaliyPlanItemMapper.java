@@ -54,8 +54,6 @@ public interface TOrderDaliyPlanItemMapper {
     List<TOrderDaliyPlanItem> selectDaliyPlansByEntryNo(String itemNo);
     
     int updateDaliyPlanItem(TOrderDaliyPlanItem record);
-
-
     
     TOrderDaliyPlanItem selectDaliyPlansByEntryNoAndNo(TOrderDaliyPlanItemKey record);
     
@@ -89,6 +87,13 @@ public interface TOrderDaliyPlanItemMapper {
     List<Map<String,Object>> selectNoProDayPlanOfDealerBranch70(RequireOrderSearch rModel);
 
     List<TOrderDaliyPlanItem> selectNoProDayPlanOfDealerBranch40(RequireOrderSearch rModel);
+
+    /**
+     * 按电商维度统计奶站日计划，生成电商的销售订单
+     * @param rModel
+     * @return
+     */
+    List<Map<String,Object>> selectNoProDayPlanOfDealerBranch10(RequireOrderSearch rModel);
 
     List<String> getDailOrderPromOfSelfBranch(RequireOrderSearch rModel);
 
@@ -173,6 +178,11 @@ public interface TOrderDaliyPlanItemMapper {
      */
     List<Map<String,Object>> selectNoProDayPlanOfDealerBranchAndEmpNo(RequireOrderSearch rModel);
 
+    /**
+     * 按送奶工维度统计奶站的日计划，生成自营奶站送奶工销售订单
+     * @param rModel
+     * @return
+     */
     List<Map<String,Object>> selectNoProDayPlanOfSelfBranchAndEmpNo(RequireOrderSearch rModel);
 
     /**
@@ -183,8 +193,18 @@ public interface TOrderDaliyPlanItemMapper {
     BigDecimal sumFinishAmtByPlanOrderNo(String planItemNo);
 
 	List<Map<String, String>> findOrderSumByDate(MilkQueryModel  model);
-    
-    
-    
-    
+
+    /**
+     * 按电商维度统计奶站日计划，生成电商的销售订单
+     * @param rModel
+     * @return
+     */
+    List<Map<String,Object>> selectNoProDayPlanOfSelfBranch10(RequireOrderSearch rModel);
+
+    /**
+     * 按电商维度统计奶站日计划，生成电商的赠品销售订单
+     * @param rModel
+     * @return
+     */
+    List<Map<String,Object>> selectProDayPlanOfSelfBranch10(RequireOrderSearch rModel);
 }

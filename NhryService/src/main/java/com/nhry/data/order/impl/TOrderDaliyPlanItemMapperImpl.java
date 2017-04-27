@@ -32,22 +32,19 @@ public class TOrderDaliyPlanItemMapperImpl implements TOrderDaliyPlanItemMapper
 	@Override
 	public int updateDaliyPlansToStopDateToDate(TOrderDaliyPlanItem record)
 	{
-		// TODO Auto-generated method stub
-		return sqlSessionTemplate.update("updateDaliyPlansToStopDateToDate", record); 
+		return sqlSessionTemplate.update("updateDaliyPlansToStopDateToDate", record);
 	}
 	
 	@Override
 	public int deletePlansForLongEdit(TOrderDaliyPlanItem record)
 	{
-		// TODO Auto-generated method stub
-		return sqlSessionTemplate.delete("deletePlansForLongEdit", record); 
+		return sqlSessionTemplate.delete("deletePlansForLongEdit", record);
 	}
 	
 	@Override
 	public int deleteFromDateToDate(TOrderDaliyPlanItem record)
 	{
-		// TODO Auto-generated method stub
-		return sqlSessionTemplate.delete("deleteFromDateToDate", record); 
+		return sqlSessionTemplate.delete("deleteFromDateToDate", record);
 	}
 
 	@Override
@@ -60,49 +57,42 @@ public class TOrderDaliyPlanItemMapperImpl implements TOrderDaliyPlanItemMapper
 	@Override
 	public int selectMaxDaliyPlansNoByOrderNo(String orderNo)
 	{
-		// TODO Auto-generated method stub
-		return sqlSessionTemplate.selectOne("selectMaxDaliyPlansNoByOrderNo", orderNo); 
+		return sqlSessionTemplate.selectOne("selectMaxDaliyPlansNoByOrderNo", orderNo);
 	}
 	
 	@Override
 	public int insert(TOrderDaliyPlanItem record)
 	{
-		// TODO Auto-generated method stub
 		return sqlSessionTemplate.insert("insertNewOrderDaliyPlanEntry", record);
 	}
 	
 	@Override
 	public int updateDaliyPlanItemStatus(TOrderDaliyPlanItem record)
 	{
-		// TODO Auto-generated method stub
 		return sqlSessionTemplate.update("updateDaliyPlanItemStatus", record);
 	}
 
 	@Override
 	public int updateDaliyPlanItemStatusBatch(HashMap map)
 	{
-		// TODO Auto-generated method stub
 		return sqlSessionTemplate.update("updateDaliyPlanItemStatusBatch", map);
 	}
 	
 	@Override
 	public int updateDaliyPlanItemRemainAmt(TOrderDaliyPlanItem record)
 	{
-		// TODO Auto-generated method stub
 		return sqlSessionTemplate.update("updateDaliyPlanItemRemainAmt", record);
 	}
 	
 	@Override
 	public int updateDaliyPlanItem(TOrderDaliyPlanItem record)
 	{
-		// TODO Auto-generated method stub
 		return sqlSessionTemplate.update("updateDaliyPlanItem", record);
 	}
 
 	@Override
 	public int updateDaliyPlanItemByItemNo(TOrderDaliyPlanItem record)
 	{
-		// TODO Auto-generated method stub
 		return sqlSessionTemplate.update("updateDaliyPlanItemByItemNo", record);
 	}
 
@@ -161,20 +151,17 @@ public class TOrderDaliyPlanItemMapperImpl implements TOrderDaliyPlanItemMapper
 	@Override
 	public List<TOrderDaliyPlanItem> selectDaliyPlansByOrderNo2(String orderNo)
 	{
-		// TODO Auto-generated method stub
 		return sqlSessionTemplate.selectList("selectDaliyPlansByOrderNo2", orderNo);
 	}
 	@Override
 	public List<TOrderDaliyPlanItem> selectDaliyPlansByOrderNoAsc(String orderNo)
 	{
-		// TODO Auto-generated method stub
 		return sqlSessionTemplate.selectList("selectDaliyPlansByOrderNoAsc", orderNo);
 	}
 	
 	@Override
 	public TOrderDaliyPlanItem selectDaliyPlansByEntryNoAndNo(TOrderDaliyPlanItemKey record)
 	{
-		// TODO Auto-generated method stub
 		return sqlSessionTemplate.selectOne("selectDaliyPlansByEntryNoAndNo", record);
 	}
 	
@@ -552,10 +539,24 @@ public class TOrderDaliyPlanItemMapperImpl implements TOrderDaliyPlanItemMapper
 		return sqlSessionTemplate.selectList("selectPromDaliyBetweenDaysAndNo",item);
 	}
 	
-	
 	@Override
 	public List<Map<String, String>> findOrderSumByDate(MilkQueryModel  model) {
 		// TODO Auto-generated method stub
 		return sqlSessionTemplate.selectList("findOrderSumByDate", model);
+	}
+	
+	@Override
+	public List<Map<String, Object>> selectNoProDayPlanOfSelfBranch10(RequireOrderSearch rModel) {
+		return sqlSessionTemplate.selectList("selectNoProDayPlanOfSelfBranch10",rModel);
+	}
+	
+	@Override
+	public List<Map<String, Object>> selectProDayPlanOfSelfBranch10(RequireOrderSearch rModel) {
+		return sqlSessionTemplate.selectList("selectProDayPlanOfSelfBranch10",rModel);
+	}
+
+	@Override
+	public List<Map<String, Object>> selectNoProDayPlanOfDealerBranch10(RequireOrderSearch rModel) {
+		return sqlSessionTemplate.selectList("selectNoProDayPlanOfDealerBranch10",rModel);
 	}
 }
