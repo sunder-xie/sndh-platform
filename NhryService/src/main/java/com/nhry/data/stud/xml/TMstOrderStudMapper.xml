@@ -115,6 +115,7 @@
 	FROM t_mst_order_stud a
 	LEFT JOIN t_md_school b ON a.school_code=b.school_code
 	WHERE a.order_status='10'
+	and a.SALES_ORG=#{salesOrg}
 	<if test="keyWord != null and keyWord != ''">
 		and (b.school_code like '%${keyWord}%' or b.school_name like '%${keyWord}%')
 	</if>

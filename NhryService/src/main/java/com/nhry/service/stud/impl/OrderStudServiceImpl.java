@@ -260,6 +260,7 @@ public class OrderStudServiceImpl implements OrderStudService {
 		if(StringUtils.isBlank(queryModel.getPageSize())){
 			throw new ServiceException(MessageCode.LOGIC_ERROR, "每页显示条数必填");
 		}
+		queryModel.setSalesOrg(this.userSessionService.getCurrentUser().getSalesOrg());
 		return mstOrderStudMapper.findOrderPage(queryModel);
 	}
 
@@ -771,7 +772,7 @@ public class OrderStudServiceImpl implements OrderStudService {
 		}
 		
 		BigDecimal result = new BigDecimal("0");
-		if(null != ruleBase){
+		if(null != ruleBase && orderStudLossModel.getMatnrCount()  > 0){//当日喝的才计算，没喝的不计算
 			if(null != ruleBase.getFixedQty() && ruleBase.getFixedQty() > 0){
 				
 				/**
@@ -796,7 +797,7 @@ public class OrderStudServiceImpl implements OrderStudService {
 				
 			}
 		}
-		if(null != maraRule){
+		if(null != maraRule){//当日喝的要计算，没喝的也要计算
 			/**
 			 * 每个奶品的数量设置，取数，计算
 			 */
