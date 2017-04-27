@@ -195,4 +195,11 @@ public class TMdOrgPriceServiceImpl extends BaseService implements TMdOrgPriceSe
         record.setSalesOrg(user.getSalesOrg());
         return tMdOrgPriceMapper.selectOrgPriceByMatnr(record);
     }
+
+    @Override
+    public PageInfo selectOrgPriceListOldPrice(OrgPriceModel record) {
+        TSysUser user = userSessionService.getCurrentUser();
+        record.setSalesOrg(user.getSalesOrg());
+        return tMdOrgPriceMapper.selectOrgPriceListOldPrice(record);
+    }
 }

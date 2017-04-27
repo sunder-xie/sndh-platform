@@ -3,6 +3,7 @@ package com.nhry.model.basic;
 import com.wordnik.swagger.annotations.ApiModel;
 
 import java.io.Serializable;
+import java.util.Date;
 
 /**
  * Created by huaguan on 2017/4/26.
@@ -14,6 +15,8 @@ public class OrgPriceModel extends BaseQueryModel implements Serializable {
     private String isShow;//是否显示
     private String salesOrg;
     private String matnr;
+    private String search;
+    private Date orderDate;
 
     public String getMatnr() {
         return matnr;
@@ -53,5 +56,21 @@ public class OrgPriceModel extends BaseQueryModel implements Serializable {
 
     public void setOrgId(String orgId) {
         this.orgId = orgId;
+    }
+
+    public String getSearch() {
+        return search;
+    }
+
+    public void setSearch(String search) {
+        this.search = search;
+    }
+
+    public Date getOrderDate() {
+        return orderDate;
+    }
+
+    public void setOrderDate(Date orderDate) {
+        this.orderDate = orderDate;
     }
 }

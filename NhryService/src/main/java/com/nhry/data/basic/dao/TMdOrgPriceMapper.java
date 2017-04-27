@@ -63,4 +63,11 @@ public interface TMdOrgPriceMapper {
      * @return
      */
     TMdOrgPrice selectOrgPriceByMatnr(OrgPriceModel record);
+
+    /**
+     *
+     * @param record
+     * @return
+     */
+    PageInfo selectOrgPriceListOldPrice(OrgPriceModel record);
 }
