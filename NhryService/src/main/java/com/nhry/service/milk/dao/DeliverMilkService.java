@@ -8,6 +8,7 @@ import com.nhry.model.order.OrderDaliyPlanReportEntityModel;
 import com.nhry.model.order.OrderDaliyPlanReportModel;
 
 import java.math.BigDecimal;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -64,4 +65,7 @@ public interface DeliverMilkService {
 	int createTemRouteOrders(TemporaryDispOrderModel tModel);
 
 	int updateDaliyPlanByRouteOrder2(String orderCode);
+
+
+	List<Map<String, String>> findOrderSumByDate(MilkQueryModel  model);
 }

@@ -80,6 +80,17 @@
     and d.ORDER_NO = #{orderNo,jdbcType=VARCHAR}
     order by d.DISP_DATE,d.REMAIN_AMT desc
   </select>
+  
+   <select id="findOrderSumByDate" resultMap="BaseResultMap" parameterType="com.nhry.model.milk.MilkQueryModel" >
+	SELECT SUM(i.qty) QTY,i.MATNR,ex.SHORT_TXT MATNR_TXT FROM t_preorder  pd 
+		INNER JOIN t_md_branch  b  on  b.BRANCH_NO= pd.BRANCH_NO
+		INNER JOIN t_mst_order_daliy_plan_item   i on  pd.ORDER_NO=i.ORDER_NO
+		INNER JOIN t_md_mara_ex ex  on  ex.MATNR=i.MATNR and ex.SALES_ORG=b.SALES_ORG
+		WHERE pd.BRANCH_NO=#{branchNo}  and  pd.emp_no=#{loginName}  and  i.DISP_DATE=#{date}
+		GROUP BY i.MATNR,ex.SHORT_TXT ORDER BY QTY 
+  </select>
+  
+  
   <select id="searchDaliyOrdersByOrderNoAndFinalStop" resultMap="BaseResultMap" parameterType="com.nhry.model.order.OrderSearchModel" >
     select 
     <include refid="Base_Column_List" />

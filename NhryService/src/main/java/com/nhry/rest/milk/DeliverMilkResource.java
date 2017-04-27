@@ -19,6 +19,7 @@ import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
+import java.util.Date;
 import java.util.List;
 
 @Path("/deliverMilk")
@@ -54,6 +55,16 @@ public class DeliverMilkResource extends BaseResource {
 	@ApiOperation(value = "/{orderCode}", response = List.class, notes = "查询路单详细信息列表")
 	public Response findRouteOrderDetails(@ApiParam(required=true,name="orderCode",value="路单编号") @PathParam("orderCode") String orderCode){
 		return convertToRespModel(MessageCode.NORMAL, null, deliverMilkService.searchRouteOrderDetailAll(orderCode));
+	}
+	
+	
+	
+	@POST
+	@Path("/findOrderSumByDate")
+	@Produces(MediaType.APPLICATION_JSON)
+	@ApiOperation(value = "/findOrderSumByDate", response = List.class, notes = "根据时间获取登录订奶员日计划汇总数量")
+	public Response findOrderSumByDate(@ApiParam(required=true,name="milkQueryModel",value="model")MilkQueryModel  model){
+		return convertToRespModel(MessageCode.NORMAL, null, deliverMilkService.findOrderSumByDate(model));
 	}
 	
 	@GET
