@@ -282,6 +282,11 @@ public class StudentMilkOrderResource  extends BaseResource {
 		Map<String, FutureTask<PISuccessMessage>> taskMap = new HashMap<String, FutureTask<PISuccessMessage>>();
 		if(list !=null &&  list.size() > 0 ){
 			for (TMstOrderStud order : list) {
+				
+				//已经发送成功的不再发送
+				if("10".equals(order.getErpOrderStatus())){
+					continue;
+				}
 				taskMap.put(order.getOrderId(), new FutureTask<PISuccessMessage>(new Callable<PISuccessMessage>(){
 					@Override
 					public PISuccessMessage call() throws Exception {

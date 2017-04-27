@@ -32,7 +32,7 @@
   </sql>
   <select id="findAllListBySalesOrg" resultMap="BaseResultMap" parameterType="java.lang.String" >
     select 
-    p.MATNR, p.SALES_ORG,p.SPEC_UNIT,ifnull(p.SHORT_TXT,p.MATNR_TXT)MATNR_TXT, p.ZBOT_CODE,SHORT_TXT,
+    p.MATNR, p.SALES_ORG,p.SPEC_UNIT,(CASE WHEN(p.SHORT_TXT IS NULL OR p.SHORT_TXT='')THEN p.MATNR_TXT ELSE p.SHORT_TXT  END) MATNR_TXT, p.ZBOT_CODE, p.SHORT_TXT,
     (SELECT i.ITEM_NAME FROM t_sys_code_item I WHERE i.TYPE_CODE=<include refid="mybaties.constant.packing _type"></include> AND i.ITEM_CODE=p.ZBOT_CODE) ZBOT_CODE_NAME
     from t_md_mara_stud p
     where p.STATUS='Y'

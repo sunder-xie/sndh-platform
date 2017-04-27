@@ -30,7 +30,7 @@
   <delete id="deleteBySalesOrgAndSchoolCode" parameterType="java.util.Map" >
     delete from t_md_school_mara_rule_base 
     	where SALES_ORG=#{salesOrg}
-    	and ru.SCHOOL_CODE=#{schoolCode}
+    	and SCHOOL_CODE=#{schoolCode}
   </delete>
   
   
