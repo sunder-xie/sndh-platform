@@ -8,6 +8,7 @@ import com.nhry.data.order.domain.TMstYearCardCompOrder;
 import com.nhry.data.order.domain.TOrderDaliyPlanItem;
 import com.nhry.data.order.domain.TOrderDaliyPlanItemKey;
 import com.nhry.data.order.domain.TPreOrder;
+import com.nhry.model.milk.MilkQueryModel;
 import com.nhry.model.milktrans.RequireOrderSearch;
 import com.nhry.model.order.OrderDaliyPlanReportEntityModel;
 import com.nhry.model.order.OrderDaliyPlanReportModel;
@@ -549,5 +550,12 @@ public class TOrderDaliyPlanItemMapperImpl implements TOrderDaliyPlanItemMapper
 		item.setOrderNo(orderNo);
 		item.setDispDate(endDate);
 		return sqlSessionTemplate.selectList("selectPromDaliyBetweenDaysAndNo",item);
+	}
+	
+	
+	@Override
+	public List<Map<String, String>> findOrderSumByDate(MilkQueryModel  model) {
+		// TODO Auto-generated method stub
+		return sqlSessionTemplate.selectList("findOrderSumByDate", model);
 	}
 }
