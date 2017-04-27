@@ -209,7 +209,7 @@ public class TMstOrderStud implements Serializable, Cloneable{
 	}
 
 	public void setList10Sum(String list10Sum) {
-		this.list10Sum = list10Sum;
+		this.list10Sum = null==list10Sum?"0":list10Sum;
 	}
 
 	public String getList20Sum() {
@@ -217,7 +217,7 @@ public class TMstOrderStud implements Serializable, Cloneable{
 	}
 
 	public void setList20Sum(String list20Sum) {
-		this.list20Sum = list20Sum;
+		this.list20Sum = null==list20Sum?"0":list20Sum;
 	}
 
 	public String getList30Sum() {
@@ -225,7 +225,7 @@ public class TMstOrderStud implements Serializable, Cloneable{
 	}
 
 	public void setList30Sum(String list30Sum) {
-		this.list30Sum = list30Sum;
+		this.list30Sum = null==list30Sum?"0":list30Sum;
 	}
 
 	public String getMatnr() {

@@ -65,7 +65,6 @@ import com.nhry.model.stud.SchoolQueryModel;
 import com.nhry.service.pi.dao.PIRequireOrderService;
 import com.nhry.service.stud.dao.OrderStudService;
 import com.nhry.utils.EnvContant;
-import com.nhry.webService.client.PISuccessMessage;
 
 
 /**
@@ -143,21 +142,12 @@ public class OrderStudServiceImpl implements OrderStudService {
 		Date orderDate = new SimpleDateFormat("yyyy-MM-dd").parse(mstOrderStud.getOrderDateStr());
 		Date date = new Date();
 		TSysUser user = this.userSessionService.getCurrentUser();
-		if(StringUtils.isNotBlank(mstOrderStud.getOrderId())){
-			TMstOrderStud updOrder = new TMstOrderStud();
-			updOrder.setOrderStatus("20");
-			updOrder.setOrderId(mstOrderStud.getOrderId());
-			updOrder.setLastModified(date);
-			updOrder.setLastModifiedBy(user.getLoginName());
-			updOrder.setLastModifiedByTxt(user.getDisplayName());
-			mstOrderStudMapper.updateByOrder(updOrder);//将订单失效
-			
-			this.deleteOrderAndItem(mstOrderStud.getOrderDateStr(), mstOrderStud.getSchoolCode(), user.getSalesOrg());
-		}
-		String orderId = getCode();
 		
+		//将订单失效
+		this.deleteOrderAndItem(mstOrderStud.getOrderDateStr(), mstOrderStud.getSchoolCode(), user.getSalesOrg());
 		
 		//创建主订单
+		String orderId = getCode();
 		mstOrderStud.setOrderId(orderId);
 		mstOrderStud.setOrderDate(orderDate);
 		mstOrderStud.setCreateAt(date);
@@ -177,7 +167,7 @@ public class OrderStudServiceImpl implements OrderStudService {
 	    			continue;
 	    		}
 	    		if(item.getQty() == null || item.getQty() < 0){
-	    			item.setQty(0);
+	    			continue;
 	    		}
 	    		item.setSchoolCode(mstOrderStud.getSchoolCode());
 	    		item.setOrderId(orderId);
@@ -203,7 +193,7 @@ public class OrderStudServiceImpl implements OrderStudService {
 	    			continue;
 	    		}
 	    		if(item.getQty() == null || item.getQty() < 0){
-	    			item.setQty(0);
+	    			continue;
 	    		}
 	    		item.setSchoolCode(mstOrderStud.getSchoolCode());
 	    		item.setOrderId(orderId);
@@ -228,7 +218,7 @@ public class OrderStudServiceImpl implements OrderStudService {
 	    			continue;
 	    		}
 	    		if(item.getQty() == null || item.getQty() < 0){
-	    			item.setQty(0);
+	    			continue;
 	    		}
 	    		item.setOrderId(orderId);
 	    		item.setMid(UUID.randomUUID().toString().replace("-", ""));
@@ -767,7 +757,7 @@ public class OrderStudServiceImpl implements OrderStudService {
 			throw new ServiceException(MessageCode.LOGIC_ERROR, "奶品代码必传");
 		}
 		if(null == orderStudLossModel.getMatnrCount() || orderStudLossModel.getMatnrCount() <= 0){
-			throw new ServiceException(MessageCode.LOGIC_ERROR, "学生喝奶总数为0,不能计算");
+			orderStudLossModel.setMatnrCount(0);
 		}
 		HashMap<String, Object> selectMap = new HashMap<String, Object>();
 		selectMap.put("salesOrg", user.getSalesOrg());
