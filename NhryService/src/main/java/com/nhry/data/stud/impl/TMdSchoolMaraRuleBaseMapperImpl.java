@@ -31,8 +31,11 @@ public class TMdSchoolMaraRuleBaseMapperImpl  implements TMdSchoolMaraRuleBaseMa
 	
 	
 	@Override
-	public int deleteBySalesOrg(String salesOrg) {
-		return sqlSessionTemplate.insert("deleteBySalesOrg",salesOrg);
+	public int deleteBySalesOrgAndSchoolCode(String salesOrg, String schoolCode) {
+		Map<String, String> map = new HashMap<String, String>();
+		map.put("salesOrg", salesOrg);
+		map.put("schoolCode", schoolCode);
+		return sqlSessionTemplate.insert("deleteBySalesOrgAndSchoolCode",map);
 	}
 
 }

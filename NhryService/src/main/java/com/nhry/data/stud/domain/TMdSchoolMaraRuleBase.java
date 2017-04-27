@@ -4,6 +4,8 @@ import java.util.Date;
 
 public class TMdSchoolMaraRuleBase {
     private String mid;
+    
+    private String schoolCode;
 
     private String specUnit;
 
@@ -28,7 +30,15 @@ public class TMdSchoolMaraRuleBase {
     private String salesOrg;//销售组织
     
     
-    public String getSpecUnit() {
+    public String getSchoolCode() {
+		return schoolCode;
+	}
+
+	public void setSchoolCode(String schoolCode) {
+		this.schoolCode = schoolCode;
+	}
+
+	public String getSpecUnit() {
 		return specUnit;
 	}
 

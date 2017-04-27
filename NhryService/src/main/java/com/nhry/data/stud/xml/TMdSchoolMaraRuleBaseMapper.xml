@@ -3,6 +3,7 @@
 <mapper namespace="com.nhry.data.stud.dao.TMdSchoolMaraRuleBaseMapper" >
   <resultMap id="BaseResultMap" type="com.nhry.data.stud.domain.TMdSchoolMaraRuleBase" >
     <id column="MID" property="mid" jdbcType="VARCHAR" />
+    <id column="SCHOOL_CODE" property="schoolCode" jdbcType="VARCHAR" />
     <result column="FIXED_QTY" property="fixedQty" jdbcType="INTEGER" />
     <result column="FIXED_SCALE" property="fixedScale" jdbcType="INTEGER" />
     <result column="FIXED_MAX_QTY" property="fixedMaxQty" jdbcType="INTEGER" />
@@ -15,19 +16,21 @@
     <result column="SALES_ORG" property="salesOrg" jdbcType="VARCHAR" />
   </resultMap>
   <sql id="Base_Column_List" >
-    ru.MID,ru.FIXED_QTY,ru.FIXED_SCALE, ru.FIXED_MAX_QTY, ru.SALES_ORG
+    ru.MID,ru.FIXED_QTY,ru.FIXED_SCALE, ru.FIXED_MAX_QTY, ru.SALES_ORG, ru.SCHOOL_CODE
   </sql>
   
-  <select id="findMaraRuleBaseByModel" resultMap="BaseResultMap" parameterType="java.lang.String" >
+  <select id="findMaraRuleBaseByModel" resultMap="BaseResultMap" parameterType="com.nhry.model.stud.SchoolMaraRuleModel" >
     select 
     <include refid="Base_Column_List" />
     from t_md_school_mara_rule_base ru 
     where ru.SALES_ORG= #{salesOrg,jdbcType=VARCHAR}
+    and ru.SCHOOL_CODE=#{schoolCode}
   </select>
   
-  <delete id="deleteBySalesOrg" parameterType="java.lang.String" >
+  <delete id="deleteBySalesOrgAndSchoolCode" parameterType="java.util.Map" >
     delete from t_md_school_mara_rule_base 
     	where SALES_ORG=#{salesOrg}
+    	and ru.SCHOOL_CODE=#{schoolCode}
   </delete>
   
   
@@ -36,6 +39,9 @@
     <trim prefix="(" suffix=")" suffixOverrides="," >
       <if test="mid != null" >
         MID,
+      </if>
+      <if test="schoolCode != null" >
+        SCHOOL_CODE,
       </if>
       <if test="fixedQty != null" >
         FIXED_QTY,
@@ -71,6 +77,9 @@
     <trim prefix="values (" suffix=")" suffixOverrides="," >
       <if test="mid != null" >
         #{mid,jdbcType=VARCHAR},
+      </if>
+      <if test="schoolCode != null" >
+        #{schoolCode,jdbcType=VARCHAR},
       </if>
       <if test="fixedQty != null" >
         #{fixedQty,jdbcType=INTEGER},

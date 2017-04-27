@@ -6,6 +6,7 @@ import com.nhry.data.order.domain.TMstYearCardCompOrder;
 import com.nhry.data.order.domain.TOrderDaliyPlanItem;
 import com.nhry.data.order.domain.TOrderDaliyPlanItemKey;
 import com.nhry.data.order.domain.TPreOrder;
+import com.nhry.model.milk.MilkQueryModel;
 import com.nhry.model.milktrans.RequireOrderSearch;
 import com.nhry.model.order.OrderDaliyPlanReportEntityModel;
 import com.nhry.model.order.OrderDaliyPlanReportModel;
@@ -180,4 +181,10 @@ public interface TOrderDaliyPlanItemMapper {
      * @return
      */
     BigDecimal sumFinishAmtByPlanOrderNo(String planItemNo);
+
+	List<Map<String, String>> findOrderSumByDate(MilkQueryModel  model);
+    
+    
+    
+    
 }

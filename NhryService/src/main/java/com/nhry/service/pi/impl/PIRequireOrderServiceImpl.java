@@ -1,6 +1,5 @@
 package com.nhry.service.pi.impl;
 
-import com.mysql.fabric.xmlrpc.base.Data;
 import com.nhry.common.auth.UserSessionService;
 import com.nhry.common.exception.MessageCode;
 import com.nhry.common.exception.ServiceException;

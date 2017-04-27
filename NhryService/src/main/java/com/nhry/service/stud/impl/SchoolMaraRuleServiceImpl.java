@@ -63,46 +63,54 @@ public class SchoolMaraRuleServiceImpl implements SchoolMaraRuleService {
 		if(StringUtils.isBlank(currentUser.getSalesOrg())){
 			throw new ServiceException(MessageCode.LOGIC_ERROR, "当前用户未关联销售组织");
 		}
-		if(null == ruleBase && null == tMdSchoolMaraRuleList){
-			throw new ServiceException(MessageCode.LOGIC_ERROR, "全局损耗基数和学校损耗基数不能全为空");
-		}
 		mdel.setSalesOrg(currentUser.getSalesOrg());
 		
-	    if(ruleBase !=null){
-	    	//删除当前损耗基数
-	    	tMdSchoolMaraRuleBaseMapper.deleteBySalesOrg(currentUser.getSalesOrg());
-	    	//添加损耗基数
-	    	Date date = new Date();
-	    	ruleBase.setMid(UUID.randomUUID().toString().replace("-", ""));
-	    	ruleBase.setCreateAt(date);
-	    	ruleBase.setCreateBy(currentUser.getLoginName());
-	    	ruleBase.setCreateByTxt(currentUser.getDisplayName());
-	    	ruleBase.setLastModified(date);
-	    	ruleBase.setLastModifiedBy(currentUser.getLoginName());
-	    	ruleBase.setLastModifiedByTxt(currentUser.getDisplayName());
-	    	ruleBase.setSalesOrg(currentUser.getSalesOrg());
-	    	tMdSchoolMaraRuleBaseMapper.intsertinfo(ruleBase);
-	    }
+		/**
+		 * 学校基数设置
+		 */
+		if(null == ruleBase){
+			ruleBase = new TMdSchoolMaraRuleBase();
+			ruleBase.setFixedMaxQty(0);
+			ruleBase.setFixedQty(0);
+			ruleBase.setFixedScale(0);
+		}
+    	//删除当前学校的损耗基数
+    	tMdSchoolMaraRuleBaseMapper.deleteBySalesOrgAndSchoolCode(currentUser.getSalesOrg(), mdel.getSchoolCode());
+    	//添加损耗基数
+    	Date date = new Date();
+    	ruleBase.setSchoolCode(mdel.getSchoolCode());
+    	ruleBase.setMid(UUID.randomUUID().toString().replace("-", ""));
+    	ruleBase.setCreateAt(date);
+    	ruleBase.setCreateBy(currentUser.getLoginName());
+    	ruleBase.setCreateByTxt(currentUser.getDisplayName());
+    	ruleBase.setLastModified(date);
+    	ruleBase.setLastModifiedBy(currentUser.getLoginName());
+    	ruleBase.setLastModifiedByTxt(currentUser.getDisplayName());
+    	ruleBase.setSalesOrg(currentUser.getSalesOrg());
+    	tMdSchoolMaraRuleBaseMapper.intsertinfo(ruleBase);
 		
-		int result=0;
-		
+    	
+    	/**
+    	 * 学校奶品设置
+    	 */
 		//删除当前奶品损耗基数
 		tMdSchoolMaraRuleMapper.deleteByModel(mdel);
 		//保存当前奶品损耗基数
-		for (TMdSchoolMaraRule tMdSchoolMaraRule : tMdSchoolMaraRuleList) {
-			Date date = new Date();
-			tMdSchoolMaraRule.setMid(UUID.randomUUID().toString().replace("-", ""));
-			tMdSchoolMaraRule.setCreateAt(date);
-			tMdSchoolMaraRule.setCreateBy(currentUser.getLoginName());
-			tMdSchoolMaraRule.setCreateByTxt(currentUser.getDisplayName());
-			tMdSchoolMaraRule.setLastModified(date);
-			tMdSchoolMaraRule.setLastModifiedBy(currentUser.getLoginName());
-			tMdSchoolMaraRule.setLastModifiedByTxt(currentUser.getDisplayName());
-			tMdSchoolMaraRule.setSalesOrg(currentUser.getSalesOrg());
-			tMdSchoolMaraRule.setSchoolCode(mdel.getSchoolCode());;
-			result+=tMdSchoolMaraRuleMapper.intsertinfo(tMdSchoolMaraRule);
+		if(null != tMdSchoolMaraRuleList && tMdSchoolMaraRuleList.size() > 0){
+			for (TMdSchoolMaraRule tMdSchoolMaraRule : tMdSchoolMaraRuleList) {
+				tMdSchoolMaraRule.setMid(UUID.randomUUID().toString().replace("-", ""));
+				tMdSchoolMaraRule.setCreateAt(date);
+				tMdSchoolMaraRule.setCreateBy(currentUser.getLoginName());
+				tMdSchoolMaraRule.setCreateByTxt(currentUser.getDisplayName());
+				tMdSchoolMaraRule.setLastModified(date);
+				tMdSchoolMaraRule.setLastModifiedBy(currentUser.getLoginName());
+				tMdSchoolMaraRule.setLastModifiedByTxt(currentUser.getDisplayName());
+				tMdSchoolMaraRule.setSalesOrg(currentUser.getSalesOrg());
+				tMdSchoolMaraRule.setSchoolCode(mdel.getSchoolCode());;
+				tMdSchoolMaraRuleMapper.intsertinfo(tMdSchoolMaraRule);
+			}
 		}
-		return result;
+		return 1;
 	}
 
 //	@Override

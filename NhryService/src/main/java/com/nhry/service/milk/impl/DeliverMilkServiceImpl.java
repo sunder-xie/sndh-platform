@@ -605,6 +605,31 @@ public class DeliverMilkServiceImpl extends BaseService implements DeliverMilkSe
 			throw new ServiceException(MessageCode.LOGIC_ERROR,"没有此路单号!");
 		}
 	}
+	
+	
+	@Override
+	public List<Map<String,String>> findOrderSumByDate(MilkQueryModel  model){
+		
+		if(model !=null){
+			if(StringUtils.isEmpty(model.getBranchNo())){
+				throw new ServiceException(MessageCode.LOGIC_ERROR,"没有奶站编号!");
+			}
+			if(StringUtils.isEmpty(model.getDate())){
+				throw new ServiceException(MessageCode.LOGIC_ERROR,"没有时间!");
+			}
+			
+			if(StringUtils.isEmpty(model.getLoginName())){
+				throw new ServiceException(MessageCode.LOGIC_ERROR,"送奶员名称!");
+			}
+			return tOrderDaliyPlanItemMapper.findOrderSumByDate(model);
+			
+		}else{
+			throw new ServiceException(MessageCode.LOGIC_ERROR,"参数异常!");
+		}
+		
+		
+	}
+	
 
 	@Override
 	public List selectRouteDetailsAllforDeliver(String code)
