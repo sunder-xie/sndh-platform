@@ -48,4 +48,6 @@ public interface TMdOrgPriceService {
     PageInfo selectOrgPricePage(OrgPriceModel record);
 
     TMdOrgPrice selectOrgPriceByMatnr(OrgPriceModel record);
+
+    PageInfo selectOrgPriceListOldPrice(OrgPriceModel record);
 }

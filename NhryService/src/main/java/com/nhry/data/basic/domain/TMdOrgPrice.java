@@ -36,6 +36,8 @@ public class TMdOrgPrice {
 
     private String secCateName;
 
+    private BigDecimal oldPrice;
+
     public String getId() {
         return id;
     }
@@ -162,5 +164,13 @@ public class TMdOrgPrice {
 
     public void setSecCateName(String secCateName) {
         this.secCateName = secCateName;
+    }
+
+    public BigDecimal getOldPrice() {
+        return oldPrice;
+    }
+
+    public void setOldPrice(BigDecimal oldPrice) {
+        this.oldPrice = oldPrice;
     }
 }

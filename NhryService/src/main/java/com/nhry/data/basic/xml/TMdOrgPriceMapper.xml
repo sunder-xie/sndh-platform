@@ -18,6 +18,7 @@
     <result column="SHORT_TXT" property="shortTxt" jdbcType="VARCHAR" />
     <result column="MATNR_TXT" property="matnrTxt" jdbcType="VARCHAR" />
     <result column="SEC_CATE_NAME" property="secCateName" jdbcType="VARCHAR" />
+    <result column="OLD_PRICE" property="oldPrice" jdbcType="VARCHAR" />
   </resultMap>
   <sql id="Base_Column_List" >
     ID, MATNR, SALES_ORG, ORG_ID, PRICE_AGREE, PRICE_DELIVER, START_DATE, END_DATE, STATUS,
@@ -50,7 +51,43 @@
     AND STATUS #{status,jdbcType=VARCHAR}
     </if>
   </select>
+
   <select id="selectOrgPriceList" resultMap="BaseResultMap" parameterType="com.nhry.model.basic.OrgPriceModel">
+    SELECT
+    t.ID,
+    t.MATNR,
+    t1.SHORT_TXT,
+    t1.SHORT_TXT MATNR_TXT,
+    t3.ITEM_NAME SEC_CATE_NAME,
+    t.IS_SHOW,
+    t.PRICE_AGREE,
+    t.PRICE_DELIVER,
+    t.START_DATE,
+    t.END_DATE,
+    t.STATUS,
+    t.ORG_ID,
+    t.SALES_ORG
+    FROM
+    t_md_org_price t
+    INNER JOIN t_md_order_org t4 on t4.ID = t.ORG_ID and t4.ORG_ID =#{orgId,jdbcType=VARCHAR}
+    LEFT JOIN t_md_mara_ex t1 ON t1.MATNR = t.MATNR and t1.SALES_ORG = t.SALES_ORG
+    LEFT JOIN t_md_mara t2 on t2.SALES_ORG = t.SALES_ORG and t2.MATNR = t.MATNR
+    LEFT JOIN t_sys_code_item t3 on t3.ITEM_CODE = t2.SEC_CATE and t3.TYPE_CODE=<include refid="mybaties.constant.products_second_category"></include>
+    AND t1.SALES_ORG = t.SALES_ORG
+    WHERE
+    t.SALES_ORG = #{salesOrg,jdbcType=VARCHAR}
+    <if test="status != null  and status != ''" >
+      AND t.STATUS = #{status,jdbcType=VARCHAR}
+    </if>
+    <if test="isShow != null  and isShow != ''" >
+      AND t.IS_SHOW = #{isShow,jdbcType=VARCHAR}
+    </if>
+    <if test="search != null  and search != ''" >
+      AND (t.MATNR like '%${search}%' or t1.SHORT_TXT like '%${search}%')
+    </if>
+    ORDER BY t.IS_SHOW DESC
+  </select>
+  <select id="selectOrgPriceListPage" resultMap="BaseResultMap" parameterType="com.nhry.model.basic.OrgPriceModel">
     SELECT
     t.ID,
     t.MATNR,
@@ -79,6 +116,59 @@
     </if>
     <if test="isShow != null  and isShow != ''" >
       AND t.IS_SHOW = #{isShow,jdbcType=VARCHAR}
+    </if>
+    <if test="search != null  and search != ''" >
+      AND (t.MATNR like '%${search}%' or t1.SHORT_TXT like '%${search}%')
+    </if>
+    ORDER BY t.IS_SHOW DESC
+  </select>
+  <select id="selectOrgPriceListOldPrice" resultMap="BaseResultMap" parameterType="com.nhry.model.basic.OrgPriceModel">
+    SELECT
+    t.ID,
+    t.MATNR,
+    t1.SHORT_TXT,
+    t1.SHORT_TXT MATNR_TXT,
+    t3.ITEM_NAME SEC_CATE_NAME,
+    t.IS_SHOW,
+    t.PRICE_AGREE,
+    t.PRICE_DELIVER,
+    t.START_DATE,
+    t.END_DATE,
+    t. STATUS,
+    t.ORG_ID,
+    t.SALES_ORG,
+    (
+    SELECT
+    o.PRICE_AGREE
+    FROM
+    t_md_org_price o
+    WHERE
+    o.MATNR = t.MATNR
+    AND o.START_DATE &lt;= #{orderDate,jdbcType=VARCHAR}
+    AND o.END_DATE &gt; #{orderDate,jdbcType=VARCHAR}
+    AND o.`STATUS` = 'N'
+    ) OLD_PRICE
+    FROM
+    t_md_org_price t
+    INNER JOIN t_md_order_org t4 ON t4.ID = t.ORG_ID
+    AND t4.ORG_CODE = #{orgId,jdbcType=VARCHAR}
+    LEFT JOIN t_md_mara_ex t1 ON t1.MATNR = t.MATNR
+    AND t1.SALES_ORG = t.SALES_ORG
+    LEFT JOIN t_md_mara t2 ON t2.SALES_ORG = t.SALES_ORG
+    AND t2.MATNR = t.MATNR
+    LEFT JOIN t_sys_code_item t3 ON t3.ITEM_CODE = t2.SEC_CATE
+    AND t3.TYPE_CODE =<include refid = "mybaties.constant.products_second_category" ></include >
+    AND t1.SALES_ORG = t.SALES_ORG
+    WHERE
+    t.SALES_ORG = #{salesOrg,jdbcType=VARCHAR}
+    <if test="status != null  and status != ''" >
+      AND t.STATUS = #{status,jdbcType=VARCHAR}
+    </if>
+    <if test="isShow != null  and isShow != ''" >
+      AND t.IS_SHOW = #{isShow,jdbcType=VARCHAR}
+    </if>
+    <if test="search != null  and search != ''" >
+      AND (t.MATNR like '%${search}%' or t1.SHORT_TXT like '%${search}%')
     </if>
     ORDER BY t.IS_SHOW DESC
   </select>
