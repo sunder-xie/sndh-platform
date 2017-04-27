@@ -55,6 +55,11 @@
     MATNR, UNIT, QTY, PRICE, AMT, REMAIN_AMT, STATUS, CREATE_AT, CREATE_BY, CREATE_BY_TXT, 
     LAST_MODIFIED, LAST_MODIFIED_BY, LAST_MODIFIED_BY_TXT,GIFT_QTY,PROMOTION_FLAG
   </sql>
+  <sql id="PREORDER_SOURCE_BRANCH">
+    AND (o.PREORDER_SOURCE = '10' OR o.PREORDER_SOURCE = '20' OR o.PREORDER_SOURCE = '30'
+    OR o.PREORDER_SOURCE = '50' OR o.PREORDER_SOURCE = '60')
+    AND o.ONLINE_SOURCE_TYPE = null
+  </sql>
   <select id="searchDaliyOrdersByPage" resultMap="BaseResultMap" parameterType="com.nhry.model.order.OrderSearchModel" >
     select 
     d.ORDER_NO, d.ORDER_DATE, d.PLAN_ITEM_NO, d.ITEM_NO, d.DISP_DATE,(CASE dayofweek(d.DISP_DATE)
@@ -717,7 +722,12 @@
                           AND e.SALES_ORG = #{salesOrg,jdbcType=VARCHAR}
                           LEFT JOIN t_promotion p ON o.PROMOTION = p.PROM_NO
                           WHERE
-                              1 = 1 AND o.PREORDER_SOURCE != '70' AND o.PREORDER_STAT != '30' AND o.PREORDER_STAT != '40' AND i.`STATUS` != '30' AND i.GIFT_QTY IS NULL
+                              1 = 1
+                              <include refid="PREORDER_SOURCE_BRANCH"/>
+                              AND o.PREORDER_STAT != '30'
+                              AND o.PREORDER_STAT != '40'
+                              AND i.`STATUS` != '30'
+                              AND i.GIFT_QTY IS NULL
                           AND (
                               (
                                   e.PRE_DAYS = 2 AND i.DISP_DATE = #{secondDay,jdbcType=DATE}
@@ -776,7 +786,7 @@
 
   <select id="selectNoProDayPlanOfDealerBranch70" resultType="java.util.HashMap" parameterType="com.nhry.model.milktrans.RequireOrderSearch">
     SELECT
-          i.MATNR matnr,SUM(i.QTY) qty,o.ONLINE_SOURCE_TYPE orgCode
+          i.MATNR matnr,SUM(i.QTY) qty,o.ONLINE_SOURCE_TYPE orgCode,i.PRICE price
       FROM
           t_mst_order_daliy_plan_item i
       LEFT JOIN t_preorder o ON i.ORDER_NO = o.ORDER_NO
@@ -795,7 +805,8 @@
               AND o.BRANCH_NO = #{branchNo,jdbcType=VARCHAR}
               GROUP BY
                   o.ONLINE_SOURCE_TYPE,
-                  i.MATNR
+                  i.MATNR,
+                  i.PRICE
   </select>
 
   <select id="getDailOrderPromOfSelfBranch" resultType="String" parameterType="com.nhry.model.milktrans.RequireOrderSearch" >
@@ -815,7 +826,7 @@
     SELECT
           SUM(di.CONFIRM_QTY) qty,
           di.CONFIRM_MATNR matnr,
-          o.ONLINE_SOURCE_TYPE orgCode
+          o.ONLINE_SOURCE_TYPE orgCode,di.PRICE price
       FROM
           t_mst_disp_order_item di
       LEFT JOIN t_mst_disp_order ti ON di.ORDER_NO = ti.ORDER_NO
@@ -832,7 +843,8 @@
       AND ti.DISP_DATE = #{orderDate,jdbcType=DATE}
       GROUP BY
           o.ONLINE_SOURCE_TYPE,
-          di.CONFIRM_MATNR
+          di.CONFIRM_MATNR,
+          di.PRICE
   </select>
   <select id="selectProDayPlanOfSelfBranch" resultMap="BaseResultMap" parameterType="com.nhry.model.milktrans.RequireOrderSearch" >
          SELECT SUM(di.CONFIRM_QTY) QTY,di.CONFIRM_MATNR,p.PROMOTION PROMOTION_FLAG
@@ -850,14 +862,14 @@
               and o.PREORDER_SOURCE = '40'
             </if>
             <if test="preorderSource != null and preorderSource != '40'">
-              and o.PREORDER_SOURCE != '40' and o.PREORDER_SOURCE != '70'
+              <include refid="PREORDER_SOURCE_BRANCH"/>
             </if>
             and e.SALES_ORG = #{salesOrg,jdbcType=VARCHAR}
             and  ti.DISP_DATE = #{orderDate,jdbcType=DATE}
             GROUP BY di.CONFIRM_MATNR,p.PROMOTION
   </select>
   <select id="selectNoProDayPlanOfSelfBranch40" resultMap="BaseResultMap" parameterType="com.nhry.model.milktrans.RequireOrderSearch" >
-    SELECT SUM(di.CONFIRM_QTY) QTY,di.CONFIRM_MATNR
+    SELECT SUM(di.CONFIRM_QTY) QTY,di.CONFIRM_MATNR,di.PRICE
     from  t_mst_disp_order_item di
     LEFT JOIN  t_mst_disp_order ti ON di.ORDER_NO = ti.ORDER_NO
     LEFT JOIN t_preorder o on 	di.ORG_ORDER_NO = o.ORDER_NO
@@ -870,7 +882,7 @@
     and o.PREORDER_SOURCE = '40'
     and e.SALES_ORG = #{salesOrg,jdbcType=VARCHAR}
     and  ti.DISP_DATE = #{orderDate,jdbcType=DATE}
-    GROUP BY di.CONFIRM_MATNR
+    GROUP BY di.CONFIRM_MATNR,di.PRICE
   </select>
   <select id="selectNoProDayPlanOfSelfBranch" resultMap="BaseResultMap" parameterType="com.nhry.model.milktrans.RequireOrderSearch" >
          SELECT  t.MATNR,SUM(t.QTY) QTY,  t.CONFIRM_MATNR
@@ -1439,7 +1451,7 @@
     AND e.SALES_ORG = #{salesOrg,jdbcType=VARCHAR}
     LEFT JOIN t_promotion p ON o.PROMOTION = p.PROM_NO
     WHERE 1 = 1
-    AND o.PREORDER_SOURCE != '70'
+    <include refid="PREORDER_SOURCE_BRANCH"/>
     AND o.PREORDER_STAT != '30'
     AND o.PREORDER_STAT != '40'
     AND i.`STATUS` != '30'
@@ -1500,8 +1512,7 @@
 			AND di.GIFT_FLAG IS NULL
 			AND disp.DISP_DATE = #{orderDate,jdbcType=DATE}
 			AND o.BRANCH_NO = #{branchNo,jdbcType=VARCHAR}
-			AND o.PREORDER_SOURCE != '70'
-			AND o.PREORDER_SOURCE != '40'
+            <include refid="PREORDER_SOURCE_BRANCH"/>
 			AND (o.PROMOTION is NULL or o.PROMOTION = '')
 			GROUP BY
 				o.EMP_NO,
@@ -1526,8 +1537,7 @@
 				AND di.GIFT_FLAG IS NULL
 				AND disp.DISP_DATE = #{orderDate,jdbcType=DATE}
 				AND o.BRANCH_NO = #{branchNo,jdbcType=VARCHAR}
-				AND o.PREORDER_SOURCE != '70'
-			    AND o.PREORDER_SOURCE != '40'
+                <include refid="PREORDER_SOURCE_BRANCH"/>
 			    AND (o.PROMOTION is NULL or o.PROMOTION = '')
 				GROUP BY
 					o.EMP_NO,
@@ -1545,4 +1555,78 @@
     and (STATUS ='20' or STATUS = '10')
   </select>
 
+  <select id="selectNoProDayPlanOfSelfBranch10" resultType="java.util.HashMap" parameterType="com.nhry.model.milktrans.RequireOrderSearch">
+    SELECT
+        o.ONLINE_SOURCE_TYPE onlinecode,
+        SUM(di.CONFIRM_QTY) qty,
+        di.CONFIRM_MATNR matnr,
+        di.PRICE price
+    FROM
+        t_mst_disp_order_item di
+    LEFT JOIN t_mst_disp_order ti ON di.ORDER_NO = ti.ORDER_NO
+    LEFT JOIN t_preorder o ON di.ORG_ORDER_NO = o.ORDER_NO
+    WHERE
+        1 = 1
+    AND di.GIFT_FLAG IS NULL
+    AND ti.STATUS = '20'
+    AND di.CONFIRM_QTY > 0
+    AND o.BRANCH_NO =  #{branchNo,jdbcType=VARCHAR}
+    AND o.PREORDER_SOURCE = '10'
+    AND o.ONLINE_SOURCE_TYPE != null
+    AND ti.DISP_DATE =  #{orderDate,jdbcType=DATE}
+    GROUP BY
+        o.ONLINE_SOURCE_TYPE,
+        di.CONFIRM_MATNR,
+        di.PRICE
+  </select>
+
+  <select id="selectProDayPlanOfSelfBranch10" resultType="java.util.HashMap" parameterType="com.nhry.model.milktrans.RequireOrderSearch">
+    SELECT
+        SUM(di.CONFIRM_QTY) qty,
+        di.CONFIRM_MATNR matnr,
+        p.PROMOTION promotion ,
+        o.ONLINE_SOURCE_TYPE onlinecode
+    FROM
+        t_mst_disp_order_item di
+    LEFT JOIN t_mst_disp_order ti ON di.ORDER_NO = ti.ORDER_NO
+    LEFT JOIN t_preorder o ON di.ORG_ORDER_NO = o.ORDER_NO
+    LEFT JOIN t_mst_plan_order_item p ON di.ORG_ITEM_NO = p.ITEM_NO
+    WHERE
+        1 = 1
+    AND di.GIFT_FLAG IS NOT NULL
+    AND ti. STATUS = '20'
+    AND di.CONFIRM_QTY > 0
+    AND o.BRANCH_NO = #{branchNo,jdbcType=VARCHAR}
+    AND o.PREORDER_SOURCE = '10'
+    AND o.ONLINE_SOURCE_TYPE != null
+    AND ti.DISP_DATE = #{orderDate,jdbcType=DATE}
+    GROUP BY
+        o.ONLINE_SOURCE_TYPE,
+        di.CONFIRM_MATNR,
+        p.PROMOTION
+  </select>
+
+  <select id="selectNoProDayPlanOfDealerBranch10" resultMap="BaseResultMap" parameterType="com.nhry.model.milktrans.RequireOrderSearch" >
+    select
+    i.MATNR matnr,
+	SUM(i.QTY) qty,
+	o.ONLINE_SOURCE_TYPE onlinecode,
+	i.PRICE price
+    from t_mst_order_daliy_plan_item i
+    LEFT JOIN t_preorder o on 	i.ORDER_NO = o.ORDER_NO
+    LEFT JOIN t_md_mara_ex e on i.MATNR = e.MATNR  and e.SALES_ORG = #{salesOrg,jdbcType=VARCHAR}
+    where  1=1
+    AND o.PREORDER_SOURCE = '10'
+    AND o.ONLINE_SOURCE_TYPE != null
+    AND o.PREORDER_STAT !='30'
+    AND o.PREORDER_STAT !='40'
+    AND i.`STATUS` !='30'
+    AND o.ONLINE_SOURCE_TYPE != null
+    AND i.GIFT_QTY is null
+    AND  ((e.PRE_DAYS= 2 AND i.DISP_DATE = #{secondDay,jdbcType=DATE} ) or (e.PRE_DAYS= 1 AND i.DISP_DATE = #{firstDay,jdbcType=DATE}))
+    AND o.BRANCH_NO = #{branchNo,jdbcType=VARCHAR}
+    GROUP BY o.ONLINEORDER_NO,
+			i.MATNR,
+			i.PRICE
+  </select>
 </mapper>

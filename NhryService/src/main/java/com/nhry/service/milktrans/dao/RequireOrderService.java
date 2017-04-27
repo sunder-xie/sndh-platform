@@ -154,8 +154,107 @@ public interface RequireOrderService {
 
     Date getRequireDate(Date orderDate);
 
+    Date getZyOrderDate(Date requireDate);
+
     BigDecimal sumGiOrderItemByReqOrderNo(Date orderDate);
 
     BigDecimal sumSalOrderByDate(Date reqOrderDate);
 
+    /**
+     * 生成自营奶站的牛奶钱包销售订单（交货单减去）
+     * @param orderDate
+     * @param branchNo
+     * @param salesOrg
+     * @param entries
+     * @return
+     */
+    TSsmSalOrder creatNoPromoSalOrderOfBranch40SubGi(Date orderDate,String branchNo,String salesOrg,Map<String, Integer> entries);
+
+    /**
+     * 生成自营奶站的牛奶钱包满赠销售订单（交货单减去）
+     * @param orderDate
+     * @param branchNo
+     * @param salesOrg
+     * @param entries
+     * @return
+     */
+    TSsmSalOrder creatPromoSalOrderOfBranch40SubGi(Date orderDate,String branchNo,String salesOrg,Map<String, Integer> entries);
+
+    /**
+     * 生成自营奶站的满赠销售订单（交货单减去）
+     * @param orderDate
+     * @param branchNo
+     * @param salesOrg
+     * @param entries
+     * @return
+     */
+    TSsmSalOrder creatProDayPlanOfSelfBranchSubGi(Date orderDate,String branchNo,String salesOrg,Map<String ,Integer> entries);
+
+    /**
+     * 生成自营奶站的年卡销售订单（交货单减去）
+     * @param orderDate
+     * @param branchNo
+     * @param salesOrg
+     * @param entries
+     * @return
+     */
+    TSsmSalOrder creatPromDaliyDiscountAmtOfBranchSubGi(Date orderDate,String branchNo,String salesOrg,Map<String,Integer> entries);
+
+    /**
+     * 生成自营奶站的机构销售订单（交货单减去）
+     * @param orderDate
+     * @param branchNo
+     * @param salesOrg
+     * @param entries
+     * @return
+     */
+    List<TSsmSalOrder> creatProDayPlanOfSelfOrgSubGi(Date orderDate,String branchNo,String salesOrg,Map<String,Integer> entries);
+
+    /**
+     * 生成自营奶站的电商销售订单(交货单减去)
+     * @param orderDate
+     * @param branchNo
+     * @param salesOrg
+     * @param entries
+     * @return
+     */
+    List<TSsmSalOrder> creatNoPromoSalOrderOfBranch10SubGi(Date orderDate,String branchNo,String salesOrg,Map<String,Integer> entries);
+
+    /**
+     * 生成自营奶站的电商满赠销售订单(交货单减去)
+     * @param orderDate
+     * @param branchNo
+     * @param salesOrg
+     * @param entries
+     * @return
+     */
+    List<TSsmSalOrder> creatPromoSalOrderOfBranch10SubGi(Date orderDate,String branchNo,String salesOrg,Map<String,Integer> entries);
+
+
+    /**
+     * 生成电商的促销销售订单（自营奶站）
+     * @param orderDate
+     * @param branchNo
+     * @param salesOrg
+     * @return
+     */
+    List<TSsmSalOrder> creatPromoSalOrderOfBranch10(Date orderDate, String branchNo, String salesOrg);
+
+    /**
+     * 生成电商的销售订单（自营奶站）
+     * @param orderDate
+     * @param branchNo
+     * @param salesOrg
+     * @return
+     */
+    List<TSsmSalOrder> creatNoPromoSalOrderOfBranch10(Date orderDate, String branchNo, String salesOrg);
+
+    /**生成电商的销售订单（经销商奶站）
+     *
+     * @param orderDate
+     * @param branchNo
+     * @param salesOrg
+     * @return
+     */
+    List<TSsmSalOrder> creatNoPromoSalOrderOfDealerBranch10(Date orderDate, String branchNo, String salesOrg);
 }
