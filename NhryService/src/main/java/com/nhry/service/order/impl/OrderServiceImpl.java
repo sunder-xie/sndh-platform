@@ -18,11 +18,13 @@ import com.nhry.data.milk.domain.TDispOrderItem;
 import com.nhry.data.order.dao.*;
 import com.nhry.data.order.domain.*;
 import com.nhry.data.stock.dao.TSsmGiOrderItemMapper;
+import com.nhry.model.basic.OrgPriceModel;
 import com.nhry.model.milk.RouteDetailUpdateModel;
 import com.nhry.model.order.*;
 import com.nhry.model.statistics.ExtendBranchInfoModel;
 import com.nhry.service.BaseService;
 import com.nhry.service.basic.dao.PriceService;
+import com.nhry.service.basic.dao.TMdOrgPriceService;
 import com.nhry.service.basic.dao.TVipCustInfoService;
 import com.nhry.service.external.dao.EcService;
 import com.nhry.service.milktrans.dao.RedateByTradeService;
@@ -80,6 +82,11 @@ public class OrderServiceImpl extends BaseService implements OrderService {
     private TOrderDaliyPlanItemBackMapper tOrderDaliyPlanItemBackMapper;
     private TYearCardCompOrderMapper tYearCardCompOrderMapper;
     private RedateByTradeService redateByTradeService;
+    private TMdOrgPriceService tMdOrgPriceService;
+
+    public void settMdOrgPriceService(TMdOrgPriceService tMdOrgPriceService) {
+        this.tMdOrgPriceService = tMdOrgPriceService;
+    }
 
     public void setRedateByTradeService(RedateByTradeService redateByTradeService) {
         this.redateByTradeService = redateByTradeService;
@@ -731,7 +738,24 @@ public class OrderServiceImpl extends BaseService implements OrderService {
                 }
             } else {
                 for (TPlanOrderItem entry : entries) {
-                    float price = priceService.getMaraPriceForCreateOrder(order.getBranchNo(), entry.getMatnr(), order.getDeliveryType(), branch.getSalesOrg());
+                    float price = 0;
+                    if("70".equals(order.getPreorderSource())){
+                        OrgPriceModel opm = new OrgPriceModel();
+                        opm.setOrgId(order.getOnlineSourceType());
+                        opm.setMatnr(entry.getMatnr());
+
+                        TMdOrgPrice top =tMdOrgPriceService.selectOrgPriceByMatnr(opm);
+                        if(top!=null){
+                            if(top.getPriceAgree()!=null){
+                                price = top.getPriceAgree().floatValue();
+                            }else{
+                                throw new ServiceException(MessageCode.LOGIC_ERROR, entry.getMatnr()+"：产品价格存在问题，请维护");
+                            }
+                        }
+                    }else{
+                        price = priceService.getMaraPriceForCreateOrder(order.getBranchNo(), entry.getMatnr(), order.getDeliveryType(), branch.getSalesOrg());
+                    }
+
                     if (price <= 0) {
                         throw new ServiceException(MessageCode.LOGIC_ERROR, "重新计算产品价格失败，" + entry.getMatnr() + " 产品价格小于0,建议退回");
                     }
@@ -3425,8 +3449,25 @@ public class OrderServiceImpl extends BaseService implements OrderService {
                     && !"10".equals(order.getPreorderSource())
                     && !"40".equals(order.getPreorderSource())) {
                 //如果是  没有奶站的订单  不重新计算金额
+                float price = 0;
                 if (StringUtils.isNotBlank(order.getBranchNo())) {
-                    float price = priceService.getMaraPriceForCreateOrder(order.getBranchNo(), entry.getMatnr(), order.getDeliveryType(), branch.getSalesOrg());
+                    if("70".equals(order.getPreorderSource())){
+                        OrgPriceModel opm = new OrgPriceModel();
+                        opm.setOrgId(record.getOrder().getOnlineSourceType());
+                        opm.setMatnr(entry.getMatnr());
+
+                         TMdOrgPrice top =tMdOrgPriceService.selectOrgPriceByMatnr(opm);
+                        if(top!=null){
+                            if(top.getPriceAgree()!=null){
+                                price = top.getPriceAgree().floatValue();
+                            }else{
+                                throw new ServiceException(MessageCode.LOGIC_ERROR, entry.getMatnr()+"：产品价格存在问题，请维护");
+                            }
+                        }
+                    }else{
+                         price = priceService.getMaraPriceForCreateOrder(order.getBranchNo(), entry.getMatnr(), order.getDeliveryType(), branch.getSalesOrg());
+                    }
+
                     if (price <= 0)
                         throw new ServiceException(MessageCode.LOGIC_ERROR, "产品价格小于0,请检查传入的商品号，奶站和配送方式!信息：" + "奶站：" + order.getBranchNo() + "商品号：" + entry.getMatnr() + "配送方式：" + order.getDeliveryType() + "销售组织：" + branch.getSalesOrg());
                     entry.setSalesPrice(new BigDecimal(String.valueOf(price)));

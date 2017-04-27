@@ -3,12 +3,15 @@ package com.nhry.rest.basic;
 import com.github.pagehelper.PageInfo;
 import com.nhry.common.exception.MessageCode;
 import com.nhry.data.basic.domain.TMdDealer;
+import com.nhry.data.basic.domain.TMdOrgPrice;
 import com.nhry.data.basic.domain.TMdPrice;
 import com.nhry.data.basic.domain.TMdPriceBranch;
+import com.nhry.model.basic.OrgPriceModel;
 import com.nhry.model.basic.PriceQueryModel;
 import com.nhry.model.sys.ResponseModel;
 import com.nhry.rest.BaseResource;
 import com.nhry.service.basic.dao.PriceService;
+import com.nhry.service.basic.dao.TMdOrgPriceService;
 import com.sun.jersey.spi.resource.Singleton;
 import com.wordnik.swagger.annotations.Api;
 import com.wordnik.swagger.annotations.ApiOperation;
@@ -21,6 +24,7 @@ import org.springframework.stereotype.Controller;
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+import java.util.List;
 
 @Path("/price")
 @Component
@@ -31,6 +35,8 @@ import javax.ws.rs.core.Response;
 public class PriceResource extends BaseResource {
 	@Autowired
 	private PriceService priceService;
+	@Autowired
+	private TMdOrgPriceService tMdOrgPriceService;
 	
 	@POST
 	@Path("/add/price")
@@ -154,5 +160,54 @@ public class PriceResource extends BaseResource {
 			@ApiParam(required=true,name="pageNum",value="当前页码")@PathParam("pageNum")int pageNum,
 			@ApiParam(required=true,name="pageSize",value="每页显示条数")@PathParam("pageSize")int pageSize){
 		return convertToRespModel(MessageCode.NORMAL, null, priceService.findMaraPricesById(id,pageNum,pageSize));
+	}
+
+	@POST
+	@Path("/orgPrice/{orgId}")
+	@Produces(MediaType.APPLICATION_JSON)
+	@Consumes(MediaType.APPLICATION_JSON)
+	@ApiOperation(value = "/orgPrice/{orgId}", response = ResponseModel.class, notes = "初始化该机构价格组")
+	public Response saveOrgPriceMatnr(@ApiParam(required=true,name="orgId",value="机构编号")@PathParam("orgId")String orgId){
+		return convertToRespModel(MessageCode.NORMAL, null, tMdOrgPriceService.inserListOrgMatnr(orgId));
+	}
+	@POST
+	@Path("/upOrgPriceList")
+	@Produces(MediaType.APPLICATION_JSON)
+	@Consumes(MediaType.APPLICATION_JSON)
+	@ApiOperation(value = "/upOrgPriceList", response = ResponseModel.class, notes = "批量更新机构价格")
+	public Response upOrgPriceList(@ApiParam(name = "TMdOrgPirce",value = "TMdOrgPirce")List<TMdOrgPrice> orgPriceList){
+		return convertToRespModel(MessageCode.NORMAL, null, tMdOrgPriceService.updateOrgPriceSelective(orgPriceList));
+	}
+	@POST
+	@Path("/upOrgPrice")
+	@Produces(MediaType.APPLICATION_JSON)
+	@Consumes(MediaType.APPLICATION_JSON)
+	@ApiOperation(value = "/updateOrgPrice", response = ResponseModel.class, notes = "机构更新机构价格")
+	public Response updateOrgPrice(@ApiParam(name = "TMdOrgPirce",value = "TMdOrgPirce")TMdOrgPrice orgPrice){
+		return convertToRespModel(MessageCode.NORMAL, null, tMdOrgPriceService.updateOrgPrice(orgPrice));
+	}
+	@POST
+	@Path("/selectOrgPriceList")
+	@Produces(MediaType.APPLICATION_JSON)
+	@Consumes(MediaType.APPLICATION_JSON)
+	@ApiOperation(value = "/selectOrgPriceList", response = ResponseModel.class, notes = "查询机构下价格列表")
+	public Response selectOrgPriceList(@ApiParam(name = "OrgPriceModel",value = "OrgPriceModel")OrgPriceModel orgPrice){
+		return convertToRespModel(MessageCode.NORMAL, null, tMdOrgPriceService.selectOrgPriceList(orgPrice));
+	}
+	@POST
+	@Path("/selectOrgPricePage")
+	@Produces(MediaType.APPLICATION_JSON)
+	@Consumes(MediaType.APPLICATION_JSON)
+	@ApiOperation(value = "/selectOrgPricePage", response = ResponseModel.class, notes = "查询机构下价格列表分页")
+	public Response selectOrgPricePage(@ApiParam(name = "OrgPriceModel",value = "OrgPriceModel")OrgPriceModel orgPrice){
+		return convertToRespModel(MessageCode.NORMAL, null, tMdOrgPriceService.selectOrgPricePage(orgPrice));
+	}
+	@POST
+	@Path("/selectOrgPriceByMatnr")
+	@Produces(MediaType.APPLICATION_JSON)
+	@Consumes(MediaType.APPLICATION_JSON)
+	@ApiOperation(value = "/selectOrgPriceByMatnr", response = ResponseModel.class, notes = "机构商品价格")
+	public Response selectOrgPriceByMatnr(@ApiParam(name = "OrgPriceModel",value = "OrgPriceModel")OrgPriceModel orgPrice){
+		return convertToRespModel(MessageCode.NORMAL, null, tMdOrgPriceService.selectOrgPriceByMatnr(orgPrice));
 	}
 }
