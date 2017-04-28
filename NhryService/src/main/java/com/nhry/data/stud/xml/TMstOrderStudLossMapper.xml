@@ -20,7 +20,9 @@
   
   <select id="findLossByOrderId" resultMap="BaseResultMap" parameterType="java.util.Map" >
     select 
-    a.MID, a.ORDER_ID, a.MATNR, a.QTY, a.SALES_ORG, b.ZBOT_CODE, b.MATNR_TXT matnrTxt,
+    a.MID, a.ORDER_ID, a.MATNR, a.QTY, a.SALES_ORG, b.ZBOT_CODE, 
+    (CASE WHEN(b.SHORT_TXT IS NULL OR b.SHORT_TXT='')THEN b.MATNR_TXT ELSE b.SHORT_TXT  END) matnrTxt
+    ,
     (SELECT i.ITEM_NAME FROM t_sys_code_item I WHERE i.TYPE_CODE=<include refid="mybaties.constant.packing _type"></include> AND i.ITEM_CODE=b.ZBOT_CODE) ZBOT_CODE_NAME
     from t_mst_order_stud_loss a
     left join t_md_mara_stud b on a.MATNR=b.MATNR
@@ -31,7 +33,9 @@
   
   <select id="findLossByOrderIdUnpack" resultMap="BaseResultMap" parameterType="java.util.Map" >
     select 
-    a.MID, a.ORDER_ID, a.MATNR, a.QTY, a.SALES_ORG, b.ZBOT_CODE, b.MATNR_TXT matnrTxt,
+    a.MID, a.ORDER_ID, a.MATNR, a.QTY, a.SALES_ORG, b.ZBOT_CODE, 
+    (CASE WHEN(b.SHORT_TXT IS NULL OR b.SHORT_TXT='')THEN b.MATNR_TXT ELSE b.SHORT_TXT  END) matnrTxt
+    ,
     (SELECT i.ITEM_NAME FROM t_sys_code_item I WHERE i.TYPE_CODE=<include refid="mybaties.constant.packing _type"></include> AND i.ITEM_CODE=b.ZBOT_CODE) ZBOT_CODE_NAME
     from t_mst_order_stud_loss_unpack a
     left join t_md_mara_stud b on a.MATNR=b.MATNR

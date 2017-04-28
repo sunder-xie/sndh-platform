@@ -103,7 +103,9 @@
   <select id="findOrderItemByMap" resultMap="BaseResultMap" parameterType="java.util.Map">
   	select 
     oi.MID, oi.ORDER_DATE, oi.ORDER_ID, oi.SCHOOL_CODE, oi.ORDER_TYPE, oi.CLASS_CODE, oi.MATNR, oi.QTY, oi.SALES_ORG,
-	class.CLASS_NAME, mara.MATNR_TXT, mara.ZBOT_CODE,
+	class.CLASS_NAME, 
+	(CASE WHEN(mara.SHORT_TXT IS NULL OR mara.SHORT_TXT='')THEN mara.MATNR_TXT ELSE mara.SHORT_TXT  END) MATNR_TXT
+	, mara.ZBOT_CODE,
     (SELECT i.ITEM_NAME FROM t_sys_code_item I WHERE i.TYPE_CODE=<include refid="mybaties.constant.packing _type"></include> AND i.ITEM_CODE=mara.ZBOT_CODE) ZBOT_CODE_NAME
     from t_mst_order_stud_item OI
     left join t_md_class CLASS on oi.CLASS_CODE=class.CLASS_CODE
@@ -117,7 +119,9 @@
   <select id="findOrderItemByMapUnpack" resultMap="BaseResultMap" parameterType="java.util.Map">
   	select 
     oi.MID, oi.ORDER_DATE, oi.ORDER_ID, oi.SCHOOL_CODE, oi.ORDER_TYPE, oi.CLASS_CODE, oi.MATNR, oi.QTY, oi.SALES_ORG,
-	class.CLASS_NAME, mara.MATNR_TXT, mara.ZBOT_CODE,
+	class.CLASS_NAME, 
+	(CASE WHEN(mara.SHORT_TXT IS NULL OR mara.SHORT_TXT='')THEN mara.MATNR_TXT ELSE mara.SHORT_TXT  END) MATNR_TXT
+	, mara.ZBOT_CODE,
     (SELECT i.ITEM_NAME FROM t_sys_code_item I WHERE i.TYPE_CODE=<include refid="mybaties.constant.packing _type"></include> AND i.ITEM_CODE=mara.ZBOT_CODE) ZBOT_CODE_NAME
     from t_mst_order_stud_item_unpack OI
     left join t_md_class CLASS on oi.CLASS_CODE=class.CLASS_CODE
