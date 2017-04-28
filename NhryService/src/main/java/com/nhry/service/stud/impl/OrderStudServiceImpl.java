@@ -166,7 +166,7 @@ public class OrderStudServiceImpl implements OrderStudService {
 	    		if(StringUtils.isBlank(item.getClassCode())){
 	    			continue;
 	    		}
-	    		if(item.getQty() == null || item.getQty() < 0){
+	    		if(item.getQty() == null || item.getQty() <= 0){
 	    			continue;
 	    		}
 	    		item.setSchoolCode(mstOrderStud.getSchoolCode());
@@ -192,7 +192,7 @@ public class OrderStudServiceImpl implements OrderStudService {
 	    		if(StringUtils.isBlank(item.getMatnr())){
 	    			continue;
 	    		}
-	    		if(item.getQty() == null || item.getQty() < 0){
+	    		if(item.getQty() == null || item.getQty() <= 0){
 	    			continue;
 	    		}
 	    		item.setSchoolCode(mstOrderStud.getSchoolCode());
@@ -217,7 +217,7 @@ public class OrderStudServiceImpl implements OrderStudService {
 	    		if(StringUtils.isBlank(item.getMatnr())){
 	    			continue;
 	    		}
-	    		if(item.getQty() == null || item.getQty() < 0){
+	    		if(item.getQty() == null || item.getQty() <= 0){
 	    			continue;
 	    		}
 	    		item.setOrderId(orderId);
@@ -1236,8 +1236,8 @@ public class OrderStudServiceImpl implements OrderStudService {
 	    		if(StringUtils.isBlank(item.getMatnr())){
 	    			continue;
 	    		}
-	    		if(item.getQty() == null || item.getQty() < 0){
-	    			item.setQty(0);
+	    		if(item.getQty() == null || item.getQty() <= 0){
+	    			continue;
 	    		}
 	    		item.setSchoolCode(mstOrderStud.getSchoolCode());
 	    		item.setOrderId(orderId);
@@ -1261,8 +1261,8 @@ public class OrderStudServiceImpl implements OrderStudService {
 	    		if(StringUtils.isBlank(item.getMatnr())){
 	    			continue;
 	    		}
-	    		if(item.getQty() == null || item.getQty() < 0){
-	    			item.setQty(0);
+	    		if(item.getQty() == null || item.getQty() <= 0){
+	    			continue;
 	    		}
 	    		item.setOrderId(orderId);
 	    		item.setMid(UUID.randomUUID().toString().replace("-", ""));
