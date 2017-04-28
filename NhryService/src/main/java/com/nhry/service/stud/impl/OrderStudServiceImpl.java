@@ -785,14 +785,16 @@ public class OrderStudServiceImpl implements OrderStudService {
 				/**
 				 * 比例计算
 				 */
-				if(ruleBase.getFixedMaxQty() == null || ruleBase.getFixedMaxQty() <= 0){
-					throw new ServiceException(MessageCode.LOGIC_ERROR, "比例计算中，上限数量未设置(不能<=0)");
-				}
+//				if(ruleBase.getFixedMaxQty() == null || ruleBase.getFixedMaxQty() <= 0){
+//					throw new ServiceException(MessageCode.LOGIC_ERROR, "比例计算中，上限数量未设置(不能<=0)");
+//				}
 				result = new BigDecimal(orderStudLossModel.getMatnrCount()).multiply(
 							new BigDecimal(ruleBase.getFixedScale()).divide(new BigDecimal("100"))
 						);
-				if(result.compareTo(new BigDecimal(ruleBase.getFixedMaxQty())) > 0){
-					result = new BigDecimal(ruleBase.getFixedMaxQty());
+				if(null != ruleBase.getFixedMaxQty() 
+						&& ruleBase.getFixedMaxQty() > 0 
+						&& result.compareTo(new BigDecimal(ruleBase.getFixedMaxQty())) > 0){
+					result = new BigDecimal(ruleBase.getFixedMaxQty());//超过上限，取上限值
 				}
 				
 			}
