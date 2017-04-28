@@ -10568,7 +10568,7 @@ public class OrderServiceImpl extends BaseService implements OrderService {
             public void run() {
                 super.run();
                 this.setName("sendReplaceBranch");
-                messLogService.sendReplaceBranch(order.getOnlineorderNo(),smodel.getBranchNo(),"2",newOrder.getyFresh(),newOrder.getInitAmt(),"");
+                messLogService.sendReplaceBranch(order.getOrderNo(),smodel.getBranchNo(),"2",newOrder.getyFresh(),newOrder.getInitAmt(),"");
             }
         });
         return 0;
