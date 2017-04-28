@@ -780,7 +780,7 @@
 			     		)
 			    </if>
 			     -->
-     ORDER BY o.ORDER_NO desc
+     ORDER BY o.ORDER_DATE desc
   </select>
   <select id="searchOrderByMp" resultMap="BaseResultMap" parameterType="com.nhry.model.order.OrderSearchModel" >
     select distinct
@@ -810,7 +810,7 @@
         AND o.DEALER_NO = #{dealerNo,jdbcType=VARCHAR}
       </if>
      AND o.PREORDER_STAT = "10"
-     ORDER BY o.ORDER_NO desc
+     ORDER BY o.ORDER_DATE desc
   </select>
 
   <select id="searchReturnOrders" resultMap="BaseResultMap" parameterType="com.nhry.model.order.ManHandOrderSearchModel">
@@ -843,7 +843,7 @@
       AND o.SALES_ORG = #{salesOrg,jdbcType=VARCHAR}
     </if>
 
-    ORDER BY ORDER_NO
+    ORDER BY ORDER_DATE DESC
   </select>
   <select id="searchReNeedOrdersByMp" resultMap="BaseResultMap" parameterType="com.nhry.model.order.OrderSearchModel" >
     select
@@ -911,7 +911,7 @@
     <if test="salesOrg != null and salesOrg !=''">
       AND o.SALES_ORG =  #{salesOrg}
     </if>
-    ORDER BY o.ORDER_NO desc
+    ORDER BY o.ORDER_DATE desc
   </select>
 
 
@@ -947,7 +947,7 @@
       AND o.ORDER_DATE  &lt;=  #{orderDateEnd}
     </if>
 
-    ORDER BY o.ORDER_NO desc
+    ORDER BY o.ORDER_DATE desc
   </select>
 
 
