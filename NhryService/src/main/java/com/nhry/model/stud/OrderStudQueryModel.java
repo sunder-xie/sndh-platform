@@ -13,7 +13,19 @@ public class OrderStudQueryModel extends BaseQueryModel implements Serializable 
 	private String keyWord;
 	
 	private String salesOrg;
+	
+	private String orderDateStr;
+	
+	
 		
+	public String getOrderDateStr() {
+		return orderDateStr;
+	}
+
+	public void setOrderDateStr(String orderDateStr) {
+		this.orderDateStr = orderDateStr;
+	}
+
 	public String getSalesOrg() {
 		return salesOrg;
 	}
