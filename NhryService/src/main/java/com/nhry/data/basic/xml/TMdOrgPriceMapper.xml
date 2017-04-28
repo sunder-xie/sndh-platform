@@ -69,7 +69,7 @@
     t.SALES_ORG
     FROM
     t_md_org_price t
-    INNER JOIN t_md_order_org t4 on t4.ID = t.ORG_ID and t4.ORG_ID =#{orgId,jdbcType=VARCHAR}
+    INNER JOIN t_md_order_org t4 on t4.ID = t.ORG_ID and t.ORG_ID =#{orgId,jdbcType=VARCHAR}
     LEFT JOIN t_md_mara_ex t1 ON t1.MATNR = t.MATNR and t1.SALES_ORG = t.SALES_ORG
     LEFT JOIN t_md_mara t2 on t2.SALES_ORG = t.SALES_ORG and t2.MATNR = t.MATNR
     LEFT JOIN t_sys_code_item t3 on t3.ITEM_CODE = t2.SEC_CATE and t3.TYPE_CODE=<include refid="mybaties.constant.products_second_category"></include>
