@@ -19,7 +19,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 import org.springframework.stereotype.Controller;
-import org.springframework.transaction.interceptor.TransactionAspectSupport;
 
 import com.github.pagehelper.PageInfo;
 import com.nhry.common.auth.UserSessionService;
@@ -307,9 +306,6 @@ public class StudentMilkOrderResource  extends BaseResource {
 					}}));
 			}
 		}
-		else{
-			sb.append("暂无可以发送的数据");
-		}
 		
 		if(taskMap != null && !taskMap.isEmpty()){
 			for(String key : taskMap.keySet()){
@@ -334,6 +330,9 @@ public class StudentMilkOrderResource  extends BaseResource {
 			if(sb.length()==0){
 				sb.append("发送成功");
 			}
+		}
+		else{
+			sb.append("暂无可发送的数据");
 		}
 		return convertToRespModel(MessageCode.NORMAL, null,sb);
 	}

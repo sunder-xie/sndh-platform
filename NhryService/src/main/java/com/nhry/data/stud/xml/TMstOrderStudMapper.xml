@@ -107,17 +107,20 @@
   	SELECT
   	a.order_id orderId, 
 	b.school_code schoolCode,b.school_name schoolName,a.order_date orderDateStr,
-	IFNULL((SELECT SUM(c.qty) FROM t_mst_order_stud_item c WHERE c.order_id=a.order_id AND c.order_type='10'), '0') list10Sum,
-	IFNULL((SELECT SUM(c.qty) FROM t_mst_order_stud_item c WHERE c.order_id=a.order_id AND c.order_type='20'), '0') list20Sum,
-	IFNULL((SELECT SUM(c.qty) FROM t_mst_order_stud_item_unpack c WHERE c.order_id=a.order_id AND c.order_type='20'), '0') list5020Sum,
-	IFNULL((SELECT SUM(c.qty) FROM t_mst_order_stud_loss c WHERE c.order_id=a.order_id), '0') list30Sum,
-	IFNULL((SELECT SUM(c.qty) FROM t_mst_order_stud_loss_unpack c WHERE c.order_id=a.order_id), '0') list5030Sum
+	IFNULL((SELECT SUM(c.qty) FROM t_mst_order_stud_item c WHERE c.order_id=a.order_id AND c.order_type='10'), 0) list10Sum,
+	IFNULL((SELECT SUM(c.qty) FROM t_mst_order_stud_item c WHERE c.order_id=a.order_id AND c.order_type='20'), 0) list20Sum,
+	IFNULL((SELECT SUM(c.qty) FROM t_mst_order_stud_item_unpack c WHERE c.order_id=a.order_id AND c.order_type='20'), 0) list5020Sum,
+	IFNULL((SELECT SUM(c.qty) FROM t_mst_order_stud_loss c WHERE c.order_id=a.order_id), 0) list30Sum,
+	IFNULL((SELECT SUM(c.qty) FROM t_mst_order_stud_loss_unpack c WHERE c.order_id=a.order_id), 0) list5030Sum
 	FROM t_mst_order_stud a
 	LEFT JOIN t_md_school b ON a.school_code=b.school_code
 	WHERE a.order_status='10'
 	and a.SALES_ORG=#{salesOrg}
 	<if test="keyWord != null and keyWord != ''">
 		and (b.school_code like '%${keyWord}%' or b.school_name like '%${keyWord}%')
+	</if>
+	<if test="orderDateStr != null and orderDateStr != ''">
+		and a.order_date=#{orderDateStr}
 	</if>
 	HAVING (list10Sum > 0 OR list20Sum > 0 OR list5020Sum > 0 OR list30Sum > 0 OR list5030Sum > 0)
 	ORDER BY a.order_date DESC
