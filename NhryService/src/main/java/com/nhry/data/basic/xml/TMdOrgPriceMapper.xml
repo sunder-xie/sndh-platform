@@ -85,7 +85,7 @@
     <if test="search != null  and search != ''" >
       AND (t.MATNR like '%${search}%' or t1.SHORT_TXT like '%${search}%')
     </if>
-    ORDER BY t.MATNR DESC
+    ORDER BY t.IS_SHOW DESC,t.MATNR DESC
   </select>
   <select id="selectOrgPriceListPage" resultMap="BaseResultMap" parameterType="com.nhry.model.basic.OrgPriceModel">
     SELECT
@@ -120,7 +120,7 @@
     <if test="search != null  and search != ''" >
       AND (t.MATNR like '%${search}%' or t1.SHORT_TXT like '%${search}%')
     </if>
-    ORDER BY t.MATNR DESC
+    ORDER BY t.IS_SHOW DESC,t.MATNR DESC
   </select>
   <select id="selectOrgPriceListOldPrice" resultMap="BaseResultMap" parameterType="com.nhry.model.basic.OrgPriceModel">
     SELECT
@@ -170,7 +170,7 @@
     <if test="search != null  and search != ''" >
       AND (t.MATNR like '%${search}%' or t1.SHORT_TXT like '%${search}%')
     </if>
-    ORDER BY t.MATNR DESC
+    ORDER BY t.IS_SHOW DESC,t.MATNR DESC
   </select>
   <select id="selectOrgPriceByMatnrOldPrice" resultMap="BaseResultMap" parameterType="com.nhry.model.basic.OrgPriceModel">
     SELECT
@@ -214,7 +214,7 @@
       AND t.STATUS = 'Y'
       AND t.IS_SHOW = 'Y'
       AND t.MATNR = #{matnr,jdbcType=VARCHAR}
-    ORDER BY t.MATNR DESC
+    ORDER BY t.IS_SHOW DESC,t.MATNR DESC
   </select>
   <select id="selectOrgPriceByMatnr" resultMap="BaseResultMap" parameterType="com.nhry.model.basic.OrgPriceModel">
     SELECT
@@ -228,7 +228,7 @@
     t.SALES_ORG = #{salesOrg,jdbcType=VARCHAR}
     AND t.MATNR = #{matnr,jdbcType=VARCHAR}
     AND t.STATUS = 'Y'
-    ORDER BY t.MATNR DESC
+    ORDER BY t.IS_SHOW DESC,t.MATNR DESC
   </select>
   <delete id="deleteOrgPriceById" parameterType="java.lang.String" >
     delete from t_md_org_price
