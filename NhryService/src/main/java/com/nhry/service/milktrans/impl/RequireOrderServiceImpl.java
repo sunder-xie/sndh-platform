@@ -1923,7 +1923,7 @@ public class RequireOrderServiceImpl implements RequireOrderService {
         sMode.setOrderDate(orderDate);
         sMode.setBranchNo(branch.getBranchNo());
         //查看今天销售订单,存在直接返回销售订单
-        List<TSsmSalOrder> result = tSsmSalOrderMapper.selectSalOrderByDateAndNo(sMode);
+        List<TSsmSalOrder> result = tSsmSalOrderMapper.selectSalOrderByRequiredDateAndNo(sMode);
         if (result != null && result.size() > 0) {
             throw new ServiceException(MessageCode.LOGIC_ERROR, "该奶站今天已经创建所有销售订单,请直接查询");
 //            return this.getSaleOrderByQueryDate(sMode);
