@@ -9,6 +9,8 @@ import com.wordnik.swagger.annotations.ApiModel;
 public class DaliyPlanEditModel {
 	
 	private String orderCode;
+
+	private String isOld;
 	
 	private ArrayList<TOrderDaliyPlanItem> entries = new ArrayList<TOrderDaliyPlanItem>();
 
@@ -32,6 +34,11 @@ public class DaliyPlanEditModel {
 		this.entries = entries;
 	}
 
-    
+	public String getIsOld() {
+		return isOld;
+	}
 
+	public void setIsOld(String isOld) {
+		this.isOld = isOld;
+	}
 }

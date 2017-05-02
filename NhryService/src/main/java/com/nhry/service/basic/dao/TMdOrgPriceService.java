@@ -4,6 +4,7 @@ import com.github.pagehelper.PageInfo;
 import com.nhry.data.basic.domain.TMdOrgPrice;
 import com.nhry.model.basic.OrgPriceModel;
 
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -50,4 +51,8 @@ public interface TMdOrgPriceService {
     TMdOrgPrice selectOrgPriceByMatnr(OrgPriceModel record);
 
     PageInfo selectOrgPriceListOldPrice(OrgPriceModel record);
+
+    List<TMdOrgPrice> selectOrgPriceMatnrList(OrgPriceModel record);
+
+    TMdOrgPrice selectOrgPriceByMatnrOldPrice(String orgCode, Date orderDate, String matnr);
 }
