@@ -83,9 +83,21 @@ public class TMstOrderStud implements Serializable, Cloneable{
     
     private String erpOrderMsg;
     
+    private String isBatch;//10批量，20单独生成的
+    
+    
+    
     
 
-    public String getErpOrderId() {
+    public String getIsBatch() {
+		return isBatch;
+	}
+
+	public void setIsBatch(String isBatch) {
+		this.isBatch = isBatch;
+	}
+
+	public String getErpOrderId() {
 		return erpOrderId;
 	}
 

@@ -101,4 +101,9 @@ public class TMstOrderStudItemMapperImpl implements TMstOrderStudItemMapper {
 		return sqlSessionTemplate.selectOne("findLossSumBySelectiveUnpack", obj);
 	}
 
+	@Override
+	public List<TMstOrderStudItem> findOrderItemUnpackByMapWithBatch(Map<String, Object> selectMap) {
+		return sqlSessionTemplate.selectList("findOrderItemUnpackByMapWithBatch", selectMap);
+	}
+
 }

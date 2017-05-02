@@ -14,10 +14,10 @@
     <result column="LAST_MODIFIED_BY_TXT" property="lastModifiedByTxt" jdbcType="VARCHAR" />
     <result column="REMARK" property="remark" jdbcType="VARCHAR" />
     <result column="SALES_ORG" property="salesOrg" jdbcType="VARCHAR" />
+    <result column="IS_BATCH" property="isBatch" jdbcType="VARCHAR" />
+    <result column="ERP_ORDER_ID" property="erpOrderId" jdbcType="VARCHAR" />
+    <result column="ERP_ORDER_STATUS" property="erpOrderStatus" jdbcType="VARCHAR" />
   </resultMap>
-  <sql id="Base_Column_List" >
-    ORDER_ID, ORDER_DATE, SCHOOL_CODE, ORDER_STATUS, REMARK, SALES_ORG
-  </sql>
   
   <select id="findOrderStudByDateAndSalesOrg" parameterType="java.util.Map" resultType="com.nhry.data.stud.domain.TMstOrderStud">
   	select
@@ -88,14 +88,15 @@
   
   <select id="selectByOrderId" resultMap="BaseResultMap" parameterType="java.lang.String" >
     select 
-    <include refid="Base_Column_List" />
+    ORDER_ID, ORDER_DATE, SCHOOL_CODE, ORDER_STATUS, REMARK, SALES_ORG, IS_BATCH
     from t_mst_order_stud
     where ORDER_ID = #{orderId,jdbcType=VARCHAR}
   </select>
   
   <select id="selectOrderBySchoolCodeAndDateWithOrderStatus10" resultMap="BaseResultMap" parameterType="com.nhry.data.stud.domain.TMstOrderStud">
   	select 
-    <include refid="Base_Column_List" />
+    ORDER_ID, ORDER_DATE, SCHOOL_CODE, ORDER_STATUS, REMARK, SALES_ORG, IS_BATCH,
+    ERP_ORDER_ID, ERP_ORDER_STATUS
     from t_mst_order_stud
     where SCHOOL_CODE=#{schoolCode}
     and ORDER_DATE=#{orderDateStr}
@@ -166,6 +167,9 @@
       <if test="salesOrg != null" >
         SALES_ORG,
       </if>
+      <if test="isBatch != null" >
+        IS_BATCH,
+      </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides="," >
       <if test="orderId != null" >
@@ -204,6 +208,9 @@
       <if test="salesOrg != null" >
         #{salesOrg,jdbcType=VARCHAR},
       </if>
+      <if test="isBatch != null" >
+        #{isBatch,jdbcType=VARCHAR},
+      </if>
     </trim>
   </insert>
   
@@ -216,6 +223,9 @@
       </if>
       <if test="schoolCode != null" >
         SCHOOL_CODE = #{schoolCode,jdbcType=VARCHAR},
+      </if>
+      <if test="isBatch != null" >
+        IS_BATCH = #{isBatch,jdbcType=VARCHAR},
       </if>
       <if test="orderStatus != null" >
         ORDER_STATUS = #{orderStatus,jdbcType=VARCHAR},
