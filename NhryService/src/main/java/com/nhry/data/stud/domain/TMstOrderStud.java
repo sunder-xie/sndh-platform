@@ -1,6 +1,7 @@
 package com.nhry.data.stud.domain;
 
 import java.io.Serializable;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 
@@ -290,6 +291,13 @@ public class TMstOrderStud implements Serializable, Cloneable{
 
     public void setOrderDate(Date orderDate) {
         this.orderDate = orderDate;
+        if(null != orderDate){
+        	try {
+            	this.orderDateStr = new SimpleDateFormat("yyyy-MM-dd").format(orderDate);
+    		} catch (Exception e) {
+    			//ignore
+    		}
+        }
     }
 
     public String getSchoolCode() {
