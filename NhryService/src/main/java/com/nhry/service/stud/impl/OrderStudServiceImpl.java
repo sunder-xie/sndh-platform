@@ -166,7 +166,7 @@ public class OrderStudServiceImpl implements OrderStudService {
 	    		if(StringUtils.isBlank(item.getClassCode())){
 	    			continue;
 	    		}
-	    		if(item.getQty() == null || item.getQty() < 0){
+	    		if(item.getQty() == null || item.getQty() <= 0){
 	    			continue;
 	    		}
 	    		item.setSchoolCode(mstOrderStud.getSchoolCode());
@@ -192,7 +192,7 @@ public class OrderStudServiceImpl implements OrderStudService {
 	    		if(StringUtils.isBlank(item.getMatnr())){
 	    			continue;
 	    		}
-	    		if(item.getQty() == null || item.getQty() < 0){
+	    		if(item.getQty() == null || item.getQty() <= 0){
 	    			continue;
 	    		}
 	    		item.setSchoolCode(mstOrderStud.getSchoolCode());
@@ -217,7 +217,7 @@ public class OrderStudServiceImpl implements OrderStudService {
 	    		if(StringUtils.isBlank(item.getMatnr())){
 	    			continue;
 	    		}
-	    		if(item.getQty() == null || item.getQty() < 0){
+	    		if(item.getQty() == null || item.getQty() <= 0){
 	    			continue;
 	    		}
 	    		item.setOrderId(orderId);
@@ -785,14 +785,16 @@ public class OrderStudServiceImpl implements OrderStudService {
 				/**
 				 * 比例计算
 				 */
-				if(ruleBase.getFixedMaxQty() == null || ruleBase.getFixedMaxQty() <= 0){
-					throw new ServiceException(MessageCode.LOGIC_ERROR, "比例计算中，上限数量未设置(不能<=0)");
-				}
+//				if(ruleBase.getFixedMaxQty() == null || ruleBase.getFixedMaxQty() <= 0){
+//					throw new ServiceException(MessageCode.LOGIC_ERROR, "比例计算中，上限数量未设置(不能<=0)");
+//				}
 				result = new BigDecimal(orderStudLossModel.getMatnrCount()).multiply(
 							new BigDecimal(ruleBase.getFixedScale()).divide(new BigDecimal("100"))
 						);
-				if(result.compareTo(new BigDecimal(ruleBase.getFixedMaxQty())) > 0){
-					result = new BigDecimal(ruleBase.getFixedMaxQty());
+				if(null != ruleBase.getFixedMaxQty() 
+						&& ruleBase.getFixedMaxQty() > 0 
+						&& result.compareTo(new BigDecimal(ruleBase.getFixedMaxQty())) > 0){
+					result = new BigDecimal(ruleBase.getFixedMaxQty());//超过上限，取上限值
 				}
 				
 			}
@@ -1234,8 +1236,8 @@ public class OrderStudServiceImpl implements OrderStudService {
 	    		if(StringUtils.isBlank(item.getMatnr())){
 	    			continue;
 	    		}
-	    		if(item.getQty() == null || item.getQty() < 0){
-	    			item.setQty(0);
+	    		if(item.getQty() == null || item.getQty() <= 0){
+	    			continue;
 	    		}
 	    		item.setSchoolCode(mstOrderStud.getSchoolCode());
 	    		item.setOrderId(orderId);
@@ -1259,8 +1261,8 @@ public class OrderStudServiceImpl implements OrderStudService {
 	    		if(StringUtils.isBlank(item.getMatnr())){
 	    			continue;
 	    		}
-	    		if(item.getQty() == null || item.getQty() < 0){
-	    			item.setQty(0);
+	    		if(item.getQty() == null || item.getQty() <= 0){
+	    			continue;
 	    		}
 	    		item.setOrderId(orderId);
 	    		item.setMid(UUID.randomUUID().toString().replace("-", ""));
