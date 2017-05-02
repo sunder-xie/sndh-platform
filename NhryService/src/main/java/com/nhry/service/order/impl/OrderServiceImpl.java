@@ -7640,13 +7640,37 @@ public class OrderServiceImpl extends BaseService implements OrderService {
                 if (!"30".equals(plan.getStatus())) {
                     //更换产品和数量
                     if (!orgPlan.getMatnr().equals(plan.getMatnr()) && !orgPlan.getQty().equals(plan.getQty())) {
-                        float price = priceService.getMaraPrice(orgOrder.getBranchNo(), plan.getMatnr(), orgOrder.getDeliveryType());
+                        float price=0;
+                        //更换商品后，如果是机构订单，机构订单修改价格
+                        if("70".equals(orgOrder.getPreorderSource())){
+                            TMdOrgPrice orgPrice = tMdOrgPriceService.selectOrgPriceByMatnrOldPrice(orgOrder.getOnlineSourceType(),orgOrder.getOrderDate(),orgPlan.getMatnr());
+                            //执行原价
+                            if("Y".equals(record.getIsOld())){
+                                price = orgPrice.getPriceAgree().floatValue();
+                            }else{
+                                price = orgPrice.getOldPrice().floatValue();
+                            }
+                        }else{
+                            price = priceService.getMaraPrice(orgOrder.getBranchNo(), plan.getMatnr(), orgOrder.getDeliveryType());
+                        }
                         if (price <= 0) throw new ServiceException(MessageCode.LOGIC_ERROR, "替换的产品价格小于0，请维护价格组!");
                         cj = orgPlan.getAmt().subtract(new BigDecimal(String.valueOf(price)).multiply(new BigDecimal(plan.getQty().toString())));
                         orgPlan.setPrice(new BigDecimal(String.valueOf(price)));
                     } else if (!orgPlan.getMatnr().equals(plan.getMatnr())) {
                         //只换产品
-                        float price = priceService.getMaraPrice(orgOrder.getBranchNo(), plan.getMatnr(), orgOrder.getDeliveryType());
+                        float price=0;
+                        //更换商品后，如果是机构订单，机构订单修改价格
+                        if("70".equals(orgOrder.getPreorderSource())){
+                            TMdOrgPrice orgPrice = tMdOrgPriceService.selectOrgPriceByMatnrOldPrice(orgOrder.getOnlineSourceType(),orgOrder.getOrderDate(),orgPlan.getMatnr());
+                            //执行原价
+                            if("Y".equals(record.getIsOld())){
+                                price = orgPrice.getPriceAgree().floatValue();
+                            }else{
+                                price = orgPrice.getOldPrice().floatValue();
+                            }
+                        }else{
+                            price = priceService.getMaraPrice(orgOrder.getBranchNo(), plan.getMatnr(), orgOrder.getDeliveryType());
+                        }
                         if (price <= 0) throw new ServiceException(MessageCode.LOGIC_ERROR, "替换的产品价格小于0，请维护价格组!");
                         cj = orgPlan.getAmt().subtract(new BigDecimal(String.valueOf(price)).multiply(new BigDecimal(orgPlan.getQty().toString())));
                         orgPlan.setPrice(new BigDecimal(String.valueOf(price)));
@@ -7718,7 +7742,19 @@ public class OrderServiceImpl extends BaseService implements OrderService {
                 }
                 //变更产品
                 if (!orgPlan.getMatnr().equals(plan.getMatnr())) {
-                    float price = priceService.getMaraPrice(orgOrder.getBranchNo(), plan.getMatnr(), orgOrder.getDeliveryType());
+                    float price=0;
+                    //更换商品后，如果是机构订单，机构订单修改价格
+                    if("70".equals(orgOrder.getPreorderSource())){
+                        TMdOrgPrice orgPrice = tMdOrgPriceService.selectOrgPriceByMatnrOldPrice(orgOrder.getOnlineSourceType(),orgOrder.getOrderDate(),orgPlan.getMatnr());
+                        //执行原价
+                        if("Y".equals(record.getIsOld())){
+                            price = orgPrice.getPriceAgree().floatValue();
+                        }else{
+                            price = orgPrice.getOldPrice().floatValue();
+                        }
+                    }else{
+                        price = priceService.getMaraPrice(orgOrder.getBranchNo(), plan.getMatnr(), orgOrder.getDeliveryType());
+                    }
                     if (price <= 0) throw new ServiceException(MessageCode.LOGIC_ERROR, "替换的产品价格小于0，请维护价格组!");
                     if (StringUtils.isNotBlank(orgPlan.getPromotionFlag()) && orgPlan.getPrice().floatValue() != price)
                         throw new ServiceException(MessageCode.LOGIC_ERROR, "有促销的产品只能替换价格相同的产品!");

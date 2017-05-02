@@ -70,4 +70,18 @@ public interface TMdOrgPriceMapper {
      * @return
      */
     PageInfo selectOrgPriceListOldPrice(OrgPriceModel record);
+
+    /**
+     *  机构下返回可售卖产品列表
+     * @param record
+     * @return
+     */
+    List<TMdOrgPrice> selectOrgPriceMatnrList(OrgPriceModel record);
+
+    /**
+     * 根据产品、机构获取该产品机构价格
+     * @param record
+     * @return
+     */
+    TMdOrgPrice selectOrgPriceByMatnrOldPrice(OrgPriceModel record);
 }

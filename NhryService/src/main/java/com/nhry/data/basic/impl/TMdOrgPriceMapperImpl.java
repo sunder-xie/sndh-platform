@@ -62,4 +62,14 @@ public class TMdOrgPriceMapperImpl implements TMdOrgPriceMapper {
     public PageInfo selectOrgPriceListOldPrice(OrgPriceModel record) {
         return sqlSessionTemplate.selectListByPages("selectOrgPriceListOldPrice",record, Integer.parseInt(record.getPageNum()),Integer.parseInt(record.getPageSize()));
     }
+
+    @Override
+    public List<TMdOrgPrice> selectOrgPriceMatnrList(OrgPriceModel record) {
+        return sqlSessionTemplate.selectList("selectOrgPriceListOldPrice",record);
+    }
+
+    @Override
+    public TMdOrgPrice selectOrgPriceByMatnrOldPrice(OrgPriceModel record) {
+        return sqlSessionTemplate.selectOne("selectOrgPriceByMatnrOldPrice",record);
+    }
 }

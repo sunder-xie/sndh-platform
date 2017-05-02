@@ -218,4 +218,12 @@ public class PriceResource extends BaseResource {
 	public Response selectOrgPriceListOldPrice(@ApiParam(name = "OrgPriceModel",value = "OrgPriceModel")OrgPriceModel orgPrice){
 		return convertToRespModel(MessageCode.NORMAL, null, tMdOrgPriceService.selectOrgPriceListOldPrice(orgPrice));
 	}
+	@POST
+	@Path("/selectOrgPriceMatnrList")
+	@Produces(MediaType.APPLICATION_JSON)
+	@Consumes(MediaType.APPLICATION_JSON)
+	@ApiOperation(value = "/selectOrgPriceMatnrList", response = ResponseModel.class, notes = "查询机构下产品列表")
+	public Response selectOrgPriceMatnrList(@ApiParam(name = "OrgPriceModel",value = "OrgPriceModel")OrgPriceModel orgPrice){
+		return convertToRespModel(MessageCode.NORMAL, null, tMdOrgPriceService.selectOrgPriceMatnrList(orgPrice));
+	}
 }
