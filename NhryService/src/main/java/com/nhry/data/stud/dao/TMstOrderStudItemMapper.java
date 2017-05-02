@@ -21,6 +21,9 @@ public interface TMstOrderStudItemMapper {
 
 	int deleteOrderAndItem(Map<String, Object> delMap);
 
+	//批量删除（逻辑删除）
+	//单独生成的订奶订单不能被批量删除
+	//已发送ERP的订奶订单不能批量删除
 	int deleteOrderWithBatch(Map<String, Object> delMap);
 
 	String findSumBySelective(TMstOrderStud obj);
@@ -38,5 +41,7 @@ public interface TMstOrderStudItemMapper {
 	String findSumBySelectiveUnpack(TMstOrderStud obj);
 
 	String findLossSumBySelectiveUnpack(TMstOrderStud obj);
+
+	List<TMstOrderStudItem> findOrderItemUnpackByMapWithBatch(Map<String, Object> selectMap);
 	
 }

@@ -143,6 +143,18 @@
     and b.order_status='10'
   </select>
   
+  <select id="findOrderItemUnpackByMapWithBatch" resultMap="BaseResultMap" parameterType="java.util.Map">
+  	select 
+    oi.MID, oi.ORDER_DATE, oi.ORDER_ID, oi.SCHOOL_CODE, oi.ORDER_TYPE, oi.CLASS_CODE, oi.MATNR, oi.QTY, oi.SALES_ORG
+    from t_mst_order_stud_item_unpack OI
+    left join t_mst_order_stud b on oi.order_id=b.order_id
+    where oi.ORDER_DATE=#{getOrderDateStr}
+    and oi.SCHOOL_CODE=#{schoolCode}
+    and oi.SALES_ORG=#{salesOrg}
+    and b.order_status='10'
+  </select>
+  
+  
   <select id="findOrderItemByOrderId" resultMap="BaseResultMap" parameterType="java.util.Map">
   	select 
     oi.MID, oi.ORDER_DATE, oi.ORDER_ID, oi.SCHOOL_CODE, oi.ORDER_TYPE, 
@@ -182,6 +194,8 @@
   	where ORDER_DATE=#{orderDateStr}
   	and SALES_ORG=#{salesOrg}
   	and ORDER_STATUS='10'
+  	and ERP_ORDER_STATUS != '10'
+  	and IS_BATCH != '20'
   </update>
   
   
