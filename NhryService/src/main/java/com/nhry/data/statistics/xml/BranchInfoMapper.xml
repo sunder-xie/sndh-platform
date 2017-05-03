@@ -11,6 +11,7 @@
         <if test="salesOrg != null">
             AND b.SALES_ORG = #{salesOrg}
         </if>
+
     </sql>
     <select id="branchDayInfo" resultType="hashmap" parameterType="com.nhry.model.statistics.BranchInfoModel">
         SELECT
@@ -476,6 +477,15 @@
         LEFT JOIN t_md_dealer d ON d.DEALER_NO = b.DEALER_NO
         LEFT JOIN t_md_mara m ON m.MATNR = i.MATNR
         AND b.SALES_ORG = m.SALES_ORG
+
+
+
+        <if test="branchName != null">
+          where  b.BRANCH_NAME     like '%' #{branchName,jdbcType=VARCHAR} '%'
+        </if>
+
+
+
     </select>
     <select id="orderOnlineStatReport" resultType="hashmap" parameterType="com.nhry.model.statistics.ExtendBranchInfoModel">
       SELECT
