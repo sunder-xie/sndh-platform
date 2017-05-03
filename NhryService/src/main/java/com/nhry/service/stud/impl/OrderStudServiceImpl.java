@@ -1009,7 +1009,7 @@ public class OrderStudServiceImpl implements OrderStudService {
 							String.valueOf(Integer.parseInt(item.getList20Sum())+Integer.parseInt(item.getList10Sum()))		
 						);
 						tmp.setTotalSum(
-							String.valueOf(Integer.parseInt(item.getList20Sum())+Integer.parseInt(item.getList30Sum()))		
+							String.valueOf(Integer.parseInt(tmp.getList20Sum())+Integer.parseInt(item.getList30Sum()))		
 						);
 						sumMilkList.add(tmp);
 					}
@@ -1026,7 +1026,7 @@ public class OrderStudServiceImpl implements OrderStudService {
 						String.valueOf(Integer.parseInt(item.getList20Sum())+Integer.parseInt(item.getList10Sum()))		
 					);
 					tmp.setTotalSum(
-						String.valueOf(Integer.parseInt(item.getList20Sum())+Integer.parseInt(item.getList30Sum()))		
+						String.valueOf(Integer.parseInt(tmp.getList20Sum())+Integer.parseInt(item.getList30Sum()))		
 					);
 					sumMilkList.add(tmp);
 				}
