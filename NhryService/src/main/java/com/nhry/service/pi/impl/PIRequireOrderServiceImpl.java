@@ -244,7 +244,7 @@ public class PIRequireOrderServiceImpl implements PIRequireOrderService {
         	itemList = orderMapper.findOrderItemByOrderIdUnpack(hashMap);
         }
         if(null == itemList || itemList.size()==0){
-        	return new PISuccessMessage(false,"",order.getOrderId()+"该订单为生成有效订单明细");
+        	return new PISuccessMessage(false,"",order.getOrderId()+"该订单未生成有效订单明细");
         }
         
         //老师奶
