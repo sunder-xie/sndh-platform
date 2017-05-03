@@ -694,7 +694,12 @@
      		AND o.PAYMENTMETHOD = #{paymentStat,jdbcType=VARCHAR}
     </if>
     <if test="preorderSource != null and preorderSource !=''">
-      AND o.PREORDER_SOURCE = #{preorderSource,jdbcType=VARCHAR}
+      <if test="'Z017' == preorderSource">
+      	AND p.PROM_SUB_TYPE = #{preorderSource}
+      </if>
+      <if test="'Z017' != preorderSource">
+      	AND o.PREORDER_SOURCE = #{preorderSource,jdbcType=VARCHAR}
+      </if>
     </if>
     <if test="onlineSourceType != null and onlineSourceType !=''">
       AND o.ONLINE_SOURCE_TYPE = #{onlineSourceType,jdbcType=VARCHAR}
