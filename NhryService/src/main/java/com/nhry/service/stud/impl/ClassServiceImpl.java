@@ -44,7 +44,7 @@ public class ClassServiceImpl implements ClassService {
 		if(StringUtils.isBlank(salesOrg)){
 			throw new ServiceException(MessageCode.LOGIC_ERROR, "销售组织编码必填");
 		}
-		return classMapper.findClassListBySalesOrg(salesOrg);
+		return classMapper.findClassListBySalesOrg10(salesOrg);
 	}
 
 	@Override
