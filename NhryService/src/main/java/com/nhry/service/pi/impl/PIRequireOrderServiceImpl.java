@@ -240,11 +240,11 @@ public class PIRequireOrderServiceImpl implements PIRequireOrderService {
         hashMap.put("salesOrg", order.getSalesOrg());
         hashMap.put("orderId", order.getOrderId());
         List<TMstOrderStudItem> itemList = orderMapper.findOrderItemByOrderId(hashMap);
-        if(itemList.size()==0){
+        if(null == itemList || itemList.size()==0){
         	itemList = orderMapper.findOrderItemByOrderIdUnpack(hashMap);
         }
-        if(itemList.size()==0){
-        	return new PISuccessMessage(false,"",order.getOrderId()+"该订单为生成有效订单明细");
+        if(null == itemList || itemList.size()==0){
+        	return new PISuccessMessage(false,"",order.getOrderId()+"该订单未生成有效订单明细");
         }
         
         //老师奶

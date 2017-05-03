@@ -112,7 +112,8 @@
 	IFNULL((SELECT SUM(c.qty) FROM t_mst_order_stud_item c WHERE c.order_id=a.order_id AND c.order_type='20'), 0) list20Sum,
 	IFNULL((SELECT SUM(c.qty) FROM t_mst_order_stud_item_unpack c WHERE c.order_id=a.order_id AND c.order_type='20'), 0) list5020Sum,
 	IFNULL((SELECT SUM(c.qty) FROM t_mst_order_stud_loss c WHERE c.order_id=a.order_id), 0) list30Sum,
-	IFNULL((SELECT SUM(c.qty) FROM t_mst_order_stud_loss_unpack c WHERE c.order_id=a.order_id), 0) list5030Sum
+	IFNULL((SELECT SUM(c.qty) FROM t_mst_order_stud_loss_unpack c WHERE c.order_id=a.order_id), 0) list5030Sum,
+	a.ERP_ORDER_STATUS erpOrderStatus, a.ERP_ORDER_ID erpOrderId
 	FROM t_mst_order_stud a
 	LEFT JOIN t_md_school b ON a.school_code=b.school_code
 	WHERE a.order_status='10'
