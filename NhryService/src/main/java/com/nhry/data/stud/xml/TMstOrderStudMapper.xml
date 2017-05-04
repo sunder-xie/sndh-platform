@@ -39,12 +39,19 @@
 	  AND a.sales_org=#{salesOrg}
 	  AND MATNR IN 
 	  (
-	  	select DISTINCT b.MATNR from
+	  	select DISTINCT b.MATNR matnr from
 	  	t_mst_order_stud_item_unpack b
 	  	left join t_mst_order_stud c on b.order_id=c.order_id
 	  	where c.sales_org=#{salesOrg}
 	  	and c.order_status='10'
 	  	and c.order_date=#{orderDateStr}
+	  	UNION ALL
+	  	select DISTINCT bb.MATNR matnr from
+	  	t_mst_order_stud_loss bb
+	  	left join t_mst_order_stud cc on bb.order_id=cc.order_id
+	  	where cc.sales_org=#{salesOrg}
+	  	and cc.order_status='10'
+	  	and cc.order_date=#{orderDateStr}
 	  )
   </select>
   
@@ -57,32 +64,51 @@
 	  AND a.sales_org=#{salesOrg}
 	  AND MATNR IN 
 	  (
-	  	select DISTINCT b.MATNR from
+	  	select DISTINCT b.MATNR matnr from
 	  	t_mst_order_stud_item b
 	  	left join t_mst_order_stud c on b.order_id=c.order_id
 	  	where c.sales_org=#{salesOrg}
 	  	and c.order_status='10'
 	  	and c.order_date=#{orderDateStr}
+	  	UNION ALL
+	  	select DISTINCT bb.MATNR matnr from
+	  	t_mst_order_stud_loss bb
+	  	left join t_mst_order_stud cc on bb.order_id=cc.order_id
+	  	where cc.sales_org=#{salesOrg}
+	  	and cc.order_status='10'
+	  	and cc.order_date=#{orderDateStr}
 	  )
   </select>
   
   
   <select id="findSchoolWithOrder" resultType="com.nhry.data.stud.domain.TMstOrderStud" parameterType="com.nhry.data.stud.domain.TMstOrderStud">
-	  SELECT DISTINCT
-	  a.SCHOOL_CODE schoolCode, a.SCHOOL_NAME schoolName, b.MATNR matnr,d.MATNR_TXT matnrTxt, d.ZBOT_CODE zbotCode,
-	  (SELECT i.ITEM_NAME FROM t_sys_code_item I WHERE i.TYPE_CODE=<include refid="mybaties.constant.packing _type"></include> AND i.ITEM_CODE=d.ZBOT_CODE) zbotCodeName
-	  from t_md_school a
-	  left join t_mst_order_stud_item b on a.school_code=b.school_code
-	  left join t_mst_order_stud c on b.order_id=c.order_id
-	  left join t_md_mara_stud d on b.matnr=d.matnr
-	  where a.VISIABLE='10'
-	  and c.ORDER_DATE=#{orderDateStr}
-	  and a.SALES_ORG=#{salesOrg}
-	  and c.order_status='10'
-	  and c.SALES_ORG=#{salesOrg}
-	  and d.STATUS='Y'
-	  and d.SALES_ORG=#{salesOrg}
-	  order by a.school_code
+	select DISTINCT * from(
+		  SELECT DISTINCT
+		  a.ERP_CODE erpCode, a.SCHOOL_CODE schoolCode, a.SCHOOL_NAME schoolName, b.MATNR matnr,d.MATNR_TXT matnrTxt, d.ZBOT_CODE zbotCode,
+		  (SELECT i.ITEM_NAME FROM t_sys_code_item I WHERE i.TYPE_CODE=<include refid="mybaties.constant.packing _type"></include> AND i.ITEM_CODE=d.ZBOT_CODE) zbotCodeName
+		  from t_md_school a
+		  left join t_mst_order_stud_item b on a.school_code=b.school_code and a.sales_org=b.sales_org
+		  left join t_mst_order_stud c on b.order_id=c.order_id and b.sales_org=c.sales_org
+		  left join t_md_mara_stud d on b.matnr=d.matnr and d.sales_org=b.sales_org
+		  where a.VISIABLE='10'
+		  and c.ORDER_DATE=#{orderDateStr}
+		  and c.order_status='10'
+		  and a.SALES_ORG=#{salesOrg}
+		  and d.STATUS='Y'
+		  UNION ALL
+		  select DISTINCT
+		  e.ERP_CODE erpCode, e.SCHOOL_CODE schoolCode, e.SCHOOL_NAME schoolName, a.MATNR matnr,d.MATNR_TXT matnrTxt, d.ZBOT_CODE zbotCode,
+		  (SELECT i.ITEM_NAME FROM t_sys_code_item I WHERE i.TYPE_CODE=<include refid="mybaties.constant.packing _type"></include> AND i.ITEM_CODE=d.ZBOT_CODE) zbotCodeName
+		  from t_mst_order_stud_loss a
+		  left join t_mst_order_stud b on a.order_id=b.order_id and a.sales_org=b.sales_org
+		  left join t_md_mara_stud d on a.matnr=d.matnr and a.sales_org=d.sales_org
+		  left join t_md_school e on b.school_code=e.school_code and e.sales_org=b.sales_org
+		  where e.VISIABLE='10'
+		  and b.ORDER_DATE=#{orderDateStr}
+		  and b.order_status='10'
+		  and a.sales_org=#{salesOrg}
+		  and d.STATUS='Y'
+	) tmp
   </select>
   
   
@@ -118,6 +144,7 @@
 	LEFT JOIN t_md_school b ON a.school_code=b.school_code
 	WHERE a.order_status='10'
 	and a.SALES_ORG=#{salesOrg}
+	and b.SALES_ORG=#{salesOrg}
 	<if test="keyWord != null and keyWord != ''">
 		and (b.school_code like '%${keyWord}%' or b.school_name like '%${keyWord}%')
 	</if>

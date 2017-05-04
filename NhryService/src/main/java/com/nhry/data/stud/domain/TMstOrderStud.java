@@ -13,6 +13,8 @@ import java.util.List;
 public class TMstOrderStud implements Serializable, Cloneable{
 	private static final long serialVersionUID = 1L;
 
+	private String erpCode;//学校ERP代码
+	
 	private String orderId;
 
     private Date orderDate;
@@ -163,6 +165,14 @@ public class TMstOrderStud implements Serializable, Cloneable{
 
 	public String getOrderType() {
 		return orderType;
+	}
+
+	public String getErpCode() {
+		return erpCode;
+	}
+
+	public void setErpCode(String erpCode) {
+		this.erpCode = erpCode;
 	}
 
 	public void setOrderType(String orderType) {

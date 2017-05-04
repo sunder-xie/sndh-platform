@@ -1139,7 +1139,7 @@ public class OrderStudServiceImpl implements OrderStudService {
         	}
             row = sheet.createRow(r);
             cell = row.createCell(0);
-            cell.setCellValue(item.getSchoolCode());//编号
+            cell.setCellValue(item.getErpCode());//编号
             cell = row.createCell(1);
             cell.setCellValue(item.getSchoolName());//学校
             cell = row.createCell(2);
@@ -1251,7 +1251,7 @@ public class OrderStudServiceImpl implements OrderStudService {
                 r += 1;
                 row = sheet.createRow(r);
                 cell = row.createCell(0);
-                cell.setCellValue("数量  "+item.getList20Sum()+"  "+item.getZbotCodeName());//数量
+                cell.setCellValue("数量  "+item.getList30Sum()+"  "+item.getZbotCodeName());//数量
 //                cell.setCellStyle(styleBold);
         	}
         }
@@ -1447,7 +1447,6 @@ public class OrderStudServiceImpl implements OrderStudService {
 			//奶品
 			Map<String, Object> selectMap = new HashMap<>();
 			selectMap.put("orderId", orderStud.getOrderId());
-			selectMap.put("orderType", "10");
 			selectMap.put("salesOrg", user.getSalesOrg());
 			selectMap.put("orderType", "20");
 			List<TMstOrderStudItem> list20 = orderStudItemMapper.findOrderItemByMapUnpack(selectMap);
