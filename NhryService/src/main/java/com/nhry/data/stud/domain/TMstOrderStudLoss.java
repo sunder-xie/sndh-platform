@@ -31,9 +31,18 @@ public class TMstOrderStudLoss {
     
     private String zbotCodeName;//
     
+    private String baseUnit;
     
 
-    public String getMatnrTxt() {
+    public String getBaseUnit() {
+		return baseUnit;
+	}
+
+	public void setBaseUnit(String baseUnit) {
+		this.baseUnit = baseUnit;
+	}
+
+	public String getMatnrTxt() {
 		return matnrTxt;
 	}
 
