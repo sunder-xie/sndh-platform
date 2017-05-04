@@ -81,6 +81,8 @@ public class TMstOrderStud implements Serializable, Cloneable{
     
     private String erpOrderId;
     
+    private String erpORderFreeId;
+    
     private String erpOrderStatus;
     
     private String erpOrderMsg;
@@ -88,15 +90,42 @@ public class TMstOrderStud implements Serializable, Cloneable{
     private String isBatch;//10批量，20单独生成的
     
     
+    private String erpOrderFreeStatus;
     
+    private String erpOrderFreeMsg;
     
 
-    public String getIsBatch() {
+    public String getErpOrderFreeStatus() {
+		return erpOrderFreeStatus;
+	}
+
+	public void setErpOrderFreeStatus(String erpOrderFreeStatus) {
+		this.erpOrderFreeStatus = erpOrderFreeStatus;
+	}
+
+	public String getErpOrderFreeMsg() {
+		return erpOrderFreeMsg;
+	}
+
+	public void setErpOrderFreeMsg(String erpOrderFreeMsg) {
+		this.erpOrderFreeMsg = erpOrderFreeMsg;
+	}
+
+	public String getIsBatch() {
 		return isBatch;
 	}
 
 	public void setIsBatch(String isBatch) {
 		this.isBatch = isBatch;
+	}
+
+	public String getErpORderFreeId() {
+		return erpORderFreeId;
+	}
+
+	public void setErpORderFreeId(String erpORderFreeId) {
+		this.erpORderFreeId = erpORderFreeId;
+
 	}
 
 	public String getErpOrderId() {
