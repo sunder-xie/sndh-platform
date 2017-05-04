@@ -307,12 +307,19 @@ public class StudentMilkOrderResource  extends BaseResource {
 							orderStudService.updateByOrder(order);
 							sb.append(order.getOrderId()+"有效订单").append(":{").append(sucMsg.getMessage()).append("},");
 				        }
+						
+						
 						if(sucMsgLoss.isSuccess()){
 							order.setErpOrderFreeStatus("10");
-							order.setErpORderFreeId(sucMsgLoss.getData());
+							order.setErpOrderFreeMsg("发送成功");
+							order.setErpOrderFreeId(sucMsgLoss.getData());
 							orderStudService.updateByOrder(order);
 						}else{
-							sb.append(order.getOrderId()+"免费订单").append(":{").append(sucMsg.getMessage()).append("},");
+							order.setErpOrderId(sucMsgLoss.getData());
+							order.setErpOrderFreeStatus("20");
+							order.setErpOrderFreeMsg(sucMsgLoss.getMessage());
+							orderStudService.updateByOrder(order);
+							sb.append(order.getOrderId()+"免费订单").append(":{").append(sucMsgLoss.getMessage()).append("},");
 						}
 						return sucMsg;
 					}}));

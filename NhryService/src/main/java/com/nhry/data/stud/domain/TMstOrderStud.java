@@ -81,7 +81,7 @@ public class TMstOrderStud implements Serializable, Cloneable{
     
     private String erpOrderId;
     
-    private String erpORderFreeId;
+    private String erpOrderFreeId;
     
     private String erpOrderStatus;
     
@@ -119,13 +119,13 @@ public class TMstOrderStud implements Serializable, Cloneable{
 		this.isBatch = isBatch;
 	}
 
-	public String getErpORderFreeId() {
-		return erpORderFreeId;
+
+	public String getErpOrderFreeId() {
+		return erpOrderFreeId;
 	}
 
-	public void setErpORderFreeId(String erpORderFreeId) {
-		this.erpORderFreeId = erpORderFreeId;
-
+	public void setErpOrderFreeId(String erpOrderFreeId) {
+		this.erpOrderFreeId = erpOrderFreeId;
 	}
 
 	public String getErpOrderId() {

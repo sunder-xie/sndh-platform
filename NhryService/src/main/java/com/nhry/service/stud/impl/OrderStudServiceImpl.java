@@ -151,7 +151,7 @@ public class OrderStudServiceImpl implements OrderStudService {
         order = mstOrderStudMapper.selectOrderBySchoolCodeAndDateWithOrderStatus10(order);
         if(null != order){
         	//已发送ERP的不能被覆盖和删除
-        	if("10".equals(order.getErpOrderStatus())){
+        	if("10".equals(order.getErpOrderStatus()) || "10".equals(order.getErpOrderFreeStatus())){
         		throw new ServiceException(MessageCode.LOGIC_ERROR, "已发送ERP的订单不能被更新");
         	}
         	//将订单失效
@@ -657,7 +657,7 @@ public class OrderStudServiceImpl implements OrderStudService {
         if(null != order){
         	
         	//已发送ERP的不能被覆盖和删除
-        	if("10".equals(order.getErpOrderStatus())){
+        	if("10".equals(order.getErpOrderStatus()) || "10".equals(order.getErpOrderFreeStatus())){
         		throw new ServiceException(MessageCode.LOGIC_ERROR, "已发送ERP的订单不能被批量生成覆盖");
         	}
         	
@@ -1328,7 +1328,7 @@ public class OrderStudServiceImpl implements OrderStudService {
 		else{
 			
 			//已发送ERP的不能被覆盖和删除
-        	if("10".equals(order.getErpOrderStatus())){
+        	if("10".equals(order.getErpOrderStatus()) || "10".equals(order.getErpOrderFreeStatus())){
         		throw new ServiceException(MessageCode.LOGIC_ERROR, "已发送ERP的订单不能被更新");
         	}
         	

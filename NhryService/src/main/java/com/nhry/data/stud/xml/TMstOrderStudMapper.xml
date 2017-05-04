@@ -17,6 +17,8 @@
     <result column="IS_BATCH" property="isBatch" jdbcType="VARCHAR" />
     <result column="ERP_ORDER_ID" property="erpOrderId" jdbcType="VARCHAR" />
     <result column="ERP_ORDER_STATUS" property="erpOrderStatus" jdbcType="VARCHAR" />
+    <result column="ERP_ORDER_FREE_ID" property="erpOrderFreeId" jdbcType="VARCHAR" />
+    <result column="ERP_ORDER_FREE_STATUS" property="erpOrderFreeStatus" jdbcType="VARCHAR" />
   </resultMap>
   
   <select id="findOrderStudByDateAndSalesOrg" parameterType="java.util.Map" resultType="com.nhry.data.stud.domain.TMstOrderStud">
@@ -122,7 +124,7 @@
   <select id="selectOrderBySchoolCodeAndDateWithOrderStatus10" resultMap="BaseResultMap" parameterType="com.nhry.data.stud.domain.TMstOrderStud">
   	select 
     ORDER_ID, ORDER_DATE, SCHOOL_CODE, ORDER_STATUS, REMARK, SALES_ORG, IS_BATCH,
-    ERP_ORDER_ID, ERP_ORDER_STATUS
+    ERP_ORDER_ID, ERP_ORDER_STATUS, ERP_ORDER_FREE_ID, ERP_ORDER_FREE_STATUS
     from t_mst_order_stud
     where SCHOOL_CODE=#{schoolCode}
     and ORDER_DATE=#{orderDateStr}
@@ -139,7 +141,7 @@
 	IFNULL((SELECT SUM(c.qty) FROM t_mst_order_stud_item_unpack c WHERE c.order_id=a.order_id AND c.order_type='20'), 0) list5020Sum,
 	IFNULL((SELECT SUM(c.qty) FROM t_mst_order_stud_loss c WHERE c.order_id=a.order_id), 0) list30Sum,
 	IFNULL((SELECT SUM(c.qty) FROM t_mst_order_stud_loss_unpack c WHERE c.order_id=a.order_id), 0) list5030Sum,
-	a.ERP_ORDER_STATUS erpOrderStatus, a.ERP_ORDER_ID erpOrderId
+	a.ERP_ORDER_STATUS erpOrderStatus, IFNULL(a.ERP_ORDER_ID, a.ERP_ORDER_FREE_ID) erpOrderId
 	FROM t_mst_order_stud a
 	LEFT JOIN t_md_school b ON a.school_code=b.school_code
 	WHERE a.order_status='10'
@@ -281,8 +283,8 @@
         ERP_ORDER_MSG = #{erpOrderMsg,jdbcType=VARCHAR},
       </if>
       
-      <if test="erpORderFreeId != null" >
-        ERP_ORDER_FREE_ID = #{erpORderFreeId,jdbcType=VARCHAR},
+      <if test="erpOrderFreeId != null" >
+        ERP_ORDER_FREE_ID = #{erpOrderFreeId,jdbcType=VARCHAR},
       </if>
       
         
