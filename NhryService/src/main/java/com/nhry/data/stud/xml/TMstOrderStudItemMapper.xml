@@ -102,6 +102,7 @@
   
   <select id="findOrderItemByMap" resultMap="BaseResultMap" parameterType="java.util.Map">
   	select 
+  	DISTINCT
     oi.MID, oi.ORDER_DATE, oi.ORDER_ID, oi.SCHOOL_CODE, oi.ORDER_TYPE, oi.CLASS_CODE, oi.MATNR, oi.QTY, oi.SALES_ORG,
 	class.CLASS_NAME, 
 	(CASE WHEN(mara.SHORT_TXT IS NULL OR mara.SHORT_TXT='')THEN mara.MATNR_TXT ELSE mara.SHORT_TXT  END) MATNR_TXT
@@ -113,27 +114,29 @@
     where oi.ORDER_ID=#{orderId}
     and oi.ORDER_TYPE=#{orderType}
     and mara.STATUS='Y'
+    and oi.SALES_ORG=#{salesOrg}
     and mara.SALES_ORG=#{salesOrg}
   </select>
   
   <select id="findOrderItemByMapUnpack" resultMap="BaseResultMap" parameterType="java.util.Map">
   	select 
+  	DISTINCT
     oi.MID, oi.ORDER_DATE, oi.ORDER_ID, oi.SCHOOL_CODE, oi.ORDER_TYPE, oi.CLASS_CODE, oi.MATNR, oi.QTY, oi.SALES_ORG,
-	class.CLASS_NAME, 
 	(CASE WHEN(mara.SHORT_TXT IS NULL OR mara.SHORT_TXT='')THEN mara.MATNR_TXT ELSE mara.SHORT_TXT  END) MATNR_TXT
 	, mara.ZBOT_CODE,
     (SELECT i.ITEM_NAME FROM t_sys_code_item I WHERE i.TYPE_CODE=<include refid="mybaties.constant.packing _type"></include> AND i.ITEM_CODE=mara.ZBOT_CODE) ZBOT_CODE_NAME
     from t_mst_order_stud_item_unpack OI
-    left join t_md_class CLASS on oi.CLASS_CODE=class.CLASS_CODE
     left join t_md_mara_stud mara on oi.MATNR=mara.MATNR
     where oi.ORDER_ID=#{orderId}
     and oi.ORDER_TYPE=#{orderType}
     and mara.STATUS='Y'
+    and oi.SALES_ORG=#{salesOrg}
     and mara.SALES_ORG=#{salesOrg}
   </select>
   
   <select id="findOrderItemByMapWithBatch" resultMap="BaseResultMap" parameterType="java.util.Map">
   	select 
+  	DISTINCT
     oi.MID, oi.ORDER_DATE, oi.ORDER_ID, oi.SCHOOL_CODE, oi.ORDER_TYPE, oi.CLASS_CODE, oi.MATNR, oi.QTY, oi.SALES_ORG
     from t_mst_order_stud_item OI
     left join t_mst_order_stud b on oi.order_id=b.order_id
@@ -141,6 +144,7 @@
     and oi.SCHOOL_CODE=#{schoolCode}
     and oi.SALES_ORG=#{salesOrg}
     and b.order_status='10'
+    and b.SALES_ORG=#{salesOrg}
   </select>
   
   <select id="findOrderItemUnpackByMapWithBatch" resultMap="BaseResultMap" parameterType="java.util.Map">
@@ -195,6 +199,7 @@
   	and SALES_ORG=#{salesOrg}
   	and ORDER_STATUS='10'
   	AND (ERP_ORDER_STATUS != '10' OR ERP_ORDER_STATUS IS NULL) 
+  	AND (ERP_ORDER_FREE_STATUS != '10' OR ERP_ORDER_FREE_STATUS IS NULL) 
 	AND IS_BATCH = '10'
   </update>
   

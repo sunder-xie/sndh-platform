@@ -37,14 +37,17 @@ import com.nhry.service.pi.dao.SmsSendService;
 import com.nhry.service.pi.pojo.MemberActivities;
 import com.nhry.utils.*;
 import com.sun.xml.bind.v2.TODO;
+
 import org.apache.commons.beanutils.BeanUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.poi.ss.util.CellRangeAddress;
 import org.apache.poi.xssf.usermodel.*;
 import org.springframework.core.task.TaskExecutor;
+
 import scala.reflect.internal.Trees;
 
 import javax.servlet.http.HttpServletRequest;
+
 import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.FileInputStream;
@@ -12040,4 +12043,9 @@ public class OrderServiceImpl extends BaseService implements OrderService {
     public TPreOrder selectByPrimaryKey(String orderNo) {
         return tPreOrderMapper.selectByPrimaryKey(orderNo);
     }
+
+	@Override
+	public List<TPreOrder> selectOrderByResumeOrderNo(String orderNo) {
+		return tPreOrderMapper.selectOrderByResumeOrderNo(orderNo);
+	}
 }

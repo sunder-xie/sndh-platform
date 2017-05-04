@@ -1,3 +1,4 @@
+
 package com.nhry.rest.stud;
 
 import java.util.HashMap;
@@ -283,13 +284,17 @@ public class StudentMilkOrderResource  extends BaseResource {
 			for (TMstOrderStud order : list) {
 				
 				//已经发送成功的不再发送
-				if("10".equals(order.getErpOrderStatus())){
+				if("10".equals(order.getErpOrderStatus()) && "10".equals(order.getErpOrderFreeStatus())){
 					continue;
 				}
+				
 				taskMap.put(order.getOrderId(), new FutureTask<PISuccessMessage>(new Callable<PISuccessMessage>(){
 					@Override
 					public PISuccessMessage call() throws Exception {
+						//正常销售订单
 						PISuccessMessage sucMsg = pIRequireOrderService.generateSalesOrder18(order);
+						//免费销售订单
+						PISuccessMessage sucMsgLoss = pIRequireOrderService.generateSalesOrderLoss18(order);
 						if (sucMsg.isSuccess()) {
 							order.setErpOrderId(sucMsg.getData());
 							order.setErpOrderStatus("10");
@@ -300,11 +305,27 @@ public class StudentMilkOrderResource  extends BaseResource {
 							order.setErpOrderStatus("20");
 							order.setErpOrderMsg(sucMsg.getMessage());
 							orderStudService.updateByOrder(order);
-							sb.append(order.getOrderId()).append(":{").append(sucMsg.getMessage()).append("},");
+							sb.append(order.getOrderId()+"有效订单").append(":{").append(sucMsg.getMessage()).append("},");
 				        }
+						
+						
+						if(sucMsgLoss.isSuccess()){
+							order.setErpOrderFreeStatus("10");
+							order.setErpOrderFreeMsg("发送成功");
+							order.setErpOrderFreeId(sucMsgLoss.getData());
+							orderStudService.updateByOrder(order);
+						}else{
+							order.setErpOrderId(sucMsgLoss.getData());
+							order.setErpOrderFreeStatus("20");
+							order.setErpOrderFreeMsg(sucMsgLoss.getMessage());
+							orderStudService.updateByOrder(order);
+							sb.append(order.getOrderId()+"免费订单").append(":{").append(sucMsgLoss.getMessage()).append("},");
+						}
 						return sucMsg;
 					}}));
 			}
+		}else{
+			sb.append("未发现有效订单");
 		}
 		
 		if(taskMap != null && !taskMap.isEmpty()){

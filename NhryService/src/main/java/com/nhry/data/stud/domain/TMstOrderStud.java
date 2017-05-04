@@ -13,6 +13,8 @@ import java.util.List;
 public class TMstOrderStud implements Serializable, Cloneable{
 	private static final long serialVersionUID = 1L;
 
+	private String erpCode;//学校ERP代码
+	
 	private String orderId;
 
     private Date orderDate;
@@ -79,6 +81,8 @@ public class TMstOrderStud implements Serializable, Cloneable{
     
     private String erpOrderId;
     
+    private String erpOrderFreeId;
+    
     private String erpOrderStatus;
     
     private String erpOrderMsg;
@@ -86,15 +90,42 @@ public class TMstOrderStud implements Serializable, Cloneable{
     private String isBatch;//10批量，20单独生成的
     
     
+    private String erpOrderFreeStatus;
     
+    private String erpOrderFreeMsg;
     
 
-    public String getIsBatch() {
+    public String getErpOrderFreeStatus() {
+		return erpOrderFreeStatus;
+	}
+
+	public void setErpOrderFreeStatus(String erpOrderFreeStatus) {
+		this.erpOrderFreeStatus = erpOrderFreeStatus;
+	}
+
+	public String getErpOrderFreeMsg() {
+		return erpOrderFreeMsg;
+	}
+
+	public void setErpOrderFreeMsg(String erpOrderFreeMsg) {
+		this.erpOrderFreeMsg = erpOrderFreeMsg;
+	}
+
+	public String getIsBatch() {
 		return isBatch;
 	}
 
 	public void setIsBatch(String isBatch) {
 		this.isBatch = isBatch;
+	}
+
+
+	public String getErpOrderFreeId() {
+		return erpOrderFreeId;
+	}
+
+	public void setErpOrderFreeId(String erpOrderFreeId) {
+		this.erpOrderFreeId = erpOrderFreeId;
 	}
 
 	public String getErpOrderId() {
@@ -163,6 +194,14 @@ public class TMstOrderStud implements Serializable, Cloneable{
 
 	public String getOrderType() {
 		return orderType;
+	}
+
+	public String getErpCode() {
+		return erpCode;
+	}
+
+	public void setErpCode(String erpCode) {
+		this.erpCode = erpCode;
 	}
 
 	public void setOrderType(String orderType) {

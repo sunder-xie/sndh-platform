@@ -140,4 +140,6 @@ public interface TPreOrderMapper {
     int updateOrderCurAmtByOrderAndAmt(Map<String, Object> uptMap);
 
     int uptOrderNoResume(String orderNo);
+    
+    List<TPreOrder> selectOrderByResumeOrderNo(String orderNo);
 }
