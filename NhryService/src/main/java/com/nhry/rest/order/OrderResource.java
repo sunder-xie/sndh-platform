@@ -572,4 +572,14 @@ public class OrderResource extends BaseResource {
 	public Response replaceOrderBranch(@ApiParam(required=true,name="order",value="参数信息") OrderNoAndDispDateModel  smodel){
 		return convertToRespModel(MessageCode.NORMAL, null, orderService.replaceOrderBranch(smodel));
 	}
+	
+	@POST
+	@Path("/selectOrderByResumeOrderNo")
+	@Produces(MediaType.APPLICATION_JSON)
+	@Consumes(MediaType.APPLICATION_JSON)
+	@ApiOperation(value = "/selectOrderByResumeOrderNo", response = List.class, notes = "根据订单号查询出续订的订单列表")
+	public Response selectOrderByResumeOrderNo(@ApiParam(required=true,name="model",value="参数信息") OrderSearchModel smodel){
+		return convertToRespModel(MessageCode.NORMAL, null, orderService.selectOrderByResumeOrderNo(smodel.getOrderNo()));
+	}
+	
 }

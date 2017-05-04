@@ -423,4 +423,9 @@ public class TPreOrderMapperImpl implements TPreOrderMapper
 
 	@Override
 	public int updateBackOrder(TPreOrder record){return sqlSessionTemplate.update("updateBackOrder", record);}
+
+	@Override
+	public List<TPreOrder> selectOrderByResumeOrderNo(String orderNo) {
+		return sqlSessionTemplate.selectList("selectOrderByResumeOrderNo", orderNo);
+	}
 }
