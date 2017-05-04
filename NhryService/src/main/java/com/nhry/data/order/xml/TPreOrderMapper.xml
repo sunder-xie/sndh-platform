@@ -629,6 +629,9 @@
       <if test="curAmt != null" >
         CUR_AMT = #{curAmt,jdbcType=DECIMAL},
       </if>
+      <if test="endDate != null">
+        END_DATE = #{endDate,jdbcType=Date},
+      </if>
     </set>
     where ORDER_NO = #{orderNo,jdbcType=VARCHAR}
   </update>
