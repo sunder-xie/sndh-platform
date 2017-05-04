@@ -10581,9 +10581,11 @@ public class OrderServiceImpl extends BaseService implements OrderService {
             newOrder.setInitAmt(initAmt);
             newOrder.setCurAmt(initAmt);
             newOrder.setIsPaid("Y");
+            newOrder.setPayDateStr(format.format(newOrder.getPayDate()));
             order.setInitAmt(oldInitAmt);
             order.setCurAmt(oldUseAmt);
-            tPreOrderMapper.updateOrderCurAmtAndInitAmt(order);
+            order.setEndDate(DateUtil.getYestoday(smodel.getDisDate()));
+            tPreOrderMapper.updateOrderInitAmtAndCurAmt(order);
         } catch (Exception e){
             throw new ServiceException(MessageCode.LOGIC_ERROR,"系统异常！");
         }
