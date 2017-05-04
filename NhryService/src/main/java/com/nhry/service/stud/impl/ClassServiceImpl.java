@@ -44,7 +44,7 @@ public class ClassServiceImpl implements ClassService {
 		if(StringUtils.isBlank(salesOrg)){
 			throw new ServiceException(MessageCode.LOGIC_ERROR, "销售组织编码必填");
 		}
-		return classMapper.findClassListBySalesOrg(salesOrg);
+		return classMapper.findClassListBySalesOrg10(salesOrg);
 	}
 
 	@Override
@@ -55,6 +55,7 @@ public class ClassServiceImpl implements ClassService {
 		if(StringUtils.isBlank(queryModel.getPageSize())){
 			throw new ServiceException(MessageCode.LOGIC_ERROR, "每页显示条数必填");
 		}
+		queryModel.setSalesOrg(this.userSessionService.getCurrentUser().getSalesOrg());
 		return classMapper.findClassPage(queryModel);
 	}
 

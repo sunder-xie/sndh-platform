@@ -37,6 +37,7 @@
 	LEFT JOIN t_md_class b ON a.CLASS_CODE=b.CLASS_CODE
 	where a.SCHOOL_CODE = #{schoolCode}
    	and a.SALES_ORG=#{salesOrg}
+   	and b.SALES_ORG=#{salesOrg}
   </select>
   <delete id="delSchoolClassBySalesOrg" parameterType="com.nhry.model.stud.SchoolClassModel" >
     delete from t_md_school_class
