@@ -22,7 +22,7 @@
   <select id="findOrderStudByDateAndSalesOrg" parameterType="java.util.Map" resultType="com.nhry.data.stud.domain.TMstOrderStud">
   	select
   	ORDER_DATE orderDateStr, ORDER_ID orderId, SCHOOL_CODE schoolCode, ORDER_STATUS orderStatus, SALES_ORG salesOrg, REMARK remark, 
-  	ERP_ORDER_ID erpOrderId, ERP_ORDER_STATUS erpOrderStatus, ERP_ORDER_MSG erpOrderMsg
+  	ERP_ORDER_ID erpOrderId, ERP_ORDER_STATUS erpOrderStatus, ERP_ORDER_MSG erpOrderMsg,ERP_ORDER_FREE_MSG  erpOrderFreeMsg ,ERP_ORDER_FREE_STATUS erpOrderFreeStatus
   	from t_mst_order_stud
   	where SALES_ORG=#{salesOrg}
   	and ORDER_DATE=#{orderDateStr}
@@ -277,8 +277,21 @@
         <if test="erpOrderStatus != null" >
         ERP_ORDER_STATUS = #{erpOrderStatus,jdbcType=VARCHAR},
       </if>
-        <if test="erpOrderMsg != null" >
+     	<if test="erpOrderMsg != null" >
         ERP_ORDER_MSG = #{erpOrderMsg,jdbcType=VARCHAR},
+      </if>
+      
+      <if test="erpORderFreeId != null" >
+        ERP_ORDER_FREE_ID = #{erpORderFreeId,jdbcType=VARCHAR},
+      </if>
+      
+        
+      <if test="erpOrderFreeStatus != null" >
+        ERP_ORDER_FREE_STATUS = #{erpOrderFreeStatus,jdbcType=VARCHAR},
+      </if>
+        
+      <if test="erpOrderFreeMsg != null" >
+        ERP_ORDER_FREE_MSG = #{erpOrderFreeMsg,jdbcType=VARCHAR},
       </if>
       
     </set>

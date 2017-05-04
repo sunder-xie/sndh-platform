@@ -73,7 +73,17 @@ public interface PIRequireOrderService {
      * @return
      */
     String execDeliveryByOrderNo(String orderNo);
-
+    /**
+     * 学生奶正常订单
+     * @param order
+     * @return
+     */
 	PISuccessMessage generateSalesOrder18(TMstOrderStud order);
+	/**
+	 * 学生奶免费订单
+	 * @param order
+	 * @return
+	 */
+	PISuccessMessage generateSalesOrderLoss18(TMstOrderStud order);
 
 }

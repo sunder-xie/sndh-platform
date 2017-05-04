@@ -64,6 +64,7 @@ import com.nhry.model.stud.SchoolMaraRuleModel;
 import com.nhry.model.stud.SchoolQueryModel;
 import com.nhry.service.pi.dao.PIRequireOrderService;
 import com.nhry.service.stud.dao.OrderStudService;
+import com.nhry.utils.DateUtil;
 import com.nhry.utils.EnvContant;
 
 
@@ -1571,7 +1572,7 @@ public class OrderStudServiceImpl implements OrderStudService {
 	public  List<TMstOrderStud>  findOrderStudByDateAndSalesOrg(){
 		TSysUser currentUser = userSessionService.getCurrentUser();
 		SimpleDateFormat format = new  SimpleDateFormat("yyyy-MM-dd");
-		return mstOrderStudMapper.findOrderStudByDateAndSalesOrg(format.format(new Date()),currentUser.getSalesOrg());
+		return mstOrderStudMapper.findOrderStudByDateAndSalesOrg(format.format(DateUtil.getTomorrow(new Date())),currentUser.getSalesOrg());
 	} 
 	
 	
