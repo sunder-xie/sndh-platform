@@ -36,6 +36,7 @@ import com.nhry.service.pi.dao.PIVipPointCreateBatService;
 import com.nhry.service.pi.dao.SmsSendService;
 import com.nhry.service.pi.pojo.MemberActivities;
 import com.nhry.utils.*;
+import com.sun.istack.NotNull;
 import com.sun.xml.bind.v2.TODO;
 
 import org.apache.commons.beanutils.BeanUtils;
@@ -10545,6 +10546,18 @@ public class OrderServiceImpl extends BaseService implements OrderService {
         if(!"10".equals(order.getPreorderSource()) && !"40".equals(order.getPreorderSource()) ){
             throw new ServiceException(MessageCode.LOGIC_ERROR,"只有电商订单才允许替换奶站！");
         }
+        OrderSearchModel searchModel = new OrderSearchModel();
+        searchModel.setOrderNo(smodel.getOrderNo());
+        searchModel.setBackDate(smodel.getDisDate());
+
+        if(order.getEndDate().before(smodel.getDisDate())){
+            throw new ServiceException(MessageCode.LOGIC_ERROR,"更换日期超出订单的结束日期！");
+        }
+
+        BigDecimal amts = tOrderDaliyPlanItemMapper.getSumDailyBackAmtByBackDate(searchModel);
+        if(amts.compareTo(BigDecimal.ZERO)<=0){
+            throw new ServiceException(MessageCode.LOGIC_ERROR,"订单的金额不满足更换奶站");
+        }
         List<TPlanOrderItem> items = tPlanOrderItemMapper.selectByOrderCode(smodel.getOrderNo());
         OrderCreateModel orderCreateModel = new OrderCreateModel();
         ArrayList<TPlanOrderItem> planList = new ArrayList<TPlanOrderItem>();
@@ -10588,6 +10601,7 @@ public class OrderServiceImpl extends BaseService implements OrderService {
                 item.setLastModified(new Date());
                 item.setLastModifiedBy(userSessionService.getCurrentUser().getLoginName());
                 item.setLastModifiedByTxt(userSessionService.getCurrentUser().getDisplayName());
+                item.setEndDispDate(DateUtil.getYestoday(smodel.getDisDate()));
                 tPlanOrderItemMapper.updateEntryByItemNo(item);
                 oldInitAmt = oldInitAmt.add(useAmt);
                 newQty += newItem.getDispTotal();
@@ -10611,6 +10625,7 @@ public class OrderServiceImpl extends BaseService implements OrderService {
             order.setEndDate(DateUtil.getYestoday(smodel.getDisDate()));
             tPreOrderMapper.updateOrderInitAmtAndCurAmt(order);
         } catch (Exception e){
+            e.printStackTrace();
             throw new ServiceException(MessageCode.LOGIC_ERROR,"系统异常！");
         }
         orderCreateModel.setOrder(newOrder);
