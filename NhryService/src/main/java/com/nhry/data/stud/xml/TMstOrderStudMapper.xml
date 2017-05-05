@@ -17,12 +17,14 @@
     <result column="IS_BATCH" property="isBatch" jdbcType="VARCHAR" />
     <result column="ERP_ORDER_ID" property="erpOrderId" jdbcType="VARCHAR" />
     <result column="ERP_ORDER_STATUS" property="erpOrderStatus" jdbcType="VARCHAR" />
+    <result column="ERP_ORDER_FREE_ID" property="erpOrderFreeId" jdbcType="VARCHAR" />
+    <result column="ERP_ORDER_FREE_STATUS" property="erpOrderFreeStatus" jdbcType="VARCHAR" />
   </resultMap>
   
   <select id="findOrderStudByDateAndSalesOrg" parameterType="java.util.Map" resultType="com.nhry.data.stud.domain.TMstOrderStud">
   	select
   	ORDER_DATE orderDateStr, ORDER_ID orderId, SCHOOL_CODE schoolCode, ORDER_STATUS orderStatus, SALES_ORG salesOrg, REMARK remark, 
-  	ERP_ORDER_ID erpOrderId, ERP_ORDER_STATUS erpOrderStatus, ERP_ORDER_MSG erpOrderMsg
+  	ERP_ORDER_ID erpOrderId, ERP_ORDER_STATUS erpOrderStatus, ERP_ORDER_MSG erpOrderMsg,ERP_ORDER_FREE_MSG  erpOrderFreeMsg ,ERP_ORDER_FREE_STATUS erpOrderFreeStatus
   	from t_mst_order_stud
   	where SALES_ORG=#{salesOrg}
   	and ORDER_DATE=#{orderDateStr}
@@ -39,12 +41,19 @@
 	  AND a.sales_org=#{salesOrg}
 	  AND MATNR IN 
 	  (
-	  	select DISTINCT b.MATNR from
+	  	select DISTINCT b.MATNR matnr from
 	  	t_mst_order_stud_item_unpack b
 	  	left join t_mst_order_stud c on b.order_id=c.order_id
 	  	where c.sales_org=#{salesOrg}
 	  	and c.order_status='10'
 	  	and c.order_date=#{orderDateStr}
+	  	UNION ALL
+	  	select DISTINCT bb.MATNR matnr from
+	  	t_mst_order_stud_loss bb
+	  	left join t_mst_order_stud cc on bb.order_id=cc.order_id
+	  	where cc.sales_org=#{salesOrg}
+	  	and cc.order_status='10'
+	  	and cc.order_date=#{orderDateStr}
 	  )
   </select>
   
@@ -57,32 +66,51 @@
 	  AND a.sales_org=#{salesOrg}
 	  AND MATNR IN 
 	  (
-	  	select DISTINCT b.MATNR from
+	  	select DISTINCT b.MATNR matnr from
 	  	t_mst_order_stud_item b
 	  	left join t_mst_order_stud c on b.order_id=c.order_id
 	  	where c.sales_org=#{salesOrg}
 	  	and c.order_status='10'
 	  	and c.order_date=#{orderDateStr}
+	  	UNION ALL
+	  	select DISTINCT bb.MATNR matnr from
+	  	t_mst_order_stud_loss bb
+	  	left join t_mst_order_stud cc on bb.order_id=cc.order_id
+	  	where cc.sales_org=#{salesOrg}
+	  	and cc.order_status='10'
+	  	and cc.order_date=#{orderDateStr}
 	  )
   </select>
   
   
   <select id="findSchoolWithOrder" resultType="com.nhry.data.stud.domain.TMstOrderStud" parameterType="com.nhry.data.stud.domain.TMstOrderStud">
-	  SELECT DISTINCT
-	  a.SCHOOL_CODE schoolCode, a.SCHOOL_NAME schoolName, b.MATNR matnr,d.MATNR_TXT matnrTxt, d.ZBOT_CODE zbotCode,
-	  (SELECT i.ITEM_NAME FROM t_sys_code_item I WHERE i.TYPE_CODE=<include refid="mybaties.constant.packing _type"></include> AND i.ITEM_CODE=d.ZBOT_CODE) zbotCodeName
-	  from t_md_school a
-	  left join t_mst_order_stud_item b on a.school_code=b.school_code
-	  left join t_mst_order_stud c on b.order_id=c.order_id
-	  left join t_md_mara_stud d on b.matnr=d.matnr
-	  where a.VISIABLE='10'
-	  and c.ORDER_DATE=#{orderDateStr}
-	  and a.SALES_ORG=#{salesOrg}
-	  and c.order_status='10'
-	  and c.SALES_ORG=#{salesOrg}
-	  and d.STATUS='Y'
-	  and d.SALES_ORG=#{salesOrg}
-	  order by a.school_code
+	select DISTINCT * from(
+		  SELECT DISTINCT
+		  a.ERP_CODE erpCode, a.SCHOOL_CODE schoolCode, a.SCHOOL_NAME schoolName, b.MATNR matnr,d.MATNR_TXT matnrTxt, d.ZBOT_CODE zbotCode,
+		  (SELECT i.ITEM_NAME FROM t_sys_code_item I WHERE i.TYPE_CODE=<include refid="mybaties.constant.packing _type"></include> AND i.ITEM_CODE=d.ZBOT_CODE) zbotCodeName
+		  from t_md_school a
+		  left join t_mst_order_stud_item b on a.school_code=b.school_code and a.sales_org=b.sales_org
+		  left join t_mst_order_stud c on b.order_id=c.order_id and b.sales_org=c.sales_org
+		  left join t_md_mara_stud d on b.matnr=d.matnr and d.sales_org=b.sales_org
+		  where a.VISIABLE='10'
+		  and c.ORDER_DATE=#{orderDateStr}
+		  and c.order_status='10'
+		  and a.SALES_ORG=#{salesOrg}
+		  and d.STATUS='Y'
+		  UNION ALL
+		  select DISTINCT
+		  e.ERP_CODE erpCode, e.SCHOOL_CODE schoolCode, e.SCHOOL_NAME schoolName, a.MATNR matnr,d.MATNR_TXT matnrTxt, d.ZBOT_CODE zbotCode,
+		  (SELECT i.ITEM_NAME FROM t_sys_code_item I WHERE i.TYPE_CODE=<include refid="mybaties.constant.packing _type"></include> AND i.ITEM_CODE=d.ZBOT_CODE) zbotCodeName
+		  from t_mst_order_stud_loss a
+		  left join t_mst_order_stud b on a.order_id=b.order_id and a.sales_org=b.sales_org
+		  left join t_md_mara_stud d on a.matnr=d.matnr and a.sales_org=d.sales_org
+		  left join t_md_school e on b.school_code=e.school_code and e.sales_org=b.sales_org
+		  where e.VISIABLE='10'
+		  and b.ORDER_DATE=#{orderDateStr}
+		  and b.order_status='10'
+		  and a.sales_org=#{salesOrg}
+		  and d.STATUS='Y'
+	) tmp
   </select>
   
   
@@ -96,7 +124,7 @@
   <select id="selectOrderBySchoolCodeAndDateWithOrderStatus10" resultMap="BaseResultMap" parameterType="com.nhry.data.stud.domain.TMstOrderStud">
   	select 
     ORDER_ID, ORDER_DATE, SCHOOL_CODE, ORDER_STATUS, REMARK, SALES_ORG, IS_BATCH,
-    ERP_ORDER_ID, ERP_ORDER_STATUS
+    ERP_ORDER_ID, ERP_ORDER_STATUS, ERP_ORDER_FREE_ID, ERP_ORDER_FREE_STATUS
     from t_mst_order_stud
     where SCHOOL_CODE=#{schoolCode}
     and ORDER_DATE=#{orderDateStr}
@@ -113,11 +141,12 @@
 	IFNULL((SELECT SUM(c.qty) FROM t_mst_order_stud_item_unpack c WHERE c.order_id=a.order_id AND c.order_type='20'), 0) list5020Sum,
 	IFNULL((SELECT SUM(c.qty) FROM t_mst_order_stud_loss c WHERE c.order_id=a.order_id), 0) list30Sum,
 	IFNULL((SELECT SUM(c.qty) FROM t_mst_order_stud_loss_unpack c WHERE c.order_id=a.order_id), 0) list5030Sum,
-	a.ERP_ORDER_STATUS erpOrderStatus, a.ERP_ORDER_ID erpOrderId
+	a.ERP_ORDER_STATUS erpOrderStatus, IFNULL(a.ERP_ORDER_ID, a.ERP_ORDER_FREE_ID) erpOrderId
 	FROM t_mst_order_stud a
 	LEFT JOIN t_md_school b ON a.school_code=b.school_code
 	WHERE a.order_status='10'
 	and a.SALES_ORG=#{salesOrg}
+	and b.SALES_ORG=#{salesOrg}
 	<if test="keyWord != null and keyWord != ''">
 		and (b.school_code like '%${keyWord}%' or b.school_name like '%${keyWord}%')
 	</if>
@@ -250,8 +279,21 @@
         <if test="erpOrderStatus != null" >
         ERP_ORDER_STATUS = #{erpOrderStatus,jdbcType=VARCHAR},
       </if>
-        <if test="erpOrderMsg != null" >
+     	<if test="erpOrderMsg != null" >
         ERP_ORDER_MSG = #{erpOrderMsg,jdbcType=VARCHAR},
+      </if>
+      
+      <if test="erpOrderFreeId != null" >
+        ERP_ORDER_FREE_ID = #{erpOrderFreeId,jdbcType=VARCHAR},
+      </if>
+      
+        
+      <if test="erpOrderFreeStatus != null" >
+        ERP_ORDER_FREE_STATUS = #{erpOrderFreeStatus,jdbcType=VARCHAR},
+      </if>
+        
+      <if test="erpOrderFreeMsg != null" >
+        ERP_ORDER_FREE_MSG = #{erpOrderFreeMsg,jdbcType=VARCHAR},
       </if>
       
     </set>

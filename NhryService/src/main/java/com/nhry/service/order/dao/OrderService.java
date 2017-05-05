@@ -231,4 +231,6 @@ public interface OrderService {
 	TPreOrder selectByPrimaryKey(String orderNo);
 
 	int replaceOrderBranch(OrderNoAndDispDateModel smodel);
+	
+	List<TPreOrder> selectOrderByResumeOrderNo(String orderNo);
 }

@@ -64,6 +64,7 @@ import com.nhry.model.stud.SchoolMaraRuleModel;
 import com.nhry.model.stud.SchoolQueryModel;
 import com.nhry.service.pi.dao.PIRequireOrderService;
 import com.nhry.service.stud.dao.OrderStudService;
+import com.nhry.utils.DateUtil;
 import com.nhry.utils.EnvContant;
 
 
@@ -150,7 +151,7 @@ public class OrderStudServiceImpl implements OrderStudService {
         order = mstOrderStudMapper.selectOrderBySchoolCodeAndDateWithOrderStatus10(order);
         if(null != order){
         	//已发送ERP的不能被覆盖和删除
-        	if("10".equals(order.getErpOrderStatus())){
+        	if("10".equals(order.getErpOrderStatus()) || "10".equals(order.getErpOrderFreeStatus())){
         		throw new ServiceException(MessageCode.LOGIC_ERROR, "已发送ERP的订单不能被更新");
         	}
         	//将订单失效
@@ -656,7 +657,7 @@ public class OrderStudServiceImpl implements OrderStudService {
         if(null != order){
         	
         	//已发送ERP的不能被覆盖和删除
-        	if("10".equals(order.getErpOrderStatus())){
+        	if("10".equals(order.getErpOrderStatus()) || "10".equals(order.getErpOrderFreeStatus())){
         		throw new ServiceException(MessageCode.LOGIC_ERROR, "已发送ERP的订单不能被批量生成覆盖");
         	}
         	
@@ -1139,7 +1140,7 @@ public class OrderStudServiceImpl implements OrderStudService {
         	}
             row = sheet.createRow(r);
             cell = row.createCell(0);
-            cell.setCellValue(item.getSchoolCode());//编号
+            cell.setCellValue(item.getErpCode());//编号
             cell = row.createCell(1);
             cell.setCellValue(item.getSchoolName());//学校
             cell = row.createCell(2);
@@ -1251,7 +1252,7 @@ public class OrderStudServiceImpl implements OrderStudService {
                 r += 1;
                 row = sheet.createRow(r);
                 cell = row.createCell(0);
-                cell.setCellValue("数量  "+item.getList20Sum()+"  "+item.getZbotCodeName());//数量
+                cell.setCellValue("数量  "+item.getList30Sum()+"  "+item.getZbotCodeName());//数量
 //                cell.setCellStyle(styleBold);
         	}
         }
@@ -1327,7 +1328,7 @@ public class OrderStudServiceImpl implements OrderStudService {
 		else{
 			
 			//已发送ERP的不能被覆盖和删除
-        	if("10".equals(order.getErpOrderStatus())){
+        	if("10".equals(order.getErpOrderStatus()) || "10".equals(order.getErpOrderFreeStatus())){
         		throw new ServiceException(MessageCode.LOGIC_ERROR, "已发送ERP的订单不能被更新");
         	}
         	
@@ -1447,7 +1448,6 @@ public class OrderStudServiceImpl implements OrderStudService {
 			//奶品
 			Map<String, Object> selectMap = new HashMap<>();
 			selectMap.put("orderId", orderStud.getOrderId());
-			selectMap.put("orderType", "10");
 			selectMap.put("salesOrg", user.getSalesOrg());
 			selectMap.put("orderType", "20");
 			List<TMstOrderStudItem> list20 = orderStudItemMapper.findOrderItemByMapUnpack(selectMap);
@@ -1572,7 +1572,7 @@ public class OrderStudServiceImpl implements OrderStudService {
 	public  List<TMstOrderStud>  findOrderStudByDateAndSalesOrg(){
 		TSysUser currentUser = userSessionService.getCurrentUser();
 		SimpleDateFormat format = new  SimpleDateFormat("yyyy-MM-dd");
-		return mstOrderStudMapper.findOrderStudByDateAndSalesOrg(format.format(new Date()),currentUser.getSalesOrg());
+		return mstOrderStudMapper.findOrderStudByDateAndSalesOrg(format.format(DateUtil.getTomorrow(new Date())),currentUser.getSalesOrg());
 	} 
 	
 	

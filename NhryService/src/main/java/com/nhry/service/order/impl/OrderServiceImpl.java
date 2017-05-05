@@ -37,14 +37,17 @@ import com.nhry.service.pi.dao.SmsSendService;
 import com.nhry.service.pi.pojo.MemberActivities;
 import com.nhry.utils.*;
 import com.sun.xml.bind.v2.TODO;
+
 import org.apache.commons.beanutils.BeanUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.poi.ss.util.CellRangeAddress;
 import org.apache.poi.xssf.usermodel.*;
 import org.springframework.core.task.TaskExecutor;
+
 import scala.reflect.internal.Trees;
 
 import javax.servlet.http.HttpServletRequest;
+
 import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.FileInputStream;
@@ -2499,11 +2502,25 @@ public class OrderServiceImpl extends BaseService implements OrderService {
                 if ("Y".equals(entry.getIsStop())) continue;//续订标示 如果订单行被停订，不参与续订
                 entry.setOrderNo(order.getOrderNo());
                 //取得该订单行项目里的产品价格组里价格
-                if (priceService.getMaraPrice(order.getBranchNo(), entry.getMatnr(), order.getDeliveryType()) > 0) {
-                    BigDecimal price = new BigDecimal(Float.toString(priceService.getMaraPrice(order.getBranchNo(), entry.getMatnr(), order.getDeliveryType())));
-                    entry.setSalesPrice(price);
-                } else {
-                    throw new ServiceException(MessageCode.LOGIC_ERROR, order.getOrderNo() + " [该订单商品" + entry.getShortTxt() + "价格存在问题，请维护后在进行续订!]");
+                if("70".equals(order.getPreorderSource())){
+                    OrgPriceModel opm = new OrgPriceModel();
+                    opm.setOrgId(order.getOnlineSourceType());
+                    opm.setMatnr(entry.getMatnr());
+
+                    TMdOrgPrice top =tMdOrgPriceService.selectOrgPriceByMatnr(opm);
+                    if(top.getPriceAgree()!=null){
+                        entry.setSalesPrice(top.getPriceAgree());
+                    }else{
+                        throw new ServiceException(MessageCode.LOGIC_ERROR, order.getOrderNo() + " [该订单商品" + entry.getShortTxt() + "价格存在问题，请维护后在进行续订!]");
+                    }
+
+                }else{
+                    if (priceService.getMaraPrice(order.getBranchNo(), entry.getMatnr(), order.getDeliveryType()) > 0) {
+                        BigDecimal price = new BigDecimal(Float.toString(priceService.getMaraPrice(order.getBranchNo(), entry.getMatnr(), order.getDeliveryType())));
+                        entry.setSalesPrice(price);
+                    } else {
+                        throw new ServiceException(MessageCode.LOGIC_ERROR, order.getOrderNo() + " [该订单商品" + entry.getShortTxt() + "价格存在问题，请维护后在进行续订!]");
+                    }
                 }
                 //设置配送开始时间
                 if (StringUtils.isBlank(record.getOrderDateStart())) {
@@ -2558,7 +2575,14 @@ public class OrderServiceImpl extends BaseService implements OrderService {
             }
 
             //保存订单，订单行
-            order.setPreorderSource("30");
+            if("70".equals(order.getPreorderSource())){
+                order.setIsPaid("Y");
+                order.setPayDate(new Date());
+                order.setPayDateStr(format.format(new Date()));
+                order.setPaymentStat("20");//机构订单已付款
+            }else{
+                order.setPreorderSource("30");
+            }
             order.setCurAmt(orderAmt);//订单价格
             order.setInitAmt(orderAmt);
             order.setEndDate(calculateFinalDate(entriesList));//订单截止日期
@@ -12040,4 +12064,9 @@ public class OrderServiceImpl extends BaseService implements OrderService {
     public TPreOrder selectByPrimaryKey(String orderNo) {
         return tPreOrderMapper.selectByPrimaryKey(orderNo);
     }
+
+	@Override
+	public List<TPreOrder> selectOrderByResumeOrderNo(String orderNo) {
+		return tPreOrderMapper.selectOrderByResumeOrderNo(orderNo);
+	}
 }

@@ -49,6 +49,7 @@
     from t_md_class a
     left join t_md_school_class b on a.CLASS_CODE=b.CLASS_CODE
     where a.SALES_ORG=#{salesOrg}
+    and b.SALES_ORG=#{salesOrg}
     and b.SCHOOL_CODE=#{schoolCode}
     and a.VISIABLE='10'
     and a.CLASS_CODE NOT IN 
