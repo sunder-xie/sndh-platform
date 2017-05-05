@@ -630,7 +630,7 @@
         CUR_AMT = #{curAmt,jdbcType=DECIMAL},
       </if>
       <if test="endDate != null">
-        END_DATE = #{endDate,jdbcType=Date},
+        END_DATE = #{endDate,jdbcType=DATE},
       </if>
     </set>
     where ORDER_NO = #{orderNo,jdbcType=VARCHAR}
